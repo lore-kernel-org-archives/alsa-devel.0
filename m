@@ -1,425 +1,98 @@
-From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v2 07/15] ASoC: qcom: q6asm: Add support to memory map and unmap
-Date: Tue,  5 Dec 2017 22:18:04 +0000
-Message-ID: <20171205221812.25641-8-srinivas.kandagatla@linaro.org>
-References: <20171205221812.25641-1-srinivas.kandagatla@linaro.org>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [alsa-devel] [PATCH v4 06/15] soundwire: Add IO transfer
+Date: Wed, 6 Dec 2017 11:28:15 +0530
+Message-ID: <20171206055813.GO32417@localhost>
+References: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
+ <1512122177-2889-7-git-send-email-vinod.koul@intel.com>
+ <40d00228-2891-6e25-4c6f-789518a0e2c2@linux.intel.com>
+ <20171203170418.GN32417@localhost>
+ <d7ed6ffa-e9b3-a7c9-ae07-369d2d541eab@linux.intel.com>
+ <20171205063114.GL32417@localhost>
+ <fb78b1c5-0a52-90b3-262e-8880aeb2da11@linux.intel.com>
+ <6a475ed4-8ca5-0422-e416-2a32f1afa8ef@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171205221812.25641-1-srinivas.kandagatla@linaro.org>
+Content-Disposition: inline
+In-Reply-To: <6a475ed4-8ca5-0422-e416-2a32f1afa8ef@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, bgoswami@codeaurora.org
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, plai@codeaurora.org, kwestfie@codeaurora.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, lkasam@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Sagar Dharia <sdharia@codeaurora.org>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sudheer Papothi <spapothi@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+On Tue, Dec 05, 2017 at 08:48:03AM -0600, Pierre-Louis Bossart wrote:
+> On 12/5/17 7:43 AM, Pierre-Louis Bossart wrote:
+> >On 12/5/17 12:31 AM, Vinod Koul wrote:
+> >>On Sun, Dec 03, 2017 at 09:01:41PM -0600, Pierre-Louis Bossart wrote:
 
-This patch adds support to memory map and unmap regions commands in
-q6asm module.
+> >>>>>>+static inline int do_transfer(struct sdw_bus *bus, struct
+> >>>>>>sdw_msg *msg)
+> >>>>>>+{
+> >>>>>>+    int retry = bus->prop.err_threshold;
+> >>>>>>+    enum sdw_command_response resp;
+> >>>>>>+    int ret = 0, i;
+> >>>>>>+
+> >>>>>>+    for (i = 0; i <= retry; i++) {
+> >>>>>>+        resp = bus->ops->xfer_msg(bus, msg);
+> >>>>>>+        ret = find_response_code(resp);
+> >>>>>>+
+> >>>>>>+        /* if cmd is ok or ignored return */
+> >>>>>>+        if (ret == 0 || ret == -ENODATA)
+> >>>>>
+> >>>>>Can you document why you don't retry on a CMD_IGNORED? I know
+> >>>>>there was a
+> >>>>>reason, I just can't remember it.
+> >>>>
+> >>>>CMD_IGNORED can be okay on broadcast. User of this API can retry all
+> >>>>they
+> >>>>want!
+> >>>
+> >>>So you retry if this is a CMD_FAILED but let higher levels retry for
+> >>>CMD_IGNORED, sorry I don't see the logic.
+> >>
+> >>Yes that is right.
+> >>
+> >>If I am doing a broadcast read, lets say for Device Id registers, why in
+> >>the
+> >>world would I want to retry? CMD_IGNORED is a valid response and
+> >>required to
+> >>stop enumeration cycle in that case.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/qdsp6/q6asm.c | 343 ++++++++++++++++++++++++++++++++++++++++++-
- sound/soc/qcom/qdsp6/q6asm.h |   5 +
- 2 files changed, 347 insertions(+), 1 deletion(-)
+Above is the clarfication
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
-index 9cc583afef4d..4be92441f524 100644
---- a/sound/soc/qcom/qdsp6/q6asm.c
-+++ b/sound/soc/qcom/qdsp6/q6asm.c
-@@ -14,9 +14,46 @@
- #include "q6asm.h"
- #include "common.h"
- 
-+#define ASM_CMD_SHARED_MEM_MAP_REGIONS		0x00010D92
-+#define ASM_CMDRSP_SHARED_MEM_MAP_REGIONS	0x00010D93
-+#define ASM_CMD_SHARED_MEM_UNMAP_REGIONS	0x00010D94
-+
- #define TUN_READ_IO_MODE		0x0004	/* tunnel read write mode */
- #define SYNC_IO_MODE			0x0001
- #define ASYNC_IO_MODE			0x0002
-+#define ASM_SHIFT_GAPLESS_MODE_FLAG	31
-+#define ADSP_MEMORY_MAP_SHMEM8_4K_POOL	3
-+
-+struct avs_cmd_shared_mem_map_regions {
-+	struct apr_hdr hdr;
-+	u16 mem_pool_id;
-+	u16 num_regions;
-+	u32 property_flag;
-+} __packed;
-+
-+struct avs_shared_map_region_payload {
-+	u32 shm_addr_lsw;
-+	u32 shm_addr_msw;
-+	u32 mem_size_bytes;
-+} __packed;
-+
-+struct avs_cmd_shared_mem_unmap_regions {
-+	struct apr_hdr hdr;
-+	u32 mem_map_handle;
-+} __packed;
-+
-+struct audio_buffer {
-+	dma_addr_t phys;
-+	uint32_t used;
-+	uint32_t size;		/* size of buffer */
-+};
-+
-+struct audio_port_data {
-+	struct audio_buffer *buf;
-+	uint32_t max_buf_cnt;
-+	uint32_t dsp_buf;
-+	uint32_t mem_map_handle;
-+};
- 
- struct audio_client {
- 	int session;
-@@ -27,6 +64,8 @@ struct audio_client {
- 	uint64_t time_stamp;
- 	struct apr_device *adev;
- 	struct mutex cmd_lock;
-+	/* idx:1 out port, 0: in port */
-+	struct audio_port_data port[2];
- 	wait_queue_head_t cmd_wait;
- 	int perf_mode;
- 	int stream_id;
-@@ -86,6 +125,260 @@ static void q6asm_session_free(struct audio_client *ac)
- 	mutex_unlock(&a->session_lock);
- }
- 
-+static inline void q6asm_add_mmaphdr(struct audio_client *ac,
-+				     struct apr_hdr *hdr, u32 pkt_size,
-+				     bool cmd_flg, u32 token)
-+{
-+	hdr->hdr_field = APR_SEQ_CMD_HDR_FIELD;
-+	hdr->src_port = 0;
-+	hdr->dest_port = 0;
-+	hdr->pkt_size = pkt_size;
-+	if (cmd_flg)
-+		hdr->token = token;
-+}
-+
-+static inline void q6asm_add_hdr(struct audio_client *ac, struct apr_hdr *hdr,
-+				 uint32_t pkt_size, bool cmd_flg,
-+				 uint32_t stream_id)
-+{
-+	hdr->hdr_field = APR_SEQ_CMD_HDR_FIELD;
-+	hdr->src_svc = ac->adev->svc_id;
-+	hdr->src_domain = APR_DOMAIN_APPS;
-+	hdr->dest_svc = APR_SVC_ASM;
-+	hdr->dest_domain = APR_DOMAIN_ADSP;
-+	hdr->src_port = ((ac->session << 8) & 0xFF00) | (stream_id);
-+	hdr->dest_port = ((ac->session << 8) & 0xFF00) | (stream_id);
-+	hdr->pkt_size = pkt_size;
-+	if (cmd_flg)
-+		hdr->token = ac->session;
-+}
-+
-+static int __q6asm_memory_unmap(struct audio_client *ac,
-+				phys_addr_t buf_add, int dir)
-+{
-+	struct avs_cmd_shared_mem_unmap_regions mem_unmap;
-+	struct q6asm *a = dev_get_drvdata(ac->dev->parent);
-+	int rc;
-+
-+	if (!a)
-+		return -ENODEV;
-+
-+	q6asm_add_mmaphdr(ac, &mem_unmap.hdr, sizeof(mem_unmap), true,
-+			  ((ac->session << 8) | dir));
-+	a->mem_state = -1;
-+
-+	mem_unmap.hdr.opcode = ASM_CMD_SHARED_MEM_UNMAP_REGIONS;
-+	mem_unmap.mem_map_handle = ac->port[dir].mem_map_handle;
-+
-+	if (mem_unmap.mem_map_handle == 0) {
-+		dev_err(ac->dev, "invalid mem handle\n");
-+		return -EINVAL;
-+	}
-+
-+	rc = apr_send_pkt(a->adev, (uint32_t *) &mem_unmap);
-+	if (rc < 0)
-+		return rc;
-+
-+	rc = wait_event_timeout(a->mem_wait, (a->mem_state >= 0),
-+				5 * HZ);
-+	if (!rc) {
-+		dev_err(ac->dev, "CMD timeout for memory_unmap 0x%x\n",
-+			mem_unmap.mem_map_handle);
-+		return -ETIMEDOUT;
-+	} else if (a->mem_state > 0) {
-+		return adsp_err_get_lnx_err_code(a->mem_state);
-+	}
-+	ac->port[dir].mem_map_handle = 0;
-+
-+	return 0;
-+}
-+
-+/**
-+ * q6asm_unmap_memory_regions() - unmap memory regions in the dsp.
-+ *
-+ * @dir: direction of audio stream
-+ * @ac: audio client instanace
-+ *
-+ * Return: Will be an negative value on failure or zero on success
-+ */
-+int q6asm_unmap_memory_regions(unsigned int dir, struct audio_client *ac)
-+{
-+	struct audio_port_data *port;
-+	int cnt = 0;
-+	int rc = 0;
-+
-+	mutex_lock(&ac->cmd_lock);
-+	port = &ac->port[dir];
-+	if (!port->buf) {
-+		mutex_unlock(&ac->cmd_lock);
-+		return 0;
-+	}
-+	cnt = port->max_buf_cnt - 1;
-+	if (cnt >= 0) {
-+		rc = __q6asm_memory_unmap(ac, port->buf[dir].phys, dir);
-+		if (rc < 0) {
-+			dev_err(ac->dev, "%s: Memory_unmap_regions failed %d\n",
-+				__func__, rc);
-+			mutex_unlock(&ac->cmd_lock);
-+			return rc;
-+		}
-+	}
-+
-+	port->max_buf_cnt = 0;
-+	kfree(port->buf);
-+	port->buf = NULL;
-+	mutex_unlock(&ac->cmd_lock);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(q6asm_unmap_memory_regions);
-+
-+static int __q6asm_memory_map_regions(struct audio_client *ac, int dir,
-+				      uint32_t period_sz, uint32_t periods,
-+				      bool is_contiguous)
-+{
-+	struct avs_cmd_shared_mem_map_regions *mmap_regions = NULL;
-+	struct avs_shared_map_region_payload *mregions = NULL;
-+	struct q6asm *a = dev_get_drvdata(ac->dev->parent);
-+	struct audio_port_data *port = NULL;
-+	struct audio_buffer *ab = NULL;
-+	void *mmap_region_cmd = NULL;
-+	void *payload = NULL;
-+	int rc = 0;
-+	int i = 0;
-+	int cmd_size = 0;
-+	uint32_t num_regions;
-+	uint32_t buf_sz;
-+
-+	if (!a)
-+		return -ENODEV;
-+	num_regions = is_contiguous ? 1 : periods;
-+	buf_sz = is_contiguous ? (period_sz * periods) : period_sz;
-+	buf_sz = PAGE_ALIGN(buf_sz);
-+
-+	cmd_size = sizeof(*mmap_regions) + (sizeof(*mregions) * num_regions);
-+
-+	mmap_region_cmd = kzalloc(cmd_size, GFP_KERNEL);
-+	if (!mmap_region_cmd)
-+		return -ENOMEM;
-+
-+	mmap_regions = (struct avs_cmd_shared_mem_map_regions *)mmap_region_cmd;
-+	q6asm_add_mmaphdr(ac, &mmap_regions->hdr, cmd_size, true,
-+			  ((ac->session << 8) | dir));
-+	a->mem_state = -1;
-+
-+	mmap_regions->hdr.opcode = ASM_CMD_SHARED_MEM_MAP_REGIONS;
-+	mmap_regions->mem_pool_id = ADSP_MEMORY_MAP_SHMEM8_4K_POOL;
-+	mmap_regions->num_regions = num_regions;
-+	mmap_regions->property_flag = 0x00;
-+
-+	payload = ((u8 *) mmap_region_cmd +
-+		   sizeof(struct avs_cmd_shared_mem_map_regions));
-+
-+	mregions = (struct avs_shared_map_region_payload *)payload;
-+
-+	ac->port[dir].mem_map_handle = 0;
-+	port = &ac->port[dir];
-+
-+	for (i = 0; i < num_regions; i++) {
-+		ab = &port->buf[i];
-+		mregions->shm_addr_lsw = lower_32_bits(ab->phys);
-+		mregions->shm_addr_msw = upper_32_bits(ab->phys);
-+		mregions->mem_size_bytes = buf_sz;
-+		++mregions;
-+	}
-+
-+	rc = apr_send_pkt(a->adev, (uint32_t *) mmap_region_cmd);
-+	if (rc < 0)
-+		goto fail_cmd;
-+
-+	rc = wait_event_timeout(a->mem_wait, (a->mem_state >= 0),
-+				5 * HZ);
-+	if (!rc) {
-+		dev_err(ac->dev, "timeout. waited for memory_map\n");
-+		rc = -ETIMEDOUT;
-+		goto fail_cmd;
-+	}
-+
-+	if (a->mem_state > 0) {
-+		rc = adsp_err_get_lnx_err_code(a->mem_state);
-+		goto fail_cmd;
-+	}
-+	rc = 0;
-+fail_cmd:
-+	kfree(mmap_region_cmd);
-+	return rc;
-+}
-+
-+/**
-+ * q6asm_map_memory_regions() - map memory regions in the dsp.
-+ *
-+ * @dir: direction of audio stream
-+ * @ac: audio client instanace
-+ * @phys: physcial address that needs mapping.
-+ * @period_sz: audio period size
-+ * @periods: number of periods
-+ *
-+ * Return: Will be an negative value on failure or zero on success
-+ */
-+int q6asm_map_memory_regions(unsigned int dir, struct audio_client *ac,
-+			     dma_addr_t phys,
-+			     unsigned int period_sz, unsigned int periods)
-+{
-+	struct audio_buffer *buf;
-+	int cnt;
-+	int rc;
-+
-+	if (ac->port[dir].buf) {
-+		dev_err(ac->dev, "Buffer already allocated\n");
-+		return 0;
-+	}
-+
-+	mutex_lock(&ac->cmd_lock);
-+
-+	buf = kzalloc(((sizeof(struct audio_buffer)) * periods), GFP_KERNEL);
-+	if (!buf) {
-+		mutex_unlock(&ac->cmd_lock);
-+		return -ENOMEM;
-+	}
-+
-+
-+	ac->port[dir].buf = buf;
-+
-+	buf[0].phys = phys;
-+	buf[0].used = dir ^ 1;
-+	buf[0].size = period_sz;
-+	cnt = 1;
-+	while (cnt < periods) {
-+		if (period_sz > 0) {
-+			buf[cnt].phys = buf[0].phys + (cnt * period_sz);
-+			buf[cnt].used = dir ^ 1;
-+			buf[cnt].size = period_sz;
-+		}
-+		cnt++;
-+	}
-+
-+	ac->port[dir].max_buf_cnt = periods;
-+	mutex_unlock(&ac->cmd_lock);
-+
-+	rc = __q6asm_memory_map_regions(ac, dir, period_sz, periods, 1);
-+	if (rc < 0) {
-+		dev_err(ac->dev,
-+			"CMD Memory_map_regions failed %d for size %d\n", rc,
-+			period_sz);
-+
-+
-+		ac->port[dir].max_buf_cnt = 0;
-+		kfree(buf);
-+		ac->port[dir].buf = NULL;
-+
-+		return rc;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(q6asm_map_memory_regions);
-+
- /**
-  * q6asm_audio_client_free() - Freee allocated audio client
-  *
-@@ -117,8 +410,10 @@ static struct audio_client *q6asm_get_audio_client(struct q6asm *a,
- 
- static int q6asm_srvc_callback(struct apr_device *adev, struct apr_client_data *data)
- {
--	struct q6asm *q6asm = dev_get_drvdata(&adev->dev);
-+	struct q6asm *a, *q6asm = dev_get_drvdata(&adev->dev);
- 	struct audio_client *ac = NULL;
-+	struct audio_port_data *port;
-+	uint32_t dir = 0;
- 	uint32_t sid = 0;
- 	uint32_t *payload;
- 
-@@ -135,6 +430,52 @@ static int q6asm_srvc_callback(struct apr_device *adev, struct apr_client_data *
- 		return 0;
- 	}
- 
-+	a = dev_get_drvdata(ac->dev->parent);
-+	if (data->opcode == APR_BASIC_RSP_RESULT) {
-+		switch (payload[0]) {
-+		case ASM_CMD_SHARED_MEM_MAP_REGIONS:
-+		case ASM_CMD_SHARED_MEM_UNMAP_REGIONS:
-+			if (payload[1] != 0) {
-+				dev_err(ac->dev,
-+					"cmd = 0x%x returned error = 0x%x sid:%d\n",
-+					payload[0], payload[1], sid);
-+				a->mem_state = payload[1];
-+			} else {
-+				a->mem_state = 0;
-+			}
-+
-+			wake_up(&a->mem_wait);
-+			break;
-+		default:
-+			dev_err(&adev->dev, "command[0x%x] not expecting rsp\n",
-+				 payload[0]);
-+			break;
-+		}
-+		return 0;
-+	}
-+
-+	dir = (data->token & 0x0F);
-+	port = &ac->port[dir];
-+
-+	switch (data->opcode) {
-+	case ASM_CMDRSP_SHARED_MEM_MAP_REGIONS:{
-+			a->mem_state = 0;
-+			ac->port[dir].mem_map_handle = payload[0];
-+			wake_up(&a->mem_wait);
-+			break;
-+		}
-+	case ASM_CMD_SHARED_MEM_UNMAP_REGIONS:{
-+			a->mem_state = 0;
-+			ac->port[dir].mem_map_handle = 0;
-+			wake_up(&a->mem_wait);
-+
-+			break;
-+		}
-+	default:
-+		dev_dbg(&adev->dev, "command[0x%x]success [0x%x]\n",
-+			payload[0], payload[1]);
-+		break;
-+	}
- 	if (ac->cb)
- 		ac->cb(data->opcode, data->token, data->payload, ac->priv);
- 	return 0;
-diff --git a/sound/soc/qcom/qdsp6/q6asm.h b/sound/soc/qcom/qdsp6/q6asm.h
-index 7a8a9039fd89..e1409c368600 100644
---- a/sound/soc/qcom/qdsp6/q6asm.h
-+++ b/sound/soc/qcom/qdsp6/q6asm.h
-@@ -11,4 +11,9 @@ struct audio_client *q6asm_audio_client_alloc(struct device *dev,
- 					      app_cb cb, void *priv);
- void q6asm_audio_client_free(struct audio_client *ac);
- int q6asm_get_session_id(struct audio_client *ac);
-+int q6asm_map_memory_regions(unsigned int dir,
-+			     struct audio_client *ac,
-+			     dma_addr_t phys,
-+			     unsigned int bufsz, unsigned int bufcnt);
-+int q6asm_unmap_memory_regions(unsigned int dir, struct audio_client *ac);
- #endif /* __Q6_ASM_H__ */
+> >>But if I am not expecting a CMD_IGNORED response, I can very well go
+> >>ahead
+> >>and retry from caller. The context is with caller and they can choose to
+> >>do
+> >>appropriate handling.
+> >>
+> >>And I have clarified this couple of times to you already, not sure how
+> >>many
+> >>more times I would have to do that.
+> >
+> >Until you clarify what you are doing.
+
+Let me try again, I think u missed that part of my reply above
+
+If I am doing a broadcast read, lets say for Device Id registers,
+why in the world would I want to retry? CMD_IGNORED is a valid response
+and required to stop enumeration cycle in that case.
+
+> >There is ONE case where IGNORED is a valid answer (reading the Prepare not
+> >finished bits), and it should not only be documented but analyzed in more
+> >details.
+> I meant Read SCP_DevID registers from Device0... prepare bits should never
+> return a CMD_IGNORED
+
+Precisely as I pointed out above.
+
+> >For a write an IGNORED is never OK.
+
+Agreed, but then transfer does both read and write. Write call can treat it
+as error and read call leaves it upto caller.
+
+Does that sound okay for you?
+
 -- 
-2.15.0
+~Vinod
