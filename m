@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 1/2] dt-bindings: sound: add bindings
-	for TAS6424
-Date: Wed, 6 Dec 2017 12:24:44 +0000
-Message-ID: <20171206122444.GA1827@finisterre>
-References: <20171205155412.20137-1-afd@ti.com>
- <20171205155412.20137-2-afd@ti.com>
+Subject: Re: [RFC PATCH 1/3] ASoC: Add platforms directory
+Date: Wed, 6 Dec 2017 12:39:08 +0000
+Message-ID: <20171206123908.GB1827@finisterre>
+References: <20171205181448.18513-1-afd@ti.com>
+ <20171205181448.18513-2-afd@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7155689443677412707=="
+Content-Type: multipart/mixed; boundary="===============0482955053472067449=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 156D6266AE1
- for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 13:24:47 +0100 (CET)
-In-Reply-To: <20171205155412.20137-2-afd@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 843C4266AE1
+ for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 13:39:10 +0100 (CET)
+In-Reply-To: <20171205181448.18513-2-afd@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,51 +22,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: "Andrew F. Davis" <afd@ti.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7155689443677412707==
+--===============0482955053472067449==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="2fHTh5uZTiUOsy+g"
+	protocol="application/pgp-signature"; boundary="s/l3CgOIzMHHjg/5"
 Content-Disposition: inline
 
 
---2fHTh5uZTiUOsy+g
+--s/l3CgOIzMHHjg/5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 05, 2017 at 09:54:11AM -0600, Andrew F. Davis wrote:
-> From: Michael Stecklein <m-stecklein@ti.com>
->=20
-> Add the bindings for the TAS6424 digital amplifier.
+On Tue, Dec 05, 2017 at 12:14:46PM -0600, Andrew F. Davis wrote:
+> Platform ASoC drivers are a lot like ASoC CODEC drivers in that they
+> both are independent pieces of a sound device, or "machine". Platform
+> drivers should be free of CODEC specifics and visa-versa. Both are then
+> used by the the "machine" driver to form the complete sound device.
+> This forms a hierarchy that makes it natural to group platform drivers
+> into their own directory, much like we group CODEC drivers already.
 
-Please use subject lines matching the style for the subsystem.  This
-makes it easier for people to identify relevant patches.
+This seems like a step backwards, and your current patch set only does
+this for the TI drivers anyway.  Currently we have things split up by IP
+holder, with machine drivers that have some platform specifics grouped
+together with the matching IP drivers that may also share some platform
+specific considerations.  This would group all the IP drivers together
+and separate them from the machine drivers they work in concert with for
+no obvious benefit.
 
---2fHTh5uZTiUOsy+g
+If you want to make a common directory for TI stuff do that, there's no
+need to mess up all the other platforms to do that though.
+
+--s/l3CgOIzMHHjg/5
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlon4YgACgkQJNaLcl1U
-h9D0UQf/RLshIW4dj6UF6wlNGmq16uXcvysIUIKZtSWS6U/3E/0I9AzkUx9KklKo
-5Ga4kur2w1PIoc6yEyhjenX+cTs+sxZjxYnfmG54D9by6ggs0Efo71xIUvQb8b3e
-Q+3rrv/dKjCqpeDc7uAXnVf48u5BvR2PP+h4pLpZM5UElsUwIsQiMtMwsHMEQS0C
-ww7cYG9O28pRw7oE2HrWzAFtplGqXLuRrPcVuEZGyXkONJ6NuQ4zUXSQqFO5drBq
-l3/U3iB2Gi7bANEpcKYkHt0uzg4tRr0X5qgZxQ821l+mSGExBUQctiNf22HRF2Hq
-P3GREUh8Ja0dVc0RXzyV2E0qRredAA==
-=kISf
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlon5OsACgkQJNaLcl1U
+h9Du4Qf/U9Z7wmDbxh1f9EubLW5EbAh8qO7TfGNB5+0N2F8rhr9JDQMyV91Q2liF
+y4vcHtWvLMpwJafkeIotN8TrjvSfII38YIwK1V++YnuQWON4RelCqpZ4jU33BqRO
+GnjJmcA3reSGNK1OIFUm2AucFZNhP1vU+Olh7hHjYYW5zEOLh6WxdaBEH8NWtwMh
+QcGziZvBA78QpHtrz8O1a79bQlGRMLKBdvT9zM7qXYZwYSUGMwJe9j64LviOXGUJ
+6zLNeb5KyrSHPftlAXcZ/Sub5faOvp3K55Eh7GMnVqHSu/MnYelys11I5fh5CQnG
+walA80BEtAk9u70EJcWGOScjBwtXWA==
+=tthK
 -----END PGP SIGNATURE-----
 
---2fHTh5uZTiUOsy+g--
+--s/l3CgOIzMHHjg/5--
 
---===============7155689443677412707==
+--===============0482955053472067449==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7155689443677412707==--
+--===============0482955053472067449==--
