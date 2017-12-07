@@ -1,88 +1,79 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: Multiple codecs on the same DAI
-Date: Thu, 7 Dec 2017 08:47:03 +0100
-Message-ID: <alpine.DEB.2.11.1712070841040.22247@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.11.1711231533480.27895@lnxricardw1.se.axis.com>
- <20171124123921.ajhxztwypujty6ps@sirena.org.uk>
- <alpine.DEB.2.11.1711241456420.27895@lnxricardw1.se.axis.com>
- <20171124180456.6c63tkph4e7ahuid@sirena.org.uk>
- <alpine.DEB.2.11.1712061352160.22247@lnxricardw1.se.axis.com>
- <20171206130323.GG1827@finisterre>
- <alpine.DEB.2.11.1712061521180.22247@lnxricardw1.se.axis.com>
- <20171206154552.iqcdtyhuj7oyfwcg@sirena.org.uk>
+From: <jiada_wang@mentor.com>
+Subject: [PATCH v1 1/2] ASoC: rsnd: ssi: fix race condition in rsnd_ssi_pointer_update
+Date: Thu, 7 Dec 2017 00:22:35 -0800
+Message-ID: <1512634956-17760-2-git-send-email-jiada_wang@mentor.com>
+References: <1512634956-17760-1-git-send-email-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B64A266E0E
- for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2017 08:47:11 +0100 (CET)
-In-Reply-To: <20171206154552.iqcdtyhuj7oyfwcg@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1512634956-17760-1-git-send-email-jiada_wang@mentor.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jiada Wang <jiada_wang@mentor.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Jiada Wang <jiada_wang@mentor.com>
 
-On Wed, 6 Dec 2017, Mark Brown wrote:
+Currently there is race condition between set of byte_pos and wrap
+it around when new buffer starts. If .pointer is called in-between
+it will result in inconsistent pointer position be returned
+from .pointer callback.
 
-> On Wed, Dec 06, 2017 at 03:26:47PM +0100, Ricard Wanderlof wrote:
-> > On Wed, 6 Dec 2017, Mark Brown wrote:
-> =
+This patch increments buffer pointer atomically to avoid this issue.
 
-> > > That just sounds like a regulator?  I'd expect that just to be used a=
-s a
-> > > supply as normal.
-> =
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+Reviewed-by: Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>
+---
+ sound/soc/sh/rcar/ssi.c |   16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-> > You mean as a DAPM widget?
-> =
-
-> Or via a device which uses it.
-> =
-
-> > >  What audio specific control would this device be provdiing?
-> =
-
-> > What it does provide is current sensing if the connected device draws t=
-oo =
-
-> > much power, although it does not automatically shut off the connected =
-
-> > device if that is the case, so a small driver is required to shut down =
-the =
-
-> > output in the case of overcurrent. There's also a requirement to be abl=
-e =
-
-> > to read the overcurrent status. One approach is to implementet the whol=
-e =
-
-> > thing as an auxilliary device, with one ALSA control to control the pow=
-er, =
-
-> > and a read only control to read the overcurrent status.
-> =
-
-> That does sound like an auxiliary device that's a regulator consumer.
-
-So essentially one would register this device as an auxiliary device, =
-
-which would define a DAPM widget which in turn would be part of a DAPM =
-
-route in the encompassing machine driver?
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index fece1e5f..cbf3bf3 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -446,25 +446,29 @@ static bool rsnd_ssi_pointer_update(struct rsnd_mod *mod,
+ 				    int byte)
+ {
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
++	bool ret = false;
++	int byte_pos;
+ 
+-	ssi->byte_pos += byte;
++	byte_pos = ssi->byte_pos + byte;
+ 
+-	if (ssi->byte_pos >= ssi->next_period_byte) {
++	if (byte_pos >= ssi->next_period_byte) {
+ 		struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+ 
+ 		ssi->period_pos++;
+ 		ssi->next_period_byte += ssi->byte_per_period;
+ 
+ 		if (ssi->period_pos >= runtime->periods) {
+-			ssi->byte_pos = 0;
++			byte_pos = 0;
+ 			ssi->period_pos = 0;
+ 			ssi->next_period_byte = ssi->byte_per_period;
+ 		}
+ 
+-		return true;
++		ret = true;
+ 	}
+ 
+-	return false;
++	WRITE_ONCE(ssi->byte_pos, byte_pos);
++
++	return ret;
+ }
+ 
+ /*
+@@ -838,7 +842,7 @@ static int rsnd_ssi_pointer(struct rsnd_mod *mod,
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+ 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+ 
+-	*pointer = bytes_to_frames(runtime, ssi->byte_pos);
++	*pointer = bytes_to_frames(runtime, READ_ONCE(ssi->byte_pos));
+ 
+ 	return 0;
+ }
+-- 
+1.7.9.5
