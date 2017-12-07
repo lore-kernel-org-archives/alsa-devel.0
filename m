@@ -1,76 +1,78 @@
-From: srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
-Subject: [PATCH v9 10/13] dt-bindings: Add qcom slimbus controller bindings
-Date: Thu,  7 Dec 2017 10:27:17 +0000
-Message-ID: <20171207102720.21071-11-srinivas.kandagatla@linaro.org>
+From: srinivas.kandagatla@linaro.org
+Subject: [PATCH v9 09/13] slimbus: core: add common defines required for controllers
+Date: Thu,  7 Dec 2017 10:27:16 +0000
+Message-ID: <20171207102720.21071-10-srinivas.kandagatla@linaro.org>
 References: <20171207102720.21071-1-srinivas.kandagatla@linaro.org>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20171207102720.21071-1-srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Corbet <corbet-T1hC0tSOHrs@public.gmane.org>, pombredanne-od1rfyK75/E@public.gmane.org, j.neuschaefer-hi6Y0CQ0nG0@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171207102720.21071-1-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org
+Cc: sdharia@codeaurora.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jonathan Corbet <corbet@lwn.net>, pombredanne@nexb.com, j.neuschaefer@gmx.net, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Sagar Dharia <sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch add device tree bindings for Qualcomm slimbus controller.
+This patch adds some common constant defines which are required
+for qcom slim controller driver.
 
-Signed-off-by: Sagar Dharia <sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Reviewed-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../devicetree/bindings/slimbus/slim-qcom-ctrl.txt | 39 ++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
+ drivers/slimbus/slimbus.h | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt b/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
-new file mode 100644
-index 000000000000..922dcb8ff24a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
-@@ -0,0 +1,39 @@
-+Qualcomm SLIMbus controller
-+This controller is used if applications processor driver controls SLIMbus
-+master component.
+diff --git a/drivers/slimbus/slimbus.h b/drivers/slimbus/slimbus.h
+index e002763e7f6e..4b71b6434549 100644
+--- a/drivers/slimbus/slimbus.h
++++ b/drivers/slimbus/slimbus.h
+@@ -9,9 +9,38 @@
+ #include <linux/completion.h>
+ #include <linux/slimbus.h>
+ 
++/* Standard values per SLIMbus spec needed by controllers and devices */
++#define SLIM_CL_PER_SUPERFRAME		6144
++#define SLIM_CL_PER_SUPERFRAME_DIV8	(SLIM_CL_PER_SUPERFRAME >> 3)
 +
-+Required properties:
+ /* SLIMbus message types. Related to interpretation of message code. */
+ #define SLIM_MSG_MT_CORE			0x0
+ 
++/*
++ * SLIM Broadcast header format
++ * BYTE 0: MT[7:5] RL[4:0]
++ * BYTE 1: RSVD[7] MC[6:0]
++ * BYTE 2: RSVD[7:6] DT[5:4] PI[3:0]
++ */
++#define SLIM_MSG_MT_MASK	GENMASK(2, 0)
++#define SLIM_MSG_MT_SHIFT	5
++#define SLIM_MSG_RL_MASK	GENMASK(4, 0)
++#define SLIM_MSG_RL_SHIFT	0
++#define SLIM_MSG_MC_MASK	GENMASK(6, 0)
++#define SLIM_MSG_MC_SHIFT	0
++#define SLIM_MSG_DT_MASK	GENMASK(1, 0)
++#define SLIM_MSG_DT_SHIFT	4
 +
-+ - #address-cells - refer to Documentation/devicetree/bindings/slimbus/bus.txt
-+ - #size-cells	- refer to Documentation/devicetree/bindings/slimbus/bus.txt
++#define SLIM_HEADER_GET_MT(b)	((b >> SLIM_MSG_MT_SHIFT) & SLIM_MSG_MT_MASK)
++#define SLIM_HEADER_GET_RL(b)	((b >> SLIM_MSG_RL_SHIFT) & SLIM_MSG_RL_MASK)
++#define SLIM_HEADER_GET_MC(b)	((b >> SLIM_MSG_MC_SHIFT) & SLIM_MSG_MC_MASK)
++#define SLIM_HEADER_GET_DT(b)	((b >> SLIM_MSG_DT_SHIFT) & SLIM_MSG_DT_MASK)
 +
-+ - reg : Offset and length of the register region(s) for the device
-+ - reg-names : Register region name(s) referenced in reg above
-+	 Required register resource entries are:
-+	 "ctrl": Physical address of controller register blocks
-+ 	 "slew": required for "qcom,apq8064-slim" SOC.
-+ - compatible : should be "qcom,<SOC-NAME>-slim" for SOC specific compatible
-+ 		followed by "qcom,slim" for fallback.
-+ - interrupts : Interrupt number used by this controller
-+ - clocks : Interface and core clocks used by this SLIMbus controller
-+ - clock-names : Required clock-name entries are:
-+	"iface" : Interface clock for this controller
-+	"core" : Interrupt for controller core's BAM
++/* Device management messages used by this framework */
++#define SLIM_MSG_MC_REPORT_PRESENT               0x1
++#define SLIM_MSG_MC_ASSIGN_LOGICAL_ADDRESS       0x2
++#define SLIM_MSG_MC_REPORT_ABSENT                0xF
 +
-+Example:
+ /* Clock pause Reconfiguration messages */
+ #define SLIM_MSG_MC_BEGIN_RECONFIGURATION        0x40
+ #define SLIM_MSG_MC_NEXT_PAUSE_CLOCK             0x4A
+@@ -92,6 +121,10 @@ struct slim_msg_txn {
+ #define DEFINE_SLIM_BCAST_TXN(name, mc, rl, la, msg) \
+ 	struct slim_msg_txn name = { rl, 0, mc, SLIM_MSG_DEST_BROADCAST, 0,\
+ 					0, la, msg, }
 +
-+	slim@28080000 {
-+		compatible = "qcom,apq8064-slim", "qcom,slim";
-+		reg = <0x28080000 0x2000>, <0x80207C 4>;
-+		reg-names = "ctrl", "slew";
-+		interrupts = <0 33 0>;
-+		clocks = <&lcc SLIMBUS_SRC>, <&lcc AUDIO_SLIMBUS_CLK>;
-+		clock-names = "iface", "core";
-+		#address-cells = <2>;
-+		#size-cell = <0>;
-+
-+		wcd9310: audio-codec@1,0{
-+			compatible = "slim217,60";
-+			reg = <1 0>;
-+		};
-+	};
++#define DEFINE_SLIM_EDEST_TXN(name, mc, rl, la, msg) \
++	struct slim_msg_txn name = { rl, 0, mc, SLIM_MSG_DEST_ENUMADDR, 0,\
++					0, la, msg, }
+ /**
+  * enum slim_clk_state: SLIMbus controller's clock state used internally for
+  *	maintaining current clock state.
 -- 
 2.15.0
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
