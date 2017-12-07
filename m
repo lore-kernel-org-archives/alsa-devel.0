@@ -1,82 +1,157 @@
-From: Eric Anholt <eric@anholt.net>
-Subject: Re: [PATCH V2] ARM: dts: bcm283x: Fix probing of
-	bcm2835-i2s
-Date: Wed, 06 Dec 2017 13:53:42 -0800
-Message-ID: <87po7rr09l.fsf@anholt.net>
-References: <1511717111-6055-1-git-send-email-stefan.wahren@i2se.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v5 00/15] soundwire: Add a new SoundWire subsystem
+Date: Wed, 6 Dec 2017 18:38:58 -0600
+Message-ID: <ec9a01eb-f1ac-c447-1b90-d955f62cb48d@linux.intel.com>
+References: <1512575231-4154-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4414589254701307937=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from anholt.net (anholt.net [50.246.234.109])
- by alsa0.perex.cz (Postfix) with ESMTP id 4BBB2267044
- for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 22:53:46 +0100 (CET)
-In-Reply-To: <1511717111-6055-1-git-send-email-stefan.wahren@i2se.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, kernel@martin.sperl.org, Matthias Reichl <hias@horus.com>, phil@raspberrypi.org
-Cc: Stefan Wahren <stefan.wahren@i2se.com>, alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1512575231-4154-1-git-send-email-vinod.koul@intel.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============4414589254701307937==
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
 
---=-=-=
-Content-Type: text/plain
 
-Stefan Wahren <stefan.wahren@i2se.com> writes:
-
-> Since 517e7a1537a ("ASoC: bcm2835: move to use the clock framework")
-> the bcm2835-i2s requires a clock as DT property. Unfortunately
-> the necessary DT change has never been applied. While we are at it
-> also fix the first PCM register range to cover the PCM_GRAY register.
+On 12/06/2017 09:46 AM, Vinod Koul wrote:
+> This patch series adds a new SoundWire subsystem which implements a
+> new MIPI bus protocol 'SoundWire'.
 >
-> This patch also fixes the dt-bindings accordlingly.
+> The SoundWire protocol is a robust, scalable, low complexity, low
+> power, low latency, two-pin (clock and data) multi-drop bus that
+> allows for the transfer of multiple audio streams and embedded
+> control/commands.  SoundWire provides synchronization capabilities
+> and supports both PCM and PDM, multichannel data, isochronous and
+> asynchronous modes.
 >
-> Fixes: 517e7a1537a ("ASoC: bcm2835: move to use the clock framework")
-> Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
-> Reviewed-by: Eric Anholt <eric@anholt.net>
-> Tested-by: Matthias Reichl <hias@horus.com>
+> This series adds SoundWire Bus, IO transfers, DisCo (Discovery and
+> Configuration) sysfs interface, regmap and Documentation summary
+Thanks Vinod, Sanyog and Shreyas for this update.
 
-DT folks, are you happy with the binding change here?  It fixes having
-the i2s node also map a very separate hardware block (clocks) which has
-its own DT node.
+I double checked the changes in this v5 one last time and I am happy 
+with the update. I don't see any show-stoppers or any inconsistencies 
+with the MIPI specifications. My comments on error handling still stand, 
+but given that this part will have to be optimized anyway when we have 
+actual systems (BER should be extremely low and typically limited to 
+single-bit errors), this patch series is a good starting point.  So...
 
-The I2S node is disabled in the upstream DT files.
+Acked-By: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE/JuuFDWp9/ZkuCBXtdYpNtH8nugFAlooZuYACgkQtdYpNtH8
-nug+SQ//dcABfzgWhXBV4bEF5AKgd04BPnhHxcK/s9QilpFdMsE99JZr5U/YyzdB
-bAlGOZwdwWeYFyj8O31pEldWPrVns41nduk8S8O8bfKgIVPrRSDXz5GvF3MnBp07
-0n9ZzzK+VTWGQFXVtUB0z7hUx7ifHmJAswQTwc28lszbbuho0Oj7WaDTMXqu0HrJ
-qNRVf5gDFdFK7JO+nzbXPyzk071sNerdKqM3wdVkXypV1jv2Ru23B4MAnA3wHLrF
-0h7wHW9r8EaNgQcRStaAZgQvEl/LkxKyJDx1BYPhHO4U6NRit7laG9XQ6Df9vMEr
-PCdlWOWFVMWKFeHJcJr1/fDLGDkq9zS7wvTaPt1nq2qV6aKsFgXLfP/sZZ8fKJ2v
-5psCrTVpx3geq2BwwbBLm6iAVLv4AQ3xs1ZqAxcK51BkHp1iSxAzirT65s+Cvp0T
-EupRSG9hK89VXi49DphoO1zvX9wJu1y4imq0lLki1T+DtR6uo/FVTJgHqD8Dj6WO
-6t2Zmvc5j70DSRL3mlQ1DmdZ3B0yFRdyooGHauCuCjrn0PBnFKQGyaSdaGbtRsMK
-58tTPCrzAxU21kvfMTMHwfPBL75U2cuUaIU+dNlyFxk+iPKhYPIIoOo9N3VjiHGZ
-upopJXxrgWdPWjRjCUn6DXpycKonRyC5ui2lKWniLxWggXD2/gY=
-=xJNs
------END PGP SIGNATURE-----
---=-=-=--
-
---===============4414589254701307937==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4414589254701307937==--
+>
+> This patch series is also available on
+> git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git topic/patch_v5
+>
+> v4: https://lkml.org/lkml/2017/12/1/205
+> v3: https://lkml.org/lkml/2017/11/30/160
+> v2: https://lkml.org/lkml/2017/11/10/216
+> v1: https://lkml.org/lkml/2017/10/18/1030
+> RFC: https://lkml.org/lkml/2016/10/21/395
+>
+> Changes in v5:
+> - Address comments by Pierre
+>    - add reference to mid.mipi.org in documentation
+>    - add group and master device number and don't use those for enumeration
+>    - fix unused calls in disco code and also remove superfluous initialization
+>    - remove sdw_transfer apis slave arg, make enum values integer and not
+>      bitmaps
+>    - clarify the sdw_program_device_num loop and fix interrupt handling
+>
+> Changes in v4:
+> - Remove text licenses and add SPDX tags only with C99 style comments
+> - make bus_type code as GPL v2.0 only
+>
+> Changes in v3:
+> - Update the kernel-doc styles and fix included headers for files
+> - handle dev_pm_domain_attach() for defered probe
+> - remove OF placeholders
+> - change regmap license to GPLv2 only
+>
+> Changes in v2:
+> - move documentation into driver-api and do rst conversion
+> - fix documentation comments
+> - add SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) to all
+>    source files
+> - rework the transfer logic and paging logic as commented on v1
+> - remove dummy sysfs fns
+> - registration checks and fixes
+> - remove slave check for regamp as that turned superfluous
+> - remove depends SoundWire symbol
+> - make modalias api arg const
+> - use bitmap for tracking assigned
+> - add counter for report present tracking
+> todo: add the dt-bindings
+>
+> Sanyog Kale (4):
+>    Documentation: Add SoundWire summary
+>    soundwire: Add SoundWire MIPI defined registers
+>    soundwire: Add Slave status handling helpers
+>    soundwire: cdns: Add sdw_master_ops and IO transfer support
+>
+> Vinod Koul (11):
+>    soundwire: Add SoundWire bus type
+>    soundwire: Add Master registration
+>    soundwire: Add MIPI DisCo property helpers
+>    soundwire: Add IO transfer
+>    regmap: Add SoundWire bus support
+>    soundwire: Add slave status handling
+>    soundwire: Add sysfs for SoundWire DisCo properties
+>    soundwire: cdns: Add cadence library
+>    soundwire: intel: Add Intel Master driver
+>    soundwire: intel: Add Intel init module
+>    MAINTAINERS: Add SoundWire entry
+>
+>   Documentation/driver-api/index.rst             |   1 +
+>   Documentation/driver-api/soundwire/index.rst   |  15 +
+>   Documentation/driver-api/soundwire/summary.rst | 207 ++++++
+>   MAINTAINERS                                    |  10 +
+>   drivers/Kconfig                                |   2 +
+>   drivers/Makefile                               |   1 +
+>   drivers/base/regmap/Kconfig                    |   4 +
+>   drivers/base/regmap/Makefile                   |   1 +
+>   drivers/base/regmap/regmap-sdw.c               |  92 +++
+>   drivers/soundwire/Kconfig                      |  37 +
+>   drivers/soundwire/Makefile                     |  18 +
+>   drivers/soundwire/bus.c                        | 967 +++++++++++++++++++++++++
+>   drivers/soundwire/bus.h                        |  73 ++
+>   drivers/soundwire/bus_type.c                   | 193 +++++
+>   drivers/soundwire/cadence_master.c             | 749 +++++++++++++++++++
+>   drivers/soundwire/cadence_master.h             |  48 ++
+>   drivers/soundwire/intel.c                      | 347 +++++++++
+>   drivers/soundwire/intel.h                      |  23 +
+>   drivers/soundwire/intel_init.c                 | 198 +++++
+>   drivers/soundwire/mipi_disco.c                 | 370 ++++++++++
+>   drivers/soundwire/slave.c                      | 115 +++
+>   drivers/soundwire/sysfs.c                      | 343 +++++++++
+>   include/linux/mod_devicetable.h                |   6 +
+>   include/linux/regmap.h                         |  37 +
+>   include/linux/soundwire/sdw.h                  | 495 +++++++++++++
+>   include/linux/soundwire/sdw_intel.h            |  24 +
+>   include/linux/soundwire/sdw_registers.h        | 194 +++++
+>   include/linux/soundwire/sdw_type.h             |  19 +
+>   scripts/mod/devicetable-offsets.c              |   4 +
+>   scripts/mod/file2alias.c                       |  15 +
+>   30 files changed, 4608 insertions(+)
+>   create mode 100644 Documentation/driver-api/soundwire/index.rst
+>   create mode 100644 Documentation/driver-api/soundwire/summary.rst
+>   create mode 100644 drivers/base/regmap/regmap-sdw.c
+>   create mode 100644 drivers/soundwire/Kconfig
+>   create mode 100644 drivers/soundwire/Makefile
+>   create mode 100644 drivers/soundwire/bus.c
+>   create mode 100644 drivers/soundwire/bus.h
+>   create mode 100644 drivers/soundwire/bus_type.c
+>   create mode 100644 drivers/soundwire/cadence_master.c
+>   create mode 100644 drivers/soundwire/cadence_master.h
+>   create mode 100644 drivers/soundwire/intel.c
+>   create mode 100644 drivers/soundwire/intel.h
+>   create mode 100644 drivers/soundwire/intel_init.c
+>   create mode 100644 drivers/soundwire/mipi_disco.c
+>   create mode 100644 drivers/soundwire/slave.c
+>   create mode 100644 drivers/soundwire/sysfs.c
+>   create mode 100644 include/linux/soundwire/sdw.h
+>   create mode 100644 include/linux/soundwire/sdw_intel.h
+>   create mode 100644 include/linux/soundwire/sdw_registers.h
+>   create mode 100644 include/linux/soundwire/sdw_type.h
+>
