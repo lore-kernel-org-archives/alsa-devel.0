@@ -1,15 +1,24 @@
-From: Jussi Laako <jussi@sonarnerd.net>
-Subject: [PATCH] ALSA: usb-audio: Add native DSD support for
-	Esoteric D-05X
-Date: Thu,  7 Dec 2017 12:58:33 +0200
-Message-ID: <1512644313-22870-1-git-send-email-jussi@sonarnerd.net>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Multiple codecs on the same DAI
+Date: Thu, 7 Dec 2017 11:20:16 +0000
+Message-ID: <20171207112016.bkiw2gi4pcmvendr@sirena.org.uk>
+References: <alpine.DEB.2.11.1711231533480.27895@lnxricardw1.se.axis.com>
+ <20171124123921.ajhxztwypujty6ps@sirena.org.uk>
+ <alpine.DEB.2.11.1711241456420.27895@lnxricardw1.se.axis.com>
+ <20171124180456.6c63tkph4e7ahuid@sirena.org.uk>
+ <alpine.DEB.2.11.1712061352160.22247@lnxricardw1.se.axis.com>
+ <20171206130323.GG1827@finisterre>
+ <alpine.DEB.2.11.1712061521180.22247@lnxricardw1.se.axis.com>
+ <20171206154552.iqcdtyhuj7oyfwcg@sirena.org.uk>
+ <alpine.DEB.2.11.1712070841040.22247@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4301164437696884444=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.sonarnerd.net (rankki.sonarnerd.net [194.142.149.154])
- by alsa0.perex.cz (Postfix) with ESMTP id C3A06267A89
- for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2017 11:58:52 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA1D52670BC
+ for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2017 12:20:18 +0100 (CET)
+In-Reply-To: <alpine.DEB.2.11.1712070841040.22247@lnxricardw1.se.axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,54 +28,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: Jussi Laako <jussi@sonarnerd.net>, nob77413@gmail.com
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Adds VID:PID of Esoteric D-05X to the TEAC device id's.
-Renames the is_teac_50X_dac() function to is_teac_dsd_dac() to cover
-broader device family from the same corporation sharing the same USB
-audio implementation.
 
-Signed-off-by: Jussi Laako <jussi@sonarnerd.net>
----
- sound/usb/quirks.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+--===============4301164437696884444==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="lbxxxtdp7z4ij2r4"
+Content-Disposition: inline
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 77eecaa..a66ef57 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1166,10 +1166,11 @@ static bool is_marantz_denon_dac(unsigned int id)
- /* TEAC UD-501/UD-503/NT-503 USB DACs need a vendor cmd to switch
-  * between PCM/DOP and native DSD mode
-  */
--static bool is_teac_50X_dac(unsigned int id)
-+static bool is_teac_dsd_dac(unsigned int id)
- {
- 	switch (id) {
- 	case USB_ID(0x0644, 0x8043): /* TEAC UD-501/UD-503/NT-503 */
-+	case USB_ID(0x0644, 0x8044): /* Esoteric D-05X */
- 		return true;
- 	}
- 	return false;
-@@ -1202,7 +1203,7 @@ int snd_usb_select_mode_quirk(struct snd_usb_substream *subs,
- 			break;
- 		}
- 		mdelay(20);
--	} else if (is_teac_50X_dac(subs->stream->chip->usb_id)) {
-+	} else if (is_teac_dsd_dac(subs->stream->chip->usb_id)) {
- 		/* Vendor mode switch cmd is required. */
- 		switch (fmt->altsetting) {
- 		case 3: /* DSD mode (DSD_U32) requested */
-@@ -1392,7 +1393,7 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
- 	}
- 
- 	/* TEAC devices with USB DAC functionality */
--	if (is_teac_50X_dac(chip->usb_id)) {
-+	if (is_teac_dsd_dac(chip->usb_id)) {
- 		if (fp->altsetting == 3)
- 			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
- 	}
--- 
-2.7.4
+
+--lbxxxtdp7z4ij2r4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Dec 07, 2017 at 08:47:03AM +0100, Ricard Wanderlof wrote:
+> On Wed, 6 Dec 2017, Mark Brown wrote:
+
+> > That does sound like an auxiliary device that's a regulator consumer.
+
+> So essentially one would register this device as an auxiliary device,=20
+> which would define a DAPM widget which in turn would be part of a DAPM=20
+> route in the encompassing machine driver?
+
+Or register a device that consumes the regulator and maps it into ASoC
+like that.
+
+--lbxxxtdp7z4ij2r4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlopI+4ACgkQJNaLcl1U
+h9AkIwf9HO3YU8/GIn65jprFl1fxcfa+IByqF7mnp+f5arU/wlnRg6kXwi/Ikjg3
+yK5O0nR2nIAgEOpAANEKLUAxT6+gfBBx9umDbFef8MlRm9tJoRvyvxC86Ku66kHm
+qPv4SjJ9c4XS4VOPRfvSUmGkpqTY9rJxR3rl9v/y/M5Ug1Gl0WSBq3Q0ovO/AjUw
+5xHg2acKvZwnsjmCR7crLwKV9zFPrAWxpjcN3qcYWmH/M5m076ZIHIAsSblBAds2
+aOYiirFkqlPAHarFVO6VZm0R1Mor2Pftc10iL2iCHP7S+41n/LFkMtiV6cenkPjr
+ADdS6eL+3y5s6JCbE9tyMSkcA9VsoQ==
+=Pj57
+-----END PGP SIGNATURE-----
+
+--lbxxxtdp7z4ij2r4--
+
+--===============4301164437696884444==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4301164437696884444==--
