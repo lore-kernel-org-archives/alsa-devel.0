@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic31xx: Reset registers during
-	power up" to the asoc tree
-Date: Thu, 07 Dec 2017 17:48:14 +0000
-Message-ID: <E1eN0HO-000409-7W@debutante>
-References: <20171207153900.9831-7-afd@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0529B266B67
- for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2017 18:48:17 +0100 (CET)
-In-Reply-To: <20171207153900.9831-7-afd@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: "Andrew F ., Davis" <afd@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Applied "ASoC: pcm186x: make pcm186x_dai_ops and pcm186x_adc_input_channel_sel_value static" to the asoc tree
+Date: Thu, 07 Dec 2017 17:48:26 +0000
+Message-ID: <E1eN0Ha-00043M-32@debutante>
+References: <20171207141132.25928-1-colin.king@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171207141132.25928-1-colin.king@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Michael Stecklein <m-stecklein@ti.com>, Andreas Dannenberg <dannenberg@ti.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic31xx: Reset registers during power up
+   ASoC: pcm186x: make pcm186x_dai_ops and pcm186x_adc_input_channel_sel_value static
 
 has been applied to the asoc tree at
 
@@ -52,66 +37,47 @@ to this mail.
 Thanks,
 Mark
 
->From 0ce918c9e070bf4fd17af0d76096ad184815bd79 Mon Sep 17 00:00:00 2001
-From: "Andrew F. Davis" <afd@ti.com>
-Date: Thu, 7 Dec 2017 09:38:56 -0600
-Subject: [PATCH] ASoC: tlv320aic31xx: Reset registers during power up
+>From dce231a484f72983cd7d5832aed4da04870a4d47 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Thu, 7 Dec 2017 14:11:32 +0000
+Subject: [PATCH] ASoC: pcm186x: make pcm186x_dai_ops and
+ pcm186x_adc_input_channel_sel_value static
 
-Add a reset function that toggles the reset line if available or uses
-the software reset command otherwise. Use this in power up to ensure the
-registers are in a sane state. This is useful when the driver module
-is reloaded, or after Kexec, warm-reboots, etc..
+pcm186x_dai_ops and pcm186x_adc_input_channel_sel_value are local to the
+source and do not need to be in global scope, so make them static.
 
-Signed-off-by: Andrew F. Davis <afd@ti.com>
+Cleans up sparse warnings:
+symbol 'pcm186x_dai_ops' was not declared. Should it be static?
+symbol 'pcm186x_adc_input_channel_sel_value' was not declared. Should it
+be static?
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 26 ++++++++++++++++++++++----
- 1 file changed, 22 insertions(+), 4 deletions(-)
+ sound/soc/codecs/pcm186x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 655c99db2426..858cb8be445f 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -1055,6 +1055,22 @@ static int aic31xx_regulator_event(struct notifier_block *nb,
+diff --git a/sound/soc/codecs/pcm186x.c b/sound/soc/codecs/pcm186x.c
+index f7aa56e20169..cdb51427facc 100644
+--- a/sound/soc/codecs/pcm186x.c
++++ b/sound/soc/codecs/pcm186x.c
+@@ -59,7 +59,7 @@ static const struct snd_kcontrol_new pcm1865_snd_controls[] = {
+ 			   pcm186x_pga_tlv),
+ };
+ 
+-const unsigned int pcm186x_adc_input_channel_sel_value[] = {
++static const unsigned int pcm186x_adc_input_channel_sel_value[] = {
+ 	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+ 	0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
+ 	0x10, 0x20, 0x30
+@@ -475,7 +475,7 @@ static int pcm186x_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
  	return 0;
  }
  
-+static int aic31xx_reset(struct aic31xx_priv *aic31xx)
-+{
-+	int ret = 0;
-+
-+	if (aic31xx->gpio_reset) {
-+		gpiod_set_value(aic31xx->gpio_reset, 1);
-+		ndelay(10); /* At least 10ns */
-+		gpiod_set_value(aic31xx->gpio_reset, 0);
-+	} else {
-+		ret = regmap_write(aic31xx->regmap, AIC31XX_RESET, 1);
-+	}
-+	mdelay(1); /* At least 1ms */
-+
-+	return ret;
-+}
-+
- static void aic31xx_clk_on(struct snd_soc_codec *codec)
- {
- 	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
-@@ -1098,11 +1114,13 @@ static int aic31xx_power_on(struct snd_soc_codec *codec)
- 	if (ret)
- 		return ret;
- 
--	if (aic31xx->gpio_reset) {
--		gpiod_set_value(aic31xx->gpio_reset, 0);
--		udelay(100);
--	}
- 	regcache_cache_only(aic31xx->regmap, false);
-+
-+	/* Reset device registers for a consistent power-on like state */
-+	ret = aic31xx_reset(aic31xx);
-+	if (ret < 0)
-+		dev_err(aic31xx->dev, "Could not reset device: %d\n", ret);
-+
- 	ret = regcache_sync(aic31xx->regmap);
- 	if (ret) {
- 		dev_err(codec->dev,
+-const struct snd_soc_dai_ops pcm186x_dai_ops = {
++static const struct snd_soc_dai_ops pcm186x_dai_ops = {
+ 	.set_sysclk = pcm186x_set_dai_sysclk,
+ 	.set_tdm_slot = pcm186x_set_tdm_slot,
+ 	.set_fmt = pcm186x_set_fmt,
 -- 
 2.15.1
