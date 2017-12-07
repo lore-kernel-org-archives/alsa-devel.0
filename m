@@ -1,43 +1,103 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v9 13/13] MAINTAINERS: Add SLIMbus maintainer
-Date: Thu,  7 Dec 2017 10:27:20 +0000
-Message-ID: <20171207102720.21071-14-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v9 02/13] dt-bindings: Add SLIMbus bindings
+Date: Thu,  7 Dec 2017 10:27:09 +0000
+Message-ID: <20171207102720.21071-3-srinivas.kandagatla@linaro.org>
 References: <20171207102720.21071-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id BF093266E6C
+ for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2017 11:30:37 +0100 (CET)
+Received: by mail-wm0-f68.google.com with SMTP id n138so12124953wmg.2
+ for <alsa-devel@alsa-project.org>; Thu, 07 Dec 2017 02:30:37 -0800 (PST)
 In-Reply-To: <20171207102720.21071-1-srinivas.kandagatla@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org
-Cc: sdharia@codeaurora.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jonathan Corbet <corbet@lwn.net>, pombredanne@nexb.com, j.neuschaefer@gmx.net, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org, j.neuschaefer@gmx.net, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, pombredanne@nexb.com, sdharia@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Sagar Dharia <sdharia@codeaurora.org>
 
-Add myself as maintainer for slimbus.
+SLIMbus (Serial Low Power Interchip Media Bus) is a specification
+developed by MIPI (Mobile Industry Processor Interface) alliance.
+SLIMbus is a 2-wire implementation, which is used to communicate with
+peripheral components like audio-codec.
 
+This patch adds device tree bindings for the slimbus.
+
+Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ Documentation/devicetree/bindings/slimbus/bus.txt | 50 +++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/slimbus/bus.txt
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index aa71ab52fd76..f26bf2707709 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12500,6 +12500,14 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
- F:	include/linux/srcu.h
- F:	kernel/rcu/srcu.c
- 
-+SERIAL LOW-POWER INTER-CHIP MEDIA BUS (SLIMbus)
-+M:	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-+L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	drivers/slimbus/
-+F:	Documentation/devicetree/bindings/slimbus/
-+F:	include/linux/slimbus.h
+diff --git a/Documentation/devicetree/bindings/slimbus/bus.txt b/Documentation/devicetree/bindings/slimbus/bus.txt
+new file mode 100644
+index 000000000000..52fa6426388c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/slimbus/bus.txt
+@@ -0,0 +1,50 @@
++SLIM(Serial Low Power Interchip Media Bus) bus
 +
- SMACK SECURITY MODULE
- M:	Casey Schaufler <casey@schaufler-ca.com>
- L:	linux-security-module@vger.kernel.org
++SLIMbus is a 2-wire bus, and is used to communicate with peripheral
++components like audio-codec.
++
++Required property for SLIMbus controller node:
++- compatible	- name of SLIMbus controller
++
++Child nodes:
++Every SLIMbus controller node can contain zero or more child nodes
++representing slave devices on the bus. Every SLIMbus slave device is
++uniquely determined by the enumeration address containing 4 fields:
++Manufacturer ID, Product code, Device index, and Instance value for
++the device.
++If child node is not present and it is instantiated after device
++discovery (slave device reporting itself present).
++
++In some cases it may be necessary to describe non-probeable device
++details such as non-standard ways of powering up a device. In
++such cases, child nodes for those devices will be present as
++slaves of the SLIMbus controller, as detailed below.
++
++Required property for SLIMbus child node if it is present:
++- reg		- Should be ('Device index', 'Instance ID') from SLIMbus
++		  Enumeration  Address.
++		  Device Index Uniquely identifies multiple Devices within
++		  a single Component.
++		  Instance ID Is for the cases where multiple Devices of the
++		  same type or Class are attached to the bus.
++
++- compatible	-"slimMID,PID". The textual representation of Manufacturer ID,
++	 	  Product Code, shall be in lower case hexadecimal with leading
++		  zeroes suppressed
++
++SLIMbus example for Qualcomm's slimbus manager component:
++
++	slim@28080000 {
++		compatible = "qcom,apq8064-slim", "qcom,slim";
++		reg = <0x28080000 0x2000>,
++		interrupts = <0 33 0>;
++		clocks = <&lcc SLIMBUS_SRC>, <&lcc AUDIO_SLIMBUS_CLK>;
++		clock-names = "iface", "core";
++		#address-cells = <2>;
++		#size-cell = <0>;
++
++		codec: wcd9310@1,0{
++			compatible = "slim217,60";
++			reg = <1 0>;
++		};
++	};
 -- 
 2.15.0
