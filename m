@@ -1,26 +1,22 @@
-From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
-Subject: Re: [RFC 01/10] ASoC: Intel: Boards: Machine driver
- for Intel platforms
-Date: Thu, 7 Dec 2017 15:21:20 +0000
-Message-ID: <85DFEED57DC57344B2483EF7BF8CB60579AC9E12@BGSMSX104.gar.corp.intel.com>
-References: <1512119648-2700-1-git-send-email-rakesh.a.ughreja@intel.com>
- <1512119648-2700-2-git-send-email-rakesh.a.ughreja@intel.com>
- <67a5002e-9671-f6cd-f37b-e8c1b6d630ce@linux.intel.com>
- <85DFEED57DC57344B2483EF7BF8CB60579AC5C24@BGSMSX104.gar.corp.intel.com>
- <a3a5250b-6b0e-4238-7e01-365624b1a35c@linux.intel.com>
- <85DFEED57DC57344B2483EF7BF8CB60579AC5D64@BGSMSX104.gar.corp.intel.com>
- <bd2f2ff6-ad7f-1f72-2422-7cc539b51f46@linux.intel.com>
- <20171206161755.GD32417@localhost>
- <85DFEED57DC57344B2483EF7BF8CB60579AC9A2A@BGSMSX104.gar.corp.intel.com>
- <7a1aabda-d883-d644-5476-81f73cbd1509@linux.intel.com>
+From: "Andrew F. Davis" <afd@ti.com>
+Subject: Re: [PATCH v2 16/19] ASoC: tlv320aic31xx: Add short
+ circuit detection support
+Date: Thu, 7 Dec 2017 09:37:36 -0600
+Message-ID: <83e40a88-2c3d-416a-6e19-56c6f96d3af3@ti.com>
+References: <20171129213300.20021-1-afd@ti.com>
+ <20171129213300.20021-17-afd@ti.com>
+ <20171201133930.xzfjjj6wzkbtk6c4@sirena.org.uk>
+ <4d956cbc-829c-0d81-2980-aa2a79f36660@ti.com>
+ <fd362117-ae71-a6a2-eb43-70c2457c0a5d@ti.com>
+ <20171207120352.4obvlu4cemagfom7@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 13C32266B67
- for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2017 16:21:27 +0100 (CET)
-In-Reply-To: <7a1aabda-d883-d644-5476-81f73cbd1509@linux.intel.com>
+Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
+ by alsa0.perex.cz (Postfix) with ESMTP id 437F1266B67
+ for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2017 16:37:58 +0100 (CET)
+In-Reply-To: <20171207120352.4obvlu4cemagfom7@sirena.org.uk>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,83 +27,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Koul, Vinod" <vinod.koul@intel.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, Patches Audio <patches.audio@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 12/07/2017 06:03 AM, Mark Brown wrote:
+> On Wed, Dec 06, 2017 at 02:22:39PM -0600, Andrew F. Davis wrote:
+>> On 12/01/2017 09:32 AM, Andrew F. Davis wrote:
+> 
+>>>> This will report the interrupt as handled even if we didn't see an
+>>>> interrupt we understand which will break shared interrupt lines.  At the
+>>>> very least we should log other interrupt sources numerically.
+> 
+>>> Okay, I think I can make that work by checking if no bits are set in the
+>>> interrupt regs and returning early if not, IRQ_NONE.
+> 
+>> This turned out to be more difficult than I expected, plus if I do
+>> handle an interrupt it doesn't mean the other device did not right? So
+>> this wouldn't fix shared lines as far as I can tell, but I don't
+>> register it as shared so this should be fine.
+> 
+> It'll mean that we don't offer the interrupt to anything else sharing
+> the line.
+> 
+>> As for your other suggestion of "log other interrupt sources
+>> numerically", could you explain this or point to an example of what you
+>> mean?
+> 
+> Just print out the bits that were set.
+> 
 
-
->-----Original Message-----
->From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
->Sent: Thursday, December 7, 2017 6:36 PM
->To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>; Koul, Vinod
-><vinod.koul@intel.com>
->Cc: alsa-devel@alsa-project.org; broonie@kernel.org; tiwai@suse.de;
->liam.r.girdwood@linux.intel.com; Patches Audio <patches.audio@intel.com>
->Subject: Re: [alsa-devel] [RFC 01/10] ASoC: Intel: Boards: Machine driver for Intel
->platforms
->
->On 12/7/17 6:27 AM, Ughreja, Rakesh A wrote:
->>
->>
->>> -----Original Message-----
->>> From: Koul, Vinod
->>> Sent: Wednesday, December 6, 2017 9:48 PM
->>> To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>> Cc: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>; alsa-devel@alsa-
->project.org;
->>> broonie@kernel.org; tiwai@suse.de; liam.r.girdwood@linux.intel.com; Patches
->>> Audio <patches.audio@intel.com>
->>> Subject: Re: [alsa-devel] [RFC 01/10] ASoC: Intel: Boards: Machine driver for
->Intel
->>> platforms
->>>
->>> On Mon, Dec 04, 2017 at 09:37:37AM -0600, Pierre-Louis Bossart wrote:
->>>> On 12/4/17 9:10 AM, Ughreja, Rakesh A wrote:
->>>
->>>>>>>>>     sound/soc/intel/boards/Kconfig           |  10 ++
->>>>>>>>>     sound/soc/intel/boards/Makefile          |   2 +
->>>>>>>>>     sound/soc/intel/boards/skl_hda_generic.c | 276
->>>>>>>> +++++++++++++++++++++++++++++++
->>>>>>>>
->>>>>>>> can we drop the Skylake reference? It's become a catch-all term to
->mean
->>>>>>>> both the platform, the IP and the driver.
->>>>>>>
->>>>>>> Suggest some name. I have no problem.
->>>>>>
->>>>>> HiFi3 ?
->>>>>> iDisp ?
->>>>>> HDAudio-DSP ?
->>>>>
->>>>> hda_dsp_generic.c -- For the main file
->>>>> hda_dsp_common.c -- for common functions
->>>>>
->>>>> Does it look fine ?
->>>>
->>>> works for me.
->>>
->>> Sorry not for me. hda_dsp_xxx doesnt tie it to anything. HDA and DSP are too
->>> generic terms. But yes I don't have a better alternate than skl_generic.
->>> Here this solution is tied to a very specfic IP which is present in SKL
->>> onwards platforms..
->>>
->>> Yes SKL is become an IP as well as platform. Maybe we should have a
->codename
->>> for this like azx :)
->>
->> We do have a code name "sst".
->>
->> So does this sound okay for you ?
->>
->> sst_hda_dsp_generic.c -- For main file
->> sst_hda_dsp_common.c -- for common functions
->
->SST is also aliased to platform drivers with closed-source firmware, not
->a good idea for machine drivers.
-
-Then I have to go back to skl_hda_dsp_generic.c and 
-skl_hda_dsp_common.c as Vinod suggested.
-
-Regards,
-Rakesh
+I don't see anyone else doing this, what would that solve? Maybe I still
+don't get what you mean here. :(
