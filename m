@@ -1,101 +1,141 @@
-From: Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v6 03/17] mfd: madera: Add common support for Cirrus Logic
- Madera codecs
-Date: Thu, 7 Dec 2017 09:54:06 +0100
-Message-ID: <CACRpkdb_i4k3F0fmDbQciPYTBUCcfpFkqM=5e3gr75-X51TTkg@mail.gmail.com>
-References: <20171123171316.10868-1-rf@opensource.wolfsonmicro.com>
- <fe8064a5-8692-46c1-9f53-ab0a429baeeb@EX17.ad.cirrus.com> <CACRpkdaxKjPd_k8tuO3R4+5LFT4_37zn6ruDRPd5j9xNAH4+Dw@mail.gmail.com>
- <1eff5a38-cff3-449b-bda4-047f50a9f1d4@EX17.ad.cirrus.com> <CACRpkdZ4QuOhk1LuGftcFozUKdZ4vFAO3omkQ004k39J=jKL7g@mail.gmail.com>
- <ce3772d8-3ae7-474f-b9c2-8008bb39fd0b@EX17.ad.cirrus.com>
+From: Code Kipper <codekipper@gmail.com>
+Subject: Re: [PATCH 2/9] ASoC: sun4i-i2s: Add compatibility
+	with A64 codec I2S
+Date: Thu, 7 Dec 2017 10:21:39 +0100
+Message-ID: <CAEKpxBnWYiSq-Xrzj9MET61kGyVSJZPNnWpDh8jwnmdtw=GKtA@mail.gmail.com>
+References: <20171203204157.20829-1-anarsoul@gmail.com>
+ <20171203204157.20829-3-anarsoul@gmail.com>
+ <CAEKpxBmHhZ+2WNXJEPbQFS6KeKsqRrZeNodRnu1M5yLc15DerA@mail.gmail.com>
+ <CA+E=qVd+uM0Aq_=sf+fomQ-m+3Oy0MdG7OPjF5tVagG1UgKYzg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <ce3772d8-3ae7-474f-b9c2-8008bb39fd0b-MRjWshV2NDGMZzV0eMwobdBPR1lH4CV8@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Thomas Gleixner <tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org>, Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "open list:WOLFSON MICROELECTRONICS DRIVERS" <patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Nikesh Oswal <Nikesh.Oswal-UVNVL95qEvAciDkP5Hr2oA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-it0-f67.google.com (mail-it0-f67.google.com
+ [209.85.214.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id CD700266E6C
+ for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2017 10:21:41 +0100 (CET)
+Received: by mail-it0-f67.google.com with SMTP id u62so13238794ita.2
+ for <alsa-devel@alsa-project.org>; Thu, 07 Dec 2017 01:21:41 -0800 (PST)
+In-Reply-To: <CA+E=qVd+uM0Aq_=sf+fomQ-m+3Oy0MdG7OPjF5tVagG1UgKYzg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, =?UTF-8?Q?Myl=C3=A8ne_Josserand?= <mylene.josserand@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 4, 2017 at 10:47 AM, Richard Fitzgerald
-<rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org> wrote:
-> On 02/12/17 12:10, Linus Walleij wrote:
->> On Wed, Nov 29, 2017 at 12:36 PM, Richard Fitzgerald
->> <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org> wrote:
->>> On 29/11/17 10:18, Linus Walleij wrote:
->>>> On Thu, Nov 23, 2017 at 6:13 PM, Richard Fitzgerald
->>>> <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org> wrote:
->>>>
->>>>> +config MFD_MADERA_I2C
->>>>> +       bool "Cirrus Logic Madera codecs with I2C"
->>>>> +       select MFD_MADERA
->>>>> +       select REGMAP_I2C
->>>>> +       depends on I2C
->>>>> +       depends on PINCTRL
->>>>> +       help
->>>>> +         Support for the Cirrus Logic Madera platform audio SoC
->>>>> +         core functionality controlled via I2C.
->>>>> +
->>>>> +config MFD_MADERA_SPI
->>>>> +       bool "Cirrus Logic Madera codecs with SPI"
->>>>> +       select MFD_MADERA
->>>>> +       select REGMAP_SPI
->>>>> +       depends on SPI_MASTER
->>>>> +       depends on PINCTRL
->>>>> +       help
->>>>> +         Support for the Cirrus Logic Madera platform audio SoC
->>>>> +         core functionality controlled via SPI.
->>>>
->>>>
->>>>
->>>> Why do the I2C and SPI subdrivers depend on PINCTRL?
->>>>
->>>> They sure don't seem to be using any pinctrl-specific APIs.
->>>>
+On 4 December 2017 at 08:34, Vasily Khoruzhick <anarsoul@gmail.com> wrote:
+> I'd keep it sun50i_a64_acodec_i2s, since other 3 I2S modules aren't
+> compatible with this one, but similar to H3.
+
+Well I wouldn't and the description of it is usage is clearly stated
+in the devicetree
+for the dai.
+>
+> On Sun, Dec 3, 2017 at 10:42 PM, Code Kipper <codekipper@gmail.com> wrote:
+>> On 3 December 2017 at 21:41, Vasily Khoruzhick <anarsoul@gmail.com> wrote:
+>>> From: Marcus Cooper <codekipper@gmail.com>
 >>>
->>> They require PINCTRL even if they don't call any functions on it because
->>> the
->>> chip won't work correctly if there isn't a PINCTRL driver to apply the
->>> correct pinmux configuration.
+>>> The I2S block used for the audio codec in the A64 is very similar
+>>> to what is used by the A10(sun4i) devices. However, its TX FIFO is
+>>> located at a different address.
+>>>
+>>> [vasilykh: - added fixed_wss and wss_value to A64 quirks,
+>>>            - changed compatible to 'allwinner,sun50i-a64-acodec-i2s,
+>>>              since A64 has 3 more I2S blocks that are not compatible
+>>>              with audio codec I2S]
+This needs to be investigated more...I'm suspicious of the
+SUN8I_I2S_FMT0_LRCK_PERIOD value which is hardcoded to 0x1f.
+I've made this following change
+https://github.com/codekipper/linux-sunxi/commit/4c5fe5f5576cfbb2e1e94a99cd19dfdc9403ea50
+which seems to work for me but I would like to look at it with a logic
+analyser and test other sample depths.
+CK
+
+>>>
+>>> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+>>> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+>>> ---
+>>>  .../devicetree/bindings/sound/sun4i-i2s.txt        |  2 ++
+>>>  sound/soc/sunxi/sun4i-i2s.c                        | 23 ++++++++++++++++++++++
+>>>  2 files changed, 25 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+>>> index 05d7135a8d2f..ab86f266962a 100644
+>>> --- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+>>> +++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+>>> @@ -9,6 +9,7 @@ Required properties:
+>>>     - "allwinner,sun4i-a10-i2s"
+>>>     - "allwinner,sun6i-a31-i2s"
+>>>     - "allwinner,sun8i-h3-i2s"
+>>> +   - "allwinner,sun50i-a64-acodec-i2s"
+>>>  - reg: physical base address of the controller and length of memory mapped
+>>>    region.
+>>>  - interrupts: should contain the I2S interrupt.
+>>> @@ -24,6 +25,7 @@ Required properties:
+>>>  Required properties for the following compatibles:
+>>>         - "allwinner,sun6i-a31-i2s"
+>>>         - "allwinner,sun8i-h3-i2s"
+>>> +       - "allwinner,sun50i-a64-acodec-i2s"
+>> I would keep the compatible format the same. ie.
+>> allwinner,sun50i-a64-i2s. The A33 for example uses the sun6i-a31-i2s
+>> for it's dai.
 >>
->>
->> Apply the configuration to what? Sorry I don't get it.
->>
->> You can't be referring to the internal pin controller of the Madera, since
->
-> Yes I am
-
-You are saying that the I2C and SPI interface to the Madera codec
-depends on pin control.
-
-It does not.
-
-You can most certainly talk I2C and SPI to the coded without any
-pin control. Probably the MFD driver can come up without it.
-
-If what you want is unconditional pin control enabled for this circuit,
-then have MFD_MADERA select PINCTRL.
-
->> that has to come up before its pin controller can even be communicated
->> with.
->
->
-> So?
->
-> The MFD driver powers up the chip before registering child drivers.
-
-Including the pin controller. You just confirmed what I said: the
-I2C and SPI interfaces do not require pin control to talk to the
-chip.
-
-> Also that's not entirely relevant, the pinctrl settings can still be written
-> with the chip off because they will go into the regmap cache and be applied
-> when the chip is next resumed.
-
-You still have the dependencies wrong.
-
-Yours,
-Linus Walleij
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>>  - resets: phandle to the reset line for this codec
+>>>
+>>>  Example:
+>>> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+>>> index 54c16eb64713..2c060e015725 100644
+>>> --- a/sound/soc/sunxi/sun4i-i2s.c
+>>> +++ b/sound/soc/sunxi/sun4i-i2s.c
+>>> @@ -942,6 +942,25 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
+>>>         .field_rxchansel        = REG_FIELD(SUN8I_I2S_RX_CHAN_SEL_REG, 0, 2),
+>>>  };
+>>>
+>>> +static const struct sun4i_i2s_quirks sun50i_a64_acodec_i2s_quirks = {
+>> ditto
+>>> +       .has_reset              = true,
+>>> +       .reg_offset_txdata      = SUN8I_I2S_FIFO_TX_REG,
+>>> +       .sun4i_i2s_regmap       = &sun4i_i2s_regmap_config,
+>>> +       .has_slave_select_bit   = true,
+>>> +       .fixed_wss              = true,
+>>> +       .wss_value              = 3,
+>>> +       .field_clkdiv_mclk_en   = REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 7, 7),
+>>> +       .field_fmt_wss          = REG_FIELD(SUN4I_I2S_FMT0_REG, 2, 3),
+>>> +       .field_fmt_sr           = REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
+>>> +       .field_fmt_bclk         = REG_FIELD(SUN4I_I2S_FMT0_REG, 6, 6),
+>>> +       .field_fmt_lrclk        = REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
+>>> +       .field_fmt_mode         = REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
+>>> +       .field_txchanmap        = REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
+>>> +       .field_rxchanmap        = REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
+>>> +       .field_txchansel        = REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
+>>> +       .field_rxchansel        = REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
+>>> +};
+>>> +
+>>>  static int sun4i_i2s_init_regmap_fields(struct device *dev,
+>>>                                         struct sun4i_i2s *i2s)
+>>>  {
+>>> @@ -1146,6 +1165,10 @@ static const struct of_device_id sun4i_i2s_match[] = {
+>>>                 .compatible = "allwinner,sun8i-h3-i2s",
+>>>                 .data = &sun8i_h3_i2s_quirks,
+>>>         },
+>>> +       {
+>>> +               .compatible = "allwinner,sun50i-a64-acodec-i2s",
+>>> +               .data = &sun50i_a64_acodec_i2s_quirks,
+>> ditto
+>> BR,
+>> CK
+>>> +       },
+>>>         {}
+>>>  };
+>>>  MODULE_DEVICE_TABLE(of, sun4i_i2s_match);
+>>> --
+>>> 2.15.0
+>>>
