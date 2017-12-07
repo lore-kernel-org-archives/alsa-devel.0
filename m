@@ -1,7 +1,7 @@
-From: Mark Brown <broonie@kernel.org>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
 Subject: Re: Multiple codecs on the same DAI
-Date: Thu, 7 Dec 2017 11:20:16 +0000
-Message-ID: <20171207112016.bkiw2gi4pcmvendr@sirena.org.uk>
+Date: Thu, 7 Dec 2017 12:31:12 +0100
+Message-ID: <alpine.DEB.2.11.1712071230120.22247@lnxricardw1.se.axis.com>
 References: <alpine.DEB.2.11.1711231533480.27895@lnxricardw1.se.axis.com>
  <20171124123921.ajhxztwypujty6ps@sirena.org.uk>
  <alpine.DEB.2.11.1711241456420.27895@lnxricardw1.se.axis.com>
@@ -11,14 +11,15 @@ References: <alpine.DEB.2.11.1711231533480.27895@lnxricardw1.se.axis.com>
  <alpine.DEB.2.11.1712061521180.22247@lnxricardw1.se.axis.com>
  <20171206154552.iqcdtyhuj7oyfwcg@sirena.org.uk>
  <alpine.DEB.2.11.1712070841040.22247@lnxricardw1.se.axis.com>
+ <20171207112016.bkiw2gi4pcmvendr@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4301164437696884444=="
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id AA1D52670BC
- for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2017 12:20:18 +0100 (CET)
-In-Reply-To: <alpine.DEB.2.11.1712070841040.22247@lnxricardw1.se.axis.com>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id A80742670BC
+ for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2017 12:31:19 +0100 (CET)
+In-Reply-To: <20171207112016.bkiw2gi4pcmvendr@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,56 +29,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4301164437696884444==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="lbxxxtdp7z4ij2r4"
-Content-Disposition: inline
+On Thu, 7 Dec 2017, Mark Brown wrote:
 
+> On Thu, Dec 07, 2017 at 08:47:03AM +0100, Ricard Wanderlof wrote:
+> > On Wed, 6 Dec 2017, Mark Brown wrote:
+> =
 
---lbxxxtdp7z4ij2r4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > > That does sound like an auxiliary device that's a regulator consumer.
+> =
 
-On Thu, Dec 07, 2017 at 08:47:03AM +0100, Ricard Wanderlof wrote:
-> On Wed, 6 Dec 2017, Mark Brown wrote:
+> > So essentially one would register this device as an auxiliary device, =
 
-> > That does sound like an auxiliary device that's a regulator consumer.
+> > which would define a DAPM widget which in turn would be part of a DAPM =
 
-> So essentially one would register this device as an auxiliary device,=20
-> which would define a DAPM widget which in turn would be part of a DAPM=20
-> route in the encompassing machine driver?
+> > route in the encompassing machine driver?
+> =
 
-Or register a device that consumes the regulator and maps it into ASoC
-like that.
+> Or register a device that consumes the regulator and maps it into ASoC
+> like that.
 
---lbxxxtdp7z4ij2r4
-Content-Type: application/pgp-signature; name="signature.asc"
+Do you offhand know of an example of such an external regulator =
 
------BEGIN PGP SIGNATURE-----
+implementation in the soc tree that I could look at to see how it all fits =
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlopI+4ACgkQJNaLcl1U
-h9AkIwf9HO3YU8/GIn65jprFl1fxcfa+IByqF7mnp+f5arU/wlnRg6kXwi/Ikjg3
-yK5O0nR2nIAgEOpAANEKLUAxT6+gfBBx9umDbFef8MlRm9tJoRvyvxC86Ku66kHm
-qPv4SjJ9c4XS4VOPRfvSUmGkpqTY9rJxR3rl9v/y/M5Ug1Gl0WSBq3Q0ovO/AjUw
-5xHg2acKvZwnsjmCR7crLwKV9zFPrAWxpjcN3qcYWmH/M5m076ZIHIAsSblBAds2
-aOYiirFkqlPAHarFVO6VZm0R1Mor2Pftc10iL2iCHP7S+41n/LFkMtiV6cenkPjr
-ADdS6eL+3y5s6JCbE9tyMSkcA9VsoQ==
-=Pj57
------END PGP SIGNATURE-----
+together?
 
---lbxxxtdp7z4ij2r4--
+/Ricard
+-- =
 
---===============4301164437696884444==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4301164437696884444==--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
