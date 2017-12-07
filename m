@@ -1,178 +1,721 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v9 01/13] Documentation: Add SLIMbus summary
-Date: Thu,  7 Dec 2017 10:27:08 +0000
-Message-ID: <20171207102720.21071-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v9 11/13] slimbus: qcom: Add Qualcomm Slimbus controller driver
+Date: Thu,  7 Dec 2017 10:27:18 +0000
+Message-ID: <20171207102720.21071-12-srinivas.kandagatla@linaro.org>
 References: <20171207102720.21071-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Return-path: <linux-doc-owner@vger.kernel.org>
 In-Reply-To: <20171207102720.21071-1-srinivas.kandagatla@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
+Sender: linux-doc-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org
 Cc: sdharia@codeaurora.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jonathan Corbet <corbet@lwn.net>, pombredanne@nexb.com, j.neuschaefer@gmx.net, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Sagar Dharia <sdharia@codeaurora.org>
 
-SLIMbus (Serial Low Power Interchip Media Bus) is a specification
-developed by MIPI (Mobile Industry Processor Interface) alliance.
-SLIMbus is a 2-wire implementation, which is used to communicate with
-peripheral components like audio-codec.
-
-The summary of SLIMbus and API is documented in the 'summary' file.
+This controller driver programs manager, interface, and framer
+devices for Qualcomm's slimbus HW block.
+Manager component currently implements logical address setting,
+and messaging interface.
+Interface device reports bus synchronization information, and framer
+device clocks the bus from the time it's woken up, until clock-pause
+is executed by the manager device.
 
 Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- Documentation/driver-api/index.rst           |   1 +
- Documentation/driver-api/slimbus/index.rst   |  15 ++++
- Documentation/driver-api/slimbus/summary.rst | 106 +++++++++++++++++++++++++++
- 3 files changed, 122 insertions(+)
- create mode 100644 Documentation/driver-api/slimbus/index.rst
- create mode 100644 Documentation/driver-api/slimbus/summary.rst
+ drivers/slimbus/Kconfig     |   6 +
+ drivers/slimbus/Makefile    |   4 +
+ drivers/slimbus/qcom-ctrl.c | 653 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 663 insertions(+)
+ create mode 100644 drivers/slimbus/qcom-ctrl.c
 
-diff --git a/Documentation/driver-api/index.rst b/Documentation/driver-api/index.rst
-index d17a9876b473..3de6097525f4 100644
---- a/Documentation/driver-api/index.rst
-+++ b/Documentation/driver-api/index.rst
-@@ -47,6 +47,7 @@ available subsections can be seen below.
-    gpio
-    misc_devices
-    dmaengine/index
-+   slimbus/index
+diff --git a/drivers/slimbus/Kconfig b/drivers/slimbus/Kconfig
+index 9b6bb84d66ed..78bdd4808282 100644
+--- a/drivers/slimbus/Kconfig
++++ b/drivers/slimbus/Kconfig
+@@ -13,5 +13,11 @@ menuconfig SLIMBUS
+ if SLIMBUS
  
- .. only::  subproject and html
+ # SLIMbus controllers
++config SLIM_QCOM_CTRL
++	tristate "Qualcomm SLIMbus Manager Component"
++	depends on SLIMBUS
++	help
++	  Select driver if Qualcomm's SLIMbus Manager Component is
++	  programmed using Linux kernel.
  
-diff --git a/Documentation/driver-api/slimbus/index.rst b/Documentation/driver-api/slimbus/index.rst
+ endif
+diff --git a/drivers/slimbus/Makefile b/drivers/slimbus/Makefile
+index cd6833ed521a..a35a3da4eb78 100644
+--- a/drivers/slimbus/Makefile
++++ b/drivers/slimbus/Makefile
+@@ -4,3 +4,7 @@
+ #
+ obj-$(CONFIG_SLIMBUS)			+= slimbus.o
+ slimbus-y				:= core.o messaging.o sched.o
++
++#Controllers
++obj-$(CONFIG_SLIM_QCOM_CTRL)		+= slim-qcom-ctrl.o
++slim-qcom-ctrl-y			:= qcom-ctrl.o
+diff --git a/drivers/slimbus/qcom-ctrl.c b/drivers/slimbus/qcom-ctrl.c
 new file mode 100644
-index 000000000000..586f979659e6
+index 000000000000..36e828b703b4
 --- /dev/null
-+++ b/Documentation/driver-api/slimbus/index.rst
-@@ -0,0 +1,15 @@
-+=====================
-+SLIMbus Documentation
-+=====================
++++ b/drivers/slimbus/qcom-ctrl.c
+@@ -0,0 +1,653 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2011-2017, The Linux Foundation
 +
-+.. toctree::
-+   :maxdepth: 1
++#include <linux/irq.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/slab.h>
++#include <linux/io.h>
++#include <linux/interrupt.h>
++#include <linux/platform_device.h>
++#include <linux/delay.h>
++#include <linux/clk.h>
++#include <linux/of.h>
++#include <linux/dma-mapping.h>
++#include "slimbus.h"
 +
-+   summary
++/* Manager registers */
++#define	MGR_CFG		0x200
++#define	MGR_STATUS	0x204
++#define	MGR_INT_EN	0x210
++#define	MGR_INT_STAT	0x214
++#define	MGR_INT_CLR	0x218
++#define	MGR_TX_MSG	0x230
++#define	MGR_RX_MSG	0x270
++#define	MGR_IE_STAT	0x2F0
++#define	MGR_VE_STAT	0x300
++#define	MGR_CFG_ENABLE	1
 +
-+.. only::  subproject
++/* Framer registers */
++#define	FRM_CFG		0x400
++#define	FRM_STAT	0x404
++#define	FRM_INT_EN	0x410
++#define	FRM_INT_STAT	0x414
++#define	FRM_INT_CLR	0x418
++#define	FRM_WAKEUP	0x41C
++#define	FRM_CLKCTL_DONE	0x420
++#define	FRM_IE_STAT	0x430
++#define	FRM_VE_STAT	0x440
 +
-+   Indices
-+   =======
++/* Interface registers */
++#define	INTF_CFG	0x600
++#define	INTF_STAT	0x604
++#define	INTF_INT_EN	0x610
++#define	INTF_INT_STAT	0x614
++#define	INTF_INT_CLR	0x618
++#define	INTF_IE_STAT	0x630
++#define	INTF_VE_STAT	0x640
 +
-+   * :ref:`genindex`
-diff --git a/Documentation/driver-api/slimbus/summary.rst b/Documentation/driver-api/slimbus/summary.rst
-new file mode 100644
-index 000000000000..9a296766dc46
---- /dev/null
-+++ b/Documentation/driver-api/slimbus/summary.rst
-@@ -0,0 +1,106 @@
-+============================
-+Linux kernel SLIMbus support
-+============================
++/* Interrupt status bits */
++#define	MGR_INT_TX_NACKED_2	BIT(25)
++#define	MGR_INT_MSG_BUF_CONTE	BIT(26)
++#define	MGR_INT_RX_MSG_RCVD	BIT(30)
++#define	MGR_INT_TX_MSG_SENT	BIT(31)
 +
-+Overview
-+========
++/* Framer config register settings */
++#define	FRM_ACTIVE	1
++#define	CLK_GEAR	7
++#define	ROOT_FREQ	11
++#define	REF_CLK_GEAR	15
++#define	INTR_WAKE	19
 +
-+What is SLIMbus?
-+----------------
-+SLIMbus (Serial Low Power Interchip Media Bus) is a specification developed by
-+MIPI (Mobile Industry Processor Interface) alliance. The bus uses master/slave
-+configuration, and is a 2-wire multi-drop implementation (clock, and data).
++#define SLIM_MSG_ASM_FIRST_WORD(l, mt, mc, dt, ad) \
++		((l) | ((mt) << 5) | ((mc) << 8) | ((dt) << 15) | ((ad) << 16))
 +
-+Currently, SLIMbus is used to interface between application processors of SoCs
-+(System-on-Chip) and peripheral components (typically codec). SLIMbus uses
-+Time-Division-Multiplexing to accommodate multiple data channels, and
-+a control channel.
++#define SLIM_ROOT_FREQ 24576000
 +
-+The control channel is used for various control functions such as bus
-+management, configuration and status updates. These messages can be unicast (e.g.
-+reading/writing device specific values), or multicast (e.g. data channel
-+reconfiguration sequence is a broadcast message announced to all devices)
++/* MAX message size over control channel */
++#define SLIM_MSGQ_BUF_LEN	40
++#define QCOM_TX_MSGS 2
++#define QCOM_RX_MSGS	8
++#define QCOM_BUF_ALLOC_RETRIES	10
 +
-+A data channel is used for data-transfer between 2 SLIMbus devices. Data
-+channel uses dedicated ports on the device.
++#define CFG_PORT(r, v) ((v) ? CFG_PORT_V2(r) : CFG_PORT_V1(r))
 +
-+Hardware description:
-+---------------------
-+SLIMbus specification has different types of device classifications based on
-+their capabilities.
-+A manager device is responsible for enumeration, configuration, and dynamic
-+channel allocation. Every bus has 1 active manager.
++/* V2 Component registers */
++#define CFG_PORT_V2(r) ((r ## _V2))
++#define	COMP_CFG_V2		4
++#define	COMP_TRUST_CFG_V2	0x3000
 +
-+A generic device is a device providing application functionality (e.g. codec).
++/* V1 Component registers */
++#define CFG_PORT_V1(r) ((r ## _V1))
++#define	COMP_CFG_V1		0
++#define	COMP_TRUST_CFG_V1	0x14
 +
-+Framer device is responsible for clocking the bus, and transmitting frame-sync
-+and framing information on the bus.
++/* Resource group info for manager, and non-ported generic device-components */
++#define EE_MGR_RSC_GRP	(1 << 10)
++#define EE_NGD_2	(2 << 6)
++#define EE_NGD_1	0
 +
-+Each SLIMbus component has an interface device for monitoring physical layer.
++struct slim_ctrl_buf {
++	void		*base;
++	phys_addr_t	phy;
++	spinlock_t	lock;
++	int		head;
++	int		tail;
++	int		sl_sz;
++	int		n;
++};
 +
-+Typically each SoC contains SLIMbus component having 1 manager, 1 framer device,
-+1 generic device (for data channel support), and 1 interface device.
-+External peripheral SLIMbus component usually has 1 generic device (for
-+functionality/data channel support), and an associated interface device.
-+The generic device's registers are mapped as 'value elements' so that they can
-+be written/read using SLIMbus control channel exchanging control/status type of
-+information.
-+In case there are multiple framer devices on the same bus, manager device is
-+responsible to select the active-framer for clocking the bus.
++struct qcom_slim_ctrl {
++	struct slim_controller  ctrl;
++	struct slim_framer	framer;
++	struct device		*dev;
++	void __iomem		*base;
++	void __iomem		*slew_reg;
 +
-+Per specification, SLIMbus uses "clock gears" to do power management based on
-+current frequency and bandwidth requirements. There are 10 clock gears and each
-+gear changes the SLIMbus frequency to be twice its previous gear.
++	struct slim_ctrl_buf	rx;
++	struct slim_ctrl_buf	tx;
 +
-+Each device has a 6-byte enumeration-address and the manager assigns every
-+device with a 1-byte logical address after the devices report presence on the
-+bus.
++	struct completion	**wr_comp;
++	int			irq;
++	struct workqueue_struct *rxwq;
++	struct work_struct	wd;
++	struct clk		*rclk;
++	struct clk		*hclk;
++};
 +
-+Software description:
-+---------------------
-+There are 2 types of SLIMbus drivers:
++static void qcom_slim_queue_tx(struct qcom_slim_ctrl *ctrl, void *buf,
++			       u8 len, u32 tx_reg)
++{
++	int count = (len + 3) >> 2;
 +
-+slim_controller represents a 'controller' for SLIMbus. This driver should
-+implement duties needed by the SoC (manager device, associated
-+interface device for monitoring the layers and reporting errors, default
-+framer device).
++	__iowrite32_copy(ctrl->base + tx_reg, buf, count);
 +
-+slim_device represents the 'generic device/component' for SLIMbus, and a
-+slim_driver should implement driver for that slim_device.
++	/* Ensure Oder of subsequent writes */
++	mb();
++}
 +
-+Device notifications to the driver:
-+-----------------------------------
-+Since SLIMbus devices have mechanisms for reporting their presence, the
-+framework allows drivers to bind when corresponding devices report their
-+presence on the bus.
-+However, it is possible that the driver needs to be probed
-+first so that it can enable corresponding SLIMbus device (e.g. power it up and/or
-+take it out of reset). To support that behavior, the framework allows drivers
-+to probe first as well  (e.g. using standard DeviceTree compatibility field).
-+This creates the necessity for the driver to know when the device is functional
-+(i.e. reported present). device_up callback is used for that reason when the
-+device reports present and is assigned a logical address by the controller.
++static void *slim_alloc_rxbuf(struct qcom_slim_ctrl *ctrl)
++{
++	unsigned long flags;
++	int idx;
 +
-+Similarly, SLIMbus devices 'report absent' when they go down. A 'device_down'
-+callback notifies the driver when the device reports absent and its logical
-+address assignment is invalidated by the controller.
++	spin_lock_irqsave(&ctrl->rx.lock, flags);
++	if ((ctrl->rx.tail + 1) % ctrl->rx.n == ctrl->rx.head) {
++		spin_unlock_irqrestore(&ctrl->rx.lock, flags);
++		dev_err(ctrl->dev, "RX QUEUE full!");
++		return NULL;
++	}
++	idx = ctrl->rx.tail;
++	ctrl->rx.tail = (ctrl->rx.tail + 1) % ctrl->rx.n;
++	spin_unlock_irqrestore(&ctrl->rx.lock, flags);
 +
-+Another notification "boot_device" is used to notify the slim_driver when
-+controller resets the bus. This notification allows the driver to take necessary
-+steps to boot the device so that it's functional after the bus has been reset.
++	return ctrl->rx.base + (idx * ctrl->rx.sl_sz);
++}
 +
-+Clock-pause:
-+------------
-+SLIMbus mandates that a reconfiguration sequence (known as clock-pause) be
-+broadcast to all active devices on the bus before the bus can enter low-power
-+mode. Controller uses this sequence when it decides to enter low-power mode so
-+that corresponding clocks and/or power-rails can be turned off to save power.
-+Clock-pause is exited by waking up framer device (if controller driver initiates
-+exiting low power mode), or by toggling the data line (if a slave device wants
-+to initiate it).
++void slim_ack_txn(struct qcom_slim_ctrl *ctrl, int err)
++{
++	struct completion *comp;
++	unsigned long flags;
++	int idx;
 +
-+Messaging APIs:
-+---------------
-+The framework supports regmap and read/write apis to exchange control-information
-+with a SLIMbus device. APIs can be synchronous or asynchronous.
-+The header file <linux/slimbus.h> has more documentation about messaging APIs.
++	spin_lock_irqsave(&ctrl->tx.lock, flags);
++	idx = ctrl->tx.head;
++	ctrl->tx.head = (ctrl->tx.head + 1) % ctrl->tx.n;
++	spin_unlock_irqrestore(&ctrl->tx.lock, flags);
++
++	comp = ctrl->wr_comp[idx];
++	ctrl->wr_comp[idx] = NULL;
++
++	complete(comp);
++}
++
++static irqreturn_t qcom_slim_handle_tx_irq(struct qcom_slim_ctrl *ctrl,
++					   u32 stat)
++{
++	int err = 0;
++
++	if (stat & MGR_INT_TX_MSG_SENT)
++		writel_relaxed(MGR_INT_TX_MSG_SENT,
++			       ctrl->base + MGR_INT_CLR);
++
++	if (stat & MGR_INT_TX_NACKED_2) {
++		u32 mgr_stat = readl_relaxed(ctrl->base + MGR_STATUS);
++		u32 mgr_ie_stat = readl_relaxed(ctrl->base + MGR_IE_STAT);
++		u32 frm_stat = readl_relaxed(ctrl->base + FRM_STAT);
++		u32 frm_cfg = readl_relaxed(ctrl->base + FRM_CFG);
++		u32 frm_intr_stat = readl_relaxed(ctrl->base + FRM_INT_STAT);
++		u32 frm_ie_stat = readl_relaxed(ctrl->base + FRM_IE_STAT);
++		u32 intf_stat = readl_relaxed(ctrl->base + INTF_STAT);
++		u32 intf_intr_stat = readl_relaxed(ctrl->base + INTF_INT_STAT);
++		u32 intf_ie_stat = readl_relaxed(ctrl->base + INTF_IE_STAT);
++
++		writel_relaxed(MGR_INT_TX_NACKED_2, ctrl->base + MGR_INT_CLR);
++
++		dev_err(ctrl->dev, "TX Nack MGR:int:0x%x, stat:0x%x\n",
++			stat, mgr_stat);
++		dev_err(ctrl->dev, "TX Nack MGR:ie:0x%x\n", mgr_ie_stat);
++		dev_err(ctrl->dev, "TX Nack FRM:int:0x%x, stat:0x%x\n",
++			frm_intr_stat, frm_stat);
++		dev_err(ctrl->dev, "TX Nack FRM:cfg:0x%x, ie:0x%x\n",
++			frm_cfg, frm_ie_stat);
++		dev_err(ctrl->dev, "TX Nack INTF:intr:0x%x, stat:0x%x\n",
++			intf_intr_stat, intf_stat);
++		dev_err(ctrl->dev, "TX Nack INTF:ie:0x%x\n",
++			intf_ie_stat);
++		err = -ENOTCONN;
++	}
++
++	slim_ack_txn(ctrl, err);
++
++	return IRQ_HANDLED;
++}
++
++static irqreturn_t qcom_slim_handle_rx_irq(struct qcom_slim_ctrl *ctrl,
++					   u32 stat)
++{
++	u32 *rx_buf, pkt[10];
++	bool q_rx = false;
++	u8 mc, mt, len;
++
++	pkt[0] = readl_relaxed(ctrl->base + MGR_RX_MSG);
++	mt = SLIM_HEADER_GET_MT(pkt[0]);
++	len = SLIM_HEADER_GET_RL(pkt[0]);
++	mc = SLIM_HEADER_GET_MC(pkt[0]>>8);
++
++	/*
++	 * this message cannot be handled by ISR, so
++	 * let work-queue handle it
++	 */
++	if (mt == SLIM_MSG_MT_CORE && mc == SLIM_MSG_MC_REPORT_PRESENT) {
++		rx_buf = (u32 *)slim_alloc_rxbuf(ctrl);
++		if (!rx_buf) {
++			dev_err(ctrl->dev, "dropping RX:0x%x due to RX full\n",
++					pkt[0]);
++			goto rx_ret_irq;
++		}
++		rx_buf[0] = pkt[0];
++
++	} else {
++		rx_buf = pkt;
++	}
++
++	__ioread32_copy(rx_buf + 1, ctrl->base + MGR_RX_MSG + 4,
++			DIV_ROUND_UP(len, 4));
++
++	switch (mc) {
++
++	case SLIM_MSG_MC_REPORT_PRESENT:
++		q_rx = true;
++		break;
++	case SLIM_MSG_MC_REPLY_INFORMATION:
++	case SLIM_MSG_MC_REPLY_VALUE:
++		slim_msg_response(&ctrl->ctrl, (u8 *)(rx_buf + 1),
++				  (u8)(*rx_buf >> 24), (len - 4));
++		break;
++	default:
++		dev_err(ctrl->dev, "unsupported MC,%x MT:%x\n",
++			mc, mt);
++		break;
++	}
++rx_ret_irq:
++	writel(MGR_INT_RX_MSG_RCVD, ctrl->base +
++		       MGR_INT_CLR);
++	if (q_rx)
++		queue_work(ctrl->rxwq, &ctrl->wd);
++
++	return IRQ_HANDLED;
++}
++
++static irqreturn_t qcom_slim_interrupt(int irq, void *d)
++{
++	struct qcom_slim_ctrl *ctrl = d;
++	u32 stat = readl_relaxed(ctrl->base + MGR_INT_STAT);
++	int ret = IRQ_NONE;
++
++	if (stat & MGR_INT_TX_MSG_SENT || stat & MGR_INT_TX_NACKED_2)
++		ret = qcom_slim_handle_tx_irq(ctrl, stat);
++
++	if (stat & MGR_INT_RX_MSG_RCVD)
++		ret = qcom_slim_handle_rx_irq(ctrl, stat);
++
++	return ret;
++}
++
++void *slim_alloc_txbuf(struct qcom_slim_ctrl *ctrl, struct slim_msg_txn *txn,
++		       struct completion *done)
++{
++	unsigned long flags;
++	int idx;
++
++	spin_lock_irqsave(&ctrl->tx.lock, flags);
++	if (((ctrl->tx.head + 1) % ctrl->tx.n) == ctrl->tx.tail) {
++		spin_unlock_irqrestore(&ctrl->tx.lock, flags);
++		dev_err(ctrl->dev, "controller TX buf unavailable");
++		return NULL;
++	}
++	idx = ctrl->tx.tail;
++	ctrl->wr_comp[idx] = done;
++	ctrl->tx.tail = (ctrl->tx.tail + 1) % ctrl->tx.n;
++
++	spin_unlock_irqrestore(&ctrl->tx.lock, flags);
++
++	return ctrl->tx.base + (idx * ctrl->tx.sl_sz);
++}
++
++
++static int qcom_xfer_msg(struct slim_controller *sctrl,
++			 struct slim_msg_txn *txn)
++{
++	struct qcom_slim_ctrl *ctrl = dev_get_drvdata(sctrl->dev);
++	DECLARE_COMPLETION_ONSTACK(done);
++	void *pbuf = slim_alloc_txbuf(ctrl, txn, &done);
++	unsigned long ms = txn->rl + HZ;
++	u8 *puc;
++	int ret = 0, timeout, retries = QCOM_BUF_ALLOC_RETRIES;
++	u8 la = txn->la;
++	u32 *head;
++	/* HW expects length field to be excluded */
++	txn->rl--;
++
++	/* spin till buffer is made available */
++	if (!pbuf) {
++		while (retries--) {
++			usleep_range(10000, 15000);
++			pbuf = slim_alloc_txbuf(ctrl, txn, &done);
++			if (pbuf)
++				break;
++		}
++	}
++
++	if (!retries && !pbuf)
++		return -ENOMEM;
++
++	puc = (u8 *)pbuf;
++	head = (u32 *)pbuf;
++
++	if (txn->dt == SLIM_MSG_DEST_LOGICALADDR) {
++		*head = SLIM_MSG_ASM_FIRST_WORD(txn->rl, txn->mt,
++						txn->mc, 0, la);
++		puc += 3;
++	} else {
++		*head = SLIM_MSG_ASM_FIRST_WORD(txn->rl, txn->mt,
++						txn->mc, 1, la);
++		puc += 2;
++	}
++
++	if (slim_tid_txn(txn->mt, txn->mc))
++		*(puc++) = txn->tid;
++
++	if (slim_ec_txn(txn->mt, txn->mc)) {
++		*(puc++) = (txn->ec & 0xFF);
++		*(puc++) = (txn->ec >> 8) & 0xFF;
++	}
++
++	if (txn->msg && txn->msg->wbuf)
++		memcpy(puc, txn->msg->wbuf, txn->msg->num_bytes);
++
++	qcom_slim_queue_tx(ctrl, head, txn->rl, MGR_TX_MSG);
++	timeout = wait_for_completion_timeout(&done, msecs_to_jiffies(ms));
++
++	if (!timeout) {
++		dev_err(ctrl->dev, "TX timed out:MC:0x%x,mt:0x%x", txn->mc,
++					txn->mt);
++		ret = -ETIMEDOUT;
++	}
++
++	return ret;
++
++}
++
++static int qcom_set_laddr(struct slim_controller *sctrl,
++				struct slim_eaddr *ead, u8 laddr)
++{
++	struct qcom_slim_ctrl *ctrl = dev_get_drvdata(sctrl->dev);
++	struct {
++		__be16 manf_id;
++		__be16 prod_code;
++		u8 dev_index;
++		u8 instance;
++		u8 laddr;
++	} __packed p;
++	struct slim_val_inf msg = {0};
++	DEFINE_SLIM_EDEST_TXN(txn, SLIM_MSG_MC_ASSIGN_LOGICAL_ADDRESS,
++			      10, laddr, &msg);
++	int ret;
++
++	p.manf_id = cpu_to_be16(ead->manf_id);
++	p.prod_code = cpu_to_be16(ead->prod_code);
++	p.dev_index = ead->dev_index;
++	p.instance = ead->instance;
++	p.laddr = laddr;
++
++	msg.wbuf = (void *)&p;
++	msg.num_bytes = 7;
++	ret = slim_do_transfer(&ctrl->ctrl, &txn);
++
++	if (ret)
++		dev_err(ctrl->dev, "set LA:0x%x failed:ret:%d\n",
++				  laddr, ret);
++	return ret;
++}
++
++static int slim_get_current_rxbuf(struct qcom_slim_ctrl *ctrl, void *buf)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&ctrl->rx.lock, flags);
++	if (ctrl->rx.tail == ctrl->rx.head) {
++		spin_unlock_irqrestore(&ctrl->rx.lock, flags);
++		return -ENODATA;
++	}
++	memcpy(buf, ctrl->rx.base + (ctrl->rx.head * ctrl->rx.sl_sz),
++				ctrl->rx.sl_sz);
++
++	ctrl->rx.head = (ctrl->rx.head + 1) % ctrl->rx.n;
++	spin_unlock_irqrestore(&ctrl->rx.lock, flags);
++
++	return 0;
++}
++
++static void qcom_slim_rxwq(struct work_struct *work)
++{
++	u8 buf[SLIM_MSGQ_BUF_LEN];
++	u8 mc, mt, len;
++	int ret;
++	struct qcom_slim_ctrl *ctrl = container_of(work, struct qcom_slim_ctrl,
++						 wd);
++
++	while ((slim_get_current_rxbuf(ctrl, buf)) != -ENODATA) {
++		len = SLIM_HEADER_GET_RL(buf[0]);
++		mt = SLIM_HEADER_GET_MT(buf[0]);
++		mc = SLIM_HEADER_GET_MC(buf[1]);
++		if (mt == SLIM_MSG_MT_CORE &&
++			mc == SLIM_MSG_MC_REPORT_PRESENT) {
++			struct slim_eaddr ea;
++			u8 laddr;
++
++			ea.manf_id = be16_to_cpup((__be16 *)&buf[2]);
++			ea.prod_code = be16_to_cpup((__be16 *)&buf[4]);
++			ea.dev_index = buf[6];
++			ea.instance = buf[7];
++
++			ret = slim_device_report_present(&ctrl->ctrl, &ea,
++							 &laddr);
++			if (ret < 0)
++				dev_err(ctrl->dev, "assign laddr failed:%d\n",
++					ret);
++		} else {
++			dev_err(ctrl->dev, "unexpected message:mc:%x, mt:%x\n",
++				mc, mt);
++		}
++	}
++}
++
++static void qcom_slim_prg_slew(struct platform_device *pdev,
++				struct qcom_slim_ctrl *ctrl)
++{
++	struct resource	*slew_mem;
++
++	if (!ctrl->slew_reg) {
++		/* SLEW RATE register for this SLIMbus */
++		slew_mem = platform_get_resource_byname(pdev, IORESOURCE_MEM,
++				"slew");
++		ctrl->slew_reg = devm_ioremap(&pdev->dev, slew_mem->start,
++				resource_size(slew_mem));
++		if (!ctrl->slew_reg)
++			return;
++	}
++
++	writel_relaxed(1, ctrl->slew_reg);
++	/* Make sure SLIMbus-slew rate enabling goes through */
++	wmb();
++}
++
++static int qcom_slim_probe(struct platform_device *pdev)
++{
++	struct qcom_slim_ctrl *ctrl;
++	struct slim_controller *sctrl;
++	struct resource *slim_mem;
++	int ret, ver;
++
++	ctrl = devm_kzalloc(&pdev->dev, sizeof(*ctrl), GFP_KERNEL);
++	if (!ctrl)
++		return -ENOMEM;
++
++	ctrl->hclk = devm_clk_get(&pdev->dev, "iface");
++	if (IS_ERR(ctrl->hclk))
++		return PTR_ERR(ctrl->hclk);
++
++	ctrl->rclk = devm_clk_get(&pdev->dev, "core");
++	if (IS_ERR(ctrl->rclk))
++		return PTR_ERR(ctrl->rclk);
++
++	ret = clk_set_rate(ctrl->rclk, SLIM_ROOT_FREQ);
++	if (ret) {
++		dev_err(&pdev->dev, "ref-clock set-rate failed:%d\n", ret);
++		return ret;
++	}
++
++	ctrl->irq = platform_get_irq(pdev, 0);
++	if (!ctrl->irq) {
++		dev_err(&pdev->dev, "no slimbus IRQ\n");
++		return -ENODEV;
++	}
++
++	sctrl = &ctrl->ctrl;
++	sctrl->dev = &pdev->dev;
++	ctrl->dev = &pdev->dev;
++	platform_set_drvdata(pdev, ctrl);
++	dev_set_drvdata(ctrl->dev, ctrl);
++
++	slim_mem = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ctrl");
++	ctrl->base = devm_ioremap_resource(ctrl->dev, slim_mem);
++	if (!ctrl->base) {
++		dev_err(&pdev->dev, "IOremap failed\n");
++		return -ENOMEM;
++	}
++
++	sctrl->set_laddr = qcom_set_laddr;
++	sctrl->xfer_msg = qcom_xfer_msg;
++	ctrl->tx.n = QCOM_TX_MSGS;
++	ctrl->tx.sl_sz = SLIM_MSGQ_BUF_LEN;
++	ctrl->rx.n = QCOM_RX_MSGS;
++	ctrl->rx.sl_sz = SLIM_MSGQ_BUF_LEN;
++	ctrl->wr_comp = kzalloc(sizeof(struct completion *) * QCOM_TX_MSGS,
++				GFP_KERNEL);
++	if (!ctrl->wr_comp)
++		return -ENOMEM;
++
++	spin_lock_init(&ctrl->rx.lock);
++	spin_lock_init(&ctrl->tx.lock);
++	INIT_WORK(&ctrl->wd, qcom_slim_rxwq);
++	ctrl->rxwq = create_singlethread_workqueue("qcom_slim_rx");
++	if (!ctrl->rxwq) {
++		dev_err(ctrl->dev, "Failed to start Rx WQ\n");
++		return -ENOMEM;
++	}
++
++	ctrl->framer.rootfreq = SLIM_ROOT_FREQ / 8;
++	ctrl->framer.superfreq =
++		ctrl->framer.rootfreq / SLIM_CL_PER_SUPERFRAME_DIV8;
++	sctrl->a_framer = &ctrl->framer;
++	sctrl->clkgear = SLIM_MAX_CLK_GEAR;
++
++	qcom_slim_prg_slew(pdev, ctrl);
++
++	ret = devm_request_irq(&pdev->dev, ctrl->irq, qcom_slim_interrupt,
++				IRQF_TRIGGER_HIGH, "qcom_slim_irq", ctrl);
++	if (ret) {
++		dev_err(&pdev->dev, "request IRQ failed\n");
++		goto err_request_irq_failed;
++	}
++
++	ret = clk_prepare_enable(ctrl->hclk);
++	if (ret)
++		goto err_hclk_enable_failed;
++
++	ret = clk_prepare_enable(ctrl->rclk);
++	if (ret)
++		goto err_rclk_enable_failed;
++
++	ctrl->tx.base = dmam_alloc_coherent(&pdev->dev,
++					   (ctrl->tx.sl_sz * ctrl->tx.n),
++					   &ctrl->tx.phy, GFP_KERNEL);
++	if (!ctrl->tx.base) {
++		ret = -ENOMEM;
++		goto err;
++	}
++
++	ctrl->rx.base = dmam_alloc_coherent(&pdev->dev,
++					   (ctrl->rx.sl_sz * ctrl->rx.n),
++					   &ctrl->rx.phy, GFP_KERNEL);
++	if (!ctrl->rx.base) {
++		ret = -ENOMEM;
++		goto err;
++	}
++
++	/* Register with framework before enabling frame, clock */
++	ret = slim_register_controller(&ctrl->ctrl);
++	if (ret) {
++		dev_err(ctrl->dev, "error adding controller\n");
++		goto err;
++	}
++
++	ver = readl_relaxed(ctrl->base);
++	/* Version info in 16 MSbits */
++	ver >>= 16;
++	/* Component register initialization */
++	writel(1, ctrl->base + CFG_PORT(COMP_CFG, ver));
++	writel((EE_MGR_RSC_GRP | EE_NGD_2 | EE_NGD_1),
++				ctrl->base + CFG_PORT(COMP_TRUST_CFG, ver));
++
++	writel((MGR_INT_TX_NACKED_2 |
++			MGR_INT_MSG_BUF_CONTE | MGR_INT_RX_MSG_RCVD |
++			MGR_INT_TX_MSG_SENT), ctrl->base + MGR_INT_EN);
++	writel(1, ctrl->base + MGR_CFG);
++	/* Framer register initialization */
++	writel((1 << INTR_WAKE) | (0xA << REF_CLK_GEAR) |
++		(0xA << CLK_GEAR) | (1 << ROOT_FREQ) | (1 << FRM_ACTIVE) | 1,
++		ctrl->base + FRM_CFG);
++	writel(MGR_CFG_ENABLE, ctrl->base + MGR_CFG);
++	writel(1, ctrl->base + INTF_CFG);
++	writel(1, ctrl->base + CFG_PORT(COMP_CFG, ver));
++
++	pm_runtime_use_autosuspend(&pdev->dev);
++	pm_runtime_set_autosuspend_delay(&pdev->dev, QCOM_SLIM_AUTOSUSPEND);
++	pm_runtime_set_active(&pdev->dev);
++	pm_runtime_mark_last_busy(&pdev->dev);
++	pm_runtime_enable(&pdev->dev);
++
++	dev_dbg(ctrl->dev, "QCOM SB controller is up:ver:0x%x!\n", ver);
++	return 0;
++
++err:
++	clk_disable_unprepare(ctrl->rclk);
++err_rclk_enable_failed:
++	clk_disable_unprepare(ctrl->hclk);
++err_hclk_enable_failed:
++err_request_irq_failed:
++	destroy_workqueue(ctrl->rxwq);
++	return ret;
++}
++
++static int qcom_slim_remove(struct platform_device *pdev)
++{
++	struct qcom_slim_ctrl *ctrl = platform_get_drvdata(pdev);
++
++	disable_irq(ctrl->irq);
++	clk_disable_unprepare(ctrl->hclk);
++	clk_disable_unprepare(ctrl->rclk);
++	slim_unregister_controller(&ctrl->ctrl);
++	destroy_workqueue(ctrl->rxwq);
++	return 0;
++}
++
++static const struct dev_pm_ops qcom_slim_dev_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(qcom_slim_suspend, qcom_slim_resume)
++	SET_RUNTIME_PM_OPS(
++			   qcom_slim_runtime_suspend,
++			   qcom_slim_runtime_resume,
++			   NULL
++	)
++};
++
++static const struct of_device_id qcom_slim_dt_match[] = {
++	{ .compatible = "qcom,slim", },
++	{ .compatible = "qcom,apq8064-slim", },
++	{}
++};
++
++static struct platform_driver qcom_slim_driver = {
++	.probe = qcom_slim_probe,
++	.remove = qcom_slim_remove,
++	.driver	= {
++		.name = "qcom_slim_ctrl",
++		.of_match_table = qcom_slim_dt_match,
++	},
++};
++module_platform_driver(qcom_slim_driver);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Qualcomm SLIMbus Controller");
 -- 
 2.15.0
+
