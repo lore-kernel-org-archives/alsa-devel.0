@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Change kern log level to avoid
-	unwanted messages" to the asoc tree
-Date: Fri, 08 Dec 2017 18:50:05 +0000
-Message-ID: <E1eNNin-0003Rb-8t@debutante>
-References: <1512666160-30729-1-git-send-email-naveen.m@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7164B266D45
- for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2017 19:50:14 +0100 (CET)
-In-Reply-To: <1512666160-30729-1-git-send-email-naveen.m@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, naveen.m@intel.com, harshapriya.n@intel.com, pierre-louis.bossart@intel.com
+Subject: Applied "ASoC: atmel-classd: select correct Kconfig symbol" to the asoc tree
+Date: Fri, 08 Dec 2017 18:50:12 +0000
+Message-ID: <E1eNNiu-0003Sk-B0@debutante>
+References: <20171208141853.3879-1-alexandre.belloni@free-electrons.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171208141853.3879-1-alexandre.belloni@free-electrons.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: Arnd Bergmann <arnd@arndb.de>Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@microchip.com>Mark Brown <broonie@kernel.org>Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Change kern log level to avoid unwanted messages
+   ASoC: atmel-classd: select correct Kconfig symbol
 
 has been applied to the asoc tree at
 
@@ -52,33 +37,54 @@ to this mail.
 Thanks,
 Mark
 
->From 4362934a75ff2a399fd0bcd75937907115770020 Mon Sep 17 00:00:00 2001
-From: Naveen Manohar <naveen.m@intel.com>
-Date: Fri, 8 Dec 2017 09:30:18 +0530
-Subject: [PATCH] ASoC: Intel: Change kern log level to avoid unwanted messages
+>From 0f0be40ba59c2d5fdfea48e3ff93f6165d616440 Mon Sep 17 00:00:00 2001
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Date: Fri, 8 Dec 2017 15:18:53 +0100
+Subject: [PATCH] ASoC: atmel-classd: select correct Kconfig symbol
 
-patch suppresses the warning message "control load not supported"
-as this is a debug information to help debug issues in topology.
+SND_ATMEL_SOC_CLASSD selects SND_ATMEL_SOC_DMA but the driver itself
+handles its own DMA operations and doesn't need anything from
+atmel-pcm-dma.c or atmel_ssc_dai.c.
 
-Signed-off-by: Naveen Manohar <naveen.m@intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+Replace SND_ATMEL_SOC_DMA by SND_SOC_GENERIC_DMAENGINE_PCM which is the
+only one actually required.
+
+This may end up in a configuration leading to a link error:
+
+sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_set_audio':
+atmel_ssc_dai.c:(.text+0x79c): undefined reference to `atmel_pcm_dma_platform_register'
+atmel_ssc_dai.c:(.text+0x79c): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `atmel_pcm_dma_platform_register'
+sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_put_audio':
+atmel_ssc_dai.c:(.text+0xf24): undefined reference to `atmel_pcm_dma_platform_unregister'
+atmel_ssc_dai.c:(.text+0xf24): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `atmel_pcm_dma_platform_unregister'
+
+Tested on sama5d2 xplained with the following configuration
+where nothing selects SND_ATMEL_SOC_DMA:
+
+CONFIG_SND_ATMEL_SOC=y
+CONFIG_SND_ATMEL_SOC_CLASSD=y
+
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Tested-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: e0a25b6d1862 ("ASoC: atmel-classd: add the Audio Class D Amplifier")
+Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 2 +-
+ sound/soc/atmel/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index a072bcf209d2..81923da18ac2 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -2908,7 +2908,7 @@ static int skl_tplg_control_load(struct snd_soc_component *cmpnt,
- 		break;
- 
- 	default:
--		dev_warn(bus->dev, "Control load not supported %d:%d:%d\n",
-+		dev_dbg(bus->dev, "Control load not supported %d:%d:%d\n",
- 			hdr->ops.get, hdr->ops.put, hdr->ops.info);
- 		break;
- 	}
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index 4a56f3dfba51..dcee145dd179 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -64,7 +64,7 @@ config SND_AT91_SOC_SAM9X5_WM8731
+ config SND_ATMEL_SOC_CLASSD
+ 	tristate "Atmel ASoC driver for boards using CLASSD"
+ 	depends on ARCH_AT91 || COMPILE_TEST
+-	select SND_ATMEL_SOC_DMA
++	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	select REGMAP_MMIO
+ 	help
+ 	  Say Y if you want to add support for Atmel ASoC driver for boards using
 -- 
 2.15.1
