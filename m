@@ -1,43 +1,51 @@
 From: Jiada Wang <jiada_wang@mentor.com>
-Subject: Re: [PATCH v1 1/2] ASoC: rsnd: ssi: fix race condition in rsnd_ssi_pointer_update
-Date: Thu, 7 Dec 2017 21:35:16 -0800
-Message-ID: <5A2A2494.2080202@mentor.com>
-References: <1512634956-17760-1-git-send-email-jiada_wang@mentor.com> <1512634956-17760-2-git-send-email-jiada_wang@mentor.com> <87y3me7uce.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v2 2/2] ASoC: rsnd: ssi: remove unnesessary
+	period_pos
+Date: Thu, 7 Dec 2017 21:43:05 -0800
+Message-ID: <5A2A2669.4020506@mentor.com>
+References: <1512634956-17760-1-git-send-email-jiada_wang@mentor.com>
+ <1512634956-17760-3-git-send-email-jiada_wang@mentor.com>
+ <87wp1y7trw.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87y3me7uce.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id 45739267B7B
+ for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2017 06:43:07 +0100 (CET)
+In-Reply-To: <87wp1y7trw.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Morimoto-san
+Hi Morimoto-san
 
-On 12/07/2017 01:45 AM, Kuninori Morimoto wrote:
+On 12/07/2017 01:58 AM, Kuninori Morimoto wrote:
 > Hi Jiada
 >
-> Thank you for your patch
+>> Further more, if the passed 'byte' amount to
+>> rsnd_ssi_pointer_update() is more than byte_per_period.
+>> the calculation of next_period_byte isn't correct.
+> Is it really happen ??
 >
->> Currently there is race condition between set of byte_pos and wrap
->> it around when new buffer starts. If .pointer is called in-between
->> it will result in inconsistent pointer position be returned
->> from .pointer callback.
->>
->> This patch increments buffer pointer atomically to avoid this issue.
->>
->> Signed-off-by: Jiada Wang<jiada_wang@mentor.com>
->> Reviewed-by: Takashi Sakamoto<takashi.sakamoto@miraclelinux.com>
->> ---
-> You using playback with PIO mode ?
-> Because this function is no longer used on DMA mode
-No, we are using rcar sound in DMA mode,
-our original patch resolves the issue in core.c for both PIO & DMA mode.
+> Basically, I have no objection about this patch,
+> but this explanation is very strange for me...
+No, I didn't see the issue,
+but the implementation of rsnd_ssi_pointer_update(), behaves like
+it knows all caller will always pass 'byte' no larger than byte_per_period,
+without any check internally.
 
-but with your commit a97a06c ("ASoC: rsnd: cleanup pointer related code"),
-DMA mode no longer has the race condition issue,
-so I ported our fix patch to only address the issue in PIO mode
+I am ok to remove this explanation from commit message,
+what do you think?
 
 Thanks,
 Jiada
