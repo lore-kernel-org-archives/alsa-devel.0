@@ -1,71 +1,108 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RESEND] ASoC: wm_adsp: Fix validation of
- firmware and coeff lengths
-Date: Fri, 8 Dec 2017 17:16:54 +0000
-Message-ID: <20171208171654.GD7606@sirena.org.uk>
-References: <20171208161520.sxiz6s3qcms2jeis@xylophone.i.decadent.org.uk>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5082273056824734933=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A92E6266D45
- for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2017 18:17:05 +0100 (CET)
-In-Reply-To: <20171208161520.sxiz6s3qcms2jeis@xylophone.i.decadent.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: Applied "ASoC: wm_adsp: Fix validation of firmware and coeff lengths" to the asoc tree
+Date: Fri, 08 Dec 2017 17:18:11 +0000
+Message-ID: <E1eNMHr-0001gv-D8@debutante>
+References: <20171207211928.btwtwlfci6f4hku2@xylophone.i.decadent.org.uk>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20171207211928.btwtwlfci6f4hku2@xylophone.i.decadent.org.uk>
+Sender: stable-owner@vger.kernel.org
 To: Ben Hutchings <ben.hutchings@codethink.co.uk>
-Cc: patches@opensource.cirrus.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, stable@vger.kernel.org
+Cc: Charles Keepax <ckeepax@opensource.cirrus.com>Charles Keepax <ckeepax@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, patches@opensource.cirrus.com, alsa-devel@alsa-project.orgstable@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5082273056824734933==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="P+33d92oIH25kiaB"
-Content-Disposition: inline
+   ASoC: wm_adsp: Fix validation of firmware and coeff lengths
 
+has been applied to the asoc tree at
 
---P+33d92oIH25kiaB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Dec 08, 2017 at 04:15:20PM +0000, Ben Hutchings wrote:
-> The checks for whether another region/block header could be present
-> are subtracting the size from the current offset.  Obviously we should
-> instead subtract the offset from the size.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-This is described as a resend but I checked and I've not been sent this
-patch before :(
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---P+33d92oIH25kiaB
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloqyQUACgkQJNaLcl1U
-h9BT8wf9HpuPZ0Xn+QYrH114JVoY/WCBVfWeTpqPa2tSDsfZU+3bMnhSzlnPW2n8
-WrnqqjnTH3BlwHLE6rhs/m+RYqMtCOxgY5Z+PV7oPeKkv8DGsL1JEGjWJLUfisnt
-o7D8LMV/xcKNzhzl8KLuurKTKdEmj3nyw+JLzjngoWr/5j+8m0r/gZnlO9CqJCrG
-sHw9Uf1ou7NLvKI3hG/QGSyW6bSl7zi4zcAT5Bi4GdxA9KgjmhuESSRjwBy47hIR
-9aUxGWsCnQd44/6ipVeCt6XYHn/xGReF7KJItMs1zeJCMwEHdvFcjvu/jFp9D+fo
-Njpdi9lcM4zdGW9ROhsHZGLGfO8Cgg==
-=PZcu
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---P+33d92oIH25kiaB--
+>From 50dd2ea8ef67a1617e0c0658bcbec4b9fb03b936 Mon Sep 17 00:00:00 2001
+From: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Date: Fri, 8 Dec 2017 16:15:20 +0000
+Subject: [PATCH] ASoC: wm_adsp: Fix validation of firmware and coeff lengths
 
---===============5082273056824734933==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+The checks for whether another region/block header could be present
+are subtracting the size from the current offset.  Obviously we should
+instead subtract the offset from the size.
 
+The checks for whether the region/block data fit in the file are
+adding the data size to the current offset and header size, without
+checking for integer overflow.  Rearrange these so that overflow is
+impossible.
 
---===============5082273056824734933==--
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/codecs/wm_adsp.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 65c059b5ffd7..66e32f5d2917 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -1733,7 +1733,7 @@ static int wm_adsp_load(struct wm_adsp *dsp)
+ 		 le64_to_cpu(footer->timestamp));
+ 
+ 	while (pos < firmware->size &&
+-	       pos - firmware->size > sizeof(*region)) {
++	       sizeof(*region) < firmware->size - pos) {
+ 		region = (void *)&(firmware->data[pos]);
+ 		region_name = "Unknown";
+ 		reg = 0;
+@@ -1782,8 +1782,8 @@ static int wm_adsp_load(struct wm_adsp *dsp)
+ 			 regions, le32_to_cpu(region->len), offset,
+ 			 region_name);
+ 
+-		if ((pos + le32_to_cpu(region->len) + sizeof(*region)) >
+-		    firmware->size) {
++		if (le32_to_cpu(region->len) >
++		    firmware->size - pos - sizeof(*region)) {
+ 			adsp_err(dsp,
+ 				 "%s.%d: %s region len %d bytes exceeds file length %zu\n",
+ 				 file, regions, region_name,
+@@ -2253,7 +2253,7 @@ static int wm_adsp_load_coeff(struct wm_adsp *dsp)
+ 
+ 	blocks = 0;
+ 	while (pos < firmware->size &&
+-	       pos - firmware->size > sizeof(*blk)) {
++	       sizeof(*blk) < firmware->size - pos) {
+ 		blk = (void *)(&firmware->data[pos]);
+ 
+ 		type = le16_to_cpu(blk->type);
+@@ -2327,8 +2327,8 @@ static int wm_adsp_load_coeff(struct wm_adsp *dsp)
+ 		}
+ 
+ 		if (reg) {
+-			if ((pos + le32_to_cpu(blk->len) + sizeof(*blk)) >
+-			    firmware->size) {
++			if (le32_to_cpu(blk->len) >
++			    firmware->size - pos - sizeof(*blk)) {
+ 				adsp_err(dsp,
+ 					 "%s.%d: %s region len %d bytes exceeds file length %zu\n",
+ 					 file, blocks, region_name,
+-- 
+2.15.1
