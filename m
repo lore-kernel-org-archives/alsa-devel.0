@@ -1,18 +1,26 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: ssi: remove unnesessary
-	period_pos" to the asoc tree
-Date: Fri, 08 Dec 2017 18:55:01 +0000
-Message-ID: <E1eNNnZ-0004Al-0a@debutante>
-References: <1512634956-17760-3-git-send-email-jiada_wang@mentor.com>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: Re: [PATCH 2/9] ASoC: sun4i-i2s: Add compatibility
+	with A64 codec I2S
+Date: Fri, 8 Dec 2017 14:16:39 -0800
+Message-ID: <CA+E=qVdcAX=Dm0MqwooKHTcZJeB9Do+KDjz4CpZMWxgSydKaKg@mail.gmail.com>
+References: <20171203204157.20829-1-anarsoul@gmail.com>
+ <20171203204157.20829-3-anarsoul@gmail.com>
+ <CAEKpxBmHhZ+2WNXJEPbQFS6KeKsqRrZeNodRnu1M5yLc15DerA@mail.gmail.com>
+ <CA+E=qVd+uM0Aq_=sf+fomQ-m+3Oy0MdG7OPjF5tVagG1UgKYzg@mail.gmail.com>
+ <CAEKpxBnWYiSq-Xrzj9MET61kGyVSJZPNnWpDh8jwnmdtw=GKtA@mail.gmail.com>
+ <CA+E=qVdcmPpUT0ddjdwY96ORiU5rQvMsYcfsEhOUsYQyKRgbRA@mail.gmail.com>
+ <CAEKpxBnG2DXxZ=qMJBPDq5MZzo-eo7-D7n51n0rySDA-Qua9-A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B791C267255
- for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2017 19:55:39 +0100 (CET)
-In-Reply-To: <1512634956-17760-3-git-send-email-jiada_wang@mentor.com>
+Received: from mail-oi0-f66.google.com (mail-oi0-f66.google.com
+ [209.85.218.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97AA9266B0F
+ for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2017 23:17:01 +0100 (CET)
+Received: by mail-oi0-f66.google.com with SMTP id w131so8129467oiw.0
+ for <alsa-devel@alsa-project.org>; Fri, 08 Dec 2017 14:17:01 -0800 (PST)
+In-Reply-To: <CAEKpxBnG2DXxZ=qMJBPDq5MZzo-eo7-D7n51n0rySDA-Qua9-A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,92 +30,135 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jiada Wang <jiada_wang@mentor.com>
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
+To: Code Kipper <codekipper@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, =?UTF-8?Q?Myl=C3=A8ne_Josserand?= <mylene.josserand@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Thu, Dec 7, 2017 at 10:40 PM, Code Kipper <codekipper@gmail.com> wrote:
+> On 7 December 2017 at 23:48, Vasily Khoruzhick <anarsoul@gmail.com> wrote:
+>> On Thu, Dec 7, 2017 at 1:21 AM, Code Kipper <codekipper@gmail.com> wrote:
+>>> On 4 December 2017 at 08:34, Vasily Khoruzhick <anarsoul@gmail.com> wrote:
+>>>> I'd keep it sun50i_a64_acodec_i2s, since other 3 I2S modules aren't
+>>>> compatible with this one, but similar to H3.
+>>>
+>>> Well I wouldn't and the description of it is usage is clearly stated
+>>> in the devicetree
+>>> for the dai.
+>>
+>> OK, how would you name 3 other I2S modules that are present in A64?
+> https://github.com/codekipper/linux-sunxi/commit/34f37778fbc08247e3bd1556f7ed02303053f5ab
+>>
+>>>> On Sun, Dec 3, 2017 at 10:42 PM, Code Kipper <codekipper@gmail.com> wrote:
+>>>>> On 3 December 2017 at 21:41, Vasily Khoruzhick <anarsoul@gmail.com> wrote:
+>>>>>> From: Marcus Cooper <codekipper@gmail.com>
+>>>>>>
+>>>>>> The I2S block used for the audio codec in the A64 is very similar
+>>>>>> to what is used by the A10(sun4i) devices. However, its TX FIFO is
+>>>>>> located at a different address.
+>>>>>>
+>>>>>> [vasilykh: - added fixed_wss and wss_value to A64 quirks,
+>>>>>>            - changed compatible to 'allwinner,sun50i-a64-acodec-i2s,
+>>>>>>              since A64 has 3 more I2S blocks that are not compatible
+>>>>>>              with audio codec I2S]
+>>> This needs to be investigated more...I'm suspicious of the
+>>> SUN8I_I2S_FMT0_LRCK_PERIOD value which is hardcoded to 0x1f.
+>>> I've made this following change
+>>> https://github.com/codekipper/linux-sunxi/commit/4c5fe5f5576cfbb2e1e94a99cd19dfdc9403ea50
+>>> which seems to work for me but I would like to look at it with a logic
 
-   ASoC: rsnd: ssi: remove unnesessary period_pos
+I tried this change and now it works fine for me as well without
+hardcoded WSS value. So problem was in hardcoded
+LRCK period. Are you OK with me submitting this patch as a part of my
+A64 audio series?
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 2e2d53da81af6b2222c6b4e025a5d01b37b4449b Mon Sep 17 00:00:00 2001
-From: Jiada Wang <jiada_wang@mentor.com>
-Date: Thu, 7 Dec 2017 22:15:39 -0800
-Subject: [PATCH] ASoC: rsnd: ssi: remove unnesessary period_pos
-
-period_pos can always be calculated by byte_pos and
-byte_per_period, there is no reason to maintain this
-variable in rsnd_dai_stream.
-
-This patch removes period_pos from rsnd_ssi and calculates
-next_period_byte with consideration of actual byte_pos value.
-
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sh/rcar/ssi.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index cbf3bf312d23..f21202429000 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -80,7 +80,6 @@ struct rsnd_ssi {
- 	unsigned int usrcnt;
- 
- 	int byte_pos;
--	int period_pos;
- 	int byte_per_period;
- 	int next_period_byte;
- };
-@@ -421,7 +420,6 @@ static void rsnd_ssi_pointer_init(struct rsnd_mod *mod,
- 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
- 
- 	ssi->byte_pos		= 0;
--	ssi->period_pos		= 0;
- 	ssi->byte_per_period	= runtime->period_size *
- 				  runtime->channels *
- 				  samples_to_bytes(runtime, 1);
-@@ -453,13 +451,12 @@ static bool rsnd_ssi_pointer_update(struct rsnd_mod *mod,
- 
- 	if (byte_pos >= ssi->next_period_byte) {
- 		struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
-+		int period_pos = byte_pos / ssi->byte_per_period;
- 
--		ssi->period_pos++;
--		ssi->next_period_byte += ssi->byte_per_period;
-+		ssi->next_period_byte = (period_pos + 1) * ssi->byte_per_period;
- 
--		if (ssi->period_pos >= runtime->periods) {
-+		if (period_pos >= runtime->periods) {
- 			byte_pos = 0;
--			ssi->period_pos = 0;
- 			ssi->next_period_byte = ssi->byte_per_period;
- 		}
- 
--- 
-2.15.1
+>>> analyser and test other sample depths.
+>>> CK
+>>
+>> I'm afraid it's not possible to get inside of SoC, since internal I2S
+>> pins do not go out. And other 3 I2S modules are different from one for
+>> internal codec.
+> I just think this needs more of an investigation, I've git a similar patch
+> https://github.com/codekipper/linux-sunxi/commit/282d986b6f9ed441ecdc996c6dceed63cbe32652
+> which I've not delivered for that very reason.
+> CK
+>>
+>>>>>>
+>>>>>> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+>>>>>> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+>>>>>> ---
+>>>>>>  .../devicetree/bindings/sound/sun4i-i2s.txt        |  2 ++
+>>>>>>  sound/soc/sunxi/sun4i-i2s.c                        | 23 ++++++++++++++++++++++
+>>>>>>  2 files changed, 25 insertions(+)
+>>>>>>
+>>>>>> diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+>>>>>> index 05d7135a8d2f..ab86f266962a 100644
+>>>>>> --- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+>>>>>> +++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+>>>>>> @@ -9,6 +9,7 @@ Required properties:
+>>>>>>     - "allwinner,sun4i-a10-i2s"
+>>>>>>     - "allwinner,sun6i-a31-i2s"
+>>>>>>     - "allwinner,sun8i-h3-i2s"
+>>>>>> +   - "allwinner,sun50i-a64-acodec-i2s"
+>>>>>>  - reg: physical base address of the controller and length of memory mapped
+>>>>>>    region.
+>>>>>>  - interrupts: should contain the I2S interrupt.
+>>>>>> @@ -24,6 +25,7 @@ Required properties:
+>>>>>>  Required properties for the following compatibles:
+>>>>>>         - "allwinner,sun6i-a31-i2s"
+>>>>>>         - "allwinner,sun8i-h3-i2s"
+>>>>>> +       - "allwinner,sun50i-a64-acodec-i2s"
+>>>>> I would keep the compatible format the same. ie.
+>>>>> allwinner,sun50i-a64-i2s. The A33 for example uses the sun6i-a31-i2s
+>>>>> for it's dai.
+>>>>>
+>>>>>>  - resets: phandle to the reset line for this codec
+>>>>>>
+>>>>>>  Example:
+>>>>>> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+>>>>>> index 54c16eb64713..2c060e015725 100644
+>>>>>> --- a/sound/soc/sunxi/sun4i-i2s.c
+>>>>>> +++ b/sound/soc/sunxi/sun4i-i2s.c
+>>>>>> @@ -942,6 +942,25 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
+>>>>>>         .field_rxchansel        = REG_FIELD(SUN8I_I2S_RX_CHAN_SEL_REG, 0, 2),
+>>>>>>  };
+>>>>>>
+>>>>>> +static const struct sun4i_i2s_quirks sun50i_a64_acodec_i2s_quirks = {
+>>>>> ditto
+>>>>>> +       .has_reset              = true,
+>>>>>> +       .reg_offset_txdata      = SUN8I_I2S_FIFO_TX_REG,
+>>>>>> +       .sun4i_i2s_regmap       = &sun4i_i2s_regmap_config,
+>>>>>> +       .has_slave_select_bit   = true,
+>>>>>> +       .fixed_wss              = true,
+>>>>>> +       .wss_value              = 3,
+>>>>>> +       .field_clkdiv_mclk_en   = REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 7, 7),
+>>>>>> +       .field_fmt_wss          = REG_FIELD(SUN4I_I2S_FMT0_REG, 2, 3),
+>>>>>> +       .field_fmt_sr           = REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
+>>>>>> +       .field_fmt_bclk         = REG_FIELD(SUN4I_I2S_FMT0_REG, 6, 6),
+>>>>>> +       .field_fmt_lrclk        = REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
+>>>>>> +       .field_fmt_mode         = REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
+>>>>>> +       .field_txchanmap        = REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
+>>>>>> +       .field_rxchanmap        = REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
+>>>>>> +       .field_txchansel        = REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
+>>>>>> +       .field_rxchansel        = REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
+>>>>>> +};
+>>>>>> +
+>>>>>>  static int sun4i_i2s_init_regmap_fields(struct device *dev,
+>>>>>>                                         struct sun4i_i2s *i2s)
+>>>>>>  {
+>>>>>> @@ -1146,6 +1165,10 @@ static const struct of_device_id sun4i_i2s_match[] = {
+>>>>>>                 .compatible = "allwinner,sun8i-h3-i2s",
+>>>>>>                 .data = &sun8i_h3_i2s_quirks,
+>>>>>>         },
+>>>>>> +       {
+>>>>>> +               .compatible = "allwinner,sun50i-a64-acodec-i2s",
+>>>>>> +               .data = &sun50i_a64_acodec_i2s_quirks,
+>>>>> ditto
+>>>>> BR,
+>>>>> CK
+>>>>>> +       },
+>>>>>>         {}
+>>>>>>  };
+>>>>>>  MODULE_DEVICE_TABLE(of, sun4i_i2s_match);
+>>>>>> --
+>>>>>> 2.15.0
+>>>>>>
