@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: ssi: fix race condition in
-	rsnd_ssi_pointer_update" to the asoc tree
-Date: Fri, 08 Dec 2017 18:52:25 +0000
-Message-ID: <E1eNNl3-0003pn-VV@debutante>
-References: <1512634956-17760-2-git-send-email-jiada_wang@mentor.com>
+Subject: Applied "ASoC: rsnd: more clear rsnd_get_dalign() for
+	DALIGN" to the asoc tree
+Date: Fri, 08 Dec 2017 18:54:49 +0000
+Message-ID: <E1eNNnN-00049U-Uh@debutante>
+References: <87k1xxiw68.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 76D91267255
- for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2017 19:52:38 +0100 (CET)
-In-Reply-To: <1512634956-17760-2-git-send-email-jiada_wang@mentor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 25754267255
+ for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2017 19:54:55 +0100 (CET)
+In-Reply-To: <87k1xxiw68.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jiada Wang <jiada_wang@mentor.com>
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: ssi: fix race condition in rsnd_ssi_pointer_update
+   ASoC: rsnd: more clear rsnd_get_dalign() for DALIGN
 
 has been applied to the asoc tree at
 
@@ -53,74 +53,77 @@ to this mail.
 Thanks,
 Mark
 
->From 33f801366bdf3f8b67dfe325b84f4051a090d01e Mon Sep 17 00:00:00 2001
-From: Jiada Wang <jiada_wang@mentor.com>
-Date: Thu, 7 Dec 2017 22:15:38 -0800
-Subject: [PATCH] ASoC: rsnd: ssi: fix race condition in
- rsnd_ssi_pointer_update
+>From a914e44693d41ba43604afa8c435c98a6d2c7cb1 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 8 Dec 2017 06:23:11 +0000
+Subject: [PATCH] ASoC: rsnd: more clear rsnd_get_dalign() for DALIGN
 
-Currently there is race condition between set of byte_pos and wrap
-it around when new buffer starts. If .pointer is called in-between
-it will result in inconsistent pointer position be returned
-from .pointer callback.
+On Renesas sound device, DALIGN which exchanges channel position
+is needed because SW and HW are using defferent data order if
+16bit data. It is not needed when 24bit data.
+rsnd_get_dalign() returns necessary value, but it was confusable
+code. This patch makes it more simple.
 
-This patch increments buffer pointer atomically to avoid this issue.
-
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-Reviewed-by: Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ sound/soc/sh/rcar/core.c | 33 ++++++++++-----------------------
+ 1 file changed, 10 insertions(+), 23 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index fece1e5f582f..cbf3bf312d23 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -446,25 +446,29 @@ static bool rsnd_ssi_pointer_update(struct rsnd_mod *mod,
- 				    int byte)
- {
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
-+	bool ret = false;
-+	int byte_pos;
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index d76ad46a6fd9..8e50b284230d 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -294,11 +294,12 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
+ 	struct rsnd_mod *ssiu = rsnd_io_to_mod_ssiu(io);
+ 	struct rsnd_mod *target;
+ 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+-	u32 val = 0x76543210;
+-	u32 mask = ~0;
  
--	ssi->byte_pos += byte;
-+	byte_pos = ssi->byte_pos + byte;
- 
--	if (ssi->byte_pos >= ssi->next_period_byte) {
-+	if (byte_pos >= ssi->next_period_byte) {
- 		struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
- 
- 		ssi->period_pos++;
- 		ssi->next_period_byte += ssi->byte_per_period;
- 
- 		if (ssi->period_pos >= runtime->periods) {
--			ssi->byte_pos = 0;
-+			byte_pos = 0;
- 			ssi->period_pos = 0;
- 			ssi->next_period_byte = ssi->byte_per_period;
- 		}
- 
--		return true;
-+		ret = true;
+ 	/*
+-	 * *Hardware* L/R and *Software* L/R are inverted.
++	 * *Hardware* L/R and *Software* L/R are inverted for 16bit data.
++	 *	    31..16 15...0
++	 *	HW: [L ch] [R ch]
++	 *	SW: [R ch] [L ch]
+ 	 * We need to care about inversion timing to control
+ 	 * Playback/Capture correctly.
+ 	 * The point is [DVC] needs *Hardware* L/R, [MEM] needs *Software* L/R
+@@ -325,27 +326,13 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
+ 		target = cmd ? cmd : ssiu;
  	}
  
--	return false;
-+	WRITE_ONCE(ssi->byte_pos, byte_pos);
-+
-+	return ret;
+-	mask <<= runtime->channels * 4;
+-	val = val & mask;
+-
+-	switch (runtime->sample_bits) {
+-	case 16:
+-		val |= 0x67452301 & ~mask;
+-		break;
+-	case 32:
+-		val |= 0x76543210 & ~mask;
+-		break;
+-	}
+-
+-	/*
+-	 * exchange channeles on SRC if possible,
+-	 * otherwise, R/L volume settings on DVC
+-	 * changes inverted channels
+-	 */
+-	if (mod == target)
+-		return val;
+-	else
++	/* Non target mod or 24bit data needs normal DALIGN */
++	if ((runtime->sample_bits != 16) ||
++	    (mod != target))
+ 		return 0x76543210;
++	/* Target mod needs inverted DALIGN when 16bit */
++	else
++		return 0x67452301;
  }
  
- /*
-@@ -838,7 +842,7 @@ static int rsnd_ssi_pointer(struct rsnd_mod *mod,
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
- 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
- 
--	*pointer = bytes_to_frames(runtime, ssi->byte_pos);
-+	*pointer = bytes_to_frames(runtime, READ_ONCE(ssi->byte_pos));
- 
- 	return 0;
- }
+ u32 rsnd_get_busif_shift(struct rsnd_dai_stream *io, struct rsnd_mod *mod)
 -- 
 2.15.1
