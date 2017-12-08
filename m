@@ -1,40 +1,46 @@
-From: "Singh, Guneshwor" <guneshwor.o.singh@intel.com>
-Subject: Re: [PATCH] ALSA: hda - Add vendor id for Cannonlake
-	HDMI codec
-Date: Fri, 8 Dec 2017 09:31:35 +0530
-Message-ID: <20171208040134.GA29106@g2>
-References: <20171207123620.25640-1-guneshwor.o.singh@intel.com>
- <20171208033629.GA31207@subhransu-desktop>
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: Re: [PATCH v1 1/2] ASoC: rsnd: ssi: fix race condition in rsnd_ssi_pointer_update
+Date: Thu, 7 Dec 2017 21:35:16 -0800
+Message-ID: <5A2A2494.2080202@mentor.com>
+References: <1512634956-17760-1-git-send-email-jiada_wang@mentor.com> <1512634956-17760-2-git-send-email-jiada_wang@mentor.com> <87y3me7uce.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 73B92266D7D
- for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2017 05:01:30 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20171208033629.GA31207@subhransu-desktop>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, ALSA <alsa-devel@alsa-project.org>, Patches Audio <patches.audio@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <87y3me7uce.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 08, 2017 at 09:06:34AM +0530, Subhransu S. Prusty wrote:
-> On Thu, Dec 07, 2017 at 06:06:20PM +0530, Guneshwor Singh wrote:
-> > Cannonlake HDMI codec has the same nid as Geminilake. This adds the
-> > codec entry for it.
-> 
-> CNL and GLK share the same vendor nid not the vendor id. 
-> You may update the subject and commit message.
-> 
+Hello Morimoto-san
 
-It's adding new vendor id and uses vendor nid from GLK's. So commit msg
-seems fine.
+On 12/07/2017 01:45 AM, Kuninori Morimoto wrote:
+> Hi Jiada
+>
+> Thank you for your patch
+>
+>> Currently there is race condition between set of byte_pos and wrap
+>> it around when new buffer starts. If .pointer is called in-between
+>> it will result in inconsistent pointer position be returned
+>> from .pointer callback.
+>>
+>> This patch increments buffer pointer atomically to avoid this issue.
+>>
+>> Signed-off-by: Jiada Wang<jiada_wang@mentor.com>
+>> Reviewed-by: Takashi Sakamoto<takashi.sakamoto@miraclelinux.com>
+>> ---
+> You using playback with PIO mode ?
+> Because this function is no longer used on DMA mode
+No, we are using rcar sound in DMA mode,
+our original patch resolves the issue in core.c for both PIO & DMA mode.
+
+but with your commit a97a06c ("ASoC: rsnd: cleanup pointer related code"),
+DMA mode no longer has the race condition issue,
+so I ported our fix patch to only address the issue in PIO mode
+
+Thanks,
+Jiada
+> Best regards
+> ---
+> Kuninori Morimoto
