@@ -1,12 +1,15 @@
-From: "Augustine.Chen" <augustine.chen@intel.com>
-Subject: [PATCH] drm/i915: Remove unused IRQ chip data of HDMI
-	LPE audio
-Date: Fri,  8 Dec 2017 17:33:23 +0800
-Message-ID: <20171208093323.2212-1-augustine.chen@intel.com>
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Subject: Re: [PATCH] drm/i915: Remove unused IRQ chip data of
+ HDMI LPE audio
+Date: Fri, 8 Dec 2017 13:18:36 +0200
+Message-ID: <20171208111836.GM10981@intel.com>
+References: <9A1A7991592FAD49BCF9F28D9CF9FE3121AB6F61@PGSMSX105.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <9A1A7991592FAD49BCF9F28D9CF9FE3121AB6F61@PGSMSX105.gar.corp.intel.com>
 List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
  <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
@@ -16,34 +19,16 @@ List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
  <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
 Errors-To: intel-gfx-bounces@lists.freedesktop.org
 Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, jerome.anand@intel.com, pierre-louis.bossart@intel.com, tiwai@suse.de
-Cc: "Augustine.Chen" <augustine.chen@intel.com>
+To: "Chen, Augustine" <augustine.chen@intel.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIGNoaXAgZGF0YSBvZiBIRE1JIExQRSBhdWRpbyBpcyBzZXQgdG8gZHJtX2k5MTVfcHJpdmF0
-ZSB3aGljaCBpcyBub3QKY29uc2lzdGVudCB3aXRoIHRoZSBleHBlY3RhdGlvbiBieSB4ODYgQVBJ
-QyBkcml2ZXIuIEluIHRoZSBjYXNlIG9mIG5vdAplbmFibGluZyBDT05GSUdfQ1BVTUFTS19PRkZT
-VEFDSywgdGhpcyB3b3VsZCBjYXVzZSBrZXJuZWwgcGFuaWMgd2hpbGUgZG9pbmcKQ1BVIGhvdHBs
-dWcuIFNpbmNlIHRoZSBkZXBlbmRlbmN5IG9mIElSUSBjaGlwIGRhdGEgd2FzIHJlbW92ZWQgZnJv
-bSBIRE1JCkxQRSBhdWRpbyBieSBDb21taXQgOWJkOTU5MDk5N2I5MmZiZDc5ZmQwMjhmNzA0ZjZj
-NTg0YjQ0MzlkNyAoImRybS9pOTE1OgpTdG9wIHByZXRlbmRpbmcgdG8gbWFzay91bm1hc2sgTFBF
-IGF1ZGlvIGludGVycnVwdHMiKSwgcmVtb3ZlIHRoZQpjb2RlIG9mIHNldHRpbmcgSVJRIGNoaXAg
-ZGF0YSB0byByZXNvbHZlIHRoaXMgaXNzdWUuCgpCdWd6aWxsYTogaHR0cHM6Ly9idWdzLmZyZWVk
-ZXNrdG9wLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9MTAzNzMxCkNjOiBQaWVycmUtTG91aXMgQm9zc2Fy
-dCA8cGllcnJlLWxvdWlzLmJvc3NhcnRAaW50ZWwuY29tPgpDYzogSmVyb21lIEFuYW5kIDxqZXJv
-bWUuYW5hbmRAaW50ZWwuY29tPgpDYzogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgpTaWdu
-ZWQtb2ZmLWJ5OiBBdWd1c3RpbmUuQ2hlbiA8YXVndXN0aW5lLmNoZW5AaW50ZWwuY29tPgotLS0K
-IGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2xwZV9hdWRpby5jIHwgMiArLQogMSBmaWxlIGNo
-YW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVy
-cy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9p
-bnRlbF9scGVfYXVkaW8uYwppbmRleCAzYmY2NTI4Li41NjE3NmY5IDEwMDY0NAotLS0gYS9kcml2
-ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9scGVfYXVkaW8uYworKysgYi9kcml2ZXJzL2dwdS9kcm0v
-aTkxNS9pbnRlbF9scGVfYXVkaW8uYwpAQCAtMTc2LDcgKzE3Niw3IEBAIHN0YXRpYyBpbnQgbHBl
-X2F1ZGlvX2lycV9pbml0KHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdikKIAkJCQlo
-YW5kbGVfc2ltcGxlX2lycSwKIAkJCQkiaGRtaV9scGVfYXVkaW9faXJxX2hhbmRsZXIiKTsKIAot
-CXJldHVybiBpcnFfc2V0X2NoaXBfZGF0YShpcnEsIGRldl9wcml2KTsKKwlyZXR1cm4gMDsKIH0K
-IAogc3RhdGljIGJvb2wgbHBlX2F1ZGlvX2RldGVjdChzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAq
-ZGV2X3ByaXYpCi0tIAoxLjkuMQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRl
-c2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8v
-aW50ZWwtZ2Z4Cg==
+T24gRnJpLCBEZWMgMDgsIDIwMTcgYXQgMDg6MzQ6MTZBTSArMDAwMCwgQ2hlbiwgQXVndXN0aW5l
+IHdyb3RlOgo+IERlYXIgU2lycywKPiBQbGVhc2Uga2luZGx5IGhlbHAgcmV2aWV3aW5nIHRoaXMg
+cGF0Y2ggZm9yIHRoZSBCdWd6aWxsYSBiZWxvdy4KPiBodHRwczovL2J1Z3MuZnJlZWRlc2t0b3Au
+b3JnL3Nob3dfYnVnLmNnaT9pZD0xMDM3MzEKClJlc2VuZCB0aGUgcGF0Y2ggdXNpbmcgZ2l0IHNl
+bmQtZW1haWwgcGxlYXNlLgoKLS0gClZpbGxlIFN5cmrDpGzDpApJbnRlbCBPVEMKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcg
+bGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRl
+c2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
