@@ -1,63 +1,52 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Subject: Re: [PATCH] drm/i915: Remove unused IRQ chip data of
- HDMI LPE audio
-Date: Fri, 8 Dec 2017 13:44:04 +0200
-Message-ID: <20171208114404.GN10981@intel.com>
-References: <20171208093323.2212-1-augustine.chen@intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] ASoC: Intel: Skylake: Re-order some code to
+	silence a warning
+Date: Fri, 8 Dec 2017 14:54:25 +0300
+Message-ID: <20171208115425.rqclgmhcph5gn47j@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from aserp2130.oracle.com (aserp2130.oracle.com [141.146.126.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1983726698E
+ for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2017 12:54:49 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20171208093323.2212-1-augustine.chen@intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: "Augustine.Chen" <augustine.chen@intel.com>
-Cc: Juergen Gross <jgross@suse.com>, Dou Liyang <douly.fnst@cn.fujitsu.com>, alsa-devel@alsa-project.org, tiwai@suse.de, intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Thomas Gleixner <tglx@linutronix.de>, Jiang Liu <jiang.liu@linux.intel.com>, pierre-louis.bossart@intel.com
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Cc: alsa-devel@alsa-project.org, Jani Nikula <jani.nikula@intel.com>, Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, kernel-janitors@vger.kernel.org, Mark Brown <broonie@kernel.org>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBEZWMgMDgsIDIwMTcgYXQgMDU6MzM6MjNQTSArMDgwMCwgQXVndXN0aW5lLkNoZW4g
-d3JvdGU6Cj4gVGhlIGNoaXAgZGF0YSBvZiBIRE1JIExQRSBhdWRpbyBpcyBzZXQgdG8gZHJtX2k5
-MTVfcHJpdmF0ZSB3aGljaCBpcyBub3QKPiBjb25zaXN0ZW50IHdpdGggdGhlIGV4cGVjdGF0aW9u
-IGJ5IHg4NiBBUElDIGRyaXZlci4KCkhtbS4gV2h5IGlzIHRoZSBhcGljIGNvZGUgbG9va2luZyBh
-dCBkYXRhIGZvciBhbiBpcnEgY2hpcCBpdApoYXNuJ3QgY3JlYXRlZD8KCkRvIHdlIG5lZWQgc29t
-ZXRoaW5nIGxpa2UKLSBkZXZfcHJpdi0+bHBlX2F1ZGlvLmlycSA9IGlycV9hbGxvY19kZXNjKDAp
-OworIGRldl9wcml2LT5scGVfYXVkaW8uaXJxID0gaXJxX2FsbG9jX2Rlc2MoLTEpOwo/CgpUaGF0
-ICpsb29rcyogbW9yZSBjb3JyZWN0IHRvIG1lIGJhc2VkIG9uIGEgY3Vyc29yeSBnbGFuY2UgYXQg
-dGhlIHg4Ngpjb2RlLCBidXQgSSBkaWRuJ3QgdHJhd2wgdmVyeSBkZWVwbHkuCgo+IEluIHRoZSBj
-YXNlIG9mIG5vdAo+IGVuYWJsaW5nIENPTkZJR19DUFVNQVNLX09GRlNUQUNLLCB0aGlzIHdvdWxk
-IGNhdXNlIGtlcm5lbCBwYW5pYyB3aGlsZSBkb2luZwo+IENQVSBob3RwbHVnLiBTaW5jZSB0aGUg
-ZGVwZW5kZW5jeSBvZiBJUlEgY2hpcCBkYXRhIHdhcyByZW1vdmVkIGZyb20gSERNSQo+IExQRSBh
-dWRpbyBieSBDb21taXQgOWJkOTU5MDk5N2I5MmZiZDc5ZmQwMjhmNzA0ZjZjNTg0YjQ0MzlkNyAo
-ImRybS9pOTE1Ogo+IFN0b3AgcHJldGVuZGluZyB0byBtYXNrL3VubWFzayBMUEUgYXVkaW8gaW50
-ZXJydXB0cyIpLCByZW1vdmUgdGhlCj4gY29kZSBvZiBzZXR0aW5nIElSUSBjaGlwIGRhdGEgdG8g
-cmVzb2x2ZSB0aGlzIGlzc3VlLgo+IAo+IEJ1Z3ppbGxhOiBodHRwczovL2J1Z3MuZnJlZWRlc2t0
-b3Aub3JnL3Nob3dfYnVnLmNnaT9pZD0xMDM3MzEKPiBDYzogUGllcnJlLUxvdWlzIEJvc3NhcnQg
-PHBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGludGVsLmNvbT4KPiBDYzogSmVyb21lIEFuYW5kIDxqZXJv
-bWUuYW5hbmRAaW50ZWwuY29tPgo+IENjOiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Cj4g
-U2lnbmVkLW9mZi1ieTogQXVndXN0aW5lLkNoZW4gPGF1Z3VzdGluZS5jaGVuQGludGVsLmNvbT4K
-PiAtLS0KPiAgZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMgfCAyICstCj4g
-IDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQo+IAo+IGRpZmYg
-LS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9scGVfYXVkaW8uYyBiL2RyaXZlcnMv
-Z3B1L2RybS9pOTE1L2ludGVsX2xwZV9hdWRpby5jCj4gaW5kZXggM2JmNjUyOC4uNTYxNzZmOSAx
-MDA2NDQKPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9scGVfYXVkaW8uYwo+ICsr
-KyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2xwZV9hdWRpby5jCj4gQEAgLTE3Niw3ICsx
-NzYsNyBAQCBzdGF0aWMgaW50IGxwZV9hdWRpb19pcnFfaW5pdChzdHJ1Y3QgZHJtX2k5MTVfcHJp
-dmF0ZSAqZGV2X3ByaXYpCj4gIAkJCQloYW5kbGVfc2ltcGxlX2lycSwKPiAgCQkJCSJoZG1pX2xw
-ZV9hdWRpb19pcnFfaGFuZGxlciIpOwo+ICAKPiAtCXJldHVybiBpcnFfc2V0X2NoaXBfZGF0YShp
-cnEsIGRldl9wcml2KTsKPiArCXJldHVybiAwOwo+ICB9Cj4gIAo+ICBzdGF0aWMgYm9vbCBscGVf
-YXVkaW9fZGV0ZWN0KHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdikKPiAtLSAKPiAx
-LjkuMQo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Cj4gSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdAo+IEludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5v
-cmcKPiBodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVs
-LWdmeAoKLS0gClZpbGxlIFN5cmrDpGzDpApJbnRlbCBPVEMKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1n
-ZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21h
-aWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+I get a Smatch warning here:
+
+    sound/soc/intel/skylake/skl-nhlt.c:335 skl_get_ssp_clks()
+    error: testing array offset 'j' after use.
+
+The code is harmless, but the checker is right that we should swap these
+two conditions so we verify that the offset is within bounds before we
+use it.
+
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
+index afa557a1c031..54f9bd630f4f 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.c
++++ b/sound/soc/intel/skylake/skl-nhlt.c
+@@ -331,8 +331,8 @@ static void skl_get_ssp_clks(struct skl *skl, struct skl_ssp_clk *ssp_clks,
+ 		rate = channels * bps * fs;
+ 
+ 		/* check if the rate is added already to the given SSP's sclk */
+-		for (j = 0; (sclk[id].rate_cfg[j].rate != 0) &&
+-				(j < SKL_MAX_CLK_RATES); j++) {
++		for (j = 0; (j < SKL_MAX_CLK_RATES) &&
++			    (sclk[id].rate_cfg[j].rate != 0); j++) {
+ 			if (sclk[id].rate_cfg[j].rate == rate) {
+ 				present = true;
+ 				break;
