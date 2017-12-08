@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: more clear rsnd_get_dalign() for
-	DALIGN" to the asoc tree
-Date: Fri, 08 Dec 2017 18:54:49 +0000
-Message-ID: <E1eNNnN-00049U-Uh@debutante>
-References: <87k1xxiw68.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: ssi: remove unnesessary
+	period_pos" to the asoc tree
+Date: Fri, 08 Dec 2017 18:55:01 +0000
+Message-ID: <E1eNNnZ-0004Al-0a@debutante>
+References: <1512634956-17760-3-git-send-email-jiada_wang@mentor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 25754267255
- for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2017 19:54:55 +0100 (CET)
-In-Reply-To: <87k1xxiw68.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B791C267255
+ for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2017 19:55:39 +0100 (CET)
+In-Reply-To: <1512634956-17760-3-git-send-email-jiada_wang@mentor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Simon <horms@verge.net.au>
+To: Jiada Wang <jiada_wang@mentor.com>
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: more clear rsnd_get_dalign() for DALIGN
+   ASoC: rsnd: ssi: remove unnesessary period_pos
 
 has been applied to the asoc tree at
 
@@ -53,77 +53,61 @@ to this mail.
 Thanks,
 Mark
 
->From a914e44693d41ba43604afa8c435c98a6d2c7cb1 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 8 Dec 2017 06:23:11 +0000
-Subject: [PATCH] ASoC: rsnd: more clear rsnd_get_dalign() for DALIGN
+>From 2e2d53da81af6b2222c6b4e025a5d01b37b4449b Mon Sep 17 00:00:00 2001
+From: Jiada Wang <jiada_wang@mentor.com>
+Date: Thu, 7 Dec 2017 22:15:39 -0800
+Subject: [PATCH] ASoC: rsnd: ssi: remove unnesessary period_pos
 
-On Renesas sound device, DALIGN which exchanges channel position
-is needed because SW and HW are using defferent data order if
-16bit data. It is not needed when 24bit data.
-rsnd_get_dalign() returns necessary value, but it was confusable
-code. This patch makes it more simple.
+period_pos can always be calculated by byte_pos and
+byte_per_period, there is no reason to maintain this
+variable in rsnd_dai_stream.
 
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+This patch removes period_pos from rsnd_ssi and calculates
+next_period_byte with consideration of actual byte_pos value.
+
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 33 ++++++++++-----------------------
- 1 file changed, 10 insertions(+), 23 deletions(-)
+ sound/soc/sh/rcar/ssi.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index d76ad46a6fd9..8e50b284230d 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -294,11 +294,12 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
- 	struct rsnd_mod *ssiu = rsnd_io_to_mod_ssiu(io);
- 	struct rsnd_mod *target;
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index cbf3bf312d23..f21202429000 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -80,7 +80,6 @@ struct rsnd_ssi {
+ 	unsigned int usrcnt;
+ 
+ 	int byte_pos;
+-	int period_pos;
+ 	int byte_per_period;
+ 	int next_period_byte;
+ };
+@@ -421,7 +420,6 @@ static void rsnd_ssi_pointer_init(struct rsnd_mod *mod,
  	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
--	u32 val = 0x76543210;
--	u32 mask = ~0;
  
- 	/*
--	 * *Hardware* L/R and *Software* L/R are inverted.
-+	 * *Hardware* L/R and *Software* L/R are inverted for 16bit data.
-+	 *	    31..16 15...0
-+	 *	HW: [L ch] [R ch]
-+	 *	SW: [R ch] [L ch]
- 	 * We need to care about inversion timing to control
- 	 * Playback/Capture correctly.
- 	 * The point is [DVC] needs *Hardware* L/R, [MEM] needs *Software* L/R
-@@ -325,27 +326,13 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
- 		target = cmd ? cmd : ssiu;
- 	}
+ 	ssi->byte_pos		= 0;
+-	ssi->period_pos		= 0;
+ 	ssi->byte_per_period	= runtime->period_size *
+ 				  runtime->channels *
+ 				  samples_to_bytes(runtime, 1);
+@@ -453,13 +451,12 @@ static bool rsnd_ssi_pointer_update(struct rsnd_mod *mod,
  
--	mask <<= runtime->channels * 4;
--	val = val & mask;
--
--	switch (runtime->sample_bits) {
--	case 16:
--		val |= 0x67452301 & ~mask;
--		break;
--	case 32:
--		val |= 0x76543210 & ~mask;
--		break;
--	}
--
--	/*
--	 * exchange channeles on SRC if possible,
--	 * otherwise, R/L volume settings on DVC
--	 * changes inverted channels
--	 */
--	if (mod == target)
--		return val;
--	else
-+	/* Non target mod or 24bit data needs normal DALIGN */
-+	if ((runtime->sample_bits != 16) ||
-+	    (mod != target))
- 		return 0x76543210;
-+	/* Target mod needs inverted DALIGN when 16bit */
-+	else
-+		return 0x67452301;
- }
+ 	if (byte_pos >= ssi->next_period_byte) {
+ 		struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
++		int period_pos = byte_pos / ssi->byte_per_period;
  
- u32 rsnd_get_busif_shift(struct rsnd_dai_stream *io, struct rsnd_mod *mod)
+-		ssi->period_pos++;
+-		ssi->next_period_byte += ssi->byte_per_period;
++		ssi->next_period_byte = (period_pos + 1) * ssi->byte_per_period;
+ 
+-		if (ssi->period_pos >= runtime->periods) {
++		if (period_pos >= runtime->periods) {
+ 			byte_pos = 0;
+-			ssi->period_pos = 0;
+ 			ssi->next_period_byte = ssi->byte_per_period;
+ 		}
+ 
 -- 
 2.15.1
