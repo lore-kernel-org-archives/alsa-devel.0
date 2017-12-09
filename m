@@ -1,17 +1,16 @@
-From: Stefan Wahren <stefan.wahren@i2se.com>
-Subject: [PATCH V3 2/2] ARM: dts: bcm283x: Fix probing of
-	bcm2835-i2s
-Date: Sat,  9 Dec 2017 12:26:35 +0100
-Message-ID: <1512818795-1441-3-git-send-email-stefan.wahren@i2se.com>
-References: <1512818795-1441-1-git-send-email-stefan.wahren@i2se.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH 1/2] ASoC: nuc900: Fix platform_get_irq() error
+ checking some more
+Date: Sat, 9 Dec 2017 14:52:03 +0300
+Message-ID: <20171209115203.pdtdfnmzwz6zpjqs@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B41426707F
- for <alsa-devel@alsa-project.org>; Sat,  9 Dec 2017 12:27:46 +0100 (CET)
-In-Reply-To: <1512818795-1441-1-git-send-email-stefan.wahren@i2se.com>
+Received: from userp2130.oracle.com (userp2130.oracle.com [156.151.31.86])
+ by alsa0.perex.cz (Postfix) with ESMTP id D0A38266C72
+ for <alsa-devel@alsa-project.org>; Sat,  9 Dec 2017 12:57:15 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,37 +20,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Eric Anholt <eric@anholt.net>, Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, kernel@martin.sperl.org, Matthias Reichl <hias@horus.com>, phil@raspberrypi.org
-Cc: Stefan Wahren <stefan.wahren@i2se.com>, alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Arvind Yadav <arvind.yadav.cs@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Since 517e7a1537a ("ASoC: bcm2835: move to use the clock framework")
-the bcm2835-i2s requires a clock as DT property. Unfortunately
-the necessary DT change has never been applied. While we are at it
-also fix the first PCM register range to cover the PCM_GRAY register.
+The error handling doesn't work here because "nuc900_audio->irq_num" is
+unsigned.  Also we should be checking for < 0 and not <= 0 but I believe
+that's harmless.  The platform_get_irq() comments don't talk about the
+return values...
 
-Fixes: 517e7a1537a ("ASoC: bcm2835: move to use the clock framework")
-Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
-Reviewed-by: Eric Anholt <eric@anholt.net>
-Tested-by: Matthias Reichl <hias@horus.com>
----
- arch/arm/boot/dts/bcm283x.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Fixes: fa8cc38165c2 ("ASoC: nuc900: Fix platform_get_irq's error checking")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-diff --git a/arch/arm/boot/dts/bcm283x.dtsi b/arch/arm/boot/dts/bcm283x.dtsi
-index 013431e..e08203c 100644
---- a/arch/arm/boot/dts/bcm283x.dtsi
-+++ b/arch/arm/boot/dts/bcm283x.dtsi
-@@ -396,8 +396,8 @@
+diff --git a/sound/soc/nuc900/nuc900-ac97.c b/sound/soc/nuc900/nuc900-ac97.c
+index 5e4fbd2d3479..71fce7c85c93 100644
+--- a/sound/soc/nuc900/nuc900-ac97.c
++++ b/sound/soc/nuc900/nuc900-ac97.c
+@@ -345,11 +345,10 @@ static int nuc900_ac97_drvprobe(struct platform_device *pdev)
+ 		goto out;
+ 	}
  
- 		i2s: i2s@7e203000 {
- 			compatible = "brcm,bcm2835-i2s";
--			reg = <0x7e203000 0x20>,
--			      <0x7e101098 0x02>;
-+			reg = <0x7e203000 0x24>;
-+			clocks = <&clocks BCM2835_CLOCK_PCM>;
+-	nuc900_audio->irq_num = platform_get_irq(pdev, 0);
+-	if (nuc900_audio->irq_num <= 0) {
+-		ret = nuc900_audio->irq_num < 0 ? nuc900_audio->irq_num : -EBUSY;
++	ret = platform_get_irq(pdev, 0);
++	if (ret < 0)
+ 		goto out;
+-	}
++	nuc900_audio->irq_num = ret;
  
- 			dmas = <&dma 2>,
- 			       <&dma 3>;
--- 
-2.7.4
+ 	nuc900_ac97_data = nuc900_audio;
+ 
