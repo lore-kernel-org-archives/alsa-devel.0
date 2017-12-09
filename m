@@ -1,63 +1,62 @@
-From: "Chris Caudle" <chris@chriscaudle.org>
-Subject: Getting started with new driver
-Date: Sat, 9 Dec 2017 12:04:43 -0600
-Message-ID: <d6783a01b45a018f65d1404ce812f1d6.squirrel@email.powweb.com>
-Reply-To: chris@chriscaudle.org
+From: arvindY <arvind.yadav.cs@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: nuc900: Fix platform_get_irq()
+ error checking some more
+Date: Sun, 10 Dec 2017 00:07:17 +0530
+Message-ID: <5A2C2D5D.2060708@gmail.com>
+References: <20171209115203.pdtdfnmzwz6zpjqs@mwanda>
+ <5A2BE644.3070009@gmail.com> <20171209172732.GF15660@piout.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from walmailout09.yourhostingaccount.com
- (walmailout09.yourhostingaccount.com [65.254.253.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C4B4266E4B
- for <alsa-devel@alsa-project.org>; Sat,  9 Dec 2017 19:04:49 +0100 (CET)
-Received: from walmailscan15.yourhostingaccount.com ([10.1.15.15]
- helo=walmailscan15.yourhostingaccount.com)
- by walmailout09.yourhostingaccount.com with esmtp (Exim)
- id 1eNjUV-0004K8-Td
- for alsa-devel@alsa-project.org; Sat, 09 Dec 2017 13:04:47 -0500
-Received: from [10.114.3.33] (helo=walimpout13)
- by walmailscan15.yourhostingaccount.com with esmtp (Exim)
- id 1eNjUV-0004W7-9i
- for alsa-devel@alsa-project.org; Sat, 09 Dec 2017 13:04:47 -0500
-Received: from [127.0.0.1] (helo=email.powweb.com)
- by walwebmail04.yourhostingaccount.com with esmtp (Exim)
- id 1eNjUR-0006Ke-Jr
- for alsa-devel@alsa-project.org; Sat, 09 Dec 2017 13:04:43 -0500
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <20171209172732.GF15660@piout.net>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-I am helping review a new network audio driver that is being developed as
-an ALSA virtual sound card.
-The developer is experienced in programming, but not much in interacting
-with open source development.
-I am out of practice in programming, but would like to help with community
-interaction, so need some advice on getting started submitting a new
-driver for review.
+Hi,
 
-My first assumption is that since ALSA has been part of the kernel tree
-for quite a while all the code should match the kernel style guide
-(basically K&R style).  Is that correct?
+On Saturday 09 December 2017 10:57 PM, Alexandre Belloni wrote:
+> Arvind,
+>
+> This was v5 and it contains an error that was corrected between v1 and
+> v2. For whatever reason, you reintroduced it between v4 and v5.
+>
+> This is wasting a lot of time.
+Yes, You are right. That is my mistake.  Next time I will try to avoid
+These kind of error.
 
-There is some cleanup to do there, as well as some cleanup to match some
-recent kernel API changes (e.g. is currently using tasklet timers, but I
-think those are pulled out now so will need to switch to softirq timers).
-
-Once I can help get the style and API usage cleaned up, how should a new
-driver be submitted for review?  It is currently in a semi-private tree on
-bitbucket.org. A series of patches as email?  One big email that contains
-all of the driver source?  Some other way?  The alsa-project.org page
-doesn't really have a "getting started on a new driver for newbies" page
-that I could find.
-
-thanks,
-Chris Caudle
+>
+> On 09/12/2017 at 19:03:56 +0530, arvindY wrote:
+>> Hi Dan,
+>>
+>> On Saturday 09 December 2017 05:22 PM, Dan Carpenter wrote:
+>>> The error handling doesn't work here because "nuc900_audio->irq_num" is
+>>> unsigned.  Also we should be checking for < 0 and not <= 0 but I believe
+>>> that's harmless.  The platform_get_irq() comments don't talk about the
+>>> return values...
+>> Sorry for this  patch. I will fix it and send you updated patch.
+>> Thanks for point it.
+Thanks for Fix. Please ignore my previous comment.
+>>> Fixes: fa8cc38165c2 ("ASoC: nuc900: Fix platform_get_irq's error checking")
+>>> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Arvind Yadav <Arvind.yadav.cs@gmail.com>
+>>>
+>>> diff --git a/sound/soc/nuc900/nuc900-ac97.c b/sound/soc/nuc900/nuc900-ac97.c
+>>> index 5e4fbd2d3479..71fce7c85c93 100644
+>>> --- a/sound/soc/nuc900/nuc900-ac97.c
+>>> +++ b/sound/soc/nuc900/nuc900-ac97.c
+>>> @@ -345,11 +345,10 @@ static int nuc900_ac97_drvprobe(struct platform_device *pdev)
+>>>    		goto out;
+>>>    	}
+>>> -	nuc900_audio->irq_num = platform_get_irq(pdev, 0);
+>>> -	if (nuc900_audio->irq_num <= 0) {
+>>> -		ret = nuc900_audio->irq_num < 0 ? nuc900_audio->irq_num : -EBUSY;
+>>> +	ret = platform_get_irq(pdev, 0);
+>>> +	if (ret < 0)
+> The <= 0 was ok, see:
+> https://lkml.org/lkml/2017/11/18/41
+>
+>
+~arvind
