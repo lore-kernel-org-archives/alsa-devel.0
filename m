@@ -1,62 +1,129 @@
-From: arvindY <arvind.yadav.cs@gmail.com>
-Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: nuc900: Fix platform_get_irq()
- error checking some more
-Date: Sun, 10 Dec 2017 00:07:17 +0530
-Message-ID: <5A2C2D5D.2060708@gmail.com>
-References: <20171209115203.pdtdfnmzwz6zpjqs@mwanda>
- <5A2BE644.3070009@gmail.com> <20171209172732.GF15660@piout.net>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: Re: [PATCH 9/9] arm64: dts: allwinner: a64: Enable
+ sound on Pine64 and SoPine
+Date: Sat, 9 Dec 2017 11:54:56 -0800
+Message-ID: <CA+E=qVepqg-_vqvKcUNaxyhds17xKZoJkoMm25R2AmmC==-HRg@mail.gmail.com>
+References: <20171203204157.20829-1-anarsoul@gmail.com>
+ <20171203204157.20829-10-anarsoul@gmail.com>
+ <CAGb2v65XC=0zwYu3Wjv0OcYrHfLbycBfaA4eW=HNN_8CzmcvRA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <20171209172732.GF15660@piout.net>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ot0-f193.google.com (mail-ot0-f193.google.com
+ [74.125.82.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 98F8E266E4B
+ for <alsa-devel@alsa-project.org>; Sat,  9 Dec 2017 20:55:20 +0100 (CET)
+Received: by mail-ot0-f193.google.com with SMTP id h9so11793189oti.0
+ for <alsa-devel@alsa-project.org>; Sat, 09 Dec 2017 11:55:20 -0800 (PST)
+In-Reply-To: <CAGb2v65XC=0zwYu3Wjv0OcYrHfLbycBfaA4eW=HNN_8CzmcvRA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Marcus Cooper <codekipper@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, =?UTF-8?Q?Myl=C3=A8ne_Josserand?= <mylene.josserand@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Saturday 09 December 2017 10:57 PM, Alexandre Belloni wrote:
-> Arvind,
->
-> This was v5 and it contains an error that was corrected between v1 and
-> v2. For whatever reason, you reintroduced it between v4 and v5.
->
-> This is wasting a lot of time.
-Yes, You are right. That is my mistake.  Next time I will try to avoid
-These kind of error.
-
->
-> On 09/12/2017 at 19:03:56 +0530, arvindY wrote:
->> Hi Dan,
+On Mon, Dec 4, 2017 at 7:24 PM, Chen-Yu Tsai <wens@csie.org> wrote:
+> On Mon, Dec 4, 2017 at 4:41 AM, Vasily Khoruzhick <anarsoul@gmail.com> wrote:
+>> This commit enables I2S, digital and analog parts of audiocodec on
+>> Pine64 and SoPine boards.
 >>
->> On Saturday 09 December 2017 05:22 PM, Dan Carpenter wrote:
->>> The error handling doesn't work here because "nuc900_audio->irq_num" is
->>> unsigned.  Also we should be checking for < 0 and not <= 0 but I believe
->>> that's harmless.  The platform_get_irq() comments don't talk about the
->>> return values...
->> Sorry for this  patch. I will fix it and send you updated patch.
->> Thanks for point it.
-Thanks for Fix. Please ignore my previous comment.
->>> Fixes: fa8cc38165c2 ("ASoC: nuc900: Fix platform_get_irq's error checking")
->>> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Arvind Yadav <Arvind.yadav.cs@gmail.com>
->>>
->>> diff --git a/sound/soc/nuc900/nuc900-ac97.c b/sound/soc/nuc900/nuc900-ac97.c
->>> index 5e4fbd2d3479..71fce7c85c93 100644
->>> --- a/sound/soc/nuc900/nuc900-ac97.c
->>> +++ b/sound/soc/nuc900/nuc900-ac97.c
->>> @@ -345,11 +345,10 @@ static int nuc900_ac97_drvprobe(struct platform_device *pdev)
->>>    		goto out;
->>>    	}
->>> -	nuc900_audio->irq_num = platform_get_irq(pdev, 0);
->>> -	if (nuc900_audio->irq_num <= 0) {
->>> -		ret = nuc900_audio->irq_num < 0 ? nuc900_audio->irq_num : -EBUSY;
->>> +	ret = platform_get_irq(pdev, 0);
->>> +	if (ret < 0)
-> The <= 0 was ok, see:
-> https://lkml.org/lkml/2017/11/18/41
+>> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+>> ---
+>>  arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts      | 16 ++++++++++++++++
+>>  .../boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts   | 16 ++++++++++++++++
+>>  2 files changed, 32 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
+>> index 806442d3e846..369d9b749521 100644
+>> --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
+>> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
+>> @@ -64,6 +64,18 @@
+>>         };
+>>  };
+>>
+>> +&codec {
+>> +       status = "okay";
+>> +};
+>> +
+>> +&codec_analog {
+>> +       status = "okay";
+>> +};
+>> +
+>> +&dai {
+>> +       status = "okay";
+>> +};
+>> +
+>>  &ehci0 {
+>>         status = "okay";
+>>  };
+>> @@ -229,6 +241,10 @@
+>>         regulator-name = "vcc-rtc";
+>>  };
+>>
+>> +&sound {
+>> +       status = "okay";
 >
+> This is missing all the board level widgets and routing.
+> Yes I know that it works right now, but that's because simple-card
+> isn't a strict card, i.e. it doesn't force the need for actual inputs
+> and outputs at both ends of the DAPM graph.
 >
-~arvind
+> Later on you'll find that missing the routing leaves the microphone
+> unusable, because the microphone bias is not turned on.
+
+sun8i-codec driver doesn't support capture at the moment. What else it
+could be missing?
+
+>
+> ChenYu
+>
+>> +};
+>> +
+>>  /* On Exp and Euler connectors */
+>>  &uart0 {
+>>         pinctrl-names = "default";
+>> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
+>> index 0eb2acedf8c3..9de5ddcc3656 100644
+>> --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
+>> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
+>> @@ -69,6 +69,18 @@
+>>         };
+>>  };
+>>
+>> +&codec {
+>> +       status = "okay";
+>> +};
+>> +
+>> +&codec_analog {
+>> +       status = "okay";
+>> +};
+>> +
+>> +&dai {
+>> +       status = "okay";
+>> +};
+>> +
+>>  &ehci0 {
+>>         status = "okay";
+>>  };
+>> @@ -133,6 +145,10 @@
+>>         regulator-name = "vcc-wifi";
+>>  };
+>>
+>> +&sound {
+>> +       status = "okay";
+>> +};
+>> +
+>>  &uart0 {
+>>         pinctrl-names = "default";
+>>         pinctrl-0 = <&uart0_pins_a>;
+>> --
+>> 2.15.0
+>>
