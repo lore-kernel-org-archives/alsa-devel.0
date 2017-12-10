@@ -1,98 +1,207 @@
-From: Philippe Ombredanne <pombredanne@nexb.com>
-Subject: Re: [PATCH v3] ASoC: TSCS42xx: Add support for Tempo
- Semiconductor's TSCS42xx audio CODEC
-Date: Sun, 10 Dec 2017 10:00:02 +0100
-Message-ID: <CAOFm3uHd_mepHLV1kBxin=OoCYp=perRLD-tKQFawqKLmw3frA@mail.gmail.com>
-References: <20171209224205.2b4qcqpro37fnev7@localhost.localdomain>
+From: Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v7 04/13] IIO: inkern: API for manipulating channel
+ attributes
+Date: Sun, 10 Dec 2017 17:53:25 +0000
+Message-ID: <20171210175325.5c0771a9@archlinux>
+References: <1512744566-13233-1-git-send-email-arnaud.pouliquen@st.com>
+        <1512744566-13233-5-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f50.google.com (mail-wm0-f50.google.com [74.125.82.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 93607266B0F
- for <alsa-devel@alsa-project.org>; Sun, 10 Dec 2017 10:00:43 +0100 (CET)
-Received: by mail-wm0-f50.google.com with SMTP id t8so9384556wmc.3
- for <alsa-devel@alsa-project.org>; Sun, 10 Dec 2017 01:00:43 -0800 (PST)
-In-Reply-To: <20171209224205.2b4qcqpro37fnev7@localhost.localdomain>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1512744566-13233-5-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Steven,
+On Fri, 8 Dec 2017 15:49:17 +0100
+Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org> wrote:
 
-On Sat, Dec 9, 2017 at 11:42 PM, Steven Eckhoff
-<steven.eckhoff.opensource@gmail.com> wrote:
-> Currently there is no support for the TSCS42xx audio CODEC.
->
-> Add support for it.
->
-> Below is the link to the v2 patch in case the threading is broken. This
->  patch addressed each issue raised in the last review.
->
-> https://patchwork.kernel.org/patch/10058117/
->
-> Signed-off-by: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-> Cc: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-kernel@vger.kernel.org
-[...]
-> --- /dev/null
-> +++ b/sound/soc/codecs/tscs42xx.c
-> @@ -0,0 +1,1571 @@
-> +/*
-> + * tscs42xx.c -- TSCS42xx ALSA SoC Audio driver
+> Extend the inkern API with functions for reading and writing
+> attribute of iio channels.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+One nitpick inline. If you aren't rerolling can get sorted
+whilst applying the series.
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron-hv44wF8Li93QT0dZR+AlfA@public.gmane.org>
+> ---
+> V6 to V7 update:
+>  - Move iio_chan_info_enum from iio.h to types.h.
+> 
+>  drivers/iio/inkern.c         | 18 +++++++++++++-----
+>  include/linux/iio/consumer.h | 26 ++++++++++++++++++++++++++
+>  include/linux/iio/iio.h      | 28 ----------------------------
+>  include/linux/iio/types.h    | 28 ++++++++++++++++++++++++++++
+>  4 files changed, 67 insertions(+), 33 deletions(-)
+> 
+> diff --git a/drivers/iio/inkern.c b/drivers/iio/inkern.c
+> index 069defc..f2e7824 100644
+> --- a/drivers/iio/inkern.c
+> +++ b/drivers/iio/inkern.c
+> @@ -664,9 +664,8 @@ int iio_convert_raw_to_processed(struct iio_channel *chan, int raw,
+>  }
+>  EXPORT_SYMBOL_GPL(iio_convert_raw_to_processed);
+>  
+> -static int iio_read_channel_attribute(struct iio_channel *chan,
+> -				      int *val, int *val2,
+> -				      enum iio_chan_info_enum attribute)
+> +int iio_read_channel_attribute(struct iio_channel *chan, int *val, int *val2,
+> +			       enum iio_chan_info_enum attribute)
+>  {
+>  	int ret;
+>  
+> @@ -682,6 +681,8 @@ static int iio_read_channel_attribute(struct iio_channel *chan,
+>  
+>  	return ret;
+>  }
+> +EXPORT_SYMBOL_GPL(iio_read_channel_attribute);
+> +
+Nitpick if you are rerolling the series.  Don't need the extra line here.
+>  
+>  int iio_read_channel_offset(struct iio_channel *chan, int *val, int *val2)
+>  {
+> @@ -850,7 +851,8 @@ static int iio_channel_write(struct iio_channel *chan, int val, int val2,
+>  						chan->channel, val, val2, info);
+>  }
+>  
+> -int iio_write_channel_raw(struct iio_channel *chan, int val)
+> +int iio_write_channel_attribute(struct iio_channel *chan, int val, int val2,
+> +				enum iio_chan_info_enum attribute)
+>  {
+>  	int ret;
+>  
+> @@ -860,12 +862,18 @@ int iio_write_channel_raw(struct iio_channel *chan, int val)
+>  		goto err_unlock;
+>  	}
+>  
+> -	ret = iio_channel_write(chan, val, 0, IIO_CHAN_INFO_RAW);
+> +	ret = iio_channel_write(chan, val, val2, attribute);
+>  err_unlock:
+>  	mutex_unlock(&chan->indio_dev->info_exist_lock);
+>  
+>  	return ret;
+>  }
+> +EXPORT_SYMBOL_GPL(iio_write_channel_attribute);
+> +
+> +int iio_write_channel_raw(struct iio_channel *chan, int val)
+> +{
+> +	return iio_write_channel_attribute(chan, val, 0, IIO_CHAN_INFO_RAW);
+> +}
+>  EXPORT_SYMBOL_GPL(iio_write_channel_raw);
+>  
+>  unsigned int iio_get_channel_ext_info_count(struct iio_channel *chan)
+> diff --git a/include/linux/iio/consumer.h b/include/linux/iio/consumer.h
+> index 5e347a9..2017f35 100644
+> --- a/include/linux/iio/consumer.h
+> +++ b/include/linux/iio/consumer.h
+> @@ -216,6 +216,32 @@ int iio_read_channel_average_raw(struct iio_channel *chan, int *val);
+>  int iio_read_channel_processed(struct iio_channel *chan, int *val);
+>  
+>  /**
+> + * iio_write_channel_attribute() - Write values to the device attribute.
+> + * @chan:	The channel being queried.
+> + * @val:	Value being written.
+> + * @val2:	Value being written.val2 use depends on attribute type.
+> + * @attribute:	info attribute to be read.
 > + *
-> + * Copyright 2017 Tempo Semiconductor, Inc.
-> + *
-> + * Author: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
+> + * Returns an error code or 0.
 > + */
-
-Have you considered using the new SPDX ids? This would come out as:
-
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * tscs42xx.c -- TSCS42xx ALSA SoC Audio driver
+> +int iio_write_channel_attribute(struct iio_channel *chan, int val,
+> +				int val2, enum iio_chan_info_enum attribute);
+> +
+> +/**
+> + * iio_read_channel_attribute() - Read values from the device attribute.
+> + * @chan:	The channel being queried.
+> + * @val:	Value being written.
+> + * @val2:	Value being written.Val2 use depends on attribute type.
+> + * @attribute:	info attribute to be written.
 > + *
-> + * Copyright 2017 Tempo Semiconductor, Inc.
-> + *
-> + * Author: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+> + * Returns an error code if failed. Else returns a description of what is in val
+> + * and val2, such as IIO_VAL_INT_PLUS_MICRO telling us we have a value of val
+> + * + val2/1e6
 > + */
-
-... and is shorter and greppable: there is nothing not to like in
-this, unless you love legalese of course!
-
-Check also Thomas doc patches and Linus rationale of why he wants this
-as the top line using C++-style comments.
-
-And if you agree like me with Linus take on C++ comments, you could
-even go with less boilerplate with this:
-
-> +// SPDX-License-Identifier: GPL-2.0
-> +// tscs42xx.c -- TSCS42xx ALSA SoC Audio driver
-> +// Copyright 2017 Tempo Semiconductor, Inc.
-> +// Author: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-
-This would make 12 lines of comment be just 4 .... with the same
-effect, but less distraction from your fine code.
-
-Thank you for your kind consideration!
--- 
-Cordially
-Philippe Ombredanne
+> +int iio_read_channel_attribute(struct iio_channel *chan, int *val,
+> +			       int *val2, enum iio_chan_info_enum attribute);
+> +
+> +/**
+>   * iio_write_channel_raw() - write to a given channel
+>   * @chan:		The channel being queried.
+>   * @val:		Value being written.
+> diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
+> index c380daa..007caf7 100644
+> --- a/include/linux/iio/iio.h
+> +++ b/include/linux/iio/iio.h
+> @@ -20,34 +20,6 @@
+>   * Currently assumes nano seconds.
+>   */
+>  
+> -enum iio_chan_info_enum {
+> -	IIO_CHAN_INFO_RAW = 0,
+> -	IIO_CHAN_INFO_PROCESSED,
+> -	IIO_CHAN_INFO_SCALE,
+> -	IIO_CHAN_INFO_OFFSET,
+> -	IIO_CHAN_INFO_CALIBSCALE,
+> -	IIO_CHAN_INFO_CALIBBIAS,
+> -	IIO_CHAN_INFO_PEAK,
+> -	IIO_CHAN_INFO_PEAK_SCALE,
+> -	IIO_CHAN_INFO_QUADRATURE_CORRECTION_RAW,
+> -	IIO_CHAN_INFO_AVERAGE_RAW,
+> -	IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY,
+> -	IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY,
+> -	IIO_CHAN_INFO_SAMP_FREQ,
+> -	IIO_CHAN_INFO_FREQUENCY,
+> -	IIO_CHAN_INFO_PHASE,
+> -	IIO_CHAN_INFO_HARDWAREGAIN,
+> -	IIO_CHAN_INFO_HYSTERESIS,
+> -	IIO_CHAN_INFO_INT_TIME,
+> -	IIO_CHAN_INFO_ENABLE,
+> -	IIO_CHAN_INFO_CALIBHEIGHT,
+> -	IIO_CHAN_INFO_CALIBWEIGHT,
+> -	IIO_CHAN_INFO_DEBOUNCE_COUNT,
+> -	IIO_CHAN_INFO_DEBOUNCE_TIME,
+> -	IIO_CHAN_INFO_CALIBEMISSIVITY,
+> -	IIO_CHAN_INFO_OVERSAMPLING_RATIO,
+> -};
+> -
+>  enum iio_shared_by {
+>  	IIO_SEPARATE,
+>  	IIO_SHARED_BY_TYPE,
+> diff --git a/include/linux/iio/types.h b/include/linux/iio/types.h
+> index 2aa7b63..6eb3d683 100644
+> --- a/include/linux/iio/types.h
+> +++ b/include/linux/iio/types.h
+> @@ -34,4 +34,32 @@ enum iio_available_type {
+>  	IIO_AVAIL_RANGE,
+>  };
+>  
+> +enum iio_chan_info_enum {
+> +	IIO_CHAN_INFO_RAW = 0,
+> +	IIO_CHAN_INFO_PROCESSED,
+> +	IIO_CHAN_INFO_SCALE,
+> +	IIO_CHAN_INFO_OFFSET,
+> +	IIO_CHAN_INFO_CALIBSCALE,
+> +	IIO_CHAN_INFO_CALIBBIAS,
+> +	IIO_CHAN_INFO_PEAK,
+> +	IIO_CHAN_INFO_PEAK_SCALE,
+> +	IIO_CHAN_INFO_QUADRATURE_CORRECTION_RAW,
+> +	IIO_CHAN_INFO_AVERAGE_RAW,
+> +	IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY,
+> +	IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY,
+> +	IIO_CHAN_INFO_SAMP_FREQ,
+> +	IIO_CHAN_INFO_FREQUENCY,
+> +	IIO_CHAN_INFO_PHASE,
+> +	IIO_CHAN_INFO_HARDWAREGAIN,
+> +	IIO_CHAN_INFO_HYSTERESIS,
+> +	IIO_CHAN_INFO_INT_TIME,
+> +	IIO_CHAN_INFO_ENABLE,
+> +	IIO_CHAN_INFO_CALIBHEIGHT,
+> +	IIO_CHAN_INFO_CALIBWEIGHT,
+> +	IIO_CHAN_INFO_DEBOUNCE_COUNT,
+> +	IIO_CHAN_INFO_DEBOUNCE_TIME,
+> +	IIO_CHAN_INFO_CALIBEMISSIVITY,
+> +	IIO_CHAN_INFO_OVERSAMPLING_RATIO,
+> +};
+> +
+>  #endif /* _IIO_TYPES_H_ */
