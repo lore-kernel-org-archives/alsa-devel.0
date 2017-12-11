@@ -1,72 +1,78 @@
-From: "Anand, Jerome" <jerome.anand@intel.com>
-Subject: Re: [PATCH] drm/i915: Remove unused IRQ chip data of
- HDMI LPE audio
-Date: Mon, 11 Dec 2017 08:33:33 +0000
-Message-ID: <F6867404AABACB4D8EC371BF802A4B7C5790D206@fmsmsx101.amr.corp.intel.com>
-References: <20171208093323.2212-1-augustine.chen@intel.com>
- <20171208114404.GN10981@intel.com> <alpine.DEB.2.20.1712082340400.2301@nanos>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH 1/2] ASoC: nuc900: Fix platform_get_irq()
+ error checking some more
+Date: Mon, 11 Dec 2017 11:40:53 +0300
+Message-ID: <20171211084053.p5ke733i3kzzk5mz@mwanda>
+References: <20171209115203.pdtdfnmzwz6zpjqs@mwanda>
+ <5A2BE644.3070009@gmail.com> <20171209172732.GF15660@piout.net>
+ <20171210015200.gr4mxzqgzyvamxui@mwanda>
+ <5A2C9E9A.7020501@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <alpine.DEB.2.20.1712082340400.2301@nanos>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Thomas Gleixner <tglx@linutronix.de>, =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Cc: Juergen Gross <jgross@suse.com>, Dou Liyang <douly.fnst@cn.fujitsu.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Jiang Liu <jiang.liu@linux.intel.com>, "Chen,
- Augustine" <augustine.chen@intel.com>, "Bossart,
- Pierre-louis" <pierre-louis.bossart@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from userp2130.oracle.com (userp2130.oracle.com [156.151.31.86])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2468D266AE4
+ for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 09:41:05 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <5A2C9E9A.7020501@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: arvindY <arvind.yadav.cs@gmail.com>
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-Cgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogVGhvbWFzIEdsZWl4bmVyIFtt
-YWlsdG86dGdseEBsaW51dHJvbml4LmRlXQo+IFNlbnQ6IFNhdHVyZGF5LCBEZWNlbWJlciA5LCAy
-MDE3IDQ6MjIgQU0KPiBUbzogVmlsbGUgU3lyasOkbMOkIDx2aWxsZS5zeXJqYWxhQGxpbnV4Lmlu
-dGVsLmNvbT4KPiBDYzogQ2hlbiwgQXVndXN0aW5lIDxhdWd1c3RpbmUuY2hlbkBpbnRlbC5jb20+
-OyBpbnRlbC0KPiBnZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnOyBhbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmc7IEFuYW5kLCBKZXJvbWUKPiA8amVyb21lLmFuYW5kQGludGVsLmNvbT47IEJvc3Nh
-cnQsIFBpZXJyZS1sb3VpcyA8cGllcnJlLQo+IGxvdWlzLmJvc3NhcnRAaW50ZWwuY29tPjsgdGl3
-YWlAc3VzZS5kZTsgSW5nbyBNb2xuYXIgPG1pbmdvQHJlZGhhdC5jb20+Owo+IEguIFBldGVyIEFu
-dmluIDxocGFAenl0b3IuY29tPjsgSmlhbmcgTGl1IDxqaWFuZy5saXVAbGludXguaW50ZWwuY29t
-PjsgSnVlcmdlbgo+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+OyBEb3UgTGl5YW5nIDxkb3VseS5m
-bnN0QGNuLmZ1aml0c3UuY29tPjsgbGludXgtCj4ga2VybmVsQHZnZXIua2VybmVsLm9yZwo+IFN1
-YmplY3Q6IFJlOiBbSW50ZWwtZ2Z4XSBbUEFUQ0hdIGRybS9pOTE1OiBSZW1vdmUgdW51c2VkIElS
-USBjaGlwIGRhdGEgb2YKPiBIRE1JIExQRSBhdWRpbwo+IAo+IE9uIEZyaSwgOCBEZWMgMjAxNywg
-VmlsbGUgU3lyasOkbMOkIHdyb3RlOgo+IAo+ID4gT24gRnJpLCBEZWMgMDgsIDIwMTcgYXQgMDU6
-MzM6MjNQTSArMDgwMCwgQXVndXN0aW5lLkNoZW4gd3JvdGU6Cj4gPiA+IFRoZSBjaGlwIGRhdGEg
-b2YgSERNSSBMUEUgYXVkaW8gaXMgc2V0IHRvIGRybV9pOTE1X3ByaXZhdGUgd2hpY2ggaXMKPiA+
-ID4gbm90IGNvbnNpc3RlbnQgd2l0aCB0aGUgZXhwZWN0YXRpb24gYnkgeDg2IEFQSUMgZHJpdmVy
-Lgo+ID4KPiA+IEhtbS4gV2h5IGlzIHRoZSBhcGljIGNvZGUgbG9va2luZyBhdCBkYXRhIGZvciBh
-biBpcnEgY2hpcCBpdCBoYXNuJ3QKPiA+IGNyZWF0ZWQ/Cj4gPgoKYXBpYyBjb2RlIGV4cGVjdHMg
-YW4gaXJxIGRvbWFpbiB0byBiZSBwbGFjZSBhcyBnZW5lcmljIGFwcHJvYWNoLgoKPiA+IERvIHdl
-IG5lZWQgc29tZXRoaW5nIGxpa2UKPiA+IC0gZGV2X3ByaXYtPmxwZV9hdWRpby5pcnEgPSBpcnFf
-YWxsb2NfZGVzYygwKTsKPiA+ICsgZGV2X3ByaXYtPmxwZV9hdWRpby5pcnEgPSBpcnFfYWxsb2Nf
-ZGVzYygtMSk7Cj4gCj4gI2RlZmluZSBpcnFfYWxsb2NfZGVzYyhub2RlKQo+IAo+IFNvIGluc3Rl
-YWQgb2YgaGFuZGluZyBpbiBub2RlIDAgeW91IGhhbmQgaW4gbm9kZSAtMSB3aGljaCBpcyBOVU1B
-X05PX05PREUKPiAKCkFncmVlIC0gYW0gbm90IHN1cmUgd2hldGhlciBpdCB3aWxsIG1ha2UgYW55
-IGRpZmZlcmVuY2UuCgo+ID4gVGhhdCAqbG9va3MqIG1vcmUgY29ycmVjdCB0byBtZSBiYXNlZCBv
-biBhIGN1cnNvcnkgZ2xhbmNlIGF0IHRoZSB4ODYKPiA+IGNvZGUsIGJ1dCBJIGRpZG4ndCB0cmF3
-bCB2ZXJ5IGRlZXBseS4KPiAKPiBUaGUgeDg2IGNvcmUgY2FyZXMgbm90IGF0IGFsbCBhYm91dCBp
-bnRlcnJ1cHQgY2hpcHMgd2hpY2ggYXJlIGNyZWF0ZWQgaW4gYSBkcml2ZXIKPiBhbmQgbm90IGNv
-bm5lY3RlZCB0byBhbiBhY3R1YWwgYXBpYy9pb2FwaWMvbXNpIGludGVycnVwdC4gVGhpcyBpbnRl
-cnJ1cHQgY2hpcCBpcwo+IGl0cyBvd24gdGhpbmcgYXMgd2UgaGF2ZSBvdGhlcnMgaW4gR1BJTyBl
-dGMuCj4gCj4gPiA+IEluIHRoZSBjYXNlIG9mIG5vdCBlbmFibGluZyBDT05GSUdfQ1BVTUFTS19P
-RkZTVEFDSywgdGhpcyB3b3VsZAo+ID4gPiBjYXVzZSBrZXJuZWwgcGFuaWMgd2hpbGUgZG9pbmcg
-Q1BVIGhvdHBsdWcuCj4gCj4gQW5kIHdoeSBzbz8gU3VyZWx5IG5vdCBiZWNhdXNlIHlvdSBzZXQg
-aXJxX2NoaXBfZGF0YS4gVGhhdCdzIHJlYWxseSBubwo+IGV4cGxhbmF0aW9uIGF0IGFsbC4KPiAK
-CklkZWFsbHksIEkgZmVlbCB0aGVyZSBuZWVkcyB0byBiZSBhbiBpcnEgZG9tYWluIGZvciBtYXBw
-aW5nIHRoZSBpcnEgbnVtYmVycyB3aXRoIGh3aXJxLgpJdCBpcyBub3QgY3JlYXRlZCBhcyBwYXJ0
-IG9mIHRoZSBoZG1pIGxwZSBhdWRpbyBicmlkZ2UuClNpbmNlIHRoZSBsb2dpYyB0byBtYXNrL3Vu
-bWFzayBscGUgYXVkaW8gaW50ZXJydXB0cyBpcyByZW1vdmVkLCB0aGVyZSBpcyBubyBuZWVkIG9m
-IHRoZQpDaGlwIGRhdGEgb3IgY3JlYXRpb24gb2YgdGhlIGRvbWFpbiBub3cuCiAKPiBDdXJpbmcg
-dGhlIHN5bXB0b20gaXMgbmV2ZXIgYSBnb29kIGFwcHJvYWNoLgo+IAo+IFRoYW5rcywKPiAKPiAJ
-dGdseApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRl
-bC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6
-Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
+On Sun, Dec 10, 2017 at 08:10:26AM +0530, arvindY wrote:
+> 
+> 
+> On Sunday 10 December 2017 07:22 AM, Dan Carpenter wrote:
+> > On Sat, Dec 09, 2017 at 06:27:32PM +0100, Alexandre Belloni wrote:
+> > > > > diff --git a/sound/soc/nuc900/nuc900-ac97.c b/sound/soc/nuc900/nuc900-ac97.c
+> > > > > index 5e4fbd2d3479..71fce7c85c93 100644
+> > > > > --- a/sound/soc/nuc900/nuc900-ac97.c
+> > > > > +++ b/sound/soc/nuc900/nuc900-ac97.c
+> > > > > @@ -345,11 +345,10 @@ static int nuc900_ac97_drvprobe(struct platform_device *pdev)
+> > > > >    		goto out;
+> > > > >    	}
+> > > > > -	nuc900_audio->irq_num = platform_get_irq(pdev, 0);
+> > > > > -	if (nuc900_audio->irq_num <= 0) {
+> > > > > -		ret = nuc900_audio->irq_num < 0 ? nuc900_audio->irq_num : -EBUSY;
+> > > > > +	ret = platform_get_irq(pdev, 0);
+> > > > > +	if (ret < 0)
+> > > The <= 0 was ok, see:
+> > > https://lkml.org/lkml/2017/11/18/41
+> > > 
+> > Yeah, but is it ever going to return 0?  That seems like a design error
+> > and also really crap commenting if so
+> yes, It can return 0 on sprac platform and If you see the return of
+> platform_get_irq() 'return r ? r->start : -ENXIO;'. It should be
+> 'return r && r->start? r->start : -ENXIO;'. We can not add checks here,
+> Because There's a bunch of platforms in the kernel they still use IRQ0 as
+> valid.
+> I have separate mails where few maintainer ask me to add check for 0 and few
+> not.
+> Adding check for 0 will never harm.
+
+What you're saying doesn't make sense.
+
+You *can't* treat 0 as an error on Sparc because that's a valid IRQ.  In
+fact, it seems like if you want to write portable code you should never
+treated zero as an error.
+
+It doesn't make sense that someone would register an IRQ resource with
+an invalid IRQ number.  In other words, r->start is never going to be
+zero on a platform where that's invalid.
+
+So I'm pretty sure "if (ret < 0) " is the correct way to write code and
+"if (ret <= 0) " is incorrect but generally harmless except perhaps in
+limited situations on SPARC or other similar arches.
+
+regards,
+dan carpenter
