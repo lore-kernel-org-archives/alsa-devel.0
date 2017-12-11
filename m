@@ -1,48 +1,38 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Skylake: Re-order some code to silence a
- warning
-Date: Mon, 11 Dec 2017 16:09:44 +0530
-Message-ID: <20171211103944.GQ18649@localhost>
-References: <20171208115425.rqclgmhcph5gn47j@mwanda>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Best (non zero)
+	CONFIG_SND_HDA_POWER_SAVE_DEFAULT value ?
+Date: Mon, 11 Dec 2017 11:37:04 +0100
+Message-ID: <77ea1b7d-ee08-bf20-c766-2ea109ce65f9@redhat.com>
+Reply-To: General PulseAudio Discussion
+ <pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171208115425.rqclgmhcph5gn47j@mwanda>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Jani Nikula <jani.nikula@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
+To: Wim Taymans <wtaymans@redhat.com>
+Cc: alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 08, 2017 at 02:54:25PM +0300, Dan Carpenter wrote:
-> I get a Smatch warning here:
-> 
->     sound/soc/intel/skylake/skl-nhlt.c:335 skl_get_ssp_clks()
->     error: testing array offset 'j' after use.
-> 
-> The code is harmless, but the checker is right that we should swap these
-> two conditions so we verify that the offset is within bounds before we
-> use it.
-
-Acked-By: Vinod Koul <vinod.koul@intel.com>
-
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
-> index afa557a1c031..54f9bd630f4f 100644
-> --- a/sound/soc/intel/skylake/skl-nhlt.c
-> +++ b/sound/soc/intel/skylake/skl-nhlt.c
-> @@ -331,8 +331,8 @@ static void skl_get_ssp_clks(struct skl *skl, struct skl_ssp_clk *ssp_clks,
->  		rate = channels * bps * fs;
->  
->  		/* check if the rate is added already to the given SSP's sclk */
-> -		for (j = 0; (sclk[id].rate_cfg[j].rate != 0) &&
-> -				(j < SKL_MAX_CLK_RATES); j++) {
-> +		for (j = 0; (j < SKL_MAX_CLK_RATES) &&
-> +			    (sclk[id].rate_cfg[j].rate != 0); j++) {
->  			if (sclk[id].rate_cfg[j].rate == rate) {
->  				present = true;
->  				break;
-
--- 
-~Vinod
+SGkgQWxsLAoKUmVjZW50bHkgSSd2ZSBjaGFuZ2VkIHRoZSB2YWx1ZSBmb3IgQ09ORklHX1NORF9I
+REFfUE9XRVJfU0FWRV9ERUZBVUxUIGZvciBGZWRvcmEKZnJvbSAwIHRvIDEuIFNvbWVvbmUgcG9p
+bnRlZCBtZSB0bzoKaHR0cHM6Ly93d3cua2VybmVsLm9yZy9kb2MvaHRtbC9sYXRlc3Qvc291bmQv
+ZGVzaWducy9wb3dlcnNhdmUuaHRtbAoKV2hpY2ggYWR2aXNlcyAxMCBzZWNvbmRzLCBidXQgdGhh
+dCBzZWVtcyBxdWl0ZSBsb25nIElNSE8sIGFsc28gZm9yIEZlZG9yYQpJIHdvdWxkIGV4cGVjdCBh
+bGwgdXNlcnMgdG8gZ28gdGhyb3VnaCBwdWxzZWF1ZGlvIGFuZCBBRkFJSyBwdWxzZWF1ZGlvIGl0
+c2VsZgphbHJlYWR5IGhhcyBhIHRpbWVvdXQgd2hlcmUgaXQga2VlcHMgdGhlIGRldmljZSBvcGVu
+IGZvciBhIHdoaWxlIHdoZW4gaWRsZT8KClNvIGFueSBhZHZpc2Ugb24gdG8gd2hhdCB3b3VsZCBi
+ZSB0aGUgYmVzdCBub24gemVybyB2YWx1ZSBmb3IKQ09ORklHX1NORF9IREFfUE9XRVJfU0FWRV9E
+RUZBVUxUID8KClJlZ2FyZHMsCgpIYW5zCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCnB1bHNlYXVkaW8tZGlzY3VzcyBtYWlsaW5nIGxpc3QKcHVsc2VhdWRp
+by1kaXNjdXNzQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9w
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL3B1bHNlYXVkaW8tZGlzY3Vzcwo=
