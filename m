@@ -1,42 +1,75 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Skylake: Re-order some code to silence a
- warning
-Date: Mon, 11 Dec 2017 13:20:23 +0200
-Message-ID: <1512991223.25007.590.camel@linux.intel.com>
-References: <20171208115425.rqclgmhcph5gn47j@mwanda>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Applied "ASoC: rsnd: ssi: fix race condition in
+ rsnd_ssi_pointer_update" to the asoc tree
+Date: Mon, 11 Dec 2017 11:38:09 +0000
+Message-ID: <20171211113809.GA9854@sirena.org.uk>
+References: <E1eNNl3-0003pn-VV@debutante>
+ <661598a7-b62c-074a-a12e-12ed87f4700e@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <20171208115425.rqclgmhcph5gn47j@mwanda>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>, Liam Girdwood <lgirdwood@gmail.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Jani Nikula <jani.nikula@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============5412450784885805281=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CCE1266AE4
+ for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 12:38:16 +0100 (CET)
+In-Reply-To: <661598a7-b62c-074a-a12e-12ed87f4700e@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, Jiada Wang <jiada_wang@mentor.com>, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2017-12-08 at 14:54 +0300, Dan Carpenter wrote:
-> I get a Smatch warning here:
-> 
->     sound/soc/intel/skylake/skl-nhlt.c:335 skl_get_ssp_clks()
->     error: testing array offset 'j' after use.
-> 
-> The code is harmless, but the checker is right that we should swap
-> these
-> two conditions so we verify that the offset is within bounds before we
-> use it.
 
-> -		for (j = 0; (sclk[id].rate_cfg[j].rate != 0) &&
-> -				(j < SKL_MAX_CLK_RATES); j++) {
-> +		for (j = 0; (j < SKL_MAX_CLK_RATES) &&
-> +			    (sclk[id].rate_cfg[j].rate != 0); j++) {
->  			if (sclk[id].rate_cfg[j].rate == rate) {
->  				present = true;
->  				break;
-
-I would rather remove also redundant parens and move the condition into
-the loop.
+--===============5412450784885805281==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="pf9I7BMVVzbSWLtt"
+Content-Disposition: inline
 
 
--- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+--pf9I7BMVVzbSWLtt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sat, Dec 09, 2017 at 02:22:50PM +0900, Takashi Sakamoto wrote:
+> On Dec 9 2017 03:52, Mark Brown wrote:
+
+> The applied patches are in v1 patchset, but we have v2 patchset already:
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2017-December/128970.html
+
+> Would you please replace the applied patches with the renewed ones? There're
+> slight differences between them.
+
+As far as I can tell what's applied is v2?
+
+--pf9I7BMVVzbSWLtt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloubiAACgkQJNaLcl1U
+h9CUxgf+KYebaf/i0rw9O7xnXU54w5OiCyW4ns1cQHc16jwk5zkCkSkW55uepKdp
+bjHmMsshHF+Rd/6MVxikBzMXCAz7cw98F6xqG7WqjOFiVt+3a6jB+532DXp3GxJt
+ZnFBO+llldgIFJBDx1M/YKn+Xj3dxQljjYNZEPgAeD5Ib1KSmYsS6Z6nnQYssChL
+DYJPHTp8TSpJIZln1XI7iUGo/EzsFTqZrAZceX24RpkPsk+uWJAhVPhFwNpYkZLz
+pTMc6qlwxylmGDl9jzTif1rm8YVDwTtzlCAJ6qnin7p4S0Ngm8Emm7GmdWMvQqge
+TUy+pCs1AmLwmT7DHVTetBl5mw5/PA==
+=2tIx
+-----END PGP SIGNATURE-----
+
+--pf9I7BMVVzbSWLtt--
+
+--===============5412450784885805281==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5412450784885805281==--
