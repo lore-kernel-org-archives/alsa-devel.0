@@ -1,57 +1,51 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v5 04/15] soundwire: Add MIPI DisCo property helpers
-Date: Mon, 11 Dec 2017 22:48:31 +0530
-Message-ID: <20171211171831.GV18649@localhost>
-References: <1512575231-4154-1-git-send-email-vinod.koul@intel.com>
- <1512575231-4154-5-git-send-email-vinod.koul@intel.com>
- <s5hbmj5kzyu.wl-tiwai@suse.de>
- <20171211170022.GT18649@localhost>
- <s5hvahdjisp.wl-tiwai@suse.de>
+Subject: Re: [alsa-devel] [PATCH 5/8] ASoC: uniphier: add support for
+ UniPhier AIO driver
+Date: Mon, 11 Dec 2017 23:18:54 +0530
+Message-ID: <20171211174854.GZ18649@localhost>
+References: <20171122114321.29196-1-suzuki.katsuhiro@socionext.com>
+ <20171122114321.29196-6-suzuki.katsuhiro@socionext.com>
+ <20171204183934.rd4vin22ktukwpip@sirena.org.uk>
+ <002b01d36d84$51d80aa0$f5881fe0$@socionext.com>
+ <20171205121440.GC11658@finisterre>
+ <004801d36e57$ea1940d0$be4bc270$@socionext.com>
+ <20171206125817.GF1827@finisterre>
+ <001501d37261$7ea89d10$7bf9d730$@socionext.com>
+ <20171211151629.GD9854@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <s5hvahdjisp.wl-tiwai@suse.de>
+In-Reply-To: <20171211151629.GD9854@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, =?utf-8?B?WWFtYWRhLCBNYXNhaGlyby/lsbHnlLAg55yf5byY?= <yamada.masahiro@socionext.com>, linux-kernel@vger.kernel.org, Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 11, 2017 at 06:06:30PM +0100, Takashi Iwai wrote:
-> On Mon, 11 Dec 2017 18:00:22 +0100,
-> Vinod Koul wrote:
-> > 
-> > On Mon, Dec 11, 2017 at 05:10:17PM +0100, Takashi Iwai wrote:
-> > > On Wed, 06 Dec 2017 16:47:00 +0100,
-> > > Vinod Koul wrote:
-> > > > 
-> > > > +		/* TODO: Read audio mode */
-> > > > +
-> > > > +		i++;
-> > > > +	}
-> > > 
-> > > Don't we use count argument for a sanity check?
-> > 
-> > Not really as that iterator runs on each bit:
-> > 
-> > for_each_set_bit(bit, &addr, 32) {
-> > 
-> > so it will not go on endlessly and can max out when all the bits being set
-> > and stop.
+On Mon, Dec 11, 2017 at 03:16:29PM +0000, Mark Brown wrote:
+> On Mon, Dec 11, 2017 at 06:21:58PM +0900, Katsuhiro Suzuki wrote:
 > 
-> Yes, that shouldn't happen.  OTOH, only looking at the callee side,
-> one may wonder that the possible error would be dpn[] overflows the
-> given array size (=count).  Though, looking at both caller and callee,
-> one realizes that it shouldn't happen, too.
+> > But I can't find how to use/map this DAI in machine driver or Device-Tree or
+> > something. I think that it's same as PCM DAI, am I correct?
+> 
+> Yes, that probably makes sense from a binding point of view.
+> 
+> > I read compress-offload.rst, but I can't find how do I test it. It seems aplay
+> > of
+> > alsa-util doesn't know compress audio formats. Should I use PulseAudio or
+> > Android HAL to test compress audio APIs?
+> 
+> IIRC tinyalsa has a compressed API test application - Vinod?
 
-Right :)
+I guess it was sheer luck that i saw this :) email in CC reads
+vinod.koul@linaro.org! I don't work for Linaro, not yet :D
 
-> (But then again wonders why passing count argument at all :)
+And to the answer the question, Yes we have compressed API test application
+in tinycompress which is located at git.alsa-project.org:tinycompress.git
 
-So we allocate memory for dpn ports by using hweight32(), and then
-fill up this memory by reading properties. Count here is used to access
-dpn[i] and fill data for each port from firmware and hence incremented
-every time..
+We have both compressed audio playback as well as record test app, cplay and
+crecord.
 
+HTH
 -- 
 ~Vinod
