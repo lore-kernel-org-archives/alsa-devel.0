@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Applied "ASoC: rsnd: ssi: fix race condition in
- rsnd_ssi_pointer_update" to the asoc tree
-Date: Mon, 11 Dec 2017 11:38:09 +0000
-Message-ID: <20171211113809.GA9854@sirena.org.uk>
-References: <E1eNNl3-0003pn-VV@debutante>
- <661598a7-b62c-074a-a12e-12ed87f4700e@sakamocchi.jp>
+Subject: Re: [PATCH v4] ASoC: TSCS42xx: Add support for Tempo
+ Semiconductor's TSCS42xx audio CODEC
+Date: Mon, 11 Dec 2017 11:40:11 +0000
+Message-ID: <20171211114011.GB9854@sirena.org.uk>
+References: <20171210210155.sjdjiqutv6frdajp@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5412450784885805281=="
+Content-Type: multipart/mixed; boundary="===============8157674634277762261=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CCE1266AE4
- for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 12:38:16 +0100 (CET)
-In-Reply-To: <661598a7-b62c-074a-a12e-12ed87f4700e@sakamocchi.jp>
+ by alsa0.perex.cz (Postfix) with ESMTP id C1A1D266AE4
+ for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 12:40:12 +0100 (CET)
+In-Reply-To: <20171210210155.sjdjiqutv6frdajp@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,54 +21,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, Jiada Wang <jiada_wang@mentor.com>, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
+To: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5412450784885805281==
+--===============8157674634277762261==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="pf9I7BMVVzbSWLtt"
+	protocol="application/pgp-signature"; boundary="+g7M9IMkV8truYOl"
 Content-Disposition: inline
 
 
---pf9I7BMVVzbSWLtt
+--+g7M9IMkV8truYOl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Dec 09, 2017 at 02:22:50PM +0900, Takashi Sakamoto wrote:
-> On Dec 9 2017 03:52, Mark Brown wrote:
+On Sun, Dec 10, 2017 at 03:02:04PM -0600, Steven Eckhoff wrote:
+> Thank you to everyone who has reviewed this. The v4 patch addresses all
+>  issues raised.
+>=20
+> I apologize for this email chain getting hacked up.
+>=20
+> Philippe Ombredanne <pombredanne@nexb.com> wrote:
+>=20
+> > Have you considered using the new SPDX ids?
+>=20
+> No I haven't, but thank you for bringing this to my attention.
+>  I have added them.
 
-> The applied patches are in v1 patchset, but we have v2 patchset already:
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2017-December/128970.html
+Please don't top post, reply in line with needed context.  This allows
+readers to readily follow the flow of conversation and understand what
+you are talking about and also helps ensure that everything in the
+discussion is being addressed.
 
-> Would you please replace the applied patches with the renewed ones? There're
-> slight differences between them.
+As far as I can tell here you've pasted a new patch in after a top
+posted reply to an old thread.  Please don't do this, please submit
+patches following the process in SubmittingPatches.
 
-As far as I can tell what's applied is v2?
-
---pf9I7BMVVzbSWLtt
+--+g7M9IMkV8truYOl
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloubiAACgkQJNaLcl1U
-h9CUxgf+KYebaf/i0rw9O7xnXU54w5OiCyW4ns1cQHc16jwk5zkCkSkW55uepKdp
-bjHmMsshHF+Rd/6MVxikBzMXCAz7cw98F6xqG7WqjOFiVt+3a6jB+532DXp3GxJt
-ZnFBO+llldgIFJBDx1M/YKn+Xj3dxQljjYNZEPgAeD5Ib1KSmYsS6Z6nnQYssChL
-DYJPHTp8TSpJIZln1XI7iUGo/EzsFTqZrAZceX24RpkPsk+uWJAhVPhFwNpYkZLz
-pTMc6qlwxylmGDl9jzTif1rm8YVDwTtzlCAJ6qnin7p4S0Ngm8Emm7GmdWMvQqge
-TUy+pCs1AmLwmT7DHVTetBl5mw5/PA==
-=2tIx
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloubpoACgkQJNaLcl1U
+h9AIRAf+IfRX2WJzekXT5tkmUIyN5epHQBjK5oGfD33JD3Go6TSFBEDYS8OcnE9h
+kFrIpMcULeiIVMJPTKGsYJ87Z5zHJXNCQW+xvDX7Vuox62tMHdiMBQBrnixqtCEK
+N4mA56NhH1FIdSKpWiB9MSYUYOSp5EwIQjBL1YHxTakv6lvDD2fKknTqqkxuDTja
+QItVX6YBiYSrS9Lj2zBNrfM3EptAMwsnUCw6qAaWRTZIBImLUaJh6tttpzs1X34g
+8tqsW+MlK01MqDG8pqrZweJyHvzd/J1nWnV+jYJeZJ2Aj4+cCuKllQphTdYMLI0+
+ZO+ECecjAdrznGKZiy39ygM7cPAoJQ==
+=j2Af
 -----END PGP SIGNATURE-----
 
---pf9I7BMVVzbSWLtt--
+--+g7M9IMkV8truYOl--
 
---===============5412450784885805281==
+--===============8157674634277762261==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5412450784885805281==--
+--===============8157674634277762261==--
