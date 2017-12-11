@@ -1,30 +1,49 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [alsa-devel] [PATCH v5 03/15] soundwire: Add Master registration
-Date: Mon, 11 Dec 2017 22:14:08 +0530
-Message-ID: <20171211164408.GS18649@localhost>
-References: <1512575231-4154-1-git-send-email-vinod.koul@intel.com>
- <1512575231-4154-4-git-send-email-vinod.koul@intel.com>
- <s5hd13ll0cd.wl-tiwai@suse.de>
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: nuc900: Fix platform_get_irq()
+ error checking some more
+Date: Mon, 11 Dec 2017 17:41:34 +0100
+Message-ID: <20171211164134.GE32306@piout.net>
+References: <20171209115203.pdtdfnmzwz6zpjqs@mwanda>
+ <5A2BE644.3070009@gmail.com>
+ <20171209172732.GF15660@piout.net>
+ <20171210015200.gr4mxzqgzyvamxui@mwanda>
+ <5A2C9E9A.7020501@gmail.com>
+ <20171211084053.p5ke733i3kzzk5mz@mwanda>
+ <a191218d-fe63-db5f-1993-2167a2077f70@gmail.com>
+ <20171211102730.agtoczxiu4dcn5ra@mwanda>
+ <20171211114950.GB32306@piout.net>
+ <20171211120129.ssrw65eghtdpmjej@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <s5hd13ll0cd.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, patches.audio@intel.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+In-Reply-To: <20171211120129.ssrw65eghtdpmjej@mwanda>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Arvind Yadav <arvind.yadav.cs@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 11, 2017 at 05:02:10PM +0100, Takashi Iwai wrote:
-> On Wed, 06 Dec 2017 16:46:59 +0100,
-> Vinod Koul wrote:
-> > 
-> > +	/* Set group device numbers and master device number */
-> > +	set_bit(SDW_GROUP12_DEV_NUM | SDW_GROUP13_DEV_NUM, bus->assigned);
+On 11/12/2017 at 15:01:29 +0300, Dan Carpenter wrote:
+> On Mon, Dec 11, 2017 at 12:49:50PM +0100, Alexandre Belloni wrote:
+> > Maybe the good thing to do is to actaully leave the nuc900 code alone
+> > instead of trying to change something that never failed and that doesn't
+> > seem to interest anyone anymore (else the platform would have been
+> > converted to DT).
+> >
 > 
-> Is this really correct?
+> I don't know.  The bug is less than a month old and this discussion has
+> been useful for me as I review any platform_get_irq() changes sent to
+> staging.
+> 
 
-Nope, this is supposed to bit number and can't be ORed, will fix thanks
+What I meant is that the original code before this "fix" was more that 7
+years old and nobody ever had any issues. And that's because getting
+that IRQ on that platform will simply never fail.
+
+Also, I really doubt anybody is going to copy paste from the nuc900-ac97
+driver so I'm really wondering whether it is worth fixing this non-issue.
 
 -- 
-~Vinod
+Alexandre Belloni, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
