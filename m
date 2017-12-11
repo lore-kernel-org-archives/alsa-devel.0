@@ -1,78 +1,57 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nuc900: Fix platform_get_irq() error checking some more" to the asoc tree
-Date: Mon, 11 Dec 2017 12:14:27 +0000
-Message-ID: <E1eOMyZ-0004f5-IZ@debutante>
-References: <20171209115203.pdtdfnmzwz6zpjqs@mwanda>
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <20171209115203.pdtdfnmzwz6zpjqs@mwanda>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Arvind Yadav <arvind.yadav.cs@gmail.com>, alsa-devel@alsa-project.orgMark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>alsa-devel@alsa-project.org
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Per board ucm files on x86?
+Date: Mon, 11 Dec 2017 13:30:35 +0100
+Message-ID: <9acc4278-5e15-ebcd-8a45-1d409189e1cc@redhat.com>
+Reply-To: General PulseAudio Discussion
+ <pulseaudio-discuss@lists.freedesktop.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
+To: alsa-devel@alsa-project.org
+Cc: pulseaudio-discuss@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: nuc900: Fix platform_get_irq() error checking some more
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From cd430a244cd5d3ca0f4053718eabdf42bc12c517 Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Sat, 9 Dec 2017 14:52:03 +0300
-Subject: [PATCH] ASoC: nuc900: Fix platform_get_irq() error checking some more
-
-The error handling doesn't work here because "nuc900_audio->irq_num" is
-unsigned.  Also we should be checking for < 0 and not <= 0 but I believe
-that's harmless.  The platform_get_irq() comments don't talk about the
-return values...
-
-Fixes: fa8cc38165c2 ("ASoC: nuc900: Fix platform_get_irq's error checking")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/nuc900/nuc900-ac97.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/nuc900/nuc900-ac97.c b/sound/soc/nuc900/nuc900-ac97.c
-index 5e4fbd2d3479..71fce7c85c93 100644
---- a/sound/soc/nuc900/nuc900-ac97.c
-+++ b/sound/soc/nuc900/nuc900-ac97.c
-@@ -345,11 +345,10 @@ static int nuc900_ac97_drvprobe(struct platform_device *pdev)
- 		goto out;
- 	}
- 
--	nuc900_audio->irq_num = platform_get_irq(pdev, 0);
--	if (nuc900_audio->irq_num <= 0) {
--		ret = nuc900_audio->irq_num < 0 ? nuc900_audio->irq_num : -EBUSY;
-+	ret = platform_get_irq(pdev, 0);
-+	if (ret < 0)
- 		goto out;
--	}
-+	nuc900_audio->irq_num = ret;
- 
- 	nuc900_ac97_data = nuc900_audio;
- 
--- 
-2.15.1
-
+SGkgQWxsLAoKVGhpcyB3ZWVrZW5kIEkndmUgY3JlYXRlZCBhIG1vZGlmaWVkIHVjbSBjb25maWcg
+YmFzZWQgb246CgpodHRwczovL2dpdGh1Yi5jb20vcGxib3NzYXJ0L1VDTS90cmVlL21hc3Rlci9j
+aHRydDU2NDUKCkZvciBhIGJvYXJkIHdoaWNoIGhhcyBhIHNpbmdsZSBzcGVha2VyIGNvbm5lY3Rl
+ZCB0byB0aGUKbGVmdCBjaGFubmVsIChzdGFuZGFyZCBtb25vIHNwZWFrZXIgc2V0dXApIGFuZCBh
+IHN0ZXJlbwpoZWFkcGhvbmUgamFjayB3aXRoIHdvcmtpbmcgamFjayBkZXRlY3Rpb24uCgpJJ3Zl
+IGJlZW4gdW5hYmxlIHRvIGNvbWUgdXAgd2l0aCBhIHVjbSBmaWxlIHdoaWNoIGFsbG93cwpzZWxl
+Y3RpbmcgYmV0d2VlbiBhICJTdGVyZW8gU3BlYWtlciArIEhlYWRwaG9uZSIgdnMKIk1vbm8gU3Bl
+YWtlciArIEhlYWRwaG9uZSIgb3V0cHV0IHByb2ZpbGUuCgpodHRwczovL2dpdGh1Yi5jb20vcGxi
+b3NzYXJ0L1VDTS90cmVlL21hc3Rlci9ieXQtcnQ1NjQwCmhhcyAiTW9ubyBTcGVha2VyIiwgIlN0
+ZXJlbyBTcGVha2VyIiBhbmQgIkhlYWRwaG9uZSIKcHJvZmlsZXMgYnV0IGRvZXMgbm90IGF1dG8t
+c3dpdGNoIGJldHdlZW4gSGVhZHBob25lCmFuZCBzcGVha2VyIGJhc2VkIG9uIGphY2sgZGV0ZWN0
+aW9uLCBJJ3ZlIGJlZW4gdW5hYmxlIHRvCmFsbG93IHNlbGVjdGluZyBlaXRoZXIgc3RlcmVvIG9y
+IG1vbm8gc3BlYWtlciB3aGlsZQprZWVwaW5nIGF1dG8tc3dpdGNoaW5nIHRvL2Zyb20gdGhlIGhl
+YWRwaG9uZXMuCgpCdXQgdGhpbmtpbmcgbW9yZSBhYm91dCB0aGlzIEkgZG9uJ3QgdGhpbmsgdGhh
+dCBoYXZpbmcKIlN0ZXJlbyBTcGVha2VyICsgSGVhZHBob25lIiBhbmQgIk1vbm8gU3BlYWtlciAr
+IEhlYWRwaG9uZSIKcHJvZmlsZXMgaXMgdGhlIGFuc3dlci4gUHJvZmlsZXMgbWFrZSBzZW5zZSBv
+biBtYWNoaW5lcyB3aXRoCmEgYnVuY2ggb2Ygb3V0cHV0cyB3aGVyZSB3ZSBkb24ndCBubyB3aGF0
+IHRoZSB1c2VyIGlzIGdvaW5nCnRvIHBsdWcgaW4sIGJ1dCBpbiB0aGlzIGNhc2UgdGhlIHN0ZXJl
+byB2cyBtb25vIHNwZWFrZXIKZGlzdGluY3Rpb24gaXMgYSBjbGVhciBwcm9wZXJ0eSBvZiB0aGUg
+ZGV2aWNlLCB3aGljaCB3ZQpzaG91bGQgSU1ITyBhdXRvZGV0ZWN0IGJhc2VkIG9uIHRoZSBkZXZp
+Y2UtbW9kZWwuCgpTbyBJIHRoaW5rIHdlIG5lZWQgYSB3YXkgdG8gaGF2ZSBkaWZmZXJlbnQgdWNt
+IGZpbGVzIHBlciBib2FyZCwKc28gaW5zdGVhZCBvZiBsb2FkaW5nIC91c3Ivc2hhcmUvdWNtL2No
+dHJ0NTY0NS8qLmNvbmYgb24gbXkKZGV2aWNlLCBhbHNhIHNob3VsZCB0cnkgdG8gbG9hZCAvdXNy
+L3NoYXJlL3VjbS9jaHRydDU2NDUtPGJvYXJkbmFtZT4vKi5jb25mCgpTcGVjaWZpY2FsbHkgSSdt
+IHRoaW5raW5nIGFib3V0IHVzaW5nIHVkZXYgKyBod2RiIChkbWkgc3RyaW5nKQptYXRjaGluZyB0
+byBzZXQgYW4gQUxTQV9VQ01fTkFNRSB1ZGV2IHByb3BlcnR5LgoKSWYgdGhlIGNvbnNlbnN1cyBp
+cyB0aGF0IHRoaXMgaXMgYSBnb29kIGlkZWEgSSBjYW4gdGFrZSBhIHNob3QKYXQgd3JpdGluZyBw
+YXRjaGVzIGZvciB0aGlzIChpbiBteSBzcGFyZSB0aW1lIG1vc3RseSksIHRoZQpkb3duc2lkZSBv
+ZiB0aGlzIGFwcHJvYWNoIGlzIGl0IHdvdWxkIGNhdXNlIGEgZGVwZW5kZW5jeSBvbgpsaWJ1ZGV2
+IGZvciB0aGUgYWxzYSB1Y20gY29kZS4KClJlZ2FyZHMsCgpIYW5zCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCnB1bHNlYXVkaW8tZGlzY3VzcyBtYWlsaW5n
+IGxpc3QKcHVsc2VhdWRpby1kaXNjdXNzQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xp
+c3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL3B1bHNlYXVkaW8tZGlzY3Vzcwo=
