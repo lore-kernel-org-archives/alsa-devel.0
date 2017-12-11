@@ -1,16 +1,16 @@
 From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
-Subject: [RFC v2 01/11] ASoC: Intel: Boards: Machine driver for
-	Intel platforms
-Date: Mon, 11 Dec 2017 16:22:53 +0530
-Message-ID: <1512989583-10877-2-git-send-email-rakesh.a.ughreja@intel.com>
+Subject: [RFC v2 02/11] ASoC: Intel: Skylake: Add entry in
+	sst_acpi_mach for HDA codecs
+Date: Mon, 11 Dec 2017 16:22:54 +0530
+Message-ID: <1512989583-10877-3-git-send-email-rakesh.a.ughreja@intel.com>
 References: <1512989583-10877-1-git-send-email-rakesh.a.ughreja@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 96DA0267537
- for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 11:48:32 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 61DB3267512
+ for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 11:48:36 +0100 (CET)
 In-Reply-To: <1512989583-10877-1-git-send-email-rakesh.a.ughreja@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,362 +25,96 @@ To: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, liam.r.girdw
 Cc: vinod.koul@intel.com, patches.audio@intel.com, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Add machine driver for Intel platforms(SKL/KBL) with HDA and iDisp codecs.
-This patch adds support for only iDisp (HDMI/DP) codec. In the
-following patch support for HDA codec will be added.
+When no I2S based codecs are detected in the BIOS, check if there are
+any HDA codecs present. If yes, load the corresponding machine driver.
 
-This should work for other Intel platforms as well e.g. BXT,GLK,CNL
-however this series is not tested on all the platforms.
+TODO:
+support for detecting the presence of HDA codec is not implemented.
+it will be implemented in the next revision.
 
 Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 ---
- sound/soc/intel/boards/Kconfig               |  10 +++
- sound/soc/intel/boards/Makefile              |   2 +
- sound/soc/intel/boards/skl_hda_dsp_common.c  | 130 +++++++++++++++++++++++++++
- sound/soc/intel/boards/skl_hda_dsp_common.h  |  42 +++++++++
- sound/soc/intel/boards/skl_hda_dsp_generic.c | 112 +++++++++++++++++++++++
- 5 files changed, 296 insertions(+)
- create mode 100644 sound/soc/intel/boards/skl_hda_dsp_common.c
- create mode 100644 sound/soc/intel/boards/skl_hda_dsp_common.h
- create mode 100644 sound/soc/intel/boards/skl_hda_dsp_generic.c
+ sound/soc/intel/skylake/skl.c | 46 ++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 43 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 6f75470..e01137d 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -262,4 +262,14 @@ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
-           Say Y if you have such a device.
-           If unsure select "N".
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 6fc2173..b99c1d8 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -442,6 +442,26 @@ static struct skl_ssp_clk skl_ssp_clks[] = {
+ 						{.name = "ssp5_sclkfs"},
+ };
  
-+config SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH
-+        tristate "ASoC Audio driver for SKL/KBL with HDA Codecs"
-+        select SND_SOC_INTEL_SST
-+        depends on SND_SOC_INTEL_SKYLAKE
-+        select SND_SOC_HDAC_HDMI
-+        help
-+          This adds support for ASoC Onboard Codec HDA machine driver. This will
-+          create an alsa sound card for HDA Codecs.
-+          Say Y if you have such a device.
-+          If unsure select "N".
- endif
-diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
-index 69d2dfa..7f6ab8e 100644
---- a/sound/soc/intel/boards/Makefile
-+++ b/sound/soc/intel/boards/Makefile
-@@ -17,6 +17,7 @@ snd-soc-sst-byt-cht-nocodec-objs := bytcht_nocodec.o
- snd-soc-kbl_rt5663_max98927-objs := kbl_rt5663_max98927.o
- snd-soc-kbl_rt5663_rt5514_max98927-objs := kbl_rt5663_rt5514_max98927.o
- snd-soc-skl_rt286-objs := skl_rt286.o
-+snd-soc-skl_hda_dsp-objs := skl_hda_dsp_generic.o skl_hda_dsp_common.o
- snd-skl_nau88l25_max98357a-objs := skl_nau88l25_max98357a.o
- snd-soc-skl_nau88l25_ssm4567-objs := skl_nau88l25_ssm4567.o
- 
-@@ -40,3 +41,4 @@ obj-$(CONFIG_SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH) += snd-soc-kbl_rt566
- obj-$(CONFIG_SND_SOC_INTEL_SKL_RT286_MACH) += snd-soc-skl_rt286.o
- obj-$(CONFIG_SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH) += snd-skl_nau88l25_max98357a.o
- obj-$(CONFIG_SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH) += snd-soc-skl_nau88l25_ssm4567.o
-+obj-$(CONFIG_SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH) += snd-soc-skl_hda_dsp.o
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_common.c b/sound/soc/intel/boards/skl_hda_dsp_common.c
-new file mode 100644
-index 0000000..5558334
---- /dev/null
-+++ b/sound/soc/intel/boards/skl_hda_dsp_common.c
-@@ -0,0 +1,130 @@
-+/*
-+ * Intel Machine Driver for SKL/KBL platforms with HDA Codecs
-+ *
-+ * Copyright (C) 2017, Intel Corporation. All rights reserved.
-+ *
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License version
-+ * 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/jack.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include "../../codecs/hdac_hdmi.h"
-+#include "../skylake/skl.h"
-+#include "skl_hda_dsp_common.h"
-+
-+#define NAME_SIZE	32
-+
-+static struct snd_soc_dai *skl_hda_get_codec_dai(struct snd_soc_card *card,
-+						     const char *dai_name)
++static struct snd_soc_acpi_mach *skl_probe_hda_machine(
++					struct snd_soc_acpi_mach *machines)
 +{
-+	struct snd_soc_pcm_runtime *rtd;
 +
-+	list_for_each_entry(rtd, &card->rtd_list, list) {
-+		if (!strcmp(rtd->codec_dai->name, dai_name))
-+			return rtd->codec_dai;
++	struct snd_soc_acpi_mach *mach;
++
++	/*
++	 * FIXME:
++	 * First check if there are any HDA codecs present on the system
++	 * then search the match table.
++	 * For now this function is not detecting the presence of any
++	 * HDA codecs.
++	 */
++	for (mach = machines; mach->id[0]; mach++) {
++		if (!strcmp(mach->id, "HDA_GEN"))
++			return mach;
 +	}
-+
 +	return NULL;
 +}
 +
-+int skl_hda_hdmi_add_pcm(struct snd_soc_card *card, int device)
-+{
-+	char dai_name[NAME_SIZE];
-+	struct skl_hda_private *ctx = snd_soc_card_get_drvdata(card);
-+	struct skl_hda_hdmi_pcm *pcm;
-+	static int i = 1;	/* hdmi codec dai name starts from index 1 */
+ static int skl_machine_device_register(struct skl *skl, void *driver_data)
+ {
+ 	struct hdac_bus *bus = skl_to_bus(skl);
+@@ -451,9 +471,14 @@ static int skl_machine_device_register(struct skl *skl, void *driver_data)
+ 
+ 	mach = snd_soc_acpi_find_machine(mach);
+ 	if (mach == NULL) {
+-		dev_err(bus->dev, "No matching machine driver found\n");
+-		return -ENODEV;
++		dev_dbg(bus->dev, "No matching I2S machine driver found\n");
++		mach = skl_probe_hda_machine(driver_data);
++		if (mach == NULL) {
++			dev_err(bus->dev, "No matching machine driver found\n");
++			return -ENODEV;
++		}
+ 	}
 +
-+	pcm = devm_kzalloc(card->dev, sizeof(*pcm), GFP_KERNEL);
-+	if (!pcm)
-+		return -ENOMEM;
-+
-+	snprintf(dai_name, sizeof(dai_name), "intel-hdmi-hifi%d", i++);
-+	pcm->codec_dai = skl_hda_get_codec_dai(card, dai_name);
-+	if (!pcm->codec_dai)
-+		return -EINVAL;
-+
-+	pcm->device = device;
-+	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
-+
-+	return 0;
-+}
-+
-+/* skl_hda_digital audio interface glue - connects codec <--> CPU */
-+struct snd_soc_dai_link skl_hda_be_dai_links[HDA_DSP_MAX_BE_DAI_LINKS] = {
-+
-+	/* Back End DAI links */
+ 	skl->fw_name = mach->fw_filename;
+ 
+ 	pdev = platform_device_alloc(mach->drv_name, -1);
+@@ -1005,6 +1030,14 @@ static struct snd_soc_acpi_mach sst_skl_devdata[] = {
+ 		.quirk_data = &skl_codecs,
+ 		.pdata = &skl_dmic_data
+ 	},
 +	{
-+		.name = "iDisp1",
-+		.id = 1,
-+		.cpu_dai_name = "iDisp1 Pin",
-+		.codec_name = "ehdaudio0D2",
-+		.codec_dai_name = "intel-hdmi-hifi1",
-+		.platform_name = "0000:00:1f.3",
-+		.dpcm_playback = 1,
-+		.no_pcm = 1,
++		.id = "HDA_GEN",
++		.drv_name = "skl_hda_generic",
++		.fw_filename = "intel/dsp_fw_release.bin",
++		.machine_quirk = NULL,
++		.quirk_data = NULL,
++		.pdata = &cnl_pdata,
 +	},
+ 	{}
+ };
+ 
+@@ -1067,7 +1100,14 @@ static struct snd_soc_acpi_mach sst_kbl_devdata[] = {
+ 		.drv_name = "kbl_rt5663",
+ 		.fw_filename = "intel/dsp_fw_kbl.bin",
+ 	},
+-
 +	{
-+		.name = "iDisp2",
-+		.id = 2,
-+		.cpu_dai_name = "iDisp2 Pin",
-+		.codec_name = "ehdaudio0D2",
-+		.codec_dai_name = "intel-hdmi-hifi2",
-+		.platform_name = "0000:00:1f.3",
-+		.dpcm_playback = 1,
-+		.no_pcm = 1,
++		.id = "HDA_GEN",
++		.drv_name = "skl_hda_generic",
++		.fw_filename = "intel/dsp_fw_kbl.bin",
++		.machine_quirk = NULL,
++		.quirk_data = NULL,
++		.pdata = &cnl_pdata,
 +	},
-+	{
-+		.name = "iDisp3",
-+		.id = 3,
-+		.cpu_dai_name = "iDisp3 Pin",
-+		.codec_name = "ehdaudio0D2",
-+		.codec_dai_name = "intel-hdmi-hifi3",
-+		.platform_name = "0000:00:1f.3",
-+		.dpcm_playback = 1,
-+		.no_pcm = 1,
-+	},
-+};
-+
-+int skl_hda_hdmi_jack_init(struct snd_soc_card *card)
-+{
-+	struct skl_hda_private *ctx = snd_soc_card_get_drvdata(card);
-+	struct skl_hda_hdmi_pcm *pcm;
-+	struct snd_soc_codec *codec = NULL;
-+	int err;
-+	char jack_name[NAME_SIZE];
-+
-+	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
-+		codec = pcm->codec_dai->codec;
-+		snprintf(jack_name, sizeof(jack_name),
-+			"HDMI/DP, pcm=%d Jack", pcm->device);
-+		err = snd_soc_card_jack_new(card, jack_name,
-+					SND_JACK_AVOUT, &pcm->hdmi_jack,
-+					NULL, 0);
-+
-+		if (err)
-+			return err;
-+
-+		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device,
-+						&pcm->hdmi_jack);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	if (!codec)
-+		return -EINVAL;
-+
-+	return hdac_hdmi_jack_port_init(codec, &card->dapm);
-+}
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_common.h b/sound/soc/intel/boards/skl_hda_dsp_common.h
-new file mode 100644
-index 0000000..c9cb66b
---- /dev/null
-+++ b/sound/soc/intel/boards/skl_hda_dsp_common.h
-@@ -0,0 +1,42 @@
-+/*
-+ * Intel Machine Driver for platform with HDA Codecs definitions
-+ *
-+ * Copyright (C) 2017, Intel Corporation. All rights reserved.
-+ *
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License version
-+ * 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ */
-+
-+#ifndef __SOUND_SOC_HDA_DSP_COMMON_H
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/jack.h>
-+#define __SOUND_SOC_HDA_DSP_COMMON_H
-+
-+#define HDA_DSP_MAX_BE_DAI_LINKS 3
-+
-+struct skl_hda_hdmi_pcm {
-+	struct list_head head;
-+	struct snd_soc_dai *codec_dai;
-+	struct snd_soc_jack hdmi_jack;
-+	int device;
-+};
-+
-+struct skl_hda_private {
-+	struct list_head hdmi_pcm_list;
-+	int pcm_count;
-+};
-+
-+extern struct snd_soc_dai_link skl_hda_be_dai_links[HDA_DSP_MAX_BE_DAI_LINKS];
-+int skl_hda_hdmi_jack_init(struct snd_soc_card *card);
-+int skl_hda_hdmi_add_pcm(struct snd_soc_card *card, int device);
-+
-+#endif /* __SOUND_SOC_HDA_DSP_COMMON_H */
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-new file mode 100644
-index 0000000..2d2b901
---- /dev/null
-+++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-@@ -0,0 +1,112 @@
-+/*
-+ * Intel Machine Driver for SKL/KBL platforms with HDA Codecs
-+ *
-+ * Copyright (C) 2017, Intel Corporation. All rights reserved.
-+ *
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License version
-+ * 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/jack.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include "../../codecs/hdac_hdmi.h"
-+#include "../skylake/skl.h"
-+#include "skl_hda_dsp_common.h"
-+
-+static const struct snd_soc_dapm_route skl_hda_map[] = {
-+
-+	{ "hifi3", NULL, "iDisp3 Tx"},
-+	{ "iDisp3 Tx", NULL, "iDisp3_out"},
-+	{ "hifi2", NULL, "iDisp2 Tx"},
-+	{ "iDisp2 Tx", NULL, "iDisp2_out"},
-+	{ "hifi1", NULL, "iDisp1 Tx"},
-+	{ "iDisp1 Tx", NULL, "iDisp1_out"},
-+
-+};
-+
-+static int skl_hda_card_late_probe(struct snd_soc_card *card)
-+{
-+	return skl_hda_hdmi_jack_init(card);
-+}
-+
-+static int
-+skl_hda_add_dai_link(struct snd_soc_card *card, struct snd_soc_dai_link *link)
-+{
-+	struct skl_hda_private *ctx = snd_soc_card_get_drvdata(card);
-+	int ret = 0;
-+
-+	dev_dbg(card->dev, "%s: dai link name - %s\n", __func__, link->name);
-+	link->platform_name = "0000:00:1f.3";
-+	link->nonatomic = 1;
-+
-+	if (strstr(link->name, "HDMI"))
-+		ret = skl_hda_hdmi_add_pcm(card, ctx->pcm_count);
-+	ctx->pcm_count++;
-+
-+	return ret;
-+}
-+
-+static struct snd_soc_card hda_soc_card = {
-+	.name = "skl_hda_card",
-+	.owner = THIS_MODULE,
-+	.dai_link = skl_hda_be_dai_links,
-+	.num_links = ARRAY_SIZE(skl_hda_be_dai_links),
-+	.dapm_routes = skl_hda_map,
-+	.num_dapm_routes = ARRAY_SIZE(skl_hda_map),
-+	.add_dai_link = skl_hda_add_dai_link,
-+	.fully_routed = true,
-+	.late_probe = skl_hda_card_late_probe,
-+};
-+
-+static int skl_hda_audio_probe(struct platform_device *pdev)
-+{
-+	struct skl_hda_private *ctx;
-+
-+	dev_dbg(&pdev->dev, "%s: machine driver probe got called\n", __func__);
-+
-+	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
-+	if (!ctx)
-+		return -ENOMEM;
-+
-+	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
-+	ctx->pcm_count = ARRAY_SIZE(skl_hda_be_dai_links);
-+
-+	hda_soc_card.dev = &pdev->dev;
-+	snd_soc_card_set_drvdata(&hda_soc_card, ctx);
-+
-+	return devm_snd_soc_register_card(&pdev->dev, &hda_soc_card);
-+}
-+
-+static const struct platform_device_id skl_hda_board_ids[] = {
-+	{ .name = "skl_hda_generic" },
-+	{ }
-+};
-+
-+static struct platform_driver skl_hda_audio = {
-+	.probe = skl_hda_audio_probe,
-+	.driver = {
-+		.name = "skl_hda_generic",
-+		.pm = &snd_soc_pm_ops,
-+	},
-+	.id_table = skl_hda_board_ids,
-+};
-+
-+module_platform_driver(skl_hda_audio)
-+
-+/* Module information */
-+MODULE_DESCRIPTION("SKL/KBL HDA Generic Machine driver");
-+MODULE_AUTHOR("Rakesh Ughreja <rakesh.a.ughreja@intel.com>");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:skl_hda_generic");
+ 	{}
+ };
+ 
 -- 
 2.7.4
