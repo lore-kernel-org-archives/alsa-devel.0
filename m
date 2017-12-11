@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nuc900: Fix a loop timeout test" to the asoc tree
-Date: Mon, 11 Dec 2017 12:14:04 +0000
-Message-ID: <E1eOMyC-0004dm-GN@debutante>
-References: <20170717081605.a6merkvdy4ngdiqj@mwanda>
+Subject: Applied "ASoC: nuc900: Fix platform_get_irq() error checking some more" to the asoc tree
+Date: Mon, 11 Dec 2017 12:14:27 +0000
+Message-ID: <E1eOMyZ-0004f5-IZ@debutante>
+References: <20171209115203.pdtdfnmzwz6zpjqs@mwanda>
 Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <20170717081605.a6merkvdy4ngdiqj@mwanda>
+In-Reply-To: <20171209115203.pdtdfnmzwz6zpjqs@mwanda>
 Sender: kernel-janitors-owner@vger.kernel.org
 To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Wan ZongShun <mcuos.com@gmail.com>, alsa-devel@alsa-project.orgMark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Arvind Yadav <arvind.yadav.cs@gmail.com>, alsa-devel@alsa-project.orgMark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nuc900: Fix a loop timeout test
+   ASoC: nuc900: Fix platform_get_irq() error checking some more
 
 has been applied to the asoc tree at
 
@@ -37,43 +37,42 @@ to this mail.
 Thanks,
 Mark
 
->From 65a12b3aafed5fc59f4ce41b22b752b1729e6701 Mon Sep 17 00:00:00 2001
+>From cd430a244cd5d3ca0f4053718eabdf42bc12c517 Mon Sep 17 00:00:00 2001
 From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Sat, 9 Dec 2017 14:52:28 +0300
-Subject: [PATCH] ASoC: nuc900: Fix a loop timeout test
+Date: Sat, 9 Dec 2017 14:52:03 +0300
+Subject: [PATCH] ASoC: nuc900: Fix platform_get_irq() error checking some more
 
-We should be finishing the loop with timeout set to zero but because
-this is a post-op we finish with timeout == -1.
+The error handling doesn't work here because "nuc900_audio->irq_num" is
+unsigned.  Also we should be checking for < 0 and not <= 0 but I believe
+that's harmless.  The platform_get_irq() comments don't talk about the
+return values...
 
-Fixes: 1082e2703a2d ("ASoC: NUC900/audio: add nuc900 audio driver support")
+Fixes: fa8cc38165c2 ("ASoC: nuc900: Fix platform_get_irq's error checking")
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/nuc900/nuc900-ac97.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/nuc900/nuc900-ac97.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/nuc900/nuc900-ac97.c b/sound/soc/nuc900/nuc900-ac97.c
-index 71fce7c85c93..81b09d740ed9 100644
+index 5e4fbd2d3479..71fce7c85c93 100644
 --- a/sound/soc/nuc900/nuc900-ac97.c
 +++ b/sound/soc/nuc900/nuc900-ac97.c
-@@ -67,7 +67,7 @@ static unsigned short nuc900_ac97_read(struct snd_ac97 *ac97,
+@@ -345,11 +345,10 @@ static int nuc900_ac97_drvprobe(struct platform_device *pdev)
+ 		goto out;
+ 	}
  
- 	/* polling the AC_R_FINISH */
- 	while (!(AUDIO_READ(nuc900_audio->mmio + ACTL_ACCON) & AC_R_FINISH)
--								&& timeout--)
-+								&& --timeout)
- 		mdelay(1);
+-	nuc900_audio->irq_num = platform_get_irq(pdev, 0);
+-	if (nuc900_audio->irq_num <= 0) {
+-		ret = nuc900_audio->irq_num < 0 ? nuc900_audio->irq_num : -EBUSY;
++	ret = platform_get_irq(pdev, 0);
++	if (ret < 0)
+ 		goto out;
+-	}
++	nuc900_audio->irq_num = ret;
  
- 	if (!timeout) {
-@@ -121,7 +121,7 @@ static void nuc900_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
+ 	nuc900_ac97_data = nuc900_audio;
  
- 	/* polling the AC_W_FINISH */
- 	while ((AUDIO_READ(nuc900_audio->mmio + ACTL_ACCON) & AC_W_FINISH)
--								&& timeout--)
-+								&& --timeout)
- 		mdelay(1);
- 
- 	if (!timeout)
 -- 
 2.15.1
 
