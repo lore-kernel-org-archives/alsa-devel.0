@@ -1,82 +1,76 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [alsa-devel] Per board ucm files on x86?
-Date: Mon, 11 Dec 2017 22:25:22 +0100
-Message-ID: <00458cbc-b306-522d-4056-4973e0bd9c90@redhat.com>
-References: <9acc4278-5e15-ebcd-8a45-1d409189e1cc@redhat.com>
- <s5hy3m9l6w0.wl-tiwai@suse.de>
-Reply-To: General PulseAudio Discussion
- <pulseaudio-discuss@lists.freedesktop.org>
+Subject: [PATCH] ASoC: rt5645: Set card long_name for GPD win /
+	pocket
+Date: Mon, 11 Dec 2017 22:26:40 +0100
+Message-ID: <20171211212640.10060-1-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-In-Reply-To: <s5hy3m9l6w0.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A5CF266AE4
+ for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 22:26:46 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAxMS0xMi0xNyAxNDo0MCwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIE1vbiwgMTEg
-RGVjIDIwMTcgMTM6MzA6MzUgKzAxMDAsCj4gSGFucyBkZSBHb2VkZSB3cm90ZToKPj4KPj4gSGkg
-QWxsLAo+Pgo+PiBUaGlzIHdlZWtlbmQgSSd2ZSBjcmVhdGVkIGEgbW9kaWZpZWQgdWNtIGNvbmZp
-ZyBiYXNlZCBvbjoKPj4KPj4gaHR0cHM6Ly9naXRodWIuY29tL3BsYm9zc2FydC9VQ00vdHJlZS9t
-YXN0ZXIvY2h0cnQ1NjQ1Cj4+Cj4+IEZvciBhIGJvYXJkIHdoaWNoIGhhcyBhIHNpbmdsZSBzcGVh
-a2VyIGNvbm5lY3RlZCB0byB0aGUKPj4gbGVmdCBjaGFubmVsIChzdGFuZGFyZCBtb25vIHNwZWFr
-ZXIgc2V0dXApIGFuZCBhIHN0ZXJlbwo+PiBoZWFkcGhvbmUgamFjayB3aXRoIHdvcmtpbmcgamFj
-ayBkZXRlY3Rpb24uCj4+Cj4+IEkndmUgYmVlbiB1bmFibGUgdG8gY29tZSB1cCB3aXRoIGEgdWNt
-IGZpbGUgd2hpY2ggYWxsb3dzCj4+IHNlbGVjdGluZyBiZXR3ZWVuIGEgIlN0ZXJlbyBTcGVha2Vy
-ICsgSGVhZHBob25lIiB2cwo+PiAiTW9ubyBTcGVha2VyICsgSGVhZHBob25lIiBvdXRwdXQgcHJv
-ZmlsZS4KPj4KPj4gaHR0cHM6Ly9naXRodWIuY29tL3BsYm9zc2FydC9VQ00vdHJlZS9tYXN0ZXIv
-Ynl0LXJ0NTY0MAo+PiBoYXMgIk1vbm8gU3BlYWtlciIsICJTdGVyZW8gU3BlYWtlciIgYW5kICJI
-ZWFkcGhvbmUiCj4+IHByb2ZpbGVzIGJ1dCBkb2VzIG5vdCBhdXRvLXN3aXRjaCBiZXR3ZWVuIEhl
-YWRwaG9uZQo+PiBhbmQgc3BlYWtlciBiYXNlZCBvbiBqYWNrIGRldGVjdGlvbiwgSSd2ZSBiZWVu
-IHVuYWJsZSB0bwo+PiBhbGxvdyBzZWxlY3RpbmcgZWl0aGVyIHN0ZXJlbyBvciBtb25vIHNwZWFr
-ZXIgd2hpbGUKPj4ga2VlcGluZyBhdXRvLXN3aXRjaGluZyB0by9mcm9tIHRoZSBoZWFkcGhvbmVz
-Lgo+Pgo+PiBCdXQgdGhpbmtpbmcgbW9yZSBhYm91dCB0aGlzIEkgZG9uJ3QgdGhpbmsgdGhhdCBo
-YXZpbmcKPj4gIlN0ZXJlbyBTcGVha2VyICsgSGVhZHBob25lIiBhbmQgIk1vbm8gU3BlYWtlciAr
-IEhlYWRwaG9uZSIKPj4gcHJvZmlsZXMgaXMgdGhlIGFuc3dlci4gUHJvZmlsZXMgbWFrZSBzZW5z
-ZSBvbiBtYWNoaW5lcyB3aXRoCj4+IGEgYnVuY2ggb2Ygb3V0cHV0cyB3aGVyZSB3ZSBkb24ndCBu
-byB3aGF0IHRoZSB1c2VyIGlzIGdvaW5nCj4+IHRvIHBsdWcgaW4sIGJ1dCBpbiB0aGlzIGNhc2Ug
-dGhlIHN0ZXJlbyB2cyBtb25vIHNwZWFrZXIKPj4gZGlzdGluY3Rpb24gaXMgYSBjbGVhciBwcm9w
-ZXJ0eSBvZiB0aGUgZGV2aWNlLCB3aGljaCB3ZQo+PiBzaG91bGQgSU1ITyBhdXRvZGV0ZWN0IGJh
-c2VkIG9uIHRoZSBkZXZpY2UtbW9kZWwuCj4+Cj4+IFNvIEkgdGhpbmsgd2UgbmVlZCBhIHdheSB0
-byBoYXZlIGRpZmZlcmVudCB1Y20gZmlsZXMgcGVyIGJvYXJkLAo+PiBzbyBpbnN0ZWFkIG9mIGxv
-YWRpbmcgL3Vzci9zaGFyZS91Y20vY2h0cnQ1NjQ1LyouY29uZiBvbiBteQo+PiBkZXZpY2UsIGFs
-c2Egc2hvdWxkIHRyeSB0byBsb2FkIC91c3Ivc2hhcmUvdWNtL2NodHJ0NTY0NS08Ym9hcmRuYW1l
-Pi8qLmNvbmYKPj4KPj4gU3BlY2lmaWNhbGx5IEknbSB0aGlua2luZyBhYm91dCB1c2luZyB1ZGV2
-ICsgaHdkYiAoZG1pIHN0cmluZykKPj4gbWF0Y2hpbmcgdG8gc2V0IGFuIEFMU0FfVUNNX05BTUUg
-dWRldiBwcm9wZXJ0eS4KPj4KPj4gSWYgdGhlIGNvbnNlbnN1cyBpcyB0aGF0IHRoaXMgaXMgYSBn
-b29kIGlkZWEgSSBjYW4gdGFrZSBhIHNob3QKPj4gYXQgd3JpdGluZyBwYXRjaGVzIGZvciB0aGlz
-IChpbiBteSBzcGFyZSB0aW1lIG1vc3RseSksIHRoZQo+PiBkb3duc2lkZSBvZiB0aGlzIGFwcHJv
-YWNoIGlzIGl0IHdvdWxkIGNhdXNlIGEgZGVwZW5kZW5jeSBvbgo+PiBsaWJ1ZGV2IGZvciB0aGUg
-YWxzYSB1Y20gY29kZS4KPiAKPiBZb3UgZG9uJ3QgbmVlZCB0byBwYXRjaCwgSSBndWVzcy4gIFRo
-ZSByZWNlbnQgY29kZSBzaG91bGQgc2V0IGEgc3RyaW5nCj4gZ2VuZXJhdGVkIGZyb20gRE1JIGFz
-IHRoZSBsb25nbmFtZSBvZiB0aGUgY2FyZCwgYW5kIGFsc2EtbGliIFVDTQo+IHBhcnNlciBwcmVm
-ZXJzIHRoZSBsb25nbmFtZSB0byB0aGUgZHJpdmVyIG5hbWUgZmllbGQuICBUaGF0IGlzLAo+IC91
-c3Ivc2hhcmUvdWNtLyRMT05HTkFNRS8kTE9OR05BTUUuY29uZiB3b3VsZCBiZSByZWFkIGF0IGZp
-cnN0LCB0aGVuCj4gL3Vzci9zaGFyZS91Y20vJERSSVZFUi8kRFJJVkVSLmNvbmYgaXMgdXNlZCBh
-cyBmYWxsYmFjay4KCkknbSBhZnJhaWQgdGhpcyBkb2VzIG5vdCB3b3JrIGVudGlyZWx5IGFzIG9u
-ZSB3b3VsZCBleHBlY3QsIGFmdGVyCm9wZW5pbmcgL3Vzci9zaGFyZS91Y20vJExPTkdOQU1FLyRM
-T05HTkFNRS5jb25mIHdoaWNoIGNvbnRhaW5zOgoKU2VjdGlvblVzZUNhc2UuIkhpRmkiIHsKICAg
-ICAgICAgRmlsZSAiSGlGaS5jb25mIgogICAgICAgICBDb21tZW50ICJEZWZhdWx0Igp9CgpzdHJh
-Y2Ugc2hvd3MgdGhhdCBhbHNhLWxpYiBvcGVuczoKL3Vzci9zaGFyZS91Y20vJERSSVZFUi9IaUZp
-LmNvbmYgYW5kIHRvIGdldCBpdCB0byBsb2FkIHRoZSBIaUZpLmNvbmYKdW5kZXIgL3Vzci9zaGFy
-ZS91Y20vJExPTkdOQU1FIEkgbmVlZCB0byBkbzoKClNlY3Rpb25Vc2VDYXNlLiJIaUZpIiB7CiAg
-ICAgICAgIEZpbGUgIi4uL2dwZC13aW4tcG9ja2V0LXJ0NTY0NS9IaUZpLmNvbmYiCiAgICAgICAg
-IENvbW1lbnQgIkRlZmF1bHQiCn0KCkxlYWRpbmcgdG8gdGhlIGZvbGxvd2luZyBpbiBzdHJhY2U6
-CgpvcGVuYXQoQVRfRkRDV0QsICIvdXNyL3NoYXJlL2Fsc2EvdWNtL2NodHJ0NTY0NS8uLi9ncGQt
-d2luLXBvY2tldC1ydDU2NDUvSGlGaS5jb25GIiwgT19SRE9OTFkpID0gMjMKCldoaWNoIHRvIG1l
-IHNlZW1zIHVuZGVzaXJhYmxlIGJlaGF2aW9yIGJ5IGFsc2EtbGliLgoKUmVnYXJkcywKCkhhbnMK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KcHVsc2VhdWRp
-by1kaXNjdXNzIG1haWxpbmcgbGlzdApwdWxzZWF1ZGlvLWRpc2N1c3NAbGlzdHMuZnJlZWRlc2t0
-b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vcHVs
-c2VhdWRpby1kaXNjdXNzCg==
+The GPD win and pocket devices both use the same codec setup and both
+have too generic dmi strings making snd_soc_set_dmi_name() not work.
+
+As these devices have only a single speaker we want a separate ucm
+file for them, which requires a unique long_name, use the existing
+GPD quirk handling to also provide a unique long_name.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ include/sound/rt5645.h    | 3 +++
+ sound/soc/codecs/rt5645.c | 4 ++++
+ 2 files changed, 7 insertions(+)
+
+diff --git a/include/sound/rt5645.h b/include/sound/rt5645.h
+index d0c33a9972b9..f218c742f08e 100644
+--- a/include/sound/rt5645.h
++++ b/include/sound/rt5645.h
+@@ -25,6 +25,9 @@ struct rt5645_platform_data {
+ 	bool level_trigger_irq;
+ 	/* Invert JD1_1 status polarity */
+ 	bool inv_jd1_1;
++
++	/* Value to asign to snd_soc_card.long_name */
++	const char *long_name;
+ };
+ 
+ #endif
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index f020d2d1eef4..5e34e24c01ab 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3394,6 +3394,9 @@ static int rt5645_probe(struct snd_soc_codec *codec)
+ 		snd_soc_dapm_sync(dapm);
+ 	}
+ 
++	if (rt5645->pdata.long_name)
++		codec->component.card->long_name = rt5645->pdata.long_name;
++
+ 	rt5645->eq_param = devm_kzalloc(codec->dev,
+ 		RT5645_HWEQ_NUM * sizeof(struct rt5645_eq_param_s), GFP_KERNEL);
+ 
+@@ -3624,6 +3627,7 @@ static const struct dmi_system_id dmi_platform_intel_broadwell[] = {
+ static const struct rt5645_platform_data gpd_win_platform_data = {
+ 	.jd_mode = 3,
+ 	.inv_jd1_1 = true,
++	.long_name = "gpd-win-pocket-rt5645",
+ };
+ 
+ static const struct dmi_system_id dmi_platform_gpd_win[] = {
+-- 
+2.14.3
