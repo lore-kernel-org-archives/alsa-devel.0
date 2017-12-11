@@ -1,17 +1,18 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v10 02/13] dt-bindings: Add SLIMbus bindings
-Date: Mon, 11 Dec 2017 23:42:56 +0000
-Message-ID: <20171211234307.14465-3-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v10 05/13] slimbus: core: add support to device
+	tree helper
+Date: Mon, 11 Dec 2017 23:42:59 +0000
+Message-ID: <20171211234307.14465-6-srinivas.kandagatla@linaro.org>
 References: <20171211234307.14465-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 815A32676AB
- for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 00:45:16 +0100 (CET)
-Received: by mail-wm0-f65.google.com with SMTP id g75so17677308wme.0
- for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 15:45:16 -0800 (PST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CD442676BA
+ for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 00:45:20 +0100 (CET)
+Received: by mail-wm0-f65.google.com with SMTP id n138so17566175wmg.2
+ for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 15:45:20 -0800 (PST)
 In-Reply-To: <20171211234307.14465-1-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,78 +27,96 @@ To: Mark Brown <broonie@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org, j.neuschaefer@gmx.net, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, pombredanne@nexb.com, sdharia@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Sagar Dharia <sdharia@codeaurora.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-SLIMbus (Serial Low Power Interchip Media Bus) is a specification
-developed by MIPI (Mobile Industry Processor Interface) alliance.
-SLIMbus is a 2-wire implementation, which is used to communicate with
-peripheral components like audio-codec.
+This patch adds support to parse slim devices from device tree.
 
-This patch adds device tree bindings for the slimbus.
-
-Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- Documentation/devicetree/bindings/slimbus/bus.txt | 50 +++++++++++++++++++++++
+ drivers/slimbus/core.c | 50 ++++++++++++++++++++++++++++++++++++++++++++++++++
  1 file changed, 50 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/slimbus/bus.txt
 
-diff --git a/Documentation/devicetree/bindings/slimbus/bus.txt b/Documentation/devicetree/bindings/slimbus/bus.txt
-new file mode 100644
-index 000000000000..52fa6426388c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/slimbus/bus.txt
-@@ -0,0 +1,50 @@
-+SLIM(Serial Low Power Interchip Media Bus) bus
+diff --git a/drivers/slimbus/core.c b/drivers/slimbus/core.c
+index ed53ae6bd1cc..1accb20ed5cd 100644
+--- a/drivers/slimbus/core.c
++++ b/drivers/slimbus/core.c
+@@ -8,6 +8,7 @@
+ #include <linux/slab.h>
+ #include <linux/init.h>
+ #include <linux/idr.h>
++#include <linux/of.h>
+ #include <linux/slimbus.h>
+ #include "slimbus.h"
+ 
+@@ -113,6 +114,9 @@ static int slim_add_device(struct slim_controller *ctrl,
+ 	sbdev->dev.driver = NULL;
+ 	sbdev->ctrl = ctrl;
+ 
++	if (node)
++		sbdev->dev.of_node = of_node_get(node);
 +
-+SLIMbus is a 2-wire bus, and is used to communicate with peripheral
-+components like audio-codec.
+ 	dev_set_name(&sbdev->dev, "%x:%x:%x:%x",
+ 				  sbdev->e_addr.manf_id,
+ 				  sbdev->e_addr.prod_code,
+@@ -143,6 +147,50 @@ static struct slim_device *slim_alloc_device(struct slim_controller *ctrl,
+ 	return sbdev;
+ }
+ 
++static void of_register_slim_devices(struct slim_controller *ctrl)
++{
++	struct device *dev = ctrl->dev;
++	struct device_node *node;
 +
-+Required property for SLIMbus controller node:
-+- compatible	- name of SLIMbus controller
++	if (!ctrl->dev->of_node)
++		return;
 +
-+Child nodes:
-+Every SLIMbus controller node can contain zero or more child nodes
-+representing slave devices on the bus. Every SLIMbus slave device is
-+uniquely determined by the enumeration address containing 4 fields:
-+Manufacturer ID, Product code, Device index, and Instance value for
-+the device.
-+If child node is not present and it is instantiated after device
-+discovery (slave device reporting itself present).
++	for_each_child_of_node(ctrl->dev->of_node, node) {
++		struct slim_device *sbdev;
++		struct slim_eaddr e_addr;
++		const char *compat = NULL;
++		int reg[2], ret;
++		int manf_id, prod_code;
 +
-+In some cases it may be necessary to describe non-probeable device
-+details such as non-standard ways of powering up a device. In
-+such cases, child nodes for those devices will be present as
-+slaves of the SLIMbus controller, as detailed below.
++		compat = of_get_property(node, "compatible", NULL);
++		if (!compat)
++			continue;
 +
-+Required property for SLIMbus child node if it is present:
-+- reg		- Should be ('Device index', 'Instance ID') from SLIMbus
-+		  Enumeration  Address.
-+		  Device Index Uniquely identifies multiple Devices within
-+		  a single Component.
-+		  Instance ID Is for the cases where multiple Devices of the
-+		  same type or Class are attached to the bus.
++		ret = sscanf(compat, "slim%x,%x", &manf_id, &prod_code);
++		if (ret != 2) {
++			dev_err(dev, "Manf ID & Product code not found %s\n",
++				compat);
++			continue;
++		}
 +
-+- compatible	-"slimMID,PID". The textual representation of Manufacturer ID,
-+	 	  Product Code, shall be in lower case hexadecimal with leading
-+		  zeroes suppressed
++		ret = of_property_read_u32_array(node, "reg", reg, 2);
++		if (ret) {
++			dev_err(dev, "Device and Instance id not found:%d\n",
++				ret);
++			continue;
++		}
 +
-+SLIMbus example for Qualcomm's slimbus manager component:
++		e_addr.dev_index = reg[0];
++		e_addr.instance = reg[1];
++		e_addr.manf_id = manf_id;
++		e_addr.prod_code = prod_code;
 +
-+	slim@28080000 {
-+		compatible = "qcom,apq8064-slim", "qcom,slim";
-+		reg = <0x28080000 0x2000>,
-+		interrupts = <0 33 0>;
-+		clocks = <&lcc SLIMBUS_SRC>, <&lcc AUDIO_SLIMBUS_CLK>;
-+		clock-names = "iface", "core";
-+		#address-cells = <2>;
-+		#size-cell = <0>;
++		sbdev = slim_alloc_device(ctrl, &e_addr, node);
++		if (!sbdev)
++			continue;
++	}
++}
 +
-+		codec: wcd9310@1,0{
-+			compatible = "slim217,60";
-+			reg = <1 0>;
-+		};
-+	};
+ /*
+  * slim_register_controller() - Controller bring-up and registration.
+  *
+@@ -174,6 +222,8 @@ int slim_register_controller(struct slim_controller *ctrl)
+ 	dev_dbg(ctrl->dev, "Bus [%s] registered:dev:%p\n",
+ 		ctrl->name, ctrl->dev);
+ 
++	of_register_slim_devices(ctrl);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(slim_register_controller);
 -- 
 2.15.0
