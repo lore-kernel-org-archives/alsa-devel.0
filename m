@@ -1,51 +1,108 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [alsa-devel] [PATCH 5/8] ASoC: uniphier: add support for
- UniPhier AIO driver
-Date: Mon, 11 Dec 2017 23:18:54 +0530
-Message-ID: <20171211174854.GZ18649@localhost>
-References: <20171122114321.29196-1-suzuki.katsuhiro@socionext.com>
- <20171122114321.29196-6-suzuki.katsuhiro@socionext.com>
- <20171204183934.rd4vin22ktukwpip@sirena.org.uk>
- <002b01d36d84$51d80aa0$f5881fe0$@socionext.com>
- <20171205121440.GC11658@finisterre>
- <004801d36e57$ea1940d0$be4bc270$@socionext.com>
- <20171206125817.GF1827@finisterre>
- <001501d37261$7ea89d10$7bf9d730$@socionext.com>
- <20171211151629.GD9854@sirena.org.uk>
+From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
+Subject: Re: [RFC v2 00/11] Enable HDA Codec support on Intel
+ Platforms (Series2)
+Date: Mon, 11 Dec 2017 18:20:41 +0000
+Message-ID: <85DFEED57DC57344B2483EF7BF8CB60579AD2F48@BGSMSX104.gar.corp.intel.com>
+References: <1512989583-10877-1-git-send-email-rakesh.a.ughreja@intel.com>
+ <s5hbmj5mrts.wl-tiwai@suse.de>
+ <85DFEED57DC57344B2483EF7BF8CB60579AD2978@BGSMSX104.gar.corp.intel.com>
+ <s5hinddl28l.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171211151629.GD9854@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, =?utf-8?B?WWFtYWRhLCBNYXNhaGlyby/lsbHnlLAg55yf5byY?= <yamada.masahiro@socionext.com>, linux-kernel@vger.kernel.org, Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id CBE7A266EDD
+ for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 19:20:48 +0100 (CET)
+In-Reply-To: <s5hinddl28l.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul,
+ Vinod" <vinod.koul@intel.com>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 11, 2017 at 03:16:29PM +0000, Mark Brown wrote:
-> On Mon, Dec 11, 2017 at 06:21:58PM +0900, Katsuhiro Suzuki wrote:
-> 
-> > But I can't find how to use/map this DAI in machine driver or Device-Tree or
-> > something. I think that it's same as PCM DAI, am I correct?
-> 
-> Yes, that probably makes sense from a binding point of view.
-> 
-> > I read compress-offload.rst, but I can't find how do I test it. It seems aplay
-> > of
-> > alsa-util doesn't know compress audio formats. Should I use PulseAudio or
-> > Android HAL to test compress audio APIs?
-> 
-> IIRC tinyalsa has a compressed API test application - Vinod?
 
-I guess it was sheer luck that i saw this :) email in CC reads
-vinod.koul@linaro.org! I don't work for Linaro, not yet :D
 
-And to the answer the question, Yes we have compressed API test application
-in tinycompress which is located at git.alsa-project.org:tinycompress.git
+>-----Original Message-----
+>From: Takashi Iwai [mailto:tiwai@suse.de]
+>Sent: Monday, December 11, 2017 8:51 PM
+>To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>
+>Cc: alsa-devel@alsa-project.org; broonie@kernel.org;
+>liam.r.girdwood@linux.intel.com; pierre-louis.bossart@linux.intel.com; Koul, Vinod
+><vinod.koul@intel.com>; Patches Audio <patches.audio@intel.com>
+>Subject: Re: [RFC v2 00/11] Enable HDA Codec support on Intel Platforms
+>(Series2)
+>
+>On Mon, 11 Dec 2017 16:10:32 +0100,
+>Ughreja, Rakesh A wrote:
+>>
+>> >good in one side.  OTOH, it is unacceptably messy, in special, because
+>> >the device creation and registration phases are mixed up.
+>>
+>> I am not sure if I understand this fully. "Device creation and registration
+>> phases are mixed up". If you can explain bit more, I can try to improve
+>> it.
+>
+>e.g. in the patch 7, snd_hda_asoc_codec_new() has the code like:
+>
+>+int snd_hda_asoc_codec_new(struct hda_bus *bus, struct snd_card *card,
+>+			unsigned int codec_addr, struct hda_codec **codecp)
+>+{
+>+	struct hda_codec *codec = NULL;
+>....
+>+	err = snd_device_new(card, SNDRV_DEV_CODEC, codec, &dev_ops);
+>
+>which means that the device is being created in this function.
+>At the same time, however, this function tries to register that codec
+>device itself soon after the above:
+>
+>+	list_for_each_entry(snd_dev, &card->devices, list) {
+>+		if (snd_dev->type == SNDRV_DEV_CODEC) {
+>+			void *device_data = snd_dev->device_data;
+>+
+>+			err = snd_device_register(card, device_data);
+>+			if (err < 0)
+>
+>This is wrong.  The registration must happen at a later stage once
+>after all components get ready.  After all, that's the reason we have
+>the dev_register individual callback in snd_dev_ops.
 
-We have both compressed audio playback as well as record test app, cplay and
-crecord.
+So when you say "after all the components get ready"
+what exactly you are referring to ?
 
-HTH
--- 
-~Vinod
+I am calling snd_hda_asoc_codec_new function from probe function of 
+hdac_driver. So I was thinking that since the codec is already enumerated
+from the bus point of view, I can register. What am I missing here ?
+
+>
+>The exception is a case with multiple probe-bindings like USB-audio
+>that matches multiple times per interface.  But it's an exception, and
+>not applied to the normal probe.  (And if any, you should just
+>register the whole via snd_card_register() call.)
+>
+>> >And exporting each codec table doesn't look nice.  We need to find a
+>> >better way...
+>>
+>> Do you think accessing the codec table via some EXPORT function
+>> is a better way ?
+>
+>We need more consideration.  I don't think we have done it fully
+>enough.  At least, exporting each table sounds like a bad idea.
+>Ideally, we should re-use the whole codec driver as is; i.e. the
+>single codec probe should work for both legacy and ext controllers.
+
+The generic hdac_hda driver uses the legacy driver APIs once the 
+hdac_dev is enumerated on the hdac_bus. 
+While the legacy driver APIs are used by controller driver.
+
+Do you think it's a wrong path to go ? Should the legacy driver
+APIs be called directly from ASoC platform driver ?
