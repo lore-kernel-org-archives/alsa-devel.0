@@ -1,19 +1,24 @@
-From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
-Subject: Re: [RFC v2 00/11] Enable HDA Codec support on Intel
- Platforms (Series2)
-Date: Mon, 11 Dec 2017 15:10:32 +0000
-Message-ID: <85DFEED57DC57344B2483EF7BF8CB60579AD2978@BGSMSX104.gar.corp.intel.com>
-References: <1512989583-10877-1-git-send-email-rakesh.a.ughreja@intel.com>
- <s5hbmj5mrts.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 5/8] ASoC: uniphier: add support for
+	UniPhier AIO driver
+Date: Mon, 11 Dec 2017 15:16:29 +0000
+Message-ID: <20171211151629.GD9854@sirena.org.uk>
+References: <20171122114321.29196-1-suzuki.katsuhiro@socionext.com>
+ <20171122114321.29196-6-suzuki.katsuhiro@socionext.com>
+ <20171204183934.rd4vin22ktukwpip@sirena.org.uk>
+ <002b01d36d84$51d80aa0$f5881fe0$@socionext.com>
+ <20171205121440.GC11658@finisterre>
+ <004801d36e57$ea1940d0$be4bc270$@socionext.com>
+ <20171206125817.GF1827@finisterre>
+ <001501d37261$7ea89d10$7bf9d730$@socionext.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6698725748950181796=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- by alsa0.perex.cz (Postfix) with ESMTP id EA3CF266EDD
- for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 16:10:38 +0100 (CET)
-In-Reply-To: <s5hbmj5mrts.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A815266EDD
+ for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 16:16:37 +0100 (CET)
+In-Reply-To: <001501d37261$7ea89d10$7bf9d730$@socionext.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,76 +28,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul,
- Vinod" <vinod.koul@intel.com>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, "broonie@kernel.org" <broonie@kernel.org>
+To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, vinod.koul@linaro.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, =?utf-8?B?WWFtYWRhLCBNYXNhaGlyby/lsbHnlLAg55yf5byY?= <yamada.masahiro@socionext.com>, linux-kernel@vger.kernel.org, Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
+--===============6698725748950181796==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="WChQLJJJfbwij+9x"
+Content-Disposition: inline
 
->-----Original Message-----
->From: Takashi Iwai [mailto:tiwai@suse.de]
->Sent: Monday, December 11, 2017 4:53 PM
->To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>
->Cc: alsa-devel@alsa-project.org; broonie@kernel.org;
->liam.r.girdwood@linux.intel.com; pierre-louis.bossart@linux.intel.com; Koul, Vinod
-><vinod.koul@intel.com>; Patches Audio <patches.audio@intel.com>
->Subject: Re: [RFC v2 00/11] Enable HDA Codec support on Intel Platforms
->(Series2)
->
->On Mon, 11 Dec 2017 11:52:52 +0100,
->Rakesh Ughreja wrote:
->>
->> Many Intel platforms (SKL, KBL) etc. in the market supports enhanced
->> audio capabilities which also includes DSP processing. This patch carry
->> forwards the works that is done in the previous series to enable HD Audio
->> codecs on such platforms.
->>
->> This patch series adds ASoC HDA codec driver for Intel platforms. It is
->> written by reusing the legacy HDA ALSA codec driver. Intention is to
->> maximize the reuse and minimize the changes in the legacy HDA codec driver.
->>
->> I would like to receive feedback before proceeding further on this
->> direction.
->>
->> INFO:
->> - This series is tested on KBL based product (Dell XPS 13).
->> - Basic playback is working with headset and speakers.
->> - HDMI playback is working.
->> - Capture operation is not tested.
->> - More platforms and use cases coverage can be added once we have basic
->>   agreement in terms of the overall approach.
->>
->> Changes in v2:
->> - Using Topology framework to create DAIs and DAI Links
->> - Moved most commonly used functions into a separate file for machine driver
->> - Implemented separate Realtek ASoC HDA Driver driver for Realtek HDA
->codecs.
->>   It is just a driver registration wrapper which reuses the legacy HDA codec
->>   driver. This allows the removes the limitation that was present in v1.
->> - Implemented the review feedback.
->
->Looking through the patchset quickly, I have a mixed feeling with it.
->I see you're trying to get it working with minimal changes, which is
 
-Thanks once again for the quick feedback.
+--WChQLJJJfbwij+9x
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->good in one side.  OTOH, it is unacceptably messy, in special, because
->the device creation and registration phases are mixed up.
+On Mon, Dec 11, 2017 at 06:21:58PM +0900, Katsuhiro Suzuki wrote:
 
-I am not sure if I understand this fully. "Device creation and registration
-phases are mixed up". If you can explain bit more, I can try to improve
-it.
+> But I can't find how to use/map this DAI in machine driver or Device-Tree or
+> something. I think that it's same as PCM DAI, am I correct?
 
->
->And exporting each codec table doesn't look nice.  We need to find a
->better way...
+Yes, that probably makes sense from a binding point of view.
 
-Do you think accessing the codec table via some EXPORT function
-is a better way ?
+> I read compress-offload.rst, but I can't find how do I test it. It seems aplay
+> of
+> alsa-util doesn't know compress audio formats. Should I use PulseAudio or
+> Android HAL to test compress audio APIs?
 
->
->
->thanks,
->
->Takashi
+IIRC tinyalsa has a compressed API test application - Vinod?
+
+--WChQLJJJfbwij+9x
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlouoUwACgkQJNaLcl1U
+h9ARPQf+PMXnrKIL23fYeyj1KTSHQe5hA6zsx76EfW6KwhDKOc22W/xWKGahKiSi
+88aMs8o/qIofpPSH9NZOfgSmnXOCMqRK38T9sW0WHqIugRc7UKBh93PV4/xjHR1w
+U4PfJVBeTDoHx81oOhtRyuAKV1Pt8n2EIutk+Xha12tCqzpRPrXr26WeQt2NXBrm
+Y3d1kcjugs9VOUlciPlboMZnXfWaVUzelvWM6FYW+oN4B9BxCKs4uuR3O8Cs92K9
+3I7GZkwMcowhcdpS5G5+5xXi3yPlCiC4+miyymITMvvjpi37wNLlf7NdP6ENnE6/
+LRWeMtupwTX1HhiRN2/2sqV/Vt2JUQ==
+=oCvC
+-----END PGP SIGNATURE-----
+
+--WChQLJJJfbwij+9x--
+
+--===============6698725748950181796==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6698725748950181796==--
