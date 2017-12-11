@@ -1,75 +1,46 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] Per board ucm files on x86?
-Date: Mon, 11 Dec 2017 08:21:23 -0600
-Message-ID: <f862e48e-c759-15e2-b065-1a2dacb01537@linux.intel.com>
-References: <9acc4278-5e15-ebcd-8a45-1d409189e1cc@redhat.com>
- <s5hy3m9l6w0.wl-tiwai@suse.de>
-Reply-To: General PulseAudio Discussion
- <pulseaudio-discuss@lists.freedesktop.org>
+From: Peter Rosin <peda@axentia.se>
+Subject: [PATCH 0/2] ASoC: tfa9879: cleanup bindings and claim
+	maintainership
+Date: Mon, 11 Dec 2017 15:26:13 +0100
+Message-ID: <20171211142615.11440-1-peda@axentia.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-In-Reply-To: <s5hy3m9l6w0.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>
-Cc: alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from EUR02-AM5-obe.outbound.protection.outlook.com
+ (mail-eopbgr00105.outbound.protection.outlook.com [40.107.0.105])
+ by alsa0.perex.cz (Postfix) with ESMTP id B9BD3266E93
+ for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 15:26:29 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>, Peter Rosin <peda@axentia.se>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAxMi8xMS8yMDE3IDA3OjQwIEFNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gTW9uLCAx
-MSBEZWMgMjAxNyAxMzozMDozNSArMDEwMCwKPiBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+PiBIaSBB
-bGwsCj4+Cj4+IFRoaXMgd2Vla2VuZCBJJ3ZlIGNyZWF0ZWQgYSBtb2RpZmllZCB1Y20gY29uZmln
-IGJhc2VkIG9uOgo+Pgo+PiBodHRwczovL2dpdGh1Yi5jb20vcGxib3NzYXJ0L1VDTS90cmVlL21h
-c3Rlci9jaHRydDU2NDUKPj4KPj4gRm9yIGEgYm9hcmQgd2hpY2ggaGFzIGEgc2luZ2xlIHNwZWFr
-ZXIgY29ubmVjdGVkIHRvIHRoZQo+PiBsZWZ0IGNoYW5uZWwgKHN0YW5kYXJkIG1vbm8gc3BlYWtl
-ciBzZXR1cCkgYW5kIGEgc3RlcmVvCj4+IGhlYWRwaG9uZSBqYWNrIHdpdGggd29ya2luZyBqYWNr
-IGRldGVjdGlvbi4KPj4KPj4gSSd2ZSBiZWVuIHVuYWJsZSB0byBjb21lIHVwIHdpdGggYSB1Y20g
-ZmlsZSB3aGljaCBhbGxvd3MKPj4gc2VsZWN0aW5nIGJldHdlZW4gYSAiU3RlcmVvIFNwZWFrZXIg
-KyBIZWFkcGhvbmUiIHZzCj4+ICJNb25vIFNwZWFrZXIgKyBIZWFkcGhvbmUiIG91dHB1dCBwcm9m
-aWxlLgo+Pgo+PiBodHRwczovL2dpdGh1Yi5jb20vcGxib3NzYXJ0L1VDTS90cmVlL21hc3Rlci9i
-eXQtcnQ1NjQwCj4+IGhhcyAiTW9ubyBTcGVha2VyIiwgIlN0ZXJlbyBTcGVha2VyIiBhbmQgIkhl
-YWRwaG9uZSIKPj4gcHJvZmlsZXMgYnV0IGRvZXMgbm90IGF1dG8tc3dpdGNoIGJldHdlZW4gSGVh
-ZHBob25lCj4+IGFuZCBzcGVha2VyIGJhc2VkIG9uIGphY2sgZGV0ZWN0aW9uLCBJJ3ZlIGJlZW4g
-dW5hYmxlIHRvCj4+IGFsbG93IHNlbGVjdGluZyBlaXRoZXIgc3RlcmVvIG9yIG1vbm8gc3BlYWtl
-ciB3aGlsZQo+PiBrZWVwaW5nIGF1dG8tc3dpdGNoaW5nIHRvL2Zyb20gdGhlIGhlYWRwaG9uZXMu
-Cj4+Cj4+IEJ1dCB0aGlua2luZyBtb3JlIGFib3V0IHRoaXMgSSBkb24ndCB0aGluayB0aGF0IGhh
-dmluZwo+PiAiU3RlcmVvIFNwZWFrZXIgKyBIZWFkcGhvbmUiIGFuZCAiTW9ubyBTcGVha2VyICsg
-SGVhZHBob25lIgo+PiBwcm9maWxlcyBpcyB0aGUgYW5zd2VyLiBQcm9maWxlcyBtYWtlIHNlbnNl
-IG9uIG1hY2hpbmVzIHdpdGgKPj4gYSBidW5jaCBvZiBvdXRwdXRzIHdoZXJlIHdlIGRvbid0IG5v
-IHdoYXQgdGhlIHVzZXIgaXMgZ29pbmcKPj4gdG8gcGx1ZyBpbiwgYnV0IGluIHRoaXMgY2FzZSB0
-aGUgc3RlcmVvIHZzIG1vbm8gc3BlYWtlcgo+PiBkaXN0aW5jdGlvbiBpcyBhIGNsZWFyIHByb3Bl
-cnR5IG9mIHRoZSBkZXZpY2UsIHdoaWNoIHdlCj4+IHNob3VsZCBJTUhPIGF1dG9kZXRlY3QgYmFz
-ZWQgb24gdGhlIGRldmljZS1tb2RlbC4KPj4KPj4gU28gSSB0aGluayB3ZSBuZWVkIGEgd2F5IHRv
-IGhhdmUgZGlmZmVyZW50IHVjbSBmaWxlcyBwZXIgYm9hcmQsCj4+IHNvIGluc3RlYWQgb2YgbG9h
-ZGluZyAvdXNyL3NoYXJlL3VjbS9jaHRydDU2NDUvKi5jb25mIG9uIG15Cj4+IGRldmljZSwgYWxz
-YSBzaG91bGQgdHJ5IHRvIGxvYWQgL3Vzci9zaGFyZS91Y20vY2h0cnQ1NjQ1LTxib2FyZG5hbWU+
-LyouY29uZgo+Pgo+PiBTcGVjaWZpY2FsbHkgSSdtIHRoaW5raW5nIGFib3V0IHVzaW5nIHVkZXYg
-KyBod2RiIChkbWkgc3RyaW5nKQo+PiBtYXRjaGluZyB0byBzZXQgYW4gQUxTQV9VQ01fTkFNRSB1
-ZGV2IHByb3BlcnR5Lgo+Pgo+PiBJZiB0aGUgY29uc2Vuc3VzIGlzIHRoYXQgdGhpcyBpcyBhIGdv
-b2QgaWRlYSBJIGNhbiB0YWtlIGEgc2hvdAo+PiBhdCB3cml0aW5nIHBhdGNoZXMgZm9yIHRoaXMg
-KGluIG15IHNwYXJlIHRpbWUgbW9zdGx5KSwgdGhlCj4+IGRvd25zaWRlIG9mIHRoaXMgYXBwcm9h
-Y2ggaXMgaXQgd291bGQgY2F1c2UgYSBkZXBlbmRlbmN5IG9uCj4+IGxpYnVkZXYgZm9yIHRoZSBh
-bHNhIHVjbSBjb2RlLgo+IFlvdSBkb24ndCBuZWVkIHRvIHBhdGNoLCBJIGd1ZXNzLiAgVGhlIHJl
-Y2VudCBjb2RlIHNob3VsZCBzZXQgYSBzdHJpbmcKPiBnZW5lcmF0ZWQgZnJvbSBETUkgYXMgdGhl
-IGxvbmduYW1lIG9mIHRoZSBjYXJkLCBhbmQgYWxzYS1saWIgVUNNCj4gcGFyc2VyIHByZWZlcnMg
-dGhlIGxvbmduYW1lIHRvIHRoZSBkcml2ZXIgbmFtZSBmaWVsZC4gIFRoYXQgaXMsCj4gL3Vzci9z
-aGFyZS91Y20vJExPTkdOQU1FLyRMT05HTkFNRS5jb25mIHdvdWxkIGJlIHJlYWQgYXQgZmlyc3Qs
-IHRoZW4KPiAvdXNyL3NoYXJlL3VjbS8kRFJJVkVSLyREUklWRVIuY29uZiBpcyB1c2VkIGFzIGZh
-bGxiYWNrLgo+ClRoZSBsb25nIG5hbWUgaXMgcmVhbGx5IGF3ZnVsIGF0IHRpbWVzLCBJJ3ZlIHNl
-ZW4gUHVsc2VBdWRpbyB0cnkgdG8gbG9hZCAKVUNNIHByb2ZpbGVzIG9mIGJvYXJkcyB3aXRoIG92
-ZXIgNDAgY2hhcmFjdGVycyB3aXRoIG11bHRpcGxlIHJlcGVhdHMuCkFsc28gZnJvbSBhIG1haW50
-YWluYWJpbGl0eSBwZXJzcGVjdGl2ZSB3ZSBuZWVkIHRoZSBpbmNsdWRlIG1lY2hhbmlzbSAKYW5k
-IEkgZG9uJ3QgdGhpbmsgaXQgd2FzIGV2ZXIgbWVyZ2VkIC0gb3Igd2hhdCBJIHNhdyB3YXNuJ3Qg
-dmVyeSB1c2VmdWwuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCnB1bHNlYXVkaW8tZGlzY3VzcyBtYWlsaW5nIGxpc3QKcHVsc2VhdWRpby1kaXNjdXNzQGxp
-c3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL3B1bHNlYXVkaW8tZGlzY3Vzcwo=
+Hi!
+
+Device tree bindings where added for the tfa9879 along with improved
+support for them in the driver some time ago. All behind my back.
+This cleans things up and properly adds me as maintainer of the new
+bindings.
+
+Cheers,
+Peter
+
+Peter Rosin (2):
+  ASoC: tfa9879: clean up bindings
+  ASoC: tfa9879: add DT bindings to MAINTAINERS
+
+ Documentation/devicetree/bindings/sound/tfa9879.txt | 8 ++++----
+ MAINTAINERS                                         | 1 +
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+-- 
+2.11.0
