@@ -1,61 +1,85 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH] ASoC: Intel: Skylake: Re-order some code
- to silence a warning
-Date: Mon, 11 Dec 2017 14:33:45 +0300
-Message-ID: <20171211113345.ubl7rj7ftt62ox5s@mwanda>
-References: <20171208115425.rqclgmhcph5gn47j@mwanda>
- <1512991223.25007.590.camel@linux.intel.com>
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: nuc900: Fix platform_get_irq()
+ error checking some more
+Date: Mon, 11 Dec 2017 12:49:50 +0100
+Message-ID: <20171211114950.GB32306@piout.net>
+References: <20171209115203.pdtdfnmzwz6zpjqs@mwanda>
+ <5A2BE644.3070009@gmail.com>
+ <20171209172732.GF15660@piout.net>
+ <20171210015200.gr4mxzqgzyvamxui@mwanda>
+ <5A2C9E9A.7020501@gmail.com>
+ <20171211084053.p5ke733i3kzzk5mz@mwanda>
+ <a191218d-fe63-db5f-1993-2167a2077f70@gmail.com>
+ <20171211102730.agtoczxiu4dcn5ra@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp2130.oracle.com (userp2130.oracle.com [156.151.31.86])
- by alsa0.perex.cz (Postfix) with ESMTP id 08A7A2673D4
- for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 12:49:03 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <kernel-janitors-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1512991223.25007.590.camel@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Jani Nikula <jani.nikula@intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, kernel-janitors@vger.kernel.org, Mark Brown <broonie@kernel.org>, Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+In-Reply-To: <20171211102730.agtoczxiu4dcn5ra@mwanda>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Arvind Yadav <arvind.yadav.cs@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 11, 2017 at 01:20:23PM +0200, Andy Shevchenko wrote:
-> On Fri, 2017-12-08 at 14:54 +0300, Dan Carpenter wrote:
-> > I get a Smatch warning here:
+On 11/12/2017 at 13:27:30 +0300, Dan Carpenter wrote:
+> On Mon, Dec 11, 2017 at 02:37:22PM +0530, Arvind Yadav wrote:
+> > Hi Dan,
 > > 
-> >     sound/soc/intel/skylake/skl-nhlt.c:335 skl_get_ssp_clks()
-> >     error: testing array offset 'j' after use.
 > > 
-> > The code is harmless, but the checker is right that we should swap
-> > these
-> > two conditions so we verify that the offset is within bounds before we
-> > use it.
+> > On Monday 11 December 2017 02:10 PM, Dan Carpenter wrote:
+> > > On Sun, Dec 10, 2017 at 08:10:26AM +0530, arvindY wrote:
+> > > > 
+> > > > On Sunday 10 December 2017 07:22 AM, Dan Carpenter wrote:
+> > > > > On Sat, Dec 09, 2017 at 06:27:32PM +0100, Alexandre Belloni wrote:
+> > > > > > > > diff --git a/sound/soc/nuc900/nuc900-ac97.c b/sound/soc/nuc900/nuc900-ac97.c
+> > > > > > > > index 5e4fbd2d3479..71fce7c85c93 100644
+> > > > > > > > --- a/sound/soc/nuc900/nuc900-ac97.c
+> > > > > > > > +++ b/sound/soc/nuc900/nuc900-ac97.c
+> > > > > > > > @@ -345,11 +345,10 @@ static int nuc900_ac97_drvprobe(struct platform_device *pdev)
+> > > > > > > >     		goto out;
+> > > > > > > >     	}
+> > > > > > > > -	nuc900_audio->irq_num = platform_get_irq(pdev, 0);
+> > > > > > > > -	if (nuc900_audio->irq_num <= 0) {
+> > > > > > > > -		ret = nuc900_audio->irq_num < 0 ? nuc900_audio->irq_num : -EBUSY;
+> > > > > > > > +	ret = platform_get_irq(pdev, 0);
+> > > > > > > > +	if (ret < 0)
+> > > > > > The <= 0 was ok, see:
+> > > > > > https://lkml.org/lkml/2017/11/18/41
+> > > > > > 
+> > > > > Yeah, but is it ever going to return 0?  That seems like a design error
+> > > > > and also really crap commenting if so
+> > > > yes, It can return 0 on sprac platform and If you see the return of
+> > > > platform_get_irq() 'return r ? r->start : -ENXIO;'. It should be
+> > > > 'return r && r->start? r->start : -ENXIO;'. We can not add checks here,
+> > > > Because There's a bunch of platforms in the kernel they still use IRQ0 as
+> > > > valid.
+> > > > I have separate mails where few maintainer ask me to add check for 0 and few
+> > > > not.
+> > > > Adding check for 0 will never harm.
+> > > What you're saying doesn't make sense.
+> > I am following a below link. Where they have point out irq 0 is not valid.
+> > https://lwn.net/Articles/470820/
 > 
-> > -		for (j = 0; (sclk[id].rate_cfg[j].rate != 0) &&
-> > -				(j < SKL_MAX_CLK_RATES); j++) {
-> > +		for (j = 0; (j < SKL_MAX_CLK_RATES) &&
-> > +			    (sclk[id].rate_cfg[j].rate != 0); j++) {
-> >  			if (sclk[id].rate_cfg[j].rate == rate) {
-> >  				present = true;
-> >  				break;
+> That article is interesting and explains why this stuff is so messed up,
+> but I think my email is correct.  No one is going to tell the kernel,
+> "There is an IRQ resource at 0, please store it in r->start.  We can't
+> use that IRQ, it's only there to make the kernel crash when people call
+> platform_get_irq()!  #geniusidea."
 > 
-> I would rather remove also redundant parens and move the condition into
-> the loop.
+> There are other IRQ functions like irq_of_parse_and_map() which do
+> return zero on error but platform_get_irq() pretty clearly returns
+> negative error codes.
+> 
+> regards,
+> dan carpenter
+> 
 
-I didn't like the way the code was written either but it's impossible
-to know how much change people are going to accept.  Even though I think
-that extra parenthesis shouldn't have been there, the original author
-felt they helped, so I try to be accomodating...
+Maybe the good thing to do is to actaully leave the nuc900 code alone
+instead of trying to change something that never failed and that doesn't
+seem to interest anyone anymore (else the platform would have been
+converted to DT).
 
-Anyway, I can resend.
-
-regards,
-dan carpenter
+-- 
+Alexandre Belloni, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
