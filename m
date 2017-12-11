@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: don't use runtime->sample_bits"
-	to the asoc tree
-Date: Mon, 11 Dec 2017 12:13:37 +0000
-Message-ID: <E1eOMxl-0004bT-GZ@debutante>
-References: <87mv2qui1k.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id CDB33267583
- for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 13:13:42 +0100 (CET)
-In-Reply-To: <87mv2qui1k.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Simon <horms@verge.net.au>
+Subject: Applied "ASoC: Intel: Skylake: Re-order some code to silence a warning" to the asoc tree
+Date: Mon, 11 Dec 2017 12:13:47 +0000
+Message-ID: <E1eOMxv-0004cf-Qa@debutante>
+References: <20171208115425.rqclgmhcph5gn47j@mwanda>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <20171208115425.rqclgmhcph5gn47j@mwanda>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, alsa-devel@alsa-project.org, Jani Nikula <jani.nikula@intel.com>, Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, kernel-janitors@vger.kernel.orgMark Brown <broonie@kernel.org>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: don't use runtime->sample_bits
+   ASoC: Intel: Skylake: Re-order some code to silence a warning
 
 has been applied to the asoc tree at
 
@@ -53,94 +37,43 @@ to this mail.
 Thanks,
 Mark
 
->From 41acc8ec04f32abb16e035ca1c9fe4d52819601e Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 11 Dec 2017 02:24:23 +0000
-Subject: [PATCH] ASoC: rsnd: don't use runtime->sample_bits
+>From 87684d338a22d15e47b16ee68f569d74ad1d076e Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Fri, 8 Dec 2017 14:54:25 +0300
+Subject: [PATCH] ASoC: Intel: Skylake: Re-order some code to silence a warning
 
-Current rsnd driver is judging 16bit/24bit data by using
-runtime->sample_bits, but it is indicating physical size,
-not format size. This is confusable code.
-This patch uses snd_pcm_format_width() to be more correct code.
+I get a Smatch warning here:
 
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+    sound/soc/intel/skylake/skl-nhlt.c:335 skl_get_ssp_clks()
+    error: testing array offset 'j' after use.
+
+The code is harmless, but the checker is right that we should swap these
+two conditions so we verify that the offset is within bounds before we
+use it.
+
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 12 ++++--------
- sound/soc/sh/rcar/ssi.c  |  9 +++------
- 2 files changed, 7 insertions(+), 14 deletions(-)
+ sound/soc/intel/skylake/skl-nhlt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 8e50b284230d..a96ebebd96de 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -274,10 +274,10 @@ u32 rsnd_get_adinr_bit(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
- 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
- 	struct device *dev = rsnd_priv_to_dev(priv);
+diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
+index ca5dc2be7b68..bde7f40f29f5 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.c
++++ b/sound/soc/intel/skylake/skl-nhlt.c
+@@ -322,8 +322,8 @@ static void skl_get_ssp_clks(struct skl *skl, struct skl_ssp_clk *ssp_clks,
+ 		rate = channels * bps * fs;
  
--	switch (runtime->sample_bits) {
-+	switch (snd_pcm_format_width(runtime->format)) {
- 	case 16:
- 		return 8 << 16;
--	case 32:
-+	case 24:
- 		return 0 << 16;
- 	}
- 
-@@ -327,7 +327,7 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
- 	}
- 
- 	/* Non target mod or 24bit data needs normal DALIGN */
--	if ((runtime->sample_bits != 16) ||
-+	if ((snd_pcm_format_width(runtime->format) != 16) ||
- 	    (mod != target))
- 		return 0x76543210;
- 	/* Target mod needs inverted DALIGN when 16bit */
-@@ -362,12 +362,8 @@ u32 rsnd_get_busif_shift(struct rsnd_dai_stream *io, struct rsnd_mod *mod)
- 	 * HW    24bit data is located as 0x******00
- 	 *
- 	 */
--	switch (runtime->sample_bits) {
--	case 16:
-+	if (snd_pcm_format_width(runtime->format) == 16)
- 		return 0;
--	case 32:
--		break;
--	}
- 
- 	for (i = 0; i < ARRAY_SIZE(playback_mods); i++) {
- 		tmod = rsnd_io_to_mod(io, mods[i]);
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index f21202429000..5a70fdc3c680 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -370,11 +370,11 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
- 	if (rsnd_io_is_play(io))
- 		cr_own |= TRMD;
- 
--	switch (runtime->sample_bits) {
-+	switch (snd_pcm_format_width(runtime->format)) {
- 	case 16:
- 		cr_own |= DWL_16;
- 		break;
--	case 32:
-+	case 24:
- 		cr_own |= DWL_24;
- 		break;
- 	}
-@@ -677,11 +677,8 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
- 				   rsnd_ssi_pointer_offset(mod, io, 0));
- 		int shift = 0;
- 
--		switch (runtime->sample_bits) {
--		case 32:
-+		if (snd_pcm_format_width(runtime->format) == 24)
- 			shift = 8;
--			break;
--		}
- 
- 		/*
- 		 * 8/16/32 data can be assesse to TDR/RDR register
+ 		/* check if the rate is added already to the given SSP's sclk */
+-		for (j = 0; (sclk[id].rate_cfg[j].rate != 0) &&
+-				(j < SKL_MAX_CLK_RATES); j++) {
++		for (j = 0; (j < SKL_MAX_CLK_RATES) &&
++			    (sclk[id].rate_cfg[j].rate != 0); j++) {
+ 			if (sclk[id].rate_cfg[j].rate == rate) {
+ 				present = true;
+ 				break;
 -- 
 2.15.1
+
