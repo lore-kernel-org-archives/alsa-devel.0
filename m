@@ -1,20 +1,20 @@
-From: Peter Rosin <peda@axentia.se>
-Subject: Re: [PATCH 0/2] ASoC: tfa9879: cleanup bindings and
- claim maintainership
-Date: Mon, 11 Dec 2017 17:45:57 +0100
-Message-ID: <04c1a8f1-3e0f-090b-ad75-5baa0ac280d5@axentia.se>
-References: <20171211142615.11440-1-peda@axentia.se>
- <20171211163548.GE9854@sirena.org.uk>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v5 04/15] soundwire: Add MIPI DisCo
+	property helpers
+Date: Mon, 11 Dec 2017 22:30:22 +0530
+Message-ID: <20171211170022.GT18649@localhost>
+References: <1512575231-4154-1-git-send-email-vinod.koul@intel.com>
+ <1512575231-4154-5-git-send-email-vinod.koul@intel.com>
+ <s5hbmj5kzyu.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR03-AM5-obe.outbound.protection.outlook.com
- (mail-eopbgr30093.outbound.protection.outlook.com [40.107.3.93])
- by alsa0.perex.cz (Postfix) with ESMTP id DF9F9266EDD
- for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 17:46:02 +0100 (CET)
-In-Reply-To: <20171211163548.GE9854@sirena.org.uk>
-Content-Language: en-US
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id DF943266EDD
+ for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 17:56:41 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hbmj5kzyu.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,38 +24,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Fabio Estevam <festevam@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, patches.audio@intel.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 2017-12-11 17:35, Mark Brown wrote:
-> On Mon, Dec 11, 2017 at 03:26:13PM +0100, Peter Rosin wrote:
->> Hi!
->>
->> Device tree bindings where added for the tfa9879 along with improved
->> support for them in the driver some time ago. All behind my back.
->> This cleans things up and properly adds me as maintainer of the new
->> bindings.
->>
->> Cheers,
->> Peter
->>
->> Peter Rosin (2):
->>   ASoC: tfa9879: clean up bindings
->>   ASoC: tfa9879: add DT bindings to MAINTAINERS
+On Mon, Dec 11, 2017 at 05:10:17PM +0100, Takashi Iwai wrote:
+> On Wed, 06 Dec 2017 16:47:00 +0100,
+> Vinod Koul wrote:
+> > 
+> > +static int sdw_slave_read_dpn(struct sdw_slave *slave,
+> > +		struct sdw_dpn_prop *dpn, int count, int ports, char *type)
+> > +{
+> ....
+> > +		nval = fwnode_property_read_u32_array(node,
+> > +				"mipi-sdw-port-wordlength-configs", NULL, 0);
+> > +		if (nval > 0)
+> > +			dpn[i].num_words = nval;
+> > +
+> > +		if (dpn[i].num_words) {
+> > +			dpn[i].words = devm_kcalloc(&slave->dev, nval,
+> > +				sizeof(*dpn[i].words), GFP_KERNEL);
 > 
-> The actual patch series doesn't appear to have arrived in my inbox?
+> Inconsistent checks here: nval or dpn[i].num_words.
 
-That's weird, because I sent it all with git send-email and the
-patches did reach lkml [1] and patchwork has them too [2][3]. I
-have also verified that you were indeed on the Cc list, and I have
-not seen any errors (yet). I'm not sure if it's going to matter if
-I send them again, or if it is fastest/simplest for you to get them
-from patchwork?
+Ah yes, we should not do allocation for less that zero case and use it
+properly, will fix this and others
 
-Cheers,
-Peter
+> 
+> > +		/* TODO: Read audio mode */
+> > +
+> > +		i++;
+> > +	}
+> 
+> Don't we use count argument for a sanity check?
 
-[1] https://lkml.org/lkml/2017/12/11/374
-[2] https://patchwork.kernel.org/patch/10105305/
-[3] https://patchwork.kernel.org/patch/10105307/
+Not really as that iterator runs on each bit:
+
+for_each_set_bit(bit, &addr, 32) {
+
+so it will not go on endlessly and can max out when all the bits being set
+and stop.
+
+-- 
+~Vinod
