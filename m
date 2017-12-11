@@ -1,7 +1,7 @@
 From: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Subject: [PATCH v8 03/13] IIO: hw_consumer: add devm_iio_hw_consumer_alloc
-Date: Mon, 11 Dec 2017 11:18:34 +0100
-Message-ID: <1512987524-2901-4-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH v8 11/13] IIO: consumer: allow to set buffer sizes
+Date: Mon, 11 Dec 2017 11:18:42 +0100
+Message-ID: <1512987524-2901-12-git-send-email-arnaud.pouliquen@st.com>
 References: <1512987524-2901-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,105 +12,59 @@ To: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland 
 Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Add devm_iio_hw_consumer_alloc function that calls iio_hw_consumer_free
-when the device is unbound from the bus.
+Add iio consumer API to set buffer size and watermark according
+to sysfs API.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
 Reviewed-by: Jonathan Cameron <Jonathan.Cameron-hv44wF8Li93QT0dZR+AlfA@public.gmane.org>
 ---
- drivers/iio/buffer/industrialio-hw-consumer.c | 66 +++++++++++++++++++++++++++
- include/linux/iio/hw-consumer.h               |  2 +
- 2 files changed, 68 insertions(+)
+ drivers/iio/buffer/industrialio-buffer-cb.c | 11 +++++++++++
+ include/linux/iio/consumer.h                | 11 +++++++++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/drivers/iio/buffer/industrialio-hw-consumer.c b/drivers/iio/buffer/industrialio-hw-consumer.c
-index 993ecdc..9516569 100644
---- a/drivers/iio/buffer/industrialio-hw-consumer.c
-+++ b/drivers/iio/buffer/industrialio-hw-consumer.c
-@@ -137,6 +137,72 @@ void iio_hw_consumer_free(struct iio_hw_consumer *hwc)
+diff --git a/drivers/iio/buffer/industrialio-buffer-cb.c b/drivers/iio/buffer/industrialio-buffer-cb.c
+index 4847534..ea63c83 100644
+--- a/drivers/iio/buffer/industrialio-buffer-cb.c
++++ b/drivers/iio/buffer/industrialio-buffer-cb.c
+@@ -104,6 +104,17 @@ struct iio_cb_buffer *iio_channel_get_all_cb(struct device *dev,
  }
- EXPORT_SYMBOL_GPL(iio_hw_consumer_free);
+ EXPORT_SYMBOL_GPL(iio_channel_get_all_cb);
  
-+static void devm_iio_hw_consumer_release(struct device *dev, void *res)
++int iio_channel_cb_set_buffer_watermark(struct iio_cb_buffer *cb_buff,
++					size_t watermark)
 +{
-+	iio_hw_consumer_free(*(struct iio_hw_consumer **)res);
++	if (!watermark)
++		return -EINVAL;
++	cb_buff->buffer.watermark = watermark;
++
++	return 0;
 +}
++EXPORT_SYMBOL_GPL(iio_channel_cb_set_buffer_watermark);
 +
-+static int devm_iio_hw_consumer_match(struct device *dev, void *res, void *data)
-+{
-+	struct iio_hw_consumer **r = res;
-+
-+	if (!r || !*r) {
-+		WARN_ON(!r || !*r);
-+		return 0;
-+	}
-+	return *r == data;
-+}
-+
-+/**
-+ * devm_iio_hw_consumer_alloc - Resource-managed iio_hw_consumer_alloc()
-+ * @dev: Pointer to consumer device.
-+ *
-+ * Managed iio_hw_consumer_alloc. iio_hw_consumer allocated with this function
-+ * is automatically freed on driver detach.
-+ *
-+ * If an iio_hw_consumer allocated with this function needs to be freed
-+ * separately, devm_iio_hw_consumer_free() must be used.
-+ *
-+ * returns pointer to allocated iio_hw_consumer on success, NULL on failure.
-+ */
-+struct iio_hw_consumer *devm_iio_hw_consumer_alloc(struct device *dev)
-+{
-+	struct iio_hw_consumer **ptr, *iio_hwc;
-+
-+	ptr = devres_alloc(devm_iio_hw_consumer_release, sizeof(*ptr),
-+			   GFP_KERNEL);
-+	if (!ptr)
-+		return NULL;
-+
-+	iio_hwc = iio_hw_consumer_alloc(dev);
-+	if (IS_ERR(iio_hwc)) {
-+		devres_free(ptr);
-+	} else {
-+		*ptr = iio_hwc;
-+		devres_add(dev, ptr);
-+	}
-+
-+	return iio_hwc;
-+}
-+EXPORT_SYMBOL_GPL(devm_iio_hw_consumer_alloc);
-+
-+/**
-+ * devm_iio_hw_consumer_free - Resource-managed iio_hw_consumer_free()
-+ * @dev: Pointer to consumer device.
-+ * @hwc: iio_hw_consumer to free.
-+ *
-+ * Free iio_hw_consumer allocated with devm_iio_hw_consumer_alloc().
-+ */
-+void devm_iio_hw_consumer_free(struct device *dev, struct iio_hw_consumer *hwc)
-+{
-+	int rc;
-+
-+	rc = devres_release(dev, devm_iio_hw_consumer_release,
-+			    devm_iio_hw_consumer_match, hwc);
-+	WARN_ON(rc);
-+}
-+EXPORT_SYMBOL_GPL(devm_iio_hw_consumer_free);
-+
+ int iio_channel_start_all_cb(struct iio_cb_buffer *cb_buff)
+ {
+ 	return iio_update_buffers(cb_buff->indio_dev, &cb_buff->buffer,
+diff --git a/include/linux/iio/consumer.h b/include/linux/iio/consumer.h
+index 2017f35..9887f4f 100644
+--- a/include/linux/iio/consumer.h
++++ b/include/linux/iio/consumer.h
+@@ -134,6 +134,17 @@ struct iio_cb_buffer *iio_channel_get_all_cb(struct device *dev,
+ 						       void *private),
+ 					     void *private);
  /**
-  * iio_hw_consumer_enable() - Enable IIO hardware consumer
-  * @hwc: iio_hw_consumer to enable.
-diff --git a/include/linux/iio/hw-consumer.h b/include/linux/iio/hw-consumer.h
-index db8c00b..44d48bb 100644
---- a/include/linux/iio/hw-consumer.h
-+++ b/include/linux/iio/hw-consumer.h
-@@ -13,6 +13,8 @@ struct iio_hw_consumer;
- 
- struct iio_hw_consumer *iio_hw_consumer_alloc(struct device *dev);
- void iio_hw_consumer_free(struct iio_hw_consumer *hwc);
-+struct iio_hw_consumer *devm_iio_hw_consumer_alloc(struct device *dev);
-+void devm_iio_hw_consumer_free(struct device *dev, struct iio_hw_consumer *hwc);
- int iio_hw_consumer_enable(struct iio_hw_consumer *hwc);
- void iio_hw_consumer_disable(struct iio_hw_consumer *hwc);
- 
++ * iio_channel_cb_set_buffer_watermark() - set the buffer watermark.
++ * @cb_buffer:		The callback buffer from whom we want the channel
++ *			information.
++ * @watermark: buffer watermark in bytes.
++ *
++ * This function allows to configure the buffer watermark.
++ */
++int iio_channel_cb_set_buffer_watermark(struct iio_cb_buffer *cb_buffer,
++					size_t watermark);
++
++/**
+  * iio_channel_release_all_cb() - release and unregister the callback.
+  * @cb_buffer:		The callback buffer that was allocated.
+  */
 -- 
 2.7.4
