@@ -1,107 +1,161 @@
 From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Subject: [alsa-devel] [PATCH v5 0/6] ASoC: Intel: Skylake: Add a clk driver to enable ssp clks early
-Date: Mon, 11 Dec 2017 13:16:24 +0530
-Message-ID: <1512978390-8848-1-git-send-email-sriramx.periyasamy@intel.com>
+Subject: [alsa-devel] [PATCH v5 2/6] ASoC: Intel: Skylake: Add extended I2S config blob support in Clock driver
+Date: Mon, 11 Dec 2017 13:16:26 +0530
+Message-ID: <1512978390-8848-3-git-send-email-sriramx.periyasamy@intel.com>
+References: <1512978390-8848-1-git-send-email-sriramx.periyasamy@intel.com>
 Return-path: <linux-clk-owner@vger.kernel.org>
+In-Reply-To: <1512978390-8848-1-git-send-email-sriramx.periyasamy@intel.com>
 Sender: linux-clk-owner@vger.kernel.org
 To: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>, mturquette@baylibre.com, sboyd@codeaurora.org, linux-clk@vger.kernel.org, Sriram Periyasamy <sriramx.periyasamy@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-For certain platforms, clocks (mclk/sclk/fs) are required to be up before
-the stream start. Example: some codecs needs the mclk/sclk/fs to be
-enabled early for a successful clock synchronization. Some platforms
-require clock to be enabled at boot and be always ON.
+Extended I2S config blob supports multiple mclk dividers in NHLT blob.
+This patch detects whether the I2S blob is legacy or extended based on the
+signature value and chooses the mclk source and divider accordingly.
 
-By sending set_dma_control IPC (with the i2s blobs queried from NHLT),
-these clocks can be enabled early after the firmware is downloaded.
+Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+---
+ sound/soc/intel/skylake/skl-i2s.h  | 31 ++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-nhlt.c | 41 +++++++++++++++++++++++++++-----------
+ 2 files changed, 60 insertions(+), 12 deletions(-)
 
-With this series, a virtual clock driver is created which provides
-interface to send the required IPCs from machine driver to enable the
-clocks. NHLT is parsed during probe and the clock information is populated.
-The pointer to blob is cached and sent along with the set_dma_control IPC
-structure during the clk prepare/unprepare callback. Clocks are created for
-a ssp if the nhlt table has endpoint configuration for that particular ssp.
-
-Kabylake machine driver uses the clock interface to enable the clocks early
-as it is required by the rt5663 driver for clock synchronization.
-
-v4 -> v5
-	- Remove checks for clock enable status from machine driver since
-	  taken care in the framework already
-
-	- Add check in the skl_clk_set_rate to avoid different rates when
-	  clock is enabled already
-
-v3 -> v4
-	- Add missing signed-offs
-
-v2 -> v3
-	- Moved the clk ops and IPCs from Skylake driver to clk driver and
-	  reordered commits accordingly
-
-	- Add the support for extended I2S blob config which supports
-	  multiple mclk dividers in NHLT
-
-	- Enable the clocks as well in DAPM PMU event instead of hw_params
-	  in machine drivers as confirmed by codec vendor
-
-	- Do not register the clk if there is no valid clock source is
-	  avail in the I2S blob
-
-	- Take care of error return in the clk driver
-
-	- Address rest of the review comments and more optimization added
-
-	- Fix the warning
-		sound/soc/intel/skylake/skl.c:724:1-3:
-		WARNING: PTR_ERR_OR_ZERO can be used
-	  reported by scripts/coccinelle/api/ptr_ret.cocci
-
-	- Modified DSP replies as human readable to ease the debugging
-
-	- Add firmware replies for MCLK/SCLK clocks if they are running
-	  already
-
-v1 -> v2
-	- Register parent clocks with skylake device.
-	  With the patch "clk: Add support for runtime PM" soon to be merged
-	  will help DSP to stay active on call to clock enable.
-	  Reference: (https://patchwork.kernel.org/patch/9911741/)
-
-	- Fix the machine driver to enable clocks early for headphone
-	  playback path as well to fix a pop noise issue
-
-Harsha Priya (1):
-  ASoC: Intel: kbl: Enable mclk and ssp sclk early
-
-Naveen M (1):
-  ASoC: Intel: eve: Enable mclk and ssp sclk early
-
-Sriram Periyasamy (2):
-  ASoC: Intel: Skylake: Add ssp clock driver
-  ASoC: Intel: Skylake: Add extended I2S config blob support in Clock
-    driver
-
-Subhransu S. Prusty (2):
-  ASoC: Intel: Skylake: Make DSP replies more human readable
-  ASoC: Intel: Skylake: Add FW reply for MCLK/SCLK IPC
-
- sound/soc/intel/Kconfig                            |   3 +
- sound/soc/intel/boards/Kconfig                     |   2 +
- sound/soc/intel/boards/kbl_rt5663_max98927.c       |  95 ++++-
- .../soc/intel/boards/kbl_rt5663_rt5514_max98927.c  |  94 ++++
- sound/soc/intel/skylake/Makefile                   |   5 +
- sound/soc/intel/skylake/skl-i2s.h                  |  31 ++
- sound/soc/intel/skylake/skl-messages.c             |   1 +
- sound/soc/intel/skylake/skl-nhlt.c                 |  41 +-
- sound/soc/intel/skylake/skl-ssp-clk.c              | 473 +++++++++++++++++++++
- sound/soc/intel/skylake/skl-ssp-clk.h              |  38 ++
- sound/soc/intel/skylake/skl-sst-ipc.c              |  50 ++-
- sound/soc/intel/skylake/skl.h                      |   6 +
- 12 files changed, 815 insertions(+), 24 deletions(-)
- create mode 100644 sound/soc/intel/skylake/skl-ssp-clk.c
-
+diff --git a/sound/soc/intel/skylake/skl-i2s.h b/sound/soc/intel/skylake/skl-i2s.h
+index dcf819bc688f..ad0a1bbca13c 100644
+--- a/sound/soc/intel/skylake/skl-i2s.h
++++ b/sound/soc/intel/skylake/skl-i2s.h
+@@ -27,6 +27,12 @@
+ #define SKL_SHIFT(x)			(ffs(x) - 1)
+ #define SKL_MCLK_DIV_RATIO_MASK		GENMASK(11, 0)
+ 
++#define is_legacy_blob(x) (x.signature != 0xEE)
++#define ext_to_legacy_blob(i2s_config_blob_ext) \
++	((struct skl_i2s_config_blob_legacy *) i2s_config_blob_ext)
++
++#define get_clk_src(mclk, mask) \
++		((mclk.mdivctrl & mask) >> SKL_SHIFT(mask))
+ struct skl_i2s_config {
+ 	u32 ssc0;
+ 	u32 ssc1;
+@@ -45,6 +51,24 @@ struct skl_i2s_config_mclk {
+ 	u32 mdivr;
+ };
+ 
++struct skl_i2s_config_mclk_ext {
++	u32 mdivctrl;
++	u32 mdivr_count;
++	u32 mdivr[0];
++} __packed;
++
++struct skl_i2s_config_blob_signature {
++	u32 minor_ver : 8;
++	u32 major_ver : 8;
++	u32 resvdz : 8;
++	u32 signature : 8;
++} __packed;
++
++struct skl_i2s_config_blob_header {
++	struct skl_i2s_config_blob_signature sig;
++	u32 size;
++};
++
+ /**
+  * struct skl_i2s_config_blob_legacy - Structure defines I2S Gateway
+  * configuration legacy blob
+@@ -61,4 +85,11 @@ struct skl_i2s_config_blob_legacy {
+ 	struct skl_i2s_config_mclk mclk;
+ };
+ 
++struct skl_i2s_config_blob_ext {
++	u32 gtw_attr;
++	struct skl_i2s_config_blob_header hdr;
++	u32 tdm_ts_group[SKL_I2S_MAX_TIME_SLOTS];
++	struct skl_i2s_config i2s_cfg;
++	struct skl_i2s_config_mclk_ext mclk;
++} __packed;
+ #endif /* __SOUND_SOC_SKL_I2S_H */
+diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
+index ca5dc2be7b68..770a9c7afca1 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.c
++++ b/sound/soc/intel/skylake/skl-nhlt.c
+@@ -26,6 +26,7 @@ static guid_t osc_guid =
+ 	GUID_INIT(0xA69F886E, 0x6CEB, 0x4594,
+ 		  0xA4, 0x1F, 0x7B, 0x5D, 0xCE, 0x24, 0xC5, 0x53);
+ 
++
+ struct nhlt_acpi_table *skl_nhlt_init(struct device *dev)
+ {
+ 	acpi_handle handle;
+@@ -272,6 +273,7 @@ void skl_nhlt_remove_sysfs(struct skl *skl)
+ static void skl_get_ssp_clks(struct skl *skl, struct skl_ssp_clk *ssp_clks,
+ 				struct nhlt_fmt *fmt, u8 id)
+ {
++	struct skl_i2s_config_blob_ext *i2s_config_ext;
+ 	struct skl_i2s_config_blob_legacy *i2s_config;
+ 	struct skl_clk_parent_src *parent;
+ 	struct skl_ssp_clk *sclk, *sclkfs;
+@@ -332,12 +334,18 @@ static void skl_get_ssp_clks(struct skl *skl, struct skl_ssp_clk *ssp_clks,
+ 
+ 		/* Fill rate and parent for sclk/sclkfs */
+ 		if (!present) {
+-			/* MCLK Divider Source Select */
+-			i2s_config = (struct skl_i2s_config_blob_legacy *)
++			i2s_config_ext = (struct skl_i2s_config_blob_ext *)
+ 						fmt->fmt_config[0].config.caps;
+-			clk_src = ((i2s_config->mclk.mdivctrl)
+-					& SKL_MNDSS_DIV_CLK_SRC_MASK) >>
+-					SKL_SHIFT(SKL_MNDSS_DIV_CLK_SRC_MASK);
++
++			/* MCLK Divider Source Select */
++			if (is_legacy_blob(i2s_config_ext->hdr.sig)) {
++				i2s_config = ext_to_legacy_blob(i2s_config_ext);
++				clk_src = get_clk_src(i2s_config->mclk,
++						SKL_MNDSS_DIV_CLK_SRC_MASK);
++			} else {
++				clk_src = get_clk_src(i2s_config_ext->mclk,
++						SKL_MNDSS_DIV_CLK_SRC_MASK);
++			}
+ 
+ 			parent = skl_get_parent_clk(clk_src);
+ 
+@@ -363,6 +371,7 @@ static void skl_get_ssp_clks(struct skl *skl, struct skl_ssp_clk *ssp_clks,
+ static void skl_get_mclk(struct skl *skl, struct skl_ssp_clk *mclk,
+ 				struct nhlt_fmt *fmt, u8 id)
+ {
++	struct skl_i2s_config_blob_ext *i2s_config_ext;
+ 	struct skl_i2s_config_blob_legacy *i2s_config;
+ 	struct nhlt_specific_cfg *fmt_cfg;
+ 	struct skl_clk_parent_src *parent;
+@@ -370,13 +379,21 @@ static void skl_get_mclk(struct skl *skl, struct skl_ssp_clk *mclk,
+ 	u8 clk_src;
+ 
+ 	fmt_cfg = &fmt->fmt_config[0].config;
+-	i2s_config = (struct skl_i2s_config_blob_legacy *)fmt_cfg->caps;
+-
+-	/* MCLK Divider Source Select */
+-	clk_src = ((i2s_config->mclk.mdivctrl) & SKL_MCLK_DIV_CLK_SRC_MASK) >>
+-					SKL_SHIFT(SKL_MCLK_DIV_CLK_SRC_MASK);
+-
+-	clkdiv = i2s_config->mclk.mdivr & SKL_MCLK_DIV_RATIO_MASK;
++	i2s_config_ext = (struct skl_i2s_config_blob_ext *)fmt_cfg->caps;
++
++	/* MCLK Divider Source Select and divider */
++	if (is_legacy_blob(i2s_config_ext->hdr.sig)) {
++		i2s_config = ext_to_legacy_blob(i2s_config_ext);
++		clk_src = get_clk_src(i2s_config->mclk,
++				SKL_MCLK_DIV_CLK_SRC_MASK);
++		clkdiv = i2s_config->mclk.mdivr &
++				SKL_MCLK_DIV_RATIO_MASK;
++	} else {
++		clk_src = get_clk_src(i2s_config_ext->mclk,
++				SKL_MCLK_DIV_CLK_SRC_MASK);
++		clkdiv = i2s_config_ext->mclk.mdivr[0] &
++				SKL_MCLK_DIV_RATIO_MASK;
++	}
+ 
+ 	/* bypass divider */
+ 	div_ratio = 1;
 -- 
 2.7.4
 
