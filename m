@@ -1,21 +1,22 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH 1/2] ASoC: nuc900: Fix platform_get_irq()
- error checking some more
-Date: Mon, 11 Dec 2017 11:40:53 +0300
-Message-ID: <20171211084053.p5ke733i3kzzk5mz@mwanda>
-References: <20171209115203.pdtdfnmzwz6zpjqs@mwanda>
- <5A2BE644.3070009@gmail.com> <20171209172732.GF15660@piout.net>
- <20171210015200.gr4mxzqgzyvamxui@mwanda>
- <5A2C9E9A.7020501@gmail.com>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: [Xen-devel] [RFC v1] ALSA: xen-front: Add Xen
+ para-virtualized frontend driver
+Date: Mon, 11 Dec 2017 10:45:27 +0200
+Message-ID: <9031a8b0-88c2-bd86-548c-7dbcf8967856@gmail.com>
+References: <fff5d166-066c-c21e-94b9-bb50f8c1b2cd@epam.com>
+ <172d2f40-937d-5455-1b4e-576ac7b0da45@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp2130.oracle.com (userp2130.oracle.com [156.151.31.86])
- by alsa0.perex.cz (Postfix) with ESMTP id 2468D266AE4
- for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 09:41:05 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <5A2C9E9A.7020501@gmail.com>
+Received: from mail-lf0-f42.google.com (mail-lf0-f42.google.com
+ [209.85.215.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id EBD81266AE4
+ for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 09:45:32 +0100 (CET)
+Received: by mail-lf0-f42.google.com with SMTP id i2so18212505lfe.9
+ for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 00:45:32 -0800 (PST)
+In-Reply-To: <172d2f40-937d-5455-1b4e-576ac7b0da45@gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,54 +26,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: arvindY <arvind.yadav.cs@gmail.com>
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>
+To: Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, xen-devel <xen-devel@lists.xenproject.org>, Clemens Ladisch <clemens@ladisch.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Dec 10, 2017 at 08:10:26AM +0530, arvindY wrote:
-> 
-> 
-> On Sunday 10 December 2017 07:22 AM, Dan Carpenter wrote:
-> > On Sat, Dec 09, 2017 at 06:27:32PM +0100, Alexandre Belloni wrote:
-> > > > > diff --git a/sound/soc/nuc900/nuc900-ac97.c b/sound/soc/nuc900/nuc900-ac97.c
-> > > > > index 5e4fbd2d3479..71fce7c85c93 100644
-> > > > > --- a/sound/soc/nuc900/nuc900-ac97.c
-> > > > > +++ b/sound/soc/nuc900/nuc900-ac97.c
-> > > > > @@ -345,11 +345,10 @@ static int nuc900_ac97_drvprobe(struct platform_device *pdev)
-> > > > >    		goto out;
-> > > > >    	}
-> > > > > -	nuc900_audio->irq_num = platform_get_irq(pdev, 0);
-> > > > > -	if (nuc900_audio->irq_num <= 0) {
-> > > > > -		ret = nuc900_audio->irq_num < 0 ? nuc900_audio->irq_num : -EBUSY;
-> > > > > +	ret = platform_get_irq(pdev, 0);
-> > > > > +	if (ret < 0)
-> > > The <= 0 was ok, see:
-> > > https://lkml.org/lkml/2017/11/18/41
-> > > 
-> > Yeah, but is it ever going to return 0?  That seems like a design error
-> > and also really crap commenting if so
-> yes, It can return 0 on sprac platform and If you see the return of
-> platform_get_irq() 'return r ? r->start : -ENXIO;'. It should be
-> 'return r && r->start? r->start : -ENXIO;'. We can not add checks here,
-> Because There's a bunch of platforms in the kernel they still use IRQ0 as
-> valid.
-> I have separate mails where few maintainer ask me to add check for 0 and few
-> not.
-> Adding check for 0 will never harm.
-
-What you're saying doesn't make sense.
-
-You *can't* treat 0 as an error on Sparc because that's a valid IRQ.  In
-fact, it seems like if you want to write portable code you should never
-treated zero as an error.
-
-It doesn't make sense that someone would register an IRQ resource with
-an invalid IRQ number.  In other words, r->start is never going to be
-zero on a platform where that's invalid.
-
-So I'm pretty sure "if (ret < 0) " is the correct way to write code and
-"if (ret <= 0) " is incorrect but generally harmless except perhaps in
-limited situations on SPARC or other similar arches.
-
-regards,
-dan carpenter
+cGluZwoKT24gMTEvMTcvMjAxNyAxMDowOCBBTSwgT2xla3NhbmRyIEFuZHJ1c2hjaGVua28gd3Jv
+dGU6Cj4gcGluZwo+Cj4gT24gMTEvMDIvMjAxNyAwMzoxMSBQTSwgT2xla3NhbmRyIEFuZHJ1c2hj
+aGVua28gd3JvdGU6Cj4+IEhpLCBhbGwhCj4+Cj4+IEZvcmV3b3JkCj4+ID09PT09PT09Cj4+Cj4+
+IFRoaXMgUkZDIGlzIGFpbWVkIHRvIGludHJvZHVjZSBzdXBwb3J0IG9mIHBhcmEtdmlydHVhbGl6
+ZWQgc291bmQgCj4+IGZyb250ZW5kCj4+IGRyaXZlciBmb3IgWGVuIFsxXSBhbmQgZ2F0aGVyIG9w
+aW5pb25zIGZyb20gdGhlIHJlbGV2YW50IGNvbW11bml0aWVzCj4+IChBTFNBLCBYZW4pLiBJdCBp
+bXBsZW1lbnRzIHRoZSBwcm90b2NvbCBmcm9tIFsyXSB3aXRoIHRoZQo+PiBmb2xsb3dpbmcgbGlt
+aXRhdGlvbnM6Cj4+IMKgIC0gbXV0ZS91bm11dGUgaXMgbm90IHN1cHBvcnRlZAo+PiDCoCAtIGdl
+dC9zZXQgdm9sdW1lIGlzIG5vdCBzdXBwb3J0ZWQKPj4gVm9sdW1lIGNvbnRyb2wgaXMgbm90IHN1
+cHBvcnRlZCBmb3IgdGhlIHJlYXNvbiB0aGF0IG1vc3Qgb2YgdGhlIAo+PiB1c2UtY2FzZXMKPj4g
+KGF0IHRoZSBtb21lbnQpIGFyZSBiYXNlZCBvbiBzY2VuYXJpb3Mgd2hlcmUgdW5wcml2aWxlZ2Vk
+IE9TCj4+IChlLmcuIEFuZHJvaWQsIEFHTCBldGMpIHVzZXMgc29mdHdhcmUgbWl4ZXJzLgo+PiBC
+b3RoIGNhcHR1cmUgYW5kIHBsYXliYWNrIGFyZSBzdXBwb3J0ZWQuCj4+Cj4+IFRoZSByZWxldmFu
+dCBiYWNrZW5kIGlzIGltcGxlbWVudGVkIGFzIGEgdXNlci1zcGFjZSBhcHBsaWNhdGlvbiBbM10K
+Pj4gYW5kIHVzZXMgYWNjb21wYW55aW5nIGhlbHBlciBsaWJyYXJ5IFs0XS4KPj4KPj4gQm90aCBm
+cm9udGVuZCBkcml2ZXIgYW5kIGJhY2tlbmQgd2VyZSB0ZXN0ZWQgb24gcmVhbCBIVyBydW5uaW5n
+IFhlbiAKPj4gaHlwZXJ2aXNvcgo+PiAoUmVuZXNhcyBSLUNhciBBUk0gYmFzZWQgSDMvTTMgYm9h
+cmRzLCB4ODYpLgo+Pgo+PiBEaXNjdXNzaW9uCj4+ID09PT09PT09PT0KPj4KPj4gRHVyaW5nIHRo
+ZSBmaXJzdCBhdHRlbXB0IHRvIHVwc3RyZWFtIHRoZSBkcml2ZXIgWzVdIG51bWJlciBvZiAKPj4g
+Y29tbWVudHMgYW5kCj4+IGNvbmNlcm5zIHdlcmUgcmFpc2VkLCBvbmUgb2YgdGhlIGJpZ2dlc3Qg
+Zmxhd3MgaW4gdGhlIGRlc2lnbiB3ZXJlIAo+PiBxdWVzdGlvbmVkCj4+IGJ5IGJvdGggQ2xlbWVu
+cyBMYWRpc2NoIFs2XSBhbmQgVGFrYXNoaSBTYWthbW90byBbN106IHRoZSBhYnNlbmNlIG9mCj4+
+IHN5bmNocm9uaXphdGlvbiBiZXR3ZWVuIGZyb250ZW5kIGFuZCBiYWNrZW5kIGR1cmluZyBjYXB0
+dXJlL3BsYXliYWNrLgo+PiBUd28gb3B0aW9ucyB3ZXJlIGRpc2N1c3NlZDoKPj4KPj4g4oCcSW4g
+ZGVzaWduIG9mIEFMU0EgUENNIGNvcmUsIGRyaXZlcnMgYXJlIGV4cGVjdGVkIHRvIHN5bmNocm9u
+aXplIHRvCj4+IGFjdHVhbCBoYXJkd2FyZXMgZm9yIHNlbWktcmVhbHRpbWUgZGF0YSB0cmFuc21p
+c3Npb24uIFRoZQo+PiBzeW5jaHJvbml6YXRpb24gaXMgZG9uZSBieSB0d28gcG9pbnRzOgo+PiAx
+KSBJbnRlcnJ1cHRzIHRvIHJlc3BvbmQgZXZlbnRzIGZyb20gYWN0dWFsIGhhcmR3YXJlcy4KPj4g
+MikgUG9zaXRpb25zIG9mIGFjdHVhbCBkYXRhIHRyYW5zbWlzc2lvbiBpbiBhbnkgc2VyaWFsIHNv
+dW5kIGludGVyZmFjZXMKPj4gwqDCoMKgIG9mIGFjdHVhbCBoYXJkd2FyZXMuCj4+IOKAnAo+Pgo+
+PiBhbmQgZmluYWxseSBhIGNoYW5nZSB0byB0aGUgZXhpc3RpbmcgcHJvdG9jb2wgd2FzIHN1Z2dl
+c3RlZDoKPj4KPj4g4oCcSW4gJ2luY2x1ZGUveGVuL2ludGVyZmFjZS9pby9zbmRpZi5oJywgdGhl
+cmUncyBubyBmdW5jdGlvbmFsaXRpZXMgSQo+PiBkZXNjcmliZWQgdGhlIGFib3ZlOgo+PiAxLiBu
+b3RpZmljYXRpb25zIGZyb20gRG9tVSB0byBEb20wIGFib3V0IHRoZSBzaXplIG9mIHBlcmlvZCBm
+b3IKPj4gwqDCoMKgIGludGVycnVwdHMgZnJvbSBhY3R1YWwgaGFyZHdhcmVzLiBPciBubyB3YXkg
+ZnJvbSBEb20wIHRvIERvbVUgYWJvdXQKPj4gwqDCoMKgIHRoZSBjb25maWd1cmVkIHNpemUgb2Yg
+dGhlIHBlcmlvZC4KPj4gMi4gbm90aWZpY2F0aW9ucyBvZiB0aGUgaW50ZXJydXB0cyBmcm9tIGFj
+dHVhbCBoYXJkd2FyZXMgdG8gRG9tVS7igJ0KPj4KPj4gVGhpcyBpcyBpbXBsZW1lbnRlZCBhcyBh
+IGNoYW5nZSB0byB0aGUgc25kaWYgcHJvdG9jb2wgWzhdIGFuZCBhbGxvd3MgCj4+IHJlbW92aW5n
+Cj4+IHBlcmlvZCBlbXVsYXRpb246Cj4+IDEuIEludHJvZHVjZWQgYSBuZXcgZXZlbnQgY2hhbm5l
+bCBmcm9tIGJhY2sgdG8gZnJvbnQKPj4gMi4gTmV3IGV2ZW50IHdpdGggbnVtYmVyIG9mIGJ5dGVz
+IHBsYXllZC9jYXB0dXJlZCAoWEVOU05EX0VWVF9DVVJfUE9TLAo+PiDCoMKgIHRvIGJlIHVzZWQg
+Zm9yIHNlbmRpbmcgc25kX3BjbV9wZXJpb2RfZWxhcHNlZCBhdCBmcm9udGVuZCAoaW4gTGludXgK
+Pj4gwqDCoCBpbXBsZW1lbnRhdGlvbikuIFNlbnQgaW4gYnl0ZXMsIG5vdCBmcmFtZXMgdG8gbWFr
+ZSB0aGUgcHJvdG9jb2wKPj4gwqDCoCBnZW5lcmljIGFuZCBjb25zaXN0ZW50KQo+PiAzLiBOZXcg
+cmVxdWVzdCBmb3IgcGxheWJhY2svY2FwdHVyZSBjb250cm9sIChYRU5TTkRfT1BfVFJJR0dFUikg
+d2l0aAo+PiDCoMKgIHN0YXJ0L3BhdXNlL3N0b3AvcmVzdW1lIHN1Yi1vcHMuCj4+Cj4+IEFsb25n
+IHdpdGggdGhlc2UgY2hhbmdlcyBvdGhlciBjb21tZW50cyBvbiB0aGUgZHJpdmVyIHdlcmUgYWRk
+cmVzc2VkLAo+PiBlLmcuIHNwbGl0IGludG8gc21hbGxlciBjaHVua3MsIG1vdmVkIHRoZSBkcml2
+ZXIgZnJvbSBtaXNjIHRvIHhlbiBldGMuCj4+Cj4+Cj4+IEhvcGUsIHRoaXMgaGVscHMgdG8gZ2V0
+IHRoZSBmdWxsIHBpY3R1cmUgb2Ygd2hhdCB3YXMgZGlzY3Vzc2VkIGFuZCAKPj4gbWFrZXMgaXQK
+Pj4gcG9zc2libGUgdG8gbW92ZSBmb3J3YXJkLgo+Pgo+PiBXYWl0aW5nIGZvciB5b3VyIHZhbHVh
+YmxlIGNvbW1lbnRzLAo+Pgo+PiBUaGFuayB5b3UsCj4+IE9sZWtzYW5kcgo+Pgo+PiBbMV0gaHR0
+cHM6Ly9naXRodWIuY29tL2FuZHIyMDAwL2xpbnV4L2NvbW1pdHMvc25kX3Vwc3RyZWFtX3YxCj4+
+IFsyXSAKPj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQv
+dG9ydmFsZHMvbGludXguZ2l0L3RyZWUvaW5jbHVkZS94ZW4vaW50ZXJmYWNlL2lvL3NuZGlmLmgK
+Pj4gWzNdIGh0dHBzOi8vZ2l0aHViLmNvbS94ZW4tdHJvb3BzL3NuZF9iZQo+PiBbNF0gaHR0cHM6
+Ly9naXRodWIuY29tL3hlbi10cm9vcHMvbGlieGVuYmUKPj4gWzVdIGh0dHBzOi8vbGttbC5vcmcv
+bGttbC8yMDE3LzgvNy8zNjMKPj4gWzZdIAo+PiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTctQXVndXN0LzEyMzYxNy5odG1sCj4+IFs3XSAK
+Pj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8y
+MDE3LUF1Z3VzdC8xMjM3NDQuaHRtbAo+PiBbOF0gCj4+IGh0dHBzOi8vZ2l0aHViLmNvbS9hbmRy
+MjAwMC9saW51eC9jb21taXQvMDk1ZDdmZWFlMDBiZjAwYzg1MmM2N2M0ZjEwNDRkZTU2MDE2Nzhl
+ZAo+Pgo+Pgo+Pgo+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwo+PiBYZW4tZGV2ZWwgbWFpbGluZyBsaXN0Cj4+IFhlbi1kZXZlbEBsaXN0cy54ZW4ub3Jn
+Cj4+IGh0dHBzOi8vbGlzdHMueGVuLm9yZy94ZW4tZGV2ZWwKPgoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
