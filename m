@@ -1,18 +1,18 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v10 06/13] slimbus: Add messaging APIs to
-	slimbus framework
-Date: Mon, 11 Dec 2017 23:43:00 +0000
-Message-ID: <20171211234307.14465-7-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v10 08/13] regmap: add SLIMbus support
+Date: Mon, 11 Dec 2017 23:43:02 +0000
+Message-ID: <20171211234307.14465-9-srinivas.kandagatla@linaro.org>
 References: <20171211234307.14465-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f47.google.com (mail-wm0-f47.google.com [74.125.82.47])
- by alsa0.perex.cz (Postfix) with ESMTP id CD5582676C4
- for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 00:45:22 +0100 (CET)
-Received: by mail-wm0-f47.google.com with SMTP id g130so15251143wme.0
- for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 15:45:22 -0800 (PST)
+Received: from mail-wr0-f194.google.com (mail-wr0-f194.google.com
+ [209.85.128.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B9372676CB
+ for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 00:45:24 +0100 (CET)
+Received: by mail-wr0-f194.google.com with SMTP id k61so19308067wrc.4
+ for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 15:45:24 -0800 (PST)
 In-Reply-To: <20171211234307.14465-1-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,517 +27,181 @@ To: Mark Brown <broonie@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org, j.neuschaefer@gmx.net, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, pombredanne@nexb.com, sdharia@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Sagar Dharia <sdharia@codeaurora.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-SLIMbus devices use value-element, and information elements to
-control device parameters (e.g. value element is used to represent
-gain for codec, information element is used to represent interrupt
-status for codec when codec interrupt fires).
-Messaging APIs are used to set/get these value and information
-elements. SLIMbus specification uses 8-bit "transaction IDs" for
-messages where a read-value is anticipated. Framework uses a table
-of pointers to store those TIDs and responds back to the caller in
-O(1).
-Caller can do synchronous and asynchronous reads/writes.
+This patch adds support to read/write SLIMbus value elements.
+Currently it only supports byte read/write. Adding this support in
+regmap would give codec drivers more flexibility when there are more
+than 2 control interfaces like SLIMbus, i2c.
+
+Without this patch each codec driver has to directly call SLIMbus value
+element apis, and this could would get messy once we want to add i2c
+interface to it.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/slimbus/Makefile    |   2 +-
- drivers/slimbus/messaging.c | 297 ++++++++++++++++++++++++++++++++++++++++++++
- drivers/slimbus/slimbus.h   |  67 ++++++++++
- include/linux/slimbus.h     |  40 ++++++
- 4 files changed, 405 insertions(+), 1 deletion(-)
- create mode 100644 drivers/slimbus/messaging.c
+ drivers/base/regmap/Kconfig          |  4 ++
+ drivers/base/regmap/Makefile         |  1 +
+ drivers/base/regmap/regmap-slimbus.c | 80 ++++++++++++++++++++++++++++++++++++
+ include/linux/regmap.h               | 18 ++++++++
+ 4 files changed, 103 insertions(+)
+ create mode 100644 drivers/base/regmap/regmap-slimbus.c
 
-diff --git a/drivers/slimbus/Makefile b/drivers/slimbus/Makefile
-index 506ff17d6346..568a14c7be78 100644
---- a/drivers/slimbus/Makefile
-+++ b/drivers/slimbus/Makefile
-@@ -3,4 +3,4 @@
- # Makefile for kernel SLIMbus framework.
- #
- obj-$(CONFIG_SLIMBUS)			+= slimbus.o
--slimbus-y				:= core.o
-+slimbus-y				:= core.o messaging.o
-diff --git a/drivers/slimbus/messaging.c b/drivers/slimbus/messaging.c
+diff --git a/drivers/base/regmap/Kconfig b/drivers/base/regmap/Kconfig
+index 3a1535d812d8..cc162b48c6d7 100644
+--- a/drivers/base/regmap/Kconfig
++++ b/drivers/base/regmap/Kconfig
+@@ -21,6 +21,10 @@ config REGMAP_I2C
+ 	tristate
+ 	depends on I2C
+ 
++config REGMAP_SLIMBUS
++	tristate
++	depends on SLIMBUS
++
+ config REGMAP_SPI
+ 	tristate
+ 	depends on SPI
+diff --git a/drivers/base/regmap/Makefile b/drivers/base/regmap/Makefile
+index 0d298c446108..63dec9222892 100644
+--- a/drivers/base/regmap/Makefile
++++ b/drivers/base/regmap/Makefile
+@@ -8,6 +8,7 @@ obj-$(CONFIG_REGCACHE_COMPRESSED) += regcache-lzo.o
+ obj-$(CONFIG_DEBUG_FS) += regmap-debugfs.o
+ obj-$(CONFIG_REGMAP_AC97) += regmap-ac97.o
+ obj-$(CONFIG_REGMAP_I2C) += regmap-i2c.o
++obj-$(CONFIG_REGMAP_SLIMBUS) += regmap-slimbus.o
+ obj-$(CONFIG_REGMAP_SPI) += regmap-spi.o
+ obj-$(CONFIG_REGMAP_SPMI) += regmap-spmi.o
+ obj-$(CONFIG_REGMAP_MMIO) += regmap-mmio.o
+diff --git a/drivers/base/regmap/regmap-slimbus.c b/drivers/base/regmap/regmap-slimbus.c
 new file mode 100644
-index 000000000000..031e67648d7c
+index 000000000000..c90bee81d954
 --- /dev/null
-+++ b/drivers/slimbus/messaging.c
-@@ -0,0 +1,297 @@
++++ b/drivers/base/regmap/regmap-slimbus.c
+@@ -0,0 +1,80 @@
 +// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2011-2017, The Linux Foundation
-+ */
++// Copyright (c) 2017, Linaro Ltd.
 +
-+#include <linux/slab.h>
-+#include "slimbus.h"
++#include <linux/regmap.h>
++#include <linux/slimbus.h>
++#include <linux/module.h>
 +
-+/**
-+ * slim_msg_response() - Deliver Message response received from a device to the
-+ *			framework.
-+ *
-+ * @ctrl: Controller handle
-+ * @reply: Reply received from the device
-+ * @len: Length of the reply
-+ * @tid: Transaction ID received with which framework can associate reply.
-+ *
-+ * Called by controller to inform framework about the response received.
-+ * This helps in making the API asynchronous, and controller-driver doesn't need
-+ * to manage 1 more table other than the one managed by framework mapping TID
-+ * with buffers
-+ */
-+void slim_msg_response(struct slim_controller *ctrl, u8 *reply, u8 tid, u8 len)
++#include "internal.h"
++
++static int regmap_slimbus_byte_reg_read(void *context, unsigned int reg,
++					unsigned int *val)
 +{
-+	struct slim_msg_txn *txn;
-+	struct slim_val_inf *msg;
-+	unsigned long flags;
++	struct slim_device *sdev = context;
++	int v;
 +
-+	spin_lock_irqsave(&ctrl->txn_lock, flags);
-+	txn = idr_find(&ctrl->tid_idr, tid);
-+	if (txn == NULL) {
-+		spin_unlock_irqrestore(&ctrl->txn_lock, flags);
-+		return;
-+	}
++	v = slim_readb(sdev, reg);
 +
-+	msg = txn->msg;
-+	if (msg == NULL || msg->rbuf == NULL) {
-+		dev_err(ctrl->dev, "Got response to invalid TID:%d, len:%d\n",
-+				tid, len);
-+		return;
-+	}
++	if (v < 0)
++		return v;
 +
-+	idr_remove(&ctrl->tid_idr, tid);
-+	spin_unlock_irqrestore(&ctrl->txn_lock, flags);
++	*val = v;
 +
-+	memcpy(msg->rbuf, reply, len);
-+	if (txn->comp)
-+		complete(txn->comp);
-+}
-+EXPORT_SYMBOL_GPL(slim_msg_response);
-+
-+/**
-+ * slim_do_transfer() - Process a SLIMbus-messaging transaction
-+ *
-+ * @ctrl: Controller handle
-+ * @txn: Transaction to be sent over SLIMbus
-+ *
-+ * Called by controller to transmit messaging transactions not dealing with
-+ * Interface/Value elements. (e.g. transmittting a message to assign logical
-+ * address to a slave device
-+ *
-+ * Return: -ETIMEDOUT: If transmission of this message timed out
-+ *	(e.g. due to bus lines not being clocked or driven by controller)
-+ */
-+int slim_do_transfer(struct slim_controller *ctrl, struct slim_msg_txn *txn)
-+{
-+	DECLARE_COMPLETION_ONSTACK(done);
-+	bool need_tid;
-+	unsigned long flags;
-+	int ret, tid, timeout;
-+
-+	need_tid = slim_tid_txn(txn->mt, txn->mc);
-+
-+	if (need_tid) {
-+		spin_lock_irqsave(&ctrl->txn_lock, flags);
-+		tid = idr_alloc(&ctrl->tid_idr, txn, 0,
-+				SLIM_MAX_TIDS, GFP_KERNEL);
-+		txn->tid = tid;
-+
-+		if (!txn->msg->comp)
-+			txn->comp = &done;
-+		else
-+			txn->comp = txn->comp;
-+
-+		spin_unlock_irqrestore(&ctrl->txn_lock, flags);
-+
-+		if (tid < 0)
-+			return tid;
-+	}
-+
-+	ret = ctrl->xfer_msg(ctrl, txn);
-+
-+	if (ret && need_tid && !txn->msg->comp) {
-+		unsigned long ms = txn->rl + HZ;
-+
-+		timeout = wait_for_completion_timeout(txn->comp,
-+						      msecs_to_jiffies(ms));
-+		if (!timeout) {
-+			ret = -ETIMEDOUT;
-+			spin_lock_irqsave(&ctrl->txn_lock, flags);
-+			idr_remove(&ctrl->tid_idr, tid);
-+			spin_unlock_irqrestore(&ctrl->txn_lock, flags);
-+		}
-+	}
-+
-+	if (ret)
-+		dev_err(ctrl->dev, "Tx:MT:0x%x, MC:0x%x, LA:0x%x failed:%d\n",
-+			txn->mt, txn->mc, txn->la, ret);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(slim_do_transfer);
-+
-+static int slim_val_inf_sanity(struct slim_controller *ctrl,
-+			       struct slim_val_inf *msg, u8 mc)
-+{
-+	if (!msg || msg->num_bytes > 16 ||
-+	    (msg->start_offset + msg->num_bytes) > 0xC00)
-+		goto reterr;
-+	switch (mc) {
-+	case SLIM_MSG_MC_REQUEST_VALUE:
-+	case SLIM_MSG_MC_REQUEST_INFORMATION:
-+		if (msg->rbuf != NULL)
-+			return 0;
-+		break;
-+
-+	case SLIM_MSG_MC_CHANGE_VALUE:
-+	case SLIM_MSG_MC_CLEAR_INFORMATION:
-+		if (msg->wbuf != NULL)
-+			return 0;
-+		break;
-+
-+	case SLIM_MSG_MC_REQUEST_CHANGE_VALUE:
-+	case SLIM_MSG_MC_REQUEST_CLEAR_INFORMATION:
-+		if (msg->rbuf != NULL && msg->wbuf != NULL)
-+			return 0;
-+		break;
-+	}
-+reterr:
-+	dev_err(ctrl->dev, "Sanity check failed:msg:offset:0x%x, mc:%d\n",
-+		msg->start_offset, mc);
-+	return -EINVAL;
++	return 0;
 +}
 +
-+static u16 slim_slicesize(int code)
++static int regmap_slimbus_byte_reg_write(void *context, unsigned int reg,
++					 unsigned int val)
 +{
-+	static const u8 sizetocode[16] = {
-+		0, 1, 2, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7
-+	};
++	struct slim_device *sdev = context;
 +
-+	clamp(code, 1, (int)ARRAY_SIZE(sizetocode));
-+
-+	return sizetocode[code - 1];
++	return slim_writeb(sdev, reg, val);
 +}
 +
-+/**
-+ * slim_xfer_msg() - Transfer a value info message on slim device
-+ *
-+ * @sbdev: slim device to which this msg has to be transfered
-+ * @msg: value info message pointer
-+ * @mc: message code of the message
-+ *
-+ * Called by drivers which want to transfer a vlaue or info elements.
-+ *
-+ * Return: -ETIMEDOUT: If transmission of this message timed out
-+ */
-+int slim_xfer_msg(struct slim_device *sbdev, struct slim_val_inf *msg,
-+		  u8 mc)
-+{
-+	DEFINE_SLIM_LDEST_TXN(txn_stack, mc, 6, sbdev->laddr, msg);
-+	struct slim_msg_txn *txn = &txn_stack;
-+	struct slim_controller *ctrl = sbdev->ctrl;
-+	int ret;
-+	u16 sl;
-+
-+	if (!ctrl)
-+		return -EINVAL;
-+
-+	ret = slim_val_inf_sanity(ctrl, msg, mc);
-+	if (ret)
-+		return ret;
-+
-+	sl = slim_slicesize(msg->num_bytes);
-+
-+	dev_dbg(ctrl->dev, "SB xfer msg:os:%x, len:%d, MC:%x, sl:%x\n",
-+		msg->start_offset, msg->num_bytes, mc, sl);
-+
-+	txn->ec = ((sl | (1 << 3)) | ((msg->start_offset & 0xFFF) << 4));
-+
-+	switch (mc) {
-+	case SLIM_MSG_MC_REQUEST_CHANGE_VALUE:
-+	case SLIM_MSG_MC_CHANGE_VALUE:
-+	case SLIM_MSG_MC_REQUEST_CLEAR_INFORMATION:
-+	case SLIM_MSG_MC_CLEAR_INFORMATION:
-+		txn->rl += msg->num_bytes;
-+	default:
-+		break;
-+	}
-+
-+	if (slim_tid_txn(txn->mt, txn->mc))
-+		txn->rl++;
-+
-+	return slim_do_transfer(ctrl, txn);
-+}
-+EXPORT_SYMBOL_GPL(slim_xfer_msg);
-+
-+static void slim_fill_msg(struct slim_val_inf *msg, u32 addr,
-+			 size_t count, u8 *rbuf, u8 *wbuf)
-+{
-+	msg->start_offset = addr;
-+	msg->num_bytes = count;
-+	msg->rbuf = rbuf;
-+	msg->wbuf = wbuf;
-+}
-+
-+/**
-+ * slim_read() - Read SLIMbus value element
-+ *
-+ * @sdev: client handle.
-+ * @addr:  address of value element to read.
-+ * @count: number of bytes to read. Maximum bytes allowed are 16.
-+ * @val: will return what the value element value was
-+ *
-+ * Return: -EINVAL for Invalid parameters, -ETIMEDOUT If transmission of
-+ * this message timed out (e.g. due to bus lines not being clocked
-+ * or driven by controller)
-+ */
-+int slim_read(struct slim_device *sdev, u32 addr, size_t count, u8 *val)
-+{
-+	struct slim_val_inf msg;
-+
-+	slim_fill_msg(&msg, addr, count, val, NULL);
-+
-+	return slim_xfer_msg(sdev, &msg, SLIM_MSG_MC_REQUEST_VALUE);
-+}
-+EXPORT_SYMBOL_GPL(slim_read);
-+
-+/**
-+ * slim_readb() - Read byte from SLIMbus value element
-+ *
-+ * @sdev: client handle.
-+ * @addr:  address in the value element to read.
-+ *
-+ * Return: byte value of value element.
-+ */
-+int slim_readb(struct slim_device *sdev, u32 addr)
-+{
-+	int ret;
-+	u8 buf;
-+
-+	ret = slim_read(sdev, addr, 1, &buf);
-+	if (ret < 0)
-+		return ret;
-+	else
-+		return buf;
-+}
-+EXPORT_SYMBOL_GPL(slim_readb);
-+
-+/**
-+ * slim_write() - Write SLIMbus value element
-+ *
-+ * @sdev: client handle.
-+ * @addr:  address in the value element to write.
-+ * @count: number of bytes to write. Maximum bytes allowed are 16.
-+ * @val: value to write to value element
-+ *
-+ * Return: -EINVAL for Invalid parameters, -ETIMEDOUT If transmission of
-+ * this message timed out (e.g. due to bus lines not being clocked
-+ * or driven by controller)
-+ */
-+int slim_write(struct slim_device *sdev, u32 addr, size_t count, u8 *val)
-+{
-+	struct slim_val_inf msg;
-+
-+	slim_fill_msg(&msg, addr, count,  val, NULL);
-+
-+	return slim_xfer_msg(sdev, &msg, SLIM_MSG_MC_CHANGE_VALUE);
-+}
-+EXPORT_SYMBOL_GPL(slim_write);
-+
-+/**
-+ * slim_writeb() - Write byte to SLIMbus value element
-+ *
-+ * @sdev: client handle.
-+ * @addr:  address of value element to write.
-+ * @value: value to write to value element
-+ *
-+ * Return: -EINVAL for Invalid parameters, -ETIMEDOUT If transmission of
-+ * this message timed out (e.g. due to bus lines not being clocked
-+ * or driven by controller)
-+ *
-+ */
-+int slim_writeb(struct slim_device *sdev, u32 addr, u8 value)
-+{
-+	return slim_write(sdev, addr, 1, &value);
-+}
-+EXPORT_SYMBOL_GPL(slim_writeb);
-diff --git a/drivers/slimbus/slimbus.h b/drivers/slimbus/slimbus.h
-index 66657722f50f..0d40c2578c28 100644
---- a/drivers/slimbus/slimbus.h
-+++ b/drivers/slimbus/slimbus.h
-@@ -8,8 +8,17 @@
- #include <linux/module.h>
- #include <linux/device.h>
- #include <linux/mutex.h>
-+#include <linux/completion.h>
- #include <linux/slimbus.h>
- 
-+/* SLIMbus message types. Related to interpretation of message code. */
-+#define SLIM_MSG_MT_CORE			0x0
-+
-+/* Destination type Values */
-+#define SLIM_MSG_DEST_LOGICALADDR	0
-+#define SLIM_MSG_DEST_ENUMADDR		1
-+#define	SLIM_MSG_DEST_BROADCAST		3
-+
- /* Standard values per SLIMbus spec needed by controllers and devices */
- #define SLIM_MAX_CLK_GEAR		10
- #define SLIM_MIN_CLK_GEAR		1
-@@ -17,6 +26,7 @@
- /* Manager's logical address is set to 0xFF per spec */
- #define SLIM_LA_MANAGER 0xFF
- 
-+#define SLIM_MAX_TIDS			256
- /**
-  * struct slim_framer - Represents SLIMbus framer.
-  * Every controller may have multiple framers. There is 1 active framer device
-@@ -37,6 +47,39 @@ struct slim_framer {
- 
- #define to_slim_framer(d) container_of(d, struct slim_framer, dev)
- 
-+/**
-+ * struct slim_msg_txn - Message to be sent by the controller.
-+ *			This structure has packet header,
-+ *			payload and buffer to be filled (if any)
-+ * @rl: Header field. remaining length.
-+ * @mt: Header field. Message type.
-+ * @mc: Header field. LSB is message code for type mt.
-+ * @dt: Header field. Destination type.
-+ * @ec: Element code. Used for elemental access APIs.
-+ * @tid: Transaction ID. Used for messages expecting response.
-+ *	(relevant for message-codes involving read operation)
-+ * @la: Logical address of the device this message is going to.
-+ *	(Not used when destination type is broadcast.)
-+ * @msg: Elemental access message to be read/written
-+ * @comp: completion if read/write is synchronous, used internally
-+ *	for tid based transactions.
-+ */
-+struct slim_msg_txn {
-+	u8			rl;
-+	u8			mt;
-+	u8			mc;
-+	u8			dt;
-+	u16			ec;
-+	u8			tid;
-+	u8			la;
-+	struct slim_val_inf	*msg;
-+	struct	completion	*comp;
++static struct regmap_bus regmap_slimbus_bus = {
++	.reg_write = regmap_slimbus_byte_reg_write,
++	.reg_read = regmap_slimbus_byte_reg_read,
++	.reg_format_endian_default = REGMAP_ENDIAN_LITTLE,
++	.val_format_endian_default = REGMAP_ENDIAN_LITTLE,
 +};
 +
-+/* Frequently used message transaction structures */
-+#define DEFINE_SLIM_LDEST_TXN(name, mc, rl, la, msg) \
-+	struct slim_msg_txn name = { rl, 0, mc, SLIM_MSG_DEST_LOGICALADDR, 0,\
-+					0, la, msg, }
- /**
-  * struct slim_controller  - Controls every instance of SLIMbus
-  *				(similar to 'master' on SPI)
-@@ -52,6 +95,9 @@ struct slim_framer {
-  * @devices: Slim device list
-  * @tid_idr: tid id allocator
-  * @txn_lock: Lock to protect table of transactions
-+ * @xfer_msg: Transfer a message on this controller (this can be a broadcast
-+ *	control/status message like data channel setup, or a unicast message
-+ *	like value element read/write.
-  * @set_laddr: Setup logical address at laddr for the slave with elemental
-  *	address e_addr. Drivers implementing controller will be expected to
-  *	send unicast message to this device with its logical address.
-@@ -93,6 +139,8 @@ struct slim_controller {
- 	struct list_head	devices;
- 	struct idr		tid_idr;
- 	spinlock_t		txn_lock;
-+	int			(*xfer_msg)(struct slim_controller *ctrl,
-+					    struct slim_msg_txn *tx);
- 	int			(*set_laddr)(struct slim_controller *ctrl,
- 					     struct slim_eaddr *ea, u8 laddr);
- 	int			(*get_laddr)(struct slim_controller *ctrl,
-@@ -104,5 +152,24 @@ int slim_device_report_present(struct slim_controller *ctrl,
- void slim_report_absent(struct slim_device *sbdev);
- int slim_register_controller(struct slim_controller *ctrl);
- int slim_unregister_controller(struct slim_controller *ctrl);
-+void slim_msg_response(struct slim_controller *ctrl, u8 *reply, u8 tid, u8 l);
-+int slim_do_transfer(struct slim_controller *ctrl, struct slim_msg_txn *txn);
++static const struct regmap_bus *regmap_get_slimbus(struct slim_device *slim,
++					const struct regmap_config *config)
++{
++	if (config->val_bits == 8 && config->reg_bits == 8)
++		return &regmap_slimbus_bus;
 +
-+static inline bool slim_tid_txn(u8 mt, u8 mc)
-+{
-+	return (mt == SLIM_MSG_MT_CORE &&
-+		(mc == SLIM_MSG_MC_REQUEST_INFORMATION ||
-+		 mc == SLIM_MSG_MC_REQUEST_CLEAR_INFORMATION ||
-+		 mc == SLIM_MSG_MC_REQUEST_VALUE ||
-+		 mc == SLIM_MSG_MC_REQUEST_CLEAR_INFORMATION));
++	return ERR_PTR(-ENOTSUPP);
 +}
- 
-+static inline bool slim_ec_txn(u8 mt, u8 mc)
++
++struct regmap *__regmap_init_slimbus(struct slim_device *slimbus,
++				     const struct regmap_config *config,
++				     struct lock_class_key *lock_key,
++				     const char *lock_name)
 +{
-+	return (mt == SLIM_MSG_MT_CORE &&
-+		((mc >= SLIM_MSG_MC_REQUEST_INFORMATION &&
-+		  mc <= SLIM_MSG_MC_REPORT_INFORMATION) ||
-+		 (mc >= SLIM_MSG_MC_REQUEST_VALUE &&
-+		  mc <= SLIM_MSG_MC_CHANGE_VALUE)));
++	const struct regmap_bus *bus = regmap_get_slimbus(slimbus, config);
++
++	if (IS_ERR(bus))
++		return ERR_CAST(bus);
++
++	return __regmap_init(&slimbus->dev, bus, &slimbus->dev, config,
++			     lock_key, lock_name);
 +}
- #endif /* _LINUX_SLIMBUS_H */
-diff --git a/include/linux/slimbus.h b/include/linux/slimbus.h
-index aeed98a683be..c36cf121d2cd 100644
---- a/include/linux/slimbus.h
-+++ b/include/linux/slimbus.h
-@@ -7,6 +7,7 @@
- #define _LINUX_SLIMBUS_H
- #include <linux/device.h>
- #include <linux/module.h>
-+#include <linux/completion.h>
- #include <linux/mod_devicetable.h>
- 
- extern struct bus_type slimbus_bus;
-@@ -88,6 +89,25 @@ struct slim_driver {
- };
- #define to_slim_driver(d) container_of(d, struct slim_driver, driver)
++EXPORT_SYMBOL_GPL(__regmap_init_slimbus);
++
++struct regmap *__devm_regmap_init_slimbus(struct slim_device *slimbus,
++					  const struct regmap_config *config,
++					  struct lock_class_key *lock_key,
++					  const char *lock_name)
++{
++	const struct regmap_bus *bus = regmap_get_slimbus(slimbus, config);
++
++	if (IS_ERR(bus))
++		return ERR_CAST(bus);
++
++	return __devm_regmap_init(&slimbus->dev, bus, &slimbus, config,
++				  lock_key, lock_name);
++}
++EXPORT_SYMBOL_GPL(__devm_regmap_init_slimbus);
++
++MODULE_LICENSE("GPL v2");
+diff --git a/include/linux/regmap.h b/include/linux/regmap.h
+index 15eddc1353ba..b2207737a159 100644
+--- a/include/linux/regmap.h
++++ b/include/linux/regmap.h
+@@ -24,6 +24,7 @@ struct module;
+ struct device;
+ struct i2c_client;
+ struct irq_domain;
++struct slim_device;
+ struct spi_device;
+ struct spmi_device;
+ struct regmap;
+@@ -499,6 +500,10 @@ struct regmap *__regmap_init_i2c(struct i2c_client *i2c,
+ 				 const struct regmap_config *config,
+ 				 struct lock_class_key *lock_key,
+ 				 const char *lock_name);
++struct regmap *__regmap_init_slimbus(struct slim_device *slimbus,
++				 const struct regmap_config *config,
++				 struct lock_class_key *lock_key,
++				 const char *lock_name);
+ struct regmap *__regmap_init_spi(struct spi_device *dev,
+ 				 const struct regmap_config *config,
+ 				 struct lock_class_key *lock_key,
+@@ -615,6 +620,19 @@ int regmap_attach_dev(struct device *dev, struct regmap *map,
+ 	__regmap_lockdep_wrapper(__regmap_init_i2c, #config,		\
+ 				i2c, config)
  
 +/**
-+ * struct slim_val_inf - Slimbus value or information element
-+ * @start_offset: Specifies starting offset in information/value element map
-+ * @rbuf: buffer to read the values
-+ * @wbuf: buffer to write
-+ * @num_bytes: upto 16. This ensures that the message will fit the slicesize
-+ *		per SLIMbus spec
-+ * @comp: completion for asynchronous operations, valid only if TID is
-+ *	  required for transaction, like REQUEST operations.
-+ *	  Rest of the transactions are synchronous anyway.
++ * regmap_init_slimbus() - Initialise register map
++ *
++ * @slimbus: Device that will be interacted with
++ * @config: Configuration for register map
++ *
++ * The return value will be an ERR_PTR() on error or a valid pointer to
++ * a struct regmap.
 + */
-+struct slim_val_inf {
-+	u16			start_offset;
-+	u8			num_bytes;
-+	u8			*rbuf;
-+	const u8		*wbuf;
-+	struct	completion	*comp;
-+};
++#define regmap_init_slimbus(slimbus, config)				\
++	__regmap_lockdep_wrapper(__regmap_init_slimbus, #config,	\
++				slimbus, config)
 +
- /*
-  * use a macro to avoid include chaining to get THIS_MODULE
-  */
-@@ -121,4 +141,24 @@ static inline void slim_set_devicedata(struct slim_device *dev, void *data)
- struct slim_device *slim_get_device(struct slim_controller *ctrl,
- 				    struct slim_eaddr *e_addr);
- int slim_get_logical_addr(struct slim_device *sbdev);
-+
-+/* Information Element management messages */
-+#define SLIM_MSG_MC_REQUEST_INFORMATION          0x20
-+#define SLIM_MSG_MC_REQUEST_CLEAR_INFORMATION    0x21
-+#define SLIM_MSG_MC_REPLY_INFORMATION            0x24
-+#define SLIM_MSG_MC_CLEAR_INFORMATION            0x28
-+#define SLIM_MSG_MC_REPORT_INFORMATION           0x29
-+
-+/* Value Element management messages */
-+#define SLIM_MSG_MC_REQUEST_VALUE                0x60
-+#define SLIM_MSG_MC_REQUEST_CHANGE_VALUE         0x61
-+#define SLIM_MSG_MC_REPLY_VALUE                  0x64
-+#define SLIM_MSG_MC_CHANGE_VALUE                 0x68
-+
-+int slim_xfer_msg(struct slim_device *sbdev, struct slim_val_inf *msg,
-+		  u8 mc);
-+int slim_readb(struct slim_device *sdev, u32 addr);
-+int slim_writeb(struct slim_device *sdev, u32 addr, u8 value);
-+int slim_read(struct slim_device *sdev, u32 addr, size_t count, u8 *val);
-+int slim_write(struct slim_device *sdev, u32 addr, size_t count, u8 *val);
- #endif /* _LINUX_SLIMBUS_H */
+ /**
+  * regmap_init_spi() - Initialise register map
+  *
 -- 
 2.15.0
