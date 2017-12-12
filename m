@@ -1,81 +1,81 @@
-From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Subject: Re: [PATCH v5] ASoC: TSCS42xx: Add support for Tempo
- Semiconductor's TSCS42xx audio CODEC
-Date: Tue, 12 Dec 2017 10:54:23 -0600
-Message-ID: <20171212165422.n5ubtuaq4sfggyyn@localhost.localdomain>
-References: <20171211195403.3irxp7g3n326ub3g@localhost.localdomain>
- <20171212130401.nugvjnko6x3c3apn@localhost.localdomain>
- <s5hefo0jdn2.wl-tiwai@suse.de>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] drm/i915: Remove unused IRQ chip data of
+ HDMI LPE audio
+Date: Tue, 12 Dec 2017 18:06:41 +0100 (CET)
+Message-ID: <alpine.DEB.2.20.1712121804570.1794@nanos>
+References: <20171208093323.2212-1-augustine.chen@intel.com>
+ <20171208114404.GN10981@intel.com> <alpine.DEB.2.20.1712082340400.2301@nanos>
+ <F6867404AABACB4D8EC371BF802A4B7C5790D206@fmsmsx101.amr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f195.google.com (mail-ot0-f195.google.com
- [74.125.82.195])
- by alsa0.perex.cz (Postfix) with ESMTP id C8FBF266DF0
- for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 17:54:27 +0100 (CET)
-Received: by mail-ot0-f195.google.com with SMTP id v21so18364653oth.6
- for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 08:54:27 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <s5hefo0jdn2.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, MarkBrown <broonie@kernel.org>
+Content-Type: multipart/mixed; BOUNDARY="8323329-487738387-1513098402=:1794"
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <F6867404AABACB4D8EC371BF802A4B7C5790D206@fmsmsx101.amr.corp.intel.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: "Anand, Jerome" <jerome.anand@intel.com>
+Cc: Juergen Gross <jgross@suse.com>, Dou Liyang <douly.fnst@cn.fujitsu.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Jiang Liu <jiang.liu@linux.intel.com>, "Chen,
+ Augustine" <augustine.chen@intel.com>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 12, 2017 at 02:10:09PM +0100, Takashi Iwai wrote:
-> On Tue, 12 Dec 2017 14:04:01 +0100,
-> Charles Keepax wrote:
-> > 
-> > On Mon, Dec 11, 2017 at 01:54:25PM -0600, Steven Eckhoff wrote:
-> > > Currently there is no support for the TSCS42xx audio CODEC.
-> > > 
-> > > Add support for it.
-> > > 
-> > > v5 attempts to address all issues raised in the previous reviews.
-> > > 
-> > > Thank you to everyone who has invested their time reviewing these
-> > > patches.
-> > > 
-> > > Acked-by: Philippe Ombredanne <pombredanne@nexb.com>
-> > > Signed-off-by: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-> > > ---
-> > > +int bytes_tlv_callback(struct snd_kcontrol *kcontrol, int op_flag,
-> > > +	unsigned int size, unsigned int __user *tlv)
-> > > +{
-> > > +	struct tscs_dsp_ctl *ctl =
-> > > +		(struct tscs_dsp_ctl *)kcontrol->private_value;
-> > > +	struct soc_bytes_ext *params = &ctl->bytes_ext;
-> > > +	unsigned int count = size < params->max ? size : params->max;
-> > > +	int ret = -ENXIO;
-> > > +
-> > > +	switch (op_flag) {
-> > > +	case SNDRV_CTL_TLV_OP_READ:
-> > > +		if (params->get)
-> > > +			ret = params->get(kcontrol, tlv, count);
-> > > +		break;
-> > > +	case SNDRV_CTL_TLV_OP_WRITE:
-> > > +		if (params->put)
-> > > +			ret = params->put(kcontrol, tlv, count);
-> > > +		break;
-> > > +	}
-> > > +	return ret;
-> > > +}
-> > 
-> > Should this function be removed, I am assuming it is a hang over
-> > from the earlier TLV implementation?
-> 
-> Yes, and bytes_ext_info() is also missing static.
-> 
-> 
-> Takashi
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Thanks for the review! it is marked static in the next version.
+--8323329-487738387-1513098402=:1794
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8BIT
+
+On Mon, 11 Dec 2017, Anand, Jerome wrote:
+> > On Fri, 8 Dec 2017, Ville Syrjälä wrote:
+> > 
+> > > On Fri, Dec 08, 2017 at 05:33:23PM +0800, Augustine.Chen wrote:
+> > > > The chip data of HDMI LPE audio is set to drm_i915_private which is
+> > > > not consistent with the expectation by x86 APIC driver.
+> > >
+> > > Hmm. Why is the apic code looking at data for an irq chip it hasn't
+> > > created?
+> > >
+> 
+> apic code expects an irq domain to be place as generic approach.
+
+APIC code does not even see that interrupt at all. It's completely
+disconnected.
+
+> > > > In the case of not enabling CONFIG_CPUMASK_OFFSTACK, this would
+> > > > cause kernel panic while doing CPU hotplug.
+> > 
+> > And why so? Surely not because you set irq_chip_data. That's really no
+> > explanation at all.
+> > 
+> 
+> Ideally, I feel there needs to be an irq domain for mapping the irq
+> numbers with hwirq.  It is not created as part of the hdmi lpe audio
+> bridge.  Since the logic to mask/unmask lpe audio interrupts is removed,
+> there is no need of the Chip data or creation of the domain now.
+
+That still does not explain why this is broken with
+CONFIG_CPUMASK_OFFSTACK=n and cpu hotplug.
+
+Thanks,
+
+	tglx
+
+
+--8323329-487738387-1513098402=:1794
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4
+IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+
+--8323329-487738387-1513098402=:1794--
