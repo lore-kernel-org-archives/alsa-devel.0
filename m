@@ -1,76 +1,44 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: sun4i-codec: fix to enable 12Khz and
- 24Khz audio playback and capture sample rates
-Date: Tue, 12 Dec 2017 10:37:32 +0000
-Message-ID: <20171212103732.GD16323@sirena.org.uk>
-References: <20171212091450.GA13602@andrea-laptop>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: pulseaudio crash when unplugging hdmi while
+ playing audio over hdmi on Cherry Trail devices
+Date: Tue, 12 Dec 2017 11:39:15 +0100
+Message-ID: <3e43fd0f-440e-ad1a-259e-bb4c0a5b5473@redhat.com>
+Reply-To: General PulseAudio Discussion
+ <pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4537069509927280172=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B363267174
- for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 11:37:44 +0100 (CET)
-In-Reply-To: <20171212091450.GA13602@andrea-laptop>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Andrea Bondavalli <andrea.bondavalli74@gmail.com>
-Cc: alsa-devel@alsa-project.org, Emilio =?iso-8859-1?Q?L=F3pez?= <emilio@elopez.com.ar>, Takashi Iwai <tiwai@suse.com>, Adam Sampson <ats@offog.org>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
+To: pulseaudio-discuss@lists.freedesktop.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4537069509927280172==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="tNQTSEo8WG/FKZ8E"
-Content-Disposition: inline
-
-
---tNQTSEo8WG/FKZ8E
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Dec 12, 2017 at 10:14:50AM +0100, Andrea Bondavalli wrote:
-> H3 ASoC supports 12Khz and 24Khz audio sample rates but the current drivers doesn't advertise these rates properly and they cannot be used.
-
-When someone has given you an acked-by or other tag on an earlier
-version of a patch you should make sure to include that on future
-submissions unless the patch gets changed too much.  That way the
-reviewer knows they don't need to repeat their work and other people
-know that the review has happened.
-
-Please fix your mail client to word wrap within paragraphs at something
-substantially less than 80 columns.  Doing this makes your messages much
-easier to read and reply to.
-
---tNQTSEo8WG/FKZ8E
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlovsWwACgkQJNaLcl1U
-h9A4rQgAg65GKgxHEdIu7fCF55rDfh6pqINp1yg9vocDM/HUk8hDhwdgnUMvHIoU
-5IKPfWLoabML+qHDhWHGv7HjxvioYXFj+pyMpmS3QFM7hwZE1ANaB+khRdC//EQR
-d0WldV+kTnWzkK0+ItSvgGMxfix0jAV0YfmxHn0c2sVB/N9YBr8jml6yc1fWmdgX
-J7c2CyeEYW0bR2Q9w/X9AZB4c8rqVxCqFxytDnlLRBosIXcCjXt/mFQ2gQWQ7m+7
-7/Hg5B4cOm6Y6jid8Rlnz2iaASR+NbZLIch5vVZtisX5vmeVe5lqk5S1K9YtnLa3
-270Jq2m5EOIvzzRumIV+Glmjvykslw==
-=POhd
------END PGP SIGNATURE-----
-
---tNQTSEo8WG/FKZ8E--
-
---===============4537069509927280172==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4537069509927280172==--
+SGkgQWxsLAoKRmlyc3Qgb2YgYWxsIGdvb2QgbmV3cywgd2l0aCBrZXJuZWwgNC4xNS1yYzIgYW5k
+IGFsc2EtbGliIDEuMS41CmF1ZGlvIG92ZXIgaGRtaSB3b3JrcyBvbiBDaGVycnkgVHJhaWwgZGV2
+aWNlcyBhZnRlciBzZWxlY3RpbmcKdGhlIHJpZ2h0IG91dHB1dCBwcm9maWxlLgoKQnV0IHdoZW4g
+dW5wbHVnZ2luZyB0aGUgaGRtaSBjYWJsZSBwYSBkaWVzLiBSdW5uaW5nIHBhIHVuZGVyCmdkYiBz
+YXlzIGl0IGdldHMga2lsbGVkIHdpdGggU0lHS0lMTCwgc28gSSB0aGluayB0aGlzIGlzCmFub3Ro
+ZXIgcmVhbHRpbWUgaXNzdWUgd2hlcmUgaXQgZ2V0cyBraWxsZWQgYnkgdGhlIGtlcm5lbCBmb3IK
+ZXhjZWVkaW5nIGl0cyBDUFUgYnVkZ2V0LgoKSSd2ZSBhIGxvZyBmaWxlIG9mIGEgcnVuIHdoaWNo
+IGVuZHMgd2l0aCBTSUdLSUxMIGhlcmU6Cmh0dHBzOi8vZmVkb3JhcGVvcGxlLm9yZy9+andyZGVn
+b2VkZS9wdWxzZWF1ZGlvLWNodC1oZG1pLmxvZwoKV2hhdCBzdGFuZHMgb3V0IGlzIGEgd2hvbGUg
+bG90IG9mIGVycm9ycyAvIHVuZGVycnVucyBhZnRlcjoKRDogW3B1bHNlYXVkaW9dIG1vZHVsZS1h
+bHNhLWNhcmQuYzogSmFjayAnSERNSS9EUCxwY209MSBKYWNrJyBpcyBub3cgdW5wbHVnZ2VkCkQ6
+IFtwdWxzZWF1ZGlvXSBkZXZpY2UtcG9ydC5jOiBTZXR0aW5nIHBvcnQgaGRtaS1vdXRwdXQtMSB0
+byBzdGF0dXMgbm8KClNvIGl0IHNlZW1zIHRoYXQgdGhlIHByb2JsZW0gaXMgdGhhdCBwYSBzdGls
+bCB0cmllcyB0byB1c2UKdGhlIGRldmljZSBhZnRlciB0aGUgdW5wbHVnLCBldmVuIHRob3VnaCBp
+dCBzZWVzIHRoZSB1bnBsdWcKYmVmb3JlIGdldHRpbmcgYW55IGVycm9ycy4KClJlZ2FyZHMsCgpI
+YW5zCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCnB1bHNl
+YXVkaW8tZGlzY3VzcyBtYWlsaW5nIGxpc3QKcHVsc2VhdWRpby1kaXNjdXNzQGxpc3RzLmZyZWVk
+ZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L3B1bHNlYXVkaW8tZGlzY3Vzcwo=
