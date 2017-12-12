@@ -1,15 +1,15 @@
 From: "Andrew F. Davis" <afd@ti.com>
-Subject: [PATCH 03/10] ASoC: tlv320aic32x4: Drop define mapping
-	from number to number
-Date: Tue, 12 Dec 2017 16:43:04 -0600
-Message-ID: <20171212224311.24045-3-afd@ti.com>
+Subject: [PATCH 06/10] ASoC: tlv320aic32x4: Use BIT and GENMASK
+	for bit field definitions
+Date: Tue, 12 Dec 2017 16:43:07 -0600
+Message-ID: <20171212224311.24045-6-afd@ti.com>
 References: <20171212224311.24045-1-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
- by alsa0.perex.cz (Postfix) with ESMTP id 92A802671F3
+Received: from lelnx194.ext.ti.com (lelnx194.ext.ti.com [198.47.27.80])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9F712677B1
  for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 23:43:14 +0100 (CET)
 In-Reply-To: <20171212224311.24045-1-afd@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,102 +26,182 @@ Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F .
  Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Drop definition of frequencies that only map from one number to
-the same number. This is not needed and if misused can hide
-bugs.
+Inter-register definitions should use BIT and GENMASK definitions
+and also be grouped by what register they belong to. This makes it
+easy to cross-check with the datasheet and is consistent with other
+drivers.
 
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 46 ++++++++++++++++++++--------------------
- sound/soc/codecs/tlv320aic32x4.h |  4 ----
- 2 files changed, 23 insertions(+), 27 deletions(-)
+ sound/soc/codecs/tlv320aic32x4.c |   2 +-
+ sound/soc/codecs/tlv320aic32x4.h | 132 ++++++++++++++++++++++++++-------------
+ 2 files changed, 88 insertions(+), 46 deletions(-)
 
 diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index c0ccf3f23a04..e37ab968a938 100644
+index b3b1ca96bb69..426d06206ae4 100644
 --- a/sound/soc/codecs/tlv320aic32x4.c
 +++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -265,34 +265,34 @@ static const struct snd_kcontrol_new aic32x4_snd_controls[] = {
- 
- static const struct aic32x4_rate_divs aic32x4_divs[] = {
- 	/* 8k rate */
--	{AIC32X4_FREQ_12000000, 8000, 1, 7, 6800, 768, 5, 3, 128, 5, 18, 24},
--	{AIC32X4_FREQ_24000000, 8000, 2, 7, 6800, 768, 15, 1, 64, 45, 4, 24},
--	{AIC32X4_FREQ_25000000, 8000, 2, 7, 3728, 768, 15, 1, 64, 45, 4, 24},
-+	{12000000, 8000, 1, 7, 6800, 768, 5, 3, 128, 5, 18, 24},
-+	{24000000, 8000, 2, 7, 6800, 768, 15, 1, 64, 45, 4, 24},
-+	{25000000, 8000, 2, 7, 3728, 768, 15, 1, 64, 45, 4, 24},
- 	/* 11.025k rate */
--	{AIC32X4_FREQ_12000000, 11025, 1, 7, 5264, 512, 8, 2, 128, 8, 8, 16},
--	{AIC32X4_FREQ_24000000, 11025, 2, 7, 5264, 512, 16, 1, 64, 32, 4, 16},
-+	{12000000, 11025, 1, 7, 5264, 512, 8, 2, 128, 8, 8, 16},
-+	{24000000, 11025, 2, 7, 5264, 512, 16, 1, 64, 32, 4, 16},
- 	/* 16k rate */
--	{AIC32X4_FREQ_12000000, 16000, 1, 7, 6800, 384, 5, 3, 128, 5, 9, 12},
--	{AIC32X4_FREQ_24000000, 16000, 2, 7, 6800, 384, 15, 1, 64, 18, 5, 12},
--	{AIC32X4_FREQ_25000000, 16000, 2, 7, 3728, 384, 15, 1, 64, 18, 5, 12},
-+	{12000000, 16000, 1, 7, 6800, 384, 5, 3, 128, 5, 9, 12},
-+	{24000000, 16000, 2, 7, 6800, 384, 15, 1, 64, 18, 5, 12},
-+	{25000000, 16000, 2, 7, 3728, 384, 15, 1, 64, 18, 5, 12},
- 	/* 22.05k rate */
--	{AIC32X4_FREQ_12000000, 22050, 1, 7, 5264, 256, 4, 4, 128, 4, 8, 8},
--	{AIC32X4_FREQ_24000000, 22050, 2, 7, 5264, 256, 16, 1, 64, 16, 4, 8},
--	{AIC32X4_FREQ_25000000, 22050, 2, 7, 2253, 256, 16, 1, 64, 16, 4, 8},
-+	{12000000, 22050, 1, 7, 5264, 256, 4, 4, 128, 4, 8, 8},
-+	{24000000, 22050, 2, 7, 5264, 256, 16, 1, 64, 16, 4, 8},
-+	{25000000, 22050, 2, 7, 2253, 256, 16, 1, 64, 16, 4, 8},
- 	/* 32k rate */
--	{AIC32X4_FREQ_12000000, 32000, 1, 7, 1680, 192, 2, 7, 64, 2, 21, 6},
--	{AIC32X4_FREQ_24000000, 32000, 2, 7, 1680, 192, 7, 2, 64, 7, 6, 6},
-+	{12000000, 32000, 1, 7, 1680, 192, 2, 7, 64, 2, 21, 6},
-+	{24000000, 32000, 2, 7, 1680, 192, 7, 2, 64, 7, 6, 6},
- 	/* 44.1k rate */
--	{AIC32X4_FREQ_12000000, 44100, 1, 7, 5264, 128, 2, 8, 128, 2, 8, 4},
--	{AIC32X4_FREQ_24000000, 44100, 2, 7, 5264, 128, 8, 2, 64, 8, 4, 4},
--	{AIC32X4_FREQ_25000000, 44100, 2, 7, 2253, 128, 8, 2, 64, 8, 4, 4},
-+	{12000000, 44100, 1, 7, 5264, 128, 2, 8, 128, 2, 8, 4},
-+	{24000000, 44100, 2, 7, 5264, 128, 8, 2, 64, 8, 4, 4},
-+	{25000000, 44100, 2, 7, 2253, 128, 8, 2, 64, 8, 4, 4},
- 	/* 48k rate */
--	{AIC32X4_FREQ_12000000, 48000, 1, 8, 1920, 128, 2, 8, 128, 2, 8, 4},
--	{AIC32X4_FREQ_24000000, 48000, 2, 8, 1920, 128, 8, 2, 64, 8, 4, 4},
--	{AIC32X4_FREQ_25000000, 48000, 2, 7, 8643, 128, 8, 2, 64, 8, 4, 4},
-+	{12000000, 48000, 1, 8, 1920, 128, 2, 8, 128, 2, 8, 4},
-+	{24000000, 48000, 2, 8, 1920, 128, 8, 2, 64, 8, 4, 4},
-+	{25000000, 48000, 2, 7, 8643, 128, 8, 2, 64, 8, 4, 4},
- 
- 	/* 96k rate */
--	{AIC32X4_FREQ_25000000, 96000, 2, 7, 8643, 64, 4, 4, 64, 4, 4, 1},
-+	{25000000, 96000, 2, 7, 8643, 64, 4, 4, 64, 4, 4, 1},
- };
- 
- static const struct snd_kcontrol_new hpl_output_mixer_controls[] = {
-@@ -585,9 +585,9 @@ static int aic32x4_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 	struct aic32x4_priv *aic32x4 = snd_soc_codec_get_drvdata(codec);
- 
- 	switch (freq) {
--	case AIC32X4_FREQ_12000000:
--	case AIC32X4_FREQ_24000000:
--	case AIC32X4_FREQ_25000000:
-+	case 12000000:
-+	case 24000000:
-+	case 25000000:
- 		aic32x4->sysclk = freq;
- 		return 0;
+@@ -670,7 +670,7 @@ static int aic32x4_hw_params(struct snd_pcm_substream *substream,
  	}
+ 
+ 	/* Use PLL as CODEC_CLKIN and DAC_MOD_CLK as BDIV_CLKIN */
+-	snd_soc_write(codec, AIC32X4_CLKMUX, AIC32X4_PLLCLKIN);
++	snd_soc_write(codec, AIC32X4_CLKMUX, AIC32X4_CODEC_CLKIN_PLL);
+ 	snd_soc_write(codec, AIC32X4_IFACE3, AIC32X4_DACMOD2BCLK);
+ 
+ 	/* We will fix R value to 1 and will make P & J=K.D as varialble */
 diff --git a/sound/soc/codecs/tlv320aic32x4.h b/sound/soc/codecs/tlv320aic32x4.h
-index 1255f8a30fbd..1e3d1e04888a 100644
+index 1e3d1e04888a..8408ecf2cf95 100644
 --- a/sound/soc/codecs/tlv320aic32x4.h
 +++ b/sound/soc/codecs/tlv320aic32x4.h
-@@ -90,10 +90,6 @@ int aic32x4_remove(struct device *dev);
+@@ -90,61 +90,103 @@ int aic32x4_remove(struct device *dev);
  #define AIC32X4_LMICPGAVOL	AIC32X4_REG(1, 59)
  #define AIC32X4_RMICPGAVOL	AIC32X4_REG(1, 60)
  
--#define AIC32X4_FREQ_12000000 12000000
--#define AIC32X4_FREQ_24000000 24000000
--#define AIC32X4_FREQ_25000000 25000000
+-#define AIC32X4_WORD_LEN_16BITS		0x00
+-#define AIC32X4_WORD_LEN_20BITS		0x01
+-#define AIC32X4_WORD_LEN_24BITS		0x02
+-#define AIC32X4_WORD_LEN_32BITS		0x03
 -
- #define AIC32X4_WORD_LEN_16BITS		0x00
- #define AIC32X4_WORD_LEN_20BITS		0x01
- #define AIC32X4_WORD_LEN_24BITS		0x02
+-#define AIC32X4_LADC_EN			(1 << 7)
+-#define AIC32X4_RADC_EN			(1 << 6)
+-
+-#define AIC32X4_I2S_MODE		0x00
+-#define AIC32X4_DSP_MODE		0x01
+-#define AIC32X4_RIGHT_JUSTIFIED_MODE	0x02
+-#define AIC32X4_LEFT_JUSTIFIED_MODE	0x03
+-
+-#define AIC32X4_AVDDWEAKDISABLE		0x08
+-#define AIC32X4_LDOCTLEN		0x01
++/* Bits, masks, and shifts */
++
++/* AIC32X4_CLKMUX */
++#define AIC32X4_PLL_CLKIN_MASK		GENMASK(3, 2)
++#define AIC32X4_PLL_CLKIN_SHIFT		(2)
++#define AIC32X4_PLL_CLKIN_MCLK		(0x00)
++#define AIC32X4_PLL_CLKIN_BCKL		(0x01)
++#define AIC32X4_PLL_CLKIN_GPIO1		(0x02)
++#define AIC32X4_PLL_CLKIN_DIN		(0x03)
++#define AIC32X4_CODEC_CLKIN_MASK	GENMASK(1, 0)
++#define AIC32X4_CODEC_CLKIN_SHIFT	(0)
++#define AIC32X4_CODEC_CLKIN_MCLK	(0x00)
++#define AIC32X4_CODEC_CLKIN_BCLK	(0x01)
++#define AIC32X4_CODEC_CLKIN_GPIO1	(0x02)
++#define AIC32X4_CODEC_CLKIN_PLL		(0x03)
++
++/* AIC32X4_PLLPR */
++#define AIC32X4_PLLEN			BIT(7)
++
++/* AIC32X4_NDAC */
++#define AIC32X4_NDACEN			BIT(7)
++
++/* AIC32X4_MDAC */
++#define AIC32X4_MDACEN			BIT(7)
++
++/* AIC32X4_NADC */
++#define AIC32X4_NADCEN			BIT(7)
++
++/* AIC32X4_MADC */
++#define AIC32X4_MADCEN			BIT(7)
++
++/* AIC32X4_BCLKN */
++#define AIC32X4_BCLKEN			BIT(7)
++
++/* AIC32X4_IFACE1 */
++#define AIC32X4_IFACE1_DATATYPE_MASK	GENMASK(7, 6)
++#define AIC32X4_IFACE1_DATATYPE_SHIFT	(6)
++#define AIC32X4_I2S_MODE		(0x00)
++#define AIC32X4_DSP_MODE		(0x01)
++#define AIC32X4_RIGHT_JUSTIFIED_MODE	(0x02)
++#define AIC32X4_LEFT_JUSTIFIED_MODE	(0x03)
++#define AIC32X4_IFACE1_DATALEN_MASK	GENMASK(5, 4)
++#define AIC32X4_IFACE1_DATALEN_SHIFT	(4)
++#define AIC32X4_WORD_LEN_16BITS		(0x00)
++#define AIC32X4_WORD_LEN_20BITS		(0x01)
++#define AIC32X4_WORD_LEN_24BITS		(0x02)
++#define AIC32X4_WORD_LEN_32BITS		(0x03)
++#define AIC32X4_IFACE1_MASTER_MASK	GENMASK(3, 2)
++#define AIC32X4_BCLKMASTER		BIT(2)
++#define AIC32X4_WCLKMASTER		BIT(3)
++
++/* AIC32X4_IFACE2 */
++#define AIC32X4_DATA_OFFSET_MASK	GENMASK(7, 0)
++
++/* AIC32X4_IFACE3 */
++#define AIC32X4_BCLKINV_MASK		BIT(3)
++#define AIC32X4_BDIVCLK_MASK		GENMASK(1, 0)
++#define AIC32X4_BDIVCLK_SHIFT		(0)
++#define AIC32X4_DAC2BCLK		(0x00)
++#define AIC32X4_DACMOD2BCLK		(0x01)
++#define AIC32X4_ADC2BCLK		(0x02)
++#define AIC32X4_ADCMOD2BCLK		(0x03)
++
++/* AIC32X4_DACSETUP */
++#define AIC32X4_DAC_CHAN_MASK		GENMASK(5, 2)
++#define AIC32X4_LDAC2RCHN		BIT(5)
++#define AIC32X4_LDAC2LCHN		BIT(4)
++#define AIC32X4_RDAC2LCHN		BIT(3)
++#define AIC32X4_RDAC2RCHN		BIT(2)
++
++/* AIC32X4_DACMUTE */
++#define AIC32X4_MUTEON			0x0C
+ 
+-#define AIC32X4_LDOIN_18_36		0x01
+-#define AIC32X4_LDOIN2HP		0x02
++/* AIC32X4_ADCSETUP */
++#define AIC32X4_LADC_EN			BIT(7)
++#define AIC32X4_RADC_EN			BIT(6)
+ 
+-#define AIC32X4_DACSPBLOCK_MASK		0x1f
+-#define AIC32X4_ADCSPBLOCK_MASK		0x1f
++/* AIC32X4_PWRCFG */
++#define AIC32X4_AVDDWEAKDISABLE		BIT(3)
+ 
+-#define AIC32X4_PLLJ_SHIFT		6
+-#define AIC32X4_DOSRMSB_SHIFT		4
++/* AIC32X4_LDOCTL */
++#define AIC32X4_LDOCTLEN		BIT(0)
+ 
+-#define AIC32X4_PLLCLKIN		0x03
++/* AIC32X4_CMMODE */
++#define AIC32X4_LDOIN_18_36		BIT(0)
++#define AIC32X4_LDOIN2HP		BIT(1)
+ 
+-#define AIC32X4_MICBIAS_LDOIN		0x08
++/* AIC32X4_MICBIAS */
++#define AIC32X4_MICBIAS_LDOIN		BIT(3)
+ #define AIC32X4_MICBIAS_2075V		0x60
+ 
++/* AIC32X4_LMICPGANIN */
+ #define AIC32X4_LMICPGANIN_IN2R_10K	0x10
+ #define AIC32X4_LMICPGANIN_CM1L_10K	0x40
++
++/* AIC32X4_RMICPGANIN */
+ #define AIC32X4_RMICPGANIN_IN1L_10K	0x10
+ #define AIC32X4_RMICPGANIN_CM1R_10K	0x40
+ 
+-#define AIC32X4_LMICPGAVOL_NOGAIN	0x80
+-#define AIC32X4_RMICPGAVOL_NOGAIN	0x80
+-
+-#define AIC32X4_BCLKMASTER		0x08
+-#define AIC32X4_WCLKMASTER		0x04
+-#define AIC32X4_PLLEN			(0x01 << 7)
+-#define AIC32X4_NDACEN			(0x01 << 7)
+-#define AIC32X4_MDACEN			(0x01 << 7)
+-#define AIC32X4_NADCEN			(0x01 << 7)
+-#define AIC32X4_MADCEN			(0x01 << 7)
+-#define AIC32X4_BCLKEN			(0x01 << 7)
+-#define AIC32X4_DACEN			(0x03 << 6)
+-#define AIC32X4_RDAC2LCHN		(0x02 << 2)
+-#define AIC32X4_LDAC2RCHN		(0x02 << 4)
+-#define AIC32X4_LDAC2LCHN		(0x01 << 4)
+-#define AIC32X4_RDAC2RCHN		(0x01 << 2)
+-#define AIC32X4_DAC_CHAN_MASK		0x3c
+-
+-#define AIC32X4_SSTEP2WCLK		0x01
+-#define AIC32X4_MUTEON			0x0C
+-#define	AIC32X4_DACMOD2BCLK		0x01
+-
+ #endif				/* _TLV320AIC32X4_H */
 -- 
 2.15.0
