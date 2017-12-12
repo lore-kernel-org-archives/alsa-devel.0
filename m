@@ -1,42 +1,71 @@
-From: Jia-Ju Bai <baijiaju1990@163.com>
-Subject: [BUG] sound/soc/samsung: a possible sleep-in-atomic
- bugs in s3c_pcm_hw_params
-Date: Tue, 12 Dec 2017 09:24:34 +0800
-Message-ID: <bb1c8c1d-4f99-7d47-818c-13e98cd024d5@163.com>
+From: "Katsuhiro Suzuki" <suzuki.katsuhiro@socionext.com>
+Subject: Re: [alsa-devel] [PATCH 5/8] ASoC: uniphier: add support for UniPhier AIO driver
+Date: Tue, 12 Dec 2017 13:33:34 +0900
+Message-ID: <003201d37302$5f40fde0$1dc2f9a0$@socionext.com>
+References: <20171122114321.29196-1-suzuki.katsuhiro@socionext.com> <20171122114321.29196-6-suzuki.katsuhiro@socionext.com> <20171204183934.rd4vin22ktukwpip@sirena.org.uk> <002b01d36d84$51d80aa0$f5881fe0$@socionext.com> <20171205121440.GC11658@finisterre> <004801d36e57$ea1940d0$be4bc270$@socionext.com> <20171206125817.GF1827@finisterre> <001501d37261$7ea89d10$7bf9d730$@socionext.com> <20171211151629.GD9854@sirena.org.uk> <20171211174854.GZ18649@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain;
+        charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from m12-16.163.com (m12-16.163.com [220.181.12.16])
- by alsa0.perex.cz (Postfix) with ESMTP id C9A3326705F
- for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 02:24:44 +0100 (CET)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: krzk@kernel.org, sbkim73@samsung.com, s.nawrocki@samsung.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171211174854.GZ18649@localhost>
+Content-Language: ja
+Sender: linux-kernel-owner@vger.kernel.org
+To: 'Vinod Koul' <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, =?iso-2022-jp?B?WWFtYWRhLCBNYXNhaGlyby8bJEI7M0VEGyhCIBskQj8/OTAbKEI=?= <yamada.masahiro@socionext.com>, linux-kernel@vger.kernel.org, Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-According to sound/soc/samsung/pcm.c, the kernel module may sleep under 
-a spinlock.
-The function call path is:
-s3c_pcm_hw_params (acquire the spinlock)
-   clk_get_rate
-     clk_core_get_rate
-       clk_prepare_lock
-         mutex_lock --> may sleep
+Hello Vinod, Mark,
 
-I do not find a good way to fix it, so I only report.
-This possible bug is found by my static analysis tool (DSAC) and my code 
-review.
+> -----Original Message-----
+> From: Vinod Koul [mailto:vinod.koul@intel.com]
+> Sent: Tuesday, December 12, 2017 2:49 AM
+> To: Mark Brown <broonie@kernel.org>
+> Cc: Suzuki, Katsuhiro/鈴木 勝博 <suzuki.katsuhiro@socionext.com>;
+> devicetree@vger.kernel.org; alsa-devel@alsa-project.org; Masami Hiramatsu
+> <masami.hiramatsu@linaro.org>; Yamada, Masahiro/山田 真弘
+> <yamada.masahiro@socionext.com>; linux-kernel@vger.kernel.org; Jassi Brar
+> <jaswinder.singh@linaro.org>; Rob Herring <robh+dt@kernel.org>;
+> linux-arm-kernel@lists.infradead.org
+> Subject: Re: [alsa-devel] [PATCH 5/8] ASoC: uniphier: add support for UniPhier
+> AIO driver
+> 
+> On Mon, Dec 11, 2017 at 03:16:29PM +0000, Mark Brown wrote:
+> > On Mon, Dec 11, 2017 at 06:21:58PM +0900, Katsuhiro Suzuki wrote:
+> >
+> > > But I can't find how to use/map this DAI in machine driver or Device-Tree
+or
+> > > something. I think that it's same as PCM DAI, am I correct?
+> >
+> > Yes, that probably makes sense from a binding point of view.
+> >
+> > > I read compress-offload.rst, but I can't find how do I test it. It seems
+aplay
+> > > of
+> > > alsa-util doesn't know compress audio formats. Should I use PulseAudio or
+> > > Android HAL to test compress audio APIs?
+> >
+> > IIRC tinyalsa has a compressed API test application - Vinod?
+> 
+> I guess it was sheer luck that i saw this :) email in CC reads
+> vinod.koul@linaro.org! I don't work for Linaro, not yet :D
+> 
+> And to the answer the question, Yes we have compressed API test application
+> in tinycompress which is located at git.alsa-project.org:tinycompress.git
+> 
+> We have both compressed audio playback as well as record test app, cplay and
+> crecord.
+> 
+
+Ah, I didn't check tinyalsa, thanks a lot!
+I'll try it.
 
 
-Thanks,
-Jia-Ju Bai
+Regards,
+--
+Katsuhiro Suzuki
+
+
+> HTH
+> --
+> ~Vinod
