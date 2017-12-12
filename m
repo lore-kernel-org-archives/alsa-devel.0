@@ -1,114 +1,113 @@
-From: Andrea Bondavalli <andrea.bondavalli74@gmail.com>
-Subject: [PATCH] ASoC: sun4i-codec: fix to enable 12Khz and
- 24Khz audio playback and capture sample rates
-Date: Tue, 12 Dec 2017 10:14:50 +0100
-Message-ID: <20171212091450.GA13602@andrea-laptop>
+From: "Chen, Augustine" <augustine.chen@intel.com>
+Subject: Re: [PATCH] drm/i915: Remove unused IRQ chip data of
+ HDMI LPE audio
+Date: Tue, 12 Dec 2017 09:26:08 +0000
+Message-ID: <9A1A7991592FAD49BCF9F28D9CF9FE3121AB7B0D@PGSMSX105.gar.corp.intel.com>
+References: <20171208093323.2212-1-augustine.chen@intel.com>
+ <20171208114404.GN10981@intel.com>
+ <alpine.DEB.2.20.1712082340400.2301@nanos>
+ <F6867404AABACB4D8EC371BF802A4B7C5790D206@fmsmsx101.amr.corp.intel.com>
+ <20171211132023.GO10981@intel.com> <s5hzi6pl7p3.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 3331C266F52
- for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 10:14:58 +0100 (CET)
-Received: by mail-wm0-f68.google.com with SMTP id r78so19361297wme.5
- for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 01:14:58 -0800 (PST)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Emilio =?iso-8859-1?Q?L=F3pez?= <emilio@elopez.com.ar>, Jon Smirl <jonsmirl@gmail.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Adam Sampson <ats@offog.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5hzi6pl7p3.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>, =?utf-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc: Juergen Gross <jgross@suse.com>, Dou Liyang <douly.fnst@cn.fujitsu.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter
+ Anvin" <hpa@zytor.com>, Thomas Gleixner <tglx@linutronix.de>, Jiang Liu <jiang.liu@linux.intel.com>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-H3 ASoC supports 12Khz and 24Khz audio sample rates but the current drivers doesn't advertise these rates properly and they cannot be used.
-
-For example attempt to capture at 12Khz uses 11Khz (same applies to audio playback):
-# arecord -f S16_LE -c 2 -r 12000  -D hw:0,0  -t raw /tmp/testS16_LE.raw
-Recording raw data '/tmp/testS16_LE.raw' : Signed 16 bit Little Endian, Rate 12000 Hz, Stereo
-Warning: rate is not accurate (requested = 12000Hz, got = 11025Hz)
-
-This patch fixes the audio sample rates declared and supported by the driver according to the H3 data sheet.
-Specifically for audio playback:
-8000, 11050, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 96000, 192000
-and for audio capture:
-8000, 11050, 12000, 16000, 22050, 24000, 32000, 44100, 48000
-
-Signed-off-by: Andrea Bondavalli <andrea.bondavalli74@gmail.com>
----
- sound/soc/sunxi/sun4i-codec.c | 29 ++++++++++++++++++++---------
- 1 file changed, 20 insertions(+), 9 deletions(-)
-
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 5da4efe..c79e8a4 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -590,12 +590,28 @@ static int sun4i_codec_hw_params(struct snd_pcm_substream *substream,
- 					     hwrate);
- }
- 
-+
-+static unsigned int sun4i_codec_src_rates[] = {
-+	8000, 11025, 12000, 16000, 22050, 24000, 32000,
-+	44100, 48000, 96000, 192000
-+};
-+
-+
-+static struct snd_pcm_hw_constraint_list sun4i_codec_constraints = {
-+	.count  = ARRAY_SIZE(sun4i_codec_src_rates),
-+	.list   = sun4i_codec_src_rates,
-+};
-+
-+
- static int sun4i_codec_startup(struct snd_pcm_substream *substream,
- 			       struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct sun4i_codec *scodec = snd_soc_card_get_drvdata(rtd->card);
- 
-+	snd_pcm_hw_constraint_list(substream->runtime, 0,
-+				SNDRV_PCM_HW_PARAM_RATE, &sun4i_codec_constraints);
-+
- 	/*
- 	 * Stop issuing DRQ when we have room for less than 16 samples
- 	 * in our TX FIFO
-@@ -633,9 +649,7 @@ static struct snd_soc_dai_driver sun4i_codec_dai = {
- 		.channels_max	= 2,
- 		.rate_min	= 8000,
- 		.rate_max	= 192000,
--		.rates		= SNDRV_PCM_RATE_8000_48000 |
--				  SNDRV_PCM_RATE_96000 |
--				  SNDRV_PCM_RATE_192000,
-+		.rates		= SNDRV_PCM_RATE_CONTINUOUS,
- 		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
- 				  SNDRV_PCM_FMTBIT_S32_LE,
- 		.sig_bits	= 24,
-@@ -645,11 +659,8 @@ static struct snd_soc_dai_driver sun4i_codec_dai = {
- 		.channels_min	= 1,
- 		.channels_max	= 2,
- 		.rate_min	= 8000,
--		.rate_max	= 192000,
--		.rates		= SNDRV_PCM_RATE_8000_48000 |
--				  SNDRV_PCM_RATE_96000 |
--				  SNDRV_PCM_RATE_192000 |
--				  SNDRV_PCM_RATE_KNOT,
-+		.rate_max	= 48000,
-+		.rates		= SNDRV_PCM_RATE_CONTINUOUS,
- 		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
- 				  SNDRV_PCM_FMTBIT_S32_LE,
- 		.sig_bits	= 24,
-@@ -1128,7 +1139,7 @@ static const struct snd_soc_component_driver sun4i_codec_component = {
- 	.name = "sun4i-codec",
- };
- 
--#define SUN4I_CODEC_RATES	SNDRV_PCM_RATE_8000_192000
-+#define SUN4I_CODEC_RATES	SNDRV_PCM_RATE_CONTINUOUS
- #define SUN4I_CODEC_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
- 				 SNDRV_PCM_FMTBIT_S32_LE)
- 
--- 
-2.7.4
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFRha2FzaGkgSXdhaSBbbWFp
+bHRvOnRpd2FpQHN1c2UuZGVdDQo+IFNlbnQ6IE1vbmRheSwgRGVjZW1iZXIgMTEsIDIwMTcgOToy
+MyBQTQ0KPiBUbzogVmlsbGUgU3lyasOkbMOkIDx2aWxsZS5zeXJqYWxhQGxpbnV4LmludGVsLmNv
+bT4NCj4gQ2M6IEFuYW5kLCBKZXJvbWUgPGplcm9tZS5hbmFuZEBpbnRlbC5jb20+OyBUaG9tYXMg
+R2xlaXhuZXINCj4gPHRnbHhAbGludXRyb25peC5kZT47IENoZW4sIEF1Z3VzdGluZSA8YXVndXN0
+aW5lLmNoZW5AaW50ZWwuY29tPjsgaW50ZWwtDQo+IGdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmc7
+IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgQm9zc2FydCwgUGllcnJlLWxvdWlzDQo+IDxw
+aWVycmUtbG91aXMuYm9zc2FydEBpbnRlbC5jb20+OyBJbmdvIE1vbG5hciA8bWluZ29AcmVkaGF0
+LmNvbT47IEguIFBldGVyDQo+IEFudmluIDxocGFAenl0b3IuY29tPjsgSmlhbmcgTGl1IDxqaWFu
+Zy5saXVAbGludXguaW50ZWwuY29tPjsgSnVlcmdlbiBHcm9zcw0KPiA8amdyb3NzQHN1c2UuY29t
+PjsgRG91IExpeWFuZyA8ZG91bHkuZm5zdEBjbi5mdWppdHN1LmNvbT47IGxpbnV4LQ0KPiBrZXJu
+ZWxAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBbSW50ZWwtZ2Z4XSBbUEFUQ0hdIGRy
+bS9pOTE1OiBSZW1vdmUgdW51c2VkIElSUSBjaGlwIGRhdGEgb2YNCj4gSERNSSBMUEUgYXVkaW8N
+Cj4gDQo+IE9uIE1vbiwgMTEgRGVjIDIwMTcgMTQ6MjA6MjMgKzAxMDAsDQo+IFZpbGxlIFN5cmrD
+pGzDpCB3cm90ZToNCj4gPg0KPiA+IE9uIE1vbiwgRGVjIDExLCAyMDE3IGF0IDA4OjMzOjMzQU0g
+KzAwMDAsIEFuYW5kLCBKZXJvbWUgd3JvdGU6DQo+ID4gPg0KPiA+ID4NCj4gPiA+ID4gLS0tLS1P
+cmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+ID4gRnJvbTogVGhvbWFzIEdsZWl4bmVyIFttYWls
+dG86dGdseEBsaW51dHJvbml4LmRlXQ0KPiA+ID4gPiBTZW50OiBTYXR1cmRheSwgRGVjZW1iZXIg
+OSwgMjAxNyA0OjIyIEFNDQo+ID4gPiA+IFRvOiBWaWxsZSBTeXJqw6Rsw6QgPHZpbGxlLnN5cmph
+bGFAbGludXguaW50ZWwuY29tPg0KPiA+ID4gPiBDYzogQ2hlbiwgQXVndXN0aW5lIDxhdWd1c3Rp
+bmUuY2hlbkBpbnRlbC5jb20+OyBpbnRlbC0NCj4gPiA+ID4gZ2Z4QGxpc3RzLmZyZWVkZXNrdG9w
+Lm9yZzsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBBbmFuZCwNCj4gPiA+ID4gSmVyb21l
+IDxqZXJvbWUuYW5hbmRAaW50ZWwuY29tPjsgQm9zc2FydCwgUGllcnJlLWxvdWlzIDxwaWVycmUt
+DQo+ID4gPiA+IGxvdWlzLmJvc3NhcnRAaW50ZWwuY29tPjsgdGl3YWlAc3VzZS5kZTsgSW5nbyBN
+b2xuYXINCj4gPiA+ID4gPG1pbmdvQHJlZGhhdC5jb20+OyBILiBQZXRlciBBbnZpbiA8aHBhQHp5
+dG9yLmNvbT47IEppYW5nIExpdQ0KPiA+ID4gPiA8amlhbmcubGl1QGxpbnV4LmludGVsLmNvbT47
+IEp1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT47IERvdQ0KPiA+ID4gPiBMaXlhbmcgPGRv
+dWx5LmZuc3RAY24uZnVqaXRzdS5jb20+OyBsaW51eC0ga2VybmVsQHZnZXIua2VybmVsLm9yZw0K
+PiA+ID4gPiBTdWJqZWN0OiBSZTogW0ludGVsLWdmeF0gW1BBVENIXSBkcm0vaTkxNTogUmVtb3Zl
+IHVudXNlZCBJUlEgY2hpcA0KPiA+ID4gPiBkYXRhIG9mIEhETUkgTFBFIGF1ZGlvDQo+ID4gPiA+
+DQo+ID4gPiA+IE9uIEZyaSwgOCBEZWMgMjAxNywgVmlsbGUgU3lyasOkbMOkIHdyb3RlOg0KPiA+
+ID4gPg0KPiA+ID4gPiA+IE9uIEZyaSwgRGVjIDA4LCAyMDE3IGF0IDA1OjMzOjIzUE0gKzA4MDAs
+IEF1Z3VzdGluZS5DaGVuIHdyb3RlOg0KPiA+ID4gPiA+ID4gVGhlIGNoaXAgZGF0YSBvZiBIRE1J
+IExQRSBhdWRpbyBpcyBzZXQgdG8gZHJtX2k5MTVfcHJpdmF0ZQ0KPiA+ID4gPiA+ID4gd2hpY2gg
+aXMgbm90IGNvbnNpc3RlbnQgd2l0aCB0aGUgZXhwZWN0YXRpb24gYnkgeDg2IEFQSUMgZHJpdmVy
+Lg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gSG1tLiBXaHkgaXMgdGhlIGFwaWMgY29kZSBsb29raW5n
+IGF0IGRhdGEgZm9yIGFuIGlycSBjaGlwIGl0DQo+ID4gPiA+ID4gaGFzbid0IGNyZWF0ZWQ/DQo+
+ID4gPiA+ID4NCj4gPiA+DQo+ID4gPiBhcGljIGNvZGUgZXhwZWN0cyBhbiBpcnEgZG9tYWluIHRv
+IGJlIHBsYWNlIGFzIGdlbmVyaWMgYXBwcm9hY2guDQo+ID4gPg0KPiA+ID4gPiA+IERvIHdlIG5l
+ZWQgc29tZXRoaW5nIGxpa2UNCj4gPiA+ID4gPiAtIGRldl9wcml2LT5scGVfYXVkaW8uaXJxID0g
+aXJxX2FsbG9jX2Rlc2MoMCk7DQo+ID4gPiA+ID4gKyBkZXZfcHJpdi0+bHBlX2F1ZGlvLmlycSA9
+IGlycV9hbGxvY19kZXNjKC0xKTsNCj4gPiA+ID4NCj4gPiA+ID4gI2RlZmluZSBpcnFfYWxsb2Nf
+ZGVzYyhub2RlKQ0KPiA+ID4gPg0KPiA+ID4gPiBTbyBpbnN0ZWFkIG9mIGhhbmRpbmcgaW4gbm9k
+ZSAwIHlvdSBoYW5kIGluIG5vZGUgLTEgd2hpY2ggaXMNCj4gPiA+ID4gTlVNQV9OT19OT0RFDQo+
+ID4gPiA+DQo+ID4NCj4gPiBBaC4gSSBtaXNyZWFkIHRoZSBtYWNyb3MuIFNvIHdlIGFscmVhZHkg
+cGFzcyBpcnE9LTEuDQpObyBtYXR0ZXIgZnJvbSB0aGUgY29kZSBwZXJzcGVjdGl2ZSBvciBmcm9t
+IHRoZSByZWFsIHRlc3QgcmVzdWx0LCB0aGlzIGNoYW5nZSBkb2Vzbid0IG1ha2UgYW55IGRpZmZl
+cmVuY2UgaW4gdGVybXMgb2YgdGhlIGlzc3VlIHN5bXB0b20uDQoNCj4gPg0KPiA+ID4NCj4gPiA+
+IEFncmVlIC0gYW0gbm90IHN1cmUgd2hldGhlciBpdCB3aWxsIG1ha2UgYW55IGRpZmZlcmVuY2Uu
+DQo+ID4gPg0KPiA+ID4gPiA+IFRoYXQgKmxvb2tzKiBtb3JlIGNvcnJlY3QgdG8gbWUgYmFzZWQg
+b24gYSBjdXJzb3J5IGdsYW5jZSBhdCB0aGUNCj4gPiA+ID4gPiB4ODYgY29kZSwgYnV0IEkgZGlk
+bid0IHRyYXdsIHZlcnkgZGVlcGx5Lg0KPiA+ID4gPg0KPiA+ID4gPiBUaGUgeDg2IGNvcmUgY2Fy
+ZXMgbm90IGF0IGFsbCBhYm91dCBpbnRlcnJ1cHQgY2hpcHMgd2hpY2ggYXJlDQo+ID4gPiA+IGNy
+ZWF0ZWQgaW4gYSBkcml2ZXIgYW5kIG5vdCBjb25uZWN0ZWQgdG8gYW4gYWN0dWFsIGFwaWMvaW9h
+cGljL21zaQ0KPiA+ID4gPiBpbnRlcnJ1cHQuIFRoaXMgaW50ZXJydXB0IGNoaXAgaXMgaXRzIG93
+biB0aGluZyBhcyB3ZSBoYXZlIG90aGVycyBpbiBHUElPIGV0Yy4NCj4gPiA+ID4NCj4gPiA+ID4g
+PiA+IEluIHRoZSBjYXNlIG9mIG5vdCBlbmFibGluZyBDT05GSUdfQ1BVTUFTS19PRkZTVEFDSywg
+dGhpcw0KPiA+ID4gPiA+ID4gd291bGQgY2F1c2Uga2VybmVsIHBhbmljIHdoaWxlIGRvaW5nIENQ
+VSBob3RwbHVnLg0KPiA+ID4gPg0KPiA+ID4gPiBBbmQgd2h5IHNvPyBTdXJlbHkgbm90IGJlY2F1
+c2UgeW91IHNldCBpcnFfY2hpcF9kYXRhLiBUaGF0J3MNCj4gPiA+ID4gcmVhbGx5IG5vIGV4cGxh
+bmF0aW9uIGF0IGFsbC4NCj4gPiA+ID4NCj4gPiA+DQo+ID4gPiBJZGVhbGx5LCBJIGZlZWwgdGhl
+cmUgbmVlZHMgdG8gYmUgYW4gaXJxIGRvbWFpbiBmb3IgbWFwcGluZyB0aGUgaXJxIG51bWJlcnMN
+Cj4gd2l0aCBod2lycS4NCj4gPiA+IEl0IGlzIG5vdCBjcmVhdGVkIGFzIHBhcnQgb2YgdGhlIGhk
+bWkgbHBlIGF1ZGlvIGJyaWRnZS4NCj4gPiA+IFNpbmNlIHRoZSBsb2dpYyB0byBtYXNrL3VubWFz
+ayBscGUgYXVkaW8gaW50ZXJydXB0cyBpcyByZW1vdmVkLA0KPiA+ID4gdGhlcmUgaXMgbm8gbmVl
+ZCBvZiB0aGUgQ2hpcCBkYXRhIG9yIGNyZWF0aW9uIG9mIHRoZSBkb21haW4gbm93Lg0KPiA+DQo+
+ID4gVGhlcmUgaXMgbm8gbmVlZCByaWdodCBub3cuIEJ1dCB0aGVyZSBtaWdodCBiZSBhIG5lZWQg
+aW4gdGhlIGZ1dHVyZS4NCj4gPiBMUEUgYXVkaW8gaXNuJ3QgZXZlbiB0aGUgb25seSBwaWVjZSBv
+ZiBoYXJkd2FyZSB3aG9zZSBpcnEgZ29lcyB0aHJvdWdoDQo+ID4gdGhlIGk5MTUgZGlzcGxheSBl
+bmdpbmUgKHRoZXJlJ3MgYWxzbyB0aGUgSVNQIGFuZCBWRUQpLiBTbyBJIHdvdWxkDQo+ID4gbXVj
+aCBwcmVmZXIgYSBwcm9wZXIgc29sdXRpb24gaW5zdGVhZCBvZiBzd2VlcGluZyB0aGUgcHJvYmxl
+bSB1bmRlcg0KPiA+IHRoZSBydWcuDQo+IA0KPiBJTU8sIHRoZSBwcmltYXJ5IHF1ZXN0aW9uIGlz
+IHdoZXRoZXIgdGhlIHVzYWdlIG9mIGlycSBjaGlwIHdpdGhvdXQgaXJxIGRvbWFpbiBpcw0KPiB2
+YWxpZCBvciBub3QuICBJZiBhbiBpcnEgZG9tYWluIGlzIG1hbmRhdG9yeSwgdGhhdCdzIHRoZSB0
+aGluZyB0byBiZSBmaXhlZCBpbiBpOTE1DQo+IHNpZGUuDQpJbiB0ZXJtcyBvZiBmdW5jdGlvbmFs
+aXR5LCB0aGUgaW50ZXJydXB0IGFuZCBoZG1pIGF1ZGlvIHdvcmsgZmluZSB3aXRob3V0IGlycSBk
+b21haW4gYWNjb3JkaW5nIHRvIHRoZSB2YWxpZGF0aW9uLiBBbmQgYmVzaWRlcywgdGhlcmUgYXJl
+IG90aGVyIGRyaXZlcnMgd2l0aCBzaW1pbGFyIGltcGxlbWVudGF0aW9uIHdoaWNoIGRvZXNuJ3Qg
+c2V0IGNoaXAgZGF0YSBhdCBhbGwuDQoNCg0KPiANCj4gDQo+IHRoYW5rcywNCj4gDQo+IFRha2Fz
+aGkNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVs
+LWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczov
+L2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
