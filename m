@@ -1,46 +1,49 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASOC: wm8960: Add multiple MCLK frequency support
-Date: Tue, 12 Dec 2017 17:37:56 +0000
-Message-ID: <20171212173756.GM16323@sirena.org.uk>
-References: <1513079936-163297-1-git-send-email-chen.liu.opensource@gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xtx0sNU5lZ46KfgK"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1513079936-163297-1-git-send-email-chen.liu.opensource@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Chen.Liu" <chen.liu.opensource@gmail.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, shengjiu.wang@freescale.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Biju Das <biju.das@bp.renesas.com>
+Subject: [PATCH] dt-bindings: ASoC: rsnd: Add device tree support for r8a774[35]
+Date: Tue, 12 Dec 2017 18:09:15 +0000
+Message-ID: <1513102155-47925-1-git-send-email-biju.das@bp.renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Cc: Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, Chris Paterson <chris.paterson2@renesas.com>, Fabrizio Castro <fabrizio.castro@bp.renesas.com>, alsa-devel@alsa-project.org, linux-renesas-soc@vger.kernel.org, Biju Das <biju.das@bp.renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
+Document r8a774[35] specific compatible strings. The Renesas RZ/G1[ME]
+(r8a774[35]) sound modules are identical to the R-Car Gen2 family.
+No driver change is needed as the fallback compatible string
+"renesas,rcar_sound-gen2" activates the right code in the driver.
 
---xtx0sNU5lZ46KfgK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Biju Das <biju.das@bp.renesas.com>
+Reviewed-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+---
+ Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-On Tue, Dec 12, 2017 at 07:58:56PM +0800, Chen.Liu wrote:
-
-> +retry:
-> +	if (unsupport) {
-
-As Charles says this would be better as a loop.  It'd also be better to
-say "unsupported" rather than "unsupport" - it scans better for native
-speakers.
-
---xtx0sNU5lZ46KfgK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlowE/MACgkQJNaLcl1U
-h9DR5gf+IRGFFjoWX577ki4jQnLo26O8PEL0AHCxHR2omSNE/X4FpbsgHok1o2J6
-h6YBz1iiWX3638lhnQIPNAMd96P84dqeKx15h2DG3F0pjvVHxwpHQ7Jy2HBfP61F
-p8+617InHWNaSy1yPBcVwwPqcof9Su+s93mSaQBWKwxS1ucUkJOXH5BKUdxnkIZu
-2Hf8r6IAkA81mAx07kPHE5eVbn4+7BA1INjYj3R5lbpiBJ5EXGxTJBUPOATzHAeS
-feLZV9pPM6cjJCppXO/49EuUdkxSXu0ZUJljKOLKJL7ub7AyHhBhoNrmg5RCtUmo
-hfflz61WKyZDD4gl+KmC9GhmN9nMTw==
-=5yi5
------END PGP SIGNATURE-----
-
---xtx0sNU5lZ46KfgK--
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index 085bec3..b3c28bd 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -4,7 +4,7 @@ Renesas R-Car sound
+ * Modules
+ =============================================
+ 
+-Renesas R-Car sound is constructed from below modules
++Renesas R-Car and RZ/G sound is constructed from below modules
+ (for Gen2 or later)
+ 
+  SCU		: Sampling Rate Converter Unit
+@@ -334,9 +334,11 @@ Required properties:
+ 
+ - compatible			: "renesas,rcar_sound-<soctype>", fallbacks
+ 				  "renesas,rcar_sound-gen1" if generation1, and
+-				  "renesas,rcar_sound-gen2" if generation2
++				  "renesas,rcar_sound-gen2" if generation2 (or RZ/G1)
+ 				  "renesas,rcar_sound-gen3" if generation3
+ 				  Examples with soctypes are:
++				    - "renesas,rcar_sound-r8a7743" (RZ/G1M)
++				    - "renesas,rcar_sound-r8a7745" (RZ/G1E)
+ 				    - "renesas,rcar_sound-r8a7778" (R-Car M1A)
+ 				    - "renesas,rcar_sound-r8a7779" (R-Car H1)
+ 				    - "renesas,rcar_sound-r8a7790" (R-Car H2)
+-- 
+1.9.1
