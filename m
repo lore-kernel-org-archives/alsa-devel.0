@@ -1,732 +1,153 @@
-From: Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v8 10/13] IIO: ADC: add stm32 DFSDM support for PDM
- microphone
-Date: Tue, 12 Dec 2017 20:27:15 +0000
-Message-ID: <20171212202715.2d9bd9f2@archlinux>
-References: <1512987524-2901-1-git-send-email-arnaud.pouliquen@st.com>
-        <1512987524-2901-11-git-send-email-arnaud.pouliquen@st.com>
+From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+Subject: Re: [PATCH v5] ASoC: TSCS42xx: Add support for Tempo Semiconductor's
+ TSCS42xx audio CODEC
+Date: Tue, 12 Dec 2017 15:31:16 -0600
+Message-ID: <20171212213114.n5pcgy6q6m3qu5s4@localhost.localdomain>
+References: <20171211195403.3irxp7g3n326ub3g@localhost.localdomain>
+ <20171212163254.GL16323@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1512987524-2901-11-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20171212163254.GL16323@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 11 Dec 2017 11:18:41 +0100
-Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org> wrote:
-
-> This code offers a way to handle PDM audio microphones in
-> ASOC framework. Audio driver should use consumer API.
-> A specific management is implemented for DMA, with a
-> callback, to allows to handle audio buffers efficiently.
+On Tue, Dec 12, 2017 at 04:32:54PM +0000, Mark Brown wrote:
+> On Mon, Dec 11, 2017 at 01:54:25PM -0600, Steven Eckhoff wrote:
+> > Currently there is no support for the TSCS42xx audio CODEC.
+> > 
+> > Add support for it.
+> > 
+> > v5 attempts to address all issues raised in the previous reviews.
+> > 
+> > Thank you to everyone who has invested their time reviewing these
+> > patches.
 > 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Hi Arnaud,
-
-I raise a few queries on v7 of this patch.
-
-https://marc.info/?l=linux-iio&m=151292965915376&w=2
-
-Jonathan
-
-> ---
->  .../ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32      |  16 +
->  drivers/iio/adc/stm32-dfsdm-adc.c                  | 508 ++++++++++++++++++++-
->  include/linux/iio/adc/stm32-dfsdm-adc.h            |  18 +
->  3 files changed, 534 insertions(+), 8 deletions(-)
->  create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32
->  create mode 100644 include/linux/iio/adc/stm32-dfsdm-adc.h
+> Please add inter-version changelogs and commentary like this after --- 
+> as covered in SubmittingPatches - this lets tools know they don't need
+> to end up in git.
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32 b/Documentation/ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32
-> new file mode 100644
-> index 0000000..da98223
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32
-> @@ -0,0 +1,16 @@
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltage_spi_clk_freq
-> +KernelVersion:	4.14
-> +Contact:	arnaud.pouliquen-qxv4g6HH51o@public.gmane.org
-> +Description:
-> +		For audio purpose only.
-> +		Used by audio driver to set/get the spi input frequency.
-> +		This is mandatory if DFSDM is slave on SPI bus, to
-> +		provide information on the SPI clock frequency during runtime
-> +		Notice that the SPI frequency should be a multiple of sample
-> +		frequency to ensure the precision.
-> +		if DFSDM input is SPI master
-> +			Reading  SPI clkout frequency,
-> +			error on writing
-> +		If DFSDM input is SPI Slave:
-> +			Reading returns value previously set.
-> +			Writing value before starting conversions.
-> \ No newline at end of file
-> diff --git a/drivers/iio/adc/stm32-dfsdm-adc.c b/drivers/iio/adc/stm32-dfsdm-adc.c
-> index 68b5920..2d6aed5 100644
-> --- a/drivers/iio/adc/stm32-dfsdm-adc.c
-> +++ b/drivers/iio/adc/stm32-dfsdm-adc.c
-> @@ -6,19 +6,25 @@
->   * Author: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>.
->   */
->  
-> +#include <linux/dmaengine.h>
-> +#include <linux/dma-mapping.h>
->  #include <linux/interrupt.h>
->  #include <linux/iio/buffer.h>
->  #include <linux/iio/hw-consumer.h>
->  #include <linux/iio/iio.h>
->  #include <linux/iio/sysfs.h>
-> +#include <linux/iio/trigger_consumer.h>
-> +#include <linux/iio/triggered_buffer.h>
->  #include <linux/module.h>
-> -#include <linux/of.h>
-> +#include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/regmap.h>
->  #include <linux/slab.h>
->  
->  #include "stm32-dfsdm.h"
->  
-> +#define DFSDM_DMA_BUFFER_SIZE (4 * PAGE_SIZE)
-> +
->  /* Conversion timeout */
->  #define DFSDM_TIMEOUT_US 100000
->  #define DFSDM_TIMEOUT (msecs_to_jiffies(DFSDM_TIMEOUT_US / 1000))
-> @@ -58,6 +64,18 @@ struct stm32_dfsdm_adc {
->  	struct completion completion;
->  	u32 *buffer;
->  
-> +	/* Audio specific */
-> +	unsigned int spi_freq;  /* SPI bus clock frequency */
-> +	unsigned int sample_freq; /* Sample frequency after filter decimation */
-> +	int (*cb)(const void *data, size_t size, void *cb_priv);
-> +	void *cb_priv;
-> +
-> +	/* DMA */
-> +	u8 *rx_buf;
-> +	unsigned int bufi; /* Buffer current position */
-> +	unsigned int buf_sz; /* Buffer size */
-> +	struct dma_chan	*dma_chan;
-> +	dma_addr_t dma_buf;
->  };
->  
->  struct stm32_dfsdm_str2field {
-> @@ -351,10 +369,63 @@ int stm32_dfsdm_channel_parse_of(struct stm32_dfsdm *dfsdm,
->  	return 0;
->  }
->  
-> +static ssize_t dfsdm_adc_audio_get_spiclk(struct iio_dev *indio_dev,
-> +					  uintptr_t priv,
-> +					  const struct iio_chan_spec *chan,
-> +					  char *buf)
-> +{
-> +	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
-> +
-> +	return snprintf(buf, PAGE_SIZE, "%d\n", adc->spi_freq);
-> +}
-> +
-> +static ssize_t dfsdm_adc_audio_set_spiclk(struct iio_dev *indio_dev,
-> +					  uintptr_t priv,
-> +					  const struct iio_chan_spec *chan,
-> +					  const char *buf, size_t len)
-> +{
-> +	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
-> +	struct stm32_dfsdm_filter *fl = &adc->dfsdm->fl_list[adc->fl_id];
-> +	struct stm32_dfsdm_channel *ch = &adc->dfsdm->ch_list[adc->ch_id];
-> +	unsigned int sample_freq = adc->sample_freq;
-> +	unsigned int spi_freq;
-> +	int ret;
-> +
-> +	dev_err(&indio_dev->dev, "enter %s\n", __func__);
-> +	/* If DFSDM is master on SPI, SPI freq can not be updated */
-> +	if (ch->src != DFSDM_CHANNEL_SPI_CLOCK_EXTERNAL)
-> +		return -EPERM;
-> +
-> +	ret = kstrtoint(buf, 0, &spi_freq);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (!spi_freq)
-> +		return -EINVAL;
-> +
-> +	if (sample_freq) {
-> +		if (spi_freq % sample_freq)
-> +			dev_warn(&indio_dev->dev,
-> +				 "Sampling rate not accurate (%d)\n",
-> +				 spi_freq / (spi_freq / sample_freq));
-> +
-> +		ret = stm32_dfsdm_set_osrs(fl, 0, (spi_freq / sample_freq));
-> +		if (ret < 0) {
-> +			dev_err(&indio_dev->dev,
-> +				"No filter parameters that match!\n");
-> +			return ret;
-> +		}
-> +	}
-> +	adc->spi_freq = spi_freq;
-> +
-> +	return len;
-> +}
-> +
->  static int stm32_dfsdm_start_conv(struct stm32_dfsdm_adc *adc, bool dma)
->  {
->  	struct regmap *regmap = adc->dfsdm->regmap;
->  	int ret;
-> +	unsigned int dma_en = 0, cont_en = 0;
->  
->  	ret = stm32_dfsdm_start_channel(adc->dfsdm, adc->ch_id);
->  	if (ret < 0)
-> @@ -365,6 +436,24 @@ static int stm32_dfsdm_start_conv(struct stm32_dfsdm_adc *adc, bool dma)
->  	if (ret < 0)
->  		goto stop_channels;
->  
-> +	if (dma) {
-> +		/* Enable DMA transfer*/
-> +		dma_en =  DFSDM_CR1_RDMAEN(1);
-> +		/* Enable conversion triggered by SPI clock*/
-> +		cont_en = DFSDM_CR1_RCONT(1);
-> +	}
-> +	/* Enable DMA transfer*/
-> +	ret = regmap_update_bits(regmap, DFSDM_CR1(adc->fl_id),
-> +				 DFSDM_CR1_RDMAEN_MASK, dma_en);
-> +	if (ret < 0)
-> +		goto stop_channels;
-> +
-> +	/* Enable conversion triggered by SPI clock*/
-> +	ret = regmap_update_bits(regmap, DFSDM_CR1(adc->fl_id),
-> +				 DFSDM_CR1_RCONT_MASK, cont_en);
-> +	if (ret < 0)
-> +		goto stop_channels;
-> +
->  	ret = stm32_dfsdm_start_filter(adc->dfsdm, adc->fl_id);
->  	if (ret < 0)
->  		goto stop_channels;
-> @@ -398,6 +487,231 @@ static void stm32_dfsdm_stop_conv(struct stm32_dfsdm_adc *adc)
->  	stm32_dfsdm_stop_channel(adc->dfsdm, adc->ch_id);
->  }
->  
-> +static int stm32_dfsdm_set_watermark(struct iio_dev *indio_dev,
-> +				     unsigned int val)
-> +{
-> +	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
-> +	unsigned int watermark = DFSDM_DMA_BUFFER_SIZE / 2;
-> +
-> +	/*
-> +	 * DMA cyclic transfers are used, buffer is split into two periods.
-> +	 * There should be :
-> +	 * - always one buffer (period) DMA is working on
-> +	 * - one buffer (period) driver pushed to ASoC side.
-> +	 */
-> +	watermark = min(watermark, val * (unsigned int)(sizeof(u32)));
-> +	adc->buf_sz = watermark * 2;
-> +
-> +	return 0;
-> +}
-> +
-> +static unsigned int stm32_dfsdm_adc_dma_residue(struct stm32_dfsdm_adc *adc)
-> +{
-> +	struct dma_tx_state state;
-> +	enum dma_status status;
-> +
-> +	status = dmaengine_tx_status(adc->dma_chan,
-> +				     adc->dma_chan->cookie,
-> +				     &state);
-> +	if (status == DMA_IN_PROGRESS) {
-> +		/* Residue is size in bytes from end of buffer */
-> +		unsigned int i = adc->buf_sz - state.residue;
-> +		unsigned int size;
-> +
-> +		/* Return available bytes */
-> +		if (i >= adc->bufi)
-> +			size = i - adc->bufi;
-> +		else
-> +			size = adc->buf_sz + i - adc->bufi;
-> +
-> +		return size;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void stm32_dfsdm_audio_dma_buffer_done(void *data)
-> +{
-> +	struct iio_dev *indio_dev = data;
-> +	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
-> +	int available = stm32_dfsdm_adc_dma_residue(adc);
-> +	size_t old_pos;
-> +
-> +	/*
-> +	 * FIXME: In Kernel interface does not support cyclic DMA buffer,and
-> +	 * offers only an interface to push data samples per samples.
-> +	 * For this reason IIO buffer interface is not used and interface is
-> +	 * bypassed using a private callback registered by ASoC.
-> +	 * This should be a temporary solution waiting a cyclic DMA engine
-> +	 * support in IIO.
-> +	 */
-> +
-> +	dev_dbg(&indio_dev->dev, "%s: pos = %d, available = %d\n", __func__,
-> +		adc->bufi, available);
-> +	old_pos = adc->bufi;
-> +
-> +	while (available >= indio_dev->scan_bytes) {
-> +		u32 *buffer = (u32 *)&adc->rx_buf[adc->bufi];
-> +
-> +		/* Mask 8 LSB that contains the channel ID */
-> +		*buffer = (*buffer & 0xFFFFFF00) << 8;
-> +		available -= indio_dev->scan_bytes;
-> +		adc->bufi += indio_dev->scan_bytes;
-> +		if (adc->bufi >= adc->buf_sz) {
-> +			if (adc->cb)
-> +				adc->cb(&adc->rx_buf[old_pos],
-> +					 adc->buf_sz - old_pos, adc->cb_priv);
-> +			adc->bufi = 0;
-> +			old_pos = 0;
-> +		}
-> +	}
-> +	if (adc->cb)
-> +		adc->cb(&adc->rx_buf[old_pos], adc->bufi - old_pos,
-> +			adc->cb_priv);
-> +}
-> +
-> +static int stm32_dfsdm_adc_dma_start(struct iio_dev *indio_dev)
-> +{
-> +	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
-> +	struct dma_async_tx_descriptor *desc;
-> +	dma_cookie_t cookie;
-> +	int ret;
-> +
-> +	if (!adc->dma_chan)
-> +		return -EINVAL;
-> +
-> +	dev_dbg(&indio_dev->dev, "%s size=%d watermark=%d\n", __func__,
-> +		adc->buf_sz, adc->buf_sz / 2);
-> +
-> +	/* Prepare a DMA cyclic transaction */
-> +	desc = dmaengine_prep_dma_cyclic(adc->dma_chan,
-> +					 adc->dma_buf,
-> +					 adc->buf_sz, adc->buf_sz / 2,
-> +					 DMA_DEV_TO_MEM,
-> +					 DMA_PREP_INTERRUPT);
-> +	if (!desc)
-> +		return -EBUSY;
-> +
-> +	desc->callback = stm32_dfsdm_audio_dma_buffer_done;
-> +	desc->callback_param = indio_dev;
-> +
-> +	cookie = dmaengine_submit(desc);
-> +	ret = dma_submit_error(cookie);
-> +	if (ret) {
-> +		dmaengine_terminate_all(adc->dma_chan);
-> +		return ret;
-> +	}
-> +
-> +	/* Issue pending DMA requests */
-> +	dma_async_issue_pending(adc->dma_chan);
-> +
-> +	return 0;
-> +}
-> +
-> +static int stm32_dfsdm_postenable(struct iio_dev *indio_dev)
-> +{
-> +	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
-> +	int ret;
-> +
-> +	/* Reset adc buffer index */
-> +	adc->bufi = 0;
-> +
-> +	ret = stm32_dfsdm_start_dfsdm(adc->dfsdm);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = stm32_dfsdm_start_conv(adc, true);
-> +	if (ret) {
-> +		dev_err(&indio_dev->dev, "Can't start conversion\n");
-> +		goto stop_dfsdm;
-> +	}
-> +
-> +	if (adc->dma_chan) {
-> +		ret = stm32_dfsdm_adc_dma_start(indio_dev);
-> +		if (ret) {
-> +			dev_err(&indio_dev->dev, "Can't start DMA\n");
-> +			goto err_stop_conv;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +
-> +err_stop_conv:
-> +	stm32_dfsdm_stop_conv(adc);
-> +stop_dfsdm:
-> +	stm32_dfsdm_stop_dfsdm(adc->dfsdm);
-> +
-> +	return ret;
-> +}
-> +
-> +static int stm32_dfsdm_predisable(struct iio_dev *indio_dev)
-> +{
-> +	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
-> +
-> +	if (adc->dma_chan)
-> +		dmaengine_terminate_all(adc->dma_chan);
-> +
-> +	stm32_dfsdm_stop_conv(adc);
-> +
-> +	stm32_dfsdm_stop_dfsdm(adc->dfsdm);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct iio_buffer_setup_ops stm32_dfsdm_buffer_setup_ops = {
-> +	.postenable = &stm32_dfsdm_postenable,
-> +	.predisable = &stm32_dfsdm_predisable,
-> +};
-> +
-> +/**
-> + * stm32_dfsdm_get_buff_cb() - register a callback that will be called when
-> + *                             DMA transfer period is achieved.
-> + *
-> + * @iio_dev: Handle to IIO device.
-> + * @cb: Pointer to callback function:
-> + *      - data: pointer to data buffer
-> + *      - size: size in byte of the data buffer
-> + *      - private: pointer to consumer private structure.
-> + * @private: Pointer to consumer private structure.
-> + */
-> +int stm32_dfsdm_get_buff_cb(struct iio_dev *iio_dev,
-> +			    int (*cb)(const void *data, size_t size,
-> +				      void *private),
-> +			    void *private)
-> +{
-> +	struct stm32_dfsdm_adc *adc;
-> +
-> +	if (!iio_dev)
-> +		return -EINVAL;
-> +	adc = iio_priv(iio_dev);
-> +
-> +	adc->cb = cb;
-> +	adc->cb_priv = private;
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(stm32_dfsdm_get_buff_cb);
-> +
-> +/**
-> + * stm32_dfsdm_release_buff_cb - unregister buffer callback
-> + *
-> + * @iio_dev: Handle to IIO device.
-> + */
-> +int stm32_dfsdm_release_buff_cb(struct iio_dev *iio_dev)
-> +{
-> +	struct stm32_dfsdm_adc *adc;
-> +
-> +	if (!iio_dev)
-> +		return -EINVAL;
-> +	adc = iio_priv(iio_dev);
-> +
-> +	adc->cb = NULL;
-> +	adc->cb_priv = NULL;
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(stm32_dfsdm_release_buff_cb);
-> +
->  static int stm32_dfsdm_single_conv(struct iio_dev *indio_dev,
->  				   const struct iio_chan_spec *chan, int *res)
->  {
-> @@ -453,15 +767,41 @@ static int stm32_dfsdm_write_raw(struct iio_dev *indio_dev,
->  {
->  	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
->  	struct stm32_dfsdm_filter *fl = &adc->dfsdm->fl_list[adc->fl_id];
-> +	struct stm32_dfsdm_channel *ch = &adc->dfsdm->ch_list[adc->ch_id];
-> +	unsigned int spi_freq = adc->spi_freq;
->  	int ret = -EINVAL;
->  
-> -	if (mask == IIO_CHAN_INFO_OVERSAMPLING_RATIO) {
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
->  		ret = stm32_dfsdm_set_osrs(fl, 0, val);
->  		if (!ret)
->  			adc->oversamp = val;
-> +
-> +		return ret;
-> +
-> +	case IIO_CHAN_INFO_SAMP_FREQ:
-> +		if (!val)
-> +			return -EINVAL;
-> +		if (ch->src != DFSDM_CHANNEL_SPI_CLOCK_EXTERNAL)
-> +			spi_freq = adc->dfsdm->spi_master_freq;
-> +
-> +		if (spi_freq % val)
-> +			dev_warn(&indio_dev->dev,
-> +				 "Sampling rate not accurate (%d)\n",
-> +				 spi_freq / (spi_freq / val));
-> +
-> +		ret = stm32_dfsdm_set_osrs(fl, 0, (spi_freq / val));
-> +		if (ret < 0) {
-> +			dev_err(&indio_dev->dev,
-> +				"Not able to find parameter that match!\n");
-> +			return ret;
-> +		}
-> +		adc->sample_freq = val;
-> +
-> +		return 0;
->  	}
->  
-> -	return ret;
-> +	return -EINVAL;
->  }
->  
->  static int stm32_dfsdm_read_raw(struct iio_dev *indio_dev,
-> @@ -494,11 +834,22 @@ static int stm32_dfsdm_read_raw(struct iio_dev *indio_dev,
->  		*val = adc->oversamp;
->  
->  		return IIO_VAL_INT;
-> +
-> +	case IIO_CHAN_INFO_SAMP_FREQ:
-> +		*val = adc->sample_freq;
-> +
-> +		return IIO_VAL_INT;
->  	}
->  
->  	return -EINVAL;
->  }
->  
-> +static const struct iio_info stm32_dfsdm_info_audio = {
-> +	.hwfifo_set_watermark = stm32_dfsdm_set_watermark,
-> +	.read_raw = stm32_dfsdm_read_raw,
-> +	.write_raw = stm32_dfsdm_write_raw,
-> +};
-> +
->  static const struct iio_info stm32_dfsdm_info_adc = {
->  	.read_raw = stm32_dfsdm_read_raw,
->  	.write_raw = stm32_dfsdm_write_raw,
-> @@ -531,6 +882,60 @@ static irqreturn_t stm32_dfsdm_irq(int irq, void *arg)
->  	return IRQ_HANDLED;
->  }
->  
-> +/*
-> + * Define external info for SPI Frequency and audio sampling rate that can be
-> + * configured by ASoC driver through consumer.h API
-> + */
-> +static const struct iio_chan_spec_ext_info dfsdm_adc_audio_ext_info[] = {
-> +	/* spi_clk_freq : clock freq on SPI/manchester bus used by channel */
-> +	{
-> +		.name = "spi_clk_freq",
-> +		.shared = IIO_SHARED_BY_TYPE,
-> +		.read = dfsdm_adc_audio_get_spiclk,
-> +		.write = dfsdm_adc_audio_set_spiclk,
-> +	},
-> +	{},
-> +};
-> +
-> +static int stm32_dfsdm_dma_request(struct iio_dev *indio_dev)
-> +{
-> +	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
-> +	struct dma_slave_config config;
-> +	int ret;
-> +
-> +	adc->dma_chan = dma_request_slave_channel(&indio_dev->dev, "rx");
-> +	if (!adc->dma_chan)
-> +		return -EINVAL;
-> +
-> +	adc->rx_buf = dma_alloc_coherent(adc->dma_chan->device->dev,
-> +					 DFSDM_DMA_BUFFER_SIZE,
-> +					 &adc->dma_buf, GFP_KERNEL);
-> +	if (!adc->rx_buf) {
-> +		ret = -ENOMEM;
-> +		goto err_release;
-> +	}
-> +
-> +	/* Configure DMA channel to read data register */
-> +	memset(&config, 0, sizeof(config));
-> +	config.src_addr = (dma_addr_t)adc->dfsdm->phys_base;
-> +	config.src_addr += DFSDM_RDATAR(adc->fl_id);
-> +	config.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-> +
-> +	ret = dmaengine_slave_config(adc->dma_chan, &config);
-> +	if (ret)
-> +		goto err_free;
-> +
-> +	return 0;
-> +
-> +err_free:
-> +	dma_free_coherent(adc->dma_chan->device->dev, DFSDM_DMA_BUFFER_SIZE,
-> +			  adc->rx_buf, adc->dma_buf);
-> +err_release:
-> +	dma_release_channel(adc->dma_chan);
-> +
-> +	return ret;
-> +}
-> +
->  static int stm32_dfsdm_adc_chan_init_one(struct iio_dev *indio_dev,
->  					 struct iio_chan_spec *ch)
->  {
-> @@ -551,7 +956,12 @@ static int stm32_dfsdm_adc_chan_init_one(struct iio_dev *indio_dev,
->  	ch->info_mask_separate = BIT(IIO_CHAN_INFO_RAW);
->  	ch->info_mask_shared_by_all = BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO);
->  
-> -	ch->scan_type.sign = 'u';
-> +	if (adc->dev_data->type == DFSDM_AUDIO) {
-> +		ch->scan_type.sign = 's';
-> +		ch->ext_info = dfsdm_adc_audio_ext_info;
-> +	} else {
-> +		ch->scan_type.sign = 'u';
-> +	}
->  	ch->scan_type.realbits = 24;
->  	ch->scan_type.storagebits = 32;
->  	adc->ch_id = ch->channel;
-> @@ -560,6 +970,64 @@ static int stm32_dfsdm_adc_chan_init_one(struct iio_dev *indio_dev,
->  					  &adc->dfsdm->ch_list[ch->channel]);
->  }
->  
-> +static int stm32_dfsdm_audio_init(struct iio_dev *indio_dev)
-> +{
-> +	struct iio_chan_spec *ch;
-> +	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
-> +	struct stm32_dfsdm_channel *d_ch;
-> +	int ret;
-> +
-> +	ret = stm32_dfsdm_dma_request(indio_dev);
-> +	if (ret) {
-> +		dev_err(&indio_dev->dev, "DMA request failed\n");
-> +		return ret;
-> +	}
-> +
-> +	indio_dev->modes |= INDIO_BUFFER_SOFTWARE;
-> +
-> +	ret = iio_triggered_buffer_setup(indio_dev,
-> +					 &iio_pollfunc_store_time,
-> +					 NULL,
-> +					 &stm32_dfsdm_buffer_setup_ops);
-> +	if (ret) {
-> +		dev_err(&indio_dev->dev, "Buffer setup failed\n");
-> +		goto err_dma_disable;
-> +	}
-> +
-> +	ch = devm_kzalloc(&indio_dev->dev, sizeof(*ch), GFP_KERNEL);
-> +	if (!ch)
-> +		return -ENOMEM;
-> +
-> +	ch->scan_index = 0;
-> +	ret = stm32_dfsdm_adc_chan_init_one(indio_dev, ch);
-> +	if (ret < 0) {
-> +		dev_err(&indio_dev->dev, "channels init failed\n");
-> +		goto err_buffer_cleanup;
-> +	}
-> +	ch->info_mask_separate = BIT(IIO_CHAN_INFO_SAMP_FREQ);
-> +
-> +	d_ch = &adc->dfsdm->ch_list[adc->ch_id];
-> +	if (d_ch->src != DFSDM_CHANNEL_SPI_CLOCK_EXTERNAL)
-> +		adc->spi_freq = adc->dfsdm->spi_master_freq;
-> +
-> +	indio_dev->num_channels = 1;
-> +	indio_dev->channels = ch;
-> +
-> +	return 0;
-> +
-> +err_buffer_cleanup:
-> +	iio_triggered_buffer_cleanup(indio_dev);
-> +
-> +err_dma_disable:
-> +	if (adc->dma_chan) {
-> +		dma_free_coherent(adc->dma_chan->device->dev,
-> +				  DFSDM_DMA_BUFFER_SIZE,
-> +				  adc->rx_buf, adc->dma_buf);
-> +		dma_release_channel(adc->dma_chan);
-> +	}
-> +	return ret;
-> +}
-> +
->  static int stm32_dfsdm_adc_init(struct iio_dev *indio_dev)
->  {
->  	struct iio_chan_spec *ch;
-> @@ -612,11 +1080,20 @@ static const struct stm32_dfsdm_dev_data stm32h7_dfsdm_adc_data = {
->  	.init = stm32_dfsdm_adc_init,
->  };
->  
-> +static const struct stm32_dfsdm_dev_data stm32h7_dfsdm_audio_data = {
-> +	.type = DFSDM_AUDIO,
-> +	.init = stm32_dfsdm_audio_init,
-> +};
-> +
->  static const struct of_device_id stm32_dfsdm_adc_match[] = {
->  	{
->  		.compatible = "st,stm32-dfsdm-adc",
->  		.data = &stm32h7_dfsdm_adc_data,
->  	},
-> +	{
-> +		.compatible = "st,stm32-dfsdm-dmic",
-> +		.data = &stm32h7_dfsdm_audio_data,
-> +	},
->  	{}
->  };
->  
-> @@ -667,8 +1144,13 @@ static int stm32_dfsdm_adc_probe(struct platform_device *pdev)
->  	name = devm_kzalloc(dev, sizeof("dfsdm-adc0"), GFP_KERNEL);
->  	if (!name)
->  		return -ENOMEM;
-> -	iio->info = &stm32_dfsdm_info_adc;
-> -	snprintf(name, sizeof("dfsdm-adc0"), "dfsdm-adc%d", adc->fl_id);
-> +	if (dev_data->type == DFSDM_AUDIO) {
-> +		iio->info = &stm32_dfsdm_info_audio;
-> +		snprintf(name, sizeof("dfsdm-pdm0"), "dfsdm-pdm%d", adc->fl_id);
-> +	} else {
-> +		iio->info = &stm32_dfsdm_info_adc;
-> +		snprintf(name, sizeof("dfsdm-adc0"), "dfsdm-adc%d", adc->fl_id);
-> +	}
->  	iio->name = name;
->  
->  	/*
-> @@ -700,7 +1182,10 @@ static int stm32_dfsdm_adc_probe(struct platform_device *pdev)
->  	if (ret < 0)
->  		return ret;
->  
-> -	return iio_device_register(iio);
-> +	iio_device_register(iio);
-> +	if (dev_data->type == DFSDM_AUDIO)
-> +		return devm_of_platform_populate(&pdev->dev);
-> +	return 0;
->  }
->  
->  static int stm32_dfsdm_adc_remove(struct platform_device *pdev)
-> @@ -709,7 +1194,14 @@ static int stm32_dfsdm_adc_remove(struct platform_device *pdev)
->  	struct iio_dev *indio_dev = iio_priv_to_dev(adc);
->  
->  	iio_device_unregister(indio_dev);
-> -
-> +	if (indio_dev->pollfunc)
-> +		iio_triggered_buffer_cleanup(indio_dev);
-> +	if (adc->dma_chan) {
-> +		dma_free_coherent(adc->dma_chan->device->dev,
-> +				  DFSDM_DMA_BUFFER_SIZE,
-> +				  adc->rx_buf, adc->dma_buf);
-> +		dma_release_channel(adc->dma_chan);
-> +	}
->  	return 0;
->  }
->  
-> diff --git a/include/linux/iio/adc/stm32-dfsdm-adc.h b/include/linux/iio/adc/stm32-dfsdm-adc.h
-> new file mode 100644
-> index 0000000..e7dc7a5
-> --- /dev/null
-> +++ b/include/linux/iio/adc/stm32-dfsdm-adc.h
-> @@ -0,0 +1,18 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * This file discribe the STM32 DFSDM IIO driver API for audio part
-> + *
-> + * Copyright (C) 2017, STMicroelectronics - All Rights Reserved
-> + * Author(s): Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>.
-> + */
-> +
-> +#ifndef STM32_DFSDM_ADC_H
-> +#define STM32_DFSDM_ADC_H
-> +
-> +int stm32_dfsdm_get_buff_cb(struct iio_dev *iio_dev,
-> +			    int (*cb)(const void *data, size_t size,
-> +				      void *private),
-> +			    void *private);
-> +int stm32_dfsdm_release_buff_cb(struct iio_dev *iio_dev);
-> +
-> +#endif
+Again I apologize. I will fix this. I will also go over the document to
+make sure nothing else gets messed up. Also thank you for the time you
+have spent reviewing the numerous versions of this patch.
+
+> > +  - compatible : "tscs:tscs42xx"
+> 
+> Compatible strings should be for specific devices, they may all be
+> treated identically by software now but may not be in future.
+> 
+Okay, this will be fixed in the next version.
+
+> > +		do {
+> > +			ret = snd_soc_read(codec, R_DACCRSTAT);
+> > +			if (ret < 0) {
+> > +				dev_err(codec->dev,
+> > +					"Failed to read stat (%d)\n", ret);
+> > +				return ret;
+> > +			}
+> > +		} while (ret);
+> 
+> There should be some sort of upper bound on how many times we'll try to
+> wait for this in case the hardware fails somehow.
+> 
+I totally agree. Most of the time the DACCRSTAT should be cleared before
+the next iteration starts, so I will sleep it 20ms if it isn't
+cleared by then and error if it hasn't cleared after 20ms.
+
+> > +static int tscs42xx_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
+> > +{
+> > +	struct snd_soc_codec *codec = dai->codec;
+> > +	int ret;
+> > +
+> > +	if (mute)
+> > +		if (stream == SNDRV_PCM_STREAM_PLAYBACK)
+> > +			ret = dac_mute(codec);
+> > +		else
+> > +			ret = adc_mute(codec);
+> > +	else
+> > +		if (stream == SNDRV_PCM_STREAM_PLAYBACK)
+> > +			ret = dac_unmute(codec);
+> > +		else
+> > +			ret = adc_unmute(codec);
+> > +
+> > +	return ret;
+> > +}
+> 
+> All these mute functions also shut down the PLLs which since...
+> 
+This is a bit funky since it looks like if you unmuted the dac and then
+muted the adc that the PLLs would be powered off on the playback stream,
+but the logic in the chip is a bit funky in that it wont allow this unless
+the playback interface is also powered off.
+
+This should definitely be fixed since it is confusing. The PLL
+powered up/down stuff will be removed from the mute functions in the
+next version.
+
+What are your thoughts on turning the PLL into a DAPM widget and using
+the event callback to power up/down the PLLs? I have tested this and it
+seems to work fine.
+
+> > +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> > +	case SND_SOC_DAIFMT_CBM_CFM:
+> > +		ret = snd_soc_update_bits(codec, R_AIC1, RM_AIC1_MS,
+> > +				RV_AIC1_MS_MASTER);
+> > +		if (ret < 0)
+> > +			dev_err(codec->dev,
+> > +				"Failed to set codec DAI master (%d)\n", ret);
+> > +		else
+> > +			ret = 0;
+> > +		break;
+> > +	default:
+> 
+> ...we only support the CODEC being the clock master seems like it might
+> mean we stop clocking the DAI?  If that's the case it's better to just
+> not have the mute control and allow the user to just control these as
+> normal mutes.
+> 
+I am going to put slave mode support in, but I may need some time to
+test how it works.
+
+> > +static int tscs42xx_probe(struct snd_soc_codec *codec)
+> > +{
+> > +	int i;
+> > +	int ret;
+> > +
+> > +	for (i = 0; i < ARRAY_SIZE(r_inits); ++i) {
+> > +		ret = snd_soc_write(codec, r_inits[i].reg, r_inits[i].def);
+> > +		if (ret < 0) {
+> > +			dev_err(codec->dev,
+> > +				"Failed to write codec defaults (%d)\n", ret);
+> > +			return ret;
+> > +		}
+> > +	}
+> 
+> I'd expect the driver to just reset the CODEC (it appears to have that
+> feature) and the regmap.
+> 
+These init values were meant to be driver defaults that differed from
+the device defaults. In hindsight this was a bad idea. I am removing
+them in the next revision and will have the machine driver setup the
+codec appropriately.
+
+> > +static int tscs42xx_remove(struct snd_soc_codec *codec)
+> > +{
+> > +	return 0;
+> > +}
+> 
+> Just remove empty functions.
+> 
+Next revision will have this removed.
+
+> > +static const struct i2c_device_id tscs42xx_i2c_id[] = {
+> > +	{ "tscs42xx", 0 },
+> > +	{ }
+> > +};
+> > +MODULE_DEVICE_TABLE(i2c, tscs42xx_i2c_id);
+> 
+> I2C IDs are better as explicit part numbers too like compatible
+> strings.
+I will update this in the next version.
