@@ -1,95 +1,111 @@
-From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
-Subject: Re: [RFC v2 00/11] Enable HDA Codec support on
-	Intel	Platforms (Series2)
-Date: Tue, 12 Dec 2017 18:25:57 +0000
-Message-ID: <85DFEED57DC57344B2483EF7BF8CB60579AD5429@BGSMSX104.gar.corp.intel.com>
-References: <1512989583-10877-1-git-send-email-rakesh.a.ughreja@intel.com>
- <s5hbmj5mrts.wl-tiwai@suse.de>
- <85DFEED57DC57344B2483EF7BF8CB60579AD2978@BGSMSX104.gar.corp.intel.com>
- <s5hinddl28l.wl-tiwai@suse.de>
- <85DFEED57DC57344B2483EF7BF8CB60579AD2F48@BGSMSX104.gar.corp.intel.com>
- <s5hefo1aymr.wl-tiwai@suse.de>
- <85DFEED57DC57344B2483EF7BF8CB60579AD52D3@BGSMSX104.gar.corp.intel.com>
- <s5h609b99fw.wl-tiwai@suse.de>
+From: "Patel, Chintan M" <chintan.m.patel@intel.com>
+Subject: RE: [alsa-devel] [PATCH v5 5/6] ASoC: Intel: Skylake: Make DSP
+ replies        more human readable
+Date: Tue, 12 Dec 2017 18:27:07 +0000
+Message-ID: <074180B186AC2945B61C466FE6C478304ADE8101@ORSMSX103.amr.corp.intel.com>
+References: <1512978390-8848-1-git-send-email-sriramx.periyasamy@intel.com>
+ <1512978390-8848-6-git-send-email-sriramx.periyasamy@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 8FB9F2671B1
- for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 19:26:02 +0100 (CET)
-In-Reply-To: <s5h609b99fw.wl-tiwai@suse.de>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-clk-owner@vger.kernel.org>
+In-Reply-To: <1512978390-8848-6-git-send-email-sriramx.periyasamy@intel.com>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul,
- Vinod" <vinod.koul@intel.com>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, "broonie@kernel.org" <broonie@kernel.org>
+Sender: linux-clk-owner@vger.kernel.org
+To: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, "Periyasamy, SriramX" <sriramx.periyasamy@intel.com>, "mturquette@baylibre.com" <mturquette@baylibre.com>, "sboyd@codeaurora.org" <sboyd@codeaurora.org>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "Prusty, Subhransu S" <subhransu.s.prusty@intel.com>, "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+I would also suggest to make similar changes for FW error code, since it doesn't give any clue what does FW error code indicates.
 
+-----Original Message-----
+From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Sriram Periyasamy
+Sent: Sunday, December 10, 2017 11:46 PM
+To: ALSA ML <alsa-devel@alsa-project.org>; Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>; Periyasamy, SriramX <sriramx.periyasamy@intel.com>; mturquette@baylibre.com; sboyd@codeaurora.org; Patches Audio <patches.audio@intel.com>; Liam Girdwood <liam.r.girdwood@linux.intel.com>; Koul, Vinod <vinod.koul@intel.com>; Prusty, Subhransu S <subhransu.s.prusty@intel.com>; linux-clk@vger.kernel.org
+Subject: [alsa-devel] [PATCH v5 5/6] ASoC: Intel: Skylake: Make DSP replies more human readable
 
->-----Original Message-----
->From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-
->project.org] On Behalf Of Takashi Iwai
->Sent: Tuesday, December 12, 2017 10:21 PM
->To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>
->Cc: alsa-devel@alsa-project.org; Koul, Vinod <vinod.koul@intel.com>; pierre-
->louis.bossart@linux.intel.com; liam.r.girdwood@linux.intel.com; Patches Audio
-><patches.audio@intel.com>; broonie@kernel.org
->Subject: Re: [alsa-devel] [RFC v2 00/11] Enable HDA Codec support on Intel
->Platforms (Series2)
->
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 
+Add more meaning to the IPC replies for easy debugging. Replace the switch case with a lookup table to lookup for the IPC replies and print in human readable form.
 
->
->The idea looks good, but I'd prefer different functions instead of
->mutating the behavior depending on the flag.  i.e. keep
->snd_hda_codec_new(), and introduce another API (snd_hda_codec_init()
->or whatever).  ASoC driver can call the latter while the legacy driver
->keeps calling the former.
->
->This would factor out the allocation and snd_hdac_device_init() calls
->from the old snd_hda_codec_new() to a new snd_hda_codec_new().
->snd_hda_codec_init() would do the rest.  snd_hda_codec_new() calls
->snd_hda_codec_init() at the end of the function.
->
->Does this sound good for you?
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/skylake/skl-sst-ipc.c | 44 ++++++++++++++++++++++++++---------
+ 1 file changed, 33 insertions(+), 11 deletions(-)
 
-I think I got this :) Thanks. Here is the skeleton code.
-I split the existing function snd_hda_codec_new into two parts.
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+index 5234fafb758a..8708755a8f9a 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.c
++++ b/sound/soc/intel/skylake/skl-sst-ipc.c
+@@ -392,18 +392,43 @@ int skl_ipc_process_notification(struct sst_generic_ipc *ipc,
+ 	return 0;
+ }
+ 
+-static int skl_ipc_set_reply_error_code(u32 reply)
++struct skl_ipc_err_map {
++	const char *msg;
++	enum skl_ipc_glb_reply reply;
++	int err;
++};
++
++static struct skl_ipc_err_map skl_err_map[] = {
++	{"DSP out of memory", IPC_GLB_REPLY_OUT_OF_MEMORY, -ENOMEM},
++	{"DSP busy", IPC_GLB_REPLY_BUSY, -EBUSY}, };
++
++static int skl_ipc_set_reply_error_code(struct sst_generic_ipc *ipc, 
++u32 reply)
+ {
+-	switch (reply) {
+-	case IPC_GLB_REPLY_OUT_OF_MEMORY:
+-		return -ENOMEM;
++	int i;
+ 
+-	case IPC_GLB_REPLY_BUSY:
+-		return -EBUSY;
++	for (i = 0; i < ARRAY_SIZE(skl_err_map); i++) {
++		if (skl_err_map[i].reply == reply)
++			break;
++	}
+ 
+-	default:
++	if (i == ARRAY_SIZE(skl_err_map)) {
++		dev_err(ipc->dev, "ipc FW reply: %d FW Error Code: %u\n",
++				reply,
++				ipc->dsp->fw_ops.get_fw_errcode(ipc->dsp));
+ 		return -EINVAL;
+ 	}
++
++	if (skl_err_map[i].err < 0)
++		dev_err(ipc->dev, "ipc FW reply: %s FW Error Code: %u\n",
++				skl_err_map[i].msg,
++				ipc->dsp->fw_ops.get_fw_errcode(ipc->dsp));
++	else
++		dev_info(ipc->dev, "ipc FW reply: %s FW Error Code: %u\n",
++				skl_err_map[i].msg,
++				ipc->dsp->fw_ops.get_fw_errcode(ipc->dsp));
++
++	return skl_err_map[i].err;
+ }
+ 
+ void skl_ipc_process_reply(struct sst_generic_ipc *ipc, @@ -441,10 +466,7 @@ void skl_ipc_process_reply(struct sst_generic_ipc *ipc,
+ 
+ 		}
+ 	} else {
+-		msg->errno = skl_ipc_set_reply_error_code(reply);
+-		dev_err(ipc->dev, "ipc FW reply: reply=%d\n", reply);
+-		dev_err(ipc->dev, "FW Error Code: %u\n",
+-			ipc->dsp->fw_ops.get_fw_errcode(ipc->dsp));
++		msg->errno = skl_ipc_set_reply_error_code(ipc, reply);
+ 		switch (IPC_GLB_NOTIFY_MSG_TYPE(header.primary)) {
+ 		case IPC_GLB_LOAD_MULTIPLE_MODS:
+ 		case IPC_GLB_LOAD_LIBRARY:
+--
+2.7.4
 
-1. snd_hda_codec_device_init()
-2. snd_hda_codec_device_new()
-
-So the new body of existing function snd_hda_codec_new looks like.
-
-int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,               
-                      unsigned int codec_addr, struct hda_codec **codecp)       
-{                                                                               
-        int ret;                                                                
-                                                                                
-        ret = snd_hda_codec_device_init(bus, card, codec_addr, codecp);         
-        if (ret < 0)                                                            
-                return ret;                                                     
-                                                                                
-        return snd_hda_codec_device_new(bus, card, codec_addr, *codecp);        
-}
-
-The ASoC driver would call only snd_hda_codec_device_new.
-If you have any suggestions for the function names, I can change it before
-I post the next series.
-
-Now switching over to the id_table problem. In the current series it is accessed
-using extern, in the patch_realtek.c file. So we really have two different
-KO files. One for legacy HDA driver and second for ASoC HDA driver.
-
-Would you like to keep them as two separate KO files or prefer to have a
-single KO file ?
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
