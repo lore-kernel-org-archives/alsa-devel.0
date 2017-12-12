@@ -1,18 +1,18 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: tfa9879: clean up bindings" to the asoc tree
-Date: Tue, 12 Dec 2017 11:16:47 +0000
-Message-ID: <E1eOiYJ-0007rX-45@debutante>
-References: <20171211142615.11440-2-peda@axentia.se>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20171211142615.11440-2-peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: sun4i-i2s: Add support for A83T" to the asoc tree
+Date: Tue, 12 Dec 2017 11:16:54 +0000
+Message-ID: <E1eOiYQ-0007uD-6c@debutante>
+References: <20171212081148.9194-2-wens@csie.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171212081148.9194-2-wens@csie.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>Maxime Ripard <maxime.ripard@free-electrons.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Marcus Cooper <codekipper@gmail.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tfa9879: clean up bindings
+   ASoC: sun4i-i2s: Add support for A83T
 
 has been applied to the asoc tree at
 
@@ -37,56 +37,87 @@ to this mail.
 Thanks,
 Mark
 
->From d61f9982c2a395407a75a4f7057c4a3f55bda462 Mon Sep 17 00:00:00 2001
-From: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-Date: Mon, 11 Dec 2017 15:26:14 +0100
-Subject: [PATCH] ASoC: tfa9879: clean up bindings
+>From 21faaea1343f2f8dc6539302c92231afc6d999a5 Mon Sep 17 00:00:00 2001
+From: Chen-Yu Tsai <wens@csie.org>
+Date: Tue, 12 Dec 2017 16:11:45 +0800
+Subject: [PATCH] ASoC: sun4i-i2s: Add support for A83T
 
-Fix a couple of nitpicks:
+The I2S controller in the A83T is mostly compatible with the one found
+in earlier SoCs such as the A20 and A31. While the documents publicly
+available for the A83T do not cover this hardware, the officially
+released BSP kernel does have register definitions for it. These were
+matched against the A20 user manual. The only difference is the TX FIFO
+and interrupt status registers have been swapped around, like what we
+have seen with the SPDIF controller.
 
-- list #sound-dai-cells as a required property.
-- The chip supports full speed I2C; don't indicate standard mode only.
-- status = "okay" is just noise.
-- The chip is an amplifier, not a codec.
-- consistently indent with tabs.
+This patch adds support for this hardware.
 
-Signed-off-by: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/tfa9879.txt | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ .../devicetree/bindings/sound/sun4i-i2s.txt         |  2 ++
+ sound/soc/sunxi/sun4i-i2s.c                         | 21 +++++++++++++++++++++
+ 2 files changed, 23 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/tfa9879.txt b/Documentation/devicetree/bindings/sound/tfa9879.txt
-index 23ba522d9e2b..1620e6848436 100644
---- a/Documentation/devicetree/bindings/sound/tfa9879.txt
-+++ b/Documentation/devicetree/bindings/sound/tfa9879.txt
-@@ -6,18 +6,18 @@ Required properties:
+diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+index 05d7135a8d2f..b9d50d6cdef3 100644
+--- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+@@ -8,6 +8,7 @@ Required properties:
+ - compatible: should be one of the following:
+    - "allwinner,sun4i-a10-i2s"
+    - "allwinner,sun6i-a31-i2s"
++   - "allwinner,sun8i-a83t-i2s"
+    - "allwinner,sun8i-h3-i2s"
+ - reg: physical base address of the controller and length of memory mapped
+   region.
+@@ -23,6 +24,7 @@ Required properties:
  
- - reg : the I2C address of the device
+ Required properties for the following compatibles:
+ 	- "allwinner,sun6i-a31-i2s"
++	- "allwinner,sun8i-a83t-i2s"
+ 	- "allwinner,sun8i-h3-i2s"
+ - resets: phandle to the reset line for this codec
  
-+- #sound-dai-cells : must be 0.
-+
- Example:
- 
- &i2c1 {
--	clock-frequency = <100000>;
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_i2c1>;
--	status = "okay";
- 
--	codec: tfa9879@6c {
-+	amp: amp@6c {
- 		#sound-dai-cells = <0>;
- 		compatible = "nxp,tfa9879";
- 		reg = <0x6c>;
--        };
-+	};
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index 04f92583a969..13d7ecabe1b6 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -897,6 +897,23 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
+ 	.field_rxchansel	= REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
  };
  
++static const struct sun4i_i2s_quirks sun8i_a83t_i2s_quirks = {
++	.has_reset		= true,
++	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
++	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
++	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 7, 7),
++	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 2, 3),
++	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
++	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 6, 6),
++	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
++	.has_slave_select_bit	= true,
++	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
++	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
++	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
++	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
++	.field_rxchansel	= REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
++};
++
+ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
+ 	.has_reset		= true,
+ 	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
+@@ -1120,6 +1137,10 @@ static const struct of_device_id sun4i_i2s_match[] = {
+ 		.compatible = "allwinner,sun6i-a31-i2s",
+ 		.data = &sun6i_a31_i2s_quirks,
+ 	},
++	{
++		.compatible = "allwinner,sun8i-a83t-i2s",
++		.data = &sun8i_a83t_i2s_quirks,
++	},
+ 	{
+ 		.compatible = "allwinner,sun8i-h3-i2s",
+ 		.data = &sun8i_h3_i2s_quirks,
 -- 
 2.15.1
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
