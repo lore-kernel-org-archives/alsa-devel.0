@@ -1,7 +1,7 @@
 From: Chen-Yu Tsai <wens@csie.org>
-Subject: [PATCH 3/4] ARM: dts: sun8i: a83t: Add I2C device nodes and pinmux settings
-Date: Tue, 12 Dec 2017 16:11:47 +0800
-Message-ID: <20171212081148.9194-4-wens@csie.org>
+Subject: [PATCH 4/4] [DO NOT MERGE] ARM: dts: sun8i: a83t: bpi-m3: Enable PCM5122 codec with I2S1
+Date: Tue, 12 Dec 2017 16:11:48 +0800
+Message-ID: <20171212081148.9194-5-wens@csie.org>
 References: <20171212081148.9194-1-wens@csie.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20171212081148.9194-1-wens@csie.org>
@@ -10,92 +10,79 @@ To: Maxime Ripard <maxime.ripard@free-electrons.com>, Rob Herring <robh+dt@kerne
 Cc: Chen-Yu Tsai <wens@csie.org>, Marcus Cooper <codekipper@gmail.com>, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The A83T has 3 I2C controllers under the standard bus. There is one
-more in the R_ block section. The pin functions for the 3 controllers
-are on PH 0~6. I2C2 can also be used on pins PE14 and PE15, but these
-pins can also mux the CSI (camera sensor interface) controller's
-embedded I2C controller. The latter seems to be preferred in the
-reference designs for I2C camera sensor access, freeing I2C2 for other
-uses.
+This patch enables a PiFi DAC+ V2.0, which is a PCM5122-based audio
+output DAC add-on board for the Raspberry Pi B+ and later, connected
+to the GPIO header of the Bananapi M3 via jumper cables. The power,
+ground, and I2C pins are in the same position, but the I2S ones are
+not.
 
-This patch adds device nodes for the three standard I2C controllers,
-as well as pinmux settings for the PH pins. For I2C0 and I2C1, since
-they only have one possible setting, just set them by default.
+The I2C controller used is I2C2, while the I2S controller is I2S1.
 
 Signed-off-by: Chen-Yu Tsai <wens@csie.org>
 ---
- arch/arm/boot/dts/sun8i-a83t.dtsi | 52 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
 
-diff --git a/arch/arm/boot/dts/sun8i-a83t.dtsi b/arch/arm/boot/dts/sun8i-a83t.dtsi
-index 354cb4b48f47..b8c5f0a2c463 100644
---- a/arch/arm/boot/dts/sun8i-a83t.dtsi
-+++ b/arch/arm/boot/dts/sun8i-a83t.dtsi
-@@ -348,6 +348,21 @@
- 				drive-strength = <40>;
- 			};
+I'm sure I've asked this before, and IIRC the answer was yes: The I2C
+controllers available on the GPIO header all have proper, always-on,
+external pull-ups. Does that mean we can enable them by default, seeing
+as they are likely intended to be used this way (as I2C pins)?
+
+I think we have a few boards where either I2C or UARTs on the GPIO
+header are enabled by default.
+
+---
+ arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts | 33 ++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+diff --git a/arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts b/arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts
+index 6550bf0e594b..a9a208ebda12 100644
+--- a/arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts
++++ b/arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts
+@@ -70,6 +70,23 @@
+ 		gpio = <&pio 3 24 GPIO_ACTIVE_HIGH>; /* PD24 */
+ 	};
  
-+			i2c0_pins: i2c0-pins {
-+				pins = "PH0", "PH1";
-+				function = "i2c0";
-+			};
++	sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "PiFi DAC+ v2.0";
++		simple-audio-card,format = "i2s";
++		simple-audio-card,mclk-fs = <512>;
++		simple-audio-card,frame-master = <&link_cpu>;
++		simple-audio-card,bitclock-master = <&link_cpu>;
 +
-+			i2c1_pins: i2c1-pins {
-+				pins = "PH2", "PH3";
-+				function = "i2c1";
-+			};
++		link_cpu: simple-audio-card,cpu {
++			sound-dai = <&i2s1>;
++		};
 +
-+			i2c2_ph_pins: i2c2-ph-pins {
-+				pins = "PH4", "PH5";
-+				function = "i2c2";
-+			};
++		simple-audio-card,codec {
++			sound-dai = <&pcm5122>;
++		};
++	};
 +
- 			i2s1_pins: i2s1-pins {
- 				/* I2S1 does not have external MCLK pin */
- 				pins = "PG10", "PG11", "PG12", "PG13";
-@@ -499,6 +514,43 @@
- 			status = "disabled";
- 		};
+ 	wifi_pwrseq: wifi_pwrseq {
+ 		compatible = "mmc-pwrseq-simple";
+ 		clocks = <&ac100_rtc 1>;
+@@ -100,6 +117,22 @@
+ 	status = "okay";
+ };
  
-+		i2c0: i2c@1c2ac00 {
-+			compatible = "allwinner,sun6i-a31-i2c";
-+			reg = <0x01c2ac00 0x400>;
-+			interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_I2C0>;
-+			resets = <&ccu RST_BUS_I2C0>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&i2c0_pins>;
-+			status = "disabled";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+		};
++&i2c2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c2_ph_pins>;
++	status = "okay";
 +
-+		i2c1: i2c@1c2b000 {
-+			compatible = "allwinner,sun6i-a31-i2c";
-+			reg = <0x01c2b000 0x400>;
-+			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_I2C1>;
-+			resets = <&ccu RST_BUS_I2C1>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&i2c1_pins>;
-+			status = "disabled";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+		};
++	pcm5122: pcm5122@4d {
++		#sound-dai-cells = <0>;
++		compatible = "ti,pcm5122";
++		reg = <0x4d>;
++	};
++};
 +
-+		i2c2: i2c@1c2b400 {
-+			compatible = "allwinner,sun6i-a31-i2c";
-+			reg = <0x01c2b400 0x400>;
-+			interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_I2C2>;
-+			resets = <&ccu RST_BUS_I2C2>;
-+			status = "disabled";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+		};
++&i2s1 {
++	status = "okay";
++};
 +
- 		emac: ethernet@1c30000 {
- 			compatible = "allwinner,sun8i-a83t-emac";
- 			syscon = <&syscon>;
+ &mdio {
+ 	rgmii_phy: ethernet-phy@1 {
+ 		compatible = "ethernet-phy-ieee802.3-c22";
 -- 
 2.15.0
