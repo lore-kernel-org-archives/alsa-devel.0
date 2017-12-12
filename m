@@ -1,49 +1,150 @@
-From: Biju Das <biju.das@bp.renesas.com>
-Subject: [PATCH] dt-bindings: ASoC: rsnd: Add device tree support for r8a774[35]
-Date: Tue, 12 Dec 2017 18:09:15 +0000
-Message-ID: <1513102155-47925-1-git-send-email-biju.das@bp.renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, Chris Paterson <chris.paterson2@renesas.com>, Fabrizio Castro <fabrizio.castro@bp.renesas.com>, alsa-devel@alsa-project.org, linux-renesas-soc@vger.kernel.org, Biju Das <biju.das@bp.renesas.com>
+From: =?UTF-8?B?Sm/Dq2wgS3LDpGhlbWFubg==?= <jkraehemann@gmail.com>
+Subject: Re: [RFC v2 00/11] Enable HDA Codec support on Intel
+ Platforms (Series2)
+Date: Tue, 12 Dec 2017 19:21:37 +0100
+Message-ID: <CA+Owze6H7O1YQkvwu+rv+snpsxX3Dg9RgMGcFwTPtRL9sHn20g@mail.gmail.com>
+References: <1512989583-10877-1-git-send-email-rakesh.a.ughreja@intel.com>
+ <s5hbmj5mrts.wl-tiwai@suse.de>
+ <85DFEED57DC57344B2483EF7BF8CB60579AD2978@BGSMSX104.gar.corp.intel.com>
+ <s5hinddl28l.wl-tiwai@suse.de>
+ <85DFEED57DC57344B2483EF7BF8CB60579AD2F48@BGSMSX104.gar.corp.intel.com>
+ <s5hefo1aymr.wl-tiwai@suse.de>
+ <85DFEED57DC57344B2483EF7BF8CB60579AD52D3@BGSMSX104.gar.corp.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-it0-f68.google.com (mail-it0-f68.google.com
+ [209.85.214.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id B77DF2671B1
+ for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 19:21:39 +0100 (CET)
+Received: by mail-it0-f68.google.com with SMTP id d137so537642itc.2
+ for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 10:21:39 -0800 (PST)
+In-Reply-To: <85DFEED57DC57344B2483EF7BF8CB60579AD52D3@BGSMSX104.gar.corp.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, Patches Audio <patches.audio@intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Koul,
+ Vinod" <vinod.koul@intel.com>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Document r8a774[35] specific compatible strings. The Renesas RZ/G1[ME]
-(r8a774[35]) sound modules are identical to the R-Car Gen2 family.
-No driver change is needed as the fallback compatible string
-"renesas,rcar_sound-gen2" activates the right code in the driver.
-
-Signed-off-by: Biju Das <biju.das@bp.renesas.com>
-Reviewed-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
----
- Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-index 085bec3..b3c28bd 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-@@ -4,7 +4,7 @@ Renesas R-Car sound
- * Modules
- =============================================
- 
--Renesas R-Car sound is constructed from below modules
-+Renesas R-Car and RZ/G sound is constructed from below modules
- (for Gen2 or later)
- 
-  SCU		: Sampling Rate Converter Unit
-@@ -334,9 +334,11 @@ Required properties:
- 
- - compatible			: "renesas,rcar_sound-<soctype>", fallbacks
- 				  "renesas,rcar_sound-gen1" if generation1, and
--				  "renesas,rcar_sound-gen2" if generation2
-+				  "renesas,rcar_sound-gen2" if generation2 (or RZ/G1)
- 				  "renesas,rcar_sound-gen3" if generation3
- 				  Examples with soctypes are:
-+				    - "renesas,rcar_sound-r8a7743" (RZ/G1M)
-+				    - "renesas,rcar_sound-r8a7745" (RZ/G1E)
- 				    - "renesas,rcar_sound-r8a7778" (R-Car M1A)
- 				    - "renesas,rcar_sound-r8a7779" (R-Car H1)
- 				    - "renesas,rcar_sound-r8a7790" (R-Car H2)
--- 
-1.9.1
+SGksCldoZXJlIGlzIHlvdXIgY29kZSBsb2NhdGVkPyBTaW5jZSBJIGhhdmUgZ290IGEgbWFjYm9v
+ayBwcm8gMjAxNiBhbmQgSQpiZWxpZXZlIHRoaXMgZmVhdHVyZSBpcyBhIHByZXJlcXVpc2l0ZSB0
+byBnZXQgYW55IHNvdW5kIHdvcmtpbmcuCkkgd291bGQgbG92ZSB0byB0ZXN0IGl0IHdpdGggbXkg
+Y2lycnVzIGxvZ2ljIDg0MDkgSERBIHNvdW5kY2FyZC4KCkJlc3RzLApKb8OrbAoKCk9uIFR1ZSwg
+RGVjIDEyLCAyMDE3IGF0IDU6MzcgUE0sIFVnaHJlamEsIFJha2VzaCBBCjxyYWtlc2guYS51Z2hy
+ZWphQGludGVsLmNvbT4gd3JvdGU6Cj4KPgo+Pi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4+
+RnJvbTogVGFrYXNoaSBJd2FpIFttYWlsdG86dGl3YWlAc3VzZS5kZV0KPj5TZW50OiBUdWVzZGF5
+LCBEZWNlbWJlciAxMiwgMjAxNyAxMjoxOSBBTQo+PlRvOiBVZ2hyZWphLCBSYWtlc2ggQSA8cmFr
+ZXNoLmEudWdocmVqYUBpbnRlbC5jb20+Cj4+Q2M6IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZzsgYnJvb25pZUBrZXJuZWwub3JnOwo+PmxpYW0uci5naXJkd29vZEBsaW51eC5pbnRlbC5jb207
+IHBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbTsgS291bCwKPj5WaW5vZCA8dmlu
+b2Qua291bEBpbnRlbC5jb20+OyBQYXRjaGVzIEF1ZGlvIDxwYXRjaGVzLmF1ZGlvQGludGVsLmNv
+bT4KPj5TdWJqZWN0OiBSZTogW1JGQyB2MiAwMC8xMV0gRW5hYmxlIEhEQSBDb2RlYyBzdXBwb3J0
+IG9uIEludGVsIFBsYXRmb3Jtcwo+PihTZXJpZXMyKQo+Cj4+Cj4+VGhlIHJlZ2lzdHJhdGlvbiBz
+aG91bGQgYmUgdHJpZ2dlcmVkIGZyb20gdGhlIHRvcC1sZXZlbCwgaS5lLiB0aGUKPj5jb250cm9s
+bGVyIGRyaXZlciwgb25jZSBhZnRlciBhbGwgY29kZWNzIGdldCBwcm9iZWQuICBPdGhlcndpc2Us
+IGl0Cj4+YmVjb21lcyByYWN5LiAgVGhlIHVzZXItc3BhY2Ugd2lsbCBzdGFydCBwb2tpbmcgdGhl
+IGRldmljZSBiZWZvcmUgYWxsCj4+dGhlIHN0dWZmIGJlY29tZXMgcmVhZHkuCj4KPiBUaGFuayB5
+b3UgdmVyeSBtdWNoLCBJIHVuZGVyc3RhbmQgbm93Lgo+Cj4+Cj4+VGhhdCBzYWlkLCBhdCB0aGUg
+cG9pbnQgd2hlbiB0aGUgY29kZWMgaXMgcHJvYmVkLCB0aGUgY2FyZCBzaG91bGRuJ3QKPj5iZSBy
+ZWdpc3RlcmVkIHlldC4gIFRoZSBjYXJkIGdldHMgcmVnaXN0ZXJlZCBhZnRlciB0aGUgYWxsIGNv
+bXBvbmVudHMKPj5hcmUgYm91bmQgYW5kIGJlY29tZSByZWFkeSAtLSB3aGljaCBpcyBkb25lIGEg
+c2luZ2xlCj4+c25kX2NhcmRfcmVnaXN0ZXIoKSBjYWxsLiAgQXQgdGhpcyBwb2ludCwgdGhlIGFj
+Y2VzcyBwb2ludHMgdG8KPj51c2VyLXNwYWNlIGFyZSBwcm92aWRlZC4KPgo+IFNvIGJhc2VkIG9u
+IHlvdXIgc3VnZ2VzdGlvbiB3aGVuIEkgcmVsb29rZWQgYXQgdGhlIGNvZGUsIEkgY291bGQKPiBy
+ZW1vdmUgdGhlIG5ldyBmdW5jdGlvbiB0aGF0IEkgYWRkZWQuIEkgY291bGQgY29tcGxldGVseSBy
+ZXVzZSB0aGUKPiBleGlzdGluZyBmdW5jdGlvbiB3aXRoIGxpdHRsZSBjaGFuZ2UuCj4KPiBEb2Vz
+IGl0IGxvb2sgb2theSA/Cj4KPiBGb2xsb3dpbmcgaXMgdGhlIHBhdGNoLCB3aGljaCBJIHRlc3Rl
+ZCBhbmQgaXQgd29ya3MgZm9yIG1lLgo+IEkgd2lsbCBpbmNsdWRlIHRoaXMgaW4gbmV4dCBzZXJp
+ZXMgYnV0IGZvciBub3cgaXQncyBvbmx5IGZvciBxdWljayByZWZlcmVuY2UuCj4KPiBJIGFtIGNh
+bGxpbmcgdGhpcyBBUEkgZnJvbSB0aGUgaGRhY19oZGEgY29kZWMgZHJpdmVyIHdpdGggYXJndW1l
+bnQKPiBIREFfREVWX0FTT0MgdG8gbWFrZSBzdXJlIHRoYXQgaXQgZG9lcyBub3QgcmVnaXN0ZXIg
+d2l0aCB0aGUgYnVzCj4gYWdhaW4uIEkgYW0gbm90IGFibGUgdG8gY2FsbCB0aGlzIEFQSSBmcm9t
+IEFTb0MgUGxhdGZvcm0gZHJpdmVyIGJlY2F1c2UKPiBJIGRvbid0IGhhdmUgc25kX2NhcmQgcG9p
+bnRlciBhdCB0aGUgdGltZSBvZiBtYWNoaW5lIGRyaXZlciBwcm9iZS4KPgo+IEZvbGxvd2luZyBp
+cyB0aGUgcGF0Y2guCj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gTW9kaWZ5IHNuZF9o
+ZGFfY29kZWNfbmV3IEFQSSBzbyB0aGF0IGl0IGNhbiB3b3JrIGZvciBsZWdhY3kgYXMgd2VsbCBh
+cwo+IEFTb0MgY29kZWMgZHJpdmVycy4gVGhlIEFQSSB0YWtlcyBhbiBhZGRpdGlvbmFsIGFyZ3Vt
+ZW50IGRldl90eXBlIGFzCj4gSERBX0RFVl9MRUdBQ1kgb3IgSERBX0RFVl9BU09DIHRvIGRpc3Rp
+bmd1aXNoIHRoZSBjYWxsZXIuCj4KPiBTaWduZWQtb2ZmLWJ5OiBSYWtlc2ggVWdocmVqYSA8cmFr
+ZXNoLmEudWdocmVqYUBpbnRlbC5jb20+Cj4gLS0tCj4gIHNvdW5kL3BjaS9oZGEvaGRhX2NvZGVj
+LmMgICAgICB8IDMwICsrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLQo+ICBzb3VuZC9wY2kv
+aGRhL2hkYV9jb2RlYy5oICAgICAgfCAgMyArKy0KPiAgc291bmQvcGNpL2hkYS9oZGFfY29udHJv
+bGxlci5jIHwgIDIgKy0KPiAgMyBmaWxlcyBjaGFuZ2VkLCAyMiBpbnNlcnRpb25zKCspLCAxMyBk
+ZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL2hkYV9jb2RlYy5jIGIv
+c291bmQvcGNpL2hkYS9oZGFfY29kZWMuYwo+IGluZGV4IDA4NWZkOWUuLjI1Mjc3OWMgMTAwNjQ0
+Cj4gLS0tIGEvc291bmQvcGNpL2hkYS9oZGFfY29kZWMuYwo+ICsrKyBiL3NvdW5kL3BjaS9oZGEv
+aGRhX2NvZGVjLmMKPiBAQCAtODY1LDcgKzg2NSw4IEBAIHN0YXRpYyB2b2lkIHNuZF9oZGFfY29k
+ZWNfZGV2X3JlbGVhc2Uoc3RydWN0IGRldmljZSAqZGV2KQo+ICAgKiBSZXR1cm5zIDAgaWYgc3Vj
+Y2Vzc2Z1bCwgb3IgYSBuZWdhdGl2ZSBlcnJvciBjb2RlLgo+ICAgKi8KPiAgaW50IHNuZF9oZGFf
+Y29kZWNfbmV3KHN0cnVjdCBoZGFfYnVzICpidXMsIHN0cnVjdCBzbmRfY2FyZCAqY2FyZCwKPiAt
+ICAgICAgICAgICAgICAgICAgICAgdW5zaWduZWQgaW50IGNvZGVjX2FkZHIsIHN0cnVjdCBoZGFf
+Y29kZWMgKipjb2RlY3ApCj4gKyAgICAgICAgICAgICAgICAgICAgIHVuc2lnbmVkIGludCBjb2Rl
+Y19hZGRyLCBzdHJ1Y3QgaGRhX2NvZGVjICoqY29kZWNwLAo+ICsgICAgICAgICAgICAgICAgICAg
+ICAgIHVuc2lnbmVkIGludCBkZXZfdHlwZSkKPiAgewo+ICAgICAgICAgc3RydWN0IGhkYV9jb2Rl
+YyAqY29kZWM7Cj4gICAgICAgICBjaGFyIGNvbXBvbmVudFszMV07Cj4gQEAgLTg4MiwyMCArODgz
+LDI3IEBAIGludCBzbmRfaGRhX2NvZGVjX25ldyhzdHJ1Y3QgaGRhX2J1cyAqYnVzLCBzdHJ1Y3Qg
+c25kX2NhcmQgKmNhcmQsCj4gICAgICAgICBpZiAoc25kX0JVR19PTihjb2RlY19hZGRyID4gSERB
+X01BWF9DT0RFQ19BRERSRVNTKSkKPiAgICAgICAgICAgICAgICAgcmV0dXJuIC1FSU5WQUw7Cj4K
+PiAtICAgICAgIGNvZGVjID0ga3phbGxvYyhzaXplb2YoKmNvZGVjKSwgR0ZQX0tFUk5FTCk7Cj4g
+LSAgICAgICBpZiAoIWNvZGVjKQo+IC0gICAgICAgICAgICAgICByZXR1cm4gLUVOT01FTTsKPiAr
+ICAgICAgIGlmIChkZXZfdHlwZSA9PSBIREFfREVWX0xFR0FDWSkgewo+Cj4gLSAgICAgICBzcHJp
+bnRmKGNvbXBvbmVudCwgImhkYXVkaW9DJWREJWQiLCBjYXJkLT5udW1iZXIsIGNvZGVjX2FkZHIp
+Owo+IC0gICAgICAgZXJyID0gc25kX2hkYWNfZGV2aWNlX2luaXQoJmNvZGVjLT5jb3JlLCAmYnVz
+LT5jb3JlLCBjb21wb25lbnQsCj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBj
+b2RlY19hZGRyKTsKPiAtICAgICAgIGlmIChlcnIgPCAwKSB7Cj4gLSAgICAgICAgICAgICAgIGtm
+cmVlKGNvZGVjKTsKPiAtICAgICAgICAgICAgICAgcmV0dXJuIGVycjsKPiArICAgICAgICAgICAg
+ICAgY29kZWMgPSBremFsbG9jKHNpemVvZigqY29kZWMpLCBHRlBfS0VSTkVMKTsKPiArICAgICAg
+ICAgICAgICAgaWYgKCFjb2RlYykKPiArICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gLUVO
+T01FTTsKPiArCj4gKyAgICAgICAgICAgICAgIHNwcmludGYoY29tcG9uZW50LCAiaGRhdWRpb0Ml
+ZEQlZCIsIGNhcmQtPm51bWJlciwgY29kZWNfYWRkcik7Cj4gKyAgICAgICAgICAgICAgIGVyciA9
+IHNuZF9oZGFjX2RldmljZV9pbml0KCZjb2RlYy0+Y29yZSwgJmJ1cy0+Y29yZSwgY29tcG9uZW50
+LAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvZGVj
+X2FkZHIpOwo+ICsgICAgICAgICAgICAgICBpZiAoZXJyIDwgMCkgewo+ICsgICAgICAgICAgICAg
+ICAgICAgICAgIGtmcmVlKGNvZGVjKTsKPiArICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4g
+ZXJyOwo+ICsgICAgICAgICAgICAgICB9Cj4gKwo+ICsgICAgICAgICAgICAgICBjb2RlYy0+Y29y
+ZS50eXBlID0gSERBX0RFVl9MRUdBQ1k7Cj4gKwo+ICsgICAgICAgfSBlbHNlIHsKPiArICAgICAg
+ICAgICAgICAgY29kZWMgPSAqY29kZWNwOwo+ICAgICAgICAgfQo+Cj4gICAgICAgICBjb2RlYy0+
+Y29yZS5kZXYucmVsZWFzZSA9IHNuZF9oZGFfY29kZWNfZGV2X3JlbGVhc2U7Cj4gLSAgICAgICBj
+b2RlYy0+Y29yZS50eXBlID0gSERBX0RFVl9MRUdBQ1k7Cj4gICAgICAgICBjb2RlYy0+Y29yZS5l
+eGVjX3ZlcmIgPSBjb2RlY19leGVjX3ZlcmI7Cj4KPiAgICAgICAgIGNvZGVjLT5idXMgPSBidXM7
+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvaGRhX2NvZGVjLmggYi9zb3VuZC9wY2kvaGRh
+L2hkYV9jb2RlYy5oCj4gaW5kZXggZDMwOTlkYi4uOTI4MTViNyAxMDA2NDQKPiAtLS0gYS9zb3Vu
+ZC9wY2kvaGRhL2hkYV9jb2RlYy5oCj4gKysrIGIvc291bmQvcGNpL2hkYS9oZGFfY29kZWMuaAo+
+IEBAIC0zMDYsNyArMzA2LDggQEAgc3RydWN0IGhkYV9jb2RlYyB7Cj4gICAqIGNvbnN0cnVjdG9y
+cwo+ICAgKi8KPiAgaW50IHNuZF9oZGFfY29kZWNfbmV3KHN0cnVjdCBoZGFfYnVzICpidXMsIHN0
+cnVjdCBzbmRfY2FyZCAqY2FyZCwKPiAtICAgICAgICAgICAgICAgICAgICAgdW5zaWduZWQgaW50
+IGNvZGVjX2FkZHIsIHN0cnVjdCBoZGFfY29kZWMgKipjb2RlY3ApOwo+ICsgICAgICAgICAgICAg
+ICAgICAgICAgIHVuc2lnbmVkIGludCBjb2RlY19hZGRyLCBzdHJ1Y3QgaGRhX2NvZGVjICoqY29k
+ZWNwLAo+ICsgICAgICAgICAgICAgICAgICAgICAgIHVuc2lnbmVkIGludCBkZXZfdHlwZSk7Cj4g
+IGludCBzbmRfaGRhX2NvZGVjX2NvbmZpZ3VyZShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYyk7Cj4g
+IGludCBzbmRfaGRhX2NvZGVjX3VwZGF0ZV93aWRnZXRzKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVj
+KTsKPgo+IGRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL2hkYV9jb250cm9sbGVyLmMgYi9zb3Vu
+ZC9wY2kvaGRhL2hkYV9jb250cm9sbGVyLmMKPiBpbmRleCBkMWViMTQ4Li5lYzg4N2Q3IDEwMDY0
+NAo+IC0tLSBhL3NvdW5kL3BjaS9oZGEvaGRhX2NvbnRyb2xsZXIuYwo+ICsrKyBiL3NvdW5kL3Bj
+aS9oZGEvaGRhX2NvbnRyb2xsZXIuYwo+IEBAIC0xMzE4LDcgKzEzMTgsNyBAQCBpbnQgYXp4X3By
+b2JlX2NvZGVjcyhzdHJ1Y3QgYXp4ICpjaGlwLCB1bnNpZ25lZCBpbnQgbWF4X3Nsb3RzKQo+ICAg
+ICAgICAgZm9yIChjID0gMDsgYyA8IG1heF9zbG90czsgYysrKSB7Cj4gICAgICAgICAgICAgICAg
+IGlmICgoYnVzLT5jb2RlY19tYXNrICYgKDEgPDwgYykpICYgY2hpcC0+Y29kZWNfcHJvYmVfbWFz
+aykgewo+ICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjOwo+
+IC0gICAgICAgICAgICAgICAgICAgICAgIGVyciA9IHNuZF9oZGFfY29kZWNfbmV3KCZjaGlwLT5i
+dXMsIGNoaXAtPmNhcmQsIGMsICZjb2RlYyk7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgZXJy
+ID0gc25kX2hkYV9jb2RlY19uZXcoJmNoaXAtPmJ1cywgY2hpcC0+Y2FyZCwgYywgJmNvZGVjLCBI
+REFfREVWX0xFR0FDWSk7Cj4gICAgICAgICAgICAgICAgICAgICAgICAgaWYgKGVyciA8IDApCj4g
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb250aW51ZTsKPiAgICAgICAgICAgICAg
+ICAgICAgICAgICBjb2RlYy0+amFja3BvbGxfaW50ZXJ2YWwgPSBnZXRfamFja3BvbGxfaW50ZXJ2
+YWwoY2hpcCk7Cj4gLS0KPiAyLjcuNAo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
