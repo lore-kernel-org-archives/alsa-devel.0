@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun4i-i2s: Add support for A83T" to the asoc tree
-Date: Tue, 12 Dec 2017 11:16:54 +0000
-Message-ID: <E1eOiYQ-0007uD-6c@debutante>
-References: <20171212081148.9194-2-wens@csie.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171212081148.9194-2-wens@csie.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>Maxime Ripard <maxime.ripard@free-electrons.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Marcus Cooper <codekipper@gmail.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: sun4i-codec: enable 12Khz and 24Khz
+	audio sample rates" to the asoc tree
+Date: Tue, 12 Dec 2017 11:16:50 +0000
+Message-ID: <E1eOiYM-0007sd-JT@debutante>
+References: <20171212091450.GA13602@andrea-laptop>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 76CE126705F
+ for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 12:16:59 +0100 (CET)
+In-Reply-To: <20171212091450.GA13602@andrea-laptop>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Andrea Bondavalli <andrea.bondavalli74@gmail.com>
+Cc: alsa-devel@alsa-project.org, Emilio =?iso-8859-1?Q?L=F3pez?= <emilio@elopez.com.ar>, Liam Girdwood <lgirdwood@gmail.com>, Adam Sampson <ats@offog.org>, Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-i2s: Add support for A83T
+   ASoC: sun4i-codec: enable 12Khz and 24Khz audio sample rates
 
 has been applied to the asoc tree at
 
@@ -37,87 +53,102 @@ to this mail.
 Thanks,
 Mark
 
->From 21faaea1343f2f8dc6539302c92231afc6d999a5 Mon Sep 17 00:00:00 2001
-From: Chen-Yu Tsai <wens@csie.org>
-Date: Tue, 12 Dec 2017 16:11:45 +0800
-Subject: [PATCH] ASoC: sun4i-i2s: Add support for A83T
+>From 5a0cf02465a0510c48ab34e7ba88b0f8c20b9ea1 Mon Sep 17 00:00:00 2001
+From: Andrea Bondavalli <andrea.bondavalli74@gmail.com>
+Date: Tue, 12 Dec 2017 10:14:50 +0100
+Subject: [PATCH] ASoC: sun4i-codec: enable 12Khz and 24Khz audio sample rates
 
-The I2S controller in the A83T is mostly compatible with the one found
-in earlier SoCs such as the A20 and A31. While the documents publicly
-available for the A83T do not cover this hardware, the officially
-released BSP kernel does have register definitions for it. These were
-matched against the A20 user manual. The only difference is the TX FIFO
-and interrupt status registers have been swapped around, like what we
-have seen with the SPDIF controller.
+H3 ASoC supports 12Khz and 24Khz audio sample rates but the current
+drivers doesn't advertise these rates properly and they cannot be used.
 
-This patch adds support for this hardware.
+For example attempt to capture at 12Khz uses 11Khz (same applies to
+audio playback):
 
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+Recording raw data '/tmp/testS16_LE.raw' : Signed 16 bit Little Endian, Rate 12000 Hz, Stereo
+Warning: rate is not accurate (requested = 12000Hz, got = 11025Hz)
+
+This patch fixes the audio sample rates declared and supported by the
+driver according to the H3 data sheet.  Specifically for audio playback:
+
+8000, 11050, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 96000, 192000
+
+and for audio capture:
+
+8000, 11050, 12000, 16000, 22050, 24000, 32000, 44100, 48000
+
+Signed-off-by: Andrea Bondavalli <andrea.bondavalli74@gmail.com>
+Acked-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/sun4i-i2s.txt         |  2 ++
- sound/soc/sunxi/sun4i-i2s.c                         | 21 +++++++++++++++++++++
- 2 files changed, 23 insertions(+)
+ sound/soc/sunxi/sun4i-codec.c | 29 ++++++++++++++++++++---------
+ 1 file changed, 20 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-index 05d7135a8d2f..b9d50d6cdef3 100644
---- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-@@ -8,6 +8,7 @@ Required properties:
- - compatible: should be one of the following:
-    - "allwinner,sun4i-a10-i2s"
-    - "allwinner,sun6i-a31-i2s"
-+   - "allwinner,sun8i-a83t-i2s"
-    - "allwinner,sun8i-h3-i2s"
- - reg: physical base address of the controller and length of memory mapped
-   region.
-@@ -23,6 +24,7 @@ Required properties:
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 5da4efe7a550..886281673972 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -590,12 +590,28 @@ static int sun4i_codec_hw_params(struct snd_pcm_substream *substream,
+ 					     hwrate);
+ }
  
- Required properties for the following compatibles:
- 	- "allwinner,sun6i-a31-i2s"
-+	- "allwinner,sun8i-a83t-i2s"
- 	- "allwinner,sun8i-h3-i2s"
- - resets: phandle to the reset line for this codec
- 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 04f92583a969..13d7ecabe1b6 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -897,6 +897,23 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
- 	.field_rxchansel	= REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
- };
- 
-+static const struct sun4i_i2s_quirks sun8i_a83t_i2s_quirks = {
-+	.has_reset		= true,
-+	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
-+	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
-+	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 7, 7),
-+	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 2, 3),
-+	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
-+	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 6, 6),
-+	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
-+	.has_slave_select_bit	= true,
-+	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
-+	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
-+	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
-+	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
-+	.field_rxchansel	= REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
++
++static unsigned int sun4i_codec_src_rates[] = {
++	8000, 11025, 12000, 16000, 22050, 24000, 32000,
++	44100, 48000, 96000, 192000
 +};
 +
- static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
- 	.has_reset		= true,
- 	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
-@@ -1120,6 +1137,10 @@ static const struct of_device_id sun4i_i2s_match[] = {
- 		.compatible = "allwinner,sun6i-a31-i2s",
- 		.data = &sun6i_a31_i2s_quirks,
- 	},
-+	{
-+		.compatible = "allwinner,sun8i-a83t-i2s",
-+		.data = &sun8i_a83t_i2s_quirks,
-+	},
- 	{
- 		.compatible = "allwinner,sun8i-h3-i2s",
- 		.data = &sun8i_h3_i2s_quirks,
++
++static struct snd_pcm_hw_constraint_list sun4i_codec_constraints = {
++	.count  = ARRAY_SIZE(sun4i_codec_src_rates),
++	.list   = sun4i_codec_src_rates,
++};
++
++
+ static int sun4i_codec_startup(struct snd_pcm_substream *substream,
+ 			       struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct sun4i_codec *scodec = snd_soc_card_get_drvdata(rtd->card);
+ 
++	snd_pcm_hw_constraint_list(substream->runtime, 0,
++				SNDRV_PCM_HW_PARAM_RATE, &sun4i_codec_constraints);
++
+ 	/*
+ 	 * Stop issuing DRQ when we have room for less than 16 samples
+ 	 * in our TX FIFO
+@@ -633,9 +649,7 @@ static struct snd_soc_dai_driver sun4i_codec_dai = {
+ 		.channels_max	= 2,
+ 		.rate_min	= 8000,
+ 		.rate_max	= 192000,
+-		.rates		= SNDRV_PCM_RATE_8000_48000 |
+-				  SNDRV_PCM_RATE_96000 |
+-				  SNDRV_PCM_RATE_192000,
++		.rates		= SNDRV_PCM_RATE_CONTINUOUS,
+ 		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
+ 				  SNDRV_PCM_FMTBIT_S32_LE,
+ 		.sig_bits	= 24,
+@@ -645,11 +659,8 @@ static struct snd_soc_dai_driver sun4i_codec_dai = {
+ 		.channels_min	= 1,
+ 		.channels_max	= 2,
+ 		.rate_min	= 8000,
+-		.rate_max	= 192000,
+-		.rates		= SNDRV_PCM_RATE_8000_48000 |
+-				  SNDRV_PCM_RATE_96000 |
+-				  SNDRV_PCM_RATE_192000 |
+-				  SNDRV_PCM_RATE_KNOT,
++		.rate_max	= 48000,
++		.rates		= SNDRV_PCM_RATE_CONTINUOUS,
+ 		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
+ 				  SNDRV_PCM_FMTBIT_S32_LE,
+ 		.sig_bits	= 24,
+@@ -1128,7 +1139,7 @@ static const struct snd_soc_component_driver sun4i_codec_component = {
+ 	.name = "sun4i-codec",
+ };
+ 
+-#define SUN4I_CODEC_RATES	SNDRV_PCM_RATE_8000_192000
++#define SUN4I_CODEC_RATES	SNDRV_PCM_RATE_CONTINUOUS
+ #define SUN4I_CODEC_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
+ 				 SNDRV_PCM_FMTBIT_S32_LE)
+ 
 -- 
 2.15.1
