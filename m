@@ -1,20 +1,16 @@
-From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v10 10/13] dt-bindings: Add qcom slimbus
-	controller bindings
-Date: Mon, 11 Dec 2017 23:43:04 +0000
-Message-ID: <20171211234307.14465-11-srinivas.kandagatla@linaro.org>
-References: <20171211234307.14465-1-srinivas.kandagatla@linaro.org>
+From: Jia-Ju Bai <baijiaju1990@163.com>
+Subject: [BUG] sound/soc/samsung: a possible sleep-in-atomic
+ bugs in s3c_pcm_hw_params
+Date: Tue, 12 Dec 2017 09:24:34 +0800
+Message-ID: <bb1c8c1d-4f99-7d47-818c-13e98cd024d5@163.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f195.google.com (mail-wr0-f195.google.com
- [209.85.128.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 429AD2676DA
- for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 00:45:27 +0100 (CET)
-Received: by mail-wr0-f195.google.com with SMTP id k61so19308123wrc.4
- for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2017 15:45:27 -0800 (PST)
-In-Reply-To: <20171211234307.14465-1-srinivas.kandagatla@linaro.org>
+Received: from m12-16.163.com (m12-16.163.com [220.181.12.16])
+ by alsa0.perex.cz (Postfix) with ESMTP id C9A3326705F
+ for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 02:24:44 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,66 +20,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org, j.neuschaefer@gmx.net, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, pombredanne@nexb.com, sdharia@codeaurora.org
+To: krzk@kernel.org, sbkim73@samsung.com, s.nawrocki@samsung.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Sagar Dharia <sdharia@codeaurora.org>
+According to sound/soc/samsung/pcm.c, the kernel module may sleep under 
+a spinlock.
+The function call path is:
+s3c_pcm_hw_params (acquire the spinlock)
+   clk_get_rate
+     clk_core_get_rate
+       clk_prepare_lock
+         mutex_lock --> may sleep
 
-This patch add device tree bindings for Qualcomm slimbus controller.
+I do not find a good way to fix it, so I only report.
+This possible bug is found by my static analysis tool (DSAC) and my code 
+review.
 
-Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../devicetree/bindings/slimbus/slim-qcom-ctrl.txt | 39 ++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
 
-diff --git a/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt b/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
-new file mode 100644
-index 000000000000..922dcb8ff24a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
-@@ -0,0 +1,39 @@
-+Qualcomm SLIMbus controller
-+This controller is used if applications processor driver controls SLIMbus
-+master component.
-+
-+Required properties:
-+
-+ - #address-cells - refer to Documentation/devicetree/bindings/slimbus/bus.txt
-+ - #size-cells	- refer to Documentation/devicetree/bindings/slimbus/bus.txt
-+
-+ - reg : Offset and length of the register region(s) for the device
-+ - reg-names : Register region name(s) referenced in reg above
-+	 Required register resource entries are:
-+	 "ctrl": Physical address of controller register blocks
-+ 	 "slew": required for "qcom,apq8064-slim" SOC.
-+ - compatible : should be "qcom,<SOC-NAME>-slim" for SOC specific compatible
-+ 		followed by "qcom,slim" for fallback.
-+ - interrupts : Interrupt number used by this controller
-+ - clocks : Interface and core clocks used by this SLIMbus controller
-+ - clock-names : Required clock-name entries are:
-+	"iface" : Interface clock for this controller
-+	"core" : Interrupt for controller core's BAM
-+
-+Example:
-+
-+	slim@28080000 {
-+		compatible = "qcom,apq8064-slim", "qcom,slim";
-+		reg = <0x28080000 0x2000>, <0x80207C 4>;
-+		reg-names = "ctrl", "slew";
-+		interrupts = <0 33 0>;
-+		clocks = <&lcc SLIMBUS_SRC>, <&lcc AUDIO_SLIMBUS_CLK>;
-+		clock-names = "iface", "core";
-+		#address-cells = <2>;
-+		#size-cell = <0>;
-+
-+		wcd9310: audio-codec@1,0{
-+			compatible = "slim217,60";
-+			reg = <1 0>;
-+		};
-+	};
--- 
-2.15.0
+Thanks,
+Jia-Ju Bai
