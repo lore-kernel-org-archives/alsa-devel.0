@@ -1,34 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: Set card long_name for GPD win
-	/ pocket" to the asoc tree
-Date: Tue, 12 Dec 2017 11:16:19 +0000
-Message-ID: <E1eOiXr-0007p8-Rl@debutante>
-References: <20171211212640.10060-1-hdegoede@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 104A126705F
- for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 12:16:27 +0100 (CET)
-In-Reply-To: <20171211212640.10060-1-hdegoede@redhat.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: tfa9879: add DT bindings to MAINTAINERS" to the asoc tree
+Date: Tue, 12 Dec 2017 11:16:41 +0000
+Message-ID: <E1eOiYD-0007qT-E1@debutante>
+References: <20171211142615.11440-3-peda@axentia.se>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20171211142615.11440-3-peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: Set card long_name for GPD win / pocket
+   ASoC: tfa9879: add DT bindings to MAINTAINERS
 
 has been applied to the asoc tree at
 
@@ -53,60 +37,35 @@ to this mail.
 Thanks,
 Mark
 
->From aa9c387c2dc25597b730cd8386cac8ccfe75de07 Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Mon, 11 Dec 2017 22:26:40 +0100
-Subject: [PATCH] ASoC: rt5645: Set card long_name for GPD win / pocket
+>From a73be94364b80388c0a600715117923669f165f8 Mon Sep 17 00:00:00 2001
+From: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
+Date: Mon, 11 Dec 2017 15:26:15 +0100
+Subject: [PATCH] ASoC: tfa9879: add DT bindings to MAINTAINERS
 
-The GPD win and pocket devices both use the same codec setup and both
-have too generic dmi strings making snd_soc_set_dmi_name() not work.
+Let's keep maintenance of the driver and the bindings in one place.
 
-As these devices have only a single speaker we want a separate ucm
-file for them, which requires a unique long_name, use the existing
-GPD quirk handling to also provide a unique long_name.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- include/sound/rt5645.h    | 3 +++
- sound/soc/codecs/rt5645.c | 4 ++++
- 2 files changed, 7 insertions(+)
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/sound/rt5645.h b/include/sound/rt5645.h
-index d0c33a9972b9..f218c742f08e 100644
---- a/include/sound/rt5645.h
-+++ b/include/sound/rt5645.h
-@@ -25,6 +25,9 @@ struct rt5645_platform_data {
- 	bool level_trigger_irq;
- 	/* Invert JD1_1 status polarity */
- 	bool inv_jd1_1;
-+
-+	/* Value to asign to snd_soc_card.long_name */
-+	const char *long_name;
- };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index aa71ab52fd76..a04aaa270ad5 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9805,6 +9805,7 @@ NXP TFA9879 DRIVER
+ M:	Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
+ L:	alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org (moderated for non-subscribers)
+ S:	Maintained
++F:	Documentation/devicetree/bindings/sound/tfa9879.txt
+ F:	sound/soc/codecs/tfa9879*
  
- #endif
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index fcd02c2c76f1..a1a7bb770745 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3394,6 +3394,9 @@ static int rt5645_probe(struct snd_soc_codec *codec)
- 		snd_soc_dapm_sync(dapm);
- 	}
- 
-+	if (rt5645->pdata.long_name)
-+		codec->component.card->long_name = rt5645->pdata.long_name;
-+
- 	rt5645->eq_param = devm_kzalloc(codec->dev,
- 		RT5645_HWEQ_NUM * sizeof(struct rt5645_eq_param_s), GFP_KERNEL);
- 
-@@ -3624,6 +3627,7 @@ static const struct dmi_system_id dmi_platform_intel_broadwell[] = {
- static const struct rt5645_platform_data gpd_win_platform_data = {
- 	.jd_mode = 3,
- 	.inv_jd1_1 = true,
-+	.long_name = "gpd-win-pocket-rt5645",
- };
- 
- static const struct dmi_system_id dmi_platform_gpd_win[] = {
+ NXP-NCI NFC DRIVER
 -- 
 2.15.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
