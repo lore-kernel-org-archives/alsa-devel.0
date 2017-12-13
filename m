@@ -1,88 +1,138 @@
-From: Nerijus Baliunas <nerijus@users.sourceforge.net>
-Subject: ES8316
-Date: Wed, 13 Dec 2017 15:53:00 +0200
-Message-ID: <Mahogany-0.68.0-8070-20171213-155300.01@nerijus.sat.lt>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] drm/i915: Remove unused IRQ chip data of
+ HDMI LPE audio
+Date: Wed, 13 Dec 2017 15:06:55 +0100 (CET)
+Message-ID: <alpine.DEB.2.20.1712131452550.1885@nanos>
+References: <20171208093323.2212-1-augustine.chen@intel.com>
+ <20171208114404.GN10981@intel.com> <alpine.DEB.2.20.1712082340400.2301@nanos>
+ <F6867404AABACB4D8EC371BF802A4B7C5790D206@fmsmsx101.amr.corp.intel.com>
+ <alpine.DEB.2.20.1712121804570.1794@nanos>
+ <F6867404AABACB4D8EC371BF802A4B7C5790F9A8@fmsmsx101.amr.corp.intel.com>
+ <alpine.DEB.2.20.1712131232090.1885@nanos> <s5hshce7skk.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bluegene.sat.lt (bluegene.sat.lt [88.119.145.12])
- by alsa0.perex.cz (Postfix) with SMTP id D444A266B67
- for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 14:54:02 +0100 (CET)
-Content-Disposition: INLINE
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; BOUNDARY="8323329-1382550213-1513174015=:1885"
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5hshce7skk.wl-tiwai@suse.de>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Juergen Gross <jgross@suse.com>, Dou Liyang <douly.fnst@cn.fujitsu.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Jiang Liu <jiang.liu@linux.intel.com>, "Chen,
+ Augustine" <augustine.chen@intel.com>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Onda obook 20 plus tablet, Fedora 27, kernel 4.13.16-302.fc27.x86_64:
+--8323329-1382550213-1513174015=:1885
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-[    8.910172] bytcht_es8316 bytcht_es8316: ASoC: CODEC DAI ES8316 HiFi not registered
-[    8.910306] bytcht_es8316 bytcht_es8316: snd_soc_register_card failed -517
+On Wed, 13 Dec 2017, Takashi Iwai wrote:
+> On Wed, 13 Dec 2017 12:35:54 +0100,
+> Thomas Gleixner wrote:
+> > 
+> > > > On Mon, 11 Dec 2017, Anand, Jerome wrote:
+> > > > > > On Fri, 8 Dec 2017, Ville Syrjälä wrote:
+> > > > > >
+> > > > > > > On Fri, Dec 08, 2017 at 05:33:23PM +0800, Augustine.Chen wrote:
+> > > > > > > > The chip data of HDMI LPE audio is set to drm_i915_private which
+> > > > > > > > is not consistent with the expectation by x86 APIC driver.
+> > > > > > >
+> > > > > > > Hmm. Why is the apic code looking at data for an irq chip it
+> > > > > > > hasn't created?
+> > > > > > >
+> > > > >
+> > > > > apic code expects an irq domain to be place as generic approach.
+> > > > 
+> > > > APIC code does not even see that interrupt at all. It's completely disconnected.
+> > > > 
+> > > 
+> > > That's the problem - APIC just converts the chip data to its internal
+> > > format and fails.
+> > 
+> > How does APIC code end up to touch that interrupt at all? Call stack please.
+> 
+> It's found in the bugzilla referred in the patch:
+>   https://bugs.freedesktop.org/show_bug.cgi?id=103731
+> 
+> [   87.353072] irq 298 idata->chip->name hdmi_lpe_audio_irqchip
+> [   87.353072] irq 298 apic_chip_data
+> [   87.353073] irq 298 data->domain is NULL
+> [   87.353120] BUG: unable to handle kernel NULL pointer dereference at (null)
+> [   87.353132] IP: setup_vector_irq+0x1ba/0x230
+> [   87.353133] PGD 0
+> 
+> If my understanding is correct, it happens only with 4.14 and earlier
+> kernels where __setup_vector_irq() loops over the all irqs:
+> 
+> static void __setup_vector_irq(int cpu)
+> {
+> 	struct apic_chip_data *data;
+> 	struct irq_desc *desc;
+> 	int irq, vector;
+> 
+> 	/* Mark the inuse vectors */
+> 	for_each_irq_desc(irq, desc) {
+> 		struct irq_data *idata = irq_desc_get_irq_data(desc);
+> 
+> 		data = apic_chip_data(idata);
+> 		if (!data || !cpumask_test_cpu(cpu, data->domain))
+> 			continue;
+> 		....
+> 
+> And since we have assigned a non-APIC chip data in the driver, the
+> code above refers to a wrong object, leading to Oops.
 
-kernel 4.14.3-300.fc27.x86_64:
+Bah crap. This information should have been provided earlier instead of
+handwavy 'doesnt work with CONFIG_FOO and hotplug'.
 
-[    8.561159] rt5645 i2c-10EC5645:00: Device with ID register 0xffff8d85 is not rt5645 or rt5650
-[    9.344562] cht-bsw-rt5645 cht-bsw-rt5645: ASoC: CODEC DAI rt5645-aif1 not registered
-[    9.344695] cht-bsw-rt5645 cht-bsw-rt5645: snd_soc_register_card failed -517
+> As a further note, the setup_vector_irq() code has been changed in
+> 4.15, and such a reference won't happen any longer.  So the patch
+> isn't necessary for now, although it's not bad to take as a cleanup.
+> And we can eventually put Cc to stable there since it actually works
+> around the issue above for the older kernels -- of course, with more
+> detailed descriptions about the background.
 
-On both kernels snd_soc_sst_byt_cht_es8316 and snd_soc_es8316
-modules are loaded automatically.
-How to make audio work?
+No, that's just tinkering. The proper fix is to make that code robust.
 
-dmesg from Android 5.1 kernel 3.14.37-x86_64:
+Something like the completely untested patch below should do the trick.
 
-<3>[    3.900404] snd_intel_sst: sst_platform_get_resources_edk
-<3>[    3.900442] snd_intel_sst: LPE base: 0xd1600000 size:0x200000
-<3>[    3.900452] snd_intel_sst: IRAM base: 0xd16c0000
-<3>[    3.900461] snd_intel_sst: DRAM base: 0xd1700000
-<3>[    3.900535] snd_intel_sst: SHIM base: 0xd1740000
-<3>[    3.900547] snd_intel_sst: Mailbox base: 0xd1744000
-<3>[    3.900720] snd_intel_sst: DDR base: 0x20000000
-<6>[    3.900720] snd_intel_sst: Enter: sst_audio_platform_init
-<6>[    3.900723] snd_intel_sst: audio:set_cht_platform_config
-<6>[    3.900958] snd_soc_sst_platform: sst_platform_probe is deferred
-<3>[    3.900977] snd_intel_sst: board_name:Cherry Trail CR
-<6>[    3.900979] snd_intel_sst: Registering machine device cht_es8316
-<3>[    3.901147] snd_intel_sst: Requesting FW fw_sst_22a8.bin now...
-<6>[    3.986899] snd_soc_sst_platform: sst_platform_probe is deferred
-<6>[    4.260819] snd_soc_sst_platform: sst_platform_probe is deferred
-<6>[    4.262978] snd_soc_sst_platform: sst_platform_probe is deferred
-<6>[    4.696961] snd_soc_sst_platform: sst_platform_probe is deferred
-<6>[    7.361346] snd_soc_sst_platform: sst_platform_probe is deferred
-<6>[    7.373893] snd_soc_sst_platform: sst_platform_probe is deferred
-<3>[    7.374140] cht_es8316 cht_es8316: ASoC: CPU DAI Headset-cpu-dai not registered
-<3>[    7.382393] snd_soc_register_card failed -517
-<6>[    7.387358] platform cht_es8316: Driver cht_es8316 requests probe deferral
-<6>[    7.387542] Cherrytrail Machine Driver cht_es8316 registerd
-<7>[   10.604513] ---es8316_probe--start--
-<4>[   10.695451] snd-soc-dummy snd-soc-dummy: ASoC: Failed to create platform debugfs directory
-<3>[   10.706037] chuangang:********************************* codec->name = es8316.1-0011
-<6>[   10.739210] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> Headset-cpu-dai mapping ok
-<6>[   10.739332] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> Deepbuffer-cpu-dai mapping ok
-<6>[   10.739410] compress asoc: snd-soc-dummy-dai <-> Compress-cpu-dai mapping ok
-<6>[   10.739530] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> Voip-cpu-dai mapping ok
-<6>[   10.739656] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> Lowlatency-cpu-dai mapping ok
-<6>[   10.740017] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> Probe-cpu-dai mapping ok
-<6>[   10.740253] cht_es8316 cht_es8316: ES8316 HiFi <-> ssp2-port mapping ok
-<6>[   10.740321] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> snd-soc-dummy-dai mapping ok
-<6>[   10.740388] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> snd-soc-dummy-dai mapping ok
-<3>[   10.740503] cht_es8316 cht_es8316: ASoC: Failed to add Headphone Switch: -16
-<7>[   10.748616] es8316_set_dai_fmt----649, fmt[4305]
-<7>[   10.750744] es8316 in slave mode
-<7>[   10.763965] es8316 1-0011: es8316_set_bias_level standby
-<6>[   10.792289] input: cherrytrailaud Headset Jack as /devices/platform/cht_es8316/sound/card1/input10
-<6>[   10.795340] snd_cht_mc_probe successful
-<6>[   11.568221] ES8316_GPIO_FLAG:26
+Thanks,
 
-Regards,
-Nerijus
+	tglx
+---
+diff --git a/arch/x86/kernel/apic/vector.c b/arch/x86/kernel/apic/vector.c
+index f3557a1eb562..02e6a3cc0d74 100644
+--- a/arch/x86/kernel/apic/vector.c
++++ b/arch/x86/kernel/apic/vector.c
+@@ -58,6 +58,9 @@ static struct apic_chip_data *apic_chip_data(struct irq_data *irq_data)
+ 	while (irq_data->parent_data)
+ 		irq_data = irq_data->parent_data;
+ 
++	if (irq_data->domain != x86_vector_domain)
++		return NULL;
++
+ 	return irq_data->chip_data;
+ }
+ 
+
+
+--8323329-1382550213-1513174015=:1885
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4
+IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+
+--8323329-1382550213-1513174015=:1885--
