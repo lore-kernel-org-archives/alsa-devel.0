@@ -1,75 +1,44 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v10 08/13] regmap: add SLIMbus support
-Date: Wed, 13 Dec 2017 16:06:11 +0000
-Message-ID: <20171213160611.GO6416@sirena.org.uk>
-References: <20171211234307.14465-1-srinivas.kandagatla@linaro.org>
- <20171211234307.14465-9-srinivas.kandagatla@linaro.org>
- <20171213092537.GB12631@kroah.com>
+From: "Andrew F. Davis" <afd@ti.com>
+Subject: Re: [PATCH 01/10] ASoC: tlv320aic32x4: Remove filename from header
+ and switch to SPDX
+Date: Wed, 13 Dec 2017 10:13:21 -0600
+Message-ID: <1ec05e88-b605-7ab4-ee5d-b3b73c562a0c@ti.com>
+References: <20171212224311.24045-1-afd@ti.com>
+ <20171213122824.GI6416@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1830032031747735616=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 531E4266B67
- for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 17:06:14 +0100 (CET)
-In-Reply-To: <20171213092537.GB12631@kroah.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Jonathan Corbet <corbet@lwn.net>, linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org, j.neuschaefer@gmx.net, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, srinivas.kandagatla@linaro.org, pombredanne@nexb.com, sdharia@codeaurora.org
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171213122824.GI6416@sirena.org.uk>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 12/13/2017 06:28 AM, Mark Brown wrote:
+> On Tue, Dec 12, 2017 at 04:43:02PM -0600, Andrew F. Davis wrote:
+> 
+>> @@ -1,21 +1,10 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>>  /*
+>> - * linux/sound/soc/codecs/tlv320aic32x4-i2c.c
+>> - *
+>>   * Copyright 2011 NW Digital Radio
+>>   *
+> 
+> Having the C++ comment next to a C comment is very ugly, if you're going
+> to do this convert the entire comment block to C++ style.
+> 
 
---===============1830032031747735616==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="7gLe/sNPhR777EPF"
-Content-Disposition: inline
+Any C++ comments in non-C99 code is ugly.. Or whatever C standard the
+kernel claims to use these days.
 
+My regex is a bit too rusty right now to handle searching for multi-line
+examples, do you know of anyone else converting the whole block to C++
+style?
 
---7gLe/sNPhR777EPF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-> On Mon, Dec 11, 2017 at 11:43:02PM +0000, srinivas.kandagatla@linaro.org wrote:
-
-> Mark, can I get an Ack for this patch so I can take it through my tree
-> with the other patches in this series?
-
-I'm actually not seeing a direct dependency here (there's a depends in
-place stopping the regmap code building if the Slimbus core isn't
-enabled) so if you want you can go ahead and apply the main stuff and I
-can apply the regmap change separately, it'll avoid Makefile/Kconfig
-conflicts anyway.
-
---7gLe/sNPhR777EPF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloxT/IACgkQJNaLcl1U
-h9D9MQf/QHSr2rl3OP0HU1ZguQ6AIupgZ8lI2DgNOwfPYZDJd9ufp1n7crUkYf0g
-wy62tiZ0/glrVyZ7Pckpob8rWJ7UfmFg86Lct5c4NYO2pT1dYYI1iYvnGcvnt5tD
-5lPBlAxuh/sETGj9gxKi2rdaaMnEP/pcWjJAcWIrENVNS5tz4bY+nQsGK80SVMOz
-m4qlNNJaVUPvT4tT+OdUWZ78nmkvpDqM3gqAZld931ujSYwfaUdxaJSkUGAxSjgh
-x/vaCAHPawqv2nvj42NZW0trhrohlVZ0bFgAvFOs7YGILA4/vzMxhMAiUqQgLydF
-+LB78AsRwHoIHwwmNyqafT7EvN01gQ==
-=TkHe
------END PGP SIGNATURE-----
-
---7gLe/sNPhR777EPF--
-
---===============1830032031747735616==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1830032031747735616==--
+Things will look a lot uglier if we do this inconsistently, if it is now
+the law of the land we do this for the first line, then we should have
+it be the only exception. Everywhere else remaining old style comments,
+IMHO.
