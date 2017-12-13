@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic32x4: Make driver selectable
-	in Kconfig" to the asoc tree
-Date: Wed, 13 Dec 2017 15:44:47 +0000
-Message-ID: <E1eP9DD-0002F8-Ih@debutante>
-References: <20171212224311.24045-10-afd@ti.com>
+Subject: Applied "ASoC: tlv320aic32x4: Use
+	snd_soc_update_bits() in aic32x4_set_dai_fmt()" to the asoc tree
+Date: Wed, 13 Dec 2017 15:44:59 +0000
+Message-ID: <E1eP9DP-0002GA-1Y@debutante>
+References: <20171212224311.24045-9-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A3E5267901
- for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 16:44:50 +0100 (CET)
-In-Reply-To: <20171212224311.24045-10-afd@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B6A95267901
+ for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 16:45:01 +0100 (CET)
+In-Reply-To: <20171212224311.24045-9-afd@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic32x4: Make driver selectable in Kconfig
+   ASoC: tlv320aic32x4: Use snd_soc_update_bits() in aic32x4_set_dai_fmt()
 
 has been applied to the asoc tree at
 
@@ -52,35 +52,78 @@ to this mail.
 Thanks,
 Mark
 
->From 9245f647fc7b82b88587b2d1de02fae66d2d314e Mon Sep 17 00:00:00 2001
+>From 60fb4be565c9c44f6999aaa9d18808f1ac49d6ef Mon Sep 17 00:00:00 2001
 From: "Andrew F. Davis" <afd@ti.com>
-Date: Tue, 12 Dec 2017 16:43:11 -0600
-Subject: [PATCH] ASoC: tlv320aic32x4: Make driver selectable in Kconfig
+Date: Tue, 12 Dec 2017 16:43:10 -0600
+Subject: [PATCH] ASoC: tlv320aic32x4: Use snd_soc_update_bits() in
+ aic32x4_set_dai_fmt()
+
+Make the code easier to read by using snd_soc_update_bits() over
+read/modify/write sequences.
 
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/tlv320aic32x4.c | 28 +++++++++++++---------------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index a42ddbc93f3d..7780dcf02f99 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -913,12 +913,12 @@ config SND_SOC_TLV320AIC32X4
- 	tristate
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index 63a52cdb7afe..fea019343c3b 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -614,16 +614,9 @@ static int aic32x4_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ static int aic32x4_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ {
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+-	u8 iface_reg_1;
+-	u8 iface_reg_2;
+-	u8 iface_reg_3;
+-
+-	iface_reg_1 = snd_soc_read(codec, AIC32X4_IFACE1);
+-	iface_reg_1 = iface_reg_1 & ~(3 << 6 | 3 << 2);
+-	iface_reg_2 = snd_soc_read(codec, AIC32X4_IFACE2);
+-	iface_reg_2 = 0;
+-	iface_reg_3 = snd_soc_read(codec, AIC32X4_IFACE3);
+-	iface_reg_3 = iface_reg_3 & ~(1 << 3);
++	u8 iface_reg_1 = 0;
++	u8 iface_reg_2 = 0;
++	u8 iface_reg_3 = 0;
  
- config SND_SOC_TLV320AIC32X4_I2C
--	tristate
-+	tristate "Texas Instruments TLV320AIC32x4 audio CODECs - I2C"
- 	depends on I2C
- 	select SND_SOC_TLV320AIC32X4
+ 	/* set master/slave audio interface */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+@@ -643,13 +636,13 @@ static int aic32x4_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	case SND_SOC_DAIFMT_DSP_A:
+ 		iface_reg_1 |= (AIC32X4_DSP_MODE <<
+ 				AIC32X4_IFACE1_DATATYPE_SHIFT);
+-		iface_reg_3 |= (1 << 3); /* invert bit clock */
++		iface_reg_3 |= AIC32X4_BCLKINV_MASK; /* invert bit clock */
+ 		iface_reg_2 = 0x01; /* add offset 1 */
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_B:
+ 		iface_reg_1 |= (AIC32X4_DSP_MODE <<
+ 				AIC32X4_IFACE1_DATATYPE_SHIFT);
+-		iface_reg_3 |= (1 << 3); /* invert bit clock */
++		iface_reg_3 |= AIC32X4_BCLKINV_MASK; /* invert bit clock */
+ 		break;
+ 	case SND_SOC_DAIFMT_RIGHT_J:
+ 		iface_reg_1 |= (AIC32X4_RIGHT_JUSTIFIED_MODE <<
+@@ -664,9 +657,14 @@ static int aic32x4_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 		return -EINVAL;
+ 	}
  
- config SND_SOC_TLV320AIC32X4_SPI
--	tristate
-+	tristate "Texas Instruments TLV320AIC32x4 audio CODECs - SPI"
- 	depends on SPI_MASTER
- 	select SND_SOC_TLV320AIC32X4
+-	snd_soc_write(codec, AIC32X4_IFACE1, iface_reg_1);
+-	snd_soc_write(codec, AIC32X4_IFACE2, iface_reg_2);
+-	snd_soc_write(codec, AIC32X4_IFACE3, iface_reg_3);
++	snd_soc_update_bits(codec, AIC32X4_IFACE1,
++			    AIC32X4_IFACE1_DATATYPE_MASK |
++			    AIC32X4_IFACE1_MASTER_MASK, iface_reg_1);
++	snd_soc_update_bits(codec, AIC32X4_IFACE2,
++			    AIC32X4_DATA_OFFSET_MASK, iface_reg_2);
++	snd_soc_update_bits(codec, AIC32X4_IFACE3,
++			    AIC32X4_BCLKINV_MASK, iface_reg_3);
++
+ 	return 0;
+ }
  
 -- 
 2.15.1
