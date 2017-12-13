@@ -1,24 +1,18 @@
-From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Subject: Re: [PATCH v5] ASoC: TSCS42xx: Add support for Tempo
- Semiconductor's TSCS42xx audio CODEC
-Date: Wed, 13 Dec 2017 00:20:39 -0600
-Message-ID: <20171213062037.ti2w2rharpjji2bf@localhost.localdomain>
-References: <20171211195403.3irxp7g3n326ub3g@localhost.localdomain>
- <20171212163254.GL16323@sirena.org.uk>
- <20171212213114.n5pcgy6q6m3qu5s4@localhost.localdomain>
- <20171212225134.mmwigvfgi7fbvgyz@localhost.localdomain>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: [PATCH v2 00/11] ASoC: fsl_ssi: Clean up - coding
+	style level
+Date: Tue, 12 Dec 2017 22:34:23 -0800
+Message-ID: <1513146874-25476-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f51.google.com (mail-oi0-f51.google.com
- [209.85.218.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 7556E26717B
- for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 07:20:51 +0100 (CET)
-Received: by mail-oi0-f51.google.com with SMTP id l6so863358oih.11
- for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 22:20:51 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20171212225134.mmwigvfgi7fbvgyz@localhost.localdomain>
+Received: from mail-pf0-f173.google.com (mail-pf0-f173.google.com
+ [209.85.192.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id C073726717B
+ for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 07:35:32 +0100 (CET)
+Received: by mail-pf0-f173.google.com with SMTP id p84so939663pfd.3
+ for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2017 22:35:32 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,87 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, lgirdwood@gmail.com, timur@tabi.org, caleb@crome.org, linux-kernel@vger.kernel.org, arnaud.mouiche@invoxia.com, lukma@denx.de, fabio.estevam@nxp.com, mail@maciej.szmigiero.name, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 12, 2017 at 04:51:35PM -0600, Steven Eckhoff wrote:
+==Changelog==
+v1->v2
+ * Dropped one patch to remove "struct device"
+ * Revised PATCH-03 "Refine all comments"
+ * Revised PATCH-05 "Refine indentations and wrappings"
+ * Rebased all other patches
+ * Added PATCH-10 "Rename i2smode to i2s_net"
+ * Added PATCH-11 "Define ternary macros to simplify code"
 
-> > > > +static int tscs42xx_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
-> > > > +{
-> > > > +	struct snd_soc_codec *codec = dai->codec;
-> > > > +	int ret;
-> > > > +
-> > > > +	if (mute)
-> > > > +		if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-> > > > +			ret = dac_mute(codec);
-> > > > +		else
-> > > > +			ret = adc_mute(codec);
-> > > > +	else
-> > > > +		if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-> > > > +			ret = dac_unmute(codec);
-> > > > +		else
-> > > > +			ret = adc_unmute(codec);
-> > > > +
-> > > > +	return ret;
-> > > > +}
-> > > 
-> > > All these mute functions also shut down the PLLs which since...
-> > > 
-> > This is a bit funky since it looks like if you unmuted the dac and then
-> > muted the adc that the PLLs would be powered off on the playback stream,
-> > but the logic in the chip is a bit funky in that it wont allow this unless
-> > the playback interface is also powered off.
-> > 
-> > This should definitely be fixed since it is confusing. The PLL
-> > powered up/down stuff will be removed from the mute functions in the
-> > next version.
-> > 
-> > What are your thoughts on turning the PLL into a DAPM widget and using
-> > the event callback to power up/down the PLLs? I have tested this and it
-> > seems to work fine.
-> > 
-> > > > +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-> > > > +	case SND_SOC_DAIFMT_CBM_CFM:
-> > > > +		ret = snd_soc_update_bits(codec, R_AIC1, RM_AIC1_MS,
-> > > > +				RV_AIC1_MS_MASTER);
-> > > > +		if (ret < 0)
-> > > > +			dev_err(codec->dev,
-> > > > +				"Failed to set codec DAI master (%d)\n", ret);
-> > > > +		else
-> > > > +			ret = 0;
-> > > > +		break;
-> > > > +	default:
-> > > 
-> > > ...we only support the CODEC being the clock master seems like it might
-> > > mean we stop clocking the DAI?  If that's the case it's better to just
-> > > not have the mute control and allow the user to just control these as
-> > > normal mutes.
-> > > 
-> > I am going to put slave mode support in, but I may need some time to
-> > test how it works.
-> > 
-> Okay I had to refresh my memory on why slave was not being supported.
-> Our slave mode needs the audio clocks to stay active to avoid pops. This
-> has something to do with how the charge pump is setup. In master mode
-> this is not an issue. I will keep the slave mode support out of the next
-> version.
-> 
-> Also I am not sure what you mean with the mute controls. Could you
-> elaborate more on this?
-> 
-Okay I belive I know what this was all about. 
+ # Detialed changes are described in each updated patch.
 
-Were you asking why the mute functions are powering up/down the PLLs?
+==Background==
+The fsl_ssi driver was designed for PPC originally and then it has
+been updated to support different modes for i.MX Series, including
+SDMA, I2S Master mode, AC97 and older i.MXs with FIQ, by different
+contributors for different use cases in different coding styles.
 
-The answer is that is was a vestige of the very first version of the
-driver where I was told I needed to power PLLs before unmuting and
-muting before powering them down, which is correct I just didn't have
-them in the correct callback. In the next version I have moved the
-powering of the PLLs into the event call back of a DAPM supply widget.
-If there is a better way I can implement that.
+Additionally, in order to fix/work-around hardware bugs and design
+flaws, the driver made a lot of compromise so now its program flow
+looks very complicated and it's getting hard to maintain or update.
 
-The previous comment on slave mode is still valid, so the next version
-will only suppor the codec in master mode.
+So I am going to clean up the driver on both coding style level and
+program flow level.
 
-Sorry for any confusion that I may have caused.
+==Introduction==
+This series of patches is the first set to clean up fsl_ssi driver
+in the coding style level. Any patch here is not supposed to change
+the program flow.
+
+==Verification==
+Theoretically, since these patches do not change program flow, they
+only need code review, build or sanity tests. I have done build and
+sanity tests on an i.MX6SoloX with WM8962 using imx_v6_v7_defconfig
+and playback/record tests in I2S Master/Slave modes.
+
+Nicolin Chen (11):
+  ASoC: fsl_ssi: Rename fsl_ssi_private to fsl_ssi
+  ASoC: fsl_ssi: Cache pdev->dev pointer
+  ASoC: fsl_ssi: Refine all comments
+  ASoC: fsl_ssi: Rename registers and fields macros
+  ASoC: fsl_ssi: Refine indentations and wrappings
+  ASoC: fsl_ssi: Refine printk outputs
+  ASoC: fsl_ssi: Rename cpu_dai parameter to dai
+  ASoC: fsl_ssi: Rename scr_val to scr
+  ASoC: fsl_ssi: Replace fsl_ssi_rxtx_reg_val with fsl_ssi_regvals
+  ASoC: fsl_ssi: Rename i2smode to i2s_net
+  ASoC: fsl_ssi: Define ternary macros to simplify code
+
+ sound/soc/fsl/fsl_ssi.c     | 1373 +++++++++++++++++++------------------------
+ sound/soc/fsl/fsl_ssi.h     |  427 ++++++++------
+ sound/soc/fsl/fsl_ssi_dbg.c |   59 +-
+ 3 files changed, 876 insertions(+), 983 deletions(-)
+
+-- 
+2.7.4
