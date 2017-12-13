@@ -1,44 +1,104 @@
-From: "Andrew F. Davis" <afd@ti.com>
-Subject: Re: [PATCH 01/10] ASoC: tlv320aic32x4: Remove filename from header
- and switch to SPDX
-Date: Wed, 13 Dec 2017 10:13:21 -0600
-Message-ID: <1ec05e88-b605-7ab4-ee5d-b3b73c562a0c@ti.com>
-References: <20171212224311.24045-1-afd@ti.com>
- <20171213122824.GI6416@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: ES8316
+Date: Wed, 13 Dec 2017 10:15:35 -0600
+Message-ID: <38ce754e-818d-03ab-0ed9-e20e848c5855@linux.intel.com>
+References: <Mahogany-0.68.0-8070-20171213-155300.01@nerijus.sat.lt>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171213122824.GI6416@sirena.org.uk>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id 489E2266B67
+ for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 17:15:27 +0100 (CET)
+In-Reply-To: <Mahogany-0.68.0-8070-20171213-155300.01@nerijus.sat.lt>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nerijus Baliunas <nerijus@users.sourceforge.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/13/2017 06:28 AM, Mark Brown wrote:
-> On Tue, Dec 12, 2017 at 04:43:02PM -0600, Andrew F. Davis wrote:
+On 12/13/17 7:53 AM, Nerijus Baliunas wrote:
+> Hello,
 > 
->> @@ -1,21 +1,10 @@
->> +// SPDX-License-Identifier: GPL-2.0
->>  /*
->> - * linux/sound/soc/codecs/tlv320aic32x4-i2c.c
->> - *
->>   * Copyright 2011 NW Digital Radio
->>   *
+> Onda obook 20 plus tablet, Fedora 27, kernel 4.13.16-302.fc27.x86_64:
 > 
-> Having the C++ comment next to a C comment is very ugly, if you're going
-> to do this convert the entire comment block to C++ style.
+> [    8.910172] bytcht_es8316 bytcht_es8316: ASoC: CODEC DAI ES8316 HiFi not registered
+> [    8.910306] bytcht_es8316 bytcht_es8316: snd_soc_register_card failed -517
 > 
+> kernel 4.14.3-300.fc27.x86_64:
+> 
+> [    8.561159] rt5645 i2c-10EC5645:00: Device with ID register 0xffff8d85 is not rt5645 or rt5650
+> [    9.344562] cht-bsw-rt5645 cht-bsw-rt5645: ASoC: CODEC DAI rt5645-aif1 not registered
+> [    9.344695] cht-bsw-rt5645 cht-bsw-rt5645: snd_soc_register_card failed -517
+> 
+> On both kernels snd_soc_sst_byt_cht_es8316 and snd_soc_es8316
+> modules are loaded automatically.
+> How to make audio work?
 
-Any C++ comments in non-C99 code is ugly.. Or whatever C standard the
-kernel claims to use these days.
+We have a known set of BIOS issues with this codec used in el-cheapo 
+platforms, see e.g. https://bugzilla.kernel.org/show_bug.cgi?id=197073
+I know that there are fixes from the android-x86 folks, but given that 
+they don't sign-off their code I am not even looking at their solution.
 
-My regex is a bit too rusty right now to handle searching for multi-line
-examples, do you know of anyone else converting the whole block to C++
-style?
-
-Things will look a lot uglier if we do this inconsistently, if it is now
-the law of the land we do this for the first line, then we should have
-it be the only exception. Everywhere else remaining old style comments,
-IMHO.
+You'd need to provide dmesg, alsa-info.sh results. and it's better to do 
+with in bugzilla that on this mailing list.
+> 
+> dmesg from Android 5.1 kernel 3.14.37-x86_64:
+> 
+> <3>[    3.900404] snd_intel_sst: sst_platform_get_resources_edk
+> <3>[    3.900442] snd_intel_sst: LPE base: 0xd1600000 size:0x200000
+> <3>[    3.900452] snd_intel_sst: IRAM base: 0xd16c0000
+> <3>[    3.900461] snd_intel_sst: DRAM base: 0xd1700000
+> <3>[    3.900535] snd_intel_sst: SHIM base: 0xd1740000
+> <3>[    3.900547] snd_intel_sst: Mailbox base: 0xd1744000
+> <3>[    3.900720] snd_intel_sst: DDR base: 0x20000000
+> <6>[    3.900720] snd_intel_sst: Enter: sst_audio_platform_init
+> <6>[    3.900723] snd_intel_sst: audio:set_cht_platform_config
+> <6>[    3.900958] snd_soc_sst_platform: sst_platform_probe is deferred
+> <3>[    3.900977] snd_intel_sst: board_name:Cherry Trail CR
+> <6>[    3.900979] snd_intel_sst: Registering machine device cht_es8316
+> <3>[    3.901147] snd_intel_sst: Requesting FW fw_sst_22a8.bin now...
+> <6>[    3.986899] snd_soc_sst_platform: sst_platform_probe is deferred
+> <6>[    4.260819] snd_soc_sst_platform: sst_platform_probe is deferred
+> <6>[    4.262978] snd_soc_sst_platform: sst_platform_probe is deferred
+> <6>[    4.696961] snd_soc_sst_platform: sst_platform_probe is deferred
+> <6>[    7.361346] snd_soc_sst_platform: sst_platform_probe is deferred
+> <6>[    7.373893] snd_soc_sst_platform: sst_platform_probe is deferred
+> <3>[    7.374140] cht_es8316 cht_es8316: ASoC: CPU DAI Headset-cpu-dai not registered
+> <3>[    7.382393] snd_soc_register_card failed -517
+> <6>[    7.387358] platform cht_es8316: Driver cht_es8316 requests probe deferral
+> <6>[    7.387542] Cherrytrail Machine Driver cht_es8316 registerd
+> <7>[   10.604513] ---es8316_probe--start--
+> <4>[   10.695451] snd-soc-dummy snd-soc-dummy: ASoC: Failed to create platform debugfs directory
+> <3>[   10.706037] chuangang:********************************* codec->name = es8316.1-0011
+> <6>[   10.739210] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> Headset-cpu-dai mapping ok
+> <6>[   10.739332] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> Deepbuffer-cpu-dai mapping ok
+> <6>[   10.739410] compress asoc: snd-soc-dummy-dai <-> Compress-cpu-dai mapping ok
+> <6>[   10.739530] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> Voip-cpu-dai mapping ok
+> <6>[   10.739656] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> Lowlatency-cpu-dai mapping ok
+> <6>[   10.740017] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> Probe-cpu-dai mapping ok
+> <6>[   10.740253] cht_es8316 cht_es8316: ES8316 HiFi <-> ssp2-port mapping ok
+> <6>[   10.740321] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> snd-soc-dummy-dai mapping ok
+> <6>[   10.740388] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> snd-soc-dummy-dai mapping ok
+> <3>[   10.740503] cht_es8316 cht_es8316: ASoC: Failed to add Headphone Switch: -16
+> <7>[   10.748616] es8316_set_dai_fmt----649, fmt[4305]
+> <7>[   10.750744] es8316 in slave mode
+> <7>[   10.763965] es8316 1-0011: es8316_set_bias_level standby
+> <6>[   10.792289] input: cherrytrailaud Headset Jack as /devices/platform/cht_es8316/sound/card1/input10
+> <6>[   10.795340] snd_cht_mc_probe successful
+> <6>[   11.568221] ES8316_GPIO_FLAG:26
+> 
+> Regards,
+> Nerijus
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
