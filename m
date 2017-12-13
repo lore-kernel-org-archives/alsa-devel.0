@@ -1,80 +1,95 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5] ASoC: TSCS42xx: Add support for Tempo
- Semiconductor's TSCS42xx audio CODEC
-Date: Wed, 13 Dec 2017 10:47:32 +0000
-Message-ID: <20171213104732.GB6416@sirena.org.uk>
-References: <20171211195403.3irxp7g3n326ub3g@localhost.localdomain>
- <20171212163254.GL16323@sirena.org.uk>
- <20171212213114.n5pcgy6q6m3qu5s4@localhost.localdomain>
- <20171212225134.mmwigvfgi7fbvgyz@localhost.localdomain>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] drm/i915: Remove unused IRQ chip data of
+ HDMI LPE audio
+Date: Wed, 13 Dec 2017 12:35:54 +0100 (CET)
+Message-ID: <alpine.DEB.2.20.1712131232090.1885@nanos>
+References: <20171208093323.2212-1-augustine.chen@intel.com>
+ <20171208114404.GN10981@intel.com> <alpine.DEB.2.20.1712082340400.2301@nanos>
+ <F6867404AABACB4D8EC371BF802A4B7C5790D206@fmsmsx101.amr.corp.intel.com>
+ <alpine.DEB.2.20.1712121804570.1794@nanos>
+ <F6867404AABACB4D8EC371BF802A4B7C5790F9A8@fmsmsx101.amr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4131350418191188549=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EEF1426717B
- for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 11:47:34 +0100 (CET)
-In-Reply-To: <20171212225134.mmwigvfgi7fbvgyz@localhost.localdomain>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/mixed; BOUNDARY="8323329-2098387782-1513164957=:1885"
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <F6867404AABACB4D8EC371BF802A4B7C5790F9A8@fmsmsx101.amr.corp.intel.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: "Anand, Jerome" <jerome.anand@intel.com>
+Cc: Juergen Gross <jgross@suse.com>, Dou Liyang <douly.fnst@cn.fujitsu.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Jiang Liu <jiang.liu@linux.intel.com>, "Chen,
+ Augustine" <augustine.chen@intel.com>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
---===============4131350418191188549==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="/NkBOFFp2J2Af1nK"
-Content-Disposition: inline
+--8323329-2098387782-1513164957=:1885
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8BIT
 
+On Wed, 13 Dec 2017, Anand, Jerome wrote:
+> > -----Original Message-----
+> > From: Thomas Gleixner [mailto:tglx@linutronix.de]
+> > Sent: Tuesday, December 12, 2017 10:37 PM
+> > To: Anand, Jerome <jerome.anand@intel.com>
+> > Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>; Chen, Augustine
+> > <augustine.chen@intel.com>; intel-gfx@lists.freedesktop.org; alsa-devel@alsa-
+> > project.org; Bossart, Pierre-louis <pierre-louis.bossart@intel.com>;
+> > tiwai@suse.de; Ingo Molnar <mingo@redhat.com>; H. Peter Anvin
+> > <hpa@zytor.com>; Jiang Liu <jiang.liu@linux.intel.com>; Juergen Gross
+> > <jgross@suse.com>; Dou Liyang <douly.fnst@cn.fujitsu.com>; linux-
+> > kernel@vger.kernel.org
+> > Subject: RE: [Intel-gfx] [PATCH] drm/i915: Remove unused IRQ chip data of
+> > HDMI LPE audio
 
---/NkBOFFp2J2Af1nK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Can you please fix your mail client NOT to replicate the full mail
+header. That's just annoying.
 
-On Tue, Dec 12, 2017 at 04:51:35PM -0600, Steven Eckhoff wrote:
+> > On Mon, 11 Dec 2017, Anand, Jerome wrote:
+> > > > On Fri, 8 Dec 2017, Ville Syrjälä wrote:
+> > > >
+> > > > > On Fri, Dec 08, 2017 at 05:33:23PM +0800, Augustine.Chen wrote:
+> > > > > > The chip data of HDMI LPE audio is set to drm_i915_private which
+> > > > > > is not consistent with the expectation by x86 APIC driver.
+> > > > >
+> > > > > Hmm. Why is the apic code looking at data for an irq chip it
+> > > > > hasn't created?
+> > > > >
+> > >
+> > > apic code expects an irq domain to be place as generic approach.
+> > 
+> > APIC code does not even see that interrupt at all. It's completely disconnected.
+> > 
+> 
+> That's the problem - APIC just converts the chip data to its internal
+> format and fails.
 
-> Also I am not sure what you mean with the mute controls. Could you
-> elaborate more on this?
+How does APIC code end up to touch that interrupt at all? Call stack please.
 
-The things the driver is doing automatically to mute the DACs and ADCs
-should be moved to user control if they're not suitable for doing
-automatically.
+And please enable CONFIG_GENERIC_IRQ_DEBUGFS and provide the output of
 
-Please delete unneeded context from mails when replying.  Doing this
-makes it much easier to find your reply in the message, helping ensure
-it won't be missed by people scrolling through the irrelevant quoted
-material.
+cat /sys/kernel/debug/irq/irqs/$N
 
---/NkBOFFp2J2Af1nK
-Content-Type: application/pgp-signature; name="signature.asc"
+where N is the interrupt number of that thing.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloxBUMACgkQJNaLcl1U
-h9CFfwf/fPgE+mYc3pXDA2yv/EI0ApwN36AWxr0ihx+z5A485MPFke8uyJabOsFR
-xMvc+6CJweCwa5cnideSw/RWsegLM5qLsftRu2X0gVpdd+DczmC0PcahqItMv6UN
-hmTrCWuvvo3hzxXl3JxBvyhkaUYlBSAVxBTQPGHg39pJmgWSxHSHJsfrByzydepx
-IFfCfhs8tBiTFBVZfZech2skH1sR6cVRoAJ9T20gHwDk2Bd4WDrmeXxot8vW02FU
-EaFU0CyyOlUgT2+1JrgmwpiDaZK43iRxuNvlbEGGe2TZ2N7TfWjynaLrXQi/AU7O
-pBTGsGJx2SbsJ/Ei7cmu5OAaWoZxEw==
-=IyZM
------END PGP SIGNATURE-----
-
---/NkBOFFp2J2Af1nK--
-
---===============4131350418191188549==
-Content-Type: text/plain; charset="us-ascii"
+	tglx
+--8323329-2098387782-1513164957=:1885
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Content-Disposition: inline
 
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4
+IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
 
---===============4131350418191188549==--
+--8323329-2098387782-1513164957=:1885--
