@@ -1,51 +1,163 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] dt-bindings: ASoC: rsnd: Add device tree support for r8a774[35]
-Date: Wed, 13 Dec 2017 13:34:40 +0100
-Message-ID: <CAMuHMdVY5PwEvZYBzC_f-W_n9ATST4_tfPBO4CakYo-93DvLtA@mail.gmail.com>
-References: <1513102155-47925-1-git-send-email-biju.das@bp.renesas.com> <20171213122052.GG6416@sirena.org.uk>
+From: "Chen.Liu" <chen.liu.opensource@gmail.com>
+Subject: [PATCH v2] ASOC: wm8960: Add multiple MCLK frequency
+	support
+Date: Wed, 13 Dec 2017 20:37:30 +0800
+Message-ID: <1513168650-102028-1-git-send-email-chen.liu.opensource@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <20171213122052.GG6416@sirena.org.uk>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Biju Das <biju.das@bp.renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, Chris Paterson <chris.paterson2@renesas.com>, Fabrizio Castro <fabrizio.castro@bp.renesas.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail5.wrs.com (mail5.windriver.com [192.103.53.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6188F266B67
+ for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 13:40:29 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: ckeepax@opensource.cirrus.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, shengjiu.wang@freescale.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+From: "Chen.Liu" <chen.liu.opensource@gmail.com>
 
-On Wed, Dec 13, 2017 at 1:20 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Tue, Dec 12, 2017 at 06:09:15PM +0000, Biju Das wrote:
->> Document r8a774[35] specific compatible strings. The Renesas RZ/G1[ME]
->> (r8a774[35]) sound modules are identical to the R-Car Gen2 family.
->> No driver change is needed as the fallback compatible string
->> "renesas,rcar_sound-gen2" activates the right code in the driver.
->
-> Please submit patches using subject lines reflecting the style for the
-> subsystem.  This makes it easier for people to identify relevant
-> patches.  Look at what existing commits in the area you're changing are
-> doing and make sure your subject lines visually resemble what they're
-> doing.
+Issue:
+ MCLK=24MHZ,SYSCLOCK=12.288MHZ.
+ When the 'wm8960_set_pll' function is called,the driver will
+ prompted "WM8960 PLL: unsupported N = 4" error message.
+ However,the value of PLLN should be 8 based on the table45(
+ PLL Frequency Examples) of the wm8960 chip manuanl.
 
-The confusing part here is that for most[*] subsystems, patches touching
-only DT bindings should have a "dt-bindings" prefix, while patches touching
-both DT bindings and driver code should have the drivers' subsystem prefix.
+Reason:
+ The intergrated PLL can be used to generate SYSCLK for the wm8960.
+ The pll_factors function in the wm8960.c file is mainly responsible
+ for setting the divider factor of the PLL divider with reference to
+ MCLK clock frequency to obtain the required SYSCLK clock frequency.
+ The configure diagram for this function can be seen below.
 
-[*] I think you're about the only maintainer who insists on patches touching
-only DT bindings having the drivers' subsystem prefix, which people tend to
-forget, if they're even aware of that rule...
+ MCLK-->[f/2]-->[R=f2/f1]-->[f/4]-->[f/N](1)-->SYSCLOCK
 
-Can we improve this?
+ The configuration of the PLL divider in above diagram is applicable to
+ MCLK clock frequency is less than or equal to 14.4MHZ.
+ examples:
+ (1)MCLK=12MHz, required clock = 12.288MHz.
+ R should be chosen to ensure 5 < PLLN < 13. There is a fixed divide by
+ 4 in the PLL and a selectable divide by N after the PLL which should
+ be set to divide by 1 to meet this requirement.
+ Enabling the divide by 1 sets the required f2 = 4 x 1 x 12.288MHz =
+ 49.152MHz.
 
-Thanks!
+ 	R = 49.152 / (12 / 2) = 8.192
+ 	PLLN = int R = 8
 
-Gr{oetje,eeting}s,
+ (2)MCLK=24MHz, required clock = 12.288MHz.
+ Enabling the divide by 1 sets the required f2 = 4 x 1 x 12.288MHZ =
+ 49.152MHZ.
 
-                        Geert
+ 	R = 49.152 / (24 / 2) = 4.096
+ 	PLLN = int R = 4
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+ And if the [f/N] reg is set to 2,then the required f2 = 4x2x12.288MHZ
+ = 98.304MHZ.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+ 	R = 98.304 / (24 / 2) = 8.192
+ 	PLLN = int R = 8
+
+ Because the [f/N] reg is fixed divide by 1,that's why driver prompted
+ error message.
+
+Solution:
+ The purpose of this patch is when the conditions(5 < PLLN < 13) is
+ false, set the register[f/N] to be 2, and the recalculate the divide
+ factor of the PLL divider.
+
+ MCLK-->[f/2]-->[R=f2/f1]-->[f/4]-->[f/N](2)-->SYSCLOCK
+
+Signed-off-by: Chen.Liu <chen.liu.opensource@gmail.com>
+---
+Changes in v2:
+- The calculation of the Ndiv is encapsulated in a loop.
+- Use 'unsupported' instead of 'unsupport'.
+---
+ sound/soc/codecs/wm8960.c | 36 +++++++++++++++++++++++++-----------
+ 1 file changed, 25 insertions(+), 11 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 997c446..83dd746 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -1036,28 +1036,38 @@ static bool is_pll_freq_available(unsigned int source, unsigned int target)
+  * to allow rounding later */
+ #define FIXED_PLL_SIZE ((1 << 24) * 10)
+ 
+-static int pll_factors(unsigned int source, unsigned int target,
++static int pll_factors(struct snd_soc_codec *codec,
++		unsigned int source, unsigned int target,
+ 		       struct _pll_div *pll_div)
+ {
+ 	unsigned long long Kpart;
+ 	unsigned int K, Ndiv, Nmod;
++	int unsupported = 0;
+ 
+ 	pr_debug("WM8960 PLL: setting %dHz->%dHz\n", source, target);
+ 
+ 	/* Scale up target to PLL operating frequency */
+ 	target *= 4;
+ 
+-	Ndiv = target / source;
+-	if (Ndiv < 6) {
+-		source >>= 1;
+-		pll_div->pre_div = 1;
++	while (1) {
+ 		Ndiv = target / source;
+-	} else
+-		pll_div->pre_div = 0;
++		if (Ndiv < 6) {
++			source >>= 1;
++			pll_div->pre_div = 1;
++			Ndiv = target / source;
++		} else
++			pll_div->pre_div = 0;
++
++		if ((Ndiv < 6) || (Ndiv > 12)) {
++			if (unsupported == 1) {
++				pr_err("WM8960 PLL: Unsupported N=%d\n", Ndiv);
++				return -EINVAL;
++			}
++		} else
++			break;
+ 
+-	if ((Ndiv < 6) || (Ndiv > 12)) {
+-		pr_err("WM8960 PLL: Unsupported N=%d\n", Ndiv);
+-		return -EINVAL;
++		target *= 2;
++		unsupported += 1;
+ 	}
+ 
+ 	pll_div->n = Ndiv;
+@@ -1077,6 +1087,10 @@ static int pll_factors(unsigned int source, unsigned int target,
+ 
+ 	pll_div->k = K;
+ 
++	if (unsupported)
++		snd_soc_update_bits(codec, WM8960_CLOCK1, 0x6,
++				WM8960_SYSCLK_DIV_2);
++
+ 	pr_debug("WM8960 PLL: N=%x K=%x pre_div=%d\n",
+ 		 pll_div->n, pll_div->k, pll_div->pre_div);
+ 
+@@ -1091,7 +1105,7 @@ static int wm8960_set_pll(struct snd_soc_codec *codec,
+ 	int ret;
+ 
+ 	if (freq_in && freq_out) {
+-		ret = pll_factors(freq_in, freq_out, &pll_div);
++		ret = pll_factors(codec, freq_in, freq_out, &pll_div);
+ 		if (ret != 0)
+ 			return ret;
+ 	}
+-- 
+1.8.3.1
