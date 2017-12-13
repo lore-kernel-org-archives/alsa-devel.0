@@ -1,24 +1,19 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v5 10/15] soundwire: Add sysfs for
- SoundWire DisCo properties
-Date: Wed, 13 Dec 2017 17:59:22 +0100
-Message-ID: <20171213165922.GA6501@kroah.com>
-References: <1512575231-4154-1-git-send-email-vinod.koul@intel.com>
- <1512575231-4154-11-git-send-email-vinod.koul@intel.com>
- <20171213091537.GA6269@kroah.com>
- <20171213095430.GO18649@localhost>
- <20171213162821.GB17132@kroah.com>
- <20171213165246.GQ18649@localhost>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 01/10] ASoC: tlv320aic32x4: Remove filename
+ from header and switch to SPDX
+Date: Wed, 13 Dec 2017 17:00:45 +0000
+Message-ID: <20171213170045.GQ6416@sirena.org.uk>
+References: <20171212224311.24045-1-afd@ti.com>
+ <20171213122824.GI6416@sirena.org.uk>
+ <1ec05e88-b605-7ab4-ee5d-b3b73c562a0c@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2097549283232358550=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.linuxfoundation.org (mail.linuxfoundation.org
- [140.211.169.12])
- by alsa0.perex.cz (Postfix) with ESMTP id B044126792A
- for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 17:59:20 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20171213165246.GQ18649@localhost>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id C033126792A
+ for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 18:00:47 +0100 (CET)
+In-Reply-To: <1ec05e88-b605-7ab4-ee5d-b3b73c562a0c@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,85 +23,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Sagar Dharia <sdharia@codeaurora.org>, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sudheer Papothi <spapothi@codeaurora.org>, alan@linux.intel.com
+To: "Andrew F. Davis" <afd@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 13, 2017 at 10:22:46PM +0530, Vinod Koul wrote:
-> On Wed, Dec 13, 2017 at 05:28:21PM +0100, Greg Kroah-Hartman wrote:
-> > On Wed, Dec 13, 2017 at 03:24:30PM +0530, Vinod Koul wrote:
-> > > On Wed, Dec 13, 2017 at 10:15:37AM +0100, Greg Kroah-Hartman wrote:
-> > > > On Wed, Dec 06, 2017 at 09:17:06PM +0530, Vinod Koul wrote:
-> > > > > It helps to read the properties for understanding and debugging
-> > > > > systems, so add sysfs files for SoundWire DisCo properties.
-> > > > > 
-> > > > > TODO: Add ABI files for sysfs
-> > > > 
-> > > > Is this TODO done?
-> > > 
-> > > Nope sorry not yet. But before this get merged will add
-> > > 
-> > > > > + * Base file is:
-> > > > > + *		properties
-> > > > > + *		|---- interface-revision
-> > > > > + *		|---- master-count
-> > > > > + *		|---- link-N
-> > > > > + *		      |---- clock-stop-modes
-> > > > > + *		      |---- max-clock-frequency
-> > > > > + *		      |---- clock-frequencies
-> > > > > + *		      |---- default-frame-rows
-> > > > > + *		      |---- default-frame-cols
-> > > > > + *		      |---- dynamic-frame-shape
-> > > > > + *		      |---- command-error-threshold
-> > > > > + */
-> > > > 
-> > > > Why nest them so deep?  Anyway, that's not really an issue I guess, it's
-> > > > your ABI, not mine :)
-> > > 
-> > > well it gives us a hierarchical view. We have N links...
-> > 
-> > That's fine, then make it a real 'struct device' if you want to have a
-> > reference counted object.  Tie it to your bus, and you are good to go.
-> > Don't use a raw kobject as that totaly breaks the device heirachy in the
-> > kernel as well as preventing any of these attributes from being accessed
-> > by userspace libraries (i.e. libudev.)
-> > 
-> > > > > +
-> > > > > +struct sdw_master_sysfs {
-> > > > > +	struct kobject kobj;
-> > > > > +	struct sdw_bus *bus;
-> > > > 
-> > > > Huh?  Why do you need to use kobjects?
-> > > > 
-> > > > When you switch from using a 'struct device' and hang a kobject off of
-> > > > it, that's a huge signal that something is wrong here.  That kobject
-> > > > will now no longer be part of the device "chain" in the system, uevents
-> > > > will get odd, and other strange things can happen.
-> > > > 
-> > > > Why can't you just use "normal" attributes attached to the device?  You
-> > > > shouldn't need a kobject here.  What am I missing?
-> > > 
-> > > Okay my understanding might be incorrect then. So we can have N links in
-> > > the system and each link would have a kobject for "link-N". Not sure how
-> > > device attributes would do link-N/clock-stop-modes and so on, if they can
-> > > let me know how and I will surely change that.
-> > 
-> > You can create a subdirectory for attributes quite easily.  If you don't
-> > want to make it a "full" object, and all you care about is the
-> > subdirectory, then do it that way.  Otherwise use a 'struct device'
-> > please.
-> 
-> Okay thanks this makes sense, yes all we do care about is creating
-> subdirectories and attributes under them. So in that sense we don't care
-> much about adding kobjects, it was means to the end.
-> 
-> So do you mind pointing an example, I though the way for that was kobjects
-> by looking at few examples I saw.
 
-Create a dynamic attribute group on the fly and initialize it and set
-the name to the name you want for the subdirectory.  I know it's done in
-the kernel in some places, dig around :)
+--===============2097549283232358550==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="V2tfspbppmK1TQo2"
+Content-Disposition: inline
 
-good luck!
 
-greg k-h
+--V2tfspbppmK1TQo2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Dec 13, 2017 at 10:13:21AM -0600, Andrew F. Davis wrote:
+
+> My regex is a bit too rusty right now to handle searching for multi-line
+> examples, do you know of anyone else converting the whole block to C++
+> style?
+
+> Things will look a lot uglier if we do this inconsistently, if it is now
+> the law of the land we do this for the first line, then we should have
+> it be the only exception. Everywhere else remaining old style comments,
+> IMHO.
+
+I think that's just the limited tooling people are using right now,
+we'll need to clean up the automatically generated output.  Unless
+people provide tools to enforce styles we're going to end up with
+divergence anyway as people start adding new files, they ought to be
+going in with SPDX headers.
+
+--V2tfspbppmK1TQo2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloxXLwACgkQJNaLcl1U
+h9CT/gf/SNJYZjs4U8PKduE/1GU8YaDYDPj/ioL9aMt7/sy5xKsZl7hMPUZnjGDr
+w66tld+P2z4G+lk+ZuOVec/i/hXvaxtdxk3jp9SV+BqUqS741ARTx9qr4Mv0GWsr
+VPZ5nUkufTABHrUWNU5FBUPmh1Uy9KVuKH42DuXwadMEVLWZxhR1ypnDIMvK7s3B
+f0dwujyDD2kNUYE5+CUNeQSXuWMKUuB6uxcTWBRz2edF7ARokhJ+Ho9OFG+7ymIv
+4v9C/7g7Euz+wI+EZMzVKc9fLIjchixTQVzINofe8IN77+YqEf4LhMdEFz/5bcFk
+1eoEOjjot/2PIF5o6Yud1ZT4NR5JWQ==
+=cisq
+-----END PGP SIGNATURE-----
+
+--V2tfspbppmK1TQo2--
+
+--===============2097549283232358550==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2097549283232358550==--
