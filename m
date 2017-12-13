@@ -1,38 +1,67 @@
-From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Subject: Re: [PATCH v5] ASoC: TSCS42xx: Add support for Tempo Semiconductor's
- TSCS42xx audio CODEC
-Date: Wed, 13 Dec 2017 09:40:00 -0600
-Message-ID: <20171213153958.6fgpujl33kzuszur@localhost.localdomain>
-References: <20171211195403.3irxp7g3n326ub3g@localhost.localdomain>
- <20171212163254.GL16323@sirena.org.uk>
- <20171212213114.n5pcgy6q6m3qu5s4@localhost.localdomain>
- <20171212225134.mmwigvfgi7fbvgyz@localhost.localdomain>
- <20171213104732.GB6416@sirena.org.uk>
+From: "Andrew F. Davis" <afd@ti.com>
+Subject: Re: [PATCH 01/10] ASoC: tlv320aic32x4: Remove filename
+ from header and switch to SPDX
+Date: Wed, 13 Dec 2017 09:44:17 -0600
+Message-ID: <3ff091f8-1366-ab38-dd7b-2633e6f3dd80@ti.com>
+References: <20171212224311.24045-1-afd@ti.com>
+ <1513131575.3036.67.camel@perches.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171213104732.GB6416@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
+ by alsa0.perex.cz (Postfix) with ESMTP id 31D8F266AE4
+ for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 16:44:39 +0100 (CET)
+In-Reply-To: <1513131575.3036.67.camel@perches.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Joe Perches <joe@perches.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 13, 2017 at 10:47:32AM +0000, Mark Brown wrote:
-> The things the driver is doing automatically to mute the DACs and ADCs
-> should be moved to user control if they're not suitable for doing
-> automatically.
+On 12/12/2017 08:19 PM, Joe Perches wrote:
+> On Tue, 2017-12-12 at 16:43 -0600, Andrew F. Davis wrote:
+>> The filename is often wrong after moves and adds nothing of value,
+>> lets drop it. While already here, switch to SPDX.
+> []
+>> diff --git a/sound/soc/codecs/tlv320aic32x4-i2c.c b/sound/soc/codecs/tlv320aic32x4-i2c.c
+> []
+>> @@ -1,21 +1,10 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>>  /*
+>> - * linux/sound/soc/codecs/tlv320aic32x4-i2c.c
+>> - *
+>>   * Copyright 2011 NW Digital Radio
+>>   *
+>>   * Author: Jeremy McDermond <nh6z@nh6z.net>
+>>   *
+>>   * Based on sound/soc/codecs/wm8974 and TI driver for kernel 2.6.27.
+>> - *
+>> - * This program is free software; you can redistribute it and/or modify
+>> - * it under the terms of the GNU General Public License as published by
+>> - * the Free Software Foundation; either version 2 of the License, or
+>> - * (at your option) any later version.
+>> - *
+>> - * This program is distributed in the hope that it will be useful,
+>> - * but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>> - * GNU General Public License for more details.
 > 
-The mutes can work normally without the PLL stuff. I have removed the PLL
-stuff from the next version and have added a DAPM widget to handle the
-PLL power up/down.
+> nack.  Note the "(at your option) any later version"
+> 
+> If you are going to update to spdx and remove the old license
+> verbiage, make sure you are adding the correct spdx tag.
+> 
 
-> Please delete unneeded context from mails when replying.  Doing this
-> makes it much easier to find your reply in the message, helping ensure
-> it won't be missed by people scrolling through the irrelevant quoted
-> material.
-I apologize again. I realized that I had done that after it was too
-late. 
+My bad, will fix.
 
-Thanks for the reviews and all the help. I believe this driver has improved
-through this process.
+By the way, do you like these spdx update patch? Or would you rather I
+drop this one and wait to let some script do it for the whole subsystem?
