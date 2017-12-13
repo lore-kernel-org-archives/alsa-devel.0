@@ -1,47 +1,51 @@
-From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
-        <mylene.josserand@free-electrons.com>
-Subject: [PATCH 2/2] ARM: dts: sun8i: Add ADC routing
-Date: Wed, 13 Dec 2017 13:34:08 +0100
-Message-ID: <20171213123408.10422-3-mylene.josserand@free-electrons.com>
-References: <20171213123408.10422-1-mylene.josserand@free-electrons.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] dt-bindings: ASoC: rsnd: Add device tree support for r8a774[35]
+Date: Wed, 13 Dec 2017 13:34:40 +0100
+Message-ID: <CAMuHMdVY5PwEvZYBzC_f-W_n9ATST4_tfPBO4CakYo-93DvLtA@mail.gmail.com>
+References: <1513102155-47925-1-git-send-email-biju.das@bp.renesas.com> <20171213122052.GG6416@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171213123408.10422-1-mylene.josserand@free-electrons.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, maxime.ripard@free-electrons.com, wens@csie.org, robh+dt@kernel.org, mark.rutland@arm.com, linux@armlinux.org.uk
-Cc: mylene.josserand@free-electrons.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, thomas.petazzoni@free-electrons.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <20171213122052.GG6416@sirena.org.uk>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Biju Das <biju.das@bp.renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, Chris Paterson <chris.paterson2@renesas.com>, Fabrizio Castro <fabrizio.castro@bp.renesas.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add the ADC route between the analog and the digital parts
-of sun8i A33. Configure the MIC1 to use MBIAS and MIC2 to use HBIAS.
+Hi Mark,
 
-Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
----
- arch/arm/boot/dts/sun8i-a33.dtsi | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+On Wed, Dec 13, 2017 at 1:20 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Tue, Dec 12, 2017 at 06:09:15PM +0000, Biju Das wrote:
+>> Document r8a774[35] specific compatible strings. The Renesas RZ/G1[ME]
+>> (r8a774[35]) sound modules are identical to the R-Car Gen2 family.
+>> No driver change is needed as the fallback compatible string
+>> "renesas,rcar_sound-gen2" activates the right code in the driver.
+>
+> Please submit patches using subject lines reflecting the style for the
+> subsystem.  This makes it easier for people to identify relevant
+> patches.  Look at what existing commits in the area you're changing are
+> doing and make sure your subject lines visually resemble what they're
+> doing.
 
-diff --git a/arch/arm/boot/dts/sun8i-a33.dtsi b/arch/arm/boot/dts/sun8i-a33.dtsi
-index 22660919bd08..1841eecd5993 100644
---- a/arch/arm/boot/dts/sun8i-a33.dtsi
-+++ b/arch/arm/boot/dts/sun8i-a33.dtsi
-@@ -191,7 +191,15 @@
- 		simple-audio-card,aux-devs = <&codec_analog>;
- 		simple-audio-card,routing =
- 			"Left DAC", "AIF1 Slot 0 Left",
--			"Right DAC", "AIF1 Slot 0 Right";
-+			"Right DAC", "AIF1 Slot 0 Right",
-+			"AIF1 Slot 0 Left ADC", "Left ADC",
-+			"AIF1 Slot 0 Right ADC", "Right ADC",
-+			"Left ADC", "ADC",
-+			"Right ADC", "ADC",
-+			"Mic",  "MBIAS",
-+			"Headset Mic", "HBIAS",
-+			"MIC1", "Mic",
-+			"MIC2", "Headset Mic";
- 		status = "disabled";
- 
- 		simple-audio-card,cpu {
--- 
-2.11.0
+The confusing part here is that for most[*] subsystems, patches touching
+only DT bindings should have a "dt-bindings" prefix, while patches touching
+both DT bindings and driver code should have the drivers' subsystem prefix.
+
+[*] I think you're about the only maintainer who insists on patches touching
+only DT bindings having the drivers' subsystem prefix, which people tend to
+forget, if they're even aware of that rule...
+
+Can we improve this?
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
