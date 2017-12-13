@@ -1,102 +1,54 @@
-From: Stephen Boyd <sboyd@codeaurora.org>
-Subject: Re: [alsa-devel] [PATCH v5 1/6] ASoC: Intel: Skylake: Add ssp clock
- driver
-Date: Wed, 13 Dec 2017 14:30:32 -0800
-Message-ID: <20171213223032.GO7997@codeaurora.org>
-References: <1512978390-8848-1-git-send-email-sriramx.periyasamy@intel.com>
- <1512978390-8848-2-git-send-email-sriramx.periyasamy@intel.com>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH v2 05/11] ASoC: fsl_ssi: Refine indentations and wrappings
+Date: Wed, 13 Dec 2017 23:30:31 +0100
+Message-ID: <bf6f6d92-ae85-e61f-b027-95189c06916d@maciej.szmigiero.name>
+References: <1513146874-25476-1-git-send-email-nicoleotsuka@gmail.com>
+ <1513146874-25476-6-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-clk-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1512978390-8848-2-git-send-email-sriramx.periyasamy@intel.com>
-Sender: linux-clk-owner@vger.kernel.org
-To: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Cc: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>, mturquette@baylibre.com, linux-clk@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1513146874-25476-6-git-send-email-nicoleotsuka@gmail.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: broonie@kernel.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, fabio.estevam@nxp.com, timur@tabi.org, caleb@crome.org, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-On 12/11, Sriram Periyasamy wrote:
-> +
-> +static int skl_clk_set_rate(struct clk_hw *hw, unsigned long rate,
-> +					unsigned long parent_rate)
-> +{
-> +	struct skl_clk *clkdev = to_skl_clk(hw);
-> +	struct skl_clk_rate_cfg_table *rcfg;
-> +	int clk_type;
-> +
-> +	if (!clkdev)
-> +		return -ENODEV;
+On 13.12.2017 07:34, Nicolin Chen wrote:
+> This patch just simply unifies the coding style.
+> 
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> ---
+> 
+> Changelog
+> v1->v2
+>  * Added two missing indentation changes
+>  * Removed two extra blank lines.
+> 
+>  sound/soc/fsl/fsl_ssi.c     | 239 +++++++++++++++++++++-----------------------
+>  sound/soc/fsl/fsl_ssi.h     |   2 +-
+>  sound/soc/fsl/fsl_ssi_dbg.c |   3 +-
+>  3 files changed, 118 insertions(+), 126 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> index 8b5407d..9a3db08 100644
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+(..)
+> @@ -916,12 +917,11 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+>  	case SND_SOC_DAIFMT_DSP_A:
+>  		/* Data on rising edge of bclk, frame high, 1clk before data */
+>  		strcr |= SSI_STCR_TFSL | SSI_STCR_TSCKP |
+> -			SSI_STCR_TXBIT0 | SSI_STCR_TEFS;
+> +			 SSI_STCR_TXBIT0 | SSI_STCR_TEFS;
+>  		break;
+>  	case SND_SOC_DAIFMT_DSP_B:
+>  		/* Data on rising edge of bclk, frame high */
+> -		strcr |= SSI_STCR_TFSL | SSI_STCR_TSCKP |
+> -			SSI_STCR_TXBIT0;
+> +		strcr |= SSI_STCR_TFSL | SSI_STCR_TSCKP |  SSI_STCR_TXBIT0;
 
-These checks don't make sense. container_of() on clk_hw
-structures returning NULL wouldn't happen.
+It looks like an extra space got here			 ^.
 
-> +
-> +	if (!rate)
-> +		return -EINVAL;
-> +
-> +	if (__clk_is_enabled(hw->clk) && (clkdev->rate != rate))
-
-Any chance you can directly read the hardware instead of going
-through the framework to find out if the clk is enabled? Seems
-circular to do it this way.
-
-> +		return -EBUSY;
-> +
-> +	rcfg = skl_get_rate_cfg(clkdev->pdata->ssp_clks[clkdev->id].rate_cfg,
-> +							rate);
-> +	if (!rcfg)
-> +		return -EINVAL;
-> +
-> +	clk_type = skl_get_clk_type(clkdev->id);
-> +	if (clk_type < 0)
-> +		return clk_type;
-> +
-> +	skl_fill_clk_ipc(rcfg, clk_type);
-> +	clkdev->rate = rate;
-> +
-> +	return 0;
-> +}
-> +
-> +static unsigned long skl_clk_recalc_rate(struct clk_hw *hw,
-> +				unsigned long parent_rate)
-> +{
-> +	struct skl_clk *clkdev = to_skl_clk(hw);
-> +	struct skl_clk_rate_cfg_table *rcfg;
-> +	int clk_type;
-> +
-> +	if (!clkdev)
-> +		return 0;
-> +
-> +	if (clkdev->rate)
-> +		return clkdev->rate;
-
-Why is the rate being cached? We should always be able to
-calculate the rate based on parent_rate that gets passed to this
-function?
-
-> +
-> +	rcfg = skl_get_rate_cfg(clkdev->pdata->ssp_clks[clkdev->id].rate_cfg,
-> +					parent_rate);
-> +	if (!rcfg)
-> +		return 0;
-> +
-> +	clk_type = skl_get_clk_type(clkdev->id);
-> +	if (clk_type < 0)
-> +		return 0;
-> +
-> +	skl_fill_clk_ipc(rcfg, clk_type);
-> +	clkdev->rate = rcfg->rate;
-> +
-> +	return clkdev->rate;
-> +}
-> +
-> +/* Not supported by clk driver. Implemented to satisfy clk fw */
-> +long skl_clk_round_rate(struct clk_hw *hw, unsigned long rate,
-> +				unsigned long *parent_rate)
-> +{
-> +	return rate;
-> +}
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Maciej
