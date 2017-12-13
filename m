@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic32x4: Use correct shift
-	definition for DATALEN bits" to the asoc tree
-Date: Wed, 13 Dec 2017 15:45:31 +0000
-Message-ID: <E1eP9Dv-0002KN-Vi@debutante>
-References: <20171212224311.24045-5-afd@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B36CF267901
- for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 16:45:34 +0100 (CET)
-In-Reply-To: <20171212224311.24045-5-afd@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: "Andrew F ., Davis" <afd@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Applied "ASoC: rsnd: Add device tree support for r8a774[35]" to the asoc tree
+Date: Wed, 13 Dec 2017 15:46:19 +0000
+Message-ID: <E1eP9Eh-0002PT-V8@debutante>
+References: <1513102155-47925-1-git-send-email-biju.das@bp.renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <1513102155-47925-1-git-send-email-biju.das@bp.renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Biju Das <biju.das@bp.renesas.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Fabrizio Castro <fabrizio.castro@bp.renesas.com>, Chris Paterson <chris.paterson2@renesas.com>, Magnus Damm <magnus.damm@gmail.com>, alsa-devel@alsa-project.org, linux-renesas-soc@vger.kernel.org, Simon Horman <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic32x4: Use correct shift definition for DATALEN bits
+   ASoC: rsnd: Add device tree support for r8a774[35]
 
 has been applied to the asoc tree at
 
@@ -52,51 +37,49 @@ to this mail.
 Thanks,
 Mark
 
->From 77bdb58795d86262e96ba37524489ba0969de253 Mon Sep 17 00:00:00 2001
-From: "Andrew F. Davis" <afd@ti.com>
-Date: Tue, 12 Dec 2017 16:43:06 -0600
-Subject: [PATCH] ASoC: tlv320aic32x4: Use correct shift definition for DATALEN
- bits
+>From b0a858a47a7889757dbc9ac9872685955eaa5cc0 Mon Sep 17 00:00:00 2001
+From: Biju Das <biju.das@bp.renesas.com>
+Date: Tue, 12 Dec 2017 18:09:15 +0000
+Subject: [PATCH] ASoC: rsnd: Add device tree support for r8a774[35]
 
-Setting the DATALEN bit field requires shifting our value by 4. Setting
-the OSR value of the PLL divider also requires a shift by 4. Currently
-the code abuses this fact and uses the shift for the divider register to
-set the data-length register. Fix this here by using the definition meant
-for this register.
+Document r8a774[35] specific compatible strings. The Renesas RZ/G1[ME]
+(r8a774[35]) sound modules are identical to the R-Car Gen2 family.
+No driver change is needed as the fallback compatible string
+"renesas,rcar_sound-gen2" activates the right code in the driver.
 
-Signed-off-by: Andrew F. Davis <afd@ti.com>
+Signed-off-by: Biju Das <biju.das@bp.renesas.com>
+Reviewed-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 8f9719e6cdfd..9f643199e1ba 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -738,15 +738,20 @@ static int aic32x4_hw_params(struct snd_pcm_substream *substream,
- 	data = data & ~(3 << 4);
- 	switch (params_width(params)) {
- 	case 16:
-+		data |= (AIC32X4_WORD_LEN_16BITS <<
-+			 AIC32X4_IFACE1_DATALEN_SHIFT);
- 		break;
- 	case 20:
--		data |= (AIC32X4_WORD_LEN_20BITS << AIC32X4_DOSRMSB_SHIFT);
-+		data |= (AIC32X4_WORD_LEN_20BITS <<
-+			 AIC32X4_IFACE1_DATALEN_SHIFT);
- 		break;
- 	case 24:
--		data |= (AIC32X4_WORD_LEN_24BITS << AIC32X4_DOSRMSB_SHIFT);
-+		data |= (AIC32X4_WORD_LEN_24BITS <<
-+			 AIC32X4_IFACE1_DATALEN_SHIFT);
- 		break;
- 	case 32:
--		data |= (AIC32X4_WORD_LEN_32BITS << AIC32X4_DOSRMSB_SHIFT);
-+		data |= (AIC32X4_WORD_LEN_32BITS <<
-+			 AIC32X4_IFACE1_DATALEN_SHIFT);
- 		break;
- 	}
- 	snd_soc_write(codec, AIC32X4_IFACE1, data);
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index 085bec364caf..b3c28bdcc268 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -4,7 +4,7 @@ Renesas R-Car sound
+ * Modules
+ =============================================
+ 
+-Renesas R-Car sound is constructed from below modules
++Renesas R-Car and RZ/G sound is constructed from below modules
+ (for Gen2 or later)
+ 
+  SCU		: Sampling Rate Converter Unit
+@@ -334,9 +334,11 @@ Required properties:
+ 
+ - compatible			: "renesas,rcar_sound-<soctype>", fallbacks
+ 				  "renesas,rcar_sound-gen1" if generation1, and
+-				  "renesas,rcar_sound-gen2" if generation2
++				  "renesas,rcar_sound-gen2" if generation2 (or RZ/G1)
+ 				  "renesas,rcar_sound-gen3" if generation3
+ 				  Examples with soctypes are:
++				    - "renesas,rcar_sound-r8a7743" (RZ/G1M)
++				    - "renesas,rcar_sound-r8a7745" (RZ/G1E)
+ 				    - "renesas,rcar_sound-r8a7778" (R-Car M1A)
+ 				    - "renesas,rcar_sound-r8a7779" (R-Car H1)
+ 				    - "renesas,rcar_sound-r8a7790" (R-Car H2)
 -- 
 2.15.1
