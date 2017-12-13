@@ -1,43 +1,93 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v10 08/13] regmap: add SLIMbus support
-Date: Wed, 13 Dec 2017 10:25:37 +0100
-Message-ID: <20171213092537.GB12631@kroah.com>
-References: <20171211234307.14465-1-srinivas.kandagatla@linaro.org>
- <20171211234307.14465-9-srinivas.kandagatla@linaro.org>
+From: "Chen, Augustine" <augustine.chen@intel.com>
+Subject: Re: [PATCH] drm/i915: Remove unused IRQ chip data of
+ HDMI LPE audio
+Date: Wed, 13 Dec 2017 09:25:43 +0000
+Message-ID: <9A1A7991592FAD49BCF9F28D9CF9FE3121AB7F0F@PGSMSX105.gar.corp.intel.com>
+References: <20171208093323.2212-1-augustine.chen@intel.com>
+ <20171208114404.GN10981@intel.com>
+ <alpine.DEB.2.20.1712082340400.2301@nanos>
+ <F6867404AABACB4D8EC371BF802A4B7C5790D206@fmsmsx101.amr.corp.intel.com>
+ <20171211132023.GO10981@intel.com>	<s5hzi6pl7p3.wl-tiwai@suse.de>
+ <9A1A7991592FAD49BCF9F28D9CF9FE3121AB7B0D@PGSMSX105.gar.corp.intel.com>
+ <s5hd13k9t5o.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171211234307.14465-9-srinivas.kandagatla@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: srinivas.kandagatla@linaro.org
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, sdharia@codeaurora.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jonathan Corbet <corbet@lwn.net>, pombredanne@nexb.com, j.neuschaefer@gmx.net, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5hd13k9t5o.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Juergen Gross <jgross@suse.com>, Dou Liyang <douly.fnst@cn.fujitsu.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter
+ Anvin" <hpa@zytor.com>, Thomas Gleixner <tglx@linutronix.de>, Jiang Liu <jiang.liu@linux.intel.com>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 11, 2017 at 11:43:02PM +0000, srinivas.kandagatla@linaro.org wrote:
-> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> 
-> This patch adds support to read/write SLIMbus value elements.
-> Currently it only supports byte read/write. Adding this support in
-> regmap would give codec drivers more flexibility when there are more
-> than 2 control interfaces like SLIMbus, i2c.
-> 
-> Without this patch each codec driver has to directly call SLIMbus value
-> element apis, and this could would get messy once we want to add i2c
-> interface to it.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  drivers/base/regmap/Kconfig          |  4 ++
->  drivers/base/regmap/Makefile         |  1 +
->  drivers/base/regmap/regmap-slimbus.c | 80 ++++++++++++++++++++++++++++++++++++
->  include/linux/regmap.h               | 18 ++++++++
->  4 files changed, 103 insertions(+)
->  create mode 100644 drivers/base/regmap/regmap-slimbus.c
-
-Mark, can I get an Ack for this patch so I can take it through my tree
-with the other patches in this series?
-
-thanks,
-
-greg k-h
+Cgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogVGFrYXNoaSBJd2FpIFttYWls
+dG86dGl3YWlAc3VzZS5kZV0KPiBTZW50OiBUdWVzZGF5LCBEZWNlbWJlciAxMiwgMjAxNyA1OjQ1
+IFBNCj4gVG86IENoZW4sIEF1Z3VzdGluZSA8YXVndXN0aW5lLmNoZW5AaW50ZWwuY29tPgo+IENj
+OiBWaWxsZSBTeXJqw6Rsw6QgPHZpbGxlLnN5cmphbGFAbGludXguaW50ZWwuY29tPjsgQW5hbmQs
+IEplcm9tZQo+IDxqZXJvbWUuYW5hbmRAaW50ZWwuY29tPjsgVGhvbWFzIEdsZWl4bmVyIDx0Z2x4
+QGxpbnV0cm9uaXguZGU+OyBpbnRlbC0KPiBnZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnOyBhbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IEJvc3NhcnQsIFBpZXJyZS1sb3Vpcwo+IDxwaWVycmUt
+bG91aXMuYm9zc2FydEBpbnRlbC5jb20+OyBJbmdvIE1vbG5hciA8bWluZ29AcmVkaGF0LmNvbT47
+IEguIFBldGVyCj4gQW52aW4gPGhwYUB6eXRvci5jb20+OyBKaWFuZyBMaXUgPGppYW5nLmxpdUBs
+aW51eC5pbnRlbC5jb20+OyBKdWVyZ2VuIEdyb3NzCj4gPGpncm9zc0BzdXNlLmNvbT47IERvdSBM
+aXlhbmcgPGRvdWx5LmZuc3RAY24uZnVqaXRzdS5jb20+OyBsaW51eC0KPiBrZXJuZWxAdmdlci5r
+ZXJuZWwub3JnCj4gU3ViamVjdDogUmU6IFtJbnRlbC1nZnhdIFtQQVRDSF0gZHJtL2k5MTU6IFJl
+bW92ZSB1bnVzZWQgSVJRIGNoaXAgZGF0YSBvZgo+IEhETUkgTFBFIGF1ZGlvCj4gCj4gT24gVHVl
+LCAxMiBEZWMgMjAxNyAxMDoyNjowOCArMDEwMCwKPiBDaGVuLCBBdWd1c3RpbmUgd3JvdGU6Cj4g
+PiA+ID4gPiA+ID4gVGhhdCAqbG9va3MqIG1vcmUgY29ycmVjdCB0byBtZSBiYXNlZCBvbiBhIGN1
+cnNvcnkgZ2xhbmNlIGF0Cj4gPiA+ID4gPiA+ID4gdGhlCj4gPiA+ID4gPiA+ID4geDg2IGNvZGUs
+IGJ1dCBJIGRpZG4ndCB0cmF3bCB2ZXJ5IGRlZXBseS4KPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4g
+VGhlIHg4NiBjb3JlIGNhcmVzIG5vdCBhdCBhbGwgYWJvdXQgaW50ZXJydXB0IGNoaXBzIHdoaWNo
+IGFyZQo+ID4gPiA+ID4gPiBjcmVhdGVkIGluIGEgZHJpdmVyIGFuZCBub3QgY29ubmVjdGVkIHRv
+IGFuIGFjdHVhbAo+ID4gPiA+ID4gPiBhcGljL2lvYXBpYy9tc2kgaW50ZXJydXB0LiBUaGlzIGlu
+dGVycnVwdCBjaGlwIGlzIGl0cyBvd24gdGhpbmcgYXMgd2UgaGF2ZQo+IG90aGVycyBpbiBHUElP
+IGV0Yy4KPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gPiA+IEluIHRoZSBjYXNlIG9mIG5vdCBlbmFi
+bGluZyBDT05GSUdfQ1BVTUFTS19PRkZTVEFDSywgdGhpcwo+ID4gPiA+ID4gPiA+ID4gd291bGQg
+Y2F1c2Uga2VybmVsIHBhbmljIHdoaWxlIGRvaW5nIENQVSBob3RwbHVnLgo+ID4gPiA+ID4gPgo+
+ID4gPiA+ID4gPiBBbmQgd2h5IHNvPyBTdXJlbHkgbm90IGJlY2F1c2UgeW91IHNldCBpcnFfY2hp
+cF9kYXRhLiBUaGF0J3MKPiA+ID4gPiA+ID4gcmVhbGx5IG5vIGV4cGxhbmF0aW9uIGF0IGFsbC4K
+PiA+ID4gPiA+ID4KPiA+ID4gPiA+Cj4gPiA+ID4gPiBJZGVhbGx5LCBJIGZlZWwgdGhlcmUgbmVl
+ZHMgdG8gYmUgYW4gaXJxIGRvbWFpbiBmb3IgbWFwcGluZyB0aGUKPiA+ID4gPiA+IGlycSBudW1i
+ZXJzCj4gPiA+IHdpdGggaHdpcnEuCj4gPiA+ID4gPiBJdCBpcyBub3QgY3JlYXRlZCBhcyBwYXJ0
+IG9mIHRoZSBoZG1pIGxwZSBhdWRpbyBicmlkZ2UuCj4gPiA+ID4gPiBTaW5jZSB0aGUgbG9naWMg
+dG8gbWFzay91bm1hc2sgbHBlIGF1ZGlvIGludGVycnVwdHMgaXMgcmVtb3ZlZCwKPiA+ID4gPiA+
+IHRoZXJlIGlzIG5vIG5lZWQgb2YgdGhlIENoaXAgZGF0YSBvciBjcmVhdGlvbiBvZiB0aGUgZG9t
+YWluIG5vdy4KPiA+ID4gPgo+ID4gPiA+IFRoZXJlIGlzIG5vIG5lZWQgcmlnaHQgbm93LiBCdXQg
+dGhlcmUgbWlnaHQgYmUgYSBuZWVkIGluIHRoZSBmdXR1cmUuCj4gPiA+ID4gTFBFIGF1ZGlvIGlz
+bid0IGV2ZW4gdGhlIG9ubHkgcGllY2Ugb2YgaGFyZHdhcmUgd2hvc2UgaXJxIGdvZXMKPiA+ID4g
+PiB0aHJvdWdoIHRoZSBpOTE1IGRpc3BsYXkgZW5naW5lICh0aGVyZSdzIGFsc28gdGhlIElTUCBh
+bmQgVkVEKS4gU28KPiA+ID4gPiBJIHdvdWxkIG11Y2ggcHJlZmVyIGEgcHJvcGVyIHNvbHV0aW9u
+IGluc3RlYWQgb2Ygc3dlZXBpbmcgdGhlCj4gPiA+ID4gcHJvYmxlbSB1bmRlciB0aGUgcnVnLgo+
+ID4gPgo+ID4gPiBJTU8sIHRoZSBwcmltYXJ5IHF1ZXN0aW9uIGlzIHdoZXRoZXIgdGhlIHVzYWdl
+IG9mIGlycSBjaGlwIHdpdGhvdXQKPiA+ID4gaXJxIGRvbWFpbiBpcyB2YWxpZCBvciBub3QuICBJ
+ZiBhbiBpcnEgZG9tYWluIGlzIG1hbmRhdG9yeSwgdGhhdCdzCj4gPiA+IHRoZSB0aGluZyB0byBi
+ZSBmaXhlZCBpbiBpOTE1IHNpZGUuCj4gPiBJbiB0ZXJtcyBvZiBmdW5jdGlvbmFsaXR5LCB0aGUg
+aW50ZXJydXB0IGFuZCBoZG1pIGF1ZGlvIHdvcmsgZmluZQo+ID4gd2l0aG91dCBpcnEgZG9tYWlu
+IGFjY29yZGluZyB0byB0aGUgdmFsaWRhdGlvbi4KPiAKPiBTdXJlLCBvdGhlcndpc2UgdGhlIHBh
+dGNoIG5ldmVyIGxhbmRlZCB0byBtYWlubGluZSA6KQo+IAo+ID4gQW5kIGJlc2lkZXMsIHRoZXJl
+Cj4gPiBhcmUgb3RoZXIgZHJpdmVycyB3aXRoIHNpbWlsYXIgaW1wbGVtZW50YXRpb24gd2hpY2gg
+ZG9lc24ndCBzZXQgY2hpcAo+ID4gZGF0YSBhdCBhbGwuCj4gCj4gWWVzLCBkcm9wcGluZyB0aGUg
+Y2hpcCBkYXRhIHNob3VsZCBiZSBPSyBpbiB0aGUgZHJpdmVyLCBidXQgdGhlIG9ubHkgcXVlc3Rp
+b24gaXMKPiB3aGV0aGVyIGl0IGlzIHRoZSByaWdodCBmaXguCj4gCj4gRGlkIHlvdSBjaGVjayB3
+aGV0aGVyIHRoZSBpc3N1ZSBoYXBwZW5zIHdpdGggNC4xNS1yYywgdG9vPyAgVGhpcyB3YXMgbmV2
+ZXIKPiBhbnN3ZXJlZCBpbiBidWd6aWxsYS4gIElmIEkgdW5kZXJzdGFuZCBjb3JyZWN0bHksIHRo
+ZSBjb2RlIHRyaWdnZXJpbmcgT29wcyBoYXMKPiBiZWVuIGNoYW5nZWQgbGFyZ2VseSB0aGVyZSBh
+bmQgaXQgc2hvdWxkIHBydW5lIHRoZSBub24tbGVnYWN5IGlycXMuCj4gCkkgdGVzdGVkIGl0IHdp
+dGggNC4xNS1SQzEgdG9kYXkgYW5kIGNvdWxkbid0IG9ic2VydmVkIHRoZSBzYW1lIHN5bXB0b20u
+IEFuZCB5ZXMsIHRoZSBjb2RlIHJ1bm5pbmcgaW50byBpbnZhbGlkIHBvaW50ZXIgd2FzIG1vZGlm
+aWVkIGRyYW1hdGljYWxseS4KRmVlbHMgbGlrZSBpdCdzIGF2YWlsYWJsZSB0byBrZWVwIHRoaXMg
+ZHJpdmVyIGludGFjdC4KCgo+IAo+IFRha2FzaGkKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4v
+bGlzdGluZm8vaW50ZWwtZ2Z4Cg==
