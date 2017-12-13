@@ -1,128 +1,262 @@
-From: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
-Subject: Re: [PATCH 3/5] media: i2c: Add TDA1997x HDMI receiver driver
-Date: Wed, 13 Dec 2017 15:33:34 -0800
-Message-ID: <CAJ+vNU1MBqK2ZkDhu7HM-EfNmgceXtah9srygzKuW-ajq9nhtA@mail.gmail.com>
-References: <1510253136-14153-1-git-send-email-tharvey@gateworks.com>
- <1510253136-14153-4-git-send-email-tharvey@gateworks.com> <20171115155204.yhqjocdm32qunllx@rob-hp-laptop>
- <CAJ+vNU0NuNjZePQBaxWHT4HtYGxZJ_DUSvuHvb6wAFDGA_xX9A@mail.gmail.com>
- <20171116043059.azaqjfbjeo4rlaon@rob-hp-laptop> <f1d607e2-3d21-ac05-c815-a5f28b860b1e@xs4all.nl>
+From: Tim Harvey <tharvey@gateworks.com>
+Subject: Re: [PATCH v4 3/5] media: i2c: Add TDA1997x HDMI
+	receiver driver
+Date: Wed, 13 Dec 2017 15:35:58 -0800
+Message-ID: <CAJ+vNU1L5MkP0DuiwjKXY75id3Brzq+9M9DfcZOXbvzVgaUdXQ@mail.gmail.com>
+References: <1511990397-27647-1-git-send-email-tharvey@gateworks.com>
+ <1511990397-27647-4-git-send-email-tharvey@gateworks.com>
+ <1a1be5d7-caed-6cba-c97a-dbb70e119fa3@xs4all.nl>
+ <CAJ+vNU0NKZizung9+1zsd1RZBrDbBgk+A8mVJ76bQysjCUoaKw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <f1d607e2-3d21-ac05-c815-a5f28b860b1e-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
-Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-media <linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Steve Longerbeam <slongerbeam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Hans Verkuil <hansverk-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr0-f181.google.com (mail-wr0-f181.google.com
+ [209.85.128.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97423266D45
+ for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 00:36:00 +0100 (CET)
+Received: by mail-wr0-f181.google.com with SMTP id z34so3605274wrz.10
+ for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 15:36:00 -0800 (PST)
+In-Reply-To: <CAJ+vNU0NKZizung9+1zsd1RZBrDbBgk+A8mVJ76bQysjCUoaKw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>, Philipp Zabel <p.zabel@pengutronix.de>, Steve Longerbeam <slongerbeam@gmail.com>, Shawn Guo <shawnguo@kernel.org>, linux-media <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 12, 2017 at 4:18 AM, Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org> wrote:
-> Hi Tim,
->
-> Sorry for the delay, I needed to find some time to think about this.
->
-> On 11/16/17 05:30, Rob Herring wrote:
->> On Wed, Nov 15, 2017 at 10:31:14AM -0800, Tim Harvey wrote:
->>> On Wed, Nov 15, 2017 at 7:52 AM, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
->>>> On Thu, Nov 09, 2017 at 10:45:34AM -0800, Tim Harvey wrote:
->>>>> Add support for the TDA1997x HDMI receivers.
->>>>>
->>>>> Cc: Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
->>>>> Signed-off-by: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
->>>>> ---
->>>>> v3:
->>>>>  - use V4L2_DV_BT_FRAME_WIDTH/HEIGHT macros
->>>>>  - fixed missing break
->>>>>  - use only hdmi_infoframe_log for infoframe logging
->>>>>  - simplify tda1997x_s_stream error handling
->>>>>  - add delayed work proc to handle hotplug enable/disable
->>>>>  - fix set_edid (disable HPD before writing, enable after)
->>>>>  - remove enabling edid by default
->>>>>  - initialize timings
->>>>>  - take quant range into account in colorspace conversion
->>>>>  - remove vendor/product tracking (we provide this in log_status via infoframes)
->>>>>  - add v4l_controls
->>>>>  - add more detail to log_status
->>>>>  - calculate vhref generator timings
->>>>>  - timing detection fixes (rounding errors, hswidth errors)
->>>>>  - rename configure_input/configure_conv functions
->>>>>
->>>>> v2:
->>>>>  - implement dv timings enum/cap
->>>>>  - remove deprecated g_mbus_config op
->>>>>  - fix dv_query_timings
->>>>>  - add EDID get/set handling
->>>>>  - remove max-pixel-rate support
->>>>>  - add audio codec DAI support
->>>>>  - change audio bindings
->>>>> ---
->>>>>  drivers/media/i2c/Kconfig            |    9 +
->>>>>  drivers/media/i2c/Makefile           |    1 +
->>>>>  drivers/media/i2c/tda1997x.c         | 3485 ++++++++++++++++++++++++++++++++++
->>>>>  include/dt-bindings/media/tda1997x.h |   78 +
->>>>
->>>> This belongs with the binding documentation patch.
->>>>
->>>
->>> Rob,
->>>
->>> Thanks - missed that. I will move it for v4.
->>>
->>> Regarding your previous comment to the v2 series:
->>>> The rest of the binding looks fine, but I have some reservations about
->>>> this. I think this should be common probably. There's been a few
->>>> bindings for display recently that deal with the interface format. Maybe
->>>> some vendor property is needed here to map a standard interface format
->>>> back to pin configuration.
->>>
->>> I take it this is not an 'Ack' for the bindings?
->>>
->>> Which did you feel should be made common? I admit I was surprised
->>> there wasn't a common binding for audio bus format (i2s|spdif) but if
->>> you were referring to the video data that would probably be much more
->>> complicated.
+On Mon, Dec 4, 2017 at 9:30 AM, Tim Harvey <tharvey@gateworks.com> wrote:
+> On Mon, Dec 4, 2017 at 4:50 AM, Hans Verkuil <hverkuil@xs4all.nl> wrote:
+>> Hi Tim,
 >>
->> The video data. Either you have to try to come up with some way to map
->> color components to signals/pins (and even cycles) or you just enumerate
->> the formats and keep adding to them when new ones appear. There's h/w
->> that allows the former, but in the end you have to interoperate, so
->> enumerating the formats is probably enough.
+>> Found a few more small issues. After that's fixed and you have the Ack for the
+>> bindings this can be merged I think.
+>
+> Hans,
+>
+> Thanks. Can you weigh in on the bindings? Rob was hoping for some
+> discussion on making some generic bus format types for video and I'm
+> not familiar with the other video encoders/decoders enough to know if
+> there is enough commonality.
+>
 >>
->>> I was hoping one of the media/driver maintainers would respond to your
->>> comment with thoughts as I'm not familiar with a very wide variety of
->>> receivers.
+>> On 11/29/2017 10:19 PM, Tim Harvey wrote:
+> <snip>
+>>> +
+>>> +/* parse an infoframe and do some sanity checks on it */
+>>> +static unsigned int
+>>> +tda1997x_parse_infoframe(struct tda1997x_state *state, u16 addr)
+>>> +{
+>>> +     struct v4l2_subdev *sd = &state->sd;
+>>> +     union hdmi_infoframe frame;
+>>> +     u8 buffer[40];
+>>> +     u8 reg;
+>>> +     int len, err;
+>>> +
+>>> +     /* read data */
+>>> +     len = io_readn(sd, addr, sizeof(buffer), buffer);
+>>> +     err = hdmi_infoframe_unpack(&frame, buffer);
+>>> +     if (err) {
+>>> +             v4l_err(state->client,
+>>> +                     "failed parsing %d byte infoframe: 0x%04x/0x%02x\n",
+>>> +                     len, addr, buffer[0]);
+>>> +             return err;
+>>> +     }
+>>> +     hdmi_infoframe_log(KERN_INFO, &state->client->dev, &frame);
+>>> +     switch (frame.any.type) {
+>>> +     /* Audio InfoFrame: see HDMI spec 8.2.2 */
+>>> +     case HDMI_INFOFRAME_TYPE_AUDIO:
+>>> +             /* sample rate */
+>>> +             switch (frame.audio.sample_frequency) {
+>>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_32000:
+>>> +                     state->audio_samplerate = 32000;
+>>> +                     break;
+>>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_44100:
+>>> +                     state->audio_samplerate = 44100;
+>>> +                     break;
+>>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_48000:
+>>> +                     state->audio_samplerate = 48000;
+>>> +                     break;
+>>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_88200:
+>>> +                     state->audio_samplerate = 88200;
+>>> +                     break;
+>>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_96000:
+>>> +                     state->audio_samplerate = 96000;
+>>> +                     break;
+>>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_176400:
+>>> +                     state->audio_samplerate = 176400;
+>>> +                     break;
+>>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_192000:
+>>> +                     state->audio_samplerate = 192000;
+>>> +                     break;
+>>> +             default:
+>>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_STREAM:
+>>> +                     break;
+>>> +             }
+>>> +
+>>> +             /* sample size */
+>>> +             switch (frame.audio.sample_size) {
+>>> +             case HDMI_AUDIO_SAMPLE_SIZE_16:
+>>> +                     state->audio_samplesize = 16;
+>>> +                     break;
+>>> +             case HDMI_AUDIO_SAMPLE_SIZE_20:
+>>> +                     state->audio_samplesize = 20;
+>>> +                     break;
+>>> +             case HDMI_AUDIO_SAMPLE_SIZE_24:
+>>> +                     state->audio_samplesize = 24;
+>>> +                     break;
+>>> +             case HDMI_AUDIO_SAMPLE_SIZE_STREAM:
+>>> +             default:
+>>> +                     break;
+>>> +             }
+>>> +
+>>> +             /* Channel Count */
+>>> +             state->audio_channels = frame.audio.channels;
+>>> +             if (frame.audio.channel_allocation &&
+>>> +                 frame.audio.channel_allocation != state->audio_ch_alloc) {
+>>> +                     /* use the channel assignment from the infoframe */
+>>> +                     state->audio_ch_alloc = frame.audio.channel_allocation;
+>>> +                     tda1997x_configure_audout(sd, state->audio_ch_alloc);
+>>> +                     /* reset the audio FIFO */
+>>> +                     tda1997x_hdmi_info_reset(sd, RESET_AUDIO, false);
+>>> +             }
+>>> +             break;
+>>> +
+>>> +     /* Auxiliary Video information (AVI) InfoFrame: see HDMI spec 8.2.1 */
+>>> +     case HDMI_INFOFRAME_TYPE_AVI:
+>>> +             state->colorspace = frame.avi.colorspace;
+>>> +             state->colorimetry = frame.avi.colorimetry;
+>>> +             state->content = frame.avi.content_type;
+>>> +             /* Quantization Range */
+>>> +             switch (state->rgb_quantization_range) {
+>>> +             case V4L2_DV_RGB_RANGE_AUTO:
+>>> +                     state->range = frame.avi.quantization_range;
+>>> +                     break;
+>>> +             case V4L2_DV_RGB_RANGE_LIMITED:
+>>> +                     state->range = HDMI_QUANTIZATION_RANGE_LIMITED;
+>>> +                     break;
+>>> +             case V4L2_DV_RGB_RANGE_FULL:
+>>> +                     state->range = HDMI_QUANTIZATION_RANGE_FULL;
+>>> +                     break;
+>>> +             }
+>>> +             if (state->range == HDMI_QUANTIZATION_RANGE_DEFAULT) {
+>>> +                     if (frame.avi.video_code <= 1)
+>>> +                             state->range = HDMI_QUANTIZATION_RANGE_FULL;
+>>> +                     else
+>>> +                             state->range = HDMI_QUANTIZATION_RANGE_LIMITED;
+>>> +             }
+>>> +             /*
+>>> +              * If colorimetry not specified, conversion depends on res type:
+>>> +              *  - SDTV: ITU601 for SD (480/576/240/288 line resolution)
+>>> +              *  - HDTV: ITU709 for HD (720/1080 line resolution)
+>>> +              *  -   PC: sRGB
+>>> +              * see HDMI specification section 6.7
+>>> +              */
+>>> +             if ((state->colorspace == HDMI_COLORSPACE_YUV422 ||
+>>> +                  state->colorspace == HDMI_COLORSPACE_YUV444) &&
+>>> +                 (state->colorimetry == HDMI_COLORIMETRY_EXTENDED ||
+>>> +                  state->colorimetry == HDMI_COLORIMETRY_NONE)) {
+>>> +                     if (is_sd(state->timings.bt.height))
+>>> +                             state->colorimetry = HDMI_COLORIMETRY_ITU_601;
+>>> +                     else if (is_hd(state->timings.bt.height))
+>>> +                             state->colorimetry = HDMI_COLORIMETRY_ITU_709;
+>>> +                     else
+>>> +                             state->colorimetry = HDMI_COLORIMETRY_NONE;
+>>> +             }
+>>> +             v4l_dbg(1, debug, state->client,
+>>> +                     "colorspace=%d colorimetry=%d range=%d content=%d\n",
+>>> +                     state->colorspace, state->colorimetry, state->range,
+>>> +                     state->content);
+>>> +
+>>> +             /* configure upsampler: 0=bypass 1=repeatchroma 2=interpolate */
+>>> +             reg = io_read(sd, REG_PIX_REPEAT);
+>>> +             reg &= ~PIX_REPEAT_MASK_UP_SEL;
+>>> +             if (state->colorspace == HDMI_COLORSPACE_YUV422)
+>>> +                     reg |= (PIX_REPEAT_CHROMA << PIX_REPEAT_SHIFT);
+>>> +             io_write(sd, REG_PIX_REPEAT, reg);
+>>> +
+>>> +             /* ConfigurePixelRepeater: repeat n-times each pixel */
+>>> +             reg = io_read(sd, REG_PIX_REPEAT);
+>>> +             reg &= ~PIX_REPEAT_MASK_REP;
+>>> +             reg |= frame.avi.pixel_repeat;
+>>> +             io_write(sd, REG_PIX_REPEAT, reg);
+>>> +
+>>> +             /* configure the receiver with the new colorspace */
+>>> +             tda1997x_configure_csc(sd);
+>>> +             break;
+>>> +     default:
+>>> +             break;
+>>> +     }
+>>> +     return 0;
+>>> +}
+>>> +
+> <snip>
+>>> +
+>>> +static int tda1997x_fill_format(struct tda1997x_state *state,
+>>> +                             struct v4l2_mbus_framefmt *format)
+>>> +{
+>>> +     const struct v4l2_bt_timings *bt;
+>>> +
+>>> +     v4l_dbg(1, debug, state->client, "%s\n", __func__);
+>>> +
+>>> +     if (!state->detected_timings)
+>>> +             return -EINVAL;
+>>> +     bt = &state->detected_timings->bt;
+>>> +     memset(format, 0, sizeof(*format));
+>>> +
+>>> +     format->width = bt->width;
+>>> +     format->height = bt->height;
+>>> +     format->field = V4L2_FIELD_NONE;
+>>> +     format->colorspace = V4L2_COLORSPACE_SRGB;
+>>> +     if (bt->flags & V4L2_DV_FL_IS_CE_VIDEO)
+>>> +             format->colorspace = (bt->height <= 576) ?
+>>> +                     V4L2_COLORSPACE_SMPTE170M : V4L2_COLORSPACE_REC709;
 >>
->> I am hoping, too.
+>> Close. What is missing is a check of the AVI InfoFrame: if it has an explicit
+>> colorimetry then use that. E.g. check for HDMI_COLORIMETRY_ITU_601 or ITU_709
+>> and set the colorspace accordingly. Otherwise fall back to what you have here.
+>>
 >
-> I don't think it is right to store this in the DT. How you map the output pins
-> is a driver thing. So when you are requested to enumerate the mediabus formats
-> (include/uapi/linux/media-bus-format.h) you support, you do so based on the
-> capabilities of the hardware, and when a format is requested you program the
-> hardware accordingly.
+> This function currently matches adv7604/adv7842 where they don't look
+> at colorimetry (but I do see a TODO in adv748x_hdmi_fill_format to
+> look at this) so I don't have an example and may not understand.
 >
-> The device tree should describe the physical characteristics like the number
-> of pins that are hooked up (i.e. are there 24, 30 or 36 pins connected).
+> Do you mean:
 >
-> These vidout-portcfg mappings do not appear to describe physical properties
-> but really register settings.
+>        format->colorspace = V4L2_COLORSPACE_SRGB;
+>        if (bt->flags & V4L2_DV_FL_IS_CE_VIDEO) {
+>                 if ((state->colorimetry == HDMI_COLORIMETRY_ITU_601) ||
+>                     (state->colorimetry == HDMI_COLORIMETRY_ITU_709))
+>                         format->colorspace = state->colorspace;
+>                 else
+>                         format->colorspace = is_sd(bt->height) ?
+>                                 V4L2_COLORSPACE_SMPTE170M :
+> V4L2_COLORSPACE_REC709;
+>         }
+>
+> Also during more testing I've found that I'm not capturing interlaced
+> properly and know I at least need:
+>
+> -        format->field = V4L2_FIELD_NONE;
+> +        format->field = (bt->interlaced) ?
+> +                V4L2_FIELD_ALTERNATE : V4L2_FIELD_NONE;
+>
+> I'm still not quite capturing interlaced yet but I think its an issue
+> of setting up the media pipeline improperly.
+>
 
 Hans,
 
-They are register settings that define which bits on the internal data
-bus are mapped to which pins on the package. Internally these parts
-have a 36bit video data bus but externally the tda19971 only has 24
-pins and even then perhaps only 8 are hooked up if using BT656 and the
-registers also define 'which 8' as it could have been connected to the
-upper or lower part of the bus. So while the bindings from
-video-interfaces.txt provide bus-width and details of the sync
-signals, additional hardware-specific interconnect details such as how
-the video bits are shifted/mixed on the output bus are needed here.
-This is why I feel vidout-portcfg should be a dt property vs something
-like a module param.
+Did you see this question above? I'm not quite understanding what you
+want me to do for filling in colorspace and don't see any examples in
+the existing drivers that appear to look at colorimetry for this.
 
 Regards,
 
 Tim
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
