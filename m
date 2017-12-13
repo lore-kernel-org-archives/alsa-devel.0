@@ -1,17 +1,22 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: ES8316
-Date: Wed, 13 Dec 2017 10:15:35 -0600
-Message-ID: <38ce754e-818d-03ab-0ed9-e20e848c5855@linux.intel.com>
-References: <Mahogany-0.68.0-8070-20171213-155300.01@nerijus.sat.lt>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v5 10/15] soundwire: Add sysfs for
+ SoundWire DisCo properties
+Date: Wed, 13 Dec 2017 17:28:21 +0100
+Message-ID: <20171213162821.GB17132@kroah.com>
+References: <1512575231-4154-1-git-send-email-vinod.koul@intel.com>
+ <1512575231-4154-11-git-send-email-vinod.koul@intel.com>
+ <20171213091537.GA6269@kroah.com>
+ <20171213095430.GO18649@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 489E2266B67
- for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 17:15:27 +0100 (CET)
-In-Reply-To: <Mahogany-0.68.0-8070-20171213-155300.01@nerijus.sat.lt>
-Content-Language: en-US
+Received: from mail.linuxfoundation.org (mail.linuxfoundation.org
+ [140.211.169.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id C98D3266B67
+ for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 17:28:18 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20171213095430.GO18649@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,84 +26,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nerijus Baliunas <nerijus@users.sourceforge.net>, alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 12/13/17 7:53 AM, Nerijus Baliunas wrote:
-> Hello,
+On Wed, Dec 13, 2017 at 03:24:30PM +0530, Vinod Koul wrote:
+> On Wed, Dec 13, 2017 at 10:15:37AM +0100, Greg Kroah-Hartman wrote:
+> > On Wed, Dec 06, 2017 at 09:17:06PM +0530, Vinod Koul wrote:
+> > > It helps to read the properties for understanding and debugging
+> > > systems, so add sysfs files for SoundWire DisCo properties.
+> > > 
+> > > TODO: Add ABI files for sysfs
+> > 
+> > Is this TODO done?
 > 
-> Onda obook 20 plus tablet, Fedora 27, kernel 4.13.16-302.fc27.x86_64:
+> Nope sorry not yet. But before this get merged will add
 > 
-> [    8.910172] bytcht_es8316 bytcht_es8316: ASoC: CODEC DAI ES8316 HiFi not registered
-> [    8.910306] bytcht_es8316 bytcht_es8316: snd_soc_register_card failed -517
+> > > + * Base file is:
+> > > + *		properties
+> > > + *		|---- interface-revision
+> > > + *		|---- master-count
+> > > + *		|---- link-N
+> > > + *		      |---- clock-stop-modes
+> > > + *		      |---- max-clock-frequency
+> > > + *		      |---- clock-frequencies
+> > > + *		      |---- default-frame-rows
+> > > + *		      |---- default-frame-cols
+> > > + *		      |---- dynamic-frame-shape
+> > > + *		      |---- command-error-threshold
+> > > + */
+> > 
+> > Why nest them so deep?  Anyway, that's not really an issue I guess, it's
+> > your ABI, not mine :)
 > 
-> kernel 4.14.3-300.fc27.x86_64:
-> 
-> [    8.561159] rt5645 i2c-10EC5645:00: Device with ID register 0xffff8d85 is not rt5645 or rt5650
-> [    9.344562] cht-bsw-rt5645 cht-bsw-rt5645: ASoC: CODEC DAI rt5645-aif1 not registered
-> [    9.344695] cht-bsw-rt5645 cht-bsw-rt5645: snd_soc_register_card failed -517
-> 
-> On both kernels snd_soc_sst_byt_cht_es8316 and snd_soc_es8316
-> modules are loaded automatically.
-> How to make audio work?
+> well it gives us a hierarchical view. We have N links...
 
-We have a known set of BIOS issues with this codec used in el-cheapo 
-platforms, see e.g. https://bugzilla.kernel.org/show_bug.cgi?id=197073
-I know that there are fixes from the android-x86 folks, but given that 
-they don't sign-off their code I am not even looking at their solution.
+That's fine, then make it a real 'struct device' if you want to have a
+reference counted object.  Tie it to your bus, and you are good to go.
+Don't use a raw kobject as that totaly breaks the device heirachy in the
+kernel as well as preventing any of these attributes from being accessed
+by userspace libraries (i.e. libudev.)
 
-You'd need to provide dmesg, alsa-info.sh results. and it's better to do 
-with in bugzilla that on this mailing list.
+> > > +
+> > > +struct sdw_master_sysfs {
+> > > +	struct kobject kobj;
+> > > +	struct sdw_bus *bus;
+> > 
+> > Huh?  Why do you need to use kobjects?
+> > 
+> > When you switch from using a 'struct device' and hang a kobject off of
+> > it, that's a huge signal that something is wrong here.  That kobject
+> > will now no longer be part of the device "chain" in the system, uevents
+> > will get odd, and other strange things can happen.
+> > 
+> > Why can't you just use "normal" attributes attached to the device?  You
+> > shouldn't need a kobject here.  What am I missing?
 > 
-> dmesg from Android 5.1 kernel 3.14.37-x86_64:
-> 
-> <3>[    3.900404] snd_intel_sst: sst_platform_get_resources_edk
-> <3>[    3.900442] snd_intel_sst: LPE base: 0xd1600000 size:0x200000
-> <3>[    3.900452] snd_intel_sst: IRAM base: 0xd16c0000
-> <3>[    3.900461] snd_intel_sst: DRAM base: 0xd1700000
-> <3>[    3.900535] snd_intel_sst: SHIM base: 0xd1740000
-> <3>[    3.900547] snd_intel_sst: Mailbox base: 0xd1744000
-> <3>[    3.900720] snd_intel_sst: DDR base: 0x20000000
-> <6>[    3.900720] snd_intel_sst: Enter: sst_audio_platform_init
-> <6>[    3.900723] snd_intel_sst: audio:set_cht_platform_config
-> <6>[    3.900958] snd_soc_sst_platform: sst_platform_probe is deferred
-> <3>[    3.900977] snd_intel_sst: board_name:Cherry Trail CR
-> <6>[    3.900979] snd_intel_sst: Registering machine device cht_es8316
-> <3>[    3.901147] snd_intel_sst: Requesting FW fw_sst_22a8.bin now...
-> <6>[    3.986899] snd_soc_sst_platform: sst_platform_probe is deferred
-> <6>[    4.260819] snd_soc_sst_platform: sst_platform_probe is deferred
-> <6>[    4.262978] snd_soc_sst_platform: sst_platform_probe is deferred
-> <6>[    4.696961] snd_soc_sst_platform: sst_platform_probe is deferred
-> <6>[    7.361346] snd_soc_sst_platform: sst_platform_probe is deferred
-> <6>[    7.373893] snd_soc_sst_platform: sst_platform_probe is deferred
-> <3>[    7.374140] cht_es8316 cht_es8316: ASoC: CPU DAI Headset-cpu-dai not registered
-> <3>[    7.382393] snd_soc_register_card failed -517
-> <6>[    7.387358] platform cht_es8316: Driver cht_es8316 requests probe deferral
-> <6>[    7.387542] Cherrytrail Machine Driver cht_es8316 registerd
-> <7>[   10.604513] ---es8316_probe--start--
-> <4>[   10.695451] snd-soc-dummy snd-soc-dummy: ASoC: Failed to create platform debugfs directory
-> <3>[   10.706037] chuangang:********************************* codec->name = es8316.1-0011
-> <6>[   10.739210] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> Headset-cpu-dai mapping ok
-> <6>[   10.739332] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> Deepbuffer-cpu-dai mapping ok
-> <6>[   10.739410] compress asoc: snd-soc-dummy-dai <-> Compress-cpu-dai mapping ok
-> <6>[   10.739530] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> Voip-cpu-dai mapping ok
-> <6>[   10.739656] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> Lowlatency-cpu-dai mapping ok
-> <6>[   10.740017] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> Probe-cpu-dai mapping ok
-> <6>[   10.740253] cht_es8316 cht_es8316: ES8316 HiFi <-> ssp2-port mapping ok
-> <6>[   10.740321] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> snd-soc-dummy-dai mapping ok
-> <6>[   10.740388] cht_es8316 cht_es8316: snd-soc-dummy-dai <-> snd-soc-dummy-dai mapping ok
-> <3>[   10.740503] cht_es8316 cht_es8316: ASoC: Failed to add Headphone Switch: -16
-> <7>[   10.748616] es8316_set_dai_fmt----649, fmt[4305]
-> <7>[   10.750744] es8316 in slave mode
-> <7>[   10.763965] es8316 1-0011: es8316_set_bias_level standby
-> <6>[   10.792289] input: cherrytrailaud Headset Jack as /devices/platform/cht_es8316/sound/card1/input10
-> <6>[   10.795340] snd_cht_mc_probe successful
-> <6>[   11.568221] ES8316_GPIO_FLAG:26
-> 
-> Regards,
-> Nerijus
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+> Okay my understanding might be incorrect then. So we can have N links in
+> the system and each link would have a kobject for "link-N". Not sure how
+> device attributes would do link-N/clock-stop-modes and so on, if they can
+> let me know how and I will surely change that.
+
+You can create a subdirectory for attributes quite easily.  If you don't
+want to make it a "full" object, and all you care about is the
+subdirectory, then do it that way.  Otherwise use a 'struct device'
+please.
+
+thanks,
+
+greg k-h
