@@ -1,76 +1,48 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 01/10] ASoC: tlv320aic32x4: Remove filename
- from header and switch to SPDX
-Date: Wed, 13 Dec 2017 12:28:24 +0000
-Message-ID: <20171213122824.GI6416@sirena.org.uk>
-References: <20171212224311.24045-1-afd@ti.com>
+From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
+        <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: [PATCH 0/2] sunxi: Add Capture support for sun8i-a33
+Date: Wed, 13 Dec 2017 13:34:06 +0100
+Message-ID: <20171213123408.10422-1-mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2368067292627390866=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A64DB266B67
- for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 13:28:26 +0100 (CET)
-In-Reply-To: <20171212224311.24045-1-afd@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Andrew F. Davis" <afd@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org
+Cc: mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello everyone,
 
---===============2368067292627390866==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="2xeD/fx0+7k8I/QN"
-Content-Disposition: inline
+Here is a first series to add support for the capture for
+Allwinner Sun8I-A33 SoC (sun8i-codec).
+These patches have been tested on Sun8i-r16 parrot board and
+the two microphones are working well.
 
+Noticed that the DAPM route is not correct: "Right/Left Digital
+ADC Mixer" widgets should be after the "Right ADC" (according to what I
+understood from the datasheet). This is currently not the case but when
+I tried to update it, I got an error about "failing to add routes".
+I will investigate why in next weeks (and send a V2) but as it
+can take time, I think it is better to send a V1 and got reviews
+(because it is the first time I am implementing such features).
 
---2xeD/fx0+7k8I/QN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thank you in advance,
+Best regards,
+Mylène
 
-On Tue, Dec 12, 2017 at 04:43:02PM -0600, Andrew F. Davis wrote:
+Mylène Josserand (2):
+  ASoC: sun8i-codec: Add ADC support for a33
+  ARM: dts: sun8i: Add ADC routing
 
-> @@ -1,21 +1,10 @@
-> +// SPDX-License-Identifier: GPL-2.0
->  /*
-> - * linux/sound/soc/codecs/tlv320aic32x4-i2c.c
-> - *
->   * Copyright 2011 NW Digital Radio
->   *
+ arch/arm/boot/dts/sun8i-a33.dtsi | 10 ++++-
+ sound/soc/sunxi/sun8i-codec.c    | 82 +++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 89 insertions(+), 3 deletions(-)
 
-Having the C++ comment next to a C comment is very ugly, if you're going
-to do this convert the entire comment block to C++ style.
+-- 
+2.11.0
 
---2xeD/fx0+7k8I/QN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloxHOgACgkQJNaLcl1U
-h9DCyQf/dEQZAxTkPFqmF9VkG+jLjJ8s0+Z8/fcQ2GfU+XR66FuwmEOZJMosnRbY
-rw3jB+Hb6sTUfuaWOWMsyZbw9tz4Wxhhu6GDzvCwY50CBl97m6uixil+P2HtvBCN
-BJT0oTFWMhN/diJnxozLI6wAJh+q0WD8tZW3SdyjN/ONlTXSqHvyTs7hFfBbedzk
-4ADYrCSaeN3j02z8QX3UKHt+h9dynZwGSY9DBMO5vodB+5lk2168B7TatOnS0v1+
-BFQCj1MeKyh1lyXJfL5rt9HNW4nauFjkueBTHc0ACoyFFBDBQSebsecocXpVKYl7
-VSH0Z0JbOoY3ZOUTlTNrYm+S+IK9eQ==
-=r8IY
------END PGP SIGNATURE-----
-
---2xeD/fx0+7k8I/QN--
-
---===============2368067292627390866==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2368067292627390866==--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
