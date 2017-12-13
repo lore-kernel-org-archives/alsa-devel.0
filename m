@@ -1,50 +1,71 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] dt-bindings: ASoC: rsnd: Add device tree support for
- r8a774[35]
-Date: Wed, 13 Dec 2017 12:20:52 +0000
-Message-ID: <20171213122052.GG6416@sirena.org.uk>
-References: <1513102155-47925-1-git-send-email-biju.das@bp.renesas.com>
+Subject: Re: [PATCH v10 08/13] regmap: add SLIMbus support
+Date: Wed, 13 Dec 2017 12:24:36 +0000
+Message-ID: <20171213122436.GH6416@sirena.org.uk>
+References: <20171211234307.14465-1-srinivas.kandagatla@linaro.org>
+ <20171211234307.14465-9-srinivas.kandagatla@linaro.org>
+ <20171213092537.GB12631@kroah.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="JbKQpFqZXJ2T76Sg"
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1513102155-47925-1-git-send-email-biju.das@bp.renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Biju Das <biju.das@bp.renesas.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, Chris Paterson <chris.paterson2@renesas.com>, Fabrizio Castro <fabrizio.castro@bp.renesas.com>, alsa-devel@alsa-project.org, linux-renesas-soc@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============3757735183459821737=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2BD51266B67
+ for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 13:24:37 +0100 (CET)
+In-Reply-To: <20171213092537.GB12631@kroah.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Jonathan Corbet <corbet@lwn.net>, linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org, j.neuschaefer@gmx.net, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, srinivas.kandagatla@linaro.org, pombredanne@nexb.com, sdharia@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
 
---JbKQpFqZXJ2T76Sg
+--===============3757735183459821737==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="LZFKeWUZP29EKQNE"
+Content-Disposition: inline
+
+
+--LZFKeWUZP29EKQNE
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Dec 12, 2017 at 06:09:15PM +0000, Biju Das wrote:
-> Document r8a774[35] specific compatible strings. The Renesas RZ/G1[ME]
-> (r8a774[35]) sound modules are identical to the R-Car Gen2 family.
-> No driver change is needed as the fallback compatible string
-> "renesas,rcar_sound-gen2" activates the right code in the driver.
+On Wed, Dec 13, 2017 at 10:25:37AM +0100, Greg Kroah-Hartman wrote:
 
-Please submit patches using subject lines reflecting the style for the
-subsystem.  This makes it easier for people to identify relevant
-patches.  Look at what existing commits in the area you're changing are
-doing and make sure your subject lines visually resemble what they're
-doing.
+> Mark, can I get an Ack for this patch so I can take it through my tree
+> with the other patches in this series?
 
---JbKQpFqZXJ2T76Sg
+Not until I've reviewed it (and the rest of the series).
+
+--LZFKeWUZP29EKQNE
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloxGyMACgkQJNaLcl1U
-h9CvIwf5AfEblxZgAIcOpdX4JqZrUTrTEa1j+mwvodabYWZmYuZ0X3iY+yYmqvz2
-VNaKMmMk3nKL462fsRZkw9jaTmoxu5QxOKvi1rB2NU2BjFriwGDmtmiXdX+/EoRa
-RqKo5XksAce6b/K+HDNgz+4LFooc8AFRxwH9jpx/c7W0dFjWsNzAY309hA/MKugf
-nVXSfcg+Ufn4StKmZZPNRNS0sB9VUMb7G847iaaTzdATqV0nmDzBqWydDniBGNuQ
-/Jq3QXRZjGWN8UaYcxROXm8XxH2VxNKeyymEsHojqRU9XpT6Si4mSI+1OmRyjHng
-htWp2Ro9wcgfHRyLwf4l9wXyBmT40A==
-=ZeZ4
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloxHAMACgkQJNaLcl1U
+h9AmXwf+PwCdIulTGv7x0ckDufiHhkEmZlrI5ZwLzkqFWIE/oZeqBpWB9bfUv0w4
+sozGK05MLkVN3p7eUREIWkxsxeK1D7y4Ioc+lcwrFX7JM09jXq9GpDzUDPX7Wv2I
+TXMD3q2iikbe1sopJB6Tvx2ZJpsoHUyjE2rKKHofeWha9AzKbYKEr+AFwNLdnKa6
+V3Tbn+9QfbwXkzst5Fzi0hvokl7SUqtr4PsV0uGa27mjwO1CCyNjtXSGVmyMXO3Z
+WrkUXcTGtZksZR15TUjygDQiTjNMDdWj9QJriXxaLpbmWv+Pm0/vk0IOMALUzZKE
+hSvG/GBxXnlaTdmw7DvMpdpyRfCERw==
+=P0O9
 -----END PGP SIGNATURE-----
 
---JbKQpFqZXJ2T76Sg--
+--LZFKeWUZP29EKQNE--
+
+--===============3757735183459821737==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3757735183459821737==--
