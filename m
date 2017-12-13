@@ -1,59 +1,31 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH 01/10] ASoC: tlv320aic32x4: Remove filename
- from header and switch to SPDX
-Date: Tue, 12 Dec 2017 18:19:35 -0800
-Message-ID: <1513131575.3036.67.camel@perches.com>
-References: <20171212224311.24045-1-afd@ti.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [alsa-devel] [PATCH v5 5/6] ASoC: Intel: Skylake: Make DSP
+ replies        more human readable
+Date: Wed, 13 Dec 2017 08:55:59 +0530
+Message-ID: <20171213032559.GH18649@localhost>
+References: <1512978390-8848-1-git-send-email-sriramx.periyasamy@intel.com>
+ <1512978390-8848-6-git-send-email-sriramx.periyasamy@intel.com>
+ <074180B186AC2945B61C466FE6C478304ADE8101@ORSMSX103.amr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtprelay.hostedemail.com (smtprelay0109.hostedemail.com
- [216.40.44.109])
- by alsa0.perex.cz (Postfix) with ESMTP id 24DA12677E3
- for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 03:19:39 +0100 (CET)
-In-Reply-To: <20171212224311.24045-1-afd@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Andrew F. Davis" <afd@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-clk-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <074180B186AC2945B61C466FE6C478304ADE8101@ORSMSX103.amr.corp.intel.com>
+Sender: linux-clk-owner@vger.kernel.org
+To: "Patel, Chintan M" <chintan.m.patel@intel.com>
+Cc: "Periyasamy, SriramX" <sriramx.periyasamy@intel.com>, ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, "mturquette@baylibre.com" <mturquette@baylibre.com>, "sboyd@codeaurora.org" <sboyd@codeaurora.org>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Prusty, Subhransu S" <subhransu.s.prusty@intel.com>, "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2017-12-12 at 16:43 -0600, Andrew F. Davis wrote:
-> The filename is often wrong after moves and adds nothing of value,
-> lets drop it. While already here, switch to SPDX.
-[]
-> diff --git a/sound/soc/codecs/tlv320aic32x4-i2c.c b/sound/soc/codecs/tlv320aic32x4-i2c.c
-[]
-> @@ -1,21 +1,10 @@
-> +// SPDX-License-Identifier: GPL-2.0
->  /*
-> - * linux/sound/soc/codecs/tlv320aic32x4-i2c.c
-> - *
->   * Copyright 2011 NW Digital Radio
->   *
->   * Author: Jeremy McDermond <nh6z@nh6z.net>
->   *
->   * Based on sound/soc/codecs/wm8974 and TI driver for kernel 2.6.27.
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License as published by
-> - * the Free Software Foundation; either version 2 of the License, or
-> - * (at your option) any later version.
-> - *
-> - * This program is distributed in the hope that it will be useful,
-> - * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> - * GNU General Public License for more details.
+On Tue, Dec 12, 2017 at 11:57:07PM +0530, Patel, Chintan M wrote:
+> I would also suggest to make similar changes for FW error code, since it doesn't give any clue what does FW error code indicates.
 
-nack.  Note the "(at your option) any later version"
+First, Why are you top posting ?
+Second, why are you not wrapping your replies ?
 
-If you are going to update to spdx and remove the old license
-verbiage, make sure you are adding the correct spdx tag.
+Please never top post on mailing list and wrap your replies.
+
+On the actual question, sure a good suggestion but not relvant in this context.
+Will check and see if we can do that.
+
+-- 
+~Vinod
