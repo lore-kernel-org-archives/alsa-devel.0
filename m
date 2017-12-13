@@ -1,18 +1,18 @@
-From: Nerijus Baliunas <nerijus@users.sourceforge.net>
-Subject: Re: ES8316
-Date: Wed, 13 Dec 2017 23:17:10 +0200
-Message-ID: <Mahogany-0.68.0-8070-20171213-231710.00@nerijus.sat.lt>
-References: <Mahogany-0.68.0-8070-20171213-155300.01@nerijus.sat.lt>
- <38ce754e-818d-03ab-0ed9-e20e848c5855@linux.intel.com>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH v2 03/11] ASoC: fsl_ssi: Refine all comments
+Date: Wed, 13 Dec 2017 23:28:51 +0100
+Message-ID: <e264f260-c8df-a51a-4756-cf2ebf979c66@maciej.szmigiero.name>
+References: <1513146874-25476-1-git-send-email-nicoleotsuka@gmail.com>
+ <1513146874-25476-4-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bluegene.sat.lt (bluegene.sat.lt [88.119.145.12])
- by alsa0.perex.cz (Postfix) with SMTP id 9BF40266D45
- for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 22:18:10 +0100 (CET)
-Content-Disposition: INLINE
-In-Reply-To: <38ce754e-818d-03ab-0ed9-e20e848c5855@linux.intel.com>
+Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E70A266D45
+ for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 23:29:00 +0100 (CET)
+In-Reply-To: <1513146874-25476-4-git-send-email-nicoleotsuka@gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,38 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: alsa-devel@alsa-project.org, timur@tabi.org, kernel@pengutronix.de, linux-kernel@vger.kernel.org, caleb@crome.org, lgirdwood@gmail.com, broonie@kernel.org, arnaud.mouiche@invoxia.com, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 13 Dec 2017 10:15:35 -0600 Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> wrote:
-
-> > Onda obook 20 plus tablet, Fedora 27, kernel 4.13.16-302.fc27.x86_64:
-> > 
-> > [    8.910172] bytcht_es8316 bytcht_es8316: ASoC: CODEC DAI ES8316 HiFi not registered
-> > [    8.910306] bytcht_es8316 bytcht_es8316: snd_soc_register_card failed -517
-> > 
-> > kernel 4.14.3-300.fc27.x86_64:
-> > 
-> > [    8.561159] rt5645 i2c-10EC5645:00: Device with ID register 0xffff8d85 is not rt5645 or rt5650
-> > [    9.344562] cht-bsw-rt5645 cht-bsw-rt5645: ASoC: CODEC DAI rt5645-aif1 not registered
-> > [    9.344695] cht-bsw-rt5645 cht-bsw-rt5645: snd_soc_register_card failed -517
-> > 
-> > On both kernels snd_soc_sst_byt_cht_es8316 and snd_soc_es8316
-> > modules are loaded automatically.
-> > How to make audio work?
+On 13.12.2017 07:34, Nicolin Chen wrote:
+> This patch refines the comments by:
+> 1) Removing all out-of-date comments
+> 2) Removing all not-so-useful comments
+> 3) Unifying the styles of all comments
+> 4) Simplifying over-descriptive comments
+> 5) Adding comments to improve code readablity
+> 6) Moving all register related comments to fsl_ssi.h
+> 7) Adding comments to all register and field defines
 > 
-> We have a known set of BIOS issues with this codec used in el-cheapo 
-> platforms, see e.g. https://bugzilla.kernel.org/show_bug.cgi?id=197073
-> I know that there are fixes from the android-x86 folks, but given that 
-> they don't sign-off their code I am not even looking at their solution.
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> ---
 > 
-> You'd need to provide dmesg, alsa-info.sh results. and it's better to do 
-> with in bugzilla that on this mailing list.
+> Changelog
+> v1->v2
+>  * Added some new comments at "SoC specific data" to be more precise.
+>  * Revised one comment in fsl_ssi_config().
+>  * Revised the comment of fsl_ssi_setup_reg_vals().
+>  * Added one comment for AC97 in fsl_ssi_setup_reg_vals().
+>  * Revised the comment of fsl_ssi_hw_params() to be more precise.
+>  * Added some comments in _fsl_ssi_set_dai_fmt() to help understand the formats.
+>  * Added one comment in fsl_ssi_set_dai_fmt() to state why AC97 needs to bypass it.
+>  * Revised comments in fsl_ssi_set_dai_tdm_slot() to be more precise.
+>  * Revised comments around dual FIFO code in fsl_ssi_imx_probe() to be more precise.
+> 
+>  sound/soc/fsl/fsl_ssi.c     | 376 ++++++++++++++------------------------------
+>  sound/soc/fsl/fsl_ssi.h     |  67 +++++++-
+>  sound/soc/fsl/fsl_ssi_dbg.c |  12 +-
+>  3 files changed, 188 insertions(+), 267 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> index e903c92..796a7ea 100644
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+(..)
+> @@ -878,10 +794,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+>  	regmap_read(regs, CCSR_SSI_SCR, &scr_val);
+>  	enabled = scr_val & CCSR_SSI_SCR_SSIEN;
+>  
+> -	/*
+> -	 * If we're in synchronous mode, and the SSI is already enabled,
+> -	 * then STCCR is already set properly.
+> -	 */
+> +	/* To support simultaneous TX and RX, bypass it if SSI is enabled */
+>  	if (enabled && ssi->cpu_dai_drv.symmetric_rates)
+>  		return 0;
+>  
 
-Done - https://bugzilla.kernel.org/show_bug.cgi?id=198159
-I tried to patch with es8316-Audio-exported-gpio-controlling-SPK-analog-switch.patch
-(adapted to my tablet), but it didn't help, probably made it worse, as the 8316 modules
-are no longer autoloaded.
+I would say that the old comment described better what is happening -
+since in synchronous (& non-AC'97) mode STCCR controls both TX and RX
+the first direction that is started (either playback or capture) is the
+only direction that needs to configure SSI in hw_params().
 
-Regards,
-Nerijus
+When the opposite direction enters hw_params() (while the first one is
+still running) there is no need to do anything and we can exit early.
+
+Maciej
