@@ -1,22 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: About ASoC DAIs cleanup
-Date: Wed, 13 Dec 2017 15:59:52 +0000
-Message-ID: <20171213155952.GL6416@sirena.org.uk>
-References: <20171208084103.GC18649@localhost>
- <87fu8lio74.wl%kuninori.morimoto.gx@renesas.com>
- <20171208105545.GE18649@localhost>
- <87shciup8e.wl%kuninori.morimoto.gx@renesas.com>
- <87r2s2uo55.wl%kuninori.morimoto.gx@renesas.com>
- <87o9n6ukyg.wl%kuninori.morimoto.gx@renesas.com>
- <87r2rzqf1q.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 01/10] ASoC: tlv320aic32x4: Remove filename
+ from header and switch to SPDX
+Date: Wed, 13 Dec 2017 16:01:40 +0000
+Message-ID: <20171213160140.GN6416@sirena.org.uk>
+References: <20171212224311.24045-1-afd@ti.com>
+ <1513131575.3036.67.camel@perches.com>
+ <3ff091f8-1366-ab38-dd7b-2633e6f3dd80@ti.com>
+ <aa585d9a-a68c-95a1-b156-26f65aa1b890@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8172488408565945762=="
+Content-Type: multipart/mixed; boundary="===============1028433631493034717=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C15AB266B67
- for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 17:00:04 +0100 (CET)
-In-Reply-To: <87r2rzqf1q.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B46EA266B67
+ for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 17:01:43 +0100 (CET)
+In-Reply-To: <aa585d9a-a68c-95a1-b156-26f65aa1b890@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,59 +24,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter <lars@metafoo.de>, Shreyas NC <shreyas.nc@intel.com>
+To: "Andrew F. Davis" <afd@ti.com>
+Cc: Joe Perches <joe@perches.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8172488408565945762==
+--===============1028433631493034717==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Mit9XoPEfICDqq/V"
+	protocol="application/pgp-signature"; boundary="ztcJpsdPpsnnlAp8"
 Content-Disposition: inline
 
 
---Mit9XoPEfICDqq/V
+--ztcJpsdPpsnnlAp8
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Dec 13, 2017 at 07:19:39AM +0000, Kuninori Morimoto wrote:
+On Wed, Dec 13, 2017 at 09:50:34AM -0600, Andrew F. Davis wrote:
+> On 12/13/2017 09:44 AM, Andrew F. Davis wrote:
 
-> Because many drivers are directly using rtd->codec_dai / rtd->cpu_dai,
-> and it is difficult to lookup CPU/Codec DAI from non categorize DAIs.
-> Thus, we can't support non-categorized DAI at this point.
+> > By the way, do you like these spdx update patch? Or would you rather I
+> > drop this one and wait to let some script do it for the whole subsystem?
 
-> Now Vinod want to use Multi CPU DAI.
-> If we can support Multi CPU DAI / Multi Codec DAI,
-> we can cleanup current DAI code more.
-> But what do you think ?
+> This last question was directed at Mark btw :)
 
-Cleaning things up so we don't need to use rtd->cpu_dai and rtd->codec_dai
-would definitely be nice, it's also useful for CODEC<->CODEC links.  Off
-the top of my head wrapping the accesses with macros/functions then
-implementing a way of getting the DAI behind them would be tractable?
+> Actually, I'll just drop the spdx change from this patch, no reason to
+> do these manually.
 
---Mit9XoPEfICDqq/V
+It's fine for me, probably nicer if anything since it avoids issues like
+mixing C and C++ comments in an ugly fashion.
+
+--ztcJpsdPpsnnlAp8
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloxTngACgkQJNaLcl1U
-h9BATQf/ZO7NnQq73FrFwJW19xe1OL2iyS03hR3kbYk5KQX8iZobEU7cA9V3z3SW
-5XcbBbh1rfAN1qihVUn+pRf+mHgFpnlKg4Vga3MruBd4UKfvWd9TYQHQYLTskW/w
-IK+Aw9RSlTRiSHrmBa0Ni71/0tU+2fmaFd+T1OUauCzR1ZM5DEm91PVfMFahmlvu
-9SZItM4kSdISwK14u6ijhu3xtjcyV8ML/+wvUBOD5RI8CzRrrwSKp7QDfBrXGv5c
-jyKZyZRgEEUzWUSjY2YajY/7E3ltzGE/fs00mtxsRAcHb8zJo1GUe1uM5d6oNwmL
-NlmQwHCZ3rfTlA6RSYh9gWthuvqvTg==
-=bhCU
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloxTuMACgkQJNaLcl1U
+h9AOFwf/TM6dvpbbvAWb67iaab3ydyhrnBY9CWKQNjI+dtc6duPQnCAu5BO9noWq
++AyZzAUmQPl6V23urVDmBN6sNz1myDWW2tckD+4bzKOpC79kwhW05iTICqw3iowz
+IOi0em4gc12EwUbQCuLs44jF0McfR8Uqat1EH5Jr6zZHL0N3/cyBzYL4Nv0UmhDQ
+3mvDPi/emwTyqpvcaj/fqg81fDpEcqDP82FWimPtiJNc29/1SrHluqqPCwc3FNRz
+bn4+/neJkX4dYalfOGupEkbOgfHaNFSggjYGNUkaAGPC1AbH//o8BHFMbN45bln5
+8S2BVPfqWoobA/H8UFkcaRPz3d+p3g==
+=fOnV
 -----END PGP SIGNATURE-----
 
---Mit9XoPEfICDqq/V--
+--ztcJpsdPpsnnlAp8--
 
---===============8172488408565945762==
+--===============1028433631493034717==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8172488408565945762==--
+--===============1028433631493034717==--
