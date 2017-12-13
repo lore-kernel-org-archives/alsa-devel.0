@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic32x4: Use BIT and GENMASK for
-	bit field definitions" to the asoc tree
-Date: Wed, 13 Dec 2017 15:45:11 +0000
-Message-ID: <E1eP9Db-0002J7-TV@debutante>
-References: <20171212224311.24045-6-afd@ti.com>
+Subject: Applied "ASoC: tlv320aic32x4: Use correct shift
+	definition for DATALEN bits" to the asoc tree
+Date: Wed, 13 Dec 2017 15:45:31 +0000
+Message-ID: <E1eP9Dv-0002KN-Vi@debutante>
+References: <20171212224311.24045-5-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B96EF267904
- for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 16:45:14 +0100 (CET)
-In-Reply-To: <20171212224311.24045-6-afd@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B36CF267901
+ for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 16:45:34 +0100 (CET)
+In-Reply-To: <20171212224311.24045-5-afd@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic32x4: Use BIT and GENMASK for bit field definitions
+   ASoC: tlv320aic32x4: Use correct shift definition for DATALEN bits
 
 has been applied to the asoc tree at
 
@@ -52,189 +52,51 @@ to this mail.
 Thanks,
 Mark
 
->From 0fe7aa39ba0492aabdde67dc1511055c9dc7e960 Mon Sep 17 00:00:00 2001
+>From 77bdb58795d86262e96ba37524489ba0969de253 Mon Sep 17 00:00:00 2001
 From: "Andrew F. Davis" <afd@ti.com>
-Date: Tue, 12 Dec 2017 16:43:07 -0600
-Subject: [PATCH] ASoC: tlv320aic32x4: Use BIT and GENMASK for bit field
- definitions
+Date: Tue, 12 Dec 2017 16:43:06 -0600
+Subject: [PATCH] ASoC: tlv320aic32x4: Use correct shift definition for DATALEN
+ bits
 
-Inter-register definitions should use BIT and GENMASK definitions
-and also be grouped by what register they belong to. This makes it
-easy to cross-check with the datasheet and is consistent with other
-drivers.
+Setting the DATALEN bit field requires shifting our value by 4. Setting
+the OSR value of the PLL divider also requires a shift by 4. Currently
+the code abuses this fact and uses the shift for the divider register to
+set the data-length register. Fix this here by using the definition meant
+for this register.
 
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic32x4.c |   2 +-
- sound/soc/codecs/tlv320aic32x4.h | 132 ++++++++++++++++++++++++++-------------
- 2 files changed, 88 insertions(+), 46 deletions(-)
+ sound/soc/codecs/tlv320aic32x4.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 9f643199e1ba..e528a8495346 100644
+index 8f9719e6cdfd..9f643199e1ba 100644
 --- a/sound/soc/codecs/tlv320aic32x4.c
 +++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -686,7 +686,7 @@ static int aic32x4_hw_params(struct snd_pcm_substream *substream,
+@@ -738,15 +738,20 @@ static int aic32x4_hw_params(struct snd_pcm_substream *substream,
+ 	data = data & ~(3 << 4);
+ 	switch (params_width(params)) {
+ 	case 16:
++		data |= (AIC32X4_WORD_LEN_16BITS <<
++			 AIC32X4_IFACE1_DATALEN_SHIFT);
+ 		break;
+ 	case 20:
+-		data |= (AIC32X4_WORD_LEN_20BITS << AIC32X4_DOSRMSB_SHIFT);
++		data |= (AIC32X4_WORD_LEN_20BITS <<
++			 AIC32X4_IFACE1_DATALEN_SHIFT);
+ 		break;
+ 	case 24:
+-		data |= (AIC32X4_WORD_LEN_24BITS << AIC32X4_DOSRMSB_SHIFT);
++		data |= (AIC32X4_WORD_LEN_24BITS <<
++			 AIC32X4_IFACE1_DATALEN_SHIFT);
+ 		break;
+ 	case 32:
+-		data |= (AIC32X4_WORD_LEN_32BITS << AIC32X4_DOSRMSB_SHIFT);
++		data |= (AIC32X4_WORD_LEN_32BITS <<
++			 AIC32X4_IFACE1_DATALEN_SHIFT);
+ 		break;
  	}
- 
- 	/* Use PLL as CODEC_CLKIN and DAC_MOD_CLK as BDIV_CLKIN */
--	snd_soc_write(codec, AIC32X4_CLKMUX, AIC32X4_PLLCLKIN);
-+	snd_soc_write(codec, AIC32X4_CLKMUX, AIC32X4_CODEC_CLKIN_PLL);
- 	snd_soc_write(codec, AIC32X4_IFACE3, AIC32X4_DACMOD2BCLK);
- 
- 	/* We will fix R value to 1 and will make P & J=K.D as varialble */
-diff --git a/sound/soc/codecs/tlv320aic32x4.h b/sound/soc/codecs/tlv320aic32x4.h
-index b017211f83eb..67772e5585b8 100644
---- a/sound/soc/codecs/tlv320aic32x4.h
-+++ b/sound/soc/codecs/tlv320aic32x4.h
-@@ -97,61 +97,103 @@ int aic32x4_remove(struct device *dev);
- #define AIC32X4_LMICPGAVOL	AIC32X4_REG(1, 59)
- #define AIC32X4_RMICPGAVOL	AIC32X4_REG(1, 60)
- 
--#define AIC32X4_WORD_LEN_16BITS		0x00
--#define AIC32X4_WORD_LEN_20BITS		0x01
--#define AIC32X4_WORD_LEN_24BITS		0x02
--#define AIC32X4_WORD_LEN_32BITS		0x03
--
--#define AIC32X4_LADC_EN			(1 << 7)
--#define AIC32X4_RADC_EN			(1 << 6)
--
--#define AIC32X4_I2S_MODE		0x00
--#define AIC32X4_DSP_MODE		0x01
--#define AIC32X4_RIGHT_JUSTIFIED_MODE	0x02
--#define AIC32X4_LEFT_JUSTIFIED_MODE	0x03
--
--#define AIC32X4_AVDDWEAKDISABLE		0x08
--#define AIC32X4_LDOCTLEN		0x01
-+/* Bits, masks, and shifts */
-+
-+/* AIC32X4_CLKMUX */
-+#define AIC32X4_PLL_CLKIN_MASK		GENMASK(3, 2)
-+#define AIC32X4_PLL_CLKIN_SHIFT		(2)
-+#define AIC32X4_PLL_CLKIN_MCLK		(0x00)
-+#define AIC32X4_PLL_CLKIN_BCKL		(0x01)
-+#define AIC32X4_PLL_CLKIN_GPIO1		(0x02)
-+#define AIC32X4_PLL_CLKIN_DIN		(0x03)
-+#define AIC32X4_CODEC_CLKIN_MASK	GENMASK(1, 0)
-+#define AIC32X4_CODEC_CLKIN_SHIFT	(0)
-+#define AIC32X4_CODEC_CLKIN_MCLK	(0x00)
-+#define AIC32X4_CODEC_CLKIN_BCLK	(0x01)
-+#define AIC32X4_CODEC_CLKIN_GPIO1	(0x02)
-+#define AIC32X4_CODEC_CLKIN_PLL		(0x03)
-+
-+/* AIC32X4_PLLPR */
-+#define AIC32X4_PLLEN			BIT(7)
-+
-+/* AIC32X4_NDAC */
-+#define AIC32X4_NDACEN			BIT(7)
-+
-+/* AIC32X4_MDAC */
-+#define AIC32X4_MDACEN			BIT(7)
-+
-+/* AIC32X4_NADC */
-+#define AIC32X4_NADCEN			BIT(7)
-+
-+/* AIC32X4_MADC */
-+#define AIC32X4_MADCEN			BIT(7)
-+
-+/* AIC32X4_BCLKN */
-+#define AIC32X4_BCLKEN			BIT(7)
-+
-+/* AIC32X4_IFACE1 */
-+#define AIC32X4_IFACE1_DATATYPE_MASK	GENMASK(7, 6)
-+#define AIC32X4_IFACE1_DATATYPE_SHIFT	(6)
-+#define AIC32X4_I2S_MODE		(0x00)
-+#define AIC32X4_DSP_MODE		(0x01)
-+#define AIC32X4_RIGHT_JUSTIFIED_MODE	(0x02)
-+#define AIC32X4_LEFT_JUSTIFIED_MODE	(0x03)
-+#define AIC32X4_IFACE1_DATALEN_MASK	GENMASK(5, 4)
-+#define AIC32X4_IFACE1_DATALEN_SHIFT	(4)
-+#define AIC32X4_WORD_LEN_16BITS		(0x00)
-+#define AIC32X4_WORD_LEN_20BITS		(0x01)
-+#define AIC32X4_WORD_LEN_24BITS		(0x02)
-+#define AIC32X4_WORD_LEN_32BITS		(0x03)
-+#define AIC32X4_IFACE1_MASTER_MASK	GENMASK(3, 2)
-+#define AIC32X4_BCLKMASTER		BIT(2)
-+#define AIC32X4_WCLKMASTER		BIT(3)
-+
-+/* AIC32X4_IFACE2 */
-+#define AIC32X4_DATA_OFFSET_MASK	GENMASK(7, 0)
-+
-+/* AIC32X4_IFACE3 */
-+#define AIC32X4_BCLKINV_MASK		BIT(3)
-+#define AIC32X4_BDIVCLK_MASK		GENMASK(1, 0)
-+#define AIC32X4_BDIVCLK_SHIFT		(0)
-+#define AIC32X4_DAC2BCLK		(0x00)
-+#define AIC32X4_DACMOD2BCLK		(0x01)
-+#define AIC32X4_ADC2BCLK		(0x02)
-+#define AIC32X4_ADCMOD2BCLK		(0x03)
-+
-+/* AIC32X4_DACSETUP */
-+#define AIC32X4_DAC_CHAN_MASK		GENMASK(5, 2)
-+#define AIC32X4_LDAC2RCHN		BIT(5)
-+#define AIC32X4_LDAC2LCHN		BIT(4)
-+#define AIC32X4_RDAC2LCHN		BIT(3)
-+#define AIC32X4_RDAC2RCHN		BIT(2)
-+
-+/* AIC32X4_DACMUTE */
-+#define AIC32X4_MUTEON			0x0C
- 
--#define AIC32X4_LDOIN_18_36		0x01
--#define AIC32X4_LDOIN2HP		0x02
-+/* AIC32X4_ADCSETUP */
-+#define AIC32X4_LADC_EN			BIT(7)
-+#define AIC32X4_RADC_EN			BIT(6)
- 
--#define AIC32X4_DACSPBLOCK_MASK		0x1f
--#define AIC32X4_ADCSPBLOCK_MASK		0x1f
-+/* AIC32X4_PWRCFG */
-+#define AIC32X4_AVDDWEAKDISABLE		BIT(3)
- 
--#define AIC32X4_PLLJ_SHIFT		6
--#define AIC32X4_DOSRMSB_SHIFT		4
-+/* AIC32X4_LDOCTL */
-+#define AIC32X4_LDOCTLEN		BIT(0)
- 
--#define AIC32X4_PLLCLKIN		0x03
-+/* AIC32X4_CMMODE */
-+#define AIC32X4_LDOIN_18_36		BIT(0)
-+#define AIC32X4_LDOIN2HP		BIT(1)
- 
--#define AIC32X4_MICBIAS_LDOIN		0x08
-+/* AIC32X4_MICBIAS */
-+#define AIC32X4_MICBIAS_LDOIN		BIT(3)
- #define AIC32X4_MICBIAS_2075V		0x60
- 
-+/* AIC32X4_LMICPGANIN */
- #define AIC32X4_LMICPGANIN_IN2R_10K	0x10
- #define AIC32X4_LMICPGANIN_CM1L_10K	0x40
-+
-+/* AIC32X4_RMICPGANIN */
- #define AIC32X4_RMICPGANIN_IN1L_10K	0x10
- #define AIC32X4_RMICPGANIN_CM1R_10K	0x40
- 
--#define AIC32X4_LMICPGAVOL_NOGAIN	0x80
--#define AIC32X4_RMICPGAVOL_NOGAIN	0x80
--
--#define AIC32X4_BCLKMASTER		0x08
--#define AIC32X4_WCLKMASTER		0x04
--#define AIC32X4_PLLEN			(0x01 << 7)
--#define AIC32X4_NDACEN			(0x01 << 7)
--#define AIC32X4_MDACEN			(0x01 << 7)
--#define AIC32X4_NADCEN			(0x01 << 7)
--#define AIC32X4_MADCEN			(0x01 << 7)
--#define AIC32X4_BCLKEN			(0x01 << 7)
--#define AIC32X4_DACEN			(0x03 << 6)
--#define AIC32X4_RDAC2LCHN		(0x02 << 2)
--#define AIC32X4_LDAC2RCHN		(0x02 << 4)
--#define AIC32X4_LDAC2LCHN		(0x01 << 4)
--#define AIC32X4_RDAC2RCHN		(0x01 << 2)
--#define AIC32X4_DAC_CHAN_MASK		0x3c
--
--#define AIC32X4_SSTEP2WCLK		0x01
--#define AIC32X4_MUTEON			0x0C
--#define	AIC32X4_DACMOD2BCLK		0x01
--
- #endif				/* _TLV320AIC32X4_H */
+ 	snd_soc_write(codec, AIC32X4_IFACE1, data);
 -- 
 2.15.1
