@@ -1,93 +1,292 @@
-From: "Chen, Augustine" <augustine.chen@intel.com>
-Subject: Re: [PATCH] drm/i915: Remove unused IRQ chip data of
- HDMI LPE audio
-Date: Wed, 13 Dec 2017 09:25:43 +0000
-Message-ID: <9A1A7991592FAD49BCF9F28D9CF9FE3121AB7F0F@PGSMSX105.gar.corp.intel.com>
-References: <20171208093323.2212-1-augustine.chen@intel.com>
- <20171208114404.GN10981@intel.com>
- <alpine.DEB.2.20.1712082340400.2301@nanos>
- <F6867404AABACB4D8EC371BF802A4B7C5790D206@fmsmsx101.amr.corp.intel.com>
- <20171211132023.GO10981@intel.com>	<s5hzi6pl7p3.wl-tiwai@suse.de>
- <9A1A7991592FAD49BCF9F28D9CF9FE3121AB7B0D@PGSMSX105.gar.corp.intel.com>
- <s5hd13k9t5o.wl-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v5 10/15] soundwire: Add sysfs for
+ SoundWire DisCo properties
+Date: Wed, 13 Dec 2017 15:24:30 +0530
+Message-ID: <20171213095430.GO18649@localhost>
+References: <1512575231-4154-1-git-send-email-vinod.koul@intel.com>
+ <1512575231-4154-11-git-send-email-vinod.koul@intel.com>
+ <20171213091537.GA6269@kroah.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5hd13k9t5o.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Juergen Gross <jgross@suse.com>, Dou Liyang <douly.fnst@cn.fujitsu.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter
- Anvin" <hpa@zytor.com>, Thomas Gleixner <tglx@linutronix.de>, Jiang Liu <jiang.liu@linux.intel.com>, "Bossart,
- Pierre-louis" <pierre-louis.bossart@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ by alsa0.perex.cz (Postfix) with ESMTP id C9DB2266AE4
+ for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 10:50:47 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20171213091537.GA6269@kroah.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Cgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogVGFrYXNoaSBJd2FpIFttYWls
-dG86dGl3YWlAc3VzZS5kZV0KPiBTZW50OiBUdWVzZGF5LCBEZWNlbWJlciAxMiwgMjAxNyA1OjQ1
-IFBNCj4gVG86IENoZW4sIEF1Z3VzdGluZSA8YXVndXN0aW5lLmNoZW5AaW50ZWwuY29tPgo+IENj
-OiBWaWxsZSBTeXJqw6Rsw6QgPHZpbGxlLnN5cmphbGFAbGludXguaW50ZWwuY29tPjsgQW5hbmQs
-IEplcm9tZQo+IDxqZXJvbWUuYW5hbmRAaW50ZWwuY29tPjsgVGhvbWFzIEdsZWl4bmVyIDx0Z2x4
-QGxpbnV0cm9uaXguZGU+OyBpbnRlbC0KPiBnZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnOyBhbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IEJvc3NhcnQsIFBpZXJyZS1sb3Vpcwo+IDxwaWVycmUt
-bG91aXMuYm9zc2FydEBpbnRlbC5jb20+OyBJbmdvIE1vbG5hciA8bWluZ29AcmVkaGF0LmNvbT47
-IEguIFBldGVyCj4gQW52aW4gPGhwYUB6eXRvci5jb20+OyBKaWFuZyBMaXUgPGppYW5nLmxpdUBs
-aW51eC5pbnRlbC5jb20+OyBKdWVyZ2VuIEdyb3NzCj4gPGpncm9zc0BzdXNlLmNvbT47IERvdSBM
-aXlhbmcgPGRvdWx5LmZuc3RAY24uZnVqaXRzdS5jb20+OyBsaW51eC0KPiBrZXJuZWxAdmdlci5r
-ZXJuZWwub3JnCj4gU3ViamVjdDogUmU6IFtJbnRlbC1nZnhdIFtQQVRDSF0gZHJtL2k5MTU6IFJl
-bW92ZSB1bnVzZWQgSVJRIGNoaXAgZGF0YSBvZgo+IEhETUkgTFBFIGF1ZGlvCj4gCj4gT24gVHVl
-LCAxMiBEZWMgMjAxNyAxMDoyNjowOCArMDEwMCwKPiBDaGVuLCBBdWd1c3RpbmUgd3JvdGU6Cj4g
-PiA+ID4gPiA+ID4gVGhhdCAqbG9va3MqIG1vcmUgY29ycmVjdCB0byBtZSBiYXNlZCBvbiBhIGN1
-cnNvcnkgZ2xhbmNlIGF0Cj4gPiA+ID4gPiA+ID4gdGhlCj4gPiA+ID4gPiA+ID4geDg2IGNvZGUs
-IGJ1dCBJIGRpZG4ndCB0cmF3bCB2ZXJ5IGRlZXBseS4KPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4g
-VGhlIHg4NiBjb3JlIGNhcmVzIG5vdCBhdCBhbGwgYWJvdXQgaW50ZXJydXB0IGNoaXBzIHdoaWNo
-IGFyZQo+ID4gPiA+ID4gPiBjcmVhdGVkIGluIGEgZHJpdmVyIGFuZCBub3QgY29ubmVjdGVkIHRv
-IGFuIGFjdHVhbAo+ID4gPiA+ID4gPiBhcGljL2lvYXBpYy9tc2kgaW50ZXJydXB0LiBUaGlzIGlu
-dGVycnVwdCBjaGlwIGlzIGl0cyBvd24gdGhpbmcgYXMgd2UgaGF2ZQo+IG90aGVycyBpbiBHUElP
-IGV0Yy4KPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gPiA+IEluIHRoZSBjYXNlIG9mIG5vdCBlbmFi
-bGluZyBDT05GSUdfQ1BVTUFTS19PRkZTVEFDSywgdGhpcwo+ID4gPiA+ID4gPiA+ID4gd291bGQg
-Y2F1c2Uga2VybmVsIHBhbmljIHdoaWxlIGRvaW5nIENQVSBob3RwbHVnLgo+ID4gPiA+ID4gPgo+
-ID4gPiA+ID4gPiBBbmQgd2h5IHNvPyBTdXJlbHkgbm90IGJlY2F1c2UgeW91IHNldCBpcnFfY2hp
-cF9kYXRhLiBUaGF0J3MKPiA+ID4gPiA+ID4gcmVhbGx5IG5vIGV4cGxhbmF0aW9uIGF0IGFsbC4K
-PiA+ID4gPiA+ID4KPiA+ID4gPiA+Cj4gPiA+ID4gPiBJZGVhbGx5LCBJIGZlZWwgdGhlcmUgbmVl
-ZHMgdG8gYmUgYW4gaXJxIGRvbWFpbiBmb3IgbWFwcGluZyB0aGUKPiA+ID4gPiA+IGlycSBudW1i
-ZXJzCj4gPiA+IHdpdGggaHdpcnEuCj4gPiA+ID4gPiBJdCBpcyBub3QgY3JlYXRlZCBhcyBwYXJ0
-IG9mIHRoZSBoZG1pIGxwZSBhdWRpbyBicmlkZ2UuCj4gPiA+ID4gPiBTaW5jZSB0aGUgbG9naWMg
-dG8gbWFzay91bm1hc2sgbHBlIGF1ZGlvIGludGVycnVwdHMgaXMgcmVtb3ZlZCwKPiA+ID4gPiA+
-IHRoZXJlIGlzIG5vIG5lZWQgb2YgdGhlIENoaXAgZGF0YSBvciBjcmVhdGlvbiBvZiB0aGUgZG9t
-YWluIG5vdy4KPiA+ID4gPgo+ID4gPiA+IFRoZXJlIGlzIG5vIG5lZWQgcmlnaHQgbm93LiBCdXQg
-dGhlcmUgbWlnaHQgYmUgYSBuZWVkIGluIHRoZSBmdXR1cmUuCj4gPiA+ID4gTFBFIGF1ZGlvIGlz
-bid0IGV2ZW4gdGhlIG9ubHkgcGllY2Ugb2YgaGFyZHdhcmUgd2hvc2UgaXJxIGdvZXMKPiA+ID4g
-PiB0aHJvdWdoIHRoZSBpOTE1IGRpc3BsYXkgZW5naW5lICh0aGVyZSdzIGFsc28gdGhlIElTUCBh
-bmQgVkVEKS4gU28KPiA+ID4gPiBJIHdvdWxkIG11Y2ggcHJlZmVyIGEgcHJvcGVyIHNvbHV0aW9u
-IGluc3RlYWQgb2Ygc3dlZXBpbmcgdGhlCj4gPiA+ID4gcHJvYmxlbSB1bmRlciB0aGUgcnVnLgo+
-ID4gPgo+ID4gPiBJTU8sIHRoZSBwcmltYXJ5IHF1ZXN0aW9uIGlzIHdoZXRoZXIgdGhlIHVzYWdl
-IG9mIGlycSBjaGlwIHdpdGhvdXQKPiA+ID4gaXJxIGRvbWFpbiBpcyB2YWxpZCBvciBub3QuICBJ
-ZiBhbiBpcnEgZG9tYWluIGlzIG1hbmRhdG9yeSwgdGhhdCdzCj4gPiA+IHRoZSB0aGluZyB0byBi
-ZSBmaXhlZCBpbiBpOTE1IHNpZGUuCj4gPiBJbiB0ZXJtcyBvZiBmdW5jdGlvbmFsaXR5LCB0aGUg
-aW50ZXJydXB0IGFuZCBoZG1pIGF1ZGlvIHdvcmsgZmluZQo+ID4gd2l0aG91dCBpcnEgZG9tYWlu
-IGFjY29yZGluZyB0byB0aGUgdmFsaWRhdGlvbi4KPiAKPiBTdXJlLCBvdGhlcndpc2UgdGhlIHBh
-dGNoIG5ldmVyIGxhbmRlZCB0byBtYWlubGluZSA6KQo+IAo+ID4gQW5kIGJlc2lkZXMsIHRoZXJl
-Cj4gPiBhcmUgb3RoZXIgZHJpdmVycyB3aXRoIHNpbWlsYXIgaW1wbGVtZW50YXRpb24gd2hpY2gg
-ZG9lc24ndCBzZXQgY2hpcAo+ID4gZGF0YSBhdCBhbGwuCj4gCj4gWWVzLCBkcm9wcGluZyB0aGUg
-Y2hpcCBkYXRhIHNob3VsZCBiZSBPSyBpbiB0aGUgZHJpdmVyLCBidXQgdGhlIG9ubHkgcXVlc3Rp
-b24gaXMKPiB3aGV0aGVyIGl0IGlzIHRoZSByaWdodCBmaXguCj4gCj4gRGlkIHlvdSBjaGVjayB3
-aGV0aGVyIHRoZSBpc3N1ZSBoYXBwZW5zIHdpdGggNC4xNS1yYywgdG9vPyAgVGhpcyB3YXMgbmV2
-ZXIKPiBhbnN3ZXJlZCBpbiBidWd6aWxsYS4gIElmIEkgdW5kZXJzdGFuZCBjb3JyZWN0bHksIHRo
-ZSBjb2RlIHRyaWdnZXJpbmcgT29wcyBoYXMKPiBiZWVuIGNoYW5nZWQgbGFyZ2VseSB0aGVyZSBh
-bmQgaXQgc2hvdWxkIHBydW5lIHRoZSBub24tbGVnYWN5IGlycXMuCj4gCkkgdGVzdGVkIGl0IHdp
-dGggNC4xNS1SQzEgdG9kYXkgYW5kIGNvdWxkbid0IG9ic2VydmVkIHRoZSBzYW1lIHN5bXB0b20u
-IEFuZCB5ZXMsIHRoZSBjb2RlIHJ1bm5pbmcgaW50byBpbnZhbGlkIHBvaW50ZXIgd2FzIG1vZGlm
-aWVkIGRyYW1hdGljYWxseS4KRmVlbHMgbGlrZSBpdCdzIGF2YWlsYWJsZSB0byBrZWVwIHRoaXMg
-ZHJpdmVyIGludGFjdC4KCgo+IAo+IFRha2FzaGkKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4v
-bGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+On Wed, Dec 13, 2017 at 10:15:37AM +0100, Greg Kroah-Hartman wrote:
+> On Wed, Dec 06, 2017 at 09:17:06PM +0530, Vinod Koul wrote:
+> > It helps to read the properties for understanding and debugging
+> > systems, so add sysfs files for SoundWire DisCo properties.
+> > 
+> > TODO: Add ABI files for sysfs
+> 
+> Is this TODO done?
+
+Nope sorry not yet. But before this get merged will add
+
+> > + * Base file is:
+> > + *		properties
+> > + *		|---- interface-revision
+> > + *		|---- master-count
+> > + *		|---- link-N
+> > + *		      |---- clock-stop-modes
+> > + *		      |---- max-clock-frequency
+> > + *		      |---- clock-frequencies
+> > + *		      |---- default-frame-rows
+> > + *		      |---- default-frame-cols
+> > + *		      |---- dynamic-frame-shape
+> > + *		      |---- command-error-threshold
+> > + */
+> 
+> Why nest them so deep?  Anyway, that's not really an issue I guess, it's
+> your ABI, not mine :)
+
+well it gives us a hierarchical view. We have N links...
+
+> 
+> > +
+> > +struct sdw_master_sysfs {
+> > +	struct kobject kobj;
+> > +	struct sdw_bus *bus;
+> 
+> Huh?  Why do you need to use kobjects?
+> 
+> When you switch from using a 'struct device' and hang a kobject off of
+> it, that's a huge signal that something is wrong here.  That kobject
+> will now no longer be part of the device "chain" in the system, uevents
+> will get odd, and other strange things can happen.
+> 
+> Why can't you just use "normal" attributes attached to the device?  You
+> shouldn't need a kobject here.  What am I missing?
+
+Okay my understanding might be incorrect then. So we can have N links in
+the system and each link would have a kobject for "link-N". Not sure how
+device attributes would do link-N/clock-stop-modes and so on, if they can
+let me know how and I will surely change that.
+
+> 
+> > +/*
+> > + * Slave sysfs
+> > + */
+> > +
+> > +/*
+> > + * The sysfs for Slave reflects the MIPI description as given
+> > + * in the MIPI DisCo spec
+> > + *
+> > + * Base file is device
+> > + *	|---- mipi_revision
+> > + *	|---- wake_capable
+> > + *	|---- test_mode_capable
+> > + *	|---- simple_clk_stop_capable
+> > + *	|---- clk_stop_timeout
+> > + *	|---- ch_prep_timeout
+> > + *	|---- reset_behave
+> > + *	|---- high_PHY_capable
+> > + *	|---- paging_support
+> > + *	|---- bank_delay_support
+> > + *	|---- p15_behave
+> > + *	|---- master_count
+> > + *	|---- source_ports
+> > + *	|---- sink_ports
+> > + *	|---- dp0
+> > + *		|---- max_word
+> > + *		|---- min_word
+> > + *		|---- words
+> > + *		|---- flow_controlled
+> > + *		|---- simple_ch_prep_sm
+> > + *		|---- device_interrupts
+> > + *	|---- dpN
+> > + *		|---- max_word
+> > + *		|---- min_word
+> > + *		|---- words
+> > + *		|---- type
+> > + *		|---- max_grouping
+> > + *		|---- simple_ch_prep_sm
+> > + *		|---- ch_prep_timeout
+> > + *		|---- device_interrupts
+> > + *		|---- max_ch
+> > + *		|---- min_ch
+> > + *		|---- ch
+> > + *		|---- ch_combinations
+> > + *		|---- modes
+> > + *		|---- max_async_buffer
+> > + *		|---- block_pack_mode
+> > + *		|---- port_encoding
+> > + *		|---- bus_min_freq
+> > + *		|---- bus_max_freq
+> > + *		|---- bus_freq
+> > + *		|---- max_freq
+> > + *		|---- min_freq
+> > + *		|---- freq
+> > + *		|---- prep_ch_behave
+> > + *		|---- glitchless
+> > + *
+> > + */
+> > +struct sdw_slave_sysfs {
+> > +	struct sdw_slave *slave;
+> > +};
+> 
+> Same here, why are you using kobjects for this "device"?  Shouldn't you
+> use a real struct device for dpX?
+> 
+> > +
+> > +#define SLAVE_ATTR(type)					\
+> > +static ssize_t type##_show(struct device *dev,			\
+> > +		struct device_attribute *attr, char *buf)	\
+> > +{								\
+> > +	struct sdw_slave *slave = dev_to_sdw_dev(dev);		\
+> > +	return sprintf(buf, "0x%x\n", slave->prop.type);	\
+> > +}								\
+> > +static DEVICE_ATTR_RO(type)
+> 
+> Oh wait, you are?  I'm confused, is this a real device or not?
+
+Yes it  real device :) We have attributes and a device can have N data ports
+which have their own attributes, so added kobject for each dpN and
+attributes for those. So it would appear as: dpN/max_word and so in sysfs
+
+If there a better way to do this without kobject, please do let me know and I
+will change that
+
+> 
+> > +
+> > +SLAVE_ATTR(mipi_revision);
+> > +SLAVE_ATTR(wake_capable);
+> > +SLAVE_ATTR(test_mode_capable);
+> > +SLAVE_ATTR(clk_stop_mode1);
+> > +SLAVE_ATTR(simple_clk_stop_capable);
+> > +SLAVE_ATTR(clk_stop_timeout);
+> > +SLAVE_ATTR(ch_prep_timeout);
+> > +SLAVE_ATTR(reset_behave);
+> > +SLAVE_ATTR(high_PHY_capable);
+> > +SLAVE_ATTR(paging_support);
+> > +SLAVE_ATTR(bank_delay_support);
+> > +SLAVE_ATTR(p15_behave);
+> > +SLAVE_ATTR(master_count);
+> > +SLAVE_ATTR(source_ports);
+> > +
+> > +static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
+> > +			     char *buf)
+> > +{
+> > +	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+> > +
+> > +	return sdw_slave_modalias(slave, buf, 256);
+> > +}
+> > +static DEVICE_ATTR_RO(modalias);
+> > +
+> > +static struct attribute *slave_dev_attrs[] = {
+> > +	&dev_attr_mipi_revision.attr,
+> > +	&dev_attr_wake_capable.attr,
+> > +	&dev_attr_test_mode_capable.attr,
+> > +	&dev_attr_clk_stop_mode1.attr,
+> > +	&dev_attr_simple_clk_stop_capable.attr,
+> > +	&dev_attr_clk_stop_timeout.attr,
+> > +	&dev_attr_ch_prep_timeout.attr,
+> > +	&dev_attr_reset_behave.attr,
+> > +	&dev_attr_high_PHY_capable.attr,
+> > +	&dev_attr_paging_support.attr,
+> > +	&dev_attr_bank_delay_support.attr,
+> > +	&dev_attr_p15_behave.attr,
+> > +	&dev_attr_master_count.attr,
+> > +	&dev_attr_source_ports.attr,
+> > +	&dev_attr_modalias.attr,
+> > +	NULL,
+> > +};
+> > +
+> > +static struct attribute_group sdw_slave_dev_attr_group = {
+> > +	.attrs	= slave_dev_attrs,
+> > +};
+> > +
+> > +const struct attribute_group *sdw_slave_dev_attr_groups[] = {
+> > +	&sdw_slave_dev_attr_group,
+> > +	NULL
+> > +};
+> > diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+> > index e752db72a045..fce502d08fef 100644
+> > --- a/include/linux/soundwire/sdw.h
+> > +++ b/include/linux/soundwire/sdw.h
+> > @@ -308,6 +308,15 @@ int sdw_master_read_prop(struct sdw_bus *bus);
+> >  int sdw_slave_read_prop(struct sdw_slave *slave);
+> >  
+> >  /*
+> > + * SDW sysfs APIs
+> > + */
+> > +struct sdw_slave_sysfs;
+> > +struct sdw_master_sysfs;
+> > +
+> > +int sdw_sysfs_bus_init(struct sdw_bus *bus);
+> 
+> How are you handling the sysfs files showing up "after" the device is
+> registered and userspace not seeing them?  Have you tried using libudev
+> to get the attributes?  Does this all work properly?  I think with the
+> use of a kobject that breaks, and that's not good.
+
+Ah i am missing an uevent here, will add. I will check the libudev too.
+
+> > +void sdw_sysfs_bus_exit(struct sdw_bus *bus);
+> > +
+> > +/*
+> >   * SDW Slave Structures and APIs
+> >   */
+> >  
+> > @@ -363,6 +372,7 @@ struct sdw_slave_ops {
+> >   * @bus: Bus handle
+> >   * @ops: Slave callback ops
+> >   * @prop: Slave properties
+> > + * @sysfs: Sysfs interface
+> >   * @node: node for bus list
+> >   * @port_ready: Port ready completion flag for each Slave port
+> >   * @dev_num: Device Number assigned by Bus
+> > @@ -374,6 +384,7 @@ struct sdw_slave {
+> >  	struct sdw_bus *bus;
+> >  	const struct sdw_slave_ops *ops;
+> >  	struct sdw_slave_prop prop;
+> > +	struct sdw_slave_sysfs *sysfs;
+> 
+> So a differently reference counted device is hanging off of this?
+> That's the big objection to using a kobject here and should have been a
+> clue that this isn't ok.
+
+sdw_slave embeds the struct device and sysfs is for this device, shouldn't
+that be okay?
+
+> 
+> >  	struct list_head node;
+> >  	struct completion *port_ready;
+> >  	u16 dev_num;
+> > @@ -453,6 +464,7 @@ struct sdw_master_ops {
+> >   * @msg_lock: message lock
+> >   * @ops: Master callback ops
+> >   * @prop: Master properties
+> > + * @sysfs: Bus sysfs
+> >   * @defer_msg: Defer message
+> >   * @clk_stop_timeout: Clock stop timeout computed
+> >   */
+> > @@ -465,6 +477,7 @@ struct sdw_bus {
+> >  	struct mutex msg_lock;
+> >  	const struct sdw_master_ops *ops;
+> >  	struct sdw_master_prop prop;
+> > +	struct sdw_master_sysfs *sysfs;
+> 
+> Same here.
+
+sdw_bus represent master device and is registered by the driver. is there a
+better way to handle this.
+
+-- 
+~Vinod
