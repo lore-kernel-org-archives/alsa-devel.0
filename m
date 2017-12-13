@@ -1,21 +1,22 @@
-From: "Andrew F. Davis" <afd@ti.com>
-Subject: Re: [PATCH 01/10] ASoC: tlv320aic32x4: Remove filename
- from header and switch to SPDX
-Date: Wed, 13 Dec 2017 09:51:51 -0600
-Message-ID: <987a243f-b7ed-6b6d-224e-2fe122d46f68@ti.com>
-References: <20171212224311.24045-1-afd@ti.com>
- <1513131575.3036.67.camel@perches.com>
- <3ff091f8-1366-ab38-dd7b-2633e6f3dd80@ti.com>
- <1513180234.27409.12.camel@perches.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: About ASoC DAIs cleanup
+Date: Wed, 13 Dec 2017 15:59:52 +0000
+Message-ID: <20171213155952.GL6416@sirena.org.uk>
+References: <20171208084103.GC18649@localhost>
+ <87fu8lio74.wl%kuninori.morimoto.gx@renesas.com>
+ <20171208105545.GE18649@localhost>
+ <87shciup8e.wl%kuninori.morimoto.gx@renesas.com>
+ <87r2s2uo55.wl%kuninori.morimoto.gx@renesas.com>
+ <87o9n6ukyg.wl%kuninori.morimoto.gx@renesas.com>
+ <87r2rzqf1q.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8172488408565945762=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CD86266B67
- for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 16:51:52 +0100 (CET)
-In-Reply-To: <1513180234.27409.12.camel@perches.com>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id C15AB266B67
+ for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 17:00:04 +0100 (CET)
+In-Reply-To: <87r2rzqf1q.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,61 +26,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Joe Perches <joe@perches.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter <lars@metafoo.de>, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/13/2017 09:50 AM, Joe Perches wrote:
-> On Wed, 2017-12-13 at 09:44 -0600, Andrew F. Davis wrote:
->> On 12/12/2017 08:19 PM, Joe Perches wrote:
->>> On Tue, 2017-12-12 at 16:43 -0600, Andrew F. Davis wrote:
->>>> The filename is often wrong after moves and adds nothing of value,
->>>> lets drop it. While already here, switch to SPDX.
->>>
->>> []
->>>> diff --git a/sound/soc/codecs/tlv320aic32x4-i2c.c b/sound/soc/codecs/tlv320aic32x4-i2c.c
->>>
->>> []
->>>> @@ -1,21 +1,10 @@
->>>> +// SPDX-License-Identifier: GPL-2.0
->>>>  /*
->>>> - * linux/sound/soc/codecs/tlv320aic32x4-i2c.c
->>>> - *
->>>>   * Copyright 2011 NW Digital Radio
->>>>   *
->>>>   * Author: Jeremy McDermond <nh6z@nh6z.net>
->>>>   *
->>>>   * Based on sound/soc/codecs/wm8974 and TI driver for kernel 2.6.27.
->>>> - *
->>>> - * This program is free software; you can redistribute it and/or modify
->>>> - * it under the terms of the GNU General Public License as published by
->>>> - * the Free Software Foundation; either version 2 of the License, or
->>>> - * (at your option) any later version.
->>>> - *
->>>> - * This program is distributed in the hope that it will be useful,
->>>> - * but WITHOUT ANY WARRANTY; without even the implied warranty of
->>>> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->>>> - * GNU General Public License for more details.
->>>
->>> nack.  Note the "(at your option) any later version"
->>>
->>> If you are going to update to spdx and remove the old license
->>> verbiage, make sure you are adding the correct spdx tag.
->>>
->>
->> My bad, will fix.
->>
->> By the way, do you like these spdx update patch? Or would you rather I
->> drop this one and wait to let some script do it for the whole subsystem?
-> 
-> I would not touch any license text until an automated tool
-> can properly do a pass over the entire kernel source tree.
-> 
 
-Just sent a message agreeing right as I got this one :)
+--===============8172488408565945762==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Mit9XoPEfICDqq/V"
+Content-Disposition: inline
 
-> All the bsd variants probably require that the original text
-> be left in place too.
-> 
 
-That's going to be pretty :/
+--Mit9XoPEfICDqq/V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Dec 13, 2017 at 07:19:39AM +0000, Kuninori Morimoto wrote:
+
+> Because many drivers are directly using rtd->codec_dai / rtd->cpu_dai,
+> and it is difficult to lookup CPU/Codec DAI from non categorize DAIs.
+> Thus, we can't support non-categorized DAI at this point.
+
+> Now Vinod want to use Multi CPU DAI.
+> If we can support Multi CPU DAI / Multi Codec DAI,
+> we can cleanup current DAI code more.
+> But what do you think ?
+
+Cleaning things up so we don't need to use rtd->cpu_dai and rtd->codec_dai
+would definitely be nice, it's also useful for CODEC<->CODEC links.  Off
+the top of my head wrapping the accesses with macros/functions then
+implementing a way of getting the DAI behind them would be tractable?
+
+--Mit9XoPEfICDqq/V
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloxTngACgkQJNaLcl1U
+h9BATQf/ZO7NnQq73FrFwJW19xe1OL2iyS03hR3kbYk5KQX8iZobEU7cA9V3z3SW
+5XcbBbh1rfAN1qihVUn+pRf+mHgFpnlKg4Vga3MruBd4UKfvWd9TYQHQYLTskW/w
+IK+Aw9RSlTRiSHrmBa0Ni71/0tU+2fmaFd+T1OUauCzR1ZM5DEm91PVfMFahmlvu
+9SZItM4kSdISwK14u6ijhu3xtjcyV8ML/+wvUBOD5RI8CzRrrwSKp7QDfBrXGv5c
+jyKZyZRgEEUzWUSjY2YajY/7E3ltzGE/fs00mtxsRAcHb8zJo1GUe1uM5d6oNwmL
+NlmQwHCZ3rfTlA6RSYh9gWthuvqvTg==
+=bhCU
+-----END PGP SIGNATURE-----
+
+--Mit9XoPEfICDqq/V--
+
+--===============8172488408565945762==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8172488408565945762==--
