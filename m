@@ -1,61 +1,58 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v5 00/15] soundwire: Add a new SoundWire
-	subsystem
-Date: Wed, 13 Dec 2017 10:18:22 +0100
-Message-ID: <20171213091822.GD6269@kroah.com>
-References: <1512575231-4154-1-git-send-email-vinod.koul@intel.com>
+From: Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>
+Subject: Re: [PATCH v10 00/13] Introduce framework for SLIMbus device driver
+Date: Wed, 13 Dec 2017 10:25:02 +0100
+Message-ID: <20171213092502.GA12631@kroah.com>
+References: <20171211234307.14465-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.linuxfoundation.org (mail.linuxfoundation.org
- [140.211.169.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D2ED266AE4
- for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 10:18:20 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1512575231-4154-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+In-Reply-To: <20171211234307.14465-1-srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Corbet <corbet-T1hC0tSOHrs@public.gmane.org>, pombredanne-od1rfyK75/E@public.gmane.org, j.neuschaefer-hi6Y0CQ0nG0@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 06, 2017 at 09:16:56PM +0530, Vinod Koul wrote:
-> This patch series adds a new SoundWire subsystem which implements a
-> new MIPI bus protocol 'SoundWire'.
+On Mon, Dec 11, 2017 at 11:42:54PM +0000, srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org wrote:
+> From: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 > 
-> The SoundWire protocol is a robust, scalable, low complexity, low
-> power, low latency, two-pin (clock and data) multi-drop bus that
-> allows for the transfer of multiple audio streams and embedded
-> control/commands.  SoundWire provides synchronization capabilities
-> and supports both PCM and PDM, multichannel data, isochronous and
-> asynchronous modes.
+> SLIMbus (Serial Low Power Interchip Media Bus) is a specification
+> developed by MIPI (Mobile Industry Processor Interface) alliance.
+> SLIMbus is a 2-wire implementation, which is used to communicate with
+> peripheral components like audio-codec.
+> SLIMbus uses Time-Division-Multiplexing to accommodate multiple data
+> channels, and control channel. Control channel has messages to do
+> device-enumeration, messages to send/receive control-data to/from
+> SLIMbus devices, messages for port/channel management, and messages to
+> do bandwidth allocation.
+> Framework is introduced to support  multiple instances of the bus
+> (1 controller per bus), and multiple slave devices per controller.
+> SPI and I2C frameworks, and comments from last time when I submitted
+> the patches were referred-to while working on this framework.
 > 
-> This series adds SoundWire Bus, IO transfers, DisCo (Discovery and
-> Configuration) sysfs interface, regmap and Documentation summary
+> These patchsets introduce device-management, OF helpers, and messaging
+> APIs, controller driver for Qualcomm's SLIMbus controller, and
+> clock-pause feature for entering/exiting low-power mode for SLIMbus.
+> Framework patches to do channel, port and bandwidth
+> management are work-in-progress and will be sent out once these
+> initial patches are accepted.
 > 
-> This patch series is also available on
-> git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git topic/patch_v5
+> These patchsets were tested on IFC6410 board with Qualcomm APQ8064
+> processor using the controller driver, and a WCD9310 codec.
 > 
-> v4: https://lkml.org/lkml/2017/12/1/205
-> v3: https://lkml.org/lkml/2017/11/30/160
-> v2: https://lkml.org/lkml/2017/11/10/216
-> v1: https://lkml.org/lkml/2017/10/18/1030
-> RFC: https://lkml.org/lkml/2016/10/21/395
+> v9: https://lkml.org/lkml/2017/12/7/289
+> 
+> Changes from v9 to v10:
+> * Added kernel-doc reference into slimbus driver api doc suggested by
+>  Jonathan Corbet
 
-I don't think patch 5 is right, how you are using kobjects.
-
-Also, you have to have some documentation on your userspace API here for
-it to be reviewable.  To hide sysfs trees and files in code comments is
-not good.
+These all look good to me.  I can take this through my tree if I get the
+ack from Mark for the regmap changes.
 
 thanks,
 
 greg k-h
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
