@@ -1,49 +1,79 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 00/14] soundwire: Add a new SoundWire subsystem
-Date: Thu, 14 Dec 2017 15:09:14 +0000
-Message-ID: <20171214150914.GD9788@sirena.org.uk>
-References: <1513230585-13882-1-git-send-email-vinod.koul@intel.com>
- <20171214073508.GA29585@kroah.com>
- <20171214105320.GX18649@localhost>
- <20171214124949.GA12935@kroah.com>
+Subject: Re: [PATCH v2] ASOC: wm8960: Add multiple MCLK
+	frequency support
+Date: Thu, 14 Dec 2017 15:31:39 +0000
+Message-ID: <20171214153139.GG9788@sirena.org.uk>
+References: <1513168650-102028-1-git-send-email-chen.liu.opensource@gmail.com>
+ <20171214115648.qidtgzihdoikxvhe@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qGV0fN9tzfkG3CxV"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171214124949.GA12935@kroah.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Vinod Koul <vinod.koul@intel.com>, Takashi <tiwai@suse.de>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
+Content-Type: multipart/mixed; boundary="===============4688939542879956499=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24DCC26732A
+ for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 16:31:50 +0100 (CET)
+In-Reply-To: <20171214115648.qidtgzihdoikxvhe@localhost.localdomain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: shengjiu.wang@freescale.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, tiwai@suse.com, lgirdwood@gmail.com, "Chen.Liu" <chen.liu.opensource@gmail.com>, daniel.baluta@nxp.com
 List-Id: alsa-devel@alsa-project.org
 
 
---qGV0fN9tzfkG3CxV
+--===============4688939542879956499==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="cyV/sMl4KAhiehtf"
+Content-Disposition: inline
+
+
+--cyV/sMl4KAhiehtf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Dec 14, 2017 at 01:49:49PM +0100, Greg Kroah-Hartman wrote:
+On Thu, Dec 14, 2017 at 11:56:48AM +0000, Charles Keepax wrote:
+> On Wed, Dec 13, 2017 at 08:37:30PM +0800, Chen.Liu wrote:
 
-> Ok, but that feels a bit rushed, as I'm guessing those sysfs files are
-> essencial for the use of the hardware.  To not include them feels odd to
-> me :)
+> > +	if (unsupported)
+> > +		snd_soc_update_bits(codec, WM8960_CLOCK1, 0x6,
+> > +				WM8960_SYSCLK_DIV_2);
+> > +
 
-As a reviewer if we can get the rest of the series moving so that
-there's less to review each time it's posted that'd be very helpful.
+> Looking at this a bit more I do have some reservations. Firstly
+> this divider can be set through wm8960_set_dai_clkdiv, and
+> secondly it is also set at the bottom of
 
---qGV0fN9tzfkG3CxV
+Removing set_clkdiv() would be a better thing if there were conflicts
+here, in general we're trying to avoid uses of it.
+
+--cyV/sMl4KAhiehtf
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloylBkACgkQJNaLcl1U
-h9Dr9Af/W9sRKInt8kqvznEn8O0nqYHAChHXk1qxZg+onEWk8JUFAjboSmlaJcQ2
-4eYk6aX8ZNVl0RDFdTGw4WUHxGFb2JoiLi+f8wIFHiEd7XS394SCN/ZEOZAMBNro
-IAdWy3XvZ8lZpwtAIe2qi/EVO94AI6K31lnoq5h38rYa/gmZEuIN6UVFKxsm6UwC
-mM5egRVYfGKqhtQxiL68jHjk5U/c4f2aIloxtB981ABQCOvQ44cWtfIqHs6ufHda
-lqDOX3QLmlrZrmvxBc8ApkpCePBOxCX2uXiEcN4UwA98X+LPgT3kOBSZ3DX7fYf5
-gWoKifRt3z8Y4K1s5cRGhEnW/pWYTA==
-=0T4F
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloymVoACgkQJNaLcl1U
+h9Dfywf+JQ2Z2RttyQxXMvQMa1cmrAOBOPv2b2Uv0CH3XcjIjZCxjPaQOsZRQ/Wp
+XVofEfvmCnMNXzD2Hlp7JWho1r3lIntMal13i2cOYV8Y51/nbeM3+Gu9YWJ10/N2
+9gD0WTTNVBKoFHcZfecDibUB415+1L5lDNlk+AOGRUXEhv62HaylzR5XWZEV2oVU
+ViFv76n0ML+yF3llwQ498YLSlCkA7dNinR3qV93aHRwMCnBqERay7IkUKExVJreM
+LX9HpDZwp3ub9gNQ97RNOtks+ewzelxXesFfVECSVYRiykdUmd4llEf871laCbFD
+1XWMCWZGYCx3h3jGbaWS3SXZr7cBXw==
+=1mqp
 -----END PGP SIGNATURE-----
 
---qGV0fN9tzfkG3CxV--
+--cyV/sMl4KAhiehtf--
+
+--===============4688939542879956499==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4688939542879956499==--
