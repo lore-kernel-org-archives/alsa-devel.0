@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASOC: wm8960: Add multiple MCLK
-	frequency support
-Date: Thu, 14 Dec 2017 16:45:55 +0000
-Message-ID: <20171214164555.GH9788@sirena.org.uk>
-References: <1513168650-102028-1-git-send-email-chen.liu.opensource@gmail.com>
- <20171214115648.qidtgzihdoikxvhe@localhost.localdomain>
- <20171214153139.GG9788@sirena.org.uk>
- <20171214155151.gfauoqjwomhadibh@localhost.localdomain>
+Subject: Re: [PATCH v2 02/15] soc: qcom: add support to APR bus
+	driver
+Date: Thu, 14 Dec 2017 16:48:07 +0000
+Message-ID: <20171214164807.GI9788@sirena.org.uk>
+References: <20171205221812.25641-1-srinivas.kandagatla@linaro.org>
+ <20171205221812.25641-3-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1432012053082806946=="
+Content-Type: multipart/mixed; boundary="===============6416905629080670737=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C5082267AE3
- for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 17:46:37 +0100 (CET)
-In-Reply-To: <20171214155151.gfauoqjwomhadibh@localhost.localdomain>
+ by alsa0.perex.cz (Postfix) with ESMTP id E4B4326732A
+ for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 17:48:08 +0100 (CET)
+In-Reply-To: <20171205221812.25641-3-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,55 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: shengjiu.wang@freescale.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, tiwai@suse.com, lgirdwood@gmail.com, "Chen.Liu" <chen.liu.opensource@gmail.com>, daniel.baluta@nxp.com
+To: srinivas.kandagatla@linaro.org
+Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, Stephen Boyd <sboyd@codeaurora.org>, kwestfie@codeaurora.org, tiwai@suse.com, David Brown <david.brown@linaro.org>, linux-arm-msm@vger.kernel.org, Andy.Gross@linaro.org, lkasam@qti.qualcomm.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1432012053082806946==
+--===============6416905629080670737==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ewQ5hdP4CtoTt3oD"
+	protocol="application/pgp-signature"; boundary="JIpyCmsTxyPLrmrM"
 Content-Disposition: inline
 
 
---ewQ5hdP4CtoTt3oD
+--JIpyCmsTxyPLrmrM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 14, 2017 at 03:51:51PM +0000, Charles Keepax wrote:
-> On Thu, Dec 14, 2017 at 03:31:39PM +0000, Mark Brown wrote:
+On Tue, Dec 05, 2017 at 10:17:59PM +0000, srinivas.kandagatla@linaro.org wr=
+ote:
+> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>=20
+> This patch adds support toi APR bus (Asynchronous Packet Router) driver.
+> ARP driver is made as a bus driver so that the apr devices can added remo=
+ved
+> more dynamically depending on the state of the services on the dsp.
+> APR is used for communication between application processor and QDSP to
+> use services on QDSP like Audio and others.
 
-> > Removing set_clkdiv() would be a better thing if there were conflicts
-> > here, in general we're trying to avoid uses of it.
+I'm not seing any of the Qualcomm architecture maintainers in copy here
+- are they not expected to review this?  I don't know what the usual
+practice is for Qualcomm things.  Adding Andy, Dave and Stephen to copy.
 
-> Ok that can probably be done as a separate patch I will review
-> again with that in mind.
-
-Yeah.  It does depend a bit if something's using it but I don't *think*
-so.
-
---ewQ5hdP4CtoTt3oD
+--JIpyCmsTxyPLrmrM
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloyqsMACgkQJNaLcl1U
-h9BCswf+McioednL7m8/9CgGuGVNcoF2flKEeaqpG7+iMSZelR468Ofk8q8X6jiq
-l5dll6bLbuWwhBuCvWkLFkq3TFx1F5CTz11lZZxiYws6Yo+xZLtfea5HKxOE8bDm
-bMayy0GuMJUHTfI4QnG/nnRj7scKOsMqygKrYDcFKc5pD0AbWvrGUhcTGVv3phdG
-xMM6CqmfJhOH2C4Mf5ESEs1wMg+w0GhKQsu8zhQQwy+l7qOK8F70mwpMeyvURWN1
-cxXVKOD1yCy0T3hyy1DEPSImpyrmI6xcJsec1FUZW9oujM42SSCgKr2QIiG40blh
-1qzJ3xg7S6jLNyR6N9Z3mc8fGVPGcg==
-=xUNd
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloyq0YACgkQJNaLcl1U
+h9CuFAf/SZIj0fLEo1GJ8Um+hbrW9Xx7xBrDor+Wjm04eAW+3lj5Uuz2SERt9wSA
+Mp1VQGO6ZK1/FtQkmeBNLKpbjUAkjFq4mWtmBD9uN3N1oiG+MqPTnqkFkrSEvu5d
+kMH3kJQnH2DLBON/IXdzj85jAqqext4xPnJmvpq8ypAXGVYeWXEB+mrkqwm+K8AC
+43VVwGvMXMU+uc9hWZsrQrwXugteydMYwMXd8u/18PtZcDF4jyJnxb1Z2i29o0ih
+RxhxraHl/xyjjJyEk03pB6sVIQNETSJhziXPrFWlpc8CGH36l2hVeIJHF/UiemnI
+/xz8YAWS2+Wr5/9GR1OlHHS3G6CLzg==
+=iOpX
 -----END PGP SIGNATURE-----
 
---ewQ5hdP4CtoTt3oD--
+--JIpyCmsTxyPLrmrM--
 
---===============1432012053082806946==
+--===============6416905629080670737==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1432012053082806946==--
+--===============6416905629080670737==--
