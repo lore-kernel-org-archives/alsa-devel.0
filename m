@@ -1,7 +1,7 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v6 11/14] soundwire: cdns: Add sdw_master_ops and IO transfer support
-Date: Thu, 14 Dec 2017 11:19:42 +0530
-Message-ID: <1513230585-13882-12-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v6 12/14] soundwire: intel: Add Intel Master driver
+Date: Thu, 14 Dec 2017 11:19:43 +0530
+Message-ID: <1513230585-13882-13-git-send-email-vinod.koul@intel.com>
 References: <1513230585-13882-1-git-send-email-vinod.koul@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1513230585-13882-1-git-send-email-vinod.koul@intel.com>
@@ -10,11 +10,9 @@ To: Takashi <tiwai@suse.de>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Sanyog Kale <sanyog.r.kale@intel.com>
-
-Implement sdw_master_ops with support for xfer_msg, xfer_msg_defer
-and reset_page_addr. Since Cadence module doesn't know the systems
-it will be used, set the read_prop to the bus helper.
+Some Intel platforms have SoundWire Master, so add Intel SoundWire
+Master driver which uses Cadence module. This patch adds probe and
+initialization routines for Intel Master driver.
 
 Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
@@ -23,408 +21,454 @@ Acked-By: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- drivers/soundwire/cadence_master.c | 320 +++++++++++++++++++++++++++++++++++++
- drivers/soundwire/cadence_master.h |  14 ++
- 2 files changed, 334 insertions(+)
+ drivers/soundwire/Kconfig           |  11 ++
+ drivers/soundwire/Makefile          |   4 +
+ drivers/soundwire/intel.c           | 345 ++++++++++++++++++++++++++++++++++++
+ drivers/soundwire/intel.h           |  23 +++
+ include/linux/soundwire/sdw_intel.h |  21 +++
+ 5 files changed, 404 insertions(+)
+ create mode 100644 drivers/soundwire/intel.c
+ create mode 100644 drivers/soundwire/intel.h
+ create mode 100644 include/linux/soundwire/sdw_intel.h
 
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index afaeb9db6a72..3a9b1462039b 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -222,9 +222,261 @@ static int cdns_clear_bit(struct sdw_cdns *cdns, int offset, u32 value)
- }
+diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
+index 34361952310e..b46084b4b1f8 100644
+--- a/drivers/soundwire/Kconfig
++++ b/drivers/soundwire/Kconfig
+@@ -23,4 +23,15 @@ config SOUNDWIRE_BUS
+ config SOUNDWIRE_CADENCE
+ 	tristate
  
- /*
-+ * IO Calls
++config SOUNDWIRE_INTEL
++	tristate "Intel SoundWire Master driver"
++	select SOUNDWIRE_CADENCE
++	select SOUNDWIRE_BUS
++	depends on X86 && ACPI
++	---help---
++	  SoundWire Intel Master driver.
++	  If you have an Intel platform which has a SoundWire Master then
++	  enable this config option to get the SoundWire support for that
++	  device.
++
+ endif
+diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
+index 1e8e966d32ee..befd7f8af7e1 100644
+--- a/drivers/soundwire/Makefile
++++ b/drivers/soundwire/Makefile
+@@ -9,3 +9,7 @@ obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
+ #Cadence Objs
+ soundwire-cadence-objs := cadence_master.o
+ obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
++
++#Intel driver
++soundwire-intel-objs :=	intel.o
++obj-$(CONFIG_SOUNDWIRE_INTEL) += soundwire-intel.o
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+new file mode 100644
+index 000000000000..6a9177ea6eb9
+--- /dev/null
++++ b/drivers/soundwire/intel.c
+@@ -0,0 +1,345 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++// Copyright(c) 2015-17 Intel Corporation.
++
++/*
++ * Soundwire Intel Master Driver
 + */
-+static enum sdw_command_response cdns_fill_msg_resp(
-+			struct sdw_cdns *cdns,
-+			struct sdw_msg *msg, int count, int offset)
++
++#include <linux/acpi.h>
++#include <linux/delay.h>
++#include <linux/interrupt.h>
++#include <linux/platform_device.h>
++#include <linux/soundwire/sdw_registers.h>
++#include <linux/soundwire/sdw.h>
++#include <linux/soundwire/sdw_intel.h>
++#include "cadence_master.h"
++#include "intel.h"
++
++/* Intel SHIM Registers Definition */
++#define SDW_SHIM_LCAP			0x0
++#define SDW_SHIM_LCTL			0x4
++#define SDW_SHIM_IPPTR			0x8
++#define SDW_SHIM_SYNC			0xC
++
++#define SDW_SHIM_CTLSCAP(x)		(0x010 + 0x60 * x)
++#define SDW_SHIM_CTLS0CM(x)		(0x012 + 0x60 * x)
++#define SDW_SHIM_CTLS1CM(x)		(0x014 + 0x60 * x)
++#define SDW_SHIM_CTLS2CM(x)		(0x016 + 0x60 * x)
++#define SDW_SHIM_CTLS3CM(x)		(0x018 + 0x60 * x)
++#define SDW_SHIM_PCMSCAP(x)		(0x020 + 0x60 * x)
++
++#define SDW_SHIM_PCMSYCHM(x, y)		(0x022 + (0x60 * x) + (0x2 * y))
++#define SDW_SHIM_PCMSYCHC(x, y)		(0x042 + (0x60 * x) + (0x2 * y))
++#define SDW_SHIM_PDMSCAP(x)		(0x062 + 0x60 * x)
++#define SDW_SHIM_IOCTL(x)		(0x06C + 0x60 * x)
++#define SDW_SHIM_CTMCTL(x)		(0x06E + 0x60 * x)
++
++#define SDW_SHIM_WAKEEN			0x190
++#define SDW_SHIM_WAKESTS		0x192
++
++#define SDW_SHIM_LCTL_SPA		BIT(0)
++#define SDW_SHIM_LCTL_CPA		BIT(8)
++
++#define SDW_SHIM_SYNC_SYNCPRD_VAL	0x176F
++#define SDW_SHIM_SYNC_SYNCPRD		GENMASK(14, 0)
++#define SDW_SHIM_SYNC_SYNCCPU		BIT(15)
++#define SDW_SHIM_SYNC_CMDSYNC_MASK	GENMASK(19, 16)
++#define SDW_SHIM_SYNC_CMDSYNC		BIT(16)
++#define SDW_SHIM_SYNC_SYNCGO		BIT(24)
++
++#define SDW_SHIM_PCMSCAP_ISS		GENMASK(3, 0)
++#define SDW_SHIM_PCMSCAP_OSS		GENMASK(7, 4)
++#define SDW_SHIM_PCMSCAP_BSS		GENMASK(12, 8)
++
++#define SDW_SHIM_PCMSYCM_LCHN		GENMASK(3, 0)
++#define SDW_SHIM_PCMSYCM_HCHN		GENMASK(7, 4)
++#define SDW_SHIM_PCMSYCM_STREAM		GENMASK(13, 8)
++#define SDW_SHIM_PCMSYCM_DIR		BIT(15)
++
++#define SDW_SHIM_PDMSCAP_ISS		GENMASK(3, 0)
++#define SDW_SHIM_PDMSCAP_OSS		GENMASK(7, 4)
++#define SDW_SHIM_PDMSCAP_BSS		GENMASK(12, 8)
++#define SDW_SHIM_PDMSCAP_CPSS		GENMASK(15, 13)
++
++#define SDW_SHIM_IOCTL_MIF		BIT(0)
++#define SDW_SHIM_IOCTL_CO		BIT(1)
++#define SDW_SHIM_IOCTL_COE		BIT(2)
++#define SDW_SHIM_IOCTL_DO		BIT(3)
++#define SDW_SHIM_IOCTL_DOE		BIT(4)
++#define SDW_SHIM_IOCTL_BKE		BIT(5)
++#define SDW_SHIM_IOCTL_WPDD		BIT(6)
++#define SDW_SHIM_IOCTL_CIBD		BIT(8)
++#define SDW_SHIM_IOCTL_DIBD		BIT(9)
++
++#define SDW_SHIM_CTMCTL_DACTQE		BIT(0)
++#define SDW_SHIM_CTMCTL_DODS		BIT(1)
++#define SDW_SHIM_CTMCTL_DOAIS		GENMASK(4, 3)
++
++#define SDW_SHIM_WAKEEN_ENABLE		BIT(0)
++#define SDW_SHIM_WAKESTS_STATUS		BIT(0)
++
++/* Intel ALH Register definitions */
++#define SDW_ALH_STRMZCFG(x)		(0x000 + (0x4 * x))
++
++#define SDW_ALH_STRMZCFG_DMAT_VAL	0x3
++#define SDW_ALH_STRMZCFG_DMAT		GENMASK(7, 0)
++#define SDW_ALH_STRMZCFG_CHN		GENMASK(19, 16)
++
++struct sdw_intel {
++	struct sdw_cdns cdns;
++	int instance;
++	struct sdw_intel_link_res *res;
++};
++
++#define cdns_to_intel(_cdns) container_of(_cdns, struct sdw_intel, cdns)
++
++/*
++ * Read, write helpers for HW registers
++ */
++static inline int intel_readl(void __iomem *base, int offset)
 +{
-+	int nack = 0, no_ack = 0;
-+	int i;
-+
-+	/* check message response */
-+	for (i = 0; i < count; i++) {
-+		if (!(cdns->response_buf[i] & CDNS_MCP_RESP_ACK)) {
-+			no_ack = 1;
-+			dev_dbg(cdns->dev, "Msg Ack not received\n");
-+			if (cdns->response_buf[i] & CDNS_MCP_RESP_NACK) {
-+				nack = 1;
-+				dev_err(cdns->dev, "Msg NACK received\n");
-+			}
-+		}
-+	}
-+
-+	if (nack) {
-+		dev_err(cdns->dev, "Msg NACKed for Slave %d\n", msg->dev_num);
-+		return SDW_CMD_FAIL;
-+	} else if (no_ack) {
-+		dev_dbg(cdns->dev, "Msg ignored for Slave %d\n", msg->dev_num);
-+		return SDW_CMD_IGNORED;
-+	}
-+
-+	/* fill response */
-+	for (i = 0; i < count; i++)
-+		msg->buf[i + offset] = cdns->response_buf[i] >>
-+				SDW_REG_SHIFT(CDNS_MCP_RESP_RDATA);
-+
-+	return SDW_CMD_OK;
++	return readl(base + offset);
 +}
 +
-+static enum sdw_command_response
-+_cdns_xfer_msg(struct sdw_cdns *cdns, struct sdw_msg *msg, int cmd,
-+				int offset, int count, bool defer)
++static inline void intel_writel(void __iomem *base, int offset, int value)
 +{
-+	unsigned long time;
-+	u32 base, i, data;
-+	u16 addr;
-+
-+	/* Program the watermark level for RX FIFO */
-+	if (cdns->msg_count != count) {
-+		cdns_writel(cdns, CDNS_MCP_FIFOLEVEL, count);
-+		cdns->msg_count = count;
-+	}
-+
-+	base = CDNS_MCP_CMD_BASE;
-+	addr = msg->addr;
-+
-+	for (i = 0; i < count; i++) {
-+		data = msg->dev_num << SDW_REG_SHIFT(CDNS_MCP_CMD_DEV_ADDR);
-+		data |= cmd << SDW_REG_SHIFT(CDNS_MCP_CMD_COMMAND);
-+		data |= addr++  << SDW_REG_SHIFT(CDNS_MCP_CMD_REG_ADDR_L);
-+
-+		if (msg->flags == SDW_MSG_FLAG_WRITE)
-+			data |= msg->buf[i + offset];
-+
-+		data |= msg->ssp_sync << SDW_REG_SHIFT(CDNS_MCP_CMD_SSP_TAG);
-+		cdns_writel(cdns, base, data);
-+		base += CDNS_MCP_CMD_WORD_LEN;
-+	}
-+
-+	if (defer)
-+		return SDW_CMD_OK;
-+
-+	/* wait for timeout or response */
-+	time = wait_for_completion_timeout(&cdns->tx_complete,
-+				msecs_to_jiffies(CDNS_TX_TIMEOUT));
-+	if (!time) {
-+		dev_err(cdns->dev, "IO transfer timed out\n");
-+		msg->len = 0;
-+		return SDW_CMD_TIMEOUT;
-+	}
-+
-+	return cdns_fill_msg_resp(cdns, msg, count, offset);
++	writel(value, base + offset);
 +}
 +
-+static enum sdw_command_response cdns_program_scp_addr(
-+			struct sdw_cdns *cdns, struct sdw_msg *msg)
++static inline u16 intel_readw(void __iomem *base, int offset)
 +{
-+	int nack = 0, no_ack = 0;
-+	unsigned long time;
-+	u32 data[2], base;
-+	int i;
-+
-+	/* Program the watermark level for RX FIFO */
-+	if (cdns->msg_count != CDNS_SCP_RX_FIFOLEVEL) {
-+		cdns_writel(cdns, CDNS_MCP_FIFOLEVEL, CDNS_SCP_RX_FIFOLEVEL);
-+		cdns->msg_count = CDNS_SCP_RX_FIFOLEVEL;
-+	}
-+
-+	data[0] = msg->dev_num << SDW_REG_SHIFT(CDNS_MCP_CMD_DEV_ADDR);
-+	data[0] |= 0x3 << SDW_REG_SHIFT(CDNS_MCP_CMD_COMMAND);
-+	data[1] = data[0];
-+
-+	data[0] |= SDW_SCP_ADDRPAGE1 << SDW_REG_SHIFT(CDNS_MCP_CMD_REG_ADDR_L);
-+	data[1] |= SDW_SCP_ADDRPAGE2 << SDW_REG_SHIFT(CDNS_MCP_CMD_REG_ADDR_L);
-+
-+	data[0] |= msg->addr_page1;
-+	data[1] |= msg->addr_page2;
-+
-+	base = CDNS_MCP_CMD_BASE;
-+	cdns_writel(cdns, base, data[0]);
-+	base += CDNS_MCP_CMD_WORD_LEN;
-+	cdns_writel(cdns, base, data[1]);
-+
-+	time = wait_for_completion_timeout(&cdns->tx_complete,
-+				msecs_to_jiffies(CDNS_TX_TIMEOUT));
-+	if (!time) {
-+		dev_err(cdns->dev, "SCP Msg trf timed out\n");
-+		msg->len = 0;
-+		return SDW_CMD_TIMEOUT;
-+	}
-+
-+	/* check response the writes */
-+	for (i = 0; i < 2; i++) {
-+		if (!(cdns->response_buf[i] & CDNS_MCP_RESP_ACK)) {
-+			no_ack = 1;
-+			dev_err(cdns->dev, "Program SCP Ack not received");
-+			if (cdns->response_buf[i] & CDNS_MCP_RESP_NACK) {
-+				nack = 1;
-+				dev_err(cdns->dev, "Program SCP NACK received");
-+			}
-+		}
-+	}
-+
-+	/* For NACK, NO ack, don't return err if we are in Broadcast mode */
-+	if (nack) {
-+		dev_err(cdns->dev,
-+			"SCP_addrpage NACKed for Slave %d", msg->dev_num);
-+		return SDW_CMD_FAIL;
-+	} else if (no_ack) {
-+		dev_dbg(cdns->dev,
-+			"SCP_addrpage ignored for Slave %d", msg->dev_num);
-+		return SDW_CMD_IGNORED;
-+	}
-+
-+	return SDW_CMD_OK;
++	return readw(base + offset);
 +}
 +
-+static int cdns_prep_msg(struct sdw_cdns *cdns, struct sdw_msg *msg, int *cmd)
++static inline void intel_writew(void __iomem *base, int offset, u16 value)
 +{
-+	int ret;
-+
-+	if (msg->page) {
-+		ret = cdns_program_scp_addr(cdns, msg);
-+		if (ret) {
-+			msg->len = 0;
-+			return ret;
-+		}
-+	}
-+
-+	switch (msg->flags) {
-+	case SDW_MSG_FLAG_READ:
-+		*cmd = CDNS_MCP_CMD_READ;
-+		break;
-+
-+	case SDW_MSG_FLAG_WRITE:
-+		*cmd = CDNS_MCP_CMD_WRITE;
-+		break;
-+
-+	default:
-+		dev_err(cdns->dev, "Invalid msg cmd: %d\n", msg->flags);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
++	writew(value, base + offset);
 +}
 +
-+static enum sdw_command_response
-+cdns_xfer_msg(struct sdw_bus *bus, struct sdw_msg *msg)
++static int intel_clear_bit(void __iomem *base, int offset, u32 value, u32 mask)
 +{
-+	struct sdw_cdns *cdns = bus_to_cdns(bus);
-+	int cmd = 0, ret, i;
++	int timeout = 10;
++	u32 reg_read;
 +
-+	ret = cdns_prep_msg(cdns, msg, &cmd);
-+	if (ret)
-+		return SDW_CMD_FAIL_OTHER;
++	writel(value, base + offset);
++	do {
++		reg_read = readl(base + offset);
++		if (!(reg_read & mask))
++			return 0;
 +
-+	for (i = 0; i < msg->len / CDNS_MCP_CMD_LEN; i++) {
-+		ret = _cdns_xfer_msg(cdns, msg, cmd, i * CDNS_MCP_CMD_LEN,
-+				CDNS_MCP_CMD_LEN, false);
-+		if (ret < 0)
-+			goto exit;
-+	}
++		timeout--;
++		udelay(50);
++	} while (timeout != 0);
 +
-+	if (!(msg->len % CDNS_MCP_CMD_LEN))
-+		goto exit;
-+
-+	ret = _cdns_xfer_msg(cdns, msg, cmd, i * CDNS_MCP_CMD_LEN,
-+			msg->len % CDNS_MCP_CMD_LEN, false);
-+
-+exit:
-+	return ret;
++	return -EAGAIN;
 +}
 +
-+static enum sdw_command_response
-+cdns_xfer_msg_defer(struct sdw_bus *bus,
-+		struct sdw_msg *msg, struct sdw_defer *defer)
++static int intel_set_bit(void __iomem *base, int offset, u32 value, u32 mask)
 +{
-+	struct sdw_cdns *cdns = bus_to_cdns(bus);
-+	int cmd = 0, ret;
++	int timeout = 10;
++	u32 reg_read;
 +
-+	/* for defer only 1 message is supported */
-+	if (msg->len > 1)
-+		return -ENOTSUPP;
++	writel(value, base + offset);
++	do {
++		reg_read = readl(base + offset);
++		if (reg_read & mask)
++			return 0;
 +
-+	ret = cdns_prep_msg(cdns, msg, &cmd);
-+	if (ret)
-+		return SDW_CMD_FAIL_OTHER;
++		timeout--;
++		udelay(50);
++	} while (timeout != 0);
 +
-+	cdns->defer = defer;
-+	cdns->defer->length = msg->len;
-+
-+	return _cdns_xfer_msg(cdns, msg, cmd, 0, msg->len, true);
-+}
-+
-+static enum sdw_command_response
-+cdns_reset_page_addr(struct sdw_bus *bus, unsigned int dev_num)
-+{
-+	struct sdw_cdns *cdns = bus_to_cdns(bus);
-+	struct sdw_msg msg;
-+
-+	/* Create dummy message with valid device number */
-+	memset(&msg, 0, sizeof(msg));
-+	msg.dev_num = dev_num;
-+
-+	return cdns_program_scp_addr(cdns, &msg);
++	return -EAGAIN;
 +}
 +
 +/*
-  * IRQ handling
-  */
- 
-+static void cdns_read_response(struct sdw_cdns *cdns)
++ * shim ops
++ */
++
++static int intel_link_power_up(struct sdw_intel *sdw)
 +{
-+	u32 num_resp, cmd_base;
-+	int i;
++	unsigned int link_id = sdw->instance;
++	void __iomem *shim = sdw->res->shim;
++	int spa_mask, cpa_mask;
++	int link_control, ret;
 +
-+	num_resp = cdns_readl(cdns, CDNS_MCP_FIFOSTAT);
-+	num_resp &= CDNS_MCP_RX_FIFO_AVAIL;
++	/* Link power up sequence */
++	link_control = intel_readl(shim, SDW_SHIM_LCTL);
++	spa_mask = (SDW_SHIM_LCTL_SPA << link_id);
++	cpa_mask = (SDW_SHIM_LCTL_CPA << link_id);
++	link_control |=  spa_mask;
 +
-+	cmd_base = CDNS_MCP_CMD_BASE;
++	ret = intel_set_bit(shim, SDW_SHIM_LCTL, link_control, cpa_mask);
++	if (ret < 0)
++		return ret;
 +
-+	for (i = 0; i < num_resp; i++) {
-+		cdns->response_buf[i] = cdns_readl(cdns, cmd_base);
-+		cmd_base += CDNS_MCP_CMD_WORD_LEN;
-+	}
-+}
-+
- static int cdns_update_slave_status(struct sdw_cdns *cdns,
- 					u32 slave0, u32 slave1)
- {
-@@ -304,6 +556,18 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
- 	if (!(int_status & CDNS_MCP_INT_IRQ))
- 		return IRQ_NONE;
- 
-+	if (int_status & CDNS_MCP_INT_RX_WL) {
-+		cdns_read_response(cdns);
-+
-+		if (cdns->defer) {
-+			cdns_fill_msg_resp(cdns, cdns->defer->msg,
-+					cdns->defer->length, 0);
-+			complete(&cdns->defer->complete);
-+			cdns->defer = NULL;
-+		} else
-+			complete(&cdns->tx_complete);
-+	}
-+
- 	if (int_status & CDNS_MCP_INT_CTRL_CLASH) {
- 
- 		/* Slave is driving bit slot during control word */
-@@ -365,6 +629,42 @@ EXPORT_SYMBOL(sdw_cdns_thread);
- /*
-  * init routines
-  */
-+static int _cdns_enable_interrupt(struct sdw_cdns *cdns)
-+{
-+	u32 mask;
-+
-+	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK0,
-+				CDNS_MCP_SLAVE_INTMASK0_MASK);
-+	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK1,
-+				CDNS_MCP_SLAVE_INTMASK1_MASK);
-+
-+	mask = CDNS_MCP_INT_SLAVE_RSVD | CDNS_MCP_INT_SLAVE_ALERT |
-+		CDNS_MCP_INT_SLAVE_ATTACH | CDNS_MCP_INT_SLAVE_NATTACH |
-+		CDNS_MCP_INT_CTRL_CLASH | CDNS_MCP_INT_DATA_CLASH |
-+		CDNS_MCP_INT_RX_WL | CDNS_MCP_INT_IRQ | CDNS_MCP_INT_DPINT;
-+
-+	cdns_writel(cdns, CDNS_MCP_INTMASK, mask);
-+
++	sdw->cdns.link_up = true;
 +	return 0;
 +}
 +
-+/**
-+ * sdw_cdns_enable_interrupt() - Enable SDW interrupts and update config
-+ * @cdns: Cadence instance
-+ */
-+int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
++static int intel_shim_init(struct sdw_intel *sdw)
 +{
-+	int ret;
++	void __iomem *shim = sdw->res->shim;
++	unsigned int link_id = sdw->instance;
++	int sync_reg, ret;
++	u16 ioctl = 0, act = 0;
 +
-+	_cdns_enable_interrupt(cdns);
-+	ret = cdns_clear_bit(cdns, CDNS_MCP_CONFIG_UPDATE,
-+			CDNS_MCP_CONFIG_UPDATE_BIT);
++	/* Initialize Shim */
++	ioctl |= SDW_SHIM_IOCTL_BKE;
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++
++	ioctl |= SDW_SHIM_IOCTL_WPDD;
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++
++	ioctl |= SDW_SHIM_IOCTL_DO;
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++
++	ioctl |= SDW_SHIM_IOCTL_DOE;
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++
++	/* Switch to MIP from Glue logic */
++	ioctl = intel_readw(shim,  SDW_SHIM_IOCTL(link_id));
++
++	ioctl &= ~(SDW_SHIM_IOCTL_DOE);
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++
++	ioctl &= ~(SDW_SHIM_IOCTL_DO);
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++
++	ioctl |= (SDW_SHIM_IOCTL_MIF);
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++
++	ioctl &= ~(SDW_SHIM_IOCTL_BKE);
++	ioctl &= ~(SDW_SHIM_IOCTL_COE);
++
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++
++	act |= 0x1 << SDW_REG_SHIFT(SDW_SHIM_CTMCTL_DOAIS);
++	act |= SDW_SHIM_CTMCTL_DACTQE;
++	act |= SDW_SHIM_CTMCTL_DODS;
++	intel_writew(shim, SDW_SHIM_CTMCTL(link_id), act);
++
++	/* Now set SyncPRD period */
++	sync_reg = intel_readl(shim, SDW_SHIM_SYNC);
++	sync_reg |= (SDW_SHIM_SYNC_SYNCPRD_VAL <<
++			SDW_REG_SHIFT(SDW_SHIM_SYNC_SYNCPRD));
++
++	/* Set SyncCPU bit */
++	sync_reg |= SDW_SHIM_SYNC_SYNCCPU;
++	ret = intel_clear_bit(shim, SDW_SHIM_SYNC, sync_reg,
++				SDW_SHIM_SYNC_SYNCCPU);
 +	if (ret < 0)
-+		dev_err(cdns->dev, "Config update timedout");
++		dev_err(sdw->cdns.dev, "Failed to set sync period: %d", ret);
 +
 +	return ret;
 +}
-+EXPORT_SYMBOL(sdw_cdns_enable_interrupt);
- 
- /**
-  * sdw_cdns_init() - Cadence initialization
-@@ -427,5 +727,25 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
- }
- EXPORT_SYMBOL(sdw_cdns_init);
- 
-+struct sdw_master_ops sdw_cdns_master_ops = {
-+	.read_prop = sdw_master_read_prop,
-+	.xfer_msg = cdns_xfer_msg,
-+	.xfer_msg_defer = cdns_xfer_msg_defer,
-+	.reset_page_addr = cdns_reset_page_addr,
-+};
-+EXPORT_SYMBOL(sdw_cdns_master_ops);
 +
-+/**
-+ * sdw_cdns_probe() - Cadence probe routine
-+ * @cdns: Cadence instance
-+ */
-+int sdw_cdns_probe(struct sdw_cdns *cdns)
++static int intel_prop_read(struct sdw_bus *bus)
 +{
-+	init_completion(&cdns->tx_complete);
++	/* Initialize with default handler to read all DisCo properties */
++	sdw_master_read_prop(bus);
++
++	/* BIOS is not giving some values correctly. So, lets override them */
++	bus->prop.num_freq = 1;
++	bus->prop.freq = devm_kcalloc(bus->dev, sizeof(*bus->prop.freq),
++					bus->prop.num_freq, GFP_KERNEL);
++	if (!bus->prop.freq)
++		return -ENOMEM;
++
++	bus->prop.freq[0] = bus->prop.max_freq;
++	bus->prop.err_threshold = 5;
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL(sdw_cdns_probe);
 +
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_DESCRIPTION("Cadence Soundwire Library");
-diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
-index f723c3395c0f..beaf6c9804eb 100644
---- a/drivers/soundwire/cadence_master.h
-+++ b/drivers/soundwire/cadence_master.h
-@@ -9,26 +9,40 @@
-  * @dev: Linux device
-  * @bus: Bus handle
-  * @instance: instance number
-+ * @response_buf: SoundWire response buffer
-+ * @tx_complete: Tx completion
-+ * @defer: Defer pointer
-  * @registers: Cadence registers
-  * @link_up: Link status
-+ * @msg_count: Messages sent on bus
-  */
- struct sdw_cdns {
- 	struct device *dev;
- 	struct sdw_bus bus;
- 	unsigned int instance;
- 
-+	u32 response_buf[0x80];
-+	struct completion tx_complete;
-+	struct sdw_defer *defer;
++/*
++ * probe and init
++ */
++static int intel_probe(struct platform_device *pdev)
++{
++	struct sdw_intel *sdw;
++	int ret;
 +
- 	void __iomem *registers;
- 
- 	bool link_up;
-+	unsigned int msg_count;
- };
- 
- #define bus_to_cdns(_bus) container_of(_bus, struct sdw_cdns, bus)
- 
- /* Exported symbols */
- 
-+int sdw_cdns_probe(struct sdw_cdns *cdns);
-+extern struct sdw_master_ops sdw_cdns_master_ops;
++	sdw = devm_kzalloc(&pdev->dev, sizeof(*sdw), GFP_KERNEL);
++	if (!sdw)
++		return -ENOMEM;
 +
- irqreturn_t sdw_cdns_irq(int irq, void *dev_id);
- irqreturn_t sdw_cdns_thread(int irq, void *dev_id);
- 
- int sdw_cdns_init(struct sdw_cdns *cdns);
-+int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns);
++	sdw->instance = pdev->id;
++	sdw->res = dev_get_platdata(&pdev->dev);
++	sdw->cdns.dev = &pdev->dev;
++	sdw->cdns.registers = sdw->res->registers;
++	sdw->cdns.instance = sdw->instance;
++	sdw->cdns.msg_count = 0;
++	sdw->cdns.bus.dev = &pdev->dev;
++	sdw->cdns.bus.link_id = pdev->id;
 +
- 
- #endif /* __SDW_CADENCE_H */
++	sdw_cdns_probe(&sdw->cdns);
++
++	/* Set property read ops */
++	sdw_cdns_master_ops.read_prop = intel_prop_read;
++	sdw->cdns.bus.ops = &sdw_cdns_master_ops;
++
++	platform_set_drvdata(pdev, sdw);
++
++	ret = sdw_add_bus_master(&sdw->cdns.bus);
++	if (ret) {
++		dev_err(&pdev->dev, "sdw_add_bus_master fail: %d\n", ret);
++		goto err_master_reg;
++	}
++
++	/* Initialize shim and controller */
++	intel_link_power_up(sdw);
++	intel_shim_init(sdw);
++
++	ret = sdw_cdns_init(&sdw->cdns);
++	if (ret)
++		goto err_init;
++
++	sdw_cdns_enable_interrupt(&sdw->cdns);
++	if (ret)
++		goto err_init;
++
++	/* Acquire IRQ */
++	ret = request_threaded_irq(sdw->res->irq, sdw_cdns_irq,
++			sdw_cdns_thread, IRQF_SHARED, KBUILD_MODNAME,
++			&sdw->cdns);
++	if (ret < 0) {
++		dev_err(sdw->cdns.dev, "unable to grab IRQ %d, disabling device\n",
++				sdw->res->irq);
++		goto err_init;
++	}
++
++	return 0;
++
++err_init:
++	sdw_delete_bus_master(&sdw->cdns.bus);
++err_master_reg:
++	return ret;
++}
++
++static int intel_remove(struct platform_device *pdev)
++{
++	struct sdw_intel *sdw;
++
++	sdw = platform_get_drvdata(pdev);
++
++	free_irq(sdw->res->irq, sdw);
++	sdw_delete_bus_master(&sdw->cdns.bus);
++
++	return 0;
++}
++
++static struct platform_driver sdw_intel_drv = {
++	.probe = intel_probe,
++	.remove = intel_remove,
++	.driver = {
++		.name = "int-sdw",
++
++	},
++};
++
++module_platform_driver(sdw_intel_drv);
++
++MODULE_LICENSE("Dual BSD/GPL");
++MODULE_ALIAS("platform:int-sdw");
++MODULE_DESCRIPTION("Intel Soundwire Master Driver");
+diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
+new file mode 100644
+index 000000000000..ffa30d9535a2
+--- /dev/null
++++ b/drivers/soundwire/intel.h
+@@ -0,0 +1,23 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++// Copyright(c) 2015-17 Intel Corporation.
++
++#ifndef __SDW_INTEL_LOCAL_H
++#define __SDW_INTEL_LOCAL_H
++
++/**
++ * struct sdw_intel_res - Soundwire link resources
++ * @registers: Link IO registers base
++ * @shim: Audio shim pointer
++ * @alh: ALH (Audio Link Hub) pointer
++ * @irq: Interrupt line
++ *
++ * This is set as pdata for each link instance.
++ */
++struct sdw_intel_link_res {
++	void __iomem *registers;
++	void __iomem *shim;
++	void __iomem *alh;
++	int irq;
++};
++
++#endif /* __SDW_INTEL_LOCAL_H */
+diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
+new file mode 100644
+index 000000000000..370cc52d8d1e
+--- /dev/null
++++ b/include/linux/soundwire/sdw_intel.h
+@@ -0,0 +1,21 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++// Copyright(c) 2015-17 Intel Corporation.
++
++#ifndef __SDW_INTEL_H
++#define __SDW_INTEL_H
++
++/**
++ * struct sdw_intel_res - Soundwire Intel resource structure
++ * @mmio_base: mmio base of SoundWire registers
++ * @irq: interrupt number
++ * @handle: ACPI parent handle
++ * @parent: parent device
++ */
++struct sdw_intel_res {
++	void __iomem *mmio_base;
++	int irq;
++	acpi_handle handle;
++	struct device *parent;
++};
++
++#endif
 -- 
 2.7.4
