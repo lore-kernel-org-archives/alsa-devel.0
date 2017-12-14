@@ -1,18 +1,19 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: rawmidi: Avoid racy info ioctl via ctl
-	device
-Date: Thu, 14 Dec 2017 16:52:15 +0100
-Message-ID: <20171214155215.22116-1-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v2] ASOC: wm8960: Add multiple MCLK
+	frequency support
+Date: Thu, 14 Dec 2017 16:19:54 +0000
+Message-ID: <20171214161954.wfik3ygadwii3zhm@localhost.localdomain>
+References: <1513168650-102028-1-git-send-email-chen.liu.opensource@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 87C35267ADD
- for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 16:52:18 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 06C3EAEAC
- for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 15:52:18 +0000 (UTC)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F25726732A
+ for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 17:20:00 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1513168650-102028-1-git-send-email-chen.liu.opensource@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,66 +23,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Chen.Liu" <chen.liu.opensource@gmail.com>
+Cc: shengjiu.wang@freescale.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, daniel.baluta@nxp.com
 List-Id: alsa-devel@alsa-project.org
 
-The rawmidi also allows to obtaining the information via ioctl of ctl
-API.  It means that user can issue an ioctl to the rawmidi device even
-when it's being removed as long as the control device is present.
-Although the code has some protection via the global register_mutex,
-its range is limited to the search of the corresponding rawmidi
-object, and the mutex is already unlocked at accessing the rawmidi
-object.  This may lead to a use-after-free.
+On Wed, Dec 13, 2017 at 08:37:30PM +0800, Chen.Liu wrote:
+> From: "Chen.Liu" <chen.liu.opensource@gmail.com>
+> diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+> index 997c446..83dd746 100644
+> --- a/sound/soc/codecs/wm8960.c
+> +++ b/sound/soc/codecs/wm8960.c
+> @@ -1036,28 +1036,38 @@ static bool is_pll_freq_available(unsigned int source, unsigned int target)
+>   * to allow rounding later */
+>  #define FIXED_PLL_SIZE ((1 << 24) * 10)
+>  
+> -static int pll_factors(unsigned int source, unsigned int target,
+> +static int pll_factors(struct snd_soc_codec *codec,
+> +		unsigned int source, unsigned int target,
+>  		       struct _pll_div *pll_div)
+>  {
+>  	unsigned long long Kpart;
+>  	unsigned int K, Ndiv, Nmod;
+> +	int unsupported = 0;
+>  
+>  	pr_debug("WM8960 PLL: setting %dHz->%dHz\n", source, target);
+>  
+>  	/* Scale up target to PLL operating frequency */
+>  	target *= 4;
+>  
+> -	Ndiv = target / source;
+> -	if (Ndiv < 6) {
+> -		source >>= 1;
+> -		pll_div->pre_div = 1;
+> +	while (1) {
+>  		Ndiv = target / source;
+> -	} else
+> -		pll_div->pre_div = 0;
+> +		if (Ndiv < 6) {
+> +			source >>= 1;
+> +			pll_div->pre_div = 1;
+> +			Ndiv = target / source;
+> +		} else
+> +			pll_div->pre_div = 0;
+> +
+> +		if ((Ndiv < 6) || (Ndiv > 12)) {
+> +			if (unsupported == 1) {
+> +				pr_err("WM8960 PLL: Unsupported N=%d\n", Ndiv);
+> +				return -EINVAL;
+> +			}
+> +		} else
+> +			break;
+>  
+> -	if ((Ndiv < 6) || (Ndiv > 12)) {
+> -		pr_err("WM8960 PLL: Unsupported N=%d\n", Ndiv);
+> -		return -EINVAL;
+> +		target *= 2;
+> +		unsupported += 1;
+>  	}
+>  
+>  	pll_div->n = Ndiv;
+> @@ -1077,6 +1087,10 @@ static int pll_factors(unsigned int source, unsigned int target,
+>  
+>  	pll_div->k = K;
+>  
+> +	if (unsupported)
+> +		snd_soc_update_bits(codec, WM8960_CLOCK1, 0x6,
+> +				WM8960_SYSCLK_DIV_2);
 
-For avoiding it, this patch widens the application of register_mutex
-to the whole snd_rawmidi_info_select() function.  We have another
-mutex per rawmidi object, but this operation isn't very hot path, so
-it shouldn't matter from the performance POV.
+OK so looking over this some more with Mark's comments in mind
+the thing that troubles me is this. Currently there are two ways
+you can configure the clocking manually or automatically.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/rawmidi.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+The manual way using the set_dai_pll, set_dai_clkdiv and
+set_dai_sysclk calls.
 
-diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
-index b3b353d72527..f055ca10bbc1 100644
---- a/sound/core/rawmidi.c
-+++ b/sound/core/rawmidi.c
-@@ -579,15 +579,14 @@ static int snd_rawmidi_info_user(struct snd_rawmidi_substream *substream,
- 	return 0;
- }
- 
--int snd_rawmidi_info_select(struct snd_card *card, struct snd_rawmidi_info *info)
-+static int __snd_rawmidi_info_select(struct snd_card *card,
-+				     struct snd_rawmidi_info *info)
- {
- 	struct snd_rawmidi *rmidi;
- 	struct snd_rawmidi_str *pstr;
- 	struct snd_rawmidi_substream *substream;
- 
--	mutex_lock(&register_mutex);
- 	rmidi = snd_rawmidi_search(card, info->device);
--	mutex_unlock(&register_mutex);
- 	if (!rmidi)
- 		return -ENXIO;
- 	if (info->stream < 0 || info->stream > 1)
-@@ -603,6 +602,16 @@ int snd_rawmidi_info_select(struct snd_card *card, struct snd_rawmidi_info *info
- 	}
- 	return -ENXIO;
- }
-+
-+int snd_rawmidi_info_select(struct snd_card *card, struct snd_rawmidi_info *info)
-+{
-+	int ret;
-+
-+	mutex_lock(&register_mutex);
-+	ret = __snd_rawmidi_info_select(card, info);
-+	mutex_unlock(&register_mutex);
-+	return ret;
-+}
- EXPORT_SYMBOL(snd_rawmidi_info_select);
- 
- static int snd_rawmidi_info_select_user(struct snd_card *card,
--- 
-2.15.1
+Automatically by calling set_dai_sysclk and set_dai_pll with
+WM8960_SYSCLK_AUTO and the driver will work it out for you. This
+option already supports setting the SYSCLK_DIV.
+
+I guess my first question would be can you get the result you
+desire by just using the automatic option?
+
+If not, it seems like what we are trying to do here is move the
+set_dai_clkdiv for SYSCLK_DIV to be automatic in both cases. The
+problem is that I suspect this handling interfers somewhat with the
+handling of these bits that is done in wm8960_configure_clocking
+through wm8960_configure_pll when we are doing things
+automatically. In which case I think you need to look at how to
+align these two clocking methods.
+
+Thanks,
+Charles
