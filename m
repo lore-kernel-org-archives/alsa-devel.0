@@ -1,197 +1,186 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun4i-i2s: Show detailed error when DAI configuration callbacks fail" to the asoc tree
-Date: Thu, 14 Dec 2017 11:49:21 +0000
-Message-ID: <E1ePS0v-0005PF-Uv@debutante>
-References: <20171214072928.6613-1-wens@csie.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171214072928.6613-1-wens@csie.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Marcus Cooper <codekipper@gmail.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>Maxime Ripard <maxime.ripard@free-electrons.com>Code Kipper <codekipper@gmail.com>, linux-sunxi@googlegroups.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v2] ASOC: wm8960: Add multiple MCLK
+	frequency support
+Date: Thu, 14 Dec 2017 11:56:48 +0000
+Message-ID: <20171214115648.qidtgzihdoikxvhe@localhost.localdomain>
+References: <1513168650-102028-1-git-send-email-chen.liu.opensource@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 55C7326707A
+ for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 13:06:36 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1513168650-102028-1-git-send-email-chen.liu.opensource@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Chen.Liu" <chen.liu.opensource@gmail.com>
+Cc: shengjiu.wang@freescale.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, daniel.baluta@nxp.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Wed, Dec 13, 2017 at 08:37:30PM +0800, Chen.Liu wrote:
+> From: "Chen.Liu" <chen.liu.opensource@gmail.com>
+> 
+> Issue:
+>  MCLK=24MHZ,SYSCLOCK=12.288MHZ.
+>  When the 'wm8960_set_pll' function is called,the driver will
+>  prompted "WM8960 PLL: unsupported N = 4" error message.
+>  However,the value of PLLN should be 8 based on the table45(
+>  PLL Frequency Examples) of the wm8960 chip manuanl.
+> 
+> Reason:
+>  The intergrated PLL can be used to generate SYSCLK for the wm8960.
+>  The pll_factors function in the wm8960.c file is mainly responsible
+>  for setting the divider factor of the PLL divider with reference to
+>  MCLK clock frequency to obtain the required SYSCLK clock frequency.
+>  The configure diagram for this function can be seen below.
+> 
+>  MCLK-->[f/2]-->[R=f2/f1]-->[f/4]-->[f/N](1)-->SYSCLOCK
+> 
+>  The configuration of the PLL divider in above diagram is applicable to
+>  MCLK clock frequency is less than or equal to 14.4MHZ.
+>  examples:
+>  (1)MCLK=12MHz, required clock = 12.288MHz.
+>  R should be chosen to ensure 5 < PLLN < 13. There is a fixed divide by
+>  4 in the PLL and a selectable divide by N after the PLL which should
+>  be set to divide by 1 to meet this requirement.
+>  Enabling the divide by 1 sets the required f2 = 4 x 1 x 12.288MHz =
+>  49.152MHz.
+> 
+>  	R = 49.152 / (12 / 2) = 8.192
+>  	PLLN = int R = 8
+> 
+>  (2)MCLK=24MHz, required clock = 12.288MHz.
+>  Enabling the divide by 1 sets the required f2 = 4 x 1 x 12.288MHZ =
+>  49.152MHZ.
+> 
+>  	R = 49.152 / (24 / 2) = 4.096
+>  	PLLN = int R = 4
+> 
+>  And if the [f/N] reg is set to 2,then the required f2 = 4x2x12.288MHZ
+>  = 98.304MHZ.
+> 
+>  	R = 98.304 / (24 / 2) = 8.192
+>  	PLLN = int R = 8
+> 
+>  Because the [f/N] reg is fixed divide by 1,that's why driver prompted
+>  error message.
+> 
+> Solution:
+>  The purpose of this patch is when the conditions(5 < PLLN < 13) is
+>  false, set the register[f/N] to be 2, and the recalculate the divide
+>  factor of the PLL divider.
+> 
+>  MCLK-->[f/2]-->[R=f2/f1]-->[f/4]-->[f/N](2)-->SYSCLOCK
+> 
+> Signed-off-by: Chen.Liu <chen.liu.opensource@gmail.com>
+> ---
 
-   ASoC: sun4i-i2s: Show detailed error when DAI configuration callbacks fail
++ Daniel Baluta, as he has done quite a bit of work on the
+clocking in this driver and I would like to at least hear this
+doesn't cause issues in his systems.
 
-has been applied to the asoc tree at
+> Changes in v2:
+> - The calculation of the Ndiv is encapsulated in a loop.
+> - Use 'unsupported' instead of 'unsupport'.
+> ---
+>  sound/soc/codecs/wm8960.c | 36 +++++++++++++++++++++++++-----------
+>  1 file changed, 25 insertions(+), 11 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+> index 997c446..83dd746 100644
+> --- a/sound/soc/codecs/wm8960.c
+> +++ b/sound/soc/codecs/wm8960.c
+> @@ -1036,28 +1036,38 @@ static bool is_pll_freq_available(unsigned int source, unsigned int target)
+>   * to allow rounding later */
+>  #define FIXED_PLL_SIZE ((1 << 24) * 10)
+>  
+> -static int pll_factors(unsigned int source, unsigned int target,
+> +static int pll_factors(struct snd_soc_codec *codec,
+> +		unsigned int source, unsigned int target,
+>  		       struct _pll_div *pll_div)
+>  {
+>  	unsigned long long Kpart;
+>  	unsigned int K, Ndiv, Nmod;
+> +	int unsupported = 0;
+>  
+>  	pr_debug("WM8960 PLL: setting %dHz->%dHz\n", source, target);
+>  
+>  	/* Scale up target to PLL operating frequency */
+>  	target *= 4;
+>  
+> -	Ndiv = target / source;
+> -	if (Ndiv < 6) {
+> -		source >>= 1;
+> -		pll_div->pre_div = 1;
+> +	while (1) {
+>  		Ndiv = target / source;
+> -	} else
+> -		pll_div->pre_div = 0;
+> +		if (Ndiv < 6) {
+> +			source >>= 1;
+> +			pll_div->pre_div = 1;
+> +			Ndiv = target / source;
+> +		} else
+> +			pll_div->pre_div = 0;
+> +
+> +		if ((Ndiv < 6) || (Ndiv > 12)) {
+> +			if (unsupported == 1) {
+> +				pr_err("WM8960 PLL: Unsupported N=%d\n", Ndiv);
+> +				return -EINVAL;
+> +			}
+> +		} else
+> +			break;
+>  
+> -	if ((Ndiv < 6) || (Ndiv > 12)) {
+> -		pr_err("WM8960 PLL: Unsupported N=%d\n", Ndiv);
+> -		return -EINVAL;
+> +		target *= 2;
+> +		unsupported += 1;
+>  	}
+>  
+>  	pll_div->n = Ndiv;
+> @@ -1077,6 +1087,10 @@ static int pll_factors(unsigned int source, unsigned int target,
+>  
+>  	pll_div->k = K;
+>  
+> +	if (unsupported)
+> +		snd_soc_update_bits(codec, WM8960_CLOCK1, 0x6,
+> +				WM8960_SYSCLK_DIV_2);
+> +
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Looking at this a bit more I do have some reservations. Firstly
+this divider can be set through wm8960_set_dai_clkdiv, and
+secondly it is also set at the bottom of
+wm8960_configure_clocking. Adding a third path that also controls
+this bit is starting to seem very complex. Do you have any
+thoughts on how this interacts with the other two paths? And
+should it perhaps take this field into account but not be
+controlling it directly?
 
 Thanks,
-Mark
+Charles
 
->From 2ff739b9bdd3199cd52e450097cb0f7fc4e1e9e8 Mon Sep 17 00:00:00 2001
-From: Chen-Yu Tsai <wens@csie.org>
-Date: Thu, 14 Dec 2017 15:29:28 +0800
-Subject: [PATCH] ASoC: sun4i-i2s: Show detailed error when DAI configuration
- callbacks fail
-
-When any of the DAI hardware configuration callbacks (.hw_param,
-.set_fmt, .set_sysclk) fails, there is no explanation about why it
-failed. This is particularly confusing for .hw_param, which covers
-many parameters of the DAI. Telling the users what parameter isn't
-supported, and what the requested value was goes a long way for
-developers trying to combine sun4i-i2s with external codecs.
-
-This patch adds dev_err calls explaining what isn't supported or
-failed, and what the value was. sun4i_i2s_set_clk_rate()'s first
-parameter was changed to a struct snd_soc_dai *dai, so we can
-get the underlying device.
-
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
-Acked-by: Marcus Cooper <codekipper@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sunxi/sun4i-i2s.c | 36 ++++++++++++++++++++++++++++++------
- 1 file changed, 30 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 04f92583a969..bc147e2dcff5 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -269,10 +269,11 @@ static bool sun4i_i2s_oversample_is_valid(unsigned int oversample)
- 	return false;
- }
- 
--static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
-+static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
- 				  unsigned int rate,
- 				  unsigned int word_size)
- {
-+	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
- 	unsigned int oversample_rate, clk_rate;
- 	int bclk_div, mclk_div;
- 	int ret;
-@@ -300,6 +301,7 @@ static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
- 		break;
- 
- 	default:
-+		dev_err(dai->dev, "Unsupported sample rate: %u\n", rate);
- 		return -EINVAL;
- 	}
- 
-@@ -308,18 +310,25 @@ static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
- 		return ret;
- 
- 	oversample_rate = i2s->mclk_freq / rate;
--	if (!sun4i_i2s_oversample_is_valid(oversample_rate))
-+	if (!sun4i_i2s_oversample_is_valid(oversample_rate)) {
-+		dev_err(dai->dev, "Unsupported oversample rate: %d\n",
-+			oversample_rate);
- 		return -EINVAL;
-+	}
- 
- 	bclk_div = sun4i_i2s_get_bclk_div(i2s, oversample_rate,
- 					  word_size);
--	if (bclk_div < 0)
-+	if (bclk_div < 0) {
-+		dev_err(dai->dev, "Unsupported BCLK divider: %d\n", bclk_div);
- 		return -EINVAL;
-+	}
- 
- 	mclk_div = sun4i_i2s_get_mclk_div(i2s, oversample_rate,
- 					  clk_rate, rate);
--	if (mclk_div < 0)
-+	if (mclk_div < 0) {
-+		dev_err(dai->dev, "Unsupported MCLK divider: %d\n", mclk_div);
- 		return -EINVAL;
-+	}
- 
- 	/* Adjust the clock division values if needed */
- 	bclk_div += i2s->variant->bclk_offset;
-@@ -349,8 +358,11 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 	u32 width;
- 
- 	channels = params_channels(params);
--	if (channels != 2)
-+	if (channels != 2) {
-+		dev_err(dai->dev, "Unsupported number of channels: %d\n",
-+			channels);
- 		return -EINVAL;
-+	}
- 
- 	if (i2s->variant->has_chcfg) {
- 		regmap_update_bits(i2s->regmap, SUN8I_I2S_CHAN_CFG_REG,
-@@ -382,6 +394,8 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 		width = DMA_SLAVE_BUSWIDTH_2_BYTES;
- 		break;
- 	default:
-+		dev_err(dai->dev, "Unsupported physical sample width: %d\n",
-+			params_physical_width(params));
- 		return -EINVAL;
- 	}
- 	i2s->playback_dma_data.addr_width = width;
-@@ -393,6 +407,8 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 		break;
- 
- 	default:
-+		dev_err(dai->dev, "Unsupported sample width: %d\n",
-+			params_width(params));
- 		return -EINVAL;
- 	}
- 
-@@ -401,7 +417,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 	regmap_field_write(i2s->field_fmt_sr,
- 			   sr + i2s->variant->fmt_offset);
- 
--	return sun4i_i2s_set_clk_rate(i2s, params_rate(params),
-+	return sun4i_i2s_set_clk_rate(dai, params_rate(params),
- 				      params_width(params));
- }
- 
-@@ -426,6 +442,8 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		val = SUN4I_I2S_FMT0_FMT_RIGHT_J;
- 		break;
- 	default:
-+		dev_err(dai->dev, "Unsupported format: %d\n",
-+			fmt & SND_SOC_DAIFMT_FORMAT_MASK);
- 		return -EINVAL;
- 	}
- 
-@@ -464,6 +482,8 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	case SND_SOC_DAIFMT_NB_NF:
- 		break;
- 	default:
-+		dev_err(dai->dev, "Unsupported clock polarity: %d\n",
-+			fmt & SND_SOC_DAIFMT_INV_MASK);
- 		return -EINVAL;
- 	}
- 
-@@ -482,6 +502,8 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 			val = SUN4I_I2S_CTRL_MODE_SLAVE;
- 			break;
- 		default:
-+			dev_err(dai->dev, "Unsupported slave setting: %d\n",
-+				fmt & SND_SOC_DAIFMT_MASTER_MASK);
- 			return -EINVAL;
- 		}
- 		regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-@@ -504,6 +526,8 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 			val = 0;
- 			break;
- 		default:
-+			dev_err(dai->dev, "Unsupported slave setting: %d\n",
-+				fmt & SND_SOC_DAIFMT_MASTER_MASK);
- 			return -EINVAL;
- 		}
- 		regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
--- 
-2.15.1
+>  	pr_debug("WM8960 PLL: N=%x K=%x pre_div=%d\n",
+>  		 pll_div->n, pll_div->k, pll_div->pre_div);
+>  
+> @@ -1091,7 +1105,7 @@ static int wm8960_set_pll(struct snd_soc_codec *codec,
+>  	int ret;
+>  
+>  	if (freq_in && freq_out) {
+> -		ret = pll_factors(freq_in, freq_out, &pll_div);
+> +		ret = pll_factors(codec, freq_in, freq_out, &pll_div);
+>  		if (ret != 0)
+>  			return ret;
+>  	}
+> -- 
+> 1.8.3.1
