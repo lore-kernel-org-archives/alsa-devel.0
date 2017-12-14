@@ -1,74 +1,144 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH 1/2] ASoC: add support of mclk clock
- providers in wm8894 driver
-Date: Thu, 14 Dec 2017 17:30:25 +0000
-Message-ID: <20171214173025.GL9788@sirena.org.uk>
-References: <1513270438-18523-1-git-send-email-olivier.moysan@st.com>
- <1513270438-18523-2-git-send-email-olivier.moysan@st.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5272956603471632064=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EF05C26732A
- for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 18:31:04 +0100 (CET)
-In-Reply-To: <1513270438-18523-2-git-send-email-olivier.moysan@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Olivier Moysan <olivier.moysan@st.com>
-Cc: benjamin.gaignard@st.com, alsa-devel@alsa-project.org, alexandre.torgue@st.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, mcoquelin.stm32@gmail.com, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com
+From: srinivas.kandagatla@linaro.org
+Subject: [RESEND PATCH v2 00/15] ASoC: qcom: Add support to QDSP6 based audio
+Date: Thu, 14 Dec 2017 17:33:47 +0000
+Message-ID: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Andy Gross <andy.gross@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: David Brown <david.brown@linaro.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, sboyd@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
---===============5272956603471632064==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="f54savKjS/tSNRaU"
-Content-Disposition: inline
+This patchset aims to provide a very basic version of QCOM DSP based
+audio support which is available in downstream andriod kernels.
+This patchset only support Digital audio based for HDMI-RX and will
+add support to other features as we move on.
 
+QDSP has both static and dynamic modules. static modules like AFE
+(Audio FrontEnd), ADM (Audio Device Manager), ASM(Audio Stream Manager)
+and CORE to provide this audio services.
+All these services use APR (Asynchronous Packet Router) protocol
+via smd/glink transport to communicate with Application processor.
+More details on each module is availble in there respective patch.
 
---f54savKjS/tSNRaU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This patchset is tested on DB820c, with HDMI audio playback
+on top of mainline, also tested slimbus analog audio using wcd9355
+with an additional small patch.
 
-On Thu, Dec 14, 2017 at 05:53:57PM +0100, Olivier Moysan wrote:
-
-> +	pdata->mclk1 = devm_clk_get(wm8994->dev, "MCLK1");
-> +	if (IS_ERR(pdata->mclk1))
-> +		pdata->mclk1 = NULL;
-
-These should special case -EPROBE_DEFER so we defer properly if we need
-to (and ideally log an error in case there was a MCLK and we legit ran
-into an error).
-
---f54savKjS/tSNRaU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloytTAACgkQJNaLcl1U
-h9C+2gf/TmIoffIsdWnVIRfpxSlAyBqZ2beewn59NgorOHA5QVzZqevBds3oI1gR
-8cNJMzXS6l7qCe5MdUNPfOvC0chWjsMJwDaqOQ05y/75OS7i1SDFrn4PmzpIRHJS
-f6VU3X8D95jnTAiOp1rs+08I/q6BCNjTMAqSZBLSu7l0QqmrAt878Vmwl6ir/Hnc
-kjyGaHef8FMqOUMIxBIf/gmwKnu/EEHbVsaFPaNb+9YJYOFEwjDzvqohHizemYxt
-Hti+2ZhCiEYEyq5l4jdo5J3OOWoxU4kTD+rIHHkAZvP9OHx5fpkt7pqE4EVwlWHc
-ja7BlXylJ3xLCZgJO8MgIlQ8zhxYOQ==
-=kKuY
------END PGP SIGNATURE-----
-
---f54savKjS/tSNRaU--
-
---===============5272956603471632064==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Here is block diagram to give a quick overview of the components
 
 
---===============5272956603471632064==--
+  +---------+          +---------+         +---------+   
+  |  q6asm  |          |q6routing|         | q6afe   | 
+  |  fedai  | <------> |  mixers | <-----> | bedai   |  
+  +---------+          +---------+         +---------+   
+      ^                     ^                   ^
+      |                     |                   |
+      |  +------------------+----------------+  |       
+      |  |                  |                |  |       
+      v  v                  v                v  v       
+  +---------+          +---------+         +---------+ 
+  |   q6ASM |          |  q6ADM  |         |   q6AFE |  
+  +---------+          +---------+         +---------+  
+      ^                     ^                   ^          ^
+      |                     |                   | CPU Side |
+------+---------------------+-------------------+--------
+      |                     |                   |
+      |                     |APR(smd/glink)     | 
+      |                     |                   |
+      |  +------------------+----------------+  |
+      |  |                  |                |  |
++-----+--+-----------------------------------+--+-------
+      |  |                  |                |  | QDSP Side |
+      v  v                  v                v  v           v
+ +---------+          +---------+         +---------+
+ |   ASM   | <------> |   ADM   | <-----> |   AFE   |
+ +---------+          +---------+         +---------+
+                                               ^
+                                               | 
+                           +-------------------+
+                           |
+---------------------------+--------------------------
+                           |            Audio I/O |
+                           v                      v
+    +--------------------------------------------------+
+    |                Audio devices                     |
+    | CODEC | HDMI-TX | PCM  | SLIMBUS | I2S |MI2S |...|
+    |                                                  |
+    +--------------------------------------------------+
+
+Changes since RFC:
+- Converted APR driver to proper bus driver 
+- Added API version info to apr devices
+- Added q6core driver.
+- Fixed various issues spotted by Banajit and Kasam.
+- Added kernel doc to exported symbols.
+- renamed qdsp6v2 to qdsp6 as api version info can be
+	 used from apr device.
+- removed unnecessary dt bindings for apr devices.
+
+Srinivas Kandagatla (15):
+  dt-bindings: soc: qcom: Add bindings for APR bus
+  soc: qcom: add support to APR bus driver
+  ASoC: qcom: qdsp6: Add common qdsp6 helper functions
+  ASoC: qcom: qdsp6: Add support to Q6AFE
+  ASoC: qcom: qdsp6: Add support to Q6ADM
+  ASoC: qcom: qdsp6: Add support to Q6ASM
+  ASoC: qcom: q6asm: Add support to memory map and unmap
+  ASoC: qcom: q6asm: add support to audio stream apis
+  ASoC: qcom: qdsp6: Add support to Q6CORE
+  ASoC: qcom: qdsp6: Add support to q6routing driver
+  ASoC: qcom: qdsp6: Add support to q6afe dai driver
+  ASoC: qcom: qdsp6: Add support to q6asm dai driver
+  dt-bindings: sound: qcom: Add devicetree bindings for apq8096
+  ASoC: qcom: apq8096: Add db820c machine driver
+  arm64: dts: msm8996: db820c: Add sound card support
+
+ .../devicetree/bindings/soc/qcom/qcom,apr.txt      |   28 +
+ .../devicetree/bindings/sound/qcom,apq8096.txt     |   22 +
+ arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi       |    5 +
+ arch/arm64/boot/dts/qcom/msm8996.dtsi              |   33 +
+ drivers/soc/qcom/Kconfig                           |    8 +
+ drivers/soc/qcom/Makefile                          |    1 +
+ drivers/soc/qcom/apr.c                             |  395 +++++++
+ include/linux/mod_devicetable.h                    |   13 +
+ include/linux/soc/qcom/apr.h                       |  174 +++
+ sound/soc/qcom/Kconfig                             |   51 +
+ sound/soc/qcom/Makefile                            |    5 +
+ sound/soc/qcom/apq8096.c                           |  124 +++
+ sound/soc/qcom/qdsp6/Makefile                      |    7 +
+ sound/soc/qcom/qdsp6/common.h                      |  225 ++++
+ sound/soc/qcom/qdsp6/q6adm.c                       |  602 +++++++++++
+ sound/soc/qcom/qdsp6/q6adm.h                       |   24 +
+ sound/soc/qcom/qdsp6/q6afe-dai.c                   |  241 +++++
+ sound/soc/qcom/qdsp6/q6afe.c                       |  503 +++++++++
+ sound/soc/qcom/qdsp6/q6afe.h                       |   30 +
+ sound/soc/qcom/qdsp6/q6asm-dai.c                   |  534 ++++++++++
+ sound/soc/qcom/qdsp6/q6asm.c                       | 1119 ++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6asm.h                       |   61 ++
+ sound/soc/qcom/qdsp6/q6core.c                      |  227 ++++
+ sound/soc/qcom/qdsp6/q6routing.c                   |  386 +++++++
+ sound/soc/qcom/qdsp6/q6routing.h                   |    9 +
+ 25 files changed, 4827 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8096.txt
+ create mode 100644 drivers/soc/qcom/apr.c
+ create mode 100644 include/linux/soc/qcom/apr.h
+ create mode 100644 sound/soc/qcom/apq8096.c
+ create mode 100644 sound/soc/qcom/qdsp6/Makefile
+ create mode 100644 sound/soc/qcom/qdsp6/common.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6adm.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6adm.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6afe-dai.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6afe.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6afe.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6asm-dai.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6asm.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6asm.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6core.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6routing.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6routing.h
+
+-- 
+2.15.0
