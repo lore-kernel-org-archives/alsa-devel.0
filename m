@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 02/15] soc: qcom: add support to APR bus
-	driver
-Date: Thu, 14 Dec 2017 16:48:07 +0000
-Message-ID: <20171214164807.GI9788@sirena.org.uk>
-References: <20171205221812.25641-1-srinivas.kandagatla@linaro.org>
- <20171205221812.25641-3-srinivas.kandagatla@linaro.org>
+From: Olivier Moysan <olivier.moysan@st.com>
+Subject: [RFC PATCH 1/2] ASoC: add support of mclk clock
+	providers in wm8894 driver
+Date: Thu, 14 Dec 2017 17:53:57 +0100
+Message-ID: <1513270438-18523-2-git-send-email-olivier.moysan@st.com>
+References: <1513270438-18523-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6416905629080670737=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E4B4326732A
- for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 17:48:08 +0100 (CET)
-In-Reply-To: <20171205221812.25641-3-srinivas.kandagatla@linaro.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id B5A38267AEE
+ for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 17:56:18 +0100 (CET)
+In-Reply-To: <1513270438-18523-1-git-send-email-olivier.moysan@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,59 +21,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: srinivas.kandagatla@linaro.org
-Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, Stephen Boyd <sboyd@codeaurora.org>, kwestfie@codeaurora.org, tiwai@suse.com, David Brown <david.brown@linaro.org>, linux-arm-msm@vger.kernel.org, Andy.Gross@linaro.org, lkasam@qti.qualcomm.com
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com
+Cc: patches@opensource.wolfsonmicro.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
+Wolfson wm8994 codec bindings exposes MCLK1 and MCLK1 clocks.
+This patch adds support of MCLK1 and MCLK2 in mfd driver.
 
---===============6416905629080670737==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="JIpyCmsTxyPLrmrM"
-Content-Disposition: inline
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+---
+ drivers/mfd/wm8994-core.c        | 9 +++++++++
+ include/linux/mfd/wm8994/pdata.h | 6 ++++++
+ 2 files changed, 15 insertions(+)
 
-
---JIpyCmsTxyPLrmrM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Dec 05, 2017 at 10:17:59PM +0000, srinivas.kandagatla@linaro.org wr=
-ote:
-> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->=20
-> This patch adds support toi APR bus (Asynchronous Packet Router) driver.
-> ARP driver is made as a bus driver so that the apr devices can added remo=
-ved
-> more dynamically depending on the state of the services on the dsp.
-> APR is used for communication between application processor and QDSP to
-> use services on QDSP like Audio and others.
-
-I'm not seing any of the Qualcomm architecture maintainers in copy here
-- are they not expected to review this?  I don't know what the usual
-practice is for Qualcomm things.  Adding Andy, Dave and Stephen to copy.
-
---JIpyCmsTxyPLrmrM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloyq0YACgkQJNaLcl1U
-h9CuFAf/SZIj0fLEo1GJ8Um+hbrW9Xx7xBrDor+Wjm04eAW+3lj5Uuz2SERt9wSA
-Mp1VQGO6ZK1/FtQkmeBNLKpbjUAkjFq4mWtmBD9uN3N1oiG+MqPTnqkFkrSEvu5d
-kMH3kJQnH2DLBON/IXdzj85jAqqext4xPnJmvpq8ypAXGVYeWXEB+mrkqwm+K8AC
-43VVwGvMXMU+uc9hWZsrQrwXugteydMYwMXd8u/18PtZcDF4jyJnxb1Z2i29o0ih
-RxhxraHl/xyjjJyEk03pB6sVIQNETSJhziXPrFWlpc8CGH36l2hVeIJHF/UiemnI
-/xz8YAWS2+Wr5/9GR1OlHHS3G6CLzg==
-=iOpX
------END PGP SIGNATURE-----
-
---JIpyCmsTxyPLrmrM--
-
---===============6416905629080670737==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6416905629080670737==--
+diff --git a/drivers/mfd/wm8994-core.c b/drivers/mfd/wm8994-core.c
+index 953d079..f1ff9d8 100644
+--- a/drivers/mfd/wm8994-core.c
++++ b/drivers/mfd/wm8994-core.c
+@@ -12,6 +12,7 @@
+  *
+  */
+ 
++#include <linux/clk.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
+@@ -310,6 +311,14 @@ static int wm8994_set_pdata_from_of(struct wm8994 *wm8994)
+ 	if (pdata->ldo[1].enable < 0)
+ 		pdata->ldo[1].enable = 0;
+ 
++	pdata->mclk1 = devm_clk_get(wm8994->dev, "MCLK1");
++	if (IS_ERR(pdata->mclk1))
++		pdata->mclk1 = NULL;
++
++	pdata->mclk2 = devm_clk_get(wm8994->dev, "MCLK2");
++	if (IS_ERR(pdata->mclk2))
++		pdata->mclk2 = NULL;
++
+ 	return 0;
+ }
+ #else
+diff --git a/include/linux/mfd/wm8994/pdata.h b/include/linux/mfd/wm8994/pdata.h
+index 90c6052..8037d26 100644
+--- a/include/linux/mfd/wm8994/pdata.h
++++ b/include/linux/mfd/wm8994/pdata.h
+@@ -233,6 +233,12 @@ struct wm8994_pdata {
+ 	 * GPIO for the IRQ pin if host only supports edge triggering
+ 	 */
+ 	int irq_gpio;
++
++	/* MCLK1 clock provider */
++	struct clk *mclk1;
++
++	/* MCLK2 clock provider */
++	struct clk *mclk2;
+ };
+ 
+ #endif
+-- 
+1.9.1
