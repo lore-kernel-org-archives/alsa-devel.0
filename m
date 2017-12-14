@@ -1,64 +1,63 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v6 00/14] soundwire: Add a new SoundWire subsystem
-Date: Thu, 14 Dec 2017 18:48:08 +0530
-Message-ID: <20171214131808.GZ18649@localhost>
-References: <1513230585-13882-1-git-send-email-vinod.koul@intel.com>
- <20171214073508.GA29585@kroah.com>
- <20171214105320.GX18649@localhost>
- <20171214124949.GA12935@kroah.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [alsa-devel] [PATCH v10 08/13] regmap: add SLIMbus support
+Date: Thu, 14 Dec 2017 13:16:13 +0000
+Message-ID: <682e689d-d196-fe38-fc6f-e51a981ee18e@linaro.org>
+References: <20171211234307.14465-1-srinivas.kandagatla@linaro.org>
+ <20171211234307.14465-9-srinivas.kandagatla@linaro.org>
+ <20171213092537.GB12631@kroah.com> <20171213160611.GO6416@sirena.org.uk>
+ <20171214051739.GV18649@localhost> <s5h6099yb4p.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171214124949.GA12935@kroah.com>
+In-Reply-To: <s5h6099yb4p.wl-tiwai@suse.de>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Takashi <tiwai@suse.de>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
+To: Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>
+Cc: Mark Brown <broonie@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Jonathan Corbet <corbet@lwn.net>, linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org, j.neuschaefer@gmx.net, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, pombredanne@nexb.com, sdharia@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 14, 2017 at 01:49:49PM +0100, Greg Kroah-Hartman wrote:
-> On Thu, Dec 14, 2017 at 04:23:20PM +0530, Vinod Koul wrote:
-> > On Thu, Dec 14, 2017 at 08:35:08AM +0100, Greg Kroah-Hartman wrote:
-> > > On Thu, Dec 14, 2017 at 11:19:31AM +0530, Vinod Koul wrote:
-> > > > Changes in v6:
-> > > >   - Add reviewed/acked tags from Philippe, Pierre, Takashi and Greg
-> > > >   - Fix nitpicks from Takashi
-> > > >   - Drop the sysfs patch for now
-> > > 
-> > > Wait, why drop the sysfs patch entirely?  You need those attributes,
-> > > right?  You also need to document the existing sysfs files in
-> > > Documentation/ABI/ for the class/device files you create in this patch
-> > > series, so that needs to be done before this patch series can be
-> > > accepted.
-> > 
-> > Well the sysfs patch is a standalone patch which contains the attributes. So
-> > I dropped that "for this series" and plan to submit after reworking.
-> > 
-> > The rest of the code doesn't depend on it, so is fine.
-> > 
-> > I thought it is an okay kernel practice to drop patches with issues, merge the
-> > rest and come back after fixing the issue. This is my plan for this as well.
+
+
+On 14/12/17 08:19, Takashi Iwai wrote:
+> On Thu, 14 Dec 2017 06:17:39 +0100,
+> Vinod Koul wrote:
+>>
+>> On Wed, Dec 13, 2017 at 04:06:11PM +0000, Mark Brown wrote:
+>>>> On Mon, Dec 11, 2017 at 11:43:02PM +0000, srinivas.kandagatla@linaro.org wrote:
+>>>
+>>>> Mark, can I get an Ack for this patch so I can take it through my tree
+>>>> with the other patches in this series?
+>>>
+>>> I'm actually not seeing a direct dependency here (there's a depends in
+>>> place stopping the regmap code building if the Slimbus core isn't
+>>> enabled) so if you want you can go ahead and apply the main stuff and I
+>>> can apply the regmap change separately, it'll avoid Makefile/Kconfig
+>>> conflicts anyway.
+>>
+>> + Takashi
+>>
+>> FWIW, since this is another MIPI Audio specfic bus, would it make sense for
+>> this series to go thru sound/ tree? I have discussed with Takashi and Greg
+>> for soundwire and we are taking sound path.
+>>
+>> Would that be okay here too? Either ways I dont mind :)
 > 
-> Ok, but that feels a bit rushed, as I'm guessing those sysfs files are
-> essencial for the use of the hardware.  To not include them feels odd to
-> me :)
+> Me too, I don't mind who takes what.
+> Just let me know.
+> 
 
-Ah, since folks acked and reviewed the rest of part, I felt we can merge the
-big pile while I started changing the sysfs files, so sent the rest :)
+It was implied early that Greg would pick up the main stuff and Mark can 
+apply regmap separately to avoid Makefile/Kconfig conflicts.
 
-This is basic IO patch series so stuff still works without the sysfs parts.
-The second series has audio streaming parts that is yet to be published so
-there is _still_ a lot of work left for soundwire and this is just a start.
+Lets keep it that way to avoid anymore confusion.
 
-> Anyway, what about the basic ABI documentation for the sysfs files you
-> have in this series?  You need to have that patch in this series,
-> otherwise it is really hard to get people to do it after the fact.
+Thanks,
+srini
 
-Sorry to disappoint but this series does not have any sysfs files. All the
-sysfs file were in the sysfs patch which is now getting reworked as we speak
-and added with ABI documentation. I should be able to post those in next
-couple of days.
 
-Thanks
--- 
-~Vinod
+> 
+> thanks,
+> 
+> Takashi
+> 
