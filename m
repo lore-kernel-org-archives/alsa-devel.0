@@ -1,25 +1,20 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: About ASoC DAIs cleanup
-Date: Thu, 14 Dec 2017 10:36:48 +0530
-Message-ID: <20171214050648.GU18649@localhost>
-References: <20171208084103.GC18649@localhost>
- <87fu8lio74.wl%kuninori.morimoto.gx@renesas.com>
- <20171208105545.GE18649@localhost>
- <87shciup8e.wl%kuninori.morimoto.gx@renesas.com>
- <87r2s2uo55.wl%kuninori.morimoto.gx@renesas.com>
- <87o9n6ukyg.wl%kuninori.morimoto.gx@renesas.com>
- <87r2rzqf1q.wl%kuninori.morimoto.gx@renesas.com>
- <20171213155952.GL6416@sirena.org.uk>
- <87wp1qow1q.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v10 08/13] regmap: add SLIMbus support
+Date: Thu, 14 Dec 2017 10:47:39 +0530
+Message-ID: <20171214051739.GV18649@localhost>
+References: <20171211234307.14465-1-srinivas.kandagatla@linaro.org>
+ <20171211234307.14465-9-srinivas.kandagatla@linaro.org>
+ <20171213092537.GB12631@kroah.com>
+ <20171213160611.GO6416@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 2DA8A266D71
- for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 06:03:02 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 88D36266D71
+ for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 06:13:55 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <87wp1qow1q.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <20171213160611.GO6416@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,54 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>, Shreyas NC <shreyas.nc@intel.com>
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Jonathan Corbet <corbet@lwn.net>, pombredanne@nexb.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-doc@vger.kernel.org, j.neuschaefer@gmx.net, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org, sdharia@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 14, 2017 at 03:07:30AM +0000, Kuninori Morimoto wrote:
+On Wed, Dec 13, 2017 at 04:06:11PM +0000, Mark Brown wrote:
+> > On Mon, Dec 11, 2017 at 11:43:02PM +0000, srinivas.kandagatla@linaro.org wrote:
 > 
-> Hi Mark
+> > Mark, can I get an Ack for this patch so I can take it through my tree
+> > with the other patches in this series?
 > 
-> Thank you for your feedback
-> 
-> > > Because many drivers are directly using rtd->codec_dai / rtd->cpu_dai,
-> > > and it is difficult to lookup CPU/Codec DAI from non categorize DAIs.
-> > > Thus, we can't support non-categorized DAI at this point.
-> > 
-> > > Now Vinod want to use Multi CPU DAI.
-> > > If we can support Multi CPU DAI / Multi Codec DAI,
-> > > we can cleanup current DAI code more.
-> > > But what do you think ?
+> I'm actually not seeing a direct dependency here (there's a depends in
+> place stopping the regmap code building if the Slimbus core isn't
+> enabled) so if you want you can go ahead and apply the main stuff and I
+> can apply the regmap change separately, it'll avoid Makefile/Kconfig
+> conflicts anyway.
 
-Thanks Morimoto San for initiating the thread,
++ Takashi
 
-> > 
-> > Cleaning things up so we don't need to use rtd->cpu_dai and rtd->codec_dai
-> > would definitely be nice, it's also useful for CODEC<->CODEC links.  Off
-> > the top of my head wrapping the accesses with macros/functions then
-> > implementing a way of getting the DAI behind them would be tractable?
+FWIW, since this is another MIPI Audio specfic bus, would it make sense for
+this series to go thru sound/ tree? I have discussed with Takashi and Greg
+for soundwire and we are taking sound path.
 
-Yes but one of the problems I see that we have specific ordering on the
-DAI ops between various components, is that a specific requirement?
+Would that be okay here too? Either ways I dont mind :)
 
-> About cleanup rtd->cpu_dai / rtd->codec_dai topic,
-> I don't know we can do it at this point.
-> But, I'm happy to think about it.
-> I'm thinking like this
-> 	1st step: add Multi CPU support
-
-Okay we will send the patches for this by next week or so...
-
-> 	2nd step: Share code between CPU/Codec DAI
-
-And then discuss how to make it common
-
-> 	3rd step: think about No-Categorized DAI (if possible)
-> Because many drivers are directly using rtd->cpu_dai, rtd->codec_dai
-
-We should fix that part while at it. I guess drivers needs own dai,
-possibly for name or some data, so if they have helpers for that, we
-should be able to remove those..
-
+Thanks
 -- 
 ~Vinod
