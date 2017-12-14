@@ -1,20 +1,14 @@
-From: Code Kipper <codekipper@gmail.com>
-Subject: Re: [PATCH] ASoC: sun4i-i2s: Show detailed error when
- DAI configuration callbacks fail
-Date: Thu, 14 Dec 2017 09:28:28 +0100
-Message-ID: <CAEKpxBnE3fneLb=Q_WCzK5ds8atbktVSzsY13Yw1C5bdSr4jRQ@mail.gmail.com>
-References: <20171214072928.6613-1-wens@csie.org>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: [PATCH v9 00/13] Add STM32 DFSDM support
+Date: Thu, 14 Dec 2017 09:57:52 +0100
+Message-ID: <1513241885-32079-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f68.google.com (mail-it0-f68.google.com
- [209.85.214.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C79F266D71
- for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 09:28:30 +0100 (CET)
-Received: by mail-it0-f68.google.com with SMTP id p139so9562307itb.1
- for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 00:28:30 -0800 (PST)
-In-Reply-To: <20171214072928.6613-1-wens@csie.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id E05DD266D71
+ for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 09:58:15 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,163 +18,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, linux-sunxi <linux-sunxi@googlegroups.com>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>
+To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jonathan Cameron <jic23@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>, Lars-Peter Clausen <lars@metafoo.de>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Alexandre Torgue <alexandre.torgue@st.com>, linux-iio@vger.kernel.org, arnaud.pouliquen@st.com, Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 14 December 2017 at 08:29, Chen-Yu Tsai <wens@csie.org> wrote:
-> When any of the DAI hardware configuration callbacks (.hw_param,
-> .set_fmt, .set_sysclk) fails, there is no explanation about why it
-> failed. This is particularly confusing for .hw_param, which covers
-> many parameters of the DAI. Telling the users what parameter isn't
-> supported, and what the requested value was goes a long way for
-> developers trying to combine sun4i-i2s with external codecs.
->
-> This patch adds dev_err calls explaining what isn't supported or
-> failed, and what the value was. sun4i_i2s_set_clk_rate()'s first
-> parameter was changed to a struct snd_soc_dai *dai, so we can
-> get the underlying device.
->
-> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Hello
 
-Acked-by: Marcus Cooper <codekipper@gmail.com>
+New version to fix patch 10/13: IIO: ADC: add stm32 DFSDM support for PDM microphone
 
-Thanks...I can get rid of shit loads of my debugging now.
+Main deltas V9 vs V8:
+- Rework probe and remove order for audio configuration in stm32-dfsdm-adc.c.
+- Optimization of the filling of the dma_slave_config struct.
 
-> ---
->  sound/soc/sunxi/sun4i-i2s.c | 36 ++++++++++++++++++++++++++++++------
->  1 file changed, 30 insertions(+), 6 deletions(-)
->
-> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-> index 13d7ecabe1b6..dca1143c1150 100644
-> --- a/sound/soc/sunxi/sun4i-i2s.c
-> +++ b/sound/soc/sunxi/sun4i-i2s.c
-> @@ -269,10 +269,11 @@ static bool sun4i_i2s_oversample_is_valid(unsigned int oversample)
->         return false;
->  }
->
-> -static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
-> +static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
->                                   unsigned int rate,
->                                   unsigned int word_size)
->  {
-> +       struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
->         unsigned int oversample_rate, clk_rate;
->         int bclk_div, mclk_div;
->         int ret;
-> @@ -300,6 +301,7 @@ static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
->                 break;
->
->         default:
-> +               dev_err(dai->dev, "Unsupported sample rate: %u\n", rate);
->                 return -EINVAL;
->         }
->
-> @@ -308,18 +310,25 @@ static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
->                 return ret;
->
->         oversample_rate = i2s->mclk_freq / rate;
-> -       if (!sun4i_i2s_oversample_is_valid(oversample_rate))
-> +       if (!sun4i_i2s_oversample_is_valid(oversample_rate)) {
-> +               dev_err(dai->dev, "Unsupported oversample rate: %d\n",
-> +                       oversample_rate);
->                 return -EINVAL;
-> +       }
->
->         bclk_div = sun4i_i2s_get_bclk_div(i2s, oversample_rate,
->                                           word_size);
-> -       if (bclk_div < 0)
-> +       if (bclk_div < 0) {
-> +               dev_err(dai->dev, "Unsupported BCLK divider: %d\n", bclk_div);
->                 return -EINVAL;
-> +       }
->
->         mclk_div = sun4i_i2s_get_mclk_div(i2s, oversample_rate,
->                                           clk_rate, rate);
-> -       if (mclk_div < 0)
-> +       if (mclk_div < 0) {
-> +               dev_err(dai->dev, "Unsupported MCLK divider: %d\n", mclk_div);
->                 return -EINVAL;
-> +       }
->
->         /* Adjust the clock division values if needed */
->         bclk_div += i2s->variant->bclk_offset;
-> @@ -349,8 +358,11 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
->         u32 width;
->
->         channels = params_channels(params);
-> -       if (channels != 2)
-> +       if (channels != 2) {
-> +               dev_err(dai->dev, "Unsupported number of channels: %d\n",
-> +                       channels);
->                 return -EINVAL;
-> +       }
->
->         if (i2s->variant->has_chcfg) {
->                 regmap_update_bits(i2s->regmap, SUN8I_I2S_CHAN_CFG_REG,
-> @@ -382,6 +394,8 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
->                 width = DMA_SLAVE_BUSWIDTH_2_BYTES;
->                 break;
->         default:
-> +               dev_err(dai->dev, "Unsupported physical sample width: %d\n",
-> +                       params_physical_width(params));
->                 return -EINVAL;
->         }
->         i2s->playback_dma_data.addr_width = width;
-> @@ -393,6 +407,8 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
->                 break;
->
->         default:
-> +               dev_err(dai->dev, "Unsupported sample width: %d\n",
-> +                       params_width(params));
->                 return -EINVAL;
->         }
->
-> @@ -401,7 +417,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
->         regmap_field_write(i2s->field_fmt_sr,
->                            sr + i2s->variant->fmt_offset);
->
-> -       return sun4i_i2s_set_clk_rate(i2s, params_rate(params),
-> +       return sun4i_i2s_set_clk_rate(dai, params_rate(params),
->                                       params_width(params));
->  }
->
-> @@ -426,6 +442,8 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
->                 val = SUN4I_I2S_FMT0_FMT_RIGHT_J;
->                 break;
->         default:
-> +               dev_err(dai->dev, "Unsupported format: %d\n",
-> +                       fmt & SND_SOC_DAIFMT_FORMAT_MASK);
->                 return -EINVAL;
->         }
->
-> @@ -464,6 +482,8 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
->         case SND_SOC_DAIFMT_NB_NF:
->                 break;
->         default:
-> +               dev_err(dai->dev, "Unsupported clock polarity: %d\n",
-> +                       fmt & SND_SOC_DAIFMT_INV_MASK);
->                 return -EINVAL;
->         }
->
-> @@ -482,6 +502,8 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
->                         val = SUN4I_I2S_CTRL_MODE_SLAVE;
->                         break;
->                 default:
-> +                       dev_err(dai->dev, "Unsupported slave setting: %d\n",
-> +                               fmt & SND_SOC_DAIFMT_MASTER_MASK);
->                         return -EINVAL;
->                 }
->                 regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-> @@ -504,6 +526,8 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
->                         val = 0;
->                         break;
->                 default:
-> +                       dev_err(dai->dev, "Unsupported slave setting: %d\n",
-> +                               fmt & SND_SOC_DAIFMT_MASTER_MASK);
->                         return -EINVAL;
->                 }
->                 regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-> --
-> 2.15.0
->
+Main deltas V8 vs V7:
+- Few typos fixes.
+- Function return optimizations in sound/soc/stm/stm32_adfsdm.c.
+
+Main deltas V7 vs V6:
+- Replaces the custom license information text with the appropriate 
+  SPDX identifier.
+- Few fixes in sound/soc/stm/stm32_adfsdm.c and stm32-dfsdm-core.c.
+- Add missing #interrupt-cells in binding examples.
+- Integrate last Jonathan's comments.
+
+Main deltas V6 vs V5:
+- Fix warning reported by kbuild test in :
+   include/linux/iio/consumer.h
+   sound/soc/stm/stm32_adfsdm.c
+
+Main deltas V5 vs V4:
+- Integrate ASOC DAI as a subnode of the DFSDM.
+- Add in kernel consumer interface to allow to manipulate attribute.
+
+Thanks,
+Arnaud
+
+Arnaud Pouliquen (12):
+  docs: driver-api: add iio hw consumer section
+  IIO: hw_consumer: add devm_iio_hw_consumer_alloc
+  IIO: inkern: API for manipulating channel attributes
+  IIO: Add DT bindings for sigma delta adc modulator
+  IIO: ADC: add sigma delta modulator support
+  IIO: add DT bindings for stm32 DFSDM filter
+  IIO: ADC: add stm32 DFSDM core support
+  IIO: ADC: add STM32 DFSDM sigma delta ADC support
+  IIO: ADC: add stm32 DFSDM support for PDM microphone
+  IIO: consumer: allow to set buffer sizes
+  ASoC: add bindings for stm32 DFSDM filter
+  ASoC: stm32: add DFSDM DAI support
+
+Lars-Peter Clausen (1):
+  iio: Add hardware consumer buffer support
+
+ .../ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32      |   16 +
+ .../bindings/iio/adc/sigma-delta-modulator.txt     |   13 +
+ .../bindings/iio/adc/st,stm32-dfsdm-adc.txt        |  128 +++
+ .../devicetree/bindings/sound/st,stm32-adfsdm.txt  |   63 +
+ Documentation/driver-api/iio/hw-consumer.rst       |   51 +
+ Documentation/driver-api/iio/index.rst             |    1 +
+ drivers/iio/adc/Kconfig                            |   37 +
+ drivers/iio/adc/Makefile                           |    3 +
+ drivers/iio/adc/sd_adc_modulator.c                 |   68 ++
+ drivers/iio/adc/stm32-dfsdm-adc.c                  | 1216 ++++++++++++++++++++
+ drivers/iio/adc/stm32-dfsdm-core.c                 |  309 +++++
+ drivers/iio/adc/stm32-dfsdm.h                      |  310 +++++
+ drivers/iio/buffer/Kconfig                         |   10 +
+ drivers/iio/buffer/Makefile                        |    1 +
+ drivers/iio/buffer/industrialio-buffer-cb.c        |   11 +
+ drivers/iio/buffer/industrialio-hw-consumer.c      |  247 ++++
+ drivers/iio/inkern.c                               |   17 +-
+ include/linux/iio/adc/stm32-dfsdm-adc.h            |   18 +
+ include/linux/iio/consumer.h                       |   37 +
+ include/linux/iio/hw-consumer.h                    |   21 +
+ include/linux/iio/iio.h                            |   28 -
+ include/linux/iio/types.h                          |   28 +
+ sound/soc/stm/Kconfig                              |   11 +
+ sound/soc/stm/Makefile                             |    3 +
+ sound/soc/stm/stm32_adfsdm.c                       |  347 ++++++
+ 25 files changed, 2961 insertions(+), 33 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.txt
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
+ create mode 100644 Documentation/driver-api/iio/hw-consumer.rst
+ create mode 100644 drivers/iio/adc/sd_adc_modulator.c
+ create mode 100644 drivers/iio/adc/stm32-dfsdm-adc.c
+ create mode 100644 drivers/iio/adc/stm32-dfsdm-core.c
+ create mode 100644 drivers/iio/adc/stm32-dfsdm.h
+ create mode 100644 drivers/iio/buffer/industrialio-hw-consumer.c
+ create mode 100644 include/linux/iio/adc/stm32-dfsdm-adc.h
+ create mode 100644 include/linux/iio/hw-consumer.h
+ create mode 100644 sound/soc/stm/stm32_adfsdm.c
+
+-- 
+2.7.4
