@@ -1,15 +1,15 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v9 01/13] iio: Add hardware consumer buffer
-	support
-Date: Thu, 14 Dec 2017 09:57:53 +0100
-Message-ID: <1513241885-32079-2-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH v9 02/13] docs: driver-api: add iio hw consumer
+	section
+Date: Thu, 14 Dec 2017 09:57:54 +0100
+Message-ID: <1513241885-32079-3-git-send-email-arnaud.pouliquen@st.com>
 References: <1513241885-32079-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id E07DE267A07
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id E2087267A09
  for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 09:58:15 +0100 (CET)
 In-Reply-To: <1513241885-32079-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,266 +25,51 @@ To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jonat
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Alexandre Torgue <alexandre.torgue@st.com>, linux-iio@vger.kernel.org, arnaud.pouliquen@st.com, Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Lars-Peter Clausen <lars@metafoo.de>
-
-Hardware consumer interface can be used when one IIO device has
-a direct connection to another device in hardware.
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
----
- drivers/iio/buffer/Kconfig                    |  10 ++
- drivers/iio/buffer/Makefile                   |   1 +
- drivers/iio/buffer/industrialio-hw-consumer.c | 181 ++++++++++++++++++++++++++
- include/linux/iio/hw-consumer.h               |  19 +++
- 4 files changed, 211 insertions(+)
- create mode 100644 drivers/iio/buffer/industrialio-hw-consumer.c
- create mode 100644 include/linux/iio/hw-consumer.h
-
-diff --git a/drivers/iio/buffer/Kconfig b/drivers/iio/buffer/Kconfig
-index 4ffd3db..338774c 100644
---- a/drivers/iio/buffer/Kconfig
-+++ b/drivers/iio/buffer/Kconfig
-@@ -29,6 +29,16 @@ config IIO_BUFFER_DMAENGINE
- 
- 	  Should be selected by drivers that want to use this functionality.
- 
-+config IIO_BUFFER_HW_CONSUMER
-+	tristate "Industrial I/O HW buffering"
-+	help
-+	  Provides a way to bonding when an IIO device has a direct connection
-+	  to another device in hardware. In this case buffers for data transfers
-+	  are handled by hardware.
-+
-+	  Should be selected by drivers that want to use the generic Hw consumer
-+	  interface.
-+
- config IIO_KFIFO_BUF
- 	tristate "Industrial I/O buffering based on kfifo"
- 	help
-diff --git a/drivers/iio/buffer/Makefile b/drivers/iio/buffer/Makefile
-index 85beaae..324a36b 100644
---- a/drivers/iio/buffer/Makefile
-+++ b/drivers/iio/buffer/Makefile
-@@ -6,5 +6,6 @@
- obj-$(CONFIG_IIO_BUFFER_CB) += industrialio-buffer-cb.o
- obj-$(CONFIG_IIO_BUFFER_DMA) += industrialio-buffer-dma.o
- obj-$(CONFIG_IIO_BUFFER_DMAENGINE) += industrialio-buffer-dmaengine.o
-+obj-$(CONFIG_IIO_BUFFER_HW_CONSUMER) += industrialio-hw-consumer.o
- obj-$(CONFIG_IIO_TRIGGERED_BUFFER) += industrialio-triggered-buffer.o
- obj-$(CONFIG_IIO_KFIFO_BUF) += kfifo_buf.o
-diff --git a/drivers/iio/buffer/industrialio-hw-consumer.c b/drivers/iio/buffer/industrialio-hw-consumer.c
-new file mode 100644
-index 0000000..993ecdc
---- /dev/null
-+++ b/drivers/iio/buffer/industrialio-hw-consumer.c
-@@ -0,0 +1,181 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright 2017 Analog Devices Inc.
-+ *  Author: Lars-Peter Clausen <lars@metafoo.de>
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/export.h>
-+#include <linux/slab.h>
-+#include <linux/module.h>
-+
-+#include <linux/iio/iio.h>
-+#include <linux/iio/consumer.h>
-+#include <linux/iio/hw-consumer.h>
-+#include <linux/iio/buffer_impl.h>
-+
-+/**
-+ * struct iio_hw_consumer - IIO hw consumer block
-+ * @buffers: hardware buffers list head.
-+ * @channels: IIO provider channels.
-+ */
-+struct iio_hw_consumer {
-+	struct list_head buffers;
-+	struct iio_channel *channels;
-+};
-+
-+struct hw_consumer_buffer {
-+	struct list_head head;
-+	struct iio_dev *indio_dev;
-+	struct iio_buffer buffer;
-+	long scan_mask[];
-+};
-+
-+static struct hw_consumer_buffer *iio_buffer_to_hw_consumer_buffer(
-+	struct iio_buffer *buffer)
-+{
-+	return container_of(buffer, struct hw_consumer_buffer, buffer);
-+}
-+
-+static void iio_hw_buf_release(struct iio_buffer *buffer)
-+{
-+	struct hw_consumer_buffer *hw_buf =
-+		iio_buffer_to_hw_consumer_buffer(buffer);
-+	kfree(hw_buf);
-+}
-+
-+static const struct iio_buffer_access_funcs iio_hw_buf_access = {
-+	.release = &iio_hw_buf_release,
-+	.modes = INDIO_BUFFER_HARDWARE,
-+};
-+
-+static struct hw_consumer_buffer *iio_hw_consumer_get_buffer(
-+	struct iio_hw_consumer *hwc, struct iio_dev *indio_dev)
-+{
-+	size_t mask_size = BITS_TO_LONGS(indio_dev->masklength) * sizeof(long);
-+	struct hw_consumer_buffer *buf;
-+
-+	list_for_each_entry(buf, &hwc->buffers, head) {
-+		if (buf->indio_dev == indio_dev)
-+			return buf;
-+	}
-+
-+	buf = kzalloc(sizeof(*buf) + mask_size, GFP_KERNEL);
-+	if (!buf)
-+		return NULL;
-+
-+	buf->buffer.access = &iio_hw_buf_access;
-+	buf->indio_dev = indio_dev;
-+	buf->buffer.scan_mask = buf->scan_mask;
-+
-+	iio_buffer_init(&buf->buffer);
-+	list_add_tail(&buf->head, &hwc->buffers);
-+
-+	return buf;
-+}
-+
-+/**
-+ * iio_hw_consumer_alloc() - Allocate IIO hardware consumer
-+ * @dev: Pointer to consumer device.
-+ *
-+ * Returns a valid iio_hw_consumer on success or a ERR_PTR() on failure.
-+ */
-+struct iio_hw_consumer *iio_hw_consumer_alloc(struct device *dev)
-+{
-+	struct hw_consumer_buffer *buf;
-+	struct iio_hw_consumer *hwc;
-+	struct iio_channel *chan;
-+	int ret;
-+
-+	hwc = kzalloc(sizeof(*hwc), GFP_KERNEL);
-+	if (!hwc)
-+		return ERR_PTR(-ENOMEM);
-+
-+	INIT_LIST_HEAD(&hwc->buffers);
-+
-+	hwc->channels = iio_channel_get_all(dev);
-+	if (IS_ERR(hwc->channels)) {
-+		ret = PTR_ERR(hwc->channels);
-+		goto err_free_hwc;
-+	}
-+
-+	chan = &hwc->channels[0];
-+	while (chan->indio_dev) {
-+		buf = iio_hw_consumer_get_buffer(hwc, chan->indio_dev);
-+		if (!buf) {
-+			ret = -ENOMEM;
-+			goto err_put_buffers;
-+		}
-+		set_bit(chan->channel->scan_index, buf->buffer.scan_mask);
-+		chan++;
-+	}
-+
-+	return hwc;
-+
-+err_put_buffers:
-+	list_for_each_entry(buf, &hwc->buffers, head)
-+		iio_buffer_put(&buf->buffer);
-+	iio_channel_release_all(hwc->channels);
-+err_free_hwc:
-+	kfree(hwc);
-+	return ERR_PTR(ret);
-+}
-+EXPORT_SYMBOL_GPL(iio_hw_consumer_alloc);
-+
-+/**
-+ * iio_hw_consumer_free() - Free IIO hardware consumer
-+ * @hwc: hw consumer to free.
-+ */
-+void iio_hw_consumer_free(struct iio_hw_consumer *hwc)
-+{
-+	struct hw_consumer_buffer *buf, *n;
-+
-+	iio_channel_release_all(hwc->channels);
-+	list_for_each_entry_safe(buf, n, &hwc->buffers, head)
-+		iio_buffer_put(&buf->buffer);
-+	kfree(hwc);
-+}
-+EXPORT_SYMBOL_GPL(iio_hw_consumer_free);
-+
-+/**
-+ * iio_hw_consumer_enable() - Enable IIO hardware consumer
-+ * @hwc: iio_hw_consumer to enable.
-+ *
-+ * Returns 0 on success.
-+ */
-+int iio_hw_consumer_enable(struct iio_hw_consumer *hwc)
-+{
-+	struct hw_consumer_buffer *buf;
-+	int ret;
-+
-+	list_for_each_entry(buf, &hwc->buffers, head) {
-+		ret = iio_update_buffers(buf->indio_dev, &buf->buffer, NULL);
-+		if (ret)
-+			goto err_disable_buffers;
-+	}
-+
-+	return 0;
-+
-+err_disable_buffers:
-+	list_for_each_entry_continue_reverse(buf, &hwc->buffers, head)
-+		iio_update_buffers(buf->indio_dev, NULL, &buf->buffer);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(iio_hw_consumer_enable);
-+
-+/**
-+ * iio_hw_consumer_disable() - Disable IIO hardware consumer
-+ * @hwc: iio_hw_consumer to disable.
-+ */
-+void iio_hw_consumer_disable(struct iio_hw_consumer *hwc)
-+{
-+	struct hw_consumer_buffer *buf;
-+
-+	list_for_each_entry(buf, &hwc->buffers, head)
-+		iio_update_buffers(buf->indio_dev, NULL, &buf->buffer);
-+}
-+EXPORT_SYMBOL_GPL(iio_hw_consumer_disable);
-+
-+MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
-+MODULE_DESCRIPTION("Hardware consumer buffer the IIO framework");
-+MODULE_LICENSE("GPL v2");
-diff --git a/include/linux/iio/hw-consumer.h b/include/linux/iio/hw-consumer.h
-new file mode 100644
-index 0000000..db8c00b
---- /dev/null
-+++ b/include/linux/iio/hw-consumer.h
-@@ -0,0 +1,19 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Industrial I/O in kernel hardware consumer interface
-+ *
-+ * Copyright 2017 Analog Devices Inc.
-+ *  Author: Lars-Peter Clausen <lars@metafoo.de>
-+ */
-+
-+#ifndef LINUX_IIO_HW_CONSUMER_H
-+#define LINUX_IIO_HW_CONSUMER_H
-+
-+struct iio_hw_consumer;
-+
-+struct iio_hw_consumer *iio_hw_consumer_alloc(struct device *dev);
-+void iio_hw_consumer_free(struct iio_hw_consumer *hwc);
-+int iio_hw_consumer_enable(struct iio_hw_consumer *hwc);
-+void iio_hw_consumer_disable(struct iio_hw_consumer *hwc);
-+
-+#endif
--- 
-2.7.4
+VGhpcyBhZGRzIGEgc2VjdGlvbiBhYm91dCB0aGUgSGFyZHdhcmUgY29uc3VtZXIKQVBJIG9mIHRo
+ZSBJSU8gc3Vic3lzdGVtIHRvIHRoZSBkcml2ZXIgQVBJCmRvY3VtZW50YXRpb24uCgpTaWduZWQt
+b2ZmLWJ5OiBBcm5hdWQgUG91bGlxdWVuIDxhcm5hdWQucG91bGlxdWVuQHN0LmNvbT4KUmV2aWV3
+ZWQtYnk6IEpvbmF0aGFuIENhbWVyb24gPEpvbmF0aGFuLkNhbWVyb25AaHVhd2VpLmNvbT4KLS0t
+CiBEb2N1bWVudGF0aW9uL2RyaXZlci1hcGkvaWlvL2h3LWNvbnN1bWVyLnJzdCB8IDUxICsrKysr
+KysrKysrKysrKysrKysrKysrKysrKysKIERvY3VtZW50YXRpb24vZHJpdmVyLWFwaS9paW8vaW5k
+ZXgucnN0ICAgICAgIHwgIDEgKwogMiBmaWxlcyBjaGFuZ2VkLCA1MiBpbnNlcnRpb25zKCspCiBj
+cmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kcml2ZXItYXBpL2lpby9ody1jb25zdW1l
+ci5yc3QKCmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RyaXZlci1hcGkvaWlvL2h3LWNvbnN1
+bWVyLnJzdCBiL0RvY3VtZW50YXRpb24vZHJpdmVyLWFwaS9paW8vaHctY29uc3VtZXIucnN0Cm5l
+dyBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAuLjhmYWNjZTYKLS0tIC9kZXYvbnVsbAor
+KysgYi9Eb2N1bWVudGF0aW9uL2RyaXZlci1hcGkvaWlvL2h3LWNvbnN1bWVyLnJzdApAQCAtMCww
+ICsxLDUxIEBACis9PT09PT09PT09PQorSFcgY29uc3VtZXIKKz09PT09PT09PT09CitBbiBJSU8g
+ZGV2aWNlIGNhbiBiZSBkaXJlY3RseSBjb25uZWN0ZWQgdG8gYW5vdGhlciBkZXZpY2UgaW4gaGFy
+ZHdhcmUuIGluIHRoaXMKK2Nhc2UgdGhlIGJ1ZmZlcnMgYmV0d2VlbiBJSU8gcHJvdmlkZXIgYW5k
+IElJTyBjb25zdW1lciBhcmUgaGFuZGxlZCBieSBoYXJkd2FyZS4KK1RoZSBJbmR1c3RyaWFsIEkv
+TyBIVyBjb25zdW1lciBvZmZlcnMgYSB3YXkgdG8gYm9uZCB0aGVzZSBJSU8gZGV2aWNlcyB3aXRo
+b3V0Citzb2Z0d2FyZSBidWZmZXIgZm9yIGRhdGEuIFRoZSBpbXBsZW1lbnRhdGlvbiBjYW4gYmUg
+Zm91bmQgdW5kZXIKKzpmaWxlOmBkcml2ZXJzL2lpby9idWZmZXIvaHctY29uc3VtZXIuY2AKKwor
+CisqIHN0cnVjdCA6Yzp0eXBlOmBpaW9faHdfY29uc3VtZXJgIOKAlCBIYXJkd2FyZSBjb25zdW1l
+ciBzdHJ1Y3R1cmUKKyogOmM6ZnVuYzpgaWlvX2h3X2NvbnN1bWVyX2FsbG9jYCDigJQgQWxsb2Nh
+dGUgSUlPIGhhcmR3YXJlIGNvbnN1bWVyCisqIDpjOmZ1bmM6YGlpb19od19jb25zdW1lcl9mcmVl
+YCDigJQgRnJlZSBJSU8gaGFyZHdhcmUgY29uc3VtZXIKKyogOmM6ZnVuYzpgaWlvX2h3X2NvbnN1
+bWVyX2VuYWJsZWAg4oCUIEVuYWJsZSBJSU8gaGFyZHdhcmUgY29uc3VtZXIKKyogOmM6ZnVuYzpg
+aWlvX2h3X2NvbnN1bWVyX2Rpc2FibGVgIOKAlCBEaXNhYmxlIElJTyBoYXJkd2FyZSBjb25zdW1l
+cgorCisKK0hXIGNvbnN1bWVyIHNldHVwCis9PT09PT09PT09PT09PT09PQorCitBcyBzdGFuZGFy
+ZCBJSU8gZGV2aWNlIHRoZSBpbXBsZW1lbnRhdGlvbiBpcyBiYXNlZCBvbiBJSU8gcHJvdmlkZXIv
+Y29uc3VtZXIuCitBIHR5cGljYWwgSUlPIEhXIGNvbnN1bWVyIHNldHVwIGxvb2tzIGxpa2UgdGhp
+czo6CisKKwlzdGF0aWMgc3RydWN0IGlpb19od19jb25zdW1lciAqaHdjOworCisJc3RhdGljIGNv
+bnN0IHN0cnVjdCBpaW9faW5mbyBhZGNfaW5mbyA9IHsKKwkJLnJlYWRfcmF3ID0gYWRjX3JlYWRf
+cmF3LAorCX07CisKKwlzdGF0aWMgaW50IGFkY19yZWFkX3JhdyhzdHJ1Y3QgaWlvX2RldiAqaW5k
+aW9fZGV2LAorCQkJCXN0cnVjdCBpaW9fY2hhbl9zcGVjIGNvbnN0ICpjaGFuLCBpbnQgKnZhbCwK
+KwkJCQlpbnQgKnZhbDIsIGxvbmcgbWFzaykKKwl7CisJCXJldCA9IGlpb19od19jb25zdW1lcl9l
+bmFibGUoaHdjKTsKKworCQkvKiBBY3F1aXJlIGRhdGEgKi8KKworCQlyZXQgPSBpaW9faHdfY29u
+c3VtZXJfZGlzYWJsZShod2MpOworCX0KKworCXN0YXRpYyBpbnQgYWRjX3Byb2JlKHN0cnVjdCBw
+bGF0Zm9ybV9kZXZpY2UgKnBkZXYpCisJeworCQlod2MgPSBkZXZtX2lpb19od19jb25zdW1lcl9h
+bGxvYygmaWlvLT5kZXYpOworCX0KKworTW9yZSBkZXRhaWxzCis9PT09PT09PT09PT0KKy4uIGtl
+cm5lbC1kb2M6OiBpbmNsdWRlL2xpbnV4L2lpby9ody1jb25zdW1lci5oCisuLiBrZXJuZWwtZG9j
+OjogZHJpdmVycy9paW8vYnVmZmVyL2luZHVzdHJpYWxpby1ody1jb25zdW1lci5jCisgICA6ZXhw
+b3J0OgorCmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RyaXZlci1hcGkvaWlvL2luZGV4LnJz
+dCBiL0RvY3VtZW50YXRpb24vZHJpdmVyLWFwaS9paW8vaW5kZXgucnN0CmluZGV4IGU1YzM5MjIu
+LjdmYmEzNDEgMTAwNjQ0Ci0tLSBhL0RvY3VtZW50YXRpb24vZHJpdmVyLWFwaS9paW8vaW5kZXgu
+cnN0CisrKyBiL0RvY3VtZW50YXRpb24vZHJpdmVyLWFwaS9paW8vaW5kZXgucnN0CkBAIC0xNSwz
+ICsxNSw0IEBAIENvbnRlbnRzOgogICAgYnVmZmVycwogICAgdHJpZ2dlcnMKICAgIHRyaWdnZXJl
+ZC1idWZmZXJzCisgICBody1jb25zdW1lcgotLSAKMi43LjQKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
