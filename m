@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5663: Fix the wrong result of the
-	first jack detection" to the asoc tree
-Date: Thu, 14 Dec 2017 11:49:09 +0000
-Message-ID: <E1ePS0j-0005No-43@debutante>
-References: <1513216447-26901-1-git-send-email-oder_chiou@realtek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 98B2F266B67
- for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 12:49:20 +0100 (CET)
-In-Reply-To: <1513216447-26901-1-git-send-email-oder_chiou@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, shruthi.sudhakar@intel.com, lgirdwood@gmail.com, albertchen@realtek.com, broonie@kernel.org, bardliao@realtek.com, shumingf@realtek.com, naveen.m@intel.com, flove@realtek.com
+Subject: Applied "ASoC: sun4i-i2s: Show detailed error when DAI configuration callbacks fail" to the asoc tree
+Date: Thu, 14 Dec 2017 11:49:21 +0000
+Message-ID: <E1ePS0v-0005PF-Uv@debutante>
+References: <20171214072928.6613-1-wens@csie.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171214072928.6613-1-wens@csie.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Marcus Cooper <codekipper@gmail.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>Maxime Ripard <maxime.ripard@free-electrons.com>Code Kipper <codekipper@gmail.com>, linux-sunxi@googlegroups.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5663: Fix the wrong result of the first jack detection
+   ASoC: sun4i-i2s: Show detailed error when DAI configuration callbacks fail
 
 has been applied to the asoc tree at
 
@@ -52,51 +37,161 @@ to this mail.
 Thanks,
 Mark
 
->From 958d022e326810fd762505bd02007aced79ffcbc Mon Sep 17 00:00:00 2001
-From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
-Date: Thu, 14 Dec 2017 09:54:07 +0800
-Subject: [PATCH] ASoC: rt5663: Fix the wrong result of the first jack
- detection
+>From 2ff739b9bdd3199cd52e450097cb0f7fc4e1e9e8 Mon Sep 17 00:00:00 2001
+From: Chen-Yu Tsai <wens@csie.org>
+Date: Thu, 14 Dec 2017 15:29:28 +0800
+Subject: [PATCH] ASoC: sun4i-i2s: Show detailed error when DAI configuration
+ callbacks fail
 
-In the first jack detection while booting, the result will always show as
-headset, even we insert the headphone.
+When any of the DAI hardware configuration callbacks (.hw_param,
+.set_fmt, .set_sysclk) fails, there is no explanation about why it
+failed. This is particularly confusing for .hw_param, which covers
+many parameters of the DAI. Telling the users what parameter isn't
+supported, and what the requested value was goes a long way for
+developers trying to combine sun4i-i2s with external codecs.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+This patch adds dev_err calls explaining what isn't supported or
+failed, and what the value was. sun4i_i2s_set_clk_rate()'s first
+parameter was changed to a struct snd_soc_dai *dai, so we can
+get the underlying device.
+
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+Acked-by: Marcus Cooper <codekipper@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5663.c | 4 ++++
- sound/soc/codecs/rt5663.h | 4 ++++
- 2 files changed, 8 insertions(+)
+ sound/soc/sunxi/sun4i-i2s.c | 36 ++++++++++++++++++++++++++++++------
+ 1 file changed, 30 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index b036c9dc0c8c..d329bf719d80 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -1560,6 +1560,10 @@ static int rt5663_jack_detect(struct snd_soc_codec *codec, int jack_insert)
- 			RT5663_IRQ_POW_SAV_MASK, RT5663_IRQ_POW_SAV_EN);
- 		snd_soc_update_bits(codec, RT5663_IRQ_1,
- 			RT5663_EN_IRQ_JD1_MASK, RT5663_EN_IRQ_JD1_EN);
-+		snd_soc_update_bits(codec, RT5663_EM_JACK_TYPE_1,
-+			RT5663_EM_JD_MASK, RT5663_EM_JD_RST);
-+		snd_soc_update_bits(codec, RT5663_EM_JACK_TYPE_1,
-+			RT5663_EM_JD_MASK, RT5663_EM_JD_NOR);
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index 04f92583a969..bc147e2dcff5 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -269,10 +269,11 @@ static bool sun4i_i2s_oversample_is_valid(unsigned int oversample)
+ 	return false;
+ }
  
- 		while (true) {
- 			regmap_read(rt5663->regmap, RT5663_INT_ST_2, &val);
-diff --git a/sound/soc/codecs/rt5663.h b/sound/soc/codecs/rt5663.h
-index c5a9b69579ad..03adc8004ba9 100644
---- a/sound/soc/codecs/rt5663.h
-+++ b/sound/soc/codecs/rt5663.h
-@@ -1029,6 +1029,10 @@
- #define RT5663_POL_EXT_JD_SHIFT			10
- #define RT5663_POL_EXT_JD_EN			(0x1 << 10)
- #define RT5663_POL_EXT_JD_DIS			(0x0 << 10)
-+#define RT5663_EM_JD_MASK			(0x1 << 7)
-+#define RT5663_EM_JD_SHIFT			7
-+#define RT5663_EM_JD_NOR			(0x1 << 7)
-+#define RT5663_EM_JD_RST			(0x0 << 7)
+-static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
++static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+ 				  unsigned int rate,
+ 				  unsigned int word_size)
+ {
++	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+ 	unsigned int oversample_rate, clk_rate;
+ 	int bclk_div, mclk_div;
+ 	int ret;
+@@ -300,6 +301,7 @@ static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
+ 		break;
  
- /* DACREF LDO Control (0x0112)*/
- #define RT5663_PWR_LDO_DACREFL_MASK		(0x1 << 9)
+ 	default:
++		dev_err(dai->dev, "Unsupported sample rate: %u\n", rate);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -308,18 +310,25 @@ static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
+ 		return ret;
+ 
+ 	oversample_rate = i2s->mclk_freq / rate;
+-	if (!sun4i_i2s_oversample_is_valid(oversample_rate))
++	if (!sun4i_i2s_oversample_is_valid(oversample_rate)) {
++		dev_err(dai->dev, "Unsupported oversample rate: %d\n",
++			oversample_rate);
+ 		return -EINVAL;
++	}
+ 
+ 	bclk_div = sun4i_i2s_get_bclk_div(i2s, oversample_rate,
+ 					  word_size);
+-	if (bclk_div < 0)
++	if (bclk_div < 0) {
++		dev_err(dai->dev, "Unsupported BCLK divider: %d\n", bclk_div);
+ 		return -EINVAL;
++	}
+ 
+ 	mclk_div = sun4i_i2s_get_mclk_div(i2s, oversample_rate,
+ 					  clk_rate, rate);
+-	if (mclk_div < 0)
++	if (mclk_div < 0) {
++		dev_err(dai->dev, "Unsupported MCLK divider: %d\n", mclk_div);
+ 		return -EINVAL;
++	}
+ 
+ 	/* Adjust the clock division values if needed */
+ 	bclk_div += i2s->variant->bclk_offset;
+@@ -349,8 +358,11 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	u32 width;
+ 
+ 	channels = params_channels(params);
+-	if (channels != 2)
++	if (channels != 2) {
++		dev_err(dai->dev, "Unsupported number of channels: %d\n",
++			channels);
+ 		return -EINVAL;
++	}
+ 
+ 	if (i2s->variant->has_chcfg) {
+ 		regmap_update_bits(i2s->regmap, SUN8I_I2S_CHAN_CFG_REG,
+@@ -382,6 +394,8 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+ 		break;
+ 	default:
++		dev_err(dai->dev, "Unsupported physical sample width: %d\n",
++			params_physical_width(params));
+ 		return -EINVAL;
+ 	}
+ 	i2s->playback_dma_data.addr_width = width;
+@@ -393,6 +407,8 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		break;
+ 
+ 	default:
++		dev_err(dai->dev, "Unsupported sample width: %d\n",
++			params_width(params));
+ 		return -EINVAL;
+ 	}
+ 
+@@ -401,7 +417,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	regmap_field_write(i2s->field_fmt_sr,
+ 			   sr + i2s->variant->fmt_offset);
+ 
+-	return sun4i_i2s_set_clk_rate(i2s, params_rate(params),
++	return sun4i_i2s_set_clk_rate(dai, params_rate(params),
+ 				      params_width(params));
+ }
+ 
+@@ -426,6 +442,8 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		val = SUN4I_I2S_FMT0_FMT_RIGHT_J;
+ 		break;
+ 	default:
++		dev_err(dai->dev, "Unsupported format: %d\n",
++			fmt & SND_SOC_DAIFMT_FORMAT_MASK);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -464,6 +482,8 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	case SND_SOC_DAIFMT_NB_NF:
+ 		break;
+ 	default:
++		dev_err(dai->dev, "Unsupported clock polarity: %d\n",
++			fmt & SND_SOC_DAIFMT_INV_MASK);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -482,6 +502,8 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 			val = SUN4I_I2S_CTRL_MODE_SLAVE;
+ 			break;
+ 		default:
++			dev_err(dai->dev, "Unsupported slave setting: %d\n",
++				fmt & SND_SOC_DAIFMT_MASTER_MASK);
+ 			return -EINVAL;
+ 		}
+ 		regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+@@ -504,6 +526,8 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 			val = 0;
+ 			break;
+ 		default:
++			dev_err(dai->dev, "Unsupported slave setting: %d\n",
++				fmt & SND_SOC_DAIFMT_MASTER_MASK);
+ 			return -EINVAL;
+ 		}
+ 		regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
 -- 
 2.15.1
