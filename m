@@ -1,253 +1,169 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v6 07/14] regmap: Add SoundWire bus support
-Date: Thu, 14 Dec 2017 11:19:38 +0530
-Message-ID: <1513230585-13882-8-git-send-email-vinod.koul@intel.com>
-References: <1513230585-13882-1-git-send-email-vinod.koul@intel.com>
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Subject: [PATCH] ASoC: sun4i-i2s: Show detailed error when DAI
+ configuration callbacks fail
+Date: Thu, 14 Dec 2017 15:29:28 +0800
+Message-ID: <20171214072928.6613-1-wens@csie.org>
+Reply-To: wens-jdAy2FN1RRM@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 248CB267A0F
- for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 06:46:25 +0100 (CET)
-In-Reply-To: <1513230585-13882-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi <tiwai@suse.de>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, patches.audio@intel.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBCMILY6JWQBBBXOQZDIQKGQEULMOOYA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-SoundWire bus provides sdw_read() and sdw_write() APIs for Slave
-devices to program the registers. Provide support in regmap for
-SoundWire bus.
+When any of the DAI hardware configuration callbacks (.hw_param,
+.set_fmt, .set_sysclk) fails, there is no explanation about why it
+failed. This is particularly confusing for .hw_param, which covers
+many parameters of the DAI. Telling the users what parameter isn't
+supported, and what the requested value was goes a long way for
+developers trying to combine sun4i-i2s with external codecs.
 
-Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
-Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
-Reviewed-by: Philippe Ombredanne <pombredanne@nexb.com>
-Acked-By: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+This patch adds dev_err calls explaining what isn't supported or
+failed, and what the value was. sun4i_i2s_set_clk_rate()'s first
+parameter was changed to a struct snd_soc_dai *dai, so we can
+get the underlying device.
+
+Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
 ---
- drivers/base/regmap/Kconfig      |  4 ++
- drivers/base/regmap/Makefile     |  1 +
- drivers/base/regmap/regmap-sdw.c | 92 ++++++++++++++++++++++++++++++++++++++++
- drivers/soundwire/Kconfig        |  1 +
- include/linux/regmap.h           | 37 ++++++++++++++++
- 5 files changed, 135 insertions(+)
- create mode 100644 drivers/base/regmap/regmap-sdw.c
+ sound/soc/sunxi/sun4i-i2s.c | 36 ++++++++++++++++++++++++++++++------
+ 1 file changed, 30 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/base/regmap/Kconfig b/drivers/base/regmap/Kconfig
-index 3a1535d812d8..71dc88a48cfa 100644
---- a/drivers/base/regmap/Kconfig
-+++ b/drivers/base/regmap/Kconfig
-@@ -41,3 +41,7 @@ config REGMAP_IRQ
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index 13d7ecabe1b6..dca1143c1150 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -269,10 +269,11 @@ static bool sun4i_i2s_oversample_is_valid(unsigned int oversample)
+ 	return false;
+ }
  
- config REGMAP_HWSPINLOCK
- 	bool
-+
-+config REGMAP_SOUNDWIRE
-+	tristate
-+	depends on SOUNDWIRE_BUS
-diff --git a/drivers/base/regmap/Makefile b/drivers/base/regmap/Makefile
-index 0d298c446108..22d263cca395 100644
---- a/drivers/base/regmap/Makefile
-+++ b/drivers/base/regmap/Makefile
-@@ -13,3 +13,4 @@ obj-$(CONFIG_REGMAP_SPMI) += regmap-spmi.o
- obj-$(CONFIG_REGMAP_MMIO) += regmap-mmio.o
- obj-$(CONFIG_REGMAP_IRQ) += regmap-irq.o
- obj-$(CONFIG_REGMAP_W1) += regmap-w1.o
-+obj-$(CONFIG_REGMAP_SOUNDWIRE) += regmap-sdw.o
-diff --git a/drivers/base/regmap/regmap-sdw.c b/drivers/base/regmap/regmap-sdw.c
-new file mode 100644
-index 000000000000..3a72039e94ea
---- /dev/null
-+++ b/drivers/base/regmap/regmap-sdw.c
-@@ -0,0 +1,92 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright(c) 2015-17 Intel Corporation.
-+
-+#include <linux/device.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/soundwire/sdw.h>
-+#include "internal.h"
-+
-+static int regmap_sdw_write(void *context, unsigned int reg, unsigned int val)
-+{
-+	struct device *dev = context;
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-+
-+	return sdw_write(slave, reg, val);
-+}
-+
-+static int regmap_sdw_read(void *context, unsigned int reg, unsigned int *val)
-+{
-+	struct device *dev = context;
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-+	int read;
-+
-+	read = sdw_read(slave, reg);
-+	if (read < 0)
-+		return read;
-+
-+	*val = read;
-+	return 0;
-+}
-+
-+static struct regmap_bus regmap_sdw = {
-+	.reg_read = regmap_sdw_read,
-+	.reg_write = regmap_sdw_write,
-+	.reg_format_endian_default = REGMAP_ENDIAN_LITTLE,
-+	.val_format_endian_default = REGMAP_ENDIAN_LITTLE,
-+};
-+
-+static int regmap_sdw_config_check(const struct regmap_config *config)
-+{
-+	/* All register are 8-bits wide as per MIPI Soundwire 1.0 Spec */
-+	if (config->val_bits != 8)
-+		return -ENOTSUPP;
-+
-+	/* Registers are 32 bits wide */
-+	if (config->reg_bits != 32)
-+		return -ENOTSUPP;
-+
-+	/* SoundWire register address are contiguous */
-+	if (config->reg_stride != 0)
-+		return -ENOTSUPP;
-+
-+	if (config->pad_bits != 0)
-+		return -ENOTSUPP;
-+
-+	return 0;
-+}
-+
-+struct regmap *__regmap_init_sdw(struct sdw_slave *sdw,
-+				 const struct regmap_config *config,
-+				 struct lock_class_key *lock_key,
-+				 const char *lock_name)
-+{
-+	int ret;
-+
-+	ret = regmap_sdw_config_check(config);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	return __regmap_init(&sdw->dev, &regmap_sdw,
-+			&sdw->dev, config, lock_key, lock_name);
-+}
-+EXPORT_SYMBOL_GPL(__regmap_init_sdw);
-+
-+struct regmap *__devm_regmap_init_sdw(struct sdw_slave *sdw,
-+				      const struct regmap_config *config,
-+				      struct lock_class_key *lock_key,
-+				      const char *lock_name)
-+{
-+	int ret;
-+
-+	ret = regmap_sdw_config_check(config);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	return __devm_regmap_init(&sdw->dev, &regmap_sdw,
-+			&sdw->dev, config, lock_key, lock_name);
-+}
-+EXPORT_SYMBOL_GPL(__devm_regmap_init_sdw);
-+
-+MODULE_DESCRIPTION("Regmap SoundWire Module");
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
-index d7d3908f4913..92a2c3bad87f 100644
---- a/drivers/soundwire/Kconfig
-+++ b/drivers/soundwire/Kconfig
-@@ -18,5 +18,6 @@ comment "SoundWire Devices"
+-static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
++static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+ 				  unsigned int rate,
+ 				  unsigned int word_size)
+ {
++	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+ 	unsigned int oversample_rate, clk_rate;
+ 	int bclk_div, mclk_div;
+ 	int ret;
+@@ -300,6 +301,7 @@ static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
+ 		break;
  
- config SOUNDWIRE_BUS
- 	tristate
-+	select REGMAP_SOUNDWIRE
+ 	default:
++		dev_err(dai->dev, "Unsupported sample rate: %u\n", rate);
+ 		return -EINVAL;
+ 	}
  
- endif
-diff --git a/include/linux/regmap.h b/include/linux/regmap.h
-index 15eddc1353ba..97a9c6563bb1 100644
---- a/include/linux/regmap.h
-+++ b/include/linux/regmap.h
-@@ -30,6 +30,7 @@ struct regmap;
- struct regmap_range_cfg;
- struct regmap_field;
- struct snd_ac97;
-+struct sdw_slave;
+@@ -308,18 +310,25 @@ static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
+ 		return ret;
  
- /* An enum of all the supported cache types */
- enum regcache_type {
-@@ -524,6 +525,10 @@ struct regmap *__regmap_init_ac97(struct snd_ac97 *ac97,
- 				  const struct regmap_config *config,
- 				  struct lock_class_key *lock_key,
- 				  const char *lock_name);
-+struct regmap *__regmap_init_sdw(struct sdw_slave *sdw,
-+				 const struct regmap_config *config,
-+				 struct lock_class_key *lock_key,
-+				 const char *lock_name);
+ 	oversample_rate = i2s->mclk_freq / rate;
+-	if (!sun4i_i2s_oversample_is_valid(oversample_rate))
++	if (!sun4i_i2s_oversample_is_valid(oversample_rate)) {
++		dev_err(dai->dev, "Unsupported oversample rate: %d\n",
++			oversample_rate);
+ 		return -EINVAL;
++	}
  
- struct regmap *__devm_regmap_init(struct device *dev,
- 				  const struct regmap_bus *bus,
-@@ -561,6 +566,10 @@ struct regmap *__devm_regmap_init_ac97(struct snd_ac97 *ac97,
- 				       const struct regmap_config *config,
- 				       struct lock_class_key *lock_key,
- 				       const char *lock_name);
-+struct regmap *__devm_regmap_init_sdw(struct sdw_slave *sdw,
-+				 const struct regmap_config *config,
-+				 struct lock_class_key *lock_key,
-+				 const char *lock_name);
+ 	bclk_div = sun4i_i2s_get_bclk_div(i2s, oversample_rate,
+ 					  word_size);
+-	if (bclk_div < 0)
++	if (bclk_div < 0) {
++		dev_err(dai->dev, "Unsupported BCLK divider: %d\n", bclk_div);
+ 		return -EINVAL;
++	}
  
- /*
-  * Wrapper for regmap_init macros to include a unique lockdep key and name
-@@ -710,6 +719,20 @@ int regmap_attach_dev(struct device *dev, struct regmap *map,
- bool regmap_ac97_default_volatile(struct device *dev, unsigned int reg);
+ 	mclk_div = sun4i_i2s_get_mclk_div(i2s, oversample_rate,
+ 					  clk_rate, rate);
+-	if (mclk_div < 0)
++	if (mclk_div < 0) {
++		dev_err(dai->dev, "Unsupported MCLK divider: %d\n", mclk_div);
+ 		return -EINVAL;
++	}
  
- /**
-+ * regmap_init_sdw() - Initialise register map
-+ *
-+ * @sdw: Device that will be interacted with
-+ * @config: Configuration for register map
-+ *
-+ * The return value will be an ERR_PTR() on error or a valid pointer to
-+ * a struct regmap.
-+ */
-+#define regmap_init_sdw(sdw, config)					\
-+	__regmap_lockdep_wrapper(__regmap_init_sdw, #config,		\
-+				sdw, config)
-+
-+
-+/**
-  * devm_regmap_init() - Initialise managed register map
-  *
-  * @dev: Device that will be interacted with
-@@ -839,6 +862,20 @@ bool regmap_ac97_default_volatile(struct device *dev, unsigned int reg);
- 	__regmap_lockdep_wrapper(__devm_regmap_init_ac97, #config,	\
- 				ac97, config)
+ 	/* Adjust the clock division values if needed */
+ 	bclk_div += i2s->variant->bclk_offset;
+@@ -349,8 +358,11 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	u32 width;
  
-+/**
-+ * devm_regmap_init_sdw() - Initialise managed register map
-+ *
-+ * @sdw: Device that will be interacted with
-+ * @config: Configuration for register map
-+ *
-+ * The return value will be an ERR_PTR() on error or a valid pointer
-+ * to a struct regmap. The regmap will be automatically freed by the
-+ * device management code.
-+ */
-+#define devm_regmap_init_sdw(sdw, config)				\
-+	__regmap_lockdep_wrapper(__devm_regmap_init_sdw, #config,	\
-+				sdw, config)
-+
- void regmap_exit(struct regmap *map);
- int regmap_reinit_cache(struct regmap *map,
- 			const struct regmap_config *config);
+ 	channels = params_channels(params);
+-	if (channels != 2)
++	if (channels != 2) {
++		dev_err(dai->dev, "Unsupported number of channels: %d\n",
++			channels);
+ 		return -EINVAL;
++	}
+ 
+ 	if (i2s->variant->has_chcfg) {
+ 		regmap_update_bits(i2s->regmap, SUN8I_I2S_CHAN_CFG_REG,
+@@ -382,6 +394,8 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+ 		break;
+ 	default:
++		dev_err(dai->dev, "Unsupported physical sample width: %d\n",
++			params_physical_width(params));
+ 		return -EINVAL;
+ 	}
+ 	i2s->playback_dma_data.addr_width = width;
+@@ -393,6 +407,8 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		break;
+ 
+ 	default:
++		dev_err(dai->dev, "Unsupported sample width: %d\n",
++			params_width(params));
+ 		return -EINVAL;
+ 	}
+ 
+@@ -401,7 +417,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	regmap_field_write(i2s->field_fmt_sr,
+ 			   sr + i2s->variant->fmt_offset);
+ 
+-	return sun4i_i2s_set_clk_rate(i2s, params_rate(params),
++	return sun4i_i2s_set_clk_rate(dai, params_rate(params),
+ 				      params_width(params));
+ }
+ 
+@@ -426,6 +442,8 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		val = SUN4I_I2S_FMT0_FMT_RIGHT_J;
+ 		break;
+ 	default:
++		dev_err(dai->dev, "Unsupported format: %d\n",
++			fmt & SND_SOC_DAIFMT_FORMAT_MASK);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -464,6 +482,8 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	case SND_SOC_DAIFMT_NB_NF:
+ 		break;
+ 	default:
++		dev_err(dai->dev, "Unsupported clock polarity: %d\n",
++			fmt & SND_SOC_DAIFMT_INV_MASK);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -482,6 +502,8 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 			val = SUN4I_I2S_CTRL_MODE_SLAVE;
+ 			break;
+ 		default:
++			dev_err(dai->dev, "Unsupported slave setting: %d\n",
++				fmt & SND_SOC_DAIFMT_MASTER_MASK);
+ 			return -EINVAL;
+ 		}
+ 		regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+@@ -504,6 +526,8 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 			val = 0;
+ 			break;
+ 		default:
++			dev_err(dai->dev, "Unsupported slave setting: %d\n",
++				fmt & SND_SOC_DAIFMT_MASTER_MASK);
+ 			return -EINVAL;
+ 		}
+ 		regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
 -- 
-2.7.4
+2.15.0
