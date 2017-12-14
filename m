@@ -1,49 +1,275 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v2 02/15] soc: qcom: add support to APR bus
- driver
-Date: Thu, 14 Dec 2017 17:37:07 +0000
-Message-ID: <20171214173707.GN9788@sirena.org.uk>
-References: <20171205221812.25641-1-srinivas.kandagatla@linaro.org>
- <20171205221812.25641-3-srinivas.kandagatla@linaro.org>
- <20171214164807.GI9788@sirena.org.uk>
- <0ba08ac5-1186-1eb0-f3c0-f6e87489035d@linaro.org>
+From: srinivas.kandagatla@linaro.org
+Subject: [RESEND PATCH v2 03/15] ASoC: qcom: qdsp6: Add common
+	qdsp6 helper functions
+Date: Thu, 14 Dec 2017 17:33:50 +0000
+Message-ID: <20171214173402.19074-4-srinivas.kandagatla@linaro.org>
+References: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="GEn4szYucjS2InE7"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <0ba08ac5-1186-1eb0-f3c0-f6e87489035d@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, Stephen Boyd <sboyd@codeaurora.org>, kwestfie@codeaurora.org, tiwai@suse.com, David Brown <david.brown@linaro.org>, linux-arm-msm@vger.kernel.org, Andy.Gross@linaro.org, lkasam@qti.qualcomm.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20892267B18
+ for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 18:36:30 +0100 (CET)
+Received: by mail-wm0-f68.google.com with SMTP id g75so12943857wme.0
+ for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 09:36:30 -0800 (PST)
+In-Reply-To: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Andy Gross <andy.gross@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, sboyd@codeaurora.org, Liam Girdwood <lgirdwood@gmail.com>, David Brown <david.brown@linaro.org>, Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
---GEn4szYucjS2InE7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This patch adds some common helper functions like translating dsp error
+to linux error codes and channel mappings etc.
 
-On Thu, Dec 14, 2017 at 05:18:29PM +0000, Srinivas Kandagatla wrote:
+These functions are used in all the following qdsp6 drivers.
 
-> I did add arm-msm mailing list in the CC.
-> I think I missed Andy and Sboyd and dt-maintainers too in the list.
-> It's better I resend this series!!
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/qcom/qdsp6/common.h | 225 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 225 insertions(+)
+ create mode 100644 sound/soc/qcom/qdsp6/common.h
 
-Probably, yeah.  I'd been wondering why it wasn't getting any reviews...
-
---GEn4szYucjS2InE7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloytsIACgkQJNaLcl1U
-h9Ba1wf9H+bEsEZCV2DADz62JaT0UvWdoq2EbVOZJN1AWwKEgINLkKc+x2mNKYFM
-mV7ArbYy9Gt7RNuyehNnpvQx7W61RG80cUayLoQyZXRdxmyFE8I7yK8DeEeOs/2S
-xg0r8CdAamhkPNvEFP4gfuXJ2K7adMxmJJdPPBcK12ArsUtK+PBqkLP4TNMrJhLR
-kcTSuEOJC5xS6d07BRDtLx7fODx4lm8Bd1I8z6BOxxtcifk6ZQcpGHOw9HUbXd3f
-dC9UHTsiAK8f14aOjFXUs+wCkY4BJWV24CJVQjl9qJr5qrRPhGmC90UM/6fPKGG6
-ph9UTZ360AsM7woQ8Q0G4dZ79Fjq6A==
-=PrUG
------END PGP SIGNATURE-----
-
---GEn4szYucjS2InE7--
+diff --git a/sound/soc/qcom/qdsp6/common.h b/sound/soc/qcom/qdsp6/common.h
+new file mode 100644
+index 000000000000..cbd6e009ef4b
+--- /dev/null
++++ b/sound/soc/qcom/qdsp6/common.h
+@@ -0,0 +1,225 @@
++/*
++ * Copyright (c) 2015-2017, The Linux Foundation. All rights reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 and
++ * only version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++ * GNU General Public License for more details.
++ */
++#ifndef __Q6DSP_COMMON_H__
++#define __Q6DSP_COMMON_H__
++
++/* ERROR CODES */
++/* Success. The operation completed with no errors. */
++#define ADSP_EOK          0x00000000
++/* General failure. */
++#define ADSP_EFAILED      0x00000001
++/* Bad operation parameter. */
++#define ADSP_EBADPARAM    0x00000002
++/* Unsupported routine or operation. */
++#define ADSP_EUNSUPPORTED 0x00000003
++/* Unsupported version. */
++#define ADSP_EVERSION     0x00000004
++/* Unexpected problem encountered. */
++#define ADSP_EUNEXPECTED  0x00000005
++/* Unhandled problem occurred. */
++#define ADSP_EPANIC       0x00000006
++/* Unable to allocate resource. */
++#define ADSP_ENORESOURCE  0x00000007
++/* Invalid handle. */
++#define ADSP_EHANDLE      0x00000008
++/* Operation is already processed. */
++#define ADSP_EALREADY     0x00000009
++/* Operation is not ready to be processed. */
++#define ADSP_ENOTREADY    0x0000000A
++/* Operation is pending completion. */
++#define ADSP_EPENDING     0x0000000B
++/* Operation could not be accepted or processed. */
++#define ADSP_EBUSY        0x0000000C
++/* Operation aborted due to an error. */
++#define ADSP_EABORTED     0x0000000D
++/* Operation preempted by a higher priority. */
++#define ADSP_EPREEMPTED   0x0000000E
++/* Operation requests intervention to complete. */
++#define ADSP_ECONTINUE    0x0000000F
++/* Operation requests immediate intervention to complete. */
++#define ADSP_EIMMEDIATE   0x00000010
++/* Operation is not implemented. */
++#define ADSP_ENOTIMPL     0x00000011
++/* Operation needs more data or resources. */
++#define ADSP_ENEEDMORE    0x00000012
++/* Operation does not have memory. */
++#define ADSP_ENOMEMORY    0x00000014
++/* Item does not exist. */
++#define ADSP_ENOTEXIST    0x00000015
++/* Max count for adsp error code sent to HLOS*/
++#define ADSP_ERR_MAX      (ADSP_ENOTEXIST + 1)
++/* Operation is finished. */
++#define ADSP_ETERMINATED    0x00011174
++
++/* ERROR STRING */
++/* Success. The operation completed with no errors. */
++#define ADSP_EOK_STR          "ADSP_EOK"
++/* General failure. */
++#define ADSP_EFAILED_STR      "ADSP_EFAILED"
++/* Bad operation parameter. */
++#define ADSP_EBADPARAM_STR    "ADSP_EBADPARAM"
++/* Unsupported routine or operation. */
++#define ADSP_EUNSUPPORTED_STR "ADSP_EUNSUPPORTED"
++/* Unsupported version. */
++#define ADSP_EVERSION_STR     "ADSP_EVERSION"
++/* Unexpected problem encountered. */
++#define ADSP_EUNEXPECTED_STR  "ADSP_EUNEXPECTED"
++/* Unhandled problem occurred. */
++#define ADSP_EPANIC_STR       "ADSP_EPANIC"
++/* Unable to allocate resource. */
++#define ADSP_ENORESOURCE_STR  "ADSP_ENORESOURCE"
++/* Invalid handle. */
++#define ADSP_EHANDLE_STR      "ADSP_EHANDLE"
++/* Operation is already processed. */
++#define ADSP_EALREADY_STR     "ADSP_EALREADY"
++/* Operation is not ready to be processed. */
++#define ADSP_ENOTREADY_STR    "ADSP_ENOTREADY"
++/* Operation is pending completion. */
++#define ADSP_EPENDING_STR     "ADSP_EPENDING"
++/* Operation could not be accepted or processed. */
++#define ADSP_EBUSY_STR        "ADSP_EBUSY"
++/* Operation aborted due to an error. */
++#define ADSP_EABORTED_STR     "ADSP_EABORTED"
++/* Operation preempted by a higher priority. */
++#define ADSP_EPREEMPTED_STR   "ADSP_EPREEMPTED"
++/* Operation requests intervention to complete. */
++#define ADSP_ECONTINUE_STR    "ADSP_ECONTINUE"
++/* Operation requests immediate intervention to complete. */
++#define ADSP_EIMMEDIATE_STR   "ADSP_EIMMEDIATE"
++/* Operation is not implemented. */
++#define ADSP_ENOTIMPL_STR     "ADSP_ENOTIMPL"
++/* Operation needs more data or resources. */
++#define ADSP_ENEEDMORE_STR    "ADSP_ENEEDMORE"
++/* Operation does not have memory. */
++#define ADSP_ENOMEMORY_STR    "ADSP_ENOMEMORY"
++/* Item does not exist. */
++#define ADSP_ENOTEXIST_STR    "ADSP_ENOTEXIST"
++/* Unexpected error code. */
++#define ADSP_ERR_MAX_STR      "ADSP_ERR_MAX"
++
++#define PCM_FORMAT_MAX_NUM_CHANNEL  8
++#define PCM_CHANNEL_NULL 0
++
++#define PCM_CHANNEL_FL    1	/* Front left channel. */
++#define PCM_CHANNEL_FR    2	/* Front right channel. */
++#define PCM_CHANNEL_FC    3	/* Front center channel. */
++#define PCM_CHANNEL_LS   4	/* Left surround channel. */
++#define PCM_CHANNEL_RS   5	/* Right surround channel. */
++#define PCM_CHANNEL_LFE  6	/* Low frequency effect channel. */
++#define PCM_CHANNEL_CS   7	/* Center surround channel; Rear center ch */
++#define PCM_CHANNEL_LB   8	/* Left back channel; Rear left channel. */
++#define PCM_CHANNEL_RB   9	/* Right back channel; Rear right channel. */
++#define PCM_CHANNELS   10	/* Top surround channel. */
++
++static inline int q6dsp_map_channels(u8 *ch_map, int ch)
++{
++	memset(ch_map, 0, PCM_FORMAT_MAX_NUM_CHANNEL);
++
++	if (ch == 1) {
++		ch_map[0] = PCM_CHANNEL_FC;
++	} else if (ch == 2) {
++		ch_map[0] = PCM_CHANNEL_FL;
++		ch_map[1] = PCM_CHANNEL_FR;
++	} else if (ch == 3) {
++		ch_map[0] = PCM_CHANNEL_FL;
++		ch_map[1] = PCM_CHANNEL_FR;
++		ch_map[2] = PCM_CHANNEL_FC;
++	} else if (ch == 4) {
++		ch_map[0] = PCM_CHANNEL_FL;
++		ch_map[1] = PCM_CHANNEL_FR;
++		ch_map[2] = PCM_CHANNEL_LS;
++		ch_map[3] = PCM_CHANNEL_RS;
++	} else if (ch == 5) {
++		ch_map[0] = PCM_CHANNEL_FL;
++		ch_map[1] = PCM_CHANNEL_FR;
++		ch_map[2] = PCM_CHANNEL_FC;
++		ch_map[3] = PCM_CHANNEL_LS;
++		ch_map[4] = PCM_CHANNEL_RS;
++	} else if (ch == 6) {
++		ch_map[0] = PCM_CHANNEL_FL;
++		ch_map[1] = PCM_CHANNEL_FR;
++		ch_map[2] = PCM_CHANNEL_LFE;
++		ch_map[3] = PCM_CHANNEL_FC;
++		ch_map[4] = PCM_CHANNEL_LS;
++		ch_map[5] = PCM_CHANNEL_RS;
++	} else if (ch == 8) {
++		ch_map[0] = PCM_CHANNEL_FL;
++		ch_map[1] = PCM_CHANNEL_FR;
++		ch_map[2] = PCM_CHANNEL_LFE;
++		ch_map[3] = PCM_CHANNEL_FC;
++		ch_map[4] = PCM_CHANNEL_LS;
++		ch_map[5] = PCM_CHANNEL_RS;
++		ch_map[6] = PCM_CHANNEL_LB;
++		ch_map[7] = PCM_CHANNEL_RB;
++	} else {
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++enum {
++	LEGACY_PCM_MODE = 0,
++	LOW_LATENCY_PCM_MODE,
++	ULTRA_LOW_LATENCY_PCM_MODE,
++	ULL_POST_PROCESSING_PCM_MODE,
++};
++
++struct adsp_err_code {
++	int		lnx_err_code;
++	char	*adsp_err_str;
++};
++
++static struct adsp_err_code adsp_err_code_info[ADSP_ERR_MAX+1] = {
++	{ 0, ADSP_EOK_STR},
++	{ -ENOTRECOVERABLE, ADSP_EFAILED_STR},
++	{ -EINVAL, ADSP_EBADPARAM_STR},
++	{ -ENOSYS, ADSP_EUNSUPPORTED_STR},
++	{ -ENOPROTOOPT, ADSP_EVERSION_STR},
++	{ -ENOTRECOVERABLE, ADSP_EUNEXPECTED_STR},
++	{ -ENOTRECOVERABLE, ADSP_EPANIC_STR},
++	{ -ENOSPC, ADSP_ENORESOURCE_STR},
++	{ -EBADR, ADSP_EHANDLE_STR},
++	{ -EALREADY, ADSP_EALREADY_STR},
++	{ -EPERM, ADSP_ENOTREADY_STR},
++	{ -EINPROGRESS, ADSP_EPENDING_STR},
++	{ -EBUSY, ADSP_EBUSY_STR},
++	{ -ECANCELED, ADSP_EABORTED_STR},
++	{ -EAGAIN, ADSP_EPREEMPTED_STR},
++	{ -EAGAIN, ADSP_ECONTINUE_STR},
++	{ -EAGAIN, ADSP_EIMMEDIATE_STR},
++	{ -EAGAIN, ADSP_ENOTIMPL_STR},
++	{ -ENODATA, ADSP_ENEEDMORE_STR},
++	{ -EADV, ADSP_ERR_MAX_STR},
++	{ -ENOMEM, ADSP_ENOMEMORY_STR},
++	{ -ENODEV, ADSP_ENOTEXIST_STR},
++	{ -EADV, ADSP_ERR_MAX_STR},
++};
++
++static inline int adsp_err_get_lnx_err_code(u32 adsp_error)
++{
++	if (adsp_error > ADSP_ERR_MAX)
++		return adsp_err_code_info[ADSP_ERR_MAX].lnx_err_code;
++	else
++		return adsp_err_code_info[adsp_error].lnx_err_code;
++}
++
++static inline char *adsp_err_get_err_str(u32 adsp_error)
++{
++	if (adsp_error > ADSP_ERR_MAX)
++		return adsp_err_code_info[ADSP_ERR_MAX].adsp_err_str;
++	else
++		return adsp_err_code_info[adsp_error].adsp_err_str;
++}
++
++#endif /* __Q6DSP_COMMON_H__ */
+-- 
+2.15.0
