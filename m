@@ -1,23 +1,15 @@
-From: Tim Harvey <tharvey@gateworks.com>
-Subject: Re: [PATCH v4 3/5] media: i2c: Add TDA1997x HDMI
-	receiver driver
-Date: Wed, 13 Dec 2017 15:35:58 -0800
-Message-ID: <CAJ+vNU1L5MkP0DuiwjKXY75id3Brzq+9M9DfcZOXbvzVgaUdXQ@mail.gmail.com>
-References: <1511990397-27647-1-git-send-email-tharvey@gateworks.com>
- <1511990397-27647-4-git-send-email-tharvey@gateworks.com>
- <1a1be5d7-caed-6cba-c97a-dbb70e119fa3@xs4all.nl>
- <CAJ+vNU0NKZizung9+1zsd1RZBrDbBgk+A8mVJ76bQysjCUoaKw@mail.gmail.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: rt5663: Fix the wrong result of the
+	first jack detection
+Date: Thu, 14 Dec 2017 09:54:07 +0800
+Message-ID: <1513216447-26901-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f181.google.com (mail-wr0-f181.google.com
- [209.85.128.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 97423266D45
- for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 00:36:00 +0100 (CET)
-Received: by mail-wr0-f181.google.com with SMTP id z34so3605274wrz.10
- for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2017 15:36:00 -0800 (PST)
-In-Reply-To: <CAJ+vNU0NKZizung9+1zsd1RZBrDbBgk+A8mVJ76bQysjCUoaKw@mail.gmail.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D26C266D71
+ for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 02:54:16 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,236 +19,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans Verkuil <hverkuil@xs4all.nl>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>, Philipp Zabel <p.zabel@pengutronix.de>, Steve Longerbeam <slongerbeam@gmail.com>, Shawn Guo <shawnguo@kernel.org>, linux-media <linux-media@vger.kernel.org>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, shruthi.sudhakar@intel.com, albertchen@realtek.com, naveen.m@intel.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 4, 2017 at 9:30 AM, Tim Harvey <tharvey@gateworks.com> wrote:
-> On Mon, Dec 4, 2017 at 4:50 AM, Hans Verkuil <hverkuil@xs4all.nl> wrote:
->> Hi Tim,
->>
->> Found a few more small issues. After that's fixed and you have the Ack for the
->> bindings this can be merged I think.
->
-> Hans,
->
-> Thanks. Can you weigh in on the bindings? Rob was hoping for some
-> discussion on making some generic bus format types for video and I'm
-> not familiar with the other video encoders/decoders enough to know if
-> there is enough commonality.
->
->>
->> On 11/29/2017 10:19 PM, Tim Harvey wrote:
-> <snip>
->>> +
->>> +/* parse an infoframe and do some sanity checks on it */
->>> +static unsigned int
->>> +tda1997x_parse_infoframe(struct tda1997x_state *state, u16 addr)
->>> +{
->>> +     struct v4l2_subdev *sd = &state->sd;
->>> +     union hdmi_infoframe frame;
->>> +     u8 buffer[40];
->>> +     u8 reg;
->>> +     int len, err;
->>> +
->>> +     /* read data */
->>> +     len = io_readn(sd, addr, sizeof(buffer), buffer);
->>> +     err = hdmi_infoframe_unpack(&frame, buffer);
->>> +     if (err) {
->>> +             v4l_err(state->client,
->>> +                     "failed parsing %d byte infoframe: 0x%04x/0x%02x\n",
->>> +                     len, addr, buffer[0]);
->>> +             return err;
->>> +     }
->>> +     hdmi_infoframe_log(KERN_INFO, &state->client->dev, &frame);
->>> +     switch (frame.any.type) {
->>> +     /* Audio InfoFrame: see HDMI spec 8.2.2 */
->>> +     case HDMI_INFOFRAME_TYPE_AUDIO:
->>> +             /* sample rate */
->>> +             switch (frame.audio.sample_frequency) {
->>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_32000:
->>> +                     state->audio_samplerate = 32000;
->>> +                     break;
->>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_44100:
->>> +                     state->audio_samplerate = 44100;
->>> +                     break;
->>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_48000:
->>> +                     state->audio_samplerate = 48000;
->>> +                     break;
->>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_88200:
->>> +                     state->audio_samplerate = 88200;
->>> +                     break;
->>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_96000:
->>> +                     state->audio_samplerate = 96000;
->>> +                     break;
->>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_176400:
->>> +                     state->audio_samplerate = 176400;
->>> +                     break;
->>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_192000:
->>> +                     state->audio_samplerate = 192000;
->>> +                     break;
->>> +             default:
->>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_STREAM:
->>> +                     break;
->>> +             }
->>> +
->>> +             /* sample size */
->>> +             switch (frame.audio.sample_size) {
->>> +             case HDMI_AUDIO_SAMPLE_SIZE_16:
->>> +                     state->audio_samplesize = 16;
->>> +                     break;
->>> +             case HDMI_AUDIO_SAMPLE_SIZE_20:
->>> +                     state->audio_samplesize = 20;
->>> +                     break;
->>> +             case HDMI_AUDIO_SAMPLE_SIZE_24:
->>> +                     state->audio_samplesize = 24;
->>> +                     break;
->>> +             case HDMI_AUDIO_SAMPLE_SIZE_STREAM:
->>> +             default:
->>> +                     break;
->>> +             }
->>> +
->>> +             /* Channel Count */
->>> +             state->audio_channels = frame.audio.channels;
->>> +             if (frame.audio.channel_allocation &&
->>> +                 frame.audio.channel_allocation != state->audio_ch_alloc) {
->>> +                     /* use the channel assignment from the infoframe */
->>> +                     state->audio_ch_alloc = frame.audio.channel_allocation;
->>> +                     tda1997x_configure_audout(sd, state->audio_ch_alloc);
->>> +                     /* reset the audio FIFO */
->>> +                     tda1997x_hdmi_info_reset(sd, RESET_AUDIO, false);
->>> +             }
->>> +             break;
->>> +
->>> +     /* Auxiliary Video information (AVI) InfoFrame: see HDMI spec 8.2.1 */
->>> +     case HDMI_INFOFRAME_TYPE_AVI:
->>> +             state->colorspace = frame.avi.colorspace;
->>> +             state->colorimetry = frame.avi.colorimetry;
->>> +             state->content = frame.avi.content_type;
->>> +             /* Quantization Range */
->>> +             switch (state->rgb_quantization_range) {
->>> +             case V4L2_DV_RGB_RANGE_AUTO:
->>> +                     state->range = frame.avi.quantization_range;
->>> +                     break;
->>> +             case V4L2_DV_RGB_RANGE_LIMITED:
->>> +                     state->range = HDMI_QUANTIZATION_RANGE_LIMITED;
->>> +                     break;
->>> +             case V4L2_DV_RGB_RANGE_FULL:
->>> +                     state->range = HDMI_QUANTIZATION_RANGE_FULL;
->>> +                     break;
->>> +             }
->>> +             if (state->range == HDMI_QUANTIZATION_RANGE_DEFAULT) {
->>> +                     if (frame.avi.video_code <= 1)
->>> +                             state->range = HDMI_QUANTIZATION_RANGE_FULL;
->>> +                     else
->>> +                             state->range = HDMI_QUANTIZATION_RANGE_LIMITED;
->>> +             }
->>> +             /*
->>> +              * If colorimetry not specified, conversion depends on res type:
->>> +              *  - SDTV: ITU601 for SD (480/576/240/288 line resolution)
->>> +              *  - HDTV: ITU709 for HD (720/1080 line resolution)
->>> +              *  -   PC: sRGB
->>> +              * see HDMI specification section 6.7
->>> +              */
->>> +             if ((state->colorspace == HDMI_COLORSPACE_YUV422 ||
->>> +                  state->colorspace == HDMI_COLORSPACE_YUV444) &&
->>> +                 (state->colorimetry == HDMI_COLORIMETRY_EXTENDED ||
->>> +                  state->colorimetry == HDMI_COLORIMETRY_NONE)) {
->>> +                     if (is_sd(state->timings.bt.height))
->>> +                             state->colorimetry = HDMI_COLORIMETRY_ITU_601;
->>> +                     else if (is_hd(state->timings.bt.height))
->>> +                             state->colorimetry = HDMI_COLORIMETRY_ITU_709;
->>> +                     else
->>> +                             state->colorimetry = HDMI_COLORIMETRY_NONE;
->>> +             }
->>> +             v4l_dbg(1, debug, state->client,
->>> +                     "colorspace=%d colorimetry=%d range=%d content=%d\n",
->>> +                     state->colorspace, state->colorimetry, state->range,
->>> +                     state->content);
->>> +
->>> +             /* configure upsampler: 0=bypass 1=repeatchroma 2=interpolate */
->>> +             reg = io_read(sd, REG_PIX_REPEAT);
->>> +             reg &= ~PIX_REPEAT_MASK_UP_SEL;
->>> +             if (state->colorspace == HDMI_COLORSPACE_YUV422)
->>> +                     reg |= (PIX_REPEAT_CHROMA << PIX_REPEAT_SHIFT);
->>> +             io_write(sd, REG_PIX_REPEAT, reg);
->>> +
->>> +             /* ConfigurePixelRepeater: repeat n-times each pixel */
->>> +             reg = io_read(sd, REG_PIX_REPEAT);
->>> +             reg &= ~PIX_REPEAT_MASK_REP;
->>> +             reg |= frame.avi.pixel_repeat;
->>> +             io_write(sd, REG_PIX_REPEAT, reg);
->>> +
->>> +             /* configure the receiver with the new colorspace */
->>> +             tda1997x_configure_csc(sd);
->>> +             break;
->>> +     default:
->>> +             break;
->>> +     }
->>> +     return 0;
->>> +}
->>> +
-> <snip>
->>> +
->>> +static int tda1997x_fill_format(struct tda1997x_state *state,
->>> +                             struct v4l2_mbus_framefmt *format)
->>> +{
->>> +     const struct v4l2_bt_timings *bt;
->>> +
->>> +     v4l_dbg(1, debug, state->client, "%s\n", __func__);
->>> +
->>> +     if (!state->detected_timings)
->>> +             return -EINVAL;
->>> +     bt = &state->detected_timings->bt;
->>> +     memset(format, 0, sizeof(*format));
->>> +
->>> +     format->width = bt->width;
->>> +     format->height = bt->height;
->>> +     format->field = V4L2_FIELD_NONE;
->>> +     format->colorspace = V4L2_COLORSPACE_SRGB;
->>> +     if (bt->flags & V4L2_DV_FL_IS_CE_VIDEO)
->>> +             format->colorspace = (bt->height <= 576) ?
->>> +                     V4L2_COLORSPACE_SMPTE170M : V4L2_COLORSPACE_REC709;
->>
->> Close. What is missing is a check of the AVI InfoFrame: if it has an explicit
->> colorimetry then use that. E.g. check for HDMI_COLORIMETRY_ITU_601 or ITU_709
->> and set the colorspace accordingly. Otherwise fall back to what you have here.
->>
->
-> This function currently matches adv7604/adv7842 where they don't look
-> at colorimetry (but I do see a TODO in adv748x_hdmi_fill_format to
-> look at this) so I don't have an example and may not understand.
->
-> Do you mean:
->
->        format->colorspace = V4L2_COLORSPACE_SRGB;
->        if (bt->flags & V4L2_DV_FL_IS_CE_VIDEO) {
->                 if ((state->colorimetry == HDMI_COLORIMETRY_ITU_601) ||
->                     (state->colorimetry == HDMI_COLORIMETRY_ITU_709))
->                         format->colorspace = state->colorspace;
->                 else
->                         format->colorspace = is_sd(bt->height) ?
->                                 V4L2_COLORSPACE_SMPTE170M :
-> V4L2_COLORSPACE_REC709;
->         }
->
-> Also during more testing I've found that I'm not capturing interlaced
-> properly and know I at least need:
->
-> -        format->field = V4L2_FIELD_NONE;
-> +        format->field = (bt->interlaced) ?
-> +                V4L2_FIELD_ALTERNATE : V4L2_FIELD_NONE;
->
-> I'm still not quite capturing interlaced yet but I think its an issue
-> of setting up the media pipeline improperly.
->
+In the first jack detection while booting, the result will always show as
+headset, even we insert the headphone.
 
-Hans,
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5663.c | 4 ++++
+ sound/soc/codecs/rt5663.h | 4 ++++
+ 2 files changed, 8 insertions(+)
 
-Did you see this question above? I'm not quite understanding what you
-want me to do for filling in colorspace and don't see any examples in
-the existing drivers that appear to look at colorimetry for this.
-
-Regards,
-
-Tim
+diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
+index b036c9d..d329bf7 100644
+--- a/sound/soc/codecs/rt5663.c
++++ b/sound/soc/codecs/rt5663.c
+@@ -1560,6 +1560,10 @@ static int rt5663_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 			RT5663_IRQ_POW_SAV_MASK, RT5663_IRQ_POW_SAV_EN);
+ 		snd_soc_update_bits(codec, RT5663_IRQ_1,
+ 			RT5663_EN_IRQ_JD1_MASK, RT5663_EN_IRQ_JD1_EN);
++		snd_soc_update_bits(codec, RT5663_EM_JACK_TYPE_1,
++			RT5663_EM_JD_MASK, RT5663_EM_JD_RST);
++		snd_soc_update_bits(codec, RT5663_EM_JACK_TYPE_1,
++			RT5663_EM_JD_MASK, RT5663_EM_JD_NOR);
+ 
+ 		while (true) {
+ 			regmap_read(rt5663->regmap, RT5663_INT_ST_2, &val);
+diff --git a/sound/soc/codecs/rt5663.h b/sound/soc/codecs/rt5663.h
+index c5a9b69..03adc80 100644
+--- a/sound/soc/codecs/rt5663.h
++++ b/sound/soc/codecs/rt5663.h
+@@ -1029,6 +1029,10 @@
+ #define RT5663_POL_EXT_JD_SHIFT			10
+ #define RT5663_POL_EXT_JD_EN			(0x1 << 10)
+ #define RT5663_POL_EXT_JD_DIS			(0x0 << 10)
++#define RT5663_EM_JD_MASK			(0x1 << 7)
++#define RT5663_EM_JD_SHIFT			7
++#define RT5663_EM_JD_NOR			(0x1 << 7)
++#define RT5663_EM_JD_RST			(0x0 << 7)
+ 
+ /* DACREF LDO Control (0x0112)*/
+ #define RT5663_PWR_LDO_DACREFL_MASK		(0x1 << 9)
+-- 
+2.7.4
