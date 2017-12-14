@@ -1,75 +1,98 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [RESEND PATCH v2 01/15] dt-bindings: soc: qcom: Add
-	bindings for APR bus
-Date: Thu, 14 Dec 2017 17:33:48 +0000
-Message-ID: <20171214173402.19074-2-srinivas.kandagatla@linaro.org>
+Subject: [RESEND PATCH v2 15/15] arm64: dts: msm8996: db820c: Add sound card support
+Date: Thu, 14 Dec 2017 17:34:02 +0000
+Message-ID: <20171214173402.19074-16-srinivas.kandagatla@linaro.org>
 References: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 963B026732A
- for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 18:36:27 +0100 (CET)
-Received: by mail-wm0-f68.google.com with SMTP id b199so12957323wme.1
- for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 09:36:27 -0800 (PST)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Andy Gross <andy.gross@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, sboyd@codeaurora.org, Liam Girdwood <lgirdwood@gmail.com>, David Brown <david.brown@linaro.org>, Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: David Brown <david.brown@linaro.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, sboyd@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch add dt bindings for Qualcomm APR bus driver
+This patch adds hdmi sound card support to db820c via qdsp.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../devicetree/bindings/soc/qcom/qcom,apr.txt      | 28 ++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+ arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi |  5 +++++
+ arch/arm64/boot/dts/qcom/msm8996.dtsi        | 33 ++++++++++++++++++++++++++++
+ 2 files changed, 38 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
-new file mode 100644
-index 000000000000..4e93213ae98d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
-@@ -0,0 +1,28 @@
-+Qualcomm APR (Asynchronous Packet Router) binding
-+
-+This binding describes the Qualcomm APR. APR is a IPC protocol for
-+communication between Application processor and QDSP. APR is mainly
-+used for audio/voice services on the QDSP.
-+
-+- compatible:
-+	Usage: required
-+	Value type: <stringlist>
-+	Definition: must be "qcom,apr-<SOC-NAME>" example: "qcom,apr-msm8996"
-+
-+
-+- qcom,smd-channel:
-+	Usage: required
-+	Value type: <string>
-+	Definition: standard SMD property specifying the SMD channel used for
-+		    communication with the APR on QDSP.
-+		    Should be "apr_audio_svc".
-+		    Described in soc/qcom/qcom,smd.txt
-+
-+= EXAMPLE
-+The following example represents a QDSP based sound card on a MSM8996 device
-+which uses apr as communication between Apps and QDSP.
-+
-+	apr {
-+		compatible = "qcom,apr-msm8996";
-+		qcom,smd-channels = "apr_audio_svc";
+diff --git a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
+index 9769053957af..b955769b100d 100644
+--- a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
++++ b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
+@@ -190,6 +190,11 @@
+ 		};
+ 	};
+ 
++	snd {
++		compatible = "qcom,apq8096-sndcard";
++		qcom,model = "DB820c";
++		iommus = <&lpass_q6_smmu 1>;
 +	};
+ 
+ 	gpio_keys {
+ 		compatible = "gpio-keys";
+diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+index a144cec7bb71..25c43fb8ab49 100644
+--- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+@@ -1262,6 +1262,7 @@
+ 
+ 				phys = <&hdmi_phy>;
+ 				phy-names = "hdmi_phy";
++				#sound-dai-cells = <0>;
+ 
+ 				ports {
+ 					#address-cells = <1>;
+@@ -1297,6 +1298,33 @@
+ 					      "ref_clk";
+ 			};
+ 		};
++
++	        lpass_q6_smmu: arm,smmu-lpass_q6@1600000 {
++			compatible = "qcom,msm8996-smmu-v2";
++	                reg = <0x1600000 0x20000>;
++	                #iommu-cells = <1>;
++                        power-domains = <&gcc HLOS1_VOTE_LPASS_CORE_GDSC>;
++
++			#global-interrupts = <1>;
++		        interrupts = <GIC_SPI 404 IRQ_TYPE_LEVEL_HIGH>,
++		                <GIC_SPI 226 IRQ_TYPE_LEVEL_HIGH>,
++		                <GIC_SPI 393 IRQ_TYPE_LEVEL_HIGH>,
++		                <GIC_SPI 394 IRQ_TYPE_LEVEL_HIGH>,
++		                <GIC_SPI 395 IRQ_TYPE_LEVEL_HIGH>,
++		                <GIC_SPI 396 IRQ_TYPE_LEVEL_HIGH>,
++		                <GIC_SPI 397 IRQ_TYPE_LEVEL_HIGH>,
++		                <GIC_SPI 398 IRQ_TYPE_LEVEL_HIGH>,
++		                <GIC_SPI 399 IRQ_TYPE_LEVEL_HIGH>,
++		                <GIC_SPI 400 IRQ_TYPE_LEVEL_HIGH>,
++		                <GIC_SPI 401 IRQ_TYPE_LEVEL_HIGH>,
++		                <GIC_SPI 402 IRQ_TYPE_LEVEL_HIGH>,
++		                <GIC_SPI 403 IRQ_TYPE_LEVEL_HIGH>;
++
++			clocks = <&gcc GCC_HLOS1_VOTE_LPASS_CORE_SMMU_CLK>,
++				 <&gcc GCC_HLOS1_VOTE_LPASS_ADSP_SMMU_CLK>;
++			clock-names = "iface", "bus";
++                        status = "okay";
++		};
+ 	};
+ 
+ 	adsp-pil {
+@@ -1325,6 +1353,11 @@
+ 			qcom,ipc = <&apcs 16 8>;
+ 			qcom,smd-edge = <1>;
+ 			qcom,remote-pid = <2>;
++
++			apr {
++				compatible = "qcom,apr-msm8996";
++				qcom,smd-channels = "apr_audio_svc";
++			};
+ 		};
+ 	};
+ 
 -- 
 2.15.0
