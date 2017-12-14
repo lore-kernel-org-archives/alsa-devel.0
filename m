@@ -1,160 +1,357 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v6 00/14] soundwire: Add a new SoundWire
-	subsystem
-Date: Thu, 14 Dec 2017 11:19:31 +0530
-Message-ID: <1513230585-13882-1-git-send-email-vinod.koul@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id E2C7F266D71
- for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 06:46:01 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: [PATCH v6 03/14] soundwire: Add Master registration
+Date: Thu, 14 Dec 2017 11:19:34 +0530
+Message-ID: <1513230585-13882-4-git-send-email-vinod.koul@intel.com>
+References: <1513230585-13882-1-git-send-email-vinod.koul@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1513230585-13882-1-git-send-email-vinod.koul@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Takashi <tiwai@suse.de>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, patches.audio@intel.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-We are going to merge this series thru sound tree, need Mark's ack on
-regmap patch or to take it thru regmap tree.
+A Master adds a SoundWire bus instance which scans the firmware
+provided for device description.
 
-This patch series adds a new SoundWire subsystem which implements a
-new MIPI bus protocol 'SoundWire'.
+In this patch we scan ACPI namespaces and create SoundWire
+Slave devices based on ACPI description
 
-The SoundWire protocol is a robust, scalable, low complexity, low
-power, low latency, two-pin (clock and data) multi-drop bus that
-allows for the transfer of multiple audio streams and embedded
-control/commands.  SoundWire provides synchronization capabilities
-and supports both PCM and PDM, multichannel data, isochronous and
-asynchronous modes.
-
-This series adds SoundWire Bus, IO transfers, DisCo (Discovery and
-Configuration) sysfs interface, regmap and Documentation summary.
-
-This patch series is also available on
-git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git topic/patch_v6
-
-v5: https://lkml.org/lkml/2017/12/6/545
-v4: https://lkml.org/lkml/2017/12/1/205
-v3: https://lkml.org/lkml/2017/11/30/160
-v2: https://lkml.org/lkml/2017/11/10/216
-v1: https://lkml.org/lkml/2017/10/18/1030
-RFC: https://lkml.org/lkml/2016/10/21/395
-
-Changes in v6:
-  - Add reviewed/acked tags from Philippe, Pierre, Takashi and Greg
-  - Fix nitpicks from Takashi
-  - Drop the sysfs patch for now
-
-Changes in v5:
-  - Address comments by Pierre
-  - add reference to mid.mipi.org in documentation
-  - add group and master device number and don't use those for enumeration
-  - fix unused calls in disco code and also remove superfluous initialization
-  - remove sdw_transfer apis slave arg, make enum values integer and not
-    bitmaps
-  - clarify the sdw_program_device_num loop and fix interrupt handling
-
-Changes in v4:
-- Remove text licenses and add SPDX tags only with C99 style comments
-- make bus_type code as GPL v2.0 only
-
-Changes in v3:
-- Update the kernel-doc styles and fix included headers for files
-- handle dev_pm_domain_attach() for defered probe
-- remove OF placeholders
-- change regmap license to GPLv2 only
-
-Changes in v2:
-- move documentation into driver-api and do rst conversion
-- fix documentation comments
-- add SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) to all
-  source files
-- rework the transfer logic and paging logic as commented on v1
-- remove dummy sysfs fns
-- registration checks and fixes
-- remove slave check for regamp as that turned superfluous
-- remove depends SoundWire symbol
-- make modalias api arg const
-- use bitmap for tracking assigned
-- add counter for report present tracking
-todo: add the dt-bindings
-
-Sanyog Kale (4):
-  Documentation: Add SoundWire summary
-  soundwire: Add SoundWire MIPI defined registers
-  soundwire: Add Slave status handling helpers
-  soundwire: cdns: Add sdw_master_ops and IO transfer support
-
-Vinod Koul (10):
-  soundwire: Add SoundWire bus type
-  soundwire: Add Master registration
-  soundwire: Add MIPI DisCo property helpers
-  soundwire: Add IO transfer
-  regmap: Add SoundWire bus support
-  soundwire: Add slave status handling
-  soundwire: cdns: Add cadence library
-  soundwire: intel: Add Intel Master driver
-  soundwire: intel: Add Intel init module
-  MAINTAINERS: Add SoundWire entry
-
- Documentation/driver-api/index.rst             |   1 +
- Documentation/driver-api/soundwire/index.rst   |  15 +
- Documentation/driver-api/soundwire/summary.rst | 207 +++++
- MAINTAINERS                                    |   9 +
- drivers/Kconfig                                |   2 +
- drivers/Makefile                               |   1 +
- drivers/base/regmap/Kconfig                    |   4 +
- drivers/base/regmap/Makefile                   |   1 +
- drivers/base/regmap/regmap-sdw.c               |  92 +++
- drivers/soundwire/Kconfig                      |  37 +
- drivers/soundwire/Makefile                     |  18 +
- drivers/soundwire/bus.c                        | 997 +++++++++++++++++++++++++
- drivers/soundwire/bus.h                        |  71 ++
- drivers/soundwire/bus_type.c                   | 193 +++++
- drivers/soundwire/cadence_master.c             | 751 +++++++++++++++++++
- drivers/soundwire/cadence_master.h             |  48 ++
- drivers/soundwire/intel.c                      | 345 +++++++++
- drivers/soundwire/intel.h                      |  23 +
- drivers/soundwire/intel_init.c                 | 198 +++++
- drivers/soundwire/mipi_disco.c                 | 401 ++++++++++
- drivers/soundwire/slave.c                      | 114 +++
- include/linux/mod_devicetable.h                |   6 +
- include/linux/regmap.h                         |  37 +
- include/linux/soundwire/sdw.h                  | 479 ++++++++++++
- include/linux/soundwire/sdw_intel.h            |  24 +
- include/linux/soundwire/sdw_registers.h        | 194 +++++
- include/linux/soundwire/sdw_type.h             |  19 +
- scripts/mod/devicetable-offsets.c              |   4 +
- scripts/mod/file2alias.c                       |  15 +
- 29 files changed, 4306 insertions(+)
- create mode 100644 Documentation/driver-api/soundwire/index.rst
- create mode 100644 Documentation/driver-api/soundwire/summary.rst
- create mode 100644 drivers/base/regmap/regmap-sdw.c
- create mode 100644 drivers/soundwire/Kconfig
- create mode 100644 drivers/soundwire/Makefile
+Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+Reviewed-by: Philippe Ombredanne <pombredanne@nexb.com>
+Acked-By: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ drivers/soundwire/Makefile    |   2 +-
+ drivers/soundwire/bus.c       | 124 ++++++++++++++++++++++++++++++++++++++++++
+ drivers/soundwire/bus.h       |  19 +++++++
+ drivers/soundwire/slave.c     | 114 ++++++++++++++++++++++++++++++++++++++
+ include/linux/soundwire/sdw.h |  18 ++++++
+ 5 files changed, 276 insertions(+), 1 deletion(-)
  create mode 100644 drivers/soundwire/bus.c
  create mode 100644 drivers/soundwire/bus.h
- create mode 100644 drivers/soundwire/bus_type.c
- create mode 100644 drivers/soundwire/cadence_master.c
- create mode 100644 drivers/soundwire/cadence_master.h
- create mode 100644 drivers/soundwire/intel.c
- create mode 100644 drivers/soundwire/intel.h
- create mode 100644 drivers/soundwire/intel_init.c
- create mode 100644 drivers/soundwire/mipi_disco.c
  create mode 100644 drivers/soundwire/slave.c
- create mode 100644 include/linux/soundwire/sdw.h
- create mode 100644 include/linux/soundwire/sdw_intel.h
- create mode 100644 include/linux/soundwire/sdw_registers.h
- create mode 100644 include/linux/soundwire/sdw_type.h
 
+diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
+index d1281def7662..c875e434f8b3 100644
+--- a/drivers/soundwire/Makefile
++++ b/drivers/soundwire/Makefile
+@@ -3,5 +3,5 @@
+ #
+ 
+ #Bus Objs
+-soundwire-bus-objs := bus_type.o
++soundwire-bus-objs := bus_type.o bus.o slave.o
+ obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+new file mode 100644
+index 000000000000..bc72c3d58bbf
+--- /dev/null
++++ b/drivers/soundwire/bus.c
+@@ -0,0 +1,124 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++// Copyright(c) 2015-17 Intel Corporation.
++
++#include <linux/acpi.h>
++#include <linux/mod_devicetable.h>
++#include <linux/soundwire/sdw.h>
++#include "bus.h"
++
++/**
++ * sdw_add_bus_master() - add a bus Master instance
++ * @bus: bus instance
++ *
++ * Initializes the bus instance, read properties and create child
++ * devices.
++ */
++int sdw_add_bus_master(struct sdw_bus *bus)
++{
++	int ret;
++
++	if (!bus->dev) {
++		pr_err("SoundWire bus has no device");
++		return -ENODEV;
++	}
++
++	mutex_init(&bus->bus_lock);
++	INIT_LIST_HEAD(&bus->slaves);
++
++	/*
++	 * Device numbers in SoundWire are 0 thru 15. Enumeration device
++	 * number (0), Broadcast device number (15), Group numbers (12 and
++	 * 13) and Master device number (14) are not used for assignment so
++	 * mask these and other higher bits.
++	 */
++
++	/* Set higher order bits */
++	*bus->assigned = ~GENMASK(SDW_BROADCAST_DEV_NUM, SDW_ENUM_DEV_NUM);
++
++	/* Set enumuration device number and broadcast device number */
++	set_bit(SDW_ENUM_DEV_NUM, bus->assigned);
++	set_bit(SDW_BROADCAST_DEV_NUM, bus->assigned);
++
++	/* Set group device numbers and master device number */
++	set_bit(SDW_GROUP12_DEV_NUM, bus->assigned);
++	set_bit(SDW_GROUP13_DEV_NUM, bus->assigned);
++	set_bit(SDW_MASTER_DEV_NUM, bus->assigned);
++
++	/*
++	 * SDW is an enumerable bus, but devices can be powered off. So,
++	 * they won't be able to report as present.
++	 *
++	 * Create Slave devices based on Slaves described in
++	 * the respective firmware (ACPI/DT)
++	 */
++	if (IS_ENABLED(CONFIG_ACPI) && ACPI_HANDLE(bus->dev))
++		ret = sdw_acpi_find_slaves(bus);
++	else
++		ret = -ENOTSUPP; /* No ACPI/DT so error out */
++
++	if (ret) {
++		dev_err(bus->dev, "Finding slaves failed:%d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL(sdw_add_bus_master);
++
++static int sdw_delete_slave(struct device *dev, void *data)
++{
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	struct sdw_bus *bus = slave->bus;
++
++	mutex_lock(&bus->bus_lock);
++
++	if (slave->dev_num) /* clear dev_num if assigned */
++		clear_bit(slave->dev_num, bus->assigned);
++
++	list_del_init(&slave->node);
++	mutex_unlock(&bus->bus_lock);
++
++	device_unregister(dev);
++	return 0;
++}
++
++/**
++ * sdw_delete_bus_master() - delete the bus master instance
++ * @bus: bus to be deleted
++ *
++ * Remove the instance, delete the child devices.
++ */
++void sdw_delete_bus_master(struct sdw_bus *bus)
++{
++	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
++}
++EXPORT_SYMBOL(sdw_delete_bus_master);
++
++void sdw_extract_slave_id(struct sdw_bus *bus,
++			u64 addr, struct sdw_slave_id *id)
++{
++	dev_dbg(bus->dev, "SDW Slave Addr: %llx", addr);
++
++	/*
++	 * Spec definition
++	 *   Register		Bit	Contents
++	 *   DevId_0 [7:4]	47:44	sdw_version
++	 *   DevId_0 [3:0]	43:40	unique_id
++	 *   DevId_1		39:32	mfg_id [15:8]
++	 *   DevId_2		31:24	mfg_id [7:0]
++	 *   DevId_3		23:16	part_id [15:8]
++	 *   DevId_4		15:08	part_id [7:0]
++	 *   DevId_5		07:00	class_id
++	 */
++	id->sdw_version = (addr >> 44) & GENMASK(3, 0);
++	id->unique_id = (addr >> 40) & GENMASK(3, 0);
++	id->mfg_id = (addr >> 24) & GENMASK(15, 0);
++	id->part_id = (addr >> 8) & GENMASK(15, 0);
++	id->class_id = addr & GENMASK(7, 0);
++
++	dev_dbg(bus->dev,
++		"SDW Slave class_id %x, part_id %x, mfg_id %x, unique_id %x, version %x",
++				id->class_id, id->part_id, id->mfg_id,
++				id->unique_id, id->sdw_version);
++
++}
+diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+new file mode 100644
+index 000000000000..a54921825ce0
+--- /dev/null
++++ b/drivers/soundwire/bus.h
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++// Copyright(c) 2015-17 Intel Corporation.
++
++#ifndef __SDW_BUS_H
++#define __SDW_BUS_H
++
++#if IS_ENABLED(CONFIG_ACPI)
++int sdw_acpi_find_slaves(struct sdw_bus *bus);
++#else
++static inline int sdw_acpi_find_slaves(struct sdw_bus *bus)
++{
++	return -ENOTSUPP;
++}
++#endif
++
++void sdw_extract_slave_id(struct sdw_bus *bus,
++			u64 addr, struct sdw_slave_id *id);
++
++#endif /* __SDW_BUS_H */
+diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
+new file mode 100644
+index 000000000000..ac103bd0c176
+--- /dev/null
++++ b/drivers/soundwire/slave.c
+@@ -0,0 +1,114 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++// Copyright(c) 2015-17 Intel Corporation.
++
++#include <linux/acpi.h>
++#include <linux/soundwire/sdw.h>
++#include <linux/soundwire/sdw_type.h>
++#include "bus.h"
++
++static void sdw_slave_release(struct device *dev)
++{
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++
++	kfree(slave);
++}
++
++static int sdw_slave_add(struct sdw_bus *bus,
++		struct sdw_slave_id *id, struct fwnode_handle *fwnode)
++{
++	struct sdw_slave *slave;
++	int ret;
++
++	slave = kzalloc(sizeof(*slave), GFP_KERNEL);
++	if (!slave)
++		return -ENOMEM;
++
++	/* Initialize data structure */
++	memcpy(&slave->id, id, sizeof(*id));
++	slave->dev.parent = bus->dev;
++	slave->dev.fwnode = fwnode;
++
++	/* name shall be sdw:link:mfg:part:class:unique */
++	dev_set_name(&slave->dev, "sdw:%x:%x:%x:%x:%x",
++			bus->link_id, id->mfg_id, id->part_id,
++			id->class_id, id->unique_id);
++
++	slave->dev.release = sdw_slave_release;
++	slave->dev.bus = &sdw_bus_type;
++	slave->bus = bus;
++	slave->status = SDW_SLAVE_UNATTACHED;
++	slave->dev_num = 0;
++
++	mutex_lock(&bus->bus_lock);
++	list_add_tail(&slave->node, &bus->slaves);
++	mutex_unlock(&bus->bus_lock);
++
++	ret = device_register(&slave->dev);
++	if (ret) {
++		dev_err(bus->dev, "Failed to add slave: ret %d\n", ret);
++
++		/*
++		 * On err, don't free but drop ref as this will be freed
++		 * when release method is invoked.
++		 */
++		mutex_lock(&bus->bus_lock);
++		list_del(&slave->node);
++		mutex_unlock(&bus->bus_lock);
++		put_device(&slave->dev);
++	}
++
++	return ret;
++}
++
++#if IS_ENABLED(CONFIG_ACPI)
++/*
++ * sdw_acpi_find_slaves() - Find Slave devices in Master ACPI node
++ * @bus: SDW bus instance
++ *
++ * Scans Master ACPI node for SDW child Slave devices and registers it.
++ */
++int sdw_acpi_find_slaves(struct sdw_bus *bus)
++{
++	struct acpi_device *adev, *parent;
++
++	parent = ACPI_COMPANION(bus->dev);
++	if (!parent) {
++		dev_err(bus->dev, "Can't find parent for acpi bind\n");
++		return -ENODEV;
++	}
++
++	list_for_each_entry(adev, &parent->children, node) {
++		unsigned long long addr;
++		struct sdw_slave_id id;
++		unsigned int link_id;
++		acpi_status status;
++
++		status = acpi_evaluate_integer(adev->handle,
++					METHOD_NAME__ADR, NULL, &addr);
++
++		if (ACPI_FAILURE(status)) {
++			dev_err(bus->dev, "_ADR resolution failed: %x\n",
++							status);
++			return status;
++		}
++
++		/* Extract link id from ADR, Bit 51 to 48 (included) */
++		link_id = (addr >> 48) & GENMASK(3, 0);
++
++		/* Check for link_id match */
++		if (link_id != bus->link_id)
++			continue;
++
++		sdw_extract_slave_id(bus, addr, &id);
++
++		/*
++		 * don't error check for sdw_slave_add as we want to continue
++		 * adding Slaves
++		 */
++		sdw_slave_add(bus, &id, acpi_fwnode_handle(adev));
++	}
++
++	return 0;
++}
++
++#endif
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index 869d7041d9fc..3bfa7f1e2b47 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -7,6 +7,21 @@
+ struct sdw_bus;
+ struct sdw_slave;
+ 
++/* SDW spec defines and enums, as defined by MIPI 1.1. Spec */
++
++/* SDW Broadcast Device Number */
++#define SDW_BROADCAST_DEV_NUM		15
++
++/* SDW Enumeration Device Number */
++#define SDW_ENUM_DEV_NUM		0
++
++/* SDW Group Device Numbers */
++#define SDW_GROUP12_DEV_NUM		12
++#define SDW_GROUP13_DEV_NUM		13
++
++/* SDW Master Device Number, not supported yet */
++#define SDW_MASTER_DEV_NUM		14
++
+ #define SDW_MAX_DEVICES			11
+ 
+ /**
+@@ -105,4 +120,7 @@ struct sdw_bus {
+ 	struct mutex bus_lock;
+ };
+ 
++int sdw_add_bus_master(struct sdw_bus *bus);
++void sdw_delete_bus_master(struct sdw_bus *bus);
++
+ #endif /* __SOUNDWIRE_H */
 -- 
 2.7.4
