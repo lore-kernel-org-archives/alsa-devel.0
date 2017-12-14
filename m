@@ -1,7 +1,7 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [RESEND PATCH v2 15/15] arm64: dts: msm8996: db820c: Add sound card support
-Date: Thu, 14 Dec 2017 17:34:02 +0000
-Message-ID: <20171214173402.19074-16-srinivas.kandagatla@linaro.org>
+Subject: [RESEND PATCH v2 10/15] ASoC: qcom: qdsp6: Add support to q6routing driver
+Date: Thu, 14 Dec 2017 17:33:57 +0000
+Message-ID: <20171214173402.19074-11-srinivas.kandagatla@linaro.org>
 References: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
@@ -12,87 +12,459 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch adds hdmi sound card support to db820c via qdsp.
+This patch adds support to q6 routing driver which configures route
+between ASM and AFE module using ADM apis.
+
+This driver uses dapm widgets to setup the matrix between AFE ports and
+ASM streams.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi |  5 +++++
- arch/arm64/boot/dts/qcom/msm8996.dtsi        | 33 ++++++++++++++++++++++++++++
- 2 files changed, 38 insertions(+)
+ sound/soc/qcom/Kconfig           |   5 +
+ sound/soc/qcom/qdsp6/Makefile    |   1 +
+ sound/soc/qcom/qdsp6/q6routing.c | 386 +++++++++++++++++++++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6routing.h |   9 +
+ 4 files changed, 401 insertions(+)
+ create mode 100644 sound/soc/qcom/qdsp6/q6routing.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6routing.h
 
-diff --git a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-index 9769053957af..b955769b100d 100644
---- a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-+++ b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-@@ -190,6 +190,11 @@
- 		};
- 	};
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index 121b9c957024..dd8fb0cde614 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -60,12 +60,17 @@ config SND_SOC_QDSP6_CORE
+ 	tristate
+ 	default n
  
-+	snd {
-+		compatible = "qcom,apq8096-sndcard";
-+		qcom,model = "DB820c";
-+		iommus = <&lpass_q6_smmu 1>;
-+	};
- 
- 	gpio_keys {
- 		compatible = "gpio-keys";
-diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-index a144cec7bb71..25c43fb8ab49 100644
---- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-@@ -1262,6 +1262,7 @@
- 
- 				phys = <&hdmi_phy>;
- 				phy-names = "hdmi_phy";
-+				#sound-dai-cells = <0>;
- 
- 				ports {
- 					#address-cells = <1>;
-@@ -1297,6 +1298,33 @@
- 					      "ref_clk";
- 			};
- 		};
++config SND_SOC_QDSP6_ROUTING
++	tristate
++	default n
 +
-+	        lpass_q6_smmu: arm,smmu-lpass_q6@1600000 {
-+			compatible = "qcom,msm8996-smmu-v2";
-+	                reg = <0x1600000 0x20000>;
-+	                #iommu-cells = <1>;
-+                        power-domains = <&gcc HLOS1_VOTE_LPASS_CORE_GDSC>;
+ config SND_SOC_QDSP6
+ 	tristate "SoC ALSA audio driver for QDSP6"
+ 	select SND_SOC_QDSP6_AFE
+ 	select SND_SOC_QDSP6_ADM
+ 	select SND_SOC_QDSP6_ASM
+ 	select SND_SOC_QDSP6_CORE
++	select SND_SOC_QDSP6_ROUTING
+ 	help
+ 	 To add support for MSM QDSP6 Soc Audio.
+ 	 This will enable sound soc platform specific
+diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
+index ad7f10691e54..c1ad060a2341 100644
+--- a/sound/soc/qcom/qdsp6/Makefile
++++ b/sound/soc/qcom/qdsp6/Makefile
+@@ -2,3 +2,4 @@ obj-$(CONFIG_SND_SOC_QDSP6_AFE) += q6afe.o
+ obj-$(CONFIG_SND_SOC_QDSP6_ADM) += q6adm.o
+ obj-$(CONFIG_SND_SOC_QDSP6_ASM) += q6asm.o
+ obj-$(CONFIG_SND_SOC_QDSP6_CORE) += q6core.o
++obj-$(CONFIG_SND_SOC_QDSP6_ROUTING) += q6routing.o
+diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
+new file mode 100644
+index 000000000000..f5f12d61a1ee
+--- /dev/null
++++ b/sound/soc/qcom/qdsp6/q6routing.c
+@@ -0,0 +1,386 @@
++/* SPDX-License-Identifier: GPL-2.0
++* Copyright (c) 2011-2016, The Linux Foundation
++* Copyright (c) 2017, Linaro Limited
++*/
++#include <linux/init.h>
++#include <linux/err.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/bitops.h>
++#include <linux/mutex.h>
++#include <linux/of_device.h>
++#include <linux/slab.h>
++#include <sound/core.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/pcm.h>
++#include <sound/control.h>
++#include <sound/asound.h>
++#include <sound/pcm_params.h>
++#include "q6afe.h"
++#include "q6asm.h"
++#include "q6adm.h"
++#include "q6routing.h"
 +
-+			#global-interrupts = <1>;
-+		        interrupts = <GIC_SPI 404 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 226 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 393 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 394 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 395 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 396 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 397 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 398 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 399 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 400 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 401 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 402 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 403 IRQ_TYPE_LEVEL_HIGH>;
++struct session_data {
++	int state;
++	int port_id;
++	int path_type;
++	int app_type;
++	int acdb_id;
++	int sample_rate;
++	int bits_per_sample;
++	int channels;
++	int format;
++	int perf_mode;
++	int numcopps;
++	int fedai_id;
++	unsigned long copp_map;
++};
 +
-+			clocks = <&gcc GCC_HLOS1_VOTE_LPASS_CORE_SMMU_CLK>,
-+				 <&gcc GCC_HLOS1_VOTE_LPASS_ADSP_SMMU_CLK>;
-+			clock-names = "iface", "bus";
-+                        status = "okay";
-+		};
- 	};
- 
- 	adsp-pil {
-@@ -1325,6 +1353,11 @@
- 			qcom,ipc = <&apcs 16 8>;
- 			qcom,smd-edge = <1>;
- 			qcom,remote-pid = <2>;
++struct msm_routing_data {
++	struct session_data sessions[MAX_SESSIONS];
++	struct device *dev;
++	struct mutex lock;
++};
 +
-+			apr {
-+				compatible = "qcom,apr-msm8996";
-+				qcom,smd-channels = "apr_audio_svc";
-+			};
- 		};
- 	};
- 
++static struct msm_routing_data *routing_data;
++
++/**
++ * q6routing_reg_phy_stream() - Register a new stream for route setup
++ *
++ * @fedai_id: Frontend dai id.
++ * @perf_mode: Performace mode.
++ * @stream_id: ASM stream id to map.
++ * @stream_type: Direction of stream
++ *
++ * Return: Will be an negative on error or a zero on success.
++ */
++int q6routing_reg_phy_stream(int fedai_id, int perf_mode,
++			   int stream_id, int stream_type)
++{
++	int j, topology, num_copps = 0;
++	struct route_payload payload;
++	int copp_idx;
++	struct session_data *session;
++
++	if (!routing_data) {
++		pr_err("Routing driver not yet ready\n");
++		return -EINVAL;
++	}
++
++	session = &routing_data->sessions[stream_id - 1];
++	mutex_lock(&routing_data->lock);
++	session->fedai_id = fedai_id;
++	payload.num_copps = 0; /* only RX needs to use payload */
++	topology = NULL_COPP_TOPOLOGY;
++	copp_idx = q6adm_open(routing_data->dev, session->port_id,
++			      session->path_type, session->sample_rate,
++			      session->channels, topology, perf_mode,
++			      session->bits_per_sample, 0, 0);
++	if ((copp_idx < 0) || (copp_idx >= MAX_COPPS_PER_PORT)) {
++		mutex_unlock(&routing_data->lock);
++		return -EINVAL;
++	}
++
++	set_bit(copp_idx, &session->copp_map);
++	for (j = 0; j < MAX_COPPS_PER_PORT; j++) {
++		unsigned long copp = session->copp_map;
++
++		if (test_bit(j, &copp)) {
++			payload.port_id[num_copps] = session->port_id;
++			payload.copp_idx[num_copps] = j;
++			num_copps++;
++		}
++	}
++
++	if (num_copps) {
++		payload.num_copps = num_copps;
++		payload.session_id = stream_id;
++		q6adm_matrix_map(routing_data->dev, session->path_type,
++				 payload, perf_mode);
++	}
++	mutex_unlock(&routing_data->lock);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(q6routing_reg_phy_stream);
++
++static struct session_data *routing_get_session(struct msm_routing_data *data,
++						int port_id, int port_type)
++{
++	int i;
++
++	for (i = 0; i < MAX_SESSIONS; i++)
++		if (port_id == data->sessions[i].port_id)
++			return &data->sessions[i];
++
++	return NULL;
++}
++
++static struct session_data *get_session_from_id(struct msm_routing_data *data,
++						int fedai_id)
++{
++	int i;
++
++	for (i = 0; i < MAX_SESSIONS; i++) {
++		if (fedai_id == data->sessions[i].fedai_id)
++			return &data->sessions[i];
++	}
++
++	return NULL;
++}
++/**
++ * q6routing_dereg_phy_stream() - Deregister a stream
++ *
++ * @fedai_id: Frontend dai id.
++ * @stream_type: Direction of stream
++ *
++ * Return: Will be an negative on error or a zero on success.
++ */
++void q6routing_dereg_phy_stream(int fedai_id, int stream_type)
++{
++	struct session_data *session;
++	int idx;
++
++	session = get_session_from_id(routing_data, fedai_id);
++	if (!session)
++		return;
++
++	for_each_set_bit(idx, &session->copp_map, MAX_COPPS_PER_PORT)
++		q6adm_close(routing_data->dev, session->port_id,
++			    session->perf_mode, idx);
++
++	session->fedai_id = -1;
++	session->copp_map = 0;
++}
++EXPORT_SYMBOL_GPL(q6routing_dereg_phy_stream);
++
++static int msm_routing_get_audio_mixer(struct snd_kcontrol *kcontrol,
++				       struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dapm_context *dapm =
++	    snd_soc_dapm_kcontrol_dapm(kcontrol);
++	struct soc_mixer_control *mc =
++	    (struct soc_mixer_control *)kcontrol->private_value;
++	int session_id = mc->shift;
++	struct snd_soc_platform *platform = snd_soc_dapm_to_platform(dapm);
++	struct msm_routing_data *priv = snd_soc_platform_get_drvdata(platform);
++	struct session_data *session = &priv->sessions[session_id];
++
++	if (session->port_id != -1)
++		ucontrol->value.integer.value[0] = 1;
++	else
++		ucontrol->value.integer.value[0] = 0;
++
++	return 0;
++}
++
++static int msm_routing_put_audio_mixer(struct snd_kcontrol *kcontrol,
++				       struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dapm_context *dapm =
++				    snd_soc_dapm_kcontrol_dapm(kcontrol);
++	struct snd_soc_platform *platform = snd_soc_dapm_to_platform(dapm);
++	struct msm_routing_data *data = snd_soc_platform_get_drvdata(platform);
++	struct soc_mixer_control *mc =
++		    (struct soc_mixer_control *)kcontrol->private_value;
++	struct snd_soc_dapm_update *update = NULL;
++	int be_id = mc->reg;
++	int session_id = mc->shift;
++	struct session_data *session = &data->sessions[session_id];
++
++	if (ucontrol->value.integer.value[0]) {
++		session->port_id = be_id;
++		snd_soc_dapm_mixer_update_power(dapm, kcontrol, 1, update);
++	} else {
++		session->port_id = -1;
++		snd_soc_dapm_mixer_update_power(dapm, kcontrol, 0, update);
++	}
++
++	return 1;
++}
++
++static const struct snd_kcontrol_new hdmi_mixer_controls[] = {
++	SOC_SINGLE_EXT("MultiMedia1", AFE_PORT_HDMI_RX,
++		       MSM_FRONTEND_DAI_MULTIMEDIA1, 1, 0,
++		       msm_routing_get_audio_mixer,
++		       msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia2", AFE_PORT_HDMI_RX,
++		       MSM_FRONTEND_DAI_MULTIMEDIA2, 1, 0,
++		       msm_routing_get_audio_mixer,
++		       msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia3", AFE_PORT_HDMI_RX,
++		       MSM_FRONTEND_DAI_MULTIMEDIA3, 1, 0,
++		       msm_routing_get_audio_mixer,
++		       msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia4", AFE_PORT_HDMI_RX,
++		       MSM_FRONTEND_DAI_MULTIMEDIA4, 1, 0,
++		       msm_routing_get_audio_mixer,
++		       msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia5", AFE_PORT_HDMI_RX,
++		       MSM_FRONTEND_DAI_MULTIMEDIA5, 1, 0,
++		       msm_routing_get_audio_mixer,
++		       msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia6", AFE_PORT_HDMI_RX,
++		       MSM_FRONTEND_DAI_MULTIMEDIA6, 1, 0,
++		       msm_routing_get_audio_mixer,
++		       msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia7", AFE_PORT_HDMI_RX,
++		       MSM_FRONTEND_DAI_MULTIMEDIA7, 1, 0,
++		       msm_routing_get_audio_mixer,
++		       msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia8", AFE_PORT_HDMI_RX,
++		       MSM_FRONTEND_DAI_MULTIMEDIA8, 1, 0,
++		       msm_routing_get_audio_mixer,
++		       msm_routing_put_audio_mixer),
++};
++
++static const struct snd_soc_dapm_widget msm_qdsp6_widgets[] = {
++	/* Frontend AIF */
++	/* Widget name equals to Front-End DAI name<Need confirmation>,
++	 * Stream name must contains substring of front-end dai name
++	 */
++	SND_SOC_DAPM_AIF_IN("MM_DL1", "MultiMedia1 Playback", 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_IN("MM_DL2", "MultiMedia2 Playback", 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_IN("MM_DL3", "MultiMedia3 Playback", 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_IN("MM_DL4", "MultiMedia4 Playback", 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_IN("MM_DL5", "MultiMedia5 Playback", 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_IN("MM_DL6", "MultiMedia6 Playback", 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_IN("MM_DL7", "MultiMedia7 Playback", 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_IN("MM_DL8", "MultiMedia8 Playback", 0, 0, 0, 0),
++
++	/* Mixer definitions */
++	SND_SOC_DAPM_MIXER("HDMI Mixer", SND_SOC_NOPM, 0, 0,
++			   hdmi_mixer_controls,
++			   ARRAY_SIZE(hdmi_mixer_controls)),
++};
++
++static const struct snd_soc_dapm_route intercon[] = {
++	{"HDMI Mixer", "MultiMedia1", "MM_DL1"},
++	{"HDMI Mixer", "MultiMedia2", "MM_DL2"},
++	{"HDMI Mixer", "MultiMedia3", "MM_DL3"},
++	{"HDMI Mixer", "MultiMedia4", "MM_DL4"},
++	{"HDMI Mixer", "MultiMedia5", "MM_DL5"},
++	{"HDMI Mixer", "MultiMedia6", "MM_DL6"},
++	{"HDMI Mixer", "MultiMedia7", "MM_DL7"},
++	{"HDMI Mixer", "MultiMedia8", "MM_DL8"},
++	{"HDMI", NULL, "HDMI Mixer"},
++	{"HDMI-RX", NULL, "HDMI"},
++};
++
++static int routing_hw_params(struct snd_pcm_substream *substream,
++				     struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	unsigned int be_id = rtd->cpu_dai->id;
++	struct snd_soc_platform *platform = rtd->platform;
++	struct msm_routing_data *data = snd_soc_platform_get_drvdata(platform);
++	struct session_data *session;
++	int port_id, port_type, path_type, bits_per_sample;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		path_type = ADM_PATH_PLAYBACK;
++		port_type = MSM_AFE_PORT_TYPE_RX;
++	}
++
++	port_id = be_id;
++
++	session = routing_get_session(data, port_id, port_type);
++
++	if (!session) {
++		pr_err("No session matrix setup yet..\n");
++		return -EINVAL;
++	}
++
++	mutex_lock(&data->lock);
++
++	session->path_type = path_type;
++	session->sample_rate = params_rate(params);
++	session->channels = params_channels(params);
++	session->format = params_format(params);
++
++	if (session->format == SNDRV_PCM_FORMAT_S16_LE)
++		session->bits_per_sample = 16;
++	else if (session->format == SNDRV_PCM_FORMAT_S24_LE)
++		bits_per_sample = 24;
++
++	mutex_unlock(&data->lock);
++	return 0;
++}
++
++static int routing_close(struct snd_pcm_substream *substream)
++{
++	return 0;
++}
++
++static int routing_prepare(struct snd_pcm_substream *substream)
++{
++	return 0;
++}
++
++static struct snd_pcm_ops q6pcm_routing_ops = {
++	.hw_params = routing_hw_params,
++	.close = routing_close,
++	.prepare = routing_prepare,
++};
++
++/* Not used but frame seems to require it */
++static int msm_routing_probe(struct snd_soc_platform *platform)
++{
++	int i;
++
++	for (i = 0; i < MAX_SESSIONS; i++)
++		routing_data->sessions[i].port_id = -1;
++
++	snd_soc_platform_set_drvdata(platform, routing_data);
++
++	return 0;
++}
++
++static struct snd_soc_platform_driver msm_soc_routing_platform = {
++	.ops = &q6pcm_routing_ops,
++	.probe = msm_routing_probe,
++	.component_driver = {
++			     .dapm_widgets = msm_qdsp6_widgets,
++			     .num_dapm_widgets = ARRAY_SIZE(msm_qdsp6_widgets),
++			     .dapm_routes = intercon,
++			     .num_dapm_routes = ARRAY_SIZE(intercon),
++			     },
++};
++
++static int q6pcm_routing_probe(struct platform_device *pdev)
++{
++
++	routing_data = devm_kzalloc(&pdev->dev,
++				    sizeof(*routing_data), GFP_KERNEL);
++	if (!routing_data)
++		return -ENOMEM;
++
++	routing_data->dev = &pdev->dev;
++
++	mutex_init(&routing_data->lock);
++	dev_set_drvdata(&pdev->dev, routing_data);
++
++	return devm_snd_soc_register_platform(&pdev->dev,
++					      &msm_soc_routing_platform);
++}
++
++static int q6pcm_routing_remove(struct platform_device *pdev)
++{
++	return 0;
++}
++
++static struct platform_driver q6pcm_routing_driver = {
++	.driver = {
++		   .name = "q6routing",
++		   .owner = THIS_MODULE,
++		   },
++	.probe = q6pcm_routing_probe,
++	.remove = q6pcm_routing_remove,
++};
++
++module_platform_driver(q6pcm_routing_driver);
++
++MODULE_DESCRIPTION("Q6 Routing platform");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/qcom/qdsp6/q6routing.h b/sound/soc/qcom/qdsp6/q6routing.h
+new file mode 100644
+index 000000000000..7f0feb196acc
+--- /dev/null
++++ b/sound/soc/qcom/qdsp6/q6routing.h
+@@ -0,0 +1,9 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _Q6_PCM_ROUTING_H
++#define _Q6_PCM_ROUTING_H
++
++int q6routing_reg_phy_stream(int fedai_id, int perf_mode,
++			   int stream_id, int stream_type);
++void q6routing_dereg_phy_stream(int fedai_id, int stream_type);
++
++#endif /*_Q6_PCM_ROUTING_H */
 -- 
 2.15.0
