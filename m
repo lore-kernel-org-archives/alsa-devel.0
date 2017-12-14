@@ -1,14 +1,17 @@
 From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: [alsa-lib][PATCH v3 0/4] add SNDRV_PCM_FORMAT_{S, U}20
-Date: Thu, 14 Dec 2017 14:50:49 +0100
-Message-ID: <4937250f-311b-ab79-dacd-6980ffdb2145@maciej.szmigiero.name>
+Subject: [alsa-lib][PATCH v3 1/4] asound.h: add
+	SNDRV_PCM_FORMAT_{S, U}20
+Date: Thu, 14 Dec 2017 14:51:35 +0100
+Message-ID: <9c20113a-6fe4-0675-f4e1-50356e41b438@maciej.szmigiero.name>
+References: <cover.1513257270.git.mail@maciej.szmigiero.name>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D78D267AB0
- for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 14:50:51 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 38FDB26732A
+ for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 14:51:37 +0100 (CET)
+In-Reply-To: <cover.1513257270.git.mail@maciej.szmigiero.name>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,31 +26,46 @@ To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-This format is similar to an existing 20-bit PCM format
-SNDRV_PCM_FORMAT_{S,U}20_3, however it occupies 4 bytes instead of 3.
+This patch adds definitions of 20-bit, 4-byte PCM formats
+SNDRV_PCM_FORMAT_{S,U}20, that were recently added to the kernel, to
+alsa-lib's own copy of asound.h.
 
-Changes from v1: Split the monolithic submission into separate
-commits. (Note that v2 wasn't tagged as such.)
+Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+---
+ include/sound/asound.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Changes from v2: Add commas at the end of two possible last entries of
-the snd_pcm_format_t enum so diffs will be more readable when new PCM
-formats are added in the future, remove asserts from
-snd_pcm_linear_{get,put}_index().
-
-Maciej S. Szmigiero (4):
-  asound.h: add SNDRV_PCM_FORMAT_{S,U}20
-  pcm: add and describe SND_PCM_FORMAT_{S,U}20
-  pcm: linear, route: handle linear formats with 20-bit sample on 4
-    bytes
-  pcm: plug: add SND_PCM_FORMAT_{S,U}20 to linear_preferred_formats
-
- include/pcm.h          | 20 ++++++++++++++++++--
- include/sound/asound.h |  9 +++++++++
- src/pcm/pcm.c          | 10 ++++++++++
- src/pcm/pcm_linear.c   | 14 +++++++++++---
- src/pcm/pcm_local.h    |  4 ++++
- src/pcm/pcm_misc.c     | 41 ++++++++++++++++++++++++++++++++++++++---
- src/pcm/pcm_plug.c     | 11 +++++++++++
- src/pcm/pcm_route.c    |  6 ++++--
- src/pcm/plugin_ops.h   | 50 ++++++++++++++++++++++++++++++++++++++++++++++----
- 9 files changed, 151 insertions(+), 14 deletions(-)
+diff --git a/include/sound/asound.h b/include/sound/asound.h
+index 5f659126f066..6041cab27a23 100644
+--- a/include/sound/asound.h
++++ b/include/sound/asound.h
+@@ -213,6 +213,11 @@ typedef int __bitwise snd_pcm_format_t;
+ #define	SNDRV_PCM_FORMAT_IMA_ADPCM	((__force snd_pcm_format_t) 22)
+ #define	SNDRV_PCM_FORMAT_MPEG		((__force snd_pcm_format_t) 23)
+ #define	SNDRV_PCM_FORMAT_GSM		((__force snd_pcm_format_t) 24)
++#define	SNDRV_PCM_FORMAT_S20_LE	((__force snd_pcm_format_t) 25) /* in four bytes, LSB justified */
++#define	SNDRV_PCM_FORMAT_S20_BE	((__force snd_pcm_format_t) 26) /* in four bytes, LSB justified */
++#define	SNDRV_PCM_FORMAT_U20_LE	((__force snd_pcm_format_t) 27) /* in four bytes, LSB justified */
++#define	SNDRV_PCM_FORMAT_U20_BE	((__force snd_pcm_format_t) 28) /* in four bytes, LSB justified */
++/* gap in the numbering for a future standard linear format */
+ #define	SNDRV_PCM_FORMAT_SPECIAL	((__force snd_pcm_format_t) 31)
+ #define	SNDRV_PCM_FORMAT_S24_3LE	((__force snd_pcm_format_t) 32)	/* in three bytes */
+ #define	SNDRV_PCM_FORMAT_S24_3BE	((__force snd_pcm_format_t) 33)	/* in three bytes */
+@@ -247,6 +252,8 @@ typedef int __bitwise snd_pcm_format_t;
+ #define	SNDRV_PCM_FORMAT_FLOAT		SNDRV_PCM_FORMAT_FLOAT_LE
+ #define	SNDRV_PCM_FORMAT_FLOAT64	SNDRV_PCM_FORMAT_FLOAT64_LE
+ #define	SNDRV_PCM_FORMAT_IEC958_SUBFRAME SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE
++#define	SNDRV_PCM_FORMAT_S20		SNDRV_PCM_FORMAT_S20_LE
++#define	SNDRV_PCM_FORMAT_U20		SNDRV_PCM_FORMAT_U20_LE
+ #endif
+ #ifdef SNDRV_BIG_ENDIAN
+ #define	SNDRV_PCM_FORMAT_S16		SNDRV_PCM_FORMAT_S16_BE
+@@ -258,6 +265,8 @@ typedef int __bitwise snd_pcm_format_t;
+ #define	SNDRV_PCM_FORMAT_FLOAT		SNDRV_PCM_FORMAT_FLOAT_BE
+ #define	SNDRV_PCM_FORMAT_FLOAT64	SNDRV_PCM_FORMAT_FLOAT64_BE
+ #define	SNDRV_PCM_FORMAT_IEC958_SUBFRAME SNDRV_PCM_FORMAT_IEC958_SUBFRAME_BE
++#define	SNDRV_PCM_FORMAT_S20		SNDRV_PCM_FORMAT_S20_BE
++#define	SNDRV_PCM_FORMAT_U20		SNDRV_PCM_FORMAT_U20_BE
+ #endif
+ 
+ typedef int __bitwise snd_pcm_subformat_t;
