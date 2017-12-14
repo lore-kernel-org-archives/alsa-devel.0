@@ -1,25 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: About ASoC DAIs cleanup
-Date: Thu, 14 Dec 2017 11:37:18 +0000
-Message-ID: <20171214113718.GB9788@sirena.org.uk>
-References: <20171208084103.GC18649@localhost>
- <87fu8lio74.wl%kuninori.morimoto.gx@renesas.com>
- <20171208105545.GE18649@localhost>
- <87shciup8e.wl%kuninori.morimoto.gx@renesas.com>
- <87r2s2uo55.wl%kuninori.morimoto.gx@renesas.com>
- <87o9n6ukyg.wl%kuninori.morimoto.gx@renesas.com>
- <87r2rzqf1q.wl%kuninori.morimoto.gx@renesas.com>
- <20171213155952.GL6416@sirena.org.uk>
- <87wp1qow1q.wl%kuninori.morimoto.gx@renesas.com>
- <20171214050648.GU18649@localhost>
+Subject: Applied "ASoC: rt5663: Fix the wrong result of the
+	first jack detection" to the asoc tree
+Date: Thu, 14 Dec 2017 11:49:09 +0000
+Message-ID: <E1ePS0j-0005No-43@debutante>
+References: <1513216447-26901-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5216895221863558099=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 21D22266B67
- for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 12:37:37 +0100 (CET)
-In-Reply-To: <20171214050648.GU18649@localhost>
+ by alsa0.perex.cz (Postfix) with ESMTP id 98B2F266B67
+ for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 12:49:20 +0100 (CET)
+In-Reply-To: <1513216447-26901-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,68 +22,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Shreyas NC <shreyas.nc@intel.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, shruthi.sudhakar@intel.com, lgirdwood@gmail.com, albertchen@realtek.com, broonie@kernel.org, bardliao@realtek.com, shumingf@realtek.com, naveen.m@intel.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5216895221863558099==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="SkvwRMAIpAhPCcCJ"
-Content-Disposition: inline
+   ASoC: rt5663: Fix the wrong result of the first jack detection
 
+has been applied to the asoc tree at
 
---SkvwRMAIpAhPCcCJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Dec 14, 2017 at 10:36:48AM +0530, Vinod Koul wrote:
-> On Thu, Dec 14, 2017 at 03:07:30AM +0000, Kuninori Morimoto wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > > Cleaning things up so we don't need to use rtd->cpu_dai and rtd->codec_dai
-> > > would definitely be nice, it's also useful for CODEC<->CODEC links.  Off
-> > > the top of my head wrapping the accesses with macros/functions then
-> > > implementing a way of getting the DAI behind them would be tractable?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Yes but one of the problems I see that we have specific ordering on the
-> DAI ops between various components, is that a specific requirement?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-It's designed to minimize pops, it's not a hard requirement but changing
-it might break things for existing systems.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> > 	3rd step: think about No-Categorized DAI (if possible)
-> > Because many drivers are directly using rtd->cpu_dai, rtd->codec_dai
+Thanks,
+Mark
 
-> We should fix that part while at it. I guess drivers needs own dai,
-> possibly for name or some data, so if they have helpers for that, we
-> should be able to remove those..
+>From 958d022e326810fd762505bd02007aced79ffcbc Mon Sep 17 00:00:00 2001
+From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
+Date: Thu, 14 Dec 2017 09:54:07 +0800
+Subject: [PATCH] ASoC: rt5663: Fix the wrong result of the first jack
+ detection
 
-The drivers need some way to get their driver data back and to know
-which DAI to address on multi device hardware.  Most of the callbacks
-get the DAI passed in directly, that's the simplest thing.
+In the first jack detection while booting, the result will always show as
+headset, even we insert the headphone.
 
---SkvwRMAIpAhPCcCJ
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5663.c | 4 ++++
+ sound/soc/codecs/rt5663.h | 4 ++++
+ 2 files changed, 8 insertions(+)
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloyYm4ACgkQJNaLcl1U
-h9DP6Af9FlivxU6FqI99dRkuRjJO/OCjIZoK+abHGqH+2DCy+tthxuxtCowRVmnD
-Ud0XlWCSo7Vf+7zUCphTq3bMfC91rZXKsbC7EMYNVKtCQZ21/a7T+al88X8cSxCN
-TpoAgns8RGdMJURkBO7cjAU+y4meF0W23TqjOZfV8hC5qMlp/WwfD/F1xqn9Of4h
-Ye4dYKPKB1y2KxkV+LOoP+Ti+KN9hVE3w2/Fb2DeMQ8JUqbXDITODSA+RVf5szn9
-v+UPFKR0n3bvOr46rOlXqC1SE8dCa8LjTUa3WfH3KwGrMQX+tRPJfbIuN70pp6Dc
-kGlN6BSwsd6+VdGHRNr3wqQs3ZZ9iw==
-=MjcC
------END PGP SIGNATURE-----
-
---SkvwRMAIpAhPCcCJ--
-
---===============5216895221863558099==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5216895221863558099==--
+diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
+index b036c9dc0c8c..d329bf719d80 100644
+--- a/sound/soc/codecs/rt5663.c
++++ b/sound/soc/codecs/rt5663.c
+@@ -1560,6 +1560,10 @@ static int rt5663_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 			RT5663_IRQ_POW_SAV_MASK, RT5663_IRQ_POW_SAV_EN);
+ 		snd_soc_update_bits(codec, RT5663_IRQ_1,
+ 			RT5663_EN_IRQ_JD1_MASK, RT5663_EN_IRQ_JD1_EN);
++		snd_soc_update_bits(codec, RT5663_EM_JACK_TYPE_1,
++			RT5663_EM_JD_MASK, RT5663_EM_JD_RST);
++		snd_soc_update_bits(codec, RT5663_EM_JACK_TYPE_1,
++			RT5663_EM_JD_MASK, RT5663_EM_JD_NOR);
+ 
+ 		while (true) {
+ 			regmap_read(rt5663->regmap, RT5663_INT_ST_2, &val);
+diff --git a/sound/soc/codecs/rt5663.h b/sound/soc/codecs/rt5663.h
+index c5a9b69579ad..03adc8004ba9 100644
+--- a/sound/soc/codecs/rt5663.h
++++ b/sound/soc/codecs/rt5663.h
+@@ -1029,6 +1029,10 @@
+ #define RT5663_POL_EXT_JD_SHIFT			10
+ #define RT5663_POL_EXT_JD_EN			(0x1 << 10)
+ #define RT5663_POL_EXT_JD_DIS			(0x0 << 10)
++#define RT5663_EM_JD_MASK			(0x1 << 7)
++#define RT5663_EM_JD_SHIFT			7
++#define RT5663_EM_JD_NOR			(0x1 << 7)
++#define RT5663_EM_JD_RST			(0x0 << 7)
+ 
+ /* DACREF LDO Control (0x0112)*/
+ #define RT5663_PWR_LDO_DACREFL_MASK		(0x1 << 9)
+-- 
+2.15.1
