@@ -1,7 +1,7 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v6 03/14] soundwire: Add Master registration
-Date: Thu, 14 Dec 2017 11:19:34 +0530
-Message-ID: <1513230585-13882-4-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v6 04/14] soundwire: Add MIPI DisCo property helpers
+Date: Thu, 14 Dec 2017 11:19:35 +0530
+Message-ID: <1513230585-13882-5-git-send-email-vinod.koul@intel.com>
 References: <1513230585-13882-1-git-send-email-vinod.koul@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1513230585-13882-1-git-send-email-vinod.koul@intel.com>
@@ -10,348 +10,840 @@ To: Takashi <tiwai@suse.de>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-A Master adds a SoundWire bus instance which scans the firmware
-provided for device description.
+MIPI Discovery And Configuration (DisCo) Specification for SoundWire
+specifies properties to be implemented for SoundWire Masters and
+Slaves. The DisCo spec doesn't mandate these properties. However,
+SDW bus cannot work without knowing these values.
 
-In this patch we scan ACPI namespaces and create SoundWire
-Slave devices based on ACPI description
+The helper functions read the Master and Slave properties.
+Implementers of Master or Slave drivers can use any of the below
+three mechanisms:
+   a) Use these APIs here as .read_prop() callback for Master
+      and Slave
+   b) Implement own methods and set those as .read_prop(), but invoke
+      APIs in this file for generic read and override the values with
+      platform specific data
+   c) Implement ones own methods which do not use anything provided
+      here
 
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Reviewed-by: Philippe Ombredanne <pombredanne@nexb.com>
 Acked-By: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- drivers/soundwire/Makefile    |   2 +-
- drivers/soundwire/bus.c       | 124 ++++++++++++++++++++++++++++++++++++++++++
- drivers/soundwire/bus.h       |  19 +++++++
- drivers/soundwire/slave.c     | 114 ++++++++++++++++++++++++++++++++++++++
- include/linux/soundwire/sdw.h |  18 ++++++
- 5 files changed, 276 insertions(+), 1 deletion(-)
- create mode 100644 drivers/soundwire/bus.c
- create mode 100644 drivers/soundwire/bus.h
- create mode 100644 drivers/soundwire/slave.c
+ drivers/soundwire/Makefile     |   2 +-
+ drivers/soundwire/bus.c        |   8 +
+ drivers/soundwire/bus_type.c   |  23 ++-
+ drivers/soundwire/mipi_disco.c | 401 +++++++++++++++++++++++++++++++++++++++++
+ include/linux/soundwire/sdw.h  | 274 ++++++++++++++++++++++++++++
+ 5 files changed, 706 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/soundwire/mipi_disco.c
 
 diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-index d1281def7662..c875e434f8b3 100644
+index c875e434f8b3..bcde0d26524c 100644
 --- a/drivers/soundwire/Makefile
 +++ b/drivers/soundwire/Makefile
 @@ -3,5 +3,5 @@
  #
  
  #Bus Objs
--soundwire-bus-objs := bus_type.o
-+soundwire-bus-objs := bus_type.o bus.o slave.o
+-soundwire-bus-objs := bus_type.o bus.o slave.o
++soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o
  obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
 diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-new file mode 100644
-index 000000000000..bc72c3d58bbf
---- /dev/null
+index bc72c3d58bbf..9626bd1ab271 100644
+--- a/drivers/soundwire/bus.c
 +++ b/drivers/soundwire/bus.c
-@@ -0,0 +1,124 @@
+@@ -25,6 +25,14 @@ int sdw_add_bus_master(struct sdw_bus *bus)
+ 	mutex_init(&bus->bus_lock);
+ 	INIT_LIST_HEAD(&bus->slaves);
+ 
++	if (bus->ops->read_prop) {
++		ret = bus->ops->read_prop(bus);
++		if (ret < 0) {
++			dev_err(bus->dev, "Bus read properties failed:%d", ret);
++			return ret;
++		}
++	}
++
+ 	/*
+ 	 * Device numbers in SoundWire are 0 thru 15. Enumeration device
+ 	 * number (0), Broadcast device number (15), Group numbers (12 and
+diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
+index 8d8dcc68e9a8..d5f3a70c06b0 100644
+--- a/drivers/soundwire/bus_type.c
++++ b/drivers/soundwire/bus_type.c
+@@ -77,6 +77,8 @@ static int sdw_drv_probe(struct device *dev)
+ 	if (!id)
+ 		return -ENODEV;
+ 
++	slave->ops = drv->ops;
++
+ 	/*
+ 	 * attach to power domain but don't turn on (last arg)
+ 	 */
+@@ -89,7 +91,26 @@ static int sdw_drv_probe(struct device *dev)
+ 		}
+ 	}
+ 
+-	return ret;
++	if (ret)
++		return ret;
++
++	/* device is probed so let's read the properties now */
++	if (slave->ops && slave->ops->read_prop)
++		slave->ops->read_prop(slave);
++
++	/*
++	 * Check for valid clk_stop_timeout, use DisCo worst case value of
++	 * 300ms
++	 *
++	 * TODO: check the timeouts and driver removal case
++	 */
++	if (slave->prop.clk_stop_timeout == 0)
++		slave->prop.clk_stop_timeout = 300;
++
++	slave->bus->clk_stop_timeout = max_t(u32, slave->bus->clk_stop_timeout,
++					slave->prop.clk_stop_timeout);
++
++	return 0;
+ }
+ 
+ static int sdw_drv_remove(struct device *dev)
+diff --git a/drivers/soundwire/mipi_disco.c b/drivers/soundwire/mipi_disco.c
+new file mode 100644
+index 000000000000..fdeba0c3b589
+--- /dev/null
++++ b/drivers/soundwire/mipi_disco.c
+@@ -0,0 +1,401 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +// Copyright(c) 2015-17 Intel Corporation.
 +
-+#include <linux/acpi.h>
++/*
++ * MIPI Discovery And Configuration (DisCo) Specification for SoundWire
++ * specifies properties to be implemented for SoundWire Masters and Slaves.
++ * The DisCo spec doesn't mandate these properties. However, SDW bus cannot
++ * work without knowing these values.
++ *
++ * The helper functions read the Master and Slave properties. Implementers
++ * of Master or Slave drivers can use any of the below three mechanisms:
++ *    a) Use these APIs here as .read_prop() callback for Master and Slave
++ *    b) Implement own methods and set those as .read_prop(), but invoke
++ *    APIs in this file for generic read and override the values with
++ *    platform specific data
++ *    c) Implement ones own methods which do not use anything provided
++ *    here
++ */
++
++#include <linux/device.h>
++#include <linux/property.h>
 +#include <linux/mod_devicetable.h>
 +#include <linux/soundwire/sdw.h>
 +#include "bus.h"
 +
 +/**
-+ * sdw_add_bus_master() - add a bus Master instance
-+ * @bus: bus instance
-+ *
-+ * Initializes the bus instance, read properties and create child
-+ * devices.
++ * sdw_master_read_prop() - Read Master properties
++ * @bus: SDW bus instance
 + */
-+int sdw_add_bus_master(struct sdw_bus *bus)
++int sdw_master_read_prop(struct sdw_bus *bus)
 +{
-+	int ret;
++	struct sdw_master_prop *prop = &bus->prop;
++	struct fwnode_handle *link;
++	char name[32];
++	int nval, i;
 +
-+	if (!bus->dev) {
-+		pr_err("SoundWire bus has no device");
-+		return -ENODEV;
++	device_property_read_u32(bus->dev,
++			"mipi-sdw-sw-interface-revision", &prop->revision);
++
++	/* Find master handle */
++	snprintf(name, sizeof(name),
++			"mipi-sdw-master-%d-subproperties", bus->link_id);
++
++	link = device_get_named_child_node(bus->dev, name);
++	if (!link) {
++		dev_err(bus->dev, "Master node %s not found\n", name);
++		return -EIO;
 +	}
 +
-+	mutex_init(&bus->bus_lock);
-+	INIT_LIST_HEAD(&bus->slaves);
++	if (fwnode_property_read_bool(link,
++			"mipi-sdw-clock-stop-mode0-supported") == true)
++		prop->clk_stop_mode = SDW_CLK_STOP_MODE0;
 +
-+	/*
-+	 * Device numbers in SoundWire are 0 thru 15. Enumeration device
-+	 * number (0), Broadcast device number (15), Group numbers (12 and
-+	 * 13) and Master device number (14) are not used for assignment so
-+	 * mask these and other higher bits.
-+	 */
++	if (fwnode_property_read_bool(link,
++			"mipi-sdw-clock-stop-mode1-supported") == true)
++		prop->clk_stop_mode |= SDW_CLK_STOP_MODE1;
 +
-+	/* Set higher order bits */
-+	*bus->assigned = ~GENMASK(SDW_BROADCAST_DEV_NUM, SDW_ENUM_DEV_NUM);
++	fwnode_property_read_u32(link,
++			"mipi-sdw-max-clock-frequency", &prop->max_freq);
 +
-+	/* Set enumuration device number and broadcast device number */
-+	set_bit(SDW_ENUM_DEV_NUM, bus->assigned);
-+	set_bit(SDW_BROADCAST_DEV_NUM, bus->assigned);
++	nval = fwnode_property_read_u32_array(link,
++			"mipi-sdw-clock-frequencies-supported", NULL, 0);
++	if (nval > 0) {
 +
-+	/* Set group device numbers and master device number */
-+	set_bit(SDW_GROUP12_DEV_NUM, bus->assigned);
-+	set_bit(SDW_GROUP13_DEV_NUM, bus->assigned);
-+	set_bit(SDW_MASTER_DEV_NUM, bus->assigned);
++		prop->num_freq = nval;
++		prop->freq = devm_kcalloc(bus->dev, prop->num_freq,
++				sizeof(*prop->freq), GFP_KERNEL);
++		if (!prop->freq)
++			return -ENOMEM;
 +
-+	/*
-+	 * SDW is an enumerable bus, but devices can be powered off. So,
-+	 * they won't be able to report as present.
-+	 *
-+	 * Create Slave devices based on Slaves described in
-+	 * the respective firmware (ACPI/DT)
-+	 */
-+	if (IS_ENABLED(CONFIG_ACPI) && ACPI_HANDLE(bus->dev))
-+		ret = sdw_acpi_find_slaves(bus);
-+	else
-+		ret = -ENOTSUPP; /* No ACPI/DT so error out */
-+
-+	if (ret) {
-+		dev_err(bus->dev, "Finding slaves failed:%d\n", ret);
-+		return ret;
++		fwnode_property_read_u32_array(link,
++				"mipi-sdw-clock-frequencies-supported",
++				prop->freq, prop->num_freq);
 +	}
++
++	/*
++	 * Check the frequencies supported. If FW doesn't provide max
++	 * freq, then populate here by checking values.
++	 */
++	if (!prop->max_freq && prop->freq) {
++		prop->max_freq = prop->freq[0];
++		for (i = 1; i < prop->num_freq; i++) {
++			if (prop->freq[i] > prop->max_freq)
++				prop->max_freq = prop->freq[i];
++		}
++	}
++
++	nval = fwnode_property_read_u32_array(link,
++			"mipi-sdw-supported-clock-gears", NULL, 0);
++	if (nval > 0) {
++
++		prop->num_clk_gears = nval;
++		prop->clk_gears = devm_kcalloc(bus->dev, prop->num_clk_gears,
++				sizeof(*prop->clk_gears), GFP_KERNEL);
++		if (!prop->clk_gears)
++			return -ENOMEM;
++
++		fwnode_property_read_u32_array(link,
++				"mipi-sdw-supported-clock-gears",
++				prop->clk_gears, prop->num_clk_gears);
++	}
++
++	fwnode_property_read_u32(link, "mipi-sdw-default-frame-rate",
++			&prop->default_frame_rate);
++
++	fwnode_property_read_u32(link, "mipi-sdw-default-frame-row-size",
++			&prop->default_row);
++
++	fwnode_property_read_u32(link, "mipi-sdw-default-frame-col-size",
++			&prop->default_col);
++
++	prop->dynamic_frame =  fwnode_property_read_bool(link,
++			"mipi-sdw-dynamic-frame-shape");
++
++	fwnode_property_read_u32(link, "mipi-sdw-command-error-threshold",
++			&prop->err_threshold);
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL(sdw_add_bus_master);
++EXPORT_SYMBOL(sdw_master_read_prop);
 +
-+static int sdw_delete_slave(struct device *dev, void *data)
++static int sdw_slave_read_dp0(struct sdw_slave *slave,
++		struct fwnode_handle *port, struct sdw_dp0_prop *dp0)
 +{
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-+	struct sdw_bus *bus = slave->bus;
++	int nval;
 +
-+	mutex_lock(&bus->bus_lock);
++	fwnode_property_read_u32(port, "mipi-sdw-port-max-wordlength",
++			&dp0->max_word);
 +
-+	if (slave->dev_num) /* clear dev_num if assigned */
-+		clear_bit(slave->dev_num, bus->assigned);
++	fwnode_property_read_u32(port, "mipi-sdw-port-min-wordlength",
++			&dp0->min_word);
 +
-+	list_del_init(&slave->node);
-+	mutex_unlock(&bus->bus_lock);
++	nval = fwnode_property_read_u32_array(port,
++			"mipi-sdw-port-wordlength-configs", NULL, 0);
++	if (nval > 0) {
 +
-+	device_unregister(dev);
++		dp0->num_words = nval;
++		dp0->words = devm_kcalloc(&slave->dev,
++				dp0->num_words, sizeof(*dp0->words),
++				GFP_KERNEL);
++		if (!dp0->words)
++			return -ENOMEM;
++
++		fwnode_property_read_u32_array(port,
++				"mipi-sdw-port-wordlength-configs",
++				dp0->words, dp0->num_words);
++	}
++
++	dp0->flow_controlled = fwnode_property_read_bool(
++			port, "mipi-sdw-bra-flow-controlled");
++
++	dp0->simple_ch_prep_sm = fwnode_property_read_bool(
++			port, "mipi-sdw-simplified-channel-prepare-sm");
++
++	dp0->device_interrupts = fwnode_property_read_bool(
++			port, "mipi-sdw-imp-def-dp0-interrupts-supported");
++
++	return 0;
++}
++
++static int sdw_slave_read_dpn(struct sdw_slave *slave,
++		struct sdw_dpn_prop *dpn, int count, int ports, char *type)
++{
++	struct fwnode_handle *node;
++	u32 bit, i = 0;
++	int nval;
++	unsigned long addr;
++	char name[40];
++
++	addr = ports;
++	/* valid ports are 1 to 14 so apply mask */
++	addr &= GENMASK(14, 1);
++
++	for_each_set_bit(bit, &addr, 32) {
++		snprintf(name, sizeof(name),
++			"mipi-sdw-dp-%d-%s-subproperties", bit, type);
++
++		dpn[i].num = bit;
++
++		node = device_get_named_child_node(&slave->dev, name);
++		if (!node) {
++			dev_err(&slave->dev, "%s dpN not found\n", name);
++			return -EIO;
++		}
++
++		fwnode_property_read_u32(node, "mipi-sdw-port-max-wordlength",
++					&dpn[i].max_word);
++		fwnode_property_read_u32(node, "mipi-sdw-port-min-wordlength",
++					&dpn[i].min_word);
++
++		nval = fwnode_property_read_u32_array(node,
++				"mipi-sdw-port-wordlength-configs", NULL, 0);
++		if (nval > 0) {
++
++			dpn[i].num_words = nval;
++			dpn[i].words = devm_kcalloc(&slave->dev,
++					dpn[i].num_words,
++					sizeof(*dpn[i].words), GFP_KERNEL);
++			if (!dpn[i].words)
++				return -ENOMEM;
++
++			fwnode_property_read_u32_array(node,
++					"mipi-sdw-port-wordlength-configs",
++					dpn[i].words, dpn[i].num_words);
++		}
++
++		fwnode_property_read_u32(node, "mipi-sdw-data-port-type",
++				&dpn[i].type);
++
++		fwnode_property_read_u32(node,
++				"mipi-sdw-max-grouping-supported",
++				&dpn[i].max_grouping);
++
++		dpn[i].simple_ch_prep_sm = fwnode_property_read_bool(node,
++				"mipi-sdw-simplified-channelprepare-sm");
++
++		fwnode_property_read_u32(node,
++				"mipi-sdw-port-channelprepare-timeout",
++				&dpn[i].ch_prep_timeout);
++
++		fwnode_property_read_u32(node,
++				"mipi-sdw-imp-def-dpn-interrupts-supported",
++				&dpn[i].device_interrupts);
++
++		fwnode_property_read_u32(node, "mipi-sdw-min-channel-number",
++				&dpn[i].min_ch);
++
++		fwnode_property_read_u32(node, "mipi-sdw-max-channel-number",
++				&dpn[i].max_ch);
++
++		nval = fwnode_property_read_u32_array(node,
++				"mipi-sdw-channel-number-list", NULL, 0);
++		if (nval > 0) {
++
++			dpn[i].num_ch = nval;
++			dpn[i].ch = devm_kcalloc(&slave->dev, dpn[i].num_ch,
++					sizeof(*dpn[i].ch), GFP_KERNEL);
++			if (!dpn[i].ch)
++				return -ENOMEM;
++
++			fwnode_property_read_u32_array(node,
++					"mipi-sdw-channel-number-list",
++					dpn[i].ch, dpn[i].num_ch);
++		}
++
++		nval = fwnode_property_read_u32_array(node,
++				"mipi-sdw-channel-combination-list", NULL, 0);
++		if (nval > 0) {
++
++			dpn[i].num_ch_combinations = nval;
++			dpn[i].ch_combinations = devm_kcalloc(&slave->dev,
++					dpn[i].num_ch_combinations,
++					sizeof(*dpn[i].ch_combinations),
++					GFP_KERNEL);
++			if (!dpn[i].ch_combinations)
++				return -ENOMEM;
++
++			fwnode_property_read_u32_array(node,
++					"mipi-sdw-channel-combination-list",
++					dpn[i].ch_combinations,
++					dpn[i].num_ch_combinations);
++		}
++
++		fwnode_property_read_u32(node,
++				"mipi-sdw-modes-supported", &dpn[i].modes);
++
++		fwnode_property_read_u32(node, "mipi-sdw-max-async-buffer",
++				&dpn[i].max_async_buffer);
++
++		dpn[i].block_pack_mode = fwnode_property_read_bool(node,
++				"mipi-sdw-block-packing-mode");
++
++		fwnode_property_read_u32(node, "mipi-sdw-port-encoding-type",
++				&dpn[i].port_encoding);
++
++		/* TODO: Read audio mode */
++
++		i++;
++	}
++
 +	return 0;
 +}
 +
 +/**
-+ * sdw_delete_bus_master() - delete the bus master instance
-+ * @bus: bus to be deleted
-+ *
-+ * Remove the instance, delete the child devices.
++ * sdw_slave_read_prop() - Read Slave properties
++ * @slave: SDW Slave
 + */
-+void sdw_delete_bus_master(struct sdw_bus *bus)
++int sdw_slave_read_prop(struct sdw_slave *slave)
 +{
-+	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
-+}
-+EXPORT_SYMBOL(sdw_delete_bus_master);
++	struct sdw_slave_prop *prop = &slave->prop;
++	struct device *dev = &slave->dev;
++	struct fwnode_handle *port;
++	int num_of_ports, nval, i, dp0 = 0;
 +
-+void sdw_extract_slave_id(struct sdw_bus *bus,
-+			u64 addr, struct sdw_slave_id *id)
-+{
-+	dev_dbg(bus->dev, "SDW Slave Addr: %llx", addr);
++	device_property_read_u32(dev, "mipi-sdw-sw-interface-revision",
++				&prop->mipi_revision);
++
++	prop->wake_capable = device_property_read_bool(dev,
++				"mipi-sdw-wake-up-unavailable");
++	prop->wake_capable = !prop->wake_capable;
++
++	prop->test_mode_capable = device_property_read_bool(dev,
++				"mipi-sdw-test-mode-supported");
++
++	prop->clk_stop_mode1 = false;
++	if (device_property_read_bool(dev,
++				"mipi-sdw-clock-stop-mode1-supported"))
++		prop->clk_stop_mode1 = true;
++
++	prop->simple_clk_stop_capable = device_property_read_bool(dev,
++			"mipi-sdw-simplified-clockstopprepare-sm-supported");
++
++	device_property_read_u32(dev, "mipi-sdw-clockstopprepare-timeout",
++			&prop->clk_stop_timeout);
++
++	device_property_read_u32(dev, "mipi-sdw-slave-channelprepare-timeout",
++			&prop->ch_prep_timeout);
++
++	device_property_read_u32(dev,
++			"mipi-sdw-clockstopprepare-hard-reset-behavior",
++			&prop->reset_behave);
++
++	prop->high_PHY_capable = device_property_read_bool(dev,
++			"mipi-sdw-highPHY-capable");
++
++	prop->paging_support = device_property_read_bool(dev,
++			"mipi-sdw-paging-support");
++
++	prop->bank_delay_support = device_property_read_bool(dev,
++			"mipi-sdw-bank-delay-support");
++
++	device_property_read_u32(dev,
++			"mipi-sdw-port15-read-behavior", &prop->p15_behave);
++
++	device_property_read_u32(dev, "mipi-sdw-master-count",
++				&prop->master_count);
++
++	device_property_read_u32(dev, "mipi-sdw-source-port-list",
++				&prop->source_ports);
++
++	device_property_read_u32(dev, "mipi-sdw-sink-port-list",
++				&prop->sink_ports);
++
++	/* Read dp0 properties */
++	port = device_get_named_child_node(dev, "mipi-sdw-dp-0-subproperties");
++	if (!port) {
++		dev_dbg(dev, "DP0 node not found!!\n");
++	} else {
++
++		prop->dp0_prop = devm_kzalloc(&slave->dev,
++				sizeof(*prop->dp0_prop), GFP_KERNEL);
++		if (!prop->dp0_prop)
++			return -ENOMEM;
++
++		sdw_slave_read_dp0(slave, port, prop->dp0_prop);
++		dp0 = 1;
++	}
 +
 +	/*
-+	 * Spec definition
-+	 *   Register		Bit	Contents
-+	 *   DevId_0 [7:4]	47:44	sdw_version
-+	 *   DevId_0 [3:0]	43:40	unique_id
-+	 *   DevId_1		39:32	mfg_id [15:8]
-+	 *   DevId_2		31:24	mfg_id [7:0]
-+	 *   DevId_3		23:16	part_id [15:8]
-+	 *   DevId_4		15:08	part_id [7:0]
-+	 *   DevId_5		07:00	class_id
++	 * Based on each DPn port, get source and sink dpn properties.
++	 * Also, some ports can operate as both source or sink.
 +	 */
-+	id->sdw_version = (addr >> 44) & GENMASK(3, 0);
-+	id->unique_id = (addr >> 40) & GENMASK(3, 0);
-+	id->mfg_id = (addr >> 24) & GENMASK(15, 0);
-+	id->part_id = (addr >> 8) & GENMASK(15, 0);
-+	id->class_id = addr & GENMASK(7, 0);
 +
-+	dev_dbg(bus->dev,
-+		"SDW Slave class_id %x, part_id %x, mfg_id %x, unique_id %x, version %x",
-+				id->class_id, id->part_id, id->mfg_id,
-+				id->unique_id, id->sdw_version);
-+
-+}
-diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-new file mode 100644
-index 000000000000..a54921825ce0
---- /dev/null
-+++ b/drivers/soundwire/bus.h
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+// Copyright(c) 2015-17 Intel Corporation.
-+
-+#ifndef __SDW_BUS_H
-+#define __SDW_BUS_H
-+
-+#if IS_ENABLED(CONFIG_ACPI)
-+int sdw_acpi_find_slaves(struct sdw_bus *bus);
-+#else
-+static inline int sdw_acpi_find_slaves(struct sdw_bus *bus)
-+{
-+	return -ENOTSUPP;
-+}
-+#endif
-+
-+void sdw_extract_slave_id(struct sdw_bus *bus,
-+			u64 addr, struct sdw_slave_id *id);
-+
-+#endif /* __SDW_BUS_H */
-diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-new file mode 100644
-index 000000000000..ac103bd0c176
---- /dev/null
-+++ b/drivers/soundwire/slave.c
-@@ -0,0 +1,114 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+// Copyright(c) 2015-17 Intel Corporation.
-+
-+#include <linux/acpi.h>
-+#include <linux/soundwire/sdw.h>
-+#include <linux/soundwire/sdw_type.h>
-+#include "bus.h"
-+
-+static void sdw_slave_release(struct device *dev)
-+{
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-+
-+	kfree(slave);
-+}
-+
-+static int sdw_slave_add(struct sdw_bus *bus,
-+		struct sdw_slave_id *id, struct fwnode_handle *fwnode)
-+{
-+	struct sdw_slave *slave;
-+	int ret;
-+
-+	slave = kzalloc(sizeof(*slave), GFP_KERNEL);
-+	if (!slave)
++	/* Allocate memory for set bits in port lists */
++	nval = hweight32(prop->source_ports);
++	prop->src_dpn_prop = devm_kcalloc(&slave->dev, nval,
++				sizeof(*prop->src_dpn_prop), GFP_KERNEL);
++	if (!prop->src_dpn_prop)
 +		return -ENOMEM;
 +
-+	/* Initialize data structure */
-+	memcpy(&slave->id, id, sizeof(*id));
-+	slave->dev.parent = bus->dev;
-+	slave->dev.fwnode = fwnode;
++	/* Read dpn properties for source port(s) */
++	sdw_slave_read_dpn(slave, prop->src_dpn_prop, nval,
++			prop->source_ports, "source");
 +
-+	/* name shall be sdw:link:mfg:part:class:unique */
-+	dev_set_name(&slave->dev, "sdw:%x:%x:%x:%x:%x",
-+			bus->link_id, id->mfg_id, id->part_id,
-+			id->class_id, id->unique_id);
++	nval = hweight32(prop->sink_ports);
++	prop->sink_dpn_prop = devm_kcalloc(&slave->dev, nval,
++				sizeof(*prop->sink_dpn_prop), GFP_KERNEL);
++	if (!prop->sink_dpn_prop)
++		return -ENOMEM;
 +
-+	slave->dev.release = sdw_slave_release;
-+	slave->dev.bus = &sdw_bus_type;
-+	slave->bus = bus;
-+	slave->status = SDW_SLAVE_UNATTACHED;
-+	slave->dev_num = 0;
++	/* Read dpn properties for sink port(s) */
++	sdw_slave_read_dpn(slave, prop->sink_dpn_prop, nval,
++			prop->sink_ports, "sink");
 +
-+	mutex_lock(&bus->bus_lock);
-+	list_add_tail(&slave->node, &bus->slaves);
-+	mutex_unlock(&bus->bus_lock);
++	/* some ports are bidirectional so check total ports by ORing */
++	nval = prop->source_ports | prop->sink_ports;
++	num_of_ports = hweight32(nval) + dp0; /* add DP0 */
 +
-+	ret = device_register(&slave->dev);
-+	if (ret) {
-+		dev_err(bus->dev, "Failed to add slave: ret %d\n", ret);
++	/* Allocate port_ready based on num_of_ports */
++	slave->port_ready = devm_kcalloc(&slave->dev, num_of_ports,
++				sizeof(*slave->port_ready), GFP_KERNEL);
++	if (!slave->port_ready)
++		return -ENOMEM;
 +
-+		/*
-+		 * On err, don't free but drop ref as this will be freed
-+		 * when release method is invoked.
-+		 */
-+		mutex_lock(&bus->bus_lock);
-+		list_del(&slave->node);
-+		mutex_unlock(&bus->bus_lock);
-+		put_device(&slave->dev);
-+	}
-+
-+	return ret;
-+}
-+
-+#if IS_ENABLED(CONFIG_ACPI)
-+/*
-+ * sdw_acpi_find_slaves() - Find Slave devices in Master ACPI node
-+ * @bus: SDW bus instance
-+ *
-+ * Scans Master ACPI node for SDW child Slave devices and registers it.
-+ */
-+int sdw_acpi_find_slaves(struct sdw_bus *bus)
-+{
-+	struct acpi_device *adev, *parent;
-+
-+	parent = ACPI_COMPANION(bus->dev);
-+	if (!parent) {
-+		dev_err(bus->dev, "Can't find parent for acpi bind\n");
-+		return -ENODEV;
-+	}
-+
-+	list_for_each_entry(adev, &parent->children, node) {
-+		unsigned long long addr;
-+		struct sdw_slave_id id;
-+		unsigned int link_id;
-+		acpi_status status;
-+
-+		status = acpi_evaluate_integer(adev->handle,
-+					METHOD_NAME__ADR, NULL, &addr);
-+
-+		if (ACPI_FAILURE(status)) {
-+			dev_err(bus->dev, "_ADR resolution failed: %x\n",
-+							status);
-+			return status;
-+		}
-+
-+		/* Extract link id from ADR, Bit 51 to 48 (included) */
-+		link_id = (addr >> 48) & GENMASK(3, 0);
-+
-+		/* Check for link_id match */
-+		if (link_id != bus->link_id)
-+			continue;
-+
-+		sdw_extract_slave_id(bus, addr, &id);
-+
-+		/*
-+		 * don't error check for sdw_slave_add as we want to continue
-+		 * adding Slaves
-+		 */
-+		sdw_slave_add(bus, &id, acpi_fwnode_handle(adev));
-+	}
++	/* Initialize completion */
++	for (i = 0; i < num_of_ports; i++)
++		init_completion(&slave->port_ready[i]);
 +
 +	return 0;
 +}
-+
-+#endif
++EXPORT_SYMBOL(sdw_slave_read_prop);
 diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 869d7041d9fc..3bfa7f1e2b47 100644
+index 3bfa7f1e2b47..3c13f580d42d 100644
 --- a/include/linux/soundwire/sdw.h
 +++ b/include/linux/soundwire/sdw.h
-@@ -7,6 +7,21 @@
- struct sdw_bus;
- struct sdw_slave;
- 
-+/* SDW spec defines and enums, as defined by MIPI 1.1. Spec */
-+
-+/* SDW Broadcast Device Number */
-+#define SDW_BROADCAST_DEV_NUM		15
-+
-+/* SDW Enumeration Device Number */
-+#define SDW_ENUM_DEV_NUM		0
-+
-+/* SDW Group Device Numbers */
-+#define SDW_GROUP12_DEV_NUM		12
-+#define SDW_GROUP13_DEV_NUM		13
-+
-+/* SDW Master Device Number, not supported yet */
-+#define SDW_MASTER_DEV_NUM		14
-+
- #define SDW_MAX_DEVICES			11
- 
- /**
-@@ -105,4 +120,7 @@ struct sdw_bus {
- 	struct mutex bus_lock;
+@@ -39,6 +39,252 @@ enum sdw_slave_status {
  };
  
-+int sdw_add_bus_master(struct sdw_bus *bus);
-+void sdw_delete_bus_master(struct sdw_bus *bus);
+ /*
++ * SDW properties, defined in MIPI DisCo spec v1.0
++ */
++enum sdw_clk_stop_reset_behave {
++	SDW_CLK_STOP_KEEP_STATUS = 1,
++};
 +
- #endif /* __SOUNDWIRE_H */
++/**
++ * enum sdw_p15_behave - Slave Port 15 behaviour when the Master attempts a
++ * read
++ * @SDW_P15_READ_IGNORED: Read is ignored
++ * @SDW_P15_CMD_OK: Command is ok
++ */
++enum sdw_p15_behave {
++	SDW_P15_READ_IGNORED = 0,
++	SDW_P15_CMD_OK = 1,
++};
++
++/**
++ * enum sdw_dpn_type - Data port types
++ * @SDW_DPN_FULL: Full Data Port is supported
++ * @SDW_DPN_SIMPLE: Simplified Data Port as defined in spec.
++ * DPN_SampleCtrl2, DPN_OffsetCtrl2, DPN_HCtrl and DPN_BlockCtrl3
++ * are not implemented.
++ * @SDW_DPN_REDUCED: Reduced Data Port as defined in spec.
++ * DPN_SampleCtrl2, DPN_HCtrl are not implemented.
++ */
++enum sdw_dpn_type {
++	SDW_DPN_FULL = 0,
++	SDW_DPN_SIMPLE = 1,
++	SDW_DPN_REDUCED = 2,
++};
++
++/**
++ * enum sdw_clk_stop_mode - Clock Stop modes
++ * @SDW_CLK_STOP_MODE0: Slave can continue operation seamlessly on clock
++ * restart
++ * @SDW_CLK_STOP_MODE1: Slave may have entered a deeper power-saving mode,
++ * not capable of continuing operation seamlessly when the clock restarts
++ */
++enum sdw_clk_stop_mode {
++	SDW_CLK_STOP_MODE0 = 0,
++	SDW_CLK_STOP_MODE1 = 1,
++};
++
++/**
++ * struct sdw_dp0_prop - DP0 properties
++ * @max_word: Maximum number of bits in a Payload Channel Sample, 1 to 64
++ * (inclusive)
++ * @min_word: Minimum number of bits in a Payload Channel Sample, 1 to 64
++ * (inclusive)
++ * @num_words: number of wordlengths supported
++ * @words: wordlengths supported
++ * @flow_controlled: Slave implementation results in an OK_NotReady
++ * response
++ * @simple_ch_prep_sm: If channel prepare sequence is required
++ * @device_interrupts: If implementation-defined interrupts are supported
++ *
++ * The wordlengths are specified by Spec as max, min AND number of
++ * discrete values, implementation can define based on the wordlengths they
++ * support
++ */
++struct sdw_dp0_prop {
++	u32 max_word;
++	u32 min_word;
++	u32 num_words;
++	u32 *words;
++	bool flow_controlled;
++	bool simple_ch_prep_sm;
++	bool device_interrupts;
++};
++
++/**
++ * struct sdw_dpn_audio_mode - Audio mode properties for DPn
++ * @bus_min_freq: Minimum bus frequency, in Hz
++ * @bus_max_freq: Maximum bus frequency, in Hz
++ * @bus_num_freq: Number of discrete frequencies supported
++ * @bus_freq: Discrete bus frequencies, in Hz
++ * @min_freq: Minimum sampling frequency, in Hz
++ * @max_freq: Maximum sampling bus frequency, in Hz
++ * @num_freq: Number of discrete sampling frequency supported
++ * @freq: Discrete sampling frequencies, in Hz
++ * @prep_ch_behave: Specifies the dependencies between Channel Prepare
++ * sequence and bus clock configuration
++ * If 0, Channel Prepare can happen at any Bus clock rate
++ * If 1, Channel Prepare sequence shall happen only after Bus clock is
++ * changed to a frequency supported by this mode or compatible modes
++ * described by the next field
++ * @glitchless: Bitmap describing possible glitchless transitions from this
++ * Audio Mode to other Audio Modes
++ */
++struct sdw_dpn_audio_mode {
++	u32 bus_min_freq;
++	u32 bus_max_freq;
++	u32 bus_num_freq;
++	u32 *bus_freq;
++	u32 max_freq;
++	u32 min_freq;
++	u32 num_freq;
++	u32 *freq;
++	u32 prep_ch_behave;
++	u32 glitchless;
++};
++
++/**
++ * struct sdw_dpn_prop - Data Port DPn properties
++ * @num: port number
++ * @max_word: Maximum number of bits in a Payload Channel Sample, 1 to 64
++ * (inclusive)
++ * @min_word: Minimum number of bits in a Payload Channel Sample, 1 to 64
++ * (inclusive)
++ * @num_words: Number of discrete supported wordlengths
++ * @words: Discrete supported wordlength
++ * @type: Data port type. Full, Simplified or Reduced
++ * @max_grouping: Maximum number of samples that can be grouped together for
++ * a full data port
++ * @simple_ch_prep_sm: If the port supports simplified channel prepare state
++ * machine
++ * @ch_prep_timeout: Port-specific timeout value, in milliseconds
++ * @device_interrupts: If set, each bit corresponds to support for
++ * implementation-defined interrupts
++ * @max_ch: Maximum channels supported
++ * @min_ch: Minimum channels supported
++ * @num_ch: Number of discrete channels supported
++ * @ch: Discrete channels supported
++ * @num_ch_combinations: Number of channel combinations supported
++ * @ch_combinations: Channel combinations supported
++ * @modes: SDW mode supported
++ * @max_async_buffer: Number of samples that this port can buffer in
++ * asynchronous modes
++ * @block_pack_mode: Type of block port mode supported
++ * @port_encoding: Payload Channel Sample encoding schemes supported
++ * @audio_modes: Audio modes supported
++ */
++struct sdw_dpn_prop {
++	u32 num;
++	u32 max_word;
++	u32 min_word;
++	u32 num_words;
++	u32 *words;
++	enum sdw_dpn_type type;
++	u32 max_grouping;
++	bool simple_ch_prep_sm;
++	u32 ch_prep_timeout;
++	u32 device_interrupts;
++	u32 max_ch;
++	u32 min_ch;
++	u32 num_ch;
++	u32 *ch;
++	u32 num_ch_combinations;
++	u32 *ch_combinations;
++	u32 modes;
++	u32 max_async_buffer;
++	bool block_pack_mode;
++	u32 port_encoding;
++	struct sdw_dpn_audio_mode *audio_modes;
++};
++
++/**
++ * struct sdw_slave_prop - SoundWire Slave properties
++ * @mipi_revision: Spec version of the implementation
++ * @wake_capable: Wake-up events are supported
++ * @test_mode_capable: If test mode is supported
++ * @clk_stop_mode1: Clock-Stop Mode 1 is supported
++ * @simple_clk_stop_capable: Simple clock mode is supported
++ * @clk_stop_timeout: Worst-case latency of the Clock Stop Prepare State
++ * Machine transitions, in milliseconds
++ * @ch_prep_timeout: Worst-case latency of the Channel Prepare State Machine
++ * transitions, in milliseconds
++ * @reset_behave: Slave keeps the status of the SlaveStopClockPrepare
++ * state machine (P=1 SCSP_SM) after exit from clock-stop mode1
++ * @high_PHY_capable: Slave is HighPHY capable
++ * @paging_support: Slave implements paging registers SCP_AddrPage1 and
++ * SCP_AddrPage2
++ * @bank_delay_support: Slave implements bank delay/bridge support registers
++ * SCP_BankDelay and SCP_NextFrame
++ * @p15_behave: Slave behavior when the Master attempts a read to the Port15
++ * alias
++ * @lane_control_support: Slave supports lane control
++ * @master_count: Number of Masters present on this Slave
++ * @source_ports: Bitmap identifying source ports
++ * @sink_ports: Bitmap identifying sink ports
++ * @dp0_prop: Data Port 0 properties
++ * @src_dpn_prop: Source Data Port N properties
++ * @sink_dpn_prop: Sink Data Port N properties
++ */
++struct sdw_slave_prop {
++	u32 mipi_revision;
++	bool wake_capable;
++	bool test_mode_capable;
++	bool clk_stop_mode1;
++	bool simple_clk_stop_capable;
++	u32 clk_stop_timeout;
++	u32 ch_prep_timeout;
++	enum sdw_clk_stop_reset_behave reset_behave;
++	bool high_PHY_capable;
++	bool paging_support;
++	bool bank_delay_support;
++	enum sdw_p15_behave p15_behave;
++	bool lane_control_support;
++	u32 master_count;
++	u32 source_ports;
++	u32 sink_ports;
++	struct sdw_dp0_prop *dp0_prop;
++	struct sdw_dpn_prop *src_dpn_prop;
++	struct sdw_dpn_prop *sink_dpn_prop;
++};
++
++/**
++ * struct sdw_master_prop - Master properties
++ * @revision: MIPI spec version of the implementation
++ * @master_count: Number of masters
++ * @clk_stop_mode: Bitmap for Clock Stop modes supported
++ * @max_freq: Maximum Bus clock frequency, in Hz
++ * @num_clk_gears: Number of clock gears supported
++ * @clk_gears: Clock gears supported
++ * @num_freq: Number of clock frequencies supported, in Hz
++ * @freq: Clock frequencies supported, in Hz
++ * @default_frame_rate: Controller default Frame rate, in Hz
++ * @default_row: Number of rows
++ * @default_col: Number of columns
++ * @dynamic_frame: Dynamic frame supported
++ * @err_threshold: Number of times that software may retry sending a single
++ * command
++ * @dpn_prop: Data Port N properties
++ */
++struct sdw_master_prop {
++	u32 revision;
++	u32 master_count;
++	enum sdw_clk_stop_mode clk_stop_mode;
++	u32 max_freq;
++	u32 num_clk_gears;
++	u32 *clk_gears;
++	u32 num_freq;
++	u32 *freq;
++	u32 default_frame_rate;
++	u32 default_row;
++	u32 default_col;
++	bool dynamic_frame;
++	u32 err_threshold;
++	struct sdw_dpn_prop *dpn_prop;
++};
++
++int sdw_master_read_prop(struct sdw_bus *bus);
++int sdw_slave_read_prop(struct sdw_slave *slave);
++
++/*
+  * SDW Slave Structures and APIs
+  */
+ 
+@@ -62,12 +308,23 @@ struct sdw_slave_id {
+ };
+ 
+ /**
++ * struct sdw_slave_ops - Slave driver callback ops
++ * @read_prop: Read Slave properties
++ */
++struct sdw_slave_ops {
++	int (*read_prop)(struct sdw_slave *sdw);
++};
++
++/**
+  * struct sdw_slave - SoundWire Slave
+  * @id: MIPI device ID
+  * @dev: Linux device
+  * @status: Status reported by the Slave
+  * @bus: Bus handle
++ * @ops: Slave callback ops
++ * @prop: Slave properties
+  * @node: node for bus list
++ * @port_ready: Port ready completion flag for each Slave port
+  * @dev_num: Device Number assigned by Bus
+  */
+ struct sdw_slave {
+@@ -75,7 +332,10 @@ struct sdw_slave {
+ 	struct device dev;
+ 	enum sdw_slave_status status;
+ 	struct sdw_bus *bus;
++	const struct sdw_slave_ops *ops;
++	struct sdw_slave_prop prop;
+ 	struct list_head node;
++	struct completion *port_ready;
+ 	u16 dev_num;
+ };
+ 
+@@ -104,6 +364,14 @@ struct sdw_driver {
+  */
+ 
+ /**
++ * struct sdw_master_ops - Master driver ops
++ * @read_prop: Read Master properties
++ */
++struct sdw_master_ops {
++	int (*read_prop)(struct sdw_bus *bus);
++};
++
++/**
+  * struct sdw_bus - SoundWire bus
+  * @dev: Master linux device
+  * @link_id: Link id number, can be 0 to N, unique for each Master
+@@ -111,6 +379,9 @@ struct sdw_driver {
+  * @assigned: Bitmap for Slave device numbers.
+  * Bit set implies used number, bit clear implies unused number.
+  * @bus_lock: bus lock
++ * @ops: Master callback ops
++ * @prop: Master properties
++ * @clk_stop_timeout: Clock stop timeout computed
+  */
+ struct sdw_bus {
+ 	struct device *dev;
+@@ -118,6 +389,9 @@ struct sdw_bus {
+ 	struct list_head slaves;
+ 	DECLARE_BITMAP(assigned, SDW_MAX_DEVICES);
+ 	struct mutex bus_lock;
++	const struct sdw_master_ops *ops;
++	struct sdw_master_prop prop;
++	unsigned int clk_stop_timeout;
+ };
+ 
+ int sdw_add_bus_master(struct sdw_bus *bus);
 -- 
 2.7.4
