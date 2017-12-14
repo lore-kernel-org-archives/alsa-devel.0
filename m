@@ -1,497 +1,257 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v6 02/14] soundwire: Add SoundWire bus type
-Date: Thu, 14 Dec 2017 11:19:33 +0530
-Message-ID: <1513230585-13882-3-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v6 13/14] soundwire: intel: Add Intel init module
+Date: Thu, 14 Dec 2017 11:19:44 +0530
+Message-ID: <1513230585-13882-14-git-send-email-vinod.koul@intel.com>
 References: <1513230585-13882-1-git-send-email-vinod.koul@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 420542679CA
- for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 06:46:07 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1513230585-13882-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Takashi <tiwai@suse.de>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, patches.audio@intel.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-This adds the base SoundWire bus type, bus and driver registration.
-along with changes to module device table for new SoundWire
-device type.
+The SoundWire Master is implemented as part of Audio controller in
+Intel platforms. Add a init module which creates SoundWire Master
+platform devices based on the links supported in the hardware.
 
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Reviewed-by: Philippe Ombredanne <pombredanne@nexb.com>
 Acked-By: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- drivers/Kconfig                    |   2 +
- drivers/Makefile                   |   1 +
- drivers/soundwire/Kconfig          |  22 +++++
- drivers/soundwire/Makefile         |   7 ++
- drivers/soundwire/bus_type.c       | 172 +++++++++++++++++++++++++++++++++++++
- include/linux/mod_devicetable.h    |   6 ++
- include/linux/soundwire/sdw.h      | 108 +++++++++++++++++++++++
- include/linux/soundwire/sdw_type.h |  19 ++++
- scripts/mod/devicetable-offsets.c  |   4 +
- scripts/mod/file2alias.c           |  15 ++++
- 10 files changed, 356 insertions(+)
- create mode 100644 drivers/soundwire/Kconfig
- create mode 100644 drivers/soundwire/Makefile
- create mode 100644 drivers/soundwire/bus_type.c
- create mode 100644 include/linux/soundwire/sdw.h
- create mode 100644 include/linux/soundwire/sdw_type.h
+ drivers/soundwire/Makefile          |   3 +
+ drivers/soundwire/intel_init.c      | 198 ++++++++++++++++++++++++++++++++++++
+ include/linux/soundwire/sdw_intel.h |   3 +
+ 3 files changed, 204 insertions(+)
+ create mode 100644 drivers/soundwire/intel_init.c
 
-diff --git a/drivers/Kconfig b/drivers/Kconfig
-index 152744c5ef0f..3a0bbbd42292 100644
---- a/drivers/Kconfig
-+++ b/drivers/Kconfig
-@@ -153,6 +153,8 @@ source "drivers/remoteproc/Kconfig"
- 
- source "drivers/rpmsg/Kconfig"
- 
-+source "drivers/soundwire/Kconfig"
-+
- source "drivers/soc/Kconfig"
- 
- source "drivers/devfreq/Kconfig"
-diff --git a/drivers/Makefile b/drivers/Makefile
-index 1d034b680431..cd13b2ed7ed6 100644
---- a/drivers/Makefile
-+++ b/drivers/Makefile
-@@ -156,6 +156,7 @@ obj-$(CONFIG_MAILBOX)		+= mailbox/
- obj-$(CONFIG_HWSPINLOCK)	+= hwspinlock/
- obj-$(CONFIG_REMOTEPROC)	+= remoteproc/
- obj-$(CONFIG_RPMSG)		+= rpmsg/
-+obj-$(CONFIG_SOUNDWIRE)		+= soundwire/
- 
- # Virtualization drivers
- obj-$(CONFIG_VIRT_DRIVERS)	+= virt/
-diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
-new file mode 100644
-index 000000000000..d7d3908f4913
---- /dev/null
-+++ b/drivers/soundwire/Kconfig
-@@ -0,0 +1,22 @@
-+#
-+# SoundWire subsystem configuration
-+#
-+
-+menuconfig SOUNDWIRE
-+	bool "SoundWire support"
-+	---help---
-+	  SoundWire is a 2-Pin interface with data and clock line ratified
-+	  by the MIPI Alliance. SoundWire is used for transporting data
-+	  typically related to audio functions. SoundWire interface is
-+	  optimized to integrate audio devices in mobile or mobile inspired
-+	  systems. Say Y to enable this subsystem, N if you do not have such
-+	  a device
-+
-+if SOUNDWIRE
-+
-+comment "SoundWire Devices"
-+
-+config SOUNDWIRE_BUS
-+	tristate
-+
-+endif
 diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-new file mode 100644
-index 000000000000..d1281def7662
---- /dev/null
+index befd7f8af7e1..e1a74c5692aa 100644
+--- a/drivers/soundwire/Makefile
 +++ b/drivers/soundwire/Makefile
-@@ -0,0 +1,7 @@
-+#
-+# Makefile for soundwire core
-+#
+@@ -13,3 +13,6 @@ obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
+ #Intel driver
+ soundwire-intel-objs :=	intel.o
+ obj-$(CONFIG_SOUNDWIRE_INTEL) += soundwire-intel.o
 +
-+#Bus Objs
-+soundwire-bus-objs := bus_type.o
-+obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
-diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
++soundwire-intel-init-objs := intel_init.o
++obj-$(CONFIG_SOUNDWIRE_INTEL) += soundwire-intel-init.o
+diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
 new file mode 100644
-index 000000000000..8d8dcc68e9a8
+index 000000000000..6f2bb99526f2
 --- /dev/null
-+++ b/drivers/soundwire/bus_type.c
-@@ -0,0 +1,172 @@
-+// SPDX-License-Identifier: GPL-2.0
++++ b/drivers/soundwire/intel_init.c
+@@ -0,0 +1,198 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +// Copyright(c) 2015-17 Intel Corporation.
 +
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/pm_domain.h>
-+#include <linux/soundwire/sdw.h>
-+#include <linux/soundwire/sdw_type.h>
-+
-+/**
-+ * sdw_get_device_id - find the matching SoundWire device id
-+ * @slave: SoundWire Slave Device
-+ * @drv: SoundWire Slave Driver
++/*
++ * SDW Intel Init Routines
 + *
-+ * The match is done by comparing the mfg_id and part_id from the
-+ * struct sdw_device_id.
++ * Initializes and creates SDW devices based on ACPI and Hardware values
 + */
-+static const struct sdw_device_id *
-+sdw_get_device_id(struct sdw_slave *slave, struct sdw_driver *drv)
-+{
-+	const struct sdw_device_id *id = drv->id_table;
 +
-+	while (id && id->mfg_id) {
-+		if (slave->id.mfg_id == id->mfg_id &&
-+		    slave->id.part_id == id->part_id)
-+			return id;
-+		id++;
++#include <linux/acpi.h>
++#include <linux/platform_device.h>
++#include <linux/soundwire/sdw_intel.h>
++#include "intel.h"
++
++#define SDW_MAX_LINKS		4
++#define SDW_SHIM_LCAP		0x0
++#define SDW_SHIM_BASE		0x2C000
++#define SDW_ALH_BASE		0x2C800
++#define SDW_LINK_BASE		0x30000
++#define SDW_LINK_SIZE		0x10000
++
++struct sdw_link_data {
++	struct sdw_intel_link_res res;
++	struct platform_device *pdev;
++};
++
++struct sdw_intel_ctx {
++	int count;
++	struct sdw_link_data *links;
++};
++
++static int sdw_intel_cleanup_pdev(struct sdw_intel_ctx *ctx)
++{
++	struct sdw_link_data *link = ctx->links;
++	int i;
++
++	if (!link)
++		return 0;
++
++	for (i = 0; i < ctx->count; i++) {
++		if (link->pdev)
++			platform_device_unregister(link->pdev);
++		link++;
 +	}
 +
-+	return NULL;
-+}
-+
-+static int sdw_bus_match(struct device *dev, struct device_driver *ddrv)
-+{
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-+	struct sdw_driver *drv = drv_to_sdw_driver(ddrv);
-+
-+	return !!sdw_get_device_id(slave, drv);
-+}
-+
-+int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size)
-+{
-+	/* modalias is sdw:m<mfg_id>p<part_id> */
-+
-+	return snprintf(buf, size, "sdw:m%04Xp%04X\n",
-+			slave->id.mfg_id, slave->id.part_id);
-+}
-+
-+static int sdw_uevent(struct device *dev, struct kobj_uevent_env *env)
-+{
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-+	char modalias[32];
-+
-+	sdw_slave_modalias(slave, modalias, sizeof(modalias));
-+
-+	if (add_uevent_var(env, "MODALIAS=%s", modalias))
-+		return -ENOMEM;
++	kfree(ctx->links);
++	ctx->links = NULL;
 +
 +	return 0;
 +}
 +
-+struct bus_type sdw_bus_type = {
-+	.name = "soundwire",
-+	.match = sdw_bus_match,
-+	.uevent = sdw_uevent,
-+};
-+EXPORT_SYMBOL_GPL(sdw_bus_type);
-+
-+static int sdw_drv_probe(struct device *dev)
++static struct sdw_intel_ctx
++*sdw_intel_add_controller(struct sdw_intel_res *res)
 +{
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-+	struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
-+	const struct sdw_device_id *id;
-+	int ret;
++	struct platform_device_info pdevinfo;
++	struct platform_device *pdev;
++	struct sdw_link_data *link;
++	struct sdw_intel_ctx *ctx;
++	struct acpi_device *adev;
++	int ret, i;
++	u8 count;
++	u32 caps;
 +
-+	id = sdw_get_device_id(slave, drv);
-+	if (!id)
-+		return -ENODEV;
++	if (acpi_bus_get_device(res->handle, &adev))
++		return NULL;
 +
-+	/*
-+	 * attach to power domain but don't turn on (last arg)
-+	 */
-+	ret = dev_pm_domain_attach(dev, false);
-+	if (ret != -EPROBE_DEFER) {
-+		ret = drv->probe(slave, id);
-+		if (ret) {
-+			dev_err(dev, "Probe of %s failed: %d\n", drv->name, ret);
-+			dev_pm_domain_detach(dev, false);
++	/* Found controller, find links supported */
++	count = 0;
++	ret = fwnode_property_read_u8_array(acpi_fwnode_handle(adev),
++				  "mipi-sdw-master-count", &count, 1);
++
++	/* Don't fail on error, continue and use hw value */
++	if (ret) {
++		dev_err(&adev->dev,
++			"Failed to read mipi-sdw-master-count: %d\n", ret);
++		count = SDW_MAX_LINKS;
++	}
++
++	/* Check SNDWLCAP.LCOUNT */
++	caps = ioread32(res->mmio_base + SDW_SHIM_BASE + SDW_SHIM_LCAP);
++
++	/* Check HW supported vs property value and use min of two */
++	count = min_t(u8, caps, count);
++
++	/* Check count is within bounds */
++	if (count > SDW_MAX_LINKS) {
++		dev_err(&adev->dev, "Link count %d exceeds max %d\n",
++						count, SDW_MAX_LINKS);
++		return NULL;
++	}
++
++	dev_dbg(&adev->dev, "Creating %d SDW Link devices\n", count);
++
++	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
++	if (!ctx)
++		return NULL;
++
++	ctx->count = count;
++	ctx->links = kcalloc(ctx->count, sizeof(*ctx->links), GFP_KERNEL);
++	if (!ctx->links)
++		goto link_err;
++
++	link = ctx->links;
++
++	/* Create SDW Master devices */
++	for (i = 0; i < count; i++) {
++
++		link->res.irq = res->irq;
++		link->res.registers = res->mmio_base + SDW_LINK_BASE
++					+ (SDW_LINK_SIZE * i);
++		link->res.shim = res->mmio_base + SDW_SHIM_BASE;
++		link->res.alh = res->mmio_base + SDW_ALH_BASE;
++
++		memset(&pdevinfo, 0, sizeof(pdevinfo));
++
++		pdevinfo.parent = res->parent;
++		pdevinfo.name = "int-sdw";
++		pdevinfo.id = i;
++		pdevinfo.fwnode = acpi_fwnode_handle(adev);
++		pdevinfo.data = &link->res;
++		pdevinfo.size_data = sizeof(link->res);
++
++		pdev = platform_device_register_full(&pdevinfo);
++		if (IS_ERR(pdev)) {
++			dev_err(&adev->dev,
++				"platform device creation failed: %ld\n",
++				PTR_ERR(pdev));
++			goto pdev_err;
 +		}
++
++		link->pdev = pdev;
++		link++;
 +	}
 +
-+	return ret;
++	return ctx;
++
++pdev_err:
++	sdw_intel_cleanup_pdev(ctx);
++link_err:
++	kfree(ctx);
++	return NULL;
 +}
 +
-+static int sdw_drv_remove(struct device *dev)
++static acpi_status sdw_intel_acpi_cb(acpi_handle handle, u32 level,
++					void *cdata, void **return_value)
 +{
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-+	struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
-+	int ret = 0;
++	struct sdw_intel_res *res = cdata;
++	struct acpi_device *adev;
 +
-+	if (drv->remove)
-+		ret = drv->remove(slave);
++	if (acpi_bus_get_device(handle, &adev)) {
++		dev_err(&adev->dev, "Couldn't find ACPI handle\n");
++		return AE_NOT_FOUND;
++	}
 +
-+	dev_pm_domain_detach(dev, false);
-+
-+	return ret;
-+}
-+
-+static void sdw_drv_shutdown(struct device *dev)
-+{
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-+	struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
-+
-+	if (drv->shutdown)
-+		drv->shutdown(slave);
++	res->handle = handle;
++	return AE_OK;
 +}
 +
 +/**
-+ * __sdw_register_driver() - register a SoundWire Slave driver
-+ * @drv: driver to register
-+ * @owner: owning module/driver
++ * sdw_intel_init() - SoundWire Intel init routine
++ * @parent_handle: ACPI parent handle
++ * @res: resource data
 + *
-+ * Return: zero on success, else a negative error code.
++ * This scans the namespace and creates SoundWire link controller devices
++ * based on the info queried.
 + */
-+int __sdw_register_driver(struct sdw_driver *drv, struct module *owner)
++void *sdw_intel_init(acpi_handle *parent_handle, struct sdw_intel_res *res)
 +{
-+	drv->driver.bus = &sdw_bus_type;
++	acpi_status status;
 +
-+	if (!drv->probe) {
-+		pr_err("driver %s didn't provide SDW probe routine\n",
-+							drv->name);
-+		return -EINVAL;
-+	}
++	status = acpi_walk_namespace(ACPI_TYPE_DEVICE,
++					parent_handle, 1,
++					sdw_intel_acpi_cb,
++					NULL, res, NULL);
++	if (ACPI_FAILURE(status))
++		return NULL;
 +
-+	drv->driver.owner = owner;
-+	drv->driver.probe = sdw_drv_probe;
-+
-+	if (drv->remove)
-+		drv->driver.remove = sdw_drv_remove;
-+
-+	if (drv->shutdown)
-+		drv->driver.shutdown = sdw_drv_shutdown;
-+
-+	return driver_register(&drv->driver);
++	return sdw_intel_add_controller(res);
 +}
-+EXPORT_SYMBOL_GPL(__sdw_register_driver);
++EXPORT_SYMBOL(sdw_intel_init);
 +
 +/**
-+ * sdw_unregister_driver() - unregisters the SoundWire Slave driver
-+ * @drv: driver to unregister
++ * sdw_intel_exit() - SoundWire Intel exit
++ * @arg: callback context
++ *
++ * Delete the controller instances created and cleanup
 + */
-+void sdw_unregister_driver(struct sdw_driver *drv)
++void sdw_intel_exit(void *arg)
 +{
-+	driver_unregister(&drv->driver);
++	struct sdw_intel_ctx *ctx = arg;
++
++	sdw_intel_cleanup_pdev(ctx);
++	kfree(ctx);
 +}
-+EXPORT_SYMBOL_GPL(sdw_unregister_driver);
++EXPORT_SYMBOL(sdw_intel_exit);
 +
-+static int __init sdw_bus_init(void)
-+{
-+	return bus_register(&sdw_bus_type);
-+}
-+
-+static void __exit sdw_bus_exit(void)
-+{
-+	bus_unregister(&sdw_bus_type);
-+}
-+
-+postcore_initcall(sdw_bus_init);
-+module_exit(sdw_bus_exit);
-+
-+MODULE_DESCRIPTION("SoundWire bus");
-+MODULE_LICENSE("GPL v2");
-diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
-index abb6dc2ebbf8..d6f727a68eb1 100644
---- a/include/linux/mod_devicetable.h
-+++ b/include/linux/mod_devicetable.h
-@@ -229,6 +229,12 @@ struct hda_device_id {
- 	unsigned long driver_data;
++MODULE_LICENSE("Dual BSD/GPL");
++MODULE_DESCRIPTION("Intel Soundwire Init Library");
+diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
+index 370cc52d8d1e..4b37528f592d 100644
+--- a/include/linux/soundwire/sdw_intel.h
++++ b/include/linux/soundwire/sdw_intel.h
+@@ -18,4 +18,7 @@ struct sdw_intel_res {
+ 	struct device *parent;
  };
  
-+struct sdw_device_id {
-+	__u16 mfg_id;
-+	__u16 part_id;
-+	kernel_ulong_t driver_data;
-+};
++void *sdw_intel_init(acpi_handle *parent_handle, struct sdw_intel_res *res);
++void sdw_intel_exit(void *arg);
 +
- /*
-  * Struct used for matching a device
-  */
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-new file mode 100644
-index 000000000000..869d7041d9fc
---- /dev/null
-+++ b/include/linux/soundwire/sdw.h
-@@ -0,0 +1,108 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+// Copyright(c) 2015-17 Intel Corporation.
-+
-+#ifndef __SOUNDWIRE_H
-+#define __SOUNDWIRE_H
-+
-+struct sdw_bus;
-+struct sdw_slave;
-+
-+#define SDW_MAX_DEVICES			11
-+
-+/**
-+ * enum sdw_slave_status - Slave status
-+ * @SDW_SLAVE_UNATTACHED: Slave is not attached with the bus.
-+ * @SDW_SLAVE_ATTACHED: Slave is attached with bus.
-+ * @SDW_SLAVE_ALERT: Some alert condition on the Slave
-+ * @SDW_SLAVE_RESERVED: Reserved for future use
-+ */
-+enum sdw_slave_status {
-+	SDW_SLAVE_UNATTACHED = 0,
-+	SDW_SLAVE_ATTACHED = 1,
-+	SDW_SLAVE_ALERT = 2,
-+	SDW_SLAVE_RESERVED = 3,
-+};
-+
-+/*
-+ * SDW Slave Structures and APIs
-+ */
-+
-+/**
-+ * struct sdw_slave_id - Slave ID
-+ * @mfg_id: MIPI Manufacturer ID
-+ * @part_id: Device Part ID
-+ * @class_id: MIPI Class ID, unused now.
-+ * Currently a placeholder in MIPI SoundWire Spec
-+ * @unique_id: Device unique ID
-+ * @sdw_version: SDW version implemented
-+ *
-+ * The order of the IDs here does not follow the DisCo spec definitions
-+ */
-+struct sdw_slave_id {
-+	__u16 mfg_id;
-+	__u16 part_id;
-+	__u8 class_id;
-+	__u8 unique_id:4;
-+	__u8 sdw_version:4;
-+};
-+
-+/**
-+ * struct sdw_slave - SoundWire Slave
-+ * @id: MIPI device ID
-+ * @dev: Linux device
-+ * @status: Status reported by the Slave
-+ * @bus: Bus handle
-+ * @node: node for bus list
-+ * @dev_num: Device Number assigned by Bus
-+ */
-+struct sdw_slave {
-+	struct sdw_slave_id id;
-+	struct device dev;
-+	enum sdw_slave_status status;
-+	struct sdw_bus *bus;
-+	struct list_head node;
-+	u16 dev_num;
-+};
-+
-+#define dev_to_sdw_dev(_dev) container_of(_dev, struct sdw_slave, dev)
-+
-+struct sdw_driver {
-+	const char *name;
-+
-+	int (*probe)(struct sdw_slave *sdw,
-+			const struct sdw_device_id *id);
-+	int (*remove)(struct sdw_slave *sdw);
-+	void (*shutdown)(struct sdw_slave *sdw);
-+
-+	const struct sdw_device_id *id_table;
-+	const struct sdw_slave_ops *ops;
-+
-+	struct device_driver driver;
-+};
-+
-+#define SDW_SLAVE_ENTRY(_mfg_id, _part_id, _drv_data) \
-+	{ .mfg_id = (_mfg_id), .part_id = (_part_id), \
-+	  .driver_data = (unsigned long)(_drv_data) }
-+
-+/*
-+ * SDW master structures and APIs
-+ */
-+
-+/**
-+ * struct sdw_bus - SoundWire bus
-+ * @dev: Master linux device
-+ * @link_id: Link id number, can be 0 to N, unique for each Master
-+ * @slaves: list of Slaves on this bus
-+ * @assigned: Bitmap for Slave device numbers.
-+ * Bit set implies used number, bit clear implies unused number.
-+ * @bus_lock: bus lock
-+ */
-+struct sdw_bus {
-+	struct device *dev;
-+	unsigned int link_id;
-+	struct list_head slaves;
-+	DECLARE_BITMAP(assigned, SDW_MAX_DEVICES);
-+	struct mutex bus_lock;
-+};
-+
-+#endif /* __SOUNDWIRE_H */
-diff --git a/include/linux/soundwire/sdw_type.h b/include/linux/soundwire/sdw_type.h
-new file mode 100644
-index 000000000000..9fd553e553e9
---- /dev/null
-+++ b/include/linux/soundwire/sdw_type.h
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright(c) 2015-17 Intel Corporation.
-+
-+#ifndef __SOUNDWIRE_TYPES_H
-+#define __SOUNDWIRE_TYPES_H
-+
-+extern struct bus_type sdw_bus_type;
-+
-+#define drv_to_sdw_driver(_drv) container_of(_drv, struct sdw_driver, driver)
-+
-+#define sdw_register_driver(drv) \
-+	__sdw_register_driver(drv, THIS_MODULE)
-+
-+int __sdw_register_driver(struct sdw_driver *drv, struct module *);
-+void sdw_unregister_driver(struct sdw_driver *drv);
-+
-+int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size);
-+
-+#endif /* __SOUNDWIRE_TYPES_H */
-diff --git a/scripts/mod/devicetable-offsets.c b/scripts/mod/devicetable-offsets.c
-index 9826b9a6543c..9fad6afe4c41 100644
---- a/scripts/mod/devicetable-offsets.c
-+++ b/scripts/mod/devicetable-offsets.c
-@@ -203,6 +203,10 @@ int main(void)
- 	DEVID_FIELD(hda_device_id, rev_id);
- 	DEVID_FIELD(hda_device_id, api_version);
- 
-+	DEVID(sdw_device_id);
-+	DEVID_FIELD(sdw_device_id, mfg_id);
-+	DEVID_FIELD(sdw_device_id, part_id);
-+
- 	DEVID(fsl_mc_device_id);
- 	DEVID_FIELD(fsl_mc_device_id, vendor);
- 	DEVID_FIELD(fsl_mc_device_id, obj_type);
-diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
-index 6ef6e63f96fd..b9beeaa4695b 100644
---- a/scripts/mod/file2alias.c
-+++ b/scripts/mod/file2alias.c
-@@ -1289,6 +1289,21 @@ static int do_hda_entry(const char *filename, void *symval, char *alias)
- }
- ADD_TO_DEVTABLE("hdaudio", hda_device_id, do_hda_entry);
- 
-+/* Looks like: sdw:mNpN */
-+static int do_sdw_entry(const char *filename, void *symval, char *alias)
-+{
-+	DEF_FIELD(symval, sdw_device_id, mfg_id);
-+	DEF_FIELD(symval, sdw_device_id, part_id);
-+
-+	strcpy(alias, "sdw:");
-+	ADD(alias, "m", mfg_id != 0, mfg_id);
-+	ADD(alias, "p", part_id != 0, part_id);
-+
-+	add_wildcard(alias);
-+	return 1;
-+}
-+ADD_TO_DEVTABLE("sdw", sdw_device_id, do_sdw_entry);
-+
- /* Looks like: fsl-mc:vNdN */
- static int do_fsl_mc_entry(const char *filename, void *symval,
- 			   char *alias)
+ #endif
 -- 
 2.7.4
