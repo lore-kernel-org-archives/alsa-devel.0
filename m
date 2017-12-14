@@ -1,7 +1,7 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v6 05/14] soundwire: Add SoundWire MIPI defined registers
-Date: Thu, 14 Dec 2017 11:19:36 +0530
-Message-ID: <1513230585-13882-6-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v6 06/14] soundwire: Add IO transfer
+Date: Thu, 14 Dec 2017 11:19:37 +0530
+Message-ID: <1513230585-13882-7-git-send-email-vinod.koul@intel.com>
 References: <1513230585-13882-1-git-send-email-vinod.koul@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1513230585-13882-1-git-send-email-vinod.koul@intel.com>
@@ -10,10 +10,10 @@ To: Takashi <tiwai@suse.de>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Sanyog Kale <sanyog.r.kale@intel.com>
-
-MIPI SoundWire spec defines standard SoundWire registers mandatory for
-SoundWire Slave devices, so add them.
+SoundWire bus supports read or write register(s) for SoundWire Slave
+device. sdw_read() and sdw_write() APIs are provided for single
+register read/write. sdw_nread() and sdw_nwrite() for operations on
+contiguous registers.
 
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Reviewed-by: Philippe Ombredanne <pombredanne@nexb.com>
@@ -21,209 +21,455 @@ Acked-By: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/linux/soundwire/sdw_registers.h | 194 ++++++++++++++++++++++++++++++++
- 1 file changed, 194 insertions(+)
- create mode 100644 include/linux/soundwire/sdw_registers.h
+ drivers/soundwire/bus.c       | 272 ++++++++++++++++++++++++++++++++++++++++++
+ drivers/soundwire/bus.h       |  36 ++++++
+ include/linux/soundwire/sdw.h |  57 +++++++++
+ 3 files changed, 365 insertions(+)
 
-diff --git a/include/linux/soundwire/sdw_registers.h b/include/linux/soundwire/sdw_registers.h
-new file mode 100644
-index 000000000000..df472b1ab410
---- /dev/null
-+++ b/include/linux/soundwire/sdw_registers.h
-@@ -0,0 +1,194 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+// Copyright(c) 2015-17 Intel Corporation.
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 9626bd1ab271..fb9008d6c40e 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -3,6 +3,8 @@
+ 
+ #include <linux/acpi.h>
+ #include <linux/mod_devicetable.h>
++#include <linux/pm_runtime.h>
++#include <linux/soundwire/sdw_registers.h>
+ #include <linux/soundwire/sdw.h>
+ #include "bus.h"
+ 
+@@ -22,6 +24,12 @@ int sdw_add_bus_master(struct sdw_bus *bus)
+ 		return -ENODEV;
+ 	}
+ 
++	if (!bus->ops) {
++		dev_err(bus->dev, "SoundWire Bus ops are not set");
++		return -EINVAL;
++	}
 +
-+#ifndef __SDW_REGISTERS_H
-+#define __SDW_REGISTERS_H
-+
++	mutex_init(&bus->msg_lock);
+ 	mutex_init(&bus->bus_lock);
+ 	INIT_LIST_HEAD(&bus->slaves);
+ 
+@@ -102,6 +110,270 @@ void sdw_delete_bus_master(struct sdw_bus *bus)
+ }
+ EXPORT_SYMBOL(sdw_delete_bus_master);
+ 
 +/*
-+ * typically we define register and shifts but if one observes carefully,
-+ * the shift can be generated from MASKS using few bit primitaives like ffs
-+ * etc, so we use that and avoid defining shifts
++ * SDW IO Calls
 + */
-+#define SDW_REG_SHIFT(n)			(ffs(n) - 1)
 +
-+/*
-+ * SDW registers as defined by MIPI 1.1 Spec
++static inline int find_response_code(enum sdw_command_response resp)
++{
++	switch (resp) {
++	case SDW_CMD_OK:
++		return 0;
++
++	case SDW_CMD_IGNORED:
++		return -ENODATA;
++
++	case SDW_CMD_TIMEOUT:
++		return -ETIMEDOUT;
++
++	default:
++		return -EIO;
++	}
++}
++
++static inline int do_transfer(struct sdw_bus *bus, struct sdw_msg *msg)
++{
++	int retry = bus->prop.err_threshold;
++	enum sdw_command_response resp;
++	int ret = 0, i;
++
++	for (i = 0; i <= retry; i++) {
++		resp = bus->ops->xfer_msg(bus, msg);
++		ret = find_response_code(resp);
++
++		/* if cmd is ok or ignored return */
++		if (ret == 0 || ret == -ENODATA)
++			return ret;
++	}
++
++	return ret;
++}
++
++static inline int do_transfer_defer(struct sdw_bus *bus,
++			struct sdw_msg *msg, struct sdw_defer *defer)
++{
++	int retry = bus->prop.err_threshold;
++	enum sdw_command_response resp;
++	int ret = 0, i;
++
++	defer->msg = msg;
++	defer->length = msg->len;
++
++	for (i = 0; i <= retry; i++) {
++		resp = bus->ops->xfer_msg_defer(bus, msg, defer);
++		ret = find_response_code(resp);
++		/* if cmd is ok or ignored return */
++		if (ret == 0 || ret == -ENODATA)
++			return ret;
++	}
++
++	return ret;
++}
++
++static int sdw_reset_page(struct sdw_bus *bus, u16 dev_num)
++{
++	int retry = bus->prop.err_threshold;
++	enum sdw_command_response resp;
++	int ret = 0, i;
++
++	for (i = 0; i <= retry; i++) {
++		resp = bus->ops->reset_page_addr(bus, dev_num);
++		ret = find_response_code(resp);
++		/* if cmd is ok or ignored return */
++		if (ret == 0 || ret == -ENODATA)
++			return ret;
++	}
++
++	return ret;
++}
++
++/**
++ * sdw_transfer() - Synchronous transfer message to a SDW Slave device
++ * @bus: SDW bus
++ * @msg: SDW message to be xfered
 + */
-+#define SDW_REGADDR				GENMASK(14, 0)
-+#define SDW_SCP_ADDRPAGE2_MASK			GENMASK(22, 15)
-+#define SDW_SCP_ADDRPAGE1_MASK			GENMASK(30, 23)
++int sdw_transfer(struct sdw_bus *bus, struct sdw_msg *msg)
++{
++	int ret;
 +
-+#define SDW_REG_NO_PAGE				0x00008000
-+#define SDW_REG_OPTIONAL_PAGE			0x00010000
-+#define SDW_REG_MAX				0x80000000
++	mutex_lock(&bus->msg_lock);
 +
-+#define SDW_DPN_SIZE				0x100
-+#define SDW_BANK1_OFFSET			0x10
++	ret = do_transfer(bus, msg);
++	if (ret != 0 && ret != -ENODATA)
++		dev_err(bus->dev, "trf on Slave %d failed:%d\n",
++				msg->dev_num, ret);
 +
-+/*
-+ * DP0 Interrupt register & bits
++	if (msg->page)
++		sdw_reset_page(bus, msg->dev_num);
++
++	mutex_unlock(&bus->msg_lock);
++
++	return ret;
++}
++
++/**
++ * sdw_transfer_defer() - Asynchronously transfer message to a SDW Slave device
++ * @bus: SDW bus
++ * @msg: SDW message to be xfered
++ * @defer: Defer block for signal completion
 + *
-+ * Spec treats Status (RO) and Clear (WC) as separate but they are same
-+ * address, so treat as same register with WC.
++ * Caller needs to hold the msg_lock lock while calling this
 + */
++int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_msg *msg,
++				struct sdw_defer *defer)
++{
++	int ret;
 +
-+/* both INT and STATUS register are same */
-+#define SDW_DP0_INT				0x0
-+#define SDW_DP0_INTMASK				0x1
-+#define SDW_DP0_PORTCTRL			0x2
-+#define SDW_DP0_BLOCKCTRL1			0x3
-+#define SDW_DP0_PREPARESTATUS			0x4
-+#define SDW_DP0_PREPARECTRL			0x5
++	if (!bus->ops->xfer_msg_defer)
++		return -ENOTSUPP;
 +
-+#define SDW_DP0_INT_TEST_FAIL			BIT(0)
-+#define SDW_DP0_INT_PORT_READY			BIT(1)
-+#define SDW_DP0_INT_BRA_FAILURE			BIT(2)
-+#define SDW_DP0_INT_IMPDEF1			BIT(5)
-+#define SDW_DP0_INT_IMPDEF2			BIT(6)
-+#define SDW_DP0_INT_IMPDEF3			BIT(7)
++	ret = do_transfer_defer(bus, msg, defer);
++	if (ret != 0 && ret != -ENODATA)
++		dev_err(bus->dev, "Defer trf on Slave %d failed:%d\n",
++				msg->dev_num, ret);
 +
-+#define SDW_DP0_PORTCTRL_DATAMODE		GENMASK(3, 2)
-+#define SDW_DP0_PORTCTRL_NXTINVBANK		BIT(4)
-+#define SDW_DP0_PORTCTRL_BPT_PAYLD		GENMASK(7, 6)
++	if (msg->page)
++		sdw_reset_page(bus, msg->dev_num);
 +
-+#define SDW_DP0_CHANNELEN			0x20
-+#define SDW_DP0_SAMPLECTRL1			0x22
-+#define SDW_DP0_SAMPLECTRL2			0x23
-+#define SDW_DP0_OFFSETCTRL1			0x24
-+#define SDW_DP0_OFFSETCTRL2			0x25
-+#define SDW_DP0_HCTRL				0x26
-+#define SDW_DP0_LANECTRL			0x28
-+
-+/* Both INT and STATUS register are same */
-+#define SDW_SCP_INT1				0x40
-+#define SDW_SCP_INTMASK1			0x41
-+
-+#define SDW_SCP_INT1_PARITY			BIT(0)
-+#define SDW_SCP_INT1_BUS_CLASH			BIT(1)
-+#define SDW_SCP_INT1_IMPL_DEF			BIT(2)
-+#define SDW_SCP_INT1_SCP2_CASCADE		BIT(7)
-+#define SDW_SCP_INT1_PORT0_3			GENMASK(6, 3)
-+
-+#define SDW_SCP_INTSTAT2			0x42
-+#define SDW_SCP_INTSTAT2_SCP3_CASCADE		BIT(7)
-+#define SDW_SCP_INTSTAT2_PORT4_10		GENMASK(6, 0)
++	return ret;
++}
 +
 +
-+#define SDW_SCP_INTSTAT3			0x43
-+#define SDW_SCP_INTSTAT3_PORT11_14		GENMASK(3, 0)
++int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
++		u32 addr, size_t count, u16 dev_num, u8 flags, u8 *buf)
++{
++	memset(msg, 0, sizeof(*msg));
++	msg->addr = addr; /* addr is 16 bit and truncated here */
++	msg->len = count;
++	msg->dev_num = dev_num;
++	msg->flags = flags;
++	msg->buf = buf;
++	msg->ssp_sync = false;
++	msg->page = false;
 +
-+/* Number of interrupt status registers */
-+#define SDW_NUM_INT_STAT_REGISTERS		3
++	if (addr < SDW_REG_NO_PAGE) { /* no paging area */
++		return 0;
++	} else if (addr >= SDW_REG_MAX) { /* illegal addr */
++		pr_err("SDW: Invalid address %x passed\n", addr);
++		return -EINVAL;
++	}
 +
-+/* Number of interrupt clear registers */
-+#define SDW_NUM_INT_CLEAR_REGISTERS		1
++	if (addr < SDW_REG_OPTIONAL_PAGE) { /* 32k but no page */
++		if (slave && !slave->prop.paging_support)
++			return 0;
++		/* no need for else as that will fall thru to paging */
++	}
 +
-+#define SDW_SCP_CTRL				0x44
-+#define SDW_SCP_CTRL_CLK_STP_NOW		BIT(1)
-+#define SDW_SCP_CTRL_FORCE_RESET		BIT(7)
++	/* paging mandatory */
++	if (dev_num == SDW_ENUM_DEV_NUM || dev_num == SDW_BROADCAST_DEV_NUM) {
++		pr_err("SDW: Invalid device for paging :%d\n", dev_num);
++		return -EINVAL;
++	}
 +
-+#define SDW_SCP_STAT				0x44
-+#define SDW_SCP_STAT_CLK_STP_NF			BIT(0)
-+#define SDW_SCP_STAT_HPHY_NOK			BIT(5)
-+#define SDW_SCP_STAT_CURR_BANK			BIT(6)
++	if (!slave) {
++		pr_err("SDW: No slave for paging addr\n");
++		return -EINVAL;
++	} else if (!slave->prop.paging_support) {
++		dev_err(&slave->dev,
++			"address %x needs paging but no support", addr);
++		return -EINVAL;
++	}
 +
-+#define SDW_SCP_SYSTEMCTRL			0x45
-+#define SDW_SCP_SYSTEMCTRL_CLK_STP_PREP		BIT(0)
-+#define SDW_SCP_SYSTEMCTRL_CLK_STP_MODE		BIT(2)
-+#define SDW_SCP_SYSTEMCTRL_WAKE_UP_EN		BIT(3)
-+#define SDW_SCP_SYSTEMCTRL_HIGH_PHY		BIT(4)
++	msg->addr_page1 = (addr >> SDW_REG_SHIFT(SDW_SCP_ADDRPAGE1_MASK));
++	msg->addr_page2 = (addr >> SDW_REG_SHIFT(SDW_SCP_ADDRPAGE2_MASK));
++	msg->addr |= BIT(15);
++	msg->page = true;
 +
-+#define SDW_SCP_SYSTEMCTRL_CLK_STP_MODE0	0
-+#define SDW_SCP_SYSTEMCTRL_CLK_STP_MODE1	BIT(2)
++	return 0;
++}
 +
-+#define SDW_SCP_DEVNUMBER			0x46
-+#define SDW_SCP_HIGH_PHY_CHECK			0x47
-+#define SDW_SCP_ADDRPAGE1			0x48
-+#define SDW_SCP_ADDRPAGE2			0x49
-+#define SDW_SCP_KEEPEREN			0x4A
-+#define SDW_SCP_BANKDELAY			0x4B
-+#define SDW_SCP_TESTMODE			0x4F
-+#define SDW_SCP_DEVID_0				0x50
-+#define SDW_SCP_DEVID_1				0x51
-+#define SDW_SCP_DEVID_2				0x52
-+#define SDW_SCP_DEVID_3				0x53
-+#define SDW_SCP_DEVID_4				0x54
-+#define SDW_SCP_DEVID_5				0x55
++/**
++ * sdw_nread() - Read "n" contiguous SDW Slave registers
++ * @slave: SDW Slave
++ * @addr: Register address
++ * @count: length
++ * @val: Buffer for values to be read
++ */
++int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
++{
++	struct sdw_msg msg;
++	int ret;
 +
-+/* Banked Registers */
-+#define SDW_SCP_FRAMECTRL_B0			0x60
-+#define SDW_SCP_FRAMECTRL_B1			(0x60 + SDW_BANK1_OFFSET)
-+#define SDW_SCP_NEXTFRAME_B0			0x61
-+#define SDW_SCP_NEXTFRAME_B1			(0x61 + SDW_BANK1_OFFSET)
++	ret = sdw_fill_msg(&msg, slave, addr, count,
++			slave->dev_num, SDW_MSG_FLAG_READ, val);
++	if (ret < 0)
++		return ret;
 +
-+/* Both INT and STATUS register is same */
-+#define SDW_DPN_INT(n)				(0x0 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_INTMASK(n)			(0x1 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_PORTCTRL(n)			(0x2 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_BLOCKCTRL1(n)			(0x3 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_PREPARESTATUS(n)		(0x4 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_PREPARECTRL(n)			(0x5 + SDW_DPN_SIZE * (n))
++	ret = pm_runtime_get_sync(slave->bus->dev);
++	if (!ret)
++		return ret;
 +
-+#define SDW_DPN_INT_TEST_FAIL			BIT(0)
-+#define SDW_DPN_INT_PORT_READY			BIT(1)
-+#define SDW_DPN_INT_IMPDEF1			BIT(5)
-+#define SDW_DPN_INT_IMPDEF2			BIT(6)
-+#define SDW_DPN_INT_IMPDEF3			BIT(7)
++	ret = sdw_transfer(slave->bus, &msg);
++	pm_runtime_put(slave->bus->dev);
 +
-+#define SDW_DPN_PORTCTRL_FLOWMODE		GENMASK(1, 0)
-+#define SDW_DPN_PORTCTRL_DATAMODE		GENMASK(3, 2)
-+#define SDW_DPN_PORTCTRL_NXTINVBANK		BIT(4)
++	return ret;
++}
++EXPORT_SYMBOL(sdw_nread);
 +
-+#define SDW_DPN_BLOCKCTRL1_WDLEN		GENMASK(5, 0)
++/**
++ * sdw_nwrite() - Write "n" contiguous SDW Slave registers
++ * @slave: SDW Slave
++ * @addr: Register address
++ * @count: length
++ * @val: Buffer for values to be read
++ */
++int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
++{
++	struct sdw_msg msg;
++	int ret;
 +
-+#define SDW_DPN_PREPARECTRL_CH_PREP		GENMASK(7, 0)
++	ret = sdw_fill_msg(&msg, slave, addr, count,
++			slave->dev_num, SDW_MSG_FLAG_WRITE, val);
++	if (ret < 0)
++		return ret;
 +
-+#define SDW_DPN_CHANNELEN_B0(n)			(0x20 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_CHANNELEN_B1(n)			(0x30 + SDW_DPN_SIZE * (n))
++	ret = pm_runtime_get_sync(slave->bus->dev);
++	if (!ret)
++		return ret;
 +
-+#define SDW_DPN_BLOCKCTRL2_B0(n)		(0x21 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_BLOCKCTRL2_B1(n)		(0x31 + SDW_DPN_SIZE * (n))
++	ret = sdw_transfer(slave->bus, &msg);
++	pm_runtime_put(slave->bus->dev);
 +
-+#define SDW_DPN_SAMPLECTRL1_B0(n)		(0x22 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_SAMPLECTRL1_B1(n)		(0x32 + SDW_DPN_SIZE * (n))
++	return ret;
++}
++EXPORT_SYMBOL(sdw_nwrite);
 +
-+#define SDW_DPN_SAMPLECTRL2_B0(n)		(0x23 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_SAMPLECTRL2_B1(n)		(0x33 + SDW_DPN_SIZE * (n))
++/**
++ * sdw_read() - Read a SDW Slave register
++ * @slave: SDW Slave
++ * @addr: Register address
++ */
++int sdw_read(struct sdw_slave *slave, u32 addr)
++{
++	u8 buf;
++	int ret;
 +
-+#define SDW_DPN_OFFSETCTRL1_B0(n)		(0x24 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_OFFSETCTRL1_B1(n)		(0x34 + SDW_DPN_SIZE * (n))
++	ret = sdw_nread(slave, addr, 1, &buf);
++	if (ret < 0)
++		return ret;
++	else
++		return buf;
++}
++EXPORT_SYMBOL(sdw_read);
 +
-+#define SDW_DPN_OFFSETCTRL2_B0(n)		(0x25 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_OFFSETCTRL2_B1(n)		(0x35 + SDW_DPN_SIZE * (n))
++/**
++ * sdw_write() - Write a SDW Slave register
++ * @slave: SDW Slave
++ * @addr: Register address
++ * @value: Register value
++ */
++int sdw_write(struct sdw_slave *slave, u32 addr, u8 value)
++{
++	return sdw_nwrite(slave, addr, 1, &value);
 +
-+#define SDW_DPN_HCTRL_B0(n)			(0x26 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_HCTRL_B1(n)			(0x36 + SDW_DPN_SIZE * (n))
++}
++EXPORT_SYMBOL(sdw_write);
 +
-+#define SDW_DPN_BLOCKCTRL3_B0(n)		(0x27 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_BLOCKCTRL3_B1(n)		(0x37 + SDW_DPN_SIZE * (n))
+ void sdw_extract_slave_id(struct sdw_bus *bus,
+ 			u64 addr, struct sdw_slave_id *id)
+ {
+diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+index a54921825ce0..48eb7de8db7b 100644
+--- a/drivers/soundwire/bus.h
++++ b/drivers/soundwire/bus.h
+@@ -16,4 +16,40 @@ static inline int sdw_acpi_find_slaves(struct sdw_bus *bus)
+ void sdw_extract_slave_id(struct sdw_bus *bus,
+ 			u64 addr, struct sdw_slave_id *id);
+ 
++enum {
++	SDW_MSG_FLAG_READ = 0,
++	SDW_MSG_FLAG_WRITE,
++};
 +
-+#define SDW_DPN_LANECTRL_B0(n)			(0x28 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_LANECTRL_B1(n)			(0x38 + SDW_DPN_SIZE * (n))
++/**
++ * struct sdw_msg - Message structure
++ * @addr: Register address accessed in the Slave
++ * @len: number of messages
++ * @dev_num: Slave device number
++ * @addr_page1: SCP address page 1 Slave register
++ * @addr_page2: SCP address page 2 Slave register
++ * @flags: transfer flags, indicate if xfer is read or write
++ * @buf: message data buffer
++ * @ssp_sync: Send message at SSP (Stream Synchronization Point)
++ * @page: address requires paging
++ */
++struct sdw_msg {
++	u16 addr;
++	u16 len;
++	u8 dev_num;
++	u8 addr_page1;
++	u8 addr_page2;
++	u8 flags;
++	u8 *buf;
++	bool ssp_sync;
++	bool page;
++};
 +
-+#define SDW_DPN_SAMPLECTRL_LOW			GENMASK(7, 0)
-+#define SDW_DPN_SAMPLECTRL_HIGH			GENMASK(15, 8)
++int sdw_transfer(struct sdw_bus *bus, struct sdw_msg *msg);
++int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_msg *msg,
++				struct sdw_defer *defer);
 +
-+#define SDW_DPN_HCTRL_HSTART			GENMASK(7, 4)
-+#define SDW_DPN_HCTRL_HSTOP			GENMASK(3, 0)
++int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
++		u32 addr, size_t count, u16 dev_num, u8 flags, u8 *buf);
 +
-+#define SDW_NUM_CASC_PORT_INTSTAT1		4
-+#define SDW_CASC_PORT_START_INTSTAT1		0
-+#define SDW_CASC_PORT_MASK_INTSTAT1		0x8
-+#define SDW_CASC_PORT_REG_OFFSET_INTSTAT1	0x0
+ #endif /* __SDW_BUS_H */
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index 3c13f580d42d..d4fa95efe8cd 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -38,6 +38,27 @@ enum sdw_slave_status {
+ 	SDW_SLAVE_RESERVED = 3,
+ };
+ 
++/**
++ * enum sdw_command_response - Command response as defined by SDW spec
++ * @SDW_CMD_OK: cmd was successful
++ * @SDW_CMD_IGNORED: cmd was ignored
++ * @SDW_CMD_FAIL: cmd was NACKed
++ * @SDW_CMD_TIMEOUT: cmd timedout
++ * @SDW_CMD_FAIL_OTHER: cmd failed due to other reason than above
++ *
++ * NOTE: The enum is different than actual Spec as response in the Spec is
++ * combination of ACK/NAK bits
++ *
++ * SDW_CMD_TIMEOUT/FAIL_OTHER is defined for SW use, not in spec
++ */
++enum sdw_command_response {
++	SDW_CMD_OK = 0,
++	SDW_CMD_IGNORED = 1,
++	SDW_CMD_FAIL = 2,
++	SDW_CMD_TIMEOUT = 3,
++	SDW_CMD_FAIL_OTHER = 4,
++};
 +
-+#define SDW_NUM_CASC_PORT_INTSTAT2		7
-+#define SDW_CASC_PORT_START_INTSTAT2		4
-+#define SDW_CASC_PORT_MASK_INTSTAT2		1
-+#define SDW_CASC_PORT_REG_OFFSET_INTSTAT2	1
+ /*
+  * SDW properties, defined in MIPI DisCo spec v1.0
+  */
+@@ -363,12 +384,37 @@ struct sdw_driver {
+  * SDW master structures and APIs
+  */
+ 
++struct sdw_msg;
 +
-+#define SDW_NUM_CASC_PORT_INTSTAT3		4
-+#define SDW_CASC_PORT_START_INTSTAT3		11
-+#define SDW_CASC_PORT_MASK_INTSTAT3		1
-+#define SDW_CASC_PORT_REG_OFFSET_INTSTAT3	2
++/**
++ * struct sdw_defer - SDW deffered message
++ * @length: message length
++ * @complete: message completion
++ * @msg: SDW message
++ */
++struct sdw_defer {
++	int length;
++	struct completion complete;
++	struct sdw_msg *msg;
++};
 +
-+#endif /* __SDW_REGISTERS_H */
+ /**
+  * struct sdw_master_ops - Master driver ops
+  * @read_prop: Read Master properties
++ * @xfer_msg: Transfer message callback
++ * @xfer_msg_defer: Defer version of transfer message callback
++ * @reset_page_addr: Reset the SCP page address registers
+  */
+ struct sdw_master_ops {
+ 	int (*read_prop)(struct sdw_bus *bus);
++
++	enum sdw_command_response (*xfer_msg)
++			(struct sdw_bus *bus, struct sdw_msg *msg);
++	enum sdw_command_response (*xfer_msg_defer)
++			(struct sdw_bus *bus, struct sdw_msg *msg,
++			struct sdw_defer *defer);
++	enum sdw_command_response (*reset_page_addr)
++			(struct sdw_bus *bus, unsigned int dev_num);
+ };
+ 
+ /**
+@@ -379,8 +425,10 @@ struct sdw_master_ops {
+  * @assigned: Bitmap for Slave device numbers.
+  * Bit set implies used number, bit clear implies unused number.
+  * @bus_lock: bus lock
++ * @msg_lock: message lock
+  * @ops: Master callback ops
+  * @prop: Master properties
++ * @defer_msg: Defer message
+  * @clk_stop_timeout: Clock stop timeout computed
+  */
+ struct sdw_bus {
+@@ -389,12 +437,21 @@ struct sdw_bus {
+ 	struct list_head slaves;
+ 	DECLARE_BITMAP(assigned, SDW_MAX_DEVICES);
+ 	struct mutex bus_lock;
++	struct mutex msg_lock;
+ 	const struct sdw_master_ops *ops;
+ 	struct sdw_master_prop prop;
++	struct sdw_defer defer_msg;
+ 	unsigned int clk_stop_timeout;
+ };
+ 
+ int sdw_add_bus_master(struct sdw_bus *bus);
+ void sdw_delete_bus_master(struct sdw_bus *bus);
+ 
++/* messaging and data APIs */
++
++int sdw_read(struct sdw_slave *slave, u32 addr);
++int sdw_write(struct sdw_slave *slave, u32 addr, u8 value);
++int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
++int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
++
+ #endif /* __SOUNDWIRE_H */
 -- 
 2.7.4
