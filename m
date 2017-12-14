@@ -1,7 +1,7 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v6 01/14] Documentation: Add SoundWire summary
-Date: Thu, 14 Dec 2017 11:19:32 +0530
-Message-ID: <1513230585-13882-2-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v6 05/14] soundwire: Add SoundWire MIPI defined registers
+Date: Thu, 14 Dec 2017 11:19:36 +0530
+Message-ID: <1513230585-13882-6-git-send-email-vinod.koul@intel.com>
 References: <1513230585-13882-1-git-send-email-vinod.koul@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1513230585-13882-1-git-send-email-vinod.koul@intel.com>
@@ -12,269 +12,218 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Sanyog Kale <sanyog.r.kale@intel.com>
 
-SoundWire is a new Linux bus which implements a new MIPI bus protocol
-'SoundWire'. The summary of SoundWire bus and API is documented in the
-'summary' file.
+MIPI SoundWire spec defines standard SoundWire registers mandatory for
+SoundWire Slave devices, so add them.
 
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
-Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
 Reviewed-by: Philippe Ombredanne <pombredanne@nexb.com>
 Acked-By: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- Documentation/driver-api/index.rst             |   1 +
- Documentation/driver-api/soundwire/index.rst   |  15 ++
- Documentation/driver-api/soundwire/summary.rst | 207 +++++++++++++++++++++++++
- 3 files changed, 223 insertions(+)
- create mode 100644 Documentation/driver-api/soundwire/index.rst
- create mode 100644 Documentation/driver-api/soundwire/summary.rst
+ include/linux/soundwire/sdw_registers.h | 194 ++++++++++++++++++++++++++++++++
+ 1 file changed, 194 insertions(+)
+ create mode 100644 include/linux/soundwire/sdw_registers.h
 
-diff --git a/Documentation/driver-api/index.rst b/Documentation/driver-api/index.rst
-index d17a9876b473..17992b9e4a55 100644
---- a/Documentation/driver-api/index.rst
-+++ b/Documentation/driver-api/index.rst
-@@ -47,6 +47,7 @@ available subsections can be seen below.
-    gpio
-    misc_devices
-    dmaengine/index
-+   soundwire/index
- 
- .. only::  subproject and html
- 
-diff --git a/Documentation/driver-api/soundwire/index.rst b/Documentation/driver-api/soundwire/index.rst
+diff --git a/include/linux/soundwire/sdw_registers.h b/include/linux/soundwire/sdw_registers.h
 new file mode 100644
-index 000000000000..647e94654752
+index 000000000000..df472b1ab410
 --- /dev/null
-+++ b/Documentation/driver-api/soundwire/index.rst
-@@ -0,0 +1,15 @@
-+=======================
-+SoundWire Documentation
-+=======================
++++ b/include/linux/soundwire/sdw_registers.h
+@@ -0,0 +1,194 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++// Copyright(c) 2015-17 Intel Corporation.
 +
-+.. toctree::
-+   :maxdepth: 1
++#ifndef __SDW_REGISTERS_H
++#define __SDW_REGISTERS_H
 +
-+   summary
++/*
++ * typically we define register and shifts but if one observes carefully,
++ * the shift can be generated from MASKS using few bit primitaives like ffs
++ * etc, so we use that and avoid defining shifts
++ */
++#define SDW_REG_SHIFT(n)			(ffs(n) - 1)
 +
-+.. only::  subproject
++/*
++ * SDW registers as defined by MIPI 1.1 Spec
++ */
++#define SDW_REGADDR				GENMASK(14, 0)
++#define SDW_SCP_ADDRPAGE2_MASK			GENMASK(22, 15)
++#define SDW_SCP_ADDRPAGE1_MASK			GENMASK(30, 23)
 +
-+   Indices
-+   =======
++#define SDW_REG_NO_PAGE				0x00008000
++#define SDW_REG_OPTIONAL_PAGE			0x00010000
++#define SDW_REG_MAX				0x80000000
 +
-+   * :ref:`genindex`
-diff --git a/Documentation/driver-api/soundwire/summary.rst b/Documentation/driver-api/soundwire/summary.rst
-new file mode 100644
-index 000000000000..8193125a2bfb
---- /dev/null
-+++ b/Documentation/driver-api/soundwire/summary.rst
-@@ -0,0 +1,207 @@
-+===========================
-+SoundWire Subsystem Summary
-+===========================
++#define SDW_DPN_SIZE				0x100
++#define SDW_BANK1_OFFSET			0x10
 +
-+SoundWire is a new interface ratified in 2015 by the MIPI Alliance.
-+SoundWire is used for transporting data typically related to audio
-+functions. SoundWire interface is optimized to integrate audio devices in
-+mobile or mobile inspired systems.
++/*
++ * DP0 Interrupt register & bits
++ *
++ * Spec treats Status (RO) and Clear (WC) as separate but they are same
++ * address, so treat as same register with WC.
++ */
 +
-+SoundWire is a 2-pin multi-drop interface with data and clock line. It
-+facilitates development of low cost, efficient, high performance systems.
-+Broad level key features of SoundWire interface include:
++/* both INT and STATUS register are same */
++#define SDW_DP0_INT				0x0
++#define SDW_DP0_INTMASK				0x1
++#define SDW_DP0_PORTCTRL			0x2
++#define SDW_DP0_BLOCKCTRL1			0x3
++#define SDW_DP0_PREPARESTATUS			0x4
++#define SDW_DP0_PREPARECTRL			0x5
 +
-+ (1) Transporting all of payload data channels, control information, and setup
-+     commands over a single two-pin interface.
++#define SDW_DP0_INT_TEST_FAIL			BIT(0)
++#define SDW_DP0_INT_PORT_READY			BIT(1)
++#define SDW_DP0_INT_BRA_FAILURE			BIT(2)
++#define SDW_DP0_INT_IMPDEF1			BIT(5)
++#define SDW_DP0_INT_IMPDEF2			BIT(6)
++#define SDW_DP0_INT_IMPDEF3			BIT(7)
 +
-+ (2) Lower clock frequency, and hence lower power consumption, by use of DDR
-+     (Dual Data Rate) data transmission.
++#define SDW_DP0_PORTCTRL_DATAMODE		GENMASK(3, 2)
++#define SDW_DP0_PORTCTRL_NXTINVBANK		BIT(4)
++#define SDW_DP0_PORTCTRL_BPT_PAYLD		GENMASK(7, 6)
 +
-+ (3) Clock scaling and optional multiple data lanes to give wide flexibility
-+     in data rate to match system requirements.
++#define SDW_DP0_CHANNELEN			0x20
++#define SDW_DP0_SAMPLECTRL1			0x22
++#define SDW_DP0_SAMPLECTRL2			0x23
++#define SDW_DP0_OFFSETCTRL1			0x24
++#define SDW_DP0_OFFSETCTRL2			0x25
++#define SDW_DP0_HCTRL				0x26
++#define SDW_DP0_LANECTRL			0x28
 +
-+ (4) Device status monitoring, including interrupt-style alerts to the Master.
++/* Both INT and STATUS register are same */
++#define SDW_SCP_INT1				0x40
++#define SDW_SCP_INTMASK1			0x41
 +
-+The SoundWire protocol supports up to eleven Slave interfaces. All the
-+interfaces share the common Bus containing data and clock line. Each of the
-+Slaves can support up to 14 Data Ports. 13 Data Ports are dedicated to audio
-+transport. Data Port0 is dedicated to transport of Bulk control information,
-+each of the audio Data Ports (1..14) can support up to 8 Channels in
-+transmit or receiving mode (typically fixed direction but configurable
-+direction is enabled by the specification).  Bandwidth restrictions to
-+~19.2..24.576Mbits/s don't however allow for 11*13*8 channels to be
-+transmitted simultaneously.
++#define SDW_SCP_INT1_PARITY			BIT(0)
++#define SDW_SCP_INT1_BUS_CLASH			BIT(1)
++#define SDW_SCP_INT1_IMPL_DEF			BIT(2)
++#define SDW_SCP_INT1_SCP2_CASCADE		BIT(7)
++#define SDW_SCP_INT1_PORT0_3			GENMASK(6, 3)
 +
-+Below figure shows an example of connectivity between a SoundWire Master and
-+two Slave devices. ::
-+
-+        +---------------+                                       +---------------+
-+        |               |                       Clock Signal    |               |
-+        |    Master     |-------+-------------------------------|    Slave      |
-+        |   Interface   |       |               Data Signal     |  Interface 1  |
-+        |               |-------|-------+-----------------------|               |
-+        +---------------+       |       |                       +---------------+
-+                                |       |
-+                                |       |
-+                                |       |
-+                             +--+-------+--+
-+                             |             |
-+                             |   Slave     |
-+                             | Interface 2 |
-+                             |             |
-+                             +-------------+
-+
-+
-+Terminology
-+===========
-+
-+The MIPI SoundWire specification uses the term 'device' to refer to a Master
-+or Slave interface, which of course can be confusing. In this summary and
-+code we use the term interface only to refer to the hardware. We follow the
-+Linux device model by mapping each Slave interface connected on the bus as a
-+device managed by a specific driver. The Linux SoundWire subsystem provides
-+a framework to implement a SoundWire Slave driver with an API allowing
-+3rd-party vendors to enable implementation-defined functionality while
-+common setup/configuration tasks are handled by the bus.
-+
-+Bus:
-+Implements SoundWire Linux Bus which handles the SoundWire protocol.
-+Programs all the MIPI-defined Slave registers. Represents a SoundWire
-+Master. Multiple instances of Bus may be present in a system.
-+
-+Slave:
-+Registers as SoundWire Slave device (Linux Device). Multiple Slave devices
-+can register to a Bus instance.
-+
-+Slave driver:
-+Driver controlling the Slave device. MIPI-specified registers are controlled
-+directly by the Bus (and transmitted through the Master driver/interface).
-+Any implementation-defined Slave register is controlled by Slave driver. In
-+practice, it is expected that the Slave driver relies on regmap and does not
-+request direct register access.
-+
-+Programming interfaces (SoundWire Master interface Driver)
-+==========================================================
-+
-+SoundWire Bus supports programming interfaces for the SoundWire Master
-+implementation and SoundWire Slave devices. All the code uses the "sdw"
-+prefix commonly used by SoC designers and 3rd party vendors.
-+
-+Each of the SoundWire Master interfaces needs to be registered to the Bus.
-+Bus implements API to read standard Master MIPI properties and also provides
-+callback in Master ops for Master driver to implement its own functions that
-+provides capabilities information. DT support is not implemented at this
-+time but should be trivial to add since capabilities are enabled with the
-+``device_property_`` API.
-+
-+The Master interface along with the Master interface capabilities are
-+registered based on board file, DT or ACPI.
-+
-+Following is the Bus API to register the SoundWire Bus:
-+
-+.. code-block:: c
-+
-+	int sdw_add_bus_master(struct sdw_bus *bus)
-+	{
-+		if (!bus->dev)
-+			return -ENODEV;
-+
-+		mutex_init(&bus->lock);
-+		INIT_LIST_HEAD(&bus->slaves);
-+
-+		/* Check ACPI for Slave devices */
-+		sdw_acpi_find_slaves(bus);
-+
-+		/* Check DT for Slave devices */
-+		sdw_of_find_slaves(bus);
-+
-+		return 0;
-+	}
-+
-+This will initialize sdw_bus object for Master device. "sdw_master_ops" and
-+"sdw_master_port_ops" callback functions are provided to the Bus.
-+
-+"sdw_master_ops" is used by Bus to control the Bus in the hardware specific
-+way. It includes Bus control functions such as sending the SoundWire
-+read/write messages on Bus, setting up clock frequency & Stream
-+Synchronization Point (SSP). The "sdw_master_ops" structure abstracts the
-+hardware details of the Master from the Bus.
-+
-+"sdw_master_port_ops" is used by Bus to setup the Port parameters of the
-+Master interface Port. Master interface Port register map is not defined by
-+MIPI specification, so Bus calls the "sdw_master_port_ops" callback
-+function to do Port operations like "Port Prepare", "Port Transport params
-+set", "Port enable and disable". The implementation of the Master driver can
-+then perform hardware-specific configurations.
-+
-+Programming interfaces (SoundWire Slave Driver)
-+===============================================
-+
-+The MIPI specification requires each Slave interface to expose a unique
-+48-bit identifier, stored in 6 read-only dev_id registers. This dev_id
-+identifier contains vendor and part information, as well as a field enabling
-+to differentiate between identical components. An additional class field is
-+currently unused. Slave driver is written for a specific vendor and part
-+identifier, Bus enumerates the Slave device based on these two ids.
-+Slave device and driver match is done based on these two ids . Probe
-+of the Slave driver is called by Bus on successful match between device and
-+driver id. A parent/child relationship is enforced between Master and Slave
-+devices (the logical representation is aligned with the physical
-+connectivity).
-+
-+The information on Master/Slave dependencies is stored in platform data,
-+board-file, ACPI or DT. The MIPI Software specification defines additional
-+link_id parameters for controllers that have multiple Master interfaces. The
-+dev_id registers are only unique in the scope of a link, and the link_id
-+unique in the scope of a controller. Both dev_id and link_id are not
-+necessarily unique at the system level but the parent/child information is
-+used to avoid ambiguity.
-+
-+.. code-block:: c
-+
-+	static const struct sdw_device_id slave_id[] = {
-+	        SDW_SLAVE_ENTRY(0x025d, 0x700, 0),
-+	        {},
-+	};
-+	MODULE_DEVICE_TABLE(sdw, slave_id);
-+
-+	static struct sdw_driver slave_sdw_driver = {
-+	        .driver = {
-+	                   .name = "slave_xxx",
-+	                   .pm = &slave_runtime_pm,
-+	                   },
-+		.probe = slave_sdw_probe,
-+		.remove = slave_sdw_remove,
-+		.ops = &slave_slave_ops,
-+		.id_table = slave_id,
-+	};
++#define SDW_SCP_INTSTAT2			0x42
++#define SDW_SCP_INTSTAT2_SCP3_CASCADE		BIT(7)
++#define SDW_SCP_INTSTAT2_PORT4_10		GENMASK(6, 0)
 +
 +
-+For capabilities, Bus implements API to read standard Slave MIPI properties
-+and also provides callback in Slave ops for Slave driver to implement own
-+function that provides capabilities information. Bus needs to know a set of
-+Slave capabilities to program Slave registers and to control the Bus
-+reconfigurations.
++#define SDW_SCP_INTSTAT3			0x43
++#define SDW_SCP_INTSTAT3_PORT11_14		GENMASK(3, 0)
 +
-+Future enhancements to be done
-+==============================
++/* Number of interrupt status registers */
++#define SDW_NUM_INT_STAT_REGISTERS		3
 +
-+ (1) Bulk Register Access (BRA) transfers.
++/* Number of interrupt clear registers */
++#define SDW_NUM_INT_CLEAR_REGISTERS		1
 +
++#define SDW_SCP_CTRL				0x44
++#define SDW_SCP_CTRL_CLK_STP_NOW		BIT(1)
++#define SDW_SCP_CTRL_FORCE_RESET		BIT(7)
 +
-+ (2) Multiple data lane support.
++#define SDW_SCP_STAT				0x44
++#define SDW_SCP_STAT_CLK_STP_NF			BIT(0)
++#define SDW_SCP_STAT_HPHY_NOK			BIT(5)
++#define SDW_SCP_STAT_CURR_BANK			BIT(6)
 +
-+Links
-+=====
++#define SDW_SCP_SYSTEMCTRL			0x45
++#define SDW_SCP_SYSTEMCTRL_CLK_STP_PREP		BIT(0)
++#define SDW_SCP_SYSTEMCTRL_CLK_STP_MODE		BIT(2)
++#define SDW_SCP_SYSTEMCTRL_WAKE_UP_EN		BIT(3)
++#define SDW_SCP_SYSTEMCTRL_HIGH_PHY		BIT(4)
 +
-+SoundWire MIPI specification 1.1 is available at:
-+https://members.mipi.org/wg/All-Members/document/70290
++#define SDW_SCP_SYSTEMCTRL_CLK_STP_MODE0	0
++#define SDW_SCP_SYSTEMCTRL_CLK_STP_MODE1	BIT(2)
 +
-+SoundWire MIPI DisCo (Discovery and Configuration) specification is
-+available at:
-+https://www.mipi.org/specifications/mipi-disco-soundwire
++#define SDW_SCP_DEVNUMBER			0x46
++#define SDW_SCP_HIGH_PHY_CHECK			0x47
++#define SDW_SCP_ADDRPAGE1			0x48
++#define SDW_SCP_ADDRPAGE2			0x49
++#define SDW_SCP_KEEPEREN			0x4A
++#define SDW_SCP_BANKDELAY			0x4B
++#define SDW_SCP_TESTMODE			0x4F
++#define SDW_SCP_DEVID_0				0x50
++#define SDW_SCP_DEVID_1				0x51
++#define SDW_SCP_DEVID_2				0x52
++#define SDW_SCP_DEVID_3				0x53
++#define SDW_SCP_DEVID_4				0x54
++#define SDW_SCP_DEVID_5				0x55
 +
-+(publicly accessible with registration or directly accessible to MIPI
-+members)
++/* Banked Registers */
++#define SDW_SCP_FRAMECTRL_B0			0x60
++#define SDW_SCP_FRAMECTRL_B1			(0x60 + SDW_BANK1_OFFSET)
++#define SDW_SCP_NEXTFRAME_B0			0x61
++#define SDW_SCP_NEXTFRAME_B1			(0x61 + SDW_BANK1_OFFSET)
 +
-+MIPI Alliance Manufacturer ID Page: mid.mipi.org
++/* Both INT and STATUS register is same */
++#define SDW_DPN_INT(n)				(0x0 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_INTMASK(n)			(0x1 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_PORTCTRL(n)			(0x2 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_BLOCKCTRL1(n)			(0x3 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_PREPARESTATUS(n)		(0x4 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_PREPARECTRL(n)			(0x5 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_INT_TEST_FAIL			BIT(0)
++#define SDW_DPN_INT_PORT_READY			BIT(1)
++#define SDW_DPN_INT_IMPDEF1			BIT(5)
++#define SDW_DPN_INT_IMPDEF2			BIT(6)
++#define SDW_DPN_INT_IMPDEF3			BIT(7)
++
++#define SDW_DPN_PORTCTRL_FLOWMODE		GENMASK(1, 0)
++#define SDW_DPN_PORTCTRL_DATAMODE		GENMASK(3, 2)
++#define SDW_DPN_PORTCTRL_NXTINVBANK		BIT(4)
++
++#define SDW_DPN_BLOCKCTRL1_WDLEN		GENMASK(5, 0)
++
++#define SDW_DPN_PREPARECTRL_CH_PREP		GENMASK(7, 0)
++
++#define SDW_DPN_CHANNELEN_B0(n)			(0x20 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_CHANNELEN_B1(n)			(0x30 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_BLOCKCTRL2_B0(n)		(0x21 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_BLOCKCTRL2_B1(n)		(0x31 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_SAMPLECTRL1_B0(n)		(0x22 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_SAMPLECTRL1_B1(n)		(0x32 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_SAMPLECTRL2_B0(n)		(0x23 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_SAMPLECTRL2_B1(n)		(0x33 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_OFFSETCTRL1_B0(n)		(0x24 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_OFFSETCTRL1_B1(n)		(0x34 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_OFFSETCTRL2_B0(n)		(0x25 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_OFFSETCTRL2_B1(n)		(0x35 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_HCTRL_B0(n)			(0x26 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_HCTRL_B1(n)			(0x36 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_BLOCKCTRL3_B0(n)		(0x27 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_BLOCKCTRL3_B1(n)		(0x37 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_LANECTRL_B0(n)			(0x28 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_LANECTRL_B1(n)			(0x38 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_SAMPLECTRL_LOW			GENMASK(7, 0)
++#define SDW_DPN_SAMPLECTRL_HIGH			GENMASK(15, 8)
++
++#define SDW_DPN_HCTRL_HSTART			GENMASK(7, 4)
++#define SDW_DPN_HCTRL_HSTOP			GENMASK(3, 0)
++
++#define SDW_NUM_CASC_PORT_INTSTAT1		4
++#define SDW_CASC_PORT_START_INTSTAT1		0
++#define SDW_CASC_PORT_MASK_INTSTAT1		0x8
++#define SDW_CASC_PORT_REG_OFFSET_INTSTAT1	0x0
++
++#define SDW_NUM_CASC_PORT_INTSTAT2		7
++#define SDW_CASC_PORT_START_INTSTAT2		4
++#define SDW_CASC_PORT_MASK_INTSTAT2		1
++#define SDW_CASC_PORT_REG_OFFSET_INTSTAT2	1
++
++#define SDW_NUM_CASC_PORT_INTSTAT3		4
++#define SDW_CASC_PORT_START_INTSTAT3		11
++#define SDW_CASC_PORT_MASK_INTSTAT3		1
++#define SDW_CASC_PORT_REG_OFFSET_INTSTAT3	2
++
++#endif /* __SDW_REGISTERS_H */
 -- 
 2.7.4
