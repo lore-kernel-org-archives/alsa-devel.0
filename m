@@ -1,52 +1,68 @@
-From: Tanu Kaskinen <tanuk@iki.fi>
-Subject: Re: pulseaudio crash when unplugging hdmi
- while playing audio over hdmi on Cherry Trail devices
-Date: Fri, 15 Dec 2017 05:23:47 +0200
-Message-ID: <1513308227.7643.47.camel@iki.fi>
-References: <3e43fd0f-440e-ad1a-259e-bb4c0a5b5473@redhat.com>
-Reply-To: General PulseAudio Discussion
- <pulseaudio-discuss@lists.freedesktop.org>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: About ASoC DAIs cleanup
+Date: Fri, 15 Dec 2017 09:50:53 +0530
+Message-ID: <20171215042053.GA18649@localhost>
+References: <87fu8lio74.wl%kuninori.morimoto.gx@renesas.com>
+ <20171208105545.GE18649@localhost>
+ <87shciup8e.wl%kuninori.morimoto.gx@renesas.com>
+ <87r2s2uo55.wl%kuninori.morimoto.gx@renesas.com>
+ <87o9n6ukyg.wl%kuninori.morimoto.gx@renesas.com>
+ <87r2rzqf1q.wl%kuninori.morimoto.gx@renesas.com>
+ <20171213155952.GL6416@sirena.org.uk>
+ <87wp1qow1q.wl%kuninori.morimoto.gx@renesas.com>
+ <20171214050648.GU18649@localhost>
+ <20171214113718.GB9788@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-In-Reply-To: <3e43fd0f-440e-ad1a-259e-bb4c0a5b5473@redhat.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
-To: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF2E8266BF5
+ for <alsa-devel@alsa-project.org>; Fri, 15 Dec 2017 05:17:07 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20171214113718.GB9788@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAyMDE3LTEyLTEyIGF0IDExOjM5ICswMTAwLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+
-IEhpIEFsbCwKPiAKPiBGaXJzdCBvZiBhbGwgZ29vZCBuZXdzLCB3aXRoIGtlcm5lbCA0LjE1LXJj
-MiBhbmQgYWxzYS1saWIgMS4xLjUKPiBhdWRpbyBvdmVyIGhkbWkgd29ya3Mgb24gQ2hlcnJ5IFRy
-YWlsIGRldmljZXMgYWZ0ZXIgc2VsZWN0aW5nCj4gdGhlIHJpZ2h0IG91dHB1dCBwcm9maWxlLgo+
-IAo+IEJ1dCB3aGVuIHVucGx1Z2dpbmcgdGhlIGhkbWkgY2FibGUgcGEgZGllcy4gUnVubmluZyBw
-YSB1bmRlcgo+IGdkYiBzYXlzIGl0IGdldHMga2lsbGVkIHdpdGggU0lHS0lMTCwgc28gSSB0aGlu
-ayB0aGlzIGlzCj4gYW5vdGhlciByZWFsdGltZSBpc3N1ZSB3aGVyZSBpdCBnZXRzIGtpbGxlZCBi
-eSB0aGUga2VybmVsIGZvcgo+IGV4Y2VlZGluZyBpdHMgQ1BVIGJ1ZGdldC4KPiAKPiBJJ3ZlIGEg
-bG9nIGZpbGUgb2YgYSBydW4gd2hpY2ggZW5kcyB3aXRoIFNJR0tJTEwgaGVyZToKPiBodHRwczov
-L2ZlZG9yYXBlb3BsZS5vcmcvfmp3cmRlZ29lZGUvcHVsc2VhdWRpby1jaHQtaGRtaS5sb2cKPiAK
-PiBXaGF0IHN0YW5kcyBvdXQgaXMgYSB3aG9sZSBsb3Qgb2YgZXJyb3JzIC8gdW5kZXJydW5zIGFm
-dGVyOgo+IEQ6IFtwdWxzZWF1ZGlvXSBtb2R1bGUtYWxzYS1jYXJkLmM6IEphY2sgJ0hETUkvRFAs
-cGNtPTEgSmFjaycgaXMgbm93IHVucGx1Z2dlZAo+IEQ6IFtwdWxzZWF1ZGlvXSBkZXZpY2UtcG9y
-dC5jOiBTZXR0aW5nIHBvcnQgaGRtaS1vdXRwdXQtMSB0byBzdGF0dXMgbm8KPiAKPiBTbyBpdCBz
-ZWVtcyB0aGF0IHRoZSBwcm9ibGVtIGlzIHRoYXQgcGEgc3RpbGwgdHJpZXMgdG8gdXNlCj4gdGhl
-IGRldmljZSBhZnRlciB0aGUgdW5wbHVnLCBldmVuIHRob3VnaCBpdCBzZWVzIHRoZSB1bnBsdWcK
-PiBiZWZvcmUgZ2V0dGluZyBhbnkgZXJyb3JzLgoKUEEga2VlcHMgdXNpbmcgdGhlIGRldmljZSwg
-YmVjYXVzZSB0aGUgY2FyZCBoYXMgbm8gYmV0dGVyIHBvcnRzCmF2YWlsYWJsZS4gSSB0aGluayBp
-dCB3b3VsZCBiZSBnb29kIHRvIHN3aXRjaCB0byB0aGUgb2ZmIHByb2ZpbGUgaW4KdGhpcyBzaXR1
-YXRpb24sIGJ1dCBJIHRoaW5rIGl0IHdvdWxkIGJlIG1vcmUgYmVuZWZpY2lhbCB0byBmaW5hbGx5
-IGZpeAp0aGF0IGluZmluaXRlIGxvb3AuIEknbGwgdHJ5IHRvIG1ha2UgYSBwYXRjaCBmb3IgdGhh
-dC4KCi0tIApUYW51CgpodHRwczovL3d3dy5wYXRyZW9uLmNvbS90YW51awpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpwdWxzZWF1ZGlvLWRpc2N1c3MgbWFp
-bGluZyBsaXN0CnB1bHNlYXVkaW8tZGlzY3Vzc0BsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6
-Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9wdWxzZWF1ZGlvLWRpc2N1
-c3MK
+On Thu, Dec 14, 2017 at 11:37:18AM +0000, Mark Brown wrote:
+> On Thu, Dec 14, 2017 at 10:36:48AM +0530, Vinod Koul wrote:
+> > On Thu, Dec 14, 2017 at 03:07:30AM +0000, Kuninori Morimoto wrote:
+> 
+> > > > Cleaning things up so we don't need to use rtd->cpu_dai and rtd->codec_dai
+> > > > would definitely be nice, it's also useful for CODEC<->CODEC links.  Off
+> > > > the top of my head wrapping the accesses with macros/functions then
+> > > > implementing a way of getting the DAI behind them would be tractable?
+> 
+> > Yes but one of the problems I see that we have specific ordering on the
+> > DAI ops between various components, is that a specific requirement?
+> 
+> It's designed to minimize pops, it's not a hard requirement but changing
+> it might break things for existing systems.
+
+Yes that was my hunch too, so lets keep the order unchanged.
+
+> > > 	3rd step: think about No-Categorized DAI (if possible)
+> > > Because many drivers are directly using rtd->cpu_dai, rtd->codec_dai
+> 
+> > We should fix that part while at it. I guess drivers needs own dai,
+> > possibly for name or some data, so if they have helpers for that, we
+> > should be able to remove those..
+> 
+> The drivers need some way to get their driver data back and to know
+> which DAI to address on multi device hardware.  Most of the callbacks
+> get the DAI passed in directly, that's the simplest thing.
+
+Precisely :)
+
+-- 
+~Vinod
