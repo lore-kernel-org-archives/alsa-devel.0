@@ -1,16 +1,16 @@
 From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
-Subject: [RFC v3 06/11] ASoC: hdac_hda: add ASoC based HDA
-	codec driver
-Date: Fri, 15 Dec 2017 17:00:43 +0530
-Message-ID: <1513337448-31685-7-git-send-email-rakesh.a.ughreja@intel.com>
+Subject: [RFC v3 07/11] ALSA: hda: split API snd_hda_codec_new
+	for using it from ASoC codec drivers
+Date: Fri, 15 Dec 2017 17:00:44 +0530
+Message-ID: <1513337448-31685-8-git-send-email-rakesh.a.ughreja@intel.com>
 References: <1513337448-31685-1-git-send-email-rakesh.a.ughreja@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id CE330267BC8
- for <alsa-devel@alsa-project.org>; Fri, 15 Dec 2017 12:26:28 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id B4D9D267BCB
+ for <alsa-devel@alsa-project.org>; Fri, 15 Dec 2017 12:26:31 +0100 (CET)
 In-Reply-To: <1513337448-31685-1-git-send-email-rakesh.a.ughreja@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,291 +25,156 @@ To: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, liam.r.girdw
 Cc: vinod.koul@intel.com, patches.audio@intel.com, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds ASoC based HDA codec driver that can be used with
-all Intel platforms.
+Split snd_hda_codec_new API into two separate functions.
+snd_hda_codec_device_init allocates memory and registers with bus.
+snd_hda_codec_device_new initialializes the fields and performs
+snd_device_new. This split would help in reusing the functions from
+ASoC HDA codec drivers.
 
 Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 ---
- sound/pci/hda/hda_codec.h     |  1 +
- sound/pci/hda/hda_generic.c   | 25 ++++++++++++
- sound/soc/codecs/Kconfig      |  6 +++
- sound/soc/codecs/Makefile     |  2 +
- sound/soc/codecs/hdac_hda.c   | 94 +++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/hdac_hda.h   | 22 ++++++++++
- sound/soc/intel/skylake/skl.c | 10 ++++-
- 7 files changed, 158 insertions(+), 2 deletions(-)
- create mode 100644 sound/soc/codecs/hdac_hda.c
- create mode 100644 sound/soc/codecs/hdac_hda.h
+ sound/pci/hda/hda_codec.c | 79 +++++++++++++++++++++++++++++++++++++----------
+ sound/pci/hda/hda_codec.h |  4 ++-
+ 2 files changed, 66 insertions(+), 17 deletions(-)
 
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index ef626cf..1525c5a 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -96,6 +96,7 @@ typedef int (*hda_codec_patch_t)(struct hda_codec *);
- 
- struct hda_codec_driver {
- 	struct hdac_driver core;
-+	struct hdac_driver *asocdrv;
- 	const struct hda_device_id *id;
- };
- 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 09ab02e..e0b46a4 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -38,6 +38,7 @@
- #include "hda_jack.h"
- #include "hda_beep.h"
- #include "hda_generic.h"
-+#include "../../sound/soc/codecs/hdac_hda.h"
- 
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 085fd9e..b77dcf2 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -857,25 +857,21 @@ static void snd_hda_codec_dev_release(struct device *dev)
+ }
  
  /**
-@@ -5964,12 +5965,36 @@ static int snd_hda_parse_generic_codec(struct hda_codec *codec)
- int __hda_codec_driver_register(struct hda_codec_driver *drv, const char *name,
- 			       struct module *owner)
+- * snd_hda_codec_new - create a HDA codec
++ * snd_hda_codec_device_init - allocate and register hdac device with bus
+  * @bus: the bus to assign
+  * @codec_addr: the codec address
+  * @codecp: the pointer to store the generated codec
+  *
+  * Returns 0 if successful, or a negative error code.
+  */
+-int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
+-		      unsigned int codec_addr, struct hda_codec **codecp)
++static int snd_hda_codec_device_init(struct hda_bus *bus, struct snd_card *card,
++			unsigned int codec_addr, struct hda_codec **codecp)
  {
-+	int ret;
+-	struct hda_codec *codec;
+-	char component[31];
+-	hda_nid_t fg;
+ 	int err;
+-	static struct snd_device_ops dev_ops = {
+-		.dev_register = snd_hda_codec_dev_register,
+-		.dev_disconnect = snd_hda_codec_dev_disconnect,
+-		.dev_free = snd_hda_codec_dev_free,
+-	};
++	char component[31];
++	struct hda_codec *codec;
 +
-+	/*
-+	 * Register ASoC HDA driver as well
-+	 */
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDA)) {
-+
-+		drv->core.id_table = drv->id;
-+		drv->asocdrv = kmalloc(sizeof(*drv->asocdrv), GFP_KERNEL);
-+		if (!drv->asocdrv)
-+			return -ENOMEM;
-+
-+		ret = __hdac_hda_codec_driver_register(&drv->core, name, owner);
-+		if (ret < 0)
-+			return ret;
-+	}
- 	return __hda_legacy_codec_driver_register(drv, name, owner);
- }
- EXPORT_SYMBOL_GPL(__hda_codec_driver_register);
++	dev_dbg(card->dev, "%s: entry\n", __func__);
  
- void hda_codec_driver_unregister(struct hda_codec_driver *drv)
- {
-+	/*
-+	 * Unregister ASoC HDA driver as well
-+	 */
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDA)) {
-+		hdac_hda_codec_driver_unregister(&drv->core);
-+		kfree(drv->asocdrv);
-+	}
-+
- 	hda_legacy_codec_driver_unregister(drv);
- }
- EXPORT_SYMBOL_GPL(hda_codec_driver_unregister);
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index ba5de07..1d41d11 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -79,6 +79,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_ES7134
- 	select SND_SOC_GTM601
- 	select SND_SOC_HDAC_HDMI
-+	select SND_SOC_HDAC_HDA
- 	select SND_SOC_ICS43432
- 	select SND_SOC_INNO_RK3036
- 	select SND_SOC_ISABELLE if I2C
-@@ -581,6 +582,11 @@ config SND_SOC_HDAC_HDMI
- 	select SND_PCM_ELD
- 	select HDMI
+ 	if (snd_BUG_ON(!bus))
+ 		return -EINVAL;
+@@ -888,14 +884,67 @@ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
  
-+config SND_SOC_HDAC_HDA
-+	tristate
-+	select SND_HDA_EXT_CORE
-+	select SND_PCM_ELD
+ 	sprintf(component, "hdaudioC%dD%d", card->number, codec_addr);
+ 	err = snd_hdac_device_init(&codec->core, &bus->core, component,
+-				   codec_addr);
++					codec_addr);
+ 	if (err < 0) {
+ 		kfree(codec);
+ 		return err;
+ 	}
++	codec->core.type = HDA_DEV_LEGACY;
 +
- config SND_SOC_ICS43432
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 0977349..dd5f90f 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -73,6 +73,7 @@ snd-soc-es8328-i2c-objs := es8328-i2c.o
- snd-soc-es8328-spi-objs := es8328-spi.o
- snd-soc-gtm601-objs := gtm601.o
- snd-soc-hdac-hdmi-objs := hdac_hdmi.o
-+snd-soc-hdac-hda-objs := hdac_hda.o
- snd-soc-ics43432-objs := ics43432.o
- snd-soc-inno-rk3036-objs := inno_rk3036.o
- snd-soc-isabelle-objs := isabelle.o
-@@ -317,6 +318,7 @@ obj-$(CONFIG_SND_SOC_ES8328_I2C)+= snd-soc-es8328-i2c.o
- obj-$(CONFIG_SND_SOC_ES8328_SPI)+= snd-soc-es8328-spi.o
- obj-$(CONFIG_SND_SOC_GTM601)    += snd-soc-gtm601.o
- obj-$(CONFIG_SND_SOC_HDAC_HDMI) += snd-soc-hdac-hdmi.o
-+obj-$(CONFIG_SND_SOC_HDAC_HDA) += snd-soc-hdac-hda.o
- obj-$(CONFIG_SND_SOC_ICS43432)	+= snd-soc-ics43432.o
- obj-$(CONFIG_SND_SOC_INNO_RK3036)	+= snd-soc-inno-rk3036.o
- obj-$(CONFIG_SND_SOC_ISABELLE)	+= snd-soc-isabelle.o
-diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
-new file mode 100644
-index 0000000..387b00f
---- /dev/null
-+++ b/sound/soc/codecs/hdac_hda.c
-@@ -0,0 +1,94 @@
-+/*
-+ *  hdac_hda.c - ASoc HDA-HDA codec driver for Intel platforms
++	*codecp = codec;
++
++	return err;
++}
++
++/**
++ * snd_hda_codec_new - create a HDA codec
++ * @bus: the bus to assign
++ * @codec_addr: the codec address
++ * @codecp: the pointer to store the generated codec
 + *
-+ *  Copyright (C) 2015-2017 Intel Corp
-+ *
-+ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ *
-+ *  This program is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License as published by
-+ *  the Free Software Foundation; version 2 of the License.
-+ *
-+ *  This program is distributed in the hope that it will be useful, but
-+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ *  General Public License for more details.
-+ *
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ * Returns 0 if successful, or a negative error code.
 + */
-+#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/module.h>
-+#include <linux/pm_runtime.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/hdaudio_ext.h>
-+#include <sound/hda_register.h>
-+#include "../../hda/local.h"
-+#include "../../pci/hda/hda_codec.h"
-+#include "hdac_hda.h"
-+
-+static int hdac_hda_dev_probe(struct hdac_device *hdev)
++int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
++			unsigned int codec_addr, struct hda_codec **codecp)
 +{
-+	struct hdac_ext_link *hlink = NULL;
-+	struct hdac_hda_priv *hda_pvt;
 +	int ret;
 +
-+	dev_dbg(&hdev->dev, "%s: entry\n", __func__);
++	ret = snd_hda_codec_device_init(bus, card, codec_addr, codecp);
++	if (ret < 0)
++		return ret;
 +
-+	/* hold the ref while we probe */
-+	hlink = snd_hdac_ext_bus_get_link(hdev->bus, dev_name(&hdev->dev));
-+	if (!hlink) {
-+		dev_err(&hdev->dev, "hdac link not found\n");
-+		return -EIO;
-+	}
-+	snd_hdac_ext_bus_link_get(hdev->bus, hlink);
-+
-+	hda_pvt = hdac_to_hda_priv(hdev);
-+	if (hda_pvt == NULL)
-+		return -ENOMEM;
-+
-+	dev_set_drvdata(&hdev->dev, hda_pvt);
-+	snd_hdac_ext_bus_link_put(hdev->bus, hlink);
-+
-+	return ret;
++	return snd_hda_codec_device_new(bus, card, codec_addr, *codecp);
 +}
++EXPORT_SYMBOL_GPL(snd_hda_codec_new);
 +
-+static int hdac_hda_dev_remove(struct hdac_device *hdev)
++/**
++ * snd_hda_codec_device_new - add HDA codec into device list
++ * @bus: the bus to assign
++ * @codec_addr: the codec address
++ * @codec: the pointer to store the codec
++ *
++ * Returns 0 if successful, or a negative error code.
++ */
++int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
++			unsigned int codec_addr, struct hda_codec *codec)
 +{
-+	dev_dbg(&hdev->dev, "%s: entry\n", __func__);
-+	return 0;
-+}
++	char component[31];
++	hda_nid_t fg;
++	int err;
++	static struct snd_device_ops dev_ops = {
++		.dev_register = snd_hda_codec_dev_register,
++		.dev_disconnect = snd_hda_codec_dev_disconnect,
++		.dev_free = snd_hda_codec_dev_free,
++	};
 +
-+#define hdac_hda_runtime_suspend NULL
-+#define hdac_hda_runtime_resume NULL
++	dev_dbg(card->dev, "%s: entry\n", __func__);
 +
-+static const struct dev_pm_ops hdac_hda_pm = {
-+	SET_RUNTIME_PM_OPS(hdac_hda_runtime_suspend,
-+				hdac_hda_runtime_resume, NULL)
-+};
-+
-+int __hdac_hda_codec_driver_register(struct hdac_driver *drv,
-+	const char *name, struct module *owner)
-+{
-+	char new_name[strlen(name) + strlen("-asoc")];
-+
-+	sprintf(new_name, "%s-asoc", name);
-+	drv->driver.name = new_name;
-+	drv->driver.pm = &hdac_hda_pm;
-+	drv->probe = hdac_hda_dev_probe;
-+	drv->remove = hdac_hda_dev_remove;
-+
-+	return snd_hda_ext_driver_register(drv);
-+}
-+EXPORT_SYMBOL_GPL(__hdac_hda_codec_driver_register);
-+
-+void hdac_hda_codec_driver_unregister(struct hdac_driver *drv)
-+{
-+	snd_hda_ext_driver_unregister(drv);
-+}
-+EXPORT_SYMBOL_GPL(hdac_hda_codec_driver_unregister);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("ASoC HDA codec driver");
-+MODULE_AUTHOR("Rakesh Ughreja<rakesh.a.ughreja@intel.com>");
-diff --git a/sound/soc/codecs/hdac_hda.h b/sound/soc/codecs/hdac_hda.h
-new file mode 100644
-index 0000000..a089ec5
---- /dev/null
-+++ b/sound/soc/codecs/hdac_hda.h
-@@ -0,0 +1,22 @@
-+#ifndef __HDAC_HDA_H__
-+#define __HDAC_HDA_H__
-+
-+struct hdac_hda_priv {
-+	struct hda_codec codec;
-+	struct hda_bus *hbus;
-+	int stream_tag;
-+
-+	struct snd_soc_codec *scodec;
-+};
-+
-+#define hdac_to_hda_priv(_hdac) \
-+			container_of(_hdac, struct hdac_hda_priv, codec.core)
-+#define hdac_to_hda_codec(_hdac) container_of(_hdac, struct hda_codec, core)
-+
-+int __hdac_hda_codec_driver_register(struct hdac_driver *drv,
-+				const char *name, struct module *owner);
-+#define hdac_hda_codec_driver_register(drv) \
-+	__hdac_hda_codec_driver_register(drv, KBUILD_MODNAME, THIS_MODULE)
-+void hdac_hda_codec_driver_unregister(struct hdac_driver *drv);
-+
-+#endif /* __HDAC_HDA_H__ */
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index c2e9c19..a56a916 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -36,6 +36,7 @@
- #include "skl-sst-dsp.h"
- #include "skl-sst-ipc.h"
- #include "../../../pci/hda/hda_codec.h"
-+#include "../../../soc/codecs/hdac_hda.h"
++	if (snd_BUG_ON(!bus))
++		return -EINVAL;
++	if (snd_BUG_ON(codec_addr > HDA_MAX_CODEC_ADDRESS))
++		return -EINVAL;
  
- static struct skl_machine_pdata skl_dmic_data;
+ 	codec->core.dev.release = snd_hda_codec_dev_release;
+-	codec->core.type = HDA_DEV_LEGACY;
+ 	codec->core.exec_verb = codec_exec_verb;
  
-@@ -619,6 +620,7 @@ static int probe_codec(struct hdac_bus *bus, int addr)
- 		(AC_VERB_PARAMETERS << 8) | AC_PAR_VENDOR_ID;
- 	unsigned int res = -1;
- 	struct skl *skl = bus_to_skl(bus);
-+	struct hdac_hda_priv *hda_codec;
- 	struct hdac_device *hdev;
+ 	codec->bus = bus;
+@@ -955,15 +1004,13 @@ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
+ 	if (err < 0)
+ 		goto error;
  
- 	mutex_lock(&bus->cmd_mutex);
-@@ -637,10 +639,14 @@ static int probe_codec(struct hdac_bus *bus, int addr)
- 	 * codec driver. If legacy controller driver can be changed this
- 	 * code change can be avoided.
- 	 */
--	hdev = devm_kzalloc(&skl->pci->dev, sizeof(*hdev), GFP_KERNEL);
--	if (!hdev)
-+	hda_codec = devm_kzalloc(&skl->pci->dev, sizeof(*hda_codec),
-+								GFP_KERNEL);
-+	if (!hda_codec)
- 		return -ENOMEM;
+-	if (codecp)
+-		*codecp = codec;
+ 	return 0;
  
-+	hda_codec->hbus = skl_to_hbus(skl);
-+	hdev = &hda_codec->codec.core;
-+
- 	return snd_hdac_ext_bus_device_init(bus, addr, hdev);
+  error:
+ 	put_device(hda_codec_dev(codec));
+ 	return err;
  }
+-EXPORT_SYMBOL_GPL(snd_hda_codec_new);
++EXPORT_SYMBOL_GPL(snd_hda_codec_device_new);
+ 
+ /**
+  * snd_hda_codec_update_widgets - Refresh widget caps and pin defaults
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index 1525c5a..33395b1 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -311,7 +311,9 @@ struct hda_codec {
+  * constructors
+  */
+ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
+-		      unsigned int codec_addr, struct hda_codec **codecp);
++			unsigned int codec_addr, struct hda_codec **codecp);
++int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
++		      unsigned int codec_addr, struct hda_codec *codec);
+ int snd_hda_codec_configure(struct hda_codec *codec);
+ int snd_hda_codec_update_widgets(struct hda_codec *codec);
  
 -- 
 2.7.4
