@@ -1,57 +1,52 @@
-From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Subject: Re: [PATCH v5] ASoC: TSCS42xx: Add support for Tempo
- Semiconductor's TSCS42xx audio CODEC
-Date: Thu, 14 Dec 2017 16:43:10 -0600
-Message-ID: <20171214224309.btsuh3ew5lkqfpcf@localhost.localdomain>
-References: <20171211195403.3irxp7g3n326ub3g@localhost.localdomain>
- <20171212163254.GL16323@sirena.org.uk>
- <20171212213114.n5pcgy6q6m3qu5s4@localhost.localdomain>
- <20171214093244.udrjwgfvpxpc3jq7@localhost.localdomain>
- <20171214222955.qicmzltikkwaazly@localhost.localdomain>
+From: Tanu Kaskinen <tanuk@iki.fi>
+Subject: Re: pulseaudio crash when unplugging hdmi
+ while playing audio over hdmi on Cherry Trail devices
+Date: Fri, 15 Dec 2017 05:23:47 +0200
+Message-ID: <1513308227.7643.47.camel@iki.fi>
+References: <3e43fd0f-440e-ad1a-259e-bb4c0a5b5473@redhat.com>
+Reply-To: General PulseAudio Discussion
+ <pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f196.google.com (mail-ot0-f196.google.com
- [74.125.82.196])
- by alsa0.perex.cz (Postfix) with ESMTP id B80C4266E30
- for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 23:43:20 +0100 (CET)
-Received: by mail-ot0-f196.google.com with SMTP id d5so6321077oti.3
- for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2017 14:43:20 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20171214222955.qicmzltikkwaazly@localhost.localdomain>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+In-Reply-To: <3e43fd0f-440e-ad1a-259e-bb4c0a5b5473@redhat.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
+To: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 14, 2017 at 04:36:17PM -0600, Steven Eckhoff wrote:
-> On Thu, Dec 14, 2017 at 09:32:44AM +0000, Charles Keepax wrote:
-> 
-> > Not sure what you mean here but setting up CODEC registers
-> > directly from the machine driver is probably not ideal. You
-> > should probably be looking into regmap_register_patch this lets
-> > you apply a bunch of register settings to the chip every time you
-> > do a regmap_cache_sync. This is useful for situations like the
-> > chip has terrible register defaults you want to correct.
-> 
-> Thanks I will keep that in mind. For now our defaults are okay, but
-> this may come in handy in other drivers. I have removed this bit from
-> the next version since this can be set by the machine driver and it
-> makes more sense there since the settings were configuring how the I2S
-> interfaces were connected.
-
-I apologize I had to reread that.
-
-The settings were setting whether the bclk and lrclk would be shared
-between the DAC and ADC interfaces. I thought this would make sense in
-the machine driver since it knows how the devices are connected. Is
-there a better way to do this?
+T24gVHVlLCAyMDE3LTEyLTEyIGF0IDExOjM5ICswMTAwLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+
+IEhpIEFsbCwKPiAKPiBGaXJzdCBvZiBhbGwgZ29vZCBuZXdzLCB3aXRoIGtlcm5lbCA0LjE1LXJj
+MiBhbmQgYWxzYS1saWIgMS4xLjUKPiBhdWRpbyBvdmVyIGhkbWkgd29ya3Mgb24gQ2hlcnJ5IFRy
+YWlsIGRldmljZXMgYWZ0ZXIgc2VsZWN0aW5nCj4gdGhlIHJpZ2h0IG91dHB1dCBwcm9maWxlLgo+
+IAo+IEJ1dCB3aGVuIHVucGx1Z2dpbmcgdGhlIGhkbWkgY2FibGUgcGEgZGllcy4gUnVubmluZyBw
+YSB1bmRlcgo+IGdkYiBzYXlzIGl0IGdldHMga2lsbGVkIHdpdGggU0lHS0lMTCwgc28gSSB0aGlu
+ayB0aGlzIGlzCj4gYW5vdGhlciByZWFsdGltZSBpc3N1ZSB3aGVyZSBpdCBnZXRzIGtpbGxlZCBi
+eSB0aGUga2VybmVsIGZvcgo+IGV4Y2VlZGluZyBpdHMgQ1BVIGJ1ZGdldC4KPiAKPiBJJ3ZlIGEg
+bG9nIGZpbGUgb2YgYSBydW4gd2hpY2ggZW5kcyB3aXRoIFNJR0tJTEwgaGVyZToKPiBodHRwczov
+L2ZlZG9yYXBlb3BsZS5vcmcvfmp3cmRlZ29lZGUvcHVsc2VhdWRpby1jaHQtaGRtaS5sb2cKPiAK
+PiBXaGF0IHN0YW5kcyBvdXQgaXMgYSB3aG9sZSBsb3Qgb2YgZXJyb3JzIC8gdW5kZXJydW5zIGFm
+dGVyOgo+IEQ6IFtwdWxzZWF1ZGlvXSBtb2R1bGUtYWxzYS1jYXJkLmM6IEphY2sgJ0hETUkvRFAs
+cGNtPTEgSmFjaycgaXMgbm93IHVucGx1Z2dlZAo+IEQ6IFtwdWxzZWF1ZGlvXSBkZXZpY2UtcG9y
+dC5jOiBTZXR0aW5nIHBvcnQgaGRtaS1vdXRwdXQtMSB0byBzdGF0dXMgbm8KPiAKPiBTbyBpdCBz
+ZWVtcyB0aGF0IHRoZSBwcm9ibGVtIGlzIHRoYXQgcGEgc3RpbGwgdHJpZXMgdG8gdXNlCj4gdGhl
+IGRldmljZSBhZnRlciB0aGUgdW5wbHVnLCBldmVuIHRob3VnaCBpdCBzZWVzIHRoZSB1bnBsdWcK
+PiBiZWZvcmUgZ2V0dGluZyBhbnkgZXJyb3JzLgoKUEEga2VlcHMgdXNpbmcgdGhlIGRldmljZSwg
+YmVjYXVzZSB0aGUgY2FyZCBoYXMgbm8gYmV0dGVyIHBvcnRzCmF2YWlsYWJsZS4gSSB0aGluayBp
+dCB3b3VsZCBiZSBnb29kIHRvIHN3aXRjaCB0byB0aGUgb2ZmIHByb2ZpbGUgaW4KdGhpcyBzaXR1
+YXRpb24sIGJ1dCBJIHRoaW5rIGl0IHdvdWxkIGJlIG1vcmUgYmVuZWZpY2lhbCB0byBmaW5hbGx5
+IGZpeAp0aGF0IGluZmluaXRlIGxvb3AuIEknbGwgdHJ5IHRvIG1ha2UgYSBwYXRjaCBmb3IgdGhh
+dC4KCi0tIApUYW51CgpodHRwczovL3d3dy5wYXRyZW9uLmNvbS90YW51awpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpwdWxzZWF1ZGlvLWRpc2N1c3MgbWFp
+bGluZyBsaXN0CnB1bHNlYXVkaW8tZGlzY3Vzc0BsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6
+Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9wdWxzZWF1ZGlvLWRpc2N1
+c3MK
