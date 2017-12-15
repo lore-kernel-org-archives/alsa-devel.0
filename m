@@ -1,18 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Silencing plops / click sounds on start / stop of
- playing audio when snd_hda_intel.power_save=1
-Date: Fri, 15 Dec 2017 14:49:19 +0100
-Message-ID: <ec7801cb-0673-8a5e-e379-d1a441197f65@perex.cz>
-References: <522e1590-6f1c-6c7d-4c8a-96c5dcbf6051@redhat.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: soc-core: care Codec <-> Codec case by
+	non_legacy_dai_naming" to the asoc tree
+Date: Fri, 15 Dec 2017 15:11:00 +0000 (GMT)
+Message-ID: <20171215151100.6BEE544006B@finisterre.ee.mobilebroadband>
+References: <87y3m4d1p7.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id BBF32267B4F
- for <alsa-devel@alsa-project.org>; Fri, 15 Dec 2017 14:49:24 +0100 (CET)
-In-Reply-To: <522e1590-6f1c-6c7d-4c8a-96c5dcbf6051@redhat.com>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 93E92266D45
+ for <alsa-devel@alsa-project.org>; Fri, 15 Dec 2017 16:11:03 +0100 (CET)
+In-Reply-To: <87y3m4d1p7.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,53 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
-Cc: jeremy@jcline.org, pulseaudio-discuss@lists.freedesktop.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 15.12.2017 v 13:35 Hans de Goede napsal(a):
-> Hi All,
-> 
-> For Fedora 28 we plan to ship the kernel with snd_hda_intel.power_save
-> defaulting to 1:
-> 
-> https://fedoraproject.org/wiki/Changes/ImprovedLaptopBatteryLife
-> 
-> We've had an update for F27 in updates-testing for a while which made
-> the same change for F27, but we've received several bug reports
-> about plops / click sounds on start / stop of playing audio:
-> 
-> https://bugzilla.redhat.com/show_bug.cgi?id=1525104
-> 
-> I know others have probably already tried fixing this, but I'm
-> wondering if there are any ideas how to fix this / things to try?
-> 
-> Ideas of my own:
-> 
-> 1) Mute the speakers / headphone output in the mixer before
-> activating power-saving. Question how hard would it be to
-> make this happen?
-> 
-> 2) Put a delay between various steps involved in turning
-> things off / on.
+The patch
 
-Hi,
+   ASoC: soc-core: care Codec <-> Codec case by non_legacy_dai_naming
 
-I am a bit skeptic about those proposals. I think that the drivers
-should do this job, because some hardware variants have different
-requirements for the proper power-off/on sequence.
+has been applied to the asoc tree at
 
-The problem appears like an improper voltage change and the HDA driver
-has already a lot of code which is trying to eliminate these pops (but
-as you can see, it is not sufficient).
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Honestly, I don't know if it's good to keep this "hidden" to users or
-enable the power save feature by default and let users to report this,
-so we can look into this problem more when the affected hardware is
-identified.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-					Jaroslav
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From cb2cf0de1174701b7c8c0285a0f398b9f2d30d8e Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 15 Dec 2017 05:10:47 +0000
+Subject: [PATCH] ASoC: soc-core: care Codec <-> Codec case by
+ non_legacy_dai_naming
+
+CPU/Codec categorize will be removed soon.
+Then, it need to know DAI is Codec somehow. This patch uses component
+driver's "non_legacy_dai_naming" which is used by Codec for it.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 90f1122d91c4..b9ca939fd05c 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1945,7 +1945,9 @@ int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
+ 	}
+ 
+ 	/* Flip the polarity for the "CPU" end of a CODEC<->CODEC link */
+-	if (cpu_dai->codec) {
++	/* the component which has non_legacy_dai_naming is Codec */
++	if (cpu_dai->codec ||
++	    cpu_dai->component->driver->non_legacy_dai_naming) {
+ 		unsigned int inv_dai_fmt;
+ 
+ 		inv_dai_fmt = dai_fmt & ~SND_SOC_DAIFMT_MASTER_MASK;
+-- 
+2.15.0
