@@ -1,61 +1,40 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [RESEND PATCH v2 13/15] dt-bindings: sound: qcom: Add devicetree
- bindings for apq8096
-Date: Sat, 16 Dec 2017 11:44:33 -0600
-Message-ID: <20171216174433.dzjftpz6zcyyq4ph@rob-hp-laptop>
-References: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
- <20171214173402.19074-14-srinivas.kandagatla@linaro.org>
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [PATCH v3 03/11] ASoC: fsl_ssi: Refine all comments
+Date: Sat, 16 Dec 2017 11:47:21 -0600
+Message-ID: <4680f3e1-e0c8-baa5-6ca4-85d3feb4eb87@tabi.org>
+References: <1513207108-30430-1-git-send-email-nicoleotsuka@gmail.com>
+ <1513207108-30430-4-git-send-email-nicoleotsuka@gmail.com>
+ <01a7d97b-7e80-83b2-e850-d513d7dc35aa@tabi.org>
+ <CAG5mAdw04U5gpRMqLYOBeujH=t+59WJLFeGe+Qareh-cuWsDvg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171214173402.19074-14-srinivas.kandagatla@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: srinivas.kandagatla@linaro.org
-Cc: Andy Gross <andy.gross@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, David Brown <david.brown@linaro.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, sboyd@codeaurora.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAG5mAdw04U5gpRMqLYOBeujH=t+59WJLFeGe+Qareh-cuWsDvg@mail.gmail.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Caleb Crome <caleb@crome.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, Fabio Estevam <fabio.estevam@nxp.com>, mail@maciej.szmigiero.name, Liam Girdwood <lgirdwood@gmail.com>, Arnaud Mouiche <arnaud.mouiche@invoxia.com>, lukma@denx.de, Sascha Hauer <kernel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 14, 2017 at 05:34:00PM +0000, srinivas.kandagatla@linaro.org wrote:
-> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> 
-> Add devicetree bindings documentation file for Qualcomm apq8096 sound card.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  .../devicetree/bindings/sound/qcom,apq8096.txt     | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8096.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8096.txt b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
-> new file mode 100644
-> index 000000000000..27b511dab533
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
-> @@ -0,0 +1,22 @@
-> +* Qualcomm Technologies APQ8096 ASoC sound card driver
-> +
-> +This binding describes the APQ8096 sound card, which uses qdsp for audio.
-> +
-> +- compatible:
-> +	Usage: required
-> +	Value type: <stringlist>
-> +	Definition: must be "qcom,apq8096-sndcard"
-> +
-> +- qcom,audio-routing:
-> +	Usage: Optional
-> +	Value type: <stringlist>
-> +	Definition:  A list of the connections between audio components.
-> +		  Each entry is a pair of strings, the first being the
-> +		  connection's sink, the second being the connection's
-> +		  source. Valid names could be power supplies, MicBias
-> +		  of codec and the jacks on the board:
-> +Example:
-> +	sound {
-> +		compatible	= "qcom,snd-apq8096";
-> +		qcom,model = "DB820c";
+On 12/16/17 11:30 AM, Caleb Crome wrote:
+> Having come to work on this driver with very little knowledge about
+> kernel programming, and i.MX, I have to agree with Timur. It's an
+> amazingly complex driver (with support of so many variants).  By
+> eliminating verbose commentary, it's also wiping away a lot of
+> knowledge.  The more sparse commentary makes things harder to
+> understand for newcomers, or really anybody who isn't already steeped
+> in knowledge about the SSI port and linux, and it's interaction with
+> DMA.
 
-Not documented, but just use "model".
+This is exactly why I wrote the comments the way I did.  As I was 
+learning about the hardware and ASoC drivers, whenever I was confused 
+about something and then figured it out, I would add a comment about 
+that.  I figured if it wasn't obvious to me, it wouldn't be obvious to 
+anyone else.  And since this was one of the first ASoC drivers, and the 
+first to use device tree, it would become a reference driver for years 
+to come.  That made it even more important that I document everything I 
+learned.
 
-This doesn't look complete. No codec, etc.?
-
-Rob
+I am pleased that other developers kept up that commenting style.  This 
+patch destroys all of that.
