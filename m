@@ -1,18 +1,18 @@
-From: Brian Norris <briannorris@chromium.org>
-Subject: [PATCH for-4.15] ASoC: rt5514-spi: only enable wakeup
-	when fully initialized
-Date: Fri, 15 Dec 2017 20:07:23 -0800
-Message-ID: <20171216040723.11710-1-briannorris@chromium.org>
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [PATCH v3 03/11] ASoC: fsl_ssi: Refine all comments
+Date: Fri, 15 Dec 2017 22:43:14 -0600
+Message-ID: <aad404d3-fa61-3c49-6265-04fc3b256bc6@tabi.org>
+References: <1513207108-30430-1-git-send-email-nicoleotsuka@gmail.com>
+ <1513207108-30430-4-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f194.google.com (mail-io0-f194.google.com
- [209.85.223.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 518C0266B0F
- for <alsa-devel@alsa-project.org>; Sat, 16 Dec 2017 05:07:37 +0100 (CET)
-Received: by mail-io0-f194.google.com with SMTP id x129so4680897iod.13
- for <alsa-devel@alsa-project.org>; Fri, 15 Dec 2017 20:07:37 -0800 (PST)
+Received: from muin.pair.com (muin.pair.com [209.68.1.55])
+ by alsa0.perex.cz (Postfix) with ESMTP id DAFA3266B0F
+ for <alsa-devel@alsa-project.org>; Sat, 16 Dec 2017 05:43:17 +0100 (CET)
+In-Reply-To: <1513207108-30430-4-git-send-email-nicoleotsuka@gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,60 +22,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Brian Norris <briannorris@chromium.org>, Jimmy Cheng-Yi Chiang <cychiang@google.com>, Jeffy Chen <jeffy.chen@rock-chips.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, linux-rockchip@lists.infradead.org, Matthias Kaehlcke <mka@chromium.org>
+To: Nicolin Chen <nicoleotsuka@gmail.com>, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, caleb@crome.org, mail@maciej.szmigiero.name, arnaud.mouiche@invoxia.com, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-If an rt5514-spi device is probed but the platform hasn't linked it in,
-we might never fully request the SPI IRQ, nor configure the rt5514 DSP,
-but we still might try to enable the SPI IRQ (enable_irq_wake()). This
-is bad, and among other things, can cause the interrupt to trigger every
-time we try to suspend the system (e.g., because the interrupt trigger
-setting was never set properly).
+On 12/13/17 5:18 PM, Nicolin Chen wrote:
+> -	 * We are running on a SoC which does not support online SSI
+> -	 * reconfiguration, so we have to enable all necessary flags at once
+> -	 * even if we do not use them later (capture and playback configuration)
+> +	 * Online configuration is not supported
+> +	 * Enable or Disable all necessary bits at once
 
-Instead of setting our wakeup capabilities in the SPI driver probe
-routine, let's wait until we've actually requested the IRQ.
-
-Fixes issues seen on the "kevin" Chromebook (Samsung Chromebook Plus).
-
-Fixes: 58f1c07d23cd ("ASoC: rt5514: Voice wakeup support.")
-Signed-off-by: Brian Norris <briannorris@chromium.org>
----
-The patch that introduced the wakeup was in 4.15-rc1. I think this qualifies as
-a bugfix, and should probably go into 4.15.
-
-Other relevant patches that are useful, and fix similar (or the same) issues:
-
-https://patchwork.kernel.org/patch/10067725/
-[PATCH] ASoC: rockchip: Use dummy_dai for rt5514 dsp dailink
-
-https://patchwork.kernel.org/patch/10116761/
-[PATCH for-4.15] ASoC: rt5514: don't assume rt5514 component was "attached"
-
- sound/soc/codecs/rt5514-spi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
-index 9255afcf2c3a..48e4b9002caf 100644
---- a/sound/soc/codecs/rt5514-spi.c
-+++ b/sound/soc/codecs/rt5514-spi.c
-@@ -289,6 +289,8 @@ static int rt5514_spi_pcm_probe(struct snd_soc_platform *platform)
- 			dev_err(&rt5514_spi->dev,
- 				"%s Failed to reguest IRQ: %d\n", __func__,
- 				ret);
-+		else
-+			device_init_wakeup(rt5514_dsp->dev, true);
- 	}
- 
- 	return 0;
-@@ -456,8 +458,6 @@ static int rt5514_spi_probe(struct spi_device *spi)
- 		return ret;
- 	}
- 
--	device_init_wakeup(&spi->dev, true);
--
- 	return 0;
- }
- 
--- 
-2.15.1.504.g5279b80103-goog
+This is an example of a bad change, IMHO.  The original was written in 
+elegant prose.  The new version is just two short sentences.
