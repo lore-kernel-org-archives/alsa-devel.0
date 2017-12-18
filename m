@@ -1,119 +1,94 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [alsa-devel] [PATCH v5 1/6] ASoC: Intel: Skylake: Add ssp clock
- driver
-Date: Mon, 18 Dec 2017 09:27:16 +0530
-Message-ID: <20171218035710.GA27559@subhransu-desktop>
-References: <1512978390-8848-1-git-send-email-sriramx.periyasamy@intel.com>
- <1512978390-8848-2-git-send-email-sriramx.periyasamy@intel.com>
- <20171213223032.GO7997@codeaurora.org>
+From: Cheng-yi Chiang <cychiang@chromium.org>
+Subject: Re: [PATCH for-4.15] ASoC: rt5514: don't assume rt5514
+	component was "attached"
+Date: Mon, 18 Dec 2017 12:23:18 +0800
+Message-ID: <CAFv8Nw+qiWedqZeVsPn17WiSyc_zwOP3bEnxn2Wc-oQ3ntgq2g@mail.gmail.com>
+References: <20171216011230.107527-1-briannorris@chromium.org>
+ <20171216031738.GA220575@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-clk-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171213223032.GO7997@codeaurora.org>
-Sender: linux-clk-owner@vger.kernel.org
-To: Stephen Boyd <sboyd@codeaurora.org>
-Cc: Sriram Periyasamy <sriramx.periyasamy@intel.com>, ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>, mturquette@baylibre.com, linux-clk@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yb0-f196.google.com (mail-yb0-f196.google.com
+ [209.85.213.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id F34E1267196
+ for <alsa-devel@alsa-project.org>; Mon, 18 Dec 2017 05:23:50 +0100 (CET)
+Received: by mail-yb0-f196.google.com with SMTP id 69so10159340ybc.6
+ for <alsa-devel@alsa-project.org>; Sun, 17 Dec 2017 20:23:50 -0800 (PST)
+In-Reply-To: <20171216031738.GA220575@google.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Brian Norris <briannorris@chromium.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jeffy Chen <jeffy.chen@rock-chips.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Matthias Kaehlcke <mka@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 13, 2017 at 02:30:32PM -0800, Stephen Boyd wrote:
-> On 12/11, Sriram Periyasamy wrote:
-> > +
-> > +static int skl_clk_set_rate(struct clk_hw *hw, unsigned long rate,
-> > +					unsigned long parent_rate)
-> > +{
-> > +	struct skl_clk *clkdev = to_skl_clk(hw);
-> > +	struct skl_clk_rate_cfg_table *rcfg;
-> > +	int clk_type;
-> > +
-> > +	if (!clkdev)
-> > +		return -ENODEV;
-> 
-> These checks don't make sense. container_of() on clk_hw
-> structures returning NULL wouldn't happen.
+Hi Brian,
+  Oder has posted the same fix : https://patchwork.kernel.org/
+patch/10066257/ and it has been applied.
+Perhaps you can cherry-pick it to v4.15 ?
 
-Sure. will remove.
+Thanks!
 
-> 
-> > +
-> > +	if (!rate)
-> > +		return -EINVAL;
-> > +
-> > +	if (__clk_is_enabled(hw->clk) && (clkdev->rate != rate))
-> 
-> Any chance you can directly read the hardware instead of going
-> through the framework to find out if the clk is enabled? Seems
+On Sat, Dec 16, 2017 at 11:17 AM, Brian Norris <briannorris@chromium.org>
+wrote:
 
-No. This involves sending an IPC to DSP to enable clock and interpreting the
-return error code. I would like to avoid doing this here in set_rate.
-
-> circular to do it this way.
-> 
-> > +		return -EBUSY;
-> > +
-> > +	rcfg = skl_get_rate_cfg(clkdev->pdata->ssp_clks[clkdev->id].rate_cfg,
-> > +							rate);
-> > +	if (!rcfg)
-> > +		return -EINVAL;
-> > +
-> > +	clk_type = skl_get_clk_type(clkdev->id);
-> > +	if (clk_type < 0)
-> > +		return clk_type;
-> > +
-> > +	skl_fill_clk_ipc(rcfg, clk_type);
-> > +	clkdev->rate = rate;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static unsigned long skl_clk_recalc_rate(struct clk_hw *hw,
-> > +				unsigned long parent_rate)
-> > +{
-> > +	struct skl_clk *clkdev = to_skl_clk(hw);
-> > +	struct skl_clk_rate_cfg_table *rcfg;
-> > +	int clk_type;
-> > +
-> > +	if (!clkdev)
-> > +		return 0;
-> > +
-> > +	if (clkdev->rate)
-> > +		return clkdev->rate;
-> 
-> Why is the rate being cached? We should always be able to
-> calculate the rate based on parent_rate that gets passed to this
-> function?
-
-Will check and get back.
-
-Regards,
-Subhransu
-
-> 
-> > +
-> > +	rcfg = skl_get_rate_cfg(clkdev->pdata->ssp_clks[clkdev->id].rate_cfg,
-> > +					parent_rate);
-> > +	if (!rcfg)
-> > +		return 0;
-> > +
-> > +	clk_type = skl_get_clk_type(clkdev->id);
-> > +	if (clk_type < 0)
-> > +		return 0;
-> > +
-> > +	skl_fill_clk_ipc(rcfg, clk_type);
-> > +	clkdev->rate = rcfg->rate;
-> > +
-> > +	return clkdev->rate;
-> > +}
-> > +
-> > +/* Not supported by clk driver. Implemented to satisfy clk fw */
-> > +long skl_clk_round_rate(struct clk_hw *hw, unsigned long rate,
-> > +				unsigned long *parent_rate)
-> > +{
-> > +	return rate;
-> > +}
-> 
-> -- 
-> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-
--- 
+> + others
+>
+> On Fri, Dec 15, 2017 at 05:12:30PM -0800, Brian Norris wrote:
+> > I've found that on Google's "Kevin" Chromebook, the rt5514 codec might
+> > not be set up completely, yet its device is still present, and therefore
+> > its PM suspend/resume is called. This hits a NULL pointer exception,
+> > since we never had the chance to set our drvdata pointer.
+> >
+> > This resolves crashes seen when trying to resume my system.
+> >
+> > Fixes: e9c50aa6bd39 ("ASoC: rt5514-spi: check irq status to schedule
+> data copy in resume function")
+> > Signed-off-by: Brian Norris <briannorris@chromium.org>
+> > ---
+> > This is a v4.15-rc1 regression
+>
+> I see that this is probably a bug on its own, which should be fixed on
+> its own (e.g., with the $subject patch), but FYI I was also pointed at
+> this patch, which also "resolves" this problem by fixing the rt5514 DAI
+> setup:
+>
+> https://patchwork.kernel.org/patch/10067725/
+> [PATCH] ASoC: rockchip: Use dummy_dai for rt5514 dsp dailink
+>
+> Would be nice to see it get handled too, possibly in 4.15 as well (I
+> think that's a regression too?).
+>
+> Brian
+>
+> >
+> >  sound/soc/codecs/rt5514-spi.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/sound/soc/codecs/rt5514-spi.c
+> b/sound/soc/codecs/rt5514-spi.c
+> > index 2df91db765ac..9255afcf2c3a 100644
+> > --- a/sound/soc/codecs/rt5514-spi.c
+> > +++ b/sound/soc/codecs/rt5514-spi.c
+> > @@ -482,7 +482,7 @@ static int __maybe_unused rt5514_resume(struct
+> device *dev)
+> >       if (device_may_wakeup(dev))
+> >               disable_irq_wake(irq);
+> >
+> > -     if (rt5514_dsp->substream) {
+> > +     if (rt5514_dsp && rt5514_dsp->substream) {
+> >               rt5514_spi_burst_read(RT5514_IRQ_CTRL, (u8 *)&buf,
+> sizeof(buf));
+> >               if (buf[0] & RT5514_IRQ_STATUS_BIT)
+> >                       rt5514_schedule_copy(rt5514_dsp);
+> > --
+> > 2.15.1.504.g5279b80103-goog
+> >
+>
