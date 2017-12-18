@@ -1,232 +1,409 @@
-From: Mauro Santos <registo.mailling-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: Mixer regression with usb soundcard
-Date: Mon, 18 Dec 2017 18:18:53 +0000
-Message-ID: <1022b04b-e07a-0bb0-be2a-72e6b280279b@gmail.com>
-References: <0f95a1cc-c438-ca4e-cc5f-d311e33a496e@gmail.com>
- <20171218134444.GA18133@kroah.com> <s5hy3m0dtw0.wl-tiwai@suse.de>
- <bd3f1487-d703-77b4-aca3-c6e15f0e18a8@gmail.com>
- <s5ha7ygdoqb.wl-tiwai@suse.de>
- <CAL6iAa+eX_3fs2bQp-SquuU6PAOGqeBfjmkYhraz=99CTKUEpg@mail.gmail.com>
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [trivial PATCH] treewide: Align function
+	definition open/close braces
+Date: Mon, 18 Dec 2017 19:19:55 +0100
+Message-ID: <3718617.0n0nEQmX11@aspire.rjw.lan>
+References: <1513556924.31581.51.camel@perches.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <CAL6iAa+eX_3fs2bQp-SquuU6PAOGqeBfjmkYhraz=99CTKUEpg-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Content-Language: en-US
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jaejoong Kim <climbbb.kim-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cloudserver094114.home.net.pl (cloudserver094114.home.net.pl
+ [79.96.170.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D68726756A
+ for <alsa-devel@alsa-project.org>; Mon, 18 Dec 2017 19:20:44 +0100 (CET)
+In-Reply-To: <1513556924.31581.51.camel@perches.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Joe Perches <joe@perches.com>
+Cc: linux-rtc@vger.kernel.org, alsa-devel@alsa-project.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Jiri Kosina <trivial@kernel.org>, linux-scsi@vger.kernel.org, MPT-FusionLinux.pdl@broadcom.com, acpi4asus-user@lists.sourceforge.net, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, platform-driver-x86@vger.kernel.org, linux-xfs@vger.kernel.org, linux-acpi@vger.kernel.org, linux-audit@redhat.com, amd-gfx@lists.freedesktop.org, netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>, ocfs2-devel@oss.oracle.com, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 18-12-2017 16:59, Jaejoong Kim wrote:
-> Mauro,
-> thanks for the report and sorry for the make problem.
+On Monday, December 18, 2017 1:28:44 AM CET Joe Perches wrote:
+> Some functions definitions have either the initial open brace and/or
+> the closing brace outside of column 1.
 > 
-> Could you try below debug patch? I add more debug code with Takashi's guideline.
+> Move those braces to column 1.
 > 
-
-I get this when I plug the device directly to a usb3 port:
-[   63.643706] usb 1-2: new full-speed USB device number 7 using xhci_hcd
-[   63.767089] usb 1-2: device descriptor read/64, error -71
-[   64.100906] input: HiFimeDIY Audio HiFimeDIY DAC as
-/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2:1.0/0003:1852:7022.0003/input/input20
-[   64.101208] hid-generic 0003:1852:7022.0003: input,hidraw2: USB HID
-v1.00 Device [HiFimeDIY Audio HiFimeDIY DAC] on usb-0000:00:14.0-2/input0
-[   64.208385] usb 1-2: [DEBUG] nameid:0, len:0
-[   64.208390] usb 1-2: [DEBUG] len:3, get_term_name:PCM
-[   64.208393] usb 1-2: [11] SU [PCM] items = 2
-[   64.208881] usbcore: registered new interface driver snd-usb-audio
-
-If I plug it to a usb2 hub where I usually have it connected the output
-is almost the same:
-[  129.159898] usb 1-3.3: new full-speed USB device number 8 using xhci_hcd
-[  129.246587] usb 1-3.3: device descriptor read/64, error -32
-[  129.532552] input: HiFimeDIY Audio HiFimeDIY DAC as
-/devices/pci0000:00/0000:00:14.0/usb1/1-3/1-3.3/1-3.3:1.0/0003:1852:7022.0004/input/input21
-[  129.532790] hid-generic 0003:1852:7022.0004: input,hidraw2: USB HID
-v1.00 Device [HiFimeDIY Audio HiFimeDIY DAC] on usb-0000:00:14.0-3.3/input0
-[  129.560090] usb 1-3.3: [DEBUG] nameid:0, len:0
-[  129.560096] usb 1-3.3: [DEBUG] len:3, get_term_name:PCM
-[  129.560100] usb 1-3.3: [11] SU [PCM] items = 2
-
-I'm compiling now a kernel with your other patch, I'll get back to you
-with all the information I can gather on the device once I test with the
-other patch.
-
-> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-> index 84b9f9c..0233425 100644
-> --- a/sound/usb/mixer.c
-> +++ b/sound/usb/mixer.c
-> @@ -595,7 +595,7 @@ int snd_usb_mixer_add_control(struct
-> usb_mixer_elem_list *list,
->         while (snd_ctl_find_id(mixer->chip->card, &kctl->id))
->                 kctl->id.index++;
->         if ((err = snd_ctl_add(mixer->chip->card, kctl)) < 0) {
-> -               usb_audio_dbg(mixer->chip, "cannot add control (err = %d)\n",
-> +               usb_audio_err(mixer->chip, "[DEBUG] cannot add control
-> (err = %d)\n",
->                               err);
->                 return err;
->         }
-> @@ -2162,14 +2162,23 @@ static int parse_audio_selector_unit(struct
-> mixer_build *state, int unitid,
+> This allows various function analyzers like gnu complexity to work
+> properly for these modified functions.
 > 
->         nameid = uac_selector_unit_iSelector(desc);
->         len = check_mapped_name(map, kctl->id.name, sizeof(kctl->id.name));
-> +
-> +       usb_audio_err(state->chip, "[DEBUG] nameid:%d, len:%d\n", nameid, len);
-> +
->         if (len)
->                 ;
-> -       else if (nameid)
-> +       else if (nameid) {
->                 len = snd_usb_copy_string_desc(state, nameid, kctl->id.name,
->                                          sizeof(kctl->id.name));
-> -       else
-> +               usb_audio_err(state->chip, "[DEBUG] len:%d,
-> copy_string id.name:%s\n",
-> +                                       len, (len > 0) ? kctl->id.name : " ");
-> +       }
-> +       else {
->                 len = get_term_name(state, &state->oterm,
->                                     kctl->id.name, sizeof(kctl->id.name), 0);
-> +               usb_audio_err(state->chip, "[DEBUG] len:%d, get_term_name:%s\n",
-> +                                       len, (len > 0) ? kctl->id.name : " ");
-> +       }
+> Miscellanea:
 > 
->         if (!len) {
->                 strlcpy(kctl->id.name, "USB", sizeof(kctl->id.name));
-> @@ -2182,7 +2191,7 @@ static int parse_audio_selector_unit(struct
-> mixer_build *state, int unitid,
->                         append_ctl_name(kctl, " Playback Source");
->         }
+> o Remove extra trailing ; and blank line from xfs_agf_verify
 > 
-> -       usb_audio_dbg(state->chip, "[%d] SU [%s] items = %d\n",
-> +       usb_audio_err(state->chip, "[%d] SU [%s] items = %d\n",
->                     cval->head.id, kctl->id.name, desc->bNrInPins);
->         return snd_usb_mixer_add_control(&cval->head, kctl);
+> Signed-off-by: Joe Perches <joe@perches.com>
+> ---
+> git diff -w shows no difference other than the above 'Miscellanea'
+> 
+> (this is against -next, but it applies against Linus' tree
+>  with a couple offsets)
+> 
+>  arch/x86/include/asm/atomic64_32.h                   |  2 +-
+>  drivers/acpi/custom_method.c                         |  2 +-
+>  drivers/acpi/fan.c                                   |  2 +-
+>  drivers/gpu/drm/amd/display/dc/core/dc.c             |  2 +-
+>  drivers/media/i2c/msp3400-kthreads.c                 |  2 +-
+>  drivers/message/fusion/mptsas.c                      |  2 +-
+>  drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c |  2 +-
+>  drivers/net/wireless/ath/ath9k/xmit.c                |  2 +-
+>  drivers/platform/x86/eeepc-laptop.c                  |  2 +-
+>  drivers/rtc/rtc-ab-b5ze-s3.c                         |  2 +-
+>  drivers/scsi/dpt_i2o.c                               |  2 +-
+>  drivers/scsi/sym53c8xx_2/sym_glue.c                  |  2 +-
+>  fs/locks.c                                           |  2 +-
+>  fs/ocfs2/stack_user.c                                |  2 +-
+>  fs/xfs/libxfs/xfs_alloc.c                            |  5 ++---
+>  fs/xfs/xfs_export.c                                  |  2 +-
+>  kernel/audit.c                                       |  6 +++---
+>  kernel/trace/trace_printk.c                          |  4 ++--
+>  lib/raid6/sse2.c                                     | 14 +++++++-------
+>  sound/soc/fsl/fsl_dma.c                              |  2 +-
+>  20 files changed, 30 insertions(+), 31 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/atomic64_32.h b/arch/x86/include/asm/atomic64_32.h
+> index 97c46b8169b7..d4d4883080fa 100644
+> --- a/arch/x86/include/asm/atomic64_32.h
+> +++ b/arch/x86/include/asm/atomic64_32.h
+> @@ -122,7 +122,7 @@ static inline long long atomic64_read(const atomic64_t *v)
+>  	long long r;
+>  	alternative_atomic64(read, "=&A" (r), "c" (v) : "memory");
+>  	return r;
+> - }
+> +}
+>  
+>  /**
+>   * atomic64_add_return - add and return
+> diff --git a/drivers/acpi/custom_method.c b/drivers/acpi/custom_method.c
+> index c68e72414a67..e967c1173ba3 100644
+> --- a/drivers/acpi/custom_method.c
+> +++ b/drivers/acpi/custom_method.c
+> @@ -94,7 +94,7 @@ static void __exit acpi_custom_method_exit(void)
+>  {
+>  	if (cm_dentry)
+>  		debugfs_remove(cm_dentry);
+> - }
+> +}
+>  
+>  module_init(acpi_custom_method_init);
+>  module_exit(acpi_custom_method_exit);
+> diff --git a/drivers/acpi/fan.c b/drivers/acpi/fan.c
+> index 6cf4988206f2..3563103590c6 100644
+> --- a/drivers/acpi/fan.c
+> +++ b/drivers/acpi/fan.c
+> @@ -219,7 +219,7 @@ fan_set_cur_state(struct thermal_cooling_device *cdev, unsigned long state)
+>  		return fan_set_state_acpi4(device, state);
+>  	else
+>  		return fan_set_state(device, state);
+> - }
+> +}
+>  
+>  static const struct thermal_cooling_device_ops fan_cooling_ops = {
+>  	.get_max_state = fan_get_max_state,
+> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
+> index d1488d5ee028..1e0d1e7c5324 100644
+> --- a/drivers/gpu/drm/amd/display/dc/core/dc.c
+> +++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
+> @@ -461,7 +461,7 @@ static void disable_dangling_plane(struct dc *dc, struct dc_state *context)
+>   ******************************************************************************/
+>  
+>  struct dc *dc_create(const struct dc_init_data *init_params)
+> - {
+> +{
+>  	struct dc *dc = kzalloc(sizeof(*dc), GFP_KERNEL);
+>  	unsigned int full_pipe_count;
+>  
+> diff --git a/drivers/media/i2c/msp3400-kthreads.c b/drivers/media/i2c/msp3400-kthreads.c
+> index 4dd01e9f553b..dc6cb8d475b3 100644
+> --- a/drivers/media/i2c/msp3400-kthreads.c
+> +++ b/drivers/media/i2c/msp3400-kthreads.c
+> @@ -885,7 +885,7 @@ static int msp34xxg_modus(struct i2c_client *client)
 >  }
+>  
+>  static void msp34xxg_set_source(struct i2c_client *client, u16 reg, int in)
+> - {
+> +{
+>  	struct msp_state *state = to_state(i2c_get_clientdata(client));
+>  	int source, matrix;
+>  
+> diff --git a/drivers/message/fusion/mptsas.c b/drivers/message/fusion/mptsas.c
+> index 345f6035599e..69a62d23514b 100644
+> --- a/drivers/message/fusion/mptsas.c
+> +++ b/drivers/message/fusion/mptsas.c
+> @@ -2968,7 +2968,7 @@ mptsas_exp_repmanufacture_info(MPT_ADAPTER *ioc,
+>  	mutex_unlock(&ioc->sas_mgmt.mutex);
+>  out:
+>  	return ret;
+> - }
+> +}
+>  
+>  static void
+>  mptsas_parse_device_info(struct sas_identify *identify,
+> diff --git a/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c b/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c
+> index 3dd973475125..0ea141ece19e 100644
+> --- a/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c
+> +++ b/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c
+> @@ -603,7 +603,7 @@ static struct uni_table_desc *nx_get_table_desc(const u8 *unirom, int section)
+>  
+>  static int
+>  netxen_nic_validate_header(struct netxen_adapter *adapter)
+> - {
+> +{
+>  	const u8 *unirom = adapter->fw->data;
+>  	struct uni_table_desc *directory = (struct uni_table_desc *) &unirom[0];
+>  	u32 fw_file_size = adapter->fw->size;
+> diff --git a/drivers/net/wireless/ath/ath9k/xmit.c b/drivers/net/wireless/ath/ath9k/xmit.c
+> index bd438062a6db..baedc7186b10 100644
+> --- a/drivers/net/wireless/ath/ath9k/xmit.c
+> +++ b/drivers/net/wireless/ath/ath9k/xmit.c
+> @@ -196,7 +196,7 @@ ath_tid_pull(struct ath_atx_tid *tid)
+>  	}
+>  
+>  	return skb;
+> - }
+> +}
+>  
+>  static struct sk_buff *ath_tid_dequeue(struct ath_atx_tid *tid)
+>  {
+> diff --git a/drivers/platform/x86/eeepc-laptop.c b/drivers/platform/x86/eeepc-laptop.c
+> index 5a681962899c..4c38904a8a32 100644
+> --- a/drivers/platform/x86/eeepc-laptop.c
+> +++ b/drivers/platform/x86/eeepc-laptop.c
+> @@ -492,7 +492,7 @@ static void eeepc_platform_exit(struct eeepc_laptop *eeepc)
+>   * potentially bad time, such as a timer interrupt.
+>   */
+>  static void tpd_led_update(struct work_struct *work)
+> - {
+> +{
+>  	struct eeepc_laptop *eeepc;
+>  
+>  	eeepc = container_of(work, struct eeepc_laptop, tpd_led_work);
+> diff --git a/drivers/rtc/rtc-ab-b5ze-s3.c b/drivers/rtc/rtc-ab-b5ze-s3.c
+> index a319bf1e49de..ef5c16dfabfa 100644
+> --- a/drivers/rtc/rtc-ab-b5ze-s3.c
+> +++ b/drivers/rtc/rtc-ab-b5ze-s3.c
+> @@ -648,7 +648,7 @@ static int abb5zes3_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alarm)
+>  			ret);
+>  
+>  	return ret;
+> - }
+> +}
+>  
+>  /* Enable or disable battery low irq generation */
+>  static inline int _abb5zes3_rtc_battery_low_irq_enable(struct regmap *regmap,
+> diff --git a/drivers/scsi/dpt_i2o.c b/drivers/scsi/dpt_i2o.c
+> index fd172b0890d3..a00d822e3142 100644
+> --- a/drivers/scsi/dpt_i2o.c
+> +++ b/drivers/scsi/dpt_i2o.c
+> @@ -3524,7 +3524,7 @@ static int adpt_i2o_systab_send(adpt_hba* pHba)
+>  #endif
+>  
+>  	return ret;	
+> - }
+> +}
+>  
+>  
+>  /*============================================================================
+> diff --git a/drivers/scsi/sym53c8xx_2/sym_glue.c b/drivers/scsi/sym53c8xx_2/sym_glue.c
+> index 791a2182de53..7320d5fe4cbc 100644
+> --- a/drivers/scsi/sym53c8xx_2/sym_glue.c
+> +++ b/drivers/scsi/sym53c8xx_2/sym_glue.c
+> @@ -1393,7 +1393,7 @@ static struct Scsi_Host *sym_attach(struct scsi_host_template *tpnt, int unit,
+>  		scsi_host_put(shost);
+>  
+>  	return NULL;
+> - }
+> +}
+>  
+>  
+>  /*
+> diff --git a/fs/locks.c b/fs/locks.c
+> index 21b4dfa289ee..d2399d001afe 100644
+> --- a/fs/locks.c
+> +++ b/fs/locks.c
+> @@ -559,7 +559,7 @@ static const struct lock_manager_operations lease_manager_ops = {
+>   * Initialize a lease, use the default lock manager operations
+>   */
+>  static int lease_init(struct file *filp, long type, struct file_lock *fl)
+> - {
+> +{
+>  	if (assign_type(fl, type) != 0)
+>  		return -EINVAL;
+>  
+> diff --git a/fs/ocfs2/stack_user.c b/fs/ocfs2/stack_user.c
+> index dae9eb7c441e..d2fb97b173da 100644
+> --- a/fs/ocfs2/stack_user.c
+> +++ b/fs/ocfs2/stack_user.c
+> @@ -398,7 +398,7 @@ static int ocfs2_control_do_setnode_msg(struct file *file,
+>  
+>  static int ocfs2_control_do_setversion_msg(struct file *file,
+>  					   struct ocfs2_control_message_setv *msg)
+> - {
+> +{
+>  	long major, minor;
+>  	char *ptr = NULL;
+>  	struct ocfs2_control_private *p = file->private_data;
+> diff --git a/fs/xfs/libxfs/xfs_alloc.c b/fs/xfs/libxfs/xfs_alloc.c
+> index 0da80019a917..217108f765d5 100644
+> --- a/fs/xfs/libxfs/xfs_alloc.c
+> +++ b/fs/xfs/libxfs/xfs_alloc.c
+> @@ -2401,7 +2401,7 @@ static bool
+>  xfs_agf_verify(
+>  	struct xfs_mount *mp,
+>  	struct xfs_buf	*bp)
+> - {
+> +{
+>  	struct xfs_agf	*agf = XFS_BUF_TO_AGF(bp);
+>  
+>  	if (xfs_sb_version_hascrc(&mp->m_sb)) {
+> @@ -2449,8 +2449,7 @@ xfs_agf_verify(
+>  	     be32_to_cpu(agf->agf_refcount_level) > XFS_BTREE_MAXLEVELS))
+>  		return false;
+>  
+> -	return true;;
+> -
+> +	return true;
+>  }
+>  
+>  static void
+> diff --git a/fs/xfs/xfs_export.c b/fs/xfs/xfs_export.c
+> index fe1bfee35898..7d5c355d78b5 100644
+> --- a/fs/xfs/xfs_export.c
+> +++ b/fs/xfs/xfs_export.c
+> @@ -122,7 +122,7 @@ xfs_nfs_get_inode(
+>  	struct super_block	*sb,
+>  	u64			ino,
+>  	u32			generation)
+> - {
+> +{
+>   	xfs_mount_t		*mp = XFS_M(sb);
+>  	xfs_inode_t		*ip;
+>  	int			error;
+> diff --git a/kernel/audit.c b/kernel/audit.c
+> index 227db99b0f19..d97e8f0f73ca 100644
+> --- a/kernel/audit.c
+> +++ b/kernel/audit.c
+> @@ -443,15 +443,15 @@ static int audit_set_failure(u32 state)
+>   * Drop any references inside the auditd connection tracking struct and free
+>   * the memory.
+>   */
+> - static void auditd_conn_free(struct rcu_head *rcu)
+> - {
+> +static void auditd_conn_free(struct rcu_head *rcu)
+> +{
+>  	struct auditd_connection *ac;
+>  
+>  	ac = container_of(rcu, struct auditd_connection, rcu);
+>  	put_pid(ac->pid);
+>  	put_net(ac->net);
+>  	kfree(ac);
+> - }
+> +}
+>  
+>  /**
+>   * auditd_set - Set/Reset the auditd connection state
+> diff --git a/kernel/trace/trace_printk.c b/kernel/trace/trace_printk.c
+> index ad1d6164e946..50f44b7b2b32 100644
+> --- a/kernel/trace/trace_printk.c
+> +++ b/kernel/trace/trace_printk.c
+> @@ -196,7 +196,7 @@ struct notifier_block module_trace_bprintk_format_nb = {
+>  };
+>  
+>  int __trace_bprintk(unsigned long ip, const char *fmt, ...)
+> - {
+> +{
+>  	int ret;
+>  	va_list ap;
+>  
+> @@ -214,7 +214,7 @@ int __trace_bprintk(unsigned long ip, const char *fmt, ...)
+>  EXPORT_SYMBOL_GPL(__trace_bprintk);
+>  
+>  int __ftrace_vbprintk(unsigned long ip, const char *fmt, va_list ap)
+> - {
+> +{
+>  	if (unlikely(!fmt))
+>  		return 0;
+>  
+> diff --git a/lib/raid6/sse2.c b/lib/raid6/sse2.c
+> index 1d2276b007ee..8191e1d0d2fb 100644
+> --- a/lib/raid6/sse2.c
+> +++ b/lib/raid6/sse2.c
+> @@ -91,7 +91,7 @@ static void raid6_sse21_gen_syndrome(int disks, size_t bytes, void **ptrs)
+>  
+>  static void raid6_sse21_xor_syndrome(int disks, int start, int stop,
+>  				     size_t bytes, void **ptrs)
+> - {
+> +{
+>  	u8 **dptr = (u8 **)ptrs;
+>  	u8 *p, *q;
+>  	int d, z, z0;
+> @@ -200,9 +200,9 @@ static void raid6_sse22_gen_syndrome(int disks, size_t bytes, void **ptrs)
+>  	kernel_fpu_end();
+>  }
+>  
+> - static void raid6_sse22_xor_syndrome(int disks, int start, int stop,
+> +static void raid6_sse22_xor_syndrome(int disks, int start, int stop,
+>  				     size_t bytes, void **ptrs)
+> - {
+> +{
+>  	u8 **dptr = (u8 **)ptrs;
+>  	u8 *p, *q;
+>  	int d, z, z0;
+> @@ -265,7 +265,7 @@ static void raid6_sse22_gen_syndrome(int disks, size_t bytes, void **ptrs)
+>  
+>  	asm volatile("sfence" : : : "memory");
+>  	kernel_fpu_end();
+> - }
+> +}
+>  
+>  const struct raid6_calls raid6_sse2x2 = {
+>  	raid6_sse22_gen_syndrome,
+> @@ -366,9 +366,9 @@ static void raid6_sse24_gen_syndrome(int disks, size_t bytes, void **ptrs)
+>  	kernel_fpu_end();
+>  }
+>  
+> - static void raid6_sse24_xor_syndrome(int disks, int start, int stop,
+> +static void raid6_sse24_xor_syndrome(int disks, int start, int stop,
+>  				     size_t bytes, void **ptrs)
+> - {
+> +{
+>  	u8 **dptr = (u8 **)ptrs;
+>  	u8 *p, *q;
+>  	int d, z, z0;
+> @@ -471,7 +471,7 @@ static void raid6_sse24_gen_syndrome(int disks, size_t bytes, void **ptrs)
+>  	}
+>  	asm volatile("sfence" : : : "memory");
+>  	kernel_fpu_end();
+> - }
+> +}
+>  
+>  
+>  const struct raid6_calls raid6_sse2x4 = {
+> diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
+> index 0c11f434a374..ec619f51d336 100644
+> --- a/sound/soc/fsl/fsl_dma.c
+> +++ b/sound/soc/fsl/fsl_dma.c
+> @@ -879,7 +879,7 @@ static const struct snd_pcm_ops fsl_dma_ops = {
+>  };
+>  
+>  static int fsl_soc_dma_probe(struct platform_device *pdev)
+> - {
+> +{
+>  	struct dma_object *dma;
+>  	struct device_node *np = pdev->dev.of_node;
+>  	struct device_node *ssi_np;
 > 
-> 
-> 2017-12-19 0:45 GMT+09:00 Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>:
->> On Mon, 18 Dec 2017 16:30:13 +0100,
->> Mauro Santos wrote:
->>>
->>> On 18-12-2017 13:53, Takashi Iwai wrote:
->>>> On Mon, 18 Dec 2017 14:44:44 +0100,
->>>> Greg KH wrote:
->>>>>
->>>>> On Sun, Dec 17, 2017 at 06:56:05PM +0000, Mauro Santos wrote:
->>>>>> I believe this is the right place to report this problem, but if it
->>>>>> isn't please point me in the right direction.
->>>>>
->>>>> Adding the developer of that patch, and the sound maintainer and
->>>>> developers to the thread.
->>>>>
->>>>>> I have noticed that after the update from kernel 4.14.5 to 4.14.6
->>>>>> alsamixer does not show the usual volume controls for my usb soundcard.
->>>>>>
->>>>>> Reverting 3884d12e17ab770aa0f5d4bc65bfbfd006f417fa ALSA: usb-audio: Add
->>>>>> check return value for usb_string() (from linux-stable) makes the
->>>>>> controls come back again with kernel 4.14.6.
->>>> (snip)
->>>>>
->>>>> This is odd, Takashi, I thought we fixed up the problem that if the
->>>>> string was invalid, the code would continue to go on, it's not a "real"
->>>>> error.  Did that not get marked for the stable trees?
->>>>
->>>> Yes, it was marked as stable, and it's odd that the revert of the
->>>> given commit changes the behavior in that way.
->>>>
->>>> Mauro, could you double-check whether reverting the commit really does
->>>> fix it as expected?  If yes, could you put some debug print at the
->>>> part the patch touches, and check which unit id gives len=0 from
->>>> snd_usb_copy_string_desc()?
->>>
->>> I'm sure reverting that patch makes things work as expected. I noticed
->>> the problem after an update and that is the only thing I revert on top
->>> of the kernel provided by the distro (Arch Linux).
->>
->> Did you revert only one patch, not both patches?
->> Just to be sure.
->>
->>> Alsamixer works fine for the built in soundcard in my laptop, but the
->>> mixer for the usb soundcard was not working so it's specific to usb and
->>> only 2 patches touch the mixer.c file between 4.14.5 and 4.14.6. I've
->>> tried reversing both, one at a time, and only reverting this one
->>> restored the expected behavior.
->>>
->>> Regarding adding the debug print I'm going to need guidance. Without
->>> reverting anything, would adding at line 2178 of sound/usb/mixer.c the
->>> following be enough?
->>>
->>> printk("usbmixdbg: nameid=%d len=%d id.name=%s\n",nameid,len,kctl->id.name);
->>>
->>> It would then look like this (minus the line wrapping):
->>> len = check_mapped_name(map, kctl->id.name, sizeof(kctl->id.name));
->>> printk("usbmixdbg: nameid=%d len=%d id.name=%s\n",nameid,len,kctl->id.name);
->>> if (len)
->>
->> Well, at that point, there should be no difference.
->> The difference is after that, so what I'd like to see is something
->> like:
->>
->> --- a/sound/usb/mixer.c
->> +++ b/sound/usb/mixer.c
->> @@ -2175,14 +2175,18 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
->>
->>         nameid = uac_selector_unit_iSelector(desc);
->>         len = check_mapped_name(map, kctl->id.name, sizeof(kctl->id.name));
->> +       pr_info("XXX id=%d, check_mapped_name=%d\n", id, len);
->>         if (len)
->>                 ;
->> -       else if (nameid)
->> +       else if (nameid) {
->>                 len = snd_usb_copy_string_desc(state, nameid, kctl->id.name,
->>                                          sizeof(kctl->id.name));
->> -       else
->> +               pr_info("XXX id=%d, copy_string=%d\n", len);
->> +       } else {
->>                 len = get_term_name(state, &state->oterm,
->>                                     kctl->id.name, sizeof(kctl->id.name), 0);
->> +               pr_info("XXX id=%d, get_term_name=%d\n", len);
->> +       }
->>
->>         if (!len) {
->>                 strlcpy(kctl->id.name, "USB", sizeof(kctl->id.name));
->>
->>
->> If you see copy_string=0, it means that your hardware reports a bogus
->> entry, and the driver does it correctly.  If ignoring that error
->> really restores the old behavior back, it essentially means that it
->> worked casually in the past...
-> 
-> AudioControl Interface Descriptor:
->         bLength                 8
->         bDescriptorType        36
->         bDescriptorSubtype      5 (SELECTOR_UNIT)
->         bUnitID                11
->         bNrInPins               2
->         baSource( 0)           14
->         baSource( 1)            5
->         iSelector               0
->         ^^^^^^^^^
-> 
->>From the lsusb.txt, iSelector is '0' which means
-> uac_selector_unit_iSelector() return zero I think.
-> 
-> Thanks, jaejoong
-> 
->>
->>
->> thanks,
->>
->> Takashi
+> --
 
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
--- 
-Mauro Santos
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+for the ACPI part.
+
+Thanks!
