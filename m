@@ -1,118 +1,129 @@
-From: Akshu Agrawal <akshu.agrawal@amd.com>
-Subject: [PATCH] ASoC: amd: Adds rate and channel constraints
-	for capture in Stoney rt5645
-Date: Mon, 18 Dec 2017 10:10:20 +0530
-Message-ID: <1513572020-7689-1-git-send-email-akshu.agrawal@amd.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Re: [alsa-devel] [PATCH v5 1/6] ASoC: Intel: Skylake: Add ssp clock
+ driver
+Date: Mon, 18 Dec 2017 10:31:14 +0530
+Message-ID: <20171218050109.GA27846@subhransu-desktop>
+References: <1512978390-8848-1-git-send-email-sriramx.periyasamy@intel.com>
+ <1512978390-8848-2-git-send-email-sriramx.periyasamy@intel.com>
+ <20171213223032.GO7997@codeaurora.org>
+ <20171218035710.GA27559@subhransu-desktop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com
- (mail-bl2nam02on0067.outbound.protection.outlook.com [104.47.38.67])
- by alsa0.perex.cz (Postfix) with ESMTP id A317E267196
- for <alsa-devel@alsa-project.org>; Mon, 18 Dec 2017 05:44:46 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: tiwai@suse.de, Alexander.Deucher@amd.com, lgirdwood@gmail.com, Akshu Agrawal <akshu.agrawal@amd.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-clk-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20171218035710.GA27559@subhransu-desktop>
+Sender: linux-clk-owner@vger.kernel.org
+To: Stephen Boyd <sboyd@codeaurora.org>
+Cc: Sriram Periyasamy <sriramx.periyasamy@intel.com>, ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>, mturquette@baylibre.com, linux-clk@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Constraints are added as we support 48Khz and dual channels.
+On Mon, Dec 18, 2017 at 09:27:16AM +0530, Subhransu S. Prusty wrote:
+> On Wed, Dec 13, 2017 at 02:30:32PM -0800, Stephen Boyd wrote:
+> > On 12/11, Sriram Periyasamy wrote:
+> > > +
+> > > +static int skl_clk_set_rate(struct clk_hw *hw, unsigned long rate,
+> > > +					unsigned long parent_rate)
+> > > +{
+> > > +	struct skl_clk *clkdev = to_skl_clk(hw);
+> > > +	struct skl_clk_rate_cfg_table *rcfg;
+> > > +	int clk_type;
+> > > +
+> > > +	if (!clkdev)
+> > > +		return -ENODEV;
+> > 
+> > These checks don't make sense. container_of() on clk_hw
+> > structures returning NULL wouldn't happen.
+> 
+> Sure. will remove.
+> 
+> > 
+> > > +
+> > > +	if (!rate)
+> > > +		return -EINVAL;
+> > > +
+> > > +	if (__clk_is_enabled(hw->clk) && (clkdev->rate != rate))
+> > 
+> > Any chance you can directly read the hardware instead of going
+> > through the framework to find out if the clk is enabled? Seems
+> 
+> No. This involves sending an IPC to DSP to enable clock and interpreting the
+> return error code. I would like to avoid doing this here in set_rate.
+> 
+> > circular to do it this way.
+> > 
+> > > +		return -EBUSY;
+> > > +
+> > > +	rcfg = skl_get_rate_cfg(clkdev->pdata->ssp_clks[clkdev->id].rate_cfg,
+> > > +							rate);
+> > > +	if (!rcfg)
+> > > +		return -EINVAL;
+> > > +
+> > > +	clk_type = skl_get_clk_type(clkdev->id);
+> > > +	if (clk_type < 0)
+> > > +		return clk_type;
+> > > +
+> > > +	skl_fill_clk_ipc(rcfg, clk_type);
+> > > +	clkdev->rate = rate;
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static unsigned long skl_clk_recalc_rate(struct clk_hw *hw,
+> > > +				unsigned long parent_rate)
+> > > +{
+> > > +	struct skl_clk *clkdev = to_skl_clk(hw);
+> > > +	struct skl_clk_rate_cfg_table *rcfg;
+> > > +	int clk_type;
+> > > +
+> > > +	if (!clkdev)
+> > > +		return 0;
+> > > +
+> > > +	if (clkdev->rate)
+> > > +		return clkdev->rate;
+> > 
+> > Why is the rate being cached? We should always be able to
+> > calculate the rate based on parent_rate that gets passed to this
+> > function?
+> 
+> Will check and get back.
 
-Change-Id: Ib705f1101f5e2ab5c04f9526b10795a45a32debc
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
----
- sound/soc/amd/acp-rt5645.c | 49 +++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 46 insertions(+), 3 deletions(-)
+If I understand correctly, you refer to deriving the rate from parent_rate
+using ratios. But since only the DSP is aware of the ratios and not the
+driver, the driver can't derive the rate from the parent_rate and thus
+cached.
 
-diff --git a/sound/soc/amd/acp-rt5645.c b/sound/soc/amd/acp-rt5645.c
-index 941aed6..f3f96c6 100644
---- a/sound/soc/amd/acp-rt5645.c
-+++ b/sound/soc/amd/acp-rt5645.c
-@@ -40,6 +40,7 @@
- #include "../codecs/rt5645.h"
- 
- #define CZ_PLAT_CLK 24000000
-+#define DUAL_CHANNEL		2
- 
- static struct snd_soc_jack cz_jack;
- 
-@@ -91,8 +92,50 @@ static int cz_init(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
- 
--static struct snd_soc_ops cz_aif1_ops = {
-+static const unsigned int channels[] = {
-+	DUAL_CHANNEL,
-+};
-+
-+static const unsigned int rates[] = {
-+	48000,
-+};
-+
-+static const struct snd_pcm_hw_constraint_list constraints_rates = {
-+	.count = ARRAY_SIZE(rates),
-+	.list  = rates,
-+	.mask = 0,
-+};
-+
-+static const struct snd_pcm_hw_constraint_list constraints_channels = {
-+	.count = ARRAY_SIZE(channels),
-+	.list = channels,
-+	.mask = 0,
-+};
-+
-+static int cz_fe_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+
-+	/*
-+	 * On this platform for PCM device we support stereo
-+	 */
-+
-+	runtime->hw.channels_max = DUAL_CHANNEL;
-+	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+				   &constraints_channels);
-+	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-+				   &constraints_rates);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops cz_aif1_play_ops = {
-+	.hw_params = cz_aif1_hw_params,
-+};
-+
-+static struct snd_soc_ops cz_aif1_cap_ops = {
- 	.hw_params = cz_aif1_hw_params,
-+	.startup = cz_fe_startup,
- };
- 
- static struct snd_soc_dai_link cz_dai_rt5650[] = {
-@@ -106,7 +149,7 @@ static int cz_init(struct snd_soc_pcm_runtime *rtd)
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
- 				| SND_SOC_DAIFMT_CBM_CFM,
- 		.init = cz_init,
--		.ops = &cz_aif1_ops,
-+		.ops = &cz_aif1_play_ops,
- 	},
- 	{
- 		.name = "amd-rt5645-cap",
-@@ -117,7 +160,7 @@ static int cz_init(struct snd_soc_pcm_runtime *rtd)
- 		.codec_name = "i2c-10EC5650:00",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
- 				| SND_SOC_DAIFMT_CBM_CFM,
--		.ops = &cz_aif1_ops,
-+		.ops = &cz_aif1_cap_ops,
- 	},
- };
- 
+> 
+> Regards,
+> Subhransu
+> 
+> > 
+> > > +
+> > > +	rcfg = skl_get_rate_cfg(clkdev->pdata->ssp_clks[clkdev->id].rate_cfg,
+> > > +					parent_rate);
+> > > +	if (!rcfg)
+> > > +		return 0;
+> > > +
+> > > +	clk_type = skl_get_clk_type(clkdev->id);
+> > > +	if (clk_type < 0)
+> > > +		return 0;
+> > > +
+> > > +	skl_fill_clk_ipc(rcfg, clk_type);
+> > > +	clkdev->rate = rcfg->rate;
+> > > +
+> > > +	return clkdev->rate;
+> > > +}
+> > > +
+> > > +/* Not supported by clk driver. Implemented to satisfy clk fw */
+> > > +long skl_clk_round_rate(struct clk_hw *hw, unsigned long rate,
+> > > +				unsigned long *parent_rate)
+> > > +{
+> > > +	return rate;
+> > > +}
+> > 
+> > -- 
+> > Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+> > a Linux Foundation Collaborative Project
+> 
+> -- 
+
 -- 
-1.9.1
