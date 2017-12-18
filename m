@@ -1,129 +1,127 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [alsa-devel] [PATCH v5 1/6] ASoC: Intel: Skylake: Add ssp clock
- driver
-Date: Mon, 18 Dec 2017 10:31:14 +0530
-Message-ID: <20171218050109.GA27846@subhransu-desktop>
-References: <1512978390-8848-1-git-send-email-sriramx.periyasamy@intel.com>
- <1512978390-8848-2-git-send-email-sriramx.periyasamy@intel.com>
- <20171213223032.GO7997@codeaurora.org>
- <20171218035710.GA27559@subhransu-desktop>
+From: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Subject: [PATCH 1/2] ASoC: Intel: Skylake: Request IRQ late
+	only after all context are initialized
+Date: Mon, 18 Dec 2017 10:46:49 +0530
+Message-ID: <20171218051650.7027-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-clk-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171218035710.GA27559@subhransu-desktop>
-Sender: linux-clk-owner@vger.kernel.org
-To: Stephen Boyd <sboyd@codeaurora.org>
-Cc: Sriram Periyasamy <sriramx.periyasamy@intel.com>, ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>, mturquette@baylibre.com, linux-clk@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 389E6266AE1
+ for <alsa-devel@alsa-project.org>; Mon, 18 Dec 2017 06:16:41 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, GuruprasadX <guruprasadx.pawse@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Pawse@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 18, 2017 at 09:27:16AM +0530, Subhransu S. Prusty wrote:
-> On Wed, Dec 13, 2017 at 02:30:32PM -0800, Stephen Boyd wrote:
-> > On 12/11, Sriram Periyasamy wrote:
-> > > +
-> > > +static int skl_clk_set_rate(struct clk_hw *hw, unsigned long rate,
-> > > +					unsigned long parent_rate)
-> > > +{
-> > > +	struct skl_clk *clkdev = to_skl_clk(hw);
-> > > +	struct skl_clk_rate_cfg_table *rcfg;
-> > > +	int clk_type;
-> > > +
-> > > +	if (!clkdev)
-> > > +		return -ENODEV;
-> > 
-> > These checks don't make sense. container_of() on clk_hw
-> > structures returning NULL wouldn't happen.
-> 
-> Sure. will remove.
-> 
-> > 
-> > > +
-> > > +	if (!rate)
-> > > +		return -EINVAL;
-> > > +
-> > > +	if (__clk_is_enabled(hw->clk) && (clkdev->rate != rate))
-> > 
-> > Any chance you can directly read the hardware instead of going
-> > through the framework to find out if the clk is enabled? Seems
-> 
-> No. This involves sending an IPC to DSP to enable clock and interpreting the
-> return error code. I would like to avoid doing this here in set_rate.
-> 
-> > circular to do it this way.
-> > 
-> > > +		return -EBUSY;
-> > > +
-> > > +	rcfg = skl_get_rate_cfg(clkdev->pdata->ssp_clks[clkdev->id].rate_cfg,
-> > > +							rate);
-> > > +	if (!rcfg)
-> > > +		return -EINVAL;
-> > > +
-> > > +	clk_type = skl_get_clk_type(clkdev->id);
-> > > +	if (clk_type < 0)
-> > > +		return clk_type;
-> > > +
-> > > +	skl_fill_clk_ipc(rcfg, clk_type);
-> > > +	clkdev->rate = rate;
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static unsigned long skl_clk_recalc_rate(struct clk_hw *hw,
-> > > +				unsigned long parent_rate)
-> > > +{
-> > > +	struct skl_clk *clkdev = to_skl_clk(hw);
-> > > +	struct skl_clk_rate_cfg_table *rcfg;
-> > > +	int clk_type;
-> > > +
-> > > +	if (!clkdev)
-> > > +		return 0;
-> > > +
-> > > +	if (clkdev->rate)
-> > > +		return clkdev->rate;
-> > 
-> > Why is the rate being cached? We should always be able to
-> > calculate the rate based on parent_rate that gets passed to this
-> > function?
-> 
-> Will check and get back.
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 
-If I understand correctly, you refer to deriving the rate from parent_rate
-using ratios. But since only the DSP is aware of the ratios and not the
-driver, the driver can't derive the rate from the parent_rate and thus
-cached.
+Sometimes during boot, panic is observed at sst_dsp_shim_read_unlocked().
+This happens when interrupt occurs before the context is initialized. So
+move the irq initialization only after the context is initialized
+completely.
 
-> 
-> Regards,
-> Subhransu
-> 
-> > 
-> > > +
-> > > +	rcfg = skl_get_rate_cfg(clkdev->pdata->ssp_clks[clkdev->id].rate_cfg,
-> > > +					parent_rate);
-> > > +	if (!rcfg)
-> > > +		return 0;
-> > > +
-> > > +	clk_type = skl_get_clk_type(clkdev->id);
-> > > +	if (clk_type < 0)
-> > > +		return 0;
-> > > +
-> > > +	skl_fill_clk_ipc(rcfg, clk_type);
-> > > +	clkdev->rate = rcfg->rate;
-> > > +
-> > > +	return clkdev->rate;
-> > > +}
-> > > +
-> > > +/* Not supported by clk driver. Implemented to satisfy clk fw */
-> > > +long skl_clk_round_rate(struct clk_hw *hw, unsigned long rate,
-> > > +				unsigned long *parent_rate)
-> > > +{
-> > > +	return rate;
-> > > +}
-> > 
-> > -- 
-> > Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-> > a Linux Foundation Collaborative Project
-> 
-> -- 
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Pawse, GuruprasadX <guruprasadx.pawse@intel.com>
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+---
+ sound/soc/intel/skylake/bxt-sst.c     |  2 +-
+ sound/soc/intel/skylake/cnl-sst.c     |  2 +-
+ sound/soc/intel/skylake/skl-sst-dsp.c | 14 ++++++++++----
+ sound/soc/intel/skylake/skl-sst-dsp.h |  1 +
+ sound/soc/intel/skylake/skl-sst.c     |  2 +-
+ 5 files changed, 14 insertions(+), 7 deletions(-)
 
+diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+index 1c78b853a7cc..13b1749fbcd5 100644
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -582,7 +582,7 @@ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 	INIT_DELAYED_WORK(&skl->d0i3.work, bxt_set_dsp_D0i3);
+ 	skl->d0i3.state = SKL_DSP_D0I3_NONE;
+ 
+-	return 0;
++	return skl_dsp_acquire_irq(sst);
+ }
+ EXPORT_SYMBOL_GPL(bxt_sst_dsp_init);
+ 
+diff --git a/sound/soc/intel/skylake/cnl-sst.c b/sound/soc/intel/skylake/cnl-sst.c
+index 387de388ce29..245df1067ba8 100644
+--- a/sound/soc/intel/skylake/cnl-sst.c
++++ b/sound/soc/intel/skylake/cnl-sst.c
+@@ -458,7 +458,7 @@ int cnl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 	cnl->boot_complete = false;
+ 	init_waitqueue_head(&cnl->boot_wait);
+ 
+-	return 0;
++	return skl_dsp_acquire_irq(sst);
+ }
+ EXPORT_SYMBOL_GPL(cnl_sst_dsp_init);
+ 
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
+index 19ee1d4f3bdf..71e31ad0bb3f 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.c
++++ b/sound/soc/intel/skylake/skl-sst-dsp.c
+@@ -435,16 +435,22 @@ struct sst_dsp *skl_dsp_ctx_init(struct device *dev,
+ 			return NULL;
+ 	}
+ 
++	return sst;
++}
++
++int skl_dsp_acquire_irq(struct sst_dsp *sst)
++{
++	struct sst_dsp_device *sst_dev = sst->sst_dev;
++	int ret;
++
+ 	/* Register the ISR */
+ 	ret = request_threaded_irq(sst->irq, sst->ops->irq_handler,
+ 		sst_dev->thread, IRQF_SHARED, "AudioDSP", sst);
+-	if (ret) {
++	if (ret)
+ 		dev_err(sst->dev, "unable to grab threaded IRQ %d, disabling device\n",
+ 			       sst->irq);
+-		return NULL;
+-	}
+ 
+-	return sst;
++	return ret;
+ }
+ 
+ void skl_dsp_free(struct sst_dsp *dsp)
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
+index b8e799ed65ef..12fc9a73dc8a 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -206,6 +206,7 @@ int skl_cldma_wait_interruptible(struct sst_dsp *ctx);
+ void skl_dsp_set_state_locked(struct sst_dsp *ctx, int state);
+ struct sst_dsp *skl_dsp_ctx_init(struct device *dev,
+ 		struct sst_dsp_device *sst_dev, int irq);
++int skl_dsp_acquire_irq(struct sst_dsp *sst);
+ bool is_skl_dsp_running(struct sst_dsp *ctx);
+ 
+ unsigned int skl_dsp_get_enabled_cores(struct sst_dsp *ctx);
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index a436abf2fe3f..5a7e41b65ef3 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -569,7 +569,7 @@ int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 
+ 	sst->fw_ops = skl_fw_ops;
+ 
+-	return 0;
++	return skl_dsp_acquire_irq(sst);
+ }
+ EXPORT_SYMBOL_GPL(skl_sst_dsp_init);
+ 
 -- 
+2.15.1
