@@ -1,21 +1,16 @@
-From: Cheng-yi Chiang <cychiang@chromium.org>
-Subject: Re: [PATCH for-4.15] ASoC: rt5514: don't assume rt5514
-	component was "attached"
-Date: Mon, 18 Dec 2017 12:23:18 +0800
-Message-ID: <CAFv8Nw+qiWedqZeVsPn17WiSyc_zwOP3bEnxn2Wc-oQ3ntgq2g@mail.gmail.com>
-References: <20171216011230.107527-1-briannorris@chromium.org>
- <20171216031738.GA220575@google.com>
+From: Akshu Agrawal <akshu.agrawal@amd.com>
+Subject: [PATCH] ASoC: amd: Adds rate and channel constraints
+	for capture in Stoney rt5645
+Date: Mon, 18 Dec 2017 10:10:20 +0530
+Message-ID: <1513572020-7689-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yb0-f196.google.com (mail-yb0-f196.google.com
- [209.85.213.196])
- by alsa0.perex.cz (Postfix) with ESMTP id F34E1267196
- for <alsa-devel@alsa-project.org>; Mon, 18 Dec 2017 05:23:50 +0100 (CET)
-Received: by mail-yb0-f196.google.com with SMTP id 69so10159340ybc.6
- for <alsa-devel@alsa-project.org>; Sun, 17 Dec 2017 20:23:50 -0800 (PST)
-In-Reply-To: <20171216031738.GA220575@google.com>
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com
+ (mail-bl2nam02on0067.outbound.protection.outlook.com [104.47.38.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id A317E267196
+ for <alsa-devel@alsa-project.org>; Mon, 18 Dec 2017 05:44:46 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,70 +20,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jeffy Chen <jeffy.chen@rock-chips.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Matthias Kaehlcke <mka@chromium.org>
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: tiwai@suse.de, Alexander.Deucher@amd.com, lgirdwood@gmail.com, Akshu Agrawal <akshu.agrawal@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Brian,
-  Oder has posted the same fix : https://patchwork.kernel.org/
-patch/10066257/ and it has been applied.
-Perhaps you can cherry-pick it to v4.15 ?
+Constraints are added as we support 48Khz and dual channels.
 
-Thanks!
+Change-Id: Ib705f1101f5e2ab5c04f9526b10795a45a32debc
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+---
+ sound/soc/amd/acp-rt5645.c | 49 +++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 46 insertions(+), 3 deletions(-)
 
-On Sat, Dec 16, 2017 at 11:17 AM, Brian Norris <briannorris@chromium.org>
-wrote:
-
-> + others
->
-> On Fri, Dec 15, 2017 at 05:12:30PM -0800, Brian Norris wrote:
-> > I've found that on Google's "Kevin" Chromebook, the rt5514 codec might
-> > not be set up completely, yet its device is still present, and therefore
-> > its PM suspend/resume is called. This hits a NULL pointer exception,
-> > since we never had the chance to set our drvdata pointer.
-> >
-> > This resolves crashes seen when trying to resume my system.
-> >
-> > Fixes: e9c50aa6bd39 ("ASoC: rt5514-spi: check irq status to schedule
-> data copy in resume function")
-> > Signed-off-by: Brian Norris <briannorris@chromium.org>
-> > ---
-> > This is a v4.15-rc1 regression
->
-> I see that this is probably a bug on its own, which should be fixed on
-> its own (e.g., with the $subject patch), but FYI I was also pointed at
-> this patch, which also "resolves" this problem by fixing the rt5514 DAI
-> setup:
->
-> https://patchwork.kernel.org/patch/10067725/
-> [PATCH] ASoC: rockchip: Use dummy_dai for rt5514 dsp dailink
->
-> Would be nice to see it get handled too, possibly in 4.15 as well (I
-> think that's a regression too?).
->
-> Brian
->
-> >
-> >  sound/soc/codecs/rt5514-spi.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/sound/soc/codecs/rt5514-spi.c
-> b/sound/soc/codecs/rt5514-spi.c
-> > index 2df91db765ac..9255afcf2c3a 100644
-> > --- a/sound/soc/codecs/rt5514-spi.c
-> > +++ b/sound/soc/codecs/rt5514-spi.c
-> > @@ -482,7 +482,7 @@ static int __maybe_unused rt5514_resume(struct
-> device *dev)
-> >       if (device_may_wakeup(dev))
-> >               disable_irq_wake(irq);
-> >
-> > -     if (rt5514_dsp->substream) {
-> > +     if (rt5514_dsp && rt5514_dsp->substream) {
-> >               rt5514_spi_burst_read(RT5514_IRQ_CTRL, (u8 *)&buf,
-> sizeof(buf));
-> >               if (buf[0] & RT5514_IRQ_STATUS_BIT)
-> >                       rt5514_schedule_copy(rt5514_dsp);
-> > --
-> > 2.15.1.504.g5279b80103-goog
-> >
->
+diff --git a/sound/soc/amd/acp-rt5645.c b/sound/soc/amd/acp-rt5645.c
+index 941aed6..f3f96c6 100644
+--- a/sound/soc/amd/acp-rt5645.c
++++ b/sound/soc/amd/acp-rt5645.c
+@@ -40,6 +40,7 @@
+ #include "../codecs/rt5645.h"
+ 
+ #define CZ_PLAT_CLK 24000000
++#define DUAL_CHANNEL		2
+ 
+ static struct snd_soc_jack cz_jack;
+ 
+@@ -91,8 +92,50 @@ static int cz_init(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
+ 
+-static struct snd_soc_ops cz_aif1_ops = {
++static const unsigned int channels[] = {
++	DUAL_CHANNEL,
++};
++
++static const unsigned int rates[] = {
++	48000,
++};
++
++static const struct snd_pcm_hw_constraint_list constraints_rates = {
++	.count = ARRAY_SIZE(rates),
++	.list  = rates,
++	.mask = 0,
++};
++
++static const struct snd_pcm_hw_constraint_list constraints_channels = {
++	.count = ARRAY_SIZE(channels),
++	.list = channels,
++	.mask = 0,
++};
++
++static int cz_fe_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	/*
++	 * On this platform for PCM device we support stereo
++	 */
++
++	runtime->hw.channels_max = DUAL_CHANNEL;
++	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++				   &constraints_channels);
++	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++				   &constraints_rates);
++
++	return 0;
++}
++
++static struct snd_soc_ops cz_aif1_play_ops = {
++	.hw_params = cz_aif1_hw_params,
++};
++
++static struct snd_soc_ops cz_aif1_cap_ops = {
+ 	.hw_params = cz_aif1_hw_params,
++	.startup = cz_fe_startup,
+ };
+ 
+ static struct snd_soc_dai_link cz_dai_rt5650[] = {
+@@ -106,7 +149,7 @@ static int cz_init(struct snd_soc_pcm_runtime *rtd)
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+ 				| SND_SOC_DAIFMT_CBM_CFM,
+ 		.init = cz_init,
+-		.ops = &cz_aif1_ops,
++		.ops = &cz_aif1_play_ops,
+ 	},
+ 	{
+ 		.name = "amd-rt5645-cap",
+@@ -117,7 +160,7 @@ static int cz_init(struct snd_soc_pcm_runtime *rtd)
+ 		.codec_name = "i2c-10EC5650:00",
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+ 				| SND_SOC_DAIFMT_CBM_CFM,
+-		.ops = &cz_aif1_ops,
++		.ops = &cz_aif1_cap_ops,
+ 	},
+ };
+ 
+-- 
+1.9.1
