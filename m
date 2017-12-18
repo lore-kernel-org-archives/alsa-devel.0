@@ -1,60 +1,73 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [RESEND PATCH v2 01/15] dt-bindings: soc: qcom: Add bindings for
- APR bus
-Date: Mon, 18 Dec 2017 09:50:10 +0000
-Message-ID: <fc2f138a-0584-c40c-0547-0015aece738c@linaro.org>
-References: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
- <20171214173402.19074-2-srinivas.kandagatla@linaro.org>
- <20171216172722.avtipt5evmreayyc@rob-hp-laptop>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v6] ASoC: TSCS42xx: Support Tempo
+ Semiconductor's TSCS42xx audio CODECs
+Date: Mon, 18 Dec 2017 09:50:48 +0000
+Message-ID: <20171218095048.e5zwla65f2qqmroj@localhost.localdomain>
+References: <20171217035439.5merfdxrjz6amscd@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <20171216172722.avtipt5evmreayyc@rob-hp-laptop>
-Content-Language: en-US
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Rob Herring <robh@kernel.org>
-Cc: Andy Gross <andy.gross@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, David Brown <david.brown@linaro.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, sboyd@codeaurora.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 975AE2674F1
+ for <alsa-devel@alsa-project.org>; Mon, 18 Dec 2017 10:50:52 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20171217035439.5merfdxrjz6amscd@localhost.localdomain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Philippe Ombredanne <pombredanne@nexb.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 16/12/17 17:27, Rob Herring wrote:
-> On Thu, Dec 14, 2017 at 05:33:48PM +0000, srinivas.kandagatla@linaro.org wrote:
->> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>
->> This patch add dt bindings for Qualcomm APR bus driver
->>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> ---
->>   .../devicetree/bindings/soc/qcom/qcom,apr.txt      | 28 ++++++++++++++++++++++
->>   1 file changed, 28 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
->>
->> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
->> new file mode 100644
->> index 000000000000..4e93213ae98d
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
->> @@ -0,0 +1,28 @@
->> +Qualcomm APR (Asynchronous Packet Router) binding
->> +
->> +This binding describes the Qualcomm APR. APR is a IPC protocol for
->> +communication between Application processor and QDSP. APR is mainly
->> +used for audio/voice services on the QDSP.
->> +
->> +- compatible:
->> +	Usage: required
->> +	Value type: <stringlist>
->> +	Definition: must be "qcom,apr-<SOC-NAME>" example: "qcom,apr-msm8996"
+On Sat, Dec 16, 2017 at 09:54:50PM -0600, Steven Eckhoff wrote:
+> Currently there is no support for TSCS42xx audio CODECs.
 > 
-> <soc>-apr is the more standard order. With that,
-Yes, it makes sense, will do that in next version.
+> Add support for TSCS42xx audio CODECs.
 > 
-> Reviewed-by: Rob Herring <robh@kernel.org>
+> Acked-by: Philippe Ombredanne <pombredanne@nexb.com>
+> Signed-off-by: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+> ---
+> +/* D2S Input Select */
+> +static char const * const d2s_input_select_text[] = {
+> +	"Line 1", "Line 2"
+> +};
+> +
+> +static const struct soc_enum d2s_input_select_enum =
+> +SOC_ENUM_SINGLE(R_INMODE, FB_INMODE_DS, ARRAY_SIZE(d2s_input_select_text),
+> +		d2s_input_select_text);
+> +
+> +static const struct snd_kcontrol_new d2s_input_mux =
+> +SOC_DAPM_ENUM("D2S_IN_MUX", d2s_input_select_enum);
+> +
 
-Thanks for reviewed-by tag.
+Is this unused?
 
-Rgrds,
-Srini
-> 
+> +#define COEFF_RAM_CTL(xname, xcount, xhandler_get, xhandler_put, xaddr) \
+> +{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
+> +	.info = bytes_info_ext, \
+> +	.get = xhandler_get, .put = xhandler_put, \
+
+Given all users of this macro use coeff_ram_get and coeff_ram_put
+might it just be worth sticking them in here?
+
+> +	.private_value = (unsigned long)&(struct coeff_ram_ctl) { \
+> +		.addr = xaddr, \
+> +		.bytes_ext = {.max = xcount, }, \
+> +	} \
+> +}
+
+Other than those two very minor comments, looks ok to me so I
+think you can add:
+
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+
+Thanks,
+Charles
