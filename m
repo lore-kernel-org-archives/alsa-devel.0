@@ -1,155 +1,147 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v1 13/15] ASoC: fsl_ssi: Remove cpu_dai_drv from fsl_ssi structure
-Date: Tue, 19 Dec 2017 09:00:17 -0800
-Message-ID: <1513702819-42310-14-git-send-email-nicoleotsuka@gmail.com>
+Subject: [PATCH v1 03/15] ASoC: fsl_ssi: Rename
+	fsl_ssi_disable_val macro
+Date: Tue, 19 Dec 2017 09:00:07 -0800
+Message-ID: <1513702819-42310-4-git-send-email-nicoleotsuka@gmail.com>
 References: <1513702819-42310-1-git-send-email-nicoleotsuka@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf0-f194.google.com (mail-pf0-f194.google.com
+ [209.85.192.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 945C62676D2
+ for <alsa-devel@alsa-project.org>; Tue, 19 Dec 2017 18:01:10 +0100 (CET)
+Received: by mail-pf0-f194.google.com with SMTP id m26so11359414pfj.11
+ for <alsa-devel@alsa-project.org>; Tue, 19 Dec 2017 09:01:10 -0800 (PST)
 In-Reply-To: <1513702819-42310-1-git-send-email-nicoleotsuka@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: timur@tabi.org, broonie@kernel.org
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, fabio.estevam@nxp.com, mail@maciej.szmigiero.name, caleb@crome.org, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
+Cc: mail@maciej.szmigiero.name, kernel@pengutronix.de, lgirdwood@gmail.com, alsa-devel@alsa-project.org, caleb@crome.org, linux-kernel@vger.kernel.org, arnaud.mouiche@invoxia.com, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-The cpu_dai_drv is only used for symmetric_rates. So this patch replaces
-it with a synchronous boolean flag.
+The define of fsl_ssi_disable_val is not so clear as it mixes two
+steps of calculations together. And those parameter names are also
+a bit long to read.
+
+Since it just tries to exclude the shared bits from the regvals of
+current stream while the opposite stream is active, it's better to
+use something like ssi_excl_shared_bits.
+
+This patch also bisects fsl_ssi_disable_val into two macros of two
+corresponding steps and then shortens its parameter names. It also
+updates callers in the fsl_ssi_config() accordingly.
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 ---
- sound/soc/fsl/fsl_ssi.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 54 ++++++++++++++++++++-----------------------------
+ 1 file changed, 22 insertions(+), 32 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 898f837..7d6149d 100644
+index f05f78d..6dda2e0 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -208,11 +208,11 @@ struct fsl_ssi_soc_data {
-  *
-  * @regs: Pointer to the regmap registers
-  * @irq: IRQ of this SSI
-- * @cpu_dai_drv: CPU DAI driver for this device
-  *
-  * @dai_fmt: DAI configuration this device is currently used with
-  * @streams: Mask of current active streams: BIT(TX) and BIT(RX)
-  * @i2s_net: I2S and Network mode configurations of SCR register
-+ * @synchronous: Use synchronous mode - both of TX and RX use STCK and SFCK
-  * @use_dma: DMA is used or FIQ with stream filter
-  * @use_dual_fifo: DMA with support for dual FIFO mode
-  * @has_ipg_clk_name: If "ipg" is in the clock name list of device tree
-@@ -253,11 +253,11 @@ struct fsl_ssi_soc_data {
- struct fsl_ssi {
- 	struct regmap *regs;
- 	int irq;
--	struct snd_soc_dai_driver cpu_dai_drv;
+@@ -417,24 +417,24 @@ static void fsl_ssi_fifo_clear(struct fsl_ssi *ssi, bool is_rx)
+ }
  
- 	unsigned int dai_fmt;
- 	u8 streams;
- 	u8 i2s_net;
-+	bool synchronous;
- 	bool use_dma;
- 	bool use_dual_fifo;
- 	bool has_ipg_clk_name;
-@@ -663,7 +663,6 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
- 	bool tx2, tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
- 	struct fsl_ssi *ssi = snd_soc_dai_get_drvdata(dai);
+ /**
+- * Calculate the bits that have to be disabled for the current stream that is
+- * getting disabled. This keeps the bits enabled that are necessary for the
+- * second stream to work if 'stream_active' is true.
++ * Exclude bits that are used by the opposite stream
+  *
+- * Detailed calculation:
+- * These are the values that need to be active after disabling. For non-active
+- * second stream, this is 0:
+- *	vals_stream * !!stream_active
++ * When both streams are active, disabling some bits for the current stream
++ * might break the other stream if these bits are used by it.
+  *
+- * The following computes the overall differences between the setup for the
+- * to-disable stream and the active stream, a simple XOR:
+- *	vals_disable ^ (vals_stream * !!(stream_active))
++ * @vals : regvals of the current stream
++ * @avals: regvals of the opposite stream
++ * @aactive: active state of the opposite stream
+  *
+- * The full expression adds a mask on all values we care about
++ *  1) XOR vals and avals to get the differences if the other stream is active;
++ *     Otherwise, return current vals if the other stream is not active
++ *  2) AND the result of 1) with the current vals
+  */
+-#define fsl_ssi_disable_val(vals_disable, vals_stream, stream_active) \
+-	((vals_disable) & \
+-	 ((vals_disable) ^ ((vals_stream) * (u32)!!(stream_active))))
++#define _ssi_xor_shared_bits(vals, avals, aactive) \
++	((vals) ^ ((avals) * (aactive)))
++
++#define ssi_excl_shared_bits(vals, avals, aactive) \
++	((vals) & _ssi_xor_shared_bits(vals, avals, aactive))
+ 
+ /**
+  * Enable or disable SSI configuration.
+@@ -445,16 +445,10 @@ static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
+ 	bool tx = &ssi->regvals[TX] == vals;
  	struct regmap *regs = ssi->regs;
--	int synchronous = ssi->cpu_dai_drv.symmetric_rates, ret;
- 	u32 pm = 999, div2, psr, stccr, mask, afreq, factor, i;
- 	unsigned long clkrate, baudrate, tmprate;
- 	unsigned int slots = params_channels(hw_params);
-@@ -671,6 +670,7 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
- 	u64 sub, savesub = 100000;
- 	unsigned int freq;
- 	bool baudclk_is_used;
-+	int ret;
+ 	struct fsl_ssi_regvals *avals;
+-	int nr_active_streams;
+-	int keep_active;
+-
+-	nr_active_streams = !!(ssi->streams & BIT(TX)) +
+-			    !!(ssi->streams & BIT(RX));
++	bool aactive;
  
- 	/* Override slots and slot_width if being specifically set... */
- 	if (ssi->slots)
-@@ -749,7 +749,7 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
- 	mask = SSI_SxCCR_PM_MASK | SSI_SxCCR_DIV2 | SSI_SxCCR_PSR;
+-	if (nr_active_streams - 1 > 0)
+-		keep_active = 1;
+-	else
+-		keep_active = 0;
++	/* Check if the opposite stream is active */
++	aactive = ssi->streams & BIT(!tx);
  
- 	/* STCCR is used for RX in synchronous mode */
--	tx2 = tx || synchronous;
-+	tx2 = tx || ssi->synchronous;
- 	regmap_update_bits(regs, REG_SSI_SxCCR(tx2), mask, stccr);
+ 	/* Get the opposite direction to keep its values untouched */
+ 	if (&ssi->regvals[RX] == vals)
+@@ -467,8 +461,7 @@ static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
+ 		 * To keep the other stream safe, exclude shared bits between
+ 		 * both streams, and get safe bits to disable current stream
+ 		 */
+-		u32 scr = fsl_ssi_disable_val(vals->scr, avals->scr,
+-					      keep_active);
++		u32 scr = ssi_excl_shared_bits(vals->scr, avals->scr, aactive);
+ 		/* Safely disable SCR register for the stream */
+ 		regmap_update_bits(regs, REG_SSI_SCR, scr, 0);
  
- 	if (!baudclk_is_used) {
-@@ -797,7 +797,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
- 	 * that should set separate configurations for STCCR and SRCCR
- 	 * despite running in the synchronous mode.
+@@ -483,7 +476,7 @@ static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
+ 	 * 2) Disable all remaining bits of both streams when last stream ends
  	 */
--	if (enabled && ssi->cpu_dai_drv.symmetric_rates)
-+	if (enabled && ssi->synchronous)
- 		return 0;
+ 	if (ssi->soc->offline_config) {
+-		if ((enable && !nr_active_streams) || (!enable && !keep_active))
++		if ((enable && !ssi->streams) || (!enable && !aactive))
+ 			fsl_ssi_rxtx_config(ssi, enable);
  
- 	if (fsl_ssi_is_i2s_master(ssi)) {
-@@ -829,7 +829,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
- 	}
+ 		goto config_done;
+@@ -505,12 +498,9 @@ static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
+ 		 * To keep the other stream safe, exclude shared bits between
+ 		 * both streams, and get safe bits to disable current stream
+ 		 */
+-		sier = fsl_ssi_disable_val(vals->sier, avals->sier,
+-					   keep_active);
+-		srcr = fsl_ssi_disable_val(vals->srcr, avals->srcr,
+-					   keep_active);
+-		stcr = fsl_ssi_disable_val(vals->stcr, avals->stcr,
+-					   keep_active);
++		sier = ssi_excl_shared_bits(vals->sier, avals->sier, aactive);
++		srcr = ssi_excl_shared_bits(vals->srcr, avals->srcr, aactive);
++		stcr = ssi_excl_shared_bits(vals->stcr, avals->stcr, aactive);
  
- 	/* In synchronous mode, the SSI uses STCCR for capture */
--	tx2 = tx || ssi->cpu_dai_drv.symmetric_rates;
-+	tx2 = tx || ssi->synchronous;
- 	regmap_update_bits(regs, REG_SSI_SxCCR(tx2), SSI_SxCCR_WL_MASK, wl);
- 
- 	return 0;
-@@ -954,7 +954,7 @@ static int _fsl_ssi_set_dai_fmt(struct fsl_ssi *ssi, unsigned int fmt)
- 	srcr = strcr;
- 
- 	/* Set SYN mode and clear RXDIR bit when using SYN or AC97 mode */
--	if (ssi->cpu_dai_drv.symmetric_rates || fsl_ssi_is_ac97(ssi)) {
-+	if (ssi->synchronous || fsl_ssi_is_ac97(ssi)) {
- 		srcr &= ~SSI_SRCR_RXDIR;
- 		scr |= SSI_SCR_SYN;
- 	}
-@@ -1352,6 +1352,7 @@ static void fsl_ssi_imx_clean(struct platform_device *pdev, struct fsl_ssi *ssi)
- 
- static int fsl_ssi_probe(struct platform_device *pdev)
- {
-+	struct snd_soc_dai_driver *cpu_dai_drv;
- 	struct fsl_ssi *ssi;
- 	int ret = 0;
- 	struct device_node *np = pdev->dev.of_node;
-@@ -1386,14 +1387,12 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	ssi->use_dma = !of_property_read_bool(np, "fsl,fiq-stream-filter");
- 
- 	if (fsl_ssi_is_ac97(ssi)) {
--		memcpy(&ssi->cpu_dai_drv, &fsl_ssi_ac97_dai,
--		       sizeof(fsl_ssi_ac97_dai));
-+		cpu_dai_drv = &fsl_ssi_ac97_dai;
- 		fsl_ac97_data = ssi;
- 	} else {
--		memcpy(&ssi->cpu_dai_drv, &fsl_ssi_dai_template,
--		       sizeof(fsl_ssi_dai_template));
-+		cpu_dai_drv = &fsl_ssi_dai_template;
- 	}
--	ssi->cpu_dai_drv.name = dev_name(dev);
-+	cpu_dai_drv->name = dev_name(dev);
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	iomem = devm_ioremap_resource(dev, res);
-@@ -1431,11 +1430,12 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	/* Set software limitations for synchronous mode */
- 	if (!of_find_property(np, "fsl,ssi-asynchronous", NULL)) {
- 		if (!fsl_ssi_is_ac97(ssi)) {
--			ssi->cpu_dai_drv.symmetric_rates = 1;
--			ssi->cpu_dai_drv.symmetric_samplebits = 1;
-+			cpu_dai_drv->symmetric_rates = 1;
-+			cpu_dai_drv->symmetric_samplebits = 1;
-+			ssi->synchronous = true;
- 		}
- 
--		ssi->cpu_dai_drv.symmetric_channels = 1;
-+		cpu_dai_drv->symmetric_channels = 1;
- 	}
- 
- 	/* Fetch FIFO depth; Set to 8 for older DT without this property */
-@@ -1490,7 +1490,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	}
- 
- 	ret = devm_snd_soc_register_component(dev, &fsl_ssi_component,
--					      &ssi->cpu_dai_drv, 1);
-+					      cpu_dai_drv, 1);
- 	if (ret) {
- 		dev_err(dev, "failed to register DAI: %d\n", ret);
- 		goto error_asoc_register;
+ 		/* Safely disable other control registers for the stream */
+ 		regmap_update_bits(regs, REG_SSI_SRCR, srcr, 0);
 -- 
 2.7.4
