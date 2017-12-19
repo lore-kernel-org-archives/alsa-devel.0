@@ -1,17 +1,25 @@
-From: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
-Subject: [PATCH v1 3/6] ALSA: usb: UAC3. Add initial mixer
-	support.
-Date: Tue, 19 Dec 2017 09:14:08 +0000
-Message-ID: <20171219091411.16267-4-jorge.sanjuan@codethink.co.uk>
-References: <20171219091411.16267-1-jorge.sanjuan@codethink.co.uk>
+From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
+Subject: Re: [RFC v3 06/11] ASoC: hdac_hda: add ASoC based HDA
+	codec driver
+Date: Tue, 19 Dec 2017 09:19:17 +0000
+Message-ID: <85DFEED57DC57344B2483EF7BF8CB60579ADCE9A@BGSMSX104.gar.corp.intel.com>
+References: <1513337448-31685-1-git-send-email-rakesh.a.ughreja@intel.com>
+ <1513337448-31685-7-git-send-email-rakesh.a.ughreja@intel.com>
+ <s5hd13ggr18.wl-tiwai@suse.de>
+ <85DFEED57DC57344B2483EF7BF8CB60579ADA90D@BGSMSX104.gar.corp.intel.com>
+ <s5hvah8f0x6.wl-tiwai@suse.de>
+ <85DFEED57DC57344B2483EF7BF8CB60579ADAF8C@BGSMSX104.gar.corp.intel.com>
+ <s5h4lorvxvj.wl-tiwai@suse.de>
+ <85DFEED57DC57344B2483EF7BF8CB60579ADB65F@BGSMSX104.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imap1.codethink.co.uk (imap1.codethink.co.uk [176.9.8.82])
- by alsa0.perex.cz (Postfix) with ESMTP id 641E8267600
- for <alsa-devel@alsa-project.org>; Tue, 19 Dec 2017 10:14:22 +0100 (CET)
-In-Reply-To: <20171219091411.16267-1-jorge.sanjuan@codethink.co.uk>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47FC5266D71
+ for <alsa-devel@alsa-project.org>; Tue, 19 Dec 2017 10:19:23 +0100 (CET)
+In-Reply-To: <85DFEED57DC57344B2483EF7BF8CB60579ADB65F@BGSMSX104.gar.corp.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,74 +29,445 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: linux-kernel@lists.codethink.co.uk, Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>, ci005-internal@lists.codethink.co.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul,
+ Vinod" <vinod.koul@intel.com>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
----
- include/uapi/linux/usb/audio.h | 13 ++++++++++---
- sound/usb/mixer.c              | 24 ++++++++++++++++++++++++
- 2 files changed, 34 insertions(+), 3 deletions(-)
 
-diff --git a/include/uapi/linux/usb/audio.h b/include/uapi/linux/usb/audio.h
-index ca33f47a2fd4..24a41afe6bae 100644
---- a/include/uapi/linux/usb/audio.h
-+++ b/include/uapi/linux/usb/audio.h
-@@ -292,9 +292,16 @@ static inline __u8 uac_mixer_unit_iChannelNames(struct uac_mixer_unit_descriptor
- static inline __u8 *uac_mixer_unit_bmControls(struct uac_mixer_unit_descriptor *desc,
- 					      int protocol)
+
+>-----Original Message-----
+>From: Ughreja, Rakesh A
+>Sent: Monday, December 18, 2017 9:36 AM
+>To: Takashi Iwai <tiwai@suse.de>
+>Cc: alsa-devel@alsa-project.org; broonie@kernel.org;
+>liam.r.girdwood@linux.intel.com; pierre-louis.bossart@linux.intel.com; Koul,
+>Vinod <vinod.koul@intel.com>; Patches Audio <patches.audio@intel.com>
+>Subject: RE: [RFC v3 06/11] ASoC: hdac_hda: add ASoC based HDA codec
+>driver
+>
+>
+>
+>>-----Original Message-----
+>>From: Takashi Iwai [mailto:tiwai@suse.de]
+>>Sent: Saturday, December 16, 2017 2:44 PM
+>>To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>
+>>Cc: alsa-devel@alsa-project.org; broonie@kernel.org;
+>>liam.r.girdwood@linux.intel.com; pierre-louis.bossart@linux.intel.com; Koul,
+>Vinod
+>><vinod.koul@intel.com>; Patches Audio <patches.audio@intel.com>
+>>Subject: Re: [RFC v3 06/11] ASoC: hdac_hda: add ASoC based HDA codec
+>driver
+>>
+>
+>>> I am not sure if I understand you fully, so asking some follow up
+>>> Questions.
+>>>
+>>> I am assuming you are asking me to implement something like following.
+>>> Where I have to implement snd_hda_get_mode() function which would
+>>> return "true" if we need to register the driver as "asoc" driver.
+>>>
+>>> Is that right understanding ?
+>>>
+>>> int __hda_codec_driver_register(struct hda_codec_driver *drv, const char
+>>*name,
+>>>                                struct module *owner)
+>>> {
+>>>         /*
+>>>          * check if we need to register ASoC HDA driver
+>>>          */
+>>> #if IS_ENABLED(CONFIG_SND_SOC_HDAC_HDA)
+>>>         int asoc_mode = snd_hda_get_mode();
+>>>         if (asoc_mode) {
+>>>                 drv->core.id_table = drv->id;
+>>>                 return __hdac_hda_codec_driver_register(&drv->core, name,
+>owner);
+>>>         }
+>>> #endif
+>>>         return __hda_legacy_codec_driver_register(drv, name, owner);
+>>> }
+>>>
+>>> If above is true then the follow up question is, what are the criteria to
+>determine
+>>> the mode. Since I cannot assume that the bus instance is already created at
+>the
+>>> time of driver registration, I am not sure how to determine what kind of
+>platform
+>>> driver would be loaded in future.
+>>
+>>My assumption is that there is only one hda_codec_driver_register().
+>>The legacy code needs to be rewritten to implement the standard
+>>probe/remove as preliminary.  Any the rest differentiation is done via
+>>additional callbacks at probe/remove time.
+>>
+>
+>Oh I see. Let me work on this and may ask you some additional clarifications.
+>
+>Regards,
+>Rakesh
+
+Hi Takashi,
+
+I worked on the concept that you proposed and here is the patch with main 
+code change. Basically I wrote common driver handlers for HDA Driver
+snd_hdac_drv_probe, snd_hdac_drv_remove, snd_hdac_drv_shutdown, 
+snd_hdac_drv_match, snd_hdac_drv_unsol_event etc.
+
+Once the common driver is probed it checks what kind of bus it is enumerated
+on by calling the bus API. If it is ASOC bus type it calls the ASOC driver
+registered callbacks and if it is LEGACY bus type it calls the Legacy driver
+registered callbacks.
+
+ASoC based platform drivers would create ASOC bus type while the legacy
+controller drivers would create LEGACY bus type. I added the bus_type as
+a part of hdac_bus, which gets set during snd_hdac_bus_init or 
+snd_hdac_ext_bus_init. hdac_device->type and hdac_driver->type are
+set the HDA_DEV_CORE during registrations and enumeration. 
+
+Also I have kept these routines as part of codec library, so that all the other
+drivers can use it without duplicating the code.
+
+Let me know if you are okay, I can include these changes as part of my
+next series.
+
+Regards,
+Rakesh
+
+--- patch--
+This patch adds common enumeration functions for HDA codec drivers.
+Once the codec is enumerated on the hdac_bus, the bus_type is checked
+before the corresponding callback functions are called.
+
+Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+---
+ sound/pci/hda/hda_bind.c  | 252 ++++++++++++++++++++++++++++++++++++++++------
+ sound/pci/hda/hda_codec.h |  22 ++--
+ 2 files changed, 231 insertions(+), 43 deletions(-)
+
+diff --git a/sound/pci/hda/hda_bind.c b/sound/pci/hda/hda_bind.c
+index d8715a1..7d8d54c 100644
+--- a/sound/pci/hda/hda_bind.c
++++ b/sound/pci/hda/hda_bind.c
+@@ -11,6 +11,7 @@
+ #include <linux/pm.h>
+ #include <linux/pm_runtime.h>
+ #include <sound/core.h>
++#include <sound/hdaudio_ext.h>
+ #include "hda_codec.h"
+ #include "hda_local.h"
+ 
+@@ -74,10 +75,10 @@ int snd_hda_codec_set_name(struct hda_codec *codec, const char *name)
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_codec_set_name);
+ 
+-static int hda_codec_driver_probe(struct device *dev)
++static int hda_codec_driver_probe(struct hdac_device *hdev)
  {
--	return (protocol == UAC_VERSION_1) ?
--		&desc->baSourceID[desc->bNrInPins + 4] :
--		&desc->baSourceID[desc->bNrInPins + 6];
-+	switch (protocol) {
-+	case UAC_VERSION_1:
-+		return &desc->baSourceID[desc->bNrInPins + 4];
-+	case UAC_VERSION_2:
-+		return &desc->baSourceID[desc->bNrInPins + 6];
-+	case UAC_VERSION_3:
-+		return &desc->baSourceID[desc->bNrInPins + 2];
-+	default:
-+		return NULL;
-+	}
+-	struct hda_codec *codec = dev_to_hda_codec(dev);
+-	struct module *owner = dev->driver->owner;
++	struct hda_codec *codec = dev_to_hda_codec(&hdev->dev);
++	struct module *owner = hdev->dev.driver->owner;
+ 	hda_codec_patch_t patch;
+ 	int err;
+ 
+@@ -130,48 +131,25 @@ static int hda_codec_driver_probe(struct device *dev)
+ 	return err;
  }
  
- static inline __u8 uac_mixer_unit_iMixer(struct uac_mixer_unit_descriptor *desc)
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index c34a1f74ea56..4158be9ef43f 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -847,6 +847,30 @@ static int check_input_term(struct mixer_build *state, int id,
- 				term->name = le16_to_cpu(d->wClockSourceStr);
- 				return 0;
- 			}
-+			case UAC3_MIXER_UNIT: {
-+				struct uac_mixer_unit_descriptor *d = p1;
-+				struct uac3_cluster_header_descriptor c_header;
-+				u16 cluster_id;
+-static int hda_codec_driver_remove(struct device *dev)
++static int hda_codec_driver_remove(struct hdac_device *hdev)
+ {
+-	struct hda_codec *codec = dev_to_hda_codec(dev);
++	struct hda_codec *codec = dev_to_hda_codec(&hdev->dev);
+ 
+ 	if (codec->patch_ops.free)
+ 		codec->patch_ops.free(codec);
+ 	snd_hda_codec_cleanup_for_unbind(codec);
+-	module_put(dev->driver->owner);
++	module_put(hdev->dev.driver->owner);
+ 	return 0;
+ }
+ 
+-static void hda_codec_driver_shutdown(struct device *dev)
++static void hda_codec_driver_shutdown(struct hdac_device *hdev)
+ {
+-	struct hda_codec *codec = dev_to_hda_codec(dev);
++	struct hda_codec *codec = dev_to_hda_codec(&hdev->dev);
+ 
+-	if (!pm_runtime_suspended(dev) && codec->patch_ops.reboot_notify)
++	if (!pm_runtime_suspended(&hdev->dev) && codec->patch_ops.reboot_notify)
+ 		codec->patch_ops.reboot_notify(codec);
+ }
+ 
+-int __hda_legacy_codec_driver_register(struct hda_codec_driver *drv,
+-					const char *name, struct module *owner)
+-{
+-	drv->core.driver.name = name;
+-	drv->core.driver.owner = owner;
+-	drv->core.driver.bus = &snd_hda_bus_type;
+-	drv->core.driver.probe = hda_codec_driver_probe;
+-	drv->core.driver.remove = hda_codec_driver_remove;
+-	drv->core.driver.shutdown = hda_codec_driver_shutdown;
+-	drv->core.driver.pm = &hda_codec_driver_pm;
+-	drv->core.type = HDA_DEV_LEGACY;
+-	drv->core.match = hda_codec_match;
+-	drv->core.unsol_event = hda_codec_unsol_event;
+-	return driver_register(&drv->core.driver);
+-}
+-EXPORT_SYMBOL_GPL(__hda_legacy_codec_driver_register);
+-
+-void hda_legacy_codec_driver_unregister(struct hda_codec_driver *drv)
+-{
+-	driver_unregister(&drv->core.driver);
+-}
+-EXPORT_SYMBOL_GPL(hda_legacy_codec_driver_unregister);
+-
+ static inline bool codec_probed(struct hda_codec *codec)
+ {
+ 	return device_attach(hda_codec_dev(codec)) > 0 && codec->preset;
+@@ -305,3 +283,213 @@ int snd_hda_codec_configure(struct hda_codec *codec)
+ 	return err;
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_codec_configure);
 +
-+				cluster_id = le16_to_cpu(d->baSourceID[d->bNrInPins]);
 +
-+				err = snd_usb_ctl_msg(state->chip->dev,
-+						usb_rcvctrlpipe(state->chip->dev, 0),
-+						UAC3_CS_REQ_HIGH_CAPABILITY_DESCRIPTOR,
-+						USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
-+						cluster_id,
-+						snd_usb_ctrl_intf(state->chip),
-+						&c_header, sizeof(c_header));
-+				if (err < 0)
-+					return err;
-+				else if (err != sizeof(c_header))
-+					return -EIO;
++/*
++ * Newly implemented functions for common routines
++ */
++static struct hdac_driver *snd_hdac_drvs[2];
 +
-+				term->type = d->bDescriptorSubtype << 16; /* virtual type */
-+				term->channels = c_header.bNrChannels;
++int snd_hdac_drv_probe(struct hdac_device *hdev)
++{
++	int bus_type;
++	struct hdac_driver *drv;
 +
-+				return 0;
-+			}
- 			default:
- 				return -ENODEV;
- 			}
++	bus_type = snd_hdac_get_bus_type(hdev->bus);
++	bus_type --;
++
++	dev_dbg(&hdev->dev, "%s: entry ..%d\n", __func__, bus_type);
++
++	drv = snd_hdac_drvs[bus_type];
++	if (drv->probe)
++		return drv->probe(hdev);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_hdac_drv_probe);
++
++int snd_hdac_drv_remove(struct hdac_device *hdev)
++{
++	int bus_type;
++	struct hdac_driver *drv;
++
++	bus_type = snd_hdac_get_bus_type(hdev->bus);
++	bus_type --;
++
++	dev_dbg(&hdev->dev, "%s: entry ..%d\n", __func__, bus_type);
++
++	drv = snd_hdac_drvs[bus_type];
++	if (drv->remove)
++		return drv->remove(hdev);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_hdac_drv_remove);
++
++void snd_hdac_drv_shutdown(struct hdac_device *hdev)
++{
++	int bus_type;
++	struct hdac_driver *drv;
++
++	bus_type = snd_hdac_get_bus_type(hdev->bus);
++	bus_type --;
++
++	dev_dbg(&hdev->dev, "%s: entry ..%d\n", __func__, bus_type);
++
++	drv = snd_hdac_drvs[bus_type];
++	if (drv->shutdown)
++		return drv->shutdown(hdev);
++}
++EXPORT_SYMBOL_GPL(snd_hdac_drv_shutdown);
++
++int snd_hdac_drv_match(struct hdac_device *hdev, struct hdac_driver *drv)
++{
++	int bus_type;
++	struct hdac_driver *cdrv;
++
++	bus_type = snd_hdac_get_bus_type(hdev->bus);
++	bus_type --;
++
++	dev_dbg(&hdev->dev, "%s: entry ..%d\n", __func__, bus_type);
++
++	cdrv = snd_hdac_drvs[bus_type];
++	if (cdrv->match)
++		return cdrv->match(hdev, drv);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_hdac_drv_match);
++
++void snd_hdac_drv_unsol_event(struct hdac_device *hdev, unsigned int event)
++{
++	int bus_type;
++	struct hdac_driver *drv;
++
++	bus_type = snd_hdac_get_bus_type(hdev->bus);
++	bus_type --;
++
++	dev_dbg(&hdev->dev, "%s: entry ..%d\n", __func__, bus_type);
++
++	drv = snd_hdac_drvs[bus_type];
++	if (drv->unsol_event)
++		return drv->unsol_event(hdev, event);
++}
++EXPORT_SYMBOL_GPL(snd_hdac_drv_unsol_event);
++
++int snd_hdac_runtime_suspend(struct device *dev)
++{
++
++	int bus_type;
++	struct hdac_driver *drv;
++	struct hdac_device *hdev = dev_to_hdac_dev(dev);
++
++	bus_type = snd_hdac_get_bus_type(hdev->bus);
++	bus_type --;
++
++	dev_dbg(&hdev->dev, "%s: entry ..%d\n", __func__, bus_type);
++
++	drv = snd_hdac_drvs[bus_type];
++	if (drv->driver.pm->runtime_suspend)
++		return drv->driver.pm->runtime_suspend(dev);
++
++	return 0;
++}
++
++int snd_hdac_runtime_resume(struct device *dev)
++{
++
++	int bus_type;
++	struct hdac_driver *drv;
++	struct hdac_device *hdev = dev_to_hdac_dev(dev);
++
++	bus_type = snd_hdac_get_bus_type(hdev->bus);
++	bus_type --;
++
++	dev_dbg(&hdev->dev, "%s: entry ..%d\n", __func__, bus_type);
++
++	drv = snd_hdac_drvs[bus_type];
++	if (drv->driver.pm->runtime_resume)
++		return drv->driver.pm->runtime_resume(dev);
++
++	return 0;
++}
++
++const struct dev_pm_ops snd_hdac_drv_pm = {
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				pm_runtime_force_resume)
++	SET_RUNTIME_PM_OPS(snd_hdac_runtime_suspend, snd_hdac_runtime_resume,
++			   NULL)
++};
++
++int snd_hdac_callback_register(struct hdac_driver *drv)
++{
++	int idx;
++
++	if(drv->type != HDA_DEV_LEGACY && drv->type != HDA_DEV_ASOC)
++		return -EINVAL;
++
++	printk("%s: registered callback %d\n", drv->driver.name, drv->type);
++	idx = drv->type - 1;
++	if (!snd_hdac_drvs[idx])
++		snd_hdac_drvs[idx] = drv;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_hdac_callback_register);
++
++int snd_hdac_callback_unregister(struct hdac_driver *drv)
++{
++	int idx;
++
++	if(drv->type != HDA_DEV_LEGACY && drv->type != HDA_DEV_ASOC)
++		return -EINVAL;
++
++	idx = drv->type - 1;
++	snd_hdac_drvs[idx] = NULL;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_hdac_callback_unregister);
++
++static struct hdac_driver hdac_legacy_driver = {
++	.type = HDA_DEV_LEGACY,
++	.match = hda_codec_match,
++	.unsol_event = hda_codec_unsol_event,
++	.probe = hda_codec_driver_probe,
++	.remove = hda_codec_driver_remove,
++	.shutdown = hda_codec_driver_shutdown,
++	.driver.pm = &hda_codec_driver_pm,
++};
++
++int __snd_hdac_driver_register(struct hda_codec_driver *drv, const char *name,
++			       struct module *owner)
++{
++	int ret;
++	struct hdac_driver *core = &drv->core;
++
++	printk("%s: entry ..%s\n", __func__, name);
++
++	core->id_table = drv->id;
++	core->driver.name = name;
++	core->driver.owner = owner;
++	core->driver.bus = &snd_hda_bus_type;
++	core->driver.pm = &snd_hdac_drv_pm;
++	core->type = HDA_DEV_CORE;
++	core->probe = snd_hdac_drv_probe;
++	core->remove = snd_hdac_drv_remove;
++	core->shutdown = snd_hdac_drv_shutdown;
++	core->match = snd_hdac_drv_match;
++	core->unsol_event = snd_hdac_drv_unsol_event;
++
++	ret = snd_hdac_callback_register(&hdac_legacy_driver);
++	if (ret < 0)
++		return ret;
++
++	return snd_hda_ext_driver_register(core);
++
++
++}
++EXPORT_SYMBOL_GPL(__snd_hdac_driver_register);
++
++void snd_hdac_driver_unregister(struct hda_codec_driver *drv)
++{
++	snd_hda_ext_driver_unregister(&drv->core);
++}
++EXPORT_SYMBOL_GPL(snd_hdac_driver_unregister);
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index dda8401..0a3b56e 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -99,18 +99,18 @@ struct hda_codec_driver {
+ 	const struct hda_device_id *id;
+ };
+ 
+-int __hda_codec_driver_register(struct hda_codec_driver *drv, const char *name,
+-			       struct module *owner);
+-#define hda_codec_driver_register(drv) \
+-	__hda_codec_driver_register(drv, KBUILD_MODNAME, THIS_MODULE)
+-void hda_codec_driver_unregister(struct hda_codec_driver *drv);
++int __snd_hdac_driver_register(struct hda_codec_driver *drv, const char *name,
++				struct module *owner);
++#define snd_hdac_driver_register(drv) \
++	__snd_hdac_driver_register(drv, KBUILD_MODNAME, THIS_MODULE)
++void snd_hdac_driver_unregister(struct hda_codec_driver *drv);
++
+ #define module_hda_codec_driver(drv) \
+-	module_driver(drv, hda_codec_driver_register, \
+-		      hda_codec_driver_unregister)
++	module_driver(drv, snd_hdac_driver_register, \
++		      snd_hdac_driver_unregister)
++
++int snd_hdac_callback_register(struct hdac_driver *drv);
++int snd_hdac_callback_unregister(struct hdac_driver *drv);
+ 
+ /* ops set by the preset patch */
+ struct hda_codec_ops {
 -- 
-2.11.0
+2.7.4
