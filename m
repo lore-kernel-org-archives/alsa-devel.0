@@ -1,18 +1,19 @@
-From: Jorge <jorge.sanjuan@codethink.co.uk>
-Subject: Re: [PATCH v1 0/6] ALSA: usb: UAC3. Add support for
- Basic Audio Device (BADD)
-Date: Tue, 19 Dec 2017 09:46:41 +0000
-Message-ID: <af8552b9-09d6-90db-c9c4-681c0d027815@codethink.co.uk>
-References: <20171219091411.16267-1-jorge.sanjuan@codethink.co.uk>
- <s5hy3lz3vjn.wl-tiwai@suse.de>
+From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Subject: Re: [PATCH] ASoC: amd: Adds rate and channel
+ constraints for capture in Stoney rt5645
+Date: Tue, 19 Dec 2017 15:25:16 +0530
+Message-ID: <96b00588-76d4-7174-eddf-b00a9dc3c253@amd.com>
+References: <1513572020-7689-1-git-send-email-akshu.agrawal@amd.com>
+ <20171219093138.GC8563@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imap1.codethink.co.uk (imap1.codethink.co.uk [176.9.8.82])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D303266D71
- for <alsa-devel@alsa-project.org>; Tue, 19 Dec 2017 10:46:42 +0100 (CET)
-In-Reply-To: <s5hy3lz3vjn.wl-tiwai@suse.de>
+Received: from NAM01-BY2-obe.outbound.protection.outlook.com
+ (mail-by2nam01on0040.outbound.protection.outlook.com [104.47.34.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2579D266D71
+ for <alsa-devel@alsa-project.org>; Tue, 19 Dec 2017 10:55:37 +0100 (CET)
+In-Reply-To: <20171219093138.GC8563@sirena.org.uk>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,89 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org, ci005-internal@lists.codethink.co.uk, Ruslan Bilovol <ruslan.bilovol@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, Alexander.Deucher@amd.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
 
-On 19/12/17 09:40, Takashi Iwai wrote:
-> On Tue, 19 Dec 2017 10:14:05 +0100,
-> Jorge Sanjuan wrote:
->>
->> This adds functionality for the Basic Audio Device (BADD) subset that is
->> defined in the USB Audio Class 3 (UAC3). In a BADD compliant driver, all
->> Class Specific descriptors are inferred and so they should all be generated
->> in the *host* as the device wont expose those. This also applies to the new
->> HIGH CAPABILITY descriptor as the GET request is not to be supported in
->> a BADD compliant driver.
->>
->> The new class requires the device to have 3 usb configurations as follows:
->>
->>      1: Legacy Mode: UAC1 or UAC2.
->>      2: BADD device with a prefined topology. (Minimum).
->>      3: UAC3 device for more detailed description or more complex
->>         devices that can't be covered by the BADD profile.
->>
->> This patch series also includes some minor fixes to sound/usb.
->>
->> It has been tested with an actual UAC3 compliant device in different host
->> machines and all configs (UAC1/2, BADD and UAC3) work.
->>
->> Also, this has been implemented on top of the the patch which adds UAC3 support
->> to the usb sound card driver:
->>
->> 	commit ddd452d7b04b86fb5f9285a19ac54deca9264ac1
->> 	Author: Ruslan Bilovol <ruslan.bilovol@gmail.com>
->> 	Date:   Tue Nov 7 04:01:20 2017 +0200
+On 12/19/2017 3:01 PM, Mark Brown wrote:
+> On Mon, Dec 18, 2017 at 10:10:20AM +0530, Akshu Agrawal wrote:
 > 
-> Where did you get this commit at all...?  The UAC3 patchset has never
-> been merged yet.  So it's moot for developing the stuff on top of it.
-> Or at least coordinate with Ruslan for merging into his series for the
-> next review round.
+>> Constraints are added as we support 48Khz and dual channels.
+> 
+> Why is this platform more resticted than other platforms - what's the
+> limitation here?
 
-Sorry. I meant to reference this patch:
-
-https://patchwork.kernel.org/patch/10045619/
-
-I had that commit message in our internal dev-branch after applying.
+The above restrictions are for capture. In Stoney host we are supporting 
+8 channels and 96Khz for playback and 2 channels and 48Khz for capture.
 
 > 
-> Ruslan, can you revise the patchset addressing the issues, and
-> resubmit?
+>> Change-Id: Ib705f1101f5e2ab5c04f9526b10795a45a32debc
 > 
+> Don't include noise like this in upstream submissions, it makes no sense
+> outside your internal environment.
+
+ok sure, will remove it.
+
 > 
-> thanks,
+>> +#define DUAL_CHANNEL		2
 > 
-> Takashi
+> Do we really need a macro for this?
 > 
->>
->> Jorge Sanjuan (6):
->>    usb: audio: Add bi-directional terminal types.
->>    usb: audio: Fix variable length field to be variable.
->>    ALSA: usb: UAC3. Add initial mixer support.
->>    ALSA: usb: Only get AudioControl header for UAC1 class.
->>    ALSA: usb: Use Class Specific EP for UAC3 devices.
->>    ALSA: usb: ADC3: Add initial BADD spec support
->>
->>   include/linux/usb/audio-v3.h   |   2 +-
->>   include/uapi/linux/usb/audio.h |  21 +-
->>   sound/usb/Makefile             |   3 +-
->>   sound/usb/badd.c               | 518 +++++++++++++++++++++++++++++++++++++++++
->>   sound/usb/badd.h               |  14 ++
->>   sound/usb/card.c               |  25 +-
->>   sound/usb/mixer.c              |  24 ++
->>   sound/usb/stream.c             | 165 ++++++++-----
->>   sound/usb/usbaudio.h           |   1 +
->>   9 files changed, 702 insertions(+), 71 deletions(-)
->>   create mode 100644 sound/usb/badd.c
->>   create mode 100644 sound/usb/badd.h
->>
->> -- 
->> 2.11.0
->>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+
+Not required, will remove it too.
