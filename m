@@ -1,143 +1,155 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [alsa-devel] [PATCH v5 1/6] ASoC: Intel: Skylake: Add ssp clock
- driver
-Date: Tue, 19 Dec 2017 11:11:12 +0530
-Message-ID: <20171219054112.GB3492@subhransu-desktop>
-References: <1512978390-8848-1-git-send-email-sriramx.periyasamy@intel.com>
- <1512978390-8848-2-git-send-email-sriramx.periyasamy@intel.com>
- <20171213223032.GO7997@codeaurora.org>
- <20171218035710.GA27559@subhransu-desktop>
- <20171218050109.GA27846@subhransu-desktop>
- <20171218191040.GW7997@codeaurora.org>
+From: chen liu <chen.liu.opensource@gmail.com>
+Subject: Re: [PATCH v2] ASOC: wm8960: Add multiple MCLK
+	frequency support
+Date: Tue, 19 Dec 2017 14:19:48 +0800
+Message-ID: <CACJSzi0hbv2p_6dXkp2AFwyYVzmU6_H56LgJxY70_ZKn2y=aUw@mail.gmail.com>
+References: <1513168650-102028-1-git-send-email-chen.liu.opensource@gmail.com>
+ <20171214161954.wfik3ygadwii3zhm@localhost.localdomain>
+ <CACJSzi0Kuknj6xFpambi87a1cXecGdfNGQ7PpgywwZV=9_U1yA@mail.gmail.com>
+ <20171218093122.mgghz4mkxtvix6uu@localhost.localdomain>
+ <CACJSzi13ZdOjvz1A2YFbE3z0nUPjeC7i5Dh+ZTnsQH55ON=YMA@mail.gmail.com>
+ <20171218115526.z336fwohv5mt45sk@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-clk-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171218191040.GW7997@codeaurora.org>
-Sender: linux-clk-owner@vger.kernel.org
-To: Stephen Boyd <sboyd@codeaurora.org>
-Cc: Sriram Periyasamy <sriramx.periyasamy@intel.com>, ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>, mturquette@baylibre.com, linux-clk@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ua0-f170.google.com (mail-ua0-f170.google.com
+ [209.85.217.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id B8731266EBE
+ for <alsa-devel@alsa-project.org>; Tue, 19 Dec 2017 07:19:50 +0100 (CET)
+Received: by mail-ua0-f170.google.com with SMTP id a25so4955391uak.3
+ for <alsa-devel@alsa-project.org>; Mon, 18 Dec 2017 22:19:50 -0800 (PST)
+In-Reply-To: <20171218115526.z336fwohv5mt45sk@localhost.localdomain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: shengjiu.wang@freescale.com, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, tiwai@suse.com, broonie@kernel.org, daniel.baluta@nxp.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 18, 2017 at 11:10:40AM -0800, Stephen Boyd wrote:
-> On 12/18, Subhransu S. Prusty wrote:
-> > On Mon, Dec 18, 2017 at 09:27:16AM +0530, Subhransu S. Prusty wrote:
-> > > On Wed, Dec 13, 2017 at 02:30:32PM -0800, Stephen Boyd wrote:
-> > > > On 12/11, Sriram Periyasamy wrote:
-> > > > 
-> > > > > +
-> > > > > +	if (!rate)
-> > > > > +		return -EINVAL;
-> > > > > +
-> > > > > +	if (__clk_is_enabled(hw->clk) && (clkdev->rate != rate))
-> > > > 
-> > > > Any chance you can directly read the hardware instead of going
-> > > > through the framework to find out if the clk is enabled? Seems
-> > > 
-> > > No. This involves sending an IPC to DSP to enable clock and interpreting the
-> > > return error code. I would like to avoid doing this here in set_rate.
-> > > 
-> 
-> Ok. So we're checking to see if software has already enabled the
-> clk and then checking to see if the rate the consumer is
-> requesting is the same as the rate it previously requested? I'm
+2017-12-18 19:55 GMT+08:00 Charles Keepax <ckeepax@opensource.cirrus.com>:
 
-The second check is not required, will remove it.
+> On Mon, Dec 18, 2017 at 07:32:41PM +0800, chen liu wrote:
+> > 2017-12-18 17:31 GMT+08:00 Charles Keepax <ckeepax@opensource.cirrus.com
+> >:
+> >
+> > > On Fri, Dec 15, 2017 at 09:07:15PM +0800, chen liu wrote:
+> > > > 2017-12-15 0:19 GMT+08:00 Charles Keepax <
+> ckeepax@opensource.cirrus.com
+> > > >:
+> > > > > On Wed, Dec 13, 2017 at 08:37:30PM +0800, Chen.Liu wrote:
+> > According to your detailed description above, I understand what you mean.
+> > For the 'wm8960_configure_pll' function,it deduces a reasonable PLL
+> output
+> > clock frequency based on the 'freq_in' frequency,the sample rate,and the
+> bit
+> > clock.
+> >
+> > static int wm8960_configure_clocking(struct snd_soc_codec*codec)
+> > ...
+> >         freq_out = wm8960_configure_pll(codec, freq_in, &i, &j, &k);
+> >         if (freq_out < 0) {
+> >                 dev_err(codec->dev, "failed to configure clock via
+> PLL\n");
+> >                 return freq_out;
+> >         }
+> >         wm8960_set_pll(codec, freq_in, freq_out);
+> > ...
+> >
+> > In the 'wm8960_configure_clocking' function, it sets the PLL divider by
+> > calling
+> > the 'wm8960_set_pll' function after calling the 'wm8960_configure_pll'.
+> > However,there is no support for SYSCLK_DIV = 2 in the 'wm8960_set_pll'
+> > function.
+> >
+> > Looking forward to your reply.
+>
+> Indeed yes, as it looks like the intention was you would set the
+> SYSCLKDIV manually if setting the PLL manually. But why not just
+> call wm8960_set_pll will WM8960_SYSCLK_AUTO, and then your code
+> will use the configure_pll stuff?
+>
+> I would like to understand what about that approach isn't working
+> for you as that seems like the easiest solution.
+>
 
-> still confused what's going on here. Does skl_fill_clk_ipc()
-> change the rate of the clk? Is there any way to ask the DSP what
+Hi Charles,
 
-skl_fill_clk_ipc() prepares the IPC message based on the rate request by the
-consumer. This IPC will be sent to DSP during a call to clock enable.
+Thanks for your reply.
 
-> the rate would be if we were to use some rate configuration?
+For your question,i will explain in detail below.
 
-No. If the clock is already running, reconfiguration is not allowed. So the
-above check is invalid.
+First at all,we can not call the 'wm8960_set_pll' function directly in the
+machine
+driver,but we can call the 'wm8960_set_dai_pll' function with
+'WM8960_SYSCLK_AUTO' as a parameter.
 
-> 
-> > > > circular to do it this way.
-> > > > 
-> > > > > +		return -EBUSY;
-> > > > > +
-> > > > > +	rcfg = skl_get_rate_cfg(clkdev->pdata->ssp_clks[clkdev->id].rate_cfg,
-> > > > > +							rate);
-> > > > > +	if (!rcfg)
-> > > > > +		return -EINVAL;
-> > > > > +
-> > > > > +	clk_type = skl_get_clk_type(clkdev->id);
-> > > > > +	if (clk_type < 0)
-> > > > > +		return clk_type;
-> > > > > +
-> > > > > +	skl_fill_clk_ipc(rcfg, clk_type);
-> > > > > +	clkdev->rate = rate;
-> > > > > +
-> > > > > +	return 0;
-> > > > > +}
-> > > > > +
-> > > > > +static unsigned long skl_clk_recalc_rate(struct clk_hw *hw,
-> > > > > +				unsigned long parent_rate)
-> > > > > +{
-> > > > > +	struct skl_clk *clkdev = to_skl_clk(hw);
-> > > > > +	struct skl_clk_rate_cfg_table *rcfg;
-> > > > > +	int clk_type;
-> > > > > +
-> > > > > +	if (!clkdev)
-> > > > > +		return 0;
-> > > > > +
-> > > > > +	if (clkdev->rate)
-> > > > > +		return clkdev->rate;
-> > > > 
-> > > > Why is the rate being cached? We should always be able to
-> > > > calculate the rate based on parent_rate that gets passed to this
-> > > > function?
-> > > 
-> > > Will check and get back.
-> > 
-> > If I understand correctly, you refer to deriving the rate from parent_rate
-> > using ratios. But since only the DSP is aware of the ratios and not the
-> > driver, the driver can't derive the rate from the parent_rate and thus
-> > cached.
-> > 
-> 
-> I was thinking the code would do what's below all the time.
+example:
+sample rate = 44100HZ,  MCLK = 24MHZ, channel = 2;
 
-I think we interpreted incorrectly. As recalc_rate is meant to be used only
-when parent_rate changes, so this can be removed as the set_parent is not
-supported for this driver. Please let me know if I understand correctly.
+In the Machine driver, we call 'snd_soc_dai_set_pll(codec_dai,
+WM8960_SYSCLK_AUTO, 0, 24000000, 0);' function to automatically
+configure the clock frequency.
+
+When we playback the audio file,the ALSA middle layer will call the
+'wm8960_hw_params' function to configure the hardware parameters and the
+clock frequency.At the bottom of this function it will call the
+'wm8960_configure_clocking' function to configure the clock frequency.
+
+static int wm8960_configure_clocking(struct snd_soc_codec *codec)
+...
+        freq_in = wm8960->freq_in; //Should be 24MHZ
+...
+        if (wm8960->clk_id == WM8960_SYSCLK_AUTO) {
+                /* disable the PLL and using MCLK to provide sysclk */
+                wm8960_set_pll(codec, 0, 0);
+                freq_out = freq_in;   //should be 24MHZ
+        } else if (wm8960->sysclk) {
+                freq_out = wm8960->sysclk;
+        } else {
+                dev_err(codec->dev, "No SYSCLK configured\n");
+                return -EINVAL;
+        }
+...
+        if (wm8960->clk_id != WM8960_SYSCLK_PLL) {
+                // If the freq_out is 24MHZ,ret will be less than zero.
+                ret = wm8960_configure_sysclk(wm8960, freq_out, &i, &j, &k);
+                if (ret >= 0) {
+                        goto configure_clock;
+                } else if (wm8960->clk_id != WM8960_SYSCLK_AUTO) {
+                        dev_err(codec->dev, "failed to configure clock\n");
+                        return -EINVAL;
+                }
+        }
+        // Then this branch will be executed.
+        //  If the sample rate is 44100HZ, the value of freq_out will be
+11.2896MHZ
+        freq_out = wm8960_configure_pll(codec, freq_in, &i, &j, &k);
+        if (freq_out < 0) {
+                dev_err(codec->dev, "failed to configure clock via PLL\n");
+                return freq_out;
+        }
+       // The 'wm8960_set_pll' function will be executed,this function is
+very important.
+       // But now, the freq_in is 24MHZ and the freq_out is 11.2896MHZ.
+        wm8960_set_pll(codec, freq_in, freq_out);
+...
+
+Because the 'wm8960_configure_pll' function has been pre-scaled by 2 for
+freq_out,
+but the value of freq_out is not multiplied by 2 in the 'pll_factors'
+function, it prints the
+"WM8960 PLL: Unsupported N =" error message.
 
 
-Regards,
-Subhransu
+Looking forward to your reply.
 
-> 
-> > > 
-> > > > 
-> > > > > +
-> > > > > +	rcfg = skl_get_rate_cfg(clkdev->pdata->ssp_clks[clkdev->id].rate_cfg,
-> > > > > +					parent_rate);
-> > > > > +	if (!rcfg)
-> > > > > +		return 0;
-> > > > > +
-> > > > > +	clk_type = skl_get_clk_type(clkdev->id);
-> > > > > +	if (clk_type < 0)
-> > > > > +		return 0;
-> > > > > +
-> > > > > +	skl_fill_clk_ipc(rcfg, clk_type);
-> > > > > +	clkdev->rate = rcfg->rate;
-> > > > > +
-> > > > > +	return clkdev->rate;
-> > > > > +}
-> > > > > +
-> 
-> I guess that means doing an IPC to the DSP to figure out the
-> ratio and how that relates to the parent rate? recalc_rate() can
-> be called many times with different things when the framework is
-> speculating on the tree. We don't want clk providers to rely on
-> the order of this op being called with respect to clk_set_rate().
-> 
-> -- 
-> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-> a Linux Foundation Collaborative Project
 
--- 
+Thanks,
+Chen.
