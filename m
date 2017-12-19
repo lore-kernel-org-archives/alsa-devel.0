@@ -1,23 +1,63 @@
-From: Timur Tabi <timur@tabi.org>
-Subject: Re: [PATCH v1 00/15] ASoC: fsl_ssi: Clean up - program flow level
-Date: Tue, 19 Dec 2017 11:34:39 -0600
-Message-ID: <5fb9a02a-e438-be5e-da02-084b5c5613c1@tabi.org>
-References: <1513702819-42310-1-git-send-email-nicoleotsuka@gmail.com>
+From: Joe Perches <joe@perches.com>
+Subject: [-next PATCH 0/4] sysfs and DEVICE_ATTR_<foo>
+Date: Tue, 19 Dec 2017 10:15:05 -0800
+Message-ID: <cover.1513706701.git.joe@perches.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1513702819-42310-1-git-send-email-nicoleotsuka@gmail.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>, broonie@kernel.org
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, fabio.estevam@nxp.com, mail@maciej.szmigiero.name, caleb@crome.org, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org, openipmi-developer@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org, linux-nvme@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-s390@vger.kernel.org, esc.storagedev@microsemi.com, linux-scsi@vger.kernel.org, linux-pm@vger.kernel.org, linux-serial@vger.kernel.org, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Cc: devel@driverdev.osuosl.org, linux-fbdev@vger.kernel.org, linux-sh@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/19/17 11:00 AM, Nicolin Chen wrote:
-> This series of patches is the second set to clean up fsl_ssi driver
-> in the program flow level. Any patch here may impact a fundamental
-> test case like playback or record.
-
-With Christmas happening over the next two weeks, I don't think I'll be 
-able to review these patches until January.
+Sm9lIFBlcmNoZXMgKDQpOgogIHN5c2ZzLmg6IFVzZSBvY3RhbCBwZXJtaXNzaW9ucwogIHRyZWV3
+aWRlOiBVc2UgREVWSUNFX0FUVFJfUlcKICB0cmVld2lkZTogVXNlIERFVklDRV9BVFRSX1JPCiAg
+dHJlZXdpZGU6IFVzZSBERVZJQ0VfQVRUUl9XTwoKIGFyY2gvYXJtL21hY2gtcHhhL3NoYXJwc2xf
+cG0uYyAgICAgICAgICAgICAgICAgICAgIHwgIDQgKy0KIGFyY2gvczM5MC9rZXJuZWwvc21wLmMg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KIGFyY2gvczM5MC9rZXJuZWwvdG9w
+b2xvZ3kuYyAgICAgICAgICAgICAgICAgICAgICAgIHwgIDMgKy0KIGFyY2gvc2gvZHJpdmVycy9w
+dXNoLXN3aXRjaC5jICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KIGFyY2gvdGlsZS9rZXJu
+ZWwvc3lzZnMuYyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgMTIgKystLQogYXJjaC94ODYv
+a2VybmVsL2NwdS9taWNyb2NvZGUvY29yZS5jICAgICAgICAgICAgICAgfCAgMiArLQogZHJpdmVy
+cy9hY3BpL2RldmljZV9zeXNmcy5jICAgICAgICAgICAgICAgICAgICAgICAgfCAgNiArLQogZHJp
+dmVycy9jaGFyL2lwbWkvaXBtaV9tc2doYW5kbGVyLmMgICAgICAgICAgICAgICAgfCAxNyArKyst
+LS0KIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfc3lzZnMuYyAgICAgICAgICAgICAgICAgIHwg
+MTIgKystLQogZHJpdmVycy9pbnB1dC90b3VjaHNjcmVlbi9lbGFudHNfaTJjLmMgICAgICAgICAg
+ICAgfCAgMiArLQogZHJpdmVycy9uZXQvZXRoZXJuZXQvaWJtL2libXZuaWMuYyAgICAgICAgICAg
+ICAgICAgfCAgMiArLQogZHJpdmVycy9uZXQvd2ltYXgvaTI0MDBtL3N5c2ZzLmMgICAgICAgICAg
+ICAgICAgICAgfCAgMyArLQogZHJpdmVycy9udm1lL2hvc3QvY29yZS5jICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgfCAxMCArKy0tCiBkcml2ZXJzL3BsYXRmb3JtL3g4Ni9jb21wYWwtbGFwdG9w
+LmMgICAgICAgICAgICAgICB8IDE4ICsrLS0tLQogZHJpdmVycy9zMzkwL2Npby9jc3MuYyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgfCAgOCArLS0KIGRyaXZlcnMvczM5MC9jaW8vZGV2aWNl
+LmMgICAgICAgICAgICAgICAgICAgICAgICAgIHwgMTAgKystLQogZHJpdmVycy9zMzkwL2NyeXB0
+by9hcF9jYXJkLmMgICAgICAgICAgICAgICAgICAgICAgfCAgMiArLQogZHJpdmVycy9zY3NpL2hw
+c2EuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxMCArKy0tCiBkcml2ZXJzL3Nj
+c2kvbHBmYy9scGZjX2F0dHIuYyAgICAgICAgICAgICAgICAgICAgICB8IDY0ICsrKysrKysrLS0t
+LS0tLS0tLS0tLS0KIC4uLi9zdGFnaW5nL21lZGlhL2F0b21pc3AvcGNpL2F0b21pc3AyL2htbS9o
+bW0uYyAgIHwgIDggKy0tCiBkcml2ZXJzL3RoZXJtYWwvdGhlcm1hbF9zeXNmcy5jICAgICAgICAg
+ICAgICAgICAgICB8IDE3ICsrKy0tLQogZHJpdmVycy90dHkvc2VyaWFsL3NoLXNjaS5jICAgICAg
+ICAgICAgICAgICAgICAgICAgfCAgMiArLQogZHJpdmVycy91c2IvaG9zdC94aGNpLWRiZ2NhcC5j
+ICAgICAgICAgICAgICAgICAgICAgfCAgMiArLQogZHJpdmVycy91c2IvcGh5L3BoeS10YWh2by5j
+ICAgICAgICAgICAgICAgICAgICAgICAgfCAgMiArLQogZHJpdmVycy92aWRlby9mYmRldi9hdW9f
+azE5MHguYyAgICAgICAgICAgICAgICAgICAgfCAgNCArLQogZHJpdmVycy92aWRlby9mYmRldi93
+MTAwZmIuYyAgICAgICAgICAgICAgICAgICAgICAgfCAgNCArLQogaW5jbHVkZS9saW51eC9zeXNm
+cy5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxNCArKy0tLQogbGliL3Rlc3RfZmly
+bXdhcmUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxNCArKy0tLQogbGliL3Rl
+c3Rfa21vZC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxNCArKy0tLQog
+c291bmQvc29jL29tYXAvbWNic3AuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNCAr
+LQogc291bmQvc29jL3NvYy1jb3JlLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
+MiArLQogc291bmQvc29jL3NvYy1kYXBtLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+fCAgMiArLQogMzIgZmlsZXMgY2hhbmdlZCwgMTIwIGluc2VydGlvbnMoKyksIDE1OCBkZWxldGlv
+bnMoLSkKCi0tIAoyLjE1LjAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNr
+dG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Ry
+aS1kZXZlbAo=
