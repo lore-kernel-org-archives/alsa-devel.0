@@ -1,8 +1,8 @@
 From: Jorge <jorge.sanjuan@codethink.co.uk>
 Subject: Re: [PATCH v1 0/6] ALSA: usb: UAC3. Add support for
  Basic Audio Device (BADD)
-Date: Tue, 19 Dec 2017 09:44:18 +0000
-Message-ID: <1748821a-fe4e-e543-c8f9-087eca3477c2@codethink.co.uk>
+Date: Tue, 19 Dec 2017 09:46:41 +0000
+Message-ID: <af8552b9-09d6-90db-c9c4-681c0d027815@codethink.co.uk>
 References: <20171219091411.16267-1-jorge.sanjuan@codethink.co.uk>
  <s5hy3lz3vjn.wl-tiwai@suse.de>
 Mime-Version: 1.0
@@ -10,13 +10,8 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from imap1.codethink.co.uk (imap1.codethink.co.uk [176.9.8.82])
- by alsa0.perex.cz (Postfix) with ESMTP id 628E0266D71
- for <alsa-devel@alsa-project.org>; Tue, 19 Dec 2017 10:44:20 +0100 (CET)
-Received: from 242.red-213-99-120.dynamicip.rima-tde.net ([213.99.120.242]
- helo=[192.168.1.44])
- by imap1.codethink.co.uk with esmtpsa (Exim 4.84_2 #1 (Debian))
- id 1eRERh-0001UV-6G
- for <alsa-devel@alsa-project.org>; Tue, 19 Dec 2017 09:44:22 +0000
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D303266D71
+ for <alsa-devel@alsa-project.org>; Tue, 19 Dec 2017 10:46:42 +0100 (CET)
 In-Reply-To: <s5hy3lz3vjn.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -28,7 +23,8 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org, ci005-internal@lists.codethink.co.uk, Ruslan Bilovol <ruslan.bilovol@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
@@ -68,15 +64,13 @@ On 19/12/17 09:40, Takashi Iwai wrote:
 > Or at least coordinate with Ruslan for merging into his series for the
 > next review round.
 
-Sorry. I meant to reference this:
+Sorry. I meant to reference this patch:
 
 https://patchwork.kernel.org/patch/10045619/
 
-I had that commit message in our internal dev-branch.
+I had that commit message in our internal dev-branch after applying.
 
-
-
->
+> 
 > Ruslan, can you revise the patchset addressing the issues, and
 > resubmit?
 > 
