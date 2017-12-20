@@ -1,18 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: fixup ADG register mask" to the
-	asoc tree
-Date: Wed, 20 Dec 2017 10:50:08 +0000
-Message-ID: <E1eRbwu-0007IB-Tc@debutante>
-References: <87r2rq6io9.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Intel: Skylake: Request IRQ late only
+	after all context are initialized" to the asoc tree
+Date: Wed, 20 Dec 2017 10:50:23 +0000
+Message-ID: <E1eRbx9-0007Ki-45@debutante>
+References: <20171218051650.7027-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 513F82677C7
- for <alsa-devel@alsa-project.org>; Wed, 20 Dec 2017 11:50:15 +0100 (CET)
-In-Reply-To: <87r2rq6io9.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <20171218051650.7027-1-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +18,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Simon <horms@verge.net.au>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, GuruprasadX <guruprasadx.pawse@intel.com>, Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Pawse@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: fixup ADG register mask
+   ASoC: Intel: Skylake: Request IRQ late only after all context are initialized
 
 has been applied to the asoc tree at
 
@@ -53,54 +48,111 @@ to this mail.
 Thanks,
 Mark
 
->From d5aa24825da5711f8cb829f873160ddf1a29b19c Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 20 Dec 2017 06:11:59 +0000
-Subject: [PATCH] ASoC: rsnd: fixup ADG register mask
+>From 8e9d8e19b3d0c36d45161233eee3f2d368efe3ac Mon Sep 17 00:00:00 2001
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Date: Mon, 18 Dec 2017 10:46:49 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Request IRQ late only after all context
+ are initialized
 
-BRGCKR should use 0x80770000, instead of 0x80FF0000.
+Sometimes during boot, panic is observed at sst_dsp_shim_read_unlocked().
+This happens when interrupt occurs before the context is initialized. So
+move the irq initialization only after the context is initialized
+completely.
 
-R-Car Gen2 xxx_TIMSEL should use 0x0F1F,
-R-Car Gen3 xxx_TIMSEL should use 0x1F1F.
-Here, Gen3 doesn't support AVD, thus, both case can use 0x0F1F.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Reviewed-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Pawse, GuruprasadX <guruprasadx.pawse@intel.com>
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/adg.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/skylake/bxt-sst.c     |  2 +-
+ sound/soc/intel/skylake/cnl-sst.c     |  2 +-
+ sound/soc/intel/skylake/skl-sst-dsp.c | 14 ++++++++++----
+ sound/soc/intel/skylake/skl-sst-dsp.h |  1 +
+ sound/soc/intel/skylake/skl-sst.c     |  2 +-
+ 5 files changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index 8ddb08714faa..4672688cac32 100644
---- a/sound/soc/sh/rcar/adg.c
-+++ b/sound/soc/sh/rcar/adg.c
-@@ -222,7 +222,7 @@ int rsnd_adg_set_cmd_timsel_gen2(struct rsnd_mod *cmd_mod,
- 				   NULL, &val, NULL);
+diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+index 4524211960e4..440bca7afbf1 100644
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -595,7 +595,7 @@ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 	INIT_DELAYED_WORK(&skl->d0i3.work, bxt_set_dsp_D0i3);
+ 	skl->d0i3.state = SKL_DSP_D0I3_NONE;
  
- 	val  = val	<< shift;
--	mask = 0xffff	<< shift;
-+	mask = 0x0f1f	<< shift;
+-	return 0;
++	return skl_dsp_acquire_irq(sst);
+ }
+ EXPORT_SYMBOL_GPL(bxt_sst_dsp_init);
  
- 	rsnd_mod_bset(adg_mod, CMDOUT_TIMSEL, mask, val);
+diff --git a/sound/soc/intel/skylake/cnl-sst.c b/sound/soc/intel/skylake/cnl-sst.c
+index 387de388ce29..245df1067ba8 100644
+--- a/sound/soc/intel/skylake/cnl-sst.c
++++ b/sound/soc/intel/skylake/cnl-sst.c
+@@ -458,7 +458,7 @@ int cnl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 	cnl->boot_complete = false;
+ 	init_waitqueue_head(&cnl->boot_wait);
  
-@@ -250,7 +250,7 @@ int rsnd_adg_set_src_timesel_gen2(struct rsnd_mod *src_mod,
+-	return 0;
++	return skl_dsp_acquire_irq(sst);
+ }
+ EXPORT_SYMBOL_GPL(cnl_sst_dsp_init);
  
- 	in   = in	<< shift;
- 	out  = out	<< shift;
--	mask = 0xffff	<< shift;
-+	mask = 0x0f1f	<< shift;
- 
- 	switch (id / 2) {
- 	case 0:
-@@ -380,7 +380,7 @@ int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *ssi_mod, unsigned int rate)
- 			ckr = 0x80000000;
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
+index 19ee1d4f3bdf..71e31ad0bb3f 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.c
++++ b/sound/soc/intel/skylake/skl-sst-dsp.c
+@@ -435,16 +435,22 @@ struct sst_dsp *skl_dsp_ctx_init(struct device *dev,
+ 			return NULL;
  	}
  
--	rsnd_mod_bset(adg_mod, BRGCKR, 0x80FF0000, adg->ckr | ckr);
-+	rsnd_mod_bset(adg_mod, BRGCKR, 0x80770000, adg->ckr | ckr);
- 	rsnd_mod_write(adg_mod, BRRA,  adg->rbga);
- 	rsnd_mod_write(adg_mod, BRRB,  adg->rbgb);
++	return sst;
++}
++
++int skl_dsp_acquire_irq(struct sst_dsp *sst)
++{
++	struct sst_dsp_device *sst_dev = sst->sst_dev;
++	int ret;
++
+ 	/* Register the ISR */
+ 	ret = request_threaded_irq(sst->irq, sst->ops->irq_handler,
+ 		sst_dev->thread, IRQF_SHARED, "AudioDSP", sst);
+-	if (ret) {
++	if (ret)
+ 		dev_err(sst->dev, "unable to grab threaded IRQ %d, disabling device\n",
+ 			       sst->irq);
+-		return NULL;
+-	}
+ 
+-	return sst;
++	return ret;
+ }
+ 
+ void skl_dsp_free(struct sst_dsp *dsp)
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
+index b8e799ed65ef..12fc9a73dc8a 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -206,6 +206,7 @@ int skl_cldma_wait_interruptible(struct sst_dsp *ctx);
+ void skl_dsp_set_state_locked(struct sst_dsp *ctx, int state);
+ struct sst_dsp *skl_dsp_ctx_init(struct device *dev,
+ 		struct sst_dsp_device *sst_dev, int irq);
++int skl_dsp_acquire_irq(struct sst_dsp *sst);
+ bool is_skl_dsp_running(struct sst_dsp *ctx);
+ 
+ unsigned int skl_dsp_get_enabled_cores(struct sst_dsp *ctx);
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index a436abf2fe3f..5a7e41b65ef3 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -569,7 +569,7 @@ int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 
+ 	sst->fw_ops = skl_fw_ops;
+ 
+-	return 0;
++	return skl_dsp_acquire_irq(sst);
+ }
+ EXPORT_SYMBOL_GPL(skl_sst_dsp_init);
  
 -- 
 2.15.1
