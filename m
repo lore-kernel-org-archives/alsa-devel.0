@@ -1,18 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdac_hdmi: keep DAI driver pointer in
-	private data" to the asoc tree
-Date: Wed, 20 Dec 2017 15:42:27 +0000
-Message-ID: <E1eRgVn-00012S-8f@debutante>
-References: <87vah2xjob.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [RFC PATCH 2/2] ASoC: select sysclk clock from
+ mlck clock provider in wm8994 driver
+Date: Wed, 20 Dec 2017 15:50:00 +0000
+Message-ID: <20171220155000.GD17890@sirena.org.uk>
+References: <1513270438-18523-1-git-send-email-olivier.moysan@st.com>
+ <1513270438-18523-3-git-send-email-olivier.moysan@st.com>
+ <20171214173624.GM9788@sirena.org.uk>
+ <43426b67-3546-8422-7fcb-9fa1ff192679@st.com>
+ <20171219093506.GD8563@sirena.org.uk>
+ <c51bf5a8-27f7-6d76-f4fb-c8884387bdca@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2726965608148170461=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 414E326780B
- for <alsa-devel@alsa-project.org>; Wed, 20 Dec 2017 16:42:30 +0100 (CET)
-In-Reply-To: <87vah2xjob.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 180FD2677EC
+ for <alsa-devel@alsa-project.org>; Wed, 20 Dec 2017 16:50:42 +0100 (CET)
+In-Reply-To: <c51bf5a8-27f7-6d76-f4fb-c8884387bdca@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,79 +26,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
+To: Olivier MOYSAN <olivier.moysan@st.com>
+Cc: Benjamin GAIGNARD <benjamin.gaignard@st.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexandre TORGUE <alexandre.torgue@st.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "kernel@stlinux.com" <kernel@stlinux.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: hdac_hdmi: keep DAI driver pointer in private data
+--===============2726965608148170461==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="XvKFcGCOAo53UbWW"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--XvKFcGCOAo53UbWW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, Dec 20, 2017 at 12:42:10PM +0000, Olivier MOYSAN wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> As a generic machine, simple or audio graph cards are not able to manage=
+=20
+> codec clock muxing.
+> If we exclude the management of muxing through codec controls,
+> the remaining solution is to handle it fully through clock framework.
+> The current patch only supports a limited range of muxing capabilities=20
+> of the codec.
+> To have a full management of the muxing, I think it is necessary to add
+> a device tree node for each codec interface and to define an aif clock=20
+> in these nodes.
+> Then parent clock assignment of these aif clocks would allow to handle=20
+> the muxing.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Controlling clocking through a clock API binding would be good, yes.
+That'd solve a bunch of other problems with use of multi-purpose clocks
+for audio as well.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--XvKFcGCOAo53UbWW
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
 
->From 1e02dac395fadfff1f2c6bd90f1180f64a9cbebe Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 20 Dec 2017 01:48:13 +0000
-Subject: [PATCH] ASoC: hdac_hdmi: keep DAI driver pointer in private data
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlo6hqcACgkQJNaLcl1U
+h9DFOwf9EFd8OGa3Gc6X94wtf+ww6JRTcI+zcddC51bU18nM/k39xlGLTyCvqCcT
+HiTR3x3qQP1rUCbLOiKVIOARAu7JmhQAovhbzib4jJ1wIZdFov5gZecKX4c7E32G
+1opjCwgZ8/tU5ClBfDaXvV6xvKEHPnzJ9oyo4jjFKIY2CxJMbwzBF4od+x2qjmsJ
+J60JrXPVT6H3LILm7o2Vut4/tlUN3QAHT0K6nYfXAE5OZVYEHQloLJjbax3EpQbp
+W6WqneVffaatVdIyUXsZMJyp7DM3EByj26cziJQ2cuyF02tg95qLIjqUmEP/Wxca
+0sxBrWK8s8A6o0a0EycnoECWAk2+GQ==
+=ML+3
+-----END PGP SIGNATURE-----
 
-struct snd_soc_component::dai_drv will be removed soon.
-hdac_hdmi is only user of it. Let's keep it on private data.
+--XvKFcGCOAo53UbWW--
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/hdac_hdmi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+--===============2726965608148170461==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 68a4a6b4e68e..15c3638fe345 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -136,6 +136,7 @@ struct hdac_hdmi_priv {
- 	struct mutex pin_mutex;
- 	struct hdac_chmap chmap;
- 	struct hdac_hdmi_drv_data *drv_data;
-+	struct snd_soc_dai_driver *dai_drv;
- };
- 
- #define hdev_to_hdmi_priv(_hdev) ((to_ehdac_device(_hdev))->private_data)
-@@ -1035,7 +1036,7 @@ static int create_fill_widget_route_map(struct snd_soc_dapm_context *dapm)
- 	struct snd_soc_dapm_route *route;
- 	struct hdac_ext_device *edev = to_hda_ext_device(dapm->dev);
- 	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
--	struct snd_soc_dai_driver *dai_drv = dapm->component->dai_drv;
-+	struct snd_soc_dai_driver *dai_drv = hdmi->dai_drv;
- 	char widget_name[NAME_SIZE];
- 	struct hdac_hdmi_cvt *cvt;
- 	struct hdac_hdmi_pin *pin;
-@@ -1437,6 +1438,7 @@ static int hdac_hdmi_create_dais(struct hdac_device *hdev,
- 	}
- 
- 	*dais = hdmi_dais;
-+	hdmi->dai_drv = hdmi_dais;
- 
- 	return 0;
- }
--- 
-2.15.1
+
+--===============2726965608148170461==--
