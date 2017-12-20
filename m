@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: remove dai_drv from
-	snd_soc_component" to the asoc tree
-Date: Wed, 20 Dec 2017 15:42:23 +0000
-Message-ID: <E1eRgVj-00011b-KL@debutante>
-References: <87tvwmxjnu.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: hdac_hdmi: keep DAI driver pointer in
+	private data" to the asoc tree
+Date: Wed, 20 Dec 2017 15:42:27 +0000
+Message-ID: <E1eRgVn-00012S-8f@debutante>
+References: <87vah2xjob.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 64CD62677FD
- for <alsa-devel@alsa-project.org>; Wed, 20 Dec 2017 16:42:27 +0100 (CET)
-In-Reply-To: <87tvwmxjnu.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 414E326780B
+ for <alsa-devel@alsa-project.org>; Wed, 20 Dec 2017 16:42:30 +0100 (CET)
+In-Reply-To: <87vah2xjob.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: remove dai_drv from snd_soc_component
+   ASoC: hdac_hdmi: keep DAI driver pointer in private data
 
 has been applied to the asoc tree at
 
@@ -53,84 +53,48 @@ to this mail.
 Thanks,
 Mark
 
->From 58bf4179000a37aa9b0ee9ab2796f7573c77fff0 Mon Sep 17 00:00:00 2001
+>From 1e02dac395fadfff1f2c6bd90f1180f64a9cbebe Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 20 Dec 2017 01:48:29 +0000
-Subject: [PATCH] ASoC: soc-core: remove dai_drv from snd_soc_component
+Date: Wed, 20 Dec 2017 01:48:13 +0000
+Subject: [PATCH] ASoC: hdac_hdmi: keep DAI driver pointer in private data
 
-ALSA SoC has some duplicate parameter.
-snd_soc_component::dai_drv is one of them.
-
-Each DAI is keeping its driver as snd_soc_dai::driver,
-and component has dai_list.
-This means, we can reach to each DAI and its driver by using dai_link.
-Thus, there is no need to keep DAI driver pointer on component.
-Let's remove it
+struct snd_soc_component::dai_drv will be removed soon.
+hdac_hdmi is only user of it. Let's keep it on private data.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  |  1 -
- sound/soc/soc-core.c | 14 ++++++++++----
- 2 files changed, 10 insertions(+), 5 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 1a7323238c49..871e1fabd701 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -858,7 +858,6 @@ struct snd_soc_component {
- 	struct list_head card_aux_list; /* for auxiliary bound components */
- 	struct list_head card_list;
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 68a4a6b4e68e..15c3638fe345 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -136,6 +136,7 @@ struct hdac_hdmi_priv {
+ 	struct mutex pin_mutex;
+ 	struct hdac_chmap chmap;
+ 	struct hdac_hdmi_drv_data *drv_data;
++	struct snd_soc_dai_driver *dai_drv;
+ };
  
--	struct snd_soc_dai_driver *dai_drv;
- 	int num_dai;
+ #define hdev_to_hdmi_priv(_hdev) ((to_ehdac_device(_hdev))->private_data)
+@@ -1035,7 +1036,7 @@ static int create_fill_widget_route_map(struct snd_soc_dapm_context *dapm)
+ 	struct snd_soc_dapm_route *route;
+ 	struct hdac_ext_device *edev = to_hda_ext_device(dapm->dev);
+ 	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
+-	struct snd_soc_dai_driver *dai_drv = dapm->component->dai_drv;
++	struct snd_soc_dai_driver *dai_drv = hdmi->dai_drv;
+ 	char widget_name[NAME_SIZE];
+ 	struct hdac_hdmi_cvt *cvt;
+ 	struct hdac_hdmi_pin *pin;
+@@ -1437,6 +1438,7 @@ static int hdac_hdmi_create_dais(struct hdac_device *hdev,
+ 	}
  
- 	const struct snd_soc_component_driver *driver;
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index c0edac80df34..6a13fbcba23f 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3149,7 +3149,7 @@ static struct snd_soc_dai *soc_add_dai(struct snd_soc_component *component,
- 	if (!dai->driver->ops)
- 		dai->driver->ops = &null_dai_ops;
+ 	*dais = hdmi_dais;
++	hdmi->dai_drv = hdmi_dais;
  
--	list_add(&dai->list, &component->dai_list);
-+	list_add_tail(&dai->list, &component->dai_list);
- 	component->num_dai++;
- 
- 	dev_dbg(dev, "ASoC: Registered DAI '%s'\n", dai->name);
-@@ -3176,8 +3176,6 @@ static int snd_soc_register_dais(struct snd_soc_component *component,
- 
- 	dev_dbg(dev, "ASoC: dai register %s #%zu\n", dev_name(dev), count);
- 
--	component->dai_drv = dai_drv;
--
- 	for (i = 0; i < count; i++) {
- 
- 		dai = soc_add_dai(component, dai_drv + i,
-@@ -4354,6 +4352,7 @@ int snd_soc_get_dai_name(struct of_phandle_args *args,
- 							     args,
- 							     dai_name);
- 		} else {
-+			struct snd_soc_dai *dai;
- 			int id = -1;
- 
- 			switch (args->args_count) {
-@@ -4375,7 +4374,14 @@ int snd_soc_get_dai_name(struct of_phandle_args *args,
- 
- 			ret = 0;
- 
--			*dai_name = pos->dai_drv[id].name;
-+			/* find target DAI */
-+			list_for_each_entry(dai, &pos->dai_list, list) {
-+				if (id == 0)
-+					break;
-+				id--;
-+			}
-+
-+			*dai_name = dai->driver->name;
- 			if (!*dai_name)
- 				*dai_name = pos->name;
- 		}
+ 	return 0;
+ }
 -- 
 2.15.1
