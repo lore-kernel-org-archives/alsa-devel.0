@@ -1,26 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC v3 06/11] ASoC: hdac_hda: add ASoC based HDA
- codec driver
-Date: Wed, 20 Dec 2017 10:26:25 +0000
-Message-ID: <20171220102625.GB17890@sirena.org.uk>
-References: <s5h4lorvxvj.wl-tiwai@suse.de>
- <85DFEED57DC57344B2483EF7BF8CB60579ADB65F@BGSMSX104.gar.corp.intel.com>
- <85DFEED57DC57344B2483EF7BF8CB60579ADCE9A@BGSMSX104.gar.corp.intel.com>
- <s5hmv2fc5ze.wl-tiwai@suse.de>
- <85DFEED57DC57344B2483EF7BF8CB60579ADD339@BGSMSX104.gar.corp.intel.com>
- <s5hmv2ebuay.wl-tiwai@suse.de>
- <85DFEED57DC57344B2483EF7BF8CB60579ADD712@BGSMSX104.gar.corp.intel.com>
- <s5ha7yebsa7.wl-tiwai@suse.de>
- <85DFEED57DC57344B2483EF7BF8CB60579ADD8AC@BGSMSX104.gar.corp.intel.com>
- <s5hk1xi4je6.wl-tiwai@suse.de>
+Subject: Applied "ASoC: rsnd: fixup ADG register mask" to the
+	asoc tree
+Date: Wed, 20 Dec 2017 10:50:08 +0000
+Message-ID: <E1eRbwu-0007IB-Tc@debutante>
+References: <87r2rq6io9.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5589387996718944779=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E3B12677C7
- for <alsa-devel@alsa-project.org>; Wed, 20 Dec 2017 11:26:39 +0100 (CET)
-In-Reply-To: <s5hk1xi4je6.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 513F82677C7
+ for <alsa-devel@alsa-project.org>; Wed, 20 Dec 2017 11:50:15 +0100 (CET)
+In-Reply-To: <87r2rq6io9.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,56 +22,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul,
- Vinod" <vinod.koul@intel.com>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, "Ughreja,
- Rakesh A" <rakesh.a.ughreja@intel.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5589387996718944779==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="/NkBOFFp2J2Af1nK"
-Content-Disposition: inline
+   ASoC: rsnd: fixup ADG register mask
 
+has been applied to the asoc tree at
 
---/NkBOFFp2J2Af1nK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Dec 19, 2017 at 08:17:37PM +0100, Takashi Iwai wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> Well, honestly speaking, that complete morphing scares me.  If it's a
-> simple additional call, it's easier to track the code flow.  But your
-> patch essentially fakes the legacy codec and bus structs and twists
-> the control by that switch...  which looks too fragile to me.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Especially when it's layered on top of all the other x86 code which is
-also complicated and fragile - feels like there's lots of places things
-can go wrong and lots of potential unexpected interactions.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---/NkBOFFp2J2Af1nK
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlo6OtAACgkQJNaLcl1U
-h9A9oAf1Hkgpn5aNiCjLocaBa8zjegofOMEBaAS8gPobWgi2UxnsoD6zIZ0UwqPR
-l8WWl17KEdBFADpYaXHJtoq6/Fmd41f3CAWanGb0ieQg69mI7rihA/EalY/VtVaq
-mpza1oudOpIYXebNYRzrqMuJNHacpZNR/0YxaF4c3f8hc71144onESLO8jBTkXCr
-7pU00dSIbkPivGTLb2/hqyZGZi535Q8QRyrh+8tEDyLW8KVRm5zYpgIAKnR3wrOb
-72N1FDE1TrQkDDaHMPIdU/21zjeRQ1OIjSPRGaufdVXCjYZ2sRw5akWtcdhm+lsq
-RV7NeF0Dcb2y67bnbAh79513ZFjP
-=/xp6
------END PGP SIGNATURE-----
+>From d5aa24825da5711f8cb829f873160ddf1a29b19c Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 20 Dec 2017 06:11:59 +0000
+Subject: [PATCH] ASoC: rsnd: fixup ADG register mask
 
---/NkBOFFp2J2Af1nK--
+BRGCKR should use 0x80770000, instead of 0x80FF0000.
 
---===============5589387996718944779==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+R-Car Gen2 xxx_TIMSEL should use 0x0F1F,
+R-Car Gen3 xxx_TIMSEL should use 0x1F1F.
+Here, Gen3 doesn't support AVD, thus, both case can use 0x0F1F.
 
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/adg.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---===============5589387996718944779==--
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 8ddb08714faa..4672688cac32 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -222,7 +222,7 @@ int rsnd_adg_set_cmd_timsel_gen2(struct rsnd_mod *cmd_mod,
+ 				   NULL, &val, NULL);
+ 
+ 	val  = val	<< shift;
+-	mask = 0xffff	<< shift;
++	mask = 0x0f1f	<< shift;
+ 
+ 	rsnd_mod_bset(adg_mod, CMDOUT_TIMSEL, mask, val);
+ 
+@@ -250,7 +250,7 @@ int rsnd_adg_set_src_timesel_gen2(struct rsnd_mod *src_mod,
+ 
+ 	in   = in	<< shift;
+ 	out  = out	<< shift;
+-	mask = 0xffff	<< shift;
++	mask = 0x0f1f	<< shift;
+ 
+ 	switch (id / 2) {
+ 	case 0:
+@@ -380,7 +380,7 @@ int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *ssi_mod, unsigned int rate)
+ 			ckr = 0x80000000;
+ 	}
+ 
+-	rsnd_mod_bset(adg_mod, BRGCKR, 0x80FF0000, adg->ckr | ckr);
++	rsnd_mod_bset(adg_mod, BRGCKR, 0x80770000, adg->ckr | ckr);
+ 	rsnd_mod_write(adg_mod, BRRA,  adg->rbga);
+ 	rsnd_mod_write(adg_mod, BRRB,  adg->rbgb);
+ 
+-- 
+2.15.1
