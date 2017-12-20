@@ -1,49 +1,43 @@
-From: Michael Pinnell <mike.pinnell@gmail.com>
-Subject: Raspberry Pi - asound/proc/status - state parameter
-	always set to RUNNING?
-Date: Wed, 20 Dec 2017 00:10:41 +0000
-Message-ID: <CA+Ggjo1GsgZJUOo--fbZae_0LxVCWNdkd5SAz=6e4uaLYGcCaQ@mail.gmail.com>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: [-next PATCH 2/4] treewide: Use DEVICE_ATTR_RW
+Date: Wed, 20 Dec 2017 10:34:03 +0200
+Message-ID: <20171220083403.GA27231@bitmer.com>
+References: <cover.1513706701.git.joe@perches.com>
+ <cd38f14f06e1f447b3159ffe8c69c0df8241bb6e.1513706701.git.joe@perches.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f172.google.com (mail-yw0-f172.google.com
- [209.85.161.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 7BEDB266E43
- for <alsa-devel@alsa-project.org>; Wed, 20 Dec 2017 01:11:03 +0100 (CET)
-Received: by mail-yw0-f172.google.com with SMTP id m129so1144440ywb.11
- for <alsa-devel@alsa-project.org>; Tue, 19 Dec 2017 16:11:03 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-pm-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <cd38f14f06e1f447b3159ffe8c69c0df8241bb6e.1513706701.git.joe@perches.com>
+Sender: linux-pm-owner@vger.kernel.org
+To: Joe Perches <joe@perches.com>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, Cezary Jackiewicz <cezary.jackiewicz@gmail.com>, Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Sebastian Ott <sebott@linux.vnet.ibm.com>, Peter Oberparleiter <oberpar@linux.vnet.ibm.com>, James Smart <james.smart@broadcom.com>, Dick Kennedy <dick.kennedy@broadcom.com>, Zhang Rui <rui.zhang@intel.com>, Eduardo Valentin <edubezval@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mathias Nyman <mathias.nyman@intel.com>, Felipe Balbi <balbi@kernel.org>, "Luis R. Rodriguez" <mcgrof@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all, I was passed thi smailing list info in this github issue..
+On Tue, Dec 19, 2017 at 10:15:07AM -0800, Joe Perches wrote:
+> Convert DEVICE_ATTR uses to DEVICE_ATTR_RW where possible.
+> 
+...
+  
+> diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
+> index 7a54e3083203..79d4dc785e5c 100644
+> --- a/sound/soc/omap/mcbsp.c
+> +++ b/sound/soc/omap/mcbsp.c
+> @@ -854,7 +854,7 @@ static ssize_t dma_op_mode_store(struct device *dev,
+>  	return size;
+>  }
+>  
+> -static DEVICE_ATTR(dma_op_mode, 0644, dma_op_mode_show, dma_op_mode_store);
+> +static DEVICE_ATTR_RW(dma_op_mode);
+>  
+While I can ack this part here if it helps generic cleanup effort I
+don't understart would it improve code readability in general? Mode 644
+is clear and don't need any grepping but for DEVICE_ATTR_RW() I had to go
+through all of these files in order to see what does it mean:
 
-https://github.com/opensrc/alsa/issues/26#issuecomment-352616858
+DEVICE_ATTR_RW: include/linux/device.h
+__ATTR_RW: include/linux/sysfs.h
+S_IWUSR: include/uapi/linux/stat.h
+S_IRUGO: include/linux/stat.h
 
-Basically, I'm working on a raspberry pi and need to know when sound is
-playing or not, and I'm trying to use the status file's state parameter to
-determine when this is.  It seems however that my state parameter is always
-set to RUNNING and has an owner_pid even though that pid is not showing up
-in ps.
-
-Any ideas what may be causing this and how to rectify?
-
-Thanks, any help would be much appreciated.
-
-Regards,
-Mike.
-
-<http://www.avg.com/email-signature?utm_medium=email&utm_source=link&utm_campaign=sig-email&utm_content=webmail>
-Virus-free.
-www.avg.com
-<http://www.avg.com/email-signature?utm_medium=email&utm_source=link&utm_campaign=sig-email&utm_content=webmail>
-<#DAB4FAD8-2DD7-40BB-A1B8-4E2AA1F9FDF2>
+Jarkko Nikula <jarkko.nikula@bitmer.com>
