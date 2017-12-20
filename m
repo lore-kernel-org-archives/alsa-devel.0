@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc.h: Arrange DAI related parameter"
-	to the asoc tree
-Date: Wed, 20 Dec 2017 15:42:19 +0000
-Message-ID: <E1eRgVf-00010f-UJ@debutante>
-References: <87shc6xjne.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc-core: remove dai_drv from
+	snd_soc_component" to the asoc tree
+Date: Wed, 20 Dec 2017 15:42:23 +0000
+Message-ID: <E1eRgVj-00011b-KL@debutante>
+References: <87tvwmxjnu.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C30E92677EC
- for <alsa-devel@alsa-project.org>; Wed, 20 Dec 2017 16:42:26 +0100 (CET)
-In-Reply-To: <87shc6xjne.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 64CD62677FD
+ for <alsa-devel@alsa-project.org>; Wed, 20 Dec 2017 16:42:27 +0100 (CET)
+In-Reply-To: <87tvwmxjnu.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc.h: Arrange DAI related parameter
+   ASoC: soc-core: remove dai_drv from snd_soc_component
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,84 @@ to this mail.
 Thanks,
 Mark
 
->From 4855f6a6283fc8ea1f79c9f49c91940afef64ef6 Mon Sep 17 00:00:00 2001
+>From 58bf4179000a37aa9b0ee9ab2796f7573c77fff0 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 20 Dec 2017 01:48:44 +0000
-Subject: [PATCH] ASoC: soc.h: Arrange DAI related parameter
+Date: Wed, 20 Dec 2017 01:48:29 +0000
+Subject: [PATCH] ASoC: soc-core: remove dai_drv from snd_soc_component
 
-"dai_list" and "num_dai" on snd_soc_component are related
-parameter. Let's arrange these.
+ALSA SoC has some duplicate parameter.
+snd_soc_component::dai_drv is one of them.
+
+Each DAI is keeping its driver as snd_soc_dai::driver,
+and component has dai_list.
+This means, we can reach to each DAI and its driver by using dai_link.
+Thus, there is no need to keep DAI driver pointer on component.
+Let's remove it
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ include/sound/soc.h  |  1 -
+ sound/soc/soc-core.c | 14 ++++++++++----
+ 2 files changed, 10 insertions(+), 5 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 871e1fabd701..be6b462e2c01 100644
+index 1a7323238c49..871e1fabd701 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -858,11 +858,10 @@ struct snd_soc_component {
+@@ -858,7 +858,6 @@ struct snd_soc_component {
  	struct list_head card_aux_list; /* for auxiliary bound components */
  	struct list_head card_list;
  
--	int num_dai;
--
+-	struct snd_soc_dai_driver *dai_drv;
+ 	int num_dai;
+ 
  	const struct snd_soc_component_driver *driver;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index c0edac80df34..6a13fbcba23f 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3149,7 +3149,7 @@ static struct snd_soc_dai *soc_add_dai(struct snd_soc_component *component,
+ 	if (!dai->driver->ops)
+ 		dai->driver->ops = &null_dai_ops;
  
- 	struct list_head dai_list;
-+	int num_dai;
+-	list_add(&dai->list, &component->dai_list);
++	list_add_tail(&dai->list, &component->dai_list);
+ 	component->num_dai++;
  
- 	int (*read)(struct snd_soc_component *, unsigned int, unsigned int *);
- 	int (*write)(struct snd_soc_component *, unsigned int, unsigned int);
+ 	dev_dbg(dev, "ASoC: Registered DAI '%s'\n", dai->name);
+@@ -3176,8 +3176,6 @@ static int snd_soc_register_dais(struct snd_soc_component *component,
+ 
+ 	dev_dbg(dev, "ASoC: dai register %s #%zu\n", dev_name(dev), count);
+ 
+-	component->dai_drv = dai_drv;
+-
+ 	for (i = 0; i < count; i++) {
+ 
+ 		dai = soc_add_dai(component, dai_drv + i,
+@@ -4354,6 +4352,7 @@ int snd_soc_get_dai_name(struct of_phandle_args *args,
+ 							     args,
+ 							     dai_name);
+ 		} else {
++			struct snd_soc_dai *dai;
+ 			int id = -1;
+ 
+ 			switch (args->args_count) {
+@@ -4375,7 +4374,14 @@ int snd_soc_get_dai_name(struct of_phandle_args *args,
+ 
+ 			ret = 0;
+ 
+-			*dai_name = pos->dai_drv[id].name;
++			/* find target DAI */
++			list_for_each_entry(dai, &pos->dai_list, list) {
++				if (id == 0)
++					break;
++				id--;
++			}
++
++			*dai_name = dai->driver->name;
+ 			if (!*dai_name)
+ 				*dai_name = pos->name;
+ 		}
 -- 
 2.15.1
