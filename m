@@ -1,92 +1,49 @@
-From: Jiada Wang <jiada_wang@mentor.com>
-Subject: Re: [PATCH v1 1/1] ASoC: rsnd: ssi: Fix issue in dma data address
- assignment
-Date: Thu, 21 Dec 2017 01:16:39 -0800
-Message-ID: <5A3B7BF7.7060400@mentor.com>
-References: <1513832314-29727-1-git-send-email-jiada_wang@mentor.com> <87k1xgbnfz.wl%kuninori.morimoto.gx@renesas.com> <5A3B5EFE.8070606@mentor.com> <87ind0bkte.wl%kuninori.morimoto.gx@renesas.com>
+From: Sakari Ailus <sakari.ailus@iki.fi>
+Subject: Re: [-next PATCH 3/4] treewide: Use DEVICE_ATTR_RO
+Date: Thu, 21 Dec 2017 11:34:10 +0200
+Message-ID: <20171221093410.ygvupz3azaccxgnb@valkosipuli.retiisi.org.uk>
+References: <cover.1513706701.git.joe@perches.com>
+ <2e64e7d278fa9e4e255221fb84717884a7bfb69c.1513706701.git.joe@perches.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87ind0bkte.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <2e64e7d278fa9e4e255221fb84717884a7bfb69c.1513706701.git.joe@perches.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Joe Perches <joe@perches.com>
+Cc: Don Brace <don.brace@microsemi.com>, linux-nvme@lists.infradead.org, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, David Airlie <airlied@linux.ie>, esc.storagedev@microsemi.com, Heiko Carstens <heiko.carstens@de.ibm.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Russell King <linux@armlinux.org.uk>, Keith Busch <keith.busch@intel.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Christoph Hellwig <hch@lst.de>, devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>, Sagi Grimberg <sagi@grimberg.me>, Yoshinori Sato <ysato@users.sourceforge.jp>, Takashi Iwai <tiwai@suse.com>, Sebastian Ott <sebott@linux.vnet.ibm.com>, James Smart <james.smart@broadcom.com>, linux-acpi@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>, Len Brown <lenb@kernel.org>, Dick Kennedy <dick.kennedy@broadcom.com>, Corey
 List-Id: alsa-devel@alsa-project.org
 
-Hi Morimoto-san
-
-On 12/20/2017 11:39 PM, Kuninori Morimoto wrote:
-> Hi Jiada
->
->> diff --git a/arch/arm64/boot/dts/renesas/salvator-common.dtsi
->> b/arch/arm64/boot/dts/renesas/salvator-common.dtsi
->> index a298df7..16f3214 100644
->> --- a/arch/arm64/boot/dts/renesas/salvator-common.dtsi
->> +++ b/arch/arm64/boot/dts/renesas/salvator-common.dtsi
->> @@ -94,14 +94,24 @@
->>          };
->>
->>          rsnd_ak4613: sound {
->> -               compatible = "simple-audio-card";
->> +               compatible = "simple-scu-audio-card";
->>
->>                  simple-audio-card,format = "left_j";
->>                  simple-audio-card,bitclock-master =<&sndcpu>;
->>                  simple-audio-card,frame-master =<&sndcpu>;
->>
->> -               sndcpu: simple-audio-card,cpu {
->> -                       sound-dai =<&rcar_sound>;
->> +               simple-audio-card,prefix = "ak4613";
->> +                simple-audio-card,routing =
->> +                        "ak4613 Playback", "DAI0 Playback",
->> +                        "DAI0 Capture", "ak4613 Capture",
->> +                        "ak4613 Playback", "DAI1 Playback";
->> +
->> +               sndcpu: simple-audio-card,cpu@0 {
->> +                       sound-dai =<&rcar_sound 0>;
->> +               };
->> +
->> +               simple-audio-card,cpu@1 {
->> +                       sound-dai =<&rcar_sound 1>;
->>                  };
->>
->>                  sndcodec: simple-audio-card,codec {
->> @@ -517,7 +527,7 @@
->>          pinctrl-names = "default";
->>
->>          /* Single DAI */
->> -       #sound-dai-cells =<0>;
->> +       #sound-dai-cells =<1>;
->>
->>          /* audio_clkout0/1/2/3 */
->>   #clock-cells =<1>;
->> @@ -549,6 +559,9 @@
->>                          playback =<&ssi0&src0&dvc0>;
->>                          capture  =<&ssi1&src1&dvc1>;
->>                  };
->> +               dai1 {
->> +                       playback =<&ssi0>;
->> +               };
->>          };
->>   };
->>
->> playing with dai1 will have issue.
-> I guess so because you are using strange settings...
-> What do you want to do ?
-this is just an example setting to reproduce the issue with current 
-mainline kernel,
-
-We have enabled TDM Split and Ex-Split mode in our kernel,
-and SSI(U)'s dma address diffs based on the BUSIF it is using,
-so have a single dma data struct per rsnd_ssi will cause issue when
-SSI isn't working with BUSIF0.
-
-Do you have any suggestion to address this issue?
-
-
-Thanks,
-Jiada
-> Best regards
-> ---
-> Kuninori Morimoto
+SGkgSm9lLAoKT24gVHVlLCBEZWMgMTksIDIwMTcgYXQgMTA6MTU6MDhBTSAtMDgwMCwgSm9lIFBl
+cmNoZXMgd3JvdGU6Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc3RhZ2luZy9tZWRpYS9hdG9taXNw
+L3BjaS9hdG9taXNwMi9obW0vaG1tLmMgYi9kcml2ZXJzL3N0YWdpbmcvbWVkaWEvYXRvbWlzcC9w
+Y2kvYXRvbWlzcDIvaG1tL2htbS5jCj4gaW5kZXggYTFjODFjMTI3MThjLi40MzM4YjhhMTMwOWYg
+MTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9zdGFnaW5nL21lZGlhL2F0b21pc3AvcGNpL2F0b21pc3Ay
+L2htbS9obW0uYwo+ICsrKyBiL2RyaXZlcnMvc3RhZ2luZy9tZWRpYS9hdG9taXNwL3BjaS9hdG9t
+aXNwMi9obW0vaG1tLmMKPiBAQCAtMTU4LDEwICsxNTgsMTAgQEAgc3RhdGljIHNzaXplX3QgZHlu
+YW1pY19wb29sX3Nob3coc3RydWN0IGRldmljZSAqZGV2LAo+ICAJcmV0dXJuIHJldDsKPiAgfTsK
+PiAgCj4gLXN0YXRpYyBERVZJQ0VfQVRUUihhY3RpdmVfYm8sIDA0NDQsIGFjdGl2ZV9ib19zaG93
+LCBOVUxMKTsKPiAtc3RhdGljIERFVklDRV9BVFRSKGZyZWVfYm8sIDA0NDQsIGZyZWVfYm9fc2hv
+dywgTlVMTCk7Cj4gLXN0YXRpYyBERVZJQ0VfQVRUUihyZXNlcnZlZF9wb29sLCAwNDQ0LCByZXNl
+cnZlZF9wb29sX3Nob3csIE5VTEwpOwo+IC1zdGF0aWMgREVWSUNFX0FUVFIoZHluYW1pY19wb29s
+LCAwNDQ0LCBkeW5hbWljX3Bvb2xfc2hvdywgTlVMTCk7Cj4gK3N0YXRpYyBERVZJQ0VfQVRUUl9S
+TyhhY3RpdmVfYm8pOwo+ICtzdGF0aWMgREVWSUNFX0FUVFJfUk8oZnJlZV9ibyk7Cj4gK3N0YXRp
+YyBERVZJQ0VfQVRUUl9STyhyZXNlcnZlZF9wb29sKTsKPiArc3RhdGljIERFVklDRV9BVFRSX1JP
+KGR5bmFtaWNfcG9vbCk7Cj4gIAo+ICBzdGF0aWMgc3RydWN0IGF0dHJpYnV0ZSAqc3lzZnNfYXR0
+cnNfY3RybFtdID0gewo+ICAJJmRldl9hdHRyX2FjdGl2ZV9iby5hdHRyLAoKSSBoYXZlIHRoZSBl
+eGFjdCBzYW1lIGNoYW5nZXMgcXVldWVkIHVwIGluIG15IHRyZWUuIEFzIHRoZXJlIHNlZW0gdG8g
+YmUgbm8KZGVwZW5kZW5jaWVzIHRvIG90aGVyIHBhdGNoZXMgaW4geW91ciBzZXQsIGhvdyBhYm91
+dCBkcm9wcGluZyB0aGlzIGNodW5rPwoKVGhhbmtzLgoKLS0gClNha2FyaSBBaWx1cwplLW1haWw6
+IHNha2FyaS5haWx1c0Bpa2kuZmkKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRl
+c2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8v
+aW50ZWwtZ2Z4Cg==
