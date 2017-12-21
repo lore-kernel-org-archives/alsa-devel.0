@@ -1,91 +1,59 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v2] ASOC: wm8960: Add multiple MCLK
-	frequency support
-Date: Thu, 21 Dec 2017 16:48:10 +0000
-Message-ID: <20171221164810.ocdl3im5gy3mipmn@localhost.localdomain>
-References: <1513168650-102028-1-git-send-email-chen.liu.opensource@gmail.com>
- <20171214161954.wfik3ygadwii3zhm@localhost.localdomain>
- <CACJSzi0Kuknj6xFpambi87a1cXecGdfNGQ7PpgywwZV=9_U1yA@mail.gmail.com>
- <20171218093122.mgghz4mkxtvix6uu@localhost.localdomain>
- <CACJSzi13ZdOjvz1A2YFbE3z0nUPjeC7i5Dh+ZTnsQH55ON=YMA@mail.gmail.com>
- <20171218115526.z336fwohv5mt45sk@localhost.localdomain>
- <CACJSzi0hbv2p_6dXkp2AFwyYVzmU6_H56LgJxY70_ZKn2y=aUw@mail.gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v10 11/13] slimbus: qcom: Add Qualcomm Slimbus controller driver
+Date: Thu, 21 Dec 2017 18:26:28 +0100
+Message-ID: <CAK8P3a2twaPd4Kw8D=g3gba68OiAMN6R-kgb03M=L-Oiv0gB5w@mail.gmail.com>
+References: <20171211234307.14465-1-srinivas.kandagatla@linaro.org> <20171211234307.14465-12-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id B27A0266BBC
- for <alsa-devel@alsa-project.org>; Thu, 21 Dec 2017 17:48:16 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <CACJSzi0hbv2p_6dXkp2AFwyYVzmU6_H56LgJxY70_ZKn2y=aUw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: chen liu <chen.liu.opensource@gmail.com>
-Cc: shengjiu.wang@freescale.com, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, tiwai@suse.com, broonie@kernel.org, daniel.baluta@nxp.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <20171211234307.14465-12-srinivas.kandagatla@linaro.org>
+Sender: linux-doc-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, sdharia@codeaurora.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jonathan Corbet <corbet@lwn.net>, Philippe Ombredanne <pombredanne@nexb.com>, nathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>, linux-arm-msm@vger.kernel.org, DTML <devicetree@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org, Andy Gross <andy.gross@linaro.org>, David Brown <david.brown@linaro.org>, Bjorn Andersson <bjorn.andersson@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 19, 2017 at 02:19:48PM +0800, chen liu wrote:
-> 2017-12-18 19:55 GMT+08:00 Charles Keepax <ckeepax@opensource.cirrus.com>:
-> > On Mon, Dec 18, 2017 at 07:32:41PM +0800, chen liu wrote:
-> > > 2017-12-18 17:31 GMT+08:00 Charles Keepax <ckeepax@opensource.cirrus.com
-> > > > On Fri, Dec 15, 2017 at 09:07:15PM +0800, chen liu wrote:
-> > > > > 2017-12-15 0:19 GMT+08:00 Charles Keepax <
-> > ckeepax@opensource.cirrus.com
-> > > > > > On Wed, Dec 13, 2017 at 08:37:30PM +0800, Chen.Liu wrote:
->         // Then this branch will be executed.
->         //  If the sample rate is 44100HZ, the value of freq_out will be
-> 11.2896MHZ
->         freq_out = wm8960_configure_pll(codec, freq_in, &i, &j, &k);
->         if (freq_out < 0) {
->                 dev_err(codec->dev, "failed to configure clock via PLL\n");
->                 return freq_out;
->         }
->        // The 'wm8960_set_pll' function will be executed,this function is
-> very important.
->        // But now, the freq_in is 24MHZ and the freq_out is 11.2896MHZ.
->         wm8960_set_pll(codec, freq_in, freq_out);
-> ...
-> 
-> Because the 'wm8960_configure_pll' function has been pre-scaled by 2 for
-> freq_out,
-> but the value of freq_out is not multiplied by 2 in the 'pll_factors'
-> function, it prints the
-> "WM8960 PLL: Unsupported N =" error message.
+> +
+> +       ctrl->tx.base = dmam_alloc_coherent(&pdev->dev,
+> +                                          (ctrl->tx.sl_sz * ctrl->tx.n),
+> +                                          &ctrl->tx.phy, GFP_KERNEL);
+> +       if (!ctrl->tx.base) {
+> +               ret = -ENOMEM;
+> +               goto err;
+> +       }
+> +
+> +       ctrl->rx.base = dmam_alloc_coherent(&pdev->dev,
+> +                                          (ctrl->rx.sl_sz * ctrl->rx.n),
+> +                                          &ctrl->rx.phy, GFP_KERNEL);
 
-Ah ok so I hadn't realised you were using the SYSCLK_AUTO stuff
-and finding an issue with it. Thank you very much for the
-explanation.
+I got another one of
 
-One thing I don't understand though is it looks like the freq_out
-returned from wm8960_configure_pll should already be taking the
-SYSCLK_DIV into account:
+/git/arm-soc/drivers/slimbus/qcom-ctrl.c: In function 'qcom_slim_probe':
+/git/arm-soc/drivers/slimbus/qcom-ctrl.c:584:9: error: passing
+argument 3 of 'dmam_alloc_coherent' from incompatible pointer type
+[-Werror=incompatible-pointer-types]
+         &ctrl->tx.phy, GFP_KERNEL);
+         ^
+In file included from /git/arm-soc/drivers/slimbus/qcom-ctrl.c:16:0:
+/git/arm-soc/include/linux/dma-mapping.h:760:14: note: expected
+'dma_addr_t * {aka unsigned int *}' but argument is of type
+'phys_addr_t * {aka long long unsigned int *}'
+ extern void *dmam_alloc_coherent(struct device *dev, size_t size,
+              ^~~~~~~~~~~~~~~~~~~
+/git/arm-soc/drivers/slimbus/qcom-ctrl.c:592:9: error: passing
+argument 3 of 'dmam_alloc_coherent' from incompatible pointer type
+[-Werror=incompatible-pointer-types]
+         &ctrl->rx.phy, GFP_KERNEL);
+         ^
+In file included from /git/arm-soc/drivers/slimbus/qcom-ctrl.c:16:0:
+/git/arm-soc/include/linux/dma-mapping.h:760:14: note: expected
+'dma_addr_t * {aka unsigned int *}' but argument is of type
+'phys_addr_t * {aka long long unsigned int *}'
+ extern void *dmam_alloc_coherent(struct device *dev, size_t size,
 
-for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
-	sysclk = lrclk * dac_divs[j];
-	freq_out = sysclk * sysclk_divs[i];
 
-So if lrclk=44100, j=0, i=2 which I believe is the case in
-question we should get:
+I don't have time to analyze this further, but I guess this is the
+same confusion
+that happened in a few other qualcomm drivers, which all used dma_alloc_*
+to get a buffer that gets passed into firmware.This is always wrong.
 
-sysclk = 44100 * 256 = 11.2896MHz
-freq_out = 11.2896MHz * 2 = 22.5792MHz
-
-So when wm8960_configure_pll returns i=2 then it should also be
-setting freq_out as 22.5792MHz. So you final call there to
-wm8960_set_pll should be:
-
-wm8960_set_pll(codec, 24MHz, 22.5792MHz);
-
-Can you see why that isn't happening?
-
-Thanks,
-Charles
+        Arnd
