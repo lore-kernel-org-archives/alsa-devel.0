@@ -1,62 +1,44 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [alsa-lib][PATCH 0/4] pcm: minor code cleanup
-Date: Fri, 22 Dec 2017 08:25:42 +0900
-Message-ID: <7514db92-4dc2-aeec-bcf5-1193f5342e94@sakamocchi.jp>
-References: <20171220171703.10609-1-o-takashi@sakamocchi.jp>
- <s5h1sjo9m16.wl-tiwai@suse.de>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH][next] soundwire: intel: fix missing assignment to ret
+Date: Thu, 21 Dec 2017 23:32:10 +0000
+Message-ID: <20171221233210.8821-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 024E7266D61
- for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2017 00:25:48 +0100 (CET)
-In-Reply-To: <s5h1sjo9m16.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+From: Colin Ian King <colin.king@canonical.com>
 
-On Dec 21 2017 23:46, Takashi Iwai wrote:
-> On Wed, 20 Dec 2017 18:16:59 +0100,
-> Takashi Sakamoto wrote:
->>
->> Hi,
->>
->> When reviewing Maciej's patches[1], I found that alsa-lib includes some
->> unused codes in linear interpolation functionality. Furthermore, some code
->> comments includes 'copy & paste' mistakes.
->>
->> This patchset improves them.
->>
->> [1] http://mailman.alsa-project.org/pipermail/alsa-devel/2017-December/129370.html
->>
->> Takashi Sakamoto (4):
->>    pcm: remove unused macros of COPY_LABELS/COPY_END
->>    pcm: remove unused macros of GETU_LABELS/GETU_END
->>    pcm: remove unused macros of NORMS_LABELS/NORMS_END
->>    pcm: fix wrong comments for some cases of linear interpolation of PCM
->>      samples
-> 
-> All patches seem missing your sign-off.
-> It's not mandatory for alsa-lib, but preferable.  Would you like me
-> adding them manually?
+Currently the return status ret is being checked but it has not been
+updated since the previous check on ret. It appears that assignment of
+ret from return status of the call to sdw_cdns_enable_interrupt was
+accidentally ommited.  Fix this.
 
-Oops... Yes, please.
-(I should have a script to check it before posting...)
+Detected by CoverityScan, CID#1463148 ("Logically dead code")
 
+Fixes: 71bb8a1b059e ("soundwire: intel: Add Intel Master driver")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/soundwire/intel.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 6a9177ea6eb9..86a7bd1fc912 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -295,7 +295,7 @@ static int intel_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_init;
+ 
+-	sdw_cdns_enable_interrupt(&sdw->cdns);
++	ret = sdw_cdns_enable_interrupt(&sdw->cdns);
+ 	if (ret)
+ 		goto err_init;
+ 
+-- 
+2.14.1
 
-Takashi Sakamoto
