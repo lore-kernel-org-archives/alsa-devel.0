@@ -1,14 +1,18 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rl6231: remove never matched if condition
-Date: Thu, 21 Dec 2017 11:21:33 +0800
-Message-ID: <1513826493-9866-1-git-send-email-bardliao@realtek.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: hdac_hdmi: Add vendor id for
+	Cannonlake HDMI codec
+Date: Thu, 21 Dec 2017 09:56:00 +0530
+Message-ID: <20171221042600.GL18649@localhost>
+References: <20171221031529.14234-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 187EF266DD5
- for <alsa-devel@alsa-project.org>; Thu, 21 Dec 2017 04:21:44 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A218266DB1
+ for <alsa-devel@alsa-project.org>; Thu, 21 Dec 2017 05:22:08 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20171221031529.14234-1-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,29 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+To: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Patches Audio <patches.audio@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-(in_t < 0) will never be true since in_t is unsigned.
+On Thu, Dec 21, 2017 at 08:45:29AM +0530, Guneshwor Singh wrote:
+> Cannonlake HDMI codec has the same nid as Geminilake. This adds the
+> vendor id for Cannonlake in hdmi device id list.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rl6231.c | 2 --
- 1 file changed, 2 deletions(-)
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 
-diff --git a/sound/soc/codecs/rl6231.c b/sound/soc/codecs/rl6231.c
-index 33690e9..7ef3b54 100644
---- a/sound/soc/codecs/rl6231.c
-+++ b/sound/soc/codecs/rl6231.c
-@@ -178,8 +178,6 @@ int rl6231_pll_calc(const unsigned int freq_in,
- 		for (n_t = 0; n_t <= max_n; n_t++) {
- 			in_t = f_in * (n_t + 2);
- 			pll_out = f_out * (k_t + 2);
--			if (in_t < 0)
--				continue;
- 			if (in_t == pll_out) {
- 				bypass = true;
- 				n = n_t;
 -- 
-2.7.4
+~Vinod
