@@ -1,16 +1,16 @@
 From: Colin King <colin.king@canonical.com>
-Subject: [PATCH][next] soundwire: fix sign extension when
-	shifting buf[2] 24 places
-Date: Thu, 21 Dec 2017 23:51:13 +0000
-Message-ID: <20171221235113.9274-1-colin.king@canonical.com>
+Subject: [PATCH][next] slimbus: avoid null pointer dereference
+	on msg
+Date: Fri, 22 Dec 2017 00:01:08 +0000
+Message-ID: <20171222000108.9533-1-colin.king@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E6D0266D61
- for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2017 00:51:15 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 90F43266D61
+ for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2017 01:01:09 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,41 +20,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, alsa-devel@alsa-project.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, alsa-devel@alsa-project.org
 Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Colin Ian King <colin.king@canonical.com>
 
-The buf[2] left shift by 24 bits is promoted to int (32 bit signed)
-and then signed-extended to unsigned long long. Hence if the upper
-bit to buf[2] is set then all the upper bits of addr end up as 1.
-Fix this by casting it to u64 before shifting it. Also replace the
-unsigned long long casts to u64 casts to match the same type of
-addr.
+The pointer msg is checked to see if it is null at the start of
+the function and jumps to the error exit label reterr that then
+dereferences msg when it prints a dev_err error message. Avoid
+this potential null pointer dereference by only printing the
+error message if msg is not null.
 
-Detected by CoverityScan, CID#1463147 ("Unintended sign extension")
+Detected by CoverityScan, CID#1463141 ("Dereference after null check")
 
-Fixes: d52d7a1be02c ("soundwire: Add Slave status handling helpers")
+Fixes: afbdcc7c384b ("slimbus: Add messaging APIs to slimbus framework")
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/soundwire/bus.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/slimbus/messaging.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 4c345197eb55..7211ecc62015 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -522,8 +522,8 @@ static int sdw_program_device_num(struct sdw_bus *bus)
- 		 * bits to avoid truncation due to size limit.
- 		 */
- 		addr = buf[5] | (buf[4] << 8) | (buf[3] << 16) |
--			(buf[2] << 24) | ((unsigned long long)buf[1] << 32) |
--			((unsigned long long)buf[0] << 40);
-+			((u64)buf[2] << 24) | ((u64)buf[1] << 32) |
-+			((u64)buf[0] << 40);
- 
- 		sdw_extract_slave_id(bus, addr, &id);
+diff --git a/drivers/slimbus/messaging.c b/drivers/slimbus/messaging.c
+index 755462a4c75e..8b2c77f516b9 100644
+--- a/drivers/slimbus/messaging.c
++++ b/drivers/slimbus/messaging.c
+@@ -170,8 +170,9 @@ static int slim_val_inf_sanity(struct slim_controller *ctrl,
+ 		break;
+ 	}
+ reterr:
+-	dev_err(ctrl->dev, "Sanity check failed:msg:offset:0x%x, mc:%d\n",
+-		msg->start_offset, mc);
++	if (msg)
++		dev_err(ctrl->dev, "Sanity check failed:msg:offset:0x%x, mc:%d\n",
++			msg->start_offset, mc);
+ 	return -EINVAL;
+ }
  
 -- 
 2.14.1
