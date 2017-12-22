@@ -1,16 +1,16 @@
 From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
-Subject: [RFC v4 4/9] ASoC: Intel: Skylake: use hda_bus instead
-	of hdac_bus
-Date: Fri, 22 Dec 2017 18:22:47 +0530
-Message-ID: <1513947172-28136-5-git-send-email-rakesh.a.ughreja@intel.com>
+Subject: [RFC v4 5/9] ALSA: hda - split snd_hda_codec_new
+	function
+Date: Fri, 22 Dec 2017 18:22:48 +0530
+Message-ID: <1513947172-28136-6-git-send-email-rakesh.a.ughreja@intel.com>
 References: <1513947172-28136-1-git-send-email-rakesh.a.ughreja@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 4EF8A26792A
- for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2017 13:48:16 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id B549626792F
+ for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2017 13:48:17 +0100 (CET)
 In-Reply-To: <1513947172-28136-1-git-send-email-rakesh.a.ughreja@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,101 +25,158 @@ To: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, liam.r.girdw
 Cc: vinod.koul@intel.com, patches.audio@intel.com, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Use hda_bus instead of hdac_bus in the SKL ASoC platform driver to enable
-reuse of legacy HDA codec drivers.
+Split snd_hda_codec_new into two separate functions.
+snd_hda_codec_device_init allocates memory and registers with bus.
+snd_hda_codec_device_new initialializes the fields and performs
+snd_device_new. This enables reuse of legacy HDA codec drivers as ASoC
+codec drivers.
+
+In addition mark some functions with EXPORT_SYMBOL_GPL so that it can be
+called by ASoC codec drivers.
 
 Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 ---
- sound/soc/intel/skylake/skl.c | 13 ++++++++++++-
- sound/soc/intel/skylake/skl.h | 10 +++++++---
- 2 files changed, 19 insertions(+), 4 deletions(-)
+ sound/pci/hda/hda_codec.c | 67 +++++++++++++++++++++++++++++++++++------------
+ sound/pci/hda/hda_codec.h |  2 ++
+ 2 files changed, 52 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index b99c1d8..ecfe0d3 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -35,6 +35,7 @@
- #include "skl.h"
- #include "skl-sst-dsp.h"
- #include "skl-sst-ipc.h"
-+#include "../../../pci/hda/hda_codec.h"
- 
- static struct skl_machine_pdata skl_dmic_data;
- 
-@@ -624,7 +625,7 @@ static int probe_codec(struct hdac_bus *bus, int addr)
- 	mutex_unlock(&bus->cmd_mutex);
- 	if (res == -1)
- 		return -EIO;
--	dev_dbg(bus->dev, "codec #%d probed OK\n", addr);
-+	dev_dbg(bus->dev, "codec #%d probed OK: %x\n", addr, res);
- 
- 	return snd_hdac_ext_bus_device_init(bus, addr);
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index e018ecb..2a8190d 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -856,6 +856,38 @@ static void snd_hda_codec_dev_release(struct device *dev)
+ 	kfree(codec);
  }
-@@ -751,6 +752,7 @@ static int skl_create(struct pci_dev *pci,
- {
- 	struct skl *skl;
- 	struct hdac_bus *bus;
-+	struct hda_bus *hbus;
  
- 	int err;
- 
-@@ -766,6 +768,7 @@ static int skl_create(struct pci_dev *pci,
- 		return -ENOMEM;
- 	}
- 
-+	hbus = skl_to_hbus(skl);
- 	bus = skl_to_bus(skl);
- 	snd_hdac_ext_bus_init(bus, &pci->dev, &bus_core_ops, io_ops);
- 	bus->use_posbuf = 1;
-@@ -773,6 +776,14 @@ static int skl_create(struct pci_dev *pci,
- 	INIT_WORK(&skl->probe_work, skl_probe_work);
- 	bus->bdl_pos_adj = 0;
- 
-+	/*
-+	 * TODO: other parameters can be taken the way it is taken by
-+	 * legacy HDA driver
-+	 */
-+	mutex_init(&hbus->prepare_mutex);
-+	hbus->pci = pci;
-+	hbus->mixer_assigned = -1;
++static int snd_hda_codec_device_init(struct hda_bus *bus, struct snd_card *card,
++			unsigned int codec_addr, struct hda_codec **codecp)
++{
++	int err;
++	char component[31];
++	struct hda_codec *codec;
 +
- 	*rskl = skl;
++	dev_dbg(card->dev, "%s: entry\n", __func__);
++
++	if (snd_BUG_ON(!bus))
++		return -EINVAL;
++	if (snd_BUG_ON(codec_addr > HDA_MAX_CODEC_ADDRESS))
++		return -EINVAL;
++
++	codec = kzalloc(sizeof(*codec), GFP_KERNEL);
++	if (!codec)
++		return -ENOMEM;
++
++	sprintf(component, "hdaudioC%dD%d", card->number, codec_addr);
++	err = snd_hdac_device_init(&codec->core, &bus->core, component,
++				   codec_addr);
++	if (err < 0) {
++		kfree(codec);
++		return err;
++	}
++
++	codec->core.type = HDA_DEV_LEGACY;
++	*codecp = codec;
++
++	return err;
++}
++
+ /**
+  * snd_hda_codec_new - create a HDA codec
+  * @bus: the bus to assign
+@@ -867,7 +899,19 @@ static void snd_hda_codec_dev_release(struct device *dev)
+ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
+ 		      unsigned int codec_addr, struct hda_codec **codecp)
+ {
+-	struct hda_codec *codec;
++	int ret;
++
++	ret = snd_hda_codec_device_init(bus, card, codec_addr, codecp);
++	if (ret < 0)
++		return ret;
++
++	return snd_hda_codec_device_new(bus, card, codec_addr, *codecp);
++}
++EXPORT_SYMBOL_GPL(snd_hda_codec_new);
++
++int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
++			unsigned int codec_addr, struct hda_codec *codec)
++{
+ 	char component[31];
+ 	hda_nid_t fg;
+ 	int err;
+@@ -877,25 +921,14 @@ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
+ 		.dev_free = snd_hda_codec_dev_free,
+ 	};
+ 
++	dev_dbg(card->dev, "%s: entry\n", __func__);
++
+ 	if (snd_BUG_ON(!bus))
+ 		return -EINVAL;
+ 	if (snd_BUG_ON(codec_addr > HDA_MAX_CODEC_ADDRESS))
+ 		return -EINVAL;
+ 
+-	codec = kzalloc(sizeof(*codec), GFP_KERNEL);
+-	if (!codec)
+-		return -ENOMEM;
+-
+-	sprintf(component, "hdaudioC%dD%d", card->number, codec_addr);
+-	err = snd_hdac_device_init(&codec->core, &bus->core, component,
+-				   codec_addr);
+-	if (err < 0) {
+-		kfree(codec);
+-		return err;
+-	}
+-
+ 	codec->core.dev.release = snd_hda_codec_dev_release;
+-	codec->core.type = HDA_DEV_LEGACY;
+ 	codec->core.exec_verb = codec_exec_verb;
+ 
+ 	codec->bus = bus;
+@@ -955,15 +988,13 @@ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
+ 	if (err < 0)
+ 		goto error;
+ 
+-	if (codecp)
+-		*codecp = codec;
+ 	return 0;
+ 
+  error:
+ 	put_device(hda_codec_dev(codec));
+ 	return err;
+ }
+-EXPORT_SYMBOL_GPL(snd_hda_codec_new);
++EXPORT_SYMBOL_GPL(snd_hda_codec_device_new);
+ 
+ /**
+  * snd_hda_codec_update_widgets - Refresh widget caps and pin defaults
+@@ -3005,6 +3036,7 @@ int snd_hda_codec_build_controls(struct hda_codec *codec)
+ 	sync_power_up_states(codec);
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(snd_hda_codec_build_controls);
+ 
+ /*
+  * PCM stuff
+@@ -3210,6 +3242,7 @@ int snd_hda_codec_parse_pcms(struct hda_codec *codec)
  
  	return 0;
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index f3a48a4..777508f 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -26,6 +26,7 @@
- #include <sound/soc.h>
- #include "skl-nhlt.h"
- #include "skl-ssp-clk.h"
-+#include "../../../pci/hda/hda_codec.h"
+ }
++EXPORT_SYMBOL_GPL(snd_hda_codec_parse_pcms);
  
- #define SKL_SUSPEND_DELAY 2000
+ /* assign all PCMs of the given codec */
+ int snd_hda_codec_build_pcms(struct hda_codec *codec)
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index 681c360..8bbedf7 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -307,6 +307,8 @@ struct hda_codec {
+  */
+ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
+ 		      unsigned int codec_addr, struct hda_codec **codecp);
++int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
++		      unsigned int codec_addr, struct hda_codec *codec);
+ int snd_hda_codec_configure(struct hda_codec *codec);
+ int snd_hda_codec_update_widgets(struct hda_codec *codec);
  
-@@ -63,7 +64,7 @@ struct skl_fw_config {
- };
- 
- struct skl {
--	struct hdac_bus hbus;
-+	struct hda_bus hbus;
- 	struct pci_dev *pci;
- 
- 	unsigned int init_done:1; /* delayed init status */
-@@ -96,8 +97,11 @@ struct skl {
- 	struct skl_fw_config cfg;
- };
- 
--#define skl_to_bus(s)  (&(s)->hbus)
--#define bus_to_skl(bus) container_of(bus, struct skl, hbus)
-+#define skl_to_bus(s)  (&(s)->hbus.core)
-+#define bus_to_skl(bus) container_of(bus, struct skl, hbus.core)
-+
-+#define skl_to_hbus(s) (&(s)->hbus)
-+#define hbus_to_skl(hbus) container_of(hbus, struct skl, hbus)
- 
- /* to pass dai dma data */
- struct skl_dma_params {
 -- 
 2.7.4
