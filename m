@@ -1,126 +1,58 @@
-From: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: ALSA: hda - Fix pointer leftover issues in hdac_acomp
-Date: Fri, 22 Dec 2017 09:35:36 +0100
-Message-ID: <20171222083536.GA22544@kroah.com>
-References: <e5c868b7-d475-6004-202e-ca0176f5bb1a@toshiba.co.jp>
- <s5hshc3xkdf.wl-tiwai@suse.de>
- <20171222080602.GA30568@kroah.com>
- <s5hpo77xjuh.wl-tiwai@suse.de>
+From: Philippe Ombredanne <pombredanne-od1rfyK75/E@public.gmane.org>
+Subject: Re: [PATCH] ASoC: max98373: Added Amplifier Driver
+Date: Fri, 22 Dec 2017 09:39:00 +0100
+Message-ID: <CAOFm3uH3+UsSZ7DgDk9AYRb8K7GjKUNwchGW3_hxD3DMOidjpg@mail.gmail.com>
+References: <1513907030-18441-1-git-send-email-ryans.lee@maximintegrated.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5hpo77xjuh.wl-tiwai@suse.de>
-Sender: stable-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: =?utf-8?B?5bKh5pysIOW5uOWkpw==?= <kouta.okamoto@toshiba.co.jp>, stable@vger.kernel.org, alsa-devel@alsa-project.org, hui.wang@canonical.com, daniel.vetter@ffwll.ch, arvind.yadav.cs@gmail.com, ander.conselvan.de.oliveira@intel.com, guneshwor.o.singh@intel.com, libin.yang@intel.com, megha.dey@intel.com, sriramx.periyasamy@intel.com, subhransu.s.prusty@intel.com, vinod.koul@intel.com, ddadap@nvidia.com, perex@perex.cz, labbott@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1513907030-18441-1-git-send-email-ryans.lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Ryan Lee <ryans.lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, afd-l0cyMroinI0@public.gmane.org, robert.jarzmik-GANU6spQydw@public.gmane.org, supercraig0719-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, jbrunet-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, dannenberg-l0cyMroinI0@public.gmane.org, Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>, bryce.ferguson-lFk7bPDcGtkY5TsXZYaR1UEOCMrvLtNR@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, m-stecklein-l0cyMroinI0@public.gmane.org, ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, LKML <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, ryan.lee.maxim-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 22, 2017 at 09:11:50AM +0100, Takashi Iwai wrote:
-> On Fri, 22 Dec 2017 09:06:02 +0100,
-> Greg KH wrote:
-> > 
-> > On Fri, Dec 22, 2017 at 09:00:28AM +0100, Takashi Iwai wrote:
-> > > On Fri, 22 Dec 2017 07:16:26 +0100,
-> > > 岡本 幸大 wrote:
-> > > > 
-> > > > Hello
-> > > > 
-> > > > I run into an Oops while executing "cat /proc/iomem" on the latest 4.4 kernel.
-> > > > See the log below:
-> > > > 
-> > > > [   55.945264] BUG: unable to handle kernel NULL pointer dereference at 0000000000000020
-> > > > [   55.945292] IP: [<ffffffff8f10d00e>] r_show+0x34/0xb4
-> > > > [   55.945324] PGD d7a39067 PUD cb3e9067 PMD 0
-> > > > [   55.945342] Oops: 0000 [#1] PREEMPT SMP
-> > > > [   55.945358] Modules linked in: snd_hda_codec_hdmi(E) dell_led(E) input_leds(E) joydev(E) snd_hda_codec_realtek(E) snd_hda_codec_generic(E) i915(E) snd_hda_intel(E) snd_hda_codec(E) snd_hda_core(E) snd_hwdep(E) snd_pcm(E) snd_seq_midi(E) snd_seq_midi_event(E) drm_kms_helper(E) snd_rawmidi(E) snd_seq(E) acpi_als(E) kfifo_buf(E) intel_rapl(E) snd_seq_device(E) snd_timer(E) drm(E) snd(E) industrialio(E) x86_pkg_temp_thermal(E) dell_wmi(E) sparse_keymap(E) dcdbas(E) intel_powerclamp(E) coretemp(E) serio_raw(E) wmi(E) mei_me(E) i2c_algo_bit(E) parport_pc(E) soundcore(E) fb_sys_fops(E) syscopyarea(E) intel_lpss_acpi(E) sysfillrect(E) mei(E) ppdev(E) intel_lpss(E) sysimgblt(E) mac_hid(E) 8250_fintek(E) i2c_hid(E) lp(E) parport(E) hid_generic(E) usbhid(E) hid(E) psmouse(E) r8169(E) mii(E
- ) ahci(E) libahci(E) fjes(E)
-> > > > [   55.945630] CPU: 0 PID: 1781 Comm: cat Tainted: G            E   4.4.92-cip11-pc-platform #1
-> > > > [   55.945655] Hardware name: Dell Inc. OptiPlex 3050/0W0CHX, BIOS 1.5.4 07/14/2017
-> > > > [   55.945679] task: ffff8800cb060400 ti: ffff8800c9910000 task.ti: ffff8800c9910000
-> > > > [   55.945701] RIP: 0010:[<ffffffff8f10d00e>]  [<ffffffff8f10d00e>] r_show+0x34/0xb4
-> > > > [   55.945726] RSP: 0018:ffff8800c9913da8  EFLAGS: 00010297
-> > > > [   55.945743] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000001000
-> > > > [   55.945765] RDX: ffffffff8fe42130 RSI: ffff8800d89844a8 RDI: ffff8800d9250dc0
-> > > > [   55.945786] RBP: ffff8800c9913dc8 R08: 0000000000000008 R09: 0000000000000001
-> > > > [   55.945807] R10: 0000000000000000 R11: 0000000000000201 R12: ffff8800d89844a8
-> > > > [   55.945828] R13: ffff8800d9250dc0 R14: ffff8800d9250dc0 R15: ffff880118719500
-> > > > [   55.945851] FS:  00007f12f3dce740(0000) GS:ffff88011dc00000(0000) knlGS:0000000000000000
-> > > > [   55.945876] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > > [   55.945894] CR2: 0000000000000020 CR3: 000000003f7e9000 CR4: 00000000003406f0
-> > > > [   55.945916] Stack:
-> > > > [   55.945923]  ffffffff8fa2ffa0 0000000000000000 0000000000010000 ffff8800c9913f28
-> > > > [   55.945950]  ffff8800c9913e30 ffffffff8f22e009 ffff8800d89844a8 000000000000063c
-> > > > [   55.945976]  ffff8800d9250e00 0000000001ae0000 000000000000002d 000000000000002e
-> > > > [   55.946013] Call Trace:
-> > > > [   55.946025]  [<ffffffff8f22e009>] seq_read+0x24b/0x317
-> > > > [   55.946043]  [<ffffffff8f263c1a>] proc_reg_read+0x48/0x67
-> > > > [   55.946061]  [<ffffffff8f263bd2>] ? proc_reg_write+0x67/0x67
-> > > > [   55.946080]  [<ffffffff8f21011a>] __vfs_read+0x26/0xba
-> > > > [   55.946097]  [<ffffffff8f37cb49>] ? security_file_permission+0x96/0xa3
-> > > > [   55.946118]  [<ffffffff8f21070c>] ? rw_verify_area+0x7e/0xd2
-> > > > [   55.946135]  [<ffffffff8f2107f8>] vfs_read+0x98/0x123
-> > > > [   55.946151]  [<ffffffff8f21131d>] SyS_read+0x4e/0x89
-> > > > [   55.946169]  [<ffffffff8f84dbae>] entry_SYSCALL_64_fastpath+0x12/0x71
-> > > > [   55.946188] Code: 41 55 41 54 53 50 49 89 fd 48 8b 97 80 00 00 00 49 89 f4 48 89 f0 48 81 7a 08 00 00 01 00 45 19 c0 31 db 41 83 e0 fc 41 83 c0 08 <48> 8b 40 20 48 39 d0 74 07 ff c3 83 fb 05 75 f0 49 8b 7d 78 ba
-> > > > [   55.946310] RIP  [<ffffffff8f10d00e>] r_show+0x34/0xb4
-> > > > [   55.946328]  RSP <ffff8800c9913da8>
-> > > > [   55.946339] CR2: 0000000000000020
-> > > > 
-> > > > I found out that the problem is in sound/hda/hdac_i915.c.
-> > > > 
-> > > > When the i915 component binding failed in snd_hdac_i915_init(), the memory used
-> > > > for "acomp" was released and "bus->audio_component" was cleared. However
-> > > > "hadc_acomp" was not. "hdac_acomp" is later used in snd_hdac_i915_register_notifier(),
-> > > > which leads to the Oops.
-> > > > 
-> > > > In my case, the pointer left over in "hdac_acomp" is re-used for the iomem control
-> > > > structure, causing the above Oops.
-> > > > 
-> > > > The following commits, already upstream, fix the above issue by clearing "hdac_acomp".
-> > > > 
-> > > >   faafd03d23c913633d2ef7e6ffebdce01b164409
-> > > >   (ALSA: hda - Clear the leftover component assignment at snd_hdac_i915_exit())
-> > > > 
-> > > >   97cc2ed27e5a168cf423f67c3bc7c6cc41d12f82
-> > > >   (ALSA: hda - Fix yet another i915 pointer leftover in error path)
-> > > > 
-> > > > The commit 97cc2ed27e5a168cf423f67c3bc7c6cc41d12f82 depends on the following commit,
-> > > > just a change in log message.
-> > > > 
-> > > >   bed2e98e1f4db8b827df507abc30be7b11b0613d
-> > > >   (ALSA: hda - Degrade i915 binding failure message)
-> > > > 
-> > > > With the patches above applied, a WARNING still occurrs if "hdac_acomp" has a NULL pointer
-> > > > in snd_hdac_i915_register_notifier().
-> > > 
-> > > Yes, these are fine to backport.  However...
-> > > 
-> > > 
-> > > > int snd_hdac_i915_register_notifier(const struct i915_audio_component_audio_ops *aops)
-> > > > {
-> > > >      if (WARN_ON(!hdac_acomp)) <--
-> > > >          return -ENODEV;
-> > > > 
-> > > > This WARNING is also fixed upstream with the following commit, whose main purpose is
-> > > > to support old Intel PCH devices, but it also suppress the WARNING.
-> > > > 
-> > > >   6603249dcdbb6aab0b726bdf372d6f20c0d2d611
-> > > >   (ALSA: hda - Enable audio component for old Intel PCH devices)
-> > > 
-> > > ... this isn't.  It'll lead to other regressions that have been
-> > > addressed later commits.  Either backport only that check, or take a
-> > > significant risk of other breakage.
-> > 
-> > Ick, ok, want me to drop this one and keep the others?  Or just drop all
-> > of the ones i just queued up?
-> 
-> Please just drop this one for now.
-> 
-> And, either we need to queue more fixes or make a partial fix just for
-> papering over this issue.
+Ryan,
 
-Now dropped, thanks.
+On Fri, Dec 22, 2017 at 2:43 AM, Ryan Lee <ryans.lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org> wrote:
+> Signed-off-by: Ryan Lee <ryans.lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
+> ---
+>
+> Created max98373 amplifier driver.
+>
 
-greg k-h
+<snip>
+
+> --- /dev/null
+> +++ b/sound/soc/codecs/max98373.c
+> @@ -0,0 +1,996 @@
+> +/*
+> + * max98373.c  --  MAX98373 ALSA Soc Audio driver
+> + *
+> + * Copyright (C) 2017 Maxim Integrated Products
+> + * Author: Ryan Lee <ryans.lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
+> + *
+> + *  This program is free software; you can redistribute  it and/or modify it
+> + *  under  the terms of  the GNU General  Public License as published by the
+> + *  Free Software Foundation;  either version 2 of the  License, or (at your
+> + *  option) any later version.
+> + */
+
+Have you considered using the new SPDX tags instead of this fine but
+long legalese?
+
+And if other contributors in your team could follow suit and you could
+spread the word that would be even better!
+
+See Thomas doc patches [1] for details.
+Thanks!
+
+[1] https://lkml.org/lkml/2017/12/4/934
+
+-- 
+Cordially
+Philippe Ombredanne
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
