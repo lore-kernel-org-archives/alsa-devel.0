@@ -1,53 +1,82 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH][next] soundwire: intel: fix missing assignment to ret
-Date: Fri, 22 Dec 2017 18:12:40 +0530
-Message-ID: <20171222124239.GX18649@localhost>
-References: <20171221233210.8821-1-colin.king@canonical.com>
+From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+Subject: [RFC v4 0/3] Enable HDA Codec support on Intel
+	Platforms (Series1)
+Date: Fri, 22 Dec 2017 18:22:09 +0530
+Message-ID: <1513947132-28089-1-git-send-email-rakesh.a.ughreja@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171221233210.8821-1-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Colin King <colin.king@canonical.com>
-Cc: Sanyog Kale <sanyog.r.kale@intel.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A3EF26710A
+ for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2017 13:47:35 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com
+Cc: vinod.koul@intel.com, patches.audio@intel.com, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 21, 2017 at 11:32:10PM +0000, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently the return status ret is being checked but it has not been
-> updated since the previous check on ret. It appears that assignment of
-> ret from return status of the call to sdw_cdns_enable_interrupt was
-> accidentally ommited.  Fix this.
+Enhanced HD Audio capabilities introduced in HD Audio controllers are
+added in backward compatible way i.e. it does not change the behavior
+of the controller with respect to HDA Bus and HDA devices.
 
-Applied, thanks
+Since there is no change in the hardware with respect to the HDA bus and
+HDA device it is more appropriate to represent the same in software as
+well.
 
-> 
-> Detected by CoverityScan, CID#1463148 ("Logically dead code")
-> 
-> Fixes: 71bb8a1b059e ("soundwire: intel: Add Intel Master driver")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/soundwire/intel.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-> index 6a9177ea6eb9..86a7bd1fc912 100644
-> --- a/drivers/soundwire/intel.c
-> +++ b/drivers/soundwire/intel.c
-> @@ -295,7 +295,7 @@ static int intel_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto err_init;
->  
-> -	sdw_cdns_enable_interrupt(&sdw->cdns);
-> +	ret = sdw_cdns_enable_interrupt(&sdw->cdns);
->  	if (ret)
->  		goto err_init;
->  
-> -- 
-> 2.14.1
-> 
+In order to align software representation with hardware it makes more
+sense to have common data structures across device, bus and driver for both
+enhanced HDA controllers and legacy HDA controllers.
+
+This patch series removes the hdac_ext_device structure, hdac_ext_bus and
+hdac_ext_driver data structures so that legacy and enhanced HDaudio
+capabilities can be handled in a backwards-compatible way without
+separate definitions.
+
+Once this clean-up is complete, additional patches will allow for
+HDaudio codec support in an ASoC framework without the need to develop
+new codec drivers, thereby enabling the use of the Intel DSP on more
+platforms (currently limited to hdmi).
+
+Changes in v4:
+- No changes in this series except rebase as there were no comments.
+
+Changes in v3:
+- No changes in this series except rebase as there were no comments.
+
+Changes in v2:
+- First three patches from v1 are merged so not included in this series.
+- No changes in this series except rebase as there were no comments.
+
+Rakesh Ughreja (3):
+  ALSA: hdac: Remove usage of struct hdac_ext_device and use hdac_device
+    instead
+  ALSA: hdac: Remove usage of struct hdac_ext_bus and use hdac_bus
+    instead
+  ALSA: hdac: Remove usage of struct hdac_ext_driver, use hdac_driver
+    instead
+
+ include/sound/hdaudio.h                |  21 ++
+ include/sound/hdaudio_ext.h            | 119 +++-------
+ sound/hda/ext/hdac_ext_bus.c           |  76 +++---
+ sound/hda/ext/hdac_ext_controller.c    |  55 +++--
+ sound/hda/ext/hdac_ext_stream.c        | 104 ++++-----
+ sound/soc/codecs/hdac_hdmi.c           | 415 ++++++++++++++++-----------------
+ sound/soc/intel/skylake/skl-messages.c |  50 ++--
+ sound/soc/intel/skylake/skl-nhlt.c     |   8 +-
+ sound/soc/intel/skylake/skl-pcm.c      | 112 +++++----
+ sound/soc/intel/skylake/skl-topology.c |  18 +-
+ sound/soc/intel/skylake/skl-topology.h |   6 +-
+ sound/soc/intel/skylake/skl.c          | 176 +++++++-------
+ sound/soc/intel/skylake/skl.h          |   7 +-
+ 13 files changed, 521 insertions(+), 646 deletions(-)
 
 -- 
-~Vinod
+2.7.4
