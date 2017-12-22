@@ -1,39 +1,84 @@
 From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH 2/3] ALSA: hda - fix headset mic detection issue on a Dell machine
-Date: Fri, 22 Dec 2017 11:17:45 +0800
-Message-ID: <1513912666-6869-2-git-send-email-hui.wang@canonical.com>
-References: <1513912666-6869-1-git-send-email-hui.wang@canonical.com>
+Subject: [PATCH 1/3] ALSA: hda - Add MIC_NO_PRESENCE fixup for 2 HP machines
+Date: Fri, 22 Dec 2017 11:17:44 +0800
+Message-ID: <1513912666-6869-1-git-send-email-hui.wang@canonical.com>
 Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1513912666-6869-1-git-send-email-hui.wang@canonical.com>
 Sender: stable-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org, tiwai@suse.de
 Cc: stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-It has the codec alc256, and add its pin definition to pin quirk
-table to let it apply ALC255_FIXUP_DELL1_MIC_NO_PRESENCE.
+There is a headset jack on the front panel, when we plug a headset
+into it, the headset mic can't trigger unsol events, and
+read_pin_sense() can't detect its presence too. So add this fixup
+to fix this issue.
 
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
- sound/pci/hda/patch_realtek.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/pci/hda/patch_conexant.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 921a10e..31d88fe 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6550,6 +6550,11 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
- 		{0x1b, 0x01011020},
- 		{0x21, 0x02211010}),
- 	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
-+		{0x12, 0x90a60130},
-+		{0x14, 0x90170110},
-+		{0x1b, 0x01011020},
-+		{0x21, 0x0221101f}),
-+	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
- 		{0x12, 0x90a60160},
- 		{0x14, 0x90170120},
- 		{0x21, 0x02211030}),
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index a81aacf..37e1cf8 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -271,6 +271,8 @@ enum {
+ 	CXT_FIXUP_HP_SPECTRE,
+ 	CXT_FIXUP_HP_GATE_MIC,
+ 	CXT_FIXUP_MUTE_LED_GPIO,
++	CXT_FIXUP_HEADSET_MIC,
++	CXT_FIXUP_HP_MIC_NO_PRESENCE,
+ };
+ 
+ /* for hda_fixup_thinkpad_acpi() */
+@@ -350,6 +352,18 @@ static void cxt_fixup_headphone_mic(struct hda_codec *codec,
+ 	}
+ }
+ 
++static void cxt_fixup_headset_mic(struct hda_codec *codec,
++				    const struct hda_fixup *fix, int action)
++{
++	struct conexant_spec *spec = codec->spec;
++
++	switch (action) {
++	case HDA_FIXUP_ACT_PRE_PROBE:
++		spec->parse_flags |= HDA_PINCFG_HEADSET_MIC;
++		break;
++	}
++}
++
+ /* OPLC XO 1.5 fixup */
+ 
+ /* OLPC XO-1.5 supports DC input mode (e.g. for use with analog sensors)
+@@ -880,6 +894,19 @@ static const struct hda_fixup cxt_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = cxt_fixup_mute_led_gpio,
+ 	},
++	[CXT_FIXUP_HEADSET_MIC] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = cxt_fixup_headset_mic,
++	},
++	[CXT_FIXUP_HP_MIC_NO_PRESENCE] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x1a, 0x02a1113c },
++			{ }
++		},
++		.chained = true,
++		.chain_id = CXT_FIXUP_HEADSET_MIC,
++	},
+ };
+ 
+ static const struct snd_pci_quirk cxt5045_fixups[] = {
+@@ -934,6 +961,8 @@ static const struct snd_pci_quirk cxt5066_fixups[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8115, "HP Z1 Gen3", CXT_FIXUP_HP_GATE_MIC),
+ 	SND_PCI_QUIRK(0x103c, 0x814f, "HP ZBook 15u G3", CXT_FIXUP_MUTE_LED_GPIO),
+ 	SND_PCI_QUIRK(0x103c, 0x822e, "HP ProBook 440 G4", CXT_FIXUP_MUTE_LED_GPIO),
++	SND_PCI_QUIRK(0x103c, 0x8299, "HP 800 G3 SFF", CXT_FIXUP_HP_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x103c, 0x829a, "HP 800 G3 DM", CXT_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1043, 0x138d, "Asus", CXT_FIXUP_HEADPHONE_MIC_PIN),
+ 	SND_PCI_QUIRK(0x152d, 0x0833, "OLPC XO-1.5", CXT_FIXUP_OLPC_XO),
+ 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo T400", CXT_PINCFG_LENOVO_TP410),
 -- 
 2.7.4
