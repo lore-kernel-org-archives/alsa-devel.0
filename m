@@ -1,17 +1,15 @@
 From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
-Subject: [RFC v4 2/9] ASoC: Intel: Skylake: Add entry in
-	sst_acpi_mach for HDA codecs
-Date: Fri, 22 Dec 2017 18:22:45 +0530
-Message-ID: <1513947172-28136-3-git-send-email-rakesh.a.ughreja@intel.com>
-References: <1513947172-28136-1-git-send-email-rakesh.a.ughreja@intel.com>
+Subject: [RFC v4 0/9] Enable HDA Codec support on Intel
+	Platforms (Series2)
+Date: Fri, 22 Dec 2017 18:22:43 +0530
+Message-ID: <1513947172-28136-1-git-send-email-rakesh.a.ughreja@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id B449B267913
- for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2017 13:48:14 +0100 (CET)
-In-Reply-To: <1513947172-28136-1-git-send-email-rakesh.a.ughreja@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CBAFC267917
+ for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2017 13:48:05 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,96 +23,93 @@ To: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, liam.r.girdw
 Cc: vinod.koul@intel.com, patches.audio@intel.com, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-When no I2S based codecs are detected in the BIOS, check if there are
-any HDA codecs present. If yes, load the corresponding machine driver.
+Many Intel platforms (SKL, KBL) etc. in the market supports enhanced 
+audio capabilities which also includes DSP processing. This patch carry
+forwards the works that is done in the previous series to enable HD Audio
+codecs on such platforms.
 
-TODO:
-support for detecting the presence of HDA codec is not implemented.
-it will be implemented in the next revision.
+This patch series adds ASoC HDA codec driver for Intel platforms. It is
+written by reusing the legacy HDA ALSA codec driver. Intention is to
+maximize the reuse and minimize the changes in the legacy HDA codec driver.
 
-Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
----
- sound/soc/intel/skylake/skl.c | 46 ++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 43 insertions(+), 3 deletions(-)
+I would like to receive feedback before proceeding further on this
+direction.
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 6fc2173..b99c1d8 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -442,6 +442,26 @@ static struct skl_ssp_clk skl_ssp_clks[] = {
- 						{.name = "ssp5_sclkfs"},
- };
- 
-+static struct snd_soc_acpi_mach *skl_probe_hda_machine(
-+					struct snd_soc_acpi_mach *machines)
-+{
-+
-+	struct snd_soc_acpi_mach *mach;
-+
-+	/*
-+	 * FIXME:
-+	 * First check if there are any HDA codecs present on the system
-+	 * then search the match table.
-+	 * For now this function is not detecting the presence of any
-+	 * HDA codecs.
-+	 */
-+	for (mach = machines; mach->id[0]; mach++) {
-+		if (!strcmp(mach->id, "HDA_GEN"))
-+			return mach;
-+	}
-+	return NULL;
-+}
-+
- static int skl_machine_device_register(struct skl *skl, void *driver_data)
- {
- 	struct hdac_bus *bus = skl_to_bus(skl);
-@@ -451,9 +471,14 @@ static int skl_machine_device_register(struct skl *skl, void *driver_data)
- 
- 	mach = snd_soc_acpi_find_machine(mach);
- 	if (mach == NULL) {
--		dev_err(bus->dev, "No matching machine driver found\n");
--		return -ENODEV;
-+		dev_dbg(bus->dev, "No matching I2S machine driver found\n");
-+		mach = skl_probe_hda_machine(driver_data);
-+		if (mach == NULL) {
-+			dev_err(bus->dev, "No matching machine driver found\n");
-+			return -ENODEV;
-+		}
- 	}
-+
- 	skl->fw_name = mach->fw_filename;
- 
- 	pdev = platform_device_alloc(mach->drv_name, -1);
-@@ -1005,6 +1030,14 @@ static struct snd_soc_acpi_mach sst_skl_devdata[] = {
- 		.quirk_data = &skl_codecs,
- 		.pdata = &skl_dmic_data
- 	},
-+	{
-+		.id = "HDA_GEN",
-+		.drv_name = "skl_hda_generic",
-+		.fw_filename = "intel/dsp_fw_release.bin",
-+		.machine_quirk = NULL,
-+		.quirk_data = NULL,
-+		.pdata = &cnl_pdata,
-+	},
- 	{}
- };
- 
-@@ -1067,7 +1100,14 @@ static struct snd_soc_acpi_mach sst_kbl_devdata[] = {
- 		.drv_name = "kbl_rt5663",
- 		.fw_filename = "intel/dsp_fw_kbl.bin",
- 	},
--
-+	{
-+		.id = "HDA_GEN",
-+		.drv_name = "skl_hda_generic",
-+		.fw_filename = "intel/dsp_fw_kbl.bin",
-+		.machine_quirk = NULL,
-+		.quirk_data = NULL,
-+		.pdata = &cnl_pdata,
-+	},
- 	{}
- };
- 
+INFO:
+- This series is tested on KBL based product (Dell XPS 13).
+- Basic playback is working with headset and speakers.
+- HDMI playback is working.
+- Capture operation is not tested.
+- Playback using legacy drivers is tested.
+- More platforms and use cases coverage can be added once we have basic
+  agreement in terms of the overall approach.
+
+Changes in v4:
+- new field bus type is added to distinguish bus type allocated by the
+  controller or platform drivers.
+- extended routines are provided in hdac_bus which are called by legacy
+  codec driver when the bus type is ext.
+- hdac_hda driver is converted into a passive library.
+
+Changes in v3:
+- snd_hda_codec_new API is split into two, so that it can be used by
+  legacy as well as ASoC codec drivers. API is split into two to avoid bus
+  registration when called by ASoC drivers.
+- Moved the __hda_codec_driver_register and hda_codec_driver_unregister
+  APIs into generic driver and it performs registration for ASoC codec
+  drivers also. So now there is only one kernel image for ASoC as well as
+  legacy codec drivers. Registration functions had to moved to generic
+  driver to resolve the circular dependency between hdac_hda and hda_codec
+  drivers.
+- There is a Kconfig entry added to compile the ASoC version of HDA codec
+  driver. For now only the Realtek codec entry is added. Same thing needs
+  to be done for rest of the codec drivers also.
+
+Changes in v2:
+- Using Topology framework to create DAIs and DAI Links
+- Moved most commonly used functions into a separate file for machine
+  driver.
+- Implemented separate Realtek ASoC HDA Driver driver for Realtek HDA
+  codecs. It is just a driver registration wrapper which reuses the legacy
+  HDA codec driver. This allows the removes the limitation that was present
+  in v1.
+
+Rakesh Ughreja (9):
+  ASoC: Intel: Boards: Machine driver for Intel platforms
+  ASoC: Intel: Skylake: Add entry in sst_acpi_mach for HDA codecs
+  ASoC: Intel: Skylake: add HDA BE DAIs
+  ASoC: Intel: Skylake: use hda_bus instead of hdac_bus
+  ALSA: hda - split snd_hda_codec_new function
+  ALSA: hdac: remove memory allocation from snd_hdac_ext_bus_device_init
+  ALSA: hdac: add bus type and extended ops support in hdac_bus
+  ASoC: hdac_hda: add asoc extension for legacy HDA codec drivers
+  ASoC: Intel: Boards: add support for HDA codecs
+
+ include/sound/hdaudio.h                      |  24 ++
+ include/sound/hdaudio_ext.h                  |   6 +-
+ sound/hda/ext/hdac_ext_bus.c                 |  14 +-
+ sound/hda/hdac_bus.c                         |   1 +
+ sound/pci/hda/hda_bind.c                     |  15 +
+ sound/pci/hda/hda_codec.c                    |  67 +++-
+ sound/pci/hda/hda_codec.h                    |   2 +
+ sound/soc/codecs/Kconfig                     |   5 +
+ sound/soc/codecs/Makefile                    |   2 +
+ sound/soc/codecs/hdac_hda.c                  | 517 +++++++++++++++++++++++++++
+ sound/soc/codecs/hdac_hda.h                  |  20 ++
+ sound/soc/intel/boards/Kconfig               |  11 +
+ sound/soc/intel/boards/Makefile              |   2 +
+ sound/soc/intel/boards/skl_hda_dsp_common.c  | 163 +++++++++
+ sound/soc/intel/boards/skl_hda_dsp_common.h  |  34 ++
+ sound/soc/intel/boards/skl_hda_dsp_generic.c | 132 +++++++
+ sound/soc/intel/skylake/skl-pcm.c            |  32 +-
+ sound/soc/intel/skylake/skl.c                |  88 ++++-
+ sound/soc/intel/skylake/skl.h                |  10 +-
+ 19 files changed, 1102 insertions(+), 43 deletions(-)
+ create mode 100644 sound/soc/codecs/hdac_hda.c
+ create mode 100644 sound/soc/codecs/hdac_hda.h
+ create mode 100644 sound/soc/intel/boards/skl_hda_dsp_common.c
+ create mode 100644 sound/soc/intel/boards/skl_hda_dsp_common.h
+ create mode 100644 sound/soc/intel/boards/skl_hda_dsp_generic.c
+
 -- 
 2.7.4
