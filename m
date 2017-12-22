@@ -1,27 +1,26 @@
-From: chen liu <chen.liu.opensource@gmail.com>
-Subject: Re: [PATCH v2] ASOC: wm8960: Add multiple MCLK
-	frequency support
-Date: Fri, 22 Dec 2017 18:40:04 +0800
-Message-ID: <CACJSzi0DjUTrbNOH4ykg=3uD=6+TuMdNB7ku_KhQOGLLbgOSWQ@mail.gmail.com>
-References: <1513168650-102028-1-git-send-email-chen.liu.opensource@gmail.com>
- <20171214161954.wfik3ygadwii3zhm@localhost.localdomain>
- <CACJSzi0Kuknj6xFpambi87a1cXecGdfNGQ7PpgywwZV=9_U1yA@mail.gmail.com>
- <20171218093122.mgghz4mkxtvix6uu@localhost.localdomain>
- <CACJSzi13ZdOjvz1A2YFbE3z0nUPjeC7i5Dh+ZTnsQH55ON=YMA@mail.gmail.com>
- <20171218115526.z336fwohv5mt45sk@localhost.localdomain>
- <CACJSzi0hbv2p_6dXkp2AFwyYVzmU6_H56LgJxY70_ZKn2y=aUw@mail.gmail.com>
- <20171221164810.ocdl3im5gy3mipmn@localhost.localdomain>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v5 10/15] soundwire: Add sysfs for
+ SoundWire DisCo properties
+Date: Fri, 22 Dec 2017 17:13:44 +0530
+Message-ID: <20171222114344.GS18649@localhost>
+References: <1512575231-4154-1-git-send-email-vinod.koul@intel.com>
+ <1512575231-4154-11-git-send-email-vinod.koul@intel.com>
+ <20171213091537.GA6269@kroah.com>
+ <20171213095430.GO18649@localhost>
+ <20171213162821.GB17132@kroah.com>
+ <20171213165246.GQ18649@localhost>
+ <20171213165922.GA6501@kroah.com>
+ <20171222082656.GQ18649@localhost>
+ <20171222083344.GA11307@kroah.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f45.google.com (mail-vk0-f45.google.com
- [209.85.213.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 231752678E1
- for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2017 11:40:25 +0100 (CET)
-Received: by mail-vk0-f45.google.com with SMTP id x64so695846vkd.6
- for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2017 02:40:25 -0800 (PST)
-In-Reply-To: <20171221164810.ocdl3im5gy3mipmn@localhost.localdomain>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3997B26710A
+ for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2017 12:39:52 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20171222083344.GA11307@kroah.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,65 +30,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: shengjiu.wang@freescale.com, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, tiwai@suse.com, broonie@kernel.org, daniel.baluta@nxp.com
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Sagar Dharia <sdharia@codeaurora.org>, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sudheer Papothi <spapothi@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-2017-12-22 0:48 GMT+08:00 Charles Keepax <ckeepax@opensource.cirrus.com>:
-> On Tue, Dec 19, 2017 at 02:19:48PM +0800, chen liu wrote:
->> 2017-12-18 19:55 GMT+08:00 Charles Keepax <ckeepax@opensource.cirrus.com>:
->> > On Mon, Dec 18, 2017 at 07:32:41PM +0800, chen liu wrote:
->> > > 2017-12-18 17:31 GMT+08:00 Charles Keepax <ckeepax@opensource.cirrus.com
->> > > > On Fri, Dec 15, 2017 at 09:07:15PM +0800, chen liu wrote:
->> > > > > 2017-12-15 0:19 GMT+08:00 Charles Keepax <
->> > ckeepax@opensource.cirrus.com
->> > > > > > On Wed, Dec 13, 2017 at 08:37:30PM +0800, Chen.Liu wrote:
+On Fri, Dec 22, 2017 at 09:33:44AM +0100, Greg Kroah-Hartman wrote:
+> On Fri, Dec 22, 2017 at 01:56:56PM +0530, Vinod Koul wrote:
 
-> One thing I don't understand though is it looks like the freq_out
-> returned from wm8960_configure_pll should already be taking the
-> SYSCLK_DIV into account:
->
-> for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
->         sysclk = lrclk * dac_divs[j];
->         freq_out = sysclk * sysclk_divs[i];
->
-> So if lrclk=44100, j=0, i=2 which I believe is the case in
-> question we should get:
->
-> sysclk = 44100 * 256 = 11.2896MHz
-> freq_out = 11.2896MHz * 2 = 22.5792MHz
->
-> So when wm8960_configure_pll returns i=2 then it should also be
-> setting freq_out as 22.5792MHz. So you final call there to
-> wm8960_set_pll should be:
+> > Hey Greg,
+> > 
+> > So I have spent couple of days on this but don't have a solution.
+> > 
+> > I can create a subdirectory using dynamic attribute group by giving it a
+> > name. Works as advertised:). But I am unable to create subdirectory under
+> > newly created subdir. The properties defined by MIPI follow a certain
+> > hierarchy so we need subdirectories to represent that.
+> 
+> Yes, you can't create directories 2 levels deep, sorry, didn't realize
+> you wanted to do that.
+> 
+> > Second issue am facing with these is getting the sdw_bus context. I tried
+> > adding it but nothing looks elegant. I tried making sdw_attributes on top of
+> > struct attribute and pass around the bus but doesn't seem to work for me.
+> > 
+> > On the contrary, the current design of creating kobjects looked more
+> > cleaner. It has been used in bunch of other places, I double checked ref
+> > counting and cleanup looks okay to me. Btw I tested with libudev as well,
+> > its works well as we do send the event using kobject_uevent().
+> 
+> Where has it been used in other parts of the kernel like this?  Time to
+> go yell at people :)
+> 
+> And the issue isn't that you will not catch the uevent, but that this is
+> an attribute of the "parent" device, which is now not a device, but a
+> "raw" kobject on no bus at all.
+> 
+> So, just create these as real struct devices, with a different "type"
+> and have them all live on the bus properly.  Look at how the greybus
+> code does it as one example (USB is another one, but it's much more
+> complex.)
 
-Hi Charles,
+Thanks for the quick reply.
 
-You are right.
+Are you sure greybus is a right example?
 
-This problem seems to affect only the clock frequency configured in
-manual mode.
+Looking at audio_manager.c we seem to create kset thus kobject without a
+device. It lives off global sysfs!
 
-Because i'm directly calling the 'snd_soc_dai_set_pll' function in the
-machine driver,the driver will  prompts ''WM8960 PLL: Unsupported N"
-error message.
-The following code is part of how i configured the clock frequency in the
-machine driver:
-======================================================
-+       if (params_rate(params) == 44100)
-+               pll_out = 11289600;
-+       else
-+               pll_out = 12288000;
-+
-+       ret = snd_soc_dai_set_pll(codec_dai, WM8960_SYSCLK_PLL, 0,
-+
-data->clk_frequency, pll_out);
+Probing further I think you wanted to point me to gb_interface_create()
+which I think would be similar to sdw_add_bus_master(). So we should
+create a device without a driver for this and make kobjects live off it.
 
-======================================================
+So IIUC it is okay to create kbojects but make sure we they live with a
+'device' right?
 
-On the other hand,i think if the codec support these MCLK clock frequency
-in the manual,so no matter use manual mode and automatic mode to
-configure the clock frequency,the driver prompt errors is very bad.
-
-Thanks again,
-Chen.
+Thanks
+-- 
+~Vinod
