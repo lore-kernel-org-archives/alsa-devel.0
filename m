@@ -1,16 +1,16 @@
 From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
-Subject: [RFC v4 6/9] ALSA: hdac: remove memory allocation from
-	snd_hdac_ext_bus_device_init
-Date: Fri, 22 Dec 2017 18:22:49 +0530
-Message-ID: <1513947172-28136-7-git-send-email-rakesh.a.ughreja@intel.com>
+Subject: [RFC v4 9/9] ASoC: Intel: Boards: add support for HDA
+	codecs
+Date: Fri, 22 Dec 2017 18:22:52 +0530
+Message-ID: <1513947172-28136-10-git-send-email-rakesh.a.ughreja@intel.com>
 References: <1513947172-28136-1-git-send-email-rakesh.a.ughreja@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 04566267919
- for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2017 13:48:20 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 38E2426791D
+ for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2017 13:48:28 +0100 (CET)
 In-Reply-To: <1513947172-28136-1-git-send-email-rakesh.a.ughreja@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,89 +25,221 @@ To: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, liam.r.girdw
 Cc: vinod.koul@intel.com, patches.audio@intel.com, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Remove memory allocation within snd_hdac_ext_bus_device_init, to make
-its behaviour identical to snd_hdac_bus_device_init. So that caller
-can allocate the parent data structure containing hdac_device.
-This API change helps in reusing the legacy HDA codec drivers with
-ASoC platform drivers.
+Add support for HDA codecs. add required widgets, controls, routes
+and dai links for the same.
 
 Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 ---
- include/sound/hdaudio_ext.h   | 3 ++-
- sound/hda/ext/hdac_ext_bus.c  | 9 ++-------
- sound/soc/intel/skylake/skl.c | 8 +++++++-
- 3 files changed, 11 insertions(+), 9 deletions(-)
+ sound/soc/intel/boards/Kconfig               |  1 +
+ sound/soc/intel/boards/skl_hda_dsp_common.c  | 43 ++++++++++++++++++++++++++++
+ sound/soc/intel/boards/skl_hda_dsp_common.h  |  2 +-
+ sound/soc/intel/boards/skl_hda_dsp_generic.c | 29 +++++++++++++++++++
+ sound/soc/intel/skylake/skl.c                | 27 ++++++++++++++---
+ 5 files changed, 97 insertions(+), 5 deletions(-)
 
-diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
-index 3c30247..c188b80 100644
---- a/include/sound/hdaudio_ext.h
-+++ b/include/sound/hdaudio_ext.h
-@@ -9,7 +9,8 @@ int snd_hdac_ext_bus_init(struct hdac_bus *bus, struct device *dev,
- 		      const struct hdac_io_ops *io_ops);
- 
- void snd_hdac_ext_bus_exit(struct hdac_bus *bus);
--int snd_hdac_ext_bus_device_init(struct hdac_bus *bus, int addr);
-+int snd_hdac_ext_bus_device_init(struct hdac_bus *bus, int addr,
-+						struct hdac_device *hdev);
- void snd_hdac_ext_bus_device_exit(struct hdac_device *hdev);
- void snd_hdac_ext_bus_device_remove(struct hdac_bus *bus);
- 
-diff --git a/sound/hda/ext/hdac_ext_bus.c b/sound/hda/ext/hdac_ext_bus.c
-index 52f0776..e4bcb76 100644
---- a/sound/hda/ext/hdac_ext_bus.c
-+++ b/sound/hda/ext/hdac_ext_bus.c
-@@ -135,16 +135,12 @@ static void default_release(struct device *dev)
-  *
-  * Returns zero for success or a negative error code.
-  */
--int snd_hdac_ext_bus_device_init(struct hdac_bus *bus, int addr)
-+int snd_hdac_ext_bus_device_init(struct hdac_bus *bus, int addr,
-+					struct hdac_device *hdev)
- {
--	struct hdac_device *hdev = NULL;
- 	char name[15];
- 	int ret;
- 
--	hdev = kzalloc(sizeof(*hdev), GFP_KERNEL);
--	if (!hdev)
--		return -ENOMEM;
--
- 	hdev->bus = bus;
- 
- 	snprintf(name, sizeof(name), "ehdaudio%dD%d", bus->idx, addr);
-@@ -175,7 +171,6 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_device_init);
- void snd_hdac_ext_bus_device_exit(struct hdac_device *hdev)
- {
- 	snd_hdac_device_exit(hdev);
--	kfree(hdev);
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index e01137d..57f0876 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -265,6 +265,7 @@ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
+ config SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH
+         tristate "ASoC Audio driver for SKL/KBL with HDA Codecs"
+         select SND_SOC_INTEL_SST
++        select SND_SOC_HDAC_HDA
+         depends on SND_SOC_INTEL_SKYLAKE
+         select SND_SOC_HDAC_HDMI
+         help
+diff --git a/sound/soc/intel/boards/skl_hda_dsp_common.c b/sound/soc/intel/boards/skl_hda_dsp_common.c
+index 5933902..d65c2cc 100644
+--- a/sound/soc/intel/boards/skl_hda_dsp_common.c
++++ b/sound/soc/intel/boards/skl_hda_dsp_common.c
+@@ -52,6 +52,24 @@ int skl_hda_hdmi_add_pcm(struct snd_soc_card *card, int device)
+ 	return 0;
  }
- EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_device_exit);
  
++static int skl_hda_link_fixup(struct snd_soc_pcm_runtime *rtd,
++					struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *rate = hw_param_interval(params,
++						SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params,
++						SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
++
++	/* The output is 48KHz, stereo, 16bits */
++	rate->min = rate->max = 48000;
++	channels->min = channels->max = 2;
++
++	snd_mask_none(fmt);
++	snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
++	return 0;
++}
++
+ /* skl_hda_digital audio interface glue - connects codec <--> CPU */
+ struct snd_soc_dai_link skl_hda_be_dai_links[HDA_DSP_MAX_BE_DAI_LINKS] = {
+ 
+@@ -86,6 +104,31 @@ struct snd_soc_dai_link skl_hda_be_dai_links[HDA_DSP_MAX_BE_DAI_LINKS] = {
+ 		.dpcm_playback = 1,
+ 		.no_pcm = 1,
+ 	},
++	{
++		.name = "Analog Playback and Capture",
++		.id = 4,
++		.cpu_dai_name = "Analog CPU DAI",
++		.codec_name = "ehdaudio0D0",
++		.codec_dai_name = "Analog Codec DAI",
++		.platform_name = "0000:00:1f.3",
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.init = NULL,
++		.no_pcm = 1,
++		.be_hw_params_fixup = skl_hda_link_fixup,
++	},
++	{
++		.name = "Digital Playback and Capture",
++		.id = 5,
++		.cpu_dai_name = "Digital CPU DAI",
++		.codec_name = "ehdaudio0D0",
++		.codec_dai_name = "Digital Codec DAI",
++		.platform_name = "0000:00:1f.3",
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.init = NULL,
++		.no_pcm = 1,
++	},
+ };
+ 
+ int skl_hda_hdmi_jack_init(struct snd_soc_card *card)
+diff --git a/sound/soc/intel/boards/skl_hda_dsp_common.h b/sound/soc/intel/boards/skl_hda_dsp_common.h
+index 203d527..920fce1 100644
+--- a/sound/soc/intel/boards/skl_hda_dsp_common.h
++++ b/sound/soc/intel/boards/skl_hda_dsp_common.h
+@@ -13,7 +13,7 @@
+ #include <sound/jack.h>
+ #define __SOUND_SOC_HDA_DSP_COMMON_H
+ 
+-#define HDA_DSP_MAX_BE_DAI_LINKS 3
++#define HDA_DSP_MAX_BE_DAI_LINKS 5
+ 
+ struct skl_hda_hdmi_pcm {
+ 	struct list_head head;
+diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
+index 07f4eed..ca82d4e 100644
+--- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
++++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
+@@ -16,8 +16,33 @@
+ #include "../skylake/skl.h"
+ #include "skl_hda_dsp_common.h"
+ 
++static const struct snd_kcontrol_new skl_hda_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphone"),
++	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++};
++
++static const struct snd_soc_dapm_widget skl_hda_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++	SND_SOC_DAPM_SPK("Codec Speaker", NULL),
++	SND_SOC_DAPM_MIC("Codec Mic", NULL),
++};
++
+ static const struct snd_soc_dapm_route skl_hda_map[] = {
+ 
++	/* HP jack connectors - unknown if we have jack detection */
++	{ "Headphone", NULL, "Codec Output Pin1" },
++	{ "Codec Speaker", NULL, "Codec Output Pin2" },
++	{ "Codec Input Pin2", NULL, "Codec Mic" },
++	{ "Codec Input Pin1", NULL, "Headset Mic" },
++
++	/* CODEC BE connections */
++	{ "Analog Codec Playback", NULL, "Analog CPU Playback" },
++	{ "Analog CPU Playback", NULL, "codec0_out" },
++
++	{ "codec0_in", NULL, "Analog CPU Capture" },
++	{ "Analog CPU Capture", NULL, "Analog Codec Capture" },
++
+ 	{ "hifi3", NULL, "iDisp3 Tx"},
+ 	{ "iDisp3 Tx", NULL, "iDisp3_out"},
+ 	{ "hifi2", NULL, "iDisp2 Tx"},
+@@ -54,6 +79,10 @@ static struct snd_soc_card hda_soc_card = {
+ 	.owner = THIS_MODULE,
+ 	.dai_link = skl_hda_be_dai_links,
+ 	.num_links = ARRAY_SIZE(skl_hda_be_dai_links),
++	.controls = skl_hda_controls,
++	.num_controls = ARRAY_SIZE(skl_hda_controls),
++	.dapm_widgets = skl_hda_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(skl_hda_widgets),
+ 	.dapm_routes = skl_hda_map,
+ 	.num_dapm_routes = ARRAY_SIZE(skl_hda_map),
+ 	.add_dai_link = skl_hda_add_dai_link,
 diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index ecfe0d3..d8fa403 100644
+index 050aa3c..ce80d9f 100644
 --- a/sound/soc/intel/skylake/skl.c
 +++ b/sound/soc/intel/skylake/skl.c
-@@ -618,6 +618,8 @@ static int probe_codec(struct hdac_bus *bus, int addr)
- 	unsigned int cmd = (addr << 28) | (AC_NODE_ROOT << 20) |
+@@ -36,6 +36,7 @@
+ #include "skl-sst-dsp.h"
+ #include "skl-sst-ipc.h"
+ #include "../../../pci/hda/hda_codec.h"
++#include "../../../soc/codecs/hdac_hda.h"
+ 
+ static struct skl_machine_pdata skl_dmic_data;
+ 
+@@ -619,7 +620,9 @@ static int probe_codec(struct hdac_bus *bus, int addr)
  		(AC_VERB_PARAMETERS << 8) | AC_PAR_VENDOR_ID;
  	unsigned int res = -1;
-+	struct skl *skl = bus_to_skl(bus);
-+	struct hdac_device *hdev;
+ 	struct skl *skl = bus_to_skl(bus);
++	struct hdac_hda_priv *hda_codec;
+ 	struct hdac_device *hdev;
++	int err;
  
  	mutex_lock(&bus->cmd_mutex);
  	snd_hdac_bus_send_cmd(bus, cmd);
-@@ -627,7 +629,11 @@ static int probe_codec(struct hdac_bus *bus, int addr)
+@@ -629,11 +632,22 @@ static int probe_codec(struct hdac_bus *bus, int addr)
  		return -EIO;
  	dev_dbg(bus->dev, "codec #%d probed OK: %x\n", addr, res);
  
--	return snd_hdac_ext_bus_device_init(bus, addr);
-+	hdev = devm_kzalloc(&skl->pci->dev, sizeof(*hdev), GFP_KERNEL);
-+	if (!hdev)
-+		return -ENOMEM;
+-	hdev = devm_kzalloc(&skl->pci->dev, sizeof(*hdev), GFP_KERNEL);
+-	if (!hdev)
++	hda_codec = devm_kzalloc(&skl->pci->dev, sizeof(*hda_codec),
++								GFP_KERNEL);
++	if (!hda_codec)
+ 		return -ENOMEM;
+ 
+-	return snd_hdac_ext_bus_device_init(bus, addr, hdev);
++	hda_codec->codec.bus = skl_to_hbus(skl);
++	hdev = &hda_codec->codec.core;
 +
-+	return snd_hdac_ext_bus_device_init(bus, addr, hdev);
++	err = snd_hdac_ext_bus_device_init(bus, addr, hdev);
++	if (err < 0)
++		return err;
++
++	if ((res & 0xFFFF0000) != 0x80860000)
++		hdev->type = HDA_DEV_LEGACY;
++
++	return 0;
  }
  
  /* Codec initialization */
+@@ -759,6 +773,7 @@ static int skl_create(struct pci_dev *pci,
+ 	struct skl *skl;
+ 	struct hdac_bus *bus;
+ 	struct hda_bus *hbus;
++	struct hdac_ext_bus_ops *ext_ops = NULL;
+ 
+ 	int err;
+ 
+@@ -776,7 +791,11 @@ static int skl_create(struct pci_dev *pci,
+ 
+ 	hbus = skl_to_hbus(skl);
+ 	bus = skl_to_bus(skl);
+-	snd_hdac_ext_bus_init(bus, &pci->dev, &bus_core_ops, io_ops, NULL);
++
++#if IS_ENABLED(CONFIG_SND_SOC_HDAC_HDA)
++	ext_ops = snd_soc_hdac_hda_get_ops();
++#endif
++	snd_hdac_ext_bus_init(bus, &pci->dev, &bus_core_ops, io_ops, ext_ops);
+ 	bus->use_posbuf = 1;
+ 	skl->pci = pci;
+ 	INIT_WORK(&skl->probe_work, skl_probe_work);
 -- 
 2.7.4
