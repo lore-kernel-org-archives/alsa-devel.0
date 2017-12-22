@@ -1,16 +1,16 @@
 From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
-Subject: [RFC v4 5/9] ALSA: hda - split snd_hda_codec_new
-	function
-Date: Fri, 22 Dec 2017 18:22:48 +0530
-Message-ID: <1513947172-28136-6-git-send-email-rakesh.a.ughreja@intel.com>
+Subject: [RFC v4 7/9] ALSA: hdac: add bus type and extended ops
+	support in hdac_bus
+Date: Fri, 22 Dec 2017 18:22:50 +0530
+Message-ID: <1513947172-28136-8-git-send-email-rakesh.a.ughreja@intel.com>
 References: <1513947172-28136-1-git-send-email-rakesh.a.ughreja@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id B549626792F
- for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2017 13:48:17 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id B9674267932
+ for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2017 13:48:23 +0100 (CET)
 In-Reply-To: <1513947172-28136-1-git-send-email-rakesh.a.ughreja@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,158 +25,143 @@ To: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, liam.r.girdw
 Cc: vinod.koul@intel.com, patches.audio@intel.com, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Split snd_hda_codec_new into two separate functions.
-snd_hda_codec_device_init allocates memory and registers with bus.
-snd_hda_codec_device_new initialializes the fields and performs
-snd_device_new. This enables reuse of legacy HDA codec drivers as ASoC
-codec drivers.
+Add add bus type field in hdac_bus structure to distinguish the
+bus instance. Bus allocated using snd_hdac_bus_init API sets the bus
+type to HDA_BUS_LEGACY and snd_hdac_ext_bus_init API sets it to
+HDA_BUS_EXT. codec drivers can identify the bus type by calling
+snd_hdac_get_bus_type API.
 
-In addition mark some functions with EXPORT_SYMBOL_GPL so that it can be
-called by ASoC codec drivers.
+Extended ops are used by the legacy codec drivers to call into
+hdac_hda library, in the subsequent patches..
 
 Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 ---
- sound/pci/hda/hda_codec.c | 67 +++++++++++++++++++++++++++++++++++------------
- sound/pci/hda/hda_codec.h |  2 ++
- 2 files changed, 52 insertions(+), 17 deletions(-)
+ include/sound/hdaudio.h       | 24 ++++++++++++++++++++++++
+ include/sound/hdaudio_ext.h   |  3 ++-
+ sound/hda/ext/hdac_ext_bus.c  |  5 ++++-
+ sound/hda/hdac_bus.c          |  1 +
+ sound/soc/intel/skylake/skl.c |  2 +-
+ 5 files changed, 32 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index e018ecb..2a8190d 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -856,6 +856,38 @@ static void snd_hda_codec_dev_release(struct device *dev)
- 	kfree(codec);
- }
+diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+index 30ec1b0..44e5514 100644
+--- a/include/sound/hdaudio.h
++++ b/include/sound/hdaudio.h
+@@ -97,6 +97,12 @@ enum {
+ 	HDA_DEV_ASOC,
+ };
  
-+static int snd_hda_codec_device_init(struct hda_bus *bus, struct snd_card *card,
-+			unsigned int codec_addr, struct hda_codec **codecp)
-+{
-+	int err;
-+	char component[31];
-+	struct hda_codec *codec;
++enum {
++	HDA_BUS_INVALID,
++	HDA_BUS_LEGACY,
++	HDA_BUS_EXT,
++};
 +
-+	dev_dbg(card->dev, "%s: entry\n", __func__);
-+
-+	if (snd_BUG_ON(!bus))
-+		return -EINVAL;
-+	if (snd_BUG_ON(codec_addr > HDA_MAX_CODEC_ADDRESS))
-+		return -EINVAL;
-+
-+	codec = kzalloc(sizeof(*codec), GFP_KERNEL);
-+	if (!codec)
-+		return -ENOMEM;
-+
-+	sprintf(component, "hdaudioC%dD%d", card->number, codec_addr);
-+	err = snd_hdac_device_init(&codec->core, &bus->core, component,
-+				   codec_addr);
-+	if (err < 0) {
-+		kfree(codec);
-+		return err;
-+	}
-+
-+	codec->core.type = HDA_DEV_LEGACY;
-+	*codecp = codec;
-+
-+	return err;
-+}
-+
- /**
-  * snd_hda_codec_new - create a HDA codec
-  * @bus: the bus to assign
-@@ -867,7 +899,19 @@ static void snd_hda_codec_dev_release(struct device *dev)
- int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
- 		      unsigned int codec_addr, struct hda_codec **codecp)
- {
--	struct hda_codec *codec;
-+	int ret;
-+
-+	ret = snd_hda_codec_device_init(bus, card, codec_addr, codecp);
-+	if (ret < 0)
-+		return ret;
-+
-+	return snd_hda_codec_device_new(bus, card, codec_addr, *codecp);
-+}
-+EXPORT_SYMBOL_GPL(snd_hda_codec_new);
-+
-+int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
-+			unsigned int codec_addr, struct hda_codec *codec)
-+{
- 	char component[31];
- 	hda_nid_t fg;
- 	int err;
-@@ -877,25 +921,14 @@ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
- 		.dev_free = snd_hda_codec_dev_free,
- 	};
- 
-+	dev_dbg(card->dev, "%s: entry\n", __func__);
-+
- 	if (snd_BUG_ON(!bus))
- 		return -EINVAL;
- 	if (snd_BUG_ON(codec_addr > HDA_MAX_CODEC_ADDRESS))
- 		return -EINVAL;
- 
--	codec = kzalloc(sizeof(*codec), GFP_KERNEL);
--	if (!codec)
--		return -ENOMEM;
--
--	sprintf(component, "hdaudioC%dD%d", card->number, codec_addr);
--	err = snd_hdac_device_init(&codec->core, &bus->core, component,
--				   codec_addr);
--	if (err < 0) {
--		kfree(codec);
--		return err;
--	}
--
- 	codec->core.dev.release = snd_hda_codec_dev_release;
--	codec->core.type = HDA_DEV_LEGACY;
- 	codec->core.exec_verb = codec_exec_verb;
- 
- 	codec->bus = bus;
-@@ -955,15 +988,13 @@ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
- 	if (err < 0)
- 		goto error;
- 
--	if (codecp)
--		*codecp = codec;
- 	return 0;
- 
-  error:
- 	put_device(hda_codec_dev(codec));
- 	return err;
- }
--EXPORT_SYMBOL_GPL(snd_hda_codec_new);
-+EXPORT_SYMBOL_GPL(snd_hda_codec_device_new);
- 
- /**
-  * snd_hda_codec_update_widgets - Refresh widget caps and pin defaults
-@@ -3005,6 +3036,7 @@ int snd_hda_codec_build_controls(struct hda_codec *codec)
- 	sync_power_up_states(codec);
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(snd_hda_codec_build_controls);
+ /* direction */
+ enum {
+ 	HDA_INPUT, HDA_OUTPUT
+@@ -212,6 +218,14 @@ struct hdac_bus_ops {
+ };
  
  /*
-  * PCM stuff
-@@ -3210,6 +3242,7 @@ int snd_hda_codec_parse_pcms(struct hda_codec *codec)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(snd_hda_codec_parse_pcms);
- 
- /* assign all PCMs of the given codec */
- int snd_hda_codec_build_pcms(struct hda_codec *codec)
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 681c360..8bbedf7 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -307,6 +307,8 @@ struct hda_codec {
++ * ops used for ASoC HDA codec drivers
++ */
++struct hdac_ext_bus_ops {
++	int (*probe)(struct hdac_device *hdev);
++	int (*remove)(struct hdac_device *hdev);
++};
++
++/*
+  * Lowlevel I/O operators
   */
- int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
- 		      unsigned int codec_addr, struct hda_codec **codecp);
-+int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
-+		      unsigned int codec_addr, struct hda_codec *codec);
- int snd_hda_codec_configure(struct hda_codec *codec);
- int snd_hda_codec_update_widgets(struct hda_codec *codec);
+ struct hdac_io_ops {
+@@ -265,8 +279,10 @@ struct hdac_rb {
+  */
+ struct hdac_bus {
+ 	struct device *dev;
++	int type;
+ 	const struct hdac_bus_ops *ops;
+ 	const struct hdac_io_ops *io_ops;
++	const struct hdac_ext_bus_ops *ext_ops;
  
+ 	/* h/w resources */
+ 	unsigned long addr;
+@@ -341,6 +357,14 @@ struct hdac_bus {
+ 
+ };
+ 
++static inline int snd_hdac_get_bus_type(struct hdac_bus *bus)
++{
++	if (bus)
++		return bus->type;
++	else
++		return HDA_BUS_INVALID;
++}
++
+ int snd_hdac_bus_init(struct hdac_bus *bus, struct device *dev,
+ 		      const struct hdac_bus_ops *ops,
+ 		      const struct hdac_io_ops *io_ops);
+diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
+index c188b80..f34aced 100644
+--- a/include/sound/hdaudio_ext.h
++++ b/include/sound/hdaudio_ext.h
+@@ -6,7 +6,8 @@
+ 
+ int snd_hdac_ext_bus_init(struct hdac_bus *bus, struct device *dev,
+ 		      const struct hdac_bus_ops *ops,
+-		      const struct hdac_io_ops *io_ops);
++		      const struct hdac_io_ops *io_ops,
++		      const struct hdac_ext_bus_ops *ext_ops);
+ 
+ void snd_hdac_ext_bus_exit(struct hdac_bus *bus);
+ int snd_hdac_ext_bus_device_init(struct hdac_bus *bus, int addr,
+diff --git a/sound/hda/ext/hdac_ext_bus.c b/sound/hda/ext/hdac_ext_bus.c
+index e4bcb76..b68ef25 100644
+--- a/sound/hda/ext/hdac_ext_bus.c
++++ b/sound/hda/ext/hdac_ext_bus.c
+@@ -89,7 +89,8 @@ static const struct hdac_io_ops hdac_ext_default_io = {
+  */
+ int snd_hdac_ext_bus_init(struct hdac_bus *bus, struct device *dev,
+ 			const struct hdac_bus_ops *ops,
+-			const struct hdac_io_ops *io_ops)
++			const struct hdac_io_ops *io_ops,
++			const struct hdac_ext_bus_ops *ext_ops)
+ {
+ 	int ret;
+ 	static int idx;
+@@ -102,6 +103,8 @@ int snd_hdac_ext_bus_init(struct hdac_bus *bus, struct device *dev,
+ 	if (ret < 0)
+ 		return ret;
+ 
++	bus->type = HDA_BUS_EXT;
++	bus->ext_ops = ext_ops;
+ 	INIT_LIST_HEAD(&bus->hlink_list);
+ 	bus->idx = idx++;
+ 
+diff --git a/sound/hda/hdac_bus.c b/sound/hda/hdac_bus.c
+index 714a517..bb7567d 100644
+--- a/sound/hda/hdac_bus.c
++++ b/sound/hda/hdac_bus.c
+@@ -35,6 +35,7 @@ int snd_hdac_bus_init(struct hdac_bus *bus, struct device *dev,
+ 	else
+ 		bus->ops = &default_ops;
+ 	bus->io_ops = io_ops;
++	bus->type = HDA_BUS_LEGACY;
+ 	INIT_LIST_HEAD(&bus->stream_list);
+ 	INIT_LIST_HEAD(&bus->codec_list);
+ 	INIT_WORK(&bus->unsol_work, process_unsol_events);
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index d8fa403..050aa3c 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -776,7 +776,7 @@ static int skl_create(struct pci_dev *pci,
+ 
+ 	hbus = skl_to_hbus(skl);
+ 	bus = skl_to_bus(skl);
+-	snd_hdac_ext_bus_init(bus, &pci->dev, &bus_core_ops, io_ops);
++	snd_hdac_ext_bus_init(bus, &pci->dev, &bus_core_ops, io_ops, NULL);
+ 	bus->use_posbuf = 1;
+ 	skl->pci = pci;
+ 	INIT_WORK(&skl->probe_work, skl_probe_work);
 -- 
 2.7.4
