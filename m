@@ -1,28 +1,22 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v5 10/15] soundwire: Add sysfs for
- SoundWire DisCo properties
-Date: Fri, 22 Dec 2017 16:20:36 +0100
-Message-ID: <20171222152036.GC6874@kroah.com>
-References: <1512575231-4154-1-git-send-email-vinod.koul@intel.com>
- <1512575231-4154-11-git-send-email-vinod.koul@intel.com>
- <20171213091537.GA6269@kroah.com>
- <20171213095430.GO18649@localhost>
- <20171213162821.GB17132@kroah.com>
- <20171213165246.GQ18649@localhost>
- <20171213165922.GA6501@kroah.com>
- <20171222082656.GQ18649@localhost>
- <20171222083344.GA11307@kroah.com>
- <20171222114344.GS18649@localhost>
+From: Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
+Subject: Re: [Xen-devel] [RFC v1] ALSA: xen-front: Add Xen
+ para-virtualized frontend driver
+Date: Fri, 22 Dec 2017 17:48:45 +0200
+Message-ID: <d3b93842-a970-e2e0-2ecb-6f66c2851f6c@epam.com>
+References: <fff5d166-066c-c21e-94b9-bb50f8c1b2cd@epam.com>
+ <172d2f40-937d-5455-1b4e-576ac7b0da45@gmail.com>
+ <9031a8b0-88c2-bd86-548c-7dbcf8967856@gmail.com>
+ <20171222151221.GC2483@char.us.oracle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.linuxfoundation.org (mail.linuxfoundation.org
- [140.211.169.12])
- by alsa0.perex.cz (Postfix) with ESMTP id C85B32670F8
- for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2017 16:20:36 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20171222114344.GS18649@localhost>
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com
+ (mail-ve1eur01on0072.outbound.protection.outlook.com [104.47.1.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 443DA2670F8
+ for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2017 16:48:51 +0100 (CET)
+In-Reply-To: <20171222151221.GC2483@char.us.oracle.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,76 +26,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Sagar Dharia <sdharia@codeaurora.org>, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sudheer Papothi <spapothi@codeaurora.org>, alan@linux.intel.com
+To: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Oleksandr Andrushchenko <andr2000@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Clemens Ladisch <clemens@ladisch.de>, tiwai@suse.com, Takashi Sakamoto <o-takashi@sakamocchi.jp>, xen-devel <xen-devel@lists.xenproject.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 22, 2017 at 05:13:44PM +0530, Vinod Koul wrote:
-> On Fri, Dec 22, 2017 at 09:33:44AM +0100, Greg Kroah-Hartman wrote:
-> > On Fri, Dec 22, 2017 at 01:56:56PM +0530, Vinod Koul wrote:
-> 
-> > > Hey Greg,
-> > > 
-> > > So I have spent couple of days on this but don't have a solution.
-> > > 
-> > > I can create a subdirectory using dynamic attribute group by giving it a
-> > > name. Works as advertised:). But I am unable to create subdirectory under
-> > > newly created subdir. The properties defined by MIPI follow a certain
-> > > hierarchy so we need subdirectories to represent that.
-> > 
-> > Yes, you can't create directories 2 levels deep, sorry, didn't realize
-> > you wanted to do that.
-> > 
-> > > Second issue am facing with these is getting the sdw_bus context. I tried
-> > > adding it but nothing looks elegant. I tried making sdw_attributes on top of
-> > > struct attribute and pass around the bus but doesn't seem to work for me.
-> > > 
-> > > On the contrary, the current design of creating kobjects looked more
-> > > cleaner. It has been used in bunch of other places, I double checked ref
-> > > counting and cleanup looks okay to me. Btw I tested with libudev as well,
-> > > its works well as we do send the event using kobject_uevent().
-> > 
-> > Where has it been used in other parts of the kernel like this?  Time to
-> > go yell at people :)
-> > 
-> > And the issue isn't that you will not catch the uevent, but that this is
-> > an attribute of the "parent" device, which is now not a device, but a
-> > "raw" kobject on no bus at all.
-> > 
-> > So, just create these as real struct devices, with a different "type"
-> > and have them all live on the bus properly.  Look at how the greybus
-> > code does it as one example (USB is another one, but it's much more
-> > complex.)
-> 
-> Thanks for the quick reply.
-> 
-> Are you sure greybus is a right example?
 
-Yes, but:
-
-> Looking at audio_manager.c we seem to create kset thus kobject without a
-> device. It lives off global sysfs!
-
-Not the audio_manager.c code :)
-
-That code never really got reviewed all that well before it was merged.
-There's a reason it is in staging...
-
-> Probing further I think you wanted to point me to gb_interface_create()
-> which I think would be similar to sdw_add_bus_master(). So we should
-> create a device without a driver for this and make kobjects live off it.
-> 
-> So IIUC it is okay to create kbojects but make sure we they live with a
-> 'device' right?
-
-No, again, no driver or bus, should ever be creating "raw" kobjects.
-
-Create a new structure, that has a struct device in it, and give it a
-type that is unique to what ever this thing is and point the parent at
-the device you are managing.  I don't have the time right now to dig
-through this sorry.  Look at usb_create_ep_devs() maybe for a better
-example.
-
-thanks,
-
-greg k-h
+On 12/22/2017 05:12 PM, Konrad Rzeszutek Wilk wrote:
+> On Mon, Dec 11, 2017 at 10:45:27AM +0200, Oleksandr Andrushchenko wrote:
+>> ping
+> ..snip..
+>>>> This is implemented as a change to the sndif protocol [8] and allows
+>>>> [8] https://github.com/andr2000/linux/commit/095d7feae00bf00c852c67c4f1044de5601678ed
+> .. I must have missed it being posted.
+>
+> But it looks OK to me - could you repost it and please have me on To: list?
+>
+Did I get you right that you want me to repost the RFC again?
