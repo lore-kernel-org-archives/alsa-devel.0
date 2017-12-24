@@ -1,17 +1,20 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: Cherry Trail + RT5645 devices analog microphone not
-	working.
-Date: Sun, 24 Dec 2017 11:42:59 +0100
-Message-ID: <d42279d7-0350-563f-fca7-27f32cb9e9ee@redhat.com>
+Subject: Re: [PATCH] ASoC: rt5645: Set card long_name for GPD
+ win / pocket
+Date: Sun, 24 Dec 2017 11:45:34 +0100
+Message-ID: <6c40b0cc-f969-79e1-f431-cdd310173d17@redhat.com>
+References: <20171211212640.10060-1-hdegoede@redhat.com>
+ <s5hpo7cdsuv.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f45.google.com (mail-wm0-f45.google.com [74.125.82.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 12CC726698E
- for <alsa-devel@alsa-project.org>; Sun, 24 Dec 2017 11:43:01 +0100 (CET)
-Received: by mail-wm0-f45.google.com with SMTP id y82so30112472wmg.1
- for <alsa-devel@alsa-project.org>; Sun, 24 Dec 2017 02:43:01 -0800 (PST)
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id EFCD026698E
+ for <alsa-devel@alsa-project.org>; Sun, 24 Dec 2017 11:45:35 +0100 (CET)
+Received: by mail-wm0-f66.google.com with SMTP id g130so30220531wme.0
+ for <alsa-devel@alsa-project.org>; Sun, 24 Dec 2017 02:45:35 -0800 (PST)
+In-Reply-To: <s5hpo7cdsuv.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,52 +25,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Bard,
+Hi,
 
-I've been looking into getting the microphone to work on
-some Cherry Trail + RT5645 devices with what appears to
-be a simple analog microphone.
+On 18-12-17 15:16, Takashi Iwai wrote:
+> On Mon, 11 Dec 2017 22:26:40 +0100,
+> Hans de Goede wrote:
+>>
+>> The GPD win and pocket devices both use the same codec setup and both
+>> have too generic dmi strings making snd_soc_set_dmi_name() not work.
+>>
+>> As these devices have only a single speaker we want a separate ucm
+>> file for them, which requires a unique long_name, use the existing
+>> GPD quirk handling to also provide a unique long_name.
+>>
+>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> 
+> Since Mark already took this patch, could you provide the UCM profile
+> for the corresponding update, too?
 
-You can see the microphone on one of the models I'm trying
-to get it to work on soldered onto the right side of the PCB
-here: https://i.imgur.com/bJzBQWe.jpg
+I've been trying to get the analog microphone input on these devices
+to work, so that I can submit a complete UCM profile in one go.
 
-I'm using this ucm config:
-
-https://fedorapeople.org/~jwrdegoede/chtrt5645/
-
-Which is basically Pierre-Louis Bossart's config from:
-https://github.com/plbossart/UCM
-
-Adjusted because the devices all have a mono speaker.
-
-I've been trying to get this to work myself and I can get
-some sound while recording by adding:
-
-                 cset "name='RECMIXL BST2 Switch' on"
-                 cset "name='RECMIXR BST2 Switch' on"
-
-But then I mainly get noise, I do get some sound from the
-microphone if I talk really really loudly, but it is
-barely above the noise-floor. I've the feeling that BST2
-is only picking up the microphone via cross-talk and
-that BST1 indeed is the correct input, but for some reason
-I get complete silence when recording when only BST1 is
-selected in the RECMIXR, and yes I've checked / set the
-"IN1 boost volume".
-
-TL;DR: I'm trying to get an analog mic to work on 3
-different models Cherry Trail + RT5645 devices and I've
-been unable to get this to work. I've put a registerdump
-of the rt5645 with gnome-sound-recorder running here:
-https://fedorapeople.org/~jwrdegoede/rt5645-mic-red.dump
-
-Any insights / help with this would be very much
-welcome.
+But all my attempts have failed, I've send Bard Liao a mail about this,
+with alsa-devel in the Cc. I hope Bard can help me to get the microphone
+to work. If that fails / take to long I will submit a version with
+just the monospeaker routing in a couple of weeks.
 
 Regards,
 
