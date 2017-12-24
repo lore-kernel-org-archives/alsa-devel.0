@@ -1,67 +1,74 @@
-From: christophe leroy <christophe.leroy@c-s.fr>
-Subject: Re: [PATCH v3 00/27] kill devm_ioremap_nocache
-Date: Sun, 24 Dec 2017 10:05:08 +0100
-Message-ID: <b8ff7f17-7f2c-f220-9833-7ae5bd7343d5@c-s.fr>
-References: <1514026525-32538-1-git-send-email-xieyisheng1@huawei.com>
- <20171223134831.GB10103@kroah.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Cherry Trail + RT5645 devices analog microphone not
+	working.
+Date: Sun, 24 Dec 2017 11:42:59 +0100
+Message-ID: <d42279d7-0350-563f-fca7-27f32cb9e9ee@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
-In-Reply-To: <20171223134831.GB10103@kroah.com>
-Content-Language: fr
-List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
-List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
-List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
-List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
-List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
-Errors-To: driverdev-devel-bounces@linuxdriverproject.org
-Sender: "devel" <driverdev-devel-bounces@linuxdriverproject.org>
-To: Greg KH <gregkh@linuxfoundation.org>, Yisheng Xie <xieyisheng1@huawei.com>
-Cc: linux-mips@linux-mips.org, ulf.hansson@linaro.org, jakub.kicinski@netronome.com, platform-driver-x86@vger.kernel.org, airlied@linux.ie, linux-wireless@vger.kernel.org, linus.walleij@linaro.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org, daniel.vetter@intel.com, dan.j.williams@intel.com, jason@lakedaemon.net, linux-rtc@vger.kernel.org, boris.brezillon@free-electrons.com, mchehab@kernel.org, dmaengine@vger.kernel.org, vinod.koul@intel.com, richard@nod.at, marek.vasut@gmail.com, industrypack-devel@lists.sourceforge.net, linux-pci@vger.kernel.org, dvhart@infradead.org, linux@roeck-us.net, linux-media@vger.kernel.org, seanpaul@chromium.org, devel@driverdev.osuosl.org, linux-watchdog@vger.kernel.org, arnd@arndb.de, b.zolnierkie@samsung.com, marc.zyngier@arm.com, jslaby@su
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f45.google.com (mail-wm0-f45.google.com [74.125.82.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 12CC726698E
+ for <alsa-devel@alsa-project.org>; Sun, 24 Dec 2017 11:43:01 +0100 (CET)
+Received: by mail-wm0-f45.google.com with SMTP id y82so30112472wmg.1
+ for <alsa-devel@alsa-project.org>; Sun, 24 Dec 2017 02:43:01 -0800 (PST)
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpMZSAyMy8xMi8yMDE3IMOgIDE0OjQ4LCBHcmVnIEtIIGEgw6ljcml0wqA6Cj4gT24gU2F0LCBE
-ZWMgMjMsIDIwMTcgYXQgMDY6NTU6MjVQTSArMDgwMCwgWWlzaGVuZyBYaWUgd3JvdGU6Cj4+IEhp
-IGFsbCwKPj4KPj4gV2hlbiBJIHRyaWVkIHRvIHVzZSBkZXZtX2lvcmVtYXAgZnVuY3Rpb24gYW5k
-IHJldmlldyByZWxhdGVkIGNvZGUsIEkgZm91bmQKPj4gZGV2bV9pb3JlbWFwIGFuZCBkZXZtX2lv
-cmVtYXBfbm9jYWNoZSBpcyBhbG1vc3QgdGhlIHNhbWUgd2l0aCBlYWNoIG90aGVyLAo+PiBleGNl
-cHQgb25lIHVzZSBpb3JlbWFwIHdoaWxlIHRoZSBvdGhlciB1c2UgaW9yZW1hcF9ub2NhY2hlLgo+
-IAo+IEZvciBhbGwgYXJjaGVzPyAgUmVhbGx5PyAgTG9vayBhdCBNSVBTLCBhbmQgeDg2LCB0aGV5
-IGhhdmUgZGlmZmVyZW50Cj4gZnVuY3Rpb25zLgo+IAo+PiBXaGlsZSBpb3JlbWFwJ3MKPj4gZGVm
-YXVsdCBmdW5jdGlvbiBpcyBpb3JlbWFwX25vY2FjaGUsIHNvIGRldm1faW9yZW1hcF9ub2NhY2hl
-IGFsc28gaGF2ZSB0aGUKPj4gc2FtZSBmdW5jdGlvbiB3aXRoIGRldm1faW9yZW1hcCwgd2hpY2gg
-Y2FuIGp1c3QgYmUga2lsbGVkIHRvIHJlZHVjZSB0aGUgc2l6ZQo+PiBvZiBkZXZyZXMubyhmcm9t
-IDIwMzA0IGJ5dGVzIHRvIDE4OTkyIGJ5dGVzIGluIG15IGNvbXBpbGUgZW52aXJvbm1lbnQpLgo+
-Pgo+PiBJIGhhdmUgcG9zdGVkIHR3byB2ZXJzaW9ucywgd2hpY2ggdXNlIG1hY3JvIGluc3RlYWQg
-b2YgZnVuY3Rpb24gZm9yCj4+IGRldm1faW9yZW1hcF9ub2NhY2hlWzFdIG9yIGRldm1faW9yZW1h
-cFsyXS4gQW5kIEdyZWcgc3VnZ2VzdCBtZSB0byBraWxsCj4+IGRldm1faW9yZW1hcF9ub2NhY2hl
-IGZvciBubyBuZWVkIHRvIGtlZXAgYSBtYWNybyBhcm91bmQgZm9yIHRoZSBkdXBsaWNhdGUKPj4g
-dGhpbmcuIFNvIGhlcmUgY29tZXMgdjMgYW5kIHBsZWFzZSBoZWxwIHRvIHJldmlldy4KPiAKPiBJ
-IGRvbid0IHRoaW5rIHRoaXMgY2FuIGJlIGRvbmUsIHdoYXQgYW0gSSBtaXNzaW5nPyAgVGhlc2Ug
-ZnVuY3Rpb25zIGFyZQo+IG5vdCBpZGVudGljYWwsIHNvcnJ5IGZvciBtaXNzaW5nIHRoYXQgYmVm
-b3JlLgoKZGV2bV9pb3JlbWFwKCkgYW5kIGRldm1faW9yZW1hcF9ub2NhY2hlKCkgYXJlIHF1aXRl
-IHNpbWlsYXIsIGJvdGggdXNlIApkZXZtX2lvcmVtYXBfcmVsZWFzZSgpIGZvciB0aGUgcmVsZWFz
-ZSwgd2h5IG5vdCBqdXN0IGRlZmluaW5nOgoKc3RhdGljIHZvaWQgX19pb21lbSAqX19kZXZtX2lv
-cmVtYXAoc3RydWN0IGRldmljZSAqZGV2LCByZXNvdXJjZV9zaXplX3QgCm9mZnNldCwKCQkJICAg
-cmVzb3VyY2Vfc2l6ZV90IHNpemUsIGJvb2wgbm9jYWNoZSkKewpbLi4uXQoJaWYgKG5vY2FjaGUp
-CgkJYWRkciA9IGlvcmVtYXBfbm9jYWNoZShvZmZzZXQsIHNpemUpOwoJZWxzZQoJCWFkZHIgPSBp
-b3JlbWFwKG9mZnNldCwgc2l6ZSk7ClsuLi5dCn0KCnRoZW4gaW4gaW5jbHVkZS9saW51eC9pby5o
-CgpzdGF0aWMgaW5saW5lIHZvaWQgX19pb21lbSAqZGV2bV9pb3JlbWFwKHN0cnVjdCBkZXZpY2Ug
-KmRldiwgCnJlc291cmNlX3NpemVfdCBvZmZzZXQsCgkJCSAgIHJlc291cmNlX3NpemVfdCBzaXpl
-KQp7cmV0dXJuIF9fZGV2bV9pb3JlbWFwKGRldiwgb2Zmc2V0LCBzaXplLCBmYWxzZSk7fQoKc3Rh
-dGljIGlubGluZSB2b2lkIF9faW9tZW0gKmRldm1faW9yZW1hcF9ub2NhY2hlKHN0cnVjdCBkZXZp
-Y2UgKmRldiwgCnJlc291cmNlX3NpemVfdCBvZmZzZXQsCgkJCQkgICByZXNvdXJjZV9zaXplX3Qg
-c2l6ZSk7CntyZXR1cm4gX19kZXZtX2lvcmVtYXAoZGV2LCBvZmZzZXQsIHNpemUsIHRydWUpO30K
-CkNocmlzdG9waGUKCj4gCj4gdGhhbmtzLAo+IAo+IGdyZWcgay1oCj4gLS0KPiBUbyB1bnN1YnNj
-cmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbGludXgtd2F0
-Y2hkb2ciIGluCj4gdGhlIGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5l
-bC5vcmcKPiBNb3JlIG1ham9yZG9tbyBpbmZvIGF0ICBodHRwOi8vdmdlci5rZXJuZWwub3JnL21h
-am9yZG9tby1pbmZvLmh0bWwKPiAKCi0tLQpMJ2Fic2VuY2UgZGUgdmlydXMgZGFucyBjZSBjb3Vy
-cmllciDDqWxlY3Ryb25pcXVlIGEgw6l0w6kgdsOpcmlmacOpZSBwYXIgbGUgbG9naWNpZWwgYW50
-aXZpcnVzIEF2YXN0LgpodHRwczovL3d3dy5hdmFzdC5jb20vYW50aXZpcnVzCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkZXZlbCBtYWlsaW5nIGxpc3QK
-ZGV2ZWxAbGludXhkcml2ZXJwcm9qZWN0Lm9yZwpodHRwOi8vZHJpdmVyZGV2LmxpbnV4ZHJpdmVy
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcml2ZXJkZXYtZGV2ZWwK
+Hi Bard,
+
+I've been looking into getting the microphone to work on
+some Cherry Trail + RT5645 devices with what appears to
+be a simple analog microphone.
+
+You can see the microphone on one of the models I'm trying
+to get it to work on soldered onto the right side of the PCB
+here: https://i.imgur.com/bJzBQWe.jpg
+
+I'm using this ucm config:
+
+https://fedorapeople.org/~jwrdegoede/chtrt5645/
+
+Which is basically Pierre-Louis Bossart's config from:
+https://github.com/plbossart/UCM
+
+Adjusted because the devices all have a mono speaker.
+
+I've been trying to get this to work myself and I can get
+some sound while recording by adding:
+
+                 cset "name='RECMIXL BST2 Switch' on"
+                 cset "name='RECMIXR BST2 Switch' on"
+
+But then I mainly get noise, I do get some sound from the
+microphone if I talk really really loudly, but it is
+barely above the noise-floor. I've the feeling that BST2
+is only picking up the microphone via cross-talk and
+that BST1 indeed is the correct input, but for some reason
+I get complete silence when recording when only BST1 is
+selected in the RECMIXR, and yes I've checked / set the
+"IN1 boost volume".
+
+TL;DR: I'm trying to get an analog mic to work on 3
+different models Cherry Trail + RT5645 devices and I've
+been unable to get this to work. I've put a registerdump
+of the rt5645 with gnome-sound-recorder running here:
+https://fedorapeople.org/~jwrdegoede/rt5645-mic-red.dump
+
+Any insights / help with this would be very much
+welcome.
+
+Regards,
+
+Hans
