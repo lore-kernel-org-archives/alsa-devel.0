@@ -1,96 +1,85 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: Cherry Trail + RT5645 devices analog microphone
-	not working.
-Date: Mon, 25 Dec 2017 02:15:16 +0000
-Message-ID: <ABFD875FF5FB574BA706497D987D48D7027476BE@RTITMBSV02.realtek.com.tw>
-References: <d42279d7-0350-563f-fca7-27f32cb9e9ee@redhat.com>
+From: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Subject: [PATCH 1/4] ASoC: mediatek: fix error handling in mt2701_afe_pcm_dev_probe()
+Date: Mon, 25 Dec 2017 16:28:45 +0800
+Message-ID: <18b7f0ec484300af795b1873efab96e51393459c.1514190169.git.ryder.lee@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 7DF39266E63
- for <alsa-devel@alsa-project.org>; Mon, 25 Dec 2017 03:15:24 +0100 (CET)
-In-Reply-To: <d42279d7-0350-563f-fca7-27f32cb9e9ee@redhat.com>
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Hans de Goede [mailto:hdegoede@redhat.com]
-> Sent: Sunday, December 24, 2017 6:43 PM
-> To: Bard Liao
-> Cc: Pierre-Louis Bossart; alsa-devel@alsa-project.org
-> Subject: Cherry Trail + RT5645 devices analog microphone not working.
-> 
-> Hi Bard,
-> 
-> I've been looking into getting the microphone to work on
-> some Cherry Trail + RT5645 devices with what appears to
-> be a simple analog microphone.
-> 
-> You can see the microphone on one of the models I'm trying
-> to get it to work on soldered onto the right side of the PCB
-> here: https://i.imgur.com/bJzBQWe.jpg
-> 
-> I'm using this ucm config:
-> 
-> https://fedorapeople.org/~jwrdegoede/chtrt5645/
-> 
-> Which is basically Pierre-Louis Bossart's config from:
-> https://github.com/plbossart/UCM
-> 
-> Adjusted because the devices all have a mono speaker.
-> 
-> I've been trying to get this to work myself and I can get
-> some sound while recording by adding:
-> 
->                  cset "name='RECMIXL BST2 Switch' on"
->                  cset "name='RECMIXR BST2 Switch' on"
-> 
-> But then I mainly get noise, I do get some sound from the
-> microphone if I talk really really loudly, but it is
-> barely above the noise-floor. I've the feeling that BST2
-> is only picking up the microphone via cross-talk and
-> that BST1 indeed is the correct input, but for some reason
-> I get complete silence when recording when only BST1 is
-> selected in the RECMIXR, and yes I've checked / set the
-> "IN1 boost volume".
-> 
-> TL;DR: I'm trying to get an analog mic to work on 3
-> different models Cherry Trail + RT5645 devices and I've
-> been unable to get this to work. I've put a registerdump
-> of the rt5645 with gnome-sound-recorder running here:
-> https://fedorapeople.org/~jwrdegoede/rt5645-mic-red.dump
-> 
-> Any insights / help with this would be very much
-> welcome.
+Fix unbalanced error handling path which will get incorrect counts
+if probe failed. The .remove() should be adjusted accordingly.
 
-I don't have the schematic, but I think you probably need micbias
-for the capture. Please add both "micbias1" and "micbias2" in
-the audio route since I don't know which one is needed.
-for example
-static const struct snd_soc_dapm_route cht_rt5645_audio_map[] = {
-...
-	{"Int Mic", NULL, "micbias1"},
-	{"Int Mic", NULL, "micbias2"},
-...
-};
+Signed-off-by: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+---
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 23 ++++++++++-------------
+ 1 file changed, 10 insertions(+), 13 deletions(-)
 
+diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+index 8fda182..b3f6f73 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
++++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+@@ -1591,8 +1591,12 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, afe);
+ 	pm_runtime_enable(&pdev->dev);
+-	if (!pm_runtime_enabled(&pdev->dev))
+-		goto err_pm_disable;
++	if (!pm_runtime_enabled(&pdev->dev)) {
++		ret = mt2701_afe_runtime_resume(&pdev->dev);
++		if (ret)
++			goto err_pm_disable;
++	}
++
+ 	pm_runtime_get_sync(&pdev->dev);
+ 
+ 	ret = snd_soc_register_platform(&pdev->dev, &mtk_afe_pcm_platform);
+@@ -1610,16 +1614,12 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+ 		goto err_dai_component;
+ 	}
+ 
+-	mt2701_afe_runtime_resume(&pdev->dev);
+-
+ 	return 0;
+ 
+ err_dai_component:
+-	snd_soc_unregister_component(&pdev->dev);
+-
+-err_platform:
+ 	snd_soc_unregister_platform(&pdev->dev);
+-
++err_platform:
++	pm_runtime_put_sync(&pdev->dev);
+ err_pm_disable:
+ 	pm_runtime_disable(&pdev->dev);
+ 
+@@ -1628,17 +1628,14 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+ 
+ static int mt2701_afe_pcm_dev_remove(struct platform_device *pdev)
+ {
+-	struct mtk_base_afe *afe = platform_get_drvdata(pdev);
+-
++	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		mt2701_afe_runtime_suspend(&pdev->dev);
+-	pm_runtime_put_sync(&pdev->dev);
+ 
+ 	snd_soc_unregister_component(&pdev->dev);
+ 	snd_soc_unregister_platform(&pdev->dev);
+-	/* disable afe clock */
+-	mt2701_afe_disable_clock(afe);
++
+ 	return 0;
+ }
+ 
+-- 
+1.9.1
 
-> 
-> Regards,
-> 
-> Hans
-> 
-> ------Please consider the environment before printing this e-mail.
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
