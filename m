@@ -1,107 +1,104 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: Cherry Trail + RT5645 devices analog microphone
-	not working.
-Date: Mon, 25 Dec 2017 13:02:49 +0100
-Message-ID: <6ccb2c4c-042f-46c0-5247-90f79d49c840@redhat.com>
-References: <d42279d7-0350-563f-fca7-27f32cb9e9ee@redhat.com>
- <ABFD875FF5FB574BA706497D987D48D7027476BE@RTITMBSV02.realtek.com.tw>
+From: Ryan Lee <RyanS.Lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
+Subject: RE: [PATCH] ASoC: max98373: Added Amplifier Driver
+Date: Mon, 25 Dec 2017 14:30:23 +0000
+Message-ID: <BY2PR11MB0837C049BCA0C1B5103EA3FBE7010@BY2PR11MB0837.namprd11.prod.outlook.com>
+References: <1513907030-18441-1-git-send-email-ryans.lee@maximintegrated.com>
+ <87a7ybo6em.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f51.google.com (mail-wm0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 4ED0E26698E
- for <alsa-devel@alsa-project.org>; Mon, 25 Dec 2017 13:02:51 +0100 (CET)
-Received: by mail-wm0-f51.google.com with SMTP id 9so31681975wme.4
- for <alsa-devel@alsa-project.org>; Mon, 25 Dec 2017 04:02:51 -0800 (PST)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D7027476BE@RTITMBSV02.realtek.com.tw>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <87a7ybo6em.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, "tiwai-IBi9RG/b67k@public.gmane.org" <tiwai-IBi9RG/b67k@public.gmane.org>, "arnd-r2nGTMty4D4@public.gmane.org" <arnd-r2nGTMty4D4@public.gmane.org>, "afd-l0cyMroinI0@public.gmane.org" <afd-l0cyMroinI0@public.gmane.org>, "robert.jarzmik-GANU6spQydw@public.gmane.org" <robert.jarzmik-GANU6spQydw@public.gmane.org>, "supercraig0719-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <supercraig0719-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "jbrunet-rdvid1DuHRBWk0Htik3J/w@public.gmane.org" <jbrunet-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, "dannenberg-l0cyMroinI0@public.gmane.org" <dannenberg-l0cyMroinI0@public.gmane.org>, "romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org" <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>, "bryce.ferguson-lFk7bPDcGtkY5TsXZYaR1UEOCMrvLtNR@public.gmane.org" <bryce.ferguson-lFk7bPDcGtkY5TsXZYaR1UEOCMrvLtNR@public.gmane.org>, "m-stecklein-l0cyMroinI0@public.gmane.org" <m-stecklein-l0cyMroinI0@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, devicetree-u79uwXL29TbrhsbdSgBK9A@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Kuninori Miromoto,
 
-On 25-12-17 03:15, Bard Liao wrote:
->> -----Original Message-----
->> From: Hans de Goede [mailto:hdegoede@redhat.com]
->> Sent: Sunday, December 24, 2017 6:43 PM
->> To: Bard Liao
->> Cc: Pierre-Louis Bossart; alsa-devel@alsa-project.org
->> Subject: Cherry Trail + RT5645 devices analog microphone not working.
+>-----Original Message-----
+>From: Kuninori Morimoto [mailto:kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org]
+>Sent: Thursday, December 21, 2017 6:24 PM
+>To: Ryan Lee <RyanS.Lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
+>Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org; broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org; robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org;
+>mark.rutland-5wv7dgnIgG8@public.gmane.org; perex-/Fr2/VpizcU@public.gmane.org; tiwai-IBi9RG/b67k@public.gmane.org; arnd-r2nGTMty4D4@public.gmane.org;
+>afd-l0cyMroinI0@public.gmane.org; robert.jarzmik-GANU6spQydw@public.gmane.org; supercraig0719-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org;
+>jbrunet-rdvid1DuHRBWk0Htik3J/w@public.gmane.org; dannenberg-l0cyMroinI0@public.gmane.org; romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org;
+>bryce.ferguson-lFk7bPDcGtkY5TsXZYaR1UEOCMrvLtNR@public.gmane.org; m-stecklein-l0cyMroinI0@public.gmane.org; alsa-devel@alsa-
+>project.org; devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org; linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org;
+>ryan.lee.maxim-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+>Subject: Re: [PATCH] ASoC: max98373: Added Amplifier Driver
+>
+>EXTERNAL EMAIL
+>
+>
+>
+>Hi Ryan
+>
+>> Signed-off-by: Ryan Lee <ryans.lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
+>> ---
 >>
->> Hi Bard,
+>> Created max98373 amplifier driver.
 >>
->> I've been looking into getting the microphone to work on
->> some Cherry Trail + RT5645 devices with what appears to
->> be a simple analog microphone.
->>
->> You can see the microphone on one of the models I'm trying
->> to get it to work on soldered onto the right side of the PCB
->> here: https://i.imgur.com/bJzBQWe.jpg
->>
->> I'm using this ucm config:
->>
->> https://fedorapeople.org/~jwrdegoede/chtrt5645/
->>
->> Which is basically Pierre-Louis Bossart's config from:
->> https://github.com/plbossart/UCM
->>
->> Adjusted because the devices all have a mono speaker.
->>
->> I've been trying to get this to work myself and I can get
->> some sound while recording by adding:
->>
->>                   cset "name='RECMIXL BST2 Switch' on"
->>                   cset "name='RECMIXR BST2 Switch' on"
->>
->> But then I mainly get noise, I do get some sound from the
->> microphone if I talk really really loudly, but it is
->> barely above the noise-floor. I've the feeling that BST2
->> is only picking up the microphone via cross-talk and
->> that BST1 indeed is the correct input, but for some reason
->> I get complete silence when recording when only BST1 is
->> selected in the RECMIXR, and yes I've checked / set the
->> "IN1 boost volume".
->>
->> TL;DR: I'm trying to get an analog mic to work on 3
->> different models Cherry Trail + RT5645 devices and I've
->> been unable to get this to work. I've put a registerdump
->> of the rt5645 with gnome-sound-recorder running here:
->> https://fedorapeople.org/~jwrdegoede/rt5645-mic-red.dump
->>
->> Any insights / help with this would be very much
->> welcome.
-> 
-> I don't have the schematic, but I think you probably need micbias
-> for the capture. Please add both "micbias1" and "micbias2" in
-> the audio route since I don't know which one is needed.
-> for example
-> static const struct snd_soc_dapm_route cht_rt5645_audio_map[] = {
-> ...
-> 	{"Int Mic", NULL, "micbias1"},
-> 	{"Int Mic", NULL, "micbias2"},
-> ...
-> };
+>>  .../devicetree/bindings/sound/max98373.txt         |  43 +
+>>  sound/soc/codecs/Kconfig                           |   5 +
+>>  sound/soc/codecs/Makefile                          |   2 +
+>>  sound/soc/codecs/max98373.c                        | 996
+>+++++++++++++++++++++
+>>  sound/soc/codecs/max98373.h                        | 225 +++++
+>>  5 files changed, 1271 insertions(+)
+>>  create mode 100644
+>> Documentation/devicetree/bindings/sound/max98373.txt
+>>  create mode 100644 sound/soc/codecs/max98373.c  create mode 100644
+>> sound/soc/codecs/max98373.h
+>(snip)
+>> +struct max98373_priv {
+>> +     struct regmap *regmap;
+>> +     struct snd_soc_codec *codec;
+>> +     unsigned int sysclk;
+>> +     unsigned int v_slot;
+>> +     unsigned int i_slot;
+>> +     unsigned int spkfb_slot;
+>> +     bool interleave_mode;
+>> +     unsigned int ch_size;
+>> +     unsigned int iface;
+>> +     bool tdm_mode;
+>> +};
+>
+>About this max98373->codec.
+>This user is only max98373_set_clock(), and it is called from
+>max98373_dai_hw_params().
+>You are getting *codec from dai->codec in this function, and max98373 is
+>came from it.
+>This means, we can remove max98373->codec ?
 
-Thank you for your reply. I've tested this, but unfortunately it
-does not help.
+Thanks for your feedback.
+I will remove max98373->codec and change related things.
 
-Do you perhaps have a cherrytrail device withrt5645 codec where you
-can test an analog mic input with the upstream driver + latest ucm
-file from Pierre-Louis with yourself ? I've the feeling that this is
-not specific to the 3 devices I've access to but a general problem
-in the driver and/or the ucm files.
+>
+>About max98373->regmap.
+>You are using devm_regmap_init_i2c(), and keeping it on max98373.
+>Can you check snd_soc_component_add() which is called from
+>snd_soc_add_component().
+>It will set component->regmap if you called devm_regmap_init_i2c().
+>I think you can use snd_soc_component_read/write instead of
+>regmap_read/write.
+>Then, we can remove max98373->regmap too ?
+>Ahh, you want to check Revision ID.
+>then, snd_soc_component_init_regmap() can help you ?
 
-Regards,
+I'm sorry but I don't fully understand the benefit of this.
+Keeping regmap information in private driver data is very common and I can =
+see many ASoC drivers are using it.
+I was able to see only a few driver use ' snd_soc_component_read'.
+I would like to keep regmap_read/write if it is still acceptable.
 
-Hans
+>
+>Best regards
+>---
+>Kuninori Morimoto
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
