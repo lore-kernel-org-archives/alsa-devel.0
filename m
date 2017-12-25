@@ -1,103 +1,63 @@
 From: Ryan Lee <RyanS.Lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
 Subject: RE: [PATCH] ASoC: max98373: Added Amplifier Driver
-Date: Mon, 25 Dec 2017 14:30:23 +0000
-Message-ID: <BY2PR11MB0837C049BCA0C1B5103EA3FBE7010@BY2PR11MB0837.namprd11.prod.outlook.com>
+Date: Mon, 25 Dec 2017 14:30:56 +0000
+Message-ID: <BY2PR11MB0837346A2FD8B05764D4282FE7010@BY2PR11MB0837.namprd11.prod.outlook.com>
 References: <1513907030-18441-1-git-send-email-ryans.lee@maximintegrated.com>
- <87a7ybo6em.wl%kuninori.morimoto.gx@renesas.com>
+ <CAOFm3uH3+UsSZ7DgDk9AYRb8K7GjKUNwchGW3_hxD3DMOidjpg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <87a7ybo6em.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+In-Reply-To: <CAOFm3uH3+UsSZ7DgDk9AYRb8K7GjKUNwchGW3_hxD3DMOidjpg-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
 Content-Language: en-US
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Cc: "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, "tiwai-IBi9RG/b67k@public.gmane.org" <tiwai-IBi9RG/b67k@public.gmane.org>, "arnd-r2nGTMty4D4@public.gmane.org" <arnd-r2nGTMty4D4@public.gmane.org>, "afd-l0cyMroinI0@public.gmane.org" <afd-l0cyMroinI0@public.gmane.org>, "robert.jarzmik-GANU6spQydw@public.gmane.org" <robert.jarzmik-GANU6spQydw@public.gmane.org>, "supercraig0719-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <supercraig0719-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "jbrunet-rdvid1DuHRBWk0Htik3J/w@public.gmane.org" <jbrunet-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, "dannenberg-l0cyMroinI0@public.gmane.org" <dannenberg-l0cyMroinI0@public.gmane.org>, "romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org" <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>, "bryce.ferguson-lFk7bPDcGtkY5TsXZYaR1UEOCMrvLtNR@public.gmane.org" <bryce.ferguson-lFk7bPDcGtkY5TsXZYaR1UEOCMrvLtNR@public.gmane.org>, "m-stecklein-l0cyMroinI0@public.gmane.org" <m-stecklein-l0cyMroinI0@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, devicetree-u79uwXL29TbrhsbdSgBK9A@public.gmane.org
+To: Philippe Ombredanne <pombredanne-od1rfyK75/E@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, "afd-l0cyMroinI0@public.gmane.org" <afd-l0cyMroinI0@public.gmane.org>, "robert.jarzmik-GANU6spQydw@public.gmane.org" <robert.jarzmik-GANU6spQydw@public.gmane.org>, "supercraig0719-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <supercraig0719-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "jbrunet-rdvid1DuHRBWk0Htik3J/w@public.gmane.org" <jbrunet-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, "dannenberg-l0cyMroinI0@public.gmane.org" <dannenberg-l0cyMroinI0@public.gmane.org>, Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>, "bryce.ferguson-lFk7bPDcGtkY5TsXZYaR1UEOCMrvLtNR@public.gmane.org" <bryce.ferguson-lFk7bPDcGtkY5TsXZYaR1UEOCMrvLtNR@public.gmane.org>, "kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org" <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, "m-stecklein-l0cyMroinI0@public.gmane.org" <m-stecklein-l0cyMroinI0@public.gmane.org>, ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, open list:OPEN FIRMWARE AND FLATTENED DEVICE TRE
 List-Id: alsa-devel@alsa-project.org
 
-Hi Kuninori Miromoto,
-
->-----Original Message-----
->From: Kuninori Morimoto [mailto:kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org]
->Sent: Thursday, December 21, 2017 6:24 PM
->To: Ryan Lee <RyanS.Lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
->Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org; broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org; robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org;
->mark.rutland-5wv7dgnIgG8@public.gmane.org; perex-/Fr2/VpizcU@public.gmane.org; tiwai-IBi9RG/b67k@public.gmane.org; arnd-r2nGTMty4D4@public.gmane.org;
->afd-l0cyMroinI0@public.gmane.org; robert.jarzmik-GANU6spQydw@public.gmane.org; supercraig0719-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org;
->jbrunet-rdvid1DuHRBWk0Htik3J/w@public.gmane.org; dannenberg-l0cyMroinI0@public.gmane.org; romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org;
->bryce.ferguson-lFk7bPDcGtkY5TsXZYaR1UEOCMrvLtNR@public.gmane.org; m-stecklein-l0cyMroinI0@public.gmane.org; alsa-devel@alsa-
->project.org; devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org; linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org;
->ryan.lee.maxim-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
->Subject: Re: [PATCH] ASoC: max98373: Added Amplifier Driver
->
->EXTERNAL EMAIL
->
->
->
->Hi Ryan
->
->> Signed-off-by: Ryan Lee <ryans.lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
->> ---
->>
->> Created max98373 amplifier driver.
->>
->>  .../devicetree/bindings/sound/max98373.txt         |  43 +
->>  sound/soc/codecs/Kconfig                           |   5 +
->>  sound/soc/codecs/Makefile                          |   2 +
->>  sound/soc/codecs/max98373.c                        | 996
->+++++++++++++++++++++
->>  sound/soc/codecs/max98373.h                        | 225 +++++
->>  5 files changed, 1271 insertions(+)
->>  create mode 100644
->> Documentation/devicetree/bindings/sound/max98373.txt
->>  create mode 100644 sound/soc/codecs/max98373.c  create mode 100644
->> sound/soc/codecs/max98373.h
->(snip)
->> +struct max98373_priv {
->> +     struct regmap *regmap;
->> +     struct snd_soc_codec *codec;
->> +     unsigned int sysclk;
->> +     unsigned int v_slot;
->> +     unsigned int i_slot;
->> +     unsigned int spkfb_slot;
->> +     bool interleave_mode;
->> +     unsigned int ch_size;
->> +     unsigned int iface;
->> +     bool tdm_mode;
->> +};
->
->About this max98373->codec.
->This user is only max98373_set_clock(), and it is called from
->max98373_dai_hw_params().
->You are getting *codec from dai->codec in this function, and max98373 is
->came from it.
->This means, we can remove max98373->codec ?
-
-Thanks for your feedback.
-I will remove max98373->codec and change related things.
-
->
->About max98373->regmap.
->You are using devm_regmap_init_i2c(), and keeping it on max98373.
->Can you check snd_soc_component_add() which is called from
->snd_soc_add_component().
->It will set component->regmap if you called devm_regmap_init_i2c().
->I think you can use snd_soc_component_read/write instead of
->regmap_read/write.
->Then, we can remove max98373->regmap too ?
->Ahh, you want to check Revision ID.
->then, snd_soc_component_init_regmap() can help you ?
-
-I'm sorry but I don't fully understand the benefit of this.
-Keeping regmap information in private driver data is very common and I can =
-see many ASoC drivers are using it.
-I was able to see only a few driver use ' snd_soc_component_read'.
-I would like to keep regmap_read/write if it is still acceptable.
-
->
->Best regards
->---
->Kuninori Morimoto
+SGkgUGhpbHBwZSBPbWJyZWRhbm5lLA0KDQo+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj5G
+cm9tOiBQaGlsaXBwZSBPbWJyZWRhbm5lIFttYWlsdG86cG9tYnJlZGFubmVAbmV4Yi5jb21dDQo+
+U2VudDogRnJpZGF5LCBEZWNlbWJlciAyMiwgMjAxNyAxMjozOSBBTQ0KPlRvOiBSeWFuIExlZSA8
+UnlhblMuTGVlQG1heGltaW50ZWdyYXRlZC5jb20+DQo+Q2M6IExpYW0gR2lyZHdvb2QgPGxnaXJk
+d29vZEBnbWFpbC5jb20+OyBNYXJrIDxicm9vbmllQGtlcm5lbC5vcmc+Ow0KPlJvYiBIZXJyaW5n
+IDxyb2JoK2R0QGtlcm5lbC5vcmc+OyBNYXJrIFJ1dGxhbmQgPG1hcmsucnV0bGFuZEBhcm0uY29t
+PjsNCj5KYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6PjsgVGFrYXNoaSBJd2FpIDx0aXdh
+aUBzdXNlLmNvbT47IEFybmQNCj5CZXJnbWFubiA8YXJuZEBhcm5kYi5kZT47IGFmZEB0aS5jb207
+IHJvYmVydC5qYXJ6bWlrQGZyZWUuZnI7DQo+c3VwZXJjcmFpZzA3MTlAZ21haWwuY29tOyBqYnJ1
+bmV0QGJheWxpYnJlLmNvbTsgZGFubmVuYmVyZ0B0aS5jb207DQo+Um9tYWluIFBlcmllciA8cm9t
+YWluLnBlcmllckBjb2xsYWJvcmEuY29tPjsNCj5icnljZS5mZXJndXNvbkByb2Nrd2VsbGNvbGxp
+bnMuY29tOyBrdW5pbm9yaS5tb3JpbW90by5neEByZW5lc2FzLmNvbTsgbS0NCj5zdGVja2xlaW5A
+dGkuY29tOyBBTFNBIDxhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc+OyBvcGVuIGxpc3Q6T1BF
+Tg0KPkZJUk1XQVJFIEFORCBGTEFUVEVORUQgREVWSUNFIFRSRUUgQklORElOR1MNCj48ZGV2aWNl
+dHJlZUB2Z2VyLmtlcm5lbC5vcmc+OyBMS01MIDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3Jn
+PjsNCj5yeWFuLmxlZS5tYXhpbUBnbWFpbC5jb20NCj5TdWJqZWN0OiBSZTogW1BBVENIXSBBU29D
+OiBtYXg5ODM3MzogQWRkZWQgQW1wbGlmaWVyIERyaXZlcg0KPg0KPkVYVEVSTkFMIEVNQUlMDQo+
+DQo+DQo+DQo+UnlhbiwNCj4NCj5PbiBGcmksIERlYyAyMiwgMjAxNyBhdCAyOjQzIEFNLCBSeWFu
+IExlZSA8cnlhbnMubGVlQG1heGltaW50ZWdyYXRlZC5jb20+DQo+d3JvdGU6DQo+PiBTaWduZWQt
+b2ZmLWJ5OiBSeWFuIExlZSA8cnlhbnMubGVlQG1heGltaW50ZWdyYXRlZC5jb20+DQo+PiAtLS0N
+Cj4+DQo+PiBDcmVhdGVkIG1heDk4MzczIGFtcGxpZmllciBkcml2ZXIuDQo+Pg0KPg0KPjxzbmlw
+Pg0KPg0KPj4gLS0tIC9kZXYvbnVsbA0KPj4gKysrIGIvc291bmQvc29jL2NvZGVjcy9tYXg5ODM3
+My5jDQo+PiBAQCAtMCwwICsxLDk5NiBAQA0KPj4gKy8qDQo+PiArICogbWF4OTgzNzMuYyAgLS0g
+IE1BWDk4MzczIEFMU0EgU29jIEF1ZGlvIGRyaXZlcg0KPj4gKyAqDQo+PiArICogQ29weXJpZ2h0
+IChDKSAyMDE3IE1heGltIEludGVncmF0ZWQgUHJvZHVjdHMNCj4+ICsgKiBBdXRob3I6IFJ5YW4g
+TGVlIDxyeWFucy5sZWVAbWF4aW1pbnRlZ3JhdGVkLmNvbT4NCj4+ICsgKg0KPj4gKyAqICBUaGlz
+IHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUgIGl0IGFuZC9v
+cg0KPj4gK21vZGlmeSBpdA0KPj4gKyAqICB1bmRlciAgdGhlIHRlcm1zIG9mICB0aGUgR05VIEdl
+bmVyYWwgIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZA0KPj4gK2J5IHRoZQ0KPj4gKyAqICBG
+cmVlIFNvZnR3YXJlIEZvdW5kYXRpb247ICBlaXRoZXIgdmVyc2lvbiAyIG9mIHRoZSAgTGljZW5z
+ZSwgb3INCj4+ICsoYXQgeW91cg0KPj4gKyAqICBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9uLg0K
+Pj4gKyAqLw0KPg0KPkhhdmUgeW91IGNvbnNpZGVyZWQgdXNpbmcgdGhlIG5ldyBTUERYIHRhZ3Mg
+aW5zdGVhZCBvZiB0aGlzIGZpbmUgYnV0IGxvbmcNCj5sZWdhbGVzZT8NCj4NCj5BbmQgaWYgb3Ro
+ZXIgY29udHJpYnV0b3JzIGluIHlvdXIgdGVhbSBjb3VsZCBmb2xsb3cgc3VpdCBhbmQgeW91IGNv
+dWxkIHNwcmVhZA0KPnRoZSB3b3JkIHRoYXQgd291bGQgYmUgZXZlbiBiZXR0ZXIhDQo+DQo+U2Vl
+IFRob21hcyBkb2MgcGF0Y2hlcyBbMV0gZm9yIGRldGFpbHMuDQo+VGhhbmtzIQ0KPg0KPlsxXQ0K
+Pmh0dHBzOi8vbmEwMS5zYWZlbGlua3MucHJvdGVjdGlvbi5vdXRsb29rLmNvbS8/dXJsPWh0dHBz
+JTNBJTJGJTJGbGttbC5vcmclDQo+MkZsa21sJTJGMjAxNyUyRjEyJTJGNCUyRjkzNCZkYXRhPTAx
+JTdDMDElN0NyeWFucy5sZWUlNDBtYXhpbWludA0KPmVncmF0ZWQuY29tJTdDZDI2ZWM0ODU5YjIy
+NDBmYjBhNjAwOGQ1NDkxNzhjNGYlN0NmYmQ5MDlkZmVhNjk0NzgNCj44YTU1NGYyNGI3ODU0YWQw
+MyU3QzAmc2RhdGE9ZFRWSDA0NFhQb3g3RVBSMFdVMUlHTWxMeGFXQkRsODAlDQo+MkIlMkZWWWh3
+dTUxeTAlM0QmcmVzZXJ2ZWQ9MA0KPg0KVGhhbmtzIGZvciB5b3VyIGZlZWRiYWNrLiBJIHdpbGwg
+Zm9sbG93IHRoaXMuDQo+LS0NCj5Db3JkaWFsbHkNCj5QaGlsaXBwZSBPbWJyZWRhbm5lDQo=
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
