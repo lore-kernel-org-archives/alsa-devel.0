@@ -1,20 +1,21 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: Cherry Trail + RT5645 devices analog microphone
-	not working.
-Date: Tue, 26 Dec 2017 05:29:12 +0000
-Message-ID: <ABFD875FF5FB574BA706497D987D48D70274A822@RTITMBSV02.realtek.com.tw>
-References: <d42279d7-0350-563f-fca7-27f32cb9e9ee@redhat.com>
- <ABFD875FF5FB574BA706497D987D48D7027476BE@RTITMBSV02.realtek.com.tw>
- <6ccb2c4c-042f-46c0-5247-90f79d49c840@redhat.com>
+From: Sagar Arun Kamble <sagar.a.kamble@intel.com>
+Subject: Re: [PATCH 15/27] ALSA: hda - Use
+ timecounter_initialize interface
+Date: Tue, 26 Dec 2017 13:07:35 +0530
+Message-ID: <b0d5ff40-fbfe-e5b3-2844-7d930484e87f@intel.com>
+References: <1513323522-15021-1-git-send-email-sagar.a.kamble@intel.com>
+ <1513323522-15021-16-git-send-email-sagar.a.kamble@intel.com>
+ <s5hh8ssgsaw.wl-tiwai@suse.de> <20171215165125.avkz25eek56i5md4@localhost>
+ <s5h4lorx6ha.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_002_ABFD875FF5FB574BA706497D987D48D70274A822RTITMBSV02realt_"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 1061B266DD5
- for <alsa-devel@alsa-project.org>; Tue, 26 Dec 2017 06:29:22 +0100 (CET)
-In-Reply-To: <6ccb2c4c-042f-46c0-5247-90f79d49c840@redhat.com>
-Content-Language: zh-TW
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id E176C266DD5
+ for <alsa-devel@alsa-project.org>; Tue, 26 Dec 2017 08:37:40 +0100 (CET)
+In-Reply-To: <s5h4lorx6ha.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,157 +25,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>, Richard Cochran <richardcochran@gmail.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
---_002_ABFD875FF5FB574BA706497D987D48D70274A822RTITMBSV02realt_
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBIYW5zIGRlIEdvZWRlIFttYWls
-dG86aGRlZ29lZGVAcmVkaGF0LmNvbV0NCj4gU2VudDogTW9uZGF5LCBEZWNlbWJlciAyNSwgMjAx
-NyA4OjAzIFBNDQo+IFRvOiBCYXJkIExpYW8NCj4gQ2M6IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0OyBh
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcNCj4gU3ViamVjdDogUmU6IENoZXJyeSBUcmFpbCAr
-IFJUNTY0NSBkZXZpY2VzIGFuYWxvZyBtaWNyb3Bob25lIG5vdCB3b3JraW5nLg0KPiANCj4gSGks
-DQo+IA0KPiBPbiAyNS0xMi0xNyAwMzoxNSwgQmFyZCBMaWFvIHdyb3RlOg0KPiA+PiAtLS0tLU9y
-aWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+PiBGcm9tOiBIYW5zIGRlIEdvZWRlIFttYWlsdG86aGRl
-Z29lZGVAcmVkaGF0LmNvbV0NCj4gPj4gU2VudDogU3VuZGF5LCBEZWNlbWJlciAyNCwgMjAxNyA2
-OjQzIFBNDQo+ID4+IFRvOiBCYXJkIExpYW8NCj4gPj4gQ2M6IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0
-OyBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcNCj4gPj4gU3ViamVjdDogQ2hlcnJ5IFRyYWls
-ICsgUlQ1NjQ1IGRldmljZXMgYW5hbG9nIG1pY3JvcGhvbmUgbm90IHdvcmtpbmcuDQo+ID4+DQo+
-ID4+IEhpIEJhcmQsDQo+ID4+DQo+ID4+IEkndmUgYmVlbiBsb29raW5nIGludG8gZ2V0dGluZyB0
-aGUgbWljcm9waG9uZSB0byB3b3JrIG9uDQo+ID4+IHNvbWUgQ2hlcnJ5IFRyYWlsICsgUlQ1NjQ1
-IGRldmljZXMgd2l0aCB3aGF0IGFwcGVhcnMgdG8NCj4gPj4gYmUgYSBzaW1wbGUgYW5hbG9nIG1p
-Y3JvcGhvbmUuDQo+ID4+DQo+ID4+IFlvdSBjYW4gc2VlIHRoZSBtaWNyb3Bob25lIG9uIG9uZSBv
-ZiB0aGUgbW9kZWxzIEknbSB0cnlpbmcNCj4gPj4gdG8gZ2V0IGl0IHRvIHdvcmsgb24gc29sZGVy
-ZWQgb250byB0aGUgcmlnaHQgc2lkZSBvZiB0aGUgUENCDQo+ID4+IGhlcmU6IGh0dHBzOi8vaS5p
-bWd1ci5jb20vYkp6QlFXZS5qcGcNCj4gPj4NCj4gPj4gSSdtIHVzaW5nIHRoaXMgdWNtIGNvbmZp
-ZzoNCj4gPj4NCj4gPj4gaHR0cHM6Ly9mZWRvcmFwZW9wbGUub3JnL35qd3JkZWdvZWRlL2NodHJ0
-NTY0NS8NCj4gPj4NCj4gPj4gV2hpY2ggaXMgYmFzaWNhbGx5IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0
-J3MgY29uZmlnIGZyb206DQo+ID4+IGh0dHBzOi8vZ2l0aHViLmNvbS9wbGJvc3NhcnQvVUNNDQo+
-ID4+DQo+ID4+IEFkanVzdGVkIGJlY2F1c2UgdGhlIGRldmljZXMgYWxsIGhhdmUgYSBtb25vIHNw
-ZWFrZXIuDQo+ID4+DQo+ID4+IEkndmUgYmVlbiB0cnlpbmcgdG8gZ2V0IHRoaXMgdG8gd29yayBt
-eXNlbGYgYW5kIEkgY2FuIGdldA0KPiA+PiBzb21lIHNvdW5kIHdoaWxlIHJlY29yZGluZyBieSBh
-ZGRpbmc6DQo+ID4+DQo+ID4+ICAgICAgICAgICAgICAgICAgIGNzZXQgIm5hbWU9J1JFQ01JWEwg
-QlNUMiBTd2l0Y2gnIG9uIg0KPiA+PiAgICAgICAgICAgICAgICAgICBjc2V0ICJuYW1lPSdSRUNN
-SVhSIEJTVDIgU3dpdGNoJyBvbiINCj4gPj4NCj4gPj4gQnV0IHRoZW4gSSBtYWlubHkgZ2V0IG5v
-aXNlLCBJIGRvIGdldCBzb21lIHNvdW5kIGZyb20gdGhlDQo+ID4+IG1pY3JvcGhvbmUgaWYgSSB0
-YWxrIHJlYWxseSByZWFsbHkgbG91ZGx5LCBidXQgaXQgaXMNCj4gPj4gYmFyZWx5IGFib3ZlIHRo
-ZSBub2lzZS1mbG9vci4gSSd2ZSB0aGUgZmVlbGluZyB0aGF0IEJTVDINCj4gPj4gaXMgb25seSBw
-aWNraW5nIHVwIHRoZSBtaWNyb3Bob25lIHZpYSBjcm9zcy10YWxrIGFuZA0KPiA+PiB0aGF0IEJT
-VDEgaW5kZWVkIGlzIHRoZSBjb3JyZWN0IGlucHV0LCBidXQgZm9yIHNvbWUgcmVhc29uDQo+ID4+
-IEkgZ2V0IGNvbXBsZXRlIHNpbGVuY2Ugd2hlbiByZWNvcmRpbmcgd2hlbiBvbmx5IEJTVDEgaXMN
-Cj4gPj4gc2VsZWN0ZWQgaW4gdGhlIFJFQ01JWFIsIGFuZCB5ZXMgSSd2ZSBjaGVja2VkIC8gc2V0
-IHRoZQ0KPiA+PiAiSU4xIGJvb3N0IHZvbHVtZSIuDQo+ID4+DQo+ID4+IFRMO0RSOiBJJ20gdHJ5
-aW5nIHRvIGdldCBhbiBhbmFsb2cgbWljIHRvIHdvcmsgb24gMw0KPiA+PiBkaWZmZXJlbnQgbW9k
-ZWxzIENoZXJyeSBUcmFpbCArIFJUNTY0NSBkZXZpY2VzIGFuZCBJJ3ZlDQo+ID4+IGJlZW4gdW5h
-YmxlIHRvIGdldCB0aGlzIHRvIHdvcmsuIEkndmUgcHV0IGEgcmVnaXN0ZXJkdW1wDQo+ID4+IG9m
-IHRoZSBydDU2NDUgd2l0aCBnbm9tZS1zb3VuZC1yZWNvcmRlciBydW5uaW5nIGhlcmU6DQo+ID4+
-IGh0dHBzOi8vZmVkb3JhcGVvcGxlLm9yZy9+andyZGVnb2VkZS9ydDU2NDUtbWljLXJlZC5kdW1w
-DQo+ID4+DQo+ID4+IEFueSBpbnNpZ2h0cyAvIGhlbHAgd2l0aCB0aGlzIHdvdWxkIGJlIHZlcnkg
-bXVjaA0KPiA+PiB3ZWxjb21lLg0KPiA+DQo+ID4gSSBkb24ndCBoYXZlIHRoZSBzY2hlbWF0aWMs
-IGJ1dCBJIHRoaW5rIHlvdSBwcm9iYWJseSBuZWVkIG1pY2JpYXMNCj4gPiBmb3IgdGhlIGNhcHR1
-cmUuIFBsZWFzZSBhZGQgYm90aCAibWljYmlhczEiIGFuZCAibWljYmlhczIiIGluDQo+ID4gdGhl
-IGF1ZGlvIHJvdXRlIHNpbmNlIEkgZG9uJ3Qga25vdyB3aGljaCBvbmUgaXMgbmVlZGVkLg0KPiA+
-IGZvciBleGFtcGxlDQo+ID4gc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1fcm91dGUg
-Y2h0X3J0NTY0NV9hdWRpb19tYXBbXSA9IHsNCj4gPiAuLi4NCj4gPiAJeyJJbnQgTWljIiwgTlVM
-TCwgIm1pY2JpYXMxIn0sDQo+ID4gCXsiSW50IE1pYyIsIE5VTEwsICJtaWNiaWFzMiJ9LA0KPiA+
-IC4uLg0KPiA+IH07DQo+IA0KPiBUaGFuayB5b3UgZm9yIHlvdXIgcmVwbHkuIEkndmUgdGVzdGVk
-IHRoaXMsIGJ1dCB1bmZvcnR1bmF0ZWx5IGl0DQo+IGRvZXMgbm90IGhlbHAuDQo+IA0KPiBEbyB5
-b3UgcGVyaGFwcyBoYXZlIGEgY2hlcnJ5dHJhaWwgZGV2aWNlIHdpdGhydDU2NDUgY29kZWMgd2hl
-cmUgeW91DQo+IGNhbiB0ZXN0IGFuIGFuYWxvZyBtaWMgaW5wdXQgd2l0aCB0aGUgdXBzdHJlYW0g
-ZHJpdmVyICsgbGF0ZXN0IHVjbQ0KPiBmaWxlIGZyb20gUGllcnJlLUxvdWlzIHdpdGggeW91cnNl
-bGYgPyBJJ3ZlIHRoZSBmZWVsaW5nIHRoYXQgdGhpcyBpcw0KPiBub3Qgc3BlY2lmaWMgdG8gdGhl
-IDMgZGV2aWNlcyBJJ3ZlIGFjY2VzcyB0byBidXQgYSBnZW5lcmFsIHByb2JsZW0NCj4gaW4gdGhl
-IGRyaXZlciBhbmQvb3IgdGhlIHVjbSBmaWxlcy4NCg0KUGxlYXNlIHRyeSB0aGUgYXR0YWNoZWQg
-cGF0Y2guIEkgZG9uJ3QgaGF2ZSBhbnkgY2hlcnJ5dHJhaWwgZGV2aWNlIHdpdGgNCnJ0NTY0NSBj
-b2RlYy4gQnV0IEkgdmVyaWZpZWQgdGhlIHJlZ2lzdGVyIHNldHRpbmdzIG9uIG15IHJ0NTY0NSBF
-VkIuDQpJZiB0aGUgcGF0Y2ggZG9lc24ndCB3b3JrLCBwbGVhc2UgZHVtcCByZWdpc3RlciBmb3Ig
-bWUuDQpOb3RlIHRoYXQgYWRkaW5nICJtaWNiaWFzMSIgYW5kICJtaWNiaWFzMiBpbiB0aGUgYXVk
-aW8gcm91dGUgaXMgYWxzbw0KbmVlZGVkLg0KDQo+IA0KPiBSZWdhcmRzLA0KPiANCj4gSGFucw0K
-PiANCj4gLS0tLS0tUGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZvcmUgcHJpbnRp
-bmcgdGhpcyBlLW1haWwuDQo=
-
---_002_ABFD875FF5FB574BA706497D987D48D70274A822RTITMBSV02realt_
-Content-Type: application/octet-stream;
-	name="0001-ASoC-rt5645-add-micbias-power-control-select.patch"
-Content-Description: 0001-ASoC-rt5645-add-micbias-power-control-select.patch
-Content-Disposition: attachment;
-	filename="0001-ASoC-rt5645-add-micbias-power-control-select.patch";
-	size=3563; creation-date="Tue, 26 Dec 2017 05:23:13 GMT";
-	modification-date="Tue, 26 Dec 2017 05:17:30 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSBhYzMxMTMxZGE3Mjg2N2U2ZmIxNGI2ZTE2YWFiMWY0MzljNmYzM2ZkIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBCYXJkIExpYW8gPGJhcmRsaWFvQHJlYWx0ZWsuY29tPgpEYXRl
-OiBUdWUsIDI2IERlYyAyMDE3IDExOjM2OjQ1ICswODAwClN1YmplY3Q6IFtQQVRDSF0gQVNvQzog
-cnQ1NjQ1OiBhZGQgbWljYmlhcyBwb3dlciBjb250cm9sIHNlbGVjdC4KCldlIG5lZWQgdG8gc2V0
-IGEgY29ycmVzcG9uZGluZyBjb250cm9sIGJpdCBiZWZvcmUgcG93ZXJpbmcgbWljYmlhcyB1cC4K
-ClNpZ25lZC1vZmYtYnk6IEJhcmQgTGlhbyA8YmFyZGxpYW9AcmVhbHRlay5jb20+Ci0tLQogc291
-bmQvc29jL2NvZGVjcy9ydDU2NDUuYyB8IDU4ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKy0tCiBzb3VuZC9zb2MvY29kZWNzL3J0NTY0NS5oIHwgIDYgKysrKysK
-IDIgZmlsZXMgY2hhbmdlZCwgNjIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYg
-LS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3J0NTY0NS5jIGIvc291bmQvc29jL2NvZGVjcy9ydDU2
-NDUuYwppbmRleCAyN2EzZDNkLi5mNTU2Y2I4IDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvY29kZWNz
-L3J0NTY0NS5jCisrKyBiL3NvdW5kL3NvYy9jb2RlY3MvcnQ1NjQ1LmMKQEAgLTE5NDEsNiArMTk0
-MSw1OCBAQCBzdGF0aWMgaW50IHJ0NTY1MF9ocF9ldmVudChzdHJ1Y3Qgc25kX3NvY19kYXBtX3dp
-ZGdldCAqdywKIAlyZXR1cm4gMDsKIH0KIAorc3RhdGljIGludCBydDU2NDVfc2V0X21pY2JpYXMx
-X2V2ZW50KHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0ICp3LAorCQlzdHJ1Y3Qgc25kX2tjb250
-cm9sICprLCBpbnQgIGV2ZW50KQoreworCXN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYyA9IHNu
-ZF9zb2NfZGFwbV90b19jb2RlYyh3LT5kYXBtKTsKKwlzdHJ1Y3QgcnQ1NjQ1X3ByaXYgKnJ0NTY0
-NSA9IHNuZF9zb2NfY29kZWNfZ2V0X2RydmRhdGEoY29kZWMpOworCisJc3dpdGNoIChldmVudCkg
-eworCWNhc2UgU05EX1NPQ19EQVBNX1BSRV9QTVU6CisJCXNuZF9zb2NfdXBkYXRlX2JpdHMoY29k
-ZWMsIFJUNTY0NV9HRU5fQ1RSTDIsCisJCQlSVDU2NDVfTUlDQklBUzFfUE9XX0NUUkxfU0VMX01B
-U0ssCisJCQlSVDU2NDVfTUlDQklBUzFfUE9XX0NUUkxfU0VMX00pOworCQlicmVhazsKKworCWNh
-c2UgU05EX1NPQ19EQVBNX1BPU1RfUE1EOgorCQlzbmRfc29jX3VwZGF0ZV9iaXRzKGNvZGVjLCBS
-VDU2NDVfR0VOX0NUUkwyLAorCQkJUlQ1NjQ1X01JQ0JJQVMxX1BPV19DVFJMX1NFTF9NQVNLLAor
-CQkJUlQ1NjQ1X01JQ0JJQVMxX1BPV19DVFJMX1NFTF9BKTsKKwkJYnJlYWs7CisKKwlkZWZhdWx0
-OgorCQlyZXR1cm4gMDsKKwl9CisKKwlyZXR1cm4gMDsKK30KKworc3RhdGljIGludCBydDU2NDVf
-c2V0X21pY2JpYXMyX2V2ZW50KHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0ICp3LAorCQlzdHJ1
-Y3Qgc25kX2tjb250cm9sICprLCBpbnQgIGV2ZW50KQoreworCXN0cnVjdCBzbmRfc29jX2NvZGVj
-ICpjb2RlYyA9IHNuZF9zb2NfZGFwbV90b19jb2RlYyh3LT5kYXBtKTsKKwlzdHJ1Y3QgcnQ1NjQ1
-X3ByaXYgKnJ0NTY0NSA9IHNuZF9zb2NfY29kZWNfZ2V0X2RydmRhdGEoY29kZWMpOworCisJc3dp
-dGNoIChldmVudCkgeworCWNhc2UgU05EX1NPQ19EQVBNX1BSRV9QTVU6CisJCXNuZF9zb2NfdXBk
-YXRlX2JpdHMoY29kZWMsIFJUNTY0NV9HRU5fQ1RSTDIsCisJCQlSVDU2NDVfTUlDQklBUzJfUE9X
-X0NUUkxfU0VMX01BU0ssCisJCQlSVDU2NDVfTUlDQklBUzJfUE9XX0NUUkxfU0VMX00pOworCQli
-cmVhazsKKworCWNhc2UgU05EX1NPQ19EQVBNX1BPU1RfUE1EOgorCQlzbmRfc29jX3VwZGF0ZV9i
-aXRzKGNvZGVjLCBSVDU2NDVfR0VOX0NUUkwyLAorCQkJUlQ1NjQ1X01JQ0JJQVMyX1BPV19DVFJM
-X1NFTF9NQVNLLAorCQkJUlQ1NjQ1X01JQ0JJQVMyX1BPV19DVFJMX1NFTF9BKTsKKwkJYnJlYWs7
-CisKKwlkZWZhdWx0OgorCQlyZXR1cm4gMDsKKwl9CisKKwlyZXR1cm4gMDsKK30KKwogc3RhdGlj
-IGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0IHJ0NTY0NV9kYXBtX3dpZGdldHNbXSA9
-IHsKIAlTTkRfU09DX0RBUE1fU1VQUExZKCJMRE8yIiwgUlQ1NjQ1X1BXUl9NSVhFUiwKIAkJUlQ1
-NjQ1X1BXUl9MRE8yX0JJVCwgMCwgTlVMTCwgMCksCkBAIC0xOTc5LDkgKzIwMzEsMTEgQEAgc3Rh
-dGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0IHJ0NTY0NV9kYXBtX3dpZGdldHNb
-XSA9IHsKIAkvKiBJbnB1dCBTaWRlICovCiAJLyogbWljYmlhcyAqLwogCVNORF9TT0NfREFQTV9T
-VVBQTFkoIm1pY2JpYXMxIiwgUlQ1NjQ1X1BXUl9BTkxHMiwKLQkJCVJUNTY0NV9QV1JfTUIxX0JJ
-VCwgMCwgTlVMTCwgMCksCisJCQlSVDU2NDVfUFdSX01CMV9CSVQsIDAsIHJ0NTY0NV9zZXRfbWlj
-YmlhczFfZXZlbnQsCisJCQlTTkRfU09DX0RBUE1fUFJFX1BNVSB8IFNORF9TT0NfREFQTV9QT1NU
-X1BNRCksCiAJU05EX1NPQ19EQVBNX1NVUFBMWSgibWljYmlhczIiLCBSVDU2NDVfUFdSX0FOTEcy
-LAotCQkJUlQ1NjQ1X1BXUl9NQjJfQklULCAwLCBOVUxMLCAwKSwKKwkJCVJUNTY0NV9QV1JfTUIy
-X0JJVCwgMCwgcnQ1NjQ1X3NldF9taWNiaWFzMl9ldmVudCwKKwkJCVNORF9TT0NfREFQTV9QUkVf
-UE1VIHwgU05EX1NPQ19EQVBNX1BPU1RfUE1EKSwKIAkvKiBJbnB1dCBMaW5lcyAqLwogCVNORF9T
-T0NfREFQTV9JTlBVVCgiRE1JQyBMMSIpLAogCVNORF9TT0NfREFQTV9JTlBVVCgiRE1JQyBSMSIp
-LApkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy9ydDU2NDUuaCBiL3NvdW5kL3NvYy9jb2Rl
-Y3MvcnQ1NjQ1LmgKaW5kZXggY2ZjNWY5Ny4uOTQwMzI1YiAxMDA2NDQKLS0tIGEvc291bmQvc29j
-L2NvZGVjcy9ydDU2NDUuaAorKysgYi9zb3VuZC9zb2MvY29kZWNzL3J0NTY0NS5oCkBAIC0yMTE3
-LDYgKzIxMTcsMTIgQEAgZW51bSB7CiAjZGVmaW5lIFJUNTY0NV9SWERDX1NSQ19TVE8JCQkoMHgw
-IDw8IDcpCiAjZGVmaW5lIFJUNTY0NV9SWERDX1NSQ19NT05PCQkJKDB4MSA8PCA3KQogI2RlZmlu
-ZSBSVDU2NDVfUlhEQ19TUkNfU0ZUCQkJKDcpCisjZGVmaW5lIFJUNTY0NV9NSUNCSUFTMV9QT1df
-Q1RSTF9TRUxfTUFTSwkoMHgxIDw8IDUpCisjZGVmaW5lIFJUNTY0NV9NSUNCSUFTMV9QT1dfQ1RS
-TF9TRUxfQQkJKDB4MCA8PCA1KQorI2RlZmluZSBSVDU2NDVfTUlDQklBUzFfUE9XX0NUUkxfU0VM
-X00JCSgweDEgPDwgNSkKKyNkZWZpbmUgUlQ1NjQ1X01JQ0JJQVMyX1BPV19DVFJMX1NFTF9NQVNL
-CSgweDEgPDwgNCkKKyNkZWZpbmUgUlQ1NjQ1X01JQ0JJQVMyX1BPV19DVFJMX1NFTF9BCQkoMHgw
-IDw8IDQpCisjZGVmaW5lIFJUNTY0NV9NSUNCSUFTMl9QT1dfQ1RSTF9TRUxfTQkJKDB4MSA8PCA0
-KQogI2RlZmluZSBSVDU2NDVfUlhEUDJfU0VMX01BU0sJCQkoMHgxIDw8IDMpCiAjZGVmaW5lIFJU
-NTY0NV9SWERQMl9TRUxfSUYyCQkJKDB4MCA8PCAzKQogI2RlZmluZSBSVDU2NDVfUlhEUDJfU0VM
-X0FEQwkJCSgweDEgPDwgMykKLS0gCjIuNy40Cgo=
-
---_002_ABFD875FF5FB574BA706497D987D48D70274A822RTITMBSV02realt_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 
---_002_ABFD875FF5FB574BA706497D987D48D70274A822RTITMBSV02realt_--
+On 12/15/2017 10:40 PM, Takashi Iwai wrote:
+> On Fri, 15 Dec 2017 17:51:25 +0100,
+> Richard Cochran wrote:
+>> On Fri, Dec 15, 2017 at 12:10:47PM +0100, Takashi Iwai wrote:
+>>
+>>>> -	struct cyclecounter *cc = &azx_dev->tc.cc;
+>>>> -	cc->read = azx_cc_read;
+>>>> -	cc->mask = CLOCKSOURCE_MASK(32);
+>>>> -	cc->mult = 125; /* saturation after 195 years */
+>>>> -	cc->shift = 0;
+>> I want to get away from this mess of open coded structure
+>> initialization and use a proper functional interface instead.
+> I agree that a proper functional interface would be better, too.
+> But not a form like foo(501, 21, 10, 499, 5678).
+> In C syntax, you may more easily pass a wrong value than open codes.
+>
+>>>>   	nsec = 0; /* audio time is elapsed time since trigger */
+>>>> -	timecounter_init(tc, nsec);
+>>>> +	timecounter_initialize(tc,
+>>>> +			       azx_cc_read,
+>>>> +			       CLOCKSOURCE_MASK(32),
+>>>> +			       125, /* saturation after 195 years */
+>>>> +			       0,
+>>>> +			       nsec);
+>>> Hmm, a function with so many arguments is difficult to remember and is
+>>> often error-prone.  By this transition, it becomes harder to read
+>>> through.
+>> Please suggest a better way.
+> I have no good idea ATM, sorry.
+>
+> Or can we provide simpler versions for covering some defaults?  At
+> least reducing the number of arguments would make things easier.
+Thought about specifying 1. cyclecounter read func 2. frequency 3. width 
+of counter as parameters here
+which can get rid of mult, shift params. But this is not easy as most of 
+the drivers do not specify
+cyclecounter frequency and instead hard-code the mult/shift factors.
+How about passing initialized cyclecounter struct?
+>
+> Takashi
