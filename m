@@ -1,48 +1,99 @@
 From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v5 3/6] media: dt-bindings: Add bindings for TDA1997X
-Date: Tue, 26 Dec 2017 13:03:11 -0600
-Message-ID: <20171226190311.fkarrmgrytbirfgq@rob-hp-laptop>
-References: <1513447230-30948-1-git-send-email-tharvey@gateworks.com>
- <1513447230-30948-4-git-send-email-tharvey@gateworks.com>
+Subject: Re: [v2] ASoC: max98373: Added Amplifier Driver
+Date: Tue, 26 Dec 2017 17:33:07 -0600
+Message-ID: <20171226233307.hdjxi5ntt7c5i2v4@rob-hp-laptop>
+References: <1514214610-17630-1-git-send-email-ryans.lee@maximintegrated.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1513447230-30948-4-git-send-email-tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
+In-Reply-To: <1514214610-17630-1-git-send-email-ryans.lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
-Cc: linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Steve Longerbeam <slongerbeam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Hans Verkuil <hansverk-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>
+To: Ryan Lee <ryans.lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org, afd-l0cyMroinI0@public.gmane.org, robert.jarzmik-GANU6spQydw@public.gmane.org, supercraig0719-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, jbrunet-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, dannenberg-l0cyMroinI0@public.gmane.org, romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org, bryce.ferguson-lFk7bPDcGtkY5TsXZYaR1UEOCMrvLtNR@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, m-stecklein-l0cyMroinI0@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ryan.lee.maxim-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Dec 16, 2017 at 10:00:27AM -0800, Tim Harvey wrote:
-> Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-> Acked-by: Sakari Ailus <sakari.ailus-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-> Signed-off-by: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
-> ---
-> v5:
->  - added Sakari's ack
-> 
-> v4:
->  - move include/dt-bindings/media/tda1997x.h to bindings patch
->  - clarify port node details
-> 
-> v3:
->  - fix typo
-> 
-> v2:
->  - add vendor prefix and remove _ from vidout-portcfg
->  - remove _ from labels
->  - remove max-pixel-rate property
->  - describe and provide example for single output port
->  - update to new audio port bindings
-> ---
->  .../devicetree/bindings/media/i2c/tda1997x.txt     | 179 +++++++++++++++++++++
->  include/dt-bindings/media/tda1997x.h               |  78 +++++++++
->  2 files changed, 257 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/tda1997x.txt
->  create mode 100644 include/dt-bindings/media/tda1997x.h
+On Mon, Dec 25, 2017 at 07:10:10AM -0800, Ryan Lee wrote:
 
-Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Needs a commit message.
+
+> Signed-off-by: Ryan Lee <ryans.lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
+> ---
+> 
+> Changes since v1:
+> 	* Removed 'codec' from 'max98373_priv' structure
+> 		: Now 'max98373_set_clock' function use 'dai->codec.dev' instead of using 'max98373->codec.dev'.
+> 	* Removed 'max98373_dai_set_sysclk' function
+> 		: This function is not necessary. Removed 'sysclk' from 'max98373_priv' as well.
+> 	* Removed 'iface' from 'max98373_priv' structure
+> 		: There is no function who refer max98373->iface variable.
+> 	* Added SPDX-License-Identifier
+> 
+>  .../devicetree/bindings/sound/max98373.txt         |  43 +
+
+Please split bindings to separate patch.
+
+>  sound/soc/codecs/Kconfig                           |   5 +
+>  sound/soc/codecs/Makefile                          |   2 +
+>  sound/soc/codecs/max98373.c                        | 974 +++++++++++++++++++++
+>  sound/soc/codecs/max98373.h                        | 212 +++++
+>  5 files changed, 1236 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/max98373.txt
+>  create mode 100644 sound/soc/codecs/max98373.c
+>  create mode 100644 sound/soc/codecs/max98373.h
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/max98373.txt b/Documentation/devicetree/bindings/sound/max98373.txt
+> new file mode 100644
+> index 0000000..22cd259
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/max98373.txt
+> @@ -0,0 +1,43 @@
+> +Maxim Integrated MAX98373 Speaker Amplifier
+> +
+> +This device supports I2C.
+> +
+> +Required properties:
+> +
+> +  - compatible : should be one of the following
+> +    - "maxim,max98373"
+> +
+> +  - reg : the I2C address of the device.
+> +
+> +Optional properties:
+> +
+> +  - maxim,vmon-slot-no : slot number used to send voltage information
+> +                   or in inteleave mode this will be used as
+> +                   interleave slot.
+> +                   slot range : 0 ~ 15,  Default : 0
+> +
+> +  - maxim,imon-slot-no : slot number used to send current information
+> +                   slot range : 0 ~ 15,  Default : 0
+> +
+> +  - maxim,spkfb-slot-no : slot number used to send speaker feedback information
+> +                   slot range : 0 ~ 15,  Default : 0
+> +
+> +  - maxim,interleave-mode : When using two MAX98373 in a system it is
+> +                   possible to create ADC data that that will
+> +                   overflow the frame size. Digital Audio Interleave
+> +                   mode provides a means to output VMON and IMON data
+> +                   from two devices on a single DOUT line when running
+> +                   smaller frames sizes such as 32 BCLKS per LRCLK or
+> +                   48 BCLKS per LRCLK.
+> +                   Range : 0 (off), 1 (on),  Default : 0
+
+This can be boolean instead.
+
+> +
+> +Example:
+> +
+> +codec: max98373@31 {
+> +   compatible = "maxim,max98373";
+> +   reg = <0x31>;
+> +   maxim,vmon-slot-no = <0>;
+> +   maxim,imon-slot-no = <1>;
+> +   maxim,spkfb-slot-no = <2>;
+> +   maxim,interleave-mode = <0>;
+> +};
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
