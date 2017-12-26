@@ -1,51 +1,49 @@
-From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Subject: [alsa-devel] [PATCH v6 6/6] ASoC: Intel: Skylake: Add FW reply for MCLK/SCLK IPC
-Date: Tue, 26 Dec 2017 22:14:56 +0530
-Message-ID: <1514306696-7062-7-git-send-email-sriramx.periyasamy@intel.com>
-References: <1514306696-7062-1-git-send-email-sriramx.periyasamy@intel.com>
-Return-path: <linux-clk-owner@vger.kernel.org>
-In-Reply-To: <1514306696-7062-1-git-send-email-sriramx.periyasamy@intel.com>
-Sender: linux-clk-owner@vger.kernel.org
-To: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Patches Audi o <patches.audio@intel.com>, mturquette@baylibre.com, sboyd@codeaurora.org, linux-clk@vger.kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v5 3/6] media: dt-bindings: Add bindings for TDA1997X
+Date: Tue, 26 Dec 2017 13:03:11 -0600
+Message-ID: <20171226190311.fkarrmgrytbirfgq@rob-hp-laptop>
+References: <1513447230-30948-1-git-send-email-tharvey@gateworks.com>
+ <1513447230-30948-4-git-send-email-tharvey@gateworks.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1513447230-30948-4-git-send-email-tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
+Cc: linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Steve Longerbeam <slongerbeam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Hans Verkuil <hansverk-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+On Sat, Dec 16, 2017 at 10:00:27AM -0800, Tim Harvey wrote:
+> Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+> Acked-by: Sakari Ailus <sakari.ailus-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+> Signed-off-by: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
+> ---
+> v5:
+>  - added Sakari's ack
+> 
+> v4:
+>  - move include/dt-bindings/media/tda1997x.h to bindings patch
+>  - clarify port node details
+> 
+> v3:
+>  - fix typo
+> 
+> v2:
+>  - add vendor prefix and remove _ from vidout-portcfg
+>  - remove _ from labels
+>  - remove max-pixel-rate property
+>  - describe and provide example for single output port
+>  - update to new audio port bindings
+> ---
+>  .../devicetree/bindings/media/i2c/tda1997x.txt     | 179 +++++++++++++++++++++
+>  include/dt-bindings/media/tda1997x.h               |  78 +++++++++
+>  2 files changed, 257 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/i2c/tda1997x.txt
+>  create mode 100644 include/dt-bindings/media/tda1997x.h
 
-If mclk/sclk is already running, FW responds with IPC reply MCLK/SCLK
-already running. Add these to the IPC reply lookup table.
-
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/skylake/skl-sst-ipc.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
-index 8708755a8f9a..9f3ce73593ae 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.c
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-@@ -249,6 +249,8 @@ enum skl_ipc_glb_reply {
- 	IPC_GLB_REPLY_INVALID_CONFIG_DATA_LEN = 121,
- 	IPC_GLB_REPLY_GATEWAY_NOT_INITIALIZED = 140,
- 	IPC_GLB_REPLY_GATEWAY_NOT_EXIST = 141,
-+	IPC_GLB_REPLY_SCLK_ALREADY_RUNNING = 150,
-+	IPC_GLB_REPLY_MCLK_ALREADY_RUNNING = 151,
- 
- 	IPC_GLB_REPLY_PPL_NOT_INITIALIZED = 160,
- 	IPC_GLB_REPLY_PPL_NOT_EXIST = 161,
-@@ -401,6 +403,10 @@ struct skl_ipc_err_map {
- static struct skl_ipc_err_map skl_err_map[] = {
- 	{"DSP out of memory", IPC_GLB_REPLY_OUT_OF_MEMORY, -ENOMEM},
- 	{"DSP busy", IPC_GLB_REPLY_BUSY, -EBUSY},
-+	{"SCLK already running", IPC_GLB_REPLY_SCLK_ALREADY_RUNNING,
-+			IPC_GLB_REPLY_SCLK_ALREADY_RUNNING},
-+	{"MCLK already running", IPC_GLB_REPLY_MCLK_ALREADY_RUNNING,
-+			IPC_GLB_REPLY_MCLK_ALREADY_RUNNING},
- };
- 
- static int skl_ipc_set_reply_error_code(struct sst_generic_ipc *ipc, u32 reply)
--- 
-2.7.4
-
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
