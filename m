@@ -1,22 +1,22 @@
-From: Hans de Goede <hdegoede@redhat.com>
+From: Bard Liao <bardliao@realtek.com>
 Subject: Re: Cherry Trail + RT5645 devices analog microphone
 	not working.
-Date: Wed, 27 Dec 2017 20:12:54 +0100
-Message-ID: <a0540986-369c-5bca-424f-102391d85095@redhat.com>
+Date: Thu, 28 Dec 2017 03:05:11 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D70274DD33@RTITMBSV02.realtek.com.tw>
 References: <d42279d7-0350-563f-fca7-27f32cb9e9ee@redhat.com>
  <ABFD875FF5FB574BA706497D987D48D7027476BE@RTITMBSV02.realtek.com.tw>
  <6ccb2c4c-042f-46c0-5247-90f79d49c840@redhat.com>
  <ABFD875FF5FB574BA706497D987D48D70274A822@RTITMBSV02.realtek.com.tw>
+ <a0540986-369c-5bca-424f-102391d85095@redhat.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------BA22AD8355A2445EA4E5EEA2"
+Content-Type: multipart/mixed;
+ boundary="_002_ABFD875FF5FB574BA706497D987D48D70274DD33RTITMBSV02realt_"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f50.google.com (mail-wm0-f50.google.com [74.125.82.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 929B1266DD5
- for <alsa-devel@alsa-project.org>; Wed, 27 Dec 2017 20:12:57 +0100 (CET)
-Received: by mail-wm0-f50.google.com with SMTP id g75so41039694wme.0
- for <alsa-devel@alsa-project.org>; Wed, 27 Dec 2017 11:12:57 -0800 (PST)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D70274A822@RTITMBSV02.realtek.com.tw>
-Content-Language: en-US
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 121A426717C
+ for <alsa-devel@alsa-project.org>; Thu, 28 Dec 2017 04:05:16 +0100 (CET)
+In-Reply-To: <a0540986-369c-5bca-424f-102391d85095@redhat.com>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,206 +26,158 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
+To: Hans de Goede <hdegoede@redhat.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------BA22AD8355A2445EA4E5EEA2
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
-On 26-12-17 06:29, Bard Liao wrote:
->> -----Original Message-----
->> From: Hans de Goede [mailto:hdegoede@redhat.com]
->> Sent: Monday, December 25, 2017 8:03 PM
->> To: Bard Liao
->> Cc: Pierre-Louis Bossart; alsa-devel@alsa-project.org
->> Subject: Re: Cherry Trail + RT5645 devices analog microphone not working.
->>
->> Hi,
->>
->> On 25-12-17 03:15, Bard Liao wrote:
->>>> -----Original Message-----
->>>> From: Hans de Goede [mailto:hdegoede@redhat.com]
->>>> Sent: Sunday, December 24, 2017 6:43 PM
->>>> To: Bard Liao
->>>> Cc: Pierre-Louis Bossart; alsa-devel@alsa-project.org
->>>> Subject: Cherry Trail + RT5645 devices analog microphone not working.
->>>>
->>>> Hi Bard,
->>>>
->>>> I've been looking into getting the microphone to work on
->>>> some Cherry Trail + RT5645 devices with what appears to
->>>> be a simple analog microphone.
->>>>
->>>> You can see the microphone on one of the models I'm trying
->>>> to get it to work on soldered onto the right side of the PCB
->>>> here: https://i.imgur.com/bJzBQWe.jpg
->>>>
->>>> I'm using this ucm config:
->>>>
->>>> https://fedorapeople.org/~jwrdegoede/chtrt5645/
->>>>
->>>> Which is basically Pierre-Louis Bossart's config from:
->>>> https://github.com/plbossart/UCM
->>>>
->>>> Adjusted because the devices all have a mono speaker.
->>>>
->>>> I've been trying to get this to work myself and I can get
->>>> some sound while recording by adding:
->>>>
->>>>                    cset "name='RECMIXL BST2 Switch' on"
->>>>                    cset "name='RECMIXR BST2 Switch' on"
->>>>
->>>> But then I mainly get noise, I do get some sound from the
->>>> microphone if I talk really really loudly, but it is
->>>> barely above the noise-floor. I've the feeling that BST2
->>>> is only picking up the microphone via cross-talk and
->>>> that BST1 indeed is the correct input, but for some reason
->>>> I get complete silence when recording when only BST1 is
->>>> selected in the RECMIXR, and yes I've checked / set the
->>>> "IN1 boost volume".
->>>>
->>>> TL;DR: I'm trying to get an analog mic to work on 3
->>>> different models Cherry Trail + RT5645 devices and I've
->>>> been unable to get this to work. I've put a registerdump
->>>> of the rt5645 with gnome-sound-recorder running here:
->>>> https://fedorapeople.org/~jwrdegoede/rt5645-mic-red.dump
->>>>
->>>> Any insights / help with this would be very much
->>>> welcome.
->>>
->>> I don't have the schematic, but I think you probably need micbias
->>> for the capture. Please add both "micbias1" and "micbias2" in
->>> the audio route since I don't know which one is needed.
->>> for example
->>> static const struct snd_soc_dapm_route cht_rt5645_audio_map[] = {
->>> ...
->>> 	{"Int Mic", NULL, "micbias1"},
->>> 	{"Int Mic", NULL, "micbias2"},
->>> ...
->>> };
->>
->> Thank you for your reply. I've tested this, but unfortunately it
->> does not help.
->>
->> Do you perhaps have a cherrytrail device withrt5645 codec where you
->> can test an analog mic input with the upstream driver + latest ucm
->> file from Pierre-Louis with yourself ? I've the feeling that this is
->> not specific to the 3 devices I've access to but a general problem
->> in the driver and/or the ucm files.
-> 
-> Please try the attached patch. I don't have any cherrytrail device with
-> rt5645 codec. But I verified the register settings on my rt5645 EVB.
-> If the patch doesn't work, please dump register for me.
-> Note that adding "micbias1" and "micbias2 in the audio route is also
-> needed.
-
-Thank you, modifying the RT5645_GEN_CTRL2 reg seems to help, for
-some reason the patch does not work and neither MB1 and MB2 in reg
-0x64 nor the RT5645_GEN_CTRL2 changes happen, but after manually
-applying these with i2cset I can actual use the mic, although there
-is still quite a bit of white noise in the background.
-
-Attached is a regdump after making the manual changes to reg 0x64 and
-reg 0xfb.
-
-I did add the micbias audio routes:
-
-@@ -2297,6 +2297,9 @@ static const struct snd_soc_dapm_route rt5645_dapm_routes[] = {
-  	{ "DMIC2", NULL, "DMIC L2" },
-  	{ "DMIC2", NULL, "DMIC R2" },
-
-+	{ "Int Mic", NULL, "micbias1" },
-+	{ "Int Mic", NULL, "micbias2" },
-+
-  	{ "BST1", NULL, "IN1P" },
-  	{ "BST1", NULL, "IN1N" },
-  	{ "BST1", NULL, "JD Power" },
-
-But I believe that your tree has some patches which are not upstream yet,
-the last patch you attached expects the micbias1 and micbias2 lines
-in the widget lists to be of the "SND_SOC_DAPM_SUPPLY" type, but here:
-https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/tree/sound/soc/codecs/rt5645.c?h=topic/rt5645
-
-They are still of the SND_SOC_DAPM_MICBIAS type.
-
-Regards,
-
-Hans
-
-
-> 
->>
->> Regards,
->>
->> Hans
->>
->> ------Please consider the environment before printing this e-mail.
-
---------------BA22AD8355A2445EA4E5EEA2
-Content-Type: text/plain; charset=UTF-8;
- name="rt5645-mic-red.dump"
+--_002_ABFD875FF5FB574BA706497D987D48D70274DD33RTITMBSV02realt_
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="rt5645-mic-red.dump"
 
-MDAwOiAwMDAwCjAwMTogODg4OAowMDI6IGM4YzgKMDAzOiBjOGM4CjAwNDogYzgwYQowMDU6
-IDAwMDAKMDA2OiAwMDAwCjAwNzogMDAwMAowMDg6IDAwMDAKMDA5OiAwMDAwCjAwYTogNzAw
-MgowMGI6IDM4MjcKMDBjOiBlMDAwCjAwZDogMDMwMAowMGU6IDAwMDAKMDBmOiAwMDAwCjAx
-MDogMDAwMAowMTE6IDAwMDAKMDEyOiAwMDAwCjAxMzogMDAwMAowMTQ6IDMzMzMKMDE1OiAw
-MDAwCjAxNjogNGIwMAowMTc6IDAwMDAKMDE4OiAwMThiCjAxOTogYWZhZgowMWE6IGFmYWYK
-MDFiOiAwMDExCjAxYzogM2YzZgowMWQ6IDdmN2YKMDFlOiA1MDAwCjAxZjogMDAwMAowMjA6
-IGEwMDAKMDIxOiAwMDAwCjAyMjogMDAwMAowMjM6IDAwMDAKMDI0OiAwMDAwCjAyNTogMDAw
-MAowMjY6IDAwMDAKMDI3OiAzODIwCjAyODogMzgzOAowMjk6IGMwYzAKMDJhOiAxNDU2CjAy
-YjogMDQwNAowMmM6IGFhYTAKMDJkOiAwMDAwCjAyZTogMDAwMAowMmY6IDEwMDIKMDMwOiAw
-MDAwCjAzMTogNTAwMAowMzI6IDAwMDAKMDMzOiAwMDAwCjAzNDogMDAwMAowMzU6IDAwMDAK
-MDM2OiAwMDAwCjAzNzogMDAwMAowMzg6IDAwMDAKMDM5OiAwMDAwCjAzYTogMDAwMAowM2I6
-IDAwMDAKMDNjOiAwMDdiCjAzZDogMDAwMAowM2U6IDAwN2IKMDNmOiAwMDAwCjA0MDogMDAx
-YwowNDE6IDAwMDAKMDQyOiAwMDFjCjA0MzogMDAwMAowNDQ6IDAwMDAKMDQ1OiA1MDAwCjA0
-NjogMDAzOAowNDc6IDAwMzgKMDQ4OiBkODA2CjA0OTogMDAwMAowNGE6IDAwMDQKMDRiOiAw
-MDAwCjA0YzogMDMxZgowNGQ6IDAwMDAKMDRlOiAwMDAwCjA0ZjogMDFmZgowNTA6IDAwMDAK
-MDUxOiAwMDAwCjA1MjogMDFmZgowNTM6IGYwMDAKMDU0OiAwMDAwCjA1NTogMDAwMAowNTY6
-IDAxMTEKMDU3OiAwMDY0CjA1ODogZWYwZQowNTk6IGYwZjAKMDVhOiBlZjBlCjA1YjogZjBm
-MAowNWM6IGVmMGUKMDVkOiBmMGYwCjA1ZTogZjAwMAowNWY6IDAwMDAKMDYwOiAwMDAwCjA2
-MTogODAwNgowNjI6IGUwMDAKMDYzOiBlOGRhCjA2NDogNGUyNAowNjU6IDBjMDIKMDY2OiAw
-MDAwCjA2NzogMDAwMAowNjg6IDAwMDAKMDY5OiAwMDAwCjA2YTogMDAwMAowNmI6IDAwMDAK
-MDZjOiAwYWFhCjA2ZDogMDAwMAowNmU6IDAwMDAKMDZmOiAwMDAwCjA3MDogODA4MwowNzE6
-IDgwMDAKMDcyOiA4MDAwCjA3MzogMTc3MAowNzQ6IDNlMDAKMDc1OiAyNDA5CjA3NjogMDAw
-YQowNzc6IDU4MDAKMDc4OiAwMDAwCjA3OTogMDEyMwowN2E6IDgwMDAKMDdiOiAwMDAwCjA3
-YzogMDAwMAowN2Q6IDAwMDAKMDdlOiAwMDAwCjA3ZjogMDAwMAowODA6IDQwMDAKMDgxOiAw
-ZjAzCjA4MjogMzAwMAowODM6IDA4MDgKMDg0OiAxMTExCjA4NTogMDAwMAowODY6IDAwMDgK
-MDg3OiAwMDAwCjA4ODogMDAwMAowODk6IDAwMDAKMDhhOiAwMTIwCjA4YjogMDAwMAowOGM6
-IDAwMDMKMDhkOiAwMDAwCjA4ZTogMDAwNAowOGY6IDExNDAKMDkwOiAwNjQ2CjA5MTogMGMw
-NgowOTI6IDAwMDAKMDkzOiAwMTA4CjA5NDogMDIyMgowOTU6IDAwMDAKMDk2OiAwMDAwCjA5
-NzogMDAwMAowOTg6IDAwMDAKMDk5OiAwMDAwCjA5YTogMjE4NAowOWI6IDAxMGEKMDljOiAw
-YWVhCjA5ZDogMDAwYwowOWU6IDA0MDAKMDlmOiAwMDAwCjBhMDogYTBlOAowYTE6IDAwNTkK
-MGEyOiAwMDAxCjBhMzogMDAwMAowYTQ6IDAwMDAKMGE1OiAwMDAwCjBhNjogMDAwMAowYTc6
-IDAwMDAKMGE4OiAwMDAwCjBhOTogMDAwMAowYWE6IDAwMDAKMGFiOiAwMDAwCjBhYzogMDAw
-MAowYWQ6IDAwMDAKMGFlOiA2MDAwCjBhZjogMDAwMAowYjA6IDYwMDAKMGIxOiAwMDAwCjBi
-MjogMDAwMAowYjM6IDAwMWYKMGI0OiAwMjBjCjBiNTogMWYwMAowYjY6IDAwMDAKMGI3OiA0
-MDAwCjBiODogMDAwMAowYjk6IDAwMDAKMGJhOiAwMDAwCjBiYjogMDAwMAowYmM6IDAwMDAK
-MGJkOiAwMjAwCjBiZTogMDEwMAowYmY6IDExODAKMGMwOiA4MDAwCjBjMTogMDAwMAowYzI6
-IDAwMDAKMGMzOiAyMDAwCjBjNDogMDAwMAowYzU6IDAwMDAKMGM2OiAwMDAwCjBjNzogMDAw
-MAowYzg6IDAwMDAKMGM5OiAwMDAwCjBjYTogMDAwMAowY2I6IDAwMDAKMGNjOiAwMDAwCjBj
-ZDogMDAwMAowY2U6IDAwMDAKMGNmOiAxODE0CjBkMDogMDY5MAowZDE6IDFjMTcKMGQyOiAw
-MDAwCjBkMzogYjMyMAowZDQ6IDAwMDAKMGQ1OiAwMDAwCjBkNjogMDQwMAowZDc6IDAwMDAK
-MGQ4OiAwMDAwCjBkOTogMDgwOQowZGE6IDAwMDAKMGRiOiAwMDAzCjBkYzogMDA0OQowZGQ6
-IDAwMWIKMGRlOiAwMDAwCjBkZjogMDAwMAowZTA6IDAwMDAKMGUxOiAwMDAwCjBlMjogMDAw
-MAowZTM6IDAwMDAKMGU0OiAwMDAwCjBlNTogMDAwMAowZTY6IDgwMDAKMGU3OiAwNzAwCjBl
-ODogODAwMAowZTk6IDA3MDAKMGVhOiAwZjIwCjBlYjogMDAwMAowZWM6IGIzMDAKMGVkOiAw
-MDAwCjBlZTogMDAwMAowZWY6IDAwMDAKMGYwOiAwMDFmCjBmMTogMDIwYwowZjI6IDFmMDAK
-MGYzOiAwMDAwCjBmNDogNDAwMAowZjU6IDAwMDAKMGY2OiAwMDAwCjBmNzogMDAwMAowZjg6
-IDAwMDAKMGY5OiAwMDAwCjBmYTogMjA2MQowZmI6IDQwNzAKMGZjOiAxODAwCjBmZDogMDAw
-NAowZmU6IDEwZWMKMGZmOiA2MzA4CjEwMDogMDAwMAo=
---------------BA22AD8355A2445EA4E5EEA2
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBIYW5zIGRlIEdvZWRlIFttYWls
+dG86aGRlZ29lZGVAcmVkaGF0LmNvbV0NCj4gU2VudDogVGh1cnNkYXksIERlY2VtYmVyIDI4LCAy
+MDE3IDM6MTMgQU0NCj4gVG86IEJhcmQgTGlhbw0KPiBDYzogUGllcnJlLUxvdWlzIEJvc3NhcnQ7
+IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZw0KPiBTdWJqZWN0OiBSZTogQ2hlcnJ5IFRyYWls
+ICsgUlQ1NjQ1IGRldmljZXMgYW5hbG9nIG1pY3JvcGhvbmUgbm90IHdvcmtpbmcuDQo+IA0KPiBI
+aSwNCj4gDQo+IE9uIDI2LTEyLTE3IDA2OjI5LCBCYXJkIExpYW8gd3JvdGU6DQo+ID4+IC0tLS0t
+T3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4+IEZyb206IEhhbnMgZGUgR29lZGUgW21haWx0bzpo
+ZGVnb2VkZUByZWRoYXQuY29tXQ0KPiA+PiBTZW50OiBNb25kYXksIERlY2VtYmVyIDI1LCAyMDE3
+IDg6MDMgUE0NCj4gPj4gVG86IEJhcmQgTGlhbw0KPiA+PiBDYzogUGllcnJlLUxvdWlzIEJvc3Nh
+cnQ7IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZw0KPiA+PiBTdWJqZWN0OiBSZTogQ2hlcnJ5
+IFRyYWlsICsgUlQ1NjQ1IGRldmljZXMgYW5hbG9nIG1pY3JvcGhvbmUgbm90IHdvcmtpbmcuDQo+
+ID4+DQo+ID4+IEhpLA0KPiA+Pg0KPiA+PiBPbiAyNS0xMi0xNyAwMzoxNSwgQmFyZCBMaWFvIHdy
+b3RlOg0KPiA+Pj4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4+Pj4gRnJvbTogSGFu
+cyBkZSBHb2VkZSBbbWFpbHRvOmhkZWdvZWRlQHJlZGhhdC5jb21dDQo+ID4+Pj4gU2VudDogU3Vu
+ZGF5LCBEZWNlbWJlciAyNCwgMjAxNyA2OjQzIFBNDQo+ID4+Pj4gVG86IEJhcmQgTGlhbw0KPiA+
+Pj4+IENjOiBQaWVycmUtTG91aXMgQm9zc2FydDsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+DQo+ID4+Pj4gU3ViamVjdDogQ2hlcnJ5IFRyYWlsICsgUlQ1NjQ1IGRldmljZXMgYW5hbG9nIG1p
+Y3JvcGhvbmUgbm90IHdvcmtpbmcuDQo+ID4+Pj4NCj4gPj4+PiBIaSBCYXJkLA0KPiA+Pj4+DQo+
+ID4+Pj4gSSd2ZSBiZWVuIGxvb2tpbmcgaW50byBnZXR0aW5nIHRoZSBtaWNyb3Bob25lIHRvIHdv
+cmsgb24NCj4gPj4+PiBzb21lIENoZXJyeSBUcmFpbCArIFJUNTY0NSBkZXZpY2VzIHdpdGggd2hh
+dCBhcHBlYXJzIHRvDQo+ID4+Pj4gYmUgYSBzaW1wbGUgYW5hbG9nIG1pY3JvcGhvbmUuDQo+ID4+
+Pj4NCj4gPj4+PiBZb3UgY2FuIHNlZSB0aGUgbWljcm9waG9uZSBvbiBvbmUgb2YgdGhlIG1vZGVs
+cyBJJ20gdHJ5aW5nDQo+ID4+Pj4gdG8gZ2V0IGl0IHRvIHdvcmsgb24gc29sZGVyZWQgb250byB0
+aGUgcmlnaHQgc2lkZSBvZiB0aGUgUENCDQo+ID4+Pj4gaGVyZTogaHR0cHM6Ly9pLmltZ3VyLmNv
+bS9iSnpCUVdlLmpwZw0KPiA+Pj4+DQo+ID4+Pj4gSSdtIHVzaW5nIHRoaXMgdWNtIGNvbmZpZzoN
+Cj4gPj4+Pg0KPiA+Pj4+IGh0dHBzOi8vZmVkb3JhcGVvcGxlLm9yZy9+andyZGVnb2VkZS9jaHRy
+dDU2NDUvDQo+ID4+Pj4NCj4gPj4+PiBXaGljaCBpcyBiYXNpY2FsbHkgUGllcnJlLUxvdWlzIEJv
+c3NhcnQncyBjb25maWcgZnJvbToNCj4gPj4+PiBodHRwczovL2dpdGh1Yi5jb20vcGxib3NzYXJ0
+L1VDTQ0KPiA+Pj4+DQo+ID4+Pj4gQWRqdXN0ZWQgYmVjYXVzZSB0aGUgZGV2aWNlcyBhbGwgaGF2
+ZSBhIG1vbm8gc3BlYWtlci4NCj4gPj4+Pg0KPiA+Pj4+IEkndmUgYmVlbiB0cnlpbmcgdG8gZ2V0
+IHRoaXMgdG8gd29yayBteXNlbGYgYW5kIEkgY2FuIGdldA0KPiA+Pj4+IHNvbWUgc291bmQgd2hp
+bGUgcmVjb3JkaW5nIGJ5IGFkZGluZzoNCj4gPj4+Pg0KPiA+Pj4+ICAgICAgICAgICAgICAgICAg
+ICBjc2V0ICJuYW1lPSdSRUNNSVhMIEJTVDIgU3dpdGNoJyBvbiINCj4gPj4+PiAgICAgICAgICAg
+ICAgICAgICAgY3NldCAibmFtZT0nUkVDTUlYUiBCU1QyIFN3aXRjaCcgb24iDQo+ID4+Pj4NCj4g
+Pj4+PiBCdXQgdGhlbiBJIG1haW5seSBnZXQgbm9pc2UsIEkgZG8gZ2V0IHNvbWUgc291bmQgZnJv
+bSB0aGUNCj4gPj4+PiBtaWNyb3Bob25lIGlmIEkgdGFsayByZWFsbHkgcmVhbGx5IGxvdWRseSwg
+YnV0IGl0IGlzDQo+ID4+Pj4gYmFyZWx5IGFib3ZlIHRoZSBub2lzZS1mbG9vci4gSSd2ZSB0aGUg
+ZmVlbGluZyB0aGF0IEJTVDINCj4gPj4+PiBpcyBvbmx5IHBpY2tpbmcgdXAgdGhlIG1pY3JvcGhv
+bmUgdmlhIGNyb3NzLXRhbGsgYW5kDQo+ID4+Pj4gdGhhdCBCU1QxIGluZGVlZCBpcyB0aGUgY29y
+cmVjdCBpbnB1dCwgYnV0IGZvciBzb21lIHJlYXNvbg0KPiA+Pj4+IEkgZ2V0IGNvbXBsZXRlIHNp
+bGVuY2Ugd2hlbiByZWNvcmRpbmcgd2hlbiBvbmx5IEJTVDEgaXMNCj4gPj4+PiBzZWxlY3RlZCBp
+biB0aGUgUkVDTUlYUiwgYW5kIHllcyBJJ3ZlIGNoZWNrZWQgLyBzZXQgdGhlDQo+ID4+Pj4gIklO
+MSBib29zdCB2b2x1bWUiLg0KPiA+Pj4+DQo+ID4+Pj4gVEw7RFI6IEknbSB0cnlpbmcgdG8gZ2V0
+IGFuIGFuYWxvZyBtaWMgdG8gd29yayBvbiAzDQo+ID4+Pj4gZGlmZmVyZW50IG1vZGVscyBDaGVy
+cnkgVHJhaWwgKyBSVDU2NDUgZGV2aWNlcyBhbmQgSSd2ZQ0KPiA+Pj4+IGJlZW4gdW5hYmxlIHRv
+IGdldCB0aGlzIHRvIHdvcmsuIEkndmUgcHV0IGEgcmVnaXN0ZXJkdW1wDQo+ID4+Pj4gb2YgdGhl
+IHJ0NTY0NSB3aXRoIGdub21lLXNvdW5kLXJlY29yZGVyIHJ1bm5pbmcgaGVyZToNCj4gPj4+PiBo
+dHRwczovL2ZlZG9yYXBlb3BsZS5vcmcvfmp3cmRlZ29lZGUvcnQ1NjQ1LW1pYy1yZWQuZHVtcA0K
+PiA+Pj4+DQo+ID4+Pj4gQW55IGluc2lnaHRzIC8gaGVscCB3aXRoIHRoaXMgd291bGQgYmUgdmVy
+eSBtdWNoDQo+ID4+Pj4gd2VsY29tZS4NCj4gPj4+DQo+ID4+PiBJIGRvbid0IGhhdmUgdGhlIHNj
+aGVtYXRpYywgYnV0IEkgdGhpbmsgeW91IHByb2JhYmx5IG5lZWQgbWljYmlhcw0KPiA+Pj4gZm9y
+IHRoZSBjYXB0dXJlLiBQbGVhc2UgYWRkIGJvdGggIm1pY2JpYXMxIiBhbmQgIm1pY2JpYXMyIiBp
+bg0KPiA+Pj4gdGhlIGF1ZGlvIHJvdXRlIHNpbmNlIEkgZG9uJ3Qga25vdyB3aGljaCBvbmUgaXMg
+bmVlZGVkLg0KPiA+Pj4gZm9yIGV4YW1wbGUNCj4gPj4+IHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25k
+X3NvY19kYXBtX3JvdXRlIGNodF9ydDU2NDVfYXVkaW9fbWFwW10gPSB7DQo+ID4+PiAuLi4NCj4g
+Pj4+IAl7IkludCBNaWMiLCBOVUxMLCAibWljYmlhczEifSwNCj4gPj4+IAl7IkludCBNaWMiLCBO
+VUxMLCAibWljYmlhczIifSwNCj4gPj4+IC4uLg0KPiA+Pj4gfTsNCj4gPj4NCj4gPj4gVGhhbmsg
+eW91IGZvciB5b3VyIHJlcGx5LiBJJ3ZlIHRlc3RlZCB0aGlzLCBidXQgdW5mb3J0dW5hdGVseSBp
+dA0KPiA+PiBkb2VzIG5vdCBoZWxwLg0KPiA+Pg0KPiA+PiBEbyB5b3UgcGVyaGFwcyBoYXZlIGEg
+Y2hlcnJ5dHJhaWwgZGV2aWNlIHdpdGhydDU2NDUgY29kZWMgd2hlcmUgeW91DQo+ID4+IGNhbiB0
+ZXN0IGFuIGFuYWxvZyBtaWMgaW5wdXQgd2l0aCB0aGUgdXBzdHJlYW0gZHJpdmVyICsgbGF0ZXN0
+IHVjbQ0KPiA+PiBmaWxlIGZyb20gUGllcnJlLUxvdWlzIHdpdGggeW91cnNlbGYgPyBJJ3ZlIHRo
+ZSBmZWVsaW5nIHRoYXQgdGhpcyBpcw0KPiA+PiBub3Qgc3BlY2lmaWMgdG8gdGhlIDMgZGV2aWNl
+cyBJJ3ZlIGFjY2VzcyB0byBidXQgYSBnZW5lcmFsIHByb2JsZW0NCj4gPj4gaW4gdGhlIGRyaXZl
+ciBhbmQvb3IgdGhlIHVjbSBmaWxlcy4NCj4gPg0KPiA+IFBsZWFzZSB0cnkgdGhlIGF0dGFjaGVk
+IHBhdGNoLiBJIGRvbid0IGhhdmUgYW55IGNoZXJyeXRyYWlsIGRldmljZSB3aXRoDQo+ID4gcnQ1
+NjQ1IGNvZGVjLiBCdXQgSSB2ZXJpZmllZCB0aGUgcmVnaXN0ZXIgc2V0dGluZ3Mgb24gbXkgcnQ1
+NjQ1IEVWQi4NCj4gPiBJZiB0aGUgcGF0Y2ggZG9lc24ndCB3b3JrLCBwbGVhc2UgZHVtcCByZWdp
+c3RlciBmb3IgbWUuDQo+ID4gTm90ZSB0aGF0IGFkZGluZyAibWljYmlhczEiIGFuZCAibWljYmlh
+czIgaW4gdGhlIGF1ZGlvIHJvdXRlIGlzIGFsc28NCj4gPiBuZWVkZWQuDQo+IA0KPiBUaGFuayB5
+b3UsIG1vZGlmeWluZyB0aGUgUlQ1NjQ1X0dFTl9DVFJMMiByZWcgc2VlbXMgdG8gaGVscCwgZm9y
+DQo+IHNvbWUgcmVhc29uIHRoZSBwYXRjaCBkb2VzIG5vdCB3b3JrIGFuZCBuZWl0aGVyIE1CMSBh
+bmQgTUIyIGluIHJlZw0KPiAweDY0IG5vciB0aGUgUlQ1NjQ1X0dFTl9DVFJMMiBjaGFuZ2VzIGhh
+cHBlbiwgYnV0IGFmdGVyIG1hbnVhbGx5DQo+IGFwcGx5aW5nIHRoZXNlIHdpdGggaTJjc2V0IEkg
+Y2FuIGFjdHVhbCB1c2UgdGhlIG1pYywgYWx0aG91Z2ggdGhlcmUNCj4gaXMgc3RpbGwgcXVpdGUg
+YSBiaXQgb2Ygd2hpdGUgbm9pc2UgaW4gdGhlIGJhY2tncm91bmQuDQoNCkkgdGhpbmsgdGhlIHJl
+YXNvbiB3aHkgdGhlIHBhdGNoIGRpZG4ndCB3b3JrIGlzIGJlY2F1c2UgIm1pY2JpYXMxIg0KYW5k
+ICJtaWNiaWFzMiIgYXJlIG5vdCBjb25uZWN0ZWQgdG8gdGhlIGF1ZGlvIHJvdXRlLiBUaGUgd2hp
+dGUNCm5vaXNlIHByb2JhYmx5IGJlY2F1c2UgdGhlIGdhaW4gaXMgdG9vIGhpZ2guIEFuZCBpZiB5
+b3UgYXJlIHVzaW5nIGENCmRpZmZlcmVudGlhbCBtaWMsIHBsZWFzZSBzZXQgcnQ1NjQ1LT5wZGF0
+YS5pbjJfZGlmZiA9IHRydWU7DQoNCj4gDQo+IEF0dGFjaGVkIGlzIGEgcmVnZHVtcCBhZnRlciBt
+YWtpbmcgdGhlIG1hbnVhbCBjaGFuZ2VzIHRvIHJlZyAweDY0IGFuZA0KPiByZWcgMHhmYi4NCj4g
+DQo+IEkgZGlkIGFkZCB0aGUgbWljYmlhcyBhdWRpbyByb3V0ZXM6DQo+IA0KPiBAQCAtMjI5Nyw2
+ICsyMjk3LDkgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1fcm91dGUNCj4gcnQ1
+NjQ1X2RhcG1fcm91dGVzW10gPSB7DQo+ICAgCXsgIkRNSUMyIiwgTlVMTCwgIkRNSUMgTDIiIH0s
+DQo+ICAgCXsgIkRNSUMyIiwgTlVMTCwgIkRNSUMgUjIiIH0sDQo+IA0KPiArCXsgIkludCBNaWMi
+LCBOVUxMLCAibWljYmlhczEiIH0sDQo+ICsJeyAiSW50IE1pYyIsIE5VTEwsICJtaWNiaWFzMiIg
+fSwNCj4gKw0KPiAgIAl7ICJCU1QxIiwgTlVMTCwgIklOMVAiIH0sDQo+ICAgCXsgIkJTVDEiLCBO
+VUxMLCAiSU4xTiIgfSwNCj4gICAJeyAiQlNUMSIsIE5VTEwsICJKRCBQb3dlciIgfSwNCg0KICsJ
+eyAiSW50IE1pYyIsIE5VTEwsICJtaWNiaWFzMSIgfSwNCiArCXsgIkludCBNaWMiLCBOVUxMLCAi
+bWljYmlhczIiIH0sDQpzaG91bGQgYWRkIGluIG1hY2hpbmUgZHJpdmVyLg0KUGxlYXNlIG1ha2Ug
+c3VyZSAiSW50IE1pYyIgaXMgcmVnaXN0ZXJlZCBhbmQgaXRzIGNvbm5lY3RlZCB0bw0KIklOMVAi
+IGFuZCAiSU4xTiIuIExpa2UNCnsiSU4xUCIsIE5VTEwsICJJbnQgTWljIn0sDQp7IklOMU4iLCBO
+VUxMLCAiSW50IE1pYyJ9LA0KT3IgeW91IGNhbiBzaGFyZSB5b3VyIG1hY2hpbmUgZHJpdmVyIHNv
+IEkgY2FuIGNoZWNrIGl0Lg0KDQo+IA0KPiBCdXQgSSBiZWxpZXZlIHRoYXQgeW91ciB0cmVlIGhh
+cyBzb21lIHBhdGNoZXMgd2hpY2ggYXJlIG5vdCB1cHN0cmVhbSB5ZXQsDQo+IHRoZSBsYXN0IHBh
+dGNoIHlvdSBhdHRhY2hlZCBleHBlY3RzIHRoZSBtaWNiaWFzMSBhbmQgbWljYmlhczIgbGluZXMN
+Cj4gaW4gdGhlIHdpZGdldCBsaXN0cyB0byBiZSBvZiB0aGUgIlNORF9TT0NfREFQTV9TVVBQTFki
+IHR5cGUsIGJ1dCBoZXJlOg0KPiBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgv
+a2VybmVsL2dpdC9icm9vbmllL3NvdW5kLmdpdC90cmVlL3NvdW5kLw0KPiBzb2MvY29kZWNzL3J0
+NTY0NS5jP2g9dG9waWMvcnQ1NjQ1DQo+IA0KPiBUaGV5IGFyZSBzdGlsbCBvZiB0aGUgU05EX1NP
+Q19EQVBNX01JQ0JJQVMgdHlwZS4NCg0KU29ycnksIEkgZm9yZ2V0IHRvIHNlbmQgdGhlIGF0dGFj
+aGVkIHBhdGNoIHRvIHVwc3RyZWFtLg0KUGxlYXNlIGFwcGx5IGl0IGZpcnN0Lg0KDQo+IA0KPiBS
+ZWdhcmRzLA0KPiANCj4gSGFucw0KPiANCj4gDQo+ID4NCj4gPj4NCj4gPj4gUmVnYXJkcywNCj4g
+Pj4NCj4gPj4gSGFucw0KPiA+Pg0KPiA+PiAtLS0tLS1QbGVhc2UgY29uc2lkZXIgdGhlIGVudmly
+b25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFpbC4NCg==
+
+--_002_ABFD875FF5FB574BA706497D987D48D70274DD33RTITMBSV02realt_
+Content-Type: application/octet-stream;
+	name="0001-ASoC-rt5645-change-micbias-widget-type-to-supply.patch"
+Content-Description: 0001-ASoC-rt5645-change-micbias-widget-type-to-supply.patch
+Content-Disposition: attachment;
+	filename="0001-ASoC-rt5645-change-micbias-widget-type-to-supply.patch";
+	size=1161; creation-date="Thu, 28 Dec 2017 02:28:16 GMT";
+	modification-date="Thu, 28 Dec 2017 02:19:41 GMT"
+Content-Transfer-Encoding: base64
+
+RnJvbSAyOGY0ZTc2Y2E3NjEyOWQ4ZTVmNTQ3Y2RiYjM2YWMzZjU2MjA3NDU1IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBCYXJkIExpYW8gPGJhcmRsaWFvQHJlYWx0ZWsuY29tPgpEYXRl
+OiBUaHUsIDMxIEF1ZyAyMDE3IDEzOjM0OjU3ICswODAwClN1YmplY3Q6IFtQQVRDSF0gQVNvQzog
+cnQ1NjQ1OiBjaGFuZ2UgbWljYmlhcyB3aWRnZXQgdHlwZSB0byBzdXBwbHkuCgpSZWdpc3RlciAi
+bWljYmlhczEiIGFuZCAibWljYmlhczIiIHRvIHN1cHBseSB3aWRlZ3RzIGFzIG1vZGVybiBkcml2
+ZXJzIGRvLgoKU2lnbmVkLW9mZi1ieTogQmFyZCBMaWFvIDxiYXJkbGlhb0ByZWFsdGVrLmNvbT4K
+LS0tCiBzb3VuZC9zb2MvY29kZWNzL3J0NTY0NS5jIHwgOCArKysrLS0tLQogMSBmaWxlIGNoYW5n
+ZWQsIDQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9z
+b2MvY29kZWNzL3J0NTY0NS5jIGIvc291bmQvc29jL2NvZGVjcy9ydDU2NDUuYwppbmRleCBjZDgy
+MzAyLi44ZjM3YWZkIDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvY29kZWNzL3J0NTY0NS5jCisrKyBi
+L3NvdW5kL3NvYy9jb2RlY3MvcnQ1NjQ1LmMKQEAgLTE5NzcsMTAgKzE5NzcsMTAgQEAgc3RhdGlj
+IGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0IHJ0NTY0NV9kYXBtX3dpZGdldHNbXSA9
+IHsKIAogCS8qIElucHV0IFNpZGUgKi8KIAkvKiBtaWNiaWFzICovCi0JU05EX1NPQ19EQVBNX01J
+Q0JJQVMoIm1pY2JpYXMxIiwgUlQ1NjQ1X1BXUl9BTkxHMiwKLQkJCVJUNTY0NV9QV1JfTUIxX0JJ
+VCwgMCksCi0JU05EX1NPQ19EQVBNX01JQ0JJQVMoIm1pY2JpYXMyIiwgUlQ1NjQ1X1BXUl9BTkxH
+MiwKLQkJCVJUNTY0NV9QV1JfTUIyX0JJVCwgMCksCisJU05EX1NPQ19EQVBNX1NVUFBMWSgibWlj
+YmlhczEiLCBSVDU2NDVfUFdSX0FOTEcyLAorCQkJUlQ1NjQ1X1BXUl9NQjFfQklULCAwLCBOVUxM
+LCAwKSwKKwlTTkRfU09DX0RBUE1fU1VQUExZKCJtaWNiaWFzMiIsIFJUNTY0NV9QV1JfQU5MRzIs
+CisJCQlSVDU2NDVfUFdSX01CMl9CSVQsIDAsIE5VTEwsIDApLAogCS8qIElucHV0IExpbmVzICov
+CiAJU05EX1NPQ19EQVBNX0lOUFVUKCJETUlDIEwxIiksCiAJU05EX1NPQ19EQVBNX0lOUFVUKCJE
+TUlDIFIxIiksCi0tIAoyLjcuNAoK
+
+--_002_ABFD875FF5FB574BA706497D987D48D70274DD33RTITMBSV02realt_
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---------------BA22AD8355A2445EA4E5EEA2--
+--_002_ABFD875FF5FB574BA706497D987D48D70274DD33RTITMBSV02realt_--
