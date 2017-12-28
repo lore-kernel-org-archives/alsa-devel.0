@@ -1,22 +1,18 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: Cherry Trail + RT5645 devices analog microphone
-	not working.
-Date: Thu, 28 Dec 2017 03:05:11 +0000
-Message-ID: <ABFD875FF5FB574BA706497D987D48D70274DD33@RTITMBSV02.realtek.com.tw>
-References: <d42279d7-0350-563f-fca7-27f32cb9e9ee@redhat.com>
- <ABFD875FF5FB574BA706497D987D48D7027476BE@RTITMBSV02.realtek.com.tw>
- <6ccb2c4c-042f-46c0-5247-90f79d49c840@redhat.com>
- <ABFD875FF5FB574BA706497D987D48D70274A822@RTITMBSV02.realtek.com.tw>
- <a0540986-369c-5bca-424f-102391d85095@redhat.com>
+From: b_lkasam@codeaurora.org
+Subject: Re: ALSA: Soc_compress open file node allows more than
+ once
+Date: Thu, 28 Dec 2017 12:05:07 +0530
+Message-ID: <d2c31d97538d192197dd8e26e94d653c@codeaurora.org>
+References: <f469eb3a04f49f7b5603572546852685@codeaurora.org>
+ <s5hmv3d3yfn.wl-tiwai@suse.de> <20171127055019.GP3187@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_002_ABFD875FF5FB574BA706497D987D48D70274DD33RTITMBSV02realt_"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 121A426717C
- for <alsa-devel@alsa-project.org>; Thu, 28 Dec 2017 04:05:16 +0100 (CET)
-In-Reply-To: <a0540986-369c-5bca-424f-102391d85095@redhat.com>
-Content-Language: zh-TW
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BC1726717C
+ for <alsa-devel@alsa-project.org>; Thu, 28 Dec 2017 07:35:09 +0100 (CET)
+In-Reply-To: <20171127055019.GP3187@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,158 +22,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, lkasam@qti.qualcomm.com, mangeshk@qti.qualcomm.com
 List-Id: alsa-devel@alsa-project.org
 
---_002_ABFD875FF5FB574BA706497D987D48D70274DD33RTITMBSV02realt_
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBIYW5zIGRlIEdvZWRlIFttYWls
-dG86aGRlZ29lZGVAcmVkaGF0LmNvbV0NCj4gU2VudDogVGh1cnNkYXksIERlY2VtYmVyIDI4LCAy
-MDE3IDM6MTMgQU0NCj4gVG86IEJhcmQgTGlhbw0KPiBDYzogUGllcnJlLUxvdWlzIEJvc3NhcnQ7
-IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZw0KPiBTdWJqZWN0OiBSZTogQ2hlcnJ5IFRyYWls
-ICsgUlQ1NjQ1IGRldmljZXMgYW5hbG9nIG1pY3JvcGhvbmUgbm90IHdvcmtpbmcuDQo+IA0KPiBI
-aSwNCj4gDQo+IE9uIDI2LTEyLTE3IDA2OjI5LCBCYXJkIExpYW8gd3JvdGU6DQo+ID4+IC0tLS0t
-T3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4+IEZyb206IEhhbnMgZGUgR29lZGUgW21haWx0bzpo
-ZGVnb2VkZUByZWRoYXQuY29tXQ0KPiA+PiBTZW50OiBNb25kYXksIERlY2VtYmVyIDI1LCAyMDE3
-IDg6MDMgUE0NCj4gPj4gVG86IEJhcmQgTGlhbw0KPiA+PiBDYzogUGllcnJlLUxvdWlzIEJvc3Nh
-cnQ7IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZw0KPiA+PiBTdWJqZWN0OiBSZTogQ2hlcnJ5
-IFRyYWlsICsgUlQ1NjQ1IGRldmljZXMgYW5hbG9nIG1pY3JvcGhvbmUgbm90IHdvcmtpbmcuDQo+
-ID4+DQo+ID4+IEhpLA0KPiA+Pg0KPiA+PiBPbiAyNS0xMi0xNyAwMzoxNSwgQmFyZCBMaWFvIHdy
-b3RlOg0KPiA+Pj4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4+Pj4gRnJvbTogSGFu
-cyBkZSBHb2VkZSBbbWFpbHRvOmhkZWdvZWRlQHJlZGhhdC5jb21dDQo+ID4+Pj4gU2VudDogU3Vu
-ZGF5LCBEZWNlbWJlciAyNCwgMjAxNyA2OjQzIFBNDQo+ID4+Pj4gVG86IEJhcmQgTGlhbw0KPiA+
-Pj4+IENjOiBQaWVycmUtTG91aXMgQm9zc2FydDsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-DQo+ID4+Pj4gU3ViamVjdDogQ2hlcnJ5IFRyYWlsICsgUlQ1NjQ1IGRldmljZXMgYW5hbG9nIG1p
-Y3JvcGhvbmUgbm90IHdvcmtpbmcuDQo+ID4+Pj4NCj4gPj4+PiBIaSBCYXJkLA0KPiA+Pj4+DQo+
-ID4+Pj4gSSd2ZSBiZWVuIGxvb2tpbmcgaW50byBnZXR0aW5nIHRoZSBtaWNyb3Bob25lIHRvIHdv
-cmsgb24NCj4gPj4+PiBzb21lIENoZXJyeSBUcmFpbCArIFJUNTY0NSBkZXZpY2VzIHdpdGggd2hh
-dCBhcHBlYXJzIHRvDQo+ID4+Pj4gYmUgYSBzaW1wbGUgYW5hbG9nIG1pY3JvcGhvbmUuDQo+ID4+
-Pj4NCj4gPj4+PiBZb3UgY2FuIHNlZSB0aGUgbWljcm9waG9uZSBvbiBvbmUgb2YgdGhlIG1vZGVs
-cyBJJ20gdHJ5aW5nDQo+ID4+Pj4gdG8gZ2V0IGl0IHRvIHdvcmsgb24gc29sZGVyZWQgb250byB0
-aGUgcmlnaHQgc2lkZSBvZiB0aGUgUENCDQo+ID4+Pj4gaGVyZTogaHR0cHM6Ly9pLmltZ3VyLmNv
-bS9iSnpCUVdlLmpwZw0KPiA+Pj4+DQo+ID4+Pj4gSSdtIHVzaW5nIHRoaXMgdWNtIGNvbmZpZzoN
-Cj4gPj4+Pg0KPiA+Pj4+IGh0dHBzOi8vZmVkb3JhcGVvcGxlLm9yZy9+andyZGVnb2VkZS9jaHRy
-dDU2NDUvDQo+ID4+Pj4NCj4gPj4+PiBXaGljaCBpcyBiYXNpY2FsbHkgUGllcnJlLUxvdWlzIEJv
-c3NhcnQncyBjb25maWcgZnJvbToNCj4gPj4+PiBodHRwczovL2dpdGh1Yi5jb20vcGxib3NzYXJ0
-L1VDTQ0KPiA+Pj4+DQo+ID4+Pj4gQWRqdXN0ZWQgYmVjYXVzZSB0aGUgZGV2aWNlcyBhbGwgaGF2
-ZSBhIG1vbm8gc3BlYWtlci4NCj4gPj4+Pg0KPiA+Pj4+IEkndmUgYmVlbiB0cnlpbmcgdG8gZ2V0
-IHRoaXMgdG8gd29yayBteXNlbGYgYW5kIEkgY2FuIGdldA0KPiA+Pj4+IHNvbWUgc291bmQgd2hp
-bGUgcmVjb3JkaW5nIGJ5IGFkZGluZzoNCj4gPj4+Pg0KPiA+Pj4+ICAgICAgICAgICAgICAgICAg
-ICBjc2V0ICJuYW1lPSdSRUNNSVhMIEJTVDIgU3dpdGNoJyBvbiINCj4gPj4+PiAgICAgICAgICAg
-ICAgICAgICAgY3NldCAibmFtZT0nUkVDTUlYUiBCU1QyIFN3aXRjaCcgb24iDQo+ID4+Pj4NCj4g
-Pj4+PiBCdXQgdGhlbiBJIG1haW5seSBnZXQgbm9pc2UsIEkgZG8gZ2V0IHNvbWUgc291bmQgZnJv
-bSB0aGUNCj4gPj4+PiBtaWNyb3Bob25lIGlmIEkgdGFsayByZWFsbHkgcmVhbGx5IGxvdWRseSwg
-YnV0IGl0IGlzDQo+ID4+Pj4gYmFyZWx5IGFib3ZlIHRoZSBub2lzZS1mbG9vci4gSSd2ZSB0aGUg
-ZmVlbGluZyB0aGF0IEJTVDINCj4gPj4+PiBpcyBvbmx5IHBpY2tpbmcgdXAgdGhlIG1pY3JvcGhv
-bmUgdmlhIGNyb3NzLXRhbGsgYW5kDQo+ID4+Pj4gdGhhdCBCU1QxIGluZGVlZCBpcyB0aGUgY29y
-cmVjdCBpbnB1dCwgYnV0IGZvciBzb21lIHJlYXNvbg0KPiA+Pj4+IEkgZ2V0IGNvbXBsZXRlIHNp
-bGVuY2Ugd2hlbiByZWNvcmRpbmcgd2hlbiBvbmx5IEJTVDEgaXMNCj4gPj4+PiBzZWxlY3RlZCBp
-biB0aGUgUkVDTUlYUiwgYW5kIHllcyBJJ3ZlIGNoZWNrZWQgLyBzZXQgdGhlDQo+ID4+Pj4gIklO
-MSBib29zdCB2b2x1bWUiLg0KPiA+Pj4+DQo+ID4+Pj4gVEw7RFI6IEknbSB0cnlpbmcgdG8gZ2V0
-IGFuIGFuYWxvZyBtaWMgdG8gd29yayBvbiAzDQo+ID4+Pj4gZGlmZmVyZW50IG1vZGVscyBDaGVy
-cnkgVHJhaWwgKyBSVDU2NDUgZGV2aWNlcyBhbmQgSSd2ZQ0KPiA+Pj4+IGJlZW4gdW5hYmxlIHRv
-IGdldCB0aGlzIHRvIHdvcmsuIEkndmUgcHV0IGEgcmVnaXN0ZXJkdW1wDQo+ID4+Pj4gb2YgdGhl
-IHJ0NTY0NSB3aXRoIGdub21lLXNvdW5kLXJlY29yZGVyIHJ1bm5pbmcgaGVyZToNCj4gPj4+PiBo
-dHRwczovL2ZlZG9yYXBlb3BsZS5vcmcvfmp3cmRlZ29lZGUvcnQ1NjQ1LW1pYy1yZWQuZHVtcA0K
-PiA+Pj4+DQo+ID4+Pj4gQW55IGluc2lnaHRzIC8gaGVscCB3aXRoIHRoaXMgd291bGQgYmUgdmVy
-eSBtdWNoDQo+ID4+Pj4gd2VsY29tZS4NCj4gPj4+DQo+ID4+PiBJIGRvbid0IGhhdmUgdGhlIHNj
-aGVtYXRpYywgYnV0IEkgdGhpbmsgeW91IHByb2JhYmx5IG5lZWQgbWljYmlhcw0KPiA+Pj4gZm9y
-IHRoZSBjYXB0dXJlLiBQbGVhc2UgYWRkIGJvdGggIm1pY2JpYXMxIiBhbmQgIm1pY2JpYXMyIiBp
-bg0KPiA+Pj4gdGhlIGF1ZGlvIHJvdXRlIHNpbmNlIEkgZG9uJ3Qga25vdyB3aGljaCBvbmUgaXMg
-bmVlZGVkLg0KPiA+Pj4gZm9yIGV4YW1wbGUNCj4gPj4+IHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25k
-X3NvY19kYXBtX3JvdXRlIGNodF9ydDU2NDVfYXVkaW9fbWFwW10gPSB7DQo+ID4+PiAuLi4NCj4g
-Pj4+IAl7IkludCBNaWMiLCBOVUxMLCAibWljYmlhczEifSwNCj4gPj4+IAl7IkludCBNaWMiLCBO
-VUxMLCAibWljYmlhczIifSwNCj4gPj4+IC4uLg0KPiA+Pj4gfTsNCj4gPj4NCj4gPj4gVGhhbmsg
-eW91IGZvciB5b3VyIHJlcGx5LiBJJ3ZlIHRlc3RlZCB0aGlzLCBidXQgdW5mb3J0dW5hdGVseSBp
-dA0KPiA+PiBkb2VzIG5vdCBoZWxwLg0KPiA+Pg0KPiA+PiBEbyB5b3UgcGVyaGFwcyBoYXZlIGEg
-Y2hlcnJ5dHJhaWwgZGV2aWNlIHdpdGhydDU2NDUgY29kZWMgd2hlcmUgeW91DQo+ID4+IGNhbiB0
-ZXN0IGFuIGFuYWxvZyBtaWMgaW5wdXQgd2l0aCB0aGUgdXBzdHJlYW0gZHJpdmVyICsgbGF0ZXN0
-IHVjbQ0KPiA+PiBmaWxlIGZyb20gUGllcnJlLUxvdWlzIHdpdGggeW91cnNlbGYgPyBJJ3ZlIHRo
-ZSBmZWVsaW5nIHRoYXQgdGhpcyBpcw0KPiA+PiBub3Qgc3BlY2lmaWMgdG8gdGhlIDMgZGV2aWNl
-cyBJJ3ZlIGFjY2VzcyB0byBidXQgYSBnZW5lcmFsIHByb2JsZW0NCj4gPj4gaW4gdGhlIGRyaXZl
-ciBhbmQvb3IgdGhlIHVjbSBmaWxlcy4NCj4gPg0KPiA+IFBsZWFzZSB0cnkgdGhlIGF0dGFjaGVk
-IHBhdGNoLiBJIGRvbid0IGhhdmUgYW55IGNoZXJyeXRyYWlsIGRldmljZSB3aXRoDQo+ID4gcnQ1
-NjQ1IGNvZGVjLiBCdXQgSSB2ZXJpZmllZCB0aGUgcmVnaXN0ZXIgc2V0dGluZ3Mgb24gbXkgcnQ1
-NjQ1IEVWQi4NCj4gPiBJZiB0aGUgcGF0Y2ggZG9lc24ndCB3b3JrLCBwbGVhc2UgZHVtcCByZWdp
-c3RlciBmb3IgbWUuDQo+ID4gTm90ZSB0aGF0IGFkZGluZyAibWljYmlhczEiIGFuZCAibWljYmlh
-czIgaW4gdGhlIGF1ZGlvIHJvdXRlIGlzIGFsc28NCj4gPiBuZWVkZWQuDQo+IA0KPiBUaGFuayB5
-b3UsIG1vZGlmeWluZyB0aGUgUlQ1NjQ1X0dFTl9DVFJMMiByZWcgc2VlbXMgdG8gaGVscCwgZm9y
-DQo+IHNvbWUgcmVhc29uIHRoZSBwYXRjaCBkb2VzIG5vdCB3b3JrIGFuZCBuZWl0aGVyIE1CMSBh
-bmQgTUIyIGluIHJlZw0KPiAweDY0IG5vciB0aGUgUlQ1NjQ1X0dFTl9DVFJMMiBjaGFuZ2VzIGhh
-cHBlbiwgYnV0IGFmdGVyIG1hbnVhbGx5DQo+IGFwcGx5aW5nIHRoZXNlIHdpdGggaTJjc2V0IEkg
-Y2FuIGFjdHVhbCB1c2UgdGhlIG1pYywgYWx0aG91Z2ggdGhlcmUNCj4gaXMgc3RpbGwgcXVpdGUg
-YSBiaXQgb2Ygd2hpdGUgbm9pc2UgaW4gdGhlIGJhY2tncm91bmQuDQoNCkkgdGhpbmsgdGhlIHJl
-YXNvbiB3aHkgdGhlIHBhdGNoIGRpZG4ndCB3b3JrIGlzIGJlY2F1c2UgIm1pY2JpYXMxIg0KYW5k
-ICJtaWNiaWFzMiIgYXJlIG5vdCBjb25uZWN0ZWQgdG8gdGhlIGF1ZGlvIHJvdXRlLiBUaGUgd2hp
-dGUNCm5vaXNlIHByb2JhYmx5IGJlY2F1c2UgdGhlIGdhaW4gaXMgdG9vIGhpZ2guIEFuZCBpZiB5
-b3UgYXJlIHVzaW5nIGENCmRpZmZlcmVudGlhbCBtaWMsIHBsZWFzZSBzZXQgcnQ1NjQ1LT5wZGF0
-YS5pbjJfZGlmZiA9IHRydWU7DQoNCj4gDQo+IEF0dGFjaGVkIGlzIGEgcmVnZHVtcCBhZnRlciBt
-YWtpbmcgdGhlIG1hbnVhbCBjaGFuZ2VzIHRvIHJlZyAweDY0IGFuZA0KPiByZWcgMHhmYi4NCj4g
-DQo+IEkgZGlkIGFkZCB0aGUgbWljYmlhcyBhdWRpbyByb3V0ZXM6DQo+IA0KPiBAQCAtMjI5Nyw2
-ICsyMjk3LDkgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1fcm91dGUNCj4gcnQ1
-NjQ1X2RhcG1fcm91dGVzW10gPSB7DQo+ICAgCXsgIkRNSUMyIiwgTlVMTCwgIkRNSUMgTDIiIH0s
-DQo+ICAgCXsgIkRNSUMyIiwgTlVMTCwgIkRNSUMgUjIiIH0sDQo+IA0KPiArCXsgIkludCBNaWMi
-LCBOVUxMLCAibWljYmlhczEiIH0sDQo+ICsJeyAiSW50IE1pYyIsIE5VTEwsICJtaWNiaWFzMiIg
-fSwNCj4gKw0KPiAgIAl7ICJCU1QxIiwgTlVMTCwgIklOMVAiIH0sDQo+ICAgCXsgIkJTVDEiLCBO
-VUxMLCAiSU4xTiIgfSwNCj4gICAJeyAiQlNUMSIsIE5VTEwsICJKRCBQb3dlciIgfSwNCg0KICsJ
-eyAiSW50IE1pYyIsIE5VTEwsICJtaWNiaWFzMSIgfSwNCiArCXsgIkludCBNaWMiLCBOVUxMLCAi
-bWljYmlhczIiIH0sDQpzaG91bGQgYWRkIGluIG1hY2hpbmUgZHJpdmVyLg0KUGxlYXNlIG1ha2Ug
-c3VyZSAiSW50IE1pYyIgaXMgcmVnaXN0ZXJlZCBhbmQgaXRzIGNvbm5lY3RlZCB0bw0KIklOMVAi
-IGFuZCAiSU4xTiIuIExpa2UNCnsiSU4xUCIsIE5VTEwsICJJbnQgTWljIn0sDQp7IklOMU4iLCBO
-VUxMLCAiSW50IE1pYyJ9LA0KT3IgeW91IGNhbiBzaGFyZSB5b3VyIG1hY2hpbmUgZHJpdmVyIHNv
-IEkgY2FuIGNoZWNrIGl0Lg0KDQo+IA0KPiBCdXQgSSBiZWxpZXZlIHRoYXQgeW91ciB0cmVlIGhh
-cyBzb21lIHBhdGNoZXMgd2hpY2ggYXJlIG5vdCB1cHN0cmVhbSB5ZXQsDQo+IHRoZSBsYXN0IHBh
-dGNoIHlvdSBhdHRhY2hlZCBleHBlY3RzIHRoZSBtaWNiaWFzMSBhbmQgbWljYmlhczIgbGluZXMN
-Cj4gaW4gdGhlIHdpZGdldCBsaXN0cyB0byBiZSBvZiB0aGUgIlNORF9TT0NfREFQTV9TVVBQTFki
-IHR5cGUsIGJ1dCBoZXJlOg0KPiBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgv
-a2VybmVsL2dpdC9icm9vbmllL3NvdW5kLmdpdC90cmVlL3NvdW5kLw0KPiBzb2MvY29kZWNzL3J0
-NTY0NS5jP2g9dG9waWMvcnQ1NjQ1DQo+IA0KPiBUaGV5IGFyZSBzdGlsbCBvZiB0aGUgU05EX1NP
-Q19EQVBNX01JQ0JJQVMgdHlwZS4NCg0KU29ycnksIEkgZm9yZ2V0IHRvIHNlbmQgdGhlIGF0dGFj
-aGVkIHBhdGNoIHRvIHVwc3RyZWFtLg0KUGxlYXNlIGFwcGx5IGl0IGZpcnN0Lg0KDQo+IA0KPiBS
-ZWdhcmRzLA0KPiANCj4gSGFucw0KPiANCj4gDQo+ID4NCj4gPj4NCj4gPj4gUmVnYXJkcywNCj4g
-Pj4NCj4gPj4gSGFucw0KPiA+Pg0KPiA+PiAtLS0tLS1QbGVhc2UgY29uc2lkZXIgdGhlIGVudmly
-b25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFpbC4NCg==
-
---_002_ABFD875FF5FB574BA706497D987D48D70274DD33RTITMBSV02realt_
-Content-Type: application/octet-stream;
-	name="0001-ASoC-rt5645-change-micbias-widget-type-to-supply.patch"
-Content-Description: 0001-ASoC-rt5645-change-micbias-widget-type-to-supply.patch
-Content-Disposition: attachment;
-	filename="0001-ASoC-rt5645-change-micbias-widget-type-to-supply.patch";
-	size=1161; creation-date="Thu, 28 Dec 2017 02:28:16 GMT";
-	modification-date="Thu, 28 Dec 2017 02:19:41 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSAyOGY0ZTc2Y2E3NjEyOWQ4ZTVmNTQ3Y2RiYjM2YWMzZjU2MjA3NDU1IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBCYXJkIExpYW8gPGJhcmRsaWFvQHJlYWx0ZWsuY29tPgpEYXRl
-OiBUaHUsIDMxIEF1ZyAyMDE3IDEzOjM0OjU3ICswODAwClN1YmplY3Q6IFtQQVRDSF0gQVNvQzog
-cnQ1NjQ1OiBjaGFuZ2UgbWljYmlhcyB3aWRnZXQgdHlwZSB0byBzdXBwbHkuCgpSZWdpc3RlciAi
-bWljYmlhczEiIGFuZCAibWljYmlhczIiIHRvIHN1cHBseSB3aWRlZ3RzIGFzIG1vZGVybiBkcml2
-ZXJzIGRvLgoKU2lnbmVkLW9mZi1ieTogQmFyZCBMaWFvIDxiYXJkbGlhb0ByZWFsdGVrLmNvbT4K
-LS0tCiBzb3VuZC9zb2MvY29kZWNzL3J0NTY0NS5jIHwgOCArKysrLS0tLQogMSBmaWxlIGNoYW5n
-ZWQsIDQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9z
-b2MvY29kZWNzL3J0NTY0NS5jIGIvc291bmQvc29jL2NvZGVjcy9ydDU2NDUuYwppbmRleCBjZDgy
-MzAyLi44ZjM3YWZkIDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvY29kZWNzL3J0NTY0NS5jCisrKyBi
-L3NvdW5kL3NvYy9jb2RlY3MvcnQ1NjQ1LmMKQEAgLTE5NzcsMTAgKzE5NzcsMTAgQEAgc3RhdGlj
-IGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0IHJ0NTY0NV9kYXBtX3dpZGdldHNbXSA9
-IHsKIAogCS8qIElucHV0IFNpZGUgKi8KIAkvKiBtaWNiaWFzICovCi0JU05EX1NPQ19EQVBNX01J
-Q0JJQVMoIm1pY2JpYXMxIiwgUlQ1NjQ1X1BXUl9BTkxHMiwKLQkJCVJUNTY0NV9QV1JfTUIxX0JJ
-VCwgMCksCi0JU05EX1NPQ19EQVBNX01JQ0JJQVMoIm1pY2JpYXMyIiwgUlQ1NjQ1X1BXUl9BTkxH
-MiwKLQkJCVJUNTY0NV9QV1JfTUIyX0JJVCwgMCksCisJU05EX1NPQ19EQVBNX1NVUFBMWSgibWlj
-YmlhczEiLCBSVDU2NDVfUFdSX0FOTEcyLAorCQkJUlQ1NjQ1X1BXUl9NQjFfQklULCAwLCBOVUxM
-LCAwKSwKKwlTTkRfU09DX0RBUE1fU1VQUExZKCJtaWNiaWFzMiIsIFJUNTY0NV9QV1JfQU5MRzIs
-CisJCQlSVDU2NDVfUFdSX01CMl9CSVQsIDAsIE5VTEwsIDApLAogCS8qIElucHV0IExpbmVzICov
-CiAJU05EX1NPQ19EQVBNX0lOUFVUKCJETUlDIEwxIiksCiAJU05EX1NPQ19EQVBNX0lOUFVUKCJE
-TUlDIFIxIiksCi0tIAoyLjcuNAoK
-
---_002_ABFD875FF5FB574BA706497D987D48D70274DD33RTITMBSV02realt_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---_002_ABFD875FF5FB574BA706497D987D48D70274DD33RTITMBSV02realt_--
+On 2017-11-27 11:20, Vinod Koul wrote:
+> On Thu, Nov 23, 2017 at 02:41:00PM +0100, Takashi Iwai wrote:
+>> On Thu, 23 Nov 2017 14:18:30 +0100,
+>> b_lkasam@codeaurora.org wrote:
+>> >
+>> > Hi ALSA team,
+>> > This is regarding compress offload framework file operations wrt open
+>> > system call.
+>> >
+>> > For open call to this driver currently allows for same node more than
+>> > once.
+>> >
+>> > This may result in memleak issues or data corruption if same node in
+>> > use by multiple instances.
+>> 
+>> This only depends on the driver side implementation.  There is no
+>> restriction in the core side, as the multiple open is possible
+>> depending on the hardware design and the driver implementation.
+> 
+> sounds right to me, also is the leak on core side or your driver?
+> 
+Sorry for delay in getting back.. Yes, leak was in driver not on core 
+side.
+Thanks everyone for inputs...We have fixed it in our driver.
+>> 
+>> > can we have restriction to avoid open of same node using some refcount?
+>> >
+>> > we can either have refcount under compr->private_data and cross check
+>> > in below function before proceeding.
+>> > static int snd_compr_open(struct inode *inode, struct file *f)
+>> >
+>> > Please suggest accordingly.
+>> 
+>> I'd suggest just to add an exclusive open check in the driver side.
+>> The open/close callbacks are protected via a mutex, so it can be a
+>> simple bool flag check.
+>> 
+>> If the exclusive access is regarded as a common pattern, we can add
+>> some flag to snd_compr later and check it in the core, instead, too.
