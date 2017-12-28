@@ -1,57 +1,53 @@
-From: Tanu Kaskinen <tanuk@iki.fi>
-Subject: Re: pulseaudio crash when unplugging hdmi
- while playing audio over hdmi on Cherry Trail devices
-Date: Thu, 28 Dec 2017 12:24:30 +0200
-Message-ID: <1514456670.2979.5.camel@iki.fi>
-References: <3e43fd0f-440e-ad1a-259e-bb4c0a5b5473@redhat.com>
- <1513308227.7643.47.camel@iki.fi>
-Reply-To: General PulseAudio Discussion
- <pulseaudio-discuss@lists.freedesktop.org>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt5645: change micbias widget type to
+	supply.
+Date: Thu, 28 Dec 2017 19:41:36 +0800
+Message-ID: <1514461296-16236-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-In-Reply-To: <1513308227.7643.47.camel@iki.fi>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
-To: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id CB0AB266C0C
+ for <alsa-devel@alsa-project.org>; Thu, 28 Dec 2017 12:41:49 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, hdegoede@redhat.com, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAyMDE3LTEyLTE1IGF0IDA1OjIzICswMjAwLCBUYW51IEthc2tpbmVuIHdyb3RlOgo+
-IE9uIFR1ZSwgMjAxNy0xMi0xMiBhdCAxMTozOSArMDEwMCwgSGFucyBkZSBHb2VkZSB3cm90ZToK
-PiA+IEhpIEFsbCwKPiA+IAo+ID4gRmlyc3Qgb2YgYWxsIGdvb2QgbmV3cywgd2l0aCBrZXJuZWwg
-NC4xNS1yYzIgYW5kIGFsc2EtbGliIDEuMS41Cj4gPiBhdWRpbyBvdmVyIGhkbWkgd29ya3Mgb24g
-Q2hlcnJ5IFRyYWlsIGRldmljZXMgYWZ0ZXIgc2VsZWN0aW5nCj4gPiB0aGUgcmlnaHQgb3V0cHV0
-IHByb2ZpbGUuCj4gPiAKPiA+IEJ1dCB3aGVuIHVucGx1Z2dpbmcgdGhlIGhkbWkgY2FibGUgcGEg
-ZGllcy4gUnVubmluZyBwYSB1bmRlcgo+ID4gZ2RiIHNheXMgaXQgZ2V0cyBraWxsZWQgd2l0aCBT
-SUdLSUxMLCBzbyBJIHRoaW5rIHRoaXMgaXMKPiA+IGFub3RoZXIgcmVhbHRpbWUgaXNzdWUgd2hl
-cmUgaXQgZ2V0cyBraWxsZWQgYnkgdGhlIGtlcm5lbCBmb3IKPiA+IGV4Y2VlZGluZyBpdHMgQ1BV
-IGJ1ZGdldC4KPiA+IAo+ID4gSSd2ZSBhIGxvZyBmaWxlIG9mIGEgcnVuIHdoaWNoIGVuZHMgd2l0
-aCBTSUdLSUxMIGhlcmU6Cj4gPiBodHRwczovL2ZlZG9yYXBlb3BsZS5vcmcvfmp3cmRlZ29lZGUv
-cHVsc2VhdWRpby1jaHQtaGRtaS5sb2cKPiA+IAo+ID4gV2hhdCBzdGFuZHMgb3V0IGlzIGEgd2hv
-bGUgbG90IG9mIGVycm9ycyAvIHVuZGVycnVucyBhZnRlcjoKPiA+IEQ6IFtwdWxzZWF1ZGlvXSBt
-b2R1bGUtYWxzYS1jYXJkLmM6IEphY2sgJ0hETUkvRFAscGNtPTEgSmFjaycgaXMgbm93IHVucGx1
-Z2dlZAo+ID4gRDogW3B1bHNlYXVkaW9dIGRldmljZS1wb3J0LmM6IFNldHRpbmcgcG9ydCBoZG1p
-LW91dHB1dC0xIHRvIHN0YXR1cyBubwo+ID4gCj4gPiBTbyBpdCBzZWVtcyB0aGF0IHRoZSBwcm9i
-bGVtIGlzIHRoYXQgcGEgc3RpbGwgdHJpZXMgdG8gdXNlCj4gPiB0aGUgZGV2aWNlIGFmdGVyIHRo
-ZSB1bnBsdWcsIGV2ZW4gdGhvdWdoIGl0IHNlZXMgdGhlIHVucGx1Zwo+ID4gYmVmb3JlIGdldHRp
-bmcgYW55IGVycm9ycy4KPiAKPiBQQSBrZWVwcyB1c2luZyB0aGUgZGV2aWNlLCBiZWNhdXNlIHRo
-ZSBjYXJkIGhhcyBubyBiZXR0ZXIgcG9ydHMKPiBhdmFpbGFibGUuIEkgdGhpbmsgaXQgd291bGQg
-YmUgZ29vZCB0byBzd2l0Y2ggdG8gdGhlIG9mZiBwcm9maWxlIGluCj4gdGhpcyBzaXR1YXRpb24s
-IGJ1dCBJIHRoaW5rIGl0IHdvdWxkIGJlIG1vcmUgYmVuZWZpY2lhbCB0byBmaW5hbGx5IGZpeAo+
-IHRoYXQgaW5maW5pdGUgbG9vcC4gSSdsbCB0cnkgdG8gbWFrZSBhIHBhdGNoIGZvciB0aGF0LgoK
-UGF0Y2hlcyBzdWJtaXR0ZWQ6Cmh0dHBzOi8vcGF0Y2h3b3JrLmZyZWVkZXNrdG9wLm9yZy9wYXRj
-aC8xOTUwOTIvCmh0dHBzOi8vcGF0Y2h3b3JrLmZyZWVkZXNrdG9wLm9yZy9wYXRjaC8xOTUwOTEv
-Cmh0dHBzOi8vcGF0Y2h3b3JrLmZyZWVkZXNrdG9wLm9yZy9wYXRjaC8xOTUwOTMvCgotLSAKVGFu
-dQoKaHR0cHM6Ly93d3cucGF0cmVvbi5jb20vdGFudWsKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KcHVsc2VhdWRpby1kaXNjdXNzIG1haWxpbmcgbGlzdApw
-dWxzZWF1ZGlvLWRpc2N1c3NAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJl
-ZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vcHVsc2VhdWRpby1kaXNjdXNzCg==
+Register "micbias1" and "micbias2" to supply widegts as modern drivers do.
+
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt5645.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index cd82302..8f37afd 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -1977,10 +1977,10 @@ static const struct snd_soc_dapm_widget rt5645_dapm_widgets[] = {
+ 
+ 	/* Input Side */
+ 	/* micbias */
+-	SND_SOC_DAPM_MICBIAS("micbias1", RT5645_PWR_ANLG2,
+-			RT5645_PWR_MB1_BIT, 0),
+-	SND_SOC_DAPM_MICBIAS("micbias2", RT5645_PWR_ANLG2,
+-			RT5645_PWR_MB2_BIT, 0),
++	SND_SOC_DAPM_SUPPLY("micbias1", RT5645_PWR_ANLG2,
++			RT5645_PWR_MB1_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("micbias2", RT5645_PWR_ANLG2,
++			RT5645_PWR_MB2_BIT, 0, NULL, 0),
+ 	/* Input Lines */
+ 	SND_SOC_DAPM_INPUT("DMIC L1"),
+ 	SND_SOC_DAPM_INPUT("DMIC R1"),
+-- 
+2.7.4
