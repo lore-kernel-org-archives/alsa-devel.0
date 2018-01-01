@@ -1,17 +1,26 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: WARNING in snd_pcm_hw_param_first
-Date: Mon, 1 Jan 2018 11:29:51 +0100
-Message-ID: <a38be896-eef5-e34d-a47f-4c301f314504@metafoo.de>
-References: <001a11444d0e6d62800561a84805@google.com>
- <s5hy3line6j.wl-tiwai@suse.de>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: Cherry Trail + RT5645 devices analog microphone
+	not working.
+Date: Mon, 1 Jan 2018 13:31:40 +0100
+Message-ID: <f98183ba-0811-4688-24c6-a50790709282@redhat.com>
+References: <d42279d7-0350-563f-fca7-27f32cb9e9ee@redhat.com>
+ <ABFD875FF5FB574BA706497D987D48D7027476BE@RTITMBSV02.realtek.com.tw>
+ <6ccb2c4c-042f-46c0-5247-90f79d49c840@redhat.com>
+ <ABFD875FF5FB574BA706497D987D48D70274A822@RTITMBSV02.realtek.com.tw>
+ <a0540986-369c-5bca-424f-102391d85095@redhat.com>
+ <ABFD875FF5FB574BA706497D987D48D70274DD33@RTITMBSV02.realtek.com.tw>
+ <7dcc5148-dd01-ddbb-516b-51ffd4f1c31a@redhat.com>
+ <ABFD875FF5FB574BA706497D987D48D70274F5AB@RTITMBSV02.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id E629B266AE1
- for <alsa-devel@alsa-project.org>; Mon,  1 Jan 2018 11:29:55 +0100 (CET)
-In-Reply-To: <s5hy3line6j.wl-tiwai@suse.de>
+Received: from mail-wm0-f52.google.com (mail-wm0-f52.google.com [74.125.82.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 483172668F0
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jan 2018 13:31:42 +0100 (CET)
+Received: by mail-wm0-f52.google.com with SMTP id a79so18067177wma.0
+ for <alsa-devel@alsa-project.org>; Mon, 01 Jan 2018 04:31:42 -0800 (PST)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D70274F5AB@RTITMBSV02.realtek.com.tw>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,64 +31,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, syzbot <syzbot+6f11c7e2a1b91d466432@syzkaller.appspotmail.com>
-Cc: alsa-devel@alsa-project.org, syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org, mingo@kernel.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/01/2018 10:03 AM, Takashi Iwai wrote:
-[...]
->> CPU: 0 PID: 3502 Comm: syzkaller781065 Not tainted 4.15.0-rc5+ #154
->> Hardware name: Google Google Compute Engine/Google Compute Engine,
->> BIOS  Google 01/01/2011
->> Call Trace:
->>  __dump_stack lib/dump_stack.c:17 [inline]
->>  dump_stack+0x194/0x257 lib/dump_stack.c:53
->>  panic+0x1e4/0x41c kernel/panic.c:183
->>  __warn+0x1dc/0x200 kernel/panic.c:547
->>  report_bug+0x211/0x2d0 lib/bug.c:184
->>  fixup_bug.part.11+0x37/0x80 arch/x86/kernel/traps.c:178
->>  fixup_bug arch/x86/kernel/traps.c:247 [inline]
->>  do_error_trap+0x2d7/0x3e0 arch/x86/kernel/traps.c:296
->>  do_invalid_op+0x1b/0x20 arch/x86/kernel/traps.c:315
->>  invalid_op+0x22/0x40 arch/x86/entry/entry_64.S:1079
->> RIP: 0010:snd_pcm_hw_param_first+0x289/0x690 sound/core/pcm_lib.c:1635
->> RSP: 0018:ffff8801c013f1a0 EFLAGS: 00010293
->> RAX: ffff8801c03bc3c0 RBX: ffff8801bff08dc0 RCX: ffffffff841bee19
->> RDX: 0000000000000000 RSI: 00000000ffffffea RDI: ffffed0038027e28
->> RBP: ffff8801c013f1f0 R08: ffffed0038027d63 R09: ffff8801c013eb10
->> R10: 0000000000000001 R11: ffffed0038027d62 R12: 000000000000000d
->> R13: 00000000ffffffea R14: 0000000000000005 R15: 0000000000002000
->>  snd_pcm_hw_param_near.constprop.27+0x78d/0x9a0 sound/core/oss/pcm_oss.c:457
->>  snd_pcm_oss_change_params+0x17d3/0x3720 sound/core/oss/pcm_oss.c:969
->>  snd_pcm_oss_make_ready+0xaa/0x130 sound/core/oss/pcm_oss.c:1128
->>  snd_pcm_oss_sync+0x257/0x830 sound/core/oss/pcm_oss.c:1638
->>  snd_pcm_oss_release+0x20b/0x280 sound/core/oss/pcm_oss.c:2431
->>  __fput+0x327/0x7e0 fs/file_table.c:210
->>  ____fput+0x15/0x20 fs/file_table.c:244
->>  task_work_run+0x199/0x270 kernel/task_work.c:113
->>  exit_task_work include/linux/task_work.h:22 [inline]
->>  do_exit+0x9bb/0x1ad0 kernel/exit.c:865
->>  do_group_exit+0x149/0x400 kernel/exit.c:968
->>  SYSC_exit_group kernel/exit.c:979 [inline]
->>  SyS_exit_group+0x1d/0x20 kernel/exit.c:977
->>  do_syscall_32_irqs_on arch/x86/entry/common.c:327 [inline]
->>  do_fast_syscall_32+0x3ee/0xf9d arch/x86/entry/common.c:389
->>  entry_SYSENTER_compat+0x54/0x63 arch/x86/entry/entry_64_compat.S:129
->> RIP: 0023:0xf7f4ec79
->> RSP: 002b:00000000ffc2c18c EFLAGS: 00000292 ORIG_RAX: 00000000000000fc
->> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000080f0298
->> RDX: 0000000000000000 RSI: 00000000080d9b78 RDI: 00000000080f02a0
->> RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
->> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
->> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
->> Dumping ftrace buffer:
->>    (ftrace buffer empty)
->> Kernel Offset: disabled
->> Rebooting in 86400 seconds..
-> 
-> This must be a superfluous WARN_ON() call invoked by snd_BUG_ON()
-> check that can be safely ignored.  A quick fix patch is below.
+Hi,
 
-I believe those snd_BUG_ON() are there because these calls to refine
-should never fail based on the checks done earlier. And them triggering
-indicates that something is wrong somewhere else.
+On 29-12-17 03:10, Bard Liao wrote:
+>> Some questions for you:
+>>
+>> 1) I think enabling micbias2 may be a problem on devices with a DMIC,
+>> could this be a problem?  Currently the codec driver itself contains
+>> quirks for dmic pin-mapping, maybe we should leave micbias2 disabled
+>> if dmic pin-mapping is specified through a quirk?
+> 
+> No, micbias2 and DMIC are independent and micbias2 will not be enabled
+> if we don't add it in the audio route. So I don't think we need to disable it
+> if dmic pin-mapping is specified.
+
+Right, but currently we use the "Int Mic" switch in both the DMIC and analog
+mic paths, and the changes to the machine driver enable micbias2 when Int Mic
+gets turned on. After my changes the machine driver has:
+
+	{"IN2P", NULL, "Int Mic"},
+	{"IN2N", NULL, "Int Mic"},
+  	{"DMIC L1", NULL, "Int Mic"},
+  	{"DMIC R1", NULL, "Int Mic"},
+...
+	{"Int Mic", NULL, "micbias2"},
+
+Since the analog mic is currently not working anyways, maybe we should
+use Int Mic2 for the analog mic, so make the above:
+
+	{"IN2P", NULL, "Int Mic2"},
+	{"IN2N", NULL, "Int Mic2"},
+  	{"DMIC L1", NULL, "Int Mic"},
+  	{"DMIC R1", NULL, "Int Mic"},
+...
+	{"Int Mic2", NULL, "micbias2"},
+
+And then use
+
+	cset "name='Int Mic Switch2' on"
+
+In the ucm file in the analog mic enable sequence?
+
+This way the already working dmic support stays unchanged and the
+analog mic support I'm adding does not enable micbias2 when using
+dmic inputs.
+
+?
+
+Regards,
+
+Hans
