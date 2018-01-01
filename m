@@ -1,250 +1,752 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH v1 05/15] ASoC: fsl_ssi: Clean up helper
- functions of trigger()
-Date: Mon, 1 Jan 2018 22:59:30 +0100
-Message-ID: <59aa58b7-aeda-ef87-e150-9fec9c6229ae@maciej.szmigiero.name>
-References: <1513702819-42310-1-git-send-email-nicoleotsuka@gmail.com>
- <1513702819-42310-6-git-send-email-nicoleotsuka@gmail.com>
+From: Bjorn Andersson <bjorn.andersson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [RESEND PATCH v2 02/15] soc: qcom: add support to APR bus driver
+Date: Mon, 1 Jan 2018 15:29:32 -0800
+Message-ID: <20180101232932.GK478@tuxbook>
+References: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
+ <20171214173402.19074-3-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
- by alsa0.perex.cz (Postfix) with ESMTP id 39A1A266FDE
- for <alsa-devel@alsa-project.org>; Mon,  1 Jan 2018 22:59:38 +0100 (CET)
-In-Reply-To: <1513702819-42310-6-git-send-email-nicoleotsuka@gmail.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, caleb@crome.org, timur@tabi.org, broonie@kernel.org, arnaud.mouiche@invoxia.com, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20171214173402.19074-3-srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
+Cc: Andy Gross <andy.gross-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, David Brown <david.brown-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, linux-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 19.12.2017 18:00, Nicolin Chen wrote:
-> The trigger() calls fsl_ssi_tx_config() and fsl_ssi_rx_config(),
-> and both of them jump to fsl_ssi_config(). And fsl_ssi_config()
-> later calls another fsl_ssi_rxtx_config().
+On Thu 14 Dec 09:33 PST 2017, srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org wrote:
+
+> From: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 > 
-> However, the whole routine, especially fsl_ssi_config() function,
-> is too complicated because of the folowing reasons:
-> 1) It has to handle the concern of the opposite stream.
-> 2) It has to handle cases of offline configurations support.
-> 3) It has to handle enable and disable operations while they're
->    mostly different.
+> This patch adds support toi APR bus (Asynchronous Packet Router) driver.
+> ARP driver is made as a bus driver so that the apr devices can added removed
+> more dynamically depending on the state of the services on the dsp.
+> APR is used for communication between application processor and QDSP to
+> use services on QDSP like Audio and others.
 > 
-> Since the enable and disable routines have more differences than
-> TX and RX rountines, this patch simplifies these helper functions
-> with the following changes:
-> - Changing to two helper functions of enable and disable instead
->   of TX and RX.
-> - Removing fsl_ssi_rxtx_config() by separately integrating it to
->   two newly introduced enable & disable functions.
-> 
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 > ---
->  sound/soc/fsl/fsl_ssi.c | 254 +++++++++++++++++++++++-------------------------
->  1 file changed, 119 insertions(+), 135 deletions(-)
+>  drivers/soc/qcom/Kconfig        |   8 +
+>  drivers/soc/qcom/Makefile       |   1 +
+>  drivers/soc/qcom/apr.c          | 395 ++++++++++++++++++++++++++++++++++++++++
+>  include/linux/mod_devicetable.h |  13 ++
+>  include/linux/soc/qcom/apr.h    | 174 ++++++++++++++++++
+>  5 files changed, 591 insertions(+)
+>  create mode 100644 drivers/soc/qcom/apr.c
+>  create mode 100644 include/linux/soc/qcom/apr.h
 > 
-> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> index 0f09caf..d8c8656 100644
-> --- a/sound/soc/fsl/fsl_ssi.c
-> +++ b/sound/soc/fsl/fsl_ssi.c
-> @@ -378,31 +378,81 @@ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
->  }
+> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+> index b81374bb6713..1daa39925dd4 100644
+> --- a/drivers/soc/qcom/Kconfig
+> +++ b/drivers/soc/qcom/Kconfig
+> @@ -97,4 +97,12 @@ config QCOM_WCNSS_CTRL
+>  	  Client driver for the WCNSS_CTRL SMD channel, used to download nv
+>  	  firmware to a newly booted WCNSS chip.
 >  
->  /**
-> - * Enable or disable all rx/tx config flags at once
-> + * Set SCR, SIER, STCR and SRCR registers with cached values in regvals
+> +config QCOM_APR
+> +	tristate "Qualcomm APR Bus (Asynchronous Packet Router)"
+> +	depends on (RPMSG_QCOM_SMD || RPMSG_QCOM_GLINK_RPM)
+
+The actual dependency you have is RPMSG. Specifying the individual
+transports here causes additional restrictions in how you can mix and
+match modules vs builtin (e.g. glink being builtin to get regulators
+early and smd built as a module forces apr to be built as a module)
+
+PS, the glink config you're depending on is RPMSG_QCOM_GLINK_SMEM
+
+> +	help
+> +          Enable APR IPC protocol support between
+> +          application processor and QDSP6. APR is
+> +          used by audio driver to configure QDSP6
+> +          ASM, ADM and AFE modules.
+>  endmenu
+> diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
+> index 40c56f67e94a..9daba7e6d20f 100644
+> --- a/drivers/soc/qcom/Makefile
+> +++ b/drivers/soc/qcom/Makefile
+> @@ -10,3 +10,4 @@ obj-$(CONFIG_QCOM_SMEM_STATE) += smem_state.o
+>  obj-$(CONFIG_QCOM_SMP2P)	+= smp2p.o
+>  obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
+>  obj-$(CONFIG_QCOM_WCNSS_CTRL) += wcnss_ctrl.o
+> +obj-$(CONFIG_QCOM_APR) += apr.o
+> diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
+> new file mode 100644
+> index 000000000000..c6f3aa7a375b
+> --- /dev/null
+> +++ b/drivers/soc/qcom/apr.c
+> @@ -0,0 +1,395 @@
+> +/* SPDX-License-Identifier: GPL-2.0
+> +* Copyright (c) 2011-2016, The Linux Foundation
+> +* Copyright (c) 2017, Linaro Limited
+> +*/
+
+For some tooling reason the SPDX line should be // commented, i.e this
+should be:
+
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Copyright (c) 2011-2016, The Linux Foundation
+ * Copyright (c) 2017, Linaro Limited
+ */
+
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/device.h>
+> +#include <linux/spinlock.h>
+> +#include <linux/list.h>
+> +#include <linux/slab.h>
+> +#include <linux/of_device.h>
+> +#include <linux/soc/qcom/apr.h>
+> +#include <linux/rpmsg.h>
+> +#include <linux/of.h>
+> +
+> +struct apr_data {
+> +	int (*get_data_src)(struct apr_hdr *hdr);
+> +	int dest_id;
+> +};
+> +
+> +struct apr {
+> +	struct rpmsg_endpoint *ch;
+> +	struct device *dev;
+> +	spinlock_t svcs_lock;
+> +	struct list_head svcs;
+> +	int dest_id;
+> +	const struct apr_data *data;
+> +};
+> +
+> +/* Static CORE service on the ADSP */
+> +static const struct apr_device_id core_svc_device_id =
+> +		ADSP_AUDIO_APR_DEV("CORE", APR_SVC_ADSP_CORE);
+
+How does this work out when we want to use APR for the modem services?
+
+> +
+> +/**
+> + * apr_send_pkt() - Send a apr message from apr device
 > + *
-> + * Notes:
-> + * 1) For offline_config SoCs, enable all necessary bits of both streams
-> + *    when 1st stream starts, even if the opposite stream will not start
-> + * 2) It also clears FIFO before setting regvals; SOR is safe to set online
->   */
-> -static void fsl_ssi_rxtx_config(struct fsl_ssi *ssi, bool enable)
-> +static void fsl_ssi_config_enable(struct fsl_ssi *ssi, bool tx)
->  {
-> -	struct regmap *regs = ssi->regs;
->  	struct fsl_ssi_regvals *vals = ssi->regvals;
-> +	u32 sier, srcr, stcr;
->  
-> -	if (enable) {
-> -		regmap_update_bits(regs, REG_SSI_SIER,
-> -				   vals[RX].sier | vals[TX].sier,
-> -				   vals[RX].sier | vals[TX].sier);
-> -		regmap_update_bits(regs, REG_SSI_SRCR,
-> -				   vals[RX].srcr | vals[TX].srcr,
-> -				   vals[RX].srcr | vals[TX].srcr);
-> -		regmap_update_bits(regs, REG_SSI_STCR,
-> -				   vals[RX].stcr | vals[TX].stcr,
-> -				   vals[RX].stcr | vals[TX].stcr);
-> +	/* Clear dirty data in the FIFO; It also prevents channel slipping */
-> +	regmap_update_bits(ssi->regs, REG_SSI_SOR,
-> +			   SSI_SOR_xX_CLR(tx), SSI_SOR_xX_CLR(tx));
-> +
-> +	/*
-> +	 * On offline_config SoCs, SxCR and SIER are already configured when
-> +	 * the previous stream started. So skip all SxCR and SIER settings
-> +	 * to prevent online reconfigurations, then jump to set SCR directly
-> +	 */
-> +	if (ssi->soc->offline_config && ssi->streams)
-> +		goto enable_scr;
-> +
-> +	if (ssi->soc->offline_config) {
-> +		/*
-> +		 * Online reconfiguration not supported, so enable all bits for
-> +		 * both streams at once to avoid necessity of reconfigurations
-> +		 */
-> +		srcr = vals[RX].srcr | vals[TX].srcr;
-> +		stcr = vals[RX].stcr | vals[TX].stcr;
-> +		sier = vals[RX].sier | vals[TX].sier;
->  	} else {
-> -		regmap_update_bits(regs, REG_SSI_SRCR,
-> -				   vals[RX].srcr | vals[TX].srcr, 0);
-> -		regmap_update_bits(regs, REG_SSI_STCR,
-> -				   vals[RX].stcr | vals[TX].stcr, 0);
-> -		regmap_update_bits(regs, REG_SSI_SIER,
-> -				   vals[RX].sier | vals[TX].sier, 0);
-> +		/* Otherwise, only set bits for the current stream */
-> +		srcr = vals[tx].srcr;
-> +		stcr = vals[tx].stcr;
-> +		sier = vals[tx].sier;
+> + * @adev: Pointer to previously registered apr device.
+> + * @buf: Pointer to buffer to send
+> + *
+> + * Return: Will be an negative on packet size on success.
+> + */
+> +int apr_send_pkt(struct apr_device *adev, uint32_t *buf)
 
-Implicit assumption here that RX == 0, TX == 1, as in the 03 patch.
+So buf here is a struct apr_hdr followed by arbitrary data. Passing a
+reference to an arbitrary chunk of data should be done with a void *.
+But you could turn struct apr_hdr into struct apr_packet by adding a
+flexible array member at the end of the struct and having this function
+take that data type. This would make the prototype self-documenting.
 
->  	}
+
+I do, however, not fancy the asymmetry of the send/callback interface
+exposed to the client. One takes the raw packet, as it sits in the
+transport and the other creates an abstract representation of the same.
+
+Can't you in the callback verify the data and then just pass the same
+object up to the client?
+
+> +{
+> +	struct apr *apr = dev_get_drvdata(adev->dev.parent);
+> +	struct apr_hdr *hdr;
+> +	unsigned long flags;
+> +	int ret;
 > +
-> +	/* Configure SRCR, STCR and SIER at once */
-> +	regmap_update_bits(ssi->regs, REG_SSI_SRCR, srcr, srcr);
-> +	regmap_update_bits(ssi->regs, REG_SSI_STCR, stcr, stcr);
-> +	regmap_update_bits(ssi->regs, REG_SSI_SIER, sier, sier);
+> +	spin_lock_irqsave(&adev->lock, flags);
 > +
-> +enable_scr:
-> +	/*
-> +	 * Start DMA before setting TE to avoid FIFO underrun
-> +	 * which may cause a channel slip or a channel swap
-> +	 *
-> +	 * TODO: FIQ cases might also need this upon testing
-> +	 */
-> +	if (ssi->use_dma && tx) {
-> +		int try = 100;
-> +		u32 sfcsr;
+> +	hdr = (struct apr_hdr *)buf;
+> +	hdr->src_domain = APR_DOMAIN_APPS;
+> +	hdr->src_svc = adev->svc_id;
+> +	hdr->dest_domain = adev->domain_id;
+> +	hdr->dest_svc = adev->svc_id;
 > +
-> +		/* Enable SSI first to send TX DMA request */
-> +		regmap_update_bits(ssi->regs, REG_SSI_SCR,
-> +				   SSI_SCR_SSIEN, SSI_SCR_SSIEN);
-> +
-> +		/* Busy wait until TX FIFO not empty -- DMA working */
-> +		do {
-> +			regmap_read(ssi->regs, REG_SSI_SFCSR, &sfcsr);
-> +			if (SSI_SFCSR_TFCNT0(sfcsr))
-> +				break;
-> +		} while (--try);
-> +
-> +		/* FIFO still empty -- something might be wrong */
-> +		if (!SSI_SFCSR_TFCNT0(sfcsr))
-> +			dev_warn(ssi->dev, "Timeout waiting TX FIFO filling\n");
+> +	ret = rpmsg_send(apr->ch, buf, hdr->pkt_size);
+> +	if (ret) {
+> +		dev_err(&adev->dev, "Unable to send APR pkt %d\n",
+> +			hdr->pkt_size);
+> +	} else {
+> +		ret = hdr->pkt_size;
 > +	}
-> +	/* Enable all remaining bits in SCR */
-> +	regmap_update_bits(ssi->regs, REG_SSI_SCR, vals[tx].scr, vals[tx].scr);
+> +
+> +	spin_unlock_irqrestore(&adev->lock, flags);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(apr_send_pkt);
+> +
+> +static void apr_dev_release(struct device *dev)
+> +{
+> +	struct apr_device *adev = to_apr_device(dev);
+> +
+> +	kfree(adev);
+> +}
+> +
+> +static int qcom_rpmsg_q6_callback(struct rpmsg_device *rpdev, void *buf,
+> +				  int len, void *priv, u32 addr)
+> +{
+> +	struct apr *apr = dev_get_drvdata(&rpdev->dev);
+> +	struct apr_client_data data;
+> +	struct apr_device *p, *c_svc = NULL;
+> +	struct apr_driver *adrv = NULL;
+> +	struct apr_hdr *hdr;
+> +	uint16_t hdr_size;
+> +	uint16_t msg_type;
+> +	uint16_t ver;
+> +	uint16_t src;
+> +	uint16_t svc;
+> +
+> +	if (!buf || len <= APR_HDR_SIZE) {
 
-Ditto.
+rpmsg should never call you with buf = NULL, so no reason to check for
+that.
+
+> +		dev_err(apr->dev, "APR: Improper apr pkt received:%p %d\n",
+> +			buf, len);
+> +		return -EINVAL;
+> +	}
+> +
+> +	hdr = buf;
+> +	ver = APR_HDR_FIELD_VER(hdr->hdr_field);
+> +	if (ver > APR_PKT_VER + 1)
+> +		return -EINVAL;
+> +
+> +	hdr_size = APR_HDR_FIELD_SIZE_BYTES(hdr->hdr_field);
+> +	if (hdr_size < APR_HDR_SIZE) {
+> +		dev_err(apr->dev, "APR: Wrong hdr size:%d\n", hdr_size);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (hdr->pkt_size < APR_HDR_SIZE) {
+> +		dev_err(apr->dev, "APR: Wrong paket size\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	msg_type = APR_HDR_FIELD_MT(hdr->hdr_field);
+> +	if (msg_type >= APR_MSG_TYPE_MAX && msg_type != APR_BASIC_RSP_RESULT) {
+> +		dev_err(apr->dev, "APR: Wrong message type: %d\n", msg_type);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (hdr->src_domain >= APR_DOMAIN_MAX ||
+> +			hdr->dest_domain >= APR_DOMAIN_MAX ||
+> +			hdr->src_svc >= APR_SVC_MAX ||
+> +			hdr->dest_svc >= APR_SVC_MAX) {
+> +		dev_err(apr->dev, "APR: Wrong APR header\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	svc = hdr->dest_svc;
+> +	src = apr->data->get_data_src(hdr);
+
+Couldn't we just use src_domain here instead of maintaining this mapping
+table in the driver?
+
+Also, looking at the send function, isn't this src just c_svc->svc_id?
+
+
+> +	if (src == APR_DEST_MAX)
+> +		return -EINVAL;
+> +
+> +	spin_lock(&apr->svcs_lock);
+> +	list_for_each_entry(p, &apr->svcs, node) {
+> +		if (svc == p->svc_id) {
+> +			c_svc = p;
+> +			if (c_svc->dev.driver)
+> +				adrv = to_apr_driver(c_svc->dev.driver);
+> +			break;
+> +		}
+> +	}
+
+Keep your services in a idr, keyed by svc_id. This will make the search
+O(log(n)), but more importantly it would replace this loop with a single
+idr_find().
+
+> +	spin_unlock(&apr->svcs_lock);
+> +
+> +	if (!adrv) {
+> +		dev_err(apr->dev, "APR: service is not registered\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	data.payload_size = hdr->pkt_size - hdr_size;
+> +	data.opcode = hdr->opcode;
+> +	data.src = src;
+> +	data.src_port = hdr->src_port;
+> +	data.dest_port = hdr->dest_port;
+> +	data.token = hdr->token;
+> +	data.msg_type = msg_type;
+> +
+> +	if (data.payload_size > 0)
+> +		data.payload = (char *)hdr + hdr_size;
+
+Using buf + hdr_size probably makes even more sense, and saves you from
+the typecast.
 
 > +
-> +	/* Log the enabled stream to the mask */
-> +	ssi->streams |= BIT(tx);
+> +	adrv->callback(c_svc, &data);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct apr_device_id *apr_match(const struct apr_device_id *id,
+> +					       const struct apr_device *adev)
+> +{
+> +	while (id->domain_id != 0 || id->svc_id != 0) {
+> +		if (id->domain_id == adev->domain_id &&
+> +		    id->svc_id == adev->svc_id &&
+> +		    id->client_id == adev->client_id)
 
-Ditto.
+Is the client_id significant here? As far as I can tell it's a
+identifier of the local "function". Are there multiple client drivers
+that would "attach" to the same remote service?
 
->  }
->  
->  /**
-> @@ -426,65 +476,50 @@ static void fsl_ssi_rxtx_config(struct fsl_ssi *ssi, bool enable)
->  	((vals) & _ssi_xor_shared_bits(vals, avals, aactive))
->  
->  /**
-> - * Enable or disable SSI configuration.
-> + * Unset SCR, SIER, STCR and SRCR registers with cached values in regvals
+> +			return id;
+> +		id++;
+> +	}
+> +	return NULL;
+> +}
+> +
+> +static int apr_device_match(struct device *dev, struct device_driver *drv)
+> +{
+> +	struct apr_device *adev = to_apr_device(dev);
+> +	struct apr_driver *adrv = to_apr_driver(drv);
+> +
+> +	return !!apr_match(adrv->id_table, adev);
+
+If this remain the only caller of apr_match() you could just inline the
+loop here.
+
+> +}
+> +
+> +static int apr_device_probe(struct device *dev)
+> +{
+> +	struct apr_device	*adev;
+> +	struct apr_driver	*adrv;
+
+You don't indent things elsewhere.
+
+> +	int ret = 0;
+> +
+> +	adev = to_apr_device(dev);
+> +	adrv = to_apr_driver(dev->driver);
+> +
+> +	ret = adrv->probe(adev);
+
+Drop ret and just return adrv->probe()
+
+> +
+> +	return ret;
+> +}
+> +
+> +static int apr_device_remove(struct device *dev)
+> +{
+> +	struct apr_device *adev = to_apr_device(dev);
+> +	struct apr_driver *adrv;
+> +	struct apr *apr = dev_get_drvdata(adev->dev.parent);
+> +
+> +	if (dev->driver) {
+> +		adrv = to_apr_driver(dev->driver);
+> +		if (adrv->remove)
+> +			adrv->remove(adev);
+> +		spin_lock(&apr->svcs_lock);
+> +		list_del(&adev->node);
+> +		spin_unlock(&apr->svcs_lock);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +struct bus_type aprbus_type = {
+> +	.name		= "aprbus",
+> +	.match		= apr_device_match,
+> +	.probe		= apr_device_probe,
+> +	.remove		= apr_device_remove,
+> +};
+> +EXPORT_SYMBOL_GPL(aprbus_type);
+> +
+> +/**
+> + * apr_add_device() - Add a new apr device
 > + *
-> + * Notes:
-> + * 1) For offline_config SoCs, to avoid online reconfigurations, disable all
-> + *    bits of both streams at once when the last stream is abort to end
-> + * 2) It also clears FIFO after unsetting regvals; SOR is safe to set online
->   */
-> -static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
-> -			   struct fsl_ssi_regvals *vals)
-> +static void fsl_ssi_config_disable(struct fsl_ssi *ssi, bool tx)
->  {
-> -	bool tx = &ssi->regvals[TX] == vals;
-> -	struct regmap *regs = ssi->regs;
-> -	struct fsl_ssi_regvals *avals;
-> +	struct fsl_ssi_regvals *avals, *vals = &ssi->regvals[tx];
+> + * @dev: Pointer to apr device.
+> + * @id: Pointer to apr device id to add.
+> + *
+> + * Return: Will be an negative on error or a zero on success.
+> + */
+> +int apr_add_device(struct device *dev, const struct apr_device_id *id)
+> +{
+> +	struct apr *apr = dev_get_drvdata(dev);
 
-Ditto.
+It's not obvious which dev this is, but it has to be the rpmsg device or
+this would dereference the drvdata of the wrong type and things would be
+very bad.
 
-> +	u32 sier, srcr, stcr, scr;
->  	bool aactive;
+How about making this more explicit by just taking a struct apr * as
+first argument, and then provide a helper for clients to acquire the
+struct apr * from the parent dev, if this is needed.
+
+> +	struct apr_device *adev = NULL;
+> +
+> +	if (!apr)
+> +		return -EINVAL;
+> +
+> +	adev = kzalloc(sizeof(*adev), GFP_KERNEL);
+> +	if (!adev)
+> +		return -ENOMEM;
+> +
+> +	spin_lock_init(&adev->lock);
+> +
+> +	adev->svc_id = id->svc_id;
+> +	adev->dest_id = apr->dest_id;
+> +	adev->client_id = id->client_id;
+> +	adev->domain_id = id->domain_id;
+
+Wouldn't this always be the domain of the apr? (or we're adding a device
+to the wrong apr)
+
+> +	adev->version = id->svc_version;
+> +
+> +	adev->dev.bus = &aprbus_type;
+> +	adev->dev.parent = dev;
+> +	adev->dev.release = apr_dev_release;
+> +	adev->dev.driver = NULL;
+> +
+> +	dev_set_name(&adev->dev, "apr:%s:%x:%x:%x", id->name, id->domain_id,
+> +				 id->svc_id, id->client_id);
+> +
+> +	spin_lock(&apr->svcs_lock);
+> +	list_add_tail(&adev->node, &apr->svcs);
+> +	spin_unlock(&apr->svcs_lock);
+
+This causes svcs to contain entries related to devices that has not been
+matched and probed yet (e.g. implementation is in a kernel module not
+loaded). I think you should move this to apr_device_probe().
+
+> +
+> +	return device_register(&adev->dev);
+> +}
+> +EXPORT_SYMBOL_GPL(apr_add_device);
+> +
+> +static int qcom_rpmsg_q6_probe(struct rpmsg_device *rpdev)
+> +{
+> +	struct device *dev = &rpdev->dev;
+> +	struct apr *apr;
+> +
+> +	apr = devm_kzalloc(dev, sizeof(*apr), GFP_KERNEL);
+> +	if (!apr)
+> +		return -ENOMEM;
+> +
+> +	apr->data = of_device_get_match_data(dev);
+> +	if (!apr->data)
+> +		return -ENODEV;
+> +
+> +	apr->dest_id = apr->data->dest_id;
+> +	dev_set_drvdata(dev, apr);
+> +	apr->ch = rpdev->ept;
+> +	apr->dev = dev;
+> +	INIT_LIST_HEAD(&apr->svcs);
+> +
+> +	/* register core service */
+> +	apr_add_device(dev, &core_svc_device_id);
+> +
+> +	return 0;
+> +}
+> +
+> +static int apr_remove_device(struct device *dev, void *null)
+> +{
+> +	struct apr_device *adev = to_apr_device(dev);
+> +
+> +	device_unregister(&adev->dev);
+> +
+> +	return 0;
+> +}
+> +
+> +static void qcom_rpmsg_q6_remove(struct rpmsg_device *rpdev)
+> +{
+> +	device_for_each_child(&rpdev->dev, NULL, apr_remove_device);
+> +}
+> +
+> +static int apr_v2_get_data_src(struct apr_hdr *hdr)
+> +{
+> +	if (hdr->src_domain == APR_DOMAIN_MODEM)
+> +		return APR_DEST_MODEM;
+> +	else if (hdr->src_domain == APR_DOMAIN_ADSP)
+> +		return APR_DEST_QDSP6;
+> +
+> +	return APR_DEST_MAX;
+
+The idiomatic return value here would be -EINVAL.
+
+> +}
+> +
+> +/*
+> + * __apr_driver_register() - Client driver registration with aprbus
+> + *
+> + * @drv:Client driver to be associated with client-device.
+> + * @owner: owning module/driver
+> + *
+> + * This API will register the client driver with the aprbus
+> + * It is called from the driver's module-init function.
+> + */
+> +int __apr_driver_register(struct apr_driver *drv, struct module *owner)
+> +{
+> +	/* ID table is mandatory to match the devices to probe */
+> +	if (!drv->id_table)
+> +		return -EINVAL;
+> +
+> +	drv->driver.bus = &aprbus_type;
+> +	drv->driver.owner = owner;
+> +
+> +	return driver_register(&drv->driver);
+> +}
+> +EXPORT_SYMBOL_GPL(__apr_driver_register);
+> +
+> +/*
+> + * apr_driver_unregister() - Undo effect of apr_driver_register
+> + *
+> + * @drv: Client driver to be unregistered
+> + */
+> +void apr_driver_unregister(struct apr_driver *drv)
+> +{
+> +	driver_unregister(&drv->driver);
+> +}
+> +EXPORT_SYMBOL_GPL(apr_driver_unregister);
+> +
+> +static const struct apr_data apr_v2_data = {
+> +	.get_data_src = apr_v2_get_data_src,
+> +	.dest_id = APR_DEST_QDSP6,
+> +};
+> +
+> +static const struct of_device_id qcom_rpmsg_q6_of_match[] = {
+> +	{ .compatible = "qcom,apr-msm8996", .data = &apr_v2_data},
+
+The dest_id of apr_v2_data and the use of "q6" in the name indicates
+that this is the "msm8996 adsp apr", what's your plan to support other
+apr remotes?
+
+How about making the domain id a property of the apr in DT and then just
+list the clients as nodes with svc_id, svc_version and client_id? You
+can still match by device_id (compatible can be optional), but that
+would allow you to describe either the adsp or modem apr link, of any
+platform (of that apr version), with the same compatible.
+
+> +	{}
+> +};
+> +
+> +static struct rpmsg_driver qcom_rpmsg_q6_driver = {
+> +	.probe = qcom_rpmsg_q6_probe,
+> +	.remove = qcom_rpmsg_q6_remove,
+> +	.callback = qcom_rpmsg_q6_callback,
+> +	.drv = {
+> +		.name = "qcom_rpmsg_q6",
+> +		.owner = THIS_MODULE,
+
+Drop the owner.
+
+> +		.of_match_table = qcom_rpmsg_q6_of_match,
+> +		},
+
+Indentation.
+
+> +};
+> +
+> +static int __init apr_init(void)
+> +{
+> +	int ret;
+> +
+> +	ret = register_rpmsg_driver(&qcom_rpmsg_q6_driver);
+> +	if (!ret)
+> +		return bus_register(&aprbus_type);
+
+Register the bus first, then the rpmsg driver.
+
+> +
+> +	return ret;
+> +}
+> +
+> +static void __exit apr_exit(void)
+> +{
+> +	bus_unregister(&aprbus_type);
+> +	unregister_rpmsg_driver(&qcom_rpmsg_q6_driver);
+> +}
+> +
+> +subsys_initcall(apr_init);
+> +module_exit(apr_exit);
+> +
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_DESCRIPTION("Qualcomm APR Bus");
+> diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
+> index abb6dc2ebbf8..068d215c3be6 100644
+> --- a/include/linux/mod_devicetable.h
+> +++ b/include/linux/mod_devicetable.h
+> @@ -452,6 +452,19 @@ struct spi_device_id {
+>  	kernel_ulong_t driver_data;	/* Data private to the driver */
+>  };
 >  
->  	/* Check if the opposite stream is active */
->  	aactive = ssi->streams & BIT(!tx);
->  
-> -	/* Get the opposite direction to keep its values untouched */
-> -	if (&ssi->regvals[RX] == vals)
-> -		avals = &ssi->regvals[TX];
-> -	else
-> -		avals = &ssi->regvals[RX];
-> -
-> -	if (!enable) {
-> -		/*
-> -		 * To keep the other stream safe, exclude shared bits between
-> -		 * both streams, and get safe bits to disable current stream
-> -		 */
-> -		u32 scr = ssi_excl_shared_bits(vals->scr, avals->scr, aactive);
-> -		/* Safely disable SCR register for the stream */
-> -		regmap_update_bits(regs, REG_SSI_SCR, scr, 0);
-> -
-> -		/* Log the disabled stream to the mask */
-> -		ssi->streams &= ~BIT(tx);
-> -	}
-> +	/* Get regvals of the opposite stream to keep opposite stream safe */
-> +	avals = &ssi->regvals[!tx];
+> +
 
-Ditto.
+One newline is enough.
 
->  
->  	/*
-> -	 * For cases where online configuration is not supported,
-> -	 * 1) Enable all necessary bits of both streams when 1st stream starts
-> -	 *    even if the opposite stream will not start
-> -	 * 2) Disable all remaining bits of both streams when last stream ends
-> +	 * To keep the other stream safe, exclude shared bits between
-> +	 * both streams, and get safe bits to disable current stream
->  	 */
-> -	if (ssi->soc->offline_config) {
-> -		if ((enable && !ssi->streams) || (!enable && !aactive))
-> -			fsl_ssi_rxtx_config(ssi, enable);
-> +	scr = ssi_excl_shared_bits(vals->scr, avals->scr, aactive);
->  
-> -		goto config_done;
-> -	}
-> +	/* Disable safe bits of SCR register for the current stream */
-> +	regmap_update_bits(ssi->regs, REG_SSI_SCR, scr, 0);
->  
-> -	/* Online configure single direction while SSI is running */
-> -	if (enable) {
-> -		/* Clear FIFO to prevent dirty data or channel slipping */
-> -		regmap_update_bits(ssi->regs, REG_SSI_SOR,
-> -				   SSI_SOR_xX_CLR(tx), SSI_SOR_xX_CLR(tx));
-> +	/* Log the disabled stream to the mask */
-> +	ssi->streams &= ~BIT(tx);
+> +#define APR_NAME_SIZE	32
+> +#define APR_MODULE_PREFIX "apr:"
+> +
+> +struct apr_device_id {
+> +	char name[APR_NAME_SIZE];
 
-Ditto.
+Does this name has any meaning? As far as I can see we're matching on
+the other parameters and use the name only to name the device.
 
-Maciej
+> +	__u32 domain_id;
+> +	__u32 svc_id;
+> +	__u32 client_id;
+> +	__u32 svc_version;
+> +	kernel_ulong_t driver_data;	/* Data private to the driver */
+> +};
+> +
+>  #define SPMI_NAME_SIZE	32
+>  #define SPMI_MODULE_PREFIX "spmi:"
+>  
+> diff --git a/include/linux/soc/qcom/apr.h b/include/linux/soc/qcom/apr.h
+> new file mode 100644
+> index 000000000000..8620289c34ab
+> --- /dev/null
+> +++ b/include/linux/soc/qcom/apr.h
+> @@ -0,0 +1,174 @@
+> +/* SPDX-License-Identifier: GPL-2.0
+> +* Copyright (c) 2011-2016, The Linux Foundation
+> +* Copyright (c) 2017, Linaro Limited
+> +*/
+> +
+> +#ifndef __APR_H_
+> +#define __APR_H_
+> +
+> +#include <linux/spinlock.h>
+> +#include <linux/device.h>
+> +#include <linux/mod_devicetable.h>
+> +/* APR Client IDs */
+> +#define APR_CLIENT_AUDIO	0x0
+> +#define APR_CLIENT_VOICE	0x1
+> +#define APR_CLIENT_MAX		0x2
+> +
+> +#define APR_DL_SMD    0
+> +#define APR_DL_MAX    1
+
+Unused.
+
+> +
+> +#define APR_DEST_MODEM 0
+> +#define APR_DEST_QDSP6 1
+> +#define APR_DEST_MAX   2
+> +#define APR_MAX_BUF   8192
+> +
+> +#define APR_HDR_LEN(hdr_len) ((hdr_len)/4)
+> +#define APR_PKT_SIZE(hdr_len, payload_len) ((hdr_len) + (payload_len))
+> +#define APR_HDR_FIELD(msg_type, hdr_len, ver)\
+> +	(((msg_type & 0x3) << 8) | ((hdr_len & 0xF) << 4) | (ver & 0xF))
+> +
+> +#define APR_HDR_SIZE sizeof(struct apr_hdr)
+> +#define APR_SEQ_CMD_HDR_FIELD APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD, \
+> +					    APR_HDR_LEN(APR_HDR_SIZE), \
+> +					    APR_PKT_VER)
+
+So for the tx path these macros are to be used by the client and for the
+rx path they are to be used by the apr driver. Better make the api
+symmetrical.
+
+One possible path is to use an sk_buf for the tx-path and reserve space
+for the header, then pass the abstract version of the packet and let the
+apr driver fill out the header.
+
+> +
+> +/* Version */
+> +#define APR_PKT_VER		0x0
+> +
+> +/* Command and Response Types */
+> +#define APR_MSG_TYPE_EVENT	0x0
+> +#define APR_MSG_TYPE_CMD_RSP	0x1
+> +#define APR_MSG_TYPE_SEQ_CMD	0x2
+> +#define APR_MSG_TYPE_NSEQ_CMD	0x3
+> +#define APR_MSG_TYPE_MAX	0x04
+> +
+> +/* APR Basic Response Message */
+> +#define APR_BASIC_RSP_RESULT 0x000110E8
+> +#define APR_RSP_ACCEPTED     0x000100BE
+> +
+> +/* Domain IDs */
+> +#define APR_DOMAIN_SIM	0x1
+> +#define APR_DOMAIN_PC		0x2
+> +#define APR_DOMAIN_MODEM	0x3
+> +#define APR_DOMAIN_ADSP	0x4
+> +#define APR_DOMAIN_APPS	0x5
+> +#define APR_DOMAIN_MAX	0x6
+> +
+> +/* ADSP service IDs */
+> +#define APR_SVC_TEST_CLIENT     0x2
+> +#define APR_SVC_ADSP_CORE	0x3
+> +#define APR_SVC_AFE		0x4
+> +#define APR_SVC_VSM		0x5
+> +#define APR_SVC_VPM		0x6
+> +#define APR_SVC_ASM		0x7
+> +#define APR_SVC_ADM		0x8
+> +#define APR_SVC_ADSP_MVM	0x09
+> +#define APR_SVC_ADSP_CVS	0x0A
+> +#define APR_SVC_ADSP_CVP	0x0B
+> +#define APR_SVC_USM		0x0C
+> +#define APR_SVC_LSM		0x0D
+> +#define APR_SVC_VIDC		0x16
+> +#define APR_SVC_MAX		0x17
+> +
+> +/* Modem Service IDs */
+> +#define APR_SVC_MVS		0x3
+> +#define APR_SVC_MVM		0x4
+> +#define APR_SVC_CVS		0x5
+> +#define APR_SVC_CVP		0x6
+> +#define APR_SVC_SRD		0x7
+> +
+> +/* APR Port IDs */
+> +#define APR_MAX_PORTS		0x80
+> +#define APR_NAME_MAX		0x40
+> +#define RESET_EVENTS		0x000130D7
+> +
+> +/* hdr field Ver [0:3], Size [4:7], Message type [8:10] */
+> +#define APR_HDR_FIELD_VER(h)		(h & 0x000F)
+> +#define APR_HDR_FIELD_SIZE(h)		((h & 0x00F0) >> 4)
+> +#define APR_HDR_FIELD_SIZE_BYTES(h)	(((h & 0x00F0) >> 4) * 4)
+> +#define APR_HDR_FIELD_MT(h)		((h & 0x0300) >> 8)
+> +
+> +struct apr_hdr {
+> +	uint16_t hdr_field;
+> +	uint16_t pkt_size;
+> +	uint8_t src_svc;
+> +	uint8_t src_domain;
+> +	uint16_t src_port;
+> +	uint8_t dest_svc;
+> +	uint8_t dest_domain;
+> +	uint16_t dest_port;
+> +	uint32_t token;
+> +	uint32_t opcode;
+> +};
+> +
+> +struct apr_client_data {
+
+Perhaps name this apr_client_message or similar, to indicate that this
+is not a per-client thing, but a description of a message/packet.
+
+> +	uint16_t payload_size;
+> +	uint16_t hdr_len;
+> +	uint16_t msg_type;
+> +	uint16_t src;
+> +	uint16_t dest_svc;
+> +	uint16_t src_port;
+> +	uint16_t dest_port;
+> +	uint32_t token;
+> +	uint32_t opcode;
+> +	void *payload;
+> +};
+> +
+
+Regards,
+Bjorn
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
