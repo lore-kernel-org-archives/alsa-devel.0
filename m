@@ -1,29 +1,25 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: Cherry Trail + RT5645 devices analog microphone
-	not working.
-Date: Tue, 2 Jan 2018 20:23:52 +0100
-Message-ID: <c967d3b0-2703-a06e-028f-d39e54c8abbc@redhat.com>
-References: <d42279d7-0350-563f-fca7-27f32cb9e9ee@redhat.com>
- <ABFD875FF5FB574BA706497D987D48D7027476BE@RTITMBSV02.realtek.com.tw>
- <6ccb2c4c-042f-46c0-5247-90f79d49c840@redhat.com>
- <ABFD875FF5FB574BA706497D987D48D70274A822@RTITMBSV02.realtek.com.tw>
- <a0540986-369c-5bca-424f-102391d85095@redhat.com>
- <ABFD875FF5FB574BA706497D987D48D70274DD33@RTITMBSV02.realtek.com.tw>
- <7dcc5148-dd01-ddbb-516b-51ffd4f1c31a@redhat.com>
- <ABFD875FF5FB574BA706497D987D48D70274F5AB@RTITMBSV02.realtek.com.tw>
- <f98183ba-0811-4688-24c6-a50790709282@redhat.com>
- <ABFD875FF5FB574BA706497D987D48D7027513B3@RTITMBSV02.realtek.com.tw>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 15/27] ALSA: hda - Use
+ timecounter_initialize interface
+Date: Tue, 2 Jan 2018 13:53:01 -0600
+Message-ID: <9f09abee-68b8-4515-131f-0f3e210503b0@linux.intel.com>
+References: <1513323522-15021-1-git-send-email-sagar.a.kamble@intel.com>
+ <1513323522-15021-16-git-send-email-sagar.a.kamble@intel.com>
+ <s5hh8ssgsaw.wl-tiwai@suse.de> <20171215165125.avkz25eek56i5md4@localhost>
+ <s5h4lorx6ha.wl-tiwai@suse.de>
+ <b0d5ff40-fbfe-e5b3-2844-7d930484e87f@intel.com>
+ <20171228164944.crphv46zegvwautk@localhost>
+ <1a9a1507-7ca3-459b-c2ce-02fc2afad2ff@intel.com>
+ <3c5734a2-8f97-4a8b-26d4-42852cc86352@linux.intel.com>
+ <20180102182146.vbfnihz73lhgf6lc@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f182.google.com (mail-wr0-f182.google.com
- [209.85.128.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 211AC26751B
- for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2018 20:23:54 +0100 (CET)
-Received: by mail-wr0-f182.google.com with SMTP id o15so17302019wrf.12
- for <alsa-devel@alsa-project.org>; Tue, 02 Jan 2018 11:23:54 -0800 (PST)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D7027513B3@RTITMBSV02.realtek.com.tw>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E455267556
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2018 20:53:03 +0100 (CET)
+In-Reply-To: <20180102182146.vbfnihz73lhgf6lc@localhost>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,102 +30,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Richard Cochran <richardcochran@gmail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Thomas Gleixner <tglx@linutronix.de>, Sagar Arun Kamble <sagar.a.kamble@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Bard,
-
-On 02-01-18 03:41, Bard Liao wrote:
->> -----Original Message-----
->> From: Hans de Goede [mailto:hdegoede@redhat.com]
->> Sent: Monday, January 01, 2018 8:32 PM
->> To: Bard Liao
->> Cc: Pierre-Louis Bossart; alsa-devel@alsa-project.org
->> Subject: Re: Cherry Trail + RT5645 devices analog microphone not working.
->>
->> Hi,
->>
->> On 29-12-17 03:10, Bard Liao wrote:
->>>> Some questions for you:
->>>>
->>>> 1) I think enabling micbias2 may be a problem on devices with a DMIC,
->>>> could this be a problem?  Currently the codec driver itself contains
->>>> quirks for dmic pin-mapping, maybe we should leave micbias2 disabled
->>>> if dmic pin-mapping is specified through a quirk?
->>>
->>> No, micbias2 and DMIC are independent and micbias2 will not be enabled
->>> if we don't add it in the audio route. So I don't think we need to disable it
->>> if dmic pin-mapping is specified.
->>
->> Right, but currently we use the "Int Mic" switch in both the DMIC and analog
->> mic paths, and the changes to the machine driver enable micbias2 when Int
->> Mic
->> gets turned on. After my changes the machine driver has:
->>
->> 	{"IN2P", NULL, "Int Mic"},
->> 	{"IN2N", NULL, "Int Mic"},
->>    	{"DMIC L1", NULL, "Int Mic"},
->>    	{"DMIC R1", NULL, "Int Mic"},
->> ...
->> 	{"Int Mic", NULL, "micbias2"},
->>
->> Since the analog mic is currently not working anyways, maybe we should
->> use Int Mic2 for the analog mic, so make the above:
+On 1/2/18 12:21 PM, Richard Cochran wrote:
+> On Tue, Jan 02, 2018 at 11:15:45AM -0600, Pierre-Louis Bossart wrote:
+>> I wrote the code for HDaudio and I remember wasting time trying to figure
+>> out the gory details of the cycle counter stuff when all I wanted was a
+>> conversion from a 24MHz counter to ns values using a 125/3 operation in the
+>> right order - as explained in the comments
 > 
-> Do you mean the analog mic doesn't work with above change?
+> Would using clocks_calc_mult_shift() work for you?
 
-It does work with the above changes, what I mean is that it does
-not work without the patch series which I've just send out, sorry
-for the confusion.
+In theory yes, but I'd need to re-check what the results would be.
+I remember applying the 1/3 factor separately to avoid wrap-around after 
+4 hours [1], but I can't remember the details on the analysis. I can't 
+figure out what the 'maxsec' argument should be either.
 
-What I was trying to say is that using a new dapm widget with a
-new name for the analog mic will NOT break existing ucm files
-since on older kernels, without the latest patches it will not
-work because of the lacking patches.
-
-> Could you dump registers for me?
-
-No need, everything works now, also see the series I just send
-out thank you for all your help!
-
->> 	{"IN2P", NULL, "Int Mic2"},
->> 	{"IN2N", NULL, "Int Mic2"},
->>    	{"DMIC L1", NULL, "Int Mic"},
->>    	{"DMIC R1", NULL, "Int Mic"},
->> ...
->> 	{"Int Mic2", NULL, "micbias2"},
->>
->> And then use
->>
->> 	cset "name='Int Mic Switch2' on"
-> 
-> It will be cset "name='Int Mic2 Switch' on"
-> And you will also need to add "Int Mic2" in cht_mc_controls[].
-> 
->>
->> In the ucm file in the analog mic enable sequence?
->>
->> This way the already working dmic support stays unchanged and the
->> analog mic support I'm adding does not enable micbias2 when using
->> dmic inputs.
-> 
-> If you are using dmic inputs, you will need to set below switches on
-> "Sto1 ADC MIXL ADC2 Switch"
-> "Sto1 ADC MIXR ADC2 Switch"
-> And below switches are for analog mics
-> "Sto1 ADC MIXL ADC1 Switch"
-> "Sto1 ADC MIXR ADC1 Switch"
-> So you can select dmic or amic by rt5645's mixer.
-
-
-
-> But, anyway it's a good idea to add a new widget for analog mic.
-
-Ok, I've just send out a patch series with your fixes to the codec
-driver + a patch to sound/soc/intel/boards/cht_bsw_rt5645.c
-adding a new "Int Analog Mic" DAPM widget for this.
-
-Regards,
-
-Hans
+[1] 
+http://elixir.free-electrons.com/linux/latest/source/sound/hda/hdac_stream.c#L486
