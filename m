@@ -1,97 +1,73 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] slimbus: qcom-ctrl: use normal allocation
-Date: Tue,  2 Jan 2018 11:48:54 +0100
-Message-ID: <20180102104909.1369737-1-arnd@arndb.de>
+From: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Subject: [PATCH 00/12] mediatek: rework audio subsystem driver
+Date: Tue, 2 Jan 2018 19:47:09 +0800
+Message-ID: <cover.1514881870.git.ryder.lee@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A3F82668F0
- for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2018 11:49:11 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, Sagar Dharia <sdharia@codeaurora.org>, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Stephen Boyd <sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Cc: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The previous patch addressed a warning but not the cause:
+Hi all,
 
-drivers/slimbus/qcom-ctrl.c: In function 'qcom_slim_probe':
-drivers/slimbus/qcom-ctrl.c:584:9: error: passing argument 3 of 'dmam_alloc_coherent' from incompatible pointer type [-Werror=incompatible-pointer-types]
+This patch series mainly adds a common driver [5][6] for the top block of
+the MediaTek audio subsystem, which includes clock part and audio components.
+This is a minimal driver that manages shared resources like shared registers,
+and expose a regmap to its sub-nodes. It was tested on the bananapi-r2 and
+the MT2701 EVB.
 
-There are two things wrong here:
+Also, this driver can be reused by other subsystems (e.g. MMSYS, ETHSYS) in
+future patch.
 
-- The naming is very confusing, we now have a member named 'phys'
-  that doesn't refer to a phys_addr_t but a dma_addr_t. If we needed
-  a dma address, it should be named 'dma' to avoid confusion, and
-  to make it less likely that someone passes it into a function that
-  expects a physical address.
+Patch[1]-[4]: rework for audio enable/disable sequences and update some part of
+			  code to make them more generic.
+Patch[7]~[12]: modify both drivers, audio and clock to adapt the new subsystem.
 
-- The dma address is not used at all at this point. It may have been
-  designed to support DMA in the future, but today it doesn't, so
-  the only effect right now is to make transfers artificially slower
-  by using uncached memory instead of cached memory for a temporary
-  buffer.
+Ryder Lee (12):
+  ASoC: mediatek: fix error handling in mt2701_afe_pcm_dev_probe()
+  ASoC: mediatek: rework clock functions for MT2701
+  ASoC: mediatek: cleanup audio driver for MT2701
+  ASoC: mediatek: update clock related properties of MT2701 AFE
+  mfd: mtk-audsys: add MediaTek audio subsystem driver
+  mfd: add DT bindings for MedaiTek audio subsystem
+  ASoC: mediatek: modify MT2701 AFE driver to adapt subsystem wrapper
+  ASoC: mediatek: modify documentation to adapt subsystem wrapper
+  clk: mediatek: move part of mtk_clk_register_gates() to the new
+    function
+  clk: mediatek: switch to use dev_get_regmap() for MT7622 audsys
+  clk: mediatek: add audsys support for MT2701
+  dt-bindings: clock: mediatek: update audsys bindings to adapt the
+    wrapper
 
-This removes the unused structure member and instead changes the code
-to call devm_kcalloc(), which matches the usage of the 'base' pointer
-as an array of temporary buffers.
+ .../bindings/arm/mediatek/mediatek,audsys.txt      |  19 +-
+ .../devicetree/bindings/mfd/mtk-audsys.txt         | 109 +++++
+ .../devicetree/bindings/sound/mt2701-afe-pcm.txt   | 257 +++++-----
+ drivers/clk/mediatek/Kconfig                       |   6 +
+ drivers/clk/mediatek/Makefile                      |   1 +
+ drivers/clk/mediatek/clk-mt2701-aud.c              | 180 +++++++
+ drivers/clk/mediatek/clk-mt7622-aud.c              |  11 +-
+ drivers/clk/mediatek/clk-mtk.c                     |  26 +-
+ drivers/clk/mediatek/clk-mtk.h                     |   4 +
+ drivers/mfd/Kconfig                                |   9 +
+ drivers/mfd/Makefile                               |   2 +
+ drivers/mfd/mtk-audsys.c                           | 138 ++++++
+ include/dt-bindings/clock/mt7622-clk.h             |   3 +-
+ sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c  | 526 +++++++--------------
+ sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.h  |  15 +-
+ sound/soc/mediatek/mt2701/mt2701-afe-common.h      |  84 +---
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c         | 212 +++------
+ sound/soc/mediatek/mt2701/mt2701-reg.h             |  42 +-
+ 18 files changed, 860 insertions(+), 784 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/mtk-audsys.txt
+ create mode 100644 drivers/clk/mediatek/clk-mt2701-aud.c
+ create mode 100644 drivers/mfd/mtk-audsys.c
 
-Fixes: db809859c8ce ("slimbus: qcom: fix incompatible pointer warning")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/slimbus/qcom-ctrl.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/slimbus/qcom-ctrl.c b/drivers/slimbus/qcom-ctrl.c
-index f51de1277912..fb1a5e0eb8dd 100644
---- a/drivers/slimbus/qcom-ctrl.c
-+++ b/drivers/slimbus/qcom-ctrl.c
-@@ -13,7 +13,6 @@
- #include <linux/delay.h>
- #include <linux/clk.h>
- #include <linux/of.h>
--#include <linux/dma-mapping.h>
- #include <linux/pm_runtime.h>
- #include "slimbus.h"
- 
-@@ -93,7 +92,6 @@
- 
- struct slim_ctrl_buf {
- 	void		*base;
--	dma_addr_t	phy;
- 	spinlock_t	lock;
- 	int		head;
- 	int		tail;
-@@ -579,17 +577,15 @@ static int qcom_slim_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_rclk_enable_failed;
- 
--	ctrl->tx.base = dmam_alloc_coherent(&pdev->dev,
--					   (ctrl->tx.sl_sz * ctrl->tx.n),
--					   &ctrl->tx.phy, GFP_KERNEL);
-+	ctrl->tx.base = devm_kcalloc(&pdev->dev, ctrl->tx.n, ctrl->tx.sl_sz,
-+				     GFP_KERNEL);
- 	if (!ctrl->tx.base) {
- 		ret = -ENOMEM;
- 		goto err;
- 	}
- 
--	ctrl->rx.base = dmam_alloc_coherent(&pdev->dev,
--					   (ctrl->rx.sl_sz * ctrl->rx.n),
--					   &ctrl->rx.phy, GFP_KERNEL);
-+	ctrl->rx.base = devm_kcalloc(&pdev->dev,ctrl->rx.n, ctrl->rx.sl_sz,
-+				     GFP_KERNEL);
- 	if (!ctrl->rx.base) {
- 		ret = -ENOMEM;
- 		goto err;
 -- 
-2.9.0
+1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
