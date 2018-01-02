@@ -1,93 +1,133 @@
 From: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Subject: [PATCH 01/12] ASoC: mediatek: fix error handling in mt2701_afe_pcm_dev_probe()
-Date: Tue, 2 Jan 2018 19:47:18 +0800
-Message-ID: <6081b70610c31f2c92ae1b83decb887a3f690f80.1514881870.git.ryder.lee@mediatek.com>
+Subject: [PATCH 07/12] ASoC: mediatek: modify MT2701 AFE driver to adapt subsystem wrapper
+Date: Tue, 2 Jan 2018 19:47:32 +0800
+Message-ID: <f1d6e5ebbfc6276f17e94f9a2669f6074ed65d41.1514881870.git.ryder.lee@mediatek.com>
 References: <cover.1514881870.git.ryder.lee@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <cover.1514881870.git.ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Cc: Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Stephen Boyd <sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Fix unbalanced error handling path which will get incorrect counts
-if probe failed. The .remove() should be adjusted accordingly.
+As the new audio subsystem wrapper is in place, modify MT2701 AFE driver
+to adapt it.
 
 Signed-off-by: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Tested-by: Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 ---
- sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 31 ++++++++++++++----------------
- 1 file changed, 14 insertions(+), 17 deletions(-)
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 42 ++++++++++++------------------
+ sound/soc/mediatek/mt2701/mt2701-reg.h     |  1 -
+ 2 files changed, 17 insertions(+), 26 deletions(-)
 
 diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-index 8fda182..a7362d1 100644
+index 0edadca..de4ce3a 100644
 --- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
 +++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-@@ -1590,12 +1590,16 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+@@ -1368,14 +1368,6 @@ static int mt2701_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
+ 	},
+ };
+ 
+-static const struct regmap_config mt2701_afe_regmap_config = {
+-	.reg_bits = 32,
+-	.reg_stride = 4,
+-	.val_bits = 32,
+-	.max_register = AFE_END_ADDR,
+-	.cache_type = REGCACHE_NONE,
+-};
+-
+ static irqreturn_t mt2701_asys_isr(int irq_id, void *dev)
+ {
+ 	int id;
+@@ -1414,9 +1406,9 @@ static int mt2701_afe_runtime_resume(struct device *dev)
+ 
+ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+ {
++	struct snd_soc_component *component;
+ 	struct mtk_base_afe *afe;
+ 	struct mt2701_afe_private *afe_priv;
+-	struct resource *res;
+ 	struct device *dev;
+ 	int i, irq_id, ret;
+ 
+@@ -1446,17 +1438,9 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-
+-	afe->base_addr = devm_ioremap_resource(&pdev->dev, res);
+-
+-	if (IS_ERR(afe->base_addr))
+-		return PTR_ERR(afe->base_addr);
+-
+-	afe->regmap = devm_regmap_init_mmio(&pdev->dev, afe->base_addr,
+-		&mt2701_afe_regmap_config);
+-	if (IS_ERR(afe->regmap))
+-		return PTR_ERR(afe->regmap);
++	afe->regmap = dev_get_regmap(dev->parent, NULL);
++	if (!afe->regmap)
++		return -ENODEV;
+ 
+ 	mutex_init(&afe->irq_alloc_lock);
+ 
+@@ -1490,6 +1474,12 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+ 			= &mt2701_i2s_data[i][I2S_IN];
+ 	}
+ 
++	component = kzalloc(sizeof(*component), GFP_KERNEL);
++	if (!component)
++		return -ENOMEM;
++
++	component->regmap = afe->regmap;
++
+ 	afe->mtk_afe_hardware = &mt2701_afe_hardware;
+ 	afe->memif_fs = mt2701_memif_fs;
+ 	afe->irq_fs = mt2701_irq_fs;
+@@ -1502,7 +1492,7 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+ 	ret = mt2701_init_clock(afe);
+ 	if (ret) {
+ 		dev_err(dev, "init clock error\n");
+-		return ret;
++		goto err_init_clock;
  	}
  
  	platform_set_drvdata(pdev, afe);
--	pm_runtime_enable(&pdev->dev);
--	if (!pm_runtime_enabled(&pdev->dev))
--		goto err_pm_disable;
--	pm_runtime_get_sync(&pdev->dev);
- 
--	ret = snd_soc_register_platform(&pdev->dev, &mtk_afe_pcm_platform);
-+	pm_runtime_enable(dev);
-+	if (!pm_runtime_enabled(dev)) {
-+		ret = mt2701_afe_runtime_resume(dev);
-+		if (ret)
-+			goto err_pm_disable;
-+	}
-+	pm_runtime_get_sync(dev);
-+
-+	ret = snd_soc_register_platform(dev, &mtk_afe_pcm_platform);
- 	if (ret) {
- 		dev_warn(dev, "err_platform\n");
+@@ -1521,10 +1511,10 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
  		goto err_platform;
-@@ -1610,35 +1614,28 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
- 		goto err_dai_component;
  	}
  
--	mt2701_afe_runtime_resume(&pdev->dev);
--
- 	return 0;
- 
- err_dai_component:
--	snd_soc_unregister_component(&pdev->dev);
--
-+	snd_soc_unregister_platform(dev);
- err_platform:
--	snd_soc_unregister_platform(&pdev->dev);
--
-+	pm_runtime_put_sync(dev);
+-	ret = snd_soc_register_component(&pdev->dev,
+-					 &mt2701_afe_pcm_dai_component,
+-					 mt2701_afe_pcm_dais,
+-					 ARRAY_SIZE(mt2701_afe_pcm_dais));
++	ret = snd_soc_add_component(dev, component,
++				    &mt2701_afe_pcm_dai_component,
++				    mt2701_afe_pcm_dais,
++				    ARRAY_SIZE(mt2701_afe_pcm_dais));
+ 	if (ret) {
+ 		dev_warn(dev, "err_dai_component\n");
+ 		goto err_dai_component;
+@@ -1538,6 +1528,8 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+ 	pm_runtime_put_sync(dev);
  err_pm_disable:
--	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_disable(dev);
+ 	pm_runtime_disable(dev);
++err_init_clock:
++	kfree(component);
  
  	return ret;
  }
+diff --git a/sound/soc/mediatek/mt2701/mt2701-reg.h b/sound/soc/mediatek/mt2701/mt2701-reg.h
+index f17c76f..18e6769 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-reg.h
++++ b/sound/soc/mediatek/mt2701/mt2701-reg.h
+@@ -145,5 +145,4 @@
+ #define ASYS_I2S_CON_WIDE_MODE_SET(x)	((x) << 1)
+ #define ASYS_I2S_IN_PHASE_FIX		(0x1 << 31)
  
- static int mt2701_afe_pcm_dev_remove(struct platform_device *pdev)
- {
--	struct mtk_base_afe *afe = platform_get_drvdata(pdev);
--
-+	pm_runtime_put_sync(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		mt2701_afe_runtime_suspend(&pdev->dev);
--	pm_runtime_put_sync(&pdev->dev);
- 
- 	snd_soc_unregister_component(&pdev->dev);
- 	snd_soc_unregister_platform(&pdev->dev);
--	/* disable afe clock */
--	mt2701_afe_disable_clock(afe);
-+
- 	return 0;
- }
- 
+-#define AFE_END_ADDR 0x15e0
+ #endif
 -- 
 1.9.1
 
