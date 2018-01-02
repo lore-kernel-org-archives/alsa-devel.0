@@ -1,17 +1,19 @@
-From: Ryder Lee <ryder.lee@mediatek.com>
-Subject: [PATCH 05/12] mfd: mtk-audsys: add MediaTek audio
-	subsystem driver
-Date: Tue, 2 Jan 2018 19:47:30 +0800
-Message-ID: <fbe22b0d78c41b121f04202dcbfcd0cc23a7590d.1514881870.git.ryder.lee@mediatek.com>
-References: <cover.1514881870.git.ryder.lee@mediatek.com>
+From: Floris Bos <bos@je-eigen-domein.nl>
+Subject: Fixing snd_pcm_indirect_playback_transfer to support
+	rewinds?
+Date: Tue, 2 Jan 2018 13:10:14 +0100
+Message-ID: <e8036085-44f7-d491-980a-efde3e9b46f4@je-eigen-domein.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
- by alsa0.perex.cz (Postfix) with ESMTP id D05432673D3
- for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2018 12:47:39 +0100 (CET)
-In-Reply-To: <cover.1514881870.git.ryder.lee@mediatek.com>
+Received: from mx2.je-eigen-domein.nl (mx2.je-eigen-domein.nl [85.10.196.86])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23FA0267035
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2018 13:10:16 +0100 (CET)
+Received: from [127.0.0.1] (localhost.localdomain [127.0.0.1])
+ by mx2.je-eigen-domein.nl (Postfix) with ESMTP id D85241C40150
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2018 13:10:14 +0100 (CET)
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,197 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Ryder Lee <ryder.lee@mediatek.com>, Garlic Tseng <garlic.tseng@mediatek.com>, Stephen Boyd <sboyd@codeaurora.org>, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add a common driver for the top block of the MediaTek audio subsystem.
-This is a wrapper which manages resources for audio components.
-
-Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
----
- drivers/mfd/Kconfig      |   9 ++++
- drivers/mfd/Makefile     |   2 +
- drivers/mfd/mtk-audsys.c | 138 +++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 149 insertions(+)
- create mode 100644 drivers/mfd/mtk-audsys.c
-
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 1d20a80..ea50b51 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -368,6 +368,15 @@ config MFD_MC13XXX_I2C
- 	help
- 	  Select this if your MC13xxx is connected via an I2C bus.
- 
-+config MFD_MEDIATEK_AUDSYS
-+	tristate "MediaTek audio subsystem interface"
-+	select MDF_CORE
-+	select REGMAP_MMIO
-+	help
-+	  Select this if you have a audio subsystem in MediaTek SoC.
-+	  The audio subsystem has at least a clock driver part and some
-+	  audio components.
-+
- config MFD_MXS_LRADC
- 	tristate "Freescale i.MX23/i.MX28 LRADC"
- 	depends on ARCH_MXS || COMPILE_TEST
-diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index d9474ad..3e20927 100644
---- a/drivers/mfd/Makefile
-+++ b/drivers/mfd/Makefile
-@@ -101,6 +101,8 @@ obj-$(CONFIG_MFD_MC13XXX)	+= mc13xxx-core.o
- obj-$(CONFIG_MFD_MC13XXX_SPI)	+= mc13xxx-spi.o
- obj-$(CONFIG_MFD_MC13XXX_I2C)	+= mc13xxx-i2c.o
- 
-+obj-$(CONFIG_MFD_MEDIATEK_AUDSYS) += mtk-audsys.o
-+
- obj-$(CONFIG_MFD_CORE)		+= mfd-core.o
- 
- obj-$(CONFIG_EZX_PCAP)		+= ezx-pcap.o
-diff --git a/drivers/mfd/mtk-audsys.c b/drivers/mfd/mtk-audsys.c
-new file mode 100644
-index 0000000..89399e1
---- /dev/null
-+++ b/drivers/mfd/mtk-audsys.c
-@@ -0,0 +1,138 @@
-+/*
-+ * Mediatek audio subsystem core driver
-+ *
-+ *  Copyright (c) 2017 MediaTek Inc.
-+ *
-+ * Author: Ryder Lee <ryder.lee@mediatek.com>
-+ *
-+ * For licencing details see kernel-base/COPYING
-+ *
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/module.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+
-+#define AUDSYS_MAX_CLK_NUM 3
-+
-+struct sys_dev {
-+	struct device *dev;
-+	struct regmap *regmap;
-+	int clk_num;
-+	struct clk *clks[];
-+};
-+
-+static const struct regmap_config aud_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+	.max_register = 0x15e0,
-+	.cache_type = REGCACHE_NONE,
-+};
-+
-+static int mtk_subsys_enable(struct sys_dev *sys)
-+{
-+	struct device *dev = sys->dev;
-+	struct clk *clk;
-+	int i, ret;
-+
-+	for (i = 0; i < sys->clk_num; i++) {
-+		clk = of_clk_get(dev->of_node, i);
-+		if (IS_ERR(clk)) {
-+			if (PTR_ERR(clk) == -EPROBE_DEFER)
-+				return -EPROBE_DEFER;
-+			break;
-+		}
-+		sys->clks[i] = clk;
-+	}
-+
-+	for (i = 0; i < sys->clk_num && sys->clks[i]; i++) {
-+		ret = clk_prepare_enable(sys->clks[i]);
-+		if (ret)
-+			goto err_enable_clks;
-+	}
-+
-+	return 0;
-+
-+err_enable_clks:
-+	while (--i >= 0)
-+		clk_disable_unprepare(sys->clks[i]);
-+
-+	return ret;
-+}
-+
-+static int mtk_subsys_probe(struct platform_device *pdev)
-+{
-+	struct sys_dev *sys;
-+	struct resource *res;
-+	void __iomem *mmio;
-+	int num, ret;
-+
-+	num = (int)of_device_get_match_data(&pdev->dev);
-+	if (!num)
-+		return -EINVAL;
-+
-+	sys = devm_kzalloc(&pdev->dev, sizeof(*sys) +
-+			   sizeof(struct clk *) * num, GFP_KERNEL);
-+	if (!sys)
-+		return -ENOMEM;
-+
-+	sys->clk_num = num;
-+	sys->dev = &pdev->dev;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	mmio = devm_ioremap_resource(sys->dev, res);
-+	if (IS_ERR(mmio))
-+		return PTR_ERR(mmio);
-+
-+	sys->regmap = devm_regmap_init_mmio(sys->dev, mmio,
-+					    &aud_regmap_config);
-+	if (IS_ERR(sys->regmap))
-+		return PTR_ERR(sys->regmap);
-+
-+	platform_set_drvdata(pdev, sys);
-+
-+	/* Enable top level clocks */
-+	ret = mtk_subsys_enable(sys);
-+	if (ret)
-+		return ret;
-+
-+	return devm_of_platform_populate(sys->dev);
-+};
-+
-+static int mtk_subsys_remove(struct platform_device *pdev)
-+{
-+	struct sys_dev *sys = platform_get_drvdata(pdev);
-+	int i;
-+
-+	for (i = sys->clk_num - 1; i >= 0; i--)
-+		if (sys->clks[i])
-+			clk_disable_unprepare(sys->clks[i]);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id of_match_audsys[] = {
-+	{
-+	  .compatible = "mediatek,mt2701-audsys-core",
-+	  .data = (void *)AUDSYS_MAX_CLK_NUM,
-+	},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(platform, of_match_audsys);
-+
-+static struct platform_driver audsys_drv = {
-+	.probe = mtk_subsys_probe,
-+	.remove	= mtk_subsys_remove,
-+	.driver = {
-+		.name = "mediatek-audsys-core",
-+		.of_match_table = of_match_ptr(of_match_audsys),
-+	},
-+};
-+
-+builtin_platform_driver(audsys_drv);
-+
-+MODULE_DESCRIPTION("Mediatek audio subsystem core driver");
-+MODULE_LICENSE("GPL");
--- 
-1.9.1
+SGksCgoKSSBhbSBiZWVuIGhhdmluZyBwcm9ibGVtcyB1c2luZyBQdWxzZSBBdWRpbyBvbiB0aGUg
+UmFzcGJlcnJ5IFBpIGZvciAKcXVpdGUgYSB3aGlsZSwgaW4gd2hpY2ggYXVkaW8gc3RvcHMgcGxh
+eWluZyBpZiB0d28gcHJvZ3JhbXMgd2FudCB0byBwbGF5IAp0aHJvdWdoIFB1bHNlIHNpbXVsdGFu
+ZW91c2x5LgoKT3IgaWYgb25lIHByb2dyYW0gYWxyZWFkeSBoYXMgZmluaXNoZWQgcGxheWluZywg
+YnV0IHlvdSBzdGFydCB0aGUgc2Vjb25kIAp3aXRoaW4gNSBzZWNvbmRzLgoKVGhpbmtpbmcgdGhh
+dCB3YXMgYSBwcm9ibGVtIGluIHRoZSBzbmRfYmNtMjgzNSBtb2R1bGUsIEkgY3JlYXRlZCBhbiAK
+aXNzdWUgaW4gdGhlIGdpdGh1YiByZXBvIHRoYXQgaG91c2VzIHRoZSBSYXNwYmVycnkgUGkga2Vy
+bmVsIGZvcmsgYWJvdXQgCml0IGluIDIwMTQ6IGh0dHBzOi8vZ2l0aHViLmNvbS9yYXNwYmVycnlw
+aS9saW51eC9pc3N1ZXMvNjg4CgoKSG93ZXZlciBJIG5vdyBoYXZlIHRoZSBpbXByZXNzaW9uIHRo
+ZSBwcm9ibGVtIGlzIG5vdCBpbiB0aGVpciBtb2R1bGUgCnNwZWNpZmljIGNvZGUsIGJ1dCB0aGF0
+IHNuZF9wY21faW5kaXJlY3RfcGxheWJhY2tfdHJhbnNmZXIoKSB3aGljaCB0aGUgCm1vZHVsZSB1
+c2VzLCBkb2Vzbid0IGRlYWwgd2l0aCByZXdpbmRzIGNvcnJlY3RseSwgd2hpY2ggUHVsc2UgdXNl
+cyAKZXh0ZW5zaXZlbHkuCgpJcyB0aGVyZSBhbnkgZWZmb3J0IGJlaW5nIGRvbmUgdG8gZml4IHRo
+aXM/CgoKSSBjYW1lIGFjcm9zcyB0aGUgIkFMU0E6IHBjbTogRml4IG5lZ2F0aXZlIGFwcGxfcHRy
+IGhhbmRsaW5nIGluIApwY20taW5kaXJlY3QgaGVscGVycyIgcGF0Y2ggaW4gdGhpcyBtYWlsaW5n
+IGxpc3QsIHNvIGFwcGFyZW50bHkgdGhlIApwcm9ibGVtIGRvZXMgaXMga25vd24gdG8geW91IGd1
+eXMuCgpIb3dldmVyIGxvb2tpbmcgYXQgdGhpcyBmcmFnbWVudCBvZiB0aGUgcGF0Y2g6Cgo9PQoK
+K3N0YXRpYyBpbmxpbmUgaW50CiDCoHNuZF9wY21faW5kaXJlY3RfcGxheWJhY2tfdHJhbnNmZXIo
+c3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCiDCoMKgwqDCoCDCoMKgwqAgwqDC
+oMKgIMKgwqDCoCDCoMKgIHN0cnVjdCBzbmRfcGNtX2luZGlyZWN0ICpyZWMsCiDCoMKgwqDCoCDC
+oMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgIHNuZF9wY21faW5kaXJlY3RfY29weV90IGNvcHkpCkBA
+IC01Niw2ICs1Niw4IEBAIHNuZF9wY21faW5kaXJlY3RfcGxheWJhY2tfdHJhbnNmZXIoc3RydWN0
+IApzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogwqDCoMKgwqAgaWYgKGRpZmYpIHsKIMKg
+wqDCoMKgIMKgwqDCoCBpZiAoZGlmZiA8IC0oc25kX3BjbV9zZnJhbWVzX3QpIChydW50aW1lLT5i
+b3VuZGFyeSAvIDIpKQogwqDCoMKgwqAgwqDCoMKgIMKgwqDCoCBkaWZmICs9IHJ1bnRpbWUtPmJv
+dW5kYXJ5OworwqDCoMKgIMKgwqDCoCBpZiAoZGlmZiA8IDApCivCoMKgwqAgwqDCoMKgIMKgwqDC
+oCByZXR1cm4gLUVJTlZBTDsKPT0KCkl0IHNlZW1zIGl0IGlzIHNpbXBseSBkZW55aW5nIHJld2lu
+ZHMgaW5zdGVhZCBvZiBtYWtpbmcgdGhlbSB3b3JrPwpJc24ndCB0aGVyZSBhbnkgd2F5IHRvIG1h
+a2UgdGhlbSB3b3JrLCBpbnN0ZWFkIG9mIGRpc2FibGluZyAKZnVuY3Rpb25hbGl0eSB1c2Vyc3Bh
+Y2Ugc2VlbXMgdG8gYmUgZXhwZWN0aW5nIHRvIGhhdmU/CgoKWW91cnMgc2luY2VyZWx5LAoKRmxv
+cmlzIEJvcwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
