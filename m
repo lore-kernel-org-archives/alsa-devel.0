@@ -1,7 +1,7 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH 6/6] slimbus: qcom: Fix return value check in qcom_slim_probe()
-Date: Tue,  2 Jan 2018 17:54:24 +0000
-Message-ID: <20180102175424.14391-7-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 5/6] slimbus: Fix missing unlock on error in slim_msg_response()
+Date: Tue,  2 Jan 2018 17:54:23 +0000
+Message-ID: <20180102175424.14391-6-srinivas.kandagatla@linaro.org>
 References: <20180102175424.14391-1-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180102175424.14391-1-srinivas.kandagatla@linaro.org>
@@ -12,31 +12,26 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Wei Yongjun <weiyongjun1@huawei.com>
 
-In case of error, the function devm_ioremap_resource() returns ERR_PTR()
-and never returns NULL. The NULL test in the return value check should
-be replaced with IS_ERR().
+Add the missing unlock before return from function slim_msg_response()
+in the error handling case.
 
 Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/slimbus/qcom-ctrl.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/slimbus/messaging.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/slimbus/qcom-ctrl.c b/drivers/slimbus/qcom-ctrl.c
-index 8d12baae4119..ffb46f915334 100644
---- a/drivers/slimbus/qcom-ctrl.c
-+++ b/drivers/slimbus/qcom-ctrl.c
-@@ -529,9 +529,9 @@ static int qcom_slim_probe(struct platform_device *pdev)
- 
- 	slim_mem = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ctrl");
- 	ctrl->base = devm_ioremap_resource(ctrl->dev, slim_mem);
--	if (!ctrl->base) {
-+	if (IS_ERR(ctrl->base)) {
- 		dev_err(&pdev->dev, "IOremap failed\n");
--		return -ENOMEM;
-+		return PTR_ERR(ctrl->base);
+diff --git a/drivers/slimbus/messaging.c b/drivers/slimbus/messaging.c
+index a9a6dc4af0da..884419c37e84 100644
+--- a/drivers/slimbus/messaging.c
++++ b/drivers/slimbus/messaging.c
+@@ -38,6 +38,7 @@ void slim_msg_response(struct slim_controller *ctrl, u8 *reply, u8 tid, u8 len)
+ 	if (msg == NULL || msg->rbuf == NULL) {
+ 		dev_err(ctrl->dev, "Got response to invalid TID:%d, len:%d\n",
+ 				tid, len);
++		spin_unlock_irqrestore(&ctrl->txn_lock, flags);
+ 		return;
  	}
  
- 	sctrl->set_laddr = qcom_set_laddr;
 -- 
 2.15.0
