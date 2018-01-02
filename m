@@ -1,37 +1,43 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH 0/6] slimbus: sparse and CoverityScan fixes
-Date: Tue,  2 Jan 2018 17:54:18 +0000
-Message-ID: <20180102175424.14391-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 2/6] slimbus: fix retries comparison to correctly identify failed allocation
+Date: Tue,  2 Jan 2018 17:54:20 +0000
+Message-ID: <20180102175424.14391-3-srinivas.kandagatla@linaro.org>
+References: <20180102175424.14391-1-srinivas.kandagatla@linaro.org>
 Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <20180102175424.14391-1-srinivas.kandagatla@linaro.org>
 Sender: linux-arm-msm-owner@vger.kernel.org
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: sdharia@codeaurora.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: sdharia@codeaurora.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Colin Ian King <colin.king@canonical.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Colin Ian King <colin.king@canonical.com>
 
-Hi Greg, 
+Currently the check for too many retries fails because retries is actually
+-1 when the retry loop terminates if no pbuf can be allocated because of
+the post decrement on retries.  Fix this by not comparing retries with zero
+but instead check if it is negative.
 
-Here are few patches which are submitted in the list few days back,
-these also fix some of the sparse errors reported.
+Detected by CoverityScan, CID#1463143 ("Logically dead code") and
+CID#1463144 ("Dereference after null check")
 
-Thanks,
-Srini
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/slimbus/qcom-ctrl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Colin Ian King (3):
-  slimbus: avoid null pointer dereference on msg
-  slimbus: fix retries comparison to correctly identify failed
-    allocation
-  slimbus: make functions slim_ack_txn and slim_alloc_txbuf static
-
-Wei Yongjun (3):
-  slimbus: Use GFP_ATOMIC under spin lock
-  slimbus: Fix missing unlock on error in slim_msg_response()
-  slimbus: qcom: Fix return value check in qcom_slim_probe()
-
- drivers/slimbus/messaging.c |  8 +++++---
- drivers/slimbus/qcom-ctrl.c | 13 +++++++------
- 2 files changed, 12 insertions(+), 9 deletions(-)
-
+diff --git a/drivers/slimbus/qcom-ctrl.c b/drivers/slimbus/qcom-ctrl.c
+index fb1a5e0eb8dd..2d67419a3c37 100644
+--- a/drivers/slimbus/qcom-ctrl.c
++++ b/drivers/slimbus/qcom-ctrl.c
+@@ -345,7 +345,7 @@ static int qcom_xfer_msg(struct slim_controller *sctrl,
+ 		}
+ 	}
+ 
+-	if (!retries && !pbuf)
++	if (retries < 0 && !pbuf)
+ 		return -ENOMEM;
+ 
+ 	puc = (u8 *)pbuf;
 -- 
 2.15.0
