@@ -1,137 +1,204 @@
-From: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Subject: [PATCH 07/12] ASoC: mediatek: modify MT2701 AFE driver to adapt subsystem wrapper
-Date: Tue, 2 Jan 2018 19:47:32 +0800
-Message-ID: <f1d6e5ebbfc6276f17e94f9a2669f6074ed65d41.1514881870.git.ryder.lee@mediatek.com>
+From: Ryder Lee <ryder.lee@mediatek.com>
+Subject: [PATCH 08/12] ASoC: mediatek: modify documentation to adapt subsystem wrapper
+Date: Tue, 2 Jan 2018 19:47:33 +0800
+Message-ID: <78b398af80014a30b018ff6af84e961c4112d463.1514881870.git.ryder.lee@mediatek.com>
 References: <cover.1514881870.git.ryder.lee@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <cover.1514881870.git.ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Cc: Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Stephen Boyd <sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1514881870.git.ryder.lee@mediatek.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>, Stephen Boyd <sboyd@codeaurora.org>, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Garlic Tseng <garlic.tseng@mediatek.com>, Ryder Lee <ryder.lee@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-As the new audio subsystem wrapper is in place, modify MT2701 AFE driver
+As the new audio subsystem wrapper is in place, modify documentation
 to adapt it.
 
-Signed-off-by: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
 ---
- sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 42 ++++++++++++------------------
- sound/soc/mediatek/mt2701/mt2701-reg.h     |  1 -
- 2 files changed, 17 insertions(+), 26 deletions(-)
+ .../devicetree/bindings/sound/mt2701-afe-pcm.txt   | 160 +++++++++++----------
+ 1 file changed, 82 insertions(+), 78 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-index 0edadca..de4ce3a 100644
---- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-+++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-@@ -1368,14 +1368,6 @@ static int mt2701_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
- 	},
- };
+diff --git a/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt b/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
+index 0450baa..00d3059 100644
+--- a/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
++++ b/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
+@@ -2,7 +2,6 @@ Mediatek AFE PCM controller for mt2701
  
--static const struct regmap_config mt2701_afe_regmap_config = {
--	.reg_bits = 32,
--	.reg_stride = 4,
--	.val_bits = 32,
--	.max_register = AFE_END_ADDR,
--	.cache_type = REGCACHE_NONE,
--};
--
- static irqreturn_t mt2701_asys_isr(int irq_id, void *dev)
- {
- 	int id;
-@@ -1414,9 +1406,9 @@ static int mt2701_afe_runtime_resume(struct device *dev)
+ Required properties:
+ - compatible = "mediatek,mt2701-audio";
+-- reg: register location and size
+ - interrupts: should contain AFE and ASYS interrupts
+ - interrupt-names: should be "afe" and "asys"
+ - power-domains: should define the power domain
+@@ -45,85 +44,90 @@ Required properties:
+ - assigned-clocks-parents: parent of input clocks of assigned clocks.
+ - assigned-clock-rates: list of clock frequencies of assigned clocks.
  
- static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
- {
-+	struct snd_soc_component *component;
- 	struct mtk_base_afe *afe;
- 	struct mt2701_afe_private *afe_priv;
--	struct resource *res;
- 	struct device *dev;
- 	int i, irq_id, ret;
- 
-@@ -1446,17 +1438,9 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--
--	afe->base_addr = devm_ioremap_resource(&pdev->dev, res);
--
--	if (IS_ERR(afe->base_addr))
--		return PTR_ERR(afe->base_addr);
--
--	afe->regmap = devm_regmap_init_mmio(&pdev->dev, afe->base_addr,
--		&mt2701_afe_regmap_config);
--	if (IS_ERR(afe->regmap))
--		return PTR_ERR(afe->regmap);
-+	afe->regmap = dev_get_regmap(dev->parent, NULL);
-+	if (!afe->regmap)
-+		return -ENODEV;
- 
- 	mutex_init(&afe->irq_alloc_lock);
- 
-@@ -1490,6 +1474,12 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
- 			= &mt2701_i2s_data[i][I2S_IN];
- 	}
- 
-+	component = kzalloc(sizeof(*component), GFP_KERNEL);
-+	if (!component)
-+		return -ENOMEM;
++Must be a subnode of MediaTek Audio Subsystem device tree node.
++See ../mfd/mtk-audsys.txt for details about the parent node.
 +
-+	component->regmap = afe->regmap;
-+
- 	afe->mtk_afe_hardware = &mt2701_afe_hardware;
- 	afe->memif_fs = mt2701_memif_fs;
- 	afe->irq_fs = mt2701_irq_fs;
-@@ -1502,7 +1492,7 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
- 	ret = mt2701_init_clock(afe);
- 	if (ret) {
- 		dev_err(dev, "init clock error\n");
--		return ret;
-+		goto err_init_clock;
- 	}
+ Example:
  
- 	platform_set_drvdata(pdev, afe);
-@@ -1521,10 +1511,10 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
- 		goto err_platform;
- 	}
+-	afe: mt2701-afe-pcm@11220000 {
+-		compatible = "mediatek,mt2701-audio";
+-		reg = <0 0x11220000 0 0x2000>,
+-		      <0 0x112A0000 0 0x20000>;
+-		interrupts = <GIC_SPI 104 IRQ_TYPE_LEVEL_LOW>,
+-			     <GIC_SPI 132 IRQ_TYPE_LEVEL_LOW>;
+-		interrupt-names	= "afe", "asys";
+-		power-domains = <&scpsys MT2701_POWER_DOMAIN_IFR_MSC>;
+-		clocks = <&topckgen CLK_TOP_AUD_MUX1_SEL>,
+-			 <&topckgen CLK_TOP_AUD_MUX2_SEL>,
+-			 <&topckgen CLK_TOP_AUD_K1_SRC_SEL>,
+-			 <&topckgen CLK_TOP_AUD_K2_SRC_SEL>,
+-			 <&topckgen CLK_TOP_AUD_K3_SRC_SEL>,
+-			 <&topckgen CLK_TOP_AUD_K4_SRC_SEL>,
+-			 <&topckgen CLK_TOP_AUD_K1_SRC_DIV>,
+-			 <&topckgen CLK_TOP_AUD_K2_SRC_DIV>,
+-			 <&topckgen CLK_TOP_AUD_K3_SRC_DIV>,
+-			 <&topckgen CLK_TOP_AUD_K4_SRC_DIV>,
+-			 <&topckgen CLK_TOP_AUD_I2S1_MCLK>,
+-			 <&topckgen CLK_TOP_AUD_I2S2_MCLK>,
+-			 <&topckgen CLK_TOP_AUD_I2S3_MCLK>,
+-			 <&topckgen CLK_TOP_AUD_I2S4_MCLK>,
+-			 <&audiosys CLK_AUD_I2SO1>,
+-			 <&audiosys CLK_AUD_I2SO2>,
+-			 <&audiosys CLK_AUD_I2SO3>,
+-			 <&audiosys CLK_AUD_I2SO4>,
+-			 <&audiosys CLK_AUD_I2SIN1>,
+-			 <&audiosys CLK_AUD_I2SIN2>,
+-			 <&audiosys CLK_AUD_I2SIN3>,
+-			 <&audiosys CLK_AUD_I2SIN4>,
+-			 <&audiosys CLK_AUD_ASRCO1>,
+-			 <&audiosys CLK_AUD_ASRCO2>,
+-			 <&audiosys CLK_AUD_ASRCO3>,
+-			 <&audiosys CLK_AUD_ASRCO4>,
+-			 <&audiosys CLK_AUD_AFE>,
+-			 <&audiosys CLK_AUD_AFE_CONN>,
+-			 <&audiosys CLK_AUD_A1SYS>,
+-			 <&audiosys CLK_AUD_A2SYS>,
+-			 <&audiosys CLK_AUD_AFE_MRGIF>;
++	audio-subsystm@11220000 {
++		compatible = "mediatek,mt2701-audsys-core";
++		...
++		afe: audio {
++			compatible = "mediatek,mt2701-audio";
++			interrupts = <GIC_SPI 104 IRQ_TYPE_LEVEL_LOW>,
++				     <GIC_SPI 132 IRQ_TYPE_LEVEL_LOW>;
++			interrupt-names	= "afe", "asys";
++			power-domains = <&scpsys MT2701_POWER_DOMAIN_IFR_MSC>;
++			clocks = <&topckgen CLK_TOP_AUD_MUX1_SEL>,
++				 <&topckgen CLK_TOP_AUD_MUX2_SEL>,
++				 <&topckgen CLK_TOP_AUD_K1_SRC_SEL>,
++				 <&topckgen CLK_TOP_AUD_K2_SRC_SEL>,
++				 <&topckgen CLK_TOP_AUD_K3_SRC_SEL>,
++				 <&topckgen CLK_TOP_AUD_K4_SRC_SEL>,
++				 <&topckgen CLK_TOP_AUD_K1_SRC_DIV>,
++				 <&topckgen CLK_TOP_AUD_K2_SRC_DIV>,
++				 <&topckgen CLK_TOP_AUD_K3_SRC_DIV>,
++				 <&topckgen CLK_TOP_AUD_K4_SRC_DIV>,
++				 <&topckgen CLK_TOP_AUD_I2S1_MCLK>,
++				 <&topckgen CLK_TOP_AUD_I2S2_MCLK>,
++				 <&topckgen CLK_TOP_AUD_I2S3_MCLK>,
++				 <&topckgen CLK_TOP_AUD_I2S4_MCLK>,
++				 <&audiosys CLK_AUD_I2SO1>,
++				 <&audiosys CLK_AUD_I2SO2>,
++				 <&audiosys CLK_AUD_I2SO3>,
++				 <&audiosys CLK_AUD_I2SO4>,
++				 <&audiosys CLK_AUD_I2SIN1>,
++				 <&audiosys CLK_AUD_I2SIN2>,
++				 <&audiosys CLK_AUD_I2SIN3>,
++				 <&audiosys CLK_AUD_I2SIN4>,
++				 <&audiosys CLK_AUD_ASRCO1>,
++				 <&audiosys CLK_AUD_ASRCO2>,
++				 <&audiosys CLK_AUD_ASRCO3>,
++				 <&audiosys CLK_AUD_ASRCO4>,
++				 <&audiosys CLK_AUD_AFE>,
++				 <&audiosys CLK_AUD_AFE_CONN>,
++				 <&audiosys CLK_AUD_A1SYS>,
++				 <&audiosys CLK_AUD_A2SYS>,
++				 <&audiosys CLK_AUD_AFE_MRGIF>;
  
--	ret = snd_soc_register_component(&pdev->dev,
--					 &mt2701_afe_pcm_dai_component,
--					 mt2701_afe_pcm_dais,
--					 ARRAY_SIZE(mt2701_afe_pcm_dais));
-+	ret = snd_soc_add_component(dev, component,
-+				    &mt2701_afe_pcm_dai_component,
-+				    mt2701_afe_pcm_dais,
-+				    ARRAY_SIZE(mt2701_afe_pcm_dais));
- 	if (ret) {
- 		dev_warn(dev, "err_dai_component\n");
- 		goto err_dai_component;
-@@ -1538,6 +1528,8 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
- 	pm_runtime_put_sync(dev);
- err_pm_disable:
- 	pm_runtime_disable(dev);
-+err_init_clock:
-+	kfree(component);
+-		clock-names = "top_audio_mux1_sel",
+-			      "top_audio_mux2_sel",
+-			      "i2s0_src_sel",
+-			      "i2s1_src_sel",
+-			      "i2s2_src_sel",
+-			      "i2s3_src_sel",
+-			      "i2s0_src_div",
+-			      "i2s1_src_div",
+-			      "i2s2_src_div",
+-			      "i2s3_src_div",
+-			      "i2s0_mclk_en",
+-			      "i2s1_mclk_en",
+-			      "i2s2_mclk_en",
+-			      "i2s3_mclk_en",
+-			      "i2so0_hop_ck",
+-			      "i2so1_hop_ck",
+-			      "i2so2_hop_ck",
+-			      "i2so3_hop_ck",
+-			      "i2si0_hop_ck",
+-			      "i2si1_hop_ck",
+-			      "i2si2_hop_ck",
+-			      "i2si3_hop_ck",
+-			      "asrc0_out_ck",
+-			      "asrc1_out_ck",
+-			      "asrc2_out_ck",
+-			      "asrc3_out_ck",
+-			      "audio_afe_pd",
+-			      "audio_afe_conn_pd",
+-			      "audio_a1sys_pd",
+-			      "audio_a2sys_pd",
+-			      "audio_mrgif_pd";
++			clock-names = "top_audio_mux1_sel",
++				      "top_audio_mux2_sel",
++				      "i2s0_src_sel",
++				      "i2s1_src_sel",
++				      "i2s2_src_sel",
++				      "i2s3_src_sel",
++				      "i2s0_src_div",
++				      "i2s1_src_div",
++				      "i2s2_src_div",
++				      "i2s3_src_div",
++				      "i2s0_mclk_en",
++				      "i2s1_mclk_en",
++				      "i2s2_mclk_en",
++				      "i2s3_mclk_en",
++				      "i2so0_hop_ck",
++				      "i2so1_hop_ck",
++				      "i2so2_hop_ck",
++				      "i2so3_hop_ck",
++				      "i2si0_hop_ck",
++				      "i2si1_hop_ck",
++				      "i2si2_hop_ck",
++				      "i2si3_hop_ck",
++				      "asrc0_out_ck",
++				      "asrc1_out_ck",
++				      "asrc2_out_ck",
++				      "asrc3_out_ck",
++				      "audio_afe_pd",
++				      "audio_afe_conn_pd",
++				      "audio_a1sys_pd",
++				      "audio_a2sys_pd",
++				      "audio_mrgif_pd";
  
- 	return ret;
- }
-diff --git a/sound/soc/mediatek/mt2701/mt2701-reg.h b/sound/soc/mediatek/mt2701/mt2701-reg.h
-index f17c76f..18e6769 100644
---- a/sound/soc/mediatek/mt2701/mt2701-reg.h
-+++ b/sound/soc/mediatek/mt2701/mt2701-reg.h
-@@ -145,5 +145,4 @@
- #define ASYS_I2S_CON_WIDE_MODE_SET(x)	((x) << 1)
- #define ASYS_I2S_IN_PHASE_FIX		(0x1 << 31)
- 
--#define AFE_END_ADDR 0x15e0
- #endif
+-		assigned-clocks = <&topckgen CLK_TOP_AUD_MUX1_SEL>,
+-				  <&topckgen CLK_TOP_AUD_MUX2_SEL>,
+-				  <&topckgen CLK_TOP_AUD_MUX1_DIV>,
+-				  <&topckgen CLK_TOP_AUD_MUX2_DIV>;
+-		assigned-clock-parents = <&topckgen CLK_TOP_AUD1PLL_98M>,
+-					 <&topckgen CLK_TOP_AUD2PLL_90M>;
+-		assigned-clock-rates = <0>, <0>, <49152000>, <45158400>;
++			assigned-clocks = <&topckgen CLK_TOP_AUD_MUX1_SEL>,
++					  <&topckgen CLK_TOP_AUD_MUX2_SEL>,
++					  <&topckgen CLK_TOP_AUD_MUX1_DIV>,
++					  <&topckgen CLK_TOP_AUD_MUX2_DIV>;
++			assigned-clock-parents = <&topckgen CLK_TOP_AUD1PLL_98M>,
++						 <&topckgen CLK_TOP_AUD2PLL_90M>;
++			assigned-clock-rates = <0>, <0>, <49152000>, <45158400>;
++		};
+ 	};
 -- 
 1.9.1
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
