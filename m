@@ -1,16 +1,15 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 2/6] ASoC: rt5645: add micbias power control
-	select.
-Date: Tue,  2 Jan 2018 19:53:10 +0100
-Message-ID: <20180102185314.17189-3-hdegoede@redhat.com>
+Subject: [PATCH 4/6] ASoC: rt5645: cleanup DMI matching code
+Date: Tue,  2 Jan 2018 19:53:12 +0100
+Message-ID: <20180102185314.17189-5-hdegoede@redhat.com>
 References: <20180102185314.17189-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F0582674F2
- for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2018 19:53:22 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DE2A2674CE
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2018 19:53:25 +0100 (CET)
 In-Reply-To: <20180102185314.17189-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,109 +24,226 @@ To: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chio
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Bard Liao <bardliao@realtek.com>
+Rather then doing a dmi_check_system() per possible system use an array
+with all known systems, with dmi_system_id.driver_data pointing to the
+platform-data for the matching system.
 
-We need to set a corresponding control bit before powering micbias up.
-
-Signed-off-by: Bard Liao <bardliao@realtek.com>
-[hdegoede@redhat.com: Remove 2 unused variable declarations]
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/codecs/rt5645.c | 56 +++++++++++++++++++++++++++++++++++++++++++++--
- sound/soc/codecs/rt5645.h |  6 +++++
- 2 files changed, 60 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5645.c | 124 +++++++++++++++++++---------------------------
+ 1 file changed, 51 insertions(+), 73 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index b69c57709d8b..2e495d61b55e 100644
+index 6c134f4d881b..cadfc8871bb9 100644
 --- a/sound/soc/codecs/rt5645.c
 +++ b/sound/soc/codecs/rt5645.c
-@@ -1943,6 +1943,56 @@ static int rt5650_hp_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
+@@ -3625,66 +3625,74 @@ static const struct acpi_device_id rt5645_acpi_match[] = {
+ MODULE_DEVICE_TABLE(acpi, rt5645_acpi_match);
+ #endif
  
-+static int rt5645_set_micbias1_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *k, int  event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-static const struct rt5645_platform_data general_platform_data = {
++static const struct rt5645_platform_data intel_braswell_platform_data = {
+ 	.dmic1_data_pin = RT5645_DMIC1_DISABLE,
+ 	.dmic2_data_pin = RT5645_DMIC_DATA_IN2P,
+ 	.jd_mode = 3,
+ };
+ 
+-static const struct dmi_system_id dmi_platform_intel_braswell[] = {
++static const struct rt5645_platform_data buddy_platform_data = {
++	.dmic1_data_pin = RT5645_DMIC_DATA_GPIO5,
++	.dmic2_data_pin = RT5645_DMIC_DATA_IN2P,
++	.jd_mode = 3,
++	.level_trigger_irq = true,
++};
 +
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		snd_soc_update_bits(codec, RT5645_GEN_CTRL2,
-+			RT5645_MICBIAS1_POW_CTRL_SEL_MASK,
-+			RT5645_MICBIAS1_POW_CTRL_SEL_M);
-+		break;
++static const struct rt5645_platform_data gpd_win_platform_data = {
++	.jd_mode = 3,
++	.inv_jd1_1 = true,
++	.long_name = "gpd-win-pocket-rt5645",
++	/* The GPD pocket has a diff. mic, for the win this does not matter. */
++	.in2_diff = true,
++};
 +
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_soc_update_bits(codec, RT5645_GEN_CTRL2,
-+			RT5645_MICBIAS1_POW_CTRL_SEL_MASK,
-+			RT5645_MICBIAS1_POW_CTRL_SEL_A);
-+		break;
++static const struct rt5645_platform_data asus_t100ha_platform_data = {
++	.dmic1_data_pin = RT5645_DMIC_DATA_IN2N,
++	.dmic2_data_pin = RT5645_DMIC2_DISABLE,
++	.jd_mode = 3,
++	.inv_jd1_1 = true,
++};
 +
-+	default:
-+		return 0;
++static const struct rt5645_platform_data jd_mode3_platform_data = {
++	.jd_mode = 3,
++};
++
++static const struct dmi_system_id dmi_platform_data[] = {
++	{
++		.ident = "Chrome Buddy",
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Buddy"),
++		},
++		.driver_data = (void *)&buddy_platform_data,
++	},
+ 	{
+ 		.ident = "Intel Strago",
+ 		.matches = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Strago"),
+ 		},
++		.driver_data = (void *)&intel_braswell_platform_data,
+ 	},
+ 	{
+ 		.ident = "Google Chrome",
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "GOOGLE"),
+ 		},
++		.driver_data = (void *)&intel_braswell_platform_data,
+ 	},
+ 	{
+ 		.ident = "Google Setzer",
+ 		.matches = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Setzer"),
+ 		},
++		.driver_data = (void *)&intel_braswell_platform_data,
+ 	},
+ 	{
+ 		.ident = "Microsoft Surface 3",
+ 		.matches = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Surface 3"),
+ 		},
++		.driver_data = (void *)&intel_braswell_platform_data,
+ 	},
+-	{ }
+-};
+-
+-static const struct rt5645_platform_data buddy_platform_data = {
+-	.dmic1_data_pin = RT5645_DMIC_DATA_GPIO5,
+-	.dmic2_data_pin = RT5645_DMIC_DATA_IN2P,
+-	.jd_mode = 3,
+-	.level_trigger_irq = true,
+-};
+-
+-static const struct dmi_system_id dmi_platform_intel_broadwell[] = {
+-	{
+-		.ident = "Chrome Buddy",
+-		.matches = {
+-			DMI_MATCH(DMI_PRODUCT_NAME, "Buddy"),
+-		},
+-	},
+-	{ }
+-};
+-
+-static const struct rt5645_platform_data gpd_win_platform_data = {
+-	.jd_mode = 3,
+-	.inv_jd1_1 = true,
+-	.long_name = "gpd-win-pocket-rt5645",
+-	/* The GPD pocket has a diff. mic, for the win this does not matter. */
+-	.in2_diff = true,
+-};
+-
+-static const struct dmi_system_id dmi_platform_gpd_win[] = {
+ 	{
+ 		/*
+ 		 * Match for the GPDwin which unfortunately uses somewhat
+@@ -3695,61 +3703,34 @@ static const struct dmi_system_id dmi_platform_gpd_win[] = {
+ 		 * the same default product_name. Also the GPDwin is the
+ 		 * only device to have both board_ and product_name not set.
+ 		 */
+-		.ident = "GPD Win",
++		.ident = "GPD Win / Pocket",
+ 		.matches = {
+ 			DMI_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
+ 			DMI_MATCH(DMI_BOARD_NAME, "Default string"),
+ 			DMI_MATCH(DMI_BOARD_SERIAL, "Default string"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Default string"),
+ 		},
++		.driver_data = (void *)&gpd_win_platform_data,
+ 	},
+-	{}
+-};
+-
+-static const struct rt5645_platform_data general_platform_data2 = {
+-	.dmic1_data_pin = RT5645_DMIC_DATA_IN2N,
+-	.dmic2_data_pin = RT5645_DMIC2_DISABLE,
+-	.jd_mode = 3,
+-	.inv_jd1_1 = true,
+-};
+-
+-static const struct dmi_system_id dmi_platform_asus_t100ha[] = {
+ 	{
+ 		.ident = "ASUS T100HAN",
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "T100HAN"),
+ 		},
++		.driver_data = (void *)&asus_t100ha_platform_data,
+ 	},
+-	{ }
+-};
+-
+-static const struct rt5645_platform_data minix_z83_4_platform_data = {
+-	.jd_mode = 3,
+-};
+-
+-static const struct dmi_system_id dmi_platform_minix_z83_4[] = {
+ 	{
+ 		.ident = "MINIX Z83-4",
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "MINIX"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Z83-4"),
+ 		},
++		.driver_data = (void *)&jd_mode3_platform_data,
+ 	},
+ 	{ }
+ };
+ 
+-static bool rt5645_check_dp(struct device *dev)
+-{
+-	if (device_property_present(dev, "realtek,in2-differential") ||
+-		device_property_present(dev, "realtek,dmic1-data-pin") ||
+-		device_property_present(dev, "realtek,dmic2-data-pin") ||
+-		device_property_present(dev, "realtek,jd-mode"))
+-		return true;
+-
+-	return false;
+-}
+-
+ static int rt5645_parse_dt(struct rt5645_priv *rt5645, struct device *dev)
+ {
+ 	rt5645->pdata.in2_diff = device_property_read_bool(dev,
+@@ -3768,6 +3749,7 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
+ {
+ 	struct rt5645_platform_data *pdata = dev_get_platdata(&i2c->dev);
++	const struct dmi_system_id *dmi_data;
+ 	struct rt5645_priv *rt5645;
+ 	int ret, i;
+ 	unsigned int val;
+@@ -3781,20 +3763,16 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 	rt5645->i2c = i2c;
+ 	i2c_set_clientdata(i2c, rt5645);
+ 
++	dmi_data = dmi_first_match(dmi_platform_data);
++	if (dmi_data) {
++		dev_info(&i2c->dev, "Detected %s platform\n", dmi_data->ident);
++		pdata = dmi_data->driver_data;
 +	}
 +
-+	return 0;
-+}
-+
-+static int rt5645_set_micbias2_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *k, int  event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		snd_soc_update_bits(codec, RT5645_GEN_CTRL2,
-+			RT5645_MICBIAS2_POW_CTRL_SEL_MASK,
-+			RT5645_MICBIAS2_POW_CTRL_SEL_M);
-+		break;
-+
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_soc_update_bits(codec, RT5645_GEN_CTRL2,
-+			RT5645_MICBIAS2_POW_CTRL_SEL_MASK,
-+			RT5645_MICBIAS2_POW_CTRL_SEL_A);
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dapm_widget rt5645_dapm_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("LDO2", RT5645_PWR_MIXER,
- 		RT5645_PWR_LDO2_BIT, 0, NULL, 0),
-@@ -1981,9 +2031,11 @@ static const struct snd_soc_dapm_widget rt5645_dapm_widgets[] = {
- 	/* Input Side */
- 	/* micbias */
- 	SND_SOC_DAPM_SUPPLY("micbias1", RT5645_PWR_ANLG2,
--			RT5645_PWR_MB1_BIT, 0, NULL, 0),
-+			RT5645_PWR_MB1_BIT, 0, rt5645_set_micbias1_event,
-+			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- 	SND_SOC_DAPM_SUPPLY("micbias2", RT5645_PWR_ANLG2,
--			RT5645_PWR_MB2_BIT, 0, NULL, 0),
-+			RT5645_PWR_MB2_BIT, 0, rt5645_set_micbias2_event,
-+			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- 	/* Input Lines */
- 	SND_SOC_DAPM_INPUT("DMIC L1"),
- 	SND_SOC_DAPM_INPUT("DMIC R1"),
-diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
-index cfc5f97549eb..940325b28c29 100644
---- a/sound/soc/codecs/rt5645.h
-+++ b/sound/soc/codecs/rt5645.h
-@@ -2117,6 +2117,12 @@ enum {
- #define RT5645_RXDC_SRC_STO			(0x0 << 7)
- #define RT5645_RXDC_SRC_MONO			(0x1 << 7)
- #define RT5645_RXDC_SRC_SFT			(7)
-+#define RT5645_MICBIAS1_POW_CTRL_SEL_MASK	(0x1 << 5)
-+#define RT5645_MICBIAS1_POW_CTRL_SEL_A		(0x0 << 5)
-+#define RT5645_MICBIAS1_POW_CTRL_SEL_M		(0x1 << 5)
-+#define RT5645_MICBIAS2_POW_CTRL_SEL_MASK	(0x1 << 4)
-+#define RT5645_MICBIAS2_POW_CTRL_SEL_A		(0x0 << 4)
-+#define RT5645_MICBIAS2_POW_CTRL_SEL_M		(0x1 << 4)
- #define RT5645_RXDP2_SEL_MASK			(0x1 << 3)
- #define RT5645_RXDP2_SEL_IF2			(0x0 << 3)
- #define RT5645_RXDP2_SEL_ADC			(0x1 << 3)
+ 	if (pdata)
+ 		rt5645->pdata = *pdata;
+-	else if (dmi_check_system(dmi_platform_intel_broadwell))
+-		rt5645->pdata = buddy_platform_data;
+-	else if (rt5645_check_dp(&i2c->dev))
++	else
+ 		rt5645_parse_dt(rt5645, &i2c->dev);
+-	else if (dmi_check_system(dmi_platform_intel_braswell))
+-		rt5645->pdata = general_platform_data;
+-	else if (dmi_check_system(dmi_platform_gpd_win))
+-		rt5645->pdata = gpd_win_platform_data;
+-	else if (dmi_check_system(dmi_platform_asus_t100ha))
+-		rt5645->pdata = general_platform_data2;
+-	else if (dmi_check_system(dmi_platform_minix_z83_4))
+-		rt5645->pdata = minix_z83_4_platform_data;
+ 
+ 	if (quirk != -1) {
+ 		rt5645->pdata.in2_diff = QUIRK_IN2_DIFF(quirk);
 -- 
 2.14.3
