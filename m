@@ -1,51 +1,49 @@
 From: Wei Yongjun <weiyongjun1@huawei.com>
-Subject: [PATCH -next] slimbus: qcom: Fix return value check in
-	qcom_slim_probe()
-Date: Tue, 2 Jan 2018 01:46:11 +0000
-Message-ID: <1514857571-84018-1-git-send-email-weiyongjun1@huawei.com>
+Subject: [PATCH -next] slimbus: qcom: Make some local functions static
+Date: Tue, 2 Jan 2018 01:46:33 +0000
+Message-ID: <1514857593-84126-1-git-send-email-weiyongjun1@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from huawei.com (szxga04-in.huawei.com [45.249.212.190])
- by alsa0.perex.cz (Postfix) with ESMTP id E2C12267219
- for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2018 02:40:34 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Sagar Dharia <sdharia@codeaurora.org>
-Cc: alsa-devel@alsa-project.org, Wei Yongjun <weiyongjun1@huawei.com>, linux-kernel@vger.kernel.org
+Cc: Wei Yongjun <weiyongjun1@huawei.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-In case of error, the function devm_ioremap_resource() returns ERR_PTR()
-and never returns NULL. The NULL test in the return value check should
-be replaced with IS_ERR().
+Fixes the following sparse warnings:
 
-Fixes: ad7fcbc308b0 ("slimbus: qcom: Add Qualcomm Slimbus controller driver")
+drivers/slimbus/qcom-ctrl.c:151:6: warning:
+ symbol 'slim_ack_txn' was not declared. Should it be static?
+drivers/slimbus/qcom-ctrl.c:304:6: warning:
+ symbol 'slim_alloc_txbuf' was not declared. Should it be static?
+
 Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 ---
- drivers/slimbus/qcom-ctrl.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/slimbus/qcom-ctrl.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/slimbus/qcom-ctrl.c b/drivers/slimbus/qcom-ctrl.c
-index 35ad70d..96fefd6 100644
+index 35ad70d..600f62d 100644
 --- a/drivers/slimbus/qcom-ctrl.c
 +++ b/drivers/slimbus/qcom-ctrl.c
-@@ -530,9 +530,9 @@ static int qcom_slim_probe(struct platform_device *pdev)
+@@ -148,7 +148,7 @@ static void *slim_alloc_rxbuf(struct qcom_slim_ctrl *ctrl)
+ 	return ctrl->rx.base + (idx * ctrl->rx.sl_sz);
+ }
  
- 	slim_mem = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ctrl");
- 	ctrl->base = devm_ioremap_resource(ctrl->dev, slim_mem);
--	if (!ctrl->base) {
-+	if (IS_ERR(ctrl->base)) {
- 		dev_err(&pdev->dev, "IOremap failed\n");
--		return -ENOMEM;
-+		return PTR_ERR(ctrl->base);
- 	}
+-void slim_ack_txn(struct qcom_slim_ctrl *ctrl, int err)
++static void slim_ack_txn(struct qcom_slim_ctrl *ctrl, int err)
+ {
+ 	struct completion *comp;
+ 	unsigned long flags;
+@@ -301,8 +301,8 @@ static int qcom_clk_pause_wakeup(struct slim_controller *sctrl)
+ 	return 0;
+ }
  
- 	sctrl->set_laddr = qcom_set_laddr;
+-void *slim_alloc_txbuf(struct qcom_slim_ctrl *ctrl, struct slim_msg_txn *txn,
+-		       struct completion *done)
++static void *slim_alloc_txbuf(struct qcom_slim_ctrl *ctrl,
++			      struct slim_msg_txn *txn, struct completion *done)
+ {
+ 	unsigned long flags;
+ 	int idx;
