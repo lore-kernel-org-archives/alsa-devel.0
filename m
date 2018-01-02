@@ -1,16 +1,16 @@
 From: Ryder Lee <ryder.lee@mediatek.com>
-Subject: [PATCH 04/12] ASoC: mediatek: update clock related
-	properties of MT2701 AFE
-Date: Tue, 2 Jan 2018 19:47:21 +0800
-Message-ID: <8693f44aac4304ce99836fc5e715a796347541d3.1514881870.git.ryder.lee@mediatek.com>
+Subject: [PATCH 05/12] mfd: mtk-audsys: add MediaTek audio
+	subsystem driver
+Date: Tue, 2 Jan 2018 19:47:30 +0800
+Message-ID: <fbe22b0d78c41b121f04202dcbfcd0cc23a7590d.1514881870.git.ryder.lee@mediatek.com>
 References: <cover.1514881870.git.ryder.lee@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- by alsa0.perex.cz (Postfix) with ESMTP id 123E72673A4
- for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2018 12:47:32 +0100 (CET)
+Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
+ by alsa0.perex.cz (Postfix) with ESMTP id D05432673D3
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2018 12:47:39 +0100 (CET)
 In-Reply-To: <cover.1514881870.git.ryder.lee@mediatek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,262 +21,197 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Ryder Lee <ryder.lee@mediatek.com>, Garlic Tseng <garlic.tseng@mediatek.com>, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Ryder Lee <ryder.lee@mediatek.com>, Garlic Tseng <garlic.tseng@mediatek.com>, Stephen Boyd <sboyd@codeaurora.org>, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Add 'assigned-clocks*' properties which are used to initialize default
-domain sources of audio system. we could configure different sets of
-input clocks through DTS now. Hence driver no longer cares about that.
-
-Also we change some 'clock-names' to make them more generic so that
-other chips can reuse gracefully.
+Add a common driver for the top block of the MediaTek audio subsystem.
+This is a wrapper which manages resources for audio components.
 
 Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
 ---
- .../devicetree/bindings/sound/mt2701-afe-pcm.txt   | 207 +++++++++------------
- 1 file changed, 91 insertions(+), 116 deletions(-)
+ drivers/mfd/Kconfig      |   9 ++++
+ drivers/mfd/Makefile     |   2 +
+ drivers/mfd/mtk-audsys.c | 138 +++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 149 insertions(+)
+ create mode 100644 drivers/mfd/mtk-audsys.c
 
-diff --git a/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt b/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
-index 77a57f8..0450baa 100644
---- a/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
-+++ b/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
-@@ -6,51 +6,44 @@ Required properties:
- - interrupts: should contain AFE and ASYS interrupts
- - interrupt-names: should be "afe" and "asys"
- - power-domains: should define the power domain
-+- clocks: Must contain an entry for each entry in clock-names
-+  See ../clocks/clock-bindings.txt for details
- - clock-names: should have these clock names:
--		"infra_sys_audio_clk",
- 		"top_audio_mux1_sel",
- 		"top_audio_mux2_sel",
--		"top_audio_mux1_div",
--		"top_audio_mux2_div",
--		"top_audio_48k_timing",
--		"top_audio_44k_timing",
--		"top_audpll_mux_sel",
--		"top_apll_sel",
--		"top_aud1_pll_98M",
--		"top_aud2_pll_90M",
--		"top_hadds2_pll_98M",
--		"top_hadds2_pll_294M",
--		"top_audpll",
--		"top_audpll_d4",
--		"top_audpll_d8",
--		"top_audpll_d16",
--		"top_audpll_d24",
--		"top_audintbus_sel",
--		"clk_26m",
--		"top_syspll1_d4",
--		"top_aud_k1_src_sel",
--		"top_aud_k2_src_sel",
--		"top_aud_k3_src_sel",
--		"top_aud_k4_src_sel",
--		"top_aud_k5_src_sel",
--		"top_aud_k6_src_sel",
--		"top_aud_k1_src_div",
--		"top_aud_k2_src_div",
--		"top_aud_k3_src_div",
--		"top_aud_k4_src_div",
--		"top_aud_k5_src_div",
--		"top_aud_k6_src_div",
--		"top_aud_i2s1_mclk",
--		"top_aud_i2s2_mclk",
--		"top_aud_i2s3_mclk",
--		"top_aud_i2s4_mclk",
--		"top_aud_i2s5_mclk",
--		"top_aud_i2s6_mclk",
--		"top_asm_m_sel",
--		"top_asm_h_sel",
--		"top_univpll2_d4",
--		"top_univpll2_d2",
--		"top_syspll_d5";
-+		"i2s0_src_sel",
-+		"i2s1_src_sel",
-+		"i2s2_src_sel",
-+		"i2s3_src_sel",
-+		"i2s0_src_div",
-+		"i2s1_src_div",
-+		"i2s2_src_div",
-+		"i2s3_src_div",
-+		"i2s0_mclk_en",
-+		"i2s1_mclk_en",
-+		"i2s2_mclk_en",
-+		"i2s3_mclk_en",
-+		"i2so0_hop_ck",
-+		"i2so1_hop_ck",
-+		"i2so2_hop_ck",
-+		"i2so3_hop_ck",
-+		"i2si0_hop_ck",
-+		"i2si1_hop_ck",
-+		"i2si2_hop_ck",
-+		"i2si3_hop_ck",
-+		"asrc0_out_ck",
-+		"asrc1_out_ck",
-+		"asrc2_out_ck",
-+		"asrc3_out_ck",
-+		"audio_afe_pd",
-+		"audio_afe_conn_pd",
-+		"audio_a1sys_pd",
-+		"audio_a2sys_pd",
-+		"audio_mrgif_pd";
-+- assigned-clocks: list of input clocks and dividers for the audio system.
-+		   See ../clocks/clock-bindings.txt for details.
-+- assigned-clocks-parents: parent of input clocks of assigned clocks.
-+- assigned-clock-rates: list of clock frequencies of assigned clocks.
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index 1d20a80..ea50b51 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -368,6 +368,15 @@ config MFD_MC13XXX_I2C
+ 	help
+ 	  Select this if your MC13xxx is connected via an I2C bus.
  
- Example:
- 
-@@ -62,93 +55,75 @@ Example:
- 			     <GIC_SPI 132 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-names	= "afe", "asys";
- 		power-domains = <&scpsys MT2701_POWER_DOMAIN_IFR_MSC>;
--		clocks = <&infracfg CLK_INFRA_AUDIO>,
--			 <&topckgen CLK_TOP_AUD_MUX1_SEL>,
-+		clocks = <&topckgen CLK_TOP_AUD_MUX1_SEL>,
- 			 <&topckgen CLK_TOP_AUD_MUX2_SEL>,
--			 <&topckgen CLK_TOP_AUD_MUX1_DIV>,
--			 <&topckgen CLK_TOP_AUD_MUX2_DIV>,
--			 <&topckgen CLK_TOP_AUD_48K_TIMING>,
--			 <&topckgen CLK_TOP_AUD_44K_TIMING>,
--			 <&topckgen CLK_TOP_AUDPLL_MUX_SEL>,
--			 <&topckgen CLK_TOP_APLL_SEL>,
--			 <&topckgen CLK_TOP_AUD1PLL_98M>,
--			 <&topckgen CLK_TOP_AUD2PLL_90M>,
--			 <&topckgen CLK_TOP_HADDS2PLL_98M>,
--			 <&topckgen CLK_TOP_HADDS2PLL_294M>,
--			 <&topckgen CLK_TOP_AUDPLL>,
--			 <&topckgen CLK_TOP_AUDPLL_D4>,
--			 <&topckgen CLK_TOP_AUDPLL_D8>,
--			 <&topckgen CLK_TOP_AUDPLL_D16>,
--			 <&topckgen CLK_TOP_AUDPLL_D24>,
--			 <&topckgen CLK_TOP_AUDINTBUS_SEL>,
--			 <&clk26m>,
--			 <&topckgen CLK_TOP_SYSPLL1_D4>,
- 			 <&topckgen CLK_TOP_AUD_K1_SRC_SEL>,
- 			 <&topckgen CLK_TOP_AUD_K2_SRC_SEL>,
- 			 <&topckgen CLK_TOP_AUD_K3_SRC_SEL>,
- 			 <&topckgen CLK_TOP_AUD_K4_SRC_SEL>,
--			 <&topckgen CLK_TOP_AUD_K5_SRC_SEL>,
--			 <&topckgen CLK_TOP_AUD_K6_SRC_SEL>,
- 			 <&topckgen CLK_TOP_AUD_K1_SRC_DIV>,
- 			 <&topckgen CLK_TOP_AUD_K2_SRC_DIV>,
- 			 <&topckgen CLK_TOP_AUD_K3_SRC_DIV>,
- 			 <&topckgen CLK_TOP_AUD_K4_SRC_DIV>,
--			 <&topckgen CLK_TOP_AUD_K5_SRC_DIV>,
--			 <&topckgen CLK_TOP_AUD_K6_SRC_DIV>,
- 			 <&topckgen CLK_TOP_AUD_I2S1_MCLK>,
- 			 <&topckgen CLK_TOP_AUD_I2S2_MCLK>,
- 			 <&topckgen CLK_TOP_AUD_I2S3_MCLK>,
- 			 <&topckgen CLK_TOP_AUD_I2S4_MCLK>,
--			 <&topckgen CLK_TOP_AUD_I2S5_MCLK>,
--			 <&topckgen CLK_TOP_AUD_I2S6_MCLK>,
--			 <&topckgen CLK_TOP_ASM_M_SEL>,
--			 <&topckgen CLK_TOP_ASM_H_SEL>,
--			 <&topckgen CLK_TOP_UNIVPLL2_D4>,
--			 <&topckgen CLK_TOP_UNIVPLL2_D2>,
--			 <&topckgen CLK_TOP_SYSPLL_D5>;
-+			 <&audiosys CLK_AUD_I2SO1>,
-+			 <&audiosys CLK_AUD_I2SO2>,
-+			 <&audiosys CLK_AUD_I2SO3>,
-+			 <&audiosys CLK_AUD_I2SO4>,
-+			 <&audiosys CLK_AUD_I2SIN1>,
-+			 <&audiosys CLK_AUD_I2SIN2>,
-+			 <&audiosys CLK_AUD_I2SIN3>,
-+			 <&audiosys CLK_AUD_I2SIN4>,
-+			 <&audiosys CLK_AUD_ASRCO1>,
-+			 <&audiosys CLK_AUD_ASRCO2>,
-+			 <&audiosys CLK_AUD_ASRCO3>,
-+			 <&audiosys CLK_AUD_ASRCO4>,
-+			 <&audiosys CLK_AUD_AFE>,
-+			 <&audiosys CLK_AUD_AFE_CONN>,
-+			 <&audiosys CLK_AUD_A1SYS>,
-+			 <&audiosys CLK_AUD_A2SYS>,
-+			 <&audiosys CLK_AUD_AFE_MRGIF>;
- 
--		clock-names = "infra_sys_audio_clk",
--			      "top_audio_mux1_sel",
-+		clock-names = "top_audio_mux1_sel",
- 			      "top_audio_mux2_sel",
--			      "top_audio_mux1_div",
--			      "top_audio_mux2_div",
--			      "top_audio_48k_timing",
--			      "top_audio_44k_timing",
--			      "top_audpll_mux_sel",
--			      "top_apll_sel",
--			      "top_aud1_pll_98M",
--			      "top_aud2_pll_90M",
--			      "top_hadds2_pll_98M",
--			      "top_hadds2_pll_294M",
--			      "top_audpll",
--			      "top_audpll_d4",
--			      "top_audpll_d8",
--			      "top_audpll_d16",
--			      "top_audpll_d24",
--			      "top_audintbus_sel",
--			      "clk_26m",
--			      "top_syspll1_d4",
--			      "top_aud_k1_src_sel",
--			      "top_aud_k2_src_sel",
--			      "top_aud_k3_src_sel",
--			      "top_aud_k4_src_sel",
--			      "top_aud_k5_src_sel",
--			      "top_aud_k6_src_sel",
--			      "top_aud_k1_src_div",
--			      "top_aud_k2_src_div",
--			      "top_aud_k3_src_div",
--			      "top_aud_k4_src_div",
--			      "top_aud_k5_src_div",
--			      "top_aud_k6_src_div",
--			      "top_aud_i2s1_mclk",
--			      "top_aud_i2s2_mclk",
--			      "top_aud_i2s3_mclk",
--			      "top_aud_i2s4_mclk",
--			      "top_aud_i2s5_mclk",
--			      "top_aud_i2s6_mclk",
--			      "top_asm_m_sel",
--			      "top_asm_h_sel",
--			      "top_univpll2_d4",
--			      "top_univpll2_d2",
--			      "top_syspll_d5";
-+			      "i2s0_src_sel",
-+			      "i2s1_src_sel",
-+			      "i2s2_src_sel",
-+			      "i2s3_src_sel",
-+			      "i2s0_src_div",
-+			      "i2s1_src_div",
-+			      "i2s2_src_div",
-+			      "i2s3_src_div",
-+			      "i2s0_mclk_en",
-+			      "i2s1_mclk_en",
-+			      "i2s2_mclk_en",
-+			      "i2s3_mclk_en",
-+			      "i2so0_hop_ck",
-+			      "i2so1_hop_ck",
-+			      "i2so2_hop_ck",
-+			      "i2so3_hop_ck",
-+			      "i2si0_hop_ck",
-+			      "i2si1_hop_ck",
-+			      "i2si2_hop_ck",
-+			      "i2si3_hop_ck",
-+			      "asrc0_out_ck",
-+			      "asrc1_out_ck",
-+			      "asrc2_out_ck",
-+			      "asrc3_out_ck",
-+			      "audio_afe_pd",
-+			      "audio_afe_conn_pd",
-+			      "audio_a1sys_pd",
-+			      "audio_a2sys_pd",
-+			      "audio_mrgif_pd";
++config MFD_MEDIATEK_AUDSYS
++	tristate "MediaTek audio subsystem interface"
++	select MDF_CORE
++	select REGMAP_MMIO
++	help
++	  Select this if you have a audio subsystem in MediaTek SoC.
++	  The audio subsystem has at least a clock driver part and some
++	  audio components.
 +
-+		assigned-clocks = <&topckgen CLK_TOP_AUD_MUX1_SEL>,
-+				  <&topckgen CLK_TOP_AUD_MUX2_SEL>,
-+				  <&topckgen CLK_TOP_AUD_MUX1_DIV>,
-+				  <&topckgen CLK_TOP_AUD_MUX2_DIV>;
-+		assigned-clock-parents = <&topckgen CLK_TOP_AUD1PLL_98M>,
-+					 <&topckgen CLK_TOP_AUD2PLL_90M>;
-+		assigned-clock-rates = <0>, <0>, <49152000>, <45158400>;
- 	};
+ config MFD_MXS_LRADC
+ 	tristate "Freescale i.MX23/i.MX28 LRADC"
+ 	depends on ARCH_MXS || COMPILE_TEST
+diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+index d9474ad..3e20927 100644
+--- a/drivers/mfd/Makefile
++++ b/drivers/mfd/Makefile
+@@ -101,6 +101,8 @@ obj-$(CONFIG_MFD_MC13XXX)	+= mc13xxx-core.o
+ obj-$(CONFIG_MFD_MC13XXX_SPI)	+= mc13xxx-spi.o
+ obj-$(CONFIG_MFD_MC13XXX_I2C)	+= mc13xxx-i2c.o
+ 
++obj-$(CONFIG_MFD_MEDIATEK_AUDSYS) += mtk-audsys.o
++
+ obj-$(CONFIG_MFD_CORE)		+= mfd-core.o
+ 
+ obj-$(CONFIG_EZX_PCAP)		+= ezx-pcap.o
+diff --git a/drivers/mfd/mtk-audsys.c b/drivers/mfd/mtk-audsys.c
+new file mode 100644
+index 0000000..89399e1
+--- /dev/null
++++ b/drivers/mfd/mtk-audsys.c
+@@ -0,0 +1,138 @@
++/*
++ * Mediatek audio subsystem core driver
++ *
++ *  Copyright (c) 2017 MediaTek Inc.
++ *
++ * Author: Ryder Lee <ryder.lee@mediatek.com>
++ *
++ * For licencing details see kernel-base/COPYING
++ *
++ */
++
++#include <linux/clk.h>
++#include <linux/module.h>
++#include <linux/of_platform.h>
++#include <linux/platform_device.h>
++#include <linux/regmap.h>
++
++#define AUDSYS_MAX_CLK_NUM 3
++
++struct sys_dev {
++	struct device *dev;
++	struct regmap *regmap;
++	int clk_num;
++	struct clk *clks[];
++};
++
++static const struct regmap_config aud_regmap_config = {
++	.reg_bits = 32,
++	.reg_stride = 4,
++	.val_bits = 32,
++	.max_register = 0x15e0,
++	.cache_type = REGCACHE_NONE,
++};
++
++static int mtk_subsys_enable(struct sys_dev *sys)
++{
++	struct device *dev = sys->dev;
++	struct clk *clk;
++	int i, ret;
++
++	for (i = 0; i < sys->clk_num; i++) {
++		clk = of_clk_get(dev->of_node, i);
++		if (IS_ERR(clk)) {
++			if (PTR_ERR(clk) == -EPROBE_DEFER)
++				return -EPROBE_DEFER;
++			break;
++		}
++		sys->clks[i] = clk;
++	}
++
++	for (i = 0; i < sys->clk_num && sys->clks[i]; i++) {
++		ret = clk_prepare_enable(sys->clks[i]);
++		if (ret)
++			goto err_enable_clks;
++	}
++
++	return 0;
++
++err_enable_clks:
++	while (--i >= 0)
++		clk_disable_unprepare(sys->clks[i]);
++
++	return ret;
++}
++
++static int mtk_subsys_probe(struct platform_device *pdev)
++{
++	struct sys_dev *sys;
++	struct resource *res;
++	void __iomem *mmio;
++	int num, ret;
++
++	num = (int)of_device_get_match_data(&pdev->dev);
++	if (!num)
++		return -EINVAL;
++
++	sys = devm_kzalloc(&pdev->dev, sizeof(*sys) +
++			   sizeof(struct clk *) * num, GFP_KERNEL);
++	if (!sys)
++		return -ENOMEM;
++
++	sys->clk_num = num;
++	sys->dev = &pdev->dev;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	mmio = devm_ioremap_resource(sys->dev, res);
++	if (IS_ERR(mmio))
++		return PTR_ERR(mmio);
++
++	sys->regmap = devm_regmap_init_mmio(sys->dev, mmio,
++					    &aud_regmap_config);
++	if (IS_ERR(sys->regmap))
++		return PTR_ERR(sys->regmap);
++
++	platform_set_drvdata(pdev, sys);
++
++	/* Enable top level clocks */
++	ret = mtk_subsys_enable(sys);
++	if (ret)
++		return ret;
++
++	return devm_of_platform_populate(sys->dev);
++};
++
++static int mtk_subsys_remove(struct platform_device *pdev)
++{
++	struct sys_dev *sys = platform_get_drvdata(pdev);
++	int i;
++
++	for (i = sys->clk_num - 1; i >= 0; i--)
++		if (sys->clks[i])
++			clk_disable_unprepare(sys->clks[i]);
++
++	return 0;
++}
++
++static const struct of_device_id of_match_audsys[] = {
++	{
++	  .compatible = "mediatek,mt2701-audsys-core",
++	  .data = (void *)AUDSYS_MAX_CLK_NUM,
++	},
++	{},
++};
++MODULE_DEVICE_TABLE(platform, of_match_audsys);
++
++static struct platform_driver audsys_drv = {
++	.probe = mtk_subsys_probe,
++	.remove	= mtk_subsys_remove,
++	.driver = {
++		.name = "mediatek-audsys-core",
++		.of_match_table = of_match_ptr(of_match_audsys),
++	},
++};
++
++builtin_platform_driver(audsys_drv);
++
++MODULE_DESCRIPTION("Mediatek audio subsystem core driver");
++MODULE_LICENSE("GPL");
 -- 
 1.9.1
