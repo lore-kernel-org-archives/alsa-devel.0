@@ -1,79 +1,124 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 1/6] ASoC: Intel: Skylake: Add ssp clock
- driver
-Date: Wed, 3 Jan 2018 11:42:45 +0000
-Message-ID: <20180103114245.GE5603@sirena.org.uk>
-References: <1514306696-7062-1-git-send-email-sriramx.periyasamy@intel.com>
- <1514306696-7062-2-git-send-email-sriramx.periyasamy@intel.com>
- <20180102233929.GO7997@codeaurora.org>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2358703787936831249=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1030E2668F0
- for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 12:42:57 +0100 (CET)
-In-Reply-To: <20180102233929.GO7997@codeaurora.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Boyd <sboyd@codeaurora.org>
-Cc: ALSA ML <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, mturquette@baylibre.com, Patches Audi o <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, linux-clk@vger.kernel.org
+Subject: Applied "ASoC: mediatek: fix error handling in mt2701_afe_pcm_dev_probe()" to the asoc tree
+Date: Wed, 03 Jan 2018 12:12:44 +0000
+Message-ID: <E1eWhuW-0001Yu-G4@debutante>
+References: <6081b70610c31f2c92ae1b83decb887a3f690f80.1514881870.git.ryder.lee@mediatek.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <6081b70610c31f2c92ae1b83decb887a3f690f80.1514881870.git.ryder.lee@mediatek.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ryder Lee <ryder.lee@mediatek.com>
+Cc: Garlic Tseng <garlic.tseng@mediatek.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.orgGarlic Tseng <garlic.tseng@mediatek.com>, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============2358703787936831249==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="tMbDGjvJuJijemkf"
-Content-Disposition: inline
+   ASoC: mediatek: fix error handling in mt2701_afe_pcm_dev_probe()
 
+has been applied to the asoc tree at
 
---tMbDGjvJuJijemkf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Jan 02, 2018 at 03:39:29PM -0800, Stephen Boyd wrote:
-> On 12/26, Sriram Periyasamy wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +// Copyright(c) 2015-17 Intel Corporation
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Does this also go into the // part? I thought just the tag was
-> with // comment style.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Only the tag *needs* to be in the C++ style but Linus indicated a desire
-for wider use of C++ comments and it looks ugly to have one line of C++
-comment right next to a big block of C comment so other maintainers have
-been asking for consistency.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---tMbDGjvJuJijemkf
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From dd6bb9b16f23f9b95b77713c45bd6182336c5b2e Mon Sep 17 00:00:00 2001
+From: Ryder Lee <ryder.lee@mediatek.com>
+Date: Tue, 2 Jan 2018 19:47:18 +0800
+Subject: [PATCH] ASoC: mediatek: fix error handling in
+ mt2701_afe_pcm_dev_probe()
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpMwbUACgkQJNaLcl1U
-h9C1iQf/aYT5dz3HpuKyIRmSIPK9tNmbg/j7On3tRqIwPRRS6f54YdF3nMRL+Ox7
-XRgUp1K5nt9g5eFngXxjX8WLvh4b4VaAPi5EjSGRaJK3v1hO4CIPyAnPe4KABWyv
-3rUshhVMxc7hPiHPPYmrYjAr23vhy07Az2at5QSvxU9gD54ayGBYi2tx3AzT29eG
-ZAGeyYHAH+zhVRN44PYddgYQaO6049i5Aw4f8hXJGTUkKCdzxr4ctImR01Ycsnk+
-BcPyzNRL2cAsTeaiwLzfttJdJsV6unsW/hpOdjqH5rnd8/d2Co9+8UJn3P5r5Zb7
-XGLOhyS7chgEg5DzQlSzTGm7QrwmVg==
-=yUja
------END PGP SIGNATURE-----
+Fix unbalanced error handling path which will get incorrect counts
+if probe failed. The .remove() should be adjusted accordingly.
 
---tMbDGjvJuJijemkf--
+Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
+Tested-by: Garlic Tseng <garlic.tseng@mediatek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 31 ++++++++++++++----------------
+ 1 file changed, 14 insertions(+), 17 deletions(-)
 
---===============2358703787936831249==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2358703787936831249==--
+diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+index 8fda182f849b..a7362d1cda1b 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
++++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+@@ -1590,12 +1590,16 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	platform_set_drvdata(pdev, afe);
+-	pm_runtime_enable(&pdev->dev);
+-	if (!pm_runtime_enabled(&pdev->dev))
+-		goto err_pm_disable;
+-	pm_runtime_get_sync(&pdev->dev);
+ 
+-	ret = snd_soc_register_platform(&pdev->dev, &mtk_afe_pcm_platform);
++	pm_runtime_enable(dev);
++	if (!pm_runtime_enabled(dev)) {
++		ret = mt2701_afe_runtime_resume(dev);
++		if (ret)
++			goto err_pm_disable;
++	}
++	pm_runtime_get_sync(dev);
++
++	ret = snd_soc_register_platform(dev, &mtk_afe_pcm_platform);
+ 	if (ret) {
+ 		dev_warn(dev, "err_platform\n");
+ 		goto err_platform;
+@@ -1610,35 +1614,28 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+ 		goto err_dai_component;
+ 	}
+ 
+-	mt2701_afe_runtime_resume(&pdev->dev);
+-
+ 	return 0;
+ 
+ err_dai_component:
+-	snd_soc_unregister_component(&pdev->dev);
+-
++	snd_soc_unregister_platform(dev);
+ err_platform:
+-	snd_soc_unregister_platform(&pdev->dev);
+-
++	pm_runtime_put_sync(dev);
+ err_pm_disable:
+-	pm_runtime_disable(&pdev->dev);
++	pm_runtime_disable(dev);
+ 
+ 	return ret;
+ }
+ 
+ static int mt2701_afe_pcm_dev_remove(struct platform_device *pdev)
+ {
+-	struct mtk_base_afe *afe = platform_get_drvdata(pdev);
+-
++	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		mt2701_afe_runtime_suspend(&pdev->dev);
+-	pm_runtime_put_sync(&pdev->dev);
+ 
+ 	snd_soc_unregister_component(&pdev->dev);
+ 	snd_soc_unregister_platform(&pdev->dev);
+-	/* disable afe clock */
+-	mt2701_afe_disable_clock(afe);
++
+ 	return 0;
+ }
+ 
+-- 
+2.15.1
