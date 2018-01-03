@@ -1,18 +1,18 @@
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v2 5/9] ASoC: Intel: Fix nested/unnecessary
- Kconfig dependencies
-Date: Wed, 03 Jan 2018 18:56:58 +0200
-Message-ID: <1514998618.7000.584.camel@linux.intel.com>
+Subject: Re: [PATCH v2 8/9] ASoC: Intel: boards: align/fix
+ SKL/BXT/KBL Kconfigs
+Date: Wed, 03 Jan 2018 19:00:29 +0200
+Message-ID: <1514998829.7000.587.camel@linux.intel.com>
 References: <20180103165022.4984-1-pierre-louis.bossart@linux.intel.com>
- <20180103165022.4984-6-pierre-louis.bossart@linux.intel.com>
+ <20180103165022.4984-9-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 8DF2D2676A9
- for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 18:04:34 +0100 (CET)
-In-Reply-To: <20180103165022.4984-6-pierre-louis.bossart@linux.intel.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9FAE72676A9
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 18:10:39 +0100 (CET)
+In-Reply-To: <20180103165022.4984-9-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,18 +28,35 @@ List-Id: alsa-devel@alsa-project.org
 
 On Wed, 2018-01-03 at 10:50 -0600, Pierre-Louis Bossart wrote:
 
-> 
->  	tristate "Intel ASoC SST driver for ACPI HiFi2 platforms
-> (Baytrail, Cherrytrail)"
->  	depends on X86 && ACPI
->  	select SND_SST_IPC_ACPI
-> +	select IOSF_MBI
->  	select SND_SOC_COMPRESS
->  	select SND_SOC_ACPI_INTEL_MATCH
->  	help
+> Also make sure same dependencies are used everywhere (only last one
+> has SPI
+> in addition).
 
-A nitpick: perhaps not to split SND_* list of options and put IOSF_MBI
-selection last?
+A nitpick:
+
+>  config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
+>  	tristate "ASoC Audio driver for KBL with RT5663 and MAX98927
+> in I2S Mode"
+> -	depends on X86_INTEL_LPSS && I2C
+> -	select SND_SOC_INTEL_SST
+> +	depends on MFD_INTEL_LPSS && I2C && ACPI
+>  	select SND_SOC_RT5663
+>  	select SND_SOC_MAX98927
+>  	select SND_SOC_DMIC
+> @@ -257,8 +256,7 @@ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
+>  
+>  config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
+>          tristate "ASoC Audio driver for KBL with RT5663, RT5514 and
+> MAX98927 in I2S Mode"
+> -        depends on X86_INTEL_LPSS && I2C && SPI
+> -        select SND_SOC_INTEL_SST
+> +        depends on MFD_INTEL_LPSS && I2C && SPI && ACPI
+
+Perhaps to split
+
+ depends on SPI
+
+to separate line to follow pattern with the rest ?
 
 -- 
 Andy Shevchenko <andriy.shevchenko@linux.intel.com>
