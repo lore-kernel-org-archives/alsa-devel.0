@@ -1,150 +1,71 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [RESEND PATCH v2 14/15] ASoC: qcom: apq8096: Add db820c machine
- driver
-Date: Wed, 3 Jan 2018 16:27:28 +0000
-Message-ID: <3acca412-4ef7-6e61-d250-2b35c1fe9fe8@linaro.org>
+Subject: Re: [RESEND PATCH v2 13/15] dt-bindings: sound: qcom: Add devicetree
+ bindings for apq8096
+Date: Wed, 3 Jan 2018 16:27:22 +0000
+Message-ID: <787ecdc5-66d8-23ee-7136-2a8759c86536@linaro.org>
 References: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
- <20171214173402.19074-15-srinivas.kandagatla@linaro.org>
- <20180103001654.GU478@tuxbook>
+ <20171214173402.19074-14-srinivas.kandagatla@linaro.org>
+ <20180103002835.GW478@tuxbook>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180103001654.GU478@tuxbook>
+In-Reply-To: <20180103002835.GW478@tuxbook>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Bjorn Andersson <bjorn.andersson@linaro.org>
 Cc: Andy Gross <andy.gross@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, David Brown <david.brown@linaro.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, sboyd@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the review comments.
 
 
-On 03/01/18 00:16, Bjorn Andersson wrote:
+On 03/01/18 00:28, Bjorn Andersson wrote:
 > On Thu 14 Dec 09:34 PST 2017, srinivas.kandagatla@linaro.org wrote:
 > 
->> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>
->> uThis patch adds support to DB820c machine driver.
+>> +++ b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
 > 
-> Drop 'u' and expand the message to claim that this is the machine driver
-> for 8996, used by the db820c.
-> 
-> [..]
->> +static struct snd_soc_dai_link msm8996_dai_links[] = {
-> 
-> Are there any differences between the DAI links of apq8096 and msm8996?
-> 
-This driver is more of board specific,
-Am not 100% sure about msm8996, on apq8096 in particularly on db820c we 
-got hdmi and analog audio connected via slimbus and also I2S on lowspeed 
-connector.
+> Wouldn't it be possible to describe all(?) qdsp based machines in this
+> one document? I.e. should we name it a little bit more generic?
 
->> +	/* FrontEnd DAI Links */
->> +	{
->> +		.name		= "MultiMedia1 Playback",
->> +		.stream_name	= "MultiMedia1",
->> +		.cpu_dai_name	= "MM_DL1",
->> +		.platform_name	= "q6asm_dai",
->> +		.dynamic	= 1,
->> +		.dpcm_playback	= 1,
->> +
->> +		.codec_dai_name	= "snd-soc-dummy-dai",
->> +		.codec_name = "snd-soc-dummy",
->> +	},
->> +	/* Backend DAI Links */
->> +	{
->> +		.name		= "HDMI Playback",
->> +		.stream_name	= "q6afe_dai",
->> +		.cpu_dai_name	= "HDMI",
->> +		.platform_name	= "q6routing",
->> +		.no_pcm		= 1,
->> +		.dpcm_playback	= 1,
->> +		.be_hw_params_fixup = msm8996_be_hw_params_fixup,
->> +		.codec_dai_name	= "i2s-hifi",
->> +		.codec_name = "hdmi-audio-codec.0.auto",
->> +	},
->> +};
->> +
->> +static int apq8096_sbc_parse_of(struct snd_soc_card *card)
-> 
-> msm8996_parse_of()
+You mean like downstream ?
 
-sure if it helps.
+I see no harm in trying it out and see how it looks like.
 
 > 
->> +{
->> +	struct device *dev = card->dev;
->> +	int ret;
+>> @@ -0,0 +1,22 @@
+>> +* Qualcomm Technologies APQ8096 ASoC sound card driver
 >> +
->> +	ret = snd_soc_of_parse_card_name(card, "qcom,model");
->> +	if (ret)
->> +		dev_err(dev, "Error parsing card name: %d\n", ret);
+>> +This binding describes the APQ8096 sound card, which uses qdsp for audio.
 >> +
->> +	return ret;
->> +}
+>> +- compatible:
+>> +	Usage: required
+>> +	Value type: <stringlist>
+>> +	Definition: must be "qcom,apq8096-sndcard"
 >> +
->> +static int msm_snd_apq8096_probe(struct platform_device *pdev)
+>> +- qcom,audio-routing:
+>> +	Usage: Optional
+>> +	Value type: <stringlist>
+>> +	Definition:  A list of the connections between audio components.
 > 
-> msm_snd_msm8996_probe()?
-sure
-> 
->> +{
->> +	int ret;
->> +	struct snd_soc_card *card;
->> +
->> +	card = devm_kzalloc(&pdev->dev, sizeof(*card), GFP_KERNEL);
->> +	if (!card)
->> +		return -ENOMEM;
->> +
->> +	card->dev = &pdev->dev;
->> +
->> +	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
->> +	if (ret)
->> +		return ret;
->> +
->> +	card->dai_link = msm8996_dai_links;
->> +	card->num_links	= ARRAY_SIZE(msm8996_dai_links);
->> +
->> +	ret = apq8096_sbc_parse_of(card);
->> +	if (ret) {
->> +		dev_err(&pdev->dev, "Error parsing OF data\n");
-> 
-> No need to print in both parse_of() and here.
-> 
+> Double space before A
 yep.
 
->> +		return ret;
->> +	}
->> +
->> +	ret = devm_snd_soc_register_card(&pdev->dev, card);
->> +	if (ret)
->> +		dev_err(&pdev->dev, "sound card register failed (%d)!\n", ret);
->> +	else
->> +		dev_err(&pdev->dev, "sound card register Sucessfull\n");
 > 
-> This isn't an error, skip the print here.
+>> +		  Each entry is a pair of strings, the first being the
+>> +		  connection's sink, the second being the connection's
+>> +		  source. Valid names could be power supplies, MicBias
+>> +		  of codec and the jacks on the board:
+>> +Example:
+>> +	sound {
+>> +		compatible	= "qcom,snd-apq8096";
 > 
+> Indentation
 yep.
 
->> +
->> +	return ret;
->> +}
->> +
->> +static const struct of_device_id msm_snd_apq8096_dt_match[] = {
->> +	{.compatible = "qcom,apq8096-sndcard"},
->> +	{}
->> +};
->> +
->> +static struct platform_driver msm_snd_apq8096_driver = {
->> +	.probe  = msm_snd_apq8096_probe,
->> +	.driver = {
->> +		.name = "msm-snd-apq8096",
->> +		.owner = THIS_MODULE,
 > 
-> Drop the .owner
+>> +		qcom,model = "DB820c";
+>> +	};
 > 
-yep
 > Regards,
 > Bjorn
 > 
