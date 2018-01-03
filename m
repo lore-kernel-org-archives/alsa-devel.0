@@ -1,69 +1,81 @@
 From: Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [RESEND PATCH v2 13/15] dt-bindings: sound: qcom:
- Add devicetree bindings for apq8096
-Date: Tue, 2 Jan 2018 16:28:35 -0800
-Message-ID: <20180103002835.GW478@tuxbook>
+Subject: Re: [RESEND PATCH v2 01/15] dt-bindings: soc: qcom: Add bindings for
+ APR bus
+Date: Tue, 2 Jan 2018 16:35:04 -0800
+Message-ID: <20180103003504.GX478@tuxbook>
 References: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
- <20171214173402.19074-14-srinivas.kandagatla@linaro.org>
+ <20171214173402.19074-2-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f53.google.com (mail-pg0-f53.google.com [74.125.83.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 3080C26719C
- for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 01:28:41 +0100 (CET)
-Received: by mail-pg0-f53.google.com with SMTP id q67so58929pga.9
- for <alsa-devel@alsa-project.org>; Tue, 02 Jan 2018 16:28:41 -0800 (PST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20171214173402.19074-14-srinivas.kandagatla@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+In-Reply-To: <20171214173402.19074-2-srinivas.kandagatla@linaro.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
 To: srinivas.kandagatla@linaro.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, sboyd@codeaurora.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, David Brown <david.brown@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Andy Gross <andy.gross@linaro.org>, linux-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Andy Gross <andy.gross@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, sboyd@codeaurora.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, David Brown <david.brown@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu 14 Dec 09:34 PST 2017, srinivas.kandagatla@linaro.org wrote:
+On Thu 14 Dec 09:33 PST 2017, srinivas.kandagatla@linaro.org wrote:
 
-> +++ b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
-
-Wouldn't it be possible to describe all(?) qdsp based machines in this
-one document? I.e. should we name it a little bit more generic?
-
-> @@ -0,0 +1,22 @@
-> +* Qualcomm Technologies APQ8096 ASoC sound card driver
+> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> 
+> This patch add dt bindings for Qualcomm APR bus driver
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  .../devicetree/bindings/soc/qcom/qcom,apr.txt      | 28 ++++++++++++++++++++++
+>  1 file changed, 28 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+> new file mode 100644
+> index 000000000000..4e93213ae98d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+> @@ -0,0 +1,28 @@
+> +Qualcomm APR (Asynchronous Packet Router) binding
 > +
-> +This binding describes the APQ8096 sound card, which uses qdsp for audio.
+> +This binding describes the Qualcomm APR. APR is a IPC protocol for
+> +communication between Application processor and QDSP. APR is mainly
+> +used for audio/voice services on the QDSP.
 > +
 > +- compatible:
 > +	Usage: required
 > +	Value type: <stringlist>
-> +	Definition: must be "qcom,apq8096-sndcard"
+> +	Definition: must be "qcom,apr-<SOC-NAME>" example: "qcom,apr-msm8996"
+
+This is not the only apr on msm8996 and some platform seems to have 3-4
+aprs. I'm therefor hesitant to use the compatible to pick the static
+list of services available on the particular firmware.
+
+If this scheme is followed we at least would need to rename this
+qcom,msm8996-apr-audio-svc
+
+But I think it would be preferable to go with qcom,apr-v2 and then list
+the static services as child nodes.
+
 > +
-> +- qcom,audio-routing:
-> +	Usage: Optional
-> +	Value type: <stringlist>
-> +	Definition:  A list of the connections between audio components.
+> +
+> +- qcom,smd-channel:
+> +	Usage: required
+> +	Value type: <string>
+> +	Definition: standard SMD property specifying the SMD channel used for
+> +		    communication with the APR on QDSP.
+> +		    Should be "apr_audio_svc".
 
-Double space before A
+This is not the only APR channel, but for apr itself this doesn't matter
+and might as well be qcom,glink-channels; so perhaps we can omit this
+from this document?
 
-> +		  Each entry is a pair of strings, the first being the
-> +		  connection's sink, the second being the connection's
-> +		  source. Valid names could be power supplies, MicBias
-> +		  of codec and the jacks on the board:
-> +Example:
-> +	sound {
-> +		compatible	= "qcom,snd-apq8096";
-
-Indentation
-
-> +		qcom,model = "DB820c";
+> +		    Described in soc/qcom/qcom,smd.txt
+> +
+> += EXAMPLE
+> +The following example represents a QDSP based sound card on a MSM8996 device
+> +which uses apr as communication between Apps and QDSP.
+> +
+> +	apr {
+> +		compatible = "qcom,apr-msm8996";
+> +		qcom,smd-channels = "apr_audio_svc";
 > +	};
 
 Regards,
