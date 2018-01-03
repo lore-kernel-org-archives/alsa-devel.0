@@ -1,111 +1,248 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Disable clock gating
-	during firmware and library download" to the asoc tree
-Date: Wed, 03 Jan 2018 12:12:47 +0000
-Message-ID: <E1eWhuZ-0001Zy-TN@debutante>
-References: <20180102092957.14091-1-guneshwor.o.singh@intel.com>
+From: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Subject: Re: [PATCH 05/12] mfd: mtk-audsys: add MediaTek audio subsystem
+ driver
+Date: Wed, 3 Jan 2018 20:24:27 +0800
+Message-ID: <1514982267.23243.40.camel@mtkswgap22>
+References: <cover.1514881870.git.ryder.lee@mediatek.com>
+         <fbe22b0d78c41b121f04202dcbfcd0cc23a7590d.1514881870.git.ryder.lee@mediatek.com>
+         <20180102163103.dqxsl4bylqwn6o5b@dell>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DA63E2675F5
- for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 13:13:01 +0100 (CET)
-In-Reply-To: <20180102092957.14091-1-guneshwor.o.singh@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Vinod Koul <vinod.koul@intel.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20180102163103.dqxsl4bylqwn6o5b@dell>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Stephen Boyd <sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Tue, 2018-01-02 at 16:31 +0000, Lee Jones wrote:
+> On Tue, 02 Jan 2018, Ryder Lee wrote:
+> 
+> > Add a common driver for the top block of the MediaTek audio subsystem.
+> > This is a wrapper which manages resources for audio components.
+> > 
+> > Signed-off-by: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 
-   ASoC: Intel: Skylake: Disable clock gating during firmware and library download
+> > diff --git a/drivers/mfd/mtk-audsys.c b/drivers/mfd/mtk-audsys.c
+> > new file mode 100644
+> > index 0000000..89399e1
+> > --- /dev/null
+> > +++ b/drivers/mfd/mtk-audsys.c
+> > @@ -0,0 +1,138 @@
+> > +/*
+> > + * Mediatek audio subsystem core driver
+> > + *
+> > + *  Copyright (c) 2017 MediaTek Inc.
+> > + *
+> > + * Author: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+> > + *
+> > + * For licencing details see kernel-base/COPYING
+> 
+> You can't do that.
+> 
+> Grep for SPDX to see what is expected.
 
-has been applied to the asoc tree at
+Okay.
+> > + *
+> > + */
+> > +
+> > +#include <linux/clk.h>
+> > +#include <linux/module.h>
+> > +#include <linux/of_platform.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/regmap.h>
+> > +
+> > +#define AUDSYS_MAX_CLK_NUM 3
+> 
+> When is this not 3?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+If other subsystems have different clocks numbers.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+> > +struct sys_dev {
+> > +	struct device *dev;
+> > +	struct regmap *regmap;
+> > +	int clk_num;
+> > +	struct clk *clks[];
+> > +};
+> > +
+> > +static const struct regmap_config aud_regmap_config = {
+> > +	.reg_bits = 32,
+> > +	.reg_stride = 4,
+> > +	.val_bits = 32,
+> > +	.max_register = 0x15e0,
+> > +	.cache_type = REGCACHE_NONE,
+> > +};
+> > +
+> > +static int mtk_subsys_enable(struct sys_dev *sys)
+> > +{
+> > +	struct device *dev = sys->dev;
+> 
+> I would remove dev and regmap from the sys_dev struct and pass in pdev
+> directly into this function.  Then use platform_get_drvdata() as you
+> did in .remove().
+> 
+> > +	struct clk *clk;
+> > +	int i, ret;
+> > +
+> > +	for (i = 0; i < sys->clk_num; i++) {
+> > +		clk = of_clk_get(dev->of_node, i);
+> > +		if (IS_ERR(clk)) {
+> > +			if (PTR_ERR(clk) == -EPROBE_DEFER)
+> > +				return -EPROBE_DEFER;
+> > +			break;
+> > +		}
+> > +		sys->clks[i] = clk;
+> > +	}
+> > +
+> > +	for (i = 0; i < sys->clk_num && sys->clks[i]; i++) {
+> 
+> Why do you need a separate loop for this?
+> 
+> Just prepare and enable valid clocks in the for() loop above.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Ohh, it's a mistake. Thanks for reminding me.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> > +		ret = clk_prepare_enable(sys->clks[i]);
+> > +		if (ret)
+> > +			goto err_enable_clks;
+> > +	}
+> > +
+> > +	return 0;
+> > +
+> > +err_enable_clks:
+> > +	while (--i >= 0)
+> > +		clk_disable_unprepare(sys->clks[i]);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int mtk_subsys_probe(struct platform_device *pdev)
+> > +{
+> > +	struct sys_dev *sys;
+> > +	struct resource *res;
+> > +	void __iomem *mmio;
+> > +	int num, ret;
+> > +
+> > +	num = (int)of_device_get_match_data(&pdev->dev);
+> > +	if (!num)
+> > +		return -EINVAL;
+> 
+> This is a very rigid method of achieving your aim.  Please find a way
+> to make this more dynamic.  You're probably better off counting the
+> elements within the property, checking to ensure there aren't more
+> than the maximum pre-allocated/allowed clocks, then using the number
+> gleaned directly from the Device Tree.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Just in case other MTK subsystems can reuse this driver and set their
+own clock numbers in SoC data table, but yes, it's too rigid.
 
-Thanks,
-Mark
+> > +	sys = devm_kzalloc(&pdev->dev, sizeof(*sys) +
+> > +			   sizeof(struct clk *) * num, GFP_KERNEL);
+> 
+> You need to add bracketing here for clarity.
 
->From d5cc0a1fcbb5ddbef9fdd4c4a978da3254ddbf37 Mon Sep 17 00:00:00 2001
-From: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
-Date: Tue, 2 Jan 2018 14:59:57 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Disable clock gating during firmware
- and library download
+Okay.
 
-During firmware and library download, sometimes it is observed that
-firmware and library download is timed-out resulting into probe failure.
+> > +	if (!sys)
+> > +		return -ENOMEM;
+> > +
+> > +	sys->clk_num = num;
+> > +	sys->dev = &pdev->dev;
+> 
+> Why are you saving the device pointer?
 
-This patch disables dynamic clock gating while firmware and library
-download.
+will remove it.
 
-Signed-off-by: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
-Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl-messages.c | 4 ++++
- sound/soc/intel/skylake/skl-pcm.c      | 4 ++++
- 2 files changed, 8 insertions(+)
+> > +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +	mmio = devm_ioremap_resource(sys->dev, res);
+> > +	if (IS_ERR(mmio))
+> > +		return PTR_ERR(mmio);
+> > +
+> > +	sys->regmap = devm_regmap_init_mmio(sys->dev, mmio,
+> > +					    &aud_regmap_config);
+> 
+> Why are you saving a devm'ed regmap pointer?
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 4e63213a8d55..933c1fbb222f 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -417,7 +417,11 @@ int skl_resume_dsp(struct skl *skl)
- 	if (skl->skl_sst->is_first_boot == true)
- 		return 0;
- 
-+	/* disable dynamic clock gating during fw and lib download */
-+	ctx->enable_miscbdcge(ctx->dev, false);
-+
- 	ret = skl_dsp_wake(ctx->dsp);
-+	ctx->enable_miscbdcge(ctx->dev, true);
- 	if (ret < 0)
- 		return ret;
- 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index cc6535ab84d1..b45a9cd5f058 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1342,7 +1342,11 @@ static int skl_platform_soc_probe(struct snd_soc_platform *platform)
- 			return -EIO;
- 		}
- 
-+		/* disable dynamic clock gating during fw and lib download */
-+		skl->skl_sst->enable_miscbdcge(platform->dev, false);
-+
- 		ret = ops->init_fw(platform->dev, skl->skl_sst);
-+		skl->skl_sst->enable_miscbdcge(platform->dev, true);
- 		if (ret < 0) {
- 			dev_err(platform->dev, "Failed to boot first fw: %d\n", ret);
- 			return ret;
--- 
-2.15.1
+We don't really need this 'sys->regmap" in driver, but need to
+initialize mmio so that its subnodes can obtain regmap through
+dev_get_regmap().
+
+> > +	if (IS_ERR(sys->regmap))
+> > +		return PTR_ERR(sys->regmap);
+> > +
+> > +	platform_set_drvdata(pdev, sys);
+> > +
+> > +	/* Enable top level clocks */
+> > +	ret = mtk_subsys_enable(sys);
+> 
+> mtk_subsys_enable_clks()
+
+Okay.
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	return devm_of_platform_populate(sys->dev);
+> > +};
+> > +
+> > +static int mtk_subsys_remove(struct platform_device *pdev)
+> > +{
+> > +	struct sys_dev *sys = platform_get_drvdata(pdev);
+> > +	int i;
+> > +
+> > +	for (i = sys->clk_num - 1; i >= 0; i--)
+> > +		if (sys->clks[i])
+> 
+> This check is superfluous as the clk subsystem does this for you.
+> 
+> > +			clk_disable_unprepare(sys->clks[i]);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct of_device_id of_match_audsys[] = {
+> > +	{
+> > +	  .compatible = "mediatek,mt2701-audsys-core",
+> > +	  .data = (void *)AUDSYS_MAX_CLK_NUM,
+> 
+> You can remove this line.
+
+Okay
+> > +	},
+> > +	{},
+> > +};
+> > +MODULE_DEVICE_TABLE(platform, of_match_audsys);
+> > +
+> > +static struct platform_driver audsys_drv = {
+> > +	.probe = mtk_subsys_probe,
+> > +	.remove	= mtk_subsys_remove,
+> > +	.driver = {
+> > +		.name = "mediatek-audsys-core",
+> > +		.of_match_table = of_match_ptr(of_match_audsys),
+> > +	},
+> > +};
+> > +
+> > +builtin_platform_driver(audsys_drv);
+> > +
+> > +MODULE_DESCRIPTION("Mediatek audio subsystem core driver");
+> 
+> > +MODULE_LICENSE("GPL");
+> 
+> <just_checking>
+>   Are you sure this is what you want?
+> </just_checking>
+> 
+
+The reason to add this driver is some MTK subsystem blocks expose more
+than a single functionality but register those in different kernel
+subsystems (e.g., AUDSYS includes audio components and clock part).
+
+But I think I should just add a property "simple-mfd" in DTS instead of
+adding this driver.
+
+Thanks.
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
