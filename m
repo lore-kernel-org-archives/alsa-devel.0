@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: fix error handling in mt2701_afe_pcm_dev_probe()" to the asoc tree
-Date: Wed, 03 Jan 2018 12:12:44 +0000
-Message-ID: <E1eWhuW-0001Yu-G4@debutante>
-References: <6081b70610c31f2c92ae1b83decb887a3f690f80.1514881870.git.ryder.lee@mediatek.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <6081b70610c31f2c92ae1b83decb887a3f690f80.1514881870.git.ryder.lee@mediatek.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ryder Lee <ryder.lee@mediatek.com>
-Cc: Garlic Tseng <garlic.tseng@mediatek.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.orgGarlic Tseng <garlic.tseng@mediatek.com>, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: Intel: cht_bsw_rt5645: Analog Mic
+	support" to the asoc tree
+Date: Wed, 03 Jan 2018 12:12:51 +0000
+Message-ID: <E1eWhud-0001ar-A1@debutante>
+References: <20180102185314.17189-7-hdegoede@redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id DB5DE2675F5
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 13:12:57 +0100 (CET)
+In-Reply-To: <20180102185314.17189-7-hdegoede@redhat.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: fix error handling in mt2701_afe_pcm_dev_probe()
+   ASoC: Intel: cht_bsw_rt5645: Analog Mic support
 
 has been applied to the asoc tree at
 
@@ -37,88 +53,67 @@ to this mail.
 Thanks,
 Mark
 
->From dd6bb9b16f23f9b95b77713c45bd6182336c5b2e Mon Sep 17 00:00:00 2001
-From: Ryder Lee <ryder.lee@mediatek.com>
-Date: Tue, 2 Jan 2018 19:47:18 +0800
-Subject: [PATCH] ASoC: mediatek: fix error handling in
- mt2701_afe_pcm_dev_probe()
+>From b70b309950418437bbd2a30afd169c4f09dee3e5 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Tue, 2 Jan 2018 19:53:14 +0100
+Subject: [PATCH] ASoC: Intel: cht_bsw_rt5645: Analog Mic support
 
-Fix unbalanced error handling path which will get incorrect counts
-if probe failed. The .remove() should be adjusted accordingly.
+Various Cherry Trail boards with a rt5645 codec have an analog mic
+connected to IN2P + IN2N. The mic on this boards also needs micbias to
+be enabled, on some boards micbias1 is used and on others micbias2, so
+we enable both.
 
-Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
-Tested-by: Garlic Tseng <garlic.tseng@mediatek.com>
+This commit adds a new "Int Analog Mic" DAPM widget for this, so that we
+do not end up enabling micbias on boards with a digital mic which uses
+the already present "Int Mic" widget. Some existing UCM files already
+refer to "Int Mic" for their "Internal Analog Microphones" SectionDevice,
+but these don't work anyways since they enable the RECMIX BST1 Switch
+instead of the BST2 switch.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 31 ++++++++++++++----------------
- 1 file changed, 14 insertions(+), 17 deletions(-)
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-index 8fda182f849b..a7362d1cda1b 100644
---- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-+++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-@@ -1590,12 +1590,16 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
- 	}
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index 18d129caa974..f898ee140cdc 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -118,6 +118,7 @@ static const struct snd_soc_dapm_widget cht_dapm_widgets[] = {
+ 	SND_SOC_DAPM_HP("Headphone", NULL),
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+ 	SND_SOC_DAPM_MIC("Int Mic", NULL),
++	SND_SOC_DAPM_MIC("Int Analog Mic", NULL),
+ 	SND_SOC_DAPM_SPK("Ext Spk", NULL),
+ 	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
+ 			platform_clock_control, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+@@ -128,6 +129,8 @@ static const struct snd_soc_dapm_route cht_rt5645_audio_map[] = {
+ 	{"IN1N", NULL, "Headset Mic"},
+ 	{"DMIC L1", NULL, "Int Mic"},
+ 	{"DMIC R1", NULL, "Int Mic"},
++	{"IN2P", NULL, "Int Analog Mic"},
++	{"IN2N", NULL, "Int Analog Mic"},
+ 	{"Headphone", NULL, "HPOL"},
+ 	{"Headphone", NULL, "HPOR"},
+ 	{"Ext Spk", NULL, "SPOL"},
+@@ -135,6 +138,9 @@ static const struct snd_soc_dapm_route cht_rt5645_audio_map[] = {
+ 	{"Headphone", NULL, "Platform Clock"},
+ 	{"Headset Mic", NULL, "Platform Clock"},
+ 	{"Int Mic", NULL, "Platform Clock"},
++	{"Int Analog Mic", NULL, "Platform Clock"},
++	{"Int Analog Mic", NULL, "micbias1"},
++	{"Int Analog Mic", NULL, "micbias2"},
+ 	{"Ext Spk", NULL, "Platform Clock"},
+ };
  
- 	platform_set_drvdata(pdev, afe);
--	pm_runtime_enable(&pdev->dev);
--	if (!pm_runtime_enabled(&pdev->dev))
--		goto err_pm_disable;
--	pm_runtime_get_sync(&pdev->dev);
- 
--	ret = snd_soc_register_platform(&pdev->dev, &mtk_afe_pcm_platform);
-+	pm_runtime_enable(dev);
-+	if (!pm_runtime_enabled(dev)) {
-+		ret = mt2701_afe_runtime_resume(dev);
-+		if (ret)
-+			goto err_pm_disable;
-+	}
-+	pm_runtime_get_sync(dev);
-+
-+	ret = snd_soc_register_platform(dev, &mtk_afe_pcm_platform);
- 	if (ret) {
- 		dev_warn(dev, "err_platform\n");
- 		goto err_platform;
-@@ -1610,35 +1614,28 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
- 		goto err_dai_component;
- 	}
- 
--	mt2701_afe_runtime_resume(&pdev->dev);
--
- 	return 0;
- 
- err_dai_component:
--	snd_soc_unregister_component(&pdev->dev);
--
-+	snd_soc_unregister_platform(dev);
- err_platform:
--	snd_soc_unregister_platform(&pdev->dev);
--
-+	pm_runtime_put_sync(dev);
- err_pm_disable:
--	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_disable(dev);
- 
- 	return ret;
- }
- 
- static int mt2701_afe_pcm_dev_remove(struct platform_device *pdev)
- {
--	struct mtk_base_afe *afe = platform_get_drvdata(pdev);
--
-+	pm_runtime_put_sync(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		mt2701_afe_runtime_suspend(&pdev->dev);
--	pm_runtime_put_sync(&pdev->dev);
- 
- 	snd_soc_unregister_component(&pdev->dev);
- 	snd_soc_unregister_platform(&pdev->dev);
--	/* disable afe clock */
--	mt2701_afe_disable_clock(afe);
-+
- 	return 0;
- }
+@@ -189,6 +195,7 @@ static const struct snd_kcontrol_new cht_mc_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Headphone"),
+ 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+ 	SOC_DAPM_PIN_SWITCH("Int Mic"),
++	SOC_DAPM_PIN_SWITCH("Int Analog Mic"),
+ 	SOC_DAPM_PIN_SWITCH("Ext Spk"),
+ };
  
 -- 
 2.15.1
