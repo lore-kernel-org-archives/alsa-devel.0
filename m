@@ -1,300 +1,96 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: update clock related properties of MT2701 AFE" to the asoc tree
-Date: Wed, 03 Jan 2018 16:29:19 +0000
-Message-ID: <E1eWlup-0002TQ-Ow@debutante>
-References: <8693f44aac4304ce99836fc5e715a796347541d3.1514881870.git.ryder.lee@mediatek.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <8693f44aac4304ce99836fc5e715a796347541d3.1514881870.git.ryder.lee@mediatek.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ryder Lee <ryder.lee@mediatek.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Garlic Tseng <garlic.tseng@mediatek.com>, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 0/9] ASoC: Intel: Kconfig+acpi fixes
+Date: Wed,  3 Jan 2018 10:50:13 -0600
+Message-ID: <20180103165022.4984-1-pierre-louis.bossart@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 975EF26768E
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 17:50:38 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: arnd@arndb.de, tiwai@suse.de, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com, torvalds@linux-foundation.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+The first patch solves issues reported by 0day with non-ACPI platforms
 
-   ASoC: mediatek: update clock related properties of MT2701 AFE
+The second patch implements what Linus, Takashi and Mark
+requested: a top-level selector defaulting to 'y' to easily filter all
+other options and with no impact on code generation. There should be no
+functionality change and will avoid breaking audio for people using
+make oldnoconfig.
 
-has been applied to the asoc tree at
+The rest of the patch series does a more in-depth cleanup. It was tested
+on Baytrail/Cherrytrail/Skylake platforms with no regressions
+observed and no reports of any compilation issues with 0-day or
+randconfig.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+The 5th patch is really the most important one, there were nested
+configs which made no sense to me. I don't know the history which led
+to such complicated stuff but simpler is better.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Patches 6..7 are just clean-ups of the machine driver configs,
+for some reason there is no consistency in the settings so I tried to
+apply common sense and use the same rules. At Andy Shevchenko's suggestion,
+I also replaced the broken dependency on X86_INTEL_LPSS by MFD_INTEL_LPSS
+for Skylake+ machines. No regressions were identified with this change.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Patch 9 is new in this series and are just cosmetic changes (comments
+and text simplification).
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Thanks to Vinod Koul for his contributions and comments.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 0739fdfc0617a86781799d033e8fe758e8e48554 Mon Sep 17 00:00:00 2001
-From: Ryder Lee <ryder.lee@mediatek.com>
-Date: Tue, 2 Jan 2018 19:47:21 +0800
-Subject: [PATCH] ASoC: mediatek: update clock related properties of MT2701 AFE
-
-Add 'assigned-clocks*' properties which are used to initialize default
-domain sources of audio system. we could configure different sets of
-input clocks through DTS now. Hence driver no longer cares about that.
-
-Also we change some 'clock-names' to make them more generic so that
-other chips can reuse gracefully.
-
-Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- .../devicetree/bindings/sound/mt2701-afe-pcm.txt   | 207 +++++++++------------
- 1 file changed, 91 insertions(+), 116 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt b/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
-index 77a57f84bed4..0450baad2813 100644
---- a/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
-+++ b/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
-@@ -6,51 +6,44 @@ Required properties:
- - interrupts: should contain AFE and ASYS interrupts
- - interrupt-names: should be "afe" and "asys"
- - power-domains: should define the power domain
-+- clocks: Must contain an entry for each entry in clock-names
-+  See ../clocks/clock-bindings.txt for details
- - clock-names: should have these clock names:
--		"infra_sys_audio_clk",
- 		"top_audio_mux1_sel",
- 		"top_audio_mux2_sel",
--		"top_audio_mux1_div",
--		"top_audio_mux2_div",
--		"top_audio_48k_timing",
--		"top_audio_44k_timing",
--		"top_audpll_mux_sel",
--		"top_apll_sel",
--		"top_aud1_pll_98M",
--		"top_aud2_pll_90M",
--		"top_hadds2_pll_98M",
--		"top_hadds2_pll_294M",
--		"top_audpll",
--		"top_audpll_d4",
--		"top_audpll_d8",
--		"top_audpll_d16",
--		"top_audpll_d24",
--		"top_audintbus_sel",
--		"clk_26m",
--		"top_syspll1_d4",
--		"top_aud_k1_src_sel",
--		"top_aud_k2_src_sel",
--		"top_aud_k3_src_sel",
--		"top_aud_k4_src_sel",
--		"top_aud_k5_src_sel",
--		"top_aud_k6_src_sel",
--		"top_aud_k1_src_div",
--		"top_aud_k2_src_div",
--		"top_aud_k3_src_div",
--		"top_aud_k4_src_div",
--		"top_aud_k5_src_div",
--		"top_aud_k6_src_div",
--		"top_aud_i2s1_mclk",
--		"top_aud_i2s2_mclk",
--		"top_aud_i2s3_mclk",
--		"top_aud_i2s4_mclk",
--		"top_aud_i2s5_mclk",
--		"top_aud_i2s6_mclk",
--		"top_asm_m_sel",
--		"top_asm_h_sel",
--		"top_univpll2_d4",
--		"top_univpll2_d2",
--		"top_syspll_d5";
-+		"i2s0_src_sel",
-+		"i2s1_src_sel",
-+		"i2s2_src_sel",
-+		"i2s3_src_sel",
-+		"i2s0_src_div",
-+		"i2s1_src_div",
-+		"i2s2_src_div",
-+		"i2s3_src_div",
-+		"i2s0_mclk_en",
-+		"i2s1_mclk_en",
-+		"i2s2_mclk_en",
-+		"i2s3_mclk_en",
-+		"i2so0_hop_ck",
-+		"i2so1_hop_ck",
-+		"i2so2_hop_ck",
-+		"i2so3_hop_ck",
-+		"i2si0_hop_ck",
-+		"i2si1_hop_ck",
-+		"i2si2_hop_ck",
-+		"i2si3_hop_ck",
-+		"asrc0_out_ck",
-+		"asrc1_out_ck",
-+		"asrc2_out_ck",
-+		"asrc3_out_ck",
-+		"audio_afe_pd",
-+		"audio_afe_conn_pd",
-+		"audio_a1sys_pd",
-+		"audio_a2sys_pd",
-+		"audio_mrgif_pd";
-+- assigned-clocks: list of input clocks and dividers for the audio system.
-+		   See ../clocks/clock-bindings.txt for details.
-+- assigned-clocks-parents: parent of input clocks of assigned clocks.
-+- assigned-clock-rates: list of clock frequencies of assigned clocks.
+Changes since v1:
+ fixed more 0-day warnings for e.g. s390 non-ACPI compilation
+ fixed use of depends
+ fixed use of CONFIG_
+ fixed indentations as needed
+ simplified text and comments
  
- Example:
+Changes since RFCv2:
+ Moved machine drivers to submenu
+ Dropped SND_SOC_INTEL_COMMON since it was not needed
+ Added more comments for if/endif
+ Simplified text for options (dropped "ASoC Intel driver....")
+ Fixed one 0-day warning
  
-@@ -62,93 +55,75 @@ Example:
- 			     <GIC_SPI 132 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-names	= "afe", "asys";
- 		power-domains = <&scpsys MT2701_POWER_DOMAIN_IFR_MSC>;
--		clocks = <&infracfg CLK_INFRA_AUDIO>,
--			 <&topckgen CLK_TOP_AUD_MUX1_SEL>,
-+		clocks = <&topckgen CLK_TOP_AUD_MUX1_SEL>,
- 			 <&topckgen CLK_TOP_AUD_MUX2_SEL>,
--			 <&topckgen CLK_TOP_AUD_MUX1_DIV>,
--			 <&topckgen CLK_TOP_AUD_MUX2_DIV>,
--			 <&topckgen CLK_TOP_AUD_48K_TIMING>,
--			 <&topckgen CLK_TOP_AUD_44K_TIMING>,
--			 <&topckgen CLK_TOP_AUDPLL_MUX_SEL>,
--			 <&topckgen CLK_TOP_APLL_SEL>,
--			 <&topckgen CLK_TOP_AUD1PLL_98M>,
--			 <&topckgen CLK_TOP_AUD2PLL_90M>,
--			 <&topckgen CLK_TOP_HADDS2PLL_98M>,
--			 <&topckgen CLK_TOP_HADDS2PLL_294M>,
--			 <&topckgen CLK_TOP_AUDPLL>,
--			 <&topckgen CLK_TOP_AUDPLL_D4>,
--			 <&topckgen CLK_TOP_AUDPLL_D8>,
--			 <&topckgen CLK_TOP_AUDPLL_D16>,
--			 <&topckgen CLK_TOP_AUDPLL_D24>,
--			 <&topckgen CLK_TOP_AUDINTBUS_SEL>,
--			 <&clk26m>,
--			 <&topckgen CLK_TOP_SYSPLL1_D4>,
- 			 <&topckgen CLK_TOP_AUD_K1_SRC_SEL>,
- 			 <&topckgen CLK_TOP_AUD_K2_SRC_SEL>,
- 			 <&topckgen CLK_TOP_AUD_K3_SRC_SEL>,
- 			 <&topckgen CLK_TOP_AUD_K4_SRC_SEL>,
--			 <&topckgen CLK_TOP_AUD_K5_SRC_SEL>,
--			 <&topckgen CLK_TOP_AUD_K6_SRC_SEL>,
- 			 <&topckgen CLK_TOP_AUD_K1_SRC_DIV>,
- 			 <&topckgen CLK_TOP_AUD_K2_SRC_DIV>,
- 			 <&topckgen CLK_TOP_AUD_K3_SRC_DIV>,
- 			 <&topckgen CLK_TOP_AUD_K4_SRC_DIV>,
--			 <&topckgen CLK_TOP_AUD_K5_SRC_DIV>,
--			 <&topckgen CLK_TOP_AUD_K6_SRC_DIV>,
- 			 <&topckgen CLK_TOP_AUD_I2S1_MCLK>,
- 			 <&topckgen CLK_TOP_AUD_I2S2_MCLK>,
- 			 <&topckgen CLK_TOP_AUD_I2S3_MCLK>,
- 			 <&topckgen CLK_TOP_AUD_I2S4_MCLK>,
--			 <&topckgen CLK_TOP_AUD_I2S5_MCLK>,
--			 <&topckgen CLK_TOP_AUD_I2S6_MCLK>,
--			 <&topckgen CLK_TOP_ASM_M_SEL>,
--			 <&topckgen CLK_TOP_ASM_H_SEL>,
--			 <&topckgen CLK_TOP_UNIVPLL2_D4>,
--			 <&topckgen CLK_TOP_UNIVPLL2_D2>,
--			 <&topckgen CLK_TOP_SYSPLL_D5>;
-+			 <&audiosys CLK_AUD_I2SO1>,
-+			 <&audiosys CLK_AUD_I2SO2>,
-+			 <&audiosys CLK_AUD_I2SO3>,
-+			 <&audiosys CLK_AUD_I2SO4>,
-+			 <&audiosys CLK_AUD_I2SIN1>,
-+			 <&audiosys CLK_AUD_I2SIN2>,
-+			 <&audiosys CLK_AUD_I2SIN3>,
-+			 <&audiosys CLK_AUD_I2SIN4>,
-+			 <&audiosys CLK_AUD_ASRCO1>,
-+			 <&audiosys CLK_AUD_ASRCO2>,
-+			 <&audiosys CLK_AUD_ASRCO3>,
-+			 <&audiosys CLK_AUD_ASRCO4>,
-+			 <&audiosys CLK_AUD_AFE>,
-+			 <&audiosys CLK_AUD_AFE_CONN>,
-+			 <&audiosys CLK_AUD_A1SYS>,
-+			 <&audiosys CLK_AUD_A2SYS>,
-+			 <&audiosys CLK_AUD_AFE_MRGIF>;
- 
--		clock-names = "infra_sys_audio_clk",
--			      "top_audio_mux1_sel",
-+		clock-names = "top_audio_mux1_sel",
- 			      "top_audio_mux2_sel",
--			      "top_audio_mux1_div",
--			      "top_audio_mux2_div",
--			      "top_audio_48k_timing",
--			      "top_audio_44k_timing",
--			      "top_audpll_mux_sel",
--			      "top_apll_sel",
--			      "top_aud1_pll_98M",
--			      "top_aud2_pll_90M",
--			      "top_hadds2_pll_98M",
--			      "top_hadds2_pll_294M",
--			      "top_audpll",
--			      "top_audpll_d4",
--			      "top_audpll_d8",
--			      "top_audpll_d16",
--			      "top_audpll_d24",
--			      "top_audintbus_sel",
--			      "clk_26m",
--			      "top_syspll1_d4",
--			      "top_aud_k1_src_sel",
--			      "top_aud_k2_src_sel",
--			      "top_aud_k3_src_sel",
--			      "top_aud_k4_src_sel",
--			      "top_aud_k5_src_sel",
--			      "top_aud_k6_src_sel",
--			      "top_aud_k1_src_div",
--			      "top_aud_k2_src_div",
--			      "top_aud_k3_src_div",
--			      "top_aud_k4_src_div",
--			      "top_aud_k5_src_div",
--			      "top_aud_k6_src_div",
--			      "top_aud_i2s1_mclk",
--			      "top_aud_i2s2_mclk",
--			      "top_aud_i2s3_mclk",
--			      "top_aud_i2s4_mclk",
--			      "top_aud_i2s5_mclk",
--			      "top_aud_i2s6_mclk",
--			      "top_asm_m_sel",
--			      "top_asm_h_sel",
--			      "top_univpll2_d4",
--			      "top_univpll2_d2",
--			      "top_syspll_d5";
-+			      "i2s0_src_sel",
-+			      "i2s1_src_sel",
-+			      "i2s2_src_sel",
-+			      "i2s3_src_sel",
-+			      "i2s0_src_div",
-+			      "i2s1_src_div",
-+			      "i2s2_src_div",
-+			      "i2s3_src_div",
-+			      "i2s0_mclk_en",
-+			      "i2s1_mclk_en",
-+			      "i2s2_mclk_en",
-+			      "i2s3_mclk_en",
-+			      "i2so0_hop_ck",
-+			      "i2so1_hop_ck",
-+			      "i2so2_hop_ck",
-+			      "i2so3_hop_ck",
-+			      "i2si0_hop_ck",
-+			      "i2si1_hop_ck",
-+			      "i2si2_hop_ck",
-+			      "i2si3_hop_ck",
-+			      "asrc0_out_ck",
-+			      "asrc1_out_ck",
-+			      "asrc2_out_ck",
-+			      "asrc3_out_ck",
-+			      "audio_afe_pd",
-+			      "audio_afe_conn_pd",
-+			      "audio_a1sys_pd",
-+			      "audio_a2sys_pd",
-+			      "audio_mrgif_pd";
-+
-+		assigned-clocks = <&topckgen CLK_TOP_AUD_MUX1_SEL>,
-+				  <&topckgen CLK_TOP_AUD_MUX2_SEL>,
-+				  <&topckgen CLK_TOP_AUD_MUX1_DIV>,
-+				  <&topckgen CLK_TOP_AUD_MUX2_DIV>;
-+		assigned-clock-parents = <&topckgen CLK_TOP_AUD1PLL_98M>,
-+					 <&topckgen CLK_TOP_AUD2PLL_90M>;
-+		assigned-clock-rates = <0>, <0>, <49152000>, <45158400>;
- 	};
+Changes since initial RFC:
+ Removed default n
+ Added help text for HASWELL, BAYTRAIL (legacy) and SKYLAKE options 
+ Made top level machine driver selection dependent on INTEL_SST_TOPLEVEL.
+ Added help text for PCI and HIFI2 platforms
+ Replaced X86_INTEL_LPSS by MFD_INTEL_LPSS for Skylake+ devices
+ Fixed a couple of indentation issues
+
+Pierre-Louis Bossart (8):
+  ASoC: acpi: add missing includes for non-ACPI platforms
+  ASoC: Intel: Fix Kconfig with top-level selector
+  ASoC: Intel: Kconfig: Simplify-clarify ACPI/PCI dependencies
+  ASoC: Intel: document what Kconfig options do
+  ASoC: Intel: Fix nested/unnecessary Kconfig dependencies
+  ASoC: Intel: boards: align Kconfig dependencies for Haswell/Broadwell
+  ASoC: Intel: boards: align Kconfig configurations for HiFi2
+  ASoC: Intel: boards: align/fix SKL/BXT/KBL Kconfigs
+
+Vinod Koul (1):
+  ASoC: Intel: kconfig: add some comments for if symbols
+
+ include/sound/soc-acpi-intel-match.h |   1 +
+ include/sound/soc-acpi.h             |   1 +
+ sound/soc/intel/Kconfig              | 116 +++++++++++++++------
+ sound/soc/intel/Makefile             |   2 +-
+ sound/soc/intel/boards/Kconfig       | 191 ++++++++++++++++++-----------------
+ 5 files changed, 186 insertions(+), 125 deletions(-)
+
 -- 
-2.15.1
+2.14.1
