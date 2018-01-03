@@ -1,329 +1,300 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [RESEND PATCH v2 10/15] ASoC: qcom: qdsp6: Add
- support to q6routing driver
-Date: Wed, 3 Jan 2018 16:27:08 +0000
-Message-ID: <c11b49c8-3022-5591-41b1-d7be7ae6d17a@linaro.org>
-References: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
- <20171214173402.19074-11-srinivas.kandagatla@linaro.org>
- <20180102230007.GR478@tuxbook>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CCD42676C9
- for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 17:27:10 +0100 (CET)
-Received: by mail-wm0-f65.google.com with SMTP id b141so3629968wme.1
- for <alsa-devel@alsa-project.org>; Wed, 03 Jan 2018 08:27:10 -0800 (PST)
-In-Reply-To: <20180102230007.GR478@tuxbook>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, sboyd@codeaurora.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, David Brown <david.brown@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Andy Gross <andy.gross@linaro.org>, linux-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: mediatek: update clock related properties of MT2701 AFE" to the asoc tree
+Date: Wed, 03 Jan 2018 16:29:19 +0000
+Message-ID: <E1eWlup-0002TQ-Ow@debutante>
+References: <8693f44aac4304ce99836fc5e715a796347541d3.1514881870.git.ryder.lee@mediatek.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <8693f44aac4304ce99836fc5e715a796347541d3.1514881870.git.ryder.lee@mediatek.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ryder Lee <ryder.lee@mediatek.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Garlic Tseng <garlic.tseng@mediatek.com>, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
+   ASoC: mediatek: update clock related properties of MT2701 AFE
 
-On 02/01/18 23:00, Bjorn Andersson wrote:
-> On Thu 14 Dec 09:33 PST 2017, srinivas.kandagatla@linaro.org wrote:
-> 
->> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>
->> This patch adds support to q6 routing driver which configures route
->> between ASM and AFE module using ADM apis.
->>
->> This driver uses dapm widgets to setup the matrix between AFE ports and
->> ASM streams.
->>
-> 
-> Why is this a separate driver from the q6adm?
+has been applied to the asoc tree at
 
-This is actually exposing the mixer controls for routing streams on to 
-different audio sink/sources using a matrix.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> 
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> ---
->>   sound/soc/qcom/Kconfig           |   5 +
->>   sound/soc/qcom/qdsp6/Makefile    |   1 +
->>   sound/soc/qcom/qdsp6/q6routing.c | 386 +++++++++++++++++++++++++++++++++++++++
->>   sound/soc/qcom/qdsp6/q6routing.h |   9 +
->>   4 files changed, 401 insertions(+)
->>   create mode 100644 sound/soc/qcom/qdsp6/q6routing.c
->>   create mode 100644 sound/soc/qcom/qdsp6/q6routing.h
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
->> diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
->> +/**
->> + * q6routing_reg_phy_stream() - Register a new stream for route setup
->> + *
->> + * @fedai_id: Frontend dai id.
->> + * @perf_mode: Performace mode.
-> 
-> "Performance"
-yep.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> 
->> + * @stream_id: ASM stream id to map.
->> + * @stream_type: Direction of stream
->> + *
->> + * Return: Will be an negative on error or a zero on success.
->> + */
->> +int q6routing_reg_phy_stream(int fedai_id, int perf_mode,
-> 
-> q6routing_stream_open() ?
+Thanks,
+Mark
 
-sure if it helps reading.
+>From 0739fdfc0617a86781799d033e8fe758e8e48554 Mon Sep 17 00:00:00 2001
+From: Ryder Lee <ryder.lee@mediatek.com>
+Date: Tue, 2 Jan 2018 19:47:21 +0800
+Subject: [PATCH] ASoC: mediatek: update clock related properties of MT2701 AFE
 
-> 
->> +			   int stream_id, int stream_type)
->> +{
->> +	int j, topology, num_copps = 0;
->> +	struct route_payload payload;
->> +	int copp_idx;
->> +	struct session_data *session;
->> +
->> +	if (!routing_data) {
->> +		pr_err("Routing driver not yet ready\n");
->> +		return -EINVAL;
->> +	}
->> +
->> +	session = &routing_data->sessions[stream_id - 1];
->> +	mutex_lock(&routing_data->lock);
->> +	session->fedai_id = fedai_id;
->> +	payload.num_copps = 0; /* only RX needs to use payload */
->> +	topology = NULL_COPP_TOPOLOGY;
->> +	copp_idx = q6adm_open(routing_data->dev, session->port_id,
->> +			      session->path_type, session->sample_rate,
->> +			      session->channels, topology, perf_mode,
->> +			      session->bits_per_sample, 0, 0);
->> +	if ((copp_idx < 0) || (copp_idx >= MAX_COPPS_PER_PORT)) {
-> 
-> Make q6adm_open() not return >= MAX_COPPS_PER_PORT.
-> 
-> And drop the extra parenthesis.
-> 
->> +		mutex_unlock(&routing_data->lock);
->> +		return -EINVAL;
->> +	}
->> +
->> +	set_bit(copp_idx, &session->copp_map);
->> +	for (j = 0; j < MAX_COPPS_PER_PORT; j++) {
-> 
-> Use for_each_set_bit()
-> 
->> +		unsigned long copp = session->copp_map;
->> +
->> +		if (test_bit(j, &copp)) {
->> +			payload.port_id[num_copps] = session->port_id;
->> +			payload.copp_idx[num_copps] = j;
->> +			num_copps++;
->> +		}
->> +	}
->> +
->> +	if (num_copps) {
->> +		payload.num_copps = num_copps;
->> +		payload.session_id = stream_id;
->> +		q6adm_matrix_map(routing_data->dev, session->path_type,
->> +				 payload, perf_mode);
->> +	}
->> +	mutex_unlock(&routing_data->lock);
->> +
->> +	return 0;
->> +}
->> +EXPORT_SYMBOL_GPL(q6routing_reg_phy_stream);
->> +
->> +static struct session_data *routing_get_session(struct msm_routing_data *data,
->> +						int port_id, int port_type)
-> 
-> port_type is ignored
+Add 'assigned-clocks*' properties which are used to initialize default
+domain sources of audio system. we could configure different sets of
+input clocks through DTS now. Hence driver no longer cares about that.
 
-It will be used once we add capture support.
+Also we change some 'clock-names' to make them more generic so that
+other chips can reuse gracefully.
 
-> 
->> +{
->> +	int i;
->> +
->> +	for (i = 0; i < MAX_SESSIONS; i++)
->> +		if (port_id == data->sessions[i].port_id)
->> +			return &data->sessions[i];
->> +
->> +	return NULL;
->> +}
->> +
+Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../devicetree/bindings/sound/mt2701-afe-pcm.txt   | 207 +++++++++------------
+ 1 file changed, 91 insertions(+), 116 deletions(-)
 
->> +/**
->> + * q6routing_dereg_phy_stream() - Deregister a stream
->> + *
->> + * @fedai_id: Frontend dai id.
->> + * @stream_type: Direction of stream
->> + *
->> + * Return: Will be an negative on error or a zero on success.
->> + */
->> +void q6routing_dereg_phy_stream(int fedai_id, int stream_type)
-> 
-> q6routing_stream_close()?
-> 
-will rename it.
->> +{
->> +	struct session_data *session;
->> +	int idx;
->> +
->> +	session = get_session_from_id(routing_data, fedai_id);
->> +	if (!session)
->> +		return;
->> +
->> +	for_each_set_bit(idx, &session->copp_map, MAX_COPPS_PER_PORT)
->> +		q6adm_close(routing_data->dev, session->port_id,
->> +			    session->perf_mode, idx);
->> +
->> +	session->fedai_id = -1;
->> +	session->copp_map = 0;
->> +}
->> +EXPORT_SYMBOL_GPL(q6routing_dereg_phy_stream);
->> +
-
->> +
-
-
->> +
->> +static const struct snd_soc_dapm_widget msm_qdsp6_widgets[] = {
->> +	/* Frontend AIF */
->> +	/* Widget name equals to Front-End DAI name<Need confirmation>,
-> 
-> Perhaps this should be confirmed and the comment updated?
-> 
-
-Some leftover from old code...
-
->> +	 * Stream name must contains substring of front-end dai name
->> +	 */
->> +	SND_SOC_DAPM_AIF_IN("MM_DL1", "MultiMedia1 Playback", 0, 0, 0, 0),
->> +	SND_SOC_DAPM_AIF_IN("MM_DL2", "MultiMedia2 Playback", 0, 0, 0, 0),
->> +	SND_SOC_DAPM_AIF_IN("MM_DL3", "MultiMedia3 Playback", 0, 0, 0, 0),
->> +	SND_SOC_DAPM_AIF_IN("MM_DL4", "MultiMedia4 Playback", 0, 0, 0, 0),
->> +	SND_SOC_DAPM_AIF_IN("MM_DL5", "MultiMedia5 Playback", 0, 0, 0, 0),
->> +	SND_SOC_DAPM_AIF_IN("MM_DL6", "MultiMedia6 Playback", 0, 0, 0, 0),
->> +	SND_SOC_DAPM_AIF_IN("MM_DL7", "MultiMedia7 Playback", 0, 0, 0, 0),
->> +	SND_SOC_DAPM_AIF_IN("MM_DL8", "MultiMedia8 Playback", 0, 0, 0, 0),
->> +
->> +	/* Mixer definitions */
->> +	SND_SOC_DAPM_MIXER("HDMI Mixer", SND_SOC_NOPM, 0, 0,
->> +			   hdmi_mixer_controls,
->> +			   ARRAY_SIZE(hdmi_mixer_controls)),
->> +};
->
->> +static int routing_hw_params(struct snd_pcm_substream *substream,
->> +				     struct snd_pcm_hw_params *params)
->> +{
->> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->> +	unsigned int be_id = rtd->cpu_dai->id;
->> +	struct snd_soc_platform *platform = rtd->platform;
->> +	struct msm_routing_data *data = snd_soc_platform_get_drvdata(platform);
->> +	struct session_data *session;
->> +	int port_id, port_type, path_type, bits_per_sample;
-> 
-> bits_per_sample is likely unused.
-> 
-yep.
-
->> +
->> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->> +		path_type = ADM_PATH_PLAYBACK;
->> +		port_type = MSM_AFE_PORT_TYPE_RX;
->> +	}
->> +
->> +	port_id = be_id;
-> 
-> Why alias this variable?
-will fix this in next version.
-
-> 
->> +
->> +	session = routing_get_session(data, port_id, port_type);
->> +
->> +	if (!session) {
->> +		pr_err("No session matrix setup yet..\n");
->> +		return -EINVAL;
->> +	}
->> +
->> +	mutex_lock(&data->lock);
->> +
->> +	session->path_type = path_type;
->> +	session->sample_rate = params_rate(params);
->> +	session->channels = params_channels(params);
->> +	session->format = params_format(params);
->> +
->> +	if (session->format == SNDRV_PCM_FORMAT_S16_LE)
->> +		session->bits_per_sample = 16;
->> +	else if (session->format == SNDRV_PCM_FORMAT_S24_LE)
->> +		bits_per_sample = 24;
-> 
-> session-> ?
-
-I agree, will fix it.
-
-> 
-> Perhaps switch on params_format(params) instead? And fail in the default
-> case.
-will give that a go.
-
-> 
->> +
->> +	mutex_unlock(&data->lock);
->> +	return 0;
->> +}
->> +
-
-
->> +static struct snd_pcm_ops q6pcm_routing_ops = {
->> +	.hw_params = routing_hw_params,
->> +	.close = routing_close,
->> +	.prepare = routing_prepare,
->> +};
->> +
->> +/* Not used but frame seems to require it */
-> 
-> Remove comment?
-> 
-looks like leftover.. will remove it.
-
-[...]
->> +
->> +static int q6pcm_routing_remove(struct platform_device *pdev)
->> +{
-> 
-> As you return here routing_data will be freed.  The early check in
-> q6routing_reg_phy_stream() seems to indicate that this driver can be
-> called even though the routing device isn't available.
-> 
-> So you probably want to clear that variable, at least.
-sure, will fix this in next version.
-
-> 
->> +	return 0;
->> +}
->> +
->> +static struct platform_driver q6pcm_routing_driver = {
->> +	.driver = {
->> +		   .name = "q6routing",
->> +		   .owner = THIS_MODULE,
-> 
-> Drop .owner
-> 
-yep.
->> +		   },
->> +	.probe = q6pcm_routing_probe,
->> +	.remove = q6pcm_routing_remove,
->> +};
-
->>
+diff --git a/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt b/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
+index 77a57f84bed4..0450baad2813 100644
+--- a/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
++++ b/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
+@@ -6,51 +6,44 @@ Required properties:
+ - interrupts: should contain AFE and ASYS interrupts
+ - interrupt-names: should be "afe" and "asys"
+ - power-domains: should define the power domain
++- clocks: Must contain an entry for each entry in clock-names
++  See ../clocks/clock-bindings.txt for details
+ - clock-names: should have these clock names:
+-		"infra_sys_audio_clk",
+ 		"top_audio_mux1_sel",
+ 		"top_audio_mux2_sel",
+-		"top_audio_mux1_div",
+-		"top_audio_mux2_div",
+-		"top_audio_48k_timing",
+-		"top_audio_44k_timing",
+-		"top_audpll_mux_sel",
+-		"top_apll_sel",
+-		"top_aud1_pll_98M",
+-		"top_aud2_pll_90M",
+-		"top_hadds2_pll_98M",
+-		"top_hadds2_pll_294M",
+-		"top_audpll",
+-		"top_audpll_d4",
+-		"top_audpll_d8",
+-		"top_audpll_d16",
+-		"top_audpll_d24",
+-		"top_audintbus_sel",
+-		"clk_26m",
+-		"top_syspll1_d4",
+-		"top_aud_k1_src_sel",
+-		"top_aud_k2_src_sel",
+-		"top_aud_k3_src_sel",
+-		"top_aud_k4_src_sel",
+-		"top_aud_k5_src_sel",
+-		"top_aud_k6_src_sel",
+-		"top_aud_k1_src_div",
+-		"top_aud_k2_src_div",
+-		"top_aud_k3_src_div",
+-		"top_aud_k4_src_div",
+-		"top_aud_k5_src_div",
+-		"top_aud_k6_src_div",
+-		"top_aud_i2s1_mclk",
+-		"top_aud_i2s2_mclk",
+-		"top_aud_i2s3_mclk",
+-		"top_aud_i2s4_mclk",
+-		"top_aud_i2s5_mclk",
+-		"top_aud_i2s6_mclk",
+-		"top_asm_m_sel",
+-		"top_asm_h_sel",
+-		"top_univpll2_d4",
+-		"top_univpll2_d2",
+-		"top_syspll_d5";
++		"i2s0_src_sel",
++		"i2s1_src_sel",
++		"i2s2_src_sel",
++		"i2s3_src_sel",
++		"i2s0_src_div",
++		"i2s1_src_div",
++		"i2s2_src_div",
++		"i2s3_src_div",
++		"i2s0_mclk_en",
++		"i2s1_mclk_en",
++		"i2s2_mclk_en",
++		"i2s3_mclk_en",
++		"i2so0_hop_ck",
++		"i2so1_hop_ck",
++		"i2so2_hop_ck",
++		"i2so3_hop_ck",
++		"i2si0_hop_ck",
++		"i2si1_hop_ck",
++		"i2si2_hop_ck",
++		"i2si3_hop_ck",
++		"asrc0_out_ck",
++		"asrc1_out_ck",
++		"asrc2_out_ck",
++		"asrc3_out_ck",
++		"audio_afe_pd",
++		"audio_afe_conn_pd",
++		"audio_a1sys_pd",
++		"audio_a2sys_pd",
++		"audio_mrgif_pd";
++- assigned-clocks: list of input clocks and dividers for the audio system.
++		   See ../clocks/clock-bindings.txt for details.
++- assigned-clocks-parents: parent of input clocks of assigned clocks.
++- assigned-clock-rates: list of clock frequencies of assigned clocks.
+ 
+ Example:
+ 
+@@ -62,93 +55,75 @@ Example:
+ 			     <GIC_SPI 132 IRQ_TYPE_LEVEL_LOW>;
+ 		interrupt-names	= "afe", "asys";
+ 		power-domains = <&scpsys MT2701_POWER_DOMAIN_IFR_MSC>;
+-		clocks = <&infracfg CLK_INFRA_AUDIO>,
+-			 <&topckgen CLK_TOP_AUD_MUX1_SEL>,
++		clocks = <&topckgen CLK_TOP_AUD_MUX1_SEL>,
+ 			 <&topckgen CLK_TOP_AUD_MUX2_SEL>,
+-			 <&topckgen CLK_TOP_AUD_MUX1_DIV>,
+-			 <&topckgen CLK_TOP_AUD_MUX2_DIV>,
+-			 <&topckgen CLK_TOP_AUD_48K_TIMING>,
+-			 <&topckgen CLK_TOP_AUD_44K_TIMING>,
+-			 <&topckgen CLK_TOP_AUDPLL_MUX_SEL>,
+-			 <&topckgen CLK_TOP_APLL_SEL>,
+-			 <&topckgen CLK_TOP_AUD1PLL_98M>,
+-			 <&topckgen CLK_TOP_AUD2PLL_90M>,
+-			 <&topckgen CLK_TOP_HADDS2PLL_98M>,
+-			 <&topckgen CLK_TOP_HADDS2PLL_294M>,
+-			 <&topckgen CLK_TOP_AUDPLL>,
+-			 <&topckgen CLK_TOP_AUDPLL_D4>,
+-			 <&topckgen CLK_TOP_AUDPLL_D8>,
+-			 <&topckgen CLK_TOP_AUDPLL_D16>,
+-			 <&topckgen CLK_TOP_AUDPLL_D24>,
+-			 <&topckgen CLK_TOP_AUDINTBUS_SEL>,
+-			 <&clk26m>,
+-			 <&topckgen CLK_TOP_SYSPLL1_D4>,
+ 			 <&topckgen CLK_TOP_AUD_K1_SRC_SEL>,
+ 			 <&topckgen CLK_TOP_AUD_K2_SRC_SEL>,
+ 			 <&topckgen CLK_TOP_AUD_K3_SRC_SEL>,
+ 			 <&topckgen CLK_TOP_AUD_K4_SRC_SEL>,
+-			 <&topckgen CLK_TOP_AUD_K5_SRC_SEL>,
+-			 <&topckgen CLK_TOP_AUD_K6_SRC_SEL>,
+ 			 <&topckgen CLK_TOP_AUD_K1_SRC_DIV>,
+ 			 <&topckgen CLK_TOP_AUD_K2_SRC_DIV>,
+ 			 <&topckgen CLK_TOP_AUD_K3_SRC_DIV>,
+ 			 <&topckgen CLK_TOP_AUD_K4_SRC_DIV>,
+-			 <&topckgen CLK_TOP_AUD_K5_SRC_DIV>,
+-			 <&topckgen CLK_TOP_AUD_K6_SRC_DIV>,
+ 			 <&topckgen CLK_TOP_AUD_I2S1_MCLK>,
+ 			 <&topckgen CLK_TOP_AUD_I2S2_MCLK>,
+ 			 <&topckgen CLK_TOP_AUD_I2S3_MCLK>,
+ 			 <&topckgen CLK_TOP_AUD_I2S4_MCLK>,
+-			 <&topckgen CLK_TOP_AUD_I2S5_MCLK>,
+-			 <&topckgen CLK_TOP_AUD_I2S6_MCLK>,
+-			 <&topckgen CLK_TOP_ASM_M_SEL>,
+-			 <&topckgen CLK_TOP_ASM_H_SEL>,
+-			 <&topckgen CLK_TOP_UNIVPLL2_D4>,
+-			 <&topckgen CLK_TOP_UNIVPLL2_D2>,
+-			 <&topckgen CLK_TOP_SYSPLL_D5>;
++			 <&audiosys CLK_AUD_I2SO1>,
++			 <&audiosys CLK_AUD_I2SO2>,
++			 <&audiosys CLK_AUD_I2SO3>,
++			 <&audiosys CLK_AUD_I2SO4>,
++			 <&audiosys CLK_AUD_I2SIN1>,
++			 <&audiosys CLK_AUD_I2SIN2>,
++			 <&audiosys CLK_AUD_I2SIN3>,
++			 <&audiosys CLK_AUD_I2SIN4>,
++			 <&audiosys CLK_AUD_ASRCO1>,
++			 <&audiosys CLK_AUD_ASRCO2>,
++			 <&audiosys CLK_AUD_ASRCO3>,
++			 <&audiosys CLK_AUD_ASRCO4>,
++			 <&audiosys CLK_AUD_AFE>,
++			 <&audiosys CLK_AUD_AFE_CONN>,
++			 <&audiosys CLK_AUD_A1SYS>,
++			 <&audiosys CLK_AUD_A2SYS>,
++			 <&audiosys CLK_AUD_AFE_MRGIF>;
+ 
+-		clock-names = "infra_sys_audio_clk",
+-			      "top_audio_mux1_sel",
++		clock-names = "top_audio_mux1_sel",
+ 			      "top_audio_mux2_sel",
+-			      "top_audio_mux1_div",
+-			      "top_audio_mux2_div",
+-			      "top_audio_48k_timing",
+-			      "top_audio_44k_timing",
+-			      "top_audpll_mux_sel",
+-			      "top_apll_sel",
+-			      "top_aud1_pll_98M",
+-			      "top_aud2_pll_90M",
+-			      "top_hadds2_pll_98M",
+-			      "top_hadds2_pll_294M",
+-			      "top_audpll",
+-			      "top_audpll_d4",
+-			      "top_audpll_d8",
+-			      "top_audpll_d16",
+-			      "top_audpll_d24",
+-			      "top_audintbus_sel",
+-			      "clk_26m",
+-			      "top_syspll1_d4",
+-			      "top_aud_k1_src_sel",
+-			      "top_aud_k2_src_sel",
+-			      "top_aud_k3_src_sel",
+-			      "top_aud_k4_src_sel",
+-			      "top_aud_k5_src_sel",
+-			      "top_aud_k6_src_sel",
+-			      "top_aud_k1_src_div",
+-			      "top_aud_k2_src_div",
+-			      "top_aud_k3_src_div",
+-			      "top_aud_k4_src_div",
+-			      "top_aud_k5_src_div",
+-			      "top_aud_k6_src_div",
+-			      "top_aud_i2s1_mclk",
+-			      "top_aud_i2s2_mclk",
+-			      "top_aud_i2s3_mclk",
+-			      "top_aud_i2s4_mclk",
+-			      "top_aud_i2s5_mclk",
+-			      "top_aud_i2s6_mclk",
+-			      "top_asm_m_sel",
+-			      "top_asm_h_sel",
+-			      "top_univpll2_d4",
+-			      "top_univpll2_d2",
+-			      "top_syspll_d5";
++			      "i2s0_src_sel",
++			      "i2s1_src_sel",
++			      "i2s2_src_sel",
++			      "i2s3_src_sel",
++			      "i2s0_src_div",
++			      "i2s1_src_div",
++			      "i2s2_src_div",
++			      "i2s3_src_div",
++			      "i2s0_mclk_en",
++			      "i2s1_mclk_en",
++			      "i2s2_mclk_en",
++			      "i2s3_mclk_en",
++			      "i2so0_hop_ck",
++			      "i2so1_hop_ck",
++			      "i2so2_hop_ck",
++			      "i2so3_hop_ck",
++			      "i2si0_hop_ck",
++			      "i2si1_hop_ck",
++			      "i2si2_hop_ck",
++			      "i2si3_hop_ck",
++			      "asrc0_out_ck",
++			      "asrc1_out_ck",
++			      "asrc2_out_ck",
++			      "asrc3_out_ck",
++			      "audio_afe_pd",
++			      "audio_afe_conn_pd",
++			      "audio_a1sys_pd",
++			      "audio_a2sys_pd",
++			      "audio_mrgif_pd";
++
++		assigned-clocks = <&topckgen CLK_TOP_AUD_MUX1_SEL>,
++				  <&topckgen CLK_TOP_AUD_MUX2_SEL>,
++				  <&topckgen CLK_TOP_AUD_MUX1_DIV>,
++				  <&topckgen CLK_TOP_AUD_MUX2_DIV>;
++		assigned-clock-parents = <&topckgen CLK_TOP_AUD1PLL_98M>,
++					 <&topckgen CLK_TOP_AUD2PLL_90M>;
++		assigned-clock-rates = <0>, <0>, <49152000>, <45158400>;
+ 	};
+-- 
+2.15.1
