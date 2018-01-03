@@ -1,106 +1,144 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v2 0/9] ASoC: Intel: Kconfig+acpi fixes
-Date: Wed, 03 Jan 2018 19:09:00 +0200
-Message-ID: <1514999340.7000.597.camel@linux.intel.com>
-References: <20180103165022.4984-1-pierre-louis.bossart@linux.intel.com>
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: Re: [RESEND PATCH v2 14/15] ASoC: qcom: apq8096: Add db820c machine
+ driver
+Date: Wed, 3 Jan 2018 09:20:45 -0800
+Message-ID: <f72f32dd-e248-47c3-23cc-eabe1b85d9ae@codeaurora.org>
+References: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
+ <20171214173402.19074-15-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180103165022.4984-1-pierre-louis.bossart@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, torvalds@linux-foundation.org, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, arnd@arndb.de, linux-kernel@vger.kernel.org
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <20171214173402.19074-15-srinivas.kandagatla@linaro.org>
+Content-Language: en-US
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: srinivas.kandagatla@linaro.org, Andy Gross <andy.gross@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: David Brown <david.brown@linaro.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2018-01-03 at 10:50 -0600, Pierre-Louis Bossart wrote:
-> The first patch solves issues reported by 0day with non-ACPI platforms
-> 
-> The second patch implements what Linus, Takashi and Mark
-> requested: a top-level selector defaulting to 'y' to easily filter all
-> other options and with no impact on code generation. There should be
-> no
-> functionality change and will avoid breaking audio for people using
-> make oldnoconfig.
-> 
-> The rest of the patch series does a more in-depth cleanup. It was
-> tested
-> on Baytrail/Cherrytrail/Skylake platforms with no regressions
-> observed and no reports of any compilation issues with 0-day or
-> randconfig.
-> 
-> The 5th patch is really the most important one, there were nested
-> configs which made no sense to me. I don't know the history which led
-> to such complicated stuff but simpler is better.
-> 
-> Patches 6..7 are just clean-ups of the machine driver configs,
-> for some reason there is no consistency in the settings so I tried to
-> apply common sense and use the same rules. At Andy Shevchenko's
-> suggestion,
-> I also replaced the broken dependency on X86_INTEL_LPSS by
-> MFD_INTEL_LPSS
-> for Skylake+ machines. No regressions were identified with this
-> change.
-> 
-> Patch 9 is new in this series and are just cosmetic changes (comments
-> and text simplification).
-> 
-> Thanks to Vinod Koul for his contributions and comments.
-
-Couple of nitpicks and seems patch 9 missed some (all?) comments to be
-addressed.
-
-So, after fixing them:
-
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> 
-> Changes since v1:
->  fixed more 0-day warnings for e.g. s390 non-ACPI compilation
->  fixed use of depends
->  fixed use of CONFIG_
->  fixed indentations as needed
->  simplified text and comments
+On 12/14/2017 09:34 AM, srinivas.kandagatla@linaro.org wrote:
+> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>
+> uThis patch adds support to DB820c machine driver.
+>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  sound/soc/qcom/Kconfig   |   9 +++-
+>  sound/soc/qcom/apq8096.c | 124 +++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 132 insertions(+), 1 deletion(-)
+>  create mode 100644 sound/soc/qcom/apq8096.c
+>
+> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+> index ecd1e4ba834d..748ccc3edefa 100644
+> --- a/sound/soc/qcom/Kconfig
+> +++ b/sound/soc/qcom/Kconfig
+> @@ -72,7 +72,6 @@ config SND_SOC_QDSP6_ASM_DAI
+>  	tristate
+>  	default n
 >  
-> Changes since RFCv2:
->  Moved machine drivers to submenu
->  Dropped SND_SOC_INTEL_COMMON since it was not needed
->  Added more comments for if/endif
->  Simplified text for options (dropped "ASoC Intel driver....")
->  Fixed one 0-day warning
->  
-> Changes since initial RFC:
->  Removed default n
->  Added help text for HASWELL, BAYTRAIL (legacy) and SKYLAKE options 
->  Made top level machine driver selection dependent on
-> INTEL_SST_TOPLEVEL.
->  Added help text for PCI and HIFI2 platforms
->  Replaced X86_INTEL_LPSS by MFD_INTEL_LPSS for Skylake+ devices
->  Fixed a couple of indentation issues
-> 
-> Pierre-Louis Bossart (8):
->   ASoC: acpi: add missing includes for non-ACPI platforms
->   ASoC: Intel: Fix Kconfig with top-level selector
->   ASoC: Intel: Kconfig: Simplify-clarify ACPI/PCI dependencies
->   ASoC: Intel: document what Kconfig options do
->   ASoC: Intel: Fix nested/unnecessary Kconfig dependencies
->   ASoC: Intel: boards: align Kconfig dependencies for
-> Haswell/Broadwell
->   ASoC: Intel: boards: align Kconfig configurations for HiFi2
->   ASoC: Intel: boards: align/fix SKL/BXT/KBL Kconfigs
-> 
-> Vinod Koul (1):
->   ASoC: Intel: kconfig: add some comments for if symbols
-> 
->  include/sound/soc-acpi-intel-match.h |   1 +
->  include/sound/soc-acpi.h             |   1 +
->  sound/soc/intel/Kconfig              | 116 +++++++++++++++------
->  sound/soc/intel/Makefile             |   2 +-
->  sound/soc/intel/boards/Kconfig       | 191 ++++++++++++++++++------
-> -----------
->  5 files changed, 186 insertions(+), 125 deletions(-)
-> 
+> -
+>  config SND_SOC_QDSP6
+>  	tristate "SoC ALSA audio driver for QDSP6"
+>  	select SND_SOC_QDSP6_AFE
+> @@ -87,3 +86,11 @@ config SND_SOC_QDSP6
+>  	 This will enable sound soc platform specific
+>  	 audio drivers. This includes q6asm, q6adm,
+>  	 q6afe interfaces to DSP using apr.
+> +
+> +config SND_SOC_MSM8996
+> +	tristate "SoC Machine driver for MSM8996 and APQ8096 boards"
+> +	select SND_SOC_QDSP6V2
+> +	default n
+> +	help
+> +	 To add support for SoC audio on MSM8996 and APQ8096 boards
+> +
+> diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
+> new file mode 100644
+> index 000000000000..5b2036317f71
+> --- /dev/null
+> +++ b/sound/soc/qcom/apq8096.c
+> @@ -0,0 +1,124 @@
+> +/*
+> + * Copyright (c) 2017 The Linux Foundation. All rights reserved.
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 and
+> + * only version 2 as published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + */
+> +#include <linux/clk.h>
+
+No clk usage though?
+
+> +#include <linux/platform_device.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +#include <sound/soc.h>
+[...]
+> +static struct snd_soc_dai_link msm8996_dai_links[] = {
+> +	/* FrontEnd DAI Links */
+> +	{
+> +		.name		= "MultiMedia1 Playback",
+> +		.stream_name	= "MultiMedia1",
+> +		.cpu_dai_name	= "MM_DL1",
+> +		.platform_name	= "q6asm_dai",
+> +		.dynamic	= 1,
+> +		.dpcm_playback	= 1,
+> +
+> +		.codec_dai_name	= "snd-soc-dummy-dai",
+> +		.codec_name = "snd-soc-dummy",
+> +	},
+> +	/* Backend DAI Links */
+> +	{
+> +		.name		= "HDMI Playback",
+> +		.stream_name	= "q6afe_dai",
+> +		.cpu_dai_name	= "HDMI",
+> +		.platform_name	= "q6routing",
+> +		.no_pcm		= 1,
+> +		.dpcm_playback	= 1,
+> +		.be_hw_params_fixup = msm8996_be_hw_params_fixup,
+> +		.codec_dai_name	= "i2s-hifi",
+> +		.codec_name = "hdmi-audio-codec.0.auto",
+> +	},
+> +};
+> +
+> +static int apq8096_sbc_parse_of(struct snd_soc_card *card)
+> +{
+> +	struct device *dev = card->dev;
+> +	int ret;
+> +
+> +	ret = snd_soc_of_parse_card_name(card, "qcom,model");
+> +	if (ret)
+> +		dev_err(dev, "Error parsing card name: %d\n", ret);
+
+So this prints an error, and the caller also prints an error when it
+fails. Double error messages?
+
+> +
+> +	return ret;
+> +}
+> +
+> +static int msm_snd_apq8096_probe(struct platform_device *pdev)
+> +{
+> +	int ret;
+> +	struct snd_soc_card *card;
+> +
+> +	card = devm_kzalloc(&pdev->dev, sizeof(*card), GFP_KERNEL);
+> +	if (!card)
+> +		return -ENOMEM;
+> +
+> +	card->dev = &pdev->dev;
+> +
+> +	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
+
+Why do we need to do this? Can you add some sort of comment in the code
+about why?
 
 -- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
