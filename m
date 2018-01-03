@@ -1,296 +1,329 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [RESEND PATCH v2 12/15] ASoC: qcom: qdsp6: Add support to q6asm
- dai driver
-Date: Wed, 3 Jan 2018 16:27:16 +0000
-Message-ID: <de23cc38-78c1-e45c-9367-847854f31c60@linaro.org>
+Subject: Re: [RESEND PATCH v2 10/15] ASoC: qcom: qdsp6: Add
+ support to q6routing driver
+Date: Wed, 3 Jan 2018 16:27:08 +0000
+Message-ID: <c11b49c8-3022-5591-41b1-d7be7ae6d17a@linaro.org>
 References: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
- <20171214173402.19074-13-srinivas.kandagatla@linaro.org>
- <20180103000306.GT478@tuxbook>
+ <20171214173402.19074-11-srinivas.kandagatla@linaro.org>
+ <20180102230007.GR478@tuxbook>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180103000306.GT478@tuxbook>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CCD42676C9
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 17:27:10 +0100 (CET)
+Received: by mail-wm0-f65.google.com with SMTP id b141so3629968wme.1
+ for <alsa-devel@alsa-project.org>; Wed, 03 Jan 2018 08:27:10 -0800 (PST)
+In-Reply-To: <20180102230007.GR478@tuxbook>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Andy Gross <andy.gross@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, David Brown <david.brown@linaro.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, sboyd@codeaurora.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, sboyd@codeaurora.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, David Brown <david.brown@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Andy Gross <andy.gross@linaro.org>, linux-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the comments.
 
-On 03/01/18 00:03, Bjorn Andersson wrote:
+
+On 02/01/18 23:00, Bjorn Andersson wrote:
 > On Thu 14 Dec 09:33 PST 2017, srinivas.kandagatla@linaro.org wrote:
 > 
-> [..]
->> +
->> +enum stream_state {
->> +	IDLE = 0,
->> +	STOPPED,
->> +	RUNNING,
+>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>
+>> This patch adds support to q6 routing driver which configures route
+>> between ASM and AFE module using ADM apis.
+>>
+>> This driver uses dapm widgets to setup the matrix between AFE ports and
+>> ASM streams.
+>>
 > 
-> These are too generic.
-> 
-Yep, I will prefix them with Q6ASM.
+> Why is this a separate driver from the q6adm?
 
->> +};
->> +
->> +struct q6asm_dai_rtd {
->> +	struct snd_pcm_substream *substream;
->> +	dma_addr_t phys;
->> +	unsigned int pcm_size;
->> +	unsigned int pcm_count;
->> +	unsigned int pcm_irq_pos;       /* IRQ position */
->> +	unsigned int periods;
->> +	uint16_t bits_per_sample;
->> +	uint16_t source; /* Encoding source bit mask */
->> +
->> +	struct audio_client *audio_client;
->> +	uint16_t session_id;
->> +
->> +	enum stream_state state;
->> +	bool set_channel_map;
->> +	char channel_map[8];
-> 
-> There's a define for this 8
-
-Yes, this is max channels.
+This is actually exposing the mixer controls for routing streams on to 
+different audio sink/sources using a matrix.
 
 > 
->> +};
->> +
->> +struct q6asm_dai_data {
->> +	u64 sid;
->> +};
->> +
->> +static struct snd_pcm_hardware q6asm_dai_hardware_playback = {
->> +	.info =                 (SNDRV_PCM_INFO_MMAP |
->> +				SNDRV_PCM_INFO_BLOCK_TRANSFER |
->> +				SNDRV_PCM_INFO_MMAP_VALID |
->> +				SNDRV_PCM_INFO_INTERLEAVED |
->> +				SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
->> +	.formats =              (SNDRV_PCM_FMTBIT_S16_LE |
->> +				SNDRV_PCM_FMTBIT_S24_LE),
->> +	.rates =                SNDRV_PCM_RATE_8000_192000,
->> +	.rate_min =             8000,
->> +	.rate_max =             192000,
->> +	.channels_min =         1,
->> +	.channels_max =         8,
->> +	.buffer_bytes_max =     (PLAYBACK_MAX_NUM_PERIODS *
->> +				PLAYBACK_MAX_PERIOD_SIZE),
->> +	.period_bytes_min =	PLAYBACK_MIN_PERIOD_SIZE,
->> +	.period_bytes_max =     PLAYBACK_MAX_PERIOD_SIZE,
->> +	.periods_min =          PLAYBACK_MIN_NUM_PERIODS,
->> +	.periods_max =          PLAYBACK_MAX_NUM_PERIODS,
-> 
-> If you just put the numbers here, instead of using the PLAYBACK_
-> defines, it's possible to grok the values of this struct without having
-> to jump to the defines for each one.
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> ---
+>>   sound/soc/qcom/Kconfig           |   5 +
+>>   sound/soc/qcom/qdsp6/Makefile    |   1 +
+>>   sound/soc/qcom/qdsp6/q6routing.c | 386 +++++++++++++++++++++++++++++++++++++++
+>>   sound/soc/qcom/qdsp6/q6routing.h |   9 +
+>>   4 files changed, 401 insertions(+)
+>>   create mode 100644 sound/soc/qcom/qdsp6/q6routing.c
+>>   create mode 100644 sound/soc/qcom/qdsp6/q6routing.h
 
-This is usually done this way in may other drivers!,
+>> diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
+
+
+>> +/**
+>> + * q6routing_reg_phy_stream() - Register a new stream for route setup
+>> + *
+>> + * @fedai_id: Frontend dai id.
+>> + * @perf_mode: Performace mode.
+> 
+> "Performance"
+yep.
 
 > 
->> +	.fifo_size =            0,
->> +};
->> +
->> +/* Conventional and unconventional sample rate supported */
->> +static unsigned int supported_sample_rates[] = {
->> +	8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000,
->> +	88200, 96000, 176400, 192000
->> +};
->> +
->> +static struct snd_pcm_hw_constraint_list constraints_sample_rates = {
+>> + * @stream_id: ASM stream id to map.
+>> + * @stream_type: Direction of stream
+>> + *
+>> + * Return: Will be an negative on error or a zero on success.
+>> + */
+>> +int q6routing_reg_phy_stream(int fedai_id, int perf_mode,
 > 
+> q6routing_stream_open() ?
 
-It is used in q6asm_dai_open().
+sure if it helps reading.
+
 > 
-
->> +	.count = ARRAY_SIZE(supported_sample_rates),
->> +	.list = supported_sample_rates,
->> +	.mask = 0,
->> +};
->> +
->
->> +
->> +static int q6asm_dai_prepare(struct snd_pcm_substream *substream)
+>> +			   int stream_id, int stream_type)
 >> +{
->> +	struct snd_pcm_runtime *runtime = substream->runtime;
->> +	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
->> +	struct q6asm_dai_rtd *prtd = runtime->private_data;
->> +	struct q6asm_dai_data *pdata;
->> +	int ret;
+>> +	int j, topology, num_copps = 0;
+>> +	struct route_payload payload;
+>> +	int copp_idx;
+>> +	struct session_data *session;
 >> +
->> +	pdata = dev_get_drvdata(soc_prtd->platform->dev);
->> +	if (!pdata)
->> +		return -EINVAL;
->> +
->> +	if (!prtd || !prtd->audio_client) {
->> +		pr_err("%s: private data null or audio client freed\n",
->> +			__func__);
+>> +	if (!routing_data) {
+>> +		pr_err("Routing driver not yet ready\n");
 >> +		return -EINVAL;
 >> +	}
 >> +
->> +	prtd->pcm_count = snd_pcm_lib_period_bytes(substream);
->> +	prtd->pcm_irq_pos = 0;
->> +	/* rate and channels are sent to audio driver */
->> +	if (prtd->state) {
->> +		/* clear the previous setup if any  */
->> +		q6asm_cmd(prtd->audio_client, CMD_CLOSE);
->> +		q6asm_unmap_memory_regions(substream->stream,
->> +					   prtd->audio_client);
->> +		q6routing_dereg_phy_stream(soc_prtd->dai_link->id,
->> +					 SNDRV_PCM_STREAM_PLAYBACK);
->> +	}
->> +
->> +	ret = q6asm_map_memory_regions(substream->stream, prtd->audio_client,
->> +				       prtd->phys,
->> +				       (prtd->pcm_size / prtd->periods),
->> +				       prtd->periods);
->> +
->> +	if (ret < 0) {
->> +		pr_err("Audio Start: Buffer Allocation failed rc = %d\n",
->> +							ret);
->> +		return -ENOMEM;
->> +	}
->> +
->> +	ret = q6asm_open_write(prtd->audio_client, FORMAT_LINEAR_PCM,
->> +			       prtd->bits_per_sample);
->> +	if (ret < 0) {
->> +		pr_err("%s: q6asm_open_write failed\n", __func__);
->> +		q6asm_audio_client_free(prtd->audio_client);
->> +		prtd->audio_client = NULL;
+>> +	session = &routing_data->sessions[stream_id - 1];
+>> +	mutex_lock(&routing_data->lock);
+>> +	session->fedai_id = fedai_id;
+>> +	payload.num_copps = 0; /* only RX needs to use payload */
+>> +	topology = NULL_COPP_TOPOLOGY;
+>> +	copp_idx = q6adm_open(routing_data->dev, session->port_id,
+>> +			      session->path_type, session->sample_rate,
+>> +			      session->channels, topology, perf_mode,
+>> +			      session->bits_per_sample, 0, 0);
+>> +	if ((copp_idx < 0) || (copp_idx >= MAX_COPPS_PER_PORT)) {
 > 
-> Do you need to roll back the q6asm_map_memory_regions?
+> Make q6adm_open() not return >= MAX_COPPS_PER_PORT.
 > 
-yes you are correct, we should roll back the map.
-
->> +		return -ENOMEM;
+> And drop the extra parenthesis.
+> 
+>> +		mutex_unlock(&routing_data->lock);
+>> +		return -EINVAL;
 >> +	}
 >> +
->> +	prtd->session_id = q6asm_get_session_id(prtd->audio_client);
->> +	ret = q6routing_reg_phy_stream(soc_prtd->dai_link->id, LEGACY_PCM_MODE,
->> +				      prtd->session_id, substream->stream);
->> +	if (ret) {
->> +		pr_err("%s: stream reg failed ret:%d\n", __func__, ret);
->> +		return ret;
+>> +	set_bit(copp_idx, &session->copp_map);
+>> +	for (j = 0; j < MAX_COPPS_PER_PORT; j++) {
+> 
+> Use for_each_set_bit()
+> 
+>> +		unsigned long copp = session->copp_map;
+>> +
+>> +		if (test_bit(j, &copp)) {
+>> +			payload.port_id[num_copps] = session->port_id;
+>> +			payload.copp_idx[num_copps] = j;
+>> +			num_copps++;
+>> +		}
 >> +	}
 >> +
->> +	ret = q6asm_media_format_block_multi_ch_pcm(
->> +			prtd->audio_client, runtime->rate,
->> +			runtime->channels, !prtd->set_channel_map,
->> +			prtd->channel_map, prtd->bits_per_sample);
-> 
-> set_channel_map and channel_map aren't referenced elsewhere. If this
-> isn't used consider removing it for now.
->
-Will take a closer look before sending next version.
-
->> +	if (ret < 0)
->> +		pr_info("%s: CMD Format block failed\n", __func__);
->> +
->> +	prtd->state = RUNNING;
+>> +	if (num_copps) {
+>> +		payload.num_copps = num_copps;
+>> +		payload.session_id = stream_id;
+>> +		q6adm_matrix_map(routing_data->dev, session->path_type,
+>> +				 payload, perf_mode);
+>> +	}
+>> +	mutex_unlock(&routing_data->lock);
 >> +
 >> +	return 0;
 >> +}
+>> +EXPORT_SYMBOL_GPL(q6routing_reg_phy_stream);
 >> +
-> [..]
->> +static int q6asm_dai_pcm_new(struct snd_soc_pcm_runtime *rtd)
+>> +static struct session_data *routing_get_session(struct msm_routing_data *data,
+>> +						int port_id, int port_type)
+> 
+> port_type is ignored
+
+It will be used once we add capture support.
+
+> 
 >> +{
->> +	struct snd_pcm *pcm = rtd->pcm;
->> +	struct snd_pcm_substream *substream;
->> +	struct snd_card *card = rtd->card->snd_card;
->> +	struct device *dev = card->dev;
->> +	struct device_node *node = dev->of_node;
->> +	struct q6asm_dai_data *pdata = dev_get_drvdata(rtd->platform->dev);
->> +	struct of_phandle_args args;
+>> +	int i;
 >> +
->> +	int size, ret = 0;
+>> +	for (i = 0; i < MAX_SESSIONS; i++)
+>> +		if (port_id == data->sessions[i].port_id)
+>> +			return &data->sessions[i];
 >> +
->> +	ret = of_parse_phandle_with_fixed_args(node, "iommus", 1, 0, &args);
->> +	if (ret < 0)
->> +		pdata->sid = -1;
->> +	else
->> +		pdata->sid = args.args[0];
->> +
-> 
-> Is this really how you're supposed to deal with the iommu?
-> 
-Any suggestions are welcome, I did not find a better way to append sid 
-to iova address from iommu.
-
-Currently downstream abstracts this in ion apis.
-
->> +
->> +
->> +	substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
->> +	size = q6asm_dai_hardware_playback.buffer_bytes_max;
->> +	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, dev, size,
->> +				  &substream->dma_buffer);
->> +	if (ret) {
->> +		dev_err(dev, "Cannot allocate buffer(s)\n");
->> +		return ret;
-> 
-> Just fall through.
-> 
-yep
-
->> +	}
->> +
->> +	return ret;
+>> +	return NULL;
 >> +}
 >> +
-> [..]
->> +static struct snd_soc_dai_driver q6asm_fe_dais[] = {
->> +	{
->> +		.playback = {
->> +			.stream_name = "MultiMedia1 Playback",
->> +			.rates = (SNDRV_PCM_RATE_8000_192000|
->> +					SNDRV_PCM_RATE_KNOT),
->> +			.formats = (SNDRV_PCM_FMTBIT_S16_LE |
->> +						SNDRV_PCM_FMTBIT_S24_LE),
->> +			.channels_min = 1,
->> +			.channels_max = 8,
->> +			.rate_min =     8000,
->> +			.rate_max =	192000,
->> +		},
->> +		.name = "MM_DL1",
->> +		.probe = fe_dai_probe,
->> +		.id = MSM_FRONTEND_DAI_MULTIMEDIA1,
->> +	},
->> +	{
->> +		.playback = {
->> +			.stream_name = "MultiMedia2 Playback",
->> +			.rates = (SNDRV_PCM_RATE_8000_192000|
->> +					SNDRV_PCM_RATE_KNOT),
->> +			.formats = (SNDRV_PCM_FMTBIT_S16_LE |
->> +						SNDRV_PCM_FMTBIT_S24_LE),
->> +			.channels_min = 1,
->> +			.channels_max = 8,
->> +			.rate_min =     8000,
->> +			.rate_max =	192000,
-> 
-> I presume the listed frontend DAIs needs to match the firmware of the
-> DSP (and features of hardware)? Can we get away with a single list for
-> all versions of the adsp?
-> 
-Yes, DSP supports 8 concurrent streams both playback and record streams.
 
-For now I have only added two entires to keep the patch simple but this 
-should be ideally 8 entries.
+>> +/**
+>> + * q6routing_dereg_phy_stream() - Deregister a stream
+>> + *
+>> + * @fedai_id: Frontend dai id.
+>> + * @stream_type: Direction of stream
+>> + *
+>> + * Return: Will be an negative on error or a zero on success.
+>> + */
+>> +void q6routing_dereg_phy_stream(int fedai_id, int stream_type)
+> 
+> q6routing_stream_close()?
+> 
+will rename it.
+>> +{
+>> +	struct session_data *session;
+>> +	int idx;
+>> +
+>> +	session = get_session_from_id(routing_data, fedai_id);
+>> +	if (!session)
+>> +		return;
+>> +
+>> +	for_each_set_bit(idx, &session->copp_map, MAX_COPPS_PER_PORT)
+>> +		q6adm_close(routing_data->dev, session->port_id,
+>> +			    session->perf_mode, idx);
+>> +
+>> +	session->fedai_id = -1;
+>> +	session->copp_map = 0;
+>> +}
+>> +EXPORT_SYMBOL_GPL(q6routing_dereg_phy_stream);
+>> +
 
-> In msm-4.4 the max rate for these where changed to 384000, see:
+>> +
+
+
+>> +
+>> +static const struct snd_soc_dapm_widget msm_qdsp6_widgets[] = {
+>> +	/* Frontend AIF */
+>> +	/* Widget name equals to Front-End DAI name<Need confirmation>,
 > 
-> 9c46f74b2724 ("ASoC: msm: add 384KHz playback support")
-sure i will include that in next version.
+> Perhaps this should be confirmed and the comment updated?
 > 
->> +		},
->> +		.name = "MM_DL2",
->> +		.probe = fe_dai_probe,
->> +		.id = MSM_FRONTEND_DAI_MULTIMEDIA2,
->> +	},
+
+Some leftover from old code...
+
+>> +	 * Stream name must contains substring of front-end dai name
+>> +	 */
+>> +	SND_SOC_DAPM_AIF_IN("MM_DL1", "MultiMedia1 Playback", 0, 0, 0, 0),
+>> +	SND_SOC_DAPM_AIF_IN("MM_DL2", "MultiMedia2 Playback", 0, 0, 0, 0),
+>> +	SND_SOC_DAPM_AIF_IN("MM_DL3", "MultiMedia3 Playback", 0, 0, 0, 0),
+>> +	SND_SOC_DAPM_AIF_IN("MM_DL4", "MultiMedia4 Playback", 0, 0, 0, 0),
+>> +	SND_SOC_DAPM_AIF_IN("MM_DL5", "MultiMedia5 Playback", 0, 0, 0, 0),
+>> +	SND_SOC_DAPM_AIF_IN("MM_DL6", "MultiMedia6 Playback", 0, 0, 0, 0),
+>> +	SND_SOC_DAPM_AIF_IN("MM_DL7", "MultiMedia7 Playback", 0, 0, 0, 0),
+>> +	SND_SOC_DAPM_AIF_IN("MM_DL8", "MultiMedia8 Playback", 0, 0, 0, 0),
+>> +
+>> +	/* Mixer definitions */
+>> +	SND_SOC_DAPM_MIXER("HDMI Mixer", SND_SOC_NOPM, 0, 0,
+>> +			   hdmi_mixer_controls,
+>> +			   ARRAY_SIZE(hdmi_mixer_controls)),
+>> +};
+>
+>> +static int routing_hw_params(struct snd_pcm_substream *substream,
+>> +				     struct snd_pcm_hw_params *params)
+>> +{
+>> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>> +	unsigned int be_id = rtd->cpu_dai->id;
+>> +	struct snd_soc_platform *platform = rtd->platform;
+>> +	struct msm_routing_data *data = snd_soc_platform_get_drvdata(platform);
+>> +	struct session_data *session;
+>> +	int port_id, port_type, path_type, bits_per_sample;
+> 
+> bits_per_sample is likely unused.
+> 
+yep.
+
+>> +
+>> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>> +		path_type = ADM_PATH_PLAYBACK;
+>> +		port_type = MSM_AFE_PORT_TYPE_RX;
+>> +	}
+>> +
+>> +	port_id = be_id;
+> 
+> Why alias this variable?
+will fix this in next version.
+
+> 
+>> +
+>> +	session = routing_get_session(data, port_id, port_type);
+>> +
+>> +	if (!session) {
+>> +		pr_err("No session matrix setup yet..\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	mutex_lock(&data->lock);
+>> +
+>> +	session->path_type = path_type;
+>> +	session->sample_rate = params_rate(params);
+>> +	session->channels = params_channels(params);
+>> +	session->format = params_format(params);
+>> +
+>> +	if (session->format == SNDRV_PCM_FORMAT_S16_LE)
+>> +		session->bits_per_sample = 16;
+>> +	else if (session->format == SNDRV_PCM_FORMAT_S24_LE)
+>> +		bits_per_sample = 24;
+> 
+> session-> ?
+
+I agree, will fix it.
+
+> 
+> Perhaps switch on params_format(params) instead? And fail in the default
+> case.
+will give that a go.
+
+> 
+>> +
+>> +	mutex_unlock(&data->lock);
+>> +	return 0;
+>> +}
+>> +
+
+
+>> +static struct snd_pcm_ops q6pcm_routing_ops = {
+>> +	.hw_params = routing_hw_params,
+>> +	.close = routing_close,
+>> +	.prepare = routing_prepare,
 >> +};
 >> +
+>> +/* Not used but frame seems to require it */
 > 
-> Regards,
-> Bjorn
+> Remove comment?
 > 
+looks like leftover.. will remove it.
+
+[...]
+>> +
+>> +static int q6pcm_routing_remove(struct platform_device *pdev)
+>> +{
+> 
+> As you return here routing_data will be freed.  The early check in
+> q6routing_reg_phy_stream() seems to indicate that this driver can be
+> called even though the routing device isn't available.
+> 
+> So you probably want to clear that variable, at least.
+sure, will fix this in next version.
+
+> 
+>> +	return 0;
+>> +}
+>> +
+>> +static struct platform_driver q6pcm_routing_driver = {
+>> +	.driver = {
+>> +		   .name = "q6routing",
+>> +		   .owner = THIS_MODULE,
+> 
+> Drop .owner
+> 
+yep.
+>> +		   },
+>> +	.probe = q6pcm_routing_probe,
+>> +	.remove = q6pcm_routing_remove,
+>> +};
+
+>>
