@@ -1,82 +1,36 @@
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [RESEND PATCH v2 01/15] dt-bindings: soc: qcom: Add bindings for
- APR bus
-Date: Tue, 2 Jan 2018 16:35:04 -0800
-Message-ID: <20180103003504.GX478@tuxbook>
-References: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
- <20171214173402.19074-2-srinivas.kandagatla@linaro.org>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [alsa-devel] [PATCH v6 1/6] ASoC: Intel: Skylake: Add ssp clock
+ driver
+Date: Wed, 3 Jan 2018 08:36:58 +0530
+Message-ID: <20180103030657.GB18649@localhost>
+References: <1514306696-7062-1-git-send-email-sriramx.periyasamy@intel.com>
+ <1514306696-7062-2-git-send-email-sriramx.periyasamy@intel.com>
+ <20180102233929.GO7997@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Return-path: <linux-clk-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20171214173402.19074-2-srinivas.kandagatla@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: srinivas.kandagatla@linaro.org
-Cc: Andy Gross <andy.gross@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, sboyd@codeaurora.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, David Brown <david.brown@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20180102233929.GO7997@codeaurora.org>
+Sender: linux-clk-owner@vger.kernel.org
+To: Stephen Boyd <sboyd@codeaurora.org>
+Cc: Sriram Periyasamy <sriramx.periyasamy@intel.com>, ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audi o <patches.audio@intel.com>, mturquette@baylibre.com, linux-clk@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu 14 Dec 09:33 PST 2017, srinivas.kandagatla@linaro.org wrote:
-
-> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+On Tue, Jan 02, 2018 at 03:39:29PM -0800, Stephen Boyd wrote:
+> On 12/26, Sriram Periyasamy wrote:
+> > diff --git a/sound/soc/intel/skylake/skl-ssp-clk.c b/sound/soc/intel/skylake/skl-ssp-clk.c
+> > new file mode 100644
+> > index 000000000000..bb828f285b16
+> > --- /dev/null
+> > +++ b/sound/soc/intel/skylake/skl-ssp-clk.c
+> > @@ -0,0 +1,432 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +// Copyright(c) 2015-17 Intel Corporation
 > 
-> This patch add dt bindings for Qualcomm APR bus driver
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  .../devicetree/bindings/soc/qcom/qcom,apr.txt      | 28 ++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
-> new file mode 100644
-> index 000000000000..4e93213ae98d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
-> @@ -0,0 +1,28 @@
-> +Qualcomm APR (Asynchronous Packet Router) binding
-> +
-> +This binding describes the Qualcomm APR. APR is a IPC protocol for
-> +communication between Application processor and QDSP. APR is mainly
-> +used for audio/voice services on the QDSP.
-> +
-> +- compatible:
-> +	Usage: required
-> +	Value type: <stringlist>
-> +	Definition: must be "qcom,apr-<SOC-NAME>" example: "qcom,apr-msm8996"
+> Does this also go into the // part? I thought just the tag was
+> with // comment style.
 
-This is not the only apr on msm8996 and some platform seems to have 3-4
-aprs. I'm therefor hesitant to use the compatible to pick the static
-list of services available on the particular firmware.
+Apparently that seems to be the latest recommendation. Tag plus copyright.
 
-If this scheme is followed we at least would need to rename this
-qcom,msm8996-apr-audio-svc
-
-But I think it would be preferable to go with qcom,apr-v2 and then list
-the static services as child nodes.
-
-> +
-> +
-> +- qcom,smd-channel:
-> +	Usage: required
-> +	Value type: <string>
-> +	Definition: standard SMD property specifying the SMD channel used for
-> +		    communication with the APR on QDSP.
-> +		    Should be "apr_audio_svc".
-
-This is not the only APR channel, but for apr itself this doesn't matter
-and might as well be qcom,glink-channels; so perhaps we can omit this
-from this document?
-
-> +		    Described in soc/qcom/qcom,smd.txt
-> +
-> += EXAMPLE
-> +The following example represents a QDSP based sound card on a MSM8996 device
-> +which uses apr as communication between Apps and QDSP.
-> +
-> +	apr {
-> +		compatible = "qcom,apr-msm8996";
-> +		qcom,smd-channels = "apr_audio_svc";
-> +	};
-
-Regards,
-Bjorn
+-- 
+~Vinod
