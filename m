@@ -1,245 +1,135 @@
-From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
-Subject: [RFC v5 9/9] ASoC: Intel: Boards: add support for HDA
-	codecs
-Date: Wed,  3 Jan 2018 10:26:22 +0530
-Message-ID: <1514955382-742-10-git-send-email-rakesh.a.ughreja@intel.com>
-References: <1514955382-742-1-git-send-email-rakesh.a.ughreja@intel.com>
+From: Yisheng Xie <xieyisheng1-hv44wF8Li93QT0dZR+AlfA@public.gmane.org>
+Subject: Re: [PATCH v3 00/27] kill devm_ioremap_nocache
+Date: Wed, 3 Jan 2018 14:42:14 +0800
+Message-ID: <e9f6805c-2dd7-f9c6-d615-5e25cff241a3@huawei.com>
+References: <1514026525-32538-1-git-send-email-xieyisheng1@huawei.com>
+ <20171223134831.GB10103@kroah.com>
+ <f7632cf5-2bcc-4d74-b912-3999937a1269@roeck-us.net>
+ <c28ac0bc-8bd2-3dce-3167-8c0f80ec601e@c-s.fr>
+ <6c0ade63-f4d3-d44d-c622-b091eb2ba902@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id CE5A42675DE
- for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 05:53:33 +0100 (CET)
-In-Reply-To: <1514955382-742-1-git-send-email-rakesh.a.ughreja@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com
-Cc: vinod.koul@intel.com, patches.audio@intel.com, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, pierre-louis.bossart@linux.intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <6c0ade63-f4d3-d44d-c622-b091eb2ba902-hv44wF8Li93QT0dZR+AlfA@public.gmane.org>
+Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: christophe leroy <christophe.leroy-GgN8y9CXRhA@public.gmane.org>, Guenter Roeck <linux-0h96xk9xTtrk1uMJSBkQmQ@public.gmane.org>, Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, starvik-VrBV9hrLPhE@public.gmane.org, jesper.nilsson-VrBV9hrLPhE@public.gmane.org, tony.luck-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, fenghua.yu-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, jonas-A9uVI2HLR7kOP4wsBPIw7w@public.gmane.org, shorne-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, dhowells-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ysxie-H32Fclmsjq1BDgjK7y7TUQ@public.gmane.org, ulf.hansson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, boris.brezillon-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, richard-/L3Ra7n9ekc@public.gmane.org, marek.vasut-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, cyrille.pitchen-yU5RGvR974pGWvitb5QawA@public.gmane.org, linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, wim-IQzOog9fTRqzQB+pC5nmwQ@public.gmane.org, linux-watchdog-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ralf-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org, linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org, jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org, marc.zyngier-5wv7dgnIgG8@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org, andriy.shevchenko-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, industrypack-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Add support for HDA codecs. add required widgets, controls, routes
-and dai links for the same.
++ cris/ia64/mn10300/openrisc maintainers
 
-Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
----
- sound/soc/intel/Kconfig                      |  1 +
- sound/soc/intel/boards/skl_hda_dsp_common.c  | 43 ++++++++++++++++++++++++++++
- sound/soc/intel/boards/skl_hda_dsp_common.h  |  2 +-
- sound/soc/intel/boards/skl_hda_dsp_generic.c | 29 +++++++++++++++++++
- sound/soc/intel/skylake/skl.c                | 27 ++++++++++++++---
- 5 files changed, 97 insertions(+), 5 deletions(-)
+On 2017/12/25 9:09, Yisheng Xie wrote:
+> hi Christophe and Greg,
+> 
+> On 2017/12/24 16:55, christophe leroy wrote:
+>>
+>>
+>> Le 23/12/2017 à 16:57, Guenter Roeck a écrit :
+>>> On 12/23/2017 05:48 AM, Greg KH wrote:
+>>>> On Sat, Dec 23, 2017 at 06:55:25PM +0800, Yisheng Xie wrote:
+>>>>> Hi all,
+>>>>>
+>>>>> When I tried to use devm_ioremap function and review related code, I found
+>>>>> devm_ioremap and devm_ioremap_nocache is almost the same with each other,
+>>>>> except one use ioremap while the other use ioremap_nocache.
+>>>>
+>>>> For all arches?  Really?  Look at MIPS, and x86, they have different
+>>>> functions.
+>>>>
+>>>
+>>> Both mips and x86 end up mapping the same function, but other arches don't.
+>>> mn10300 is one where ioremap and ioremap_nocache are definitely different.
+>>
+>> alpha: identical
+>> arc: identical
+>> arm: identical
+>> arm64: identical
+>> cris: different        <==
+>> frv: identical
+>> hexagone: identical
+>> ia64: different        <==
+>> m32r: identical
+>> m68k: identical
+>> metag: identical
+>> microblaze: identical
+>> mips: identical
+>> mn10300: different     <==
+>> nios: identical
+>> openrisc: different    <==
+>> parisc: identical
+>> riscv: identical
+>> s390: identical
+>> sh: identical
+>> sparc: identical
+>> tile: identical
+>> um: rely on asm/generic
+>> unicore32: identical
+>> x86: identical
+>> asm/generic (no mmu): identical
+> 
+> Wow, that's correct, sorry for I have just checked the main archs, I means
+> x86,arm, arm64, mips.
+> 
+> However, I stall have no idea about why these 4 archs want different ioremap
+> function with others. Drivers seems cannot aware this? If driver call ioremap
+> want he really want for there 4 archs, cache or nocache?
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 7b49d04..5dc2b30 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -66,6 +66,7 @@ config SND_SOC_INTEL_SKYLAKE
- 	select SND_HDA_DSP_LOADER
- 	select SND_SOC_TOPOLOGY
- 	select SND_SOC_INTEL_SST
-+	select SND_SOC_HDAC_HDA if SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH
- 
- # ASoC codec drivers
- source "sound/soc/intel/boards/Kconfig"
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_common.c b/sound/soc/intel/boards/skl_hda_dsp_common.c
-index 5933902..d65c2cc 100644
---- a/sound/soc/intel/boards/skl_hda_dsp_common.c
-+++ b/sound/soc/intel/boards/skl_hda_dsp_common.c
-@@ -52,6 +52,24 @@ int skl_hda_hdmi_add_pcm(struct snd_soc_card *card, int device)
- 	return 0;
- }
- 
-+static int skl_hda_link_fixup(struct snd_soc_pcm_runtime *rtd,
-+					struct snd_pcm_hw_params *params)
-+{
-+	struct snd_interval *rate = hw_param_interval(params,
-+						SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels = hw_param_interval(params,
-+						SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
-+
-+	/* The output is 48KHz, stereo, 16bits */
-+	rate->min = rate->max = 48000;
-+	channels->min = channels->max = 2;
-+
-+	snd_mask_none(fmt);
-+	snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
-+	return 0;
-+}
-+
- /* skl_hda_digital audio interface glue - connects codec <--> CPU */
- struct snd_soc_dai_link skl_hda_be_dai_links[HDA_DSP_MAX_BE_DAI_LINKS] = {
- 
-@@ -86,6 +104,31 @@ struct snd_soc_dai_link skl_hda_be_dai_links[HDA_DSP_MAX_BE_DAI_LINKS] = {
- 		.dpcm_playback = 1,
- 		.no_pcm = 1,
- 	},
-+	{
-+		.name = "Analog Playback and Capture",
-+		.id = 4,
-+		.cpu_dai_name = "Analog CPU DAI",
-+		.codec_name = "ehdaudio0D0",
-+		.codec_dai_name = "Analog Codec DAI",
-+		.platform_name = "0000:00:1f.3",
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+		.init = NULL,
-+		.no_pcm = 1,
-+		.be_hw_params_fixup = skl_hda_link_fixup,
-+	},
-+	{
-+		.name = "Digital Playback and Capture",
-+		.id = 5,
-+		.cpu_dai_name = "Digital CPU DAI",
-+		.codec_name = "ehdaudio0D0",
-+		.codec_dai_name = "Digital Codec DAI",
-+		.platform_name = "0000:00:1f.3",
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+		.init = NULL,
-+		.no_pcm = 1,
-+	},
- };
- 
- int skl_hda_hdmi_jack_init(struct snd_soc_card *card)
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_common.h b/sound/soc/intel/boards/skl_hda_dsp_common.h
-index 203d527..920fce1 100644
---- a/sound/soc/intel/boards/skl_hda_dsp_common.h
-+++ b/sound/soc/intel/boards/skl_hda_dsp_common.h
-@@ -13,7 +13,7 @@
- #include <sound/jack.h>
- #define __SOUND_SOC_HDA_DSP_COMMON_H
- 
--#define HDA_DSP_MAX_BE_DAI_LINKS 3
-+#define HDA_DSP_MAX_BE_DAI_LINKS 5
- 
- struct skl_hda_hdmi_pcm {
- 	struct list_head head;
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-index 07f4eed..ca82d4e 100644
---- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
-+++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-@@ -16,8 +16,33 @@
- #include "../skylake/skl.h"
- #include "skl_hda_dsp_common.h"
- 
-+static const struct snd_kcontrol_new skl_hda_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Headphone"),
-+	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-+};
-+
-+static const struct snd_soc_dapm_widget skl_hda_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_SPK("Codec Speaker", NULL),
-+	SND_SOC_DAPM_MIC("Codec Mic", NULL),
-+};
-+
- static const struct snd_soc_dapm_route skl_hda_map[] = {
- 
-+	/* HP jack connectors - unknown if we have jack detection */
-+	{ "Headphone", NULL, "Codec Output Pin1" },
-+	{ "Codec Speaker", NULL, "Codec Output Pin2" },
-+	{ "Codec Input Pin2", NULL, "Codec Mic" },
-+	{ "Codec Input Pin1", NULL, "Headset Mic" },
-+
-+	/* CODEC BE connections */
-+	{ "Analog Codec Playback", NULL, "Analog CPU Playback" },
-+	{ "Analog CPU Playback", NULL, "codec0_out" },
-+
-+	{ "codec0_in", NULL, "Analog CPU Capture" },
-+	{ "Analog CPU Capture", NULL, "Analog Codec Capture" },
-+
- 	{ "hifi3", NULL, "iDisp3 Tx"},
- 	{ "iDisp3 Tx", NULL, "iDisp3_out"},
- 	{ "hifi2", NULL, "iDisp2 Tx"},
-@@ -54,6 +79,10 @@ static struct snd_soc_card hda_soc_card = {
- 	.owner = THIS_MODULE,
- 	.dai_link = skl_hda_be_dai_links,
- 	.num_links = ARRAY_SIZE(skl_hda_be_dai_links),
-+	.controls = skl_hda_controls,
-+	.num_controls = ARRAY_SIZE(skl_hda_controls),
-+	.dapm_widgets = skl_hda_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(skl_hda_widgets),
- 	.dapm_routes = skl_hda_map,
- 	.num_dapm_routes = ARRAY_SIZE(skl_hda_map),
- 	.add_dai_link = skl_hda_add_dai_link,
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 712865f..fc7bcab5 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -36,6 +36,7 @@
- #include "skl-sst-dsp.h"
- #include "skl-sst-ipc.h"
- #include "../../../pci/hda/hda_codec.h"
-+#include "../../../soc/codecs/hdac_hda.h"
- 
- static struct skl_machine_pdata skl_dmic_data;
- 
-@@ -630,7 +631,9 @@ static int probe_codec(struct hdac_bus *bus, int addr)
- 		(AC_VERB_PARAMETERS << 8) | AC_PAR_VENDOR_ID;
- 	unsigned int res = -1;
- 	struct skl *skl = bus_to_skl(bus);
-+	struct hdac_hda_priv *hda_codec;
- 	struct hdac_device *hdev;
-+	int err;
- 
- 	mutex_lock(&bus->cmd_mutex);
- 	snd_hdac_bus_send_cmd(bus, cmd);
-@@ -640,11 +643,22 @@ static int probe_codec(struct hdac_bus *bus, int addr)
- 		return -EIO;
- 	dev_dbg(bus->dev, "codec #%d probed OK: %x\n", addr, res);
- 
--	hdev = devm_kzalloc(&skl->pci->dev, sizeof(*hdev), GFP_KERNEL);
--	if (!hdev)
-+	hda_codec = devm_kzalloc(&skl->pci->dev, sizeof(*hda_codec),
-+								GFP_KERNEL);
-+	if (!hda_codec)
- 		return -ENOMEM;
- 
--	return snd_hdac_ext_bus_device_init(bus, addr, hdev);
-+	hda_codec->codec.bus = skl_to_hbus(skl);
-+	hdev = &hda_codec->codec.core;
-+
-+	err = snd_hdac_ext_bus_device_init(bus, addr, hdev);
-+	if (err < 0)
-+		return err;
-+
-+	if ((res & 0xFFFF0000) != 0x80860000)
-+		hdev->type = HDA_DEV_LEGACY;
-+
-+	return 0;
- }
- 
- /* Codec initialization */
-@@ -782,6 +796,7 @@ static int skl_create(struct pci_dev *pci,
- 	struct skl *skl;
- 	struct hdac_bus *bus;
- 	struct hda_bus *hbus;
-+	struct hdac_ext_bus_ops *ext_ops = NULL;
- 
- 	int err;
- 
-@@ -799,7 +814,11 @@ static int skl_create(struct pci_dev *pci,
- 
- 	hbus = skl_to_hbus(skl);
- 	bus = skl_to_bus(skl);
--	snd_hdac_ext_bus_init(bus, &pci->dev, &bus_core_ops, io_ops, NULL);
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_HDAC_HDA)
-+	ext_ops = snd_soc_hdac_hda_get_ops();
-+#endif
-+	snd_hdac_ext_bus_init(bus, &pci->dev, &bus_core_ops, io_ops, ext_ops);
- 	bus->use_posbuf = 1;
- 	skl->pci = pci;
- 	INIT_WORK(&skl->probe_work, skl_probe_work);
--- 
-2.7.4
+Could you please help about this? it is out of my knowledge.
+
+Thanks
+Yisheng
+
+> 
+>>
+>> So 4 among all arches seems to have ioremap() and ioremap_nocache() being different.
+>>
+>> Could we have a define set by the 4 arches on which ioremap() and ioremap_nocache() are different, something like HAVE_DIFFERENT_IOREMAP_NOCACHE ?
+> 
+> Then, what the HAVE_DIFFERENT_IOREMAP_NOCACHE is uesed for ?
+> 
+> Thanks
+> Yisheng
+>>
+>> Christophe
+>>
+>>>
+>>> Guenter
+>>>
+>>>>> While ioremap's
+>>>>> default function is ioremap_nocache, so devm_ioremap_nocache also have the
+>>>>> same function with devm_ioremap, which can just be killed to reduce the size
+>>>>> of devres.o(from 20304 bytes to 18992 bytes in my compile environment).
+>>>>>
+>>>>> I have posted two versions, which use macro instead of function for
+>>>>> devm_ioremap_nocache[1] or devm_ioremap[2]. And Greg suggest me to kill
+>>>>> devm_ioremap_nocache for no need to keep a macro around for the duplicate
+>>>>> thing. So here comes v3 and please help to review.
+>>>>
+>>>> I don't think this can be done, what am I missing?  These functions are
+>>>> not identical, sorry for missing that before.
+> 
+> Never mind, I should checked all the arches, sorry about that.
+> 
+>>>>
+>>>> thanks,
+>>>>
+>>>> greg k-h
+>>>>
+>>>
+>>> -- 
+>>> To unsubscribe from this list: send the line "unsubscribe linux-watchdog" in
+>>> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>
+>> ---
+>> L'absence de virus dans ce courrier électronique a été vérifiée par le logiciel antivirus Avast.
+>> https://www.avast.com/antivirus
+>>
+>>
+>> .
+>>
+> 
+> 
+> .
+> 
