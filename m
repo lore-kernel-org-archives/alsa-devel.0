@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 2/3] ASoC: Replace snd_soc_acpi_check_hid with
-	acpi_dev_present
-Date: Wed,  3 Jan 2018 11:02:41 -0600
-Message-ID: <20180103170242.5363-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/3] ASoC: Intel: bytcht_es8316: fix HID
+	handling
+Date: Wed,  3 Jan 2018 11:02:42 -0600
+Message-ID: <20180103170242.5363-4-pierre-louis.bossart@linux.intel.com>
 References: <20180103170242.5363-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 961B62676AB
- for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 18:02:51 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id A478D26770D
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 18:02:52 +0100 (CET)
 In-Reply-To: <20180103170242.5363-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,88 +25,76 @@ To: alsa-devel@alsa-project.org
 Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, jeremy@jcline.org, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeremy Cline <jeremy@jcline.org>
+Same problem as with previous machine drivers, the codec dai
+uses a hard-coded name of "i2c-ESSX8316:00" but ACPI provides
+"i2c-ESSX8316:01" in some systems.
 
-Replace snd_soc_acpi_check_hid() with the generic acpi_dev_present()
-and remove the now unused snd_soc_acpi_check_hid function. This should
-have no functional change.
+Fix by overriding the hard-coded value with the codec name derived
+from the HID information
 
-Signed-off-by: Jeremy Cline <jeremy@jcline.org>
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=189261
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/soc-acpi.h |  3 ---
- sound/soc/soc-acpi.c     | 32 ++------------------------------
- 2 files changed, 2 insertions(+), 33 deletions(-)
+ sound/soc/intel/boards/Kconfig         |  1 +
+ sound/soc/intel/boards/bytcht_es8316.c | 26 +++++++++++++++++++++++++-
+ 2 files changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
-index a93436089bf5..d1aaf876cd26 100644
---- a/include/sound/soc-acpi.h
-+++ b/include/sound/soc-acpi.h
-@@ -50,9 +50,6 @@ snd_soc_acpi_find_package_from_hid(const u8 hid[ACPI_ID_LEN],
- struct snd_soc_acpi_mach *
- snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines);
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 89a73e3d9d2d..4af2393160bf 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -153,6 +153,7 @@ config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
+ config SND_SOC_INTEL_BYT_CHT_ES8316_MACH
+ 	tristate "Baytrail & Cherrytrail with ES8316 codec"
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
++	select SND_SOC_ACPI
+ 	select SND_SOC_ES8316
+ 	help
+ 	  This adds support for ASoC machine driver for Intel(R) Baytrail &
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 8088396717e3..ae24f6205f05 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -232,15 +232,39 @@ static struct snd_soc_card byt_cht_es8316_card = {
+ 	.fully_routed = true,
+ };
  
--/* acpi check hid */
--bool snd_soc_acpi_check_hid(const u8 hid[ACPI_ID_LEN]);
--
- /**
-  * snd_soc_acpi_mach: ACPI-based machine descriptor. Most of the fields are
-  * related to the hardware, except for the firmware and topology file names.
-diff --git a/sound/soc/soc-acpi.c b/sound/soc/soc-acpi.c
-index e103f3571b55..06d2aaccdb32 100644
---- a/sound/soc/soc-acpi.c
-+++ b/sound/soc/soc-acpi.c
-@@ -49,41 +49,13 @@ const char *snd_soc_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN])
- }
- EXPORT_SYMBOL_GPL(snd_soc_acpi_find_name_from_hid);
- 
--static acpi_status snd_soc_acpi_mach_match(acpi_handle handle, u32 level,
--				       void *context, void **ret)
--{
--	unsigned long long sta;
--	acpi_status status;
--
--	*(bool *)context = true;
--	status = acpi_evaluate_integer(handle, "_STA", NULL, &sta);
--	if (ACPI_FAILURE(status) || !(sta & ACPI_STA_DEVICE_PRESENT))
--		*(bool *)context = false;
--
--	return AE_OK;
--}
--
--bool snd_soc_acpi_check_hid(const u8 hid[ACPI_ID_LEN])
--{
--	acpi_status status;
--	bool found = false;
--
--	status = acpi_get_devices(hid, snd_soc_acpi_mach_match, &found, NULL);
--
--	if (ACPI_FAILURE(status))
--		return false;
--
--	return found;
--}
--EXPORT_SYMBOL_GPL(snd_soc_acpi_check_hid);
--
- struct snd_soc_acpi_mach *
- snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines)
++static char codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
++
+ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
  {
- 	struct snd_soc_acpi_mach *mach;
+-	int ret = 0;
+ 	struct byt_cht_es8316_private *priv;
++	struct snd_soc_acpi_mach *mach;
++	const char *i2c_name = NULL;
++	int dai_index = 0;
++	int i;
++	int ret = 0;
  
- 	for (mach = machines; mach->id[0]; mach++) {
--		if (snd_soc_acpi_check_hid(mach->id) == true) {
-+		if (acpi_dev_present(mach->id, NULL, -1)) {
- 			if (mach->machine_quirk(mach) != NULL)
- 				mach = mach->machine_quirk(mach);
- 			return mach;
-@@ -161,7 +133,7 @@ struct snd_soc_acpi_mach *snd_soc_acpi_codec_list(void *arg)
- 		return mach;
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
+ 	if (!priv)
+ 		return -ENOMEM;
  
- 	for (i = 0; i < codec_list->num_codecs; i++) {
--		if (snd_soc_acpi_check_hid(codec_list->codecs[i]) != true)
-+		if (!acpi_dev_present(codec_list->codecs[i], NULL, -1))
- 			return NULL;
- 	}
- 
++	mach = (&pdev->dev)->platform_data;
++	/* fix index of codec dai */
++	for (i = 0; i < ARRAY_SIZE(byt_cht_es8316_dais); i++) {
++		if (!strcmp(byt_cht_es8316_dais[i].codec_name,
++			    "i2c-ESSX8316:00")) {
++			dai_index = i;
++			break;
++		}
++	}
++
++	/* fixup codec name based on HID */
++	i2c_name = snd_soc_acpi_find_name_from_hid(mach->id);
++	if (i2c_name) {
++		snprintf(codec_name, sizeof(codec_name),
++			"%s%s", "i2c-", i2c_name);
++		byt_cht_es8316_dais[dai_index].codec_name = codec_name;
++	}
++
+ 	/* register the soc card */
+ 	byt_cht_es8316_card.dev = &pdev->dev;
+ 	snd_soc_card_set_drvdata(&byt_cht_es8316_card, priv);
 -- 
 2.14.1
