@@ -1,117 +1,70 @@
-From: Bjorn Andersson <bjorn.andersson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [RESEND PATCH v2 15/15] arm64: dts: msm8996: db820c: Add sound
- card support
-Date: Tue, 2 Jan 2018 16:22:29 -0800
-Message-ID: <20180103002229.GV478@tuxbook>
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: [RESEND PATCH v2 13/15] dt-bindings: sound: qcom:
+ Add devicetree bindings for apq8096
+Date: Tue, 2 Jan 2018 16:28:35 -0800
+Message-ID: <20180103002835.GW478@tuxbook>
 References: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
- <20171214173402.19074-16-srinivas.kandagatla@linaro.org>
+ <20171214173402.19074-14-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg0-f53.google.com (mail-pg0-f53.google.com [74.125.83.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3080C26719C
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 01:28:41 +0100 (CET)
+Received: by mail-pg0-f53.google.com with SMTP id q67so58929pga.9
+ for <alsa-devel@alsa-project.org>; Tue, 02 Jan 2018 16:28:41 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <20171214173402.19074-16-srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
-Cc: Andy Gross <andy.gross-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, David Brown <david.brown-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, linux-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
+In-Reply-To: <20171214173402.19074-14-srinivas.kandagatla@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: srinivas.kandagatla@linaro.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, sboyd@codeaurora.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, David Brown <david.brown@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Andy Gross <andy.gross@linaro.org>, linux-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu 14 Dec 09:34 PST 2017, srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org wrote:
+On Thu 14 Dec 09:34 PST 2017, srinivas.kandagatla@linaro.org wrote:
 
-> From: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-> 
-> This patch adds hdmi sound card support to db820c via qdsp.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-> ---
->  arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi |  5 +++++
->  arch/arm64/boot/dts/qcom/msm8996.dtsi        | 33 ++++++++++++++++++++++++++++
->  2 files changed, 38 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-> index 9769053957af..b955769b100d 100644
-> --- a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-> @@ -190,6 +190,11 @@
->  		};
->  	};
->  
-> +	snd {
-> +		compatible = "qcom,apq8096-sndcard";
-> +		qcom,model = "DB820c";
-> +		iommus = <&lpass_q6_smmu 1>;
-> +	};
->  
->  	gpio_keys {
->  		compatible = "gpio-keys";
-> diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> index a144cec7bb71..25c43fb8ab49 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> @@ -1262,6 +1262,7 @@
->  
->  				phys = <&hdmi_phy>;
->  				phy-names = "hdmi_phy";
-> +				#sound-dai-cells = <0>;
->  
->  				ports {
->  					#address-cells = <1>;
-> @@ -1297,6 +1298,33 @@
->  					      "ref_clk";
->  			};
->  		};
+> +++ b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
+
+Wouldn't it be possible to describe all(?) qdsp based machines in this
+one document? I.e. should we name it a little bit more generic?
+
+> @@ -0,0 +1,22 @@
+> +* Qualcomm Technologies APQ8096 ASoC sound card driver
 > +
-> +	        lpass_q6_smmu: arm,smmu-lpass_q6@1600000 {
+> +This binding describes the APQ8096 sound card, which uses qdsp for audio.
+> +
+> +- compatible:
+> +	Usage: required
+> +	Value type: <stringlist>
+> +	Definition: must be "qcom,apq8096-sndcard"
+> +
+> +- qcom,audio-routing:
+> +	Usage: Optional
+> +	Value type: <stringlist>
+> +	Definition:  A list of the connections between audio components.
 
-name this node "iommu"
+Double space before A
 
-> +			compatible = "qcom,msm8996-smmu-v2";
-> +	                reg = <0x1600000 0x20000>;
-> +	                #iommu-cells = <1>;
-> +                        power-domains = <&gcc HLOS1_VOTE_LPASS_CORE_GDSC>;
+> +		  Each entry is a pair of strings, the first being the
+> +		  connection's sink, the second being the connection's
+> +		  source. Valid names could be power supplies, MicBias
+> +		  of codec and the jacks on the board:
+> +Example:
+> +	sound {
+> +		compatible	= "qcom,snd-apq8096";
 
 Indentation
 
-> +
-> +			#global-interrupts = <1>;
-> +		        interrupts = <GIC_SPI 404 IRQ_TYPE_LEVEL_HIGH>,
-> +		                <GIC_SPI 226 IRQ_TYPE_LEVEL_HIGH>,
-> +		                <GIC_SPI 393 IRQ_TYPE_LEVEL_HIGH>,
-> +		                <GIC_SPI 394 IRQ_TYPE_LEVEL_HIGH>,
-> +		                <GIC_SPI 395 IRQ_TYPE_LEVEL_HIGH>,
-> +		                <GIC_SPI 396 IRQ_TYPE_LEVEL_HIGH>,
-> +		                <GIC_SPI 397 IRQ_TYPE_LEVEL_HIGH>,
-> +		                <GIC_SPI 398 IRQ_TYPE_LEVEL_HIGH>,
-> +		                <GIC_SPI 399 IRQ_TYPE_LEVEL_HIGH>,
-> +		                <GIC_SPI 400 IRQ_TYPE_LEVEL_HIGH>,
-> +		                <GIC_SPI 401 IRQ_TYPE_LEVEL_HIGH>,
-> +		                <GIC_SPI 402 IRQ_TYPE_LEVEL_HIGH>,
-> +		                <GIC_SPI 403 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +			clocks = <&gcc GCC_HLOS1_VOTE_LPASS_CORE_SMMU_CLK>,
-> +				 <&gcc GCC_HLOS1_VOTE_LPASS_ADSP_SMMU_CLK>;
-> +			clock-names = "iface", "bus";
-> +                        status = "okay";
-> +		};
->  	};
->  
->  	adsp-pil {
-> @@ -1325,6 +1353,11 @@
->  			qcom,ipc = <&apcs 16 8>;
->  			qcom,smd-edge = <1>;
->  			qcom,remote-pid = <2>;
-> +
-> +			apr {
-
-"apr-audio-svc", as this is not the only apr channel on this edge.
-
-> +				compatible = "qcom,apr-msm8996";
-> +				qcom,smd-channels = "apr_audio_svc";
-> +			};
->  		};
+> +		qcom,model = "DB820c";
+> +	};
 
 Regards,
 Bjorn
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
