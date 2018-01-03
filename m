@@ -1,410 +1,525 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [RESEND PATCH v2 04/15] ASoC: qcom: qdsp6: Add support to Q6AFE
-Date: Wed, 3 Jan 2018 16:26:35 +0000
-Message-ID: <d4ac1306-c58f-abfd-bafe-5ae70a67d0eb@linaro.org>
+Subject: Re: [RESEND PATCH v2 02/15] soc: qcom: add support to
+	APR bus driver
+Date: Wed, 3 Jan 2018 16:26:20 +0000
+Message-ID: <cb7bfd2e-9240-8aff-adf7-b6e25d3eb53e@linaro.org>
 References: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
- <20171214173402.19074-5-srinivas.kandagatla@linaro.org>
- <20180102004523.GM478@tuxbook>
+ <20171214173402.19074-3-srinivas.kandagatla@linaro.org>
+ <20180101232932.GK478@tuxbook>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180102004523.GM478@tuxbook>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f48.google.com (mail-wm0-f48.google.com [74.125.82.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 812BD267686
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 17:26:23 +0100 (CET)
+Received: by mail-wm0-f48.google.com with SMTP id 9so3588970wme.4
+ for <alsa-devel@alsa-project.org>; Wed, 03 Jan 2018 08:26:23 -0800 (PST)
+In-Reply-To: <20180101232932.GK478@tuxbook>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Andy Gross <andy.gross@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, David Brown <david.brown@linaro.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, sboyd@codeaurora.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, sboyd@codeaurora.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, David Brown <david.brown@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Andy Gross <andy.gross@linaro.org>, linux-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the comments!
+Thank Bjorn for the Review.
 
-On 02/01/18 00:45, Bjorn Andersson wrote:
-> On Thu 14 Dec 09:33 PST 2017, srinivas.kandagatla@linaro.org wrote:
+
+On 01/01/18 23:29, Bjorn Andersson wrote:
+>> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+>> index b81374bb6713..1daa39925dd4 100644
+>> --- a/drivers/soc/qcom/Kconfig
+>> +++ b/drivers/soc/qcom/Kconfig
+>> @@ -97,4 +97,12 @@ config QCOM_WCNSS_CTRL
+>>   	  Client driver for the WCNSS_CTRL SMD channel, used to download nv
+>>   	  firmware to a newly booted WCNSS chip.
+>>   
+>> +config QCOM_APR
+>> +	tristate "Qualcomm APR Bus (Asynchronous Packet Router)"
+>> +	depends on (RPMSG_QCOM_SMD || RPMSG_QCOM_GLINK_RPM)
 > 
-> [..]
+> The actual dependency you have is RPMSG. Specifying the individual
+> transports here causes additional restrictions in how you can mix and
+> match modules vs builtin (e.g. glink being builtin to get regulators
+> early and smd built as a module forces apr to be built as a module)
+> 
+I agree, Will fix this in next version.
+
+>> +++ b/drivers/soc/qcom/apr.c
+>> @@ -0,0 +1,395 @@
+>> +/* SPDX-License-Identifier: GPL-2.0
+>> +* Copyright (c) 2011-2016, The Linux Foundation
+>> +* Copyright (c) 2017, Linaro Limited
+>> +*/
+> 
+> For some tooling reason the SPDX line should be // commented, i.e this
+> should be:
+> 
+> // SPDX-License-Identifier: GPL-2.0
+> /*
+>   * Copyright (c) 2011-2016, The Linux Foundation
+>   * Copyright (c) 2017, Linaro Limited
+>   */
+> 
+Yep, this was also considered for next version.
 >> +
->> +config SND_SOC_QDSP6_AFE
->> +	tristate
->> +	default n
+...
+>> +
+>> +/* Static CORE service on the ADSP */
+>> +static const struct apr_device_id core_svc_device_id =
+>> +		ADSP_AUDIO_APR_DEV("CORE", APR_SVC_ADSP_CORE);
 > 
-> Do you see a particular benefit of having one kernel module per
-> function? Why not just compile them all into the same q6dsp.ko?
+> How does this work out when we want to use APR for the modem services?
 > 
-No, I do not see any benefit in doing so, I can try to make it as single 
-module in next version.
+So the plan is, If the modem service can be queried using AVCS core 
+commands then it would be added dynamically from q6core driver else we 
+can add is as static service into this list.
 
 >> +
->> +config SND_SOC_QDSP6
->> +	tristate "SoC ALSA audio driver for QDSP6"
->> +	select SND_SOC_QDSP6_AFE
->> +	help
->> +	 To add support for MSM QDSP6 Soc Audio.
->> +	 This will enable sound soc platform specific
->> +	 audio drivers. This includes q6asm, q6adm,
->> +	 q6afe interfaces to DSP using apr.
-> [..]
->> +struct q6afev2 {
->> +	void *apr;
+>> +/**
+>> + * apr_send_pkt() - Send a apr message from apr device
+>> + *
+>> + * @adev: Pointer to previously registered apr device.
+>> + * @buf: Pointer to buffer to send
+>> + *
+>> + * Return: Will be an negative on packet size on success.
+>> + */
+>> +int apr_send_pkt(struct apr_device *adev, uint32_t *buf)
 > 
-> apr has a type, even if it's definition is hidden you should use the
-> proper type here.
->
-I agree.
+> So buf here is a struct apr_hdr followed by arbitrary data. Passing a
+> reference to an arbitrary chunk of data should be done with a void *.
+> But you could turn struct apr_hdr into struct apr_packet by adding a
+> flexible array member at the end of the struct and having this function
+> take that data type. This would make the prototype self-documenting.
+> 
+> 
+> I do, however, not fancy the asymmetry of the send/callback interface
+> exposed to the client. One takes the raw packet, as it sits in the
+> transport and the other creates an abstract representation of the same.
+> 
+> Can't you in the callback verify the data and then just pass the same
+> object up to the client?
 
->> +	struct device *dev;
->> +	int state;
->> +	int status;
->> +	struct platform_device *daidev;
->> +
->> +	struct mutex afe_cmd_lock;
+I can try it and see how it looks.
 > 
-> You shouldn't need to include afe_ in this name.
-> 
-make sense!
->> +	struct list_head port_list;
->> +	spinlock_t port_list_lock;
->> +	struct list_head node;
->> +};
->> +
-> [..]
->> +/* Port map of index vs real hw port ids */
->> +static struct afe_port_map port_maps[AFE_PORT_MAX] = {
->> +		[AFE_PORT_HDMI_RX] = { AFE_PORT_ID_MULTICHAN_HDMI_RX,
-> 
-> Looks like you have an extra tab here, consider breaking the 80 char
-> "rule" to not have to wrap these.
-yep!
-> 
->> +				       AFE_PORT_HDMI_RX, 1},
->> +};
->> +
->> +static struct q6afe_port *afe_find_port(struct q6afev2 *afe, int token)
 >> +{
->> +	struct q6afe_port *p = NULL;
->> +
->> +	spin_lock(&afe->port_list_lock);
->> +	list_for_each_entry(p, &afe->port_list, node)
->> +		if (p->token == token)
->> +			break;
->> +
->> +	spin_unlock(&afe->port_list_lock);
->> +	return p;
->> +}
-> 
-> Make port_list an idr and you can just use idr_find() instead of rolling
-> your own search function.
-> 
-Will give that a go.
->> +
->> +static int afe_callback(struct apr_device *adev, struct apr_client_data *data)
->> +{
->> +	struct q6afev2 *afe = dev_get_drvdata(&adev->dev);//priv;
-> 
-> This is perfectly fine, no need to extend the interface with a priv (so
-> drop the comment).
 
-I think it was a leftover, will clean such instances.
-> 
->> +	struct q6afe_port *port;
+...
+
 >> +
->> +	if (!data) {
->> +		dev_err(afe->dev, "%s: Invalid param data\n", __func__);
+>> +static int qcom_rpmsg_q6_callback(struct rpmsg_device *rpdev, void *buf,
+>> +				  int len, void *priv, u32 addr)
+>> +{
+>> +	struct apr *apr = dev_get_drvdata(&rpdev->dev);
+>> +	struct apr_client_data data;
+>> +	struct apr_device *p, *c_svc = NULL;
+>> +	struct apr_driver *adrv = NULL;
+>> +	struct apr_hdr *hdr;
+>> +	uint16_t hdr_size;
+>> +	uint16_t msg_type;
+>> +	uint16_t ver;
+>> +	uint16_t src;
+>> +	uint16_t svc;
+>> +
+>> +	if (!buf || len <= APR_HDR_SIZE) {
+> 
+> rpmsg should never call you with buf = NULL, so no reason to check for
+> that.
+
+Yep!
+
+> 
+>> +		dev_err(apr->dev, "APR: Improper apr pkt received:%p %d\n",
+>> +			buf, len);
 >> +		return -EINVAL;
 >> +	}
-> 
-> Just define on in the apr layer that data will never be NULL, that will
-> save you 4 lines of code in every apr client.
-> 
-I agree!
-
+...
 >> +
->> +	if (data->payload_size) {
->> +		uint32_t *payload = data->payload;
-> 
-> So the payload is 2 ints, where the first is a command and the second is
-> the status of it. This you can express in a simple struct to make the
-> code even easier on the eye.
-> 
-Will do that, if it make code more readable.
+>> +	if (hdr->src_domain >= APR_DOMAIN_MAX ||
+>> +			hdr->dest_domain >= APR_DOMAIN_MAX ||
+>> +			hdr->src_svc >= APR_SVC_MAX ||
+>> +			hdr->dest_svc >= APR_SVC_MAX) {
+>> +		dev_err(apr->dev, "APR: Wrong APR header\n");
+>> +		return -EINVAL;
+>> +	}
 >> +
->> +		if (data->opcode == APR_BASIC_RSP_RESULT) {
->> +			if (payload[1] != 0) {
->> +				afe->status = payload[1];
->> +				dev_err(afe->dev,
->> +					"cmd = 0x%x returned error = 0x%x\n",
->> +					payload[0], payload[1]);
->> +			}
->> +			switch (payload[0]) {
->> +			case AFE_PORT_CMD_SET_PARAM_V2:
->> +			case AFE_PORT_CMD_DEVICE_STOP:
->> +			case AFE_PORT_CMD_DEVICE_START:
->> +				afe->state = AFE_CMD_RESP_AVAIL;
->> +				port = afe_find_port(afe, data->token);
->> +				if (port)
->> +					wake_up(&port->wait);
+>> +	svc = hdr->dest_svc;
+>> +	src = apr->data->get_data_src(hdr);
+> 
+> Couldn't we just use src_domain here instead of maintaining this mapping
+> table in the driver?
+Yes, we can do that too, I will give that a go.
+> 
+> Also, looking at the send function, isn't this src just c_svc->svc_id?
+> 
+src here represents mapping between domain and dest id. It is not same 
+as svc_id.
+> 
+>> +	if (src == APR_DEST_MAX)
+>> +		return -EINVAL;
 >> +
->> +				break;
->> +			default:
->> +				dev_err(afe->dev, "Unknown cmd 0x%x\n",
->> +					payload[0]);
-> 
-> If you flip the check for payload_size to return early if there isn't a
-> payload then you can reduce the indentation level one step and probably
-> doesn't have to wrap this line.
-
-yep make sense!
-
-> 
->> +				break;
->> +			}
+>> +	spin_lock(&apr->svcs_lock);
+>> +	list_for_each_entry(p, &apr->svcs, node) {
+>> +		if (svc == p->svc_id) {
+>> +			c_svc = p;
+>> +			if (c_svc->dev.driver)
+>> +				adrv = to_apr_driver(c_svc->dev.driver);
+>> +			break;
 >> +		}
 >> +	}
+> 
+> Keep your services in a idr, keyed by svc_id. This will make the search
+> O(log(n)), but more importantly it would replace this loop with a single
+> idr_find().
+> 
+I will try it and see how it looks!
+
+>> +	spin_unlock(&apr->svcs_lock);
+>> +
+>> +	if (!adrv) {
+>> +		dev_err(apr->dev, "APR: service is not registered\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	data.payload_size = hdr->pkt_size - hdr_size;
+>> +	data.opcode = hdr->opcode;
+>> +	data.src = src;
+>> +	data.src_port = hdr->src_port;
+>> +	data.dest_port = hdr->dest_port;
+>> +	data.token = hdr->token;
+>> +	data.msg_type = msg_type;
+>> +
+>> +	if (data.payload_size > 0)
+>> +		data.payload = (char *)hdr + hdr_size;
+> 
+> Using buf + hdr_size probably makes even more sense, and saves you from
+> the typecast.
+> 
+Agree!
+
+>> +
+>> +	adrv->callback(c_svc, &data);
+>> +
 >> +	return 0;
 >> +}
->> +/**
->> + * q6afe_get_port_id() - Get port id from a given port index
->> + *
->> + * @index: port index
->> + *
->> + * Return: Will be an negative on error or valid port_id on success
->> + */
->> +int q6afe_get_port_id(int index)
+>> +
+>> +static const struct apr_device_id *apr_match(const struct apr_device_id *id,
+>> +					       const struct apr_device *adev)
 >> +{
->> +	if (index < 0 || index > AFE_PORT_MAX)
+>> +	while (id->domain_id != 0 || id->svc_id != 0) {
+>> +		if (id->domain_id == adev->domain_id &&
+>> +		    id->svc_id == adev->svc_id &&
+>> +		    id->client_id == adev->client_id)
+> 
+> Is the client_id significant here? As far as I can tell it's a
+> identifier of the local "function". Are there multiple client drivers
+> that would "attach" to the same remote service?
+
+No. svc id is unique per client id, so it redundant check as you said.
+
+> 
+>> +			return id;
+>> +		id++;
+>> +	}
+>> +	return NULL;
+>> +}
+>> +
+>> +static int apr_device_match(struct device *dev, struct device_driver *drv)
+>> +{
+>> +	struct apr_device *adev = to_apr_device(dev);
+>> +	struct apr_driver *adrv = to_apr_driver(drv);
+>> +
+>> +	return !!apr_match(adrv->id_table, adev);
+> 
+> If this remain the only caller of apr_match() you could just inline the
+> loop here.
+Makes sense.
+> 
+>> +}
+>> +
+>> +static int apr_device_probe(struct device *dev)
+>> +{
+>> +	struct apr_device	*adev;
+>> +	struct apr_driver	*adrv;
+> 
+> You don't indent things elsewhere.
+Yep.
+> 
+>> +	int ret = 0;
+>> +
+>> +	adev = to_apr_device(dev);
+>> +	adrv = to_apr_driver(dev->driver);
+>> +
+>> +	ret = adrv->probe(adev);
+> 
+> Drop ret and just return adrv->probe()
+> 
+yep
+
+>> +
+>> +	return ret;
+>> +}
+>> +
+...
+>> +
+>> +/**
+>> + * apr_add_device() - Add a new apr device
+>> + *
+>> + * @dev: Pointer to apr device.
+>> + * @id: Pointer to apr device id to add.
+>> + *
+>> + * Return: Will be an negative on error or a zero on success.
+>> + */
+>> +int apr_add_device(struct device *dev, const struct apr_device_id *id)
+>> +{
+>> +	struct apr *apr = dev_get_drvdata(dev);
+> 
+> It's not obvious which dev this is, but it has to be the rpmsg device or
+> this would dereference the drvdata of the wrong type and things would be
+> very bad.
+> 
+> How about making this more explicit by just taking a struct apr * as
+> first argument, and then provide a helper for clients to acquire the
+> struct apr * from the parent dev, if this is needed.
+> 
+Yep, that makes it much cleaner, will do it in next version.
+
+>> +	struct apr_device *adev = NULL;
+>> +
+>> +	if (!apr)
 >> +		return -EINVAL;
 >> +
->> +	return port_maps[index].port_id;
->> +}
->> +EXPORT_SYMBOL_GPL(q6afe_get_port_id);
+>> +	adev = kzalloc(sizeof(*adev), GFP_KERNEL);
+>> +	if (!adev)
+>> +		return -ENOMEM;
 >> +
->> +static int afe_apr_send_pkt(struct q6afev2 *afe, void *data,
->> +			    wait_queue_head_t *wait)
+>> +	spin_lock_init(&adev->lock);
+>> +
+>> +	adev->svc_id = id->svc_id;
+>> +	adev->dest_id = apr->dest_id;
+>> +	adev->client_id = id->client_id;
+>> +	adev->domain_id = id->domain_id;
 > 
-> Rather than conditionally passing the wait, split this function in
-> afe_send_sync(*afe, *data, wait) and afe_send_async(*afe, *data).
+> Wouldn't this always be the domain of the apr? (or we're adding a device
+> to the wrong apr)
 > 
-Will do that across other modules too.
+Yes, it is.
+
+>> +	adev->version = id->svc_version;
+>> +
+>> +	adev->dev.bus = &aprbus_type;
+>> +	adev->dev.parent = dev;
+>> +	adev->dev.release = apr_dev_release;
+>> +	adev->dev.driver = NULL;
+>> +
+>> +	dev_set_name(&adev->dev, "apr:%s:%x:%x:%x", id->name, id->domain_id,
+>> +				 id->svc_id, id->client_id);
+>> +
+>> +	spin_lock(&apr->svcs_lock);
+>> +	list_add_tail(&adev->node, &apr->svcs);
+>> +	spin_unlock(&apr->svcs_lock);
+> 
+> This causes svcs to contain entries related to devices that has not been
+> matched and probed yet (e.g. implementation is in a kernel module not
+> loaded). I think you should move this to apr_device_probe().
+> 
+Yep!
+>> +
+>> +	return device_register(&adev->dev);
+>> +}
+>> +EXPORT_SYMBOL_GPL(apr_add_device);
+>> +
+...
+>> +static int apr_v2_get_data_src(struct apr_hdr *hdr)
+>> +{
+>> +	if (hdr->src_domain == APR_DOMAIN_MODEM)
+>> +		return APR_DEST_MODEM;
+>> +	else if (hdr->src_domain == APR_DOMAIN_ADSP)
+>> +		return APR_DEST_QDSP6;
+>> +
+>> +	return APR_DEST_MAX;
+> 
+> The idiomatic return value here would be -EINVAL.
+> 
+yep!, I try it this would also change logic at caller side.
+
+>> +}
+>> +
+>> +/*
+>
+
+>> +
+>> +static const struct apr_data apr_v2_data = {
+>> +	.get_data_src = apr_v2_get_data_src,
+>> +	.dest_id = APR_DEST_QDSP6,
+>> +};
+>> +
+>> +static const struct of_device_id qcom_rpmsg_q6_of_match[] = {
+>> +	{ .compatible = "qcom,apr-msm8996", .data = &apr_v2_data},
+> 
+> The dest_id of apr_v2_data and the use of "q6" in the name indicates
+> that this is the "msm8996 adsp apr", what's your plan to support other
+> apr remotes?
+
+We would need one more entry for modem case, like db410c cases, Will add 
+this as we move on.
+
+> How about making the domain id a property of the apr in DT and then just
+> list the clients as nodes with svc_id, svc_version and client_id? You
+> can still match by device_id (compatible can be optional), but that
+> would allow you to describe either the adsp or modem apr link, of any
+> platform (of that apr version), with the same compatible.
+> 
+
+This will work too!
+
+Current design I had in mind was to get the q6core service up and this 
+can query what AVCS static services are available on remote side and 
+then add apr devices.
+
+If we go with dt approch we might not need q6core driver, but on the 
+other hand we need to be aware of svc major and minor version, which 
+might be specific to the dsp firmware running on. Also we might endup 
+talking on services without querying the dsp state.
+
+May be we should do some offline disussion on this!
+
+
+>> +	{}
+>> +};
+>> +
+>> +static struct rpmsg_driver qcom_rpmsg_q6_driver = {
+>> +	.probe = qcom_rpmsg_q6_probe,
+>> +	.remove = qcom_rpmsg_q6_remove,
+>> +	.callback = qcom_rpmsg_q6_callback,
+>> +	.drv = {
+>> +		.name = "qcom_rpmsg_q6",
+>> +		.owner = THIS_MODULE,
+> 
+> Drop the owner.
+> 
+Yep!
+
+>> +		.of_match_table = qcom_rpmsg_q6_of_match,
+>> +		},
+> 
+> Indentation.
+
+Sure!
+> 
+>> +};
+>> +
+>> +static int __init apr_init(void)
 >> +{
 >> +	int ret;
 >> +
->> +	if (wait)
->> +		afe->state = AFE_CMD_RESP_NONE;
->> +
->> +	afe->status = 0;
->> +	ret = apr_send_pkt(afe->apr, data);
->> +	if (ret > 0) {
+>> +	ret = register_rpmsg_driver(&qcom_rpmsg_q6_driver);
+>> +	if (!ret)
+>> +		return bus_register(&aprbus_type);
 > 
-> Check ret < 0 and return here, this saves you one indentation level in
-> the following chunk.
-> 
-> If you then check !wait and return early you can reduce another level.
->
-okay!
+> Register the bus first, then the rpmsg driver.
 
-
->> +		if (wait) {
->> +			ret = wait_event_timeout(*wait,
->> +						 (afe->state ==
->> +						 AFE_CMD_RESP_AVAIL),
->> +						 msecs_to_jiffies(TIMEOUT_MS));
->> +			if (!ret) {
->> +				ret = -ETIMEDOUT;
->> +			} else if (afe->status > 0) {
->> +				dev_err(afe->dev, "DSP returned error[%s]\n",
->> +				       adsp_err_get_err_str(afe->status));
->> +				ret = adsp_err_get_lnx_err_code(afe->status);
->> +			} else {
->> +				ret = 0;
->> +			}
->> +		} else {
->> +			ret = 0;
->> +		}
->> +	} else {
->> +		dev_err(afe->dev, "packet not transmitted\n");
->> +		ret = -EINVAL;
->> +	}
->> +
->> +	return ret;
->> +}
->> +
->> +static int afe_send_cmd_port_start(struct q6afe_port *port)
->> +{
->> +	u16 port_id = port->id;
->> +	struct afe_port_cmd_device_start start;
->> +	struct q6afev2 *afe = port->afe.v2;
->> +	int ret, index;
->> +
->> +	index = port->token;
->> +	start.hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
->> +					    APR_HDR_LEN(APR_HDR_SIZE),
->> +					    APR_PKT_VER);
->> +	start.hdr.pkt_size = sizeof(start);
->> +	start.hdr.src_port = 0;
->> +	start.hdr.dest_port = 0;
->> +	start.hdr.token = index;
-> 
-> Just put port->token here, saves you a local variable.
-> 
 yep!
 
->> +	start.hdr.opcode = AFE_PORT_CMD_DEVICE_START;
->> +	start.port_id = port_id;
->> +
->> +	ret = afe_apr_send_pkt(afe, &start, &port->wait);
->> +	if (ret)
->> +		dev_err(afe->dev, "AFE enable for port 0x%x failed %d\n",
->> +		       port_id, ret);
+> 
 >> +
 >> +	return ret;
 >> +}
 >> +
->> +static int afe_port_start(struct q6afe_port *port,
->> +			  union afe_port_config *afe_config)
->> +{
->> +	struct afe_audioif_config_command config;
->> +	struct q6afev2 *afe = port->afe.v2;
->> +	int ret = 0;
->> +	int port_id = port->id;
->> +	int cfg_type;
->> +	int index = 0;
->> +
->> +	if (!afe_config) {
-> 
-> Looking at the one caller of this function, afe_config can't be NULL, so
-> no need for this error handling.
-> 
-okay.
+...
 
->> +		dev_err(afe->dev, "Error, no configuration data\n");
->> +		ret = -EINVAL;
->> +		return ret;
->> +	}
+>> diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
+>> index abb6dc2ebbf8..068d215c3be6 100644
+>> --- a/include/linux/mod_devicetable.h
+>> +++ b/include/linux/mod_devicetable.h
+>> @@ -452,6 +452,19 @@ struct spi_device_id {
+>>   	kernel_ulong_t driver_data;	/* Data private to the driver */
+>>   };
+>>   
 >> +
->> +	index = port->token;
->> +
->> +	mutex_lock(&afe->afe_cmd_lock);
->> +	/* Also send the topology id here: */
->> +	config.hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
->> +					     APR_HDR_LEN(APR_HDR_SIZE),
->> +					     APR_PKT_VER);
->> +	config.hdr.pkt_size = sizeof(config);
->> +	config.hdr.src_port = 0;
->> +	config.hdr.dest_port = 0;
->> +	config.hdr.token = index;
->> +
->> +	cfg_type = port->cfg_type;
->> +	config.hdr.opcode = AFE_PORT_CMD_SET_PARAM_V2;
->> +	config.param.port_id = port_id;
->> +	config.param.payload_size = sizeof(config) - sizeof(struct apr_hdr) -
->> +	    sizeof(config.param);
->> +	config.param.payload_address_lsw = 0x00;
->> +	config.param.payload_address_msw = 0x00;
->> +	config.param.mem_map_handle = 0x00;
->> +	config.pdata.module_id = AFE_MODULE_AUDIO_DEV_INTERFACE;
->> +	config.pdata.param_id = cfg_type;
->> +	config.pdata.param_size = sizeof(config.port);
 > 
-> This looks like a good candidate for a afe_port_set_param() function.
-> 
-makes sense.
-
->> +
->> +	config.port = *afe_config;
->> +
->> +	ret = afe_apr_send_pkt(afe, &config, &port->wait);
->> +	if (ret) {
->> +		dev_err(afe->dev, "AFE enable for port 0x%x failed %d\n",
->> +			port_id, ret);
->> +		goto fail_cmd;
->> +	}
->> +
->> +	ret = afe_send_cmd_port_start(port);
->> +
->> +fail_cmd:
->> +	mutex_unlock(&afe->afe_cmd_lock);
->> +	return ret;
->> +}
-> [..]
->> +/**
->> + * q6afe_port_get_from_id() - Get port instance from a port id
->> + *
->> + * @dev: Pointer to afe child device.
->> + * @id: port id
->> + *
->> + * Return: Will be an error pointer on error or a valid afe port
->> + * on success.
->> + */
->> +struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
-> 
-> Will there be any other getter? Otherwise you can just call this
-> q6afe_port_get().
-
-There is one more get, which is basically lookup from index to port number.
+> One newline is enough.
+yep
 
 > 
->> +{
->> +	int port_id;
->> +	struct q6afev2 *afe = dev_get_drvdata(dev->parent);
->> +	struct q6afe_port *port;
->> +	int token;
->> +	int cfg_type;
+>> +#define APR_NAME_SIZE	32
+>> +#define APR_MODULE_PREFIX "apr:"
 >> +
->> +	if (!afe) {
->> +		dev_err(dev, "Unable to find instance of afe service\n");
->> +		return ERR_PTR(-ENOENT);
->> +	}
+>> +struct apr_device_id {
+>> +	char name[APR_NAME_SIZE];
 > 
-> As this comes from the passed dev this check will catch bugs withing
-> this driver, but if the client accidentally passes the wrong dev it's
-> likely that you don't catch it here anyways. Consider dropping the
-> check.
+> Does this name has any meaning? As far as I can see we're matching on
+> the other parameters and use the name only to name the device.
+No, it just to give the device a usefull name.
+> 
+>> +	__u32 domain_id;
+>> +	__u32 svc_id;
+>> +	__u32 client_id;
+>> +	__u32 svc_version;
+>> +	kernel_ulong_t driver_data;	/* Data private to the driver */
+>> +};
+>> +
+>>   #define SPMI_NAME_SIZE	32
+>>   #define SPMI_MODULE_PREFIX "spmi:"
+>>   
+>> diff --git a/include/linux/soc/qcom/apr.h b/include/linux/soc/qcom/apr.h
+>> new file mode 100644
+>> index 000000000000..8620289c34ab
+>> --- /dev/null
+>> +++ b/include/linux/soc/qcom/apr.h
 
-yes!
+...
+
+>> +
+>> +#define APR_DL_SMD    0
+>> +#define APR_DL_MAX    1
+> 
+> Unused.
+will remove it.
+> 
+>> +
+...
+>> +#define APR_HDR_SIZE sizeof(struct apr_hdr)
+>> +#define APR_SEQ_CMD_HDR_FIELD APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD, \
+>> +					    APR_HDR_LEN(APR_HDR_SIZE), \
+>> +					    APR_PKT_VER)
+> 
+> So for the tx path these macros are to be used by the client and for the
+> rx path they are to be used by the apr driver. Better make the api
+> symmetrical.
+Will try that in next version.
 
 > 
->> +
->> +	token = id;
->> +	if (token < 0 || token > AFE_PORT_MAX) {
->> +		dev_err(dev, "AFE port token[%d] invalid!\n", token);
->> +		return ERR_PTR(-EINVAL);
->> +	}
->> +
->> +	port_id = port_maps[id].port_id;
->> +
->> +	port = devm_kzalloc(dev, sizeof(*port), GFP_KERNEL);
->> +	if (!port)
->> +		return ERR_PTR(-ENOMEM);
->> +
->> +	init_waitqueue_head(&port->wait);
->> +
->> +	port->token = token;
->> +	port->id = port_id;
->> +
->> +	port->afe.v2 = afe;
->> +	switch (port_id) {
+> One possible path is to use an sk_buf for the tx-path and reserve space
+> for the header, then pass the abstract version of the packet and let the
+> apr driver fill out the header.
 > 
-> How about moving this switch statement above the allocation?
-> 
+In some cases like q6asm the apr header port numbers are much more 
+specific to the service and they change depening on stream and session 
+ids within the service.
 
-Yes, this can be done!
->> +	case AFE_PORT_ID_MULTICHAN_HDMI_RX:
->> +		cfg_type = AFE_PARAM_ID_HDMI_CONFIG;
->> +		break;
->> +	default:
->> +		dev_err(dev, "Invalid port id 0x%x\n", port_id);
->> +		return ERR_PTR(-EINVAL);
->> +	}
 >> +
->> +	port->cfg_type = cfg_type;
+
+>> +struct apr_client_data {
+> 
+> Perhaps name this apr_client_message or similar, to indicate that this
+> is not a per-client thing, but a description of a message/packet.
+
+make sense, Will change it to apr_client_message.
+> 
+>> +	uint16_t payload_size;
+...
+>> +	void *payload;
+>> +};
 >> +
->> +	spin_lock(&afe->port_list_lock);
->> +	list_add_tail(&port->node, &afe->port_list);
->> +	spin_unlock(&afe->port_list_lock);
->> +
->> +	return port;
->> +
->> +}
->> +EXPORT_SYMBOL_GPL(q6afe_port_get_from_id);
 > 
 > Regards,
 > Bjorn
