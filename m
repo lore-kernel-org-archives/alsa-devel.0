@@ -1,72 +1,90 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 1/9] ASoC: acpi: add missing includes for
-	non-ACPI platforms
-Date: Wed,  3 Jan 2018 10:50:14 -0600
-Message-ID: <20180103165022.4984-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 7/9] ASoC: Intel: boards: align Kconfig configurations for HiFi2
+Date: Wed,  3 Jan 2018 10:50:20 -0600
+Message-ID: <20180103165022.4984-8-pierre-louis.bossart@linux.intel.com>
 References: <20180103165022.4984-1-pierre-louis.bossart@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 042A62676A9
- for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 17:50:40 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180103165022.4984-1-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: arnd@arndb.de, tiwai@suse.de, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com, torvalds@linux-foundation.org
+Cc: tiwai@suse.de, broonie@kernel.org, torvalds@linux-foundation.org, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-0-day reports compilation issues with non-ACPI platforms.
+Make sure all the configs are aligned
+Also add the missing dependencies on SOC_ACPI stuff used to fix
+DAI names based on HID and fix a couple of indentation issues
 
-In file included from sound/soc/soc-acpi.c:17:0:
->> include/sound/soc-acpi.h:36:46: error: 'ACPI_ID_LEN' undeclared here (not in a function); did you mean 'ACPI_FILE'?
-    snd_soc_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN])
-
- sound/soc/soc-acpi.c: At top level:
->> sound/soc/soc-acpi.c:174:16: error: expected declaration specifiers or '...' before string constant
-    MODULE_LICENSE("GPL v2");
-
-Add missing include files.
-
-Fixes: 7feb2f786a46 ("ASoC: move ACPI common code out of Intel/sst tree")
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/soc-acpi-intel-match.h | 1 +
- include/sound/soc-acpi.h             | 1 +
- 2 files changed, 2 insertions(+)
+ sound/soc/intel/boards/Kconfig | 33 +++++++++++++++++++--------------
+ 1 file changed, 19 insertions(+), 14 deletions(-)
 
-diff --git a/include/sound/soc-acpi-intel-match.h b/include/sound/soc-acpi-intel-match.h
-index 1a9191cd4bb3..9da6388c20a1 100644
---- a/include/sound/soc-acpi-intel-match.h
-+++ b/include/sound/soc-acpi-intel-match.h
-@@ -16,6 +16,7 @@
- #ifndef __LINUX_SND_SOC_ACPI_INTEL_MATCH_H
- #define __LINUX_SND_SOC_ACPI_INTEL_MATCH_H
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 358f8f33adc4..08c482cc02f7 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -85,29 +85,32 @@ endif
+ if SND_SST_ATOM_HIFI2_PLATFORM
  
-+#include <linux/module.h>
- #include <linux/stddef.h>
- #include <linux/acpi.h>
+ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+-        tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5640 codec"
+-	depends on X86 && I2C && ACPI
++	tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5640 codec"
++	depends on X86_INTEL_LPSS && I2C && ACPI
++	select SND_SOC_ACPI
+ 	select SND_SOC_RT5640
+ 	help
+-          This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
+-          platforms with RT5640 audio codec.
+-          Say Y or m if you have such a device. This is a recommended option.
+-          If unsure select "N".
++	  This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
++	  platforms with RT5640 audio codec.
++	  Say Y or m if you have such a device. This is a recommended option.
++	  If unsure select "N".
  
-diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
-index a7d8d335b043..a93436089bf5 100644
---- a/include/sound/soc-acpi.h
-+++ b/include/sound/soc-acpi.h
-@@ -17,6 +17,7 @@
+ config SND_SOC_INTEL_BYTCR_RT5651_MACH
+-        tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5651 codec"
+-	depends on X86 && I2C && ACPI
++	tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5651 codec"
++	depends on X86_INTEL_LPSS && I2C && ACPI
++	select SND_SOC_ACPI
+ 	select SND_SOC_RT5651
+ 	help
+-          This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
+-          platforms with RT5651 audio codec.
+-          Say Y or m if you have such a device. This is a recommended option.
+-          If unsure select "N".
++	  This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
++	  platforms with RT5651 audio codec.
++	  Say Y or m if you have such a device. This is a recommended option.
++	  If unsure select "N".
  
- #include <linux/stddef.h>
- #include <linux/acpi.h>
-+#include <linux/mod_devicetable.h>
- 
- struct snd_soc_acpi_package_context {
- 	char *name;           /* package name */
+ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+-        tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5672 codec"
++	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5672 codec"
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
+-        select SND_SOC_RT5670
++	select SND_SOC_ACPI
++	select SND_SOC_RT5670
+         help
+           This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
+           platforms with RT5672 audio codec.
+@@ -117,6 +120,7 @@ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+ config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
+ 	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5645/5650 codec"
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
++	select SND_SOC_ACPI
+ 	select SND_SOC_RT5645
+ 	help
+ 	  This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
+@@ -138,6 +142,7 @@ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
+ config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail with DA7212/7213 codec"
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
++	select SND_SOC_ACPI
+ 	select SND_SOC_DA7213
+ 	help
+ 	  This adds support for ASoC machine driver for Intel(R) Baytrail & CherryTrail
 -- 
 2.14.1
