@@ -1,144 +1,99 @@
-From: Stephen Boyd <sboyd@codeaurora.org>
-Subject: Re: [RESEND PATCH v2 14/15] ASoC: qcom: apq8096: Add db820c machine
- driver
-Date: Wed, 3 Jan 2018 09:20:45 -0800
-Message-ID: <f72f32dd-e248-47c3-23cc-eabe1b85d9ae@codeaurora.org>
-References: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
- <20171214173402.19074-15-srinivas.kandagatla@linaro.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rcar: tidyup simple-card example for
+	CPU node" to the asoc tree
+Date: Wed, 03 Jan 2018 17:43:47 +0000
+Message-ID: <E1eWn4t-0005mU-27@debutante>
+References: <873743nxuj.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <20171214173402.19074-15-srinivas.kandagatla@linaro.org>
-Content-Language: en-US
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: srinivas.kandagatla@linaro.org, Andy Gross <andy.gross@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: David Brown <david.brown@linaro.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9129B2676A9
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 18:43:53 +0100 (CET)
+In-Reply-To: <873743nxuj.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Simon <horms@verge.net.au>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, "Yokoyama (Renesas)" <hiroyuki.yokoyama.vx@renesas.com>, Geert Uytterhoeven <geert+renesas@glider.be>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/14/2017 09:34 AM, srinivas.kandagatla@linaro.org wrote:
-> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->
-> uThis patch adds support to DB820c machine driver.
->
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  sound/soc/qcom/Kconfig   |   9 +++-
->  sound/soc/qcom/apq8096.c | 124 +++++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 132 insertions(+), 1 deletion(-)
->  create mode 100644 sound/soc/qcom/apq8096.c
->
-> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-> index ecd1e4ba834d..748ccc3edefa 100644
-> --- a/sound/soc/qcom/Kconfig
-> +++ b/sound/soc/qcom/Kconfig
-> @@ -72,7 +72,6 @@ config SND_SOC_QDSP6_ASM_DAI
->  	tristate
->  	default n
->  
-> -
->  config SND_SOC_QDSP6
->  	tristate "SoC ALSA audio driver for QDSP6"
->  	select SND_SOC_QDSP6_AFE
-> @@ -87,3 +86,11 @@ config SND_SOC_QDSP6
->  	 This will enable sound soc platform specific
->  	 audio drivers. This includes q6asm, q6adm,
->  	 q6afe interfaces to DSP using apr.
-> +
-> +config SND_SOC_MSM8996
-> +	tristate "SoC Machine driver for MSM8996 and APQ8096 boards"
-> +	select SND_SOC_QDSP6V2
-> +	default n
-> +	help
-> +	 To add support for SoC audio on MSM8996 and APQ8096 boards
-> +
-> diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
-> new file mode 100644
-> index 000000000000..5b2036317f71
-> --- /dev/null
-> +++ b/sound/soc/qcom/apq8096.c
-> @@ -0,0 +1,124 @@
-> +/*
-> + * Copyright (c) 2017 The Linux Foundation. All rights reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 and
-> + * only version 2 as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + */
-> +#include <linux/clk.h>
+The patch
 
-No clk usage though?
+   ASoC: rcar: tidyup simple-card example for CPU node
 
-> +#include <linux/platform_device.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <sound/soc.h>
-[...]
-> +static struct snd_soc_dai_link msm8996_dai_links[] = {
-> +	/* FrontEnd DAI Links */
-> +	{
-> +		.name		= "MultiMedia1 Playback",
-> +		.stream_name	= "MultiMedia1",
-> +		.cpu_dai_name	= "MM_DL1",
-> +		.platform_name	= "q6asm_dai",
-> +		.dynamic	= 1,
-> +		.dpcm_playback	= 1,
-> +
-> +		.codec_dai_name	= "snd-soc-dummy-dai",
-> +		.codec_name = "snd-soc-dummy",
-> +	},
-> +	/* Backend DAI Links */
-> +	{
-> +		.name		= "HDMI Playback",
-> +		.stream_name	= "q6afe_dai",
-> +		.cpu_dai_name	= "HDMI",
-> +		.platform_name	= "q6routing",
-> +		.no_pcm		= 1,
-> +		.dpcm_playback	= 1,
-> +		.be_hw_params_fixup = msm8996_be_hw_params_fixup,
-> +		.codec_dai_name	= "i2s-hifi",
-> +		.codec_name = "hdmi-audio-codec.0.auto",
-> +	},
-> +};
-> +
-> +static int apq8096_sbc_parse_of(struct snd_soc_card *card)
-> +{
-> +	struct device *dev = card->dev;
-> +	int ret;
-> +
-> +	ret = snd_soc_of_parse_card_name(card, "qcom,model");
-> +	if (ret)
-> +		dev_err(dev, "Error parsing card name: %d\n", ret);
+has been applied to the asoc tree at
 
-So this prints an error, and the caller also prints an error when it
-fails. Double error messages?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> +
-> +	return ret;
-> +}
-> +
-> +static int msm_snd_apq8096_probe(struct platform_device *pdev)
-> +{
-> +	int ret;
-> +	struct snd_soc_card *card;
-> +
-> +	card = devm_kzalloc(&pdev->dev, sizeof(*card), GFP_KERNEL);
-> +	if (!card)
-> +		return -ENOMEM;
-> +
-> +	card->dev = &pdev->dev;
-> +
-> +	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Why do we need to do this? Can you add some sort of comment in the code
-about why?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 2ca69d73bc05a55edb95689d436ce87974a3162e Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 22 Dec 2017 05:29:03 +0000
+Subject: [PATCH] ASoC: rcar: tidyup simple-card example for CPU node
+
+commit a5702e1cb3c ("ASoC: rsnd: Drop unit-addresses without reg
+properties") modifies simple-card multi CPU nodes.
+But, naming of "cpu-x" breaks probing.
+Let's add reg = <x>; instead of renaming node.
+
+Reported-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+CC: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index b3c28bdcc268..5bed9a595772 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -197,12 +197,17 @@ Ex)
+ 	[MEM] -> [SRC2] -> [CTU03] -+
+ 
+ 	sound {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
+ 		compatible = "simple-scu-audio-card";
+ 		...
+-		simple-audio-card,cpu-0 {
++		simple-audio-card,cpu@0 {
++			reg = <0>;
+ 			sound-dai = <&rcar_sound 0>;
+ 		};
+-		simple-audio-card,cpu-1 {
++		simple-audio-card,cpu@1 {
++			reg = <1>;
+ 			sound-dai = <&rcar_sound 1>;
+ 		};
+ 		simple-audio-card,codec {
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.15.1
