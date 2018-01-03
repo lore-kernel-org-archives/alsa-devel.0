@@ -1,84 +1,36 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 4/9] ASoC: Intel: document what Kconfig
-	options do
-Date: Wed,  3 Jan 2018 10:50:17 -0600
-Message-ID: <20180103165022.4984-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 6/9] ASoC: Intel: boards: align Kconfig dependencies for Haswell/Broadwell
+Date: Wed,  3 Jan 2018 10:50:19 -0600
+Message-ID: <20180103165022.4984-7-pierre-louis.bossart@linux.intel.com>
 References: <20180103165022.4984-1-pierre-louis.bossart@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id DE8912676A9
- for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 17:50:42 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180103165022.4984-1-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: arnd@arndb.de, tiwai@suse.de, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com, torvalds@linux-foundation.org
+Cc: tiwai@suse.de, broonie@kernel.org, torvalds@linux-foundation.org, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Document in comments what the options are supposed to mean, before
-clean-up in next patch.
-
-No functionality change here.
+Make sure that the same I2C/I2C_DESIGNWARE_PLATFORM are selected.
+The latter might actually need to be moved to the SOC side of things,
+it really has no place in a machine driver dependency
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/Kconfig | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 16374576cb6e..01b75df6b118 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -16,16 +16,27 @@ if SND_SOC_INTEL_SST_TOPLEVEL
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index e926f9747232..358f8f33adc4 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -40,7 +40,7 @@ config SND_SOC_INTEL_HASWELL_MACH
  
- config SND_SST_IPC
- 	tristate
-+	# This option controls the IPC core for HiFi2 platforms
- 
- config SND_SST_IPC_PCI
- 	tristate
- 	select SND_SST_IPC
-+	# This option controls the PCI-based IPC for HiFi2 platforms
-+	#  (Medfield, Merrifield).
- 
- config SND_SST_IPC_ACPI
- 	tristate
- 	select SND_SST_IPC
- 	select SND_SOC_INTEL_SST
- 	select IOSF_MBI
-+	# This option controls the ACPI-based IPC for HiFi2 platforms
-+	# (Baytrail, Cherrytrail)
-+
-+config SND_SOC_INTEL_SST_ACPI
-+	tristate
-+	# This option controls ACPI-based probing on
-+	# Haswell/Broadwell/Baytrail legacy and will be set
-+	# when these platforms are enabled
- 
- config SND_SOC_INTEL_SST
- 	tristate
-@@ -34,9 +45,9 @@ config SND_SOC_INTEL_SST
- config SND_SOC_INTEL_SST_FIRMWARE
- 	tristate
- 	select DW_DMAC_CORE
--
--config SND_SOC_INTEL_SST_ACPI
--	tristate
-+	# This option controls firmware download on
-+	# Haswell/Broadwell/Baytrail legacy and will be set
-+	# when these platforms are enabled
- 
- config SND_SOC_INTEL_HASWELL
- 	tristate "Intel ASoC SST driver for Haswell/Broadwell"
+ config SND_SOC_INTEL_BDW_RT5677_MACH
+ 	tristate "ASoC Audio driver for Intel Broadwell with RT5677 codec"
+-	depends on X86_INTEL_LPSS && GPIOLIB && I2C
++	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM && GPIOLIB
+ 	select SND_SOC_RT5677
+ 	help
+ 	  This adds support for Intel Broadwell platform based boards with
 -- 
 2.14.1
