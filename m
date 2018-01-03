@@ -1,22 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/6] ASoC: rt5645: change micbias widget
-	type to supply.
-Date: Wed, 3 Jan 2018 11:36:27 +0000
-Message-ID: <20180103113627.GC5603@sirena.org.uk>
-References: <20180102185314.17189-1-hdegoede@redhat.com>
- <20180102185314.17189-2-hdegoede@redhat.com>
- <20180103105053.GA5603@sirena.org.uk>
- <f2b24e22-6e4c-cd9d-e6c1-e9546d98b8c4@redhat.com>
- <20180103112844.GB5603@sirena.org.uk>
- <e3e481ba-f47b-5272-57c0-5f90eb1f4432@redhat.com>
+Subject: Re: [PATCH v6 1/6] ASoC: Intel: Skylake: Add ssp clock
+ driver
+Date: Wed, 3 Jan 2018 11:42:45 +0000
+Message-ID: <20180103114245.GE5603@sirena.org.uk>
+References: <1514306696-7062-1-git-send-email-sriramx.periyasamy@intel.com>
+ <1514306696-7062-2-git-send-email-sriramx.periyasamy@intel.com>
+ <20180102233929.GO7997@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8643827507300283574=="
+Content-Type: multipart/mixed; boundary="===============2358703787936831249=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 705E62668F0
- for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 12:36:31 +0100 (CET)
-In-Reply-To: <e3e481ba-f47b-5272-57c0-5f90eb1f4432@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1030E2668F0
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 12:42:57 +0100 (CET)
+In-Reply-To: <20180102233929.GO7997@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,53 +23,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+To: Stephen Boyd <sboyd@codeaurora.org>
+Cc: ALSA ML <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, mturquette@baylibre.com, Patches Audi o <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, linux-clk@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8643827507300283574==
+--===============2358703787936831249==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="f+W+jCU1fRNres8c"
+	protocol="application/pgp-signature"; boundary="tMbDGjvJuJijemkf"
 Content-Disposition: inline
 
 
---f+W+jCU1fRNres8c
+--tMbDGjvJuJijemkf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jan 03, 2018 at 12:32:51PM +0100, Hans de Goede wrote:
+On Tue, Jan 02, 2018 at 03:39:29PM -0800, Stephen Boyd wrote:
+> On 12/26, Sriram Periyasamy wrote:
 
-> > This analysis
-> > needs to be in the changelog.
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +// Copyright(c) 2015-17 Intel Corporation
 
-> Ok I will send a v2 with the changelog ammended any comments for
-> the rest of the series?
+> Does this also go into the // part? I thought just the tag was
+> with // comment style.
 
-Please allow a few minutes...
+Only the tag *needs* to be in the C++ style but Linus indicated a desire
+for wider use of C++ comments and it looks ugly to have one line of C++
+comment right next to a big block of C comment so other maintainers have
+been asking for consistency.
 
---f+W+jCU1fRNres8c
+--tMbDGjvJuJijemkf
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpMwDoACgkQJNaLcl1U
-h9AY0Af/TNTewk17Ml8UXNI5L0xo+I2DpVKvSjPkfdz90VJZ/nHlavK88L32j6df
-Rt5UgQ+HIINU2O7dY5kLK9yvnhEd2hu5tDkPgwXT/JYyXBMva6/CzzXs8HsPYJAl
-00UFlYF/oQHnD8IbzunA3Igm/eRd6x/cx3/ps7bHJxWUizY+QBp2a2AxFe/EvkvB
-OLyq3G7yUZo2/P7PNbyDt4F/sf+DD+JPMBXk5MkXKnJCIlCQsBmefVwfzj6+rs7G
-M2hL31labPWLs8w8rzal2y6dKJyvk+SNbNXypVthRON2bDD07nS2g91fj3n/KTIP
-YNpVkbz2YxFhqPKVwkwIg+FYrqeRSw==
-=Qu+4
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpMwbUACgkQJNaLcl1U
+h9C1iQf/aYT5dz3HpuKyIRmSIPK9tNmbg/j7On3tRqIwPRRS6f54YdF3nMRL+Ox7
+XRgUp1K5nt9g5eFngXxjX8WLvh4b4VaAPi5EjSGRaJK3v1hO4CIPyAnPe4KABWyv
+3rUshhVMxc7hPiHPPYmrYjAr23vhy07Az2at5QSvxU9gD54ayGBYi2tx3AzT29eG
+ZAGeyYHAH+zhVRN44PYddgYQaO6049i5Aw4f8hXJGTUkKCdzxr4ctImR01Ycsnk+
+BcPyzNRL2cAsTeaiwLzfttJdJsV6unsW/hpOdjqH5rnd8/d2Co9+8UJn3P5r5Zb7
+XGLOhyS7chgEg5DzQlSzTGm7QrwmVg==
+=yUja
 -----END PGP SIGNATURE-----
 
---f+W+jCU1fRNres8c--
+--tMbDGjvJuJijemkf--
 
---===============8643827507300283574==
+--===============2358703787936831249==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8643827507300283574==--
+--===============2358703787936831249==--
