@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: set in2_diff flag for GPD win
-	and pocket devices" to the asoc tree
-Date: Wed, 03 Jan 2018 12:13:01 +0000
-Message-ID: <E1eWhun-0001dX-HS@debutante>
-References: <20180102185314.17189-4-hdegoede@redhat.com>
+Subject: Applied "ASoC: Intel: Skylake: Disable clock gating
+	during firmware and library download" to the asoc tree
+Date: Wed, 03 Jan 2018 12:12:47 +0000
+Message-ID: <E1eWhuZ-0001Zy-TN@debutante>
+References: <20180102092957.14091-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DAC89267610
- for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 13:13:05 +0100 (CET)
-In-Reply-To: <20180102185314.17189-4-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DA63E2675F5
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 13:13:01 +0100 (CET)
+In-Reply-To: <20180102092957.14091-1-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+To: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: set in2_diff flag for GPD win and pocket devices
+   ASoC: Intel: Skylake: Disable clock gating during firmware and library download
 
 has been applied to the asoc tree at
 
@@ -53,38 +53,59 @@ to this mail.
 Thanks,
 Mark
 
->From 2dc6e1a4883a3eba451c76b726c23a580ed05307 Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Tue, 2 Jan 2018 19:53:11 +0100
-Subject: [PATCH] ASoC: rt5645: set in2_diff flag for GPD win and pocket
- devices
+>From d5cc0a1fcbb5ddbef9fdd4c4a978da3254ddbf37 Mon Sep 17 00:00:00 2001
+From: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+Date: Tue, 2 Jan 2018 14:59:57 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Disable clock gating during firmware
+ and library download
 
-The GPD pocket has a differential signal microphone and needs in2_diff
-to be set to avoid getting a very noisy signal.
+During firmware and library download, sometimes it is observed that
+firmware and library download is timed-out resulting into probe failure.
 
-Since the GPD pocket and win use the same DMI strings, they share their
-platform data-definition, so enabling in2_diff on the pocket also sets
-it on the GPD win. The GPD win has a normal microphone, but setting
-in2_diff there does not negatively impact the sound from the microphone.
+This patch disables dynamic clock gating while firmware and library
+download.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/intel/skylake/skl-messages.c | 4 ++++
+ sound/soc/intel/skylake/skl-pcm.c      | 4 ++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index a1a7bb770745..6dd894c9f355 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3628,6 +3628,8 @@ static const struct rt5645_platform_data gpd_win_platform_data = {
- 	.jd_mode = 3,
- 	.inv_jd1_1 = true,
- 	.long_name = "gpd-win-pocket-rt5645",
-+	/* The GPD pocket has a diff. mic, for the win this does not matter. */
-+	.in2_diff = true,
- };
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 4e63213a8d55..933c1fbb222f 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -417,7 +417,11 @@ int skl_resume_dsp(struct skl *skl)
+ 	if (skl->skl_sst->is_first_boot == true)
+ 		return 0;
  
- static const struct dmi_system_id dmi_platform_gpd_win[] = {
++	/* disable dynamic clock gating during fw and lib download */
++	ctx->enable_miscbdcge(ctx->dev, false);
++
+ 	ret = skl_dsp_wake(ctx->dsp);
++	ctx->enable_miscbdcge(ctx->dev, true);
+ 	if (ret < 0)
+ 		return ret;
+ 
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index cc6535ab84d1..b45a9cd5f058 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1342,7 +1342,11 @@ static int skl_platform_soc_probe(struct snd_soc_platform *platform)
+ 			return -EIO;
+ 		}
+ 
++		/* disable dynamic clock gating during fw and lib download */
++		skl->skl_sst->enable_miscbdcge(platform->dev, false);
++
+ 		ret = ops->init_fw(platform->dev, skl->skl_sst);
++		skl->skl_sst->enable_miscbdcge(platform->dev, true);
+ 		if (ret < 0) {
+ 			dev_err(platform->dev, "Failed to boot first fw: %d\n", ret);
+ 			return ret;
 -- 
 2.15.1
