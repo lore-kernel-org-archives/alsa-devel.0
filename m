@@ -1,236 +1,142 @@
-From: Ryder Lee <ryder.lee@mediatek.com>
-Subject: [PATCH v1 3/6] ASoC: mediatek: update MT2701 AFE
-	documentation to adapt mfd device
-Date: Thu, 4 Jan 2018 15:44:09 +0800
-Message-ID: <a716adbb734cefd8e8ea614a2e4686af8204490e.1515038387.git.ryder.lee@mediatek.com>
-References: <cover.1515038387.git.ryder.lee@mediatek.com>
+From: Christophe LEROY <christophe.leroy@c-s.fr>
+Subject: Re: [PATCH v3 00/27] kill devm_ioremap_nocache
+Date: Thu, 4 Jan 2018 09:05:45 +0100
+Message-ID: <1eb206ed-95e9-5839-485d-0e549ff3f505@c-s.fr>
+References: <1514026525-32538-1-git-send-email-xieyisheng1@huawei.com>
+ <20171223134831.GB10103@kroah.com>
+ <b8ff7f17-7f2c-f220-9833-7ae5bd7343d5@c-s.fr>
+ <8dd19411-5b06-0aa4-fd0e-e5b112c25dcb@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F7E02677F6
- for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 08:44:21 +0100 (CET)
-In-Reply-To: <cover.1515038387.git.ryder.lee@mediatek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Ryder Lee <ryder.lee@mediatek.com>, Garlic Tseng <garlic.tseng@mediatek.com>, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-ide-owner@vger.kernel.org>
+In-Reply-To: <8dd19411-5b06-0aa4-fd0e-e5b112c25dcb@huawei.com>
+Content-Language: fr
+Sender: linux-ide-owner@vger.kernel.org
+To: Yisheng Xie <xieyisheng1@huawei.com>, Greg KH <gregkh@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org, ysxie@foxmail.com, ulf.hansson@linaro.org, linux-mmc@vger.kernel.org, boris.brezillon@free-electrons.com, richard@nod.at, marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org, alsa-devel@alsa-project.org, wim@iguana.be, linux@roeck-us.net, linux-watchdog@vger.kernel.org, b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org, linus.walleij@linaro.org, linux-gpio@vger.kernel.org, ralf@linux-mips.org, linux-mips@linux-mips.org, lgirdwood@gmail.com, broonie@kernel.org, tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, arnd@arndb.de, andriy.shevchenko@linux.intel.com, industrypack-devel@lists.sourceforge.net, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, mchehab@kernel.org, linux-media@vg
 List-Id: alsa-devel@alsa-project.org
 
-As the new MFD parent is in place, modify MT2701 AFE documentation to
-adapt it. Also add three core clocks in example.
 
-Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
----
- .../devicetree/bindings/sound/mt2701-afe-pcm.txt   | 171 +++++++++++----------
- 1 file changed, 93 insertions(+), 78 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt b/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
-index 0450baa..12f147b 100644
---- a/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
-+++ b/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
-@@ -2,15 +2,17 @@ Mediatek AFE PCM controller for mt2701
- 
- Required properties:
- - compatible = "mediatek,mt2701-audio";
--- reg: register location and size
- - interrupts: should contain AFE and ASYS interrupts
- - interrupt-names: should be "afe" and "asys"
- - power-domains: should define the power domain
- - clocks: Must contain an entry for each entry in clock-names
-   See ../clocks/clock-bindings.txt for details
- - clock-names: should have these clock names:
-+		"infra_sys_audio_clk",
- 		"top_audio_mux1_sel",
- 		"top_audio_mux2_sel",
-+		"top_audio_a1sys_hp",
-+		"top_audio_a2sys_hp",
- 		"i2s0_src_sel",
- 		"i2s1_src_sel",
- 		"i2s2_src_sel",
-@@ -45,85 +47,98 @@ Required properties:
- - assigned-clocks-parents: parent of input clocks of assigned clocks.
- - assigned-clock-rates: list of clock frequencies of assigned clocks.
- 
-+Must be a subnode of MediaTek audsys device tree node.
-+See ../arm/mediatek/mediatek,audsys.txt for details about the parent node.
-+
- Example:
- 
--	afe: mt2701-afe-pcm@11220000 {
--		compatible = "mediatek,mt2701-audio";
--		reg = <0 0x11220000 0 0x2000>,
--		      <0 0x112A0000 0 0x20000>;
--		interrupts = <GIC_SPI 104 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 132 IRQ_TYPE_LEVEL_LOW>;
--		interrupt-names	= "afe", "asys";
--		power-domains = <&scpsys MT2701_POWER_DOMAIN_IFR_MSC>;
--		clocks = <&topckgen CLK_TOP_AUD_MUX1_SEL>,
--			 <&topckgen CLK_TOP_AUD_MUX2_SEL>,
--			 <&topckgen CLK_TOP_AUD_K1_SRC_SEL>,
--			 <&topckgen CLK_TOP_AUD_K2_SRC_SEL>,
--			 <&topckgen CLK_TOP_AUD_K3_SRC_SEL>,
--			 <&topckgen CLK_TOP_AUD_K4_SRC_SEL>,
--			 <&topckgen CLK_TOP_AUD_K1_SRC_DIV>,
--			 <&topckgen CLK_TOP_AUD_K2_SRC_DIV>,
--			 <&topckgen CLK_TOP_AUD_K3_SRC_DIV>,
--			 <&topckgen CLK_TOP_AUD_K4_SRC_DIV>,
--			 <&topckgen CLK_TOP_AUD_I2S1_MCLK>,
--			 <&topckgen CLK_TOP_AUD_I2S2_MCLK>,
--			 <&topckgen CLK_TOP_AUD_I2S3_MCLK>,
--			 <&topckgen CLK_TOP_AUD_I2S4_MCLK>,
--			 <&audiosys CLK_AUD_I2SO1>,
--			 <&audiosys CLK_AUD_I2SO2>,
--			 <&audiosys CLK_AUD_I2SO3>,
--			 <&audiosys CLK_AUD_I2SO4>,
--			 <&audiosys CLK_AUD_I2SIN1>,
--			 <&audiosys CLK_AUD_I2SIN2>,
--			 <&audiosys CLK_AUD_I2SIN3>,
--			 <&audiosys CLK_AUD_I2SIN4>,
--			 <&audiosys CLK_AUD_ASRCO1>,
--			 <&audiosys CLK_AUD_ASRCO2>,
--			 <&audiosys CLK_AUD_ASRCO3>,
--			 <&audiosys CLK_AUD_ASRCO4>,
--			 <&audiosys CLK_AUD_AFE>,
--			 <&audiosys CLK_AUD_AFE_CONN>,
--			 <&audiosys CLK_AUD_A1SYS>,
--			 <&audiosys CLK_AUD_A2SYS>,
--			 <&audiosys CLK_AUD_AFE_MRGIF>;
-+	audsys: audio-subsystem@11220000 {
-+		compatible = "mediatek,mt2701-audsys", "syscon", "simple-mfd";
-+		...
-+
-+		afe: audio-controller {
-+			compatible = "mediatek,mt2701-audio";
-+			interrupts =  <GIC_SPI 104 IRQ_TYPE_LEVEL_LOW>,
-+				      <GIC_SPI 132 IRQ_TYPE_LEVEL_LOW>;
-+			interrupt-names	= "afe", "asys";
-+			power-domains = <&scpsys MT2701_POWER_DOMAIN_IFR_MSC>;
-+
-+			clocks = <&infracfg CLK_INFRA_AUDIO>,
-+				 <&topckgen CLK_TOP_AUD_MUX1_SEL>,
-+				 <&topckgen CLK_TOP_AUD_MUX2_SEL>,
-+				 <&topckgen CLK_TOP_AUD_48K_TIMING>,
-+				 <&topckgen CLK_TOP_AUD_44K_TIMING>,
-+				 <&topckgen CLK_TOP_AUD_K1_SRC_SEL>,
-+				 <&topckgen CLK_TOP_AUD_K2_SRC_SEL>,
-+				 <&topckgen CLK_TOP_AUD_K3_SRC_SEL>,
-+				 <&topckgen CLK_TOP_AUD_K4_SRC_SEL>,
-+				 <&topckgen CLK_TOP_AUD_K1_SRC_DIV>,
-+				 <&topckgen CLK_TOP_AUD_K2_SRC_DIV>,
-+				 <&topckgen CLK_TOP_AUD_K3_SRC_DIV>,
-+				 <&topckgen CLK_TOP_AUD_K4_SRC_DIV>,
-+				 <&topckgen CLK_TOP_AUD_I2S1_MCLK>,
-+				 <&topckgen CLK_TOP_AUD_I2S2_MCLK>,
-+				 <&topckgen CLK_TOP_AUD_I2S3_MCLK>,
-+				 <&topckgen CLK_TOP_AUD_I2S4_MCLK>,
-+				 <&audsys CLK_AUD_I2SO1>,
-+				 <&audsys CLK_AUD_I2SO2>,
-+				 <&audsys CLK_AUD_I2SO3>,
-+				 <&audsys CLK_AUD_I2SO4>,
-+				 <&audsys CLK_AUD_I2SIN1>,
-+				 <&audsys CLK_AUD_I2SIN2>,
-+				 <&audsys CLK_AUD_I2SIN3>,
-+				 <&audsys CLK_AUD_I2SIN4>,
-+				 <&audsys CLK_AUD_ASRCO1>,
-+				 <&audsys CLK_AUD_ASRCO2>,
-+				 <&audsys CLK_AUD_ASRCO3>,
-+				 <&audsys CLK_AUD_ASRCO4>,
-+				 <&audsys CLK_AUD_AFE>,
-+				 <&audsys CLK_AUD_AFE_CONN>,
-+				 <&audsys CLK_AUD_A1SYS>,
-+				 <&audsys CLK_AUD_A2SYS>,
-+				 <&audsys CLK_AUD_AFE_MRGIF>;
- 
--		clock-names = "top_audio_mux1_sel",
--			      "top_audio_mux2_sel",
--			      "i2s0_src_sel",
--			      "i2s1_src_sel",
--			      "i2s2_src_sel",
--			      "i2s3_src_sel",
--			      "i2s0_src_div",
--			      "i2s1_src_div",
--			      "i2s2_src_div",
--			      "i2s3_src_div",
--			      "i2s0_mclk_en",
--			      "i2s1_mclk_en",
--			      "i2s2_mclk_en",
--			      "i2s3_mclk_en",
--			      "i2so0_hop_ck",
--			      "i2so1_hop_ck",
--			      "i2so2_hop_ck",
--			      "i2so3_hop_ck",
--			      "i2si0_hop_ck",
--			      "i2si1_hop_ck",
--			      "i2si2_hop_ck",
--			      "i2si3_hop_ck",
--			      "asrc0_out_ck",
--			      "asrc1_out_ck",
--			      "asrc2_out_ck",
--			      "asrc3_out_ck",
--			      "audio_afe_pd",
--			      "audio_afe_conn_pd",
--			      "audio_a1sys_pd",
--			      "audio_a2sys_pd",
--			      "audio_mrgif_pd";
-+			clock-names = "infra_sys_audio_clk",
-+				      "top_audio_mux1_sel",
-+				      "top_audio_mux2_sel",
-+				      "top_audio_a1sys_hp",
-+				      "top_audio_a2sys_hp",
-+				      "i2s0_src_sel",
-+				      "i2s1_src_sel",
-+				      "i2s2_src_sel",
-+				      "i2s3_src_sel",
-+				      "i2s0_src_div",
-+				      "i2s1_src_div",
-+				      "i2s2_src_div",
-+				      "i2s3_src_div",
-+				      "i2s0_mclk_en",
-+				      "i2s1_mclk_en",
-+				      "i2s2_mclk_en",
-+				      "i2s3_mclk_en",
-+				      "i2so0_hop_ck",
-+				      "i2so1_hop_ck",
-+				      "i2so2_hop_ck",
-+				      "i2so3_hop_ck",
-+				      "i2si0_hop_ck",
-+				      "i2si1_hop_ck",
-+				      "i2si2_hop_ck",
-+				      "i2si3_hop_ck",
-+				      "asrc0_out_ck",
-+				      "asrc1_out_ck",
-+				      "asrc2_out_ck",
-+				      "asrc3_out_ck",
-+				      "audio_afe_pd",
-+				      "audio_afe_conn_pd",
-+				      "audio_a1sys_pd",
-+				      "audio_a2sys_pd",
-+				      "audio_mrgif_pd";
- 
--		assigned-clocks = <&topckgen CLK_TOP_AUD_MUX1_SEL>,
--				  <&topckgen CLK_TOP_AUD_MUX2_SEL>,
--				  <&topckgen CLK_TOP_AUD_MUX1_DIV>,
--				  <&topckgen CLK_TOP_AUD_MUX2_DIV>;
--		assigned-clock-parents = <&topckgen CLK_TOP_AUD1PLL_98M>,
--					 <&topckgen CLK_TOP_AUD2PLL_90M>;
--		assigned-clock-rates = <0>, <0>, <49152000>, <45158400>;
-+			assigned-clocks = <&topckgen CLK_TOP_AUD_MUX1_SEL>,
-+					  <&topckgen CLK_TOP_AUD_MUX2_SEL>,
-+					  <&topckgen CLK_TOP_AUD_MUX1_DIV>,
-+					  <&topckgen CLK_TOP_AUD_MUX2_DIV>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_AUD1PLL_98M>,
-+						 <&topckgen CLK_TOP_AUD2PLL_90M>;
-+			assigned-clock-rates = <0>, <0>, <49152000>, <45158400>;
-+		};
- 	};
--- 
-1.9.1
+Le 25/12/2017 à 02:34, Yisheng Xie a écrit :
+> 
+> 
+> On 2017/12/24 17:05, christophe leroy wrote:
+>>
+>>
+>> Le 23/12/2017 à 14:48, Greg KH a écrit :
+>>> On Sat, Dec 23, 2017 at 06:55:25PM +0800, Yisheng Xie wrote:
+>>>> Hi all,
+>>>>
+>>>> When I tried to use devm_ioremap function and review related code, I found
+>>>> devm_ioremap and devm_ioremap_nocache is almost the same with each other,
+>>>> except one use ioremap while the other use ioremap_nocache.
+>>>
+>>> For all arches?  Really?  Look at MIPS, and x86, they have different
+>>> functions.
+>>>
+>>>> While ioremap's
+>>>> default function is ioremap_nocache, so devm_ioremap_nocache also have the
+>>>> same function with devm_ioremap, which can just be killed to reduce the size
+>>>> of devres.o(from 20304 bytes to 18992 bytes in my compile environment).
+>>>>
+>>>> I have posted two versions, which use macro instead of function for
+>>>> devm_ioremap_nocache[1] or devm_ioremap[2]. And Greg suggest me to kill
+>>>> devm_ioremap_nocache for no need to keep a macro around for the duplicate
+>>>> thing. So here comes v3 and please help to review.
+>>>
+>>> I don't think this can be done, what am I missing?  These functions are
+>>> not identical, sorry for missing that before.
+>>
+>> devm_ioremap() and devm_ioremap_nocache() are quite similar, both use devm_ioremap_release() for the release, why not just defining:
+>>
+>> static void __iomem *__devm_ioremap(struct device *dev, resource_size_t offset,
+>>                 resource_size_t size, bool nocache)
+>> {
+>> [...]
+>>      if (nocache)
+>>          addr = ioremap_nocache(offset, size);
+>>      else
+>>          addr = ioremap(offset, size);
+>> [...]
+>> }
+>>
+>> then in include/linux/io.h
+>>
+>> static inline void __iomem *devm_ioremap(struct device *dev, resource_size_t offset,
+>>                 resource_size_t size)
+>> {return __devm_ioremap(dev, offset, size, false);}
+>>
+>> static inline void __iomem *devm_ioremap_nocache(struct device *dev, resource_size_t offset,
+>>                     resource_size_t size);
+>> {return __devm_ioremap(dev, offset, size, true);}
+> 
+> Yeah, this seems good to me, right now we have devm_ioremap, devm_ioremap_wc, devm_ioremap_nocache
+> May be we can use an enum like:
+> typedef enum {
+> 	DEVM_IOREMAP = 0,
+> 	DEVM_IOREMAP_NOCACHE,
+> 	DEVM_IOREMAP_WC,
+> } devm_ioremap_type;
+> 
+> static inline void __iomem *devm_ioremap(struct device *dev, resource_size_t offset,
+>                  resource_size_t size)
+>   {return __devm_ioremap(dev, offset, size, DEVM_IOREMAP);}
+> 
+>   static inline void __iomem *devm_ioremap_nocache(struct device *dev, resource_size_t offset,
+>                      resource_size_t size);
+>   {return __devm_ioremap(dev, offset, size, DEVM_IOREMAP_NOCACHE);}
+> 
+>   static inline void __iomem *devm_ioremap_wc(struct device *dev, resource_size_t offset,
+>                      resource_size_t size);
+>   {return __devm_ioremap(dev, offset, size, DEVM_IOREMAP_WC);}
+> 
+>   static void __iomem *__devm_ioremap(struct device *dev, resource_size_t offset,
+>                  resource_size_t size, devm_ioremap_type type)
+>   {
+>       void __iomem **ptr, *addr = NULL;
+>   [...]
+>       switch (type){
+>       case DEVM_IOREMAP:
+>           addr = ioremap(offset, size);
+>           break;
+>       case DEVM_IOREMAP_NOCACHE:
+>           addr = ioremap_nocache(offset, size);
+>           break;
+>       case DEVM_IOREMAP_WC:
+>           addr = ioremap_wc(offset, size);
+>           break;
+>       }
+>   [...]
+>   }
+
+
+That looks good to me, will you submit a v4 ?
+
+Christophe
+
+> 
+> Thanks
+> Yisheng
+> 
+>>
+>> Christophe
+>>
+>>>
+>>> thanks,
+>>>
+>>> greg k-h
+>>> -- 
+>>> To unsubscribe from this list: send the line "unsubscribe linux-watchdog" in
+>>> the body of a message to majordomo@vger.kernel.org
+>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>>
+>>
+>> ---
+>> L'absence de virus dans ce courrier électronique a été vérifiée par le logiciel antivirus Avast.
+>> https://www.avast.com/antivirus
+>>
+>>
+>> .
+>>
