@@ -1,75 +1,37 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v3 01/10] ASoC: acpi: add missing includes for
-	non-ACPI platforms
-Date: Thu,  4 Jan 2018 16:35:52 -0600
-Message-ID: <20180104223601.5831-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 06/10] ASoC: Intel: boards: align Kconfig dependencies for Haswell/Broadwell
+Date: Thu,  4 Jan 2018 16:35:57 -0600
+Message-ID: <20180104223601.5831-7-pierre-louis.bossart@linux.intel.com>
 References: <20180104223601.5831-1-pierre-louis.bossart@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 7BCB426798B
- for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 23:36:11 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180104223601.5831-1-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: arnd@arndb.de, tiwai@suse.de, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com, torvalds@linux-foundation.org
+Cc: tiwai@suse.de, broonie@kernel.org, torvalds@linux-foundation.org, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-0-day reports compilation issues with non-ACPI platforms.
+Make sure that the same I2C/I2C_DESIGNWARE_PLATFORM are selected.
+The latter might actually need to be moved to the SOC side of things,
+it really has no place in a machine driver dependency
 
-In file included from sound/soc/soc-acpi.c:17:0:
->> include/sound/soc-acpi.h:36:46: error: 'ACPI_ID_LEN' undeclared here
-(not in a function); did you mean 'ACPI_FILE'?
-    snd_soc_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN])
-
- sound/soc/soc-acpi.c: At top level:
->> sound/soc/soc-acpi.c:174:16: error: expected declaration specifiers or
-'...' before string constant
-    MODULE_LICENSE("GPL v2");
-
-Add missing include files.
-
-Fixes: 7feb2f786a46 ("ASoC: move ACPI common code out of Intel/sst tree")
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- include/sound/soc-acpi-intel-match.h | 1 +
- include/sound/soc-acpi.h             | 1 +
- 2 files changed, 2 insertions(+)
+ sound/soc/intel/boards/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/sound/soc-acpi-intel-match.h b/include/sound/soc-acpi-intel-match.h
-index 1a9191cd4bb3..9da6388c20a1 100644
---- a/include/sound/soc-acpi-intel-match.h
-+++ b/include/sound/soc-acpi-intel-match.h
-@@ -16,6 +16,7 @@
- #ifndef __LINUX_SND_SOC_ACPI_INTEL_MATCH_H
- #define __LINUX_SND_SOC_ACPI_INTEL_MATCH_H
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index e926f9747232..358f8f33adc4 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -40,7 +40,7 @@ config SND_SOC_INTEL_HASWELL_MACH
  
-+#include <linux/module.h>
- #include <linux/stddef.h>
- #include <linux/acpi.h>
- 
-diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
-index a7d8d335b043..a93436089bf5 100644
---- a/include/sound/soc-acpi.h
-+++ b/include/sound/soc-acpi.h
-@@ -17,6 +17,7 @@
- 
- #include <linux/stddef.h>
- #include <linux/acpi.h>
-+#include <linux/mod_devicetable.h>
- 
- struct snd_soc_acpi_package_context {
- 	char *name;           /* package name */
+ config SND_SOC_INTEL_BDW_RT5677_MACH
+ 	tristate "ASoC Audio driver for Intel Broadwell with RT5677 codec"
+-	depends on X86_INTEL_LPSS && GPIOLIB && I2C
++	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM && GPIOLIB
+ 	select SND_SOC_RT5677
+ 	help
+ 	  This adds support for Intel Broadwell platform based boards with
 -- 
 2.14.1
