@@ -1,150 +1,32 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: mediatek: add some core clocks for MT2701 AFE" to the
- asoc tree
-Date: Thu, 04 Jan 2018 17:42:55 +0000
-Message-ID: <E1eX9Xb-00068V-3K@debutante>
-References: <d93643da906e25360a7dbbdcbfaa2228dfd688bf.1515038387.git.ryder.lee@mediatek.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH v1 11/15] ASoC: fsl_ssi: Setup AC97 in dai_probe()
+Date: Thu, 4 Jan 2018 11:07:33 -0800
+Message-ID: <20180104190732.GA27975@Asurada-Nvidia>
+References: <1513702819-42310-1-git-send-email-nicoleotsuka@gmail.com>
+ <1513702819-42310-12-git-send-email-nicoleotsuka@gmail.com>
+ <b8e41d81-948a-fbac-af75-3e31c3382426@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <d93643da906e25360a7dbbdcbfaa2228dfd688bf.1515038387.git.ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <b8e41d81-948a-fbac-af75-3e31c3382426@maciej.szmigiero.name>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc: timur@tabi.org, broonie@kernel.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, fabio.estevam@nxp.com, caleb@crome.org, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: mediatek: add some core clocks for MT2701 AFE
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 96365d9fdb2f0d81bfc010298289a8c168931cd0 Mon Sep 17 00:00:00 2001
-From: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Date: Thu, 4 Jan 2018 15:44:07 +0800
-Subject: [PATCH] ASoC: mediatek: add some core clocks for MT2701 AFE
-
-Add three core clocks for MT2701 AFE.
-
-Signed-off-by: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
----
- sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c | 30 ++++++++++++++++++++++-
- sound/soc/mediatek/mt2701/mt2701-afe-common.h     |  3 +++
- 2 files changed, 32 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c b/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c
-index 56a057c78c9a..949fc3a1d025 100644
---- a/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c
-+++ b/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c
-@@ -18,8 +18,11 @@
- #include "mt2701-afe-clock-ctrl.h"
+On Mon, Jan 01, 2018 at 04:17:20PM +0100, Maciej S. Szmigiero wrote:
+> > AC97 configures some registers earlier to start a communication
+> > with CODECs, so this patch moves those register settings to the
+> > dai_probe() as well, along with other register configurations.
  
- static const char *const base_clks[] = {
-+	[MT2701_INFRA_SYS_AUDIO] = "infra_sys_audio_clk",
- 	[MT2701_TOP_AUD_MCLK_SRC0] = "top_audio_mux1_sel",
- 	[MT2701_TOP_AUD_MCLK_SRC1] = "top_audio_mux2_sel",
-+	[MT2701_TOP_AUD_A1SYS] = "top_audio_a1sys_hp",
-+	[MT2701_TOP_AUD_A2SYS] = "top_audio_a2sys_hp",
- 	[MT2701_AUDSYS_AFE] = "audio_afe_pd",
- 	[MT2701_AUDSYS_AFE_CONN] = "audio_afe_conn_pd",
- 	[MT2701_AUDSYS_A1SYS] = "audio_a1sys_pd",
-@@ -169,10 +172,26 @@ static int mt2701_afe_enable_audsys(struct mtk_base_afe *afe)
- 	struct mt2701_afe_private *afe_priv = afe->platform_priv;
- 	int ret;
- 
--	ret = clk_prepare_enable(afe_priv->base_ck[MT2701_AUDSYS_AFE]);
-+	/* Enable infra clock gate */
-+	ret = clk_prepare_enable(afe_priv->base_ck[MT2701_INFRA_SYS_AUDIO]);
- 	if (ret)
- 		return ret;
- 
-+	/* Enable top a1sys clock gate */
-+	ret = clk_prepare_enable(afe_priv->base_ck[MT2701_TOP_AUD_A1SYS]);
-+	if (ret)
-+		goto err_a1sys;
-+
-+	/* Enable top a2sys clock gate */
-+	ret = clk_prepare_enable(afe_priv->base_ck[MT2701_TOP_AUD_A2SYS]);
-+	if (ret)
-+		goto err_a2sys;
-+
-+	/* Internal clock gates */
-+	ret = clk_prepare_enable(afe_priv->base_ck[MT2701_AUDSYS_AFE]);
-+	if (ret)
-+		goto err_afe;
-+
- 	ret = clk_prepare_enable(afe_priv->base_ck[MT2701_AUDSYS_A1SYS]);
- 	if (ret)
- 		goto err_audio_a1sys;
-@@ -193,6 +212,12 @@ static int mt2701_afe_enable_audsys(struct mtk_base_afe *afe)
- 	clk_disable_unprepare(afe_priv->base_ck[MT2701_AUDSYS_A1SYS]);
- err_audio_a1sys:
- 	clk_disable_unprepare(afe_priv->base_ck[MT2701_AUDSYS_AFE]);
-+err_afe:
-+	clk_disable_unprepare(afe_priv->base_ck[MT2701_TOP_AUD_A2SYS]);
-+err_a2sys:
-+	clk_disable_unprepare(afe_priv->base_ck[MT2701_TOP_AUD_A1SYS]);
-+err_a1sys:
-+	clk_disable_unprepare(afe_priv->base_ck[MT2701_INFRA_SYS_AUDIO]);
- 
- 	return ret;
- }
-@@ -205,6 +230,9 @@ static void mt2701_afe_disable_audsys(struct mtk_base_afe *afe)
- 	clk_disable_unprepare(afe_priv->base_ck[MT2701_AUDSYS_A2SYS]);
- 	clk_disable_unprepare(afe_priv->base_ck[MT2701_AUDSYS_A1SYS]);
- 	clk_disable_unprepare(afe_priv->base_ck[MT2701_AUDSYS_AFE]);
-+	clk_disable_unprepare(afe_priv->base_ck[MT2701_TOP_AUD_A1SYS]);
-+	clk_disable_unprepare(afe_priv->base_ck[MT2701_TOP_AUD_A2SYS]);
-+	clk_disable_unprepare(afe_priv->base_ck[MT2701_INFRA_SYS_AUDIO]);
- }
- 
- int mt2701_afe_enable_clock(struct mtk_base_afe *afe)
-diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-common.h b/sound/soc/mediatek/mt2701/mt2701-afe-common.h
-index 9a2b301a4c21..ae8ddeacfbfe 100644
---- a/sound/soc/mediatek/mt2701/mt2701-afe-common.h
-+++ b/sound/soc/mediatek/mt2701/mt2701-afe-common.h
-@@ -61,8 +61,11 @@ enum {
- };
- 
- enum audio_base_clock {
-+	MT2701_INFRA_SYS_AUDIO,
- 	MT2701_TOP_AUD_MCLK_SRC0,
- 	MT2701_TOP_AUD_MCLK_SRC1,
-+	MT2701_TOP_AUD_A1SYS,
-+	MT2701_TOP_AUD_A2SYS,
- 	MT2701_AUDSYS_AFE,
- 	MT2701_AUDSYS_AFE_CONN,
- 	MT2701_AUDSYS_A1SYS,
--- 
-2.15.1
+> This patch breaks AC'97 CODEC probing.
+> 
+> Namely, the fsl_ssi DAI probe callback is only called after the AC'97
+> CODEC probe callback, so when you move SSI AC'97 startup to its DAI
+> probe callback it won't be done yet when the CODEC is probed (and this
+> requires a working AC'97 interface to successfully complete).
+
+Hmm...What's the dependency here? Why is it required like this?
+I am okay to put everything to a separate fsl_ssi_hw_init() and
+move it back to the platform probe() though.
