@@ -1,48 +1,48 @@
-From: John Frankish <john.frankish@outlook.com>
-Subject: Compiling alsa-lib fails with lto
-Date: Thu, 4 Jan 2018 13:29:42 +0000
-Message-ID: <AM0PR0402MB342656ED4BF898691F265412F31F0@AM0PR0402MB3426.eurprd04.prod.outlook.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [RESEND PATCH v2 14/15] ASoC: qcom: apq8096: Add db820c machine
+ driver
+Date: Thu, 4 Jan 2018 13:44:30 +0000
+Message-ID: <418b531d-9d51-80c5-85aa-8ab8ef27bebb@linaro.org>
+References: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
+ <20171214173402.19074-15-srinivas.kandagatla@linaro.org>
+ <f72f32dd-e248-47c3-23cc-eabe1b85d9ae@codeaurora.org>
+ <20180104120244.GE10774@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR03-DB5-obe.outbound.protection.outlook.com
- (mail-oln040092071018.outbound.protection.outlook.com [40.92.71.18])
- by alsa0.perex.cz (Postfix) with ESMTP id C4CAE26782A
- for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 14:29:45 +0100 (CET)
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <20180104120244.GE10774@sirena.org.uk>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Stephen Boyd <sboyd@codeaurora.org>
+Cc: Andy Gross <andy.gross@linaro.org>, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, David Brown <david.brown@linaro.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Using gcc-7.2.0 and alsa-lib-1.1.5
 
-Is there a way to compile alsa-lib with lto (the method below works with alsa-plugins and alsa-utils)?
 
-Compiling alsa-lib like this works fine:
+On 04/01/18 12:02, Mark Brown wrote:
+> On Wed, Jan 03, 2018 at 09:20:45AM -0800, Stephen Boyd wrote:
+>> On 12/14/2017 09:34 AM, srinivas.kandagatla@linaro.org wrote:
+> 
+>>> uThis patch adds support to DB820c machine driver.
+> 
+>>> +	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
+> 
+>> Why do we need to do this? Can you add some sort of comment in the code
+>> about why?
+> 
+> And why are we applying DMA restrictions in a machine driver?
 
-CC="gcc -mtune=generic -Os -pipe" CXX="g++ -mtune=generic -Os -pipe -fno-exceptions -fno-rtti" ./configure --prefix=/usr/local --disable-static --localstatedir=/var --with-configdir=/usr/local/etc/alsa
+Initially I had this in pcm driver, but looking at example usage of 
+snd_dma_alloc_pages, most of them use card->dev and some of them use pcm 
+device for allocating dma memory.
 
-..but compiling with lto like this fails as per below:
+Also, as I moved most dsp static services and dais out of DT, except 
+codec and sound card, sound card device was the only choice I had for 
+binding with iommu and enforcing iova range restrictions.
 
-CC=" gcc -flto -fuse-linker-plugin -mtune=generic -Os -pipe" CXX="g++ -flto -fuse-linker-plugin -mtune=generic -Os -pipe -fno-exceptions -fno-rtti" ./configure --prefix=/usr/local --disable-static --localstatedir=/var --with-configdir=/usr/local/etc/alsa
+This call will be replaced by dma-ranges property in DT either way.
 
-libtool: link: gcc -flto -fuse-linker-plugin -mtune=generic -Os -pipe -o .libs/aserver aserver.o  ../src/.libs/libasound.so -lm -ldl -lpthread -lrt
-/tmp/ccoTf6DH.ltrans0.ltrans.o: In function `pcm_shm_cmd':
-<artificial>:(.text+0xe7a): undefined reference to `snd_pcm_forward'
-../src/.libs/libasound.so: undefined reference to `snd_timer_params_set_filter'
-../src/.libs/libasound.so: undefined reference to `snd_ctl_elem_info_get_dimension'
-../src/.libs/libasound.so: undefined reference to `snd_ctl_elem_info_get_dimensions'
-collect2: error: ld returned 1 exit status
-make[1]: *** [Makefile:333: aserver] Error 1
-make[1]: Leaving directory '/usr/src/alsa-lib-1.1.5/aserver'
-make: *** [Makefile:338: all-recursive] Error 1
-Command exited with non-zero status 2
+
+--srini
+> 
