@@ -1,55 +1,96 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 0/3] ACPI, ASoC, gpio: Introduce and use
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v2 1/3] ACPI / utils: Introduce
  acpi_dev_get_dev_name()
-Date: Thu, 4 Jan 2018 11:33:33 -0600
-Message-ID: <c8c6acfa-4dfa-9567-a7a6-49be33ecf4e8@linux.intel.com>
+Date: Thu, 04 Jan 2018 19:40:27 +0200
+Message-ID: <1515087627.7000.701.camel@linux.intel.com>
 References: <20180104164709.64387-1-andriy.shevchenko@linux.intel.com>
+         <20180104164709.64387-2-andriy.shevchenko@linux.intel.com>
+         <aed928f3-452c-c0b8-bd93-b9921d72df67@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-gpio-owner@vger.kernel.org>
-In-Reply-To: <20180104164709.64387-1-andriy.shevchenko@linux.intel.com>
-Content-Language: en-US
+In-Reply-To: <aed928f3-452c-c0b8-bd93-b9921d72df67@linux.intel.com>
 Sender: linux-gpio-owner@vger.kernel.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Erik Schmauss <erik.schmauss@intel.com>, linux-acpi@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Erik Schmauss <erik.schmauss@intel.com>, linux-acpi@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, Mika Westerberg <mika.westerberg@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 1/4/18 10:47 AM, Andy Shevchenko wrote:
-> It appears that at least one current user (patch 2) and upcoming one
-> (patch 3) need to get device name by ACPI HID.
+On Thu, 2018-01-04 at 11:31 -0600, Pierre-Louis Bossart wrote:
+> On 1/4/18 10:47 AM, Andy Shevchenko wrote:
+> > Sometimes the user want to have device name of the match rather than
+> > just checking if device present or not. To make life easier for such
+> > users introduce acpi_dev_get_dev_name() helper based on code for
+> > acpi_dev_present().
+> > 
+> > To be more consistent with the purpose rename
+> > 
+> >    struct acpi_dev_present_info  -> struct acpi_dev_match_info
+> >    acpi_dev_present_cb()         -> acpi_dev_match_cb()
+> > 
+> > in the utils.c file.
 > 
-> Here we introduce acpi_dev_get_dev_name() based on code done for
-> acpi_dev_present() and reuse it where appropriate.
-> 
-> The series has been tested on Intel Edison with ACPI enabled U-Boot,
-> while patch 2 wasn't tested anyhow (Pierre, can you help with it?).
+> I would have done this differently. You have two routines 
+> (acpi_dev_present and acpi_dev_get_dev_name) which do the same thing 
+> except for what they return (bool and const char *) respectively.
 
-Yes I'll try to test later this week. I just have to figure out which of 
-my devices needs this (been a while since I worked on this).
+I have thought about it :-)
 
-> 
-> Since patch 1 and cross subsystem nature of the series I think the best
-> way is to push this via Rafael's linux-pm tree.
-> 
-> In worst case, if, Rafael, you have no objection, push at least first
-> patch for this cycle to allow utilization in the future.
-> 
-> Andy Shevchenko (3):
->    ACPI / utils: Introduce acpi_dev_get_dev_name()
->    ASoC: Intel - Convert users to use acpi_dev_get_dev_name()
->    gpio: merrifield: Add support of ACPI enabled platforms
-> 
->   drivers/acpi/utils.c                    | 40 +++++++++++++++++++++++++++------
->   drivers/gpio/gpio-merrifield.c          | 11 ++++++++-
->   include/acpi/acpi_bus.h                 |  1 +
->   include/linux/acpi.h                    |  6 +++++
->   include/sound/soc-acpi.h                |  7 ------
->   sound/soc/intel/boards/bytcht_da7213.c  |  2 +-
->   sound/soc/intel/boards/bytcr_rt5640.c   |  2 +-
->   sound/soc/intel/boards/bytcr_rt5651.c   |  2 +-
->   sound/soc/intel/boards/cht_bsw_rt5645.c |  2 +-
->   sound/soc/intel/boards/cht_bsw_rt5672.c |  2 +-
->   sound/soc/soc-acpi.c                    | 33 ---------------------------
->   11 files changed, 55 insertions(+), 53 deletions(-)
-> 
+I decide that for two current users there is a little benefit over
+effort and readability.
 
+See also below.
+
+> This could be factored with
+> 
+> static struct device *dev _acpi_dev_present(const char *hid, const
+> char 
+> *uid, s64 hrv) {
+> 
+> 	struct acpi_dev_present_info match = {};
+> 	struct device *dev;
+> 
+> 	strlcpy(match.hid[0].id, hid, sizeof(match.hid[0].id));
+> 	match.uid = uid;
+> 	match.hrv = hrv;
+> 
+> 	dev = bus_find_device(&acpi_bus_type, NULL, &match,
+> 		acpi_dev_present_cb);
+> 	
+> 	return dev;
+> }
+> 
+> bool acpi_dev_present(const char *hid, const char *uid, s64 hrv)
+> {
+> 	return !!_acpi_dev_present(const char *hid, const char *uid, s64
+> hrv);
+> }
+> 
+> const char *acpi_dev_get_dev_name(const char *hid, const char *uid,
+> s64 hrv)
+> {
+> 	struct device *dev;
+> 
+> 	dev = _acpi_dev_present(const char *hid, const char *uid, s64
+> hrv);
+> 
+> 	return dev ? match.dev_name : NULL;
+
+And where is the match declaration?
+
+Yes, needs to be duplicated. That's why I stopped going this direction.
+
+It still might make sense when 3+ variant will appear.
+
+> }
+> 
+> That said you are a much better programmer than me so the other code
+> is 
+> fine with me...
+
+Thanks.
+
+Would be nice to get your Tested-by at some point.
+
+-- 
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Intel Finland Oy
