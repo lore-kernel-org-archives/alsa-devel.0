@@ -1,15 +1,15 @@
 From: syzbot <syzbot+993cb4cfcbbff3947c21@syzkaller.appspotmail.com>
 Subject: suspicious RCU usage at sound/core/pcm_lib.c:LINE
 Date: Thu, 04 Jan 2018 04:03:01 -0800
-Message-ID: <001a114488b41d864a0561f21d89@google.com>
+Message-ID: <001a1145e8621a11c00561f21d3a@google.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="001a114488b41d861e0561f21d88"
+Content-Type: multipart/mixed; boundary="001a1145e8621a11810561f21d39"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f70.google.com (mail-it0-f70.google.com
- [209.85.214.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B7D7267852
+Received: from mail-it0-f71.google.com (mail-it0-f71.google.com
+ [209.85.214.71])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3F7FE26785C
  for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 13:03:03 +0100 (CET)
-Received: by mail-it0-f70.google.com with SMTP id i66so1036805itf.0
+Received: by mail-it0-f71.google.com with SMTP id a3so1681900itg.7
  for <alsa-devel@alsa-project.org>; Thu, 04 Jan 2018 04:03:02 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,7 +23,7 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, mingo@kernel.org, o-takashi@sakamocchi.jp, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
---001a114488b41d861e0561f21d88
+--001a1145e8621a11810561f21d39
 Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 
 Hello,
@@ -153,7 +153,7 @@ Note: if the crash happens again, it will cause creation of a new bug
 report.
 Note: all commands must start from beginning of the line in the email body.
 
---001a114488b41d861e0561f21d88
+--001a1145e8621a11810561f21d39
 Content-Type: text/plain; charset="US-ASCII"; name="config.txt"
 Content-Disposition: attachment; filename="config.txt"
 Content-Transfer-Encoding: base64
@@ -2510,7 +2510,7 @@ X0ZPTlRfOHgxNj15CiMgQ09ORklHX1NHX1NQTElUIGlzIG5vdCBzZXQKQ09ORklHX1NHX1BPT0w9
 eQpDT05GSUdfQVJDSF9IQVNfU0dfQ0hBSU49eQpDT05GSUdfQVJDSF9IQVNfUE1FTV9BUEk9eQpD
 T05GSUdfQVJDSF9IQVNfVUFDQ0VTU19GTFVTSENBQ0hFPXkKQ09ORklHX1NUQUNLREVQT1Q9eQpD
 T05GSUdfU0JJVE1BUD15CiMgQ09ORklHX1NUUklOR19TRUxGVEVTVCBpcyBub3Qgc2V0Cg==
---001a114488b41d861e0561f21d88
+--001a1145e8621a11810561f21d39
 Content-Type: application/octet-stream; name="raw.log"
 Content-Disposition: attachment; filename="raw.log"
 Content-Transfer-Encoding: base64
@@ -20912,11 +20912,11 @@ MDAwYTJmN2VmIFIxNDogMDAwMDdmYzAyYzZjYjljMCBSMTU6IDAwMDAwMDAwMDAwMDAwMDINClsg
 ICA0My4zNzUwMjRdIER1bXBpbmcgZnRyYWNlIGJ1ZmZlcjoNClsgICA0My4zNzUwODNdICAgIChm
 dHJhY2UgYnVmZmVyIGVtcHR5KQ0KWyAgIDQzLjM3NTA4Nl0gS2VybmVsIE9mZnNldDogZGlzYWJs
 ZWQNCg==
---001a114488b41d861e0561f21d88
+--001a1145e8621a11810561f21d39
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---001a114488b41d861e0561f21d88--
+--001a1145e8621a11810561f21d39--
