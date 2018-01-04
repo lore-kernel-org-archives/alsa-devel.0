@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: add micbias power control
-	select." to the asoc tree
-Date: Thu, 04 Jan 2018 12:37:20 +0000
-Message-ID: <E1eX4ls-000607-Kp@debutante>
-References: <20180102185314.17189-3-hdegoede@redhat.com>
+Subject: Applied "ASoC: rt5645: change micbias widget type to
+	supply." to the asoc tree
+Date: Thu, 04 Jan 2018 12:37:24 +0000
+Message-ID: <E1eX4lw-00061F-2b@debutante>
+References: <1514461296-16236-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E77526782A
- for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 13:37:30 +0100 (CET)
-In-Reply-To: <20180102185314.17189-3-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DC7AA26785A
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 13:37:33 +0100 (CET)
+In-Reply-To: <1514461296-16236-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, hdegoede@redhat.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: add micbias power control select.
+   ASoC: rt5645: change micbias widget type to supply.
 
 has been applied to the asoc tree at
 
@@ -53,113 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From e61f3f31e5830f027d8eedb742bc48a9b3173699 Mon Sep 17 00:00:00 2001
+>From bd70b19e9e7e87ad330d820386774f304e74d112 Mon Sep 17 00:00:00 2001
 From: Bard Liao <bardliao@realtek.com>
-Date: Wed, 3 Jan 2018 13:39:02 +0100
-Subject: [PATCH] ASoC: rt5645: add micbias power control select.
+Date: Wed, 3 Jan 2018 13:39:01 +0100
+Subject: [PATCH] ASoC: rt5645: change micbias widget type to supply.
 
-We need to set a corresponding control bit before powering micbias up.
+Register "micbias1" and "micbias2" to supply widgets as modern drivers do.
+
+This should not cause any (new) issues for existing users of the codec,
+since micbias support is broken anyways. Micbias support needs the
+RT5645_MICBIAS?_POW_CTRL_SEL bits in the RT5645_GEN_CTRL2 register to be
+updated when enabled/disabled which we currently do not do.
+
+The updating of these bits will be fixed in a follow-up commit.
 
 Signed-off-by: Bard Liao <bardliao@realtek.com>
-[hdegoede@redhat.com: Remove 2 unused variable declarations]
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 56 +++++++++++++++++++++++++++++++++++++++++++++--
- sound/soc/codecs/rt5645.h |  6 +++++
- 2 files changed, 60 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5645.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 6f6da0abe220..fbaf36aeb587 100644
+index daf7b73ba415..6f6da0abe220 100644
 --- a/sound/soc/codecs/rt5645.c
 +++ b/sound/soc/codecs/rt5645.c
-@@ -1943,6 +1943,56 @@ static int rt5650_hp_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
+@@ -1980,10 +1980,10 @@ static const struct snd_soc_dapm_widget rt5645_dapm_widgets[] = {
  
-+static int rt5645_set_micbias1_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *k, int  event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		snd_soc_update_bits(codec, RT5645_GEN_CTRL2,
-+			RT5645_MICBIAS1_POW_CTRL_SEL_MASK,
-+			RT5645_MICBIAS1_POW_CTRL_SEL_M);
-+		break;
-+
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_soc_update_bits(codec, RT5645_GEN_CTRL2,
-+			RT5645_MICBIAS1_POW_CTRL_SEL_MASK,
-+			RT5645_MICBIAS1_POW_CTRL_SEL_A);
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt5645_set_micbias2_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *k, int  event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		snd_soc_update_bits(codec, RT5645_GEN_CTRL2,
-+			RT5645_MICBIAS2_POW_CTRL_SEL_MASK,
-+			RT5645_MICBIAS2_POW_CTRL_SEL_M);
-+		break;
-+
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_soc_update_bits(codec, RT5645_GEN_CTRL2,
-+			RT5645_MICBIAS2_POW_CTRL_SEL_MASK,
-+			RT5645_MICBIAS2_POW_CTRL_SEL_A);
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dapm_widget rt5645_dapm_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("LDO2", RT5645_PWR_MIXER,
- 		RT5645_PWR_LDO2_BIT, 0, NULL, 0),
-@@ -1981,9 +2031,11 @@ static const struct snd_soc_dapm_widget rt5645_dapm_widgets[] = {
  	/* Input Side */
  	/* micbias */
- 	SND_SOC_DAPM_SUPPLY("micbias1", RT5645_PWR_ANLG2,
--			RT5645_PWR_MB1_BIT, 0, NULL, 0),
-+			RT5645_PWR_MB1_BIT, 0, rt5645_set_micbias1_event,
-+			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- 	SND_SOC_DAPM_SUPPLY("micbias2", RT5645_PWR_ANLG2,
--			RT5645_PWR_MB2_BIT, 0, NULL, 0),
-+			RT5645_PWR_MB2_BIT, 0, rt5645_set_micbias2_event,
-+			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+-	SND_SOC_DAPM_MICBIAS("micbias1", RT5645_PWR_ANLG2,
+-			RT5645_PWR_MB1_BIT, 0),
+-	SND_SOC_DAPM_MICBIAS("micbias2", RT5645_PWR_ANLG2,
+-			RT5645_PWR_MB2_BIT, 0),
++	SND_SOC_DAPM_SUPPLY("micbias1", RT5645_PWR_ANLG2,
++			RT5645_PWR_MB1_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("micbias2", RT5645_PWR_ANLG2,
++			RT5645_PWR_MB2_BIT, 0, NULL, 0),
  	/* Input Lines */
  	SND_SOC_DAPM_INPUT("DMIC L1"),
  	SND_SOC_DAPM_INPUT("DMIC R1"),
-diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
-index cfc5f97549eb..940325b28c29 100644
---- a/sound/soc/codecs/rt5645.h
-+++ b/sound/soc/codecs/rt5645.h
-@@ -2117,6 +2117,12 @@ enum {
- #define RT5645_RXDC_SRC_STO			(0x0 << 7)
- #define RT5645_RXDC_SRC_MONO			(0x1 << 7)
- #define RT5645_RXDC_SRC_SFT			(7)
-+#define RT5645_MICBIAS1_POW_CTRL_SEL_MASK	(0x1 << 5)
-+#define RT5645_MICBIAS1_POW_CTRL_SEL_A		(0x0 << 5)
-+#define RT5645_MICBIAS1_POW_CTRL_SEL_M		(0x1 << 5)
-+#define RT5645_MICBIAS2_POW_CTRL_SEL_MASK	(0x1 << 4)
-+#define RT5645_MICBIAS2_POW_CTRL_SEL_A		(0x0 << 4)
-+#define RT5645_MICBIAS2_POW_CTRL_SEL_M		(0x1 << 4)
- #define RT5645_RXDP2_SEL_MASK			(0x1 << 3)
- #define RT5645_RXDP2_SEL_IF2			(0x0 << 3)
- #define RT5645_RXDP2_SEL_ADC			(0x1 << 3)
 -- 
 2.15.1
