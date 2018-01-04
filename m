@@ -1,32 +1,54 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH v1 11/15] ASoC: fsl_ssi: Setup AC97 in dai_probe()
-Date: Thu, 4 Jan 2018 11:07:33 -0800
-Message-ID: <20180104190732.GA27975@Asurada-Nvidia>
+Subject: Re: [PATCH v1 01/15] ASoC: fsl_ssi: Clean up
+	set_dai_tdm_slot()
+Date: Thu, 4 Jan 2018 11:08:37 -0800
+Message-ID: <20180104190836.GB27975@Asurada-Nvidia>
 References: <1513702819-42310-1-git-send-email-nicoleotsuka@gmail.com>
- <1513702819-42310-12-git-send-email-nicoleotsuka@gmail.com>
- <b8e41d81-948a-fbac-af75-3e31c3382426@maciej.szmigiero.name>
+ <1513702819-42310-2-git-send-email-nicoleotsuka@gmail.com>
+ <b910e12c-bee7-18ba-f878-bece9a9f9cc1@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pl0-f43.google.com (mail-pl0-f43.google.com
+ [209.85.160.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 469EA267900
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 20:08:24 +0100 (CET)
+Received: by mail-pl0-f43.google.com with SMTP id z5so1561522plo.10
+ for <alsa-devel@alsa-project.org>; Thu, 04 Jan 2018 11:08:24 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <b8e41d81-948a-fbac-af75-3e31c3382426@maciej.szmigiero.name>
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <b910e12c-bee7-18ba-f878-bece9a9f9cc1@maciej.szmigiero.name>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc: timur@tabi.org, broonie@kernel.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, fabio.estevam@nxp.com, caleb@crome.org, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
+Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, caleb@crome.org, timur@tabi.org, broonie@kernel.org, arnaud.mouiche@invoxia.com, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 01, 2018 at 04:17:20PM +0100, Maciej S. Szmigiero wrote:
-> > AC97 configures some registers earlier to start a communication
-> > with CODECs, so this patch moves those register settings to the
-> > dai_probe() as well, along with other register configurations.
- 
-> This patch breaks AC'97 CODEC probing.
-> 
-> Namely, the fsl_ssi DAI probe callback is only called after the AC'97
-> CODEC probe callback, so when you move SSI AC'97 startup to its DAI
-> probe callback it won't be done yet when the CODEC is probed (and this
-> requires a working AC'97 interface to successfully complete).
+On Mon, Jan 01, 2018 at 07:39:52PM +0100, Maciej S. Szmigiero wrote:
 
-Hmm...What's the dependency here? Why is it required like this?
-I am okay to put everything to a separate fsl_ssi_hw_init() and
-move it back to the platform probe() though.
+> >  	/* The slot number should be >= 2 if using Network mode or I2S mode */
+> > -	regmap_read(regs, REG_SSI_SCR, &val);
+> > -	val &= SSI_SCR_I2S_MODE_MASK | SSI_SCR_NET;
+> > -	if (val && slots < 2) {
+> > +	if (ssi->i2s_net && slots < 2) {
+> >  		dev_err(dai->dev, "slot number should be >= 2 in I2S or NET\n");
+> >  		return -EINVAL;
+> >  	}
+> 
+> Are you sure that ssi->i2s_net SSI_SCR_I2S_MODE_MASK | SSI_SCR_NET bits
+> (also known as SSI_SCR_I2S_NET_MASK) zero or non-zero status is always
+> consistent with that in the SCR register?
+> 
+> I can see that in fsl_ssi_hw_params() these bits in SCR are zeroed in
+> a one special case and in the second special case they are hardcoded
+> to SSI_SCR_I2S_MODE_NORMAL | SSI_SCR_NET, in both cases regardless of
+> what is currently in ssi->i2s_net.
+
+You are right. I should update the i2s_net in hw_params() too. Thanks!
