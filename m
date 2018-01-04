@@ -1,77 +1,119 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/6] ASoC: rt5645: change micbias widget
-	type to supply.
-Date: Thu, 4 Jan 2018 10:53:43 +0000
-Message-ID: <20180104105343.GA10774@sirena.org.uk>
-References: <20180102185314.17189-1-hdegoede@redhat.com>
- <20180102185314.17189-2-hdegoede@redhat.com>
- <20180103105053.GA5603@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D702756F3C@RTITMBSV02.realtek.com.tw>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0156001099348840632=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id F21052677F1
- for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 11:53:50 +0100 (CET)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D702756F3C@RTITMBSV02.realtek.com.tw>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Hans de Goede <hdegoede@redhat.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Koro Chen =?utf-8?B?KOmZs+aAnee/sCk=?= <koro.chen@mediatek.com>, Takashi Iwai <tiwai@suse.com>
+From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Subject: [alsa-devel] [PATCH v7 0/6] ASoC: Intel: Skylake: Add a clk driver to enable ssp clks early
+Date: Thu,  4 Jan 2018 16:55:13 +0530
+Message-ID: <1515065119-1683-1-git-send-email-sriramx.periyasamy@intel.com>
+Return-path: <linux-clk-owner@vger.kernel.org>
+Sender: linux-clk-owner@vger.kernel.org
+To: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>, mturquette@baylibre.com, sboyd@codeaurora.org, linux-clk@vger.kernel.org, Sriram Periyasamy <sriramx.periyasamy@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+For certain platforms, clocks (mclk/sclk/fs) are required to be up before
+the stream start. Example: some codecs needs the mclk/sclk/fs to be
+enabled early for a successful clock synchronization. Some platforms
+require clock to be enabled at boot and be always ON.
 
---===============0156001099348840632==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Qxx1br4bt0+wmkIi"
-Content-Disposition: inline
+By sending set_dma_control IPC (with the i2s blobs queried from NHLT),
+these clocks can be enabled early after the firmware is downloaded.
 
+With this series, a virtual clock driver is created which provides
+interface to send the required IPCs from machine driver to enable the
+clocks. NHLT is parsed during probe and the clock information is populated.
+The pointer to blob is cached and sent along with the set_dma_control IPC
+structure during the clk prepare/unprepare callback. Clocks are created for
+a ssp if the nhlt table has endpoint configuration for that particular ssp.
 
---Qxx1br4bt0+wmkIi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Kabylake machine driver uses the clock interface to enable the clocks early
+as it is required by the rt5663 driver for clock synchronization.
 
-On Thu, Jan 04, 2018 at 07:19:15AM +0000, Bard Liao wrote:
+v6 -> v7
+	- Remove the check to deny set_rate when clock is enabled and
+	  instead use framework flag CLK_SET_RATE_GATE
 
-> I found mt8173 from mediatek is using rt5650 micbias.
-> 	{"Headset Mic", NULL, "micbias1"},
-> 	{"Headset Mic", NULL, "micbias2"},
-> I think we should remove it but still need to verify.
-> We are co-working with MTK folks on it and it may take some days.
+v5 -> v6
+	- Remove unwanted checks from clk ops
 
-That looks like normal supply usage for a micbias so most likely your
-patch is a fix for them anyway.
+	- Modify recalc_rate to return just the cached rate and remove the 
+	  rate calculations
 
---Qxx1br4bt0+wmkIi
-Content-Type: application/pgp-signature; name="signature.asc"
+	- Add license based on SPDX	
 
------BEGIN PGP SIGNATURE-----
+v4 -> v5
+	- Remove checks for clock enable status from machine driver since
+	  taken care in the framework already
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpOB7UACgkQJNaLcl1U
-h9AXyggAg9DViiuj2vmK5kzZb9ZdxQwr0bhNvlHAmNGVeGLCzvhqHJn/ucQ8eqoF
-2zldoJXmcnShe74ArlBcncSmNAczYCjd8VxmBk44EFvSpbSqiDIbCAkp68CnVh1H
-dUYYnM6WuMk6BZuIwL9FnK2YCbJNsgYFeJKBLMTYo+4ryXcHENRAlIJms4l84c4A
-kSQ1IZJX1Gs1IJdqogTj7S/EuUoQmYBZW2T15MOa1i+J5nCiMh0J9XZZIiaciikW
-M0SU+4W51m3QXp973wf0apNE6zkuIKtMKvxZFoJ9aK/LJVZ6k2RdpGAdDuy81W06
-OA2IBSaZT2tzUZ/HTg6S9Dh0OxzMrw==
-=tESt
------END PGP SIGNATURE-----
+	- Add check in the skl_clk_set_rate to avoid different rates when
+	  clock is enabled already
 
---Qxx1br4bt0+wmkIi--
+v3 -> v4
+	- Add missing signed-offs
 
---===============0156001099348840632==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+v2 -> v3
+	- Moved the clk ops and IPCs from Skylake driver to clk driver and
+	  reordered commits accordingly
 
+	- Add the support for extended I2S blob config which supports
+	  multiple mclk dividers in NHLT
 
---===============0156001099348840632==--
+	- Enable the clocks as well in DAPM PMU event instead of hw_params
+	  in machine drivers as confirmed by codec vendor
+
+	- Do not register the clk if there is no valid clock source is
+	  avail in the I2S blob
+
+	- Take care of error return in the clk driver
+
+	- Address rest of the review comments and more optimization added
+
+	- Fix the warning
+		sound/soc/intel/skylake/skl.c:724:1-3:
+		WARNING: PTR_ERR_OR_ZERO can be used
+	  reported by scripts/coccinelle/api/ptr_ret.cocci
+
+	- Modified DSP replies as human readable to ease the debugging
+
+	- Add firmware replies for MCLK/SCLK clocks if they are running
+	  already
+
+v1 -> v2
+	- Register parent clocks with skylake device.
+	  With the patch "clk: Add support for runtime PM" soon to be merged
+	  will help DSP to stay active on call to clock enable.
+	  Reference: (https://patchwork.kernel.org/patch/9911741/)
+
+	- Fix the machine driver to enable clocks early for headphone
+	  playback path as well to fix a pop noise issue
+
+Harsha Priya (1):
+  ASoC: Intel: kbl: Enable mclk and ssp sclk early
+
+Naveen M (1):
+  ASoC: Intel: eve: Enable mclk and ssp sclk early
+
+Sriram Periyasamy (2):
+  ASoC: Intel: Skylake: Add ssp clock driver
+  ASoC: Intel: Skylake: Add extended I2S config blob support in Clock
+    driver
+
+Subhransu S. Prusty (2):
+  ASoC: Intel: Skylake: Make DSP replies more human readable
+  ASoC: Intel: Skylake: Add FW reply for MCLK/SCLK IPC
+
+ sound/soc/intel/Kconfig                            |   3 +
+ sound/soc/intel/boards/Kconfig                     |   2 +
+ sound/soc/intel/boards/kbl_rt5663_max98927.c       |  95 ++++-
+ .../soc/intel/boards/kbl_rt5663_rt5514_max98927.c  |  94 +++++
+ sound/soc/intel/skylake/Makefile                   |   5 +
+ sound/soc/intel/skylake/skl-i2s.h                  |  31 ++
+ sound/soc/intel/skylake/skl-messages.c             |   1 +
+ sound/soc/intel/skylake/skl-nhlt.c                 |  41 +-
+ sound/soc/intel/skylake/skl-ssp-clk.c              | 429 +++++++++++++++++++++
+ sound/soc/intel/skylake/skl-ssp-clk.h              |  38 ++
+ sound/soc/intel/skylake/skl-sst-ipc.c              |  50 ++-
+ sound/soc/intel/skylake/skl.h                      |   6 +
+ 12 files changed, 771 insertions(+), 24 deletions(-)
+ create mode 100644 sound/soc/intel/skylake/skl-ssp-clk.c
+
+-- 
+2.7.4
+
