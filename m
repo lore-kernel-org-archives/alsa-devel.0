@@ -1,96 +1,94 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 1/3] ACPI / utils: Introduce
- acpi_dev_get_dev_name()
-Date: Thu, 04 Jan 2018 19:40:27 +0200
-Message-ID: <1515087627.7000.701.camel@linux.intel.com>
-References: <20180104164709.64387-1-andriy.shevchenko@linux.intel.com>
-         <20180104164709.64387-2-andriy.shevchenko@linux.intel.com>
-         <aed928f3-452c-c0b8-bd93-b9921d72df67@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-gpio-owner@vger.kernel.org>
-In-Reply-To: <aed928f3-452c-c0b8-bd93-b9921d72df67@linux.intel.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Erik Schmauss <erik.schmauss@intel.com>, linux-acpi@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, Mika Westerberg <mika.westerberg@linux.intel.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: simple-card: Pass 'reg' property in the examples" to the asoc tree
+Date: Thu, 04 Jan 2018 17:42:37 +0000
+Message-ID: <E1eX9XJ-00061f-2W@debutante>
+References: <1515086697-25900-1-git-send-email-festevam@gmail.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1515086697-25900-1-git-send-email-festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2018-01-04 at 11:31 -0600, Pierre-Louis Bossart wrote:
-> On 1/4/18 10:47 AM, Andy Shevchenko wrote:
-> > Sometimes the user want to have device name of the match rather than
-> > just checking if device present or not. To make life easier for such
-> > users introduce acpi_dev_get_dev_name() helper based on code for
-> > acpi_dev_present().
-> > 
-> > To be more consistent with the purpose rename
-> > 
-> >    struct acpi_dev_present_info  -> struct acpi_dev_match_info
-> >    acpi_dev_present_cb()         -> acpi_dev_match_cb()
-> > 
-> > in the utils.c file.
-> 
-> I would have done this differently. You have two routines 
-> (acpi_dev_present and acpi_dev_get_dev_name) which do the same thing 
-> except for what they return (bool and const char *) respectively.
+The patch
 
-I have thought about it :-)
+   ASoC: simple-card: Pass 'reg' property in the examples
 
-I decide that for two current users there is a little benefit over
-effort and readability.
+has been applied to the asoc tree at
 
-See also below.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> This could be factored with
-> 
-> static struct device *dev _acpi_dev_present(const char *hid, const
-> char 
-> *uid, s64 hrv) {
-> 
-> 	struct acpi_dev_present_info match = {};
-> 	struct device *dev;
-> 
-> 	strlcpy(match.hid[0].id, hid, sizeof(match.hid[0].id));
-> 	match.uid = uid;
-> 	match.hrv = hrv;
-> 
-> 	dev = bus_find_device(&acpi_bus_type, NULL, &match,
-> 		acpi_dev_present_cb);
-> 	
-> 	return dev;
-> }
-> 
-> bool acpi_dev_present(const char *hid, const char *uid, s64 hrv)
-> {
-> 	return !!_acpi_dev_present(const char *hid, const char *uid, s64
-> hrv);
-> }
-> 
-> const char *acpi_dev_get_dev_name(const char *hid, const char *uid,
-> s64 hrv)
-> {
-> 	struct device *dev;
-> 
-> 	dev = _acpi_dev_present(const char *hid, const char *uid, s64
-> hrv);
-> 
-> 	return dev ? match.dev_name : NULL;
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-And where is the match declaration?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Yes, needs to be duplicated. That's why I stopped going this direction.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-It still might make sense when 3+ variant will appear.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> }
-> 
-> That said you are a much better programmer than me so the other code
-> is 
-> fine with me...
+Thanks,
+Mark
 
-Thanks.
+>From ef42e3557f66bd236bfc157c1f02de5abfd01236 Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>
+Date: Thu, 4 Jan 2018 15:24:57 -0200
+Subject: [PATCH] ASoC: simple-card: Pass 'reg' property in the examples
 
-Would be nice to get your Tested-by at some point.
+Since unit addresses are passed to simple-audio-card,dai-link a
+corresponding 'reg' property is needed, otherwise dtc complains
+(when building with W=1) in case someone copies the bindings example
+into a real dts file:
 
+Warning (unit_address_vs_reg): Node /sound-digital/simple-audio-card,dai-link@0 has a unit name, but no reg property
+
+Improve the example by passing the correct 'reg' properties.
+
+Signed-off-by: Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+---
+ Documentation/devicetree/bindings/sound/simple-card.txt | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
+index 166f2290233b..17c13e74667d 100644
+--- a/Documentation/devicetree/bindings/sound/simple-card.txt
++++ b/Documentation/devicetree/bindings/sound/simple-card.txt
+@@ -140,6 +140,7 @@ sound {
+ 	simple-audio-card,name = "Cubox Audio";
+ 
+ 	simple-audio-card,dai-link@0 {		/* I2S - HDMI */
++		reg = <0>;
+ 		format = "i2s";
+ 		cpu {
+ 			sound-dai = <&audio1 0>;
+@@ -150,6 +151,7 @@ sound {
+ 	};
+ 
+ 	simple-audio-card,dai-link@1 {		/* S/PDIF - HDMI */
++		reg = <1>;
+ 		cpu {
+ 			sound-dai = <&audio1 1>;
+ 		};
+@@ -159,6 +161,7 @@ sound {
+ 	};
+ 
+ 	simple-audio-card,dai-link@2 {		/* S/PDIF - S/PDIF */
++		reg = <2>;
+ 		cpu {
+ 			sound-dai = <&audio1 1>;
+ 		};
 -- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+2.15.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
