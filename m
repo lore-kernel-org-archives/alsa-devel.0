@@ -1,18 +1,16 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: pcm: Workaround for weird PulseAudio
-	behavior on rewind error
-Date: Thu,  4 Jan 2018 18:07:43 +0100
-Message-ID: <20180104170743.23887-1-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [V3 2/2] ASoC: max98373: Added Amplifier Driver
+Date: Thu, 4 Jan 2018 17:13:45 +0000
+Message-ID: <20180104171345.GI10774@sirena.org.uk>
+References: <1515004757-22267-1-git-send-email-ryans.lee@maximintegrated.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0222517289629146679=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3AE3E267900
- for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 18:07:45 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id A174AACEC
- for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 17:07:45 +0000 (UTC)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D6A4267900
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 18:14:05 +0100 (CET)
+In-Reply-To: <1515004757-22267-1-git-send-email-ryans.lee@maximintegrated.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,59 +20,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Ryan Lee <ryans.lee@maximintegrated.com>
+Cc: bryce.ferguson@rockwellcollins.com, alsa-devel@alsa-project.org, ryan.lee.maxim@gmail.com, kuninori.morimoto.gx@renesas.com, arnd@arndb.de, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com, afd@ti.com, m-stecklein@ti.com, romain.perier@collabora.com, dannenberg@ti.com, robert.jarzmik@free.fr, supercraig0719@gmail.com, jbrunet@baylibre.com
 List-Id: alsa-devel@alsa-project.org
 
-The commit 9027c4639ef1 ("ALSA: pcm: Call ack() whenever appl_ptr is
-updated") introduced the possible error code returned from the PCM
-rewind ioctl.  Basically the change was for handling the indirect PCM
-more correctly, but ironically, it caused rather a side-effect:
-PulseAudio gets pissed off when receiving an error from rewind, throws
-everything away and stops processing further, resulting in the
-silence.
 
-It's clearly a failure in the application side, so the best would be
-to fix that bug in PA.  OTOH, PA is mostly the only user of the rewind
-feature, so it's not good to slap the sole customer.
+--===============0222517289629146679==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="cVp8NMj01v+Em8Se"
+Content-Disposition: inline
 
-This patch tries to mitigate the situation: instead of returning an
-error, now the rewind ioctl returns zero when the driver can't rewind.
-It indicates that no rewind was performed, so the behavior is
-consistent, at least.
 
-Fixes: 9027c4639ef1 ("ALSA: pcm: Call ack() whenever appl_ptr is updated")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/pcm_native.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+--cVp8NMj01v+Em8Se
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index a4d92e46c459..f08772568c17 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -2580,7 +2580,7 @@ static snd_pcm_sframes_t forward_appl_ptr(struct snd_pcm_substream *substream,
- 	return ret < 0 ? ret : frames;
- }
- 
--/* decrease the appl_ptr; returns the processed frames or a negative error */
-+/* decrease the appl_ptr; returns the processed frames or zero for error */
- static snd_pcm_sframes_t rewind_appl_ptr(struct snd_pcm_substream *substream,
- 					 snd_pcm_uframes_t frames,
- 					 snd_pcm_sframes_t avail)
-@@ -2597,7 +2597,12 @@ static snd_pcm_sframes_t rewind_appl_ptr(struct snd_pcm_substream *substream,
- 	if (appl_ptr < 0)
- 		appl_ptr += runtime->boundary;
- 	ret = pcm_lib_apply_appl_ptr(substream, appl_ptr);
--	return ret < 0 ? ret : frames;
-+	/* NOTE: we return zero for errors because PulseAudio gets depressed
-+	 * upon receiving an error from rewind ioctl and stops processing
-+	 * any longer.  Returning zero means that no rewind is done, so
-+	 * it's not absolutely wrong to answer like that.
-+	 */
-+	return ret < 0 ? 0 : frames;
- }
- 
- static snd_pcm_sframes_t snd_pcm_playback_rewind(struct snd_pcm_substream *substream,
--- 
-2.15.1
+On Wed, Jan 03, 2018 at 10:39:17AM -0800, Ryan Lee wrote:
+
+This looks mostly good.  There are a few smaller issues but I think at
+this point it's most sensible to apply and fix those incrementally so
+I'll do that, please follow up with patches fixing the remaining issues.
+
+> --- /dev/null
+> +++ b/sound/soc/codecs/max98373.c
+> @@ -0,0 +1,971 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/* Copyright (c) 2017, Maxim Integrated */
+
+SPDX headers are supposed to be C++ comments, please send a followup
+patch fixing this.
+
+> +static int max98373_get_bclk_sel(int bclk)
+> +{
+> +	int i;
+> +	/* match BCLKs per LRCLK */
+> +	for (i = 0; i < ARRAY_SIZE(bclk_sel_table); i++) {
+> +		if (bclk_sel_table[i] == bclk)
+> +			return i + 2;
+> +	}
+> +	return 0;
+> +}
+> +static int max98373_set_clock(struct snd_soc_codec *codec,
+
+Missing blank line between the functions.
+
+> +	}
+> +	/* set DAI_SR to correct LRCLK frequency */
+
+Another missing blank line.
+
+> +static int max98373_dai_tdm_slot(struct snd_soc_dai *dai,
+> +	unsigned int tx_mask, unsigned int rx_mask,
+> +	int slots, int slot_width)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +	struct max98373_priv *max98373 = snd_soc_codec_get_drvdata(codec);
+> +	int bsel = 0;
+> +	unsigned int chan_sz = 0;
+> +	unsigned int mask;
+> +	int x, slot_found;
+> +
+> +	max98373->tdm_mode = true;
+
+This should really also support disabling TDM mode - if the parameters
+are all 0 just turn TDM off.  Again can be fixed in a followup.
+
+> +SOC_SINGLE_TLV("DHT Gain Min", MAX98373_R20D1_DHT_CFG,
+> +	MAX98373_DHT_SPK_GAIN_MIN_SHIFT, 9, 0, max98373_dht_spkgain_min_tlv),
+> +SOC_SINGLE_TLV("DHT Rot Pnt", MAX98373_R20D1_DHT_CFG,
+> +	MAX98373_DHT_ROT_PNT_SHIFT, 15, 0, max98373_dht_rotation_point_tlv),
+> +SOC_SINGLE_TLV("DHT Attack Step", MAX98373_R20D2_DHT_ATTACK_CFG,
+> +	MAX98373_DHT_ATTACK_STEP_SHIFT, 4, 0, max98373_dht_step_size_tlv),
+> +SOC_SINGLE_TLV("DHT Release Step", MAX98373_R20D3_DHT_RELEASE_CFG,
+> +	MAX98373_DHT_RELEASE_STEP_SHIFT, 4, 0, max98373_dht_step_size_tlv),
+
+You should add a Volume on the end of these control names so that
+userspace knows how to display them properly; it's a little confusing as
+they're not actually gains but it tends to work out better.  Same for
+most of the other TLV controls.
+
+--cVp8NMj01v+Em8Se
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpOYMgACgkQJNaLcl1U
+h9CtoQf+Ped45sTIstDYqeYZOEJ9OvXwYbrWtGvJK4GtnP3fvlAD5cwRiKfM9HN8
+TzeYn74v3bShwcfha1wfjDfi2QdYLPOHN/0JRi6RZOeYA6ps+v8ihMNoE/FlroUu
+Grnugasgmtz+4xumzZHAS20oegxDMX1mIzr+FdMvi6xHK9UJLWYVYx03Lq1jHxKi
+ZO8ik2wVPKuReQXqceY7rIi6PRdhJMIX+cfwCzzhIR2TA/xBCPCITv3DjZcirMLE
+64H4q/xN5BTbL94iwQAXBNMtwIlpNu0holagxu0xUU63vA6I4bK20USZWJhkfzqe
+8XngdcBxAXaOeXgm1HE/4FjwS0qzjQ==
+=sQ7T
+-----END PGP SIGNATURE-----
+
+--cVp8NMj01v+Em8Se--
+
+--===============0222517289629146679==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0222517289629146679==--
