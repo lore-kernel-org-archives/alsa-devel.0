@@ -1,22 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/6] ASoC: rt5645: change micbias widget
-	type to supply.
-Date: Thu, 4 Jan 2018 12:01:26 +0000
-Message-ID: <20180104120125.GD10774@sirena.org.uk>
-References: <20180102185314.17189-1-hdegoede@redhat.com>
- <20180102185314.17189-2-hdegoede@redhat.com>
- <20180103105053.GA5603@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D702756F3C@RTITMBSV02.realtek.com.tw>
- <20180104105343.GA10774@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D7027574B8@RTITMBSV02.realtek.com.tw>
+Subject: Re: [RESEND PATCH v2 14/15] ASoC: qcom: apq8096: Add
+ db820c machine driver
+Date: Thu, 4 Jan 2018 12:02:44 +0000
+Message-ID: <20180104120244.GE10774@sirena.org.uk>
+References: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
+ <20171214173402.19074-15-srinivas.kandagatla@linaro.org>
+ <f72f32dd-e248-47c3-23cc-eabe1b85d9ae@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2326068799752672433=="
+Content-Type: multipart/mixed; boundary="===============1157706251455896090=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5CE9526782A
- for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 13:01:39 +0100 (CET)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D7027574B8@RTITMBSV02.realtek.com.tw>
+ by alsa0.perex.cz (Postfix) with ESMTP id 10E8926782A
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 13:02:47 +0100 (CET)
+In-Reply-To: <f72f32dd-e248-47c3-23cc-eabe1b85d9ae@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,61 +23,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Hans de Goede <hdegoede@redhat.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Koro Chen =?utf-8?B?KOmZs+aAnee/sCk=?= <koro.chen@mediatek.com>, Takashi Iwai <tiwai@suse.com>
+To: Stephen Boyd <sboyd@codeaurora.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <david.brown@linaro.org>, Rob Herring <robh+dt@kernel.org>, srinivas.kandagatla@linaro.org, linux-arm-kernel@lists.infradead.org, Andy Gross <andy.gross@linaro.org>, linux-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2326068799752672433==
+--===============1157706251455896090==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="d01dLTUuW90fS44H"
+	protocol="application/pgp-signature"; boundary="sfyO1m2EN8ZOtJL6"
 Content-Disposition: inline
 
 
---d01dLTUuW90fS44H
+--sfyO1m2EN8ZOtJL6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jan 04, 2018 at 11:14:40AM +0000, Bard Liao wrote:
+On Wed, Jan 03, 2018 at 09:20:45AM -0800, Stephen Boyd wrote:
+> On 12/14/2017 09:34 AM, srinivas.kandagatla@linaro.org wrote:
 
-> > > I found mt8173 from mediatek is using rt5650 micbias.
-> > > 	{"Headset Mic", NULL, "micbias1"},
-> > > 	{"Headset Mic", NULL, "micbias2"},
-> > > I think we should remove it but still need to verify.
-> > > We are co-working with MTK folks on it and it may take some days.
+> > uThis patch adds support to DB820c machine driver.
 
-> > That looks like normal supply usage for a micbias so most likely your
-> > patch is a fix for them anyway.
+> > +	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
 
-> Yes, it's supply usage for a micbias. So it didn't take effect with
-> MICBIAS widget type. Actually, we don't need to set the micbias
-> power bit for headset mic and we have verified it today. So, I will
-> send a patch to remove them soon.
+> Why do we need to do this? Can you add some sort of comment in the code
+> about why?
 
-Are you sure that's likely to be helpful?
+And why are we applying DMA restrictions in a machine driver?
 
---d01dLTUuW90fS44H
+--sfyO1m2EN8ZOtJL6
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpOF5UACgkQJNaLcl1U
-h9A5kgf/SqT0UPPvNYIYIK83jUxsaTkXSdsP573xEtSkMLzkrdLKs0hnDcHPEZFd
-5ce+3rTtGhhCLYC0SzUlRUQkuwyreuJFHbH3cMRf3k9U1L2RAwYPHToIDCJUGx12
-Vx8Uydw5CVEp2fAUHN3SLRsFP3Ok6+oM6JyaNAn3CKPtRmLtiyI1rvCi4SnGL7km
-qVeaCIc2W/gc0kVf+9FGlL9K+n131iVwphgZuhso/jljm7eWw6+vN2CZahiKXqoj
-yM0H6DIbeKxKGayXIcqnsFrUsu9B6w10caezGWTLhknC/2hTj0jbU6LBIDHXrIkz
-tzXsaaBY2ItUVcmW5b1jOqIa4rXTjg==
-=rn7L
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpOF+MACgkQJNaLcl1U
+h9DqSAf/TRTXDKdOETvzPNSKGaWNVG2ljRSTEBuPrReetgJ+PI1o30yx4FGcKhyV
+MiDyv/O+wn1bkKSZ9o3TpSbz+e1Vwk/ceFEKrNwPxT1iK7Z2gqP0VbrnJ3g7nAjq
+l2A2PvlIuZA8gD0F19g8r9dXgTLiuWSxduYY4YZIK4ns9JmSZi+VyfAwL/p2pKE4
+EQkGHDmfm9x3vC85U1x2G4Bc+f8LmFWQhc3tbuxeqkZz1S/AK5IDzvpAPG93jCvx
+QqaxW6uHYkYhZgqQJxojomPmkzWvT83YrsSbVlsRit1lQE2PQYBuKm+exmkWQJb5
+nrZGGyAF1SzKBMfd6IrccOWBQOwwSA==
+=5JJo
 -----END PGP SIGNATURE-----
 
---d01dLTUuW90fS44H--
+--sfyO1m2EN8ZOtJL6--
 
---===============2326068799752672433==
+--===============1157706251455896090==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2326068799752672433==--
+--===============1157706251455896090==--
