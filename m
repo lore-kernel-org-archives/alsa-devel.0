@@ -1,19 +1,18 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH] ASoC: rt5645: add fallback case for jack
- detection support
-Date: Wed, 3 Jan 2018 23:20:38 +0100
-Message-ID: <6b845088-9900-789c-1137-811321e23252@redhat.com>
-References: <20180103184241.11690-1-pierre-louis.bossart@linux.intel.com>
+From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
+Subject: Re: [RFC v5 0/3] Enable HDA Codec support on Intel
+ Platforms (Series1)
+Date: Thu, 4 Jan 2018 04:34:05 +0000
+Message-ID: <85DFEED57DC57344B2483EF7BF8CB60579AE376D@BGSMSX104.gar.corp.intel.com>
+References: <1514955336-693-1-git-send-email-rakesh.a.ughreja@intel.com>
+ <s5hbmibc5sg.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 775D12676A9
- for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2018 23:20:40 +0100 (CET)
-Received: by mail-wm0-f68.google.com with SMTP id g130so21937916wme.0
- for <alsa-devel@alsa-project.org>; Wed, 03 Jan 2018 14:20:40 -0800 (PST)
-In-Reply-To: <20180103184241.11690-1-pierre-louis.bossart@linux.intel.com>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id BD1D32676A9
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 05:34:18 +0100 (CET)
+In-Reply-To: <s5hbmibc5sg.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,83 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, vinod.koul@intel.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, Bard Liao <bardliao@realtek.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul,
+ Vinod" <vinod.koul@intel.com>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On 03-01-18 19:42, Pierre-Louis Bossart wrote:
-> Commit 78f5605c0329 ("ASoC: rt5645: cleanup DMI matching code") did a
-> lot of useful cleanups, but the logic is a bit flawed: if there is no
-> DMI match on an ACPI machine, the code reads non-existent properties.
 
-Reading non existent properties is not a problem, notice that the check
-only checks if one of the properties is present, the others may still
-be unset, which is fine, then the code reading the properties will leave
-everything 0 / false.
-> Re-add previous code that checked for the existence of those
-> properties and a fallback mode to enable jd-mode3 if there is no
-> pdata, device property or quirk. This will help avoid having to add
-> new DMI quirks when only the jd-mode is needed for headset playback.
+>-----Original Message-----
+>From: Takashi Iwai [mailto:tiwai@suse.de]
+>Sent: Wednesday, January 3, 2018 9:07 PM
+>To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>
+>Cc: alsa-devel@alsa-project.org; broonie@kernel.org;
+>liam.r.girdwood@linux.intel.com; pierre-louis.bossart@linux.intel.com; Koul, Vinod
+><vinod.koul@intel.com>; Patches Audio <patches.audio@intel.com>
+>Subject: Re: [RFC v5 0/3] Enable HDA Codec support on Intel Platforms (Series1)
 
-Note I do think that defaulting to jd_mode = 3 is a good idea,
-I just believe that the commit message wrongly give the impression
-that reading non-existent props is a problem.
+>
+>Unfortunately my Dell machine has no DSP, and it doesn't give the
+>proper NHLT entry, thus the snd-soc-skl loading fails.
+>(BTW, there was a kernel WARNING hit by that; will submit the fix
+>patch later.)
 
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Cc: Bard Liao <bardliao@realtek.com>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->   sound/soc/codecs/rt5645.c | 15 ++++++++++++++-
->   1 file changed, 14 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-> index ebc4f5970f24..476020445f65 100644
-> --- a/sound/soc/codecs/rt5645.c
-> +++ b/sound/soc/codecs/rt5645.c
-> @@ -3687,6 +3687,17 @@ static const struct dmi_system_id dmi_platform_data[] = {
->   	{ }
->   };
->   
-> +static bool rt5645_check_dp(struct device *dev)
-> +{
-> +	if (device_property_present(dev, "realtek,in2-differential") ||
-> +	    device_property_present(dev, "realtek,dmic1-data-pin") ||
-> +	    device_property_present(dev, "realtek,dmic2-data-pin") ||
-> +	    device_property_present(dev, "realtek,jd-mode"))
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
->   static int rt5645_parse_dt(struct rt5645_priv *rt5645, struct device *dev)
->   {
->   	rt5645->pdata.in2_diff = device_property_read_bool(dev,
-> @@ -3727,8 +3738,10 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
->   
->   	if (pdata)
->   		rt5645->pdata = *pdata;
-> -	else
-> +	else if (rt5645_check_dp(&i2c->dev))
->   		rt5645_parse_dt(rt5645, &i2c->dev);
-> +	else
-> +		rt5645->pdata = jd_mode3_platform_data;
+Yes, you are right.
+Based on specification of Dell Latitude 7270, it looks like it is SKL
+SoC and so may not have DSP enabled in the BIOS.
 
-How about:
+>
+>So, only judging from the quick glance over the patches:
+>first off, the less change in ALSA legacy side than previous versions
+>is nice.  Where to call the probe and the remove of ext_ops is still a
+>slight question (whether it has to be the very beginning or not), but
+>it's a good start.
 
-		rt5645->pdata.jd_mode = 3;
+Based on your suggestion during the previous reviews, I tried reusing
+the other functions like snd_hda_codec_set_name, snd_hdac_regmap_init,
+patch, snd_hda_codec_build_pcms, snd_hda_codec_build_controls etc.
 
-instead and remove jd_mode3_platform_data and the 2 dmi table entries
-pointing to it ?
+Except the regmap_init function everything else requires snd_card which
+is created only at the machine driver load, so I was not able to reuse 
+any other function. That's why I am calling all these functions in the 
+snd_soc_codec probe time, and not during the hdac_dev probe.
+I have tried calling the regmap_init in the hdac_dev probe and things seem
+to work fine, but I am not sure if it is right thing to do, since the card is not
+created. 
+
+Do you know if we can do regmap_init before the card is created ?
+
+>
+>Maybe we can drop the introduction of bus type, too.  Basically just
+>checking the non-NULL bus->ext_ops should be enough to identify the
+>ext-bus type.
+
+Yes, sure. I will include this change in the next series.
 
 Regards,
-
-Hans
-
-
-
->   
->   	if (quirk != -1) {
->   		rt5645->pdata.in2_diff = QUIRK_IN2_DIFF(quirk);
-> 
+Rakesh
