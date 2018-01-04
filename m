@@ -1,22 +1,18 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH 3/3] ASoC: Intel: bytcht_es8316: fix HID
-	handling
-Date: Thu, 04 Jan 2018 19:13:03 +0200
-Message-ID: <1515085983.7000.688.camel@linux.intel.com>
-References: <20180103170242.5363-1-pierre-louis.bossart@linux.intel.com>
- <20180103170242.5363-4-pierre-louis.bossart@linux.intel.com>
- <1515077848.7000.676.camel@linux.intel.com>
- <1294a824-602c-66e0-35bb-a7b47f3e856a@linux.intel.com>
- <1515081629.7000.679.camel@linux.intel.com>
- <8608f1eb-d22a-75c3-f6a2-68929404e393@linux.intel.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: simple-card: Pass 'reg' property in the
+	examples
+Date: Thu,  4 Jan 2018 15:24:57 -0200
+Message-ID: <1515086697-25900-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E2EA267900
- for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 18:16:07 +0100 (CET)
-In-Reply-To: <8608f1eb-d22a-75c3-f6a2-68929404e393@linux.intel.com>
+Received: from mail-qk0-f195.google.com (mail-qk0-f195.google.com
+ [209.85.220.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 07C26267900
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 18:25:03 +0100 (CET)
+Received: by mail-qk0-f195.google.com with SMTP id x7so2806394qkb.0
+ for <alsa-devel@alsa-project.org>; Thu, 04 Jan 2018 09:25:03 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,33 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, vinod.koul@intel.com, broonie@kernel.org, jeremy@jcline.org, liam.r.girdwood@linux.intel.com
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2018-01-04 at 11:06 -0600, Pierre-Louis Bossart wrote:
-> On 1/4/18 10:00 AM, Andy Shevchenko wrote:
-> > On Thu, 2018-01-04 at 09:24 -0600, Pierre-Louis Bossart wrote:
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
-> > > we use this: snd_soc_acpi_find_name_from_hid(mach->id)
-> > > 
-> > > When I started all this the recommendation was to do all this on
-> > > the
-> > > audio side of things, I have no objections to a move of the
-> > > functionality in acpi.
-> > 
-> > I almost done a patch. I will Cc you for the series.
-> 
-> ok. The only concern I have is that this needs to be a somewhat 
-> contained change that doesn't depend on all sorts of other ACPI/GPIO 
-> changes. We will have to maintain a v4.14-based branch for a very
-> very 
-> long time and the simpler we make it for people who back-port or 
-> cherry-pick the better.
+Since unit addresses are passed to simple-audio-card,dai-link a
+corresponding 'reg' property is needed, otherwise dtc complains
+(when building with W=1) in case someone copies the bindings example
+into a real dts file:
 
-Yes, that is how series has been prepared. You basically need two first
-patches out of three from it. It had been sent already.
+Warning (unit_address_vs_reg): Node /sound-digital/simple-audio-card,dai-link@0 has a unit name, but no reg property
 
+Improve the example by passing the correct 'reg' properties.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+---
+ Documentation/devicetree/bindings/sound/simple-card.txt | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
+index 166f229..17c13e7 100644
+--- a/Documentation/devicetree/bindings/sound/simple-card.txt
++++ b/Documentation/devicetree/bindings/sound/simple-card.txt
+@@ -140,6 +140,7 @@ sound {
+ 	simple-audio-card,name = "Cubox Audio";
+ 
+ 	simple-audio-card,dai-link@0 {		/* I2S - HDMI */
++		reg = <0>;
+ 		format = "i2s";
+ 		cpu {
+ 			sound-dai = <&audio1 0>;
+@@ -150,6 +151,7 @@ sound {
+ 	};
+ 
+ 	simple-audio-card,dai-link@1 {		/* S/PDIF - HDMI */
++		reg = <1>;
+ 		cpu {
+ 			sound-dai = <&audio1 1>;
+ 		};
+@@ -159,6 +161,7 @@ sound {
+ 	};
+ 
+ 	simple-audio-card,dai-link@2 {		/* S/PDIF - S/PDIF */
++		reg = <2>;
+ 		cpu {
+ 			sound-dai = <&audio1 1>;
+ 		};
 -- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+2.7.4
