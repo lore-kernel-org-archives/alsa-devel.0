@@ -1,17 +1,22 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: aloop: Fix racy hw constraints adjustment
-Date: Thu,  4 Jan 2018 18:04:08 +0100
-Message-ID: <20180104170408.23750-1-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 3/3] ASoC: Intel: bytcht_es8316: fix HID
+	handling
+Date: Thu, 4 Jan 2018 11:06:01 -0600
+Message-ID: <8608f1eb-d22a-75c3-f6a2-68929404e393@linux.intel.com>
+References: <20180103170242.5363-1-pierre-louis.bossart@linux.intel.com>
+ <20180103170242.5363-4-pierre-louis.bossart@linux.intel.com>
+ <1515077848.7000.676.camel@linux.intel.com>
+ <1294a824-602c-66e0-35bb-a7b47f3e856a@linux.intel.com>
+ <1515081629.7000.679.camel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 7DD1A26790C
- for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 18:04:11 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 0520BAE06
- for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 17:04:11 +0000 (UTC)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9908B267900
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 18:06:04 +0100 (CET)
+In-Reply-To: <1515081629.7000.679.camel@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,149 +26,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, vinod.koul@intel.com, broonie@kernel.org, jeremy@jcline.org, liam.r.girdwood@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The aloop driver tries to update the hw constraints of the connected
-target on the cable of the opened PCM substream.  This is done by
-adding the extra hw constraints rules referring to the substream
-runtime->hw fields, while the other substream may update the runtime
-hw of another side on the fly.
+On 1/4/18 10:00 AM, Andy Shevchenko wrote:
+> On Thu, 2018-01-04 at 09:24 -0600, Pierre-Louis Bossart wrote:
+>> On 1/4/18 8:57 AM, Andy Shevchenko wrote:
+>>> On Wed, 2018-01-03 at 11:02 -0600, Pierre-Louis Bossart wrote:
+>>>>
+>>>> Fix by overriding the hard-coded value with the codec name derived
+>>>> from the HID information
+>>>
+>>> The patch makes me think about introducing acpi_dev_get_dev_name()
+>>> and
+>>> utilize it here since I need something similar to have in one of
+>>> GPIO
+>>> drivers.
+>>
+>> we use this: snd_soc_acpi_find_name_from_hid(mach->id)
+>>
+>> When I started all this the recommendation was to do all this on the
+>> audio side of things, I have no objections to a move of the
+>> functionality in acpi.
+> 
+> I almost done a patch. I will Cc you for the series.
 
-This is, however, racy and may result in the inconsistent values when
-both PCM streams perform the prepare concurrently.  One of the reason
-is that it overwrites the other's runtime->hw field; which is not only
-racy but also broken when it's called before the open of another side
-finishes.  And, since the reference to runtime->hw isn't protected,
-the concurrent write may give the partial value update and become
-inconsistent.
+ok. The only concern I have is that this needs to be a somewhat 
+contained change that doesn't depend on all sorts of other ACPI/GPIO 
+changes. We will have to maintain a v4.14-based branch for a very very 
+long time and the simpler we make it for people who back-port or 
+cherry-pick the better.
 
-This patch is an attempt to fix and clean up:
-- The prepare doesn't change the runtime->hw of other side any longer,
-  but only update the cable->hw that is referred commonly.
-- The extra rules refer to the loopback_pcm object instead of the
-  runtime->hw.  The actual hw is deduced from cable->hw.
-- The extra rules take the cable_lock to protect against the race.
+> 
+>>>> +static char codec_name[16]; /* i2c-<HID>:00 with HID being 8
+>>>> chars */
+>>>> +
+>>>
+>>> I would rather do use 4 + ACPI_ID_LEN + 3 /* or 1 + 2 */ + 1 and
+>>> explain
+>>> each part in the comment above.
+>>
+>> yes we could do this. this is the same code as in other machine
+>> drivers,
+>> so we should do the replacement across all of them in one shot in a
+>> separate patch.
+> 
+> Whatever you prefer, it's minor.
+>    
+>>>> +	mach = (&pdev->dev)->platform_data;
+>>>> +	/* fix index of codec dai */
+>>>> +	for (i = 0; i < ARRAY_SIZE(byt_cht_es8316_dais); i++) {
+>>>> +		if (!strcmp(byt_cht_es8316_dais[i].codec_name,
+>>>> +			    "i2c-ESSX8316:00")) {
+>>>> +			dai_index = i;
+>>>> +			break;
+>>>> +		}
+>>>
+>>> Perhaps at some point you can do such in more generic (across Intel
+>>> ASoCs) ?
+>>
+>> Not sure what you are hinting at here? Did you mean changing the name
+>> of
+>> the array? Or adding a helper function to do this?
+> 
+> Suggestion is to create a helper out of similar for-loops-fix-name in
+> all current users.
 
-Fixes: b1c73fc8e697 ("ALSA: snd-aloop: Fix hw_params restrictions and checking")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/drivers/aloop.c | 51 +++++++++++++++++++++------------------------------
- 1 file changed, 21 insertions(+), 30 deletions(-)
-
-diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
-index afac886ffa28..b1eee1a1e925 100644
---- a/sound/drivers/aloop.c
-+++ b/sound/drivers/aloop.c
-@@ -305,19 +305,6 @@ static int loopback_trigger(struct snd_pcm_substream *substream, int cmd)
- 	return 0;
- }
- 
--static void params_change_substream(struct loopback_pcm *dpcm,
--				    struct snd_pcm_runtime *runtime)
--{
--	struct snd_pcm_runtime *dst_runtime;
--
--	if (dpcm == NULL || dpcm->substream == NULL)
--		return;
--	dst_runtime = dpcm->substream->runtime;
--	if (dst_runtime == NULL)
--		return;
--	dst_runtime->hw = dpcm->cable->hw;
--}
--
- static void params_change(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -329,10 +316,6 @@ static void params_change(struct snd_pcm_substream *substream)
- 	cable->hw.rate_max = runtime->rate;
- 	cable->hw.channels_min = runtime->channels;
- 	cable->hw.channels_max = runtime->channels;
--	params_change_substream(cable->streams[SNDRV_PCM_STREAM_PLAYBACK],
--				runtime);
--	params_change_substream(cable->streams[SNDRV_PCM_STREAM_CAPTURE],
--				runtime);
- }
- 
- static int loopback_prepare(struct snd_pcm_substream *substream)
-@@ -620,12 +603,14 @@ static unsigned int get_cable_index(struct snd_pcm_substream *substream)
- static int rule_format(struct snd_pcm_hw_params *params,
- 		       struct snd_pcm_hw_rule *rule)
- {
--
--	struct snd_pcm_hardware *hw = rule->private;
-+	struct loopback_pcm *dpcm = rule->private;
-+	struct loopback_cable *cable = dpcm->cable;
- 	struct snd_mask *maskp = hw_param_mask(params, rule->var);
- 
--	maskp->bits[0] &= (u_int32_t)hw->formats;
--	maskp->bits[1] &= (u_int32_t)(hw->formats >> 32);
-+	mutex_lock(&dpcm->loopback->cable_lock);
-+	maskp->bits[0] &= (u_int32_t)cable->hw.formats;
-+	maskp->bits[1] &= (u_int32_t)(cable->hw.formats >> 32);
-+	mutex_unlock(&dpcm->loopback->cable_lock);
- 	memset(maskp->bits + 2, 0, (SNDRV_MASK_MAX-64) / 8); /* clear rest */
- 	if (! maskp->bits[0] && ! maskp->bits[1])
- 		return -EINVAL;
-@@ -635,11 +620,14 @@ static int rule_format(struct snd_pcm_hw_params *params,
- static int rule_rate(struct snd_pcm_hw_params *params,
- 		     struct snd_pcm_hw_rule *rule)
- {
--	struct snd_pcm_hardware *hw = rule->private;
-+	struct loopback_pcm *dpcm = rule->private;
-+	struct loopback_cable *cable = dpcm->cable;
- 	struct snd_interval t;
- 
--        t.min = hw->rate_min;
--        t.max = hw->rate_max;
-+	mutex_lock(&dpcm->loopback->cable_lock);
-+	t.min = cable->hw.rate_min;
-+	t.max = cable->hw.rate_max;
-+	mutex_unlock(&dpcm->loopback->cable_lock);
-         t.openmin = t.openmax = 0;
-         t.integer = 0;
- 	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
-@@ -648,11 +636,14 @@ static int rule_rate(struct snd_pcm_hw_params *params,
- static int rule_channels(struct snd_pcm_hw_params *params,
- 			 struct snd_pcm_hw_rule *rule)
- {
--	struct snd_pcm_hardware *hw = rule->private;
-+	struct loopback_pcm *dpcm = rule->private;
-+	struct loopback_cable *cable = dpcm->cable;
- 	struct snd_interval t;
- 
--        t.min = hw->channels_min;
--        t.max = hw->channels_max;
-+	mutex_lock(&dpcm->loopback->cable_lock);
-+	t.min = cable->hw.channels_min;
-+	t.max = cable->hw.channels_max;
-+	mutex_unlock(&dpcm->loopback->cable_lock);
-         t.openmin = t.openmax = 0;
-         t.integer = 0;
- 	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
-@@ -699,19 +690,19 @@ static int loopback_open(struct snd_pcm_substream *substream)
- 	/* are cached -> they do not reflect the actual state */
- 	err = snd_pcm_hw_rule_add(runtime, 0,
- 				  SNDRV_PCM_HW_PARAM_FORMAT,
--				  rule_format, &runtime->hw,
-+				  rule_format, dpcm,
- 				  SNDRV_PCM_HW_PARAM_FORMAT, -1);
- 	if (err < 0)
- 		goto unlock;
- 	err = snd_pcm_hw_rule_add(runtime, 0,
- 				  SNDRV_PCM_HW_PARAM_RATE,
--				  rule_rate, &runtime->hw,
-+				  rule_rate, dpcm,
- 				  SNDRV_PCM_HW_PARAM_RATE, -1);
- 	if (err < 0)
- 		goto unlock;
- 	err = snd_pcm_hw_rule_add(runtime, 0,
- 				  SNDRV_PCM_HW_PARAM_CHANNELS,
--				  rule_channels, &runtime->hw,
-+				  rule_channels, dpcm,
- 				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
- 	if (err < 0)
- 		goto unlock;
--- 
-2.15.1
+ok, I'll work on this. Thanks for the suggestion.
