@@ -1,39 +1,77 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [RESEND PATCH v2 14/15] ASoC: qcom: apq8096: Add db820c machine
- driver
-Date: Thu, 4 Jan 2018 09:25:24 +0000
-Message-ID: <e595cb26-e48b-335a-28bc-353a2a7d641a@linaro.org>
-References: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
- <20171214173402.19074-15-srinivas.kandagatla@linaro.org>
- <f72f32dd-e248-47c3-23cc-eabe1b85d9ae@codeaurora.org>
- <4db358ab-3171-bb08-ca26-ec9bf282e8d4@linaro.org>
- <20180103194151.GA21040@codeaurora.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/6] ASoC: rt5645: change micbias widget
+	type to supply.
+Date: Thu, 4 Jan 2018 10:53:43 +0000
+Message-ID: <20180104105343.GA10774@sirena.org.uk>
+References: <20180102185314.17189-1-hdegoede@redhat.com>
+ <20180102185314.17189-2-hdegoede@redhat.com>
+ <20180103105053.GA5603@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D702756F3C@RTITMBSV02.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180103194151.GA21040@codeaurora.org>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Stephen Boyd <sboyd@codeaurora.org>
-Cc: Andy Gross <andy.gross@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, David Brown <david.brown@linaro.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============0156001099348840632=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id F21052677F1
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 11:53:50 +0100 (CET)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D702756F3C@RTITMBSV02.realtek.com.tw>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Hans de Goede <hdegoede@redhat.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Koro Chen =?utf-8?B?KOmZs+aAnee/sCk=?= <koro.chen@mediatek.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 
+--===============0156001099348840632==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Qxx1br4bt0+wmkIi"
+Content-Disposition: inline
 
-On 03/01/18 19:41, Stephen Boyd wrote:
->>>> +	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
->>> Why do we need to do this? Can you add some sort of comment in the code
->>> about why?
->> Even though dsp supports 64 bit addresses, but the sid sits at
->> offset of 32, which brings this restriction of supporting only 32
->> bit iova.
->>
-> Doesn't the dsp have an iommu in place to make the address
-> translation from 64 to 32 bits transparent? I thought this was
-> what dma-ranges and iommu binding was for, but I'm not well
-> versed on all the details here.
-Thanks for reminding, dma-ranges would work too, I will give that a go 
-in next version.
 
---srini
+--Qxx1br4bt0+wmkIi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Jan 04, 2018 at 07:19:15AM +0000, Bard Liao wrote:
+
+> I found mt8173 from mediatek is using rt5650 micbias.
+> 	{"Headset Mic", NULL, "micbias1"},
+> 	{"Headset Mic", NULL, "micbias2"},
+> I think we should remove it but still need to verify.
+> We are co-working with MTK folks on it and it may take some days.
+
+That looks like normal supply usage for a micbias so most likely your
+patch is a fix for them anyway.
+
+--Qxx1br4bt0+wmkIi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpOB7UACgkQJNaLcl1U
+h9AXyggAg9DViiuj2vmK5kzZb9ZdxQwr0bhNvlHAmNGVeGLCzvhqHJn/ucQ8eqoF
+2zldoJXmcnShe74ArlBcncSmNAczYCjd8VxmBk44EFvSpbSqiDIbCAkp68CnVh1H
+dUYYnM6WuMk6BZuIwL9FnK2YCbJNsgYFeJKBLMTYo+4ryXcHENRAlIJms4l84c4A
+kSQ1IZJX1Gs1IJdqogTj7S/EuUoQmYBZW2T15MOa1i+J5nCiMh0J9XZZIiaciikW
+M0SU+4W51m3QXp973wf0apNE6zkuIKtMKvxZFoJ9aK/LJVZ6k2RdpGAdDuy81W06
+OA2IBSaZT2tzUZ/HTg6S9Dh0OxzMrw==
+=tESt
+-----END PGP SIGNATURE-----
+
+--Qxx1br4bt0+wmkIi--
+
+--===============0156001099348840632==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0156001099348840632==--
