@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v3 09/10] ASoC: Intel: kconfig: add some comments for if symbols
-Date: Thu,  4 Jan 2018 16:36:00 -0600
-Message-ID: <20180104223601.5831-10-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 08/10] ASoC: Intel: boards: align/fix SKL/BXT/KBL Kconfigs
+Date: Thu,  4 Jan 2018 16:35:59 -0600
+Message-ID: <20180104223601.5831-9-pierre-louis.bossart@linux.intel.com>
 References: <20180104223601.5831-1-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180104223601.5831-1-pierre-louis.bossart@linux.intel.com>
@@ -10,64 +10,86 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, broonie@kernel.org, torvalds@linux-foundation.org, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Vinod Koul <vinod.koul@intel.com>
+No reason why SND_SOC_INTEL_SST should be set here.
+Also make sure same dependencies are used everywhere (only last one has SPI
+in addition). Replace X86_INTEL_LPSS by MFD_INTEL_LPSS since the former
+makes no sense for Skylake+ devices
 
-Help in finding matching "if" endings by commenting the "endif".
-
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/soc/intel/boards/Kconfig | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/intel/boards/Kconfig | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
 diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 063611ad641c..e1b6addcd13d 100644
+index 08c482cc02f7..063611ad641c 100644
 --- a/sound/soc/intel/boards/Kconfig
 +++ b/sound/soc/intel/boards/Kconfig
-@@ -24,7 +24,7 @@ config SND_MFLD_MACHINE
-           Say Y if you have such a device.
-           If unsure select "N".
+@@ -178,7 +178,7 @@ if SND_SOC_INTEL_SKYLAKE
  
--endif
-+endif ## SND_SST_ATOM_HIFI2_PLATFORM_PCI
+ config SND_SOC_INTEL_SKL_RT286_MACH
+ 	tristate "ASoC Audio driver for SKL with RT286 I2S mode"
+-	depends on X86 && ACPI && I2C
++	depends on MFD_INTEL_LPSS && I2C && ACPI
+ 	select SND_SOC_RT286
+ 	select SND_SOC_DMIC
+ 	select SND_SOC_HDAC_HDMI
+@@ -190,7 +190,7 @@ config SND_SOC_INTEL_SKL_RT286_MACH
  
- if SND_SOC_INTEL_HASWELL
+ config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
+ 	tristate "ASoC Audio driver for SKL with NAU88L25 and SSM4567 in I2S Mode"
+-	depends on X86_INTEL_LPSS && I2C
++	depends on MFD_INTEL_LPSS && I2C && ACPI
+ 	select SND_SOC_NAU8825
+ 	select SND_SOC_SSM4567
+ 	select SND_SOC_DMIC
+@@ -203,7 +203,7 @@ config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
  
-@@ -57,7 +57,7 @@ config SND_SOC_INTEL_BROADWELL_MACH
- 	  Ultrabook platforms.
- 	  Say Y or m if you have such a device. This is a recommended option.
- 	  If unsure select "N".
--endif
-+endif ## SND_SOC_INTEL_HASWELL
+ config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
+ 	tristate "ASoC Audio driver for SKL with NAU88L25 and MAX98357A in I2S Mode"
+-	depends on X86_INTEL_LPSS && I2C
++	depends on MFD_INTEL_LPSS && I2C && ACPI
+ 	select SND_SOC_NAU8825
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_DMIC
+@@ -216,7 +216,7 @@ config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
  
- if SND_SOC_INTEL_BAYTRAIL
+ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
+ 	tristate "ASoC Audio driver for Broxton with DA7219 and MAX98357A in I2S Mode"
+-	depends on X86 && ACPI && I2C
++	depends on MFD_INTEL_LPSS && I2C && ACPI
+ 	select SND_SOC_DA7219
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_DMIC
+@@ -230,7 +230,7 @@ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
  
-@@ -80,7 +80,7 @@ config SND_SOC_INTEL_BYT_RT5640_MACH
- 	  with the RT5640 audio codec. This driver is deprecated, use
- 	  SND_SOC_INTEL_BYTCR_RT5640_MACH instead for better functionality.
+ config SND_SOC_INTEL_BXT_RT298_MACH
+ 	tristate "ASoC Audio driver for Broxton with RT298 I2S mode"
+-	depends on X86 && ACPI && I2C
++	depends on MFD_INTEL_LPSS && I2C && ACPI
+ 	select SND_SOC_RT298
+ 	select SND_SOC_DMIC
+ 	select SND_SOC_HDAC_HDMI
+@@ -243,8 +243,7 @@ config SND_SOC_INTEL_BXT_RT298_MACH
  
--endif
-+endif ## SND_SOC_INTEL_BAYTRAIL
+ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
+ 	tristate "ASoC Audio driver for KBL with RT5663 and MAX98927 in I2S Mode"
+-	depends on X86_INTEL_LPSS && I2C
+-	select SND_SOC_INTEL_SST
++	depends on MFD_INTEL_LPSS && I2C && ACPI
+ 	select SND_SOC_RT5663
+ 	select SND_SOC_MAX98927
+ 	select SND_SOC_DMIC
+@@ -257,8 +256,8 @@ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
  
- if SND_SST_ATOM_HIFI2_PLATFORM
- 
-@@ -172,7 +172,7 @@ config SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH
- 
- 	  If unsure select "N".
- 
--endif
-+endif ## SND_SST_ATOM_HIFI2_PLATFORM
- 
- if SND_SOC_INTEL_SKYLAKE
- 
-@@ -268,6 +268,6 @@ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
-           create an alsa sound card for RT5663 + RT5514 + MAX98927.
-           Say Y or m if you have such a device. This is a recommended option.
-           If unsure select "N".
--endif
-+endif ## SND_SOC_INTEL_SKYLAKE
- 
- endif ## SND_SOC_INTEL_MACH
+ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
+         tristate "ASoC Audio driver for KBL with RT5663, RT5514 and MAX98927 in I2S Mode"
+-        depends on X86_INTEL_LPSS && I2C && SPI
+-        select SND_SOC_INTEL_SST
++        depends on MFD_INTEL_LPSS && I2C && ACPI
++        depends on SPI
+         select SND_SOC_RT5663
+         select SND_SOC_RT5514
+         select SND_SOC_RT5514_SPI
 -- 
 2.14.1
