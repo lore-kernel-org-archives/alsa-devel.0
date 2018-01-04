@@ -1,131 +1,165 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: INFO: rcu detected stall in memcpy
-Date: Thu, 4 Jan 2018 13:08:45 +0100
-Message-ID: <CACT4Y+Z1oSMf8t4fWZ8_Na+TU=S59z-PTYeK71qO=Awy+nAmqw@mail.gmail.com>
-References: <001a113f711a23fe310561f21d1a@google.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rt5645: add micbias power control
+	select." to the asoc tree
+Date: Thu, 04 Jan 2018 12:37:20 +0000
+Message-ID: <E1eX4ls-000607-Kp@debutante>
+References: <20180102185314.17189-3-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <001a113f711a23fe310561f21d1a@google.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: syzbot <syzbot+387f48da65cb522abfe8@syzkaller.appspotmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc: =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>, LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>, syzkaller-bugs@googlegroups.com, Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E77526782A
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 13:37:30 +0100 (CET)
+In-Reply-To: <20180102185314.17189-3-hdegoede@redhat.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 4, 2018 at 1:03 PM, syzbot
-<syzbot+387f48da65cb522abfe8@syzkaller.appspotmail.com> wrote:
-> Hello,
->
-> syzkaller hit the following crash on
-> 30a7acd573899fd8b8ac39236eff6468b195ac7d
-> git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/master
-> compiler: gcc (GCC) 7.1.1 20170620
-> .config is attached
-> Raw console output is attached.
-> Unfortunately, I don't have any reproducer for this bug yet.
->
->
-> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> Reported-by: syzbot+387f48da65cb522abfe8@syzkaller.appspotmail.com
-> It will help syzbot understand when the bug is fixed. See footer for
-> details.
-> If you forward the report, please keep this part and the footer.
+The patch
 
-This looks ALSA-related. +ALSA maintainers.
+   ASoC: rt5645: add micbias power control select.
 
+has been applied to the asoc tree at
 
-> INFO: rcu_sched detected stalls on CPUs/tasks:
->         (detected by 0, t=125002 jiffies, g=15654, c=15653, q=133)
-> All QSes seen, last rcu_sched kthread activity 125002
-> (4294863411-4294738409), jiffies_till_next_fqs=3, root ->qsmask 0x0
-> syz-executor1   R  running task    24936 11943   3739 0x0000000c
-> Call Trace:
->  <IRQ>
->  sched_show_task+0x4a3/0x5e0 kernel/sched/core.c:5198
->  print_other_cpu_stall+0x996/0x1090 kernel/rcu/tree.c:1564
->  check_cpu_stall.isra.61+0x6e6/0x15b0 kernel/rcu/tree.c:1682
->  __rcu_pending kernel/rcu/tree.c:3440 [inline]
->  rcu_pending kernel/rcu/tree.c:3502 [inline]
->  rcu_check_callbacks+0x256/0xd00 kernel/rcu/tree.c:2842
->  update_process_times+0x30/0x60 kernel/time/timer.c:1628
->  tick_sched_handle+0x85/0x160 kernel/time/tick-sched.c:162
->  tick_sched_timer+0x42/0x120 kernel/time/tick-sched.c:1194
->  __run_hrtimer kernel/time/hrtimer.c:1211 [inline]
->  __hrtimer_run_queues+0x358/0xe20 kernel/time/hrtimer.c:1275
->  hrtimer_interrupt+0x1c2/0x5e0 kernel/time/hrtimer.c:1309
->  local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1025 [inline]
->  smp_apic_timer_interrupt+0x14a/0x700 arch/x86/kernel/apic/apic.c:1050
->  apic_timer_interrupt+0xa9/0xb0 arch/x86/entry/entry_64.S:920
->  </IRQ>
-> RIP: 0010:kasan_mem_to_shadow include/linux/kasan.h:30 [inline]
-> RIP: 0010:memory_is_poisoned_n mm/kasan/kasan.c:210 [inline]
-> RIP: 0010:memory_is_poisoned mm/kasan/kasan.c:241 [inline]
-> RIP: 0010:check_memory_region_inline mm/kasan/kasan.c:257 [inline]
-> RIP: 0010:check_memory_region+0x38/0x190 mm/kasan/kasan.c:267
-> RSP: 0000:ffff8801bd2ff868 EFLAGS: 00000212 ORIG_RAX: ffffffffffffff11
-> RAX: ffff7fffffffffff RBX: ffffc9000160020b RCX: ffffffff841fceaf
-> RDX: 0000000000000001 RSI: 0000000000000002 RDI: ffffc9000160020a
-> RBP: ffff8801bd2ff878 R08: ffffc9000160020a R09: dffffc0000000000
-> R10: 0000000000000001 R11: ffffed0037a5ff2e R12: ffffc9000160020a
-> R13: ffff8801bd2ff970 R14: dffffc0000000000 R15: ffffc9000160020a
->  memcpy+0x37/0x50 mm/kasan/kasan.c:303
->  memcpy include/linux/string.h:344 [inline]
->  cvt_s16_to_native sound/core/oss/mulaw.c:164 [inline]
->  mulaw_decode+0x52f/0x770 sound/core/oss/mulaw.c:195
->  mulaw_transfer+0x222/0x270 sound/core/oss/mulaw.c:273
->  snd_pcm_plug_write_transfer+0x22d/0x420 sound/core/oss/pcm_plugin.c:611
->  snd_pcm_oss_write2+0x260/0x420 sound/core/oss/pcm_oss.c:1311
->  snd_pcm_oss_write1 sound/core/oss/pcm_oss.c:1372 [inline]
->  snd_pcm_oss_write+0x5fe/0x830 sound/core/oss/pcm_oss.c:2646
->  __vfs_write+0xef/0x970 fs/read_write.c:480
->  vfs_write+0x189/0x510 fs/read_write.c:544
->  SYSC_write fs/read_write.c:589 [inline]
->  SyS_write+0xef/0x220 fs/read_write.c:581
->  entry_SYSCALL_64_fastpath+0x23/0x9a
-> RIP: 0033:0x452ac9
-> RSP: 002b:00007fa354a13c58 EFLAGS: 00000212 ORIG_RAX: 0000000000000001
-> RAX: ffffffffffffffda RBX: cccccccccccccccd RCX: 0000000000452ac9
-> RDX: 00000000fffffeb2 RSI: 0000000020083fc6 RDI: 0000000000000014
-> RBP: 00000000000005b5 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000212 R12: 00000000006f6998
-> R13: 00000000ffffffff R14: 00007fa354a146d4 R15: 0000000000000000
-> rcu_sched kthread starved for 125002 jiffies! g15654 c15653 f0x2
-> RCU_GP_WAIT_FQS(3) ->state=0x0 ->cpu=0
-> rcu_sched       R  running task    23456     8      2 0x80000000
-> Call Trace:
->  context_switch kernel/sched/core.c:2799 [inline]
->  __schedule+0x8eb/0x2060 kernel/sched/core.c:3375
->  schedule+0xf5/0x430 kernel/sched/core.c:3434
->  schedule_timeout+0x118/0x230 kernel/time/timer.c:1793
->  rcu_gp_kthread+0x9e5/0x1930 kernel/rcu/tree.c:2314
->  kthread+0x33c/0x400 kernel/kthread.c:238
->  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:524
->
->
-> ---
-> This bug is generated by a dumb bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for details.
-> Direct all questions to syzkaller@googlegroups.com.
->
-> syzbot will keep track of this bug report.
-> If you forgot to add the Reported-by tag, once the fix for this bug is
-> merged
-> into any tree, please reply to this email with:
-> #syz fix: exact-commit-title
-> To mark this as a duplicate of another syzbot report, please reply with:
-> #syz dup: exact-subject-of-another-report
-> If it's a one-off invalid bug report, please reply with:
-> #syz invalid
-> Note: if the crash happens again, it will cause creation of a new bug
-> report.
-> Note: all commands must start from beginning of the line in the email body.
->
-> --
-> You received this message because you are subscribed to the Google Groups
-> "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an
-> email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit
-> https://groups.google.com/d/msgid/syzkaller-bugs/001a113f711a23fe310561f21d1a%40google.com.
->
-> For more options, visit https://groups.google.com/d/optout.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From e61f3f31e5830f027d8eedb742bc48a9b3173699 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Wed, 3 Jan 2018 13:39:02 +0100
+Subject: [PATCH] ASoC: rt5645: add micbias power control select.
+
+We need to set a corresponding control bit before powering micbias up.
+
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+[hdegoede@redhat.com: Remove 2 unused variable declarations]
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5645.c | 56 +++++++++++++++++++++++++++++++++++++++++++++--
+ sound/soc/codecs/rt5645.h |  6 +++++
+ 2 files changed, 60 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 6f6da0abe220..fbaf36aeb587 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -1943,6 +1943,56 @@ static int rt5650_hp_event(struct snd_soc_dapm_widget *w,
+ 	return 0;
+ }
+ 
++static int rt5645_set_micbias1_event(struct snd_soc_dapm_widget *w,
++		struct snd_kcontrol *k, int  event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_update_bits(codec, RT5645_GEN_CTRL2,
++			RT5645_MICBIAS1_POW_CTRL_SEL_MASK,
++			RT5645_MICBIAS1_POW_CTRL_SEL_M);
++		break;
++
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_update_bits(codec, RT5645_GEN_CTRL2,
++			RT5645_MICBIAS1_POW_CTRL_SEL_MASK,
++			RT5645_MICBIAS1_POW_CTRL_SEL_A);
++		break;
++
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
++static int rt5645_set_micbias2_event(struct snd_soc_dapm_widget *w,
++		struct snd_kcontrol *k, int  event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_update_bits(codec, RT5645_GEN_CTRL2,
++			RT5645_MICBIAS2_POW_CTRL_SEL_MASK,
++			RT5645_MICBIAS2_POW_CTRL_SEL_M);
++		break;
++
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_update_bits(codec, RT5645_GEN_CTRL2,
++			RT5645_MICBIAS2_POW_CTRL_SEL_MASK,
++			RT5645_MICBIAS2_POW_CTRL_SEL_A);
++		break;
++
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
+ static const struct snd_soc_dapm_widget rt5645_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SUPPLY("LDO2", RT5645_PWR_MIXER,
+ 		RT5645_PWR_LDO2_BIT, 0, NULL, 0),
+@@ -1981,9 +2031,11 @@ static const struct snd_soc_dapm_widget rt5645_dapm_widgets[] = {
+ 	/* Input Side */
+ 	/* micbias */
+ 	SND_SOC_DAPM_SUPPLY("micbias1", RT5645_PWR_ANLG2,
+-			RT5645_PWR_MB1_BIT, 0, NULL, 0),
++			RT5645_PWR_MB1_BIT, 0, rt5645_set_micbias1_event,
++			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+ 	SND_SOC_DAPM_SUPPLY("micbias2", RT5645_PWR_ANLG2,
+-			RT5645_PWR_MB2_BIT, 0, NULL, 0),
++			RT5645_PWR_MB2_BIT, 0, rt5645_set_micbias2_event,
++			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+ 	/* Input Lines */
+ 	SND_SOC_DAPM_INPUT("DMIC L1"),
+ 	SND_SOC_DAPM_INPUT("DMIC R1"),
+diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
+index cfc5f97549eb..940325b28c29 100644
+--- a/sound/soc/codecs/rt5645.h
++++ b/sound/soc/codecs/rt5645.h
+@@ -2117,6 +2117,12 @@ enum {
+ #define RT5645_RXDC_SRC_STO			(0x0 << 7)
+ #define RT5645_RXDC_SRC_MONO			(0x1 << 7)
+ #define RT5645_RXDC_SRC_SFT			(7)
++#define RT5645_MICBIAS1_POW_CTRL_SEL_MASK	(0x1 << 5)
++#define RT5645_MICBIAS1_POW_CTRL_SEL_A		(0x0 << 5)
++#define RT5645_MICBIAS1_POW_CTRL_SEL_M		(0x1 << 5)
++#define RT5645_MICBIAS2_POW_CTRL_SEL_MASK	(0x1 << 4)
++#define RT5645_MICBIAS2_POW_CTRL_SEL_A		(0x0 << 4)
++#define RT5645_MICBIAS2_POW_CTRL_SEL_M		(0x1 << 4)
+ #define RT5645_RXDP2_SEL_MASK			(0x1 << 3)
+ #define RT5645_RXDP2_SEL_IF2			(0x0 << 3)
+ #define RT5645_RXDP2_SEL_ADC			(0x1 << 3)
+-- 
+2.15.1
