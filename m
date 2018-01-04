@@ -1,81 +1,54 @@
-From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
-Subject: Re: [RFC v5 0/3] Enable HDA Codec support on Intel
- Platforms (Series1)
-Date: Thu, 4 Jan 2018 04:34:05 +0000
-Message-ID: <85DFEED57DC57344B2483EF7BF8CB60579AE376D@BGSMSX104.gar.corp.intel.com>
-References: <1514955336-693-1-git-send-email-rakesh.a.ughreja@intel.com>
- <s5hbmibc5sg.wl-tiwai@suse.de>
+From: Ryder Lee <ryder.lee@mediatek.com>
+Subject: [PATCH v1 0/6] add "simple-mfd" support for MediaTek audio subsystem
+Date: Thu, 4 Jan 2018 15:44:02 +0800
+Message-ID: <cover.1515038387.git.ryder.lee@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id BD1D32676A9
- for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2018 05:34:18 +0100 (CET)
-In-Reply-To: <s5hbmibc5sg.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul,
- Vinod" <vinod.koul@intel.com>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, "broonie@kernel.org" <broonie@kernel.org>
+Content-Type: text/plain
+Return-path: <linux-clk-owner@vger.kernel.org>
+Sender: linux-clk-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Stephen Boyd <sboyd@codeaurora.org>
+Cc: Lee Jones <lee.jones@linaro.org>, Matthias Brugger <matthias.bgg@gmail.com>, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-clk@vger.kernel.org, Garlic Tseng <garlic.tseng@mediatek.com>, Ryder Lee <ryder.lee@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
+The reason for this series is that MediaTek audio hardware block expose more than
+a single functionality, but register those in different kernel subsystems.
+Same issue could also be found in MMSYS: https://lkml.org/lkml/2017/11/14/669
 
->-----Original Message-----
->From: Takashi Iwai [mailto:tiwai@suse.de]
->Sent: Wednesday, January 3, 2018 9:07 PM
->To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>
->Cc: alsa-devel@alsa-project.org; broonie@kernel.org;
->liam.r.girdwood@linux.intel.com; pierre-louis.bossart@linux.intel.com; Koul, Vinod
-><vinod.koul@intel.com>; Patches Audio <patches.audio@intel.com>
->Subject: Re: [RFC v5 0/3] Enable HDA Codec support on Intel Platforms (Series1)
+Hence use "simple-mfd" to handle this kind of situation, that will make sure all
+children are registered - and we don't need to write an MFD driver specially.
+It was tested on the bananapi-r2 and the MT2701/MT7622 EVB.
 
->
->Unfortunately my Dell machine has no DSP, and it doesn't give the
->proper NHLT entry, thus the snd-soc-skl loading fails.
->(BTW, there was a kernel WARNING hit by that; will submit the fix
->patch later.)
+[1]~[3]: modify the current audio driver accordingly.
+[5][6]: add clock driver for MT2701 and add missing data for MT7622.
 
-Yes, you are right.
-Based on specification of Dell Latitude 7270, it looks like it is SKL
-SoC and so may not have DSP enabled in the BIOS.
+changes since v1:
+ - To avoid writing an MFD driver, we add "simple-mfd" in the audsys binding.
+ - Move three top clocks to audio driver [1] as we remove mfd/mtk-audsys.c in v1.
 
->
->So, only judging from the quick glance over the patches:
->first off, the less change in ALSA legacy side than previous versions
->is nice.  Where to call the probe and the remove of ext_ops is still a
->slight question (whether it has to be the very beginning or not), but
->it's a good start.
+Ryder Lee (6):
+  ASoC: mediatek: add some core clocks for MT2701 AFE
+  ASoC: mediatek: modify MT2701 AFE driver to adapt mfd device
+  ASoC: mediatek: update MT2701 AFE documentation to adapt mfd device
+  dt-bindings: clock: mediatek: add "simple-mfd" in audsys documentation
+  clk: mediatek: update missing clock data for MT7622 audsys
+  clk: mediatek: add audsys support for MT2701
 
-Based on your suggestion during the previous reviews, I tried reusing
-the other functions like snd_hda_codec_set_name, snd_hdac_regmap_init,
-patch, snd_hda_codec_build_pcms, snd_hda_codec_build_controls etc.
+ .../bindings/arm/mediatek/mediatek,audsys.txt      |  21 ++-
+ .../devicetree/bindings/sound/mt2701-afe-pcm.txt   | 171 +++++++++++---------
+ drivers/clk/mediatek/Kconfig                       |   6 +
+ drivers/clk/mediatek/Makefile                      |   1 +
+ drivers/clk/mediatek/clk-mt2701-aud.c              | 174 +++++++++++++++++++++
+ drivers/clk/mediatek/clk-mt7622-aud.c              |   3 +-
+ include/dt-bindings/clock/mt7622-clk.h             |   3 +-
+ sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c  |  30 +++-
+ sound/soc/mediatek/mt2701/mt2701-afe-common.h      |   3 +
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c         |  45 +++---
+ sound/soc/mediatek/mt2701/mt2701-reg.h             |   1 -
+ 11 files changed, 345 insertions(+), 113 deletions(-)
+ create mode 100644 drivers/clk/mediatek/clk-mt2701-aud.c
 
-Except the regmap_init function everything else requires snd_card which
-is created only at the machine driver load, so I was not able to reuse 
-any other function. That's why I am calling all these functions in the 
-snd_soc_codec probe time, and not during the hdac_dev probe.
-I have tried calling the regmap_init in the hdac_dev probe and things seem
-to work fine, but I am not sure if it is right thing to do, since the card is not
-created. 
+-- 
+1.9.1
 
-Do you know if we can do regmap_init before the card is created ?
-
->
->Maybe we can drop the introduction of bus type, too.  Basically just
->checking the non-NULL bus->ext_ops should be enough to identify the
->ext-bus type.
-
-Yes, sure. I will include this change in the next series.
-
-Regards,
-Rakesh
