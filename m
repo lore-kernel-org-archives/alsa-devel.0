@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 1/4] ASoC: Intel: bytcr-rt5651: add quirk for
-	IN3P which may also be used
-Date: Fri,  5 Jan 2018 13:20:18 -0600
-Message-ID: <20180105192023.11229-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/4] ASoC: Intel: bytcr-rt5651: fix Kiano DMI
+	quirk
+Date: Fri,  5 Jan 2018 13:20:22 -0600
+Message-ID: <20180105192023.11229-6-pierre-louis.bossart@linux.intel.com>
 References: <20180105192023.11229-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 9553F267AB5
- for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2018 20:20:32 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C3594267AB5
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2018 20:20:36 +0100 (CET)
 In-Reply-To: <20180105192023.11229-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,73 +25,28 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, Carlo Caione <carlo@caione.org>, bardliao@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Keyon Jie <yang.jie@linux.intel.com>
+The current code doesn't enable the MCLK which reduces audio quality
+(PLL driven from BLCK), fix the quirk
 
-On Minnowboard Max with Realtek rt5651 eval board, the IN3P is
-connected to Headset Mic.
-
-Here add and select it for Minnowboard Max.
-
-Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+Tested-by: Carlo Caione <carlo@caione.org>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 488ec48f296a..de3758b2aac1 100644
+index 7d95008f1795..dfe6435f8ed0 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -39,6 +39,7 @@ enum {
- 	BYT_RT5651_IN1_MAP,
- 	BYT_RT5651_IN2_MAP,
- 	BYT_RT5651_IN1_IN2_MAP,
-+	BYT_RT5651_IN3_MAP,
- };
- 
- #define BYT_RT5651_MAP(quirk)	((quirk) & GENMASK(7, 0))
-@@ -63,6 +64,8 @@ static void log_quirks(struct device *dev)
- 		dev_info(dev, "quirk IN1_MAP enabled");
- 	if (BYT_RT5651_MAP(byt_rt5651_quirk) == BYT_RT5651_IN2_MAP)
- 		dev_info(dev, "quirk IN2_MAP enabled");
-+	if (BYT_RT5651_MAP(byt_rt5651_quirk) == BYT_RT5651_IN3_MAP)
-+		dev_info(dev, "quirk IN3_MAP enabled");
- 	if (byt_rt5651_quirk & BYT_RT5651_DMIC_EN)
- 		dev_info(dev, "quirk DMIC enabled");
- 	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN)
-@@ -179,6 +182,12 @@ static const struct snd_soc_dapm_route byt_rt5651_intmic_in1_in2_map[] = {
- 	{"IN3P", NULL, "Headset Mic"},
- };
- 
-+static const struct snd_soc_dapm_route byt_rt5651_intmic_in3_map[] = {
-+	{"Internal Mic", NULL, "micbias1"},
-+	{"IN3P", NULL, "Headset Mic"},
-+	{"IN1P", NULL, "Internal Mic"},
-+};
-+
- static const struct snd_kcontrol_new byt_rt5651_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Headphone"),
- 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-@@ -255,8 +264,7 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Circuitco"),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Minnowboard Max B3 PLATFORM"),
+@@ -281,7 +281,8 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "KIANO"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "KIANO SlimNote 14.2"),
  		},
--		.driver_data = (void *)(BYT_RT5651_DMIC_MAP |
--					BYT_RT5651_DMIC_EN),
-+		.driver_data = (void *)(BYT_RT5651_IN3_MAP),
+-		.driver_data = (void *)(BYT_RT5651_IN1_IN2_MAP),
++		.driver_data = (void *)(BYT_RT5651_MCLK_EN |
++					BYT_RT5651_IN1_IN2_MAP),
  	},
- 	{
- 		.callback = byt_rt5651_quirk_cb,
-@@ -293,6 +301,10 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
- 		custom_map = byt_rt5651_intmic_in1_in2_map;
- 		num_routes = ARRAY_SIZE(byt_rt5651_intmic_in1_in2_map);
- 		break;
-+	case BYT_RT5651_IN3_MAP:
-+		custom_map = byt_rt5651_intmic_in3_map;
-+		num_routes = ARRAY_SIZE(byt_rt5651_intmic_in3_map);
-+		break;
- 	default:
- 		custom_map = byt_rt5651_intmic_dmic_map;
- 		num_routes = ARRAY_SIZE(byt_rt5651_intmic_dmic_map);
+ 	{}
+ };
 -- 
 2.14.1
