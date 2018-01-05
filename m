@@ -1,162 +1,59 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 1/3] ACPI / utils: Introduce acpi_dev_get_dev_name()
-Date: Thu, 4 Jan 2018 18:47:56 -0600
-Message-ID: <5e21c7c3-83cf-e038-e57e-0dfa4640862e@linux.intel.com>
-References: <20180104164709.64387-1-andriy.shevchenko@linux.intel.com>
- <20180104164709.64387-2-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH 1/3] [PATCH] ASoC: acpi: fix machine driver
+ selection based on quirk
+Date: Thu, 4 Jan 2018 18:58:17 -0600
+Message-ID: <79f098ec-1a98-78d3-872e-22b038e16ac2@linux.intel.com>
+References: <20180103170242.5363-1-pierre-louis.bossart@linux.intel.com>
+ <20180103170242.5363-2-pierre-louis.bossart@linux.intel.com>
+ <1515071329.7000.668.camel@linux.intel.com>
+ <dbd1e594-9c6f-2780-2a9d-081214e48dd9@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <20180104164709.64387-2-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F0FA26799C
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2018 01:58:20 +0100 (CET)
+In-Reply-To: <dbd1e594-9c6f-2780-2a9d-081214e48dd9@linux.intel.com>
 Content-Language: en-US
-Sender: linux-acpi-owner@vger.kernel.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Erik Schmauss <erik.schmauss@intel.com>, linux-acpi@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, Mika Westerberg <mika.westerberg@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, vinod.koul@intel.com, broonie@kernel.org, jeremy@jcline.org, liam.r.girdwood@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 01/04/2018 10:47 AM, Andy Shevchenko wrote:
-> Sometimes the user want to have device name of the match rather than
-> just checking if device present or not. To make life easier for such
-> users introduce acpi_dev_get_dev_name() helper based on code for
-> acpi_dev_present().
->
-> To be more consistent with the purpose rename
->
->    struct acpi_dev_present_info  -> struct acpi_dev_match_info
->    acpi_dev_present_cb()         -> acpi_dev_match_cb()
->
-> in the utils.c file.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-This works fine on a Dell 5585 where the default codec dai name needs to 
-be updated based on the actual HID information, so
-Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-the next patch does not apply directly however, and needs additional 
-changes for the ES8316 machine driver. see the changes here: 
-https://github.com/plbossart/sound/tree/topic/bytcht-acpi-fixes
-
-It's probably best to let this patch go through the acpi tree, and the 
-next one through Mark's tree once the first is merged and all the other 
-Kconfig/acpi stuff is also in -next?
-
-> ---
->   drivers/acpi/utils.c    | 40 +++++++++++++++++++++++++++++++++-------
->   include/acpi/acpi_bus.h |  1 +
->   include/linux/acpi.h    |  6 ++++++
->   3 files changed, 40 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
-> index 9d49a1acebe3..1da9e986d510 100644
-> --- a/drivers/acpi/utils.c
-> +++ b/drivers/acpi/utils.c
-> @@ -737,16 +737,17 @@ bool acpi_dev_found(const char *hid)
->   }
->   EXPORT_SYMBOL(acpi_dev_found);
->   
-> -struct acpi_dev_present_info {
-> +struct acpi_dev_match_info {
-> +	const char *dev_name;
->   	struct acpi_device_id hid[2];
->   	const char *uid;
->   	s64 hrv;
->   };
->   
-> -static int acpi_dev_present_cb(struct device *dev, void *data)
-> +static int acpi_dev_match_cb(struct device *dev, void *data)
->   {
->   	struct acpi_device *adev = to_acpi_device(dev);
-> -	struct acpi_dev_present_info *match = data;
-> +	struct acpi_dev_match_info *match = data;
->   	unsigned long long hrv;
->   	acpi_status status;
->   
-> @@ -757,6 +758,8 @@ static int acpi_dev_present_cb(struct device *dev, void *data)
->   	    strcmp(adev->pnp.unique_id, match->uid)))
->   		return 0;
->   
-> +	match->dev_name = acpi_dev_name(adev);
-> +
->   	if (match->hrv == -1)
->   		return 1;
->   
-> @@ -789,20 +792,43 @@ static int acpi_dev_present_cb(struct device *dev, void *data)
->    */
->   bool acpi_dev_present(const char *hid, const char *uid, s64 hrv)
->   {
-> -	struct acpi_dev_present_info match = {};
-> +	struct acpi_dev_match_info match = {};
->   	struct device *dev;
->   
->   	strlcpy(match.hid[0].id, hid, sizeof(match.hid[0].id));
->   	match.uid = uid;
->   	match.hrv = hrv;
->   
-> -	dev = bus_find_device(&acpi_bus_type, NULL, &match,
-> -			      acpi_dev_present_cb);
-> -
-> +	dev = bus_find_device(&acpi_bus_type, NULL, &match, acpi_dev_match_cb);
->   	return !!dev;
->   }
->   EXPORT_SYMBOL(acpi_dev_present);
->   
-> +/**
-> + * acpi_dev_get_dev_name - Return device name of first match of ACPI device
-> + * @hid: Hardware ID of the device.
-> + * @uid: Unique ID of the device, pass NULL to not check _UID
-> + * @hrv: Hardware Revision of the device, pass -1 to not check _HRV
-> + *
-> + * Return device name if a matching device was present
-> + * at the moment of invocation, or NULL otherwise.
-> + *
-> + * See additional information in acpi_dev_present() as well.
-> + */
-> +const char *acpi_dev_get_dev_name(const char *hid, const char *uid, s64 hrv)
-> +{
-> +	struct acpi_dev_match_info match = {};
-> +	struct device *dev;
-> +
-> +	strlcpy(match.hid[0].id, hid, sizeof(match.hid[0].id));
-> +	match.uid = uid;
-> +	match.hrv = hrv;
-> +
-> +	dev = bus_find_device(&acpi_bus_type, NULL, &match, acpi_dev_match_cb);
-> +	return dev ? match.dev_name : NULL;
-> +}
-> +EXPORT_SYMBOL(acpi_dev_get_dev_name);
-> +
->   /*
->    * acpi_backlight= handling, this is done here rather then in video_detect.c
->    * because __setup cannot be used in modules.
-> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> index 79287629c888..8883f5ebb6ce 100644
-> --- a/include/acpi/acpi_bus.h
-> +++ b/include/acpi/acpi_bus.h
-> @@ -90,6 +90,7 @@ acpi_evaluate_dsm_typed(acpi_handle handle, const guid_t *guid, u64 rev,
->   
->   bool acpi_dev_found(const char *hid);
->   bool acpi_dev_present(const char *hid, const char *uid, s64 hrv);
-> +const char *acpi_dev_get_dev_name(const char *hid, const char *uid, s64 hrv);
->   
->   #ifdef CONFIG_ACPI
->   
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index 1922063f6894..d6576eec45d1 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -644,6 +644,12 @@ static inline bool acpi_dev_present(const char *hid, const char *uid, s64 hrv)
->   	return false;
->   }
->   
-> +static inline
-> +const char *acpi_dev_get_dev_name(const char *hid, const char *uid, s64 hrv)
-> +{
-> +	return NULL;
-> +}
-> +
->   static inline bool is_acpi_node(struct fwnode_handle *fwnode)
->   {
->   	return false;
-
+CgpPbiAwMS8wNC8yMDE4IDA5OjE4IEFNLCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPiBP
+biAxLzQvMTggNzowOCBBTSwgQW5keSBTaGV2Y2hlbmtvIHdyb3RlOgo+PiBPbiBXZWQsIDIwMTgt
+MDEtMDMgYXQgMTE6MDIgLTA2MDAsIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+Pj4gVGhl
+IEFDUEkvbWFjaGluZS1kcml2ZXIgY29kZSByZWZhY3RvcmluZyBpbnRyb2R1Y2VkIGluIDQuMTMg
+aW50cm9kdWNlZAo+Pj4gYSByZWdyZXNzaW9uIGZvciBjYXNlcyB3aGVyZSB3ZSBuZWVkIGEgRE1J
+LWJhc2VkIHF1aXJrIHRvIHNlbGVjdCB0aGUKPj4+IG1hY2hpbmUgZHJpdmVyICh0aGUgQklPUyBy
+ZXBvcnRzIGFuIGludmFsaWQgSElEKS4gVGhlIGZpeCBpcyBqdXN0IHRvCj4+PiBtYWtlIHN1cmUg
+dGhlIHJlc3VsdHMgb2YgdGhlIHF1aXJrIGFyZSBhY3R1YWxseSB1c2VkLgo+Pj4KPj4KPj4+IMKg
+wqDCoMKgwqAgZm9yIChtYWNoID0gbWFjaGluZXM7IG1hY2gtPmlkWzBdOyBtYWNoKyspIHsKPj4+
+IMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoc25kX3NvY19hY3BpX2NoZWNrX2hpZChtYWNoLT5pZCkg
+PT0gdHJ1ZSkgewo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKG1hY2gtPm1hY2hp
+bmVfcXVpcmsobWFjaCkgIT0gTlVMTCkKPj4KPj4gSnVzdCBhIG5pdDogcGVyaGFwcyB1c2UgbW9y
+ZSBuYXR1cmFsIHN0eWxlLCBpLmUuIGRyb3AgIiAhPSBOVUxMIiBwYXJ0Cj4+IG9mZj8KPgo+IG9r
+LgpJIGZvdW5kIG91dCB3aGlsZSB0ZXN0aW5nIEFuZHkncyBwYXRjaGVzIHRoYXQgdGhlcmUgd2Fz
+IGEgCm1lcmdlL2NvcHktcGFzdGUgbWlzdGFrZSBoZXJlIHdoaWNoIHdhc24ndCBkZXRlY3RlZCBp
+biBteSB0ZXN0cyAtIG5vdCAKc3VyZSBob3cuIGl0IHNob3VsZCBiZSAoYXMgaW4gdGhlIGluaXRp
+YWwgcGF0Y2ggb24gYnVnemlsbGEpCgppZiAobWFjaC0+bWFjaGluZV9xdWlyaykKIMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBtYWNoID0gbWFjaC0+bWFjaGluZV9xdWlyayhtYWNoKTsK
+CldpbGwgZml4IGluIHRoZSBuZXh0IHZlcnNpb24KCj4KPj4KPj4+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgbWFjaCA9IG1hY2gtPm1hY2hpbmVfcXVpcmsobWFjaCk7Cj4+PiArwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gbWFjaDsKPj4+IMKgwqDCoMKgwqDCoMKgwqDCoCB9
+Cj4+PiDCoMKgwqDCoMKgIH0KPj4+IMKgwqDCoMKgwqAgcmV0dXJuIE5VTEw7Cj4+Cj4KPiBfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
