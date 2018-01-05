@@ -1,76 +1,87 @@
-From: Sagar Arun Kamble <sagar.a.kamble@intel.com>
-Subject: Re: [alsa-devel] [PATCH 15/27] ALSA: hda - Use timecounter_initialize
- interface
-Date: Fri, 5 Jan 2018 15:36:56 +0530
-Message-ID: <d3e83230-dc06-fc2b-b507-723d4863fb4e@intel.com>
-References: <1513323522-15021-1-git-send-email-sagar.a.kamble@intel.com>
- <1513323522-15021-16-git-send-email-sagar.a.kamble@intel.com>
- <s5hh8ssgsaw.wl-tiwai@suse.de> <20171215165125.avkz25eek56i5md4@localhost>
- <s5h4lorx6ha.wl-tiwai@suse.de>
- <b0d5ff40-fbfe-e5b3-2844-7d930484e87f@intel.com>
- <20171228164944.crphv46zegvwautk@localhost>
- <1a9a1507-7ca3-459b-c2ce-02fc2afad2ff@intel.com>
- <3c5734a2-8f97-4a8b-26d4-42852cc86352@linux.intel.com>
- <20180102182146.vbfnihz73lhgf6lc@localhost>
- <9f09abee-68b8-4515-131f-0f3e210503b0@linux.intel.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: davinci-mcasp: Add rule to constrain the
+	minimum period size
+Date: Fri, 5 Jan 2018 12:18:07 +0200
+Message-ID: <20180105101807.7360-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <9f09abee-68b8-4515-131f-0f3e210503b0@linux.intel.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Richard Cochran <richardcochran@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lelnx194.ext.ti.com (lelnx194.ext.ti.com [198.47.27.80])
+ by alsa0.perex.cz (Postfix) with ESMTP id CD520266CFE
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2018 11:18:03 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, jsarha@ti.com
 List-Id: alsa-devel@alsa-project.org
 
+The minimum period size (in frames) must be not lower than the FIFO size
+of McASP and in general too small period size would easily result underrun
+in applications as eDMA - the most common DMA servicing McASP have support
+for limited number of periods.
 
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+Hi,
 
-On 1/3/2018 1:23 AM, Pierre-Louis Bossart wrote:
-> On 1/2/18 12:21 PM, Richard Cochran wrote:
->> On Tue, Jan 02, 2018 at 11:15:45AM -0600, Pierre-Louis Bossart wrote:
->>> I wrote the code for HDaudio and I remember wasting time trying to 
->>> figure
->>> out the gory details of the cycle counter stuff when all I wanted was a
->>> conversion from a 24MHz counter to ns values using a 125/3 operation 
->>> in the
->>> right order - as explained in the comments
->>
->> Would using clocks_calc_mult_shift() work for you?
->
-> In theory yes, but I'd need to re-check what the results would be.
-> I remember applying the 1/3 factor separately to avoid wrap-around 
-> after 4 hours [1], but I can't remember the details on the analysis. I 
-> can't figure out what the 'maxsec' argument should be either.
->
-I am not sure if I understood the wrap-around correctly. Is 
-AZX_REG_WALL_CLK 64bit or 32bit and in the comments which 20 bits are 
-being referred.
+I have tried to use
+snd_pcm_hw_constraint_minmax(..., SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 64, 0)
 
-Keeping maxsec at lower value will ensure good precision but the mult 
-factor derived then might lead to overflow if the interval of counter 
-read is big.
-Keeping maxsec high will reduce the mult factor and will marginally 
-impact the precision (of the order of 6 decimal places of fraction nano 
-second).
+but with that the refining code was not able to find suitable configuration.
 
-For 24mhz clock I am getting following scale factors at different maxsec 
-values. I think these are as good as 125/3
-125/3 gives scale factor of 41.666666666666666666666666666667
+Regards,
+Peter
 
-maxsec, mult, shift, scale factor (mult/(2^shift))
-0, 2796202667, 26,     41.66666667163372039794921875
-3600, 87381333, 21,   41.666666507720947265625
-14400, 21845333, 19, 41.6666660308837890625
+ sound/soc/davinci/davinci-mcasp.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-I see sound driver uses only timecounter_read so conversions should be fine.
-If there are usages of timecounter_cyc2time then we will have to take 
-care of updating the timecounter often as
-timecounter API internally counts time backwards if counter is spaced 
-more than 1/2 the range.
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 51c61a6861af..ba4da45902b8 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -1263,6 +1263,20 @@ static int davinci_mcasp_hw_rule_format(struct snd_pcm_hw_params *params,
+ 	return snd_mask_refine(fmt, &nfmt);
+ }
+ 
++static int davinci_mcasp_hw_rule_min_periodsize(
++		struct snd_pcm_hw_params *params, struct snd_pcm_hw_rule *rule)
++{
++	struct snd_interval *period_size = hw_param_interval(params,
++						SNDRV_PCM_HW_PARAM_PERIOD_SIZE);
++	struct snd_interval frames;
++
++	snd_interval_any(&frames);
++	frames.min = 64;
++	frames.integer = 1;
++
++	return snd_interval_refine(period_size, &frames);
++}
++
+ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
+ 				 struct snd_soc_dai *cpu_dai)
+ {
+@@ -1354,6 +1368,11 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
+ 			return ret;
+ 	}
+ 
++	snd_pcm_hw_rule_add(substream->runtime, 0,
++			    SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
++			    davinci_mcasp_hw_rule_min_periodsize, NULL,
++			    SNDRV_PCM_HW_PARAM_PERIOD_SIZE, -1);
++
+ 	return 0;
+ }
+ 
+-- 
+Peter
 
-Thanks
-Sagar
-> [1] 
-> http://elixir.free-electrons.com/linux/latest/source/sound/hda/hdac_stream.c#L486 
->
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
