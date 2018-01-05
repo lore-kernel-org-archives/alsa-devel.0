@@ -1,170 +1,71 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/3] ALSA: aloop: Fix racy hw constraints
-	adjustment
-Date: Fri,  5 Jan 2018 16:54:28 +0100
-Message-ID: <20180105155428.14621-4-tiwai@suse.de>
-References: <20180105155428.14621-1-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2 1/3] ACPI / utils: Introduce acpi_dev_get_dev_name()
+Date: Fri, 5 Jan 2018 09:55:31 -0600
+Message-ID: <4a1db265-a1cd-727e-1bf5-474d5f662955@linux.intel.com>
+References: <20180104164709.64387-1-andriy.shevchenko@linux.intel.com>
+ <20180104164709.64387-2-andriy.shevchenko@linux.intel.com>
+ <CAJZ5v0ih7RCPCdmVyn-RV39pUmZvodZs9S9-Av_ucY4mZ7vTrA@mail.gmail.com>
+ <1515154920.7000.732.camel@linux.intel.com>
+ <CAJZ5v0hYYPXT=Z8qnAV3mniF1hJ8Vu9t+MzUPX7o6Wg4zaUHwQ@mail.gmail.com>
+ <1515155974.7000.735.camel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F738266A74
- for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2018 16:54:31 +0100 (CET)
-In-Reply-To: <20180105155428.14621-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Dmitry Vyukov <dvyukov@google.com>
+Return-path: <linux-gpio-owner@vger.kernel.org>
+In-Reply-To: <1515155974.7000.735.camel@linux.intel.com>
+Content-Language: en-US
+Sender: linux-gpio-owner@vger.kernel.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Erik Schmauss <erik.schmauss@intel.com>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, Mika Westerberg <mika.westerberg@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The aloop driver tries to update the hw constraints of the connected
-target on the cable of the opened PCM substream.  This is done by
-adding the extra hw constraints rules referring to the substream
-runtime->hw fields, while the other substream may update the runtime
-hw of another side on the fly.
+On 1/5/18 6:39 AM, Andy Shevchenko wrote:
+> On Fri, 2018-01-05 at 13:34 +0100, Rafael J. Wysocki wrote:
+>> On Fri, Jan 5, 2018 at 1:22 PM, Andy Shevchenko
+>> <andriy.shevchenko@linux.intel.com> wrote:
+>>> On Fri, 2018-01-05 at 13:06 +0100, Rafael J. Wysocki wrote:
+>>>> On Thu, Jan 4, 2018 at 5:47 PM, Andy Shevchenko
+>>>> <andriy.shevchenko@linux.intel.com> wrote:
+> 
+>>> "Subset of Intel ASoC drivers is an existing user of this API when
+>>> they
+>>> need to find an actual instance of the codec device based on its
+>>> ACPI
+>>> HID."
+>>
+>> And why do they need the name (and not something else)?
+> 
+> I don't know the guts of Intel ASoC implementation, so, can't answer
+> this without investigation.
+> 
+> Pierre, can you elaborate this piece?
 
-This is, however, racy and may result in the inconsistent values when
-both PCM streams perform the prepare concurrently.  One of the reason
-is that it overwrites the other's runtime->hw field; which is not only
-racy but also broken when it's called before the open of another side
-finishes.  And, since the reference to runtime->hw isn't protected,
-the concurrent write may give the partial value update and become
-inconsistent.
+Because the ASoC DAI structures use strings to represent the codec name. 
+See e.g.
 
-This patch is an attempt to fix and clean up:
-- The prepare doesn't change the runtime->hw of other side any longer,
-  but only update the cable->hw that is referred commonly.
-- The extra rules refer to the loopback_pcm object instead of the
-  runtime->hw.  The actual hw is deduced from cable->hw.
-- The extra rules take the cable_lock to protect against the race.
+http://elixir.free-electrons.com/linux/latest/source/sound/soc/intel/boards/cht_bsw_rt5645.c#L480
+http://elixir.free-electrons.com/linux/latest/source/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c#L37
 
-Fixes: b1c73fc8e697 ("ALSA: snd-aloop: Fix hw_params restrictions and checking")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/drivers/aloop.c | 51 +++++++++++++++++++++------------------------------
- 1 file changed, 21 insertions(+), 30 deletions(-)
+In most cases a hard-coded name is fine, except when the BIOS uses a 
+different HID or the ACPI subsystem changes the :00 ending to :01
 
-diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
-index 006521db487d..0333143a1fa7 100644
---- a/sound/drivers/aloop.c
-+++ b/sound/drivers/aloop.c
-@@ -306,19 +306,6 @@ static int loopback_trigger(struct snd_pcm_substream *substream, int cmd)
- 	return 0;
- }
- 
--static void params_change_substream(struct loopback_pcm *dpcm,
--				    struct snd_pcm_runtime *runtime)
--{
--	struct snd_pcm_runtime *dst_runtime;
--
--	if (dpcm == NULL || dpcm->substream == NULL)
--		return;
--	dst_runtime = dpcm->substream->runtime;
--	if (dst_runtime == NULL)
--		return;
--	dst_runtime->hw = dpcm->cable->hw;
--}
--
- static void params_change(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -330,10 +317,6 @@ static void params_change(struct snd_pcm_substream *substream)
- 	cable->hw.rate_max = runtime->rate;
- 	cable->hw.channels_min = runtime->channels;
- 	cable->hw.channels_max = runtime->channels;
--	params_change_substream(cable->streams[SNDRV_PCM_STREAM_PLAYBACK],
--				runtime);
--	params_change_substream(cable->streams[SNDRV_PCM_STREAM_CAPTURE],
--				runtime);
- }
- 
- static int loopback_prepare(struct snd_pcm_substream *substream)
-@@ -621,24 +604,29 @@ static unsigned int get_cable_index(struct snd_pcm_substream *substream)
- static int rule_format(struct snd_pcm_hw_params *params,
- 		       struct snd_pcm_hw_rule *rule)
- {
--
--	struct snd_pcm_hardware *hw = rule->private;
-+	struct loopback_pcm *dpcm = rule->private;
-+	struct loopback_cable *cable = dpcm->cable;
- 	struct snd_mask m;
- 
- 	snd_mask_none(&m);
--	m.bits[0] = (u_int32_t)hw->formats;
--	m.bits[1] = (u_int32_t)(hw->formats >> 32);
-+	mutex_lock(&dpcm->loopback->cable_lock);
-+	m.bits[0] = (u_int32_t)cable->hw.formats;
-+	m.bits[1] = (u_int32_t)(cable->hw.formats >> 32);
-+	mutex_unlock(&dpcm->loopback->cable_lock);
- 	return snd_mask_refine(hw_param_mask(params, rule->var), &m);
- }
- 
- static int rule_rate(struct snd_pcm_hw_params *params,
- 		     struct snd_pcm_hw_rule *rule)
- {
--	struct snd_pcm_hardware *hw = rule->private;
-+	struct loopback_pcm *dpcm = rule->private;
-+	struct loopback_cable *cable = dpcm->cable;
- 	struct snd_interval t;
- 
--        t.min = hw->rate_min;
--        t.max = hw->rate_max;
-+	mutex_lock(&dpcm->loopback->cable_lock);
-+	t.min = cable->hw.rate_min;
-+	t.max = cable->hw.rate_max;
-+	mutex_unlock(&dpcm->loopback->cable_lock);
-         t.openmin = t.openmax = 0;
-         t.integer = 0;
- 	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
-@@ -647,11 +635,14 @@ static int rule_rate(struct snd_pcm_hw_params *params,
- static int rule_channels(struct snd_pcm_hw_params *params,
- 			 struct snd_pcm_hw_rule *rule)
- {
--	struct snd_pcm_hardware *hw = rule->private;
-+	struct loopback_pcm *dpcm = rule->private;
-+	struct loopback_cable *cable = dpcm->cable;
- 	struct snd_interval t;
- 
--        t.min = hw->channels_min;
--        t.max = hw->channels_max;
-+	mutex_lock(&dpcm->loopback->cable_lock);
-+	t.min = cable->hw.channels_min;
-+	t.max = cable->hw.channels_max;
-+	mutex_unlock(&dpcm->loopback->cable_lock);
-         t.openmin = t.openmax = 0;
-         t.integer = 0;
- 	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
-@@ -716,19 +707,19 @@ static int loopback_open(struct snd_pcm_substream *substream)
- 	/* are cached -> they do not reflect the actual state */
- 	err = snd_pcm_hw_rule_add(runtime, 0,
- 				  SNDRV_PCM_HW_PARAM_FORMAT,
--				  rule_format, &runtime->hw,
-+				  rule_format, dpcm,
- 				  SNDRV_PCM_HW_PARAM_FORMAT, -1);
- 	if (err < 0)
- 		goto unlock;
- 	err = snd_pcm_hw_rule_add(runtime, 0,
- 				  SNDRV_PCM_HW_PARAM_RATE,
--				  rule_rate, &runtime->hw,
-+				  rule_rate, dpcm,
- 				  SNDRV_PCM_HW_PARAM_RATE, -1);
- 	if (err < 0)
- 		goto unlock;
- 	err = snd_pcm_hw_rule_add(runtime, 0,
- 				  SNDRV_PCM_HW_PARAM_CHANNELS,
--				  rule_channels, &runtime->hw,
-+				  rule_channels, dpcm,
- 				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
- 	if (err < 0)
- 		goto unlock;
--- 
-2.15.1
+So what the code does is that you look for a set of known HIDs, create 
+the machine driver and pass the HID as pdata, then in the machine driver 
+once you query the string that lets ASoC do the rest of the card creation.
+
+You can argue that ASoC should not use strings, but that's not really a 
+debate at this point: all I am trying to do is to make devices work when 
+their BIOS is slightly different from the norm.
+
+> 
+>>> So, acpi_dev_get_name() then?
+>>
+>> It would be somewhat clearer to call it
+>> acpi_dev_get_first_match_name() IMO.
+>>
+>> Otherwise it may not be clear what name this is going to return.
+> 
+> Works for me.
+> 
+> 
+
