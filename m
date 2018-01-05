@@ -1,57 +1,44 @@
-From: Matthias Kaehlcke <mka@chromium.org>
-Subject: Re: [PATCH] ASoC: codecs: dmic: Use channel map for configs with a
- single mic
-Date: Fri, 5 Jan 2018 11:18:36 -0800
-Message-ID: <20180105191836.GA111999@google.com>
-References: <20180104194848.198941-1-mka@chromium.org>
- <20180104195438.GA200397@google.com>
- <295ce358-c00e-74ce-50c1-1df32c2c6cf7@st.com>
- <20180105120455.GA9076@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/4] Intel/rt5651 updates
+Date: Fri,  5 Jan 2018 13:20:17 -0600
+Message-ID: <20180105192023.11229-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180105120455.GA9076@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Bhumika Goyal <bhumirks@gmail.com>, huang lin <hl@rock-chips.com>, Brian Norris <briannorris@chromium.org>, Dylan Reid <dgreid@chromium.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A42A267AA9
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2018 20:20:30 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, Carlo Caione <carlo@caione.org>, bardliao@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-El Fri, Jan 05, 2018 at 12:04:55PM +0000 Mark Brown ha dit:
+Fix existing quirks and add new ones, and add support for LineIn
 
-> On Fri, Jan 05, 2018 at 11:45:43AM +0100, Arnaud Pouliquen wrote:
-> 
-> > >> +             num-channels = <1>;
-> 
-> > In your implementation seems not linked to hardware but software...
-> 
-> > DMIC driver description specifies the channels_max to 8 channels.
-> > I suppose that it is used for DMIC codecs that integrate filters and are
-> > connected to CPU DAI with I2S/PCM links. But it can be also used for
-> > DMIC connected to CPU DAI with a SPI link (in this case decimation
-> > filter in on Soc side).
-> 
-> The intention with the DMIC CODEC is that it's used when the CPU
-> directly has PDM inputs and the DMICs are just directly wired to it
-> (stereo is obviously the norm here but some SoCs may bunch things up
-> further for use with mic arrays).
-> 
-> > If we continue to support both use cases, specify the number of channels
-> > seems reasonable but this should be use to change the max channel
-> > constraint, not to declare a control.
-> 
-> Yes, that would seem the most obvious thing - it's how we handle things
-> like CPU DAIs that support very high channel counts when connected to
-> stereo CODECs for example.  It's not obvious why we'd use a channel map
-> here instead.
+An updated UCM file supporting all possible inputs/outputs is
+available at https://github.com/plbossart/UCM/tree/master/bytcr-rt5651
+Additional validation of the microphone/LineIn settings is still on-going
+with Carlo Caione and Realtek.
 
-Thanks for the feedback!
+Keyon Jie (1):
+  ASoC: Intel: bytcr-rt5651: add quirk for IN3P which may also be used
 
-I experimented initially with changing channels_max, but overwriting
-dmic_dai.capture.channels_max didn't seem right since it would affect
-other possible instances of the codec. I overlooked that this can be
-avoided by passing a *copy* with adjusted channels_max to
-snd_soc_register_codec().
+Pierre-Louis Bossart (3):
+  ASoC: Intel: bytcr-rt5651: enable MinnowBoard Turbot quirks
+  ASoC: Intel: bytcr-rt5651: fix Kiano DMI quirk
+  ASoC: Intel: bytcr-rt5651: add support for Line In
 
-Matthias
+ sound/soc/intel/boards/bytcr_rt5651.c | 34 +++++++++++++++++++++++++++++++---
+ 1 file changed, 31 insertions(+), 3 deletions(-)
+
+-- 
+2.14.1
