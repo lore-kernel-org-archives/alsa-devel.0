@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 2/4] ASoC: Intel: bytcr_rt5651: enable
+Subject: [PATCH 2/4] ASoC: Intel: bytcr-rt5651: enable
 	MinnowBoard Turbot quirks
-Date: Fri,  5 Jan 2018 13:20:19 -0600
-Message-ID: <20180105192023.11229-3-pierre-louis.bossart@linux.intel.com>
+Date: Fri,  5 Jan 2018 13:20:20 -0600
+Message-ID: <20180105192023.11229-4-pierre-louis.bossart@linux.intel.com>
 References: <20180105192023.11229-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 63B23267AB1
- for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2018 20:20:32 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 95B12267AB7
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2018 20:20:33 +0100 (CET)
 In-Reply-To: <20180105192023.11229-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
