@@ -1,67 +1,95 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v2 1/3] ACPI / utils: Introduce acpi_dev_get_dev_name()
-Date: Fri, 05 Jan 2018 14:43:55 +0200
-Message-ID: <1515156235.7000.740.camel@linux.intel.com>
-References: <20180104164709.64387-1-andriy.shevchenko@linux.intel.com>
-         <20180104164709.64387-2-andriy.shevchenko@linux.intel.com>
-         <5e21c7c3-83cf-e038-e57e-0dfa4640862e@linux.intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [bug report] soundwire: Add IO transfer
+Date: Fri, 5 Jan 2018 16:47:05 +0300
+Message-ID: <20180105134705.tgpqwx2vz7x4ja3f@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <5e21c7c3-83cf-e038-e57e-0dfa4640862e@linux.intel.com>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Erik Schmauss <erik.schmauss@intel.com>, linux-acpi@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, Mika Westerberg <mika.westerberg@linux.intel.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from userp2120.oracle.com (userp2120.oracle.com [156.151.31.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id D3491267A16
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2018 14:47:24 +0100 (CET)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: vinod.koul@intel.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2018-01-04 at 18:47 -0600, Pierre-Louis Bossart wrote:
-> 
-> On 01/04/2018 10:47 AM, Andy Shevchenko wrote:
-> > Sometimes the user want to have device name of the match rather than
-> > just checking if device present or not. To make life easier for such
-> > users introduce acpi_dev_get_dev_name() helper based on code for
-> > acpi_dev_present().
-> > 
-> > To be more consistent with the purpose rename
-> > 
-> >    struct acpi_dev_present_info  -> struct acpi_dev_match_info
-> >    acpi_dev_present_cb()         -> acpi_dev_match_cb()
-> > 
-> > in the utils.c file.
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> This works fine on a Dell 5585 where the default codec dai name needs
-> to 
-> be updated based on the actual HID information, so
-> Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Hello Vinod Koul,
 
-Thanks!
+The patch 9d715fa005eb: "soundwire: Add IO transfer" from Dec 14,
+2017, leads to the following static checker warning:
 
-Is this only for patch 1, or for both 1 and 2 ?
+	drivers/soundwire/bus.c:309 sdw_nread()
+	info: return a literal instead of 'ret'
 
-> the next patch does not apply directly however, and needs additional 
-> changes for the ES8316 machine driver. see the changes here: 
-> https://github.com/plbossart/sound/tree/topic/bytcht-acpi-fixes
+drivers/soundwire/bus.c
+   297  int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+   298  {
+   299          struct sdw_msg msg;
+   300          int ret;
+   301  
+   302          ret = sdw_fill_msg(&msg, slave, addr, count,
+   303                          slave->dev_num, SDW_MSG_FLAG_READ, val);
+   304          if (ret < 0)
+   305                  return ret;
+   306  
+   307          ret = pm_runtime_get_sync(slave->bus->dev);
+   308          if (!ret)
+   309                  return ret;
 
-You mean because of this
-https://github.com/plbossart/sound/commit/2416827fa6d221b27edd6397f17daa
-a1f3cd5fb0
-?
+Changing "return ret;" to "return 0;" is more readable, but I mostly
+am not sure this is correct.  rpm_resume() has crap comments.  It
+sometimes returns negatives, sometimes zero and sometimes one but I have
+no idea what it means...  Probably this check should be:
 
-I.e. I need to rebase on top of your series.
+		if (ret <= 0)
+			return ret;
 
-> It's probably best to let this patch go through the acpi tree, and
-> the 
-> next one through Mark's tree once the first is merged and all the
-> other 
-> Kconfig/acpi stuff is also in -next?
+(Bugs like this is why the static checker warning exists).
 
-It wouldn't prevent to push patch 3 as well via linux-pm at the same
-time as patch 1.
+   310  
+   311          ret = sdw_transfer(slave->bus, &msg);
+   312          pm_runtime_put(slave->bus->dev);
+   313  
+   314          return ret;
+   315  }
+   316  EXPORT_SYMBOL(sdw_nread);
+   317  
+   318  /**
+   319   * sdw_nwrite() - Write "n" contiguous SDW Slave registers
+   320   * @slave: SDW Slave
+   321   * @addr: Register address
+   322   * @count: length
+   323   * @val: Buffer for values to be read
+   324   */
+   325  int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+   326  {
+   327          struct sdw_msg msg;
+   328          int ret;
+   329  
+   330          ret = sdw_fill_msg(&msg, slave, addr, count,
+   331                          slave->dev_num, SDW_MSG_FLAG_WRITE, val);
+   332          if (ret < 0)
+   333                  return ret;
+   334  
+   335          ret = pm_runtime_get_sync(slave->bus->dev);
+   336          if (!ret)
+   337                  return ret;
 
-Linus, do you have any objection on that?
+Same static checker warning here.
 
--- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+   338  
+   339          ret = sdw_transfer(slave->bus, &msg);
+   340          pm_runtime_put(slave->bus->dev);
+
+regards,
+dan carpenter
