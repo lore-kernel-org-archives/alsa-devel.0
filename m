@@ -1,52 +1,164 @@
-From: Matthias Kaehlcke <mka@chromium.org>
-Subject: [PATCH] ASoC: rockchip: i2s: Support mono capture
-Date: Fri,  5 Jan 2018 14:12:42 -0800
-Message-ID: <20180105221242.22083-1-mka@chromium.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, Brian Norris <briannorris@chromium.org>, Dylan Reid <dgreid@chromium.org>, Matthias Kaehlcke <mka@chromium.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v3 1/3] ACPI / utils: Introduce acpi_dev_get_first_match_name()
+Date: Sat, 6 Jan 2018 00:27:03 +0100
+Message-ID: <CAJZ5v0iH+2JHe8vCR9tQX62ULwx_eVd1QGPtinSLNDzWx1NmEg@mail.gmail.com>
+References: <20180105160935.48588-1-andriy.shevchenko@linux.intel.com> <20180105160935.48588-2-andriy.shevchenko@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-gpio-owner@vger.kernel.org>
+In-Reply-To: <20180105160935.48588-2-andriy.shevchenko@linux.intel.com>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: "Rafael J . Wysocki" <rjw@rjwysocki.net>, Erik Schmauss <erik.schmauss@intel.com>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, Mika Westerberg <mika.westerberg@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The Rockchip I2S controller only allows to configure even numbers of
-capture channels. It is still possible to capture monophonic audio by
-using dual-channel mode and ignoring the 'data' from the second
-channel.
+On Fri, Jan 5, 2018 at 5:09 PM, Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> Sometimes the user wants to have device name of the match rather than
+> just checking if device present or not. To make life easier for such
+> users introduce acpi_dev_get_first_match_name() helper based on code
+> for acpi_dev_present().
+>
+> For example, GPIO driver for Intel Merrifield needs to know the device
+> name of pin control to be able to apply GPIO mapping table to the proper
+> device.
+>
+> To be more consistent with the purpose rename
+>
+>   struct acpi_dev_present_info  -> struct acpi_dev_match_info
+>   acpi_dev_present_cb()         -> acpi_dev_match_cb()
+>
+> in the utils.c file.
+>
+> Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
----
- sound/soc/rockchip/rockchip_i2s.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+OK, so which way do you want this to go in?
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 908211e1d6fc..cc22ab3d10dd 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -328,6 +328,7 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
- 		val |= I2S_CHN_4;
- 		break;
- 	case 2:
-+	case 1:
- 		val |= I2S_CHN_2;
- 		break;
- 	default:
-@@ -460,7 +461,7 @@ static struct snd_soc_dai_driver rockchip_i2s_dai = {
- 	},
- 	.capture = {
- 		.stream_name = "Capture",
--		.channels_min = 2,
-+		.channels_min = 1,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_8000_192000,
- 		.formats = (SNDRV_PCM_FMTBIT_S8 |
-@@ -654,7 +655,7 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
- 	}
- 
- 	if (!of_property_read_u32(node, "rockchip,capture-channels", &val)) {
--		if (val >= 2 && val <= 8)
-+		if (val >= 1 && val <= 8)
- 			soc_dai->capture.channels_max = val;
- 	}
- 
--- 
-2.16.0.rc0.223.g4a4ac83678-goog
+> ---
+>  drivers/acpi/utils.c    | 41 ++++++++++++++++++++++++++++++++++-------
+>  include/acpi/acpi_bus.h |  3 +++
+>  include/linux/acpi.h    |  6 ++++++
+>  3 files changed, 43 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
+> index 9d49a1acebe3..78db97687f26 100644
+> --- a/drivers/acpi/utils.c
+> +++ b/drivers/acpi/utils.c
+> @@ -737,16 +737,17 @@ bool acpi_dev_found(const char *hid)
+>  }
+>  EXPORT_SYMBOL(acpi_dev_found);
+>
+> -struct acpi_dev_present_info {
+> +struct acpi_dev_match_info {
+> +       const char *dev_name;
+>         struct acpi_device_id hid[2];
+>         const char *uid;
+>         s64 hrv;
+>  };
+>
+> -static int acpi_dev_present_cb(struct device *dev, void *data)
+> +static int acpi_dev_match_cb(struct device *dev, void *data)
+>  {
+>         struct acpi_device *adev = to_acpi_device(dev);
+> -       struct acpi_dev_present_info *match = data;
+> +       struct acpi_dev_match_info *match = data;
+>         unsigned long long hrv;
+>         acpi_status status;
+>
+> @@ -757,6 +758,8 @@ static int acpi_dev_present_cb(struct device *dev, void *data)
+>             strcmp(adev->pnp.unique_id, match->uid)))
+>                 return 0;
+>
+> +       match->dev_name = acpi_dev_name(adev);
+> +
+>         if (match->hrv == -1)
+>                 return 1;
+>
+> @@ -789,20 +792,44 @@ static int acpi_dev_present_cb(struct device *dev, void *data)
+>   */
+>  bool acpi_dev_present(const char *hid, const char *uid, s64 hrv)
+>  {
+> -       struct acpi_dev_present_info match = {};
+> +       struct acpi_dev_match_info match = {};
+>         struct device *dev;
+>
+>         strlcpy(match.hid[0].id, hid, sizeof(match.hid[0].id));
+>         match.uid = uid;
+>         match.hrv = hrv;
+>
+> -       dev = bus_find_device(&acpi_bus_type, NULL, &match,
+> -                             acpi_dev_present_cb);
+> -
+> +       dev = bus_find_device(&acpi_bus_type, NULL, &match, acpi_dev_match_cb);
+>         return !!dev;
+>  }
+>  EXPORT_SYMBOL(acpi_dev_present);
+>
+> +/**
+> + * acpi_dev_get_first_match_name - Return name of first match of ACPI device
+> + * @hid: Hardware ID of the device.
+> + * @uid: Unique ID of the device, pass NULL to not check _UID
+> + * @hrv: Hardware Revision of the device, pass -1 to not check _HRV
+> + *
+> + * Return device name if a matching device was present
+> + * at the moment of invocation, or NULL otherwise.
+> + *
+> + * See additional information in acpi_dev_present() as well.
+> + */
+> +const char *
+> +acpi_dev_get_first_match_name(const char *hid, const char *uid, s64 hrv)
+> +{
+> +       struct acpi_dev_match_info match = {};
+> +       struct device *dev;
+> +
+> +       strlcpy(match.hid[0].id, hid, sizeof(match.hid[0].id));
+> +       match.uid = uid;
+> +       match.hrv = hrv;
+> +
+> +       dev = bus_find_device(&acpi_bus_type, NULL, &match, acpi_dev_match_cb);
+> +       return dev ? match.dev_name : NULL;
+> +}
+> +EXPORT_SYMBOL(acpi_dev_get_first_match_name);
+> +
+>  /*
+>   * acpi_backlight= handling, this is done here rather then in video_detect.c
+>   * because __setup cannot be used in modules.
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index 79287629c888..c9608b0b80c6 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -91,6 +91,9 @@ acpi_evaluate_dsm_typed(acpi_handle handle, const guid_t *guid, u64 rev,
+>  bool acpi_dev_found(const char *hid);
+>  bool acpi_dev_present(const char *hid, const char *uid, s64 hrv);
+>
+> +const char *
+> +acpi_dev_get_first_match_name(const char *hid, const char *uid, s64 hrv);
+> +
+>  #ifdef CONFIG_ACPI
+>
+>  #include <linux/proc_fs.h>
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index 60f0d3248125..493ac6451773 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -642,6 +642,12 @@ static inline bool acpi_dev_present(const char *hid, const char *uid, s64 hrv)
+>         return false;
+>  }
+>
+> +static inline const char *
+> +acpi_dev_get_first_match_name(const char *hid, const char *uid, s64 hrv)
+> +{
+> +       return NULL;
+> +}
+> +
+>  static inline bool is_acpi_node(struct fwnode_handle *fwnode)
+>  {
+>         return false;
+> --
+> 2.15.1
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
