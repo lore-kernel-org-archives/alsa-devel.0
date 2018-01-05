@@ -1,78 +1,76 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: mt8173: remove unnecessary micbias
-	widget in route
-Date: Fri, 5 Jan 2018 17:00:51 +0800
-Message-ID: <1515142851-11445-1-git-send-email-bardliao@realtek.com>
+From: Sagar Arun Kamble <sagar.a.kamble@intel.com>
+Subject: Re: [alsa-devel] [PATCH 15/27] ALSA: hda - Use timecounter_initialize
+ interface
+Date: Fri, 5 Jan 2018 15:36:56 +0530
+Message-ID: <d3e83230-dc06-fc2b-b507-723d4863fb4e@intel.com>
+References: <1513323522-15021-1-git-send-email-sagar.a.kamble@intel.com>
+ <1513323522-15021-16-git-send-email-sagar.a.kamble@intel.com>
+ <s5hh8ssgsaw.wl-tiwai@suse.de> <20171215165125.avkz25eek56i5md4@localhost>
+ <s5h4lorx6ha.wl-tiwai@suse.de>
+ <b0d5ff40-fbfe-e5b3-2844-7d930484e87f@intel.com>
+ <20171228164944.crphv46zegvwautk@localhost>
+ <1a9a1507-7ca3-459b-c2ce-02fc2afad2ff@intel.com>
+ <3c5734a2-8f97-4a8b-26d4-42852cc86352@linux.intel.com>
+ <20180102182146.vbfnihz73lhgf6lc@localhost>
+ <9f09abee-68b8-4515-131f-0f3e210503b0@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id D0807266CFE
- for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2018 10:01:01 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, koro.chen@mediatek.com, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <9f09abee-68b8-4515-131f-0f3e210503b0@linux.intel.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Richard Cochran <richardcochran@gmail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Thomas Gleixner <tglx@linutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-The micbias1/2 are connected to route as SUPPLY usage. It was not
-take effect since they were MICBIAS type. To keep the same register
-settings, we have to remove it once the micbias1/2 widget is converted
-to SUPPLY type.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c | 2 --
- sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c | 2 --
- sound/soc/mediatek/mt8173/mt8173-rt5650.c        | 2 --
- 3 files changed, 6 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
-index 99c1521..5a9a548 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
-@@ -37,8 +37,6 @@ static const struct snd_soc_dapm_route mt8173_rt5650_rt5514_routes[] = {
- 	{"Sub DMIC1R", NULL, "Int Mic"},
- 	{"Headphone", NULL, "HPOL"},
- 	{"Headphone", NULL, "HPOR"},
--	{"Headset Mic", NULL, "micbias1"},
--	{"Headset Mic", NULL, "micbias2"},
- 	{"IN1P", NULL, "Headset Mic"},
- 	{"IN1N", NULL, "Headset Mic"},
- };
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
-index 42de84c..b724808 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
-@@ -40,8 +40,6 @@ static const struct snd_soc_dapm_route mt8173_rt5650_rt5676_routes[] = {
- 	{"Headphone", NULL, "HPOL"},
- 	{"Headphone", NULL, "HPOR"},
- 	{"Headphone", NULL, "Sub AIF2TX"}, /* IF2 ADC to 5650  */
--	{"Headset Mic", NULL, "micbias1"},
--	{"Headset Mic", NULL, "micbias2"},
- 	{"IN1P", NULL, "Headset Mic"},
- 	{"IN1N", NULL, "Headset Mic"},
- 	{"Sub AIF2RX", NULL, "Headset Mic"}, /* IF2 DAC from 5650  */
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-index e69c141..40ebefd 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-@@ -51,8 +51,6 @@ static const struct snd_soc_dapm_route mt8173_rt5650_routes[] = {
- 	{"DMIC R1", NULL, "Int Mic"},
- 	{"Headphone", NULL, "HPOL"},
- 	{"Headphone", NULL, "HPOR"},
--	{"Headset Mic", NULL, "micbias1"},
--	{"Headset Mic", NULL, "micbias2"},
- 	{"IN1P", NULL, "Headset Mic"},
- 	{"IN1N", NULL, "Headset Mic"},
- };
--- 
-2.7.4
+On 1/3/2018 1:23 AM, Pierre-Louis Bossart wrote:
+> On 1/2/18 12:21 PM, Richard Cochran wrote:
+>> On Tue, Jan 02, 2018 at 11:15:45AM -0600, Pierre-Louis Bossart wrote:
+>>> I wrote the code for HDaudio and I remember wasting time trying to 
+>>> figure
+>>> out the gory details of the cycle counter stuff when all I wanted was a
+>>> conversion from a 24MHz counter to ns values using a 125/3 operation 
+>>> in the
+>>> right order - as explained in the comments
+>>
+>> Would using clocks_calc_mult_shift() work for you?
+>
+> In theory yes, but I'd need to re-check what the results would be.
+> I remember applying the 1/3 factor separately to avoid wrap-around 
+> after 4 hours [1], but I can't remember the details on the analysis. I 
+> can't figure out what the 'maxsec' argument should be either.
+>
+I am not sure if I understood the wrap-around correctly. Is 
+AZX_REG_WALL_CLK 64bit or 32bit and in the comments which 20 bits are 
+being referred.
+
+Keeping maxsec at lower value will ensure good precision but the mult 
+factor derived then might lead to overflow if the interval of counter 
+read is big.
+Keeping maxsec high will reduce the mult factor and will marginally 
+impact the precision (of the order of 6 decimal places of fraction nano 
+second).
+
+For 24mhz clock I am getting following scale factors at different maxsec 
+values. I think these are as good as 125/3
+125/3 gives scale factor of 41.666666666666666666666666666667
+
+maxsec, mult, shift, scale factor (mult/(2^shift))
+0, 2796202667, 26,     41.66666667163372039794921875
+3600, 87381333, 21,   41.666666507720947265625
+14400, 21845333, 19, 41.6666660308837890625
+
+I see sound driver uses only timecounter_read so conversions should be fine.
+If there are usages of timecounter_cyc2time then we will have to take 
+care of updating the timecounter often as
+timecounter API internally counts time backwards if counter is spaced 
+more than 1/2 the range.
+
+Thanks
+Sagar
+> [1] 
+> http://elixir.free-electrons.com/linux/latest/source/sound/hda/hdac_stream.c#L486 
+>
