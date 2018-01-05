@@ -1,75 +1,52 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v7] ASoC: TSCS42xx: Add support for Tempo
- Semiconductor's TSCS42xx audio CODEC
-Date: Fri, 5 Jan 2018 12:38:03 +0000
-Message-ID: <20180105123803.GD9076@sirena.org.uk>
-References: <20171219205415.wlu4atv2mdy7i3gb@localhost.localdomain>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v2 1/3] ACPI / utils: Introduce acpi_dev_get_dev_name()
+Date: Fri, 05 Jan 2018 14:39:34 +0200
+Message-ID: <1515155974.7000.735.camel@linux.intel.com>
+References: <20180104164709.64387-1-andriy.shevchenko@linux.intel.com>
+         <20180104164709.64387-2-andriy.shevchenko@linux.intel.com>
+         <CAJZ5v0ih7RCPCdmVyn-RV39pUmZvodZs9S9-Av_ucY4mZ7vTrA@mail.gmail.com>
+         <1515154920.7000.732.camel@linux.intel.com>
+         <CAJZ5v0hYYPXT=Z8qnAV3mniF1hJ8Vu9t+MzUPX7o6Wg4zaUHwQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9091247203223781165=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CECE267A16
- for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2018 13:38:06 +0100 (CET)
-In-Reply-To: <20171219205415.wlu4atv2mdy7i3gb@localhost.localdomain>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Philippe Ombredanne <pombredanne@nexb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-gpio-owner@vger.kernel.org>
+In-Reply-To: <CAJZ5v0hYYPXT=Z8qnAV3mniF1hJ8Vu9t+MzUPX7o6Wg4zaUHwQ@mail.gmail.com>
+Sender: linux-gpio-owner@vger.kernel.org
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Erik Schmauss <erik.schmauss@intel.com>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, Mika Westerberg <mika.westerberg@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2018-01-05 at 13:34 +0100, Rafael J. Wysocki wrote:
+> On Fri, Jan 5, 2018 at 1:22 PM, Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Fri, 2018-01-05 at 13:06 +0100, Rafael J. Wysocki wrote:
+> > > On Thu, Jan 4, 2018 at 5:47 PM, Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
 
---===============9091247203223781165==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="UfEAyuTBtIjiZzX6"
-Content-Disposition: inline
+> > "Subset of Intel ASoC drivers is an existing user of this API when
+> > they
+> > need to find an actual instance of the codec device based on its
+> > ACPI
+> > HID."
+> 
+> And why do they need the name (and not something else)?
 
+I don't know the guts of Intel ASoC implementation, so, can't answer
+this without investigation.
 
---UfEAyuTBtIjiZzX6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Pierre, can you elaborate this piece?
 
-On Tue, Dec 19, 2017 at 02:54:25PM -0600, Steven Eckhoff wrote:
-> Currently there is no support for TSCS42xx audio CODECs.
->=20
-> Add support for TSCS42xx audio CODECs.
+> > So, acpi_dev_get_name() then?
+> 
+> It would be somewhat clearer to call it
+> acpi_dev_get_first_match_name() IMO.
+> 
+> Otherwise it may not be clear what name this is going to return.
 
-This doesn't apply cleanly against current code, what did you submit
-against?  :(  These aren't trivial things that have just been added to
-my tree in this development cycle either, it looks like you're
-submitting against some older kernel.  I've applied anyway but please be
-careful.
-
---UfEAyuTBtIjiZzX6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpPcaoACgkQJNaLcl1U
-h9C/uAf/f7zxEUprNCXNxDht+ujYRmJgRLxUqx+24wj7eOWPxrOgivw4IFYoP2Wj
-EBdIrdpmtOtrMV53ineqLwbDYW1pfryM77ybv5+1MYDinNdGsI0dtSUCzQjNGsGj
-efk5eW0YJQNgVGCDt8yjIuNTWle9a0bYhqy4Ns+EwtBc1X3HSlgPfxkqz3CgMviB
-RvqtD0zObqmgRqSIAaP6fmmxXnQFIaymgqMOtkhsJaVW6kj/ArEi3SzNLBeGWBrr
-vPL/Dmp8CoKkRuWm9nWyPqvuW08lrKtN/txq8uCKJjDidc7tAmtTKHxLEUqchguf
-Y8givkvAq2R8G30lgkWi1pPNMosowQ==
-=N5Xc
------END PGP SIGNATURE-----
-
---UfEAyuTBtIjiZzX6--
-
---===============9091247203223781165==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Works for me.
 
 
---===============9091247203223781165==--
+-- 
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Intel Finland Oy
