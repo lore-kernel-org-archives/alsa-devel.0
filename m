@@ -1,146 +1,52 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 4/4] ASoC: acpi: remove hard-coded
-	i2c-device name length
-Date: Fri,  5 Jan 2018 14:55:36 -0600
-Message-ID: <20180105205536.10366-5-pierre-louis.bossart@linux.intel.com>
-References: <20180105205536.10366-1-pierre-louis.bossart@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 4D49D267AD3
- for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2018 21:55:49 +0100 (CET)
-In-Reply-To: <20180105205536.10366-1-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, jeremy@jcline.org, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com
+From: Matthias Kaehlcke <mka@chromium.org>
+Subject: [PATCH] ASoC: rockchip: i2s: Support mono capture
+Date: Fri,  5 Jan 2018 14:12:42 -0800
+Message-ID: <20180105221242.22083-1-mka@chromium.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, Brian Norris <briannorris@chromium.org>, Dylan Reid <dgreid@chromium.org>, Matthias Kaehlcke <mka@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Remove hard-coded [16] array size, replace with clearer description and
-dependency on ACPI_ID_LEN
-No functionality change
+The Rockchip I2S controller only allows to configure even numbers of
+capture channels. It is still possible to capture monophonic audio by
+using dual-channel mode and ignoring the 'data' from the second
+channel.
 
-Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
 ---
- include/sound/soc-acpi.h                | 3 +++
- sound/soc/intel/boards/bytcht_da7213.c  | 2 +-
- sound/soc/intel/boards/bytcht_es8316.c  | 2 +-
- sound/soc/intel/boards/bytcr_rt5640.c   | 2 +-
- sound/soc/intel/boards/bytcr_rt5651.c   | 2 +-
- sound/soc/intel/boards/cht_bsw_rt5645.c | 4 ++--
- sound/soc/intel/boards/cht_bsw_rt5672.c | 2 +-
- 7 files changed, 10 insertions(+), 7 deletions(-)
+ sound/soc/rockchip/rockchip_i2s.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
-index d1aaf876cd26..703c78483113 100644
---- a/include/sound/soc-acpi.h
-+++ b/include/sound/soc-acpi.h
-@@ -27,6 +27,9 @@ struct snd_soc_acpi_package_context {
- 	bool data_valid;
- };
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 908211e1d6fc..cc22ab3d10dd 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -328,6 +328,7 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		val |= I2S_CHN_4;
+ 		break;
+ 	case 2:
++	case 1:
+ 		val |= I2S_CHN_2;
+ 		break;
+ 	default:
+@@ -460,7 +461,7 @@ static struct snd_soc_dai_driver rockchip_i2s_dai = {
+ 	},
+ 	.capture = {
+ 		.stream_name = "Capture",
+-		.channels_min = 2,
++		.channels_min = 1,
+ 		.channels_max = 2,
+ 		.rates = SNDRV_PCM_RATE_8000_192000,
+ 		.formats = (SNDRV_PCM_FMTBIT_S8 |
+@@ -654,7 +655,7 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+ 	}
  
-+/* codec name is used in DAIs is i2c-<HID>:00 with HID being 8 chars */
-+#define SND_SOC_ACPI_I2C_DEVICE_NAME_LEN (4 + ACPI_ID_LEN + 3 + 1)
-+
- #if IS_ENABLED(CONFIG_ACPI)
- /* translation fron HID to I2C name, needed for DAI codec_name */
- const char *snd_soc_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN]);
-diff --git a/sound/soc/intel/boards/bytcht_da7213.c b/sound/soc/intel/boards/bytcht_da7213.c
-index c4d82ad41bd7..06c6a5deb071 100644
---- a/sound/soc/intel/boards/bytcht_da7213.c
-+++ b/sound/soc/intel/boards/bytcht_da7213.c
-@@ -219,7 +219,7 @@ static struct snd_soc_card bytcht_da7213_card = {
- 	.num_dapm_routes = ARRAY_SIZE(audio_map),
- };
- 
--static char codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
-+static char codec_name[SND_SOC_ACPI_I2C_DEVICE_NAME_LEN];
- 
- static int bytcht_da7213_probe(struct platform_device *pdev)
- {
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index ae24f6205f05..0da04ebc118e 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -232,7 +232,7 @@ static struct snd_soc_card byt_cht_es8316_card = {
- 	.fully_routed = true,
- };
- 
--static char codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
-+static char codec_name[SND_SOC_ACPI_I2C_DEVICE_NAME_LEN];
- 
- static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- {
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index f2c0fc415e52..e7bbbc0eba55 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -713,7 +713,7 @@ static struct snd_soc_card byt_rt5640_card = {
- 	.fully_routed = true,
- };
- 
--static char byt_rt5640_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
-+static char byt_rt5640_codec_name[SND_SOC_ACPI_I2C_DEVICE_NAME_LEN];
- static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
- static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
- 
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 488ec48f296a..23966105a494 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -481,7 +481,7 @@ static struct snd_soc_card byt_rt5651_card = {
- 	.fully_routed = true,
- };
- 
--static char byt_rt5651_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
-+static char byt_rt5651_codec_name[SND_SOC_ACPI_I2C_DEVICE_NAME_LEN];
- 
- static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- {
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index f898ee140cdc..50acb55fe153 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -49,7 +49,7 @@ struct cht_acpi_card {
- struct cht_mc_private {
- 	struct snd_soc_jack jack;
- 	struct cht_acpi_card *acpi_card;
--	char codec_name[16];
-+	char codec_name[SND_SOC_ACPI_I2C_DEVICE_NAME_LEN];
- 	struct clk *mclk;
- };
- 
-@@ -506,7 +506,7 @@ static struct cht_acpi_card snd_soc_cards[] = {
- 	{"10EC5650", CODEC_TYPE_RT5650, &snd_soc_card_chtrt5650},
- };
- 
--static char cht_rt5645_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
-+static char cht_rt5645_codec_name[SND_SOC_ACPI_I2C_DEVICE_NAME_LEN];
- static char cht_rt5645_codec_aif_name[12]; /*  = "rt5645-aif[1|2]" */
- static char cht_rt5645_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
- 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
-index f8f21eee9b2d..b1decdacbae7 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
-@@ -35,7 +35,7 @@
- 
- struct cht_mc_private {
- 	struct snd_soc_jack headset;
--	char codec_name[16];
-+	char codec_name[SND_SOC_ACPI_I2C_DEVICE_NAME_LEN];
- 	struct clk *mclk;
- };
+ 	if (!of_property_read_u32(node, "rockchip,capture-channels", &val)) {
+-		if (val >= 2 && val <= 8)
++		if (val >= 1 && val <= 8)
+ 			soc_dai->capture.channels_max = val;
+ 	}
  
 -- 
-2.14.1
+2.16.0.rc0.223.g4a4ac83678-goog
