@@ -1,15 +1,15 @@
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 2/2] ASoC: Intel: sst: Fix some style
-Date: Sat,  6 Jan 2018 21:18:55 +0100
-Message-ID: <20180106201855.6131-1-christophe.jaillet@wanadoo.fr>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH 0/1] conf/ucm: Add
+	chtrt5645-mono-speaker-analog-mic configuration
+Date: Sat,  6 Jan 2018 23:03:19 +0100
+Message-ID: <20180106220320.5423-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp10.smtpout.orange.fr
- [80.12.242.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 18295266F2E
- for <alsa-devel@alsa-project.org>; Sat,  6 Jan 2018 21:19:18 +0100 (CET)
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id 34CB5266F2E
+ for <alsa-devel@alsa-project.org>; Sat,  6 Jan 2018 23:03:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,50 +19,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes 3 small issues:
- - missing 2nd '*' at the beginning of a doxygen comment
- - extra space after a '\n' in a dev_dbg message
- - extra tab before a 'return" statement
+Hi All,
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- sound/soc/intel/atom/sst/sst_stream.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Now that the kernel patch for the "Int Analog Mic" switch is queued for
+merging into 4.16, here is a non RFC version of my patch which adds a
+configuration for Cherry Trail boards which use a rt5645 codec connected
+to a mono speaker and with an analog mic on IN2N + IN2P.
 
-diff --git a/sound/soc/intel/atom/sst/sst_stream.c b/sound/soc/intel/atom/sst/sst_stream.c
-index 20f5066fefb9..7ee6aeb7e0af 100644
---- a/sound/soc/intel/atom/sst/sst_stream.c
-+++ b/sound/soc/intel/atom/sst/sst_stream.c
-@@ -223,7 +223,7 @@ int sst_send_byte_stream_mrfld(struct intel_sst_drv *sst_drv_ctx,
- 	return ret;
- }
- 
--/*
-+/**
-  * sst_pause_stream - Send msg for a pausing stream
-  * @str_id:	 stream ID
-  *
-@@ -261,7 +261,7 @@ int sst_pause_stream(struct intel_sst_drv *sst_drv_ctx, int str_id)
- 		}
- 	} else {
- 		retval = -EBADRQC;
--		dev_dbg(sst_drv_ctx->dev, "SST DBG:BADRQC for stream\n ");
-+		dev_dbg(sst_drv_ctx->dev, "SST DBG:BADRQC for stream\n");
- 	}
- 
- 	return retval;
-@@ -284,7 +284,7 @@ int sst_resume_stream(struct intel_sst_drv *sst_drv_ctx, int str_id)
- 	if (!str_info)
- 		return -EINVAL;
- 	if (str_info->status == STREAM_RUNNING)
--			return 0;
-+		return 0;
- 	if (str_info->status == STREAM_PAUSED) {
- 		retval = sst_prepare_and_post_msg(sst_drv_ctx, str_info->task_id,
- 				IPC_CMD, IPC_IA_RESUME_STREAM_MRFLD,
--- 
-2.14.1
+Compared to the RFC version the line setting the Headphone Volume has
+been changed to set it to 25 (out of 39) instead of 31 because 31 has
+been reported to cause a crackling noise on some devices.
+
+The chtrt5645-mono-speaker-analog-mic/HiFi.conf for this is based on the
+latest version from https://github.com/plbossart/UCM/tree/master/chtrt5645
+with all the unused input options removed and some changes made to make
+the analog mic work.
+
+This has been tested on the following devices:
+
+GPD win
+GPD pocket
+Teclast X80 Pro
+
+Regards,
+
+Hans
