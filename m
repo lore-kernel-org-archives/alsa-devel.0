@@ -1,88 +1,43 @@
-From: "Brown, Aaron F" <aaron.f.brown@intel.com>
-Subject: RE: [Intel-wired-lan] [PATCH 1/1] timecounter: Make cyclecounter
- struct part of timecounter struct
-Date: Sat, 6 Jan 2018 04:29:23 +0000
-Message-ID: <309B89C4C689E141A5FF6A0C5FB2118B8C731E65@ORSMSX101.amr.corp.intel.com>
-References: <1512189095-28654-1-git-send-email-sagar.a.kamble@intel.com>
- <1512577496.8693.0.camel@intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v6 07/14] regmap: Add SoundWire bus support
+Date: Sat, 6 Jan 2018 11:41:17 +0530
+Message-ID: <20180106061116.GO18649@localhost>
+References: <1513230585-13882-1-git-send-email-vinod.koul@intel.com>
+ <1513230585-13882-8-git-send-email-vinod.koul@intel.com>
+ <20180105170421.GE9076@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1512577496.8693.0.camel@intel.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>, "Kamble, Sagar A" <sagar.a.kamble@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Richard Cochran <richardcochran@gmail.com>, Stephen Boyd <sboyd@codeaurora.org>, Chris Wilson <chris@chris-wilson.co.uk>, John Stultz <john.stultz@linaro.org>, "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>, Thomas Gleixner <tglx@linutronix.de>, "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id AE6AF266E07
+ for <alsa-devel@alsa-project.org>; Sat,  6 Jan 2018 07:07:11 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20180105170421.GE9076@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-PiBGcm9tOiBJbnRlbC13aXJlZC1sYW4gW21haWx0bzppbnRlbC13aXJlZC1sYW4tYm91bmNlc0Bv
-c3Vvc2wub3JnXSBPbg0KPiBCZWhhbGYgT2YgSmVmZiBLaXJzaGVyDQo+IFNlbnQ6IFdlZG5lc2Rh
-eSwgRGVjZW1iZXIgNiwgMjAxNyA4OjI1IEFNDQo+IFRvOiBLYW1ibGUsIFNhZ2FyIEEgPHNhZ2Fy
-LmEua2FtYmxlQGludGVsLmNvbT47IGxpbnV4LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+
-IENjOiBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IGxpbnV4LXJkbWFAdmdlci5rZXJuZWwu
-b3JnOw0KPiBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBSaWNoYXJkIENvY2hyYW4gPHJpY2hhcmRj
-b2NocmFuQGdtYWlsLmNvbT47DQo+IFN0ZXBoZW4gQm95ZCA8c2JveWRAY29kZWF1cm9yYS5vcmc+
-OyBDaHJpcyBXaWxzb24gPGNocmlzQGNocmlzLQ0KPiB3aWxzb24uY28udWs+OyBKb2huIFN0dWx0
-eiA8am9obi5zdHVsdHpAbGluYXJvLm9yZz47IGludGVsLXdpcmVkLQ0KPiBsYW5AbGlzdHMub3N1
-b3NsLm9yZzsgVGhvbWFzIEdsZWl4bmVyIDx0Z2x4QGxpbnV0cm9uaXguZGU+Ow0KPiBrdm1hcm1A
-bGlzdHMuY3MuY29sdW1iaWEuZWR1OyBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5v
-cmcNCj4gU3ViamVjdDogUmU6IFtJbnRlbC13aXJlZC1sYW5dIFtQQVRDSCAxLzFdIHRpbWVjb3Vu
-dGVyOiBNYWtlIGN5Y2xlY291bnRlcg0KPiBzdHJ1Y3QgcGFydCBvZiB0aW1lY291bnRlciBzdHJ1
-Y3QNCj4gDQo+IE9uIFNhdCwgMjAxNy0xMi0wMiBhdCAxMDowMSArMDUzMCwgU2FnYXIgQXJ1biBL
-YW1ibGUgd3JvdGU6DQo+ID4gVGhlcmUgaXMgbm8gcmVhbCBuZWVkIGZvciB0aGUgdXNlcnMgb2Yg
-dGltZWNvdW50ZXJzIHRvIGRlZmluZQ0KPiA+IGN5Y2xlY291bnRlcg0KPiA+IGFuZCB0aW1lY291
-bnRlciB2YXJpYWJsZXMgc2VwYXJhdGVseS4gU2luY2UgdGltZWNvdW50ZXIgd2lsbCBhbHdheXMN
-Cj4gPiBiZQ0KPiA+IGJhc2VkIG9uIGN5Y2xlY291bnRlciwgaGF2ZSBjeWNsZWNvdW50ZXIgc3Ry
-dWN0IGFzIG1lbWJlciBvZg0KPiA+IHRpbWVjb3VudGVyDQo+ID4gc3RydWN0Lg0KPiA+DQo+ID4g
-U3VnZ2VzdGVkLWJ5OiBDaHJpcyBXaWxzb24gPGNocmlzQGNocmlzLXdpbHNvbi5jby51az4NCj4g
-PiBTaWduZWQtb2ZmLWJ5OiBTYWdhciBBcnVuIEthbWJsZSA8c2FnYXIuYS5rYW1ibGVAaW50ZWwu
-Y29tPg0KPiA+IENjOiBDaHJpcyBXaWxzb24gPGNocmlzQGNocmlzLXdpbHNvbi5jby51az4NCj4g
-PiBDYzogUmljaGFyZCBDb2NocmFuIDxyaWNoYXJkY29jaHJhbkBnbWFpbC5jb20+DQo+ID4gQ2M6
-IEpvaG4gU3R1bHR6IDxqb2huLnN0dWx0ekBsaW5hcm8ub3JnPg0KPiA+IENjOiBUaG9tYXMgR2xl
-aXhuZXIgPHRnbHhAbGludXRyb25peC5kZT4NCj4gPiBDYzogU3RlcGhlbiBCb3lkIDxzYm95ZEBj
-b2RlYXVyb3JhLm9yZz4NCj4gPiBDYzogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiA+
-IENjOiBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gPiBDYzogbmV0ZGV2
-QHZnZXIua2VybmVsLm9yZw0KPiA+IENjOiBpbnRlbC13aXJlZC1sYW5AbGlzdHMub3N1b3NsLm9y
-Zw0KPiA+IENjOiBsaW51eC1yZG1hQHZnZXIua2VybmVsLm9yZw0KPiA+IENjOiBhbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcNCj4gPiBDYzoga3ZtYXJtQGxpc3RzLmNzLmNvbHVtYmlhLmVkdQ0K
-PiANCj4gQWNrZWQtYnk6IEplZmYgS2lyc2hlciA8amVmZnJleS50LmtpcnNoZXJAaW50ZWwuY29t
-Pg0KPiANCg0KVGVzdGVkLWJ5OiBBYXJvbiBCcm93biA8YWFyb24uZi5icm93bkBpbnRlbC5jb20+
-DQoNCj4gRm9yIHRoZSBjaGFuZ2VzIHRvIHRoZSBJbnRlbCBkcml2ZXJzLg0KPiANCj4gPiAtLS0N
-Cj4gPiAgYXJjaC9taWNyb2JsYXplL2tlcm5lbC90aW1lci5jICAgICAgICAgICAgICAgICAgICAg
-fCAyMCArKysrKystLS0tLS0NCj4gPiAgZHJpdmVycy9jbG9ja3NvdXJjZS9hcm1fYXJjaF90aW1l
-ci5jICAgICAgICAgICAgICAgfCAxOSArKysrKystLS0tLS0NCj4gPiAgZHJpdmVycy9uZXQvZXRo
-ZXJuZXQvYW1kL3hnYmUveGdiZS1kZXYuYyAgICAgICAgICAgfCAgMyArLQ0KPiA+ICBkcml2ZXJz
-L25ldC9ldGhlcm5ldC9hbWQveGdiZS94Z2JlLXB0cC5jICAgICAgICAgICB8ICA5ICsrKy0tLQ0K
-PiA+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9hbWQveGdiZS94Z2JlLmggICAgICAgICAgICAgICB8
-ICAxIC0NCj4gPiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvYnJvYWRjb20vYm54MngvYm54MnguaCAg
-ICAgICAgfCAgMSAtDQo+ID4gIGRyaXZlcnMvbmV0L2V0aGVybmV0L2Jyb2FkY29tL2JueDJ4L2Ju
-eDJ4X21haW4uYyAgIHwgMjAgKysrKysrLS0tLS0tDQo+ID4gIGRyaXZlcnMvbmV0L2V0aGVybmV0
-L2ZyZWVzY2FsZS9mZWMuaCAgICAgICAgICAgICAgIHwgIDEgLQ0KPiA+ICBkcml2ZXJzL25ldC9l
-dGhlcm5ldC9mcmVlc2NhbGUvZmVjX3B0cC5jICAgICAgICAgICB8IDMwICsrKysrKysrKy0tLQ0K
-PiA+IC0tLS0tLQ0KPiA+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9lMTAwMGUvZTEwMDAu
-aCAgICAgICAgICB8ICAxIC0NCj4gPiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvZTEwMDBl
-L25ldGRldi5jICAgICAgICAgfCAyNyArKysrKysrKy0tDQo+ID4gLS0tLS0tDQo+ID4gIGRyaXZl
-cnMvbmV0L2V0aGVybmV0L2ludGVsL2UxMDAwZS9wdHAuYyAgICAgICAgICAgIHwgIDIgKy0NCj4g
-PiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdiL2lnYi5oICAgICAgICAgICAgICAgfCAg
-MSAtDQo+ID4gIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2lnYi9pZ2JfcHRwLmMgICAgICAg
-ICAgIHwgMjUgKysrKysrKystLQ0KPiA+IC0tLS0tDQo+ID4gIGRyaXZlcnMvbmV0L2V0aGVybmV0
-L2ludGVsL2l4Z2JlL2l4Z2JlLmggICAgICAgICAgIHwgIDEgLQ0KPiA+ICBkcml2ZXJzL25ldC9l
-dGhlcm5ldC9pbnRlbC9peGdiZS9peGdiZV9wdHAuYyAgICAgICB8IDE3ICsrKysrLS0tLS0NCj4g
-PiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NC9lbl9jbG9jay5jICAgICAgfCAy
-OCArKysrKysrKy0tDQo+ID4gLS0tLS0tLQ0KPiA+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxs
-YW5veC9tbHg0L21seDRfZW4uaCAgICAgICB8ICAxIC0NCj4gPiAgLi4uL25ldC9ldGhlcm5ldC9t
-ZWxsYW5veC9tbHg1L2NvcmUvbGliL2Nsb2NrLmMgICAgfCAzNCArKysrKysrKysrDQo+ID4gLS0t
-LS0tLS0tLQ0KPiA+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9xbG9naWMvcWVkZS9xZWRlX3B0cC5j
-ICAgICAgICB8IDIwICsrKysrKy0tLS0tLQ0KPiA+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC90aS9j
-cHRzLmMgICAgICAgICAgICAgICAgICAgICB8IDM2DQo+ID4gKysrKysrKysrKysrLS0tLS0tLS0t
-LQ0KPiA+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC90aS9jcHRzLmggICAgICAgICAgICAgICAgICAg
-ICB8ICAxIC0NCj4gPiAgaW5jbHVkZS9saW51eC9tbHg1L2RyaXZlci5oICAgICAgICAgICAgICAg
-ICAgICAgICAgfCAgMSAtDQo+ID4gIGluY2x1ZGUvbGludXgvdGltZWNvdW50ZXIuaCAgICAgICAg
-ICAgICAgICAgICAgICAgIHwgIDQgKy0tDQo+ID4gIGluY2x1ZGUvc291bmQvaGRhdWRpby5oICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDEgLQ0KPiA+ICBrZXJuZWwvdGltZS90aW1lY291
-bnRlci5jICAgICAgICAgICAgICAgICAgICAgICAgICB8IDI4ICsrKysrKysrLS0NCj4gPiAtLS0t
-LS0tDQo+ID4gIHNvdW5kL2hkYS9oZGFjX3N0cmVhbS5jICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHwgIDcgKysrLS0NCj4gPiAgdmlydC9rdm0vYXJtL2FyY2hfdGltZXIuYyAgICAgICAgICAg
-ICAgICAgICAgICAgICAgfCAgNiArKy0tDQo+ID4gIDI4IGZpbGVzIGNoYW5nZWQsIDE2MyBpbnNl
-cnRpb25zKCspLCAxODIgZGVsZXRpb25zKC0pDQo=
+On Fri, Jan 05, 2018 at 05:04:21PM +0000, Mark Brown wrote:
+> On Thu, Dec 14, 2017 at 11:19:38AM +0530, Vinod Koul wrote:
+> 
+> > +	/* SoundWire register address are contiguous */
+> > +	if (config->reg_stride != 0)
+> > +		return -ENOTSUPP;
+> 
+> That doesn't mean the chip hasn't decided not to use half the addresses
+> for some reason - this isn't something the bus should be enforcing.
+
+Agreed, will drop this
+
+-- 
+~Vinod
