@@ -1,164 +1,88 @@
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v3 1/3] ACPI / utils: Introduce acpi_dev_get_first_match_name()
-Date: Sat, 6 Jan 2018 00:27:03 +0100
-Message-ID: <CAJZ5v0iH+2JHe8vCR9tQX62ULwx_eVd1QGPtinSLNDzWx1NmEg@mail.gmail.com>
-References: <20180105160935.48588-1-andriy.shevchenko@linux.intel.com> <20180105160935.48588-2-andriy.shevchenko@linux.intel.com>
+From: "Brown, Aaron F" <aaron.f.brown@intel.com>
+Subject: RE: [Intel-wired-lan] [PATCH 1/1] timecounter: Make cyclecounter
+ struct part of timecounter struct
+Date: Sat, 6 Jan 2018 04:29:23 +0000
+Message-ID: <309B89C4C689E141A5FF6A0C5FB2118B8C731E65@ORSMSX101.amr.corp.intel.com>
+References: <1512189095-28654-1-git-send-email-sagar.a.kamble@intel.com>
+ <1512577496.8693.0.camel@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-gpio-owner@vger.kernel.org>
-In-Reply-To: <20180105160935.48588-2-andriy.shevchenko@linux.intel.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: "Rafael J . Wysocki" <rjw@rjwysocki.net>, Erik Schmauss <erik.schmauss@intel.com>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, Mika Westerberg <mika.westerberg@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1512577496.8693.0.camel@intel.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>, "Kamble, Sagar A" <sagar.a.kamble@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Richard Cochran <richardcochran@gmail.com>, Stephen Boyd <sboyd@codeaurora.org>, Chris Wilson <chris@chris-wilson.co.uk>, John Stultz <john.stultz@linaro.org>, "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>, Thomas Gleixner <tglx@linutronix.de>, "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 5, 2018 at 5:09 PM, Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> Sometimes the user wants to have device name of the match rather than
-> just checking if device present or not. To make life easier for such
-> users introduce acpi_dev_get_first_match_name() helper based on code
-> for acpi_dev_present().
->
-> For example, GPIO driver for Intel Merrifield needs to know the device
-> name of pin control to be able to apply GPIO mapping table to the proper
-> device.
->
-> To be more consistent with the purpose rename
->
->   struct acpi_dev_present_info  -> struct acpi_dev_match_info
->   acpi_dev_present_cb()         -> acpi_dev_match_cb()
->
-> in the utils.c file.
->
-> Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-OK, so which way do you want this to go in?
-
-> ---
->  drivers/acpi/utils.c    | 41 ++++++++++++++++++++++++++++++++++-------
->  include/acpi/acpi_bus.h |  3 +++
->  include/linux/acpi.h    |  6 ++++++
->  3 files changed, 43 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
-> index 9d49a1acebe3..78db97687f26 100644
-> --- a/drivers/acpi/utils.c
-> +++ b/drivers/acpi/utils.c
-> @@ -737,16 +737,17 @@ bool acpi_dev_found(const char *hid)
->  }
->  EXPORT_SYMBOL(acpi_dev_found);
->
-> -struct acpi_dev_present_info {
-> +struct acpi_dev_match_info {
-> +       const char *dev_name;
->         struct acpi_device_id hid[2];
->         const char *uid;
->         s64 hrv;
->  };
->
-> -static int acpi_dev_present_cb(struct device *dev, void *data)
-> +static int acpi_dev_match_cb(struct device *dev, void *data)
->  {
->         struct acpi_device *adev = to_acpi_device(dev);
-> -       struct acpi_dev_present_info *match = data;
-> +       struct acpi_dev_match_info *match = data;
->         unsigned long long hrv;
->         acpi_status status;
->
-> @@ -757,6 +758,8 @@ static int acpi_dev_present_cb(struct device *dev, void *data)
->             strcmp(adev->pnp.unique_id, match->uid)))
->                 return 0;
->
-> +       match->dev_name = acpi_dev_name(adev);
-> +
->         if (match->hrv == -1)
->                 return 1;
->
-> @@ -789,20 +792,44 @@ static int acpi_dev_present_cb(struct device *dev, void *data)
->   */
->  bool acpi_dev_present(const char *hid, const char *uid, s64 hrv)
->  {
-> -       struct acpi_dev_present_info match = {};
-> +       struct acpi_dev_match_info match = {};
->         struct device *dev;
->
->         strlcpy(match.hid[0].id, hid, sizeof(match.hid[0].id));
->         match.uid = uid;
->         match.hrv = hrv;
->
-> -       dev = bus_find_device(&acpi_bus_type, NULL, &match,
-> -                             acpi_dev_present_cb);
-> -
-> +       dev = bus_find_device(&acpi_bus_type, NULL, &match, acpi_dev_match_cb);
->         return !!dev;
->  }
->  EXPORT_SYMBOL(acpi_dev_present);
->
-> +/**
-> + * acpi_dev_get_first_match_name - Return name of first match of ACPI device
-> + * @hid: Hardware ID of the device.
-> + * @uid: Unique ID of the device, pass NULL to not check _UID
-> + * @hrv: Hardware Revision of the device, pass -1 to not check _HRV
-> + *
-> + * Return device name if a matching device was present
-> + * at the moment of invocation, or NULL otherwise.
-> + *
-> + * See additional information in acpi_dev_present() as well.
-> + */
-> +const char *
-> +acpi_dev_get_first_match_name(const char *hid, const char *uid, s64 hrv)
-> +{
-> +       struct acpi_dev_match_info match = {};
-> +       struct device *dev;
-> +
-> +       strlcpy(match.hid[0].id, hid, sizeof(match.hid[0].id));
-> +       match.uid = uid;
-> +       match.hrv = hrv;
-> +
-> +       dev = bus_find_device(&acpi_bus_type, NULL, &match, acpi_dev_match_cb);
-> +       return dev ? match.dev_name : NULL;
-> +}
-> +EXPORT_SYMBOL(acpi_dev_get_first_match_name);
-> +
->  /*
->   * acpi_backlight= handling, this is done here rather then in video_detect.c
->   * because __setup cannot be used in modules.
-> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> index 79287629c888..c9608b0b80c6 100644
-> --- a/include/acpi/acpi_bus.h
-> +++ b/include/acpi/acpi_bus.h
-> @@ -91,6 +91,9 @@ acpi_evaluate_dsm_typed(acpi_handle handle, const guid_t *guid, u64 rev,
->  bool acpi_dev_found(const char *hid);
->  bool acpi_dev_present(const char *hid, const char *uid, s64 hrv);
->
-> +const char *
-> +acpi_dev_get_first_match_name(const char *hid, const char *uid, s64 hrv);
-> +
->  #ifdef CONFIG_ACPI
->
->  #include <linux/proc_fs.h>
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index 60f0d3248125..493ac6451773 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -642,6 +642,12 @@ static inline bool acpi_dev_present(const char *hid, const char *uid, s64 hrv)
->         return false;
->  }
->
-> +static inline const char *
-> +acpi_dev_get_first_match_name(const char *hid, const char *uid, s64 hrv)
-> +{
-> +       return NULL;
-> +}
-> +
->  static inline bool is_acpi_node(struct fwnode_handle *fwnode)
->  {
->         return false;
-> --
-> 2.15.1
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+PiBGcm9tOiBJbnRlbC13aXJlZC1sYW4gW21haWx0bzppbnRlbC13aXJlZC1sYW4tYm91bmNlc0Bv
+c3Vvc2wub3JnXSBPbg0KPiBCZWhhbGYgT2YgSmVmZiBLaXJzaGVyDQo+IFNlbnQ6IFdlZG5lc2Rh
+eSwgRGVjZW1iZXIgNiwgMjAxNyA4OjI1IEFNDQo+IFRvOiBLYW1ibGUsIFNhZ2FyIEEgPHNhZ2Fy
+LmEua2FtYmxlQGludGVsLmNvbT47IGxpbnV4LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+
+IENjOiBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IGxpbnV4LXJkbWFAdmdlci5rZXJuZWwu
+b3JnOw0KPiBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBSaWNoYXJkIENvY2hyYW4gPHJpY2hhcmRj
+b2NocmFuQGdtYWlsLmNvbT47DQo+IFN0ZXBoZW4gQm95ZCA8c2JveWRAY29kZWF1cm9yYS5vcmc+
+OyBDaHJpcyBXaWxzb24gPGNocmlzQGNocmlzLQ0KPiB3aWxzb24uY28udWs+OyBKb2huIFN0dWx0
+eiA8am9obi5zdHVsdHpAbGluYXJvLm9yZz47IGludGVsLXdpcmVkLQ0KPiBsYW5AbGlzdHMub3N1
+b3NsLm9yZzsgVGhvbWFzIEdsZWl4bmVyIDx0Z2x4QGxpbnV0cm9uaXguZGU+Ow0KPiBrdm1hcm1A
+bGlzdHMuY3MuY29sdW1iaWEuZWR1OyBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5v
+cmcNCj4gU3ViamVjdDogUmU6IFtJbnRlbC13aXJlZC1sYW5dIFtQQVRDSCAxLzFdIHRpbWVjb3Vu
+dGVyOiBNYWtlIGN5Y2xlY291bnRlcg0KPiBzdHJ1Y3QgcGFydCBvZiB0aW1lY291bnRlciBzdHJ1
+Y3QNCj4gDQo+IE9uIFNhdCwgMjAxNy0xMi0wMiBhdCAxMDowMSArMDUzMCwgU2FnYXIgQXJ1biBL
+YW1ibGUgd3JvdGU6DQo+ID4gVGhlcmUgaXMgbm8gcmVhbCBuZWVkIGZvciB0aGUgdXNlcnMgb2Yg
+dGltZWNvdW50ZXJzIHRvIGRlZmluZQ0KPiA+IGN5Y2xlY291bnRlcg0KPiA+IGFuZCB0aW1lY291
+bnRlciB2YXJpYWJsZXMgc2VwYXJhdGVseS4gU2luY2UgdGltZWNvdW50ZXIgd2lsbCBhbHdheXMN
+Cj4gPiBiZQ0KPiA+IGJhc2VkIG9uIGN5Y2xlY291bnRlciwgaGF2ZSBjeWNsZWNvdW50ZXIgc3Ry
+dWN0IGFzIG1lbWJlciBvZg0KPiA+IHRpbWVjb3VudGVyDQo+ID4gc3RydWN0Lg0KPiA+DQo+ID4g
+U3VnZ2VzdGVkLWJ5OiBDaHJpcyBXaWxzb24gPGNocmlzQGNocmlzLXdpbHNvbi5jby51az4NCj4g
+PiBTaWduZWQtb2ZmLWJ5OiBTYWdhciBBcnVuIEthbWJsZSA8c2FnYXIuYS5rYW1ibGVAaW50ZWwu
+Y29tPg0KPiA+IENjOiBDaHJpcyBXaWxzb24gPGNocmlzQGNocmlzLXdpbHNvbi5jby51az4NCj4g
+PiBDYzogUmljaGFyZCBDb2NocmFuIDxyaWNoYXJkY29jaHJhbkBnbWFpbC5jb20+DQo+ID4gQ2M6
+IEpvaG4gU3R1bHR6IDxqb2huLnN0dWx0ekBsaW5hcm8ub3JnPg0KPiA+IENjOiBUaG9tYXMgR2xl
+aXhuZXIgPHRnbHhAbGludXRyb25peC5kZT4NCj4gPiBDYzogU3RlcGhlbiBCb3lkIDxzYm95ZEBj
+b2RlYXVyb3JhLm9yZz4NCj4gPiBDYzogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiA+
+IENjOiBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gPiBDYzogbmV0ZGV2
+QHZnZXIua2VybmVsLm9yZw0KPiA+IENjOiBpbnRlbC13aXJlZC1sYW5AbGlzdHMub3N1b3NsLm9y
+Zw0KPiA+IENjOiBsaW51eC1yZG1hQHZnZXIua2VybmVsLm9yZw0KPiA+IENjOiBhbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmcNCj4gPiBDYzoga3ZtYXJtQGxpc3RzLmNzLmNvbHVtYmlhLmVkdQ0K
+PiANCj4gQWNrZWQtYnk6IEplZmYgS2lyc2hlciA8amVmZnJleS50LmtpcnNoZXJAaW50ZWwuY29t
+Pg0KPiANCg0KVGVzdGVkLWJ5OiBBYXJvbiBCcm93biA8YWFyb24uZi5icm93bkBpbnRlbC5jb20+
+DQoNCj4gRm9yIHRoZSBjaGFuZ2VzIHRvIHRoZSBJbnRlbCBkcml2ZXJzLg0KPiANCj4gPiAtLS0N
+Cj4gPiAgYXJjaC9taWNyb2JsYXplL2tlcm5lbC90aW1lci5jICAgICAgICAgICAgICAgICAgICAg
+fCAyMCArKysrKystLS0tLS0NCj4gPiAgZHJpdmVycy9jbG9ja3NvdXJjZS9hcm1fYXJjaF90aW1l
+ci5jICAgICAgICAgICAgICAgfCAxOSArKysrKystLS0tLS0NCj4gPiAgZHJpdmVycy9uZXQvZXRo
+ZXJuZXQvYW1kL3hnYmUveGdiZS1kZXYuYyAgICAgICAgICAgfCAgMyArLQ0KPiA+ICBkcml2ZXJz
+L25ldC9ldGhlcm5ldC9hbWQveGdiZS94Z2JlLXB0cC5jICAgICAgICAgICB8ICA5ICsrKy0tLQ0K
+PiA+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9hbWQveGdiZS94Z2JlLmggICAgICAgICAgICAgICB8
+ICAxIC0NCj4gPiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvYnJvYWRjb20vYm54MngvYm54MnguaCAg
+ICAgICAgfCAgMSAtDQo+ID4gIGRyaXZlcnMvbmV0L2V0aGVybmV0L2Jyb2FkY29tL2JueDJ4L2Ju
+eDJ4X21haW4uYyAgIHwgMjAgKysrKysrLS0tLS0tDQo+ID4gIGRyaXZlcnMvbmV0L2V0aGVybmV0
+L2ZyZWVzY2FsZS9mZWMuaCAgICAgICAgICAgICAgIHwgIDEgLQ0KPiA+ICBkcml2ZXJzL25ldC9l
+dGhlcm5ldC9mcmVlc2NhbGUvZmVjX3B0cC5jICAgICAgICAgICB8IDMwICsrKysrKysrKy0tLQ0K
+PiA+IC0tLS0tLQ0KPiA+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9lMTAwMGUvZTEwMDAu
+aCAgICAgICAgICB8ICAxIC0NCj4gPiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvZTEwMDBl
+L25ldGRldi5jICAgICAgICAgfCAyNyArKysrKysrKy0tDQo+ID4gLS0tLS0tDQo+ID4gIGRyaXZl
+cnMvbmV0L2V0aGVybmV0L2ludGVsL2UxMDAwZS9wdHAuYyAgICAgICAgICAgIHwgIDIgKy0NCj4g
+PiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdiL2lnYi5oICAgICAgICAgICAgICAgfCAg
+MSAtDQo+ID4gIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2lnYi9pZ2JfcHRwLmMgICAgICAg
+ICAgIHwgMjUgKysrKysrKystLQ0KPiA+IC0tLS0tDQo+ID4gIGRyaXZlcnMvbmV0L2V0aGVybmV0
+L2ludGVsL2l4Z2JlL2l4Z2JlLmggICAgICAgICAgIHwgIDEgLQ0KPiA+ICBkcml2ZXJzL25ldC9l
+dGhlcm5ldC9pbnRlbC9peGdiZS9peGdiZV9wdHAuYyAgICAgICB8IDE3ICsrKysrLS0tLS0NCj4g
+PiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NC9lbl9jbG9jay5jICAgICAgfCAy
+OCArKysrKysrKy0tDQo+ID4gLS0tLS0tLQ0KPiA+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxs
+YW5veC9tbHg0L21seDRfZW4uaCAgICAgICB8ICAxIC0NCj4gPiAgLi4uL25ldC9ldGhlcm5ldC9t
+ZWxsYW5veC9tbHg1L2NvcmUvbGliL2Nsb2NrLmMgICAgfCAzNCArKysrKysrKysrDQo+ID4gLS0t
+LS0tLS0tLQ0KPiA+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9xbG9naWMvcWVkZS9xZWRlX3B0cC5j
+ICAgICAgICB8IDIwICsrKysrKy0tLS0tLQ0KPiA+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC90aS9j
+cHRzLmMgICAgICAgICAgICAgICAgICAgICB8IDM2DQo+ID4gKysrKysrKysrKysrLS0tLS0tLS0t
+LQ0KPiA+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC90aS9jcHRzLmggICAgICAgICAgICAgICAgICAg
+ICB8ICAxIC0NCj4gPiAgaW5jbHVkZS9saW51eC9tbHg1L2RyaXZlci5oICAgICAgICAgICAgICAg
+ICAgICAgICAgfCAgMSAtDQo+ID4gIGluY2x1ZGUvbGludXgvdGltZWNvdW50ZXIuaCAgICAgICAg
+ICAgICAgICAgICAgICAgIHwgIDQgKy0tDQo+ID4gIGluY2x1ZGUvc291bmQvaGRhdWRpby5oICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDEgLQ0KPiA+ICBrZXJuZWwvdGltZS90aW1lY291
+bnRlci5jICAgICAgICAgICAgICAgICAgICAgICAgICB8IDI4ICsrKysrKysrLS0NCj4gPiAtLS0t
+LS0tDQo+ID4gIHNvdW5kL2hkYS9oZGFjX3N0cmVhbS5jICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIHwgIDcgKysrLS0NCj4gPiAgdmlydC9rdm0vYXJtL2FyY2hfdGltZXIuYyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgfCAgNiArKy0tDQo+ID4gIDI4IGZpbGVzIGNoYW5nZWQsIDE2MyBpbnNl
+cnRpb25zKCspLCAxODIgZGVsZXRpb25zKC0pDQo=
