@@ -1,47 +1,52 @@
-From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Subject: Re: [alsa-devel][PATCH v7] ASoC: TSCS42xx: Add support for Tempo
- Semiconductor's TSCS42xx audio CODEC
-Date: Sat, 6 Jan 2018 11:00:01 -0600
-Message-ID: <20180106170000.lkofva6unqdv5c6n@localhost.localdomain>
-References: <20171219205415.wlu4atv2mdy7i3gb@localhost.localdomain>
- <20180105122242.GC9076@sirena.org.uk>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 1/2] ASoC: Intel: sst: Fix the return value of
+	'sst_send_byte_stream_mrfld()'
+Date: Sat,  6 Jan 2018 21:18:24 +0100
+Message-ID: <20180106201824.6081-1-christophe.jaillet@wanadoo.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180105122242.GC9076@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Philippe Ombredanne <pombredanne@nexb.com>, Charles Keepax <ckeepax@opensource.cirrus.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.smtpout.orange.fr (smtp10.smtpout.orange.fr
+ [80.12.242.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A72A266F2E
+ for <alsa-devel@alsa-project.org>; Sat,  6 Jan 2018 21:18:49 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 05, 2018 at 12:22:42PM +0000, Mark Brown wrote:
+In some error handling paths, an error code is assiegned to 'ret'.
+However, the function always return 0.
 
-> > +	SOC_ENUM("MBC Band1 Level Detect Switch",
-> > +		mbc_level_detection_enums[0]),
-> > +	SOC_ENUM("MBC Band2 Level Detect Switch",
-> > +		mbc_level_detection_enums[1]),
-> > +	SOC_ENUM("MBC Band3 Level Detect Switch",
-> > +		mbc_level_detection_enums[2]),
-> > +	SOC_ENUM("MBC Band1 Level Detect Win Switch",
-> > +		mbc_level_detection_window_enums[0]),
-> > +	SOC_ENUM("MBC Band2 Level Detect Win Switch",
-> > +		mbc_level_detection_window_enums[1]),
-> > +	SOC_ENUM("MBC Band3 Level Detect Win Switch",
-> > +		mbc_level_detection_window_enums[2]),
-> 
-> These are enums so they should probably not have Switch at the end of
-> their name, I suspect that might confuse userspace somehow.
+Fix it and return the error code if such an error paths is taken.
 
-v8 will remove Switch from the name.
+Fixes: 3d9ff34622ba ("ASoC: Intel: sst: add stream operations")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ sound/soc/intel/atom/sst/sst_stream.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > +	SOC_SINGLE("MBC1 Phase Invert", R_DACMBCMUG1, FB_DACMBCMUG1_PHASE,
-> > +		1, 0),
-> 
-> While this is an on/off switch (for inversion) so it ought to end in
-> Switch.  Otherwise this driver looks good I think, just those couple of
-> small things so I'll apply - please send followup patches fixing.
-
-v8 will add Switch to this.
-
-Thank you again for your time on this.
+diff --git a/sound/soc/intel/atom/sst/sst_stream.c b/sound/soc/intel/atom/sst/sst_stream.c
+index 65e257b17a7e..20f5066fefb9 100644
+--- a/sound/soc/intel/atom/sst/sst_stream.c
++++ b/sound/soc/intel/atom/sst/sst_stream.c
+@@ -220,7 +220,7 @@ int sst_send_byte_stream_mrfld(struct intel_sst_drv *sst_drv_ctx,
+ 		sst_free_block(sst_drv_ctx, block);
+ out:
+ 	test_and_clear_bit(pvt_id, &sst_drv_ctx->pvt_id);
+-	return 0;
++	return ret;
+ }
+ 
+ /*
+-- 
+2.14.1
