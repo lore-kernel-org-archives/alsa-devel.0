@@ -1,21 +1,17 @@
-From: Oliver Friedrich <olifriedrich@gmail.com>
-Subject: Sync issues with newer Roland and Boss devices
-Date: Fri, 5 Jan 2018 00:39:19 +0100
-Message-ID: <e4ae769b-a533-7716-951a-8ca9601e41d7@gmail.com>
+From: "Francisco G." <frangio.1@gmail.com>
+Subject: snd_hda_intel: coil whine noises after resume
+Date: Sun, 7 Jan 2018 20:07:55 -0300
+Message-ID: <CAHXyb9ZCZJzVisuBARa+UORcjRERV8yokez=DP1_5O5isTz0ZA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2305901561918769057=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f51.google.com (mail-wm0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id EB2B526799C
- for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2018 00:40:40 +0100 (CET)
-Received: by mail-wm0-f51.google.com with SMTP id f206so6147876wmf.5
- for <alsa-devel@alsa-project.org>; Thu, 04 Jan 2018 15:40:40 -0800 (PST)
-Received: from ?IPv6:2a02:810a:1340:8ec8:ac09:9490:d778:2d75?
- ([2a02:810a:1340:8ec8:ac09:9490:d778:2d75])
- by smtp.googlemail.com with ESMTPSA id a10sm1415609edi.40.2018.01.04.15.40.38
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 04 Jan 2018 15:40:38 -0800 (PST)
+Received: from mail-yb0-f172.google.com (mail-yb0-f172.google.com
+ [209.85.213.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2257A266FE0
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 00:08:12 +0100 (CET)
+Received: by mail-yb0-f172.google.com with SMTP id b132so703788yba.5
+ for <alsa-devel@alsa-project.org>; Sun, 07 Jan 2018 15:08:12 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,291 +21,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: perex@perex.cz, tiwai@suse.com, matt.jared@intel.com, andy.kopp@intel.com, dan.d.kogan@intel.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============2305901561918769057==
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="YIR5ielNENHubGfu3CLRxmnvGkVMvnlbm"
+Hello.
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---YIR5ielNENHubGfu3CLRxmnvGkVMvnlbm
-Content-Type: multipart/mixed; boundary="OQ90FWN4PY8SWulohSQVTDJGJ7cZneVJ1";
- protected-headers="v1"
-From: Oliver Friedrich <olifriedrich@gmail.com>
-To: alsa-devel@alsa-project.org
-Message-ID: <e4ae769b-a533-7716-951a-8ca9601e41d7@gmail.com>
-Subject: Sync issues with newer Roland and Boss devices
+Some users included myself have noticed coil-whine-like noises coming
+through the headphones after the computer resumes from sleep. This noise is
+clearly associated to the laptop activity, e.g. when scrolling through a
+webpage or compiling something, the processor can be heard doing the work.
 
---OQ90FWN4PY8SWulohSQVTDJGJ7cZneVJ1
-Content-Type: multipart/mixed;
- boundary="------------6AEB79C151FF66DE38CC4DFC"
-Content-Language: de-DE
+Interestingly, the coil whine that can be heard from the computer with
+naked ears (which is a common problem with this laptop) is also increased
+after resume.
 
-This is a multi-part message in MIME format.
---------------6AEB79C151FF66DE38CC4DFC
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+The problem has been observed on a Dell XPS 13 9360 with an i7-8550U CPU by
+myself, as well as with an i5-8250U by a user in the Arch Linux forums
+<https://bbs.archlinux.org/viewtopic.php?pid=1759588#p1759588>. This user
+has also noticed that reloading the snd_hda_intel module fixes the issue.
 
-Dear Alsa-angels,
-
-I hope I'm posting this to the right place.
-
-
-I was not able to get my BOSS GT-1 running:
-
-- uname -r
-4.14.11-1-ARCH (occured on 4.14.10 as well)
-
-- dmesg
-=2E..
-usb 2-1: Unable to change format on ep #8e: already in use
-=2E..
-
-- aplay -l
-Karte 2: GT1 [GT-1], Ger=C3=A4t 0: USB Audio [USB Audio]
-  Sub-Ger=C3=A4te: 1/1
-  Sub-Ger=C3=A4t #0: subdevice #0
-
-lsusb output attached
-
-
-I found a dirty workaround there:
-https://www.linuxmusicians.com/viewtopic.php?f=3D6&t=3D17180&start=3D30#p=
-83949
-
-I added the USB ID of my device and it works (ALSA, PulseAudio, JACK).
-This seems to work for the RC-300 loopstation and the Micro BR-80, too.
-
-The affected code was changed with commit
-ba7c2be114243fa4cfcbc66a81db18e1d55abf4b
-about 4 years ago.
-
-I only applied a simple patch without knowing what the reason for the
-other Roland quirks were, so I just wanted to inform you about this issue=
-=2E
-
-I'm not sure what's missing at the moment, I'm no kernel developer (yet).=
-
-
-Thanks in advance! If you need more info, just tell me.
-
-Regards
-
-Oli
-
---------------6AEB79C151FF66DE38CC4DFC
-Content-Type: text/plain; charset=UTF-8;
- name="lsusb.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="lsusb.txt"
-
-bHN1c2IgLWQgMDU4MjowMWQ2IC12dgoKQnVzIDAwMiBEZXZpY2UgMDExOiBJRCAwNTgyOjAx
-ZDYgUm9sYW5kIENvcnAuIApDb3VsZG4ndCBvcGVuIGRldmljZSwgc29tZSBpbmZvcm1hdGlv
-biB3aWxsIGJlIG1pc3NpbmcKRGV2aWNlIERlc2NyaXB0b3I6CiAgYkxlbmd0aCAgICAgICAg
-ICAgICAgICAxOAogIGJEZXNjcmlwdG9yVHlwZSAgICAgICAgIDEKICBiY2RVU0IgICAgICAg
-ICAgICAgICAyLjAwCiAgYkRldmljZUNsYXNzICAgICAgICAgIDI1NSBWZW5kb3IgU3BlY2lm
-aWMgQ2xhc3MKICBiRGV2aWNlU3ViQ2xhc3MgICAgICAgICAwIAogIGJEZXZpY2VQcm90b2Nv
-bCAgICAgICAyNTUgCiAgYk1heFBhY2tldFNpemUwICAgICAgICA2NAogIGlkVmVuZG9yICAg
-ICAgICAgICAweDA1ODIgUm9sYW5kIENvcnAuCiAgaWRQcm9kdWN0ICAgICAgICAgIDB4MDFk
-NiAKICBiY2REZXZpY2UgICAgICAgICAgICAwLjAwCiAgaU1hbnVmYWN0dXJlciAgICAgICAg
-ICAgMSAKICBpUHJvZHVjdCAgICAgICAgICAgICAgICAyIAogIGlTZXJpYWwgICAgICAgICAg
-ICAgICAgIDAgCiAgYk51bUNvbmZpZ3VyYXRpb25zICAgICAgMQogIENvbmZpZ3VyYXRpb24g
-RGVzY3JpcHRvcjoKICAgIGJMZW5ndGggICAgICAgICAgICAgICAgIDkKICAgIGJEZXNjcmlw
-dG9yVHlwZSAgICAgICAgIDIKICAgIHdUb3RhbExlbmd0aCAgICAgICAgICAxODgKICAgIGJO
-dW1JbnRlcmZhY2VzICAgICAgICAgIDQKICAgIGJDb25maWd1cmF0aW9uVmFsdWUgICAgIDEK
-ICAgIGlDb25maWd1cmF0aW9uICAgICAgICAgIDAgCiAgICBibUF0dHJpYnV0ZXMgICAgICAg
-ICAweGMwCiAgICAgIFNlbGYgUG93ZXJlZAogICAgTWF4UG93ZXIgICAgICAgICAgICAgICAg
-MG1BCiAgICBJbnRlcmZhY2UgRGVzY3JpcHRvcjoKICAgICAgYkxlbmd0aCAgICAgICAgICAg
-ICAgICAgOQogICAgICBiRGVzY3JpcHRvclR5cGUgICAgICAgICA0CiAgICAgIGJJbnRlcmZh
-Y2VOdW1iZXIgICAgICAgIDAKICAgICAgYkFsdGVybmF0ZVNldHRpbmcgICAgICAgMAogICAg
-ICBiTnVtRW5kcG9pbnRzICAgICAgICAgICAwCiAgICAgIGJJbnRlcmZhY2VDbGFzcyAgICAg
-ICAyNTUgVmVuZG9yIFNwZWNpZmljIENsYXNzCiAgICAgIGJJbnRlcmZhY2VTdWJDbGFzcyAg
-ICAyNTUgVmVuZG9yIFNwZWNpZmljIFN1YmNsYXNzCiAgICAgIGJJbnRlcmZhY2VQcm90b2Nv
-bCAgICAgIDAgCiAgICAgIGlJbnRlcmZhY2UgICAgICAgICAgICAgIDAgCiAgICBJbnRlcmZh
-Y2UgRGVzY3JpcHRvcjoKICAgICAgYkxlbmd0aCAgICAgICAgICAgICAgICAgOQogICAgICBi
-RGVzY3JpcHRvclR5cGUgICAgICAgICA0CiAgICAgIGJJbnRlcmZhY2VOdW1iZXIgICAgICAg
-IDEKICAgICAgYkFsdGVybmF0ZVNldHRpbmcgICAgICAgMAogICAgICBiTnVtRW5kcG9pbnRz
-ICAgICAgICAgICAwCiAgICAgIGJJbnRlcmZhY2VDbGFzcyAgICAgICAyNTUgVmVuZG9yIFNw
-ZWNpZmljIENsYXNzCiAgICAgIGJJbnRlcmZhY2VTdWJDbGFzcyAgICAgIDIgCiAgICAgIGJJ
-bnRlcmZhY2VQcm90b2NvbCAgICAgIDIgCiAgICAgIGlJbnRlcmZhY2UgICAgICAgICAgICAg
-IDAgCiAgICAgICoqIFVOUkVDT0dOSVpFRDogIDA2IDI0IGYxIDAxIDAwIDAwCiAgICBJbnRl
-cmZhY2UgRGVzY3JpcHRvcjoKICAgICAgYkxlbmd0aCAgICAgICAgICAgICAgICAgOQogICAg
-ICBiRGVzY3JpcHRvclR5cGUgICAgICAgICA0CiAgICAgIGJJbnRlcmZhY2VOdW1iZXIgICAg
-ICAgIDEKICAgICAgYkFsdGVybmF0ZVNldHRpbmcgICAgICAgMQogICAgICBiTnVtRW5kcG9p
-bnRzICAgICAgICAgICAxCiAgICAgIGJJbnRlcmZhY2VDbGFzcyAgICAgICAyNTUgVmVuZG9y
-IFNwZWNpZmljIENsYXNzCiAgICAgIGJJbnRlcmZhY2VTdWJDbGFzcyAgICAgIDIgCiAgICAg
-IGJJbnRlcmZhY2VQcm90b2NvbCAgICAgIDIgCiAgICAgIGlJbnRlcmZhY2UgICAgICAgICAg
-ICAgIDAgCiAgICAgICoqIFVOUkVDT0dOSVpFRDogIDA3IDI0IDAxIDAxIDAwIDAxIDAwCiAg
-ICAgICoqIFVOUkVDT0dOSVpFRDogIDBiIDI0IDAyIDAxIDAyIDA0IDE4IDAxIDQ0IGFjIDAw
-CiAgICAgICoqIFVOUkVDT0dOSVpFRDogIDA2IDI0IGYxIDA0IDE2IDAwCiAgICAgIEVuZHBv
-aW50IERlc2NyaXB0b3I6CiAgICAgICAgYkxlbmd0aCAgICAgICAgICAgICAgICAgNwogICAg
-ICAgIGJEZXNjcmlwdG9yVHlwZSAgICAgICAgIDUKICAgICAgICBiRW5kcG9pbnRBZGRyZXNz
-ICAgICAweDBkICBFUCAxMyBPVVQKICAgICAgICBibUF0dHJpYnV0ZXMgICAgICAgICAgICA1
-CiAgICAgICAgICBUcmFuc2ZlciBUeXBlICAgICAgICAgICAgSXNvY2hyb25vdXMKICAgICAg
-ICAgIFN5bmNoIFR5cGUgICAgICAgICAgICAgICBBc3luY2hyb25vdXMKICAgICAgICAgIFVz
-YWdlIFR5cGUgICAgICAgICAgICAgICBEYXRhCiAgICAgICAgd01heFBhY2tldFNpemUgICAg
-IDB4MDAzOCAgMXggNTYgYnl0ZXMKICAgICAgICBiSW50ZXJ2YWwgICAgICAgICAgICAgICAx
-CiAgICBJbnRlcmZhY2UgRGVzY3JpcHRvcjoKICAgICAgYkxlbmd0aCAgICAgICAgICAgICAg
-ICAgOQogICAgICBiRGVzY3JpcHRvclR5cGUgICAgICAgICA0CiAgICAgIGJJbnRlcmZhY2VO
-dW1iZXIgICAgICAgIDIKICAgICAgYkFsdGVybmF0ZVNldHRpbmcgICAgICAgMAogICAgICBi
-TnVtRW5kcG9pbnRzICAgICAgICAgICAwCiAgICAgIGJJbnRlcmZhY2VDbGFzcyAgICAgICAy
-NTUgVmVuZG9yIFNwZWNpZmljIENsYXNzCiAgICAgIGJJbnRlcmZhY2VTdWJDbGFzcyAgICAg
-IDIgCiAgICAgIGJJbnRlcmZhY2VQcm90b2NvbCAgICAgIDEgCiAgICAgIGlJbnRlcmZhY2Ug
-ICAgICAgICAgICAgIDAgCiAgICBJbnRlcmZhY2UgRGVzY3JpcHRvcjoKICAgICAgYkxlbmd0
-aCAgICAgICAgICAgICAgICAgOQogICAgICBiRGVzY3JpcHRvclR5cGUgICAgICAgICA0CiAg
-ICAgIGJJbnRlcmZhY2VOdW1iZXIgICAgICAgIDIKICAgICAgYkFsdGVybmF0ZVNldHRpbmcg
-ICAgICAgMQogICAgICBiTnVtRW5kcG9pbnRzICAgICAgICAgICAxCiAgICAgIGJJbnRlcmZh
-Y2VDbGFzcyAgICAgICAyNTUgVmVuZG9yIFNwZWNpZmljIENsYXNzCiAgICAgIGJJbnRlcmZh
-Y2VTdWJDbGFzcyAgICAgIDIgCiAgICAgIGJJbnRlcmZhY2VQcm90b2NvbCAgICAgIDEgCiAg
-ICAgIGlJbnRlcmZhY2UgICAgICAgICAgICAgIDAgCiAgICAgICoqIFVOUkVDT0dOSVpFRDog
-IDA3IDI0IDAxIDA3IDAwIDAxIDAwCiAgICAgICoqIFVOUkVDT0dOSVpFRDogIDBiIDI0IDAy
-IDAxIDAyIDA0IDE4IDAxIDQ0IGFjIDAwCiAgICAgICoqIFVOUkVDT0dOSVpFRDogIDA2IDI0
-IGYxIDA0IDE2IDAwCiAgICAgIEVuZHBvaW50IERlc2NyaXB0b3I6CiAgICAgICAgYkxlbmd0
-aCAgICAgICAgICAgICAgICAgNwogICAgICAgIGJEZXNjcmlwdG9yVHlwZSAgICAgICAgIDUK
-ICAgICAgICBiRW5kcG9pbnRBZGRyZXNzICAgICAweDhlICBFUCAxNCBJTgogICAgICAgIGJt
-QXR0cmlidXRlcyAgICAgICAgICAgMzcKICAgICAgICAgIFRyYW5zZmVyIFR5cGUgICAgICAg
-ICAgICBJc29jaHJvbm91cwogICAgICAgICAgU3luY2ggVHlwZSAgICAgICAgICAgICAgIEFz
-eW5jaHJvbm91cwogICAgICAgICAgVXNhZ2UgVHlwZSAgICAgICAgICAgICAgIEltcGxpY2l0
-IGZlZWRiYWNrIERhdGEKICAgICAgICB3TWF4UGFja2V0U2l6ZSAgICAgMHgwMDM4ICAxeCA1
-NiBieXRlcwogICAgICAgIGJJbnRlcnZhbCAgICAgICAgICAgICAgIDEKICAgIEludGVyZmFj
-ZSBEZXNjcmlwdG9yOgogICAgICBiTGVuZ3RoICAgICAgICAgICAgICAgICA5CiAgICAgIGJE
-ZXNjcmlwdG9yVHlwZSAgICAgICAgIDQKICAgICAgYkludGVyZmFjZU51bWJlciAgICAgICAg
-MwogICAgICBiQWx0ZXJuYXRlU2V0dGluZyAgICAgICAwCiAgICAgIGJOdW1FbmRwb2ludHMg
-ICAgICAgICAgIDIKICAgICAgYkludGVyZmFjZUNsYXNzICAgICAgIDI1NSBWZW5kb3IgU3Bl
-Y2lmaWMgQ2xhc3MKICAgICAgYkludGVyZmFjZVN1YkNsYXNzICAgICAgMyAKICAgICAgYklu
-dGVyZmFjZVByb3RvY29sICAgICAgMCAKICAgICAgaUludGVyZmFjZSAgICAgICAgICAgICAg
-MCAKICAgICAgKiogVU5SRUNPR05JWkVEOiAgMDYgMjQgZjEgMDIgMDEgMDEKICAgICAgRW5k
-cG9pbnQgRGVzY3JpcHRvcjoKICAgICAgICBiTGVuZ3RoICAgICAgICAgICAgICAgICA3CiAg
-ICAgICAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAgNQogICAgICAgIGJFbmRwb2ludEFkZHJl
-c3MgICAgIDB4MDMgIEVQIDMgT1VUCiAgICAgICAgYm1BdHRyaWJ1dGVzICAgICAgICAgICAg
-MgogICAgICAgICAgVHJhbnNmZXIgVHlwZSAgICAgICAgICAgIEJ1bGsKICAgICAgICAgIFN5
-bmNoIFR5cGUgICAgICAgICAgICAgICBOb25lCiAgICAgICAgICBVc2FnZSBUeXBlICAgICAg
-ICAgICAgICAgRGF0YQogICAgICAgIHdNYXhQYWNrZXRTaXplICAgICAweDAyMDAgIDF4IDUx
-MiBieXRlcwogICAgICAgIGJJbnRlcnZhbCAgICAgICAgICAgICAgIDEKICAgICAgRW5kcG9p
-bnQgRGVzY3JpcHRvcjoKICAgICAgICBiTGVuZ3RoICAgICAgICAgICAgICAgICA3CiAgICAg
-ICAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAgNQogICAgICAgIGJFbmRwb2ludEFkZHJlc3Mg
-ICAgIDB4ODQgIEVQIDQgSU4KICAgICAgICBibUF0dHJpYnV0ZXMgICAgICAgICAgICAyCiAg
-ICAgICAgICBUcmFuc2ZlciBUeXBlICAgICAgICAgICAgQnVsawogICAgICAgICAgU3luY2gg
-VHlwZSAgICAgICAgICAgICAgIE5vbmUKICAgICAgICAgIFVzYWdlIFR5cGUgICAgICAgICAg
-ICAgICBEYXRhCiAgICAgICAgd01heFBhY2tldFNpemUgICAgIDB4MDIwMCAgMXggNTEyIGJ5
-dGVzCiAgICAgICAgYkludGVydmFsICAgICAgICAgICAgICAgMAogICAgSW50ZXJmYWNlIERl
-c2NyaXB0b3I6CiAgICAgIGJMZW5ndGggICAgICAgICAgICAgICAgIDkKICAgICAgYkRlc2Ny
-aXB0b3JUeXBlICAgICAgICAgNAogICAgICBiSW50ZXJmYWNlTnVtYmVyICAgICAgICAzCiAg
-ICAgIGJBbHRlcm5hdGVTZXR0aW5nICAgICAgIDEKICAgICAgYk51bUVuZHBvaW50cyAgICAg
-ICAgICAgMgogICAgICBiSW50ZXJmYWNlQ2xhc3MgICAgICAgMjU1IFZlbmRvciBTcGVjaWZp
-YyBDbGFzcwogICAgICBiSW50ZXJmYWNlU3ViQ2xhc3MgICAgICAzIAogICAgICBiSW50ZXJm
-YWNlUHJvdG9jb2wgICAgICAwIAogICAgICBpSW50ZXJmYWNlICAgICAgICAgICAgICAwIAog
-ICAgICBFbmRwb2ludCBEZXNjcmlwdG9yOgogICAgICAgIGJMZW5ndGggICAgICAgICAgICAg
-ICAgIDcKICAgICAgICBiRGVzY3JpcHRvclR5cGUgICAgICAgICA1CiAgICAgICAgYkVuZHBv
-aW50QWRkcmVzcyAgICAgMHgwMyAgRVAgMyBPVVQKICAgICAgICBibUF0dHJpYnV0ZXMgICAg
-ICAgICAgICAzCiAgICAgICAgICBUcmFuc2ZlciBUeXBlICAgICAgICAgICAgSW50ZXJydXB0
-CiAgICAgICAgICBTeW5jaCBUeXBlICAgICAgICAgICAgICAgTm9uZQogICAgICAgICAgVXNh
-Z2UgVHlwZSAgICAgICAgICAgICAgIERhdGEKICAgICAgICB3TWF4UGFja2V0U2l6ZSAgICAg
-MHgwMjAwICAxeCA1MTIgYnl0ZXMKICAgICAgICBiSW50ZXJ2YWwgICAgICAgICAgICAgICA0
-CiAgICAgIEVuZHBvaW50IERlc2NyaXB0b3I6CiAgICAgICAgYkxlbmd0aCAgICAgICAgICAg
-ICAgICAgNwogICAgICAgIGJEZXNjcmlwdG9yVHlwZSAgICAgICAgIDUKICAgICAgICBiRW5k
-cG9pbnRBZGRyZXNzICAgICAweDg1ICBFUCA1IElOCiAgICAgICAgYm1BdHRyaWJ1dGVzICAg
-ICAgICAgICAgMwogICAgICAgICAgVHJhbnNmZXIgVHlwZSAgICAgICAgICAgIEludGVycnVw
-dAogICAgICAgICAgU3luY2ggVHlwZSAgICAgICAgICAgICAgIE5vbmUKICAgICAgICAgIFVz
-YWdlIFR5cGUgICAgICAgICAgICAgICBEYXRhCiAgICAgICAgd01heFBhY2tldFNpemUgICAg
-IDB4MDIwMCAgMXggNTEyIGJ5dGVzCiAgICAgICAgYkludGVydmFsICAgICAgICAgICAgICAg
-NAoK
---------------6AEB79C151FF66DE38CC4DFC
-Content-Type: application/pgp-keys;
- name="0x51A4F2D1.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="0x51A4F2D1.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-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
-mmlJzJa8Be7RNfLXhyiRISjSeg=3D=3D
-=3D4+uX
------END PGP PUBLIC KEY BLOCK-----
-
---------------6AEB79C151FF66DE38CC4DFC--
-
---OQ90FWN4PY8SWulohSQVTDJGJ7cZneVJ1--
-
---YIR5ielNENHubGfu3CLRxmnvGkVMvnlbm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEOG/lea0YJkMcnbdyETV5TFGk8tEFAlpOuysACgkQETV5TFGk
-8tEgXw/9HUj/dcISOBrHEq0PFIr4AMOQzL3vggY6vDSBTFhuxNh2Q23l7T+lV4MR
-paX45r8Abq2MVj8we7MylfOkEdlv+RMunjiiIOTN8uY/4LGQeeFhI1emqmFsE7GU
-ikNUxTsfiTJPXG54z1D3FUkCfIiOX9eYuEYDrHb8Er34n4zGq8PFHkU5NDeHfVXa
-nEN4arTAAaEMJo2aO9SrjKvJwXUVMJLaCICp82OkKJytGM0Ndi/fVEpPmK+nSx5k
-40wXLBLvxW/ouFRM9RfmPq4wxgRf76UfUQEH2+2rINpmtdc31154ff+f/yxhcgk3
-KhK6ZfvODluEOilX5Hvay0Qvh44n5xVozMb7aqLPHLE9gprL9wHmbFR3vwtr0hXL
-qxnVzlEWfvsVZ1fu3HUF5Lk/z2jOhCeUxjyPtacjXqgRS6VE9Pd9ArSkapvy7qXv
-zvd/nmRNt7WegaySpdNnuj+A1uVyv5nDuFkBrymSoxxH7fod3xVqcUW/r11ckqkM
-Qj1/JvX/xgGS5SXnWaE7WiuxJ3Q2wPXvFUfYv88nfsX3D+7zyvLlQRAlff8p3ke7
-fPbiA7S6U+dEl2cz7fvlZp/2E/lDPYVIRB1IAsh+BGHctBzK1prbNSKNPXiTl6Wg
-hMnsYYIYrdwdu/IgDGaM5DIU0PoEuH++wuWb0J6Rh4HDN3Oj6TI=
-=UU7H
------END PGP SIGNATURE-----
-
---YIR5ielNENHubGfu3CLRxmnvGkVMvnlbm--
-
---===============2305901561918769057==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2305901561918769057==--
+Please let me know of any inormation that would be needed to debug this
+problem.
