@@ -1,17 +1,19 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [bug report] soundwire: Add IO transfer
-Date: Mon, 8 Jan 2018 09:07:22 +0530
-Message-ID: <20180108033722.GR18649@localhost>
-References: <20180105134705.tgpqwx2vz7x4ja3f@mwanda>
+Subject: Re: [PATCH v2 4/4] ASoC: acpi: remove hard-coded
+ i2c-device name length
+Date: Mon, 8 Jan 2018 10:11:33 +0530
+Message-ID: <20180108044133.GW18649@localhost>
+References: <20180105205536.10366-1-pierre-louis.bossart@linux.intel.com>
+ <20180105205536.10366-5-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id A34B226717C
- for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 04:33:13 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id EEDAA26717C
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 05:37:23 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20180105134705.tgpqwx2vz7x4ja3f@mwanda>
+In-Reply-To: <20180105205536.10366-5-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,86 +23,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org, Shreyas NC <shreyas.nc@intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: jeremy@jcline.org, alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 05, 2018 at 04:47:05PM +0300, Dan Carpenter wrote:
-> Hello Vinod Koul,
+On Fri, Jan 05, 2018 at 02:55:36PM -0600, Pierre-Louis Bossart wrote:
+> Remove hard-coded [16] array size, replace with clearer description and
+> dependency on ACPI_ID_LEN
+> No functionality change
 > 
-> The patch 9d715fa005eb: "soundwire: Add IO transfer" from Dec 14,
-> 2017, leads to the following static checker warning:
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  include/sound/soc-acpi.h                | 3 +++
+>  sound/soc/intel/boards/bytcht_da7213.c  | 2 +-
+>  sound/soc/intel/boards/bytcht_es8316.c  | 2 +-
+>  sound/soc/intel/boards/bytcr_rt5640.c   | 2 +-
+>  sound/soc/intel/boards/bytcr_rt5651.c   | 2 +-
+>  sound/soc/intel/boards/cht_bsw_rt5645.c | 4 ++--
+>  sound/soc/intel/boards/cht_bsw_rt5672.c | 2 +-
+>  7 files changed, 10 insertions(+), 7 deletions(-)
 > 
-> 	drivers/soundwire/bus.c:309 sdw_nread()
-> 	info: return a literal instead of 'ret'
-> 
-> drivers/soundwire/bus.c
->    297  int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
->    298  {
->    299          struct sdw_msg msg;
->    300          int ret;
->    301  
->    302          ret = sdw_fill_msg(&msg, slave, addr, count,
->    303                          slave->dev_num, SDW_MSG_FLAG_READ, val);
->    304          if (ret < 0)
->    305                  return ret;
->    306  
->    307          ret = pm_runtime_get_sync(slave->bus->dev);
->    308          if (!ret)
->    309                  return ret;
-> 
-> Changing "return ret;" to "return 0;" is more readable, but I mostly
-> am not sure this is correct.  rpm_resume() has crap comments.  It
-> sometimes returns negatives, sometimes zero and sometimes one but I have
-> no idea what it means...  Probably this check should be:
-> 
-> 		if (ret <= 0)
-> 			return ret;
+> diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+> index d1aaf876cd26..703c78483113 100644
+> --- a/include/sound/soc-acpi.h
+> +++ b/include/sound/soc-acpi.h
+> @@ -27,6 +27,9 @@ struct snd_soc_acpi_package_context {
+>  	bool data_valid;
+>  };
+>  
+> +/* codec name is used in DAIs is i2c-<HID>:00 with HID being 8 chars */
+> +#define SND_SOC_ACPI_I2C_DEVICE_NAME_LEN (4 + ACPI_ID_LEN + 3 + 1)
 
-That's right we already have a patch for this in our internal code, will send
-that out. rpm_resume can return positive values and yes that should be
-documented somewhere :)
+nitpicking, thats a very long name :(
 
-> 
-> (Bugs like this is why the static checker warning exists).
-> 
->    310  
->    311          ret = sdw_transfer(slave->bus, &msg);
->    312          pm_runtime_put(slave->bus->dev);
->    313  
->    314          return ret;
->    315  }
->    316  EXPORT_SYMBOL(sdw_nread);
->    317  
->    318  /**
->    319   * sdw_nwrite() - Write "n" contiguous SDW Slave registers
->    320   * @slave: SDW Slave
->    321   * @addr: Register address
->    322   * @count: length
->    323   * @val: Buffer for values to be read
->    324   */
->    325  int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
->    326  {
->    327          struct sdw_msg msg;
->    328          int ret;
->    329  
->    330          ret = sdw_fill_msg(&msg, slave, addr, count,
->    331                          slave->dev_num, SDW_MSG_FLAG_WRITE, val);
->    332          if (ret < 0)
->    333                  return ret;
->    334  
->    335          ret = pm_runtime_get_sync(slave->bus->dev);
->    336          if (!ret)
->    337                  return ret;
-> 
-> Same static checker warning here.
-> 
->    338  
->    339          ret = sdw_transfer(slave->bus, &msg);
->    340          pm_runtime_put(slave->bus->dev);
-> 
-> regards,
-> dan carpenter
+how about SND_ACPI_I2C_ID_LEN, we can drop SOC. And replace DEVICE_NAME with ID
 
 -- 
 ~Vinod
