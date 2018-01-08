@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: pcm: Allow aborting mutex lock at
-	OSS read/write loops
-Date: Mon,  8 Jan 2018 15:25:41 +0100
-Message-ID: <20180108142541.18098-3-tiwai@suse.de>
+Subject: [PATCH 1/2] ALSA: pcm: Abort properly at pending
+	signal in OSS read/write loops
+Date: Mon,  8 Jan 2018 15:25:40 +0100
+Message-ID: <20180108142541.18098-2-tiwai@suse.de>
 References: <20180108142541.18098-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 99E96267394
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C465267396
  for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 15:25:49 +0100 (CET)
 In-Reply-To: <20180108142541.18098-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,100 +25,47 @@ To: alsa-devel@alsa-project.org
 Cc: Dmitry Vyukov <dvyukov@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-PCM OSS read/write loops keep taking the mutex lock for the whole
-read/write, and this might take very long when the exceptionally high
-amount of data is given.  Also, since it invokes with mutex_lock(),
-the concurrent read/write becomes unbreakable.
+The loops for read and write in PCM OSS emulation have no proper check
+of pending signals, and they keep processing even after user tries to
+break.  This results in a very long delay, often seen as RCU stall
+when a huge unprocessed bytes remain queued.  The bug could be easily
+triggered by syzkaller.
 
-This patch tries to address these issues by replacing mutex_lock()
-with mutex_lock_interruptible(), and also splits / re-takes the lock
-at each read/write period chunk, so that it can switch the context
-more finely if requested.
+As a simple workaround, this patch adds the proper check of pending
+signals and aborts the loop appropriately.
 
+Reported-by: syzbot+993cb4cfcbbff3947c21@syzkaller.appspotmail.com
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/oss/pcm_oss.c | 36 +++++++++++++++++++++---------------
- 1 file changed, 21 insertions(+), 15 deletions(-)
+ sound/core/oss/pcm_oss.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
-index e317964bd2ea..5e334642903e 100644
+index ceaa51f76591..e317964bd2ea 100644
 --- a/sound/core/oss/pcm_oss.c
 +++ b/sound/core/oss/pcm_oss.c
-@@ -1334,8 +1334,11 @@ static ssize_t snd_pcm_oss_write1(struct snd_pcm_substream *substream, const cha
- 
- 	if ((tmp = snd_pcm_oss_make_ready(substream)) < 0)
- 		return tmp;
--	mutex_lock(&runtime->oss.params_lock);
- 	while (bytes > 0) {
-+		if (mutex_lock_interruptible(&runtime->oss.params_lock)) {
-+			tmp = -EINTR;
-+			break;
-+		}
- 		if (bytes < runtime->oss.period_bytes || runtime->oss.buffer_used > 0) {
- 			tmp = bytes;
- 			if (tmp + runtime->oss.buffer_used > runtime->oss.period_bytes)
-@@ -1379,18 +1382,18 @@ static ssize_t snd_pcm_oss_write1(struct snd_pcm_substream *substream, const cha
- 			xfer += tmp;
- 			if ((substream->f_flags & O_NONBLOCK) != 0 &&
+@@ -1381,6 +1381,10 @@ static ssize_t snd_pcm_oss_write1(struct snd_pcm_substream *substream, const cha
  			    tmp != runtime->oss.period_bytes)
--				break;
-+				tmp = -EAGAIN;
+ 				break;
  		}
-+ err:
-+		mutex_unlock(&runtime->oss.params_lock);
-+		if (tmp < 0)
-+			break;
- 		if (signal_pending(current)) {
- 			tmp = -ERESTARTSYS;
--			goto err;
-+			break;
- 		}
-+		tmp = 0;
- 	}
--	mutex_unlock(&runtime->oss.params_lock);
--	return xfer;
--
-- err:
--	mutex_unlock(&runtime->oss.params_lock);
- 	return xfer > 0 ? (snd_pcm_sframes_t)xfer : tmp;
- }
- 
-@@ -1438,8 +1441,11 @@ static ssize_t snd_pcm_oss_read1(struct snd_pcm_substream *substream, char __use
- 
- 	if ((tmp = snd_pcm_oss_make_ready(substream)) < 0)
- 		return tmp;
--	mutex_lock(&runtime->oss.params_lock);
- 	while (bytes > 0) {
-+		if (mutex_lock_interruptible(&runtime->oss.params_lock)) {
-+			tmp = -EINTR;
-+			break;
++		if (signal_pending(current)) {
++			tmp = -ERESTARTSYS;
++			goto err;
 +		}
- 		if (bytes < runtime->oss.period_bytes || runtime->oss.buffer_used > 0) {
- 			if (runtime->oss.buffer_used == 0) {
- 				tmp = snd_pcm_oss_read2(substream, runtime->oss.buffer, runtime->oss.period_bytes, 1);
-@@ -1470,16 +1476,16 @@ static ssize_t snd_pcm_oss_read1(struct snd_pcm_substream *substream, char __use
+ 	}
+ 	mutex_unlock(&runtime->oss.params_lock);
+ 	return xfer;
+@@ -1466,6 +1470,10 @@ static ssize_t snd_pcm_oss_read1(struct snd_pcm_substream *substream, char __use
  			bytes -= tmp;
  			xfer += tmp;
  		}
-+ err:
-+		mutex_unlock(&runtime->oss.params_lock);
-+		if (tmp < 0)
-+			break;
- 		if (signal_pending(current)) {
- 			tmp = -ERESTARTSYS;
--			goto err;
-+			break;
- 		}
-+		tmp = 0;
++		if (signal_pending(current)) {
++			tmp = -ERESTARTSYS;
++			goto err;
++		}
  	}
--	mutex_unlock(&runtime->oss.params_lock);
--	return xfer;
--
-- err:
--	mutex_unlock(&runtime->oss.params_lock);
- 	return xfer > 0 ? (snd_pcm_sframes_t)xfer : tmp;
- }
- 
+ 	mutex_unlock(&runtime->oss.params_lock);
+ 	return xfer;
 -- 
 2.15.1
