@@ -1,21 +1,17 @@
-From: Petr Kulhavy <brain@jikos.cz>
-Subject: Set multiple mixer channel values at once
-Date: Mon, 8 Jan 2018 12:01:34 +0100
-Message-ID: <35d6971a-efcf-443d-b25e-dc448780e492@jikos.cz>
-Reply-To: brain@jikos.cz
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v8] ASoC: TSCS42xx: Add support for Tempo
+ Semiconductor's TSCS42xx audio CODEC
+Date: Mon, 8 Jan 2018 11:20:46 +0000
+Message-ID: <20180108112046.GA11698@sirena.org.uk>
+References: <20180107141943.y5hh3cob2uak4sod@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============8684861326148961744=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from twin.jikos.cz (twin.jikos.cz [91.219.245.39])
- by alsa0.perex.cz (Postfix) with ESMTP id 5362326698E
- for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 12:01:40 +0100 (CET)
-Received: from [192.168.100.123] (240.90.254.84.ftth.as8758.net
- [84.254.90.240]) (authenticated bits=0)
- by twin.jikos.cz (8.13.6/8.13.6) with ESMTP id w08B1dbC007375
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES128-SHA bits=128 verify=NO)
- for <alsa-devel@alsa-project.org>; Mon, 8 Jan 2018 12:01:40 +0100
-Content-Language: de-CH
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 881A826698E
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 12:20:50 +0100 (CET)
+In-Reply-To: <20180107141943.y5hh3cob2uak4sod@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,37 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Philippe Ombredanne <pombredanne@nexb.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-does the ALSA library provide a method to set multiple channel values of =
+--===============8684861326148961744==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="h31gzZEtNLTqOjlF"
+Content-Disposition: inline
 
-a multi-channel mixer element at once? There are the =
 
-snd_mixer_selem_set_XXXXX_all()=A0 methods, which set all channels to the =
+--h31gzZEtNLTqOjlF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-same value.
-I would like to write a different value to each channel, is there such a =
+On Sun, Jan 07, 2018 at 08:19:54AM -0600, Steven Eckhoff wrote:
+> Currently there is no support for TSCS42xx audio CODECs.
+>=20
+> Add support for TSCS42xx audio CODECs.
 
-method?
+Please don't resubmit patches that have already been applied, you should
+submit patches against current code in the tree you're expecting things
+to be applied to.  If any updates are needed to a patch that's already
+been applied you should submit incremental patches which make those
+updates.  This avoids having to change published git commits which could
+cause problems for people working against git.
 
-My motivation is the following. I have a HW with DSP/equaliser function, =
+--h31gzZEtNLTqOjlF
+Content-Type: application/pgp-signature; name="signature.asc"
 
-which uses a 5-channel mixer element (volume type element) to store =
+-----BEGIN PGP SIGNATURE-----
 
-biquad coefficients.
-To avoid invalid values in the transfer function the coefficients have =
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpTVA0ACgkQJNaLcl1U
+h9BDyQf+KAjkajZcneH0vBdstVHBTjsQDMp9xmIaWl0qiXYzYc7t05Zl7cRhSSTx
++ITw4ft3m/dshAshZR8ZM6QzKpyyJoFX8TmfW6bS0666aLeKuSsacMseIEW9aTEo
+/U/OmvQDYnQ6M1hPKtviKDglvs7KCsTUvwdoqRU47s+VtNopBy7OHrWlE7X4IHm1
+kUOD9sHGDSFiw9lFbexrkCVOWlOqIM1mnjopMZ5vaSZpwjOdhptRUpcNlSZI9HUs
++U3nxlo+8ZAlqby8lhSMu2gB93vfVjli01a8g4RKLOIkO59GJxwpwmQlrOvMtorf
+DM72hGd1WGZYuP9YgdwU6XA+Bdj7GQ==
+=YMTO
+-----END PGP SIGNATURE-----
 
-to be sent to the HW over I2C all together in one transfer. Though the =
+--h31gzZEtNLTqOjlF--
 
-low level driver does that, the snd_mixer_selem_set_playback_volume() =
+--===============8684861326148961744==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-API method I'm using sets only one coef at a time.
-This results in partial updates of the biquad coefficients and temporary =
 
-errors in the transfer function.
-
-Thanks
-Petr
+--===============8684861326148961744==--
