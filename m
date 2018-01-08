@@ -1,19 +1,19 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 3/4] ASoC: Intel: bytcht_es8316: fix HID
-	handling
-Date: Mon, 8 Jan 2018 14:23:19 -0600
-Message-ID: <43e8b08e-f519-280c-ea72-5344e24b896b@linux.intel.com>
+Subject: Re: [PATCH v2 4/4] ASoC: acpi: remove hard-coded
+ i2c-device name length
+Date: Mon, 8 Jan 2018 14:28:23 -0600
+Message-ID: <12631c8f-699c-cb2f-643f-5f4c7ab982c0@linux.intel.com>
 References: <20180105205536.10366-1-pierre-louis.bossart@linux.intel.com>
- <20180105205536.10366-4-pierre-louis.bossart@linux.intel.com>
- <20180108044321.GX18649@localhost>
+ <20180105205536.10366-5-pierre-louis.bossart@linux.intel.com>
+ <20180108044133.GW18649@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 4BAC02674CE
- for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 21:23:25 +0100 (CET)
-In-Reply-To: <20180108044321.GX18649@localhost>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 497EC2674CE
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 21:28:25 +0100 (CET)
+In-Reply-To: <20180108044133.GW18649@localhost>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,103 +25,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>
-Cc: jeremy@jcline.org, alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, tiwai@suse.de, jeremy@jcline.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 1/7/18 10:43 PM, Vinod Koul wrote:
-> On Fri, Jan 05, 2018 at 02:55:35PM -0600, Pierre-Louis Bossart wrote:
->> Same problem as with previous machine drivers, the codec dai
->> uses a hard-coded name of "i2c-ESSX8316:00" but ACPI provides
->> "i2c-ESSX8316:01" in some systems.
+On 1/7/18 10:41 PM, Vinod Koul wrote:
+> On Fri, Jan 05, 2018 at 02:55:36PM -0600, Pierre-Louis Bossart wrote:
+>> Remove hard-coded [16] array size, replace with clearer description and
+>> dependency on ACPI_ID_LEN
+>> No functionality change
 >>
->> Fix by overriding the hard-coded value with the codec name derived
->> from the HID information
->>
->> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=189261
+>> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 >> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 >> ---
->>   sound/soc/intel/boards/Kconfig         |  1 +
->>   sound/soc/intel/boards/bytcht_es8316.c | 26 +++++++++++++++++++++++++-
->>   2 files changed, 26 insertions(+), 1 deletion(-)
+>>   include/sound/soc-acpi.h                | 3 +++
+>>   sound/soc/intel/boards/bytcht_da7213.c  | 2 +-
+>>   sound/soc/intel/boards/bytcht_es8316.c  | 2 +-
+>>   sound/soc/intel/boards/bytcr_rt5640.c   | 2 +-
+>>   sound/soc/intel/boards/bytcr_rt5651.c   | 2 +-
+>>   sound/soc/intel/boards/cht_bsw_rt5645.c | 4 ++--
+>>   sound/soc/intel/boards/cht_bsw_rt5672.c | 2 +-
+>>   7 files changed, 10 insertions(+), 7 deletions(-)
 >>
->> diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
->> index 89a73e3d9d2d..4af2393160bf 100644
->> --- a/sound/soc/intel/boards/Kconfig
->> +++ b/sound/soc/intel/boards/Kconfig
->> @@ -153,6 +153,7 @@ config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
->>   config SND_SOC_INTEL_BYT_CHT_ES8316_MACH
->>   	tristate "Baytrail & Cherrytrail with ES8316 codec"
->>   	depends on X86_INTEL_LPSS && I2C && ACPI
->> +	select SND_SOC_ACPI
->>   	select SND_SOC_ES8316
->>   	help
->>   	  This adds support for ASoC machine driver for Intel(R) Baytrail &
->> diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
->> index 8088396717e3..ae24f6205f05 100644
->> --- a/sound/soc/intel/boards/bytcht_es8316.c
->> +++ b/sound/soc/intel/boards/bytcht_es8316.c
->> @@ -232,15 +232,39 @@ static struct snd_soc_card byt_cht_es8316_card = {
->>   	.fully_routed = true,
+>> diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+>> index d1aaf876cd26..703c78483113 100644
+>> --- a/include/sound/soc-acpi.h
+>> +++ b/include/sound/soc-acpi.h
+>> @@ -27,6 +27,9 @@ struct snd_soc_acpi_package_context {
+>>   	bool data_valid;
 >>   };
 >>   
->> +static char codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
->> +
->>   static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
->>   {
->> -	int ret = 0;
->>   	struct byt_cht_es8316_private *priv;
->> +	struct snd_soc_acpi_mach *mach;
->> +	const char *i2c_name = NULL;
->> +	int dai_index = 0;
->> +	int i;
->> +	int ret = 0;
->>   
->>   	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
->>   	if (!priv)
->>   		return -ENOMEM;
->>   
->> +	mach = (&pdev->dev)->platform_data;
->> +	/* fix index of codec dai */
->> +	for (i = 0; i < ARRAY_SIZE(byt_cht_es8316_dais); i++) {
->> +		if (!strcmp(byt_cht_es8316_dais[i].codec_name,
->> +			    "i2c-ESSX8316:00")) {
->> +			dai_index = i;
->> +			break;
->> +		}
->> +	}
->> +
->> +	/* fixup codec name based on HID */
->> +	i2c_name = snd_soc_acpi_find_name_from_hid(mach->id);
->> +	if (i2c_name) {
->> +		snprintf(codec_name, sizeof(codec_name),
->> +			"%s%s", "i2c-", i2c_name);
->> +		byt_cht_es8316_dais[dai_index].codec_name = codec_name;
->> +	}
+>> +/* codec name is used in DAIs is i2c-<HID>:00 with HID being 8 chars */
+>> +#define SND_SOC_ACPI_I2C_DEVICE_NAME_LEN (4 + ACPI_ID_LEN + 3 + 1)
 > 
-> this looks good, but I though we had few other places where this was done,
-> esp the BSW based chromebooks, if so would it make send to have a macro in
-> soc-acpi which updates the dai name based on the result from
-> snd_soc_acpi_find_name_from_hid()
-
-Well snd_soc_acpi_find_name_from_hid() will be replaced by an ACPI 
-generic util (see proposal from Andy last week).
-
-The idea was to add this first patch, and then do a replacement across 
-all machine drivers when Andy's patch is available.
-
-Andy also had another idea to add a helper which would take care of the 
-for loop (which would indeed simplify the code further).
-
-If that's alright with everyone, I'd like to add this patch first as is 
-so that folks with the es8316 hardware get working audio, then do the 
-two cleanups later.
-
+> nitpicking, thats a very long name :(
 > 
->> +
->>   	/* register the soc card */
->>   	byt_cht_es8316_card.dev = &pdev->dev;
->>   	snd_soc_card_set_drvdata(&byt_cht_es8316_card, priv);
->> -- 
->> 2.14.1
->>
-> 
+> how about SND_ACPI_I2C_ID_LEN, we can drop SOC. And replace DEVICE_NAME with ID
+
+Fine with me. Andy do you concur or have a more precise suggestion?
