@@ -1,15 +1,17 @@
-From: John Keeping <john@metanate.com>
-Subject: [PATCH] ASoC: rockchip: i2s: fix playback after
-	runtime resume
-Date: Mon,  8 Jan 2018 12:23:01 +0000
-Message-ID: <20180108122301.18255-1-john@metanate.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: acpi: fix machine driver selection
+	based on quirk" to the asoc tree
+Date: Mon, 08 Jan 2018 12:35:15 +0000
+Message-ID: <E1eYWe3-0003Fq-Ih@debutante>
+References: <20180105205536.10366-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0315131458834636544=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metanate.com (dougal.metanate.com [90.155.101.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 365D926698E
- for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 13:23:18 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 25CDF26698E
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 13:35:29 +0100 (CET)
+In-Reply-To: <20180105205536.10366-2-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,72 +21,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Sugar Zhang <sugar.zhang@rock-chips.com>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, John Keeping <john@metanate.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: jeremy@jcline.org, alsa-devel@alsa-project.org, andriy.shevchenko@linux.intel.com, tiwai@suse.de, stable@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, vinod.koul@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-When restoring registers during runtime resume, we must not write to
-I2S_TXDR which is the transmit FIFO as this queues up a sample to be
-output and pushes all of the output channels down by one.
+--===============0315131458834636544==
+Content-Type: text/plain
 
-This can be demonstrated with the speaker-test utility:
+The patch
 
-	for i in a b c; do speaker-test -c 2 -s 1; done
+   ASoC: acpi: fix machine driver selection based on quirk
 
-which should play a test through the left speaker three times but if the
-I2S hardware starts runtime suspended the first sample will be played
-through the right speaker.
+has been applied to the asoc tree at
 
-Fix this by marking I2S_TXDR as volatile (which also requires marking it
-as readble, even though it technically isn't).  This seems to be the
-most robust fix, the alternative of giving I2S_TXDR a default value is
-more fragile since it does not prevent regcache writing to the register
-in all circumstances.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-While here, also fix the configuration of I2S_RXDR and I2S_FIFOLR; these
-are not writable so they do not suffer from the same problem as I2S_TXDR
-but reading from I2S_RXDR does suffer from a similar problem.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Fixes: f0447f6cbb20 ("ASoC: rockchip: i2s: restore register during runtime_suspend/resume cycle", 2016-09-07)
-Signed-off-by: John Keeping <john@metanate.com>
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 5c256045b87b8aa8e5bc9d2e2fdc0802351c1f99 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 5 Jan 2018 14:55:33 -0600
+Subject: [PATCH] ASoC: acpi: fix machine driver selection based on quirk
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The ACPI/machine-driver code refactoring introduced in 4.13 introduced
+a regression for cases where we need a DMI-based quirk to select the
+machine driver (the BIOS reports an invalid HID). The fix is just to
+make sure the results of the quirk are actually used.
+
+Fixes: 54746dabf770 ('ASoC: Improve machine driver selection based on quirk data')
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=96691
+Tested-by: Nicole Færber <nicole.faerber@dpin.de>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
-I'm not completely happy with marking I2S_TXDR as readable here, but I
-can't see a better way to do this.  Neither "volatile" nor "precious"
-seem to match exactly a writable FIFO register but this does at least
-fix the bug and tegra30_ahub.c seems to take the same approach.
+ sound/soc/soc-acpi.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
- sound/soc/rockchip/rockchip_i2s.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 908211e1d6fc..20855ed8e4b7 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -504,6 +504,7 @@ static bool rockchip_i2s_rd_reg(struct device *dev, unsigned int reg)
- 	case I2S_INTCR:
- 	case I2S_XFER:
- 	case I2S_CLR:
-+	case I2S_TXDR:
- 	case I2S_RXDR:
- 	case I2S_FIFOLR:
- 	case I2S_INTSR:
-@@ -518,6 +519,9 @@ static bool rockchip_i2s_volatile_reg(struct device *dev, unsigned int reg)
- 	switch (reg) {
- 	case I2S_INTSR:
- 	case I2S_CLR:
-+	case I2S_FIFOLR:
-+	case I2S_TXDR:
-+	case I2S_RXDR:
- 		return true;
- 	default:
- 		return false;
-@@ -527,6 +531,7 @@ static bool rockchip_i2s_volatile_reg(struct device *dev, unsigned int reg)
- static bool rockchip_i2s_precious_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
-+	case I2S_RXDR:
- 	default:
- 		return false;
+diff --git a/sound/soc/soc-acpi.c b/sound/soc/soc-acpi.c
+index f21df28bc28e..d4dd2efea45e 100644
+--- a/sound/soc/soc-acpi.c
++++ b/sound/soc/soc-acpi.c
+@@ -84,11 +84,9 @@ snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines)
+ 
+ 	for (mach = machines; mach->id[0]; mach++) {
+ 		if (snd_soc_acpi_check_hid(mach->id) == true) {
+-			if (mach->machine_quirk == NULL)
+-				return mach;
+-
+-			if (mach->machine_quirk(mach) != NULL)
+-				return mach;
++			if (mach->machine_quirk)
++				mach = mach->machine_quirk(mach);
++			return mach;
+ 		}
  	}
+ 	return NULL;
 -- 
 2.15.1
+
+
+--===============0315131458834636544==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0315131458834636544==--
