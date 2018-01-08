@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Fix Kconfig with top-level selector" to the asoc tree
-Date: Mon, 08 Jan 2018 16:22:33 +0000
-Message-ID: <E1eYaC1-000297-2u@debutante>
-References: <20180103165022.4984-3-pierre-louis.bossart@linux.intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180103165022.4984-3-pierre-louis.bossart@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, arnd@arndb.de, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.comvinod.koul@intel.combroonie@kernel.org, andriy.shevchenko@linux.intel.comtorvalds@linux-foundation.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: rockchip: i2s: fix playback after runtime resume" to the asoc tree
+Date: Mon, 08 Jan 2018 16:22:53 +0000
+Message-ID: <E1eYaCL-0002AW-D7@debutante>
+References: <20180108160104.6307-1-john@metanate.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20180108160104.6307-1-john@metanate.com>
+Sender: stable-owner@vger.kernel.org
+To: John Keeping <john@metanate.com>
+Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.org, alsa-devel@alsa-project.org, Sugar Zhang <sugar.zhang@rock-chips.com>, linux-rockchip@lists.infradead.orgMark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Fix Kconfig with top-level selector
+   ASoC: rockchip: i2s: fix playback after runtime resume
 
 has been applied to the asoc tree at
 
@@ -37,473 +37,71 @@ to this mail.
 Thanks,
 Mark
 
->From c6059879be298cccda52f77bf019a7a99eb13e78 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 4 Jan 2018 16:35:53 -0600
-Subject: [PATCH] ASoC: Intel: Fix Kconfig with top-level selector
+>From c66234cfedfc3e6e3b62563a5f2c1562be09a35d Mon Sep 17 00:00:00 2001
+From: John Keeping <john@metanate.com>
+Date: Mon, 8 Jan 2018 16:01:04 +0000
+Subject: [PATCH] ASoC: rockchip: i2s: fix playback after runtime resume
 
-Follow network example suggested by Linus, move Intel definitions
-in if/endif block and clarify in help text which options distro
-configurations should enable - everything except legacy Baytrail stuff and
-NOCODEC (test only)
+When restoring registers during runtime resume, we must not write to
+I2S_TXDR which is the transmit FIFO as this queues up a sample to be
+output and pushes all of the output channels down by one.
 
-To avoid user confusion, machine drivers are handled with a submenu made
-dependent on this top-level selector.
+This can be demonstrated with the speaker-test utility:
 
-There should be no functionality change - except that sound capabilities
-are restored when using older configs without any user selection.
+	for i in a b c; do speaker-test -c 2 -s 1; done
 
-Note that the SND_SOC_ACPI_INTEL_MATCH config is currently filtered
-out by the top-level selector. This will change in the near future to
-allow for this option to be selected by both SST and SOF drivers
+which should play a test through the left speaker three times but if the
+I2S hardware starts runtime suspended the first sample will be played
+through the right speaker.
 
-(simplification with submenu for machine drivers by Vinod Koul)
+Fix this by marking I2S_TXDR as volatile (which also requires marking it
+as readble, even though it technically isn't).  This seems to be the
+most robust fix, the alternative of giving I2S_TXDR a default value is
+more fragile since it does not prevent regcache writing to the register
+in all circumstances.
 
-Fixes: f6a118a800e3 ("ASoC: Intel: clarify Kconfig dependencies")
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+While here, also fix the configuration of I2S_RXDR and I2S_FIFOLR; these
+are not writable so they do not suffer from the same problem as I2S_TXDR
+but reading from I2S_RXDR does suffer from a similar problem.
+
+Fixes: f0447f6cbb20 ("ASoC: rockchip: i2s: restore register during runtime_suspend/resume cycle", 2016-09-07)
+Signed-off-by: John Keeping <john@metanate.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
- sound/soc/intel/Kconfig        | 66 +++++++++++++++++++----------
- sound/soc/intel/Makefile       |  2 +-
- sound/soc/intel/boards/Kconfig | 94 +++++++++++++++++++++++-------------------
- 3 files changed, 97 insertions(+), 65 deletions(-)
+ sound/soc/rockchip/rockchip_i2s.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 7b49d04e3c60..b827d3b70095 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -1,3 +1,19 @@
-+config SND_SOC_INTEL_SST_TOPLEVEL
-+	bool "Intel ASoC SST drivers"
-+	default y
-+	depends on X86 || COMPILE_TEST
-+	select SND_SOC_INTEL_MACH
-+	help
-+	  Intel ASoC SST Platform Drivers. If you have a Intel machine that
-+	  has an audio controller with a DSP and I2S or DMIC port, then
-+	  enable this option by saying Y
-+
-+	  Note that the answer to this question doesn't directly affect the
-+	  kernel: saying N will just cause the configurator to skip all
-+	  the questions about Intel SST drivers.
-+
-+if SND_SOC_INTEL_SST_TOPLEVEL
-+
- config SND_SST_IPC
- 	tristate
- 
-@@ -11,9 +27,6 @@ config SND_SST_IPC_ACPI
- 	select SND_SOC_INTEL_SST
- 	select IOSF_MBI
- 
--config SND_SOC_INTEL_COMMON
--	tristate
--
- config SND_SOC_INTEL_SST
- 	tristate
- 	select SND_SOC_INTEL_SST_ACPI if ACPI
-@@ -25,47 +38,56 @@ config SND_SOC_INTEL_SST_FIRMWARE
- config SND_SOC_INTEL_SST_ACPI
- 	tristate
- 
--config SND_SOC_ACPI_INTEL_MATCH
--	tristate
--	select SND_SOC_ACPI if ACPI
--
--config SND_SOC_INTEL_SST_TOPLEVEL
--	tristate "Intel ASoC SST drivers"
--	depends on X86 || COMPILE_TEST
--	select SND_SOC_INTEL_MACH
--	select SND_SOC_INTEL_COMMON
--	help
--          Intel ASoC Audio Drivers. If you have a Intel machine that
--          has audio controller with a DSP and I2S or DMIC port, then
--          enable this option by saying Y or M
--          If unsure select "N".
--
- config SND_SOC_INTEL_HASWELL
- 	tristate "Intel ASoC SST driver for Haswell/Broadwell"
--	depends on SND_SOC_INTEL_SST_TOPLEVEL && SND_DMA_SGBUF
-+	depends on SND_DMA_SGBUF
- 	depends on DMADEVICES
- 	select SND_SOC_INTEL_SST
- 	select SND_SOC_INTEL_SST_FIRMWARE
-+	select SND_SOC_ACPI_INTEL_MATCH
-+	help
-+	  If you have a Intel Haswell or Broadwell platform connected to
-+	  an I2S codec, then enable this option by saying Y or m. This is
-+	  typically used for Chromebooks. This is a recommended option.
- 
- config SND_SOC_INTEL_BAYTRAIL
- 	tristate "Intel ASoC SST driver for Baytrail (legacy)"
--	depends on SND_SOC_INTEL_SST_TOPLEVEL
- 	depends on DMADEVICES
- 	select SND_SOC_INTEL_SST
- 	select SND_SOC_INTEL_SST_FIRMWARE
-+	select SND_SOC_ACPI_INTEL_MATCH
-+	help
-+	  If you have a Intel Baytrail platform connected to an I2S codec,
-+	  then enable this option by saying Y or m. This was typically used
-+	  for Baytrail Chromebooks but this option is now deprecated and is
-+	  not recommended, use SND_SST_ATOM_HIFI2_PLATFORM instead.
- 
- config SND_SST_ATOM_HIFI2_PLATFORM
- 	tristate "Intel ASoC SST driver for HiFi2 platforms (*field, *trail)"
--	depends on SND_SOC_INTEL_SST_TOPLEVEL && X86
-+	depends on X86
- 	select SND_SOC_COMPRESS
-+	select SND_SOC_ACPI_INTEL_MATCH
- 
- config SND_SOC_INTEL_SKYLAKE
- 	tristate "Intel ASoC SST driver for SKL/BXT/KBL/GLK/CNL"
--	depends on SND_SOC_INTEL_SST_TOPLEVEL && PCI && ACPI
-+	depends on PCI && ACPI
- 	select SND_HDA_EXT_CORE
- 	select SND_HDA_DSP_LOADER
- 	select SND_SOC_TOPOLOGY
- 	select SND_SOC_INTEL_SST
-+	select SND_SOC_ACPI_INTEL_MATCH
-+	help
-+	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
-+	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
-+	  then enable this option by saying Y or m.
-+
-+config SND_SOC_ACPI_INTEL_MATCH
-+	tristate
-+	select SND_SOC_ACPI if ACPI
-+	# this option controls the compilation of ACPI matching tables and
-+	# helpers and is not meant to be selected by the user.
-+
-+endif ## SND_SOC_INTEL_SST_TOPLEVEL
- 
- # ASoC codec drivers
- source "sound/soc/intel/boards/Kconfig"
-diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
-index b973d457e834..8160520fd74c 100644
---- a/sound/soc/intel/Makefile
-+++ b/sound/soc/intel/Makefile
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- # Core support
--obj-$(CONFIG_SND_SOC_INTEL_COMMON) += common/
-+obj-$(CONFIG_SND_SOC) += common/
- 
- # Platform Support
- obj-$(CONFIG_SND_SOC_INTEL_HASWELL) += haswell/
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 6f754708a48c..08481882c240 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -1,7 +1,14 @@
--config SND_SOC_INTEL_MACH
--	tristate "Intel Audio machine drivers"
-+menuconfig SND_SOC_INTEL_MACH
-+	bool "Intel Machine drivers"
- 	depends on SND_SOC_INTEL_SST_TOPLEVEL
--	select SND_SOC_ACPI_INTEL_MATCH if ACPI
-+	help
-+         Intel ASoC Machine Drivers. If you have a Intel machine that
-+         has an audio controller with a DSP and I2S or DMIC port, then
-+         enable this option by saying Y
-+
-+         Note that the answer to this question doesn't directly affect the
-+         kernel: saying N will just cause the configurator to skip all
-+         the questions about Intel ASoC machine drivers.
- 
- if SND_SOC_INTEL_MACH
- 
-@@ -17,103 +24,106 @@ config SND_MFLD_MACHINE
-           Say Y if you have such a device.
-           If unsure select "N".
- 
-+if SND_SOC_INTEL_HASWELL
-+
- config SND_SOC_INTEL_HASWELL_MACH
- 	tristate "ASoC Audio DSP support for Intel Haswell Lynxpoint"
- 	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM
--	depends on SND_SOC_INTEL_HASWELL
- 	select SND_SOC_RT5640
- 	help
- 	  This adds support for the Lynxpoint Audio DSP on Intel(R) Haswell
--	  Ultrabook platforms.
--	  Say Y if you have such a device.
-+	  Ultrabook platforms. This is a recommended option.
-+	  Say Y or m if you have such a device.
- 	  If unsure select "N".
- 
- config SND_SOC_INTEL_BDW_RT5677_MACH
- 	tristate "ASoC Audio driver for Intel Broadwell with RT5677 codec"
- 	depends on X86_INTEL_LPSS && GPIOLIB && I2C
--	depends on SND_SOC_INTEL_HASWELL
- 	select SND_SOC_RT5677
- 	help
- 	  This adds support for Intel Broadwell platform based boards with
--	  the RT5677 audio codec.
-+	  the RT5677 audio codec. This is a recommended option.
-+	  Say Y or m if you have such a device.
-+	  If unsure select "N".
- 
- config SND_SOC_INTEL_BROADWELL_MACH
- 	tristate "ASoC Audio DSP support for Intel Broadwell Wildcatpoint"
- 	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM
--	depends on SND_SOC_INTEL_HASWELL
- 	select SND_SOC_RT286
- 	help
- 	  This adds support for the Wilcatpoint Audio DSP on Intel(R) Broadwell
- 	  Ultrabook platforms.
--	  Say Y if you have such a device.
-+	  Say Y or m if you have such a device. This is a recommended option.
- 	  If unsure select "N".
-+endif
-+
-+if SND_SOC_INTEL_BAYTRAIL
- 
- config SND_SOC_INTEL_BYT_MAX98090_MACH
- 	tristate "ASoC Audio driver for Intel Baytrail with MAX98090 codec"
- 	depends on X86_INTEL_LPSS && I2C
--	depends on SND_SST_IPC_ACPI = n
--	depends on SND_SOC_INTEL_BAYTRAIL
- 	select SND_SOC_MAX98090
- 	help
- 	  This adds audio driver for Intel Baytrail platform based boards
--	  with the MAX98090 audio codec.
-+	  with the MAX98090 audio codec. This driver is deprecated, use
-+	  SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH instead for better
-+	  functionality.
- 
- config SND_SOC_INTEL_BYT_RT5640_MACH
- 	tristate "ASoC Audio driver for Intel Baytrail with RT5640 codec"
- 	depends on X86_INTEL_LPSS && I2C
--	depends on SND_SST_IPC_ACPI = n
--	depends on SND_SOC_INTEL_BAYTRAIL
- 	select SND_SOC_RT5640
- 	help
- 	  This adds audio driver for Intel Baytrail platform based boards
- 	  with the RT5640 audio codec. This driver is deprecated, use
- 	  SND_SOC_INTEL_BYTCR_RT5640_MACH instead for better functionality.
- 
-+endif
-+
-+if SND_SST_ATOM_HIFI2_PLATFORM
-+
- config SND_SOC_INTEL_BYTCR_RT5640_MACH
-         tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5640 codec"
- 	depends on X86 && I2C && ACPI
- 	select SND_SOC_RT5640
--	depends on SND_SST_ATOM_HIFI2_PLATFORM
- 	select SND_SST_IPC_ACPI
- 	help
-           This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
-           platforms with RT5640 audio codec.
--          Say Y if you have such a device.
-+          Say Y or m if you have such a device. This is a recommended option.
-           If unsure select "N".
- 
- config SND_SOC_INTEL_BYTCR_RT5651_MACH
-         tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5651 codec"
- 	depends on X86 && I2C && ACPI
- 	select SND_SOC_RT5651
--	depends on SND_SST_ATOM_HIFI2_PLATFORM
- 	select SND_SST_IPC_ACPI
- 	help
-           This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
-           platforms with RT5651 audio codec.
--          Say Y if you have such a device.
-+          Say Y or m if you have such a device. This is a recommended option.
-           If unsure select "N".
- 
- config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
-         tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5672 codec"
- 	depends on X86_INTEL_LPSS && I2C && ACPI
-         select SND_SOC_RT5670
--        depends on SND_SST_ATOM_HIFI2_PLATFORM
-         select SND_SST_IPC_ACPI
-         help
-           This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
-           platforms with RT5672 audio codec.
--          Say Y if you have such a device.
-+          Say Y or m if you have such a device. This is a recommended option.
-           If unsure select "N".
- 
- config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
- 	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5645/5650 codec"
- 	depends on X86_INTEL_LPSS && I2C && ACPI
- 	select SND_SOC_RT5645
--	depends on SND_SST_ATOM_HIFI2_PLATFORM
- 	select SND_SST_IPC_ACPI
- 	help
- 	  This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
- 	  platforms with RT5645/5650 audio codec.
-+	  Say Y or m if you have such a device. This is a recommended option.
- 	  If unsure select "N".
- 
- config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
-@@ -121,63 +131,67 @@ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
- 	depends on X86_INTEL_LPSS && I2C && ACPI
- 	select SND_SOC_MAX98090
- 	select SND_SOC_TS3A227E
--	depends on SND_SST_ATOM_HIFI2_PLATFORM
- 	select SND_SST_IPC_ACPI
- 	help
- 	  This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
- 	  platforms with MAX98090 audio codec it also can support TI jack chip as aux device.
-+	  Say Y or m if you have such a device. This is a recommended option.
- 	  If unsure select "N".
- 
- config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
- 	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail with DA7212/7213 codec"
- 	depends on X86_INTEL_LPSS && I2C && ACPI
- 	select SND_SOC_DA7213
--	depends on SND_SST_ATOM_HIFI2_PLATFORM
- 	select SND_SST_IPC_ACPI
- 	help
- 	  This adds support for ASoC machine driver for Intel(R) Baytrail & CherryTrail
- 	  platforms with DA7212/7213 audio codec.
-+	  Say Y or m if you have such a device. This is a recommended option.
- 	  If unsure select "N".
- 
- config SND_SOC_INTEL_BYT_CHT_ES8316_MACH
- 	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail with ES8316 codec"
- 	depends on X86_INTEL_LPSS && I2C && ACPI
- 	select SND_SOC_ES8316
--	depends on SND_SST_ATOM_HIFI2_PLATFORM
- 	select SND_SST_IPC_ACPI
- 	help
- 	  This adds support for ASoC machine driver for Intel(R) Baytrail &
- 	  Cherrytrail platforms with ES8316 audio codec.
-+	  Say Y or m if you have such a device. This is a recommended option.
- 	  If unsure select "N".
- 
- config SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH
- 	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail platform with no codec (MinnowBoard MAX, Up)"
- 	depends on X86_INTEL_LPSS && I2C && ACPI
--	depends on SND_SST_ATOM_HIFI2_PLATFORM
- 	select SND_SST_IPC_ACPI
- 	help
- 	  This adds support for ASoC machine driver for the MinnowBoard Max or
- 	  Up boards and provides access to I2S signals on the Low-Speed
--	  connector
-+	  connector. This is not a recommended option outside of these cases.
-+	  It is not intended to be enabled by distros by default.
-+	  Say Y or m if you have such a device.
-+
- 	  If unsure select "N".
- 
-+endif
-+
-+if SND_SOC_INTEL_SKYLAKE
-+
- config SND_SOC_INTEL_SKL_RT286_MACH
- 	tristate "ASoC Audio driver for SKL with RT286 I2S mode"
- 	depends on X86 && ACPI && I2C
--	depends on SND_SOC_INTEL_SKYLAKE
- 	select SND_SOC_RT286
- 	select SND_SOC_DMIC
- 	select SND_SOC_HDAC_HDMI
- 	help
- 	   This adds support for ASoC machine driver for Skylake platforms
- 	   with RT286 I2S audio codec.
--	   Say Y if you have such a device.
-+	   Say Y or m if you have such a device.
- 	   If unsure select "N".
- 
- config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
- 	tristate "ASoC Audio driver for SKL with NAU88L25 and SSM4567 in I2S Mode"
- 	depends on X86_INTEL_LPSS && I2C
--	depends on SND_SOC_INTEL_SKYLAKE
- 	select SND_SOC_NAU8825
- 	select SND_SOC_SSM4567
- 	select SND_SOC_DMIC
-@@ -185,13 +199,12 @@ config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
- 	help
- 	  This adds support for ASoC Onboard Codec I2S machine driver. This will
- 	  create an alsa sound card for NAU88L25 + SSM4567.
--	  Say Y if you have such a device.
-+	  Say Y or m if you have such a device. This is a recommended option.
- 	  If unsure select "N".
- 
- config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
- 	tristate "ASoC Audio driver for SKL with NAU88L25 and MAX98357A in I2S Mode"
- 	depends on X86_INTEL_LPSS && I2C
--	depends on SND_SOC_INTEL_SKYLAKE
- 	select SND_SOC_NAU8825
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_DMIC
-@@ -199,13 +212,12 @@ config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
- 	help
- 	  This adds support for ASoC Onboard Codec I2S machine driver. This will
- 	  create an alsa sound card for NAU88L25 + MAX98357A.
--	  Say Y if you have such a device.
-+	  Say Y or m if you have such a device. This is a recommended option.
- 	  If unsure select "N".
- 
- config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
- 	tristate "ASoC Audio driver for Broxton with DA7219 and MAX98357A in I2S Mode"
- 	depends on X86 && ACPI && I2C
--	depends on SND_SOC_INTEL_SKYLAKE
- 	select SND_SOC_DA7219
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_DMIC
-@@ -214,13 +226,12 @@ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
- 	help
- 	   This adds support for ASoC machine driver for Broxton-P platforms
- 	   with DA7219 + MAX98357A I2S audio codec.
--	   Say Y if you have such a device.
-+	   Say Y or m if you have such a device. This is a recommended option.
- 	   If unsure select "N".
- 
- config SND_SOC_INTEL_BXT_RT298_MACH
- 	tristate "ASoC Audio driver for Broxton with RT298 I2S mode"
- 	depends on X86 && ACPI && I2C
--	depends on SND_SOC_INTEL_SKYLAKE
- 	select SND_SOC_RT298
- 	select SND_SOC_DMIC
- 	select SND_SOC_HDAC_HDMI
-@@ -228,14 +239,13 @@ config SND_SOC_INTEL_BXT_RT298_MACH
- 	help
- 	   This adds support for ASoC machine driver for Broxton platforms
- 	   with RT286 I2S audio codec.
--	   Say Y if you have such a device.
-+	   Say Y or m if you have such a device. This is a recommended option.
- 	   If unsure select "N".
- 
- config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
- 	tristate "ASoC Audio driver for KBL with RT5663 and MAX98927 in I2S Mode"
- 	depends on X86_INTEL_LPSS && I2C
- 	select SND_SOC_INTEL_SST
--	depends on SND_SOC_INTEL_SKYLAKE
- 	select SND_SOC_RT5663
- 	select SND_SOC_MAX98927
- 	select SND_SOC_DMIC
-@@ -243,14 +253,13 @@ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
- 	help
- 	  This adds support for ASoC Onboard Codec I2S machine driver. This will
- 	  create an alsa sound card for RT5663 + MAX98927.
--	  Say Y if you have such a device.
-+	  Say Y or m if you have such a device. This is a recommended option.
- 	  If unsure select "N".
- 
- config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
-         tristate "ASoC Audio driver for KBL with RT5663, RT5514 and MAX98927 in I2S Mode"
-         depends on X86_INTEL_LPSS && I2C && SPI
-         select SND_SOC_INTEL_SST
--        depends on SND_SOC_INTEL_SKYLAKE
-         select SND_SOC_RT5663
-         select SND_SOC_RT5514
-         select SND_SOC_RT5514_SPI
-@@ -259,7 +268,8 @@ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
-         help
-           This adds support for ASoC Onboard Codec I2S machine driver. This will
-           create an alsa sound card for RT5663 + RT5514 + MAX98927.
--          Say Y if you have such a device.
-+          Say Y or m if you have such a device. This is a recommended option.
-           If unsure select "N".
--
- endif
-+
-+endif ## SND_SOC_INTEL_MACH
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 908211e1d6fc..eb27f6c24bf7 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -504,6 +504,7 @@ static bool rockchip_i2s_rd_reg(struct device *dev, unsigned int reg)
+ 	case I2S_INTCR:
+ 	case I2S_XFER:
+ 	case I2S_CLR:
++	case I2S_TXDR:
+ 	case I2S_RXDR:
+ 	case I2S_FIFOLR:
+ 	case I2S_INTSR:
+@@ -518,6 +519,9 @@ static bool rockchip_i2s_volatile_reg(struct device *dev, unsigned int reg)
+ 	switch (reg) {
+ 	case I2S_INTSR:
+ 	case I2S_CLR:
++	case I2S_FIFOLR:
++	case I2S_TXDR:
++	case I2S_RXDR:
+ 		return true;
+ 	default:
+ 		return false;
+@@ -527,6 +531,8 @@ static bool rockchip_i2s_volatile_reg(struct device *dev, unsigned int reg)
+ static bool rockchip_i2s_precious_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
++	case I2S_RXDR:
++		return true;
+ 	default:
+ 		return false;
+ 	}
 -- 
 2.15.1
