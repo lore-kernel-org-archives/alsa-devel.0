@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: i2s: Support mono capture" to the asoc tree
-Date: Mon, 08 Jan 2018 12:35:31 +0000
-Message-ID: <E1eYWeJ-0003HQ-NH@debutante>
-References: <20180105221242.22083-1-mka@chromium.org>
+Subject: Applied "ASoC: fsl_ssi: Fix build error" to the asoc tree
+Date: Mon, 08 Jan 2018 12:35:38 +0000
+Message-ID: <E1eYWeQ-0003K9-QM@debutante>
+References: <1515344750-6159-1-git-send-email-linux@roeck-us.net>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180105221242.22083-1-mka@chromium.org>
+In-Reply-To: <1515344750-6159-1-git-send-email-linux@roeck-us.net>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Matthias Kaehlcke <mka@chromium.org>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>, alsa-devel@alsa-project.org, Brian Norris <briannorris@chromium.org>, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, Dylan Reid <dgreid@chromium.org>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>Nicolin Chen <nicoleotsuka@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, "Maciej S . Szmigiero" <mail@maciej.szmigiero.name>, linuxppc-dev@lists.ozlabs.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: i2s: Support mono capture
+   ASoC: fsl_ssi: Fix build error
 
 has been applied to the asoc tree at
 
@@ -37,51 +37,39 @@ to this mail.
 Thanks,
 Mark
 
->From db51707b9c9aeedd310ebce60f15d5bb006567e0 Mon Sep 17 00:00:00 2001
-From: Matthias Kaehlcke <mka@chromium.org>
-Date: Fri, 5 Jan 2018 14:12:42 -0800
-Subject: [PATCH] ASoC: rockchip: i2s: Support mono capture
+>From a5a86a7f87d7b684f0369e1f207bb294cfa58dde Mon Sep 17 00:00:00 2001
+From: Guenter Roeck <linux@roeck-us.net>
+Date: Sun, 7 Jan 2018 09:05:50 -0800
+Subject: [PATCH] ASoC: fsl_ssi: Fix build error
 
-The Rockchip I2S controller only allows to configure even numbers of
-capture channels. It is still possible to capture monophonic audio by
-using dual-channel mode and ignoring the 'data' from the second
-channel.
+powerpc:mpc85xx_defconfig fails to build with the following errors.
 
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+sound/soc/fsl/fsl_dma.c: In function 'fsl_soc_dma_probe':
+sound/soc/fsl/fsl_dma.c:916:34: error: 'CCSR_SSI_STX0' undeclared
+sound/soc/fsl/fsl_dma.c:917:34: error: 'CCSR_SSI_SRX0' undeclared
+
+Fixes: a818aa5f967b ("ASoC: fsl_ssi: Rename registers and fields macros")
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_i2s.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl_dma.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 908211e1d6fc..cc22ab3d10dd 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -328,6 +328,7 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
- 		val |= I2S_CHN_4;
- 		break;
- 	case 2:
-+	case 1:
- 		val |= I2S_CHN_2;
- 		break;
- 	default:
-@@ -460,7 +461,7 @@ static struct snd_soc_dai_driver rockchip_i2s_dai = {
- 	},
- 	.capture = {
- 		.stream_name = "Capture",
--		.channels_min = 2,
-+		.channels_min = 1,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_8000_192000,
- 		.formats = (SNDRV_PCM_FMTBIT_S8 |
-@@ -654,7 +655,7 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
- 	}
+diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
+index 0c11f434a374..8c2981b70f64 100644
+--- a/sound/soc/fsl/fsl_dma.c
++++ b/sound/soc/fsl/fsl_dma.c
+@@ -913,8 +913,8 @@ static int fsl_soc_dma_probe(struct platform_device *pdev)
+ 	dma->dai.pcm_free = fsl_dma_free_dma_buffers;
  
- 	if (!of_property_read_u32(node, "rockchip,capture-channels", &val)) {
--		if (val >= 2 && val <= 8)
-+		if (val >= 1 && val <= 8)
- 			soc_dai->capture.channels_max = val;
- 	}
+ 	/* Store the SSI-specific information that we need */
+-	dma->ssi_stx_phys = res.start + CCSR_SSI_STX0;
+-	dma->ssi_srx_phys = res.start + CCSR_SSI_SRX0;
++	dma->ssi_stx_phys = res.start + REG_SSI_STX0;
++	dma->ssi_srx_phys = res.start + REG_SSI_SRX0;
  
+ 	iprop = of_get_property(ssi_np, "fsl,fifo-depth", NULL);
+ 	if (iprop)
 -- 
 2.15.1
