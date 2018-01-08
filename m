@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: sst: Fix some style" to the asoc tree
-Date: Mon, 08 Jan 2018 16:23:19 +0000
-Message-ID: <E1eYaCl-0002Fz-89@debutante>
-References: <20180106201855.6131-1-christophe.jaillet@wanadoo.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180106201855.6131-1-christophe.jaillet@wanadoo.fr>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Applied "ASoC: Intel: sst: Fix the return value of 'sst_send_byte_stream_mrfld()'" to the asoc tree
+Date: Mon, 08 Jan 2018 16:23:27 +0000
+Message-ID: <E1eYaCt-0002Gy-6e@debutante>
+References: <20180106201824.6081-1-christophe.jaillet@wanadoo.fr>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <20180106201824.6081-1-christophe.jaillet@wanadoo.fr>
+Sender: kernel-janitors-owner@vger.kernel.org
 To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: sst: Fix some style
+   ASoC: Intel: sst: Fix the return value of 'sst_send_byte_stream_mrfld()'
 
 has been applied to the asoc tree at
 
@@ -37,52 +37,37 @@ to this mail.
 Thanks,
 Mark
 
->From 25f3fd043ec1f60f3955f9d7277d97e2f9c1612c Mon Sep 17 00:00:00 2001
+>From eaadb1caa966a91128297b754e90b7c92b350a00 Mon Sep 17 00:00:00 2001
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Date: Sat, 6 Jan 2018 21:18:55 +0100
-Subject: [PATCH] ASoC: Intel: sst: Fix some style
+Date: Sat, 6 Jan 2018 21:18:24 +0100
+Subject: [PATCH] ASoC: Intel: sst: Fix the return value of
+ 'sst_send_byte_stream_mrfld()'
 
-This patch fixes 3 small issues:
- - missing 2nd '*' at the beginning of a doxygen comment
- - extra space after a '\n' in a dev_dbg message
- - extra tab before a 'return" statement
+In some error handling paths, an error code is assiegned to 'ret'.
+However, the function always return 0.
 
+Fix it and return the error code if such an error paths is taken.
+
+Fixes: 3d9ff34622ba ("ASoC: Intel: sst: add stream operations")
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst_stream.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/atom/sst/sst_stream.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/atom/sst/sst_stream.c b/sound/soc/intel/atom/sst/sst_stream.c
-index 20f5066fefb9..7ee6aeb7e0af 100644
+index 65e257b17a7e..20f5066fefb9 100644
 --- a/sound/soc/intel/atom/sst/sst_stream.c
 +++ b/sound/soc/intel/atom/sst/sst_stream.c
-@@ -223,7 +223,7 @@ int sst_send_byte_stream_mrfld(struct intel_sst_drv *sst_drv_ctx,
- 	return ret;
+@@ -220,7 +220,7 @@ int sst_send_byte_stream_mrfld(struct intel_sst_drv *sst_drv_ctx,
+ 		sst_free_block(sst_drv_ctx, block);
+ out:
+ 	test_and_clear_bit(pvt_id, &sst_drv_ctx->pvt_id);
+-	return 0;
++	return ret;
  }
  
--/*
-+/**
-  * sst_pause_stream - Send msg for a pausing stream
-  * @str_id:	 stream ID
-  *
-@@ -261,7 +261,7 @@ int sst_pause_stream(struct intel_sst_drv *sst_drv_ctx, int str_id)
- 		}
- 	} else {
- 		retval = -EBADRQC;
--		dev_dbg(sst_drv_ctx->dev, "SST DBG:BADRQC for stream\n ");
-+		dev_dbg(sst_drv_ctx->dev, "SST DBG:BADRQC for stream\n");
- 	}
- 
- 	return retval;
-@@ -284,7 +284,7 @@ int sst_resume_stream(struct intel_sst_drv *sst_drv_ctx, int str_id)
- 	if (!str_info)
- 		return -EINVAL;
- 	if (str_info->status == STREAM_RUNNING)
--			return 0;
-+		return 0;
- 	if (str_info->status == STREAM_PAUSED) {
- 		retval = sst_prepare_and_post_msg(sst_drv_ctx, str_info->task_id,
- 				IPC_CMD, IPC_IA_RESUME_STREAM_MRFLD,
+ /*
 -- 
 2.15.1
+
