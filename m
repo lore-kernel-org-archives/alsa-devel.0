@@ -1,17 +1,19 @@
-From: "Francisco G." <frangio.1@gmail.com>
-Subject: snd_hda_intel: coil whine noises after resume
-Date: Sun, 7 Jan 2018 20:07:55 -0300
-Message-ID: <CAHXyb9ZCZJzVisuBARa+UORcjRERV8yokez=DP1_5O5isTz0ZA@mail.gmail.com>
+From: "Zhang, Keqiao" <keqiao.zhang@intel.com>
+Subject: Re: [PATCH 2/4] ASoC: Intel: bytcr-rt5651:
+	enable	MinnowBoard Turbot quirks
+Date: Mon, 8 Jan 2018 08:25:03 +0000
+Message-ID: <57E804B13068CF489D6E1F6E5365559B5762CA7F@SHSMSX103.ccr.corp.intel.com>
+References: <20180105192023.11229-1-pierre-louis.bossart@linux.intel.com>
+ <20180105192023.11229-4-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yb0-f172.google.com (mail-yb0-f172.google.com
- [209.85.213.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 2257A266FE0
- for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 00:08:12 +0100 (CET)
-Received: by mail-yb0-f172.google.com with SMTP id b132so703788yba.5
- for <alsa-devel@alsa-project.org>; Sun, 07 Jan 2018 15:08:12 -0800 (PST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CAF1266DCD
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 09:25:07 +0100 (CET)
+In-Reply-To: <20180105192023.11229-4-pierre-louis.bossart@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,25 +23,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: perex@perex.cz, tiwai@suse.com, matt.jared@intel.com, andy.kopp@intel.com, dan.d.kogan@intel.com
-Cc: alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, Keyon Jie <yang.jie@linux.intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Koul,
+ Vinod" <vinod.koul@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, Carlo Caione <carlo@caione.org>, "bardliao@realtek.com" <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
 
-Some users included myself have noticed coil-whine-like noises coming
-through the headphones after the computer resumes from sleep. This noise is
-clearly associated to the laptop activity, e.g. when scrolling through a
-webpage or compiling something, the processor can be heard doing the work.
 
-Interestingly, the coil whine that can be heard from the computer with
-naked ears (which is a common problem with this laptop) is also increased
-after resume.
-
-The problem has been observed on a Dell XPS 13 9360 with an i7-8550U CPU by
-myself, as well as with an i5-8250U by a user in the Arch Linux forums
-<https://bbs.archlinux.org/viewtopic.php?pid=1759588#p1759588>. This user
-has also noticed that reloading the snd_hda_intel module fixes the issue.
-
-Please let me know of any inormation that would be needed to debug this
-problem.
+> -----Original Message-----
+> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-
+> project.org] On Behalf Of Pierre-Louis Bossart
+> Sent: Saturday, January 6, 2018 3:20 AM
+> To: alsa-devel@alsa-project.org
+> Cc: tiwai@suse.de; Keyon Jie <yang.jie@linux.intel.com>; Pierre-Louis Bossart
+> <pierre-louis.bossart@linux.intel.com>; liam.r.girdwood@linux.intel.com; Koul,
+> Vinod <vinod.koul@intel.com>; broonie@kernel.org; Carlo Caione
+> <carlo@caione.org>; bardliao@realtek.com
+> Subject: [alsa-devel] [PATCH 2/4] ASoC: Intel: bytcr-rt5651: enable
+> MinnowBoard Turbot quirks
+> 
+> Define DMI quirk for rt5651 eval board connected to MinnowBoard Turbot. The
+> only difference with a MinnowBoard MAX is that the MCLK pin is enabled on the
+> LSE connector
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Tested-by: Keqiao.Zhang <Keqiao.zhang@intel.com>
+> ---
+>  sound/soc/intel/boards/bytcr_rt5651.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/sound/soc/intel/boards/bytcr_rt5651.c
+> b/sound/soc/intel/boards/bytcr_rt5651.c
+> index de3758b2aac1..7d95008f1795 100644
+> --- a/sound/soc/intel/boards/bytcr_rt5651.c
+> +++ b/sound/soc/intel/boards/bytcr_rt5651.c
+> @@ -266,6 +266,15 @@ static const struct dmi_system_id
+> byt_rt5651_quirk_table[] = {
+>  		},
+>  		.driver_data = (void *)(BYT_RT5651_IN3_MAP),
+>  	},
+> +	{
+> +		.callback = byt_rt5651_quirk_cb,
+> +		.matches = {
+> +			DMI_MATCH(DMI_SYS_VENDOR, "ADI"),
+> +			DMI_MATCH(DMI_PRODUCT_NAME, "Minnowboard
+> Turbot"),
+> +		},
+> +		.driver_data = (void *)(BYT_RT5651_MCLK_EN |
+> +					BYT_RT5651_IN3_MAP),
+> +	},
+>  	{
+>  		.callback = byt_rt5651_quirk_cb,
+>  		.matches = {
+> --
+> 2.14.1
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
