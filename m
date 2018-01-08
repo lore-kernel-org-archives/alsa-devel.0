@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: i2s: fix playback after runtime resume" to the asoc tree
-Date: Mon, 08 Jan 2018 16:22:53 +0000
-Message-ID: <E1eYaCL-0002AW-D7@debutante>
-References: <20180108160104.6307-1-john@metanate.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20180108160104.6307-1-john@metanate.com>
-Sender: stable-owner@vger.kernel.org
-To: John Keeping <john@metanate.com>
-Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.org, alsa-devel@alsa-project.org, Sugar Zhang <sugar.zhang@rock-chips.com>, linux-rockchip@lists.infradead.orgMark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: Intel: Fix nested/unnecessary Kconfig
+	dependencies" to the asoc tree
+Date: Mon, 08 Jan 2018 16:22:11 +0000
+Message-ID: <E1eYaBf-00025t-2Z@debutante>
+References: <20180104223601.5831-6-pierre-louis.bossart@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BAA2267512
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 17:22:17 +0100 (CET)
+In-Reply-To: <20180104223601.5831-6-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, arnd@arndb.de, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com, torvalds@linux-foundation.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: i2s: fix playback after runtime resume
+   ASoC: Intel: Fix nested/unnecessary Kconfig dependencies
 
 has been applied to the asoc tree at
 
@@ -37,71 +53,81 @@ to this mail.
 Thanks,
 Mark
 
->From c66234cfedfc3e6e3b62563a5f2c1562be09a35d Mon Sep 17 00:00:00 2001
-From: John Keeping <john@metanate.com>
-Date: Mon, 8 Jan 2018 16:01:04 +0000
-Subject: [PATCH] ASoC: rockchip: i2s: fix playback after runtime resume
+>From f3f2bb7a0ebf9d83229810f69a53fee2c0441b2c Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 4 Jan 2018 16:35:56 -0600
+Subject: [PATCH] ASoC: Intel: Fix nested/unnecessary Kconfig dependencies
 
-When restoring registers during runtime resume, we must not write to
-I2S_TXDR which is the transmit FIFO as this queues up a sample to be
-output and pushes all of the output channels down by one.
+This patch fixes a number of issues:
+1. IOSF_MBI is only needed for byt-cr detection, which is only supported
+on Baytrail/Cherrytrail, move to HiFi2 config
 
-This can be demonstrated with the speaker-test utility:
+2. SND_SOC_INTEL_SST should not select SND_SOC_INTEL_SST_ACPI, the latter
+config is only valid for Haswell/Baytrail legacy but not needed by Skylake
 
-	for i in a b c; do speaker-test -c 2 -s 1; done
+3. SND_SST_IPC_ACPI, used only by the atom/sst driver, should not select
+SND_SOC_INTEL_SST, none of the code under common/sst*.c is used
 
-which should play a test through the left speaker three times but if the
-I2S hardware starts runtime suspended the first sample will be played
-through the right speaker.
+This nesting of configs really makes no sense, it's easier to maintain
+if for each platform one can control what is strictly required.
 
-Fix this by marking I2S_TXDR as volatile (which also requires marking it
-as readble, even though it technically isn't).  This seems to be the
-most robust fix, the alternative of giving I2S_TXDR a default value is
-more fragile since it does not prevent regcache writing to the register
-in all circumstances.
+Compiled-tested with each of Haswell, Baytrail legacy, HiFi2, SKL cases
+selected independently. 0-day and explicit randconfig tests did not report
+additional issues and no functionality loss was observed in Intel tests on
+HIFI2 and SKYLAKE platforms
 
-While here, also fix the configuration of I2S_RXDR and I2S_FIFOLR; these
-are not writable so they do not suffer from the same problem as I2S_TXDR
-but reading from I2S_RXDR does suffer from a similar problem.
-
-Fixes: f0447f6cbb20 ("ASoC: rockchip: i2s: restore register during runtime_suspend/resume cycle", 2016-09-07)
-Signed-off-by: John Keeping <john@metanate.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/rockchip/rockchip_i2s.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/intel/Kconfig | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 908211e1d6fc..eb27f6c24bf7 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -504,6 +504,7 @@ static bool rockchip_i2s_rd_reg(struct device *dev, unsigned int reg)
- 	case I2S_INTCR:
- 	case I2S_XFER:
- 	case I2S_CLR:
-+	case I2S_TXDR:
- 	case I2S_RXDR:
- 	case I2S_FIFOLR:
- 	case I2S_INTSR:
-@@ -518,6 +519,9 @@ static bool rockchip_i2s_volatile_reg(struct device *dev, unsigned int reg)
- 	switch (reg) {
- 	case I2S_INTSR:
- 	case I2S_CLR:
-+	case I2S_FIFOLR:
-+	case I2S_TXDR:
-+	case I2S_RXDR:
- 		return true;
- 	default:
- 		return false;
-@@ -527,6 +531,8 @@ static bool rockchip_i2s_volatile_reg(struct device *dev, unsigned int reg)
- static bool rockchip_i2s_precious_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
-+	case I2S_RXDR:
-+		return true;
- 	default:
- 		return false;
- 	}
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 01b75df6b118..ca0d6eb95d11 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -27,8 +27,6 @@ config SND_SST_IPC_PCI
+ config SND_SST_IPC_ACPI
+ 	tristate
+ 	select SND_SST_IPC
+-	select SND_SOC_INTEL_SST
+-	select IOSF_MBI
+ 	# This option controls the ACPI-based IPC for HiFi2 platforms
+ 	# (Baytrail, Cherrytrail)
+ 
+@@ -40,7 +38,6 @@ config SND_SOC_INTEL_SST_ACPI
+ 
+ config SND_SOC_INTEL_SST
+ 	tristate
+-	select SND_SOC_INTEL_SST_ACPI if ACPI
+ 
+ config SND_SOC_INTEL_SST_FIRMWARE
+ 	tristate
+@@ -54,6 +51,7 @@ config SND_SOC_INTEL_HASWELL
+ 	depends on SND_DMA_SGBUF
+ 	depends on DMADEVICES && ACPI
+ 	select SND_SOC_INTEL_SST
++	select SND_SOC_INTEL_SST_ACPI
+ 	select SND_SOC_INTEL_SST_FIRMWARE
+ 	select SND_SOC_ACPI_INTEL_MATCH
+ 	help
+@@ -65,6 +63,7 @@ config SND_SOC_INTEL_BAYTRAIL
+ 	tristate "Intel ASoC SST driver for Baytrail (legacy)"
+ 	depends on DMADEVICES && ACPI
+ 	select SND_SOC_INTEL_SST
++	select SND_SOC_INTEL_SST_ACPI
+ 	select SND_SOC_INTEL_SST_FIRMWARE
+ 	select SND_SOC_ACPI_INTEL_MATCH
+ 	help
+@@ -93,6 +92,7 @@ config SND_SST_ATOM_HIFI2_PLATFORM
+ 	select SND_SST_IPC_ACPI
+ 	select SND_SOC_COMPRESS
+ 	select SND_SOC_ACPI_INTEL_MATCH
++	select IOSF_MBI
+ 	help
+ 	  If you have a Intel Baytrail or Cherrytrail platform with an I2S
+ 	  codec, then enable this option by saying Y or m. This is a
 -- 
 2.15.1
