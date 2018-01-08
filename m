@@ -1,17 +1,24 @@
-From: John Keeping <john@metanate.com>
-Subject: [PATCH v2] ASoC: rockchip: i2s: fix playback after
-	runtime resume
-Date: Mon,  8 Jan 2018 16:01:04 +0000
-Message-ID: <20180108160104.6307-1-john@metanate.com>
-References: <20180108122301.18255-1-john@metanate.com>
+From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+Subject: Re: [PATCH v8] ASoC: TSCS42xx: Add support for Tempo
+ Semiconductor's TSCS42xx audio CODEC
+Date: Mon, 8 Jan 2018 09:11:14 -0700
+Message-ID: <20180108161112.nkz6mhhmimuz6mut@localhost.localdomain>
+References: <20180107141943.y5hh3cob2uak4sod@localhost.localdomain>
+ <20180108112046.GA11698@sirena.org.uk>
+ <20180108151539.bpaafslmpjhoow5c@localhost.localdomain>
+ <20180108153107.GG11698@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metanate.com (dougal.metanate.com [90.155.101.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F6BA2673AF
- for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 17:01:14 +0100 (CET)
-In-Reply-To: <20180108122301.18255-1-john@metanate.com>
+Received: from mail-io0-f196.google.com (mail-io0-f196.google.com
+ [209.85.223.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 782AA2673AF
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 17:11:30 +0100 (CET)
+Received: by mail-io0-f196.google.com with SMTP id v30so14704528iov.7
+ for <alsa-devel@alsa-project.org>; Mon, 08 Jan 2018 08:11:30 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20180108153107.GG11698@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,71 +28,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Sugar Zhang <sugar.zhang@rock-chips.com>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, John Keeping <john@metanate.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Philippe Ombredanne <pombredanne@nexb.com>
 List-Id: alsa-devel@alsa-project.org
 
-When restoring registers during runtime resume, we must not write to
-I2S_TXDR which is the transmit FIFO as this queues up a sample to be
-output and pushes all of the output channels down by one.
+On Mon, Jan 08, 2018 at 03:31:07PM +0000, Mark Brown wrote:
+> Please don't do that either, if you're submitting a new patch just
+> submit a new patch.  If patches get sorted into the middle of an old
+> thread it makes it harder to follow what's new and current.
 
-This can be demonstrated with the speaker-test utility:
-
-	for i in a b c; do speaker-test -c 2 -s 1; done
-
-which should play a test through the left speaker three times but if the
-I2S hardware starts runtime suspended the first sample will be played
-through the right speaker.
-
-Fix this by marking I2S_TXDR as volatile (which also requires marking it
-as readble, even though it technically isn't).  This seems to be the
-most robust fix, the alternative of giving I2S_TXDR a default value is
-more fragile since it does not prevent regcache writing to the register
-in all circumstances.
-
-While here, also fix the configuration of I2S_RXDR and I2S_FIFOLR; these
-are not writable so they do not suffer from the same problem as I2S_TXDR
-but reading from I2S_RXDR does suffer from a similar problem.
-
-Fixes: f0447f6cbb20 ("ASoC: rockchip: i2s: restore register during runtime_suspend/resume cycle", 2016-09-07)
-Signed-off-by: John Keeping <john@metanate.com>
----
-v2 changes:
-- Fix rockchip_i2s_precious_reg to return true for I2S_RXDR
-
- sound/soc/rockchip/rockchip_i2s.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 908211e1d6fc..eb27f6c24bf7 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -504,6 +504,7 @@ static bool rockchip_i2s_rd_reg(struct device *dev, unsigned int reg)
- 	case I2S_INTCR:
- 	case I2S_XFER:
- 	case I2S_CLR:
-+	case I2S_TXDR:
- 	case I2S_RXDR:
- 	case I2S_FIFOLR:
- 	case I2S_INTSR:
-@@ -518,6 +519,9 @@ static bool rockchip_i2s_volatile_reg(struct device *dev, unsigned int reg)
- 	switch (reg) {
- 	case I2S_INTSR:
- 	case I2S_CLR:
-+	case I2S_FIFOLR:
-+	case I2S_TXDR:
-+	case I2S_RXDR:
- 		return true;
- 	default:
- 		return false;
-@@ -527,6 +531,8 @@ static bool rockchip_i2s_volatile_reg(struct device *dev, unsigned int reg)
- static bool rockchip_i2s_precious_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
-+	case I2S_RXDR:
-+		return true;
- 	default:
- 		return false;
- 	}
--- 
-2.15.1
+Okay that makes sense. I will submit a new incremental patch.
