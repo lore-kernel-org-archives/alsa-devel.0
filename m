@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: sst: Fix the return value of 'sst_send_byte_stream_mrfld()'" to the asoc tree
-Date: Mon, 08 Jan 2018 16:23:27 +0000
-Message-ID: <E1eYaCt-0002Gy-6e@debutante>
-References: <20180106201824.6081-1-christophe.jaillet@wanadoo.fr>
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <20180106201824.6081-1-christophe.jaillet@wanadoo.fr>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: acpi: add missing includes for non-ACPI platforms" to the asoc tree
+Date: Mon, 08 Jan 2018 16:23:30 +0000
+Message-ID: <E1eYaCw-0002I2-ME@debutante>
+References: <20180103165022.4984-2-pierre-louis.bossart@linux.intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180103165022.4984-2-pierre-louis.bossart@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, arnd@arndb.de, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, vinod.koul@intel.combroonie@kernel.org, andriy.shevchenko@linux.intel.com, torvalds@linux-foundation.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: sst: Fix the return value of 'sst_send_byte_stream_mrfld()'
+   ASoC: acpi: add missing includes for non-ACPI platforms
 
 has been applied to the asoc tree at
 
@@ -37,37 +37,58 @@ to this mail.
 Thanks,
 Mark
 
->From eaadb1caa966a91128297b754e90b7c92b350a00 Mon Sep 17 00:00:00 2001
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Date: Sat, 6 Jan 2018 21:18:24 +0100
-Subject: [PATCH] ASoC: Intel: sst: Fix the return value of
- 'sst_send_byte_stream_mrfld()'
+>From 845ab40092601630ec9eb58398a53b9a87b6900b Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 4 Jan 2018 16:35:52 -0600
+Subject: [PATCH] ASoC: acpi: add missing includes for non-ACPI platforms
 
-In some error handling paths, an error code is assiegned to 'ret'.
-However, the function always return 0.
+0-day reports compilation issues with non-ACPI platforms.
 
-Fix it and return the error code if such an error paths is taken.
+In file included from sound/soc/soc-acpi.c:17:0:
+>> include/sound/soc-acpi.h:36:46: error: 'ACPI_ID_LEN' undeclared here
+(not in a function); did you mean 'ACPI_FILE'?
+    snd_soc_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN])
 
-Fixes: 3d9ff34622ba ("ASoC: Intel: sst: add stream operations")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+ sound/soc/soc-acpi.c: At top level:
+>> sound/soc/soc-acpi.c:174:16: error: expected declaration specifiers or
+'...' before string constant
+    MODULE_LICENSE("GPL v2");
+
+Add missing include files.
+
+Fixes: 7feb2f786a46 ("ASoC: move ACPI common code out of Intel/sst tree")
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst_stream.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/soc-acpi-intel-match.h | 1 +
+ include/sound/soc-acpi.h             | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/atom/sst/sst_stream.c b/sound/soc/intel/atom/sst/sst_stream.c
-index 65e257b17a7e..20f5066fefb9 100644
---- a/sound/soc/intel/atom/sst/sst_stream.c
-+++ b/sound/soc/intel/atom/sst/sst_stream.c
-@@ -220,7 +220,7 @@ int sst_send_byte_stream_mrfld(struct intel_sst_drv *sst_drv_ctx,
- 		sst_free_block(sst_drv_ctx, block);
- out:
- 	test_and_clear_bit(pvt_id, &sst_drv_ctx->pvt_id);
--	return 0;
-+	return ret;
- }
+diff --git a/include/sound/soc-acpi-intel-match.h b/include/sound/soc-acpi-intel-match.h
+index 1a9191cd4bb3..9da6388c20a1 100644
+--- a/include/sound/soc-acpi-intel-match.h
++++ b/include/sound/soc-acpi-intel-match.h
+@@ -16,6 +16,7 @@
+ #ifndef __LINUX_SND_SOC_ACPI_INTEL_MATCH_H
+ #define __LINUX_SND_SOC_ACPI_INTEL_MATCH_H
  
- /*
++#include <linux/module.h>
+ #include <linux/stddef.h>
+ #include <linux/acpi.h>
+ 
+diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+index a7d8d335b043..a93436089bf5 100644
+--- a/include/sound/soc-acpi.h
++++ b/include/sound/soc-acpi.h
+@@ -17,6 +17,7 @@
+ 
+ #include <linux/stddef.h>
+ #include <linux/acpi.h>
++#include <linux/mod_devicetable.h>
+ 
+ struct snd_soc_acpi_package_context {
+ 	char *name;           /* package name */
 -- 
 2.15.1
-
