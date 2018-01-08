@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: boards: align Kconfig configurations for HiFi2" to the asoc tree
-Date: Mon, 08 Jan 2018 16:21:45 +0000
-Message-ID: <E1eYaBF-000231-NB@debutante>
-References: <20180103165022.4984-8-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: boards: align Kconfig dependencies for Haswell/Broadwell" to the asoc tree
+Date: Mon, 08 Jan 2018 16:22:04 +0000
+Message-ID: <E1eYaBY-00024U-Bl@debutante>
+References: <20171118000202.22302-6-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180103165022.4984-8-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20171118000202.22302-6-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, arnd@arndb.de, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, vinod.koul@intel.combroonie@kernel.org, andriy.shevchenko@linux.intel.com, torvalds@linux-foundation.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: boards: align Kconfig configurations for HiFi2
+   ASoC: Intel: boards: align Kconfig dependencies for Haswell/Broadwell
 
 has been applied to the asoc tree at
 
@@ -37,89 +37,36 @@ to this mail.
 Thanks,
 Mark
 
->From 99644597d71333866070f0223bffa62c03f36587 Mon Sep 17 00:00:00 2001
+>From 043f5a0b8d6e4b9cb373978ca1883fe16287abfd Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 4 Jan 2018 16:35:58 -0600
-Subject: [PATCH] ASoC: Intel: boards: align Kconfig configurations for HiFi2
+Date: Thu, 4 Jan 2018 16:35:57 -0600
+Subject: [PATCH] ASoC: Intel: boards: align Kconfig dependencies for
+ Haswell/Broadwell
 
-Make sure all the configs are aligned
-Also add the missing dependencies on SOC_ACPI stuff used to fix
-DAI names based on HID and fix a couple of indentation issues
+Make sure that the same I2C/I2C_DESIGNWARE_PLATFORM are selected.
+The latter might actually need to be moved to the SOC side of things,
+it really has no place in a machine driver dependency
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/Kconfig | 33 +++++++++++++++++++--------------
- 1 file changed, 19 insertions(+), 14 deletions(-)
+ sound/soc/intel/boards/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 358f8f33adc4..08c482cc02f7 100644
+index e926f9747232..358f8f33adc4 100644
 --- a/sound/soc/intel/boards/Kconfig
 +++ b/sound/soc/intel/boards/Kconfig
-@@ -85,29 +85,32 @@ endif
- if SND_SST_ATOM_HIFI2_PLATFORM
+@@ -40,7 +40,7 @@ config SND_SOC_INTEL_HASWELL_MACH
  
- config SND_SOC_INTEL_BYTCR_RT5640_MACH
--        tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5640 codec"
--	depends on X86 && I2C && ACPI
-+	tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5640 codec"
-+	depends on X86_INTEL_LPSS && I2C && ACPI
-+	select SND_SOC_ACPI
- 	select SND_SOC_RT5640
+ config SND_SOC_INTEL_BDW_RT5677_MACH
+ 	tristate "ASoC Audio driver for Intel Broadwell with RT5677 codec"
+-	depends on X86_INTEL_LPSS && GPIOLIB && I2C
++	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM && GPIOLIB
+ 	select SND_SOC_RT5677
  	help
--          This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
--          platforms with RT5640 audio codec.
--          Say Y or m if you have such a device. This is a recommended option.
--          If unsure select "N".
-+	  This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
-+	  platforms with RT5640 audio codec.
-+	  Say Y or m if you have such a device. This is a recommended option.
-+	  If unsure select "N".
- 
- config SND_SOC_INTEL_BYTCR_RT5651_MACH
--        tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5651 codec"
--	depends on X86 && I2C && ACPI
-+	tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5651 codec"
-+	depends on X86_INTEL_LPSS && I2C && ACPI
-+	select SND_SOC_ACPI
- 	select SND_SOC_RT5651
- 	help
--          This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
--          platforms with RT5651 audio codec.
--          Say Y or m if you have such a device. This is a recommended option.
--          If unsure select "N".
-+	  This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
-+	  platforms with RT5651 audio codec.
-+	  Say Y or m if you have such a device. This is a recommended option.
-+	  If unsure select "N".
- 
- config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
--        tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5672 codec"
-+	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5672 codec"
- 	depends on X86_INTEL_LPSS && I2C && ACPI
--        select SND_SOC_RT5670
-+	select SND_SOC_ACPI
-+	select SND_SOC_RT5670
-         help
-           This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
-           platforms with RT5672 audio codec.
-@@ -117,6 +120,7 @@ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
- config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
- 	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5645/5650 codec"
- 	depends on X86_INTEL_LPSS && I2C && ACPI
-+	select SND_SOC_ACPI
- 	select SND_SOC_RT5645
- 	help
- 	  This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
-@@ -138,6 +142,7 @@ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
- config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
- 	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail with DA7212/7213 codec"
- 	depends on X86_INTEL_LPSS && I2C && ACPI
-+	select SND_SOC_ACPI
- 	select SND_SOC_DA7213
- 	help
- 	  This adds support for ASoC machine driver for Intel(R) Baytrail & CherryTrail
+ 	  This adds support for Intel Broadwell platform based boards with
 -- 
 2.15.1
