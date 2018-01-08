@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5651: fix Kiano DMI
-	quirk" to the asoc tree
-Date: Mon, 08 Jan 2018 16:23:15 +0000
-Message-ID: <E1eYaCh-0002Ex-AS@debutante>
-References: <20180105192023.11229-5-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Replace snd_soc_acpi_check_hid with
+	acpi_dev_present" to the asoc tree
+Date: Mon, 08 Jan 2018 16:23:34 +0000
+Message-ID: <E1eYaD0-0002JA-7A@debutante>
+References: <20180105205536.10366-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id AE587267480
- for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 17:23:21 +0100 (CET)
-In-Reply-To: <20180105192023.11229-5-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5DF6226750E
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 17:23:38 +0100 (CET)
+In-Reply-To: <20180105205536.10366-3-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, Carlo Caione <carlo@caione.org>, bardliao@realtek.com
+Cc: jeremy@jcline.org, alsa-devel@alsa-project.org, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5651: fix Kiano DMI quirk
+   ASoC: Replace snd_soc_acpi_check_hid with acpi_dev_present
 
 has been applied to the asoc tree at
 
@@ -53,35 +52,93 @@ to this mail.
 Thanks,
 Mark
 
->From 56e49aa41da204f8582816c3f2572862c71adc90 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 5 Jan 2018 13:20:21 -0600
-Subject: [PATCH] ASoC: Intel: bytcr_rt5651: fix Kiano DMI quirk
+>From 0d5ea120abc020fada1f7cb019ec37f13162e7af Mon Sep 17 00:00:00 2001
+From: Jeremy Cline <jeremy@jcline.org>
+Date: Fri, 5 Jan 2018 14:55:34 -0600
+Subject: [PATCH] ASoC: Replace snd_soc_acpi_check_hid with acpi_dev_present
 
-The current code doesn't enable the MCLK which reduces audio quality
-(PLL driven from BLCK), fix the quirk
+Replace snd_soc_acpi_check_hid() with the generic acpi_dev_present()
+and remove the now unused snd_soc_acpi_check_hid function. This should
+have no functional change.
 
-Tested-by: Carlo Caione <carlo@caione.org>
+Signed-off-by: Jeremy Cline <jeremy@jcline.org>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/sound/soc-acpi.h |  3 ---
+ sound/soc/soc-acpi.c     | 32 ++------------------------------
+ 2 files changed, 2 insertions(+), 33 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 488ec48f296a..de064f0f7b08 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -264,7 +264,8 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "KIANO"),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "KIANO SlimNote 14.2"),
- 		},
--		.driver_data = (void *)(BYT_RT5651_IN1_IN2_MAP),
-+		.driver_data = (void *)(BYT_RT5651_MCLK_EN |
-+					BYT_RT5651_IN1_IN2_MAP),
- 	},
- 	{}
- };
+diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+index a7d8d335b043..057805489af3 100644
+--- a/include/sound/soc-acpi.h
++++ b/include/sound/soc-acpi.h
+@@ -49,9 +49,6 @@ snd_soc_acpi_find_package_from_hid(const u8 hid[ACPI_ID_LEN],
+ struct snd_soc_acpi_mach *
+ snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines);
+ 
+-/* acpi check hid */
+-bool snd_soc_acpi_check_hid(const u8 hid[ACPI_ID_LEN]);
+-
+ /**
+  * snd_soc_acpi_mach: ACPI-based machine descriptor. Most of the fields are
+  * related to the hardware, except for the firmware and topology file names.
+diff --git a/sound/soc/soc-acpi.c b/sound/soc/soc-acpi.c
+index d4dd2efea45e..7f43c9bf3d09 100644
+--- a/sound/soc/soc-acpi.c
++++ b/sound/soc/soc-acpi.c
+@@ -49,41 +49,13 @@ const char *snd_soc_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN])
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_find_name_from_hid);
+ 
+-static acpi_status snd_soc_acpi_mach_match(acpi_handle handle, u32 level,
+-				       void *context, void **ret)
+-{
+-	unsigned long long sta;
+-	acpi_status status;
+-
+-	*(bool *)context = true;
+-	status = acpi_evaluate_integer(handle, "_STA", NULL, &sta);
+-	if (ACPI_FAILURE(status) || !(sta & ACPI_STA_DEVICE_PRESENT))
+-		*(bool *)context = false;
+-
+-	return AE_OK;
+-}
+-
+-bool snd_soc_acpi_check_hid(const u8 hid[ACPI_ID_LEN])
+-{
+-	acpi_status status;
+-	bool found = false;
+-
+-	status = acpi_get_devices(hid, snd_soc_acpi_mach_match, &found, NULL);
+-
+-	if (ACPI_FAILURE(status))
+-		return false;
+-
+-	return found;
+-}
+-EXPORT_SYMBOL_GPL(snd_soc_acpi_check_hid);
+-
+ struct snd_soc_acpi_mach *
+ snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines)
+ {
+ 	struct snd_soc_acpi_mach *mach;
+ 
+ 	for (mach = machines; mach->id[0]; mach++) {
+-		if (snd_soc_acpi_check_hid(mach->id) == true) {
++		if (acpi_dev_present(mach->id, NULL, -1)) {
+ 			if (mach->machine_quirk)
+ 				mach = mach->machine_quirk(mach);
+ 			return mach;
+@@ -161,7 +133,7 @@ struct snd_soc_acpi_mach *snd_soc_acpi_codec_list(void *arg)
+ 		return mach;
+ 
+ 	for (i = 0; i < codec_list->num_codecs; i++) {
+-		if (snd_soc_acpi_check_hid(codec_list->codecs[i]) != true)
++		if (!acpi_dev_present(codec_list->codecs[i], NULL, -1))
+ 			return NULL;
+ 	}
+ 
 -- 
 2.15.1
