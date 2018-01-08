@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: document what Kconfig options do" to the asoc tree
-Date: Mon, 08 Jan 2018 16:22:14 +0000
-Message-ID: <E1eYaBi-00026u-LK@debutante>
-References: <20180103165022.4984-5-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: sst: Fix some style" to the asoc tree
+Date: Mon, 08 Jan 2018 16:23:19 +0000
+Message-ID: <E1eYaCl-0002Fz-89@debutante>
+References: <20180106201855.6131-1-christophe.jaillet@wanadoo.fr>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180103165022.4984-5-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20180106201855.6131-1-christophe.jaillet@wanadoo.fr>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, arnd@arndb.de, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, vinod.koul@intel.combroonie@kernel.org, andriy.shevchenko@linux.intel.com, torvalds@linux-foundation.orgalsa-devel@alsa-project.org
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: document what Kconfig options do
+   ASoC: Intel: sst: Fix some style
 
 has been applied to the asoc tree at
 
@@ -37,68 +37,52 @@ to this mail.
 Thanks,
 Mark
 
->From def2c4284fd6b3402265ee050d769897e3331521 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 4 Jan 2018 16:35:55 -0600
-Subject: [PATCH] ASoC: Intel: document what Kconfig options do
+>From 25f3fd043ec1f60f3955f9d7277d97e2f9c1612c Mon Sep 17 00:00:00 2001
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Date: Sat, 6 Jan 2018 21:18:55 +0100
+Subject: [PATCH] ASoC: Intel: sst: Fix some style
 
-Document in comments what the options are supposed to mean, before
-clean-up in next patch.
+This patch fixes 3 small issues:
+ - missing 2nd '*' at the beginning of a doxygen comment
+ - extra space after a '\n' in a dev_dbg message
+ - extra tab before a 'return" statement
 
-No functionality change here.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/Kconfig | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ sound/soc/intel/atom/sst/sst_stream.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 16374576cb6e..01b75df6b118 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -16,16 +16,27 @@ if SND_SOC_INTEL_SST_TOPLEVEL
+diff --git a/sound/soc/intel/atom/sst/sst_stream.c b/sound/soc/intel/atom/sst/sst_stream.c
+index 20f5066fefb9..7ee6aeb7e0af 100644
+--- a/sound/soc/intel/atom/sst/sst_stream.c
++++ b/sound/soc/intel/atom/sst/sst_stream.c
+@@ -223,7 +223,7 @@ int sst_send_byte_stream_mrfld(struct intel_sst_drv *sst_drv_ctx,
+ 	return ret;
+ }
  
- config SND_SST_IPC
- 	tristate
-+	# This option controls the IPC core for HiFi2 platforms
+-/*
++/**
+  * sst_pause_stream - Send msg for a pausing stream
+  * @str_id:	 stream ID
+  *
+@@ -261,7 +261,7 @@ int sst_pause_stream(struct intel_sst_drv *sst_drv_ctx, int str_id)
+ 		}
+ 	} else {
+ 		retval = -EBADRQC;
+-		dev_dbg(sst_drv_ctx->dev, "SST DBG:BADRQC for stream\n ");
++		dev_dbg(sst_drv_ctx->dev, "SST DBG:BADRQC for stream\n");
+ 	}
  
- config SND_SST_IPC_PCI
- 	tristate
- 	select SND_SST_IPC
-+	# This option controls the PCI-based IPC for HiFi2 platforms
-+	#  (Medfield, Merrifield).
- 
- config SND_SST_IPC_ACPI
- 	tristate
- 	select SND_SST_IPC
- 	select SND_SOC_INTEL_SST
- 	select IOSF_MBI
-+	# This option controls the ACPI-based IPC for HiFi2 platforms
-+	# (Baytrail, Cherrytrail)
-+
-+config SND_SOC_INTEL_SST_ACPI
-+	tristate
-+	# This option controls ACPI-based probing on
-+	# Haswell/Broadwell/Baytrail legacy and will be set
-+	# when these platforms are enabled
- 
- config SND_SOC_INTEL_SST
- 	tristate
-@@ -34,9 +45,9 @@ config SND_SOC_INTEL_SST
- config SND_SOC_INTEL_SST_FIRMWARE
- 	tristate
- 	select DW_DMAC_CORE
--
--config SND_SOC_INTEL_SST_ACPI
--	tristate
-+	# This option controls firmware download on
-+	# Haswell/Broadwell/Baytrail legacy and will be set
-+	# when these platforms are enabled
- 
- config SND_SOC_INTEL_HASWELL
- 	tristate "Intel ASoC SST driver for Haswell/Broadwell"
+ 	return retval;
+@@ -284,7 +284,7 @@ int sst_resume_stream(struct intel_sst_drv *sst_drv_ctx, int str_id)
+ 	if (!str_info)
+ 		return -EINVAL;
+ 	if (str_info->status == STREAM_RUNNING)
+-			return 0;
++		return 0;
+ 	if (str_info->status == STREAM_PAUSED) {
+ 		retval = sst_prepare_and_post_msg(sst_drv_ctx, str_info->task_id,
+ 				IPC_CMD, IPC_IA_RESUME_STREAM_MRFLD,
 -- 
 2.15.1
