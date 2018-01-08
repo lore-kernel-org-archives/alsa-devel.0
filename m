@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: boards: align/fix SKL/BXT/KBL Kconfigs" to the asoc tree
-Date: Mon, 08 Jan 2018 16:21:33 +0000
-Message-ID: <E1eYaB3-00020X-4v@debutante>
-References: <20180104223601.5831-9-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: boards: align Kconfig configurations for HiFi2" to the asoc tree
+Date: Mon, 08 Jan 2018 16:21:45 +0000
+Message-ID: <E1eYaBF-000231-NB@debutante>
+References: <20180103165022.4984-8-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180104223601.5831-9-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20180103165022.4984-8-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, arnd@arndb.de, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, vinod.koul@intel.combroonie@kernel.org, andriy.shevchenko@linux.intel.com, torvalds@linux-foundation.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: boards: align/fix SKL/BXT/KBL Kconfigs
+   ASoC: Intel: boards: align Kconfig configurations for HiFi2
 
 has been applied to the asoc tree at
 
@@ -37,93 +37,89 @@ to this mail.
 Thanks,
 Mark
 
->From 969eaef7710400e39be13190bace40910555d426 Mon Sep 17 00:00:00 2001
+>From 99644597d71333866070f0223bffa62c03f36587 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 4 Jan 2018 16:35:59 -0600
-Subject: [PATCH] ASoC: Intel: boards: align/fix SKL/BXT/KBL Kconfigs
+Date: Thu, 4 Jan 2018 16:35:58 -0600
+Subject: [PATCH] ASoC: Intel: boards: align Kconfig configurations for HiFi2
 
-No reason why SND_SOC_INTEL_SST should be set here.
-Also make sure same dependencies are used everywhere (only last one has SPI
-in addition). Replace X86_INTEL_LPSS by MFD_INTEL_LPSS since the former
-makes no sense for Skylake+ devices
+Make sure all the configs are aligned
+Also add the missing dependencies on SOC_ACPI stuff used to fix
+DAI names based on HID and fix a couple of indentation issues
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/Kconfig | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ sound/soc/intel/boards/Kconfig | 33 +++++++++++++++++++--------------
+ 1 file changed, 19 insertions(+), 14 deletions(-)
 
 diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 08c482cc02f7..063611ad641c 100644
+index 358f8f33adc4..08c482cc02f7 100644
 --- a/sound/soc/intel/boards/Kconfig
 +++ b/sound/soc/intel/boards/Kconfig
-@@ -178,7 +178,7 @@ if SND_SOC_INTEL_SKYLAKE
+@@ -85,29 +85,32 @@ endif
+ if SND_SST_ATOM_HIFI2_PLATFORM
  
- config SND_SOC_INTEL_SKL_RT286_MACH
- 	tristate "ASoC Audio driver for SKL with RT286 I2S mode"
--	depends on X86 && ACPI && I2C
-+	depends on MFD_INTEL_LPSS && I2C && ACPI
- 	select SND_SOC_RT286
- 	select SND_SOC_DMIC
- 	select SND_SOC_HDAC_HDMI
-@@ -190,7 +190,7 @@ config SND_SOC_INTEL_SKL_RT286_MACH
+ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+-        tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5640 codec"
+-	depends on X86 && I2C && ACPI
++	tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5640 codec"
++	depends on X86_INTEL_LPSS && I2C && ACPI
++	select SND_SOC_ACPI
+ 	select SND_SOC_RT5640
+ 	help
+-          This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
+-          platforms with RT5640 audio codec.
+-          Say Y or m if you have such a device. This is a recommended option.
+-          If unsure select "N".
++	  This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
++	  platforms with RT5640 audio codec.
++	  Say Y or m if you have such a device. This is a recommended option.
++	  If unsure select "N".
  
- config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
- 	tristate "ASoC Audio driver for SKL with NAU88L25 and SSM4567 in I2S Mode"
--	depends on X86_INTEL_LPSS && I2C
-+	depends on MFD_INTEL_LPSS && I2C && ACPI
- 	select SND_SOC_NAU8825
- 	select SND_SOC_SSM4567
- 	select SND_SOC_DMIC
-@@ -203,7 +203,7 @@ config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
+ config SND_SOC_INTEL_BYTCR_RT5651_MACH
+-        tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5651 codec"
+-	depends on X86 && I2C && ACPI
++	tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5651 codec"
++	depends on X86_INTEL_LPSS && I2C && ACPI
++	select SND_SOC_ACPI
+ 	select SND_SOC_RT5651
+ 	help
+-          This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
+-          platforms with RT5651 audio codec.
+-          Say Y or m if you have such a device. This is a recommended option.
+-          If unsure select "N".
++	  This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
++	  platforms with RT5651 audio codec.
++	  Say Y or m if you have such a device. This is a recommended option.
++	  If unsure select "N".
  
- config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
- 	tristate "ASoC Audio driver for SKL with NAU88L25 and MAX98357A in I2S Mode"
--	depends on X86_INTEL_LPSS && I2C
-+	depends on MFD_INTEL_LPSS && I2C && ACPI
- 	select SND_SOC_NAU8825
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_DMIC
-@@ -216,7 +216,7 @@ config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
- 
- config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
- 	tristate "ASoC Audio driver for Broxton with DA7219 and MAX98357A in I2S Mode"
--	depends on X86 && ACPI && I2C
-+	depends on MFD_INTEL_LPSS && I2C && ACPI
- 	select SND_SOC_DA7219
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_DMIC
-@@ -230,7 +230,7 @@ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
- 
- config SND_SOC_INTEL_BXT_RT298_MACH
- 	tristate "ASoC Audio driver for Broxton with RT298 I2S mode"
--	depends on X86 && ACPI && I2C
-+	depends on MFD_INTEL_LPSS && I2C && ACPI
- 	select SND_SOC_RT298
- 	select SND_SOC_DMIC
- 	select SND_SOC_HDAC_HDMI
-@@ -243,8 +243,7 @@ config SND_SOC_INTEL_BXT_RT298_MACH
- 
- config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
- 	tristate "ASoC Audio driver for KBL with RT5663 and MAX98927 in I2S Mode"
--	depends on X86_INTEL_LPSS && I2C
--	select SND_SOC_INTEL_SST
-+	depends on MFD_INTEL_LPSS && I2C && ACPI
- 	select SND_SOC_RT5663
- 	select SND_SOC_MAX98927
- 	select SND_SOC_DMIC
-@@ -257,8 +256,8 @@ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
- 
- config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
-         tristate "ASoC Audio driver for KBL with RT5663, RT5514 and MAX98927 in I2S Mode"
--        depends on X86_INTEL_LPSS && I2C && SPI
--        select SND_SOC_INTEL_SST
-+        depends on MFD_INTEL_LPSS && I2C && ACPI
-+        depends on SPI
-         select SND_SOC_RT5663
-         select SND_SOC_RT5514
-         select SND_SOC_RT5514_SPI
+ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+-        tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5672 codec"
++	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5672 codec"
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
+-        select SND_SOC_RT5670
++	select SND_SOC_ACPI
++	select SND_SOC_RT5670
+         help
+           This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
+           platforms with RT5672 audio codec.
+@@ -117,6 +120,7 @@ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+ config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
+ 	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5645/5650 codec"
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
++	select SND_SOC_ACPI
+ 	select SND_SOC_RT5645
+ 	help
+ 	  This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
+@@ -138,6 +142,7 @@ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
+ config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail with DA7212/7213 codec"
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
++	select SND_SOC_ACPI
+ 	select SND_SOC_DA7213
+ 	help
+ 	  This adds support for ASoC machine driver for Intel(R) Baytrail & CherryTrail
 -- 
 2.15.1
