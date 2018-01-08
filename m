@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v8] ASoC: TSCS42xx: Add support for Tempo
- Semiconductor's TSCS42xx audio CODEC
-Date: Mon, 8 Jan 2018 11:20:46 +0000
-Message-ID: <20180108112046.GA11698@sirena.org.uk>
-References: <20180107141943.y5hh3cob2uak4sod@localhost.localdomain>
+From: John Keeping <john@metanate.com>
+Subject: [PATCH] ASoC: rockchip: i2s: fix playback after
+	runtime resume
+Date: Mon,  8 Jan 2018 12:23:01 +0000
+Message-ID: <20180108122301.18255-1-john@metanate.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8684861326148961744=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 881A826698E
- for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 12:20:50 +0100 (CET)
-In-Reply-To: <20180107141943.y5hh3cob2uak4sod@localhost.localdomain>
+Received: from metanate.com (dougal.metanate.com [90.155.101.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id 365D926698E
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 13:23:18 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +19,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Philippe Ombredanne <pombredanne@nexb.com>
+To: alsa-devel@alsa-project.org
+Cc: Sugar Zhang <sugar.zhang@rock-chips.com>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, John Keeping <john@metanate.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+When restoring registers during runtime resume, we must not write to
+I2S_TXDR which is the transmit FIFO as this queues up a sample to be
+output and pushes all of the output channels down by one.
 
---===============8684861326148961744==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="h31gzZEtNLTqOjlF"
-Content-Disposition: inline
+This can be demonstrated with the speaker-test utility:
 
+	for i in a b c; do speaker-test -c 2 -s 1; done
 
---h31gzZEtNLTqOjlF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+which should play a test through the left speaker three times but if the
+I2S hardware starts runtime suspended the first sample will be played
+through the right speaker.
 
-On Sun, Jan 07, 2018 at 08:19:54AM -0600, Steven Eckhoff wrote:
-> Currently there is no support for TSCS42xx audio CODECs.
->=20
-> Add support for TSCS42xx audio CODECs.
+Fix this by marking I2S_TXDR as volatile (which also requires marking it
+as readble, even though it technically isn't).  This seems to be the
+most robust fix, the alternative of giving I2S_TXDR a default value is
+more fragile since it does not prevent regcache writing to the register
+in all circumstances.
 
-Please don't resubmit patches that have already been applied, you should
-submit patches against current code in the tree you're expecting things
-to be applied to.  If any updates are needed to a patch that's already
-been applied you should submit incremental patches which make those
-updates.  This avoids having to change published git commits which could
-cause problems for people working against git.
+While here, also fix the configuration of I2S_RXDR and I2S_FIFOLR; these
+are not writable so they do not suffer from the same problem as I2S_TXDR
+but reading from I2S_RXDR does suffer from a similar problem.
 
---h31gzZEtNLTqOjlF
-Content-Type: application/pgp-signature; name="signature.asc"
+Fixes: f0447f6cbb20 ("ASoC: rockchip: i2s: restore register during runtime_suspend/resume cycle", 2016-09-07)
+Signed-off-by: John Keeping <john@metanate.com>
+---
+I'm not completely happy with marking I2S_TXDR as readable here, but I
+can't see a better way to do this.  Neither "volatile" nor "precious"
+seem to match exactly a writable FIFO register but this does at least
+fix the bug and tegra30_ahub.c seems to take the same approach.
 
------BEGIN PGP SIGNATURE-----
+ sound/soc/rockchip/rockchip_i2s.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpTVA0ACgkQJNaLcl1U
-h9BDyQf+KAjkajZcneH0vBdstVHBTjsQDMp9xmIaWl0qiXYzYc7t05Zl7cRhSSTx
-+ITw4ft3m/dshAshZR8ZM6QzKpyyJoFX8TmfW6bS0666aLeKuSsacMseIEW9aTEo
-/U/OmvQDYnQ6M1hPKtviKDglvs7KCsTUvwdoqRU47s+VtNopBy7OHrWlE7X4IHm1
-kUOD9sHGDSFiw9lFbexrkCVOWlOqIM1mnjopMZ5vaSZpwjOdhptRUpcNlSZI9HUs
-+U3nxlo+8ZAlqby8lhSMu2gB93vfVjli01a8g4RKLOIkO59GJxwpwmQlrOvMtorf
-DM72hGd1WGZYuP9YgdwU6XA+Bdj7GQ==
-=YMTO
------END PGP SIGNATURE-----
-
---h31gzZEtNLTqOjlF--
-
---===============8684861326148961744==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8684861326148961744==--
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 908211e1d6fc..20855ed8e4b7 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -504,6 +504,7 @@ static bool rockchip_i2s_rd_reg(struct device *dev, unsigned int reg)
+ 	case I2S_INTCR:
+ 	case I2S_XFER:
+ 	case I2S_CLR:
++	case I2S_TXDR:
+ 	case I2S_RXDR:
+ 	case I2S_FIFOLR:
+ 	case I2S_INTSR:
+@@ -518,6 +519,9 @@ static bool rockchip_i2s_volatile_reg(struct device *dev, unsigned int reg)
+ 	switch (reg) {
+ 	case I2S_INTSR:
+ 	case I2S_CLR:
++	case I2S_FIFOLR:
++	case I2S_TXDR:
++	case I2S_RXDR:
+ 		return true;
+ 	default:
+ 		return false;
+@@ -527,6 +531,7 @@ static bool rockchip_i2s_volatile_reg(struct device *dev, unsigned int reg)
+ static bool rockchip_i2s_precious_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
++	case I2S_RXDR:
+ 	default:
+ 		return false;
+ 	}
+-- 
+2.15.1
