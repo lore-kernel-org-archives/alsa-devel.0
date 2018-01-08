@@ -1,17 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v3 00/10] ASoC: Intel: Kconfig+acpi fixes
-Date: Mon, 8 Jan 2018 10:17:15 +0530
-Message-ID: <20180108044714.GZ18649@localhost>
-References: <20180104223601.5831-1-pierre-louis.bossart@linux.intel.com>
+From: Kailang <kailang@realtek.com>
+Subject: alc225 depop optimize
+Date: Mon, 8 Jan 2018 07:37:29 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18406188@RTITMBSV02.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A18406188RTITMBSV02realt_"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id CDC1926717C
- for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 05:43:05 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20180104223601.5831-1-pierre-louis.bossart@linux.intel.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3568A26717C
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2018 08:37:36 +0100 (CET)
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,29 +19,114 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, arnd@arndb.de, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com, torvalds@linux-foundation.org
+To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 04, 2018 at 04:35:51PM -0600, Pierre-Louis Bossart wrote:
+--_002_6FAB7C47BCF00940BB0999A99BE3547A18406188RTITMBSV02realt_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-> Pierre-Louis Bossart (8):
->   ASoC: acpi: add missing includes for non-ACPI platforms
->   ASoC: Intel: Fix Kconfig with top-level selector
->   ASoC: Intel: Kconfig: Simplify-clarify ACPI/PCI dependencies
->   ASoC: Intel: document what Kconfig options do
->   ASoC: Intel: Fix nested/unnecessary Kconfig dependencies
->   ASoC: Intel: boards: align Kconfig dependencies for Haswell/Broadwell
->   ASoC: Intel: boards: align Kconfig configurations for HiFi2
->   ASoC: Intel: boards: align/fix SKL/BXT/KBL Kconfigs
+=20
+Hi Takashi,
+=20
+Attach patch was for alc225 depop optimize.
+=20
+BR,
+Kailang
 
-These:
+--_002_6FAB7C47BCF00940BB0999A99BE3547A18406188RTITMBSV02realt_
+Content-Type: application/octet-stream;
+	name="0000-alc225-depop-optimize.patch"
+Content-Description: 0000-alc225-depop-optimize.patch
+Content-Disposition: attachment;
+	filename="0000-alc225-depop-optimize.patch"; size=4323;
+	creation-date="Fri, 05 Jan 2018 08:55:49 GMT";
+	modification-date="Fri, 05 Jan 2018 08:57:32 GMT"
+Content-Transfer-Encoding: base64
 
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+RnJvbSA1N2JmNTVkYzI0YWY1MzE2ZjI0ZmI1NzQyOGVlYzJiYjg3OThhZWRlIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
+dGU6IEZyaSwgNSBKYW4gMjAxOCAxNjo1MDowOCArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6
+IGhkYS9yZWFsdGVrIC0gdXBkYXRlIEFMQzIyNSBkZXBvcCBvcHRpbWl6ZQoKQWRkIEFMQzIyNSBp
+dHMgb3duIGRlcG9wIGZ1bmN0aW9ucyBmb3IgYWxjX2luaXQgYW5kIGFsY19zaHV0dXAuCkFkZCBk
+ZXBvcCBvcHRpbWl6ZSBzdGVwIGZvciBoZWFkc2V0IG1vZGUgZnVuY3Rpb25zLgoKU2lnbmVkLW9m
+Zi1ieTogS2FpbGFuZyBZYW5nIDxrYWlsYW5nQHJlYWx0ZWsuY29tPgoKZGlmZiAtLWdpdCBhL3Nv
+dW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVr
+LmMKaW5kZXggYjIwMzcxMy4uYmRjOTJjYiAxMDA2NDQKLS0tIGEvc291bmQvcGNpL2hkYS9wYXRj
+aF9yZWFsdGVrLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKQEAgLTMxNjYs
+NiArMzE2Niw5MiBAQCBzdGF0aWMgdm9pZCBhbGMyNTZfc2h1dHVwKHN0cnVjdCBoZGFfY29kZWMg
+KmNvZGVjKQogCXNuZF9oZGFfc2h1dHVwX3BpbnMoY29kZWMpOwogfQogCit0YXRpYyB2b2lkIGFs
+YzIyNV9pbml0KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQoreworCXN0cnVjdCBhbGNfc3BlYyAq
+c3BlYyA9IGNvZGVjLT5zcGVjOworCWhkYV9uaWRfdCBocF9waW4gPSBzcGVjLT5nZW4uYXV0b2Nm
+Zy5ocF9waW5zWzBdOworCWJvb2wgaHAxX3Bpbl9zZW5zZSxocDJfcGluX3NlbnNlOworCisJaWYg
+KCFocF9waW4pCisJCXJldHVybjsKKworCW1zbGVlcCgzMCk7CisKKwlocDFfcGluX3NlbnNlID0g
+c25kX2hkYV9qYWNrX2RldGVjdChjb2RlYywgaHBfcGluKTsKKwlocDJfcGluX3NlbnNlID0gc25k
+X2hkYV9qYWNrX2RldGVjdChjb2RlYywgMHgxNik7CisKKwlpZiAoaHAxX3Bpbl9zZW5zZSB8fCBo
+cDJfcGluX3NlbnNlKQorCQltc2xlZXAoMik7CisKKwlhbGNfdXBkYXRlX2NvZWZleF9pZHgoY29k
+ZWMsIDB4NTcsIDB4MDQsIDB4MDAwNywgMHgxKTsgLyogTG93IHBvd2VyICovCisKKwlpZiAoaHAx
+X3Bpbl9zZW5zZSkKKwkJc25kX2hkYV9jb2RlY193cml0ZShjb2RlYywgaHBfcGluLCAwLAorCQkJ
+ICAgIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFNUF9PVVRfTVVURSk7CisJaWYgKGhwMl9w
+aW5fc2Vuc2UpCisJCXNuZF9oZGFfY29kZWNfd3JpdGUoY29kZWMsIDB4MTYsIDAsCisJCQkgICAg
+QUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX09VVF9NVVRFKTsKKworCWlmIChocDFfcGlu
+X3NlbnNlIHx8IGhwMl9waW5fc2Vuc2UpCisJCW1zbGVlcCg4NSk7CisKKwlpZiAoaHAxX3Bpbl9z
+ZW5zZSkKKwkJc25kX2hkYV9jb2RlY193cml0ZShjb2RlYywgaHBfcGluLCAwLAorCQkJICAgIEFD
+X1ZFUkJfU0VUX1BJTl9XSURHRVRfQ09OVFJPTCwgUElOX09VVCk7CisJaWYgKGhwMl9waW5fc2Vu
+c2UpCisJCXNuZF9oZGFfY29kZWNfd3JpdGUoY29kZWMsIDB4MTYsIDAsCisJCQkgICAgQUNfVkVS
+Ql9TRVRfUElOX1dJREdFVF9DT05UUk9MLCBQSU5fT1VUKTsKKworCWlmIChocDFfcGluX3NlbnNl
+IHx8IGhwMl9waW5fc2Vuc2UpCisJCW1zbGVlcCgxMDApOworCisJYWxjX3VwZGF0ZV9jb2VmX2lk
+eChjb2RlYywgMHg0YSwgMyA8PCAxMCwgMCk7CisJYWxjX3VwZGF0ZV9jb2VmZXhfaWR4KGNvZGVj
+LCAweDU3LCAweDA0LCAweDAwMDcsIDB4NCk7IC8qIEhpZ2h0IHBvd2VyICovCit9CisKK3N0YXRp
+YyB2b2lkIGFsYzIyNV9zaHV0dXAoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCit7CisJc3RydWN0
+IGFsY19zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7CisJaGRhX25pZF90IGhwX3BpbiA9IHNwZWMt
+Pmdlbi5hdXRvY2ZnLmhwX3BpbnNbMF07CisJYm9vbCBocDFfcGluX3NlbnNlLGhwMl9waW5fc2Vu
+c2U7CisKKwlpZiAoIWhwX3BpbikgeworCQlhbGMyNjlfc2h1dHVwKGNvZGVjKTsKKwkJcmV0dXJu
+OworCX0KKworCWFsY191cGRhdGVfY29lZl9pZHgoY29kZWMsIDB4NGEsIDAsIDMgPDwgMTApOyAv
+KiAzayBwdWxsIGxvdyBjb250cm9sIGZvciBIZWFkc2V0IGphY2suICovCisKKwlocDFfcGluX3Nl
+bnNlID0gc25kX2hkYV9qYWNrX2RldGVjdChjb2RlYywgaHBfcGluKTsKKwlocDJfcGluX3NlbnNl
+ID0gc25kX2hkYV9qYWNrX2RldGVjdChjb2RlYywgMHgxNik7CisKKwlpZiAoaHAxX3Bpbl9zZW5z
+ZSB8fCBocDJfcGluX3NlbnNlKQorCQltc2xlZXAoMik7CisKKwlpZiAoaHAxX3Bpbl9zZW5zZSkK
+KwkJc25kX2hkYV9jb2RlY193cml0ZShjb2RlYywgaHBfcGluLCAwLAorCQkJICAgIEFDX1ZFUkJf
+U0VUX0FNUF9HQUlOX01VVEUsIEFNUF9PVVRfTVVURSk7CisJaWYgKGhwMl9waW5fc2Vuc2UpCisJ
+CXNuZF9oZGFfY29kZWNfd3JpdGUoY29kZWMsIDB4MTYsIDAsCisJCQkgICAgQUNfVkVSQl9TRVRf
+QU1QX0dBSU5fTVVURSwgQU1QX09VVF9NVVRFKTsKKworCWlmIChocDFfcGluX3NlbnNlIHx8IGhw
+Ml9waW5fc2Vuc2UpCisJCW1zbGVlcCg4NSk7CisKKwlpZiAoaHAxX3Bpbl9zZW5zZSkKKwkJc25k
+X2hkYV9jb2RlY193cml0ZShjb2RlYywgaHBfcGluLCAwLAorCQkJICAgIEFDX1ZFUkJfU0VUX1BJ
+Tl9XSURHRVRfQ09OVFJPTCwgMHgwKTsKKwlpZiAoaHAyX3Bpbl9zZW5zZSkKKwkJc25kX2hkYV9j
+b2RlY193cml0ZShjb2RlYywgMHgxNiwgMCwKKwkJCSAgICBBQ19WRVJCX1NFVF9QSU5fV0lER0VU
+X0NPTlRST0wsIDB4MCk7CisKKwlpZiAoaHAxX3Bpbl9zZW5zZSB8fCBocDJfcGluX3NlbnNlKQor
+CQltc2xlZXAoMTAwKTsKKworCWFsY19hdXRvX3NldHVwX2VhcGQoY29kZWMsIGZhbHNlKTsKKwlz
+bmRfaGRhX3NodXR1cF9waW5zKGNvZGVjKTsKK30KKwogc3RhdGljIHZvaWQgYWxjX2RlZmF1bHRf
+aW5pdChzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIHsKIAlzdHJ1Y3QgYWxjX3NwZWMgKnNwZWMg
+PSBjb2RlYy0+c3BlYzsKQEAgLTQ1NjksNiArNDY1NSwxMiBAQCBzdGF0aWMgdm9pZCBhbGNfZGV0
+ZXJtaW5lX2hlYWRzZXRfdHlwZShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAljYXNlIDB4MTBl
+YzAyMjU6CiAJY2FzZSAweDEwZWMwMjk1OgogCWNhc2UgMHgxMGVjMDI5OToKKwkJc25kX2hkYV9j
+b2RlY193cml0ZShjb2RlYywgMHgyMSwgMCwKKwkJCSAgICBBQ19WRVJCX1NFVF9BTVBfR0FJTl9N
+VVRFLCBBTVBfT1VUX01VVEUpOworCQltc2xlZXAoODApOworCQlzbmRfaGRhX2NvZGVjX3dyaXRl
+KGNvZGVjLCAweDIxLCAwLAorCQkJICAgIEFDX1ZFUkJfU0VUX1BJTl9XSURHRVRfQ09OVFJPTCwg
+MHgwKTsKKwogCQlhbGNfcHJvY2Vzc19jb2VmX2Z3KGNvZGVjLCBhbGMyMjVfcHJlX2hzbW9kZSk7
+CiAJCWFsY191cGRhdGVfY29lZl9pZHgoY29kZWMsIDB4NjcsIDB4ZjAwMCwgMHgxMDAwKTsKIAkJ
+dmFsID0gYWxjX3JlYWRfY29lZl9pZHgoY29kZWMsIDB4NDUpOwpAQCAtNDU4OCw2ICs0NjgwLDEy
+IEBAIHN0YXRpYyB2b2lkIGFsY19kZXRlcm1pbmVfaGVhZHNldF90eXBlKHN0cnVjdCBoZGFfY29k
+ZWMgKmNvZGVjKQogCQlhbGNfdXBkYXRlX2NvZWZfaWR4KGNvZGVjLCAweDRhLCA3PDw2LCA3PDw2
+KTsKIAkJYWxjX3VwZGF0ZV9jb2VmX2lkeChjb2RlYywgMHg0YSwgMzw8NCwgMzw8NCk7CiAJCWFs
+Y191cGRhdGVfY29lZl9pZHgoY29kZWMsIDB4NjcsIDB4ZjAwMCwgMHgzMDAwKTsKKworCQlzbmRf
+aGRhX2NvZGVjX3dyaXRlKGNvZGVjLCAweDIxLCAwLAorCQkJICAgIEFDX1ZFUkJfU0VUX1BJTl9X
+SURHRVRfQ09OVFJPTCwgUElOX09VVCk7CisJCW1zbGVlcCg4MCk7CisJCXNuZF9oZGFfY29kZWNf
+d3JpdGUoY29kZWMsIDB4MjEsIDAsCisJCQkgICAgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwg
+QU1QX09VVF9VTk1VVEUpOwogCQlicmVhazsKIAljYXNlIDB4MTBlYzA4Njc6CiAJCWlzX2N0aWEg
+PSB0cnVlOwpAQCAtNjkyNSw2ICs3MDIzLDggQEAgc3RhdGljIGludCBwYXRjaF9hbGMyNjkoc3Ry
+dWN0IGhkYV9jb2RlYyAqY29kZWMpCiAJY2FzZSAweDEwZWMwMjk1OgogCWNhc2UgMHgxMGVjMDI5
+OToKIAkJc3BlYy0+Y29kZWNfdmFyaWFudCA9IEFMQzI2OV9UWVBFX0FMQzIyNTsKKwkJc3BlYy0+
+c2h1dHVwID0gYWxjMjI1X3NodXR1cDsKKwkJc3BlYy0+aW5pdF9ob29rID0gYWxjMjI1X2luaXQ7
+CiAJCXNwZWMtPmdlbi5taXhlcl9uaWQgPSAwOyAvKiBubyBsb29wYmFjayBvbiBBTEMyMjUsIEFM
+QzI5NSBhbmQgQUxDMjk5ICovCiAJCWJyZWFrOwogCWNhc2UgMHgxMGVjMDIzNDoK
 
-> Vinod Koul (2):
->   ASoC: Intel: kconfig: add some comments for if symbols
->   ASoC: Intel: kconfig: drop boiler plate text from config items
+--_002_6FAB7C47BCF00940BB0999A99BE3547A18406188RTITMBSV02realt_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
--- 
-~Vinod
+
+--_002_6FAB7C47BCF00940BB0999A99BE3547A18406188RTITMBSV02realt_--
