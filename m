@@ -1,15 +1,14 @@
 From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] slimbus: Unlock on error path in
-	slim_msg_response()
-Date: Tue, 9 Jan 2018 12:34:35 +0300
-Message-ID: <20180109093435.4n45kxibmpvpb5i2@mwanda>
+Subject: [PATCH 1/2] soundwire: Fix a signedness bug
+Date: Tue, 9 Jan 2018 12:37:00 +0300
+Message-ID: <20180109093700.7275ardpus7g6rkq@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
- by alsa0.perex.cz (Postfix) with ESMTP id CDDED26717C
- for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2018 10:34:47 +0100 (CET)
+Received: from userp2120.oracle.com (userp2120.oracle.com [156.151.31.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D30726717C
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2018 10:37:17 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,24 +19,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Sagar Dharia <sdharia@codeaurora.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Sanyog Kale <sanyog.r.kale@intel.com>, kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We need to unlock and restore IRQs before returning on this error path.
+"ret" is an int and "buf" is a u8.  sdw_read() returns negative error
+codes which are truncated to the u8, 0-255 range before being stored as
+an int.  It means that "ret" can't be less than zero.
 
-Fixes afbdcc7c384b0 ("slimbus: Add messaging APIs to slimbus framework")
+Fixes: b0a9c37b0178 ("soundwire: Add slave status handling")
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-diff --git a/drivers/slimbus/messaging.c b/drivers/slimbus/messaging.c
-index 755462a4c75e..94818a8427e2 100644
---- a/drivers/slimbus/messaging.c
-+++ b/drivers/slimbus/messaging.c
-@@ -36,6 +36,7 @@ void slim_msg_response(struct slim_controller *ctrl, u8 *reply, u8 tid, u8 len)
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 4c345197eb55..ac88031f7664 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -771,12 +771,13 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+ 	sdw_modify_slave_status(slave, SDW_SLAVE_ALERT);
  
- 	msg = txn->msg;
- 	if (msg == NULL || msg->rbuf == NULL) {
-+		spin_unlock_irqrestore(&ctrl->txn_lock, flags);
- 		dev_err(ctrl->dev, "Got response to invalid TID:%d, len:%d\n",
- 				tid, len);
- 		return;
+ 	/* Read Instat 1, Instat 2 and Instat 3 registers */
+-	ret = buf = sdw_read(slave, SDW_SCP_INT1);
++	ret = sdw_read(slave, SDW_SCP_INT1);
+ 	if (ret < 0) {
+ 		dev_err(slave->bus->dev,
+ 					"SDW_SCP_INT1 read failed:%d", ret);
+ 		return ret;
+ 	}
++	buf = ret;
+ 
+ 	ret = sdw_nread(slave, SDW_SCP_INTSTAT2, 2, buf2);
+ 	if (ret < 0) {
+@@ -870,12 +871,13 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+ 		 * Read status again to ensure no new interrupts arrived
+ 		 * while servicing interrupts.
+ 		 */
+-		ret = _buf = sdw_read(slave, SDW_SCP_INT1);
++		ret = sdw_read(slave, SDW_SCP_INT1);
+ 		if (ret < 0) {
+ 			dev_err(slave->bus->dev,
+ 					"SDW_SCP_INT1 read failed:%d", ret);
+ 			return ret;
+ 		}
++		_buf = ret;
+ 
+ 		ret = sdw_nread(slave, SDW_SCP_INTSTAT2, 2, _buf2);
+ 		if (ret < 0) {
