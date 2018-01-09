@@ -1,18 +1,28 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 1/2] slimbus: qcom-ctrl: fix a NULL test
-Date: Tue, 9 Jan 2018 09:48:23 +0000
-Message-ID: <0e365f53-bb45-2d95-30fb-9a862319df35@linaro.org>
-References: <20180109092616.mfha2rs56oaxfjaz@mwanda>
+From: Sagar Arun Kamble <sagar.a.kamble@intel.com>
+Subject: Re: [PATCH 15/27] ALSA: hda - Use
+ timecounter_initialize interface
+Date: Tue, 9 Jan 2018 15:39:57 +0530
+Message-ID: <4a40a784-bd6f-b2a3-904c-33368a98d0ed@intel.com>
+References: <1513323522-15021-1-git-send-email-sagar.a.kamble@intel.com>
+ <1513323522-15021-16-git-send-email-sagar.a.kamble@intel.com>
+ <s5hh8ssgsaw.wl-tiwai@suse.de> <20171215165125.avkz25eek56i5md4@localhost>
+ <s5h4lorx6ha.wl-tiwai@suse.de>
+ <b0d5ff40-fbfe-e5b3-2844-7d930484e87f@intel.com>
+ <20171228164944.crphv46zegvwautk@localhost>
+ <1a9a1507-7ca3-459b-c2ce-02fc2afad2ff@intel.com>
+ <3c5734a2-8f97-4a8b-26d4-42852cc86352@linux.intel.com>
+ <20180102182146.vbfnihz73lhgf6lc@localhost>
+ <9f09abee-68b8-4515-131f-0f3e210503b0@linux.intel.com>
+ <d3e83230-dc06-fc2b-b507-723d4863fb4e@intel.com>
+ <8c4dbc50-3e59-e860-6131-99fa10a8313f@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 70C6826760A
- for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2018 10:48:25 +0100 (CET)
-Received: by mail-wm0-f68.google.com with SMTP id t8so19097033wmc.3
- for <alsa-devel@alsa-project.org>; Tue, 09 Jan 2018 01:48:25 -0800 (PST)
-In-Reply-To: <20180109092616.mfha2rs56oaxfjaz@mwanda>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18D7726717C
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2018 11:10:02 +0100 (CET)
+In-Reply-To: <8c4dbc50-3e59-e860-6131-99fa10a8313f@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,36 +33,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>, Sagar Dharia <sdharia@codeaurora.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Richard Cochran <richardcochran@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 09/01/18 09:26, Dan Carpenter wrote:
-> "retries" ends when it is set to -1 and not 0 so that part of the test
-> is wrong.  This bug would lead to a NULL dereference a couple lines
-> later.
-> 
-> Fixes: afbdcc7c384b ("slimbus: Add messaging APIs to slimbus framework")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
-> Should Greg be added to the MAINTAINERS file for this driver?
-> 
-> diff --git a/drivers/slimbus/qcom-ctrl.c b/drivers/slimbus/qcom-ctrl.c
-> index fb1a5e0eb8dd..3ab59209cbdc 100644
-> --- a/drivers/slimbus/qcom-ctrl.c
-> +++ b/drivers/slimbus/qcom-ctrl.c
-> @@ -345,7 +345,7 @@ static int qcom_xfer_msg(struct slim_controller *sctrl,
->   		}
->   	}
->   
-> -	if (!retries && !pbuf)
-> +	if (!pbuf)
->   		return -ENOMEM;
->   
->   	puc = (u8 *)pbuf;
-> 
-
-Already fixed at:
-https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1575799.html
+CgpPbiAxLzUvMjAxOCA5OjEzIFBNLCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPiBPbiAx
+LzUvMTggNDowNiBBTSwgU2FnYXIgQXJ1biBLYW1ibGUgd3JvdGU6Cj4+Cj4+Cj4+IE9uIDEvMy8y
+MDE4IDE6MjMgQU0sIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+Pj4gT24gMS8yLzE4IDEy
+OjIxIFBNLCBSaWNoYXJkIENvY2hyYW4gd3JvdGU6Cj4+Pj4gT24gVHVlLCBKYW4gMDIsIDIwMTgg
+YXQgMTE6MTU6NDVBTSAtMDYwMCwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4+Pj4+IEkg
+d3JvdGUgdGhlIGNvZGUgZm9yIEhEYXVkaW8gYW5kIEkgcmVtZW1iZXIgd2FzdGluZyB0aW1lIHRy
+eWluZyB0byAKPj4+Pj4gZmlndXJlCj4+Pj4+IG91dCB0aGUgZ29yeSBkZXRhaWxzIG9mIHRoZSBj
+eWNsZSBjb3VudGVyIHN0dWZmIHdoZW4gYWxsIEkgd2FudGVkIAo+Pj4+PiB3YXMgYQo+Pj4+PiBj
+b252ZXJzaW9uIGZyb20gYSAyNE1IeiBjb3VudGVyIHRvIG5zIHZhbHVlcyB1c2luZyBhIDEyNS8z
+IAo+Pj4+PiBvcGVyYXRpb24gaW4gdGhlCj4+Pj4+IHJpZ2h0IG9yZGVyIC0gYXMgZXhwbGFpbmVk
+IGluIHRoZSBjb21tZW50cwo+Pj4+Cj4+Pj4gV291bGQgdXNpbmcgY2xvY2tzX2NhbGNfbXVsdF9z
+aGlmdCgpIHdvcmsgZm9yIHlvdT8KPj4+Cj4+PiBJbiB0aGVvcnkgeWVzLCBidXQgSSdkIG5lZWQg
+dG8gcmUtY2hlY2sgd2hhdCB0aGUgcmVzdWx0cyB3b3VsZCBiZS4KPj4+IEkgcmVtZW1iZXIgYXBw
+bHlpbmcgdGhlIDEvMyBmYWN0b3Igc2VwYXJhdGVseSB0byBhdm9pZCB3cmFwLWFyb3VuZCAKPj4+
+IGFmdGVyIDQgaG91cnMgWzFdLCBidXQgSSBjYW4ndCByZW1lbWJlciB0aGUgZGV0YWlscyBvbiB0
+aGUgYW5hbHlzaXMuIAo+Pj4gSSBjYW4ndCBmaWd1cmUgb3V0IHdoYXQgdGhlICdtYXhzZWMnIGFy
+Z3VtZW50IHNob3VsZCBiZSBlaXRoZXIuCj4+Pgo+PiBJIGFtIG5vdCBzdXJlIGlmIEkgdW5kZXJz
+dG9vZCB0aGUgd3JhcC1hcm91bmQgY29ycmVjdGx5LiBJcyAKPj4gQVpYX1JFR19XQUxMX0NMSyA2
+NGJpdCBvciAzMmJpdCBhbmQgaW4gdGhlIGNvbW1lbnRzIHdoaWNoIDIwIGJpdHMgYXJlIAo+PiBi
+ZWluZyByZWZlcnJlZC4KPgo+IGl0J3MgYSAzMi1iaXQgY291bnRlci4KPiBvZmYgdGhlIHRvcCBv
+ZiBteSBoZWFkLCB0aGUgaWRlYSB3YXMgdGhhdCB0aGUgaW50ZWdlciBhcml0aG1ldGljIAo+IHNo
+b3VsZCBub3QgZGVncmFkZSB0aGUgcHJlY2lzaW9uICg0Mm5zKSBhbmQgdGhhdCBtZWFucyB5b3Ug
+bmVlZCB0byBiZSAKPiBjYXJlZnVsIHdpdGggdGhlIGZyYWN0aW9uYWwgcGFydCwgZXNwZWNpYWxs
+eSBpZiB0aGUgZXJyb3JzIHdpdGggdGhlIAo+IGZyYWN0aW9uYWwgcGFydCBhY2N1bXVsYXRlIG92
+ZXIgdGltZSAoSSB0aGluayB0aGlzIHdhcyB0aGUgY2FzZSB3aGVuIEkgCj4gbG9va2VkIHNldmVy
+YWwgeWVhcnMgYWdvKS4gVGhhdCdzIHRoZSBtYWluIHJlYXNvbiB3aHkgSSBkaWQgdGhlIAo+IGRp
+dmlzaW9uIGJ5IDMgbGFzdCwgYWZ0ZXIgdGhlIHJlYWQsIHNvIHRoYXQgdGhlIHByZWNpc2lvbiBp
+cyBub3QgCj4gaW1wYWN0ZWQgYnkgdGhlIGludGVydmFsIGJldHdlZW4gdHdvIHJlYWRzLgo+CnRp
+bWVjb3VudGVyIGludGVyZmFjZSBlbnN1cmVzIHRvIGFkZCB0aGUgZnJhY3Rpb25hbCBucyB0aW1l
+IHNvIGl0IGhhcyAKZ29vZCBwcmVjaXNpb24uIEluIHRoZSB0YWJsZSBiZWxvdyAzNjAwIGluZGlj
+YXRlcyBpbnRlcnZhbCBvZiAxbWluIApiZXR3ZWVuIHR3byBjb3VudGVyIHJlYWRzCmFuZCAxNDQw
+MCBpbmRpY2F0ZXMgdGhhdCBpbnRlcnZhbCBvZiA0IG1pbnV0ZXMuwqAgU2hpZnQgZmFjdG9yIGNv
+bnRyb2xzIAp0aGUgbnMgcHJlY2lzaW9uIHdlIHdhbnQuCkNvbnNpZGVyaW5nIGR1cmF0aW9uIG9m
+IDE5NSB5ZWFycyBvZiBpbnRlcnZhbCBiZXR3ZWVuIGNvdW50ZXIgcmVhZHMgYXQgCjI0bWh6IHdl
+IGdldCBtdWx0PTgzIGFuZCBzaGlmdD0xIHdoaWNoIHdpbGwgZ2l2ZSBjeWNsZSBkdXJhdGlvbiA9
+IDQxLjUuCldoYXQgaXMgdGhlIG1heGltdW0gZHVyYXRpb24gb2YgaW50ZXJ2YWwgb3ZlciB3aGlj
+aCB0aGlzIHJlYWQgY2FuIGJlIApkb25lIGluIGF1ZGlvIGRyaXZlci4KPiBZb3UgYWxzbyBuZWVk
+IHRvIGJlIGNhcmVmdWwgd2l0aCB0aGUgbXVsdGlwbGljYXRpb24gZmFjdG9yIG90aGVyd2lzZSAK
+PiB5b3Ugd2lsbCBleGNlZWQgdGhlIDY0LWJpdCByZXNvbHV0aW9uLiBGb3IgZXhhbXBsZSB3aXRo
+IHRoZSAxNDQwMCAKPiBmYWN0b3IsIHlvdSBjYW5ub3QgaGFuZGxlIGEgY291bnRlciBsYXJnZXIg
+dGhhbiAyXjY0LzE0NDAwLCB3aGljaCAKPiBnaXZlcyB5b3UgMTQ4MjYgaG91cnMgb3IgMS42OSB5
+ZWFycy4gSXQncyBvbmUgb2YgdGhvc2UgJ25vYm9keSB3aWxsIAo+IGV2ZXIgbmVlZCBtb3JlIHRo
+YW4gNjQwS0InIHZhbHVlLiBUaGUgMTI1IGZhY3RvciBnaXZlcyB5b3UgMTk1IHllYXJzIAo+IHdp
+dGhvdXQgc2F0dXJhdGluZy4KPgo+Pgo+PiBLZWVwaW5nIG1heHNlYyBhdCBsb3dlciB2YWx1ZSB3
+aWxsIGVuc3VyZSBnb29kIHByZWNpc2lvbiBidXQgdGhlIG11bHQgCj4+IGZhY3RvciBkZXJpdmVk
+IHRoZW4gbWlnaHQgbGVhZCB0byBvdmVyZmxvdyBpZiB0aGUgaW50ZXJ2YWwgb2YgY291bnRlciAK
+Pj4gcmVhZCBpcyBiaWcuCj4+IEtlZXBpbmcgbWF4c2VjIGhpZ2ggd2lsbCByZWR1Y2UgdGhlIG11
+bHQgZmFjdG9yIGFuZCB3aWxsIG1hcmdpbmFsbHkgCj4+IGltcGFjdCB0aGUgcHJlY2lzaW9uIChv
+ZiB0aGUgb3JkZXIgb2YgNiBkZWNpbWFsIHBsYWNlcyBvZiBmcmFjdGlvbiAKPj4gbmFubyBzZWNv
+bmQpLgo+Pgo+PiBGb3IgMjRtaHogY2xvY2sgSSBhbSBnZXR0aW5nIGZvbGxvd2luZyBzY2FsZSBm
+YWN0b3JzIGF0IGRpZmZlcmVudCAKPj4gbWF4c2VjIHZhbHVlcy4gSSB0aGluayB0aGVzZSBhcmUg
+YXMgZ29vZCBhcyAxMjUvMwo+PiAxMjUvMyBnaXZlcyBzY2FsZSBmYWN0b3Igb2YgNDEuNjY2NjY2
+NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY3Cj4+Cj4+IG1heHNlYywgbXVsdCwgc2hpZnQsIHNjYWxl
+IGZhY3RvciAobXVsdC8oMl5zaGlmdCkpCj4+IDAsIDI3OTYyMDI2NjcsIDI2LMKgwqDCoMKgIDQx
+LjY2NjY2NjY3MTYzMzcyMDM5Nzk0OTIxODc1Cj4+IDM2MDAsIDg3MzgxMzMzLCAyMSzCoMKgIDQx
+LjY2NjY2NjUwNzcyMDk0NzI2NTYyNQo+PiAxNDQwMCwgMjE4NDUzMzMsIDE5LCA0MS42NjY2NjYw
+MzA4ODM3ODkwNjI1Cj4+Cj4+IEkgc2VlIHNvdW5kIGRyaXZlciB1c2VzIG9ubHkgdGltZWNvdW50
+ZXJfcmVhZCBzbyBjb252ZXJzaW9ucyBzaG91bGQgCj4+IGJlIGZpbmUuCj4+IElmIHRoZXJlIGFy
+ZSB1c2FnZXMgb2YgdGltZWNvdW50ZXJfY3ljMnRpbWUgdGhlbiB3ZSB3aWxsIGhhdmUgdG8gdGFr
+ZSAKPj4gY2FyZSBvZiB1cGRhdGluZyB0aGUgdGltZWNvdW50ZXIgb2Z0ZW4gYXMKPj4gdGltZWNv
+dW50ZXIgQVBJIGludGVybmFsbHkgY291bnRzIHRpbWUgYmFja3dhcmRzIGlmIGNvdW50ZXIgaXMg
+c3BhY2VkIAo+PiBtb3JlIHRoYW4gMS8yIHRoZSByYW5nZS4KPj4KPj4gVGhhbmtzCj4+IFNhZ2Fy
+Cj4+PiBbMV0gCj4+PiBodHRwOi8vZWxpeGlyLmZyZWUtZWxlY3Ryb25zLmNvbS9saW51eC9sYXRl
+c3Qvc291cmNlL3NvdW5kL2hkYS9oZGFjX3N0cmVhbS5jI0w0ODYgCj4+Pgo+Pgo+CgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
