@@ -1,19 +1,18 @@
-From: Sagar Arun Kamble <sagar.a.kamble@intel.com>
-Subject: Re: [Intel-wired-lan] [PATCH 01/27] timecounter: Make
- cyclecounter struct part of timecounter struct
-Date: Tue, 9 Jan 2018 14:31:33 +0530
-Message-ID: <af2474d2-edf7-7db3-b14d-3587222daf79@intel.com>
-References: <1513323522-15021-1-git-send-email-sagar.a.kamble@intel.com>
- <1513323522-15021-2-git-send-email-sagar.a.kamble@intel.com>
- <309B89C4C689E141A5FF6A0C5FB2118B8C734DF8@ORSMSX101.amr.corp.intel.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH] ASoC: codecs: dmic: Make number of
+	channels configurable
+Date: Tue, 9 Jan 2018 10:04:17 +0100
+Message-ID: <b4ab0392-8ce8-721a-0f70-22bfd358ced6@st.com>
+References: <20180105203957.184883-1-mka@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 50B2526717C
- for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2018 10:01:39 +0100 (CET)
-In-Reply-To: <309B89C4C689E141A5FF6A0C5FB2118B8C734DF8@ORSMSX101.amr.corp.intel.com>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CC8E26717C
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2018 10:04:29 +0100 (CET)
+In-Reply-To: <20180105203957.184883-1-mka@chromium.org>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,82 +23,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Brown, Aaron F" <aaron.f.brown@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Richard Cochran <richardcochran@gmail.com>, Stephen Boyd <sboyd@codeaurora.org>, Chris Wilson <chris@chris-wilson.co.uk>, John Stultz <john.stultz@linaro.org>, "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>, Thomas Gleixner <tglx@linutronix.de>, "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Matthias Kaehlcke <mka@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, huang lin <hl@rock-chips.com>, Brian Norris <briannorris@chromium.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Dylan Reid <dgreid@chromium.org>, Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Aaron.
-
-Regards,
-Sagar
-
-On 1/9/2018 3:50 AM, Brown, Aaron F wrote:
->> From: Intel-wired-lan [mailto:intel-wired-lan-bounces@osuosl.org] On
->> Behalf Of Sagar Arun Kamble
->> Sent: Thursday, December 14, 2017 11:38 PM
->> To: linux-kernel@vger.kernel.org
->> Cc: alsa-devel@alsa-project.org; linux-rdma@vger.kernel.org;
->> netdev@vger.kernel.org; Richard Cochran <richardcochran@gmail.com>;
->> Stephen Boyd <sboyd@codeaurora.org>; Chris Wilson <chris@chris-
->> wilson.co.uk>; John Stultz <john.stultz@linaro.org>; intel-wired-
->> lan@lists.osuosl.org; Thomas Gleixner <tglx@linutronix.de>; Kamble, Sagar A
->> <sagar.a.kamble@intel.com>; kvmarm@lists.cs.columbia.edu; linux-arm-
->> kernel@lists.infradead.org
->> Subject: [Intel-wired-lan] [PATCH 01/27] timecounter: Make cyclecounter
->> struct part of timecounter struct
->>
->> There is no real need for the users of timecounters to define cyclecounter
->> and timecounter variables separately. Since timecounter will always be
->> based on cyclecounter, have cyclecounter struct as member of timecounter
->> struct.
->>
->> v2: Rebase.
->>
->> Suggested-by: Chris Wilson <chris@chris-wilson.co.uk>
->> Signed-off-by: Sagar Arun Kamble <sagar.a.kamble@intel.com>
->> Cc: Chris Wilson <chris@chris-wilson.co.uk>
->> Cc: Richard Cochran <richardcochran@gmail.com>
->> Cc: John Stultz <john.stultz@linaro.org>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Stephen Boyd <sboyd@codeaurora.org>
->> Cc: linux-kernel@vger.kernel.org
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: netdev@vger.kernel.org
->> Cc: intel-wired-lan@lists.osuosl.org
->> Cc: linux-rdma@vger.kernel.org
->> Cc: alsa-devel@alsa-project.org
->> Cc: kvmarm@lists.cs.columbia.edu
->> Acked-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com> (Intel drivers)
->> ---
->>   arch/microblaze/kernel/timer.c                     | 20 ++++++------
->>   drivers/clocksource/arm_arch_timer.c               | 19 ++++++------
->>   drivers/net/ethernet/amd/xgbe/xgbe-dev.c           |  3 +-
->>   drivers/net/ethernet/amd/xgbe/xgbe-ptp.c           |  9 +++---
->>   drivers/net/ethernet/amd/xgbe/xgbe.h               |  1 -
->>   drivers/net/ethernet/broadcom/bnx2x/bnx2x.h        |  1 -
->>   drivers/net/ethernet/broadcom/bnx2x/bnx2x_main.c   | 20 ++++++------
->>   drivers/net/ethernet/freescale/fec.h               |  1 -
->>   drivers/net/ethernet/freescale/fec_ptp.c           | 30 +++++++++---------
->>   drivers/net/ethernet/intel/e1000e/e1000.h          |  1 -
->>   drivers/net/ethernet/intel/e1000e/netdev.c         | 27 ++++++++--------
->>   drivers/net/ethernet/intel/e1000e/ptp.c            |  2 +-
->>   drivers/net/ethernet/intel/igb/igb.h               |  1 -
->>   drivers/net/ethernet/intel/igb/igb_ptp.c           | 25 ++++++++-------
->>   drivers/net/ethernet/intel/ixgbe/ixgbe.h           |  1 -
->>   drivers/net/ethernet/intel/ixgbe/ixgbe_ptp.c       | 17 +++++-----
->>   drivers/net/ethernet/mellanox/mlx4/en_clock.c      | 28 ++++++++---------
->>   drivers/net/ethernet/mellanox/mlx4/mlx4_en.h       |  1 -
->>   .../net/ethernet/mellanox/mlx5/core/lib/clock.c    | 34 ++++++++++----------
->>   drivers/net/ethernet/qlogic/qede/qede_ptp.c        | 20 ++++++------
->>   drivers/net/ethernet/ti/cpts.c                     | 36 ++++++++++++----------
->>   drivers/net/ethernet/ti/cpts.h                     |  1 -
->>   include/linux/mlx5/driver.h                        |  1 -
->>   include/linux/timecounter.h                        |  4 +--
->>   include/sound/hdaudio.h                            |  1 -
->>   kernel/time/timecounter.c                          | 28 ++++++++---------
->>   sound/hda/hdac_stream.c                            |  7 +++--
->>   virt/kvm/arm/arch_timer.c                          |  6 ++--
->>   28 files changed, 163 insertions(+), 182 deletions(-)
->>
-> For Intel e1000e and igb drivers:
-> Tested-by: Aaron Brown <aaron.f.brown@intel.com>
+SGVsbG8gTWF0aGlhcywKCk5leHQgdGltZSBjb3VsZCB5b3UgYWRkIHBhdGNoIHZlcnNpb24gaW4g
+eW91ciBtYWlsIHN1YmplY3QgKCBbUEFUQ0ggdlhdKQplYXNpZXIgdG8gZm9sbG93IHZlcnNpb25z
+IDotKS4KCm90aGVyd2lzZSwKCkFja2VkLWJ5OiBBcm5hdWQgUG91bGlxdWVuIDxhcm5hdWQucG91
+bGlxdWVuQHN0LmNvbT4KClJlZ2FyZHMsCkFybmF1ZAoKT24gMDEvMDUvMjAxOCAwOTozOSBQTSwg
+TWF0dGhpYXMgS2FlaGxja2Ugd3JvdGU6Cj4gVGhlIERNSUMgREFJIGRyaXZlciBzcGVjaWZpZXMg
+YSBudW1iZXIgb2YgMSB0byA4IGNoYW5uZWxzIGZvciBlYWNoIERBSS4KPiBUaGUgYWN0dWFsIG51
+bWJlciBvZiBtaWNzIGNhbiBjdXJyZW50bHkgbm90IGJlIGNvbmZpZ3VyZWQgaW4gdGhlIGRldmlj
+ZQo+IHRyZWUgb3IgYXVkaW8gZ2x1ZSwgYnV0IGlzIGRlcml2ZWQgZnJvbSB0aGUgbWluL21heCBj
+aGFubmVscyBvZiB0aGUgQ1BVCj4gYW5kIGNvZGVjIERBSS4gQSB0eXBpY2FsIENQVSBEQUkgaGFz
+IHR3byBvciBtb3JlIGNoYW5uZWxzLCBpbiBjb25zZXF1ZW5jZQo+IGEgc2luZ2xlIG1pYyBpcyB0
+cmVhdGVkIGFzIGEgc3RlcmVvL211bHRpIGNoYW5uZWwgZGV2aWNlLCBldmVuIHRob3VnaAo+IG9u
+bHkgb25lIGNoYW5uZWwgY2FycmllcyBhdWRpbyBkYXRhLgo+IAo+IFRoaXMgY2hhbmdlIGFkZHMg
+dGhlIG9wdGlvbiB0byBzcGVjaWZ5IHRoZSBudW1iZXIgb2YgdXNlZCBETUlDIGNoYW5uZWxzCj4g
+aW4gdGhlIGRldmljZSB0cmVlLiBXaGVuIHNwZWNpZmllZCB0aGlzIHZhbHVlIG92ZXJ3cml0ZXMg
+dGhlIGRlZmF1bHQKPiBjaGFubmVsc19tYXggdmFsdWUgb2YgOCBpbiB0aGUgc25kX3NvY19kYWlf
+ZHJpdmVyIHN0cnVjdCBvZiB0aGUgY29kZWMuCj4gCj4gU2lnbmVkLW9mZi1ieTogTWF0dGhpYXMg
+S2FlaGxja2UgPG1rYUBjaHJvbWl1bS5vcmc+Cj4gLS0tCj4gwqBEb2N1bWVudGF0aW9uL2Rldmlj
+ZXRyZWUvYmluZGluZ3Mvc291bmQvZG1pYy50eHQgfMKgIDIgKysKPiDCoHNvdW5kL3NvYy9jb2Rl
+Y3MvZG1pYy5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgfCAyNAo+ICsrKysrKysrKysrKysrKysrKysrKysrLQo+IMKgMiBmaWxlcyBjaGFuZ2VkLCAy
+NSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4gCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50
+YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9kbWljLnR4dAo+IGIvRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2RtaWMudHh0Cj4gaW5kZXggNTRjOGVmNjQ5OGE4
+Li5mN2JmNjU2MTE0NTMgMTAwNjQ0Cj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
+bmRpbmdzL3NvdW5kL2RtaWMudHh0Cj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
+bmRpbmdzL3NvdW5kL2RtaWMudHh0Cj4gQEAgLTcsMTAgKzcsMTIgQEAgUmVxdWlyZWQgcHJvcGVy
+dGllczoKPiDCoAo+IMKgT3B0aW9uYWwgcHJvcGVydGllczoKPiDCoMKgwqDCoMKgwqDCoMKgIC0g
+ZG1pY2VuLWdwaW9zOiBHUElPIHNwZWNpZmllciBmb3IgZG1pYyB0byBjb250cm9sIHN0YXJ0IGFu
+ZCBzdG9wCj4gK8KgwqDCoMKgwqDCoCAtIG51bS1jaGFubmVsczogTnVtYmVyIG9mIG1pY3JvcGhv
+bmVzIG9uIHRoaXMgREFJCj4gwqAKPiDCoEV4YW1wbGUgbm9kZToKPiDCoAo+IMKgwqDCoMKgwqDC
+oMKgwqAgZG1pY19jb2RlYzogZG1pY0AwIHsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBjb21wYXRpYmxlID0gImRtaWMtY29kZWMiOwo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIGRtaWNlbi1ncGlvcyA9IDwmZ3BpbzQgMyBHUElPX0FDVElWRV9ISUdIPjsKPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBudW0tY2hhbm5lbHMgPSA8MT47Cj4gwqDCoMKg
+wqDCoMKgwqDCoCB9Owo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL2RtaWMuYyBiL3Nv
+dW5kL3NvYy9jb2RlY3MvZG1pYy5jCj4gaW5kZXggYjg4YTFlZTY2ZjgwLi5jODhmOTc0ZWJlM2Ug
+MTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2NvZGVjcy9kbWljLmMKPiArKysgYi9zb3VuZC9zb2Mv
+Y29kZWNzL2RtaWMuYwo+IEBAIC0xMDcsOCArMTA3LDMwIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
+c25kX3NvY19jb2RlY19kcml2ZXIgc29jX2RtaWMgPSB7Cj4gwqAKPiDCoHN0YXRpYyBpbnQgZG1p
+Y19kZXZfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiDCoHsKPiArwqDCoMKg
+wqDCoMKgIGludCBlcnI7Cj4gK8KgwqDCoMKgwqDCoCB1MzIgY2hhbnM7Cj4gK8KgwqDCoMKgwqDC
+oCBzdHJ1Y3Qgc25kX3NvY19kYWlfZHJpdmVyICpkYWlfZHJ2ID0gJmRtaWNfZGFpOwo+ICsKPiAr
+wqDCoMKgwqDCoMKgIGlmIChwZGV2LT5kZXYub2Zfbm9kZSkgewo+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIGVyciA9IG9mX3Byb3BlcnR5X3JlYWRfdTMyKHBkZXYtPmRldi5vZl9ub2Rl
+LAo+ICJudW0tY2hhbm5lbHMiLCAmY2hhbnMpOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIGlmIChlcnIgJiYgKGVyciAhPSAtRU5PRU5UKSkKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIGVycjsKPiArCj4gK8KgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgaWYgKCFlcnIpIHsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgaWYgKGNoYW5zIDwgMSB8fCBjaGFucyA+IDgpCj4gK8KgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1
+cm4gLUVJTlZBTDsKPiArCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIGRhaV9kcnYgPSBkZXZtX2t6YWxsb2MoJnBkZXYtPmRldiwKPiBzaXplb2YoKmRhaV9k
+cnYpLCBHRlBfS0VSTkVMKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgaWYgKCFkYWlfZHJ2KQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIC1FTk9NRU07Cj4gKwo+ICvCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBtZW1jcHkoZGFpX2Rydiwg
+JmRtaWNfZGFpLCBzaXplb2YoKmRhaV9kcnYpKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgZGFpX2Rydi0+Y2FwdHVyZS5jaGFubmVsc19tYXggPSBjaGFu
+czsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9Cj4gK8KgwqDCoMKgwqDCoCB9Cj4g
+KwoKPiDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiBzbmRfc29jX3JlZ2lzdGVyX2NvZGVjKCZwZGV2
+LT5kZXYsCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICZz
+b2NfZG1pYywgJmRtaWNfZGFpLCAxKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgJnNvY19kbWljLCBkYWlfZHJ2LCAxKTsKPiDCoH0KPiDCoAo+IMKgc3Rh
+dGljIGludCBkbWljX2Rldl9yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiAt
+LSAKPiAyLjE2LjAucmMwLjIyMy5nNGE0YWM4MzY3OC1nb29nCj4gCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
