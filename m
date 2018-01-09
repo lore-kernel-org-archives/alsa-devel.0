@@ -1,59 +1,65 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v2 3/4] ASoC: Intel: bytcht_es8316: fix HID
-	handling
-Date: Tue, 09 Jan 2018 12:40:49 +0200
-Message-ID: <1515494449.7000.817.camel@linux.intel.com>
-References: <20180105205536.10366-1-pierre-louis.bossart@linux.intel.com>
- <20180105205536.10366-4-pierre-louis.bossart@linux.intel.com>
- <20180108044321.GX18649@localhost>
- <43e8b08e-f519-280c-ea72-5344e24b896b@linux.intel.com>
- <20180109044808.GM18649@localhost>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v3 1/3] ACPI / utils: Introduce acpi_dev_get_first_match_name()
+Date: Tue, 9 Jan 2018 14:34:39 +0100
+Message-ID: <CACRpkdbKPLmMkzEV4N-ftrp7jb73NB0oVeV+2E1gG1b=fFvjkw@mail.gmail.com>
+References: <20180105160935.48588-1-andriy.shevchenko@linux.intel.com>
+ <CAJZ5v0iH+2JHe8vCR9tQX62ULwx_eVd1QGPtinSLNDzWx1NmEg@mail.gmail.com>
+ <1515416960.7000.784.camel@linux.intel.com> <3404188.B388fAZkns@aspire.rjw.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 2069E26717C
- for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2018 11:40:53 +0100 (CET)
-In-Reply-To: <20180109044808.GM18649@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, jeremy@jcline.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-acpi-owner@vger.kernel.org>
+In-Reply-To: <3404188.B388fAZkns@aspire.rjw.lan>
+Sender: linux-acpi-owner@vger.kernel.org
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Rafael J. Wysocki" <rafael@kernel.org>, Erik Schmauss <erik.schmauss@intel.com>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, linux-gpio@vger.kernel.org, Mika Westerberg <mika.westerberg@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2018-01-09 at 10:18 +0530, Vinod Koul wrote:
-> On Mon, Jan 08, 2018 at 02:23:19PM -0600, Pierre-Louis Bossart wrote:
+On Tue, Jan 9, 2018 at 1:18 AM, Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> On Monday, January 8, 2018 2:09:20 PM CET Andy Shevchenko wrote:
+>> On Sat, 2018-01-06 at 00:27 +0100, Rafael J. Wysocki wrote:
+>> > On Fri, Jan 5, 2018 at 5:09 PM, Andy Shevchenko
+>> > <andriy.shevchenko@linux.intel.com> wrote:
+>> > > Sometimes the user wants to have device name of the match rather
+>> > > than
+>> > > just checking if device present or not. To make life easier for such
+>> > > users introduce acpi_dev_get_first_match_name() helper based on code
+>> > > for acpi_dev_present().
+>> > >
+>> > > For example, GPIO driver for Intel Merrifield needs to know the
+>> > > device
+>> > > name of pin control to be able to apply GPIO mapping table to the
+>> > > proper
+>> > > device.
+>> > >
+>> > > To be more consistent with the purpose rename
+>> > >
+>> > >   struct acpi_dev_present_info  -> struct acpi_dev_match_info
+>> > >   acpi_dev_present_cb()         -> acpi_dev_match_cb()
+>> > >
+>> > > in the utils.c file.
+>> > >
+>> > > Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.co
+>> > > m>
+>> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>> >
+>> > OK, so which way do you want this to go in?
+>>
+>> If you have no objections, patch 1 may go straight forward to linux-pm
+>> tree as far as you are okay with the contents.
+>>
+>> I dunno, if Mika's ACK is enough to you to get the second one (patch 2)
+>> together, otherwise Linus' ACK would be needed or leave it for next
+>> cycle.
+>>
+>> According to what Mark and Pierre told previously I guess we just
+>> postpone patch 3 for next cycle.
+>
+> OK
+>
+> Linus, can you please have a look at the [2/3] from this lot and let me know
+> whether or not I can take it?
 
-> > Well snd_soc_acpi_find_name_from_hid() will be replaced by an ACPI
-> > generic
-> > util (see proposal from Andy last week).
-> > 
-> > The idea was to add this first patch, and then do a replacement
-> > across all
-> > machine drivers when Andy's patch is available.
-> > 
-> > Andy also had another idea to add a helper which would take care of
-> > the for
-> > loop (which would indeed simplify the code further).
-> > 
-> > If that's alright with everyone, I'd like to add this patch first as
-> > is so
-> > that folks with the es8316 hardware get working audio, then do the
-> > two
-> > cleanups later.
-> 
-> Yeah sounds fair to me :)
+OK looking...
 
-No objections from my side either.
-
--- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+Yours,
+Linus Walleij
