@@ -1,19 +1,18 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH] ASoC: codecs: dmic: Make number of
-	channels configurable
-Date: Tue, 9 Jan 2018 10:04:17 +0100
-Message-ID: <b4ab0392-8ce8-721a-0f70-22bfd358ced6@st.com>
-References: <20180105203957.184883-1-mka@chromium.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH 2/2] slimbus: qcom-ctrl: Fix
+ devm_ioremap_resource() error handling
+Date: Tue, 9 Jan 2018 12:26:44 +0300
+Message-ID: <20180109092644.wa4ubwxkcvc3lyza@mwanda>
+References: <20180109092616.mfha2rs56oaxfjaz@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 1CC8E26717C
- for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2018 10:04:29 +0100 (CET)
-In-Reply-To: <20180105203957.184883-1-mka@chromium.org>
-Content-Language: en-US
+Received: from userp2130.oracle.com (userp2130.oracle.com [156.151.31.86])
+ by alsa0.perex.cz (Postfix) with ESMTP id 857A726717C
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2018 10:26:57 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20180109092616.mfha2rs56oaxfjaz@mwanda>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,75 +22,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matthias Kaehlcke <mka@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, huang lin <hl@rock-chips.com>, Brian Norris <briannorris@chromium.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Dylan Reid <dgreid@chromium.org>, Bhumika Goyal <bhumirks@gmail.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8gTWF0aGlhcywKCk5leHQgdGltZSBjb3VsZCB5b3UgYWRkIHBhdGNoIHZlcnNpb24gaW4g
-eW91ciBtYWlsIHN1YmplY3QgKCBbUEFUQ0ggdlhdKQplYXNpZXIgdG8gZm9sbG93IHZlcnNpb25z
-IDotKS4KCm90aGVyd2lzZSwKCkFja2VkLWJ5OiBBcm5hdWQgUG91bGlxdWVuIDxhcm5hdWQucG91
-bGlxdWVuQHN0LmNvbT4KClJlZ2FyZHMsCkFybmF1ZAoKT24gMDEvMDUvMjAxOCAwOTozOSBQTSwg
-TWF0dGhpYXMgS2FlaGxja2Ugd3JvdGU6Cj4gVGhlIERNSUMgREFJIGRyaXZlciBzcGVjaWZpZXMg
-YSBudW1iZXIgb2YgMSB0byA4IGNoYW5uZWxzIGZvciBlYWNoIERBSS4KPiBUaGUgYWN0dWFsIG51
-bWJlciBvZiBtaWNzIGNhbiBjdXJyZW50bHkgbm90IGJlIGNvbmZpZ3VyZWQgaW4gdGhlIGRldmlj
-ZQo+IHRyZWUgb3IgYXVkaW8gZ2x1ZSwgYnV0IGlzIGRlcml2ZWQgZnJvbSB0aGUgbWluL21heCBj
-aGFubmVscyBvZiB0aGUgQ1BVCj4gYW5kIGNvZGVjIERBSS4gQSB0eXBpY2FsIENQVSBEQUkgaGFz
-IHR3byBvciBtb3JlIGNoYW5uZWxzLCBpbiBjb25zZXF1ZW5jZQo+IGEgc2luZ2xlIG1pYyBpcyB0
-cmVhdGVkIGFzIGEgc3RlcmVvL211bHRpIGNoYW5uZWwgZGV2aWNlLCBldmVuIHRob3VnaAo+IG9u
-bHkgb25lIGNoYW5uZWwgY2FycmllcyBhdWRpbyBkYXRhLgo+IAo+IFRoaXMgY2hhbmdlIGFkZHMg
-dGhlIG9wdGlvbiB0byBzcGVjaWZ5IHRoZSBudW1iZXIgb2YgdXNlZCBETUlDIGNoYW5uZWxzCj4g
-aW4gdGhlIGRldmljZSB0cmVlLiBXaGVuIHNwZWNpZmllZCB0aGlzIHZhbHVlIG92ZXJ3cml0ZXMg
-dGhlIGRlZmF1bHQKPiBjaGFubmVsc19tYXggdmFsdWUgb2YgOCBpbiB0aGUgc25kX3NvY19kYWlf
-ZHJpdmVyIHN0cnVjdCBvZiB0aGUgY29kZWMuCj4gCj4gU2lnbmVkLW9mZi1ieTogTWF0dGhpYXMg
-S2FlaGxja2UgPG1rYUBjaHJvbWl1bS5vcmc+Cj4gLS0tCj4gwqBEb2N1bWVudGF0aW9uL2Rldmlj
-ZXRyZWUvYmluZGluZ3Mvc291bmQvZG1pYy50eHQgfMKgIDIgKysKPiDCoHNvdW5kL3NvYy9jb2Rl
-Y3MvZG1pYy5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgfCAyNAo+ICsrKysrKysrKysrKysrKysrKysrKysrLQo+IMKgMiBmaWxlcyBjaGFuZ2VkLCAy
-NSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4gCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50
-YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9kbWljLnR4dAo+IGIvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2RtaWMudHh0Cj4gaW5kZXggNTRjOGVmNjQ5OGE4
-Li5mN2JmNjU2MTE0NTMgMTAwNjQ0Cj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL3NvdW5kL2RtaWMudHh0Cj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL3NvdW5kL2RtaWMudHh0Cj4gQEAgLTcsMTAgKzcsMTIgQEAgUmVxdWlyZWQgcHJvcGVy
-dGllczoKPiDCoAo+IMKgT3B0aW9uYWwgcHJvcGVydGllczoKPiDCoMKgwqDCoMKgwqDCoMKgIC0g
-ZG1pY2VuLWdwaW9zOiBHUElPIHNwZWNpZmllciBmb3IgZG1pYyB0byBjb250cm9sIHN0YXJ0IGFu
-ZCBzdG9wCj4gK8KgwqDCoMKgwqDCoCAtIG51bS1jaGFubmVsczogTnVtYmVyIG9mIG1pY3JvcGhv
-bmVzIG9uIHRoaXMgREFJCj4gwqAKPiDCoEV4YW1wbGUgbm9kZToKPiDCoAo+IMKgwqDCoMKgwqDC
-oMKgwqAgZG1pY19jb2RlYzogZG1pY0AwIHsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBjb21wYXRpYmxlID0gImRtaWMtY29kZWMiOwo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIGRtaWNlbi1ncGlvcyA9IDwmZ3BpbzQgMyBHUElPX0FDVElWRV9ISUdIPjsKPiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBudW0tY2hhbm5lbHMgPSA8MT47Cj4gwqDCoMKg
-wqDCoMKgwqDCoCB9Owo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL2RtaWMuYyBiL3Nv
-dW5kL3NvYy9jb2RlY3MvZG1pYy5jCj4gaW5kZXggYjg4YTFlZTY2ZjgwLi5jODhmOTc0ZWJlM2Ug
-MTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2NvZGVjcy9kbWljLmMKPiArKysgYi9zb3VuZC9zb2Mv
-Y29kZWNzL2RtaWMuYwo+IEBAIC0xMDcsOCArMTA3LDMwIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
-c25kX3NvY19jb2RlY19kcml2ZXIgc29jX2RtaWMgPSB7Cj4gwqAKPiDCoHN0YXRpYyBpbnQgZG1p
-Y19kZXZfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiDCoHsKPiArwqDCoMKg
-wqDCoMKgIGludCBlcnI7Cj4gK8KgwqDCoMKgwqDCoCB1MzIgY2hhbnM7Cj4gK8KgwqDCoMKgwqDC
-oCBzdHJ1Y3Qgc25kX3NvY19kYWlfZHJpdmVyICpkYWlfZHJ2ID0gJmRtaWNfZGFpOwo+ICsKPiAr
-wqDCoMKgwqDCoMKgIGlmIChwZGV2LT5kZXYub2Zfbm9kZSkgewo+ICvCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIGVyciA9IG9mX3Byb3BlcnR5X3JlYWRfdTMyKHBkZXYtPmRldi5vZl9ub2Rl
-LAo+ICJudW0tY2hhbm5lbHMiLCAmY2hhbnMpOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIGlmIChlcnIgJiYgKGVyciAhPSAtRU5PRU5UKSkKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIGVycjsKPiArCj4gK8KgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgaWYgKCFlcnIpIHsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgaWYgKGNoYW5zIDwgMSB8fCBjaGFucyA+IDgpCj4gK8KgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1
-cm4gLUVJTlZBTDsKPiArCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIGRhaV9kcnYgPSBkZXZtX2t6YWxsb2MoJnBkZXYtPmRldiwKPiBzaXplb2YoKmRhaV9k
-cnYpLCBHRlBfS0VSTkVMKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgaWYgKCFkYWlfZHJ2KQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIC1FTk9NRU07Cj4gKwo+ICvCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBtZW1jcHkoZGFpX2Rydiwg
-JmRtaWNfZGFpLCBzaXplb2YoKmRhaV9kcnYpKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgZGFpX2Rydi0+Y2FwdHVyZS5jaGFubmVsc19tYXggPSBjaGFu
-czsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9Cj4gK8KgwqDCoMKgwqDCoCB9Cj4g
-KwoKPiDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiBzbmRfc29jX3JlZ2lzdGVyX2NvZGVjKCZwZGV2
-LT5kZXYsCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICZz
-b2NfZG1pYywgJmRtaWNfZGFpLCAxKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgJnNvY19kbWljLCBkYWlfZHJ2LCAxKTsKPiDCoH0KPiDCoAo+IMKgc3Rh
-dGljIGludCBkbWljX2Rldl9yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiAt
-LSAKPiAyLjE2LjAucmMwLjIyMy5nNGE0YWM4MzY3OC1nb29nCj4gCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+devm_ioremap_resource() returns error pointers, not NULL so the check
+needs to be fixed.
+
+Fixes: ad7fcbc308b0 ("slimbus: qcom: Add Qualcomm Slimbus controller driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+diff --git a/drivers/slimbus/qcom-ctrl.c b/drivers/slimbus/qcom-ctrl.c
+index 3ab59209cbdc..6bf95bf33299 100644
+--- a/drivers/slimbus/qcom-ctrl.c
++++ b/drivers/slimbus/qcom-ctrl.c
+@@ -528,9 +528,9 @@ static int qcom_slim_probe(struct platform_device *pdev)
+ 
+ 	slim_mem = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ctrl");
+ 	ctrl->base = devm_ioremap_resource(ctrl->dev, slim_mem);
+-	if (!ctrl->base) {
++	if (IS_ERR(ctrl->base)) {
+ 		dev_err(&pdev->dev, "IOremap failed\n");
+-		return -ENOMEM;
++		return PTR_ERR(ctrl->base);
+ 	}
+ 
+ 	sctrl->set_laddr = qcom_set_laddr;
