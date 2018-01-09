@@ -1,54 +1,105 @@
-From: Jiada Wang <jiada_wang@mentor.com>
-Subject: Re: Applied "ASoC: rsnd: ssi: fix race condition in rsnd_ssi_pointer_update"
- to the asoc tree
-Date: Tue, 9 Jan 2018 00:59:16 -0800
-Message-ID: <5A548464.7060506@mentor.com>
-References: <E1eNNl3-0003pn-VV@debutante> <661598a7-b62c-074a-a12e-12ed87f4700e@sakamocchi.jp> <20171211113809.GA9854@sirena.org.uk> <5A54565C.70805@mentor.com> <9caa59c7-4c0b-ef77-88ea-29f5e03441c0@sakamocchi.jp>
+From: Sagar Arun Kamble <sagar.a.kamble@intel.com>
+Subject: Re: [Intel-wired-lan] [PATCH 01/27] timecounter: Make
+ cyclecounter struct part of timecounter struct
+Date: Tue, 9 Jan 2018 14:31:33 +0530
+Message-ID: <af2474d2-edf7-7db3-b14d-3587222daf79@intel.com>
+References: <1513323522-15021-1-git-send-email-sagar.a.kamble@intel.com>
+ <1513323522-15021-2-git-send-email-sagar.a.kamble@intel.com>
+ <309B89C4C689E141A5FF6A0C5FB2118B8C734DF8@ORSMSX101.amr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <9caa59c7-4c0b-ef77-88ea-29f5e03441c0@sakamocchi.jp>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 50B2526717C
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2018 10:01:39 +0100 (CET)
+In-Reply-To: <309B89C4C689E141A5FF6A0C5FB2118B8C734DF8@ORSMSX101.amr.corp.intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Brown, Aaron F" <aaron.f.brown@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Richard Cochran <richardcochran@gmail.com>, Stephen Boyd <sboyd@codeaurora.org>, Chris Wilson <chris@chris-wilson.co.uk>, John Stultz <john.stultz@linaro.org>, "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>, Thomas Gleixner <tglx@linutronix.de>, "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Sakamoto-san
+Thanks Aaron.
 
+Regards,
+Sagar
 
-On 01/08/2018 10:53 PM, Takashi Sakamoto wrote:
-> Hi Jiada,
->
-> On Jan 9 2018 14:42, Jiada Wang wrote:
->> Only the first patch in
->> https://www.spinics.net/lists/alsa-devel/msg71021.html
->> was applied, but the second patch "ASoC: rsnd: ssi: remove 
->> unnesessary period_pos"
->> was missed
+On 1/9/2018 3:50 AM, Brown, Aaron F wrote:
+>> From: Intel-wired-lan [mailto:intel-wired-lan-bounces@osuosl.org] On
+>> Behalf Of Sagar Arun Kamble
+>> Sent: Thursday, December 14, 2017 11:38 PM
+>> To: linux-kernel@vger.kernel.org
+>> Cc: alsa-devel@alsa-project.org; linux-rdma@vger.kernel.org;
+>> netdev@vger.kernel.org; Richard Cochran <richardcochran@gmail.com>;
+>> Stephen Boyd <sboyd@codeaurora.org>; Chris Wilson <chris@chris-
+>> wilson.co.uk>; John Stultz <john.stultz@linaro.org>; intel-wired-
+>> lan@lists.osuosl.org; Thomas Gleixner <tglx@linutronix.de>; Kamble, Sagar A
+>> <sagar.a.kamble@intel.com>; kvmarm@lists.cs.columbia.edu; linux-arm-
+>> kernel@lists.infradead.org
+>> Subject: [Intel-wired-lan] [PATCH 01/27] timecounter: Make cyclecounter
+>> struct part of timecounter struct
 >>
->> Could you please have a look
->
-> I can see all of them were applied to Mark's for-next branch[1].
->
->  - 33f801366bdf ('ASoC: rsnd: ssi: fix race condition in 
-> rsnd_ssi_pointer_update')[2]
->  - 2e2d53da81af ('ASoC: rsnd: ssi: remove unnesessary period_pos')[3]
->
-> No worries to us.
-
-Thanks,
-
-Jiada
->
-> [1] 
-> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/log/?h=for-next
-> [2] 
-> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/commit/sound/soc/sh?h=for-next&id=33f801366bdf3f8b67dfe325b84f4051a090d01e
-> [3] 
-> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/commit/sound/soc/sh?h=for-next&id=2e2d53da81af6b2222c6b4e025a5d01b37b4449b
->
->
-> Regards
->
-> Takashi Sakamoto
+>> There is no real need for the users of timecounters to define cyclecounter
+>> and timecounter variables separately. Since timecounter will always be
+>> based on cyclecounter, have cyclecounter struct as member of timecounter
+>> struct.
+>>
+>> v2: Rebase.
+>>
+>> Suggested-by: Chris Wilson <chris@chris-wilson.co.uk>
+>> Signed-off-by: Sagar Arun Kamble <sagar.a.kamble@intel.com>
+>> Cc: Chris Wilson <chris@chris-wilson.co.uk>
+>> Cc: Richard Cochran <richardcochran@gmail.com>
+>> Cc: John Stultz <john.stultz@linaro.org>
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Stephen Boyd <sboyd@codeaurora.org>
+>> Cc: linux-kernel@vger.kernel.org
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: netdev@vger.kernel.org
+>> Cc: intel-wired-lan@lists.osuosl.org
+>> Cc: linux-rdma@vger.kernel.org
+>> Cc: alsa-devel@alsa-project.org
+>> Cc: kvmarm@lists.cs.columbia.edu
+>> Acked-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com> (Intel drivers)
+>> ---
+>>   arch/microblaze/kernel/timer.c                     | 20 ++++++------
+>>   drivers/clocksource/arm_arch_timer.c               | 19 ++++++------
+>>   drivers/net/ethernet/amd/xgbe/xgbe-dev.c           |  3 +-
+>>   drivers/net/ethernet/amd/xgbe/xgbe-ptp.c           |  9 +++---
+>>   drivers/net/ethernet/amd/xgbe/xgbe.h               |  1 -
+>>   drivers/net/ethernet/broadcom/bnx2x/bnx2x.h        |  1 -
+>>   drivers/net/ethernet/broadcom/bnx2x/bnx2x_main.c   | 20 ++++++------
+>>   drivers/net/ethernet/freescale/fec.h               |  1 -
+>>   drivers/net/ethernet/freescale/fec_ptp.c           | 30 +++++++++---------
+>>   drivers/net/ethernet/intel/e1000e/e1000.h          |  1 -
+>>   drivers/net/ethernet/intel/e1000e/netdev.c         | 27 ++++++++--------
+>>   drivers/net/ethernet/intel/e1000e/ptp.c            |  2 +-
+>>   drivers/net/ethernet/intel/igb/igb.h               |  1 -
+>>   drivers/net/ethernet/intel/igb/igb_ptp.c           | 25 ++++++++-------
+>>   drivers/net/ethernet/intel/ixgbe/ixgbe.h           |  1 -
+>>   drivers/net/ethernet/intel/ixgbe/ixgbe_ptp.c       | 17 +++++-----
+>>   drivers/net/ethernet/mellanox/mlx4/en_clock.c      | 28 ++++++++---------
+>>   drivers/net/ethernet/mellanox/mlx4/mlx4_en.h       |  1 -
+>>   .../net/ethernet/mellanox/mlx5/core/lib/clock.c    | 34 ++++++++++----------
+>>   drivers/net/ethernet/qlogic/qede/qede_ptp.c        | 20 ++++++------
+>>   drivers/net/ethernet/ti/cpts.c                     | 36 ++++++++++++----------
+>>   drivers/net/ethernet/ti/cpts.h                     |  1 -
+>>   include/linux/mlx5/driver.h                        |  1 -
+>>   include/linux/timecounter.h                        |  4 +--
+>>   include/sound/hdaudio.h                            |  1 -
+>>   kernel/time/timecounter.c                          | 28 ++++++++---------
+>>   sound/hda/hdac_stream.c                            |  7 +++--
+>>   virt/kvm/arm/arch_timer.c                          |  6 ++--
+>>   28 files changed, 163 insertions(+), 182 deletions(-)
+>>
+> For Intel e1000e and igb drivers:
+> Tested-by: Aaron Brown <aaron.f.brown@intel.com>
