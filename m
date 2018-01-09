@@ -1,71 +1,62 @@
-From: Matthias Kaehlcke <mka@chromium.org>
-Subject: Re: [PATCH] ASoC: rockchip: i2s: Support mono capture
-Date: Mon, 8 Jan 2018 16:01:15 -0800
-Message-ID: <20180109000115.GA184703@google.com>
-References: <20180105221242.22083-1-mka@chromium.org>
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v3 1/3] ACPI / utils: Introduce acpi_dev_get_first_match_name()
+Date: Tue, 09 Jan 2018 01:18:17 +0100
+Message-ID: <3404188.B388fAZkns@aspire.rjw.lan>
+References: <20180105160935.48588-1-andriy.shevchenko@linux.intel.com> <CAJZ5v0iH+2JHe8vCR9tQX62ULwx_eVd1QGPtinSLNDzWx1NmEg@mail.gmail.com> <1515416960.7000.784.camel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180105221242.22083-1-mka@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, Brian Norris <briannorris@chromium.org>, Dylan Reid <dgreid@chromium.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-acpi-owner@vger.kernel.org>
+In-Reply-To: <1515416960.7000.784.camel@linux.intel.com>
+Sender: linux-acpi-owner@vger.kernel.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Linus Walleij <linus.walleij@linaro.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Erik Schmauss <erik.schmauss@intel.com>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, linux-gpio@vger.kernel.org, Mika Westerberg <mika.westerberg@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-El Fri, Jan 05, 2018 at 02:12:42PM -0800 Matthias Kaehlcke ha dit:
-
-> The Rockchip I2S controller only allows to configure even numbers of
-> capture channels. It is still possible to capture monophonic audio by
-> using dual-channel mode and ignoring the 'data' from the second
-> channel.
-
-Due to different issues in our audio recording path I couldn't test
-this properly, and only looked at the .wav data in audacity, which
-appeared to look ok. After putting some of the missing pieces
-together and I noticed that mono capture doesn't work as intended,
-the recorded audio is slowed down. I think this is because the I2S
-controller keeps generating a two-channel stream, however the sound
-system interprets it as a monophonic stream because of the channel
-configuration.
-
-Not sure if there is a clean solution for this if we can't tell the
-hardware to generate a single-channel stream. Any suggestions or do
-we have to revert the patch?
-
-Sorry about the mess :(
-
-> ---
->  sound/soc/rockchip/rockchip_i2s.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+On Monday, January 8, 2018 2:09:20 PM CET Andy Shevchenko wrote:
+> On Sat, 2018-01-06 at 00:27 +0100, Rafael J. Wysocki wrote:
+> > On Fri, Jan 5, 2018 at 5:09 PM, Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > Sometimes the user wants to have device name of the match rather
+> > > than
+> > > just checking if device present or not. To make life easier for such
+> > > users introduce acpi_dev_get_first_match_name() helper based on code
+> > > for acpi_dev_present().
+> > > 
+> > > For example, GPIO driver for Intel Merrifield needs to know the
+> > > device
+> > > name of pin control to be able to apply GPIO mapping table to the
+> > > proper
+> > > device.
+> > > 
+> > > To be more consistent with the purpose rename
+> > > 
+> > >   struct acpi_dev_present_info  -> struct acpi_dev_match_info
+> > >   acpi_dev_present_cb()         -> acpi_dev_match_cb()
+> > > 
+> > > in the utils.c file.
+> > > 
+> > > Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.co
+> > > m>
+> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > 
+> > OK, so which way do you want this to go in?
 > 
-> diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-> index 908211e1d6fc..cc22ab3d10dd 100644
-> --- a/sound/soc/rockchip/rockchip_i2s.c
-> +++ b/sound/soc/rockchip/rockchip_i2s.c
-> @@ -328,6 +328,7 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
->  		val |= I2S_CHN_4;
->  		break;
->  	case 2:
-> +	case 1:
->  		val |= I2S_CHN_2;
->  		break;
->  	default:
-> @@ -460,7 +461,7 @@ static struct snd_soc_dai_driver rockchip_i2s_dai = {
->  	},
->  	.capture = {
->  		.stream_name = "Capture",
-> -		.channels_min = 2,
-> +		.channels_min = 1,
->  		.channels_max = 2,
->  		.rates = SNDRV_PCM_RATE_8000_192000,
->  		.formats = (SNDRV_PCM_FMTBIT_S8 |
-> @@ -654,7 +655,7 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
->  	}
->  
->  	if (!of_property_read_u32(node, "rockchip,capture-channels", &val)) {
-> -		if (val >= 2 && val <= 8)
-> +		if (val >= 1 && val <= 8)
->  			soc_dai->capture.channels_max = val;
->  	}
->  
+> If you have no objections, patch 1 may go straight forward to linux-pm
+> tree as far as you are okay with the contents.
+> 
+> I dunno, if Mika's ACK is enough to you to get the second one (patch 2)
+> together, otherwise Linus' ACK would be needed or leave it for next
+> cycle.
+> 
+> According to what Mark and Pierre told previously I guess we just
+> postpone patch 3 for next cycle.
+
+OK
+
+Linus, can you please have a look at the [2/3] from this lot and let me know
+whether or not I can take it?
+
+Thanks,
+Rafael
+
