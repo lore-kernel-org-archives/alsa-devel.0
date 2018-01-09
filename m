@@ -1,20 +1,21 @@
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v2 4/4] ASoC: acpi: remove hard-coded
- i2c-device name length
-Date: Tue, 09 Jan 2018 12:39:50 +0200
-Message-ID: <1515494390.7000.816.camel@linux.intel.com>
+Subject: Re: [PATCH v2 3/4] ASoC: Intel: bytcht_es8316: fix HID
+	handling
+Date: Tue, 09 Jan 2018 12:40:49 +0200
+Message-ID: <1515494449.7000.817.camel@linux.intel.com>
 References: <20180105205536.10366-1-pierre-louis.bossart@linux.intel.com>
- <20180105205536.10366-5-pierre-louis.bossart@linux.intel.com>
- <20180108044133.GW18649@localhost>
- <12631c8f-699c-cb2f-643f-5f4c7ab982c0@linux.intel.com>
+ <20180105205536.10366-4-pierre-louis.bossart@linux.intel.com>
+ <20180108044321.GX18649@localhost>
+ <43e8b08e-f519-280c-ea72-5344e24b896b@linux.intel.com>
+ <20180109044808.GM18649@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 381F126717C
- for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2018 11:40:00 +0100 (CET)
-In-Reply-To: <12631c8f-699c-cb2f-643f-5f4c7ab982c0@linux.intel.com>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2069E26717C
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2018 11:40:53 +0100 (CET)
+In-Reply-To: <20180109044808.GM18649@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,35 +25,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>
-Cc: jeremy@jcline.org, tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@linux.intel.com
+To: Vinod Koul <vinod.koul@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, jeremy@jcline.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2018-01-08 at 14:28 -0600, Pierre-Louis Bossart wrote:
-> On 1/7/18 10:41 PM, Vinod Koul wrote:
-> > On Fri, Jan 05, 2018 at 02:55:36PM -0600, Pierre-Louis Bossart
-> > wrote:
-> > > Remove hard-coded [16] array size, replace with clearer
-> > > description and
-> > > dependency on ACPI_ID_LEN
-> > > 
+On Tue, 2018-01-09 at 10:18 +0530, Vinod Koul wrote:
+> On Mon, Jan 08, 2018 at 02:23:19PM -0600, Pierre-Louis Bossart wrote:
 
-
-> > >   
-> > > +/* codec name is used in DAIs is i2c-<HID>:00 with HID being 8
-> > > chars */
-> > > +#define SND_SOC_ACPI_I2C_DEVICE_NAME_LEN (4 + ACPI_ID_LEN + 3 +
-> > > 1)
+> > Well snd_soc_acpi_find_name_from_hid() will be replaced by an ACPI
+> > generic
+> > util (see proposal from Andy last week).
 > > 
-> > nitpicking, thats a very long name :(
+> > The idea was to add this first patch, and then do a replacement
+> > across all
+> > machine drivers when Andy's patch is available.
 > > 
-> > how about SND_ACPI_I2C_ID_LEN, we can drop SOC. And replace
-> > DEVICE_NAME with ID
+> > Andy also had another idea to add a helper which would take care of
+> > the for
+> > loop (which would indeed simplify the code further).
+> > 
+> > If that's alright with everyone, I'd like to add this patch first as
+> > is so
+> > that folks with the es8316 hardware get working audio, then do the
+> > two
+> > cleanups later.
 > 
-> Fine with me. Andy do you concur or have a more precise suggestion?
+> Yeah sounds fair to me :)
 
-Looks sane to me.
-Thank you, Vinod, for a suggestion.
+No objections from my side either.
 
 -- 
 Andy Shevchenko <andriy.shevchenko@linux.intel.com>
