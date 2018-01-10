@@ -1,127 +1,72 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [RESEND PATCH v9 00/13] Add STM32 DFSDM support
-Date: Wed, 10 Jan 2018 10:36:07 +0000
-Message-ID: <20180110103607.GD9003@sirena.org.uk>
-References: <1515579195-12894-1-git-send-email-arnaud.pouliquen@st.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [alsa-devel] [PATCH 1/2] soundwire: Fix a signedness bug
+Date: Wed, 10 Jan 2018 16:24:25 +0530
+Message-ID: <20180110105425.GY18649@localhost>
+References: <20180109093700.7275ardpus7g6rkq@mwanda>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="RhUH2Ysw6aD5utA4"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <kernel-janitors-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1515579195-12894-1-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>
+In-Reply-To: <20180109093700.7275ardpus7g6rkq@mwanda>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Sanyog Kale <sanyog.r.kale@intel.com>, kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Jan 09, 2018 at 12:37:00PM +0300, Dan Carpenter wrote:
+> "ret" is an int and "buf" is a u8.  sdw_read() returns negative error
+> codes which are truncated to the u8, 0-255 range before being stored as
+> an int.  It means that "ret" can't be less than zero.
+> 
+> Fixes: b0a9c37b0178 ("soundwire: Add slave status handling")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+> index 4c345197eb55..ac88031f7664 100644
+> --- a/drivers/soundwire/bus.c
+> +++ b/drivers/soundwire/bus.c
+> @@ -771,12 +771,13 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+>  	sdw_modify_slave_status(slave, SDW_SLAVE_ALERT);
+>  
+>  	/* Read Instat 1, Instat 2 and Instat 3 registers */
+> -	ret = buf = sdw_read(slave, SDW_SCP_INT1);
+> +	ret = sdw_read(slave, SDW_SCP_INT1);
 
---RhUH2Ysw6aD5utA4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+How about:
 
-On Wed, Jan 10, 2018 at 11:13:02AM +0100, Arnaud Pouliquen wrote:
+	buf = ret = sdw_read(slave, SDW_SCP_INT1);
 
-> Jonathan's comment for you, posted for this version:
-> >So Mark, over to you. I'm happy if you want to do the immutable branch o=
-nce=20
-> >any issue you find are fixed, or I can do it.=20
-> >I'm just looking for acks or a pull request now.
+That should make sure truncation happens latter, but then this is simpler to
+read...
 
-Jonathan, this is a pretty weird way of doing things - the bulk of the
-series is for IIO so I'd have expected it to go in via the IIO tree.
-It's especially odd to end up with the driver which isn't a build
-dependency in my tree.
+>  	if (ret < 0) {
+>  		dev_err(slave->bus->dev,
+>  					"SDW_SCP_INT1 read failed:%d", ret);
+>  		return ret;
+>  	}
+> +	buf = ret;
+>  
+>  	ret = sdw_nread(slave, SDW_SCP_INTSTAT2, 2, buf2);
+>  	if (ret < 0) {
+> @@ -870,12 +871,13 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+>  		 * Read status again to ensure no new interrupts arrived
+>  		 * while servicing interrupts.
+>  		 */
+> -		ret = _buf = sdw_read(slave, SDW_SCP_INT1);
+> +		ret = sdw_read(slave, SDW_SCP_INT1);
+>  		if (ret < 0) {
+>  			dev_err(slave->bus->dev,
+>  					"SDW_SCP_INT1 read failed:%d", ret);
+>  			return ret;
+>  		}
+> +		_buf = ret;
+>  
+>  		ret = sdw_nread(slave, SDW_SCP_INTSTAT2, 2, _buf2);
+>  		if (ret < 0) {
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-The following changes since commit 4fbd8d194f06c8a3fd2af1ce560ddb31f7ec8323:
-
-  Linux 4.15-rc1 (2017-11-26 16:01:47 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/ii=
-o-asoc-sync
-
-for you to fetch changes up to 16cbca06fa8288a4f58426fc898b141e12ee8008:
-
-  IIO: consumer: allow to set buffer sizes (2018-01-10 10:30:14 +0000)
-
-----------------------------------------------------------------
-IIO: ST DFSDM support
-
-This is the IIO portion of some patches adding support for the ST DFSDM
-IP, it's shared with ASoC as the hardware is also used for audio.
-
-----------------------------------------------------------------
-Arnaud Pouliquen (10):
-      docs: driver-api: add iio hw consumer section
-      IIO: hw_consumer: add devm_iio_hw_consumer_alloc
-      IIO: inkern: API for manipulating channel attributes
-      IIO: Add DT bindings for sigma delta adc modulator
-      IIO: ADC: add sigma delta modulator support
-      IIO: add DT bindings for stm32 DFSDM filter
-      IIO: ADC: add stm32 DFSDM core support
-      IIO: ADC: add STM32 DFSDM sigma delta ADC support
-      IIO: ADC: add stm32 DFSDM support for PDM microphone
-      IIO: consumer: allow to set buffer sizes
-
-Lars-Peter Clausen (1):
-      iio: Add hardware consumer buffer support
-
- .../ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32      |   16 +
- .../bindings/iio/adc/sigma-delta-modulator.txt     |   13 +
- .../bindings/iio/adc/st,stm32-dfsdm-adc.txt        |  128 +++
- Documentation/driver-api/iio/hw-consumer.rst       |   51 +
- Documentation/driver-api/iio/index.rst             |    1 +
- drivers/iio/adc/Kconfig                            |   37 +
- drivers/iio/adc/Makefile                           |    3 +
- drivers/iio/adc/sd_adc_modulator.c                 |   68 ++
- drivers/iio/adc/stm32-dfsdm-adc.c                  | 1216 ++++++++++++++++=
-++++
- drivers/iio/adc/stm32-dfsdm-core.c                 |  309 +++++
- drivers/iio/adc/stm32-dfsdm.h                      |  310 +++++
- drivers/iio/buffer/Kconfig                         |   10 +
- drivers/iio/buffer/Makefile                        |    1 +
- drivers/iio/buffer/industrialio-buffer-cb.c        |   11 +
- drivers/iio/buffer/industrialio-hw-consumer.c      |  247 ++++
- drivers/iio/inkern.c                               |   17 +-
- include/linux/iio/adc/stm32-dfsdm-adc.h            |   18 +
- include/linux/iio/consumer.h                       |   37 +
- include/linux/iio/hw-consumer.h                    |   21 +
- include/linux/iio/iio.h                            |   28 -
- include/linux/iio/types.h                          |   28 +
- 21 files changed, 2537 insertions(+), 33 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32
- create mode 100644 Documentation/devicetree/bindings/iio/adc/sigma-delta-m=
-odulator.txt
- create mode 100644 Documentation/devicetree/bindings/iio/adc/st,stm32-dfsd=
-m-adc.txt
- create mode 100644 Documentation/driver-api/iio/hw-consumer.rst
- create mode 100644 drivers/iio/adc/sd_adc_modulator.c
- create mode 100644 drivers/iio/adc/stm32-dfsdm-adc.c
- create mode 100644 drivers/iio/adc/stm32-dfsdm-core.c
- create mode 100644 drivers/iio/adc/stm32-dfsdm.h
- create mode 100644 drivers/iio/buffer/industrialio-hw-consumer.c
- create mode 100644 include/linux/iio/adc/stm32-dfsdm-adc.h
- create mode 100644 include/linux/iio/hw-consumer.h
-
---RhUH2Ysw6aD5utA4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpV7JcACgkQJNaLcl1U
-h9AxjQf/c7wRX61FxoxONfLFCc+jA1dek8tWPYjVlydqz+TehYiy7owUx6U4aSaq
-bKpyN37TeNHf0I1l+aaiYLFc1QTeB/+EUyLAXyeCDI6KHVeHuC6soUKY9YHBasEP
-wKjJnGhkqVZ0rmPVWxRMMsi1SCus4Vu3QnQQwSp+nO3PEwTNCHW0cDL6+bXKnU4T
-GiCFwTLWrkqo4ng+/GkGZMErryiYFzVl3vlHGCApvJzzxYpwia1UgrJvxRWTmwQh
-vw8ruNMPDPI1T0MWeSeT7YYW3DxqNJOIwv4pjLsV60wmxs5Z9qTiS9cV02xj3Zvw
-8d4K5ZNFirDU0fDg3ywUUwNTFX95aQ==
-=a0f7
------END PGP SIGNATURE-----
-
---RhUH2Ysw6aD5utA4--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+~Vinod
