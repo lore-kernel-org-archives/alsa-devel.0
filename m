@@ -1,22 +1,23 @@
 From: Eric Biggers <ebiggers3@gmail.com>
-Subject: Re: BUG: soft lockup (2)
-Date: Tue, 9 Jan 2018 23:46:10 -0800
-Message-ID: <20180110074610.GD931@zzz.localdomain>
-References: <089e082676ec552289055ffc71f9@google.com>
- <001a113ece5c2b600d05620b097a@google.com>
+Subject: Re: KASAN: null-ptr-deref Write in linear_transfer
+Date: Wed, 10 Jan 2018 00:08:00 -0800
+Message-ID: <20180110080800.GE931@zzz.localdomain>
+References: <001a1147e1988b160a05620552eb@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <001a113ece5c2b600d05620b097a@google.com>
+In-Reply-To: <001a1147e1988b160a05620552eb@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: syzbot <syzbot+f76f3c62dfadce022fd1c1deff15a61e09ac708a@syzkaller.appspotmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, aaron.lu@intel.com, adobriyan@gmail.com, akpm@linux-foundation.org, alsa-devel@alsa-project.org, frederic@kernel.org, linux-kernel@vger.kernel.org, mingo@kernel.org, o-takashi@sakamocchi.jp, perex@perex.cz, peterz@infradead.org, syzkaller-bugs@googlegroups.com, tiwai@suse.com, ying.huang@intel.com
+To: syzbot <syzbot+a8f5641f452c7e6abf03@syzkaller.appspotmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 05, 2018 at 09:47:01AM -0800, syzbot wrote:
-> syzkaller has found reproducer for the following crash on
-> e1915c8195b38393005be9b74bfa6a3a367c83b3
+On Fri, Jan 05, 2018 at 02:58:02AM -0800, syzbot wrote:
+> Hello,
+> 
+> syzkaller hit the following crash on
+> 30a7acd573899fd8b8ac39236eff6468b195ac7d
 > git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/master
 > compiler: gcc (GCC) 7.1.1 20170620
 > .config is attached
@@ -27,55 +28,54 @@ On Fri, Jan 05, 2018 at 09:47:01AM -0800, syzbot wrote:
 > 
 > 
 > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> Reported-by:
-> syzbot+f76f3c62dfadce022fd1c1deff15a61e09ac708a@syzkaller.appspotmail.com
-> It will help syzbot understand when the bug is fixed.
+> Reported-by: syzbot+a8f5641f452c7e6abf03@syzkaller.appspotmail.com
+> It will help syzbot understand when the bug is fixed. See footer for
+> details.
+> If you forward the report, please keep this part and the footer.
 > 
-> watchdog: BUG: soft lockup - CPU#0 stuck for 135s! [syzkaller670324:3527]
-> Modules linked in:
-> irq event stamp: 2531226
-> hardirqs last  enabled at (2531225): [<00000000f1ec093f>]
-> snd_pcm_stream_unlock_irq+0x78/0xe0 sound/core/pcm_native.c:166
-> hardirqs last disabled at (2531226): [<000000003c6ef1cd>]
-> apic_timer_interrupt+0xa4/0xb0 arch/x86/entry/entry_64.S:920
-> softirqs last  enabled at (41848): [<0000000081bd5f03>]
-> __do_softirq+0x7a0/0xb85 kernel/softirq.c:311
-> softirqs last disabled at (41829): [<00000000d02c6d52>] invoke_softirq
-> kernel/softirq.c:365 [inline]
-> softirqs last disabled at (41829): [<00000000d02c6d52>] irq_exit+0x1cc/0x200
-> kernel/softirq.c:405
-> CPU: 0 PID: 3527 Comm: syzkaller670324 Not tainted 4.15.0-rc6+ #158
+> ==================================================================
+> BUG: KASAN: null-ptr-deref in memcpy include/linux/string.h:344 [inline]
+> BUG: KASAN: null-ptr-deref in do_convert sound/core/oss/linear.c:52 [inline]
+> BUG: KASAN: null-ptr-deref in convert sound/core/oss/linear.c:81 [inline]
+> BUG: KASAN: null-ptr-deref in linear_transfer+0x634/0x900
+> sound/core/oss/linear.c:110
+> Write of size 2 at addr           (null) by task syzkaller360172/7860
+> 
+> CPU: 0 PID: 7860 Comm: syzkaller360172 Not tainted 4.15.0-rc6+ #155
 > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
 > Google 01/01/2011
-> RIP: 0010:memcpy+0x45/0x50 mm/kasan/kasan.c:305
-> RSP: 0018:ffff8801bf6676f0 EFLAGS: 00000246 ORIG_RAX: ffffffffffffff11
-> RAX: ffffc9000137ba06 RBX: 0000000000000002 RCX: 0000000000000000
-> RDX: 0000000000000002 RSI: ffff8801bf6677da RDI: ffffc9000137ba08
-> RBP: ffff8801bf667708 R08: fffff5200026f741 R09: fffff5200026f741
-> R10: 0000000000000001 R11: fffff5200026f740 R12: ffffc9000137ba06
-> R13: ffff8801bf6677d8 R14: dffffc0000000000 R15: ffffc9000137ba06
-> FS:  0000000000000000(0000) GS:ffff8801db200000(0063) knlGS:00000000f7ec6b40
-> CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-> CR2: 0000000020735ee0 CR3: 00000001bfba8002 CR4: 00000000001606f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 > Call Trace:
+>  __dump_stack lib/dump_stack.c:17 [inline]
+>  dump_stack+0x194/0x257 lib/dump_stack.c:53
+>  kasan_report_error mm/kasan/report.c:349 [inline]
+>  kasan_report+0x13b/0x340 mm/kasan/report.c:409
+>  check_memory_region_inline mm/kasan/kasan.c:260 [inline]
+>  check_memory_region+0x137/0x190 mm/kasan/kasan.c:267
+>  memcpy+0x37/0x50 mm/kasan/kasan.c:303
 >  memcpy include/linux/string.h:344 [inline]
->  cvt_s16_to_native sound/core/oss/mulaw.c:164 [inline]
->  mulaw_decode+0x52f/0x770 sound/core/oss/mulaw.c:195
->  mulaw_transfer+0x222/0x270 sound/core/oss/mulaw.c:273
+>  do_convert sound/core/oss/linear.c:52 [inline]
+>  convert sound/core/oss/linear.c:81 [inline]
+>  linear_transfer+0x634/0x900 sound/core/oss/linear.c:110
 >  snd_pcm_plug_write_transfer+0x22d/0x420 sound/core/oss/pcm_plugin.c:611
 >  snd_pcm_oss_write2+0x260/0x420 sound/core/oss/pcm_oss.c:1311
->  snd_pcm_oss_write1 sound/core/oss/pcm_oss.c:1372 [inline]
->  snd_pcm_oss_write+0x5fe/0x830 sound/core/oss/pcm_oss.c:2646
->  __vfs_write+0xef/0x970 fs/read_write.c:480
->  vfs_write+0x189/0x510 fs/read_write.c:544
->  SYSC_write fs/read_write.c:589 [inline]
->  SyS_write+0xef/0x220 fs/read_write.c:581
->  do_syscall_32_irqs_on arch/x86/entry/common.c:327 [inline]
->  do_fast_syscall_32+0x3ee/0xf9d arch/x86/entry/common.c:389
+>  snd_pcm_oss_sync1+0x1cc/0x550 sound/core/oss/pcm_oss.c:1530
+>  snd_pcm_oss_sync+0x5b6/0x830 sound/core/oss/pcm_oss.c:1604
+>  snd_pcm_oss_release+0x20b/0x280 sound/core/oss/pcm_oss.c:2431
+>  __fput+0x327/0x7e0 fs/file_table.c:210
+>  ____fput+0x15/0x20 fs/file_table.c:244
+>  task_work_run+0x199/0x270 kernel/task_work.c:113
+>  exit_task_work include/linux/task_work.h:22 [inline]
+>  do_exit+0x9bb/0x1ad0 kernel/exit.c:865
+>  do_group_exit+0x149/0x400 kernel/exit.c:968
+>  get_signal+0x73f/0x16c0 kernel/signal.c:2335
+>  do_signal+0x90/0x1eb0 arch/x86/kernel/signal.c:809
+>  exit_to_usermode_loop+0x214/0x310 arch/x86/entry/common.c:158
+>  prepare_exit_to_usermode arch/x86/entry/common.c:195 [inline]
+>  syscall_return_slowpath arch/x86/entry/common.c:264 [inline]
+>  do_syscall_32_irqs_on arch/x86/entry/common.c:333 [inline]
+>  do_fast_syscall_32+0xbfd/0xf9d arch/x86/entry/common.c:389
 >  entry_SYSENTER_compat+0x54/0x63 arch/x86/entry/entry_64_compat.S:129
 
-Seems that this is fixed in sound/for-linus by:
+Still reproducible even after all the fixes currently in sound/for-linus.
 
-#syz fix: ALSA: pcm: Abort properly at pending signal in OSS read/write loops
+Eric
