@@ -1,19 +1,15 @@
 From: "Fischer, Christian" <fischerc@swissphone.de>
-Subject: Re: ASoC: sgtl5000: recording issue at 8 kHz with
-	fsl-imx28
-Date: Wed, 10 Jan 2018 14:20:36 +0000
-Message-ID: <DD64F087E8F0B540A1C9216D6716FFBDF9946A5B@defrsexc01.swissphone.de>
+Subject: Re: [PATCH v2] ASoC: sgtl5000: Fix powerup/down of
+ micbias
+Date: Wed, 10 Jan 2018 14:26:32 +0000
+Message-ID: <DD64F087E8F0B540A1C9216D6716FFBDF9946A6E@defrsexc01.swissphone.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail2.avectris.ch (mail2.avectris.ch [185.94.144.40])
- by alsa0.perex.cz (Postfix) with ESMTP id EA8FA266DEC
- for <alsa-devel@alsa-project.org>; Wed, 10 Jan 2018 15:20:38 +0100 (CET)
-Received: from mail2.avectris.ch (localhost [127.0.0.1])
- by mail2.avectris.ch (Mission Control Email Shield,
- 5082) with SMTP id 3zGrlB0lMZzbTLT
- for <alsa-devel@alsa-project.org>; Wed, 10 Jan 2018 15:20:38 +0100 (MET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 72F95266DEC
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jan 2018 15:26:34 +0100 (CET)
 Content-Language: de-DE
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,46 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-It's me again.
-
-I just found out that the audio playback is affected by this problem too.
-Maybe this can serve as a hint.
-
-Regards,
-Christian
-
------Urspr=FCngliche Nachricht-----
-Von: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-pr=
-oject.org] Im Auftrag von Fischer, Christian
-Gesendet: Mittwoch, 10. Januar 2018 11:31
-An: alsa-devel@alsa-project.org
-Cc: 'Takashi Iwai' <tiwai@suse.com>; 'Mark Brown' <broonie@kernel.org>; 'Li=
-am Girdwood' <lgirdwood@gmail.com>
-Betreff: [alsa-devel] ASoC: sgtl5000: recording issue at 8 kHz with fsl-imx=
-28
-
-Hello guys,
-
-trying to record from a SGTL5000 with 8 kHz sampling rate gives a very bad =
-audio quality.
-All other sampling rates working fine.
-
-Initially posted at NXP forum: https://community.nxp.com/message/975131
-
-Tested with imx28, sgtl5000 and Kernel 4.14.12.
-
-I've attached a recording with 8 kHz, capture-vol was 67, mic-gain 33, AVC-=
-off and Capture-ZC off.
-Recorded with "arecord -D "hw:0,1" -t wav -f S16_LE -c 2 -r 8000 test.wav".
-Sounds like there are missing samples..
-
-The microphone is powered from mic-bias and decoupled with a 100nF capacito=
-r.
-
-Can anybody help me?
-Thank you guys!
-Kind regards,
-
-Christian Fischer
+SGVsbG8gRmFiaW8sDQoNCmlzIGl0IG5vdyBvaz8NCkknbSBub3Qgd29ya2luZyB3aXRoIGxpbnV4
+LWdpdCwgc28gbXkgcGF0Y2ggaXMgY3JlYXRlZCBieSBteXNlbGYuDQoNClJlZ2FyZHMsDQpDaHJp
+c3RpYW4NCg0KU2lnbmVkLW9mZi1ieTogQ2hyaXN0aWFuIEZpc2NoZXIgPGZpc2NoZXJjQHN3aXNz
+cGhvbmUuZGU+DQoNCi0tLSBzb3VuZC9zb2MvY29kZWNzL3NndGw1MDAwLmMNCisrKyBzb3VuZC9z
+b2MvY29kZWNzL3NndGw1MDAwLmMNCkBAIC0yNjAsNiArMjYwLDkgQEAgc3RhdGljIGNvbnN0IHN0
+cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0DQogDQogCVNORF9TT0NfREFQTV9QUkUoIlZBR19QT1dF
+Ul9QUkUiLCBwb3dlcl92YWdfZXZlbnQpLA0KIAlTTkRfU09DX0RBUE1fUE9TVCgiVkFHX1BPV0VS
+X1BPU1QiLCBwb3dlcl92YWdfZXZlbnQpLA0KKw0KKwlTTkRfU09DX0RBUE1fUFJFKCJNSUNfQklB
+U19QUkUiLCBtaWNfYmlhc19ldmVudCksDQorCVNORF9TT0NfREFQTV9QT1NUKCJNSUNfQklBU19Q
+T1NUIiwgbWljX2JpYXNfZXZlbnQpLA0KIH07DQogDQogLyogcm91dGVzIGZvciBzZ3RsNTAwMCAq
+Lw0KDQotLS0tLVVyc3Byw7xuZ2xpY2hlIE5hY2hyaWNodC0tLS0tDQpWb246IEZhYmlvIEVzdGV2
+YW0gW21haWx0bzpmZXN0ZXZhbUBnbWFpbC5jb21dIA0KR2VzZW5kZXQ6IE1pdHR3b2NoLCAxMC4g
+SmFudWFyIDIwMTggMTM6NDINCkFuOiBGaXNjaGVyLCBDaHJpc3RpYW4gPGZpc2NoZXJjQHN3aXNz
+cGhvbmUuZGU+DQpDYzogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBUYWthc2hpIEl3YWkg
+PHRpd2FpQHN1c2UuY29tPjsgTWFyayBCcm93biA8YnJvb25pZUBrZXJuZWwub3JnPjsgTGlhbSBH
+aXJkd29vZCA8bGdpcmR3b29kQGdtYWlsLmNvbT4NCkJldHJlZmY6IFJlOiBbYWxzYS1kZXZlbF0g
+W1BBVENIXSBBU29DOiBzZ3RsNTAwMDogRml4IHBvd2VydXAvZG93biBvZiBtaWNiaWFzDQoNCkhp
+IENocmlzdGlhbiwNCg0KT24gV2VkLCBKYW4gMTAsIDIwMTggYXQgODowNyBBTSwgRmlzY2hlciwg
+Q2hyaXN0aWFuIDxmaXNjaGVyY0Bzd2lzc3Bob25lLmRlPiB3cm90ZToNCj4gVGhlIGJpYXMtYmlh
+cy12b2x0YWdlIHNob3VsZCBwb3dlcmVkIHVwL2Rvd24gYXV0b21hdGljYWxseS4NCj4gQWRkZWQg
+bWlzc2luZyBEQVBNX1BSRSBhbmQgREFQTV9QT1NUIHdpZGdldHMgdG8gZmlyZSB1cCB0aGUgbWlj
+X2JpYXNfZXZlbnQgZnVuY3Rpb24uDQoNClRoYW5rcyBmb3Igc3VibWl0dGluZyB0aGUgcGF0Y2gu
+DQoNCllvdSBtaXNzZWQgeW91ciBTaWduZWQtb2ZmLWJ5IHRhZy4NCg0KUGxlYXNlIHJlc2VuZCBp
+dC4NCg0KVGhhbmtzDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
