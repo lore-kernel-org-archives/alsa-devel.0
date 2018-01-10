@@ -1,72 +1,54 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [alsa-devel] [PATCH 1/2] soundwire: Fix a signedness bug
-Date: Wed, 10 Jan 2018 16:24:25 +0530
-Message-ID: <20180110105425.GY18649@localhost>
+Subject: Re: [PATCH 2/2] soundwire: Testing the wrong variable
+Date: Wed, 10 Jan 2018 16:25:44 +0530
+Message-ID: <20180110105544.GZ18649@localhost>
 References: <20180109093700.7275ardpus7g6rkq@mwanda>
+ <20180109093744.egp4vynjgghidp6i@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <kernel-janitors-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20180109093700.7275ardpus7g6rkq@mwanda>
+In-Reply-To: <20180109093744.egp4vynjgghidp6i@mwanda>
 Sender: kernel-janitors-owner@vger.kernel.org
 To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Sanyog Kale <sanyog.r.kale@intel.com>, kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Sanyog Kale <sanyog.r.kale@intel.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 09, 2018 at 12:37:00PM +0300, Dan Carpenter wrote:
-> "ret" is an int and "buf" is a u8.  sdw_read() returns negative error
-> codes which are truncated to the u8, 0-255 range before being stored as
-> an int.  It means that "ret" can't be less than zero.
+On Tue, Jan 09, 2018 at 12:37:44PM +0300, Dan Carpenter wrote:
+> We should be using "status2" here instead of "status".
+
+This is already fixed by commit:
+
+Author: Wei Yongjun <weiyongjun1@huawei.com>
+Date:   Mon Jan 8 22:22:44 2018 +0530
+
+    soundwire: Fix typo in return value check of sdw_read()
+
+    Fix the typo, 'status' should be instead of 'status2'.
+
+
 > 
 > Fixes: b0a9c37b0178 ("soundwire: Add slave status handling")
 > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > 
 > diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-> index 4c345197eb55..ac88031f7664 100644
+> index ac88031f7664..a5d41a4a1609 100644
 > --- a/drivers/soundwire/bus.c
 > +++ b/drivers/soundwire/bus.c
-> @@ -771,12 +771,13 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
->  	sdw_modify_slave_status(slave, SDW_SLAVE_ALERT);
+> @@ -741,10 +741,10 @@ static int sdw_handle_port_interrupt(struct sdw_slave *slave,
 >  
->  	/* Read Instat 1, Instat 2 and Instat 3 registers */
-> -	ret = buf = sdw_read(slave, SDW_SCP_INT1);
-> +	ret = sdw_read(slave, SDW_SCP_INT1);
-
-How about:
-
-	buf = ret = sdw_read(slave, SDW_SCP_INT1);
-
-That should make sure truncation happens latter, but then this is simpler to
-read...
-
->  	if (ret < 0) {
->  		dev_err(slave->bus->dev,
->  					"SDW_SCP_INT1 read failed:%d", ret);
->  		return ret;
->  	}
-> +	buf = ret;
->  
->  	ret = sdw_nread(slave, SDW_SCP_INTSTAT2, 2, buf2);
->  	if (ret < 0) {
-> @@ -870,12 +871,13 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
->  		 * Read status again to ensure no new interrupts arrived
->  		 * while servicing interrupts.
->  		 */
-> -		ret = _buf = sdw_read(slave, SDW_SCP_INT1);
-> +		ret = sdw_read(slave, SDW_SCP_INT1);
->  		if (ret < 0) {
+>  		/* Read DPN interrupt again */
+>  		status2 = sdw_read(slave, addr);
+> -		if (status < 0) {
+> +		if (status2 < 0) {
 >  			dev_err(slave->bus->dev,
->  					"SDW_SCP_INT1 read failed:%d", ret);
->  			return ret;
+> -					"SDW_DPN_INT read failed:%d", status);
+> -			return status;
+> +					"SDW_DPN_INT read failed:%d", status2);
+> +			return status2;
 >  		}
-> +		_buf = ret;
+>  		status &= status2;
 >  
->  		ret = sdw_nread(slave, SDW_SCP_INTSTAT2, 2, _buf2);
->  		if (ret < 0) {
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
 -- 
 ~Vinod
