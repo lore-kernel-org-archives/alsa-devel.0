@@ -1,81 +1,61 @@
-From: Eric Biggers <ebiggers3@gmail.com>
-Subject: Re: KASAN: null-ptr-deref Write in linear_transfer
-Date: Wed, 10 Jan 2018 00:08:00 -0800
-Message-ID: <20180110080800.GE931@zzz.localdomain>
-References: <001a1147e1988b160a05620552eb@google.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [ANNOUNCE] SOF 1.0 Release
+Date: Wed, 10 Jan 2018 09:08:24 +0100
+Message-ID: <06f9354e-99cb-6324-12e9-e184fad78d25@perex.cz>
+References: <1515525458.1844.203.camel@linux.intel.com>
+ <s5ha7xmyx7m.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <001a1147e1988b160a05620552eb@google.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: syzbot <syzbot+a8f5641f452c7e6abf03@syzkaller.appspotmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <s5ha7xmyx7m.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "sound-open-firmware@alsa-project.org" <sound-open-firmware@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 05, 2018 at 02:58:02AM -0800, syzbot wrote:
-> Hello,
+Dne 10.1.2018 v 08:44 Takashi Iwai napsal(a):
+> On Tue, 09 Jan 2018 20:17:38 +0100,
+> Liam Girdwood wrote:
+>>
+>> I'd like to announce the 1.0 release of Sound Open Firmware (SOF) is
+>> available for download on git.alsa-project.org. 
+>>
+>> SOF is an open source BSD licensed audio DSP firmware that currently
+>> runs on Cadence xtensa architecture DSPs found on Intel Baytrail,
+>> Braswell and Cherrytrail based devices, however SOF is architecture and
+>> platform independent meaning it's not tightly coupled to xtensa DSPs or
+>> Intel CPUs/SoCs.
+>>
+>> The 1.0 release supports limited playback and capture topologies
+>> alongside volume, mixing and sample format conversion.
+>>
+>> Information about SOF can be found on the ALSA SOF wiki here :-
+>>
+>> https://www.alsa-project.org/main/index.php/Firmware
+>>
+>> Development for SOF 1.1 has started which will include support for
+>> Haswell, Broadwell and Apollolake platform alongside support for SRC
+>> and more complex topologies.
 > 
-> syzkaller hit the following crash on
-> 30a7acd573899fd8b8ac39236eff6468b195ac7d
-> git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/master
-> compiler: gcc (GCC) 7.1.1 20170620
-> .config is attached
-> Raw console output is attached.
-> C reproducer is attached
-> syzkaller reproducer is attached. See https://goo.gl/kgGztJ
-> for information about syzkaller reproducers
-> 
-> 
-> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> Reported-by: syzbot+a8f5641f452c7e6abf03@syzkaller.appspotmail.com
-> It will help syzbot understand when the bug is fixed. See footer for
-> details.
-> If you forward the report, please keep this part and the footer.
-> 
-> ==================================================================
-> BUG: KASAN: null-ptr-deref in memcpy include/linux/string.h:344 [inline]
-> BUG: KASAN: null-ptr-deref in do_convert sound/core/oss/linear.c:52 [inline]
-> BUG: KASAN: null-ptr-deref in convert sound/core/oss/linear.c:81 [inline]
-> BUG: KASAN: null-ptr-deref in linear_transfer+0x634/0x900
-> sound/core/oss/linear.c:110
-> Write of size 2 at addr           (null) by task syzkaller360172/7860
-> 
-> CPU: 0 PID: 7860 Comm: syzkaller360172 Not tainted 4.15.0-rc6+ #155
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-> Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:17 [inline]
->  dump_stack+0x194/0x257 lib/dump_stack.c:53
->  kasan_report_error mm/kasan/report.c:349 [inline]
->  kasan_report+0x13b/0x340 mm/kasan/report.c:409
->  check_memory_region_inline mm/kasan/kasan.c:260 [inline]
->  check_memory_region+0x137/0x190 mm/kasan/kasan.c:267
->  memcpy+0x37/0x50 mm/kasan/kasan.c:303
->  memcpy include/linux/string.h:344 [inline]
->  do_convert sound/core/oss/linear.c:52 [inline]
->  convert sound/core/oss/linear.c:81 [inline]
->  linear_transfer+0x634/0x900 sound/core/oss/linear.c:110
->  snd_pcm_plug_write_transfer+0x22d/0x420 sound/core/oss/pcm_plugin.c:611
->  snd_pcm_oss_write2+0x260/0x420 sound/core/oss/pcm_oss.c:1311
->  snd_pcm_oss_sync1+0x1cc/0x550 sound/core/oss/pcm_oss.c:1530
->  snd_pcm_oss_sync+0x5b6/0x830 sound/core/oss/pcm_oss.c:1604
->  snd_pcm_oss_release+0x20b/0x280 sound/core/oss/pcm_oss.c:2431
->  __fput+0x327/0x7e0 fs/file_table.c:210
->  ____fput+0x15/0x20 fs/file_table.c:244
->  task_work_run+0x199/0x270 kernel/task_work.c:113
->  exit_task_work include/linux/task_work.h:22 [inline]
->  do_exit+0x9bb/0x1ad0 kernel/exit.c:865
->  do_group_exit+0x149/0x400 kernel/exit.c:968
->  get_signal+0x73f/0x16c0 kernel/signal.c:2335
->  do_signal+0x90/0x1eb0 arch/x86/kernel/signal.c:809
->  exit_to_usermode_loop+0x214/0x310 arch/x86/entry/common.c:158
->  prepare_exit_to_usermode arch/x86/entry/common.c:195 [inline]
->  syscall_return_slowpath arch/x86/entry/common.c:264 [inline]
->  do_syscall_32_irqs_on arch/x86/entry/common.c:333 [inline]
->  do_fast_syscall_32+0xbfd/0xf9d arch/x86/entry/common.c:389
->  entry_SYSENTER_compat+0x54/0x63 arch/x86/entry/entry_64_compat.S:129
+> Do you plan for a classical tarball release, or it's only over git
+> repo?  I'm asking it since I'm considering to package for distro.
 
-Still reproducible even after all the fixes currently in sound/for-linus.
+I can create and host the tarballs on alsa-project.org. Liam, could you
+add missing pieces to Makefile.am for 'make dist'?
 
-Eric
+					Thanks,
+						Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
