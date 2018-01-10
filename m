@@ -1,19 +1,20 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [RESEND PATCH v9 00/13] Add STM32 DFSDM support
-Date: Wed, 10 Jan 2018 14:24:05 +0100
-Message-ID: <8e261059-d233-162c-3dbd-6dc4215380f1@st.com>
-References: <1515579195-12894-1-git-send-email-arnaud.pouliquen@st.com>
- <20180110103607.GD9003@sirena.org.uk>
- <EDAAA911-C2FA-44B1-AAD6-22D7600CF6A5@jic23.retrosnub.co.uk>
+From: "Fischer, Christian" <fischerc@swissphone.de>
+Subject: Re: ASoC: sgtl5000: recording issue at 8 kHz with
+	fsl-imx28
+Date: Wed, 10 Jan 2018 14:20:36 +0000
+Message-ID: <DD64F087E8F0B540A1C9216D6716FFBDF9946A5B@defrsexc01.swissphone.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 6A0B2266DEC
- for <alsa-devel@alsa-project.org>; Wed, 10 Jan 2018 14:24:09 +0100 (CET)
-In-Reply-To: <EDAAA911-C2FA-44B1-AAD6-22D7600CF6A5@jic23.retrosnub.co.uk>
-Content-Language: en-US
+Received: from mail2.avectris.ch (mail2.avectris.ch [185.94.144.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id EA8FA266DEC
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jan 2018 15:20:38 +0100 (CET)
+Received: from mail2.avectris.ch (localhost [127.0.0.1])
+ by mail2.avectris.ch (Mission Control Email Shield,
+ 5082) with SMTP id 3zGrlB0lMZzbTLT
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jan 2018 15:20:38 +0100 (MET)
+Content-Language: de-DE
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,105 +24,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jonathan Cameron <jic23@jic23.retrosnub.co.uk>, Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, Jonathan Cameron <jic23@kernel.org>, Alexandre TORGUE <alexandre.torgue@st.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAwMS8xMC8yMDE4IDAxOjU3IFBNLCBKb25hdGhhbiBDYW1lcm9uIHdyb3RlOgo+IAo+IAo+
-IE9uIDEwIEphbnVhcnkgMjAxOCAxMDozNjowNyBHTVQsIE1hcmsgQnJvd24gPGJyb29uaWVAa2Vy
-bmVsLm9yZz4gd3JvdGU6Cj4+T24gV2VkLCBKYW4gMTAsIDIwMTggYXQgMTE6MTM6MDJBTSArMDEw
-MCwgQXJuYXVkIFBvdWxpcXVlbiB3cm90ZToKPj4KPj4+IEpvbmF0aGFuJ3MgY29tbWVudCBmb3Ig
-eW91LCBwb3N0ZWQgZm9yIHRoaXMgdmVyc2lvbjoKPj4+ID5TbyBNYXJrLCBvdmVyIHRvIHlvdS4g
-SSdtIGhhcHB5IGlmIHlvdSB3YW50IHRvIGRvIHRoZSBpbW11dGFibGUKPj5icmFuY2ggb25jZSAK
-Pj4+ID5hbnkgaXNzdWUgeW91IGZpbmQgYXJlIGZpeGVkLCBvciBJIGNhbiBkbyBpdC4gCj4+PiA+
-SSdtIGp1c3QgbG9va2luZyBmb3IgYWNrcyBvciBhIHB1bGwgcmVxdWVzdCBub3cuCj4+Cj4+Sm9u
-YXRoYW4sIHRoaXMgaXMgYSBwcmV0dHkgd2VpcmQgd2F5IG9mIGRvaW5nIHRoaW5ncyAtIHRoZSBi
-dWxrIG9mIHRoZQo+PnNlcmllcyBpcyBmb3IgSUlPIHNvIEknZCBoYXZlIGV4cGVjdGVkIGl0IHRv
-IGdvIGluIHZpYSB0aGUgSUlPIHRyZWUuCj4+SXQncyBlc3BlY2lhbGx5IG9kZCB0byBlbmQgdXAg
-d2l0aCB0aGUgZHJpdmVyIHdoaWNoIGlzbid0IGEgYnVpbGQKPj5kZXBlbmRlbmN5IGluIG15IHRy
-ZWUuCj4gCj4gSGkgTWFyaywKPiAKPiBTdXJlLCBzdWNoIGEgYnJhbmNoIGluIElJTyBtaWdodCBo
-YXZlIG1hZGUgbW9yZSBzZW5zZS4gSSBnb3QgaXQgaW50byBteQo+IGhlYWQgdGhhdCB5b3UKPiDC
-oHdhbnRlZCB0byBkbyBpdCB0aGlzIHdheSEKPiAKPiBEaWRuJ3QgY2FyZSBteXNlbGYgYXMgcmVz
-dWx0IGlzIHRoZSBzYW1lLgo+IAo+IE9vcHMgaWYgdGhhdCB3YXNuJ3QgeW91ciBpbnRlbnQuCj4g
-Cj4gQWggd2VsbCwgYWxsIGlzIHdlbGwgdGhhdCBlbmRzIHdlbGwgYW5kIHRoYW5rcyBmb3IgdGhp
-cy4KPiAKPiBKb25hdGhhbgo+IAoKSm9uYXRoYW4sIExhcnMsIE1hcmsgYW5kIFJvYgoKRXZlbiBp
-ZiBpdCBpcyBqdXN0IHRoZSBmaXJzdCBzdGVwIG9mIHRoZSBpbnRlZ3JhdGlvbiBwcm9jZXNzLCBp
-IHdvdWxkCmxpa2UgdG8gdGFrZSB0aGlzIG9wcG9ydHVuaXR5IHRvIHRoYW5rIHlvdSBmb3IgeW91
-ciBoZWxwIHRvIGludGVncmF0ZQp0aGUgREZTRE0gZHJpdmVycy4KUHJvYmFibHkgbm90IHRoZSBt
-b3N0IHRyaWNreSBvbmUsIGJ1dCBub3QgdGhlIGVhc2llc3QgZWl0aGVyLi4uClNvIHRoYW5rcyBm
-b3IgeW91ciByZXZpZXdzLCBhZHZpY2VzLCBzb2x1dGlvbnMsIGFuZCBjb21wcm9taXNlcy4KClJl
-Z2FyZHMKQXJuYXVkCgo+Pgo+PlRoZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQKPj40
-ZmJkOGQxOTRmMDZjOGEzZmQyYWYxY2U1NjBkZGIzMWY3ZWM4MzIzOgo+Pgo+PsKgIExpbnV4IDQu
-MTUtcmMxICgyMDE3LTExLTI2IDE2OjAxOjQ3IC0wODAwKQo+Pgo+PmFyZSBhdmFpbGFibGUgaW4g
-dGhlIEdpdCByZXBvc2l0b3J5IGF0Ogo+Pgo+Pmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3Nj
-bS9saW51eC9rZXJuZWwvZ2l0L2Jyb29uaWUvc291bmQuZ2l0Cj4+dGFncy9paW8tYXNvYy1zeW5j
-Cj4+Cj4+Zm9yIHlvdSB0byBmZXRjaCBjaGFuZ2VzIHVwIHRvCj4+MTZjYmNhMDZmYTgyODhhNGY1
-ODQyNmZjODk4YjE0MWUxMmVlODAwODoKPj4KPj7CoCBJSU86IGNvbnN1bWVyOiBhbGxvdyB0byBz
-ZXQgYnVmZmVyIHNpemVzICgyMDE4LTAxLTEwIDEwOjMwOjE0ICswMDAwKQo+Pgo+Pi0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
-Pj5JSU86IFNUIERGU0RNIHN1cHBvcnQKPj4KPj5UaGlzIGlzIHRoZSBJSU8gcG9ydGlvbiBvZiBz
-b21lIHBhdGNoZXMgYWRkaW5nIHN1cHBvcnQgZm9yIHRoZSBTVCBERlNETQo+PklQLCBpdCdzIHNo
-YXJlZCB3aXRoIEFTb0MgYXMgdGhlIGhhcmR3YXJlIGlzIGFsc28gdXNlZCBmb3IgYXVkaW8uCj4+
-Cj4+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLQo+PkFybmF1ZCBQb3VsaXF1ZW4gKDEwKToKPj7CoMKgwqDCoMKgIGRvY3M6IGRy
-aXZlci1hcGk6IGFkZCBpaW8gaHcgY29uc3VtZXIgc2VjdGlvbgo+PsKgwqDCoMKgwqAgSUlPOiBo
-d19jb25zdW1lcjogYWRkIGRldm1faWlvX2h3X2NvbnN1bWVyX2FsbG9jCj4+wqDCoMKgwqDCoCBJ
-SU86IGlua2VybjogQVBJIGZvciBtYW5pcHVsYXRpbmcgY2hhbm5lbCBhdHRyaWJ1dGVzCj4+wqDC
-oMKgwqDCoCBJSU86IEFkZCBEVCBiaW5kaW5ncyBmb3Igc2lnbWEgZGVsdGEgYWRjIG1vZHVsYXRv
-cgo+PsKgwqDCoMKgwqAgSUlPOiBBREM6IGFkZCBzaWdtYSBkZWx0YSBtb2R1bGF0b3Igc3VwcG9y
-dAo+PsKgwqDCoMKgwqAgSUlPOiBhZGQgRFQgYmluZGluZ3MgZm9yIHN0bTMyIERGU0RNIGZpbHRl
-cgo+PsKgwqDCoMKgwqAgSUlPOiBBREM6IGFkZCBzdG0zMiBERlNETSBjb3JlIHN1cHBvcnQKPj7C
-oMKgwqDCoMKgIElJTzogQURDOiBhZGQgU1RNMzIgREZTRE0gc2lnbWEgZGVsdGEgQURDIHN1cHBv
-cnQKPj7CoMKgwqDCoMKgIElJTzogQURDOiBhZGQgc3RtMzIgREZTRE0gc3VwcG9ydCBmb3IgUERN
-IG1pY3JvcGhvbmUKPj7CoMKgwqDCoMKgIElJTzogY29uc3VtZXI6IGFsbG93IHRvIHNldCBidWZm
-ZXIgc2l6ZXMKPj4KPj5MYXJzLVBldGVyIENsYXVzZW4gKDEpOgo+PsKgwqDCoMKgwqAgaWlvOiBB
-ZGQgaGFyZHdhcmUgY29uc3VtZXIgYnVmZmVyIHN1cHBvcnQKPj4KPj4gLi4uL0FCSS90ZXN0aW5n
-L3N5c2ZzLWJ1cy1paW8tZGZzZG0tYWRjLXN0bTMywqDCoMKgwqDCoCB8wqDCoCAxNiArCj4+IC4u
-Li9iaW5kaW5ncy9paW8vYWRjL3NpZ21hLWRlbHRhLW1vZHVsYXRvci50eHTCoMKgwqDCoCB8wqDC
-oCAxMyArCj4+IC4uLi9iaW5kaW5ncy9paW8vYWRjL3N0LHN0bTMyLWRmc2RtLWFkYy50eHTCoMKg
-wqDCoMKgwqDCoCB8wqAgMTI4ICsrKwo+PiBEb2N1bWVudGF0aW9uL2RyaXZlci1hcGkvaWlvL2h3
-LWNvbnN1bWVyLnJzdMKgwqDCoMKgwqDCoCB8wqDCoCA1MSArCj4+IERvY3VtZW50YXRpb24vZHJp
-dmVyLWFwaS9paW8vaW5kZXgucnN0wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgwqAgMSAr
-Cj4+IGRyaXZlcnMvaWlvL2FkYy9LY29uZmlnwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgIDM3ICsKPj4gZHJpdmVycy9paW8vYWRjL01h
-a2VmaWxlwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCB8wqDCoMKgIDMgKwo+PiBkcml2ZXJzL2lpby9hZGMvc2RfYWRjX21vZHVsYXRvci5jwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqAgNjggKysKPj5kcml2ZXJzL2lpby9hZGMv
-c3RtMzItZGZzZG0tYWRjLmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwgMTIx
-Ngo+PisrKysrKysrKysrKysrKysrKysrCj4+IGRyaXZlcnMvaWlvL2FkYy9zdG0zMi1kZnNkbS1j
-b3JlLmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqAgMzA5ICsrKysrCj4+IGRy
-aXZlcnMvaWlvL2FkYy9zdG0zMi1kZnNkbS5owqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIHzCoCAzMTAgKysrKysKPj4gZHJpdmVycy9paW8vYnVmZmVyL0tjb25maWfC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqAgMTAg
-Kwo+PiBkcml2ZXJzL2lpby9idWZmZXIvTWFrZWZpbGXCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgwqAgMSArCj4+IGRyaXZlcnMvaWlvL2J1ZmZlci9p
-bmR1c3RyaWFsaW8tYnVmZmVyLWNiLmPCoMKgwqDCoMKgwqDCoCB8wqDCoCAxMSArCj4+IGRyaXZl
-cnMvaWlvL2J1ZmZlci9pbmR1c3RyaWFsaW8taHctY29uc3VtZXIuY8KgwqDCoMKgwqAgfMKgIDI0
-NyArKysrCj4+IGRyaXZlcnMvaWlvL2lua2Vybi5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgIDE3ICstCj4+IGluY2x1ZGUv
-bGludXgvaWlvL2FkYy9zdG0zMi1kZnNkbS1hZGMuaMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKg
-wqAgMTggKwo+PiBpbmNsdWRlL2xpbnV4L2lpby9jb25zdW1lci5owqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqAgMzcgKwo+PiBpbmNsdWRlL2xpbnV4L2lp
-by9ody1jb25zdW1lci5owqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKg
-wqAgMjEgKwo+PiBpbmNsdWRlL2xpbnV4L2lpby9paW8uaMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqDCoCAyOCAtCj4+IGluY2x1ZGUvbGlu
-dXgvaWlvL3R5cGVzLmjCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCB8wqDCoCAyOCArCj4+IDIxIGZpbGVzIGNoYW5nZWQsIDI1MzcgaW5zZXJ0aW9ucygr
-KSwgMzMgZGVsZXRpb25zKC0pCj4+Y3JlYXRlIG1vZGUgMTAwNjQ0Cj4+RG9jdW1lbnRhdGlvbi9B
-QkkvdGVzdGluZy9zeXNmcy1idXMtaWlvLWRmc2RtLWFkYy1zdG0zMgo+PmNyZWF0ZSBtb2RlIDEw
-MDY0NAo+PkRvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9paW8vYWRjL3NpZ21hLWRl
-bHRhLW1vZHVsYXRvci50eHQKPj5jcmVhdGUgbW9kZSAxMDA2NDQKPj5Eb2N1bWVudGF0aW9uL2Rl
-dmljZXRyZWUvYmluZGluZ3MvaWlvL2FkYy9zdCxzdG0zMi1kZnNkbS1hZGMudHh0Cj4+IGNyZWF0
-ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RyaXZlci1hcGkvaWlvL2h3LWNvbnN1bWVyLnJz
-dAo+PiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9paW8vYWRjL3NkX2FkY19tb2R1bGF0b3Iu
-Ywo+PiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9paW8vYWRjL3N0bTMyLWRmc2RtLWFkYy5j
-Cj4+IGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2lpby9hZGMvc3RtMzItZGZzZG0tY29yZS5j
-Cj4+IGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2lpby9hZGMvc3RtMzItZGZzZG0uaAo+PiBj
-cmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9paW8vYnVmZmVyL2luZHVzdHJpYWxpby1ody1jb25z
-dW1lci5jCj4+IGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2xpbnV4L2lpby9hZGMvc3RtMzIt
-ZGZzZG0tYWRjLmgKPj4gY3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvbGludXgvaWlvL2h3LWNv
-bnN1bWVyLmgKPiAKPiAtLSAKPiBTZW50IGZyb20gbXkgQW5kcm9pZCBkZXZpY2Ugd2l0aCBLLTkg
-TWFpbC4gUGxlYXNlIGV4Y3VzZSBteSBicmV2aXR5LgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+It's me again.
+
+I just found out that the audio playback is affected by this problem too.
+Maybe this can serve as a hint.
+
+Regards,
+Christian
+
+-----Urspr=FCngliche Nachricht-----
+Von: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-pr=
+oject.org] Im Auftrag von Fischer, Christian
+Gesendet: Mittwoch, 10. Januar 2018 11:31
+An: alsa-devel@alsa-project.org
+Cc: 'Takashi Iwai' <tiwai@suse.com>; 'Mark Brown' <broonie@kernel.org>; 'Li=
+am Girdwood' <lgirdwood@gmail.com>
+Betreff: [alsa-devel] ASoC: sgtl5000: recording issue at 8 kHz with fsl-imx=
+28
+
+Hello guys,
+
+trying to record from a SGTL5000 with 8 kHz sampling rate gives a very bad =
+audio quality.
+All other sampling rates working fine.
+
+Initially posted at NXP forum: https://community.nxp.com/message/975131
+
+Tested with imx28, sgtl5000 and Kernel 4.14.12.
+
+I've attached a recording with 8 kHz, capture-vol was 67, mic-gain 33, AVC-=
+off and Capture-ZC off.
+Recorded with "arecord -D "hw:0,1" -t wav -f S16_LE -c 2 -r 8000 test.wav".
+Sounds like there are missing samples..
+
+The microphone is powered from mic-bias and decoupled with a 100nF capacito=
+r.
+
+Can anybody help me?
+Thank you guys!
+Kind regards,
+
+Christian Fischer
