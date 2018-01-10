@@ -1,78 +1,95 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "IIO: ADC: stm32_dfsdm_stop_filter() can be static" to the asoc tree
-Date: Wed, 10 Jan 2018 15:33:17 +0000
-Message-ID: <E1eZINR-00056S-N9@debutante>
-References: <20180110152305.GA83560@lkp-sb05>
-Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20180110152305.GA83560@lkp-sb05>
-Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Fengguang Wu <fengguang.wu-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jonathan Cameron <Jonathan.Cameron-hv44wF8Li93QT0dZR+AlfA@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, kbuild-all-JC7UmRfGjtg@public.gmane.org, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: "Fischer, Christian" <fischerc@swissphone.de>
+Subject: Re: [PATCH v2] ASoC: sgtl5000: Fix powerup/down of
+ micbias
+Date: Wed, 10 Jan 2018 15:53:00 +0000
+Message-ID: <DD64F087E8F0B540A1C9216D6716FFBDF9946AA9@defrsexc01.swissphone.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail2.avectris.ch (mail2.avectris.ch [185.94.144.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id AF60F2676F6
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jan 2018 16:53:02 +0100 (CET)
+Content-Language: de-DE
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Baluta <daniel.baluta@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   IIO: ADC: stm32_dfsdm_stop_filter() can be static
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 1c4d0c5bc347328b257740d060ce9dbf48eebfe0 Mon Sep 17 00:00:00 2001
-From: kbuild test robot <fengguang.wu-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Date: Wed, 10 Jan 2018 23:23:05 +0800
-Subject: [PATCH] IIO: ADC: stm32_dfsdm_stop_filter() can be static
-
-Fixes: e2e6771c6462 ("IIO: ADC: add STM32 DFSDM sigma delta ADC support")
-Signed-off-by: Fengguang Wu <fengguang.wu-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
----
- drivers/iio/adc/stm32-dfsdm-adc.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/iio/adc/stm32-dfsdm-adc.c b/drivers/iio/adc/stm32-dfsdm-adc.c
-index b03ca3f94331..e628d04d5c77 100644
---- a/drivers/iio/adc/stm32-dfsdm-adc.c
-+++ b/drivers/iio/adc/stm32-dfsdm-adc.c
-@@ -254,7 +254,7 @@ static int stm32_dfsdm_start_filter(struct stm32_dfsdm *dfsdm,
- 				  DFSDM_CR1_RSWSTART(1));
- }
- 
--void stm32_dfsdm_stop_filter(struct stm32_dfsdm *dfsdm, unsigned int fl_id)
-+static void stm32_dfsdm_stop_filter(struct stm32_dfsdm *dfsdm, unsigned int fl_id)
- {
- 	/* Disable conversion */
- 	regmap_update_bits(dfsdm->regmap, DFSDM_CR1(fl_id),
-@@ -296,9 +296,9 @@ static int stm32_dfsdm_filter_configure(struct stm32_dfsdm *dfsdm,
- 				  DFSDM_CR1_RSYNC(fl->sync_mode));
- }
- 
--int stm32_dfsdm_channel_parse_of(struct stm32_dfsdm *dfsdm,
--				 struct iio_dev *indio_dev,
--				 struct iio_chan_spec *ch)
-+static int stm32_dfsdm_channel_parse_of(struct stm32_dfsdm *dfsdm,
-+					struct iio_dev *indio_dev,
-+					struct iio_chan_spec *ch)
- {
- 	struct stm32_dfsdm_channel *df_ch;
- 	const char *of_str;
--- 
-2.15.1
+SGVsbG8gRGFuaWVsLA0KDQpJJ20gc29ycnksIHRoYXRzIG15IGZpcnN0IG9mZmljaWFsIHBhdGNo
+IDotKQ0KSSd2ZSBub3cgY2xvbmVkIGEga2VybmVsIG91dHNpZGUgbXkgYnVpbGRzeXN0ZW0gYW5k
+IChob3BlZnVsbHkpIGEgbmV3LCBhY2NlcHRhYmxlIHBhdGNoLg0KUmVnYXJkcywNCkNocmlzdGlh
+bg0KDQpGcm9tIGQwNjc5NGQ5OGUzZWQ4NGVjYjE2NDFiNzRkMDkzMzY2ZmZmZjJjYmEgTW9uIFNl
+cCAxNyAwMDowMDowMCAyMDAxDQpGcm9tOiBDaHJpc3RpYW4gRmlzY2hlciA8ZmlzY2hlcmNAc3dp
+c3NwaG9uZS5kZT4NCkRhdGU6IFdlZCwgMTAgSmFuIDIwMTggMTY6NDc6NTEgKzAxMDANClN1Ympl
+Y3Q6IFtQQVRDSCB2Ml0gQVNvQzogc2d0bDUwMDA6IGZpeCBwb3dlcnVwL2Rvd24gb2YgbWljYmlh
+cy12b2x0YWdlDQoNClRoZSBtaWMtYmlhcy12b2x0YWdlIHNob3VsZCBnZXQgcG93ZXJlZCB1cC9k
+b3duIGF1dG9tYXRpY2FsbHkuDQpBZGRlZCBtaXNzaW5nIERBUE1fUFJFIGFuZCBEQVBNX1BPU1Qg
+d2lkZ2V0cyB0byBmaXJlIHVwIHRoZSBtaWNfYmlhc19ldmVudCBmdW5jdGlvbi4NCg0KU2lnbmVk
+LW9mZi1ieTogQ2hyaXN0aWFuIEZpc2NoZXIgPGZpc2NoZXJjQHN3aXNzcGhvbmUuZGU+DQotLS0N
+CiBzb3VuZC9zb2MvY29kZWNzL3NndGw1MDAwLmMgfCAzICsrKw0KIDEgZmlsZSBjaGFuZ2VkLCAz
+IGluc2VydGlvbnMoKykNCg0KZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3Mvc2d0bDUwMDAu
+YyBiL3NvdW5kL3NvYy9jb2RlY3Mvc2d0bDUwMDAuYw0KaW5kZXggZjJiYjRmZS4uNDk3MzM2NSAx
+MDA2NDQNCi0tLSBhL3NvdW5kL3NvYy9jb2RlY3Mvc2d0bDUwMDAuYw0KKysrIGIvc291bmQvc29j
+L2NvZGVjcy9zZ3RsNTAwMC5jDQpAQCAtMjYwLDYgKzI2MCw5IEBAIHN0YXRpYyBjb25zdCBzdHJ1
+Y3Qgc25kX3NvY19kYXBtX3dpZGdldCBzZ3RsNTAwMF9kYXBtX3dpZGdldHNbXSA9IHsNCiANCiAJ
+U05EX1NPQ19EQVBNX1BSRSgiVkFHX1BPV0VSX1BSRSIsIHBvd2VyX3ZhZ19ldmVudCksDQogCVNO
+RF9TT0NfREFQTV9QT1NUKCJWQUdfUE9XRVJfUE9TVCIsIHBvd2VyX3ZhZ19ldmVudCksDQorDQor
+CVNORF9TT0NfREFQTV9QUkUoIk1JQ19CSUFTX1BSRSIsIG1pY19iaWFzX2V2ZW50KSwNCisJU05E
+X1NPQ19EQVBNX1BPU1QoIk1JQ19CSUFTX1BPU1QiLCBtaWNfYmlhc19ldmVudCksDQogfTsNCiAN
+CiAvKiByb3V0ZXMgZm9yIHNndGw1MDAwICovDQotLSANCjIuNy40DQoNCi0tLS0tVXJzcHLDvG5n
+bGljaGUgTmFjaHJpY2h0LS0tLS0NClZvbjogRGFuaWVsIEJhbHV0YSBbbWFpbHRvOmRhbmllbC5i
+YWx1dGFAbnhwLmNvbV0gDQpHZXNlbmRldDogTWl0dHdvY2gsIDEwLiBKYW51YXIgMjAxOCAxNToz
+MQ0KQW46IEZpc2NoZXIsIENocmlzdGlhbiA8ZmlzY2hlcmNAc3dpc3NwaG9uZS5kZT47IGFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZw0KQ2M6IGxnaXJkd29vZEBnbWFpbC5jb207IGJyb29uaWVA
+a2VybmVsLm9yZzsgdGl3YWlAc3VzZS5jb20NCkJldHJlZmY6IFJlOiBbYWxzYS1kZXZlbF0gW1BB
+VENIIHYyXSBBU29DOiBzZ3RsNTAwMDogRml4IHBvd2VydXAvZG93biBvZiBtaWNiaWFzDQoNCk9u
+IE1pLCAyMDE4LTAxLTEwIGF0IDE0OjI2ICswMDAwLCBGaXNjaGVyLCBDaHJpc3RpYW4gd3JvdGU6
+DQo+IEhlbGxvIEZhYmlvLA0KPiANCj4gaXMgaXQgbm93IG9rPw0KPiBJJ20gbm90IHdvcmtpbmcg
+d2l0aCBsaW51eC1naXQsIHNvIG15IHBhdGNoIGlzIGNyZWF0ZWQgYnkgbXlzZWxmLg0KPiANCj4g
+UmVnYXJkcywNCj4gQ2hyaXN0aWFuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBDaHJpc3RpYW4gRmlz
+Y2hlciA8ZmlzY2hlcmNAc3dpc3NwaG9uZS5kZT4NCg0KSGkgQ2hyaXN0aWFuLA0KDQpUaGlzIGRv
+ZXNuJ3QgbG9vayBnb29kIHRvIG1lLiBIb3cgYXJlIGNyZWF0aW5nL3NlbmRpbmcgdGhlIHBhdGNo
+ZXM/DQoNCllvdSBzaG91bGQgdXBkYXRlIHRoZSBjb21taXQgbWVzc2FnZSB0byBpbmNsdWRlIHlv
+dXIgU2lnbmVkLW9mZi1ieSB0YWcgYW5kIHRoZW4gcmVzZW5kIHRoZSBlbnRpcmUgcGF0Y2guDQoN
+CnRoYW5rcywNCkRhbmllbC4NCg0KDQo+IA0KPiAtLS0gc291bmQvc29jL2NvZGVjcy9zZ3RsNTAw
+MC5jDQo+ICsrKyBzb3VuZC9zb2MvY29kZWNzL3NndGw1MDAwLmMNCj4gQEAgLTI2MCw2ICsyNjAs
+OSBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFwbV93aWRnZXQNCj4gwqANCj4gwqAJ
+U05EX1NPQ19EQVBNX1BSRSgiVkFHX1BPV0VSX1BSRSIsIHBvd2VyX3ZhZ19ldmVudCksDQo+IMKg
+CVNORF9TT0NfREFQTV9QT1NUKCJWQUdfUE9XRVJfUE9TVCIsIHBvd2VyX3ZhZ19ldmVudCksDQo+
+ICsNCj4gKwlTTkRfU09DX0RBUE1fUFJFKCJNSUNfQklBU19QUkUiLCBtaWNfYmlhc19ldmVudCks
+DQo+ICsJU05EX1NPQ19EQVBNX1BPU1QoIk1JQ19CSUFTX1BPU1QiLCBtaWNfYmlhc19ldmVudCks
+DQo+IMKgfTsNCj4gwqANCj4gwqAvKiByb3V0ZXMgZm9yIHNndGw1MDAwICovDQo+IA0KPiAtLS0t
+LVVyc3Byw7xuZ2xpY2hlIE5hY2hyaWNodC0tLS0tDQo+IFZvbjogRmFiaW8gRXN0ZXZhbSBbbWFp
+bHRvOmZlc3RldmFtQGdtYWlsLmNvbV0NCj4gR2VzZW5kZXQ6IE1pdHR3b2NoLCAxMC4gSmFudWFy
+IDIwMTggMTM6NDINCj4gQW46IEZpc2NoZXIsIENocmlzdGlhbiA8ZmlzY2hlcmNAc3dpc3NwaG9u
+ZS5kZT4NCj4gQ2M6IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgVGFrYXNoaSBJd2FpIDx0
+aXdhaUBzdXNlLmNvbT47IE1hcmsgDQo+IEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+OyBMaWFt
+IEdpcmR3b29kIDxsZ2lyZHdvb2RAZ21haWwuY29tPg0KPiBCZXRyZWZmOiBSZTogW2Fsc2EtZGV2
+ZWxdIFtQQVRDSF0gQVNvQzogc2d0bDUwMDA6IEZpeCBwb3dlcnVwL2Rvd24gb2YgDQo+IG1pY2Jp
+YXMNCj4gDQo+IEhpIENocmlzdGlhbiwNCj4gDQo+IE9uIFdlZCwgSmFuIDEwLCAyMDE4IGF0IDg6
+MDcgQU0sIEZpc2NoZXIsIENocmlzdGlhbiA8ZmlzY2hlcmNAc3dpc3NwaG9uZS5kZT4gd3JvdGU6
+DQo+ID4gDQo+ID4gVGhlIGJpYXMtYmlhcy12b2x0YWdlIHNob3VsZCBwb3dlcmVkIHVwL2Rvd24g
+YXV0b21hdGljYWxseS4NCj4gPiBBZGRlZCBtaXNzaW5nIERBUE1fUFJFIGFuZCBEQVBNX1BPU1Qg
+d2lkZ2V0cyB0byBmaXJlIHVwIHRoZSBtaWNfYmlhc19ldmVudCBmdW5jdGlvbi4NCj4gVGhhbmtz
+IGZvciBzdWJtaXR0aW5nIHRoZSBwYXRjaC4NCj4gDQo+IFlvdSBtaXNzZWQgeW91ciBTaWduZWQt
+b2ZmLWJ5IHRhZy4NCj4gDQo+IFBsZWFzZSByZXNlbmQgaXQuDQo+IA0KPiBUaGFua3MNCj4gX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QNCj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnDQo+IGh0dHBzOi8v
+ZW1lYTAxLnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91dGxvb2suY29tLz91cmw9aHR0cCUzQSUyRiUy
+Rm1haWwNCj4gbWFuLmFsc2EtcHJvamVjdC5vcmclMkZtYWlsbWFuJTJGbGlzdGluZm8lMkZhbHNh
+LWRldmVsJmRhdGE9MDIlN0MwMSU3Qw0KPiBkYW5pZWwuYmFsdXRhJTQwbnhwLmNvbSU3QzRhNzcx
+Njk0YWYzMTRmYTdkNzMwMDhkNTU4MzYyYTM3DQo+ICU3QzY4NmVhMWQzYmMyYjRjNmZhOTJjZDk5
+YzVjMzAxNjM1JTdDMCU3QzAlN0M2MzY1MTE5MTIwMjkyODI4ODUmc2RhdGE9Wm80MlpKeEl4cDU0
+WXlZTFZzRnJyUldrRHQlMkZxQnlSNnVxcjhVNnBYM2lZJTNEJnJlc2VydmVkPTANCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
