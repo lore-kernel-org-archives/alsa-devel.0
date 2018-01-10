@@ -1,17 +1,19 @@
-From: Jonathan Cameron <jic23@jic23.retrosnub.co.uk>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 Subject: Re: [RESEND PATCH v9 00/13] Add STM32 DFSDM support
-Date: Wed, 10 Jan 2018 12:57:56 +0000
-Message-ID: <EDAAA911-C2FA-44B1-AAD6-22D7600CF6A5@jic23.retrosnub.co.uk>
+Date: Wed, 10 Jan 2018 14:24:05 +0100
+Message-ID: <8e261059-d233-162c-3dbd-6dc4215380f1@st.com>
 References: <1515579195-12894-1-git-send-email-arnaud.pouliquen@st.com>
  <20180110103607.GD9003@sirena.org.uk>
+ <EDAAA911-C2FA-44B1-AAD6-22D7600CF6A5@jic23.retrosnub.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from saturn.retrosnub.co.uk (saturn.retrosnub.co.uk [178.18.118.26])
- by alsa0.perex.cz (Postfix) with ESMTP id CBA4C266DEC
- for <alsa-devel@alsa-project.org>; Wed, 10 Jan 2018 13:58:05 +0100 (CET)
-In-Reply-To: <20180110103607.GD9003@sirena.org.uk>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 6A0B2266DEC
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jan 2018 14:24:09 +0100 (CET)
+In-Reply-To: <EDAAA911-C2FA-44B1-AAD6-22D7600CF6A5@jic23.retrosnub.co.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,114 +23,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-iio@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, Jonathan Cameron <jic23@kernel.org>, Alexandre Torgue <alexandre.torgue@st.com>
+To: Jonathan Cameron <jic23@jic23.retrosnub.co.uk>, Mark Brown <broonie@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, Jonathan Cameron <jic23@kernel.org>, Alexandre TORGUE <alexandre.torgue@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 10 January 2018 10:36:07 GMT, Mark Brown <broonie@kernel.org> wrote:
->On Wed, Jan 10, 2018 at 11:13:02AM +0100, Arnaud Pouliquen wrote:
->
->> Jonathan's comment for you, posted for this version:
->> >So Mark, over to you. I'm happy if you want to do the immutable
->branch once 
->> >any issue you find are fixed, or I can do it. 
->> >I'm just looking for acks or a pull request now.
->
->Jonathan, this is a pretty weird way of doing things - the bulk of the
->series is for IIO so I'd have expected it to go in via the IIO tree.
->It's especially odd to end up with the driver which isn't a build
->dependency in my tree.
-
-Hi Mark,
-
-Sure, such a branch in IIO might have made more sense. I got it into my head that you
- wanted to do it this way!
-
-Didn't care myself as result is the same.
-
-Oops if that wasn't your intent.
-
-Ah well, all is well that ends well and thanks for this.
-
-Jonathan
-
->
->The following changes since commit
->4fbd8d194f06c8a3fd2af1ce560ddb31f7ec8323:
->
->  Linux 4.15-rc1 (2017-11-26 16:01:47 -0800)
->
->are available in the Git repository at:
->
->https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
->tags/iio-asoc-sync
->
->for you to fetch changes up to
->16cbca06fa8288a4f58426fc898b141e12ee8008:
->
->  IIO: consumer: allow to set buffer sizes (2018-01-10 10:30:14 +0000)
->
->----------------------------------------------------------------
->IIO: ST DFSDM support
->
->This is the IIO portion of some patches adding support for the ST DFSDM
->IP, it's shared with ASoC as the hardware is also used for audio.
->
->----------------------------------------------------------------
->Arnaud Pouliquen (10):
->      docs: driver-api: add iio hw consumer section
->      IIO: hw_consumer: add devm_iio_hw_consumer_alloc
->      IIO: inkern: API for manipulating channel attributes
->      IIO: Add DT bindings for sigma delta adc modulator
->      IIO: ADC: add sigma delta modulator support
->      IIO: add DT bindings for stm32 DFSDM filter
->      IIO: ADC: add stm32 DFSDM core support
->      IIO: ADC: add STM32 DFSDM sigma delta ADC support
->      IIO: ADC: add stm32 DFSDM support for PDM microphone
->      IIO: consumer: allow to set buffer sizes
->
->Lars-Peter Clausen (1):
->      iio: Add hardware consumer buffer support
->
-> .../ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32      |   16 +
-> .../bindings/iio/adc/sigma-delta-modulator.txt     |   13 +
-> .../bindings/iio/adc/st,stm32-dfsdm-adc.txt        |  128 +++
-> Documentation/driver-api/iio/hw-consumer.rst       |   51 +
-> Documentation/driver-api/iio/index.rst             |    1 +
-> drivers/iio/adc/Kconfig                            |   37 +
-> drivers/iio/adc/Makefile                           |    3 +
-> drivers/iio/adc/sd_adc_modulator.c                 |   68 ++
->drivers/iio/adc/stm32-dfsdm-adc.c                  | 1216
->++++++++++++++++++++
-> drivers/iio/adc/stm32-dfsdm-core.c                 |  309 +++++
-> drivers/iio/adc/stm32-dfsdm.h                      |  310 +++++
-> drivers/iio/buffer/Kconfig                         |   10 +
-> drivers/iio/buffer/Makefile                        |    1 +
-> drivers/iio/buffer/industrialio-buffer-cb.c        |   11 +
-> drivers/iio/buffer/industrialio-hw-consumer.c      |  247 ++++
-> drivers/iio/inkern.c                               |   17 +-
-> include/linux/iio/adc/stm32-dfsdm-adc.h            |   18 +
-> include/linux/iio/consumer.h                       |   37 +
-> include/linux/iio/hw-consumer.h                    |   21 +
-> include/linux/iio/iio.h                            |   28 -
-> include/linux/iio/types.h                          |   28 +
-> 21 files changed, 2537 insertions(+), 33 deletions(-)
->create mode 100644
->Documentation/ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32
->create mode 100644
->Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.txt
->create mode 100644
->Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt
-> create mode 100644 Documentation/driver-api/iio/hw-consumer.rst
-> create mode 100644 drivers/iio/adc/sd_adc_modulator.c
-> create mode 100644 drivers/iio/adc/stm32-dfsdm-adc.c
-> create mode 100644 drivers/iio/adc/stm32-dfsdm-core.c
-> create mode 100644 drivers/iio/adc/stm32-dfsdm.h
-> create mode 100644 drivers/iio/buffer/industrialio-hw-consumer.c
-> create mode 100644 include/linux/iio/adc/stm32-dfsdm-adc.h
-> create mode 100644 include/linux/iio/hw-consumer.h
-
--- 
-Sent from my Android device with K-9 Mail. Please excuse my brevity.
+CgpPbiAwMS8xMC8yMDE4IDAxOjU3IFBNLCBKb25hdGhhbiBDYW1lcm9uIHdyb3RlOgo+IAo+IAo+
+IE9uIDEwIEphbnVhcnkgMjAxOCAxMDozNjowNyBHTVQsIE1hcmsgQnJvd24gPGJyb29uaWVAa2Vy
+bmVsLm9yZz4gd3JvdGU6Cj4+T24gV2VkLCBKYW4gMTAsIDIwMTggYXQgMTE6MTM6MDJBTSArMDEw
+MCwgQXJuYXVkIFBvdWxpcXVlbiB3cm90ZToKPj4KPj4+IEpvbmF0aGFuJ3MgY29tbWVudCBmb3Ig
+eW91LCBwb3N0ZWQgZm9yIHRoaXMgdmVyc2lvbjoKPj4+ID5TbyBNYXJrLCBvdmVyIHRvIHlvdS4g
+SSdtIGhhcHB5IGlmIHlvdSB3YW50IHRvIGRvIHRoZSBpbW11dGFibGUKPj5icmFuY2ggb25jZSAK
+Pj4+ID5hbnkgaXNzdWUgeW91IGZpbmQgYXJlIGZpeGVkLCBvciBJIGNhbiBkbyBpdC4gCj4+PiA+
+SSdtIGp1c3QgbG9va2luZyBmb3IgYWNrcyBvciBhIHB1bGwgcmVxdWVzdCBub3cuCj4+Cj4+Sm9u
+YXRoYW4sIHRoaXMgaXMgYSBwcmV0dHkgd2VpcmQgd2F5IG9mIGRvaW5nIHRoaW5ncyAtIHRoZSBi
+dWxrIG9mIHRoZQo+PnNlcmllcyBpcyBmb3IgSUlPIHNvIEknZCBoYXZlIGV4cGVjdGVkIGl0IHRv
+IGdvIGluIHZpYSB0aGUgSUlPIHRyZWUuCj4+SXQncyBlc3BlY2lhbGx5IG9kZCB0byBlbmQgdXAg
+d2l0aCB0aGUgZHJpdmVyIHdoaWNoIGlzbid0IGEgYnVpbGQKPj5kZXBlbmRlbmN5IGluIG15IHRy
+ZWUuCj4gCj4gSGkgTWFyaywKPiAKPiBTdXJlLCBzdWNoIGEgYnJhbmNoIGluIElJTyBtaWdodCBo
+YXZlIG1hZGUgbW9yZSBzZW5zZS4gSSBnb3QgaXQgaW50byBteQo+IGhlYWQgdGhhdCB5b3UKPiDC
+oHdhbnRlZCB0byBkbyBpdCB0aGlzIHdheSEKPiAKPiBEaWRuJ3QgY2FyZSBteXNlbGYgYXMgcmVz
+dWx0IGlzIHRoZSBzYW1lLgo+IAo+IE9vcHMgaWYgdGhhdCB3YXNuJ3QgeW91ciBpbnRlbnQuCj4g
+Cj4gQWggd2VsbCwgYWxsIGlzIHdlbGwgdGhhdCBlbmRzIHdlbGwgYW5kIHRoYW5rcyBmb3IgdGhp
+cy4KPiAKPiBKb25hdGhhbgo+IAoKSm9uYXRoYW4sIExhcnMsIE1hcmsgYW5kIFJvYgoKRXZlbiBp
+ZiBpdCBpcyBqdXN0IHRoZSBmaXJzdCBzdGVwIG9mIHRoZSBpbnRlZ3JhdGlvbiBwcm9jZXNzLCBp
+IHdvdWxkCmxpa2UgdG8gdGFrZSB0aGlzIG9wcG9ydHVuaXR5IHRvIHRoYW5rIHlvdSBmb3IgeW91
+ciBoZWxwIHRvIGludGVncmF0ZQp0aGUgREZTRE0gZHJpdmVycy4KUHJvYmFibHkgbm90IHRoZSBt
+b3N0IHRyaWNreSBvbmUsIGJ1dCBub3QgdGhlIGVhc2llc3QgZWl0aGVyLi4uClNvIHRoYW5rcyBm
+b3IgeW91ciByZXZpZXdzLCBhZHZpY2VzLCBzb2x1dGlvbnMsIGFuZCBjb21wcm9taXNlcy4KClJl
+Z2FyZHMKQXJuYXVkCgo+Pgo+PlRoZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQKPj40
+ZmJkOGQxOTRmMDZjOGEzZmQyYWYxY2U1NjBkZGIzMWY3ZWM4MzIzOgo+Pgo+PsKgIExpbnV4IDQu
+MTUtcmMxICgyMDE3LTExLTI2IDE2OjAxOjQ3IC0wODAwKQo+Pgo+PmFyZSBhdmFpbGFibGUgaW4g
+dGhlIEdpdCByZXBvc2l0b3J5IGF0Ogo+Pgo+Pmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3Nj
+bS9saW51eC9rZXJuZWwvZ2l0L2Jyb29uaWUvc291bmQuZ2l0Cj4+dGFncy9paW8tYXNvYy1zeW5j
+Cj4+Cj4+Zm9yIHlvdSB0byBmZXRjaCBjaGFuZ2VzIHVwIHRvCj4+MTZjYmNhMDZmYTgyODhhNGY1
+ODQyNmZjODk4YjE0MWUxMmVlODAwODoKPj4KPj7CoCBJSU86IGNvbnN1bWVyOiBhbGxvdyB0byBz
+ZXQgYnVmZmVyIHNpemVzICgyMDE4LTAxLTEwIDEwOjMwOjE0ICswMDAwKQo+Pgo+Pi0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
+Pj5JSU86IFNUIERGU0RNIHN1cHBvcnQKPj4KPj5UaGlzIGlzIHRoZSBJSU8gcG9ydGlvbiBvZiBz
+b21lIHBhdGNoZXMgYWRkaW5nIHN1cHBvcnQgZm9yIHRoZSBTVCBERlNETQo+PklQLCBpdCdzIHNo
+YXJlZCB3aXRoIEFTb0MgYXMgdGhlIGhhcmR3YXJlIGlzIGFsc28gdXNlZCBmb3IgYXVkaW8uCj4+
+Cj4+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLQo+PkFybmF1ZCBQb3VsaXF1ZW4gKDEwKToKPj7CoMKgwqDCoMKgIGRvY3M6IGRy
+aXZlci1hcGk6IGFkZCBpaW8gaHcgY29uc3VtZXIgc2VjdGlvbgo+PsKgwqDCoMKgwqAgSUlPOiBo
+d19jb25zdW1lcjogYWRkIGRldm1faWlvX2h3X2NvbnN1bWVyX2FsbG9jCj4+wqDCoMKgwqDCoCBJ
+SU86IGlua2VybjogQVBJIGZvciBtYW5pcHVsYXRpbmcgY2hhbm5lbCBhdHRyaWJ1dGVzCj4+wqDC
+oMKgwqDCoCBJSU86IEFkZCBEVCBiaW5kaW5ncyBmb3Igc2lnbWEgZGVsdGEgYWRjIG1vZHVsYXRv
+cgo+PsKgwqDCoMKgwqAgSUlPOiBBREM6IGFkZCBzaWdtYSBkZWx0YSBtb2R1bGF0b3Igc3VwcG9y
+dAo+PsKgwqDCoMKgwqAgSUlPOiBhZGQgRFQgYmluZGluZ3MgZm9yIHN0bTMyIERGU0RNIGZpbHRl
+cgo+PsKgwqDCoMKgwqAgSUlPOiBBREM6IGFkZCBzdG0zMiBERlNETSBjb3JlIHN1cHBvcnQKPj7C
+oMKgwqDCoMKgIElJTzogQURDOiBhZGQgU1RNMzIgREZTRE0gc2lnbWEgZGVsdGEgQURDIHN1cHBv
+cnQKPj7CoMKgwqDCoMKgIElJTzogQURDOiBhZGQgc3RtMzIgREZTRE0gc3VwcG9ydCBmb3IgUERN
+IG1pY3JvcGhvbmUKPj7CoMKgwqDCoMKgIElJTzogY29uc3VtZXI6IGFsbG93IHRvIHNldCBidWZm
+ZXIgc2l6ZXMKPj4KPj5MYXJzLVBldGVyIENsYXVzZW4gKDEpOgo+PsKgwqDCoMKgwqAgaWlvOiBB
+ZGQgaGFyZHdhcmUgY29uc3VtZXIgYnVmZmVyIHN1cHBvcnQKPj4KPj4gLi4uL0FCSS90ZXN0aW5n
+L3N5c2ZzLWJ1cy1paW8tZGZzZG0tYWRjLXN0bTMywqDCoMKgwqDCoCB8wqDCoCAxNiArCj4+IC4u
+Li9iaW5kaW5ncy9paW8vYWRjL3NpZ21hLWRlbHRhLW1vZHVsYXRvci50eHTCoMKgwqDCoCB8wqDC
+oCAxMyArCj4+IC4uLi9iaW5kaW5ncy9paW8vYWRjL3N0LHN0bTMyLWRmc2RtLWFkYy50eHTCoMKg
+wqDCoMKgwqDCoCB8wqAgMTI4ICsrKwo+PiBEb2N1bWVudGF0aW9uL2RyaXZlci1hcGkvaWlvL2h3
+LWNvbnN1bWVyLnJzdMKgwqDCoMKgwqDCoCB8wqDCoCA1MSArCj4+IERvY3VtZW50YXRpb24vZHJp
+dmVyLWFwaS9paW8vaW5kZXgucnN0wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgwqAgMSAr
+Cj4+IGRyaXZlcnMvaWlvL2FkYy9LY29uZmlnwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgIDM3ICsKPj4gZHJpdmVycy9paW8vYWRjL01h
+a2VmaWxlwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCB8wqDCoMKgIDMgKwo+PiBkcml2ZXJzL2lpby9hZGMvc2RfYWRjX21vZHVsYXRvci5jwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqAgNjggKysKPj5kcml2ZXJzL2lpby9hZGMv
+c3RtMzItZGZzZG0tYWRjLmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwgMTIx
+Ngo+PisrKysrKysrKysrKysrKysrKysrCj4+IGRyaXZlcnMvaWlvL2FkYy9zdG0zMi1kZnNkbS1j
+b3JlLmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqAgMzA5ICsrKysrCj4+IGRy
+aXZlcnMvaWlvL2FkYy9zdG0zMi1kZnNkbS5owqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIHzCoCAzMTAgKysrKysKPj4gZHJpdmVycy9paW8vYnVmZmVyL0tjb25maWfC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqAgMTAg
+Kwo+PiBkcml2ZXJzL2lpby9idWZmZXIvTWFrZWZpbGXCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgwqAgMSArCj4+IGRyaXZlcnMvaWlvL2J1ZmZlci9p
+bmR1c3RyaWFsaW8tYnVmZmVyLWNiLmPCoMKgwqDCoMKgwqDCoCB8wqDCoCAxMSArCj4+IGRyaXZl
+cnMvaWlvL2J1ZmZlci9pbmR1c3RyaWFsaW8taHctY29uc3VtZXIuY8KgwqDCoMKgwqAgfMKgIDI0
+NyArKysrCj4+IGRyaXZlcnMvaWlvL2lua2Vybi5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgIDE3ICstCj4+IGluY2x1ZGUv
+bGludXgvaWlvL2FkYy9zdG0zMi1kZnNkbS1hZGMuaMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKg
+wqAgMTggKwo+PiBpbmNsdWRlL2xpbnV4L2lpby9jb25zdW1lci5owqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqAgMzcgKwo+PiBpbmNsdWRlL2xpbnV4L2lp
+by9ody1jb25zdW1lci5owqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKg
+wqAgMjEgKwo+PiBpbmNsdWRlL2xpbnV4L2lpby9paW8uaMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqDCoCAyOCAtCj4+IGluY2x1ZGUvbGlu
+dXgvaWlvL3R5cGVzLmjCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCB8wqDCoCAyOCArCj4+IDIxIGZpbGVzIGNoYW5nZWQsIDI1MzcgaW5zZXJ0aW9ucygr
+KSwgMzMgZGVsZXRpb25zKC0pCj4+Y3JlYXRlIG1vZGUgMTAwNjQ0Cj4+RG9jdW1lbnRhdGlvbi9B
+QkkvdGVzdGluZy9zeXNmcy1idXMtaWlvLWRmc2RtLWFkYy1zdG0zMgo+PmNyZWF0ZSBtb2RlIDEw
+MDY0NAo+PkRvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9paW8vYWRjL3NpZ21hLWRl
+bHRhLW1vZHVsYXRvci50eHQKPj5jcmVhdGUgbW9kZSAxMDA2NDQKPj5Eb2N1bWVudGF0aW9uL2Rl
+dmljZXRyZWUvYmluZGluZ3MvaWlvL2FkYy9zdCxzdG0zMi1kZnNkbS1hZGMudHh0Cj4+IGNyZWF0
+ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RyaXZlci1hcGkvaWlvL2h3LWNvbnN1bWVyLnJz
+dAo+PiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9paW8vYWRjL3NkX2FkY19tb2R1bGF0b3Iu
+Ywo+PiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9paW8vYWRjL3N0bTMyLWRmc2RtLWFkYy5j
+Cj4+IGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2lpby9hZGMvc3RtMzItZGZzZG0tY29yZS5j
+Cj4+IGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2lpby9hZGMvc3RtMzItZGZzZG0uaAo+PiBj
+cmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9paW8vYnVmZmVyL2luZHVzdHJpYWxpby1ody1jb25z
+dW1lci5jCj4+IGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2xpbnV4L2lpby9hZGMvc3RtMzIt
+ZGZzZG0tYWRjLmgKPj4gY3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvbGludXgvaWlvL2h3LWNv
+bnN1bWVyLmgKPiAKPiAtLSAKPiBTZW50IGZyb20gbXkgQW5kcm9pZCBkZXZpY2Ugd2l0aCBLLTkg
+TWFpbC4gUGxlYXNlIGV4Y3VzZSBteSBicmV2aXR5LgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
