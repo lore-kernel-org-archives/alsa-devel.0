@@ -1,26 +1,46 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: ux500: add MODULE_LICENSE tag
-Date: Wed, 10 Jan 2018 17:34:45 +0100
-Message-ID: <20180110163503.603206-1-arnd@arndb.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.74])
- by alsa0.perex.cz (Postfix) with ESMTP id 5EC05266A74
- for <alsa-devel@alsa-project.org>; Wed, 10 Jan 2018 17:35:14 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Takashi Iwai <tiwai@suse.com>, Donglin Peng <dolinux.peng@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Johan Hovold <johan@kernel.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: ux500: add MODULE_LICENSE tag" to the asoc tree
+Date: Wed, 10 Jan 2018 16:42:51 +0000
+Message-ID: <E1eZJSl-00089M-Kc@debutante>
+References: <20180110163503.603206-1-arnd@arndb.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180110163503.603206-1-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Takashi Iwai <tiwai@suse.com>, Donglin Peng <dolinux.peng@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Johan Hovold <johan@kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
+
+The patch
+
+   ASoC: ux500: add MODULE_LICENSE tag
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 1783c9d7cb7bc3181b9271665959b87280d98d8e Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 10 Jan 2018 17:34:45 +0100
+Subject: [PATCH] ASoC: ux500: add MODULE_LICENSE tag
 
 This adds MODULE_LICENSE/AUTHOR/DESCRIPTION tags to the ux500
 platform drivers, to avoid these build warnings:
@@ -32,6 +52,7 @@ The company no longer exists, so the email addresses of the authors
 don't work any more, but I've added them anyway for consistency.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
  sound/soc/ux500/mop500.c    | 4 ++++
  sound/soc/ux500/ux500_pcm.c | 5 +++++
@@ -63,4 +84,4 @@ index f12c01dddc8d..d35ba7700f46 100644
 +MODULE_DESCRIPTION("ASoC UX500 driver");
 +MODULE_LICENSE("GPL v2");
 -- 
-2.9.0
+2.15.1
