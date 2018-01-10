@@ -1,16 +1,14 @@
-From: "Fischer, Christian" <fischerc@swissphone.de>
-Subject: Re: [PATCH v2] ASoC: sgtl5000: Fix powerup/down of
- micbias
-Date: Wed, 10 Jan 2018 15:53:00 +0000
-Message-ID: <DD64F087E8F0B540A1C9216D6716FFBDF9946AA9@defrsexc01.swissphone.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: ux500: add MODULE_LICENSE tag
+Date: Wed, 10 Jan 2018 17:34:45 +0100
+Message-ID: <20180110163503.603206-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail2.avectris.ch (mail2.avectris.ch [185.94.144.40])
- by alsa0.perex.cz (Postfix) with ESMTP id AF60F2676F6
- for <alsa-devel@alsa-project.org>; Wed, 10 Jan 2018 16:53:02 +0100 (CET)
-Content-Language: de-DE
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.74])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5EC05266A74
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jan 2018 17:35:14 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,76 +18,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Baluta <daniel.baluta@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Takashi Iwai <tiwai@suse.com>, Donglin Peng <dolinux.peng@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Johan Hovold <johan@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8gRGFuaWVsLA0KDQpJJ20gc29ycnksIHRoYXRzIG15IGZpcnN0IG9mZmljaWFsIHBhdGNo
-IDotKQ0KSSd2ZSBub3cgY2xvbmVkIGEga2VybmVsIG91dHNpZGUgbXkgYnVpbGRzeXN0ZW0gYW5k
-IChob3BlZnVsbHkpIGEgbmV3LCBhY2NlcHRhYmxlIHBhdGNoLg0KUmVnYXJkcywNCkNocmlzdGlh
-bg0KDQpGcm9tIGQwNjc5NGQ5OGUzZWQ4NGVjYjE2NDFiNzRkMDkzMzY2ZmZmZjJjYmEgTW9uIFNl
-cCAxNyAwMDowMDowMCAyMDAxDQpGcm9tOiBDaHJpc3RpYW4gRmlzY2hlciA8ZmlzY2hlcmNAc3dp
-c3NwaG9uZS5kZT4NCkRhdGU6IFdlZCwgMTAgSmFuIDIwMTggMTY6NDc6NTEgKzAxMDANClN1Ympl
-Y3Q6IFtQQVRDSCB2Ml0gQVNvQzogc2d0bDUwMDA6IGZpeCBwb3dlcnVwL2Rvd24gb2YgbWljYmlh
-cy12b2x0YWdlDQoNClRoZSBtaWMtYmlhcy12b2x0YWdlIHNob3VsZCBnZXQgcG93ZXJlZCB1cC9k
-b3duIGF1dG9tYXRpY2FsbHkuDQpBZGRlZCBtaXNzaW5nIERBUE1fUFJFIGFuZCBEQVBNX1BPU1Qg
-d2lkZ2V0cyB0byBmaXJlIHVwIHRoZSBtaWNfYmlhc19ldmVudCBmdW5jdGlvbi4NCg0KU2lnbmVk
-LW9mZi1ieTogQ2hyaXN0aWFuIEZpc2NoZXIgPGZpc2NoZXJjQHN3aXNzcGhvbmUuZGU+DQotLS0N
-CiBzb3VuZC9zb2MvY29kZWNzL3NndGw1MDAwLmMgfCAzICsrKw0KIDEgZmlsZSBjaGFuZ2VkLCAz
-IGluc2VydGlvbnMoKykNCg0KZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3Mvc2d0bDUwMDAu
-YyBiL3NvdW5kL3NvYy9jb2RlY3Mvc2d0bDUwMDAuYw0KaW5kZXggZjJiYjRmZS4uNDk3MzM2NSAx
-MDA2NDQNCi0tLSBhL3NvdW5kL3NvYy9jb2RlY3Mvc2d0bDUwMDAuYw0KKysrIGIvc291bmQvc29j
-L2NvZGVjcy9zZ3RsNTAwMC5jDQpAQCAtMjYwLDYgKzI2MCw5IEBAIHN0YXRpYyBjb25zdCBzdHJ1
-Y3Qgc25kX3NvY19kYXBtX3dpZGdldCBzZ3RsNTAwMF9kYXBtX3dpZGdldHNbXSA9IHsNCiANCiAJ
-U05EX1NPQ19EQVBNX1BSRSgiVkFHX1BPV0VSX1BSRSIsIHBvd2VyX3ZhZ19ldmVudCksDQogCVNO
-RF9TT0NfREFQTV9QT1NUKCJWQUdfUE9XRVJfUE9TVCIsIHBvd2VyX3ZhZ19ldmVudCksDQorDQor
-CVNORF9TT0NfREFQTV9QUkUoIk1JQ19CSUFTX1BSRSIsIG1pY19iaWFzX2V2ZW50KSwNCisJU05E
-X1NPQ19EQVBNX1BPU1QoIk1JQ19CSUFTX1BPU1QiLCBtaWNfYmlhc19ldmVudCksDQogfTsNCiAN
-CiAvKiByb3V0ZXMgZm9yIHNndGw1MDAwICovDQotLSANCjIuNy40DQoNCi0tLS0tVXJzcHLDvG5n
-bGljaGUgTmFjaHJpY2h0LS0tLS0NClZvbjogRGFuaWVsIEJhbHV0YSBbbWFpbHRvOmRhbmllbC5i
-YWx1dGFAbnhwLmNvbV0gDQpHZXNlbmRldDogTWl0dHdvY2gsIDEwLiBKYW51YXIgMjAxOCAxNToz
-MQ0KQW46IEZpc2NoZXIsIENocmlzdGlhbiA8ZmlzY2hlcmNAc3dpc3NwaG9uZS5kZT47IGFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZw0KQ2M6IGxnaXJkd29vZEBnbWFpbC5jb207IGJyb29uaWVA
-a2VybmVsLm9yZzsgdGl3YWlAc3VzZS5jb20NCkJldHJlZmY6IFJlOiBbYWxzYS1kZXZlbF0gW1BB
-VENIIHYyXSBBU29DOiBzZ3RsNTAwMDogRml4IHBvd2VydXAvZG93biBvZiBtaWNiaWFzDQoNCk9u
-IE1pLCAyMDE4LTAxLTEwIGF0IDE0OjI2ICswMDAwLCBGaXNjaGVyLCBDaHJpc3RpYW4gd3JvdGU6
-DQo+IEhlbGxvIEZhYmlvLA0KPiANCj4gaXMgaXQgbm93IG9rPw0KPiBJJ20gbm90IHdvcmtpbmcg
-d2l0aCBsaW51eC1naXQsIHNvIG15IHBhdGNoIGlzIGNyZWF0ZWQgYnkgbXlzZWxmLg0KPiANCj4g
-UmVnYXJkcywNCj4gQ2hyaXN0aWFuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBDaHJpc3RpYW4gRmlz
-Y2hlciA8ZmlzY2hlcmNAc3dpc3NwaG9uZS5kZT4NCg0KSGkgQ2hyaXN0aWFuLA0KDQpUaGlzIGRv
-ZXNuJ3QgbG9vayBnb29kIHRvIG1lLiBIb3cgYXJlIGNyZWF0aW5nL3NlbmRpbmcgdGhlIHBhdGNo
-ZXM/DQoNCllvdSBzaG91bGQgdXBkYXRlIHRoZSBjb21taXQgbWVzc2FnZSB0byBpbmNsdWRlIHlv
-dXIgU2lnbmVkLW9mZi1ieSB0YWcgYW5kIHRoZW4gcmVzZW5kIHRoZSBlbnRpcmUgcGF0Y2guDQoN
-CnRoYW5rcywNCkRhbmllbC4NCg0KDQo+IA0KPiAtLS0gc291bmQvc29jL2NvZGVjcy9zZ3RsNTAw
-MC5jDQo+ICsrKyBzb3VuZC9zb2MvY29kZWNzL3NndGw1MDAwLmMNCj4gQEAgLTI2MCw2ICsyNjAs
-OSBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFwbV93aWRnZXQNCj4gwqANCj4gwqAJ
-U05EX1NPQ19EQVBNX1BSRSgiVkFHX1BPV0VSX1BSRSIsIHBvd2VyX3ZhZ19ldmVudCksDQo+IMKg
-CVNORF9TT0NfREFQTV9QT1NUKCJWQUdfUE9XRVJfUE9TVCIsIHBvd2VyX3ZhZ19ldmVudCksDQo+
-ICsNCj4gKwlTTkRfU09DX0RBUE1fUFJFKCJNSUNfQklBU19QUkUiLCBtaWNfYmlhc19ldmVudCks
-DQo+ICsJU05EX1NPQ19EQVBNX1BPU1QoIk1JQ19CSUFTX1BPU1QiLCBtaWNfYmlhc19ldmVudCks
-DQo+IMKgfTsNCj4gwqANCj4gwqAvKiByb3V0ZXMgZm9yIHNndGw1MDAwICovDQo+IA0KPiAtLS0t
-LVVyc3Byw7xuZ2xpY2hlIE5hY2hyaWNodC0tLS0tDQo+IFZvbjogRmFiaW8gRXN0ZXZhbSBbbWFp
-bHRvOmZlc3RldmFtQGdtYWlsLmNvbV0NCj4gR2VzZW5kZXQ6IE1pdHR3b2NoLCAxMC4gSmFudWFy
-IDIwMTggMTM6NDINCj4gQW46IEZpc2NoZXIsIENocmlzdGlhbiA8ZmlzY2hlcmNAc3dpc3NwaG9u
-ZS5kZT4NCj4gQ2M6IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgVGFrYXNoaSBJd2FpIDx0
-aXdhaUBzdXNlLmNvbT47IE1hcmsgDQo+IEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+OyBMaWFt
-IEdpcmR3b29kIDxsZ2lyZHdvb2RAZ21haWwuY29tPg0KPiBCZXRyZWZmOiBSZTogW2Fsc2EtZGV2
-ZWxdIFtQQVRDSF0gQVNvQzogc2d0bDUwMDA6IEZpeCBwb3dlcnVwL2Rvd24gb2YgDQo+IG1pY2Jp
-YXMNCj4gDQo+IEhpIENocmlzdGlhbiwNCj4gDQo+IE9uIFdlZCwgSmFuIDEwLCAyMDE4IGF0IDg6
-MDcgQU0sIEZpc2NoZXIsIENocmlzdGlhbiA8ZmlzY2hlcmNAc3dpc3NwaG9uZS5kZT4gd3JvdGU6
-DQo+ID4gDQo+ID4gVGhlIGJpYXMtYmlhcy12b2x0YWdlIHNob3VsZCBwb3dlcmVkIHVwL2Rvd24g
-YXV0b21hdGljYWxseS4NCj4gPiBBZGRlZCBtaXNzaW5nIERBUE1fUFJFIGFuZCBEQVBNX1BPU1Qg
-d2lkZ2V0cyB0byBmaXJlIHVwIHRoZSBtaWNfYmlhc19ldmVudCBmdW5jdGlvbi4NCj4gVGhhbmtz
-IGZvciBzdWJtaXR0aW5nIHRoZSBwYXRjaC4NCj4gDQo+IFlvdSBtaXNzZWQgeW91ciBTaWduZWQt
-b2ZmLWJ5IHRhZy4NCj4gDQo+IFBsZWFzZSByZXNlbmQgaXQuDQo+IA0KPiBUaGFua3MNCj4gX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QNCj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnDQo+IGh0dHBzOi8v
-ZW1lYTAxLnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91dGxvb2suY29tLz91cmw9aHR0cCUzQSUyRiUy
-Rm1haWwNCj4gbWFuLmFsc2EtcHJvamVjdC5vcmclMkZtYWlsbWFuJTJGbGlzdGluZm8lMkZhbHNh
-LWRldmVsJmRhdGE9MDIlN0MwMSU3Qw0KPiBkYW5pZWwuYmFsdXRhJTQwbnhwLmNvbSU3QzRhNzcx
-Njk0YWYzMTRmYTdkNzMwMDhkNTU4MzYyYTM3DQo+ICU3QzY4NmVhMWQzYmMyYjRjNmZhOTJjZDk5
-YzVjMzAxNjM1JTdDMCU3QzAlN0M2MzY1MTE5MTIwMjkyODI4ODUmc2RhdGE9Wm80MlpKeEl4cDU0
-WXlZTFZzRnJyUldrRHQlMkZxQnlSNnVxcjhVNnBYM2lZJTNEJnJlc2VydmVkPTANCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+This adds MODULE_LICENSE/AUTHOR/DESCRIPTION tags to the ux500
+platform drivers, to avoid these build warnings:
+
+WARNING: modpost: missing MODULE_LICENSE() in sound/soc/ux500/snd-soc-ux500-plat-dma.o
+WARNING: modpost: missing MODULE_LICENSE() in sound/soc/ux500/snd-soc-ux500-mach-mop500.o
+
+The company no longer exists, so the email addresses of the authors
+don't work any more, but I've added them anyway for consistency.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ sound/soc/ux500/mop500.c    | 4 ++++
+ sound/soc/ux500/ux500_pcm.c | 5 +++++
+ 2 files changed, 9 insertions(+)
+
+diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
+index 070a6880980e..c60a57797640 100644
+--- a/sound/soc/ux500/mop500.c
++++ b/sound/soc/ux500/mop500.c
+@@ -163,3 +163,7 @@ static struct platform_driver snd_soc_mop500_driver = {
+ };
+ 
+ module_platform_driver(snd_soc_mop500_driver);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("ASoC MOP500 board driver");
++MODULE_AUTHOR("Ola Lilja");
+diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
+index f12c01dddc8d..d35ba7700f46 100644
+--- a/sound/soc/ux500/ux500_pcm.c
++++ b/sound/soc/ux500/ux500_pcm.c
+@@ -165,3 +165,8 @@ int ux500_pcm_unregister_platform(struct platform_device *pdev)
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(ux500_pcm_unregister_platform);
++
++MODULE_AUTHOR("Ola Lilja");
++MODULE_AUTHOR("Roger Nilsson");
++MODULE_DESCRIPTION("ASoC UX500 driver");
++MODULE_LICENSE("GPL v2");
+-- 
+2.9.0
