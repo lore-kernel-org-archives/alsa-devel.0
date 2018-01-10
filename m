@@ -1,33 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "IIO: consumer: allow to set buffer sizes" to
-	the asoc tree
-Date: Wed, 10 Jan 2018 11:12:56 +0000
-Message-ID: <E1eZEJU-0004sb-VM@debutante>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 11B4E2677B3
- for <alsa-devel@alsa-project.org>; Wed, 10 Jan 2018 12:12:58 +0100 (CET)
-In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "IIO: ADC: add sigma delta modulator support" to the asoc tree
+Date: Wed, 10 Jan 2018 11:13:14 +0000
+Message-ID: <E1eZEJm-0004yz-Go@debutante>
+References: <1512744566-13233-7-git-send-email-arnaud.pouliquen@st.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1512744566-13233-7-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Jonathan Cameron <Jonathan.Cameron-hv44wF8Li93QT0dZR+AlfA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   IIO: consumer: allow to set buffer sizes
+   IIO: ADC: add sigma delta modulator support
 
 has been applied to the asoc tree at
 
@@ -52,65 +36,136 @@ to this mail.
 Thanks,
 Mark
 
->From 16cbca06fa8288a4f58426fc898b141e12ee8008 Mon Sep 17 00:00:00 2001
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Date: Wed, 10 Jan 2018 11:13:13 +0100
-Subject: [PATCH] IIO: consumer: allow to set buffer sizes
+>From 8a5f0b6f6c4f1a0ff98b5ca1f83cbe34cdebd96e Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Date: Wed, 10 Jan 2018 11:13:08 +0100
+Subject: [PATCH] IIO: ADC: add sigma delta modulator support
 
-Add iio consumer API to set buffer size and watermark according
-to sysfs API.
+Add generic driver to support sigma delta modulators.
+Typically, this device is hardware connected to
+an IIO device in charge of the conversion. Devices are
+bonded through the hardware consumer API.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Acked-by: Jonathan Cameron <Jonathan.Cameron-hv44wF8Li93QT0dZR+AlfA@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- drivers/iio/buffer/industrialio-buffer-cb.c | 11 +++++++++++
- include/linux/iio/consumer.h                | 11 +++++++++++
- 2 files changed, 22 insertions(+)
+ drivers/iio/adc/Kconfig            | 12 +++++++
+ drivers/iio/adc/Makefile           |  1 +
+ drivers/iio/adc/sd_adc_modulator.c | 68 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 81 insertions(+)
+ create mode 100644 drivers/iio/adc/sd_adc_modulator.c
 
-diff --git a/drivers/iio/buffer/industrialio-buffer-cb.c b/drivers/iio/buffer/industrialio-buffer-cb.c
-index 4847534700e7..ea63c838eeae 100644
---- a/drivers/iio/buffer/industrialio-buffer-cb.c
-+++ b/drivers/iio/buffer/industrialio-buffer-cb.c
-@@ -104,6 +104,17 @@ struct iio_cb_buffer *iio_channel_get_all_cb(struct device *dev,
- }
- EXPORT_SYMBOL_GPL(iio_channel_get_all_cb);
+diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+index ef86296b8b0d..5f9d04a8ba53 100644
+--- a/drivers/iio/adc/Kconfig
++++ b/drivers/iio/adc/Kconfig
+@@ -629,6 +629,18 @@ config SPEAR_ADC
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called spear_adc.
  
-+int iio_channel_cb_set_buffer_watermark(struct iio_cb_buffer *cb_buff,
-+					size_t watermark)
-+{
-+	if (!watermark)
-+		return -EINVAL;
-+	cb_buff->buffer.watermark = watermark;
++config SD_ADC_MODULATOR
++	tristate "Generic sigma delta modulator"
++	depends on OF
++	select IIO_BUFFER
++	select IIO_TRIGGERED_BUFFER
++	help
++	  Select this option to enables sigma delta modulator. This driver can
++	  support generic sigma delta modulators.
 +
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(iio_channel_cb_set_buffer_watermark);
++	  This driver can also be built as a module.  If so, the module
++	  will be called sd_adc_modulator.
 +
- int iio_channel_start_all_cb(struct iio_cb_buffer *cb_buff)
- {
- 	return iio_update_buffers(cb_buff->indio_dev, &cb_buff->buffer,
-diff --git a/include/linux/iio/consumer.h b/include/linux/iio/consumer.h
-index 2017f35db17c..9887f4f8e2a8 100644
---- a/include/linux/iio/consumer.h
-+++ b/include/linux/iio/consumer.h
-@@ -133,6 +133,17 @@ struct iio_cb_buffer *iio_channel_get_all_cb(struct device *dev,
- 					     int (*cb)(const void *data,
- 						       void *private),
- 					     void *private);
-+/**
-+ * iio_channel_cb_set_buffer_watermark() - set the buffer watermark.
-+ * @cb_buffer:		The callback buffer from whom we want the channel
-+ *			information.
-+ * @watermark: buffer watermark in bytes.
+ config STM32_ADC_CORE
+ 	tristate "STMicroelectronics STM32 adc core"
+ 	depends on ARCH_STM32 || COMPILE_TEST
+diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
+index 9572c1090f35..fa5e7949f642 100644
+--- a/drivers/iio/adc/Makefile
++++ b/drivers/iio/adc/Makefile
+@@ -82,3 +82,4 @@ obj-$(CONFIG_VF610_ADC) += vf610_adc.o
+ obj-$(CONFIG_VIPERBOARD_ADC) += viperboard_adc.o
+ xilinx-xadc-y := xilinx-xadc-core.o xilinx-xadc-events.o
+ obj-$(CONFIG_XILINX_XADC) += xilinx-xadc.o
++obj-$(CONFIG_SD_ADC_MODULATOR) += sd_adc_modulator.o
+diff --git a/drivers/iio/adc/sd_adc_modulator.c b/drivers/iio/adc/sd_adc_modulator.c
+new file mode 100644
+index 000000000000..560d8c7d9d86
+--- /dev/null
++++ b/drivers/iio/adc/sd_adc_modulator.c
+@@ -0,0 +1,68 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Generic sigma delta modulator driver
 + *
-+ * This function allows to configure the buffer watermark.
++ * Copyright (C) 2017, STMicroelectronics - All Rights Reserved
++ * Author: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>.
 + */
-+int iio_channel_cb_set_buffer_watermark(struct iio_cb_buffer *cb_buffer,
-+					size_t watermark);
 +
- /**
-  * iio_channel_release_all_cb() - release and unregister the callback.
-  * @cb_buffer:		The callback buffer that was allocated.
++#include <linux/iio/iio.h>
++#include <linux/iio/triggered_buffer.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
++
++static const struct iio_info iio_sd_mod_iio_info;
++
++static const struct iio_chan_spec iio_sd_mod_ch = {
++	.type = IIO_VOLTAGE,
++	.indexed = 1,
++	.scan_type = {
++		.sign = 'u',
++		.realbits = 1,
++		.shift = 0,
++	},
++};
++
++static int iio_sd_mod_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct iio_dev *iio;
++
++	iio = devm_iio_device_alloc(dev, 0);
++	if (!iio)
++		return -ENOMEM;
++
++	iio->dev.parent = dev;
++	iio->dev.of_node = dev->of_node;
++	iio->name = dev_name(dev);
++	iio->info = &iio_sd_mod_iio_info;
++	iio->modes = INDIO_BUFFER_HARDWARE;
++
++	iio->num_channels = 1;
++	iio->channels = &iio_sd_mod_ch;
++
++	platform_set_drvdata(pdev, iio);
++
++	return devm_iio_device_register(&pdev->dev, iio);
++}
++
++static const struct of_device_id sd_adc_of_match[] = {
++	{ .compatible = "sd-modulator" },
++	{ .compatible = "ads1201" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, sd_adc_of_match);
++
++static struct platform_driver iio_sd_mod_adc = {
++	.driver = {
++		.name = "iio_sd_adc_mod",
++		.of_match_table = of_match_ptr(sd_adc_of_match),
++	},
++	.probe = iio_sd_mod_probe,
++};
++
++module_platform_driver(iio_sd_mod_adc);
++
++MODULE_DESCRIPTION("Basic sigma delta modulator");
++MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>");
++MODULE_LICENSE("GPL v2");
 -- 
 2.15.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
