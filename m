@@ -1,57 +1,62 @@
-From: Mirza Krak <mirza.krak-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Bad PCM stream after a suspend/resume cycle
-Date: Thu, 11 Jan 2018 10:06:12 +0100
-Message-ID: <CALw8SCXUpeUv8433Rd9is6eNd9ztd6soEOoDMkVSLue6qT6wKg@mail.gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: stm32: select IIO_BUFFER
+Date: Thu, 11 Jan 2018 11:33:26 +0100
+Message-ID: <20180111103346.1358598-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
-List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8077D266E76
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2018 11:34:03 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, olivier moysan <olivier.moysan@st.com>, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkuCgpJIGhhdmUgYSBxdWl0ZSBzaW1wbGUgcHJvYmxlbSByZWFsbHkgKHNpbXBsZSB0ZXN0LWNh
-c2UgYXQgbGVhc3QpLgoKRm9sbG93aW5nIGRlc2NyaWJlcyB0aGUgdGVzdCBjYXNlOgoKJCBhcGxh
-eSB0ZXN0LndhdgoKIyBXaGlsZSB0aGUgLndhdiBpcyBwbGF5aW5nIHN1c3BlbmQgdGhlIHN5c3Rl
-bQokIHN5c3RlbWN0bCBzdXNwZW5kCgojIFdoZW4gc3lzdGVtIGlzIHJlc3VtZWQgSSBnZXQgdGhl
-IGZvbGxvd2luZyBlcnJvciBvbiBteSBhcGxheSBjb21tYW5kCmFwbGF5OiBwY21fd3JpdGU6MjAz
-MDogd3JpdGUgZXJyb3I6IEZpbGUgZGVzY3JpcHRvciBpbiBiYWQgc3RhdGUKCkkgd2FzIGV4cGVj
-dGluZyBmb3IgdGhlIHBsYXliYWNrIHRvIHJlc3VtZS4KCkkgZGlkIHNvbWUgZGVidWdnaW5nIHVz
-aW5nICJhcGxheSIgYW5kIHdoYXQgSSBjYW4gc2VlIHRoYXQgaGFwcGVucwpiZWZvcmUgdGhlIEVC
-QURGRCBlcnJvciBpcyB0aGF0IHRoZSAid3JpdGVpX2Z1bmMoKSIgcmV0dXJucyBhIHBvc2l0aXZl
-CnZhbHVlIG9uY2Ugd2hpY2ggcmVzdWx0cyBpbiBhIGNhbGwgdG8gInNuZF9wY21fd2FpdCgpIiBh
-bmQgb24gdGhlIG5leHQKIndyaXRlaV9mdW5jKCkiIGNhbGwgLUVCQURGRCBpcyByZXR1cm5lZC4K
-Ckkgd291bGQgZXhwZWN0IGEgLUVTVFJQSVBFIGVycm9yIHdoaWNoIHNob3VsZCB0aGVuIHJlc3Vs
-dCBpbiB0aGF0IHRoZQpQQ00gc3RyZWFtIHRvIGJlICJyZXN1bWVkIiAoYWNjb3JkaW5nIHRvIGRv
-Y3VtZW50YXRpb24gYXQgbGVhc3QpLiBJCmhhdmUgdHJpZWQgImZvcmNpbmciIGEgY2FsbCB0byAi
-c3VzcGVuZCgpIiBvbiB0aGUgZmlyc3Qgd3JpdGUgZXJyb3IgaW4KYXBsYXkgYWZ0ZXIgc3lzdGVt
-IGlzIHJlc3VtZWQgYW5kIGl0IGFjdHVhbGx5IHdvcmtzLCBraW5kYS4gVGhlCnBsYXliYWNrIGlz
-IHJlc3VtZWQgZXZlbi10aG91Z2ggdGhlICJzbmRfcGNtX3Jlc3VtZSgpIiBjYWxsIHJldHVybnMg
-YW4KZXJyb3IuCgpJIGhhdmUgbm90IHdvcmtlZCBtdWNoIHdpdGggdGhlIHNvdW5kIHN1YnN5c3Rl
-bSBiZWZvcmUgYW5kIEkgYW0gaGF2aW5nCmEgaGFyZCB0aW1lIGZvbGxvd2luZyBhbGwgdGhlIGNh
-bGwgcGF0aHMgdG8gc2VlIHdoby93aGF0IGlzIHRvIGJsYW1lCmZvciB0aGlzIGJlaGF2aW9yLiBN
-YXliZSBpdCBleHBlY3RlZCB0byB3b3JrIGxpa2UgdGhpcz8gQW5kIEkgZG8gbm90Cmtub3cgaWYg
-dGhpcyBpcyBvbmx5IG9uIG15IFNvQyBvciBpZiB0aGlzIGlzIGEgZ2VuZXJpYyBzb3VuZCBwcm9i
-bGVtLgoKSW5mb3JtYXRpb24gYWJvdXQgbXkgc3lzdGVtOgoKVXNpbmcgYSBSSzMyODggU29DIChS
-SzMyODgtRmlyZUZseSBib2FyZCkgd2l0aCA0LjE0LjEzIExpbnV4IGtlcm5lbAoobGF0ZXN0IHN0
-YWJsZSkuCgphbHNhLWxpYiB2ZXJzaW9uIDEuMS40LjEKClBsYXliYWNrIHVzaW5nIEkyUwoKJCBj
-YXQgL3Byb2MvYXNvdW5kL2NhcmRzCiAwIFtJMlMgICAgICAgICAgICBdOiBJMlMgLSBJMlMKICAg
-ICAgICAgICAgICAgICAgICAgIEkyUwokIGNhdCAvcHJvYy9hc291bmQvY2FyZDAvcGNtMHAvaW5m
-bwpjYXJkOiAwCmRldmljZTogMApzdWJkZXZpY2U6IDAKc3RyZWFtOiBQTEFZQkFDSwppZDogQXVk
-aW8gZXM4MzI4LWhpZmktYW5hbG9nLTAKbmFtZToKc3VibmFtZTogc3ViZGV2aWNlICMwCmNsYXNz
-OiAwCnN1YmNsYXNzOiAwCnN1YmRldmljZXNfY291bnQ6IDEKc3ViZGV2aWNlc19hdmFpbDogMQoK
-TGV0IG1lIGtub3cgaWYgdGhlcmUgaXMgYWRkaXRpb25hbCBpbmZvcm1hdGlvbiB0aGF0IEkgbmVl
-ZCB0byBwcm92aWRlLgoKLS0gCk1lZCBWw6RubGlnYSBIw6Rsc25pbmdhciAvIEJlc3QgUmVnYXJk
-cwoKTWlyemEgS3JhawoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTGludXgtcm9ja2NoaXAgbWFpbGluZyBsaXN0CkxpbnV4LXJvY2tjaGlwQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
-aW51eC1yb2NrY2hpcAo=
+The new stm32_adfsdm driver has incomplete dependencies as shown
+by Kconfig:
+
+warning: (SND_SOC_STM32_DFSDM && LMP91000) selects IIO_BUFFER_CB which has unmet direct dependencies (IIO && IIO_BUFFER)
+sound/soc/stm/stm32_adfsdm.o: In function `stm32_adfsdm_trigger':
+stm32_adfsdm.c:(.text+0x8c): undefined reference to `stm32_dfsdm_get_buff_cb'
+stm32_adfsdm.c:(.text+0x9c): undefined reference to `stm32_dfsdm_release_buff_cb'
+
+This makes the dependency on SND_SOC_STM32_DFSDM unconditional, so we can
+always resolve the stm32_dfsdm_get_buff_cb/stm32_dfsdm_release_buff_cb
+symbols and get the implied IIO_BUFFER dependency.
+
+compile-testing on other platforms is still possible as long as that IIO
+driver is there.
+
+Fixes: 55da094824c4 ("ASoC: stm32: add DFSDM DAI support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ sound/soc/stm/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/stm/Kconfig b/sound/soc/stm/Kconfig
+index a78f7700d489..3ad881fc40a1 100644
+--- a/sound/soc/stm/Kconfig
++++ b/sound/soc/stm/Kconfig
+@@ -30,8 +30,9 @@ config SND_SOC_STM32_SPDIFRX
+ 
+ config SND_SOC_STM32_DFSDM
+ 	tristate "SoC Audio support for STM32 DFSDM"
+-	depends on (ARCH_STM32 && OF && STM32_DFSDM_ADC) || COMPILE_TEST
++	depends on ARCH_STM32 || COMPILE_TEST
+ 	depends on SND_SOC
++	depends on STM32_DFSDM_ADC
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	select SND_SOC_DMIC
+ 	select IIO_BUFFER_CB
+-- 
+2.9.0
