@@ -1,82 +1,46 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: sgtl5000: fix powerup/down of
-	micbias-voltage
-Date: Thu, 11 Jan 2018 16:19:47 +0000
-Message-ID: <20180111161947.GD7834@sirena.org.uk>
-References: <1515660031-9183-1-git-send-email-fischerc@swissphone.de>
- <20180111150704.GC7834@sirena.org.uk>
- <DD64F087E8F0B540A1C9216D6716FFBDF9947CB6@defrsexc01.swissphone.de>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4245954921480616489=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F77F266E6D
- for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2018 17:19:49 +0100 (CET)
-In-Reply-To: <DD64F087E8F0B540A1C9216D6716FFBDF9947CB6@defrsexc01.swissphone.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Fischer, Christian" <fischerc@swissphone.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "fabio.estevam@nxp.com" <fabio.estevam@nxp.com>, "bhumirks@gmail.com" <bhumirks@gmail.com>, "richard.leitner@skidata.com" <richard.leitner@skidata.com>
+From: Luis de Bethencourt <luisbg@kernel.org>
+Subject: [PATCH] ASoC: cs42l73: Remove trailing semicolon
+Date: Thu, 11 Jan 2018 16:27:04 +0000
+Message-ID: <20180111162704.25246-1-luisbg@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Joe Perches <joe@perches.com>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Luis de Bethencourt <luisbg@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The trailing semicolon is an empty statement that does no operation.
+Removing it since it doesn't do anything.
 
---===============4245954921480616489==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="tNQTSEo8WG/FKZ8E"
-Content-Disposition: inline
+Signed-off-by: Luis de Bethencourt <luisbg@kernel.org>
+---
 
+Hi,
 
---tNQTSEo8WG/FKZ8E
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+After fixing the same thing in drivers/staging/rtl8723bs/, Joe Perches
+suggested I fix it treewide [0].
 
-On Thu, Jan 11, 2018 at 04:14:31PM +0000, Fischer, Christian wrote:
-> Hi Mark,
-
-Please don't top post, reply in line with needed context.  This allows
-readers to readily follow the flow of conversation and understand what
-you are talking about and also helps ensure that everything in the
-discussion is being addressed.
-
-> Testing:
-> arecord -D "hw:0,1" -c 2 -f S16_LE -t wav test_recording.wav
-> Recording WAVE 'test_recording.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Stereo
-> ==> no event was fired
-
-Has your board connected the bias to the microphone widget it defines?
-Unless your board says that the bias is in use on a given board it won't
-be enabled.
-
---tNQTSEo8WG/FKZ8E
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpXjqIACgkQJNaLcl1U
-h9B11wf/WCtPxz5BRF+sLMbaTNQCKxkdAbJ/3/3WQC5SPXC4syvb++oZUmgdFQTq
-tFjwS6y3hTy5E5UglQUvEyBNV4S7D12N/VqAJ9RCMu3lzSTwYmDMZGHrAVZj3yn1
-8TEayYo/ccodiG5afyvOuR0uUKt0gYK3CE6C/U9RumgA5vdSRqhRVxqBCao5igsY
-S5/aRvBkbTGMWkZL8c1cAB3vL1Q1f4L+QauO29hbggyq3R8ebBNqdMahgeXmoM5H
-IUmzwq/laF7qSM9IBhjzBiziaSr+wUP6pCEhnFRbg5dkiP5iQ0Bt5goWIGfoNxVn
-hC+VgbJOHp2lxB1KjhQE7UyT21OiaA==
-=ZFfX
------END PGP SIGNATURE-----
-
---tNQTSEo8WG/FKZ8E--
-
---===============4245954921480616489==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Best regards 
+Luis
 
 
---===============4245954921480616489==--
+[0] http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2018-January/115410.html
+[1] http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2018-January/115390.html
+
+ sound/soc/codecs/cs42l73.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
+index dde37e569ade..aebaa97490b6 100644
+--- a/sound/soc/codecs/cs42l73.c
++++ b/sound/soc/codecs/cs42l73.c
+@@ -1355,7 +1355,7 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
+ 	ret = regmap_read(cs42l73->regmap, CS42L73_REVID, &reg);
+ 	if (ret < 0) {
+ 		dev_err(&i2c_client->dev, "Get Revision ID failed\n");
+-		return ret;;
++		return ret;
+ 	}
+ 
+ 	dev_info(&i2c_client->dev,
+-- 
+2.15.1
