@@ -1,17 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "IIO: ADC: stm32-dfsdm: avoid unused-variable
-	warning" to the asoc tree
-Date: Thu, 11 Jan 2018 12:31:00 +0000
-Message-ID: <E1eZc0a-0007Pd-6g@debutante>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: seq: Make ioctls race-free
+Date: Thu, 11 Jan 2018 14:38:57 +0100
+Message-ID: <20180111133857.32311-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E81432678CE
- for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2018 13:31:00 +0100 (CET)
-In-Reply-To: 
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 800D4266E3A
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2018 14:39:05 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,77 +18,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Luo Quan <a4651386@163.com>, Kees Cook <keescook@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+The ALSA sequencer ioctls have no protection against racy calls while
+the concurrent operations may lead to interfere with each other.  As
+reported recently, for example, the concurrent calls of setting client
+pool with a combination of write calls may lead to either the
+unkillable dead-lock or UAF.
 
-   IIO: ADC: stm32-dfsdm: avoid unused-variable warning
+As a slightly big hammer solution, this patch introduces the mutex to
+make each ioctl exclusive.  Although this may reduce performance via
+parallel ioctl calls, usually it's not demanded for sequencer usages,
+hence it should be negligible.
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 2353758bc2d427809f5feb15f046ded91c60afef Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 11 Jan 2018 11:34:46 +0100
-Subject: [PATCH] IIO: ADC: stm32-dfsdm: avoid unused-variable warning
-
-Building with CONFIG_OF disabled produces a compiler warning:
-
-drivers/iio/adc/stm32-dfsdm-core.c: In function 'stm32_dfsdm_probe':
-drivers/iio/adc/stm32-dfsdm-core.c:245:22: error: unused variable 'pnode' [-Werror=unused-variable]
-
-This removes the variable and open-codes it in the only place
-it gets used to avoid that warning.
-
-Fixes: bed73904e76f ("IIO: ADC: add stm32 DFSDM core support")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reported-by: Luo Quan <a4651386@163.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- drivers/iio/adc/stm32-dfsdm-core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 3 +++
+ sound/core/seq/seq_clientmgr.h | 1 +
+ 2 files changed, 4 insertions(+)
 
-diff --git a/drivers/iio/adc/stm32-dfsdm-core.c b/drivers/iio/adc/stm32-dfsdm-core.c
-index 72427414db7f..6cd655f8239b 100644
---- a/drivers/iio/adc/stm32-dfsdm-core.c
-+++ b/drivers/iio/adc/stm32-dfsdm-core.c
-@@ -242,7 +242,6 @@ MODULE_DEVICE_TABLE(of, stm32_dfsdm_of_match);
- static int stm32_dfsdm_probe(struct platform_device *pdev)
- {
- 	struct dfsdm_priv *priv;
--	struct device_node *pnode = pdev->dev.of_node;
- 	const struct of_device_id *of_id;
- 	const struct stm32_dfsdm_dev_data *dev_data;
- 	struct stm32_dfsdm *dfsdm;
-@@ -254,7 +253,7 @@ static int stm32_dfsdm_probe(struct platform_device *pdev)
+diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
+index 6e22eea72654..d01913404581 100644
+--- a/sound/core/seq/seq_clientmgr.c
++++ b/sound/core/seq/seq_clientmgr.c
+@@ -221,6 +221,7 @@ static struct snd_seq_client *seq_create_client1(int client_index, int poolsize)
+ 	rwlock_init(&client->ports_lock);
+ 	mutex_init(&client->ports_mutex);
+ 	INIT_LIST_HEAD(&client->ports_list_head);
++	mutex_init(&client->ioctl_mutex);
  
- 	priv->pdev = pdev;
+ 	/* find free slot in the client table */
+ 	spin_lock_irqsave(&clients_lock, flags);
+@@ -2130,7 +2131,9 @@ static long snd_seq_ioctl(struct file *file, unsigned int cmd,
+ 			return -EFAULT;
+ 	}
  
--	of_id = of_match_node(stm32_dfsdm_of_match, pnode);
-+	of_id = of_match_node(stm32_dfsdm_of_match, pdev->dev.of_node);
- 	if (!of_id->data) {
- 		dev_err(&pdev->dev, "Data associated to device is missing\n");
- 		return -EINVAL;
++	mutex_lock(&client->ioctl_mutex);
+ 	err = handler->func(client, &buf);
++	mutex_unlock(&client->ioctl_mutex);
+ 	if (err >= 0) {
+ 		/* Some commands includes a bug in 'dir' field. */
+ 		if (handler->cmd == SNDRV_SEQ_IOCTL_SET_QUEUE_CLIENT ||
+diff --git a/sound/core/seq/seq_clientmgr.h b/sound/core/seq/seq_clientmgr.h
+index c6614254ef8a..0611e1e0ed5b 100644
+--- a/sound/core/seq/seq_clientmgr.h
++++ b/sound/core/seq/seq_clientmgr.h
+@@ -61,6 +61,7 @@ struct snd_seq_client {
+ 	struct list_head ports_list_head;
+ 	rwlock_t ports_lock;
+ 	struct mutex ports_mutex;
++	struct mutex ioctl_mutex;
+ 	int convert32;		/* convert 32->64bit */
+ 
+ 	/* output pool */
 -- 
 2.15.1
