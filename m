@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v3 1/2] ASoC: Intel: bytcht_es8316: fix HID
-	handling
-Date: Thu, 11 Jan 2018 13:52:08 -0600
-Message-ID: <20180111195209.5809-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 2/2] ASoC: acpi: remove hard-coded
+	i2c-device name length
+Date: Thu, 11 Jan 2018 13:52:09 -0600
+Message-ID: <20180111195209.5809-3-pierre-louis.bossart@linux.intel.com>
 References: <20180111195209.5809-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id A512D266EEC
- for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2018 20:52:38 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 32C4B267930
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2018 20:52:39 +0100 (CET)
 In-Reply-To: <20180111195209.5809-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,76 +25,122 @@ To: alsa-devel@alsa-project.org
 Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, jeremy@jcline.org, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Same problem as with previous machine drivers, the codec dai
-uses a hard-coded name of "i2c-ESSX8316:00" but ACPI provides
-"i2c-ESSX8316:01" in some systems.
+Remove hard-codec [16] array size, replace with clearer description and
+dependency on ACPI_ID_LEN
+No functionality change
 
-Fix by overriding the hard-coded value with the codec name derived
-from the HID information
-
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=189261
+Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/Kconfig         |  1 +
- sound/soc/intel/boards/bytcht_es8316.c | 26 +++++++++++++++++++++++++-
- 2 files changed, 26 insertions(+), 1 deletion(-)
+ include/sound/soc-acpi.h                | 3 +++
+ sound/soc/intel/boards/bytcht_da7213.c  | 2 +-
+ sound/soc/intel/boards/bytcht_es8316.c  | 2 +-
+ sound/soc/intel/boards/bytcr_rt5640.c   | 2 +-
+ sound/soc/intel/boards/bytcr_rt5651.c   | 2 +-
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 4 ++--
+ sound/soc/intel/boards/cht_bsw_rt5672.c | 2 +-
+ 7 files changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index de598dcbef30..d4e103615f51 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -139,6 +139,7 @@ config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
- config SND_SOC_INTEL_BYT_CHT_ES8316_MACH
- 	tristate "Baytrail & Cherrytrail with ES8316 codec"
- 	depends on X86_INTEL_LPSS && I2C && ACPI
-+	select SND_SOC_ACPI
- 	select SND_SOC_ES8316
- 	help
- 	  This adds support for ASoC machine driver for Intel(R) Baytrail &
+diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+index d1aaf876cd26..83320af8def2 100644
+--- a/include/sound/soc-acpi.h
++++ b/include/sound/soc-acpi.h
+@@ -27,6 +27,9 @@ struct snd_soc_acpi_package_context {
+ 	bool data_valid;
+ };
+ 
++/* codec name is used in DAIs is i2c-<HID>:00 with HID being 8 chars */
++#define SND_ACPI_I2C_ID_LEN (4 + ACPI_ID_LEN + 3 + 1)
++
+ #if IS_ENABLED(CONFIG_ACPI)
+ /* translation fron HID to I2C name, needed for DAI codec_name */
+ const char *snd_soc_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN]);
+diff --git a/sound/soc/intel/boards/bytcht_da7213.c b/sound/soc/intel/boards/bytcht_da7213.c
+index c4d82ad41bd7..6219c04d4731 100644
+--- a/sound/soc/intel/boards/bytcht_da7213.c
++++ b/sound/soc/intel/boards/bytcht_da7213.c
+@@ -219,7 +219,7 @@ static struct snd_soc_card bytcht_da7213_card = {
+ 	.num_dapm_routes = ARRAY_SIZE(audio_map),
+ };
+ 
+-static char codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
++static char codec_name[SND_ACPI_I2C_ID_LEN];
+ 
+ static int bytcht_da7213_probe(struct platform_device *pdev)
+ {
 diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 8088396717e3..ae24f6205f05 100644
+index ae24f6205f05..079f35cd4eaf 100644
 --- a/sound/soc/intel/boards/bytcht_es8316.c
 +++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -232,15 +232,39 @@ static struct snd_soc_card byt_cht_es8316_card = {
+@@ -232,7 +232,7 @@ static struct snd_soc_card byt_cht_es8316_card = {
  	.fully_routed = true,
  };
  
-+static char codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
-+
+-static char codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
++static char codec_name[SND_ACPI_I2C_ID_LEN];
+ 
  static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
  {
--	int ret = 0;
- 	struct byt_cht_es8316_private *priv;
-+	struct snd_soc_acpi_mach *mach;
-+	const char *i2c_name = NULL;
-+	int dai_index = 0;
-+	int i;
-+	int ret = 0;
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index f2c0fc415e52..4548f75498d0 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -713,7 +713,7 @@ static struct snd_soc_card byt_rt5640_card = {
+ 	.fully_routed = true,
+ };
  
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
- 	if (!priv)
- 		return -ENOMEM;
+-static char byt_rt5640_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
++static char byt_rt5640_codec_name[SND_ACPI_I2C_ID_LEN];
+ static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
+ static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
  
-+	mach = (&pdev->dev)->platform_data;
-+	/* fix index of codec dai */
-+	for (i = 0; i < ARRAY_SIZE(byt_cht_es8316_dais); i++) {
-+		if (!strcmp(byt_cht_es8316_dais[i].codec_name,
-+			    "i2c-ESSX8316:00")) {
-+			dai_index = i;
-+			break;
-+		}
-+	}
-+
-+	/* fixup codec name based on HID */
-+	i2c_name = snd_soc_acpi_find_name_from_hid(mach->id);
-+	if (i2c_name) {
-+		snprintf(codec_name, sizeof(codec_name),
-+			"%s%s", "i2c-", i2c_name);
-+		byt_cht_es8316_dais[dai_index].codec_name = codec_name;
-+	}
-+
- 	/* register the soc card */
- 	byt_cht_es8316_card.dev = &pdev->dev;
- 	snd_soc_card_set_drvdata(&byt_cht_es8316_card, priv);
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 22c9cc5d135e..5a6b7dedb773 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -509,7 +509,7 @@ static struct snd_soc_card byt_rt5651_card = {
+ 	.fully_routed = true,
+ };
+ 
+-static char byt_rt5651_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
++static char byt_rt5651_codec_name[SND_ACPI_I2C_ID_LEN];
+ 
+ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ {
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index f898ee140cdc..f368151678a8 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -49,7 +49,7 @@ struct cht_acpi_card {
+ struct cht_mc_private {
+ 	struct snd_soc_jack jack;
+ 	struct cht_acpi_card *acpi_card;
+-	char codec_name[16];
++	char codec_name[SND_ACPI_I2C_ID_LEN];
+ 	struct clk *mclk;
+ };
+ 
+@@ -506,7 +506,7 @@ static struct cht_acpi_card snd_soc_cards[] = {
+ 	{"10EC5650", CODEC_TYPE_RT5650, &snd_soc_card_chtrt5650},
+ };
+ 
+-static char cht_rt5645_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
++static char cht_rt5645_codec_name[SND_ACPI_I2C_ID_LEN];
+ static char cht_rt5645_codec_aif_name[12]; /*  = "rt5645-aif[1|2]" */
+ static char cht_rt5645_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+ 
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
+index f8f21eee9b2d..1f3d38dc4fcb 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5672.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
+@@ -35,7 +35,7 @@
+ 
+ struct cht_mc_private {
+ 	struct snd_soc_jack headset;
+-	char codec_name[16];
++	char codec_name[SND_ACPI_I2C_ID_LEN];
+ 	struct clk *mclk;
+ };
+ 
 -- 
 2.14.1
