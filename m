@@ -1,7 +1,7 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v2 12/16] ASoC: fsl_ssi: Setup AC97 in fsl_ssi_hw_init()
-Date: Wed, 10 Jan 2018 22:43:11 -0800
-Message-ID: <1515652995-15996-13-git-send-email-nicoleotsuka@gmail.com>
+Subject: [PATCH v2 14/16] ASoC: fsl_ssi: Remove cpu_dai_drv from fsl_ssi structure
+Date: Wed, 10 Jan 2018 22:43:13 -0800
+Message-ID: <1515652995-15996-15-git-send-email-nicoleotsuka@gmail.com>
 References: <1515652995-15996-1-git-send-email-nicoleotsuka@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1515652995-15996-1-git-send-email-nicoleotsuka@gmail.com>
@@ -10,88 +10,147 @@ To: timur@tabi.org, broonie@kernel.org, mail@maciej.szmigiero.name
 Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, fabio.estevam@nxp.com, caleb@crome.org, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-AC97 configures most of registers earlier to start a communication
-with CODECs in order to successfully initialize CODEC. Currently,
-_fsl_ssi_set_dai_fmt() and fsl_ssi_setup_ac97() are called to get
-all SSI registers properly set.
-
-Since now the driver has a fsl_ssi_hw_init() to handle all register
-initial settings, this patch moves those register settings of AC97
-to the fsl_ssi_hw_init() as well.
-
-Meanwhile it applies _fsl_ssi_set_dai_fmt() call to AC97 only since
-other formats would be configured via normal set_dai_fmt() directly.
-
-This patch also adds fsl_ssi_hw_clean() to cleanup control bits for
-AC97 in the platform remote() function.
+The cpu_dai_drv is only used for symmetric_rates. So this patch replaces
+it with a synchronous boolean flag.
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Tested-by: Caleb Crome <caleb@crome.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 36e370e..178c192 100644
+index 213962a..716603c 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -982,9 +982,6 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- 	regmap_write(regs, REG_SSI_SRCR, srcr);
- 	regmap_write(regs, REG_SSI_SCR, scr);
+@@ -208,11 +208,11 @@ struct fsl_ssi_soc_data {
+  *
+  * @regs: Pointer to the regmap registers
+  * @irq: IRQ of this SSI
+- * @cpu_dai_drv: CPU DAI driver for this device
+  *
+  * @dai_fmt: DAI configuration this device is currently used with
+  * @streams: Mask of current active streams: BIT(TX) and BIT(RX)
+  * @i2s_net: I2S and Network mode configurations of SCR register
++ * @synchronous: Use synchronous mode - both of TX and RX use STCK and SFCK
+  * @use_dma: DMA is used or FIQ with stream filter
+  * @use_dual_fifo: DMA with support for dual FIFO mode
+  * @has_ipg_clk_name: If "ipg" is in the clock name list of device tree
+@@ -253,11 +253,11 @@ struct fsl_ssi_soc_data {
+ struct fsl_ssi {
+ 	struct regmap *regs;
+ 	int irq;
+-	struct snd_soc_dai_driver cpu_dai_drv;
  
--	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_AC97)
--		fsl_ssi_setup_ac97(ssi);
--
- 	return 0;
- }
+ 	unsigned int dai_fmt;
+ 	u8 streams;
+ 	u8 i2s_net;
++	bool synchronous;
+ 	bool use_dma;
+ 	bool use_dual_fifo;
+ 	bool has_ipg_clk_name;
+@@ -668,7 +668,6 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+ 	bool tx2, tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	struct fsl_ssi *ssi = snd_soc_dai_get_drvdata(dai);
+ 	struct regmap *regs = ssi->regs;
+-	int synchronous = ssi->cpu_dai_drv.symmetric_rates, ret;
+ 	u32 pm = 999, div2, psr, stccr, mask, afreq, factor, i;
+ 	unsigned long clkrate, baudrate, tmprate;
+ 	unsigned int slots = params_channels(hw_params);
+@@ -676,6 +675,7 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+ 	u64 sub, savesub = 100000;
+ 	unsigned int freq;
+ 	bool baudclk_is_used;
++	int ret;
  
-@@ -1250,10 +1247,28 @@ static int fsl_ssi_hw_init(struct fsl_ssi *ssi)
- 		regmap_update_bits(ssi->regs, REG_SSI_SCR,
- 				   SSI_SCR_TCH_EN, SSI_SCR_TCH_EN);
+ 	/* Override slots and slot_width if being specifically set... */
+ 	if (ssi->slots)
+@@ -754,7 +754,7 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+ 	mask = SSI_SxCCR_PM_MASK | SSI_SxCCR_DIV2 | SSI_SxCCR_PSR;
  
-+	/* AC97 should start earlier to communicate with CODECs */
-+	if (fsl_ssi_is_ac97(ssi)) {
-+		_fsl_ssi_set_dai_fmt(ssi->dev, ssi, ssi->dai_fmt);
-+		fsl_ssi_setup_ac97(ssi);
-+	}
-+
- 	return 0;
- }
+ 	/* STCCR is used for RX in synchronous mode */
+-	tx2 = tx || synchronous;
++	tx2 = tx || ssi->synchronous;
+ 	regmap_update_bits(regs, REG_SSI_SxCCR(tx2), mask, stccr);
  
- /**
-+ * Clear SSI registers
-+ */
-+static void fsl_ssi_hw_clean(struct fsl_ssi *ssi)
-+{
-+	/* Disable registers for AC97 */
-+	if (fsl_ssi_is_ac97(ssi)) {
-+		regmap_write(ssi->regs, REG_SSI_SCR, 0);
-+		regmap_write(ssi->regs, REG_SSI_SACNT, 0);
-+		regmap_write(ssi->regs, REG_SSI_SOR, 0);
-+	}
-+}
-+/**
-  * Make every character in a string lower-case
-  */
- static void make_lowercase(char *s)
-@@ -1535,9 +1550,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	if (!baudclk_is_used) {
+@@ -802,7 +802,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+ 	 * that should set separate configurations for STCCR and SRCCR
+ 	 * despite running in the synchronous mode.
+ 	 */
+-	if (enabled && ssi->cpu_dai_drv.symmetric_rates)
++	if (enabled && ssi->synchronous)
+ 		return 0;
+ 
+ 	if (fsl_ssi_is_i2s_master(ssi)) {
+@@ -834,7 +834,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
  	}
  
- done:
--	if (ssi->dai_fmt)
--		_fsl_ssi_set_dai_fmt(dev, ssi, ssi->dai_fmt);
--
- 	/* Initially configures SSI registers */
- 	fsl_ssi_hw_init(ssi);
+ 	/* In synchronous mode, the SSI uses STCCR for capture */
+-	tx2 = tx || ssi->cpu_dai_drv.symmetric_rates;
++	tx2 = tx || ssi->synchronous;
+ 	regmap_update_bits(regs, REG_SSI_SxCCR(tx2), SSI_SxCCR_WL_MASK, wl);
  
-@@ -1582,6 +1594,8 @@ static int fsl_ssi_remove(struct platform_device *pdev)
+ 	return 0;
+@@ -959,7 +959,7 @@ static int _fsl_ssi_set_dai_fmt(struct fsl_ssi *ssi, unsigned int fmt)
+ 	srcr = strcr;
+ 
+ 	/* Set SYN mode and clear RXDIR bit when using SYN or AC97 mode */
+-	if (ssi->cpu_dai_drv.symmetric_rates || fsl_ssi_is_ac97(ssi)) {
++	if (ssi->synchronous || fsl_ssi_is_ac97(ssi)) {
+ 		srcr &= ~SSI_SRCR_RXDIR;
+ 		scr |= SSI_SCR_SYN;
+ 	}
+@@ -1360,6 +1360,7 @@ static void fsl_ssi_imx_clean(struct platform_device *pdev, struct fsl_ssi *ssi)
+ 
+ static int fsl_ssi_probe(struct platform_device *pdev)
  {
- 	struct fsl_ssi *ssi = dev_get_drvdata(&pdev->dev);
++	struct snd_soc_dai_driver *cpu_dai_drv;
+ 	struct fsl_ssi *ssi;
+ 	int ret = 0;
+ 	struct device_node *np = pdev->dev.of_node;
+@@ -1394,14 +1395,12 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	ssi->use_dma = !of_property_read_bool(np, "fsl,fiq-stream-filter");
  
-+	fsl_ssi_hw_clean(ssi);
-+
- 	fsl_ssi_debugfs_remove(&ssi->dbg_stats);
+ 	if (fsl_ssi_is_ac97(ssi)) {
+-		memcpy(&ssi->cpu_dai_drv, &fsl_ssi_ac97_dai,
+-		       sizeof(fsl_ssi_ac97_dai));
++		cpu_dai_drv = &fsl_ssi_ac97_dai;
+ 		fsl_ac97_data = ssi;
+ 	} else {
+-		memcpy(&ssi->cpu_dai_drv, &fsl_ssi_dai_template,
+-		       sizeof(fsl_ssi_dai_template));
++		cpu_dai_drv = &fsl_ssi_dai_template;
+ 	}
+-	ssi->cpu_dai_drv.name = dev_name(dev);
++	cpu_dai_drv->name = dev_name(dev);
  
- 	if (ssi->pdev)
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	iomem = devm_ioremap_resource(dev, res);
+@@ -1439,11 +1438,12 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	/* Set software limitations for synchronous mode */
+ 	if (!of_find_property(np, "fsl,ssi-asynchronous", NULL)) {
+ 		if (!fsl_ssi_is_ac97(ssi)) {
+-			ssi->cpu_dai_drv.symmetric_rates = 1;
+-			ssi->cpu_dai_drv.symmetric_samplebits = 1;
++			cpu_dai_drv->symmetric_rates = 1;
++			cpu_dai_drv->symmetric_samplebits = 1;
++			ssi->synchronous = true;
+ 		}
+ 
+-		ssi->cpu_dai_drv.symmetric_channels = 1;
++		cpu_dai_drv->symmetric_channels = 1;
+ 	}
+ 
+ 	/* Fetch FIFO depth; Set to 8 for older DT without this property */
+@@ -1498,7 +1498,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	ret = devm_snd_soc_register_component(dev, &fsl_ssi_component,
+-					      &ssi->cpu_dai_drv, 1);
++					      cpu_dai_drv, 1);
+ 	if (ret) {
+ 		dev_err(dev, "failed to register DAI: %d\n", ret);
+ 		goto error_asoc_register;
 -- 
 2.7.4
