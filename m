@@ -1,88 +1,82 @@
-From: "Fischer, Christian" <fischerc@swissphone.de>
-Subject: AW: [PATCH] ASoC: sgtl5000: fix powerup/down of micbias-voltage
-Date: Thu, 11 Jan 2018 16:14:31 +0000
-Message-ID: <DD64F087E8F0B540A1C9216D6716FFBDF9947CB6@defrsexc01.swissphone.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: sgtl5000: fix powerup/down of
+	micbias-voltage
+Date: Thu, 11 Jan 2018 16:19:47 +0000
+Message-ID: <20180111161947.GD7834@sirena.org.uk>
 References: <1515660031-9183-1-git-send-email-fischerc@swissphone.de>
  <20180111150704.GC7834@sirena.org.uk>
+ <DD64F087E8F0B540A1C9216D6716FFBDF9947CB6@defrsexc01.swissphone.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180111150704.GC7834@sirena.org.uk>
-Content-Language: de-DE
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "richard.leitner@skidata.com" <richard.leitner@skidata.com>, "fabio.estevam@nxp.com" <fabio.estevam@nxp.com>, "bhumirks@gmail.com" <bhumirks@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============4245954921480616489=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F77F266E6D
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2018 17:19:49 +0100 (CET)
+In-Reply-To: <DD64F087E8F0B540A1C9216D6716FFBDF9947CB6@defrsexc01.swissphone.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Fischer, Christian" <fischerc@swissphone.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "fabio.estevam@nxp.com" <fabio.estevam@nxp.com>, "bhumirks@gmail.com" <bhumirks@gmail.com>, "richard.leitner@skidata.com" <richard.leitner@skidata.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-Unfortunately, this was not the case with my tests.
-The supply is switched off at the start of the driver, but when starting a recording not started.
-The function "mic_bias_event" only consumes SND_SOC_DAPM_POST_PMU (0x02) and SND_SOC_DAPM_PRE_PMD (0x04).
+--===============4245954921480616489==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="tNQTSEo8WG/FKZ8E"
+Content-Disposition: inline
 
-I changed:
-> SND_SOC_DAPM_SUPPLY("Mic Bias", SGTL5000_CHIP_MIC_CTRL, 8, 0, 
-> mic_bias_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-to:
-> SND_SOC_DAPM_SUPPLY("Mic Bias", SGTL5000_CHIP_MIC_CTRL, 8, 0, 
-> mic_bias_event, 0xFF),
-To receive all events.
 
-And added this to "mic_bias_event":
-> dev_info(codec->dev, "mic_bias_event event: %d\n", event);
+--tNQTSEo8WG/FKZ8E
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-At probing I got this:
-sgtl5000 1-000a: mic_bias_event event: 128
-sgtl5000 1-000a: mic_bias_event event: 4 --> /* before widget power down, this disables the mic-bias-resistor */
-sgtl5000 1-000a: mic_bias_event event: 8 --> /* after widget power down */
+On Thu, Jan 11, 2018 at 04:14:31PM +0000, Fischer, Christian wrote:
+> Hi Mark,
 
-Testing:
-arecord -D "hw:0,1" -c 2 -f S16_LE -t wav test_recording.wav
-Recording WAVE 'test_recording.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Stereo
-==> no event was fired
+Please don't top post, reply in line with needed context.  This allows
+readers to readily follow the flow of conversation and understand what
+you are talking about and also helps ensure that everything in the
+discussion is being addressed.
 
-With my patch included, at probing:
-sgtl5000 1-000a: mic_bias_event event: 128
-sgtl5000 1-000a: mic_bias_event event: 4 --> /* before widget power down, this disables the mic-bias-resistor */
-sgtl5000 1-000a: mic_bias_event event: 8 --> /* after widget power down */
+> Testing:
+> arecord -D "hw:0,1" -c 2 -f S16_LE -t wav test_recording.wav
+> Recording WAVE 'test_recording.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Stereo
+> ==> no event was fired
 
-Testing:
-arecord -D "hw:0,1" -c 2 -f S16_LE -t wav test_recording.wav
-Recording WAVE 'test_recording.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Stereo
-[   82.341376] sgtl5000 1-000a: mic_bias_event event: 1 --> /* before widget power up */
-[   82.762701] sgtl5000 1-000a: mic_bias_event event: 2  --> /* after widget power up, this enables the supply */
-^CAborted by signal Interrupt...
-[   90.362685] sgtl5000 1-000a: mic_bias_event event: 4 --> /* before widget power down, this disables the mic-bias-resistor */
-[   90.369561] sgtl5000 1-000a: mic_bias_event event: 8 --> /* after widget power down */
-==> events are working
+Has your board connected the bias to the microphone widget it defines?
+Unless your board says that the bias is in use on a given board it won't
+be enabled.
 
-The disadvantage is that this is also done when playing audio:
-aplay -D "hw:0,0" -c 2 -f S16_LE -t wav test_recording.wav
-sgtl5000 1-000a: mic_bias_event event: 1
-sgtl5000 1-000a: mic_bias_event event: 2
-Playing WAVE 'test_recording.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Stereo
-sgtl5000 1-000a: mic_bias_event event: 4
-sgtl5000 1-000a: mic_bias_event event: 8
+--tNQTSEo8WG/FKZ8E
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I'm not so into ALSA, maybe there is another way to set the event properly.
+-----BEGIN PGP SIGNATURE-----
 
-Kind regards,
-Christian
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpXjqIACgkQJNaLcl1U
+h9B11wf/WCtPxz5BRF+sLMbaTNQCKxkdAbJ/3/3WQC5SPXC4syvb++oZUmgdFQTq
+tFjwS6y3hTy5E5UglQUvEyBNV4S7D12N/VqAJ9RCMu3lzSTwYmDMZGHrAVZj3yn1
+8TEayYo/ccodiG5afyvOuR0uUKt0gYK3CE6C/U9RumgA5vdSRqhRVxqBCao5igsY
+S5/aRvBkbTGMWkZL8c1cAB3vL1Q1f4L+QauO29hbggyq3R8ebBNqdMahgeXmoM5H
+IUmzwq/laF7qSM9IBhjzBiziaSr+wUP6pCEhnFRbg5dkiP5iQ0Bt5goWIGfoNxVn
+hC+VgbJOHp2lxB1KjhQE7UyT21OiaA==
+=ZFfX
+-----END PGP SIGNATURE-----
 
------Ursprüngliche Nachricht-----
-Von: Mark Brown [mailto:broonie@kernel.org] 
-Gesendet: Donnerstag, 11. Januar 2018 16:07
-An: Fischer, Christian <fischerc@swissphone.de>
-Cc: alsa-devel@alsa-project.org; lgirdwood@gmail.com; perex@perex.cz; tiwai@suse.com; richard.leitner@skidata.com; fabio.estevam@nxp.com; bhumirks@gmail.com; linux-kernel@vger.kernel.org
-Betreff: Re: [PATCH] ASoC: sgtl5000: fix powerup/down of micbias-voltage
+--tNQTSEo8WG/FKZ8E--
 
-On Thu, Jan 11, 2018 at 09:40:31AM +0100, fischerc@swissphone.de wrote:
+--===============4245954921480616489==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> The mic-bias-voltage should get powered up/down automatically.
-> Added missing DAPM_PRE and DAPM_POST widgets to fire up the mic_bias_event function.
 
-> +	SND_SOC_DAPM_PRE("MIC_BIAS_PRE", mic_bias_event),
-> +	SND_SOC_DAPM_POST("MIC_BIAS_POST", mic_bias_event),
-
-I don't understand what this is intended to do.  The mic_bias_event() callback is already hooked up to the Mic Bias supply widget, it should be invoked whenever the bias is turned on and off already?
+--===============4245954921480616489==--
