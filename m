@@ -1,16 +1,20 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v3 0/2] ASoC: Intel: ACPI-related fixes
-Date: Thu, 11 Jan 2018 22:13:58 +0200
-Message-ID: <1515701638.7000.934.camel@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v3 1/2] ASoC: Intel: bytcht_es8316: fix HID
+ handling
+Date: Thu, 11 Jan 2018 15:56:53 -0600
+Message-ID: <0a56d149-5045-df4b-1489-93d902698426@linux.intel.com>
 References: <20180111195209.5809-1-pierre-louis.bossart@linux.intel.com>
+ <20180111195209.5809-2-pierre-louis.bossart@linux.intel.com>
+ <1515701530.7000.932.camel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id DDC38267950
- for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2018 21:14:02 +0100 (CET)
-In-Reply-To: <20180111195209.5809-1-pierre-louis.bossart@linux.intel.com>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7953E266F50
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2018 22:56:59 +0100 (CET)
+In-Reply-To: <1515701530.7000.932.camel@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,49 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, vinod.koul@intel.com, broonie@kernel.org, jeremy@jcline.org, liam.r.girdwood@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2018-01-11 at 13:52 -0600, Pierre-Louis Bossart wrote:
-> The first two patches in the v2 series were merged, but these last
-> two were not.
+On 1/11/18 2:12 PM, Andy Shevchenko wrote:
+> On Thu, 2018-01-11 at 13:52 -0600, Pierre-Louis Bossart wrote:
+>> Same problem as with previous machine drivers, the codec dai
+>> uses a hard-coded name of "i2c-ESSX8316:00" but ACPI provides
+>> "i2c-ESSX8316:01" in some systems.
 > 
-> As agreed with Andy and Vinod, there will be a follow-up patch
-> to replace snd_soc_acpi_find_name_from_hid() with
-> acpi_dev_get_dev_name(), as well as the introduction of a helper
-> for the search loops.
+>>   static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+>>   {
+>> -	int ret = 0;
+>>   	struct byt_cht_es8316_private *priv;
+>> +	struct snd_soc_acpi_mach *mach;
+>> +	const char *i2c_name = NULL;
+>> +	int dai_index = 0;
 > 
+>> +	int i;
+> 
+> A nit: unsigned int will look more natural here.
 
-Thanks!
+it'll go away in all machine drivers with the next cleanup (addition of 
+a helper)
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Changes since v2:
->  rename constant per Vinod's suggestion
->  removed redundant comment on name
 > 
-> Changes since v1:
->  cleaned-up quirk handling, fixed merge mistake
->  added Andy's Reviewed-by tag on patch 2
->  added 4th patch to add new constant dependent on ACPI_ID_LEN
+>> +	int ret = 0;
 > 
-> Pierre-Louis Bossart (2):
->   ASoC: Intel: bytcht_es8316: fix HID handling
->   ASoC: acpi: remove hard-coded i2c-device name length
-> 
->  include/sound/soc-acpi.h                |  3 +++
->  sound/soc/intel/boards/Kconfig          |  1 +
->  sound/soc/intel/boards/bytcht_da7213.c  |  2 +-
->  sound/soc/intel/boards/bytcht_es8316.c  | 26
-> +++++++++++++++++++++++++-
->  sound/soc/intel/boards/bytcr_rt5640.c   |  2 +-
->  sound/soc/intel/boards/bytcr_rt5651.c   |  2 +-
->  sound/soc/intel/boards/cht_bsw_rt5645.c |  4 ++--
->  sound/soc/intel/boards/cht_bsw_rt5672.c |  2 +-
->  8 files changed, 35 insertions(+), 7 deletions(-)
-> 
-
--- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
