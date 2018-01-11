@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "IIO: ADC: stm32-dfsdm: avoid unused-variable
-	warning" to the asoc tree
-Date: Thu, 11 Jan 2018 12:30:57 +0000
-Message-ID: <E1eZc0X-0007OX-Q5@debutante>
+Subject: Applied "IIO: ADC: fix return value check in
+	stm32_dfsdm_adc_probe()" to the asoc tree
+Date: Thu, 11 Jan 2018 12:30:55 +0000
+Message-ID: <E1eZc0V-0007No-DJ@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id F1671266E3A
- for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2018 13:30:58 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A7FE2678BD
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2018 13:30:59 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
+To: Wei Yongjun <weiyongjun1@huawei.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   IIO: ADC: stm32-dfsdm: avoid unused-variable warning
+   IIO: ADC: fix return value check in stm32_dfsdm_adc_probe()
 
 has been applied to the asoc tree at
 
@@ -52,46 +52,37 @@ to this mail.
 Thanks,
 Mark
 
->From 25140717414c319bcc44b5aac39357a52d0bc8e0 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 11 Jan 2018 11:34:46 +0100
-Subject: [PATCH] IIO: ADC: stm32-dfsdm: avoid unused-variable warning
+>From d5ff18bcd4b5e66396eab7e8271172157ee1253e Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Thu, 11 Jan 2018 11:12:41 +0000
+Subject: [PATCH] IIO: ADC: fix return value check in stm32_dfsdm_adc_probe()
 
-Building with CONFIG_OF disabled produces a compiler warning:
+In case of error, the function devm_iio_device_alloc() returns NULL
+pointer not ERR_PTR(). The IS_ERR() test in the return value check
+should be replaced with NULL test.
 
-drivers/iio/adc/stm32-dfsdm-core.c: In function 'stm32_dfsdm_probe':
-drivers/iio/adc/stm32-dfsdm-core.c:245:22: error: unused variable 'pnode' [-Werror=unused-variable]
-
-This removes the variable and open-codes it in the only place
-it gets used to avoid that warning.
-
-Fixes: bed73904e76f ("IIO: ADC: add stm32 DFSDM core support")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: e2e6771c6462 ("IIO: ADC: add STM32 DFSDM sigma delta ADC support")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/iio/adc/stm32-dfsdm-core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/iio/adc/stm32-dfsdm-adc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iio/adc/stm32-dfsdm-core.c b/drivers/iio/adc/stm32-dfsdm-core.c
-index 72427414db7f..6cd655f8239b 100644
---- a/drivers/iio/adc/stm32-dfsdm-core.c
-+++ b/drivers/iio/adc/stm32-dfsdm-core.c
-@@ -242,7 +242,6 @@ MODULE_DEVICE_TABLE(of, stm32_dfsdm_of_match);
- static int stm32_dfsdm_probe(struct platform_device *pdev)
- {
- 	struct dfsdm_priv *priv;
--	struct device_node *pnode = pdev->dev.of_node;
- 	const struct of_device_id *of_id;
- 	const struct stm32_dfsdm_dev_data *dev_data;
- 	struct stm32_dfsdm *dfsdm;
-@@ -254,7 +253,7 @@ static int stm32_dfsdm_probe(struct platform_device *pdev)
+diff --git a/drivers/iio/adc/stm32-dfsdm-adc.c b/drivers/iio/adc/stm32-dfsdm-adc.c
+index e628d04d5c77..5e871404f565 100644
+--- a/drivers/iio/adc/stm32-dfsdm-adc.c
++++ b/drivers/iio/adc/stm32-dfsdm-adc.c
+@@ -1100,9 +1100,9 @@ static int stm32_dfsdm_adc_probe(struct platform_device *pdev)
+ 	dev_data = (const struct stm32_dfsdm_dev_data *)of_id->data;
  
- 	priv->pdev = pdev;
+ 	iio = devm_iio_device_alloc(dev, sizeof(*adc));
+-	if (IS_ERR(iio)) {
++	if (!iio) {
+ 		dev_err(dev, "%s: Failed to allocate IIO\n", __func__);
+-		return PTR_ERR(iio);
++		return -ENOMEM;
+ 	}
  
--	of_id = of_match_node(stm32_dfsdm_of_match, pnode);
-+	of_id = of_match_node(stm32_dfsdm_of_match, pdev->dev.of_node);
- 	if (!of_id->data) {
- 		dev_err(&pdev->dev, "Data associated to device is missing\n");
- 		return -EINVAL;
+ 	adc = iio_priv(iio);
 -- 
 2.15.1
