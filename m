@@ -1,15 +1,17 @@
-From: abhijeet.kumar@intel.com
-Subject: [PATCH] ASoC: hdac_hdmi: Ensuring proper setting of
-	output widget power state
-Date: Thu, 11 Jan 2018 17:04:27 +0530
-Message-ID: <1515670468-9198-1-git-send-email-abhijeet.kumar@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "IIO: ADC: stm32-dfsdm: avoid unused-variable
+	warning" to the asoc tree
+Date: Thu, 11 Jan 2018 12:30:57 +0000
+Message-ID: <E1eZc0X-0007OX-Q5@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 23C842678CE
- for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2018 12:26:09 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1671266E3A
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2018 13:30:58 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,37 +21,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Sandeep Tayal <sandeepx.tayal@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: abhijeet.kumar@intel.com
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Abhijeet Kumar <abhijeet.kumar@intel.com>
+The patch
 
-When we change the resolution of DP pannel or hot plug-unplug it while
-playing an audio clip,sometimes we observe a silent playback(no audio).
+   IIO: ADC: stm32-dfsdm: avoid unused-variable warning
 
-During no audio condition, we have noticed that the power state of the
-pin or the connector is D3. Optimzing the way we set the power could
-mitigate the issue.With this changes the verb is sent to set the power
-state and response is received. Thus ensuring power state is set.
+has been applied to the asoc tree at
 
-Signed-off-by: Abhijeet Kumar <abhijeet.kumar@intel.com>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 25140717414c319bcc44b5aac39357a52d0bc8e0 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Thu, 11 Jan 2018 11:34:46 +0100
+Subject: [PATCH] IIO: ADC: stm32-dfsdm: avoid unused-variable warning
+
+Building with CONFIG_OF disabled produces a compiler warning:
+
+drivers/iio/adc/stm32-dfsdm-core.c: In function 'stm32_dfsdm_probe':
+drivers/iio/adc/stm32-dfsdm-core.c:245:22: error: unused variable 'pnode' [-Werror=unused-variable]
+
+This removes the variable and open-codes it in the only place
+it gets used to avoid that warning.
+
+Fixes: bed73904e76f ("IIO: ADC: add stm32 DFSDM core support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdac_hdmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/adc/stm32-dfsdm-core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index f3b4f4dfae6a..e24caecf0a4f 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -718,7 +718,7 @@ static void hdac_hdmi_set_power_state(struct hdac_ext_device *edev,
+diff --git a/drivers/iio/adc/stm32-dfsdm-core.c b/drivers/iio/adc/stm32-dfsdm-core.c
+index 72427414db7f..6cd655f8239b 100644
+--- a/drivers/iio/adc/stm32-dfsdm-core.c
++++ b/drivers/iio/adc/stm32-dfsdm-core.c
+@@ -242,7 +242,6 @@ MODULE_DEVICE_TABLE(of, stm32_dfsdm_of_match);
+ static int stm32_dfsdm_probe(struct platform_device *pdev)
  {
- 	if (get_wcaps(&edev->hdac, nid) & AC_WCAP_POWER) {
- 		if (!snd_hdac_check_power_state(&edev->hdac, nid, pwr_state))
--			snd_hdac_codec_write(&edev->hdac, nid, 0,
-+			snd_hdac_codec_read(&edev->hdac, nid, 0,
- 				AC_VERB_SET_POWER_STATE, pwr_state);
- 	}
- }
+ 	struct dfsdm_priv *priv;
+-	struct device_node *pnode = pdev->dev.of_node;
+ 	const struct of_device_id *of_id;
+ 	const struct stm32_dfsdm_dev_data *dev_data;
+ 	struct stm32_dfsdm *dfsdm;
+@@ -254,7 +253,7 @@ static int stm32_dfsdm_probe(struct platform_device *pdev)
+ 
+ 	priv->pdev = pdev;
+ 
+-	of_id = of_match_node(stm32_dfsdm_of_match, pnode);
++	of_id = of_match_node(stm32_dfsdm_of_match, pdev->dev.of_node);
+ 	if (!of_id->data) {
+ 		dev_err(&pdev->dev, "Data associated to device is missing\n");
+ 		return -EINVAL;
 -- 
-1.9.1
+2.15.1
