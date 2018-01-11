@@ -1,14 +1,17 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v3 0/2] ASoC: Intel: ACPI-related fixes
-Date: Thu, 11 Jan 2018 13:52:07 -0600
-Message-ID: <20180111195209.5809-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 1/2] ASoC: Intel: bytcht_es8316: fix HID
+	handling
+Date: Thu, 11 Jan 2018 13:52:08 -0600
+Message-ID: <20180111195209.5809-2-pierre-louis.bossart@linux.intel.com>
+References: <20180111195209.5809-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 44FF5266E62
- for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2018 20:52:36 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id A512D266EEC
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2018 20:52:38 +0100 (CET)
+In-Reply-To: <20180111195209.5809-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,36 +25,76 @@ To: alsa-devel@alsa-project.org
 Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, jeremy@jcline.org, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The first two patches in the v2 series were merged, but these last
-two were not.
+Same problem as with previous machine drivers, the codec dai
+uses a hard-coded name of "i2c-ESSX8316:00" but ACPI provides
+"i2c-ESSX8316:01" in some systems.
 
-As agreed with Andy and Vinod, there will be a follow-up patch
-to replace snd_soc_acpi_find_name_from_hid() with
-acpi_dev_get_dev_name(), as well as the introduction of a helper
-for the search loops.
+Fix by overriding the hard-coded value with the codec name derived
+from the HID information
 
-Changes since v2:
- rename constant per Vinod's suggestion
- removed redundant comment on name
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=189261
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/intel/boards/Kconfig         |  1 +
+ sound/soc/intel/boards/bytcht_es8316.c | 26 +++++++++++++++++++++++++-
+ 2 files changed, 26 insertions(+), 1 deletion(-)
 
-Changes since v1:
- cleaned-up quirk handling, fixed merge mistake
- added Andy's Reviewed-by tag on patch 2
- added 4th patch to add new constant dependent on ACPI_ID_LEN
-
-Pierre-Louis Bossart (2):
-  ASoC: Intel: bytcht_es8316: fix HID handling
-  ASoC: acpi: remove hard-coded i2c-device name length
-
- include/sound/soc-acpi.h                |  3 +++
- sound/soc/intel/boards/Kconfig          |  1 +
- sound/soc/intel/boards/bytcht_da7213.c  |  2 +-
- sound/soc/intel/boards/bytcht_es8316.c  | 26 +++++++++++++++++++++++++-
- sound/soc/intel/boards/bytcr_rt5640.c   |  2 +-
- sound/soc/intel/boards/bytcr_rt5651.c   |  2 +-
- sound/soc/intel/boards/cht_bsw_rt5645.c |  4 ++--
- sound/soc/intel/boards/cht_bsw_rt5672.c |  2 +-
- 8 files changed, 35 insertions(+), 7 deletions(-)
-
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index de598dcbef30..d4e103615f51 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -139,6 +139,7 @@ config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
+ config SND_SOC_INTEL_BYT_CHT_ES8316_MACH
+ 	tristate "Baytrail & Cherrytrail with ES8316 codec"
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
++	select SND_SOC_ACPI
+ 	select SND_SOC_ES8316
+ 	help
+ 	  This adds support for ASoC machine driver for Intel(R) Baytrail &
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 8088396717e3..ae24f6205f05 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -232,15 +232,39 @@ static struct snd_soc_card byt_cht_es8316_card = {
+ 	.fully_routed = true,
+ };
+ 
++static char codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
++
+ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ {
+-	int ret = 0;
+ 	struct byt_cht_es8316_private *priv;
++	struct snd_soc_acpi_mach *mach;
++	const char *i2c_name = NULL;
++	int dai_index = 0;
++	int i;
++	int ret = 0;
+ 
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
++	mach = (&pdev->dev)->platform_data;
++	/* fix index of codec dai */
++	for (i = 0; i < ARRAY_SIZE(byt_cht_es8316_dais); i++) {
++		if (!strcmp(byt_cht_es8316_dais[i].codec_name,
++			    "i2c-ESSX8316:00")) {
++			dai_index = i;
++			break;
++		}
++	}
++
++	/* fixup codec name based on HID */
++	i2c_name = snd_soc_acpi_find_name_from_hid(mach->id);
++	if (i2c_name) {
++		snprintf(codec_name, sizeof(codec_name),
++			"%s%s", "i2c-", i2c_name);
++		byt_cht_es8316_dais[dai_index].codec_name = codec_name;
++	}
++
+ 	/* register the soc card */
+ 	byt_cht_es8316_card.dev = &pdev->dev;
+ 	snd_soc_card_set_drvdata(&byt_cht_es8316_card, priv);
 -- 
 2.14.1
