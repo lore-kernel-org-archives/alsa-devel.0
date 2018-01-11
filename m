@@ -1,51 +1,57 @@
-From: <fischerc@swissphone.de>
-Subject: [PATCH] ASoC: sgtl5000: fix powerup/down of
-	micbias-voltage
-Date: Thu, 11 Jan 2018 09:40:31 +0100
-Message-ID: <1515660031-9183-1-git-send-email-fischerc@swissphone.de>
+From: Mirza Krak <mirza.krak-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Bad PCM stream after a suspend/resume cycle
+Date: Thu, 11 Jan 2018 10:06:12 +0100
+Message-ID: <CALw8SCXUpeUv8433Rd9is6eNd9ztd6soEOoDMkVSLue6qT6wKg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail2.avectris.ch (mail2.avectris.ch [185.94.144.40])
- by alsa0.perex.cz (Postfix) with ESMTP id D69362668F0
- for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2018 09:40:34 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, fabio.estevam@nxp.com, Christian Fischer <fischerc@swissphone.de>, bhumirks@gmail.com, richard.leitner@skidata.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
+List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Christian Fischer <fischerc@swissphone.de>
-
-The mic-bias-voltage should get powered up/down automatically.
-Added missing DAPM_PRE and DAPM_POST widgets to fire up the mic_bias_event function.
-
-Signed-off-by: Christian Fischer <fischerc@swissphone.de>
----
- sound/soc/codecs/sgtl5000.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index f2bb4fe..4973365 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -260,6 +260,9 @@ static const struct snd_soc_dapm_widget sgtl5000_dapm_widgets[] = {
- 
- 	SND_SOC_DAPM_PRE("VAG_POWER_PRE", power_vag_event),
- 	SND_SOC_DAPM_POST("VAG_POWER_POST", power_vag_event),
-+
-+	SND_SOC_DAPM_PRE("MIC_BIAS_PRE", mic_bias_event),
-+	SND_SOC_DAPM_POST("MIC_BIAS_POST", mic_bias_event),
- };
- 
- /* routes for sgtl5000 */
--- 
-2.7.4
+SGkuCgpJIGhhdmUgYSBxdWl0ZSBzaW1wbGUgcHJvYmxlbSByZWFsbHkgKHNpbXBsZSB0ZXN0LWNh
+c2UgYXQgbGVhc3QpLgoKRm9sbG93aW5nIGRlc2NyaWJlcyB0aGUgdGVzdCBjYXNlOgoKJCBhcGxh
+eSB0ZXN0LndhdgoKIyBXaGlsZSB0aGUgLndhdiBpcyBwbGF5aW5nIHN1c3BlbmQgdGhlIHN5c3Rl
+bQokIHN5c3RlbWN0bCBzdXNwZW5kCgojIFdoZW4gc3lzdGVtIGlzIHJlc3VtZWQgSSBnZXQgdGhl
+IGZvbGxvd2luZyBlcnJvciBvbiBteSBhcGxheSBjb21tYW5kCmFwbGF5OiBwY21fd3JpdGU6MjAz
+MDogd3JpdGUgZXJyb3I6IEZpbGUgZGVzY3JpcHRvciBpbiBiYWQgc3RhdGUKCkkgd2FzIGV4cGVj
+dGluZyBmb3IgdGhlIHBsYXliYWNrIHRvIHJlc3VtZS4KCkkgZGlkIHNvbWUgZGVidWdnaW5nIHVz
+aW5nICJhcGxheSIgYW5kIHdoYXQgSSBjYW4gc2VlIHRoYXQgaGFwcGVucwpiZWZvcmUgdGhlIEVC
+QURGRCBlcnJvciBpcyB0aGF0IHRoZSAid3JpdGVpX2Z1bmMoKSIgcmV0dXJucyBhIHBvc2l0aXZl
+CnZhbHVlIG9uY2Ugd2hpY2ggcmVzdWx0cyBpbiBhIGNhbGwgdG8gInNuZF9wY21fd2FpdCgpIiBh
+bmQgb24gdGhlIG5leHQKIndyaXRlaV9mdW5jKCkiIGNhbGwgLUVCQURGRCBpcyByZXR1cm5lZC4K
+Ckkgd291bGQgZXhwZWN0IGEgLUVTVFJQSVBFIGVycm9yIHdoaWNoIHNob3VsZCB0aGVuIHJlc3Vs
+dCBpbiB0aGF0IHRoZQpQQ00gc3RyZWFtIHRvIGJlICJyZXN1bWVkIiAoYWNjb3JkaW5nIHRvIGRv
+Y3VtZW50YXRpb24gYXQgbGVhc3QpLiBJCmhhdmUgdHJpZWQgImZvcmNpbmciIGEgY2FsbCB0byAi
+c3VzcGVuZCgpIiBvbiB0aGUgZmlyc3Qgd3JpdGUgZXJyb3IgaW4KYXBsYXkgYWZ0ZXIgc3lzdGVt
+IGlzIHJlc3VtZWQgYW5kIGl0IGFjdHVhbGx5IHdvcmtzLCBraW5kYS4gVGhlCnBsYXliYWNrIGlz
+IHJlc3VtZWQgZXZlbi10aG91Z2ggdGhlICJzbmRfcGNtX3Jlc3VtZSgpIiBjYWxsIHJldHVybnMg
+YW4KZXJyb3IuCgpJIGhhdmUgbm90IHdvcmtlZCBtdWNoIHdpdGggdGhlIHNvdW5kIHN1YnN5c3Rl
+bSBiZWZvcmUgYW5kIEkgYW0gaGF2aW5nCmEgaGFyZCB0aW1lIGZvbGxvd2luZyBhbGwgdGhlIGNh
+bGwgcGF0aHMgdG8gc2VlIHdoby93aGF0IGlzIHRvIGJsYW1lCmZvciB0aGlzIGJlaGF2aW9yLiBN
+YXliZSBpdCBleHBlY3RlZCB0byB3b3JrIGxpa2UgdGhpcz8gQW5kIEkgZG8gbm90Cmtub3cgaWYg
+dGhpcyBpcyBvbmx5IG9uIG15IFNvQyBvciBpZiB0aGlzIGlzIGEgZ2VuZXJpYyBzb3VuZCBwcm9i
+bGVtLgoKSW5mb3JtYXRpb24gYWJvdXQgbXkgc3lzdGVtOgoKVXNpbmcgYSBSSzMyODggU29DIChS
+SzMyODgtRmlyZUZseSBib2FyZCkgd2l0aCA0LjE0LjEzIExpbnV4IGtlcm5lbAoobGF0ZXN0IHN0
+YWJsZSkuCgphbHNhLWxpYiB2ZXJzaW9uIDEuMS40LjEKClBsYXliYWNrIHVzaW5nIEkyUwoKJCBj
+YXQgL3Byb2MvYXNvdW5kL2NhcmRzCiAwIFtJMlMgICAgICAgICAgICBdOiBJMlMgLSBJMlMKICAg
+ICAgICAgICAgICAgICAgICAgIEkyUwokIGNhdCAvcHJvYy9hc291bmQvY2FyZDAvcGNtMHAvaW5m
+bwpjYXJkOiAwCmRldmljZTogMApzdWJkZXZpY2U6IDAKc3RyZWFtOiBQTEFZQkFDSwppZDogQXVk
+aW8gZXM4MzI4LWhpZmktYW5hbG9nLTAKbmFtZToKc3VibmFtZTogc3ViZGV2aWNlICMwCmNsYXNz
+OiAwCnN1YmNsYXNzOiAwCnN1YmRldmljZXNfY291bnQ6IDEKc3ViZGV2aWNlc19hdmFpbDogMQoK
+TGV0IG1lIGtub3cgaWYgdGhlcmUgaXMgYWRkaXRpb25hbCBpbmZvcm1hdGlvbiB0aGF0IEkgbmVl
+ZCB0byBwcm92aWRlLgoKLS0gCk1lZCBWw6RubGlnYSBIw6Rsc25pbmdhciAvIEJlc3QgUmVnYXJk
+cwoKTWlyemEgS3JhawoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KTGludXgtcm9ja2NoaXAgbWFpbGluZyBsaXN0CkxpbnV4LXJvY2tjaGlwQGxpc3RzLmlu
+ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
+aW51eC1yb2NrY2hpcAo=
