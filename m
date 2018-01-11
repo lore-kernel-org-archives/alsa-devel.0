@@ -1,7 +1,7 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v2 07/16] ASoC: fsl_ssi: Add DAIFMT define for AC97
-Date: Wed, 10 Jan 2018 22:43:06 -0800
-Message-ID: <1515652995-15996-8-git-send-email-nicoleotsuka@gmail.com>
+Subject: [PATCH v2 09/16] ASoC: fsl_ssi: Set xFEN0 and xFEN1 together
+Date: Wed, 10 Jan 2018 22:43:08 -0800
+Message-ID: <1515652995-15996-10-git-send-email-nicoleotsuka@gmail.com>
 References: <1515652995-15996-1-git-send-email-nicoleotsuka@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1515652995-15996-1-git-send-email-nicoleotsuka@gmail.com>
@@ -10,58 +10,45 @@ To: timur@tabi.org, broonie@kernel.org, mail@maciej.szmigiero.name
 Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, fabio.estevam@nxp.com, caleb@crome.org, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-The _fsl_ssi_set_dai_fmt() bypasses an undefined format for AC97
-mode. However, it's not really necessary if AC97 has its complete
-format defined.
-
-So this patch adds a DAIFMT macro of complete format including a
-clock direction and polarity.
+It'd be safer to enable both FIFOs for TX or RX at the same time.
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Tested-by: Caleb Crome <caleb@crome.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 09a571a..b449b8b 100644
+index 4399a22..e75b57d 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -86,6 +86,16 @@
- 	 SNDRV_PCM_FMTBIT_S24_LE)
- #endif
+@@ -586,6 +586,11 @@ static void fsl_ssi_setup_regvals(struct fsl_ssi *ssi)
+ 	if (fsl_ssi_is_ac97(ssi))
+ 		vals[RX].scr = vals[TX].scr = 0;
  
-+/*
-+ * In AC97 mode, TXDIR bit is forced to 0 and TFDIR bit is forced to 1:
-+ *  - SSI inputs external bit clock and outputs frame sync clock -- CBM_CFS
-+ *  - Also have NB_NF to mark these two clocks will not be inverted
-+ */
-+#define FSLSSI_AC97_DAIFMT \
-+	(SND_SOC_DAIFMT_AC97 | \
-+	 SND_SOC_DAIFMT_CBM_CFS | \
-+	 SND_SOC_DAIFMT_NB_NF)
++	if (ssi->use_dual_fifo) {
++		vals[RX].srcr |= SSI_SRCR_RFEN1;
++		vals[TX].stcr |= SSI_STCR_TFEN1;
++	}
 +
- #define FSLSSI_SIER_DBG_RX_FLAGS \
- 	(SSI_SIER_RFF0_EN | \
- 	 SSI_SIER_RLS_EN | \
-@@ -959,8 +969,7 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- 		scr &= ~SSI_SCR_SYS_CLK_EN;
- 		break;
- 	default:
--		if (!fsl_ssi_is_ac97(ssi))
--			return -EINVAL;
-+		return -EINVAL;
- 	}
+ 	if (ssi->use_dma) {
+ 		vals[RX].sier |= SSI_SIER_RDMAE;
+ 		vals[TX].sier |= SSI_SIER_TDMAE;
+@@ -986,14 +991,9 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+ 		     SSI_SFCSR_TFWM0(wm) | SSI_SFCSR_RFWM0(wm) |
+ 		     SSI_SFCSR_TFWM1(wm) | SSI_SFCSR_RFWM1(wm));
  
- 	stcr |= strcr;
-@@ -1367,7 +1376,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	sprop = of_get_property(np, "fsl,mode", NULL);
- 	if (sprop) {
- 		if (!strcmp(sprop, "ac97-slave"))
--			ssi->dai_fmt = SND_SOC_DAIFMT_AC97;
-+			ssi->dai_fmt = FSLSSI_AC97_DAIFMT;
- 	}
+-	if (ssi->use_dual_fifo) {
+-		regmap_update_bits(regs, REG_SSI_SRCR,
+-				   SSI_SRCR_RFEN1, SSI_SRCR_RFEN1);
+-		regmap_update_bits(regs, REG_SSI_STCR,
+-				   SSI_STCR_TFEN1, SSI_STCR_TFEN1);
++	if (ssi->use_dual_fifo)
+ 		regmap_update_bits(regs, REG_SSI_SCR,
+ 				   SSI_SCR_TCH_EN, SSI_SCR_TCH_EN);
+-	}
  
- 	/* Select DMA or FIQ */
+ 	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_AC97)
+ 		fsl_ssi_setup_ac97(ssi);
 -- 
 2.7.4
