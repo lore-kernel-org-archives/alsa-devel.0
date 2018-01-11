@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: fix a typo in stm32_adfsdm_probe()" to the asoc tree
-Date: Thu, 11 Jan 2018 12:31:03 +0000
-Message-ID: <E1eZc0d-0007Qk-1v@debutante>
-References: <1515669111-125208-1-git-send-email-weiyongjun1@huawei.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1515669111-125208-1-git-send-email-weiyongjun1@huawei.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime@sirena.org.uk, Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@st.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Subject: Applied "IIO: ADC: stm32-dfsdm: avoid unused-variable
+	warning" to the asoc tree
+Date: Thu, 11 Jan 2018 12:31:00 +0000
+Message-ID: <E1eZc0a-0007Pd-6g@debutante>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id E81432678CE
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2018 13:31:00 +0100 (CET)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: fix a typo in stm32_adfsdm_probe()
+   IIO: ADC: stm32-dfsdm: avoid unused-variable warning
 
 has been applied to the asoc tree at
 
@@ -37,33 +52,46 @@ to this mail.
 Thanks,
 Mark
 
->From 6dee6722c6065f4850eab98c2b7b9f4a08a35813 Mon Sep 17 00:00:00 2001
-From: Wei Yongjun <weiyongjun1@huawei.com>
-Date: Thu, 11 Jan 2018 11:11:51 +0000
-Subject: [PATCH] ASoC: stm32: fix a typo in stm32_adfsdm_probe()
+>From 2353758bc2d427809f5feb15f046ded91c60afef Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Thu, 11 Jan 2018 11:34:46 +0100
+Subject: [PATCH] IIO: ADC: stm32-dfsdm: avoid unused-variable warning
 
-Fix a typo, we should return PTR_ERR(priv->iio_cb) instead of
-PTR_ERR(priv->iio_ch).
+Building with CONFIG_OF disabled produces a compiler warning:
 
-Fixes: 55da094824c4 ("ASoC: stm32: add DFSDM DAI support")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+drivers/iio/adc/stm32-dfsdm-core.c: In function 'stm32_dfsdm_probe':
+drivers/iio/adc/stm32-dfsdm-core.c:245:22: error: unused variable 'pnode' [-Werror=unused-variable]
+
+This removes the variable and open-codes it in the only place
+it gets used to avoid that warning.
+
+Fixes: bed73904e76f ("IIO: ADC: add stm32 DFSDM core support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_adfsdm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/adc/stm32-dfsdm-core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_adfsdm.c b/sound/soc/stm/stm32_adfsdm.c
-index af50891983c6..7306e3eca9e1 100644
---- a/sound/soc/stm/stm32_adfsdm.c
-+++ b/sound/soc/stm/stm32_adfsdm.c
-@@ -320,7 +320,7 @@ static int stm32_adfsdm_probe(struct platform_device *pdev)
+diff --git a/drivers/iio/adc/stm32-dfsdm-core.c b/drivers/iio/adc/stm32-dfsdm-core.c
+index 72427414db7f..6cd655f8239b 100644
+--- a/drivers/iio/adc/stm32-dfsdm-core.c
++++ b/drivers/iio/adc/stm32-dfsdm-core.c
+@@ -242,7 +242,6 @@ MODULE_DEVICE_TABLE(of, stm32_dfsdm_of_match);
+ static int stm32_dfsdm_probe(struct platform_device *pdev)
+ {
+ 	struct dfsdm_priv *priv;
+-	struct device_node *pnode = pdev->dev.of_node;
+ 	const struct of_device_id *of_id;
+ 	const struct stm32_dfsdm_dev_data *dev_data;
+ 	struct stm32_dfsdm *dfsdm;
+@@ -254,7 +253,7 @@ static int stm32_dfsdm_probe(struct platform_device *pdev)
  
- 	priv->iio_cb = iio_channel_get_all_cb(&pdev->dev, NULL, NULL);
- 	if (IS_ERR(priv->iio_cb))
--		return PTR_ERR(priv->iio_ch);
-+		return PTR_ERR(priv->iio_cb);
+ 	priv->pdev = pdev;
  
- 	ret = devm_snd_soc_register_platform(&pdev->dev,
- 					     &stm32_adfsdm_soc_platform);
+-	of_id = of_match_node(stm32_dfsdm_of_match, pnode);
++	of_id = of_match_node(stm32_dfsdm_of_match, pdev->dev.of_node);
+ 	if (!of_id->data) {
+ 		dev_err(&pdev->dev, "Data associated to device is missing\n");
+ 		return -EINVAL;
 -- 
 2.15.1
