@@ -1,107 +1,88 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/2] sound: Remove unused register_sound_midi()
-	and co
-Date: Thu, 11 Jan 2018 17:13:32 +0100
-Message-ID: <20180111161333.13349-1-tiwai@suse.de>
+From: "Fischer, Christian" <fischerc@swissphone.de>
+Subject: AW: [PATCH] ASoC: sgtl5000: fix powerup/down of micbias-voltage
+Date: Thu, 11 Jan 2018 16:14:31 +0000
+Message-ID: <DD64F087E8F0B540A1C9216D6716FFBDF9947CB6@defrsexc01.swissphone.de>
+References: <1515660031-9183-1-git-send-email-fischerc@swissphone.de>
+ <20180111150704.GC7834@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 9EBBE266E6D
- for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2018 17:13:35 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id C5D98ADFB
- for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2018 16:13:34 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180111150704.GC7834@sirena.org.uk>
+Content-Language: de-DE
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "richard.leitner@skidata.com" <richard.leitner@skidata.com>, "fabio.estevam@nxp.com" <fabio.estevam@nxp.com>, "bhumirks@gmail.com" <bhumirks@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-These helpers are no longer used after the removal of the legacy OSS
-drivers.  Let's clean up.
+Hi Mark,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/linux/sound.h |  2 --
- sound/sound_core.c    | 35 -----------------------------------
- 2 files changed, 37 deletions(-)
+Unfortunately, this was not the case with my tests.
+The supply is switched off at the start of the driver, but when starting a recording not started.
+The function "mic_bias_event" only consumes SND_SOC_DAPM_POST_PMU (0x02) and SND_SOC_DAPM_PRE_PMD (0x04).
 
-diff --git a/include/linux/sound.h b/include/linux/sound.h
-index 3c6d393c7f29..ec85b7a1f8d1 100644
---- a/include/linux/sound.h
-+++ b/include/linux/sound.h
-@@ -12,11 +12,9 @@ struct device;
- extern int register_sound_special(const struct file_operations *fops, int unit);
- extern int register_sound_special_device(const struct file_operations *fops, int unit, struct device *dev);
- extern int register_sound_mixer(const struct file_operations *fops, int dev);
--extern int register_sound_midi(const struct file_operations *fops, int dev);
- extern int register_sound_dsp(const struct file_operations *fops, int dev);
- 
- extern void unregister_sound_special(int unit);
- extern void unregister_sound_mixer(int unit);
--extern void unregister_sound_midi(int unit);
- extern void unregister_sound_dsp(int unit);
- #endif /* _LINUX_SOUND_H */
-diff --git a/sound/sound_core.c b/sound/sound_core.c
-index 99b73c675743..8b026b66cf18 100644
---- a/sound/sound_core.c
-+++ b/sound/sound_core.c
-@@ -452,26 +452,6 @@ int register_sound_mixer(const struct file_operations *fops, int dev)
- 
- EXPORT_SYMBOL(register_sound_mixer);
- 
--/**
-- *	register_sound_midi - register a midi device
-- *	@fops: File operations for the driver
-- *	@dev: Unit number to allocate
-- *
-- *	Allocate a midi device. Unit is the number of the midi device requested.
-- *	Pass -1 to request the next free midi unit.
-- *
-- *	Return: On success, the allocated number is returned. On failure,
-- *	a negative error code is returned.
-- */
--
--int register_sound_midi(const struct file_operations *fops, int dev)
--{
--	return sound_insert_unit(&chains[2], fops, dev, 2, 130,
--				 "midi", S_IRUSR | S_IWUSR, NULL);
--}
--
--EXPORT_SYMBOL(register_sound_midi);
--
- /*
-  *	DSP's are registered as a triple. Register only one and cheat
-  *	in open - see below.
-@@ -532,21 +512,6 @@ void unregister_sound_mixer(int unit)
- 
- EXPORT_SYMBOL(unregister_sound_mixer);
- 
--/**
-- *	unregister_sound_midi - unregister a midi device
-- *	@unit: unit number to allocate
-- *
-- *	Release a sound device that was allocated with register_sound_midi().
-- *	The unit passed is the return value from the register function.
-- */
--
--void unregister_sound_midi(int unit)
--{
--	sound_remove_unit(&chains[2], unit);
--}
--
--EXPORT_SYMBOL(unregister_sound_midi);
--
- /**
-  *	unregister_sound_dsp - unregister a DSP device
-  *	@unit: unit number to allocate
--- 
-2.15.1
+I changed:
+> SND_SOC_DAPM_SUPPLY("Mic Bias", SGTL5000_CHIP_MIC_CTRL, 8, 0, 
+> mic_bias_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+to:
+> SND_SOC_DAPM_SUPPLY("Mic Bias", SGTL5000_CHIP_MIC_CTRL, 8, 0, 
+> mic_bias_event, 0xFF),
+To receive all events.
+
+And added this to "mic_bias_event":
+> dev_info(codec->dev, "mic_bias_event event: %d\n", event);
+
+At probing I got this:
+sgtl5000 1-000a: mic_bias_event event: 128
+sgtl5000 1-000a: mic_bias_event event: 4 --> /* before widget power down, this disables the mic-bias-resistor */
+sgtl5000 1-000a: mic_bias_event event: 8 --> /* after widget power down */
+
+Testing:
+arecord -D "hw:0,1" -c 2 -f S16_LE -t wav test_recording.wav
+Recording WAVE 'test_recording.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Stereo
+==> no event was fired
+
+With my patch included, at probing:
+sgtl5000 1-000a: mic_bias_event event: 128
+sgtl5000 1-000a: mic_bias_event event: 4 --> /* before widget power down, this disables the mic-bias-resistor */
+sgtl5000 1-000a: mic_bias_event event: 8 --> /* after widget power down */
+
+Testing:
+arecord -D "hw:0,1" -c 2 -f S16_LE -t wav test_recording.wav
+Recording WAVE 'test_recording.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Stereo
+[   82.341376] sgtl5000 1-000a: mic_bias_event event: 1 --> /* before widget power up */
+[   82.762701] sgtl5000 1-000a: mic_bias_event event: 2  --> /* after widget power up, this enables the supply */
+^CAborted by signal Interrupt...
+[   90.362685] sgtl5000 1-000a: mic_bias_event event: 4 --> /* before widget power down, this disables the mic-bias-resistor */
+[   90.369561] sgtl5000 1-000a: mic_bias_event event: 8 --> /* after widget power down */
+==> events are working
+
+The disadvantage is that this is also done when playing audio:
+aplay -D "hw:0,0" -c 2 -f S16_LE -t wav test_recording.wav
+sgtl5000 1-000a: mic_bias_event event: 1
+sgtl5000 1-000a: mic_bias_event event: 2
+Playing WAVE 'test_recording.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Stereo
+sgtl5000 1-000a: mic_bias_event event: 4
+sgtl5000 1-000a: mic_bias_event event: 8
+
+I'm not so into ALSA, maybe there is another way to set the event properly.
+
+Kind regards,
+Christian
+
+-----Ursprüngliche Nachricht-----
+Von: Mark Brown [mailto:broonie@kernel.org] 
+Gesendet: Donnerstag, 11. Januar 2018 16:07
+An: Fischer, Christian <fischerc@swissphone.de>
+Cc: alsa-devel@alsa-project.org; lgirdwood@gmail.com; perex@perex.cz; tiwai@suse.com; richard.leitner@skidata.com; fabio.estevam@nxp.com; bhumirks@gmail.com; linux-kernel@vger.kernel.org
+Betreff: Re: [PATCH] ASoC: sgtl5000: fix powerup/down of micbias-voltage
+
+On Thu, Jan 11, 2018 at 09:40:31AM +0100, fischerc@swissphone.de wrote:
+
+> The mic-bias-voltage should get powered up/down automatically.
+> Added missing DAPM_PRE and DAPM_POST widgets to fire up the mic_bias_event function.
+
+> +	SND_SOC_DAPM_PRE("MIC_BIAS_PRE", mic_bias_event),
+> +	SND_SOC_DAPM_POST("MIC_BIAS_POST", mic_bias_event),
+
+I don't understand what this is intended to do.  The mic_bias_event() callback is already hooked up to the Mic Bias supply widget, it should be invoked whenever the bias is turned on and off already?
