@@ -1,70 +1,46 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC updates for v4.16
-Date: Fri, 12 Jan 2018 18:49:06 +0000
-Message-ID: <20180112184906.GB21458@sirena.org.uk>
-References: <20180112125751.GB6606@sirena.org.uk>
- <s5hlgh3npmn.wl-tiwai@suse.de>
+Subject: Re: [PATCH v3 3/3] ASoC: Intel - Convert to use
+ acpi_dev_get_first_match_name()
+Date: Fri, 12 Jan 2018 19:03:12 +0000
+Message-ID: <20180112190312.GD21458@sirena.org.uk>
+References: <20180105160935.48588-1-andriy.shevchenko@linux.intel.com>
+ <20180105160935.48588-4-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3287861004195509265=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1317D266B67
- for <alsa-devel@alsa-project.org>; Fri, 12 Jan 2018 19:49:08 +0100 (CET)
-In-Reply-To: <s5hlgh3npmn.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cYtjc4pxslFTELvY"
+Return-path: <linux-acpi-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180105160935.48588-4-andriy.shevchenko@linux.intel.com>
+Sender: linux-acpi-owner@vger.kernel.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: "Rafael J . Wysocki" <rjw@rjwysocki.net>, Erik Schmauss <erik.schmauss@intel.com>, linux-acpi@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, Mika Westerberg <mika.westerberg@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3287861004195509265==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="VrqPEDrXMn8OVzN4"
-Content-Disposition: inline
-
-
---VrqPEDrXMn8OVzN4
+--cYtjc4pxslFTELvY
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jan 12, 2018 at 03:00:32PM +0100, Takashi Iwai wrote:
+On Fri, Jan 05, 2018 at 06:09:35PM +0200, Andy Shevchenko wrote:
+> Instead of home grown snd_soc_acpi_find_name_from_hid() use
+> acpi_dev_get_first_match_name().
 
-> Pulled now.  Thanks!
+This doesn't apply against current code (even after pulling Raphael's
+pull request) - can you please check and resend?
 
-I'll probably have one more update over the weekend or on Monday - just
-got one cross tree thing from Intel to sort out.
-
---VrqPEDrXMn8OVzN4
+--cYtjc4pxslFTELvY
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpZAx0ACgkQJNaLcl1U
-h9Cv5Qf/cqrRC5e0XTmnPwrbZL7nHlKVf0WrO3yxiTKjqLH1xgiwI1E/RX082DCF
-dw/LWqgzdMxmkn7qN7GHKIczPp3l88SCe5htQN3TDfMGS6+MDx5Z4Qk/c0v4/A+o
-NzMXTUbrp0szKj5xHMyk7gRCwPlfyVNszy5e5JebhyOk/gYyPGMMFXgJngLrxeTc
-GkgMoriYx59yQ5eoqrAYQyzX74/6ssOar6YXmqm3wR1zm9thySEkSfUmBv2uGI7A
-yikOqNy4GE6N6gAMIJIUL0H5ISTbKoDp/VvSDq2sMd8Z7mgzNWJ0GMgd1G5nV4Mt
-ZtLSjdD2l783/7vWKEiRrZtbgJ26OQ==
-=PfoM
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpZBm8ACgkQJNaLcl1U
+h9CZDQf+PiyzQu3xKSmImSpyK7LEbagpUO0JZQm8kWvvlnWsqe3CYPIKo746unXy
+6QYDMeWXoh5Rawvy2k8x7jYcsDBrgx66OEf8GR1oJgoVo5QVJGAwPSb8Z95LIg7B
+oih3vR3xlRIE5fcLMtwyVTuN6edfyIFc/Ku7leZ69NhVvSSEsR/gOvj1JkOW2ak2
+gRRuSjy4WdScnR+t4Rv4trH+ZFf4eQcfjhv/GvDr/XgbrppZ9MBRIvCX7WFM8tM8
+lS7W2CaHIQAeZdSY0C/7w1gREKVoWB3GMwW9Cb804bt8+d53MB6GYhbQ/3Eehsd8
+dOVc//625ub5j1NGjs7y2eDAQsrt+Q==
+=OFbF
 -----END PGP SIGNATURE-----
 
---VrqPEDrXMn8OVzN4--
-
---===============3287861004195509265==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3287861004195509265==--
+--cYtjc4pxslFTELvY--
