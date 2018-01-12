@@ -1,17 +1,17 @@
 From: "Kumar, Abhijeet" <abhijeet.kumar@intel.com>
 Subject: Re: [PATCH] ASoC: hdac_hdmi: Ensuring proper setting
  of output widget power state
-Date: Fri, 12 Jan 2018 13:55:54 +0530
-Message-ID: <d84bdde7-2eda-ab2b-adce-b689b4222838@intel.com>
+Date: Fri, 12 Jan 2018 08:36:10 +0000
+Message-ID: <60213CA7255C53479ADE3BCF0360117F02E7119B@PGSMSX104.gar.corp.intel.com>
 References: <1515670468-9198-1-git-send-email-abhijeet.kumar@intel.com>
  <20180112054638.GL18649@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 521B4266F50
- for <alsa-devel@alsa-project.org>; Fri, 12 Jan 2018 09:25:59 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id BD266266F50
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jan 2018 09:36:19 +0100 (CET)
 In-Reply-To: <20180112054638.GL18649@localhost>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -23,59 +23,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Guneshwor Singh <guneshwor.o.singh@intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jeeja KP <jeeja.kp@intel.com>, Sandeep Tayal <sandeepx.tayal@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: "Koul, Vinod" <vinod.koul@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Kumar,
+ Abhijeet" <abhijeet.kumar@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Singh,
+ Guneshwor O" <guneshwor.o.singh@intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Kp,
+ Jeeja" <jeeja.kp@intel.com>, "Tayal, SandeepX" <sandeepx.tayal@intel.com>, "Prusty, Subhransu S" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 1/12/2018 11:16 AM, Vinod Koul wrote:
-> On Thu, Jan 11, 2018 at 05:04:27PM +0530, abhijeet.kumar@intel.com wrote:
->> From: Abhijeet Kumar <abhijeet.kumar@intel.com>
->>
->> When we change the resolution of DP pannel or hot plug-unplug it while
->> playing an audio clip,sometimes we observe a silent playback(no audio).
 > can you rephrase this please
-done please review v2!
->> During no audio condition, we have noticed that the power state of the
->> pin or the connector is D3. Optimzing the way we set the power could
->> mitigate the issue.With this changes the verb is sent to set the power
-> space after .
->
->> state and response is received. Thus ensuring power state is set.
+	done please review v2! https://patchwork.kernel.org/patch/10159791/
+
 > am not sure I fully understood the problem here
+This appears to be an timing issue, while performing a stress test, we found out that sometimes either pin or converters are not powered up. Thus ensuring it that the power state is set correctly.
 
-This appears to be an timing issue, while performing a stress test, we 
-found out that sometimes either pin or converters are not powered up. 
-Thus ensuring it that the power state is set correctly.
-
->
->> Signed-off-by: Abhijeet Kumar <abhijeet.kumar@intel.com>
->> ---
->>   sound/soc/codecs/hdac_hdmi.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
->> index f3b4f4dfae6a..e24caecf0a4f 100644
->> --- a/sound/soc/codecs/hdac_hdmi.c
->> +++ b/sound/soc/codecs/hdac_hdmi.c
->> @@ -718,7 +718,7 @@ static void hdac_hdmi_set_power_state(struct hdac_ext_device *edev,
->>   {
->>   	if (get_wcaps(&edev->hdac, nid) & AC_WCAP_POWER) {
->>   		if (!snd_hdac_check_power_state(&edev->hdac, nid, pwr_state))
->> -			snd_hdac_codec_write(&edev->hdac, nid, 0,
->> +			snd_hdac_codec_read(&edev->hdac, nid, 0,
 > how does read help instead of write?
+Indeed i'm making use of read instead of write to send the set command. But unlike codec_write, codec_read send the verb synchronously. Maybe if you read the comment while powering up and down afg in hdmi_codec_prepare and hdmi_codec_complete you would understand better. 
+"codec_read is preferred over codec_write to set the power state. This way verb is send to set the power state and response is received. So setting power state is ensured without using loop to read the state."
 
-Indeed i'm making use of read instead of write to send the set command.
+-----Original Message-----
+From: Koul, Vinod 
+Sent: Friday, January 12, 2018 11:17 AM
+To: Kumar, Abhijeet <abhijeet.kumar@intel.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>; Mark Brown <broonie@kernel.org>; Jaroslav Kysela <perex@perex.cz>; Takashi Iwai <tiwai@suse.com>; Kp, Jeeja <jeeja.kp@intel.com>; Prusty, Subhransu S <subhransu.s.prusty@intel.com>; Singh, Guneshwor O <guneshwor.o.singh@intel.com>; Tayal, SandeepX <sandeepx.tayal@intel.com>; alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: hdac_hdmi: Ensuring proper setting of output widget power state
 
-But unlike codec_write, codec_read send the verb synchronously. Maybe if 
-you read the comment while powering up and down in hdmi_codec_prepare 
-and hdmi_codec_complete you would understand better.
+On Thu, Jan 11, 2018 at 05:04:27PM +0530, abhijeet.kumar@intel.com wrote:
+> From: Abhijeet Kumar <abhijeet.kumar@intel.com>
+> 
+> When we change the resolution of DP pannel or hot plug-unplug it while 
+> playing an audio clip,sometimes we observe a silent playback(no audio).
 
-"codec_read is preferred over codec_write to set the power state.
+can you rephrase this please
 
-This way verb is send to set the power state and response is received. 
-So setting power state is ensured without using loop to read the state."
+> During no audio condition, we have noticed that the power state of the 
+> pin or the connector is D3. Optimzing the way we set the power could 
+> mitigate the issue.With this changes the verb is sent to set the power
 
->
+space after .
+
+> state and response is received. Thus ensuring power state is set.
+
+am not sure I fully understood the problem here
+
+> 
+> Signed-off-by: Abhijeet Kumar <abhijeet.kumar@intel.com>
+> ---
+>  sound/soc/codecs/hdac_hdmi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/codecs/hdac_hdmi.c 
+> b/sound/soc/codecs/hdac_hdmi.c index f3b4f4dfae6a..e24caecf0a4f 100644
+> --- a/sound/soc/codecs/hdac_hdmi.c
+> +++ b/sound/soc/codecs/hdac_hdmi.c
+> @@ -718,7 +718,7 @@ static void hdac_hdmi_set_power_state(struct 
+> hdac_ext_device *edev,  {
+>  	if (get_wcaps(&edev->hdac, nid) & AC_WCAP_POWER) {
+>  		if (!snd_hdac_check_power_state(&edev->hdac, nid, pwr_state))
+> -			snd_hdac_codec_write(&edev->hdac, nid, 0,
+> +			snd_hdac_codec_read(&edev->hdac, nid, 0,
+
+how does read help instead of write?
+
+--
+~Vinod
