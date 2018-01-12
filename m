@@ -1,17 +1,17 @@
 From: abhijeet.kumar@intel.com
 Subject: [PATCH v2] ASoC: hdac_hdmi: Ensuring proper setting of
 	output widget power state
-Date: Fri, 12 Jan 2018 13:57:58 +0530
-Message-ID: <1515745679-6989-1-git-send-email-abhijeet.kumar@intel.com>
-References: <1515670468-9198-1-git-send-email-abhijeet.kumar@intel.com>
+Date: Fri, 12 Jan 2018 14:02:54 +0530
+Message-ID: <1515745975-7037-1-git-send-email-abhijeet.kumar@intel.com>
+References: <1515670468-9198-1>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 137D7266F50
- for <alsa-devel@alsa-project.org>; Fri, 12 Jan 2018 09:19:40 +0100 (CET)
-In-Reply-To: <1515670468-9198-1-git-send-email-abhijeet.kumar@intel.com>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5333A266F50
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jan 2018 09:24:34 +0100 (CET)
+In-Reply-To: <1515670468-9198-1>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
