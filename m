@@ -1,88 +1,129 @@
-From: "Kumar, Abhijeet" <abhijeet.kumar@intel.com>
-Subject: Re: [PATCH] ASoC: hdac_hdmi: Ensuring proper setting
- of output widget power state
-Date: Fri, 12 Jan 2018 08:36:10 +0000
-Message-ID: <60213CA7255C53479ADE3BCF0360117F02E7119B@PGSMSX104.gar.corp.intel.com>
-References: <1515670468-9198-1-git-send-email-abhijeet.kumar@intel.com>
- <20180112054638.GL18649@localhost>
+From: Yisheng Xie <xieyisheng1@huawei.com>
+Subject: Re: [PATCH v3 00/27] kill devm_ioremap_nocache
+Date: Fri, 12 Jan 2018 17:12:12 +0800
+Message-ID: <ff498c83-d1ee-7553-e20c-a07369f8dad6@huawei.com>
+References: <1514026525-32538-1-git-send-email-xieyisheng1@huawei.com>
+ <20171223134831.GB10103@kroah.com>
+ <b8ff7f17-7f2c-f220-9833-7ae5bd7343d5@c-s.fr>
+ <8dd19411-5b06-0aa4-fd0e-e5b112c25dcb@huawei.com>
+ <1eb206ed-95e9-5839-485d-0e549ff3f505@c-s.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id BD266266F50
- for <alsa-devel@alsa-project.org>; Fri, 12 Jan 2018 09:36:19 +0100 (CET)
-In-Reply-To: <20180112054638.GL18649@localhost>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Kumar,
- Abhijeet" <abhijeet.kumar@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Singh,
- Guneshwor O" <guneshwor.o.singh@intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Kp,
- Jeeja" <jeeja.kp@intel.com>, "Tayal, SandeepX" <sandeepx.tayal@intel.com>, "Prusty, Subhransu S" <subhransu.s.prusty@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-mmc-owner@vger.kernel.org>
+In-Reply-To: <1eb206ed-95e9-5839-485d-0e549ff3f505@c-s.fr>
+Sender: linux-mmc-owner@vger.kernel.org
+To: Christophe LEROY <christophe.leroy@c-s.fr>, Greg KH <gregkh@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org, ysxie@foxmail.com, ulf.hansson@linaro.org, linux-mmc@vger.kernel.org, boris.brezillon@free-electrons.com, richard@nod.at, marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org, alsa-devel@alsa-project.org, wim@iguana.be, linux@roeck-us.net, linux-watchdog@vger.kernel.org, b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org, linus.walleij@linaro.org, linux-gpio@vger.kernel.org, ralf@linux-mips.org, linux-mips@linux-mips.org, lgirdwood@gmail.com, broonie@kernel.org, tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, arnd@arndb.de, andriy.shevchenko@linux.intel.com, industrypack-devel@lists.sourceforge.net, wg@grandegger.com, mkl@pengutronix.deli
 List-Id: alsa-devel@alsa-project.org
 
-> can you rephrase this please
-	done please review v2! https://patchwork.kernel.org/patch/10159791/
+Hi Christophe ，
 
-> am not sure I fully understood the problem here
-This appears to be an timing issue, while performing a stress test, we found out that sometimes either pin or converters are not powered up. Thus ensuring it that the power state is set correctly.
-
-> how does read help instead of write?
-Indeed i'm making use of read instead of write to send the set command. But unlike codec_write, codec_read send the verb synchronously. Maybe if you read the comment while powering up and down afg in hdmi_codec_prepare and hdmi_codec_complete you would understand better. 
-"codec_read is preferred over codec_write to set the power state. This way verb is send to set the power state and response is received. So setting power state is ensured without using loop to read the state."
-
------Original Message-----
-From: Koul, Vinod 
-Sent: Friday, January 12, 2018 11:17 AM
-To: Kumar, Abhijeet <abhijeet.kumar@intel.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>; Mark Brown <broonie@kernel.org>; Jaroslav Kysela <perex@perex.cz>; Takashi Iwai <tiwai@suse.com>; Kp, Jeeja <jeeja.kp@intel.com>; Prusty, Subhransu S <subhransu.s.prusty@intel.com>; Singh, Guneshwor O <guneshwor.o.singh@intel.com>; Tayal, SandeepX <sandeepx.tayal@intel.com>; alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: hdac_hdmi: Ensuring proper setting of output widget power state
-
-On Thu, Jan 11, 2018 at 05:04:27PM +0530, abhijeet.kumar@intel.com wrote:
-> From: Abhijeet Kumar <abhijeet.kumar@intel.com>
+On 2018/1/4 16:05, Christophe LEROY wrote:
 > 
-> When we change the resolution of DP pannel or hot plug-unplug it while 
-> playing an audio clip,sometimes we observe a silent playback(no audio).
+> 
+> Le 25/12/2017 à 02:34, Yisheng Xie a écrit :
+>>
+>>
+>> On 2017/12/24 17:05, christophe leroy wrote:
+>>>
+>>>
+>>> Le 23/12/2017 à 14:48, Greg KH a écrit :
+>>>> On Sat, Dec 23, 2017 at 06:55:25PM +0800, Yisheng Xie wrote:
+>>>>> Hi all,
+>>>>>
+>>>>> When I tried to use devm_ioremap function and review related code, I found
+>>>>> devm_ioremap and devm_ioremap_nocache is almost the same with each other,
+>>>>> except one use ioremap while the other use ioremap_nocache.
+>>>>
+>>>> For all arches?  Really?  Look at MIPS, and x86, they have different
+>>>> functions.
+>>>>
+>>>>> While ioremap's
+>>>>> default function is ioremap_nocache, so devm_ioremap_nocache also have the
+>>>>> same function with devm_ioremap, which can just be killed to reduce the size
+>>>>> of devres.o(from 20304 bytes to 18992 bytes in my compile environment).
+>>>>>
+>>>>> I have posted two versions, which use macro instead of function for
+>>>>> devm_ioremap_nocache[1] or devm_ioremap[2]. And Greg suggest me to kill
+>>>>> devm_ioremap_nocache for no need to keep a macro around for the duplicate
+>>>>> thing. So here comes v3 and please help to review.
+>>>>
+>>>> I don't think this can be done, what am I missing?  These functions are
+>>>> not identical, sorry for missing that before.
+>>>
+>>> devm_ioremap() and devm_ioremap_nocache() are quite similar, both use devm_ioremap_release() for the release, why not just defining:
+>>>
+>>> static void __iomem *__devm_ioremap(struct device *dev, resource_size_t offset,
+>>>                 resource_size_t size, bool nocache)
+>>> {
+>>> [...]
+>>>      if (nocache)
+>>>          addr = ioremap_nocache(offset, size);
+>>>      else
+>>>          addr = ioremap(offset, size);
+>>> [...]
+>>> }
+>>>
+>>> then in include/linux/io.h
+>>>
+>>> static inline void __iomem *devm_ioremap(struct device *dev, resource_size_t offset,
+>>>                 resource_size_t size)
+>>> {return __devm_ioremap(dev, offset, size, false);}
+>>>
+>>> static inline void __iomem *devm_ioremap_nocache(struct device *dev, resource_size_t offset,
+>>>                     resource_size_t size);
+>>> {return __devm_ioremap(dev, offset, size, true);}
+>>
+>> Yeah, this seems good to me, right now we have devm_ioremap, devm_ioremap_wc, devm_ioremap_nocache
+>> May be we can use an enum like:
+>> typedef enum {
+>>     DEVM_IOREMAP = 0,
+>>     DEVM_IOREMAP_NOCACHE,
+>>     DEVM_IOREMAP_WC,
+>> } devm_ioremap_type;
+>>
+>> static inline void __iomem *devm_ioremap(struct device *dev, resource_size_t offset,
+>>                  resource_size_t size)
+>>   {return __devm_ioremap(dev, offset, size, DEVM_IOREMAP);}
+>>
+>>   static inline void __iomem *devm_ioremap_nocache(struct device *dev, resource_size_t offset,
+>>                      resource_size_t size);
+>>   {return __devm_ioremap(dev, offset, size, DEVM_IOREMAP_NOCACHE);}
+>>
+>>   static inline void __iomem *devm_ioremap_wc(struct device *dev, resource_size_t offset,
+>>                      resource_size_t size);
+>>   {return __devm_ioremap(dev, offset, size, DEVM_IOREMAP_WC);}
+>>
+>>   static void __iomem *__devm_ioremap(struct device *dev, resource_size_t offset,
+>>                  resource_size_t size, devm_ioremap_type type)
+>>   {
+>>       void __iomem **ptr, *addr = NULL;
+>>   [...]
+>>       switch (type){
+>>       case DEVM_IOREMAP:
+>>           addr = ioremap(offset, size);
+>>           break;
+>>       case DEVM_IOREMAP_NOCACHE:
+>>           addr = ioremap_nocache(offset, size);
+>>           break;
+>>       case DEVM_IOREMAP_WC:
+>>           addr = ioremap_wc(offset, size);
+>>           break;
+>>       }
+>>   [...]
+>>   }
+> 
+> 
+> That looks good to me, will you submit a v4 ?
 
-can you rephrase this please
+Sorry for late response. And I will submit the v4 as your suggestion.
 
-> During no audio condition, we have noticed that the power state of the 
-> pin or the connector is D3. Optimzing the way we set the power could 
-> mitigate the issue.With this changes the verb is sent to set the power
-
-space after .
-
-> state and response is received. Thus ensuring power state is set.
-
-am not sure I fully understood the problem here
+Thanks
+Yisheng
 
 > 
-> Signed-off-by: Abhijeet Kumar <abhijeet.kumar@intel.com>
-> ---
->  sound/soc/codecs/hdac_hdmi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Christophe
 > 
-> diff --git a/sound/soc/codecs/hdac_hdmi.c 
-> b/sound/soc/codecs/hdac_hdmi.c index f3b4f4dfae6a..e24caecf0a4f 100644
-> --- a/sound/soc/codecs/hdac_hdmi.c
-> +++ b/sound/soc/codecs/hdac_hdmi.c
-> @@ -718,7 +718,7 @@ static void hdac_hdmi_set_power_state(struct 
-> hdac_ext_device *edev,  {
->  	if (get_wcaps(&edev->hdac, nid) & AC_WCAP_POWER) {
->  		if (!snd_hdac_check_power_state(&edev->hdac, nid, pwr_state))
-> -			snd_hdac_codec_write(&edev->hdac, nid, 0,
-> +			snd_hdac_codec_read(&edev->hdac, nid, 0,
+>>
 
-how does read help instead of write?
-
---
-~Vinod
