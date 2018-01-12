@@ -1,28 +1,43 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH v3 3/3] ASoC: Intel - Convert to use
  acpi_dev_get_first_match_name()
-Date: Fri, 12 Jan 2018 21:01:26 +0000
-Message-ID: <20180112210126.GF21458@sirena.org.uk>
+Date: Fri, 12 Jan 2018 21:03:22 +0000
+Message-ID: <20180112210322.GG21458@sirena.org.uk>
 References: <20180105160935.48588-1-andriy.shevchenko@linux.intel.com>
  <20180105160935.48588-4-andriy.shevchenko@linux.intel.com>
  <20180112190312.GD21458@sirena.org.uk>
  <1515788467.7000.978.camel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="f5QefDQHtn8hx44O"
-Return-path: <linux-acpi-owner@vger.kernel.org>
-Content-Disposition: inline
+Content-Type: multipart/mixed; boundary="===============8976082422276450978=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C73A266B67
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jan 2018 22:03:27 +0100 (CET)
 In-Reply-To: <1515788467.7000.978.camel@linux.intel.com>
-Sender: linux-acpi-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: "Rafael J . Wysocki" <rjw@rjwysocki.net>, Erik Schmauss <erik.schmauss@intel.com>, linux-acpi@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-gpio@vger.kernel.org, Mika Westerberg <mika.westerberg@linux.intel.com>, Linus Walleij <linus.walleij@linaro.org>, "Rafael J . Wysocki" <rjw@rjwysocki.net>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, linux-acpi@vger.kernel.org, Erik Schmauss <erik.schmauss@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---f5QefDQHtn8hx44O
+--===============8976082422276450978==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="h3LYUU6HlUDSAOzy"
+Content-Disposition: inline
+
+
+--h3LYUU6HlUDSAOzy
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
 On Fri, Jan 12, 2018 at 10:21:07PM +0200, Andy Shevchenko wrote:
 > On Fri, 2018-01-12 at 19:03 +0000, Mark Brown wrote:
@@ -32,31 +47,33 @@ On Fri, Jan 12, 2018 at 10:21:07PM +0200, Andy Shevchenko wrote:
 
 > It requires Pierre's series #2 [1] to be applied first.
 
-Ugh, I see.  I'm surprised I was getting pushed about applying this when
-it had unreviewed dependencies... =20
+Oh, and please note that the "and resend" part there is important, if
+I've replied like that it means the patch is gone from my review queue
+so I'll need to go and try to find a copy to do something with it which
+can be error prone.
 
-> [1]: https://www.spinics.net/lists/alsa-devel/msg72463.html
-
-Please include human readable descriptions of things like commits and
-issues being discussed in e-mail in your mails, this makes them much
-easier for humans to read especially when they have no internet access.
-I do frequently catch up on my mail on flights or while otherwise
-travelling so this is even more pressing for me than just being about
-making things a bit easier to read.
-
---f5QefDQHtn8hx44O
+--h3LYUU6HlUDSAOzy
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpZIiUACgkQJNaLcl1U
-h9BJcAf/TNJlUnpDrGh39TKWonEt5nPLKmj4aWwG/CSljhNFArL+p+KhEoz/z40m
-rcp8QUKBDZZXNfOLDTi5RSr+LPiLxv2R76nsgAKgsGoBKyBonADSYJJHbb3x6BVC
-j+EVj4SgOGQWne0S3NwxYhGExZnEK5Z8/0/WptLEJJMx5nN7ABNjAiKatHaeB/jh
-jvGkMDPZtEuoKPftAmaFdonDDZ1uLXwdR7MtV0+jIGRHmnvmovYmmj7SdEaq9cO/
-6VJOudmp5x4coIZFMentmb/T+brtfcv3WzoDG8aPCnMQ3Fv07bhj2hM767X60Fwp
-dLn4a6GwbWD8I0keIbXZN3qeLhfFxQ==
-=NYMe
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpZIpkACgkQJNaLcl1U
+h9C0Xwf+J46crKTMqIYBZqKkO5VH73LQBiKoHwsUJuQZC73qjPgfnCUnpPVBk6cB
+PGEHsTKRzOEJU67K4hqmsrlKit+G4bgSwZfl50We6JLTUICg9XhejPb/vV0b7LgR
+YnFHhJ2HMaL7E62LuV7KD5BL9i5O2avxeCd5GQmKh7pJ9lFDuZHeE96GhKYjRJ0L
+qGEYEXYOkxZQswcS8yzWDLRNoj3T3sU+hmxWrDxzZ3hrXkaZH6BBUKIWoE2cT/X3
+m/oVwYW7NnTCTgr8AtL3k/6HcKuCMQXlpm67bm/RFG4PnJVScMsmdv8CdMJk59LU
+F0FmmetV8rBnMfoFJJQzZTjcZRO+YQ==
+=ryRX
 -----END PGP SIGNATURE-----
 
---f5QefDQHtn8hx44O--
+--h3LYUU6HlUDSAOzy--
+
+--===============8976082422276450978==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8976082422276450978==--
