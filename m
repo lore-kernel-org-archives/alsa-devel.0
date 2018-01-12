@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel - Convert to use
-	acpi_dev_get_first_match_name()" to the asoc tree
-Date: Fri, 12 Jan 2018 21:21:05 +0000
-Message-ID: <E1ea6l7-0003nX-IN@debutante>
-References: <20180112211617.60941-1-andriy.shevchenko@linux.intel.com>
+Subject: Applied "ASoC: mxs-sgtl5000: add audio-routing
+	support" to the asoc tree
+Date: Fri, 12 Jan 2018 21:24:17 +0000
+Message-ID: <E1ea6oD-0004hk-Fw@debutante>
+References: <1515763379-10182-1-git-send-email-fischerc@swissphone.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A860266B67
- for <alsa-devel@alsa-project.org>; Fri, 12 Jan 2018 22:21:10 +0100 (CET)
-In-Reply-To: <20180112211617.60941-1-andriy.shevchenko@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D7D4266B67
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jan 2018 22:24:21 +0100 (CET)
+In-Reply-To: <1515763379-10182-1-git-send-email-fischerc@swissphone.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Christian Fischer <fischerc@swissphone.de>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com, dolinux.peng@gmail.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel - Convert to use acpi_dev_get_first_match_name()
+   ASoC: mxs-sgtl5000: add audio-routing support
 
 has been applied to the asoc tree at
 
@@ -53,170 +53,108 @@ to this mail.
 Thanks,
 Mark
 
->From 3a1479599a610cd49cbf91da68963ade90ee0fa3 Mon Sep 17 00:00:00 2001
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date: Fri, 12 Jan 2018 23:16:17 +0200
-Subject: [PATCH] ASoC: Intel - Convert to use acpi_dev_get_first_match_name()
+>From 949293d45d6b0951e2dfdfd670a9c0092b10fd27 Mon Sep 17 00:00:00 2001
+From: Christian Fischer <fischerc@swissphone.de>
+Date: Fri, 12 Jan 2018 14:22:59 +0100
+Subject: [PATCH] ASoC: mxs-sgtl5000: add audio-routing support
 
-Instead of home grown snd_soc_acpi_find_name_from_hid() use
-acpi_dev_get_first_match_name().
+Add dapm_widgets to machine-driver (from imx-sgtl5000).
+If the "audio-routing"-property is present at probing the dapm-widgets
+getting linked to the card.
 
-Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Christian Fischer <fischerc@swissphone.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-acpi.h                |  7 -------
- sound/soc/intel/boards/bytcht_da7213.c  |  2 +-
- sound/soc/intel/boards/bytcht_es8316.c  |  2 +-
- sound/soc/intel/boards/bytcr_rt5640.c   |  2 +-
- sound/soc/intel/boards/bytcr_rt5651.c   |  2 +-
- sound/soc/intel/boards/cht_bsw_rt5645.c |  2 +-
- sound/soc/intel/boards/cht_bsw_rt5672.c |  2 +-
- sound/soc/soc-acpi.c                    | 33 ---------------------------------
- 8 files changed, 6 insertions(+), 46 deletions(-)
+ .../bindings/sound/mxs-audio-sgtl5000.txt          | 33 +++++++++++++++++++---
+ sound/soc/mxs/mxs-sgtl5000.c                       | 20 +++++++++++++
+ 2 files changed, 49 insertions(+), 4 deletions(-)
 
-diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
-index 83320af8def2..082224275f52 100644
---- a/include/sound/soc-acpi.h
-+++ b/include/sound/soc-acpi.h
-@@ -31,16 +31,9 @@ struct snd_soc_acpi_package_context {
- #define SND_ACPI_I2C_ID_LEN (4 + ACPI_ID_LEN + 3 + 1)
+diff --git a/Documentation/devicetree/bindings/sound/mxs-audio-sgtl5000.txt b/Documentation/devicetree/bindings/sound/mxs-audio-sgtl5000.txt
+index 601c518eddaa..4eb980bd0287 100644
+--- a/Documentation/devicetree/bindings/sound/mxs-audio-sgtl5000.txt
++++ b/Documentation/devicetree/bindings/sound/mxs-audio-sgtl5000.txt
+@@ -1,10 +1,31 @@
+ * Freescale MXS audio complex with SGTL5000 codec
  
- #if IS_ENABLED(CONFIG_ACPI)
--/* translation fron HID to I2C name, needed for DAI codec_name */
--const char *snd_soc_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN]);
- bool snd_soc_acpi_find_package_from_hid(const u8 hid[ACPI_ID_LEN],
- 				    struct snd_soc_acpi_package_context *ctx);
- #else
--static inline const char *
--snd_soc_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN])
--{
--	return NULL;
--}
- static inline bool
- snd_soc_acpi_find_package_from_hid(const u8 hid[ACPI_ID_LEN],
- 				   struct snd_soc_acpi_package_context *ctx)
-diff --git a/sound/soc/intel/boards/bytcht_da7213.c b/sound/soc/intel/boards/bytcht_da7213.c
-index 6219c04d4731..2179dedb28ad 100644
---- a/sound/soc/intel/boards/bytcht_da7213.c
-+++ b/sound/soc/intel/boards/bytcht_da7213.c
-@@ -243,7 +243,7 @@ static int bytcht_da7213_probe(struct platform_device *pdev)
- 	}
+ Required properties:
+-- compatible: "fsl,mxs-audio-sgtl5000"
+-- model: The user-visible name of this sound complex
+-- saif-controllers: The phandle list of the MXS SAIF controller
+-- audio-codec: The phandle of the SGTL5000 audio codec
++- compatible		: "fsl,mxs-audio-sgtl5000"
++- model			: The user-visible name of this sound complex
++- saif-controllers	: The phandle list of the MXS SAIF controller
++- audio-codec		: The phandle of the SGTL5000 audio codec
++- audio-routing		: A list of the connections between audio components.
++			  Each entry is a pair of strings, the first being the
++			  connection's sink, the second being the connection's
++			  source. Valid names could be power supplies, SGTL5000
++			  pins, and the jacks on the board:
++
++			  Power supplies:
++			   * Mic Bias
++
++			  SGTL5000 pins:
++			   * MIC_IN
++			   * LINE_IN
++			   * HP_OUT
++			   * LINE_OUT
++
++			  Board connectors:
++			   * Mic Jack
++			   * Line In Jack
++			   * Headphone Jack
++			   * Line Out Jack
++			   * Ext Spk
  
- 	/* fixup codec name based on HID */
--	i2c_name = snd_soc_acpi_find_name_from_hid(mach->id);
-+	i2c_name = acpi_dev_get_first_match_name(mach->id, NULL, -1);
- 	if (i2c_name) {
- 		snprintf(codec_name, sizeof(codec_name),
- 			"%s%s", "i2c-", i2c_name);
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 079f35cd4eaf..305e7f4fe55a 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -258,7 +258,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 	}
+ Example:
  
- 	/* fixup codec name based on HID */
--	i2c_name = snd_soc_acpi_find_name_from_hid(mach->id);
-+	i2c_name = acpi_dev_get_first_match_name(mach->id, NULL, -1);
- 	if (i2c_name) {
- 		snprintf(codec_name, sizeof(codec_name),
- 			"%s%s", "i2c-", i2c_name);
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 4548f75498d0..b6a1cfeec830 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -762,7 +762,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	}
+@@ -14,4 +35,8 @@ sound {
+ 	model = "imx28-evk-sgtl5000";
+ 	saif-controllers = <&saif0 &saif1>;
+ 	audio-codec = <&sgtl5000>;
++	audio-routing =
++		"MIC_IN", "Mic Jack",
++		"Mic Jack", "Mic Bias",
++		"Headphone Jack", "HP_OUT";
+ };
+diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
+index 2ed3240cc682..b593f76212e0 100644
+--- a/sound/soc/mxs/mxs-sgtl5000.c
++++ b/sound/soc/mxs/mxs-sgtl5000.c
+@@ -93,6 +93,14 @@ static struct snd_soc_dai_link mxs_sgtl5000_dai[] = {
+ 	},
+ };
  
- 	/* fixup codec name based on HID */
--	i2c_name = snd_soc_acpi_find_name_from_hid(mach->id);
-+	i2c_name = acpi_dev_get_first_match_name(mach->id, NULL, -1);
- 	if (i2c_name) {
- 		snprintf(byt_rt5640_codec_name, sizeof(byt_rt5640_codec_name),
- 			"%s%s", "i2c-", i2c_name);
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 5a6b7dedb773..456526a93dd5 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -539,7 +539,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 	}
++static const struct snd_soc_dapm_widget mxs_sgtl5000_dapm_widgets[] = {
++	SND_SOC_DAPM_MIC("Mic Jack", NULL),
++	SND_SOC_DAPM_LINE("Line In Jack", NULL),
++	SND_SOC_DAPM_HP("Headphone Jack", NULL),
++	SND_SOC_DAPM_SPK("Line Out Jack", NULL),
++	SND_SOC_DAPM_SPK("Ext Spk", NULL),
++};
++
+ static struct snd_soc_card mxs_sgtl5000 = {
+ 	.name		= "mxs_sgtl5000",
+ 	.owner		= THIS_MODULE,
+@@ -141,6 +149,18 @@ static int mxs_sgtl5000_probe(struct platform_device *pdev)
  
- 	/* fixup codec name based on HID */
--	i2c_name = snd_soc_acpi_find_name_from_hid(mach->id);
-+	i2c_name = acpi_dev_get_first_match_name(mach->id, NULL, -1);
- 	if (i2c_name) {
- 		snprintf(byt_rt5651_codec_name, sizeof(byt_rt5651_codec_name),
- 			"%s%s", "i2c-", i2c_name);
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index cef6a8c31c8d..976ea6bf9539 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -566,7 +566,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 		}
+ 	card->dev = &pdev->dev;
  
- 	/* fixup codec name based on HID */
--	i2c_name = snd_soc_acpi_find_name_from_hid(mach->id);
-+	i2c_name = acpi_dev_get_first_match_name(mach->id, NULL, -1);
- 	if (i2c_name) {
- 		snprintf(cht_rt5645_codec_name, sizeof(cht_rt5645_codec_name),
- 			"%s%s", "i2c-", i2c_name);
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
-index 1f3d38dc4fcb..c14a52d2f714 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
-@@ -396,7 +396,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 
- 	/* fixup codec name based on HID */
- 	if (mach) {
--		i2c_name = snd_soc_acpi_find_name_from_hid(mach->id);
-+		i2c_name = acpi_dev_get_first_match_name(mach->id, NULL, -1);
- 		if (i2c_name) {
- 			snprintf(drv->codec_name, sizeof(drv->codec_name),
- 				 "i2c-%s", i2c_name);
-diff --git a/sound/soc/soc-acpi.c b/sound/soc/soc-acpi.c
-index 7f43c9bf3d09..3d7e1ff79139 100644
---- a/sound/soc/soc-acpi.c
-+++ b/sound/soc/soc-acpi.c
-@@ -16,39 +16,6 @@
- 
- #include <sound/soc-acpi.h>
- 
--static acpi_status snd_soc_acpi_find_name(acpi_handle handle, u32 level,
--				      void *context, void **ret)
--{
--	struct acpi_device *adev;
--	const char *name = NULL;
--
--	if (acpi_bus_get_device(handle, &adev))
--		return AE_OK;
--
--	if (adev->status.present && adev->status.functional) {
--		name = acpi_dev_name(adev);
--		*(const char **)ret = name;
--		return AE_CTRL_TERMINATE;
--	}
--
--	return AE_OK;
--}
--
--const char *snd_soc_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN])
--{
--	const char *name = NULL;
--	acpi_status status;
--
--	status = acpi_get_devices(hid, snd_soc_acpi_find_name, NULL,
--				  (void **)&name);
--
--	if (ACPI_FAILURE(status) || name[0] == '\0')
--		return NULL;
--
--	return name;
--}
--EXPORT_SYMBOL_GPL(snd_soc_acpi_find_name_from_hid);
--
- struct snd_soc_acpi_mach *
- snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines)
- {
++	if (of_find_property(np, "audio-routing", NULL)) {
++		card->dapm_widgets = mxs_sgtl5000_dapm_widgets;
++		card->num_dapm_widgets = ARRAY_SIZE(mxs_sgtl5000_dapm_widgets);
++
++		ret = snd_soc_of_parse_audio_routing(card, "audio-routing");
++		if (ret) {
++			dev_err(&pdev->dev, "failed to parse audio-routing (%d)\n",
++				ret);
++			return ret;
++		}
++	}
++
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
 -- 
 2.15.1
