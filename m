@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42l73: Remove trailing semicolon" to the asoc tree
-Date: Fri, 12 Jan 2018 21:09:11 +0000
-Message-ID: <E1ea6Zb-0003Cp-Gl@debutante>
-References: <20180111162704.25246-1-luisbg@kernel.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180111162704.25246-1-luisbg@kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Luis de Bethencourt <luisbg@kernel.org>
-Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Joe Perches <joe@perches.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: acpi: remove hard-coded i2c-device name
+	length" to the asoc tree
+Date: Fri, 12 Jan 2018 21:09:21 +0000
+Message-ID: <E1ea6Zl-0003Dm-3x@debutante>
+References: <20180111195209.5809-3-pierre-louis.bossart@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id C241A267BC6
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jan 2018 22:09:27 +0100 (CET)
+In-Reply-To: <20180111195209.5809-3-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: jeremy@jcline.org, alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs42l73: Remove trailing semicolon
+   ASoC: acpi: remove hard-coded i2c-device name length
 
 has been applied to the asoc tree at
 
@@ -37,32 +53,130 @@ to this mail.
 Thanks,
 Mark
 
->From ef3d687c795c82c44aef1bf25fcd4900ba60be9a Mon Sep 17 00:00:00 2001
-From: Luis de Bethencourt <luisbg@kernel.org>
-Date: Thu, 11 Jan 2018 16:27:04 +0000
-Subject: [PATCH] ASoC: cs42l73: Remove trailing semicolon
+>From 2be2d57986431626e905ee344086affa44c5bb9b Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 11 Jan 2018 13:52:09 -0600
+Subject: [PATCH] ASoC: acpi: remove hard-coded i2c-device name length
 
-The trailing semicolon is an empty statement that does no operation.
-Removing it since it doesn't do anything.
+Remove hard-codec [16] array size, replace with clearer description and
+dependency on ACPI_ID_LEN
+No functionality change
 
-Signed-off-by: Luis de Bethencourt <luisbg@kernel.org>
+Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42l73.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/soc-acpi.h                | 3 +++
+ sound/soc/intel/boards/bytcht_da7213.c  | 2 +-
+ sound/soc/intel/boards/bytcht_es8316.c  | 2 +-
+ sound/soc/intel/boards/bytcr_rt5640.c   | 2 +-
+ sound/soc/intel/boards/bytcr_rt5651.c   | 2 +-
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 4 ++--
+ sound/soc/intel/boards/cht_bsw_rt5672.c | 2 +-
+ 7 files changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
-index dde37e569ade..aebaa97490b6 100644
---- a/sound/soc/codecs/cs42l73.c
-+++ b/sound/soc/codecs/cs42l73.c
-@@ -1355,7 +1355,7 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
- 	ret = regmap_read(cs42l73->regmap, CS42L73_REVID, &reg);
- 	if (ret < 0) {
- 		dev_err(&i2c_client->dev, "Get Revision ID failed\n");
--		return ret;;
-+		return ret;
- 	}
+diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+index d1aaf876cd26..83320af8def2 100644
+--- a/include/sound/soc-acpi.h
++++ b/include/sound/soc-acpi.h
+@@ -27,6 +27,9 @@ struct snd_soc_acpi_package_context {
+ 	bool data_valid;
+ };
  
- 	dev_info(&i2c_client->dev,
++/* codec name is used in DAIs is i2c-<HID>:00 with HID being 8 chars */
++#define SND_ACPI_I2C_ID_LEN (4 + ACPI_ID_LEN + 3 + 1)
++
+ #if IS_ENABLED(CONFIG_ACPI)
+ /* translation fron HID to I2C name, needed for DAI codec_name */
+ const char *snd_soc_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN]);
+diff --git a/sound/soc/intel/boards/bytcht_da7213.c b/sound/soc/intel/boards/bytcht_da7213.c
+index c4d82ad41bd7..6219c04d4731 100644
+--- a/sound/soc/intel/boards/bytcht_da7213.c
++++ b/sound/soc/intel/boards/bytcht_da7213.c
+@@ -219,7 +219,7 @@ static struct snd_soc_card bytcht_da7213_card = {
+ 	.num_dapm_routes = ARRAY_SIZE(audio_map),
+ };
+ 
+-static char codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
++static char codec_name[SND_ACPI_I2C_ID_LEN];
+ 
+ static int bytcht_da7213_probe(struct platform_device *pdev)
+ {
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index ae24f6205f05..079f35cd4eaf 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -232,7 +232,7 @@ static struct snd_soc_card byt_cht_es8316_card = {
+ 	.fully_routed = true,
+ };
+ 
+-static char codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
++static char codec_name[SND_ACPI_I2C_ID_LEN];
+ 
+ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ {
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index f2c0fc415e52..4548f75498d0 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -713,7 +713,7 @@ static struct snd_soc_card byt_rt5640_card = {
+ 	.fully_routed = true,
+ };
+ 
+-static char byt_rt5640_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
++static char byt_rt5640_codec_name[SND_ACPI_I2C_ID_LEN];
+ static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
+ static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+ 
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 22c9cc5d135e..5a6b7dedb773 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -509,7 +509,7 @@ static struct snd_soc_card byt_rt5651_card = {
+ 	.fully_routed = true,
+ };
+ 
+-static char byt_rt5651_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
++static char byt_rt5651_codec_name[SND_ACPI_I2C_ID_LEN];
+ 
+ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ {
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index 18d129caa974..cef6a8c31c8d 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -49,7 +49,7 @@ struct cht_acpi_card {
+ struct cht_mc_private {
+ 	struct snd_soc_jack jack;
+ 	struct cht_acpi_card *acpi_card;
+-	char codec_name[16];
++	char codec_name[SND_ACPI_I2C_ID_LEN];
+ 	struct clk *mclk;
+ };
+ 
+@@ -499,7 +499,7 @@ static struct cht_acpi_card snd_soc_cards[] = {
+ 	{"10EC5650", CODEC_TYPE_RT5650, &snd_soc_card_chtrt5650},
+ };
+ 
+-static char cht_rt5645_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
++static char cht_rt5645_codec_name[SND_ACPI_I2C_ID_LEN];
+ static char cht_rt5645_codec_aif_name[12]; /*  = "rt5645-aif[1|2]" */
+ static char cht_rt5645_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+ 
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
+index f8f21eee9b2d..1f3d38dc4fcb 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5672.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
+@@ -35,7 +35,7 @@
+ 
+ struct cht_mc_private {
+ 	struct snd_soc_jack headset;
+-	char codec_name[16];
++	char codec_name[SND_ACPI_I2C_ID_LEN];
+ 	struct clk *mclk;
+ };
+ 
 -- 
 2.15.1
