@@ -1,18 +1,22 @@
-From: Jussi Laako <jussi@sonarnerd.net>
-Subject: ALSA device with slave clock
-Date: Sun, 14 Jan 2018 22:37:28 +0200
-Message-ID: <c0ec603c-9e3f-54fc-5dbd-7be6121ae5ae@sonarnerd.net>
+From: Ladislav Michl <ladis@linux-mips.org>
+Subject: Re: ASoC: How to write new (atmel) driver?
+Date: Sun, 14 Jan 2018 22:53:49 +0100
+Message-ID: <20180114215349.GA16051@lenoch>
+References: <20180114115400.GA5867@lenoch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.sonarnerd.net (rankki.sonarnerd.net [194.142.149.154])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D1AF266CFE
- for <alsa-devel@alsa-project.org>; Sun, 14 Jan 2018 21:37:31 +0100 (CET)
-Received: from [IPv6:fc00::2] (porkkala.uworld [IPv6:fc00::2])
- by mail.sonarnerd.net (Postfix) with ESMTP id A2FC62310C9
- for <alsa-devel@alsa-project.org>; Sun, 14 Jan 2018 22:37:28 +0200 (EET)
-Content-Language: en-US
+Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
+ by alsa0.perex.cz (Postfix) with ESMTP id DBEED266CFE
+ for <alsa-devel@alsa-project.org>; Sun, 14 Jan 2018 22:53:54 +0100 (CET)
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23992521AbeANVxuvXFCj (ORCPT
+ <rfc822;alsa-devel@alsa-project.org>);
+ Sun, 14 Jan 2018 22:53:50 +0100
+Content-Disposition: inline
+In-Reply-To: <20180114115400.GA5867@lenoch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,47 +27,114 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolas Ferre <nicolas.ferre@microchip.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sun, Jan 14, 2018 at 12:54:00PM +0100, Ladislav Michl wrote:
+> Hi there!
+> 
+> I've got new at91sam9g20 board with max9867 codec (*), so I wanted to get
+> inspiration from other drivers in sound/soc/atmel. Indeed, there are three
+> of them:
+> atmel_wm8904.c
+> sam9g20_wm8731.c
+> sam9x5_wm8731.c
+> Now, looking at sound/soc/tegra, sound/soc/mediatek, etc. most drivers seems
+> to be created by copy, modify (mostly find&replace), commit. There are so many
+> of them, that it is probably impossible to fix them all (consider for
+> example patch bellow to be done several times for different drivers) (**)
 
-I've been fighting with some devices for the case where ALSA device is a 
-clock slave. I'm also working on some patches/quirks to make some of 
-these things work.
+Okay, at least for atmel drivers, I'll just sent few cleanups/fixes, not
+sure about the rest. Perhaps some coccinelle scripting would help.
 
-I have couple of questions in this domain I didn't find documented:
+> So is sound/soc/generic preferred solution these days? Btw, generic drivers
+> are calling of_node_put before they are done dealing with that node.
+> 
+> And if above is preferred solution what about all those already created
+> drivers? Fix them all or covert to generic one by introducing DT fixups
+> for all those over the time created DT properties? At least for atmel
+> drivers that seems to be doable as atmel_ssc_dai needs to be modified
+> to get it work under generic framework and keeping old interface would
+> needlesly complicate things - unless I miss something obvious of course :)
 
-1) How is application supposed to use ALSA capture device when it 
-doesn't know the sampling rate? For example with ASIO on Windows 
-application sets sampling rate to 0 to indicate slave and then starts 
-the device and retrieves the rate using ASIOGetSampleRate(). There are 
-typically also reset request messages when the rate changes.
+...and the obvious is drivers/misc/atmel-ssc.c and then simple-audio-card
+should do the trick.
 
-2) Some USB devices have indicator for lock status between set sampling 
-rate and detected input rate. One such device I have is Motu 8D (UAC2 
-device):
-     Simple mixer control 'Internal Clock Validity',0
-       Capabilities: pswitch pswitch-joined
-       Playback channels: Mono
-       Mono: Playback [on]
-As long as the status is valid, I can set sampling rate to the same, or 
-something else. When the status becomes invalid due to rate mismatch, 
-ALSA fails to set any of the sampling rates, even correct one and 
-there's an error message in dmesg: "usb 3-14: clock source 1 is not 
-valid, cannot use". So the clock source cannot be made valid again by 
-changing sampling rate once it has become invalid, because it is 
-currently invalid...
+Well, remaining question is how is SND_SOC_MAX9768 expected to be selected?
 
-3) What is the correct way to deal with clock slave device from both 
-driver and application perspective? So that application can retrieve the 
-current sampling rate, instead of setting one... UAC2 has provisions for 
-this, but this doesn't seem to be supported by the current driver. I 
-have also some hardware where I would like to do the same with I2S - 
-where clock generator is outside of the SoC and the SoC is just a slave 
-(for example S/PDIF or AES/EBU input to a SoC where clock is generated 
-from the input stream using PLL).
-
-
-Best regards,
-
-	- Jussi
+> (*) for now I wrote driver using copy&modify, but that does not seem to be
+>     the right solution anymore
+> (**) almost two decades ago I rather wrote OSS driver for the very same
+>      reasons, but now OSS is gone...
+> 
+> diff --git a/sound/soc/atmel/sam9x5_wm8731.c b/sound/soc/atmel/sam9x5_wm8731.c
+> index 9db08826b32a..11e2c37a2e42 100644
+> --- a/sound/soc/atmel/sam9x5_wm8731.c
+> +++ b/sound/soc/atmel/sam9x5_wm8731.c
+> @@ -78,7 +78,6 @@ static const struct snd_soc_dapm_widget sam9x5_dapm_widgets[] = {
+>  static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+>  {
+>  	struct device_node *np = pdev->dev.of_node;
+> -	struct device_node *codec_np, *cpu_np;
+>  	struct snd_soc_card *card;
+>  	struct snd_soc_dai_link *dai;
+>  	struct sam9x5_drvdata *priv;
+> @@ -122,23 +121,20 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+>  		goto out;
+>  	}
+>  
+> -	codec_np = of_parse_phandle(np, "atmel,audio-codec", 0);
+> -	if (!codec_np) {
+> +	dai->codec_of_node = of_parse_phandle(np, "atmel,audio-codec", 0);
+> +	if (!dai->codec_of_node) {
+>  		dev_err(&pdev->dev, "atmel,audio-codec node missing\n");
+>  		ret = -EINVAL;
+>  		goto out;
+>  	}
+>  
+> -	dai->codec_of_node = codec_np;
+> -
+> -	cpu_np = of_parse_phandle(np, "atmel,ssc-controller", 0);
+> -	if (!cpu_np) {
+> +	dai->cpu_of_node = of_parse_phandle(np, "atmel,ssc-controller", 0);
+> +	if (!dai->cpu_of_node) {
+>  		dev_err(&pdev->dev, "atmel,ssc-controller node missing\n");
+>  		ret = -EINVAL;
+> -		goto out;
+> +		goto out_put_codec;
+>  	}
+> -	dai->cpu_of_node = cpu_np;
+> -	dai->platform_of_node = cpu_np;
+> +	dai->platform_of_node = dai->cpu_of_node;
+>  
+>  	priv->ssc_id = of_alias_get_id(cpu_np, "ssc");
+>  
+> @@ -146,12 +142,9 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+>  	if (ret != 0) {
+>  		dev_err(&pdev->dev, "Failed to set SSC %d for audio: %d\n",
+>  			ret, priv->ssc_id);
+> -		goto out;
+> +		goto out_put_cpu;
+>  	}
+>  
+> -	of_node_put(codec_np);
+> -	of_node_put(cpu_np);
+> -
+>  	ret = snd_soc_register_card(card);
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "Platform device allocation failed\n");
+> @@ -164,6 +157,10 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+>  
+>  out_put_audio:
+>  	atmel_ssc_put_audio(priv->ssc_id);
+> +out_put_cpu:
+> +	of_node_put(dai->cpu_of_node);
+> +out_put_codec:
+> +	of_node_put(dai->codec_of_node);
+>  out:
+>  	return ret;
+>  }
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
