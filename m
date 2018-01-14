@@ -1,15 +1,18 @@
-From: Martin Peres <martin.peres@free.fr>
-Subject: [PATCH] ALSA: usb-audio: Add a quirk for Nura's first
-	gen headset
-Date: Sun, 14 Jan 2018 18:05:53 +0200
-Message-ID: <20180114160553.15445-1-martin.peres@free.fr>
+From: Jussi Laako <jussi@sonarnerd.net>
+Subject: ALSA device with slave clock
+Date: Sun, 14 Jan 2018 22:37:28 +0200
+Message-ID: <c0ec603c-9e3f-54fc-5dbd-7be6121ae5ae@sonarnerd.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
- by alsa0.perex.cz (Postfix) with ESMTP id 436A0266CFE
- for <alsa-devel@alsa-project.org>; Sun, 14 Jan 2018 17:06:32 +0100 (CET)
+Received: from mail.sonarnerd.net (rankki.sonarnerd.net [194.142.149.154])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D1AF266CFE
+ for <alsa-devel@alsa-project.org>; Sun, 14 Jan 2018 21:37:31 +0100 (CET)
+Received: from [IPv6:fc00::2] (porkkala.uworld [IPv6:fc00::2])
+ by mail.sonarnerd.net (Postfix) with ESMTP id A2FC62310C9
+ for <alsa-devel@alsa-project.org>; Sun, 14 Jan 2018 22:37:28 +0200 (EET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,78 +23,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Martin Peres <martin.peres@free.fr>
 List-Id: alsa-devel@alsa-project.org
 
-The capture interface does not work, and the playback interface
-actually supports only 48kHz unlike what is advertised (44.1, 32, 22,
-16, 8).
+Hi,
 
-The only unknown here is if there are other devices that use the same
-product ID, but given that this ID is currently unknown, I would assume
-it is specially allocated for the nura headset.
+I've been fighting with some devices for the case where ALSA device is a 
+clock slave. I'm also working on some patches/quirks to make some of 
+these things work.
 
-Signed-off-by: Martin Peres <martin.peres@free.fr>
----
- sound/usb/quirks-table.h | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+I have couple of questions in this domain I didn't find documented:
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 8a59d4782a0f..50252046b01d 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -3277,4 +3277,52 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
- 	}
- },
- 
-+{
-+	/*
-+	 * Nura's first gen headphones use Cambridge Silicon Radio's vendor
-+	 * ID, but it looks like the product ID actually is only for Nura.
-+	 * The capture interface does not work at all (even on Windows),
-+	 * and only the 48 kHz sample rate works for the playback interface.
-+	 */
-+	USB_DEVICE(0x0a12, 0x1243),
-+	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = (const struct snd_usb_audio_quirk[]) {
-+			{
-+				.ifnum = 0,
-+				.type = QUIRK_AUDIO_STANDARD_MIXER,
-+			},
-+			/* Capture */
-+			{
-+				.ifnum = 1,
-+				.type = QUIRK_IGNORE_INTERFACE,
-+			},
-+			/* Playback */
-+			{
-+				.ifnum = 2,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = &(const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+					.channels = 2,
-+					.iface = 2,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.attributes = UAC_EP_CS_ATTR_FILL_MAX |
-+						UAC_EP_CS_ATTR_SAMPLE_RATE,
-+					.endpoint = 0x03,
-+					.ep_attr = USB_ENDPOINT_XFER_ISOC,
-+					.rates = SNDRV_PCM_RATE_48000,
-+					.rate_min = 48000,
-+					.rate_max = 48000,
-+					.nr_rates = 1,
-+					.rate_table = (unsigned int[]) {
-+						48000
-+					}
-+				}
-+			},
-+		}
-+	}
-+},
-+
- #undef USB_DEVICE_VENDOR_SPEC
--- 
-2.15.1
+1) How is application supposed to use ALSA capture device when it 
+doesn't know the sampling rate? For example with ASIO on Windows 
+application sets sampling rate to 0 to indicate slave and then starts 
+the device and retrieves the rate using ASIOGetSampleRate(). There are 
+typically also reset request messages when the rate changes.
+
+2) Some USB devices have indicator for lock status between set sampling 
+rate and detected input rate. One such device I have is Motu 8D (UAC2 
+device):
+     Simple mixer control 'Internal Clock Validity',0
+       Capabilities: pswitch pswitch-joined
+       Playback channels: Mono
+       Mono: Playback [on]
+As long as the status is valid, I can set sampling rate to the same, or 
+something else. When the status becomes invalid due to rate mismatch, 
+ALSA fails to set any of the sampling rates, even correct one and 
+there's an error message in dmesg: "usb 3-14: clock source 1 is not 
+valid, cannot use". So the clock source cannot be made valid again by 
+changing sampling rate once it has become invalid, because it is 
+currently invalid...
+
+3) What is the correct way to deal with clock slave device from both 
+driver and application perspective? So that application can retrieve the 
+current sampling rate, instead of setting one... UAC2 has provisions for 
+this, but this doesn't seem to be supported by the current driver. I 
+have also some hardware where I would like to do the same with I2S - 
+where clock generator is outside of the SoC and the SoC is just a slave 
+(for example S/PDIF or AES/EBU input to a SoC where clock is generated 
+from the input stream using PLL).
+
+
+Best regards,
+
+	- Jussi
