@@ -1,20 +1,20 @@
-From: "Fischer, Christian" <fischerc@swissphone.de>
-Subject: Re: [PATCH] ASoC: sgtl5000: fix powerup/down of
- micbias-voltage
-Date: Sat, 13 Jan 2018 09:50:58 +0000
-Message-ID: <DD64F087E8F0B540A1C9216D6716FFBDF9949231@defrsexc01.swissphone.de>
-References: <DD64F087E8F0B540A1C9216D6716FFBDF994813E@defrsexc01.swissphone.de>
- <CAOMZO5A9ypZOhA01hHwS3Eyig7t=3ivD2nnWh8NF7PB2P-w-Uw@mail.gmail.com>,
- <CAOMZO5D8hpwg+mfZ0LFhuvQU8EX0n+qkfc8PR=BF7ar2Fp=hJw@mail.gmail.com>
+From: Ladislav Michl <ladis@linux-mips.org>
+Subject: ASoC: How to write new (atmel) driver?
+Date: Sun, 14 Jan 2018 12:54:00 +0100
+Message-ID: <20180114115400.GA5867@lenoch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail2.avectris.ch (mail2.avectris.ch [185.94.144.40])
- by alsa0.perex.cz (Postfix) with ESMTP id CAE05266CFE
- for <alsa-devel@alsa-project.org>; Sat, 13 Jan 2018 10:51:01 +0100 (CET)
-In-Reply-To: <CAOMZO5D8hpwg+mfZ0LFhuvQU8EX0n+qkfc8PR=BF7ar2Fp=hJw@mail.gmail.com>
-Content-Language: de-DE
+Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C117266CFE
+ for <alsa-devel@alsa-project.org>; Sun, 14 Jan 2018 12:54:06 +0100 (CET)
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23990439AbeANLyBs3iFm (ORCPT
+ <rfc822;alsa-devel@alsa-project.org>);
+ Sun, 14 Jan 2018 12:54:01 +0100
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,28 +24,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, "fabio.estevam@nxp.com" <fabio.estevam@nxp.com>, "bhumirks@gmail.com" <bhumirks@gmail.com>, "richard.leitner@skidata.com" <richard.leitner@skidata.com>
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
->> What about using simple audio card binding in your device tree instead?
->>
->> You could pass the simple-audio-card,routing property as described in
->> Documentation/devicetree/bindings/sound/simple-card.txt
->>
->> A dts where sgtl5000 is used with simple audio card is
->> arch/arm/boot/dts/imx7s-warp.dts.
->>
->> This one does not use simple-audio-card,routing, but at least it gives
->> you a reference.
->
-> This one uses sgtl5000 with simple-audio-card,routing:
-> arch/arm/boot/dts/imx6ul-tx6ul.dtsi
-> 
-> Hope it helps.
+Hi there!
 
-Hello Fabio,
+I've got new at91sam9g20 board with max9867 codec (*), so I wanted to get
+inspiration from other drivers in sound/soc/atmel. Indeed, there are three
+of them:
+atmel_wm8904.c
+sam9g20_wm8731.c
+sam9x5_wm8731.c
+Now, looking at sound/soc/tegra, sound/soc/mediatek, etc. most drivers seems
+to be created by copy, modify (mostly find&replace), commit. There are so many
+of them, that it is probably impossible to fix them all (consider for
+example patch bellow to be done several times for different drivers) (**)
 
-you are right, a simple-audio-card would work too! Thanks!
-I also applied a patch for mxs-sgtl5000 machine-driver that adds audio-routing support:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2018-January/130666.html
+So is sound/soc/generic preferred solution these days? Btw, generic drivers
+are calling of_node_put before they are done dealing with that node.
+
+And if above is preferred solution what about all those already created
+drivers? Fix them all or covert to generic one by introducing DT fixups
+for all those over the time created DT properties? At least for atmel
+drivers that seems to be doable as atmel_ssc_dai needs to be modified
+to get it work under generic framework and keeping old interface would
+needlesly complicate things - unless I miss something obvious of course :)
+
+(*) for now I wrote driver using copy&modify, but that does not seem to be
+    the right solution anymore
+(**) almost two decades ago I rather wrote OSS driver for the very same
+     reasons, but now OSS is gone...
+
+diff --git a/sound/soc/atmel/sam9x5_wm8731.c b/sound/soc/atmel/sam9x5_wm8731.c
+index 9db08826b32a..11e2c37a2e42 100644
+--- a/sound/soc/atmel/sam9x5_wm8731.c
++++ b/sound/soc/atmel/sam9x5_wm8731.c
+@@ -78,7 +78,6 @@ static const struct snd_soc_dapm_widget sam9x5_dapm_widgets[] = {
+ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+-	struct device_node *codec_np, *cpu_np;
+ 	struct snd_soc_card *card;
+ 	struct snd_soc_dai_link *dai;
+ 	struct sam9x5_drvdata *priv;
+@@ -122,23 +121,20 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+ 		goto out;
+ 	}
+ 
+-	codec_np = of_parse_phandle(np, "atmel,audio-codec", 0);
+-	if (!codec_np) {
++	dai->codec_of_node = of_parse_phandle(np, "atmel,audio-codec", 0);
++	if (!dai->codec_of_node) {
+ 		dev_err(&pdev->dev, "atmel,audio-codec node missing\n");
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
+ 
+-	dai->codec_of_node = codec_np;
+-
+-	cpu_np = of_parse_phandle(np, "atmel,ssc-controller", 0);
+-	if (!cpu_np) {
++	dai->cpu_of_node = of_parse_phandle(np, "atmel,ssc-controller", 0);
++	if (!dai->cpu_of_node) {
+ 		dev_err(&pdev->dev, "atmel,ssc-controller node missing\n");
+ 		ret = -EINVAL;
+-		goto out;
++		goto out_put_codec;
+ 	}
+-	dai->cpu_of_node = cpu_np;
+-	dai->platform_of_node = cpu_np;
++	dai->platform_of_node = dai->cpu_of_node;
+ 
+ 	priv->ssc_id = of_alias_get_id(cpu_np, "ssc");
+ 
+@@ -146,12 +142,9 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+ 	if (ret != 0) {
+ 		dev_err(&pdev->dev, "Failed to set SSC %d for audio: %d\n",
+ 			ret, priv->ssc_id);
+-		goto out;
++		goto out_put_cpu;
+ 	}
+ 
+-	of_node_put(codec_np);
+-	of_node_put(cpu_np);
+-
+ 	ret = snd_soc_register_card(card);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Platform device allocation failed\n");
+@@ -164,6 +157,10 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+ 
+ out_put_audio:
+ 	atmel_ssc_put_audio(priv->ssc_id);
++out_put_cpu:
++	of_node_put(dai->cpu_of_node);
++out_put_codec:
++	of_node_put(dai->codec_of_node);
+ out:
+ 	return ret;
+ }
