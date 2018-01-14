@@ -1,20 +1,15 @@
-From: Ladislav Michl <ladis@linux-mips.org>
-Subject: ASoC: How to write new (atmel) driver?
-Date: Sun, 14 Jan 2018 12:54:00 +0100
-Message-ID: <20180114115400.GA5867@lenoch>
+From: Martin Peres <martin.peres@free.fr>
+Subject: [PATCH] ALSA: usb-audio: Add a quirk for Nura's first
+	gen headset
+Date: Sun, 14 Jan 2018 18:05:53 +0200
+Message-ID: <20180114160553.15445-1-martin.peres@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C117266CFE
- for <alsa-devel@alsa-project.org>; Sun, 14 Jan 2018 12:54:06 +0100 (CET)
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23990439AbeANLyBs3iFm (ORCPT
- <rfc822;alsa-devel@alsa-project.org>);
- Sun, 14 Jan 2018 12:54:01 +0100
-Content-Disposition: inline
+Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
+ by alsa0.perex.cz (Postfix) with ESMTP id 436A0266CFE
+ for <alsa-devel@alsa-project.org>; Sun, 14 Jan 2018 17:06:32 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,101 +20,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: Martin Peres <martin.peres@free.fr>
 List-Id: alsa-devel@alsa-project.org
 
-Hi there!
+The capture interface does not work, and the playback interface
+actually supports only 48kHz unlike what is advertised (44.1, 32, 22,
+16, 8).
 
-I've got new at91sam9g20 board with max9867 codec (*), so I wanted to get
-inspiration from other drivers in sound/soc/atmel. Indeed, there are three
-of them:
-atmel_wm8904.c
-sam9g20_wm8731.c
-sam9x5_wm8731.c
-Now, looking at sound/soc/tegra, sound/soc/mediatek, etc. most drivers seems
-to be created by copy, modify (mostly find&replace), commit. There are so many
-of them, that it is probably impossible to fix them all (consider for
-example patch bellow to be done several times for different drivers) (**)
+The only unknown here is if there are other devices that use the same
+product ID, but given that this ID is currently unknown, I would assume
+it is specially allocated for the nura headset.
 
-So is sound/soc/generic preferred solution these days? Btw, generic drivers
-are calling of_node_put before they are done dealing with that node.
+Signed-off-by: Martin Peres <martin.peres@free.fr>
+---
+ sound/usb/quirks-table.h | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-And if above is preferred solution what about all those already created
-drivers? Fix them all or covert to generic one by introducing DT fixups
-for all those over the time created DT properties? At least for atmel
-drivers that seems to be doable as atmel_ssc_dai needs to be modified
-to get it work under generic framework and keeping old interface would
-needlesly complicate things - unless I miss something obvious of course :)
-
-(*) for now I wrote driver using copy&modify, but that does not seem to be
-    the right solution anymore
-(**) almost two decades ago I rather wrote OSS driver for the very same
-     reasons, but now OSS is gone...
-
-diff --git a/sound/soc/atmel/sam9x5_wm8731.c b/sound/soc/atmel/sam9x5_wm8731.c
-index 9db08826b32a..11e2c37a2e42 100644
---- a/sound/soc/atmel/sam9x5_wm8731.c
-+++ b/sound/soc/atmel/sam9x5_wm8731.c
-@@ -78,7 +78,6 @@ static const struct snd_soc_dapm_widget sam9x5_dapm_widgets[] = {
- static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
--	struct device_node *codec_np, *cpu_np;
- 	struct snd_soc_card *card;
- 	struct snd_soc_dai_link *dai;
- 	struct sam9x5_drvdata *priv;
-@@ -122,23 +121,20 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
- 		goto out;
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 8a59d4782a0f..50252046b01d 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3277,4 +3277,52 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
  	}
+ },
  
--	codec_np = of_parse_phandle(np, "atmel,audio-codec", 0);
--	if (!codec_np) {
-+	dai->codec_of_node = of_parse_phandle(np, "atmel,audio-codec", 0);
-+	if (!dai->codec_of_node) {
- 		dev_err(&pdev->dev, "atmel,audio-codec node missing\n");
- 		ret = -EINVAL;
- 		goto out;
- 	}
- 
--	dai->codec_of_node = codec_np;
--
--	cpu_np = of_parse_phandle(np, "atmel,ssc-controller", 0);
--	if (!cpu_np) {
-+	dai->cpu_of_node = of_parse_phandle(np, "atmel,ssc-controller", 0);
-+	if (!dai->cpu_of_node) {
- 		dev_err(&pdev->dev, "atmel,ssc-controller node missing\n");
- 		ret = -EINVAL;
--		goto out;
-+		goto out_put_codec;
- 	}
--	dai->cpu_of_node = cpu_np;
--	dai->platform_of_node = cpu_np;
-+	dai->platform_of_node = dai->cpu_of_node;
- 
- 	priv->ssc_id = of_alias_get_id(cpu_np, "ssc");
- 
-@@ -146,12 +142,9 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
- 	if (ret != 0) {
- 		dev_err(&pdev->dev, "Failed to set SSC %d for audio: %d\n",
- 			ret, priv->ssc_id);
--		goto out;
-+		goto out_put_cpu;
- 	}
- 
--	of_node_put(codec_np);
--	of_node_put(cpu_np);
--
- 	ret = snd_soc_register_card(card);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Platform device allocation failed\n");
-@@ -164,6 +157,10 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
- 
- out_put_audio:
- 	atmel_ssc_put_audio(priv->ssc_id);
-+out_put_cpu:
-+	of_node_put(dai->cpu_of_node);
-+out_put_codec:
-+	of_node_put(dai->codec_of_node);
- out:
- 	return ret;
- }
++{
++	/*
++	 * Nura's first gen headphones use Cambridge Silicon Radio's vendor
++	 * ID, but it looks like the product ID actually is only for Nura.
++	 * The capture interface does not work at all (even on Windows),
++	 * and only the 48 kHz sample rate works for the playback interface.
++	 */
++	USB_DEVICE(0x0a12, 0x1243),
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_STANDARD_MIXER,
++			},
++			/* Capture */
++			{
++				.ifnum = 1,
++				.type = QUIRK_IGNORE_INTERFACE,
++			},
++			/* Playback */
++			{
++				.ifnum = 2,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S16_LE,
++					.channels = 2,
++					.iface = 2,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = UAC_EP_CS_ATTR_FILL_MAX |
++						UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.endpoint = 0x03,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC,
++					.rates = SNDRV_PCM_RATE_48000,
++					.rate_min = 48000,
++					.rate_max = 48000,
++					.nr_rates = 1,
++					.rate_table = (unsigned int[]) {
++						48000
++					}
++				}
++			},
++		}
++	}
++},
++
+ #undef USB_DEVICE_VENDOR_SPEC
+-- 
+2.15.1
