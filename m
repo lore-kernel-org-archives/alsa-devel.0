@@ -1,7 +1,7 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v3 06/17] ASoC: fsl_ssi: Clear FIFO directly in fsl_ssi_config()
-Date: Sun, 14 Jan 2018 20:21:16 -0800
-Message-ID: <1515990087-11598-7-git-send-email-nicoleotsuka@gmail.com>
+Subject: [PATCH v3 02/17] ASoC: fsl_ssi: Keep ssi->i2s_net updated
+Date: Sun, 14 Jan 2018 20:21:12 -0800
+Message-ID: <1515990087-11598-3-git-send-email-nicoleotsuka@gmail.com>
 References: <1515990087-11598-1-git-send-email-nicoleotsuka@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1515990087-11598-1-git-send-email-nicoleotsuka@gmail.com>
@@ -10,108 +10,46 @@ To: timur@tabi.org, broonie@kernel.org, mail@maciej.szmigiero.name
 Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, fabio.estevam@nxp.com, caleb@crome.org, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-The FIFO clear helper function is just one line of code now.
-So it could be cleaned up by removing it and calling regmap
-directly.
+The hw_params() overwrites i2s_net settings for special cases like
+mono-channel support, however, it doesn't update ssi->i2s_net as
+set_dai_fmt() does.
 
-Meanwhile, FIFO clear could be applied to all use cases, not
-confined to AC97. So this patch also moves FIFO clear in the
-trigger() to fsl_ssi_config() and removes the AC97 check.
-
-Note that SOR register is safe from offline_config HW limit.
+This patch removes the local i2s_net variable and directly updates
+ssi->i2s_net in the hw_params() so that the driver can simply look
+up the ssi->i2s_net instead of reading the register.
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Tested-by: Caleb Crome <caleb@crome.org>
 ---
-Changelog
-v3
- * Replaced "bool dir" with "int dir" and "int adir"
-v2
- * Replaced bool tx with bool dir
-
- sound/soc/fsl/fsl_ssi.c | 33 ++++++++++-----------------------
- 1 file changed, 10 insertions(+), 23 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index bbeef71..a2ac92f 100644
+index 001e453..9847a1d 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -410,17 +410,6 @@ static void fsl_ssi_rxtx_config(struct fsl_ssi *ssi, bool enable)
- }
- 
- /**
-- * Clear remaining data in the FIFO to avoid dirty data or channel slipping
-- */
--static void fsl_ssi_fifo_clear(struct fsl_ssi *ssi, bool is_rx)
--{
--	bool tx = !is_rx;
--
--	regmap_update_bits(ssi->regs, REG_SSI_SOR,
--			   SSI_SOR_xX_CLR(tx), SSI_SOR_xX_CLR(tx));
--}
--
--/**
-  * Exclude bits that are used by the opposite stream
-  *
-  * When both streams are active, disabling some bits for the current stream
-@@ -446,10 +435,11 @@ static void fsl_ssi_fifo_clear(struct fsl_ssi *ssi, bool is_rx)
- static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
- 			   struct fsl_ssi_regvals *vals)
- {
--	int adir = (&ssi->regvals[TX] == vals) ? RX : TX;
--	int dir = (&ssi->regvals[TX] == vals) ? TX : RX;
-+	bool tx = &ssi->regvals[TX] == vals;
- 	struct regmap *regs = ssi->regs;
- 	struct fsl_ssi_regvals *avals;
-+	int adir = tx ? RX : TX;
-+	int dir = tx ? TX : RX;
- 	bool aactive;
- 
- 	/* Check if the opposite stream is active */
-@@ -489,7 +479,9 @@ static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
- 
- 	/* Online configure single direction while SSI is running */
- 	if (enable) {
--		fsl_ssi_fifo_clear(ssi, vals->scr & SSI_SCR_RE);
-+		/* Clear FIFO to prevent dirty data or channel slipping */
-+		regmap_update_bits(ssi->regs, REG_SSI_SOR,
-+				   SSI_SOR_xX_CLR(tx), SSI_SOR_xX_CLR(tx));
- 
- 		regmap_update_bits(regs, REG_SSI_SRCR, vals->srcr, vals->srcr);
- 		regmap_update_bits(regs, REG_SSI_STCR, vals->stcr, vals->stcr);
-@@ -511,6 +503,10 @@ static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
- 		regmap_update_bits(regs, REG_SSI_SRCR, srcr, 0);
- 		regmap_update_bits(regs, REG_SSI_STCR, stcr, 0);
- 		regmap_update_bits(regs, REG_SSI_SIER, sier, 0);
-+
-+		/* Clear FIFO to prevent dirty data or channel slipping */
-+		regmap_update_bits(ssi->regs, REG_SSI_SOR,
-+				   SSI_SOR_xX_CLR(tx), SSI_SOR_xX_CLR(tx));
+@@ -838,16 +838,16 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
  	}
  
- config_done:
-@@ -1091,7 +1087,6 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct fsl_ssi *ssi = snd_soc_dai_get_drvdata(rtd->cpu_dai);
--	struct regmap *regs = ssi->regs;
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -1116,14 +1111,6 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- 		return -EINVAL;
- 	}
- 
--	/* Clear corresponding FIFO */
--	if (fsl_ssi_is_ac97(ssi)) {
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--			regmap_write(regs, REG_SSI_SOR, SSI_SOR_TX_CLR);
+ 	if (!fsl_ssi_is_ac97(ssi)) {
+-		u8 i2s_net;
+ 		/* Normal + Network mode to send 16-bit data in 32-bit frames */
+ 		if (fsl_ssi_is_i2s_cbm_cfs(ssi) && sample_size == 16)
+-			i2s_net = SSI_SCR_I2S_MODE_NORMAL | SSI_SCR_NET;
 -		else
--			regmap_write(regs, REG_SSI_SOR, SSI_SOR_RX_CLR);
--	}
--
- 	return 0;
- }
+-			i2s_net = ssi->i2s_net;
++			ssi->i2s_net = SSI_SCR_I2S_MODE_NORMAL | SSI_SCR_NET;
++
++		/* Use Normal mode to send mono data at 1st slot of 2 slots */
++		if (channels == 1)
++			ssi->i2s_net = SSI_SCR_I2S_MODE_NORMAL;
  
+ 		regmap_update_bits(regs, REG_SSI_SCR,
+-				   SSI_SCR_I2S_NET_MASK,
+-				   channels == 1 ? 0 : i2s_net);
++				   SSI_SCR_I2S_NET_MASK, ssi->i2s_net);
+ 	}
+ 
+ 	/* In synchronous mode, the SSI uses STCCR for capture */
 -- 
 2.7.4
