@@ -1,54 +1,75 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v3 10/17] ASoC: fsl_ssi: Set xFEN0 and xFEN1 together
-Date: Sun, 14 Jan 2018 20:21:20 -0800
-Message-ID: <1515990087-11598-11-git-send-email-nicoleotsuka@gmail.com>
+Subject: [PATCH v3 01/17] ASoC: fsl_ssi: Redefine RX and TX
+	macros
+Date: Sun, 14 Jan 2018 20:21:11 -0800
+Message-ID: <1515990087-11598-2-git-send-email-nicoleotsuka@gmail.com>
 References: <1515990087-11598-1-git-send-email-nicoleotsuka@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pl0-f66.google.com (mail-pl0-f66.google.com
+ [209.85.160.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id E950B26731A
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jan 2018 05:22:16 +0100 (CET)
+Received: by mail-pl0-f66.google.com with SMTP id 62so2805381pld.7
+ for <alsa-devel@alsa-project.org>; Sun, 14 Jan 2018 20:22:16 -0800 (PST)
 In-Reply-To: <1515990087-11598-1-git-send-email-nicoleotsuka@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: timur@tabi.org, broonie@kernel.org, mail@maciej.szmigiero.name
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, fabio.estevam@nxp.com, caleb@crome.org, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
+Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, linux-kernel@vger.kernel.org, caleb@crome.org, lgirdwood@gmail.com, arnaud.mouiche@invoxia.com, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-It'd be safer to enable both FIFOs for TX or RX at the same time.
+The RX and TX macros were defined implicitly and there was
+a potential risk if someone changes their values.
+
+Since they were defined to index the array ssi->regvals[2],
+this patch moves these two macros to fsl_ssi.c, closer to
+its owner ssi->regvals. And it also puts some comments here
+to limit their value within [0, 1].
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Tested-by: Caleb Crome <caleb@crome.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 4 ++++
+ sound/soc/fsl/fsl_ssi.h | 3 ---
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index e5efee2..ba06e94 100644
+index aecd00f..001e453 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -591,6 +591,11 @@ static void fsl_ssi_setup_regvals(struct fsl_ssi *ssi)
- 	if (fsl_ssi_is_ac97(ssi))
- 		vals[RX].scr = vals[TX].scr = 0;
+@@ -56,6 +56,10 @@
+ #include "fsl_ssi.h"
+ #include "imx-pcm.h"
  
-+	if (ssi->use_dual_fifo) {
-+		vals[RX].srcr |= SSI_SRCR_RFEN1;
-+		vals[TX].stcr |= SSI_STCR_TFEN1;
-+	}
++/* Define RX and TX to index ssi->regvals array; Can be 0 or 1 only */
++#define RX 0
++#define TX 1
 +
- 	if (ssi->use_dma) {
- 		vals[RX].sier |= SSI_SIER_RDMAE;
- 		vals[TX].sier |= SSI_SIER_TDMAE;
-@@ -991,14 +996,9 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- 		     SSI_SFCSR_TFWM0(wm) | SSI_SFCSR_RFWM0(wm) |
- 		     SSI_SFCSR_TFWM1(wm) | SSI_SFCSR_RFWM1(wm));
+ /**
+  * FSLSSI_I2S_FORMATS: audio formats supported by the SSI
+  *
+diff --git a/sound/soc/fsl/fsl_ssi.h b/sound/soc/fsl/fsl_ssi.h
+index de2fdc5..18f8dd5 100644
+--- a/sound/soc/fsl/fsl_ssi.h
++++ b/sound/soc/fsl/fsl_ssi.h
+@@ -12,9 +12,6 @@
+ #ifndef _MPC8610_I2S_H
+ #define _MPC8610_I2S_H
  
--	if (ssi->use_dual_fifo) {
--		regmap_update_bits(regs, REG_SSI_SRCR,
--				   SSI_SRCR_RFEN1, SSI_SRCR_RFEN1);
--		regmap_update_bits(regs, REG_SSI_STCR,
--				   SSI_STCR_TFEN1, SSI_STCR_TFEN1);
-+	if (ssi->use_dual_fifo)
- 		regmap_update_bits(regs, REG_SSI_SCR,
- 				   SSI_SCR_TCH_EN, SSI_SCR_TCH_EN);
--	}
+-#define RX 0
+-#define TX 1
+-
+ /* -- SSI Register Map -- */
  
- 	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_AC97)
- 		fsl_ssi_setup_ac97(ssi);
+ /* SSI Transmit Data Register 0 */
 -- 
 2.7.4
