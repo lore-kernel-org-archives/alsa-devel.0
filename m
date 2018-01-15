@@ -1,140 +1,72 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH v7 02/17] mfd: madera: Add DT bindings for Cirrus Logic Madera codecs
-Date: Mon, 15 Jan 2018 12:41:50 +0000
-Message-ID: <20180115124205.29042-3-rf@opensource.wolfsonmicro.com>
-References: <20180115124205.29042-1-rf@opensource.wolfsonmicro.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Maximum 50 dB gain in ALSA softvol plugin
+Date: Mon, 15 Jan 2018 14:14:13 +0100
+Message-ID: <alpine.DEB.2.11.1801151410060.2359@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.11.1801121645540.16471@lnxricardw1.se.axis.com>
+ <s5ha7xj3ug4.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180115124205.29042-1-rf@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lee.jones@linaro.org, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, robh+dt@kernel.org, tglx@linutronix.de, jason@lakedaemon.net
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 013B3267574
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jan 2018 14:14:21 +0100 (CET)
+In-Reply-To: <s5ha7xj3ug4.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Specification of the bindings for the parent MFD driver component
-of the Cirrus Logic Madera codec drivers.
 
-Note that although the interrupt controller and GPIO are child
-drivers their required bindings are trivial, mandatory, and exist
-within the parent MFD node so are documented here.
+On Fri, 12 Jan 2018, Takashi Iwai wrote:
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Acked-by: Rob Herring <robh@kernel.org>
-Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> > The ALSA softvol plugin has a maximum gain of 50 dB (MAX_DB_UPPER_LIMIT=
+ is =
 
----
- Documentation/devicetree/bindings/mfd/madera.txt | 102 +++++++++++++++++++++++
- 1 file changed, 102 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mfd/madera.txt
+> > fixed to 50 in pcm/pcm_softvol.c). Is there some technical reason for t=
+his =
 
-diff --git a/Documentation/devicetree/bindings/mfd/madera.txt b/Documentation/devicetree/bindings/mfd/madera.txt
-new file mode 100644
-index 000000000000..db3266088386
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mfd/madera.txt
-@@ -0,0 +1,102 @@
-+Cirrus Logic Madera class audio codecs Multi-Functional Device
-+
-+These devices are audio SoCs with extensive digital capabilities and a range
-+of analogue I/O.
-+
-+See also the child driver bindings in:
-+bindings/pinctrl/cirrus,madera-pinctrl.txt
-+bindings/regulator/arizona-regulator.txt
-+bindings/sound/madera.txt
-+
-+Required properties:
-+
-+  - compatible : One of the following chip-specific strings:
-+        "cirrus,cs47l35"
-+        "cirrus,cs47l85"
-+        "cirrus,cs47l90"
-+        "cirrus,cs47l91"
-+        "cirrus,wm1840"
-+
-+  - reg : I2C slave address when connected using I2C, chip select number when
-+    using SPI.
-+
-+  - DCVDD-supply : Power supply for the device as defined in
-+    bindings/regulator/regulator.txt
-+    Mandatory on CS47L35, CS47L90, CS47L91
-+    Optional on CS47L85, WM1840
-+
-+  - AVDD-supply, DBVDD1-supply, DBVDD2-supply, CPVDD1-supply, CPVDD2-supply :
-+    Power supplies for the device
-+
-+  - DBVDD3-supply, DBVDD4-supply : Power supplies for the device
-+    (CS47L85, CS47L90, CS47L91, WM1840)
-+
-+  - SPKVDDL-supply, SPKVDDR-supply : Power supplies for the device
-+    (CS47L85, WM1840)
-+
-+  - SPKVDD-supply : Power supply for the device
-+    (CS47L35)
-+
-+  - interrupt-controller : Indicates that this device is an interrupt controller
-+
-+  - #interrupt-cells: the number of cells to describe an IRQ, must be 2.
-+    The first cell is the IRQ number.
-+    The second cell is the flags, encoded as the trigger masks from
-+    bindings/interrupt-controller/interrupts.txt
-+
-+  - gpio-controller : Indicates this device is a GPIO controller.
-+
-+  - #gpio-cells : Must be 2. The first cell is the pin number. The second cell
-+    is reserved for future use and must be zero
-+
-+  - interrupt-parent : The parent interrupt controller.
-+
-+  - interrupts : The interrupt line the /IRQ signal for the device is
-+    connected to.
-+
-+Optional properties:
-+
-+  - MICVDD-supply : Power supply, only need to be specified if
-+    powered externally
-+
-+  - reset-gpios : One entry specifying the GPIO controlling /RESET.
-+    As defined in bindings/gpio.txt.
-+    Although optional, it is strongly recommended to use a hardware reset
-+
-+  - MICBIASx : Initial data for the MICBIAS regulators, as covered in
-+    Documentation/devicetree/bindings/regulator/regulator.txt.
-+    One for each MICBIAS generator (MICBIAS1, MICBIAS2, ...)
-+    (all codecs)
-+
-+    One for each output pin (MICBIAS1A, MIBCIAS1B, MICBIAS2A, ...)
-+    (all except CS47L85, WM1840)
-+
-+    The following following additional property is supported for the generator
-+    nodes:
-+      - cirrus,ext-cap : Set to 1 if the MICBIAS has external decoupling
-+        capacitors attached.
-+
-+Optional child nodes:
-+    micvdd : Node containing initialization data for the micvdd regulator
-+    See bindings/regulator/arizona-regulator.txt
-+
-+    ldo1 : Node containing initialization data for the LDO1 regulator
-+    See bindings/regulator/arizona-regulator.txt
-+    (cs47l85, wm1840)
-+
-+Example:
-+
-+cs47l85@0 {
-+	compatible = "cirrus,cs47l85";
-+	reg = <0>;
-+
-+	reset-gpios = <&gpio 0>;
-+
-+	interrupt-controller;
-+	#interrupt-cells = <2>;
-+	interrupts = <&host_irq1>;
-+	interrupt-parent = <&gic>;
-+
-+	gpio-controller;
-+	#gpio-cells = <2>;
-+};
--- 
-2.11.0
+> > limit? These days when >16 bit audio is becoming common, it's not =
+
+> > unreasonable to have large gain figures, and that is in fact a usecase =
+I =
+
+> > have right now.
+> > =
+
+> > I'm looking through the CONVERT_AREA and MULTI_DIV_foo macros to see if =
+
+> > there's something there that degenerates when the gain factor becomes t=
+oo =
+
+> > large, but I'd thought I'd ask too rather than just do reverse =
+
+> > engineering.
+> =
+
+> There is no more reason than "some reasonable limit".
+
+Ok, my suggestion would be set MAX_DB_UPPER_LIMIT to 90 dB. 90 dB comes =
+
+out as 31622, which still is manageable when shifted up by VOL_SCALE_SHIFT =
+
+(=3D 16), fitting in a 32-bit int. Thus it works in MULTI_DIV_short() too, =
+
+where it is multiplied with the 16-bit sample value yielding an int.
+
+I'll try it out and prepare a patch.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
