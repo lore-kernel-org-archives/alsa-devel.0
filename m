@@ -1,7 +1,7 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v4 16/17] ASoC: fsl_ssi: Move DT related code to a separate probe()
-Date: Mon, 15 Jan 2018 15:16:31 -0800
-Message-ID: <1516058192-65519-17-git-send-email-nicoleotsuka@gmail.com>
+Subject: [PATCH v4 14/17] ASoC: fsl_ssi: Clean up _fsl_ssi_set_dai_fmt()
+Date: Mon, 15 Jan 2018 15:16:29 -0800
+Message-ID: <1516058192-65519-15-git-send-email-nicoleotsuka@gmail.com>
 References: <1516058192-65519-1-git-send-email-nicoleotsuka@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1516058192-65519-1-git-send-email-nicoleotsuka@gmail.com>
@@ -10,338 +10,191 @@ To: timur@tabi.org, broonie@kernel.org, mail@maciej.szmigiero.name
 Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, fabio.estevam@nxp.com, caleb@crome.org, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-This patch cleans up probe() function by moving all Device Tree
-related code into a separate function. It allows the probe() to
-be Device Tree independent. This will be very useful for future
-integration of imx-ssi driver which has similar functionalities
-while exists only because it supports non-DT cases.
+The _fsl_ssi_set_dai_fmt() is a helper function being called from
+fsl_ssi_set_dai_fmt() as an ASoC operation and fsl_ssi_hw_init()
+mainly for AC97 format initialization.
 
-This patch also moves symmetric_channels of AC97 from the probe
-to the structure snd_soc_dai_driver for simplification.
-
-Additionally, since PowerPC and AC97 use the same pdev pointer
-to register a platform device, this patch also unifies related
-code.
+This patch cleans the _fsl_ssi_set_dai_fmt() in following ways:
+* Removing *dev pointer in the parameters as it's included in the
+  *ssi pointer of struct fsl_ssi.
+* Using regmap_update_bits() instead of regmap_read() with masking
+  the value manually.
+* Moving baudclk check to the switch-case routine to skip the I2S
+  master check. And moving SxCCR.DC settings after baudclk check.
+* Adding format settings for SND_SOC_DAIFMT_AC97 like others.
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Tested-by: Caleb Crome <caleb@crome.org>
 ---
 Changelog
 v4
- * Made bool synchronous exclusive with AC97 mode in PATCH-16
+ * Added TXBIT0 bit back to play safe
+v3
+ * Put CBM_CFS behind the baudclk check to keep the same program
+   flow as before
 
- sound/soc/fsl/fsl_ssi.c | 209 ++++++++++++++++++++++++++----------------------
- 1 file changed, 114 insertions(+), 95 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 74 +++++++++++++++++++++++--------------------------
+ 1 file changed, 35 insertions(+), 39 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index dfeca43..07ec47d 100644
+index ebb3eb9..aa4c006 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -239,8 +239,12 @@ struct fsl_ssi_soc_data {
-  *
-  * @fiq_params: FIQ stream filtering parameters
-  *
-- * @pdev: Pointer to pdev when using fsl-ssi as sound card (ppc only)
-- *        TODO: Should be replaced with simple-sound-card
-+ * @card_pdev: Platform_device pointer when using fsl-ssi as sound card
-+ *             (PowerPC or AC97 only)
-+ * @card_name: Platform_device name when using fsl-ssi as sound card
-+ *             (PowerPC or AC97 only)
-+ * @card_idx: The index of SSI when registering a sound card
-+ *             (PowerPC or AC97 only)
-  *
-  * @dbg_stats: Debugging statistics
-  *
-@@ -285,7 +289,9 @@ struct fsl_ssi {
- 
- 	struct imx_pcm_fiq_params fiq_params;
- 
--	struct platform_device *pdev;
-+	struct platform_device *card_pdev;
-+	char card_name[32];
-+	u32 card_idx;
- 
- 	struct fsl_ssi_dbg dbg_stats;
- 
-@@ -1134,6 +1140,7 @@ static const struct snd_soc_component_driver fsl_ssi_component = {
- 
- static struct snd_soc_dai_driver fsl_ssi_ac97_dai = {
- 	.bus_control = true,
-+	.symmetric_channels = 1,
- 	.probe = fsl_ssi_dai_probe,
- 	.playback = {
- 		.stream_name = "AC97 Playback",
-@@ -1285,9 +1292,7 @@ static void make_lowercase(char *s)
- static int fsl_ssi_imx_probe(struct platform_device *pdev,
- 			     struct fsl_ssi *ssi, void __iomem *iomem)
- {
--	struct device_node *np = pdev->dev.of_node;
- 	struct device *dev = &pdev->dev;
--	u32 dmas[4];
- 	int ret;
- 
- 	/* Backward compatible for a DT without ipg clock name assigned */
-@@ -1321,14 +1326,8 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
- 	ssi->dma_params_tx.addr = ssi->ssi_phys + REG_SSI_STX0;
- 	ssi->dma_params_rx.addr = ssi->ssi_phys + REG_SSI_SRX0;
- 
--	/* Set to dual FIFO mode according to the SDMA sciprt */
--	ret = of_property_read_u32_array(np, "dmas", dmas, 4);
--	if (ssi->use_dma && !ret && dmas[2] == IMX_DMATYPE_SSI_DUAL) {
--		ssi->use_dual_fifo = true;
--		/*
--		 * Use even numbers to avoid channel swap due to SDMA
--		 * script design
--		 */
-+	/* Use even numbers to avoid channel swap due to SDMA script design */
-+	if (ssi->use_dual_fifo) {
- 		ssi->dma_params_tx.maxburst &= ~0x1;
- 		ssi->dma_params_rx.maxburst &= ~0x1;
- 	}
-@@ -1369,41 +1368,109 @@ static void fsl_ssi_imx_clean(struct platform_device *pdev, struct fsl_ssi *ssi)
- 		clk_disable_unprepare(ssi->clk);
+@@ -860,42 +860,31 @@ static int fsl_ssi_hw_free(struct snd_pcm_substream *substream,
+ 	return 0;
  }
  
--static int fsl_ssi_probe(struct platform_device *pdev)
-+static int fsl_ssi_probe_from_dt(struct fsl_ssi *ssi)
+-static int _fsl_ssi_set_dai_fmt(struct device *dev,
+-				struct fsl_ssi *ssi, unsigned int fmt)
++static int _fsl_ssi_set_dai_fmt(struct fsl_ssi *ssi, unsigned int fmt)
  {
--	struct fsl_ssi *ssi;
--	int ret = 0;
--	struct device_node *np = pdev->dev.of_node;
--	struct device *dev = &pdev->dev;
-+	struct device *dev = ssi->dev;
-+	struct device_node *np = dev->of_node;
- 	const struct of_device_id *of_id;
- 	const char *p, *sprop;
- 	const uint32_t *iprop;
--	struct resource *res;
--	void __iomem *iomem;
--	char name[64];
--	struct regmap_config regconfig = fsl_ssi_regconfig;
-+	u32 dmas[4];
-+	int ret;
+-	struct regmap *regs = ssi->regs;
+-	u32 strcr = 0, stcr, srcr, scr, mask;
++	u32 strcr = 0, scr = 0, stcr, srcr, mask;
  
- 	of_id = of_match_device(fsl_ssi_ids, dev);
- 	if (!of_id || !of_id->data)
- 		return -EINVAL;
+ 	ssi->dai_fmt = fmt;
  
--	ssi = devm_kzalloc(dev, sizeof(*ssi), GFP_KERNEL);
--	if (!ssi)
--		return -ENOMEM;
--
- 	ssi->soc = of_id->data;
--	ssi->dev = dev;
-+
-+	ret = of_property_match_string(np, "clock-names", "ipg");
-+	/* Get error code if not found */
-+	ssi->has_ipg_clk_name = ret >= 0;
- 
- 	/* Check if being used in AC97 mode */
- 	sprop = of_get_property(np, "fsl,mode", NULL);
--	if (sprop) {
--		if (!strcmp(sprop, "ac97-slave"))
--			ssi->dai_fmt = FSLSSI_AC97_DAIFMT;
-+	if (sprop && !strcmp(sprop, "ac97-slave")) {
-+		ssi->dai_fmt = FSLSSI_AC97_DAIFMT;
-+
-+		ret = of_property_read_u32(np, "cell-index", &ssi->card_idx);
-+		if (ret) {
-+			dev_err(dev, "failed to get SSI index property\n");
-+			return -EINVAL;
-+		}
-+		strcpy(ssi->card_name, "ac97-codec");
-+	} else if (!of_find_property(np, "fsl,ssi-asynchronous", NULL)) {
-+		/*
-+		 * In synchronous mode, STCK and STFS ports are used by RX
-+		 * as well. So the software should limit the sample rates,
-+		 * sample bits and channels to be symmetric.
-+		 *
-+		 * This is exclusive with FSLSSI_AC97_FORMATS as AC97 runs
-+		 * in the SSI synchronous mode however it does not have to
-+		 * limit symmetric sample rates and sample bits.
-+		 */
-+		ssi->synchronous = true;
- 	}
- 
- 	/* Select DMA or FIQ */
- 	ssi->use_dma = !of_property_read_bool(np, "fsl,fiq-stream-filter");
- 
-+	/* Fetch FIFO depth; Set to 8 for older DT without this property */
-+	iprop = of_get_property(np, "fsl,fifo-depth", NULL);
-+	if (iprop)
-+		ssi->fifo_depth = be32_to_cpup(iprop);
-+	else
-+		ssi->fifo_depth = 8;
-+
-+	/* Use dual FIFO mode depending on the support from SDMA script */
-+	ret = of_property_read_u32_array(np, "dmas", dmas, 4);
-+	if (ssi->use_dma && !ret && dmas[2] == IMX_DMATYPE_SSI_DUAL)
-+		ssi->use_dual_fifo = true;
-+
-+	/*
-+	 * Backward compatible for older bindings by manually triggering the
-+	 * machine driver's probe(). Use /compatible property, including the
-+	 * address of CPU DAI driver structure, as the name of machine driver
-+	 *
-+	 * If card_name is set by AC97 earlier, bypass here since it uses a
-+	 * different name to register the device.
-+	 */
-+	if (!ssi->card_name[0] && of_get_property(np, "codec-handle", NULL)) {
-+		sprop = of_get_property(of_find_node_by_path("/"),
-+					"compatible", NULL);
-+		/* Strip "fsl," in the compatible name if applicable */
-+		p = strrchr(sprop, ',');
-+		if (p)
-+			sprop = p + 1;
-+		snprintf(ssi->card_name, sizeof(ssi->card_name),
-+			 "snd-soc-%s", sprop);
-+		make_lowercase(ssi->card_name);
-+		ssi->card_idx = 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static int fsl_ssi_probe(struct platform_device *pdev)
-+{
-+	struct regmap_config regconfig = fsl_ssi_regconfig;
-+	struct device *dev = &pdev->dev;
-+	struct fsl_ssi *ssi;
-+	struct resource *res;
-+	void __iomem *iomem;
-+	int ret = 0;
-+
-+	ssi = devm_kzalloc(dev, sizeof(*ssi), GFP_KERNEL);
-+	if (!ssi)
-+		return -ENOMEM;
-+
-+	ssi->dev = dev;
-+
-+	/* Probe from DT */
-+	ret = fsl_ssi_probe_from_dt(ssi);
-+	if (ret)
-+		return ret;
-+
- 	if (fsl_ssi_is_ac97(ssi)) {
- 		memcpy(&ssi->cpu_dai_drv, &fsl_ssi_ac97_dai,
- 		       sizeof(fsl_ssi_ac97_dai));
-@@ -1427,15 +1494,11 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 			REG_SSI_SRMSK / sizeof(uint32_t) + 1;
- 	}
- 
--	ret = of_property_match_string(np, "clock-names", "ipg");
--	if (ret < 0) {
--		ssi->has_ipg_clk_name = false;
--		ssi->regs = devm_regmap_init_mmio(dev, iomem, &regconfig);
--	} else {
--		ssi->has_ipg_clk_name = true;
-+	if (ssi->has_ipg_clk_name)
- 		ssi->regs = devm_regmap_init_mmio_clk(dev, "ipg", iomem,
- 						      &regconfig);
--	}
-+	else
-+		ssi->regs = devm_regmap_init_mmio(dev, iomem, &regconfig);
- 	if (IS_ERR(ssi->regs)) {
- 		dev_err(dev, "failed to init register map\n");
- 		return PTR_ERR(ssi->regs);
-@@ -1447,24 +1510,13 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		return ssi->irq;
- 	}
- 
--	/* Set software limitations for synchronous mode */
--	if (!of_find_property(np, "fsl,ssi-asynchronous", NULL)) {
--		if (!fsl_ssi_is_ac97(ssi)) {
--			ssi->cpu_dai_drv.symmetric_rates = 1;
--			ssi->cpu_dai_drv.symmetric_samplebits = 1;
--			ssi->synchronous = true;
--		}
--
-+	/* Set software limitations for synchronous mode except AC97 */
-+	if (ssi->synchronous && !fsl_ssi_is_ac97(ssi)) {
-+		ssi->cpu_dai_drv.symmetric_rates = 1;
- 		ssi->cpu_dai_drv.symmetric_channels = 1;
-+		ssi->cpu_dai_drv.symmetric_samplebits = 1;
- 	}
- 
--	/* Fetch FIFO depth; Set to 8 for older DT without this property */
--	iprop = of_get_property(np, "fsl,fifo-depth", NULL);
--	if (iprop)
--		ssi->fifo_depth = be32_to_cpup(iprop);
--	else
--		ssi->fifo_depth = 8;
--
- 	/*
- 	 * Configure TX and RX DMA watermarks -- when to send a DMA request
- 	 *
-@@ -1529,50 +1581,17 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto error_asoc_register;
- 
--	/* Bypass it if using newer DT bindings of ASoC machine drivers */
--	if (!of_get_property(np, "codec-handle", NULL))
--		goto done;
--
--	/*
--	 * Backward compatible for older bindings by manually triggering the
--	 * machine driver's probe(). Use /compatible property, including the
--	 * address of CPU DAI driver structure, as the name of machine driver.
--	 */
--	sprop = of_get_property(of_find_node_by_path("/"), "compatible", NULL);
--	/* Sometimes the compatible name has a "fsl," prefix, so we strip it. */
--	p = strrchr(sprop, ',');
--	if (p)
--		sprop = p + 1;
--	snprintf(name, sizeof(name), "snd-soc-%s", sprop);
--	make_lowercase(name);
--
--	ssi->pdev = platform_device_register_data(dev, name, 0, NULL, 0);
--	if (IS_ERR(ssi->pdev)) {
--		ret = PTR_ERR(ssi->pdev);
--		dev_err(dev, "failed to register platform: %d\n", ret);
--		goto error_sound_card;
+-	if (fsl_ssi_is_i2s_master(ssi) && IS_ERR(ssi->baudclk)) {
+-		dev_err(dev, "missing baudclk for master mode\n");
+-		return -EINVAL;
 -	}
 -
--done:
- 	/* Initially configures SSI registers */
- 	fsl_ssi_hw_init(ssi);
+-	regmap_read(regs, REG_SSI_SCR, &scr);
+-	scr &= ~(SSI_SCR_SYN | SSI_SCR_I2S_MODE_MASK);
+ 	/* Synchronize frame sync clock for TE to avoid data slipping */
+ 	scr |= SSI_SCR_SYNC_TX_FS;
  
--	if (fsl_ssi_is_ac97(ssi)) {
--		u32 ssi_idx;
--
--		ret = of_property_read_u32(np, "cell-index", &ssi_idx);
--		if (ret) {
--			dev_err(dev, "failed to get SSI index property\n");
--			goto error_sound_card;
--		}
--
--		ssi->pdev = platform_device_register_data(NULL, "ac97-codec",
--							  ssi_idx, NULL, 0);
--		if (IS_ERR(ssi->pdev)) {
--			ret = PTR_ERR(ssi->pdev);
--			dev_err(dev,
--				"failed to register AC97 codec platform: %d\n",
--				ret);
-+	/* Register a platform device for older bindings or AC97 */
-+	if (ssi->card_name[0]) {
-+		ssi->card_pdev = platform_device_register_data(dev,
-+				ssi->card_name, ssi->card_idx, NULL, 0);
-+		if (IS_ERR(ssi->card_pdev)) {
-+			ret = PTR_ERR(ssi->card_pdev);
-+			dev_err(dev, "failed to register %s: %d\n",
-+				ssi->card_name, ret);
- 			goto error_sound_card;
+-	mask = SSI_STCR_TXBIT0 | SSI_STCR_TFDIR | SSI_STCR_TXDIR |
+-	       SSI_STCR_TSCKP | SSI_STCR_TFSI | SSI_STCR_TFSL | SSI_STCR_TEFS;
+-	regmap_read(regs, REG_SSI_STCR, &stcr);
+-	regmap_read(regs, REG_SSI_SRCR, &srcr);
+-	stcr &= ~mask;
+-	srcr &= ~mask;
++	/* Set to default shifting settings: LSB_ALIGNED */
++	strcr |= SSI_STCR_TXBIT0;
+ 
+ 	/* Use Network mode as default */
+ 	ssi->i2s_net = SSI_SCR_NET;
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+-		regmap_update_bits(regs, REG_SSI_STCCR,
+-				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(2));
+-		regmap_update_bits(regs, REG_SSI_SRCCR,
+-				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(2));
+ 		switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-		case SND_SOC_DAIFMT_CBM_CFS:
+ 		case SND_SOC_DAIFMT_CBS_CFS:
++			if (IS_ERR(ssi->baudclk)) {
++				dev_err(ssi->dev,
++					"missing baudclk for master mode\n");
++				return -EINVAL;
++			}
++			/* fall through */
++		case SND_SOC_DAIFMT_CBM_CFS:
+ 			ssi->i2s_net |= SSI_SCR_I2S_MODE_MASTER;
+ 			break;
+ 		case SND_SOC_DAIFMT_CBM_CFM:
+@@ -905,30 +894,34 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+ 			return -EINVAL;
  		}
+ 
++		regmap_update_bits(ssi->regs, REG_SSI_STCCR,
++				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(2));
++		regmap_update_bits(ssi->regs, REG_SSI_SRCCR,
++				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(2));
++
+ 		/* Data on rising edge of bclk, frame low, 1clk before data */
+-		strcr |= SSI_STCR_TFSI | SSI_STCR_TSCKP |
+-			 SSI_STCR_TXBIT0 | SSI_STCR_TEFS;
++		strcr |= SSI_STCR_TFSI | SSI_STCR_TSCKP | SSI_STCR_TEFS;
+ 		break;
+ 	case SND_SOC_DAIFMT_LEFT_J:
+ 		/* Data on rising edge of bclk, frame high */
+-		strcr |= SSI_STCR_TXBIT0 | SSI_STCR_TSCKP;
++		strcr |= SSI_STCR_TSCKP;
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_A:
+ 		/* Data on rising edge of bclk, frame high, 1clk before data */
+-		strcr |= SSI_STCR_TFSL | SSI_STCR_TSCKP |
+-			 SSI_STCR_TXBIT0 | SSI_STCR_TEFS;
++		strcr |= SSI_STCR_TFSL | SSI_STCR_TSCKP | SSI_STCR_TEFS;
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_B:
+ 		/* Data on rising edge of bclk, frame high */
+-		strcr |= SSI_STCR_TFSL | SSI_STCR_TSCKP | SSI_STCR_TXBIT0;
++		strcr |= SSI_STCR_TFSL | SSI_STCR_TSCKP;
+ 		break;
+ 	case SND_SOC_DAIFMT_AC97:
+ 		/* Data on falling edge of bclk, frame high, 1clk before data */
+-		ssi->i2s_net |= SSI_SCR_I2S_MODE_NORMAL;
++		strcr |= SSI_STCR_TEFS;
+ 		break;
+ 	default:
+ 		return -EINVAL;
  	}
-@@ -1602,8 +1621,8 @@ static int fsl_ssi_remove(struct platform_device *pdev)
++
+ 	scr |= ssi->i2s_net;
  
- 	fsl_ssi_debugfs_remove(&ssi->dbg_stats);
+ 	/* DAI clock inversion */
+@@ -962,20 +955,17 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+ 		break;
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+ 		/* Input bit or frame sync clocks */
+-		scr &= ~SSI_SCR_SYS_CLK_EN;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBM_CFS:
+ 		/* Input bit clock but output frame sync clock */
+-		strcr &= ~SSI_STCR_TXDIR;
+ 		strcr |= SSI_STCR_TFDIR;
+-		scr &= ~SSI_SCR_SYS_CLK_EN;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
  
--	if (ssi->pdev)
--		platform_device_unregister(ssi->pdev);
-+	if (ssi->card_pdev)
-+		platform_device_unregister(ssi->card_pdev);
+-	stcr |= strcr;
+-	srcr |= strcr;
++	stcr = strcr;
++	srcr = strcr;
  
- 	if (ssi->soc->imx)
- 		fsl_ssi_imx_clean(pdev, ssi);
+ 	/* Set SYN mode and clear RXDIR bit when using SYN or AC97 mode */
+ 	if (ssi->cpu_dai_drv.symmetric_rates || fsl_ssi_is_ac97(ssi)) {
+@@ -983,9 +973,15 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+ 		scr |= SSI_SCR_SYN;
+ 	}
+ 
+-	regmap_write(regs, REG_SSI_STCR, stcr);
+-	regmap_write(regs, REG_SSI_SRCR, srcr);
+-	regmap_write(regs, REG_SSI_SCR, scr);
++	mask = SSI_STCR_TFDIR | SSI_STCR_TXDIR | SSI_STCR_TSCKP |
++	       SSI_STCR_TFSL | SSI_STCR_TFSI | SSI_STCR_TEFS | SSI_STCR_TXBIT0;
++
++	regmap_update_bits(ssi->regs, REG_SSI_STCR, mask, stcr);
++	regmap_update_bits(ssi->regs, REG_SSI_SRCR, mask, srcr);
++
++	mask = SSI_SCR_SYNC_TX_FS | SSI_SCR_I2S_MODE_MASK |
++	       SSI_SCR_SYS_CLK_EN | SSI_SCR_SYN;
++	regmap_update_bits(ssi->regs, REG_SSI_SCR, mask, scr);
+ 
+ 	return 0;
+ }
+@@ -1001,7 +997,7 @@ static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	if (fsl_ssi_is_ac97(ssi))
+ 		return 0;
+ 
+-	return _fsl_ssi_set_dai_fmt(dai->dev, ssi, fmt);
++	return _fsl_ssi_set_dai_fmt(ssi, fmt);
+ }
+ 
+ /**
+@@ -1254,7 +1250,7 @@ static int fsl_ssi_hw_init(struct fsl_ssi *ssi)
+ 
+ 	/* AC97 should start earlier to communicate with CODECs */
+ 	if (fsl_ssi_is_ac97(ssi)) {
+-		_fsl_ssi_set_dai_fmt(ssi->dev, ssi, ssi->dai_fmt);
++		_fsl_ssi_set_dai_fmt(ssi, ssi->dai_fmt);
+ 		fsl_ssi_setup_ac97(ssi);
+ 	}
+ 
 -- 
 2.7.4
