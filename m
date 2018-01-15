@@ -1,1677 +1,3682 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH v7 04/17] mfd: madera: Register map tables for Cirrus Logic CS47L35
-Date: Mon, 15 Jan 2018 12:41:52 +0000
-Message-ID: <20180115124205.29042-5-rf@opensource.wolfsonmicro.com>
-References: <20180115124205.29042-1-rf@opensource.wolfsonmicro.com>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH v6 4/6] media: i2c: Add TDA1997x HDMI receiver driver
+Date: Mon, 15 Jan 2018 13:56:18 +0100
+Message-ID: <1e65ee61-f282-4b53-dd03-68a89a91da8e@xs4all.nl>
+References: <1514491789-8697-1-git-send-email-tharvey@gateworks.com>
+ <1514491789-8697-5-git-send-email-tharvey@gateworks.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180115124205.29042-1-rf@opensource.wolfsonmicro.com>
+In-Reply-To: <1514491789-8697-5-git-send-email-tharvey@gateworks.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: lee.jones@linaro.org, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, robh+dt@kernel.org, tglx@linutronix.de, jason@lakedaemon.net
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+To: Tim Harvey <tharvey@gateworks.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, shawnguo@kernel.org, Steve Longerbeam <slongerbeam@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>
 List-Id: alsa-devel@alsa-project.org
 
-Regmap configuration tables for Cirrus Logic CS47L35 codecs.
+On 12/28/2017 09:09 PM, Tim Harvey wrote:
+> Add support for the TDA1997x HDMI receivers.
+> 
+> Cc: Hans Verkuil <hverkuil@xs4all.nl>
+> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+> ---
+> v6:
+>  - fix return on regulator enablei in tda1997x_set_power() (Fabio)
+>  - replace copyright with SPDX tag (Philippe)
+>  - fix colorspace handling (Hans)
+> 
+> v5:
+>  - uppercase string constants
+>  - use v4l2_hdmi_rx_coloriemtry to fill format
+>  - fix V4L2_CID_DV_RX_RGB_RANGE
+>  - fix interlaced mode format
+> 
+> v4:
+>  - move include/dt-bindings/media/tda1997x.h to bindings patch
+>  - fix typos
+>  - fix default quant range for VGA
+>  - fix quant range handling and conv matrix
+>  - add additional standards and capabilities to timings_cap
+> 
+> v3:
+>  - use V4L2_DV_BT_FRAME_WIDTH/HEIGHT macros
+>  - fixed missing break
+>  - use only hdmi_infoframe_log for infoframe logging
+>  - simplify tda1997x_s_stream error handling
+>  - add delayed work proc to handle hotplug enable/disable
+>  - fix set_edid (disable HPD before writing, enable after)
+>  - remove enabling edid by default
+>  - initialize timings
+>  - take quant range into account in colorspace conversion
+>  - remove vendor/product tracking (we provide this in log_status via infoframes)
+>  - add v4l_controls
+>  - add more detail to log_status
+>  - calculate vhref generator timings
+>  - timing detection fixes (rounding errors, hswidth errors)
+>  - rename configure_input/configure_conv functions
+> 
+> v2:
+>  - implement dv timings enum/cap
+>  - remove deprecated g_mbus_config op
+>  - fix dv_query_timings
+>  - add EDID get/set handling
+>  - remove max-pixel-rate support
+>  - add audio codec DAI support
+>  - change audio bindings
+> ---
+>  drivers/media/i2c/Kconfig    |    9 +
+>  drivers/media/i2c/Makefile   |    1 +
+>  drivers/media/i2c/tda1997x.c | 3476 ++++++++++++++++++++++++++++++++++++++++++
+>  include/media/i2c/tda1997x.h |   41 +
+>  4 files changed, 3527 insertions(+)
+>  create mode 100644 drivers/media/i2c/tda1997x.c
+>  create mode 100644 include/media/i2c/tda1997x.h
+> 
+> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+> index 3c6d642..abf24b9 100644
+> --- a/drivers/media/i2c/Kconfig
+> +++ b/drivers/media/i2c/Kconfig
+> @@ -56,6 +56,15 @@ config VIDEO_TDA9840
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called tda9840.
+>  
+> +config VIDEO_TDA1997X
+> +	tristate "NXP TDA1997x HDMI receiver"
+> +	depends on VIDEO_V4L2 && I2C && VIDEO_V4L2_SUBDEV_API
+> +	---help---
+> +	  V4L2 subdevice driver for the NXP TDA1997x HDMI receivers.
+> +
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called tda1997x.
+> +
+>  config VIDEO_TEA6415C
+>  	tristate "Philips TEA6415C audio processor"
+>  	depends on I2C
+> diff --git a/drivers/media/i2c/Makefile b/drivers/media/i2c/Makefile
+> index 548a9ef..adfcae9 100644
+> --- a/drivers/media/i2c/Makefile
+> +++ b/drivers/media/i2c/Makefile
+> @@ -13,6 +13,7 @@ obj-$(CONFIG_VIDEO_TVAUDIO) += tvaudio.o
+>  obj-$(CONFIG_VIDEO_TDA7432) += tda7432.o
+>  obj-$(CONFIG_VIDEO_SAA6588) += saa6588.o
+>  obj-$(CONFIG_VIDEO_TDA9840) += tda9840.o
+> +obj-$(CONFIG_VIDEO_TDA1997X) += tda1997x.o
+>  obj-$(CONFIG_VIDEO_TEA6415C) += tea6415c.o
+>  obj-$(CONFIG_VIDEO_TEA6420) += tea6420.o
+>  obj-$(CONFIG_VIDEO_SAA7110) += saa7110.o
+> diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
+> new file mode 100644
+> index 0000000..0993c13
+> --- /dev/null
+> +++ b/drivers/media/i2c/tda1997x.c
+> @@ -0,0 +1,3476 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2017 Gateworks Corporation
+> + */
+> +#include <linux/delay.h>
+> +#include <linux/hdmi.h>
+> +#include <linux/i2c.h>
+> +#include <linux/init.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of_graph.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regulator/consumer.h>
+> +#include <linux/types.h>
+> +#include <linux/v4l2-dv-timings.h>
+> +#include <linux/videodev2.h>
+> +
+> +#include <media/v4l2-ctrls.h>
+> +#include <media/v4l2-device.h>
+> +#include <media/v4l2-dv-timings.h>
+> +#include <media/v4l2-event.h>
+> +#include <media/v4l2-fwnode.h>
+> +#include <media/i2c/tda1997x.h>
+> +
+> +#include <sound/core.h>
+> +#include <sound/pcm.h>
+> +#include <sound/pcm_params.h>
+> +#include <sound/soc.h>
+> +
+> +#include <dt-bindings/media/tda1997x.h>
+> +
+> +/* debug level */
+> +static int debug;
+> +module_param(debug, int, 0644);
+> +MODULE_PARM_DESC(debug, "debug level (0-2)");
+> +
+> +/* Page 0x00 - General Control */
+> +#define REG_VERSION		0x0000
+> +#define REG_INPUT_SEL		0x0001
+> +#define REG_SVC_MODE		0x0002
+> +#define REG_HPD_MAN_CTRL	0x0003
+> +#define REG_RT_MAN_CTRL		0x0004
+> +#define REG_STANDBY_SOFT_RST	0x000A
+> +#define REG_HDMI_SOFT_RST	0x000B
+> +#define REG_HDMI_INFO_RST	0x000C
+> +#define REG_INT_FLG_CLR_TOP	0x000E
+> +#define REG_INT_FLG_CLR_SUS	0x000F
+> +#define REG_INT_FLG_CLR_DDC	0x0010
+> +#define REG_INT_FLG_CLR_RATE	0x0011
+> +#define REG_INT_FLG_CLR_MODE	0x0012
+> +#define REG_INT_FLG_CLR_INFO	0x0013
+> +#define REG_INT_FLG_CLR_AUDIO	0x0014
+> +#define REG_INT_FLG_CLR_HDCP	0x0015
+> +#define REG_INT_FLG_CLR_AFE	0x0016
+> +#define REG_INT_MASK_TOP	0x0017
+> +#define REG_INT_MASK_SUS	0x0018
+> +#define REG_INT_MASK_DDC	0x0019
+> +#define REG_INT_MASK_RATE	0x001A
+> +#define REG_INT_MASK_MODE	0x001B
+> +#define REG_INT_MASK_INFO	0x001C
+> +#define REG_INT_MASK_AUDIO	0x001D
+> +#define REG_INT_MASK_HDCP	0x001E
+> +#define REG_INT_MASK_AFE	0x001F
+> +#define REG_DETECT_5V		0x0020
+> +#define REG_SUS_STATUS		0x0021
+> +#define REG_V_PER		0x0022
+> +#define REG_H_PER		0x0025
+> +#define REG_HS_WIDTH		0x0027
+> +#define REG_FMT_H_TOT		0x0029
+> +#define REG_FMT_H_ACT		0x002b
+> +#define REG_FMT_H_FRONT		0x002d
+> +#define REG_FMT_H_SYNC		0x002f
+> +#define REG_FMT_H_BACK		0x0031
+> +#define REG_FMT_V_TOT		0x0033
+> +#define REG_FMT_V_ACT		0x0035
+> +#define REG_FMT_V_FRONT_F1	0x0037
+> +#define REG_FMT_V_FRONT_F2	0x0038
+> +#define REG_FMT_V_SYNC		0x0039
+> +#define REG_FMT_V_BACK_F1	0x003a
+> +#define REG_FMT_V_BACK_F2	0x003b
+> +#define REG_FMT_DE_ACT		0x003c
+> +#define REG_RATE_CTRL		0x0040
+> +#define REG_CLK_MIN_RATE	0x0043
+> +#define REG_CLK_MAX_RATE	0x0046
+> +#define REG_CLK_A_STATUS	0x0049
+> +#define REG_CLK_A_RATE		0x004A
+> +#define REG_DRIFT_CLK_A_REG	0x004D
+> +#define REG_CLK_B_STATUS	0x004E
+> +#define REG_CLK_B_RATE		0x004F
+> +#define REG_DRIFT_CLK_B_REG	0x0052
+> +#define REG_HDCP_CTRL		0x0060
+> +#define REG_HDCP_KDS		0x0061
+> +#define REG_HDCP_BCAPS		0x0063
+> +#define REG_HDCP_KEY_CTRL	0x0064
+> +#define REG_INFO_CTRL		0x0076
+> +#define REG_INFO_EXCEED		0x0077
+> +#define REG_PIX_REPEAT		0x007B
+> +#define REG_AUDIO_PATH		0x007C
+> +#define REG_AUDCFG		0x007D
+> +#define REG_AUDIO_OUT_ENABLE	0x007E
+> +#define REG_AUDIO_OUT_HIZ	0x007F
+> +#define REG_VDP_CTRL		0x0080
+> +#define REG_VDP_MATRIX		0x0081
+> +#define REG_VHREF_CTRL		0x00A0
+> +#define REG_PXCNT_PR		0x00A2
+> +#define REG_PXCNT_NPIX		0x00A4
+> +#define REG_LCNT_PR		0x00A6
+> +#define REG_LCNT_NLIN		0x00A8
+> +#define REG_HREF_S		0x00AA
+> +#define REG_HREF_E		0x00AC
+> +#define REG_HS_S		0x00AE
+> +#define REG_HS_E		0x00B0
+> +#define REG_VREF_F1_S		0x00B2
+> +#define REG_VREF_F1_WIDTH	0x00B4
+> +#define REG_VREF_F2_S		0x00B5
+> +#define REG_VREF_F2_WIDTH	0x00B7
+> +#define REG_VS_F1_LINE_S	0x00B8
+> +#define REG_VS_F1_LINE_WIDTH	0x00BA
+> +#define REG_VS_F2_LINE_S	0x00BB
+> +#define REG_VS_F2_LINE_WIDTH	0x00BD
+> +#define REG_VS_F1_PIX_S		0x00BE
+> +#define REG_VS_F1_PIX_E		0x00C0
+> +#define REG_VS_F2_PIX_S		0x00C2
+> +#define REG_VS_F2_PIX_E		0x00C4
+> +#define REG_FREF_F1_S		0x00C6
+> +#define REG_FREF_F2_S		0x00C8
+> +#define REG_FDW_S		0x00ca
+> +#define REG_FDW_E		0x00cc
+> +#define REG_BLK_GY		0x00da
+> +#define REG_BLK_BU		0x00dc
+> +#define REG_BLK_RV		0x00de
+> +#define REG_FILTERS_CTRL	0x00e0
+> +#define REG_DITHERING_CTRL	0x00E9
+> +#define REG_OF			0x00EA
+> +#define REG_PCLK		0x00EB
+> +#define REG_HS_HREF		0x00EC
+> +#define REG_VS_VREF		0x00ED
+> +#define REG_DE_FREF		0x00EE
+> +#define REG_VP35_32_CTRL	0x00EF
+> +#define REG_VP31_28_CTRL	0x00F0
+> +#define REG_VP27_24_CTRL	0x00F1
+> +#define REG_VP23_20_CTRL	0x00F2
+> +#define REG_VP19_16_CTRL	0x00F3
+> +#define REG_VP15_12_CTRL	0x00F4
+> +#define REG_VP11_08_CTRL	0x00F5
+> +#define REG_VP07_04_CTRL	0x00F6
+> +#define REG_VP03_00_CTRL	0x00F7
+> +#define REG_CURPAGE_00H		0xFF
+> +
+> +#define MASK_VPER		0x3fffff
+> +#define MASK_VHREF		0x3fff
+> +#define MASK_HPER		0x0fff
+> +#define MASK_HSWIDTH		0x03ff
+> +
+> +/* HPD Detection */
+> +#define DETECT_UTIL		BIT(7)	/* utility of HDMI level */
+> +#define DETECT_HPD		BIT(6)	/* HPD of HDMI level */
+> +#define DETECT_5V_SEL		BIT(2)	/* 5V present on selected input */
+> +#define DETECT_5V_B		BIT(1)	/* 5V present on input B */
+> +#define DETECT_5V_A		BIT(0)	/* 5V present on input A */
+> +
+> +/* Input Select */
+> +#define INPUT_SEL_RST_FMT	BIT(7)	/* 1=reset format measurement */
+> +#define INPUT_SEL_RST_VDP	BIT(2)	/* 1=reset video data path */
+> +#define INPUT_SEL_OUT_MODE	BIT(1)	/* 0=loop 1=bypass */
+> +#define INPUT_SEL_B		BIT(0)	/* 0=inputA 1=inputB */
+> +
+> +/* Service Mode */
+> +#define SVC_MODE_CLK2_MASK	0xc0
+> +#define SVC_MODE_CLK2_SHIFT	6
+> +#define SVC_MODE_CLK2_XTL	0L
+> +#define SVC_MODE_CLK2_XTLDIV2	1L
+> +#define SVC_MODE_CLK2_HDMIX2	3L
+> +#define SVC_MODE_CLK1_MASK	0x30
+> +#define SVC_MODE_CLK1_SHIFT	4
+> +#define SVC_MODE_CLK1_XTAL	0L
+> +#define SVC_MODE_CLK1_XTLDIV2	1L
+> +#define SVC_MODE_CLK1_HDMI	3L
+> +#define SVC_MODE_RAMP		BIT(3)	/* 0=colorbar 1=ramp */
+> +#define SVC_MODE_PAL		BIT(2)	/* 0=NTSC(480i/p) 1=PAL(576i/p) */
+> +#define SVC_MODE_INT_PROG	BIT(1)	/* 0=interlaced 1=progressive */
+> +#define SVC_MODE_SM_ON		BIT(0)	/* Enable color bars and tone gen */
+> +
+> +/* HDP Manual Control */
+> +#define HPD_MAN_CTRL_HPD_PULSE	BIT(7)	/* HPD Pulse low 110ms */
+> +#define HPD_MAN_CTRL_5VEN	BIT(2)	/* Output 5V */
+> +#define HPD_MAN_CTRL_HPD_B	BIT(1)	/* Assert HPD High for Input A */
+> +#define HPD_MAN_CTRL_HPD_A	BIT(0)	/* Assert HPD High for Input A */
+> +
+> +/* RT_MAN_CTRL */
+> +#define RT_MAN_CTRL_RT_AUTO	BIT(7)
+> +#define RT_MAN_CTRL_RT		BIT(6)
+> +#define RT_MAN_CTRL_RT_B	BIT(1)	/* enable TMDS pull-up on Input B */
+> +#define RT_MAN_CTRL_RT_A	BIT(0)	/* enable TMDS pull-up on Input A */
+> +
+> +/* VDP_CTRL */
+> +#define VDP_CTRL_COMPDEL_BP	BIT(5)	/* bypass compdel */
+> +#define VDP_CTRL_FORMATTER_BP	BIT(4)	/* bypass formatter */
+> +#define VDP_CTRL_PREFILTER_BP	BIT(1)	/* bypass prefilter */
+> +#define VDP_CTRL_MATRIX_BP	BIT(0)	/* bypass matrix conversion */
+> +
+> +/* REG_VHREF_CTRL */
+> +#define VHREF_INT_DET		BIT(7)	/* interlace detect: 1=alt 0=frame */
+> +#define VHREF_VSYNC_MASK	0x60
+> +#define VHREF_VSYNC_SHIFT	6
+> +#define VHREF_VSYNC_AUTO	0L
+> +#define VHREF_VSYNC_FDW		1L
+> +#define VHREF_VSYNC_EVEN	2L
+> +#define VHREF_VSYNC_ODD		3L
+> +#define VHREF_STD_DET_MASK	0x18
+> +#define VHREF_STD_DET_SHIFT	3
+> +#define VHREF_STD_DET_PAL	0L
+> +#define VHREF_STD_DET_NTSC	1L
+> +#define VHREF_STD_DET_AUTO	2L
+> +#define VHREF_STD_DET_OFF	3L
+> +#define VHREF_VREF_SRC_STD	BIT(2)	/* 1=from standard 0=manual */
+> +#define VHREF_HREF_SRC_STD	BIT(1)	/* 1=from standard 0=manual */
+> +#define VHREF_HSYNC_SEL_HS	BIT(0)	/* 1=HS 0=VS */
+> +
+> +/* AUDIO_OUT_ENABLE */
+> +#define AUDIO_OUT_ENABLE_ACLK	BIT(5)
+> +#define AUDIO_OUT_ENABLE_WS	BIT(4)
+> +#define AUDIO_OUT_ENABLE_AP3	BIT(3)
+> +#define AUDIO_OUT_ENABLE_AP2	BIT(2)
+> +#define AUDIO_OUT_ENABLE_AP1	BIT(1)
+> +#define AUDIO_OUT_ENABLE_AP0	BIT(0)
+> +
+> +/* Prefilter Control */
+> +#define FILTERS_CTRL_BU_MASK	0x0c
+> +#define FILTERS_CTRL_BU_SHIFT	2
+> +#define FILTERS_CTRL_RV_MASK	0x03
+> +#define FILTERS_CTRL_RV_SHIFT	0
+> +#define FILTERS_CTRL_OFF	0L	/* off */
+> +#define FILTERS_CTRL_2TAP	1L	/* 2 Taps */
+> +#define FILTERS_CTRL_7TAP	2L	/* 7 Taps */
+> +#define FILTERS_CTRL_2_7TAP	3L	/* 2/7 Taps */
+> +
+> +/* PCLK Configuration */
+> +#define PCLK_DELAY_MASK		0x70
+> +#define PCLK_DELAY_SHIFT	4	/* Pixel delay (-8..+7) */
+> +#define PCLK_INV_SHIFT		2
+> +#define PCLK_SEL_MASK		0x03	/* clock scaler */
+> +#define PCLK_SEL_SHIFT		0
+> +#define PCLK_SEL_X1		0L
+> +#define PCLK_SEL_X2		1L
+> +#define PCLK_SEL_DIV2		2L
+> +#define PCLK_SEL_DIV4		3L
+> +
+> +/* Pixel Repeater */
+> +#define PIX_REPEAT_MASK_UP_SEL	0x30
+> +#define PIX_REPEAT_MASK_REP	0x0f
+> +#define PIX_REPEAT_SHIFT	4
+> +#define PIX_REPEAT_CHROMA	1
+> +
+> +/* Page 0x01 - HDMI info and packets */
+> +#define REG_HDMI_FLAGS		0x0100
+> +#define REG_DEEP_COLOR_MODE	0x0101
+> +#define REG_AUDIO_FLAGS		0x0108
+> +#define REG_AUDIO_FREQ		0x0109
+> +#define REG_ACP_PACKET_TYPE	0x0141
+> +#define REG_ISRC1_PACKET_TYPE	0x0161
+> +#define REG_ISRC2_PACKET_TYPE	0x0181
+> +#define REG_GBD_PACKET_TYPE	0x01a1
+> +
+> +/* HDMI_FLAGS */
+> +#define HDMI_FLAGS_AUDIO	BIT(7)	/* Audio packet in last videoframe */
+> +#define HDMI_FLAGS_HDMI		BIT(6)	/* HDMI detected */
+> +#define HDMI_FLAGS_EESS		BIT(5)	/* EESS detected */
+> +#define HDMI_FLAGS_HDCP		BIT(4)	/* HDCP detected */
+> +#define HDMI_FLAGS_AVMUTE	BIT(3)	/* AVMUTE */
+> +#define HDMI_FLAGS_AUD_LAYOUT	BIT(2)	/* Layout status Audio sample packet */
+> +#define HDMI_FLAGS_AUD_FIFO_OF	BIT(1)	/* FIFO read/write pointers crossed */
+> +#define HDMI_FLAGS_AUD_FIFO_LOW	BIT(0)	/* FIFO read ptr within 2 of write */
+> +
+> +/* Page 0x12 - HDMI Extra control and debug */
+> +#define REG_CLK_CFG		0x1200
+> +#define REG_CLK_OUT_CFG		0x1201
+> +#define REG_CFG1		0x1202
+> +#define REG_CFG2		0x1203
+> +#define REG_WDL_CFG		0x1210
+> +#define REG_DELOCK_DELAY	0x1212
+> +#define REG_PON_OVR_EN		0x12A0
+> +#define REG_PON_CBIAS		0x12A1
+> +#define REG_PON_RESCAL		0x12A2
+> +#define REG_PON_RES		0x12A3
+> +#define REG_PON_CLK		0x12A4
+> +#define REG_PON_PLL		0x12A5
+> +#define REG_PON_EQ		0x12A6
+> +#define REG_PON_DES		0x12A7
+> +#define REG_PON_OUT		0x12A8
+> +#define REG_PON_MUX		0x12A9
+> +#define REG_MODE_REC_CFG1	0x12F8
+> +#define REG_MODE_REC_CFG2	0x12F9
+> +#define REG_MODE_REC_STS	0x12FA
+> +#define REG_AUDIO_LAYOUT	0x12D0
+> +
+> +#define PON_EN			1
+> +#define PON_DIS			0
+> +
+> +/* CLK CFG */
+> +#define CLK_CFG_INV_OUT_CLK	BIT(7)
+> +#define CLK_CFG_INV_BUS_CLK	BIT(6)
+> +#define CLK_CFG_SEL_ACLK_EN	BIT(1)
+> +#define CLK_CFG_SEL_ACLK	BIT(0)
+> +#define CLK_CFG_DIS		0
+> +
+> +/* Page 0x13 - HDMI Extra control and debug */
+> +#define REG_DEEP_COLOR_CTRL	0x1300
+> +#define REG_CGU_DBG_SEL		0x1305
+> +#define REG_HDCP_DDC_ADDR	0x1310
+> +#define REG_HDCP_KIDX		0x1316
+> +#define REG_DEEP_PLL7_BYP	0x1347
+> +#define REG_HDCP_DE_CTRL	0x1370
+> +#define REG_HDCP_EP_FILT_CTRL	0x1371
+> +#define REG_HDMI_CTRL		0x1377
+> +#define REG_HMTP_CTRL		0x137a
+> +#define REG_TIMER_D		0x13CF
+> +#define REG_SUS_SET_RGB0	0x13E1
+> +#define REG_SUS_SET_RGB1	0x13E2
+> +#define REG_SUS_SET_RGB2	0x13E3
+> +#define REG_SUS_SET_RGB3	0x13E4
+> +#define REG_SUS_SET_RGB4	0x13E5
+> +#define REG_MAN_SUS_HDMI_SEL	0x13E8
+> +#define REG_MAN_HDMI_SET	0x13E9
+> +#define REG_SUS_CLOCK_GOOD	0x13EF
+> +
+> +/* HDCP DE Control */
+> +#define HDCP_DE_MODE_MASK	0xc0	/* DE Measurement mode */
+> +#define HDCP_DE_MODE_SHIFT	6
+> +#define HDCP_DE_REGEN_EN	BIT(5)	/* enable regen mode */
+> +#define HDCP_DE_FILTER_MASK	0x18	/* DE filter sensitivity */
+> +#define HDCP_DE_FILTER_SHIFT	3
+> +#define HDCP_DE_COMP_MASK	0x07	/* DE Composition mode */
+> +#define HDCP_DE_COMP_MIXED	6L
+> +#define HDCP_DE_COMP_OR		5L
+> +#define HDCP_DE_COMP_AND	4L
+> +#define HDCP_DE_COMP_CH3	3L
+> +#define HDCP_DE_COMP_CH2	2L
+> +#define HDCP_DE_COMP_CH1	1L
+> +#define HDCP_DE_COMP_CH0	0L
+> +
+> +/* HDCP EP Filter Control */
+> +#define HDCP_EP_FIL_CTL_MASK	0x30
+> +#define HDCP_EP_FIL_CTL_SHIFT	4
+> +#define HDCP_EP_FIL_VS_MASK	0x0c
+> +#define HDCP_EP_FIL_VS_SHIFT	2
+> +#define HDCP_EP_FIL_HS_MASK	0x03
+> +#define HDCP_EP_FIL_HS_SHIFT	0
+> +
+> +/* HDMI_CTRL */
+> +#define HDMI_CTRL_MUTE_MASK	0x0c
+> +#define HDMI_CTRL_MUTE_SHIFT	2
+> +#define HDMI_CTRL_MUTE_AUTO	0L
+> +#define HDMI_CTRL_MUTE_OFF	1L
+> +#define HDMI_CTRL_MUTE_ON	2L
+> +#define HDMI_CTRL_HDCP_MASK	0x03
+> +#define HDMI_CTRL_HDCP_SHIFT	0
+> +#define HDMI_CTRL_HDCP_EESS	2L
+> +#define HDMI_CTRL_HDCP_OESS	1L
+> +#define HDMI_CTRL_HDCP_AUTO	0L
+> +
+> +/* CGU_DBG_SEL bits */
+> +#define CGU_DBG_CLK_SEL_MASK	0x18
+> +#define CGU_DBG_CLK_SEL_SHIFT	3
+> +#define CGU_DBG_XO_FRO_SEL	BIT(2)
+> +#define CGU_DBG_VDP_CLK_SEL	BIT(1)
+> +#define CGU_DBG_PIX_CLK_SEL	BIT(0)
+> +
+> +/* REG_MAN_SUS_HDMI_SEL / REG_MAN_HDMI_SET bits */
+> +#define MAN_DIS_OUT_BUF		BIT(7)
+> +#define MAN_DIS_ANA_PATH	BIT(6)
+> +#define MAN_DIS_HDCP		BIT(5)
+> +#define MAN_DIS_TMDS_ENC	BIT(4)
+> +#define MAN_DIS_TMDS_FLOW	BIT(3)
+> +#define MAN_RST_HDCP		BIT(2)
+> +#define MAN_RST_TMDS_ENC	BIT(1)
+> +#define MAN_RST_TMDS_FLOW	BIT(0)
+> +
+> +/* Page 0x14 - Audio Extra control and debug */
+> +#define REG_FIFO_LATENCY_VAL	0x1403
+> +#define REG_AUDIO_CLOCK		0x1411
+> +#define REG_TEST_NCTS_CTRL	0x1415
+> +#define REG_TEST_AUDIO_FREQ	0x1426
+> +#define REG_TEST_MODE		0x1437
+> +
+> +/* Audio Clock Configuration */
+> +#define AUDIO_CLOCK_PLL_PD	BIT(7)	/* powerdown PLL */
+> +#define AUDIO_CLOCK_SEL_MASK	0x7f
+> +#define AUDIO_CLOCK_SEL_16FS	0L	/* 16*fs */
+> +#define AUDIO_CLOCK_SEL_32FS	1L	/* 32*fs */
+> +#define AUDIO_CLOCK_SEL_64FS	2L	/* 64*fs */
+> +#define AUDIO_CLOCK_SEL_128FS	3L	/* 128*fs */
+> +#define AUDIO_CLOCK_SEL_256FS	4L	/* 256*fs */
+> +#define AUDIO_CLOCK_SEL_512FS	5L	/* 512*fs */
+> +
+> +/* Page 0x20: EDID and Hotplug Detect */
+> +#define REG_EDID_IN_BYTE0	0x2000 /* EDID base */
+> +#define REG_EDID_IN_VERSION	0x2080
+> +#define REG_EDID_ENABLE		0x2081
+> +#define REG_HPD_POWER		0x2084
+> +#define REG_HPD_AUTO_CTRL	0x2085
+> +#define REG_HPD_DURATION	0x2086
+> +#define REG_RX_HPD_HEAC		0x2087
+> +
+> +/* EDID_ENABLE */
+> +#define EDID_ENABLE_NACK_OFF	BIT(7)
+> +#define EDID_ENABLE_EDID_ONLY	BIT(6)
+> +#define EDID_ENABLE_B_EN	BIT(1)
+> +#define EDID_ENABLE_A_EN	BIT(0)
+> +
+> +/* HPD Power */
+> +#define HPD_POWER_BP_MASK	0x0c
+> +#define HPD_POWER_BP_SHIFT	2
+> +#define HPD_POWER_BP_LOW	0L
+> +#define HPD_POWER_BP_HIGH	1L
+> +#define HPD_POWER_EDID_ONLY	BIT(1)
+> +
+> +/* HPD Auto control */
+> +#define HPD_AUTO_READ_EDID	BIT(7)
+> +#define HPD_AUTO_HPD_F3TECH	BIT(5)
+> +#define HPD_AUTO_HP_OTHER	BIT(4)
+> +#define HPD_AUTO_HPD_UNSEL	BIT(3)
+> +#define HPD_AUTO_HPD_ALL_CH	BIT(2)
+> +#define HPD_AUTO_HPD_PRV_CH	BIT(1)
+> +#define HPD_AUTO_HPD_NEW_CH	BIT(0)
+> +
+> +/* Page 0x21 - EDID content */
+> +#define REG_EDID_IN_BYTE128	0x2100 /* CEA Extension block */
+> +#define REG_EDID_IN_SPA_SUB	0x2180
+> +#define REG_EDID_IN_SPA_AB_A	0x2181
+> +#define REG_EDID_IN_SPA_CD_A	0x2182
+> +#define REG_EDID_IN_CKSUM_A	0x2183
+> +#define REG_EDID_IN_SPA_AB_B	0x2184
+> +#define REG_EDID_IN_SPA_CD_B	0x2185
+> +#define REG_EDID_IN_CKSUM_B	0x2186
+> +
+> +/* Page 0x30 - NV Configuration */
+> +#define REG_RT_AUTO_CTRL	0x3000
+> +#define REG_EQ_MAN_CTRL0	0x3001
+> +#define REG_EQ_MAN_CTRL1	0x3002
+> +#define REG_OUTPUT_CFG		0x3003
+> +#define REG_MUTE_CTRL		0x3004
+> +#define REG_SLAVE_ADDR		0x3005
+> +#define REG_CMTP_REG6		0x3006
+> +#define REG_CMTP_REG7		0x3007
+> +#define REG_CMTP_REG8		0x3008
+> +#define REG_CMTP_REG9		0x3009
+> +#define REG_CMTP_REGA		0x300A
+> +#define REG_CMTP_REGB		0x300B
+> +#define REG_CMTP_REGC		0x300C
+> +#define REG_CMTP_REGD		0x300D
+> +#define REG_CMTP_REGE		0x300E
+> +#define REG_CMTP_REGF		0x300F
+> +#define REG_CMTP_REG10		0x3010
+> +#define REG_CMTP_REG11		0x3011
+> +
+> +/* Page 0x80 - CEC */
+> +#define REG_PWR_CONTROL		0x80F4
+> +#define REG_OSC_DIVIDER		0x80F5
+> +#define REG_EN_OSC_PERIOD_LSB	0x80F8
+> +#define REG_CONTROL		0x80FF
+> +
+> +/* global interrupt flags (INT_FLG_CRL_TOP) */
+> +#define INTERRUPT_AFE		BIT(7) /* AFE module */
+> +#define INTERRUPT_HDCP		BIT(6) /* HDCP module */
+> +#define INTERRUPT_AUDIO		BIT(5) /* Audio module */
+> +#define INTERRUPT_INFO		BIT(4) /* Infoframe module */
+> +#define INTERRUPT_MODE		BIT(3) /* HDMI mode module */
+> +#define INTERRUPT_RATE		BIT(2) /* rate module */
+> +#define INTERRUPT_DDC		BIT(1) /* DDC module */
+> +#define INTERRUPT_SUS		BIT(0) /* SUS module */
+> +
+> +/* INT_FLG_CLR_HDCP bits */
+> +#define MASK_HDCP_MTP		BIT(7) /* HDCP MTP busy */
+> +#define MASK_HDCP_DLMTP		BIT(4) /* HDCP end download MTP to SRAM */
+> +#define MASK_HDCP_DLRAM		BIT(3) /* HDCP end download keys from SRAM */
+> +#define MASK_HDCP_ENC		BIT(2) /* HDCP ENC */
+> +#define MASK_STATE_C5		BIT(1) /* HDCP State C5 reached */
+> +#define MASK_AKSV		BIT(0) /* AKSV received (start of auth) */
+> +
+> +/* INT_FLG_CLR_RATE bits */
+> +#define MASK_RATE_B_DRIFT	BIT(7) /* Rate measurement drifted */
+> +#define MASK_RATE_B_ST		BIT(6) /* Rate measurement stability change */
+> +#define MASK_RATE_B_ACT		BIT(5) /* Rate measurement activity change */
+> +#define MASK_RATE_B_PST		BIT(4) /* Rate measreument presence change */
+> +#define MASK_RATE_A_DRIFT	BIT(3) /* Rate measurement drifted */
+> +#define MASK_RATE_A_ST		BIT(2) /* Rate measurement stability change */
+> +#define MASK_RATE_A_ACT		BIT(1) /* Rate measurement presence change */
+> +#define MASK_RATE_A_PST		BIT(0) /* Rate measreument presence change */
+> +
+> +/* INT_FLG_CLR_SUS (Start Up Sequencer) bits */
+> +#define MASK_MPT		BIT(7) /* Config MTP end of process */
+> +#define MASK_FMT		BIT(5) /* Video format changed */
+> +#define MASK_RT_PULSE		BIT(4) /* End of termination resistance pulse */
+> +#define MASK_SUS_END		BIT(3) /* SUS last state reached */
+> +#define MASK_SUS_ACT		BIT(2) /* Activity of selected input changed */
+> +#define MASK_SUS_CH		BIT(1) /* Selected input changed */
+> +#define MASK_SUS_ST		BIT(0) /* SUS state changed */
+> +
+> +/* INT_FLG_CLR_DDC bits */
+> +#define MASK_EDID_MTP		BIT(7) /* EDID MTP end of process */
+> +#define MASK_DDC_ERR		BIT(6) /* master DDC error */
+> +#define MASK_DDC_CMD_DONE	BIT(5) /* master DDC cmd send correct */
+> +#define MASK_READ_DONE		BIT(4) /* End of down EDID read */
+> +#define MASK_RX_DDC_SW		BIT(3) /* Output DDC switching finished */
+> +#define MASK_HDCP_DDC_SW	BIT(2) /* HDCP DDC switching finished */
+> +#define MASK_HDP_PULSE_END	BIT(1) /* End of Hot Plug Detect pulse */
+> +#define MASK_DET_5V		BIT(0) /* Detection of +5V */
+> +
+> +/* INT_FLG_CLR_MODE bits */
+> +#define MASK_HDMI_FLG		BIT(7) /* HDMI mode/avmute/encrypt/FIFO fail */
+> +#define MASK_GAMUT		BIT(6) /* Gamut packet */
+> +#define MASK_ISRC2		BIT(5) /* ISRC2 packet */
+> +#define MASK_ISRC1		BIT(4) /* ISRC1 packet */
+> +#define MASK_ACP		BIT(3) /* Audio Content Protection packet */
+> +#define MASK_DC_NO_GCP		BIT(2) /* GCP not received in 5 frames */
+> +#define MASK_DC_PHASE		BIT(1) /* deepcolor pixel phase needs update */
+> +#define MASK_DC_MODE		BIT(0) /* deepcolor color depth changed */
+> +
+> +/* INT_FLG_CLR_INFO bits (Infoframe Change Status) */
+> +#define MASK_MPS_IF		BIT(6) /* MPEG Source Product */
+> +#define MASK_AUD_IF		BIT(5) /* Audio */
+> +#define MASK_SPD_IF		BIT(4) /* Source Product Descriptor */
+> +#define MASK_AVI_IF		BIT(3) /* Auxiliary Video IF */
+> +#define MASK_VS_IF_OTHER_BK2	BIT(2) /* Vendor Specific (bank2) */
+> +#define MASK_VS_IF_OTHER_BK1	BIT(1) /* Vendor Specific (bank1) */
+> +#define MASK_VS_IF_HDMI		BIT(0) /* Vendor Specific (w/ HDMI LLC code) */
+> +
+> +/* INT_FLG_CLR_AUDIO bits */
+> +#define MASK_AUDIO_FREQ_FLG	BIT(5) /* Audio freq change */
+> +#define MASK_AUDIO_FLG		BIT(4) /* DST, OBA, HBR, ASP change */
+> +#define MASK_MUTE_FLG		BIT(3) /* Audio Mute */
+> +#define MASK_CH_STATE		BIT(2) /* Channel status */
+> +#define MASK_UNMUTE_FIFO	BIT(1) /* Audio Unmute */
+> +#define MASK_ERROR_FIFO_PT	BIT(0) /* Audio FIFO pointer error */
+> +
+> +/* INT_FLG_CLR_AFE bits */
+> +#define MASK_AFE_WDL_UNLOCKED	BIT(7) /* Wordlocker was unlocked */
+> +#define MASK_AFE_GAIN_DONE	BIT(6) /* Gain calibration done */
+> +#define MASK_AFE_OFFSET_DONE	BIT(5) /* Offset calibration done */
+> +#define MASK_AFE_ACTIVITY_DET	BIT(4) /* Activity detected on data */
+> +#define MASK_AFE_PLL_LOCK	BIT(3) /* TMDS PLL is locked */
+> +#define MASK_AFE_TRMCAL_DONE	BIT(2) /* Termination calibration done */
+> +#define MASK_AFE_ASU_STATE	BIT(1) /* ASU state is reached */
+> +#define MASK_AFE_ASU_READY	BIT(0) /* AFE calibration done: TMDS ready */
+> +
+> +/* Audio Output */
+> +#define AUDCFG_CLK_INVERT	BIT(7)	/* invert A_CLK polarity */
+> +#define AUDCFG_TEST_TONE	BIT(6)	/* enable test tone generator */
+> +#define AUDCFG_BUS_SHIFT	5
+> +#define AUDCFG_BUS_I2S		0L
+> +#define AUDCFG_BUS_SPDIF	1L
+> +#define AUDCFG_I2SW_SHIFT	4
+> +#define AUDCFG_I2SW_16		0L
+> +#define AUDCFG_I2SW_32		1L
+> +#define AUDCFG_AUTO_MUTE_EN	BIT(3)	/* Enable Automatic audio mute */
+> +#define AUDCFG_HBR_SHIFT	2
+> +#define AUDCFG_HBR_STRAIGHT	0L	/* straight via AP0 */
+> +#define AUDCFG_HBR_DEMUX	1L	/* demuxed via AP0:AP3 */
+> +#define AUDCFG_TYPE_MASK	0x03
+> +#define AUDCFG_TYPE_SHIFT	0
+> +#define AUDCFG_TYPE_DST		3L	/* Direct Stream Transfer (DST) */
+> +#define AUDCFG_TYPE_OBA		2L	/* One Bit Audio (OBA) */
+> +#define AUDCFG_TYPE_HBR		1L	/* High Bit Rate (HBR) */
+> +#define AUDCFG_TYPE_PCM		0L	/* Audio samples */
+> +
+> +/* Video Formatter */
+> +#define OF_VP_ENABLE		BIT(7)	/* VP[35:0]/HS/VS/DE/CLK */
+> +#define OF_BLK			BIT(4)	/* blanking codes */
+> +#define OF_TRC			BIT(3)	/* timing codes (SAV/EAV) */
+> +#define OF_FMT_MASK		0x3
+> +#define OF_FMT_444		0L	/* RGB444/YUV444 */
+> +#define OF_FMT_422_SMPT		1L	/* YUV422 semi-planar */
+> +#define OF_FMT_422_CCIR		2L	/* YUV422 CCIR656 */
+> +
+> +/* HS/HREF output control */
+> +#define HS_HREF_DELAY_MASK	0xf0
+> +#define HS_HREF_DELAY_SHIFT	4	/* Pixel delay (-8..+7) */
+> +#define HS_HREF_PXQ_SHIFT	3	/* Timing codes from HREF */
+> +#define HS_HREF_INV_SHIFT	2	/* polarity (1=invert) */
+> +#define HS_HREF_SEL_MASK	0x03
+> +#define HS_HREF_SEL_SHIFT	0
+> +#define HS_HREF_SEL_HS_VHREF	0L	/* HS from VHREF */
+> +#define HS_HREF_SEL_HREF_VHREF	1L	/* HREF from VHREF */
+> +#define HS_HREF_SEL_HREF_HDMI	2L	/* HREF from HDMI */
+> +#define HS_HREF_SEL_NONE	3L	/* not generated */
+> +
+> +/* VS output control */
+> +#define VS_VREF_DELAY_MASK	0xf0
+> +#define VS_VREF_DELAY_SHIFT	4	/* Pixel delay (-8..+7) */
+> +#define VS_VREF_INV_SHIFT	2	/* polarity (1=invert) */
+> +#define VS_VREF_SEL_MASK	0x03
+> +#define VS_VREF_SEL_SHIFT	0
+> +#define VS_VREF_SEL_VS_VHREF	0L	/* VS from VHREF */
+> +#define VS_VREF_SEL_VREF_VHREF	1L	/* VREF from VHREF */
+> +#define VS_VREF_SEL_VREF_HDMI	2L	/* VREF from HDMI */
+> +#define VS_VREF_SEL_NONE	3L	/* not generated */
+> +
+> +/* DE/FREF output control */
+> +#define DE_FREF_DELAY_MASK	0xf0
+> +#define DE_FREF_DELAY_SHIFT	4	/* Pixel delay (-8..+7) */
+> +#define DE_FREF_DE_PXQ_SHIFT	3	/* Timing codes from DE */
+> +#define DE_FREF_INV_SHIFT	2	/* polarity (1=invert) */
+> +#define DE_FREF_SEL_MASK	0x03
+> +#define DE_FREF_SEL_SHIFT	0
+> +#define DE_FREF_SEL_DE_VHREF	0L	/* DE from VHREF (HREF and not(VREF) */
+> +#define DE_FREF_SEL_FREF_VHREF	1L	/* FREF from VHREF */
+> +#define DE_FREF_SEL_FREF_HDMI	2L	/* FREF from HDMI */
+> +#define DE_FREF_SEL_NONE	3L	/* not generated */
+> +
+> +/* HDMI_SOFT_RST bits */
+> +#define RESET_DC		BIT(7)	/* Reset deep color module */
+> +#define RESET_HDCP		BIT(6)	/* Reset HDCP module */
+> +#define RESET_KSV		BIT(5)	/* Reset KSV-FIFO */
+> +#define RESET_SCFG		BIT(4)	/* Reset HDCP and repeater function */
+> +#define RESET_HCFG		BIT(3)	/* Reset HDCP DDC part */
+> +#define RESET_PA		BIT(2)	/* Reset polarity adjust */
+> +#define RESET_EP		BIT(1)	/* Reset Error protection */
+> +#define RESET_TMDS		BIT(0)	/* Reset TMDS (calib, encoding, flow) */
+> +
+> +/* HDMI_INFO_RST bits */
+> +#define NACK_HDCP		BIT(7)	/* No ACK on HDCP request */
+> +#define RESET_FIFO		BIT(4)	/* Reset Audio FIFO control */
+> +#define RESET_GAMUT		BIT(3)	/* Clear Gamut packet */
+> +#define RESET_AI		BIT(2)	/* Clear ACP and ISRC packets */
+> +#define RESET_IF		BIT(1)	/* Clear all Audio infoframe packets */
+> +#define RESET_AUDIO		BIT(0)	/* Reset Audio FIFO control */
+> +
+> +/* HDCP_BCAPS bits */
+> +#define HDCP_HDMI		BIT(7)	/* HDCP suports HDMI (vs DVI only) */
+> +#define HDCP_REPEATER		BIT(6)	/* HDCP supports repeater function */
+> +#define HDCP_READY		BIT(5)	/* set by repeater function */
+> +#define HDCP_FAST		BIT(4)	/* Up to 400kHz */
+> +#define HDCP_11			BIT(1)	/* HDCP 1.1 supported */
+> +#define HDCP_FAST_REAUTH	BIT(0)	/* fast reauthentication supported */
+> +
+> +/* Audio output formatter */
+> +#define AUDIO_LAYOUT_SP_FLAG	BIT(2)	/* sp flag used by FIFO */
+> +#define AUDIO_LAYOUT_MANUAL	BIT(1)	/* manual layout (vs per pkt) */
+> +#define AUDIO_LAYOUT_LAYOUT1	BIT(0)  /* Layout1: AP0-3 vs Layout0:AP0 */
+> +
+> +/* masks for interrupt status registers */
+> +#define MASK_SUS_STATUS		0x1F
+> +#define LAST_STATE_REACHED	0x1B
+> +#define MASK_CLK_STABLE		0x04
+> +#define MASK_CLK_ACTIVE		0x02
+> +#define MASK_SUS_STATE		0x10
+> +#define MASK_SR_FIFO_FIFO_CTRL	0x30
+> +#define MASK_AUDIO_FLAG		0x10
+> +
+> +/* Rate measurement */
+> +#define RATE_REFTIM_ENABLE	0x01
+> +#define CLK_MIN_RATE		0x0057e4
+> +#define CLK_MAX_RATE		0x0395f8
+> +#define WDL_CFG_VAL		0x82
+> +#define DC_FILTER_VAL		0x31
+> +
+> +/* Infoframe */
+> +#define VS_HDMI_IF_UPDATE	0x0200
+> +#define VS_HDMI_IF		0x0201
+> +#define VS_BK1_IF_UPDATE	0x0220
+> +#define VS_BK1_IF		0x0221
+> +#define VS_BK2_IF_UPDATE	0x0240
+> +#define VS_BK2_IF		0x0241
+> +#define AVI_IF_UPDATE		0x0260
+> +#define AVI_IF			0x0261
+> +#define SPD_IF_UPDATE		0x0280
+> +#define SPD_IF			0x0281
+> +#define AUD_IF_UPDATE		0x02a0
+> +#define AUD_IF			0x02a1
+> +#define MPS_IF_UPDATE		0x02c0
+> +#define MPS_IF			0x02c1
+> +
+> +/* Audio formats */
+> +static const char * const audtype_names[] = {
+> +	"PCM",			/* PCM Samples */
+> +	"HBR",			/* High Bit Rate Audio */
+> +	"OBA",			/* One-Bit Audio */
+> +	"DST"			/* Direct Stream Transfer */
+> +};
+> +
+> +/* Audio output port formats */
+> +enum audfmt_types {
+> +	AUDFMT_TYPE_DISABLED = 0,
+> +	AUDFMT_TYPE_I2S,
+> +	AUDFMT_TYPE_SPDIF,
+> +};
+> +static const char * const audfmt_names[] = {
+> +	"Disabled",
+> +	"I2S",
+> +	"SPDIF",
+> +};
+> +
+> +/* Video input formats */
+> +static const char * const hdmi_colorspace_names[] = {
+> +	"RGB", "YUV422", "YUV444", "YUV420", "", "", "", "",
+> +};
+> +static const char * const hdmi_colorimetry_names[] = {
+> +	"", "ITU601", "ITU709", "Extended",
+> +};
+> +static const char * const v4l2_quantization_names[] = {
+> +	"Default",
+> +	"Rull Range (0-255)",
+> +	"Limited Range (16-235)",
+> +};
+> +
+> +/* Video output port formats */
+> +static const char * const vidfmt_names[] = {
+> +	"RGB444/YUV444",	/* RGB/YUV444 16bit data bus, 8bpp */
+> +	"YUV422 semi-planar",	/* YUV422 16bit data base, 8bpp */
+> +	"YUV422 CCIR656",	/* BT656 (YUV 8bpp 2 clock per pixel) */
+> +	"Invalid",
+> +};
+> +
+> +/*
+> + * Video Output formats
+> + * There are 24 video output pins on TDA19971 and 36 on TDA19973 supporting
+> + * the following output formats:
+> + * - RGB444
+> + * - YUV444
+> + * - YUV422 semi-planar based on ITU-R BT.601
+> + * - YUV422 ITU-R BT.656
+> + *
+> + * TDA19971 can output 3x8bits per pixel
+> + * TDA19973 can output 3x8, 3x10, or 3x12bit per pixel
+> + *
+> + * Deep color modes (3x10 or 3x12 bits) are possible in any case.
+> + *
+> + * Reference: NXP AN1206 - TDA19971_TDA19973 receiver HW recommendation: 3.3.4
+> + */
+> +static u32 tda19971_video_formats[] = {
+> +	/* 24bit RGB444: 1 pixel in 1x24bit sample: VP[23:0] */
+> +	MEDIA_BUS_FMT_RGB888_1X24,
+> +	/* 24bit YUV444: 1 pixel in 1x24bit sample: VP[23:0] */
+> +	MEDIA_BUS_FMT_YUV8_1X24,
+> +	/* 24bit YUV422: 1 pixel in 1x24bit sample: VP[23:12]/VP[11:0] */
+> +	MEDIA_BUS_FMT_UYVY12_1X24,
+> +	/* 20bit YUV422: 1 pixel in 1x20bit sample: VP[23:14]/VP[11:2] */
+> +	MEDIA_BUS_FMT_UYVY10_1X20,
+> +	/* 16bit YUV422: 1 pixel in 1x16bit sample: VP[23:16]/VP[15:8] */
+> +	MEDIA_BUS_FMT_UYVY8_1X16,
+> +	/* 12bit CCIR656: 1 pixel in 2x12bit samples: VP[23:12] */
+> +	MEDIA_BUS_FMT_UYVY12_2X12,
+> +	/* 10bit CCIR656: 1 pixel in 2x10bit samples: VP[23:14] */
+> +	MEDIA_BUS_FMT_UYVY10_2X10,
+> +	/* 8bit CCIR656: 1 pixel in 2x8bit samples: VP[23:16] */
+> +	MEDIA_BUS_FMT_UYVY8_2X8,
+> +};
+> +static u32 tda19973_video_formats[] = {
+> +	/* 36bit RGB444: 1 pixel in 1x36bit sample on VP[35:0] */
+> +	MEDIA_BUS_FMT_RGB121212_1X36,
+> +	/* 36bit YUV444 1 pixel in 1x36bit sample on VP[35:0] */
+> +	MEDIA_BUS_FMT_YUV12_1X36,
+> +	/* 24bit YUV422: 1 pixel in 1x24bit sample on VP[35:24]/VP[11:0]  */
+> +	MEDIA_BUS_FMT_UYVY12_1X24,
+> +	/* 12bit CCIR656: 1 pixel in 2x12bit samples on VP[11:0] */
+> +	MEDIA_BUS_FMT_UYVY12_2X12,
+> +};
+> +
+> +/*
+> + * Colorspace conversion matrices
+> + */
+> +struct color_matrix_coefs {
+> +	const char *name;
+> +	/* Input offsets */
+> +	s16 offint1;
+> +	s16 offint2;
+> +	s16 offint3;
+> +	/* Coeficients */
+> +	s16 p11coef;
+> +	s16 p12coef;
+> +	s16 p13coef;
+> +	s16 p21coef;
+> +	s16 p22coef;
+> +	s16 p23coef;
+> +	s16 p31coef;
+> +	s16 p32coef;
+> +	s16 p33coef;
+> +	/* Output offsets */
+> +	s16 offout1;
+> +	s16 offout2;
+> +	s16 offout3;
+> +};
+> +
+> +enum {
+> +	ITU709_RGBFULL,
+> +	ITU601_RGBFULL,
+> +	RGBLIMITED_RGBFULL,
+> +	RGBLIMITED_ITU601,
+> +	RGBLIMITED_ITU709,
+> +	RGBFULL_ITU601,
+> +	RGBFULL_ITU709,
+> +};
+> +
+> +/* NB: 4096 is 1.0 using fixed point numbers */
+> +static const struct color_matrix_coefs conv_matrix[] = {
+> +	{
+> +		"YUV709 -> RGB full",
+> +		 -256, -2048,  -2048,
+> +		 4769, -2183,   -873,
+> +		 4769,  7343,      0,
+> +		 4769,     0,   8652,
+> +		    0,     0,      0,
+> +	},
+> +	{
+> +		"YUV601 -> RGB full",
+> +		 -256, -2048,  -2048,
+> +		 4769, -3330,  -1602,
+> +		 4769,  6538,      0,
+> +		 4769,     0,   8264,
+> +		  256,   256,    256,
+> +	},
+> +	{
+> +		"RGB limited -> RGB full",
+> +		 -256,  -256,   -256,
+> +		    0,  4769,      0,
+> +		    0,     0,   4769,
+> +		 4769,     0,      0,
+> +		    0,     0,      0,
+> +	},
+> +	{
+> +		"RGB limited -> ITU601",
+> +		 -256,  -256,   -256,
+> +		 2404,  1225,    467,
+> +		-1754,  2095,   -341,
+> +		-1388,  -707,   2095,
+> +		  256,  2048,   2048,
+> +	},
+> +	{
+> +		"RGB limited -> ITU709",
+> +		 -256,  -256,   -256,
+> +		 2918,   867,    295,
+> +		-1894,  2087,   -190,
+> +		-1607,  -477,   2087,
+> +		  256,  2048,   2048,
+> +	},
+> +	{
+> +		"RGB full -> ITU601",
+> +		    0,     0,      0,
+> +		 2065,  1052,    401,
+> +		-1506,  1799,   -293,
+> +		-1192,  -607,   1799,
+> +		  256,  2048,   2048,
+> +	},
+> +	{
+> +		"RGB full -> ITU709",
+> +		    0,     0,      0,
+> +		 2506,   745,    253,
+> +		-1627,  1792,   -163,
+> +		-1380,  -410,   1792,
+> +		  256,  2048,   2048,
+> +	},
+> +};
+> +
+> +static const struct v4l2_dv_timings_cap tda1997x_dv_timings_cap = {
+> +	.type = V4L2_DV_BT_656_1120,
+> +	/* keep this initialization for compatibility with GCC < 4.4.6 */
+> +	.reserved = { 0 },
+> +
+> +	V4L2_INIT_BT_TIMINGS(
+> +		640, 1920,			/* min/max width */
+> +		480, 1080,			/* min/max height */
+> +		13000000, 165000000,		/* min/max pixelclock */
+> +		/* standards */
+> +		V4L2_DV_BT_STD_CEA861 | V4L2_DV_BT_STD_DMT |
+> +			V4L2_DV_BT_STD_GTF | V4L2_DV_BT_STD_CVT,
+> +		/* capabilities */
+> +		V4L2_DV_BT_CAP_INTERLACED | V4L2_DV_BT_CAP_PROGRESSIVE |
+> +			V4L2_DV_BT_CAP_REDUCED_BLANKING |
+> +			V4L2_DV_BT_CAP_CUSTOM
+> +	)
+> +};
+> +
+> +/*
+> + * Video Input formats
+> + */
+> +static const struct v4l2_dv_timings tda1997x_hdmi_modes[] = {
+> +	V4L2_DV_BT_DMT_640X350P85,
+> +	V4L2_DV_BT_DMT_640X400P85,
+> +	V4L2_DV_BT_DMT_640X480P60,
+> +	V4L2_DV_BT_DMT_640X480P72,
+> +	V4L2_DV_BT_DMT_640X480P75,
+> +	V4L2_DV_BT_DMT_720X400P85,
+> +	V4L2_DV_BT_CEA_720X480I59_94,
+> +	V4L2_DV_BT_CEA_720X480P59_94,
+> +	V4L2_DV_BT_CEA_720X576I50,
+> +	V4L2_DV_BT_CEA_720X576P50,
+> +	V4L2_DV_BT_DMT_800X600P60,
+> +	V4L2_DV_BT_DMT_800X600P72,
+> +	V4L2_DV_BT_DMT_800X600P75,
+> +	V4L2_DV_BT_DMT_800X600P85,
+> +	V4L2_DV_BT_DMT_1024X768P60,
+> +	V4L2_DV_BT_DMT_1024X768P70,
+> +	V4L2_DV_BT_DMT_1024X768P75,
+> +	V4L2_DV_BT_DMT_1024X768P85,
+> +	V4L2_DV_BT_CEA_1280X720P24,
+> +	V4L2_DV_BT_CEA_1280X720P25,
+> +	V4L2_DV_BT_CEA_1280X720P30,
+> +	V4L2_DV_BT_CEA_1280X720P50,
+> +	V4L2_DV_BT_CEA_1280X720P60,
+> +	V4L2_DV_BT_DMT_1280X768P60_RB,
+> +	V4L2_DV_BT_DMT_1280X768P75,
+> +	V4L2_DV_BT_DMT_1280X768P85,
+> +	V4L2_DV_BT_DMT_1280X960P60,
+> +	V4L2_DV_BT_DMT_1280X1024P60,
+> +	V4L2_DV_BT_DMT_1280X1024P85,
+> +	V4L2_DV_BT_DMT_1280X1024P75,
+> +	V4L2_DV_BT_DMT_1360X768P60,
+> +	V4L2_DV_BT_DMT_1440X900P60,
+> +	V4L2_DV_BT_DMT_1400X1050P60_RB,
+> +	V4L2_DV_BT_DMT_1400X1050P60,
+> +	V4L2_DV_BT_DMT_1600X1200P60,
+> +	V4L2_DV_BT_DMT_1680X1050P60_RB,
+> +	V4L2_DV_BT_CEA_1920X1080P24,
+> +	V4L2_DV_BT_CEA_1920X1080P25,
+> +	V4L2_DV_BT_CEA_1920X1080P30,
+> +	V4L2_DV_BT_CEA_1920X1080I50,
+> +	V4L2_DV_BT_CEA_1920X1080P50,
+> +	V4L2_DV_BT_CEA_1920X1080I60,
+> +	V4L2_DV_BT_CEA_1920X1080P60,
+> +	V4L2_DV_BT_DMT_1920X1200P60_RB,
+> +};
+> +
+> +/* regulator supplies */
+> +static const char * const tda1997x_supply_name[] = {
+> +	"DOVDD", /* Digital I/O supply */
+> +	"DVDD",  /* Digital Core supply */
+> +	"AVDD",  /* Analog supply */
+> +};
+> +
+> +#define TDA1997X_NUM_SUPPLIES ARRAY_SIZE(tda1997x_supply_name)
+> +
+> +enum tda1997x_type {
+> +	TDA19971,
+> +	TDA19973,
+> +};
+> +
+> +enum tda1997x_hdmi_pads {
+> +	TDA1997X_PAD_SOURCE,
+> +	TDA1997X_NUM_PADS,
+> +};
+> +
+> +struct tda1997x_chip_info {
+> +	enum tda1997x_type type;
+> +	const char *name;
+> +	const u32 *formats;
+> +	unsigned int nformats;
+> +};
+> +
+> +struct tda1997x_state {
+> +	const struct tda1997x_chip_info *info;
+> +	struct tda1997x_platform_data pdata;
+> +	struct i2c_client *client;
+> +	struct i2c_client *client_cec;
+> +	struct v4l2_subdev sd;
+> +	struct regulator_bulk_data supplies[TDA1997X_NUM_SUPPLIES];
+> +	struct media_pad pads[TDA1997X_NUM_PADS];
+> +	struct mutex lock;
+> +	struct mutex page_lock;
+> +	char page;
+> +
+> +	/* detected info from chip */
+> +	int chip_revision;
+> +	char port_30bit;
+> +	char output_2p5;
+> +	char tmdsb_clk;
+> +	char tmdsb_soc;
+> +
+> +	/* status info */
+> +	char hdmi_status;
+> +	char mptrw_in_progress;
+> +	char state_c5_reached;
+> +	char activity_status;
+> +	char input_detect[2];
+> +
+> +	/* video */
+> +	struct hdmi_avi_infoframe avi_infoframe;
+> +	struct v4l2_hdmi_colorimetry colorimetry;
+> +	u32 rgb_quantization_range;
+> +	struct v4l2_dv_timings timings;
+> +	const struct v4l2_dv_timings *detected_timings;
+> +	int fps;
+> +	const struct color_matrix_coefs *conv;
+> +	u32 code;
+> +	enum v4l2_mbus_type bus_type;
+> +	u8 vid_fmt;
+> +
+> +	/* controls */
+> +	struct v4l2_ctrl_handler hdl;
+> +	struct v4l2_ctrl *detect_tx_5v_ctrl;
+> +	struct v4l2_ctrl *rgb_quantization_range_ctrl;
+> +
+> +	/* audio */
+> +	u8  audio_ch_alloc;
+> +	int audio_samplerate;
+> +	int audio_channels;
+> +	int audio_samplesize;
+> +	int audio_type;
+> +	struct mutex audio_lock;
+> +	struct snd_pcm_substream *audio_stream;
+> +
+> +	/* EDID */
+> +	struct {
+> +		u8 edid[256];
+> +		u32 present;
+> +		unsigned int blocks;
+> +	} edid;
+> +	struct delayed_work delayed_work_enable_hpd;
+> +};
+> +
+> +static const struct v4l2_event tda1997x_ev_fmt = {
+> +	.type = V4L2_EVENT_SOURCE_CHANGE,
+> +	.u.src_change.changes = V4L2_EVENT_SRC_CH_RESOLUTION,
+> +};
+> +
+> +static const struct tda1997x_chip_info tda1997x_chip_info[] = {
+> +	[TDA19971] = {
+> +		.type = TDA19971,
+> +		.name = "tda19971",
+> +		.formats = tda19971_video_formats,
+> +		.nformats = ARRAY_SIZE(tda19971_video_formats),
+> +	},
+> +	[TDA19973] = {
+> +		.type = TDA19973,
+> +		.name = "tda19973",
+> +		.formats = tda19973_video_formats,
+> +		.nformats = ARRAY_SIZE(tda19973_video_formats),
+> +	},
+> +};
+> +
+> +static inline struct tda1997x_state *to_state(struct v4l2_subdev *sd)
+> +{
+> +	return container_of(sd, struct tda1997x_state, sd);
+> +}
+> +
+> +static inline struct v4l2_subdev *to_sd(struct v4l2_ctrl *ctrl)
+> +{
+> +	return &container_of(ctrl->handler, struct tda1997x_state, hdl)->sd;
+> +}
+> +
+> +static int tda1997x_cec_read(struct v4l2_subdev *sd, u8 reg)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +	int val;
+> +
+> +	val = i2c_smbus_read_byte_data(state->client_cec, reg);
+> +	if (val < 0) {
+> +		v4l_err(state->client, "read reg error: reg=%2x\n", reg);
+> +		val = -1;
+> +	}
+> +
+> +	return val;
+> +}
+> +
+> +static int tda1997x_cec_write(struct v4l2_subdev *sd, u8 reg, u8 val)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +	int ret = 0;
+> +
+> +	ret = i2c_smbus_write_byte_data(state->client_cec, reg, val);
+> +	if (ret < 0) {
+> +		v4l_err(state->client, "write reg error:reg=%2x,val=%2x\n",
+> +			reg, val);
+> +		ret = -1;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +/* -----------------------------------------------------------------------------
+> + * I2C transfer
+> + */
+> +
+> +static int tda1997x_setpage(struct v4l2_subdev *sd, u8 page)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +	int ret;
+> +
+> +	if (state->page != page) {
+> +		ret = i2c_smbus_write_byte_data(state->client,
+> +			REG_CURPAGE_00H, page);
+> +		if (ret < 0) {
+> +			v4l_err(state->client,
+> +				"write reg error:reg=%2x,val=%2x\n",
+> +				REG_CURPAGE_00H, page);
+> +			return ret;
+> +		}
+> +		state->page = page;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static inline int io_read(struct v4l2_subdev *sd, u16 reg)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +	int val;
+> +
+> +	mutex_lock(&state->page_lock);
+> +	if (tda1997x_setpage(sd, reg >> 8)) {
+> +		val = -1;
+> +		goto out;
+> +	}
+> +
+> +	val = i2c_smbus_read_byte_data(state->client, reg&0xff);
+> +	if (val < 0) {
+> +		v4l_err(state->client, "read reg error: reg=%2x\n", reg & 0xff);
+> +		val = -1;
+> +		goto out;
+> +	}
+> +
+> +out:
+> +	mutex_unlock(&state->page_lock);
+> +	return val;
+> +}
+> +
+> +static inline long io_read16(struct v4l2_subdev *sd, u16 reg)
+> +{
+> +	u8 val;
+> +	long lval = 0;
+> +
+> +	val = io_read(sd, reg);
+> +	if (val < 0)
+> +		return val;
+> +	lval |= (val << 8);
+> +	val = io_read(sd, reg + 1);
+> +	if (val < 0)
+> +		return val;
+> +	lval |= val;
+> +
+> +	return lval;
+> +}
+> +
+> +static inline long io_read24(struct v4l2_subdev *sd, u16 reg)
+> +{
+> +	u8 val;
+> +	long lval = 0;
+> +
+> +	val = io_read(sd, reg);
+> +	if (val < 0)
+> +		return val;
+> +	lval |= (val << 16);
+> +	val = io_read(sd, reg + 1);
+> +	if (val < 0)
+> +		return val;
+> +	lval |= (val << 8);
+> +	val = io_read(sd, reg + 2);
+> +	if (val < 0)
+> +		return val;
+> +	lval |= val;
+> +
+> +	return lval;
+> +}
+> +
+> +static unsigned int io_readn(struct v4l2_subdev *sd, u16 reg, u8 len, u8 *data)
+> +{
+> +	int i;
+> +	int sz = 0;
+> +	u8 val;
+> +
+> +	for (i = 0; i < len; i++) {
+> +		val = io_read(sd, reg + i);
+> +		if (val < 0)
+> +			break;
+> +		data[i] = val;
+> +		sz++;
+> +	}
+> +
+> +	return sz;
+> +}
+> +
+> +static int io_write(struct v4l2_subdev *sd, u16 reg, u8 val)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +	s32 ret = 0;
+> +
+> +	mutex_lock(&state->page_lock);
+> +	if (tda1997x_setpage(sd, reg >> 8)) {
+> +		ret = -1;
+> +		goto out;
+> +	}
+> +
+> +	ret = i2c_smbus_write_byte_data(state->client, reg & 0xff, val);
+> +	if (ret < 0) {
+> +		v4l_err(state->client, "write reg error:reg=%2x,val=%2x\n",
+> +			reg&0xff, val);
+> +		ret = -1;
+> +		goto out;
+> +	}
+> +
+> +out:
+> +	mutex_unlock(&state->page_lock);
+> +	return ret;
+> +}
+> +
+> +static int io_write16(struct v4l2_subdev *sd, u16 reg, u16 val)
+> +{
+> +	int ret;
+> +
+> +	ret = io_write(sd, reg, (val >> 8) & 0xff);
+> +	if (ret < 0)
+> +		return ret;
+> +	ret = io_write(sd, reg + 1, val & 0xff);
+> +	if (ret < 0)
+> +		return ret;
+> +	return 0;
+> +}
+> +
+> +static int io_write24(struct v4l2_subdev *sd, u16 reg, u32 val)
+> +{
+> +	int ret;
+> +
+> +	ret = io_write(sd, reg, (val >> 16) & 0xff);
+> +	if (ret < 0)
+> +		return ret;
+> +	ret = io_write(sd, reg + 1, (val >> 8) & 0xff);
+> +	if (ret < 0)
+> +		return ret;
+> +	ret = io_write(sd, reg + 2, val & 0xff);
+> +	if (ret < 0)
+> +		return ret;
+> +	return 0;
+> +}
+> +
+> +/* -----------------------------------------------------------------------------
+> + * Hotplug
+> + */
+> +
+> +enum hpd_mode {
+> +	HPD_LOW_BP,	/* HPD low and pulse of at least 100ms */
+> +	HPD_LOW_OTHER,	/* HPD low and pulse of at least 100ms */
+> +	HPD_HIGH_BP,	/* HIGH */
+> +	HPD_HIGH_OTHER,
+> +	HPD_PULSE,	/* HPD low pulse */
+> +};
+> +
+> +/* manual HPD (Hot Plug Detect) control */
+> +static int tda1997x_manual_hpd(struct v4l2_subdev *sd, enum hpd_mode mode)
+> +{
+> +	u8 hpd_auto, hpd_pwr, hpd_man;
+> +
+> +	hpd_auto = io_read(sd, REG_HPD_AUTO_CTRL);
+> +	hpd_pwr = io_read(sd, REG_HPD_POWER);
+> +	hpd_man = io_read(sd, REG_HPD_MAN_CTRL);
+> +
+> +	/* mask out unused bits */
+> +	hpd_man &= (HPD_MAN_CTRL_HPD_PULSE |
+> +		    HPD_MAN_CTRL_5VEN |
+> +		    HPD_MAN_CTRL_HPD_B |
+> +		    HPD_MAN_CTRL_HPD_A);
+> +
+> +	switch (mode) {
+> +	/* HPD low and pulse of at least 100ms */
+> +	case HPD_LOW_BP:
+> +		/* hpd_bp=0 */
+> +		hpd_pwr &= ~HPD_POWER_BP_MASK;
+> +		/* disable HPD_A and HPD_B */
+> +		hpd_man &= ~(HPD_MAN_CTRL_HPD_A | HPD_MAN_CTRL_HPD_B);
+> +		io_write(sd, REG_HPD_POWER, hpd_pwr);
+> +		io_write(sd, REG_HPD_MAN_CTRL, hpd_man);
+> +		break;
+> +	/* HPD high */
+> +	case HPD_HIGH_BP:
+> +		/* hpd_bp=1 */
+> +		hpd_pwr &= ~HPD_POWER_BP_MASK;
+> +		hpd_pwr |= 1 << HPD_POWER_BP_SHIFT;
+> +		io_write(sd, REG_HPD_POWER, hpd_pwr);
+> +		break;
+> +	/* HPD low and pulse of at least 100ms */
+> +	case HPD_LOW_OTHER:
+> +		/* disable HPD_A and HPD_B */
+> +		hpd_man &= ~(HPD_MAN_CTRL_HPD_A | HPD_MAN_CTRL_HPD_B);
+> +		/* hp_other=0 */
+> +		hpd_auto &= ~HPD_AUTO_HP_OTHER;
+> +		io_write(sd, REG_HPD_AUTO_CTRL, hpd_auto);
+> +		io_write(sd, REG_HPD_MAN_CTRL, hpd_man);
+> +		break;
+> +	/* HPD high */
+> +	case HPD_HIGH_OTHER:
+> +		hpd_auto |= HPD_AUTO_HP_OTHER;
+> +		io_write(sd, REG_HPD_AUTO_CTRL, hpd_auto);
+> +		break;
+> +	/* HPD low pulse */
+> +	case HPD_PULSE:
+> +		/* disable HPD_A and HPD_B */
+> +		hpd_man &= ~(HPD_MAN_CTRL_HPD_A | HPD_MAN_CTRL_HPD_B);
+> +		io_write(sd, REG_HPD_MAN_CTRL, hpd_man);
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void tda1997x_delayed_work_enable_hpd(struct work_struct *work)
+> +{
+> +	struct delayed_work *dwork = to_delayed_work(work);
+> +	struct tda1997x_state *state = container_of(dwork,
+> +						    struct tda1997x_state,
+> +						    delayed_work_enable_hpd);
+> +	struct v4l2_subdev *sd = &state->sd;
+> +
+> +	v4l2_dbg(2, debug, sd, "%s:\n", __func__);
+> +
+> +	/* Set HPD high */
+> +	tda1997x_manual_hpd(sd, HPD_HIGH_OTHER);
+> +	tda1997x_manual_hpd(sd, HPD_HIGH_BP);
+> +
+> +	state->edid.present = 1;
+> +}
+> +
+> +static void tda1997x_disable_edid(struct v4l2_subdev *sd)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +
+> +	v4l2_dbg(1, debug, sd, "%s\n", __func__);
+> +	cancel_delayed_work_sync(&state->delayed_work_enable_hpd);
+> +
+> +	/* Set HPD low */
+> +	tda1997x_manual_hpd(sd, HPD_LOW_BP);
+> +}
+> +
+> +static void tda1997x_enable_edid(struct v4l2_subdev *sd)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +
+> +	v4l2_dbg(1, debug, sd, "%s\n", __func__);
+> +
+> +	/* Enable hotplug after 100ms */
+> +	schedule_delayed_work(&state->delayed_work_enable_hpd, HZ / 10);
+> +}
+> +
+> +/* -----------------------------------------------------------------------------
+> + * Signal Control
+> + */
+> +
+> +/*
+> + * The color conversion matrix will convert between the colorimetry of the
+> + * HDMI input to the desired output format RGB|YUV. RGB output is to be
+> + * full-range and YUV is to be limited range.
+> + *
+> + * RGB full-range uses values from 0 to 255 which is recommended on a monitor
+> + * and RGB Limited uses values from 16 to 236 (16=black, 235=white) which is
+> + * typically recommended on a TV.
+> + */
+> +static int
+> +tda1997x_configure_csc(struct v4l2_subdev *sd)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +	struct hdmi_avi_infoframe *avi = &state->avi_infoframe;
+> +	struct v4l2_hdmi_colorimetry *c = &state->colorimetry;
+> +	/* Blanking code values depend on output colorspace (RGB or YUV) */
+> +	struct blanking_codes {
+> +		s16 code_gy;
+> +		s16 code_bu;
+> +		s16 code_rv;
+> +	};
+> +	static const struct blanking_codes rgb_blanking = { 64, 64, 64 };
+> +	static const struct blanking_codes yuv_blanking = { 64, 512, 512 };
+> +	const struct blanking_codes *blanking_codes = NULL;
+> +	u8 reg;
+> +
+> +	v4l_dbg(1, debug, state->client, "input:%s quant:%s output:%s\n",
+> +		hdmi_colorspace_names[avi->colorspace],
+> +		v4l2_quantization_names[c->quantization],
+> +		vidfmt_names[state->vid_fmt]);
+> +	state->conv = NULL;
+> +	switch (state->vid_fmt) {
+> +	/* RGB output */
+> +	case OF_FMT_444:
+> +		blanking_codes = &rgb_blanking;
+> +		if (c->colorspace == V4L2_COLORSPACE_SRGB) {
+> +			if (c->quantization == V4L2_QUANTIZATION_LIM_RANGE)
+> +				state->conv = &conv_matrix[RGBLIMITED_RGBFULL];
+> +		} else {
+> +			if (c->colorspace == V4L2_COLORSPACE_REC709)
+> +				state->conv = &conv_matrix[ITU709_RGBFULL];
+> +			else if (c->colorspace == V4L2_COLORSPACE_SMPTE170M)
+> +				state->conv = &conv_matrix[ITU601_RGBFULL];
+> +		}
+> +		break;
+> +
+> +	/* YUV output */
+> +	case OF_FMT_422_SMPT: /* semi-planar */
+> +	case OF_FMT_422_CCIR: /* CCIR656 */
+> +		blanking_codes = &yuv_blanking;
+> +		if ((c->colorspace == V4L2_COLORSPACE_SRGB) &&
+> +		    (c->quantization == V4L2_QUANTIZATION_FULL_RANGE)) {
+> +			if (state->timings.bt.height <= 576)
+> +				state->conv = &conv_matrix[RGBFULL_ITU601];
+> +			else
+> +				state->conv = &conv_matrix[RGBFULL_ITU709];
+> +		} else if ((c->colorspace == V4L2_COLORSPACE_SRGB) &&
+> +			   (c->quantization == V4L2_QUANTIZATION_LIM_RANGE)) {
+> +			if (state->timings.bt.height <= 576)
+> +				state->conv = &conv_matrix[RGBLIMITED_ITU601];
+> +			else
+> +				state->conv = &conv_matrix[RGBLIMITED_ITU709];
+> +		}
+> +		break;
+> +	}
+> +
+> +	if (state->conv) {
+> +		v4l_dbg(1, debug, state->client, "%s\n",
+> +			state->conv->name);
+> +		/* enable matrix conversion */
+> +		reg = io_read(sd, REG_VDP_CTRL);
+> +		reg &= ~VDP_CTRL_MATRIX_BP;
+> +		io_write(sd, REG_VDP_CTRL, reg);
+> +		/* offset inputs */
+> +		io_write16(sd, REG_VDP_MATRIX + 0, state->conv->offint1);
+> +		io_write16(sd, REG_VDP_MATRIX + 2, state->conv->offint2);
+> +		io_write16(sd, REG_VDP_MATRIX + 4, state->conv->offint3);
+> +		/* coefficients */
+> +		io_write16(sd, REG_VDP_MATRIX + 6, state->conv->p11coef);
+> +		io_write16(sd, REG_VDP_MATRIX + 8, state->conv->p12coef);
+> +		io_write16(sd, REG_VDP_MATRIX + 10, state->conv->p13coef);
+> +		io_write16(sd, REG_VDP_MATRIX + 12, state->conv->p21coef);
+> +		io_write16(sd, REG_VDP_MATRIX + 14, state->conv->p22coef);
+> +		io_write16(sd, REG_VDP_MATRIX + 16, state->conv->p23coef);
+> +		io_write16(sd, REG_VDP_MATRIX + 18, state->conv->p31coef);
+> +		io_write16(sd, REG_VDP_MATRIX + 20, state->conv->p32coef);
+> +		io_write16(sd, REG_VDP_MATRIX + 22, state->conv->p33coef);
+> +		/* offset outputs */
+> +		io_write16(sd, REG_VDP_MATRIX + 24, state->conv->offout1);
+> +		io_write16(sd, REG_VDP_MATRIX + 26, state->conv->offout2);
+> +		io_write16(sd, REG_VDP_MATRIX + 28, state->conv->offout3);
+> +	} else {
+> +		/* disable matrix conversion */
+> +		reg = io_read(sd, REG_VDP_CTRL);
+> +		reg |= VDP_CTRL_MATRIX_BP;
+> +		io_write(sd, REG_VDP_CTRL, reg);
+> +	}
+> +
+> +	/* SetBlankingCodes */
+> +	if (blanking_codes) {
+> +		io_write16(sd, REG_BLK_GY, blanking_codes->code_gy);
+> +		io_write16(sd, REG_BLK_BU, blanking_codes->code_bu);
+> +		io_write16(sd, REG_BLK_RV, blanking_codes->code_rv);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/* Configure frame detection window and VHREF timing generator */
+> +static int
+> +tda1997x_configure_vhref(struct v4l2_subdev *sd)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +	const struct v4l2_bt_timings *bt;
+> +	int width, lines;
+> +	u16 href_start, href_end;
+> +	u16 vref_f1_start, vref_f2_start;
+> +	u8 vref_f1_width, vref_f2_width;
+> +	u8 field_polarity;
+> +	u16 fieldref_f1_start, fieldref_f2_start;
+> +	u8 reg;
+> +
+> +	if (!state->detected_timings)
+> +		return -EINVAL;
+> +	bt = &state->detected_timings->bt;
+> +	href_start = bt->hbackporch + bt->hsync + 1;
+> +	href_end = href_start + bt->width;
+> +	vref_f1_start = bt->height + bt->vbackporch + bt->vsync +
+> +			bt->il_vbackporch + bt->il_vsync +
+> +			bt->il_vfrontporch;
+> +	vref_f1_width = bt->vbackporch + bt->vsync + bt->vfrontporch;
+> +	vref_f2_start = 0;
+> +	vref_f2_width = 0;
+> +	fieldref_f1_start = 0;
+> +	fieldref_f2_start = 0;
+> +	if (bt->interlaced) {
+> +		vref_f2_start = (bt->height / 2) +
+> +				(bt->il_vbackporch + bt->il_vsync - 1);
+> +		vref_f2_width = bt->il_vbackporch + bt->il_vsync +
+> +				bt->il_vfrontporch;
+> +		fieldref_f2_start = vref_f2_start + bt->il_vfrontporch +
+> +				    fieldref_f1_start;
+> +	}
+> +	field_polarity = 0;
+> +
+> +	width = V4L2_DV_BT_FRAME_WIDTH(bt);
+> +	lines = V4L2_DV_BT_FRAME_HEIGHT(bt);
+> +
+> +	/*
+> +	 * Configure Frame Detection Window:
+> +	 *  horiz area where the VHREF module consider a VSYNC a new frame
+> +	 */
+> +	io_write16(sd, REG_FDW_S, 0x2ef); /* start position */
+> +	io_write16(sd, REG_FDW_E, 0x141); /* end position */
+> +
+> +	/* Set Pixel And Line Counters */
+> +	if (state->chip_revision == 0)
+> +		io_write16(sd, REG_PXCNT_PR, 4);
+> +	else
+> +		io_write16(sd, REG_PXCNT_PR, 1);
+> +	io_write16(sd, REG_PXCNT_NPIX, width & MASK_VHREF);
+> +	io_write16(sd, REG_LCNT_PR, 1);
+> +	io_write16(sd, REG_LCNT_NLIN, lines & MASK_VHREF);
+> +
+> +	/*
+> +	 * Configure the VHRef timing generator responsible for rebuilding all
+> +	 * horiz and vert synch and ref signals from its input allowing auto
+> +	 * detection algorithms and forcing predefined modes (480i & 576i)
+> +	 */
+> +	reg = VHREF_STD_DET_OFF << VHREF_STD_DET_SHIFT;
+> +	io_write(sd, REG_VHREF_CTRL, reg);
+> +
+> +	/*
+> +	 * Configure the VHRef timing values. In case the VHREF generator has
+> +	 * been configured in manual mode, this will allow to manually set all
+> +	 * horiz and vert ref values (non-active pixel areas) of the generator
+> +	 * and allows setting the frame reference params.
+> +	 */
+> +	/* horizontal reference start/end */
+> +	io_write16(sd, REG_HREF_S, href_start & MASK_VHREF);
+> +	io_write16(sd, REG_HREF_E, href_end & MASK_VHREF);
+> +	/* vertical reference f1 start/end */
+> +	io_write16(sd, REG_VREF_F1_S, vref_f1_start & MASK_VHREF);
+> +	io_write(sd, REG_VREF_F1_WIDTH, vref_f1_width);
+> +	/* vertical reference f2 start/end */
+> +	io_write16(sd, REG_VREF_F2_S, vref_f2_start & MASK_VHREF);
+> +	io_write(sd, REG_VREF_F2_WIDTH, vref_f2_width);
+> +
+> +	/* F1/F2 FREF, field polarity */
+> +	reg = fieldref_f1_start & MASK_VHREF;
+> +	reg |= field_polarity << 8;
+> +	io_write16(sd, REG_FREF_F1_S, reg);
+> +	reg = fieldref_f2_start & MASK_VHREF;
+> +	io_write16(sd, REG_FREF_F2_S, reg);
+> +
+> +	return 0;
+> +}
+> +
+> +/* Configure Video Output port signals */
+> +static int
+> +tda1997x_configure_vidout(struct tda1997x_state *state)
+> +{
+> +	struct v4l2_subdev *sd = &state->sd;
+> +	struct tda1997x_platform_data *pdata = &state->pdata;
+> +	u8 prefilter;
+> +	u8 reg;
+> +
+> +	/* Configure pixel clock generator: delay, polarity, rate */
+> +	reg = (state->vid_fmt == OF_FMT_422_CCIR) ?
+> +	       PCLK_SEL_X2 : PCLK_SEL_X1;
+> +	reg |= pdata->vidout_delay_pclk << PCLK_DELAY_SHIFT;
+> +	reg |= pdata->vidout_inv_pclk << PCLK_INV_SHIFT;
+> +	io_write(sd, REG_PCLK, reg);
+> +
+> +	/* Configure pre-filter */
+> +	prefilter = 0; /* filters off */
+> +	/* YUV422 mode requires conversion */
+> +	if ((state->vid_fmt == OF_FMT_422_SMPT)
+> +	 || (state->vid_fmt == OF_FMT_422_CCIR)) {
+> +		/* 2/7taps for Rv and Bu */
+> +		prefilter = FILTERS_CTRL_2_7TAP << FILTERS_CTRL_BU_SHIFT |
+> +			    FILTERS_CTRL_2_7TAP << FILTERS_CTRL_RV_SHIFT;
+> +	}
+> +	io_write(sd, REG_FILTERS_CTRL, prefilter);
+> +
+> +	/* Configure video port */
+> +	reg = state->vid_fmt & OF_FMT_MASK;
+> +	if (state->vid_fmt == OF_FMT_422_CCIR)
+> +		reg |= (OF_BLK | OF_TRC);
+> +	reg |= OF_VP_ENABLE;
+> +	io_write(sd, REG_OF, reg);
+> +
+> +	/* Configure formatter and conversions */
+> +	reg = io_read(sd, REG_VDP_CTRL);
+> +	/* pre-filter is needed unless (REG_FILTERS_CTRL == 0) */
+> +	if (!prefilter)
+> +		reg |= VDP_CTRL_PREFILTER_BP;
+> +	else
+> +		reg &= ~VDP_CTRL_PREFILTER_BP;
+> +	/* formatter is needed for YUV422 and for trc/blc codes */
+> +	if (state->vid_fmt == OF_FMT_444)
+> +		reg |= VDP_CTRL_FORMATTER_BP;
+> +	/* formatter and compdel needed for timing/blanking codes */
+> +	else
+> +		reg &= ~(VDP_CTRL_FORMATTER_BP | VDP_CTRL_COMPDEL_BP);
+> +	/* activate compdel for small sync delays */
+> +	if ((pdata->vidout_delay_vs < 4) || (pdata->vidout_delay_hs < 4))
+> +		reg &= ~VDP_CTRL_COMPDEL_BP;
+> +	io_write(sd, REG_VDP_CTRL, reg);
+> +
+> +	/* Configure DE output signal: delay, polarity, and source */
+> +	reg = pdata->vidout_delay_de << DE_FREF_DELAY_SHIFT |
+> +	      pdata->vidout_inv_de << DE_FREF_INV_SHIFT |
+> +	      pdata->vidout_sel_de << DE_FREF_SEL_SHIFT;
+> +	io_write(sd, REG_DE_FREF, reg);
+> +
+> +	/* Configure HS/HREF output signal: delay, polarity, and source */
+> +	if (state->vid_fmt != OF_FMT_422_CCIR) {
+> +		reg = pdata->vidout_delay_hs << HS_HREF_DELAY_SHIFT |
+> +		      pdata->vidout_inv_hs << HS_HREF_INV_SHIFT |
+> +		      pdata->vidout_sel_hs << HS_HREF_SEL_SHIFT;
+> +	} else
+> +		reg = HS_HREF_SEL_NONE << HS_HREF_SEL_SHIFT;
+> +	io_write(sd, REG_HS_HREF, reg);
+> +
+> +	/* Configure VS/VREF output signal: delay, polarity, and source */
+> +	if (state->vid_fmt != OF_FMT_422_CCIR) {
+> +		reg = pdata->vidout_delay_vs << VS_VREF_DELAY_SHIFT |
+> +		      pdata->vidout_inv_vs << VS_VREF_INV_SHIFT |
+> +		      pdata->vidout_sel_vs << VS_VREF_SEL_SHIFT;
+> +	} else
+> +		reg = VS_VREF_SEL_NONE << VS_VREF_SEL_SHIFT;
+> +	io_write(sd, REG_VS_VREF, reg);
+> +
+> +	return 0;
+> +}
+> +
+> +/* Configure Audio output port signals */
+> +static int
+> +tda1997x_configure_audout(struct v4l2_subdev *sd, u8 channel_assignment)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +	struct tda1997x_platform_data *pdata = &state->pdata;
+> +	bool sp_used_by_fifo = 1;
+> +	u8 reg;
+> +
+> +	if (!pdata->audout_format)
+> +		return 0;
+> +
+> +	/* channel assignment (CEA-861-D Table 20) */
+> +	io_write(sd, REG_AUDIO_PATH, channel_assignment);
+> +
+> +	/* Audio output configuration */
+> +	reg = 0;
+> +	switch (pdata->audout_format) {
+> +	case AUDFMT_TYPE_I2S:
+> +		reg |= AUDCFG_BUS_I2S << AUDCFG_BUS_SHIFT;
+> +		break;
+> +	case AUDFMT_TYPE_SPDIF:
+> +		reg |= AUDCFG_BUS_SPDIF << AUDCFG_BUS_SHIFT;
+> +		break;
+> +	}
+> +	switch (state->audio_type) {
+> +	case AUDCFG_TYPE_PCM:
+> +		reg |= AUDCFG_TYPE_PCM << AUDCFG_TYPE_SHIFT;
+> +		break;
+> +	case AUDCFG_TYPE_OBA:
+> +		reg |= AUDCFG_TYPE_OBA << AUDCFG_TYPE_SHIFT;
+> +		break;
+> +	case AUDCFG_TYPE_DST:
+> +		reg |= AUDCFG_TYPE_DST << AUDCFG_TYPE_SHIFT;
+> +		sp_used_by_fifo = 0;
+> +		break;
+> +	case AUDCFG_TYPE_HBR:
+> +		reg |= AUDCFG_TYPE_HBR << AUDCFG_TYPE_SHIFT;
+> +		if (pdata->audout_layout == 1) {
+> +			/* demuxed via AP0:AP3 */
+> +			reg |= AUDCFG_HBR_DEMUX << AUDCFG_HBR_SHIFT;
+> +			if (pdata->audout_format == AUDFMT_TYPE_SPDIF)
+> +				sp_used_by_fifo = 0;
+> +		} else {
+> +			/* straight via AP0 */
+> +			reg |= AUDCFG_HBR_STRAIGHT << AUDCFG_HBR_SHIFT;
+> +		}
+> +		break;
+> +	}
+> +	if (pdata->audout_width == 32)
+> +		reg |= AUDCFG_I2SW_32 << AUDCFG_I2SW_SHIFT;
+> +	else
+> +		reg |= AUDCFG_I2SW_16 << AUDCFG_I2SW_SHIFT;
+> +
+> +	/* automatic hardware mute */
+> +	if (pdata->audio_auto_mute)
+> +		reg |= AUDCFG_AUTO_MUTE_EN;
+> +	/* clock polarity */
+> +	if (pdata->audout_invert_clk)
+> +		reg |= AUDCFG_CLK_INVERT;
+> +	io_write(sd, REG_AUDCFG, reg);
+> +
+> +	/* audio layout */
+> +	reg = (pdata->audout_layout) ? AUDIO_LAYOUT_LAYOUT1 : 0;
+> +	if (!pdata->audout_layoutauto)
+> +		reg |= AUDIO_LAYOUT_MANUAL;
+> +	if (sp_used_by_fifo)
+> +		reg |= AUDIO_LAYOUT_SP_FLAG;
+> +	io_write(sd, REG_AUDIO_LAYOUT, reg);
+> +
+> +	/* FIFO Latency value */
+> +	io_write(sd, REG_FIFO_LATENCY_VAL, 0x80);
+> +
+> +	/* Audio output port config */
+> +	if (sp_used_by_fifo) {
+> +		reg = AUDIO_OUT_ENABLE_AP0;
+> +		if (channel_assignment >= 0x01)
+> +			reg |= AUDIO_OUT_ENABLE_AP1;
+> +		if (channel_assignment >= 0x04)
+> +			reg |= AUDIO_OUT_ENABLE_AP2;
+> +		if (channel_assignment >= 0x0c)
+> +			reg |= AUDIO_OUT_ENABLE_AP3;
+> +		/* specific cases where AP1 is not used */
+> +		if ((channel_assignment == 0x04)
+> +		 || (channel_assignment == 0x08)
+> +		 || (channel_assignment == 0x0c)
+> +		 || (channel_assignment == 0x10)
+> +		 || (channel_assignment == 0x14)
+> +		 || (channel_assignment == 0x18)
+> +		 || (channel_assignment == 0x1c))
+> +			reg &= ~AUDIO_OUT_ENABLE_AP1;
+> +		/* specific cases where AP2 is not used */
+> +		if ((channel_assignment >= 0x14)
+> +		 && (channel_assignment <= 0x17))
+> +			reg &= ~AUDIO_OUT_ENABLE_AP2;
+> +	} else {
+> +		reg = AUDIO_OUT_ENABLE_AP3 |
+> +		      AUDIO_OUT_ENABLE_AP2 |
+> +		      AUDIO_OUT_ENABLE_AP1 |
+> +		      AUDIO_OUT_ENABLE_AP0;
+> +	}
+> +	if (pdata->audout_format == AUDFMT_TYPE_I2S)
+> +		reg |= (AUDIO_OUT_ENABLE_ACLK | AUDIO_OUT_ENABLE_WS);
+> +	io_write(sd, REG_AUDIO_OUT_ENABLE, reg);
+> +
+> +	/* reset test mode to normal audio freq auto selection */
+> +	io_write(sd, REG_TEST_MODE, 0x00);
+> +
+> +	return 0;
+> +}
+> +
+> +/* Soft Reset of specific hdmi info */
+> +static int
+> +tda1997x_hdmi_info_reset(struct v4l2_subdev *sd, u8 info_rst, bool reset_sus)
+> +{
+> +	u8 reg;
+> +
+> +	/* reset infoframe engine packets */
+> +	reg = io_read(sd, REG_HDMI_INFO_RST);
+> +	io_write(sd, REG_HDMI_INFO_RST, info_rst);
+> +
+> +	/* if infoframe engine has been reset clear INT_FLG_MODE */
+> +	if (reg & RESET_IF) {
+> +		reg = io_read(sd, REG_INT_FLG_CLR_MODE);
+> +		io_write(sd, REG_INT_FLG_CLR_MODE, reg);
+> +	}
+> +
+> +	/* Disable REFTIM to restart start-up-sequencer (SUS) */
+> +	reg = io_read(sd, REG_RATE_CTRL);
+> +	reg &= ~RATE_REFTIM_ENABLE;
+> +	if (!reset_sus)
+> +		reg |= RATE_REFTIM_ENABLE;
+> +	reg = io_write(sd, REG_RATE_CTRL, reg);
+> +
+> +	return 0;
+> +}
+> +
+> +static void
+> +tda1997x_power_mode(struct tda1997x_state *state, bool enable)
+> +{
+> +	struct v4l2_subdev *sd = &state->sd;
+> +	u8 reg;
+> +
+> +	if (enable) {
+> +		/* Automatic control of TMDS */
+> +		io_write(sd, REG_PON_OVR_EN, PON_DIS);
+> +		/* Enable current bias unit */
+> +		io_write(sd, REG_CFG1, PON_EN);
+> +		/* Enable deep color PLL */
+> +		io_write(sd, REG_DEEP_PLL7_BYP, PON_DIS);
+> +		/* Output buffers active */
+> +		reg = io_read(sd, REG_OF);
+> +		reg &= ~OF_VP_ENABLE;
+> +		io_write(sd, REG_OF, reg);
+> +	} else {
+> +		/* Power down EDID mode sequence */
+> +		/* Output buffers in HiZ */
+> +		reg = io_read(sd, REG_OF);
+> +		reg |= OF_VP_ENABLE;
+> +		io_write(sd, REG_OF, reg);
+> +		/* Disable deep color PLL */
+> +		io_write(sd, REG_DEEP_PLL7_BYP, PON_EN);
+> +		/* Disable current bias unit */
+> +		io_write(sd, REG_CFG1, PON_DIS);
+> +		/* Manual control of TMDS */
+> +		io_write(sd, REG_PON_OVR_EN, PON_EN);
+> +	}
+> +}
+> +
+> +static bool
+> +tda1997x_detect_tx_5v(struct v4l2_subdev *sd)
+> +{
+> +	u8 reg = io_read(sd, REG_DETECT_5V);
+> +
+> +	return ((reg & DETECT_5V_SEL) ? 1 : 0);
+> +}
+> +
+> +static bool
+> +tda1997x_detect_tx_hpd(struct v4l2_subdev *sd)
+> +{
+> +	u8 reg = io_read(sd, REG_DETECT_5V);
+> +
+> +	return ((reg & DETECT_HPD) ? 1 : 0);
+> +}
+> +
+> +static int
+> +tda1997x_detect_std(struct tda1997x_state *state)
+> +{
+> +	struct v4l2_subdev *sd = &state->sd;
+> +	u32 vper;
+> +	u16 hper;
+> +	u16 hsper;
+> +	int i;
+> +
+> +	/*
+> +	 * Read the FMT registers
+> +	 *   REG_V_PER: Period of a frame (or two fields) in MCLK(27MHz) cycles
+> +	 *   REG_H_PER: Period of a line in MCLK(27MHz) cycles
+> +	 *   REG_HS_WIDTH: Period of horiz sync pulse in MCLK(27MHz) cycles
+> +	 */
+> +	vper = io_read24(sd, REG_V_PER) & MASK_VPER;
+> +	hper = io_read16(sd, REG_H_PER) & MASK_HPER;
+> +	hsper = io_read16(sd, REG_HS_WIDTH) & MASK_HSWIDTH;
+> +	if (!vper || !hper || !hsper)
+> +		return -ENOLINK;
+> +	v4l2_dbg(1, debug, sd, "Signal Timings: %u/%u/%u\n", vper, hper, hsper);
+> +
+> +	/* look for matching timings */
+> +	for (i = 0; i < ARRAY_SIZE(tda1997x_hdmi_modes); i++) {
+> +		const struct v4l2_bt_timings *bt = &tda1997x_hdmi_modes[i].bt;
+> +		u32 lines, width, _hper, _hsper;
+> +		u32 vmin, vmax, hmin, hmax, hsmin, hsmax;
+> +		bool vmatch, hmatch, hsmatch;
+> +
+> +		width = V4L2_DV_BT_FRAME_WIDTH(bt);
+> +		lines = V4L2_DV_BT_FRAME_HEIGHT(bt);
+> +		_hper = (u32)bt->pixelclock / width;
+> +		if (bt->interlaced)
+> +			lines /= 2;
+> +		/* vper +/- 0.7% */
+> +		vmin = ((27000000 / 1000) * 993) / _hper * lines;
+> +		vmax = ((27000000 / 1000) * 1007) / _hper * lines;
+> +		/* hper +/- 1.0% */
+> +		hmin = ((27000000 / 100) * 99) / _hper;
+> +		hmax = ((27000000 / 100) * 101) / _hper;
+> +		/* hsper +/- 2 (take care to avoid 32bit overflow) */
+> +		_hsper = 27000 * bt->hsync / ((u32)bt->pixelclock/1000);
+> +		hsmin = _hsper - 2;
+> +		hsmax = _hsper + 2;
+> +
+> +		/* vmatch matches the framerate */
+> +		vmatch = ((vper <= vmax) && (vper >= vmin)) ? 1 : 0;
+> +		/* hmatch matches the width */
+> +		hmatch = ((hper <= hmax) && (hper >= hmin)) ? 1 : 0;
+> +		/* hsmatch matches the hswidth */
+> +		hsmatch = ((hsper <= hsmax) && (hsper >= hsmin)) ? 1 : 0;
+> +		if (hmatch && vmatch && hsmatch) {
+> +			state->detected_timings = &tda1997x_hdmi_modes[i];
+> +			v4l2_print_dv_timings(sd->name, "Detected format: ",
+> +					      state->detected_timings, false);
+> +			return 0;
+> +		}
+> +	}
+> +
+> +	v4l_err(state->client, "no resolution match for timings: %d/%d/%d\n",
+> +		vper, hper, hsper);
+> +	return -EINVAL;
+> +}
+> +
+> +/* some sort of errata workaround for chip revision 0 (N1) */
+> +static void tda1997x_reset_n1(struct tda1997x_state *state)
+> +{
+> +	struct v4l2_subdev *sd = &state->sd;
+> +	u8 reg;
+> +
+> +	/* clear HDMI mode flag in BCAPS */
+> +	io_write(sd, REG_CLK_CFG, CLK_CFG_SEL_ACLK_EN | CLK_CFG_SEL_ACLK);
+> +	io_write(sd, REG_PON_OVR_EN, PON_EN);
+> +	io_write(sd, REG_PON_CBIAS, PON_EN);
+> +	io_write(sd, REG_PON_PLL, PON_EN);
+> +
+> +	reg = io_read(sd, REG_MODE_REC_CFG1);
+> +	reg &= ~0x06;
+> +	reg |= 0x02;
+> +	io_write(sd, REG_MODE_REC_CFG1, reg);
+> +	io_write(sd, REG_CLK_CFG, CLK_CFG_DIS);
+> +	io_write(sd, REG_PON_OVR_EN, PON_DIS);
+> +	reg = io_read(sd, REG_MODE_REC_CFG1);
+> +	reg &= ~0x06;
+> +	io_write(sd, REG_MODE_REC_CFG1, reg);
+> +}
+> +
+> +/*
+> + * Activity detection must only be notified when stable_clk_x AND active_x
+> + * bits are set to 1. If only stable_clk_x bit is set to 1 but not
+> + * active_x, it means that the TMDS clock is not in the defined range
+> + * and activity detection must not be notified.
+> + */
+> +static u8
+> +tda1997x_read_activity_status_regs(struct v4l2_subdev *sd)
+> +{
+> +	u8 reg, status = 0;
+> +
+> +	/* Read CLK_A_STATUS register */
+> +	reg = io_read(sd, REG_CLK_A_STATUS);
+> +	/* when stable_clk_x is set to 1, check active_x bit */
+> +	if ((reg & MASK_CLK_STABLE) && !(reg & MASK_CLK_ACTIVE))
+> +		reg &= ~MASK_CLK_STABLE;
+> +	status |= ((reg & MASK_CLK_STABLE) >> 2);
+> +
+> +	/* Read CLK_B_STATUS register */
+> +	reg = io_read(sd, REG_CLK_B_STATUS);
+> +	/* when stable_clk_x is set to 1, check active_x bit */
+> +	if ((reg & MASK_CLK_STABLE) && !(reg & MASK_CLK_ACTIVE))
+> +		reg &= ~MASK_CLK_STABLE;
+> +	status |= ((reg & MASK_CLK_STABLE) >> 1);
+> +
+> +	/* Read the SUS_STATUS register */
+> +	reg = io_read(sd, REG_SUS_STATUS);
+> +
+> +	/* If state = 5 => TMDS is locked */
+> +	if ((reg & MASK_SUS_STATUS) == LAST_STATE_REACHED)
+> +		status |= MASK_SUS_STATE;
+> +	else
+> +		status &= ~MASK_SUS_STATE;
+> +
+> +	return status;
+> +}
+> +
+> +/* parse an infoframe and do some sanity checks on it */
+> +static unsigned int
+> +tda1997x_parse_infoframe(struct tda1997x_state *state, u16 addr)
+> +{
+> +	struct v4l2_subdev *sd = &state->sd;
+> +	struct v4l2_hdmi_colorimetry *c = &state->colorimetry;
+> +	union hdmi_infoframe frame;
+> +	u8 buffer[40];
+> +	u8 reg;
+> +	int len, err;
+> +
+> +	/* read data */
+> +	len = io_readn(sd, addr, sizeof(buffer), buffer);
+> +	err = hdmi_infoframe_unpack(&frame, buffer);
+> +	if (err) {
+> +		v4l_err(state->client,
+> +			"failed parsing %d byte infoframe: 0x%04x/0x%02x\n",
+> +			len, addr, buffer[0]);
+> +		return err;
+> +	}
+> +	hdmi_infoframe_log(KERN_INFO, &state->client->dev, &frame);
+> +	switch (frame.any.type) {
+> +	/* Audio InfoFrame: see HDMI spec 8.2.2 */
+> +	case HDMI_INFOFRAME_TYPE_AUDIO:
+> +		/* sample rate */
+> +		switch (frame.audio.sample_frequency) {
+> +		case HDMI_AUDIO_SAMPLE_FREQUENCY_32000:
+> +			state->audio_samplerate = 32000;
+> +			break;
+> +		case HDMI_AUDIO_SAMPLE_FREQUENCY_44100:
+> +			state->audio_samplerate = 44100;
+> +			break;
+> +		case HDMI_AUDIO_SAMPLE_FREQUENCY_48000:
+> +			state->audio_samplerate = 48000;
+> +			break;
+> +		case HDMI_AUDIO_SAMPLE_FREQUENCY_88200:
+> +			state->audio_samplerate = 88200;
+> +			break;
+> +		case HDMI_AUDIO_SAMPLE_FREQUENCY_96000:
+> +			state->audio_samplerate = 96000;
+> +			break;
+> +		case HDMI_AUDIO_SAMPLE_FREQUENCY_176400:
+> +			state->audio_samplerate = 176400;
+> +			break;
+> +		case HDMI_AUDIO_SAMPLE_FREQUENCY_192000:
+> +			state->audio_samplerate = 192000;
+> +			break;
+> +		default:
+> +		case HDMI_AUDIO_SAMPLE_FREQUENCY_STREAM:
+> +			break;
+> +		}
+> +
+> +		/* sample size */
+> +		switch (frame.audio.sample_size) {
+> +		case HDMI_AUDIO_SAMPLE_SIZE_16:
+> +			state->audio_samplesize = 16;
+> +			break;
+> +		case HDMI_AUDIO_SAMPLE_SIZE_20:
+> +			state->audio_samplesize = 20;
+> +			break;
+> +		case HDMI_AUDIO_SAMPLE_SIZE_24:
+> +			state->audio_samplesize = 24;
+> +			break;
+> +		case HDMI_AUDIO_SAMPLE_SIZE_STREAM:
+> +		default:
+> +			break;
+> +		}
+> +
+> +		/* Channel Count */
+> +		state->audio_channels = frame.audio.channels;
+> +		if (frame.audio.channel_allocation &&
+> +		    frame.audio.channel_allocation != state->audio_ch_alloc) {
+> +			/* use the channel assignment from the infoframe */
+> +			state->audio_ch_alloc = frame.audio.channel_allocation;
+> +			tda1997x_configure_audout(sd, state->audio_ch_alloc);
+> +			/* reset the audio FIFO */
+> +			tda1997x_hdmi_info_reset(sd, RESET_AUDIO, false);
+> +		}
+> +		break;
+> +
+> +	/* Auxiliary Video information (AVI) InfoFrame: see HDMI spec 8.2.1 */
+> +	case HDMI_INFOFRAME_TYPE_AVI:
+> +		state->avi_infoframe = frame.avi;
+> +		state->colorimetry = v4l2_hdmi_rx_colorimetry(&frame.avi, NULL,
+> +					state->timings.bt.height);
 
-Signed-off-by: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/mfd/Kconfig          |    7 +
- drivers/mfd/Makefile         |    3 +
- drivers/mfd/cs47l35-tables.c | 1610 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 1620 insertions(+)
- create mode 100644 drivers/mfd/cs47l35-tables.c
+This looks good.
 
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 8ea298bdcf58..97151f3340bd 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -259,6 +259,13 @@ config MFD_MADERA_SPI
- 	  Support for the Cirrus Logic Madera platform audio SoC
- 	  core functionality controlled via SPI.
- 
-+config MFD_CS47L35
-+	bool "Cirrus Logic CS47L35"
-+	select PINCTRL_CS47L35
-+	depends on MFD_MADERA
-+	help
-+	  Support for Cirrus Logic CS47L35 Smart Codec
-+
- config MFD_ASIC3
- 	bool "Compaq ASIC3"
- 	depends on GPIOLIB && ARM
-diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index 1349e23e2be1..abc2de60aa35 100644
---- a/drivers/mfd/Makefile
-+++ b/drivers/mfd/Makefile
-@@ -74,6 +74,9 @@ obj-$(CONFIG_MFD_WM8994)	+= wm8994.o
- obj-$(CONFIG_MFD_WM97xx)	+= wm97xx-core.o
- 
- obj-$(CONFIG_MFD_MADERA)	+= madera-core.o
-+ifeq ($(CONFIG_MFD_CS47L35),y)
-+obj-$(CONFIG_MFD_MADERA)	+= cs47l35-tables.o
-+endif
- obj-$(CONFIG_MFD_MADERA_I2C)	+= madera-i2c.o
- obj-$(CONFIG_MFD_MADERA_SPI)	+= madera-spi.o
- 
-diff --git a/drivers/mfd/cs47l35-tables.c b/drivers/mfd/cs47l35-tables.c
-new file mode 100644
-index 000000000000..fdaf6de3c8aa
---- /dev/null
-+++ b/drivers/mfd/cs47l35-tables.c
-@@ -0,0 +1,1610 @@
-+/*
-+ * Regmap tables for CS47L35 codec
-+ *
-+ * Copyright 2015-2016 Cirrus Logic
-+ *
-+ * Author: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+
-+#include <linux/mfd/madera/core.h>
-+#include <linux/mfd/madera/registers.h>
-+
-+#include "madera.h"
-+
-+static const struct reg_sequence cs47l35_reva_16_patch[] = {
-+	{ 0x460, 0x0c40 },
-+	{ 0x461, 0xcd1a },
-+	{ 0x462, 0x0c40 },
-+	{ 0x463, 0xb53b },
-+	{ 0x464, 0x0c40 },
-+	{ 0x465, 0x7503 },
-+	{ 0x466, 0x0c40 },
-+	{ 0x467, 0x4a41 },
-+	{ 0x468, 0x0041 },
-+	{ 0x469, 0x3491 },
-+	{ 0x46a, 0x0841 },
-+	{ 0x46b, 0x1f50 },
-+	{ 0x46c, 0x0446 },
-+	{ 0x46d, 0x14ed },
-+	{ 0x46e, 0x0446 },
-+	{ 0x46f, 0x1455 },
-+	{ 0x470, 0x04c6 },
-+	{ 0x471, 0x1220 },
-+	{ 0x472, 0x04c6 },
-+	{ 0x473, 0x040f },
-+	{ 0x474, 0x04ce },
-+	{ 0x475, 0x0339 },
-+	{ 0x476, 0x05df },
-+	{ 0x477, 0x028f },
-+	{ 0x478, 0x05df },
-+	{ 0x479, 0x0209 },
-+	{ 0x47a, 0x05df },
-+	{ 0x47b, 0x00cf },
-+	{ 0x47c, 0x05df },
-+	{ 0x47d, 0x0001 },
-+	{ 0x47e, 0x07ff },
-+};
-+
-+int cs47l35_patch(struct madera *madera)
-+{
-+	int ret;
-+
-+	ret = regmap_register_patch(madera->regmap, cs47l35_reva_16_patch,
-+				    ARRAY_SIZE(cs47l35_reva_16_patch));
-+	if (ret < 0)
-+		dev_err(madera->dev, "Error applying patch: %d\n", ret);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(cs47l35_patch);
-+
-+static const struct reg_default cs47l35_reg_default[] = {
-+	{ 0x00000020, 0x0000 }, /* R32 (0x20) - Tone Generator 1 */
-+	{ 0x00000021, 0x1000 }, /* R33 (0x21) - Tone Generator 2 */
-+	{ 0x00000022, 0x0000 }, /* R34 (0x22) - Tone Generator 3 */
-+	{ 0x00000023, 0x1000 }, /* R35 (0x23) - Tone Generator 4 */
-+	{ 0x00000024, 0x0000 }, /* R36 (0x24) - Tone Generator 5 */
-+	{ 0x00000030, 0x0000 }, /* R48 (0x30) - PWM Drive 1 */
-+	{ 0x00000031, 0x0100 }, /* R49 (0x31) - PWM Drive 2 */
-+	{ 0x00000032, 0x0100 }, /* R50 (0x32) - PWM Drive 3 */
-+	{ 0x00000061, 0x01ff }, /* R97 (0x61) - Sample Rate Sequence Select 1 */
-+	{ 0x00000062, 0x01ff }, /* R98 (0x62) - Sample Rate Sequence Select 2 */
-+	{ 0x00000063, 0x01ff }, /* R99 (0x63) - Sample Rate Sequence Select 3 */
-+	{ 0x00000064, 0x01ff }, /* R100 (0x64) - Sample Rate Sequence Select 4*/
-+	{ 0x00000066, 0x01ff }, /* R102 (0x66) - Always On Triggers Sequence Select 1*/
-+	{ 0x00000067, 0x01ff }, /* R103 (0x67) - Always On Triggers Sequence Select 2*/
-+	{ 0x00000090, 0x0000 }, /* R144 (0x90) - Haptics Control 1 */
-+	{ 0x00000091, 0x7fff }, /* R145 (0x91) - Haptics Control 2 */
-+	{ 0x00000092, 0x0000 }, /* R146 (0x92) - Haptics phase 1 intensity */
-+	{ 0x00000093, 0x0000 }, /* R147 (0x93) - Haptics phase 1 duration */
-+	{ 0x00000094, 0x0000 }, /* R148 (0x94) - Haptics phase 2 intensity */
-+	{ 0x00000095, 0x0000 }, /* R149 (0x95) - Haptics phase 2 duration */
-+	{ 0x00000096, 0x0000 }, /* R150 (0x96) - Haptics phase 3 intensity */
-+	{ 0x00000097, 0x0000 }, /* R151 (0x97) - Haptics phase 3 duration */
-+	{ 0x000000A0, 0x0000 }, /* R160 (0xa0) - Comfort Noise Generator */
-+	{ 0x00000100, 0x0002 }, /* R256 (0x100) - Clock 32k 1 */
-+	{ 0x00000101, 0x0404 }, /* R257 (0x101) - System Clock 1 */
-+	{ 0x00000102, 0x0011 }, /* R258 (0x102) - Sample rate 1 */
-+	{ 0x00000103, 0x0011 }, /* R259 (0x103) - Sample rate 2 */
-+	{ 0x00000104, 0x0011 }, /* R260 (0x104) - Sample rate 3 */
-+	{ 0x00000120, 0x0305 }, /* R288 (0x120) - DSP Clock 1 */
-+	{ 0x00000122, 0x0000 }, /* R290 (0x122) - DSP Clock 2 */
-+	{ 0x00000149, 0x0000 }, /* R329 (0x149) - Output system clock */
-+	{ 0x0000014a, 0x0000 }, /* R330 (0x14a) - Output async clock */
-+	{ 0x00000152, 0x0000 }, /* R338 (0x152) - Rate Estimator 1 */
-+	{ 0x00000153, 0x0000 }, /* R339 (0x153) - Rate Estimator 2 */
-+	{ 0x00000154, 0x0000 }, /* R340 (0x154) - Rate Estimator 3 */
-+	{ 0x00000155, 0x0000 }, /* R341 (0x155) - Rate Estimator 4 */
-+	{ 0x00000156, 0x0000 }, /* R342 (0x156) - Rate Estimator 5 */
-+	{ 0x00000171, 0x0002 }, /* R369 (0x171) - FLL1 Control 1 */
-+	{ 0x00000172, 0x0008 }, /* R370 (0x172) - FLL1 Control 2 */
-+	{ 0x00000173, 0x0018 }, /* R371 (0x173) - FLL1 Control 3 */
-+	{ 0x00000174, 0x007d }, /* R372 (0x174) - FLL1 Control 4 */
-+	{ 0x00000175, 0x0000 }, /* R373 (0x175) - FLL1 Control 5 */
-+	{ 0x00000176, 0x0000 }, /* R374 (0x176) - FLL1 Control 6 */
-+	{ 0x00000177, 0x0281 }, /* R375 (0x177) - FLL1 Loop Filter Test 1 */
-+	{ 0x00000179, 0x0000 }, /* R377 (0x179) - FLL1 Control 7 */
-+	{ 0x0000017a, 0x0b06 }, /* R378 (0x17a) - FLL1 EFS2 */
-+	{ 0x0000017f, 0x0000 }, /* R383 (0x17f) - FLL1 Synchroniser 1 */
-+	{ 0x00000180, 0x0000 }, /* R384 (0x180) - FLL1 Synchroniser 2 */
-+	{ 0x00000181, 0x0000 }, /* R385 (0x181) - FLL1 Synchroniser 3 */
-+	{ 0x00000182, 0x0000 }, /* R386 (0x182) - FLL1 Synchroniser 4 */
-+	{ 0x00000183, 0x0000 }, /* R387 (0x183) - FLL1 Synchroniser 5 */
-+	{ 0x00000184, 0x0000 }, /* R388 (0x184) - FLL1 Synchroniser 6 */
-+	{ 0x00000185, 0x0001 }, /* R389 (0x185) - FLL1 Synchroniser 7 */
-+	{ 0x00000187, 0x0000 }, /* R391 (0x187) - FLL1 Spread Spectrum */
-+	{ 0x00000188, 0x000c }, /* R392 (0x188) - FLL1 GPIO Clock */
-+	{ 0x00000200, 0x0006 }, /* R512 (0x200) - Mic Charge Pump 1 */
-+	{ 0x0000020b, 0x0400 }, /* R523 (0x20b) - HP Charge Pump 8 */
-+	{ 0x00000213, 0x03e4 }, /* R531 (0x213) - LDO2 Control 1 */
-+	{ 0x00000218, 0x00e6 }, /* R536 (0x218) - Mic Bias Ctrl 1 */
-+	{ 0x00000219, 0x00e6 }, /* R537 (0x219) - Mic Bias Ctrl 2 */
-+	{ 0x0000021c, 0x0022 }, /* R540 (0x21c) - Mic Bias Ctrl 5 */
-+	{ 0x0000021e, 0x0022 }, /* R542 (0x21e) - Mic Bias Ctrl 6 */
-+	{ 0x0000027e, 0x0000 }, /* R638 (0x27e) - EDRE HP stereo control */
-+	{ 0x00000293, 0x0080 }, /* R659 (0x293) - Accessory Detect Mode 1 */
-+	{ 0x0000029b, 0x0000 }, /* R667 (0x29b) - Headphone Detect 1 */
-+	{ 0x000002a3, 0x1102 }, /* R675 (0x2a3) - Mic Detect Control 1 */
-+	{ 0x000002a4, 0x009f }, /* R676 (0x2a4) - Mic Detect Control 2 */
-+	{ 0x000002a6, 0x3d3d }, /* R678 (0x2a6) - Mic Detect Level 1 */
-+	{ 0x000002a7, 0x3d3d }, /* R679 (0x2a7) - Mic Detect Level 2 */
-+	{ 0x000002a8, 0x333d }, /* R680 (0x2a8) - Mic Detect Level 3 */
-+	{ 0x000002a9, 0x202d }, /* R681 (0x2a9) - Mic Detect Level 4 */
-+	{ 0x000002c6, 0x0010 }, /* R710 (0x2c5) - Mic Clamp control */
-+	{ 0x000002c8, 0x0000 }, /* R712 (0x2c8) - GP switch 1 */
-+	{ 0x000002d3, 0x0000 }, /* R723 (0x2d3) - Jack detect analogue */
-+	{ 0x00000300, 0x0000 }, /* R768 (0x300) - Input Enables */
-+	{ 0x00000308, 0x0000 }, /* R776 (0x308) - Input Rate */
-+	{ 0x00000309, 0x0022 }, /* R777 (0x309) - Input Volume Ramp */
-+	{ 0x0000030c, 0x0002 }, /* R780 (0x30c) - HPF Control */
-+	{ 0x00000310, 0x0080 }, /* R784 (0x310) - IN1L Control */
-+	{ 0x00000311, 0x0180 }, /* R785 (0x311) - ADC Digital Volume 1L */
-+	{ 0x00000312, 0x0500 }, /* R786 (0x312) - DMIC1L Control */
-+	{ 0x00000314, 0x0080 }, /* R788 (0x314) - IN1R Control */
-+	{ 0x00000315, 0x0180 }, /* R789 (0x315) - ADC Digital Volume 1R */
-+	{ 0x00000316, 0x0000 }, /* R790 (0x316) - DMIC1R Control */
-+	{ 0x00000318, 0x0080 }, /* R792 (0x318) - IN2L Control */
-+	{ 0x00000319, 0x0180 }, /* R793 (0x319) - ADC Digital Volume 2L */
-+	{ 0x0000031a, 0x0500 }, /* R794 (0x31a) - DMIC2L Control */
-+	{ 0x0000031c, 0x0080 }, /* R796 (0x31c) - IN2R Control */
-+	{ 0x0000031d, 0x0180 }, /* R797 (0x31d) - ADC Digital Volume 2R */
-+	{ 0x0000031e, 0x0000 }, /* R798 (0x31e) - DMIC2R Control */
-+	{ 0x00000400, 0x0000 }, /* R1024 (0x400) - Output Enables 1 */
-+	{ 0x00000408, 0x0000 }, /* R1032 (0x408) - Output Rate 1 */
-+	{ 0x00000409, 0x0022 }, /* R1033 (0x409) - Output Volume Ramp */
-+	{ 0x00000410, 0x0080 }, /* R1040 (0x410) - Output Path Config 1L */
-+	{ 0x00000411, 0x0180 }, /* R1041 (0x411) - DAC Digital Volume 1L */
-+	{ 0x00000413, 0x0001 }, /* R1043 (0x413) - Noise Gate Select 1L */
-+	{ 0x00000414, 0x0080 }, /* R1044 (0x414) - Output Path Config 1R */
-+	{ 0x00000415, 0x0180 }, /* R1045 (0x415) - DAC Digital Volume 1R */
-+	{ 0x00000417, 0x0002 }, /* R1047 (0x417) - Noise Gate Select 1R */
-+	{ 0x00000428, 0x0000 }, /* R1064 (0x428) - Output Path Config 4L */
-+	{ 0x00000429, 0x0180 }, /* R1065 (0x429) - DAC Digital Volume 4L */
-+	{ 0x0000042b, 0x0040 }, /* R1067 (0x42b) - Noise Gate Select 4L */
-+	{ 0x00000430, 0x0000 }, /* R1072 (0x430) - Output Path Config 5L */
-+	{ 0x00000431, 0x0180 }, /* R1073 (0x431) - DAC Digital Volume 5L */
-+	{ 0x00000433, 0x0100 }, /* R1075 (0x433) - Noise Gate Select 5L */
-+	{ 0x00000434, 0x0000 }, /* R1076 (0x434) - Output Path Config 5R */
-+	{ 0x00000435, 0x0180 }, /* R1077 (0x435) - DAC Digital Volume 5R */
-+	{ 0x00000437, 0x0200 }, /* R1079 (0x437) - Noise Gate Select 5R */
-+	{ 0x00000440, 0x0003 }, /* R1088 (0x440) - DRE Enable */
-+	{ 0x00000448, 0x0a83 }, /* R1096 (0x448) - eDRE Enable */
-+	{ 0x0000044a, 0x0000 }, /* R1098 (0x44a) - eDRE Manual */
-+	{ 0x00000450, 0x0000 }, /* R1104 (0x450) - DAC AEC Control 1 */
-+	{ 0x00000458, 0x0000 }, /* R1112 (0x458) - Noise Gate Control */
-+	{ 0x00000490, 0x0069 }, /* R1168 (0x490) - PDM SPK1 CTRL 1 */
-+	{ 0x00000491, 0x0000 }, /* R1169 (0x491) - PDM SPK1 CTRL 2 */
-+	{ 0x000004a0, 0x3080 }, /* R1184 (0x4a0) - HP1 Short Circuit Ctrl */
-+	{ 0x000004a8, 0x7120 }, /* R1192 (0x4a8) - HP Test Ctrl 5 */
-+	{ 0x000004a9, 0x7120 }, /* R1193 (0x4a9) - HP Test Ctrl 6 */
-+	{ 0x00000500, 0x000c }, /* R1280 (0x500) - AIF1 BCLK Ctrl */
-+	{ 0x00000501, 0x0000 }, /* R1281 (0x501) - AIF1 Tx Pin Ctrl */
-+	{ 0x00000502, 0x0000 }, /* R1282 (0x502) - AIF1 Rx Pin Ctrl */
-+	{ 0x00000503, 0x0000 }, /* R1283 (0x503) - AIF1 Rate Ctrl */
-+	{ 0x00000504, 0x0000 }, /* R1284 (0x504) - AIF1 Format */
-+	{ 0x00000506, 0x0040 }, /* R1286 (0x506) - AIF1 Rx BCLK Rate */
-+	{ 0x00000507, 0x1818 }, /* R1287 (0x507) - AIF1 Frame Ctrl 1 */
-+	{ 0x00000508, 0x1818 }, /* R1288 (0x508) - AIF1 Frame Ctrl 2 */
-+	{ 0x00000509, 0x0000 }, /* R1289 (0x509) - AIF1 Frame Ctrl 3 */
-+	{ 0x0000050a, 0x0001 }, /* R1290 (0x50a) - AIF1 Frame Ctrl 4 */
-+	{ 0x0000050b, 0x0002 }, /* R1291 (0x50b) - AIF1 Frame Ctrl 5 */
-+	{ 0x0000050c, 0x0003 }, /* R1292 (0x50c) - AIF1 Frame Ctrl 6 */
-+	{ 0x0000050d, 0x0004 }, /* R1293 (0x50d) - AIF1 Frame Ctrl 7 */
-+	{ 0x0000050e, 0x0005 }, /* R1294 (0x50e) - AIF1 Frame Ctrl 8 */
-+	{ 0x00000511, 0x0000 }, /* R1297 (0x511) - AIF1 Frame Ctrl 11 */
-+	{ 0x00000512, 0x0001 }, /* R1298 (0x512) - AIF1 Frame Ctrl 12 */
-+	{ 0x00000513, 0x0002 }, /* R1299 (0x513) - AIF1 Frame Ctrl 13 */
-+	{ 0x00000514, 0x0003 }, /* R1300 (0x514) - AIF1 Frame Ctrl 14 */
-+	{ 0x00000515, 0x0004 }, /* R1301 (0x515) - AIF1 Frame Ctrl 15 */
-+	{ 0x00000516, 0x0005 }, /* R1302 (0x516) - AIF1 Frame Ctrl 16 */
-+	{ 0x00000519, 0x0000 }, /* R1305 (0x519) - AIF1 Tx Enables */
-+	{ 0x0000051a, 0x0000 }, /* R1306 (0x51a) - AIF1 Rx Enables */
-+	{ 0x00000540, 0x000c }, /* R1344 (0x540) - AIF2 BCLK Ctrl */
-+	{ 0x00000541, 0x0000 }, /* R1345 (0x541) - AIF2 Tx Pin Ctrl */
-+	{ 0x00000542, 0x0000 }, /* R1346 (0x542) - AIF2 Rx Pin Ctrl */
-+	{ 0x00000543, 0x0000 }, /* R1347 (0x543) - AIF2 Rate Ctrl */
-+	{ 0x00000544, 0x0000 }, /* R1348 (0x544) - AIF2 Format */
-+	{ 0x00000546, 0x0040 }, /* R1350 (0x546) - AIF2 Rx BCLK Rate */
-+	{ 0x00000547, 0x1818 }, /* R1351 (0x547) - AIF2 Frame Ctrl 1 */
-+	{ 0x00000548, 0x1818 }, /* R1352 (0x548) - AIF2 Frame Ctrl 2 */
-+	{ 0x00000549, 0x0000 }, /* R1353 (0x549) - AIF2 Frame Ctrl 3 */
-+	{ 0x0000054a, 0x0001 }, /* R1354 (0x54a) - AIF2 Frame Ctrl 4 */
-+	{ 0x00000551, 0x0000 }, /* R1361 (0x551) - AIF2 Frame Ctrl 11 */
-+	{ 0x00000552, 0x0001 }, /* R1362 (0x552) - AIF2 Frame Ctrl 12 */
-+	{ 0x00000559, 0x0000 }, /* R1369 (0x559) - AIF2 Tx Enables */
-+	{ 0x0000055a, 0x0000 }, /* R1370 (0x55a) - AIF2 Rx Enables */
-+	{ 0x00000580, 0x000c }, /* R1408 (0x580) - AIF3 BCLK Ctrl */
-+	{ 0x00000581, 0x0000 }, /* R1409 (0x581) - AIF3 Tx Pin Ctrl */
-+	{ 0x00000582, 0x0000 }, /* R1410 (0x582) - AIF3 Rx Pin Ctrl */
-+	{ 0x00000583, 0x0000 }, /* R1411 (0x583) - AIF3 Rate Ctrl */
-+	{ 0x00000584, 0x0000 }, /* R1412 (0x584) - AIF3 Format */
-+	{ 0x00000586, 0x0040 }, /* R1414 (0x586) - AIF3 Rx BCLK Rate */
-+	{ 0x00000587, 0x1818 }, /* R1415 (0x587) - AIF3 Frame Ctrl 1 */
-+	{ 0x00000588, 0x1818 }, /* R1416 (0x588) - AIF3 Frame Ctrl 2 */
-+	{ 0x00000589, 0x0000 }, /* R1417 (0x589) - AIF3 Frame Ctrl 3 */
-+	{ 0x0000058a, 0x0001 }, /* R1418 (0x58a) - AIF3 Frame Ctrl 4 */
-+	{ 0x00000591, 0x0000 }, /* R1425 (0x591) - AIF3 Frame Ctrl 11 */
-+	{ 0x00000592, 0x0001 }, /* R1426 (0x592) - AIF3 Frame Ctrl 12 */
-+	{ 0x00000599, 0x0000 }, /* R1433 (0x599) - AIF3 Tx Enables */
-+	{ 0x0000059a, 0x0000 }, /* R1434 (0x59a) - AIF3 Rx Enables */
-+	{ 0x000005c2, 0x0000 }, /* R1474 (0x5c2) - SPD1 TX Control */
-+	{ 0x000005e3, 0x0000 }, /* R1507 (0x5e3) - SLIMbus Framer Ref Gear */
-+	{ 0x000005e5, 0x0000 }, /* R1509 (0x5e5) - SLIMbus Rates 1 */
-+	{ 0x000005e6, 0x0000 }, /* R1510 (0x5e6) - SLIMbus Rates 2 */
-+	{ 0x000005e7, 0x0000 }, /* R1511 (0x5e7) - SLIMbus Rates 3 */
-+	{ 0x000005e9, 0x0000 }, /* R1513 (0x5e9) - SLIMbus Rates 5 */
-+	{ 0x000005ea, 0x0000 }, /* R1514 (0x5ea) - SLIMbus Rates 6 */
-+	{ 0x000005eb, 0x0000 }, /* R1515 (0x5eb) - SLIMbus Rates 7 */
-+	{ 0x000005f5, 0x0000 }, /* R1525 (0x5f5) - SLIMbus RX Channel Enable */
-+	{ 0x000005f6, 0x0000 }, /* R1526 (0x5f6) - SLIMbus TX Channel Enable */
-+	{ 0x00000640, 0x0000 }, /* R1600 (0x640) - PWM1MIX Input 1 Source */
-+	{ 0x00000641, 0x0080 }, /* R1601 (0x641) - PWM1MIX Input 1 Volume */
-+	{ 0x00000642, 0x0000 }, /* R1602 (0x642) - PWM1MIX Input 2 Source */
-+	{ 0x00000643, 0x0080 }, /* R1603 (0x643) - PWM1MIX Input 2 Volume */
-+	{ 0x00000644, 0x0000 }, /* R1604 (0x644) - PWM1MIX Input 3 Source */
-+	{ 0x00000645, 0x0080 }, /* R1605 (0x645) - PWM1MIX Input 3 Volume */
-+	{ 0x00000646, 0x0000 }, /* R1606 (0x646) - PWM1MIX Input 4 Source */
-+	{ 0x00000647, 0x0080 }, /* R1607 (0x647) - PWM1MIX Input 4 Volume */
-+	{ 0x00000648, 0x0000 }, /* R1608 (0x648) - PWM2MIX Input 1 Source */
-+	{ 0x00000649, 0x0080 }, /* R1609 (0x649) - PWM2MIX Input 1 Volume */
-+	{ 0x0000064a, 0x0000 }, /* R1610 (0x64a) - PWM2MIX Input 2 Source */
-+	{ 0x0000064b, 0x0080 }, /* R1611 (0x64b) - PWM2MIX Input 2 Volume */
-+	{ 0x0000064c, 0x0000 }, /* R1612 (0x64c) - PWM2MIX Input 3 Source */
-+	{ 0x0000064d, 0x0080 }, /* R1613 (0x64d) - PWM2MIX Input 3 Volume */
-+	{ 0x0000064e, 0x0000 }, /* R1614 (0x64e) - PWM2MIX Input 4 Source */
-+	{ 0x0000064f, 0x0080 }, /* R1615 (0x64f) - PWM2MIX Input 4 Volume */
-+	{ 0x00000680, 0x0000 }, /* R1664 (0x680) - OUT1LMIX Input 1 Source */
-+	{ 0x00000681, 0x0080 }, /* R1665 (0x681) - OUT1LMIX Input 1 Volume */
-+	{ 0x00000682, 0x0000 }, /* R1666 (0x682) - OUT1LMIX Input 2 Source */
-+	{ 0x00000683, 0x0080 }, /* R1667 (0x683) - OUT1LMIX Input 2 Volume */
-+	{ 0x00000684, 0x0000 }, /* R1668 (0x684) - OUT1LMIX Input 3 Source */
-+	{ 0x00000685, 0x0080 }, /* R1669 (0x685) - OUT1LMIX Input 3 Volume */
-+	{ 0x00000686, 0x0000 }, /* R1670 (0x686) - OUT1LMIX Input 4 Source */
-+	{ 0x00000687, 0x0080 }, /* R1671 (0x687) - OUT1LMIX Input 4 Volume */
-+	{ 0x00000688, 0x0000 }, /* R1672 (0x688) - OUT1RMIX Input 1 Source */
-+	{ 0x00000689, 0x0080 }, /* R1673 (0x689) - OUT1RMIX Input 1 Volume */
-+	{ 0x0000068a, 0x0000 }, /* R1674 (0x68a) - OUT1RMIX Input 2 Source */
-+	{ 0x0000068b, 0x0080 }, /* R1675 (0x68b) - OUT1RMIX Input 2 Volume */
-+	{ 0x0000068c, 0x0000 }, /* R1672 (0x68c) - OUT1RMIX Input 3 Source */
-+	{ 0x0000068d, 0x0080 }, /* R1673 (0x68d) - OUT1RMIX Input 3 Volume */
-+	{ 0x0000068e, 0x0000 }, /* R1674 (0x68e) - OUT1RMIX Input 4 Source */
-+	{ 0x0000068f, 0x0080 }, /* R1675 (0x68f) - OUT1RMIX Input 4 Volume */
-+	{ 0x000006b0, 0x0000 }, /* R1712 (0x6b0) - OUT4LMIX Input 1 Source */
-+	{ 0x000006b1, 0x0080 }, /* R1713 (0x6b1) - OUT4LMIX Input 1 Volume */
-+	{ 0x000006b2, 0x0000 }, /* R1714 (0x6b2) - OUT4LMIX Input 2 Source */
-+	{ 0x000006b3, 0x0080 }, /* R1715 (0x6b3) - OUT4LMIX Input 2 Volume */
-+	{ 0x000006b4, 0x0000 }, /* R1716 (0x6b4) - OUT4LMIX Input 3 Source */
-+	{ 0x000006b5, 0x0080 }, /* R1717 (0x6b5) - OUT4LMIX Input 3 Volume */
-+	{ 0x000006b6, 0x0000 }, /* R1718 (0x6b6) - OUT4LMIX Input 4 Source */
-+	{ 0x000006b7, 0x0080 }, /* R1719 (0x6b7) - OUT4LMIX Input 4 Volume */
-+	{ 0x000006c0, 0x0000 }, /* R1728 (0x6c0) - OUT5LMIX Input 1 Source */
-+	{ 0x000006c1, 0x0080 }, /* R1729 (0x6c1) - OUT5LMIX Input 1 Volume */
-+	{ 0x000006c2, 0x0000 }, /* R1730 (0x6c2) - OUT5LMIX Input 2 Source */
-+	{ 0x000006c3, 0x0080 }, /* R1731 (0x6c3) - OUT5LMIX Input 2 Volume */
-+	{ 0x000006c4, 0x0000 }, /* R1732 (0x6c4) - OUT5LMIX Input 3 Source */
-+	{ 0x000006c5, 0x0080 }, /* R1733 (0x6c5) - OUT5LMIX Input 3 Volume */
-+	{ 0x000006c6, 0x0000 }, /* R1734 (0x6c6) - OUT5LMIX Input 4 Source */
-+	{ 0x000006c7, 0x0080 }, /* R1735 (0x6c7) - OUT5LMIX Input 4 Volume */
-+	{ 0x000006c8, 0x0000 }, /* R1736 (0x6c8) - OUT5RMIX Input 1 Source */
-+	{ 0x000006c9, 0x0080 }, /* R1737 (0x6c9) - OUT5RMIX Input 1 Volume */
-+	{ 0x000006ca, 0x0000 }, /* R1738 (0x6ca) - OUT5RMIX Input 2 Source */
-+	{ 0x000006cb, 0x0080 }, /* R1739 (0x6cb) - OUT5RMIX Input 2 Volume */
-+	{ 0x000006cc, 0x0000 }, /* R1740 (0x6cc) - OUT5RMIX Input 3 Source */
-+	{ 0x000006cd, 0x0080 }, /* R1741 (0x6cd) - OUT5RMIX Input 3 Volume */
-+	{ 0x000006ce, 0x0000 }, /* R1742 (0x6ce) - OUT5RMIX Input 4 Source */
-+	{ 0x000006cf, 0x0080 }, /* R1743 (0x6cf) - OUT5RMIX Input 4 Volume */
-+	{ 0x00000700, 0x0000 }, /* R1792 (0x700) - AIF1TX1MIX Input 1 Source */
-+	{ 0x00000701, 0x0080 }, /* R1793 (0x701) - AIF1TX1MIX Input 1 Volume */
-+	{ 0x00000702, 0x0000 }, /* R1794 (0x702) - AIF1TX1MIX Input 2 Source */
-+	{ 0x00000703, 0x0080 }, /* R1795 (0x703) - AIF1TX1MIX Input 2 Volume */
-+	{ 0x00000704, 0x0000 }, /* R1796 (0x704) - AIF1TX1MIX Input 3 Source */
-+	{ 0x00000705, 0x0080 }, /* R1797 (0x705) - AIF1TX1MIX Input 3 Volume */
-+	{ 0x00000706, 0x0000 }, /* R1798 (0x706) - AIF1TX1MIX Input 4 Source */
-+	{ 0x00000707, 0x0080 }, /* R1799 (0x707) - AIF1TX1MIX Input 4 Volume */
-+	{ 0x00000708, 0x0000 }, /* R1800 (0x708) - AIF1TX2MIX Input 1 Source */
-+	{ 0x00000709, 0x0080 }, /* R1801 (0x709) - AIF1TX2MIX Input 1 Volume */
-+	{ 0x0000070a, 0x0000 }, /* R1802 (0x70a) - AIF1TX2MIX Input 2 Source */
-+	{ 0x0000070b, 0x0080 }, /* R1803 (0x70b) - AIF1TX2MIX Input 2 Volume */
-+	{ 0x0000070c, 0x0000 }, /* R1804 (0x70c) - AIF1TX2MIX Input 3 Source */
-+	{ 0x0000070d, 0x0080 }, /* R1805 (0x70d) - AIF1TX2MIX Input 3 Volume */
-+	{ 0x0000070e, 0x0000 }, /* R1806 (0x70e) - AIF1TX2MIX Input 4 Source */
-+	{ 0x0000070f, 0x0080 }, /* R1807 (0x70f) - AIF1TX2MIX Input 4 Volume */
-+	{ 0x00000710, 0x0000 }, /* R1808 (0x710) - AIF1TX3MIX Input 1 Source */
-+	{ 0x00000711, 0x0080 }, /* R1809 (0x711) - AIF1TX3MIX Input 1 Volume */
-+	{ 0x00000712, 0x0000 }, /* R1810 (0x712) - AIF1TX3MIX Input 2 Source */
-+	{ 0x00000713, 0x0080 }, /* R1811 (0x713) - AIF1TX3MIX Input 2 Volume */
-+	{ 0x00000714, 0x0000 }, /* R1812 (0x714) - AIF1TX3MIX Input 3 Source */
-+	{ 0x00000715, 0x0080 }, /* R1813 (0x715) - AIF1TX3MIX Input 3 Volume */
-+	{ 0x00000716, 0x0000 }, /* R1814 (0x716) - AIF1TX3MIX Input 4 Source */
-+	{ 0x00000717, 0x0080 }, /* R1815 (0x717) - AIF1TX3MIX Input 4 Volume */
-+	{ 0x00000718, 0x0000 }, /* R1816 (0x718) - AIF1TX4MIX Input 1 Source */
-+	{ 0x00000719, 0x0080 }, /* R1817 (0x719) - AIF1TX4MIX Input 1 Volume */
-+	{ 0x0000071a, 0x0000 }, /* R1818 (0x71a) - AIF1TX4MIX Input 2 Source */
-+	{ 0x0000071b, 0x0080 }, /* R1819 (0x71b) - AIF1TX4MIX Input 2 Volume */
-+	{ 0x0000071c, 0x0000 }, /* R1820 (0x71c) - AIF1TX4MIX Input 3 Source */
-+	{ 0x0000071d, 0x0080 }, /* R1821 (0x71d) - AIF1TX4MIX Input 3 Volume */
-+	{ 0x0000071e, 0x0000 }, /* R1822 (0x71e) - AIF1TX4MIX Input 4 Source */
-+	{ 0x0000071f, 0x0080 }, /* R1823 (0x71f) - AIF1TX4MIX Input 4 Volume */
-+	{ 0x00000720, 0x0000 }, /* R1824 (0x720) - AIF1TX5MIX Input 1 Source */
-+	{ 0x00000721, 0x0080 }, /* R1825 (0x721) - AIF1TX5MIX Input 1 Volume */
-+	{ 0x00000722, 0x0000 }, /* R1826 (0x722) - AIF1TX5MIX Input 2 Source */
-+	{ 0x00000723, 0x0080 }, /* R1827 (0x723) - AIF1TX5MIX Input 2 Volume */
-+	{ 0x00000724, 0x0000 }, /* R1828 (0x724) - AIF1TX5MIX Input 3 Source */
-+	{ 0x00000725, 0x0080 }, /* R1829 (0x725) - AIF1TX5MIX Input 3 Volume */
-+	{ 0x00000726, 0x0000 }, /* R1830 (0x726) - AIF1TX5MIX Input 4 Source */
-+	{ 0x00000727, 0x0080 }, /* R1831 (0x727) - AIF1TX5MIX Input 4 Volume */
-+	{ 0x00000728, 0x0000 }, /* R1832 (0x728) - AIF1TX6MIX Input 1 Source */
-+	{ 0x00000729, 0x0080 }, /* R1833 (0x729) - AIF1TX6MIX Input 1 Volume */
-+	{ 0x0000072a, 0x0000 }, /* R1834 (0x72a) - AIF1TX6MIX Input 2 Source */
-+	{ 0x0000072b, 0x0080 }, /* R1835 (0x72b) - AIF1TX6MIX Input 2 Volume */
-+	{ 0x0000072c, 0x0000 }, /* R1836 (0x72c) - AIF1TX6MIX Input 3 Source */
-+	{ 0x0000072d, 0x0080 }, /* R1837 (0x72d) - AIF1TX6MIX Input 3 Volume */
-+	{ 0x0000072e, 0x0000 }, /* R1838 (0x72e) - AIF1TX6MIX Input 4 Source */
-+	{ 0x0000072f, 0x0080 }, /* R1839 (0x72f) - AIF1TX6MIX Input 4 Volume */
-+	{ 0x00000740, 0x0000 }, /* R1856 (0x740) - AIF2TX1MIX Input 1 Source */
-+	{ 0x00000741, 0x0080 }, /* R1857 (0x741) - AIF2TX1MIX Input 1 Volume */
-+	{ 0x00000742, 0x0000 }, /* R1858 (0x742) - AIF2TX1MIX Input 2 Source */
-+	{ 0x00000743, 0x0080 }, /* R1859 (0x743) - AIF2TX1MIX Input 2 Volume */
-+	{ 0x00000744, 0x0000 }, /* R1860 (0x744) - AIF2TX1MIX Input 3 Source */
-+	{ 0x00000745, 0x0080 }, /* R1861 (0x745) - AIF2TX1MIX Input 3 Volume */
-+	{ 0x00000746, 0x0000 }, /* R1862 (0x746) - AIF2TX1MIX Input 4 Source */
-+	{ 0x00000747, 0x0080 }, /* R1863 (0x747) - AIF2TX1MIX Input 4 Volume */
-+	{ 0x00000748, 0x0000 }, /* R1864 (0x748) - AIF2TX2MIX Input 1 Source */
-+	{ 0x00000749, 0x0080 }, /* R1865 (0x749) - AIF2TX2MIX Input 1 Volume */
-+	{ 0x0000074a, 0x0000 }, /* R1866 (0x74a) - AIF2TX2MIX Input 2 Source */
-+	{ 0x0000074b, 0x0080 }, /* R1867 (0x74b) - AIF2TX2MIX Input 2 Volume */
-+	{ 0x0000074c, 0x0000 }, /* R1868 (0x74c) - AIF2TX2MIX Input 3 Source */
-+	{ 0x0000074d, 0x0080 }, /* R1869 (0x74d) - AIF2TX2MIX Input 3 Volume */
-+	{ 0x0000074e, 0x0000 }, /* R1870 (0x74e) - AIF2TX2MIX Input 4 Source */
-+	{ 0x0000074f, 0x0080 }, /* R1871 (0x74f) - AIF2TX2MIX Input 4 Volume */
-+	{ 0x00000780, 0x0000 }, /* R1920 (0x780) - AIF3TX1MIX Input 1 Source */
-+	{ 0x00000781, 0x0080 }, /* R1921 (0x781) - AIF3TX1MIX Input 1 Volume */
-+	{ 0x00000782, 0x0000 }, /* R1922 (0x782) - AIF3TX1MIX Input 2 Source */
-+	{ 0x00000783, 0x0080 }, /* R1923 (0x783) - AIF3TX1MIX Input 2 Volume */
-+	{ 0x00000784, 0x0000 }, /* R1924 (0x784) - AIF3TX1MIX Input 3 Source */
-+	{ 0x00000785, 0x0080 }, /* R1925 (0x785) - AIF3TX1MIX Input 3 Volume */
-+	{ 0x00000786, 0x0000 }, /* R1926 (0x786) - AIF3TX1MIX Input 4 Source */
-+	{ 0x00000787, 0x0080 }, /* R1927 (0x787) - AIF3TX1MIX Input 4 Volume */
-+	{ 0x00000788, 0x0000 }, /* R1928 (0x788) - AIF3TX2MIX Input 1 Source */
-+	{ 0x00000789, 0x0080 }, /* R1929 (0x789) - AIF3TX2MIX Input 1 Volume */
-+	{ 0x0000078a, 0x0000 }, /* R1930 (0x78a) - AIF3TX2MIX Input 2 Source */
-+	{ 0x0000078b, 0x0080 }, /* R1931 (0x78b) - AIF3TX2MIX Input 2 Volume */
-+	{ 0x0000078c, 0x0000 }, /* R1932 (0x78c) - AIF3TX2MIX Input 3 Source */
-+	{ 0x0000078d, 0x0080 }, /* R1933 (0x78d) - AIF3TX2MIX Input 3 Volume */
-+	{ 0x0000078e, 0x0000 }, /* R1934 (0x78e) - AIF3TX2MIX Input 4 Source */
-+	{ 0x0000078f, 0x0080 }, /* R1935 (0x78f) - AIF3TX2MIX Input 4 Volume */
-+	{ 0x000007c0, 0x0000 }, /* R1984 (0x7c0) - SLIMTX1MIX Input 1 Source */
-+	{ 0x000007c1, 0x0080 }, /* R1985 (0x7c1) - SLIMTX1MIX Input 1 Volume */
-+	{ 0x000007c2, 0x0000 }, /* R1986 (0x7c2) - SLIMTX1MIX Input 2 Source */
-+	{ 0x000007c3, 0x0080 }, /* R1987 (0x7c3) - SLIMTX1MIX Input 2 Volume */
-+	{ 0x000007c4, 0x0000 }, /* R1988 (0x7c4) - SLIMTX1MIX Input 3 Source */
-+	{ 0x000007c5, 0x0080 }, /* R1989 (0x7c5) - SLIMTX1MIX Input 3 Volume */
-+	{ 0x000007c6, 0x0000 }, /* R1990 (0x7c6) - SLIMTX1MIX Input 4 Source */
-+	{ 0x000007c7, 0x0080 }, /* R1991 (0x7c7) - SLIMTX1MIX Input 4 Volume */
-+	{ 0x000007c8, 0x0000 }, /* R1992 (0x7c8) - SLIMTX2MIX Input 1 Source */
-+	{ 0x000007c9, 0x0080 }, /* R1993 (0x7c9) - SLIMTX2MIX Input 1 Volume */
-+	{ 0x000007ca, 0x0000 }, /* R1994 (0x7ca) - SLIMTX2MIX Input 2 Source */
-+	{ 0x000007cb, 0x0080 }, /* R1995 (0x7cb) - SLIMTX2MIX Input 2 Volume */
-+	{ 0x000007cc, 0x0000 }, /* R1996 (0x7cc) - SLIMTX2MIX Input 3 Source */
-+	{ 0x000007cd, 0x0080 }, /* R1997 (0x7cd) - SLIMTX2MIX Input 3 Volume */
-+	{ 0x000007ce, 0x0000 }, /* R1998 (0x7ce) - SLIMTX2MIX Input 4 Source */
-+	{ 0x000007cf, 0x0080 }, /* R1999 (0x7cf) - SLIMTX2MIX Input 4 Volume */
-+	{ 0x000007d0, 0x0000 }, /* R2000 (0x7d0) - SLIMTX3MIX Input 1 Source */
-+	{ 0x000007d1, 0x0080 }, /* R2001 (0x7d1) - SLIMTX3MIX Input 1 Volume */
-+	{ 0x000007d2, 0x0000 }, /* R2002 (0x7d2) - SLIMTX3MIX Input 2 Source */
-+	{ 0x000007d3, 0x0080 }, /* R2003 (0x7d3) - SLIMTX3MIX Input 2 Volume */
-+	{ 0x000007d4, 0x0000 }, /* R2004 (0x7d4) - SLIMTX3MIX Input 3 Source */
-+	{ 0x000007d5, 0x0080 }, /* R2005 (0x7d5) - SLIMTX3MIX Input 3 Volume */
-+	{ 0x000007d6, 0x0000 }, /* R2006 (0x7d6) - SLIMTX3MIX Input 4 Source */
-+	{ 0x000007d7, 0x0080 }, /* R2007 (0x7d7) - SLIMTX3MIX Input 4 Volume */
-+	{ 0x000007d8, 0x0000 }, /* R2008 (0x7d8) - SLIMTX4MIX Input 1 Source */
-+	{ 0x000007d9, 0x0080 }, /* R2009 (0x7d9) - SLIMTX4MIX Input 1 Volume */
-+	{ 0x000007da, 0x0000 }, /* R2010 (0x7da) - SLIMTX4MIX Input 2 Source */
-+	{ 0x000007db, 0x0080 }, /* R2011 (0x7db) - SLIMTX4MIX Input 2 Volume */
-+	{ 0x000007dc, 0x0000 }, /* R2012 (0x7dc) - SLIMTX4MIX Input 3 Source */
-+	{ 0x000007dd, 0x0080 }, /* R2013 (0x7dd) - SLIMTX4MIX Input 3 Volume */
-+	{ 0x000007de, 0x0000 }, /* R2014 (0x7de) - SLIMTX4MIX Input 4 Source */
-+	{ 0x000007df, 0x0080 }, /* R2015 (0x7df) - SLIMTX4MIX Input 4 Volume */
-+	{ 0x000007e0, 0x0000 }, /* R2016 (0x7e0) - SLIMTX5MIX Input 1 Source */
-+	{ 0x000007e1, 0x0080 }, /* R2017 (0x7e1) - SLIMTX5MIX Input 1 Volume */
-+	{ 0x000007e2, 0x0000 }, /* R2018 (0x7e2) - SLIMTX5MIX Input 2 Source */
-+	{ 0x000007e3, 0x0080 }, /* R2019 (0x7e3) - SLIMTX5MIX Input 2 Volume */
-+	{ 0x000007e4, 0x0000 }, /* R2020 (0x7e4) - SLIMTX5MIX Input 3 Source */
-+	{ 0x000007e5, 0x0080 }, /* R2021 (0x7e5) - SLIMTX5MIX Input 3 Volume */
-+	{ 0x000007e6, 0x0000 }, /* R2022 (0x7e6) - SLIMTX5MIX Input 4 Source */
-+	{ 0x000007e7, 0x0080 }, /* R2023 (0x7e7) - SLIMTX5MIX Input 4 Volume */
-+	{ 0x000007e8, 0x0000 }, /* R2024 (0x7e8) - SLIMTX6MIX Input 1 Source */
-+	{ 0x000007e9, 0x0080 }, /* R2025 (0x7e9) - SLIMTX6MIX Input 1 Volume */
-+	{ 0x000007ea, 0x0000 }, /* R2026 (0x7ea) - SLIMTX6MIX Input 2 Source */
-+	{ 0x000007eb, 0x0080 }, /* R2027 (0x7eb) - SLIMTX6MIX Input 2 Volume */
-+	{ 0x000007ec, 0x0000 }, /* R2028 (0x7ec) - SLIMTX6MIX Input 3 Source */
-+	{ 0x000007ed, 0x0080 }, /* R2029 (0x7ed) - SLIMTX6MIX Input 3 Volume */
-+	{ 0x000007ee, 0x0000 }, /* R2030 (0x7ee) - SLIMTX6MIX Input 4 Source */
-+	{ 0x000007ef, 0x0080 }, /* R2031 (0x7ef) - SLIMTX6MIX Input 4 Volume */
-+	{ 0x00000800, 0x0000 }, /* R2048 (0x800) - SPDIF1TX1MIX Input 1 Source*/
-+	{ 0x00000801, 0x0080 }, /* R2049 (0x801) - SPDIF1TX1MIX Input 1 Volume*/
-+	{ 0x00000808, 0x0000 }, /* R2056 (0x808) - SPDIF1TX2MIX Input 1 Source*/
-+	{ 0x00000809, 0x0080 }, /* R2057 (0x809) - SPDIF1TX2MIX Input 1 Volume*/
-+	{ 0x00000880, 0x0000 }, /* R2176 (0x880) - EQ1MIX Input 1 Source */
-+	{ 0x00000881, 0x0080 }, /* R2177 (0x881) - EQ1MIX Input 1 Volume */
-+	{ 0x00000882, 0x0000 }, /* R2178 (0x882) - EQ1MIX Input 2 Source */
-+	{ 0x00000883, 0x0080 }, /* R2179 (0x883) - EQ1MIX Input 2 Volume */
-+	{ 0x00000884, 0x0000 }, /* R2180 (0x884) - EQ1MIX Input 3 Source */
-+	{ 0x00000885, 0x0080 }, /* R2181 (0x885) - EQ1MIX Input 3 Volume */
-+	{ 0x00000886, 0x0000 }, /* R2182 (0x886) - EQ1MIX Input 4 Source */
-+	{ 0x00000887, 0x0080 }, /* R2183 (0x887) - EQ1MIX Input 4 Volume */
-+	{ 0x00000888, 0x0000 }, /* R2184 (0x888) - EQ2MIX Input 1 Source */
-+	{ 0x00000889, 0x0080 }, /* R2185 (0x889) - EQ2MIX Input 1 Volume */
-+	{ 0x0000088a, 0x0000 }, /* R2186 (0x88a) - EQ2MIX Input 2 Source */
-+	{ 0x0000088b, 0x0080 }, /* R2187 (0x88b) - EQ2MIX Input 2 Volume */
-+	{ 0x0000088c, 0x0000 }, /* R2188 (0x88c) - EQ2MIX Input 3 Source */
-+	{ 0x0000088d, 0x0080 }, /* R2189 (0x88d) - EQ2MIX Input 3 Volume */
-+	{ 0x0000088e, 0x0000 }, /* R2190 (0x88e) - EQ2MIX Input 4 Source */
-+	{ 0x0000088f, 0x0080 }, /* R2191 (0x88f) - EQ2MIX Input 4 Volume */
-+	{ 0x00000890, 0x0000 }, /* R2192 (0x890) - EQ3MIX Input 1 Source */
-+	{ 0x00000891, 0x0080 }, /* R2193 (0x891) - EQ3MIX Input 1 Volume */
-+	{ 0x00000892, 0x0000 }, /* R2194 (0x892) - EQ3MIX Input 2 Source */
-+	{ 0x00000893, 0x0080 }, /* R2195 (0x893) - EQ3MIX Input 2 Volume */
-+	{ 0x00000894, 0x0000 }, /* R2196 (0x894) - EQ3MIX Input 3 Source */
-+	{ 0x00000895, 0x0080 }, /* R2197 (0x895) - EQ3MIX Input 3 Volume */
-+	{ 0x00000896, 0x0000 }, /* R2198 (0x896) - EQ3MIX Input 4 Source */
-+	{ 0x00000897, 0x0080 }, /* R2199 (0x897) - EQ3MIX Input 4 Volume */
-+	{ 0x00000898, 0x0000 }, /* R2200 (0x898) - EQ4MIX Input 1 Source */
-+	{ 0x00000899, 0x0080 }, /* R2201 (0x899) - EQ4MIX Input 1 Volume */
-+	{ 0x0000089a, 0x0000 }, /* R2202 (0x89a) - EQ4MIX Input 2 Source */
-+	{ 0x0000089b, 0x0080 }, /* R2203 (0x89b) - EQ4MIX Input 2 Volume */
-+	{ 0x0000089c, 0x0000 }, /* R2204 (0x89c) - EQ4MIX Input 3 Source */
-+	{ 0x0000089d, 0x0080 }, /* R2205 (0x89d) - EQ4MIX Input 3 Volume */
-+	{ 0x0000089e, 0x0000 }, /* R2206 (0x89e) - EQ4MIX Input 4 Source */
-+	{ 0x0000089f, 0x0080 }, /* R2207 (0x89f) - EQ4MIX Input 4 Volume */
-+	{ 0x000008c0, 0x0000 }, /* R2240 (0x8c0) - DRC1LMIX Input 1 Source */
-+	{ 0x000008c1, 0x0080 }, /* R2241 (0x8c1) - DRC1LMIX Input 1 Volume */
-+	{ 0x000008c2, 0x0000 }, /* R2242 (0x8c2) - DRC1LMIX Input 2 Source */
-+	{ 0x000008c3, 0x0080 }, /* R2243 (0x8c3) - DRC1LMIX Input 2 Volume */
-+	{ 0x000008c4, 0x0000 }, /* R2244 (0x8c4) - DRC1LMIX Input 3 Source */
-+	{ 0x000008c5, 0x0080 }, /* R2245 (0x8c5) - DRC1LMIX Input 3 Volume */
-+	{ 0x000008c6, 0x0000 }, /* R2246 (0x8c6) - DRC1LMIX Input 4 Source */
-+	{ 0x000008c7, 0x0080 }, /* R2247 (0x8c7) - DRC1LMIX Input 4 Volume */
-+	{ 0x000008c8, 0x0000 }, /* R2248 (0x8c8) - DRC1RMIX Input 1 Source */
-+	{ 0x000008c9, 0x0080 }, /* R2249 (0x8c9) - DRC1RMIX Input 1 Volume */
-+	{ 0x000008ca, 0x0000 }, /* R2250 (0x8ca) - DRC1RMIX Input 2 Source */
-+	{ 0x000008cb, 0x0080 }, /* R2251 (0x8cb) - DRC1RMIX Input 2 Volume */
-+	{ 0x000008cc, 0x0000 }, /* R2252 (0x8cc) - DRC1RMIX Input 3 Source */
-+	{ 0x000008cd, 0x0080 }, /* R2253 (0x8cd) - DRC1RMIX Input 3 Volume */
-+	{ 0x000008ce, 0x0000 }, /* R2254 (0x8ce) - DRC1RMIX Input 4 Source */
-+	{ 0x000008cf, 0x0080 }, /* R2255 (0x8cf) - DRC1RMIX Input 4 Volume */
-+	{ 0x000008d0, 0x0000 }, /* R2256 (0x8d0) - DRC2LMIX Input 1 Source */
-+	{ 0x000008d1, 0x0080 }, /* R2257 (0x8d1) - DRC2LMIX Input 1 Volume */
-+	{ 0x000008d2, 0x0000 }, /* R2258 (0x8d2) - DRC2LMIX Input 2 Source */
-+	{ 0x000008d3, 0x0080 }, /* R2259 (0x8d3) - DRC2LMIX Input 2 Volume */
-+	{ 0x000008d4, 0x0000 }, /* R2260 (0x8d4) - DRC2LMIX Input 3 Source */
-+	{ 0x000008d5, 0x0080 }, /* R2261 (0x8d5) - DRC2LMIX Input 3 Volume */
-+	{ 0x000008d6, 0x0000 }, /* R2262 (0x8d6) - DRC2LMIX Input 4 Source */
-+	{ 0x000008d7, 0x0080 }, /* R2263 (0x8d7) - DRC2LMIX Input 4 Volume */
-+	{ 0x000008d8, 0x0000 }, /* R2264 (0x8d8) - DRC2RMIX Input 1 Source */
-+	{ 0x000008d9, 0x0080 }, /* R2265 (0x8d9) - DRC2RMIX Input 1 Volume */
-+	{ 0x000008da, 0x0000 }, /* R2266 (0x8da) - DRC2RMIX Input 2 Source */
-+	{ 0x000008db, 0x0080 }, /* R2267 (0x8db) - DRC2RMIX Input 2 Volume */
-+	{ 0x000008dc, 0x0000 }, /* R2268 (0x8dc) - DRC2RMIX Input 3 Source */
-+	{ 0x000008dd, 0x0080 }, /* R2269 (0x8dd) - DRC2RMIX Input 3 Volume */
-+	{ 0x000008de, 0x0000 }, /* R2270 (0x8de) - DRC2RMIX Input 4 Source */
-+	{ 0x000008df, 0x0080 }, /* R2271 (0x8df) - DRC2RMIX Input 4 Volume */
-+	{ 0x00000900, 0x0000 }, /* R2304 (0x900) - HPLP1MIX Input 1 Source */
-+	{ 0x00000901, 0x0080 }, /* R2305 (0x901) - HPLP1MIX Input 1 Volume */
-+	{ 0x00000902, 0x0000 }, /* R2306 (0x902) - HPLP1MIX Input 2 Source */
-+	{ 0x00000903, 0x0080 }, /* R2307 (0x903) - HPLP1MIX Input 2 Volume */
-+	{ 0x00000904, 0x0000 }, /* R2308 (0x904) - HPLP1MIX Input 3 Source */
-+	{ 0x00000905, 0x0080 }, /* R2309 (0x905) - HPLP1MIX Input 3 Volume */
-+	{ 0x00000906, 0x0000 }, /* R2310 (0x906) - HPLP1MIX Input 4 Source */
-+	{ 0x00000907, 0x0080 }, /* R2311 (0x907) - HPLP1MIX Input 4 Volume */
-+	{ 0x00000908, 0x0000 }, /* R2312 (0x908) - HPLP2MIX Input 1 Source */
-+	{ 0x00000909, 0x0080 }, /* R2313 (0x909) - HPLP2MIX Input 1 Volume */
-+	{ 0x0000090a, 0x0000 }, /* R2314 (0x90a) - HPLP2MIX Input 2 Source */
-+	{ 0x0000090b, 0x0080 }, /* R2315 (0x90b) - HPLP2MIX Input 2 Volume */
-+	{ 0x0000090c, 0x0000 }, /* R2316 (0x90c) - HPLP2MIX Input 3 Source */
-+	{ 0x0000090d, 0x0080 }, /* R2317 (0x90d) - HPLP2MIX Input 3 Volume */
-+	{ 0x0000090e, 0x0000 }, /* R2318 (0x90e) - HPLP2MIX Input 4 Source */
-+	{ 0x0000090f, 0x0080 }, /* R2319 (0x90f) - HPLP2MIX Input 4 Volume */
-+	{ 0x00000910, 0x0000 }, /* R2320 (0x910) - HPLP3MIX Input 1 Source */
-+	{ 0x00000911, 0x0080 }, /* R2321 (0x911) - HPLP3MIX Input 1 Volume */
-+	{ 0x00000912, 0x0000 }, /* R2322 (0x912) - HPLP3MIX Input 2 Source */
-+	{ 0x00000913, 0x0080 }, /* R2323 (0x913) - HPLP3MIX Input 2 Volume */
-+	{ 0x00000914, 0x0000 }, /* R2324 (0x914) - HPLP3MIX Input 3 Source */
-+	{ 0x00000915, 0x0080 }, /* R2325 (0x915) - HPLP3MIX Input 3 Volume */
-+	{ 0x00000916, 0x0000 }, /* R2326 (0x916) - HPLP3MIX Input 4 Source */
-+	{ 0x00000917, 0x0080 }, /* R2327 (0x917) - HPLP3MIX Input 4 Volume */
-+	{ 0x00000918, 0x0000 }, /* R2328 (0x918) - HPLP4MIX Input 1 Source */
-+	{ 0x00000919, 0x0080 }, /* R2329 (0x919) - HPLP4MIX Input 1 Volume */
-+	{ 0x0000091a, 0x0000 }, /* R2330 (0x91a) - HPLP4MIX Input 2 Source */
-+	{ 0x0000091b, 0x0080 }, /* R2331 (0x91b) - HPLP4MIX Input 2 Volume */
-+	{ 0x0000091c, 0x0000 }, /* R2332 (0x91c) - HPLP4MIX Input 3 Source */
-+	{ 0x0000091d, 0x0080 }, /* R2333 (0x91d) - HPLP4MIX Input 3 Volume */
-+	{ 0x0000091e, 0x0000 }, /* R2334 (0x91e) - HPLP4MIX Input 4 Source */
-+	{ 0x0000091f, 0x0080 }, /* R2335 (0x91f) - HPLP4MIX Input 4 Volume */
-+	{ 0x00000940, 0x0000 }, /* R2368 (0x940) - DSP1LMIX Input 1 Source */
-+	{ 0x00000941, 0x0080 }, /* R2369 (0x941) - DSP1LMIX Input 1 Volume */
-+	{ 0x00000942, 0x0000 }, /* R2370 (0x942) - DSP1LMIX Input 2 Source */
-+	{ 0x00000943, 0x0080 }, /* R2371 (0x943) - DSP1LMIX Input 2 Volume */
-+	{ 0x00000944, 0x0000 }, /* R2372 (0x944) - DSP1LMIX Input 3 Source */
-+	{ 0x00000945, 0x0080 }, /* R2373 (0x945) - DSP1LMIX Input 3 Volume */
-+	{ 0x00000946, 0x0000 }, /* R2374 (0x946) - DSP1LMIX Input 4 Source */
-+	{ 0x00000947, 0x0080 }, /* R2375 (0x947) - DSP1LMIX Input 4 Volume */
-+	{ 0x00000948, 0x0000 }, /* R2376 (0x948) - DSP1RMIX Input 1 Source */
-+	{ 0x00000949, 0x0080 }, /* R2377 (0x949) - DSP1RMIX Input 1 Volume */
-+	{ 0x0000094a, 0x0000 }, /* R2378 (0x94a) - DSP1RMIX Input 2 Source */
-+	{ 0x0000094b, 0x0080 }, /* R2379 (0x94b) - DSP1RMIX Input 2 Volume */
-+	{ 0x0000094c, 0x0000 }, /* R2380 (0x94c) - DSP1RMIX Input 3 Source */
-+	{ 0x0000094d, 0x0080 }, /* R2381 (0x94d) - DSP1RMIX Input 3 Volume */
-+	{ 0x0000094e, 0x0000 }, /* R2382 (0x94e) - DSP1RMIX Input 4 Source */
-+	{ 0x0000094f, 0x0080 }, /* R2383 (0x94f) - DSP1RMIX Input 4 Volume */
-+	{ 0x00000950, 0x0000 }, /* R2384 (0x950) - DSP1AUX1MIX Input 1 Source */
-+	{ 0x00000958, 0x0000 }, /* R2392 (0x958) - DSP1AUX2MIX Input 1 Source */
-+	{ 0x00000960, 0x0000 }, /* R2400 (0x960) - DSP1AUX3MIX Input 1 Source */
-+	{ 0x00000968, 0x0000 }, /* R2408 (0x968) - DSP1AUX4MIX Input 1 Source */
-+	{ 0x00000970, 0x0000 }, /* R2416 (0x970) - DSP1AUX5MIX Input 1 Source */
-+	{ 0x00000978, 0x0000 }, /* R2424 (0x978) - DSP1AUX6MIX Input 1 Source */
-+	{ 0x00000980, 0x0000 }, /* R2432 (0x980) - DSP2LMIX Input 1 Source */
-+	{ 0x00000981, 0x0080 }, /* R2433 (0x981) - DSP2LMIX Input 1 Volume */
-+	{ 0x00000982, 0x0000 }, /* R2434 (0x982) - DSP2LMIX Input 2 Source */
-+	{ 0x00000983, 0x0080 }, /* R2435 (0x983) - DSP2LMIX Input 2 Volume */
-+	{ 0x00000984, 0x0000 }, /* R2436 (0x984) - DSP2LMIX Input 3 Source */
-+	{ 0x00000985, 0x0080 }, /* R2437 (0x985) - DSP2LMIX Input 3 Volume */
-+	{ 0x00000986, 0x0000 }, /* R2438 (0x986) - DSP2LMIX Input 4 Source */
-+	{ 0x00000987, 0x0080 }, /* R2439 (0x987) - DSP2LMIX Input 4 Volume */
-+	{ 0x00000988, 0x0000 }, /* R2440 (0x988) - DSP2RMIX Input 1 Source */
-+	{ 0x00000989, 0x0080 }, /* R2441 (0x989) - DSP2RMIX Input 1 Volume */
-+	{ 0x0000098a, 0x0000 }, /* R2442 (0x98a) - DSP2RMIX Input 2 Source */
-+	{ 0x0000098b, 0x0080 }, /* R2443 (0x98b) - DSP2RMIX Input 2 Volume */
-+	{ 0x0000098c, 0x0000 }, /* R2444 (0x98c) - DSP2RMIX Input 3 Source */
-+	{ 0x0000098d, 0x0080 }, /* R2445 (0x98d) - DSP2RMIX Input 3 Volume */
-+	{ 0x0000098e, 0x0000 }, /* R2446 (0x98e) - DSP2RMIX Input 4 Source */
-+	{ 0x0000098f, 0x0080 }, /* R2447 (0x98f) - DSP2RMIX Input 4 Volume */
-+	{ 0x00000990, 0x0000 }, /* R2448 (0x990) - DSP2AUX1MIX Input 1 Source */
-+	{ 0x00000998, 0x0000 }, /* R2456 (0x998) - DSP2AUX2MIX Input 1 Source */
-+	{ 0x000009a0, 0x0000 }, /* R2464 (0x9a0) - DSP2AUX3MIX Input 1 Source */
-+	{ 0x000009a8, 0x0000 }, /* R2472 (0x9a8) - DSP2AUX4MIX Input 1 Source */
-+	{ 0x000009b0, 0x0000 }, /* R2480 (0x9b0) - DSP2AUX5MIX Input 1 Source */
-+	{ 0x000009b8, 0x0000 }, /* R2488 (0x9b8) - DSP2AUX6MIX Input 1 Source */
-+	{ 0x000009c0, 0x0000 }, /* R2496 (0x9c0) - DSP3LMIX Input 1 Source */
-+	{ 0x000009c1, 0x0080 }, /* R2497 (0x9c1) - DSP3LMIX Input 1 Volume */
-+	{ 0x000009c2, 0x0000 }, /* R2498 (0x9c2) - DSP3LMIX Input 2 Source */
-+	{ 0x000009c3, 0x0080 }, /* R2499 (0x9c3) - DSP3LMIX Input 2 Volume */
-+	{ 0x000009c4, 0x0000 }, /* R2500 (0x9c4) - DSP3LMIX Input 3 Source */
-+	{ 0x000009c5, 0x0080 }, /* R2501 (0x9c5) - DSP3LMIX Input 3 Volume */
-+	{ 0x000009c6, 0x0000 }, /* R2502 (0x9c6) - DSP3LMIX Input 4 Source */
-+	{ 0x000009c7, 0x0080 }, /* R2503 (0x9c7) - DSP3LMIX Input 4 Volume */
-+	{ 0x000009c8, 0x0000 }, /* R2504 (0x9c8) - DSP3RMIX Input 1 Source */
-+	{ 0x000009c9, 0x0080 }, /* R2505 (0x9c9) - DSP3RMIX Input 1 Volume */
-+	{ 0x000009ca, 0x0000 }, /* R2506 (0x9ca) - DSP3RMIX Input 2 Source */
-+	{ 0x000009cb, 0x0080 }, /* R2507 (0x9cb) - DSP3RMIX Input 2 Volume */
-+	{ 0x000009cc, 0x0000 }, /* R2508 (0x9cc) - DSP3RMIX Input 3 Source */
-+	{ 0x000009cd, 0x0080 }, /* R2509 (0x9cd) - DSP3RMIX Input 3 Volume */
-+	{ 0x000009ce, 0x0000 }, /* R2510 (0x9ce) - DSP3RMIX Input 4 Source */
-+	{ 0x000009cf, 0x0080 }, /* R2511 (0x9cf) - DSP3RMIX Input 4 Volume */
-+	{ 0x000009d0, 0x0000 }, /* R2512 (0x9d0) - DSP3AUX1MIX Input 1 Source */
-+	{ 0x000009d8, 0x0000 }, /* R2520 (0x9d8) - DSP3AUX2MIX Input 1 Source */
-+	{ 0x000009e0, 0x0000 }, /* R2528 (0x9e0) - DSP3AUX3MIX Input 1 Source */
-+	{ 0x000009e8, 0x0000 }, /* R2536 (0x9e8) - DSP3AUX4MIX Input 1 Source */
-+	{ 0x000009f0, 0x0000 }, /* R2544 (0x9f0) - DSP3AUX5MIX Input 1 Source */
-+	{ 0x000009f8, 0x0000 }, /* R2552 (0x9f8) - DSP3AUX6MIX Input 1 Source */
-+	{ 0x00000b00, 0x0000 }, /* R2816 (0xb00) - ISRC1DEC1MIX Input 1 Source*/
-+	{ 0x00000b08, 0x0000 }, /* R2824 (0xb08) - ISRC1DEC2MIX Input 1 Source*/
-+	{ 0x00000b10, 0x0000 }, /* R2832 (0xb10) - ISRC1DEC3MIX Input 1 Source*/
-+	{ 0x00000b18, 0x0000 }, /* R2840 (0xb18) - ISRC1DEC4MIX Input 1 Source*/
-+	{ 0x00000b20, 0x0000 }, /* R2848 (0xb20) - ISRC1INT1MIX Input 1 Source*/
-+	{ 0x00000b28, 0x0000 }, /* R2856 (0xb28) - ISRC1INT2MIX Input 1 Source*/
-+	{ 0x00000b30, 0x0000 }, /* R2864 (0xb30) - ISRC1INT3MIX Input 1 Source*/
-+	{ 0x00000b38, 0x0000 }, /* R2872 (0xb38) - ISRC1INT4MIX Input 1 Source*/
-+	{ 0x00000b40, 0x0000 }, /* R2880 (0xb40) - ISRC2DEC1MIX Input 1 Source*/
-+	{ 0x00000b48, 0x0000 }, /* R2888 (0xb48) - ISRC2DEC2MIX Input 1 Source*/
-+	{ 0x00000b50, 0x0000 }, /* R2896 (0xb50) - ISRC2DEC3MIX Input 1 Source*/
-+	{ 0x00000b58, 0x0000 }, /* R2904 (0xb58) - ISRC2DEC4MIX Input 1 Source*/
-+	{ 0x00000b60, 0x0000 }, /* R2912 (0xb60) - ISRC2INT1MIX Input 1 Source*/
-+	{ 0x00000b68, 0x0000 }, /* R2920 (0xb68) - ISRC2INT2MIX Input 1 Source*/
-+	{ 0x00000b70, 0x0000 }, /* R2928 (0xb70) - ISRC2INT3MIX Input 1 Source*/
-+	{ 0x00000b78, 0x0000 }, /* R2936 (0xb78) - ISRC2INT4MIX Input 1 Source*/
-+	{ 0x00000e00, 0x0000 }, /* R3584 (0xe00) - FX Ctrl1 */
-+	{ 0x00000e10, 0x6318 }, /* R3600 (0xe10) - EQ1_1 */
-+	{ 0x00000e11, 0x6300 }, /* R3601 (0xe11) - EQ1_2 */
-+	{ 0x00000e12, 0x0fc8 }, /* R3602 (0xe12) - EQ1_3 */
-+	{ 0x00000e13, 0x03fe }, /* R3603 (0xe13) - EQ1_4 */
-+	{ 0x00000e14, 0x00e0 }, /* R3604 (0xe14) - EQ1_5 */
-+	{ 0x00000e15, 0x1ec4 }, /* R3605 (0xe15) - EQ1_6 */
-+	{ 0x00000e16, 0xf136 }, /* R3606 (0xe16) - EQ1_7 */
-+	{ 0x00000e17, 0x0409 }, /* R3607 (0xe17) - EQ1_8 */
-+	{ 0x00000e18, 0x04cc }, /* R3608 (0xe18) - EQ1_9 */
-+	{ 0x00000e19, 0x1c9b }, /* R3609 (0xe19) - EQ1_10 */
-+	{ 0x00000e1a, 0xf337 }, /* R3610 (0xe1a) - EQ1_11 */
-+	{ 0x00000e1b, 0x040b }, /* R3611 (0xe1b) - EQ1_12 */
-+	{ 0x00000e1c, 0x0cbb }, /* R3612 (0xe1c) - EQ1_13 */
-+	{ 0x00000e1d, 0x16f8 }, /* R3613 (0xe1d) - EQ1_14 */
-+	{ 0x00000e1e, 0xf7d9 }, /* R3614 (0xe1e) - EQ1_15 */
-+	{ 0x00000e1f, 0x040a }, /* R3615 (0xe1f) - EQ1_16 */
-+	{ 0x00000e20, 0x1f14 }, /* R3616 (0xe20) - EQ1_17 */
-+	{ 0x00000e21, 0x058c }, /* R3617 (0xe21) - EQ1_18 */
-+	{ 0x00000e22, 0x0563 }, /* R3618 (0xe22) - EQ1_19 */
-+	{ 0x00000e23, 0x4000 }, /* R3619 (0xe23) - EQ1_20 */
-+	{ 0x00000e24, 0x0b75 }, /* R3620 (0xe24) - EQ1_21 */
-+	{ 0x00000e26, 0x6318 }, /* R3622 (0xe26) - EQ2_1 */
-+	{ 0x00000e27, 0x6300 }, /* R3623 (0xe27) - EQ2_2 */
-+	{ 0x00000e28, 0x0fc8 }, /* R3624 (0xe28) - EQ2_3 */
-+	{ 0x00000e29, 0x03fe }, /* R3625 (0xe29) - EQ2_4 */
-+	{ 0x00000e2a, 0x00e0 }, /* R3626 (0xe2a) - EQ2_5 */
-+	{ 0x00000e2b, 0x1ec4 }, /* R3627 (0xe2b) - EQ2_6 */
-+	{ 0x00000e2c, 0xf136 }, /* R3628 (0xe2c) - EQ2_7 */
-+	{ 0x00000e2d, 0x0409 }, /* R3629 (0xe2d) - EQ2_8 */
-+	{ 0x00000e2e, 0x04cc }, /* R3630 (0xe2e) - EQ2_9 */
-+	{ 0x00000e2f, 0x1c9b }, /* R3631 (0xe2f) - EQ2_10 */
-+	{ 0x00000e30, 0xf337 }, /* R3632 (0xe30) - EQ2_11 */
-+	{ 0x00000e31, 0x040b }, /* R3633 (0xe31) - EQ2_12 */
-+	{ 0x00000e32, 0x0cbb }, /* R3634 (0xe32) - EQ2_13 */
-+	{ 0x00000e33, 0x16f8 }, /* R3635 (0xe33) - EQ2_14 */
-+	{ 0x00000e34, 0xf7d9 }, /* R3636 (0xe34) - EQ2_15 */
-+	{ 0x00000e35, 0x040a }, /* R3637 (0xe35) - EQ2_16 */
-+	{ 0x00000e36, 0x1f14 }, /* R3638 (0xe36) - EQ2_17 */
-+	{ 0x00000e37, 0x058c }, /* R3639 (0xe37) - EQ2_18 */
-+	{ 0x00000e38, 0x0563 }, /* R3640 (0xe38) - EQ2_19 */
-+	{ 0x00000e39, 0x4000 }, /* R3641 (0xe39) - EQ2_20 */
-+	{ 0x00000e3a, 0x0b75 }, /* R3642 (0xe3a) - EQ2_21 */
-+	{ 0x00000e3c, 0x6318 }, /* R3644 (0xe3c) - EQ3_1 */
-+	{ 0x00000e3d, 0x6300 }, /* R3645 (0xe3d) - EQ3_2 */
-+	{ 0x00000e3e, 0x0fc8 }, /* R3646 (0xe3e) - EQ3_3 */
-+	{ 0x00000e3f, 0x03fe }, /* R3647 (0xe3f) - EQ3_4 */
-+	{ 0x00000e40, 0x00e0 }, /* R3648 (0xe40) - EQ3_5 */
-+	{ 0x00000e41, 0x1ec4 }, /* R3649 (0xe41) - EQ3_6 */
-+	{ 0x00000e42, 0xf136 }, /* R3650 (0xe42) - EQ3_7 */
-+	{ 0x00000e43, 0x0409 }, /* R3651 (0xe43) - EQ3_8 */
-+	{ 0x00000e44, 0x04cc }, /* R3652 (0xe44) - EQ3_9 */
-+	{ 0x00000e45, 0x1c9b }, /* R3653 (0xe45) - EQ3_10 */
-+	{ 0x00000e46, 0xf337 }, /* R3654 (0xe46) - EQ3_11 */
-+	{ 0x00000e47, 0x040b }, /* R3655 (0xe47) - EQ3_12 */
-+	{ 0x00000e48, 0x0cbb }, /* R3656 (0xe48) - EQ3_13 */
-+	{ 0x00000e49, 0x16f8 }, /* R3657 (0xe49) - EQ3_14 */
-+	{ 0x00000e4a, 0xf7d9 }, /* R3658 (0xe4a) - EQ3_15 */
-+	{ 0x00000e4b, 0x040a }, /* R3659 (0xe4b) - EQ3_16 */
-+	{ 0x00000e4c, 0x1f14 }, /* R3660 (0xe4c) - EQ3_17 */
-+	{ 0x00000e4d, 0x058c }, /* R3661 (0xe4d) - EQ3_18 */
-+	{ 0x00000e4e, 0x0563 }, /* R3662 (0xe4e) - EQ3_19 */
-+	{ 0x00000e4f, 0x4000 }, /* R3663 (0xe4f) - EQ3_20 */
-+	{ 0x00000e50, 0x0b75 }, /* R3664 (0xe50) - EQ3_21 */
-+	{ 0x00000e52, 0x6318 }, /* R3666 (0xe52) - EQ4_1 */
-+	{ 0x00000e53, 0x6300 }, /* R3667 (0xe53) - EQ4_2 */
-+	{ 0x00000e54, 0x0fc8 }, /* R3668 (0xe54) - EQ4_3 */
-+	{ 0x00000e55, 0x03fe }, /* R3669 (0xe55) - EQ4_4 */
-+	{ 0x00000e56, 0x00e0 }, /* R3670 (0xe56) - EQ4_5 */
-+	{ 0x00000e57, 0x1ec4 }, /* R3671 (0xe57) - EQ4_6 */
-+	{ 0x00000e58, 0xf136 }, /* R3672 (0xe58) - EQ4_7 */
-+	{ 0x00000e59, 0x0409 }, /* R3673 (0xe59) - EQ4_8 */
-+	{ 0x00000e5a, 0x04cc }, /* R3674 (0xe5a) - EQ4_9 */
-+	{ 0x00000e5b, 0x1c9b }, /* R3675 (0xe5b) - EQ4_10 */
-+	{ 0x00000e5c, 0xf337 }, /* R3676 (0xe5c) - EQ4_11 */
-+	{ 0x00000e5d, 0x040b }, /* R3677 (0xe5d) - EQ4_12 */
-+	{ 0x00000e5e, 0x0cbb }, /* R3678 (0xe5e) - EQ4_13 */
-+	{ 0x00000e5f, 0x16f8 }, /* R3679 (0xe5f) - EQ4_14 */
-+	{ 0x00000e60, 0xf7d9 }, /* R3680 (0xe60) - EQ4_15 */
-+	{ 0x00000e61, 0x040a }, /* R3681 (0xe61) - EQ4_16 */
-+	{ 0x00000e62, 0x1f14 }, /* R3682 (0xe62) - EQ4_17 */
-+	{ 0x00000e63, 0x058c }, /* R3683 (0xe63) - EQ4_18 */
-+	{ 0x00000e64, 0x0563 }, /* R3684 (0xe64) - EQ4_19 */
-+	{ 0x00000e65, 0x4000 }, /* R3685 (0xe65) - EQ4_20 */
-+	{ 0x00000e66, 0x0b75 }, /* R3686 (0xe66) - EQ4_21 */
-+	{ 0x00000e80, 0x0018 }, /* R3712 (0xe80) - DRC1 ctrl1 */
-+	{ 0x00000e81, 0x0933 }, /* R3713 (0xe81) - DRC1 ctrl2 */
-+	{ 0x00000e82, 0x0018 }, /* R3714 (0xe82) - DRC1 ctrl3 */
-+	{ 0x00000e83, 0x0000 }, /* R3715 (0xe83) - DRC1 ctrl4 */
-+	{ 0x00000e84, 0x0000 }, /* R3716 (0xe84) - DRC1 ctrl5 */
-+	{ 0x00000e88, 0x0018 }, /* R3720 (0xe88) - DRC2 ctrl1 */
-+	{ 0x00000e89, 0x0933 }, /* R3721 (0xe89) - DRC2 ctrl2 */
-+	{ 0x00000e8a, 0x0018 }, /* R3722 (0xe8a) - DRC2 ctrl3 */
-+	{ 0x00000e8b, 0x0000 }, /* R3723 (0xe8b) - DRC2 ctrl4 */
-+	{ 0x00000e8c, 0x0000 }, /* R3724 (0xe8c) - DRC2 ctrl5 */
-+	{ 0x00000ec0, 0x0000 }, /* R3776 (0xec0) - HPLPF1_1 */
-+	{ 0x00000ec1, 0x0000 }, /* R3777 (0xec1) - HPLPF1_2 */
-+	{ 0x00000ec4, 0x0000 }, /* R3780 (0xec4) - HPLPF2_1 */
-+	{ 0x00000ec5, 0x0000 }, /* R3781 (0xec5) - HPLPF2_2 */
-+	{ 0x00000ec8, 0x0000 }, /* R3784 (0xec8) - HPLPF3_1 */
-+	{ 0x00000ec9, 0x0000 }, /* R3785 (0xec9) - HPLPF3_2 */
-+	{ 0x00000ecc, 0x0000 }, /* R3788 (0xecc) - HPLPF4_1 */
-+	{ 0x00000ecd, 0x0000 }, /* R3789 (0xecd) - HPLPF4_2 */
-+	{ 0x00000ef0, 0x0000 }, /* R3824 (0xef0) - ISRC 1 CTRL 1 */
-+	{ 0x00000ef1, 0x0001 }, /* R3825 (0xef1) - ISRC 1 CTRL 2 */
-+	{ 0x00000ef2, 0x0000 }, /* R3826 (0xef2) - ISRC 1 CTRL 3 */
-+	{ 0x00000ef3, 0x0000 }, /* R3827 (0xef3) - ISRC 2 CTRL 1 */
-+	{ 0x00000ef4, 0x0001 }, /* R3828 (0xef4) - ISRC 2 CTRL 2 */
-+	{ 0x00000ef5, 0x0000 }, /* R3829 (0xef5) - ISRC 2 CTRL 3 */
-+	{ 0x00001300, 0x0000 }, /* R4864 (0x1300) - DAC Comp 1 */
-+	{ 0x00001302, 0x0000 }, /* R4866 (0x1302) - DAC Comp 2 */
-+	{ 0x00001380, 0x0000 }, /* R4992 (0x1380) - FRF Coefficient 1L 1 */
-+	{ 0x00001381, 0x0000 }, /* R4993 (0x1381) - FRF Coefficient 1L 2 */
-+	{ 0x00001382, 0x0000 }, /* R4994 (0x1382) - FRF Coefficient 1L 3 */
-+	{ 0x00001383, 0x0000 }, /* R4995 (0x1383) - FRF Coefficient 1L 4 */
-+	{ 0x00001390, 0x0000 }, /* R5008 (0x1390) - FRF Coefficient 1R 1 */
-+	{ 0x00001391, 0x0000 }, /* R5009 (0x1391) - FRF Coefficient 1R 2 */
-+	{ 0x00001392, 0x0000 }, /* R5010 (0x1392) - FRF Coefficient 1R 3 */
-+	{ 0x00001393, 0x0000 }, /* R5011 (0x1393) - FRF Coefficient 1R 4 */
-+	{ 0x000013a0, 0x0000 }, /* R5024 (0x13a0) - FRF Coefficient 4L 1 */
-+	{ 0x000013a1, 0x0000 }, /* R5025 (0x13a1) - FRF Coefficient 4L 2 */
-+	{ 0x000013a2, 0x0000 }, /* R5026 (0x13a2) - FRF Coefficient 4L 3 */
-+	{ 0x000013a3, 0x0000 }, /* R5027 (0x13a3) - FRF Coefficient 4L 4 */
-+	{ 0x000013b0, 0x0000 }, /* R5040 (0x13b0) - FRF Coefficient 5L 1 */
-+	{ 0x000013b1, 0x0000 }, /* R5041 (0x13b1) - FRF Coefficient 5L 2 */
-+	{ 0x000013b2, 0x0000 }, /* R5042 (0x13b2) - FRF Coefficient 5L 3 */
-+	{ 0x000013b3, 0x0000 }, /* R5043 (0x13b3) - FRF Coefficient 5L 4 */
-+	{ 0x000013c0, 0x0000 }, /* R5040 (0x13c0) - FRF Coefficient 5R 1 */
-+	{ 0x000013c1, 0x0000 }, /* R5041 (0x13c1) - FRF Coefficient 5R 2 */
-+	{ 0x000013c2, 0x0000 }, /* R5042 (0x13c2) - FRF Coefficient 5R 3 */
-+	{ 0x000013c3, 0x0000 }, /* R5043 (0x13c3) - FRF Coefficient 5R 4 */
-+	{ 0x00001700, 0x2001 }, /* R5888 (0x1700) - GPIO1 Control 1 */
-+	{ 0x00001701, 0xf000 }, /* R5889 (0x1701) - GPIO1 Control 2 */
-+	{ 0x00001702, 0x2001 }, /* R5890 (0x1702) - GPIO2 Control 1 */
-+	{ 0x00001703, 0xf000 }, /* R5891 (0x1703) - GPIO2 Control 2 */
-+	{ 0x00001704, 0x2001 }, /* R5892 (0x1704) - GPIO3 Control 1 */
-+	{ 0x00001705, 0xf000 }, /* R5893 (0x1705) - GPIO3 Control 2 */
-+	{ 0x00001706, 0x2001 }, /* R5894 (0x1706) - GPIO4 Control 1 */
-+	{ 0x00001707, 0xf000 }, /* R5895 (0x1707) - GPIO4 Control 2 */
-+	{ 0x00001708, 0x2001 }, /* R5896 (0x1708) - GPIO5 Control 1 */
-+	{ 0x00001709, 0xf000 }, /* R5897 (0x1709) - GPIO5 Control 2 */
-+	{ 0x0000170a, 0x2001 }, /* R5898 (0x170a) - GPIO6 Control 1 */
-+	{ 0x0000170b, 0xf000 }, /* R5899 (0x170b) - GPIO6 Control 2 */
-+	{ 0x0000170c, 0x2001 }, /* R5900 (0x170c) - GPIO7 Control 1 */
-+	{ 0x0000170d, 0xf000 }, /* R5901 (0x170d) - GPIO7 Control 2 */
-+	{ 0x0000170e, 0x2001 }, /* R5902 (0x170e) - GPIO8 Control 1 */
-+	{ 0x0000170f, 0xf000 }, /* R5903 (0x170f) - GPIO8 Control 2 */
-+	{ 0x00001710, 0x2001 }, /* R5904 (0x1710) - GPIO9 Control 1 */
-+	{ 0x00001711, 0xf000 }, /* R5905 (0x1711) - GPIO9 Control 2 */
-+	{ 0x00001712, 0x2001 }, /* R5906 (0x1712) - GPIO10 Control 1 */
-+	{ 0x00001713, 0xf000 }, /* R5907 (0x1713) - GPIO10 Control 2 */
-+	{ 0x00001714, 0x2001 }, /* R5908 (0x1714) - GPIO11 Control 1 */
-+	{ 0x00001715, 0xf000 }, /* R5909 (0x1715) - GPIO11 Control 2 */
-+	{ 0x00001716, 0x2001 }, /* R5910 (0x1716) - GPIO12 Control 1 */
-+	{ 0x00001717, 0xf000 }, /* R5911 (0x1717) - GPIO12 Control 2 */
-+	{ 0x00001718, 0x2001 }, /* R5912 (0x1718) - GPIO13 Control 1 */
-+	{ 0x00001719, 0xf000 }, /* R5913 (0x1719) - GPIO13 Control 2 */
-+	{ 0x0000171a, 0x2001 }, /* R5914 (0x171a) - GPIO14 Control 1 */
-+	{ 0x0000171b, 0xf000 }, /* R5915 (0x171b) - GPIO14 Control 2 */
-+	{ 0x0000171c, 0x2001 }, /* R5916 (0x171c) - GPIO15 Control 1 */
-+	{ 0x0000171d, 0xf000 }, /* R5917 (0x171d) - GPIO15 Control 2 */
-+	{ 0x0000171e, 0x2001 }, /* R5918 (0x171e) - GPIO16 Control 1 */
-+	{ 0x0000171f, 0xf000 }, /* R5919 (0x171f) - GPIO16 Control 2 */
-+	{ 0x00001840, 0xffff }, /* R6208 (0x1840) - IRQ1 Mask 1 */
-+	{ 0x00001841, 0xffff }, /* R6209 (0x1841) - IRQ1 Mask 2 */
-+	{ 0x00001842, 0xffff }, /* R6210 (0x1842) - IRQ1 Mask 3 */
-+	{ 0x00001843, 0xffff }, /* R6211 (0x1843) - IRQ1 Mask 4 */
-+	{ 0x00001844, 0xffff }, /* R6212 (0x1844) - IRQ1 Mask 5 */
-+	{ 0x00001845, 0xffff }, /* R6213 (0x1845) - IRQ1 Mask 6 */
-+	{ 0x00001846, 0xffff }, /* R6214 (0x1846) - IRQ1 Mask 7 */
-+	{ 0x00001847, 0xffff }, /* R6215 (0x1847) - IRQ1 Mask 8 */
-+	{ 0x00001848, 0xffff }, /* R6216 (0x1848) - IRQ1 Mask 9 */
-+	{ 0x00001849, 0xffff }, /* R6217 (0x1849) - IRQ1 Mask 10 */
-+	{ 0x0000184a, 0xffff }, /* R6218 (0x184a) - IRQ1 Mask 11 */
-+	{ 0x0000184b, 0xffff }, /* R6219 (0x184b) - IRQ1 Mask 12 */
-+	{ 0x0000184c, 0xffff }, /* R6220 (0x184c) - IRQ1 Mask 13 */
-+	{ 0x0000184d, 0xffff }, /* R6221 (0x184d) - IRQ1 Mask 14 */
-+	{ 0x0000184e, 0xffff }, /* R6222 (0x184e) - IRQ1 Mask 15 */
-+	{ 0x0000184f, 0xffff }, /* R6223 (0x184f) - IRQ1 Mask 16 */
-+	{ 0x00001850, 0xffff }, /* R6224 (0x1850) - IRQ1 Mask 17 */
-+	{ 0x00001851, 0xffff }, /* R6225 (0x1851) - IRQ1 Mask 18 */
-+	{ 0x00001852, 0xffff }, /* R6226 (0x1852) - IRQ1 Mask 19 */
-+	{ 0x00001853, 0xffff }, /* R6227 (0x1853) - IRQ1 Mask 20 */
-+	{ 0x00001854, 0xffff }, /* R6228 (0x1854) - IRQ1 Mask 21 */
-+	{ 0x00001855, 0xffff }, /* R6229 (0x1855) - IRQ1 Mask 22 */
-+	{ 0x00001856, 0xffff }, /* R6230 (0x1856) - IRQ1 Mask 23 */
-+	{ 0x00001857, 0xffff }, /* R6231 (0x1857) - IRQ1 Mask 24 */
-+	{ 0x00001858, 0xffff }, /* R6232 (0x1858) - IRQ1 Mask 25 */
-+	{ 0x00001859, 0xffff }, /* R6233 (0x1859) - IRQ1 Mask 26 */
-+	{ 0x0000185a, 0xffff }, /* R6234 (0x185a) - IRQ1 Mask 27 */
-+	{ 0x0000185b, 0xffff }, /* R6235 (0x185b) - IRQ1 Mask 28 */
-+	{ 0x0000185c, 0xffff }, /* R6236 (0x185c) - IRQ1 Mask 29 */
-+	{ 0x0000185d, 0xffff }, /* R6237 (0x185d) - IRQ1 Mask 30 */
-+	{ 0x0000185e, 0xffff }, /* R6238 (0x185e) - IRQ1 Mask 31 */
-+	{ 0x0000185f, 0xffff }, /* R6239 (0x185f) - IRQ1 Mask 32 */
-+	{ 0x00001860, 0xffff }, /* R6240 (0x1860) - IRQ1 Mask 33 */
-+	{ 0x00001a06, 0x0000 }, /* R6662 (0x1a06) - Interrupt Debounce 7 */
-+	{ 0x00001a80, 0x4400 }, /* R6784 (0x1a80) - IRQ1 CTRL */
-+};
-+
-+static bool cs47l35_is_adsp_memory(unsigned int reg)
-+{
-+	switch (reg) {
-+	case 0x080000 ... 0x085ffe:
-+	case 0x0a0000 ... 0x0a7ffe:
-+	case 0x0c0000 ... 0x0c1ffe:
-+	case 0x0e0000 ... 0x0e1ffe:
-+	case 0x100000 ... 0x10effe:
-+	case 0x120000 ... 0x12bffe:
-+	case 0x136000 ... 0x137ffe:
-+	case 0x140000 ... 0x14bffe:
-+	case 0x160000 ... 0x161ffe:
-+	case 0x180000 ... 0x18effe:
-+	case 0x1a0000 ... 0x1b1ffe:
-+	case 0x1b6000 ... 0x1b7ffe:
-+	case 0x1c0000 ... 0x1cbffe:
-+	case 0x1e0000 ... 0x1e1ffe:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool cs47l35_16bit_readable_register(struct device *dev,
-+					    unsigned int reg)
-+{
-+	switch (reg) {
-+	case MADERA_SOFTWARE_RESET:
-+	case MADERA_HARDWARE_REVISION:
-+	case MADERA_WRITE_SEQUENCER_CTRL_0:
-+	case MADERA_WRITE_SEQUENCER_CTRL_1:
-+	case MADERA_WRITE_SEQUENCER_CTRL_2:
-+	case MADERA_TONE_GENERATOR_1:
-+	case MADERA_TONE_GENERATOR_2:
-+	case MADERA_TONE_GENERATOR_3:
-+	case MADERA_TONE_GENERATOR_4:
-+	case MADERA_TONE_GENERATOR_5:
-+	case MADERA_PWM_DRIVE_1:
-+	case MADERA_PWM_DRIVE_2:
-+	case MADERA_PWM_DRIVE_3:
-+	case MADERA_SAMPLE_RATE_SEQUENCE_SELECT_1:
-+	case MADERA_SAMPLE_RATE_SEQUENCE_SELECT_2:
-+	case MADERA_SAMPLE_RATE_SEQUENCE_SELECT_3:
-+	case MADERA_SAMPLE_RATE_SEQUENCE_SELECT_4:
-+	case MADERA_ALWAYS_ON_TRIGGERS_SEQUENCE_SELECT_1:
-+	case MADERA_ALWAYS_ON_TRIGGERS_SEQUENCE_SELECT_2:
-+	case MADERA_HAPTICS_CONTROL_1:
-+	case MADERA_HAPTICS_CONTROL_2:
-+	case MADERA_HAPTICS_PHASE_1_INTENSITY:
-+	case MADERA_HAPTICS_PHASE_1_DURATION:
-+	case MADERA_HAPTICS_PHASE_2_INTENSITY:
-+	case MADERA_HAPTICS_PHASE_2_DURATION:
-+	case MADERA_HAPTICS_PHASE_3_INTENSITY:
-+	case MADERA_HAPTICS_PHASE_3_DURATION:
-+	case MADERA_HAPTICS_STATUS:
-+	case MADERA_COMFORT_NOISE_GENERATOR:
-+	case MADERA_CLOCK_32K_1:
-+	case MADERA_SYSTEM_CLOCK_1:
-+	case MADERA_SAMPLE_RATE_1:
-+	case MADERA_SAMPLE_RATE_2:
-+	case MADERA_SAMPLE_RATE_3:
-+	case MADERA_SAMPLE_RATE_1_STATUS:
-+	case MADERA_SAMPLE_RATE_2_STATUS:
-+	case MADERA_SAMPLE_RATE_3_STATUS:
-+	case MADERA_DSP_CLOCK_1:
-+	case MADERA_DSP_CLOCK_2:
-+	case MADERA_OUTPUT_SYSTEM_CLOCK:
-+	case MADERA_OUTPUT_ASYNC_CLOCK:
-+	case MADERA_RATE_ESTIMATOR_1:
-+	case MADERA_RATE_ESTIMATOR_2:
-+	case MADERA_RATE_ESTIMATOR_3:
-+	case MADERA_RATE_ESTIMATOR_4:
-+	case MADERA_RATE_ESTIMATOR_5:
-+	case MADERA_FLL1_CONTROL_1:
-+	case MADERA_FLL1_CONTROL_2:
-+	case MADERA_FLL1_CONTROL_3:
-+	case MADERA_FLL1_CONTROL_4:
-+	case MADERA_FLL1_CONTROL_5:
-+	case MADERA_FLL1_CONTROL_6:
-+	case MADERA_FLL1_CONTROL_7:
-+	case MADERA_FLL1_EFS_2:
-+	case MADERA_FLL1_LOOP_FILTER_TEST_1:
-+	case CS47L35_FLL1_SYNCHRONISER_1:
-+	case CS47L35_FLL1_SYNCHRONISER_2:
-+	case CS47L35_FLL1_SYNCHRONISER_3:
-+	case CS47L35_FLL1_SYNCHRONISER_4:
-+	case CS47L35_FLL1_SYNCHRONISER_5:
-+	case CS47L35_FLL1_SYNCHRONISER_6:
-+	case CS47L35_FLL1_SYNCHRONISER_7:
-+	case CS47L35_FLL1_SPREAD_SPECTRUM:
-+	case CS47L35_FLL1_GPIO_CLOCK:
-+	case MADERA_MIC_CHARGE_PUMP_1:
-+	case MADERA_HP_CHARGE_PUMP_8:
-+	case MADERA_LDO2_CONTROL_1:
-+	case MADERA_MIC_BIAS_CTRL_1:
-+	case MADERA_MIC_BIAS_CTRL_2:
-+	case MADERA_MIC_BIAS_CTRL_5:
-+	case MADERA_MIC_BIAS_CTRL_6:
-+	case MADERA_HP_CTRL_1L:
-+	case MADERA_HP_CTRL_1R:
-+	case MADERA_DCS_HP1L_CONTROL:
-+	case MADERA_DCS_HP1R_CONTROL:
-+	case MADERA_EDRE_HP_STEREO_CONTROL:
-+	case MADERA_ACCESSORY_DETECT_MODE_1:
-+	case MADERA_HEADPHONE_DETECT_1:
-+	case MADERA_HEADPHONE_DETECT_2:
-+	case MADERA_HEADPHONE_DETECT_3:
-+	case MADERA_HEADPHONE_DETECT_5:
-+	case MADERA_MICD_CLAMP_CONTROL:
-+	case MADERA_MIC_DETECT_1_CONTROL_1:
-+	case MADERA_MIC_DETECT_1_CONTROL_2:
-+	case MADERA_MIC_DETECT_1_CONTROL_3:
-+	case MADERA_MIC_DETECT_1_LEVEL_1:
-+	case MADERA_MIC_DETECT_1_LEVEL_2:
-+	case MADERA_MIC_DETECT_1_LEVEL_3:
-+	case MADERA_MIC_DETECT_1_LEVEL_4:
-+	case MADERA_MIC_DETECT_1_CONTROL_4:
-+	case MADERA_GP_SWITCH_1:
-+	case MADERA_JACK_DETECT_ANALOGUE:
-+	case MADERA_INPUT_ENABLES:
-+	case MADERA_INPUT_ENABLES_STATUS:
-+	case MADERA_INPUT_RATE:
-+	case MADERA_INPUT_VOLUME_RAMP:
-+	case MADERA_HPF_CONTROL:
-+	case MADERA_IN1L_CONTROL:
-+	case MADERA_ADC_DIGITAL_VOLUME_1L:
-+	case MADERA_DMIC1L_CONTROL:
-+	case MADERA_IN1R_CONTROL:
-+	case MADERA_ADC_DIGITAL_VOLUME_1R:
-+	case MADERA_DMIC1R_CONTROL:
-+	case MADERA_IN2L_CONTROL:
-+	case MADERA_ADC_DIGITAL_VOLUME_2L:
-+	case MADERA_DMIC2L_CONTROL:
-+	case MADERA_IN2R_CONTROL:
-+	case MADERA_ADC_DIGITAL_VOLUME_2R:
-+	case MADERA_DMIC2R_CONTROL:
-+	case MADERA_OUTPUT_ENABLES_1:
-+	case MADERA_OUTPUT_STATUS_1:
-+	case MADERA_RAW_OUTPUT_STATUS_1:
-+	case MADERA_OUTPUT_RATE_1:
-+	case MADERA_OUTPUT_VOLUME_RAMP:
-+	case MADERA_OUTPUT_PATH_CONFIG_1L:
-+	case MADERA_DAC_DIGITAL_VOLUME_1L:
-+	case MADERA_NOISE_GATE_SELECT_1L:
-+	case MADERA_OUTPUT_PATH_CONFIG_1R:
-+	case MADERA_DAC_DIGITAL_VOLUME_1R:
-+	case MADERA_NOISE_GATE_SELECT_1R:
-+	case MADERA_OUTPUT_PATH_CONFIG_4L:
-+	case MADERA_DAC_DIGITAL_VOLUME_4L:
-+	case MADERA_NOISE_GATE_SELECT_4L:
-+	case MADERA_OUTPUT_PATH_CONFIG_5L:
-+	case MADERA_DAC_DIGITAL_VOLUME_5L:
-+	case MADERA_NOISE_GATE_SELECT_5L:
-+	case MADERA_OUTPUT_PATH_CONFIG_5R:
-+	case MADERA_DAC_DIGITAL_VOLUME_5R:
-+	case MADERA_NOISE_GATE_SELECT_5R:
-+	case MADERA_DRE_ENABLE:
-+	case MADERA_EDRE_ENABLE:
-+	case MADERA_EDRE_MANUAL:
-+	case MADERA_DAC_AEC_CONTROL_1:
-+	case MADERA_NOISE_GATE_CONTROL:
-+	case MADERA_PDM_SPK1_CTRL_1:
-+	case MADERA_PDM_SPK1_CTRL_2:
-+	case MADERA_HP1_SHORT_CIRCUIT_CTRL:
-+	case MADERA_HP_TEST_CTRL_5:
-+	case MADERA_HP_TEST_CTRL_6:
-+	case MADERA_AIF1_BCLK_CTRL:
-+	case MADERA_AIF1_TX_PIN_CTRL:
-+	case MADERA_AIF1_RX_PIN_CTRL:
-+	case MADERA_AIF1_RATE_CTRL:
-+	case MADERA_AIF1_FORMAT:
-+	case MADERA_AIF1_RX_BCLK_RATE:
-+	case MADERA_AIF1_FRAME_CTRL_1:
-+	case MADERA_AIF1_FRAME_CTRL_2:
-+	case MADERA_AIF1_FRAME_CTRL_3:
-+	case MADERA_AIF1_FRAME_CTRL_4:
-+	case MADERA_AIF1_FRAME_CTRL_5:
-+	case MADERA_AIF1_FRAME_CTRL_6:
-+	case MADERA_AIF1_FRAME_CTRL_7:
-+	case MADERA_AIF1_FRAME_CTRL_8:
-+	case MADERA_AIF1_FRAME_CTRL_11:
-+	case MADERA_AIF1_FRAME_CTRL_12:
-+	case MADERA_AIF1_FRAME_CTRL_13:
-+	case MADERA_AIF1_FRAME_CTRL_14:
-+	case MADERA_AIF1_FRAME_CTRL_15:
-+	case MADERA_AIF1_FRAME_CTRL_16:
-+	case MADERA_AIF1_TX_ENABLES:
-+	case MADERA_AIF1_RX_ENABLES:
-+	case MADERA_AIF2_BCLK_CTRL:
-+	case MADERA_AIF2_TX_PIN_CTRL:
-+	case MADERA_AIF2_RX_PIN_CTRL:
-+	case MADERA_AIF2_RATE_CTRL:
-+	case MADERA_AIF2_FORMAT:
-+	case MADERA_AIF2_RX_BCLK_RATE:
-+	case MADERA_AIF2_FRAME_CTRL_1:
-+	case MADERA_AIF2_FRAME_CTRL_2:
-+	case MADERA_AIF2_FRAME_CTRL_3:
-+	case MADERA_AIF2_FRAME_CTRL_4:
-+	case MADERA_AIF2_FRAME_CTRL_11:
-+	case MADERA_AIF2_FRAME_CTRL_12:
-+	case MADERA_AIF2_TX_ENABLES:
-+	case MADERA_AIF2_RX_ENABLES:
-+	case MADERA_AIF3_BCLK_CTRL:
-+	case MADERA_AIF3_TX_PIN_CTRL:
-+	case MADERA_AIF3_RX_PIN_CTRL:
-+	case MADERA_AIF3_RATE_CTRL:
-+	case MADERA_AIF3_FORMAT:
-+	case MADERA_AIF3_RX_BCLK_RATE:
-+	case MADERA_AIF3_FRAME_CTRL_1:
-+	case MADERA_AIF3_FRAME_CTRL_2:
-+	case MADERA_AIF3_FRAME_CTRL_3:
-+	case MADERA_AIF3_FRAME_CTRL_4:
-+	case MADERA_AIF3_FRAME_CTRL_11:
-+	case MADERA_AIF3_FRAME_CTRL_12:
-+	case MADERA_AIF3_TX_ENABLES:
-+	case MADERA_AIF3_RX_ENABLES:
-+	case MADERA_SPD1_TX_CONTROL:
-+	case MADERA_SPD1_TX_CHANNEL_STATUS_1:
-+	case MADERA_SPD1_TX_CHANNEL_STATUS_2:
-+	case MADERA_SPD1_TX_CHANNEL_STATUS_3:
-+	case MADERA_SLIMBUS_FRAMER_REF_GEAR:
-+	case MADERA_SLIMBUS_RATES_1:
-+	case MADERA_SLIMBUS_RATES_2:
-+	case MADERA_SLIMBUS_RATES_3:
-+	case MADERA_SLIMBUS_RATES_5:
-+	case MADERA_SLIMBUS_RATES_6:
-+	case MADERA_SLIMBUS_RATES_7:
-+	case MADERA_SLIMBUS_RX_CHANNEL_ENABLE:
-+	case MADERA_SLIMBUS_TX_CHANNEL_ENABLE:
-+	case MADERA_SLIMBUS_RX_PORT_STATUS:
-+	case MADERA_SLIMBUS_TX_PORT_STATUS:
-+	case MADERA_PWM1MIX_INPUT_1_SOURCE:
-+	case MADERA_PWM1MIX_INPUT_1_VOLUME:
-+	case MADERA_PWM1MIX_INPUT_2_SOURCE:
-+	case MADERA_PWM1MIX_INPUT_2_VOLUME:
-+	case MADERA_PWM1MIX_INPUT_3_SOURCE:
-+	case MADERA_PWM1MIX_INPUT_3_VOLUME:
-+	case MADERA_PWM1MIX_INPUT_4_SOURCE:
-+	case MADERA_PWM1MIX_INPUT_4_VOLUME:
-+	case MADERA_PWM2MIX_INPUT_1_SOURCE:
-+	case MADERA_PWM2MIX_INPUT_1_VOLUME:
-+	case MADERA_PWM2MIX_INPUT_2_SOURCE:
-+	case MADERA_PWM2MIX_INPUT_2_VOLUME:
-+	case MADERA_PWM2MIX_INPUT_3_SOURCE:
-+	case MADERA_PWM2MIX_INPUT_3_VOLUME:
-+	case MADERA_PWM2MIX_INPUT_4_SOURCE:
-+	case MADERA_PWM2MIX_INPUT_4_VOLUME:
-+	case MADERA_OUT1LMIX_INPUT_1_SOURCE:
-+	case MADERA_OUT1LMIX_INPUT_1_VOLUME:
-+	case MADERA_OUT1LMIX_INPUT_2_SOURCE:
-+	case MADERA_OUT1LMIX_INPUT_2_VOLUME:
-+	case MADERA_OUT1LMIX_INPUT_3_SOURCE:
-+	case MADERA_OUT1LMIX_INPUT_3_VOLUME:
-+	case MADERA_OUT1LMIX_INPUT_4_SOURCE:
-+	case MADERA_OUT1LMIX_INPUT_4_VOLUME:
-+	case MADERA_OUT1RMIX_INPUT_1_SOURCE:
-+	case MADERA_OUT1RMIX_INPUT_1_VOLUME:
-+	case MADERA_OUT1RMIX_INPUT_2_SOURCE:
-+	case MADERA_OUT1RMIX_INPUT_2_VOLUME:
-+	case MADERA_OUT1RMIX_INPUT_3_SOURCE:
-+	case MADERA_OUT1RMIX_INPUT_3_VOLUME:
-+	case MADERA_OUT1RMIX_INPUT_4_SOURCE:
-+	case MADERA_OUT1RMIX_INPUT_4_VOLUME:
-+	case MADERA_OUT4LMIX_INPUT_1_SOURCE:
-+	case MADERA_OUT4LMIX_INPUT_1_VOLUME:
-+	case MADERA_OUT4LMIX_INPUT_2_SOURCE:
-+	case MADERA_OUT4LMIX_INPUT_2_VOLUME:
-+	case MADERA_OUT4LMIX_INPUT_3_SOURCE:
-+	case MADERA_OUT4LMIX_INPUT_3_VOLUME:
-+	case MADERA_OUT4LMIX_INPUT_4_SOURCE:
-+	case MADERA_OUT4LMIX_INPUT_4_VOLUME:
-+	case MADERA_OUT5LMIX_INPUT_1_SOURCE:
-+	case MADERA_OUT5LMIX_INPUT_1_VOLUME:
-+	case MADERA_OUT5LMIX_INPUT_2_SOURCE:
-+	case MADERA_OUT5LMIX_INPUT_2_VOLUME:
-+	case MADERA_OUT5LMIX_INPUT_3_SOURCE:
-+	case MADERA_OUT5LMIX_INPUT_3_VOLUME:
-+	case MADERA_OUT5LMIX_INPUT_4_SOURCE:
-+	case MADERA_OUT5LMIX_INPUT_4_VOLUME:
-+	case MADERA_OUT5RMIX_INPUT_1_SOURCE:
-+	case MADERA_OUT5RMIX_INPUT_1_VOLUME:
-+	case MADERA_OUT5RMIX_INPUT_2_SOURCE:
-+	case MADERA_OUT5RMIX_INPUT_2_VOLUME:
-+	case MADERA_OUT5RMIX_INPUT_3_SOURCE:
-+	case MADERA_OUT5RMIX_INPUT_3_VOLUME:
-+	case MADERA_OUT5RMIX_INPUT_4_SOURCE:
-+	case MADERA_OUT5RMIX_INPUT_4_VOLUME:
-+	case MADERA_AIF1TX1MIX_INPUT_1_SOURCE:
-+	case MADERA_AIF1TX1MIX_INPUT_1_VOLUME:
-+	case MADERA_AIF1TX1MIX_INPUT_2_SOURCE:
-+	case MADERA_AIF1TX1MIX_INPUT_2_VOLUME:
-+	case MADERA_AIF1TX1MIX_INPUT_3_SOURCE:
-+	case MADERA_AIF1TX1MIX_INPUT_3_VOLUME:
-+	case MADERA_AIF1TX1MIX_INPUT_4_SOURCE:
-+	case MADERA_AIF1TX1MIX_INPUT_4_VOLUME:
-+	case MADERA_AIF1TX2MIX_INPUT_1_SOURCE:
-+	case MADERA_AIF1TX2MIX_INPUT_1_VOLUME:
-+	case MADERA_AIF1TX2MIX_INPUT_2_SOURCE:
-+	case MADERA_AIF1TX2MIX_INPUT_2_VOLUME:
-+	case MADERA_AIF1TX2MIX_INPUT_3_SOURCE:
-+	case MADERA_AIF1TX2MIX_INPUT_3_VOLUME:
-+	case MADERA_AIF1TX2MIX_INPUT_4_SOURCE:
-+	case MADERA_AIF1TX2MIX_INPUT_4_VOLUME:
-+	case MADERA_AIF1TX3MIX_INPUT_1_SOURCE:
-+	case MADERA_AIF1TX3MIX_INPUT_1_VOLUME:
-+	case MADERA_AIF1TX3MIX_INPUT_2_SOURCE:
-+	case MADERA_AIF1TX3MIX_INPUT_2_VOLUME:
-+	case MADERA_AIF1TX3MIX_INPUT_3_SOURCE:
-+	case MADERA_AIF1TX3MIX_INPUT_3_VOLUME:
-+	case MADERA_AIF1TX3MIX_INPUT_4_SOURCE:
-+	case MADERA_AIF1TX3MIX_INPUT_4_VOLUME:
-+	case MADERA_AIF1TX4MIX_INPUT_1_SOURCE:
-+	case MADERA_AIF1TX4MIX_INPUT_1_VOLUME:
-+	case MADERA_AIF1TX4MIX_INPUT_2_SOURCE:
-+	case MADERA_AIF1TX4MIX_INPUT_2_VOLUME:
-+	case MADERA_AIF1TX4MIX_INPUT_3_SOURCE:
-+	case MADERA_AIF1TX4MIX_INPUT_3_VOLUME:
-+	case MADERA_AIF1TX4MIX_INPUT_4_SOURCE:
-+	case MADERA_AIF1TX4MIX_INPUT_4_VOLUME:
-+	case MADERA_AIF1TX5MIX_INPUT_1_SOURCE:
-+	case MADERA_AIF1TX5MIX_INPUT_1_VOLUME:
-+	case MADERA_AIF1TX5MIX_INPUT_2_SOURCE:
-+	case MADERA_AIF1TX5MIX_INPUT_2_VOLUME:
-+	case MADERA_AIF1TX5MIX_INPUT_3_SOURCE:
-+	case MADERA_AIF1TX5MIX_INPUT_3_VOLUME:
-+	case MADERA_AIF1TX5MIX_INPUT_4_SOURCE:
-+	case MADERA_AIF1TX5MIX_INPUT_4_VOLUME:
-+	case MADERA_AIF1TX6MIX_INPUT_1_SOURCE:
-+	case MADERA_AIF1TX6MIX_INPUT_1_VOLUME:
-+	case MADERA_AIF1TX6MIX_INPUT_2_SOURCE:
-+	case MADERA_AIF1TX6MIX_INPUT_2_VOLUME:
-+	case MADERA_AIF1TX6MIX_INPUT_3_SOURCE:
-+	case MADERA_AIF1TX6MIX_INPUT_3_VOLUME:
-+	case MADERA_AIF1TX6MIX_INPUT_4_SOURCE:
-+	case MADERA_AIF1TX6MIX_INPUT_4_VOLUME:
-+	case MADERA_AIF2TX1MIX_INPUT_1_SOURCE:
-+	case MADERA_AIF2TX1MIX_INPUT_1_VOLUME:
-+	case MADERA_AIF2TX1MIX_INPUT_2_SOURCE:
-+	case MADERA_AIF2TX1MIX_INPUT_2_VOLUME:
-+	case MADERA_AIF2TX1MIX_INPUT_3_SOURCE:
-+	case MADERA_AIF2TX1MIX_INPUT_3_VOLUME:
-+	case MADERA_AIF2TX1MIX_INPUT_4_SOURCE:
-+	case MADERA_AIF2TX1MIX_INPUT_4_VOLUME:
-+	case MADERA_AIF2TX2MIX_INPUT_1_SOURCE:
-+	case MADERA_AIF2TX2MIX_INPUT_1_VOLUME:
-+	case MADERA_AIF2TX2MIX_INPUT_2_SOURCE:
-+	case MADERA_AIF2TX2MIX_INPUT_2_VOLUME:
-+	case MADERA_AIF2TX2MIX_INPUT_3_SOURCE:
-+	case MADERA_AIF2TX2MIX_INPUT_3_VOLUME:
-+	case MADERA_AIF2TX2MIX_INPUT_4_SOURCE:
-+	case MADERA_AIF2TX2MIX_INPUT_4_VOLUME:
-+	case MADERA_AIF3TX1MIX_INPUT_1_SOURCE:
-+	case MADERA_AIF3TX1MIX_INPUT_1_VOLUME:
-+	case MADERA_AIF3TX1MIX_INPUT_2_SOURCE:
-+	case MADERA_AIF3TX1MIX_INPUT_2_VOLUME:
-+	case MADERA_AIF3TX1MIX_INPUT_3_SOURCE:
-+	case MADERA_AIF3TX1MIX_INPUT_3_VOLUME:
-+	case MADERA_AIF3TX1MIX_INPUT_4_SOURCE:
-+	case MADERA_AIF3TX1MIX_INPUT_4_VOLUME:
-+	case MADERA_AIF3TX2MIX_INPUT_1_SOURCE:
-+	case MADERA_AIF3TX2MIX_INPUT_1_VOLUME:
-+	case MADERA_AIF3TX2MIX_INPUT_2_SOURCE:
-+	case MADERA_AIF3TX2MIX_INPUT_2_VOLUME:
-+	case MADERA_AIF3TX2MIX_INPUT_3_SOURCE:
-+	case MADERA_AIF3TX2MIX_INPUT_3_VOLUME:
-+	case MADERA_AIF3TX2MIX_INPUT_4_SOURCE:
-+	case MADERA_AIF3TX2MIX_INPUT_4_VOLUME:
-+	case MADERA_SLIMTX1MIX_INPUT_1_SOURCE:
-+	case MADERA_SLIMTX1MIX_INPUT_1_VOLUME:
-+	case MADERA_SLIMTX1MIX_INPUT_2_SOURCE:
-+	case MADERA_SLIMTX1MIX_INPUT_2_VOLUME:
-+	case MADERA_SLIMTX1MIX_INPUT_3_SOURCE:
-+	case MADERA_SLIMTX1MIX_INPUT_3_VOLUME:
-+	case MADERA_SLIMTX1MIX_INPUT_4_SOURCE:
-+	case MADERA_SLIMTX1MIX_INPUT_4_VOLUME:
-+	case MADERA_SLIMTX2MIX_INPUT_1_SOURCE:
-+	case MADERA_SLIMTX2MIX_INPUT_1_VOLUME:
-+	case MADERA_SLIMTX2MIX_INPUT_2_SOURCE:
-+	case MADERA_SLIMTX2MIX_INPUT_2_VOLUME:
-+	case MADERA_SLIMTX2MIX_INPUT_3_SOURCE:
-+	case MADERA_SLIMTX2MIX_INPUT_3_VOLUME:
-+	case MADERA_SLIMTX2MIX_INPUT_4_SOURCE:
-+	case MADERA_SLIMTX2MIX_INPUT_4_VOLUME:
-+	case MADERA_SLIMTX3MIX_INPUT_1_SOURCE:
-+	case MADERA_SLIMTX3MIX_INPUT_1_VOLUME:
-+	case MADERA_SLIMTX3MIX_INPUT_2_SOURCE:
-+	case MADERA_SLIMTX3MIX_INPUT_2_VOLUME:
-+	case MADERA_SLIMTX3MIX_INPUT_3_SOURCE:
-+	case MADERA_SLIMTX3MIX_INPUT_3_VOLUME:
-+	case MADERA_SLIMTX3MIX_INPUT_4_SOURCE:
-+	case MADERA_SLIMTX3MIX_INPUT_4_VOLUME:
-+	case MADERA_SLIMTX4MIX_INPUT_1_SOURCE:
-+	case MADERA_SLIMTX4MIX_INPUT_1_VOLUME:
-+	case MADERA_SLIMTX4MIX_INPUT_2_SOURCE:
-+	case MADERA_SLIMTX4MIX_INPUT_2_VOLUME:
-+	case MADERA_SLIMTX4MIX_INPUT_3_SOURCE:
-+	case MADERA_SLIMTX4MIX_INPUT_3_VOLUME:
-+	case MADERA_SLIMTX4MIX_INPUT_4_SOURCE:
-+	case MADERA_SLIMTX4MIX_INPUT_4_VOLUME:
-+	case MADERA_SLIMTX5MIX_INPUT_1_SOURCE:
-+	case MADERA_SLIMTX5MIX_INPUT_1_VOLUME:
-+	case MADERA_SLIMTX5MIX_INPUT_2_SOURCE:
-+	case MADERA_SLIMTX5MIX_INPUT_2_VOLUME:
-+	case MADERA_SLIMTX5MIX_INPUT_3_SOURCE:
-+	case MADERA_SLIMTX5MIX_INPUT_3_VOLUME:
-+	case MADERA_SLIMTX5MIX_INPUT_4_SOURCE:
-+	case MADERA_SLIMTX5MIX_INPUT_4_VOLUME:
-+	case MADERA_SLIMTX6MIX_INPUT_1_SOURCE:
-+	case MADERA_SLIMTX6MIX_INPUT_1_VOLUME:
-+	case MADERA_SLIMTX6MIX_INPUT_2_SOURCE:
-+	case MADERA_SLIMTX6MIX_INPUT_2_VOLUME:
-+	case MADERA_SLIMTX6MIX_INPUT_3_SOURCE:
-+	case MADERA_SLIMTX6MIX_INPUT_3_VOLUME:
-+	case MADERA_SLIMTX6MIX_INPUT_4_SOURCE:
-+	case MADERA_SLIMTX6MIX_INPUT_4_VOLUME:
-+	case MADERA_SPDIF1TX1MIX_INPUT_1_SOURCE:
-+	case MADERA_SPDIF1TX1MIX_INPUT_1_VOLUME:
-+	case MADERA_SPDIF1TX2MIX_INPUT_1_SOURCE:
-+	case MADERA_SPDIF1TX2MIX_INPUT_1_VOLUME:
-+	case MADERA_EQ1MIX_INPUT_1_SOURCE:
-+	case MADERA_EQ1MIX_INPUT_1_VOLUME:
-+	case MADERA_EQ1MIX_INPUT_2_SOURCE:
-+	case MADERA_EQ1MIX_INPUT_2_VOLUME:
-+	case MADERA_EQ1MIX_INPUT_3_SOURCE:
-+	case MADERA_EQ1MIX_INPUT_3_VOLUME:
-+	case MADERA_EQ1MIX_INPUT_4_SOURCE:
-+	case MADERA_EQ1MIX_INPUT_4_VOLUME:
-+	case MADERA_EQ2MIX_INPUT_1_SOURCE:
-+	case MADERA_EQ2MIX_INPUT_1_VOLUME:
-+	case MADERA_EQ2MIX_INPUT_2_SOURCE:
-+	case MADERA_EQ2MIX_INPUT_2_VOLUME:
-+	case MADERA_EQ2MIX_INPUT_3_SOURCE:
-+	case MADERA_EQ2MIX_INPUT_3_VOLUME:
-+	case MADERA_EQ2MIX_INPUT_4_SOURCE:
-+	case MADERA_EQ2MIX_INPUT_4_VOLUME:
-+	case MADERA_EQ3MIX_INPUT_1_SOURCE:
-+	case MADERA_EQ3MIX_INPUT_1_VOLUME:
-+	case MADERA_EQ3MIX_INPUT_2_SOURCE:
-+	case MADERA_EQ3MIX_INPUT_2_VOLUME:
-+	case MADERA_EQ3MIX_INPUT_3_SOURCE:
-+	case MADERA_EQ3MIX_INPUT_3_VOLUME:
-+	case MADERA_EQ3MIX_INPUT_4_SOURCE:
-+	case MADERA_EQ3MIX_INPUT_4_VOLUME:
-+	case MADERA_EQ4MIX_INPUT_1_SOURCE:
-+	case MADERA_EQ4MIX_INPUT_1_VOLUME:
-+	case MADERA_EQ4MIX_INPUT_2_SOURCE:
-+	case MADERA_EQ4MIX_INPUT_2_VOLUME:
-+	case MADERA_EQ4MIX_INPUT_3_SOURCE:
-+	case MADERA_EQ4MIX_INPUT_3_VOLUME:
-+	case MADERA_EQ4MIX_INPUT_4_SOURCE:
-+	case MADERA_EQ4MIX_INPUT_4_VOLUME:
-+	case MADERA_DRC1LMIX_INPUT_1_SOURCE:
-+	case MADERA_DRC1LMIX_INPUT_1_VOLUME:
-+	case MADERA_DRC1LMIX_INPUT_2_SOURCE:
-+	case MADERA_DRC1LMIX_INPUT_2_VOLUME:
-+	case MADERA_DRC1LMIX_INPUT_3_SOURCE:
-+	case MADERA_DRC1LMIX_INPUT_3_VOLUME:
-+	case MADERA_DRC1LMIX_INPUT_4_SOURCE:
-+	case MADERA_DRC1LMIX_INPUT_4_VOLUME:
-+	case MADERA_DRC1RMIX_INPUT_1_SOURCE:
-+	case MADERA_DRC1RMIX_INPUT_1_VOLUME:
-+	case MADERA_DRC1RMIX_INPUT_2_SOURCE:
-+	case MADERA_DRC1RMIX_INPUT_2_VOLUME:
-+	case MADERA_DRC1RMIX_INPUT_3_SOURCE:
-+	case MADERA_DRC1RMIX_INPUT_3_VOLUME:
-+	case MADERA_DRC1RMIX_INPUT_4_SOURCE:
-+	case MADERA_DRC1RMIX_INPUT_4_VOLUME:
-+	case MADERA_DRC2LMIX_INPUT_1_SOURCE:
-+	case MADERA_DRC2LMIX_INPUT_1_VOLUME:
-+	case MADERA_DRC2LMIX_INPUT_2_SOURCE:
-+	case MADERA_DRC2LMIX_INPUT_2_VOLUME:
-+	case MADERA_DRC2LMIX_INPUT_3_SOURCE:
-+	case MADERA_DRC2LMIX_INPUT_3_VOLUME:
-+	case MADERA_DRC2LMIX_INPUT_4_SOURCE:
-+	case MADERA_DRC2LMIX_INPUT_4_VOLUME:
-+	case MADERA_DRC2RMIX_INPUT_1_SOURCE:
-+	case MADERA_DRC2RMIX_INPUT_1_VOLUME:
-+	case MADERA_DRC2RMIX_INPUT_2_SOURCE:
-+	case MADERA_DRC2RMIX_INPUT_2_VOLUME:
-+	case MADERA_DRC2RMIX_INPUT_3_SOURCE:
-+	case MADERA_DRC2RMIX_INPUT_3_VOLUME:
-+	case MADERA_DRC2RMIX_INPUT_4_SOURCE:
-+	case MADERA_DRC2RMIX_INPUT_4_VOLUME:
-+	case MADERA_HPLP1MIX_INPUT_1_SOURCE:
-+	case MADERA_HPLP1MIX_INPUT_1_VOLUME:
-+	case MADERA_HPLP1MIX_INPUT_2_SOURCE:
-+	case MADERA_HPLP1MIX_INPUT_2_VOLUME:
-+	case MADERA_HPLP1MIX_INPUT_3_SOURCE:
-+	case MADERA_HPLP1MIX_INPUT_3_VOLUME:
-+	case MADERA_HPLP1MIX_INPUT_4_SOURCE:
-+	case MADERA_HPLP1MIX_INPUT_4_VOLUME:
-+	case MADERA_HPLP2MIX_INPUT_1_SOURCE:
-+	case MADERA_HPLP2MIX_INPUT_1_VOLUME:
-+	case MADERA_HPLP2MIX_INPUT_2_SOURCE:
-+	case MADERA_HPLP2MIX_INPUT_2_VOLUME:
-+	case MADERA_HPLP2MIX_INPUT_3_SOURCE:
-+	case MADERA_HPLP2MIX_INPUT_3_VOLUME:
-+	case MADERA_HPLP2MIX_INPUT_4_SOURCE:
-+	case MADERA_HPLP2MIX_INPUT_4_VOLUME:
-+	case MADERA_HPLP3MIX_INPUT_1_SOURCE:
-+	case MADERA_HPLP3MIX_INPUT_1_VOLUME:
-+	case MADERA_HPLP3MIX_INPUT_2_SOURCE:
-+	case MADERA_HPLP3MIX_INPUT_2_VOLUME:
-+	case MADERA_HPLP3MIX_INPUT_3_SOURCE:
-+	case MADERA_HPLP3MIX_INPUT_3_VOLUME:
-+	case MADERA_HPLP3MIX_INPUT_4_SOURCE:
-+	case MADERA_HPLP3MIX_INPUT_4_VOLUME:
-+	case MADERA_HPLP4MIX_INPUT_1_SOURCE:
-+	case MADERA_HPLP4MIX_INPUT_1_VOLUME:
-+	case MADERA_HPLP4MIX_INPUT_2_SOURCE:
-+	case MADERA_HPLP4MIX_INPUT_2_VOLUME:
-+	case MADERA_HPLP4MIX_INPUT_3_SOURCE:
-+	case MADERA_HPLP4MIX_INPUT_3_VOLUME:
-+	case MADERA_HPLP4MIX_INPUT_4_SOURCE:
-+	case MADERA_HPLP4MIX_INPUT_4_VOLUME:
-+	case MADERA_DSP1LMIX_INPUT_1_SOURCE:
-+	case MADERA_DSP1LMIX_INPUT_1_VOLUME:
-+	case MADERA_DSP1LMIX_INPUT_2_SOURCE:
-+	case MADERA_DSP1LMIX_INPUT_2_VOLUME:
-+	case MADERA_DSP1LMIX_INPUT_3_SOURCE:
-+	case MADERA_DSP1LMIX_INPUT_3_VOLUME:
-+	case MADERA_DSP1LMIX_INPUT_4_SOURCE:
-+	case MADERA_DSP1LMIX_INPUT_4_VOLUME:
-+	case MADERA_DSP1RMIX_INPUT_1_SOURCE:
-+	case MADERA_DSP1RMIX_INPUT_1_VOLUME:
-+	case MADERA_DSP1RMIX_INPUT_2_SOURCE:
-+	case MADERA_DSP1RMIX_INPUT_2_VOLUME:
-+	case MADERA_DSP1RMIX_INPUT_3_SOURCE:
-+	case MADERA_DSP1RMIX_INPUT_3_VOLUME:
-+	case MADERA_DSP1RMIX_INPUT_4_SOURCE:
-+	case MADERA_DSP1RMIX_INPUT_4_VOLUME:
-+	case MADERA_DSP1AUX1MIX_INPUT_1_SOURCE:
-+	case MADERA_DSP1AUX2MIX_INPUT_1_SOURCE:
-+	case MADERA_DSP1AUX3MIX_INPUT_1_SOURCE:
-+	case MADERA_DSP1AUX4MIX_INPUT_1_SOURCE:
-+	case MADERA_DSP1AUX5MIX_INPUT_1_SOURCE:
-+	case MADERA_DSP1AUX6MIX_INPUT_1_SOURCE:
-+	case MADERA_DSP2LMIX_INPUT_1_SOURCE:
-+	case MADERA_DSP2LMIX_INPUT_1_VOLUME:
-+	case MADERA_DSP2LMIX_INPUT_2_SOURCE:
-+	case MADERA_DSP2LMIX_INPUT_2_VOLUME:
-+	case MADERA_DSP2LMIX_INPUT_3_SOURCE:
-+	case MADERA_DSP2LMIX_INPUT_3_VOLUME:
-+	case MADERA_DSP2LMIX_INPUT_4_SOURCE:
-+	case MADERA_DSP2LMIX_INPUT_4_VOLUME:
-+	case MADERA_DSP2RMIX_INPUT_1_SOURCE:
-+	case MADERA_DSP2RMIX_INPUT_1_VOLUME:
-+	case MADERA_DSP2RMIX_INPUT_2_SOURCE:
-+	case MADERA_DSP2RMIX_INPUT_2_VOLUME:
-+	case MADERA_DSP2RMIX_INPUT_3_SOURCE:
-+	case MADERA_DSP2RMIX_INPUT_3_VOLUME:
-+	case MADERA_DSP2RMIX_INPUT_4_SOURCE:
-+	case MADERA_DSP2RMIX_INPUT_4_VOLUME:
-+	case MADERA_DSP2AUX1MIX_INPUT_1_SOURCE:
-+	case MADERA_DSP2AUX2MIX_INPUT_1_SOURCE:
-+	case MADERA_DSP2AUX3MIX_INPUT_1_SOURCE:
-+	case MADERA_DSP2AUX4MIX_INPUT_1_SOURCE:
-+	case MADERA_DSP2AUX5MIX_INPUT_1_SOURCE:
-+	case MADERA_DSP2AUX6MIX_INPUT_1_SOURCE:
-+	case MADERA_DSP3LMIX_INPUT_1_SOURCE:
-+	case MADERA_DSP3LMIX_INPUT_1_VOLUME:
-+	case MADERA_DSP3LMIX_INPUT_2_SOURCE:
-+	case MADERA_DSP3LMIX_INPUT_2_VOLUME:
-+	case MADERA_DSP3LMIX_INPUT_3_SOURCE:
-+	case MADERA_DSP3LMIX_INPUT_3_VOLUME:
-+	case MADERA_DSP3LMIX_INPUT_4_SOURCE:
-+	case MADERA_DSP3LMIX_INPUT_4_VOLUME:
-+	case MADERA_DSP3RMIX_INPUT_1_SOURCE:
-+	case MADERA_DSP3RMIX_INPUT_1_VOLUME:
-+	case MADERA_DSP3RMIX_INPUT_2_SOURCE:
-+	case MADERA_DSP3RMIX_INPUT_2_VOLUME:
-+	case MADERA_DSP3RMIX_INPUT_3_SOURCE:
-+	case MADERA_DSP3RMIX_INPUT_3_VOLUME:
-+	case MADERA_DSP3RMIX_INPUT_4_SOURCE:
-+	case MADERA_DSP3RMIX_INPUT_4_VOLUME:
-+	case MADERA_DSP3AUX1MIX_INPUT_1_SOURCE:
-+	case MADERA_DSP3AUX2MIX_INPUT_1_SOURCE:
-+	case MADERA_DSP3AUX3MIX_INPUT_1_SOURCE:
-+	case MADERA_DSP3AUX4MIX_INPUT_1_SOURCE:
-+	case MADERA_DSP3AUX5MIX_INPUT_1_SOURCE:
-+	case MADERA_DSP3AUX6MIX_INPUT_1_SOURCE:
-+	case MADERA_ISRC1DEC1MIX_INPUT_1_SOURCE:
-+	case MADERA_ISRC1DEC2MIX_INPUT_1_SOURCE:
-+	case MADERA_ISRC1DEC3MIX_INPUT_1_SOURCE:
-+	case MADERA_ISRC1DEC4MIX_INPUT_1_SOURCE:
-+	case MADERA_ISRC1INT1MIX_INPUT_1_SOURCE:
-+	case MADERA_ISRC1INT2MIX_INPUT_1_SOURCE:
-+	case MADERA_ISRC1INT3MIX_INPUT_1_SOURCE:
-+	case MADERA_ISRC1INT4MIX_INPUT_1_SOURCE:
-+	case MADERA_ISRC2DEC1MIX_INPUT_1_SOURCE:
-+	case MADERA_ISRC2DEC2MIX_INPUT_1_SOURCE:
-+	case MADERA_ISRC2DEC3MIX_INPUT_1_SOURCE:
-+	case MADERA_ISRC2DEC4MIX_INPUT_1_SOURCE:
-+	case MADERA_ISRC2INT1MIX_INPUT_1_SOURCE:
-+	case MADERA_ISRC2INT2MIX_INPUT_1_SOURCE:
-+	case MADERA_ISRC2INT3MIX_INPUT_1_SOURCE:
-+	case MADERA_ISRC2INT4MIX_INPUT_1_SOURCE:
-+	case MADERA_FX_CTRL1:
-+	case MADERA_FX_CTRL2:
-+	case MADERA_EQ1_1 ... MADERA_EQ1_21:
-+	case MADERA_EQ2_1 ... MADERA_EQ2_21:
-+	case MADERA_EQ3_1 ... MADERA_EQ3_21:
-+	case MADERA_EQ4_1 ... MADERA_EQ4_21:
-+	case MADERA_DRC1_CTRL1:
-+	case MADERA_DRC1_CTRL2:
-+	case MADERA_DRC1_CTRL3:
-+	case MADERA_DRC1_CTRL4:
-+	case MADERA_DRC1_CTRL5:
-+	case MADERA_DRC2_CTRL1:
-+	case MADERA_DRC2_CTRL2:
-+	case MADERA_DRC2_CTRL3:
-+	case MADERA_DRC2_CTRL4:
-+	case MADERA_DRC2_CTRL5:
-+	case MADERA_HPLPF1_1:
-+	case MADERA_HPLPF1_2:
-+	case MADERA_HPLPF2_1:
-+	case MADERA_HPLPF2_2:
-+	case MADERA_HPLPF3_1:
-+	case MADERA_HPLPF3_2:
-+	case MADERA_HPLPF4_1:
-+	case MADERA_HPLPF4_2:
-+	case MADERA_ISRC_1_CTRL_1:
-+	case MADERA_ISRC_1_CTRL_2:
-+	case MADERA_ISRC_1_CTRL_3:
-+	case MADERA_ISRC_2_CTRL_1:
-+	case MADERA_ISRC_2_CTRL_2:
-+	case MADERA_ISRC_2_CTRL_3:
-+	case MADERA_DAC_COMP_1:
-+	case MADERA_DAC_COMP_2:
-+	case MADERA_FRF_COEFFICIENT_1L_1:
-+	case MADERA_FRF_COEFFICIENT_1L_2:
-+	case MADERA_FRF_COEFFICIENT_1L_3:
-+	case MADERA_FRF_COEFFICIENT_1L_4:
-+	case MADERA_FRF_COEFFICIENT_1R_1:
-+	case MADERA_FRF_COEFFICIENT_1R_2:
-+	case MADERA_FRF_COEFFICIENT_1R_3:
-+	case MADERA_FRF_COEFFICIENT_1R_4:
-+	case CS47L35_FRF_COEFFICIENT_4L_1:
-+	case CS47L35_FRF_COEFFICIENT_4L_2:
-+	case CS47L35_FRF_COEFFICIENT_4L_3:
-+	case CS47L35_FRF_COEFFICIENT_4L_4:
-+	case CS47L35_FRF_COEFFICIENT_5L_1:
-+	case CS47L35_FRF_COEFFICIENT_5L_2:
-+	case CS47L35_FRF_COEFFICIENT_5L_3:
-+	case CS47L35_FRF_COEFFICIENT_5L_4:
-+	case CS47L35_FRF_COEFFICIENT_5R_1:
-+	case CS47L35_FRF_COEFFICIENT_5R_2:
-+	case CS47L35_FRF_COEFFICIENT_5R_3:
-+	case CS47L35_FRF_COEFFICIENT_5R_4:
-+	case MADERA_GPIO1_CTRL_1 ... MADERA_GPIO16_CTRL_2:
-+	case MADERA_IRQ1_STATUS_1 ... MADERA_IRQ1_STATUS_33:
-+	case MADERA_IRQ1_MASK_1 ... MADERA_IRQ1_MASK_33:
-+	case MADERA_IRQ1_RAW_STATUS_1 ... MADERA_IRQ1_RAW_STATUS_33:
-+	case MADERA_INTERRUPT_DEBOUNCE_7:
-+	case MADERA_IRQ1_CTRL:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool cs47l35_16bit_volatile_register(struct device *dev,
-+					    unsigned int reg)
-+{
-+	switch (reg) {
-+	case MADERA_SOFTWARE_RESET:
-+	case MADERA_HARDWARE_REVISION:
-+	case MADERA_WRITE_SEQUENCER_CTRL_0:
-+	case MADERA_WRITE_SEQUENCER_CTRL_1:
-+	case MADERA_WRITE_SEQUENCER_CTRL_2:
-+	case MADERA_HAPTICS_STATUS:
-+	case MADERA_SAMPLE_RATE_1_STATUS:
-+	case MADERA_SAMPLE_RATE_2_STATUS:
-+	case MADERA_SAMPLE_RATE_3_STATUS:
-+	case MADERA_HP_CTRL_1L:
-+	case MADERA_HP_CTRL_1R:
-+	case MADERA_DCS_HP1L_CONTROL:
-+	case MADERA_DCS_HP1R_CONTROL:
-+	case MADERA_MIC_DETECT_1_CONTROL_3:
-+	case MADERA_MIC_DETECT_1_CONTROL_4:
-+	case MADERA_HEADPHONE_DETECT_2:
-+	case MADERA_HEADPHONE_DETECT_3:
-+	case MADERA_HEADPHONE_DETECT_5:
-+	case MADERA_INPUT_ENABLES_STATUS:
-+	case MADERA_OUTPUT_STATUS_1:
-+	case MADERA_RAW_OUTPUT_STATUS_1:
-+	case MADERA_SPD1_TX_CHANNEL_STATUS_1:
-+	case MADERA_SPD1_TX_CHANNEL_STATUS_2:
-+	case MADERA_SPD1_TX_CHANNEL_STATUS_3:
-+	case MADERA_SLIMBUS_RX_PORT_STATUS:
-+	case MADERA_SLIMBUS_TX_PORT_STATUS:
-+	case MADERA_FX_CTRL2:
-+	case MADERA_IRQ1_STATUS_1 ... MADERA_IRQ1_STATUS_33:
-+	case MADERA_IRQ1_RAW_STATUS_1 ... MADERA_IRQ1_RAW_STATUS_33:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool cs47l35_32bit_readable_register(struct device *dev,
-+					    unsigned int reg)
-+{
-+	switch (reg) {
-+	case MADERA_WSEQ_SEQUENCE_1 ... MADERA_WSEQ_SEQUENCE_252:
-+	case CS47L35_OTP_HPDET_CAL_1 ... CS47L35_OTP_HPDET_CAL_2:
-+	case MADERA_DSP1_CONFIG_1 ... MADERA_DSP1_SCRATCH_2:
-+	case MADERA_DSP2_CONFIG_1 ... MADERA_DSP2_SCRATCH_2:
-+	case MADERA_DSP3_CONFIG_1 ... MADERA_DSP3_SCRATCH_2:
-+		return true;
-+	default:
-+		return cs47l35_is_adsp_memory(reg);
-+	}
-+}
-+
-+static bool cs47l35_32bit_volatile_register(struct device *dev,
-+					    unsigned int reg)
-+{
-+	switch (reg) {
-+	case MADERA_WSEQ_SEQUENCE_1 ... MADERA_WSEQ_SEQUENCE_252:
-+	case CS47L35_OTP_HPDET_CAL_1 ... CS47L35_OTP_HPDET_CAL_2:
-+	case MADERA_DSP1_CONFIG_1 ... MADERA_DSP1_SCRATCH_2:
-+	case MADERA_DSP2_CONFIG_1 ... MADERA_DSP2_SCRATCH_2:
-+	case MADERA_DSP3_CONFIG_1 ... MADERA_DSP3_SCRATCH_2:
-+		return true;
-+	default:
-+		return cs47l35_is_adsp_memory(reg);
-+	}
-+}
-+
-+const struct regmap_config cs47l35_16bit_spi_regmap = {
-+	.name = "cs47l35_16bit",
-+	.reg_bits = 32,
-+	.pad_bits = 16,
-+	.val_bits = 16,
-+	.reg_format_endian = REGMAP_ENDIAN_BIG,
-+	.val_format_endian = REGMAP_ENDIAN_BIG,
-+
-+	.max_register = 0x1b00,
-+	.readable_reg = cs47l35_16bit_readable_register,
-+	.volatile_reg = cs47l35_16bit_volatile_register,
-+
-+	.cache_type = REGCACHE_RBTREE,
-+	.reg_defaults = cs47l35_reg_default,
-+	.num_reg_defaults = ARRAY_SIZE(cs47l35_reg_default),
-+};
-+EXPORT_SYMBOL_GPL(cs47l35_16bit_spi_regmap);
-+
-+const struct regmap_config cs47l35_16bit_i2c_regmap = {
-+	.name = "cs47l35_16bit",
-+	.reg_bits = 32,
-+	.val_bits = 16,
-+	.reg_format_endian = REGMAP_ENDIAN_BIG,
-+	.val_format_endian = REGMAP_ENDIAN_BIG,
-+
-+	.max_register = 0x1b00,
-+	.readable_reg = cs47l35_16bit_readable_register,
-+	.volatile_reg = cs47l35_16bit_volatile_register,
-+
-+	.cache_type = REGCACHE_RBTREE,
-+	.reg_defaults = cs47l35_reg_default,
-+	.num_reg_defaults = ARRAY_SIZE(cs47l35_reg_default),
-+};
-+EXPORT_SYMBOL_GPL(cs47l35_16bit_i2c_regmap);
-+
-+const struct regmap_config cs47l35_32bit_spi_regmap = {
-+	.name = "cs47l35_32bit",
-+	.reg_bits = 32,
-+	.reg_stride = 2,
-+	.pad_bits = 16,
-+	.val_bits = 32,
-+	.reg_format_endian = REGMAP_ENDIAN_BIG,
-+	.val_format_endian = REGMAP_ENDIAN_BIG,
-+
-+	.max_register = MADERA_DSP3_SCRATCH_2,
-+	.readable_reg = cs47l35_32bit_readable_register,
-+	.volatile_reg = cs47l35_32bit_volatile_register,
-+
-+	.cache_type = REGCACHE_RBTREE,
-+};
-+EXPORT_SYMBOL_GPL(cs47l35_32bit_spi_regmap);
-+
-+const struct regmap_config cs47l35_32bit_i2c_regmap = {
-+	.name = "cs47l35_32bit",
-+	.reg_bits = 32,
-+	.reg_stride = 2,
-+	.val_bits = 32,
-+	.reg_format_endian = REGMAP_ENDIAN_BIG,
-+	.val_format_endian = REGMAP_ENDIAN_BIG,
-+
-+	.max_register = MADERA_DSP3_SCRATCH_2,
-+	.readable_reg = cs47l35_32bit_readable_register,
-+	.volatile_reg = cs47l35_32bit_volatile_register,
-+
-+	.cache_type = REGCACHE_RBTREE,
-+};
-+EXPORT_SYMBOL_GPL(cs47l35_32bit_i2c_regmap);
--- 
-2.11.0
+But there is one corner case that isn't handled in this driver: what if there
+is no AVI InfoFrame (e.g. you receive a DVI signal)?
+
+The CTA-861 spec says that in the absence of an AVI InfoFrame you should use
+limited range for CE formats and full range for IT formats. However, without
+an AVI InfoFrame it is hard to detect a CE format since there is no VIC code.
+In addition, a real DVI source will always transmit full range.
+
+I would recommend that in the absence of an AVI InfoFrame you fall back to
+sRGB with full range quantization. Not quite according to the spec but more
+likely to work in practice.
+
+> +		/* If ycbcr_enc is V4L2_YCBCR_ENC_DEFAULT, we receive RGB */
+> +		if (c->ycbcr_enc == V4L2_YCBCR_ENC_DEFAULT) {
+> +			switch (state->rgb_quantization_range) {
+> +			case V4L2_DV_RGB_RANGE_LIMITED:
+> +				c->quantization = V4L2_QUANTIZATION_FULL_RANGE;
+> +				break;
+> +			case V4L2_DV_RGB_RANGE_FULL:
+> +				c->quantization = V4L2_QUANTIZATION_LIM_RANGE;
+> +				break;
+> +			}
+> +		}
+> +		v4l_dbg(1, debug, state->client,
+> +			"colorspace=%d/%d colorimetry=%d range=%s content=%d\n",
+> +			frame.avi.colorspace, c->colorspace,
+> +			frame.avi.colorimetry,
+> +			v4l2_quantization_names[c->quantization],
+> +			frame.avi.content_type);
+> +
+> +		/* configure upsampler: 0=bypass 1=repeatchroma 2=interpolate */
+> +		reg = io_read(sd, REG_PIX_REPEAT);
+> +		reg &= ~PIX_REPEAT_MASK_UP_SEL;
+> +		if (frame.avi.colorspace == HDMI_COLORSPACE_YUV422)
+> +			reg |= (PIX_REPEAT_CHROMA << PIX_REPEAT_SHIFT);
+> +		io_write(sd, REG_PIX_REPEAT, reg);
+> +
+> +		/* ConfigurePixelRepeater: repeat n-times each pixel */
+> +		reg = io_read(sd, REG_PIX_REPEAT);
+> +		reg &= ~PIX_REPEAT_MASK_REP;
+> +		reg |= frame.avi.pixel_repeat;
+> +		io_write(sd, REG_PIX_REPEAT, reg);
+> +
+> +		/* configure the receiver with the new colorspace */
+> +		tda1997x_configure_csc(sd);
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static void tda1997x_irq_sus(struct tda1997x_state *state, u8 *flags)
+> +{
+> +	struct v4l2_subdev *sd = &state->sd;
+> +	u8 reg, source;
+> +
+> +	source = io_read(sd, REG_INT_FLG_CLR_SUS);
+> +	io_write(sd, REG_INT_FLG_CLR_SUS, source);
+> +
+> +	if (source & MASK_MPT) {
+> +		/* reset MTP in use flag if set */
+> +		if (state->mptrw_in_progress)
+> +			state->mptrw_in_progress = 0;
+> +	}
+> +
+> +	if (source & MASK_SUS_END) {
+> +		/* reset audio FIFO */
+> +		reg = io_read(sd, REG_HDMI_INFO_RST);
+> +		reg |= MASK_SR_FIFO_FIFO_CTRL;
+> +		io_write(sd, REG_HDMI_INFO_RST, reg);
+> +		reg &= ~MASK_SR_FIFO_FIFO_CTRL;
+> +		io_write(sd, REG_HDMI_INFO_RST, reg);
+> +
+> +		/* reset HDMI flags */
+> +		state->hdmi_status = 0;
+> +	}
+> +
+> +	/* filter FMT interrupt based on SUS state */
+> +	reg = io_read(sd, REG_SUS_STATUS);
+> +	if (((reg & MASK_SUS_STATUS) != LAST_STATE_REACHED)
+> +	   || (source & MASK_MPT)) {
+> +		source &= ~MASK_FMT;
+> +	}
+> +
+> +	if (source & (MASK_FMT | MASK_SUS_END)) {
+> +		reg = io_read(sd, REG_SUS_STATUS);
+> +		if ((reg & MASK_SUS_STATUS) != LAST_STATE_REACHED) {
+> +			v4l_err(state->client, "BAD SUS STATUS\n");
+> +			return;
+> +		}
+> +
+> +		/* There is new activity, the status for HDCP repeater state */
+> +		state->state_c5_reached = 0;
+> +
+> +		/* Detect the new resolution */
+> +		if (!tda1997x_detect_std(state))
+> +			v4l2_subdev_notify_event(&state->sd, &tda1997x_ev_fmt);
+> +	}
+> +}
+> +
+> +static void tda1997x_irq_ddc(struct tda1997x_state *state, u8 *flags)
+> +{
+> +	struct v4l2_subdev *sd = &state->sd;
+> +	u8 source;
+> +
+> +	source = io_read(sd, REG_INT_FLG_CLR_DDC);
+> +	io_write(sd, REG_INT_FLG_CLR_DDC, source);
+> +	if (source & MASK_EDID_MTP) {
+> +		/* reset MTP in use flag if set */
+> +		if (state->mptrw_in_progress)
+> +			state->mptrw_in_progress = 0;
+> +	}
+> +
+> +	/* Detection of +5V */
+> +	if (source & MASK_DET_5V) {
+> +		v4l2_ctrl_s_ctrl(state->detect_tx_5v_ctrl,
+> +				 tda1997x_detect_tx_5v(sd));
+> +	}
+> +}
+> +
+> +static void tda1997x_irq_rate(struct tda1997x_state *state, u8 *flags)
+> +{
+> +	struct v4l2_subdev *sd = &state->sd;
+> +	u8 reg, source;
+> +
+> +	u8 irq_status, last_irq_status;
+> +
+> +	source = io_read(sd, REG_INT_FLG_CLR_RATE);
+> +	io_write(sd, REG_INT_FLG_CLR_RATE, source);
+> +
+> +	/* read status regs */
+> +	last_irq_status = irq_status = tda1997x_read_activity_status_regs(sd);
+> +
+> +	/*
+> +	 * read clock status reg until INT_FLG_CLR_RATE is still 0
+> +	 * after the read to make sure its the last one
+> +	 */
+> +	reg = source;
+> +	while (reg != 0) {
+> +		irq_status = tda1997x_read_activity_status_regs(sd);
+> +		reg = io_read(sd, REG_INT_FLG_CLR_RATE);
+> +		io_write(sd, REG_INT_FLG_CLR_RATE, reg);
+> +		source |= reg;
+> +	}
+> +
+> +	/* we only pay attention to stability change events */
+> +	if (source & (MASK_RATE_A_ST | MASK_RATE_B_ST)) {
+> +		int input = (source & MASK_RATE_A_ST)?0:1;
+> +		u8 mask = 1<<input;
+> +
+> +		/* state change */
+> +		if ((irq_status & mask) != (state->activity_status & mask)) {
+> +			/* activity lost */
+> +			if ((irq_status & mask) == 0) {
+> +				v4l_info(state->client,
+> +					 "HDMI-%c: Digital Activity Lost\n",
+> +					 input+'A');
+> +
+> +				/* bypass up/down sampler and pixel repeater */
+> +				reg = io_read(sd, REG_PIX_REPEAT);
+> +				reg &= ~PIX_REPEAT_MASK_UP_SEL;
+> +				reg &= ~PIX_REPEAT_MASK_REP;
+> +				io_write(sd, REG_PIX_REPEAT, reg);
+> +
+> +				if (state->chip_revision == 0)
+> +					tda1997x_reset_n1(state);
+> +
+> +				state->detected_timings = NULL;
+> +				state->input_detect[input] = 0;
+> +				v4l2_subdev_notify_event(sd, &tda1997x_ev_fmt);
+> +			}
+> +
+> +			/* activity detected */
+> +			else {
+> +				v4l_info(state->client,
+> +					 "HDMI-%c: Digital Activity Detected\n",
+> +					 input+'A');
+> +				state->input_detect[input] = 1;
+> +			}
+> +
+> +			/* hold onto current state */
+> +			state->activity_status = (irq_status & mask);
+> +		}
+> +	}
+> +}
+> +
+> +static void tda1997x_irq_info(struct tda1997x_state *state, u8 *flags)
+> +{
+> +	struct v4l2_subdev *sd = &state->sd;
+> +	u8 source;
+> +
+> +	source = io_read(sd, REG_INT_FLG_CLR_INFO);
+> +	io_write(sd, REG_INT_FLG_CLR_INFO, source);
+> +
+> +	/* Audio infoframe */
+> +	if (source & MASK_AUD_IF) {
+> +		tda1997x_parse_infoframe(state, AUD_IF);
+> +		source &= ~MASK_AUD_IF;
+> +	}
+> +
+> +	/* Source Product Descriptor infoframe change */
+> +	if (source & MASK_SPD_IF) {
+> +		tda1997x_parse_infoframe(state, SPD_IF);
+> +		source &= ~MASK_SPD_IF;
+> +	}
+> +
+> +	/* Auxiliary Video Information infoframe */
+> +	if (source & MASK_AVI_IF) {
+> +		tda1997x_parse_infoframe(state, AVI_IF);
+> +		source &= ~MASK_AVI_IF;
+> +	}
+> +}
+> +
+> +static void tda1997x_irq_audio(struct tda1997x_state *state, u8 *flags)
+> +{
+> +	struct v4l2_subdev *sd = &state->sd;
+> +	u8 reg, source;
+> +
+> +	source = io_read(sd, REG_INT_FLG_CLR_AUDIO);
+> +	io_write(sd, REG_INT_FLG_CLR_AUDIO, source);
+> +
+> +	/* reset audio FIFO on FIFO pointer error or audio mute */
+> +	if (source & MASK_ERROR_FIFO_PT ||
+> +	    source & MASK_MUTE_FLG) {
+> +		/* audio reset audio FIFO */
+> +		reg = io_read(sd, REG_SUS_STATUS);
+> +		if ((reg & MASK_SUS_STATUS) == LAST_STATE_REACHED) {
+> +			reg = io_read(sd, REG_HDMI_INFO_RST);
+> +			reg |= MASK_SR_FIFO_FIFO_CTRL;
+> +			io_write(sd, REG_HDMI_INFO_RST, reg);
+> +			reg &= ~MASK_SR_FIFO_FIFO_CTRL;
+> +			io_write(sd, REG_HDMI_INFO_RST, reg);
+> +			/* reset channel status IT if present */
+> +			source &= ~(MASK_CH_STATE);
+> +		}
+> +	}
+> +	if (source & MASK_AUDIO_FREQ_FLG) {
+> +		static const int freq[] = {
+> +			0, 32000, 44100, 48000, 88200, 96000, 176400, 192000
+> +		};
+> +
+> +		reg = io_read(sd, REG_AUDIO_FREQ);
+> +		state->audio_samplerate = freq[reg & 7];
+> +		v4l_info(state->client, "Audio Frequency Change: %dHz\n",
+> +			 state->audio_samplerate);
+> +	}
+> +	if (source & MASK_AUDIO_FLG) {
+> +		reg = io_read(sd, REG_AUDIO_FLAGS);
+> +		if (reg & BIT(AUDCFG_TYPE_DST))
+> +			state->audio_type = AUDCFG_TYPE_DST;
+> +		if (reg & BIT(AUDCFG_TYPE_OBA))
+> +			state->audio_type = AUDCFG_TYPE_OBA;
+> +		if (reg & BIT(AUDCFG_TYPE_HBR))
+> +			state->audio_type = AUDCFG_TYPE_HBR;
+> +		if (reg & BIT(AUDCFG_TYPE_PCM))
+> +			state->audio_type = AUDCFG_TYPE_PCM;
+> +		v4l_info(state->client, "Audio Type: %s\n",
+> +			 audtype_names[state->audio_type]);
+> +	}
+> +}
+> +
+> +static void tda1997x_irq_hdcp(struct tda1997x_state *state, u8 *flags)
+> +{
+> +	struct v4l2_subdev *sd = &state->sd;
+> +	u8 reg, source;
+> +
+> +	source = io_read(sd, REG_INT_FLG_CLR_HDCP);
+> +	io_write(sd, REG_INT_FLG_CLR_HDCP, source);
+> +
+> +	/* reset MTP in use flag if set */
+> +	if (source & MASK_HDCP_MTP)
+> +		state->mptrw_in_progress = 0;
+> +	if (source & MASK_STATE_C5) {
+> +		/* REPEATER: mask AUDIO and IF irqs to avoid IF during auth */
+> +		reg = io_read(sd, REG_INT_MASK_TOP);
+> +		reg &= ~(INTERRUPT_AUDIO | INTERRUPT_INFO);
+> +		io_write(sd, REG_INT_MASK_TOP, reg);
+> +		*flags &= (INTERRUPT_AUDIO | INTERRUPT_INFO);
+> +	}
+> +}
+> +
+> +static irqreturn_t tda1997x_isr_thread(int irq, void *d)
+> +{
+> +	struct tda1997x_state *state = d;
+> +	struct v4l2_subdev *sd = &state->sd;
+> +	u8 flags;
+> +
+> +	mutex_lock(&state->lock);
+> +	do {
+> +		/* read interrupt flags */
+> +		flags = io_read(sd, REG_INT_FLG_CLR_TOP);
+> +		if (flags == 0)
+> +			break;
+> +
+> +		/* SUS interrupt source (Input activity events) */
+> +		if (flags & INTERRUPT_SUS)
+> +			tda1997x_irq_sus(state, &flags);
+> +		/* DDC interrupt source (Display Data Channel) */
+> +		else if (flags & INTERRUPT_DDC)
+> +			tda1997x_irq_ddc(state, &flags);
+> +		/* RATE interrupt source (Digital Input activity) */
+> +		else if (flags & INTERRUPT_RATE)
+> +			tda1997x_irq_rate(state, &flags);
+> +		/* Infoframe change interrupt */
+> +		else if (flags & INTERRUPT_INFO)
+> +			tda1997x_irq_info(state, &flags);
+> +		/* Audio interrupt source:
+> +		 *   freq change, DST,OBA,HBR,ASP flags, mute, FIFO err
+> +		 */
+> +		else if (flags & INTERRUPT_AUDIO)
+> +			tda1997x_irq_audio(state, &flags);
+> +		/* HDCP interrupt source (content protection) */
+> +		if (flags & INTERRUPT_HDCP)
+> +			tda1997x_irq_hdcp(state, &flags);
+> +	} while (flags != 0);
+> +	mutex_unlock(&state->lock);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static bool tda1997x_check_dv_timings(const struct v4l2_dv_timings *timings,
+> +				      void *hdl)
+> +{
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(tda1997x_hdmi_modes); i++) {
+> +		if (v4l2_match_dv_timings(timings, &tda1997x_hdmi_modes[i],
+> +					  0, false))
+> +			return true;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+> +/* -----------------------------------------------------------------------------
+> + * v4l2_subdev_video_ops
+> + */
+> +
+> +static int
+> +tda1997x_g_input_status(struct v4l2_subdev *sd, u32 *status)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +
+> +	mutex_lock(&state->lock);
+> +	if (state->detected_timings)
+> +		*status = 0;
+> +	else
+> +		*status |= V4L2_IN_ST_NO_SIGNAL;
+> +	mutex_unlock(&state->lock);
+> +
+> +	return 0;
+> +};
+> +
+> +static int tda1997x_s_dv_timings(struct v4l2_subdev *sd,
+> +				struct v4l2_dv_timings *timings)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +	int ret;
+> +
+> +	v4l_dbg(1, debug, state->client, "%s\n", __func__);
+> +	if (!timings)
+> +		return -EINVAL;
+> +
+> +	if (v4l2_match_dv_timings(&state->timings, timings, 0, false))
+> +		return 0; /* no changes */
+> +
+> +	if (!v4l2_valid_dv_timings(timings, &tda1997x_dv_timings_cap,
+> +				   tda1997x_check_dv_timings, state))
+> +		return -ERANGE;
+> +
+> +	mutex_lock(&state->lock);
+> +	state->timings = *timings;
+> +	/* setup frame detection window and VHREF timing generator */
+> +	ret = tda1997x_configure_vhref(sd);
+> +	if (ret)
+> +		goto error;
+> +	/* configure colorspace conversion */
+> +	ret = tda1997x_configure_csc(sd);
+> +	if (ret)
+> +		goto error;
+> +	mutex_unlock(&state->lock);
+> +
+> +	return 0;
+> +
+> +error:
+> +	mutex_unlock(&state->lock);
+> +	return ret;
+> +}
+> +
+> +static int tda1997x_g_dv_timings(struct v4l2_subdev *sd,
+> +				 struct v4l2_dv_timings *timings)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +
+> +	v4l_dbg(1, debug, state->client, "%s\n", __func__);
+> +	if (!timings)
+> +		return -EINVAL;
+> +
+> +	mutex_lock(&state->lock);
+> +	*timings = state->timings;
+> +	mutex_unlock(&state->lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static int tda1997x_query_dv_timings(struct v4l2_subdev *sd,
+> +				     struct v4l2_dv_timings *timings)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +	int ret;
+> +
+> +	v4l_dbg(1, debug, state->client, "%s\n", __func__);
+> +	if (!timings)
+> +		return -EINVAL;
+> +
+> +	memset(timings, 0, sizeof(struct v4l2_dv_timings));
+> +	mutex_lock(&state->lock);
+> +	ret = tda1997x_detect_std(state);
+> +	if (!ret)
+> +		*timings = *state->detected_timings;
+> +	mutex_unlock(&state->lock);
+> +
+> +	return ret;
+> +}
+> +
+> +static int tda1997x_s_stream(struct v4l2_subdev *sd, int enable)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +
+> +	v4l_dbg(1, debug, state->client, "%s %d\n", __func__, enable);
+> +	mutex_lock(&state->lock);
+> +	if (!state->detected_timings)
+> +		v4l_dbg(1, debug, state->client, "Invalid HDMI signal\n");
+> +	mutex_unlock(&state->lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct v4l2_subdev_video_ops tda1997x_video_ops = {
+> +	.g_input_status = tda1997x_g_input_status,
+> +	.s_dv_timings = tda1997x_s_dv_timings,
+> +	.g_dv_timings = tda1997x_g_dv_timings,
+> +	.query_dv_timings = tda1997x_query_dv_timings,
+> +	.s_stream = tda1997x_s_stream,
+> +};
+> +
+> +
+> +/* -----------------------------------------------------------------------------
+> + * v4l2_subdev_pad_ops
+> + */
+> +
+> +static int tda1997x_enum_mbus_code(struct v4l2_subdev *sd,
+> +				  struct v4l2_subdev_pad_config *cfg,
+> +				  struct v4l2_subdev_mbus_code_enum *code)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +
+> +	if (code->index > 0)
+> +		return -EINVAL;
+> +
+> +	code->code = state->code;
+
+Hmm. This receiver supports multiple output formats, but you advertise only one.
+That looks wrong. If nothing else, you should be able to switch between RGB and
+YUV 4:4:4 since they use the same port config.
+
+It's a common use-case that you want to switch between RGB and YUV depending on
+the source material (i.e. if you receive a desktop/graphics then RGB is best, if
+you receive video then YUV 4:2:2 or 4:2:0 is best).
+
+Hardcoding just one format won't do.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int tda1997x_fill_format(struct tda1997x_state *state,
+> +				struct v4l2_mbus_framefmt *format)
+> +{
+> +	const struct v4l2_bt_timings *bt;
+> +
+> +	v4l_dbg(1, debug, state->client, "%s\n", __func__);
+> +
+> +	if (!state->detected_timings)
+> +		return -EINVAL;
+> +
+> +	memset(format, 0, sizeof(*format));
+> +	bt = &state->detected_timings->bt;
+> +	format->width = bt->width;
+> +	format->height = bt->height;
+> +	format->colorspace = state->colorimetry.colorspace;
+> +
+> +	return 0;
+> +}
+> +
+> +static int tda1997x_get_pad_format(struct v4l2_subdev *sd,
+> +				   struct v4l2_subdev_pad_config *cfg,
+> +				   struct v4l2_subdev_format *format)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +
+> +	v4l_dbg(1, debug, state->client, "%s\n", __func__);
+> +	if (format->pad != TDA1997X_PAD_SOURCE)
+> +		return -EINVAL;
+> +
+> +	tda1997x_fill_format(state, &format->format);
+> +
+> +	if (format->which == V4L2_SUBDEV_FORMAT_TRY) {
+> +		struct v4l2_mbus_framefmt *fmt;
+> +
+> +		fmt = v4l2_subdev_get_try_format(sd, cfg, format->pad);
+> +		format->format.code = format->format.code;
+> +	} else
+> +		format->format.code = state->code;
+
+No need to mess around with TRY vs ACTIVE. The behavior is the same for
+both.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int tda1997x_set_pad_format(struct v4l2_subdev *sd,
+> +				   struct v4l2_subdev_pad_config *cfg,
+> +				   struct v4l2_subdev_format *format)
+> +{
+> +	struct v4l2_mbus_framefmt *fmt;
+> +
+> +	if (format->pad != TDA1997X_PAD_SOURCE)
+> +		return -EINVAL;
+> +
+> +	if (format->which == V4L2_SUBDEV_FORMAT_ACTIVE)
+> +		return tda1997x_get_pad_format(sd, cfg, format);
+
+Same here, just call return tda1997x_get_pad_format(sd, cfg, format);
+
+But note that it makes no sense to support only one possible mbus code
+when it is clearly possible to switch between multiple output formats.
+
+I'm not sure why I didn't see that earlier...
+
+> +
+> +	fmt = v4l2_subdev_get_try_format(sd, cfg, format->pad);
+> +	*fmt = format->format;
+> +
+> +	return 0;
+> +}
+> +
+> +static int tda1997x_get_edid(struct v4l2_subdev *sd, struct v4l2_edid *edid)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +
+> +	v4l_dbg(1, debug, state->client, "%s pad=%d\n", __func__, edid->pad);
+> +	memset(edid->reserved, 0, sizeof(edid->reserved));
+> +
+> +	if (!state->edid.present)
+> +		return -ENODATA;
+> +
+> +	if (edid->start_block == 0 && edid->blocks == 0) {
+> +		edid->blocks = state->edid.blocks;
+> +		return 0;
+> +	}
+> +
+> +	if (edid->start_block >= state->edid.blocks)
+> +		return -EINVAL;
+> +
+> +	if (edid->start_block + edid->blocks > state->edid.blocks)
+> +		edid->blocks = state->edid.blocks - edid->start_block;
+> +
+> +	memcpy(edid->edid, state->edid.edid + edid->start_block * 128,
+> +	       edid->blocks * 128);
+> +
+> +	return 0;
+> +}
+> +
+> +static int tda1997x_set_edid(struct v4l2_subdev *sd, struct v4l2_edid *edid)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +	int i;
+> +
+> +	v4l_dbg(1, debug, state->client, "%s pad=%d\n", __func__, edid->pad);
+> +	memset(edid->reserved, 0, sizeof(edid->reserved));
+> +
+> +	if (edid->start_block != 0)
+> +		return -EINVAL;
+> +
+> +	if (edid->blocks == 0) {
+> +		state->edid.blocks = 0;
+> +		state->edid.present = 0;
+> +		tda1997x_disable_edid(sd);
+> +		return 0;
+> +	}
+> +
+> +	if (edid->blocks > 2) {
+> +		edid->blocks = 2;
+> +		return -E2BIG;
+> +	}
+> +
+> +	tda1997x_disable_edid(sd);
+> +
+> +	/* write base EDID */
+> +	for (i = 0; i < 128; i++)
+> +		io_write(sd, REG_EDID_IN_BYTE0 + i, edid->edid[i]);
+> +
+> +	/* write CEA Extension */
+> +	for (i = 0; i < 128; i++)
+> +		io_write(sd, REG_EDID_IN_BYTE128 + i, edid->edid[i+128]);
+> +
+> +	tda1997x_enable_edid(sd);
+> +
+> +	return 0;
+> +}
+> +
+> +static int tda1997x_get_dv_timings_cap(struct v4l2_subdev *sd,
+> +				       struct v4l2_dv_timings_cap *cap)
+> +{
+> +	*cap = tda1997x_dv_timings_cap;
+> +	return 0;
+> +}
+> +
+> +static int tda1997x_enum_dv_timings(struct v4l2_subdev *sd,
+> +				    struct v4l2_enum_dv_timings *timings)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +
+> +	return v4l2_enum_dv_timings_cap(timings, &tda1997x_dv_timings_cap,
+> +					tda1997x_check_dv_timings, state);
+> +}
+> +
+> +static const struct v4l2_subdev_pad_ops tda1997x_pad_ops = {
+> +	.enum_mbus_code = tda1997x_enum_mbus_code,
+> +	.get_fmt = tda1997x_get_pad_format,
+> +	.set_fmt = tda1997x_set_pad_format,
+> +	.get_edid = tda1997x_get_edid,
+> +	.set_edid = tda1997x_set_edid,
+> +	.dv_timings_cap = tda1997x_get_dv_timings_cap,
+> +	.enum_dv_timings = tda1997x_enum_dv_timings,
+> +};
+> +
+> +/* -----------------------------------------------------------------------------
+> + * v4l2_subdev_core_ops
+> + */
+> +
+> +static int tda1997x_log_infoframe(struct v4l2_subdev *sd, int addr)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +	union hdmi_infoframe frame;
+> +	u8 buffer[40];
+> +	int len, err;
+> +
+> +	/* read data */
+> +	len = io_readn(sd, addr, sizeof(buffer), buffer);
+> +	v4l2_dbg(1, debug, sd, "infoframe: addr=%d len=%d\n", addr, len);
+> +	err = hdmi_infoframe_unpack(&frame, buffer);
+> +	if (err) {
+> +		v4l_err(state->client,
+> +			"failed parsing %d byte infoframe: 0x%04x/0x%02x\n",
+> +			len, addr, buffer[0]);
+> +		return err;
+> +	}
+> +	hdmi_infoframe_log(KERN_INFO, &state->client->dev, &frame);
+> +
+> +	return 0;
+> +}
+> +
+> +static int tda1997x_log_status(struct v4l2_subdev *sd)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +	struct v4l2_dv_timings timings;
+> +	struct hdmi_avi_infoframe *avi = &state->avi_infoframe;
+> +
+> +	v4l2_info(sd, "-----Chip status-----\n");
+> +	v4l2_info(sd, "Chip: %s N%d\n", state->info->name,
+> +		  state->chip_revision + 1);
+> +	v4l2_info(sd, "EDID Enabled: %s\n", state->edid.present ? "yes" : "no");
+> +
+> +	v4l2_info(sd, "-----Signal status-----\n");
+> +	v4l2_info(sd, "Cable detected (+5V power): %s\n",
+> +		  tda1997x_detect_tx_5v(sd) ? "yes" : "no");
+> +	v4l2_info(sd, "HPD detected: %s\n",
+> +		  tda1997x_detect_tx_hpd(sd) ? "yes" : "no");
+> +
+> +	v4l2_info(sd, "-----Video Timings-----\n");
+> +	if (tda1997x_query_dv_timings(sd, &timings))
+> +		v4l2_info(sd, "No video detected\n");
+> +	else
+> +		v4l2_print_dv_timings(sd->name, "Detected format: ",
+> +				      &timings, true);
+> +	v4l2_print_dv_timings(sd->name, "Configured format: ",
+> +			      &state->timings, true);
+> +
+> +	v4l2_info(sd, "-----Color space-----\n");
+> +	v4l2_info(sd, "Input color space: %s %s %s",
+> +		  hdmi_colorspace_names[avi->colorspace],
+> +		  (avi->colorspace == HDMI_COLORSPACE_RGB) ? "" :
+> +			hdmi_colorimetry_names[avi->colorimetry],
+> +		  v4l2_quantization_names[state->colorimetry.quantization]);
+> +	v4l2_info(sd, "Output color space: %s",
+> +		  vidfmt_names[state->vid_fmt]);
+> +	v4l2_info(sd, "Color space conversion: %s", state->conv ?
+> +		  state->conv->name : "None");
+> +
+> +	v4l2_info(sd, "-----Audio-----\n");
+> +	if (state->audio_channels) {
+> +		v4l2_info(sd, "audio: %dch %dHz\n", state->audio_channels,
+> +			  state->audio_samplerate);
+> +	} else {
+> +		v4l2_info(sd, "audio: none\n");
+> +	}
+> +
+> +	v4l2_info(sd, "-----Infoframes-----\n");
+> +	tda1997x_log_infoframe(sd, AUD_IF);
+> +	tda1997x_log_infoframe(sd, SPD_IF);
+> +	tda1997x_log_infoframe(sd, AVI_IF);
+> +
+> +	return 0;
+> +}
+> +
+> +static int tda1997x_subscribe_event(struct v4l2_subdev *sd,
+> +				    struct v4l2_fh *fh,
+> +				    struct v4l2_event_subscription *sub)
+> +{
+> +	switch (sub->type) {
+> +	case V4L2_EVENT_SOURCE_CHANGE:
+> +		return v4l2_src_change_event_subdev_subscribe(sd, fh, sub);
+> +	case V4L2_EVENT_CTRL:
+> +		return v4l2_ctrl_subdev_subscribe_event(sd, fh, sub);
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static const struct v4l2_subdev_core_ops tda1997x_core_ops = {
+> +	.log_status = tda1997x_log_status,
+> +	.subscribe_event = tda1997x_subscribe_event,
+> +	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
+> +};
+> +
+> +/* -----------------------------------------------------------------------------
+> + * v4l2_subdev_ops
+> + */
+> +
+> +static const struct v4l2_subdev_ops tda1997x_subdev_ops = {
+> +	.core = &tda1997x_core_ops,
+> +	.video = &tda1997x_video_ops,
+> +	.pad = &tda1997x_pad_ops,
+> +};
+> +
+> +/* -----------------------------------------------------------------------------
+> + * v4l2_controls
+> + */
+> +
+> +static int tda1997x_s_ctrl(struct v4l2_ctrl *ctrl)
+> +{
+> +	struct v4l2_subdev *sd = to_sd(ctrl);
+> +	struct tda1997x_state *state = to_state(sd);
+> +
+> +	switch (ctrl->id) {
+> +	/* allow overriding the default RGB quantization range */
+> +	case V4L2_CID_DV_RX_RGB_RANGE:
+> +		state->rgb_quantization_range = ctrl->val;
+> +		tda1997x_configure_csc(sd);
+> +		return 0;
+> +	}
+> +
+> +	return -EINVAL;
+> +};
+> +
+> +static int tda1997x_g_volatile_ctrl(struct v4l2_ctrl *ctrl)
+> +{
+> +	struct v4l2_subdev *sd = to_sd(ctrl);
+> +	struct tda1997x_state *state = to_state(sd);
+> +
+> +	if (ctrl->id == V4L2_CID_DV_RX_IT_CONTENT_TYPE) {
+> +		ctrl->val = state->avi_infoframe.content_type;
+> +		return 0;
+> +	}
+> +	return -EINVAL;
+> +};
+> +
+> +static const struct v4l2_ctrl_ops tda1997x_ctrl_ops = {
+> +	.s_ctrl = tda1997x_s_ctrl,
+> +	.g_volatile_ctrl = tda1997x_g_volatile_ctrl,
+> +};
+> +
+> +static int tda1997x_core_init(struct v4l2_subdev *sd)
+> +{
+> +	struct tda1997x_state *state = to_state(sd);
+> +	struct tda1997x_platform_data *pdata = &state->pdata;
+> +	u8 reg;
+> +	int i;
+> +
+> +	/* disable HPD */
+> +	io_write(sd, REG_HPD_AUTO_CTRL, HPD_AUTO_HPD_UNSEL);
+> +	if (state->chip_revision == 0) {
+> +		io_write(sd, REG_MAN_SUS_HDMI_SEL, MAN_DIS_HDCP | MAN_RST_HDCP);
+> +		io_write(sd, REG_CGU_DBG_SEL, 1 << CGU_DBG_CLK_SEL_SHIFT);
+> +	}
+> +
+> +	/* reset infoframe at end of start-up-sequencer */
+> +	io_write(sd, REG_SUS_SET_RGB2, 0x06);
+> +	io_write(sd, REG_SUS_SET_RGB3, 0x06);
+> +
+> +	/* Enable TMDS pull-ups */
+> +	io_write(sd, REG_RT_MAN_CTRL, RT_MAN_CTRL_RT |
+> +		 RT_MAN_CTRL_RT_B | RT_MAN_CTRL_RT_A);
+> +
+> +	/* enable sync measurement timing */
+> +	tda1997x_cec_write(sd, REG_PWR_CONTROL & 0xff, 0x04);
+> +	/* adjust CEC clock divider */
+> +	tda1997x_cec_write(sd, REG_OSC_DIVIDER & 0xff, 0x03);
+> +	tda1997x_cec_write(sd, REG_EN_OSC_PERIOD_LSB & 0xff, 0xa0);
+> +	io_write(sd, REG_TIMER_D, 0x54);
+> +	/* enable power switch */
+> +	reg = tda1997x_cec_read(sd, REG_CONTROL & 0xff);
+> +	reg |= 0x20;
+> +	tda1997x_cec_write(sd, REG_CONTROL & 0xff, reg);
+> +	mdelay(50);
+> +
+> +	/* read the chip version */
+> +	reg = io_read(sd, REG_VERSION);
+> +	/* get the chip configuration */
+> +	reg = io_read(sd, REG_CMTP_REG10);
+> +
+> +	/* enable interrupts we care about */
+> +	io_write(sd, REG_INT_MASK_TOP,
+> +		 INTERRUPT_HDCP | INTERRUPT_AUDIO | INTERRUPT_INFO |
+> +		 INTERRUPT_RATE | INTERRUPT_SUS);
+> +	/* config_mtp,fmt,sus_end,sus_st */
+> +	io_write(sd, REG_INT_MASK_SUS, MASK_MPT | MASK_FMT | MASK_SUS_END);
+> +	/* rate stability change for inputs A/B */
+> +	io_write(sd, REG_INT_MASK_RATE, MASK_RATE_B_ST | MASK_RATE_A_ST);
+> +	/* aud,spd,avi*/
+> +	io_write(sd, REG_INT_MASK_INFO,
+> +		 MASK_AUD_IF | MASK_SPD_IF | MASK_AVI_IF);
+> +	/* audio_freq,audio_flg,mute_flg,fifo_err */
+> +	io_write(sd, REG_INT_MASK_AUDIO,
+> +		 MASK_AUDIO_FREQ_FLG | MASK_AUDIO_FLG | MASK_MUTE_FLG |
+> +		 MASK_ERROR_FIFO_PT);
+> +	/* HDCP C5 state reached */
+> +	io_write(sd, REG_INT_MASK_HDCP, MASK_STATE_C5);
+> +	/* 5V detect and HDP pulse end */
+> +	io_write(sd, REG_INT_MASK_DDC, MASK_DET_5V);
+> +	/* don't care about AFE/MODE */
+> +	io_write(sd, REG_INT_MASK_AFE, 0);
+> +	io_write(sd, REG_INT_MASK_MODE, 0);
+> +
+> +	/* clear all interrupts */
+> +	io_write(sd, REG_INT_FLG_CLR_TOP, 0xff);
+> +	io_write(sd, REG_INT_FLG_CLR_SUS, 0xff);
+> +	io_write(sd, REG_INT_FLG_CLR_DDC, 0xff);
+> +	io_write(sd, REG_INT_FLG_CLR_RATE, 0xff);
+> +	io_write(sd, REG_INT_FLG_CLR_MODE, 0xff);
+> +	io_write(sd, REG_INT_FLG_CLR_INFO, 0xff);
+> +	io_write(sd, REG_INT_FLG_CLR_AUDIO, 0xff);
+> +	io_write(sd, REG_INT_FLG_CLR_HDCP, 0xff);
+> +	io_write(sd, REG_INT_FLG_CLR_AFE, 0xff);
+> +
+> +	/* init TMDS equalizer */
+> +	if (state->chip_revision == 0)
+> +		io_write(sd, REG_CGU_DBG_SEL, 1 << CGU_DBG_CLK_SEL_SHIFT);
+> +	io_write24(sd, REG_CLK_MIN_RATE, CLK_MIN_RATE);
+> +	io_write24(sd, REG_CLK_MAX_RATE, CLK_MAX_RATE);
+> +	if (state->chip_revision == 0)
+> +		io_write(sd, REG_WDL_CFG, WDL_CFG_VAL);
+> +	/* DC filter */
+> +	io_write(sd, REG_DEEP_COLOR_CTRL, DC_FILTER_VAL);
+> +	/* disable test pattern */
+> +	io_write(sd, REG_SVC_MODE, 0x00);
+> +	/* update HDMI INFO CTRL */
+> +	io_write(sd, REG_INFO_CTRL, 0xff);
+> +	/* write HDMI INFO EXCEED value */
+> +	io_write(sd, REG_INFO_EXCEED, 3);
+> +
+> +	if (state->chip_revision == 0)
+> +		tda1997x_reset_n1(state);
+> +
+> +	/*
+> +	 * No HDCP acknowledge when HDCP is disabled
+> +	 * and reset SUS to force format detection
+> +	 */
+> +	tda1997x_hdmi_info_reset(sd, NACK_HDCP, true);
+> +
+> +	/* Set HPD low */
+> +	tda1997x_manual_hpd(sd, HPD_LOW_BP);
+> +
+> +	/* Configure receiver capabilities */
+> +	io_write(sd, REG_HDCP_BCAPS, HDCP_HDMI | HDCP_FAST_REAUTH);
+> +
+> +	/* Configure HDMI: Auto HDCP mode, packet controlled mute */
+> +	reg = HDMI_CTRL_MUTE_AUTO << HDMI_CTRL_MUTE_SHIFT;
+> +	reg |= HDMI_CTRL_HDCP_AUTO << HDMI_CTRL_HDCP_SHIFT;
+> +	io_write(sd, REG_HDMI_CTRL, reg);
+> +
+> +	/* reset start-up-sequencer to force format detection */
+> +	tda1997x_hdmi_info_reset(sd, 0, true);
+> +
+> +	/* disable matrix conversion */
+> +	reg = io_read(sd, REG_VDP_CTRL);
+> +	reg |= VDP_CTRL_MATRIX_BP;
+> +	io_write(sd, REG_VDP_CTRL, reg);
+> +
+> +	/* set video output mode */
+> +	tda1997x_configure_vidout(state);
+> +
+> +	/* configure video output port */
+> +	for (i = 0; i < 9; i++) {
+> +		v4l_dbg(1, debug, state->client, "vidout_cfg[%d]=0x%02x\n", i,
+> +			pdata->vidout_port_cfg[i]);
+> +		io_write(sd, REG_VP35_32_CTRL + i, pdata->vidout_port_cfg[i]);
+> +	}
+> +
+> +	/* configure audio output port */
+> +	tda1997x_configure_audout(sd, 0);
+> +
+> +	/* configure audio clock freq */
+> +	switch (pdata->audout_mclk_fs) {
+> +	case 512:
+> +		reg = AUDIO_CLOCK_SEL_512FS;
+> +		break;
+> +	case 256:
+> +		reg = AUDIO_CLOCK_SEL_256FS;
+> +		break;
+> +	case 128:
+> +		reg = AUDIO_CLOCK_SEL_128FS;
+> +		break;
+> +	case 64:
+> +		reg = AUDIO_CLOCK_SEL_64FS;
+> +		break;
+> +	case 32:
+> +		reg = AUDIO_CLOCK_SEL_32FS;
+> +		break;
+> +	default:
+> +		reg = AUDIO_CLOCK_SEL_16FS;
+> +		break;
+> +	}
+> +	io_write(sd, REG_AUDIO_CLOCK, reg);
+> +
+> +	/* reset advanced infoframes (ISRC1/ISRC2/ACP) */
+> +	tda1997x_hdmi_info_reset(sd, RESET_AI, false);
+> +	/* reset infoframe */
+> +	tda1997x_hdmi_info_reset(sd, RESET_IF, false);
+> +	/* reset audio infoframes */
+> +	tda1997x_hdmi_info_reset(sd, RESET_AUDIO, false);
+> +	/* reset gamut */
+> +	tda1997x_hdmi_info_reset(sd, RESET_GAMUT, false);
+> +
+> +	/* get initial HDMI status */
+> +	state->hdmi_status = io_read(sd, REG_HDMI_FLAGS);
+> +
+> +	return 0;
+> +}
+> +
+> +static int tda1997x_set_power(struct tda1997x_state *state, bool on)
+> +{
+> +	int ret = 0;
+> +
+> +	if (on) {
+> +		ret = regulator_bulk_enable(TDA1997X_NUM_SUPPLIES,
+> +					     state->supplies);
+> +		msleep(300);
+> +	} else {
+> +		ret = regulator_bulk_disable(TDA1997X_NUM_SUPPLIES,
+> +					     state->supplies);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static const struct i2c_device_id tda1997x_i2c_id[] = {
+> +	{"tda19971", (kernel_ulong_t)&tda1997x_chip_info[TDA19971]},
+> +	{"tda19973", (kernel_ulong_t)&tda1997x_chip_info[TDA19973]},
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(i2c, tda1997x_i2c_id);
+> +
+> +static const struct of_device_id tda1997x_of_id[] __maybe_unused = {
+> +	{ .compatible = "nxp,tda19971", .data = &tda1997x_chip_info[TDA19971] },
+> +	{ .compatible = "nxp,tda19973", .data = &tda1997x_chip_info[TDA19973] },
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(of, tda1997x_of_id);
+> +
+> +static int tda1997x_parse_dt(struct tda1997x_state *state)
+> +{
+> +	struct tda1997x_platform_data *pdata = &state->pdata;
+> +	struct v4l2_fwnode_endpoint bus_cfg;
+> +	struct device_node *ep;
+> +	struct device_node *np;
+> +	unsigned int flags;
+> +	const char *str;
+> +	int ret;
+> +	u32 v;
+> +
+> +	/*
+> +	 * setup default values:
+> +	 * - HREF: active high from start to end of row
+> +	 * - VS: Vertical Sync active high at beginning of frame
+> +	 * - DE: Active high when data valid
+> +	 * - A_CLK: 128*Fs
+> +	 */
+> +	pdata->vidout_sel_hs = HS_HREF_SEL_HREF_VHREF;
+> +	pdata->vidout_sel_vs = VS_VREF_SEL_VREF_HDMI;
+> +	pdata->vidout_sel_de = DE_FREF_SEL_DE_VHREF;
+> +
+> +	np = state->client->dev.of_node;
+> +	ep = of_graph_get_next_endpoint(np, NULL);
+> +	if (!ep)
+> +		return -EINVAL;
+> +
+> +	ret = v4l2_fwnode_endpoint_parse(of_fwnode_handle(ep), &bus_cfg);
+> +	if (ret) {
+> +		of_node_put(ep);
+> +		return ret;
+> +	}
+> +	of_node_put(ep);
+> +
+> +	/* polarity of HS/VS/DE */
+> +	flags = bus_cfg.bus.parallel.flags;
+> +	if (flags & V4L2_MBUS_HSYNC_ACTIVE_LOW)
+> +		pdata->vidout_inv_hs = 1;
+> +	if (flags & V4L2_MBUS_VSYNC_ACTIVE_LOW)
+> +		pdata->vidout_inv_vs = 1;
+> +	if (flags & V4L2_MBUS_DATA_ACTIVE_LOW)
+> +		pdata->vidout_inv_de = 1;
+> +	pdata->vidout_bus_width = bus_cfg.bus.parallel.bus_width;
+> +
+> +	/* video output port config */
+> +	ret = of_property_count_u32_elems(np, "nxp,vidout-portcfg");
+> +	if (ret > 0) {
+> +		u32 reg, val, i;
+> +
+> +		for (i = 0; i < ret / 2 && i < 9; i++) {
+> +			of_property_read_u32_index(np, "nxp,vidout-portcfg",
+> +						   i * 2, &reg);
+> +			of_property_read_u32_index(np, "nxp,vidout-portcfg",
+> +						   i * 2 + 1, &val);
+> +			if (reg < 9)
+> +				pdata->vidout_port_cfg[reg] = val;
+> +		}
+> +	} else {
+> +		v4l_err(state->client, "nxp,vidout-portcfg missing\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* default to channel layout dictated by packet header */
+> +	pdata->audout_layoutauto = true;
+> +
+> +	pdata->audout_format = AUDFMT_TYPE_DISABLED;
+> +	if (!of_property_read_string(np, "nxp,audout-format", &str)) {
+> +		if (strcmp(str, "i2s") == 0)
+> +			pdata->audout_format = AUDFMT_TYPE_I2S;
+> +		else if (strcmp(str, "spdif") == 0)
+> +			pdata->audout_format = AUDFMT_TYPE_SPDIF;
+> +		else {
+> +			v4l_err(state->client, "nxp,audout-format invalid\n");
+> +			return -EINVAL;
+> +		}
+> +		if (!of_property_read_u32(np, "nxp,audout-layout", &v)) {
+> +			switch (v) {
+> +			case 0:
+> +			case 1:
+> +				break;
+> +			default:
+> +				v4l_err(state->client,
+> +					"nxp,audout-layout invalid\n");
+> +				return -EINVAL;
+> +			}
+> +			pdata->audout_layout = v;
+> +		}
+> +		if (!of_property_read_u32(np, "nxp,audout-width", &v)) {
+> +			switch (v) {
+> +			case 16:
+> +			case 32:
+> +				break;
+> +			default:
+> +				v4l_err(state->client,
+> +					"nxp,audout-width invalid\n");
+> +				return -EINVAL;
+> +			}
+> +			pdata->audout_width = v;
+> +		}
+> +		if (!of_property_read_u32(np, "nxp,audout-mclk-fs", &v)) {
+> +			switch (v) {
+> +			case 512:
+> +			case 256:
+> +			case 128:
+> +			case 64:
+> +			case 32:
+> +			case 16:
+> +				break;
+> +			default:
+> +				v4l_err(state->client,
+> +					"nxp,audout-mclk-fs invalid\n");
+> +				return -EINVAL;
+> +			}
+> +			pdata->audout_mclk_fs = v;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int tda1997x_get_regulators(struct tda1997x_state *state)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < TDA1997X_NUM_SUPPLIES; i++)
+> +		state->supplies[i].supply = tda1997x_supply_name[i];
+> +
+> +	return devm_regulator_bulk_get(&state->client->dev,
+> +				       TDA1997X_NUM_SUPPLIES,
+> +				       state->supplies);
+> +}
+> +
+> +static int tda1997x_identify_module(struct tda1997x_state *state)
+> +{
+> +	struct v4l2_subdev *sd = &state->sd;
+> +	enum tda1997x_type type;
+> +	u8 reg;
+> +
+> +	/* Read chip configuration*/
+> +	reg = io_read(sd, REG_CMTP_REG10);
+> +	state->tmdsb_clk = (reg >> 6) & 0x01; /* use tmds clock B_inv for B */
+> +	state->tmdsb_soc = (reg >> 5) & 0x01; /* tmds of input B */
+> +	state->port_30bit = (reg >> 2) & 0x03; /* 30bit vs 24bit */
+> +	state->output_2p5 = (reg >> 1) & 0x01; /* output supply 2.5v */
+> +	switch ((reg >> 4) & 0x03) {
+> +	case 0x00:
+> +		type = TDA19971;
+> +		break;
+> +	case 0x02:
+> +	case 0x03:
+> +		type = TDA19973;
+> +		break;
+> +	default:
+> +		dev_err(&state->client->dev, "unsupported chip ID\n");
+> +		return -EIO;
+> +	}
+> +	if (state->info->type != type) {
+> +		dev_err(&state->client->dev, "chip id mismatch\n");
+> +		return -EIO;
+> +	}
+> +
+> +	/* read chip revision */
+> +	state->chip_revision = io_read(sd, REG_CMTP_REG11);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct media_entity_operations tda1997x_media_ops = {
+> +	.link_validate = v4l2_subdev_link_validate,
+> +};
+> +
+> +
+> +/* -----------------------------------------------------------------------------
+> + * HDMI Audio Codec
+> + */
+> +
+> +/* refine sample-rate based on HDMI source */
+> +static int tda1997x_pcm_startup(struct snd_pcm_substream *substream,
+> +				struct snd_soc_dai *dai)
+> +{
+> +	struct tda1997x_state *state = snd_soc_dai_get_drvdata(dai);
+> +	struct snd_soc_codec *codec = dai->codec;
+> +	struct snd_pcm_runtime *rtd = substream->runtime;
+> +	int rate, err;
+> +
+> +	rate = state->audio_samplerate;
+> +	err = snd_pcm_hw_constraint_minmax(rtd, SNDRV_PCM_HW_PARAM_RATE,
+> +					   rate, rate);
+> +	if (err < 0) {
+> +		dev_err(codec->dev, "failed to constrain samplerate to %dHz\n",
+> +			rate);
+> +		return err;
+> +	}
+> +	dev_info(codec->dev, "set samplerate constraint to %dHz\n", rate);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct snd_soc_dai_ops tda1997x_dai_ops = {
+> +	.startup = tda1997x_pcm_startup,
+> +};
+> +
+> +static struct snd_soc_dai_driver tda1997x_audio_dai = {
+> +	.name = "tda1997x",
+> +	.capture = {
+> +		.stream_name = "Capture",
+> +		.channels_min = 2,
+> +		.channels_max = 8,
+> +		.rates = SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |
+> +			 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |
+> +			 SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 |
+> +			 SNDRV_PCM_RATE_192000,
+> +	},
+> +	.ops = &tda1997x_dai_ops,
+> +};
+> +
+> +static int tda1997x_codec_probe(struct snd_soc_codec *codec)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int tda1997x_codec_remove(struct snd_soc_codec *codec)
+> +{
+> +	return 0;
+> +}
+> +
+> +static struct snd_soc_codec_driver tda1997x_codec_driver = {
+> +	.probe = tda1997x_codec_probe,
+> +	.remove = tda1997x_codec_remove,
+> +	.reg_word_size = sizeof(u16),
+> +};
+> +
+> +static int tda1997x_probe(struct i2c_client *client,
+> +			 const struct i2c_device_id *id)
+> +{
+> +	struct tda1997x_state *state;
+> +	struct tda1997x_platform_data *pdata;
+> +	struct v4l2_subdev *sd;
+> +	struct v4l2_ctrl_handler *hdl;
+> +	struct v4l2_ctrl *ctrl;
+> +	static const struct v4l2_dv_timings cea1920x1080 =
+> +		V4L2_DV_BT_CEA_1920X1080P60;
+> +	int ret;
+> +
+> +	/* Check if the adapter supports the needed features */
+> +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_BYTE_DATA))
+> +		return -EIO;
+> +
+> +	state = kzalloc(sizeof(struct tda1997x_state), GFP_KERNEL);
+> +	if (!state)
+> +		return -ENOMEM;
+> +
+> +	state->client = client;
+> +	pdata = &state->pdata;
+> +	if (IS_ENABLED(CONFIG_OF) && client->dev.of_node) {
+> +		const struct of_device_id *oid;
+> +
+> +		oid = of_match_node(tda1997x_of_id, client->dev.of_node);
+> +		state->info = oid->data;
+> +
+> +		ret = tda1997x_parse_dt(state);
+> +		if (ret < 0) {
+> +			v4l_err(client, "DT parsing error\n");
+> +			goto err_free_state;
+> +		}
+> +	} else if (client->dev.platform_data) {
+> +		struct tda1997x_platform_data *pdata =
+> +			client->dev.platform_data;
+> +		state->info =
+> +			(const struct tda1997x_chip_info *)id->driver_data;
+> +		state->pdata = *pdata;
+> +	} else {
+> +		v4l_err(client, "No platform data\n");
+> +		ret = -ENODEV;
+> +		goto err_free_state;
+> +	}
+> +
+> +	ret = tda1997x_get_regulators(state);
+> +	if (ret)
+> +		goto err_free_state;
+> +
+> +	ret = tda1997x_set_power(state, 1);
+> +	if (ret)
+> +		goto err_free_state;
+> +
+> +	mutex_init(&state->page_lock);
+> +	mutex_init(&state->lock);
+> +	state->page = 0xff;
+> +
+> +	INIT_DELAYED_WORK(&state->delayed_work_enable_hpd,
+> +			  tda1997x_delayed_work_enable_hpd);
+> +
+> +	/* set video format based on chip and bus width */
+> +	ret = tda1997x_identify_module(state);
+> +	if (ret)
+> +		goto err_free_mutex;
+> +
+> +	/* initialize subdev */
+> +	sd = &state->sd;
+> +	v4l2_i2c_subdev_init(sd, client, &tda1997x_subdev_ops);
+> +	snprintf(sd->name, sizeof(sd->name), "%s %d-%04x",
+> +		 id->name, i2c_adapter_id(client->adapter),
+> +		 client->addr);
+> +	sd->flags = V4L2_SUBDEV_FL_HAS_DEVNODE | V4L2_SUBDEV_FL_HAS_EVENTS;
+> +	sd->entity.ops = &tda1997x_media_ops;
+> +
+> +	switch (state->info->type) {
+> +	case TDA19973:
+> +		switch (pdata->vidout_bus_width) {
+> +		case 36: /* 36bit RGB (could also be 36bit YUV) */
+> +			state->code = MEDIA_BUS_FMT_YUV12_1X36;
+
+The comment says RGB, the mbus fmt says YUV. One of the two must be wrong.
+
+> +			break;
+> +		case 24: /* 24bit BT656 (YUV422 semi-planar: 1-cycle) */
+> +			state->code = MEDIA_BUS_FMT_UYVY12_1X24;
+> +			break;
+> +		case 12: /* 12bit BT656 (2-cycle) */
+> +			state->code = MEDIA_BUS_FMT_UYVY12_2X12;
+> +			break;
+> +		}
+> +		break;
+> +	case TDA19971:
+> +		switch (pdata->vidout_bus_width) {
+> +		case 24: /* 24bit YUV (could also be RGB or YUV422) */
+> +			state->code = MEDIA_BUS_FMT_YUV8_1X24;
+> +			break;
+> +		case 20: /* 20bit YUV422 */
+> +			state->code = MEDIA_BUS_FMT_UYVY10_1X20;
+> +			break;
+> +		case 16: /* 16bit BT656 (YUV422 semi-planar: 1-cycle) */
+> +			state->code = MEDIA_BUS_FMT_UYVY8_1X16;
+> +			break;
+> +		case 12: /* 12bit BT656 (2-cycle) */
+> +			state->code = MEDIA_BUS_FMT_UYVY12_2X12;
+> +			break;
+> +		case 10: /* 10bit BT656 (2-cycle) */
+> +			state->code = MEDIA_BUS_FMT_UYVY10_2X10;
+> +			break;
+> +		case 8: /* 8bit BT656 (2-cycle) */
+> +			state->code = MEDIA_BUS_FMT_UYVY8_2X8;
+> +			break;
+> +		}
+> +	}
+> +	switch (state->code) {
+> +	case MEDIA_BUS_FMT_RGB121212_1X36:
+> +	case MEDIA_BUS_FMT_RGB888_1X24:
+> +	case MEDIA_BUS_FMT_YUV12_1X36:
+> +	case MEDIA_BUS_FMT_YUV8_1X24:
+> +		state->bus_type = V4L2_MBUS_PARALLEL;
+> +		state->vid_fmt = OF_FMT_444;
+> +		break;
+> +	case MEDIA_BUS_FMT_UYVY12_1X24:
+> +	case MEDIA_BUS_FMT_UYVY8_1X16:
+> +		state->bus_type = V4L2_MBUS_BT656;
+> +		state->vid_fmt = OF_FMT_422_SMPT;
+> +		break;
+> +	case MEDIA_BUS_FMT_UYVY12_2X12:
+> +	case MEDIA_BUS_FMT_UYVY10_2X10:
+> +	case MEDIA_BUS_FMT_UYVY8_2X8:
+> +		state->bus_type = V4L2_MBUS_BT656;
+> +		state->vid_fmt = OF_FMT_422_CCIR;
+> +		break;
+> +	default:
+> +		v4l_err(state->client, "incompatible code (%x)\n", state->code);
+> +		ret = -EINVAL;
+> +		goto err_free_mutex;
+> +	}
+> +	state->timings = cea1920x1080;
+> +
+> +	/* disable/reset HDCP to get correct I2C access to Rx HDMI */
+> +	io_write(sd, REG_MAN_SUS_HDMI_SEL, MAN_RST_HDCP | MAN_DIS_HDCP);
+> +
+> +	/*
+> +	 * if N2 version, reset compdel_bp as it may generate some small pixel
+> +	 * shifts in case of embedded sync/or delay lower than 4
+> +	 */
+> +	if (state->chip_revision != 0) {
+> +		io_write(sd, REG_MAN_SUS_HDMI_SEL, 0x00);
+> +		io_write(sd, REG_VDP_CTRL, 0x1f);
+> +	}
+> +
+> +	v4l_info(client, "NXP %s N%d detected\n", state->info->name,
+> +		 state->chip_revision + 1);
+> +	v4l_info(client, "video: %dbit %s %s MBUS_FMT=0x%x\n",
+> +		pdata->vidout_bus_width,
+> +		(state->bus_type == V4L2_MBUS_PARALLEL) ? "parallel" : "BT656",
+> +		vidfmt_names[state->vid_fmt],
+> +		state->code);
+> +	if (pdata->audout_format) {
+> +		v4l_info(client, "audio: %dch %s layout%d sysclk=%d*fs\n",
+> +			 pdata->audout_layout ? 2 : 8,
+> +			 audfmt_names[pdata->audout_format],
+> +			 pdata->audout_layout,
+> +			 pdata->audout_mclk_fs);
+> +	}
+> +
+> +	ret = 0x34 + ((io_read(sd, REG_SLAVE_ADDR)>>4) & 0x03);
+> +	state->client_cec = i2c_new_dummy(client->adapter, ret);
+> +	v4l_info(client, "CEC slave address 0x%02x\n", ret);
+> +
+> +	ret = tda1997x_core_init(sd);
+> +	if (ret)
+> +		goto err_free_mutex;
+> +
+> +	/* control handlers */
+> +	hdl = &state->hdl;
+> +	v4l2_ctrl_handler_init(hdl, 5);
+> +	ctrl = v4l2_ctrl_new_std_menu(hdl, &tda1997x_ctrl_ops,
+> +			V4L2_CID_DV_RX_IT_CONTENT_TYPE,
+> +			V4L2_DV_IT_CONTENT_TYPE_NO_ITC, 0,
+> +			V4L2_DV_IT_CONTENT_TYPE_NO_ITC);
+> +	if (ctrl)
+> +		ctrl->flags |= V4L2_CTRL_FLAG_VOLATILE;
+> +	/* custom controls */
+> +	state->detect_tx_5v_ctrl = v4l2_ctrl_new_std(hdl, NULL,
+> +			V4L2_CID_DV_RX_POWER_PRESENT, 0, 1, 0, 0);
+> +	state->rgb_quantization_range_ctrl = v4l2_ctrl_new_std_menu(hdl,
+> +			&tda1997x_ctrl_ops,
+> +			V4L2_CID_DV_RX_RGB_RANGE, V4L2_DV_RGB_RANGE_FULL, 0,
+> +			V4L2_DV_RGB_RANGE_AUTO);
+> +
+> +	/* initialize source pads */
+> +	state->pads[TDA1997X_PAD_SOURCE].flags = MEDIA_PAD_FL_SOURCE;
+> +	ret = media_entity_pads_init(&sd->entity, TDA1997X_NUM_PADS,
+> +		state->pads);
+> +	if (ret) {
+> +		v4l_err(client, "failed entity_init: %d", ret);
+> +		goto err_free_mutex;
+> +	}
+> +
+> +	ret = v4l2_async_register_subdev(sd);
+> +	if (ret)
+> +		goto err_free_media;
+> +
+> +	/* register audio DAI */
+> +	if (pdata->audout_format) {
+> +		u64 formats;
+> +
+> +		if (pdata->audout_width == 32)
+> +			formats = SNDRV_PCM_FMTBIT_S32_LE;
+> +		else
+> +			formats = SNDRV_PCM_FMTBIT_S16_LE;
+> +		tda1997x_audio_dai.capture.formats = formats;
+> +		ret = snd_soc_register_codec(&state->client->dev,
+> +					     &tda1997x_codec_driver,
+> +					     &tda1997x_audio_dai, 1);
+> +		if (ret) {
+> +			dev_err(&client->dev, "register audio codec failed\n");
+> +			goto err_free_media;
+> +		}
+> +		dev_set_drvdata(&state->client->dev, state);
+> +		v4l_info(state->client, "registered audio codec\n");
+> +	}
+> +
+> +	/* request irq */
+> +	ret = devm_request_threaded_irq(&client->dev, client->irq,
+> +					NULL, tda1997x_isr_thread,
+> +					IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+> +					KBUILD_MODNAME, state);
+> +	if (ret) {
+> +		v4l_err(client, "irq%d reg failed: %d\n", client->irq, ret);
+> +		goto err_free_media;
+> +	}
+> +
+> +	return 0;
+> +
+> +err_free_media:
+> +	media_entity_cleanup(&sd->entity);
+> +err_free_mutex:
+> +	cancel_delayed_work(&state->delayed_work_enable_hpd);
+> +	mutex_destroy(&state->page_lock);
+> +	mutex_destroy(&state->lock);
+> +err_free_state:
+> +	kfree(state);
+> +	dev_err(&client->dev, "%s failed: %d\n", __func__, ret);
+> +
+> +	return ret;
+> +}
+> +
+> +static int tda1997x_remove(struct i2c_client *client)
+> +{
+> +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> +	struct tda1997x_state *state = to_state(sd);
+> +	struct tda1997x_platform_data *pdata = &state->pdata;
+> +
+> +	if (pdata->audout_format) {
+> +		snd_soc_unregister_codec(&client->dev);
+> +		mutex_destroy(&state->audio_lock);
+> +	}
+> +
+> +	disable_irq(state->client->irq);
+> +	tda1997x_power_mode(state, 0);
+> +
+> +	v4l2_async_unregister_subdev(sd);
+> +	media_entity_cleanup(&sd->entity);
+> +	regulator_bulk_disable(TDA1997X_NUM_SUPPLIES, state->supplies);
+> +	i2c_unregister_device(state->client_cec);
+> +	cancel_delayed_work(&state->delayed_work_enable_hpd);
+> +	mutex_destroy(&state->page_lock);
+> +	mutex_destroy(&state->lock);
+> +
+> +	kfree(state);
+> +
+> +	return 0;
+> +}
+> +
+> +static struct i2c_driver tda1997x_i2c_driver = {
+> +	.driver = {
+> +		.name = "tda1997x",
+> +		.owner = THIS_MODULE,
+> +		.of_match_table = of_match_ptr(tda1997x_of_id),
+> +	},
+> +	.probe = tda1997x_probe,
+> +	.remove = tda1997x_remove,
+> +	.id_table = tda1997x_i2c_id,
+> +};
+> +
+> +module_i2c_driver(tda1997x_i2c_driver);
+> +
+> +MODULE_AUTHOR("Tim Harvey <tharvey@gateworks.com>");
+> +MODULE_DESCRIPTION("TDA1997X HDMI Receiver driver");
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/include/media/i2c/tda1997x.h b/include/media/i2c/tda1997x.h
+> new file mode 100644
+> index 0000000..0ed3cc2
+> --- /dev/null
+> +++ b/include/media/i2c/tda1997x.h
+> @@ -0,0 +1,41 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * tda1997x - NXP HDMI receiver
+> + *
+> + * Copyright 2017 Tim Harvey <tharvey@gateworks.com>
+> + *
+> + */
+> +
+> +#ifndef _TDA1997X_
+> +#define _TDA1997X_
+> +
+> +/* Platform Data */
+> +struct tda1997x_platform_data {
+> +	u32 vidout_bus_width;
+> +	u8 vidout_port_cfg[9];
+> +	/* pin polarity (1=invert) */
+> +	bool vidout_inv_de;
+> +	bool vidout_inv_hs;
+> +	bool vidout_inv_vs;
+> +	bool vidout_inv_pclk;
+> +	/* clock delays (0=-8, 1=-7 ... 15=+7 pixels) */
+> +	u8 vidout_delay_hs;
+> +	u8 vidout_delay_vs;
+> +	u8 vidout_delay_de;
+> +	u8 vidout_delay_pclk;
+> +	/* sync selections (controls how sync pins are derived) */
+> +	u8 vidout_sel_hs;
+> +	u8 vidout_sel_vs;
+> +	u8 vidout_sel_de;
+> +
+> +	/* Audio Port Output */
+> +	int audout_format;
+> +	u32 audout_mclk_fs;	/* clock multiplier */
+> +	u32 audout_width;	/* 13 or 32 bit */
+> +	u32 audout_layout;	/* layout0=AP0 layout1=AP0,AP1,AP2,AP3 */
+> +	bool audout_layoutauto;	/* audio layout dictated by pkt header */
+> +	bool audout_invert_clk;	/* data valid on rising edge of BCLK */
+> +	bool audio_auto_mute;	/* enable hardware audio auto-mute */
+> +};
+> +
+> +#endif
+> 
+
+Regards,
+
+	Hans
