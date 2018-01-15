@@ -1,85 +1,105 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v3 08/17] ASoC: fsl_ssi: Add DAIFMT define for
-	AC97
-Date: Sun, 14 Jan 2018 20:21:18 -0800
-Message-ID: <1515990087-11598-9-git-send-email-nicoleotsuka@gmail.com>
+Subject: [PATCH v3 12/17] ASoC: fsl_ssi: Move one-time configurations to probe()
+Date: Sun, 14 Jan 2018 20:21:22 -0800
+Message-ID: <1515990087-11598-13-git-send-email-nicoleotsuka@gmail.com>
 References: <1515990087-11598-1-git-send-email-nicoleotsuka@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f196.google.com (mail-pf0-f196.google.com
- [209.85.192.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D53C26734C
- for <alsa-devel@alsa-project.org>; Mon, 15 Jan 2018 05:22:24 +0100 (CET)
-Received: by mail-pf0-f196.google.com with SMTP id b25so1187764pfd.9
- for <alsa-devel@alsa-project.org>; Sun, 14 Jan 2018 20:22:24 -0800 (PST)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1515990087-11598-1-git-send-email-nicoleotsuka@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: timur@tabi.org, broonie@kernel.org, mail@maciej.szmigiero.name
-Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, linux-kernel@vger.kernel.org, caleb@crome.org, lgirdwood@gmail.com, arnaud.mouiche@invoxia.com, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, fabio.estevam@nxp.com, caleb@crome.org, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-The _fsl_ssi_set_dai_fmt() bypasses an undefined format for AC97
-mode. However, it's not really necessary if AC97 has its complete
-format defined.
-
-So this patch adds a DAIFMT macro of complete format including a
-clock direction and polarity.
+The probe() could handle some one-time configurations since
+they will not be changed once being configured.
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Tested-by: Caleb Crome <caleb@crome.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+Changelog
+v2
+ * Moved all to fsl_ssi_hw_init() in platform probe()
+
+ sound/soc/fsl/fsl_ssi.c | 39 ++++++++++++++++++++++++++-------------
+ 1 file changed, 26 insertions(+), 13 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 7a6a32b..b76a517 100644
+index e1fe511..50648f5 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -90,6 +90,16 @@
- 	 SNDRV_PCM_FMTBIT_S24_LE)
- #endif
+@@ -865,7 +865,6 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+ {
+ 	struct regmap *regs = ssi->regs;
+ 	u32 strcr = 0, stcr, srcr, scr, mask;
+-	u8 wm;
  
-+/*
-+ * In AC97 mode, TXDIR bit is forced to 0 and TFDIR bit is forced to 1:
-+ *  - SSI inputs external bit clock and outputs frame sync clock -- CBM_CFS
-+ *  - Also have NB_NF to mark these two clocks will not be inverted
+ 	ssi->dai_fmt = fmt;
+ 
+@@ -874,8 +873,6 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+ 		return -EINVAL;
+ 	}
+ 
+-	fsl_ssi_setup_regvals(ssi);
+-
+ 	regmap_read(regs, REG_SSI_SCR, &scr);
+ 	scr &= ~(SSI_SCR_SYN | SSI_SCR_I2S_MODE_MASK);
+ 	/* Synchronize frame sync clock for TE to avoid data slipping */
+@@ -990,16 +987,6 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+ 	regmap_write(regs, REG_SSI_SRCR, srcr);
+ 	regmap_write(regs, REG_SSI_SCR, scr);
+ 
+-	wm = ssi->fifo_watermark;
+-
+-	regmap_write(regs, REG_SSI_SFCSR,
+-		     SSI_SFCSR_TFWM0(wm) | SSI_SFCSR_RFWM0(wm) |
+-		     SSI_SFCSR_TFWM1(wm) | SSI_SFCSR_RFWM1(wm));
+-
+-	if (ssi->use_dual_fifo)
+-		regmap_update_bits(regs, REG_SSI_SCR,
+-				   SSI_SCR_TCH_EN, SSI_SCR_TCH_EN);
+-
+ 	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_AC97)
+ 		fsl_ssi_setup_ac97(ssi);
+ 
+@@ -1249,6 +1236,29 @@ static struct snd_ac97_bus_ops fsl_ssi_ac97_ops = {
+ };
+ 
+ /**
++ * Initialize SSI registers
 + */
-+#define FSLSSI_AC97_DAIFMT \
-+	(SND_SOC_DAIFMT_AC97 | \
-+	 SND_SOC_DAIFMT_CBM_CFS | \
-+	 SND_SOC_DAIFMT_NB_NF)
++static int fsl_ssi_hw_init(struct fsl_ssi *ssi)
++{
++	u32 wm = ssi->fifo_watermark;
 +
- #define FSLSSI_SIER_DBG_RX_FLAGS \
- 	(SSI_SIER_RFF0_EN | \
- 	 SSI_SIER_RLS_EN | \
-@@ -964,8 +974,7 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- 		scr &= ~SSI_SCR_SYS_CLK_EN;
- 		break;
- 	default:
--		if (!fsl_ssi_is_ac97(ssi))
--			return -EINVAL;
-+		return -EINVAL;
- 	}
++	/* Initialize regvals */
++	fsl_ssi_setup_regvals(ssi);
++
++	/* Set watermarks */
++	regmap_write(ssi->regs, REG_SSI_SFCSR,
++		     SSI_SFCSR_TFWM0(wm) | SSI_SFCSR_RFWM0(wm) |
++		     SSI_SFCSR_TFWM1(wm) | SSI_SFCSR_RFWM1(wm));
++
++	/* Enable Dual FIFO mode */
++	if (ssi->use_dual_fifo)
++		regmap_update_bits(ssi->regs, REG_SSI_SCR,
++				   SSI_SCR_TCH_EN, SSI_SCR_TCH_EN);
++
++	return 0;
++}
++
++/**
+  * Make every character in a string lower-case
+  */
+ static void make_lowercase(char *s)
+@@ -1533,6 +1543,9 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	if (ssi->dai_fmt)
+ 		_fsl_ssi_set_dai_fmt(dev, ssi, ssi->dai_fmt);
  
- 	stcr |= strcr;
-@@ -1372,7 +1381,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	sprop = of_get_property(np, "fsl,mode", NULL);
- 	if (sprop) {
- 		if (!strcmp(sprop, "ac97-slave"))
--			ssi->dai_fmt = SND_SOC_DAIFMT_AC97;
-+			ssi->dai_fmt = FSLSSI_AC97_DAIFMT;
- 	}
++	/* Initially configures SSI registers */
++	fsl_ssi_hw_init(ssi);
++
+ 	if (fsl_ssi_is_ac97(ssi)) {
+ 		u32 ssi_idx;
  
- 	/* Select DMA or FIQ */
 -- 
 2.7.4
