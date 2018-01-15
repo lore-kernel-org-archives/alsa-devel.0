@@ -1,7 +1,7 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v3 11/17] ASoC: fsl_ssi: Use snd_soc_init_dma_data instead
-Date: Sun, 14 Jan 2018 20:21:21 -0800
-Message-ID: <1515990087-11598-12-git-send-email-nicoleotsuka@gmail.com>
+Subject: [PATCH v3 10/17] ASoC: fsl_ssi: Set xFEN0 and xFEN1 together
+Date: Sun, 14 Jan 2018 20:21:20 -0800
+Message-ID: <1515990087-11598-11-git-send-email-nicoleotsuka@gmail.com>
 References: <1515990087-11598-1-git-send-email-nicoleotsuka@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1515990087-11598-1-git-send-email-nicoleotsuka@gmail.com>
@@ -10,31 +10,45 @@ To: timur@tabi.org, broonie@kernel.org, mail@maciej.szmigiero.name
 Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, fabio.estevam@nxp.com, caleb@crome.org, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Since there is a helper function, use it to help readability.
+It'd be safer to enable both FIFOs for TX or RX at the same time.
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Tested-by: Caleb Crome <caleb@crome.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index ba06e94..e1fe511 100644
+index e5efee2..ba06e94 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1110,10 +1110,9 @@ static int fsl_ssi_dai_probe(struct snd_soc_dai *dai)
- {
- 	struct fsl_ssi *ssi = snd_soc_dai_get_drvdata(dai);
+@@ -591,6 +591,11 @@ static void fsl_ssi_setup_regvals(struct fsl_ssi *ssi)
+ 	if (fsl_ssi_is_ac97(ssi))
+ 		vals[RX].scr = vals[TX].scr = 0;
  
--	if (ssi->soc->imx && ssi->use_dma) {
--		dai->playback_dma_data = &ssi->dma_params_tx;
--		dai->capture_dma_data = &ssi->dma_params_rx;
++	if (ssi->use_dual_fifo) {
++		vals[RX].srcr |= SSI_SRCR_RFEN1;
++		vals[TX].stcr |= SSI_STCR_TFEN1;
++	}
++
+ 	if (ssi->use_dma) {
+ 		vals[RX].sier |= SSI_SIER_RDMAE;
+ 		vals[TX].sier |= SSI_SIER_TDMAE;
+@@ -991,14 +996,9 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+ 		     SSI_SFCSR_TFWM0(wm) | SSI_SFCSR_RFWM0(wm) |
+ 		     SSI_SFCSR_TFWM1(wm) | SSI_SFCSR_RFWM1(wm));
+ 
+-	if (ssi->use_dual_fifo) {
+-		regmap_update_bits(regs, REG_SSI_SRCR,
+-				   SSI_SRCR_RFEN1, SSI_SRCR_RFEN1);
+-		regmap_update_bits(regs, REG_SSI_STCR,
+-				   SSI_STCR_TFEN1, SSI_STCR_TFEN1);
++	if (ssi->use_dual_fifo)
+ 		regmap_update_bits(regs, REG_SSI_SCR,
+ 				   SSI_SCR_TCH_EN, SSI_SCR_TCH_EN);
 -	}
-+	if (ssi->soc->imx && ssi->use_dma)
-+		snd_soc_dai_init_dma_data(dai, &ssi->dma_params_tx,
-+					  &ssi->dma_params_rx);
  
- 	return 0;
- }
+ 	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_AC97)
+ 		fsl_ssi_setup_ac97(ssi);
 -- 
 2.7.4
