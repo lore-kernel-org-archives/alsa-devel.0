@@ -1,23 +1,17 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH v2 14/16] ASoC: fsl_ssi: Remove cpu_dai_drv
- from fsl_ssi structure
-Date: Sun, 14 Jan 2018 16:13:06 -0800
-Message-ID: <20180115001305.GD2925@Asurada-CZ80>
-References: <1515652995-15996-1-git-send-email-nicoleotsuka@gmail.com>
- <1515652995-15996-15-git-send-email-nicoleotsuka@gmail.com>
- <4626cd37-c84c-6187-51ae-73fa419b801e@maciej.szmigiero.name>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: ALSA device with slave clock
+Date: Mon, 15 Jan 2018 11:06:06 +0900
+Message-ID: <39fb9333-92d8-8eea-a161-a73013981f0e@sakamocchi.jp>
+References: <c0ec603c-9e3f-54fc-5dbd-7be6121ae5ae@sonarnerd.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f196.google.com (mail-pf0-f196.google.com
- [209.85.192.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 700FE266CFE
- for <alsa-devel@alsa-project.org>; Mon, 15 Jan 2018 01:13:10 +0100 (CET)
-Received: by mail-pf0-f196.google.com with SMTP id e76so7255859pfk.1
- for <alsa-devel@alsa-project.org>; Sun, 14 Jan 2018 16:13:10 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <4626cd37-c84c-6187-51ae-73fa419b801e@maciej.szmigiero.name>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 9311F266CFE
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jan 2018 03:06:08 +0100 (CET)
+In-Reply-To: <c0ec603c-9e3f-54fc-5dbd-7be6121ae5ae@sonarnerd.net>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,18 +21,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, caleb@crome.org, timur@tabi.org, broonie@kernel.org, arnaud.mouiche@invoxia.com, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
+To: Jussi Laako <jussi@sonarnerd.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jan 14, 2018 at 11:42:59PM +0100, Maciej S. Szmigiero wrote:
-> On 11.01.2018 07:43, Nicolin Chen wrote:
-> > The cpu_dai_drv is only used for symmetric_rates. So this patch replaces
-> > it with a synchronous boolean flag.
-> 
-> You make cpu_dai_drv common to all SSI instances instead of per-instance.
-> 
-> What if you have multiple SSIs in the system with different
-> symmetric_{rates,samplebits,channels} settings?
-
-Good catch...it should maintain each cpu_dai_drv separately. Thanks!
+SGksCgpPbiBKYW4gMTUgMjAxOCAwNTozNywgSnVzc2kgTGFha28gd3JvdGU6Cj4gMSkgSG93IGlz
+IGFwcGxpY2F0aW9uIHN1cHBvc2VkIHRvIHVzZSBBTFNBIGNhcHR1cmUgZGV2aWNlIHdoZW4gaXQg
+Cj4gZG9lc24ndCBrbm93IHRoZSBzYW1wbGluZyByYXRlPyBGb3IgZXhhbXBsZSB3aXRoIEFTSU8g
+b24gV2luZG93cyAKPiBhcHBsaWNhdGlvbiBzZXRzIHNhbXBsaW5nIHJhdGUgdG8gMCB0byBpbmRp
+Y2F0ZSBzbGF2ZSBhbmQgdGhlbiBzdGFydHMgCj4gdGhlIGRldmljZSBhbmQgcmV0cmlldmVzIHRo
+ZSByYXRlIHVzaW5nIEFTSU9HZXRTYW1wbGVSYXRlKCkuIFRoZXJlIGFyZSAKPiB0eXBpY2FsbHkg
+YWxzbyByZXNldCByZXF1ZXN0IG1lc3NhZ2VzIHdoZW4gdGhlIHJhdGUgY2hhbmdlcy4KCldoZW4g
+ZGVsZWdhdGluZyB0aGUgZGVzaWNpb24gdG8gQUxTQSBQQ00gY29yZSwgYXBwbGljYXRpb25zIHNo
+b3VsZCBzZXQKJ3N0cnVjdCBzbmRfcGNtX2h3X3BhcmFtcy5pbnRlcnZhbHNbU05EUlZfUENNX0hX
+X1BBUkFNX1JBVEVdJyBmb3IKJ2FueScgc3RhdGUgKHNlZSAnc25kX2ludGVydmFsX2FueSgpJyBp
+biAnc3JjL3BjbS9pbnRlcnZhbF9pbmxpbmUuaCcgb2YKYWxzYS1saWIpLCB0aGVuIGNhbGwgaW9j
+dGwoMikgd2l0aCAnU05EUlZfUENNX0lPQ1RMX0hXX1BBUkFNUycgY29tbWFuZC4KSW4gdGhpcyBj
+YXNlLCBBTFNBIFBDTSBjb3JlIHNlbGVjdCB0aGUgX21pbmltdW1fIHZhbHVlIG9mIGF2YWlsYWJs
+ZQpzYW1wbGluZyByYXRlcyBzdXBwb3J0ZWQgYnkgdGhlIGRyaXZlci4gWW91IGNhbiBzZWUgdGhl
+IHNlbGVjdGlvbgpwcm9jZXNzIGluICdzbmRfcGNtX2h3X3BhcmFtc19jaG9vc2UoKScgaW4gJ3Nv
+dW5kL2NvcmUvcGNtX25hdGl2ZS5jJyBvZiAKa2VybmVsIHNvdXJjZS4KCldoZW4gYXBwbHlpbmcg
+cmVzdHJpY3Rpb25zIHRvIHRoZSBhdmFpbGFibGUgc2FtcGxpbmcgcmF0ZXMsIEFMU0EgUENNCmRy
+aXZlcnMgYXJlIGV4cGVjdGVkIHRvIGRlc2NyaWJlIHJlbGV2YW50IHBhcmFtZXRlcnMgb24KJ3N0
+cnVjdCBzbmRfcGNtX2hhcmR3YXJlJyBwcm9wZXJseSB3aGVuIGhhbmRsaW5nIGNhbGxzIG9mIG9w
+ZW4oMikgdG8KYW55IEFMU0EgUENNIGNoYXJhY3RlciBkZXZpY2VzLgoKYGBgCihpbmNsdWRlL3Nv
+dW5kL3BjbS5oKQpzdHJ1Y3Qgc25kX3BjbV9oYXJkd2FyZSB7CiAgIC4uLgogICB1bnNpZ25lZCBp
+bnQgcmF0ZXM7CiAgIHVuc2lnbmVkIGludCByYXRlX21pbjsKICAgdW5zaWduZWQgaW50IHJhdGVf
+bWF4OwogICAuLi4KfTsKYGBgCgpCZWxvdyBpcyBhbiBleGFtcGxlIHRvIGxpbWl0IGF2YWlsYWJs
+ZSBzYW1wbGluZyByYXRlcyBqdXN0IHRvIDQ0MTAwLgoKYGBgCihJbiBhbiBpbXBsZW1lbnRhdGlv
+biBvZiAnc3RydWN0IHNuZF9wY21fb3BzLm9wZW4nKQpzdHJ1Y3Qgc25kX3BjbV9oYXJkd2FyZSBp
+bmZvOwouLi4KaW5mby5yYXRlX21pbiA9IDQ0MTAwOwppbmZvLnJhdGVfbWF4ID0gNDQxMDA7Cmlu
+Zm8ucmF0ZXMgPSBzbmRfcGNtX3JhdGVfdG9fcmF0ZV9iaXQoNDQxMDApOwpzdWJzdHJlYW0tPnJ1
+bnRpbWUuaHcgPSBpbmZvOwouLi4KYGBgCgpZb3UgY2FuIHNlZSBhY3R1YWwgZXhhbXBsZSBpbiBz
+bmQtZGljZSBkcml2ZXIgaW4KJ3NvdW5kL2ZpcmV3aXJlL2RpY2UvZGljZS1wY20uYycgKCdsaW1p
+dF9jaGFubmVsc19hbmRfcmF0ZXMoKScpLiBGb3IKc2V2ZXJhbCByZWFzb25zLCB0aGlzIGRyaXZl
+ciByZWFkcyByZWdpc3RlcnMgb24gdGFyZ2V0IGRldmljZXMsIHRoZW4KbGltaXQgc2FtcGxpbmcg
+cmF0ZSBmb3IgQUxTQSBQQ00gc3Vic3RyZWFtIHRvIGFjdHVhbCBzdXBwb3J0ZWQgc2FtcGxpbmcK
+cmF0ZS4gVGhlIHN0YXRlIG9mIGRldmljZSBjYW4gYmUgY2hhbmdlZCBieSB0aGUgb3RoZXIgYXBw
+bGljYXRpb25zLCBzbwp0aGUgZHJpdmVyIGR5bmFtaWNhbGx5IGNoYW5nZSB0aGUgcmVzdHJpY3Rp
+b24uCgo+IDIpIFNvbWUgVVNCIGRldmljZXMgaGF2ZSBpbmRpY2F0b3IgZm9yIGxvY2sgc3RhdHVz
+IGJldHdlZW4gc2V0IHNhbXBsaW5nIAo+IHJhdGUgYW5kIGRldGVjdGVkIGlucHV0IHJhdGUuIE9u
+ZSBzdWNoIGRldmljZSBJIGhhdmUgaXMgTW90dSA4RCAoVUFDMiAKPiBkZXZpY2UpOgo+ICDCoMKg
+wqAgU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0ludGVybmFsIENsb2NrIFZhbGlkaXR5JywwCj4gIMKg
+wqDCoMKgwqAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCj4gIMKgwqDCoMKg
+wqAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KPiAgwqDCoMKgwqDCoCBNb25vOiBQbGF5YmFjayBb
+b25dCj4gQXMgbG9uZyBhcyB0aGUgc3RhdHVzIGlzIHZhbGlkLCBJIGNhbiBzZXQgc2FtcGxpbmcg
+cmF0ZSB0byB0aGUgc2FtZSwgb3IgCj4gc29tZXRoaW5nIGVsc2UuIFdoZW4gdGhlIHN0YXR1cyBi
+ZWNvbWVzIGludmFsaWQgZHVlIHRvIHJhdGUgbWlzbWF0Y2gsIAo+IEFMU0EgZmFpbHMgdG8gc2V0
+IGFueSBvZiB0aGUgc2FtcGxpbmcgcmF0ZXMsIGV2ZW4gY29ycmVjdCBvbmUgYW5kIAo+IHRoZXJl
+J3MgYW4gZXJyb3IgbWVzc2FnZSBpbiBkbWVzZzogInVzYiAzLTE0OiBjbG9jayBzb3VyY2UgMSBp
+cyBub3QgCj4gdmFsaWQsIGNhbm5vdCB1c2UiLiBTbyB0aGUgY2xvY2sgc291cmNlIGNhbm5vdCBi
+ZSBtYWRlIHZhbGlkIGFnYWluIGJ5IAo+IGNoYW5naW5nIHNhbXBsaW5nIHJhdGUgb25jZSBpdCBo
+YXMgYmVjb21lIGludmFsaWQsIGJlY2F1c2UgaXQgaXMgCj4gY3VycmVudGx5IGludmFsaWQuLi4K
+CkkndmUgbmV2ZXIgcmVhZCByZWxhdGVkIGNvZGVzIGZvciB5b3VyIGRldmljZS4gSW4gbXkgb3Bp
+bmlvbiwgY3VycmVudAonc25kLXVzYi1hdWRpbycgZG9lc24ndCBoYW5kbGUgc3VjaCByZXN0cmlj
+dGlvbiBjb3JyZWN0bHkuIEluIHRoZW9yeSwKdGhlIGRyaXZlciBzaG91bGQgcmVhZCBzdGF0ZSBv
+ZiB0aGUgZGV2aWNlLCB0aGVuIGFwcGx5aW5nIHRoZQpyZXN0cmljdGlvbiB0byBydW50aW1lIG9m
+IHRoZSBQQ00gc3Vic3RyZWFtIHdoZW4gaGFuZGxpbmcgb3BlbigyKSBmcm9tCnVzZXJzcGFjZSBh
+cHBsaWNhdGlvbnMsIGFzIEkgZGVzY3JpYmVkLgoKPiAzKSBXaGF0IGlzIHRoZSBjb3JyZWN0IHdh
+eSB0byBkZWFsIHdpdGggY2xvY2sgc2xhdmUgZGV2aWNlIGZyb20gYm90aCAKPiBkcml2ZXIgYW5k
+IGFwcGxpY2F0aW9uIHBlcnNwZWN0aXZlPyBTbyB0aGF0IGFwcGxpY2F0aW9uIGNhbiByZXRyaWV2
+ZSB0aGUgCj4gY3VycmVudCBzYW1wbGluZyByYXRlLCBpbnN0ZWFkIG9mIHNldHRpbmcgb25lLi4u
+IFVBQzIgaGFzIHByb3Zpc2lvbnMgZm9yIAo+IHRoaXMsIGJ1dCB0aGlzIGRvZXNuJ3Qgc2VlbSB0
+byBiZSBzdXBwb3J0ZWQgYnkgdGhlIGN1cnJlbnQgZHJpdmVyLiBJIAo+IGhhdmUgYWxzbyBzb21l
+IGhhcmR3YXJlIHdoZXJlIEkgd291bGQgbGlrZSB0byBkbyB0aGUgc2FtZSB3aXRoIEkyUyAtIAo+
+IHdoZXJlIGNsb2NrIGdlbmVyYXRvciBpcyBvdXRzaWRlIG9mIHRoZSBTb0MgYW5kIHRoZSBTb0Mg
+aXMganVzdCBhIHNsYXZlIAo+IChmb3IgZXhhbXBsZSBTL1BESUYgb3IgQUVTL0VCVSBpbnB1dCB0
+byBhIFNvQyB3aGVyZSBjbG9jayBpcyBnZW5lcmF0ZWQgCj4gZnJvbSB0aGUgaW5wdXQgc3RyZWFt
+IHVzaW5nIFBMTCkuCgpJdCdzIGJldHRlciBmb3IgeW91ciBkcml2ZXIgdG8gZGVzY3JpYmUgJ3N0
+cnVjdCBzbmRfcGNtX2hhcmR3YXJlJwpjb3JyZWN0bHksIGFzIEkgbm90ZWQuCgpGb3IgdGhlIGlu
+dGVyYWN0aW9uIGJldHdlZW4gYXBwbGljYXRpb24va2VybmVsLXN0dWZmcywgdGhpcyBsb3ctbGV2
+ZWwKc2FtcGxlIHByb2dyYW0gbWF5IGJlIGdvb2QgaW5mb3JtYXRpb24gdG8geW91LgpodHRwczov
+L2dpdGh1Yi5jb20vdGFrYXN3aWUvYWxzYS1pb2N0bC10ZXN0L2Jsb2IvbWFzdGVyL3JlZmluZS1w
+Y20tcGFyYW1zLmMKCgpSZWdhcmRzCgpUYWthc2hpIFNha2Ftb3RvCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
