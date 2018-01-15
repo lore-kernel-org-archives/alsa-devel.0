@@ -1,17 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: ALSA device with slave clock
-Date: Mon, 15 Jan 2018 11:06:06 +0900
-Message-ID: <39fb9333-92d8-8eea-a161-a73013981f0e@sakamocchi.jp>
-References: <c0ec603c-9e3f-54fc-5dbd-7be6121ae5ae@sonarnerd.net>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: [PATCH v3 00/17] ASoC: fsl_ssi: Clean up - program
+	flow level
+Date: Sun, 14 Jan 2018 20:21:10 -0800
+Message-ID: <1515990087-11598-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 9311F266CFE
- for <alsa-devel@alsa-project.org>; Mon, 15 Jan 2018 03:06:08 +0100 (CET)
-In-Reply-To: <c0ec603c-9e3f-54fc-5dbd-7be6121ae5ae@sonarnerd.net>
-Content-Language: en-US
+Received: from mail-pl0-f48.google.com (mail-pl0-f48.google.com
+ [209.85.160.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9668E266CFE
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jan 2018 05:22:16 +0100 (CET)
+Received: by mail-pl0-f48.google.com with SMTP id q2so2799802pll.3
+ for <alsa-devel@alsa-project.org>; Sun, 14 Jan 2018 20:22:16 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,78 +22,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jussi Laako <jussi@sonarnerd.net>, alsa-devel@alsa-project.org
+To: timur@tabi.org, broonie@kernel.org, mail@maciej.szmigiero.name
+Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, linux-kernel@vger.kernel.org, caleb@crome.org, lgirdwood@gmail.com, arnaud.mouiche@invoxia.com, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiBKYW4gMTUgMjAxOCAwNTozNywgSnVzc2kgTGFha28gd3JvdGU6Cj4gMSkgSG93IGlz
-IGFwcGxpY2F0aW9uIHN1cHBvc2VkIHRvIHVzZSBBTFNBIGNhcHR1cmUgZGV2aWNlIHdoZW4gaXQg
-Cj4gZG9lc24ndCBrbm93IHRoZSBzYW1wbGluZyByYXRlPyBGb3IgZXhhbXBsZSB3aXRoIEFTSU8g
-b24gV2luZG93cyAKPiBhcHBsaWNhdGlvbiBzZXRzIHNhbXBsaW5nIHJhdGUgdG8gMCB0byBpbmRp
-Y2F0ZSBzbGF2ZSBhbmQgdGhlbiBzdGFydHMgCj4gdGhlIGRldmljZSBhbmQgcmV0cmlldmVzIHRo
-ZSByYXRlIHVzaW5nIEFTSU9HZXRTYW1wbGVSYXRlKCkuIFRoZXJlIGFyZSAKPiB0eXBpY2FsbHkg
-YWxzbyByZXNldCByZXF1ZXN0IG1lc3NhZ2VzIHdoZW4gdGhlIHJhdGUgY2hhbmdlcy4KCldoZW4g
-ZGVsZWdhdGluZyB0aGUgZGVzaWNpb24gdG8gQUxTQSBQQ00gY29yZSwgYXBwbGljYXRpb25zIHNo
-b3VsZCBzZXQKJ3N0cnVjdCBzbmRfcGNtX2h3X3BhcmFtcy5pbnRlcnZhbHNbU05EUlZfUENNX0hX
-X1BBUkFNX1JBVEVdJyBmb3IKJ2FueScgc3RhdGUgKHNlZSAnc25kX2ludGVydmFsX2FueSgpJyBp
-biAnc3JjL3BjbS9pbnRlcnZhbF9pbmxpbmUuaCcgb2YKYWxzYS1saWIpLCB0aGVuIGNhbGwgaW9j
-dGwoMikgd2l0aCAnU05EUlZfUENNX0lPQ1RMX0hXX1BBUkFNUycgY29tbWFuZC4KSW4gdGhpcyBj
-YXNlLCBBTFNBIFBDTSBjb3JlIHNlbGVjdCB0aGUgX21pbmltdW1fIHZhbHVlIG9mIGF2YWlsYWJs
-ZQpzYW1wbGluZyByYXRlcyBzdXBwb3J0ZWQgYnkgdGhlIGRyaXZlci4gWW91IGNhbiBzZWUgdGhl
-IHNlbGVjdGlvbgpwcm9jZXNzIGluICdzbmRfcGNtX2h3X3BhcmFtc19jaG9vc2UoKScgaW4gJ3Nv
-dW5kL2NvcmUvcGNtX25hdGl2ZS5jJyBvZiAKa2VybmVsIHNvdXJjZS4KCldoZW4gYXBwbHlpbmcg
-cmVzdHJpY3Rpb25zIHRvIHRoZSBhdmFpbGFibGUgc2FtcGxpbmcgcmF0ZXMsIEFMU0EgUENNCmRy
-aXZlcnMgYXJlIGV4cGVjdGVkIHRvIGRlc2NyaWJlIHJlbGV2YW50IHBhcmFtZXRlcnMgb24KJ3N0
-cnVjdCBzbmRfcGNtX2hhcmR3YXJlJyBwcm9wZXJseSB3aGVuIGhhbmRsaW5nIGNhbGxzIG9mIG9w
-ZW4oMikgdG8KYW55IEFMU0EgUENNIGNoYXJhY3RlciBkZXZpY2VzLgoKYGBgCihpbmNsdWRlL3Nv
-dW5kL3BjbS5oKQpzdHJ1Y3Qgc25kX3BjbV9oYXJkd2FyZSB7CiAgIC4uLgogICB1bnNpZ25lZCBp
-bnQgcmF0ZXM7CiAgIHVuc2lnbmVkIGludCByYXRlX21pbjsKICAgdW5zaWduZWQgaW50IHJhdGVf
-bWF4OwogICAuLi4KfTsKYGBgCgpCZWxvdyBpcyBhbiBleGFtcGxlIHRvIGxpbWl0IGF2YWlsYWJs
-ZSBzYW1wbGluZyByYXRlcyBqdXN0IHRvIDQ0MTAwLgoKYGBgCihJbiBhbiBpbXBsZW1lbnRhdGlv
-biBvZiAnc3RydWN0IHNuZF9wY21fb3BzLm9wZW4nKQpzdHJ1Y3Qgc25kX3BjbV9oYXJkd2FyZSBp
-bmZvOwouLi4KaW5mby5yYXRlX21pbiA9IDQ0MTAwOwppbmZvLnJhdGVfbWF4ID0gNDQxMDA7Cmlu
-Zm8ucmF0ZXMgPSBzbmRfcGNtX3JhdGVfdG9fcmF0ZV9iaXQoNDQxMDApOwpzdWJzdHJlYW0tPnJ1
-bnRpbWUuaHcgPSBpbmZvOwouLi4KYGBgCgpZb3UgY2FuIHNlZSBhY3R1YWwgZXhhbXBsZSBpbiBz
-bmQtZGljZSBkcml2ZXIgaW4KJ3NvdW5kL2ZpcmV3aXJlL2RpY2UvZGljZS1wY20uYycgKCdsaW1p
-dF9jaGFubmVsc19hbmRfcmF0ZXMoKScpLiBGb3IKc2V2ZXJhbCByZWFzb25zLCB0aGlzIGRyaXZl
-ciByZWFkcyByZWdpc3RlcnMgb24gdGFyZ2V0IGRldmljZXMsIHRoZW4KbGltaXQgc2FtcGxpbmcg
-cmF0ZSBmb3IgQUxTQSBQQ00gc3Vic3RyZWFtIHRvIGFjdHVhbCBzdXBwb3J0ZWQgc2FtcGxpbmcK
-cmF0ZS4gVGhlIHN0YXRlIG9mIGRldmljZSBjYW4gYmUgY2hhbmdlZCBieSB0aGUgb3RoZXIgYXBw
-bGljYXRpb25zLCBzbwp0aGUgZHJpdmVyIGR5bmFtaWNhbGx5IGNoYW5nZSB0aGUgcmVzdHJpY3Rp
-b24uCgo+IDIpIFNvbWUgVVNCIGRldmljZXMgaGF2ZSBpbmRpY2F0b3IgZm9yIGxvY2sgc3RhdHVz
-IGJldHdlZW4gc2V0IHNhbXBsaW5nIAo+IHJhdGUgYW5kIGRldGVjdGVkIGlucHV0IHJhdGUuIE9u
-ZSBzdWNoIGRldmljZSBJIGhhdmUgaXMgTW90dSA4RCAoVUFDMiAKPiBkZXZpY2UpOgo+ICDCoMKg
-wqAgU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0ludGVybmFsIENsb2NrIFZhbGlkaXR5JywwCj4gIMKg
-wqDCoMKgwqAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCj4gIMKgwqDCoMKg
-wqAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KPiAgwqDCoMKgwqDCoCBNb25vOiBQbGF5YmFjayBb
-b25dCj4gQXMgbG9uZyBhcyB0aGUgc3RhdHVzIGlzIHZhbGlkLCBJIGNhbiBzZXQgc2FtcGxpbmcg
-cmF0ZSB0byB0aGUgc2FtZSwgb3IgCj4gc29tZXRoaW5nIGVsc2UuIFdoZW4gdGhlIHN0YXR1cyBi
-ZWNvbWVzIGludmFsaWQgZHVlIHRvIHJhdGUgbWlzbWF0Y2gsIAo+IEFMU0EgZmFpbHMgdG8gc2V0
-IGFueSBvZiB0aGUgc2FtcGxpbmcgcmF0ZXMsIGV2ZW4gY29ycmVjdCBvbmUgYW5kIAo+IHRoZXJl
-J3MgYW4gZXJyb3IgbWVzc2FnZSBpbiBkbWVzZzogInVzYiAzLTE0OiBjbG9jayBzb3VyY2UgMSBp
-cyBub3QgCj4gdmFsaWQsIGNhbm5vdCB1c2UiLiBTbyB0aGUgY2xvY2sgc291cmNlIGNhbm5vdCBi
-ZSBtYWRlIHZhbGlkIGFnYWluIGJ5IAo+IGNoYW5naW5nIHNhbXBsaW5nIHJhdGUgb25jZSBpdCBo
-YXMgYmVjb21lIGludmFsaWQsIGJlY2F1c2UgaXQgaXMgCj4gY3VycmVudGx5IGludmFsaWQuLi4K
-CkkndmUgbmV2ZXIgcmVhZCByZWxhdGVkIGNvZGVzIGZvciB5b3VyIGRldmljZS4gSW4gbXkgb3Bp
-bmlvbiwgY3VycmVudAonc25kLXVzYi1hdWRpbycgZG9lc24ndCBoYW5kbGUgc3VjaCByZXN0cmlj
-dGlvbiBjb3JyZWN0bHkuIEluIHRoZW9yeSwKdGhlIGRyaXZlciBzaG91bGQgcmVhZCBzdGF0ZSBv
-ZiB0aGUgZGV2aWNlLCB0aGVuIGFwcGx5aW5nIHRoZQpyZXN0cmljdGlvbiB0byBydW50aW1lIG9m
-IHRoZSBQQ00gc3Vic3RyZWFtIHdoZW4gaGFuZGxpbmcgb3BlbigyKSBmcm9tCnVzZXJzcGFjZSBh
-cHBsaWNhdGlvbnMsIGFzIEkgZGVzY3JpYmVkLgoKPiAzKSBXaGF0IGlzIHRoZSBjb3JyZWN0IHdh
-eSB0byBkZWFsIHdpdGggY2xvY2sgc2xhdmUgZGV2aWNlIGZyb20gYm90aCAKPiBkcml2ZXIgYW5k
-IGFwcGxpY2F0aW9uIHBlcnNwZWN0aXZlPyBTbyB0aGF0IGFwcGxpY2F0aW9uIGNhbiByZXRyaWV2
-ZSB0aGUgCj4gY3VycmVudCBzYW1wbGluZyByYXRlLCBpbnN0ZWFkIG9mIHNldHRpbmcgb25lLi4u
-IFVBQzIgaGFzIHByb3Zpc2lvbnMgZm9yIAo+IHRoaXMsIGJ1dCB0aGlzIGRvZXNuJ3Qgc2VlbSB0
-byBiZSBzdXBwb3J0ZWQgYnkgdGhlIGN1cnJlbnQgZHJpdmVyLiBJIAo+IGhhdmUgYWxzbyBzb21l
-IGhhcmR3YXJlIHdoZXJlIEkgd291bGQgbGlrZSB0byBkbyB0aGUgc2FtZSB3aXRoIEkyUyAtIAo+
-IHdoZXJlIGNsb2NrIGdlbmVyYXRvciBpcyBvdXRzaWRlIG9mIHRoZSBTb0MgYW5kIHRoZSBTb0Mg
-aXMganVzdCBhIHNsYXZlIAo+IChmb3IgZXhhbXBsZSBTL1BESUYgb3IgQUVTL0VCVSBpbnB1dCB0
-byBhIFNvQyB3aGVyZSBjbG9jayBpcyBnZW5lcmF0ZWQgCj4gZnJvbSB0aGUgaW5wdXQgc3RyZWFt
-IHVzaW5nIFBMTCkuCgpJdCdzIGJldHRlciBmb3IgeW91ciBkcml2ZXIgdG8gZGVzY3JpYmUgJ3N0
-cnVjdCBzbmRfcGNtX2hhcmR3YXJlJwpjb3JyZWN0bHksIGFzIEkgbm90ZWQuCgpGb3IgdGhlIGlu
-dGVyYWN0aW9uIGJldHdlZW4gYXBwbGljYXRpb24va2VybmVsLXN0dWZmcywgdGhpcyBsb3ctbGV2
-ZWwKc2FtcGxlIHByb2dyYW0gbWF5IGJlIGdvb2QgaW5mb3JtYXRpb24gdG8geW91LgpodHRwczov
-L2dpdGh1Yi5jb20vdGFrYXN3aWUvYWxzYS1pb2N0bC10ZXN0L2Jsb2IvbWFzdGVyL3JlZmluZS1w
-Y20tcGFyYW1zLmMKCgpSZWdhcmRzCgpUYWthc2hpIFNha2Ftb3RvCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+==Change log==
+v3
+ * Reworked the series by taking suggestions from Maciej
+  + Added PATCH-01 to make RX and TX more clearly defined
+  + Replaced "bool dir" with "int dir" in PATCH-04
+  + Replaced "!dir" with "int adir" in PATCH-05
+  + Put CBM_CFS behind the baudclk check to keep the same
+    program flow in PATCH-14
+  + Removed all cpu_dai_drv changes in PATCH-15
+v2
+ * Reworked the series by taking suggestions from Maciej
+  + Added PATCH-01 to keep all ssi->i2s_net updated
+  + Replaced bool tx with bool dir in PATCH-03 and PATCH-06
+  + Moved all initial register configurations from dai probe() to
+    platform probe() so as to let AC97 CODEC successfully probe.
+ * Added Tested-by from Caleb for TDM test cases.
+
+==Background==
+The fsl_ssi driver was designed for PPC originally and then it has
+been updated to support different modes for i.MX Series, including
+SDMA, I2S Master mode, AC97 and older i.MXs with FIQ, by different
+contributors for different use cases in different coding styles.
+
+Additionally, in order to fix/work-around hardware bugs and design
+flaws, the driver made a lot of compromise so now its program flow
+looks very complicated and it's getting hard to maintain or update.
+
+So I am going to clean up the driver on both coding style level and
+program flow level.
+
+==Introduction==
+This series of patches is the second set to clean up fsl_ssi driver
+in the program flow level. Any patch here may impact a fundamental
+test case like playback or record.
+
+==Verification==
+This series of patches require fully tested. I have done such tests
+on i.MX6SoloX with WM8962 using imx_v6_v7_defconfig as:
+ - Playback via I2S Master and Slave mode
+ - Record via I2S Master and Slave mode
+ - Simultaneous playback and record via I2S Master and Slave mode
+ - Background playback with foreground record (starting at different
+   time) via I2S Master and Slave mode
+ - Background record with foreground playback (starting at different
+   time) via I2S Master and Slave mode
+ * All tests above by hacking offline_config to true in imx51.
+
+Caleb has tested v1 with TDM lookback tests on i.MX6.
+
+Example of uncovered tests: AC97, PowerPC and FIQ.
+
+Nicolin Chen (17):
+  ASoC: fsl_ssi: Redefine RX and TX macros
+  ASoC: fsl_ssi: Keep ssi->i2s_net updated
+  ASoC: fsl_ssi: Clean up set_dai_tdm_slot()
+  ASoC: fsl_ssi: Maintain a mask of active streams
+  ASoC: fsl_ssi: Rename fsl_ssi_disable_val macro
+  ASoC: fsl_ssi: Clear FIFO directly in fsl_ssi_config()
+  ASoC: fsl_ssi: Clean up helper functions of trigger()
+  ASoC: fsl_ssi: Add DAIFMT define for AC97
+  ASoC: fsl_ssi: Clean up fsl_ssi_setup_regvals()
+  ASoC: fsl_ssi: Set xFEN0 and xFEN1 together
+  ASoC: fsl_ssi: Use snd_soc_init_dma_data instead
+  ASoC: fsl_ssi: Move one-time configurations to probe()
+  ASoC: fsl_ssi: Setup AC97 in fsl_ssi_hw_init()
+  ASoC: fsl_ssi: Clean up _fsl_ssi_set_dai_fmt()
+  ASoC: fsl_ssi: Add bool synchronous to mark synchronous mode
+  ASoC: fsl_ssi: Move DT related code to a separate probe()
+  ASoC: fsl_ssi: Use ssi->streams instead of reading register
+
+ sound/soc/fsl/fsl_ssi.c | 733 ++++++++++++++++++++++++------------------------
+ sound/soc/fsl/fsl_ssi.h |   3 -
+ 2 files changed, 370 insertions(+), 366 deletions(-)
+
+-- 
+2.7.4
