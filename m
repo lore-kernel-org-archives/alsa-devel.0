@@ -1,75 +1,48 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v3 01/17] ASoC: fsl_ssi: Redefine RX and TX
-	macros
-Date: Sun, 14 Jan 2018 20:21:11 -0800
-Message-ID: <1515990087-11598-2-git-send-email-nicoleotsuka@gmail.com>
+Subject: [PATCH v3 17/17] ASoC: fsl_ssi: Use ssi->streams instead of reading register
+Date: Sun, 14 Jan 2018 20:21:27 -0800
+Message-ID: <1515990087-11598-18-git-send-email-nicoleotsuka@gmail.com>
 References: <1515990087-11598-1-git-send-email-nicoleotsuka@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl0-f66.google.com (mail-pl0-f66.google.com
- [209.85.160.66])
- by alsa0.perex.cz (Postfix) with ESMTP id E950B26731A
- for <alsa-devel@alsa-project.org>; Mon, 15 Jan 2018 05:22:16 +0100 (CET)
-Received: by mail-pl0-f66.google.com with SMTP id 62so2805381pld.7
- for <alsa-devel@alsa-project.org>; Sun, 14 Jan 2018 20:22:16 -0800 (PST)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1515990087-11598-1-git-send-email-nicoleotsuka@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: timur@tabi.org, broonie@kernel.org, mail@maciej.szmigiero.name
-Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, linux-kernel@vger.kernel.org, caleb@crome.org, lgirdwood@gmail.com, arnaud.mouiche@invoxia.com, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, fabio.estevam@nxp.com, caleb@crome.org, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-The RX and TX macros were defined implicitly and there was
-a potential risk if someone changes their values.
-
-Since they were defined to index the array ssi->regvals[2],
-this patch moves these two macros to fsl_ssi.c, closer to
-its owner ssi->regvals. And it also puts some comments here
-to limit their value within [0, 1].
+Since ssi->streams is being updated along with SCR register and
+its SSIEN bit, it's simpler to use it instead.
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Tested-by: Caleb Crome <caleb@crome.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 4 ++++
- sound/soc/fsl/fsl_ssi.h | 3 ---
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index aecd00f..001e453 100644
+index d2072de..2768def 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -56,6 +56,10 @@
- #include "fsl_ssi.h"
- #include "imx-pcm.h"
- 
-+/* Define RX and TX to index ssi->regvals array; Can be 0 or 1 only */
-+#define RX 0
-+#define TX 1
-+
- /**
-  * FSLSSI_I2S_FORMATS: audio formats supported by the SSI
-  *
-diff --git a/sound/soc/fsl/fsl_ssi.h b/sound/soc/fsl/fsl_ssi.h
-index de2fdc5..18f8dd5 100644
---- a/sound/soc/fsl/fsl_ssi.h
-+++ b/sound/soc/fsl/fsl_ssi.h
-@@ -12,9 +12,6 @@
- #ifndef _MPC8610_I2S_H
- #define _MPC8610_I2S_H
- 
--#define RX 0
--#define TX 1
+@@ -803,11 +803,6 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+ 	unsigned int sample_size = params_width(hw_params);
+ 	u32 wl = SSI_SxCCR_WL(sample_size);
+ 	int ret;
+-	u32 scr;
+-	int enabled;
 -
- /* -- SSI Register Map -- */
+-	regmap_read(regs, REG_SSI_SCR, &scr);
+-	enabled = scr & SSI_SCR_SSIEN;
  
- /* SSI Transmit Data Register 0 */
+ 	/*
+ 	 * SSI is properly configured if it is enabled and running in
+@@ -815,7 +810,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+ 	 * that should set separate configurations for STCCR and SRCCR
+ 	 * despite running in the synchronous mode.
+ 	 */
+-	if (enabled && ssi->synchronous)
++	if (ssi->streams && ssi->synchronous)
+ 		return 0;
+ 
+ 	if (fsl_ssi_is_i2s_master(ssi)) {
 -- 
 2.7.4
