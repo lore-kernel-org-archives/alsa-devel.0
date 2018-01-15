@@ -1,7 +1,7 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v4 17/17] ASoC: fsl_ssi: Use ssi->streams instead of reading register
-Date: Mon, 15 Jan 2018 15:16:32 -0800
-Message-ID: <1516058192-65519-18-git-send-email-nicoleotsuka@gmail.com>
+Subject: [PATCH v4 12/17] ASoC: fsl_ssi: Move one-time configurations to probe()
+Date: Mon, 15 Jan 2018 15:16:27 -0800
+Message-ID: <1516058192-65519-13-git-send-email-nicoleotsuka@gmail.com>
 References: <1516058192-65519-1-git-send-email-nicoleotsuka@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1516058192-65519-1-git-send-email-nicoleotsuka@gmail.com>
@@ -10,39 +10,96 @@ To: timur@tabi.org, broonie@kernel.org, mail@maciej.szmigiero.name
 Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, fabio.estevam@nxp.com, caleb@crome.org, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Since ssi->streams is being updated along with SCR register and
-its SSIEN bit, it's simpler to use it instead.
+The probe() could handle some one-time configurations since
+they will not be changed once being configured.
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Tested-by: Caleb Crome <caleb@crome.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+Changelog
+v2
+ * Moved all to fsl_ssi_hw_init() in platform probe()
+
+ sound/soc/fsl/fsl_ssi.c | 39 ++++++++++++++++++++++++++-------------
+ 1 file changed, 26 insertions(+), 13 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 07ec47d..0d06a51 100644
+index e1fe511..50648f5 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -803,11 +803,6 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
- 	unsigned int sample_size = params_width(hw_params);
- 	u32 wl = SSI_SxCCR_WL(sample_size);
- 	int ret;
--	u32 scr;
--	int enabled;
+@@ -865,7 +865,6 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+ {
+ 	struct regmap *regs = ssi->regs;
+ 	u32 strcr = 0, stcr, srcr, scr, mask;
+-	u8 wm;
+ 
+ 	ssi->dai_fmt = fmt;
+ 
+@@ -874,8 +873,6 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+ 		return -EINVAL;
+ 	}
+ 
+-	fsl_ssi_setup_regvals(ssi);
 -
--	regmap_read(regs, REG_SSI_SCR, &scr);
--	enabled = scr & SSI_SCR_SSIEN;
+ 	regmap_read(regs, REG_SSI_SCR, &scr);
+ 	scr &= ~(SSI_SCR_SYN | SSI_SCR_I2S_MODE_MASK);
+ 	/* Synchronize frame sync clock for TE to avoid data slipping */
+@@ -990,16 +987,6 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+ 	regmap_write(regs, REG_SSI_SRCR, srcr);
+ 	regmap_write(regs, REG_SSI_SCR, scr);
  
- 	/*
- 	 * SSI is properly configured if it is enabled and running in
-@@ -815,7 +810,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
- 	 * that should set separate configurations for STCCR and SRCCR
- 	 * despite running in the synchronous mode.
- 	 */
--	if (enabled && ssi->synchronous)
-+	if (ssi->streams && ssi->synchronous)
- 		return 0;
+-	wm = ssi->fifo_watermark;
+-
+-	regmap_write(regs, REG_SSI_SFCSR,
+-		     SSI_SFCSR_TFWM0(wm) | SSI_SFCSR_RFWM0(wm) |
+-		     SSI_SFCSR_TFWM1(wm) | SSI_SFCSR_RFWM1(wm));
+-
+-	if (ssi->use_dual_fifo)
+-		regmap_update_bits(regs, REG_SSI_SCR,
+-				   SSI_SCR_TCH_EN, SSI_SCR_TCH_EN);
+-
+ 	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_AC97)
+ 		fsl_ssi_setup_ac97(ssi);
  
- 	if (fsl_ssi_is_i2s_master(ssi)) {
+@@ -1249,6 +1236,29 @@ static struct snd_ac97_bus_ops fsl_ssi_ac97_ops = {
+ };
+ 
+ /**
++ * Initialize SSI registers
++ */
++static int fsl_ssi_hw_init(struct fsl_ssi *ssi)
++{
++	u32 wm = ssi->fifo_watermark;
++
++	/* Initialize regvals */
++	fsl_ssi_setup_regvals(ssi);
++
++	/* Set watermarks */
++	regmap_write(ssi->regs, REG_SSI_SFCSR,
++		     SSI_SFCSR_TFWM0(wm) | SSI_SFCSR_RFWM0(wm) |
++		     SSI_SFCSR_TFWM1(wm) | SSI_SFCSR_RFWM1(wm));
++
++	/* Enable Dual FIFO mode */
++	if (ssi->use_dual_fifo)
++		regmap_update_bits(ssi->regs, REG_SSI_SCR,
++				   SSI_SCR_TCH_EN, SSI_SCR_TCH_EN);
++
++	return 0;
++}
++
++/**
+  * Make every character in a string lower-case
+  */
+ static void make_lowercase(char *s)
+@@ -1533,6 +1543,9 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	if (ssi->dai_fmt)
+ 		_fsl_ssi_set_dai_fmt(dev, ssi, ssi->dai_fmt);
+ 
++	/* Initially configures SSI registers */
++	fsl_ssi_hw_init(ssi);
++
+ 	if (fsl_ssi_is_ac97(ssi)) {
+ 		u32 ssi_idx;
+ 
 -- 
 2.7.4
