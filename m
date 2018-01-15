@@ -1,167 +1,66 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v7 12/17] gpio: madera: Support Cirrus Logic Madera class codecs
-Date: Mon, 15 Jan 2018 21:44:41 +0200
-Message-ID: <CAHp75VcS6y53oOogr5s2rygo6aOn0keijE=n23Ja=eOYETUsug@mail.gmail.com>
-References: <20180115124205.29042-1-rf@opensource.wolfsonmicro.com> <20180115124205.29042-13-rf@opensource.wolfsonmicro.com>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH v3 14/17] ASoC: fsl_ssi: Clean up
+	_fsl_ssi_set_dai_fmt()
+Date: Mon, 15 Jan 2018 22:16:28 +0100
+Message-ID: <88551d87-1b76-9a30-6781-1d0b6479b317@maciej.szmigiero.name>
+References: <1515990087-11598-1-git-send-email-nicoleotsuka@gmail.com>
+ <1515990087-11598-15-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180115124205.29042-13-rf@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <gnurou@gmail.com>, Rob Herring <robh+dt@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, patches@opensource.wolfsonmicro.com, "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>, devicetree <devicetree@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7E9DC266BBC
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jan 2018 22:16:35 +0100 (CET)
+In-Reply-To: <1515990087-11598-15-git-send-email-nicoleotsuka@gmail.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, caleb@crome.org, timur@tabi.org, arnaud.mouiche@invoxia.com, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 15, 2018 at 2:42 PM, Richard Fitzgerald
-<rf@opensource.wolfsonmicro.com> wrote:
-> This adds support for the GPIOs on Cirrus Logic Madera class codecs.
-> Any pins not used for special functions (see the pinctrl driver) can be
-> used as general single-bit input or output lines. The number of available
-> GPIOs varies between codecs.
+On 15.01.2018 05:21, Nicolin Chen wrote:
+> The _fsl_ssi_set_dai_fmt() is a helper function being called from
+> fsl_ssi_set_dai_fmt() as an ASoC operation and fsl_ssi_hw_init()
+> mainly for AC97 format initialization.
+> 
+> This patch cleans the _fsl_ssi_set_dai_fmt() in following ways:
+> * Removing *dev pointer in the parameters as it's included in the
+>   *ssi pointer of struct fsl_ssi.
+> * Using regmap_update_bits() instead of regmap_read() with masking
+>   the value manually.
+> * Removing TXBIT0 configurations since this bit is set to 1 as its
+>   reset value and there is no use case so far to unset it. And it
+>   is safe to remove since regmap_update_bits() won't touch it.
 
-> +config GPIO_MADERA
-> +       bool "Cirrus Logic Madera class codecs"
+I didn't get any response to a comment I've written about the point
+above during the previous patch iteration:> The old code set this bit in any mode other than AC'97 (where the
+> hardware always treats this bit as set regardless of the actual value).
+> I would play safe here and not rely on this bit being set by a SSI
+> reset on all SSI models.
 
-Not module?
+Maciej
 
-> +/*
-> + * GPIO support for Cirrus Logic Madera codecs
-> + *
-> + * Copyright 2015-2017 Cirrus Logic
-
-SPDX ?
-
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/gpio.h>
-> +#include <linux/kernel.h>
-
-> +#include <linux/module.h>
-
-?!?! Same to the MODULE_*() macros and Co.
-
-> +static int madera_gpio_get_direction(struct gpio_chip *chip,
-> +                                    unsigned int offset)
-> +{
-
-> +       ret = regmap_read(madera->regmap,
-
-> +                         MADERA_GPIO1_CTRL_2 + (2 * offset), &val);
-
-Redundant parens here and everywhere. * has higher priority and noone
-I'm pretty sure can think other way.
-
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       return (val & MADERA_GP1_DIR_MASK) >> MADERA_GP1_DIR_SHIFT;
-
-!! missed ?
-
-> +}
-
-> +static int madera_gpio_direction_out(struct gpio_chip *chip,
-> +                                    unsigned int offset, int value)
-> +{
-> +       struct madera_gpio *madera_gpio = gpiochip_get_data(chip);
-> +       struct madera *madera = madera_gpio->madera;
-> +       unsigned int regval;
-> +       int ret;
-> +
-> +       if (value)
-> +               regval = MADERA_GP1_LVL;
-> +       else
-> +               regval = 0;
-
-Perhaps
-
-regval = value ? ... : 0;
-
-?
-
-> +       if (value)
-> +               regval = MADERA_GP1_LVL;
-> +       else
-> +               regval = 0;
-
-Ditto.
-
-> +static int madera_gpio_probe(struct platform_device *pdev)
-> +{
-> +       struct madera *madera = dev_get_drvdata(pdev->dev.parent);
-> +       struct madera_pdata *pdata = dev_get_platdata(madera->dev);
-> +       struct madera_gpio *madera_gpio;
-> +       int ret;
-
-> +       madera_gpio->madera = madera;
-> +       madera_gpio->gpio_chip = template_chip;
-> +       madera_gpio->gpio_chip.parent = &pdev->dev;
-> +
-
-> +       if (IS_ENABLED(CONFIG_OF_GPIO))
-> +               madera_gpio->gpio_chip.of_node = madera->dev->of_node;
-
-Isn't it done in GPIO core?
-
-> +       if (pdata && pdata->gpio_base)
-> +               madera_gpio->gpio_chip.base = pdata->gpio_base;
-
-platform data in modern driver? Hmm...
-
-> +       else
-> +               madera_gpio->gpio_chip.base = -1;
-
-
-> +
-> +       ret = devm_gpiochip_add_data(&pdev->dev, &madera_gpio->gpio_chip,
-> +                                    madera_gpio);
-> +       if (ret < 0) {
-> +               dev_err(&pdev->dev, "Could not register gpiochip, %d\n", ret);
-> +               return ret;
-> +       }
-> +
-> +       ret = gpiochip_add_pin_range(&madera_gpio->gpio_chip, "madera-pinctrl",
-> +                                    0, 0, madera_gpio->gpio_chip.ngpio);
-> +       if (ret) {
-> +               dev_warn(&pdev->dev, "Failed to add pin range (%d)\n", ret);
-> +               return ret;
-> +       }
-
-Consider if your messages above indeed make value. Hint: device core
-prints a warning if ->probe() fails.
-
-
-> +static struct platform_driver madera_gpio_driver = {
-> +       .driver.name    = "madera-gpio",
-
-Please, do in more portable way, i.e.
- .driver = {
-   .name = "...",
- },
-
-> +       .driver.owner   = THIS_MODULE,
-
-Is this still needed? I suppose below macro does it for ya.
-
-> +       .probe          = madera_gpio_probe,
-> +};
-> +
-> +module_platform_driver(madera_gpio_driver);
-> +
-
-> +MODULE_DESCRIPTION("GPIO interface for Madera codecs");
-> +MODULE_AUTHOR("Nariman Poushin <nariman@opensource.wolfsonmicro.com>");
-> +MODULE_AUTHOR("Richard Fitzgerald <rf@opensource.wolfsonmicro.com>");
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_ALIAS("platform:madera-gpio");
-
-See above
-
--- 
-With Best Regards,
-Andy Shevchenko
+> * Moving baudclk check to the switch-case routine to skip the I2S
+>   master check. And moving SxCCR.DC settings after baudclk check.
+> * Adding format settings for SND_SOC_DAIFMT_AC97 like others.
+> 
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> Tested-by: Caleb Crome <caleb@crome.org>
+> ---
+> Changelog
+> v3
+>  * Put CBM_CFS behind the baudclk check to keep the same program
+>    flow as before
+> 
+>  sound/soc/fsl/fsl_ssi.c | 73 ++++++++++++++++++++++---------------------------
+>  1 file changed, 33 insertions(+), 40 deletions(-)
+> 
