@@ -1,16 +1,19 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] ASoC: au1x: Fix timeout tests in
-	au1xac97c_ac97_read()
-Date: Mon, 15 Jan 2018 11:08:38 +0300
-Message-ID: <20180115080838.q6nupi7rs7k5pdky@mwanda>
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Subject: Re: [PATCH 3/5] ASoC: sam9x5_wm8731: Return -ENODEV
+ when probe does not find OF node
+Date: Mon, 15 Jan 2018 09:20:25 +0100
+Message-ID: <20180115082025.GQ2678@piout.net>
+References: <20180115075213.GA10762@lenoch>
+ <20180115075351.GD10762@lenoch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp2120.oracle.com (userp2120.oracle.com [156.151.31.85])
- by alsa0.perex.cz (Postfix) with ESMTP id C0DCE266FBD
- for <alsa-devel@alsa-project.org>; Mon, 15 Jan 2018 09:08:58 +0100 (CET)
+Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FB5B266FBD
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jan 2018 09:20:25 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <20180115075351.GD10762@lenoch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,39 +23,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Manuel Lauss <manuel.lauss@googlemail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, SF Markus Elfring <elfring@users.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-The loop timeout doesn't work because it's a post op and ends with "tmo"
-set to -1.  I changed it from a post-op to a pre-op and I changed the
-initial the starting value from 5 to 6 so we still iterate 5 times.  I
-left the other as it was because it's a large number.
+On 15/01/2018 at 08:53:51 +0100, Ladislav Michl wrote:
+> Probe should fail with -ENODEV when called with NULL pdev->dev.of_node.
+> 
+> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+> ---
+>  sound/soc/atmel/sam9x5_wm8731.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/atmel/sam9x5_wm8731.c b/sound/soc/atmel/sam9x5_wm8731.c
+> index e6c303ab869d..9db08826b32a 100644
+> --- a/sound/soc/atmel/sam9x5_wm8731.c
+> +++ b/sound/soc/atmel/sam9x5_wm8731.c
+> @@ -84,10 +84,8 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+>  	struct sam9x5_drvdata *priv;
+>  	int ret;
+>  
+> -	if (!np) {
+> -		dev_err(&pdev->dev, "No device node supplied\n");
+> -		return -EINVAL;
+> -	}
+> +	if (!np)
+> +		return -ENODEV;
+>  
 
-Fixes: b3c70c9ea62a ("ASoC: Alchemy AC97C/I2SC audio support")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+This will never happen, you may as well just remove the test.
 
-diff --git a/sound/soc/au1x/ac97c.c b/sound/soc/au1x/ac97c.c
-index 29a97d52e8ad..66d6c52e7761 100644
---- a/sound/soc/au1x/ac97c.c
-+++ b/sound/soc/au1x/ac97c.c
-@@ -91,8 +91,8 @@ static unsigned short au1xac97c_ac97_read(struct snd_ac97 *ac97,
- 	do {
- 		mutex_lock(&ctx->lock);
- 
--		tmo = 5;
--		while ((RD(ctx, AC97_STATUS) & STAT_CP) && tmo--)
-+		tmo = 6;
-+		while ((RD(ctx, AC97_STATUS) & STAT_CP) && --tmo)
- 			udelay(21);	/* wait an ac97 frame time */
- 		if (!tmo) {
- 			pr_debug("ac97rd timeout #1\n");
-@@ -105,7 +105,7 @@ static unsigned short au1xac97c_ac97_read(struct snd_ac97 *ac97,
- 		 * poll, Forrest, poll...
- 		 */
- 		tmo = 0x10000;
--		while ((RD(ctx, AC97_STATUS) & STAT_CP) && tmo--)
-+		while ((RD(ctx, AC97_STATUS) & STAT_CP) && --tmo)
- 			asm volatile ("nop");
- 		data = RD(ctx, AC97_CMDRESP);
- 
+>  	card = devm_kzalloc(&pdev->dev, sizeof(*card), GFP_KERNEL);
+>  	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+> -- 
+> 2.15.1
+> 
+
+-- 
+Alexandre Belloni, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
