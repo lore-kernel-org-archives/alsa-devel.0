@@ -1,55 +1,76 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v4 02/17] ASoC: fsl_ssi: Keep ssi->i2s_net updated
-Date: Mon, 15 Jan 2018 15:16:17 -0800
-Message-ID: <1516058192-65519-3-git-send-email-nicoleotsuka@gmail.com>
+Subject: [PATCH v4 01/17] ASoC: fsl_ssi: Redefine RX and TX
+	macros
+Date: Mon, 15 Jan 2018 15:16:16 -0800
+Message-ID: <1516058192-65519-2-git-send-email-nicoleotsuka@gmail.com>
 References: <1516058192-65519-1-git-send-email-nicoleotsuka@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pl0-f65.google.com (mail-pl0-f65.google.com
+ [209.85.160.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F870266BBC
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jan 2018 00:17:23 +0100 (CET)
+Received: by mail-pl0-f65.google.com with SMTP id 62so4728474pld.7
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jan 2018 15:17:23 -0800 (PST)
 In-Reply-To: <1516058192-65519-1-git-send-email-nicoleotsuka@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: timur@tabi.org, broonie@kernel.org, mail@maciej.szmigiero.name
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, fabio.estevam@nxp.com, caleb@crome.org, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
+Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, linux-kernel@vger.kernel.org, caleb@crome.org, lgirdwood@gmail.com, arnaud.mouiche@invoxia.com, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-The hw_params() overwrites i2s_net settings for special cases like
-mono-channel support, however, it doesn't update ssi->i2s_net as
-set_dai_fmt() does.
+The RX and TX macros were defined implicitly and there was
+a potential risk if someone changes their values.
 
-This patch removes the local i2s_net variable and directly updates
-ssi->i2s_net in the hw_params() so that the driver can simply look
-up the ssi->i2s_net instead of reading the register.
+Since they were defined to index the array ssi->regvals[2],
+this patch moves these two macros to fsl_ssi.c, closer to
+its owner ssi->regvals. And it also puts some comments here
+to limit their value within [0, 1].
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Tested-by: Caleb Crome <caleb@crome.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 4 ++++
+ sound/soc/fsl/fsl_ssi.h | 3 ---
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 001e453..9847a1d 100644
+index aecd00f..001e453 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -838,16 +838,16 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
- 	}
+@@ -56,6 +56,10 @@
+ #include "fsl_ssi.h"
+ #include "imx-pcm.h"
  
- 	if (!fsl_ssi_is_ac97(ssi)) {
--		u8 i2s_net;
- 		/* Normal + Network mode to send 16-bit data in 32-bit frames */
- 		if (fsl_ssi_is_i2s_cbm_cfs(ssi) && sample_size == 16)
--			i2s_net = SSI_SCR_I2S_MODE_NORMAL | SSI_SCR_NET;
--		else
--			i2s_net = ssi->i2s_net;
-+			ssi->i2s_net = SSI_SCR_I2S_MODE_NORMAL | SSI_SCR_NET;
++/* Define RX and TX to index ssi->regvals array; Can be 0 or 1 only */
++#define RX 0
++#define TX 1
 +
-+		/* Use Normal mode to send mono data at 1st slot of 2 slots */
-+		if (channels == 1)
-+			ssi->i2s_net = SSI_SCR_I2S_MODE_NORMAL;
+ /**
+  * FSLSSI_I2S_FORMATS: audio formats supported by the SSI
+  *
+diff --git a/sound/soc/fsl/fsl_ssi.h b/sound/soc/fsl/fsl_ssi.h
+index de2fdc5..18f8dd5 100644
+--- a/sound/soc/fsl/fsl_ssi.h
++++ b/sound/soc/fsl/fsl_ssi.h
+@@ -12,9 +12,6 @@
+ #ifndef _MPC8610_I2S_H
+ #define _MPC8610_I2S_H
  
- 		regmap_update_bits(regs, REG_SSI_SCR,
--				   SSI_SCR_I2S_NET_MASK,
--				   channels == 1 ? 0 : i2s_net);
-+				   SSI_SCR_I2S_NET_MASK, ssi->i2s_net);
- 	}
+-#define RX 0
+-#define TX 1
+-
+ /* -- SSI Register Map -- */
  
- 	/* In synchronous mode, the SSI uses STCCR for capture */
+ /* SSI Transmit Data Register 0 */
 -- 
 2.7.4
