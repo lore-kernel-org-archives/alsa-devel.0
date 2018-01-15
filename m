@@ -1,135 +1,63 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v4 06/17] ASoC: fsl_ssi: Clear FIFO directly in
-	fsl_ssi_config()
-Date: Mon, 15 Jan 2018 15:16:21 -0800
-Message-ID: <1516058192-65519-7-git-send-email-nicoleotsuka@gmail.com>
+Subject: [PATCH v4 09/17] ASoC: fsl_ssi: Clean up fsl_ssi_setup_regvals()
+Date: Mon, 15 Jan 2018 15:16:24 -0800
+Message-ID: <1516058192-65519-10-git-send-email-nicoleotsuka@gmail.com>
 References: <1516058192-65519-1-git-send-email-nicoleotsuka@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl0-f68.google.com (mail-pl0-f68.google.com
- [209.85.160.68])
- by alsa0.perex.cz (Postfix) with ESMTP id DBAD2267621
- for <alsa-devel@alsa-project.org>; Tue, 16 Jan 2018 00:17:28 +0100 (CET)
-Received: by mail-pl0-f68.google.com with SMTP id f4so3336283plr.10
- for <alsa-devel@alsa-project.org>; Mon, 15 Jan 2018 15:17:28 -0800 (PST)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1516058192-65519-1-git-send-email-nicoleotsuka@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: timur@tabi.org, broonie@kernel.org, mail@maciej.szmigiero.name
-Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, linux-kernel@vger.kernel.org, caleb@crome.org, lgirdwood@gmail.com, arnaud.mouiche@invoxia.com, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, fabio.estevam@nxp.com, caleb@crome.org, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-The FIFO clear helper function is just one line of code now.
-So it could be cleaned up by removing it and calling regmap
-directly.
-
-Meanwhile, FIFO clear could be applied to all use cases, not
-confined to AC97. So this patch also moves FIFO clear in the
-trigger() to fsl_ssi_config() and removes the AC97 check.
-
-Note that SOR register is safe from offline_config HW limit.
+This patch cleans fsl_ssi_setup_regvals() by following changes:
+1) Moving DBG bits to the first lines.
+2) Setting SSIE, RE/TE as default and cleaning it for AC97
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Tested-by: Caleb Crome <caleb@crome.org>
 ---
-Changelog
-v3
- * Replaced "bool dir" with "int dir" and "int adir"
-v2
- * Replaced bool tx with bool dir
-
- sound/soc/fsl/fsl_ssi.c | 33 ++++++++++-----------------------
- 1 file changed, 10 insertions(+), 23 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index bbeef71..a2ac92f 100644
+index b76a517..e5efee2 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -410,17 +410,6 @@ static void fsl_ssi_rxtx_config(struct fsl_ssi *ssi, bool enable)
- }
- 
- /**
-- * Clear remaining data in the FIFO to avoid dirty data or channel slipping
-- */
--static void fsl_ssi_fifo_clear(struct fsl_ssi *ssi, bool is_rx)
--{
--	bool tx = !is_rx;
--
--	regmap_update_bits(ssi->regs, REG_SSI_SOR,
--			   SSI_SOR_xX_CLR(tx), SSI_SOR_xX_CLR(tx));
--}
--
--/**
-  * Exclude bits that are used by the opposite stream
-  *
-  * When both streams are active, disabling some bits for the current stream
-@@ -446,10 +435,11 @@ static void fsl_ssi_fifo_clear(struct fsl_ssi *ssi, bool is_rx)
- static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
- 			   struct fsl_ssi_regvals *vals)
+@@ -580,18 +580,16 @@ static void fsl_ssi_setup_regvals(struct fsl_ssi *ssi)
  {
--	int adir = (&ssi->regvals[TX] == vals) ? RX : TX;
--	int dir = (&ssi->regvals[TX] == vals) ? TX : RX;
-+	bool tx = &ssi->regvals[TX] == vals;
- 	struct regmap *regs = ssi->regs;
- 	struct fsl_ssi_regvals *avals;
-+	int adir = tx ? RX : TX;
-+	int dir = tx ? TX : RX;
- 	bool aactive;
+ 	struct fsl_ssi_regvals *vals = ssi->regvals;
  
- 	/* Check if the opposite stream is active */
-@@ -489,7 +479,9 @@ static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
+-	vals[RX].sier = SSI_SIER_RFF0_EN;
++	vals[RX].sier = SSI_SIER_RFF0_EN | FSLSSI_SIER_DBG_RX_FLAGS;
+ 	vals[RX].srcr = SSI_SRCR_RFEN0;
+-	vals[RX].scr = 0;
+-	vals[TX].sier = SSI_SIER_TFE0_EN;
++	vals[RX].scr = SSI_SCR_SSIEN | SSI_SCR_RE;
++	vals[TX].sier = SSI_SIER_TFE0_EN | FSLSSI_SIER_DBG_TX_FLAGS;
+ 	vals[TX].stcr = SSI_STCR_TFEN0;
+-	vals[TX].scr = 0;
++	vals[TX].scr = SSI_SCR_SSIEN | SSI_SCR_TE;
  
- 	/* Online configure single direction while SSI is running */
- 	if (enable) {
--		fsl_ssi_fifo_clear(ssi, vals->scr & SSI_SCR_RE);
-+		/* Clear FIFO to prevent dirty data or channel slipping */
-+		regmap_update_bits(ssi->regs, REG_SSI_SOR,
-+				   SSI_SOR_xX_CLR(tx), SSI_SOR_xX_CLR(tx));
- 
- 		regmap_update_bits(regs, REG_SSI_SRCR, vals->srcr, vals->srcr);
- 		regmap_update_bits(regs, REG_SSI_STCR, vals->stcr, vals->stcr);
-@@ -511,6 +503,10 @@ static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
- 		regmap_update_bits(regs, REG_SSI_SRCR, srcr, 0);
- 		regmap_update_bits(regs, REG_SSI_STCR, stcr, 0);
- 		regmap_update_bits(regs, REG_SSI_SIER, sier, 0);
-+
-+		/* Clear FIFO to prevent dirty data or channel slipping */
-+		regmap_update_bits(ssi->regs, REG_SSI_SOR,
-+				   SSI_SOR_xX_CLR(tx), SSI_SOR_xX_CLR(tx));
- 	}
- 
- config_done:
-@@ -1091,7 +1087,6 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct fsl_ssi *ssi = snd_soc_dai_get_drvdata(rtd->cpu_dai);
--	struct regmap *regs = ssi->regs;
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -1116,14 +1111,6 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- 		return -EINVAL;
- 	}
- 
--	/* Clear corresponding FIFO */
--	if (fsl_ssi_is_ac97(ssi)) {
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--			regmap_write(regs, REG_SSI_SOR, SSI_SOR_TX_CLR);
--		else
--			regmap_write(regs, REG_SSI_SOR, SSI_SOR_RX_CLR);
+ 	/* AC97 has already enabled SSIEN, RE and TE, so ignore them */
+-	if (!fsl_ssi_is_ac97(ssi)) {
+-		vals[RX].scr = SSI_SCR_SSIEN | SSI_SCR_RE;
+-		vals[TX].scr = SSI_SCR_SSIEN | SSI_SCR_TE;
 -	}
++	if (fsl_ssi_is_ac97(ssi))
++		vals[RX].scr = vals[TX].scr = 0;
+ 
+ 	if (ssi->use_dma) {
+ 		vals[RX].sier |= SSI_SIER_RDMAE;
+@@ -600,9 +598,6 @@ static void fsl_ssi_setup_regvals(struct fsl_ssi *ssi)
+ 		vals[RX].sier |= SSI_SIER_RIE;
+ 		vals[TX].sier |= SSI_SIER_TIE;
+ 	}
 -
- 	return 0;
+-	vals[RX].sier |= FSLSSI_SIER_DBG_RX_FLAGS;
+-	vals[TX].sier |= FSLSSI_SIER_DBG_TX_FLAGS;
  }
  
+ static void fsl_ssi_setup_ac97(struct fsl_ssi *ssi)
 -- 
 2.7.4
