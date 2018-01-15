@@ -1,185 +1,80 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: Maximum 50 dB gain in ALSA softvol plugin
-Date: Mon, 15 Jan 2018 16:26:33 +0100
-Message-ID: <alpine.DEB.2.11.1801151547220.2359@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.11.1801121645540.16471@lnxricardw1.se.axis.com>
- <s5ha7xj3ug4.wl-tiwai@suse.de>
- <alpine.DEB.2.11.1801151410060.2359@lnxricardw1.se.axis.com>
- <s5hd12b2q99.wl-tiwai@suse.de>
- <alpine.DEB.2.11.1801151446420.2359@lnxricardw1.se.axis.com>
- <s5h8tcz2pje.wl-tiwai@suse.de>
- <alpine.DEB.2.11.1801151520280.2359@lnxricardw1.se.axis.com>
- <s5hshb718wx.wl-tiwai@suse.de>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 3/4] ASoC: codecs: tas5720: add TAS5722 specific volume
+ control
+Date: Mon, 15 Jan 2018 16:41:34 +0000
+Message-ID: <20180115164134.GA12018@sirena.org.uk>
+References: <20171211190157.12371-1-afd@ti.com>
+ <20171211190157.12371-3-afd@ti.com>
+ <20171212120121.GH16323@sirena.org.uk>
+ <ada57df8-66c0-0692-9250-422ef37cce95@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 326F5267515
- for <alsa-devel@alsa-project.org>; Mon, 15 Jan 2018 16:26:40 +0100 (CET)
-In-Reply-To: <s5hshb718wx.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Nq2Wo0NMKNjxTN9z"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <ada57df8-66c0-0692-9250-422ef37cce95-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "Andrew F. Davis" <afd-l0cyMroinI0@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
-On Mon, 15 Jan 2018, Jaroslav Kysela wrote:
-
-> > The usecase we have actually calls for 55 dB of gain maximum, but I was =
-
-> > thinking that looking at the code the maths can actually handle 90 dB s=
-o =
-
-> > it would be good 'reasonable limit' - it's a nice round number and fits=
- in =
-
-> > 16 bits (signed).
-> > =
-
-> > The usecase we have is using digital MEMS microphones ((2S connected, =
-
-> > with no integral amplification) and when the sound source is far away, =
-a =
-
-> > fair amount of gain can be needed.
-> =
-
-> Wow, the signal quality from few bits per sample must be really good ;-)
-> It would be better to use ADC with higher resolution (24-bit) and low
-> noise floor (but I see the possible costs requirements). This is why we
-> have such good audio in collaborative conferences :-)
-
-Ok, I wasn't expecting this kind of discussion on this subject ... =
-
-
-It's true that for best performance, analog microphones (even analog MEMS) =
-
-trump digital MEMS microphones when it comes to SNR, but in many cases, =
-
-the SNR of the room itself will be the limiting factor anyway.
-
-The point is this: a typical digital MEMS microphone has 0 dBFS output at =
-
-120 dB SPL. Looking at one typical recording usecase, the background noise =
-
-level in a quiet room is 40 or 50 dB SPL, with speech at a distance of a =
-
-meter or so being around 60 dB SPL. So in this case we're 60 dB below full =
-
-scale for the speech signal, with the acoustic noise floor being 10 or 20 =
-
-dB below that. The noise floor of a MEMS microphone of this type is =
-
-equivalent to about 30 dB SPL, so the acoustic noise is still higher than =
-
-the electrical noise in the system.
-
-Now, assuming we actually want to hear what is going on, so we bring up =
-
-the gain by 60 dB in order to get the speech to full scale. That =
-
-means that the noise floor comes up too, and there's not much we can do =
-
-about that anyway as it's part of the acoustic scene we're capturing. The =
-
-fact that we loose bit depth is not of much consequence, as the acoustic =
-
-noise in the scene is above the resulting quantization noise anyway, in =
-
-much the same way that adding dither to a signal masks the quantization =
-
-noise. The acoustic SNR is 10-20 dB so we could actually represent the =
-
-resulting signal with 8 bits and still be fine.
-
-A side note here is that many PC's, especially laptops, do not provide =
-
-much playback gain, so there is a point in bringing up signals to close to =
-
-0 dBFS.
-
-The bottom line is that, yes, we loose bit depth when we apply gain, but =
-
-that itself doesn't impact the sound quality, as long as the noise level =
-
-is above the quantization noise to start with, which it is in many =
-
-microphone cases. And we really might need a large gain in certain =
-
-situations.
-
-On Mon, 15 Jan 2018, Takashi Iwai wrote:
-
-> [ ... ] the amplification in softvol is really dumb, and such a high =
-
-> gain like 90dB is doubtful whether it's really useful.  As Jaroslav =
-
-> already suggested, we need a better setup to get more meaningful =
-
-> results.
-
-In what way is it dumb? Amplification is just a multiplication with a gain =
-
-factor, and the softvol plugin seems to do that fine. I just tested =
-
-patching it to 90 dB gain max, and applying a (24 bit) sine wave at -90 dB =
-
-and amplifying it by 90 dB using softvol, and I couldn't see any odd =
-
-artfacts.
-
-Of course, for the usecase I described, an AGC of some form, or dynamic =
-
-compressor would probably be better, but for a static gain, softvol could =
-
-very well be employed.
-
-Ok ... bottom line ... I'd like to increase the maximum potential gain for =
-
-softvol above the current 50 dB. I suggested 90 dB because that's how much =
-
-the algorithm can handle, and that's what I figured the MAX_DB_UPPER_LIMIT =
-
-in pcm/pcm_softvol.c should reflect. Furthermore, I can't see any problem =
-
-with increasing the limit; it does not degenerate the algorithm or cause =
-
-potential problems for existing users. Admittedly, this is not kernel =
-
-code, but if it were I would expect that the point of view would be that =
-
-the code should not make assumptions on user's policies but only its own =
-
-technical limitations. And if the input is 32 bit audio, we'd still end up =
-
-with about 16 bits of resolution when applying 90 dB of gain, so =
-
-mathematically it's not unreasonable.
-
-The only problem I can foresee is that it means that all future changes to =
-
-the algorithm might need to accommodate the specified maximum gain to =
-
-avoid annoying users who are actually using it, which might be a problem =
-
-somewhere down the line.
-
-But for my usecase I'd be happy just pushing the limit to 60 or 70 dB if =
-
-that's more acceptable.
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+--Nq2Wo0NMKNjxTN9z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jan 15, 2018 at 08:50:09AM -0600, Andrew F. Davis wrote:
+> On 12/12/2017 06:01 AM, Mark Brown wrote:
+> > On Mon, Dec 11, 2017 at 01:01:56PM -0600, Andrew F. Davis wrote:
+
+> >> The TAS5722 supports modifying volume in 0.25dB steps (as opposed to 0=
+=2E5dB
+> >> steps on the TAS5720). Introduce a custom mixer control that allows ta=
+king
+> >> advantage of this finer output volume granularity.
+
+> > Don't do this, it's just making things more complicated.  Instead do
+> > what other drivers do and register different sets of controls depending
+> > on which part you're working with.  The normal thing is to have a big
+> > table for all the shared controls that are the same on all variants then
+> > register additional tables during probe with those that vary for the
+> > individul devices.
+
+> That is what we are doing here, the reason for the custom mixer control
+> is that the controlled bits span two registers in a odd way that is not
+> supported by the standard handlers.
+
+That's not clear from the commit message, it sounds like you're
+introducing an an extra control rather than replacing the one that's
+currently there. =20
+
+> > As ever all volume controls should end in Volume (like the immediately
+> > adjacent control does).
+
+> This was done so this table exactly matches the existing table. If you
+> would like me to change this then I can, and can do it for the other
+> table as well, up to you.
+
+Of course fixes for bugs in existing code are welcome.
+
+--Nq2Wo0NMKNjxTN9z
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpc2b0ACgkQJNaLcl1U
+h9A+Tgf+J9b/7AVInlfTZZU5+zvRCdfwNvt08QHYvXnOhC6Qwy7yJ3T+M3qvxbFM
+HKmLTUL1HZ6C1CYkpj43zoj7dUyQeh4uPtl51LGEnYdaY1GJnYMCKx6CW4VkLftH
+JCLpEZ+dArp5F3Kziqe5Y2OYZZ41Rt1rk8DHWik92b37FAWPUdz6IbajHtQRFHMt
+e2u5l9dqV5beBRLgflT2PESynGCdj9a6P5WigjaUFFRXU60Yr3X8pboIoT7BqNvs
+aAq01uSE4/Neqf4eg89Yj7cbewTKFKxsVwxPeQau42qmOhpIr+rJxjHiBenk6c8v
+yeIj0Y71O5nShQ2ckvZU6rXrufcTBQ==
+=f9pb
+-----END PGP SIGNATURE-----
+
+--Nq2Wo0NMKNjxTN9z--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
