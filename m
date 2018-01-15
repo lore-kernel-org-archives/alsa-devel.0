@@ -1,23 +1,16 @@
-From: Ladislav Michl <ladis@linux-mips.org>
-Subject: [PATCH 5/5] ASoC: atmel_wm8904: Return -ENODEV when
- probe does not find OF node
-Date: Mon, 15 Jan 2018 08:54:58 +0100
-Message-ID: <20180115075458.GF10762@lenoch>
-References: <20180115075213.GA10762@lenoch>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] ASoC: au1x: Fix timeout tests in
+	au1xac97c_ac97_read()
+Date: Mon, 15 Jan 2018 11:08:38 +0300
+Message-ID: <20180115080838.q6nupi7rs7k5pdky@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
- by alsa0.perex.cz (Postfix) with ESMTP id C84EF26731C
- for <alsa-devel@alsa-project.org>; Mon, 15 Jan 2018 08:54:59 +0100 (CET)
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23990488AbeAOHy7eauPu (ORCPT
- <rfc822;alsa-devel@alsa-project.org>);
- Mon, 15 Jan 2018 08:54:59 +0100
+Received: from userp2120.oracle.com (userp2120.oracle.com [156.151.31.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0DCE266FBD
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jan 2018 09:08:58 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20180115075213.GA10762@lenoch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,33 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, SF Markus Elfring <elfring@users.sourceforge.net>
+To: Liam Girdwood <lgirdwood@gmail.com>, Manuel Lauss <manuel.lauss@googlemail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Probe should fail with -ENODEV when called with NULL pdev->dev.of_node.
+The loop timeout doesn't work because it's a post op and ends with "tmo"
+set to -1.  I changed it from a post-op to a pre-op and I changed the
+initial the starting value from 5 to 6 so we still iterate 5 times.  I
+left the other as it was because it's a large number.
 
-Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
----
- sound/soc/atmel/atmel_wm8904.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Fixes: b3c70c9ea62a ("ASoC: Alchemy AC97C/I2SC audio support")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-diff --git a/sound/soc/atmel/atmel_wm8904.c b/sound/soc/atmel/atmel_wm8904.c
-index fbc10f61eb55..39a73c4d19ec 100644
---- a/sound/soc/atmel/atmel_wm8904.c
-+++ b/sound/soc/atmel/atmel_wm8904.c
-@@ -85,10 +85,8 @@ static int atmel_asoc_wm8904_dt_init(struct platform_device *pdev)
- 	struct snd_soc_dai_link *dailink = &atmel_asoc_wm8904_dailink;
- 	int ret;
+diff --git a/sound/soc/au1x/ac97c.c b/sound/soc/au1x/ac97c.c
+index 29a97d52e8ad..66d6c52e7761 100644
+--- a/sound/soc/au1x/ac97c.c
++++ b/sound/soc/au1x/ac97c.c
+@@ -91,8 +91,8 @@ static unsigned short au1xac97c_ac97_read(struct snd_ac97 *ac97,
+ 	do {
+ 		mutex_lock(&ctx->lock);
  
--	if (!np) {
--		dev_err(&pdev->dev, "only device tree supported\n");
--		return -EINVAL;
--	}
-+	if (!np)
-+		return -ENODEV;
+-		tmo = 5;
+-		while ((RD(ctx, AC97_STATUS) & STAT_CP) && tmo--)
++		tmo = 6;
++		while ((RD(ctx, AC97_STATUS) & STAT_CP) && --tmo)
+ 			udelay(21);	/* wait an ac97 frame time */
+ 		if (!tmo) {
+ 			pr_debug("ac97rd timeout #1\n");
+@@ -105,7 +105,7 @@ static unsigned short au1xac97c_ac97_read(struct snd_ac97 *ac97,
+ 		 * poll, Forrest, poll...
+ 		 */
+ 		tmo = 0x10000;
+-		while ((RD(ctx, AC97_STATUS) & STAT_CP) && tmo--)
++		while ((RD(ctx, AC97_STATUS) & STAT_CP) && --tmo)
+ 			asm volatile ("nop");
+ 		data = RD(ctx, AC97_CMDRESP);
  
- 	ret = snd_soc_of_parse_card_name(card, "atmel,model");
- 	if (ret) {
--- 
-2.15.1
