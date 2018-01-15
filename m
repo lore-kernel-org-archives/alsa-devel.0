@@ -1,21 +1,21 @@
 From: Ladislav Michl <ladis@linux-mips.org>
-Subject: [PATCH 3/5] ASoC: sam9x5_wm8731: Return -ENODEV when
- probe does not find OF node
-Date: Mon, 15 Jan 2018 08:53:51 +0100
-Message-ID: <20180115075351.GD10762@lenoch>
+Subject: [PATCH 4/5] ASoC: sam9x5_wm8731: Fix OF node reference
+	counting
+Date: Mon, 15 Jan 2018 08:54:30 +0100
+Message-ID: <20180115075430.GE10762@lenoch>
 References: <20180115075213.GA10762@lenoch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 1688426731C
- for <alsa-devel@alsa-project.org>; Mon, 15 Jan 2018 08:53:54 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3043C26731C
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jan 2018 08:54:32 +0100 (CET)
 Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
  (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23990477AbeAOHxxsuT-u (ORCPT
+ id S23990477AbeAOHyb60kCu (ORCPT
  <rfc822;alsa-devel@alsa-project.org>);
- Mon, 15 Jan 2018 08:53:53 +0100
+ Mon, 15 Jan 2018 08:54:31 +0100
 Content-Disposition: inline
 In-Reply-To: <20180115075213.GA10762@lenoch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -31,29 +31,82 @@ To: alsa-devel@alsa-project.org
 Cc: Liam Girdwood <lgirdwood@gmail.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, SF Markus Elfring <elfring@users.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Probe should fail with -ENODEV when called with NULL pdev->dev.of_node.
+of_node_release() is called as the destructor on a dynamically
+allocated node in of_node_put(), but node pointer is still in use.
+Fix that by moving of_node_put() into the error path.
 
 Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
 ---
- sound/soc/atmel/sam9x5_wm8731.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/atmel/sam9x5_wm8731.c | 27 ++++++++++++---------------
+ 1 file changed, 12 insertions(+), 15 deletions(-)
 
 diff --git a/sound/soc/atmel/sam9x5_wm8731.c b/sound/soc/atmel/sam9x5_wm8731.c
-index e6c303ab869d..9db08826b32a 100644
+index 9db08826b32a..bcfb474ee0e8 100644
 --- a/sound/soc/atmel/sam9x5_wm8731.c
 +++ b/sound/soc/atmel/sam9x5_wm8731.c
-@@ -84,10 +84,8 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+@@ -78,7 +78,6 @@ static const struct snd_soc_dapm_widget sam9x5_dapm_widgets[] = {
+ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+-	struct device_node *codec_np, *cpu_np;
+ 	struct snd_soc_card *card;
+ 	struct snd_soc_dai_link *dai;
  	struct sam9x5_drvdata *priv;
- 	int ret;
+@@ -122,36 +121,30 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+ 		goto out;
+ 	}
  
--	if (!np) {
--		dev_err(&pdev->dev, "No device node supplied\n");
--		return -EINVAL;
--	}
-+	if (!np)
-+		return -ENODEV;
+-	codec_np = of_parse_phandle(np, "atmel,audio-codec", 0);
+-	if (!codec_np) {
++	dai->codec_of_node = of_parse_phandle(np, "atmel,audio-codec", 0);
++	if (!dai->codec_of_node) {
+ 		dev_err(&pdev->dev, "atmel,audio-codec node missing\n");
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
  
- 	card = devm_kzalloc(&pdev->dev, sizeof(*card), GFP_KERNEL);
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+-	dai->codec_of_node = codec_np;
+-
+-	cpu_np = of_parse_phandle(np, "atmel,ssc-controller", 0);
+-	if (!cpu_np) {
++	dai->cpu_of_node = of_parse_phandle(np, "atmel,ssc-controller", 0);
++	if (!dai->cpu_of_node) {
+ 		dev_err(&pdev->dev, "atmel,ssc-controller node missing\n");
+ 		ret = -EINVAL;
+-		goto out;
++		goto out_put_codec;
+ 	}
+-	dai->cpu_of_node = cpu_np;
+-	dai->platform_of_node = cpu_np;
++	dai->platform_of_node = dai->cpu_of_node;
+ 
+-	priv->ssc_id = of_alias_get_id(cpu_np, "ssc");
++	priv->ssc_id = of_alias_get_id(dai->cpu_of_node, "ssc");
+ 
+ 	ret = atmel_ssc_set_audio(priv->ssc_id);
+ 	if (ret != 0) {
+ 		dev_err(&pdev->dev, "Failed to set SSC %d for audio: %d\n",
+ 			ret, priv->ssc_id);
+-		goto out;
++		goto out_put_cpu;
+ 	}
+ 
+-	of_node_put(codec_np);
+-	of_node_put(cpu_np);
+-
+ 	ret = snd_soc_register_card(card);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Platform device allocation failed\n");
+@@ -164,6 +157,10 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+ 
+ out_put_audio:
+ 	atmel_ssc_put_audio(priv->ssc_id);
++out_put_cpu:
++	of_node_put(dai->cpu_of_node);
++out_put_codec:
++	of_node_put(dai->codec_of_node);
+ out:
+ 	return ret;
+ }
 -- 
 2.15.1
