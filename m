@@ -1,20 +1,21 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: [PATCH v4 00/17] ASoC: fsl_ssi: Clean up - program
-	flow level
-Date: Tue, 16 Jan 2018 13:26:08 -0800
-Message-ID: <CAG5mAdxz99cM3a5K2Jk1hce+kfUNmhwuFr7Da_zpoW7Cw8avcg@mail.gmail.com>
-References: <1516058192-65519-1-git-send-email-nicoleotsuka@gmail.com>
+From: Dennis Mungai <dmngaie@gmail.com>
+Subject: Re: Bug report for: [P7xxDM2(-G), Realtek ALC898,
+ issue: Headphone Jack, External] No sound at all
+Date: Wed, 17 Jan 2018 01:33:06 +0300
+Message-ID: <CAKKYfmGMjEjhuo_MgKUgSS2KWHCGzJMJpPeBGbiuSJD=FoNeoQ@mail.gmail.com>
+References: <CAKKYfmEHpTina=bzw_vpSx8inwHUKuhUgfo9C1t+YHCLGcnMOQ@mail.gmail.com>
+ <s5h8td3pesk.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f169.google.com (mail-pf0-f169.google.com
- [209.85.192.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E0C5266E62
- for <alsa-devel@alsa-project.org>; Tue, 16 Jan 2018 22:26:30 +0100 (CET)
-Received: by mail-pf0-f169.google.com with SMTP id y5so10375375pff.13
- for <alsa-devel@alsa-project.org>; Tue, 16 Jan 2018 13:26:30 -0800 (PST)
-In-Reply-To: <1516058192-65519-1-git-send-email-nicoleotsuka@gmail.com>
+Received: from mail-qt0-f181.google.com (mail-qt0-f181.google.com
+ [209.85.216.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id E7299266E62
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jan 2018 23:33:09 +0100 (CET)
+Received: by mail-qt0-f181.google.com with SMTP id 33so20280742qtv.1
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jan 2018 14:33:09 -0800 (PST)
+In-Reply-To: <s5h8td3pesk.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,93 +25,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: mail@maciej.szmigiero.name, Sascha Hauer <kernel@pengutronix.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Arnaud Mouiche <arnaud.mouiche@invoxia.com>, lukma@denx.de, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 15, 2018 at 3:16 PM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
-> ==Change log==
-> v4
->  * Reworked the series by taking suggestions from Maciej
->   + Added TXBIT0 bit back to play safe in PATCH-14
->   + Made bool synchronous exclusive with AC97 mode in PATCH-16
-> v3
->  * Reworked the series by taking suggestions from Maciej
->   + Added PATCH-01 to make RX and TX more clearly defined
->   + Replaced "bool dir" with "int dir" in PATCH-04
->   + Replaced "!dir" with "int adir" in PATCH-05
->   + Put CBM_CFS behind the baudclk check to keep the same
->     program flow in PATCH-14
->   + Removed all cpu_dai_drv changes in PATCH-15
-> v2
->  * Reworked the series by taking suggestions from Maciej
->   + Added PATCH-01 to keep all ssi->i2s_net updated
->   + Replaced bool tx with bool dir in PATCH-03 and PATCH-06
->   + Moved all initial register configurations from dai probe() to
->     platform probe() so as to let AC97 CODEC successfully probe.
->  * Added Tested-by from Caleb for TDM test cases.
->
-> ==Background==
-> The fsl_ssi driver was designed for PPC originally and then it has
-> been updated to support different modes for i.MX Series, including
-> SDMA, I2S Master mode, AC97 and older i.MXs with FIQ, by different
-> contributors for different use cases in different coding styles.
->
-> Additionally, in order to fix/work-around hardware bugs and design
-> flaws, the driver made a lot of compromise so now its program flow
-> looks very complicated and it's getting hard to maintain or update.
->
-> So I am going to clean up the driver on both coding style level and
-> program flow level.
->
-> ==Introduction==
-> This series of patches is the second set to clean up fsl_ssi driver
-> in the program flow level. Any patch here may impact a fundamental
-> test case like playback or record.
->
-> ==Verification==
-> This series of patches require fully tested. I have done such tests
-> on i.MX6SoloX with WM8962 using imx_v6_v7_defconfig as:
->  - Playback via I2S Master and Slave mode
->  - Record via I2S Master and Slave mode
->  - Simultaneous playback and record via I2S Master and Slave mode
->  - Background playback with foreground record (starting at different
->    time) via I2S Master and Slave mode
->  - Background record with foreground playback (starting at different
->    time) via I2S Master and Slave mode
->  * All tests above by hacking offline_config to true in imx51.
->
-> Caleb has tested v1 with TDM lookback tests on i.MX6.
->
-> Example of uncovered tests: AC97, PowerPC and FIQ.
->
-> Nicolin Chen (17):
->   ASoC: fsl_ssi: Redefine RX and TX macros
->   ASoC: fsl_ssi: Keep ssi->i2s_net updated
->   ASoC: fsl_ssi: Clean up set_dai_tdm_slot()
->   ASoC: fsl_ssi: Maintain a mask of active streams
->   ASoC: fsl_ssi: Rename fsl_ssi_disable_val macro
->   ASoC: fsl_ssi: Clear FIFO directly in fsl_ssi_config()
->   ASoC: fsl_ssi: Clean up helper functions of trigger()
->   ASoC: fsl_ssi: Add DAIFMT define for AC97
->   ASoC: fsl_ssi: Clean up fsl_ssi_setup_regvals()
->   ASoC: fsl_ssi: Set xFEN0 and xFEN1 together
->   ASoC: fsl_ssi: Use snd_soc_init_dma_data instead
->   ASoC: fsl_ssi: Move one-time configurations to probe()
->   ASoC: fsl_ssi: Setup AC97 in fsl_ssi_hw_init()
->   ASoC: fsl_ssi: Clean up _fsl_ssi_set_dai_fmt()
->   ASoC: fsl_ssi: Add bool synchronous to mark synchronous mode
->   ASoC: fsl_ssi: Move DT related code to a separate probe()
->   ASoC: fsl_ssi: Use ssi->streams instead of reading register
->
->  sound/soc/fsl/fsl_ssi.c | 741 +++++++++++++++++++++++++-----------------------
->  sound/soc/fsl/fsl_ssi.h |   3 -
->  2 files changed, 379 insertions(+), 365 deletions(-)
->
-> --
-> 2.7.4
->
+Cool, thanks!
 
-Tested v4 with 8 channel TDM at 48kHz. No problems found.
+Rewiring the pins via hdajack retask tool fixes the detection, but still no
+sound from the headphones jack is heard. Only the temporary click off the
+audio jack when plugged in.
 
-Tested-by: Caleb Crome <caleb@crome.org>
+On Jan 12, 2018 11:11, "Takashi Iwai" <tiwai@suse.de> wrote:
+
+> On Thu, 11 Jan 2018 19:21:03 +0100,
+> Dennis Mungai wrote:
+> >
+> > Hello there,
+> >
+> > I have Ubuntu 16.04LTS installed on the Clevo P751DM2-G, also marketed
+> > as the Origin Eon 15-X (Late 2016 model), the System76's Serval WS
+> > (2017 model), the Eurocom Sky X4E2, among others.
+> >
+> > The sound card is the Realtek ALC898 with the following output
+> configuration:
+> >
+> > 1. One SPDIF/headphone combo jack (to the right)
+> > 2. One Line Out.
+> > 3. One Line-In.
+> > 4. One Mic-In.
+> >
+> > Background information:
+> >
+> > On Windows, one can use the Realtek HD Audio control panel pop-up menu
+> > on jack detection to set the output type when an audio device is
+> > plugged in to an appropriate jack, combined with Sound Blaster X-Fi
+> > MB5 software to enable post-processing effects such as Bass, noise
+> > cancellation, etc.
+> >
+> > What I have tried so far:
+> >
+> > 1. Setting the model definition at /etc/modprobe.d/sound.conf with the
+> > following entries:
+> >
+> > options snd-hda-intel model=no-primary-hp enable=1 index=0
+> >
+> > Using such a line worked before on an MSI GS43VR 6RE Phantom Pro that
+> > also has the same (or a similar) ESS Sabre Audio DAC component.
+> >
+> > Expected behavior:
+> >
+> > When plugged into the microphone jack, the ESS Sabre DAC should be
+> > activated and sound should be routed to the headset.
+> >
+> > Observed anomaly:
+> >
+> > Sound comes out through the speakers instead.
+> >
+> > However, the line-out output works. In that case, when plugged into
+> > the line out, Audio works as expected.
+>
+> Judging from alsa-info.sh output, BIOS doesn't seem to give the proper
+> headphone pin (or the headset output), and that's the culprit.
+> It's a bug of BIOS.  You can try to figure out the pin and override
+> the pin config via hdajackretask or such a tool.
+>
+>
+> Takashi
+>
