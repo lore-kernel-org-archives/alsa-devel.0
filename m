@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: au1x: Fix timeout tests in au1xac97c_ac97_read()" to the asoc tree
-Date: Tue, 16 Jan 2018 13:57:14 +0000
-Message-ID: <E1ebRjm-0005D1-DP@debutante>
-References: <20180115080838.q6nupi7rs7k5pdky@mwanda>
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <20180115080838.q6nupi7rs7k5pdky@mwanda>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Manuel Lauss <manuel.lauss@googlemail.com>, alsa-devel@alsa-project.orgMark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>alsa-devel@alsa-project.org
+Subject: Applied "IIO: ADC: stm32-dfsdm: fix static check
+	warning" to the asoc tree
+Date: Tue, 16 Jan 2018 13:57:08 +0000
+Message-ID: <E1ebRjg-0005BJ-UA@debutante>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id A67EC266E7C
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jan 2018 14:57:14 +0100 (CET)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jonathan Cameron <Jonathan.Cameron@huawei.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: au1x: Fix timeout tests in au1xac97c_ac97_read()
+   IIO: ADC: stm32-dfsdm: fix static check warning
 
 has been applied to the asoc tree at
 
@@ -37,47 +52,35 @@ to this mail.
 Thanks,
 Mark
 
->From 123af9043e93cb6f235207d260d50f832cdb5439 Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Mon, 15 Jan 2018 11:08:38 +0300
-Subject: [PATCH] ASoC: au1x: Fix timeout tests in au1xac97c_ac97_read()
+>From 1175d0f9f4031ce02845f6f843f58a9caaee7817 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Date: Mon, 15 Jan 2018 10:00:26 +0100
+Subject: [PATCH] IIO: ADC: stm32-dfsdm: fix static check warning
 
-The loop timeout doesn't work because it's a post op and ends with "tmo"
-set to -1.  I changed it from a post-op to a pre-op and I changed the
-initial the starting value from 5 to 6 so we still iterate 5 times.  I
-left the other as it was because it's a large number.
+iio_priv does not return an error pointer, so check is not valid.
+Patch suppresses it.
 
-Fixes: b3c70c9ea62a ("ASoC: Alchemy AC97C/I2SC audio support")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/au1x/ac97c.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/iio/adc/stm32-dfsdm-adc.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/sound/soc/au1x/ac97c.c b/sound/soc/au1x/ac97c.c
-index 29a97d52e8ad..66d6c52e7761 100644
---- a/sound/soc/au1x/ac97c.c
-+++ b/sound/soc/au1x/ac97c.c
-@@ -91,8 +91,8 @@ static unsigned short au1xac97c_ac97_read(struct snd_ac97 *ac97,
- 	do {
- 		mutex_lock(&ctx->lock);
+diff --git a/drivers/iio/adc/stm32-dfsdm-adc.c b/drivers/iio/adc/stm32-dfsdm-adc.c
+index 3fe9b34ac6af..daa026d6a94f 100644
+--- a/drivers/iio/adc/stm32-dfsdm-adc.c
++++ b/drivers/iio/adc/stm32-dfsdm-adc.c
+@@ -1099,10 +1099,6 @@ static int stm32_dfsdm_adc_probe(struct platform_device *pdev)
+ 	}
  
--		tmo = 5;
--		while ((RD(ctx, AC97_STATUS) & STAT_CP) && tmo--)
-+		tmo = 6;
-+		while ((RD(ctx, AC97_STATUS) & STAT_CP) && --tmo)
- 			udelay(21);	/* wait an ac97 frame time */
- 		if (!tmo) {
- 			pr_debug("ac97rd timeout #1\n");
-@@ -105,7 +105,7 @@ static unsigned short au1xac97c_ac97_read(struct snd_ac97 *ac97,
- 		 * poll, Forrest, poll...
- 		 */
- 		tmo = 0x10000;
--		while ((RD(ctx, AC97_STATUS) & STAT_CP) && tmo--)
-+		while ((RD(ctx, AC97_STATUS) & STAT_CP) && --tmo)
- 			asm volatile ("nop");
- 		data = RD(ctx, AC97_CMDRESP);
+ 	adc = iio_priv(iio);
+-	if (IS_ERR(adc)) {
+-		dev_err(dev, "%s: Failed to allocate ADC\n", __func__);
+-		return PTR_ERR(adc);
+-	}
+ 	adc->dfsdm = dev_get_drvdata(dev->parent);
  
+ 	iio->dev.parent = dev;
 -- 
 2.15.1
-
