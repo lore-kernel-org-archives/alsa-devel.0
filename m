@@ -1,15 +1,22 @@
-From: Ian Douglas Scott <ian@iandouglasscott.com>
-Subject: [PATCH] ALSA: usb-audio: Support changing input on
-	Sound Blaster E1
-Date: Mon, 15 Jan 2018 20:38:27 -0800
-Message-ID: <20180116043827.22584-1-ian@iandouglasscott.com>
+From: Martin Peres <martin.peres@free.fr>
+Subject: Re: [PATCH] ALSA: usb-audio: Add a quirk for Nura's
+	first gen headset
+Date: Tue, 16 Jan 2018 10:58:44 +0200
+Message-ID: <14c69a5c-52d0-7c7c-f518-60fa1eff9c4c@free.fr>
+References: <20180114160553.15445-1-martin.peres@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iandouglasscott.com (iandouglasscott.com [104.156.231.7])
- by alsa0.perex.cz (Postfix) with ESMTP id D992F267626
- for <alsa-devel@alsa-project.org>; Tue, 16 Jan 2018 05:38:56 +0100 (CET)
+Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
+ by alsa0.perex.cz (Postfix) with ESMTP id DFDE0266A74
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jan 2018 09:58:46 +0100 (CET)
+Received: from [IPv6:2001:14ba:9f3:f800::1] (unknown
+ [IPv6:2001:14ba:9f3:f800::1]) (Authenticated sender: martin.peres)
+ by smtp1-g21.free.fr (Postfix) with ESMTPSA id EAD31B0051E
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jan 2018 09:58:44 +0100 (CET)
+In-Reply-To: <20180114160553.15445-1-martin.peres@free.fr>
+Content-Language: fr-xx-moderne
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,126 +26,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Detlef Urban <onkel@paraair.de>, Bhumika Goyal <bhumirks@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Cc: Ian Douglas Scott <ian@iandouglasscott.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The E1 has two headphone jacks, one of which can be set as a microphone
-input. In the default mode, it uses the built-in microphone as an input.
-By sending a special command, the second headphone jack is instead used
-as an input.
+On 14/01/18 18:05, Martin Peres wrote:
+> The capture interface does not work, and the playback interface
+> actually supports only 48kHz unlike what is advertised (44.1, 32, 22,
+> 16, 8).
+> 
+> The only unknown here is if there are other devices that use the same
+> product ID, but given that this ID is currently unknown, I would assume
+> it is specially allocated for the nura headset.
+> 
+> Signed-off-by: Martin Peres <martin.peres@free.fr>
 
-This might work with the E3 as well, but I don't have one of those to
-test it.
+Cc: Stable <stable@vger.kernel.org>
 
-Signed-off-by: Ian Douglas Scott <ian@iandouglasscott.com>
----
- sound/usb/mixer_quirks.c | 79 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 79 insertions(+)
+Is there anything else I need to do? Get more testers maybe? I have
+reported bugs here before (and had a nice interaction with Takashi Iwai)
+but this is my first patch to this subsystem (I am an Intel/Nouveau/DRM
+developer).
 
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index e1e7ce9ab217..a91a0b75f6db 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -27,6 +27,7 @@
-  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-  */
- 
-+#include <linux/hid.h>
- #include <linux/init.h>
- #include <linux/slab.h>
- #include <linux/usb.h>
-@@ -1721,6 +1722,80 @@ static int snd_microii_controls_create(struct usb_mixer_interface *mixer)
- 	return 0;
- }
- 
-+static int snd_soundblaster_e1_switch_get(struct snd_kcontrol *kcontrol,
-+					  struct snd_ctl_elem_value *ucontrol)
-+{
-+	ucontrol->value.integer.value[0] = kcontrol->private_value;
-+	return 0;
-+}
-+
-+static int snd_soundblaster_e1_switch_update(struct usb_mixer_interface *mixer,
-+					     unsigned char state)
-+{
-+	struct snd_usb_audio *chip = mixer->chip;
-+	int err;
-+	unsigned char buff[2];
-+
-+	buff[0] = 0x02;
-+	buff[1] = state ? 0x02 : 0x00;
-+
-+	err = snd_usb_lock_shutdown(chip);
-+	if (err < 0)
-+		return err;
-+	err = snd_usb_ctl_msg(chip->dev,
-+			      usb_sndctrlpipe(chip->dev, 0),
-+			      HID_REQ_SET_REPORT,
-+			      USB_TYPE_CLASS | USB_RECIP_INTERFACE
-+					     | USB_DIR_OUT,
-+			      0x0202, 3,
-+			      buff, 2);
-+	snd_usb_unlock_shutdown(chip);
-+	return err;
-+}
-+
-+static int snd_soundblaster_e1_switch_put(struct snd_kcontrol *kcontrol,
-+					  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct usb_mixer_elem_list *list = snd_kcontrol_chip(kcontrol);
-+	unsigned char value = ucontrol->value.integer.value[0];
-+
-+	kcontrol->private_value = value;
-+	return snd_soundblaster_e1_switch_update(list->mixer, value);
-+}
-+
-+static int snd_soundblaster_e1_switch_resume(struct usb_mixer_elem_list *list)
-+{
-+	return snd_soundblaster_e1_switch_update(list->mixer,
-+						 list->kctl->private_value);
-+}
-+
-+static int snd_soundblaster_e1_switch_info(struct snd_kcontrol *kcontrol,
-+					   struct snd_ctl_elem_info *uinfo)
-+{
-+	static const char *const texts[2] = {
-+		"Mic", "Aux"
-+	};
-+
-+	return snd_ctl_enum_info(uinfo, 1, ARRAY_SIZE(texts), texts);
-+}
-+
-+static struct snd_kcontrol_new snd_soundblaster_e1_input_switch = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "Input Source",
-+	.info = snd_soundblaster_e1_switch_info,
-+	.get = snd_soundblaster_e1_switch_get,
-+	.put = snd_soundblaster_e1_switch_put,
-+	.private_value = 0,
-+};
-+
-+static int snd_soundblaster_e1_switch_create(struct usb_mixer_interface *mixer)
-+{
-+	return add_single_ctl_with_resume(mixer, 0,
-+					  snd_soundblaster_e1_switch_resume,
-+					  &snd_soundblaster_e1_input_switch,
-+					  NULL);
-+}
-+
- int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
- {
- 	int err = 0;
-@@ -1802,6 +1877,10 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
- 	case USB_ID(0x1235, 0x800c): /* Focusrite Scarlett 18i20 */
- 		err = snd_scarlett_controls_create(mixer);
- 		break;
-+
-+	case USB_ID(0x041e, 0x323b): /* Creative Sound Blaster E1 */
-+		err = snd_soundblaster_e1_switch_create(mixer);
-+		break;
- 	}
- 
- 	return err;
--- 
-2.15.1
+For more information on how I got to this patch:
+http://www.mupuf.org/blog/2018/01/14/nura-headphones-on-linux/
+
+> ---
+>  sound/usb/quirks-table.h | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 48 insertions(+)
+> 
+> diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+> index 8a59d4782a0f..50252046b01d 100644
+> --- a/sound/usb/quirks-table.h
+> +++ b/sound/usb/quirks-table.h
+> @@ -3277,4 +3277,52 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+>  	}
+>  },
+>  
+> +{
+> +	/*
+> +	 * Nura's first gen headphones use Cambridge Silicon Radio's vendor
+> +	 * ID, but it looks like the product ID actually is only for Nura.
+> +	 * The capture interface does not work at all (even on Windows),
+> +	 * and only the 48 kHz sample rate works for the playback interface.
+> +	 */
+> +	USB_DEVICE(0x0a12, 0x1243),
+> +	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
+> +		.ifnum = QUIRK_ANY_INTERFACE,
+> +		.type = QUIRK_COMPOSITE,
+> +		.data = (const struct snd_usb_audio_quirk[]) {
+> +			{
+> +				.ifnum = 0,
+> +				.type = QUIRK_AUDIO_STANDARD_MIXER,
+> +			},
+> +			/* Capture */
+> +			{
+> +				.ifnum = 1,
+> +				.type = QUIRK_IGNORE_INTERFACE,
+> +			},
+> +			/* Playback */
+> +			{
+> +				.ifnum = 2,
+> +				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
+> +				.data = &(const struct audioformat) {
+> +					.formats = SNDRV_PCM_FMTBIT_S16_LE,
+> +					.channels = 2,
+> +					.iface = 2,
+> +					.altsetting = 1,
+> +					.altset_idx = 1,
+> +					.attributes = UAC_EP_CS_ATTR_FILL_MAX |
+> +						UAC_EP_CS_ATTR_SAMPLE_RATE,
+> +					.endpoint = 0x03,
+> +					.ep_attr = USB_ENDPOINT_XFER_ISOC,
+> +					.rates = SNDRV_PCM_RATE_48000,
+> +					.rate_min = 48000,
+> +					.rate_max = 48000,
+> +					.nr_rates = 1,
+> +					.rate_table = (unsigned int[]) {
+> +						48000
+> +					}
+> +				}
+> +			},
+> +		}
+> +	}
+> +},
+> +
+>  #undef USB_DEVICE_VENDOR_SPEC
+> 
