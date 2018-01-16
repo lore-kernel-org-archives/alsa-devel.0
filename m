@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cx20442: fix regression by adding back
+Subject: Applied "ASoC: uda1380: fix regression by adding back
 	.read/.write" to the asoc tree
-Date: Tue, 16 Jan 2018 13:56:08 +0000
-Message-ID: <E1ebRii-00058Q-T4@debutante>
-References: <87wp0i8syg.wl%kuninori.morimoto.gx@renesas.com>
+Date: Tue, 16 Jan 2018 13:56:37 +0000
+Message-ID: <E1ebRjB-00059a-Cv@debutante>
+References: <87y3ky8sz2.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 008BF266E7C
- for <alsa-devel@alsa-project.org>; Tue, 16 Jan 2018 14:56:27 +0100 (CET)
-In-Reply-To: <87wp0i8syg.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D625C26770A
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jan 2018 14:56:43 +0100 (CET)
+In-Reply-To: <87y3ky8sz2.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bhumika Goyal <bhumirks@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Javier Martinez Canillas <javier@osg.samsung.com>, Mark Brown <broonie@kernel.org>, Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cx20442: fix regression by adding back .read/.write
+   ASoC: uda1380: fix regression by adding back .read/.write
 
 has been applied to the asoc tree at
 
@@ -53,110 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 3c89724e994f4aee6ae2637ccd4e12aa4f92666c Mon Sep 17 00:00:00 2001
+>From 7604d8068e6253c143b27ce7e164ee8e7a9da5b9 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 16 Jan 2018 02:00:18 +0000
-Subject: [PATCH] ASoC: cx20442: fix regression by adding back .read/.write
+Date: Tue, 16 Jan 2018 01:59:53 +0000
+Subject: [PATCH] ASoC: uda1380: fix regression by adding back .read/.write
 
-commit 39b5a0f80c07f ("ASoC: cx20442: don't use reg_cache")
+commit c001bf633a9 ("ASoC: use internal reg_cache on uda1380")
 removed .read/.write from driver, but it might breaks non-regmap
 driver, because ALSA SoC framework might call it.
 
-To fix this regression, this patch back .read/.write.
-and also this patch uses cx20442 internal reg_cache
-which is needed for .read/.write.
+To fix this regression, this patch back .read/.write
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cx20442.c | 26 +++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
+ sound/soc/codecs/uda1380.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
-index 6b6f8e44369b..95bb10ba80dc 100644
---- a/sound/soc/codecs/cx20442.c
-+++ b/sound/soc/codecs/cx20442.c
-@@ -28,6 +28,7 @@
- struct cx20442_priv {
- 	struct tty_struct *tty;
- 	struct regulator *por;
-+	u8 reg_cache;
- };
+diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
+index 46a495b4da8d..c73e6a192224 100644
+--- a/sound/soc/codecs/uda1380.c
++++ b/sound/soc/codecs/uda1380.c
+@@ -726,6 +726,8 @@ static int uda1380_probe(struct snd_soc_codec *codec)
  
- #define CX20442_PM		0x0
-@@ -88,6 +89,17 @@ static const struct snd_soc_dapm_route cx20442_audio_map[] = {
- 	{"ADC", NULL, "Input Mixer"},
- };
+ static const struct snd_soc_codec_driver soc_codec_dev_uda1380 = {
+ 	.probe =	uda1380_probe,
++	.read =		uda1380_read_reg_cache,
++	.write =	uda1380_write,
+ 	.set_bias_level = uda1380_set_bias_level,
+ 	.suspend_bias_off = true,
  
-+static unsigned int cx20442_read_reg_cache(struct snd_soc_codec *codec,
-+					   unsigned int reg)
-+{
-+	struct cx20442_priv *cx20442 = snd_soc_codec_get_drvdata(codec);
-+
-+	if (reg >= 1)
-+		return -EINVAL;
-+
-+	return cx20442->reg_cache;
-+}
-+
- enum v253_vls {
- 	V253_VLS_NONE = 0,
- 	V253_VLS_T,
-@@ -112,8 +124,6 @@ enum v253_vls {
- 	V253_VLS_TEST,
- };
- 
--#if 0
--/* FIXME : these function will be re-used */
- static int cx20442_pm_to_v253_vls(u8 value)
- {
- 	switch (value & ~(1 << CX20442_AGC)) {
-@@ -147,11 +157,10 @@ static int cx20442_write(struct snd_soc_codec *codec, unsigned int reg,
- 							unsigned int value)
- {
- 	struct cx20442_priv *cx20442 = snd_soc_codec_get_drvdata(codec);
--	u8 *reg_cache = codec->reg_cache;
- 	int vls, vsp, old, len;
- 	char buf[18];
- 
--	if (reg >= codec->driver->reg_cache_size)
-+	if (reg >= 1)
- 		return -EINVAL;
- 
- 	/* tty and write pointers required for talking to the modem
-@@ -159,8 +168,8 @@ static int cx20442_write(struct snd_soc_codec *codec, unsigned int reg,
- 	if (!cx20442->tty || !cx20442->tty->ops->write)
- 		return -EIO;
- 
--	old = reg_cache[reg];
--	reg_cache[reg] = value;
-+	old = cx20442->reg_cache;
-+	cx20442->reg_cache = value;
- 
- 	vls = cx20442_pm_to_v253_vls(value);
- 	if (vls < 0)
-@@ -190,7 +199,6 @@ static int cx20442_write(struct snd_soc_codec *codec, unsigned int reg,
- 
- 	return 0;
- }
--#endif
- 
- /*
-  * Line discpline related code
-@@ -384,12 +392,12 @@ static int cx20442_codec_remove(struct snd_soc_codec *codec)
- 	return 0;
- }
- 
--static const u8 cx20442_reg;
--
- static const struct snd_soc_codec_driver cx20442_codec_dev = {
- 	.probe = 	cx20442_codec_probe,
- 	.remove = 	cx20442_codec_remove,
- 	.set_bias_level = cx20442_set_bias_level,
-+	.read = cx20442_read_reg_cache,
-+	.write = cx20442_write,
- 
- 	.component_driver = {
- 		.dapm_widgets		= cx20442_dapm_widgets,
 -- 
 2.15.1
