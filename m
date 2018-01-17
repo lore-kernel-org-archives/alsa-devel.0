@@ -1,67 +1,102 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v5 08/17] ASoC: fsl_ssi: Add DAIFMT define for AC97
-Date: Tue, 16 Jan 2018 22:51:33 -0800
-Message-ID: <1516171902-32669-9-git-send-email-nicoleotsuka@gmail.com>
-References: <1516171902-32669-1-git-send-email-nicoleotsuka@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1516171902-32669-1-git-send-email-nicoleotsuka@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: timur@tabi.org, broonie@kernel.org, mail@maciej.szmigiero.name
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, fabio.estevam@nxp.com, caleb@crome.org, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
+From: Kailang <kailang@realtek.com>
+Subject: ALC215/ALC285/ALC289 headset mode support
+Date: Wed, 17 Jan 2018 07:42:18 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A184068AB@RTITMBSV02.realtek.com.tw>
+Mime-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A184068ABRTITMBSV02realt_"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id C910B266A74
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2018 08:42:24 +0100 (CET)
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The _fsl_ssi_set_dai_fmt() bypasses an undefined format for AC97
-mode. However, it's not really necessary if AC97 has its complete
-format defined.
+--_002_6FAB7C47BCF00940BB0999A99BE3547A184068ABRTITMBSV02realt_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-So this patch adds a DAIFMT macro of complete format including a
-clock direction and polarity.
+Hi Takashi,
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Tested-by: Caleb Crome <caleb@crome.org>
----
- sound/soc/fsl/fsl_ssi.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+Attach patch was for ALC215/ALC285/ALC289 headset mode support.
+Many thanks.
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 7a6a32b..b76a517 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -90,6 +90,16 @@
- 	 SNDRV_PCM_FMTBIT_S24_LE)
- #endif
- 
-+/*
-+ * In AC97 mode, TXDIR bit is forced to 0 and TFDIR bit is forced to 1:
-+ *  - SSI inputs external bit clock and outputs frame sync clock -- CBM_CFS
-+ *  - Also have NB_NF to mark these two clocks will not be inverted
-+ */
-+#define FSLSSI_AC97_DAIFMT \
-+	(SND_SOC_DAIFMT_AC97 | \
-+	 SND_SOC_DAIFMT_CBM_CFS | \
-+	 SND_SOC_DAIFMT_NB_NF)
-+
- #define FSLSSI_SIER_DBG_RX_FLAGS \
- 	(SSI_SIER_RFF0_EN | \
- 	 SSI_SIER_RLS_EN | \
-@@ -964,8 +974,7 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- 		scr &= ~SSI_SCR_SYS_CLK_EN;
- 		break;
- 	default:
--		if (!fsl_ssi_is_ac97(ssi))
--			return -EINVAL;
-+		return -EINVAL;
- 	}
- 
- 	stcr |= strcr;
-@@ -1372,7 +1381,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	sprop = of_get_property(np, "fsl,mode", NULL);
- 	if (sprop) {
- 		if (!strcmp(sprop, "ac97-slave"))
--			ssi->dai_fmt = SND_SOC_DAIFMT_AC97;
-+			ssi->dai_fmt = FSLSSI_AC97_DAIFMT;
- 	}
- 
- 	/* Select DMA or FIQ */
--- 
-2.7.4
+BR,
+Kailang
+
+--_002_6FAB7C47BCF00940BB0999A99BE3547A184068ABRTITMBSV02realt_
+Content-Type: application/octet-stream;
+	name="0000-alc215-headset-mode.patch"
+Content-Description: 0000-alc215-headset-mode.patch
+Content-Disposition: attachment; filename="0000-alc215-headset-mode.patch";
+	size=2648; creation-date="Wed, 17 Jan 2018 07:37:38 GMT";
+	modification-date="Wed, 17 Jan 2018 07:25:46 GMT"
+Content-Transfer-Encoding: base64
+
+RnJvbSBkMGRlMjAwNmIwMWNhNWUwNTBkZTgwMjU1ZjYzMmUxNTNjMmQwYmEwIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
+dGU6IFdlZCwgMTcgSmFuIDIwMTggMTU6MjI6NTUgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGEvcmVhbHRlayAtIFN1cHBvcnQgaGVhZHNldCBtb2RlIGZvcgogQUxDMjE1L0FMQzI4NS9B
+TEMyODkKClRoaXMgcGF0Y2ggd2lsbCBlbmFibGUgaGVhZHNldCBtb2RlIGZvciBBTEMyMTUvQUxD
+Mjg1L0FMQzI4OSBwbGF0Zm9ybS4KClNpZ25lZC1vZmYtYnk6IEthaWxhbmcgWWFuZyA8a2FpbGFu
+Z0ByZWFsdGVrLmNvbT4KCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsu
+YyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCmluZGV4IDU1MjY0NmMuLjJlZmJhNGIg
+MTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCisrKyBiL3NvdW5kL3Bj
+aS9oZGEvcGF0Y2hfcmVhbHRlay5jCkBAIC00MDg2LDggKzQwODYsMTEgQEAgc3RhdGljIHZvaWQg
+YWxjX2hlYWRzZXRfbW9kZV91bnBsdWdnZWQoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiAJY2Fz
+ZSAweDEwZWMwNjY4OgogCQlhbGNfcHJvY2Vzc19jb2VmX2Z3KGNvZGVjLCBjb2VmMDY2OCk7CiAJ
+CWJyZWFrOworCWNhc2UgMHgxMGVjMDIxNToKIAljYXNlIDB4MTBlYzAyMjU6CisJY2FzZSAweDEw
+ZWMwMjg1OgogCWNhc2UgMHgxMGVjMDI5NToKKwljYXNlIDB4MTBlYzAyODk6CiAJY2FzZSAweDEw
+ZWMwMjk5OgogCQlhbGNfcHJvY2Vzc19jb2VmX2Z3KGNvZGVjLCBjb2VmMDIyNSk7CiAJCWJyZWFr
+OwpAQCAtNDIwOSw4ICs0MjEyLDExIEBAIHN0YXRpYyB2b2lkIGFsY19oZWFkc2V0X21vZGVfbWlj
+X2luKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLCBoZGFfbmlkX3QgaHBfcGluLAogCQlhbGNfcHJv
+Y2Vzc19jb2VmX2Z3KGNvZGVjLCBjb2VmMDY4OCk7CiAJCXNuZF9oZGFfc2V0X3Bpbl9jdGxfY2Fj
+aGUoY29kZWMsIG1pY19waW4sIFBJTl9WUkVGNTApOwogCQlicmVhazsKKwljYXNlIDB4MTBlYzAy
+MTU6CiAJY2FzZSAweDEwZWMwMjI1OgorCWNhc2UgMHgxMGVjMDI4NToKIAljYXNlIDB4MTBlYzAy
+OTU6CisJY2FzZSAweDEwZWMwMjg5OgogCWNhc2UgMHgxMGVjMDI5OToKIAkJYWxjX3Byb2Nlc3Nf
+Y29lZl9mdyhjb2RlYywgYWxjMjI1X3ByZV9oc21vZGUpOwogCQlhbGNfdXBkYXRlX2NvZWZfaWR4
+KGNvZGVjLCAweDQ1LCAweDNmPDwxMCwgMHgzMTw8MTApOwpAQCAtNDI4MSw4ICs0Mjg3LDExIEBA
+IHN0YXRpYyB2b2lkIGFsY19oZWFkc2V0X21vZGVfZGVmYXVsdChzdHJ1Y3QgaGRhX2NvZGVjICpj
+b2RlYykKIAl9OwogCiAJc3dpdGNoIChjb2RlYy0+Y29yZS52ZW5kb3JfaWQpIHsKKwljYXNlIDB4
+MTBlYzAyMTU6CiAJY2FzZSAweDEwZWMwMjI1OgorCWNhc2UgMHgxMGVjMDI4NToKIAljYXNlIDB4
+MTBlYzAyOTU6CisJY2FzZSAweDEwZWMwMjg5OgogCWNhc2UgMHgxMGVjMDI5OToKIAkJYWxjX3By
+b2Nlc3NfY29lZl9mdyhjb2RlYywgYWxjMjI1X3ByZV9oc21vZGUpOwogCQlhbGNfcHJvY2Vzc19j
+b2VmX2Z3KGNvZGVjLCBjb2VmMDIyNSk7CkBAIC00NDI0LDggKzQ0MzMsMTEgQEAgc3RhdGljIHZv
+aWQgYWxjX2hlYWRzZXRfbW9kZV9jdGlhKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogCWNhc2Ug
+MHgxMGVjMDY2ODoKIAkJYWxjX3Byb2Nlc3NfY29lZl9mdyhjb2RlYywgY29lZjA2ODgpOwogCQli
+cmVhazsKKwljYXNlIDB4MTBlYzAyMTU6CiAJY2FzZSAweDEwZWMwMjI1OgorCWNhc2UgMHgxMGVj
+MDI4NToKIAljYXNlIDB4MTBlYzAyOTU6CisJY2FzZSAweDEwZWMwMjg5OgogCWNhc2UgMHgxMGVj
+MDI5OToKIAkJdmFsID0gYWxjX3JlYWRfY29lZl9pZHgoY29kZWMsIDB4NDUpOwogCQlpZiAodmFs
+ICYgKDEgPDwgOSkpCkBAIC00NTI4LDggKzQ1NDAsMTEgQEAgc3RhdGljIHZvaWQgYWxjX2hlYWRz
+ZXRfbW9kZV9vbXRwKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogCWNhc2UgMHgxMGVjMDY2ODoK
+IAkJYWxjX3Byb2Nlc3NfY29lZl9mdyhjb2RlYywgY29lZjA2ODgpOwogCQlicmVhazsKKwljYXNl
+IDB4MTBlYzAyMTU6CiAJY2FzZSAweDEwZWMwMjI1OgorCWNhc2UgMHgxMGVjMDI4NToKIAljYXNl
+IDB4MTBlYzAyOTU6CisJY2FzZSAweDEwZWMwMjg5OgogCWNhc2UgMHgxMGVjMDI5OToKIAkJYWxj
+X3Byb2Nlc3NfY29lZl9mdyhjb2RlYywgY29lZjAyMjUpOwogCQlicmVhazsKQEAgLTQ2NTgsOCAr
+NDY3MywxMSBAQCBzdGF0aWMgdm9pZCBhbGNfZGV0ZXJtaW5lX2hlYWRzZXRfdHlwZShzdHJ1Y3Qg
+aGRhX2NvZGVjICpjb2RlYykKIAkJdmFsID0gYWxjX3JlYWRfY29lZl9pZHgoY29kZWMsIDB4YmUp
+OwogCQlpc19jdGlhID0gKHZhbCAmIDB4MWMwMikgPT0gMHgxYzAyOwogCQlicmVhazsKKwljYXNl
+IDB4MTBlYzAyMTU6CiAJY2FzZSAweDEwZWMwMjI1OgorCWNhc2UgMHgxMGVjMDI4NToKIAljYXNl
+IDB4MTBlYzAyOTU6CisJY2FzZSAweDEwZWMwMjg5OgogCWNhc2UgMHgxMGVjMDI5OToKIAkJc25k
+X2hkYV9jb2RlY193cml0ZShjb2RlYywgMHgyMSwgMCwKIAkJCSAgICBBQ19WRVJCX1NFVF9BTVBf
+R0FJTl9NVVRFLCBBTVBfT1VUX01VVEUpOwo=
+
+--_002_6FAB7C47BCF00940BB0999A99BE3547A184068ABRTITMBSV02realt_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--_002_6FAB7C47BCF00940BB0999A99BE3547A184068ABRTITMBSV02realt_--
