@@ -1,16 +1,16 @@
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Subject: [PATCH] ASoC: sgtl5000: Do not print error on probe
-	deferral
-Date: Wed, 17 Jan 2018 13:46:20 -0200
-Message-ID: <1516203981-6333-1-git-send-email-fabio.estevam@nxp.com>
+Subject: [PATCH v2 1/2] ASoC: sgtl5000: Do not print error on
+	probe deferral
+Date: Wed, 17 Jan 2018 13:48:54 -0200
+Message-ID: <1516204135-11200-1-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from NAM02-CY1-obe.outbound.protection.outlook.com
- (mail-cys01nam02on0050.outbound.protection.outlook.com [104.47.37.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 4496C266E7C
- for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2018 16:46:30 +0100 (CET)
+ (mail-cys01nam02on0069.outbound.protection.outlook.com [104.47.37.69])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2329B266E7C
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2018 16:49:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,6 +30,9 @@ error message.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 ---
+Changes since v1:
+- Correcty mark this patch as 1/2
+
  sound/soc/codecs/sgtl5000.c | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
