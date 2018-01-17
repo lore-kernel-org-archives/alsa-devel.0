@@ -1,73 +1,38 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: remove second duplicated assignment to pointer 'res'" to the asoc tree
-Date: Wed, 17 Jan 2018 11:24:01 +0000
-Message-ID: <E1eblp3-0003i2-8z@debutante>
-References: <20180117101708.11698-1-colin.king@canonical.com>
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <20180117101708.11698-1-colin.king@canonical.com>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Subject: [PATCH -next] slimbus: qcom: remove redundant dev_err call in qcom_slim_probe()
+Date: Wed, 17 Jan 2018 11:32:50 +0000
+Message-ID: <1516188770-4716-1-git-send-email-weiyongjun1@huawei.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Wei Yongjun <weiyongjun1@huawei.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+There is a error message within devm_ioremap_resource
+already, so remove the dev_err call to avoid redundant
+error message.
 
-   ASoC: Intel: remove second duplicated assignment to pointer 'res'
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From fb2fcaeaad504ae9dad26f7b26a8ea840d00535f Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Wed, 17 Jan 2018 10:17:08 +0000
-Subject: [PATCH] ASoC: Intel: remove second duplicated assignment to pointer
- 'res'
-
-The second assignment to res is identical to the previous assignment
-so it is redundant and can be removed.
-
-Cleans up clang warning:
-sound/soc/intel/skylake/skl-topology.c:191:25: warning: Value stored to
-'res' during its initialization is never read
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 ---
- sound/soc/intel/skylake/skl-topology.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/slimbus/qcom-ctrl.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 28bc16a8e09a..73af6e19ebbd 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -190,7 +190,6 @@ skl_tplg_free_pipe_mcps(struct skl *skl, struct skl_module_cfg *mconfig)
- 	u8 res_idx = mconfig->res_idx;
- 	struct skl_module_res *res = &mconfig->module->resources[res_idx];
+diff --git a/drivers/slimbus/qcom-ctrl.c b/drivers/slimbus/qcom-ctrl.c
+index ffb46f9..2f671dd 100644
+--- a/drivers/slimbus/qcom-ctrl.c
++++ b/drivers/slimbus/qcom-ctrl.c
+@@ -529,10 +529,8 @@ static int qcom_slim_probe(struct platform_device *pdev)
  
--	res = &mconfig->module->resources[res_idx];
- 	skl->resource.mcps -= res->cps;
- }
+ 	slim_mem = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ctrl");
+ 	ctrl->base = devm_ioremap_resource(ctrl->dev, slim_mem);
+-	if (IS_ERR(ctrl->base)) {
+-		dev_err(&pdev->dev, "IOremap failed\n");
++	if (IS_ERR(ctrl->base))
+ 		return PTR_ERR(ctrl->base);
+-	}
  
--- 
-2.15.1
-
+ 	sctrl->set_laddr = qcom_set_laddr;
+ 	sctrl->xfer_msg = qcom_xfer_msg;
