@@ -1,15 +1,22 @@
-From: Matthias Reichl <hias@horus.com>
-Subject: [PATCH] ASoC: bcm2835: fix hw_params error when device
-	is in prepared state
-Date: Wed, 17 Jan 2018 13:50:50 +0100
-Message-ID: <20180117125050.2948-1-hias@horus.com>
+From: Mirza Krak <mirza.krak@gmail.com>
+Subject: Re: Bad PCM stream after a suspend/resume cycle
+Date: Wed, 17 Jan 2018 15:08:27 +0100
+Message-ID: <CALw8SCV8penDHKxTjrg0Z7k6dTFxEq79G8fK74iPz+3vix1fcQ@mail.gmail.com>
+References: <CALw8SCXUpeUv8433Rd9is6eNd9ztd6soEOoDMkVSLue6qT6wKg@mail.gmail.com>
+ <s5h7esnpe3z.wl-tiwai@suse.de>
+ <CALw8SCX8XmVeLncD3GNHtt32MW26EGW=XFG=2iuK7vvREzj8Dw@mail.gmail.com>
+ <s5hwp0ndkcm.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.horus.com (mail.horus.com [78.46.148.228])
- by alsa0.perex.cz (Postfix) with ESMTP id 6BF85266E42
- for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2018 13:50:52 +0100 (CET)
+Received: from mail-qt0-f193.google.com (mail-qt0-f193.google.com
+ [209.85.216.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A78A266A74
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2018 15:08:28 +0100 (CET)
+Received: by mail-qt0-f193.google.com with SMTP id s3so22629349qtb.10
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2018 06:08:28 -0800 (PST)
+In-Reply-To: <s5hwp0ndkcm.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,72 +26,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Eric Anholt <eric@anholt.net>, Stefan Wahren <stefan.wahren@i2se.com>
-Cc: alsa-devel@alsa-project.org, Phil Elwell <phil@raspberrypi.org>, linux-rpi-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
 List-Id: alsa-devel@alsa-project.org
 
-If bcm2835 is configured as bitclock master calling hw_params()
-after prepare() fails with EBUSY. This also makes it impossible to
-use bcm2835 in full duplex mode.
-
-The error is caused by the split clock setup: clk_set_rate
-is called in hw_params, clk_prepare_enable in prepare. As hw_params
-doesn't check if the clock was already enabled clk_set_rate
-fails with EBUSY.
-
-Fix this by moving clock startup from prepare to hw_params and
-let hw_params properly deal with an already set up or enabled
-clock.
-
-Signed-off-by: Matthias Reichl <hias@horus.com>
----
- sound/soc/bcm/bcm2835-i2s.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
-index 2e449d7173fc..d5f73a8ab893 100644
---- a/sound/soc/bcm/bcm2835-i2s.c
-+++ b/sound/soc/bcm/bcm2835-i2s.c
-@@ -130,6 +130,7 @@ struct bcm2835_i2s_dev {
- 	struct regmap				*i2s_regmap;
- 	struct clk				*clk;
- 	bool					clk_prepared;
-+	int					clk_rate;
- };
- 
- static void bcm2835_i2s_start_clock(struct bcm2835_i2s_dev *dev)
-@@ -419,10 +420,19 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- 	/* Clock should only be set up here if CPU is clock master */
--	if (bit_clock_master) {
--		ret = clk_set_rate(dev->clk, bclk_rate);
--		if (ret)
--			return ret;
-+	if (bit_clock_master &&
-+	    (!dev->clk_prepared || dev->clk_rate != bclk_rate)) {
-+		if (dev->clk_prepared)
-+			bcm2835_i2s_stop_clock(dev);
-+
-+		if (dev->clk_rate != bclk_rate) {
-+			ret = clk_set_rate(dev->clk, bclk_rate);
-+			if (ret)
-+				return ret;
-+			dev->clk_rate = bclk_rate;
-+		}
-+
-+		bcm2835_i2s_start_clock(dev);
- 	}
- 
- 	/* Setup the frame format */
-@@ -618,8 +628,6 @@ static int bcm2835_i2s_prepare(struct snd_pcm_substream *substream,
- 	struct bcm2835_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
- 	uint32_t cs_reg;
- 
--	bcm2835_i2s_start_clock(dev);
--
- 	/*
- 	 * Clear both FIFOs if the one that should be started
- 	 * is not empty at the moment. This should only happen
--- 
-2.11.0
+T24gMTIgSmFudWFyeSAyMDE4IGF0IDE5OjA0LCBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+
+IHdyb3RlOgo+IE9uIEZyaSwgMTIgSmFuIDIwMTggMTQ6MzY6NDUgKzAxMDAsCj4gTWlyemEgS3Jh
+ayB3cm90ZToKPj4KCjwgc25pcCA+Cgo+Cj4gVGhlIEVCQURGRCBpcyBhbHJlYWR5IGluZGljYXRp
+bmcgYSBmYXRhbCBlcnJvciwgYW5kIHNvbWV0aGluZyBpcyB3cm9uZwo+IGluIHRoZSBkcml2ZXIu
+ICBCYXNpY2FsbHkgdGhlIGRyaXZlciBzaG91bGQgc3VzcGVuZCB0aGUgc3RyZWFtIHZpYQo+IHNu
+ZF9wY21fc3VzcGVuZCooKSBjYWxsIGluIHRoZSBQTSByZXN1bWUgb3BzLiAgTW9zdCBsaWtlbHkg
+eW91ciBkcml2ZXIKPiBtaXNzZXMgdGhhdC4KPgo+IFRoYXQgc2FpZCwgaXQncyBzcGVjaWZpYyB0
+byB5b3VyIHVzaW5nIGRyaXZlciwgYW5kIHlvdSdkIG5lZWQgdG8gdGFrZQo+IGEgbG9vayBhdCB0
+aGF0IGNvZGUgdGhlcmUuCgpUaGFuayB5b3UgZm9yIHlvdSBwYXRpZW5jZSB3aXRoIG1lLgoKSSBo
+YXZlIGxvb2tlZCBmdXJ0aGVyIGluIHRvIG15IGhhcmR3YXJlIGRyaXZlcnMgYW5kIEkgY2FuIG5v
+dCByZWFsbHkKc2VlIGFueSBmYXVsdHMgaGVyZS4KCkJ1dCBJIGRpZCBzb21lIGZ1cnRoZXIgdGVz
+dGluZyBhbmQgYXBwbHlpbmcgdGhlIGZvbGxvd2luZyBkaWZmIG9uCmFwbGF5ICJyZXNvbHZlcyIg
+dGhlIHByb2JsZW0gKHYxLjEuNCBvZiBhbHNhLXV0aWxzKToKCmRpZmYgLS1naXQgYS9hcGxheS9h
+cGxheS5jIGIvYXBsYXkvYXBsYXkuYwppbmRleCBmNzkzYzgyLi4wNDBjZWMxIDEwMDY0NAotLS0g
+YS9hcGxheS9hcGxheS5jCisrKyBiL2FwbGF5L2FwbGF5LmMKQEAgLTIwMjAsNiArMjAyMCw4IEBA
+IHN0YXRpYyBzc2l6ZV90IHBjbV93cml0ZSh1X2NoYXIgKmRhdGEsIHNpemVfdCBjb3VudCkKICAg
+ICAgICAgICAgICAgIGlmICh0ZXN0X3Bvc2l0aW9uKQogICAgICAgICAgICAgICAgICAgICAgICBk
+b190ZXN0X3Bvc2l0aW9uKCk7CiAgICAgICAgICAgICAgICBpZiAociA9PSAtRUFHQUlOIHx8IChy
+ID49IDAgJiYgKHNpemVfdClyIDwgY291bnQpKSB7CisgICAgICAgICAgICAgICAgICAgICAgIGlm
+IChzbmRfcGNtX3N0YXRlKGhhbmRsZSkgPT0gU05EX1BDTV9TVEFURV9TVVNQRU5ERUQpCisgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgc3VzcGVuZCgpOwogICAgICAgICAgICAgICAgICAg
+ICAgICBpZiAoIXRlc3Rfbm93YWl0KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNu
+ZF9wY21fd2FpdChoYW5kbGUsIDEwMCk7CiAgICAgICAgICAgICAgICB9IGVsc2UgaWYgKHIgPT0g
+LUVQSVBFKSB7CgpXaGljaCBtZWFucyB0aGF0IHRoZXJlIGlzIG5vIGVycm9yIGluIHJlZ2FyZCB0
+byBzdXNwZW5kaW5nIHRoZSBzdHJlYW0KYXMgaXQgcHJvcGVybHkgcmVwb3J0cyB0aGlzIHdoZW4g
+Y2hlY2tlZC4KCk15IHByb2JsZW0gaXMgdGhhdCB0aGlzIGNvbmRpdGlvbjoKCiAgICAociA+PSAw
+ICYmIChzaXplX3QpciA8IGNvdW50KQoKSXMgYWx3YXlzIHRydWUgYWZ0ZXIgYSBzdXNwZW5kL3Jl
+c3VtZSBjeWNsZS4gV2hpY2ggbm9ybWFsbHkgZG9lcyBub3QKcmVzdWx0IGluIGEgInJlc3VtZSIg
+Y2FsbCBmcm9tIGFwbGF5IG5vciBmcm9tIHNuZF9wY21fcmVjb3Zlciwgd2hpY2gKbWVhbnMgdGhh
+dCBpdCB3aWxsIHRyeSB0byB3cml0ZSBkYXRhIHRvIGEgc3VzcGVuZGVkIHN0cmVhbSB3aGljaApy
+ZXN1bHRzIGluIC1FQkFERkQgZHVlIHRvIHRoaXMgKGZyb20gYWxzYS1saWIpOgoKc25kX3BjbV9z
+ZnJhbWVzX3Qgc25kX3BjbV93cml0ZWkoc25kX3BjbV90ICpwY20sIGNvbnN0IHZvaWQgKmJ1ZmZl
+ciwKc25kX3BjbV91ZnJhbWVzX3Qgc2l6ZSkKewogICAgPCBzbmlwID4KCiAgICBpZiAoYmFkX3Bj
+bV9zdGF0ZShwY20sIFBfU1RBVEVfUlVOTkFCTEUpKQogICAgICAgIHJldHVybiAtRUJBREZEOwog
+ICAgcmV0dXJuIF9zbmRfcGNtX3dyaXRlaShwY20sIGJ1ZmZlciwgc2l6ZSk7Cn0KCkJlY2F1c2Ug
+U1VTUEVOREVEIGlzIG5vdCBwYXJ0IG9mIHRoZSBQX1NUQVRFX1JVTk5BQkxFLCB3aGljaCBtYXli
+ZSBpdCBzaG91bGQgYmU/CgotLSAKTWVkIFbDpG5saWdhIEjDpGxzbmluZ2FyIC8gQmVzdCBSZWdh
+cmRzCgpNaXJ6YSBLcmFrCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
