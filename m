@@ -1,57 +1,194 @@
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Subject: [PATCH v2 2/2] ASoC: mxs-sgtl5000: Do not print error
-	on probe deferral
-Date: Wed, 17 Jan 2018 13:48:55 -0200
-Message-ID: <1516204135-11200-2-git-send-email-fabio.estevam@nxp.com>
-References: <1516204135-11200-1-git-send-email-fabio.estevam@nxp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM01-SN1-obe.outbound.protection.outlook.com
- (mail-sn1nam01on0046.outbound.protection.outlook.com [104.47.32.46])
- by alsa0.perex.cz (Postfix) with ESMTP id D4D70266E7C
- for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2018 16:49:09 +0100 (CET)
-In-Reply-To: <1516204135-11200-1-git-send-email-fabio.estevam@nxp.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org
+From: Peng Donglin <dolinux.peng@gmail.com>
+Subject: [PATCH] ASoC: use seq_file to dump the contents of dai_list, platoform_list and codec_list
+Date: Wed, 17 Jan 2018 23:49:58 +0800
+Message-ID: <1516204198-14690-1-git-send-email-dolinux.peng@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Peng Donglin <dolinux.peng@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Probe deferral may happen, so do not print an error message in this
-case.
+Now the debugfs files dais/codecs/platforms have a size limit PAGE_SIZE and
+the user can not see the whole contents of dai_list/platform_list/codec_list
+when they are larger than this limit.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+This patch uses seq_file instead to make sure dais/platforms/codecs show the
+full contents of dai_list/platform_list/codec_list.
+
+Signed-off-by: Peng Donglin <dolinux.peng@gmail.com>
 ---
-Changes since v1:
-- None
+ sound/soc/soc-core.c | 111 +++++++++++++++++----------------------------------
+ 1 file changed, 37 insertions(+), 74 deletions(-)
 
- sound/soc/mxs/mxs-sgtl5000.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
-index b593f76..2b3f240 100644
---- a/sound/soc/mxs/mxs-sgtl5000.c
-+++ b/sound/soc/mxs/mxs-sgtl5000.c
-@@ -163,8 +163,9 @@ static int mxs_sgtl5000_probe(struct platform_device *pdev)
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index c0edac8..7b58211 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -349,120 +349,84 @@ static void soc_init_codec_debugfs(struct snd_soc_component *component)
+ 			"ASoC: Failed to create codec register debugfs file\n");
+ }
  
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret) {
--		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
--			ret);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
-+				ret);
- 		return ret;
- 	}
+-static ssize_t codec_list_read_file(struct file *file, char __user *user_buf,
+-				    size_t count, loff_t *ppos)
++static int codec_list_seq_show(struct seq_file *m, void *v)
+ {
+-	char *buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
+-	ssize_t len, ret = 0;
+ 	struct snd_soc_codec *codec;
  
+-	if (!buf)
+-		return -ENOMEM;
+-
+ 	mutex_lock(&client_mutex);
+ 
+-	list_for_each_entry(codec, &codec_list, list) {
+-		len = snprintf(buf + ret, PAGE_SIZE - ret, "%s\n",
+-			       codec->component.name);
+-		if (len >= 0)
+-			ret += len;
+-		if (ret > PAGE_SIZE) {
+-			ret = PAGE_SIZE;
+-			break;
+-		}
+-	}
++	list_for_each_entry(codec, &codec_list, list)
++		seq_printf(m, "%s\n", codec->component.name);
+ 
+ 	mutex_unlock(&client_mutex);
+ 
+-	if (ret >= 0)
+-		ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
+-
+-	kfree(buf);
++	return 0;
++}
+ 
+-	return ret;
++static int codec_list_seq_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, codec_list_seq_show, NULL);
+ }
+ 
+ static const struct file_operations codec_list_fops = {
+-	.read = codec_list_read_file,
+-	.llseek = default_llseek,/* read accesses f_pos */
++	.open = codec_list_seq_open,
++	.read = seq_read,
++	.llseek = seq_lseek,
++	.release = single_release,
+ };
+ 
+-static ssize_t dai_list_read_file(struct file *file, char __user *user_buf,
+-				  size_t count, loff_t *ppos)
++static int dai_list_seq_show(struct seq_file *m, void *v)
+ {
+-	char *buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
+-	ssize_t len, ret = 0;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_dai *dai;
+ 
+-	if (!buf)
+-		return -ENOMEM;
+-
+ 	mutex_lock(&client_mutex);
+ 
+-	list_for_each_entry(component, &component_list, list) {
+-		list_for_each_entry(dai, &component->dai_list, list) {
+-			len = snprintf(buf + ret, PAGE_SIZE - ret, "%s\n",
+-				dai->name);
+-			if (len >= 0)
+-				ret += len;
+-			if (ret > PAGE_SIZE) {
+-				ret = PAGE_SIZE;
+-				break;
+-			}
+-		}
+-	}
++	list_for_each_entry(component, &component_list, list)
++		list_for_each_entry(dai, &component->dai_list, list)
++			seq_printf(m, "%s\n", dai->name);
+ 
+ 	mutex_unlock(&client_mutex);
+ 
+-	ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
+-
+-	kfree(buf);
++	return 0;
++}
+ 
+-	return ret;
++static int dai_list_seq_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, dai_list_seq_show, NULL);
+ }
+ 
+ static const struct file_operations dai_list_fops = {
+-	.read = dai_list_read_file,
+-	.llseek = default_llseek,/* read accesses f_pos */
++	.open = dai_list_seq_open,
++	.read = seq_read,
++	.llseek = seq_lseek,
++	.release = single_release,
+ };
+ 
+-static ssize_t platform_list_read_file(struct file *file,
+-				       char __user *user_buf,
+-				       size_t count, loff_t *ppos)
++static int platform_list_seq_show(struct seq_file *m, void *v)
+ {
+-	char *buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
+-	ssize_t len, ret = 0;
+ 	struct snd_soc_platform *platform;
+ 
+-	if (!buf)
+-		return -ENOMEM;
+-
+ 	mutex_lock(&client_mutex);
+ 
+-	list_for_each_entry(platform, &platform_list, list) {
+-		len = snprintf(buf + ret, PAGE_SIZE - ret, "%s\n",
+-			       platform->component.name);
+-		if (len >= 0)
+-			ret += len;
+-		if (ret > PAGE_SIZE) {
+-			ret = PAGE_SIZE;
+-			break;
+-		}
+-	}
++	list_for_each_entry(platform, &platform_list, list)
++		seq_printf(m, "%s\n", platform->component.name);
+ 
+ 	mutex_unlock(&client_mutex);
+ 
+-	ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
+-
+-	kfree(buf);
++	return 0;
++}
+ 
+-	return ret;
++static int platform_list_seq_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, platform_list_seq_show, NULL);
+ }
+ 
+ static const struct file_operations platform_list_fops = {
+-	.read = platform_list_read_file,
+-	.llseek = default_llseek,/* read accesses f_pos */
++	.open = platform_list_seq_open,
++	.read = seq_read,
++	.llseek = seq_lseek,
++	.release = single_release,
+ };
+ 
+ static void soc_init_card_debugfs(struct snd_soc_card *card)
+@@ -491,7 +455,6 @@ static void soc_cleanup_card_debugfs(struct snd_soc_card *card)
+ 	debugfs_remove_recursive(card->debugfs_card_root);
+ }
+ 
+-
+ static void snd_soc_debugfs_init(void)
+ {
+ 	snd_soc_debugfs_root = debugfs_create_dir("asoc", NULL);
 -- 
 2.7.4
