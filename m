@@ -1,19 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 122/187] ASoC: twl4030: replace codec to
- component
-Date: Wed, 17 Jan 2018 13:37:23 +0200
-Message-ID: <5a4a4358-75c3-886b-bb6d-d9cbfecfca4b@ti.com>
-References: <87bmhzevk9.wl%kuninori.morimoto.gx@renesas.com>
- <87fu7b7sz4.wl%kuninori.morimoto.gx@renesas.com>
+From: Matthias Reichl <hias@horus.com>
+Subject: [PATCH] ASoC: bcm2835: fix hw_params error when device
+	is in prepared state
+Date: Wed, 17 Jan 2018 13:50:50 +0100
+Message-ID: <20180117125050.2948-1-hias@horus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
- by alsa0.perex.cz (Postfix) with ESMTP id 70013266B67
- for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2018 12:37:08 +0100 (CET)
-In-Reply-To: <87fu7b7sz4.wl%kuninori.morimoto.gx@renesas.com>
-Content-Language: en-US
+Received: from mail.horus.com (mail.horus.com [78.46.148.228])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6BF85266E42
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2018 13:50:52 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,44 +19,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>
+To: Mark Brown <broonie@kernel.org>, Eric Anholt <eric@anholt.net>, Stefan Wahren <stefan.wahren@i2se.com>
+Cc: alsa-devel@alsa-project.org, Phil Elwell <phil@raspberrypi.org>, linux-rpi-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE4LTAxLTEyIDAzOjQzLCBLdW5pbm9yaSBNb3JpbW90byB3cm90ZToKPiAKPiBGcm9t
-OiBLdW5pbm9yaSBNb3JpbW90byA8a3VuaW5vcmkubW9yaW1vdG8uZ3hAcmVuZXNhcy5jb20+Cj4g
-Cj4gTm93IHdlIGNhbiByZXBsYWNlIENvZGVjIHRvIENvbXBvbmVudC4gTGV0J3MgZG8gaXQuCj4g
-Cj4gTm90ZToKPiAJeHh4X2NvZGVjX3h4eCgpCQktPgl4eHhfY29tcG9uZW50X3h4eCgpCj4gCS5p
-ZGxlX2JpYXNfb2ZmID0gMQktPgkuaWRsZV9iaWFzX29uID0gMAo+IAkuaWdub3JlX3BtZG93bl90
-aW1lID0gMAktPgkucG1kb3duX3RpbWUgPSAxCj4gCS0JCQktPgkuZW5kaWFubmVzcyA9IDEKPiAJ
-LQkJCS0+CS5ub25fbGVnYWN5X2RhaV9uYW1pbmcgPSAxCj4gCj4gU2lnbmVkLW9mZi1ieTogS3Vu
-aW5vcmkgTW9yaW1vdG8gPGt1bmlub3JpLm1vcmltb3RvLmd4QHJlbmVzYXMuY29tPgo+IC0tLQo+
-ICBzb3VuZC9zb2MvY29kZWNzL3R3bDQwMzAuYyB8IDM3OSArKysrKysrKysrKysrKysrKysrKysr
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDE4NSBpbnNlcnRpb25z
-KCspLCAxOTQgZGVsZXRpb25zKC0pCgouLi4KCj4gLXN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3Nv
-Y19jb2RlY19kcml2ZXIgc29jX2NvZGVjX2Rldl90d2w0MDMwID0gewo+IC0JLnByb2JlID0gdHds
-NDAzMF9zb2NfcHJvYmUsCj4gLQkucmVtb3ZlID0gdHdsNDAzMF9zb2NfcmVtb3ZlLAo+IC0JLnNl
-dF9iaWFzX2xldmVsID0gdHdsNDAzMF9zZXRfYmlhc19sZXZlbCwKPiAtCS5pZGxlX2JpYXNfb2Zm
-ID0gdHJ1ZSwKPiAtCj4gLQkuY29tcG9uZW50X2RyaXZlciA9IHsKPiAtCQkuY29udHJvbHMJCT0g
-dHdsNDAzMF9zbmRfY29udHJvbHMsCj4gLQkJLm51bV9jb250cm9scwkJPSBBUlJBWV9TSVpFKHR3
-bDQwMzBfc25kX2NvbnRyb2xzKSwKPiAtCQkuZGFwbV93aWRnZXRzCQk9IHR3bDQwMzBfZGFwbV93
-aWRnZXRzLAo+IC0JCS5udW1fZGFwbV93aWRnZXRzCT0gQVJSQVlfU0laRSh0d2w0MDMwX2RhcG1f
-d2lkZ2V0cyksCj4gLQkJLmRhcG1fcm91dGVzCQk9IGludGVyY29uLAo+IC0JCS5udW1fZGFwbV9y
-b3V0ZXMJPSBBUlJBWV9TSVpFKGludGVyY29uKSwKPiAtCX0sCj4gK3N0YXRpYyBjb25zdCBzdHJ1
-Y3Qgc25kX3NvY19jb21wb25lbnRfZHJpdmVyIHNvY19jb21wb25lbnRfZGV2X3R3bDQwMzAgPSB7
-Cj4gKwkucHJvYmUJCQk9IHR3bDQwMzBfc29jX3Byb2JlLAo+ICsJLnJlbW92ZQkJCT0gdHdsNDAz
-MF9zb2NfcmVtb3ZlLAo+ICsJLnNldF9iaWFzX2xldmVsCQk9IHR3bDQwMzBfc2V0X2JpYXNfbGV2
-ZWwsCj4gKwkuY29udHJvbHMJCT0gdHdsNDAzMF9zbmRfY29udHJvbHMsCj4gKwkubnVtX2NvbnRy
-b2xzCQk9IEFSUkFZX1NJWkUodHdsNDAzMF9zbmRfY29udHJvbHMpLAo+ICsJLmRhcG1fd2lkZ2V0
-cwkJPSB0d2w0MDMwX2RhcG1fd2lkZ2V0cywKPiArCS5udW1fZGFwbV93aWRnZXRzCT0gQVJSQVlf
-U0laRSh0d2w0MDMwX2RhcG1fd2lkZ2V0cyksCj4gKwkuZGFwbV9yb3V0ZXMJCT0gaW50ZXJjb24s
-Cj4gKwkubnVtX2RhcG1fcm91dGVzCT0gQVJSQVlfU0laRShpbnRlcmNvbiksCj4gKwkucG1kb3du
-X3RpbWUJCT0gMSwKPiArCS5lbmRpYW5uZXNzCQk9IDEsCj4gKwkubm9uX2xlZ2FjeV9kYWlfbmFt
-aW5nCT0gMSwKCldlIG5lZWQgdGhlIC5yZWFkIGFuZCAud3JpdGUgYmFjayBmaXJzdCwgYXMgdGhl
-IHJlbW92YWwgb2YgdGhvc2UgYnJva2UKdHdsNDAzMCBhbmQgdHdsNjA0MC4KCi0gUMOpdGVyCgpU
-ZXhhcyBJbnN0cnVtZW50cyBGaW5sYW5kIE95LCBQb3Jra2FsYW5rYXR1IDIyLCAwMDE4MCBIZWxz
-aW5raS4KWS10dW5udXMvQnVzaW5lc3MgSUQ6IDA2MTU1MjEtNC4gS290aXBhaWtrYS9Eb21pY2ls
-ZTogSGVsc2lua2kKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+If bcm2835 is configured as bitclock master calling hw_params()
+after prepare() fails with EBUSY. This also makes it impossible to
+use bcm2835 in full duplex mode.
+
+The error is caused by the split clock setup: clk_set_rate
+is called in hw_params, clk_prepare_enable in prepare. As hw_params
+doesn't check if the clock was already enabled clk_set_rate
+fails with EBUSY.
+
+Fix this by moving clock startup from prepare to hw_params and
+let hw_params properly deal with an already set up or enabled
+clock.
+
+Signed-off-by: Matthias Reichl <hias@horus.com>
+---
+ sound/soc/bcm/bcm2835-i2s.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+index 2e449d7173fc..d5f73a8ab893 100644
+--- a/sound/soc/bcm/bcm2835-i2s.c
++++ b/sound/soc/bcm/bcm2835-i2s.c
+@@ -130,6 +130,7 @@ struct bcm2835_i2s_dev {
+ 	struct regmap				*i2s_regmap;
+ 	struct clk				*clk;
+ 	bool					clk_prepared;
++	int					clk_rate;
+ };
+ 
+ static void bcm2835_i2s_start_clock(struct bcm2835_i2s_dev *dev)
+@@ -419,10 +420,19 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	/* Clock should only be set up here if CPU is clock master */
+-	if (bit_clock_master) {
+-		ret = clk_set_rate(dev->clk, bclk_rate);
+-		if (ret)
+-			return ret;
++	if (bit_clock_master &&
++	    (!dev->clk_prepared || dev->clk_rate != bclk_rate)) {
++		if (dev->clk_prepared)
++			bcm2835_i2s_stop_clock(dev);
++
++		if (dev->clk_rate != bclk_rate) {
++			ret = clk_set_rate(dev->clk, bclk_rate);
++			if (ret)
++				return ret;
++			dev->clk_rate = bclk_rate;
++		}
++
++		bcm2835_i2s_start_clock(dev);
+ 	}
+ 
+ 	/* Setup the frame format */
+@@ -618,8 +628,6 @@ static int bcm2835_i2s_prepare(struct snd_pcm_substream *substream,
+ 	struct bcm2835_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
+ 	uint32_t cs_reg;
+ 
+-	bcm2835_i2s_start_clock(dev);
+-
+ 	/*
+ 	 * Clear both FIFOs if the one that should be started
+ 	 * is not empty at the moment. This should only happen
+-- 
+2.11.0
