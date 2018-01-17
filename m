@@ -1,16 +1,18 @@
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Subject: [PATCH v2 1/2] ASoC: sgtl5000: Do not print error on
-	probe deferral
-Date: Wed, 17 Jan 2018 13:48:54 -0200
-Message-ID: <1516204135-11200-1-git-send-email-fabio.estevam@nxp.com>
+Subject: [PATCH v2 2/2] ASoC: mxs-sgtl5000: Do not print error
+	on probe deferral
+Date: Wed, 17 Jan 2018 13:48:55 -0200
+Message-ID: <1516204135-11200-2-git-send-email-fabio.estevam@nxp.com>
+References: <1516204135-11200-1-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com
- (mail-cys01nam02on0069.outbound.protection.outlook.com [104.47.37.69])
- by alsa0.perex.cz (Postfix) with ESMTP id 2329B266E7C
- for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2018 16:49:07 +0100 (CET)
+Received: from NAM01-SN1-obe.outbound.protection.outlook.com
+ (mail-sn1nam01on0046.outbound.protection.outlook.com [104.47.32.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id D4D70266E7C
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2018 16:49:09 +0100 (CET)
+In-Reply-To: <1516204135-11200-1-git-send-email-fabio.estevam@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,35 +26,31 @@ To: broonie@kernel.org
 Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When the MCLK is not yet available when the codec is probed, probe
-deferral will happen and in this case we should not print an
-error message.
+Probe deferral may happen, so do not print an error message in this
+case.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 ---
 Changes since v1:
-- Correcty mark this patch as 1/2
+- None
 
- sound/soc/codecs/sgtl5000.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/mxs/mxs-sgtl5000.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index f2bb4fe..633cdcf 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -1332,10 +1332,13 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
- 	sgtl5000->mclk = devm_clk_get(&client->dev, NULL);
- 	if (IS_ERR(sgtl5000->mclk)) {
- 		ret = PTR_ERR(sgtl5000->mclk);
--		dev_err(&client->dev, "Failed to get mclock: %d\n", ret);
- 		/* Defer the probe to see if the clk will be provided later */
- 		if (ret == -ENOENT)
- 			ret = -EPROBE_DEFER;
-+
+diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
+index b593f76..2b3f240 100644
+--- a/sound/soc/mxs/mxs-sgtl5000.c
++++ b/sound/soc/mxs/mxs-sgtl5000.c
+@@ -163,8 +163,9 @@ static int mxs_sgtl5000_probe(struct platform_device *pdev)
+ 
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
+-			ret);
 +		if (ret != -EPROBE_DEFER)
-+			dev_err(&client->dev, "Failed to get mclock: %d\n",
++			dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
 +				ret);
- 		goto disable_regs;
+ 		return ret;
  	}
  
 -- 
