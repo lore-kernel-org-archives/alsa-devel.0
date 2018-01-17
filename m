@@ -1,112 +1,129 @@
-From: Eric Anholt <eric-WhKQ6XTQaPysTnJN9+BGXg@public.gmane.org>
-Subject: Re: [PATCH V3 1/2] dt-bindings: bcm283x: Fix register ranges of bcm2835-i2s
-Date: Wed, 17 Jan 2018 11:37:03 -0800
-Message-ID: <87a7xcmg4g.fsf@anholt.net>
-References: <1512818795-1441-1-git-send-email-stefan.wahren@i2se.com> <1512818795-1441-2-git-send-email-stefan.wahren@i2se.com> <47138b75-1d6a-1692-636b-e37a87d68842@i2se.com>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH v5 00/17] ASoC: fsl_ssi: Clean up - program
+	flow level
+Date: Wed, 17 Jan 2018 20:38:48 +0100
+Message-ID: <a6621849-2621-79ee-c8a4-09e23beea2c5@maciej.szmigiero.name>
+References: <1516171902-32669-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <47138b75-1d6a-1692-636b-e37a87d68842-eS4NqCHxEME@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stefan Wahren <stefan.wahren-eS4NqCHxEME@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Florian Fainelli <f.fainelli-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org, Matthias Reichl <hias-vtPv7MOkFPkAvxtiuMwx3w@public.gmane.org>, phil-FnsA7b+Nu9XbIbC87yuRow@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
+ by alsa0.perex.cz (Postfix) with ESMTP id 36489266FBD
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2018 20:38:54 +0100 (CET)
+In-Reply-To: <1516171902-32669-1-git-send-email-nicoleotsuka@gmail.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, caleb@crome.org, timur@tabi.org, broonie@kernel.org, arnaud.mouiche@invoxia.com, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On 17.01.2018 07:51, Nicolin Chen wrote:
+> [ Maciej, could you please send your Tested-by/Reviewed-by for AC97
+>   once you confirm this series?
+>   
+>   And Caleb, this version does not need a test for non-AC97 cases.
+> 
+>   Thanks both! ]
+> 
+> ==Change log==
+> v5
+>  * Reworked the series by taking suggestions from Maciej for AC97
+>   + Fixed SSI lockup issue by changing cleanup sequence in PATCH-13
+>   + Moved fsl_ssi_hw_clean() after unregistering the CODEC device
+>     in PATCH-13
+>   + Set NULL as the parent of CODEC platform device to fix a NULL
+>     pointer dereference bug in PATCH-16
+>  * Updated comments of three variables/pointers in struct fsl_ssi
+>    to describe them more accurately in PATCH-16
+> v4
+>  * Reworked the series by taking suggestions from Maciej
+>   + Added TXBIT0 bit back to play safe in PATCH-14
+>   + Made bool synchronous exclusive with AC97 mode in PATCH-16
+> v3
+>  * Reworked the series by taking suggestions from Maciej
+>   + Added PATCH-01 to make RX and TX more clearly defined
+>   + Replaced "bool dir" with "int dir" in PATCH-04
+>   + Replaced "!dir" with "int adir" in PATCH-05
+>   + Put CBM_CFS behind the baudclk check to keep the same
+>     program flow in PATCH-14
+>   + Removed all cpu_dai_drv changes in PATCH-15
+> v2
+>  * Reworked the series by taking suggestions from Maciej
+>   + Added PATCH-01 to keep all ssi->i2s_net updated
+>   + Replaced bool tx with bool dir in PATCH-03 and PATCH-06
+>   + Moved all initial register configurations from dai probe() to
+>     platform probe() so as to let AC97 CODEC successfully probe.
+>  * Added Tested-by from Caleb for TDM test cases.
+> 
+> ==Background==
+> The fsl_ssi driver was designed for PPC originally and then it has
+> been updated to support different modes for i.MX Series, including
+> SDMA, I2S Master mode, AC97 and older i.MXs with FIQ, by different
+> contributors for different use cases in different coding styles.
+> 
+> Additionally, in order to fix/work-around hardware bugs and design
+> flaws, the driver made a lot of compromise so now its program flow
+> looks very complicated and it's getting hard to maintain or update.
+> 
+> So I am going to clean up the driver on both coding style level and
+> program flow level.
+> 
+> ==Introduction==
+> This series of patches is the second set to clean up fsl_ssi driver
+> in the program flow level. Any patch here may impact a fundamental
+> test case like playback or record.
+> 
+> ==Verification==
+> This series of patches require fully tested. I have done such tests
+> on i.MX6SoloX with WM8962 using imx_v6_v7_defconfig as:
+>  - Playback via I2S Master and Slave mode
+>  - Record via I2S Master and Slave mode
+>  - Simultaneous playback and record via I2S Master and Slave mode
+>  - Background playback with foreground record (starting at different
+>    time) via I2S Master and Slave mode
+>  - Background record with foreground playback (starting at different
+>    time) via I2S Master and Slave mode
+>  * All tests above by hacking offline_config to true in imx51.
+> 
+> Caleb has tested v1-v4 with TDM lookback tests on i.MX6.
+> 
+> Example of uncovered tests: AC97, PowerPC and FIQ.
 
-Stefan Wahren <stefan.wahren-eS4NqCHxEME@public.gmane.org> writes:
+For the whole series:
+Tested-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+Reviewed-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 
-> Am 09.12.2017 um 12:26 schrieb Stefan Wahren:
->> Since 517e7a1537a ("ASoC: bcm2835: move to use the clock framework")
->> the bcm2835-i2s requires a clock as DT property. Unfortunately
->> the necessary DT change has never been applied. While we are at it
->> also fix the first PCM register range to cover the PCM_GRAY register.
->>
->> This patch only fixes the affected dt-bindings.
->>
->> Signed-off-by: Stefan Wahren <stefan.wahren-eS4NqCHxEME@public.gmane.org>
->> Reviewed-by: Eric Anholt <eric-WhKQ6XTQaPysTnJN9+BGXg@public.gmane.org>
->> ---
->>   Documentation/devicetree/bindings/dma/brcm,bcm2835-dma.txt   | 4 ++--
->>   Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt | 9 ++++-=
-----
->>   2 files changed, 6 insertions(+), 7 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/dma/brcm,bcm2835-dma.txt =
-b/Documentation/devicetree/bindings/dma/brcm,bcm2835-dma.txt
->> index baf9b34..b6a8cc0 100644
->> --- a/Documentation/devicetree/bindings/dma/brcm,bcm2835-dma.txt
->> +++ b/Documentation/devicetree/bindings/dma/brcm,bcm2835-dma.txt
->> @@ -74,8 +74,8 @@ Example:
->>=20=20=20
->>   bcm2835_i2s: i2s@7e203000 {
->>   	compatible =3D "brcm,bcm2835-i2s";
->> -	reg =3D <	0x7e203000 0x20>,
->> -	      < 0x7e101098 0x02>;
->> +	reg =3D <	0x7e203000 0x24>;
->> +	clocks =3D <&clocks BCM2835_CLOCK_PCM>;
->>=20=20=20
->>   	dmas =3D <&dma 2>,
->>   	       <&dma 3>;
->> diff --git a/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.tx=
-t b/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt
->> index 65783de..7bb0362 100644
->> --- a/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt
->> +++ b/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt
->> @@ -2,9 +2,8 @@
->>=20=20=20
->>   Required properties:
->>   - compatible: "brcm,bcm2835-i2s"
->> -- reg: A list of base address and size entries:
->> -	* The first entry should cover the PCM registers
->> -	* The second entry should cover the PCM clock registers
->> +- reg: Should contain PCM registers location and length.
->> +- clocks: the (PCM) clock to use
->>   - dmas: List of DMA controller phandle and DMA request line ordered pa=
-irs.
->>   - dma-names: Identifier string for each DMA request line in the dmas p=
-roperty.
->>     These strings correspond 1:1 with the ordered pairs in dmas.
->> @@ -16,8 +15,8 @@ Example:
->>=20=20=20
->>   bcm2835_i2s: i2s@7e203000 {
->>   	compatible =3D "brcm,bcm2835-i2s";
->> -	reg =3D <0x7e203000 0x20>,
->> -	      <0x7e101098 0x02>;
->> +	reg =3D <0x7e203000 0x24>;
->> +	clocks =3D <&clocks BCM2835_CLOCK_PCM>;
->>=20=20=20
->>   	dmas =3D <&dma 2>,
->>   	       <&dma 3>;
->
-> gentle ping ...
+However, I have a small nitpick regarding a comment newly added in
+this version of patch 16:
++		/*
++		 * Do not set SSI dev as the parent of AC97 CODEC device since
++		 * it does not have a DT node. Otherwise ASoC core will assume
++		 * CODEC has the same DT node as the SSI, so it may return a
++		 * NULL pointer of CODEC when asked for SSI via the DT node
 
-Still looking for a DT ack, here.
+The second part of the last sentence isn't really true, the ASoC core
+will return a (valid, non-NULL) CODEC object pointer when asked for
+the SSI one if we set the SSI as the parent device of a AC'97 CODEC
+platform device.
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+The NULL pointer dereference when starting a playback that I wrote
+about in my previous message happens because in this situation the SSI
+DAI probe callback won't ever get called and so won't setup DMA data
+pointers (they will remain NULL).
+And this in turn will cause the ASoC DMA code to dereference these
+NULL pointers when starting a playback (the same will probably happen
+also when starting a capture).
 
------BEGIN PGP SIGNATURE-----
+Sorry if I wasn't 100% clear about these details in my previous
+message describing this issue.
 
-iQIzBAEBCgAdFiEE/JuuFDWp9/ZkuCBXtdYpNtH8nugFAlpfpeAACgkQtdYpNtH8
-nugr2w//fvHDUrGTYOKrxPgEtkmEpIYI5Rj3FyGJ8+Ryict7Yr15Kfy/SUCAfb5X
-bA5grq9DfMH9K0BrZk88EocF3Slr4sMMfO0+efWFPrkEJEJHdKi3td+4vEJVeaKL
-oEtTwSscMtp+TGZRUaUxufnNTnvqq17aTUaxVGkXC6cDCNxWleEuQ4kQdP6ZmWWQ
-fXrX1F+l2ieLtiWIh1XJYBCUE/2fqA5EbNNa8Vq1WYn/2ieiYZlfFpfOiDPBBTLX
-ZggdrawhsO0eJyzoVFGzOgfzo/r8xuXhZcWI+fvKp681qVFC8WKCY7Bhoyxsn/5I
-J2p4PBjReYoaqPM3/5fNcnyp+fdrbPhNlBb8gcJOAJLB/I0xzrY0nmFFfZnA+JHY
-qkO3ymKFWtU63/eqAt7H6zKqX2uhrt1WwnChbjoanJboig5YYrSY51GKjHLL0ZJf
-wHuswTlT1fuZZzvZgqQ/f1S+c7dB8r1Jl72ZD8dVqSQG7IPX958mUQamPZkP2dz7
-IbQbzXJtJBD6Ijn49ICxWddzQO7dNvMfDB8eAHfUAEPhumpBN0/LF+qdfpOzsoQi
-UM2v7/v7ng2qf7jgMa/g7gssW7wYlRmnJXK9SuZY1YcPy4Vh0YS3chRWle48ijmo
-iw0bNFz94TQsQXbjYqU7E3Xf+xvLDm3ffTZELH2sad09QoMxhsY=
-=j7T8
------END PGP SIGNATURE-----
---=-=-=--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Maciej
