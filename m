@@ -1,112 +1,114 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v5 13/17] ASoC: fsl_ssi: Setup AC97 in fsl_ssi_hw_init()
-Date: Tue, 16 Jan 2018 22:51:38 -0800
-Message-ID: <1516171902-32669-14-git-send-email-nicoleotsuka@gmail.com>
+Subject: [PATCH v5 04/17] ASoC: fsl_ssi: Maintain a mask of
+	active streams
+Date: Tue, 16 Jan 2018 22:51:29 -0800
+Message-ID: <1516171902-32669-5-git-send-email-nicoleotsuka@gmail.com>
 References: <1516171902-32669-1-git-send-email-nicoleotsuka@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pl0-f66.google.com (mail-pl0-f66.google.com
+ [209.85.160.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E127266F6D
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2018 07:52:28 +0100 (CET)
+Received: by mail-pl0-f66.google.com with SMTP id f4so6721724plr.10
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jan 2018 22:52:28 -0800 (PST)
 In-Reply-To: <1516171902-32669-1-git-send-email-nicoleotsuka@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: timur@tabi.org, broonie@kernel.org, mail@maciej.szmigiero.name
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, fabio.estevam@nxp.com, caleb@crome.org, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
+Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, linux-kernel@vger.kernel.org, caleb@crome.org, lgirdwood@gmail.com, arnaud.mouiche@invoxia.com, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-AC97 configures most of registers earlier to start a communication
-with CODECs in order to successfully initialize CODEC. Currently,
-_fsl_ssi_set_dai_fmt() and fsl_ssi_setup_ac97() are called to get
-all SSI registers properly set.
+Checking TE and RE bits in SCR register doesn't work for AC97 mode
+which enables SSIEN, TE and RE in the fsl_ssi_setup_ac97() that's
+called during probe().
 
-Since now the driver has a fsl_ssi_hw_init() to handle all register
-initial settings, this patch moves those register settings of AC97
-to the fsl_ssi_hw_init() as well.
+So when running into the trigger(), it will always get the result
+of both TE and RE being enabled already, even if actually there is
+no active stream.
 
-Meanwhile it applies _fsl_ssi_set_dai_fmt() call to AC97 only since
-other formats would be configured via normal set_dai_fmt() directly.
-
-This patch also adds fsl_ssi_hw_clean() to cleanup control bits for
-AC97 in the platform remote() function.
+This patch fixes this issue by adding a variable to log the active
+streams manually.
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Tested-by: Caleb Crome <caleb@crome.org>
 ---
 Changelog
-v5
- * Moved fsl_ssi_hw_clean() after unregister CODEC platform dev
- * For cleanup sequence, disabled TE and RE first while SSIEN at last
+v3
+ * Replaced "bool dir" with "int dir"
 v2
- * Moved all to fsl_ssi_hw_init() in platform probe()
- * Added fsl_ssi_hw_clean() instead of dai remove()
+ * Replaced bool tx with bool dir
 
- sound/soc/fsl/fsl_ssi.c | 33 +++++++++++++++++++++++++++------
- 1 file changed, 27 insertions(+), 6 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 50648f5..d577f3d 100644
+index 8984ee2..51e7405 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -987,9 +987,6 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- 	regmap_write(regs, REG_SSI_SRCR, srcr);
- 	regmap_write(regs, REG_SSI_SCR, scr);
+@@ -205,6 +205,7 @@ struct fsl_ssi_soc_data {
+  * @cpu_dai_drv: CPU DAI driver for this device
+  *
+  * @dai_fmt: DAI configuration this device is currently used with
++ * @streams: Mask of current active streams: BIT(TX) and BIT(RX)
+  * @i2s_net: I2S and Network mode configurations of SCR register
+  * @use_dma: DMA is used or FIQ with stream filter
+  * @use_dual_fifo: DMA with support for dual FIFO mode
+@@ -249,6 +250,7 @@ struct fsl_ssi {
+ 	struct snd_soc_dai_driver cpu_dai_drv;
  
--	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_AC97)
--		fsl_ssi_setup_ac97(ssi);
+ 	unsigned int dai_fmt;
++	u8 streams;
+ 	u8 i2s_net;
+ 	bool use_dma;
+ 	bool use_dual_fifo;
+@@ -444,15 +446,14 @@ static void fsl_ssi_fifo_clear(struct fsl_ssi *ssi, bool is_rx)
+ static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
+ 			   struct fsl_ssi_regvals *vals)
+ {
++	int dir = (&ssi->regvals[TX] == vals) ? TX : RX;
+ 	struct regmap *regs = ssi->regs;
+ 	struct fsl_ssi_regvals *avals;
+ 	int nr_active_streams;
+-	u32 scr;
+ 	int keep_active;
+ 
+-	regmap_read(regs, REG_SSI_SCR, &scr);
 -
- 	return 0;
- }
+-	nr_active_streams = !!(scr & SSI_SCR_TE) + !!(scr & SSI_SCR_RE);
++	nr_active_streams = !!(ssi->streams & BIT(TX)) +
++			    !!(ssi->streams & BIT(RX));
  
-@@ -1255,10 +1252,34 @@ static int fsl_ssi_hw_init(struct fsl_ssi *ssi)
- 		regmap_update_bits(ssi->regs, REG_SSI_SCR,
- 				   SSI_SCR_TCH_EN, SSI_SCR_TCH_EN);
- 
-+	/* AC97 should start earlier to communicate with CODECs */
-+	if (fsl_ssi_is_ac97(ssi)) {
-+		_fsl_ssi_set_dai_fmt(ssi->dev, ssi, ssi->dai_fmt);
-+		fsl_ssi_setup_ac97(ssi);
-+	}
+ 	if (nr_active_streams - 1 > 0)
+ 		keep_active = 1;
+@@ -474,6 +475,9 @@ static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
+ 					      keep_active);
+ 		/* Safely disable SCR register for the stream */
+ 		regmap_update_bits(regs, REG_SSI_SCR, scr, 0);
 +
- 	return 0;
- }
- 
- /**
-+ * Clear SSI registers
-+ */
-+static void fsl_ssi_hw_clean(struct fsl_ssi *ssi)
-+{
-+	/* Disable registers for AC97 */
-+	if (fsl_ssi_is_ac97(ssi)) {
-+		/* Disable TE and RE bits first */
-+		regmap_update_bits(ssi->regs, REG_SSI_SCR,
-+				   SSI_SCR_TE | SSI_SCR_RE, 0);
-+		/* Disable AC97 mode */
-+		regmap_write(ssi->regs, REG_SSI_SACNT, 0);
-+		/* Unset WAIT bits */
-+		regmap_write(ssi->regs, REG_SSI_SOR, 0);
-+		/* Disable SSI -- software reset */
-+		regmap_update_bits(ssi->regs, REG_SSI_SCR, SSI_SCR_SSIEN, 0);
-+	}
-+}
-+/**
-  * Make every character in a string lower-case
-  */
- static void make_lowercase(char *s)
-@@ -1540,9 +1561,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
++		/* Log the disabled stream to the mask */
++		ssi->streams &= ~BIT(dir);
  	}
  
- done:
--	if (ssi->dai_fmt)
--		_fsl_ssi_set_dai_fmt(dev, ssi, ssi->dai_fmt);
--
- 	/* Initially configures SSI registers */
- 	fsl_ssi_hw_init(ssi);
- 
-@@ -1592,6 +1610,9 @@ static int fsl_ssi_remove(struct platform_device *pdev)
- 	if (ssi->pdev)
- 		platform_device_unregister(ssi->pdev);
- 
-+	/* Clean up SSI registers */
-+	fsl_ssi_hw_clean(ssi);
+ 	/*
+@@ -549,6 +553,9 @@ static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
+ 		}
+ 		/* Enable all remaining bits */
+ 		regmap_update_bits(regs, REG_SSI_SCR, vals->scr, vals->scr);
 +
- 	if (ssi->soc->imx)
- 		fsl_ssi_imx_clean(pdev, ssi);
++		/* Log the enabled stream to the mask */
++		ssi->streams |= BIT(dir);
+ 	}
+ }
  
 -- 
 2.7.4
