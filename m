@@ -1,200 +1,76 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v5 14/17] ASoC: fsl_ssi: Clean up _fsl_ssi_set_dai_fmt()
-Date: Tue, 16 Jan 2018 22:51:39 -0800
-Message-ID: <1516171902-32669-15-git-send-email-nicoleotsuka@gmail.com>
+Subject: [PATCH v5 01/17] ASoC: fsl_ssi: Redefine RX and TX
+	macros
+Date: Tue, 16 Jan 2018 22:51:26 -0800
+Message-ID: <1516171902-32669-2-git-send-email-nicoleotsuka@gmail.com>
 References: <1516171902-32669-1-git-send-email-nicoleotsuka@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pl0-f65.google.com (mail-pl0-f65.google.com
+ [209.85.160.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 475C4266F72
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2018 07:52:25 +0100 (CET)
+Received: by mail-pl0-f65.google.com with SMTP id b96so8117826pli.2
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jan 2018 22:52:24 -0800 (PST)
 In-Reply-To: <1516171902-32669-1-git-send-email-nicoleotsuka@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: timur@tabi.org, broonie@kernel.org, mail@maciej.szmigiero.name
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, fabio.estevam@nxp.com, caleb@crome.org, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
+Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, linux-kernel@vger.kernel.org, caleb@crome.org, lgirdwood@gmail.com, arnaud.mouiche@invoxia.com, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-The _fsl_ssi_set_dai_fmt() is a helper function being called from
-fsl_ssi_set_dai_fmt() as an ASoC operation and fsl_ssi_hw_init()
-mainly for AC97 format initialization.
+The RX and TX macros were defined implicitly and there was
+a potential risk if someone changes their values.
 
-This patch cleans the _fsl_ssi_set_dai_fmt() in following ways:
-* Removing *dev pointer in the parameters as it's included in the
-  *ssi pointer of struct fsl_ssi.
-* Using regmap_update_bits() instead of regmap_read() with masking
-  the value manually.
-* Moving baudclk check to the switch-case routine to skip the I2S
-  master check. And moving SxCCR.DC settings after baudclk check.
-* Adding format settings for SND_SOC_DAIFMT_AC97 like others.
+Since they were defined to index the array ssi->regvals[2],
+this patch moves these two macros to fsl_ssi.c, closer to
+its owner ssi->regvals. And it also puts some comments here
+to limit their value within [0, 1].
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Tested-by: Caleb Crome <caleb@crome.org>
 ---
-Changelog
-v4
- * Added TXBIT0 bit back to play safe
-v3
- * Put CBM_CFS behind the baudclk check to keep the same program
-   flow as before
-
- sound/soc/fsl/fsl_ssi.c | 74 +++++++++++++++++++++++--------------------------
- 1 file changed, 35 insertions(+), 39 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 4 ++++
+ sound/soc/fsl/fsl_ssi.h | 3 ---
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index d577f3d..f29f3b0 100644
+index aecd00f..001e453 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -860,42 +860,31 @@ static int fsl_ssi_hw_free(struct snd_pcm_substream *substream,
- 	return 0;
- }
+@@ -56,6 +56,10 @@
+ #include "fsl_ssi.h"
+ #include "imx-pcm.h"
  
--static int _fsl_ssi_set_dai_fmt(struct device *dev,
--				struct fsl_ssi *ssi, unsigned int fmt)
-+static int _fsl_ssi_set_dai_fmt(struct fsl_ssi *ssi, unsigned int fmt)
- {
--	struct regmap *regs = ssi->regs;
--	u32 strcr = 0, stcr, srcr, scr, mask;
-+	u32 strcr = 0, scr = 0, stcr, srcr, mask;
- 
- 	ssi->dai_fmt = fmt;
- 
--	if (fsl_ssi_is_i2s_master(ssi) && IS_ERR(ssi->baudclk)) {
--		dev_err(dev, "missing baudclk for master mode\n");
--		return -EINVAL;
--	}
--
--	regmap_read(regs, REG_SSI_SCR, &scr);
--	scr &= ~(SSI_SCR_SYN | SSI_SCR_I2S_MODE_MASK);
- 	/* Synchronize frame sync clock for TE to avoid data slipping */
- 	scr |= SSI_SCR_SYNC_TX_FS;
- 
--	mask = SSI_STCR_TXBIT0 | SSI_STCR_TFDIR | SSI_STCR_TXDIR |
--	       SSI_STCR_TSCKP | SSI_STCR_TFSI | SSI_STCR_TFSL | SSI_STCR_TEFS;
--	regmap_read(regs, REG_SSI_STCR, &stcr);
--	regmap_read(regs, REG_SSI_SRCR, &srcr);
--	stcr &= ~mask;
--	srcr &= ~mask;
-+	/* Set to default shifting settings: LSB_ALIGNED */
-+	strcr |= SSI_STCR_TXBIT0;
- 
- 	/* Use Network mode as default */
- 	ssi->i2s_net = SSI_SCR_NET;
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
--		regmap_update_bits(regs, REG_SSI_STCCR,
--				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(2));
--		regmap_update_bits(regs, REG_SSI_SRCCR,
--				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(2));
- 		switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--		case SND_SOC_DAIFMT_CBM_CFS:
- 		case SND_SOC_DAIFMT_CBS_CFS:
-+			if (IS_ERR(ssi->baudclk)) {
-+				dev_err(ssi->dev,
-+					"missing baudclk for master mode\n");
-+				return -EINVAL;
-+			}
-+			/* fall through */
-+		case SND_SOC_DAIFMT_CBM_CFS:
- 			ssi->i2s_net |= SSI_SCR_I2S_MODE_MASTER;
- 			break;
- 		case SND_SOC_DAIFMT_CBM_CFM:
-@@ -905,30 +894,34 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- 			return -EINVAL;
- 		}
- 
-+		regmap_update_bits(ssi->regs, REG_SSI_STCCR,
-+				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(2));
-+		regmap_update_bits(ssi->regs, REG_SSI_SRCCR,
-+				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(2));
++/* Define RX and TX to index ssi->regvals array; Can be 0 or 1 only */
++#define RX 0
++#define TX 1
 +
- 		/* Data on rising edge of bclk, frame low, 1clk before data */
--		strcr |= SSI_STCR_TFSI | SSI_STCR_TSCKP |
--			 SSI_STCR_TXBIT0 | SSI_STCR_TEFS;
-+		strcr |= SSI_STCR_TFSI | SSI_STCR_TSCKP | SSI_STCR_TEFS;
- 		break;
- 	case SND_SOC_DAIFMT_LEFT_J:
- 		/* Data on rising edge of bclk, frame high */
--		strcr |= SSI_STCR_TXBIT0 | SSI_STCR_TSCKP;
-+		strcr |= SSI_STCR_TSCKP;
- 		break;
- 	case SND_SOC_DAIFMT_DSP_A:
- 		/* Data on rising edge of bclk, frame high, 1clk before data */
--		strcr |= SSI_STCR_TFSL | SSI_STCR_TSCKP |
--			 SSI_STCR_TXBIT0 | SSI_STCR_TEFS;
-+		strcr |= SSI_STCR_TFSL | SSI_STCR_TSCKP | SSI_STCR_TEFS;
- 		break;
- 	case SND_SOC_DAIFMT_DSP_B:
- 		/* Data on rising edge of bclk, frame high */
--		strcr |= SSI_STCR_TFSL | SSI_STCR_TSCKP | SSI_STCR_TXBIT0;
-+		strcr |= SSI_STCR_TFSL | SSI_STCR_TSCKP;
- 		break;
- 	case SND_SOC_DAIFMT_AC97:
- 		/* Data on falling edge of bclk, frame high, 1clk before data */
--		ssi->i2s_net |= SSI_SCR_I2S_MODE_NORMAL;
-+		strcr |= SSI_STCR_TEFS;
- 		break;
- 	default:
- 		return -EINVAL;
- 	}
-+
- 	scr |= ssi->i2s_net;
- 
- 	/* DAI clock inversion */
-@@ -962,20 +955,17 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- 		break;
- 	case SND_SOC_DAIFMT_CBM_CFM:
- 		/* Input bit or frame sync clocks */
--		scr &= ~SSI_SCR_SYS_CLK_EN;
- 		break;
- 	case SND_SOC_DAIFMT_CBM_CFS:
- 		/* Input bit clock but output frame sync clock */
--		strcr &= ~SSI_STCR_TXDIR;
- 		strcr |= SSI_STCR_TFDIR;
--		scr &= ~SSI_SCR_SYS_CLK_EN;
- 		break;
- 	default:
- 		return -EINVAL;
- 	}
- 
--	stcr |= strcr;
--	srcr |= strcr;
-+	stcr = strcr;
-+	srcr = strcr;
- 
- 	/* Set SYN mode and clear RXDIR bit when using SYN or AC97 mode */
- 	if (ssi->cpu_dai_drv.symmetric_rates || fsl_ssi_is_ac97(ssi)) {
-@@ -983,9 +973,15 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- 		scr |= SSI_SCR_SYN;
- 	}
- 
--	regmap_write(regs, REG_SSI_STCR, stcr);
--	regmap_write(regs, REG_SSI_SRCR, srcr);
--	regmap_write(regs, REG_SSI_SCR, scr);
-+	mask = SSI_STCR_TFDIR | SSI_STCR_TXDIR | SSI_STCR_TSCKP |
-+	       SSI_STCR_TFSL | SSI_STCR_TFSI | SSI_STCR_TEFS | SSI_STCR_TXBIT0;
-+
-+	regmap_update_bits(ssi->regs, REG_SSI_STCR, mask, stcr);
-+	regmap_update_bits(ssi->regs, REG_SSI_SRCR, mask, srcr);
-+
-+	mask = SSI_SCR_SYNC_TX_FS | SSI_SCR_I2S_MODE_MASK |
-+	       SSI_SCR_SYS_CLK_EN | SSI_SCR_SYN;
-+	regmap_update_bits(ssi->regs, REG_SSI_SCR, mask, scr);
- 
- 	return 0;
- }
-@@ -1001,7 +997,7 @@ static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	if (fsl_ssi_is_ac97(ssi))
- 		return 0;
- 
--	return _fsl_ssi_set_dai_fmt(dai->dev, ssi, fmt);
-+	return _fsl_ssi_set_dai_fmt(ssi, fmt);
- }
- 
  /**
-@@ -1254,7 +1250,7 @@ static int fsl_ssi_hw_init(struct fsl_ssi *ssi)
+  * FSLSSI_I2S_FORMATS: audio formats supported by the SSI
+  *
+diff --git a/sound/soc/fsl/fsl_ssi.h b/sound/soc/fsl/fsl_ssi.h
+index de2fdc5..18f8dd5 100644
+--- a/sound/soc/fsl/fsl_ssi.h
++++ b/sound/soc/fsl/fsl_ssi.h
+@@ -12,9 +12,6 @@
+ #ifndef _MPC8610_I2S_H
+ #define _MPC8610_I2S_H
  
- 	/* AC97 should start earlier to communicate with CODECs */
- 	if (fsl_ssi_is_ac97(ssi)) {
--		_fsl_ssi_set_dai_fmt(ssi->dev, ssi, ssi->dai_fmt);
-+		_fsl_ssi_set_dai_fmt(ssi, ssi->dai_fmt);
- 		fsl_ssi_setup_ac97(ssi);
- 	}
+-#define RX 0
+-#define TX 1
+-
+ /* -- SSI Register Map -- */
  
+ /* SSI Transmit Data Register 0 */
 -- 
 2.7.4
