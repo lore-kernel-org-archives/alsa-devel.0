@@ -1,33 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "IIO: ADC: stm32-dfsdm: remove unused variable
-	again" to the asoc tree
-Date: Thu, 18 Jan 2018 11:22:44 +0000
-Message-ID: <E1ec8HM-0003j8-Hq@debutante>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C659266A74
- for <alsa-devel@alsa-project.org>; Thu, 18 Jan 2018 12:22:45 +0100 (CET)
-In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: remove select on non-existing SND_SOC_INTEL_COMMON" to the asoc tree
+Date: Thu, 18 Jan 2018 11:23:05 +0000
+Message-ID: <E1ec8Hh-0003mn-5i@debutante>
+References: <20180117184324.3475-1-clabbe.montjoie@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180117184324.3475-1-clabbe.montjoie@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Corentin Labbe <clabbe.montjoie@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.orgCorentin Labbe <clabbe.montjoie@gmail.com>, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   IIO: ADC: stm32-dfsdm: remove unused variable again
+   ASoC: Intel: remove select on non-existing SND_SOC_INTEL_COMMON
 
 has been applied to the asoc tree at
 
@@ -52,37 +36,35 @@ to this mail.
 Thanks,
 Mark
 
->From 166a5a33d5a7bfa62c039eb10e69589b09fd0557 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 18 Jan 2018 12:17:47 +0100
-Subject: [PATCH] IIO: ADC: stm32-dfsdm: remove unused variable again
+>From e29a22a86a20ea7651ff8c731ab034c31bd9764e Mon Sep 17 00:00:00 2001
+From: Corentin LABBE <clabbe.montjoie@gmail.com>
+Date: Wed, 17 Jan 2018 19:43:24 +0100
+Subject: [PATCH] ASoC: Intel: remove select on non-existing
+ SND_SOC_INTEL_COMMON
 
-The merge between commit abaca806fd13 ("IIO: ADC: stm32-dfsdm: code
-optimization") and commit 2353758bc2d4 ("IIO: ADC: stm32-dfsdm: avoid
-unused-variable warning") left one variable behind that is no longer
-needed and can be removed, as shown by the gcc warning:
+SND_SST_ATOM_HIFI2_PLATFORM_PCI select SND_SOC_INTEL_COMMON which do not
+exists anymore.
+So remove this select.
 
-drivers/iio/adc/stm32-dfsdm-core.c: In function 'stm32_dfsdm_probe':
-drivers/iio/adc/stm32-dfsdm-core.c:245:29: error: unused variable 'of_id' [-Werror=unused-variable]
-
-Fixes: d84b4c7c706f ("Merge branch 'topic/iio' of https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound into asoc-st-dfsdm")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: c6059879be29 ("ASoC: Intel: Fix Kconfig with top-level selector")
+Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/iio/adc/stm32-dfsdm-core.c | 1 -
+ sound/soc/intel/Kconfig | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/iio/adc/stm32-dfsdm-core.c b/drivers/iio/adc/stm32-dfsdm-core.c
-index 84277bcc465f..6290332cfd3f 100644
---- a/drivers/iio/adc/stm32-dfsdm-core.c
-+++ b/drivers/iio/adc/stm32-dfsdm-core.c
-@@ -242,7 +242,6 @@ MODULE_DEVICE_TABLE(of, stm32_dfsdm_of_match);
- static int stm32_dfsdm_probe(struct platform_device *pdev)
- {
- 	struct dfsdm_priv *priv;
--	const struct of_device_id *of_id;
- 	const struct stm32_dfsdm_dev_data *dev_data;
- 	struct stm32_dfsdm *dfsdm;
- 	int ret;
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index b0bd1938b71e..f2c9e8c5970a 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -77,7 +77,6 @@ config SND_SST_ATOM_HIFI2_PLATFORM_PCI
+ 	depends on X86 && PCI
+ 	select SND_SST_IPC_PCI
+ 	select SND_SOC_COMPRESS
+-	select SND_SOC_INTEL_COMMON
+ 	help
+ 	  If you have a Intel Medfield or Merrifield/Edison platform, then
+ 	  enable this option by saying Y or m. Distros will typically not
 -- 
 2.15.1
