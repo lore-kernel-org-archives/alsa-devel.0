@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: bcm2835: fix hw_params error when
-	device is in prepared state" to the asoc tree
-Date: Thu, 18 Jan 2018 11:22:47 +0000
-Message-ID: <E1ec8HP-0003k8-GV@debutante>
-References: <20180117125050.2948-1-hias@horus.com>
+Subject: Applied "ASoC: sgtl5000: Do not print error on probe
+	deferral" to the asoc tree
+Date: Thu, 18 Jan 2018 11:23:00 +0000
+Message-ID: <E1ec8Hc-0003ll-Gb@debutante>
+References: <1516203981-6333-1-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id CF9542671A8
- for <alsa-devel@alsa-project.org>; Thu, 18 Jan 2018 12:22:52 +0100 (CET)
-In-Reply-To: <20180117125050.2948-1-hias@horus.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 651A32671C0
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jan 2018 12:23:02 +0100 (CET)
+In-Reply-To: <1516203981-6333-1-git-send-email-fabio.estevam@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matthias Reichl <hias@horus.com>
-Cc: Stefan Wahren <stefan.wahren@i2se.com>, alsa-devel@alsa-project.org, Phil Elwell <phil@raspberrypi.org>, Eric Anholt <eric@anholt.net>, Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org
+To: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: bcm2835: fix hw_params error when device is in prepared state
+   ASoC: sgtl5000: Do not print error on probe deferral
 
 has been applied to the asoc tree at
 
@@ -53,75 +53,39 @@ to this mail.
 Thanks,
 Mark
 
->From 8d5737a5f53902a916ee1e1cb248c9b8b883b2ea Mon Sep 17 00:00:00 2001
-From: Matthias Reichl <hias@horus.com>
-Date: Wed, 17 Jan 2018 13:50:50 +0100
-Subject: [PATCH] ASoC: bcm2835: fix hw_params error when device is in prepared
- state
+>From 8af5748fa48698a433ba9a1766204bda283dffa8 Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Date: Wed, 17 Jan 2018 13:48:54 -0200
+Subject: [PATCH] ASoC: sgtl5000: Do not print error on probe deferral
 
-If bcm2835 is configured as bitclock master calling hw_params()
-after prepare() fails with EBUSY. This also makes it impossible to
-use bcm2835 in full duplex mode.
+When the MCLK is not yet available when the codec is probed, probe
+deferral will happen and in this case we should not print an
+error message.
 
-The error is caused by the split clock setup: clk_set_rate
-is called in hw_params, clk_prepare_enable in prepare. As hw_params
-doesn't check if the clock was already enabled clk_set_rate
-fails with EBUSY.
-
-Fix this by moving clock startup from prepare to hw_params and
-let hw_params properly deal with an already set up or enabled
-clock.
-
-Signed-off-by: Matthias Reichl <hias@horus.com>
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/bcm/bcm2835-i2s.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+ sound/soc/codecs/sgtl5000.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
-index 2e449d7173fc..d5f73a8ab893 100644
---- a/sound/soc/bcm/bcm2835-i2s.c
-+++ b/sound/soc/bcm/bcm2835-i2s.c
-@@ -130,6 +130,7 @@ struct bcm2835_i2s_dev {
- 	struct regmap				*i2s_regmap;
- 	struct clk				*clk;
- 	bool					clk_prepared;
-+	int					clk_rate;
- };
- 
- static void bcm2835_i2s_start_clock(struct bcm2835_i2s_dev *dev)
-@@ -419,10 +420,19 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index f2bb4feba3b6..633cdcfc933d 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -1332,10 +1332,13 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
+ 	sgtl5000->mclk = devm_clk_get(&client->dev, NULL);
+ 	if (IS_ERR(sgtl5000->mclk)) {
+ 		ret = PTR_ERR(sgtl5000->mclk);
+-		dev_err(&client->dev, "Failed to get mclock: %d\n", ret);
+ 		/* Defer the probe to see if the clk will be provided later */
+ 		if (ret == -ENOENT)
+ 			ret = -EPROBE_DEFER;
++
++		if (ret != -EPROBE_DEFER)
++			dev_err(&client->dev, "Failed to get mclock: %d\n",
++				ret);
+ 		goto disable_regs;
  	}
  
- 	/* Clock should only be set up here if CPU is clock master */
--	if (bit_clock_master) {
--		ret = clk_set_rate(dev->clk, bclk_rate);
--		if (ret)
--			return ret;
-+	if (bit_clock_master &&
-+	    (!dev->clk_prepared || dev->clk_rate != bclk_rate)) {
-+		if (dev->clk_prepared)
-+			bcm2835_i2s_stop_clock(dev);
-+
-+		if (dev->clk_rate != bclk_rate) {
-+			ret = clk_set_rate(dev->clk, bclk_rate);
-+			if (ret)
-+				return ret;
-+			dev->clk_rate = bclk_rate;
-+		}
-+
-+		bcm2835_i2s_start_clock(dev);
- 	}
- 
- 	/* Setup the frame format */
-@@ -618,8 +628,6 @@ static int bcm2835_i2s_prepare(struct snd_pcm_substream *substream,
- 	struct bcm2835_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
- 	uint32_t cs_reg;
- 
--	bcm2835_i2s_start_clock(dev);
--
- 	/*
- 	 * Clear both FIFOs if the one that should be started
- 	 * is not empty at the moment. This should only happen
 -- 
 2.15.1
