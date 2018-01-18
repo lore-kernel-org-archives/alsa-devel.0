@@ -1,17 +1,24 @@
-From: Donglin Peng <dolinux.peng@gmail.com>
-Subject: [PATCH v2] ASoC: use seq_file to dump the contents of
-	dai_list, platform_list and codec_list
-Date: Thu, 18 Jan 2018 13:31:26 +0800
-Message-ID: <20180118053126.22082-1-dolinux.peng@gmail.com>
+From: Mirza Krak <mirza.krak@gmail.com>
+Subject: Re: Bad PCM stream after a suspend/resume cycle
+Date: Thu, 18 Jan 2018 09:49:53 +0100
+Message-ID: <CALw8SCV4-6G24B1=kykv65+C7X7OfqY9LKGbZj5Di1s7SFxdVw@mail.gmail.com>
+References: <CALw8SCXUpeUv8433Rd9is6eNd9ztd6soEOoDMkVSLue6qT6wKg@mail.gmail.com>
+ <s5h7esnpe3z.wl-tiwai@suse.de>
+ <CALw8SCX8XmVeLncD3GNHtt32MW26EGW=XFG=2iuK7vvREzj8Dw@mail.gmail.com>
+ <s5hwp0ndkcm.wl-tiwai@suse.de>
+ <CALw8SCV8penDHKxTjrg0Z7k6dTFxEq79G8fK74iPz+3vix1fcQ@mail.gmail.com>
+ <s5h7esgwmno.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 270B4266A74
- for <alsa-devel@alsa-project.org>; Thu, 18 Jan 2018 06:31:59 +0100 (CET)
-Received: by mail-pg0-f65.google.com with SMTP id z17so13133189pgc.4
- for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2018 21:31:59 -0800 (PST)
+Received: from mail-qt0-f196.google.com (mail-qt0-f196.google.com
+ [209.85.216.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 16494267144
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jan 2018 09:49:54 +0100 (CET)
+Received: by mail-qt0-f196.google.com with SMTP id z11so2525713qtm.3
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jan 2018 00:49:54 -0800 (PST)
+In-Reply-To: <s5h7esgwmno.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,195 +28,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Donglin Peng <dolinux.peng@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
 List-Id: alsa-devel@alsa-project.org
 
-Now the debugfs files dais/platforms/codecs have a size limit PAGE_SIZE and
-the user can not see the whole contents of dai_list/platform_list/codec_list
-when they are larger than this limit.
-
-This patch uses seq_file instead to make sure dais/platforms/codecs show the
-full contents of dai_list/platform_list/codec_list.
-
-Signed-off-by: Donglin Peng <dolinux.peng@gmail.com>
----
-Changelog
-v2
- -fix commit log error
-
- sound/soc/soc-core.c | 111 +++++++++++++++++----------------------------------
- 1 file changed, 37 insertions(+), 74 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index c0edac80df34..7b582112e3fc 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -349,120 +349,84 @@ static void soc_init_codec_debugfs(struct snd_soc_component *component)
- 			"ASoC: Failed to create codec register debugfs file\n");
- }
- 
--static ssize_t codec_list_read_file(struct file *file, char __user *user_buf,
--				    size_t count, loff_t *ppos)
-+static int codec_list_seq_show(struct seq_file *m, void *v)
- {
--	char *buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
--	ssize_t len, ret = 0;
- 	struct snd_soc_codec *codec;
- 
--	if (!buf)
--		return -ENOMEM;
--
- 	mutex_lock(&client_mutex);
- 
--	list_for_each_entry(codec, &codec_list, list) {
--		len = snprintf(buf + ret, PAGE_SIZE - ret, "%s\n",
--			       codec->component.name);
--		if (len >= 0)
--			ret += len;
--		if (ret > PAGE_SIZE) {
--			ret = PAGE_SIZE;
--			break;
--		}
--	}
-+	list_for_each_entry(codec, &codec_list, list)
-+		seq_printf(m, "%s\n", codec->component.name);
- 
- 	mutex_unlock(&client_mutex);
- 
--	if (ret >= 0)
--		ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
--
--	kfree(buf);
-+	return 0;
-+}
- 
--	return ret;
-+static int codec_list_seq_open(struct inode *inode, struct file *file)
-+{
-+	return single_open(file, codec_list_seq_show, NULL);
- }
- 
- static const struct file_operations codec_list_fops = {
--	.read = codec_list_read_file,
--	.llseek = default_llseek,/* read accesses f_pos */
-+	.open = codec_list_seq_open,
-+	.read = seq_read,
-+	.llseek = seq_lseek,
-+	.release = single_release,
- };
- 
--static ssize_t dai_list_read_file(struct file *file, char __user *user_buf,
--				  size_t count, loff_t *ppos)
-+static int dai_list_seq_show(struct seq_file *m, void *v)
- {
--	char *buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
--	ssize_t len, ret = 0;
- 	struct snd_soc_component *component;
- 	struct snd_soc_dai *dai;
- 
--	if (!buf)
--		return -ENOMEM;
--
- 	mutex_lock(&client_mutex);
- 
--	list_for_each_entry(component, &component_list, list) {
--		list_for_each_entry(dai, &component->dai_list, list) {
--			len = snprintf(buf + ret, PAGE_SIZE - ret, "%s\n",
--				dai->name);
--			if (len >= 0)
--				ret += len;
--			if (ret > PAGE_SIZE) {
--				ret = PAGE_SIZE;
--				break;
--			}
--		}
--	}
-+	list_for_each_entry(component, &component_list, list)
-+		list_for_each_entry(dai, &component->dai_list, list)
-+			seq_printf(m, "%s\n", dai->name);
- 
- 	mutex_unlock(&client_mutex);
- 
--	ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
--
--	kfree(buf);
-+	return 0;
-+}
- 
--	return ret;
-+static int dai_list_seq_open(struct inode *inode, struct file *file)
-+{
-+	return single_open(file, dai_list_seq_show, NULL);
- }
- 
- static const struct file_operations dai_list_fops = {
--	.read = dai_list_read_file,
--	.llseek = default_llseek,/* read accesses f_pos */
-+	.open = dai_list_seq_open,
-+	.read = seq_read,
-+	.llseek = seq_lseek,
-+	.release = single_release,
- };
- 
--static ssize_t platform_list_read_file(struct file *file,
--				       char __user *user_buf,
--				       size_t count, loff_t *ppos)
-+static int platform_list_seq_show(struct seq_file *m, void *v)
- {
--	char *buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
--	ssize_t len, ret = 0;
- 	struct snd_soc_platform *platform;
- 
--	if (!buf)
--		return -ENOMEM;
--
- 	mutex_lock(&client_mutex);
- 
--	list_for_each_entry(platform, &platform_list, list) {
--		len = snprintf(buf + ret, PAGE_SIZE - ret, "%s\n",
--			       platform->component.name);
--		if (len >= 0)
--			ret += len;
--		if (ret > PAGE_SIZE) {
--			ret = PAGE_SIZE;
--			break;
--		}
--	}
-+	list_for_each_entry(platform, &platform_list, list)
-+		seq_printf(m, "%s\n", platform->component.name);
- 
- 	mutex_unlock(&client_mutex);
- 
--	ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
--
--	kfree(buf);
-+	return 0;
-+}
- 
--	return ret;
-+static int platform_list_seq_open(struct inode *inode, struct file *file)
-+{
-+	return single_open(file, platform_list_seq_show, NULL);
- }
- 
- static const struct file_operations platform_list_fops = {
--	.read = platform_list_read_file,
--	.llseek = default_llseek,/* read accesses f_pos */
-+	.open = platform_list_seq_open,
-+	.read = seq_read,
-+	.llseek = seq_lseek,
-+	.release = single_release,
- };
- 
- static void soc_init_card_debugfs(struct snd_soc_card *card)
-@@ -491,7 +455,6 @@ static void soc_cleanup_card_debugfs(struct snd_soc_card *card)
- 	debugfs_remove_recursive(card->debugfs_card_root);
- }
- 
--
- static void snd_soc_debugfs_init(void)
- {
- 	snd_soc_debugfs_root = debugfs_create_dir("asoc", NULL);
--- 
-2.15.1
+T24gMTcgSmFudWFyeSAyMDE4IGF0IDE2OjA1LCBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+
+IHdyb3RlOgo+IE9uIFdlZCwgMTcgSmFuIDIwMTggMTU6MDg6MjcgKzAxMDAsCj4gTWlyemEgS3Jh
+ayB3cm90ZToKPj4KPj4gT24gMTIgSmFudWFyeSAyMDE4IGF0IDE5OjA0LCBUYWthc2hpIEl3YWkg
+PHRpd2FpQHN1c2UuZGU+IHdyb3RlOgo+PiA+IE9uIEZyaSwgMTIgSmFuIDIwMTggMTQ6MzY6NDUg
+KzAxMDAsCj4+ID4gTWlyemEgS3JhayB3cm90ZToKPj4gPj4KPj4KPj4gPCBzbmlwID4KPj4KPj4g
+Pgo+PiA+IFRoZSBFQkFERkQgaXMgYWxyZWFkeSBpbmRpY2F0aW5nIGEgZmF0YWwgZXJyb3IsIGFu
+ZCBzb21ldGhpbmcgaXMgd3JvbmcKPj4gPiBpbiB0aGUgZHJpdmVyLiAgQmFzaWNhbGx5IHRoZSBk
+cml2ZXIgc2hvdWxkIHN1c3BlbmQgdGhlIHN0cmVhbSB2aWEKPj4gPiBzbmRfcGNtX3N1c3BlbmQq
+KCkgY2FsbCBpbiB0aGUgUE0gcmVzdW1lIG9wcy4gIE1vc3QgbGlrZWx5IHlvdXIgZHJpdmVyCj4+
+ID4gbWlzc2VzIHRoYXQuCj4+ID4KPj4gPiBUaGF0IHNhaWQsIGl0J3Mgc3BlY2lmaWMgdG8geW91
+ciB1c2luZyBkcml2ZXIsIGFuZCB5b3UnZCBuZWVkIHRvIHRha2UKPj4gPiBhIGxvb2sgYXQgdGhh
+dCBjb2RlIHRoZXJlLgo+Pgo+PiBUaGFuayB5b3UgZm9yIHlvdSBwYXRpZW5jZSB3aXRoIG1lLgo+
+Pgo+PiBJIGhhdmUgbG9va2VkIGZ1cnRoZXIgaW4gdG8gbXkgaGFyZHdhcmUgZHJpdmVycyBhbmQg
+SSBjYW4gbm90IHJlYWxseQo+PiBzZWUgYW55IGZhdWx0cyBoZXJlLgo+Pgo+PiBCdXQgSSBkaWQg
+c29tZSBmdXJ0aGVyIHRlc3RpbmcgYW5kIGFwcGx5aW5nIHRoZSBmb2xsb3dpbmcgZGlmZiBvbgo+
+PiBhcGxheSAicmVzb2x2ZXMiIHRoZSBwcm9ibGVtICh2MS4xLjQgb2YgYWxzYS11dGlscyk6Cj4+
+Cj4+IGRpZmYgLS1naXQgYS9hcGxheS9hcGxheS5jIGIvYXBsYXkvYXBsYXkuYwo+PiBpbmRleCBm
+NzkzYzgyLi4wNDBjZWMxIDEwMDY0NAo+PiAtLS0gYS9hcGxheS9hcGxheS5jCj4+ICsrKyBiL2Fw
+bGF5L2FwbGF5LmMKPj4gQEAgLTIwMjAsNiArMjAyMCw4IEBAIHN0YXRpYyBzc2l6ZV90IHBjbV93
+cml0ZSh1X2NoYXIgKmRhdGEsIHNpemVfdCBjb3VudCkKPj4gICAgICAgICAgICAgICAgIGlmICh0
+ZXN0X3Bvc2l0aW9uKQo+PiAgICAgICAgICAgICAgICAgICAgICAgICBkb190ZXN0X3Bvc2l0aW9u
+KCk7Cj4+ICAgICAgICAgICAgICAgICBpZiAociA9PSAtRUFHQUlOIHx8IChyID49IDAgJiYgKHNp
+emVfdClyIDwgY291bnQpKSB7Cj4+ICsgICAgICAgICAgICAgICAgICAgICAgIGlmIChzbmRfcGNt
+X3N0YXRlKGhhbmRsZSkgPT0gU05EX1BDTV9TVEFURV9TVVNQRU5ERUQpCj4+ICsgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgc3VzcGVuZCgpOwo+PiAgICAgICAgICAgICAgICAgICAgICAg
+ICBpZiAoIXRlc3Rfbm93YWl0KQo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNu
+ZF9wY21fd2FpdChoYW5kbGUsIDEwMCk7Cj4+ICAgICAgICAgICAgICAgICB9IGVsc2UgaWYgKHIg
+PT0gLUVQSVBFKSB7Cj4+Cj4+IFdoaWNoIG1lYW5zIHRoYXQgdGhlcmUgaXMgbm8gZXJyb3IgaW4g
+cmVnYXJkIHRvIHN1c3BlbmRpbmcgdGhlIHN0cmVhbQo+PiBhcyBpdCBwcm9wZXJseSByZXBvcnRz
+IHRoaXMgd2hlbiBjaGVja2VkLgo+Pgo+PiBNeSBwcm9ibGVtIGlzIHRoYXQgdGhpcyBjb25kaXRp
+b246Cj4+Cj4+ICAgICAociA+PSAwICYmIChzaXplX3QpciA8IGNvdW50KQo+Pgo+PiBJcyBhbHdh
+eXMgdHJ1ZSBhZnRlciBhIHN1c3BlbmQvcmVzdW1lIGN5Y2xlLiBXaGljaCBub3JtYWxseSBkb2Vz
+IG5vdAo+PiByZXN1bHQgaW4gYSAicmVzdW1lIiBjYWxsIGZyb20gYXBsYXkgbm9yIGZyb20gc25k
+X3BjbV9yZWNvdmVyLCB3aGljaAo+PiBtZWFucyB0aGF0IGl0IHdpbGwgdHJ5IHRvIHdyaXRlIGRh
+dGEgdG8gYSBzdXNwZW5kZWQgc3RyZWFtIHdoaWNoCj4+IHJlc3VsdHMgaW4gLUVCQURGRCBkdWUg
+dG8gdGhpcyAoZnJvbSBhbHNhLWxpYik6Cj4+Cj4+IHNuZF9wY21fc2ZyYW1lc190IHNuZF9wY21f
+d3JpdGVpKHNuZF9wY21fdCAqcGNtLCBjb25zdCB2b2lkICpidWZmZXIsCj4+IHNuZF9wY21fdWZy
+YW1lc190IHNpemUpCj4+IHsKPj4gICAgIDwgc25pcCA+Cj4+Cj4+ICAgICBpZiAoYmFkX3BjbV9z
+dGF0ZShwY20sIFBfU1RBVEVfUlVOTkFCTEUpKQo+PiAgICAgICAgIHJldHVybiAtRUJBREZEOwo+
+PiAgICAgcmV0dXJuIF9zbmRfcGNtX3dyaXRlaShwY20sIGJ1ZmZlciwgc2l6ZSk7Cj4+IH0KPj4K
+Pj4gQmVjYXVzZSBTVVNQRU5ERUQgaXMgbm90IHBhcnQgb2YgdGhlIFBfU1RBVEVfUlVOTkFCTEUs
+IHdoaWNoIG1heWJlIGl0IHNob3VsZCBiZT8KPgo+IE9LLCB0aGF0J3MgYSBidWcgaW4gYWxzYS1s
+aWIsIHRoZW4uICBUaGUgc2FuaXR5IGNoZWNrIGlzIGdvb2QsIGJ1dCBpdAo+IHJldHVybnMgdGhl
+IGluY29uc2lzdGVudCBlcnJvciBjb2RlIHRoYXQgZG9lc24ndCBtYXRjaCB3aXRoIHRoZSBQQ00K
+PiBzdGF0ZS4KPgo+IENvdWxkIHlvdSB0cnkgdGhlIHBhdGNoIGJlbG93PwoKWWVhaCwgdGhlIHBh
+dGNoIHJlc29sdmVkIG15IGlzc3VlcyBhbmQgdGhlIHN0cmVhbSBpcyByZXN1bWVkL3Jlc2V0CmFm
+dGVyIHN1c3BlbmQgcHJvcGVybHkuIFRlc3RlZCB3aXRoIGFwbGF5IGFuZCB3aXRoIGN1c3RvbSBh
+cHBsaWNhdGlvbgp0aGF0IHVzZXMgc25kX3BjbV9yZWNvdmVyIHRvIGhhbmRsZSByZXR1cm4gdmFs
+dWVzIGZyb20gd3JpdGUuCgpZb3UgY2FuIGFkZCBteToKClRlc3RlZC1ieTogTWlyemEgS3JhayA8
+bWlyemEua3Jha0BnbWFpbC5jb20+CgpJZiB5b3UgbGlrZS4KCi0tIApNZWQgVsOkbmxpZ2EgSMOk
+bHNuaW5nYXIgLyBCZXN0IFJlZ2FyZHMKCk1pcnphIEtyYWsKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
