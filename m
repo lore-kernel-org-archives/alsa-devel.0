@@ -1,161 +1,138 @@
-From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Subject: [PATCH v2 8/9] arm64: dts: uniphier: add speaker out for UniPhier
- LD11/LD20 boards
-Date: Fri, 19 Jan 2018 18:25:35 +0900
-Message-ID: <20180119092536.22501-9-suzuki.katsuhiro@socionext.com>
+From: Katsuhiro Suzuki <suzuki.katsuhiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>
+Subject: [PATCH v2 9/9] arm64: dts: uniphier: add compress audio out for UniPhier LD11/LD20
+Date: Fri, 19 Jan 2018 18:25:36 +0900
+Message-ID: <20180119092536.22501-10-suzuki.katsuhiro@socionext.com>
 References: <20180119092536.22501-1-suzuki.katsuhiro@socionext.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20180119092536.22501-1-suzuki.katsuhiro@socionext.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20180119092536.22501-1-suzuki.katsuhiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Masahiro Yamada <yamada.masahiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>
+Cc: Masami Hiramatsu <masami.hiramatsu-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Jassi Brar <jaswinder.singh-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Katsuhiro Suzuki <suzuki.katsuhiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds codec node for TI TAS571x on UniPhier LD11/20
-global boards. And adds settings of AIO for speaker out.
+This patch adds compress audio node for S/PDIF on UniPhier LD11/20
+global boards. And adds settings of AIO for it.
 
-Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>
 ---
- .../boot/dts/socionext/uniphier-ld11-global.dts      | 20 ++++++++++++++++++++
- .../boot/dts/socionext/uniphier-ld20-global.dts      | 20 ++++++++++++++++++++
- 2 files changed, 40 insertions(+)
+ .../boot/dts/socionext/uniphier-ld11-global.dts    | 30 +++++++++++++++++++++-
+ .../boot/dts/socionext/uniphier-ld20-global.dts    | 30 +++++++++++++++++++++-
+ 2 files changed, 58 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld11-global.dts b/arch/arm64/boot/dts/socionext/uniphier-ld11-global.dts
-index 4eb8d00a8c02..ca09251a3eab 100644
+index ca09251a3eab..51cb717e5e56 100644
 --- a/arch/arm64/boot/dts/socionext/uniphier-ld11-global.dts
 +++ b/arch/arm64/boot/dts/socionext/uniphier-ld11-global.dts
-@@ -10,6 +10,7 @@
- 
- /dts-v1/;
- #include "uniphier-ld11.dtsi"
-+#include "dt-bindings/gpio/uniphier-gpio.h"
- 
- / {
- 	model = "UniPhier LD11 Global Board (REF_LD11_GP)";
-@@ -45,6 +46,7 @@
- 			widgets = "Headphone", "Headphone Jack";
- 
+@@ -48,7 +48,8 @@
  			dais = <&i2s_port2
-+				&i2s_port3
+ 				&i2s_port3
  				&i2s_port4
- 				&spdif_port0>;
+-				&spdif_port0>;
++				&spdif_port0
++				&comp_spdif_port0>;
  		};
-@@ -73,6 +75,20 @@
- &i2c0 {
- 	status = "okay";
  
-+	tas5707a@1d {
-+		compatible = "ti,tas5711";
-+		reg = <0x1d>;
-+		reset-gpios = <&gpio UNIPHIER_GPIO_PORT(23, 4) GPIO_ACTIVE_LOW>;
-+		pdn-gpios = <&gpio UNIPHIER_GPIO_PORT(23, 5) GPIO_ACTIVE_LOW>;
-+		#sound-dai-cells = <0>;
+ 		spdif-out {
+@@ -61,6 +62,17 @@
+ 				};
+ 			};
+ 		};
 +
-+		port@0 {
-+			tas_speaker: endpoint {
-+				remote-endpoint = <&i2s_hpcmout1>;
++		comp-spdif-out {
++			compatible = "linux,spdif-dit";
++			#sound-dai-cells = <0>;
++
++			port@0 {
++				comp_spdif_tx: endpoint {
++					remote-endpoint = <&comp_spdif_hiecout1>;
++				};
 +			};
++		};
+ 	};
+ };
+ 
+@@ -149,6 +161,22 @@
+ 			remote-endpoint = <&spdif_tx>;
+ 		};
+ 	};
++
++	src_port0: port@6 {
++		i2s_epcmout2: endpoint {
 +		};
 +	};
 +
- 	eeprom@50 {
- 		compatible = "st,24c64", "atmel,24c64";
- 		reg = <0x50>;
-@@ -109,17 +125,21 @@
- 
- 	i2s_port2: port@2 {
- 		i2s_line: endpoint {
-+			dai-format = "i2s";
- 			remote-endpoint = <&evea_line>;
- 		};
- 	};
- 
- 	i2s_port3: port@3 {
- 		i2s_hpcmout1: endpoint {
-+			dai-format = "i2s";
-+			remote-endpoint = <&tas_speaker>;
- 		};
- 	};
- 
- 	i2s_port4: port@4 {
- 		i2s_pcmout3: endpoint {
-+			dai-format = "i2s";
- 			remote-endpoint = <&evea_hp>;
- 		};
- 	};
-diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts b/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts
-index ebcd65631bca..0728832ce552 100644
---- a/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts
-+++ b/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts
-@@ -10,6 +10,7 @@
- 
- /dts-v1/;
- #include "uniphier-ld20.dtsi"
-+#include "dt-bindings/gpio/uniphier-gpio.h"
- 
- / {
- 	model = "UniPhier LD20 Global Board (REF_LD20_GP)";
-@@ -45,6 +46,7 @@
- 			widgets = "Headphone", "Headphone Jack";
- 
- 			dais = <&i2s_port2
-+				&i2s_port3
- 				&i2s_port4
- 				&spdif_port0>;
- 		};
-@@ -72,6 +74,20 @@
- 
- &i2c0 {
- 	status = "okay";
++	src_port1: port@7 {
++		i2s_epcmout3: endpoint {
++		};
++	};
 +
-+	tas5707@1b {
-+		compatible = "ti,tas5711";
-+		reg = <0x1b>;
-+		reset-gpios = <&gpio UNIPHIER_GPIO_PORT(0, 0) GPIO_ACTIVE_LOW>;
-+		pdn-gpios = <&gpio UNIPHIER_GPIO_PORT(0, 1) GPIO_ACTIVE_LOW>;
-+		#sound-dai-cells = <0>;
-+
-+		port@0 {
-+			tas_speaker: endpoint {
-+				remote-endpoint = <&i2s_hpcmout1>;
-+			};
++	comp_spdif_port0: port@8 {
++		comp_spdif_hiecout1: endpoint {
++			remote-endpoint = <&comp_spdif_tx>;
 +		};
 +	};
  };
  
- &nand {
-@@ -91,17 +107,21 @@
+ &evea {
+diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts b/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts
+index 0728832ce552..0bda5c1382bc 100644
+--- a/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts
++++ b/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts
+@@ -48,7 +48,8 @@
+ 			dais = <&i2s_port2
+ 				&i2s_port3
+ 				&i2s_port4
+-				&spdif_port0>;
++				&spdif_port0
++				&comp_spdif_port0>;
+ 		};
  
- 	i2s_port2: port@2 {
- 		i2s_line: endpoint {
-+			dai-format = "i2s";
- 			remote-endpoint = <&evea_line>;
+ 		spdif-out {
+@@ -61,6 +62,17 @@
+ 				};
+ 			};
+ 		};
++
++		comp-spdif-out {
++			compatible = "linux,spdif-dit";
++			#sound-dai-cells = <0>;
++
++			port@0 {
++				comp_spdif_tx: endpoint {
++					remote-endpoint = <&comp_spdif_hiecout1>;
++				};
++			};
++		};
+ 	};
+ };
+ 
+@@ -131,6 +143,22 @@
+ 			remote-endpoint = <&spdif_tx>;
  		};
  	};
++
++	src_port0: port@6 {
++		i2s_epcmout2: endpoint {
++		};
++	};
++
++	src_port1: port@7 {
++		i2s_epcmout3: endpoint {
++		};
++	};
++
++	comp_spdif_port0: port@8 {
++		comp_spdif_hiecout1: endpoint {
++			remote-endpoint = <&comp_spdif_tx>;
++		};
++	};
+ };
  
- 	i2s_port3: port@3 {
- 		i2s_hpcmout1: endpoint {
-+			dai-format = "i2s";
-+			remote-endpoint = <&tas_speaker>;
- 		};
- 	};
- 
- 	i2s_port4: port@4 {
- 		i2s_pcmout3: endpoint {
-+			dai-format = "i2s";
- 			remote-endpoint = <&evea_hp>;
- 		};
- 	};
+ &evea {
 -- 
 2.15.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
