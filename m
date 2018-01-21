@@ -1,7 +1,8 @@
 From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: [PATCH 2/5] ALSA: emu10k1: use dma_set_mask_and_coherent()
-Date: Sun, 21 Jan 2018 17:26:58 +0100
-Message-ID: <b2925b7c-46b5-a6de-226b-b8740299640b@maciej.szmigiero.name>
+Subject: [PATCH 3/5] ALSA: emu10k1: add optional debug printouts with DMA
+ addresses
+Date: Sun, 21 Jan 2018 17:27:11 +0100
+Message-ID: <b3853e16-0ac1-d2b5-3473-cac73ef05b05@maciej.szmigiero.name>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-2
 Content-Transfer-Encoding: 7bit
@@ -12,26 +13,88 @@ To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We have been calling dma_set_mask() and then dma_set_coherent_mask() with
-the same value, but there is a dma_set_mask_and_coherent() function that
-does exactly that so let's use it instead.
+When we get a IOMMU page fault for a emu10k1 device it is very hard to
+discover which of chip many DMA allocations triggered it (since on a IOMMU
+system the DMA address space is often very different from the CPU one).
+Let's add optional debug printouts providing this information.
+
+These debug printouts are only enabled on an explicit request via the
+kernel dynamic debug mechanism.
 
 Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 ---
- sound/pci/emu10k1/emu10k1_main.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/pci/emu10k1/emu10k1_main.c |  8 ++++++++
+ sound/pci/emu10k1/memory.c       | 11 +++++++++--
+ 2 files changed, 17 insertions(+), 2 deletions(-)
 
 diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
-index a0a4d31ded53..11e868f569d6 100644
+index 11e868f569d6..8decd2a7a404 100644
 --- a/sound/pci/emu10k1/emu10k1_main.c
 +++ b/sound/pci/emu10k1/emu10k1_main.c
-@@ -1871,8 +1871,7 @@ int snd_emu10k1_create(struct snd_card *card,
- 	emu->address_mode = is_audigy ? 0 : 1;
- 	/* set the DMA transfer mask */
- 	emu->dma_mask = emu->address_mode ? EMU10K1_DMA_MASK : AUDIGY_DMA_MASK;
--	if (dma_set_mask(&pci->dev, emu->dma_mask) < 0 ||
--	    dma_set_coherent_mask(&pci->dev, emu->dma_mask) < 0) {
-+	if (dma_set_mask_and_coherent(&pci->dev, emu->dma_mask) < 0) {
- 		dev_err(card->dev,
- 			"architecture does not support PCI busmaster DMA with mask 0x%lx\n",
- 			emu->dma_mask);
+@@ -1898,6 +1898,9 @@ int snd_emu10k1_create(struct snd_card *card,
+ 		err = -ENOMEM;
+ 		goto error;
+ 	}
++	dev_dbg(card->dev, "page table address range is %.8lx:%.8lx\n",
++		(unsigned long)emu->ptb_pages.addr,
++		(unsigned long)(emu->ptb_pages.addr + emu->ptb_pages.bytes));
+ 
+ 	emu->page_ptr_table = vmalloc(emu->max_cache_pages * sizeof(void *));
+ 	emu->page_addr_table = vmalloc(emu->max_cache_pages *
+@@ -1912,6 +1915,11 @@ int snd_emu10k1_create(struct snd_card *card,
+ 		err = -ENOMEM;
+ 		goto error;
+ 	}
++	dev_dbg(card->dev, "silent page range is %.8lx:%.8lx\n",
++		(unsigned long)emu->silent_page.addr,
++		(unsigned long)(emu->silent_page.addr +
++				emu->silent_page.bytes));
++
+ 	emu->memhdr = snd_util_memhdr_new(emu->max_cache_pages * PAGE_SIZE);
+ 	if (emu->memhdr == NULL) {
+ 		err = -ENOMEM;
+diff --git a/sound/pci/emu10k1/memory.c b/sound/pci/emu10k1/memory.c
+index eaa61024ac7f..39afe199e1c7 100644
+--- a/sound/pci/emu10k1/memory.c
++++ b/sound/pci/emu10k1/memory.c
+@@ -35,6 +35,8 @@
+  */
+ #define __set_ptb_entry(emu,page,addr) \
+ 	(((u32 *)(emu)->ptb_pages.area)[page] = cpu_to_le32(((addr) << (emu->address_mode)) | (page)))
++#define __get_ptb_entry(emu, page) \
++	(le32_to_cpu(((u32 *)(emu)->ptb_pages.area)[page]))
+ 
+ #define UNIT_PAGES		(PAGE_SIZE / EMUPAGESIZE)
+ #define MAX_ALIGN_PAGES0		(MAXPAGES0 / UNIT_PAGES)
+@@ -44,7 +46,7 @@
+ /* get offset address from aligned page */
+ #define aligned_page_offset(page)	((page) << PAGE_SHIFT)
+ 
+-#if PAGE_SIZE == 4096
++#if PAGE_SIZE == 4096 && !IS_ENABLED(CONFIG_DYNAMIC_DEBUG)
+ /* page size == EMUPAGESIZE */
+ /* fill PTB entrie(s) corresponding to page with addr */
+ #define set_ptb_entry(emu,page,addr)	__set_ptb_entry(emu,page,addr)
+@@ -58,6 +60,8 @@ static inline void set_ptb_entry(struct snd_emu10k1 *emu, int page, dma_addr_t a
+ 	page *= UNIT_PAGES;
+ 	for (i = 0; i < UNIT_PAGES; i++, page++) {
+ 		__set_ptb_entry(emu, page, addr);
++		dev_dbg(emu->card->dev, "mapped page %d to entry %.8x\n", page,
++			(unsigned int)__get_ptb_entry(emu, page));
+ 		addr += EMUPAGESIZE;
+ 	}
+ }
+@@ -65,9 +69,12 @@ static inline void set_silent_ptb(struct snd_emu10k1 *emu, int page)
+ {
+ 	int i;
+ 	page *= UNIT_PAGES;
+-	for (i = 0; i < UNIT_PAGES; i++, page++)
++	for (i = 0; i < UNIT_PAGES; i++, page++) {
+ 		/* do not increment ptr */
+ 		__set_ptb_entry(emu, page, emu->silent_page.addr);
++		dev_dbg(emu->card->dev, "mapped silent page %d to entry %.8x\n",
++			page, (unsigned int)__get_ptb_entry(emu, page));
++	}
+ }
+ #endif /* PAGE_SIZE */
+ 
