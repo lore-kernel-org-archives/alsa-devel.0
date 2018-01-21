@@ -1,202 +1,83 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: [PATCH 5/5] ALSA: emu10k1: add a IOMMU workaround
-Date: Sun, 21 Jan 2018 17:27:41 +0100
-Message-ID: <0c6f92c4-6808-50e1-f074-eb0a180976e7@maciej.szmigiero.name>
+From: kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH 3/5] ALSA: emu10k1: add optional debug printouts with DMA
+ addresses
+Date: Mon, 22 Jan 2018 06:07:01 +0800
+Message-ID: <201801220517.ZlAl02eD%fengguang.wu@intel.com>
+References: <b3853e16-0ac1-d2b5-3473-cac73ef05b05@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <b3853e16-0ac1-d2b5-3473-cac73ef05b05@maciej.szmigiero.name>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc: kbuild-all@01.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The Audigy 2 CA0102 chip (but most likely others from the emu10k1 family,
-too) has a problem that from time to time it likes to do few DMA reads a
-bit beyond its normal allocation and gets very confused if these reads get
-blocked by a IOMMU.
+Hi Maciej,
 
-For the first (reserved) page this happens multiple times at every
-playback, for various synth pages it happens randomly, rarely for the page
-table memory itself.
-All these reads seem to follow a similar pattern, observed read offsets
-beyond the allocation end were 0x00, 0x40, 0x80 and 0xc0 (PCI cache line
-multiples), so it looks like the device tries to accesses up to 256 extra
-bytes.
+Thank you for the patch! Perhaps something to improve:
 
-As a workaround let's widen these DMA allocations by an extra page if we
-detect that the device is behind a non-passthrough IOMMU (the DMA memory
-should be relatively plenty on IOMMU systems).
+[auto build test WARNING on sound/for-next]
+[also build test WARNING on v4.15-rc8 next-20180119]
+[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
 
-Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+url:    https://github.com/0day-ci/linux/commits/Maciej-S-Szmigiero/ALSA-emu10k1-remove-reserved_page/20180122-022950
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
+reproduce:
+        # apt-get install sparse
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF=-D__CHECK_ENDIAN__
+
+
+sparse warnings: (new ones prefixed by >>)
+
+   sound/pci/emu10k1/memory.c:62:17: sparse: incorrect type in assignment (different base types) @@ expected unsigned int <noident> @@ got ed int <noident> @@
+   sound/pci/emu10k1/memory.c:62:17: expected unsigned int <noident>
+   sound/pci/emu10k1/memory.c:62:17: got restricted __le32 <noident>
+>> sound/pci/emu10k1/memory.c:63:17: sparse: cast to restricted __le32
+   sound/pci/emu10k1/memory.c:74:17: sparse: incorrect type in assignment (different base types) @@ expected unsigned int <noident> @@ got ed int <noident> @@
+   sound/pci/emu10k1/memory.c:74:17: expected unsigned int <noident>
+   sound/pci/emu10k1/memory.c:74:17: got restricted __le32 <noident>
+   sound/pci/emu10k1/memory.c:75:17: sparse: cast to restricted __le32
+
+vim +63 sound/pci/emu10k1/memory.c
+
+    48	
+    49	#if PAGE_SIZE == 4096 && !IS_ENABLED(CONFIG_DYNAMIC_DEBUG)
+    50	/* page size == EMUPAGESIZE */
+    51	/* fill PTB entrie(s) corresponding to page with addr */
+    52	#define set_ptb_entry(emu,page,addr)	__set_ptb_entry(emu,page,addr)
+    53	/* fill PTB entrie(s) corresponding to page with silence pointer */
+    54	#define set_silent_ptb(emu,page)	__set_ptb_entry(emu,page,emu->silent_page.addr)
+    55	#else
+    56	/* fill PTB entries -- we need to fill UNIT_PAGES entries */
+    57	static inline void set_ptb_entry(struct snd_emu10k1 *emu, int page, dma_addr_t addr)
+    58	{
+    59		int i;
+    60		page *= UNIT_PAGES;
+    61		for (i = 0; i < UNIT_PAGES; i++, page++) {
+  > 62			__set_ptb_entry(emu, page, addr);
+  > 63			dev_dbg(emu->card->dev, "mapped page %d to entry %.8x\n", page,
+    64				(unsigned int)__get_ptb_entry(emu, page));
+    65			addr += EMUPAGESIZE;
+    66		}
+    67	}
+    68	static inline void set_silent_ptb(struct snd_emu10k1 *emu, int page)
+    69	{
+    70		int i;
+    71		page *= UNIT_PAGES;
+    72		for (i = 0; i < UNIT_PAGES; i++, page++) {
+    73			/* do not increment ptr */
+    74			__set_ptb_entry(emu, page, emu->silent_page.addr);
+    75			dev_dbg(emu->card->dev, "mapped silent page %d to entry %.8x\n",
+    76				page, (unsigned int)__get_ptb_entry(emu, page));
+    77		}
+    78	}
+    79	#endif /* PAGE_SIZE */
+    80	
+    81	
+
 ---
- include/sound/emu10k1.h          |  1 +
- sound/pci/emu10k1/emu10k1_main.c | 49 +++++++++++++++++++++++++++++++++++++---
- sound/pci/emu10k1/memory.c       | 16 ++++++++++---
- 3 files changed, 60 insertions(+), 6 deletions(-)
-
-diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
-index db32b7de52e0..ba27abf65408 100644
---- a/include/sound/emu10k1.h
-+++ b/include/sound/emu10k1.h
-@@ -1710,6 +1710,7 @@ struct snd_emu10k1 {
- 	unsigned int ecard_ctrl;		/* ecard control bits */
- 	unsigned int address_mode;		/* address mode */
- 	unsigned long dma_mask;			/* PCI DMA mask */
-+	bool iommu_workaround;			/* IOMMU workaround needed */
- 	unsigned int delay_pcm_irq;		/* in samples */
- 	int max_cache_pages;			/* max memory size / PAGE_SIZE */
- 	struct snd_dma_buffer silent_page;	/* silent page */
-diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
-index 8decd2a7a404..3d1b57546379 100644
---- a/sound/pci/emu10k1/emu10k1_main.c
-+++ b/sound/pci/emu10k1/emu10k1_main.c
-@@ -36,6 +36,7 @@
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/interrupt.h>
-+#include <linux/iommu.h>
- #include <linux/pci.h>
- #include <linux/slab.h>
- #include <linux/vmalloc.h>
-@@ -1758,6 +1759,37 @@ static struct snd_emu_chip_details emu_chip_details[] = {
- 	{ } /* terminator */
- };
- 
-+/*
-+ * The chip (at least the Audigy 2 CA0102 chip, but most likely others, too)
-+ * has a problem that from time to time it likes to do few DMA reads a bit
-+ * beyond its normal allocation and gets very confused if these reads get
-+ * blocked by a IOMMU.
-+ *
-+ * This behaviour has been observed for the first (reserved) page
-+ * (for which it happens multiple times at every playback), often for various
-+ * synth pages and sometimes for the page table memory itself.
-+ *
-+ * As a workaround let's widen these DMA allocations by an extra page if we
-+ * detect that the device is behind a non-passthrough IOMMU.
-+ */
-+static void snd_emu10k1_detect_iommu(struct snd_emu10k1 *emu)
-+{
-+	struct iommu_domain *domain;
-+
-+	emu->iommu_workaround = false;
-+
-+	if (!iommu_present(emu->card->dev->bus))
-+		return;
-+
-+	domain = iommu_get_domain_for_dev(emu->card->dev);
-+	if (domain && domain->type == IOMMU_DOMAIN_IDENTITY)
-+		return;
-+
-+	dev_notice(emu->card->dev,
-+		   "non-passthrough IOMMU detected, widening DMA allocations");
-+	emu->iommu_workaround = true;
-+}
-+
- int snd_emu10k1_create(struct snd_card *card,
- 		       struct pci_dev *pci,
- 		       unsigned short extin_mask,
-@@ -1770,6 +1802,7 @@ int snd_emu10k1_create(struct snd_card *card,
- 	struct snd_emu10k1 *emu;
- 	int idx, err;
- 	int is_audigy;
-+	size_t page_table_size, silent_page_size;
- 	unsigned int silent_page;
- 	const struct snd_emu_chip_details *c;
- 	static struct snd_device_ops ops = {
-@@ -1867,6 +1900,8 @@ int snd_emu10k1_create(struct snd_card *card,
- 
- 	is_audigy = emu->audigy = c->emu10k2_chip;
- 
-+	snd_emu10k1_detect_iommu(emu);
-+
- 	/* set addressing mode */
- 	emu->address_mode = is_audigy ? 0 : 1;
- 	/* set the DMA transfer mask */
-@@ -1893,8 +1928,13 @@ int snd_emu10k1_create(struct snd_card *card,
- 	emu->port = pci_resource_start(pci, 0);
- 
- 	emu->max_cache_pages = max_cache_bytes >> PAGE_SHIFT;
-+
-+	page_table_size = sizeof(u32) * (emu->address_mode ? MAXPAGES1 :
-+					 MAXPAGES0);
-+	if (emu->iommu_workaround)
-+		page_table_size += PAGE_SIZE;
- 	if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, snd_dma_pci_data(pci),
--				(emu->address_mode ? 32 : 16) * 1024, &emu->ptb_pages) < 0) {
-+				page_table_size, &emu->ptb_pages) < 0) {
- 		err = -ENOMEM;
- 		goto error;
- 	}
-@@ -1910,8 +1950,11 @@ int snd_emu10k1_create(struct snd_card *card,
- 		goto error;
- 	}
- 
-+	silent_page_size = EMUPAGESIZE;
-+	if (emu->iommu_workaround)
-+		silent_page_size *= 2;
- 	if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, snd_dma_pci_data(pci),
--				EMUPAGESIZE, &emu->silent_page) < 0) {
-+				silent_page_size, &emu->silent_page) < 0) {
- 		err = -ENOMEM;
- 		goto error;
- 	}
-@@ -1995,7 +2038,7 @@ int snd_emu10k1_create(struct snd_card *card,
- 		0x00000000 | SPCS_EMPHASIS_NONE | SPCS_COPYRIGHT;
- 
- 	/* Clear silent pages and set up pointers */
--	memset(emu->silent_page.area, 0, PAGE_SIZE);
-+	memset(emu->silent_page.area, 0, silent_page_size);
- 	silent_page = emu->silent_page.addr << emu->address_mode;
- 	for (idx = 0; idx < (emu->address_mode ? MAXPAGES1 : MAXPAGES0); idx++)
- 		((u32 *)emu->ptb_pages.area)[idx] = cpu_to_le32(silent_page | idx);
-diff --git a/sound/pci/emu10k1/memory.c b/sound/pci/emu10k1/memory.c
-index a23eba540132..85414852c3db 100644
---- a/sound/pci/emu10k1/memory.c
-+++ b/sound/pci/emu10k1/memory.c
-@@ -457,6 +457,16 @@ static void get_single_page_range(struct snd_util_memhdr *hdr,
- 	*last_page_ret = last_page;
- }
- 
-+static size_t synth_get_alloc_size(struct snd_emu10k1 *emu)
-+{
-+	size_t alloc_size = PAGE_SIZE;
-+
-+	if (emu->iommu_workaround)
-+		alloc_size *= 2;
-+
-+	return alloc_size;
-+}
-+
- /*
-  * allocate kernel pages
-  */
-@@ -471,7 +481,7 @@ static int synth_alloc_pages(struct snd_emu10k1 *emu, struct snd_emu10k1_memblk
- 	for (page = first_page; page <= last_page; page++) {
- 		if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
- 					snd_dma_pci_data(emu->pci),
--					PAGE_SIZE, &dmab) < 0)
-+					synth_get_alloc_size(emu), &dmab) < 0)
- 			goto __fail;
- 		if (!is_valid_page(emu, dmab.addr)) {
- 			snd_dma_free_pages(&dmab);
-@@ -488,7 +498,7 @@ static int synth_alloc_pages(struct snd_emu10k1 *emu, struct snd_emu10k1_memblk
- 	for (page = first_page; page <= last_page; page++) {
- 		dmab.area = emu->page_ptr_table[page];
- 		dmab.addr = emu->page_addr_table[page];
--		dmab.bytes = PAGE_SIZE;
-+		dmab.bytes = synth_get_alloc_size(emu);
- 		snd_dma_free_pages(&dmab);
- 		emu->page_addr_table[page] = 0;
- 		emu->page_ptr_table[page] = NULL;
-@@ -513,7 +523,7 @@ static int synth_free_pages(struct snd_emu10k1 *emu, struct snd_emu10k1_memblk *
- 			continue;
- 		dmab.area = emu->page_ptr_table[page];
- 		dmab.addr = emu->page_addr_table[page];
--		dmab.bytes = PAGE_SIZE;
-+		dmab.bytes = synth_get_alloc_size(emu);
- 		snd_dma_free_pages(&dmab);
- 		emu->page_addr_table[page] = 0;
- 		emu->page_ptr_table[page] = NULL;
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
