@@ -1,83 +1,109 @@
-From: alsa2@bushytails.net
-Subject: [PATCH - alsa-lib 1/1] Patch for two bugs in
-	snd_pcm_area_silence().
-Date: Sat, 20 Jan 2018 19:27:03 -0800
-Message-ID: <1516505223-16067-1-git-send-email-alsa2@bushytails.net>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: [PATCH 1/5] ALSA: emu10k1: remove reserved_page
+Date: Sun, 21 Jan 2018 17:26:41 +0100
+Message-ID: <142b8ef6-8874-adcd-4879-7abf8755ae76@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=iso-8859-2
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, furrywolf <alsa2@bushytails.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: furrywolf <alsa2@bushytails.net>
+The emu10k1-family chips need the first page (index 0) reserved in their
+page tables for some reason (every emu10k1 driver I've checked does this
+without much of an explanation).
+Using the first page for normal samples results in a broken playback.
 
-First, after silencing the buffer 64 bits at a time, any remaining samples
-need to be silenced by the following width-specific code.  However, instead
-of silencing the end of the buffer, the code instead re-silences the start
-of the buffer, leaving the end unsilenced.  To fix this, update the pointer
-used by the width-specific code to point to the end of the area just
-silenced, instead of leaving it pointing to the start of the buffer.
+However, we already have a dummy page allocated - so called "silent page"
+and, in fact, had always been setting it as the first page in the chip page
+table because an initialization of every entry of the page table to point
+to a silent page happens after and overwrites the reserved_page allocation.
 
-Second, the code for 24 bit samples can only silence a single sample, as
-there's no loop for multiple samples as with other formats.  To fix this,
-add a loop similar to the ones used for every other width.
+So the only thing remaining to remove the reserved_page allocation is a
+trivial change to the page allocation logic to ignore the first page entry
+and start its allocations from the second entry (index 1).
 
-The symptoms of these bugs are random data at the end of every supposedly
-silenced buffer with certain format/buffer size combinations, resulting in
-pops and noise.
+Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+---
+ include/sound/emu10k1.h          |  1 -
+ sound/pci/emu10k1/emu10k1_main.c | 11 -----------
+ sound/pci/emu10k1/memory.c       |  8 ++++++--
+ 3 files changed, 6 insertions(+), 14 deletions(-)
 
-Signed-off-by: furrywolf <alsa2@bushytails.net>
-
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index 69d7d66..1753cda 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -2955,6 +2955,7 @@ int snd_pcm_area_silence(const snd_pcm_channel_area_t *dst_area, snd_pcm_uframes
- 			*dstp++ = silence;
- 		if (samples == 0)
- 			return 0;
-+		dst = (char *)dstp;
- 	}
- 	dst_step = dst_area->step / 8;
- 	switch (width) {
-@@ -2996,16 +2997,20 @@ int snd_pcm_area_silence(const snd_pcm_channel_area_t *dst_area, snd_pcm_uframes
- 		}
- 		break;
- 	}
--	case 24:
-+	case 24: {
-+		while (samples-- > 0) {
- #ifdef SNDRV_LITTLE_ENDIAN
--		*(dst + 0) = silence >> 0;
--		*(dst + 1) = silence >> 8;
--		*(dst + 2) = silence >> 16;
-+			*(dst + 0) = silence >> 0;
-+			*(dst + 1) = silence >> 8;
-+			*(dst + 2) = silence >> 16;
- #else
--		*(dst + 2) = silence >> 0;
--		*(dst + 1) = silence >> 8;
--		*(dst + 0) = silence >> 16;
-+			*(dst + 2) = silence >> 0;
-+			*(dst + 1) = silence >> 8;
-+			*(dst + 0) = silence >> 16;
- #endif
-+			dst += dst_step;
-+		}
+diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
+index 4f42affe777c..db32b7de52e0 100644
+--- a/include/sound/emu10k1.h
++++ b/include/sound/emu10k1.h
+@@ -1718,7 +1718,6 @@ struct snd_emu10k1 {
+ 	struct snd_dma_buffer p16v_buffer;
+ 
+ 	struct snd_util_memhdr *memhdr;		/* page allocation list */
+-	struct snd_emu10k1_memblk *reserved_page;	/* reserved page */
+ 
+ 	struct list_head mapped_link_head;
+ 	struct list_head mapped_order_link_head;
+diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
+index ccf4415a1c7b..a0a4d31ded53 100644
+--- a/sound/pci/emu10k1/emu10k1_main.c
++++ b/sound/pci/emu10k1/emu10k1_main.c
+@@ -1272,12 +1272,6 @@ static int snd_emu10k1_free(struct snd_emu10k1 *emu)
+ 	release_firmware(emu->dock_fw);
+ 	if (emu->irq >= 0)
+ 		free_irq(emu->irq, emu);
+-	/* remove reserved page */
+-	if (emu->reserved_page) {
+-		snd_emu10k1_synth_free(emu,
+-			(struct snd_util_memblk *)emu->reserved_page);
+-		emu->reserved_page = NULL;
+-	}
+ 	snd_util_memhdr_free(emu->memhdr);
+ 	if (emu->silent_page.area)
+ 		snd_dma_free_pages(&emu->silent_page);
+@@ -1993,11 +1987,6 @@ int snd_emu10k1_create(struct snd_card *card,
+ 		SPCS_GENERATIONSTATUS | 0x00001200 |
+ 		0x00000000 | SPCS_EMPHASIS_NONE | SPCS_COPYRIGHT;
+ 
+-	emu->reserved_page = (struct snd_emu10k1_memblk *)
+-		snd_emu10k1_synth_alloc(emu, 4096);
+-	if (emu->reserved_page)
+-		emu->reserved_page->map_locked = 1;
+-
+ 	/* Clear silent pages and set up pointers */
+ 	memset(emu->silent_page.area, 0, PAGE_SIZE);
+ 	silent_page = emu->silent_page.addr << emu->address_mode;
+diff --git a/sound/pci/emu10k1/memory.c b/sound/pci/emu10k1/memory.c
+index 4f1f69be1865..eaa61024ac7f 100644
+--- a/sound/pci/emu10k1/memory.c
++++ b/sound/pci/emu10k1/memory.c
+@@ -102,7 +102,7 @@ static void emu10k1_memblk_init(struct snd_emu10k1_memblk *blk)
+  */
+ static int search_empty_map_area(struct snd_emu10k1 *emu, int npages, struct list_head **nextp)
+ {
+-	int page = 0, found_page = -ENOMEM;
++	int page = 1, found_page = -ENOMEM;
+ 	int max_size = npages;
+ 	int size;
+ 	struct list_head *candidate = &emu->mapped_link_head;
+@@ -147,6 +147,10 @@ static int map_memblk(struct snd_emu10k1 *emu, struct snd_emu10k1_memblk *blk)
+ 	page = search_empty_map_area(emu, blk->pages, &next);
+ 	if (page < 0) /* not found */
+ 		return page;
++	if (page == 0) {
++		dev_err(emu->card->dev, "trying to map zero (reserved) page\n");
++		return -EINVAL;
 +	}
- 		break;
- 	case 32: {
- 		uint32_t sil = silence;
--- 
-1.7.10.4
+ 	/* insert this block in the proper position of mapped list */
+ 	list_add_tail(&blk->mapped_link, next);
+ 	/* append this as a newest block in order list */
+@@ -177,7 +181,7 @@ static int unmap_memblk(struct snd_emu10k1 *emu, struct snd_emu10k1_memblk *blk)
+ 		q = get_emu10k1_memblk(p, mapped_link);
+ 		start_page = q->mapped_page + q->pages;
+ 	} else
+-		start_page = 0;
++		start_page = 1;
+ 	if ((p = blk->mapped_link.next) != &emu->mapped_link_head) {
+ 		q = get_emu10k1_memblk(p, mapped_link);
+ 		end_page = q->mapped_page;
