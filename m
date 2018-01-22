@@ -1,23 +1,27 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: Maximum 50 dB gain in ALSA softvol plugin
-Date: Mon, 22 Jan 2018 14:47:12 +0100
-Message-ID: <alpine.DEB.2.11.1801221435420.12063@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.11.1801121645540.16471@lnxricardw1.se.axis.com>
- <s5ha7xj3ug4.wl-tiwai@suse.de>
- <alpine.DEB.2.11.1801151410060.2359@lnxricardw1.se.axis.com>
- <s5hd12b2q99.wl-tiwai@suse.de>
- <alpine.DEB.2.11.1801151446420.2359@lnxricardw1.se.axis.com>
- <s5h8tcz2pje.wl-tiwai@suse.de>
- <alpine.DEB.2.11.1801151520280.2359@lnxricardw1.se.axis.com>
- <s5hshb718wx.wl-tiwai@suse.de>
+From: "Keith A. Milner" <maillist@superlative.org>
+Subject: Re: Attempting to understand odd snd-usb-audio code
+	and behavior
+Date: Mon, 22 Jan 2018 14:06:08 +0000
+Message-ID: <4997219.KIItTR1t2S@kamdesktop>
+References: <2006820.TBXnYHJvYE@kamdesktop> <1954362.aJMGcWAYHc@kamdesktop>
+ <f5769b3d-0bb1-cd15-90a6-3983cb28f8ff@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="nextPart2142860.v6bVxjTWUG"
+Content-Transfer-Encoding: 7Bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 745CC266B67
- for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2018 14:47:19 +0100 (CET)
-In-Reply-To: <s5hshb718wx.wl-tiwai@suse.de>
+Received: from mail-wm0-f43.google.com (mail-wm0-f43.google.com [74.125.82.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1736266B67
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2018 15:06:12 +0100 (CET)
+Received: by mail-wm0-f43.google.com with SMTP id f71so16539578wmf.0
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2018 06:06:12 -0800 (PST)
+Received: from kamdesktop.localnet
+ (2.b.7.c.1.4.7.d.9.e.d.f.7.0.9.e.f.a.9.2.a.0.e.b.0.b.8.0.1.0.0.2.ip6.arpa.
+ [2001:8b0:be0a:29af:e907:fde9:d741:c7b2])
+ by smtp.gmail.com with ESMTPSA id o18sm14139239wrc.62.2018.01.22.06.06.09
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 22 Jan 2018 06:06:10 -0800 (PST)
+In-Reply-To: <f5769b3d-0bb1-cd15-90a6-3983cb28f8ff@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,69 +31,292 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-On Mon, 15 Jan 2018, Takashi Iwai wrote:
+--nextPart2142860.v6bVxjTWUG
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-> OTOH, the amplification in softvol is really dumb, and such a high
-> gain like 90dB is doubtful whether it's really useful.  As Jaroslav
-> already suggested, we need a better setup to get more meaningful
-> results.
+On Wednesday 23 Aug 2017 14:52:43 Clemens Ladisch wrote:
+> Keith A. Milner wrote:
+> >>> kernel: [ 1987.452947] usb 1-1: Unable to change format on ep #8e:
+> >>> already in use> 
+> > So the error messages are due to a userspace app trying to open playback
+> > and capture at the same time?
+> 
+> For this device, playback requires a running capture stream to determine
+> the rate of packets.  This error happens when the application tries to
+> open the capture stream after the playback stream.  (If the format does
+> not actually need to change, the error message is misleading.)
+> 
+> Your actual problem is that the device does not send any capture packets.
 
-Hi Takashi,
+OK, I found some more time to look at this.
 
-I didn't really get a definitive response to my elaboration last week =
+The background is a Roland device. The device descriptor is attached, but it 
+seems to be common to a lot of Roland devices.
 
-regarding the maximum allowable gain value for the softvol plugin.
+Specifically on this device, the Playback endpoint is 0x0d and there is a 
+related Implicit feedback endpoint at 0x8e.
 
-First of all, regarding the algorithm itself used, as it stands today it =
+I have USB traces of the device operation under Windows and the (non) 
+operation under Linux. The primary difference seems to be that, under Windows, 
+the Implict Feedback endpoint (0x8e) is opened prior to playback commencing. 
+Given previous discussions (and further research) on Implicit feedback, this 
+makes sense.
 
-can handle a maximum of 90.3 dB gain without falling apart (as the gain =
+Under Linux, this does not happen.
 
-factor is held in a signed integer). Changing the maximum allowable gain =
+I've been studying the code in pcm.c and endpoint.c to work out why this is, 
+and have some questions on the code function.
 
-from 50 dB to 90 dB does not impact the algorithm or existing =
+The flow of the code to deal with implict feedback setup in pcm.c is, roughly, 
+as follows:
+set_sync_endpoint
+  set_sync_ep_implicit_fb_quirk
+     search_roland_implicit_fb
 
-functionality in any way, it just changes the allowable maximum to =
+set_sync_ep_implicit_fb_quirk seems to deal with quirks relating to implicit 
+feedback and, within this, is a specific check for Roland which ends up 
+branching to "add_sync_ep" which adds a new endpoint via endpoint.c function 
+snd_usb_add_endpoint and assigns this as as the sync endpoint:
 
-correspond to the technical limit of the current algorithm. The limit is =
+	subs->sync_endpoint = snd_usb_add_endpoint(subs->stream->chip,
+						   alts, ep, !subs->direction,
+						   SND_USB_ENDPOINT_TYPE_DATA);
 
-not visible to the user anyway until he tries to configure a max_dB that =
+	subs->data_endpoint->sync_master = subs->sync_endpoint;
 
-is above 50 (and then only in the shape of an error message). So from a =
+Within endpoint.c, this new endpoint is added to chip->ep_list :
 
-purely technical viewpoint I cannot understand any opposition.
+	list_add_tail(&ep->list, &chip->ep_list);
 
-You mentioned that the amplification is really dumb, I'm not sure what the =
+After set_sync_ep_implicit_fb_quirk has completed it returns to 
+set_sync_endpoint which then checks that there are at least 2 endpoints:
 
-problem is, perhaps you could elaborate, essentially a gain is a =
+	if (altsd->bNumEndpoints < 2)
+		return 0;
 
-multiplication with a gain factor, and that's what softvol does.
+However, in the case I'm testing, on this device, this test fails as 
+bNumEndpoints is 1, even though we've just added a second endpoint for the 
+Implicit feedback.
 
-Another issue is if such a large gain is useful. I would say that is up to =
+Looking at the code, endpoint.c does not alter bNumEndpoints, which seems to 
+be a fundamental piece of data held against the usb_host_interface instance 
+and, presumably, set from the device descriptor by underlying kernel code.
 
-the user, and of course, if you have a weak signal to start with, with, =
+My question is, is the test for bNumEndpoints correct here? From what I can 
+gather, the whole point of the set_sync_ep_implicit_fb_quirk and 
+search_roland_implicit_fb code is to add an endpoint that can then be used by 
+set_sync_endpoint, but this seems to be ignored by doing the test for 
+bNumEndpoints.
 
-say, only 8 bits of resolution, adding 90 dB of gain is going to mean =
+Or, perhaps, is it that the way that this endpoint is added is incorrect.
 
-there's a lot of noise bits there, but the signal quality is of course not =
+I have, by the way, tried commenting out the bNumEndpoints test, and it fails 
+at the subsequent sync-pipe check with:
 
-worse than it was to start with, just louder, and that's how any signal =
+invalid sync pipe. bmAttributes 00, bLength 0, bSynchAddress 00
 
-(digital or analog) behaves when gain is added.
+To me this suggests the endpoint isn't being set correctly somehow.
 
-But the bottom line of course is that you are the maintainer. So what =
+Any pointers gratefully received.
 
-would you consider a reasonable maximum gain that's more than 50 dB. 70 =
+Cheers,
 
-dB?
+Keith
 
-/Ricard
--- =
 
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+
+--nextPart2142860.v6bVxjTWUG
+Content-Disposition: attachment; filename="GT-1_lsusb.txt"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"; name="GT-1_lsusb.txt"
+
+Bus 001 Device 013: ID 0582:01d6 Roland Corp. 
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               2.00
+  bDeviceClass          255 Vendor Specific Class
+  bDeviceSubClass         0 
+  bDeviceProtocol       255 
+  bMaxPacketSize0        64
+  idVendor           0x0582 Roland Corp.
+  idProduct          0x01d6 
+  bcdDevice            0.00
+  iManufacturer           1 BOSS
+  iProduct                2 GT-1
+  iSerial                 0 
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength          188
+    bNumInterfaces          4
+    bConfigurationValue     1
+    iConfiguration          0 
+    bmAttributes         0xc0
+      Self Powered
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass    255 Vendor Specific Subclass
+      bInterfaceProtocol      0 
+      iInterface              0 
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      2 
+      bInterfaceProtocol      2 
+      iInterface              0 
+      ** UNRECOGNIZED:  06 24 f1 01 00 00
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       1
+      bNumEndpoints           1
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      2 
+      bInterfaceProtocol      2 
+      iInterface              0 
+      ** UNRECOGNIZED:  07 24 01 01 00 01 00
+      ** UNRECOGNIZED:  0b 24 02 01 02 04 18 01 44 ac 00
+      ** UNRECOGNIZED:  06 24 f1 04 16 00
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x0d  EP 13 OUT
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+          Usage Type               Data
+        wMaxPacketSize     0x0038  1x 56 bytes
+        bInterval               1
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      2 
+      bInterfaceProtocol      1 
+      iInterface              0 
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       1
+      bNumEndpoints           1
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      2 
+      bInterfaceProtocol      1 
+      iInterface              0 
+      ** UNRECOGNIZED:  07 24 01 07 00 01 00
+      ** UNRECOGNIZED:  0b 24 02 01 02 04 18 01 44 ac 00
+      ** UNRECOGNIZED:  06 24 f1 04 16 00
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x8e  EP 14 IN
+        bmAttributes           37
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+          Usage Type               Implicit feedback Data
+        wMaxPacketSize     0x0038  1x 56 bytes
+        bInterval               1
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        3
+      bAlternateSetting       0
+      bNumEndpoints           2
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      3 
+      bInterfaceProtocol      0 
+      iInterface              0 
+      ** UNRECOGNIZED:  06 24 f1 02 01 01
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x03  EP 3 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               1
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x84  EP 4 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        3
+      bAlternateSetting       1
+      bNumEndpoints           2
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      3 
+      bInterfaceProtocol      0 
+      iInterface              0 
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x03  EP 3 OUT
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               4
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x85  EP 5 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               4
+Device Qualifier (for other device speed):
+  bLength                10
+  bDescriptorType         6
+  bcdUSB               2.00
+  bDeviceClass          255 Vendor Specific Class
+  bDeviceSubClass         0 
+  bDeviceProtocol       255 
+  bMaxPacketSize0        64
+  bNumConfigurations      1
+Device Status:     0x0001
+  Self Powered
+
+--nextPart2142860.v6bVxjTWUG
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--nextPart2142860.v6bVxjTWUG--
