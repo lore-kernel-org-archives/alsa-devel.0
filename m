@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dmic: Fix check of return value from read of 'num-channels'" to the asoc tree
-Date: Mon, 22 Jan 2018 12:26:31 +0000
-Message-ID: <E1edbBH-0004cm-1y@debutante>
-References: <20180119233650.100472-1-mka@chromium.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180119233650.100472-1-mka@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Matthias Kaehlcke <mka@chromium.org>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: sgtl5000: Clarify a bit about the ER1
+	meaning" to the asoc tree
+Date: Mon, 22 Jan 2018 12:26:38 +0000
+Message-ID: <E1edbBO-0004eW-77@debutante>
+References: <1516275928-10318-1-git-send-email-fabio.estevam@nxp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 13203267338
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2018 13:26:40 +0100 (CET)
+In-Reply-To: <1516275928-10318-1-git-send-email-fabio.estevam@nxp.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dmic: Fix check of return value from read of 'num-channels'
+   ASoC: sgtl5000: Clarify a bit about the ER1 meaning
 
 has been applied to the asoc tree at
 
@@ -37,40 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From 35b84bf0614a7da98bfbbac70ed3d01c3b5b6c58 Mon Sep 17 00:00:00 2001
-From: Matthias Kaehlcke <mka@chromium.org>
-Date: Fri, 19 Jan 2018 15:36:50 -0800
-Subject: [PATCH] ASoC: dmic: Fix check of return value from read of
- 'num-channels'
+>From da689e0da3c042c9d240e21189a2af0aa9da3ab5 Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Date: Thu, 18 Jan 2018 09:45:28 -0200
+Subject: [PATCH] ASoC: sgtl5000: Clarify a bit about the ER1 meaning
 
-Commit 7fb59e940f62 ("ASoC: codecs: dmic: Make number of channels
- configurable") introduces an optional property to the device tree
-to specify the number of DMIC channels. dmic_codec_probe() uses
-of_property_read_u32() to read the DT value, and expects a return
-value of -ENOENT when the property does not exist. This expectation
-is incorrect, the actual value returned in this case is -EINVAL (see
-of_find_property_value_of_size(), which is called under the hood).
-Check for -EINVAL instead.
+The "check ER1" message is not very clear about its meaning.
 
-Fixes: 7fb59e940f62 ("ASoC: codecs: dmic: Make number of channels configurable")
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Improve it a bit by referring to it as "ER1 erratum" so that it
+becomes clearer that ER1 references to a SGTL5000 erratum.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/dmic.c | 2 +-
+ sound/soc/codecs/sgtl5000.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
-index c88f974ebe3e..cf83c423394d 100644
---- a/sound/soc/codecs/dmic.c
-+++ b/sound/soc/codecs/dmic.c
-@@ -113,7 +113,7 @@ static int dmic_dev_probe(struct platform_device *pdev)
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 633cdcfc933d..e1ab5537d27a 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -1392,7 +1392,7 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
  
- 	if (pdev->dev.of_node) {
- 		err = of_property_read_u32(pdev->dev.of_node, "num-channels", &chans);
--		if (err && (err != -ENOENT))
-+		if (err && (err != -EINVAL))
- 			return err;
- 
- 		if (!err) {
+ 		ana_pwr |= SGTL5000_LINEREG_D_POWERUP;
+ 		dev_info(&client->dev,
+-			 "Using internal LDO instead of VDDD: check ER1\n");
++			 "Using internal LDO instead of VDDD: check ER1 erratum\n");
+ 	} else {
+ 		/* using external LDO for VDDD
+ 		 * Clear startup powerup and simple powerup
 -- 
 2.15.1
