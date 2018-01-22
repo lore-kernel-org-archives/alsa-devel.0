@@ -1,73 +1,74 @@
-From: <twischer@de.adit-jv.com>
-Subject: [PATCH - JACK PCM plugin] jack: Write only valid
-	values to the internal hw_ptr
-Date: Mon, 22 Jan 2018 09:37:20 +0100
-Message-ID: <1516610240-7772-1-git-send-email-twischer@de.adit-jv.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH] ASoC: intel: clean up CONFIG_SND_SST_IPC handling
+Date: Mon, 22 Jan 2018 11:51:32 +0200
+Message-ID: <1516614692.7000.1155.camel@linux.intel.com>
+References: <20180121221505.196163-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180121221505.196163-1-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Harsha Priya N <harshapriya.n@intel.com>, Naveen M <naveen.m@intel.com>, Daniel Drake <drake@endlessm.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Timo Wischer <twischer@de.adit-jv.com>
+On Sun, 2018-01-21 at 23:14 +0100, Arnd Bergmann wrote:
+> In a configuration with SND_SST_ATOM_HIFI2_PLATFORM_PCI=y and
+> SND_SST_ATOM_HIFI2_PLATFORM=m, we get this module link failure:
+> 
+> ERROR: "sst_context_init" [sound/soc/intel/atom/sst/snd-intel-sst-
+> acpi.ko] undefined!
+> ERROR: "sst_context_cleanup" [sound/soc/intel/atom/sst/snd-intel-sst-
+> acpi.ko] undefined!
+> ERROR: "sst_alloc_drv_context" [sound/soc/intel/atom/sst/snd-intel-
+> sst-acpi.ko] undefined!
+> ERROR: "intel_sst_pm" [sound/soc/intel/atom/sst/snd-intel-sst-acpi.ko] 
+> undefined!
+> ERROR: "sst_configure_runtime_pm" [sound/soc/intel/atom/sst/snd-intel-
+> sst-acpi.ko] undefined!
+> 
+> The problem is that the sound/soc/intel/atom/ directory only gets
+> entered by Kbuild when SND_SST_ATOM_HIFI2_PLATFORM is set, so we
+> only build modules (obj-m) under here but not built-in files (obj-y)
+> including the snd-intel-sst-core that we clearly want need here.
+> 
+> Before commit 4772c16ede52 ("ASoC: Intel: Kconfig: Simplify-clarify
+> ACPI/PCI
+> dependencies"), this could not happen as all files in
+> sound/soc/intel/atom/
+> depended on CONFIG_SND_SST_ATOM_HIFI2_PLATFORM anyway.
+> 
+> Slightly later, commit 05f4434bc130 ("ASoC: Intel: remove
+> mfld_machine")
+> was added, which then removed the Merrifield machine code that
+> happened
+> to be the only user of SND_SST_ATOM_HIFI2_PLATFORM_PCI. With that
+> gone,
 
-Otherwise the ALSA thread could for example read a hw_ptr >
-buffer_size
+That's what I afraid of. Intel Merrifield *should* be there. What Vinod
+did, AFAIU, is removal of Intel Medfield support, which is fine with me.
 
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
+So, before this can go, we need to get confirmation from Vinod and
+Pierre, that Merrifield still stays there.
 
-diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
-index 4468ede..3aed332 100644
---- a/jack/pcm_jack.c
-+++ b/jack/pcm_jack.c
-@@ -137,6 +137,7 @@ static int
- snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
- {
- 	snd_pcm_jack_t *jack = io->private_data;
-+	snd_pcm_uframes_t hw_ptr;
- 	const snd_pcm_channel_area_t *areas;
- 	snd_pcm_uframes_t xfer = 0;
- 	unsigned int channel;
-@@ -155,12 +156,13 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
- 			return 0;
- 		}
- 	}
--	
-+
-+	hw_ptr = jack->hw_ptr;
- 	areas = snd_pcm_ioplug_mmap_areas(io);
- 
- 	while (xfer < nframes) {
- 		snd_pcm_uframes_t frames = nframes - xfer;
--		snd_pcm_uframes_t offset = jack->hw_ptr;
-+		snd_pcm_uframes_t offset = hw_ptr;
- 		snd_pcm_uframes_t cont = io->buffer_size - offset;
- 
- 		if (cont < frames)
-@@ -173,10 +175,11 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
- 				snd_pcm_area_copy(&areas[channel], offset, &jack->areas[channel], xfer, frames, io->format);
- 		}
- 		
--		jack->hw_ptr += frames;
--		jack->hw_ptr %= io->buffer_size;
-+		hw_ptr += frames;
-+		hw_ptr %= io->buffer_size;
- 		xfer += frames;
- 	}
-+	jack->hw_ptr = hw_ptr;
- 
- 	pcm_poll_unblock_check(io); /* unblock socket for polling if needed */
- 
+> it appears that we can completely remove that symbol as well, along
+> with
+> the SND_SST_IPC_PCI code and everything associated with it that is now
+> unused.
+> 
+> For clarify, this also removes the SND_SST_IPC_ACPI symbol that is now
+> synonymous with SND_SST_IPC, and links both into a single loadable
+> module.
+
+> I checked that this patch leads to a clean compilation, and that the
+> code I'm removing is only used for the now-obsolete Merrifield PCI ID.
+
+NACK for this part.
+
+> If I got something else wrong, or you want a different fix, please
+> just send a replacement patch and treat this as a bug report.
+
 -- 
-2.7.4
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Intel Finland Oy
