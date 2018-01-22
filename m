@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sam9g20_wm8731: use dev_*() logging
-	functions" to the asoc tree
-Date: Mon, 22 Jan 2018 12:26:23 +0000
-Message-ID: <E1edbB9-0004aq-S7@debutante>
-References: <20180115075254.GB10762@lenoch>
+Subject: Applied "ASoC: sam9x5_wm8731: Drop 'ASoC' prefix from
+	error messages" to the asoc tree
+Date: Mon, 22 Jan 2018 12:26:20 +0000
+Message-ID: <E1edbB6-0004Zt-8R@debutante>
+References: <20180115075321.GC10762@lenoch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A7F126732C
- for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2018 13:26:35 +0100 (CET)
-In-Reply-To: <20180115075254.GB10762@lenoch>
+ by alsa0.perex.cz (Postfix) with ESMTP id EB4BF266B67
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2018 13:26:29 +0100 (CET)
+In-Reply-To: <20180115075321.GC10762@lenoch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sam9g20_wm8731: use dev_*() logging functions
+   ASoC: sam9x5_wm8731: Drop 'ASoC' prefix from error messages
 
 has been applied to the asoc tree at
 
@@ -53,78 +53,64 @@ to this mail.
 Thanks,
 Mark
 
->From edefc8f387a86c2db943db6accd1cd23be2b64a9 Mon Sep 17 00:00:00 2001
+>From 2efb8a8f11ba92971551189da91ece8b5040e461 Mon Sep 17 00:00:00 2001
 From: Ladislav Michl <ladis@linux-mips.org>
-Date: Mon, 15 Jan 2018 08:52:54 +0100
-Subject: [PATCH] ASoC: sam9g20_wm8731: use dev_*() logging functions
+Date: Mon, 15 Jan 2018 08:53:21 +0100
+Subject: [PATCH] ASoC: sam9x5_wm8731: Drop 'ASoC' prefix from error messages
 
-Use dev_*() logging functions instead of plain printk and as
-messages are now properly prefixed drop 'ASoC' prefix as well.
+dev_err already provides messages with prefix, so drop 'ASoC'
+prefix.
 
 Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/sam9g20_wm8731.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ sound/soc/atmel/sam9x5_wm8731.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
-index d7469cdd90dc..98f93e79c654 100644
---- a/sound/soc/atmel/sam9g20_wm8731.c
-+++ b/sound/soc/atmel/sam9g20_wm8731.c
-@@ -110,16 +110,15 @@ static const struct snd_soc_dapm_route intercon[] = {
- static int at91sam9g20ek_wm8731_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct device *dev = rtd->dev;
+diff --git a/sound/soc/atmel/sam9x5_wm8731.c b/sound/soc/atmel/sam9x5_wm8731.c
+index ccdf547f4d8c..e6c303ab869d 100644
+--- a/sound/soc/atmel/sam9x5_wm8731.c
++++ b/sound/soc/atmel/sam9x5_wm8731.c
+@@ -49,13 +49,13 @@ static int sam9x5_wm8731_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct device *dev = rtd->dev;
  	int ret;
  
--	printk(KERN_DEBUG
--			"at91sam9g20ek_wm8731 "
--			": at91sam9g20ek_wm8731_init() called\n");
+-	dev_dbg(dev, "ASoC: %s called\n", __func__);
 +	dev_dbg(dev, "%s called\n", __func__);
  
- 	ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK_MCLK,
--		MCLK_RATE, SND_SOC_CLOCK_IN);
-+				     MCLK_RATE, SND_SOC_CLOCK_IN);
+ 	/* set the codec system clock for DAC and ADC */
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK_XTAL,
+ 				     MCLK_RATE, SND_SOC_CLOCK_IN);
  	if (ret < 0) {
--		printk(KERN_ERR "Failed to set WM8731 SYSCLK: %d\n", ret);
+-		dev_err(dev, "ASoC: Failed to set WM8731 SYSCLK: %d\n", ret);
 +		dev_err(dev, "Failed to set WM8731 SYSCLK: %d\n", ret);
  		return ret;
  	}
  
-@@ -179,21 +178,21 @@ static int at91sam9g20ek_audio_probe(struct platform_device *pdev)
- 	 */
- 	mclk = clk_get(NULL, "pck0");
- 	if (IS_ERR(mclk)) {
--		printk(KERN_ERR "ASoC: Failed to get MCLK\n");
-+		dev_err(&pdev->dev, "Failed to get MCLK\n");
- 		ret = PTR_ERR(mclk);
- 		goto err;
- 	}
+@@ -146,8 +146,7 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
  
- 	pllb = clk_get(NULL, "pllb");
- 	if (IS_ERR(pllb)) {
--		printk(KERN_ERR "ASoC: Failed to get PLLB\n");
-+		dev_err(&pdev->dev, "Failed to get PLLB\n");
- 		ret = PTR_ERR(pllb);
- 		goto err_mclk;
- 	}
- 	ret = clk_set_parent(mclk, pllb);
- 	clk_put(pllb);
+ 	ret = atmel_ssc_set_audio(priv->ssc_id);
  	if (ret != 0) {
--		printk(KERN_ERR "ASoC: Failed to set MCLK parent\n");
-+		dev_err(&pdev->dev, "Failed to set MCLK parent\n");
- 		goto err_mclk;
+-		dev_err(&pdev->dev,
+-			"ASoC: Failed to set SSC %d for audio: %d\n",
++		dev_err(&pdev->dev, "Failed to set SSC %d for audio: %d\n",
+ 			ret, priv->ssc_id);
+ 		goto out;
  	}
- 
-@@ -236,7 +235,7 @@ static int at91sam9g20ek_audio_probe(struct platform_device *pdev)
+@@ -157,12 +156,11 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
  
  	ret = snd_soc_register_card(card);
  	if (ret) {
--		printk(KERN_ERR "ASoC: snd_soc_register_card() failed\n");
-+		dev_err(&pdev->dev, "snd_soc_register_card() failed\n");
+-		dev_err(&pdev->dev,
+-			"ASoC: Platform device allocation failed\n");
++		dev_err(&pdev->dev, "Platform device allocation failed\n");
+ 		goto out_put_audio;
  	}
  
+-	dev_dbg(&pdev->dev, "ASoC: %s ok\n", __func__);
++	dev_dbg(&pdev->dev, "%s ok\n", __func__);
+ 
  	return ret;
+ 
 -- 
 2.15.1
