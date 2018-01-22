@@ -1,21 +1,15 @@
-From: Happy <happy.musicmaker@gmail.com>
-Subject: Where do amidi MIDI port names come from ?
-Date: Mon, 22 Jan 2018 22:48:52 +0800
-Message-ID: <1516632532.3556.14.camel@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH - alsa-lib 1/1] Patch for two bugs in
+ snd_pcm_area_silence().
+Date: Mon, 22 Jan 2018 23:48:41 +0900
+Message-ID: <77fbb9d8-f5c2-ac97-5b77-4f7792fcc270@sakamocchi.jp>
+References: <1516505223-16067-1-git-send-email-alsa2@bushytails.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f43.google.com (mail-pg0-f43.google.com [74.125.83.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A22426738D
- for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2018 15:48:57 +0100 (CET)
-Received: by mail-pg0-f43.google.com with SMTP id z17so7255465pgc.4
- for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2018 06:48:57 -0800 (PST)
-Received: from H3U1 ([175.182.114.92])
- by smtp.googlemail.com with ESMTPSA id k10sm25474077pgq.89.2018.01.22.06.48.54
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Mon, 22 Jan 2018 06:48:55 -0800 (PST)
+In-Reply-To: <1516505223-16067-1-git-send-email-alsa2@bushytails.net>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,27 +19,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa2@bushytails.net, patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-Does someone know where (USB) MIDI port names in Linux come from ? 
+On Jan 21 2018 12:27, alsa2@bushytails.net wrote:
+> From: furrywolf <alsa2@bushytails.net>
+> 
+> First, after silencing the buffer 64 bits at a time, any remaining samples
+> need to be silenced by the following width-specific code.  However, instead
+> of silencing the end of the buffer, the code instead re-silences the start
+> of the buffer, leaving the end unsilenced.  To fix this, update the pointer
+> used by the width-specific code to point to the end of the area just
+> silenced, instead of leaving it pointing to the start of the buffer.
+> 
+> Second, the code for 24 bit samples can only silence a single sample, as
+> there's no loop for multiple samples as with other formats.  To fix this,
+> add a loop similar to the ones used for every other width.
+> 
+> The symptoms of these bugs are random data at the end of every supposedly
+> silenced buffer with certain format/buffer size combinations, resulting in
+> pops and noise.
+> 
+> Signed-off-by: furrywolf <alsa2@bushytails.net>
+> 
+> diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+> index 69d7d66..1753cda 100644
+> --- a/src/pcm/pcm.c
+> +++ b/src/pcm/pcm.c
+> @@ -2955,6 +2955,7 @@ int snd_pcm_area_silence(const snd_pcm_channel_area_t *dst_area, snd_pcm_uframes
+>   			*dstp++ = silence;
+>   		if (samples == 0)
+>   			return 0;
+> +		dst = (char *)dstp;
+>   	}
+>   	dst_step = dst_area->step / 8;
+>   	switch (width) {
+> @@ -2996,16 +2997,20 @@ int snd_pcm_area_silence(const snd_pcm_channel_area_t *dst_area, snd_pcm_uframes
+>   		}
+>   		break;
+>   	}
+> -	case 24:
+> +	case 24: {
+> +		while (samples-- > 0) {
+>   #ifdef SNDRV_LITTLE_ENDIAN
+> -		*(dst + 0) = silence >> 0;
+> -		*(dst + 1) = silence >> 8;
+> -		*(dst + 2) = silence >> 16;
+> +			*(dst + 0) = silence >> 0;
+> +			*(dst + 1) = silence >> 8;
+> +			*(dst + 2) = silence >> 16;
+>   #else
+> -		*(dst + 2) = silence >> 0;
+> -		*(dst + 1) = silence >> 8;
+> -		*(dst + 0) = silence >> 16;
+> +			*(dst + 2) = silence >> 0;
+> +			*(dst + 1) = silence >> 8;
+> +			*(dst + 0) = silence >> 16;
+>   #endif
+> +			dst += dst_step;
+> +		}
+> +	}
+>   		break;
+>   	case 32: {
+>   		uint32_t sil = silence;
 
-For example a MIDISport 4x4 shows "Midiman" at lsusb (the same for each
-one if there is more than one device. This comes from the idVendor,
-idProduct in the device descriptor)
+I'm under reviewing this patch, but need a bit more time (I'm writing 
+test program to check these functions.).
 
-But "MIDISPORT 4x4 Anniv MIDI 1 to 4" by amidi -l for the device.
-Thus wonder where amidi (ALSA) gets the product/portname from.
+However, as you noted, this patch includes two issues. There's a space 
+to consider about splitting this into two patches, each of which handles 
+each issue you addressed.
 
-There are other examples where the SUB device ID is not known by
-Linux but the port name does have the vendor/product name
 
-Microsoft argues that some MIDI devices do not report a name
-But since Linux does not have a driver for each device
-I highly doubt so.  (have not come across one)
+Regards
 
-Microsoft chose to use the name from the device driver in their
-UWP MIDI implementation which has apparantly been not a good idea
-It has resulted in multiple duplicate device/port names for
-different devices.
+Takashi Sakamoto
