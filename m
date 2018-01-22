@@ -1,116 +1,102 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] ASoC: intel: clean up CONFIG_SND_SST_IPC handling
-Date: Mon, 22 Jan 2018 11:58:34 +0100
-Message-ID: <CAK8P3a0H6CbFgqQijFRYsDoYq3mEPcuBL6x01Ppp7P+_81t++A@mail.gmail.com>
-References: <20180121221505.196163-1-arnd@arndb.de> <1516614692.7000.1155.camel@linux.intel.com>
+From: Ryder Lee <ryder.lee@mediatek.com>
+Subject: [PATCH] ASoC: mediatek: fix double free in mt2701_afe_pcm_dev_probe()
+Date: Mon, 22 Jan 2018 19:33:05 +0800
+Message-ID: <2fd34b71f3c940186b99f799c3ed14a83ccc4bba.1516620578.git.ryder.lee@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1516614692.7000.1155.camel@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Harsha Priya N <harshapriya.n@intel.com>, Naveen M <naveen.m@intel.com>, Daniel Drake <drake@endlessm.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Ryder Lee <ryder.lee@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 22, 2018 at 10:51 AM, Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> On Sun, 2018-01-21 at 23:14 +0100, Arnd Bergmann wrote:
->> In a configuration with SND_SST_ATOM_HIFI2_PLATFORM_PCI=y and
->> SND_SST_ATOM_HIFI2_PLATFORM=m, we get this module link failure:
->>
->> ERROR: "sst_context_init" [sound/soc/intel/atom/sst/snd-intel-sst-
->> acpi.ko] undefined!
->> ERROR: "sst_context_cleanup" [sound/soc/intel/atom/sst/snd-intel-sst-
->> acpi.ko] undefined!
->> ERROR: "sst_alloc_drv_context" [sound/soc/intel/atom/sst/snd-intel-
->> sst-acpi.ko] undefined!
->> ERROR: "intel_sst_pm" [sound/soc/intel/atom/sst/snd-intel-sst-acpi.ko]
->> undefined!
->> ERROR: "sst_configure_runtime_pm" [sound/soc/intel/atom/sst/snd-intel-
->> sst-acpi.ko] undefined!
->>
->> The problem is that the sound/soc/intel/atom/ directory only gets
->> entered by Kbuild when SND_SST_ATOM_HIFI2_PLATFORM is set, so we
->> only build modules (obj-m) under here but not built-in files (obj-y)
->> including the snd-intel-sst-core that we clearly want need here.
->>
->> Before commit 4772c16ede52 ("ASoC: Intel: Kconfig: Simplify-clarify
->> ACPI/PCI
->> dependencies"), this could not happen as all files in
->> sound/soc/intel/atom/
->> depended on CONFIG_SND_SST_ATOM_HIFI2_PLATFORM anyway.
->>
->> Slightly later, commit 05f4434bc130 ("ASoC: Intel: remove
->> mfld_machine")
->> was added, which then removed the Merrifield machine code that
->> happened
->> to be the only user of SND_SST_ATOM_HIFI2_PLATFORM_PCI. With that
->> gone,
->
-> That's what I afraid of. Intel Merrifield *should* be there. What Vinod
-> did, AFAIU, is removal of Intel Medfield support, which is fine with me.
->
-> So, before this can go, we need to get confirmation from Vinod and
-> Pierre, that Merrifield still stays there.
+The commit dfa3cbb8(ASoC: mediatek: modify MT2701 AFE driver to adapt mfd device)
+leads to the following static checker warning:
 
-Ok, I see. Checking further, I see that SND_SST_ATOM_HIFI2_PLATFORM_PCI
-cannot be built without SND_SST_ATOM_HIFI2_PLATFORM:
+	sound/soc/mediatek/mt2701/mt2701-afe-pcm.c:1535 mt2701_afe_pcm_dev_probe()
+	error: double free of 'component'
 
-sound/soc/intel/atom/sst/sst_drv_interface.o: In function `sst_register':
-sst_drv_interface.c:(.text+0xc3e): undefined reference to `sst_register_dsp'
-sound/soc/intel/atom/sst/sst_drv_interface.o: In function `sst_unregister':
-sst_drv_interface.c:(.text+0xc67): undefined reference to `sst_unregister_dsp'
+This patch fixes that and adds a helper mt2701_afe_add_component() to setup
+component.
 
-How about this instead:
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
+---
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 32 +++++++++++++++++-------------
+ 1 file changed, 18 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index f2c9e8c5970a..16344bd24eb0 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -72,21 +72,8 @@ config SND_SOC_INTEL_BAYTRAIL
-          for Baytrail Chromebooks but this option is now deprecated and is
-          not recommended, use SND_SST_ATOM_HIFI2_PLATFORM instead.
-
--config SND_SST_ATOM_HIFI2_PLATFORM_PCI
--       tristate "PCI HiFi2 (Medfield, Merrifield) Platforms"
--       depends on X86 && PCI
--       select SND_SST_IPC_PCI
--       select SND_SOC_COMPRESS
--       help
--         If you have a Intel Medfield or Merrifield/Edison platform, then
--         enable this option by saying Y or m. Distros will typically not
--         enable this option: Medfield devices are not available to
--         developers and while Merrifield/Edison can run a mainline kernel with
--         limited functionality it will require a firmware file which
--         is not in the standard firmware tree
--
- config SND_SST_ATOM_HIFI2_PLATFORM
--       tristate "ACPI HiFi2 (Baytrail, Cherrytrail) Platforms"
-+       tristate "ACPI HiFi2 (Baytrail, Cherrytrail, Merrifield) Platforms"
-        depends on X86 && ACPI
-        select SND_SST_IPC_ACPI
-        select SND_SOC_COMPRESS
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index d4e103615f51..c73b19292fda 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -159,6 +159,19 @@ config SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH
-
-          If unsure select "N".
-
-+config SND_SOC_INTEL_MRFLD_MACH
-+       tristate "Merrifield/Edison platform"
-+       depends on X86_INTEL_LPSS && I2C && PCI
-+       select SND_SST_IPC_PCI
-+       help
-+         This adds support for ASoC PCI driver for the Merrifield
-+         (platform) used e.g. on Intel Edison.  If you have
-+         Merrifield/Edison platform, then enable this option by saying
-+         Y or m. Distros will typically not enable this option: while
-+         Merrifield/Edison can run a mainline kernel with limited
-+         functionality it will require a firmware file which is not in
-+         the standard firmware tree.
+diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+index f0cd08f..ff15537 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
++++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+@@ -1405,9 +1405,24 @@ static int mt2701_afe_runtime_resume(struct device *dev)
+ 	return mt2701_afe_enable_clock(afe);
+ }
+ 
+-static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
++static int mt2701_afe_add_component(struct mtk_base_afe *afe)
+ {
+ 	struct snd_soc_component *component;
 +
- endif ## SND_SST_ATOM_HIFI2_PLATFORM
-
- if SND_SOC_INTEL_SKYLAKE
++	component = kzalloc(sizeof(*component), GFP_KERNEL);
++	if (!component)
++		return -ENOMEM;
++
++	component->regmap = afe->regmap;
++
++	return snd_soc_add_component(afe->dev, component,
++				     &mt2701_afe_pcm_dai_component,
++				     mt2701_afe_pcm_dais,
++				     ARRAY_SIZE(mt2701_afe_pcm_dais));
++}
++
++static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
++{
+ 	struct mtk_base_afe *afe;
+ 	struct mt2701_afe_private *afe_priv;
+ 	struct device *dev;
+@@ -1477,12 +1492,6 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+ 			= &mt2701_i2s_data[i][I2S_IN];
+ 	}
+ 
+-	component = kzalloc(sizeof(*component), GFP_KERNEL);
+-	if (!component)
+-		return -ENOMEM;
+-
+-	component->regmap = afe->regmap;
+-
+ 	afe->mtk_afe_hardware = &mt2701_afe_hardware;
+ 	afe->memif_fs = mt2701_memif_fs;
+ 	afe->irq_fs = mt2701_irq_fs;
+@@ -1495,7 +1504,7 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+ 	ret = mt2701_init_clock(afe);
+ 	if (ret) {
+ 		dev_err(dev, "init clock error\n");
+-		goto err_init_clock;
++		return ret;
+ 	}
+ 
+ 	platform_set_drvdata(pdev, afe);
+@@ -1514,10 +1523,7 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+ 		goto err_platform;
+ 	}
+ 
+-	ret = snd_soc_add_component(dev, component,
+-				    &mt2701_afe_pcm_dai_component,
+-				    mt2701_afe_pcm_dais,
+-				    ARRAY_SIZE(mt2701_afe_pcm_dais));
++	ret = mt2701_afe_add_component(afe);
+ 	if (ret) {
+ 		dev_warn(dev, "err_dai_component\n");
+ 		goto err_dai_component;
+@@ -1531,8 +1537,6 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+ 	pm_runtime_put_sync(dev);
+ err_pm_disable:
+ 	pm_runtime_disable(dev);
+-err_init_clock:
+-	kfree(component);
+ 
+ 	return ret;
+ }
+-- 
+1.9.1
