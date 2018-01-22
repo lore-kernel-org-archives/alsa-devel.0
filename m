@@ -1,18 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sgtl5000: Clarify a bit about the ER1
-	meaning" to the asoc tree
-Date: Mon, 22 Jan 2018 12:26:38 +0000
-Message-ID: <E1edbBO-0004eW-77@debutante>
-References: <1516275928-10318-1-git-send-email-fabio.estevam@nxp.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Maximum 50 dB gain in ALSA softvol plugin
+Date: Mon, 22 Jan 2018 14:47:12 +0100
+Message-ID: <alpine.DEB.2.11.1801221435420.12063@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.11.1801121645540.16471@lnxricardw1.se.axis.com>
+ <s5ha7xj3ug4.wl-tiwai@suse.de>
+ <alpine.DEB.2.11.1801151410060.2359@lnxricardw1.se.axis.com>
+ <s5hd12b2q99.wl-tiwai@suse.de>
+ <alpine.DEB.2.11.1801151446420.2359@lnxricardw1.se.axis.com>
+ <s5h8tcz2pje.wl-tiwai@suse.de>
+ <alpine.DEB.2.11.1801151520280.2359@lnxricardw1.se.axis.com>
+ <s5hshb718wx.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 13203267338
- for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2018 13:26:40 +0100 (CET)
-In-Reply-To: <1516275928-10318-1-git-send-email-fabio.estevam@nxp.com>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 745CC266B67
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2018 14:47:19 +0100 (CET)
+In-Reply-To: <s5hshb718wx.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +27,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: sgtl5000: Clarify a bit about the ER1 meaning
+On Mon, 15 Jan 2018, Takashi Iwai wrote:
 
-has been applied to the asoc tree at
+> OTOH, the amplification in softvol is really dumb, and such a high
+> gain like 90dB is doubtful whether it's really useful.  As Jaroslav
+> already suggested, we need a better setup to get more meaningful
+> results.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Hi Takashi,
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+I didn't really get a definitive response to my elaboration last week =
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+regarding the maximum allowable gain value for the softvol plugin.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+First of all, regarding the algorithm itself used, as it stands today it =
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+can handle a maximum of 90.3 dB gain without falling apart (as the gain =
 
-Thanks,
-Mark
+factor is held in a signed integer). Changing the maximum allowable gain =
 
->From da689e0da3c042c9d240e21189a2af0aa9da3ab5 Mon Sep 17 00:00:00 2001
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Thu, 18 Jan 2018 09:45:28 -0200
-Subject: [PATCH] ASoC: sgtl5000: Clarify a bit about the ER1 meaning
+from 50 dB to 90 dB does not impact the algorithm or existing =
 
-The "check ER1" message is not very clear about its meaning.
+functionality in any way, it just changes the allowable maximum to =
 
-Improve it a bit by referring to it as "ER1 erratum" so that it
-becomes clearer that ER1 references to a SGTL5000 erratum.
+correspond to the technical limit of the current algorithm. The limit is =
 
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/sgtl5000.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+not visible to the user anyway until he tries to configure a max_dB that =
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 633cdcfc933d..e1ab5537d27a 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -1392,7 +1392,7 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
- 
- 		ana_pwr |= SGTL5000_LINEREG_D_POWERUP;
- 		dev_info(&client->dev,
--			 "Using internal LDO instead of VDDD: check ER1\n");
-+			 "Using internal LDO instead of VDDD: check ER1 erratum\n");
- 	} else {
- 		/* using external LDO for VDDD
- 		 * Clear startup powerup and simple powerup
--- 
-2.15.1
+is above 50 (and then only in the shape of an error message). So from a =
+
+purely technical viewpoint I cannot understand any opposition.
+
+You mentioned that the amplification is really dumb, I'm not sure what the =
+
+problem is, perhaps you could elaborate, essentially a gain is a =
+
+multiplication with a gain factor, and that's what softvol does.
+
+Another issue is if such a large gain is useful. I would say that is up to =
+
+the user, and of course, if you have a weak signal to start with, with, =
+
+say, only 8 bits of resolution, adding 90 dB of gain is going to mean =
+
+there's a lot of noise bits there, but the signal quality is of course not =
+
+worse than it was to start with, just louder, and that's how any signal =
+
+(digital or analog) behaves when gain is added.
+
+But the bottom line of course is that you are the maintainer. So what =
+
+would you consider a reasonable maximum gain that's more than 50 dB. 70 =
+
+dB?
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
