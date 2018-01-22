@@ -1,102 +1,75 @@
 From: Ryder Lee <ryder.lee@mediatek.com>
-Subject: [PATCH] ASoC: mediatek: fix double free in mt2701_afe_pcm_dev_probe()
-Date: Mon, 22 Jan 2018 19:33:05 +0800
-Message-ID: <2fd34b71f3c940186b99f799c3ed14a83ccc4bba.1516620578.git.ryder.lee@mediatek.com>
+Subject: Re: [bug report] ASoC: mediatek: modify MT2701 AFE
+ driver to adapt mfd device
+Date: Mon, 22 Jan 2018 19:38:12 +0800
+Message-ID: <1516621092.30761.3.camel@mtkswgap22>
+References: <20180122100138.GA20468@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Ryder Lee <ryder.lee@mediatek.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id 03408266B67
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2018 12:38:20 +0100 (CET)
+In-Reply-To: <20180122100138.GA20468@mwanda>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The commit dfa3cbb8(ASoC: mediatek: modify MT2701 AFE driver to adapt mfd device)
-leads to the following static checker warning:
+On Mon, 2018-01-22 at 13:01 +0300, Dan Carpenter wrote:
+> Hello Ryder Lee,
+> 
+> The patch dfa3cbb83e09: "ASoC: mediatek: modify MT2701 AFE driver to
+> adapt mfd device" from Jan 4, 2018, leads to the following static
+> checker warning:
+> 
+> 	sound/soc/mediatek/mt2701/mt2701-afe-pcm.c:1535 mt2701_afe_pcm_dev_probe()
+> 	error: double free of 'component'
+> 
+> sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+>   1509          pm_runtime_get_sync(dev);
+>   1510  
+>   1511          ret = snd_soc_register_platform(dev, &mtk_afe_pcm_platform);
+>   1512          if (ret) {
+>   1513                  dev_warn(dev, "err_platform\n");
+>   1514                  goto err_platform;
+>   1515          }
+>   1516  
+>   1517          ret = snd_soc_add_component(dev, component,
+>                                                  ^^^^^^^^^
+> snd_soc_add_component() frees "component" on error.  This seems like a
+> layering violation to me, and it naturally leads to bugs like this.
+> 
+>   1518                                      &mt2701_afe_pcm_dai_component,
+>   1519                                      mt2701_afe_pcm_dais,
+>   1520                                      ARRAY_SIZE(mt2701_afe_pcm_dais));
+>   1521          if (ret) {
+>   1522                  dev_warn(dev, "err_dai_component\n");
+>   1523                  goto err_dai_component;
+>   1524          }
+>   1525  
+>   1526          return 0;
+>   1527  
+>   1528  err_dai_component:
+>   1529          snd_soc_unregister_platform(dev);
+>   1530  err_platform:
+>   1531          pm_runtime_put_sync(dev);
+>   1532  err_pm_disable:
+>   1533          pm_runtime_disable(dev);
+>   1534  err_init_clock:
+>   1535          kfree(component);
+>                       ^^^^^^^^^
+> Double free
 
-	sound/soc/mediatek/mt2701/mt2701-afe-pcm.c:1535 mt2701_afe_pcm_dev_probe()
-	error: double free of 'component'
+Thanks for catching that. I've just sent a fixup patch.
 
-This patch fixes that and adds a helper mt2701_afe_add_component() to setup
-component.
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
----
- sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 32 +++++++++++++++++-------------
- 1 file changed, 18 insertions(+), 14 deletions(-)
-
-diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-index f0cd08f..ff15537 100644
---- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-+++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-@@ -1405,9 +1405,24 @@ static int mt2701_afe_runtime_resume(struct device *dev)
- 	return mt2701_afe_enable_clock(afe);
- }
- 
--static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
-+static int mt2701_afe_add_component(struct mtk_base_afe *afe)
- {
- 	struct snd_soc_component *component;
-+
-+	component = kzalloc(sizeof(*component), GFP_KERNEL);
-+	if (!component)
-+		return -ENOMEM;
-+
-+	component->regmap = afe->regmap;
-+
-+	return snd_soc_add_component(afe->dev, component,
-+				     &mt2701_afe_pcm_dai_component,
-+				     mt2701_afe_pcm_dais,
-+				     ARRAY_SIZE(mt2701_afe_pcm_dais));
-+}
-+
-+static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
-+{
- 	struct mtk_base_afe *afe;
- 	struct mt2701_afe_private *afe_priv;
- 	struct device *dev;
-@@ -1477,12 +1492,6 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
- 			= &mt2701_i2s_data[i][I2S_IN];
- 	}
- 
--	component = kzalloc(sizeof(*component), GFP_KERNEL);
--	if (!component)
--		return -ENOMEM;
--
--	component->regmap = afe->regmap;
--
- 	afe->mtk_afe_hardware = &mt2701_afe_hardware;
- 	afe->memif_fs = mt2701_memif_fs;
- 	afe->irq_fs = mt2701_irq_fs;
-@@ -1495,7 +1504,7 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
- 	ret = mt2701_init_clock(afe);
- 	if (ret) {
- 		dev_err(dev, "init clock error\n");
--		goto err_init_clock;
-+		return ret;
- 	}
- 
- 	platform_set_drvdata(pdev, afe);
-@@ -1514,10 +1523,7 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
- 		goto err_platform;
- 	}
- 
--	ret = snd_soc_add_component(dev, component,
--				    &mt2701_afe_pcm_dai_component,
--				    mt2701_afe_pcm_dais,
--				    ARRAY_SIZE(mt2701_afe_pcm_dais));
-+	ret = mt2701_afe_add_component(afe);
- 	if (ret) {
- 		dev_warn(dev, "err_dai_component\n");
- 		goto err_dai_component;
-@@ -1531,8 +1537,6 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
- 	pm_runtime_put_sync(dev);
- err_pm_disable:
- 	pm_runtime_disable(dev);
--err_init_clock:
--	kfree(component);
- 
- 	return ret;
- }
--- 
-1.9.1
+Ryder
