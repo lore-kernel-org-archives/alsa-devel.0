@@ -1,74 +1,77 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH] ASoC: intel: clean up CONFIG_SND_SST_IPC handling
-Date: Mon, 22 Jan 2018 11:51:32 +0200
-Message-ID: <1516614692.7000.1155.camel@linux.intel.com>
-References: <20180121221505.196163-1-arnd@arndb.de>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [bug report] ASoC: mediatek: modify MT2701 AFE driver
+ to adapt mfd device
+Date: Mon, 22 Jan 2018 13:01:38 +0300
+Message-ID: <20180122100138.GA20468@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180121221505.196163-1-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Harsha Priya N <harshapriya.n@intel.com>, Naveen M <naveen.m@intel.com>, Daniel Drake <drake@endlessm.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from aserp2130.oracle.com (aserp2130.oracle.com [141.146.126.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 030E0266D71
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2018 11:06:49 +0100 (CET)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: ryder.lee@mediatek.com
+Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2018-01-21 at 23:14 +0100, Arnd Bergmann wrote:
-> In a configuration with SND_SST_ATOM_HIFI2_PLATFORM_PCI=y and
-> SND_SST_ATOM_HIFI2_PLATFORM=m, we get this module link failure:
-> 
-> ERROR: "sst_context_init" [sound/soc/intel/atom/sst/snd-intel-sst-
-> acpi.ko] undefined!
-> ERROR: "sst_context_cleanup" [sound/soc/intel/atom/sst/snd-intel-sst-
-> acpi.ko] undefined!
-> ERROR: "sst_alloc_drv_context" [sound/soc/intel/atom/sst/snd-intel-
-> sst-acpi.ko] undefined!
-> ERROR: "intel_sst_pm" [sound/soc/intel/atom/sst/snd-intel-sst-acpi.ko] 
-> undefined!
-> ERROR: "sst_configure_runtime_pm" [sound/soc/intel/atom/sst/snd-intel-
-> sst-acpi.ko] undefined!
-> 
-> The problem is that the sound/soc/intel/atom/ directory only gets
-> entered by Kbuild when SND_SST_ATOM_HIFI2_PLATFORM is set, so we
-> only build modules (obj-m) under here but not built-in files (obj-y)
-> including the snd-intel-sst-core that we clearly want need here.
-> 
-> Before commit 4772c16ede52 ("ASoC: Intel: Kconfig: Simplify-clarify
-> ACPI/PCI
-> dependencies"), this could not happen as all files in
-> sound/soc/intel/atom/
-> depended on CONFIG_SND_SST_ATOM_HIFI2_PLATFORM anyway.
-> 
-> Slightly later, commit 05f4434bc130 ("ASoC: Intel: remove
-> mfld_machine")
-> was added, which then removed the Merrifield machine code that
-> happened
-> to be the only user of SND_SST_ATOM_HIFI2_PLATFORM_PCI. With that
-> gone,
+Hello Ryder Lee,
 
-That's what I afraid of. Intel Merrifield *should* be there. What Vinod
-did, AFAIU, is removal of Intel Medfield support, which is fine with me.
+The patch dfa3cbb83e09: "ASoC: mediatek: modify MT2701 AFE driver to
+adapt mfd device" from Jan 4, 2018, leads to the following static
+checker warning:
 
-So, before this can go, we need to get confirmation from Vinod and
-Pierre, that Merrifield still stays there.
+	sound/soc/mediatek/mt2701/mt2701-afe-pcm.c:1535 mt2701_afe_pcm_dev_probe()
+	error: double free of 'component'
 
-> it appears that we can completely remove that symbol as well, along
-> with
-> the SND_SST_IPC_PCI code and everything associated with it that is now
-> unused.
-> 
-> For clarify, this also removes the SND_SST_IPC_ACPI symbol that is now
-> synonymous with SND_SST_IPC, and links both into a single loadable
-> module.
+sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+  1509          pm_runtime_get_sync(dev);
+  1510  
+  1511          ret = snd_soc_register_platform(dev, &mtk_afe_pcm_platform);
+  1512          if (ret) {
+  1513                  dev_warn(dev, "err_platform\n");
+  1514                  goto err_platform;
+  1515          }
+  1516  
+  1517          ret = snd_soc_add_component(dev, component,
+                                                 ^^^^^^^^^
+snd_soc_add_component() frees "component" on error.  This seems like a
+layering violation to me, and it naturally leads to bugs like this.
 
-> I checked that this patch leads to a clean compilation, and that the
-> code I'm removing is only used for the now-obsolete Merrifield PCI ID.
+  1518                                      &mt2701_afe_pcm_dai_component,
+  1519                                      mt2701_afe_pcm_dais,
+  1520                                      ARRAY_SIZE(mt2701_afe_pcm_dais));
+  1521          if (ret) {
+  1522                  dev_warn(dev, "err_dai_component\n");
+  1523                  goto err_dai_component;
+  1524          }
+  1525  
+  1526          return 0;
+  1527  
+  1528  err_dai_component:
+  1529          snd_soc_unregister_platform(dev);
+  1530  err_platform:
+  1531          pm_runtime_put_sync(dev);
+  1532  err_pm_disable:
+  1533          pm_runtime_disable(dev);
+  1534  err_init_clock:
+  1535          kfree(component);
+                      ^^^^^^^^^
+Double free
 
-NACK for this part.
+  1536  
+  1537          return ret;
+  1538  }
 
-> If I got something else wrong, or you want a different fix, please
-> just send a replacement patch and treat this as a bug report.
 
--- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+regards,
+dan carpenter
