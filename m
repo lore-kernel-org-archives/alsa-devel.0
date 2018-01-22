@@ -1,118 +1,49 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH] ASoC: intel: clean up CONFIG_SND_SST_IPC handling
-Date: Mon, 22 Jan 2018 13:39:02 +0200
-Message-ID: <1516621142.7000.1170.camel@linux.intel.com>
-References: <20180121221505.196163-1-arnd@arndb.de>
-         <1516614692.7000.1155.camel@linux.intel.com>
-         <CAK8P3a0H6CbFgqQijFRYsDoYq3mEPcuBL6x01Ppp7P+_81t++A@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: codecs: dmic: Fix check of return value from read
+ of 'num-channels'
+Date: Mon, 22 Jan 2018 12:21:03 +0000
+Message-ID: <20180122122103.GA9952@sirena.org.uk>
+References: <20180119233650.100472-1-mka@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAK8P3a0H6CbFgqQijFRYsDoYq3mEPcuBL6x01Ppp7P+_81t++A@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <20180119233650.100472-1-mka@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Harsha Priya N <harshapriya.n@intel.com>, Naveen M <naveen.m@intel.com>, Daniel Drake <drake@endlessm.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+To: Matthias Kaehlcke <mka@chromium.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2018-01-22 at 11:58 +0100, Arnd Bergmann wrote:
-> On Mon, Jan 22, 2018 at 10:51 AM, Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Sun, 2018-01-21 at 23:14 +0100, Arnd Bergmann wrote:
 
-> > > Slightly later, commit 05f4434bc130 ("ASoC: Intel: remove
-> > > mfld_machine")
-> > > was added, which then removed the Merrifield machine code that
-> > > happened
-> > > to be the only user of SND_SST_ATOM_HIFI2_PLATFORM_PCI. With that
-> > > gone,
-> > 
-> > That's what I afraid of. Intel Merrifield *should* be there. What
-> > Vinod
-> > did, AFAIU, is removal of Intel Medfield support, which is fine with
-> > me.
-> > 
-> > So, before this can go, we need to get confirmation from Vinod and
-> > Pierre, that Merrifield still stays there.
-> 
-> Ok, I see. Checking further, I see that
-> SND_SST_ATOM_HIFI2_PLATFORM_PCI
-> cannot be built without SND_SST_ATOM_HIFI2_PLATFORM:
-> 
-> sound/soc/intel/atom/sst/sst_drv_interface.o: In function
-> `sst_register':
-> sst_drv_interface.c:(.text+0xc3e): undefined reference to
-> `sst_register_dsp'
-> sound/soc/intel/atom/sst/sst_drv_interface.o: In function
-> `sst_unregister':
-> sst_drv_interface.c:(.text+0xc67): undefined reference to
-> `sst_unregister_dsp'
+--EeQfGwPcQSOJBaQU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Oh.
+On Fri, Jan 19, 2018 at 03:36:50PM -0800, Matthias Kaehlcke wrote:
+> Commit 7fb59e940f62 ("ASoC: codecs: dmic: Make number of channels
+>  configurable") introduces an optional property to the device tree
+> to specify the number of DMIC channels. dmic_codec_probe() uses
 
-> 
-> How about this instead:
-> 
-> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-> index f2c9e8c5970a..16344bd24eb0 100644
-> --- a/sound/soc/intel/Kconfig
-> +++ b/sound/soc/intel/Kconfig
-> @@ -72,21 +72,8 @@ config SND_SOC_INTEL_BAYTRAIL
->           for Baytrail Chromebooks but this option is now deprecated
-> and is
->           not recommended, use SND_SST_ATOM_HIFI2_PLATFORM instead.
-> 
-> -config SND_SST_ATOM_HIFI2_PLATFORM_PCI
-> -       tristate "PCI HiFi2 (Medfield, Merrifield) Platforms"
-> -       depends on X86 && PCI
-> -       select SND_SST_IPC_PCI
-> -       select SND_SOC_COMPRESS
-> -       help
-> -         If you have a Intel Medfield or Merrifield/Edison platform,
-> then
-> -         enable this option by saying Y or m. Distros will typically
-> not
-> -         enable this option: Medfield devices are not available to
-> -         developers and while Merrifield/Edison can run a mainline
-> kernel with
-> -         limited functionality it will require a firmware file which
-> -         is not in the standard firmware tree
-> -
->  config SND_SST_ATOM_HIFI2_PLATFORM
-> -       tristate "ACPI HiFi2 (Baytrail, Cherrytrail) Platforms"
-> +       tristate "ACPI HiFi2 (Baytrail, Cherrytrail, Merrifield)
-> Platforms"
+Please submit patches using subject lines reflecting the style for the
+subsystem.  This makes it easier for people to identify relevant
+patches.  Look at what existing commits in the area you're changing are
+doing and make sure your subject lines visually resemble what they're
+doing.
 
-Perhaps it makes sense to do something like _HIFI2 and on top
-HIFI2_PLATFORM and HIFI2_PCI, but it seems like a current split.
+--EeQfGwPcQSOJBaQU
+Content-Type: application/pgp-signature; name="signature.asc"
 
-So, it means the split itself is not accurate in the first place.
-Pierre, Vinod?
+-----BEGIN PGP SIGNATURE-----
 
-> +config SND_SOC_INTEL_MRFLD_MACH
-> +       tristate "Merrifield/Edison platform"
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpl1y4ACgkQJNaLcl1U
+h9BXoAf/emoRMv7miqNH91ax46LBTb9Xz2m60uWOV/SLjenCy/sNc6z6ro6OPlfM
+SskBvQWGm7BrUC/OllCwrnOSAPNKuB5I75VVLXpeM9EWHTknrKZw26+Ca6tBpHXf
+6ASEWHzwUMBbsH6HYEdFv423cx8PIH2kgeNSdwtntf2sRX+yqnaFElq10WTNN2g1
+4/9pQtA3jkNp4asKlXonm4t+9Gkc+J5bx/6cS2K+r6ohV+F+anexTRBcGvMCseQt
+FrVxROdTp/qdSW6+qHfK8DzjYak3AVRXNDM6gwBDYGWNml0V4nsiv4xILrQFfXtv
+as+8SEd+F0Mxr2RDFTSzEvedpdy+2Q==
+=3zM/
+-----END PGP SIGNATURE-----
 
-Edison should not be here (it's a board, while Merrifield is a platform)
-
-> +       depends on X86_INTEL_LPSS && I2C && PCI
-
-X86_INTEL_LPSS has nothing to do with Merrifield. :-)
-
-> +       select SND_SST_IPC_PCI
-> +       help
-> +         This adds support for ASoC PCI driver for the Merrifield
-> +         (platform) used e.g. on Intel Edison.  If you have
-> +         Merrifield/Edison platform, then enable this option by
-> saying
-> +         Y or m. Distros will typically not enable this option: while
-> +         Merrifield/Edison can run a mainline kernel with limited
-> +         functionality it will require a firmware file which is not
-> in
-> +         the standard firmware tree.
-
-Above looks like a solution to me, although I'm not familiar with ASoC
-code, so, I would rely on Pierre, Vinod and Liam suggestions.
-
--- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+--EeQfGwPcQSOJBaQU--
