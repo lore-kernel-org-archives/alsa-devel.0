@@ -1,295 +1,149 @@
-From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Subject: [PATCH 2/2] cplay: add option to specify codec ID
-Date: Tue, 23 Jan 2018 11:33:12 +0900
-Message-ID: <20180123023312.13029-2-suzuki.katsuhiro@socionext.com>
-References: <20180123023312.13029-1-suzuki.katsuhiro@socionext.com>
+From: Charles Mulder <keyboardcolab@gmail.com>
+Subject: Best course of action with Audient iD14
+Date: Tue, 23 Jan 2018 07:04:15 +0000
+Message-ID: <CALVpPLHpUS3GX8gPq_c2RhDVP_3YY-y2Tv2E-SF0tj+uHNN94A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx.socionext.com (mx.socionext.com [202.248.49.38])
- by alsa0.perex.cz (Postfix) with ESMTP id 5566A266F23
- for <alsa-devel@alsa-project.org>; Tue, 23 Jan 2018 03:33:10 +0100 (CET)
-In-Reply-To: <20180123023312.13029-1-suzuki.katsuhiro@socionext.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>
-Cc: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, Jassi Brar <jaswinder.singh@linaro.org>, Takashi Iwai <tiwai@suse.com>, Masami Hiramatsu <masami.hiramatsu@linaro.org>
+Content-Type: multipart/mixed; boundary="===============6104762870893253040=="
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/options/alsa-user>,
+ <mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+ <mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds a -I command line option to set the codec ID,
-same as crecord.
+--===============6104762870893253040==
+Content-Type: multipart/alternative; boundary="001a113f810230bffb05636c286a"
 
-Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
----
- src/utils/cplay.c | 174 +++++++++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 139 insertions(+), 35 deletions(-)
+--001a113f810230bffb05636c286a
+Content-Type: text/plain; charset="UTF-8"
 
-diff --git a/src/utils/cplay.c b/src/utils/cplay.c
-index bc95f0d..a716f5e 100644
---- a/src/utils/cplay.c
-+++ b/src/utils/cplay.c
-@@ -74,25 +74,75 @@
- #include "tinycompress/tinymp3.h"
- 
- static int verbose;
-+static const unsigned int DEFAULT_CODEC_ID = SND_AUDIOCODEC_PCM;
-+
-+static const struct {
-+	const char *name;
-+	unsigned int id;
-+} codec_ids[] = {
-+	{ "PCM", SND_AUDIOCODEC_PCM },
-+	{ "MP3", SND_AUDIOCODEC_MP3 },
-+	{ "AMR", SND_AUDIOCODEC_AMR },
-+	{ "AMRWB", SND_AUDIOCODEC_AMRWB },
-+	{ "AMRWBPLUS", SND_AUDIOCODEC_AMRWBPLUS },
-+	{ "AAC", SND_AUDIOCODEC_AAC },
-+	{ "WMA", SND_AUDIOCODEC_WMA },
-+	{ "REAL", SND_AUDIOCODEC_REAL },
-+	{ "VORBIS", SND_AUDIOCODEC_VORBIS },
-+	{ "FLAC", SND_AUDIOCODEC_FLAC },
-+	{ "IEC61937", SND_AUDIOCODEC_IEC61937 },
-+	{ "G723_1", SND_AUDIOCODEC_G723_1 },
-+	{ "G729", SND_AUDIOCODEC_G729 },
-+/* BESPOKE isn't defined on older kernels */
-+#ifdef SND_AUDIOCODEC_BESPOKE
-+	{ "BESPOKE", SND_AUDIOCODEC_BESPOKE },
-+#endif
-+};
-+#define CPLAY_NUM_CODEC_IDS (sizeof(codec_ids) / sizeof(codec_ids[0]))
-+
-+static const char *codec_name_from_id(unsigned int id)
-+{
-+	static char hexname[12];
-+	int i;
-+
-+	for (i = 0; i < CPLAY_NUM_CODEC_IDS; ++i) {
-+		if (codec_ids[i].id == id)
-+			return codec_ids[i].name;
-+	}
-+
-+	snprintf(hexname, sizeof(hexname), "0x%x", id);
-+	return hexname; /* a static is safe because we're single-threaded */
-+}
- 
- static void usage(void)
- {
-+	int i;
-+
- 	fprintf(stderr, "usage: cplay [OPTIONS] filename\n"
- 		"-c\tcard number\n"
- 		"-d\tdevice node\n"
-+		"-I\tspecify codec ID (default is mp3)\n"
- 		"-b\tbuffer size\n"
- 		"-f\tfragments\n\n"
- 		"-v\tverbose mode\n"
- 		"-h\tPrints this help list\n\n"
- 		"Example:\n"
- 		"\tcplay -c 1 -d 2 test.mp3\n"
--		"\tcplay -f 5 test.mp3\n");
-+		"\tcplay -f 5 test.mp3\n\n"
-+		"Valid codec IDs:\n");
-+
-+	for (i = 0; i < CPLAY_NUM_CODEC_IDS; ++i)
-+		fprintf(stderr, "%s%c", codec_ids[i].name,
-+			((i + 1) % 8) ? ' ' : '\n');
-+
-+	fprintf(stderr, "\nor the value in decimal or hex\n");
- 
- 	exit(EXIT_FAILURE);
- }
- 
- void play_samples(char *name, unsigned int card, unsigned int device,
--		unsigned long buffer_size, unsigned int frag);
-+		unsigned long buffer_size, unsigned int frag,
-+		unsigned long codec_id);
- 
- struct mp3_header {
- 	uint16_t sync;
-@@ -156,15 +206,15 @@ int main(int argc, char **argv)
- {
- 	char *file;
- 	unsigned long buffer_size = 0;
--	int c;
-+	int c, i;
- 	unsigned int card = 0, device = 0, frag = 0;
--
-+	unsigned int codec_id = SND_AUDIOCODEC_MP3;
- 
- 	if (argc < 2)
- 		usage();
- 
- 	verbose = 0;
--	while ((c = getopt(argc, argv, "hvb:f:c:d:")) != -1) {
-+	while ((c = getopt(argc, argv, "hvb:f:c:d:I:")) != -1) {
- 		switch (c) {
- 		case 'h':
- 			usage();
-@@ -181,6 +231,25 @@ int main(int argc, char **argv)
- 		case 'd':
- 			device = strtol(optarg, NULL, 10);
- 			break;
-+		case 'I':
-+			if (optarg[0] == '0') {
-+				codec_id = strtol(optarg, NULL, 0);
-+			} else {
-+				for (i = 0; i < CPLAY_NUM_CODEC_IDS; ++i) {
-+					if (strcmp(optarg,
-+						   codec_ids[i].name) == 0) {
-+						codec_id = codec_ids[i].id;
-+						break;
-+					}
-+				}
-+
-+				if (i == CPLAY_NUM_CODEC_IDS) {
-+					fprintf(stderr, "Unrecognised ID: %s\n",
-+						optarg);
-+					usage();
-+				}
-+			}
-+			break;
- 		case 'v':
- 			verbose = 1;
- 			break;
-@@ -193,24 +262,74 @@ int main(int argc, char **argv)
- 
- 	file = argv[optind];
- 
--	play_samples(file, card, device, buffer_size, frag);
-+	play_samples(file, card, device, buffer_size, frag, codec_id);
- 
- 	fprintf(stderr, "Finish Playing.... Close Normally\n");
- 	exit(EXIT_SUCCESS);
- }
- 
-+void get_codec_mp3(FILE *file, struct compr_config *config,
-+		struct snd_codec *codec)
-+{
-+	size_t read;
-+	struct mp3_header header;
-+	unsigned int channels, rate, bits;
-+
-+	read = fread(&header, sizeof(header), 1, file);
-+	if (read != 1) {
-+		fprintf(stderr, "Unable to read header \n");
-+		fclose(file);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	if (parse_mp3_header(&header, &channels, &rate, &bits) == -1) {
-+		fclose(file);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	codec->id = SND_AUDIOCODEC_MP3;
-+	codec->ch_in = channels;
-+	codec->ch_out = channels;
-+	codec->sample_rate = rate;
-+	if (!codec->sample_rate) {
-+		fprintf(stderr, "invalid sample rate %d\n", rate);
-+		fclose(file);
-+		exit(EXIT_FAILURE);
-+	}
-+	codec->bit_rate = bits;
-+	codec->rate_control = 0;
-+	codec->profile = 0;
-+	codec->level = 0;
-+	codec->ch_mode = 0;
-+	codec->format = 0;
-+}
-+
-+int get_codec_iec(FILE *file, struct compr_config *config,
-+		struct snd_codec *codec)
-+{
-+	codec->id = SND_AUDIOCODEC_IEC61937;
-+	/* FIXME: cannot get accurate ch_in, any channels may be accepted */
-+	codec->ch_in = 2;
-+	codec->ch_out = 2;
-+	codec->sample_rate = 0;
-+	codec->bit_rate = 0;
-+	codec->rate_control = 0;
-+	codec->profile = SND_AUDIOPROFILE_IEC61937_SPDIF;
-+	codec->level = 0;
-+	codec->ch_mode = 0;
-+	codec->format = 0;
-+}
-+
- void play_samples(char *name, unsigned int card, unsigned int device,
--		unsigned long buffer_size, unsigned int frag)
-+		unsigned long buffer_size, unsigned int frag,
-+		unsigned long codec_id)
- {
- 	struct compr_config config;
- 	struct snd_codec codec;
- 	struct compress *compress;
--	struct mp3_header header;
- 	FILE *file;
- 	char *buffer;
- 	int size, num_read, wrote;
--	unsigned int channels, rate, bits;
--	size_t read;
- 
- 	if (verbose)
- 		printf("%s: entry\n", __func__);
-@@ -220,33 +339,18 @@ void play_samples(char *name, unsigned int card, unsigned int device,
- 		exit(EXIT_FAILURE);
- 	}
- 
--	read = fread(&header, 1, sizeof(header), file);
--	if (read != sizeof(header)) {
--		fprintf(stderr, "Unable to read header \n");
--		fclose(file);
-+	switch (codec_id) {
-+	case SND_AUDIOCODEC_MP3:
-+		get_codec_mp3(file, &config, &codec);
-+		break;
-+	case SND_AUDIOCODEC_IEC61937:
-+		get_codec_iec(file, &config, &codec);
-+		break;
-+	default:
-+		fprintf(stderr, "codec ID %d is not supported\n", codec_id);
- 		exit(EXIT_FAILURE);
- 	}
- 
--	if (parse_mp3_header(&header, &channels, &rate, &bits) == -1) {
--		fclose(file);
--		exit(EXIT_FAILURE);
--	}
--
--	codec.id = SND_AUDIOCODEC_MP3;
--	codec.ch_in = channels;
--	codec.ch_out = channels;
--	codec.sample_rate = rate;
--	if (!codec.sample_rate) {
--		fprintf(stderr, "invalid sample rate %d\n", rate);
--		fclose(file);
--		exit(EXIT_FAILURE);
--	}
--	codec.bit_rate = bits;
--	codec.rate_control = 0;
--	codec.profile = 0;
--	codec.level = 0;
--	codec.ch_mode = 0;
--	codec.format = 0;
- 	if ((buffer_size != 0) && (frag != 0)) {
- 		config.fragment_size = buffer_size/frag;
- 		config.fragments = frag;
-@@ -292,7 +396,7 @@ void play_samples(char *name, unsigned int card, unsigned int device,
- 	printf("Playing file %s On Card %u device %u, with buffer of %lu bytes\n",
- 			name, card, device, buffer_size);
- 	printf("Format %u Channels %u, %u Hz, Bit Rate %d\n",
--			SND_AUDIOCODEC_MP3, channels, rate, bits);
-+			codec.id, codec.ch_in, codec.sample_rate, codec.bit_rate);
- 
- 	compress_start(compress);
- 	if (verbose)
+Hi.
+
+I recently bought the Audient iD14, which is a class compliant USB2 device.
+
+I would like to use it for writing and record music. Apparently it has
+great converters.
+
+After some online searching I came across a similar question on
+StackOverflow
+<https://askubuntu.com/questions/714280/ubuntu-thinks-my-audient-id14-audio-interface-is-analogue-surround-4-0-when-its>
+:
+
+*Question*
+"Ubuntu lists my audio interface as Analogue Surround 4.0 when it actually
+only plays in stereo. As a result, the audio plays louder in the right
+channel than the left channel."
+
+*Answer*
+*"Ubuntu (Linux in general) is correct in assigning 4 outputs as there are
+4 outputs on the iD14. As you and I both know, only one pair of outputs are
+physically accessible. Outputs 3&4 are primarily used to send alternate
+mixes to musicians and are only accessible via the Audient mixer and/or
+DAW. The iD14 is class compliant in as far as it is recognised and some
+audio can be heard. Unfortunately that is as far as it goes (currently) as
+there is no mixer available to ALSA or Pulse etc. If you open a terminal
+and run alsamixer, press F6 and select Audient iD14, it will report a
+broken pipe error. ALSA (or Pulseaudio) has no way of knowing how to
+allocate the outputs, so assumes all 4 detected outs are available, but
+also has no way of directing signal appropriately."*
+
+I would like to ask your help to establish what the best course of action
+would be.
+
+Should I work on trying to fix this issue with a custom .asoundrc
+<http://www.alsa-project.org/main/index.php/Asoundrc> file, possibly using
+the multi plugin
+<http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html#pcm_plugins_multi>
+?
+
+If that's not possible, what would writing a ALSA USB driver specifically
+for the Audient iD14 entail?
+
+iD14 manual and specifications
+<https://audient.com/products/audio-interfaces/id14/downloads/>
+
+I would appreciate your thoughts and insights on this.
+
+Kind regards,
+Charles Mulder
+
+
+
 -- 
-2.15.0
+Charles Mulder
+Software Engineer/Musician
+mobile: +27 83 653 3698
+phone: +27 27 948 2592
+skype: charliemurder
+
+--001a113f810230bffb05636c286a
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>Hi.=C2=A0=C2=A0</div><div><br></div><div>I recently b=
+ought the Audient iD14, which is a class compliant USB2 device.</div><div><=
+br></div><div>I would like to use it for writing and record music. Apparent=
+ly it has great converters.=C2=A0</div><div><br></div><div>After some onlin=
+e searching I came across <a href=3D"https://askubuntu.com/questions/714280=
+/ubuntu-thinks-my-audient-id14-audio-interface-is-analogue-surround-4-0-whe=
+n-its">a similar question on StackOverflow</a>:</div><div><br></div><div><b=
+>Question</b></div><div>&quot;Ubuntu lists my audio interface as Analogue S=
+urround 4.0 when it actually only plays in stereo. As a result, the audio p=
+lays louder in the right channel than the left channel.&quot;</div><div><br=
+></div><div><b>Answer</b></div><div><i>&quot;Ubuntu (Linux in general) is c=
+orrect in assigning 4 outputs as there are 4 outputs on the iD14. As you an=
+d I both know, only one pair of outputs are physically accessible. Outputs =
+3&amp;4 are primarily used to send alternate mixes to musicians and are onl=
+y accessible via the Audient mixer and/or DAW. The iD14 is class compliant =
+in as far as it is recognised and some audio can be heard. Unfortunately th=
+at is as far as it goes (currently) as there is no mixer available to ALSA =
+or Pulse etc. If you open a terminal and run alsamixer, press F6 and select=
+ Audient iD14, it will report a broken pipe error. ALSA (or Pulseaudio) has=
+ no way of knowing how to allocate the outputs, so assumes all 4 detected o=
+uts are available, but also has no way of directing signal appropriately.&q=
+uot;</i></div><div><br></div><div>I would like to ask your help to establis=
+h what the best course of action would be.</div><div><br></div><div>Should =
+I work on trying to fix this issue with a custom <a href=3D"http://www.alsa=
+-project.org/main/index.php/Asoundrc">.asoundrc</a> file, possibly using th=
+e <a href=3D"http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html=
+#pcm_plugins_multi">multi plugin</a>?</div><div><br></div><div>If that&#39;=
+s not possible, what would writing a ALSA USB driver specifically for the A=
+udient iD14 entail?=C2=A0</div><div><br></div><div><a href=3D"https://audie=
+nt.com/products/audio-interfaces/id14/downloads/">iD14 manual and specifica=
+tions</a></div><div><br></div><div>I would appreciate your thoughts and ins=
+ights on this.=C2=A0</div><div><br></div><div>Kind regards,</div><div>Charl=
+es Mulder</div><div><br></div></div><br clear=3D"all"><br>-- <br><div dir=
+=3D"ltr" class=3D"gmail_signature" data-smartmail=3D"gmail_signature"><div =
+dir=3D"ltr">Charles Mulder<div>Software Engineer/Musician<div><div>mobile: =
++27 83 653 3698</div><div>phone: +27 27 948 2592</div><div>skype: charliemu=
+rder</div></div></div></div></div>
+
+--001a113f810230bffb05636c286a--
+
+
+--===============6104762870893253040==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Check out the vibrant tech community on one of the world's most
+engaging tech sites, Slashdot.org! http://sdm.link/slashdot
+--===============6104762870893253040==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-user mailing list
+Alsa-user@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-user
+
+--===============6104762870893253040==--
