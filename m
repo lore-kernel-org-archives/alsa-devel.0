@@ -1,101 +1,47 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: snd_soc_rtdcom_lookup() cares
-	component driver name" to the asoc tree
-Date: Tue, 23 Jan 2018 17:28:27 +0000
-Message-ID: <E1ee2N1-00035L-5E@debutante>
-References: <87o9llo1b1.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v2] ASoC: use seq_file to dump the contents of
+ dai_list,platform_list and codec_list
+Date: Tue, 23 Jan 2018 17:37:32 +0000
+Message-ID: <20180123173732.GI7600@sirena.org.uk>
+References: <20180118053126.22082-1-dolinux.peng@gmail.com>
+ <CAHp75VcefO1L-E8ymHX7MibLiOXkRZ3+3FbkF_L+ywMV-i3Mvw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4624E2672B0
- for <alsa-devel@alsa-project.org>; Tue, 23 Jan 2018 18:28:32 +0100 (CET)
-In-Reply-To: <87o9llo1b1.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, MukundaVijendar <vijendar.mukunda@amd.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7IgncvKP0CVPV/ZZ"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAHp75VcefO1L-E8ymHX7MibLiOXkRZ3+3FbkF_L+ywMV-i3Mvw@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Donglin Peng <dolinux.peng@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: soc-core: snd_soc_rtdcom_lookup() cares component driver name
+--7IgncvKP0CVPV/ZZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+On Tue, Jan 23, 2018 at 07:08:15PM +0200, Andy Shevchenko wrote:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> If it's not critical, I would suggest to wait till v4.16-rc1, where I
+> would like to push [1], and switch to DEFINE_SHOW_ATTRIBUTE() macro.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Too late, I already applied this - a further conversion for the new
+macro would be good.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+--7IgncvKP0CVPV/ZZ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+-----BEGIN PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpnctsACgkQJNaLcl1U
+h9CVHggAgE4n+giVg9u4xhMlinZeynLrEVZwxu812CRq0v2MICd6KytFjeK37dHi
+HwSBouj1GTugqzu1v+auLELKH26BYYO0jUzpKslhjYOHYxQmWDZMv37LqG6z2Ryb
+Mnhsua2lEv61va28lg0qvQcboWaYFlngVbqsRkhq/msiB/5W3ukShvPJf+JX8Ghu
+5HM5hvKd6XNcU+LRcQq90hm8e0NmvpFhZ3RNzcEKQZQTHq7YkJ9M77w91DRWyCEQ
+4GsK7YEXNTTpsoPHgt4MCfLTVh2MKNvr/r/EJ3k/661wJYD42Oi/yuzL6zWVVcEz
+QSbGxArJS6IPqOmIcPHwElF7Mb3wvA==
+=yeqY
+-----END PGP SIGNATURE-----
 
-Thanks,
-Mark
-
->From 971da24c48a9447fb7a3c7805812fd5f443ca008 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 23 Jan 2018 00:41:24 +0000
-Subject: [PATCH] ASoC: soc-core: snd_soc_rtdcom_lookup() cares component
- driver name
-
-snd_soc_rtdcom_lookup() look up component by uisng driver name.
-Then, it uses component->driver->name.
-Some driver might doesn't have it, thus it should care NULL pointer.
-This patch solve this issue.
-
-Reported-by: Mukunda,Vijendar <vijendar.mukunda@amd.com>
-Reported-by: Manuel Lauss <manuel.lauss@gmail.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Mukunda,Vijendar <vijendar.mukunda@amd.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-core.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 9b79c2199781..52b2e04cc5e2 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -590,9 +590,17 @@ struct snd_soc_component *snd_soc_rtdcom_lookup(struct snd_soc_pcm_runtime *rtd,
- {
- 	struct snd_soc_rtdcom_list *rtdcom;
- 
-+	if (!driver_name)
-+		return NULL;
-+
- 	for_each_rtdcom(rtd, rtdcom) {
--		if ((rtdcom->component->driver->name == driver_name) ||
--		    strcmp(rtdcom->component->driver->name, driver_name) == 0)
-+		const char *component_name = rtdcom->component->driver->name;
-+
-+		if (!component_name)
-+			continue;
-+
-+		if ((component_name == driver_name) ||
-+		    strcmp(component_name, driver_name) == 0)
- 			return rtdcom->component;
- 	}
- 
--- 
-2.15.1
+--7IgncvKP0CVPV/ZZ--
