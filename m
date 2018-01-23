@@ -1,18 +1,18 @@
-From: abhijeet.kumar@intel.com
-Subject: [PATCH 2/3] ALSA: hda: Make use of core codec
-	functions to sync power state
-Date: Tue, 23 Jan 2018 23:00:52 +0530
-Message-ID: <1516728657-21522-2-git-send-email-abhijeet.kumar@intel.com>
-References: <1515670468-9198-1-git-send-email-abhijeet.kumar@intel.com>
- <1516728657-21522-1-git-send-email-abhijeet.kumar@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: soc-core: snd_soc_rtdcom_lookup() cares
+	component driver name" to the asoc tree
+Date: Tue, 23 Jan 2018 17:28:27 +0000
+Message-ID: <E1ee2N1-00035L-5E@debutante>
+References: <87o9llo1b1.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 6323E2672B0
- for <alsa-devel@alsa-project.org>; Tue, 23 Jan 2018 18:22:29 +0100 (CET)
-In-Reply-To: <1516728657-21522-1-git-send-email-abhijeet.kumar@intel.com>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4624E2672B0
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jan 2018 18:28:32 +0100 (CET)
+In-Reply-To: <87o9llo1b1.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,83 +22,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Abhijeet Kumar <abhijeet.kumar@intel.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Bhumika Goyal <bhumirks@gmail.com>, Wang YanQing <udknight@gmail.com>, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, MukundaVijendar <vijendar.mukunda@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Abhijeet Kumar <abhijeet.kumar@intel.com>
+The patch
 
-Since sync_power_state is moved to core it's better to use the helper
-function to ensure the actual power state reaches target instead of
-using the local helper functions already exsisting in hda code.
+   ASoC: soc-core: snd_soc_rtdcom_lookup() cares component driver name
 
-Signed-off-by: Abhijeet Kumar <abhijeet.kumar@intel.com>
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 971da24c48a9447fb7a3c7805812fd5f443ca008 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 23 Jan 2018 00:41:24 +0000
+Subject: [PATCH] ASoC: soc-core: snd_soc_rtdcom_lookup() cares component
+ driver name
+
+snd_soc_rtdcom_lookup() look up component by uisng driver name.
+Then, it uses component->driver->name.
+Some driver might doesn't have it, thus it should care NULL pointer.
+This patch solve this issue.
+
+Reported-by: Mukunda,Vijendar <vijendar.mukunda@amd.com>
+Reported-by: Manuel Lauss <manuel.lauss@gmail.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: Mukunda,Vijendar <vijendar.mukunda@amd.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/pci/hda/hda_codec.c | 28 +---------------------------
- sound/pci/hda/hda_local.h |  6 +++++-
- 2 files changed, 6 insertions(+), 28 deletions(-)
+ sound/soc/soc-core.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index e018ecbf78a8..5bc3a7468e17 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -2702,32 +2702,6 @@ void snd_hda_codec_set_power_to_all(struct hda_codec *codec, hda_nid_t fg,
- }
- EXPORT_SYMBOL_GPL(snd_hda_codec_set_power_to_all);
- 
--/*
-- * wait until the state is reached, returns the current state
-- */
--static unsigned int hda_sync_power_state(struct hda_codec *codec,
--					 hda_nid_t fg,
--					 unsigned int power_state)
--{
--	unsigned long end_time = jiffies + msecs_to_jiffies(500);
--	unsigned int state, actual_state;
--
--	for (;;) {
--		state = snd_hda_codec_read(codec, fg, 0,
--					   AC_VERB_GET_POWER_STATE, 0);
--		if (state & AC_PWRST_ERROR)
--			break;
--		actual_state = (state >> 4) & 0x0f;
--		if (actual_state == power_state)
--			break;
--		if (time_after_eq(jiffies, end_time))
--			break;
--		/* wait until the codec reachs to the target state */
--		msleep(1);
--	}
--	return state;
--}
--
- /**
-  * snd_hda_codec_eapd_power_filter - A power filter callback for EAPD
-  * @codec: the HDA codec
-@@ -2790,7 +2764,7 @@ static unsigned int hda_set_power_state(struct hda_codec *codec,
- 						   state);
- 			snd_hda_codec_set_power_to_all(codec, fg, power_state);
- 		}
--		state = hda_sync_power_state(codec, fg, power_state);
-+		state = snd_hda_sync_power_state(codec, fg, power_state);
- 		if (!(state & AC_PWRST_ERROR))
- 			break;
- 	}
-diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
-index 5b5c324c99b9..321e78baa63c 100644
---- a/sound/pci/hda/hda_local.h
-+++ b/sound/pci/hda/hda_local.h
-@@ -622,7 +622,11 @@ int snd_hda_check_amp_list_power(struct hda_codec *codec,
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 9b79c2199781..52b2e04cc5e2 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -590,9 +590,17 @@ struct snd_soc_component *snd_soc_rtdcom_lookup(struct snd_soc_pcm_runtime *rtd,
  {
- 	return snd_hdac_check_power_state(&codec->core, nid, target_state);
- }
--
-+static inline bool snd_hda_sync_power_state(struct hda_codec *codec,
-+			   hda_nid_t nid, unsigned int target_state)
-+{
-+	return snd_hdac_sync_power_state(&codec->core, nid, target_state);
-+}
- unsigned int snd_hda_codec_eapd_power_filter(struct hda_codec *codec,
- 					     hda_nid_t nid,
- 					     unsigned int power_state);
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 
++	if (!driver_name)
++		return NULL;
++
+ 	for_each_rtdcom(rtd, rtdcom) {
+-		if ((rtdcom->component->driver->name == driver_name) ||
+-		    strcmp(rtdcom->component->driver->name, driver_name) == 0)
++		const char *component_name = rtdcom->component->driver->name;
++
++		if (!component_name)
++			continue;
++
++		if ((component_name == driver_name) ||
++		    strcmp(component_name, driver_name) == 0)
+ 			return rtdcom->component;
+ 	}
+ 
 -- 
-1.9.1
+2.15.1
