@@ -1,91 +1,88 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v2] ASoC: use seq_file to dump the contents
- of dai_list, platform_list and codec_list
-Date: Tue, 23 Jan 2018 19:08:15 +0200
-Message-ID: <CAHp75VcefO1L-E8ymHX7MibLiOXkRZ3+3FbkF_L+ywMV-i3Mvw@mail.gmail.com>
-References: <20180118053126.22082-1-dolinux.peng@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f195.google.com (mail-qt0-f195.google.com
- [209.85.216.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 10263267044
- for <alsa-devel@alsa-project.org>; Tue, 23 Jan 2018 18:08:17 +0100 (CET)
-Received: by mail-qt0-f195.google.com with SMTP id s39so3118388qth.7
- for <alsa-devel@alsa-project.org>; Tue, 23 Jan 2018 09:08:17 -0800 (PST)
-In-Reply-To: <20180118053126.22082-1-dolinux.peng@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Donglin Peng <dolinux.peng@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+From: abhijeet.kumar@intel.com
+Subject: [PATCH 1/3] ALSA: hda: Copying sync power state helper to core
+Date: Tue, 23 Jan 2018 23:00:51 +0530
+Message-ID: <1516728657-21522-1-git-send-email-abhijeet.kumar@intel.com>
+References: <1515670468-9198-1-git-send-email-abhijeet.kumar@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1515670468-9198-1-git-send-email-abhijeet.kumar@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Abhijeet Kumar <abhijeet.kumar@intel.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Bhumika Goyal <bhumirks@gmail.com>, Wang YanQing <udknight@gmail.com>, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 18, 2018 at 7:31 AM, Donglin Peng <dolinux.peng@gmail.com> wrote:
-> Now the debugfs files dais/platforms/codecs have a size limit PAGE_SIZE and
-> the user can not see the whole contents of dai_list/platform_list/codec_list
-> when they are larger than this limit.
->
-> This patch uses seq_file instead to make sure dais/platforms/codecs show the
-> full contents of dai_list/platform_list/codec_list.
+From: Abhijeet Kumar <abhijeet.kumar@intel.com>
 
-If it's not critical, I would suggest to wait till v4.16-rc1, where I
-would like to push [1], and switch to DEFINE_SHOW_ATTRIBUTE() macro.
+The current sync_power_state is local to hda code, moving it
+core so that other users apart from hda legacy can use it.
+The helper function ensures the actual state reaches the target state.
 
+Signed-off-by: Abhijeet Kumar <abhijeet.kumar@intel.com>
+---
+ include/sound/hdaudio.h |  2 ++
+ sound/hda/hdac_device.c | 35 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 37 insertions(+)
 
-> +static int codec_list_seq_open(struct inode *inode, struct file *file)
-> +{
-> +       return single_open(file, codec_list_seq_show, NULL);
->  }
->
->  static const struct file_operations codec_list_fops = {
-> +       .open = codec_list_seq_open,
-> +       .read = seq_read,
-> +       .llseek = seq_lseek,
-> +       .release = single_release,
->  };
-
-This will be just
-
-DEFINE_SHOW_ATTRIBUTE(codec_list_seq);
-
-> +static int dai_list_seq_open(struct inode *inode, struct file *file)
-> +{
-> +       return single_open(file, dai_list_seq_show, NULL);
->  }
->
->  static const struct file_operations dai_list_fops = {
-> +       .open = dai_list_seq_open,
-> +       .read = seq_read,
-> +       .llseek = seq_lseek,
-> +       .release = single_release,
->  };
-
-Ditto.
-
-> +static int platform_list_seq_open(struct inode *inode, struct file *file)
-> +{
-> +       return single_open(file, platform_list_seq_show, NULL);
->  }
->
->  static const struct file_operations platform_list_fops = {
-> +       .open = platform_list_seq_open,
-> +       .read = seq_read,
-> +       .llseek = seq_lseek,
-> +       .release = single_release,
->  };
-
-Ditto.
-
-[1]: https://patchwork.kernel.org/patch/10178813/
-
+diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+index 68169e3749de..4c93ff5301bd 100644
+--- a/include/sound/hdaudio.h
++++ b/include/sound/hdaudio.h
+@@ -146,6 +146,8 @@ int snd_hdac_codec_write(struct hdac_device *hdac, hda_nid_t nid,
+ 			int flags, unsigned int verb, unsigned int parm);
+ bool snd_hdac_check_power_state(struct hdac_device *hdac,
+ 		hda_nid_t nid, unsigned int target_state);
++unsigned int snd_hdac_sync_power_state(struct hdac_device *hdac,
++		      hda_nid_t nid, unsigned int target_state);
+ /**
+  * snd_hdac_read_parm - read a codec parameter
+  * @codec: the codec object
+diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
+index 06f845e293cb..7ba100bb1c3f 100644
+--- a/sound/hda/hdac_device.c
++++ b/sound/hda/hdac_device.c
+@@ -3,6 +3,7 @@
+  */
+ 
+ #include <linux/init.h>
++#include <linux/delay.h>
+ #include <linux/device.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
+@@ -1064,3 +1065,37 @@ bool snd_hdac_check_power_state(struct hdac_device *hdac,
+ 	return (state == target_state);
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_check_power_state);
++/**
++ * snd_hdac_sync_power_state - wait until actual power state matches
++ * with the target state
++ *
++ * @hdac: the HDAC device
++ * @nid: NID to send the command
++ * @target_state: target state to check for
++ *
++ * Return power state or PS_ERROR if codec rejects GET verb.
++ */
++unsigned int snd_hdac_sync_power_state(struct hdac_device *codec,
++			hda_nid_t nid, unsigned int power_state)
++{
++	unsigned long end_time = jiffies + msecs_to_jiffies(500);
++	unsigned int state, actual_state, count;
++
++	for (count = 0; count < 500; count++) {
++		state = snd_hdac_codec_read(codec, nid, 0,
++				AC_VERB_GET_POWER_STATE, 0);
++		if (state & AC_PWRST_ERROR) {
++			msleep(20);
++			break;
++		}
++		actual_state = (state >> 4) & 0x0f;
++		if (actual_state == power_state)
++			break;
++		if (time_after_eq(jiffies, end_time))
++			break;
++		/* wait until the codec reachs to the target state */
++		msleep(1);
++	}
++	return state;
++}
++EXPORT_SYMBOL_GPL(snd_hdac_sync_power_state);
 -- 
-With Best Regards,
-Andy Shevchenko
+1.9.1
