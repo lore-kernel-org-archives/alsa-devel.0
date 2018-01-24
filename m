@@ -1,61 +1,114 @@
-From: Ladislav Michl <ladis@linux-mips.org>
-Subject: [PATCH RESEND] sound: omap-twl4030: do not complain on
- -EPROBE_DEFER when initializing
-Date: Wed, 24 Jan 2018 18:20:49 +0100
-Message-ID: <20180124172048.GA2095@lenoch>
+From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH 3/3] ASoC: sun4i-i2s: Add regmap field to
+ sign extend sample
+Date: Wed, 24 Jan 2018 18:41:30 +0100
+Message-ID: <CAEKpxBnfBBrFPA+b3e27+A406_om6Eh5UyeZgV0LkeDJK89p7w@mail.gmail.com>
+References: <20180124141101.12867-1-codekipper@gmail.com> <20180124141101.12867-4-codekipper@gmail.com>
+Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 8FBB6266A74
- for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2018 18:20:50 +0100 (CET)
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23990395AbeAXRUupA6pD (ORCPT
- <rfc822;alsa-devel@alsa-project.org>);
- Wed, 24 Jan 2018 18:20:50 +0100
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBTEKUPJQKGQEH4P3LAI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20180124141101.12867-4-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Don't complain on -EPROBE_DEFER when when initializing, the driver
-probe will be retried later.
-
-Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
----
- Note: Just a resend of patch from 9 Nov 2016 as there were no
-       reply by then.
-
- sound/soc/omap/omap-twl4030.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/omap/omap-twl4030.c b/sound/soc/omap/omap-twl4030.c
-index cccc316743fa..7c1f71884768 100644
---- a/sound/soc/omap/omap-twl4030.c
-+++ b/sound/soc/omap/omap-twl4030.c
-@@ -322,8 +322,10 @@ static int omap_twl4030_probe(struct platform_device *pdev)
- 	snd_soc_card_set_drvdata(card, priv);
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret) {
--		dev_err(&pdev->dev, "devm_snd_soc_register_card() failed: %d\n",
--			ret);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(&pdev->dev,
-+				"devm_snd_soc_register_card() failed: %d\n",
-+				ret);
- 		return ret;
- 	}
- 
--- 
-2.15.1
+On 24 January 2018 at 15:11,  <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+>
+> On the newer SoCs this is set by default to transfer a 0 after
+> each sample in each slot. Add the regmap field to configure this
+> and set it so that it pads the sample with 0s.
+>
+> Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+NACK missing regmap field from A83t.
+CK
+> ---
+>  sound/soc/sunxi/sun4i-i2s.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+>
+> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+> index 626679057d0f..9fda1240b717 100644
+> --- a/sound/soc/sunxi/sun4i-i2s.c
+> +++ b/sound/soc/sunxi/sun4i-i2s.c
+> @@ -139,6 +139,7 @@
+>   * @field_fmt_bclk: regmap field to set clk polarity.
+>   * @field_fmt_lrclk: regmap field to set frame polarity.
+>   * @field_fmt_mode: regmap field to set the operational mode.
+> + * @field_fmt_sext: regmap field to set the sign extension.
+>   * @field_txchanmap: location of the tx channel mapping register.
+>   * @field_rxchanmap: location of the rx channel mapping register.
+>   * @field_txchansel: location of the tx channel select bit fields.
+> @@ -164,6 +165,7 @@ struct sun4i_i2s_quirks {
+>         struct reg_field                field_fmt_bclk;
+>         struct reg_field                field_fmt_lrclk;
+>         struct reg_field                field_fmt_mode;
+> +       struct reg_field                field_fmt_sext;
+>         struct reg_field                field_txchanmap;
+>         struct reg_field                field_rxchanmap;
+>         struct reg_field                field_txchansel;
+> @@ -188,6 +190,7 @@ struct sun4i_i2s {
+>         struct regmap_field     *field_fmt_bclk;
+>         struct regmap_field     *field_fmt_lrclk;
+>         struct regmap_field     *field_fmt_mode;
+> +       struct regmap_field     *field_fmt_sext;
+>         struct regmap_field     *field_txchanmap;
+>         struct regmap_field     *field_rxchanmap;
+>         struct regmap_field     *field_txchansel;
+> @@ -358,6 +361,9 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+>                                    SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
+>                                    SUN8I_I2S_FMT0_LRCK_PERIOD(word_size));
+>
+> +       /* Set sign extension to pad out LSB with 0 */
+> +       regmap_field_write(i2s->field_fmt_sext, 0);
+> +
+>         return 0;
+>  }
+>
+> @@ -929,6 +935,7 @@ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
+>         .field_fmt_lrclk        = REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
+>         .has_slave_select_bit   = true,
+>         .field_fmt_mode         = REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
+> +       .field_fmt_sext         = REG_FIELD(SUN4I_I2S_FMT1_REG, 8, 8),
+>         .field_txchanmap        = REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
+>         .field_rxchanmap        = REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
+>         .field_txchansel        = REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
+> @@ -946,6 +953,7 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
+>         .field_fmt_lrclk        = REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
+>         .has_slave_select_bit   = true,
+>         .field_fmt_mode         = REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
+> +       .field_fmt_sext         = REG_FIELD(SUN4I_I2S_FMT1_REG, 8, 8),
+>         .field_txchanmap        = REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
+>         .field_rxchanmap        = REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
+>         .field_txchansel        = REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
+> @@ -986,6 +994,7 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
+>         .field_fmt_bclk         = REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
+>         .field_fmt_lrclk        = REG_FIELD(SUN4I_I2S_FMT0_REG, 19, 19),
+>         .field_fmt_mode         = REG_FIELD(SUN4I_I2S_CTRL_REG, 4, 5),
+> +       .field_fmt_sext         = REG_FIELD(SUN4I_I2S_FMT1_REG, 4, 5),
+>         .field_txchanmap        = REG_FIELD(SUN8I_I2S_TX_CHAN_MAP_REG, 0, 31),
+>         .field_rxchanmap        = REG_FIELD(SUN8I_I2S_RX_CHAN_MAP_REG, 0, 31),
+>         .field_txchansel        = REG_FIELD(SUN8I_I2S_TX_CHAN_SEL_REG, 0, 2),
+> @@ -1031,6 +1040,12 @@ static int sun4i_i2s_init_regmap_fields(struct device *dev,
+>         if (IS_ERR(i2s->field_fmt_mode))
+>                 return PTR_ERR(i2s->field_fmt_mode);
+>
+> +       i2s->field_fmt_sext =
+> +                       devm_regmap_field_alloc(dev, i2s->regmap,
+> +                                               i2s->variant->field_fmt_sext);
+> +       if (IS_ERR(i2s->field_fmt_sext))
+> +               return PTR_ERR(i2s->field_fmt_sext);
+> +
+>         i2s->field_txchanmap =
+>                         devm_regmap_field_alloc(dev, i2s->regmap,
+>                                                 i2s->variant->field_txchanmap);
+> --
+> 2.16.0
+>
