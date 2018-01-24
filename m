@@ -1,110 +1,56 @@
-From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH 3/3] ASoC: sun4i-i2s: Add regmap field to sign
- extend sample
-Date: Wed, 24 Jan 2018 15:11:01 +0100
-Message-ID: <20180124141101.12867-4-codekipper@gmail.com>
-References: <20180124141101.12867-1-codekipper@gmail.com>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH 15/38] ASoC: cs47l24: replace platform to
+ component
+Date: Wed, 24 Jan 2018 14:23:59 +0000
+Message-ID: <20180124142359.hcipz24l3ymli42d@localhost.localdomain>
+References: <87vag7gb9o.wl%kuninori.morimoto.gx@renesas.com>
+ <87a7xjgb01.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBB65HULJQKGQEBT3CU4Q-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20180124141101.12867-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id A1878266FE0
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2018 15:24:03 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <87a7xjgb01.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+On Fri, Jan 12, 2018 at 12:47:14AM +0000, Kuninori Morimoto wrote:
+> 
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> Now platform can be replaced to component, let's do it.
+> This patch merges cs47l24_compr_platform into soc_codec_dev_cs47l24
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
 
-On the newer SoCs this is set by default to transfer a 0 after
-each sample in each slot. Add the regmap field to configure this
-and set it so that it pads the sample with 0s.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
----
- sound/soc/sunxi/sun4i-i2s.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+These patches look good but it looks like there are some problems with the patch:
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 626679057d0f..9fda1240b717 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -139,6 +139,7 @@
-  * @field_fmt_bclk: regmap field to set clk polarity.
-  * @field_fmt_lrclk: regmap field to set frame polarity.
-  * @field_fmt_mode: regmap field to set the operational mode.
-+ * @field_fmt_sext: regmap field to set the sign extension.
-  * @field_txchanmap: location of the tx channel mapping register.
-  * @field_rxchanmap: location of the rx channel mapping register.
-  * @field_txchansel: location of the tx channel select bit fields.
-@@ -164,6 +165,7 @@ struct sun4i_i2s_quirks {
- 	struct reg_field		field_fmt_bclk;
- 	struct reg_field		field_fmt_lrclk;
- 	struct reg_field		field_fmt_mode;
-+	struct reg_field		field_fmt_sext;
- 	struct reg_field		field_txchanmap;
- 	struct reg_field		field_rxchanmap;
- 	struct reg_field		field_txchansel;
-@@ -188,6 +190,7 @@ struct sun4i_i2s {
- 	struct regmap_field	*field_fmt_bclk;
- 	struct regmap_field	*field_fmt_lrclk;
- 	struct regmap_field	*field_fmt_mode;
-+	struct regmap_field	*field_fmt_sext;
- 	struct regmap_field	*field_txchanmap;
- 	struct regmap_field	*field_rxchanmap;
- 	struct regmap_field	*field_txchansel;
-@@ -358,6 +361,9 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
- 				   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
- 				   SUN8I_I2S_FMT0_LRCK_PERIOD(word_size));
- 
-+	/* Set sign extension to pad out LSB with 0 */
-+	regmap_field_write(i2s->field_fmt_sext, 0);
-+
- 	return 0;
- }
- 
-@@ -929,6 +935,7 @@ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
- 	.has_slave_select_bit	= true,
- 	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
-+	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 8, 8),
- 	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
- 	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
- 	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
-@@ -946,6 +953,7 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
- 	.has_slave_select_bit	= true,
- 	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
-+	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 8, 8),
- 	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
- 	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
- 	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
-@@ -986,6 +994,7 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
- 	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 19, 19),
- 	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_CTRL_REG, 4, 5),
-+	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 4, 5),
- 	.field_txchanmap	= REG_FIELD(SUN8I_I2S_TX_CHAN_MAP_REG, 0, 31),
- 	.field_rxchanmap	= REG_FIELD(SUN8I_I2S_RX_CHAN_MAP_REG, 0, 31),
- 	.field_txchansel	= REG_FIELD(SUN8I_I2S_TX_CHAN_SEL_REG, 0, 2),
-@@ -1031,6 +1040,12 @@ static int sun4i_i2s_init_regmap_fields(struct device *dev,
- 	if (IS_ERR(i2s->field_fmt_mode))
- 		return PTR_ERR(i2s->field_fmt_mode);
- 
-+	i2s->field_fmt_sext =
-+			devm_regmap_field_alloc(dev, i2s->regmap,
-+						i2s->variant->field_fmt_sext);
-+	if (IS_ERR(i2s->field_fmt_sext))
-+		return PTR_ERR(i2s->field_fmt_sext);
-+
- 	i2s->field_txchanmap =
- 			devm_regmap_field_alloc(dev, i2s->regmap,
- 						i2s->variant->field_txchanmap);
--- 
-2.16.0
+commit 9e7e3738ab0e ("ASoC: snd_soc_component_driver has snd_compr_ops")
+
+I have sent a patch to fix that up:
+
+ASoC: compress: Correct handling of compressed ops
+
+Please do have a look an let me know your thoughts.
+
+
+Thanks,
+Charles
