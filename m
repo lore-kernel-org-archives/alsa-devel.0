@@ -1,75 +1,54 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514-spi: Check the validity of drvdata pointer on resume" to the asoc tree
-Date: Wed, 24 Jan 2018 15:36:06 +0000
-Message-ID: <E1eeN5q-0004lO-5c@debutante>
+Subject: Re: Applied "ASoC: rt5514-spi: Check the validity of drvdata pointer
+ on resume" to the asoc tree
+Date: Wed, 24 Jan 2018 15:47:35 +0000
+Message-ID: <20180124154735.GG9366@sirena.org.uk>
 References: <20171216011230.107527-1-briannorris@chromium.org>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20171216011230.107527-1-briannorris@chromium.org>
-Sender: stable-owner@vger.kernel.org
+ <E1eeN5q-0004lO-5c@debutante>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Wtrm9ATX0sn6fFKv"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <E1eeN5q-0004lO-5c@debutante>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Marc Zyngier <marc.zyngier@arm.com>
-Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.org, Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Brian Norris <briannorris@chromium.org>, Takashi Iwai <tiwai@suse.com>alsa-devel@alsa-project.org
+Cc: stable@vger.kernel.org, Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Brian Norris <briannorris@chromium.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rt5514-spi: Check the validity of drvdata pointer on resume
+--Wtrm9ATX0sn6fFKv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-has been applied to the asoc tree at
+On Wed, Jan 24, 2018 at 03:36:06PM +0000, Mark Brown wrote:
+> The patch
+>=20
+>    ASoC: rt5514-spi: Check the validity of drvdata pointer on resume
+>=20
+> has been applied to the asoc tree at
+>=20
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git=20
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Dropped again - this was fixed with "ASoC: rt5514-spi: only enable wakeup
+when fully initialized" which was already in Linus' tree.  Dunno if that
+was part of why it went AWOL, I wouldn't have thought so as I usually
+send a "this didn't apply" mail.  No idea what happened.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+--Wtrm9ATX0sn6fFKv
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+-----BEGIN PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpoqpcACgkQJNaLcl1U
+h9BnLgf/SNRRPbqrc8GnDyClJWIHArOdr/qLYnJDKML8zbj38A+QigEBVMBMett4
+RhAgnG/xPxMh3JhrwyV0PnUCHci1l8tktopj5MpExjVF6MGrKQJAt0DIXamtuyRw
+LF66XWPu9hx42ntGGLnHCfo7CsHUxedI4wpJnpNw0VMpNxJjfOLhay5OZZkX4yVZ
+k9RT6UFuVSrXUK0d3xbVEOmIIrlSNIICzDYH9KW7+FkRxCB/G1b+RXiYS1v7B/+K
+c0gt8+LKnK2inHwzGJVyCAorEKi5elMXByU6lVA56F63xgEHdr4im8LrRz/aPRgA
+kyKueywLmv1tD5XcbuYm+77XygbGKw==
+=rw+p
+-----END PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 509bf3a7d43ab173abc354df2a859229ede043c0 Mon Sep 17 00:00:00 2001
-From: Marc Zyngier <marc.zyngier@arm.com>
-Date: Wed, 24 Jan 2018 14:50:00 +0000
-Subject: [PATCH] ASoC: rt5514-spi: Check the validity of drvdata pointer on
- resume
-
-The rt5514-spi driver seem to assume the validity of the drvdata pointer
-on resume, which it may not be populated, leading to a not-so-nice crash.
-
-This stems from the fact that rt5514_spi_pcm_probe() is never called on
-my system (a kevin Chromebook). No idea why, but if it can happen, it
-is worth fixing.
-
-Fixes: e9c50aa6bd39 ("ASoC: rt5514-spi: check irq status to schedule data copy in resume function")
-Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
----
- sound/soc/codecs/rt5514-spi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
-index 2df91db765ac..9255afcf2c3a 100644
---- a/sound/soc/codecs/rt5514-spi.c
-+++ b/sound/soc/codecs/rt5514-spi.c
-@@ -482,7 +482,7 @@ static int __maybe_unused rt5514_resume(struct device *dev)
- 	if (device_may_wakeup(dev))
- 		disable_irq_wake(irq);
- 
--	if (rt5514_dsp->substream) {
-+	if (rt5514_dsp && rt5514_dsp->substream) {
- 		rt5514_spi_burst_read(RT5514_IRQ_CTRL, (u8 *)&buf, sizeof(buf));
- 		if (buf[0] & RT5514_IRQ_STATUS_BIT)
- 			rt5514_schedule_copy(rt5514_dsp);
--- 
-2.15.1
+--Wtrm9ATX0sn6fFKv--
