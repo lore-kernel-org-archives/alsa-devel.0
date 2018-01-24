@@ -1,21 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: compress: Correct handling of
- compressed ops
-Date: Wed, 24 Jan 2018 16:05:51 +0000
-Message-ID: <20180124160551.GH9366@sirena.org.uk>
-References: <20180124135525.5633-1-ckeepax@opensource.cirrus.com>
- <20180124142901.GG18649@localhost>
- <20180124144915.p5fo2pypnawqbj66@localhost.localdomain>
- <20180124153330.GF9366@sirena.org.uk>
- <20180124160029.3qurs4cm75owjptn@localhost.localdomain>
+Subject: Applied "ASoC: soc-pcm: rename .pmdown_time to
+	.use_pmdown_time for Component" to the asoc tree
+Date: Wed, 24 Jan 2018 16:52:33 +0000
+Message-ID: <E1eeOHp-00005L-Tp@debutante>
+References: <87shb2e86z.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1336945391033105989=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 82528266C0E
- for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2018 17:05:57 +0100 (CET)
-In-Reply-To: <20180124160029.3qurs4cm75owjptn@localhost.localdomain>
+ by alsa0.perex.cz (Postfix) with ESMTP id AF6AA266A74
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2018 17:52:39 +0100 (CET)
+In-Reply-To: <87shb2e86z.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,53 +22,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, dan.carpenter@oracle.com, kuninori.morimoto.gx@renesas.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============1336945391033105989==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="4LFBTxd4L5NLO6ly"
-Content-Disposition: inline
+   ASoC: soc-pcm: rename .pmdown_time to .use_pmdown_time for Component
 
+has been applied to the asoc tree at
 
---4LFBTxd4L5NLO6ly
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Jan 24, 2018 at 04:00:29PM +0000, Charles Keepax wrote:
-> On Wed, Jan 24, 2018 at 03:33:30PM +0000, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > This doesn't apply against Linus' tree so that's not going to happen...
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Shall I split it into a crufty fix and then a tidy up?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Without seeing how awkward the crufty fix looks it's hard to say, use
-your judgement.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---4LFBTxd4L5NLO6ly
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From 72c3818411e5418834472e3edadcf04cfacb1274 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 19 Jan 2018 05:21:19 +0000
+Subject: [PATCH] ASoC: soc-pcm: rename .pmdown_time to .use_pmdown_time for
+ Component
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlport4ACgkQJNaLcl1U
-h9DXnQf8Dp2xwztwAuIbKtZ1TrkL4ht1MCeaDA0Hik/SsmU7QtHSIw0zXaOmyrYt
-UUejLG+srhTauazUcDvErwlDw6SnzajyN7/muw43q50w+bDD9RSjR53vNF9CGZHG
-Hcau6ASv36aiCrAvPBMJOa3xARgaE58gpThdI3R7vzwnCmaN5bvHTgnjgirzWHY3
-t6HkDpcSiWIdf/kRkbibK9OYUcMJ1RGa7peHVr+3jPLb8/0/kaoFShO2wwP9lfe8
-3jd7ggEcBLe4dY3RB02QqsjtY4mI2EAziXGg8mhHBY7eRyIS6wq03tZxJfAJp3u4
-nJt9Zx4ikX7VbCRXTiQI3749cvWBcQ==
-=1kLK
------END PGP SIGNATURE-----
+commit fbb16563c6c2 ("ASoC: snd_soc_component_driver has pmdown_time")
+added new .pmdown_time which is for inverted version of current
+.ignore_pmdown_time
+But it is confusable name. Let's rename it to .use_pmdown_time
 
---4LFBTxd4L5NLO6ly--
+Reported-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ include/sound/soc.h | 2 +-
+ sound/soc/soc-pcm.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---===============1336945391033105989==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1336945391033105989==--
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 1a7323238c49..812ae4faf559 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -836,7 +836,7 @@ struct snd_soc_component_driver {
+ 	/* bits */
+ 	unsigned int idle_bias_on:1;
+ 	unsigned int suspend_bias_off:1;
+-	unsigned int pmdown_time:1; /* care pmdown_time at stop */
++	unsigned int use_pmdown_time:1; /* care pmdown_time at stop */
+ 	unsigned int endianness:1;
+ 	unsigned int non_legacy_dai_naming:1;
+ };
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 8075856668c2..bce0741dab04 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -144,7 +144,7 @@ bool snd_soc_runtime_ignore_pmdown_time(struct snd_soc_pcm_runtime *rtd)
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		ignore &= !component->driver->pmdown_time;
++		ignore &= !component->driver->use_pmdown_time;
+ 	}
+ 
+ 	/* this will be removed */
+-- 
+2.15.1
