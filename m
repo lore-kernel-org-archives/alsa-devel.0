@@ -1,24 +1,20 @@
-From: Ladislav Michl <ladis@linux-mips.org>
-Subject: Re: [PATCH 2/2] ASoC: compress: Fixup some minor style
- issues
-Date: Wed, 24 Jan 2018 15:33:19 +0100
-Message-ID: <20180124143319.GA29547@lenoch>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH 1/2] ASoC: compress: Correct handling of
+ compressed ops
+Date: Wed, 24 Jan 2018 14:49:15 +0000
+Message-ID: <20180124144915.p5fo2pypnawqbj66@localhost.localdomain>
 References: <20180124135525.5633-1-ckeepax@opensource.cirrus.com>
- <20180124135525.5633-2-ckeepax@opensource.cirrus.com>
+ <20180124142901.GG18649@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 1500B267537
- for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2018 15:33:21 +0100 (CET)
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23990474AbeAXOdVRUFHp (ORCPT
- <rfc822;alsa-devel@alsa-project.org>);
- Wed, 24 Jan 2018 15:33:21 +0100
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id E4849266C0E
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2018 15:49:20 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20180124135525.5633-2-ckeepax@opensource.cirrus.com>
+In-Reply-To: <20180124142901.GG18649@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,55 +24,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, vinod.koul@intel.com, lgirdwood@gmail.com, broonie@kernel.org, dan.carpenter@oracle.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, dan.carpenter@oracle.com, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 24, 2018 at 01:55:25PM +0000, Charles Keepax wrote:
-> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> ---
->  sound/soc/soc-compress.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+On Wed, Jan 24, 2018 at 07:59:01PM +0530, Vinod Koul wrote:
+> On Wed, Jan 24, 2018 at 01:55:24PM +0000, Charles Keepax wrote:
+> > The soc_compr_copy callback is currently broken. Since the
+> > changes to move the compr_ops over to the component the return
+> > value is not correctly propagated, always returning zero on
+> > success rather than the number of bytes copied. This causes
+> > user-space to stall continuously reading as it does not believe
+> > it has received any data.
+> > 
+> > Furthermore, the changes to move the compr_ops over to the
+> > component iterate through the list of components and will
+> > call the compressed operation for any that have compressed
+> > ops. However, there would be signifcantly more work required
+> > to support such a system. There isn't currently any sensible
+> > mechanism to forward the ops to multiple components. For example
+> > what should be done about merging data from copy?  Or what should
+> > be returned through the pointer call, each component may have
+> > different amounts of data available, but user-space expects a
+> > single answer?
+> > 
+> > As such clean up the code a little by factoring out the search
+> > for the relevant component and bring things back to looking for
+> > a single component that supports compressed ops on a single
+> > runtime. These refactorings also put back the original handling
+> > for the copy callback, correcting the return value.
 > 
-> diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-> index 34834c02dda8..7c1955e9533a 100644
-> --- a/sound/soc/soc-compress.c
-> +++ b/sound/soc/soc-compress.c
-> @@ -262,7 +262,6 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
->  	if (!codec_dai->active)
->  		codec_dai->rate = 0;
->  
-> -
->  	if (rtd->dai_link->compr_ops && rtd->dai_link->compr_ops->shutdown)
->  		rtd->dai_link->compr_ops->shutdown(cstream);
->  
-> @@ -401,7 +400,6 @@ static int soc_compr_trigger_fe(struct snd_compr_stream *cstream, int cmd)
->  	else
->  		stream = SNDRV_PCM_STREAM_CAPTURE;
->  
-> -
->  	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
->  
->  	if (cpu_dai->driver->cops && cpu_dai->driver->cops->trigger) {
-> @@ -859,7 +857,7 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
->  	rtd->compr = compr;
->  	compr->private_data = rtd;
->  
-> -	printk(KERN_INFO "compress asoc: %s <-> %s mapping ok\n", codec_dai->name,
-> +	pr_info("compress asoc: %s <-> %s mapping ok\n", codec_dai->name,
->  		cpu_dai->name);
-
-What about:
-	dev_info(rtd->card->dev, ...
-or better drop this change and make separate patch fixing logging
-soc-compress-wide?
-
->  	return ret;
->  
-> -- 
-> 2.11.0
+> Thank you Charles for spotting this and fixing it. The changes look good to
+> me. But should we split the copy fix from rest of the handling and backport
+> that one to stable?
 > 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > 
+> > Fixes: 9e7e3738ab0e ("ASoC: snd_soc_component_driver has snd_compr_ops")
+
+The offending change here is only in the v4.15-rc's so if we can
+get the change in before 4.16 there shouldn't be any need to send
+anything to stable.
+
+I had thought about splitting this into two changes but the fix
+to the copy stuff becomes a little odd since you end up with the
+copy callback returning as soon as it hits a viable compressed
+ops but all the other callbacks keep running. Or you could fix up
+all the callbacks but then it starts to feel like you might as
+well apply this patch. Where I got to was really the primary bug
+here is that the code would try to call multiple callbacks it
+just so happens that the only thing that manifests is the copy
+return on my system.
+
+That said if others are keen for me to split it as well I don't
+mind doing so.
+
+Thanks,
+Charles
