@@ -1,20 +1,20 @@
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH 004/187] ASoC: wm2000: replace codec to
+Subject: Re: [PATCH 010/187] ASoC: wm8524: replace codec to
  component
-Date: Wed, 24 Jan 2018 15:19:10 +0000
-Message-ID: <20180124151910.nkk35utvk5uk3qzu@localhost.localdomain>
+Date: Wed, 24 Jan 2018 15:20:27 +0000
+Message-ID: <20180124152027.w7fwsexeghhruufg@localhost.localdomain>
 References: <87bmhzevk9.wl%kuninori.morimoto.gx@renesas.com>
- <876087evfu.wl%kuninori.morimoto.gx@renesas.com>
+ <87wp0ndgs5.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 43B72266C0E
- for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2018 16:19:12 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id EAF7E266C0E
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2018 16:20:30 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <876087evfu.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87wp0ndgs5.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 12, 2018 at 01:08:42AM +0000, Kuninori Morimoto wrote:
+On Fri, Jan 12, 2018 at 01:10:38AM +0000, Kuninori Morimoto wrote:
 > 
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
