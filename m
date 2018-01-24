@@ -1,21 +1,21 @@
-From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Subject: Re: [PATCH 14/38] ASoC: amd: replace platform to
-	component
-Date: Wed, 24 Jan 2018 14:45:13 +0530
-Message-ID: <0bfdbf55-cff6-44eb-e245-94290a2064fd@amd.com>
-References: <87vag7gb9o.wl%kuninori.morimoto.gx@renesas.com>
- <87bmhzgb0n.wl%kuninori.morimoto.gx@renesas.com>
- <87vafs6q67.wl%kuninori.morimoto.gx@renesas.com>
+From: =?UTF-8?B?UGF2ZWwgxZhlem7DrcSNZWs=?= <pavel.reznicek@evangnet.cz>
+Subject: Bug message caught in syslog
+Date: Wed, 24 Jan 2018 11:50:20 +0100
+Message-ID: <5eca8ce6-1c01-85e9-5ff2-e341f64550f6@evangnet.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM03-BY2-obe.outbound.protection.outlook.com
- (mail-by2nam03on0059.outbound.protection.outlook.com [104.47.42.59])
- by alsa0.perex.cz (Postfix) with ESMTP id 227B1266FE0
- for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2018 10:16:16 +0100 (CET)
-In-Reply-To: <87vafs6q67.wl%kuninori.morimoto.gx@renesas.com>
-Content-Language: en-US
+Received: from mx2.evangnet.cz (mx1.evangnet.cz [88.86.123.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 54276266A74
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2018 11:50:23 +0100 (CET)
+Received: from [192.168.0.104] (5.188.broadband4.iol.cz [85.71.188.5])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ (Authenticated sender: pavel.reznicek@evangnet.cz)
+ by mx2.evangnet.cz (Postfix) with ESMTPSA id 15CB0367A0
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2018 11:50:21 +0100 (CET)
+Content-Language: cs-CZ
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,143 +25,256 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>
-Cc: "Vemuri, Murali-krishna" <Murali-krishna.Vemuri@amd.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Tested-by: Mukunda,Vijendar <vijendar.mukunda@amd.com>
+Dear developers,
 
+I'm sorry if I write to the wrong list but I just catched several log =
 
-On Wednesday 24 January 2018 06:16 AM, Kuninori Morimoto wrote:
-> I have asked patch test to Mukunda / Vemuri.
-> Cc this mail to them.
->
->> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->>
->> Now platform can be replaced to component, let's do it.
->>
->> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->> ---
->>   sound/soc/amd/acp-pcm-dma.c | 29 ++++++++++++++++++-----------
->>   1 file changed, 18 insertions(+), 11 deletions(-)
->>
->> diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
->> index c33a512..78d7b62 100644
->> --- a/sound/soc/amd/acp-pcm-dma.c
->> +++ b/sound/soc/amd/acp-pcm-dma.c
->> @@ -23,6 +23,8 @@
->>   #include <drm/amd_asic_type.h>
->>   #include "acp.h"
->>   
->> +#define DRV_NAME "acp_audio_dma"
->> +
->>   #define PLAYBACK_MIN_NUM_PERIODS    2
->>   #define PLAYBACK_MAX_NUM_PERIODS    2
->>   #define PLAYBACK_MAX_PERIOD_SIZE    16384
->> @@ -702,8 +704,8 @@ static int acp_dma_open(struct snd_pcm_substream *substream)
->>   	int ret = 0;
->>   	struct snd_pcm_runtime *runtime = substream->runtime;
->>   	struct snd_soc_pcm_runtime *prtd = substream->private_data;
->> -	struct audio_drv_data *intr_data = dev_get_drvdata(prtd->platform->dev);
->> -
->> +	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd, DRV_NAME);
->> +	struct audio_drv_data *intr_data = dev_get_drvdata(component->dev);
->>   	struct audio_substream_data *adata =
->>   		kzalloc(sizeof(struct audio_substream_data), GFP_KERNEL);
->>   	if (adata == NULL)
->> @@ -730,7 +732,7 @@ static int acp_dma_open(struct snd_pcm_substream *substream)
->>   	ret = snd_pcm_hw_constraint_integer(runtime,
->>   					    SNDRV_PCM_HW_PARAM_PERIODS);
->>   	if (ret < 0) {
->> -		dev_err(prtd->platform->dev, "set integer constraint failed\n");
->> +		dev_err(component->dev, "set integer constraint failed\n");
->>   		kfree(adata);
->>   		return ret;
->>   	}
->> @@ -778,7 +780,8 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
->>   	struct snd_pcm_runtime *runtime;
->>   	struct audio_substream_data *rtd;
->>   	struct snd_soc_pcm_runtime *prtd = substream->private_data;
->> -	struct audio_drv_data *adata = dev_get_drvdata(prtd->platform->dev);
->> +	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd, DRV_NAME);
->> +	struct audio_drv_data *adata = dev_get_drvdata(component->dev);
->>   
->>   	runtime = substream->runtime;
->>   	rtd = runtime->private_data;
->> @@ -907,6 +910,7 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
->>   	struct snd_pcm_runtime *runtime = substream->runtime;
->>   	struct snd_soc_pcm_runtime *prtd = substream->private_data;
->>   	struct audio_substream_data *rtd = runtime->private_data;
->> +	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd, DRV_NAME);
->>   
->>   	if (!rtd)
->>   		return -EINVAL;
->> @@ -924,7 +928,7 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
->>   			while (acp_reg_read(rtd->acp_mmio, mmACP_DMA_CH_STS) &
->>   						BIT(SYSRAM_TO_ACP_CH_NUM)) {
->>   				if (!loops--) {
->> -					dev_err(prtd->platform->dev,
->> +					dev_err(component->dev,
->>   						"acp dma start timeout\n");
->>   					return -ETIMEDOUT;
->>   				}
->> @@ -970,7 +974,8 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
->>   static int acp_dma_new(struct snd_soc_pcm_runtime *rtd)
->>   {
->>   	int ret;
->> -	struct audio_drv_data *adata = dev_get_drvdata(rtd->platform->dev);
->> +	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
->> +	struct audio_drv_data *adata = dev_get_drvdata(component->dev);
->>   
->>   	switch (adata->asic_type) {
->>   	case CHIP_STONEY:
->> @@ -987,7 +992,7 @@ static int acp_dma_new(struct snd_soc_pcm_runtime *rtd)
->>   		break;
->>   	}
->>   	if (ret < 0)
->> -		dev_err(rtd->platform->dev,
->> +		dev_err(component->dev,
->>   				"buffer preallocation failer error:%d\n", ret);
->>   	return ret;
->>   }
->> @@ -998,7 +1003,8 @@ static int acp_dma_close(struct snd_pcm_substream *substream)
->>   	struct snd_pcm_runtime *runtime = substream->runtime;
->>   	struct audio_substream_data *rtd = runtime->private_data;
->>   	struct snd_soc_pcm_runtime *prtd = substream->private_data;
->> -	struct audio_drv_data *adata = dev_get_drvdata(prtd->platform->dev);
->> +	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd, DRV_NAME);
->> +	struct audio_drv_data *adata = dev_get_drvdata(component->dev);
->>   
->>   	kfree(rtd);
->>   
->> @@ -1044,7 +1050,8 @@ static int acp_dma_close(struct snd_pcm_substream *substream)
->>   	.prepare = acp_dma_prepare,
->>   };
->>   
->> -static struct snd_soc_platform_driver acp_asoc_platform = {
->> +static struct snd_soc_component_driver acp_asoc_platform = {
->> +	.name = DRV_NAME,
->>   	.ops = &acp_dma_ops,
->>   	.pcm_new = acp_dma_new,
->>   };
->> @@ -1102,7 +1109,8 @@ static int acp_audio_probe(struct platform_device *pdev)
->>   		return status;
->>   	}
->>   
->> -	status = snd_soc_register_platform(&pdev->dev, &acp_asoc_platform);
->> +	status = devm_snd_soc_register_component(&pdev->dev,
->> +						&acp_asoc_platform, NULL, 0);
->>   	if (status != 0) {
->>   		dev_err(&pdev->dev, "Fail to register ALSA platform device\n");
->>   		return status;
->> @@ -1123,7 +1131,6 @@ static int acp_audio_remove(struct platform_device *pdev)
->>   	status = acp_deinit(adata->acp_mmio);
->>   	if (status)
->>   		dev_err(&pdev->dev, "ACP Deinit failed status:%d\n", status);
->> -	snd_soc_unregister_platform(&pdev->dev);
->>   	pm_runtime_disable(&pdev->dev);
->>   
->>   	return 0;
->> -- 
->> 1.9.1
->>
+messages that I was advised to report as a bug to you, the ALSA developers.
+
+I'm not experiencing any sound problems by ear, just found these =
+
+messages in the syslog (via logcheck).
+
+Ran the alsa-info_alsa-info.sh shell script and its output can be found =
+
+here:
+
+http://www.alsa-project.org/db/?f=3Dd9b579a048b94cdc71e619c4deac60e4c8228dbb
+
+The log messages in question read as follows:
+
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: snd_pcm_avail() navr=E1til hodnotu, kter=E1 je nezvykle vysok=
+=E1: 570108 bajt=F9 (3231 ms).
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: S nejv=ECt=B9=ED pravd=ECpodobnost=ED se jedn=E1 o chybu v ovl=
+ada=E8i ALSA "snd_hda_intel". Nahlaste pros=EDm tento probl=E9m v=FDvoj=E1=
+=F8=F9m ALSA.
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: snd_pcm_dump():
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: Soft volume PCM
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: Control: PCM Playback Volume
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: min_dB: -51
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: max_dB: 0
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: resolution: 256
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: Its setup is:
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   stream       : PLAYBACK
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   access       : MMAP_INTERLEAVED
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   format       : S16_LE
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   subformat    : STD
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   channels     : 2
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   rate         : 44100
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   exact rate   : 44100 (44100/1)
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   msbits       : 16
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   buffer_size  : 16384
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   period_size  : 8192
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   period_time  : 185759
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   tstamp_mode  : ENABLE
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   tstamp_type  : MONOTONIC
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   period_step  : 1
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   avail_min    : 15802
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   period_event : 0
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   start_threshold  : -1
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   stop_threshold   : 4611686018427387904
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   silence_threshold: 0
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   silence_size : 0
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   boundary     : 4611686018427387904
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: Slave: Hardware PCM card 0 'HDA Intel PCH' device 0 subdevice 0
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: Its setup is:
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   stream       : PLAYBACK
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   access       : MMAP_INTERLEAVED
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   format       : S16_LE
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   subformat    : STD
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   channels     : 2
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   rate         : 44100
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   exact rate   : 44100 (44100/1)
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   msbits       : 16
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   buffer_size  : 16384
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   period_size  : 8192
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   period_time  : 185759
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   tstamp_mode  : ENABLE
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   tstamp_type  : MONOTONIC
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   period_step  : 1
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   avail_min    : 15802
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   period_event : 0
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   start_threshold  : -1
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   stop_threshold   : 4611686018427387904
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   silence_threshold: 0
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   silence_size : 0
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   boundary     : 4611686018427387904
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   appl_ptr     : 95068169
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   hw_ptr       : 95194312
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: snd_pcm_delay() navr=E1til hodnotu, kter=E1 je nezvykle vysok=
+=E1: -454064 bajt=F9 (-2574 ms).
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: S nejv=ECt=B9=ED pravd=ECpodobnost=ED se jedn=E1 o chybu v ovl=
+ada=E8i ALSA "snd_hda_intel". Nahlaste pros=EDm tento probl=E9m v=FDvoj=E1=
+=F8=F9m ALSA.
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: snd_pcm_dump():
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: Soft volume PCM
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: Control: PCM Playback Volume
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: min_dB: -51
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: max_dB: 0
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: resolution: 256
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: Its setup is:
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   stream       : PLAYBACK
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   access       : MMAP_INTERLEAVED
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   format       : S16_LE
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   subformat    : STD
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   channels     : 2
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   rate         : 44100
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   exact rate   : 44100 (44100/1)
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   msbits       : 16
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   buffer_size  : 16384
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   period_size  : 8192
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   period_time  : 185759
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   tstamp_mode  : ENABLE
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   tstamp_type  : MONOTONIC
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   period_step  : 1
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   avail_min    : 15802
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   period_event : 0
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   start_threshold  : -1
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   stop_threshold   : 4611686018427387904
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   silence_threshold: 0
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   silence_size : 0
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   boundary     : 4611686018427387904
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: Slave: Hardware PCM card 0 'HDA Intel PCH' device 0 subdevice 0
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c: Its setup is:
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   stream       : PLAYBACK
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   access       : MMAP_INTERLEAVED
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   format       : S16_LE
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   subformat    : STD
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   channels     : 2
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   rate         : 44100
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   exact rate   : 44100 (44100/1)
+Jan 24 07:01:25 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   msbits       : 16
+Jan 24 07:01:26 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   buffer_size  : 16384
+Jan 24 07:01:26 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   period_size  : 8192
+Jan 24 07:01:26 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   period_time  : 185759
+Jan 24 07:01:26 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   tstamp_mode  : ENABLE
+Jan 24 07:01:26 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   tstamp_type  : MONOTONIC
+Jan 24 07:01:26 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   period_step  : 1
+Jan 24 07:01:26 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   avail_min    : 15802
+Jan 24 07:01:26 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   period_event : 0
+Jan 24 07:01:26 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   start_threshold  : -1
+Jan 24 07:01:26 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   stop_threshold   : 4611686018427387904
+Jan 24 07:01:26 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   silence_threshold: 0
+Jan 24 07:01:26 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   silence_size : 0
+Jan 24 07:01:26 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   boundary     : 4611686018427387904
+Jan 24 07:01:26 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   appl_ptr     : 95099921
+Jan 24 07:01:26 ideapad-310 pulseaudio[2724]: [alsa-sink-CX20751/2 Analog] =
+alsa-util.c:   hw_ptr       : 95213480
+
+I'd be happy to help you solving this issue if not known already. Please =
+
+feel free to ask for whatever information you'd need.
+
+Pavel =D8ezn=ED=E8ek A. K. A. Cigydd
