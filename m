@@ -1,22 +1,20 @@
-From: Code Kipper <codekipper@gmail.com>
-Subject: Re: [PATCH 3/3] ASoC: sun4i-i2s: Add regmap field to
-	sign extend sample
-Date: Thu, 25 Jan 2018 10:03:51 +0100
-Message-ID: <CAEKpxB=5nd2fqpAJQ4L6EFqxCZ=pkCvE9v5EYUR=6BGVYbwp_g@mail.gmail.com>
-References: <20180124141101.12867-1-codekipper@gmail.com>
- <20180124141101.12867-4-codekipper@gmail.com>
- <20180125084145.f4otos2kavo6rg7t@flea.lan>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH 1/2] ASoC: compress: Correct handling of
+	compressed ops
+Date: Thu, 25 Jan 2018 09:47:45 +0000
+Message-ID: <20180125094745.rxboofyab5ey5nux@localhost.localdomain>
+References: <20180124135525.5633-1-ckeepax@opensource.cirrus.com>
+ <87wp06lotn.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f194.google.com (mail-io0-f194.google.com
- [209.85.223.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 8597D266C0E
- for <alsa-devel@alsa-project.org>; Thu, 25 Jan 2018 10:03:53 +0100 (CET)
-Received: by mail-io0-f194.google.com with SMTP id d13so7883252iog.5
- for <alsa-devel@alsa-project.org>; Thu, 25 Jan 2018 01:03:53 -0800 (PST)
-In-Reply-To: <20180125084145.f4otos2kavo6rg7t@flea.lan>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B81D266A74
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jan 2018 10:47:51 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <87wp06lotn.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,73 +24,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, "Andrea Venturi (pers)" <be17068@iperbole.bo.it>, linux-sunxi <linux-sunxi@googlegroups.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, dan.carpenter@oracle.com
 List-Id: alsa-devel@alsa-project.org
 
-On 25 January 2018 at 09:41, Maxime Ripard
-<maxime.ripard@free-electrons.com> wrote:
-> Hi,
->
-> On Wed, Jan 24, 2018 at 03:11:01PM +0100, codekipper@gmail.com wrote:
->> From: Marcus Cooper <codekipper@gmail.com>
->>
->> On the newer SoCs this is set by default to transfer a 0 after
->> each sample in each slot. Add the regmap field to configure this
->> and set it so that it pads the sample with 0s.
->>
->> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
->> ---
->>  sound/soc/sunxi/sun4i-i2s.c | 15 +++++++++++++++
->>  1 file changed, 15 insertions(+)
->>
->> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
->> index 626679057d0f..9fda1240b717 100644
->> --- a/sound/soc/sunxi/sun4i-i2s.c
->> +++ b/sound/soc/sunxi/sun4i-i2s.c
->> @@ -139,6 +139,7 @@
->>   * @field_fmt_bclk: regmap field to set clk polarity.
->>   * @field_fmt_lrclk: regmap field to set frame polarity.
->>   * @field_fmt_mode: regmap field to set the operational mode.
->> + * @field_fmt_sext: regmap field to set the sign extension.
->>   * @field_txchanmap: location of the tx channel mapping register.
->>   * @field_rxchanmap: location of the rx channel mapping register.
->>   * @field_txchansel: location of the tx channel select bit fields.
->> @@ -164,6 +165,7 @@ struct sun4i_i2s_quirks {
->>       struct reg_field                field_fmt_bclk;
->>       struct reg_field                field_fmt_lrclk;
->>       struct reg_field                field_fmt_mode;
->> +     struct reg_field                field_fmt_sext;
->>       struct reg_field                field_txchanmap;
->>       struct reg_field                field_rxchanmap;
->>       struct reg_field                field_txchansel;
->> @@ -188,6 +190,7 @@ struct sun4i_i2s {
->>       struct regmap_field     *field_fmt_bclk;
->>       struct regmap_field     *field_fmt_lrclk;
->>       struct regmap_field     *field_fmt_mode;
->> +     struct regmap_field     *field_fmt_sext;
->>       struct regmap_field     *field_txchanmap;
->>       struct regmap_field     *field_rxchanmap;
->>       struct regmap_field     *field_txchansel;
->> @@ -358,6 +361,9 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
->>                                  SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
->>                                  SUN8I_I2S_FMT0_LRCK_PERIOD(word_size));
->>
->> +     /* Set sign extension to pad out LSB with 0 */
->> +     regmap_field_write(i2s->field_fmt_sext, 0);
->> +
->
-> Your commit log seems to suggest that it's only relevant for the newer
-> SoCs (which ones?), yet you enable it for all the supported
-> ones. Either the code or the commit log should be adjusted to be
-> consistent with the other.
-ACK
+On Thu, Jan 25, 2018 at 01:18:37AM +0000, Kuninori Morimoto wrote:
+> soc_compr_get_component() searches 1st component which have compr_ops,
+> but it doesn't check compr_ops->xxx, In above case, compr_ops->open.
+> Is it OK ?
+> 
+> For me, it looks like we can solve it by using "break" and "goto".
+> "goto" is quick hack for now.
+> For example like below (not tested).
+> If we can use rtd->platform, use it, and skip rtdcom loop by using "goto".
+> If we use rtdcom, call "break" after calling 1st callback.
+> soc_rtdcom_xxx() in soc-pcm.c is doing similar things.
+> I don't know this is good idea, or not.
+> 
+> ---------------
+> diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+> index 81232f4..a147a03 100644
+> --- a/sound/soc/soc-compress.c
+> +++ b/sound/soc/soc-compress.c
+> @@ -53,6 +53,7 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
+>  				platform->component.name);
+>  			goto plat_err;
+>  		}
+> +		goto rtdcom_skip:
+>  	}
+>  
+>  	for_each_rtdcom(rtd, rtdcom) {
+> @@ -72,10 +73,13 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
+>  			       component->name);
+>  			ret = __ret;
+>  		}
+> +		break;
+>  	}
+>  	if (ret < 0)
+>  		goto machine_err;
+>  
+> +rtdcom_skip:
+> +
+>  	if (rtd->dai_link->compr_ops && rtd->dai_link->compr_ops->startup) {
+>  		ret = rtd->dai_link->compr_ops->startup(cstream);
+>  		if (ret < 0) {
+> ---------------
+
+Yes I had considered adding in breaks as an initial fix, however,
+two things drove me in this direction.
+
+Firstly, it didn't feel like it made sense to be calling
+different compr_ops on different components. Not sure if anyone
+feels there might be use-cases for that?
+
+And what should happen if two components had the same
+callback? Which do we call, should we call both as the current
+code does, but then what to do with the results? In short I
+felt there is significantly more work to be done to support
+systems where we have multiple components providing compressed
+functionality on a single runtime, so better to not look like we
+support it at the moment.
+
+Secondly it feels like a lot of code duplication having those
+almost identical loops in every callback and this solution keeps
+things much neater.
+
+I will have a look through the soc-pcm stuff as well and have a
+think if there are any issues there as well, although that does
+all seem to work on my system.
+
 Thanks,
-CK
->
-> Maxime
->
-> --
-> Maxime Ripard, Free Electrons
-> Embedded Linux and Kernel engineering
-> http://free-electrons.com
+Charles
