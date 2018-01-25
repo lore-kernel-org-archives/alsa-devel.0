@@ -1,61 +1,104 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH 1/2] ASoC: compress: Correct handling of
- compressed ops
-Date: Thu, 25 Jan 2018 11:03:04 +0000
-Message-ID: <20180125110304.euhn2ula6b65ehtv@localhost.localdomain>
-References: <20180124135525.5633-1-ckeepax@opensource.cirrus.com>
- <20180124142901.GG18649@localhost>
- <20180124144915.p5fo2pypnawqbj66@localhost.localdomain>
- <20180124153330.GF9366@sirena.org.uk>
- <20180124160029.3qurs4cm75owjptn@localhost.localdomain>
- <20180124160551.GH9366@sirena.org.uk>
- <20180124171440.fsep6atik37urv5m@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id C3724266A74
- for <alsa-devel@alsa-project.org>; Thu, 25 Jan 2018 12:03:09 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20180124171440.fsep6atik37urv5m@localhost.localdomain>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, dan.carpenter@oracle.com, kuninori.morimoto.gx@renesas.com
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rockchip: Use dummy_dai for rt5514 dsp dailink" to the asoc tree
+Date: Thu, 25 Jan 2018 12:15:22 +0000
+Message-ID: <E1eegR8-0006Sc-0T@debutante>
+References: <20171121082517.17233-1-jeffy.chen@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171121082517.17233-1-jeffy.chen@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jeffy Chen <jeffy.chen@rock-chips.com>
+Cc: Jimmy Cheng-Yi Chiang <cychiang@google.com>, Brian Norris <briannorris@chromium.org>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, linux-rockchip@lists.infradead.org, mka@chromium.org, linux-arm-kernel@lists.infradead.orgcychiang@google.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 24, 2018 at 05:14:40PM +0000, Charles Keepax wrote:
-> On Wed, Jan 24, 2018 at 04:05:51PM +0000, Mark Brown wrote:
-> > On Wed, Jan 24, 2018 at 04:00:29PM +0000, Charles Keepax wrote:
-> > > On Wed, Jan 24, 2018 at 03:33:30PM +0000, Mark Brown wrote:
-> > 
-> > > > This doesn't apply against Linus' tree so that's not going to happen...
-> > 
-> > > Shall I split it into a crufty fix and then a tidy up?
-> > 
-> > Without seeing how awkward the crufty fix looks it's hard to say, use
-> > your judgement.
-> 
-> My feeling is still the same really that we should stick with this
-> patch even though its a bit more to put into stable, since really
-> the looping stuff is a bug as well.
-> 
-> But that said I will have a go at drafting up a separated patch,
-> see what it looks like and report back tomorrow.
+The patch
 
-A simpler fix does indeed apply to Linus's tree, given there is
-also still some discussion on the patch I will split the patch
-into the copy fix and the separate refactoring so we can get the
-fix in now.
+   ASoC: rockchip: Use dummy_dai for rt5514 dsp dailink
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-Charles
+Mark
+
+>From fde7f9dbc71365230eeb8c8ea97ce9b552c8e5bd Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Tue, 21 Nov 2017 16:25:17 +0800
+Subject: [PATCH] ASoC: rockchip: Use dummy_dai for rt5514 dsp dailink
+
+The rt5514 dsp captures pcm data through spi directly, so we should not
+use rockchip-i2s as it's cpu dai like other codecs.
+
+Use dummy_dai for rt5514 dsp dailink to make voice wakeup work again.
+
+Reported-by: Jimmy Cheng-Yi Chiang <cychiang@google.com>
+Fixes: (72cfb0f20c75 ASoC: rockchip: Use codec of_node and dai_name for rt5514 dsp)
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+Tested-by: Brian Norris <briannorris@chromium.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/rockchip/rk3399_gru_sound.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index d64fbbd50544..aa8ffd035377 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -367,7 +367,8 @@ static const struct snd_soc_dai_link rockchip_dais[] = {
+ 	[DAILINK_RT5514_DSP] = {
+ 		.name = "RT5514 DSP",
+ 		.stream_name = "Wake on Voice",
+-		.codec_dai_name = "rt5514-dsp-cpu-dai",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
+ 	},
+ };
+ 
+@@ -528,7 +529,18 @@ static int rockchip_sound_of_parse_dais(struct device *dev,
+ 		if (index < 0)
+ 			continue;
+ 
+-		np_cpu = (index == DAILINK_CDNDP) ? np_cpu1 : np_cpu0;
++		switch (index) {
++		case DAILINK_CDNDP:
++			np_cpu = np_cpu1;
++			break;
++		case DAILINK_RT5514_DSP:
++			np_cpu = np_codec;
++			break;
++		default:
++			np_cpu = np_cpu0;
++			break;
++		}
++
+ 		if (!np_cpu) {
+ 			dev_err(dev, "Missing 'rockchip,cpu' for %s\n",
+ 				rockchip_dais[index].name);
+@@ -538,7 +550,8 @@ static int rockchip_sound_of_parse_dais(struct device *dev,
+ 		dai = &card->dai_link[card->num_links++];
+ 		*dai = rockchip_dais[index];
+ 
+-		dai->codec_of_node = np_codec;
++		if (!dai->codec_name)
++			dai->codec_of_node = np_codec;
+ 		dai->platform_of_node = np_cpu;
+ 		dai->cpu_of_node = np_cpu;
+ 
+-- 
+2.15.1
