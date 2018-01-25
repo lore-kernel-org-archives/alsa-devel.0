@@ -1,18 +1,35 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: Use dummy_dai for rt5514 dsp dailink" to the asoc tree
-Date: Thu, 25 Jan 2018 12:15:22 +0000
-Message-ID: <E1eegR8-0006Sc-0T@debutante>
-References: <20171121082517.17233-1-jeffy.chen@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171121082517.17233-1-jeffy.chen@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jeffy Chen <jeffy.chen@rock-chips.com>
-Cc: Jimmy Cheng-Yi Chiang <cychiang@google.com>, Brian Norris <briannorris@chromium.org>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, linux-rockchip@lists.infradead.org, mka@chromium.org, linux-arm-kernel@lists.infradead.orgcychiang@google.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: sun8i-codec: Add ADC support for a33"
+	to the asoc tree
+Date: Thu, 25 Jan 2018 12:15:09 +0000
+Message-ID: <E1eegQv-0006R9-DN@debutante>
+References: <20171213123408.10422-2-mylene.josserand@free-electrons.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============2437379022154144556=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 81A14267603
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jan 2018 13:15:50 +0100 (CET)
+In-Reply-To: <20171213123408.10422-2-mylene.josserand@free-electrons.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: mark.rutland@arm.com, thomas.petazzoni@free-electrons.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, tiwai@suse.com, robh+dt@kernel.org, lgirdwood@gmail.com, wens@csie.org, broonie@kernel.org, linux@armlinux.org.uk, maxime.ripard@free-electrons.com, mylene.josserand@free-electrons.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
+
+--===============2437379022154144556==
+Content-Type: text/plain
 
 The patch
 
-   ASoC: rockchip: Use dummy_dai for rt5514 dsp dailink
+   ASoC: sun8i-codec: Add ADC support for a33
 
 has been applied to the asoc tree at
 
@@ -37,68 +54,202 @@ to this mail.
 Thanks,
 Mark
 
->From fde7f9dbc71365230eeb8c8ea97ce9b552c8e5bd Mon Sep 17 00:00:00 2001
-From: Jeffy Chen <jeffy.chen@rock-chips.com>
-Date: Tue, 21 Nov 2017 16:25:17 +0800
-Subject: [PATCH] ASoC: rockchip: Use dummy_dai for rt5514 dsp dailink
+>From eda85d1fee05d69e97939f9603b857f2244d72d9 Mon Sep 17 00:00:00 2001
+From: Mylene JOSSERAND <mylene.josserand@free-electrons.com>
+Date: Wed, 13 Dec 2017 13:34:07 +0100
+Subject: [PATCH] ASoC: sun8i-codec: Add ADC support for a33
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-The rt5514 dsp captures pcm data through spi directly, so we should not
-use rockchip-i2s as it's cpu dai like other codecs.
+Add ADC support for the sun8i-codec driver.
 
-Use dummy_dai for rt5514 dsp dailink to make voice wakeup work again.
+This driver uses microphones widgets and routes provided by the
+analog part (sun8i-codec-analog).
+Some digital configurations are needed by creating new ADC widgets
+and routes.
 
-Reported-by: Jimmy Cheng-Yi Chiang <cychiang@google.com>
-Fixes: (72cfb0f20c75 ASoC: rockchip: Use codec of_node and dai_name for rt5514 dsp)
-Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
-Tested-by: Brian Norris <briannorris@chromium.org>
+Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rk3399_gru_sound.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ sound/soc/sunxi/sun8i-codec.c | 82 +++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 80 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index d64fbbd50544..aa8ffd035377 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -367,7 +367,8 @@ static const struct snd_soc_dai_link rockchip_dais[] = {
- 	[DAILINK_RT5514_DSP] = {
- 		.name = "RT5514 DSP",
- 		.stream_name = "Wake on Voice",
--		.codec_dai_name = "rt5514-dsp-cpu-dai",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
- 	},
+diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+index 3dd183be08a4..7a15df924316 100644
+--- a/sound/soc/sunxi/sun8i-codec.c
++++ b/sound/soc/sunxi/sun8i-codec.c
+@@ -37,9 +37,11 @@
+ #define SUN8I_SYSCLK_CTL_SYSCLK_SRC			0
+ #define SUN8I_MOD_CLK_ENA				0x010
+ #define SUN8I_MOD_CLK_ENA_AIF1				15
++#define SUN8I_MOD_CLK_ENA_ADC				3
+ #define SUN8I_MOD_CLK_ENA_DAC				2
+ #define SUN8I_MOD_RST_CTL				0x014
+ #define SUN8I_MOD_RST_CTL_AIF1				15
++#define SUN8I_MOD_RST_CTL_ADC				3
+ #define SUN8I_MOD_RST_CTL_DAC				2
+ #define SUN8I_SYS_SR_CTRL				0x018
+ #define SUN8I_SYS_SR_CTRL_AIF1_FS			12
+@@ -54,9 +56,25 @@
+ #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ		4
+ #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_16		(1 << 4)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT		2
++#define SUN8I_AIF1_ADCDAT_CTRL				0x044
++#define SUN8I_AIF1_ADCDAT_CTRL_AIF1_DA0L_ENA		15
++#define SUN8I_AIF1_ADCDAT_CTRL_AIF1_DA0R_ENA		14
+ #define SUN8I_AIF1_DACDAT_CTRL				0x048
+ #define SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0L_ENA		15
+ #define SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_ENA		14
++#define SUN8I_AIF1_MXR_SRC				0x04c
++#define SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_AIF1DA0L	15
++#define SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_AIF2DACL	14
++#define SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_ADCL		13
++#define SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_AIF2DACR	12
++#define SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF1DA0R	11
++#define SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF2DACR	10
++#define SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_ADCR		9
++#define SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF2DACL	8
++#define SUN8I_ADC_DIG_CTRL				0x100
++#define SUN8I_ADC_DIG_CTRL_ENDA			15
++#define SUN8I_ADC_DIG_CTRL_ADOUT_DTS			2
++#define SUN8I_ADC_DIG_CTRL_ADOUT_DLY			1
+ #define SUN8I_DAC_DIG_CTRL				0x120
+ #define SUN8I_DAC_DIG_CTRL_ENDA			15
+ #define SUN8I_DAC_MXR_SRC				0x130
+@@ -338,10 +356,30 @@ static const struct snd_kcontrol_new sun8i_dac_mixer_controls[] = {
+ 			SUN8I_DAC_MXR_SRC_DACR_MXR_SRC_ADCR, 1, 0),
  };
  
-@@ -528,7 +529,18 @@ static int rockchip_sound_of_parse_dais(struct device *dev,
- 		if (index < 0)
- 			continue;
- 
--		np_cpu = (index == DAILINK_CDNDP) ? np_cpu1 : np_cpu0;
-+		switch (index) {
-+		case DAILINK_CDNDP:
-+			np_cpu = np_cpu1;
-+			break;
-+		case DAILINK_RT5514_DSP:
-+			np_cpu = np_codec;
-+			break;
-+		default:
-+			np_cpu = np_cpu0;
-+			break;
-+		}
++static const struct snd_kcontrol_new sun8i_input_mixer_controls[] = {
++	SOC_DAPM_DOUBLE("AIF1 Slot 0 Digital ADC Capture Switch",
++			SUN8I_AIF1_MXR_SRC,
++			SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_AIF1DA0L,
++			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF1DA0R, 1, 0),
++	SOC_DAPM_DOUBLE("AIF2 Digital ADC Capture Switch", SUN8I_AIF1_MXR_SRC,
++			SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_AIF2DACL,
++			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF2DACR, 1, 0),
++	SOC_DAPM_DOUBLE("AIF1 Data Digital ADC Capture Switch",
++			SUN8I_AIF1_MXR_SRC,
++			SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_ADCL,
++			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_ADCR, 1, 0),
++	SOC_DAPM_DOUBLE("AIF2 Inv Digital ADC Capture Switch",
++			SUN8I_AIF1_MXR_SRC,
++			SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_AIF2DACR,
++			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF2DACL, 1, 0),
++};
 +
- 		if (!np_cpu) {
- 			dev_err(dev, "Missing 'rockchip,cpu' for %s\n",
- 				rockchip_dais[index].name);
-@@ -538,7 +550,8 @@ static int rockchip_sound_of_parse_dais(struct device *dev,
- 		dai = &card->dai_link[card->num_links++];
- 		*dai = rockchip_dais[index];
+ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
+-	/* Digital parts of the DACs */
++	/* Digital parts of the DACs and ADC */
+ 	SND_SOC_DAPM_SUPPLY("DAC", SUN8I_DAC_DIG_CTRL, SUN8I_DAC_DIG_CTRL_ENDA,
+ 			    0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("ADC", SUN8I_ADC_DIG_CTRL, SUN8I_ADC_DIG_CTRL_ENDA,
++			    0, NULL, 0),
  
--		dai->codec_of_node = np_codec;
-+		if (!dai->codec_name)
-+			dai->codec_of_node = np_codec;
- 		dai->platform_of_node = np_cpu;
- 		dai->cpu_of_node = np_cpu;
+ 	/* Analog DAC AIF */
+ 	SND_SOC_DAPM_AIF_IN("AIF1 Slot 0 Left", "Playback", 0,
+@@ -351,17 +389,31 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
+ 			    SUN8I_AIF1_DACDAT_CTRL,
+ 			    SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_ENA, 0),
  
+-	/* DAC Mixers */
++	/* Analog ADC AIF */
++	SND_SOC_DAPM_AIF_IN("AIF1 Slot 0 Left ADC", "Capture", 0,
++			    SUN8I_AIF1_ADCDAT_CTRL,
++			    SUN8I_AIF1_ADCDAT_CTRL_AIF1_DA0L_ENA, 0),
++	SND_SOC_DAPM_AIF_IN("AIF1 Slot 0 Right ADC", "Capture", 0,
++			    SUN8I_AIF1_ADCDAT_CTRL,
++			    SUN8I_AIF1_ADCDAT_CTRL_AIF1_DA0R_ENA, 0),
++
++	/* DAC and ADC Mixers */
+ 	SOC_MIXER_ARRAY("Left Digital DAC Mixer", SND_SOC_NOPM, 0, 0,
+ 			sun8i_dac_mixer_controls),
+ 	SOC_MIXER_ARRAY("Right Digital DAC Mixer", SND_SOC_NOPM, 0, 0,
+ 			sun8i_dac_mixer_controls),
++	SOC_MIXER_ARRAY("Left Digital ADC Mixer", SND_SOC_NOPM, 0, 0,
++			sun8i_input_mixer_controls),
++	SOC_MIXER_ARRAY("Right Digital ADC Mixer", SND_SOC_NOPM, 0, 0,
++			sun8i_input_mixer_controls),
+ 
+ 	/* Clocks */
+ 	SND_SOC_DAPM_SUPPLY("MODCLK AFI1", SUN8I_MOD_CLK_ENA,
+ 			    SUN8I_MOD_CLK_ENA_AIF1, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("MODCLK DAC", SUN8I_MOD_CLK_ENA,
+ 			    SUN8I_MOD_CLK_ENA_DAC, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("MODCLK ADC", SUN8I_MOD_CLK_ENA,
++			    SUN8I_MOD_CLK_ENA_ADC, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("AIF1", SUN8I_SYSCLK_CTL,
+ 			    SUN8I_SYSCLK_CTL_AIF1CLK_ENA, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("SYSCLK", SUN8I_SYSCLK_CTL,
+@@ -378,6 +430,12 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
+ 			    SUN8I_MOD_RST_CTL_AIF1, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("RST DAC", SUN8I_MOD_RST_CTL,
+ 			    SUN8I_MOD_RST_CTL_DAC, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("RST ADC", SUN8I_MOD_RST_CTL,
++			    SUN8I_MOD_RST_CTL_ADC, 0, NULL, 0),
++
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++	SND_SOC_DAPM_MIC("Mic", NULL),
++
+ };
+ 
+ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
+@@ -387,11 +445,16 @@ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
+ 	{ "RST AIF1", NULL, "AIF1 PLL" },
+ 	{ "MODCLK AFI1", NULL, "RST AIF1" },
+ 	{ "DAC", NULL, "MODCLK AFI1" },
++	{ "ADC", NULL, "MODCLK AFI1" },
+ 
+ 	{ "RST DAC", NULL, "SYSCLK" },
+ 	{ "MODCLK DAC", NULL, "RST DAC" },
+ 	{ "DAC", NULL, "MODCLK DAC" },
+ 
++	{ "RST ADC", NULL, "SYSCLK" },
++	{ "MODCLK ADC", NULL, "RST ADC" },
++	{ "ADC", NULL, "MODCLK ADC" },
++
+ 	/* DAC Routes */
+ 	{ "AIF1 Slot 0 Right", NULL, "DAC" },
+ 	{ "AIF1 Slot 0 Left", NULL, "DAC" },
+@@ -401,6 +464,12 @@ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
+ 	  "AIF1 Slot 0 Left"},
+ 	{ "Right Digital DAC Mixer", "AIF1 Slot 0 Digital DAC Playback Switch",
+ 	  "AIF1 Slot 0 Right"},
++
++	/* ADC routes */
++	{ "Left Digital ADC Mixer", "AIF1 Data Digital ADC Capture Switch",
++	  "AIF1 Slot 0 Left ADC" },
++	{ "Right Digital ADC Mixer", "AIF1 Data Digital ADC Capture Switch",
++	  "AIF1 Slot 0 Right ADC" },
+ };
+ 
+ static const struct snd_soc_dai_ops sun8i_codec_dai_ops = {
+@@ -418,6 +487,15 @@ static struct snd_soc_dai_driver sun8i_codec_dai = {
+ 		.rates = SNDRV_PCM_RATE_8000_192000,
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
++	/* capture capabilities */
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = 1,
++		.channels_max = 2,
++		.rates = SNDRV_PCM_RATE_8000_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		.sig_bits = 24,
++	},
+ 	/* pcm operations */
+ 	.ops = &sun8i_codec_dai_ops,
+ };
 -- 
 2.15.1
+
+
+--===============2437379022154144556==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2437379022154144556==--
