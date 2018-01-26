@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: compress: Correct handling of copy callback" to the asoc tree
-Date: Fri, 26 Jan 2018 15:23:34 +0000
-Message-ID: <E1ef5qo-0006Br-0u@debutante>
-References: <20180126130845.7122-1-ckeepax@opensource.cirrus.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20180126130845.7122-1-ckeepax@opensource.cirrus.com>
-Sender: stable-owner@vger.kernel.org
+Subject: Applied "ASoC: compress: Remove some extraneous blank
+	lines" to the asoc tree
+Date: Fri, 26 Jan 2018 15:25:45 +0000
+Message-ID: <E1ef5sv-0006YX-Qz@debutante>
+References: <20180126130845.7122-2-ckeepax@opensource.cirrus.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D13026721A
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jan 2018 16:25:53 +0100 (CET)
+In-Reply-To: <20180126130845.7122-2-ckeepax@opensource.cirrus.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgbroonie@kernel.org, alsa-devel@alsa-project.org, ladis@linux-mips.org, kuninori.morimoto.gx@renesas.com, vinod.koul@intel.com, lgirdwood@gmail.com, dan.carpenter@oracle.comalsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, ladis@linux-mips.org, kuninori.morimoto.gx@renesas.com, vinod.koul@intel.com, lgirdwood@gmail.com, broonie@kernel.org, dan.carpenter@oracle.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: compress: Correct handling of copy callback
+   ASoC: compress: Remove some extraneous blank lines
 
 has been applied to the asoc tree at
 
@@ -37,65 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From 290df4d3ab192821b66857c05346b23056ee9545 Mon Sep 17 00:00:00 2001
+>From b2154d729edad549842cdbaae4beda18dbb425ff Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Fri, 26 Jan 2018 13:08:43 +0000
-Subject: [PATCH] ASoC: compress: Correct handling of copy callback
+Date: Fri, 26 Jan 2018 13:08:44 +0000
+Subject: [PATCH] ASoC: compress: Remove some extraneous blank lines
 
-The soc_compr_copy callback is currently broken. Since the
-changes to move the compr_ops over to the component the return
-value is not correctly propagated, always returning zero on
-success rather than the number of bytes copied. This causes
-user-space to stall continuously reading as it does not believe
-it has received any data.
-
-Furthermore, the changes to move the compr_ops over to the
-component iterate through the list of components and will call
-the copy callback for any that have compressed ops. There isn't
-currently any consensus on the mechanism to combine the results
-of multiple copy callbacks.
-
-To fix this issue for now halt searching the component list when
-we locate a copy callback and return the result of that single
-callback. Additional work should probably be done to look at the
-other ops, tidy things up, and work out if we want to support
-multiple components on a single compressed, but this is the only
-fix required to get things working again.
-
-Fixes: 9e7e3738ab0e ("ASoC: snd_soc_component_driver has snd_compr_ops")
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/soc-compress.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/soc-compress.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index d9b1e6417fb9..1507117d1185 100644
+index 7973f92cd40f..b1cf758e3be2 100644
 --- a/sound/soc/soc-compress.c
 +++ b/sound/soc/soc-compress.c
-@@ -944,7 +944,7 @@ static int soc_compr_copy(struct snd_compr_stream *cstream,
- 	struct snd_soc_platform *platform = rtd->platform;
- 	struct snd_soc_component *component;
- 	struct snd_soc_rtdcom_list *rtdcom;
--	int ret = 0, __ret;
-+	int ret = 0;
- 
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
- 
-@@ -965,10 +965,10 @@ static int soc_compr_copy(struct snd_compr_stream *cstream,
- 		    !component->driver->compr_ops->copy)
- 			continue;
- 
--		__ret = component->driver->compr_ops->copy(cstream, buf, count);
--		if (__ret < 0)
--			ret = __ret;
-+		ret = component->driver->compr_ops->copy(cstream, buf, count);
-+		break;
+@@ -145,7 +145,6 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+ 		}
  	}
-+
- err:
- 	mutex_unlock(&rtd->pcm_mutex);
- 	return ret;
+ 
+-
+ 	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->open) {
+ 		ret = platform->driver->compr_ops->open(cstream);
+ 		if (ret < 0) {
+@@ -307,7 +306,6 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
+ 	if (!codec_dai->active)
+ 		codec_dai->rate = 0;
+ 
+-
+ 	if (rtd->dai_link->compr_ops && rtd->dai_link->compr_ops->shutdown)
+ 		rtd->dai_link->compr_ops->shutdown(cstream);
+ 
+@@ -460,7 +458,6 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
+ 	if (cpu_dai->driver->cops && cpu_dai->driver->cops->trigger)
+ 		cpu_dai->driver->cops->trigger(cstream, cmd, cpu_dai);
+ 
+-
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 		snd_soc_dai_digital_mute(codec_dai, 0, cstream->direction);
 -- 
 2.15.1
