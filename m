@@ -1,95 +1,56 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH 1/3] ASoC: compress: Correct handling of copy
-	callback
-Date: Fri, 26 Jan 2018 13:08:43 +0000
-Message-ID: <20180126130845.7122-1-ckeepax@opensource.cirrus.com>
+From: <peter.enderborg@sony.com>
+Subject: [PATCH v2 0/5] selinux:Significant reduce of preempt_disable holds
+Date: Fri, 26 Jan 2018 15:32:36 +0100
+Message-ID: <20180126143241.23108-1-peter.enderborg@sony.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id EEC06267666
- for <alsa-devel@alsa-project.org>; Fri, 26 Jan 2018 14:08:56 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, ladis@linux-mips.org, kuninori.morimoto.gx@renesas.com, vinod.koul@intel.com, lgirdwood@gmail.com, dan.carpenter@oracle.com
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Paul Moore <paul@paul-moore.com>, Stephen Smalley <sds@tycho.nsa.gov>, Eric Paris <eparis@parisplace.org>, James Morris <james.l.morris@oracle.com>, Daniel Jurgens <danielj@mellanox.com>, Doug Ledford <dledford@redhat.com>, selinux@tycho.nsa.gov, linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, alsa-devel@alsa-project.org, "Serge E . Hallyn" <serge@hallyn.com>
 List-Id: alsa-devel@alsa-project.org
 
-The soc_compr_copy callback is currently broken. Since the
-changes to move the compr_ops over to the component the return
-value is not correctly propagated, always returning zero on
-success rather than the number of bytes copied. This causes
-user-space to stall continuously reading as it does not believe
-it has received any data.
+Holding the preempt_disable is very bad for low latency tasks
+as audio and therefore we need to break out the rule-set dependent
+part from this disable. By using a RCU instead of rwlock we
+have an efficient locking and less preemption interference.
 
-Furthermore, the changes to move the compr_ops over to the
-component iterate through the list of components and will call
-the copy callback for any that have compressed ops. There isn't
-currently any consensus on the mechanism to combine the results
-of multiple copy callbacks.
+Selinux uses a lot of read_locks. This patch replaces the rwlock
+with RCY that does not hold preempt_disable.
 
-To fix this issue for now halt searching the component list when
-we locate a copy callback and return the result of that single
-callback. Additional work should probably be done to look at the
-other ops, tidy things up, and work out if we want to support
-multiple components on a single compressed, but this is the only
-fix required to get things working again.
+Intel Xeon W3520 2.67 Ghz running FC27 with 4.15.0-rc9git (+measurement)
+I get preempt_disable in worst case for 1.2ms in security_compute_av().
+With the patch I get 960us as the longest security_compute_av()
+without preempt disabeld. It very much noise in the measurement
+but it is not likely a degrade.
 
-Fixes: 9e7e3738ab0e ("ASoC: snd_soc_component_driver has snd_compr_ops")
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
+And the preempt_disable times is also very dependent on the selinux
+rule-set.
 
-Ok here is the simpler fix that should make it much easier to
-either sneak this into 4.15 or at least apply it to stable.
+In security_get_user_sids() we have two nested for-loops and the
+inner part calls sittab_context_to_sid() that calls
+sidtab_search_context() that has a for loop() over a while() where
+the loops is dependent on the rules.
 
-Going to do a little more thinking on the full patch before I
-send again that need to really wrap my head around what the
-intentions are with trying to enable multiple components to
-furfil the same role. If anyone has any thoughts on use cases
-etc. for this please do send them on :-)
+On the test system the average lookup time is 60us and does
+not change with the RCU usage.
 
-Thanks,
-Charles
+To use RCU the structure of policydb has to be accesses through a pointer.
+We need 4 patches to get there.
 
+  [PATCH v2 1/5] selinux:Remove direct references to policydb.
+  We remove direct references and pass it through function arguments.
 
- sound/soc/soc-compress.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+  [PATCH v2 2/5] selinux: Move policydb to pointer structure
+  Move the policydb to dynamic allocated structure.
 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 81232f4ab614b..7973f92cd40f5 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -944,7 +944,7 @@ static int soc_compr_copy(struct snd_compr_stream *cstream,
- 	struct snd_soc_platform *platform = rtd->platform;
- 	struct snd_soc_component *component;
- 	struct snd_soc_rtdcom_list *rtdcom;
--	int ret = 0, __ret;
-+	int ret = 0;
- 
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
- 
-@@ -965,10 +965,10 @@ static int soc_compr_copy(struct snd_compr_stream *cstream,
- 		    !component->driver->compr_ops->copy)
- 			continue;
- 
--		__ret = component->driver->compr_ops->copy(cstream, buf, count);
--		if (__ret < 0)
--			ret = __ret;
-+		ret = component->driver->compr_ops->copy(cstream, buf, count);
-+		break;
- 	}
-+
- err:
- 	mutex_unlock(&rtd->pcm_mutex);
- 	return ret;
--- 
-2.11.0
+  [PATCH v2 3/5] selinux: Move sidtab to pointer structure
+  Same as for policydb but for sidtab. They are closly related
+  and should be switched at the same time.
+  
+  [PATCH v2 4/5] selinux: Use pointer to switch policydb and sidtab
+  Now we can switch rules by switching pointers.
+
+  [PATCH v2 5/5] selinux: Switch locking to RCU.
+  We are now ready to use RCU.
+  
+History: V1 rwsem
