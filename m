@@ -1,11 +1,10 @@
 From: <peter.enderborg@sony.com>
-Subject: [PATCH v2 5/5] selinux: Switch locking to RCU.
-Date: Fri, 26 Jan 2018 15:32:41 +0100
-Message-ID: <20180126143241.23108-6-peter.enderborg@sony.com>
+Subject: [PATCH v2 2/5] selinux: Move policydb to pointer structure
+Date: Fri, 26 Jan 2018 15:32:38 +0100
+Message-ID: <20180126143241.23108-3-peter.enderborg@sony.com>
 References: <20180126143241.23108-1-peter.enderborg@sony.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180126143241.23108-1-peter.enderborg@sony.com>
 Sender: linux-kernel-owner@vger.kernel.org
@@ -15,662 +14,873 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Peter Enderborg <peter.enderborg@sony.com>
 
-This patch switch to using RCU locks instead of rwlocks. This has
-the big advantage that it does not has preempt disable.
+To be able to use rcu locks we seed to address the policydb
+though a pointer. This patch adds a pointer structure to
+repleace the static policydb.
 
 Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
-Reported-by: Björn Davidsson <bjorn.davidsson@sony.com>
 ---
- security/selinux/ss/services.c | 162 +++++++++++++++++++++--------------------
- 1 file changed, 82 insertions(+), 80 deletions(-)
+ security/selinux/ss/services.c | 274 ++++++++++++++++++++++-------------------
+ 1 file changed, 149 insertions(+), 125 deletions(-)
 
 diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
-index 81c5717..f142ef8 100644
+index 47d8030..21400bd 100644
 --- a/security/selinux/ss/services.c
 +++ b/security/selinux/ss/services.c
-@@ -87,7 +87,7 @@ int selinux_policycap_alwaysnetwork;
- int selinux_policycap_cgroupseclabel;
- int selinux_policycap_nnp_nosuid_transition;
+@@ -90,7 +90,6 @@ int selinux_policycap_nnp_nosuid_transition;
+ static DEFINE_RWLOCK(policy_rwlock);
  
--static DEFINE_RWLOCK(policy_rwlock);
-+static DEFINE_SPINLOCK(policy_w_lock);
- 
+ static struct sidtab sidtab;
+-static struct policydb policydb;
  int ss_initialized;
  
-@@ -115,14 +115,14 @@ struct selinux_mapping {
- 	u32 perms[sizeof(u32) * 8];
- };
- 
--struct shared_current_mapping {
-+struct shared_rcu_mapping {
+ /*
+@@ -120,6 +119,7 @@ struct selinux_mapping {
+ struct shared_current_mapping {
  	struct selinux_mapping *current_mapping;
  	u16 current_mapping_size;
- 	struct policydb policydb;
- 	struct sidtab sidtab;
++	struct policydb policydb;
  };
  
--static struct shared_current_mapping *crm;
-+static struct shared_rcu_mapping *crm;
+ static struct shared_current_mapping *crm;
+@@ -277,7 +277,7 @@ static void map_decision(u16 tclass, struct av_decision *avd,
  
- static int selinux_set_mapping(struct policydb *pol,
- 			       struct security_class_mapping *map,
-@@ -791,7 +791,7 @@ static int security_compute_validatetrans(u32 oldsid, u32 newsid, u32 tasksid,
- 	if (!ss_initialized)
- 		return 0;
- 
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 
- 	if (!user)
- 		tclass = unmap_class(orig_tclass);
-@@ -845,7 +845,7 @@ static int security_compute_validatetrans(u32 oldsid, u32 newsid, u32 tasksid,
- 	}
- 
- out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	return rc;
- }
- 
-@@ -879,7 +879,7 @@ int security_bounded_transition(u32 old_sid, u32 new_sid)
- 	int index;
- 	int rc;
- 
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 
- 	rc = -EINVAL;
- 	old_context = sidtab_search(&crm->sidtab, old_sid);
-@@ -941,7 +941,7 @@ int security_bounded_transition(u32 old_sid, u32 new_sid)
- 		kfree(old_name);
- 	}
- out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 
- 	return rc;
- }
-@@ -1029,7 +1029,7 @@ void security_compute_xperms_decision(u32 ssid,
- 	memset(xpermd->auditallow->p, 0, sizeof(xpermd->auditallow->p));
- 	memset(xpermd->dontaudit->p, 0, sizeof(xpermd->dontaudit->p));
- 
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 	if (!ss_initialized)
- 		goto allow;
- 
-@@ -1083,7 +1083,7 @@ void security_compute_xperms_decision(u32 ssid,
- 		}
- 	}
- out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	return;
- allow:
- 	memset(xpermd->allowed->p, 0xff, sizeof(xpermd->allowed->p));
-@@ -1110,7 +1110,7 @@ void security_compute_av(u32 ssid,
- 	u16 tclass;
- 	struct context *scontext = NULL, *tcontext = NULL;
- 
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 	avd_init(avd);
- 	xperms->len = 0;
- 	if (!ss_initialized)
-@@ -1143,7 +1143,7 @@ void security_compute_av(u32 ssid,
- 	context_struct_compute_av(scontext, tcontext, tclass, avd, xperms);
- 	map_decision(orig_tclass, avd, crm->policydb.allow_unknown);
- out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	return;
- allow:
- 	avd->allowed = 0xffffffff;
-@@ -1157,7 +1157,7 @@ void security_compute_av_user(u32 ssid,
+ int security_mls_enabled(void)
  {
- 	struct context *scontext = NULL, *tcontext = NULL;
+-	return policydb.mls_enabled;
++	return crm->policydb.mls_enabled;
+ }
  
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 	avd_init(avd);
- 	if (!ss_initialized)
- 		goto allow;
-@@ -1188,7 +1188,7 @@ void security_compute_av_user(u32 ssid,
+ /*
+@@ -335,8 +335,8 @@ static int constraint_expr_eval(struct context *scontext,
+ 			case CEXPR_ROLE:
+ 				val1 = scontext->role;
+ 				val2 = tcontext->role;
+-				r1 = policydb.role_val_to_struct[val1 - 1];
+-				r2 = policydb.role_val_to_struct[val2 - 1];
++				r1 = crm->policydb.role_val_to_struct[val1 - 1];
++				r2 = crm->policydb.role_val_to_struct[val2 - 1];
+ 				switch (e->op) {
+ 				case CEXPR_DOM:
+ 					s[++sp] = ebitmap_get_bit(&r1->dominates,
+@@ -501,8 +501,8 @@ static void security_dump_masked_av(struct context *scontext,
+ 	if (!permissions)
+ 		return;
  
- 	context_struct_compute_av(scontext, tcontext, tclass, avd, NULL);
-  out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	return;
- allow:
- 	avd->allowed = 0xffffffff;
-@@ -1293,7 +1293,7 @@ static int security_sid_to_context_core(u32 sid, char **scontext,
+-	tclass_name = sym_name(&policydb, SYM_CLASSES, tclass - 1);
+-	tclass_dat = policydb.class_val_to_struct[tclass - 1];
++	tclass_name = sym_name(&crm->policydb, SYM_CLASSES, tclass - 1);
++	tclass_dat = crm->policydb.class_val_to_struct[tclass - 1];
+ 	common_dat = tclass_dat->comdatum;
+ 
+ 	/* init permission_names */
+@@ -571,14 +571,14 @@ static void type_attribute_bounds_av(struct context *scontext,
+ 	struct type_datum *target;
+ 	u32 masked = 0;
+ 
+-	source = flex_array_get_ptr(policydb.type_val_to_struct_array,
++	source = flex_array_get_ptr(crm->policydb.type_val_to_struct_array,
+ 				    scontext->type - 1);
+ 	BUG_ON(!source);
+ 
+ 	if (!source->bounds)
+ 		return;
+ 
+-	target = flex_array_get_ptr(policydb.type_val_to_struct_array,
++	target = flex_array_get_ptr(crm->policydb.type_val_to_struct_array,
+ 				    tcontext->type - 1);
+ 	BUG_ON(!target);
+ 
+@@ -664,13 +664,13 @@ static void context_struct_compute_av(struct context *scontext,
+ 		xperms->len = 0;
+ 	}
+ 
+-	if (unlikely(!tclass || tclass > policydb.p_classes.nprim)) {
++	if (unlikely(!tclass || tclass > crm->policydb.p_classes.nprim)) {
+ 		if (printk_ratelimit())
+ 			printk(KERN_WARNING "SELinux:  Invalid class %hu\n", tclass);
+ 		return;
+ 	}
+ 
+-	tclass_datum = policydb.class_val_to_struct[tclass - 1];
++	tclass_datum = crm->policydb.class_val_to_struct[tclass - 1];
+ 
+ 	/*
+ 	 * If a specific type enforcement rule was defined for
+@@ -678,15 +678,18 @@ static void context_struct_compute_av(struct context *scontext,
+ 	 */
+ 	avkey.target_class = tclass;
+ 	avkey.specified = AVTAB_AV | AVTAB_XPERMS;
+-	sattr = flex_array_get(policydb.type_attr_map_array, scontext->type - 1);
++	sattr = flex_array_get(crm->policydb.type_attr_map_array,
++			       scontext->type - 1);
+ 	BUG_ON(!sattr);
+-	tattr = flex_array_get(policydb.type_attr_map_array, tcontext->type - 1);
++	tattr = flex_array_get(crm->policydb.type_attr_map_array,
++			       tcontext->type - 1);
+ 	BUG_ON(!tattr);
+ 	ebitmap_for_each_positive_bit(sattr, snode, i) {
+ 		ebitmap_for_each_positive_bit(tattr, tnode, j) {
+ 			avkey.source_type = i + 1;
+ 			avkey.target_type = j + 1;
+-			for (node = avtab_search_node(&policydb.te_avtab, &avkey);
++			for (node = avtab_search_node(&crm->policydb.te_avtab,
++						      &avkey);
+ 			     node;
+ 			     node = avtab_search_node_next(node, avkey.specified)) {
+ 				if (node->key.specified == AVTAB_ALLOWED)
+@@ -700,7 +703,7 @@ static void context_struct_compute_av(struct context *scontext,
+ 			}
+ 
+ 			/* Check conditional av table for additional permissions */
+-			cond_compute_av(&policydb.te_cond_avtab, &avkey,
++			cond_compute_av(&crm->policydb.te_cond_avtab, &avkey,
+ 					avd, xperms);
+ 
+ 		}
+@@ -725,16 +728,16 @@ static void context_struct_compute_av(struct context *scontext,
+ 	 * role is changing, then check the (current_role, new_role)
+ 	 * pair.
+ 	 */
+-	if (tclass == policydb.process_class &&
+-	    (avd->allowed & policydb.process_trans_perms) &&
++	if (tclass == crm->policydb.process_class &&
++	    (avd->allowed & crm->policydb.process_trans_perms) &&
+ 	    scontext->role != tcontext->role) {
+-		for (ra = policydb.role_allow; ra; ra = ra->next) {
++		for (ra = crm->policydb.role_allow; ra; ra = ra->next) {
+ 			if (scontext->role == ra->role &&
+ 			    tcontext->role == ra->new_role)
+ 				break;
+ 		}
+ 		if (!ra)
+-			avd->allowed &= ~policydb.process_trans_perms;
++			avd->allowed &= ~crm->policydb.process_trans_perms;
+ 	}
+ 
+ 	/*
+@@ -763,7 +766,7 @@ static int security_validtrans_handle_fail(struct context *ocontext,
+ 	audit_log(current->audit_context, GFP_ATOMIC, AUDIT_SELINUX_ERR,
+ 		  "op=security_validate_transition seresult=denied"
+ 		  " oldcontext=%s newcontext=%s taskcontext=%s tclass=%s",
+-		  o, n, t, sym_name(&policydb, SYM_CLASSES, tclass-1));
++		  o, n, t, sym_name(&crm->policydb, SYM_CLASSES, tclass-1));
+ out:
+ 	kfree(o);
+ 	kfree(n);
+@@ -795,11 +798,11 @@ static int security_compute_validatetrans(u32 oldsid, u32 newsid, u32 tasksid,
+ 	else
+ 		tclass = orig_tclass;
+ 
+-	if (!tclass || tclass > policydb.p_classes.nprim) {
++	if (!tclass || tclass > crm->policydb.p_classes.nprim) {
  		rc = -EINVAL;
  		goto out;
  	}
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 	if (force)
- 		context = sidtab_search_force(&crm->sidtab, sid);
- 	else
-@@ -1306,7 +1306,7 @@ static int security_sid_to_context_core(u32 sid, char **scontext,
+-	tclass_datum = policydb.class_val_to_struct[tclass - 1];
++	tclass_datum = crm->policydb.class_val_to_struct[tclass - 1];
+ 
+ 	ocontext = sidtab_search(&sidtab, oldsid);
+ 	if (!ocontext) {
+@@ -901,7 +904,7 @@ int security_bounded_transition(u32 old_sid, u32 new_sid)
+ 
+ 	index = new_context->type;
+ 	while (true) {
+-		type = flex_array_get_ptr(policydb.type_val_to_struct_array,
++		type = flex_array_get_ptr(crm->policydb.type_val_to_struct_array,
+ 					  index - 1);
+ 		BUG_ON(!type);
+ 
+@@ -1046,35 +1049,36 @@ void security_compute_xperms_decision(u32 ssid,
+ 
+ 	tclass = unmap_class(orig_tclass);
+ 	if (unlikely(orig_tclass && !tclass)) {
+-		if (policydb.allow_unknown)
++		if (crm->policydb.allow_unknown)
+ 			goto allow;
+ 		goto out;
  	}
- 	rc = context_struct_to_string(context, scontext, scontext_len);
- out_unlock:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
+ 
+ 
+-	if (unlikely(!tclass || tclass > policydb.p_classes.nprim)) {
++	if (unlikely(!tclass || tclass > crm->policydb.p_classes.nprim)) {
+ 		pr_warn_ratelimited("SELinux:  Invalid class %hu\n", tclass);
+ 		goto out;
+ 	}
+ 
+ 	avkey.target_class = tclass;
+ 	avkey.specified = AVTAB_XPERMS;
+-	sattr = flex_array_get(policydb.type_attr_map_array,
++	sattr = flex_array_get(crm->policydb.type_attr_map_array,
+ 				scontext->type - 1);
+ 	BUG_ON(!sattr);
+-	tattr = flex_array_get(policydb.type_attr_map_array,
++	tattr = flex_array_get(crm->policydb.type_attr_map_array,
+ 				tcontext->type - 1);
+ 	BUG_ON(!tattr);
+ 	ebitmap_for_each_positive_bit(sattr, snode, i) {
+ 		ebitmap_for_each_positive_bit(tattr, tnode, j) {
+ 			avkey.source_type = i + 1;
+ 			avkey.target_type = j + 1;
+-			for (node = avtab_search_node(&policydb.te_avtab, &avkey);
++			for (node = avtab_search_node(&crm->policydb.te_avtab,
++						      &avkey);
+ 			     node;
+ 			     node = avtab_search_node_next(node, avkey.specified))
+ 				services_compute_xperms_decision(xpermd, node);
+ 
+-			cond_compute_xperms(&policydb.te_cond_avtab,
++			cond_compute_xperms(&crm->policydb.te_cond_avtab,
+ 						&avkey, xpermd);
+ 		}
+ 	}
+@@ -1120,7 +1124,7 @@ void security_compute_av(u32 ssid,
+ 	}
+ 
+ 	/* permissive domain? */
+-	if (ebitmap_get_bit(&policydb.permissive_map, scontext->type))
++	if (ebitmap_get_bit(&crm->policydb.permissive_map, scontext->type))
+ 		avd->flags |= AVD_FLAGS_PERMISSIVE;
+ 
+ 	tcontext = sidtab_search(&sidtab, tsid);
+@@ -1132,12 +1136,12 @@ void security_compute_av(u32 ssid,
+ 
+ 	tclass = unmap_class(orig_tclass);
+ 	if (unlikely(orig_tclass && !tclass)) {
+-		if (policydb.allow_unknown)
++		if (crm->policydb.allow_unknown)
+ 			goto allow;
+ 		goto out;
+ 	}
+ 	context_struct_compute_av(scontext, tcontext, tclass, avd, xperms);
+-	map_decision(orig_tclass, avd, policydb.allow_unknown);
++	map_decision(orig_tclass, avd, crm->policydb.allow_unknown);
  out:
- 	return rc;
- 
-@@ -1458,7 +1458,7 @@ static int security_context_to_sid_core(const char *scontext, u32 scontext_len,
- 			goto out;
+ 	read_unlock(&policy_rwlock);
+ 	return;
+@@ -1166,7 +1170,7 @@ void security_compute_av_user(u32 ssid,
  	}
  
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 	rc = string_to_context_struct(&crm->policydb, &crm->sidtab, scontext2,
+ 	/* permissive domain? */
+-	if (ebitmap_get_bit(&policydb.permissive_map, scontext->type))
++	if (ebitmap_get_bit(&crm->policydb.permissive_map, scontext->type))
+ 		avd->flags |= AVD_FLAGS_PERMISSIVE;
+ 
+ 	tcontext = sidtab_search(&sidtab, tsid);
+@@ -1177,7 +1181,7 @@ void security_compute_av_user(u32 ssid,
+ 	}
+ 
+ 	if (unlikely(!tclass)) {
+-		if (policydb.allow_unknown)
++		if (crm->policydb.allow_unknown)
+ 			goto allow;
+ 		goto out;
+ 	}
+@@ -1217,10 +1221,13 @@ static int context_struct_to_string(struct context *context, char **scontext, u3
+ 	}
+ 
+ 	/* Compute the size of the context. */
+-	*scontext_len += strlen(sym_name(&policydb, SYM_USERS, context->user - 1)) + 1;
+-	*scontext_len += strlen(sym_name(&policydb, SYM_ROLES, context->role - 1)) + 1;
+-	*scontext_len += strlen(sym_name(&policydb, SYM_TYPES, context->type - 1)) + 1;
+-	*scontext_len += mls_compute_context_len(&policydb, context);
++	*scontext_len += strlen(sym_name(&crm->policydb, SYM_USERS,
++					 context->user - 1)) + 1;
++	*scontext_len += strlen(sym_name(&crm->policydb, SYM_ROLES,
++					 context->role - 1)) + 1;
++	*scontext_len += strlen(sym_name(&crm->policydb, SYM_TYPES,
++					 context->type - 1)) + 1;
++	*scontext_len += mls_compute_context_len(&crm->policydb, context);
+ 
+ 	if (!scontext)
+ 		return 0;
+@@ -1235,11 +1242,11 @@ static int context_struct_to_string(struct context *context, char **scontext, u3
+ 	 * Copy the user name, role name and type name into the context.
+ 	 */
+ 	scontextp += sprintf(scontextp, "%s:%s:%s",
+-		sym_name(&policydb, SYM_USERS, context->user - 1),
+-		sym_name(&policydb, SYM_ROLES, context->role - 1),
+-		sym_name(&policydb, SYM_TYPES, context->type - 1));
++		sym_name(&crm->policydb, SYM_USERS, context->user - 1),
++		sym_name(&crm->policydb, SYM_ROLES, context->role - 1),
++		sym_name(&crm->policydb, SYM_TYPES, context->type - 1));
+ 
+-	mls_sid_to_context(&policydb, context, &scontextp);
++	mls_sid_to_context(&crm->policydb, context, &scontextp);
+ 
+ 	*scontextp = 0;
+ 
+@@ -1452,7 +1459,7 @@ static int security_context_to_sid_core(const char *scontext, u32 scontext_len,
+ 	}
+ 
+ 	read_lock(&policy_rwlock);
+-	rc = string_to_context_struct(&policydb, &sidtab, scontext2,
++	rc = string_to_context_struct(&crm->policydb, &sidtab, scontext2,
  				      scontext_len, &context, def_sid);
  	if (rc == -EINVAL && force) {
-@@ -1470,7 +1470,7 @@ static int security_context_to_sid_core(const char *scontext, u32 scontext_len,
- 	rc = sidtab_context_to_sid(&crm->sidtab, &context, sid);
- 	context_destroy(&context);
- out_unlock:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
+ 		context.str = str;
+@@ -1546,7 +1553,7 @@ static int compute_sid_handle_invalid_context(
+ 		  " scontext=%s"
+ 		  " tcontext=%s"
+ 		  " tclass=%s",
+-		  n, s, t, sym_name(&policydb, SYM_CLASSES, tclass-1));
++		  n, s, t, sym_name(&crm->policydb, SYM_CLASSES, tclass-1));
  out:
- 	kfree(scontext2);
- 	kfree(str);
-@@ -1620,7 +1620,7 @@ static int security_compute_sid(u32 ssid,
- 
- 	context_init(&newcontext);
- 
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 
- 	if (kern) {
- 		tclass = unmap_class(orig_tclass);
-@@ -1759,7 +1759,7 @@ static int security_compute_sid(u32 ssid,
- 	/* Obtain the sid for the context. */
- 	rc = sidtab_context_to_sid(&crm->sidtab, &newcontext, out_sid);
- out_unlock:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	context_destroy(&newcontext);
- out:
- 	return rc;
-@@ -2051,7 +2051,6 @@ static void security_load_policycaps(struct policydb *pdb)
- }
- 
- static int security_preserve_bools(struct policydb *p);
--
- /**
-  * security_load_policy - Load a security policy configuration.
-  * @data: binary policy data
-@@ -2068,17 +2067,17 @@ int security_load_policy(void *data, size_t len)
- 	struct sidtab oldsidtab, newsidtab;
- 	struct selinux_mapping *oldmap = NULL, *map = NULL;
- 	struct convert_context_args args;
--	struct shared_current_mapping *next_rcu;
--	struct shared_current_mapping *old_rcu;
-+	struct shared_rcu_mapping *next_rcu;
-+	struct shared_rcu_mapping *old_rcu;
- 	u32 seqno;
- 	u16 map_size;
- 	int rc = 0;
- 	struct policy_file file = { data, len }, *fp = &file;
- 
- 	if (!ss_initialized) {
--		struct shared_current_mapping *first_mapping;
-+		struct shared_rcu_mapping *first_mapping;
- 
--		first_mapping = kzalloc(sizeof(struct shared_current_mapping),
-+		first_mapping = kzalloc(sizeof(struct shared_rcu_mapping),
- 					GFP_KERNEL);
- 		if (!first_mapping) {
- 			rc = -ENOMEM;
-@@ -2145,7 +2144,7 @@ int security_load_policy(void *data, size_t len)
- 		goto out;
+ 	kfree(s);
+ 	kfree(t);
+@@ -1638,8 +1645,8 @@ static int security_compute_sid(u32 ssid,
+ 		goto out_unlock;
  	}
  
--	next_rcu = kzalloc(sizeof(struct shared_current_mapping), GFP_KERNEL);
-+	next_rcu = kzalloc(sizeof(struct shared_rcu_mapping), GFP_KERNEL);
- 	if (!next_rcu) {
- 		kfree(oldpolicydb);
- 		rc = -ENOMEM;
-@@ -2157,7 +2156,7 @@ int security_load_policy(void *data, size_t len)
- 		goto out;
+-	if (tclass && tclass <= policydb.p_classes.nprim)
+-		cladatum = policydb.class_val_to_struct[tclass - 1];
++	if (tclass && tclass <= crm->policydb.p_classes.nprim)
++		cladatum = crm->policydb.class_val_to_struct[tclass - 1];
  
- 	next_rcu->policydb.len = len;
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
+ 	/* Set the user identity. */
+ 	switch (specified) {
+@@ -1665,7 +1672,7 @@ static int security_compute_sid(u32 ssid,
+ 	} else if (cladatum && cladatum->default_role == DEFAULT_TARGET) {
+ 		newcontext.role = tcontext->role;
+ 	} else {
+-		if ((tclass == policydb.process_class) || (sock == true))
++		if ((tclass == crm->policydb.process_class) || (sock == true))
+ 			newcontext.role = scontext->role;
+ 		else
+ 			newcontext.role = OBJECT_R_VAL;
+@@ -1677,7 +1684,8 @@ static int security_compute_sid(u32 ssid,
+ 	} else if (cladatum && cladatum->default_type == DEFAULT_TARGET) {
+ 		newcontext.type = tcontext->type;
+ 	} else {
+-		if ((tclass == policydb.process_class) || (sock == true)) {
++		if ((tclass == crm->policydb.process_class) ||
++		    (sock == true)) {
+ 			/* Use the type of process. */
+ 			newcontext.type = scontext->type;
+ 		} else {
+@@ -1691,11 +1699,12 @@ static int security_compute_sid(u32 ssid,
+ 	avkey.target_type = tcontext->type;
+ 	avkey.target_class = tclass;
+ 	avkey.specified = specified;
+-	avdatum = avtab_search(&policydb.te_avtab, &avkey);
++	avdatum = avtab_search(&crm->policydb.te_avtab, &avkey);
+ 
+ 	/* If no permanent rule, also check for enabled conditional rules */
+ 	if (!avdatum) {
+-		node = avtab_search_node(&policydb.te_cond_avtab, &avkey);
++		node = avtab_search_node(&crm->policydb.te_cond_avtab,
++					 &avkey);
+ 		for (; node; node = avtab_search_node_next(node, specified)) {
+ 			if (node->key.specified & AVTAB_ENABLED) {
+ 				avdatum = &node->datum;
+@@ -1711,13 +1720,16 @@ static int security_compute_sid(u32 ssid,
+ 
+ 	/* if we have a objname this is a file trans check so check those rules */
+ 	if (objname)
+-		filename_compute_type(&policydb, &newcontext, scontext->type,
+-				      tcontext->type, tclass, objname);
++		filename_compute_type(&crm->policydb, &newcontext,
++				      scontext->type, tcontext->type,
++				      tclass, objname);
+ 
+ 	/* Check for class-specific changes. */
+ 	if (specified & AVTAB_TRANSITION) {
+ 		/* Look for a role transition rule. */
+-		for (roletr = policydb.role_tr; roletr; roletr = roletr->next) {
++		for (roletr = crm->policydb.role_tr;
++		     roletr;
++		     roletr = roletr->next) {
+ 			if ((roletr->role == scontext->role) &&
+ 			    (roletr->type == tcontext->type) &&
+ 			    (roletr->tclass == tclass)) {
+@@ -1730,13 +1742,13 @@ static int security_compute_sid(u32 ssid,
+ 
+ 	/* Set the MLS attributes.
+ 	   This is done last because it may allocate memory. */
+-	rc = mls_compute_sid(&policydb, scontext, tcontext, tclass, specified,
+-			     &newcontext, sock);
++	rc = mls_compute_sid(&crm->policydb, scontext, tcontext, tclass,
++			     specified, &newcontext, sock);
+ 	if (rc)
+ 		goto out_unlock;
+ 
+ 	/* Check the validity of the context. */
+-	if (!policydb_context_isvalid(&policydb, &newcontext)) {
++	if (!policydb_context_isvalid(&crm->policydb, &newcontext)) {
+ 		rc = compute_sid_handle_invalid_context(scontext,
+ 							tcontext,
+ 							tclass,
+@@ -1944,7 +1956,8 @@ static int convert_context(u32 key,
+ 
+ 	/* Convert the MLS fields if dealing with MLS policies */
+ 	if (args->oldp->mls_enabled && args->newp->mls_enabled) {
+-		rc = mls_convert_context(&policydb, args->oldp, args->newp, c);
++		rc = mls_convert_context(&crm->policydb, args->oldp,
++					 args->newp, c);
+ 		if (rc)
+ 			goto bad;
+ 	} else if (args->oldp->mls_enabled && !args->newp->mls_enabled) {
+@@ -2009,27 +2022,31 @@ static void security_load_policycaps(void)
+ 	unsigned int i;
+ 	struct ebitmap_node *node;
+ 
+-	selinux_policycap_netpeer = ebitmap_get_bit(&policydb.policycaps,
+-						  POLICYDB_CAPABILITY_NETPEER);
+-	selinux_policycap_openperm = ebitmap_get_bit(&policydb.policycaps,
+-						  POLICYDB_CAPABILITY_OPENPERM);
+-	selinux_policycap_extsockclass = ebitmap_get_bit(&policydb.policycaps,
+-					  POLICYDB_CAPABILITY_EXTSOCKCLASS);
+-	selinux_policycap_alwaysnetwork = ebitmap_get_bit(&policydb.policycaps,
+-						  POLICYDB_CAPABILITY_ALWAYSNETWORK);
++	selinux_policycap_netpeer =
++		ebitmap_get_bit(&crm->policydb.policycaps,
++			  POLICYDB_CAPABILITY_NETPEER);
++	selinux_policycap_openperm =
++		ebitmap_get_bit(&crm->policydb.policycaps,
++				POLICYDB_CAPABILITY_OPENPERM);
++	selinux_policycap_extsockclass =
++		ebitmap_get_bit(&crm->policydb.policycaps,
++				POLICYDB_CAPABILITY_EXTSOCKCLASS);
++	selinux_policycap_alwaysnetwork =
++		ebitmap_get_bit(&crm->policydb.policycaps,
++				POLICYDB_CAPABILITY_ALWAYSNETWORK);
+ 	selinux_policycap_cgroupseclabel =
+-		ebitmap_get_bit(&policydb.policycaps,
++		ebitmap_get_bit(&crm->policydb.policycaps,
+ 				POLICYDB_CAPABILITY_CGROUPSECLABEL);
+ 	selinux_policycap_nnp_nosuid_transition =
+-		ebitmap_get_bit(&policydb.policycaps,
++		ebitmap_get_bit(&crm->policydb.policycaps,
+ 				POLICYDB_CAPABILITY_NNP_NOSUID_TRANSITION);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(selinux_policycap_names); i++)
+ 		pr_info("SELinux:  policy capability %s=%d\n",
+ 			selinux_policycap_names[i],
+-			ebitmap_get_bit(&policydb.policycaps, i));
++			ebitmap_get_bit(&crm->policydb.policycaps, i));
+ 
+-	ebitmap_for_each_positive_bit(&policydb.policycaps, node, i) {
++	ebitmap_for_each_positive_bit(&crm->policydb.policycaps, node, i) {
+ 		if (i >= ARRAY_SIZE(selinux_policycap_names))
+ 			pr_info("SELinux:  unknown policy capability %u\n",
+ 				i);
+@@ -2084,7 +2101,7 @@ int security_load_policy(void *data, size_t len)
+ 		avtab_cache_init();
+ 		ebitmap_cache_init();
+ 		hashtab_cache_init();
+-		rc = policydb_read(&policydb, fp);
++		rc = policydb_read(&crm->policydb, fp);
+ 		if (rc) {
+ 			avtab_cache_destroy();
+ 			ebitmap_cache_destroy();
+@@ -2092,21 +2109,21 @@ int security_load_policy(void *data, size_t len)
+ 			goto out;
+ 		}
+ 
+-		policydb.len = len;
+-		rc = selinux_set_mapping(&policydb, secclass_map,
++		crm->policydb.len = len;
++		rc = selinux_set_mapping(&crm->policydb, secclass_map,
+ 					 &crm->current_mapping,
+ 					 &crm->current_mapping_size);
+ 		if (rc) {
+-			policydb_destroy(&policydb);
++			policydb_destroy(&crm->policydb);
+ 			avtab_cache_destroy();
+ 			ebitmap_cache_destroy();
+ 			hashtab_cache_destroy();
+ 			goto out;
+ 		}
+ 
+-		rc = policydb_load_isids(&policydb, &sidtab);
++		rc = policydb_load_isids(&crm->policydb, &sidtab);
+ 		if (rc) {
+-			policydb_destroy(&policydb);
++			policydb_destroy(&crm->policydb);
+ 			avtab_cache_destroy();
+ 			ebitmap_cache_destroy();
+ 			hashtab_cache_destroy();
+@@ -2135,9 +2152,9 @@ int security_load_policy(void *data, size_t len)
+ 
+ 	newpolicydb->len = len;
  	/* If switching between different policy types, log MLS status */
- 	if (crm->policydb.mls_enabled && !next_rcu->policydb.mls_enabled)
+-	if (policydb.mls_enabled && !newpolicydb->mls_enabled)
++	if (crm->policydb.mls_enabled && !newpolicydb->mls_enabled)
  		printk(KERN_INFO "SELinux: Disabling MLS support...\n");
-@@ -2210,19 +2209,19 @@ int security_load_policy(void *data, size_t len)
- 	/* Install the new policydb and SID table. */
- 	/* next */
- 	security_load_policycaps(&next_rcu->policydb);
--	read_unlock(&policy_rwlock);
--	write_lock_irq(&policy_rwlock);
- 	sidtab_set(&next_rcu->sidtab, &newsidtab);
- 	security_load_policycaps(&next_rcu->policydb);
- 	oldmap = crm->current_mapping;
-+	rcu_read_unlock();
- 	next_rcu->current_mapping = map;
- 	next_rcu->current_mapping_size = map_size;
+-	else if (!policydb.mls_enabled && newpolicydb->mls_enabled)
++	else if (!crm->policydb.mls_enabled && newpolicydb->mls_enabled)
+ 		printk(KERN_INFO "SELinux: Enabling MLS support...\n");
  
-+	spin_lock(&policy_w_lock);
- 	seqno = ++latest_granting;
- 	old_rcu = crm;
- 	crm = next_rcu;
--	write_unlock_irq(&policy_rwlock);
--
-+	spin_unlock(&policy_w_lock);
-+	synchronize_rcu();
- 	/* Free the old policydb and SID table. */
- 	policydb_destroy(oldpolicydb);
- 	sidtab_destroy(&oldsidtab);
-@@ -2250,9 +2249,9 @@ size_t security_policydb_len(void)
- {
+ 	rc = policydb_load_isids(newpolicydb, &newsidtab);
+@@ -2168,7 +2185,7 @@ int security_load_policy(void *data, size_t len)
+ 	 * Convert the internal representations of contexts
+ 	 * in the new SID table.
+ 	 */
+-	args.oldp = &policydb;
++	args.oldp = &crm->policydb;
+ 	args.newp = newpolicydb;
+ 	rc = sidtab_map(&newsidtab, convert_context, &args);
+ 	if (rc) {
+@@ -2179,12 +2196,13 @@ int security_load_policy(void *data, size_t len)
+ 	}
+ 
+ 	/* Save the old policydb and SID table to free later. */
+-	memcpy(oldpolicydb, &policydb, sizeof(policydb));
++	memcpy(oldpolicydb, &crm->policydb, sizeof(struct policydb));
+ 	sidtab_set(&oldsidtab, &sidtab);
+ 
+ 	/* Install the new policydb and SID table. */
+ 	write_lock_irq(&policy_rwlock);
+-	memcpy(&policydb, newpolicydb, sizeof(policydb));
++	memcpy(&crm->policydb, newpolicydb, sizeof(struct policydb));
++
+ 	sidtab_set(&sidtab, &newsidtab);
+ 	security_load_policycaps();
+ 	oldmap = crm->current_mapping;
+@@ -2222,7 +2240,7 @@ size_t security_policydb_len(void)
  	size_t len;
  
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 	len = crm->policydb.len;
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
+ 	read_lock(&policy_rwlock);
+-	len = policydb.len;
++	len = crm->policydb.len;
+ 	read_unlock(&policy_rwlock);
  
  	return len;
- }
-@@ -2268,7 +2267,7 @@ int security_port_sid(u8 protocol, u16 port, u32 *out_sid)
- 	struct ocontext *c;
- 	int rc = 0;
+@@ -2241,7 +2259,7 @@ int security_port_sid(u8 protocol, u16 port, u32 *out_sid)
  
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
+ 	read_lock(&policy_rwlock);
  
- 	c = crm->policydb.ocontexts[OCON_PORT];
+-	c = policydb.ocontexts[OCON_PORT];
++	c = crm->policydb.ocontexts[OCON_PORT];
  	while (c) {
-@@ -2293,7 +2292,7 @@ int security_port_sid(u8 protocol, u16 port, u32 *out_sid)
- 	}
+ 		if (c->u.port.protocol == protocol &&
+ 		    c->u.port.low_port <= port &&
+@@ -2281,7 +2299,7 @@ int security_ib_pkey_sid(u64 subnet_prefix, u16 pkey_num, u32 *out_sid)
  
- out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	return rc;
- }
+ 	read_lock(&policy_rwlock);
  
-@@ -2308,7 +2307,7 @@ int security_ib_pkey_sid(u64 subnet_prefix, u16 pkey_num, u32 *out_sid)
- 	struct ocontext *c;
- 	int rc = 0;
- 
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 
- 	c = crm->policydb.ocontexts[OCON_IBPKEY];
+-	c = policydb.ocontexts[OCON_IBPKEY];
++	c = crm->policydb.ocontexts[OCON_IBPKEY];
  	while (c) {
-@@ -2333,7 +2332,7 @@ int security_ib_pkey_sid(u64 subnet_prefix, u16 pkey_num, u32 *out_sid)
- 		*out_sid = SECINITSID_UNLABELED;
+ 		if (c->u.ibpkey.low_pkey <= pkey_num &&
+ 		    c->u.ibpkey.high_pkey >= pkey_num &&
+@@ -2321,7 +2339,7 @@ int security_ib_endport_sid(const char *dev_name, u8 port_num, u32 *out_sid)
  
- out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	return rc;
- }
+ 	read_lock(&policy_rwlock);
  
-@@ -2348,7 +2347,7 @@ int security_ib_endport_sid(const char *dev_name, u8 port_num, u32 *out_sid)
- 	struct ocontext *c;
- 	int rc = 0;
- 
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 
- 	c = crm->policydb.ocontexts[OCON_IBENDPORT];
+-	c = policydb.ocontexts[OCON_IBENDPORT];
++	c = crm->policydb.ocontexts[OCON_IBENDPORT];
  	while (c) {
-@@ -2374,7 +2373,7 @@ int security_ib_endport_sid(const char *dev_name, u8 port_num, u32 *out_sid)
- 		*out_sid = SECINITSID_UNLABELED;
+ 		if (c->u.ibendport.port == port_num &&
+ 		    !strncmp(c->u.ibendport.dev_name,
+@@ -2361,7 +2379,7 @@ int security_netif_sid(char *name, u32 *if_sid)
  
- out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	return rc;
- }
+ 	read_lock(&policy_rwlock);
  
-@@ -2388,7 +2387,7 @@ int security_netif_sid(char *name, u32 *if_sid)
- 	int rc = 0;
- 	struct ocontext *c;
- 
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 
- 	c = crm->policydb.ocontexts[OCON_NETIF];
+-	c = policydb.ocontexts[OCON_NETIF];
++	c = crm->policydb.ocontexts[OCON_NETIF];
  	while (c) {
-@@ -2415,7 +2414,7 @@ int security_netif_sid(char *name, u32 *if_sid)
- 		*if_sid = SECINITSID_NETIF;
+ 		if (strcmp(name, c->u.name) == 0)
+ 			break;
+@@ -2430,7 +2448,7 @@ int security_node_sid(u16 domain,
  
- out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	return rc;
- }
+ 		addr = *((u32 *)addrp);
  
-@@ -2447,7 +2446,7 @@ int security_node_sid(u16 domain,
- 	int rc;
- 	struct ocontext *c;
+-		c = policydb.ocontexts[OCON_NODE];
++		c = crm->policydb.ocontexts[OCON_NODE];
+ 		while (c) {
+ 			if (c->u.node.addr == (addr & c->u.node.mask))
+ 				break;
+@@ -2443,7 +2461,7 @@ int security_node_sid(u16 domain,
+ 		rc = -EINVAL;
+ 		if (addrlen != sizeof(u64) * 2)
+ 			goto out;
+-		c = policydb.ocontexts[OCON_NODE6];
++		c = crm->policydb.ocontexts[OCON_NODE6];
+ 		while (c) {
+ 			if (match_ipv6_addrmask(addrp, c->u.node6.addr,
+ 						c->u.node6.mask))
+@@ -2522,7 +2540,7 @@ int security_get_user_sids(u32 fromsid,
+ 		goto out_unlock;
  
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
+ 	rc = -EINVAL;
+-	user = hashtab_search(policydb.p_users.table, username);
++	user = hashtab_search(crm->policydb.p_users.table, username);
+ 	if (!user)
+ 		goto out_unlock;
  
- 	switch (domain) {
- 	case AF_INET: {
-@@ -2502,7 +2501,7 @@ int security_node_sid(u16 domain,
+@@ -2534,12 +2552,12 @@ int security_get_user_sids(u32 fromsid,
+ 		goto out_unlock;
  
- 	rc = 0;
- out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	return rc;
- }
+ 	ebitmap_for_each_positive_bit(&user->roles, rnode, i) {
+-		role = policydb.role_val_to_struct[i];
++		role = crm->policydb.role_val_to_struct[i];
+ 		usercon.role = i + 1;
+ 		ebitmap_for_each_positive_bit(&role->types, tnode, j) {
+ 			usercon.type = j + 1;
  
-@@ -2541,7 +2540,7 @@ int security_get_user_sids(u32 fromsid,
- 	if (!ss_initialized)
- 		goto out;
+-			if (mls_setup_user_range(&policydb, fromcon,
++			if (mls_setup_user_range(&crm->policydb, fromcon,
+ 						 user, &usercon))
+ 				continue;
  
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
+@@ -2623,7 +2641,7 @@ static inline int __security_genfs_sid(const char *fstype,
+ 	sclass = unmap_class(orig_sclass);
+ 	*sid = SECINITSID_UNLABELED;
  
- 	context_init(&usercon);
+-	for (genfs = policydb.genfs; genfs; genfs = genfs->next) {
++	for (genfs = crm->policydb.genfs; genfs; genfs = genfs->next) {
+ 		cmp = strcmp(fstype, genfs->fstype);
+ 		if (cmp <= 0)
+ 			break;
+@@ -2692,7 +2710,7 @@ int security_fs_use(struct super_block *sb)
  
-@@ -2593,7 +2592,7 @@ int security_get_user_sids(u32 fromsid,
- 	}
- 	rc = 0;
- out_unlock:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	if (rc || !mynel) {
- 		kfree(mysids);
- 		goto out;
-@@ -2704,9 +2703,9 @@ int security_genfs_sid(const char *fstype,
- {
- 	int retval;
+ 	read_lock(&policy_rwlock);
  
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 	retval = __security_genfs_sid(fstype, path, orig_sclass, sid);
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	return retval;
- }
- 
-@@ -2721,7 +2720,7 @@ int security_fs_use(struct super_block *sb)
- 	struct superblock_security_struct *sbsec = sb->s_security;
- 	const char *fstype = sb->s_type->name;
- 
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 
- 	c = crm->policydb.ocontexts[OCON_FSUSE];
+-	c = policydb.ocontexts[OCON_FSUSE];
++	c = crm->policydb.ocontexts[OCON_FSUSE];
  	while (c) {
-@@ -2752,7 +2751,7 @@ int security_fs_use(struct super_block *sb)
- 	}
- 
- out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	return rc;
- }
- 
-@@ -2760,7 +2759,7 @@ int security_get_bools(int *len, char ***names, int **values)
- {
- 	int i, rc;
- 
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 	*names = NULL;
+ 		if (strcmp(fstype, c->u.name) == 0)
+ 			break;
+@@ -2733,7 +2751,7 @@ int security_get_bools(int *len, char ***names, int **values)
  	*values = NULL;
  
-@@ -2790,7 +2789,7 @@ int security_get_bools(int *len, char ***names, int **values)
- 	}
  	rc = 0;
- out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	return rc;
- err:
- 	if (*names) {
-@@ -2803,13 +2802,14 @@ int security_get_bools(int *len, char ***names, int **values)
+-	*len = policydb.p_bools.nprim;
++	*len = crm->policydb.p_bools.nprim;
+ 	if (!*len)
+ 		goto out;
  
- int security_set_bools(int len, int *values)
- {
--	struct shared_current_mapping *next_rcu, *old_rcu;
-+
-+	struct shared_rcu_mapping *next_rcu, *old_rcu;
- 	int i, rc;
- 	int lenp, seqno = 0;
- 	struct cond_node *cur;
+@@ -2748,10 +2766,11 @@ int security_get_bools(int *len, char ***names, int **values)
+ 		goto err;
  
--	next_rcu = kzalloc(sizeof(struct shared_current_mapping), GFP_KERNEL);
--	read_lock(&policy_rwlock);
-+	next_rcu = kzalloc(sizeof(struct shared_rcu_mapping), GFP_KERNEL);
-+	rcu_read_lock();
- 	old_rcu = crm;
- 	memcpy(&next_rcu->policydb, &old_rcu->policydb,
- 	       sizeof(struct policydb));
-@@ -2842,13 +2842,15 @@ int security_set_bools(int len, int *values)
+ 	for (i = 0; i < *len; i++) {
+-		(*values)[i] = policydb.bool_val_to_struct[i]->state;
++		(*values)[i] = crm->policydb.bool_val_to_struct[i]->state;
+ 
+ 		rc = -ENOMEM;
+-		(*names)[i] = kstrdup(sym_name(&policydb, SYM_BOOLS, i), GFP_ATOMIC);
++		(*names)[i] = kstrdup(sym_name(&crm->policydb, SYM_BOOLS, i),
++				      GFP_ATOMIC);
+ 		if (!(*names)[i])
+ 			goto err;
+ 	}
+@@ -2778,29 +2797,30 @@ int security_set_bools(int len, int *values)
+ 	write_lock_irq(&policy_rwlock);
+ 
+ 	rc = -EFAULT;
+-	lenp = policydb.p_bools.nprim;
++	lenp = crm->policydb.p_bools.nprim;
+ 	if (len != lenp)
+ 		goto out;
+ 
+ 	for (i = 0; i < len; i++) {
+-		if (!!values[i] != policydb.bool_val_to_struct[i]->state) {
++		if (!!values[i] !=
++		    crm->policydb.bool_val_to_struct[i]->state) {
+ 			audit_log(current->audit_context, GFP_ATOMIC,
+ 				AUDIT_MAC_CONFIG_CHANGE,
+ 				"bool=%s val=%d old_val=%d auid=%u ses=%u",
+-				sym_name(&policydb, SYM_BOOLS, i),
++				sym_name(&crm->policydb, SYM_BOOLS, i),
+ 				!!values[i],
+-				policydb.bool_val_to_struct[i]->state,
++				crm->policydb.bool_val_to_struct[i]->state,
+ 				from_kuid(&init_user_ns, audit_get_loginuid(current)),
+ 				audit_get_sessionid(current));
+ 		}
+ 		if (values[i])
+-			policydb.bool_val_to_struct[i]->state = 1;
++			crm->policydb.bool_val_to_struct[i]->state = 1;
+ 		else
+-			policydb.bool_val_to_struct[i]->state = 0;
++			crm->policydb.bool_val_to_struct[i]->state = 0;
+ 	}
+ 
+-	for (cur = policydb.cond_list; cur; cur = cur->next) {
+-		rc = evaluate_cond_node(&policydb, cur);
++	for (cur = crm->policydb.cond_list; cur; cur = cur->next) {
++		rc = evaluate_cond_node(&crm->policydb, cur);
  		if (rc)
  			goto out;
  	}
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
-+
- 	rc = 0;
- 
--	write_lock_irq(&policy_rwlock);
-+	spin_lock(&policy_w_lock);
- 	seqno = ++latest_granting;
- 	crm = next_rcu;
--	write_unlock_irq(&policy_rwlock);
-+	spin_unlock(&policy_w_lock);
-+	synchronize_rcu();
- out:
- 	if (!rc) {
- 		avc_ss_reset(seqno);
-@@ -2868,7 +2870,7 @@ int security_get_bool_value(int index)
- 	int rc;
- 	int len;
- 
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
+@@ -2826,11 +2846,11 @@ int security_get_bool_value(int index)
+ 	read_lock(&policy_rwlock);
  
  	rc = -EFAULT;
- 	len = crm->policydb.p_bools.nprim;
-@@ -2877,7 +2879,7 @@ int security_get_bool_value(int index)
+-	len = policydb.p_bools.nprim;
++	len = crm->policydb.p_bools.nprim;
+ 	if (index >= len)
+ 		goto out;
  
- 	rc = crm->policydb.bool_val_to_struct[index]->state;
+-	rc = policydb.bool_val_to_struct[index]->state;
++	rc = crm->policydb.bool_val_to_struct[index]->state;
  out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
+ 	read_unlock(&policy_rwlock);
  	return rc;
- }
- 
-@@ -2933,7 +2935,7 @@ int security_sid_mls_copy(u32 sid, u32 mls_sid, u32 *new_sid)
- 
- 	context_init(&newcon);
- 
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 
- 	rc = -EINVAL;
- 	context1 = sidtab_search(&crm->sidtab, sid);
-@@ -2975,7 +2977,7 @@ int security_sid_mls_copy(u32 sid, u32 mls_sid, u32 *new_sid)
- 
- 	rc = sidtab_context_to_sid(&crm->sidtab, &newcon, new_sid);
- out_unlock:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	context_destroy(&newcon);
- out:
- 	return rc;
-@@ -3032,7 +3034,7 @@ int security_net_peersid_resolve(u32 nlbl_sid, u32 nlbl_type,
- 	if (!crm->policydb.mls_enabled)
- 		return 0;
- 
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 
- 	rc = -EINVAL;
- 	nlbl_ctx = sidtab_search(&crm->sidtab, nlbl_sid);
-@@ -3059,7 +3061,7 @@ int security_net_peersid_resolve(u32 nlbl_sid, u32 nlbl_type,
- 	 * expressive */
- 	*peer_sid = xfrm_sid;
- out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	return rc;
- }
- 
-@@ -3080,7 +3082,7 @@ int security_get_classes(char ***classes, int *nclasses)
- {
+@@ -2881,7 +2901,7 @@ int security_sid_mls_copy(u32 sid, u32 mls_sid, u32 *new_sid)
  	int rc;
  
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
+ 	rc = 0;
+-	if (!ss_initialized || !policydb.mls_enabled) {
++	if (!ss_initialized || !crm->policydb.mls_enabled) {
+ 		*new_sid = sid;
+ 		goto out;
+ 	}
+@@ -2914,7 +2934,7 @@ int security_sid_mls_copy(u32 sid, u32 mls_sid, u32 *new_sid)
+ 		goto out_unlock;
+ 
+ 	/* Check the validity of the new context. */
+-	if (!policydb_context_isvalid(&policydb, &newcon)) {
++	if (!policydb_context_isvalid(&crm->policydb, &newcon)) {
+ 		rc = convert_context_handle_invalid_context(&newcon);
+ 		if (rc) {
+ 			if (!context_struct_to_string(&newcon, &s, &len)) {
+@@ -2984,7 +3004,7 @@ int security_net_peersid_resolve(u32 nlbl_sid, u32 nlbl_type,
+ 	/* we don't need to check ss_initialized here since the only way both
+ 	 * nlbl_sid and xfrm_sid are not equal to SECSID_NULL would be if the
+ 	 * security server was initialized and ss_initialized was true */
+-	if (!policydb.mls_enabled)
++	if (!crm->policydb.mls_enabled)
+ 		return 0;
+ 
+ 	read_lock(&policy_rwlock);
+@@ -3038,12 +3058,12 @@ int security_get_classes(char ***classes, int *nclasses)
+ 	read_lock(&policy_rwlock);
  
  	rc = -ENOMEM;
- 	*nclasses = crm->policydb.p_classes.nprim;
-@@ -3098,7 +3100,7 @@ int security_get_classes(char ***classes, int *nclasses)
- 	}
+-	*nclasses = policydb.p_classes.nprim;
++	*nclasses = crm->policydb.p_classes.nprim;
+ 	*classes = kcalloc(*nclasses, sizeof(**classes), GFP_ATOMIC);
+ 	if (!*classes)
+ 		goto out;
  
- out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	return rc;
- }
- 
-@@ -3120,7 +3122,7 @@ int security_get_permissions(char *class, char ***perms, int *nperms)
- 	int rc, i;
- 	struct class_datum *match;
- 
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
+-	rc = hashtab_map(policydb.p_classes.table, get_classes_callback,
++	rc = hashtab_map(crm->policydb.p_classes.table, get_classes_callback,
+ 			*classes);
+ 	if (rc) {
+ 		int i;
+@@ -3078,7 +3098,7 @@ int security_get_permissions(char *class, char ***perms, int *nperms)
+ 	read_lock(&policy_rwlock);
  
  	rc = -EINVAL;
- 	match = hashtab_search(crm->policydb.p_classes.table, class);
-@@ -3149,11 +3151,11 @@ int security_get_permissions(char *class, char ***perms, int *nperms)
- 		goto err;
+-	match = hashtab_search(policydb.p_classes.table, class);
++	match = hashtab_search(crm->policydb.p_classes.table, class);
+ 	if (!match) {
+ 		printk(KERN_ERR "SELinux: %s:  unrecognized class %s\n",
+ 			__func__, class);
+@@ -3117,12 +3137,12 @@ int security_get_permissions(char *class, char ***perms, int *nperms)
  
- out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	return rc;
- 
- err:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	for (i = 0; i < *nperms; i++)
- 		kfree((*perms)[i]);
- 	kfree(*perms);
-@@ -3184,9 +3186,9 @@ int security_policycap_supported(unsigned int req_cap)
+ int security_get_reject_unknown(void)
  {
+-	return policydb.reject_unknown;
++	return crm->policydb.reject_unknown;
+ }
+ 
+ int security_get_allow_unknown(void)
+ {
+-	return policydb.allow_unknown;
++	return crm->policydb.allow_unknown;
+ }
+ 
+ /**
+@@ -3140,7 +3160,7 @@ int security_policycap_supported(unsigned int req_cap)
  	int rc;
  
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 	rc = ebitmap_get_bit(&crm->policydb.policycaps, req_cap);
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
+ 	read_lock(&policy_rwlock);
+-	rc = ebitmap_get_bit(&policydb.policycaps, req_cap);
++	rc = ebitmap_get_bit(&crm->policydb.policycaps, req_cap);
+ 	read_unlock(&policy_rwlock);
  
  	return rc;
- }
-@@ -3250,7 +3252,7 @@ int selinux_audit_rule_init(u32 field, u32 op, char *rulestr, void **vrule)
+@@ -3213,7 +3233,8 @@ int selinux_audit_rule_init(u32 field, u32 op, char *rulestr, void **vrule)
+ 	case AUDIT_SUBJ_USER:
+ 	case AUDIT_OBJ_USER:
+ 		rc = -EINVAL;
+-		userdatum = hashtab_search(policydb.p_users.table, rulestr);
++		userdatum = hashtab_search(crm->policydb.p_users.table,
++					   rulestr);
+ 		if (!userdatum)
+ 			goto out;
+ 		tmprule->au_ctxt.user = userdatum->value;
+@@ -3221,7 +3242,8 @@ int selinux_audit_rule_init(u32 field, u32 op, char *rulestr, void **vrule)
+ 	case AUDIT_SUBJ_ROLE:
+ 	case AUDIT_OBJ_ROLE:
+ 		rc = -EINVAL;
+-		roledatum = hashtab_search(policydb.p_roles.table, rulestr);
++		roledatum = hashtab_search(crm->policydb.p_roles.table,
++					   rulestr);
+ 		if (!roledatum)
+ 			goto out;
+ 		tmprule->au_ctxt.role = roledatum->value;
+@@ -3229,7 +3251,8 @@ int selinux_audit_rule_init(u32 field, u32 op, char *rulestr, void **vrule)
+ 	case AUDIT_SUBJ_TYPE:
+ 	case AUDIT_OBJ_TYPE:
+ 		rc = -EINVAL;
+-		typedatum = hashtab_search(policydb.p_types.table, rulestr);
++		typedatum = hashtab_search(crm->policydb.p_types.table,
++					   rulestr);
+ 		if (!typedatum)
+ 			goto out;
+ 		tmprule->au_ctxt.type = typedatum->value;
+@@ -3238,8 +3261,8 @@ int selinux_audit_rule_init(u32 field, u32 op, char *rulestr, void **vrule)
+ 	case AUDIT_SUBJ_CLR:
+ 	case AUDIT_OBJ_LEV_LOW:
+ 	case AUDIT_OBJ_LEV_HIGH:
+-		rc = mls_from_string(&policydb, rulestr, &tmprule->au_ctxt,
+-				     GFP_ATOMIC);
++		rc = mls_from_string(&crm->policydb, rulestr,
++				     &tmprule->au_ctxt, GFP_ATOMIC);
+ 		if (rc)
+ 			goto out;
+ 		break;
+@@ -3489,15 +3512,15 @@ int security_netlbl_secattr_to_sid(struct netlbl_lsm_secattr *secattr,
+ 		ctx_new.user = ctx->user;
+ 		ctx_new.role = ctx->role;
+ 		ctx_new.type = ctx->type;
+-		mls_import_netlbl_lvl(&policydb, &ctx_new, secattr);
++		mls_import_netlbl_lvl(&crm->policydb, &ctx_new, secattr);
+ 		if (secattr->flags & NETLBL_SECATTR_MLS_CAT) {
+-			rc = mls_import_netlbl_cat(&policydb, &ctx_new,
++			rc = mls_import_netlbl_cat(&crm->policydb, &ctx_new,
+ 						   secattr);
+ 			if (rc)
+ 				goto out;
+ 		}
+ 		rc = -EIDRM;
+-		if (!mls_context_isvalid(&policydb, &ctx_new))
++		if (!mls_context_isvalid(&crm->policydb, &ctx_new))
+ 			goto out_free;
  
- 	context_init(&tmprule->au_ctxt);
+ 		rc = sidtab_context_to_sid(&sidtab, &ctx_new, sid);
+@@ -3545,15 +3568,16 @@ int security_netlbl_sid_to_secattr(u32 sid, struct netlbl_lsm_secattr *secattr)
+ 		goto out;
  
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
+ 	rc = -ENOMEM;
+-	secattr->domain = kstrdup(sym_name(&policydb, SYM_TYPES, ctx->type - 1),
++	secattr->domain = kstrdup(sym_name(&crm->policydb,
++					   SYM_TYPES, ctx->type - 1),
+ 				  GFP_ATOMIC);
+ 	if (secattr->domain == NULL)
+ 		goto out;
  
- 	tmprule->au_seqno = latest_granting;
- 
-@@ -3294,7 +3296,7 @@ int selinux_audit_rule_init(u32 field, u32 op, char *rulestr, void **vrule)
- 	}
- 	rc = 0;
+ 	secattr->attr.secid = sid;
+ 	secattr->flags |= NETLBL_SECATTR_DOMAIN_CPY | NETLBL_SECATTR_SECID;
+-	mls_export_netlbl_lvl(&policydb, ctx, secattr);
+-	rc = mls_export_netlbl_cat(&policydb, ctx, secattr);
++	mls_export_netlbl_lvl(&crm->policydb, ctx, secattr);
++	rc = mls_export_netlbl_cat(&crm->policydb, ctx, secattr);
  out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 
- 	if (rc) {
- 		selinux_audit_rule_free(tmprule);
-@@ -3344,7 +3346,7 @@ int selinux_audit_rule_match(u32 sid, u32 field, u32 op, void *vrule,
- 		return -ENOENT;
- 	}
- 
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 
- 	if (rule->au_seqno < latest_granting) {
- 		match = -ESTALE;
-@@ -3435,7 +3437,7 @@ int selinux_audit_rule_match(u32 sid, u32 field, u32 op, void *vrule,
- 	}
- 
- out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	return match;
- }
- 
-@@ -3521,7 +3523,7 @@ int security_netlbl_secattr_to_sid(struct netlbl_lsm_secattr *secattr,
- 		return 0;
- 	}
- 
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 
- 	if (secattr->flags & NETLBL_SECATTR_CACHE)
- 		*sid = *(u32 *)secattr->cache->data;
-@@ -3558,12 +3560,12 @@ int security_netlbl_secattr_to_sid(struct netlbl_lsm_secattr *secattr,
- 	} else
- 		*sid = SECSID_NULL;
- 
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	return 0;
- out_free:
- 	ebitmap_destroy(&ctx_new.range.level[0].cat);
- out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
+ 	read_unlock(&policy_rwlock);
  	return rc;
- }
- 
-@@ -3585,7 +3587,7 @@ int security_netlbl_sid_to_secattr(u32 sid, struct netlbl_lsm_secattr *secattr)
- 	if (!ss_initialized)
- 		return 0;
- 
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 
- 	rc = -ENOENT;
- 	ctx = sidtab_search(&crm->sidtab, sid);
-@@ -3604,7 +3606,7 @@ int security_netlbl_sid_to_secattr(u32 sid, struct netlbl_lsm_secattr *secattr)
- 	mls_export_netlbl_lvl(&crm->policydb, ctx, secattr);
- 	rc = mls_export_netlbl_cat(&crm->policydb, ctx, secattr);
- out:
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
- 	return rc;
- }
- #endif /* CONFIG_NETLABEL */
-@@ -3632,9 +3634,9 @@ int security_read_policy(void **data, size_t *len)
- 	fp.data = *data;
+@@ -3584,7 +3608,7 @@ int security_read_policy(void **data, size_t *len)
  	fp.len = *len;
  
--	read_lock(&policy_rwlock);
-+	rcu_read_lock();
- 	rc = policydb_write(&crm->policydb, &fp);
--	read_unlock(&policy_rwlock);
-+	rcu_read_unlock();
+ 	read_lock(&policy_rwlock);
+-	rc = policydb_write(&policydb, &fp);
++	rc = policydb_write(&crm->policydb, &fp);
+ 	read_unlock(&policy_rwlock);
  
  	if (rc)
- 		return rc;
 -- 
 2.7.4
