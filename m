@@ -1,140 +1,101 @@
-From: Jan-Marek Glogowski <glogow@fbihome.de>
-Subject: [RfC][PATCH] ALSA: hda/realtek Pin quirk for Fujitsu
-	U7[25]7
-Date: Fri, 26 Jan 2018 16:12:53 +0100
-Message-ID: <dcac37ef-4319-9eb3-4652-17bc6aa8fbc9@fbihome.de>
-References: <c6ec1a50-187e-42d8-4137-f162c52e4f79@fbihome.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ironman.h-da.de (ironman.h-da.de [141.100.10.250])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B91626721A
- for <alsa-devel@alsa-project.org>; Fri, 26 Jan 2018 16:12:54 +0100 (CET)
-Received: from [172.16.3.194] (unknown [194.113.41.246])
- by mail.fbihome.de (Postfix) with ESMTPSA id 373BF4210D
- for <alsa-devel@alsa-project.org>; Fri, 26 Jan 2018 16:12:53 +0100 (CET)
-In-Reply-To: <c6ec1a50-187e-42d8-4137-f162c52e4f79@fbihome.de>
-Content-Language: en-GB
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: compress: Correct handling of copy callback" to the asoc tree
+Date: Fri, 26 Jan 2018 15:23:34 +0000
+Message-ID: <E1ef5qo-0006Br-0u@debutante>
+References: <20180126130845.7122-1-ckeepax@opensource.cirrus.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20180126130845.7122-1-ckeepax@opensource.cirrus.com>
+Sender: stable-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgbroonie@kernel.org, alsa-devel@alsa-project.org, ladis@linux-mips.org, kuninori.morimoto.gx@renesas.com, vinod.koul@intel.com, lgirdwood@gmail.com, dan.carpenter@oracle.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi everybody,
+The patch
 
-I got new HW from our supplier, a Fujitsu U727 and a U757 laptop, which
-have a headset jack. Attaching a headset, the microphone doesn't work.
-After some reading and trying various tools to understand the problem, I
-found hdajacksensetest, which showed a sense change for a seemingly
-wrong unconnected pin.
-Overriding this pins' config has fixed the headsets microphone, so now I
-have the attached kernel patch with a SND_HDA_PIN_QUIRK.
+   ASoC: compress: Correct handling of copy callback
 
-After compiling the patched module (for 4.4), everything works as
-expected, but hdajackretask still shows the pin as unconnected, so I'm
-wondering,  if I need to do something in addition? Is this normal
-behaviour? This is just a port to master, as we (Munich) are on Ubuntu
-Trusty with Xenial HWE (4.4 kernel).
+has been applied to the asoc tree at
 
-Thanks for the review.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Jan-Marek Glogowski
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-P.S. checkpatch.pl warned about too long lines for the
-SND_HDA_PIN_QUIRK. Should I fix that?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
->From 69f1c296b22ab6dce93ba50de9cf05e279d52088 Mon Sep 17 00:00:00 2001
-From: Jan-Marek Glogowski <glogow@fbihome.de>
-Date: Wed, 24 Jan 2018 18:57:38 +0100
-Subject: [PATCH] ALSA: hda/realtek Pin quirk for Fujitsu U7[25]7
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-These laptops have a combined jack to attach headsets, the U727 on
-the left, the U757 on the right, but a headsets microphone doesn't
-work. Using hdajacksensetest I found that pin 0x19 changed the
-present state when plugging the headset, in addition to 0x21, but
-didn't have the correct configuration (shown as "Not connected").
+Thanks,
+Mark
 
-So this sets the configuration to the same values as the headphone
-pin 0x21 except for the device type microphone, which makes it
-work correctly. With the patch the configured pins for U727 are
+>From 290df4d3ab192821b66857c05346b23056ee9545 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Fri, 26 Jan 2018 13:08:43 +0000
+Subject: [PATCH] ASoC: compress: Correct handling of copy callback
 
-Pin 0x12 (Internal Mic, Mobile-In): present = No
-Pin 0x14 (Internal Speaker): present = No
-Pin 0x19 (Black Mic, Left side): present = No
-Pin 0x1d (Internal Aux): present = No
-Pin 0x21 (Black Headphone, Left side): present = No
+The soc_compr_copy callback is currently broken. Since the
+changes to move the compr_ops over to the component the return
+value is not correctly propagated, always returning zero on
+success rather than the number of bytes copied. This causes
+user-space to stall continuously reading as it does not believe
+it has received any data.
 
-Signed-off-by: Jan-Marek Glogowski <glogow@fbihome.de>
+Furthermore, the changes to move the compr_ops over to the
+component iterate through the list of components and will call
+the copy callback for any that have compressed ops. There isn't
+currently any consensus on the mechanism to combine the results
+of multiple copy callbacks.
+
+To fix this issue for now halt searching the component list when
+we locate a copy callback and return the result of that single
+callback. Additional work should probably be done to look at the
+other ops, tidy things up, and work out if we want to support
+multiple components on a single compressed, but this is the only
+fix required to get things working again.
+
+Fixes: 9e7e3738ab0e ("ASoC: snd_soc_component_driver has snd_compr_ops")
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
- sound/pci/hda/patch_realtek.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ sound/soc/soc-compress.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 9aafc6c..52c6beb 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5275,6 +5275,8 @@ enum {
- 	ALC255_FIXUP_ASUS_MIC_NO_PRESENCE,
- 	ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
- 	ALC255_FIXUP_DELL2_MIC_NO_PRESENCE,
-+	ALC255_FIXUP_FUJITSU_U727_MIC,
-+	ALC255_FIXUP_FUJITSU_U757_MIC,
- 	ALC255_FIXUP_HEADSET_MODE,
- 	ALC255_FIXUP_HEADSET_MODE_NO_HP_MIC,
- 	ALC293_FIXUP_DELL1_MIC_NO_PRESENCE,
-@@ -5786,6 +5788,20 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC255_FIXUP_HEADSET_MODE_NO_HP_MIC
- 	},
-+	[ALC255_FIXUP_FUJITSU_U727_MIC] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x19, 0x03a11020 }, /* detect headset mic, left */
-+			{ }
-+		},
-+	},
-+	[ALC255_FIXUP_FUJITSU_U757_MIC] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x19, 0x04a11020 }, /* detect headset mic, right */
-+			{ }
-+		},
-+	},
- 	[ALC255_FIXUP_HEADSET_MODE] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_headset_mode_alc255,
-@@ -6589,6 +6605,18 @@ static const struct snd_hda_pin_quirk
-alc269_pin_fixup_tbl[] = {
- 	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell",
-ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
- 		{0x1b, 0x01011020},
- 		{0x21, 0x02211010}),
-+	SND_HDA_PIN_QUIRK(0x10ec0255, 0x10cf, "Fujitsu Lifebook U727",
-ALC255_FIXUP_FUJITSU_U727_MIC,
-+		{0x12, 0xb7a60130},
-+		{0x14, 0x90170110},
-+		{0x19, 0x411111f0},
-+		{0x1d, 0x909701f0},
-+		{0x21, 0x03211020}),
-+	SND_HDA_PIN_QUIRK(0x10ec0255, 0x10cf, "Fujitsu Livebook U757",
-ALC255_FIXUP_FUJITSU_U757_MIC,
-+		{0x12, 0xb7a60130},
-+		{0x14, 0x90170110},
-+		{0x19, 0x411111f0},
-+		{0x1d, 0x909701f0},
-+		{0x21, 0x04211020}),
- 	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1028, "Dell",
-ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
- 		{0x12, 0x90a60130},
- 		{0x14, 0x90170110},
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index d9b1e6417fb9..1507117d1185 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -944,7 +944,7 @@ static int soc_compr_copy(struct snd_compr_stream *cstream,
+ 	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+-	int ret = 0, __ret;
++	int ret = 0;
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+@@ -965,10 +965,10 @@ static int soc_compr_copy(struct snd_compr_stream *cstream,
+ 		    !component->driver->compr_ops->copy)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->copy(cstream, buf, count);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->copy(cstream, buf, count);
++		break;
+ 	}
++
+ err:
+ 	mutex_unlock(&rtd->pcm_mutex);
+ 	return ret;
 -- 
-2.1.4
+2.15.1
