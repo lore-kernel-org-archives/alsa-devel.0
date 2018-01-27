@@ -1,136 +1,118 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: [PATCH v2 4/5] ALSA: emu10k1: make sure synth DMA pages are allocated
- with DMA functions
-Date: Sat, 27 Jan 2018 15:42:47 +0100
-Message-ID: <619e9569-717a-1b4b-6470-4fa6b186bf41@maciej.szmigiero.name>
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Subject: Re: [PATCH] ASoC: atmel: Remove check for node pointer
+Date: Sat, 27 Jan 2018 22:53:36 +0100
+Message-ID: <20180127215336.GC5842@piout.net>
+References: <20180122141557.GA29226@lenoch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id EE388266FD1
+ for <alsa-devel@alsa-project.org>; Sat, 27 Jan 2018 22:53:37 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20180122141557.GA29226@lenoch>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: alsa-devel@alsa-project.org, Nicolas Ferre <nicolas.ferre@microchip.com>, Peter Rosin <peda@axentia.se>
 List-Id: alsa-devel@alsa-project.org
 
-Commit a5003fc04113 ("[ALSA] emu10k1 - simplify page allocation for synth")
-switched from using the DMA allocator for synth DMA pages to manually
-calling alloc_page().
-However, this usage has an implicit assumption that the DMA address space
-for the emu10k1-family chip is the same as the CPU physical address space
-which is not true for a system with a IOMMU.
+On 22/01/2018 at 15:15:57 +0100, Ladislav Michl wrote:
+> Probe function is called only after DT compatible is matched,
+> thus node pointer cannot be NULL.
+> 
+> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+Acked-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 
-Since this made the synth part of the driver non-functional on such systems
-let's effectively revert that commit.
+> ---
+>  Note: this patch replaces previously sent
+>  "ASoC: sam9x5_wm8731: Return -ENODEV when probe does not find OF node" and
+>  "ASoC: atmel_wm8904: Return -ENODEV when probe does not find OF node"
+>  while taking Alexandre Belloni's advice into account and extending it for
+>  the rest of Atmel's drivers.
+> 
+>  sound/soc/atmel/atmel_wm8904.c   | 5 -----
+>  sound/soc/atmel/sam9g20_wm8731.c | 4 ----
+>  sound/soc/atmel/sam9x5_wm8731.c  | 5 -----
+>  sound/soc/atmel/tse850-pcm5142.c | 5 -----
+>  4 files changed, 19 deletions(-)
+> 
+> diff --git a/sound/soc/atmel/atmel_wm8904.c b/sound/soc/atmel/atmel_wm8904.c
+> index fbc10f61eb55..0619a9961e0c 100644
+> --- a/sound/soc/atmel/atmel_wm8904.c
+> +++ b/sound/soc/atmel/atmel_wm8904.c
+> @@ -85,11 +85,6 @@ static int atmel_asoc_wm8904_dt_init(struct platform_device *pdev)
+>  	struct snd_soc_dai_link *dailink = &atmel_asoc_wm8904_dailink;
+>  	int ret;
+>  
+> -	if (!np) {
+> -		dev_err(&pdev->dev, "only device tree supported\n");
+> -		return -EINVAL;
+> -	}
+> -
+>  	ret = snd_soc_of_parse_card_name(card, "atmel,model");
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "failed to parse card name\n");
+> diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
+> index 98f93e79c654..a53f3ee82d30 100644
+> --- a/sound/soc/atmel/sam9g20_wm8731.c
+> +++ b/sound/soc/atmel/sam9g20_wm8731.c
+> @@ -163,10 +163,6 @@ static int at91sam9g20ek_audio_probe(struct platform_device *pdev)
+>  	struct snd_soc_card *card = &snd_soc_at91sam9g20ek;
+>  	int ret;
+>  
+> -	if (!np) {
+> -		return -ENODEV;
+> -	}
+> -
+>  	ret = atmel_ssc_set_audio(0);
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "ssc channel is not valid\n");
+> diff --git a/sound/soc/atmel/sam9x5_wm8731.c b/sound/soc/atmel/sam9x5_wm8731.c
+> index 920f72565ff2..b177524f5926 100644
+> --- a/sound/soc/atmel/sam9x5_wm8731.c
+> +++ b/sound/soc/atmel/sam9x5_wm8731.c
+> @@ -83,11 +83,6 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+>  	struct sam9x5_drvdata *priv;
+>  	int ret;
+>  
+> -	if (!np) {
+> -		dev_err(&pdev->dev, "No device node supplied\n");
+> -		return -EINVAL;
+> -	}
+> -
+>  	card = devm_kzalloc(&pdev->dev, sizeof(*card), GFP_KERNEL);
+>  	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+>  	dai = devm_kzalloc(&pdev->dev, sizeof(*dai), GFP_KERNEL);
+> diff --git a/sound/soc/atmel/tse850-pcm5142.c b/sound/soc/atmel/tse850-pcm5142.c
+> index 3a1393283156..73b327e781ab 100644
+> --- a/sound/soc/atmel/tse850-pcm5142.c
+> +++ b/sound/soc/atmel/tse850-pcm5142.c
+> @@ -327,11 +327,6 @@ static int tse850_dt_init(struct platform_device *pdev)
+>  	struct device_node *codec_np, *cpu_np;
+>  	struct snd_soc_dai_link *dailink = &tse850_dailink;
+>  
+> -	if (!np) {
+> -		dev_err(&pdev->dev, "only device tree supported\n");
+> -		return -EINVAL;
+> -	}
+> -
+>  	cpu_np = of_parse_phandle(np, "axentia,cpu-dai", 0);
+>  	if (!cpu_np) {
+>  		dev_err(&pdev->dev, "failed to get cpu dai\n");
+> -- 
+> 2.15.1
+> 
 
-Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
----
-Changes from v1: None in this patch.
-
- sound/pci/emu10k1/memory.c | 70 ++++++++++++++++++++++++++--------------------
- 1 file changed, 39 insertions(+), 31 deletions(-)
-
-diff --git a/sound/pci/emu10k1/memory.c b/sound/pci/emu10k1/memory.c
-index fcb04cbbc9ab..5cdffe2d31e1 100644
---- a/sound/pci/emu10k1/memory.c
-+++ b/sound/pci/emu10k1/memory.c
-@@ -457,49 +457,44 @@ static void get_single_page_range(struct snd_util_memhdr *hdr,
- 	*last_page_ret = last_page;
- }
- 
--/* release allocated pages */
--static void __synth_free_pages(struct snd_emu10k1 *emu, int first_page,
--			       int last_page)
--{
--	int page;
--
--	for (page = first_page; page <= last_page; page++) {
--		free_page((unsigned long)emu->page_ptr_table[page]);
--		emu->page_addr_table[page] = 0;
--		emu->page_ptr_table[page] = NULL;
--	}
--}
--
- /*
-  * allocate kernel pages
-  */
- static int synth_alloc_pages(struct snd_emu10k1 *emu, struct snd_emu10k1_memblk *blk)
- {
- 	int page, first_page, last_page;
-+	struct snd_dma_buffer dmab;
- 
- 	emu10k1_memblk_init(blk);
- 	get_single_page_range(emu->memhdr, blk, &first_page, &last_page);
- 	/* allocate kernel pages */
- 	for (page = first_page; page <= last_page; page++) {
--		/* first try to allocate from <4GB zone */
--		struct page *p = alloc_page(GFP_KERNEL | GFP_DMA32 |
--					    __GFP_NOWARN);
--		if (!p || (page_to_pfn(p) & ~(emu->dma_mask >> PAGE_SHIFT))) {
--			if (p)
--				__free_page(p);
--			/* try to allocate from <16MB zone */
--			p = alloc_page(GFP_ATOMIC | GFP_DMA |
--				       __GFP_NORETRY | /* no OOM-killer */
--				       __GFP_NOWARN);
--		}
--		if (!p) {
--			__synth_free_pages(emu, first_page, page - 1);
--			return -ENOMEM;
-+		if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
-+					snd_dma_pci_data(emu->pci),
-+					PAGE_SIZE, &dmab) < 0)
-+			goto __fail;
-+		if (!is_valid_page(emu, dmab.addr)) {
-+			snd_dma_free_pages(&dmab);
-+			goto __fail;
- 		}
--		emu->page_addr_table[page] = page_to_phys(p);
--		emu->page_ptr_table[page] = page_address(p);
-+		emu->page_addr_table[page] = dmab.addr;
-+		emu->page_ptr_table[page] = dmab.area;
- 	}
- 	return 0;
-+
-+__fail:
-+	/* release allocated pages */
-+	last_page = page - 1;
-+	for (page = first_page; page <= last_page; page++) {
-+		dmab.area = emu->page_ptr_table[page];
-+		dmab.addr = emu->page_addr_table[page];
-+		dmab.bytes = PAGE_SIZE;
-+		snd_dma_free_pages(&dmab);
-+		emu->page_addr_table[page] = 0;
-+		emu->page_ptr_table[page] = NULL;
-+	}
-+
-+	return -ENOMEM;
- }
- 
- /*
-@@ -507,10 +502,23 @@ static int synth_alloc_pages(struct snd_emu10k1 *emu, struct snd_emu10k1_memblk
-  */
- static int synth_free_pages(struct snd_emu10k1 *emu, struct snd_emu10k1_memblk *blk)
- {
--	int first_page, last_page;
-+	int page, first_page, last_page;
-+	struct snd_dma_buffer dmab;
- 
- 	get_single_page_range(emu->memhdr, blk, &first_page, &last_page);
--	__synth_free_pages(emu, first_page, last_page);
-+	dmab.dev.type = SNDRV_DMA_TYPE_DEV;
-+	dmab.dev.dev = snd_dma_pci_data(emu->pci);
-+	for (page = first_page; page <= last_page; page++) {
-+		if (emu->page_ptr_table[page] == NULL)
-+			continue;
-+		dmab.area = emu->page_ptr_table[page];
-+		dmab.addr = emu->page_addr_table[page];
-+		dmab.bytes = PAGE_SIZE;
-+		snd_dma_free_pages(&dmab);
-+		emu->page_addr_table[page] = 0;
-+		emu->page_ptr_table[page] = NULL;
-+	}
-+
- 	return 0;
- }
- 
+-- 
+Alexandre Belloni, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
