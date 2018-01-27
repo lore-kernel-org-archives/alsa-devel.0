@@ -1,51 +1,111 @@
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] ASoC: Intel: Fix some error handling path in
-	'sst_platform_get_resources()'
-Date: Sat, 27 Jan 2018 13:40:28 +0100
-Message-ID: <20180127124028.3795-1-christophe.jaillet@wanadoo.fr>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: [PATCH v2 1/5] ALSA: emu10k1: remove reserved_page
+Date: Sat, 27 Jan 2018 15:42:17 +0100
+Message-ID: <1f8839d8-16ae-9ef8-d5ed-c51d4fb3ff32@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp01.smtpout.orange.fr
- [80.12.242.123])
- by alsa0.perex.cz (Postfix) with ESMTP id BD289266C0E
- for <alsa-devel@alsa-project.org>; Sat, 27 Jan 2018 13:43:08 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, arvind.yadav.cs@gmail.com
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-2
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-U2V2ZXJhbCBlcnJvciBoYW5kbGluZyBwYXRocyBzZXQgJ3JldCcgdG8gYW4gZXJyb3IgY29kZSwg
-YnV0IHRoZSBmdW5jdGlvbgphbHdheXMgcmV0dXJucyAwIChpLmUuIHN1Y2Nlc3MpCgpSZXR1cm4g
-J3JldCcgaW5zdGVhZCBpbiBvcmRlciB0byByZXR1cm4gdGhlIGVycm9yIGNvZGUuCgpTaWduZWQt
-b2ZmLWJ5OiBDaHJpc3RvcGhlIEpBSUxMRVQgPGNocmlzdG9waGUuamFpbGxldEB3YW5hZG9vLmZy
-PgotLS0KSSBndWVzcyB0aGF0IHRoZSBjb2RlIG5lZWRzIG1vcmUgY29ycmVjdGlvbi4gRm9yIHRo
-aXMgZmlyc3QgdHJ5LCBJJ3ZlIGxlZnQKdGhlIGxvZ2ljIGFzLWlzLCBidXQgSSBkb24ndCByZWFs
-bHkgc2VlIHdoeSB3ZSBjYWxsICdwY2lfcmVsZWFzZV9yZWdpb25zKCknCmluIHRoZSBub3JtYWwg
-cGF0aC4KQSAncmV0dXJuIDA7JyBiZWZvcmUgdGhlICdkb19yZWxlYXNlX3JlZ2lvbnMnIGxhYmVs
-IHdvdWxkIHNvdW5kIG1vcmUKbG9naWNhbCB0byBtZS4KLS0tCiBzb3VuZC9zb2MvaW50ZWwvYXRv
-bS9zc3Qvc3N0X3BjaS5jIHwgNSArKysrLQogMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygr
-KSwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbnRlbC9hdG9tL3NzdC9z
-c3RfcGNpLmMgYi9zb3VuZC9zb2MvaW50ZWwvYXRvbS9zc3Qvc3N0X3BjaS5jCmluZGV4IDY5MDZl
-ZTYyNGNmNi4uOGNhZTIwODAyYjdjIDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvaW50ZWwvYXRvbS9z
-c3Qvc3N0X3BjaS5jCisrKyBiL3NvdW5kL3NvYy9pbnRlbC9hdG9tL3NzdC9zc3RfcGNpLmMKQEAg
-LTEwNSw5ICsxMDUsMTIgQEAgc3RhdGljIGludCBzc3RfcGxhdGZvcm1fZ2V0X3Jlc291cmNlcyhz
-dHJ1Y3QgaW50ZWxfc3N0X2RydiAqY3R4KQogCQlnb3RvIGRvX3JlbGVhc2VfcmVnaW9uczsKIAl9
-CiAJZGV2X2RiZyhjdHgtPmRldiwgIkRSQU0gUHRyICVwXG4iLCBjdHgtPmRyYW0pOworCisJcmV0
-ID0gMDsKKwogZG9fcmVsZWFzZV9yZWdpb25zOgogCXBjaV9yZWxlYXNlX3JlZ2lvbnMocGNpKTsK
-LQlyZXR1cm4gMDsKKwlyZXR1cm4gcmV0OwogfQogCiAvKgotLSAKMi4xNC4xCgoKLS0tCkwnYWJz
-ZW5jZSBkZSB2aXJ1cyBkYW5zIGNlIGNvdXJyaWVyIMOpbGVjdHJvbmlxdWUgYSDDqXTDqSB2w6ly
-aWZpw6llIHBhciBsZSBsb2dpY2llbCBhbnRpdmlydXMgQXZhc3QuCmh0dHBzOi8vd3d3LmF2YXN0
-LmNvbS9hbnRpdmlydXMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+The emu10k1-family chips need the first page (index 0) reserved in their
+page tables for some reason (every emu10k1 driver I've checked does this
+without much of an explanation).
+Using the first page for normal samples results in a broken playback.
+
+However, we already have a dummy page allocated - so called "silent page"
+and, in fact, had always been setting it as the first page in the chip page
+table because an initialization of every entry of the page table to point
+to a silent page happens after and overwrites the reserved_page allocation.
+
+So the only thing remaining to remove the reserved_page allocation is a
+trivial change to the page allocation logic to ignore the first page entry
+and start its allocations from the second entry (index 1).
+
+Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+---
+Changes from v1: None in this patch.
+
+ include/sound/emu10k1.h          |  1 -
+ sound/pci/emu10k1/emu10k1_main.c | 11 -----------
+ sound/pci/emu10k1/memory.c       |  8 ++++++--
+ 3 files changed, 6 insertions(+), 14 deletions(-)
+
+diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
+index 4f42affe777c..db32b7de52e0 100644
+--- a/include/sound/emu10k1.h
++++ b/include/sound/emu10k1.h
+@@ -1718,7 +1718,6 @@ struct snd_emu10k1 {
+ 	struct snd_dma_buffer p16v_buffer;
+ 
+ 	struct snd_util_memhdr *memhdr;		/* page allocation list */
+-	struct snd_emu10k1_memblk *reserved_page;	/* reserved page */
+ 
+ 	struct list_head mapped_link_head;
+ 	struct list_head mapped_order_link_head;
+diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
+index ccf4415a1c7b..a0a4d31ded53 100644
+--- a/sound/pci/emu10k1/emu10k1_main.c
++++ b/sound/pci/emu10k1/emu10k1_main.c
+@@ -1272,12 +1272,6 @@ static int snd_emu10k1_free(struct snd_emu10k1 *emu)
+ 	release_firmware(emu->dock_fw);
+ 	if (emu->irq >= 0)
+ 		free_irq(emu->irq, emu);
+-	/* remove reserved page */
+-	if (emu->reserved_page) {
+-		snd_emu10k1_synth_free(emu,
+-			(struct snd_util_memblk *)emu->reserved_page);
+-		emu->reserved_page = NULL;
+-	}
+ 	snd_util_memhdr_free(emu->memhdr);
+ 	if (emu->silent_page.area)
+ 		snd_dma_free_pages(&emu->silent_page);
+@@ -1993,11 +1987,6 @@ int snd_emu10k1_create(struct snd_card *card,
+ 		SPCS_GENERATIONSTATUS | 0x00001200 |
+ 		0x00000000 | SPCS_EMPHASIS_NONE | SPCS_COPYRIGHT;
+ 
+-	emu->reserved_page = (struct snd_emu10k1_memblk *)
+-		snd_emu10k1_synth_alloc(emu, 4096);
+-	if (emu->reserved_page)
+-		emu->reserved_page->map_locked = 1;
+-
+ 	/* Clear silent pages and set up pointers */
+ 	memset(emu->silent_page.area, 0, PAGE_SIZE);
+ 	silent_page = emu->silent_page.addr << emu->address_mode;
+diff --git a/sound/pci/emu10k1/memory.c b/sound/pci/emu10k1/memory.c
+index 4f1f69be1865..eaa61024ac7f 100644
+--- a/sound/pci/emu10k1/memory.c
++++ b/sound/pci/emu10k1/memory.c
+@@ -102,7 +102,7 @@ static void emu10k1_memblk_init(struct snd_emu10k1_memblk *blk)
+  */
+ static int search_empty_map_area(struct snd_emu10k1 *emu, int npages, struct list_head **nextp)
+ {
+-	int page = 0, found_page = -ENOMEM;
++	int page = 1, found_page = -ENOMEM;
+ 	int max_size = npages;
+ 	int size;
+ 	struct list_head *candidate = &emu->mapped_link_head;
+@@ -147,6 +147,10 @@ static int map_memblk(struct snd_emu10k1 *emu, struct snd_emu10k1_memblk *blk)
+ 	page = search_empty_map_area(emu, blk->pages, &next);
+ 	if (page < 0) /* not found */
+ 		return page;
++	if (page == 0) {
++		dev_err(emu->card->dev, "trying to map zero (reserved) page\n");
++		return -EINVAL;
++	}
+ 	/* insert this block in the proper position of mapped list */
+ 	list_add_tail(&blk->mapped_link, next);
+ 	/* append this as a newest block in order list */
+@@ -177,7 +181,7 @@ static int unmap_memblk(struct snd_emu10k1 *emu, struct snd_emu10k1_memblk *blk)
+ 		q = get_emu10k1_memblk(p, mapped_link);
+ 		start_page = q->mapped_page + q->pages;
+ 	} else
+-		start_page = 0;
++		start_page = 1;
+ 	if ((p = blk->mapped_link.next) != &emu->mapped_link_head) {
+ 		q = get_emu10k1_memblk(p, mapped_link);
+ 		end_page = q->mapped_page;
