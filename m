@@ -1,87 +1,48 @@
-From: Kirill Marinushkin <k.marinushkin@gmail.com>
-Subject: [PATCH] ALSA: usb-audio: Fix UAC2 get_ctl request with a RANGE attribute
-Date: Mon, 29 Jan 2018 06:37:55 +0100
-Message-ID: <20180129053755.20136-1-k.marinushkin@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com
-Cc: Kirill Marinushkin <k.marinushkin@gmail.com>, Jaejoong Kim <climbbb.kim@gmail.com>, Bhumika Goyal <bhumirks@gmail.com>, Stephen Barber <smbarber@chromium.org>, Julian Scheel <julian@jusst.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - Fix headset mic detection problem for two Dell machines
+Date: Mon, 29 Jan 2018 14:23:15 +0800
+Message-ID: <1517206995-3319-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-The layout of the UAC2 Control request and response varies depending on
-the request type. With the current implementation, only the Layout 2
-Parameter Block (with the 2-byte sized RANGE attribute) is handled
-properly. For the Control requests with the 1-byte sized RANGE attribute
-(Bass Control, Mid Control, Tremble Control), the response is parsed
-incorrectly.
+One of them has the codec of alc256 and the other one has the codec
+of alc289.
 
-This commit:
-* fixes the wLength field value in the request
-* fixes parsing the range values from the response
-
-Fixes: 23caaf19b11e ("ALSA: usb-mixer: Add support for Audio Class v2.0")
-Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Jaejoong Kim <climbbb.kim@gmail.com>
-Cc: Bhumika Goyal <bhumirks@gmail.com>
-Cc: Stephen Barber <smbarber@chromium.org>
-Cc: Julian Scheel <julian@jusst.de>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
- sound/usb/mixer.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ sound/pci/hda/patch_realtek.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 2b4ceda36291..20b28a5a1456 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -347,17 +347,20 @@ static int get_ctl_value_v2(struct usb_mixer_elem_info *cval, int request,
- 			    int validx, int *value_ret)
- {
- 	struct snd_usb_audio *chip = cval->head.mixer->chip;
--	unsigned char buf[4 + 3 * sizeof(__u32)]; /* enough space for one range */
-+	/* enough space for one range */
-+	unsigned char buf[sizeof(__u16) + 3 * sizeof(__u32)];
- 	unsigned char *val;
--	int idx = 0, ret, size;
-+	int idx = 0, ret, val_size, size;
- 	__u8 bRequest;
- 
-+	val_size = uac2_ctl_value_size(cval->val_type);
-+
- 	if (request == UAC_GET_CUR) {
- 		bRequest = UAC2_CS_CUR;
--		size = uac2_ctl_value_size(cval->val_type);
-+		size = val_size;
- 	} else {
- 		bRequest = UAC2_CS_RANGE;
--		size = sizeof(buf);
-+		size = sizeof(__u16) + 3 * val_size;
- 	}
- 
- 	memset(buf, 0, sizeof(buf));
-@@ -390,16 +393,17 @@ static int get_ctl_value_v2(struct usb_mixer_elem_info *cval, int request,
- 		val = buf + sizeof(__u16);
- 		break;
- 	case UAC_GET_MAX:
--		val = buf + sizeof(__u16) * 2;
-+		val = buf + sizeof(__u16) + val_size;
- 		break;
- 	case UAC_GET_RES:
--		val = buf + sizeof(__u16) * 3;
-+		val = buf + sizeof(__u16) + val_size * 2;
- 		break;
- 	default:
- 		return -EINVAL;
- 	}
- 
--	*value_ret = convert_signed_value(cval, snd_usb_combine_bytes(val, sizeof(__u16)));
-+	*value_ret = convert_signed_value(cval,
-+					  snd_usb_combine_bytes(val, val_size));
- 
- 	return 0;
- }
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 2347588..b791efe 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6735,6 +6735,11 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x14, 0x90170110},
+ 		{0x21, 0x02211020}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
++		{0x12, 0x90a60130},
++		{0x14, 0x90170110},
++		{0x14, 0x01011020},
++		{0x21, 0x0221101f}),
++	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		ALC256_STANDARD_PINS),
+ 	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1043, "ASUS", ALC256_FIXUP_ASUS_MIC,
+ 		{0x14, 0x90170110},
+@@ -6803,6 +6808,10 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x12, 0x90a60120},
+ 		{0x14, 0x90170110},
+ 		{0x21, 0x0321101f}),
++	SND_HDA_PIN_QUIRK(0x10ec0289, 0x1028, "Dell", ALC225_FIXUP_DELL1_MIC_NO_PRESENCE,
++		{0x12, 0xb7a60130},
++		{0x14, 0x90170110},
++		{0x21, 0x04211020}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0290, 0x103c, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1,
+ 		ALC290_STANDARD_PINS,
+ 		{0x15, 0x04211040},
 -- 
-2.13.6
+2.7.4
