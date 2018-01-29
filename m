@@ -1,41 +1,37 @@
-From: Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH] Asoc: samsung: clean makefile about inexistant files
-Date: Mon, 29 Jan 2018 12:26:16 +0000
-Message-ID: <1517228776-1617-1-git-send-email-clabbe@baylibre.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, krzk@kernel.org, lgirdwood@gmail.com, perex@perex.cz, s.nawrocki@samsung.com, sbkim73@samsung.com, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
+From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH 1/3] ASoC: sun4i-i2s: Add set_tdm_slot functionality
+Date: Mon, 29 Jan 2018 13:28:51 +0100
+Message-ID: <CAEKpxBnHEW+uN0yJOCaBODY2p_uxOcu7+ofsRuutrwvbJ9KeCA@mail.gmail.com>
+References: <20180124141101.12867-1-codekipper@gmail.com> <20180124141101.12867-2-codekipper@gmail.com>
+ <CAGb2v67eYFP1cnJ8iY9-Y-50kSbuY_Wip51q0veqx9z0_Prenw@mail.gmail.com>
+ <CAEKpxBn6FNLCN22Bax1RiTdZbsHOqq6Ls5k2JYz6QJt4_77ffA@mail.gmail.com> <20180129113248.GA10969@sirena.org.uk>
+Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBBFHXTJQKGQEATMLSUI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20180129113248.GA10969-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Clean makefile rules about inexistant files.
-Thoses files were removed in commit a076d418235f ("ASoC: samsung: Drop AC97 drivers")
-
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- sound/soc/samsung/Makefile | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/sound/soc/samsung/Makefile b/sound/soc/samsung/Makefile
-index 030949e1e434..c3b76035f69c 100644
---- a/sound/soc/samsung/Makefile
-+++ b/sound/soc/samsung/Makefile
-@@ -21,8 +21,6 @@ obj-$(CONFIG_SND_SAMSUNG_I2S) += snd-soc-idma.o
- # S3C24XX Machine Support
- snd-soc-jive-wm8750-objs := jive_wm8750.o
- snd-soc-neo1973-wm8753-objs := neo1973_wm8753.o
--snd-soc-smdk2443-wm9710-objs := smdk2443_wm9710.o
--snd-soc-ln2440sbc-alc650-objs := ln2440sbc_alc650.o
- snd-soc-s3c24xx-uda134x-objs := s3c24xx_uda134x.o
- snd-soc-s3c24xx-simtec-objs := s3c24xx_simtec.o
- snd-soc-s3c24xx-simtec-hermes-objs := s3c24xx_simtec_hermes.o
-@@ -32,7 +30,6 @@ snd-soc-rx1950-uda1380-objs := rx1950_uda1380.o
- snd-soc-smdk-wm8580-objs := smdk_wm8580.o
- snd-soc-smdk-wm8994-objs := smdk_wm8994.o
- snd-soc-snow-objs := snow.o
--snd-soc-smdk-wm9713-objs := smdk_wm9713.o
- snd-soc-s3c64xx-smartq-wm8987-objs := smartq_wm8987.o
- snd-soc-smdk-spdif-objs := smdk_spdif.o
- snd-soc-smdk-wm8994pcm-objs := smdk_wm8994pcm.o
--- 
-2.13.6
+On 29 January 2018 at 12:32, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+> On Mon, Jan 29, 2018 at 08:34:00AM +0100, Code Kipper wrote:
+>
+>> I'm not sure..I was looking for a clean example of being able to
+>> override the number of bclks in the lrclk width and some other
+>> devices(Rpi) were doing it this way.  I open to suggestions,
+>
+> You're looking for set_bclk_ratio() I think.
+Hi Mark,
+I'm looking for a mechanism to be able to override the bclk width
+(usually it's based on param_width) from the device tree. The tdm slot
+functionality looked just what I needed.
+BR,
+CK
