@@ -1,136 +1,150 @@
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 Subject: Re: [PATCH 1/3] ASoC: sun4i-i2s: Add set_tdm_slot functionality
-Date: Mon, 29 Jan 2018 15:38:40 +0800
-Message-ID: <CAGb2v65-Cg4GNL6YcJin6x27bu+R4-X8zjhjYO3pnpatGvE+ew@mail.gmail.com>
+Date: Mon, 29 Jan 2018 08:52:12 +0100
+Message-ID: <CAEKpxB=MP1S8pbVYAVEGvsxLKaTQOHmq7jJpiD1gDtH7ieCJCw@mail.gmail.com>
 References: <20180124141101.12867-1-codekipper@gmail.com> <20180124141101.12867-2-codekipper@gmail.com>
- <CAGb2v67eYFP1cnJ8iY9-Y-50kSbuY_Wip51q0veqx9z0_Prenw@mail.gmail.com> <CAEKpxBn6FNLCN22Bax1RiTdZbsHOqq6Ls5k2JYz6QJt4_77ffA@mail.gmail.com>
-Reply-To: wens-jdAy2FN1RRM@public.gmane.org
+ <CAGb2v67eYFP1cnJ8iY9-Y-50kSbuY_Wip51q0veqx9z0_Prenw@mail.gmail.com>
+ <CAEKpxBn6FNLCN22Bax1RiTdZbsHOqq6Ls5k2JYz6QJt4_77ffA@mail.gmail.com> <CAGb2v65-Cg4GNL6YcJin6x27bu+R4-X8zjhjYO3pnpatGvE+ew@mail.gmail.com>
+Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCMILY6JWQBBBF47XPJQKGQESPHY4TQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBLNFXPJQKGQE7INEMYA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <CAEKpxBn6FNLCN22Bax1RiTdZbsHOqq6Ls5k2JYz6QJt4_77ffA-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+In-Reply-To: <CAGb2v65-Cg4GNL6YcJin6x27bu+R4-X8zjhjYO3pnpatGvE+ew-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
 List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
  <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
 Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 29, 2018 at 3:34 PM, Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
-> On 29 January 2018 at 02:50, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org> wrote:
->> On Wed, Jan 24, 2018 at 10:10 PM,  <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
->>> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+On 29 January 2018 at 08:38, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org> wrote:
+> On Mon, Jan 29, 2018 at 3:34 PM, Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+>> On 29 January 2018 at 02:50, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org> wrote:
+>>> On Wed, Jan 24, 2018 at 10:10 PM,  <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+>>>> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+>>>>
+>>>> Some codecs require a different amount of a bit clocks per frame than
+>>>> what is calculated by the sample width. Use the tdm slot bindings to
+>>>> provide this mechanism.
+>>>>
+>>>> Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+>>>> ---
+>>>>  sound/soc/sunxi/sun4i-i2s.c | 23 +++++++++++++++++++++--
+>>>>  1 file changed, 21 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+>>>> index dca1143c1150..d7a9141514cf 100644
+>>>> --- a/sound/soc/sunxi/sun4i-i2s.c
+>>>> +++ b/sound/soc/sunxi/sun4i-i2s.c
+>>>> @@ -96,6 +96,7 @@
+>>>>  #define SUN8I_I2S_CTRL_BCLK_OUT                        BIT(18)
+>>>>  #define SUN8I_I2S_CTRL_LRCK_OUT                        BIT(17)
+>>>>
+>>>> +#define SUN8I_I2S_FMT0_LRCK_MAX_PERIOD         (GENMASK(17, 8) >> 8)
+>>>>  #define SUN8I_I2S_FMT0_LRCK_PERIOD_MASK                GENMASK(17, 8)
+>>>>  #define SUN8I_I2S_FMT0_LRCK_PERIOD(period)     ((period - 1) << 8)
+>>>>
+>>>> @@ -193,6 +194,9 @@ struct sun4i_i2s {
+>>>>         struct regmap_field     *field_rxchansel;
+>>>>
+>>>>         const struct sun4i_i2s_quirks   *variant;
+>>>> +
+>>>> +       unsigned int    tdm_slots;
+>>>> +       unsigned int    slot_width;
+>>>>  };
+>>>>
+>>>>  struct sun4i_i2s_clk_div {
+>>>> @@ -344,7 +348,7 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+>>>>         if (i2s->variant->has_fmt_set_lrck_period)
+>>>>                 regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
+>>>>                                    SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
+>>>> -                                  SUN8I_I2S_FMT0_LRCK_PERIOD(32));
+>>>> +                                  SUN8I_I2S_FMT0_LRCK_PERIOD(word_size));
+>>>>
+>>>>         return 0;
+>>>>  }
+>>>> @@ -418,7 +422,8 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+>>>>                            sr + i2s->variant->fmt_offset);
+>>>>
+>>>>         return sun4i_i2s_set_clk_rate(dai, params_rate(params),
+>>>> -                                     params_width(params));
+>>>> +                                     i2s->tdm_slots ?
+>>>> +                                     i2s->slot_width : params_width(params));
+>>>>  }
+>>>>
+>>>>  static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+>>>> @@ -691,6 +696,19 @@ static int sun4i_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+>>>>         return 0;
+>>>>  }
+>>>>
+>>>> +static int sun4i_i2s_set_dai_tdm_slot(struct snd_soc_dai *dai,
+>>>> +       unsigned int tx_mask, unsigned int rx_mask,
+>>>> +       int slots, int width)
+>>>> +{
+>>>> +       struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+>>>> +
+>>>> +       i2s->tdm_slots = slots;
+>>>> +
+>>>> +       i2s->slot_width = width;
+>>>> +
+>>>> +       return 0;
+>>>> +}
+>>>> +
 >>>
->>> Some codecs require a different amount of a bit clocks per frame than
->>> what is calculated by the sample width. Use the tdm slot bindings to
->>> provide this mechanism.
->>>
->>> Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
->>> ---
->>>  sound/soc/sunxi/sun4i-i2s.c | 23 +++++++++++++++++++++--
->>>  1 file changed, 21 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
->>> index dca1143c1150..d7a9141514cf 100644
->>> --- a/sound/soc/sunxi/sun4i-i2s.c
->>> +++ b/sound/soc/sunxi/sun4i-i2s.c
->>> @@ -96,6 +96,7 @@
->>>  #define SUN8I_I2S_CTRL_BCLK_OUT                        BIT(18)
->>>  #define SUN8I_I2S_CTRL_LRCK_OUT                        BIT(17)
->>>
->>> +#define SUN8I_I2S_FMT0_LRCK_MAX_PERIOD         (GENMASK(17, 8) >> 8)
->>>  #define SUN8I_I2S_FMT0_LRCK_PERIOD_MASK                GENMASK(17, 8)
->>>  #define SUN8I_I2S_FMT0_LRCK_PERIOD(period)     ((period - 1) << 8)
->>>
->>> @@ -193,6 +194,9 @@ struct sun4i_i2s {
->>>         struct regmap_field     *field_rxchansel;
->>>
->>>         const struct sun4i_i2s_quirks   *variant;
->>> +
->>> +       unsigned int    tdm_slots;
->>> +       unsigned int    slot_width;
->>>  };
->>>
->>>  struct sun4i_i2s_clk_div {
->>> @@ -344,7 +348,7 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
->>>         if (i2s->variant->has_fmt_set_lrck_period)
->>>                 regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
->>>                                    SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
->>> -                                  SUN8I_I2S_FMT0_LRCK_PERIOD(32));
->>> +                                  SUN8I_I2S_FMT0_LRCK_PERIOD(word_size));
->>>
->>>         return 0;
->>>  }
->>> @@ -418,7 +422,8 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
->>>                            sr + i2s->variant->fmt_offset);
->>>
->>>         return sun4i_i2s_set_clk_rate(dai, params_rate(params),
->>> -                                     params_width(params));
->>> +                                     i2s->tdm_slots ?
->>> +                                     i2s->slot_width : params_width(params));
->>>  }
->>>
->>>  static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
->>> @@ -691,6 +696,19 @@ static int sun4i_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
->>>         return 0;
->>>  }
->>>
->>> +static int sun4i_i2s_set_dai_tdm_slot(struct snd_soc_dai *dai,
->>> +       unsigned int tx_mask, unsigned int rx_mask,
->>> +       int slots, int width)
->>> +{
->>> +       struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
->>> +
->>> +       i2s->tdm_slots = slots;
->>> +
->>> +       i2s->slot_width = width;
->>> +
->>> +       return 0;
->>> +}
->>> +
+>>> IIRC some of the DAI controllers actually support TDM. Would this
+>>> change conflict with that in the future?
 >>
->> IIRC some of the DAI controllers actually support TDM. Would this
->> change conflict with that in the future?
+>> Hi Wens,
+>> I'm not sure..I was looking for a clean example of being able to
+>> override the number of bclks in the lrclk width and some other
+>> devices(Rpi) were doing it this way.  I open to suggestions,
 >
-> Hi Wens,
-> I'm not sure..I was looking for a clean example of being able to
-> override the number of bclks in the lrclk width and some other
-> devices(Rpi) were doing it this way.  I open to suggestions,
+> I'm not familiar with the issue either. If Mark doesn't have any
+> objections, we could merge it for now, and fix it later if there
+> are any complications.
+>
+> BTW, you didn't provide a device tree example (if any) for how
+> to use this.
 
-I'm not familiar with the issue either. If Mark doesn't have any
-objections, we could merge it for now, and fix it later if there
-are any complications.
+Hi Wens,
 
-BTW, you didn't provide a device tree example (if any) for how
-to use this.
+here is an example that I use for the Pine64 audio hat.
+https://github.com/codekipper/linux-sunxi/commit/faa9dfba955bf71ca23b089b1cb678a14443216f#diff-1473a38b339685d191c5a87aab9c0fdfR80
 
-ChenYu
+I've done the same on the A64 for HDMI and analog audio which both use
+the i2s and seem to require 32bit LRCK width.
 
-> BR,
-> CK
->>
->> Thanks
->> ChenYu
->>
->>>  static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
->>>         .hw_params      = sun4i_i2s_hw_params,
->>>         .set_fmt        = sun4i_i2s_set_fmt,
->>> @@ -698,6 +716,7 @@ static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
->>>         .shutdown       = sun4i_i2s_shutdown,
->>>         .startup        = sun4i_i2s_startup,
->>>         .trigger        = sun4i_i2s_trigger,
->>> +       .set_tdm_slot   = sun4i_i2s_set_dai_tdm_slot,
->>>  };
+BR,
+CK
+
+>
+> ChenYu
+>
+>> BR,
+>> CK
 >>>
->>>  static int sun4i_i2s_dai_probe(struct snd_soc_dai *dai)
->>> --
->>> 2.16.0
+>>> Thanks
+>>> ChenYu
 >>>
->>> --
->>> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
->>> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
->>> For more options, visit https://groups.google.com/d/optout.
+>>>>  static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
+>>>>         .hw_params      = sun4i_i2s_hw_params,
+>>>>         .set_fmt        = sun4i_i2s_set_fmt,
+>>>> @@ -698,6 +716,7 @@ static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
+>>>>         .shutdown       = sun4i_i2s_shutdown,
+>>>>         .startup        = sun4i_i2s_startup,
+>>>>         .trigger        = sun4i_i2s_trigger,
+>>>> +       .set_tdm_slot   = sun4i_i2s_set_dai_tdm_slot,
+>>>>  };
+>>>>
+>>>>  static int sun4i_i2s_dai_probe(struct snd_soc_dai *dai)
+>>>> --
+>>>> 2.16.0
+>>>>
+>>>> --
+>>>> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
+>>>> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+>>>> For more options, visit https://groups.google.com/d/optout.
