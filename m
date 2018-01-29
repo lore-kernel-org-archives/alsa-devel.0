@@ -1,45 +1,116 @@
-From: Maurizio Berti <maurizio.berti@gmail.com>
-Subject: pyalsa support for Python 3
-Date: Mon, 29 Jan 2018 01:38:33 +0100
-Message-ID: <CAPn+-XTf4HZq+NmN4m-h0LO0Z65K76yO58W7GdrMxgONz-LopA@mail.gmail.com>
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Subject: Re: [PATCH 1/3] ASoC: sun4i-i2s: Add set_tdm_slot functionality
+Date: Mon, 29 Jan 2018 09:50:11 +0800
+Message-ID: <CAGb2v67eYFP1cnJ8iY9-Y-50kSbuY_Wip51q0veqx9z0_Prenw@mail.gmail.com>
+References: <20180124141101.12867-1-codekipper@gmail.com> <20180124141101.12867-2-codekipper@gmail.com>
+Reply-To: wens-jdAy2FN1RRM@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f45.google.com (mail-wm0-f45.google.com [74.125.82.45])
- by alsa0.perex.cz (Postfix) with ESMTP id DADF8266E42
- for <alsa-devel@alsa-project.org>; Mon, 29 Jan 2018 01:39:14 +0100 (CET)
-Received: by mail-wm0-f45.google.com with SMTP id x4so42614773wmc.0
- for <alsa-devel@alsa-project.org>; Sun, 28 Jan 2018 16:39:14 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBCMILY6JWQBBB2X3XHJQKGQESXCXMEQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20180124141101.12867-2-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8sCkkgdXNlZCBweWFsc2EncyBhbHNhc2VxIG1vZHVsZSBmb3IgYSBwcm9qZWN0IG9mIG1p
-bmUgd2hpY2ggdXNlZCBQeXRob24gMi4KTm93IEknbSBzd2l0Y2hpbmcgdG8gUHl0aG9uIDMgYW5k
-IEknZCBuZWVkIHRvIHVzZSB0aGUgYWxzYXNlcSBtb2R1bGUgd2l0aAp0aGF0IHZlcnNpb24uIFVu
-Zm9ydHVuYWxseSwgaXQgc2VlbXMgdGhhdCBQeXRob24gMyBzdXBwb3J0IGhhcyBub3QgYmVlbgph
-ZGRlZCB5ZXQuCgpJIGZvdW5kIHRoaXMgbWVzc2FnZToKaHR0cDovL2xpbnV4LWF1ZGlvLjQyMDIu
-bjcubmFiYmxlLmNvbS9QeXRob24zLVB5QWxzYS1CdWlsZC1mYWlscy10ZDgzNTkwLmh0bWwKSXQg
-aXMgb2xkZXIgdGhhbiB0aGUgbGF0ZXN0IHJlbGVhc2Ugb2YgcHlhbHNhLCBidXQsIGV2ZW4gYWZ0
-ZXIgdHJ5aW5nIHRvCmZvbGxvdyB0aGUgaW5zdHJ1Y3Rpb25zLCBJIHN0aWxsIGdldCBlcnJvcnMg
-YW5kIGNhbm5vdCBidWlsZCBweWFsc2EgZm9yClB5dGhvbjM6IHdoaWxlIHRoZSAicHlhbHNhL2Fs
-c2Fjb250cm9sLmM6MTg0OjY6IGVycm9yOiDigJhzdHJ1Y3QKcHlhbHNhY29udHJvbOKAmSBoYXMg
-bm8gbWVtYmVyIG5hbWVkIOKAmG9iX3R5cGXigJkiIGVycm9yIGlzIGdvbmUsIGl0IHN0aWxsCmRv
-ZXNuJ3QgYnVpbGQuClRoZSBsYXRlc3QgbWVzc2FnZSByZXBvcnRzOgoKICAgIGVycm9yOiBjb21t
-YW5kICdpNjg2LXBjLWxpbnV4LWdudS1nY2MnIGZhaWxlZCB3aXRoIGV4aXQgc3RhdHVzIDEKCklz
-IHRoZXJlIGFueSBjaGFuY2UgdGhhdCBweWFsc2EgZ2V0cyBhbiB1cGRhdGUgZm9yIGl0PwoKVGhh
-bmsgeW91LApNYXVyaXppbwoKLS0gCsOIIGRpZmZpY2lsZSBhdmVyZSB1bmEgY29udmluemlvbmUg
-cHJlY2lzYSBxdWFuZG8gc2kgcGFybGEgZGVsbGUgcmFnaW9uaSBkZWwKY3VvcmUuIC0gIlNvc3Rp
-ZW5lIFBlcmVpcmEiLCBBbnRvbmlvIFRhYnVjY2hpCmh0dHA6Ly93d3cuamlkZXNrLm5ldApfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
-aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
-YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Wed, Jan 24, 2018 at 10:10 PM,  <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+>
+> Some codecs require a different amount of a bit clocks per frame than
+> what is calculated by the sample width. Use the tdm slot bindings to
+> provide this mechanism.
+>
+> Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> ---
+>  sound/soc/sunxi/sun4i-i2s.c | 23 +++++++++++++++++++++--
+>  1 file changed, 21 insertions(+), 2 deletions(-)
+>
+> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+> index dca1143c1150..d7a9141514cf 100644
+> --- a/sound/soc/sunxi/sun4i-i2s.c
+> +++ b/sound/soc/sunxi/sun4i-i2s.c
+> @@ -96,6 +96,7 @@
+>  #define SUN8I_I2S_CTRL_BCLK_OUT                        BIT(18)
+>  #define SUN8I_I2S_CTRL_LRCK_OUT                        BIT(17)
+>
+> +#define SUN8I_I2S_FMT0_LRCK_MAX_PERIOD         (GENMASK(17, 8) >> 8)
+>  #define SUN8I_I2S_FMT0_LRCK_PERIOD_MASK                GENMASK(17, 8)
+>  #define SUN8I_I2S_FMT0_LRCK_PERIOD(period)     ((period - 1) << 8)
+>
+> @@ -193,6 +194,9 @@ struct sun4i_i2s {
+>         struct regmap_field     *field_rxchansel;
+>
+>         const struct sun4i_i2s_quirks   *variant;
+> +
+> +       unsigned int    tdm_slots;
+> +       unsigned int    slot_width;
+>  };
+>
+>  struct sun4i_i2s_clk_div {
+> @@ -344,7 +348,7 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+>         if (i2s->variant->has_fmt_set_lrck_period)
+>                 regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
+>                                    SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
+> -                                  SUN8I_I2S_FMT0_LRCK_PERIOD(32));
+> +                                  SUN8I_I2S_FMT0_LRCK_PERIOD(word_size));
+>
+>         return 0;
+>  }
+> @@ -418,7 +422,8 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+>                            sr + i2s->variant->fmt_offset);
+>
+>         return sun4i_i2s_set_clk_rate(dai, params_rate(params),
+> -                                     params_width(params));
+> +                                     i2s->tdm_slots ?
+> +                                     i2s->slot_width : params_width(params));
+>  }
+>
+>  static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+> @@ -691,6 +696,19 @@ static int sun4i_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+>         return 0;
+>  }
+>
+> +static int sun4i_i2s_set_dai_tdm_slot(struct snd_soc_dai *dai,
+> +       unsigned int tx_mask, unsigned int rx_mask,
+> +       int slots, int width)
+> +{
+> +       struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+> +
+> +       i2s->tdm_slots = slots;
+> +
+> +       i2s->slot_width = width;
+> +
+> +       return 0;
+> +}
+> +
+
+IIRC some of the DAI controllers actually support TDM. Would this
+change conflict with that in the future?
+
+Thanks
+ChenYu
+
+>  static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
+>         .hw_params      = sun4i_i2s_hw_params,
+>         .set_fmt        = sun4i_i2s_set_fmt,
+> @@ -698,6 +716,7 @@ static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
+>         .shutdown       = sun4i_i2s_shutdown,
+>         .startup        = sun4i_i2s_startup,
+>         .trigger        = sun4i_i2s_trigger,
+> +       .set_tdm_slot   = sun4i_i2s_set_dai_tdm_slot,
+>  };
+>
+>  static int sun4i_i2s_dai_probe(struct snd_soc_dai *dai)
+> --
+> 2.16.0
+>
+> --
+> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+> For more options, visit https://groups.google.com/d/optout.
