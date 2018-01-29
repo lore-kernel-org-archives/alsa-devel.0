@@ -1,121 +1,172 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Subject: Re: [Intel-gfx] [PATCH] drm/i915: Remove unused IRQ chip data of
- HDMI LPE audio
-Date: Mon, 29 Jan 2018 19:09:22 +0200
-Message-ID: <20180129170922.GR5453@intel.com>
-References: <20171208093323.2212-1-augustine.chen@intel.com>
- <20171208114404.GN10981@intel.com>
- <alpine.DEB.2.20.1712082340400.2301@nanos>
- <F6867404AABACB4D8EC371BF802A4B7C5790D206@fmsmsx101.amr.corp.intel.com>
- <alpine.DEB.2.20.1712121804570.1794@nanos>
- <F6867404AABACB4D8EC371BF802A4B7C5790F9A8@fmsmsx101.amr.corp.intel.com>
- <alpine.DEB.2.20.1712131232090.1885@nanos>
- <s5hshce7skk.wl-tiwai@suse.de>
- <alpine.DEB.2.20.1712131452550.1885@nanos>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: [PATCH] sound/tlv320dac33: Add device tree support
+Date: Tue, 30 Jan 2018 00:05:39 +0100
+Message-ID: <20180129230539.GA18280@amd>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="+QahgC5+KEYLbs62"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.20.1712131452550.1885@nanos>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Takashi Iwai <tiwai@suse.de>, "Anand, Jerome" <jerome.anand@intel.com>, "Chen, Augustine" <augustine.chen@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Bossart, Pierre-louis" <pierre-louis.bossart@intel.com>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Jiang Liu <jiang.liu@linux.intel.com>, Juergen Gross <jgross@suse.com>, Dou Liyang <douly.fnst@cn.fujitsu.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com, bhumirks@gmail.com, pavel@ucw.cz, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, pali.rohar@gmail.com, sre@kernel.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-omap@vger.kernel.org, tony@atomide.com, khilman@kernel.org, aaro.koskinen@iki.fi, ivo.g.dimitrov.75@gmail.com, patrikbachan@gmail.com, serge@hallyn.com, abcloriens@gmail.com, clayton@craftyguy.net, martijn@brixit.nl, sakari.ailus@linux.intel.com, Filip =?utf-8?Q?Matijevi=C4=87?= <filip.matijevic.pz@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 13, 2017 at 03:06:55PM +0100, Thomas Gleixner wrote:
-> On Wed, 13 Dec 2017, Takashi Iwai wrote:
-> > On Wed, 13 Dec 2017 12:35:54 +0100,
-> > Thomas Gleixner wrote:
-> > > 
-> > > > > On Mon, 11 Dec 2017, Anand, Jerome wrote:
-> > > > > > > On Fri, 8 Dec 2017, Ville Syrjälä wrote:
-> > > > > > >
-> > > > > > > > On Fri, Dec 08, 2017 at 05:33:23PM +0800, Augustine.Chen wrote:
-> > > > > > > > > The chip data of HDMI LPE audio is set to drm_i915_private which
-> > > > > > > > > is not consistent with the expectation by x86 APIC driver.
-> > > > > > > >
-> > > > > > > > Hmm. Why is the apic code looking at data for an irq chip it
-> > > > > > > > hasn't created?
-> > > > > > > >
-> > > > > >
-> > > > > > apic code expects an irq domain to be place as generic approach.
-> > > > > 
-> > > > > APIC code does not even see that interrupt at all. It's completely disconnected.
-> > > > > 
-> > > > 
-> > > > That's the problem - APIC just converts the chip data to its internal
-> > > > format and fails.
-> > > 
-> > > How does APIC code end up to touch that interrupt at all? Call stack please.
-> > 
-> > It's found in the bugzilla referred in the patch:
-> >   https://bugs.freedesktop.org/show_bug.cgi?id=103731
-> > 
-> > [   87.353072] irq 298 idata->chip->name hdmi_lpe_audio_irqchip
-> > [   87.353072] irq 298 apic_chip_data
-> > [   87.353073] irq 298 data->domain is NULL
-> > [   87.353120] BUG: unable to handle kernel NULL pointer dereference at (null)
-> > [   87.353132] IP: setup_vector_irq+0x1ba/0x230
-> > [   87.353133] PGD 0
-> > 
-> > If my understanding is correct, it happens only with 4.14 and earlier
-> > kernels where __setup_vector_irq() loops over the all irqs:
-> > 
-> > static void __setup_vector_irq(int cpu)
-> > {
-> > 	struct apic_chip_data *data;
-> > 	struct irq_desc *desc;
-> > 	int irq, vector;
-> > 
-> > 	/* Mark the inuse vectors */
-> > 	for_each_irq_desc(irq, desc) {
-> > 		struct irq_data *idata = irq_desc_get_irq_data(desc);
-> > 
-> > 		data = apic_chip_data(idata);
-> > 		if (!data || !cpumask_test_cpu(cpu, data->domain))
-> > 			continue;
-> > 		....
-> > 
-> > And since we have assigned a non-APIC chip data in the driver, the
-> > code above refers to a wrong object, leading to Oops.
-> 
-> Bah crap. This information should have been provided earlier instead of
-> handwavy 'doesnt work with CONFIG_FOO and hotplug'.
-> 
-> > As a further note, the setup_vector_irq() code has been changed in
-> > 4.15, and such a reference won't happen any longer.  So the patch
-> > isn't necessary for now, although it's not bad to take as a cleanup.
-> > And we can eventually put Cc to stable there since it actually works
-> > around the issue above for the older kernels -- of course, with more
-> > detailed descriptions about the background.
-> 
-> No, that's just tinkering. The proper fix is to make that code robust.
-> 
-> Something like the completely untested patch below should do the trick.
-> 
-> Thanks,
-> 
-> 	tglx
-> ---
-> diff --git a/arch/x86/kernel/apic/vector.c b/arch/x86/kernel/apic/vector.c
-> index f3557a1eb562..02e6a3cc0d74 100644
-> --- a/arch/x86/kernel/apic/vector.c
-> +++ b/arch/x86/kernel/apic/vector.c
-> @@ -58,6 +58,9 @@ static struct apic_chip_data *apic_chip_data(struct irq_data *irq_data)
->  	while (irq_data->parent_data)
->  		irq_data = irq_data->parent_data;
->  
-> +	if (irq_data->domain != x86_vector_domain)
-> +		return NULL;
-> +
->  	return irq_data->chip_data;
->  }
->  
-> 
 
-Did this patch resolve the issue?
+--+QahgC5+KEYLbs62
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Ville Syrjälä
-Intel OTC
+
+This adds device tree support to tlv320dac33.c.
+
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
+
+diff --git a/Documentation/devicetree/bindings/sound/tlv320dac33.txt b/Docu=
+mentation/devicetree/bindings/sound/tlv320dac33.txt
+new file mode 100644
+index 0000000..6cbd311
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/tlv320dac33.txt
+@@ -0,0 +1,32 @@
++Texas Instruments - tlv320dac33 Codec module
++
++The tlv320dac33 serial control bus communicates through I2C protocols.
++
++Required properties:
++
++- compatible - "ti,tlv320dac33"
++- reg - I2C slave address
++
++Optional properties:
++
++- power-gpios - gpio pin to power the device, active high
++
++- interrupts       - The interrupt output from the device.
++- interrupt-parent - The parent interrupt controller.
++
++- ti,keep-bclk 	- Keep the BCLK running in FIFO modes
++- ti,burst-bclkdiv - BCLK divider value in burst mode
++
++Example:
++
++tlv320dac33: audio-codec@19 {
++	compatible =3D "ti,tlv320dac33";
++	reg =3D <0x19>;
++
++	interrupt-parent =3D <&gpio2>;
++	interrupts =3D <21 1>; /* gpio_53, IRQF_TRIGGER_RISING */
++	power-gpio =3D <&gpio2 28 0>; /* gpio_60 */
++
++	ti,keep-bclk;
++	ti,burst-bclkdiv =3D <3>;
++};
+diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+index 5b94a15..2a0fe06 100644
+--- a/sound/soc/codecs/tlv320dac33.c
++++ b/sound/soc/codecs/tlv320dac33.c
+@@ -30,6 +32,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/gpio.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/of_gpio.h>
+ #include <linux/slab.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -105,7 +108,7 @@ struct tlv320dac33_priv {
+ 	unsigned int nsample;		/* burst read amount from host */
+ 	int mode1_latency;		/* latency caused by the i2c writes in
+ 					 * us */
+-	u8 burst_bclkdiv;		/* BCLK divider value in burst mode */
++	u32 burst_bclkdiv;		/* BCLK divider value in burst mode */
+ 	unsigned int burst_rate;	/* Interface speed in Burst modes */
+=20
+ 	int keep_bclk;			/* Keep the BCLK continuously running
+@@ -1484,16 +1487,11 @@ static struct snd_soc_dai_driver dac33_dai =3D {
+ static int dac33_i2c_probe(struct i2c_client *client,
+ 			   const struct i2c_device_id *id)
+ {
+-	struct tlv320dac33_platform_data *pdata;
++	struct tlv320dac33_platform_data *pdata =3D client->dev.platform_data;
+ 	struct tlv320dac33_priv *dac33;
++	struct device_node *np =3D client->dev.of_node;
+ 	int ret, i;
+=20
+-	if (client->dev.platform_data =3D=3D NULL) {
+-		dev_err(&client->dev, "Platform data not set\n");
+-		return -ENODEV;
+-	}
+-	pdata =3D client->dev.platform_data;
+-
+ 	dac33 =3D devm_kzalloc(&client->dev, sizeof(struct tlv320dac33_priv),
+ 			     GFP_KERNEL);
+ 	if (dac33 =3D=3D NULL)
+@@ -1505,10 +1503,26 @@ static int dac33_i2c_probe(struct i2c_client *clien=
+t,
+=20
+ 	i2c_set_clientdata(client, dac33);
+=20
+-	dac33->power_gpio =3D pdata->power_gpio;
+-	dac33->burst_bclkdiv =3D pdata->burst_bclkdiv;
+-	dac33->keep_bclk =3D pdata->keep_bclk;
+-	dac33->mode1_latency =3D pdata->mode1_latency;
++	if (pdata) {
++		dac33->power_gpio =3D pdata->power_gpio;
++		dac33->burst_bclkdiv =3D pdata->burst_bclkdiv;
++		dac33->keep_bclk =3D pdata->keep_bclk;
++		dac33->mode1_latency =3D pdata->mode1_latency;
++	} else if (np) {
++		ret =3D of_get_named_gpio(np, "power-gpios", 0);
++		if (ret >=3D 0)
++			dac33->power_gpio =3D ret;
++		else
++			dac33->power_gpio =3D -1;
++
++		if (of_property_read_bool(np, "ti,keep-bclk"))
++			dac33->keep_bclk =3D true;
++
++		of_property_read_u32(np, "ti,burst-bclkdiv", &dac33->burst_bclkdiv);
++	} else {
++		dev_err(&client->dev, "Platform data not set\n");
++		return -ENODEV;
++	}
+ 	if (!dac33->mode1_latency)
+ 		dac33->mode1_latency =3D 10000; /* 10ms */
+ 	dac33->irq =3D client->irq;
+@@ -1574,9 +1588,16 @@ static const struct i2c_device_id tlv320dac33_i2c_id=
+[] =3D {
+ };
+ MODULE_DEVICE_TABLE(i2c, tlv320dac33_i2c_id);
+=20
++static const struct of_device_id tlv320dac33_of_match[] =3D {
++	{ .compatible =3D "ti,tlv320dac33", },
++	{},
++};
++MODULE_DEVICE_TABLE(i2c, tlv320dac33_of_match);
++
+ static struct i2c_driver tlv320dac33_i2c_driver =3D {
+ 	.driver =3D {
+ 		.name =3D "tlv320dac33-codec",
++		.of_match_table =3D of_match_ptr(tlv320dac33_of_match),
+ 	},
+ 	.probe		=3D dac33_i2c_probe,
+ 	.remove		=3D dac33_i2c_remove,
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--+QahgC5+KEYLbs62
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlpvqMMACgkQMOfwapXb+vKqtQCdFnCA4LlqtKuol9jqGJWx5juh
+lfoAn0jQ6cD3Ke0CRvJGD5gLMTSZGKY/
+=NnnZ
+-----END PGP SIGNATURE-----
+
+--+QahgC5+KEYLbs62--
