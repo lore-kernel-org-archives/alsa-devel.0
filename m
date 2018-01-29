@@ -1,32 +1,27 @@
-From: Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH] ASoC: remove dead makefile about sn95031
-Date: Mon, 29 Jan 2018 12:28:54 +0000
-Message-ID: <1517228934-1754-1-git-send-email-clabbe@baylibre.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH] Asoc: samsung: clean makefile about inexistant files
+Date: Mon, 29 Jan 2018 13:31:09 +0100
+Message-ID: <CAJKOXPckV+UCUdFmgYx-6XPR_GwruOnOY-VE2qog6dNJAG5AOQ@mail.gmail.com>
+References: <1517228776-1617-1-git-send-email-clabbe@baylibre.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1517228776-1617-1-git-send-email-clabbe@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
+To: Corentin Labbe <clabbe@baylibre.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, Sylwester Nawrocki <s.nawrocki@samsung.com>, sbkim73@samsung.com, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-All sn95031 stuff was removed in commit 987da3fe1759 ("ASoC: sn95031: remove this code")
-Since SND_SOC_SN95031 was gone, remove makefile about it.
+On Mon, Jan 29, 2018 at 1:26 PM, Corentin Labbe <clabbe@baylibre.com> wrote:
+> Clean makefile rules about inexistant files.
+> Thoses files were removed in commit a076d418235f ("ASoC: samsung: Drop AC97 drivers")
+>
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+> ---
+>  sound/soc/samsung/Makefile | 3 ---
+>  1 file changed, 3 deletions(-)
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- sound/soc/codecs/Makefile | 1 -
- 1 file changed, 1 deletion(-)
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index da1571336f1e..4053c72d852b 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -387,7 +387,6 @@ obj-$(CONFIG_SND_SOC_SIGMADSP)	+= snd-soc-sigmadsp.o
- obj-$(CONFIG_SND_SOC_SIGMADSP_I2C)	+= snd-soc-sigmadsp-i2c.o
- obj-$(CONFIG_SND_SOC_SIGMADSP_REGMAP)	+= snd-soc-sigmadsp-regmap.o
- obj-$(CONFIG_SND_SOC_SI476X)	+= snd-soc-si476x.o
--obj-$(CONFIG_SND_SOC_SN95031)	+=snd-soc-sn95031.o
- obj-$(CONFIG_SND_SOC_SPDIF)	+= snd-soc-spdif-rx.o snd-soc-spdif-tx.o
- obj-$(CONFIG_SND_SOC_SIRF_AUDIO_CODEC) += sirf-audio-codec.o
- obj-$(CONFIG_SND_SOC_SSM2518)	+= snd-soc-ssm2518.o
--- 
-2.13.6
+Best regards,
+Krzysztof
