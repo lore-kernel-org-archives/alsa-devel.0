@@ -1,159 +1,70 @@
-From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Subject: [PATCH 3/3] ASoC: Intel: Skylake: Add support for spib
-	mode
-Date: Tue, 30 Jan 2018 15:06:26 +0530
-Message-ID: <1517304986-16847-4-git-send-email-sriramx.periyasamy@intel.com>
-References: <1517304986-16847-1-git-send-email-sriramx.periyasamy@intel.com>
+From: Pavel Machek <pavel-+ZI9xUNit7I@public.gmane.org>
+Subject: Re: [PATCH] sound/tlv320dac33: Add device tree support
+Date: Tue, 30 Jan 2018 11:00:23 +0100
+Message-ID: <20180130100023.GB18104@amd>
+References: <20180129230539.GA18280@amd>
+ <20180129232031.GA7695@lenoch>
+ <20180129233301.GA18104@amd>
+ <20180130083446.GA13498@lenoch>
+ <20180130085314.GA4585@amd>
+ <1141b126-b883-a246-85ad-c5a69acb90bb@gmail.com>
+ <20180130093838.GA15195@lenoch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 290EC267556
- for <alsa-devel@alsa-project.org>; Tue, 30 Jan 2018 10:43:20 +0100 (CET)
-In-Reply-To: <1517304986-16847-1-git-send-email-sriramx.periyasamy@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Ramesh Babu <ramesh.babu@intel.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="dTy3Mrz/UPE2dbVg"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20180130093838.GA15195@lenoch>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Ladislav Michl <ladis-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org>
+Cc: Filip =?utf-8?Q?Matijevi=C4=87?= <filip.matijevic.pz-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, bhumirks-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, pali.rohar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, aaro.koskinen-X3B1VOXEql0@public.gmane.org, ivo.g.dimitrov.75-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, patrikbachan-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, serge-A9i7LUbDfNHQT0dZR+AlfA@public.gmane.org, abcloriens-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, clayton-fehKsxFhGzZIf6P1QZMOBw@public.gmane.org, martijn-28JJ9oSIdodmR6Xm/wNWPw@public.gmane.org, sakari.ailus-VuQAYsv1563Yd54FQh9/CA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Ramesh Babu <ramesh.babu@intel.com>
 
-Skylake audio controller supports SPIB (Software Position in buffer)
-capability, which can be used to inform position of application pointer
-to host DMA controller.
-When SPIB mode is enabled, driver could write the application pointer
-position in SPIB register. Host DMA will make sure it won't
-read/write beyond bytes specified in SPIB register.
+--dTy3Mrz/UPE2dbVg
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-SPIB mode will be useful in low power use cases, where DSP could
-pre-fetch large buffers to avoid frequent wakes caused due to
-interrupts.
+On Tue 2018-01-30 10:38:38, Ladislav Michl wrote:
+> On Tue, Jan 30, 2018 at 10:11:02AM +0100, Filip Matijevi=C4=87 wrote:
+> > Hi,
+> >=20
 
-Skylake driver makes use of no_rewind flag and appl_ptr_update
-callback to enable and update SPIB register respectively.
+> > > Well, notice I'm converting existing driver to device tree. And that
+> > > one already has GPIO dependency. It is possible that more work needs
+> > > to be done there, but that should not be a reason to delay this. Feel
+> > > free to help.
+>=20
+> Adding DT properties that need to be maintained for compatibility reasons
+> is a bad idea and very good reason to delay merging unfinished stuff.
+> And meanwhile it turned out it is not power-gpio :)
 
-Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
-Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
----
- sound/soc/intel/skylake/skl-pcm.c | 43 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 42 insertions(+), 1 deletion(-)
+I believe reset-gpios and power-gpios are commonly used like
+this... and that's what the old code does.
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index df824224261e..346f9ac8053b 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -43,7 +43,8 @@ static const struct snd_pcm_hardware azx_pcm_hw = {
- 				 SNDRV_PCM_INFO_SYNC_START |
- 				 SNDRV_PCM_INFO_HAS_WALL_CLOCK | /* legacy */
- 				 SNDRV_PCM_INFO_HAS_LINK_ATIME |
--				 SNDRV_PCM_INFO_NO_PERIOD_WAKEUP),
-+				 SNDRV_PCM_INFO_NO_PERIOD_WAKEUP |
-+				 SNDRV_PCM_INFO_SYNC_APPLPTR),
- 	.formats =		SNDRV_PCM_FMTBIT_S16_LE |
- 				SNDRV_PCM_FMTBIT_S32_LE |
- 				SNDRV_PCM_FMTBIT_S24_LE,
-@@ -145,6 +146,7 @@ int skl_pcm_host_dma_prepare(struct device *dev, struct skl_pipe_params *params)
- 	unsigned int format_val;
- 	struct hdac_stream *hstream;
- 	struct hdac_ext_stream *stream;
-+	struct snd_pcm_runtime *runtime;
- 	int err;
- 
- 	hstream = snd_hdac_get_stream(bus, params->stream,
-@@ -170,6 +172,11 @@ int skl_pcm_host_dma_prepare(struct device *dev, struct skl_pipe_params *params)
- 	if (err < 0)
- 		return err;
- 
-+	/* Enable SPIB if no_rewinds flag is set */
-+	runtime = hdac_stream(stream)->substream->runtime;
-+	if (runtime->no_rewinds)
-+		snd_hdac_ext_stream_spbcap_enable(ebus, true, hstream->index);
-+
- 	hdac_stream(stream)->prepared = 1;
- 
- 	return 0;
-@@ -366,9 +373,14 @@ static int skl_pcm_hw_free(struct snd_pcm_substream *substream,
- {
- 	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
- 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct hdac_stream *hstream = hdac_stream(stream);
- 
- 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
- 
-+	if (runtime->no_rewinds)
-+		snd_hdac_ext_stream_spbcap_enable(ebus, false, hstream->index);
-+
- 	snd_hdac_stream_cleanup(hdac_stream(stream));
- 	hdac_stream(stream)->prepared = 0;
- 
-@@ -444,6 +456,7 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
- 	struct skl_module_cfg *mconfig;
- 	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
- 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_dapm_widget *w;
- 	int ret;
- 
-@@ -469,6 +482,10 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
- 			snd_hdac_ext_stream_set_dpibr(ebus, stream,
- 							stream->lpib);
- 			snd_hdac_ext_stream_set_lpib(stream, stream->lpib);
-+
-+			if (runtime->no_rewinds)
-+				snd_hdac_ext_stream_set_spib(ebus,
-+						stream, stream->spib);
- 		}
- 
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -1095,6 +1112,29 @@ static int skl_platform_pcm_trigger(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
-+/* Update SPIB register with application position */
-+static int skl_platform_ack(struct snd_pcm_substream *substream)
-+{
-+	struct hdac_ext_stream *estream = get_hdac_ext_stream(substream);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
-+	ssize_t appl_pos, buf_size;
-+	u32 spib;
-+
-+	/* Use spib mode only if no_rewind mode is set */
-+	if (!runtime->no_rewinds)
-+		return 0;
-+
-+	appl_pos = frames_to_bytes(runtime, runtime->control->appl_ptr);
-+	buf_size = frames_to_bytes(runtime, runtime->buffer_size);
-+
-+	spib = appl_pos % buf_size;
-+
-+	/* Allowable value for SPIB is 1 byte to max buffer size */
-+	spib = (spib == 0) ? buf_size : spib;
-+	return snd_hdac_ext_stream_set_spib(ebus, estream, spib);
-+}
-+
- static snd_pcm_uframes_t skl_platform_pcm_pointer
- 			(struct snd_pcm_substream *substream)
- {
-@@ -1202,6 +1242,7 @@ static const struct snd_pcm_ops skl_platform_ops = {
- 	.get_time_info =  skl_get_time_info,
- 	.mmap = snd_pcm_lib_default_mmap,
- 	.page = snd_pcm_sgbuf_ops_page,
-+	.ack = skl_platform_ack,
- };
- 
- static void skl_pcm_free(struct snd_pcm *pcm)
--- 
-2.7.4
+You are not helping.
+
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--dTy3Mrz/UPE2dbVg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlpwQjcACgkQMOfwapXb+vKkTACgkNTAPlrFaYM1KRwWZe+QSlUZ
+EnwAoLP4x3zT5zTZ+/efNUlHJTeJzQVr
+=N3vk
+-----END PGP SIGNATURE-----
+
+--dTy3Mrz/UPE2dbVg--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
