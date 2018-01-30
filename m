@@ -1,74 +1,61 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] iio: adc: STM32_DFSDM_ADC should depend on
-	HAS_DMA
-Date: Tue, 30 Jan 2018 15:03:37 +0000
-Message-ID: <20180130150337.GC10525@sirena.org.uk>
-References: <1517318506-14664-1-git-send-email-geert@linux-m68k.org>
+From: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
+Subject: Re: [PATCH] iio: adc: STM32_DFSDM_ADC should depend on HAS_DMA
+Date: Tue, 30 Jan 2018 16:31:24 +0100
+Message-ID: <CAMuHMdWhADAPSnj_34R04Oh_H_puyc0vzx--tpihAaUM4NDMQg@mail.gmail.com>
+References: <1517318506-14664-1-git-send-email-geert@linux-m68k.org> <20180130150337.GC10525@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4833978347115733288=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E51D266CFE
- for <alsa-devel@alsa-project.org>; Tue, 30 Jan 2018 16:03:42 +0100 (CET)
-In-Reply-To: <1517318506-14664-1-git-send-email-geert@linux-m68k.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20180130150337.GC10525-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ALSA Development Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Linux Kernel Mailing List <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark,
 
---===============4833978347115733288==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Izn7cH1Com+I3R9J"
-Content-Disposition: inline
+On Tue, Jan 30, 2018 at 4:03 PM, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+> On Tue, Jan 30, 2018 at 02:21:46PM +0100, Geert Uytterhoeven wrote:
+>> If NO_DMA=y:
+>>
+>>     ERROR: "bad_dma_ops" [drivers/iio/adc/stm32-dfsdm-adc.ko] undefined!
+>>
+>> Add a dependency on HAS_DMA to fix this.
+>
+> Once again I have to ask why we're doing this per driver and not having
+> the few architectures that have this issue set something up.
 
+Because doing so would lead us to
 
---Izn7cH1Com+I3R9J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+    depends on COMPILE_TEST || HAS_DMA
 
-On Tue, Jan 30, 2018 at 02:21:46PM +0100, Geert Uytterhoeven wrote:
-> If NO_DMA=3Dy:
->=20
->     ERROR: "bad_dma_ops" [drivers/iio/adc/stm32-dfsdm-adc.ko] undefined!
->=20
-> Add a dependency on HAS_DMA to fix this.
+in many places. Is that any better?
 
-Once again I have to ask why we're doing this per driver and not having
-the few architectures that have this issue set something up.
+I agree we could indeed use DMA dummies in cases where a driver uses:
 
---Izn7cH1Com+I3R9J
-Content-Type: application/pgp-signature; name="signature.asc"
+   depends on ARCH_FOO || ARCH_BAR || COMPILE_TEST
+   depends on HAS_DMA
 
------BEGIN PGP SIGNATURE-----
+But we also have generic options like:
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpwiUgACgkQJNaLcl1U
-h9DLPwf/QzrLNH1BfkugKqyYddmd2cAma8j0yuYG9OOjNzdxsdLrA+MWidgFuExp
-L3p5bDY4YPOzWlLyi80+nBp9GX3FdVrtV7YgpTUuUloygNP5AGbbmkaSLPHCbept
-7cM7zXoWC1WYqvJMvl5syq4IjWqgbEfvELSybELTQ9ZYuwR2S4bPqZYr9F6GQZZm
-AB3n1G9H3ZCGfZzNUwPVe0INQaLY7K+nq+Ic1GSfssocUSzux14dKAlLIkMVEkxO
-N2+7Kd4RL79Tj7d+R/zRK/mIFgFwoEExvCLvLrm1hxGsCszzmsxXVpfwfs4jPgUd
-7ravvGW9hLNtYrWoFIFWtNOMOPqdZA==
-=HoYM
------END PGP SIGNATURE-----
+    config ATA_BMDMA
+            bool "ATA BMDMA support"
+            depends on HAS_DMA
 
---Izn7cH1Com+I3R9J--
+And even architecture-specific drivers for SoCs that may or not have DMA:
 
---===============4833978347115733288==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+config HASH_DEV_STM32
+        tristate "Support for STM32 hash accelerators"
+        depends on ARCH_STM32
+        depends on HAS_DMA
 
+Gr{oetje,eeting}s,
 
---===============4833978347115733288==--
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
