@@ -1,95 +1,128 @@
-From: Ladislav Michl <ladis-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org>
-Subject: Re: [PATCH] sound/tlv320dac33: Add device tree support
-Date: Tue, 30 Jan 2018 10:38:38 +0100
-Message-ID: <20180130093838.GA15195@lenoch>
-References: <20180129230539.GA18280@amd>
- <20180129232031.GA7695@lenoch>
- <20180129233301.GA18104@amd>
- <20180130083446.GA13498@lenoch>
- <20180130085314.GA4585@amd>
- <1141b126-b883-a246-85ad-c5a69acb90bb@gmail.com>
+From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Subject: [alsa-lib] [PATCH] pcm: add set and get methods for
+	no-rewind flag
+Date: Tue, 30 Jan 2018 15:03:28 +0530
+Message-ID: <1517304808-16649-1-git-send-email-sriramx.periyasamy@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Transfer-Encoding: 8bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1141b126-b883-a246-85ad-c5a69acb90bb-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Filip =?iso-8859-2?Q?Matijevi=E6?= <filip.matijevic.pz-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Pavel Machek <pavel-+ZI9xUNit7I@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, bhumirks-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, pali.rohar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, aaro.koskinen-X3B1VOXEql0@public.gmane.org, ivo.g.dimitrov.75-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, patrikbachan-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, serge-A9i7LUbDfNHQT0dZR+AlfA@public.gmane.org, abcloriens-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, clayton-fehKsxFhGzZIf6P1QZMOBw@public.gmane.org, martijn-28JJ9oSIdodmR6Xm/wNWPw@public.gmane.org, sakari.ailus-VuQAYsv1563Yd54FQh9/CA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB20C267523
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jan 2018 10:40:20 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: ALSA ML <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+Cc: Patches Audio <patches.audio@intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Ramesh Babu <ramesh.babu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 30, 2018 at 10:11:02AM +0100, Filip Matijeviæ wrote:
-> Hi,
-> 
-> On 01/30/2018 09:53 AM, Pavel Machek wrote:
-> > On Tue 2018-01-30 09:34:46, Ladislav Michl wrote:
-> >> On Tue, Jan 30, 2018 at 12:33:01AM +0100, Pavel Machek wrote:
-> >>> On Tue 2018-01-30 00:20:31, Ladislav Michl wrote:
-> >>>> On Tue, Jan 30, 2018 at 12:05:39AM +0100, Pavel Machek wrote:
-> >>>>>
-> >>>>> This adds device tree support to tlv320dac33.c.
-> >>>>>
-> >>>>> Signed-off-by: Pavel Machek <pavel-+ZI9xUNit7I@public.gmane.org>
-> >>>>>
-> >>>>> diff --git a/Documentation/devicetree/bindings/sound/tlv320dac33.txt b/Documentation/devicetree/bindings/sound/tlv320dac33.txt
-> >>>>> new file mode 100644
-> >>>>> index 0000000..6cbd311
-> >>>>> --- /dev/null
-> >>>>> +++ b/Documentation/devicetree/bindings/sound/tlv320dac33.txt
-> >>>>> @@ -0,0 +1,32 @@
-> >>>>> +Texas Instruments - tlv320dac33 Codec module
-> >>>>> +
-> >>>>> +The tlv320dac33 serial control bus communicates through I2C protocols.
-> >>>>> +
-> >>>>> +Required properties:
-> >>>>> +
-> >>>>> +- compatible - "ti,tlv320dac33"
-> >>>>> +- reg - I2C slave address
-> >>>>> +
-> >>>>> +Optional properties:
-> >>>>> +
-> >>>>> +- power-gpios - gpio pin to power the device, active high
-> >>>>
-> >>>> While driver used gpio in platform data, isn't it more likely
-> >>>> regulator which powers device?
-> >>>
-> >>>                 power-gpios = <&gpio2 28 0>; /* gpio_60 */
-> >>>
-> >>> Looks like GPIO to me -- example is from Nokia N9. So this appears to
-> >>> be correct.
-> >>
-> >> Device datasheet doesn't list any pin which looks like "power-gpio"
-> >> http://www.ti.com/lit/ds/symlink/tlv320dac32.pdf
-> >> Unfortunately I do not know much about N9, but was able to find Nokia 5610
-> >> scheme to get clue how could be tlv320dac33 hardwired (see page 2):
-> >> http://mastermobile.spb.ru/service/nokia_5610_rm-242_service_schematics.pdf
-> >> Here AVDD is powered by LP3985 voltage regulator which is enabled using
-> >> VEN pin which might be connected to gpio. Or there could be completely
-> >> different voltage regulator with different controls. And since Linux
-> >> already has voltage regulator class, lets not limit ourselves to gpio
-> >> pins.
-> > 
-> > Well, notice I'm converting existing driver to device tree. And that
-> > one already has GPIO dependency. It is possible that more work needs
-> > to be done there, but that should not be a reason to delay this. Feel
-> > free to help.
+From: Ramesh Babu <ramesh.babu@intel.com>
 
-Adding DT properties that need to be maintained for compatibility reasons
-is a bad idea and very good reason to delay merging unfinished stuff.
-And meanwhile it turned out it is not power-gpio :)
+Add functions to set/get no-rewind flag
 
-> According to N9 schematics
-> http://www.s-manuals.com/manuals/phone/nokia/nokia_n9_rm-696_service_schematics_v1.pdf
-> it's in fact GPIO pin that is connected to reset line (labeled
-> CODEC_RST). So calling it "power" might be misleading, but the driver
-> code is quite clear as it labels that GPIO as "tlv320dac33 reset"
+Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
+Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+---
+ include/pcm.h          |  2 ++
+ include/sound/asound.h |  1 +
+ src/pcm/pcm.c          | 40 ++++++++++++++++++++++++++++++++++++++++
+ src/pcm/pcm_local.h    |  1 +
+ 4 files changed, 44 insertions(+)
 
-Thanks a lot! So now it is clear that gpio is connected to codec's nRESET pin,
-therefore "reset-gpios" property seems reasonable here.
-
-	ladis
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/include/pcm.h b/include/pcm.h
+index 2619c8cd8bd4..8c0b19c106b0 100644
+--- a/include/pcm.h
++++ b/include/pcm.h
+@@ -805,6 +805,8 @@ int snd_pcm_hw_params_set_export_buffer(snd_pcm_t *pcm, snd_pcm_hw_params_t *par
+ int snd_pcm_hw_params_get_export_buffer(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int *val);
+ int snd_pcm_hw_params_set_period_wakeup(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int val);
+ int snd_pcm_hw_params_get_period_wakeup(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int *val);
++int snd_pcm_hw_params_set_no_rewind(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int val);
++int snd_pcm_hw_params_get_no_rewind(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int *val);
+ 
+ int snd_pcm_hw_params_get_period_time(const snd_pcm_hw_params_t *params, unsigned int *val, int *dir);
+ int snd_pcm_hw_params_get_period_time_min(const snd_pcm_hw_params_t *params, unsigned int *val, int *dir);
+diff --git a/include/sound/asound.h b/include/sound/asound.h
+index 6041cab27a23..35fd50ec5395 100644
+--- a/include/sound/asound.h
++++ b/include/sound/asound.h
+@@ -375,6 +375,7 @@ typedef int snd_pcm_hw_param_t;
+ #define SNDRV_PCM_HW_PARAMS_NORESAMPLE	(1<<0)	/* avoid rate resampling */
+ #define SNDRV_PCM_HW_PARAMS_EXPORT_BUFFER	(1<<1)	/* export buffer */
+ #define SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP	(1<<2)	/* disable period wakeups */
++#define SNDRV_PCM_HW_PARAMS_NO_REWINDS          (1<<3)  /* disable rewinds */
+ 
+ struct snd_interval {
+ 	unsigned int min, max;
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index 69d7d66500ea..c7041be47be6 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -4763,6 +4763,46 @@ int snd_pcm_hw_params_get_period_wakeup(snd_pcm_t *pcm, snd_pcm_hw_params_t *par
+ }
+ 
+ /**
++ * \brief Configure no-rewind flag through configuration space
++ * \param pcm PCM handle
++ * \param params Configuration space
++ * \param val 0 = disable (default), 1 = enable (default) no-rewind flag
++ * \return Zero on success, otherwise a negative error code.
++ *
++ * This function can be called to inform driver about application uses rewind or not
++ *
++ * Based on no-rewind flag, underlying driver could take decision on buffering scheme.
++ */
++
++/* TODO: Invert the logic with function name set_rewind */
++int snd_pcm_hw_params_set_no_rewind(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int val)
++{
++	assert(pcm && params);
++
++	if (val) {
++		params->flags |= SND_PCM_HW_PARAMS_NO_REWINDS;
++	} else
++		params->flags &= ~SND_PCM_HW_PARAMS_NO_REWINDS;
++	params->rmask = ~0;
++
++	return snd_pcm_hw_refine(pcm, params);
++}
++
++/**
++ * \brief Extract no-rewind flag from a configuration space
++ * \param pcm PCM handle
++ * \param params Configuration space
++ * \param val 0 = disabled, 1 = enabled no-rewind flag
++ * \return Zero on success, otherwise a negative error code.
++ */
++int snd_pcm_hw_params_get_no_rewind(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int *val)
++{
++	assert(pcm && params && val);
++	*val = params->flags & SND_PCM_HW_PARAMS_NO_REWINDS ? 0 : 1;
++	return 0;
++}
++
++/**
+  * \brief Extract period time from a configuration space
+  * \param params Configuration space
+  * \param val Returned approximate period duration in us
+diff --git a/src/pcm/pcm_local.h b/src/pcm/pcm_local.h
+index 3d95e1749169..91479cabff88 100644
+--- a/src/pcm/pcm_local.h
++++ b/src/pcm/pcm_local.h
+@@ -103,6 +103,7 @@
+ #define SND_PCM_HW_PARAMS_NORESAMPLE SNDRV_PCM_HW_PARAMS_NORESAMPLE
+ #define SND_PCM_HW_PARAMS_EXPORT_BUFFER SNDRV_PCM_HW_PARAMS_EXPORT_BUFFER
+ #define SND_PCM_HW_PARAMS_NO_PERIOD_WAKEUP SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP
++#define SND_PCM_HW_PARAMS_NO_REWINDS SNDRV_PCM_HW_PARAMS_NO_REWINDS
+ 
+ #define SND_PCM_INFO_MONOTONIC	0x80000000
+ 
+-- 
+2.7.4
