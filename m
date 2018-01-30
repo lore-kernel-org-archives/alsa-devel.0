@@ -1,21 +1,21 @@
 From: Ladislav Michl <ladis@linux-mips.org>
-Subject: [PATCH 1/7] ASoC: atmel: Remove redundant dev_err()
- call in probe function
-Date: Tue, 30 Jan 2018 12:06:54 +0100
-Message-ID: <20180130110654.GB18123@lenoch>
+Subject: [PATCH 2/7] ASoC: atmel_ssc_dai: Fix TCMR settings in
+	I2S slave mode
+Date: Tue, 30 Jan 2018 12:08:10 +0100
+Message-ID: <20180130110810.GC18123@lenoch>
 References: <20180130110604.GA18123@lenoch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
- by alsa0.perex.cz (Postfix) with ESMTP id BFC092671F2
- for <alsa-devel@alsa-project.org>; Tue, 30 Jan 2018 12:06:55 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 90D5E2671F2
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jan 2018 12:08:11 +0100 (CET)
 Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
  (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23994711AbeA3LGzk2Uk0 (ORCPT
+ id S23994711AbeA3LILIMgf0 (ORCPT
  <rfc822;alsa-devel@alsa-project.org>);
- Tue, 30 Jan 2018 12:06:55 +0100
+ Tue, 30 Jan 2018 12:08:11 +0100
 Content-Disposition: inline
 In-Reply-To: <20180130110604.GA18123@lenoch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -31,50 +31,23 @@ To: alsa-devel@alsa-project.org
 Cc: Charles Keepax <ckeepax@opensource.cirrus.com>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, anish kumar <yesanishhere@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-There is an error message within devm_ioremap_resource already,
-so remove the redundant dev_err() call.
-
 Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
 ---
- sound/soc/atmel/atmel-classd.c | 7 ++-----
- sound/soc/atmel/atmel-pdmic.c  | 7 ++-----
- 2 files changed, 4 insertions(+), 10 deletions(-)
+ sound/soc/atmel/atmel_ssc_dai.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
-index ebabed69f0e6..540f0b6a95aa 100644
---- a/sound/soc/atmel/atmel-classd.c
-+++ b/sound/soc/atmel/atmel-classd.c
-@@ -580,11 +580,8 @@ static int atmel_classd_probe(struct platform_device *pdev)
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index a1e2c5682dcd..8e145487cb18 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -647,7 +647,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
  
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	io_base = devm_ioremap_resource(dev, res);
--	if (IS_ERR(io_base)) {
--		ret =  PTR_ERR(io_base);
--		dev_err(dev, "failed to remap register memory: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(io_base))
-+		return PTR_ERR(io_base);
- 
- 	dd->phy_base = res->start;
- 
-diff --git a/sound/soc/atmel/atmel-pdmic.c b/sound/soc/atmel/atmel-pdmic.c
-index 8e3d34be9e69..0729f656f7eb 100644
---- a/sound/soc/atmel/atmel-pdmic.c
-+++ b/sound/soc/atmel/atmel-pdmic.c
-@@ -629,11 +629,8 @@ static int atmel_pdmic_probe(struct platform_device *pdev)
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	io_base = devm_ioremap_resource(dev, res);
--	if (IS_ERR(io_base)) {
--		ret = PTR_ERR(io_base);
--		dev_err(dev, "failed to remap register memory: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(io_base))
-+		return PTR_ERR(io_base);
- 
- 	dd->phy_base = res->start;
- 
+ 		tcmr =	  SSC_BF(TCMR_PERIOD, 0)
+ 			| SSC_BF(TCMR_STTDLY, START_DELAY)
+-			| SSC_BF(TCMR_START, SSC_START_FALLING_RF)
++			| SSC_BF(TCMR_START, SSC_START_TX_RX)
+ 			| SSC_BF(TCMR_CKI, SSC_CKI_FALLING)
+ 			| SSC_BF(TCMR_CKO, SSC_CKO_NONE)
+ 			| SSC_BF(TCMR_CKS, ssc->clk_from_rk_pin ?
 -- 
 2.15.1
