@@ -1,65 +1,75 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 0/3] Add SPIB Support for Intel Skylake
- platforms
-Date: Tue, 30 Jan 2018 17:14:32 +0530
-Message-ID: <20180130114432.GV18649@localhost>
-References: <1517304986-16847-1-git-send-email-sriramx.periyasamy@intel.com>
- <013428a5-b593-1a7d-5a62-4e838a9fe5d0@sakamocchi.jp>
- <20180130110743.GA26938@subhransu-desktop>
+From: Pavel Machek <pavel-+ZI9xUNit7I@public.gmane.org>
+Subject: Re: [PATCH] sound/tlv320dac33: Add device tree support
+Date: Tue, 30 Jan 2018 13:28:29 +0100
+Message-ID: <20180130122829.GA10373@amd>
+References: <20180129230539.GA18280@amd>
+ <20180129232031.GA7695@lenoch>
+ <20180129233301.GA18104@amd>
+ <20180130083446.GA13498@lenoch>
+ <20180130085314.GA4585@amd>
+ <20180130113238.GA10525@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- by alsa0.perex.cz (Postfix) with ESMTP id DDA002671F2
- for <alsa-devel@alsa-project.org>; Tue, 30 Jan 2018 12:40:00 +0100 (CET)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="ew6BAiZeqk4r7MaW"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <20180130110743.GA26938@subhransu-desktop>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: ALSA ML <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "Periyasamy, SriramX" <sriramx.periyasamy@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+In-Reply-To: <20180130113238.GA10525-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Ladislav Michl <ladis-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, bhumirks-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, pali.rohar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, aaro.koskinen-X3B1VOXEql0@public.gmane.org, ivo.g.dimitrov.75-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, patrikbachan-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, serge-A9i7LUbDfNHQT0dZR+AlfA@public.gmane.org, abcloriens-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, clayton-fehKsxFhGzZIf6P1QZMOBw@public.gmane.org, martijn-28JJ9oSIdodmR6Xm/wNWPw@public.gmane.org, sakari.ailus-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Filip =?utf-8?Q?Matijevi=C4=87?= <filip.matijevic.pz-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 30, 2018 at 04:37:44PM +0530, Subhransu S. Prusty wrote:
-> On Tue, Jan 30, 2018 at 04:08:39PM +0530, Takashi Sakamoto wrote:
-> > Hi,
 
-Hi Takashi Sakamoto,
+--ew6BAiZeqk4r7MaW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > In my opinion, when drivers
-> > return appropriate values at implementations of
-> > "struct snd_pcm_ops.pointer" and "struct snd_pcm_ops.ack", your aim is
-> > satisfied. In short, you can let ALSA PCM core to handle
-> > rewinding/forwarding requests from userland for zero number of handled
-> > frames in result. So the 'SNDRV_PCM_HW_PARAMS_NO_REWINDS' flag is
-> > useless.
-> 
-> Based on the earlier discussion in v3, this series includes the usage of the
-> 'SNDRV_PCM_HW_PARAMS_NO_REWINDS' flag. Please refer to the discussion on
-> https://patchwork.kernel.org/patch/9795233/
+On Tue 2018-01-30 11:32:38, Mark Brown wrote:
+> On Tue, Jan 30, 2018 at 09:53:14AM +0100, Pavel Machek wrote:
+>=20
+> > Well, notice I'm converting existing driver to device tree. And that
+> > one already has GPIO dependency. It is possible that more work needs
+> > to be done there, but that should not be a reason to delay this. Feel
+> > free to help.
+>=20
+> No, it's a very good reason to delay merging something.  A DT binding is
+> an ABI so we need to sort out interface issues and describe things as
+> well as we can, with board files it's not an ABI so we can just do any
+> old thing that happens to work and while it might not be ideal it
+> doesn't really matter since we can change it later if we need to.
 
-Also it is worth mentioning that this supports a HW feature which requires
-the knowledge of data available in ring buffer to be provided to hardware.
-With the feature enabled, we cannot rewind/forward, hence the support is
-dependent upon application querying about no rewind capability and setting
-it, otherwise this feature is not enabled...
+Whatever.
 
-> 
-> > 
-> > From me, please refer to our previous discussion about this
-> > flag[1][2][3], then describe your insistence of this flag. At least,
-> > it's not better idea to abandon the old discussion when posting this
-> > kind of patches. Additionally you should add 'v4' in title of this
-> 
-> Yes should have added the reference and v4. Sorry to have missed it.
+Turns out this was GPIO after all.
 
--- 
-~Vinod
+I believe power-gpio and reset-gpio are equiavalent, with different
+polarity. (After all, devices in reset consume less power).
+
+If you prefer one solution over another, let me know...
+
+									Pavel
+
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--ew6BAiZeqk4r7MaW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlpwZO0ACgkQMOfwapXb+vKxBACgsLBvaOHPfqI2SMfxRvcwWOrs
+m/sAnREPZZpu8Dv53RkXupfS9xDB7xa+
+=VSe0
+-----END PGP SIGNATURE-----
+
+--ew6BAiZeqk4r7MaW--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
