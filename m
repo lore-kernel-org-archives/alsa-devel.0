@@ -1,120 +1,68 @@
-From: b_lkasam@codeaurora.org
-Subject: Re: ASoC Compress FE open causing warning
-Date: Tue, 30 Jan 2018 12:20:24 +0530
-Message-ID: <1357caf761c9e3c0090f1b2860e4477b@codeaurora.org>
-References: <c53a10fafc0b7bcd452b7cc908d6ff16@codeaurora.org>
- <a32a9b75fbd152f1ac8eddcde5d8dfbd@codeaurora.org>
- <20180117101749.GL18649@localhost>
+From: Ladislav Michl <ladis@linux-mips.org>
+Subject: Re: [PATCH] sound/tlv320dac33: Add device tree support
+Date: Tue, 30 Jan 2018 09:34:46 +0100
+Message-ID: <20180130083446.GA13498@lenoch>
+References: <20180129230539.GA18280@amd>
+ <20180129232031.GA7695@lenoch>
+ <20180129233301.GA18104@amd>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C87E266E3A
- for <alsa-devel@alsa-project.org>; Tue, 30 Jan 2018 07:50:27 +0100 (CET)
-In-Reply-To: <20180117101749.GL18649@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180129233301.GA18104@amd>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pavel Machek <pavel@ucw.cz>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com, bhumirks@gmail.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, pali.rohar@gmail.com, sre@kernel.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-omap@vger.kernel.org, tony@atomide.com, khilman@kernel.org, aaro.koskinen@iki.fi, ivo.g.dimitrov.75@gmail.com, patrikbachan@gmail.com, serge@hallyn.com, abcloriens@gmail.com, clayton@craftyguy.net, martijn@brixit.nl, sakari.ailus@linux.intel.com, Filip =?iso-8859-2?Q?Matijevi=E6?= <filip.matijevic.pz@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2018-01-17 15:47, Vinod Koul wrote:
-> On Wed, Jan 17, 2018 at 03:08:31PM +0530, b_lkasam@codeaurora.org 
-> wrote:
->> hi ALSA team,
->> Please comment on below issue wrt warning seen..
+On Tue, Jan 30, 2018 at 12:33:01AM +0100, Pavel Machek wrote:
+> On Tue 2018-01-30 00:20:31, Ladislav Michl wrote:
+> > On Tue, Jan 30, 2018 at 12:05:39AM +0100, Pavel Machek wrote:
+> > > 
+> > > This adds device tree support to tlv320dac33.c.
+> > > 
+> > > Signed-off-by: Pavel Machek <pavel@ucw.cz>
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/sound/tlv320dac33.txt b/Documentation/devicetree/bindings/sound/tlv320dac33.txt
+> > > new file mode 100644
+> > > index 0000000..6cbd311
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/sound/tlv320dac33.txt
+> > > @@ -0,0 +1,32 @@
+> > > +Texas Instruments - tlv320dac33 Codec module
+> > > +
+> > > +The tlv320dac33 serial control bus communicates through I2C protocols.
+> > > +
+> > > +Required properties:
+> > > +
+> > > +- compatible - "ti,tlv320dac33"
+> > > +- reg - I2C slave address
+> > > +
+> > > +Optional properties:
+> > > +
+> > > +- power-gpios - gpio pin to power the device, active high
+> > 
+> > While driver used gpio in platform data, isn't it more likely
+> > regulator which powers device?
 > 
-> Why are you top posting and please CC relevant folks on the list to get 
-> a
-> response.
+>                 power-gpios = <&gpio2 28 0>; /* gpio_60 */
 > 
->> 
->> thanks
->> Laxminath Kasam
->> On 2018-01-10 15:00, b_lkasam@codeaurora.org wrote:
->> >Hi ALSA team,
->> >This is wrt soc_compr_open_fe() call result in warning in API
->> >triggered from it snd_soc_runtime_activate(fe, stream)..
->> >Due to lock taken is &fe->card->mutex, but expected to take
->> >&fe->pcm_mutex.
-> 
-> can you explain what are you trying, since I don't see this warning, do 
-> you
-> see this warning always or sometimes?
-> 
-> Btw this is common path for compress and pcm, so even a pcm should
-> potentially trigger this...
-> 
+> Looks like GPIO to me -- example is from Nokia N9. So this appears to
+> be correct.
 
-It is just normal compress playback usecase.
-Issue will be observed once you enable this config "DEBUG_LOCK_ALLOC".
+Device datasheet doesn't list any pin which looks like "power-gpio"
+http://www.ti.com/lit/ds/symlink/tlv320dac32.pdf
+Unfortunately I do not know much about N9, but was able to find Nokia 5610
+scheme to get clue how could be tlv320dac33 hardwired (see page 2):
+http://mastermobile.spb.ru/service/nokia_5610_rm-242_service_schematics.pdf
+Here AVDD is powered by LP3985 voltage regulator which is enabled using
+VEN pin which might be connected to gpio. Or there could be completely
+different voltage regulator with different controls. And since Linux
+already has voltage regulator class, lets not limit ourselves to gpio
+pins.
 
->> >Below line results in warning since pcm_mutex lock is not taken..
->> >
->> >void snd_soc_runtime_activate(struct snd_soc_pcm_runtime *rtd, int stream)
->> >{
->> >   ...
->> >	lockdep_assert_held(&rtd->pcm_mutex);
->> >
->> >}
->> >
->> >Warning seen as below ->
->> ><4>[ 263.555973] [3: writer: 8681] WARNING: CPU: 3 PID: 8681 at
->> >/home/min47.lee/ext-drive/j8plus-oos/android/kernel/sound/soc/soc-pcm.c:71
->> >snd_soc_runtime_activate+0x11c/0x130()
->> ><6>[ 263.572125] [3: writer: 8681] Modules linked in:
->> ><6>[ 263.572176] [3: writer: 8681] CPU: 3 PID: 8681 Comm: writer
->> >Tainted: G W 3.18.71-g9888952 #3
->> ><6>[ 263.572253] [3: writer: 8681] Hardware name: Samsung J8-Plus LTE
->> >EUR OPEN Rev01 (DT)
->> ><0>[ 263.572317] [3: writer: 8681] Call trace:
->> ><6>[ 263.576842] [3: writer: 8681] [<ffffffc00008aae4>]
->> >dump_backtrace+0x0/0x15c
->> ><6>[ 263.576904] [3: writer: 8681] [<ffffffc00008ac54>]
->> >show_stack+0x14/0x1c
->> ><6>[ 263.576966] [3: writer: 8681] [<ffffffc0011a1cb0>]
->> >dump_stack+0x80/0xa4
->> ><6>[ 263.577025] [3: writer: 8681] [<ffffffc0000a6bf0>]
->> >warn_slowpath_common+0x88/0xac
->> ><6>[ 263.577088] [3: writer: 8681] [<ffffffc0000a6d2c>]
->> >warn_slowpath_null+0x18/0x20
->> ><6>[ 263.577152] [3: writer: 8681] [<ffffffc000f0141c>]
->> >snd_soc_runtime_activate+0x11c/0x130
->> ><6>[ 263.577221] [3: writer: 8681] [<ffffffc000f05e74>]
->> >soc_compr_open_fe+0x204/0x29c
->> ><6>[ 263.577289] [3: writer: 8681] [<ffffffc000eddbac>]
->> >snd_compr_open+0x170/0x1b4
->> ><6>[ 263.577355] [3: writer: 8681] [<ffffffc000ebfc78>]
->> >snd_open+0x13c/0x154
->> ><6>[ 263.577415] [3: writer: 8681] [<ffffffc0001d72e8>]
->> >chrdev_open+0x140/0x188
->> ><6>[ 263.577476] [3: writer: 8681] [<ffffffc0001d0758>]
->> >do_dentry_open+0x260/0x2d8
->> ><6>[ 263.577545] [3: writer: 8681] [<ffffffc0001d1938>] vfs_open+0x60/0x6c
->> ><6>[ 263.577605] [3: writer: 8681] [<ffffffc0001e0ea8>]
->> >do_last+0x804/0xb3c
->> ><6>[ 263.577665] [3: writer: 8681] [<ffffffc0001e141c>]
->> >path_openat+0x23c/0x5f4
->> ><6>[ 263.577732] [3: writer: 8681] [<ffffffc0001e2108>]
->> >do_filp_open+0x40/0xa8
->> ><6>[ 263.577796] [3: writer: 8681] [<ffffffc0001d1cf4>]
->> >do_sys_open+0x174/0x224
->> ><6>[ 263.577866] [3: writer: 8681] [<ffffffc0002212f4>]
->> >compat_SyS_openat+0xc/0x14
->> >
->> >
->> >
->> >With Regards,
->> >Laxminath Kasam
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+See also here about deprecated power-gpios:
+Documentation/devicetree/bindings/mmc/cavium-mmc.txt
+so it seems others already fallen into that trap.
+
+	ladis
