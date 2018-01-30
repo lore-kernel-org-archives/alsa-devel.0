@@ -1,97 +1,85 @@
-From: Pavel Machek <pavel-+ZI9xUNit7I@public.gmane.org>
-Subject: Re: [PATCH] sound/tlv320dac33: Add device tree support
-Date: Tue, 30 Jan 2018 11:35:38 +0100
-Message-ID: <20180130103538.GD18104@amd>
-References: <20180129230539.GA18280@amd>
- <20180129232031.GA7695@lenoch>
- <20180129233301.GA18104@amd>
- <20180130083446.GA13498@lenoch>
- <20180130085314.GA4585@amd>
- <1141b126-b883-a246-85ad-c5a69acb90bb@gmail.com>
- <20180130093838.GA15195@lenoch>
- <20180130100023.GB18104@amd>
- <20180130101046.GA16474@lenoch>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 0/3] Add SPIB Support for Intel Skylake
+	platforms
+Date: Tue, 30 Jan 2018 19:38:39 +0900
+Message-ID: <013428a5-b593-1a7d-5a62-4e838a9fe5d0@sakamocchi.jp>
+References: <1517304986-16847-1-git-send-email-sriramx.periyasamy@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="11Y7aswkeuHtSBEs"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20180130101046.GA16474@lenoch>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Ladislav Michl <ladis-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org>
-Cc: Filip =?utf-8?Q?Matijevi=C4=87?= <filip.matijevic.pz-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, bhumirks-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, pali.rohar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, aaro.koskinen-X3B1VOXEql0@public.gmane.org, ivo.g.dimitrov.75-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, patrikbachan-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, serge-A9i7LUbDfNHQT0dZR+AlfA@public.gmane.org, abcloriens-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, clayton-fehKsxFhGzZIf6P1QZMOBw@public.gmane.org, martijn-28JJ9oSIdodmR6Xm/wNWPw@public.gmane.org, sakari.ailus-VuQAYsv1563Yd54FQh9/CA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 7BC1326721E
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jan 2018 11:38:44 +0100 (CET)
+In-Reply-To: <1517304986-16847-1-git-send-email-sriramx.periyasamy@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sriram Periyasamy <sriramx.periyasamy@intel.com>, ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---11Y7aswkeuHtSBEs
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Jan 30 2018 18:36, Sriram Periyasamy wrote:
+> Skylake audio controller supports SPIB (Software Position in buffer)
+> capability, which can be used to inform position of application pointer
+> to host DMA controller. When SPIB mode is enabled, driver could write
+> the application pointer position in SPIB register. Host DMA will make
+> sure it won't read/write beyond bytes specified in SPIB register.
+> 
+> SPIB mode will be useful in low power use cases, where DSP could
+> pre-fetch large buffers to avoid frequent wakes caused due to interrupts.
+> 
+> To support SPIB in the driver, save the spib values in stream context
+> which can be restored during resume from S3. Add new hw_params flag to
+> explicitly tell driver that rewinds will never be used.
+> 
+> Pierre-Louis Bossart (1):
+>   ALSA: core: let low-level driver or userspace disable rewinds
+> 
+> Ramesh Babu (2):
+>   ALSA: hda: ext: add spib to stream context
+>   ASoC: Intel: Skylake: Add support for spib mode
+> 
+>  include/sound/hdaudio_ext.h       |  1 +
+>  include/sound/pcm.h               |  1 +
+>  include/uapi/sound/asound.h       |  1 +
+>  sound/core/pcm_native.c           |  8 ++++++++
+>  sound/hda/ext/hdac_ext_stream.c   |  2 ++
+>  sound/soc/intel/skylake/skl-pcm.c | 43 ++++++++++++++++++++++++++++++++++++++-
+>  6 files changed, 55 insertions(+), 1 deletion(-)
 
-On Tue 2018-01-30 11:10:46, Ladislav Michl wrote:
-> On Tue, Jan 30, 2018 at 11:00:23AM +0100, Pavel Machek wrote:
-> > On Tue 2018-01-30 10:38:38, Ladislav Michl wrote:
-> > > On Tue, Jan 30, 2018 at 10:11:02AM +0100, Filip Matijevi=C4=87 wrote:
-> > > > Hi,
-> > > >=20
-> >=20
-> > > > > Well, notice I'm converting existing driver to device tree. And t=
-hat
-> > > > > one already has GPIO dependency. It is possible that more work ne=
-eds
-> > > > > to be done there, but that should not be a reason to delay this. =
-Feel
-> > > > > free to help.
-> > >=20
-> > > Adding DT properties that need to be maintained for compatibility rea=
-sons
-> > > is a bad idea and very good reason to delay merging unfinished stuff.
-> > > And meanwhile it turned out it is not power-gpio :)
-> >=20
-> > I believe reset-gpios and power-gpios are commonly used like
-> > this... and that's what the old code does.
->=20
-> Why do you care about old code when introducing new DT property?
-> Either it is reset, then lets call it reset-gpios or it is power supply
-> and then voltage regulator should be used (VAUX4.OUT is such a regulator
-> although it is unclear to me how it is controlled (*)).
+In my opinion, when drivers
+return appropriate values at implementations of
+"struct snd_pcm_ops.pointer" and "struct snd_pcm_ops.ack", your aim is
+satisfied. In short, you can let ALSA PCM core to handle
+rewinding/forwarding requests from userland for zero number of handled
+frames in result. So the 'SNDRV_PCM_HW_PARAMS_NO_REWINDS' flag is
+useless.
 
-power gpio =3D !reset gpio. Difference is only in polarity.
+>From me, please refer to our previous discussion about this
+flag[1][2][3], then describe your insistence of this flag. At least,
+it's not better idea to abandon the old discussion when posting this
+kind of patches. Additionally you should add 'v4' in title of this
+patchset to represent this patchset is a part of series of your work for
+the flag and your Intel platform.
 
-> > You are not helping.
->=20
-> The only way I can help here is to resend your patch with "reset-gpios"
-> used, which I'm pretty sure you can handle yourself.
+[1]
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-May/120676.html
+[2]
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-June/121683.html
+[3]
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-June/121967.html
 
-Well, you can do that, and then you can argue with the next person who
-feels one of the properties has to get his preferred color. Hard part
-is not changing code :-(.
 
-									Pavel
+Regards
 
-> (*) Remark "DAC33 enabled (for example, plug in a headset to the 3.5mm
-> AV connector and start music playback from the device)" in schematics
-> suggests it is controlled somehow.
-
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---11Y7aswkeuHtSBEs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlpwSnoACgkQMOfwapXb+vJpSACfcoEayAIDb8i+euYVi6ax51do
-2ogAoLNW73ZHvDoFKVEHhmR0dufAqXGX
-=6iRg
------END PGP SIGNATURE-----
-
---11Y7aswkeuHtSBEs--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Takashi Sakamoto
