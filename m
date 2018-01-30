@@ -1,15 +1,15 @@
 From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Subject: [alsa-utils] [PATCH] Add support for no-rewind flag in
-	aplay utility
-Date: Tue, 30 Jan 2018 15:04:45 +0530
-Message-ID: <1517304885-16750-1-git-send-email-sriramx.periyasamy@intel.com>
+Subject: [PATCH 0/3] Add SPIB Support for Intel Skylake
+	platforms
+Date: Tue, 30 Jan 2018 15:06:23 +0530
+Message-ID: <1517304986-16847-1-git-send-email-sriramx.periyasamy@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D175267537
- for <alsa-devel@alsa-project.org>; Tue, 30 Jan 2018 10:41:26 +0100 (CET)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 395FA26753C
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jan 2018 10:43:09 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,83 +19,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA ML <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
-Cc: Patches Audio <patches.audio@intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Ramesh Babu <ramesh.babu@intel.com>
+To: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Ramesh Babu <ramesh.babu@intel.com>
+Skylake audio controller supports SPIB (Software Position in buffer)
+capability, which can be used to inform position of application pointer
+to host DMA controller. When SPIB mode is enabled, driver could write
+the application pointer position in SPIB register. Host DMA will make
+sure it won't read/write beyond bytes specified in SPIB register.
 
-The "no-rewind" flag is introduced in alsa.
-Application can use this flag to assure kernel driver
-that rewind won't be exercised. Driver could use this
-flag to alter it's buffering scheme to optimize power
-and performance.
+SPIB mode will be useful in low power use cases, where DSP could
+pre-fetch large buffers to avoid frequent wakes caused due to interrupts.
 
-Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
-Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
----
- aplay/aplay.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+To support SPIB in the driver, save the spib values in stream context
+which can be restored during resume from S3. Add new hw_params flag to
+explicitly tell driver that rewinds will never be used.
 
-diff --git a/aplay/aplay.c b/aplay/aplay.c
-index 6b740c281f8e..b50602a59024 100644
---- a/aplay/aplay.c
-+++ b/aplay/aplay.c
-@@ -108,6 +108,7 @@ static snd_pcm_stream_t stream = SND_PCM_STREAM_PLAYBACK;
- static int mmap_flag = 0;
- static int interleaved = 1;
- static int nonblock = 0;
-+static int no_rewind = 0;
- static volatile sig_atomic_t in_aborting = 0;
- static u_char *audiobuf = NULL;
- static snd_pcm_uframes_t chunk_size = 0;
-@@ -229,6 +230,7 @@ _("Usage: %s [OPTION]... [FILE]...\n"
- "-I, --separate-channels one file for each channel\n"
- "-i, --interactive       allow interactive operation from stdin\n"
- "-m, --chmap=ch1,ch2,..  Give the channel map to override or follow\n"
-+"-w, --no-rewind         enables no rewind mode\n"
- "    --disable-resample  disable automatic rate resample\n"
- "    --disable-channels  disable automatic channel conversions\n"
- "    --disable-format    disable automatic format conversions\n"
-@@ -470,7 +472,7 @@ int main(int argc, char *argv[])
- {
- 	int duration_or_sample = 0;
- 	int option_index;
--	static const char short_options[] = "hnlLD:qt:c:f:r:d:s:MNF:A:R:T:B:vV:IPCi"
-+	static const char short_options[] = "hnlLD:qt:c:f:r:d:s:w:MNF:A:R:T:B:vV:IPCi"
- #ifdef CONFIG_SUPPORT_CHMAP
- 		"m:"
- #endif
-@@ -514,6 +516,7 @@ int main(int argc, char *argv[])
- 		{"process-id-file", 1, 0, OPT_PROCESS_ID_FILE},
- 		{"use-strftime", 0, 0, OPT_USE_STRFTIME},
- 		{"interactive", 0, 0, 'i'},
-+		{"no-rewind", 0, 0, 'w'},
- 		{"dump-hw-params", 0, 0, OPT_DUMP_HWPARAMS},
- 		{"fatal-errors", 0, 0, OPT_FATAL_ERRORS},
- #ifdef CONFIG_SUPPORT_CHMAP
-@@ -753,6 +756,9 @@ int main(int argc, char *argv[])
- 		case 'i':
- 			interactive = 1;
- 			break;
-+		case 'w':
-+			no_rewind = 1;
-+			break;
- 		case OPT_DISABLE_RESAMPLE:
- 			open_mode |= SND_PCM_NO_AUTO_RESAMPLE;
- 			break;
-@@ -1396,6 +1402,12 @@ static void set_params(void)
- 							     &buffer_frames);
- 	}
- 	assert(err >= 0);
-+
-+	if (no_rewind) {
-+		err = snd_pcm_hw_params_set_no_rewind(handle, params, 1);
-+		assert(err >= 0);
-+	}
-+
- 	monotonic = snd_pcm_hw_params_is_monotonic(params);
- 	can_pause = snd_pcm_hw_params_can_pause(params);
- 	err = snd_pcm_hw_params(handle, params);
+Pierre-Louis Bossart (1):
+  ALSA: core: let low-level driver or userspace disable rewinds
+
+Ramesh Babu (2):
+  ALSA: hda: ext: add spib to stream context
+  ASoC: Intel: Skylake: Add support for spib mode
+
+ include/sound/hdaudio_ext.h       |  1 +
+ include/sound/pcm.h               |  1 +
+ include/uapi/sound/asound.h       |  1 +
+ sound/core/pcm_native.c           |  8 ++++++++
+ sound/hda/ext/hdac_ext_stream.c   |  2 ++
+ sound/soc/intel/skylake/skl-pcm.c | 43 ++++++++++++++++++++++++++++++++++++++-
+ 6 files changed, 55 insertions(+), 1 deletion(-)
+
 -- 
 2.7.4
