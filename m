@@ -1,52 +1,85 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] ASoC: codecs: Add support for AK5558 ADC driver
-Date: Wed, 31 Jan 2018 17:08:59 +0000
-Message-ID: <20180131170859.GC7763@sirena.org.uk>
-References: <1517403459-6668-1-git-send-email-daniel.baluta@nxp.com>
- <CAOMZO5BToV0OKEc_f8M1=zSL-X=qSXnokFyEfEEX2tGTUO=a-A@mail.gmail.com>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: [PATCHv2] tlv320dac33: Add device tree bindings
+Date: Wed, 31 Jan 2018 20:01:12 +0100
+Message-ID: <20180131190112.GA31608@amd>
+References: <20180129230539.GA18280@amd>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="oJ71EGRlYNjSvfq7"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="Q68bSM7Ycu6FN28Q"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAOMZO5BToV0OKEc_f8M1=zSL-X=qSXnokFyEfEEX2tGTUO=a-A-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Daniel Baluta <daniel.baluta-3arQi8VN3Tc@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, wakasugi.jb-r6lgfPJHJciWyREYz5tgSuqrae++aQT8@public.gmane.org, shengjiu.wang-3arQi8VN3Tc@public.gmane.org, mihai.serban-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, cosmin.samoila-3arQi8VN3Tc@public.gmane.org, linux-imx-3arQi8VN3Tc@public.gmane.org, Mihai Serban <mihai.serban-3arQi8VN3Tc@public.gmane.org>
+In-Reply-To: <20180129230539.GA18280@amd>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com, bhumirks@gmail.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, pali.rohar@gmail.com, sre@kernel.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-omap@vger.kernel.org, tony@atomide.com, khilman@kernel.org, aaro.koskinen@iki.fi, ivo.g.dimitrov.75@gmail.com, patrikbachan@gmail.com, serge@hallyn.com, abcloriens@gmail.com, clayton@craftyguy.net, martijn@brixit.nl, sakari.ailus@linux.intel.com, Filip =?utf-8?Q?Matijevi=C4=87?= <filip.matijevic.pz@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---oJ71EGRlYNjSvfq7
+--Q68bSM7Ycu6FN28Q
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2018 at 02:20:31PM -0200, Fabio Estevam wrote:
-> On Wed, Jan 31, 2018 at 10:57 AM, Daniel Baluta <daniel.baluta-3arQi8VN3Tc@public.gmane.org> wrote:
 
-> > +       dev_err(&i2c->dev, "%s(%d)\n", __func__, __LINE__);
+This adds device tree bindings for tlv320dac33.c.
 
-> You certainly do not want an error message on every probe :-)
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
 
-Sometimes you've just got to be honest with people about their hardware
-choices! :)
+diff --git a/Documentation/devicetree/bindings/sound/tlv320dac33.txt b/Docu=
+mentation/devicetree/bindings/sound/tlv320dac33.txt
+new file mode 100644
+index 0000000..7fdda95
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/tlv320dac33.txt
+@@ -0,0 +1,32 @@
++Texas Instruments - tlv320dac33 Codec module
++
++The tlv320dac33 serial control bus communicates through I2C protocols.
++
++Required properties:
++
++- compatible - "ti,tlv320dac33"
++- reg - I2C slave address
++
++Optional properties:
++
++- reset-gpios - gpio pin to power the device, active low
++
++- interrupts       - The interrupt output from the device.
++- interrupt-parent - The parent interrupt controller.
++
++- ti,keep-bclk 	- Keep the BCLK running in FIFO modes
++- ti,burst-bclkdiv - BCLK divider value in burst mode
++
++Example:
++
++tlv320dac33: audio-codec@19 {
++	compatible =3D "ti,tlv320dac33";
++	reg =3D <0x19>;
++
++	interrupt-parent =3D <&gpio2>;
++	interrupts =3D <21 1>; /* gpio_53, IRQF_TRIGGER_RISING */
++	reset-gpios =3D <&gpio2 28 0>; /* gpio_60 */
++
++	ti,keep-bclk;
++	ti,burst-bclkdiv =3D <3>;
++};
 
---oJ71EGRlYNjSvfq7
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--Q68bSM7Ycu6FN28Q
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpx+CsACgkQJNaLcl1U
-h9B2iwf+JFWIP6EjUfINlZZ7JvpAr96cX3SyKanWXBU4N+9peL1zDbwXYNT8+KVw
-Mp03a2fClB7NgTqLR5xKF0vPecfKbKMzk0RUKaTBu/rsHTguEsen/EegKcn3s4Ix
-vBIWXhoGry3m/XMlL/EgaDqAHRMRnFVlCJkzcYhXbdnjmnH3jxj9N6CMAyz1tMXa
-KMzzMs7Y4PJOzG0eub5GzcxNmW9UKqUIkO0Hwheaxlzet41KB5Z0zCsbxOOM/y06
-wcml2/tT80ekc/5v8Ldo9sl9pZRRDiWdv8TNIzfLf4XaeGPeY5LyQkd2SIM0kY7g
-W2I6OBZ/gRuk80aTwXlohFxJL3iv2w==
-=Jhgu
+iEYEARECAAYFAlpyEngACgkQMOfwapXb+vIoBgCglNyLOuWrgVOVKZJHl2KRTmFf
+5CQAnjW1sBvNqWmNwQh7HdTOwM6TgcJD
+=bMd9
 -----END PGP SIGNATURE-----
 
---oJ71EGRlYNjSvfq7--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--Q68bSM7Ycu6FN28Q--
