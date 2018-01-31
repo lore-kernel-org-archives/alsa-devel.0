@@ -1,97 +1,94 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [GIT PULL]: kbl audio firmware update
-Date: Wed, 31 Jan 2018 15:21:03 +0530
-Message-ID: <20180131095102.GX18649@localhost>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8559795408442140935=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 92B28266A74
- for <alsa-devel@alsa-project.org>; Wed, 31 Jan 2018 10:46:29 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: linux-firmware@kernel.org
-Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: mt8173-rt5650: fix child-node lookup" to the asoc tree
+Date: Wed, 31 Jan 2018 10:42:02 +0000
+Message-ID: <E1egpq6-0002zx-4O@debutante>
+References: <20180131055921.25574-1-johan@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180131055921.25574-1-johan@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Johan Hovold <johan@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-mediatek@lists.infradead.org, PC Liao <pc.liao@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============8559795408442140935==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AkbCVLjbJ9qUtAXD"
-Content-Disposition: inline
+   ASoC: mt8173-rt5650: fix child-node lookup
 
+has been applied to the asoc tree at
 
---AkbCVLjbJ9qUtAXD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Hi,
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Please PULL to receive the update for KBL audio DSP firmware.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-The following changes since commit 2a713be25a44bd6cec90d8affc54b246a2ca9c7b:
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-  amdgpu: update uvd firmware for polaris asics (2018-01-19 07:16:32 -0500)
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-are available in the git repository at:
+Thanks,
+Mark
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git kbl
+>From 06190937b9de9803e15a122762b5bbd442eaee31 Mon Sep 17 00:00:00 2001
+From: Johan Hovold <johan@kernel.org>
+Date: Wed, 31 Jan 2018 16:59:21 +1100
+Subject: [PATCH] ASoC: mt8173-rt5650: fix child-node lookup
 
-for you to fetch changes up to aab8b6fff9417a9938f6393dc09cf6ce90e55565:
+This driver used the wrong OF-helper when looking up the optional
+capture-codec child node during probe. Instead of searching just
+children of the sound node, a tree-wide depth-first search starting at
+the unrelated platform node was done. Not only could this end up
+matching an unrelated node or no node at all; the platform node could
+also be prematurely freed since of_find_node_by_name() drops a reference
+to its first argument. This particular pattern has been observed leading
+to crashes after probe deferrals in other drivers.
 
-  linux-firmware: intel: Update Kabylake audio firmware (2018-01-30 15:42:4=
-5 +0530)
+Fix this by dropping the broken call to of_find_node_by_name() and
+keeping only the second, correct lookup using of_get_child_by_name()
+while taking care not to bail out if the optional node is missing.
 
-----------------------------------------------------------------
-Guneshwor Singh (1):
-      linux-firmware: intel: Update Kabylake audio firmware
+Note that this also addresses two capture-codec node-reference leaks
+(one for each of the original helper calls).
 
- WHENCE                     |   4 +++-
- intel/dsp_fw_kbl.bin       |   2 +-
- intel/dsp_fw_kbl_v3266.bin | Bin 0 -> 243016 bytes
- 3 files changed, 4 insertions(+), 2 deletions(-)
- create mode 100644 intel/dsp_fw_kbl_v3266.bin
+Compile tested only.
 
-Thanks
---=20
-~Vinod
+Fixes: d349caeb0510 ("ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver")
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/mediatek/mt8173/mt8173-rt5650.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
---AkbCVLjbJ9qUtAXD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJacZGGAAoJEHwUBw8lI4NHSLwQAM2wurOlaUwdmv2eLQo4tFGC
-OtOkVbM7ietbnMxMekGwQ5KBmJrxQZ4h3XR9mxt89cbL+H5Yv0PgjO3d3z9R/MTT
-hRuZ3X8E68pCBYK4wtOxBteOVNHfd6S6CxpTY6p8uYqAxLghoilQ0tnpSKPL8cKu
-gpFjfmQ6aevsPi6pbKgyyDg07B9dDjTtuhIx0Iz1maLf6Xcls2PD9f/whFM9aj9B
-SVhwliXlezSKAGDunT8eV0G7M5laHZ4mcCn7k6TCYc0IPGNUXpjMR2/dAV89Dnge
-cgO7yanL9cbI/+LBZ3tTGbyvExZrHAJdMTn9ODPzFnosIeknQOlqkJVnoRdYL9hJ
-h2lBQfd4g3CTxAum0jzL3y+Og8J8AzQMMrZFtf0NP+4DHUvnHjNk1ZdNYClU7DwX
-Qt+IY+RC3zW4/985ZU2wwBgZPy2QTwq9mD7AjwM6vpBEh/Qxw/EicptA9TuOHkr4
-Ze6PgYJrQ/Ls/MujA/M1+jENAiR6392N0qutKepwMtCWFjccQblr8WxR/rqoc+Hv
-zpXHaKGbVGgVvG9sX3NUGIsmjNfvJQeXv7lMZoYsH9mOd2Uiih27qUF5QQbBBSnz
-euQd2SlypZwusxcG6W/B3b0zUI10fAmVhtTxhzz6rZegzJQILmmJrimcV6Q4h2f+
-TQT3JNnLDhz/84qD4sl+
-=WOnQ
------END PGP SIGNATURE-----
-
---AkbCVLjbJ9qUtAXD--
-
---===============8559795408442140935==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8559795408442140935==--
+diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
+index 40ebefd625c1..679fc8bea0a3 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
++++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
+@@ -272,15 +272,10 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
+ 	}
+ 	mt8173_rt5650_codecs[1].of_node = mt8173_rt5650_codecs[0].of_node;
+ 
+-	if (of_find_node_by_name(platform_node, "codec-capture")) {
+-		np = of_get_child_by_name(pdev->dev.of_node, "codec-capture");
+-		if (!np) {
+-			dev_err(&pdev->dev,
+-				"%s: Can't find codec-capture DT node\n",
+-				__func__);
+-			return -EINVAL;
+-		}
++	np = of_get_child_by_name(pdev->dev.of_node, "codec-capture");
++	if (np) {
+ 		ret = snd_soc_of_get_dai_name(np, &codec_capture_dai);
++		of_node_put(np);
+ 		if (ret < 0) {
+ 			dev_err(&pdev->dev,
+ 				"%s codec_capture_dai name fail %d\n",
+-- 
+2.15.1
