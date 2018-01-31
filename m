@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] iio: adc: STM32_DFSDM_ADC should depend on
-	HAS_DMA
-Date: Tue, 30 Jan 2018 16:35:07 +0000
-Message-ID: <20180130163507.GE10525@sirena.org.uk>
-References: <1517318506-14664-1-git-send-email-geert@linux-m68k.org>
- <20180130150337.GC10525@sirena.org.uk>
- <CAMuHMdWhADAPSnj_34R04Oh_H_puyc0vzx--tpihAaUM4NDMQg@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-utils] [PATCH] Add support for no-rewind
+ flag in aplay utility
+Date: Wed, 31 Jan 2018 01:14:04 +0100
+Message-ID: <68140ddd-1ee9-ba8b-68f9-6a55404b0343@linux.intel.com>
+References: <1517304885-16750-1-git-send-email-sriramx.periyasamy@intel.com>
+ <ae19083c-15f9-e65e-faa5-d75809885b07@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6598885211294441214=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 18EED266A74
- for <alsa-devel@alsa-project.org>; Tue, 30 Jan 2018 17:35:11 +0100 (CET)
-In-Reply-To: <CAMuHMdWhADAPSnj_34R04Oh_H_puyc0vzx--tpihAaUM4NDMQg@mail.gmail.com>
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ by alsa0.perex.cz (Postfix) with ESMTP id 38348267503
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jan 2018 01:14:04 +0100 (CET)
+In-Reply-To: <ae19083c-15f9-e65e-faa5-d75809885b07@sakamocchi.jp>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +23,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-iio@vger.kernel.org, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Jonathan Cameron <jic23@kernel.org>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, ALSA ML <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+Cc: Patches Audio <patches.audio@intel.com>, Ramesh Babu <ramesh.babu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 1/30/18 11:40 AM, Takashi Sakamoto wrote:
+> Hi,
+> 
+> On Jan 30 2018 18:34, Sriram Periyasamy wrote:
+>> From: Ramesh Babu <ramesh.babu@intel.com>
+>>
+>> The "no-rewind" flag is introduced in alsa.
+>> Application can use this flag to assure kernel driver
+>> that rewind won't be exercised. Driver could use this
+>> flag to alter it's buffering scheme to optimize power
+>> and performance.
+>>
+>> Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
+>> Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+>> ---
+>>   aplay/aplay.c | 14 +++++++++++++-
+>>   1 file changed, 13 insertions(+), 1 deletion(-)
+> 
+> Current implementation of 'aplay' doesn't perform rewinding/forwarding,
+> thus an additional of this option is surplus.
 
---===============6598885211294441214==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="WBsA/oQW3eTA3LlM"
-Content-Disposition: inline
+It helps tell the driver that rewinds won't be used and indirectly that 
+the appl_ptr updates are passed to the hardware.
+Removing the option or making the functionality unconditional removes 
+the freedom to test with or without this option.
 
-
---WBsA/oQW3eTA3LlM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jan 30, 2018 at 04:31:24PM +0100, Geert Uytterhoeven wrote:
-> On Tue, Jan 30, 2018 at 4:03 PM, Mark Brown <broonie@kernel.org> wrote:
-
-> > Once again I have to ask why we're doing this per driver and not having
-> > the few architectures that have this issue set something up.
-
-> Because doing so would lead us to
-
->     depends on COMPILE_TEST || HAS_DMA
-
-> in many places. Is that any better?
-
-Honestly I'd just not have any dependency here, I'm not sure the DMA
-dependencies are really covering a good percentage of what's really
-likely to be found on these platforms.
-
---WBsA/oQW3eTA3LlM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpwnroACgkQJNaLcl1U
-h9Ajqwf8CzwrV4U8sSZ0G25bzklvvsjHNQkf4CgeH9Kw6v0OptVeyPYs4tJaPTIm
-RTyK/WEMzBVrBk1vyV7WyrguSx1R/aTpdx5G9kPhHsCq+Yt5sXb21iNGZYgyW0Ri
-ymakDUq3I9qS9pm7raimmwr5ZYfcFmtXxZyDw0uPI1Cp3vP1g7GHnllKuJLdbR3m
-w8Neir7C81QqgSyFGTdP/oin9JcfQ88bddvE77m8kMRopQ8pu42otddhpt36E3NM
-fIkVq1nyYYoO9wdb3QYiTrAWYIZFe1KvU/Qu4ZpaAFkt4xdUDZB7+WWcSnBI6qkL
-CP4qPBnGnXl8XYa1mOYaTgfixJppCA==
-=KIZ9
------END PGP SIGNATURE-----
-
---WBsA/oQW3eTA3LlM--
-
---===============6598885211294441214==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6598885211294441214==--
+> 
+>> diff --git a/aplay/aplay.c b/aplay/aplay.c
+>> index 6b740c281f8e..b50602a59024 100644
+>> --- a/aplay/aplay.c
+>> +++ b/aplay/aplay.c
+>> @@ -108,6 +108,7 @@ static snd_pcm_stream_t stream = SND_PCM_STREAM_PLAYBACK;
+>>   static int mmap_flag = 0;
+>>   static int interleaved = 1;
+>>   static int nonblock = 0;
+>> +static int no_rewind = 0;
+>>   static volatile sig_atomic_t in_aborting = 0;
+>>   static u_char *audiobuf = NULL;
+>>   static snd_pcm_uframes_t chunk_size = 0;
+>> @@ -229,6 +230,7 @@ _("Usage: %s [OPTION]... [FILE]...\n"
+>>   "-I, --separate-channels one file for each channel\n"
+>>   "-i, --interactive       allow interactive operation from stdin\n"
+>>   "-m, --chmap=ch1,ch2,..  Give the channel map to override or follow\n"
+>> +"-w, --no-rewind         enables no rewind mode\n"
+>>   "    --disable-resample  disable automatic rate resample\n"
+>>   "    --disable-channels  disable automatic channel conversions\n"
+>>   "    --disable-format    disable automatic format conversions\n"
+>> @@ -470,7 +472,7 @@ int main(int argc, char *argv[])
+>>   {
+>>   	int duration_or_sample = 0;
+>>   	int option_index;
+>> -	static const char short_options[] = "hnlLD:qt:c:f:r:d:s:MNF:A:R:T:B:vV:IPCi"
+>> +	static const char short_options[] = "hnlLD:qt:c:f:r:d:s:w:MNF:A:R:T:B:vV:IPCi"
+>>   #ifdef CONFIG_SUPPORT_CHMAP
+>>   		"m:"
+>>   #endif
+>> @@ -514,6 +516,7 @@ int main(int argc, char *argv[])
+>>   		{"process-id-file", 1, 0, OPT_PROCESS_ID_FILE},
+>>   		{"use-strftime", 0, 0, OPT_USE_STRFTIME},
+>>   		{"interactive", 0, 0, 'i'},
+>> +		{"no-rewind", 0, 0, 'w'},
+>>   		{"dump-hw-params", 0, 0, OPT_DUMP_HWPARAMS},
+>>   		{"fatal-errors", 0, 0, OPT_FATAL_ERRORS},
+>>   #ifdef CONFIG_SUPPORT_CHMAP
+>> @@ -753,6 +756,9 @@ int main(int argc, char *argv[])
+>>   		case 'i':
+>>   			interactive = 1;
+>>   			break;
+>> +		case 'w':
+>> +			no_rewind = 1;
+>> +			break;
+>>   		case OPT_DISABLE_RESAMPLE:
+>>   			open_mode |= SND_PCM_NO_AUTO_RESAMPLE;
+>>   			break;
+>> @@ -1396,6 +1402,12 @@ static void set_params(void)
+>>   							     &buffer_frames);
+>>   	}
+>>   	assert(err >= 0);
+>> +
+>> +	if (no_rewind) {
+>> +		err = snd_pcm_hw_params_set_no_rewind(handle, params, 1);
+>> +		assert(err >= 0);
+>> +	}
+>> +
+>>   	monotonic = snd_pcm_hw_params_is_monotonic(params);
+>>   	can_pause = snd_pcm_hw_params_can_pause(params);
+>>   	err = snd_pcm_hw_params(handle, params);
+> 
+> 
+> Regards
+> 
+> Takashi Sakamoto
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
