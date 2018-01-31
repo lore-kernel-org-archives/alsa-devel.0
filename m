@@ -1,115 +1,60 @@
-From: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
-Subject: Re: [PATCH v6 4/6] media: i2c: Add TDA1997x HDMI receiver driver
-Date: Tue, 30 Jan 2018 20:51:07 -0800
-Message-ID: <CAJ+vNU1xnnmNZW5zmT8+0HfT3Xfg6zfdrbC8vFNH4wuah5AVTA@mail.gmail.com>
-References: <1514491789-8697-1-git-send-email-tharvey@gateworks.com>
- <1514491789-8697-5-git-send-email-tharvey@gateworks.com> <1e65ee61-f282-4b53-dd03-68a89a91da8e@xs4all.nl>
- <CAJ+vNU1ysHuzqOnL4sf3hFZrU5kyGnQ0dFkRObVjCa=NyLsJug@mail.gmail.com> <517f8b12-e10e-1e8d-6d98-26f5fefe62b8@xs4all.nl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <517f8b12-e10e-1e8d-6d98-26f5fefe62b8-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
-Cc: linux-media <linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Steve Longerbeam <slongerbeam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Hans Verkuil <hansverk-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>
+From: Johan Hovold <johan@kernel.org>
+Subject: [PATCH] ASoC: mt8173-rt5650: fix child-node lookup
+Date: Wed, 31 Jan 2018 16:59:21 +1100
+Message-ID: <20180131055921.25574-1-johan@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, Johan Hovold <johan@kernel.org>, PC Liao <pc.liao@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 29, 2018 at 4:00 AM, Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org> wrote:
-> On 01/25/2018 05:15 PM, Tim Harvey wrote:
-<snip>
->>>
->>> Hmm. This receiver supports multiple output formats, but you advertise only one.
->>> That looks wrong. If nothing else, you should be able to switch between RGB and
->>> YUV 4:4:4 since they use the same port config.
->>>
->>> It's a common use-case that you want to switch between RGB and YUV depending on
->>> the source material (i.e. if you receive a desktop/graphics then RGB is best, if
->>> you receive video then YUV 4:2:2 or 4:2:0 is best).
->>>
->>> Hardcoding just one format won't do.
->>>
->>
->> I've been thinking about this a bit. I had hard-coded a single format
->> for now because I haven't had any good ideas on how to deal with the
->> fact that the port mappings would need to differ if you change from
->> the RGB888/YUV444 (I think these are referred to as 'planar' formats?)
->> to YUV422 (semi-planar) and BT656 formats. It is true though that the
->> 36bit (TDA19973) RGB888/YUV444 and 24bit (TDA19971/2) formats can both
->> be supported with the same port mappings / pinout.
->
-> Regarding terminology:
->
-> RGB and YUV are typically interleaved, i.e. the color components are
-> (for two pixels) either RGBRGB for RGB888, YUVYUV for YUV444 or YUYV
-> for YUV422.
->
-> Planar formats are in practice only seen for YUV and will first output
-> all Y samples, and then the UV samples. This requires that the hardware
-> buffers the frame and that's not normally done by HDMI receivers.
->
-> The DMA engine, however, is often able to split up the interleaved YUV
-> samples that it receives and DMA them to separate buffers, thus turning
-> an interleaved media bus format to a planar memory format.
->
-> BT656 doesn't refer to how the samples are transferred, instead it
-> refers to how the hsync and vsync are reported. The enum v4l2_mbus_type
-> has various options, one of them being BT656.
->
-> Which mbus type is used is board specific (and should come from the
-> device tree). Whether to transmit RGB888, YUV444 or YUV422 (or possibly
-> even YUV420) is dynamic and is up to userspace since it is use-case
-> dependent.
->
-> So you'll never switch between BT656 and CSI, but you can switch between
-> BT656+RGB and BT656+YUV, or between CSI+RGB and CSI+YUV.
->
->>
->> For example the GW5400 has a TDA19971 mapped to IMX6 CSI_DATA[19:4]
->> (16bit) for YUV422. However if you want to use BT656 you have to shift
->> the TDA19971 port mappings to get the YCbCr pins mapped to
->> CSI_DATA[19:x] and those pin groups are at the bottom of the bus for
->> the RGB888/YUV444 format.
->
-> As mentioned above, you wouldn't switch between mbus types.
->
->>
->> I suppose however that perhaps for the example above if I have a 16bit
->> width required to support YUV422 there would never be a useful case
->> for supporting 8-bit/10-bit/12-bit BT656 on the same board?
->
-> You wouldn't switch between mbus types, but if the device tree configures
-> BT.656 with a bus width of 24 bits, then the application might very well
-> want to dynamically switch between 8, 10 and 12 bits per color component.
->
+This driver used the wrong OF-helper when looking up the optional
+capture-codec child node during probe. Instead of searching just
+children of the sound node, a tree-wide depth-first search starting at
+the unrelated platform node was done. Not only could this end up
+matching an unrelated node or no node at all; the platform node could
+also be prematurely freed since of_find_node_by_name() drops a reference
+to its first argument. This particular pattern has been observed leading
+to crashes after probe deferrals in other drivers.
 
-Hans,
+Fix this by dropping the broken call to of_find_node_by_name() and
+keeping only the second, correct lookup using of_get_child_by_name()
+while taking care not to bail out if the optional node is missing.
 
-I just submitted a v7 with multiple format support. Your point about
-bus_type being specified by dt is exactly what I needed to help make
-sense of the formats.
+Note that this also addresses two capture-codec node-reference leaks
+(one for each of the original helper calls).
 
-That said, I'm unsure how to properly test the enum_mbus_code() pad op
-function. How do you obtain a list of valid formats on a subdev?
+Compile tested only.
 
-I tried the following:
-root@ventana:~# media-ctl -e 'tda19971 2-0048'
-/dev/v4l-subdev1
-root@ventana:~# media-ctl --get-v4l2 '"tda19971 2-0048":0'
-                [fmt:UYVY8_2X8/1280x720 field:none colorspace:srgb]
-^^^^ calls get_format and returns the 1 and only format available for
-my tda19971 with 16bit parallel bus
-root@ventana:~# v4l2-ctl -d /dev/v4l-subdev1 --get-fmt-video-out
-VIDIOC_G_FMT: failed: Inappropriate ioctl for device
-root@ventana:~# v4l2-ctl -d /dev/v4l-subdev1 --list-formats-out
-ioctl: VIDIOC_ENUM_FMT
+Fixes: d349caeb0510 ("ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver")
+Cc: PC Liao <pc.liao@mediatek.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ sound/soc/mediatek/mt8173/mt8173-rt5650.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-I'm thinking perhaps enumerating the list of possible formats is a
-missing feature in media-ctl?
-
-Regards,
-
-Tim
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
+index 40ebefd625c1..679fc8bea0a3 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
++++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
+@@ -272,15 +272,10 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
+ 	}
+ 	mt8173_rt5650_codecs[1].of_node = mt8173_rt5650_codecs[0].of_node;
+ 
+-	if (of_find_node_by_name(platform_node, "codec-capture")) {
+-		np = of_get_child_by_name(pdev->dev.of_node, "codec-capture");
+-		if (!np) {
+-			dev_err(&pdev->dev,
+-				"%s: Can't find codec-capture DT node\n",
+-				__func__);
+-			return -EINVAL;
+-		}
++	np = of_get_child_by_name(pdev->dev.of_node, "codec-capture");
++	if (np) {
+ 		ret = snd_soc_of_get_dai_name(np, &codec_capture_dai);
++		of_node_put(np);
+ 		if (ret < 0) {
+ 			dev_err(&pdev->dev,
+ 				"%s codec_capture_dai name fail %d\n",
+-- 
+2.13.6
