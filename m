@@ -1,94 +1,51 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mt8173-rt5650: fix child-node lookup" to the asoc tree
-Date: Wed, 31 Jan 2018 10:42:02 +0000
-Message-ID: <E1egpq6-0002zx-4O@debutante>
-References: <20180131055921.25574-1-johan@kernel.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180131055921.25574-1-johan@kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Johan Hovold <johan@kernel.org>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-mediatek@lists.infradead.org, PC Liao <pc.liao@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>alsa-devel@alsa-project.org
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v2 005/186] ASoC: wm2200: replace codec to
+ component
+Date: Wed, 31 Jan 2018 13:20:42 +0000
+Message-ID: <20180131132042.wfluvemjs4o2pwcm@localhost.localdomain>
+References: <87607l8k9i.wl%kuninori.morimoto.gx@renesas.com>
+ <87inbl5q6q.wl%kuninori.morimoto.gx@renesas.com>
+ <87bmhd5q33.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 783A3266F3E
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jan 2018 14:20:47 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <87bmhd5q33.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Mon, Jan 29, 2018 at 02:59:19AM +0000, Kuninori Morimoto wrote:
+> 
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> Now we can replace Codec to Component. Let's do it.
+> 
+> Note:
+> 	xxx_codec_xxx()		->	xxx_component_xxx()
+> 	.idle_bias_off = 1	->	.idle_bias_on = 0
+> 	.ignore_pmdown_time = 1	->	.use_pmdown_time = 0
+> 	-			->	.endianness = 1
+> 	-			->	.non_legacy_dai_naming = 1
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
 
-   ASoC: mt8173-rt5650: fix child-node lookup
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
 Thanks,
-Mark
-
->From 06190937b9de9803e15a122762b5bbd442eaee31 Mon Sep 17 00:00:00 2001
-From: Johan Hovold <johan@kernel.org>
-Date: Wed, 31 Jan 2018 16:59:21 +1100
-Subject: [PATCH] ASoC: mt8173-rt5650: fix child-node lookup
-
-This driver used the wrong OF-helper when looking up the optional
-capture-codec child node during probe. Instead of searching just
-children of the sound node, a tree-wide depth-first search starting at
-the unrelated platform node was done. Not only could this end up
-matching an unrelated node or no node at all; the platform node could
-also be prematurely freed since of_find_node_by_name() drops a reference
-to its first argument. This particular pattern has been observed leading
-to crashes after probe deferrals in other drivers.
-
-Fix this by dropping the broken call to of_find_node_by_name() and
-keeping only the second, correct lookup using of_get_child_by_name()
-while taking care not to bail out if the optional node is missing.
-
-Note that this also addresses two capture-codec node-reference leaks
-(one for each of the original helper calls).
-
-Compile tested only.
-
-Fixes: d349caeb0510 ("ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver")
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/mediatek/mt8173/mt8173-rt5650.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-index 40ebefd625c1..679fc8bea0a3 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-@@ -272,15 +272,10 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
- 	}
- 	mt8173_rt5650_codecs[1].of_node = mt8173_rt5650_codecs[0].of_node;
- 
--	if (of_find_node_by_name(platform_node, "codec-capture")) {
--		np = of_get_child_by_name(pdev->dev.of_node, "codec-capture");
--		if (!np) {
--			dev_err(&pdev->dev,
--				"%s: Can't find codec-capture DT node\n",
--				__func__);
--			return -EINVAL;
--		}
-+	np = of_get_child_by_name(pdev->dev.of_node, "codec-capture");
-+	if (np) {
- 		ret = snd_soc_of_get_dai_name(np, &codec_capture_dai);
-+		of_node_put(np);
- 		if (ret < 0) {
- 			dev_err(&pdev->dev,
- 				"%s codec_capture_dai name fail %d\n",
--- 
-2.15.1
+Charles
