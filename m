@@ -1,22 +1,13 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] sound/tlv320dac33: Add device tree support
-Date: Wed, 31 Jan 2018 11:24:34 +0200
-Message-ID: <571fedb5-0449-eb6f-04c5-e14252e055aa@ti.com>
-References: <20180129230539.GA18280@amd> <20180129232031.GA7695@lenoch>
- <20180129233301.GA18104@amd> <20180130083446.GA13498@lenoch>
- <20180130085314.GA4585@amd> <1141b126-b883-a246-85ad-c5a69acb90bb@gmail.com>
- <20180130093838.GA15195@lenoch> <20180130100023.GB18104@amd>
- <20180130101046.GA16474@lenoch> <20180130103538.GD18104@amd>
- <20180130113829.GA18464@lenoch>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [GIT PULL]: kbl audio firmware update
+Date: Wed, 31 Jan 2018 15:21:03 +0530
+Message-ID: <20180131095102.GX18649@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============8559795408442140935=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
- by alsa0.perex.cz (Postfix) with ESMTP id 28B6B266A74
- for <alsa-devel@alsa-project.org>; Wed, 31 Jan 2018 10:24:15 +0100 (CET)
-In-Reply-To: <20180130113829.GA18464@lenoch>
-Content-Language: en-US
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92B28266A74
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jan 2018 10:46:29 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,116 +17,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ladislav Michl <ladis@linux-mips.org>, Pavel Machek <pavel@ucw.cz>
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, tony@atomide.com, abcloriens@gmail.com, lgirdwood@gmail.com, martijn@brixit.nl, =?UTF-8?Q?Filip_Matijevi=c4=87?= <filip.matijevic.pz@gmail.com>, patrikbachan@gmail.com, ivo.g.dimitrov.75@gmail.com, khilman@kernel.org, tiwai@suse.com, serge@hallyn.com, devicetree@vger.kernel.org, broonie@kernel.org, sre@kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, aaro.koskinen@iki.fi, linux-kernel@vger.kernel.org, robh+dt@kernel.org, clayton@craftyguy.net, sakari.ailus@linux.intel.com, pali.rohar@gmail.com, bhumirks@gmail.com
+To: linux-firmware@kernel.org
+Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2018-01-30 13:38, Ladislav Michl wrote:
-> On Tue, Jan 30, 2018 at 11:35:38AM +0100, Pavel Machek wrote:
->> On Tue 2018-01-30 11:10:46, Ladislav Michl wrote:
->>> On Tue, Jan 30, 2018 at 11:00:23AM +0100, Pavel Machek wrote:
->>>> On Tue 2018-01-30 10:38:38, Ladislav Michl wrote:
->>>>> On Tue, Jan 30, 2018 at 10:11:02AM +0100, Filip Matijevi=E6 wrote:
->>>>>> Hi,
->>>>>>
->>>>
->>>>>>> Well, notice I'm converting existing driver to device tree. And that
->>>>>>> one already has GPIO dependency. It is possible that more work needs
->>>>>>> to be done there, but that should not be a reason to delay this. Fe=
-el
->>>>>>> free to help.
->>>>>
->>>>> Adding DT properties that need to be maintained for compatibility rea=
-sons
->>>>> is a bad idea and very good reason to delay merging unfinished stuff.
->>>>> And meanwhile it turned out it is not power-gpio :)
->>>>
->>>> I believe reset-gpios and power-gpios are commonly used like
->>>> this... and that's what the old code does.
->>>
->>> Why do you care about old code when introducing new DT property?
->>> Either it is reset, then lets call it reset-gpios or it is power supply
->>> and then voltage regulator should be used (VAUX4.OUT is such a regulator
->>> although it is unclear to me how it is controlled (*)).
->>
->> power gpio =3D !reset gpio. Difference is only in polarity.
-> =
 
-> Quick grep:
-> Documentation/devicetree/bindings/net/smsc-lan91c111.txt
-> - power-gpios: GPIO to control the PWRDWN pin
-> - reset-gpios: GPIO to control the RESET pin
-> Documentation/devicetree/bindings/net/wireless/ti,wl1251.txt
-> - ti,power-gpio :     GPIO connected to chip's PMEN pin
-> Documentation/devicetree/bindings/input/touchscreen/silead_gsl1680.txt
-> - power-gpios             : Specification for the pin connected to the gs=
-l1680's
->                             shutdown input. This needs to be driven high =
-to take the
->                             gsl1680 out of its low power state
-> Documentation/devicetree/bindings/input/touchscreen/ektf2127.txt
-> - power-gpios             : GPIO specification for the pin connected to t=
-he
->                             ektf2127's wake input. This needs to be drive=
-n high
->                             to take ektf2127 out of it's low power state
-> =
-
-> As you can see others are using it to drive pins different from nRESET. As
-> stated in datasheet:
-> "The TLV320DAC32 requires a hardware reset after power-up for proper oper=
-ation.
-> After all power supplies are at their specified values, the nRESET pin mu=
-st be
-> driven low for at least 10ns. If this reset sequence is not performed, th=
-e DAC32
-> may not respond properly to register reads/writes". That does not sound l=
-ike
-> anything to do with power.
-> =
-
-> (It seems the only difference between TLV320DAC33 and TLV320DAC32 is uses=
- a ball
-> grid array package vs QFN32)
-
-Note that tlv320dac32 !=3D tlv320dac33, they are not even register
-compatible devices... dac33 was created _for_ Nokia back in the days and
-as far as I know there is no publicly available documentation for dac33.
-
-And yes, my pick to use power_gpio in the code was wrong, it should have
-been named as reset_gpio.
-
-> =
-
->>>> You are not helping.
->>>
->>> The only way I can help here is to resend your patch with "reset-gpios"
->>> used, which I'm pretty sure you can handle yourself.
->>
->> Well, you can do that, and then you can argue with the next person who
->> feels one of the properties has to get his preferred color. Hard part
->> is not changing code :-(.
-> =
-
-> Indeed, hard part is not to break DT compatibility later. Consider someone
-> will have to add regulator support later, which you omitted to do - having
-> both power supply and power gpio is a bit confusing, don't you think?
-> =
-
-> Anyway, time to stop arguing, feel free to do what you think is right, I =
-do
-> not have anything important to add :)
-> =
-
-> 	ladis
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> =
+--===============8559795408442140935==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="AkbCVLjbJ9qUtAXD"
+Content-Disposition: inline
 
 
-- P=E9ter
+--AkbCVLjbJ9qUtAXD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Hi,
+
+Please PULL to receive the update for KBL audio DSP firmware.
+
+The following changes since commit 2a713be25a44bd6cec90d8affc54b246a2ca9c7b:
+
+  amdgpu: update uvd firmware for polaris asics (2018-01-19 07:16:32 -0500)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git kbl
+
+for you to fetch changes up to aab8b6fff9417a9938f6393dc09cf6ce90e55565:
+
+  linux-firmware: intel: Update Kabylake audio firmware (2018-01-30 15:42:4=
+5 +0530)
+
+----------------------------------------------------------------
+Guneshwor Singh (1):
+      linux-firmware: intel: Update Kabylake audio firmware
+
+ WHENCE                     |   4 +++-
+ intel/dsp_fw_kbl.bin       |   2 +-
+ intel/dsp_fw_kbl_v3266.bin | Bin 0 -> 243016 bytes
+ 3 files changed, 4 insertions(+), 2 deletions(-)
+ create mode 100644 intel/dsp_fw_kbl_v3266.bin
+
+Thanks
+--=20
+~Vinod
+
+--AkbCVLjbJ9qUtAXD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJacZGGAAoJEHwUBw8lI4NHSLwQAM2wurOlaUwdmv2eLQo4tFGC
+OtOkVbM7ietbnMxMekGwQ5KBmJrxQZ4h3XR9mxt89cbL+H5Yv0PgjO3d3z9R/MTT
+hRuZ3X8E68pCBYK4wtOxBteOVNHfd6S6CxpTY6p8uYqAxLghoilQ0tnpSKPL8cKu
+gpFjfmQ6aevsPi6pbKgyyDg07B9dDjTtuhIx0Iz1maLf6Xcls2PD9f/whFM9aj9B
+SVhwliXlezSKAGDunT8eV0G7M5laHZ4mcCn7k6TCYc0IPGNUXpjMR2/dAV89Dnge
+cgO7yanL9cbI/+LBZ3tTGbyvExZrHAJdMTn9ODPzFnosIeknQOlqkJVnoRdYL9hJ
+h2lBQfd4g3CTxAum0jzL3y+Og8J8AzQMMrZFtf0NP+4DHUvnHjNk1ZdNYClU7DwX
+Qt+IY+RC3zW4/985ZU2wwBgZPy2QTwq9mD7AjwM6vpBEh/Qxw/EicptA9TuOHkr4
+Ze6PgYJrQ/Ls/MujA/M1+jENAiR6392N0qutKepwMtCWFjccQblr8WxR/rqoc+Hv
+zpXHaKGbVGgVvG9sX3NUGIsmjNfvJQeXv7lMZoYsH9mOd2Uiih27qUF5QQbBBSnz
+euQd2SlypZwusxcG6W/B3b0zUI10fAmVhtTxhzz6rZegzJQILmmJrimcV6Q4h2f+
+TQT3JNnLDhz/84qD4sl+
+=WOnQ
+-----END PGP SIGNATURE-----
+
+--AkbCVLjbJ9qUtAXD--
+
+--===============8559795408442140935==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8559795408442140935==--
