@@ -1,39 +1,88 @@
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH v6 4/6] media: i2c: Add TDA1997x HDMI receiver driver
-Date: Thu, 1 Feb 2018 08:19:53 +0100
-Message-ID: <a2e873da-adf2-e4aa-71d6-d1c9c2671d41@xs4all.nl>
-References: <1514491789-8697-1-git-send-email-tharvey@gateworks.com>
- <1514491789-8697-5-git-send-email-tharvey@gateworks.com>
- <1e65ee61-f282-4b53-dd03-68a89a91da8e@xs4all.nl>
- <CAJ+vNU1ysHuzqOnL4sf3hFZrU5kyGnQ0dFkRObVjCa=NyLsJug@mail.gmail.com>
- <517f8b12-e10e-1e8d-6d98-26f5fefe62b8@xs4all.nl>
- <CAJ+vNU1xnnmNZW5zmT8+0HfT3Xfg6zfdrbC8vFNH4wuah5AVTA@mail.gmail.com>
- <fa8cc2d1-b7ea-343e-5b5a-ba5f60b9c5d9@xs4all.nl>
- <83695d60-5052-14ba-4f7b-23f153a05a85@xs4all.nl>
- <CAJ+vNU3DJ2xNEKoi1-div80hKkzsm+pFYtzJDUn+seXAVq8jCQ@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCHv2] tlv320dac33: Add device tree bindings
+Date: Thu, 1 Feb 2018 09:39:11 +0200
+Message-ID: <20b9ff40-a869-a165-07a2-2a103830efb3@ti.com>
+References: <20180129230539.GA18280@amd> <20180131190112.GA31608@amd>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <CAJ+vNU3DJ2xNEKoi1-div80hKkzsm+pFYtzJDUn+seXAVq8jCQ@mail.gmail.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id 71F21266EEB
+ for <alsa-devel@alsa-project.org>; Thu,  1 Feb 2018 08:38:53 +0100 (CET)
+In-Reply-To: <20180131190112.GA31608@amd>
 Content-Language: en-US
-Sender: linux-media-owner@vger.kernel.org
-To: Tim Harvey <tharvey@gateworks.com>
-Cc: linux-media <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>, Steve Longerbeam <slongerbeam@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pavel Machek <pavel@ucw.cz>, lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com, bhumirks@gmail.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, pali.rohar@gmail.com, sre@kernel.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-omap@vger.kernel.org, tony@atomide.com, khilman@kernel.org, aaro.koskinen@iki.fi, ivo.g.dimitrov.75@gmail.com, patrikbachan@gmail.com, serge@hallyn.com, abcloriens@gmail.com, clayton@craftyguy.net, martijn@brixit.nl, sakari.ailus@linux.intel.com, =?UTF-8?Q?Filip_Matijevi=c4=87?= <filip.matijevic.pz@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/01/2018 05:47 AM, Tim Harvey wrote:
-> Hans,
-> 
-> You forgot to include v4l2-ctl-selection.cpp in your patch.
 
-You mean v4l2-ctl-subdev.cpp :-)
 
-Anyway, I plan on committing this to v4l2-ctl soon. I'll let you know
-when that's done.
+On 2018-01-31 21:01, Pavel Machek wrote:
+> =
 
-I added support for almost all subdev ioctls to v4l2-ctl.
+> This adds device tree bindings for tlv320dac33.c.
 
-Regards,
+Can you CC me for dac33 patches in the future, please?
 
-	Hans
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+
+> Signed-off-by: Pavel Machek <pavel@ucw.cz>
+> =
+
+> diff --git a/Documentation/devicetree/bindings/sound/tlv320dac33.txt b/Do=
+cumentation/devicetree/bindings/sound/tlv320dac33.txt
+> new file mode 100644
+> index 0000000..7fdda95
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/tlv320dac33.txt
+> @@ -0,0 +1,32 @@
+> +Texas Instruments - tlv320dac33 Codec module
+> +
+> +The tlv320dac33 serial control bus communicates through I2C protocols.
+> +
+> +Required properties:
+> +
+> +- compatible - "ti,tlv320dac33"
+> +- reg - I2C slave address
+> +
+> +Optional properties:
+> +
+> +- reset-gpios - gpio pin to power the device, active low
+> +
+> +- interrupts       - The interrupt output from the device.
+> +- interrupt-parent - The parent interrupt controller.
+> +
+> +- ti,keep-bclk 	- Keep the BCLK running in FIFO modes
+> +- ti,burst-bclkdiv - BCLK divider value in burst mode
+> +
+> +Example:
+> +
+> +tlv320dac33: audio-codec@19 {
+> +	compatible =3D "ti,tlv320dac33";
+> +	reg =3D <0x19>;
+> +
+> +	interrupt-parent =3D <&gpio2>;
+> +	interrupts =3D <21 1>; /* gpio_53, IRQF_TRIGGER_RISING */
+> +	reset-gpios =3D <&gpio2 28 0>; /* gpio_60 */
+> +
+> +	ti,keep-bclk;
+> +	ti,burst-bclkdiv =3D <3>;
+> +};
+> =
+
+> =
+
+
+- P=E9ter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
