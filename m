@@ -1,51 +1,64 @@
-From: Andy Shevchenko <andy.shevchenko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH] ASoC: codecs: Add support for AK5558 ADC driver
-Date: Thu, 1 Feb 2018 16:46:56 +0200
-Message-ID: <CAHp75VfydH+9ABZRbV++Od3+wnvQdzXyyDFtfi-1FnOUYjOXQQ@mail.gmail.com>
-References: <1517403459-6668-1-git-send-email-daniel.baluta@nxp.com>
- <CAHp75Vdd58U1y-LOQGg=rePOWf1LeQsZxn2ykzBhXL013ztW3Q@mail.gmail.com>
- <1517475954.8615.18.camel@nxp.com> <CAHp75Vf=Ap7UkMNOcOhzY+MjJmn-c-UphzEzAjmFtMh69kea4A@mail.gmail.com>
- <20180201134840.GA10785@sirena.org.uk>
+From: Josh Boyer <jwboyer@kernel.org>
+Subject: Re: [GIT PULL]: kbl audio firmware update
+Date: Thu, 1 Feb 2018 10:22:52 -0500
+Message-ID: <CA+5PVA5CmtqY9HSUwQNqGxYCv89ki8zF8-6u_x0xF6dgFdJAWQ@mail.gmail.com>
+References: <20180131095102.GX18649@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20180201134840.GA10785-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Daniel Baluta <daniel.baluta-3arQi8VN3Tc@public.gmane.org>, Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>, dl-linux-imx <linux-imx-3arQi8VN3Tc@public.gmane.org>, Cosmin Samoila <cosmin.samoila-3arQi8VN3Tc@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "wakasugi.jb-r6lgfPJHJciWyREYz5tgSuqrae++aQT8@public.gmane.org" <wakasugi.jb-r6lgfPJHJciWyREYz5tgSuqrae++aQT8@public.gmane.org>, "mihai.serban-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <mihai.serban-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "S.j. Wang" <shengjiu.wang-3arQi8VN3Tc@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "mihai.serban-3arQi8VN3Tc@public.gmane.org" <mihai.serban-3arQi8VN3Tc@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2FB5266D71
+ for <alsa-devel@alsa-project.org>; Thu,  1 Feb 2018 16:29:59 +0100 (CET)
+Received: from mail-qk0-f182.google.com (mail-qk0-f182.google.com
+ [209.85.220.182])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id C01EC21798
+ for <alsa-devel@alsa-project.org>; Thu,  1 Feb 2018 15:22:53 +0000 (UTC)
+Received: by mail-qk0-f182.google.com with SMTP id a5so19816017qkg.10
+ for <alsa-devel@alsa-project.org>; Thu, 01 Feb 2018 07:22:53 -0800 (PST)
+In-Reply-To: <20180131095102.GX18649@localhost>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org, Linux Firmware <linux-firmware@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 1, 2018 at 3:48 PM, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
-> On Thu, Feb 01, 2018 at 03:20:38PM +0200, Andy Shevchenko wrote:
->> On Thu, Feb 1, 2018 at 11:05 AM, Daniel Baluta <daniel.baluta-3arQi8VN3Tc@public.gmane.org> wrote:
+On Wed, Jan 31, 2018 at 4:51 AM, Vinod Koul <vinod.koul@intel.com> wrote:
+> Hi,
 >
->> >> > Signed-off-by: Junichi Wakasugi <wakasugi.jb-r6lgfPJHJciWyREYz5tgSuqrae++aQT8@public.gmane.org>
->> >> > Signed-off-by: Mihai Serban <mihai.serban-3arQi8VN3Tc@public.gmane.org>
->> >> > Signed-off-by: Shengjiu Wang <shengjiu.wang-3arQi8VN3Tc@public.gmane.org>
->> >> > Signed-off-by: Daniel Baluta <daniel.baluta-3arQi8VN3Tc@public.gmane.org>
->> >> 4 authors of the code?!
+> Please PULL to receive the update for KBL audio DSP firmware.
 >
->> > The code has a very long history. I will add under each SoB the specific
->> > contribution.
+> The following changes since commit 2a713be25a44bd6cec90d8affc54b246a2ca9c7b:
 >
->> > Mihai got the code from Junichi and reworked it for 4.9. Then Shengjiu and
->> > me added various features and cleanups.
+>   amdgpu: update uvd firmware for polaris asics (2018-01-19 07:16:32 -0500)
 >
->> > Any other suggestion?
+> are available in the git repository at:
 >
->> Yes, please, put detailed credits in commit message to not shock
->> people with so many SoB w/o explanation why.
+>   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git kbl
 >
-> Honestly the signoffs above are nothing unusual for a driver contributed
-> by a vendor - things are often bouncing around internally for ages and
-> it's good to keep credits for people.
+> for you to fetch changes up to aab8b6fff9417a9938f6393dc09cf6ce90e55565:
+>
+>   linux-firmware: intel: Update Kabylake audio firmware (2018-01-30 15:42:45 +0530)
+>
+> ----------------------------------------------------------------
+> Guneshwor Singh (1):
+>       linux-firmware: intel: Update Kabylake audio firmware
+>
+>  WHENCE                     |   4 +++-
+>  intel/dsp_fw_kbl.bin       |   2 +-
+>  intel/dsp_fw_kbl_v3266.bin | Bin 0 -> 243016 bytes
+>  3 files changed, 4 insertions(+), 2 deletions(-)
+>  create mode 100644 intel/dsp_fw_kbl_v3266.bin
 
-We have Co-developed-by: for the authors.
+Merged and pushed out.  Thanks.
 
--- 
-With Best Regards,
-Andy Shevchenko
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+josh
