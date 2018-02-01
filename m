@@ -1,24 +1,12 @@
-From: Josh Boyer <jwboyer@kernel.org>
-Subject: Re: [GIT PULL]: kbl audio firmware update
-Date: Thu, 1 Feb 2018 10:22:52 -0500
-Message-ID: <CA+5PVA5CmtqY9HSUwQNqGxYCv89ki8zF8-6u_x0xF6dgFdJAWQ@mail.gmail.com>
-References: <20180131095102.GX18649@localhost>
+From: furrywolf <alsa2@bushytails.net>
+Subject: [PATCH - alsa-lib 1/1] Patch for another bug in
+	snd_pcm_area_silence().
+Date: Thu,  1 Feb 2018 10:12:12 -0800
+Message-ID: <1517508732-27545-1-git-send-email-alsa2@bushytails.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- by alsa0.perex.cz (Postfix) with ESMTP id D2FB5266D71
- for <alsa-devel@alsa-project.org>; Thu,  1 Feb 2018 16:29:59 +0100 (CET)
-Received: from mail-qk0-f182.google.com (mail-qk0-f182.google.com
- [209.85.220.182])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C01EC21798
- for <alsa-devel@alsa-project.org>; Thu,  1 Feb 2018 15:22:53 +0000 (UTC)
-Received: by mail-qk0-f182.google.com with SMTP id a5so19816017qkg.10
- for <alsa-devel@alsa-project.org>; Thu, 01 Feb 2018 07:22:53 -0800 (PST)
-In-Reply-To: <20180131095102.GX18649@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,37 +16,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org, Linux Firmware <linux-firmware@kernel.org>
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, furrywolf <alsa2@bushytails.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 31, 2018 at 4:51 AM, Vinod Koul <vinod.koul@intel.com> wrote:
-> Hi,
->
-> Please PULL to receive the update for KBL audio DSP firmware.
->
-> The following changes since commit 2a713be25a44bd6cec90d8affc54b246a2ca9c7b:
->
->   amdgpu: update uvd firmware for polaris asics (2018-01-19 07:16:32 -0500)
->
-> are available in the git repository at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git kbl
->
-> for you to fetch changes up to aab8b6fff9417a9938f6393dc09cf6ce90e55565:
->
->   linux-firmware: intel: Update Kabylake audio firmware (2018-01-30 15:42:45 +0530)
->
-> ----------------------------------------------------------------
-> Guneshwor Singh (1):
->       linux-firmware: intel: Update Kabylake audio firmware
->
->  WHENCE                     |   4 +++-
->  intel/dsp_fw_kbl.bin       |   2 +-
->  intel/dsp_fw_kbl_v3266.bin | Bin 0 -> 243016 bytes
->  3 files changed, 4 insertions(+), 2 deletions(-)
->  create mode 100644 intel/dsp_fw_kbl_v3266.bin
+Only silence areas 64 bits at a time if it's possible to do so, which is
+when either the silence values are all zero, or when the format width
+divides evenly into 64 bits.  For formats that are neither of these, let
+the width-specific code handle the entire silencing.  Silencing formats
+that are not evenly divisible into 64 bits in 64-bit chunks, when the
+data isn't just zeroes, results in values being written to shifting
+positions in the sample, giving garbage.
 
-Merged and pushed out.  Thanks.
+Makes Takashi Sakamoto's tester happy for all tests.  Yay!  (And Thanks!)
 
-josh
+Signed-off-by: furrywolf <alsa2@bushytails.net>
+
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index 1753cda..5f9bd9f 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -2947,7 +2947,7 @@ int snd_pcm_area_silence(const snd_pcm_channel_area_t *dst_area, snd_pcm_uframes
+ 	dst = snd_pcm_channel_area_addr(dst_area, dst_offset);
+ 	width = snd_pcm_format_physical_width(format);
+ 	silence = snd_pcm_format_silence_64(format);
+-	if (dst_area->step == (unsigned int) width) {
++	if (dst_area->step == (unsigned int) width && (!silence || !(64 % width))) {
+ 		unsigned int dwords = samples * width / 64;
+ 		uint64_t *dstp = (uint64_t *)dst;
+ 		samples -= dwords * 64 / width;
+-- 
+1.9.1
