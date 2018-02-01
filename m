@@ -1,85 +1,123 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: [PATCHv2] tlv320dac33: Add device tree bindings
-Date: Wed, 31 Jan 2018 20:01:12 +0100
-Message-ID: <20180131190112.GA31608@amd>
-References: <20180129230539.GA18280@amd>
+From: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Subject: [PATCH] ASoC: hdac_hdmi: Program pin-port-mux during
+	jack report event
+Date: Thu,  1 Feb 2018 08:36:50 +0530
+Message-ID: <20180201030650.29580-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="Q68bSM7Ycu6FN28Q"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180129230539.GA18280@amd>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com, bhumirks@gmail.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, pali.rohar@gmail.com, sre@kernel.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-omap@vger.kernel.org, tony@atomide.com, khilman@kernel.org, aaro.koskinen@iki.fi, ivo.g.dimitrov.75@gmail.com, patrikbachan@gmail.com, serge@hallyn.com, abcloriens@gmail.com, clayton@craftyguy.net, martijn@brixit.nl, sakari.ailus@linux.intel.com, Filip =?utf-8?Q?Matijevi=C4=87?= <filip.matijevic.pz@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 566FA266A74
+ for <alsa-devel@alsa-project.org>; Thu,  1 Feb 2018 04:07:16 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
 
---Q68bSM7Ycu6FN28Q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+During d3/d0 cycle, the connection selection index of all pins points
+to the default value. This needs to be restored to ensure audio is
+restored after d3/d0 cycle.
 
+So store the connection selection index and program it during jack
+report event which gets invoked in cases like d3/d0 cycle, hot plug
+detection when multiple displays are connected.
 
-This adds device tree bindings for tlv320dac33.c.
+Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+---
+ sound/soc/codecs/hdac_hdmi.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-Signed-off-by: Pavel Machek <pavel@ucw.cz>
-
-diff --git a/Documentation/devicetree/bindings/sound/tlv320dac33.txt b/Docu=
-mentation/devicetree/bindings/sound/tlv320dac33.txt
-new file mode 100644
-index 0000000..7fdda95
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/tlv320dac33.txt
-@@ -0,0 +1,32 @@
-+Texas Instruments - tlv320dac33 Codec module
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index dba6f4c5074a..cabcb75bf4fc 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -32,6 +32,7 @@
+ #include <sound/hda_chmap.h>
+ #include "../../hda/local.h"
+ #include "hdac_hdmi.h"
++#include <sound/hda_regmap.h>
+ 
+ #define NAME_SIZE	32
+ 
+@@ -83,6 +84,7 @@ struct hdac_hdmi_pin {
+ 	struct list_head head;
+ 	hda_nid_t nid;
+ 	bool mst_capable;
++	int conn_index;
+ 	struct hdac_hdmi_port *ports;
+ 	int num_ports;
+ 	struct hdac_ext_device *edev;
+@@ -141,6 +143,9 @@ struct hdac_hdmi_priv {
+ 
+ #define hdev_to_hdmi_priv(_hdev) ((to_ehdac_device(_hdev))->private_data)
+ 
++static int hdac_hdmi_port_select_set(struct hdac_ext_device *edev,
++					struct hdac_hdmi_port *port);
 +
-+The tlv320dac33 serial control bus communicates through I2C protocols.
+ static struct hdac_hdmi_pcm *
+ hdac_hdmi_get_pcm_from_cvt(struct hdac_hdmi_priv *hdmi,
+ 			   struct hdac_hdmi_cvt *cvt)
+@@ -159,6 +164,7 @@ static void hdac_hdmi_jack_report(struct hdac_hdmi_pcm *pcm,
+ 		struct hdac_hdmi_port *port, bool is_connect)
+ {
+ 	struct hdac_ext_device *edev = port->pin->edev;
++	int cmd, err;
+ 
+ 	if (is_connect)
+ 		snd_soc_dapm_enable_pin(port->dapm, port->jack_pin);
+@@ -166,6 +172,29 @@ static void hdac_hdmi_jack_report(struct hdac_hdmi_pcm *pcm,
+ 		snd_soc_dapm_disable_pin(port->dapm, port->jack_pin);
+ 
+ 	if (is_connect) {
++		/* set the device if pin is mst_capable */
++		if (hdac_hdmi_port_select_set(edev, port) < 0) {
++			dev_err(&edev->hdev.dev,
++				"port %d device select fail\n", port->id);
++			return;
++		}
++		/*
++		 * Restore the connection selection index of the
++		 * respective pin.
++		 */
++		if (port->pin->conn_index > 0) {
++			cmd = snd_hdac_regmap_encode_verb(port->pin->nid,
++						AC_VERB_SET_CONNECT_SEL);
++			err = snd_hdac_regmap_write_raw(&edev->hdev, cmd,
++						port->pin->conn_index - 1);
++			if (err < 0) {
++				dev_err(&edev->hdev.dev,
++					"pin %d conn select index fail %d\n",
++					port->pin->nid, err);
++				return;
++			}
++		}
 +
-+Required properties:
+ 		/*
+ 		 * Report Jack connect event when a device is connected
+ 		 * for the first time where same PCM is attached to multiple
+@@ -891,6 +920,9 @@ static int hdac_hdmi_set_pin_port_mux(struct snd_kcontrol *kcontrol,
+ 		}
+ 	}
+ 
++	if (ucontrol->value.enumerated.item[0] > 0)
++		port->pin->conn_index =	ucontrol->value.enumerated.item[0];
 +
-+- compatible - "ti,tlv320dac33"
-+- reg - I2C slave address
-+
-+Optional properties:
-+
-+- reset-gpios - gpio pin to power the device, active low
-+
-+- interrupts       - The interrupt output from the device.
-+- interrupt-parent - The parent interrupt controller.
-+
-+- ti,keep-bclk 	- Keep the BCLK running in FIFO modes
-+- ti,burst-bclkdiv - BCLK divider value in burst mode
-+
-+Example:
-+
-+tlv320dac33: audio-codec@19 {
-+	compatible =3D "ti,tlv320dac33";
-+	reg =3D <0x19>;
-+
-+	interrupt-parent =3D <&gpio2>;
-+	interrupts =3D <21 1>; /* gpio_53, IRQF_TRIGGER_RISING */
-+	reset-gpios =3D <&gpio2 28 0>; /* gpio_60 */
-+
-+	ti,keep-bclk;
-+	ti,burst-bclkdiv =3D <3>;
-+};
-
-
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---Q68bSM7Ycu6FN28Q
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlpyEngACgkQMOfwapXb+vIoBgCglNyLOuWrgVOVKZJHl2KRTmFf
-5CQAnjW1sBvNqWmNwQh7HdTOwM6TgcJD
-=bMd9
------END PGP SIGNATURE-----
-
---Q68bSM7Ycu6FN28Q--
+ 	/*
+ 	 * Jack status is not reported during device probe as the
+ 	 * PCMs are not registered by then. So report it here.
+-- 
+2.16.1
