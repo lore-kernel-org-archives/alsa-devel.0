@@ -1,15 +1,16 @@
-From: Kailang <kailang@realtek.com>
-Subject: Add Thinkpad dock support for ALC298
-Date: Fri, 2 Feb 2018 07:44:17 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18409E3C@RTITMBSV02.realtek.com.tw>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: ALSA: tons of false positives because of
+	snd_ctl_find_id()
+Date: Fri, 2 Feb 2018 11:29:03 +0300
+Message-ID: <20180202082903.GA11023@mwanda>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A18409E3CRTITMBSV02realt_"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F806266F64
- for <alsa-devel@alsa-project.org>; Fri,  2 Feb 2018 08:44:21 +0100 (CET)
-Content-Language: zh-TW
+Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DB71266EEB
+ for <alsa-devel@alsa-project.org>; Fri,  2 Feb 2018 09:29:19 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,117 +20,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A18409E3CRTITMBSV02realt_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Hello Takashi Iwai,
 
-Hi Takashi,
-=20
-ThinkPad for ALC298 platform need to support dock device.
-This patch will enable it.
-But It need to use SSID for the quirk table.
-Because IdeaPad also has ALC298 platform.
-Use verb for the quirk table will confuse it.
-=20
-BR,
-Kailang
+The patch 72cbfd45fac6: "ALSA: ice1724 - Add ESI Maya44 support" from
+May 6, 2009, leads to the following static checker warning:
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A18409E3CRTITMBSV02realt_
-Content-Type: application/octet-stream;
-	name="0000-alc298-thinkpad-dock.patch"
-Content-Description: 0000-alc298-thinkpad-dock.patch
-Content-Disposition: attachment; filename="0000-alc298-thinkpad-dock.patch";
-	size=4373; creation-date="Fri, 02 Feb 2018 07:35:32 GMT";
-	modification-date="Fri, 02 Feb 2018 07:35:05 GMT"
-Content-Transfer-Encoding: base64
+	sound/pci/ice1712/maya44.c:204 maya_vol_put()
+	error: buffer overflow 'chip->wm' 2 <= u32max.
 
-RnJvbSAxMTkwMTEzMWU1ODI5ODgxZTMwYmM5NTNmNzczNzQyOGU5MzJjZjM4IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
-dGU6IEZyaSwgMiBGZWIgMjAxOCAxNToyNjo0NiArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6
-IGhkYS9yZWFsdGVrIC0gRW5hYmxlIFRoaW5rcGFkIERvY2sgZGV2aWNlIGZvciBBTEMyOTgKIHBs
-YXRmb3JtCgpUaGlua3BhZCBEb2NrIGRldmljZSBzdXBwb3J0IGZvciBBTEMyOTggcGxhdGZvcm0u
-Ckl0IG5lZWQgdG8gdXNlIFNTSUQgZm9yIHRoZSBxdWlyayB0YWJsZS4KQmVjYXVzZSBJZGVhUGFk
-IGFsc28gaGFzIEFMQzI5OCBwbGF0Zm9ybS4KVXNlIHZlcmIgZm9yIHRoZSBxdWlyayB0YWJsZSB3
-aWxsIGNvbmZ1c2UuCgpTaWduZWQtb2ZmLWJ5OiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRl
-ay5jb20+CgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgYi9zb3Vu
-ZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwppbmRleCAyMzQ3NTg4Li41NWRmNGQ5IDEwMDY0NAot
-LS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYworKysgYi9zb3VuZC9wY2kvaGRhL3Bh
-dGNoX3JlYWx0ZWsuYwpAQCAtNDk3Miw2ICs0OTcyLDI4IEBAIHN0YXRpYyB2b2lkIGFsY19maXh1
-cF90cHQ0NDBfZG9jayhzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywKIAl9CiB9CiAKK3N0YXRpYyB2
-b2lkIGFsY19maXh1cF90cHQ0NzBfZG9jayhzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywKKwkJCQkg
-IGNvbnN0IHN0cnVjdCBoZGFfZml4dXAgKmZpeCwgaW50IGFjdGlvbikKK3sKKwlzdGF0aWMgY29u
-c3Qgc3RydWN0IGhkYV9waW50YmwgcGluY2Znc1tdID0geworCQl7IDB4MTcsIDB4MjEyMTEwMTAg
-fSwgLyogZG9jayBoZWFkcGhvbmUgKi8KKwkJeyAweDE5LCAweDIxYTExMDEwIH0sIC8qIGRvY2sg
-bWljICovCisJCXsgfQorCX07CisJc3RydWN0IGFsY19zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7
-CisKKwlpZiAoYWN0aW9uID09IEhEQV9GSVhVUF9BQ1RfUFJFX1BST0JFKSB7CisJCXNwZWMtPnBh
-cnNlX2ZsYWdzID0gSERBX1BJTkNGR19OT19IUF9GSVhVUDsKKwkJLyogRW5hYmxlIERPQ0sgZGV2
-aWNlICovCisJCXNuZF9oZGFfY29kZWNfd3JpdGUoY29kZWMsIDB4MTcsIDAsCisJCQkgICAgQUNf
-VkVSQl9TRVRfQ09ORklHX0RFRkFVTFRfQllURVNfMywgMCk7CisJCS8qIEVuYWJsZSBET0NLIGRl
-dmljZSAqLworCQlzbmRfaGRhX2NvZGVjX3dyaXRlKGNvZGVjLCAweDE5LCAwLAorCQkJICAgIEFD
-X1ZFUkJfU0VUX0NPTkZJR19ERUZBVUxUX0JZVEVTXzMsIDApOworCQlzbmRfaGRhX2FwcGx5X3Bp
-bmNmZ3MoY29kZWMsIHBpbmNmZ3MpOworCX0KK30KKwogc3RhdGljIHZvaWQgYWxjX3NodXR1cF9k
-ZWxsX3hwczEzKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogewogCXN0cnVjdCBhbGNfc3BlYyAq
-c3BlYyA9IGNvZGVjLT5zcGVjOwpAQCAtNTQ0Niw2ICs1NDY4LDcgQEAgZW51bSB7CiAJQUxDNzAw
-X0ZJWFVQX0lOVEVMX1JFRkVSRU5DRSwKIAlBTEMyNzRfRklYVVBfREVMTF9CSU5EX0RBQ1MsCiAJ
-QUxDMjc0X0ZJWFVQX0RFTExfQUlPX0xJTkVPVVRfVkVSQiwKKwlBTEMyOThfRklYVVBfVFBUNDcw
-X0RPQ0ssCiB9OwogCiBzdGF0aWMgY29uc3Qgc3RydWN0IGhkYV9maXh1cCBhbGMyNjlfZml4dXBz
-W10gPSB7CkBAIC02MjcxLDYgKzYyOTQsMTIgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBoZGFfZml4
-dXAgYWxjMjY5X2ZpeHVwc1tdID0gewogCQkuY2hhaW5lZCA9IHRydWUsCiAJCS5jaGFpbl9pZCA9
-IEFMQzI3NF9GSVhVUF9ERUxMX0JJTkRfREFDUwogCX0sCisJW0FMQzI5OF9GSVhVUF9UUFQ0NzBf
-RE9DS10gPSB7CisJCS50eXBlID0gSERBX0ZJWFVQX0ZVTkMsCisJCS52LmZ1bmMgPSBhbGNfZml4
-dXBfdHB0NDcwX2RvY2ssCisJCS5jaGFpbmVkID0gdHJ1ZSwKKwkJLmNoYWluX2lkID0gQUxDMjkz
-X0ZJWFVQX0xFTk9WT19TUEtfTk9JU0UKKwl9LAogfTsKIAogc3RhdGljIGNvbnN0IHN0cnVjdCBz
-bmRfcGNpX3F1aXJrIGFsYzI2OV9maXh1cF90YmxbXSA9IHsKQEAgLTY0NTAsOCArNjQ3OSwxNiBA
-QCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9wY2lfcXVpcmsgYWxjMjY5X2ZpeHVwX3RibFtdID0g
-ewogCVNORF9QQ0lfUVVJUksoMHgxN2FhLCAweDIyMTgsICJUaGlua3BhZCBYMSBDYXJib24gMm5k
-IiwgQUxDMjkyX0ZJWFVQX1RQVDQ0MF9ET0NLKSwKIAlTTkRfUENJX1FVSVJLKDB4MTdhYSwgMHgy
-MjIzLCAiVGhpbmtQYWQgVDU1MCIsIEFMQzI5Ml9GSVhVUF9UUFQ0NDBfRE9DSyksCiAJU05EX1BD
-SV9RVUlSSygweDE3YWEsIDB4MjIyNiwgIlRoaW5rUGFkIFgyNTAiLCBBTEMyOTJfRklYVVBfVFBU
-NDQwX0RPQ0spLAorCVNORF9QQ0lfUVVJUksoMHgxN2FhLCAweDIyMmQsICJUaGlua3BhZCIsIEFM
-QzI5OF9GSVhVUF9UUFQ0NzBfRE9DSyksCisJU05EX1BDSV9RVUlSSygweDE3YWEsIDB4MjIyZSwg
-IlRoaW5rcGFkIiwgQUxDMjk4X0ZJWFVQX1RQVDQ3MF9ET0NLKSwKIAlTTkRfUENJX1FVSVJLKDB4
-MTdhYSwgMHgyMjMxLCAiVGhpbmtwYWQgVDU2MCIsIEFMQzI5Ml9GSVhVUF9UUFQ0NjApLAogCVNO
-RF9QQ0lfUVVJUksoMHgxN2FhLCAweDIyMzMsICJUaGlua3BhZCIsIEFMQzI5Ml9GSVhVUF9UUFQ0
-NjApLAorCVNORF9QQ0lfUVVJUksoMHgxN2FhLCAweDIyNDUsICJUaGlua3BhZCBUNDcwIiwgQUxD
-Mjk4X0ZJWFVQX1RQVDQ3MF9ET0NLKSwKKwlTTkRfUENJX1FVSVJLKDB4MTdhYSwgMHgyMjQ2LCAi
-VGhpbmtwYWQiLCBBTEMyOThfRklYVVBfVFBUNDcwX0RPQ0spLAorCVNORF9QQ0lfUVVJUksoMHgx
-N2FhLCAweDIyNDcsICJUaGlua3BhZCIsIEFMQzI5OF9GSVhVUF9UUFQ0NzBfRE9DSyksCisJU05E
-X1BDSV9RVUlSSygweDE3YWEsIDB4MjI0YiwgIlRoaW5rcGFkIiwgQUxDMjk4X0ZJWFVQX1RQVDQ3
-MF9ET0NLKSwKKwlTTkRfUENJX1FVSVJLKDB4MTdhYSwgMHgyMjRjLCAiVGhpbmtwYWQiLCBBTEMy
-OThfRklYVVBfVFBUNDcwX0RPQ0spLAorCVNORF9QQ0lfUVVJUksoMHgxN2FhLCAweDIyNGQsICJU
-aGlua3BhZCIsIEFMQzI5OF9GSVhVUF9UUFQ0NzBfRE9DSyksCiAJU05EX1BDSV9RVUlSSygweDE3
-YWEsIDB4MzBiYiwgIlRoaW5rQ2VudHJlIEFJTyIsIEFMQzIzM19GSVhVUF9MRU5PVk9fTElORTJf
-TUlDX0hPVEtFWSksCiAJU05EX1BDSV9RVUlSSygweDE3YWEsIDB4MzBlMiwgIlRoaW5rQ2VudHJl
-IEFJTyIsIEFMQzIzM19GSVhVUF9MRU5PVk9fTElORTJfTUlDX0hPVEtFWSksCiAJU05EX1BDSV9R
-VUlSSygweDE3YWEsIDB4MzEwYywgIlRoaW5rQ2VudHJlIFN0YXRpb24iLCBBTEMyOTRfRklYVVBf
-TEVOT1ZPX01JQ19MT0NBVElPTiksCkBAIC02NDcyLDcgKzY1MDksMTIgQEAgc3RhdGljIGNvbnN0
-IHN0cnVjdCBzbmRfcGNpX3F1aXJrIGFsYzI2OV9maXh1cF90YmxbXSA9IHsKIAlTTkRfUENJX1FV
-SVJLKDB4MTdhYSwgMHg1MDUwLCAiVGhpbmtwYWQgVDU2MHAiLCBBTEMyOTJfRklYVVBfVFBUNDYw
-KSwKIAlTTkRfUENJX1FVSVJLKDB4MTdhYSwgMHg1MDUxLCAiVGhpbmtwYWQgTDQ2MCIsIEFMQzI5
-Ml9GSVhVUF9UUFQ0NjApLAogCVNORF9QQ0lfUVVJUksoMHgxN2FhLCAweDUwNTMsICJUaGlua3Bh
-ZCBUNDYwIiwgQUxDMjkyX0ZJWFVQX1RQVDQ2MCksCisJU05EX1BDSV9RVUlSSygweDE3YWEsIDB4
-NTA1ZCwgIlRoaW5rcGFkIiwgQUxDMjk4X0ZJWFVQX1RQVDQ3MF9ET0NLKSwKKwlTTkRfUENJX1FV
-SVJLKDB4MTdhYSwgMHg1MDVmLCAiVGhpbmtwYWQiLCBBTEMyOThfRklYVVBfVFBUNDcwX0RPQ0sp
-LAorCVNORF9QQ0lfUVVJUksoMHgxN2FhLCAweDUwNjIsICJUaGlua3BhZCIsIEFMQzI5OF9GSVhV
-UF9UUFQ0NzBfRE9DSyksCiAJU05EX1BDSV9RVUlSSygweDE3YWEsIDB4NTEwOSwgIlRoaW5rcGFk
-IiwgQUxDMjY5X0ZJWFVQX0xJTUlUX0lOVF9NSUNfQk9PU1QpLAorCVNORF9QQ0lfUVVJUksoMHgx
-N2FhLCAweDUxMWUsICJUaGlua3BhZCIsIEFMQzI5OF9GSVhVUF9UUFQ0NzBfRE9DSyksCisJU05E
-X1BDSV9RVUlSSygweDE3YWEsIDB4NTExZiwgIlRoaW5rcGFkIiwgQUxDMjk4X0ZJWFVQX1RQVDQ3
-MF9ET0NLKSwKIAlTTkRfUENJX1FVSVJLKDB4MTdhYSwgMHgzYmY4LCAiUXVhbnRhIEZMMSIsIEFM
-QzI2OV9GSVhVUF9QQ01fNDRLKSwKIAlTTkRfUENJX1FVSVJLKDB4MTdhYSwgMHg5ZTU0LCAiTEVO
-T1ZPIE5CIiwgQUxDMjY5X0ZJWFVQX0xFTk9WT19FQVBEKSwKIAlTTkRfUENJX1FVSVJLKDB4MWI3
-ZCwgMHhhODMxLCAiT3JkaXNzaW1vIEVWRTIgIiwgQUxDMjY5VkJfRklYVVBfT1JESVNTSU1PX0VW
-RTIpLCAvKiBBbHNvIGtub3duIGFzIE1hbGF0YSBQQy1CMTMwMyAqLwo=
+sound/pci/ice1712/maya44.c
+   199  static int maya_vol_put(struct snd_kcontrol *kcontrol,
+   200                          struct snd_ctl_elem_value *ucontrol)
+   201  {
+   202          struct snd_maya44 *chip = snd_kcontrol_chip(kcontrol);
+   203          struct snd_wm8776 *wm =
+   204                  &chip->wm[snd_ctl_get_ioff(kcontrol, &ucontrol->id)];
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+This is a false positive obviously, but this code is crazy hard for
+static analysis to parse.
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A18409E3CRTITMBSV02realt_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+snd_ctl_find_id() in sound/core/control.c
+   682  /**
+   683   * snd_ctl_find_id - find the control instance with the given id
+   684   * @card: the card instance
+   685   * @id: the id to search
+   686   *
+   687   * Finds the control instance with the given id from the card.
+   688   *
+   689   * The caller must down card->controls_rwsem before calling this function
+   690   * (if the race condition can happen).
+   691   *
+   692   * Return: The pointer of the instance if found, or %NULL if not.
+   693   *
+   694   */
+   695  struct snd_kcontrol *snd_ctl_find_id(struct snd_card *card,
+   696                                       struct snd_ctl_elem_id *id)
+   697  {
+   698          struct snd_kcontrol *kctl;
+   699  
+   700          if (snd_BUG_ON(!card || !id))
+   701                  return NULL;
+   702          if (id->numid != 0)
+   703                  return snd_ctl_find_numid(card, id->numid);
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+On this path, we don't check id->index.  Which is fine because we don't
+use it.  It would really make my life simpler if we could set the
+unchecked fields to zero.  How Smatch works is that we merge all the
+success paths together so it would either be zero or checked which is
+easy to deal with.  In the current code it's either checked or
+unchecked which is just unchecked when you merge the success paths
+together.
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A18409E3CRTITMBSV02realt_--
+I can probably figure out other ways to deal with this if that's not a
+good idea.
+
+   704          list_for_each_entry(kctl, &card->controls, list) {
+   705                  if (kctl->id.iface != id->iface)
+   706                          continue;
+   707                  if (kctl->id.device != id->device)
+   708                          continue;
+   709                  if (kctl->id.subdevice != id->subdevice)
+   710                          continue;
+   711                  if (strncmp(kctl->id.name, id->name, sizeof(kctl->id.name)))
+   712                          continue;
+   713                  if (kctl->id.index > id->index)
+   714                          continue;
+   715                  if (kctl->id.index + kctl->count <= id->index)
+   716                          continue;
+   717                  return kctl;
+   718          }
+   719          return NULL;
+   720  }
+   721  EXPORT_SYMBOL(snd_ctl_find_id);
+
+regards,
+dan carpenter
