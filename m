@@ -1,17 +1,26 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: fix debugfs read using
-	path->connected
-Date: Fri, 2 Feb 2018 16:53:40 +0100
-Message-ID: <20180202155340.GC7101@sirena.org.uk>
-References: <1517555015-19080-1-git-send-email-kaichieh.chuang@mediatek.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH] ASoC: codecs: Add support for AK5558 ADC
+	driver
+Date: Fri, 2 Feb 2018 18:09:39 +0200
+Message-ID: <CAHp75VeiPrJc-G44BomwwSFs1AELWNis=aS-j=Pg85ttL78Jnw@mail.gmail.com>
+References: <1517403459-6668-1-git-send-email-daniel.baluta@nxp.com>
+ <CAHp75Vdd58U1y-LOQGg=rePOWf1LeQsZxn2ykzBhXL013ztW3Q@mail.gmail.com>
+ <1517475954.8615.18.camel@nxp.com>
+ <CAHp75Vf=Ap7UkMNOcOhzY+MjJmn-c-UphzEzAjmFtMh69kea4A@mail.gmail.com>
+ <20180201134840.GA10785@sirena.org.uk>
+ <CAHp75VfydH+9ABZRbV++Od3+wnvQdzXyyDFtfi-1FnOUYjOXQQ@mail.gmail.com>
+ <20180202150609.GB7101@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7946392473666580064=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D968326791F
- for <alsa-devel@alsa-project.org>; Fri,  2 Feb 2018 16:53:44 +0100 (CET)
-In-Reply-To: <1517555015-19080-1-git-send-email-kaichieh.chuang@mediatek.com>
+Received: from mail-qk0-f194.google.com (mail-qk0-f194.google.com
+ [209.85.220.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA66326791F
+ for <alsa-devel@alsa-project.org>; Fri,  2 Feb 2018 17:09:42 +0100 (CET)
+Received: by mail-qk0-f194.google.com with SMTP id i141so24509195qke.0
+ for <alsa-devel@alsa-project.org>; Fri, 02 Feb 2018 08:09:42 -0800 (PST)
+In-Reply-To: <20180202150609.GB7101@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +30,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: kaichieh.chuang@mediatek.com
-Cc: alsa-devel@alsa-project.org, chipeng.chang@mediatek.com, garlic.tseng@mediatek.com, srv_wsdupstream@mediatek.com, shane.chien@mediatek.com, linux-mediatek@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "wakasugi.jb@om.asahi-kasei.co.jp" <wakasugi.jb@om.asahi-kasei.co.jp>, Cosmin Samoila <cosmin.samoila@nxp.com>, dl-linux-imx <linux-imx@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>, "mihai.serban@nxp.com" <mihai.serban@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, "mihai.serban@gmail.com" <mihai.serban@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Feb 2, 2018 at 5:06 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Thu, Feb 01, 2018 at 04:46:56PM +0200, Andy Shevchenko wrote:
+>> On Thu, Feb 1, 2018 at 3:48 PM, Mark Brown <broonie@kernel.org> wrote:
+>
+>> >> >> > Signed-off-by: Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>
+>> >> >> > Signed-off-by: Mihai Serban <mihai.serban@nxp.com>
+>> >> >> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+>> >> >> > Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+>
+>> > Honestly the signoffs above are nothing unusual for a driver contributed
+>> > by a vendor - things are often bouncing around internally for ages and
+>> > it's good to keep credits for people.
+>
+>> We have Co-developed-by: for the authors.
+>
+> Which doesn't really get much use
 
---===============7946392473666580064==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="p2kqVDKq5asng8Dg"
-Content-Disposition: inline
+True... (13 entries so far)
 
+>  and in this case where it looks like
+> the code has flowed from AKM to NXP the DCO bit is pretty important.
 
---p2kqVDKq5asng8Dg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Feb 02, 2018 at 03:03:35PM +0800, kaichieh.chuang@mediatek.com wrot=
-e:
-> From: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
->=20
-> This fix a bug in dapm_widget_power_read_file(),
-> where it may sent opposite order of source/sink widget
-> into the p->connected().
-
-This doesn't apply against my tree or Linus' tree, can you please check
-and resend?  The change itself seems to make sense.
-
---p2kqVDKq5asng8Dg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlp0iYMACgkQJNaLcl1U
-h9BglAf/fo2O6Zgl5GMwF7xw7/970LIln1aK++VVLzx1mGyjDJuoivOfjuGxhV57
-Oz/zi6Z9alcxOdA651zgOeLg27TM7jwkKIqJv1tGzoCGYdFAzUrEJpeNETrhXBpS
-frISC1dL75o4hiSA/I3cFJ4Q9TZWj/mkPWZVy+PR4fOr4Ew84WoM4P0qLvPU1mh0
-o3aJAx4rSn8Ru2ooIHNa9qhCYG7CUMF2iys21oL4qbv51vo6g6URuS6wfGzHEYmw
-hHp0w42uEn0QctSTVmN3NQOEu6/vh0SxOHIgI2zzIYfFKvX/ToB3KlFT04JdmyBh
-hAmzenanOF8ESeq9qQdDR1mwdT3/fQ==
-=wCBf
------END PGP SIGNATURE-----
-
---p2kqVDKq5asng8Dg--
-
---===============7946392473666580064==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+...though it doesn't replace SoB, it adds a bit of information to it
+(points to the authors of the module).
 
 
---===============7946392473666580064==--
+-- 
+With Best Regards,
+Andy Shevchenko
