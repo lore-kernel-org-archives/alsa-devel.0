@@ -1,18 +1,15 @@
 From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH v2 2/2] ASoC: ak5558: Add bindings for AK5558
-	ADC
-Date: Fri, 2 Feb 2018 18:20:06 +0200
-Message-ID: <1517588406-3295-3-git-send-email-daniel.baluta@nxp.com>
-References: <1517588406-3295-1-git-send-email-daniel.baluta@nxp.com>
+Subject: [PATCH v2 0/2] Add support for AK5558 ADC
+Date: Fri, 2 Feb 2018 18:20:04 +0200
+Message-ID: <1517588406-3295-1-git-send-email-daniel.baluta@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com
- (mail-sn1nam02on0081.outbound.protection.outlook.com [104.47.36.81])
- by alsa0.perex.cz (Postfix) with ESMTP id 14A39267952
- for <alsa-devel@alsa-project.org>; Fri,  2 Feb 2018 18:33:35 +0100 (CET)
-In-Reply-To: <1517588406-3295-1-git-send-email-daniel.baluta@nxp.com>
+Received: from NAM03-CO1-obe.outbound.protection.outlook.com
+ (mail-co1nam03on0060.outbound.protection.outlook.com [104.47.40.60])
+ by alsa0.perex.cz (Postfix) with ESMTP id 45A83267953
+ for <alsa-devel@alsa-project.org>; Fri,  2 Feb 2018 18:33:36 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,40 +23,32 @@ To: broonie@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
 Cc: daniel.baluta@gmail.com, shengjiu.wang@nxp.com, linux-kernel@vger.kernel.org, wakasugi.jb@om.asahi-kasei.co.jp, linux-imx@nxp.com, cosmin.samoila@nxp.com, daniel.baluta@nxp.com, mihai.serban@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
----
- Documentation/devicetree/bindings/sound/ak5558.txt | 23 ++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ak5558.txt
-
-diff --git a/Documentation/devicetree/bindings/sound/ak5558.txt b/Documentation/devicetree/bindings/sound/ak5558.txt
-new file mode 100644
-index 0000000..61c85568
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ak5558.txt
-@@ -0,0 +1,23 @@
-+AK5558 8 channel differential 32-bit delta-sigma ADC
-+
-+This device supports I2C mode only.
-+
-+Required properties:
-+
-+- compatible : "asahi-kasei,ak5558"
-+- reg : The I2C address of the device for I2C.
-+
-+Optional properties:
-+
-+- reset-gpios: A GPIO specifier for the GPIO controlling
-+	the power down & reset pin.
-+
-+Example:
-+
-+&i2c {
-+	ak5558: ak5558@10 {
-+		compatible = "asahi-kasei,ak5558";
-+		reg = <0x10>;
-+		reset-gpios = <&gpio1 10 GPIO_ACTIVE_LOW>;
-+	};
-+};
--- 
-2.7.4
+V2Ugc3VwcG9ydCBub3JtYWwgbW9kZSwgVERNIG1vZGUgYW5kIHBtLgoKQ2hhbmdlcyBzaW5jZSB2
+MTogW2FkZHJlc3NlZCBjb21tZW50cyBmcm9tIEFuZHkgYW5kIEZhYmlvXQogKiBmaXggR1BJTyBw
+b2xhcml0eSBmcm9tIGFjdGl2ZSBoaWdoIHRvIGFjdGl2ZSBsb3cgZm9yIGNvcnJlY3QgZG9jdW1l
+bnRhdGlvbgogKiBmaXggbGljZW5zZSBoZWFkZXIgYnkgdXNpbmcgU1BEWCBpZGVudGlmaWVyCiAq
+IHJlbW92ZSBkZWJ1ZyBwcmludHMgYXQgdGhlIGJlZ2lubmluZyBvZiBmdW5jdGlvbnMuCiAqIG9u
+bHkgc3VwcG9ydCBhdXRvIGNsb2NrIHN3aXRjaGluZyAobWFudWFsIHN3aXRjaGluZyB3YXMgZGVh
+ZCBjb2RlIGFueXdheSkgKGluIHRoZQogICBmdXR1cmUgd2UgY291bGQgYWRkIGEgRFQgcHJvcGVy
+dHkgdG8gY2hvb3NlIGJldHdlZW4gbWFudWFsIGFuZCBhdXRvKQogKiBVc2UgZ3Bpb2QgQVBJCiAq
+IHVzZSBHRU5NQVNLCiAqIGludHJvZHVjZSBwb3dlcl9vZmYvcG93ZXJfb24KCk9uZSBvcGVuIHF1
+ZXN0aW9uIGlzIHRoZSByZXN1bWUgc2VxdWVuY2Ugd2hpY2ggYXBwZWFycyB0byBuZWVkIHBvd2Vy
+X29mZi9wb3dlcl9vbi4KSnVzdCBwb3dlcl9vbiBhbG9uZSBpc24ndCBlbm91Z2guIFdpdGgganVz
+dCBwb3dlcl9vbiBhZnRlciByZXN1bWUgYXBsYXkgcGxheXMgYQpzb25nIGZvciAxIHNlY29uZHMg
+YW5kIHRoZW4gdGhlIHNvdW5kIHN0b3BzLgoKRGF0YXNoZWV0IHNheXMsIHBhZ2UgNTUiCgooMSkg
+VGhlIFBETiBwaW4gc2hvdWxkIGJlIGhlbGQgdG8g4oCcTOKAnSBmb3IgbW9yZSB0aGFuIDE1MCBu
+cyBhZnRlciBBVkREIGFuZCBUVkREIGFyZSBwb3dlcmVkIHVwLgoKRGFuaWVsIEJhbHV0YSAoMik6
+CiAgQVNvQzogY29kZWNzOiBBZGQgc3VwcG9ydCBmb3IgQUs1NTU4IEFEQyBkcml2ZXIKICBBU29D
+OiBhazU1NTg6IEFkZCBiaW5kaW5ncyBmb3IgQUs1NTU4IEFEQwoKIERvY3VtZW50YXRpb24vZGV2
+aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9hazU1NTgudHh0IHwgIDIzICsKIHNvdW5kL3NvYy9jb2Rl
+Y3MvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA2ICsKIHNvdW5kL3NvYy9j
+b2RlY3MvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAyICsKIHNvdW5kL3Nv
+Yy9jb2RlY3MvYWs1NTU4LmMgICAgICAgICAgICAgICAgICAgICAgICAgIHwgNjI2ICsrKysrKysr
+KysrKysrKysrKysrKwogc291bmQvc29jL2NvZGVjcy9hazU1NTguaCAgICAgICAgICAgICAgICAg
+ICAgICAgICAgfCAgNTIgKysKIDUgZmlsZXMgY2hhbmdlZCwgNzA5IGluc2VydGlvbnMoKykKIGNy
+ZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQv
+YWs1NTU4LnR4dAogY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9jb2RlY3MvYWs1NTU4LmMK
+IGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9zb2MvY29kZWNzL2FrNTU1OC5oCgotLSAKMi43LjQK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
