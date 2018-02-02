@@ -1,14 +1,15 @@
-From: <kaichieh.chuang@mediatek.com>
-Subject: [PATCH] ASoC: dapm: fix debugfs read using
-	path->connected
-Date: Fri, 2 Feb 2018 15:03:35 +0800
-Message-ID: <1517555015-19080-1-git-send-email-kaichieh.chuang@mediatek.com>
+From: Kailang <kailang@realtek.com>
+Subject: Add headset support for Dell laptop
+Date: Fri, 2 Feb 2018 07:40:47 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18409E2E@RTITMBSV02.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6504481781458582052=="
+Content-Type: multipart/mixed;
+ boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A18409E2ERTITMBSV02realt_"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- by alsa0.perex.cz (Postfix) with ESMTP id 4968B266F64
- for <alsa-devel@alsa-project.org>; Fri,  2 Feb 2018 08:03:42 +0100 (CET)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id DF986266F64
+ for <alsa-devel@alsa-project.org>; Fri,  2 Feb 2018 08:40:54 +0100 (CET)
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,79 +19,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, chipeng.chang@mediatek.com, garlic.tseng@mediatek.com, srv_wsdupstream@mediatek.com, shane.chien@mediatek.com, linux-mediatek@lists.infradead.org, kaichieh.chuang@mediatek.com
+To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============6504481781458582052==
-Content-Type: multipart/related;
-	boundary="__=_Part_Boundary_001_1224092056.1181097657"
+--_002_6FAB7C47BCF00940BB0999A99BE3547A18409E2ERTITMBSV02realt_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
---__=_Part_Boundary_001_1224092056.1181097657
-MIME-Version: 1.0
-Content-Type: text/plain
+Hi Takashi,
 
-From: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+Attach patch was for support headset mode for Dell laptop.
 
-This fix a bug in dapm_widget_power_read_file(),
-where it may sent opposite order of source/sink widget
-into the p->connected().
+This platform had two Dmic and single Dmic.
+This update was for single Dmic.
 
-for example,
-static int connected_check(source, sink);
-{"w_sink", NULL, "w_source", connected_check}
+This commit was for two Dmic.=20
+commit	75ee94b20b46459e3d29f5ac2c3af3cebdeef777
 
-the dapm_widget_power_read_file() will query p->connected()
-in following case
-        p->conneted("w_source", "w_sink")
-        p->conneted("w_sink", "w_source")
-we should avoid the last case, since it's the wrong order (source/sink)
-as declared in snd_soc_dapm_route.
+Many thanks.
 
-Signed-off-by: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
----
- sound/soc/soc-dapm.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+BR,
+Kailang=
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index a10b21c..ee6d9d9a 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2026,7 +2026,7 @@ static ssize_t dapm_widget_power_read_file(struct file *fi
-le,
-        snd_soc_dapm_for_each_direction(dir) {
-                rdir = SND_SOC_DAPM_DIR_REVERSE(dir);
-                snd_soc_dapm_widget_for_each_path(w, dir, p) {
--                       if (p->connected && !p->connected(w, p->node[rdir]))
-+                       if (p->connected && !p->connected(p->source, p->sink))
-                                continue;
+--_002_6FAB7C47BCF00940BB0999A99BE3547A18409E2ERTITMBSV02realt_
+Content-Type: application/octet-stream;
+	name="0000-dell-grizzly-single-dmic.patch"
+Content-Description: 0000-dell-grizzly-single-dmic.patch
+Content-Disposition: attachment;
+	filename="0000-dell-grizzly-single-dmic.patch"; size=1343;
+	creation-date="Fri, 02 Feb 2018 07:35:32 GMT";
+	modification-date="Fri, 02 Feb 2018 07:21:36 GMT"
+Content-Transfer-Encoding: base64
 
-                        if (!p->connect)
---
-1.7.9.5
+RnJvbSBiYzUwYTAwMjA5N2Q1YjJlNWQ2NThiN2IyZGQwYmY2N2NmZjViMWU0IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
+dGU6IEZyaSwgMiBGZWIgMjAxOCAxNToxMzowOSArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6
+IGhkYS9yZWFsdGVrIC0gQWRkIGhlYWRzZXQgbW9kZSBzdXBwb3J0IGZvciBEZWxsIGxhcHRvcAoK
+VGhpcyBwbGF0Zm9ybSBoYWQgdHdvIERtaWMgYW5kIHNpbmdsZSBEbWljLgpUaGlzIHVwZGF0ZSB3
+YXMgZm9yIHNpbmdsZSBEbWljLgoKVGhpcyBjb21taXQgd2FzIGZvciB0d28gRG1pYy4KY29tbWl0
+CTc1ZWU5NGIyMGI0NjQ1OWUzZDI5ZjVhYzJjM2FmM2NlYmRlZWY3NzcKClNpZ25lZC1vZmYtYnk6
+IEthaWxhbmcgWWFuZyA8a2FpbGFuZ0ByZWFsdGVrLmNvbT4KCmRpZmYgLS1naXQgYS9zb3VuZC9w
+Y2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCmlu
+ZGV4IDIzNDc1ODguLjQyNjEzOGUgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVh
+bHRlay5jCisrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCkBAIC02MzIxLDYgKzYz
+MjEsOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9wY2lfcXVpcmsgYWxjMjY5X2ZpeHVwX3Ri
+bFtdID0gewogCVNORF9QQ0lfUVVJUksoMHgxMDI4LCAweDA3NWQsICJEZWxsIEFJTyIsIEFMQzI5
+OF9GSVhVUF9TUEtfVk9MVU1FKSwKIAlTTkRfUENJX1FVSVJLKDB4MTAyOCwgMHgwNzk4LCAiRGVs
+bCBJbnNwaXJvbiAxNyA3MDAwIEdhbWluZyIsIEFMQzI1Nl9GSVhVUF9ERUxMX0lOU1BJUk9OXzc1
+NTlfU1VCV09PRkVSKSwKIAlTTkRfUENJX1FVSVJLKDB4MTAyOCwgMHgwODJhLCAiRGVsbCBYUFMg
+MTMgOTM2MCIsIEFMQzI1Nl9GSVhVUF9ERUxMX1hQU18xM19IRUFEUEhPTkVfTk9JU0UpLAorCVNO
+RF9QQ0lfUVVJUksoMHgxMDI4LCAweDA4NGIsICJEZWxsIiwgQUxDMjc0X0ZJWFVQX0RFTExfQUlP
+X0xJTkVPVVRfVkVSQiksCisJU05EX1BDSV9RVUlSSygweDEwMjgsIDB4MDg0ZSwgIkRlbGwiLCBB
+TEMyNzRfRklYVVBfREVMTF9BSU9fTElORU9VVF9WRVJCKSwKIAlTTkRfUENJX1FVSVJLKDB4MTAy
+OCwgMHgxNjRhLCAiRGVsbCIsIEFMQzI5M19GSVhVUF9ERUxMMV9NSUNfTk9fUFJFU0VOQ0UpLAog
+CVNORF9QQ0lfUVVJUksoMHgxMDI4LCAweDE2NGIsICJEZWxsIiwgQUxDMjkzX0ZJWFVQX0RFTEwx
+X01JQ19OT19QUkVTRU5DRSksCiAJU05EX1BDSV9RVUlSSygweDEwM2MsIDB4MTU4NiwgIkhQIiwg
+QUxDMjY5X0ZJWFVQX0hQX01VVEVfTEVEX01JQzIpLAo=
 
-
-************* Email Confidentiality Notice ********************
-The information contained in this e-mail message (including any
-attachments) may be confidential, proprietary, privileged, or otherwise
-exempt from disclosure under applicable laws. It is intended to be
-conveyed only to the designated recipient(s). Any use, dissemination,
-distribution, printing, retaining or copying of this e-mail (including its
-attachments) by unintended recipient(s) is strictly prohibited and may
-be unlawful. If you are not an intended recipient of this e-mail, or believe
-that you have received this e-mail in error, please notify the sender
-immediately (by replying to this e-mail), delete any and all copies of
-this e-mail (including any attachments) from your system, and do not
-disclose the content of this e-mail to any other person. Thank you!
-
---__=_Part_Boundary_001_1224092056.1181097657--
-
-
---===============6504481781458582052==
+--_002_6FAB7C47BCF00940BB0999A99BE3547A18409E2ERTITMBSV02realt_
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6504481781458582052==--
+--_002_6FAB7C47BCF00940BB0999A99BE3547A18409E2ERTITMBSV02realt_--
