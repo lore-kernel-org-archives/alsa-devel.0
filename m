@@ -1,99 +1,68 @@
-From: Ulf Magnusson <ulfalizer@gmail.com>
-Subject: Re: [PATCH 00/20] Remove references to undefined symbols and fix two
- potential bugs
-Date: Mon, 5 Feb 2018 03:08:24 +0100
-Message-ID: <CAFkk2KRafUf3ki2R7B1pE_wzYkYn-OdeqLnvL0kScSxdzDMEXw@mail.gmail.com>
-References: <20180205012146.23981-1-ulfalizer@gmail.com>
+From: Naveen Manohar <naveen.m@intel.com>
+Subject: [PATCH 2/2] ASoC: Intel: Add Kabylake Dialog+Maxim
+	machine driver entry
+Date: Mon,  5 Feb 2018 09:59:57 +0530
+Message-ID: <1517804997-13776-3-git-send-email-naveen.m@intel.com>
+References: <1517804997-13776-1-git-send-email-naveen.m@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kbuild-owner@vger.kernel.org>
-In-Reply-To: <20180205012146.23981-1-ulfalizer@gmail.com>
-Sender: linux-kbuild-owner@vger.kernel.org
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, perex@perex.cz, tiwai@suse.com, robert.jarzmik@free.fr, broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, tfiga@chromium.org, paul.burton@mips.com, Marek Szyprowski <m.szyprowski@samsung.com>, Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>, Linus Walleij <linus.walleij@linaro.org>, vgupta@synopsys.com, mgorman@techsingularity.net, hch@lst.de, mina86@mina86.com, robh@kernel.org, sboyd@codeaurora.org, paulus@ozlabs.org, will.deacon@arm.com, Tony Lindgren <tony@atomide.com>, Nicholas Piggin <npiggin@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Ulf Magnusson <ulfalizer@gmail.com>, Palmer Dabbelt <palmer@sifive.com>, Albert Ou <albert@sifive.com>, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id B7F242671CC
+ for <alsa-devel@alsa-project.org>; Mon,  5 Feb 2018 05:30:21 +0100 (CET)
+In-Reply-To: <1517804997-13776-1-git-send-email-naveen.m@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: vinod.koul@intel.com, harshapriya.n@intel.com, naveen.m@intel.com, broonie@kernel.org, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 5, 2018 at 2:21 AM, Ulf Magnusson <ulfalizer@gmail.com> wrote:
-> Hello,
->
-> This patchset fixes most references to globally undefined symbols in Kconfig
-> files, as reported by the
-> https://github.com/ulfalizer/Kconfiglib/blob/master/examples/list_undefined.py
-> script. I will send emails in reply to the patchset for some cases where I'm
-> not sure what the proper fix is.
->
-> All of the fixes are independent. I just created a patchset to track them more
-> easily.
->
-> Summary of changes:
->
->  - Commits 1 and 2 fix what looks like potential bugs: A broken (intended)
->    select of PL310_ERRATA_753970 for ARM/mvebu, and a misspelled dependency on
->    PPC_PSERIES in KVM/PPC.
->
->  - Commits 3-5 remove leftover AVR32 stuff.
->
->  - Commits 6 and 7 remove some selects of removed symbols from riscv.
->
->  - Commits 8-17 remove various references to removed symbols.
->
->  - Commits 18-20 fix some (harmless) malformed defaults.
->
-> Ulf Magnusson (20):
->   ARM: mvebu: Fix broken PL310_ERRATA_753970 selects
->   KVM: PPC: Book3S PR: Fix broken select due to misspelling
->   kconfig: Remove leftover references to AVR32 symbol
->   misc: atmel: Remove CPU_AT32AP700X (AVR32) reference
->   rtc: at32ap700x: Remove PLATFORM_AT32AP dependency
->   riscv: Remove ARCH_HAS_ATOMIC64_DEC_IF_POSITIVE select
->   riscv: Remove ARCH_WANT_OPTIONAL_GPIOLIB select
->   s390/kconfig: Remove ARCH_WANTS_PROT_NUMA_PROT_NONE select
->   clk: sunxi-ng: Remove SUNXI_CCU_* selects
->   lib/Kconfig: Remove leftover select of GENERIC_IO
->   usb: gadget: udc: Remove USB_GADGET_DUALSPEED select
->   ARM: debug: Remove ARCH_MSM dep. from UNCOMPRESS_INCLUDE
->   ore: Remove PNFS_OBJLAYOUT dependency
->   iio: gyro: mpu3050: Remove INPUT_MPU3050 dep. from I2C
->   phy: Remove SOC_EXYNOS4212 dep. from PHY_EXYNOS4X12_USB
->   auxdisplay: img-ascii-lcd: Remove MIPS_SEAD3 dep.
->   media: sec: Remove PLAT_S5P dependency
->   iwlwifi: fix malformed CONFIG_IWLWIFI_PCIE_RTPM default
->   ARC: Fix malformed ARC_EMUL_UNALIGNED default
->   x86/PCI: VMD: Fix malformed default
->
->  arch/arc/Kconfig                           |  1 -
->  arch/arm/Kconfig.debug                     |  2 +-
->  arch/arm/mach-mvebu/Kconfig                |  4 ++--
->  arch/powerpc/kvm/Kconfig                   |  2 +-
->  arch/riscv/Kconfig                         |  2 --
->  arch/s390/Kconfig                          |  1 -
->  drivers/auxdisplay/Kconfig                 |  2 +-
->  drivers/clk/sunxi-ng/Kconfig               |  7 -------
->  drivers/cpufreq/Kconfig                    | 10 ----------
->  drivers/iio/gyro/Kconfig                   |  1 -
->  drivers/media/platform/Kconfig             |  2 +-
->  drivers/misc/Kconfig                       |  1 -
->  drivers/net/wireless/intel/iwlwifi/Kconfig |  1 -
->  drivers/pci/host/Kconfig                   |  1 -
->  drivers/phy/samsung/Kconfig                |  2 +-
->  drivers/pwm/Kconfig                        |  2 +-
->  drivers/rtc/Kconfig                        |  2 +-
->  drivers/spi/Kconfig                        |  2 +-
->  drivers/usb/gadget/udc/Kconfig             |  1 -
->  drivers/video/console/Kconfig              |  2 +-
->  fs/exofs/Kconfig.ore                       |  2 +-
->  lib/Kconfig                                |  1 -
->  22 files changed, 12 insertions(+), 39 deletions(-)
->
-> --
-> 2.14.1
->
+Adds Kabylake kbl_da7219_max98357a_i2s machine driver entry into
+machine table
 
-The symbol AC97_BUS_NEW in sound/ac97/Kconfig selects the globally
-undefined symbol AC97.
+Signed-off-by: Naveen Manohar <naveen.m@intel.com>
+---
+ sound/soc/intel/skylake/skl.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-It doesn't seem to simply be a misspelling of AC97_BUS, because then
-the dependencies of AC97_BUS_COMPAT would be impossible to satisfy.
-
-Cheers,
-Ulf
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 32ce64c..aa9edc8 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -1017,6 +1017,11 @@ static void skl_remove(struct pci_dev *pci)
+ 	.codecs = {"10EC5663", "10EC5514"}
+ };
+ 
++static struct snd_soc_acpi_codecs kbl_7219_98357_codecs = {
++	.num_codecs = 1,
++	.codecs = {"MX98357A"}
++};
++
+ static struct skl_machine_pdata cnl_pdata = {
+ 	.use_tplg_pcm = true,
+ };
+@@ -1105,6 +1110,14 @@ static void skl_remove(struct pci_dev *pci)
+ 		.drv_name = "kbl_rt5663",
+ 		.fw_filename = "intel/dsp_fw_kbl.bin",
+ 	},
++	{
++		.id = "DLGS7219",
++		.drv_name = "kbl_da7219_max98357a",
++		.fw_filename = "intel/dsp_fw_kbl.bin",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &kbl_7219_98357_codecs,
++		.pdata = &skl_dmic_data
++	},
+ 
+ 	{}
+ };
+-- 
+1.9.1
