@@ -1,15 +1,18 @@
-From: Naveen Manohar <naveen.m@intel.com>
-Subject: [PATCH 0/2] ASoC: Intel: kabylake: Adds
-	da7219+max98537 machine driver
-Date: Mon,  5 Feb 2018 09:59:55 +0530
-Message-ID: <1517804997-13776-1-git-send-email-naveen.m@intel.com>
+From: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+Subject: Re: [PATCH] ASoC: dapm: fix debugfs read using
+ path->connected
+Date: Mon, 5 Feb 2018 12:56:20 +0800
+Message-ID: <1517806580.27374.4.camel@mtkswgap22>
+References: <1517555015-19080-1-git-send-email-kaichieh.chuang@mediatek.com>
+ <20180202155340.GC7101@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id B47232671BE
- for <alsa-devel@alsa-project.org>; Mon,  5 Feb 2018 05:30:18 +0100 (CET)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id BBD9B2671BE
+ for <alsa-devel@alsa-project.org>; Mon,  5 Feb 2018 05:56:31 +0100 (CET)
+In-Reply-To: <20180202155340.GC7101@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,24 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: vinod.koul@intel.com, harshapriya.n@intel.com, naveen.m@intel.com, broonie@kernel.org, pierre-louis.bossart@intel.com
+To: Mark Brown <broonie@kernel.org>
+Cc: shane.chien@mediatek.com, alsa-devel@alsa-project.org, garlic.tseng@mediatek.com, chipeng.chang@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
-Add kabylake machine driver & corresponding driver entry in machine table
-for maxim speaker codec - max98357a, configured to ssp0 and
-dialog headset codec - da7219, configured to ssp1. 
+On Fri, 2018-02-02 at 16:53 +0100, Mark Brown wrote:
+> 
+> This doesn't apply against my tree or Linus' tree, can you please check
+> and resend?  The change itself seems to make sense.
 
-Naveen Manohar (2):
-  ASoC: Intel: Add Kabylake-y Dialog Maxim machine driver
-  ASoC: Intel: Add Kabylake Dialog+Maxim machine driver entry
+Maybe its because the "Email Confidentiality Notice" at the end?
 
- sound/soc/intel/boards/Kconfig                |  14 +
- sound/soc/intel/boards/Makefile               |   2 +
- sound/soc/intel/boards/kbl_da7219_max98357a.c | 613 ++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl.c                 |  13 +
- 4 files changed, 642 insertions(+)
- create mode 100644 sound/soc/intel/boards/kbl_da7219_max98357a.c
-
--- 
-1.9.1
+Let me try to sent one without it.
