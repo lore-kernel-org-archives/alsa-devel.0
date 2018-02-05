@@ -1,19 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: fix debugfs read using
- path->connected
-Date: Mon, 5 Feb 2018 11:31:30 +0000
-Message-ID: <20180205113130.GA12384@sirena.org.uk>
-References: <1517555015-19080-1-git-send-email-kaichieh.chuang@mediatek.com>
- <20180202155340.GC7101@sirena.org.uk>
- <1517806580.27374.4.camel@mtkswgap22>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH] ASoC: wm_adsp: Don't init cache from DSP
+	memory if control is write-only
+Date: Mon, 5 Feb 2018 11:38:17 +0000
+Message-ID: <20180205113817.16470-1-rf@opensource.cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6724021663128929874=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D994267076
- for <alsa-devel@alsa-project.org>; Mon,  5 Feb 2018 12:31:33 +0100 (CET)
-In-Reply-To: <1517806580.27374.4.camel@mtkswgap22>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id D6234267076
+ for <alsa-devel@alsa-project.org>; Mon,  5 Feb 2018 12:38:31 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,58 +20,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-Cc: shane.chien@mediatek.com, alsa-devel@alsa-project.org, garlic.tseng@mediatek.com, chipeng.chang@mediatek.com
+To: broonie@kernel.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+For controls marked write-only don't initialize the cache from the
+content of the DSP memory. We stil need the cache for any new data
+that is written to this control, and we need to return something
+for a read of the ALSA control because most user-side code assumes
+all ALSA controls are readable. The cache is already created zero-
+filled so the only change needed is to skip populating it from
+DSP memory if the control isn't readable.
 
---===============6724021663128929874==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="YZ5djTAD1cGYuMQK"
-Content-Disposition: inline
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ sound/soc/codecs/wm_adsp.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-
---YZ5djTAD1cGYuMQK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Feb 05, 2018 at 12:56:20PM +0800, KaiChieh Chuang wrote:
-> On Fri, 2018-02-02 at 16:53 +0100, Mark Brown wrote:
-
-> > This doesn't apply against my tree or Linus' tree, can you please check
-> > and resend?  The change itself seems to make sense.
-
-> Maybe its because the "Email Confidentiality Notice" at the end?
-
-> Let me try to sent one without it.
-
-Ah, that could be - or perhaps your mail system is mangling the patch so
-that git and patch can't exactly understand it.  You looked to be
-generating against a sensible tree based on your earlier mail so I'm
-guessing it's something about it being damaged in transfer.
-
---YZ5djTAD1cGYuMQK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlp4QHMACgkQJNaLcl1U
-h9C00Af/c1naI14IIZSN04dK3n+RNLD2fbbez5tNK7xGY++UDBlZkCriZraR4S9z
-KRlCsJpnzMExAGTchGTNSJbAq+fhG1zNjya8K1zbpODme4P00jB4im/72zkl1PTm
-ITPMuGJRm1UTlrRJfvwmLtOegWsK9H1vCgEzQNKrQ/fHg669JgF6osw3qrfo/tKr
-99YMwwof5X8RtnPU2CUxUqd1CdYEFWk6fZUz8w5sNuhnJzArzUSeMwhG9bx2uh9t
-8/8o1q6yP9wtD3W5qINYxod1IUy8QrQIZENSEczf/AAsw4bow9McgwpIChtqhkda
-MGPBtgf5qRfnjfe6cQohr6omV3TwrQ==
-=whoT
------END PGP SIGNATURE-----
-
---YZ5djTAD1cGYuMQK--
-
---===============6724021663128929874==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6724021663128929874==--
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 66e32f5d2917..0060aeb63a9f 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -1237,9 +1237,16 @@ static int wm_coeff_init_control_caches(struct wm_adsp *dsp)
+ 		if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
+ 			continue;
+ 
+-		ret = wm_coeff_read_control(ctl, ctl->cache, ctl->len);
+-		if (ret < 0)
+-			return ret;
++		/*
++		 * For readable controls populate the cache from the DSP memory.
++		 * For non-readable controls the cache was zero-filled when
++		 * created so we don't need to do anything.
++		 */
++		if (!ctl->flags || (ctl->flags & WMFW_CTL_FLAG_READABLE)) {
++			ret = wm_coeff_read_control(ctl, ctl->cache, ctl->len);
++			if (ret < 0)
++				return ret;
++		}
+ 	}
+ 
+ 	return 0;
+-- 
+2.11.0
