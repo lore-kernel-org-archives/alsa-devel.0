@@ -1,86 +1,35 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: add of dependency for stm32 drivers" to the asoc tree
-Date: Mon, 05 Feb 2018 15:20:02 +0000
-Message-ID: <E1eiiYs-0007FQ-II@debutante>
-References: <1517827785-6275-1-git-send-email-olivier.moysan@st.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH 0/8] ASoC: samsung: Add HDMI sound support for tm2 board
+Date: Mon, 05 Feb 2018 16:43:55 +0100
+Message-ID: <20180205154403.13520-1-s.nawrocki@samsung.com>
+References: <CGME20180205154421epcas2p16072f713ea81f72b3f8230f6a9d412cf@epcas2p1.samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1517827785-6275-1-git-send-email-olivier.moysan@st.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: olivier moysan <olivier.moysan@st.com>, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com, linux-kernel@vger.kernel.orgolivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.comalsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, robh+dt@kernel.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, krzk@kernel.org, jcsing.lee@samsung.com, sbkim73@samsung.com, linux-kernel@vger.kernel.org, b.zolnierkie@samsung.com, m.szyprowski@samsung.com, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+This series adds support for HDMI audio on exynos5433 tm2 board, it
+includes a few fixes for the I2S driver and an extension of the existing
+card driver to support the I2S1<->HDMI transmitter path.
 
-   ASoC: stm32: add of dependency for stm32 drivers
+Sylwester Nawrocki (8):
+  ASoC: samsung: i2s: Ensure the RCLK rate is properly determined
+  ASoC: samsung: i2s: Ensure names of supplied clocks are unique
+  ASoC: samsung: i2s: Prevent external abort on exynos5433 I2S1 access
+  ASoC: samsung: i2s: Define the parameters list for SAMSUNG_I2S_OPCLK
+  ASoC: samsung: Add support for HDMI audio on TM2 board
+  ASoC: samsung: i2s: Update clock-output-names property documentation
+  ASoC: samsung: Add missing #sound-dai-cells property documentation
+  ASoC: samsung,tm2-audio DT binding documentation update
 
-has been applied to the asoc tree at
+ .../bindings/sound/samsung,tm2-audio.txt           |  14 +-
+ .../devicetree/bindings/sound/samsung-i2s.txt      |  22 +--
+ sound/soc/samsung/i2s-regs.h                       |  11 +-
+ sound/soc/samsung/i2s.c                            |  50 ++++--
+ sound/soc/samsung/i2s.h                            |  11 +-
+ sound/soc/samsung/tm2_wm5110.c                     | 180 ++++++++++++++++++---
+ 6 files changed, 229 insertions(+), 59 deletions(-)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 748bce8e6c7ebae2d89314a42e0c4b65232a0ce9 Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Mon, 5 Feb 2018 11:49:45 +0100
-Subject: [PATCH] ASoC: stm32: add of dependency for stm32 drivers
-
-Add of dependency for STM32 ASoC drivers.
-DFSDM of dependency is already inherited
-from STM32_DFSDM_ADC dependency.
-
-Signed-off-by: olivier moysan <olivier.moysan@st.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/stm/Kconfig | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/stm/Kconfig b/sound/soc/stm/Kconfig
-index 3ad881fc40a1..48f9ddd94016 100644
---- a/sound/soc/stm/Kconfig
-+++ b/sound/soc/stm/Kconfig
-@@ -2,7 +2,7 @@ menu "STMicroelectronics STM32 SOC audio support"
- 
- config SND_SOC_STM32_SAI
- 	tristate "STM32 SAI interface (Serial Audio Interface) support"
--	depends on ARCH_STM32 || COMPILE_TEST
-+	depends on (ARCH_STM32 && OF) || COMPILE_TEST
- 	depends on SND_SOC
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	select REGMAP_MMIO
-@@ -11,7 +11,7 @@ config SND_SOC_STM32_SAI
- 
- config SND_SOC_STM32_I2S
- 	tristate "STM32 I2S interface (SPI/I2S block) support"
--	depends on ARCH_STM32 || COMPILE_TEST
-+	depends on (ARCH_STM32 && OF) || COMPILE_TEST
- 	depends on SND_SOC
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	select REGMAP_MMIO
-@@ -20,7 +20,7 @@ config SND_SOC_STM32_I2S
- 
- config SND_SOC_STM32_SPDIFRX
- 	tristate "STM32 S/PDIF receiver (SPDIFRX) support"
--	depends on ARCH_STM32 || COMPILE_TEST
-+	depends on (ARCH_STM32 && OF) || COMPILE_TEST
- 	depends on SND_SOC
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	select REGMAP_MMIO
--- 
-2.15.1
+--
+2.14.2
