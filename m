@@ -1,77 +1,257 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [GIT PULL] Extra ASoC updates for v4.16
-Date: Tue, 6 Feb 2018 15:25:34 -0800
-Message-ID: <CA+55aFzD0+2pfQN+hPOmGNR5CHfp5KYKNtvng0NqVbKGTE5LRg@mail.gmail.com>
-References: <20180206114439.GC5681@sirena.org.uk>
+From: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
+Subject: Re: [PATCH v8 0/7] TDA1997x HDMI video reciver
+Date: Tue, 6 Feb 2018 15:29:09 -0800
+Message-ID: <CAJ+vNU1oiM0Y0rO-DHi57nVOqnw60A7pn_1=h5b46-BrY7_p2Q@mail.gmail.com>
+References: <1517948874-21681-1-git-send-email-tharvey@gateworks.com> <c7771c44-a9ff-0207-38f6-28bcc06ccdee@xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f181.google.com (mail-io0-f181.google.com
- [209.85.223.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 1917E266F62
- for <alsa-devel@alsa-project.org>; Wed,  7 Feb 2018 00:25:36 +0100 (CET)
-Received: by mail-io0-f181.google.com with SMTP id f89so4342784ioj.4
- for <alsa-devel@alsa-project.org>; Tue, 06 Feb 2018 15:25:36 -0800 (PST)
-In-Reply-To: <20180206114439.GC5681@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <c7771c44-a9ff-0207-38f6-28bcc06ccdee-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
+Cc: linux-media <linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Steve Longerbeam <slongerbeam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Hans Verkuil <hansverk-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 6, 2018 at 3:44 AM, Mark Brown <broonie@kernel.org> wrote:
-> This pull request is for things that arrived in the last week of the
-> v4.15 cycle, I'm sending it directly since Takashi still seems to be on
-> holiday (I'd thought he'd be back this week).  There's some random new
-> development in here and also a bunch of bugfixes.
+On Tue, Feb 6, 2018 at 1:21 PM, Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org> wrote:
+> On 02/06/2018 09:27 PM, Tim Harvey wrote:
+>
+> <snip>
+>
+>> v4l2-compliance test results:
+>>  - with the following kernel patches:
+>>    v4l2-subdev: clear reserved fields
+>>  . v4l2-subdev: without controls return -ENOTTY
+>>
+>> v4l2-compliance SHA   : b2f8f9049056eb6f9e028927dacb2c715a062df8
+>> Media Driver Info:
+>>       Driver name      : imx-media
+>>       Model            : imx-media
+>>       Serial           :
+>>       Bus info         :
+>>       Media version    : 4.15.0
+>>       Hardware revision: 0x00000000 (0)
+>>       Driver version   : 4.15.0
+>> Interface Info:
+>>       ID               : 0x0300008f
+>>       Type             : V4L Sub-Device
+>> Entity Info:
+>>       ID               : 0x00000003 (3)
+>>       Name             : tda19971 2-0048
+>>       Function         : Unknown
+>
+> This is missing. It should be one of these:
+>
+> https://hverkuil.home.xs4all.nl/spec/uapi/mediactl/media-types.html#media-entity-type
+>
+> However, we don't have a proper function defined.
+>
+> I would suggest adding a new MEDIA_ENT_F_DTV_DECODER analogous to MEDIA_ENT_F_ATV_DECODER.
+>
+> It would be a new patch adding this + documentation.
 
-No. I'm not taking this completely crazy stuff.
+Hows this look for adding to my next series:
 
-It has 54 commits total. Of those, 35 are merges. Many of those merges
-are complicated octopus merges that don't bring in _anything_ new,
-because the commits they merge all came in through some other source.
+Author: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
+Date:   Tue Feb 6 14:12:52 2018 -0800
 
-Really. Ask yourself - why would I take that kind of complete and
-utter mess, where two thirds of the commits don't actually do anything
-but mess up the history and make things hard to follow?
+    [media] add digital video decoder video interface entity functions
 
-> Unfortunately I can't figure out how to generate a sensible git pull
-> request for this since it ended up containing both v4.15-rc9 and my
-> prior pull requests.
+    Add a new media entity function definition for digital TV decoders:
+    MEDIA_ENT_F_DTV_DECODER
 
-git pull-request doesn't necessarily work if you have complex history,
-and this is more complex than most, by a long shot.
+    Signed-off-by: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
 
-In fact, it was so complex that just "git merge" - which usually
-completes in under a second - spent a lot of CPU time on that merge
-from hell. It probably had a ton of different common merge points that
-all ended up being recursively merged together to get a base for the
-final merge.
+--- a/Documentation/media/uapi/mediactl/media-types.rst
++++ b/Documentation/media/uapi/mediactl/media-types.rst
+@@ -321,6 +321,17 @@ Types and flags used to represent the media graph elements
+          MIPI CSI-2, ...), and outputs them on its source pad to an output
+          video bus of another type (eDP, MIPI CSI-2, parallel, ...).
 
-[ Whee. I went back and looked. There's 88 merge-bases. EIGHTY-EIGHT!
-Christ. That must be some kind of record. Poor git. It did end up with
-a clean merge in the end, but no wonder it took tens of seconds to do
-so ]
++    -  ..  row 31
++
++       ..  _MEDIA-ENT-F-DTV-DECODER:
++
++       -  ``MEDIA_ENT_F_DTV_DECODER``
++
++       -  Digital video decoder. The basic function of the video decoder is
++         to accept digital video from a wide variety of sources
++         and output it in some digital video standard, with appropriate
++         timing signals.
++
+ ..  tabularcolumns:: |p{5.5cm}|p{12.0cm}|
 
-It is expected that anybody who doesn't have a linear history knows
-how to do a test merge and report the result that way.
+ .. _media-entity-flag:
+diff --git a/include/uapi/linux/media.h b/include/uapi/linux/media.h
+index b9b9446..6653e88 100644
+--- a/include/uapi/linux/media.h
++++ b/include/uapi/linux/media.h
+@@ -152,6 +152,7 @@ struct media_device_info {
+  * MEDIA_ENT_F_IF_VID_DECODER and/or MEDIA_ENT_F_IF_AUD_DECODER.
+  */
+ #define MEDIA_ENT_F_TUNER              (MEDIA_ENT_F_OLD_SUBDEV_BASE + 5)
++#define MEDIA_ENT_F_DTV_DECODER
+(MEDIA_ENT_F_OLD_SUBDEV_BASE + 6)
 
-That said, history really generally isn't expected to be this messy
-_anyway_. This looks like some drug-induced frenzy of "let's just
-merge random branches for no good reason even if they have been merged
-earlier".
+ #define MEDIA_ENT_F_V4L2_SUBDEV_UNKNOWN        MEDIA_ENT_F_OLD_SUBDEV_BASE
 
-So pulled and then unpulled in horror.
 
-Because some of those merges look very Lovecraftian, with the whole
-gigantic octopus merge theme. Cthulhu and tentacles galore.
+Assigning this now shows a function but does not resolve the media
+compliance results:
 
-              Linus
+--- a/drivers/media/i2c/tda1997x.c
++++ b/drivers/media/i2c/tda1997x.c
+@@ -2586,6 +2586,7 @@ static int tda1997x_probe(struct i2c_client *client,
+                 id->name, i2c_adapter_id(client->adapter),
+                 client->addr);
+        sd->flags = V4L2_SUBDEV_FL_HAS_DEVNODE | V4L2_SUBDEV_FL_HAS_EVENTS;
++       sd->entity.function = MEDIA_ENT_F_DTV_DECODER;
+        sd->entity.ops = &tda1997x_media_ops;
+
+        /* set allowed mbus modes based on chip, bus-type, and bus-width */
+
+
+root@ventana:~# v4l2-compliance -u1
+v4l2-compliance SHA   : b2f8f9049056eb6f9e028927dacb2c715a062df8
+Media Driver Info:
+        Driver name      : imx-media
+        Model            : imx-media
+        Serial           :
+        Bus info         :
+        Media version    : 4.15.0
+        Hardware revision: 0x00000000 (0)
+        Driver version   : 4.15.0
+Interface Info:
+        ID               : 0x0300008f
+        Type             : V4L Sub-Device
+Entity Info:
+        ID               : 0x00000003 (3)
+        Name             : tda19971 2-0048
+        Function         : Unknown (00020006)
+        Pad 0x01000004   : Source
+          Link 0x0200006f: to remote pad 0x1000063 of entity
+'ipu1_csi0_mux': Data
+
+...
+
+root@ventana:~# v4l2-compliance -m0 -M
+v4l2-compliance SHA   : b2f8f9049056eb6f9e028927dacb2c715a062df8
+Media Driver Info:
+        Driver name      : imx-media
+        Model            : imx-media
+        Serial           :
+        Bus info         :
+        Media version    : 4.15.0
+        Hardware revision: 0x00000000 (0)
+        Driver version   : 4.15.0
+
+Compliance test for device /dev/media0:
+
+Required ioctls:
+        test MEDIA_IOC_DEVICE_INFO: OK
+
+Allow for multiple opens:
+        test second /dev/media0 open: OK
+        test MEDIA_IOC_DEVICE_INFO: OK
+        test for unlimited opens: OK
+
+Media Controller ioctls:
+                fail: v4l2-test-media.cpp(141): ent.function ==
+MEDIA_ENT_F_V4L2_SUBDEV_UNKNOWN
+        test MEDIA_IOC_G_TOPOLOGY: FAIL
+                fail: v4l2-test-media.cpp(256):
+v2_entities_set.find(ent.id) == v2_entities_set.end()
+        test MEDIA_IOC_ENUM_ENTITIES/LINKS: FAIL
+        test MEDIA_IOC_SETUP_LINK: OK
+
+Total: 7, Succeeded: 5, Failed: 2, Warnings: 0
+
+>
+<snip>
+>>
+>> Sub-Device ioctls (Source Pad 0):
+>>       test Try VIDIOC_SUBDEV_ENUM_MBUS_CODE/FRAME_SIZE/FRAME_INTERVAL: OK
+>>       test Try VIDIOC_SUBDEV_G/S_FMT: OK
+>>       test Try VIDIOC_SUBDEV_G/S_SELECTION/CROP: OK (Not Supported)
+>>       test Active VIDIOC_SUBDEV_ENUM_MBUS_CODE/FRAME_SIZE/FRAME_INTERVAL: OK
+>>       test Active VIDIOC_SUBDEV_G/S_FMT: OK
+>>       test Active VIDIOC_SUBDEV_G/S_SELECTION/CROP: OK (Not Supported)
+>>       test VIDIOC_SUBDEV_G/S_FRAME_INTERVAL: OK (Not Supported)
+>>
+>> Control ioctls:
+>>       test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK (Not Supported)
+>>       test VIDIOC_QUERYCTRL: OK (Not Supported)
+>>       test VIDIOC_G/S_CTRL: OK (Not Supported)
+>>       test VIDIOC_G/S/TRY_EXT_CTRLS: OK (Not Supported)
+>>       test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK (Not Supported)
+>>       test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+>>       Standard Controls: 0 Private Controls: 0
+>
+> Why doesn't this show anything? You have at least one control, so this should
+> reflect that. Does 'v4l2-ctl -d /dev/v4l-subdev1 -l' show any controls?
+>
+> I think sd->ctrl_handler is never set to the v4l2_ctrl_handler pointer.
+>
+> Have you ever tested the controls?
+>
+> Looking closer I also notice that the control handler is never freed. Or
+> checked for errors when it is created in the probe function. Hmm, I should
+> have caught that earlier.
+>
+
+Yes thanks - I missed this also:
+
+--- a/drivers/media/i2c/tda1997x.c
++++ b/drivers/media/i2c/tda1997x.c
+@@ -2726,6 +2726,12 @@ static int tda1997x_probe(struct i2c_client *client,
+                        &tda1997x_ctrl_ops,
+                        V4L2_CID_DV_RX_RGB_RANGE, V4L2_DV_RGB_RANGE_FULL, 0,
+                        V4L2_DV_RGB_RANGE_AUTO);
++       state->sd.ctrl_handler = hdl;
++       if (hdl->error) {
++               ret = hdl->error;
++               goto err_free_handler;
++       }
++       v4l2_ctrl_handler_setup(hdl);
+
+        /* initialize source pads */
+        state->pads[TDA1997X_PAD_SOURCE].flags = MEDIA_PAD_FL_SOURCE;
+@@ -2774,6 +2780,8 @@ static int tda1997x_probe(struct i2c_client *client,
+
+ err_free_media:
+        media_entity_cleanup(&sd->entity);
++err_free_handler:
++       v4l2_ctrl_handler_free(&state->hdl);
+ err_free_mutex:
+        cancel_delayed_work(&state->delayed_work_enable_hpd);
+        mutex_destroy(&state->page_lock);
+@@ -2801,6 +2809,7 @@ static int tda1997x_remove(struct i2c_client *client)
+
+        v4l2_async_unregister_subdev(sd);
+        media_entity_cleanup(&sd->entity);
++       v4l2_ctrl_handler_free(&state->hdl);
+        regulator_bulk_disable(TDA1997X_NUM_SUPPLIES, state->supplies);
+        i2c_unregister_device(state->client_cec);
+        cancel_delayed_work(&state->delayed_work_enable_hpd);
+
+root@ventana:~# v4l2-ctl -d /dev/v4l-subdev1 --list-ctrls
+
+Digital Video Controls
+
+                  power_present 0x00a00964 (bitmask): max=0x00000001
+default=0x00000000 value=0x00000000 flags=read-only
+      rx_rgb_quantization_range 0x00a00965 (menu)   : min=0 max=2
+default=0 value=2
+             rx_it_content_type 0x00a00966 (menu)   : min=0 max=4
+default=4 value=0 flags=read-only, volatile
+
+And various sets/gets appear to work as designed (found that I wasn't
+updating the csc when quantiation range was changed via ctrl and fixed
+it).
+
+Regards,
+
+Tim
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
