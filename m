@@ -1,120 +1,133 @@
 From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH v8 5/7] media: i2c: Add TDA1997x HDMI receiver driver
-Date: Tue, 6 Feb 2018 22:09:24 +0100
-Message-ID: <1ff2a81e-04f7-02eb-6ba2-70227665839b@xs4all.nl>
+Subject: Re: [PATCH v8 0/7] TDA1997x HDMI video reciver
+Date: Tue, 6 Feb 2018 22:21:17 +0100
+Message-ID: <c7771c44-a9ff-0207-38f6-28bcc06ccdee@xs4all.nl>
 References: <1517948874-21681-1-git-send-email-tharvey@gateworks.com>
- <1517948874-21681-6-git-send-email-tharvey@gateworks.com>
- <3630ba30-eb18-0829-7b0c-f0a786232969@xs4all.nl>
- <CAJ+vNU1SWma59YwvRO7jDAu2=ndgSU6CgYtKs0792+oqDAEtrQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAJ+vNU1SWma59YwvRO7jDAu2=ndgSU6CgYtKs0792+oqDAEtrQ@mail.gmail.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lb2-smtp-cloud8.xs4all.net (lb2-smtp-cloud8.xs4all.net
+ [194.109.24.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9EBD1266F62
+ for <alsa-devel@alsa-project.org>; Tue,  6 Feb 2018 22:21:21 +0100 (CET)
+In-Reply-To: <1517948874-21681-1-git-send-email-tharvey@gateworks.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tim Harvey <tharvey@gateworks.com>
-Cc: linux-media <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>, Steve Longerbeam <slongerbeam@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tim Harvey <tharvey@gateworks.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>, Philipp Zabel <p.zabel@pengutronix.de>, Steve Longerbeam <slongerbeam@gmail.com>, shawnguo@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/06/2018 10:03 PM, Tim Harvey wrote:
-> On Tue, Feb 6, 2018 at 12:38 PM, Hans Verkuil <hverkuil@xs4all.nl> wrote:
->> On 02/06/2018 09:27 PM, Tim Harvey wrote:
->>> Add support for the TDA1997x HDMI receivers.
->>>
->>> Cc: Hans Verkuil <hverkuil@xs4all.nl>
->>> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
->>> ---
->>
->> <snip>
->>
->>> +static int tda1997x_get_dv_timings_cap(struct v4l2_subdev *sd,
->>> +                                    struct v4l2_dv_timings_cap *cap)
->>> +{
->>> +     if (cap->pad != TDA1997X_PAD_SOURCE)
->>> +             return -EINVAL;
->>> +
->>> +     *cap = tda1997x_dv_timings_cap;
->>> +     return 0;
->>> +}
->>> +
->>> +static int tda1997x_enum_dv_timings(struct v4l2_subdev *sd,
->>> +                                 struct v4l2_enum_dv_timings *timings)
->>> +{
->>> +     if (timings->pad != TDA1997X_PAD_SOURCE)
->>> +             return -EINVAL;
->>> +
->>> +     return v4l2_enum_dv_timings_cap(timings, &tda1997x_dv_timings_cap,
->>> +                                     NULL, NULL);
->>> +}
->>
->> You shouldn't need this pad test: it's done in the v4l2-subdev.c core code
->> already. But please double-check :-)
->>
-> 
-> oh right - forgot to check that. Yes, v4l2-subdev.c has pad bounds
-> checking on all ops I use so I can remove them.
-> 
->> Can you post the output of the v4l2-compliance test? I'm curious to see it.
-> 
-> it's in the cover letter (should I move it to the driver patch for
-> subsequent submittals?)
+On 02/06/2018 09:27 PM, Tim Harvey wrote:
 
-Ah, it was all the way down after the MC topology. That's why I missed it.
+<snip>
 
+> v4l2-compliance test results:
+>  - with the following kernel patches:
+>    v4l2-subdev: clear reserved fields
+>  . v4l2-subdev: without controls return -ENOTTY
 > 
->>
->> Can you also try to run v4l2-compliance -m /dev/mediaX? That also tests
->> whether the right entity types are set (note: testing for that should
->> also happen in the subdev compliance test, but I haven't done that yet).
->>
-> 
-> root@ventana:~# v4l2-compliance -m0
 > v4l2-compliance SHA   : b2f8f9049056eb6f9e028927dacb2c715a062df8
 > Media Driver Info:
->         Driver name      : imx-media
->         Model            : imx-media
->         Serial           :
->         Bus info         :
->         Media version    : 4.15.0
->         Hardware revision: 0x00000000 (0)
->         Driver version   : 4.15.0
+> 	Driver name      : imx-media
+> 	Model            : imx-media
+> 	Serial           : 
+> 	Bus info         : 
+> 	Media version    : 4.15.0
+> 	Hardware revision: 0x00000000 (0)
+> 	Driver version   : 4.15.0
+> Interface Info:
+> 	ID               : 0x0300008f
+> 	Type             : V4L Sub-Device
+> Entity Info:
+> 	ID               : 0x00000003 (3)
+> 	Name             : tda19971 2-0048
+> 	Function         : Unknown
+
+This is missing. It should be one of these:
+
+https://hverkuil.home.xs4all.nl/spec/uapi/mediactl/media-types.html#media-entity-type
+
+However, we don't have a proper function defined.
+
+I would suggest adding a new MEDIA_ENT_F_DTV_DECODER analogous to MEDIA_ENT_F_ATV_DECODER.
+
+It would be a new patch adding this + documentation.
+
+> 	Pad 0x01000004   : Source
+> 	  Link 0x0200006f: to remote pad 0x1000063 of entity 'ipu1_csi0_mux': Data
 > 
-> Compliance test for device /dev/media0:
-> 
-> Required ioctls:
->         test MEDIA_IOC_DEVICE_INFO: OK
+> Compliance test for device /dev/v4l-subdev1:
 > 
 > Allow for multiple opens:
->         test second /dev/media0 open: OK
->         test MEDIA_IOC_DEVICE_INFO: OK
->         test for unlimited opens: OK
+> 	test second /dev/v4l-subdev1 open: OK
+> 	test for unlimited opens: OK
 > 
-> Media Controller ioctls:
->                 fail: v4l2-test-media.cpp(141): ent.function ==
-> MEDIA_ENT_F_V4L2_SUBDEV_UNKNOWN
->         test MEDIA_IOC_G_TOPOLOGY: FAIL
->                 fail: v4l2-test-media.cpp(256):
-> v2_entities_set.find(ent.id) == v2_entities_set.end()
->         test MEDIA_IOC_ENUM_ENTITIES/LINKS: FAIL
->         test MEDIA_IOC_SETUP_LINK: OK
+> Debug ioctls:
+> 	test VIDIOC_LOG_STATUS: OK
 > 
-> Total: 7, Succeeded: 5, Failed: 2, Warnings: 0
+> Input ioctls:
+> 	test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+> 	test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+> 	test VIDIOC_ENUMAUDIO: OK (Not Supported)
+> 	test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
+> 	test VIDIOC_G/S_AUDIO: OK (Not Supported)
+> 	Inputs: 0 Audio Inputs: 0 Tuners: 0
 > 
-> foiled again!
+> Output ioctls:
+> 	test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+> 	test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+> 	test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+> 	test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+> 	Outputs: 0 Audio Outputs: 0 Modulators: 0
 > 
-> Is something missing after v4l2_i2c_subdev_init() or is this perhaps
-> something missing in the imx media drivers?
-> 
->         v4l2_i2c_subdev_init(sd, client, &tda1997x_subdev_ops);
->         snprintf(sd->name, sizeof(sd->name), "%s %d-%04x",
->                  id->name, i2c_adapter_id(client->adapter),
->                  client->addr);
->         sd->flags = V4L2_SUBDEV_FL_HAS_DEVNODE | V4L2_SUBDEV_FL_HAS_EVENTS;
->         sd->entity.ops = &tda1997x_media_ops;
+> Input/Output configuration ioctls:
+> 	test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+> 	test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK
+> 	test VIDIOC_DV_TIMINGS_CAP: OK
+> 	test VIDIOC_G/S_EDID: OK
 
-Yeah, I was afraid of that. Anyway, I saw some issues in the subdev compliance.
-I'll reply to the cover letter about that.
+Nice!
+
+> 
+> Sub-Device ioctls (Source Pad 0):
+> 	test Try VIDIOC_SUBDEV_ENUM_MBUS_CODE/FRAME_SIZE/FRAME_INTERVAL: OK
+> 	test Try VIDIOC_SUBDEV_G/S_FMT: OK
+> 	test Try VIDIOC_SUBDEV_G/S_SELECTION/CROP: OK (Not Supported)
+> 	test Active VIDIOC_SUBDEV_ENUM_MBUS_CODE/FRAME_SIZE/FRAME_INTERVAL: OK
+> 	test Active VIDIOC_SUBDEV_G/S_FMT: OK
+> 	test Active VIDIOC_SUBDEV_G/S_SELECTION/CROP: OK (Not Supported)
+> 	test VIDIOC_SUBDEV_G/S_FRAME_INTERVAL: OK (Not Supported)
+> 
+> Control ioctls:
+> 	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK (Not Supported)
+> 	test VIDIOC_QUERYCTRL: OK (Not Supported)
+> 	test VIDIOC_G/S_CTRL: OK (Not Supported)
+> 	test VIDIOC_G/S/TRY_EXT_CTRLS: OK (Not Supported)
+> 	test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK (Not Supported)
+> 	test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+> 	Standard Controls: 0 Private Controls: 0
+
+Why doesn't this show anything? You have at least one control, so this should
+reflect that. Does 'v4l2-ctl -d /dev/v4l-subdev1 -l' show any controls?
+
+I think sd->ctrl_handler is never set to the v4l2_ctrl_handler pointer.
+
+Have you ever tested the controls?
+
+Looking closer I also notice that the control handler is never freed. Or
+checked for errors when it is created in the probe function. Hmm, I should
+have caught that earlier.
 
 Regards,
 
