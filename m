@@ -1,14 +1,20 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH] ASoC: Intel: add nau8824 sound card
-Date: Tue, 6 Feb 2018 15:02:43 +0800
-Message-ID: <1517900563-21098-1-git-send-email-KCHSU0@nuvoton.com>
+From: Jean-Philippe Guillemin <h1p8r10n@gmail.com>
+Subject: Re: Adding support for CMEDIA USB2.0 High-Speed True
+	HD Audio
+Date: Tue, 6 Feb 2018 08:12:14 +0100
+Message-ID: <CAOuaOFv2E_xASspeuxWz_Nc9M-Ks8DJKJiMSVfoLvd03hMMP7w@mail.gmail.com>
+References: <CAOuaOFuAa0jd9ZAENcnaJci1JmCw+dzAwQqT9bhv2t=i=ndWSA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A07B0266A74
- for <alsa-devel@alsa-project.org>; Tue,  6 Feb 2018 08:03:05 +0100 (CET)
+Received: from mail-ot0-f173.google.com (mail-ot0-f173.google.com
+ [74.125.82.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4EFC2266A74
+ for <alsa-devel@alsa-project.org>; Tue,  6 Feb 2018 08:12:46 +0100 (CET)
+Received: by mail-ot0-f173.google.com with SMTP id h14so32356otj.5
+ for <alsa-devel@alsa-project.org>; Mon, 05 Feb 2018 23:12:46 -0800 (PST)
+In-Reply-To: <CAOuaOFuAa0jd9ZAENcnaJci1JmCw+dzAwQqT9bhv2t=i=ndWSA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,371 +24,1305 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, John Hsu <KCHSU0@nuvoton.com>, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, YHCHuang@nuvoton.com, WTLI@nuvoton.com, CTLIN0@nuvoton.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Create sound card with NAU88L24 codec in Intel Cherryview-based platforms,
-Cherrytrail and Braswell.
+Anyone ?
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
----
- sound/soc/intel/boards/Kconfig                    |  11 +
- sound/soc/intel/boards/Makefile                   |   2 +
- sound/soc/intel/boards/cht_bsw_nau8824.c          | 282 ++++++++++++++++++++++
- sound/soc/intel/common/soc-acpi-intel-cht-match.c |   9 +
- 4 files changed, 304 insertions(+)
- create mode 100644 sound/soc/intel/boards/cht_bsw_nau8824.c
+2018-02-02 15:36 GMT+01:00 Jean-Philippe Guillemin <h1p8r10n@gmail.com>:
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index fefb1ee..b4f12e6 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -125,6 +125,17 @@ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
- 	  Say Y or m if you have such a device. This is a recommended option.
- 	  If unsure select "N".
- 
-+config SND_SOC_INTEL_CHT_BSW_NAU8824_MACH
-+	tristate "Cherrytrail & Braswell with NAU88L24 codec"
-+	depends on X86_INTEL_LPSS && I2C && ACPI
-+	select SND_SOC_ACPI
-+	select SND_SOC_NAU8824
-+	help
-+	  This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
-+	  platforms with NAU88L24 audio codec.
-+	  Say Y or m if you have such a device. This is a recommended option.
-+	  If unsure select "N".
-+
- config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
- 	tristate "Baytrail & Cherrytrail with DA7212/7213 codec"
- 	depends on X86_INTEL_LPSS && I2C && ACPI
-diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
-index 69d2dfa..f2a9ee4 100644
---- a/sound/soc/intel/boards/Makefile
-+++ b/sound/soc/intel/boards/Makefile
-@@ -11,6 +11,7 @@ snd-soc-sst-bytcr-rt5651-objs := bytcr_rt5651.o
- snd-soc-sst-cht-bsw-rt5672-objs := cht_bsw_rt5672.o
- snd-soc-sst-cht-bsw-rt5645-objs := cht_bsw_rt5645.o
- snd-soc-sst-cht-bsw-max98090_ti-objs := cht_bsw_max98090_ti.o
-+snd-soc-sst-cht-bsw-nau8824-objs := cht_bsw_nau8824.o
- snd-soc-sst-byt-cht-da7213-objs := bytcht_da7213.o
- snd-soc-sst-byt-cht-es8316-objs := bytcht_es8316.o
- snd-soc-sst-byt-cht-nocodec-objs := bytcht_nocodec.o
-@@ -32,6 +33,7 @@ obj-$(CONFIG_SND_SOC_INTEL_BYTCR_RT5651_MACH) += snd-soc-sst-bytcr-rt5651.o
- obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_RT5672_MACH) += snd-soc-sst-cht-bsw-rt5672.o
- obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_RT5645_MACH) += snd-soc-sst-cht-bsw-rt5645.o
- obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH) += snd-soc-sst-cht-bsw-max98090_ti.o
-+obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_NAU8824_MACH) += snd-soc-sst-cht-bsw-nau8824.o
- obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_DA7213_MACH) += snd-soc-sst-byt-cht-da7213.o
- obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_ES8316_MACH) += snd-soc-sst-byt-cht-es8316.o
- obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH) += snd-soc-sst-byt-cht-nocodec.o
-diff --git a/sound/soc/intel/boards/cht_bsw_nau8824.c b/sound/soc/intel/boards/cht_bsw_nau8824.c
-new file mode 100644
-index 0000000..08d0b81
---- /dev/null
-+++ b/sound/soc/intel/boards/cht_bsw_nau8824.c
-@@ -0,0 +1,282 @@
-+/*
-+ *  cht-bsw-nau8824.c - ASoc Machine driver for Intel Cherryview-based
-+ *          platforms Cherrytrail and Braswell, with nau8824 codec.
-+ *
-+ *  Copyright (C) 2018 Intel Corp
-+ *  Copyright (C) 2018 Nuvoton Technology Corp
-+ *
-+ *  Author: Wang, Joseph C <joequant@gmail.com>
-+ *  Co-author: John Hsu <KCHSU0@nuvoton.com>
-+ *  This file is based on cht_bsw_rt5672.c and cht-bsw-max98090.c
-+ *
-+ *  This program is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License as published by
-+ *  the Free Software Foundation; version 2 of the License.
-+ *
-+ *  This program is distributed in the hope that it will be useful, but
-+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ *  General Public License for more details.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/jack.h>
-+#include <linux/input.h>
-+#include "../atom/sst-atom-controls.h"
-+#include "../../codecs/nau8824.h"
-+
-+struct cht_mc_private {
-+	struct snd_soc_jack jack;
-+};
-+
-+static struct snd_soc_jack_pin cht_bsw_jack_pins[] = {
-+	{
-+		.pin = "Headphone",
-+		.mask = SND_JACK_HEADPHONE,
-+	},
-+	{
-+		.pin = "Headset Mic",
-+		.mask = SND_JACK_MICROPHONE,
-+	},
-+};
-+
-+static const struct snd_soc_dapm_widget cht_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_MIC("Int Mic", NULL),
-+	SND_SOC_DAPM_SPK("Ext Spk", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route cht_audio_map[] = {
-+	{"Ext Spk", NULL, "SPKOUTL"},
-+	{"Ext Spk", NULL, "SPKOUTR"},
-+	{"Headphone", NULL, "HPOL"},
-+	{"Headphone", NULL, "HPOR"},
-+	{"MIC1", NULL, "Int Mic"},
-+	{"MIC2", NULL, "Int Mic"},
-+	{"HSMIC1", NULL, "Headset Mic"},
-+	{"HSMIC2", NULL, "Headset Mic"},
-+	{"Playback", NULL, "ssp2 Tx"},
-+	{"ssp2 Tx", NULL, "codec_out0"},
-+	{"ssp2 Tx", NULL, "codec_out1"},
-+	{"codec_in0", NULL, "ssp2 Rx" },
-+	{"codec_in1", NULL, "ssp2 Rx" },
-+	{"ssp2 Rx", NULL, "Capture"},
-+};
-+
-+static const struct snd_kcontrol_new cht_mc_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Headphone"),
-+	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-+	SOC_DAPM_PIN_SWITCH("Int Mic"),
-+	SOC_DAPM_PIN_SWITCH("Ext Spk"),
-+};
-+
-+static int cht_aif1_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int ret;
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai, NAU8824_CLK_FLL_FS, 0,
-+		SND_SOC_CLOCK_IN);
-+	if (ret < 0) {
-+		dev_err(codec_dai->dev, "can't set FS clock %d\n", ret);
-+		return ret;
-+	}
-+	ret = snd_soc_dai_set_pll(codec_dai, 0, 0, params_rate(params),
-+		params_rate(params) * 256);
-+	if (ret < 0) {
-+		dev_err(codec_dai->dev, "can't set FLL: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
-+{
-+	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
-+	struct snd_soc_jack *jack = &ctx->jack;
-+	struct snd_soc_codec *codec = runtime->codec;
-+	struct snd_soc_dai *codec_dai = runtime->codec_dai;
-+	int ret, jack_type;
-+
-+	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
-+	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xf, 0x1, 4, 24);
-+	if (ret < 0) {
-+		dev_err(runtime->dev, "can't set codec TDM slot %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* NAU88L24 supports 4 butons headset detection
-+	 * KEY_MEDIA
-+	 * KEY_VOICECOMMAND
-+	 * KEY_VOLUMEUP
-+	 * KEY_VOLUMEDOWN
-+	 */
-+	jack_type = SND_JACK_HEADPHONE | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+		SND_JACK_BTN_2 | SND_JACK_BTN_3;
-+	ret = snd_soc_card_jack_new(runtime->card, "Headset", jack_type, jack,
-+		cht_bsw_jack_pins, ARRAY_SIZE(cht_bsw_jack_pins));
-+	if (ret) {
-+		dev_err(runtime->dev,
-+			"Headset Jack creation failed %d\n", ret);
-+		return ret;
-+	}
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_MEDIA);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-+
-+	nau8824_enable_jack_detect(codec, jack);
-+
-+	return ret;
-+}
-+
-+static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_interval *rate = hw_param_interval(params,
-+		SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels = hw_param_interval(params,
-+		SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_mask *fmt =
-+		hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
-+
-+	/* The DSP will covert the FE rate to 48k, stereo, 24bits */
-+	rate->min = rate->max = 48000;
-+	channels->min = channels->max = 2;
-+
-+	/* set SSP2 to 24-bit */
-+	snd_mask_none(fmt);
-+	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
-+
-+	return 0;
-+}
-+
-+static int cht_aif1_startup(struct snd_pcm_substream *substream)
-+{
-+	return snd_pcm_hw_constraint_single(substream->runtime,
-+		SNDRV_PCM_HW_PARAM_RATE, 48000);
-+}
-+
-+static const struct snd_soc_ops cht_aif1_ops = {
-+	.startup = cht_aif1_startup,
-+};
-+
-+static const struct snd_soc_ops cht_be_ssp2_ops = {
-+	.hw_params = cht_aif1_hw_params,
-+};
-+
-+static struct snd_soc_dai_link cht_dailink[] = {
-+	/* Front End DAI links */
-+	[MERR_DPCM_AUDIO] = {
-+		.name = "Audio Port",
-+		.stream_name = "Audio",
-+		.cpu_dai_name = "media-cpu-dai",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.codec_name = "snd-soc-dummy",
-+		.platform_name = "sst-mfld-platform",
-+		.nonatomic = true,
-+		.dynamic = 1,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+		.ops = &cht_aif1_ops,
-+	},
-+	[MERR_DPCM_DEEP_BUFFER] = {
-+		.name = "Deep-Buffer Audio Port",
-+		.stream_name = "Deep-Buffer Audio",
-+		.cpu_dai_name = "deepbuffer-cpu-dai",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.codec_name = "snd-soc-dummy",
-+		.platform_name = "sst-mfld-platform",
-+		.nonatomic = true,
-+		.dynamic = 1,
-+		.dpcm_playback = 1,
-+		.ops = &cht_aif1_ops,
-+	},
-+	[MERR_DPCM_COMPR] = {
-+		.name = "Compressed Port",
-+		.stream_name = "Compress",
-+		.cpu_dai_name = "compress-cpu-dai",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.codec_name = "snd-soc-dummy",
-+		.platform_name = "sst-mfld-platform",
-+	},
-+	/* Back End DAI links */
-+	{
-+		/* SSP2 - Codec */
-+		.name = "SSP2-Codec",
-+		.id = 1,
-+		.cpu_dai_name = "ssp2-port",
-+		.platform_name = "sst-mfld-platform",
-+		.no_pcm = 1,
-+		.codec_dai_name = NAU8824_CODEC_DAI,
-+		.codec_name = "i2c-10508824:00",
-+		.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_IB_NF
-+			| SND_SOC_DAIFMT_CBS_CFS,
-+		.init = cht_codec_init,
-+		.be_hw_params_fixup = cht_codec_fixup,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+		.ops = &cht_be_ssp2_ops,
-+	},
-+};
-+
-+/* SoC card */
-+static struct snd_soc_card snd_soc_card_cht = {
-+	.name = "chtnau8824",
-+	.owner = THIS_MODULE,
-+	.dai_link = cht_dailink,
-+	.num_links = ARRAY_SIZE(cht_dailink),
-+	.dapm_widgets = cht_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(cht_dapm_widgets),
-+	.dapm_routes = cht_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(cht_audio_map),
-+	.controls = cht_mc_controls,
-+	.num_controls = ARRAY_SIZE(cht_mc_controls),
-+};
-+
-+static int snd_cht_mc_probe(struct platform_device *pdev)
-+{
-+	struct cht_mc_private *drv;
-+	int ret_val;
-+
-+	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_ATOMIC);
-+	if (!drv)
-+		return -ENOMEM;
-+	snd_soc_card_set_drvdata(&snd_soc_card_cht, drv);
-+
-+	/* register the soc card */
-+	snd_soc_card_cht.dev = &pdev->dev;
-+	ret_val = devm_snd_soc_register_card(&pdev->dev, &snd_soc_card_cht);
-+	if (ret_val) {
-+		dev_err(&pdev->dev,
-+			"snd_soc_register_card failed %d\n", ret_val);
-+		return ret_val;
-+	}
-+	platform_set_drvdata(pdev, &snd_soc_card_cht);
-+
-+	return ret_val;
-+}
-+
-+static struct platform_driver snd_cht_mc_driver = {
-+	.driver = {
-+		.name = "cht-bsw-nau8824",
-+	},
-+	.probe = snd_cht_mc_probe,
-+};
-+
-+module_platform_driver(snd_cht_mc_driver);
-+
-+MODULE_DESCRIPTION("ASoC Intel(R) Baytrail CR Machine driver");
-+MODULE_AUTHOR("Wang, Joseph C <joequant@gmail.com>");
-+MODULE_AUTHOR("John Hsu <KCHSU0@nuvoton.com>");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:cht-bsw-nau8824");
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cht-match.c b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-index b50a0d5..ad1eb2d 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-@@ -118,6 +118,15 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 		.asoc_plat_name = "sst-mfld-platform",
- 	},
- 	{
-+		.id = "10508824",
-+		.drv_name = "cht-bsw-nau8824",
-+		.fw_filename = "intel/fw_sst_22a8.bin",
-+		.board = "cht-bsw",
-+		.sof_fw_filename = "intel/reef-cht.ri",
-+		.sof_tplg_filename = "intel/reef-cht-nau8824.tplg",
-+		.asoc_plat_name = "sst-mfld-platform",
-+	},
-+	{
- 		.id = "DLGS7212",
- 		.drv_name = "bytcht_da7213",
- 		.fw_filename = "intel/fw_sst_22a8.bin",
--- 
-2.6.4
+> Hi,
+>
+> CMEDIA USB2.0 High-Speed True HD Audio has iec958 output on device 2 and
+> iec958 input on device 0.
+>
+> root[~]# cat /proc/asound/cards
+>  0 [Audio          ]: USB-Audio - USB2.0 High-Speed True HD Audio
+>                       CMEDIA USB2.0 High-Speed True HD Audio at
+> usb-0000:00:12.2-2, high speed
+>
+> I'm trying to create a mapping in USB-Audio.conf :
+>  # If a device does not use the first PCM device for digital data, the
+> device
+>   # number for the iec958 device can be changed here.
+>   USB-Audio.pcm.iec958_device {
+>      # "NoiseBlaster 3000" 42
+>      "USB Sound Blaster HD" 1
+>      "USB2.0 High-Speed True HD Audio" 2
+>   ...
+>
+> But I never got a match on "USB2.0 High-Speed True HD Audio".
+>
+> Please could you provide me correct config ? I will test it and report
+> results so that you can append this card to ALSA.
+>
+> Thanks
+> (below lsusb output)
+>
+> root[~]# lsusb -v
+> Bus 001 Device 009: ID 147a:e055 Formosa Industrial Computing, Inc.
+> Device Descriptor:
+>   bLength                18
+>   bDescriptorType         1
+>   bcdUSB               2.00
+>   bDeviceClass          239 Miscellaneous Device
+>   bDeviceSubClass         2
+>   bDeviceProtocol         1 Interface Association
+>   bMaxPacketSize0        64
+>   idVendor           0x147a Formosa Industrial Computing, Inc.
+>   idProduct          0xe055
+>   bcdDevice            1.08
+>   iManufacturer           1 CMEDIA
+>   iProduct                2 USB2.0 High-Speed True HD Audio
+>   iSerial                 0
+>   bNumConfigurations      1
+>   Configuration Descriptor:
+>     bLength                 9
+>     bDescriptorType         2
+>     wTotalLength         1170
+>     bNumInterfaces          6
+>     bConfigurationValue     1
+>     iConfiguration          0
+>     bmAttributes         0x80
+>       (Bus Powered)
+>     MaxPower              500mA
+>     Interface Association:
+>       bLength                 8
+>       bDescriptorType        11
+>       bFirstInterface         0
+>       bInterfaceCount         5
+>       bFunctionClass          1 Audio
+>       bFunctionSubClass       0
+>       bFunctionProtocol      32
+>       iFunction               0
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        0
+>       bAlternateSetting       0
+>       bNumEndpoints           1
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      1 Control Device
+>       bInterfaceProtocol     32
+>       iInterface              0
+>       AudioControl Interface Descriptor:
+>         bLength                 9
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (HEADER)
+>         bcdADC               2.00
+>         bCategory              10
+>         wTotalLength          378
+>         bmControl            0x00
+>       AudioControl Interface Descriptor:
+>         bLength                17
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (INPUT_TERMINAL)
+>         bTerminalID             1
+>         wTerminalType      0x0101 USB Streaming
+>         bAssocTerminal          0
+>         bCSourceID             22
+>         bNrChannels             0
+>         bmChannelConfig   0x00000000
+>         bmControls    0x0040
+>           Cluster Control (read-only)
+>         iChannelNames           0
+>         iTerminal               0
+>       AudioControl Interface Descriptor:
+>         bLength                17
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (INPUT_TERMINAL)
+>         bTerminalID             2
+>         wTerminalType      0x0101 USB Streaming
+>         bAssocTerminal          0
+>         bCSourceID             23
+>         bNrChannels             0
+>         bmChannelConfig   0x00000000
+>         bmControls    0x0040
+>           Cluster Control (read-only)
+>         iChannelNames           0
+>         iTerminal               0
+>       AudioControl Interface Descriptor:
+>         bLength                17
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (INPUT_TERMINAL)
+>         bTerminalID             3
+>         wTerminalType      0x0201 Microphone
+>         bAssocTerminal          0
+>         bCSourceID             24
+>         bNrChannels             2
+>         bmChannelConfig   0x00000003
+>           Front Left (FL)
+>           Front Right (FR)
+>         bmControls    0x0040
+>           Cluster Control (read-only)
+>         iChannelNames           0
+>         iTerminal               0
+>       AudioControl Interface Descriptor:
+>         bLength                17
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (INPUT_TERMINAL)
+>         bTerminalID             4
+>         wTerminalType      0x0603 Line Connector
+>         bAssocTerminal          0
+>         bCSourceID             24
+>         bNrChannels             2
+>         bmChannelConfig   0x00000003
+>           Front Left (FL)
+>           Front Right (FR)
+>         bmControls    0x0040
+>           Cluster Control (read-only)
+>         iChannelNames           0
+>         iTerminal               0
+>       AudioControl Interface Descriptor:
+>         bLength                17
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (INPUT_TERMINAL)
+>         bTerminalID             5
+>         wTerminalType      0x0605 SPDIF interface
+>         bAssocTerminal          0
+>         bCSourceID             25
+>         bNrChannels             2
+>         bmChannelConfig   0x00000003
+>           Front Left (FL)
+>           Front Right (FR)
+>         bmControls    0x0040
+>           Cluster Control (read-only)
+>         iChannelNames           0
+>         iTerminal               0
+>       AudioControl Interface Descriptor:
+>         bLength                12
+>         bDescriptorType        36
+>         bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+>         bTerminalID             6
+>         wTerminalType      0x0301 Speaker
+>         bAssocTerminal          0
+>         bSourceID              11
+>         bCSourceID             22
+>         bmControls         0x0000
+>         iTerminal               0
+>       AudioControl Interface Descriptor:
+>         bLength                12
+>         bDescriptorType        36
+>         bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+>         bTerminalID             7
+>         wTerminalType      0x0605 SPDIF interface
+>         bAssocTerminal          0
+>         bSourceID              12
+>         bCSourceID             23
+>         bmControls         0x0000
+>         iTerminal               0
+>       AudioControl Interface Descriptor:
+>         bLength                12
+>         bDescriptorType        36
+>         bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+>         bTerminalID             8
+>         wTerminalType      0x0101 USB Streaming
+>         bAssocTerminal          0
+>         bSourceID              10
+>         bCSourceID             24
+>         bmControls         0x0000
+>         iTerminal               0
+>       AudioControl Interface Descriptor:
+>         bLength                12
+>         bDescriptorType        36
+>         bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+>         bTerminalID             9
+>         wTerminalType      0x0101 USB Streaming
+>         bAssocTerminal          0
+>         bSourceID               5
+>         bCSourceID             25
+>         bmControls         0x0000
+>         iTerminal               0
+>       AudioControl Interface Descriptor:
+>         bLength                10
+>         bDescriptorType        36
+>         bDescriptorSubtype      5 (SELECTOR_UNIT)
+>         bUnitID                10
+>         bNrInPins               3
+>         baSource( 0)           13
+>         baSource( 1)           14
+>         baSource( 2)           15
+>         bmControls           0x03
+>           Selector Control (read/write)
+>         iSelector               0
+>       AudioControl Interface Descriptor:
+>         bLength                42
+>         bDescriptorType        36
+>         bDescriptorSubtype      6 (FEATURE_UNIT)
+>         bUnitID                11
+>         bSourceID              18
+>         bmaControls( 0)      0x00000003
+>           Mute Control (read/write)
+>         bmaControls( 1)      0x0000000c
+>           Volume Control (read/write)
+>         bmaControls( 2)      0x0000000c
+>           Volume Control (read/write)
+>         bmaControls( 3)      0x0000000c
+>           Volume Control (read/write)
+>         bmaControls( 4)      0x0000000c
+>           Volume Control (read/write)
+>         bmaControls( 5)      0x0000000c
+>           Volume Control (read/write)
+>         bmaControls( 6)      0x0000000c
+>           Volume Control (read/write)
+>         bmaControls( 7)      0x0000000c
+>           Volume Control (read/write)
+>         bmaControls( 8)      0x0000000c
+>           Volume Control (read/write)
+>         iFeature                0
+>       AudioControl Interface Descriptor:
+>         bLength                18
+>         bDescriptorType        36
+>         bDescriptorSubtype      6 (FEATURE_UNIT)
+>         bUnitID                12
+>         bSourceID               2
+>         bmaControls( 0)      0x00000003
+>           Mute Control (read/write)
+>         bmaControls( 1)      0x00000000
+>         bmaControls( 2)      0x00000000
+>         iFeature                0
+>       AudioControl Interface Descriptor:
+>         bLength                18
+>         bDescriptorType        36
+>         bDescriptorSubtype      6 (FEATURE_UNIT)
+>         bUnitID                13
+>         bSourceID               3
+>         bmaControls( 0)      0x00003003
+>           Mute Control (read/write)
+>           Automatic Gain Control (read/write)
+>         bmaControls( 1)      0x0000000c
+>           Volume Control (read/write)
+>         bmaControls( 2)      0x0000000c
+>           Volume Control (read/write)
+>         iFeature                0
+>       AudioControl Interface Descriptor:
+>         bLength                18
+>         bDescriptorType        36
+>         bDescriptorSubtype      6 (FEATURE_UNIT)
+>         bUnitID                14
+>         bSourceID               4
+>         bmaControls( 0)      0x00000003
+>           Mute Control (read/write)
+>         bmaControls( 1)      0x0000000c
+>           Volume Control (read/write)
+>         bmaControls( 2)      0x0000000c
+>           Volume Control (read/write)
+>         iFeature                0
+>       AudioControl Interface Descriptor:
+>         bLength                18
+>         bDescriptorType        36
+>         bDescriptorSubtype      6 (FEATURE_UNIT)
+>         bUnitID                15
+>         bSourceID              19
+>         bmaControls( 0)      0x00000003
+>           Mute Control (read/write)
+>         bmaControls( 1)      0x0000000c
+>           Volume Control (read/write)
+>         bmaControls( 2)      0x0000000c
+>           Volume Control (read/write)
+>         iFeature                0
+>       AudioControl Interface Descriptor:
+>         bLength                18
+>         bDescriptorType        36
+>         bDescriptorSubtype      6 (FEATURE_UNIT)
+>         bUnitID                16
+>         bSourceID               3
+>         bmaControls( 0)      0x00000003
+>           Mute Control (read/write)
+>         bmaControls( 1)      0x0000000c
+>           Volume Control (read/write)
+>         bmaControls( 2)      0x0000000c
+>           Volume Control (read/write)
+>         iFeature                0
+>       AudioControl Interface Descriptor:
+>         bLength                18
+>         bDescriptorType        36
+>         bDescriptorSubtype      6 (FEATURE_UNIT)
+>         bUnitID                17
+>         bSourceID               4
+>         bmaControls( 0)      0x00000003
+>           Mute Control (read/write)
+>         bmaControls( 1)      0x0000000c
+>           Volume Control (read/write)
+>         bmaControls( 2)      0x0000000c
+>           Volume Control (read/write)
+>         iFeature                0
+>       AudioControl Interface Descriptor:
+>         bLength                28
+>         bDescriptorType        36
+>         bDescriptorSubtype      4 (MIXER_UNIT)
+>         bUnitID                18
+>         bNrPins                 3
+>         baSourceID( 0)          1
+>         baSourceID( 1)         16
+>         baSourceID( 2)         17
+>         bNrChannels             8
+>         bmChannelConfig    0x0000063f
+>           Front Left (FL)
+>           Front Right (FR)
+>           Front Center (FC)
+>           Low Frequency Effects (LFE)
+>           Back Left (BL)
+>           Back Right (BR)
+>           Side Left (SL)
+>           Side Right (SR)
+>         iChannelNames           0
+>  00 00 00 00 00 00 00 00 00 00 00 00
+>         bmControls         01
+>           Cluster Control (read-only)
+>         iMixer                 0
+>       AudioControl Interface Descriptor:
+>         bLength                16
+>         bDescriptorType        36
+>         bDescriptorSubtype      4 (MIXER_UNIT)
+>         bUnitID                19
+>         bNrPins                 2
+>         baSourceID( 0)          3
+>         baSourceID( 1)          4
+>         bNrChannels             2
+>         bmChannelConfig    0x00000003
+>           Front Left (FL)
+>           Front Right (FR)
+>         iChannelNames           0
+>  00
+>         bmControls         01
+>           Cluster Control (read-only)
+>         iMixer                 0
+>       AudioControl Interface Descriptor:
+>         bLength                 8
+>         bDescriptorType        36
+>         bDescriptorSubtype     10 (CLOCK_SOURCE)
+>         bClockID               22
+>         bmAttributes         0x07 Internal programmable Clock (synced to
+> SOF)
+>         bmControls           0x07
+>           Clock Frequency Control (read/write)
+>           Clock Validity Control (read-only)
+>         bAssocTerminal          0
+>         iClockSource            0
+>       AudioControl Interface Descriptor:
+>         bLength                 8
+>         bDescriptorType        36
+>         bDescriptorSubtype     10 (CLOCK_SOURCE)
+>         bClockID               23
+>         bmAttributes         0x07 Internal programmable Clock (synced to
+> SOF)
+>         bmControls           0x07
+>           Clock Frequency Control (read/write)
+>           Clock Validity Control (read-only)
+>         bAssocTerminal          0
+>         iClockSource            0
+>       AudioControl Interface Descriptor:
+>         bLength                 8
+>         bDescriptorType        36
+>         bDescriptorSubtype     10 (CLOCK_SOURCE)
+>         bClockID               24
+>         bmAttributes         0x03 Internal programmable Clock
+>         bmControls           0x07
+>           Clock Frequency Control (read/write)
+>           Clock Validity Control (read-only)
+>         bAssocTerminal          0
+>         iClockSource            0
+>       AudioControl Interface Descriptor:
+>         bLength                 8
+>         bDescriptorType        36
+>         bDescriptorSubtype     10 (CLOCK_SOURCE)
+>         bClockID               25
+>         bmAttributes         0x00 External Clock
+>         bmControls           0x07
+>           Clock Frequency Control (read/write)
+>           Clock Validity Control (read-only)
+>         bAssocTerminal          0
+>         iClockSource            0
+>       Endpoint Descriptor:
+>         bLength                 7
+>         bDescriptorType         5
+>         bEndpointAddress     0x8f  EP 15 IN
+>         bmAttributes            3
+>           Transfer Type            Interrupt
+>           Synch Type               None
+>           Usage Type               Data
+>         wMaxPacketSize     0x0006  1x 6 bytes
+>         bInterval               4
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        1
+>       bAlternateSetting       0
+>       bNumEndpoints           0
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol     32
+>       iInterface              4 Output
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        1
+>       bAlternateSetting       1
+>       bNumEndpoints           1
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol     32
+>       iInterface              0
+>       AudioStreaming Interface Descriptor:
+>         bLength                16
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (AS_GENERAL)
+>         bTerminalLink           1
+>         bmControls           0x05
+>           Active Alternate Setting Control (read-only)
+>           Valid Alternate Setting Control (read-only)
+>         bFormatType             1
+>         bmFormats         0x00000001
+>           PCM
+>         bNrChannels             8
+>         bmChannelConfig   0x0000063f
+>           Front Left (FL)
+>           Front Right (FR)
+>           Front Center (FC)
+>           Low Frequency Effects (LFE)
+>           Back Left (BL)
+>           Back Right (BR)
+>           Side Left (SL)
+>           Side Right (SR)
+>         iChannelNames           0
+>       AudioStreaming Interface Descriptor:
+>         bLength                 6
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (FORMAT_TYPE)
+>         bFormatType             1 (FORMAT_TYPE_I)
+>         bSubslotSize            2
+>         bBitResolution         16
+>       Endpoint Descriptor:
+>         bLength                 7
+>         bDescriptorType         5
+>         bEndpointAddress     0x05  EP 5 OUT
+>         bmAttributes           13
+>           Transfer Type            Isochronous
+>           Synch Type               Synchronous
+>           Usage Type               Data
+>         wMaxPacketSize     0x01a0  1x 416 bytes
+>         bInterval               1
+>         AudioControl Endpoint Descriptor:
+>           bLength                 8
+>           bDescriptorType        37
+>           bDescriptorSubtype      1 (EP_GENERAL)
+>           bmAttributes         0x00
+>           bmControls           0x00
+>           bLockDelayUnits         0 Undefined
+>           wLockDelay              0
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        1
+>       bAlternateSetting       2
+>       bNumEndpoints           1
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol     32
+>       iInterface              0
+>       AudioStreaming Interface Descriptor:
+>         bLength                16
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (AS_GENERAL)
+>         bTerminalLink           1
+>         bmControls           0x05
+>           Active Alternate Setting Control (read-only)
+>           Valid Alternate Setting Control (read-only)
+>         bFormatType             1
+>         bmFormats         0x00000001
+>           PCM
+>         bNrChannels             8
+>         bmChannelConfig   0x0000063f
+>           Front Left (FL)
+>           Front Right (FR)
+>           Front Center (FC)
+>           Low Frequency Effects (LFE)
+>           Back Left (BL)
+>           Back Right (BR)
+>           Side Left (SL)
+>           Side Right (SR)
+>         iChannelNames           0
+>       AudioStreaming Interface Descriptor:
+>         bLength                 6
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (FORMAT_TYPE)
+>         bFormatType             1 (FORMAT_TYPE_I)
+>         bSubslotSize            4
+>         bBitResolution         24
+>       Endpoint Descriptor:
+>         bLength                 7
+>         bDescriptorType         5
+>         bEndpointAddress     0x05  EP 5 OUT
+>         bmAttributes           13
+>           Transfer Type            Isochronous
+>           Synch Type               Synchronous
+>           Usage Type               Data
+>         wMaxPacketSize     0x0340  1x 832 bytes
+>         bInterval               1
+>         AudioControl Endpoint Descriptor:
+>           bLength                 8
+>           bDescriptorType        37
+>           bDescriptorSubtype      1 (EP_GENERAL)
+>           bmAttributes         0x00
+>           bmControls           0x00
+>           bLockDelayUnits         0 Undefined
+>           wLockDelay              0
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        1
+>       bAlternateSetting       3
+>       bNumEndpoints           1
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol     32
+>       iInterface              0
+>       AudioStreaming Interface Descriptor:
+>         bLength                16
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (AS_GENERAL)
+>         bTerminalLink           1
+>         bmControls           0x05
+>           Active Alternate Setting Control (read-only)
+>           Valid Alternate Setting Control (read-only)
+>         bFormatType             1
+>         bmFormats         0x00000001
+>           PCM
+>         bNrChannels             2
+>         bmChannelConfig   0x00000003
+>           Front Left (FL)
+>           Front Right (FR)
+>         iChannelNames           0
+>       AudioStreaming Interface Descriptor:
+>         bLength                 6
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (FORMAT_TYPE)
+>         bFormatType             1 (FORMAT_TYPE_I)
+>         bSubslotSize            2
+>         bBitResolution         16
+>       Endpoint Descriptor:
+>         bLength                 7
+>         bDescriptorType         5
+>         bEndpointAddress     0x05  EP 5 OUT
+>         bmAttributes           13
+>           Transfer Type            Isochronous
+>           Synch Type               Synchronous
+>           Usage Type               Data
+>         wMaxPacketSize     0x0068  1x 104 bytes
+>         bInterval               1
+>         AudioControl Endpoint Descriptor:
+>           bLength                 8
+>           bDescriptorType        37
+>           bDescriptorSubtype      1 (EP_GENERAL)
+>           bmAttributes         0x00
+>           bmControls           0x00
+>           bLockDelayUnits         0 Undefined
+>           wLockDelay              0
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        1
+>       bAlternateSetting       4
+>       bNumEndpoints           1
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol     32
+>       iInterface              0
+>       AudioStreaming Interface Descriptor:
+>         bLength                16
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (AS_GENERAL)
+>         bTerminalLink           1
+>         bmControls           0x05
+>           Active Alternate Setting Control (read-only)
+>           Valid Alternate Setting Control (read-only)
+>         bFormatType             1
+>         bmFormats         0x00000001
+>           PCM
+>         bNrChannels             2
+>         bmChannelConfig   0x00000003
+>           Front Left (FL)
+>           Front Right (FR)
+>         iChannelNames           0
+>       AudioStreaming Interface Descriptor:
+>         bLength                 6
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (FORMAT_TYPE)
+>         bFormatType             1 (FORMAT_TYPE_I)
+>         bSubslotSize            4
+>         bBitResolution         24
+>       Endpoint Descriptor:
+>         bLength                 7
+>         bDescriptorType         5
+>         bEndpointAddress     0x05  EP 5 OUT
+>         bmAttributes           13
+>           Transfer Type            Isochronous
+>           Synch Type               Synchronous
+>           Usage Type               Data
+>         wMaxPacketSize     0x00d0  1x 208 bytes
+>         bInterval               1
+>         AudioControl Endpoint Descriptor:
+>           bLength                 8
+>           bDescriptorType        37
+>           bDescriptorSubtype      1 (EP_GENERAL)
+>           bmAttributes         0x00
+>           bmControls           0x00
+>           bLockDelayUnits         0 Undefined
+>           wLockDelay              0
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        1
+>       bAlternateSetting       5
+>       bNumEndpoints           1
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol     32
+>       iInterface              0
+>       AudioStreaming Interface Descriptor:
+>         bLength                16
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (AS_GENERAL)
+>         bTerminalLink           1
+>         bmControls           0x05
+>           Active Alternate Setting Control (read-only)
+>           Valid Alternate Setting Control (read-only)
+>         bFormatType             1
+>         bmFormats         0x00000001
+>           PCM
+>         bNrChannels             6
+>         bmChannelConfig   0x0000003f
+>           Front Left (FL)
+>           Front Right (FR)
+>           Front Center (FC)
+>           Low Frequency Effects (LFE)
+>           Back Left (BL)
+>           Back Right (BR)
+>         iChannelNames           0
+>       AudioStreaming Interface Descriptor:
+>         bLength                 6
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (FORMAT_TYPE)
+>         bFormatType             1 (FORMAT_TYPE_I)
+>         bSubslotSize            2
+>         bBitResolution         16
+>       Endpoint Descriptor:
+>         bLength                 7
+>         bDescriptorType         5
+>         bEndpointAddress     0x05  EP 5 OUT
+>         bmAttributes           13
+>           Transfer Type            Isochronous
+>           Synch Type               Synchronous
+>           Usage Type               Data
+>         wMaxPacketSize     0x0138  1x 312 bytes
+>         bInterval               1
+>         AudioControl Endpoint Descriptor:
+>           bLength                 8
+>           bDescriptorType        37
+>           bDescriptorSubtype      1 (EP_GENERAL)
+>           bmAttributes         0x00
+>           bmControls           0x00
+>           bLockDelayUnits         0 Undefined
+>           wLockDelay              0
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        1
+>       bAlternateSetting       6
+>       bNumEndpoints           1
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol     32
+>       iInterface              0
+>       AudioStreaming Interface Descriptor:
+>         bLength                16
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (AS_GENERAL)
+>         bTerminalLink           1
+>         bmControls           0x05
+>           Active Alternate Setting Control (read-only)
+>           Valid Alternate Setting Control (read-only)
+>         bFormatType             1
+>         bmFormats         0x00000001
+>           PCM
+>         bNrChannels             6
+>         bmChannelConfig   0x0000003f
+>           Front Left (FL)
+>           Front Right (FR)
+>           Front Center (FC)
+>           Low Frequency Effects (LFE)
+>           Back Left (BL)
+>           Back Right (BR)
+>         iChannelNames           0
+>       AudioStreaming Interface Descriptor:
+>         bLength                 6
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (FORMAT_TYPE)
+>         bFormatType             1 (FORMAT_TYPE_I)
+>         bSubslotSize            4
+>         bBitResolution         24
+>       Endpoint Descriptor:
+>         bLength                 7
+>         bDescriptorType         5
+>         bEndpointAddress     0x05  EP 5 OUT
+>         bmAttributes           13
+>           Transfer Type            Isochronous
+>           Synch Type               Synchronous
+>           Usage Type               Data
+>         wMaxPacketSize     0x0270  1x 624 bytes
+>         bInterval               1
+>         AudioControl Endpoint Descriptor:
+>           bLength                 8
+>           bDescriptorType        37
+>           bDescriptorSubtype      1 (EP_GENERAL)
+>           bmAttributes         0x00
+>           bmControls           0x00
+>           bLockDelayUnits         0 Undefined
+>           wLockDelay              0
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        1
+>       bAlternateSetting       7
+>       bNumEndpoints           1
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol     32
+>       iInterface              0
+>       AudioStreaming Interface Descriptor:
+>         bLength                16
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (AS_GENERAL)
+>         bTerminalLink           1
+>         bmControls           0x05
+>           Active Alternate Setting Control (read-only)
+>           Valid Alternate Setting Control (read-only)
+>         bFormatType             1
+>         bmFormats         0x00000001
+>           PCM
+>         bNrChannels             4
+>         bmChannelConfig   0x00000033
+>           Front Left (FL)
+>           Front Right (FR)
+>           Back Left (BL)
+>           Back Right (BR)
+>         iChannelNames           0
+>       AudioStreaming Interface Descriptor:
+>         bLength                 6
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (FORMAT_TYPE)
+>         bFormatType             1 (FORMAT_TYPE_I)
+>         bSubslotSize            2
+>         bBitResolution         16
+>       Endpoint Descriptor:
+>         bLength                 7
+>         bDescriptorType         5
+>         bEndpointAddress     0x05  EP 5 OUT
+>         bmAttributes           13
+>           Transfer Type            Isochronous
+>           Synch Type               Synchronous
+>           Usage Type               Data
+>         wMaxPacketSize     0x00d0  1x 208 bytes
+>         bInterval               1
+>         AudioControl Endpoint Descriptor:
+>           bLength                 8
+>           bDescriptorType        37
+>           bDescriptorSubtype      1 (EP_GENERAL)
+>           bmAttributes         0x00
+>           bmControls           0x00
+>           bLockDelayUnits         0 Undefined
+>           wLockDelay              0
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        1
+>       bAlternateSetting       8
+>       bNumEndpoints           1
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol     32
+>       iInterface              0
+>       AudioStreaming Interface Descriptor:
+>         bLength                16
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (AS_GENERAL)
+>         bTerminalLink           1
+>         bmControls           0x05
+>           Active Alternate Setting Control (read-only)
+>           Valid Alternate Setting Control (read-only)
+>         bFormatType             1
+>         bmFormats         0x00000001
+>           PCM
+>         bNrChannels             4
+>         bmChannelConfig   0x00000033
+>           Front Left (FL)
+>           Front Right (FR)
+>           Back Left (BL)
+>           Back Right (BR)
+>         iChannelNames           0
+>       AudioStreaming Interface Descriptor:
+>         bLength                 6
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (FORMAT_TYPE)
+>         bFormatType             1 (FORMAT_TYPE_I)
+>         bSubslotSize            4
+>         bBitResolution         24
+>       Endpoint Descriptor:
+>         bLength                 7
+>         bDescriptorType         5
+>         bEndpointAddress     0x05  EP 5 OUT
+>         bmAttributes           13
+>           Transfer Type            Isochronous
+>           Synch Type               Synchronous
+>           Usage Type               Data
+>         wMaxPacketSize     0x01a0  1x 416 bytes
+>         bInterval               1
+>         AudioControl Endpoint Descriptor:
+>           bLength                 8
+>           bDescriptorType        37
+>           bDescriptorSubtype      1 (EP_GENERAL)
+>           bmAttributes         0x00
+>           bmControls           0x00
+>           bLockDelayUnits         0 Undefined
+>           wLockDelay              0
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        2
+>       bAlternateSetting       0
+>       bNumEndpoints           0
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol     32
+>       iInterface              5 SPDIF Output
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        2
+>       bAlternateSetting       1
+>       bNumEndpoints           1
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol     32
+>       iInterface              0
+>       AudioStreaming Interface Descriptor:
+>         bLength                16
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (AS_GENERAL)
+>         bTerminalLink           2
+>         bmControls           0x05
+>           Active Alternate Setting Control (read-only)
+>           Valid Alternate Setting Control (read-only)
+>         bFormatType             1
+>         bmFormats         0x00000001
+>           PCM
+>         bNrChannels             2
+>         bmChannelConfig   0x00000003
+>           Front Left (FL)
+>           Front Right (FR)
+>         iChannelNames           0
+>       AudioStreaming Interface Descriptor:
+>         bLength                 6
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (FORMAT_TYPE)
+>         bFormatType             1 (FORMAT_TYPE_I)
+>         bSubslotSize            2
+>         bBitResolution         16
+>       Endpoint Descriptor:
+>         bLength                 7
+>         bDescriptorType         5
+>         bEndpointAddress     0x06  EP 6 OUT
+>         bmAttributes           13
+>           Transfer Type            Isochronous
+>           Synch Type               Synchronous
+>           Usage Type               Data
+>         wMaxPacketSize     0x0068  1x 104 bytes
+>         bInterval               1
+>         AudioControl Endpoint Descriptor:
+>           bLength                 8
+>           bDescriptorType        37
+>           bDescriptorSubtype      1 (EP_GENERAL)
+>           bmAttributes         0x00
+>           bmControls           0x00
+>           bLockDelayUnits         0 Undefined
+>           wLockDelay              0
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        2
+>       bAlternateSetting       2
+>       bNumEndpoints           1
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol     32
+>       iInterface              0
+>       AudioStreaming Interface Descriptor:
+>         bLength                16
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (AS_GENERAL)
+>         bTerminalLink           2
+>         bmControls           0x05
+>           Active Alternate Setting Control (read-only)
+>           Valid Alternate Setting Control (read-only)
+>         bFormatType             1
+>         bmFormats         0x00000001
+>           PCM
+>         bNrChannels             2
+>         bmChannelConfig   0x00000003
+>           Front Left (FL)
+>           Front Right (FR)
+>         iChannelNames           0
+>       AudioStreaming Interface Descriptor:
+>         bLength                 6
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (FORMAT_TYPE)
+>         bFormatType             1 (FORMAT_TYPE_I)
+>         bSubslotSize            4
+>         bBitResolution         24
+>       Endpoint Descriptor:
+>         bLength                 7
+>         bDescriptorType         5
+>         bEndpointAddress     0x06  EP 6 OUT
+>         bmAttributes           13
+>           Transfer Type            Isochronous
+>           Synch Type               Synchronous
+>           Usage Type               Data
+>         wMaxPacketSize     0x00d0  1x 208 bytes
+>         bInterval               1
+>         AudioControl Endpoint Descriptor:
+>           bLength                 8
+>           bDescriptorType        37
+>           bDescriptorSubtype      1 (EP_GENERAL)
+>           bmAttributes         0x00
+>           bmControls           0x00
+>           bLockDelayUnits         0 Undefined
+>           wLockDelay              0
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        2
+>       bAlternateSetting       3
+>       bNumEndpoints           1
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol     32
+>       iInterface              0
+>       AudioStreaming Interface Descriptor:
+>         bLength                16
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (AS_GENERAL)
+>         bTerminalLink           2
+>         bmControls           0x05
+>           Active Alternate Setting Control (read-only)
+>           Valid Alternate Setting Control (read-only)
+>         bFormatType             3
+>         bmFormats         0x00001381
+>           PCM
+>         bNrChannels             2
+>         bmChannelConfig   0x00000003
+>           Front Left (FL)
+>           Front Right (FR)
+>         iChannelNames           0
+>       AudioStreaming Interface Descriptor:
+>         bLength                 6
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (FORMAT_TYPE)
+>         bFormatType             3 (FORMAT_TYPE_III)
+>         bSubslotSize            2
+>         bBitResolution         16
+>       Endpoint Descriptor:
+>         bLength                 7
+>         bDescriptorType         5
+>         bEndpointAddress     0x06  EP 6 OUT
+>         bmAttributes           13
+>           Transfer Type            Isochronous
+>           Synch Type               Synchronous
+>           Usage Type               Data
+>         wMaxPacketSize     0x0068  1x 104 bytes
+>         bInterval               1
+>         AudioControl Endpoint Descriptor:
+>           bLength                 8
+>           bDescriptorType        37
+>           bDescriptorSubtype      1 (EP_GENERAL)
+>           bmAttributes         0x00
+>           bmControls           0x00
+>           bLockDelayUnits         0 Undefined
+>           wLockDelay              0
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        3
+>       bAlternateSetting       0
+>       bNumEndpoints           0
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol     32
+>       iInterface              6 Input
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        3
+>       bAlternateSetting       1
+>       bNumEndpoints           1
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol     32
+>       iInterface              0
+>       AudioStreaming Interface Descriptor:
+>         bLength                16
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (AS_GENERAL)
+>         bTerminalLink           8
+>         bmControls           0x05
+>           Active Alternate Setting Control (read-only)
+>           Valid Alternate Setting Control (read-only)
+>         bFormatType             1
+>         bmFormats         0x00000001
+>           PCM
+>         bNrChannels             2
+>         bmChannelConfig   0x00000003
+>           Front Left (FL)
+>           Front Right (FR)
+>         iChannelNames           0
+>       AudioStreaming Interface Descriptor:
+>         bLength                 6
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (FORMAT_TYPE)
+>         bFormatType             1 (FORMAT_TYPE_I)
+>         bSubslotSize            2
+>         bBitResolution         16
+>       Endpoint Descriptor:
+>         bLength                 7
+>         bDescriptorType         5
+>         bEndpointAddress     0x88  EP 8 IN
+>         bmAttributes            5
+>           Transfer Type            Isochronous
+>           Synch Type               Asynchronous
+>           Usage Type               Data
+>         wMaxPacketSize     0x0068  1x 104 bytes
+>         bInterval               1
+>         AudioControl Endpoint Descriptor:
+>           bLength                 8
+>           bDescriptorType        37
+>           bDescriptorSubtype      1 (EP_GENERAL)
+>           bmAttributes         0x00
+>           bmControls           0x00
+>           bLockDelayUnits         0 Undefined
+>           wLockDelay              0
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        3
+>       bAlternateSetting       2
+>       bNumEndpoints           1
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol     32
+>       iInterface              0
+>       AudioStreaming Interface Descriptor:
+>         bLength                16
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (AS_GENERAL)
+>         bTerminalLink           8
+>         bmControls           0x05
+>           Active Alternate Setting Control (read-only)
+>           Valid Alternate Setting Control (read-only)
+>         bFormatType             1
+>         bmFormats         0x00000001
+>           PCM
+>         bNrChannels             2
+>         bmChannelConfig   0x00000003
+>           Front Left (FL)
+>           Front Right (FR)
+>         iChannelNames           0
+>       AudioStreaming Interface Descriptor:
+>         bLength                 6
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (FORMAT_TYPE)
+>         bFormatType             1 (FORMAT_TYPE_I)
+>         bSubslotSize            4
+>         bBitResolution         24
+>       Endpoint Descriptor:
+>         bLength                 7
+>         bDescriptorType         5
+>         bEndpointAddress     0x88  EP 8 IN
+>         bmAttributes            5
+>           Transfer Type            Isochronous
+>           Synch Type               Asynchronous
+>           Usage Type               Data
+>         wMaxPacketSize     0x00d0  1x 208 bytes
+>         bInterval               1
+>         AudioControl Endpoint Descriptor:
+>           bLength                 8
+>           bDescriptorType        37
+>           bDescriptorSubtype      1 (EP_GENERAL)
+>           bmAttributes         0x00
+>           bmControls           0x00
+>           bLockDelayUnits         0 Undefined
+>           wLockDelay              0
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        4
+>       bAlternateSetting       0
+>       bNumEndpoints           0
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol     32
+>       iInterface              7 SPDIF Input
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        4
+>       bAlternateSetting       1
+>       bNumEndpoints           1
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol     32
+>       iInterface              0
+>       AudioStreaming Interface Descriptor:
+>         bLength                16
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (AS_GENERAL)
+>         bTerminalLink           9
+>         bmControls           0x05
+>           Active Alternate Setting Control (read-only)
+>           Valid Alternate Setting Control (read-only)
+>         bFormatType             1
+>         bmFormats         0x00000001
+>           PCM
+>         bNrChannels             2
+>         bmChannelConfig   0x00000003
+>           Front Left (FL)
+>           Front Right (FR)
+>         iChannelNames           0
+>       AudioStreaming Interface Descriptor:
+>         bLength                 6
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (FORMAT_TYPE)
+>         bFormatType             1 (FORMAT_TYPE_I)
+>         bSubslotSize            2
+>         bBitResolution         16
+>       Endpoint Descriptor:
+>         bLength                 7
+>         bDescriptorType         5
+>         bEndpointAddress     0x8a  EP 10 IN
+>         bmAttributes            5
+>           Transfer Type            Isochronous
+>           Synch Type               Asynchronous
+>           Usage Type               Data
+>         wMaxPacketSize     0x0068  1x 104 bytes
+>         bInterval               1
+>         AudioControl Endpoint Descriptor:
+>           bLength                 8
+>           bDescriptorType        37
+>           bDescriptorSubtype      1 (EP_GENERAL)
+>           bmAttributes         0x00
+>           bmControls           0x00
+>           bLockDelayUnits         0 Undefined
+>           wLockDelay              0
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        4
+>       bAlternateSetting       2
+>       bNumEndpoints           1
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol     32
+>       iInterface              0
+>       AudioStreaming Interface Descriptor:
+>         bLength                16
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (AS_GENERAL)
+>         bTerminalLink           9
+>         bmControls           0x05
+>           Active Alternate Setting Control (read-only)
+>           Valid Alternate Setting Control (read-only)
+>         bFormatType             1
+>         bmFormats         0x00000001
+>           PCM
+>         bNrChannels             2
+>         bmChannelConfig   0x00000003
+>           Front Left (FL)
+>           Front Right (FR)
+>         iChannelNames           0
+>       AudioStreaming Interface Descriptor:
+>         bLength                 6
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (FORMAT_TYPE)
+>         bFormatType             1 (FORMAT_TYPE_I)
+>         bSubslotSize            4
+>         bBitResolution         24
+>       Endpoint Descriptor:
+>         bLength                 7
+>         bDescriptorType         5
+>         bEndpointAddress     0x8a  EP 10 IN
+>         bmAttributes            5
+>           Transfer Type            Isochronous
+>           Synch Type               Asynchronous
+>           Usage Type               Data
+>         wMaxPacketSize     0x00d0  1x 208 bytes
+>         bInterval               1
+>         AudioControl Endpoint Descriptor:
+>           bLength                 8
+>           bDescriptorType        37
+>           bDescriptorSubtype      1 (EP_GENERAL)
+>           bmAttributes         0x00
+>           bmControls           0x00
+>           bLockDelayUnits         0 Undefined
+>           wLockDelay              0
+>     Interface Association:
+>       bLength                 8
+>       bDescriptorType        11
+>       bFirstInterface         5
+>       bInterfaceCount         1
+>       bFunctionClass          3 Human Interface Device
+>       bFunctionSubClass       0
+>       bFunctionProtocol       0
+>       iFunction               0
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        5
+>       bAlternateSetting       0
+>       bNumEndpoints           1
+>       bInterfaceClass         3 Human Interface Device
+>       bInterfaceSubClass      0
+>       bInterfaceProtocol      0
+>       iInterface              0
+>         HID Device Descriptor:
+>           bLength                 9
+>           bDescriptorType        33
+>           bcdHID               1.00
+>           bCountryCode            0 Not supported
+>           bNumDescriptors         1
+>           bDescriptorType        34 Report
+>           wDescriptorLength      50
+>          Report Descriptors:
+>            ** UNAVAILABLE **
+>       Endpoint Descriptor:
+>         bLength                 7
+>         bDescriptorType         5
+>         bEndpointAddress     0x84  EP 4 IN
+>         bmAttributes            3
+>           Transfer Type            Interrupt
+>           Synch Type               None
+>           Usage Type               Data
+>         wMaxPacketSize     0x0010  1x 16 bytes
+>         bInterval               4
+> Device Qualifier (for other device speed):
+>   bLength                10
+>   bDescriptorType         6
+>   bcdUSB               2.00
+>   bDeviceClass          239 Miscellaneous Device
+>   bDeviceSubClass         2
+>   bDeviceProtocol         1 Interface Association
+>   bMaxPacketSize0        64
+>   bNumConfigurations      1
+> Device Status:     0x0000
+>   (Bus Powered)
+>
+> I'm trying to create a mapping in
+>
