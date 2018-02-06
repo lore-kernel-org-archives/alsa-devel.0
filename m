@@ -1,56 +1,56 @@
 From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH 6/8] ASoC: samsung: i2s: Update
- clock-output-names property documentation
-Date: Tue, 6 Feb 2018 13:59:47 +0100
-Message-ID: <CAJKOXPcXLwiB_bxQtBp-1PhM7yrA5fGM7t6kZtASXdFCgEHC=g@mail.gmail.com>
-References: <CGME20180205154529epcas2p3478546ef61294ac06cd9d8ed3d7e12c9@epcas2p3.samsung.com>
- <20180205154403.13520-1-s.nawrocki@samsung.com>
- <20180205154403.13520-7-s.nawrocki@samsung.com>
- <CAJKOXPcT-C8t-1i0n5JE23udfKfdURRbyvaCbA1KGKxdZ1+Y=A@mail.gmail.com>
+Subject: Re: [PATCH 7/8] ASoC: samsung: Add missing #sound-dai-cells property documentation
+Date: Tue, 6 Feb 2018 14:02:11 +0100
+Message-ID: <CAJKOXPc_NUa2worczHpm4VoTY9Do1-Gq4-711kLz7W0qowTeGQ@mail.gmail.com>
+References: <CGME20180205154533epcas2p2d0ed58188cf7f29751c08cd804f6fb0d@epcas2p2.samsung.com>
+ <20180205154403.13520-1-s.nawrocki@samsung.com> <20180205154403.13520-8-s.nawrocki@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- by alsa0.perex.cz (Postfix) with ESMTP id E0CAF26755C
- for <alsa-devel@alsa-project.org>; Tue,  6 Feb 2018 13:59:50 +0100 (CET)
-Received: from mail-wm0-f42.google.com (mail-wm0-f42.google.com [74.125.82.42])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 7F8B82178F
- for <alsa-devel@alsa-project.org>; Tue,  6 Feb 2018 12:59:49 +0000 (UTC)
-Received: by mail-wm0-f42.google.com with SMTP id v123so3647948wmd.5
- for <alsa-devel@alsa-project.org>; Tue, 06 Feb 2018 04:59:49 -0800 (PST)
-In-Reply-To: <CAJKOXPcT-C8t-1i0n5JE23udfKfdURRbyvaCbA1KGKxdZ1+Y=A@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20180205154403.13520-8-s.nawrocki@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
 To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, =?UTF-8?B?QmFydMWCb21pZWogxbtvxYJuaWVya2lld2ljeg==?= <b.zolnierkie@samsung.com>, sbkim73@samsung.com, jcsing.lee@samsung.com, lgirdwood@gmail.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org, broonie@kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, robh+dt@kernel.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, jcsing.lee@samsung.com, sbkim73@samsung.com, linux-kernel@vger.kernel.org, =?UTF-8?B?QmFydMWCb21pZWogxbtvxYJuaWVya2lld2ljeg==?= <b.zolnierkie@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 6, 2018 at 1:59 PM, Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> On Mon, Feb 5, 2018 at 4:44 PM, Sylwester Nawrocki
-> <s.nawrocki@samsung.com> wrote:
->> The clock-output-names property is marked as deprecated. While at it,
->> #clock-cells property's value is corrected in the example snippet
->> and few typos are fixed.
->>
->> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
->> ---
->>  .../devicetree/bindings/sound/samsung-i2s.txt          | 18 +++++++++---------
->>  1 file changed, 9 insertions(+), 9 deletions(-)
->
-> As with all bindings, this should go before changing the driver.
+On Mon, Feb 5, 2018 at 4:44 PM, Sylwester Nawrocki
+<s.nawrocki@samsung.com> wrote:
+> The #sound-dai-cells property might be helpful in selecting primary
+> or secondary CPU DAI and it's already present in i2s nodes for some
+> exynos SoCs so let's add it to the DT binding documentation.
 
-Ah, too fast in pressing return. I missed:
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+The description above looks like you are documenting existing optional
+property but you added it as a required property.
 
 Best regards,
 Krzysztof
+
+>
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> ---
+>  Documentation/devicetree/bindings/sound/samsung-i2s.txt | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/sound/samsung-i2s.txt b/Documentation/devicetree/bindings/sound/samsung-i2s.txt
+> index 5d7bb2735824..dd1b6e329941 100644
+> --- a/Documentation/devicetree/bindings/sound/samsung-i2s.txt
+> +++ b/Documentation/devicetree/bindings/sound/samsung-i2s.txt
+> @@ -54,6 +54,9 @@ in the IIS Multi Audio Interface.
+>  Note: Old DTs may not have the #clock-cells property and then not use the I2S
+>  node as a clock supplier.
+>
+> + - #sound-dai-cells: should be 1.
+> +
+> +
+>  Optional SoC Specific Properties:
+>
+>  - samsung,idma-addr: Internal DMA register base address of the audio
+> @@ -79,4 +82,5 @@ i2s0: i2s@3830000 {
+>         samsung,idma-addr = <0x03000000>;
+>         pinctrl-names = "default";
+>         pinctrl-0 = <&i2s0_bus>;
+> +       #sound-dai-cells = <1>;
+>  };
+> --
+> 2.14.2
+>
