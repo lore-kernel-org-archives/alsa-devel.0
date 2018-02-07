@@ -1,38 +1,63 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH 7/8] ASoC: samsung: Add missing #sound-dai-cells
- property documentation
-Date: Wed, 07 Feb 2018 17:37:33 +0100
-Message-ID: <5d525a1a-b7a7-8b90-97f9-a59c9e361509@samsung.com>
-References: <CGME20180205154533epcas2p2d0ed58188cf7f29751c08cd804f6fb0d@epcas2p2.samsung.com>
-        <20180205154403.13520-1-s.nawrocki@samsung.com>
-        <20180205154403.13520-8-s.nawrocki@samsung.com>
-        <CAJKOXPc_NUa2worczHpm4VoTY9Do1-Gq4-711kLz7W0qowTeGQ@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [GIT PULL] Extra ASoC updates for v4.16
+Date: Wed, 7 Feb 2018 12:10:46 -0800
+Message-ID: <CA+55aFw3T5eLAY=VReAyWMaeJU1hKktwoqRMXS0Ynkjtf=b8oA@mail.gmail.com>
+References: <20180206114439.GC5681@sirena.org.uk>
+ <CA+55aFzD0+2pfQN+hPOmGNR5CHfp5KYKNtvng0NqVbKGTE5LRg@mail.gmail.com>
+ <s5h372d743i.wl-tiwai@suse.de>
+ <CA+55aFy7b_eCGhH1PVVzw10BKanxAcRVK=k5CRNc2fDhN9717Q@mail.gmail.com>
+ <20180207122927.GB6003@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <CAJKOXPc_NUa2worczHpm4VoTY9Do1-Gq4-711kLz7W0qowTeGQ@mail.gmail.com>
-Content-language: en-GB
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, robh+dt@kernel.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, jcsing.lee@samsung.com, sbkim73@samsung.com, linux-kernel@vger.kernel.org, =?UTF-8?Q?Bart=c5=82omiej_=c5=bbo=c5=82nierkiewicz?= <b.zolnierkie@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-it0-f49.google.com (mail-it0-f49.google.com
+ [209.85.214.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 42DDC2676C5
+ for <alsa-devel@alsa-project.org>; Wed,  7 Feb 2018 21:10:48 +0100 (CET)
+Received: by mail-it0-f49.google.com with SMTP id k6so3714727ita.3
+ for <alsa-devel@alsa-project.org>; Wed, 07 Feb 2018 12:10:48 -0800 (PST)
+In-Reply-To: <20180207122927.GB6003@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <takashi.iwai@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/06/2018 02:02 PM, Krzysztof Kozlowski wrote:
-> On Mon, Feb 5, 2018 at 4:44 PM, Sylwester Nawrocki
-> <s.nawrocki@samsung.com> wrote:
->> The #sound-dai-cells property might be helpful in selecting primary
->> or secondary CPU DAI and it's already present in i2s nodes for some
->> exynos SoCs so let's add it to the DT binding documentation.
+On Wed, Feb 7, 2018 at 4:29 AM, Mark Brown <broonie@kernel.org> wrote:
 >
-> The description above looks like you are documenting existing optional
-> property but you added it as a required property.
+> I'm frankly a little bit confused about what went wrong here, usually
+> git does manage to elide empty merges - for example, if I ask git to
+> merge four branches two of which are already merged:
 
-Actually, it would be better to have it as a required property, but
-that could be done with any new device bindings. For the exisitng ones 
-I will move this property to the "Optional SoC Specific Properties"
-paragraph.
+Yes, so git does elide truly trivial merges, but the git triviality
+test is actually not "have all the commits been merged elsewhere", but
+"are all the branches completely just subsets in history of each
+other".
 
--- 
-Regards,
-Sylwester
+So a single extra merge commit that exists in one branch but not the
+others will defeat that, and then you get a merge of a merge etc.
+That's something we saw early on, when people would do daily
+back-merges - even if there was no extra work in the development
+branch, the previous back-merge *itself* would mean that the merge
+wouldn't fast-forward to the upstream code, but would just do another
+merge, because upstream wasn't a full superset of the development
+branch due to the previous back-merge that wasn't upstream.
+
+But in this case, the issue doesn't seem to be a previous back-merge,
+but simply that the commits ion question had been merged up-stream -
+but they weren't in your development branch, so when your development
+branch does a merge, to *that* branch it looks like new commits, even
+if it isn't anythign new or interesting to *me*, because I got those
+commits from Takashi's pull two weeks ago.
+
+This new pull request looks better, I'll look at it next.
+
+               Linus
