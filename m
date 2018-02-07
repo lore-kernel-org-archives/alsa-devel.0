@@ -1,32 +1,123 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH 00/20] Remove references to undefined symbols and fix two potential bugs
-Date: Wed, 07 Feb 2018 10:28:11 +0100
-Message-ID: <87lgg587ys.fsf@belgarion.home>
-References: <20180205012146.23981-1-ulfalizer@gmail.com>
-        <CAFkk2KRafUf3ki2R7B1pE_wzYkYn-OdeqLnvL0kScSxdzDMEXw@mail.gmail.com>
+From: Rohit Kumar <rohitkr@codeaurora.org>
+Subject: Re: [RESEND PATCH v2 11/15] ASoC: qcom: qdsp6: Add
+ support to q6afe dai driver
+Date: Wed, 7 Feb 2018 17:04:06 +0530
+Message-ID: <33dbc1d9-ec33-b779-9258-4d1b13e17aaa@codeaurora.org>
+References: <20171214173402.19074-1-srinivas.kandagatla@linaro.org>
+ <20171214173402.19074-12-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAFkk2KRafUf3ki2R7B1pE_wzYkYn-OdeqLnvL0kScSxdzDMEXw@mail.gmail.com>
-        (Ulf Magnusson's message of "Mon, 5 Feb 2018 03:08:24 +0100")
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ulf Magnusson <ulfalizer@gmail.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, perex@perex.cz, tiwai@suse.com, broonie@kernel.org, alsa-devel@alsa-project.org, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, tfiga@chromium.org, paul.burton@mips.com, Marek Szyprowski <m.szyprowski@samsung.com>, Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>, Linus Walleij <linus.walleij@linaro.org>, vgupta@synopsys.com, mgorman@techsingularity.net, hch@lst.de, mina86@mina86.com, robh@kernel.org, sboyd@codeaurora.org, paulus@ozlabs.org, will.deacon@arm.com, Tony Lindgren <tony@atomide.com>, Nicholas Piggin <npiggin@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Palmer Dabbelt <palmer@sifive.com>, Albert Ou <albert@sifive.com>, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4ACE5266D7D
+ for <alsa-devel@alsa-project.org>; Wed,  7 Feb 2018 12:34:19 +0100 (CET)
+In-Reply-To: <20171214173402.19074-12-srinivas.kandagatla@linaro.org>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: srinivas.kandagatla@linaro.org, Andy Gross <andy.gross@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Patrick Lai <plai@codeaurora.org>, sboyd@codeaurora.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, David Brown <david.brown@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Ulf Magnusson <ulfalizer@gmail.com> writes:
 
-> The symbol AC97_BUS_NEW in sound/ac97/Kconfig selects the globally
-> undefined symbol AC97.
+
+On 12/14/2017 11:03 PM, srinivas.kandagatla@linaro.org wrote:
+> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 >
-> It doesn't seem to simply be a misspelling of AC97_BUS, because then
-> the dependencies of AC97_BUS_COMPAT would be impossible to satisfy.
-You're correct.
-
-I don't know what happened to me when coding this, but you can safely remove
-this useless select statement.
-
-Cheers.
-
--- 
-Robert
+> This patch adds support to q6afe backend dais driver.
+>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>   sound/soc/qcom/Kconfig           |   5 +
+>   sound/soc/qcom/qdsp6/Makefile    |   1 +
+>   sound/soc/qcom/qdsp6/q6afe-dai.c | 241 +++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 247 insertions(+)
+>   create mode 100644 sound/soc/qcom/qdsp6/q6afe-dai.c
+>
+> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+> index dd8fb0cde614..003ce182691c 100644
+> --- a/sound/soc/qcom/Kconfig
+> +++ b/sound/soc/qcom/Kconfig
+> @@ -64,6 +64,10 @@ config SND_SOC_QDSP6_ROUTING
+>   	tristate
+>   	default n
+>   
+> +config SND_SOC_QDSP6_AFE_DAI
+> +	tristate
+> +	default n
+> +
+>   config SND_SOC_QDSP6
+>   	tristate "SoC ALSA audio driver for QDSP6"
+>   	select SND_SOC_QDSP6_AFE
+> @@ -71,6 +75,7 @@ config SND_SOC_QDSP6
+>   	select SND_SOC_QDSP6_ASM
+>   	select SND_SOC_QDSP6_CORE
+>   	select SND_SOC_QDSP6_ROUTING
+> +	select SND_SOC_QDSP6_AFE_DAI
+>   	help
+>   	 To add support for MSM QDSP6 Soc Audio.
+>   	 This will enable sound soc platform specific
+> diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
+> index c1ad060a2341..bd8bd02bf09e 100644
+> --- a/sound/soc/qcom/qdsp6/Makefile
+> +++ b/sound/soc/qcom/qdsp6/Makefile
+> @@ -3,3 +3,4 @@ obj-$(CONFIG_SND_SOC_QDSP6_ADM) += q6adm.o
+>   obj-$(CONFIG_SND_SOC_QDSP6_ASM) += q6asm.o
+>   obj-$(CONFIG_SND_SOC_QDSP6_CORE) += q6core.o
+>   obj-$(CONFIG_SND_SOC_QDSP6_ROUTING) += q6routing.o
+> +obj-$(CONFIG_SND_SOC_QDSP6_AFE_DAI) += q6afe-dai.o
+> diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
+> new file mode 100644
+> index 000000000000..e9865c684bcb
+> --- /dev/null
+> +++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
+> @@ -0,0 +1,241 @@
+> +/* SPDX-License-Identifier: GPL-2.0
+> +* Copyright (c) 2011-2016, The Linux Foundation
+> +* Copyright (c) 2017, Linaro Limited
+> +*/
+> +#include <linux/err.h>
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+> +#include <linux/device.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +#include <sound/pcm.h>
+> +#include <sound/soc.h>
+> +#include <sound/pcm_params.h>
+> +#include "q6afe.h"
+> +
+> +struct q6hdmi_dai_data {
+> +	struct q6afe_port *port;
+> +	struct q6afe_hdmi_cfg port_config;
+> +	bool is_port_started;
+> +};
+> +
+> +static int q6hdmi_format_put(struct snd_kcontrol *kcontrol,
+> +				struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct q6hdmi_dai_data *dai_data = kcontrol->private_data;
+> +	int value = ucontrol->value.integer.value[0];
+> +
+> +	dai_data->port_config.datatype = value;
+....
+> +
+> +static struct platform_driver q6afe_dai_driver = {
+> +	.probe  = q6afe_dai_dev_probe,
+> +	.remove = q6afe_dai_dev_remove,
+> +	.driver = {
+> +		.name = "q6afe_dai",
+> +		.owner = THIS_MODULE,
+> +	},
+> +};
+> +
+> +module_platform_driver(q6afe_dai_driver);
+MODULE_LICENSE missing.
