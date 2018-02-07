@@ -1,36 +1,37 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v2] ASoC: use seq_file to dump the contents of
- dai_list,platform_list and codec_list
-Date: Wed, 7 Feb 2018 16:15:04 +0200
-Message-ID: <CAHp75VdvTdwB=EM1DejYHcazBRRgoy5cw=Rs0U5kSTXHWeuUOA@mail.gmail.com>
-References: <20180118053126.22082-1-dolinux.peng@gmail.com>
- <CAHp75VcefO1L-E8ymHX7MibLiOXkRZ3+3FbkF_L+ywMV-i3Mvw@mail.gmail.com>
- <20180123173732.GI7600@sirena.org.uk> <CAErzpmt5Z_bVkO-86yCNNWMNSYXWMzvABGtTEuYV1Y1qk=2LJQ@mail.gmail.com>
- <20180126112838.GA32674@sirena.org.uk>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [PATCH 2/8] ASoC: samsung: i2s: Ensure names of supplied clocks
+ are unique
+Date: Wed, 07 Feb 2018 16:20:56 +0100
+Message-ID: <db8df557-fa55-9eac-d9cf-f3dc111c93c0@samsung.com>
+References: <CGME20180205154511epcas1p14dccb00b68fdb688f2c427c56e01c052@epcas1p1.samsung.com>
+        <20180205154403.13520-1-s.nawrocki@samsung.com>
+        <20180205154403.13520-3-s.nawrocki@samsung.com>
+        <CAJKOXPeUPyX89u1csm98huKLEGX_xjaPr_wuqwuyoQWwurQbUg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180126112838.GA32674@sirena.org.uk>
+In-reply-to: <CAJKOXPeUPyX89u1csm98huKLEGX_xjaPr_wuqwuyoQWwurQbUg@mail.gmail.com>
+Content-language: en-GB
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Donglin Peng <dolinux.peng@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, robh+dt@kernel.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, jcsing.lee@samsung.com, sbkim73@samsung.com, linux-kernel@vger.kernel.org, =?UTF-8?Q?Bart=c5=82omiej_=c5=bbo=c5=82nierkiewicz?= <b.zolnierkie@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 26, 2018 at 1:28 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Jan 26, 2018 at 03:16:00PM +0800, Donglin Peng wrote:
->> On Wed, Jan 24, 2018 at 1:37 AM, Mark Brown <broonie@kernel.org> wrote:
+On 02/06/2018 01:20 PM, Krzysztof Kozlowski wrote:
+>> @@ -1214,30 +1216,35 @@ static int i2s_register_clock_provider(struct platform_device *pdev)
+>>                 clk_put(rclksrc);
+>>         }
+>>
+>> +       for (i = 0; i < ARRAY_SIZE(i2s_clk_desc); i++)
+>> +               i2s_clk_name[i] = devm_kasprintf(dev, GFP_KERNEL, "%s_%s",
+>> +                                               dev_name(dev), i2s_clk_desc[i]);
 >
->> > Too late, I already applied this - a further conversion for the new
->> > macro would be good.
->
->> I can send another patch after the following patch is merged:
->> https://patchwork.kernel.org/patch/10178813/
->
-> Yes, please - that'd be great!
+> kasprintf() might return NULL and later it is being used as clock
+> name. I think you should handle such error.
 
-I have sent PR to Linus. If everything goes fine, it will be in
-upstream today evening.
+Right, I will fix that in next version, thanks for your review.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards,
+Sylwester
