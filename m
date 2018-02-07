@@ -1,34 +1,66 @@
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH v8 0/7] TDA1997x HDMI video reciver
-Date: Wed, 7 Feb 2018 10:09:14 +0100
-Message-ID: <7cf38465-7a79-5d81-a995-9acfbacf5023@xs4all.nl>
-References: <1517948874-21681-1-git-send-email-tharvey@gateworks.com>
- <c7771c44-a9ff-0207-38f6-28bcc06ccdee@xs4all.nl>
- <CAJ+vNU1oiM0Y0rO-DHi57nVOqnw60A7pn_1=h5b46-BrY7_p2Q@mail.gmail.com>
- <605fd4a8-43ab-c566-57b6-abb1c9f8f0f8@xs4all.nl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Subject: [RESEND PATCH v2 1/9] ASoC: uniphier: add DT bindings documentation for UniPhier AIO
+Date: Wed,  7 Feb 2018 18:10:41 +0900
+Message-ID: <20180207091049.24700-2-suzuki.katsuhiro@socionext.com>
+References: <20180207091049.24700-1-suzuki.katsuhiro@socionext.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <605fd4a8-43ab-c566-57b6-abb1c9f8f0f8@xs4all.nl>
-Content-Language: en-US
+In-Reply-To: <20180207091049.24700-1-suzuki.katsuhiro@socionext.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Tim Harvey <tharvey@gateworks.com>
-Cc: linux-media <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>, Steve Longerbeam <slongerbeam@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Masami Hiramatsu <masami.hiramatsu@linaro.org>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/07/18 09:22, Hans Verkuil wrote:
-> On 02/07/2018 12:29 AM, Tim Harvey wrote:
->> Media Controller ioctls:
->>                 fail: v4l2-test-media.cpp(141): ent.function ==
->> MEDIA_ENT_F_V4L2_SUBDEV_UNKNOWN
-> 
-> Weird, this shouldn't happen. I'll look into this a bit more.
+This patch adds DT binding documentation for UniPhier
+AIO audio subsystem.
 
-Can you run 'mc_nextgen_test -e -i' and post the output?
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+---
+ .../devicetree/bindings/sound/uniphier,aio.txt     | 36 ++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/uniphier,aio.txt
 
-It's found in contrib/test.
-
-Thanks!
-
-	Hans
+diff --git a/Documentation/devicetree/bindings/sound/uniphier,aio.txt b/Documentation/devicetree/bindings/sound/uniphier,aio.txt
+new file mode 100644
+index 000000000000..73f6c27ae4f7
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/uniphier,aio.txt
+@@ -0,0 +1,36 @@
++Socionext UniPhier SoC audio driver
++
++The Socionext UniPhier audio subsystem consists of I2S and S/PDIF blocks in
++the same register space.
++
++Required properties:
++- compatible      : should be one of the following:
++		    "socionext,uniphier-ld11-aio"
++		    "socionext,uniphier-ld20-aio"
++- reg             : offset and length of the register set for the device.
++- interrupts      : should contain I2S or S/PDIF interrupt.
++- pinctrl-names   : should be "default".
++- pinctrl-0       : defined I2S signal pins for an external codec chip.
++- clock-names     : should include following entries:
++                    "aio"
++- clocks          : a list of phandle, should contain an entry for each
++                    entry in clock-names.
++- reset-names     : should include following entries:
++                    "aio"
++- resets          : a list of phandle, should contain an entry for each
++                    entry in reset-names.
++- #sound-dai-cells: should be 1.
++
++Example:
++	audio {
++		compatible = "socionext,uniphier-ld20-aio";
++		reg = <0x56000000 0x80000>;
++		interrupts = <0 144 4>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_aout>;
++		clock-names = "aio";
++		clocks = <&sys_clk 40>;
++		reset-names = "aio";
++		resets = <&sys_rst 40>;
++		#sound-dai-cells = <1>;
++	};
+-- 
+2.15.0
