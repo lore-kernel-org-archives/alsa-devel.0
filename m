@@ -1,18 +1,19 @@
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v8 1/7] v4l2-dv-timings: add
-	v4l2_hdmi_colorimetry()
-Date: Tue, 6 Feb 2018 17:22:40 -0800
-Message-ID: <c1dc5de9-e81d-b9bd-b587-1a94de96f97c@infradead.org>
-References: <1517948874-21681-1-git-send-email-tharvey@gateworks.com>
- <1517948874-21681-2-git-send-email-tharvey@gateworks.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [alsa-utils] [PATCH] Add support for no-rewind
+ flag in aplay utility
+Date: Wed, 7 Feb 2018 11:41:34 +0900
+Message-ID: <2e9ded59-99f4-11fc-fd79-d3e22cbc7544@sakamocchi.jp>
+References: <1517304885-16750-1-git-send-email-sriramx.periyasamy@intel.com>
+ <ae19083c-15f9-e65e-faa5-d75809885b07@sakamocchi.jp>
+ <68140ddd-1ee9-ba8b-68f9-6a55404b0343@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bombadil.infradead.org (bombadil.infradead.org [65.50.211.133])
- by alsa0.perex.cz (Postfix) with ESMTP id D8DFB266F62
- for <alsa-devel@alsa-project.org>; Wed,  7 Feb 2018 02:22:53 +0100 (CET)
-In-Reply-To: <1517948874-21681-2-git-send-email-tharvey@gateworks.com>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 115A9266F62
+ for <alsa-devel@alsa-project.org>; Wed,  7 Feb 2018 03:41:37 +0100 (CET)
+In-Reply-To: <68140ddd-1ee9-ba8b-68f9-6a55404b0343@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,68 +24,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tim Harvey <tharvey@gateworks.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>, Hans Verkuil <hans.verkuil@cisco.com>, Philipp Zabel <p.zabel@pengutronix.de>, Steve Longerbeam <slongerbeam@gmail.com>, Hans Verkuil <hverkuil@xs4all.nl>, shawnguo@kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, ALSA ML <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+Cc: Patches Audio <patches.audio@intel.com>, Ramesh Babu <ramesh.babu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/06/2018 12:27 PM, Tim Harvey wrote:
-> From: Hans Verkuil <hverkuil@xs4all.nl>
-> 
-> Add the v4l2_hdmi_colorimetry() function so we have a single function
-> that determines the colorspace, YCbCr encoding, quantization range and
-> transfer function from the InfoFrame data.
-> 
-> Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
-> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-> ---
->  drivers/media/v4l2-core/v4l2-dv-timings.c | 141 ++++++++++++++++++++++++++++++
->  include/media/v4l2-dv-timings.h           |  21 +++++
->  2 files changed, 162 insertions(+)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-dv-timings.c b/drivers/media/v4l2-core/v4l2-dv-timings.c
-> index 930f9c5..0182d3d 100644
-> --- a/drivers/media/v4l2-core/v4l2-dv-timings.c
-> +++ b/drivers/media/v4l2-core/v4l2-dv-timings.c
-> @@ -27,6 +27,7 @@
->  #include <linux/v4l2-dv-timings.h>
->  #include <media/v4l2-dv-timings.h>
->  #include <linux/math64.h>
-> +#include <linux/hdmi.h>
->  
->  MODULE_AUTHOR("Hans Verkuil");
->  MODULE_DESCRIPTION("V4L2 DV Timings Helper Functions");
-> @@ -814,3 +815,143 @@ struct v4l2_fract v4l2_calc_aspect_ratio(u8 hor_landscape, u8 vert_portrait)
->  	return aspect;
->  }
->  EXPORT_SYMBOL_GPL(v4l2_calc_aspect_ratio);
-> +
-> +/** v4l2_hdmi_rx_colorimetry - determine HDMI colorimetry information
-> + *	based on various InfoFrames.
-> + * @avi - the AVI InfoFrame
-> + * @hdmi - the HDMI Vendor InfoFrame, may be NULL
-> + * @height - the frame height
-
-kernel-doc format for function parameters is like:
-
- * @avi: the AVI InfoFrame
-
-etc.
-
-> + *
-> + * Determines the HDMI colorimetry information, i.e. how the HDMI
-> + * pixel color data should be interpreted.
-> + *
-> + * Note that some of the newer features (DCI-P3, HDR) are not yet
-> + * implemented: the hdmi.h header needs to be updated to the HDMI 2.0
-> + * and CTA-861-G standards.
-> + */
-> +struct v4l2_hdmi_colorimetry
-> +v4l2_hdmi_rx_colorimetry(const struct hdmi_avi_infoframe *avi,
-> +			 const struct hdmi_vendor_infoframe *hdmi,
-> +			 unsigned int height)
-> +{
-
-
-thanks,
--- 
-~Randy
+SGksCgpPbiBKYW4gMzEgMjAxOCAwOToxNCwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4g
+T24gMS8zMC8xOCAxMTo0MCBBTSwgVGFrYXNoaSBTYWthbW90byB3cm90ZToKPj4gSGksCj4+Cj4+
+IE9uIEphbiAzMCAyMDE4IDE4OjM0LCBTcmlyYW0gUGVyaXlhc2FteSB3cm90ZToKPj4+IEZyb206
+IFJhbWVzaCBCYWJ1IDxyYW1lc2guYmFidUBpbnRlbC5jb20+Cj4+Pgo+Pj4gVGhlICJuby1yZXdp
+bmQiIGZsYWcgaXMgaW50cm9kdWNlZCBpbiBhbHNhLgo+Pj4gQXBwbGljYXRpb24gY2FuIHVzZSB0
+aGlzIGZsYWcgdG8gYXNzdXJlIGtlcm5lbCBkcml2ZXIKPj4+IHRoYXQgcmV3aW5kIHdvbid0IGJl
+IGV4ZXJjaXNlZC4gRHJpdmVyIGNvdWxkIHVzZSB0aGlzCj4+PiBmbGFnIHRvIGFsdGVyIGl0J3Mg
+YnVmZmVyaW5nIHNjaGVtZSB0byBvcHRpbWl6ZSBwb3dlcgo+Pj4gYW5kIHBlcmZvcm1hbmNlLgo+
+Pj4KPj4+IFNpZ25lZC1vZmYtYnk6IFJhbWVzaCBCYWJ1IDxyYW1lc2guYmFidUBpbnRlbC5jb20+
+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBTcmlyYW0gUGVyaXlhc2FteSA8c3JpcmFteC5wZXJpeWFzYW15
+QGludGVsLmNvbT4KPj4+IC0tLQo+Pj4gwqAgYXBsYXkvYXBsYXkuYyB8IDE0ICsrKysrKysrKysr
+KystCj4+PiDCoCAxIGZpbGUgY2hhbmdlZCwgMTMgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigt
+KQo+Pgo+PiBDdXJyZW50IGltcGxlbWVudGF0aW9uIG9mICdhcGxheScgZG9lc24ndCBwZXJmb3Jt
+IHJld2luZGluZy9mb3J3YXJkaW5nLAo+PiB0aHVzIGFuIGFkZGl0aW9uYWwgb2YgdGhpcyBvcHRp
+b24gaXMgc3VycGx1cy4KPiAKPiBJdCBoZWxwcyB0ZWxsIHRoZSBkcml2ZXIgdGhhdCByZXdpbmRz
+IHdvbid0IGJlIHVzZWQgYW5kIGluZGlyZWN0bHkgdGhhdCAKPiB0aGUgYXBwbF9wdHIgdXBkYXRl
+cyBhcmUgcGFzc2VkIHRvIHRoZSBoYXJkd2FyZS4KPiBSZW1vdmluZyB0aGUgb3B0aW9uIG9yIG1h
+a2luZyB0aGUgZnVuY3Rpb25hbGl0eSB1bmNvbmRpdGlvbmFsIHJlbW92ZXMgCj4gdGhlIGZyZWVk
+b20gdG8gdGVzdCB3aXRoIG9yIHdpdGhvdXQgdGhpcyBvcHRpb24uCiBGcm9tIG5hbWUgb2YgdGhp
+cyBvcHRpb24sIEkgdW5kZXJzdGFuZCB0aGF0IHlvdXIgaW50ZW5zaW9uIGlzIHRvIHNldApoYXJk
+d2FyZSBwYXJhbWV0ZXIgd2l0aCB5b3VyIG5ldyBmbGFnICdTTkRfUENNX0hXX1BBUkFNU19OT19S
+RVdJTkRTJyBzbwp0aGF0IEFMU0EgUENNIGNvcmUgZG9lc24ndCBhbGxvdyBhcHBsaWNhdGlvbnMg
+dG8gcGVyZm9ybQpyZXdpbmRpbmcvZm9yd2FyZGluZyByZXF1ZXN0cyBiZWNhdXNlIHlvdXIgZHJp
+dmVycyBmb3IgSW50ZWwgQVRPTQpwbGF0Zm9ybSB3aXRoIFNTUCAod2l0aG91dCBIREEpIGFuZCBE
+U1AgY29yZSBhbmQgc3BlY2lmaWMgZmlybXdhcmVzCmluY2x1ZGluZyBibG9icyBmb3IgQUxTQSB0
+b3BvbG9neSBpbnRlcmZhY2UgYXJlIG5vdCBhbGxvd2VkIHRvCmludmFsaWRhdGUgcXVldWVkIFBD
+TSBmcmFtZXMgaW4gYnVmZmVyIGRlZGljYXRlZCB0byBETUEgdHJhbnNtaXNzaW9uIGR1ZQp0byBy
+ZXN0cmljdGlvbnMgb2YgdGhlIGhhcmR3YXJlLgoKSG93ZXZlciwgYXBsYXkgaXMgX25vdF8gd3Jp
+dHRlbiB0byBwZXJmb3JtIHRoZSByZXdpbmRpbmcvZm9yd2FyZGluZwpyZXF1ZXN0cywgdGh1cyB3
+ZSBuZXZlciBjaGVjayBhY3R1YWwgZWZmZWN0cyBvZiB0aGUgZmxhZyBiZWNhdXNlIGl0Cm5ldmVy
+IGtpY2sgeW91ciBkcml2ZXIgZm9yIHRoZSBpbnZhbGlkYXRpb24uIFlvdXIgbmV3IG9wdGlvbiBm
+b3IgYXBsYXkKaGFzIG5vIHByYWN0aWNhbCBtZWFuaW5nIGZvciBydW5uaW5nIFBDTSBydW50aW1l
+LgoKSSBvcHBvc2UgYW4gYWRkaXRpb24gb2YgdGhpcyBmbGFnIHRvIGtlZXAgdGhpcyBiYXNpYyB1
+dGlsaXR5IHJlYWRhYmxlLAp1bmRlcnN0YW5kYWJsZSBhbmQgYmVpbmcgc21hbGwgZm9yIGVhc3kg
+bWFpbnRhaW5hbmNlLiBBdCBsZWFzdCwgSSdkIG5vdApsaWtlIHRvIGV4cGxhaW4gYWJvdXQgYW4g
+YWltIG9mIHRoaXMgbWFrZXNoaWZ0IG9wdGlvbiBldmVyeSB0aW1lIHRvIGJlCmFza2VkIGJ5IGRl
+dmVsb3BlcnMgYW5kIHVzZXJzLCBpbnN0ZWFkIG9mIHlvdS4KCj4+PiBkaWZmIC0tZ2l0IGEvYXBs
+YXkvYXBsYXkuYyBiL2FwbGF5L2FwbGF5LmMKPj4+IGluZGV4IDZiNzQwYzI4MWY4ZS4uYjUwNjAy
+YTU5MDI0IDEwMDY0NAo+Pj4gLS0tIGEvYXBsYXkvYXBsYXkuYwo+Pj4gKysrIGIvYXBsYXkvYXBs
+YXkuYwo+Pj4gQEAgLTEwOCw2ICsxMDgsNyBAQCBzdGF0aWMgc25kX3BjbV9zdHJlYW1fdCBzdHJl
+YW0gPSAKPj4+IFNORF9QQ01fU1RSRUFNX1BMQVlCQUNLOwo+Pj4gwqAgc3RhdGljIGludCBtbWFw
+X2ZsYWcgPSAwOwo+Pj4gwqAgc3RhdGljIGludCBpbnRlcmxlYXZlZCA9IDE7Cj4+PiDCoCBzdGF0
+aWMgaW50IG5vbmJsb2NrID0gMDsKPj4+ICtzdGF0aWMgaW50IG5vX3Jld2luZCA9IDA7Cj4+PiDC
+oCBzdGF0aWMgdm9sYXRpbGUgc2lnX2F0b21pY190IGluX2Fib3J0aW5nID0gMDsKPj4+IMKgIHN0
+YXRpYyB1X2NoYXIgKmF1ZGlvYnVmID0gTlVMTDsKPj4+IMKgIHN0YXRpYyBzbmRfcGNtX3VmcmFt
+ZXNfdCBjaHVua19zaXplID0gMDsKPj4+IEBAIC0yMjksNiArMjMwLDcgQEAgXygiVXNhZ2U6ICVz
+IFtPUFRJT05dLi4uIFtGSUxFXS4uLlxuIgo+Pj4gwqAgIi1JLCAtLXNlcGFyYXRlLWNoYW5uZWxz
+IG9uZSBmaWxlIGZvciBlYWNoIGNoYW5uZWxcbiIKPj4+IMKgICItaSwgLS1pbnRlcmFjdGl2ZcKg
+wqDCoMKgwqDCoCBhbGxvdyBpbnRlcmFjdGl2ZSBvcGVyYXRpb24gZnJvbSBzdGRpblxuIgo+Pj4g
+wqAgIi1tLCAtLWNobWFwPWNoMSxjaDIsLi7CoCBHaXZlIHRoZSBjaGFubmVsIG1hcCB0byBvdmVy
+cmlkZSBvciBmb2xsb3dcbiIKPj4+ICsiLXcsIC0tbm8tcmV3aW5kwqDCoMKgwqDCoMKgwqDCoCBl
+bmFibGVzIG5vIHJld2luZCBtb2RlXG4iCj4+PiDCoCAiwqDCoMKgIC0tZGlzYWJsZS1yZXNhbXBs
+ZcKgIGRpc2FibGUgYXV0b21hdGljIHJhdGUgcmVzYW1wbGVcbiIKPj4+IMKgICLCoMKgwqAgLS1k
+aXNhYmxlLWNoYW5uZWxzwqAgZGlzYWJsZSBhdXRvbWF0aWMgY2hhbm5lbCBjb252ZXJzaW9uc1xu
+Igo+Pj4gwqAgIsKgwqDCoCAtLWRpc2FibGUtZm9ybWF0wqDCoMKgIGRpc2FibGUgYXV0b21hdGlj
+IGZvcm1hdCBjb252ZXJzaW9uc1xuIgo+Pj4gQEAgLTQ3MCw3ICs0NzIsNyBAQCBpbnQgbWFpbihp
+bnQgYXJnYywgY2hhciAqYXJndltdKQo+Pj4gwqAgewo+Pj4gwqDCoMKgwqDCoCBpbnQgZHVyYXRp
+b25fb3Jfc2FtcGxlID0gMDsKPj4+IMKgwqDCoMKgwqAgaW50IG9wdGlvbl9pbmRleDsKPj4+IC3C
+oMKgwqAgc3RhdGljIGNvbnN0IGNoYXIgc2hvcnRfb3B0aW9uc1tdID0gCj4+PiAiaG5sTEQ6cXQ6
+YzpmOnI6ZDpzOk1ORjpBOlI6VDpCOnZWOklQQ2kiCj4+PiArwqDCoMKgIHN0YXRpYyBjb25zdCBj
+aGFyIHNob3J0X29wdGlvbnNbXSA9IAo+Pj4gImhubExEOnF0OmM6ZjpyOmQ6czp3Ok1ORjpBOlI6
+VDpCOnZWOklQQ2kiCj4+PiDCoCAjaWZkZWYgQ09ORklHX1NVUFBPUlRfQ0hNQVAKPj4+IMKgwqDC
+oMKgwqDCoMKgwqDCoCAibToiCj4+PiDCoCAjZW5kaWYKPj4+IEBAIC01MTQsNiArNTE2LDcgQEAg
+aW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKPj4+IMKgwqDCoMKgwqDCoMKgwqDCoCB7
+InByb2Nlc3MtaWQtZmlsZSIsIDEsIDAsIE9QVF9QUk9DRVNTX0lEX0ZJTEV9LAo+Pj4gwqDCoMKg
+wqDCoMKgwqDCoMKgIHsidXNlLXN0cmZ0aW1lIiwgMCwgMCwgT1BUX1VTRV9TVFJGVElNRX0sCj4+
+PiDCoMKgwqDCoMKgwqDCoMKgwqAgeyJpbnRlcmFjdGl2ZSIsIDAsIDAsICdpJ30sCj4+PiArwqDC
+oMKgwqDCoMKgwqAgeyJuby1yZXdpbmQiLCAwLCAwLCAndyd9LAo+Pj4gwqDCoMKgwqDCoMKgwqDC
+oMKgIHsiZHVtcC1ody1wYXJhbXMiLCAwLCAwLCBPUFRfRFVNUF9IV1BBUkFNU30sCj4+PiDCoMKg
+wqDCoMKgwqDCoMKgwqAgeyJmYXRhbC1lcnJvcnMiLCAwLCAwLCBPUFRfRkFUQUxfRVJST1JTfSwK
+Pj4+IMKgICNpZmRlZiBDT05GSUdfU1VQUE9SVF9DSE1BUAo+Pj4gQEAgLTc1Myw2ICs3NTYsOSBA
+QCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKg
+IGNhc2UgJ2knOgo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaW50ZXJhY3RpdmUgPSAx
+Owo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYnJlYWs7Cj4+PiArwqDCoMKgwqDCoMKg
+wqAgY2FzZSAndyc6Cj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBub19yZXdpbmQgPSAxOwo+
+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYnJlYWs7Cj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAg
+Y2FzZSBPUFRfRElTQUJMRV9SRVNBTVBMRToKPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IG9wZW5fbW9kZSB8PSBTTkRfUENNX05PX0FVVE9fUkVTQU1QTEU7Cj4+PiDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCBicmVhazsKPj4+IEBAIC0xMzk2LDYgKzE0MDIsMTIgQEAgc3RhdGljIHZv
+aWQgc2V0X3BhcmFtcyh2b2lkKQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgJmJ1ZmZlcl9mcmFtZXMpOwo+Pj4g
+wqDCoMKgwqDCoCB9Cj4+PiDCoMKgwqDCoMKgIGFzc2VydChlcnIgPj0gMCk7Cj4+PiArCj4+PiAr
+wqDCoMKgIGlmIChub19yZXdpbmQpIHsKPj4+ICvCoMKgwqDCoMKgwqDCoCBlcnIgPSBzbmRfcGNt
+X2h3X3BhcmFtc19zZXRfbm9fcmV3aW5kKGhhbmRsZSwgcGFyYW1zLCAxKTsKPj4+ICvCoMKgwqDC
+oMKgwqDCoCBhc3NlcnQoZXJyID49IDApOwo+Pj4gK8KgwqDCoCB9Cj4+PiArCj4+PiDCoMKgwqDC
+oMKgIG1vbm90b25pYyA9IHNuZF9wY21faHdfcGFyYW1zX2lzX21vbm90b25pYyhwYXJhbXMpOwo+
+Pj4gwqDCoMKgwqDCoCBjYW5fcGF1c2UgPSBzbmRfcGNtX2h3X3BhcmFtc19jYW5fcGF1c2UocGFy
+YW1zKTsKPj4+IMKgwqDCoMKgwqAgZXJyID0gc25kX3BjbV9od19wYXJhbXMoaGFuZGxlLCBwYXJh
+bXMpOwoKClRha2FzaGkgU2FrYW1vdG8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
