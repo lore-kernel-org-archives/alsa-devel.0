@@ -1,21 +1,20 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [GIT PULL] Extra ASoC updates for v4.16
-Date: Tue, 6 Feb 2018 22:12:28 -0800
-Message-ID: <CA+55aFy7b_eCGhH1PVVzw10BKanxAcRVK=k5CRNc2fDhN9717Q@mail.gmail.com>
-References: <20180206114439.GC5681@sirena.org.uk>
- <CA+55aFzD0+2pfQN+hPOmGNR5CHfp5KYKNtvng0NqVbKGTE5LRg@mail.gmail.com>
- <s5h372d743i.wl-tiwai@suse.de>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH v8 0/7] TDA1997x HDMI video reciver
+Date: Wed, 7 Feb 2018 09:22:24 +0100
+Message-ID: <605fd4a8-43ab-c566-57b6-abb1c9f8f0f8@xs4all.nl>
+References: <1517948874-21681-1-git-send-email-tharvey@gateworks.com>
+ <c7771c44-a9ff-0207-38f6-28bcc06ccdee@xs4all.nl>
+ <CAJ+vNU1oiM0Y0rO-DHi57nVOqnw60A7pn_1=h5b46-BrY7_p2Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f42.google.com (mail-it0-f42.google.com
- [209.85.214.42])
- by alsa0.perex.cz (Postfix) with ESMTP id C8D4A266F62
- for <alsa-devel@alsa-project.org>; Wed,  7 Feb 2018 07:12:30 +0100 (CET)
-Received: by mail-it0-f42.google.com with SMTP id k6so867426ita.3
- for <alsa-devel@alsa-project.org>; Tue, 06 Feb 2018 22:12:30 -0800 (PST)
-In-Reply-To: <s5h372d743i.wl-tiwai@suse.de>
+Received: from lb1-smtp-cloud9.xs4all.net (lb1-smtp-cloud9.xs4all.net
+ [194.109.24.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F3BE266E6D
+ for <alsa-devel@alsa-project.org>; Wed,  7 Feb 2018 09:22:32 +0100 (CET)
+In-Reply-To: <CAJ+vNU1oiM0Y0rO-DHi57nVOqnw60A7pn_1=h5b46-BrY7_p2Q@mail.gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,126 +24,273 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <takashi.iwai@gmail.com>
+To: Tim Harvey <tharvey@gateworks.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>, Philipp Zabel <p.zabel@pengutronix.de>, Steve Longerbeam <slongerbeam@gmail.com>, Shawn Guo <shawnguo@kernel.org>, linux-media <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 6, 2018 at 9:37 PM, Takashi Iwai <tiwai@suse.de> wrote:
+On 02/07/2018 12:29 AM, Tim Harvey wrote:
+> On Tue, Feb 6, 2018 at 1:21 PM, Hans Verkuil <hverkuil@xs4all.nl> wrote:
+>> On 02/06/2018 09:27 PM, Tim Harvey wrote:
 >>
->> Because some of those merges look very Lovecraftian, with the whole
->> gigantic octopus merge theme. Cthulhu and tentacles galore.
->
-> So, would you suggest to straighten commits by rebase at this time?
-> The rebase was a thing to be avoided in general, and that's the reason
-> of the messy multiple merges.
+>> <snip>
+>>
+>>> v4l2-compliance test results:
+>>>  - with the following kernel patches:
+>>>    v4l2-subdev: clear reserved fields
+>>>  . v4l2-subdev: without controls return -ENOTTY
+>>>
+>>> v4l2-compliance SHA   : b2f8f9049056eb6f9e028927dacb2c715a062df8
+>>> Media Driver Info:
+>>>       Driver name      : imx-media
+>>>       Model            : imx-media
+>>>       Serial           :
+>>>       Bus info         :
+>>>       Media version    : 4.15.0
+>>>       Hardware revision: 0x00000000 (0)
+>>>       Driver version   : 4.15.0
+>>> Interface Info:
+>>>       ID               : 0x0300008f
+>>>       Type             : V4L Sub-Device
+>>> Entity Info:
+>>>       ID               : 0x00000003 (3)
+>>>       Name             : tda19971 2-0048
+>>>       Function         : Unknown
+>>
+>> This is missing. It should be one of these:
+>>
+>> https://hverkuil.home.xs4all.nl/spec/uapi/mediactl/media-types.html#media-entity-type
+>>
+>> However, we don't have a proper function defined.
+>>
+>> I would suggest adding a new MEDIA_ENT_F_DTV_DECODER analogous to MEDIA_ENT_F_ATV_DECODER.
+>>
+>> It would be a new patch adding this + documentation.
+> 
+> Hows this look for adding to my next series:
+> 
+> Author: Tim Harvey <tharvey@gateworks.com>
+> Date:   Tue Feb 6 14:12:52 2018 -0800
+> 
+>     [media] add digital video decoder video interface entity functions
+> 
+>     Add a new media entity function definition for digital TV decoders:
+>     MEDIA_ENT_F_DTV_DECODER
+> 
+>     Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+> 
+> --- a/Documentation/media/uapi/mediactl/media-types.rst
+> +++ b/Documentation/media/uapi/mediactl/media-types.rst
+> @@ -321,6 +321,17 @@ Types and flags used to represent the media graph elements
+>           MIPI CSI-2, ...), and outputs them on its source pad to an output
+>           video bus of another type (eDP, MIPI CSI-2, parallel, ...).
+> 
+> +    -  ..  row 31
+> +
+> +       ..  _MEDIA-ENT-F-DTV-DECODER:
+> +
+> +       -  ``MEDIA_ENT_F_DTV_DECODER``
+> +
+> +       -  Digital video decoder. The basic function of the video decoder is
+> +         to accept digital video from a wide variety of sources
+> +         and output it in some digital video standard, with appropriate
+> +         timing signals.
+> +
+>  ..  tabularcolumns:: |p{5.5cm}|p{12.0cm}|
+> 
+>  .. _media-entity-flag:
+> diff --git a/include/uapi/linux/media.h b/include/uapi/linux/media.h
+> index b9b9446..6653e88 100644
+> --- a/include/uapi/linux/media.h
+> +++ b/include/uapi/linux/media.h
+> @@ -152,6 +152,7 @@ struct media_device_info {
+>   * MEDIA_ENT_F_IF_VID_DECODER and/or MEDIA_ENT_F_IF_AUD_DECODER.
+>   */
+>  #define MEDIA_ENT_F_TUNER              (MEDIA_ENT_F_OLD_SUBDEV_BASE + 5)
+> +#define MEDIA_ENT_F_DTV_DECODER
+> (MEDIA_ENT_F_OLD_SUBDEV_BASE + 6)
 
-You don't need to rebase the commits themselves - not the ones that
-are real commits that do things.
+Don't use MEDIA_ENT_F_OLD_SUBDEV_BASE for new functions.
 
-But the merging up of the commits is insane.
+Use this instead:
 
-For example, these merges bring in basically *nothing* new (ok, so
-some of them bring in a couple of commits, but see the pattern here?):
+/*
+ * Analog video decoder functions
+ */
+#define MEDIA_ENT_F_DTV_DECODER			(MEDIA_ENT_F_BASE + 0x6001)
 
- - 3df40aaee07cd24df42ace7fa88fb4db32ad9a30 merge of a remote tracking
-branch that had already been merged
+Other than this, this patch looks great.
 
- - e0a663f24d532c7ad9ff34cc1aa96bf94c75ef44 merge of a remote tracking
-branch that had already been merged
+> 
+>  #define MEDIA_ENT_F_V4L2_SUBDEV_UNKNOWN        MEDIA_ENT_F_OLD_SUBDEV_BASE
+> 
+> 
+> Assigning this now shows a function but does not resolve the media
+> compliance results:
+> 
+> --- a/drivers/media/i2c/tda1997x.c
+> +++ b/drivers/media/i2c/tda1997x.c
+> @@ -2586,6 +2586,7 @@ static int tda1997x_probe(struct i2c_client *client,
+>                  id->name, i2c_adapter_id(client->adapter),
+>                  client->addr);
+>         sd->flags = V4L2_SUBDEV_FL_HAS_DEVNODE | V4L2_SUBDEV_FL_HAS_EVENTS;
+> +       sd->entity.function = MEDIA_ENT_F_DTV_DECODER;
+>         sd->entity.ops = &tda1997x_media_ops;
+> 
+>         /* set allowed mbus modes based on chip, bus-type, and bus-width */
+> 
+> 
+> root@ventana:~# v4l2-compliance -u1
+> v4l2-compliance SHA   : b2f8f9049056eb6f9e028927dacb2c715a062df8
+> Media Driver Info:
+>         Driver name      : imx-media
+>         Model            : imx-media
+>         Serial           :
+>         Bus info         :
+>         Media version    : 4.15.0
+>         Hardware revision: 0x00000000 (0)
+>         Driver version   : 4.15.0
+> Interface Info:
+>         ID               : 0x0300008f
+>         Type             : V4L Sub-Device
+> Entity Info:
+>         ID               : 0x00000003 (3)
+>         Name             : tda19971 2-0048
+>         Function         : Unknown (00020006)
 
- - b10f47faa4ad94b8b26780a873ed8756cee51120 merge of five
-remote-tracking branches that had already been merged
+Actually it does. The value above is now the new function.
 
- - eeb58f1eed5e8e503f12e4b84a3f27b3d21a40eb merge of five remote
-tracking branches that had already been merged
+>         Pad 0x01000004   : Source
+>           Link 0x0200006f: to remote pad 0x1000063 of entity
+> 'ipu1_csi0_mux': Data
+> 
+> ...
+> 
+> root@ventana:~# v4l2-compliance -m0 -M
+> v4l2-compliance SHA   : b2f8f9049056eb6f9e028927dacb2c715a062df8
+> Media Driver Info:
+>         Driver name      : imx-media
+>         Model            : imx-media
+>         Serial           :
+>         Bus info         :
+>         Media version    : 4.15.0
+>         Hardware revision: 0x00000000 (0)
+>         Driver version   : 4.15.0
+> 
+> Compliance test for device /dev/media0:
+> 
+> Required ioctls:
+>         test MEDIA_IOC_DEVICE_INFO: OK
+> 
+> Allow for multiple opens:
+>         test second /dev/media0 open: OK
+>         test MEDIA_IOC_DEVICE_INFO: OK
+>         test for unlimited opens: OK
+> 
+> Media Controller ioctls:
+>                 fail: v4l2-test-media.cpp(141): ent.function ==
+> MEDIA_ENT_F_V4L2_SUBDEV_UNKNOWN
 
- - 3cad9eda9bf8f11d4574399b68dd04405d1cafb3 merge of three remote
-tracking branches that had already been merged
+Weird, this shouldn't happen. I'll look into this a bit more.
 
- - fcf9403a18a77f887c8a7034d53fc39f2f44f549 merge of three remote
-tracking branches that had already been merged
+>         test MEDIA_IOC_G_TOPOLOGY: FAIL
+>                 fail: v4l2-test-media.cpp(256):
+> v2_entities_set.find(ent.id) == v2_entities_set.end()
 
- - e193ddead848f3da380c4f85bf78af9f34ba94f2 merge of five remote
-tracking branches that had already been merged
+This is a v4l2-compliance bug that I have fixed. Just do another git pull.
 
- - 01813e837ff00dbf27e5b87790f646be23bc1935 merge of five remote
-tracking branches, *ONE* of cwhich had a single new commit in it.
+Regards,
 
- - 5a477f39532a06532e05b5b1391f3d1393577180 merge of five remote
-tracking branches that had already been merged
+	Hans
 
- - 2aa5cad2e8daf9f5a75bd55351fc71963a8da90d merge of five remote
-tracking branches, of which three actually had *one* real commit each
-
- - a451d4e0c23b096bcfe5ec494fce7e5125bc4dd3 merge ot two remote
-tracking branches that had already been merged
-
- - 7cf143ca596da8e5e4091f622315b269bba82508 merge of two remote
-tracking branches that had already been merged
-
- - 19c2d84997beaf06327e392071c2dbe98602c56b merge of five remote
-tracking branches, of which *ONE* had a single new commit in it
-
- - 5e1b94471344c5415e8fa61f07c6cedbaf242bbc merge of five remote
-tracking branches that had already been merged
-
- - 92730ec723b3f089a6c4d84984ca940d498be792 merge of four remote
-tracking branches of which *ONE* had a single new commit in it.
-
- - 43900579c34d58f5feb67de2bd8733ae3585e79a merge of four remote
-tracking branches that had already been merged
-
- - f3ae09ce60c425d2e66591c7135a291196fa6739 merge of five remote
-tracking branches that had already been merged
-
- - c710f11f3a1662490d6f5516c877dcd4d9c5948b merge of five remote
-tracking branches that had already been merged
-
-...
-
-then I got really tired of walking through things.
-
-See a pattern above? It's not that the actual commits that change
-something need to be rebased.
-
-It's the *MERGES* that need to be stopped. I don't know what the hell
-Mark is doing. There's some kind of completely mindless and crazy
-merging going on.
-
-And I think it's entirely automated *GARBAGE*. Look at this:
-
-     git log --pretty='%cn %cd' --merges 3f551e3cefcf..e0a663f24d53
-
-which shows just the committer and the commit date of the merges in
-question. And there is a total of 35 merges in that range, but what's
-notable is that ALL BUT ONE of them happen in between
-
-    Fri Jan 26 15:24:49 2018
-
-and
-
-    Fri Jan 26 15:27:56 2018
-
-so we had 34 mindless merges in just over three minutes. That's a
-merge every six seconds.
-
-Put another way: Mark is doing some automated stupid crap. The result
-of that stupid crap is all those merges of stuff that had already been
-merged.
-
-It's wrong, and I'm not pulling that kind of idiotic auto-generated merge hell.
-
-But there are actually real commits in there, as shown by
-
-    git log --oneline --no-merges 3f551e3cefcf..e0a663f24d53
-
-but those 19 real commits are basically overwhelmed by the 34 crazy
-automated and complex merges.
-
-And I really don't think they need to be rebased. They just need to be
-merged *sanely* instead of being merged mindlessly with octopus merges
-where one branch (out of five) _might_ have had a new commit.
-
-See what I'm complaining about?
-
-               Linus
+>         test MEDIA_IOC_ENUM_ENTITIES/LINKS: FAIL
+>         test MEDIA_IOC_SETUP_LINK: OK
+> 
+> Total: 7, Succeeded: 5, Failed: 2, Warnings: 0
+> 
+>>
+> <snip>
+>>>
+>>> Sub-Device ioctls (Source Pad 0):
+>>>       test Try VIDIOC_SUBDEV_ENUM_MBUS_CODE/FRAME_SIZE/FRAME_INTERVAL: OK
+>>>       test Try VIDIOC_SUBDEV_G/S_FMT: OK
+>>>       test Try VIDIOC_SUBDEV_G/S_SELECTION/CROP: OK (Not Supported)
+>>>       test Active VIDIOC_SUBDEV_ENUM_MBUS_CODE/FRAME_SIZE/FRAME_INTERVAL: OK
+>>>       test Active VIDIOC_SUBDEV_G/S_FMT: OK
+>>>       test Active VIDIOC_SUBDEV_G/S_SELECTION/CROP: OK (Not Supported)
+>>>       test VIDIOC_SUBDEV_G/S_FRAME_INTERVAL: OK (Not Supported)
+>>>
+>>> Control ioctls:
+>>>       test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK (Not Supported)
+>>>       test VIDIOC_QUERYCTRL: OK (Not Supported)
+>>>       test VIDIOC_G/S_CTRL: OK (Not Supported)
+>>>       test VIDIOC_G/S/TRY_EXT_CTRLS: OK (Not Supported)
+>>>       test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK (Not Supported)
+>>>       test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+>>>       Standard Controls: 0 Private Controls: 0
+>>
+>> Why doesn't this show anything? You have at least one control, so this should
+>> reflect that. Does 'v4l2-ctl -d /dev/v4l-subdev1 -l' show any controls?
+>>
+>> I think sd->ctrl_handler is never set to the v4l2_ctrl_handler pointer.
+>>
+>> Have you ever tested the controls?
+>>
+>> Looking closer I also notice that the control handler is never freed. Or
+>> checked for errors when it is created in the probe function. Hmm, I should
+>> have caught that earlier.
+>>
+> 
+> Yes thanks - I missed this also:
+> 
+> --- a/drivers/media/i2c/tda1997x.c
+> +++ b/drivers/media/i2c/tda1997x.c
+> @@ -2726,6 +2726,12 @@ static int tda1997x_probe(struct i2c_client *client,
+>                         &tda1997x_ctrl_ops,
+>                         V4L2_CID_DV_RX_RGB_RANGE, V4L2_DV_RGB_RANGE_FULL, 0,
+>                         V4L2_DV_RGB_RANGE_AUTO);
+> +       state->sd.ctrl_handler = hdl;
+> +       if (hdl->error) {
+> +               ret = hdl->error;
+> +               goto err_free_handler;
+> +       }
+> +       v4l2_ctrl_handler_setup(hdl);
+> 
+>         /* initialize source pads */
+>         state->pads[TDA1997X_PAD_SOURCE].flags = MEDIA_PAD_FL_SOURCE;
+> @@ -2774,6 +2780,8 @@ static int tda1997x_probe(struct i2c_client *client,
+> 
+>  err_free_media:
+>         media_entity_cleanup(&sd->entity);
+> +err_free_handler:
+> +       v4l2_ctrl_handler_free(&state->hdl);
+>  err_free_mutex:
+>         cancel_delayed_work(&state->delayed_work_enable_hpd);
+>         mutex_destroy(&state->page_lock);
+> @@ -2801,6 +2809,7 @@ static int tda1997x_remove(struct i2c_client *client)
+> 
+>         v4l2_async_unregister_subdev(sd);
+>         media_entity_cleanup(&sd->entity);
+> +       v4l2_ctrl_handler_free(&state->hdl);
+>         regulator_bulk_disable(TDA1997X_NUM_SUPPLIES, state->supplies);
+>         i2c_unregister_device(state->client_cec);
+>         cancel_delayed_work(&state->delayed_work_enable_hpd);
+> 
+> root@ventana:~# v4l2-ctl -d /dev/v4l-subdev1 --list-ctrls
+> 
+> Digital Video Controls
+> 
+>                   power_present 0x00a00964 (bitmask): max=0x00000001
+> default=0x00000000 value=0x00000000 flags=read-only
+>       rx_rgb_quantization_range 0x00a00965 (menu)   : min=0 max=2
+> default=0 value=2
+>              rx_it_content_type 0x00a00966 (menu)   : min=0 max=4
+> default=4 value=0 flags=read-only, volatile
+> 
+> And various sets/gets appear to work as designed (found that I wasn't
+> updating the csc when quantiation range was changed via ctrl and fixed
+> it).
+> 
+> Regards,
+> 
+> Tim
+> 
