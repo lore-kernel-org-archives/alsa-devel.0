@@ -1,15 +1,23 @@
-From: "Wischer, Timo (ADITG/ESB)" <twischer@de.adit-jv.com>
-Subject: Re: [PATCH - JACK PCM plugin] jack: Write only valid
- values to the internal hw_ptr
-Date: Thu, 8 Feb 2018 08:49:53 +0000
-Message-ID: <B0FB33DC1499054591F62C0EF1E013D7684F7A01@HI2EXCH01.adit-jv.com>
-References: <1516610240-7772-1-git-send-email-twischer@de.adit-jv.com>
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH v8 0/7] TDA1997x HDMI video reciver
+Date: Thu, 08 Feb 2018 11:46:56 +0100
+Message-ID: <1518086816.4359.4.camel@pengutronix.de>
+References: <1517948874-21681-1-git-send-email-tharvey@gateworks.com>
+ <c7771c44-a9ff-0207-38f6-28bcc06ccdee@xs4all.nl>
+ <CAJ+vNU1oiM0Y0rO-DHi57nVOqnw60A7pn_1=h5b46-BrY7_p2Q@mail.gmail.com>
+ <605fd4a8-43ab-c566-57b6-abb1c9f8f0f8@xs4all.nl>
+ <7cf38465-7a79-5d81-a995-9acfbacf5023@xs4all.nl>
+ <CAJ+vNU014FJZsb44YnidE3fFiqeB6o8A7kvGinJWu7=yq3_dhA@mail.gmail.com>
+ <d188a172-fc00-eb46-c6f5-833a86475390@xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1516610240-7772-1-git-send-email-twischer@de.adit-jv.com>
-Content-Language: en-US
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [85.220.165.71])
+ by alsa0.perex.cz (Postfix) with ESMTP id 947EE266E55
+ for <alsa-devel@alsa-project.org>; Thu,  8 Feb 2018 11:47:01 +0100 (CET)
+In-Reply-To: <d188a172-fc00-eb46-c6f5-833a86475390@xs4all.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,96 +27,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "patch@alsa-project.org" <patch@alsa-project.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Hans Verkuil <hverkuil@xs4all.nl>, Tim Harvey <tharvey@gateworks.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>, Steve Longerbeam <slongerbeam@gmail.com>, Shawn Guo <shawnguo@kernel.org>, linux-media <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
-
-any comments so far?
-
-It would be great if someone could have a look
-because I have some further fixes pending.
-
-Best regards
-
-Timo Wischer
-
-Advanced Driver Information Technology GmbH
-Engineering Software Base (ADITG/ESB)
-Robert-Bosch-Str. 200
-31139 Hildesheim
-Germany
-
-Tel. +49 5121 49 6938
-Fax +49 5121 49 6999
-twischer@de.adit-jv.com
-
-ADIT is a joint venture company of Robert Bosch GmbH/Robert Bosch Car Multi=
-media GmbH and DENSO Corporation
-Sitz: Hildesheim, Registergericht: Amtsgericht Hildesheim HRB 3438
-Gesch=E4ftsf=FChrung: Wilhelm Grabow, Ken Yaguchi
-
-________________________________________
-From: Wischer, Timo (ADITG/ESB)
-Sent: Monday, January 22, 2018 9:37 AM
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org; Wischer, Timo (ADITG/ESB)
-Subject: [PATCH - JACK PCM plugin] jack: Write only valid values to the int=
-ernal hw_ptr
-
-From: Timo Wischer <twischer@de.adit-jv.com>
-
-Otherwise the ALSA thread could for example read a hw_ptr >
-buffer_size
-
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
-
-diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
-index 4468ede..3aed332 100644
---- a/jack/pcm_jack.c
-+++ b/jack/pcm_jack.c
-@@ -137,6 +137,7 @@ static int
- snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
- {
-        snd_pcm_jack_t *jack =3D io->private_data;
-+       snd_pcm_uframes_t hw_ptr;
-        const snd_pcm_channel_area_t *areas;
-        snd_pcm_uframes_t xfer =3D 0;
-        unsigned int channel;
-@@ -155,12 +156,13 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_p=
-cm_ioplug_t *io)
-                        return 0;
-                }
-        }
--
-+
-+       hw_ptr =3D jack->hw_ptr;
-        areas =3D snd_pcm_ioplug_mmap_areas(io);
-
-        while (xfer < nframes) {
-                snd_pcm_uframes_t frames =3D nframes - xfer;
--               snd_pcm_uframes_t offset =3D jack->hw_ptr;
-+               snd_pcm_uframes_t offset =3D hw_ptr;
-                snd_pcm_uframes_t cont =3D io->buffer_size - offset;
-
-                if (cont < frames)
-@@ -173,10 +175,11 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_p=
-cm_ioplug_t *io)
-                                snd_pcm_area_copy(&areas[channel], offset, =
-&jack->areas[channel], xfer, frames, io->format);
-                }
-
--               jack->hw_ptr +=3D frames;
--               jack->hw_ptr %=3D io->buffer_size;
-+               hw_ptr +=3D frames;
-+               hw_ptr %=3D io->buffer_size;
-                xfer +=3D frames;
-        }
-+       jack->hw_ptr =3D hw_ptr;
-
-        pcm_poll_unblock_check(io); /* unblock socket for polling if needed=
- */
-
---
-2.7.4
+T24gV2VkLCAyMDE4LTAyLTA3IGF0IDIzOjE5ICswMTAwLCBIYW5zIFZlcmt1aWwgd3JvdGU6Cj4g
+T24gMDIvMDcvMjAxOCAxMTowNSBQTSwgVGltIEhhcnZleSB3cm90ZToKPiA+IE9uIFdlZCwgRmVi
+IDcsIDIwMTggYXQgMTowOSBBTSwgSGFucyBWZXJrdWlsIDxodmVya3VpbEB4czRhbGwubmw+IHdy
+b3RlOgo+ID4gPiBPbiAwMi8wNy8xOCAwOToyMiwgSGFucyBWZXJrdWlsIHdyb3RlOgo+ID4gPiA+
+IE9uIDAyLzA3LzIwMTggMTI6MjkgQU0sIFRpbSBIYXJ2ZXkgd3JvdGU6Cj4gPiA+ID4gPiBNZWRp
+YSBDb250cm9sbGVyIGlvY3RsczoKPiA+ID4gPiA+ICAgICAgICAgICAgICAgICBmYWlsOiB2NGwy
+LXRlc3QtbWVkaWEuY3BwKDE0MSk6IGVudC5mdW5jdGlvbiA9PQo+ID4gPiA+ID4gTUVESUFfRU5U
+X0ZfVjRMMl9TVUJERVZfVU5LTk9XTgo+ID4gPiA+IAo+ID4gPiA+IFdlaXJkLCB0aGlzIHNob3Vs
+ZG4ndCBoYXBwZW4uIEknbGwgbG9vayBpbnRvIHRoaXMgYSBiaXQgbW9yZS4KPiA+ID4gCj4gPiA+
+IENhbiB5b3UgcnVuICdtY19uZXh0Z2VuX3Rlc3QgLWUgLWknIGFuZCBwb3N0IHRoZSBvdXRwdXQ/
+Cj4gPiA+IAo+ID4gPiBJdCdzIGZvdW5kIGluIGNvbnRyaWIvdGVzdC4KPiA+ID4gCj4gPiAKPiA+
+IHJvb3RAdmVudGFuYTp+IyAuL3Y0bC11dGlscy9jb250cmliL3Rlc3QvbWNfbmV4dGdlbl90ZXN0
+IC1lIC1pCj4gPiBEZXZpY2U6IGlteC1tZWRpYSAoZHJpdmVyIGlteC1tZWRpYSkKPiA+IEJ1czoK
+PiA+IHZlcnNpb246IDAKPiA+IG51bWJlciBvZiBlbnRpdGllczogMjQKPiA+IG51bWJlciBvZiBp
+bnRlcmZhY2VzOiAyNAo+ID4gbnVtYmVyIG9mIHBhZHM6IDQ4Cj4gPiBudW1iZXIgb2YgbGlua3M6
+IDUwCj4gPiBlbnRpdHkgZW50aXR5IzE6ICd1bmtub3duIGVudGl0eSB0eXBlJyBhZHY3MTgwIDIt
+MDAyMCwgMSBwYWQocyksIDEgc291cmNlKHMpCj4gPiBlbnRpdHkgZW50aXR5IzM6ICd1bmtub3du
+IGVudGl0eSB0eXBlJyB0ZGExOTk3MSAyLTAwNDgsIDEgcGFkKHMpLCAxIHNvdXJjZShzKQo+ID4g
+ZW50aXR5IGVudGl0eSM1OiAndW5rbm93biBlbnRpdHkgdHlwZScgaXB1MV92ZGljLCAzIHBhZChz
+KSwgMiBzaW5rKHMpLAo+ID4gMSBzb3VyY2UocykKPiA+IGVudGl0eSBlbnRpdHkjOTogJ3Vua25v
+d24gZW50aXR5IHR5cGUnIGlwdTJfdmRpYywgMyBwYWQocyksIDIgc2luayhzKSwKPiA+IDEgc291
+cmNlKHMpCj4gPiBlbnRpdHkgZW50aXR5IzEzOiAndW5rbm93biBlbnRpdHkgdHlwZScgaXB1MV9p
+Y19wcnAsIDMgcGFkKHMpLCAxCj4gPiBzaW5rKHMpLCAyIHNvdXJjZShzKQo+ID4gZW50aXR5IGVu
+dGl0eSMxNzogJ3Vua25vd24gZW50aXR5IHR5cGUnIGlwdTFfaWNfcHJwZW5jLCAyIHBhZChzKSwg
+MQo+ID4gc2luayhzKSwgMSBzb3VyY2UocykKPiA+IGVudGl0eSBlbnRpdHkjMjA6ICdWNEwgSS9P
+JyBpcHUxX2ljX3BycGVuYyBjYXB0dXJlLCAxIHBhZChzKSwgMSBzaW5rKHMpCj4gPiBlbnRpdHkg
+ZW50aXR5IzI2OiAndW5rbm93biBlbnRpdHkgdHlwZScgaXB1MV9pY19wcnB2ZiwgMiBwYWQocyks
+IDEKPiA+IHNpbmsocyksIDEgc291cmNlKHMpCj4gPiBlbnRpdHkgZW50aXR5IzI5OiAnVjRMIEkv
+TycgaXB1MV9pY19wcnB2ZiBjYXB0dXJlLCAxIHBhZChzKSwgMSBzaW5rKHMpCj4gPiBlbnRpdHkg
+ZW50aXR5IzM1OiAndW5rbm93biBlbnRpdHkgdHlwZScgaXB1Ml9pY19wcnAsIDMgcGFkKHMpLCAx
+Cj4gPiBzaW5rKHMpLCAyIHNvdXJjZShzKQo+ID4gZW50aXR5IGVudGl0eSMzOTogJ3Vua25vd24g
+ZW50aXR5IHR5cGUnIGlwdTJfaWNfcHJwZW5jLCAyIHBhZChzKSwgMQo+ID4gc2luayhzKSwgMSBz
+b3VyY2UocykKPiA+IGVudGl0eSBlbnRpdHkjNDI6ICdWNEwgSS9PJyBpcHUyX2ljX3BycGVuYyBj
+YXB0dXJlLCAxIHBhZChzKSwgMSBzaW5rKHMpCj4gPiBlbnRpdHkgZW50aXR5IzQ4OiAndW5rbm93
+biBlbnRpdHkgdHlwZScgaXB1Ml9pY19wcnB2ZiwgMiBwYWQocyksIDEKPiA+IHNpbmsocyksIDEg
+c291cmNlKHMpCj4gPiBlbnRpdHkgZW50aXR5IzUxOiAnVjRMIEkvTycgaXB1Ml9pY19wcnB2ZiBj
+YXB0dXJlLCAxIHBhZChzKSwgMSBzaW5rKHMpCj4gPiBlbnRpdHkgZW50aXR5IzU3OiAndW5rbm93
+biBlbnRpdHkgdHlwZScgaXB1MV9jc2kwLCAzIHBhZChzKSwgMQo+ID4gc2luayhzKSwgMiBzb3Vy
+Y2UocykKPiA+IGVudGl0eSBlbnRpdHkjNjE6ICdWNEwgSS9PJyBpcHUxX2NzaTAgY2FwdHVyZSwg
+MSBwYWQocyksIDEgc2luayhzKQo+ID4gZW50aXR5IGVudGl0eSM2NzogJ3Vua25vd24gZW50aXR5
+IHR5cGUnIGlwdTFfY3NpMSwgMyBwYWQocyksIDEKPiA+IHNpbmsocyksIDIgc291cmNlKHMpCj4g
+PiBlbnRpdHkgZW50aXR5IzcxOiAnVjRMIEkvTycgaXB1MV9jc2kxIGNhcHR1cmUsIDEgcGFkKHMp
+LCAxIHNpbmsocykKPiA+IGVudGl0eSBlbnRpdHkjNzc6ICd1bmtub3duIGVudGl0eSB0eXBlJyBp
+cHUyX2NzaTAsIDMgcGFkKHMpLCAxCj4gPiBzaW5rKHMpLCAyIHNvdXJjZShzKQo+ID4gZW50aXR5
+IGVudGl0eSM4MTogJ1Y0TCBJL08nIGlwdTJfY3NpMCBjYXB0dXJlLCAxIHBhZChzKSwgMSBzaW5r
+KHMpCj4gPiBlbnRpdHkgZW50aXR5Izg3OiAndW5rbm93biBlbnRpdHkgdHlwZScgaXB1Ml9jc2kx
+LCAzIHBhZChzKSwgMQo+ID4gc2luayhzKSwgMiBzb3VyY2UocykKPiA+IGVudGl0eSBlbnRpdHkj
+OTE6ICdWNEwgSS9PJyBpcHUyX2NzaTEgY2FwdHVyZSwgMSBwYWQocyksIDEgc2luayhzKQo+ID4g
+ZW50aXR5IGVudGl0eSM5NzogJ3Vua25vd24gZW50aXR5IHR5cGUnIGlwdTFfY3NpMF9tdXgsIDMg
+cGFkKHMpLCAyCj4gPiBzaW5rKHMpLCAxIHNvdXJjZShzKQo+ID4gZW50aXR5IGVudGl0eSMxMDE6
+ICd1bmtub3duIGVudGl0eSB0eXBlJyBpcHUyX2NzaTFfbXV4LCAzIHBhZChzKSwgMgo+ID4gc2lu
+ayhzKSwgMSBzb3VyY2UocykKPiAKPiBZdWNrLiBTbyBub2JvZHkgaW4gaW14IChhbmQgYWR2NzE4
+MCEpIGlzIHNldHRpbmcgYSB2YWxpZCBmdW5jdGlvbi4KPiBBbmQgSSBzZWUgdGhlIG1jX25leHRn
+ZW5fdGVzdC5jIGRvZXNuJ3Qga25vdyBhbGwgdGhlIGxhdGVzdCBmdW5jdGlvbnMKPiBhbnl3YXku
+CgpUaGF0J3MgcHJvYmFibHkgYmVjYXVzZSBmb3IgbW9zdCBvZiB0aGUgZW50aXRpZXMgaXQncyBh
+IGJpdCB1bmNsZWFyCndoaWNoIGZ1bmN0aW9uIHNob3VsZCBiZSBhc3NpZ25lZC4KCmlwdVsxMl1f
+Y3NpWzAxXV9tdXggYXJlIHZpZGVvIG11bHRpcGxleGVycywgc28gTUVESUFfRU5UX0ZfVklEX01V
+WC4gSQp0aG91Z2h0IHRob3NlIHNob3VsZCBhbHJlYWR5IGJlIHNldCBjb3JyZWN0bHkgaW4gdGhl
+IHZpZGVvLW11eCBkcml2ZXIuCgppcHVbMTJdX2NzaVswMV0gYXJlIHRoZSBpbnRlcmZhY2VzIHRv
+IHRoZSBvdXRzaWRlIHBhcmFsbGVsIGJ1c3NlcywgYnV0CnRoZXkgY2FuIGFsc28gJ2Rvd25zY2Fs
+ZScgYnkgc2tpcHBpbmcsIHNraXAgZnJhbWVzIGFuZCBwYWNrIG9yIGV4cGFuZApwaXhlbHMgZnJv
+bSB0aGUgYnVzIGludG8gdGhlIGludGVybmFsIEZJRk9zIHRoYXQgbGVhZCB0byB0aGUgbmV4dApl
+bGVtZW50LiBUaGVzZSBhcmUgbm90IE1FRElBX0VOVF9GX1ZJRF9JRl9CUklER0UsIGFyZSB0aGV5
+PwoKaXB1WzEyXV92ZGljIGFyZSBtYWlubHkgZGVpbnRlcmxhY2Vycywgc28gYSBuZXcgZnVuY3Rp
+b24KTUVESUFfRU5UX0ZfUFJPQ19WSURFT19ERUlOVEVSTEFDRVIgPyBUaGVzZSBlbnRpdGllcyBj
+b3VsZCBhbHNvIGJlIHVzZWQKYXMgY29tcG9zZXJzIGluIGEgbWVtMm1lbSBzY2VuYXJpbyAoTUVE
+SUFfRU5UX0ZfUFJPQ19WSURFT19DT01QT1NFUiA/KSwKYnV0IHRoaXMgaXMgY3VycmVudGx5IG5v
+dCBzdXBwb3J0ZWQuCgppcHVbMTJdX2ljX3BycCBpcyBqdXN0IGEgdGVlIGVsZW1lbnTCoHRoYXQg
+ZmVlZHMgYm90aCBpcHVbMTJdX2ljX3BycGVuYwphbmQgaXB1WzEyXV9pY19wcnB2Zi4gVGhlc2Ug
+YXJlIGJvdGggc2NhbGVycyBhbmQgY29sb3JzcGFjZSBjb252ZXJ0ZXJzLgpNRURJQV9FTlRfRl9Q
+Uk9DX1ZJREVPX1NDQUxFUiA/Ck1FRElBX0VOVF9GX1BST0NfVklERU9fUElYRUxfRU5DX0NPTlYg
+PwoKImlwdVsxMl1fY3NpWzAxXSBjYXB0dXJlIiBhcmUgdGhlIERNQSBlbGVtZW50cyB3cml0aW5n
+IHRvIG1lbW9yeSwgc28KTUVESUFfRU5UX0ZfUFJPQ19WSURFT19QSVhFTF9GT1JNQVRURVIgPwoK
+PiBUaGF0J3Mgd2hhdCBoYXBwZW5zIHdoZW4geW91IGRvbid0IGhhdmUgY29tcGxpYW5jZSB0ZXN0
+cywgbm9ib2R5IGJvdGhlcnMKPiB0byBmaWxsIHN0dWZmIGxpa2UgdGhhdCBpbi4gQW55d2F5LCB0
+aGF0IGV4cGxhaW5zIHRoZSB2NGwyLWNvbXBsaWFuY2UgZXJyb3IKPiB5b3UgZ290IChhbHRob3Vn
+aCBJIHNob3VsZCBpbXByb3ZlIHRoZSBlcnJvciB0byBhbHNvIG1lbnRpb25lZCB0aGUgZW50aXR5
+Cj4gaW4gcXVlc3Rpb24pLiBJbiBvdGhlciB3b3JkcywgaXQncyBub3QgeW91LCBpdCdzIHRoZW0g
+Oi0pCgpyZWdhcmRzClBoaWxpcHAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
