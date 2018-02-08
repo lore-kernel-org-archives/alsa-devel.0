@@ -1,7 +1,7 @@
 From: Hans Verkuil <hverkuil@xs4all.nl>
 Subject: Re: [PATCH v8 0/7] TDA1997x HDMI video reciver
-Date: Thu, 8 Feb 2018 12:56:25 +0100
-Message-ID: <3b95357c-e44f-eed9-efd3-e2b0e4ff9eb2@xs4all.nl>
+Date: Thu, 8 Feb 2018 13:01:56 +0100
+Message-ID: <e13db87e-761a-b0e5-3802-348c9776674a@xs4all.nl>
 References: <1517948874-21681-1-git-send-email-tharvey@gateworks.com>
  <c7771c44-a9ff-0207-38f6-28bcc06ccdee@xs4all.nl>
  <CAJ+vNU1oiM0Y0rO-DHi57nVOqnw60A7pn_1=h5b46-BrY7_p2Q@mail.gmail.com>
@@ -10,135 +10,152 @@ References: <1517948874-21681-1-git-send-email-tharvey@gateworks.com>
  <CAJ+vNU014FJZsb44YnidE3fFiqeB6o8A7kvGinJWu7=yq3_dhA@mail.gmail.com>
  <d188a172-fc00-eb46-c6f5-833a86475390@xs4all.nl>
  <1518086816.4359.4.camel@pengutronix.de>
+ <3b95357c-e44f-eed9-efd3-e2b0e4ff9eb2@xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <1518086816.4359.4.camel@pengutronix.de>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lb3-smtp-cloud9.xs4all.net (lb3-smtp-cloud9.xs4all.net
+ [194.109.24.30])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9FE22266E55
+ for <alsa-devel@alsa-project.org>; Thu,  8 Feb 2018 13:02:00 +0100 (CET)
+In-Reply-To: <3b95357c-e44f-eed9-efd3-e2b0e4ff9eb2@xs4all.nl>
 Content-Language: en-US
-Sender: linux-media-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Philipp Zabel <p.zabel@pengutronix.de>, Tim Harvey <tharvey@gateworks.com>
-Cc: linux-media <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>, Steve Longerbeam <slongerbeam@gmail.com>, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>, Steve Longerbeam <slongerbeam@gmail.com>, Shawn Guo <shawnguo@kernel.org>, linux-media <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/08/18 11:46, Philipp Zabel wrote:
-> On Wed, 2018-02-07 at 23:19 +0100, Hans Verkuil wrote:
->> On 02/07/2018 11:05 PM, Tim Harvey wrote:
->>> On Wed, Feb 7, 2018 at 1:09 AM, Hans Verkuil <hverkuil@xs4all.nl> wrote:
->>>> On 02/07/18 09:22, Hans Verkuil wrote:
->>>>> On 02/07/2018 12:29 AM, Tim Harvey wrote:
->>>>>> Media Controller ioctls:
->>>>>>                 fail: v4l2-test-media.cpp(141): ent.function ==
->>>>>> MEDIA_ENT_F_V4L2_SUBDEV_UNKNOWN
+On 02/08/18 12:56, Hans Verkuil wrote:
+> On 02/08/18 11:46, Philipp Zabel wrote:
+>> On Wed, 2018-02-07 at 23:19 +0100, Hans Verkuil wrote:
+>>> On 02/07/2018 11:05 PM, Tim Harvey wrote:
+>>>> On Wed, Feb 7, 2018 at 1:09 AM, Hans Verkuil <hverkuil@xs4all.nl> wrote:
+>>>>> On 02/07/18 09:22, Hans Verkuil wrote:
+>>>>>> On 02/07/2018 12:29 AM, Tim Harvey wrote:
+>>>>>>> Media Controller ioctls:
+>>>>>>>                 fail: v4l2-test-media.cpp(141): ent.function ==
+>>>>>>> MEDIA_ENT_F_V4L2_SUBDEV_UNKNOWN
+>>>>>>
+>>>>>> Weird, this shouldn't happen. I'll look into this a bit more.
 >>>>>
->>>>> Weird, this shouldn't happen. I'll look into this a bit more.
+>>>>> Can you run 'mc_nextgen_test -e -i' and post the output?
+>>>>>
+>>>>> It's found in contrib/test.
+>>>>>
 >>>>
->>>> Can you run 'mc_nextgen_test -e -i' and post the output?
->>>>
->>>> It's found in contrib/test.
->>>>
+>>>> root@ventana:~# ./v4l-utils/contrib/test/mc_nextgen_test -e -i
+>>>> Device: imx-media (driver imx-media)
+>>>> Bus:
+>>>> version: 0
+>>>> number of entities: 24
+>>>> number of interfaces: 24
+>>>> number of pads: 48
+>>>> number of links: 50
+>>>> entity entity#1: 'unknown entity type' adv7180 2-0020, 1 pad(s), 1 source(s)
+>>>> entity entity#3: 'unknown entity type' tda19971 2-0048, 1 pad(s), 1 source(s)
+>>>> entity entity#5: 'unknown entity type' ipu1_vdic, 3 pad(s), 2 sink(s),
+>>>> 1 source(s)
+>>>> entity entity#9: 'unknown entity type' ipu2_vdic, 3 pad(s), 2 sink(s),
+>>>> 1 source(s)
+>>>> entity entity#13: 'unknown entity type' ipu1_ic_prp, 3 pad(s), 1
+>>>> sink(s), 2 source(s)
+>>>> entity entity#17: 'unknown entity type' ipu1_ic_prpenc, 2 pad(s), 1
+>>>> sink(s), 1 source(s)
+>>>> entity entity#20: 'V4L I/O' ipu1_ic_prpenc capture, 1 pad(s), 1 sink(s)
+>>>> entity entity#26: 'unknown entity type' ipu1_ic_prpvf, 2 pad(s), 1
+>>>> sink(s), 1 source(s)
+>>>> entity entity#29: 'V4L I/O' ipu1_ic_prpvf capture, 1 pad(s), 1 sink(s)
+>>>> entity entity#35: 'unknown entity type' ipu2_ic_prp, 3 pad(s), 1
+>>>> sink(s), 2 source(s)
+>>>> entity entity#39: 'unknown entity type' ipu2_ic_prpenc, 2 pad(s), 1
+>>>> sink(s), 1 source(s)
+>>>> entity entity#42: 'V4L I/O' ipu2_ic_prpenc capture, 1 pad(s), 1 sink(s)
+>>>> entity entity#48: 'unknown entity type' ipu2_ic_prpvf, 2 pad(s), 1
+>>>> sink(s), 1 source(s)
+>>>> entity entity#51: 'V4L I/O' ipu2_ic_prpvf capture, 1 pad(s), 1 sink(s)
+>>>> entity entity#57: 'unknown entity type' ipu1_csi0, 3 pad(s), 1
+>>>> sink(s), 2 source(s)
+>>>> entity entity#61: 'V4L I/O' ipu1_csi0 capture, 1 pad(s), 1 sink(s)
+>>>> entity entity#67: 'unknown entity type' ipu1_csi1, 3 pad(s), 1
+>>>> sink(s), 2 source(s)
+>>>> entity entity#71: 'V4L I/O' ipu1_csi1 capture, 1 pad(s), 1 sink(s)
+>>>> entity entity#77: 'unknown entity type' ipu2_csi0, 3 pad(s), 1
+>>>> sink(s), 2 source(s)
+>>>> entity entity#81: 'V4L I/O' ipu2_csi0 capture, 1 pad(s), 1 sink(s)
+>>>> entity entity#87: 'unknown entity type' ipu2_csi1, 3 pad(s), 1
+>>>> sink(s), 2 source(s)
+>>>> entity entity#91: 'V4L I/O' ipu2_csi1 capture, 1 pad(s), 1 sink(s)
+>>>> entity entity#97: 'unknown entity type' ipu1_csi0_mux, 3 pad(s), 2
+>>>> sink(s), 1 source(s)
+>>>> entity entity#101: 'unknown entity type' ipu2_csi1_mux, 3 pad(s), 2
+>>>> sink(s), 1 source(s)
 >>>
->>> root@ventana:~# ./v4l-utils/contrib/test/mc_nextgen_test -e -i
->>> Device: imx-media (driver imx-media)
->>> Bus:
->>> version: 0
->>> number of entities: 24
->>> number of interfaces: 24
->>> number of pads: 48
->>> number of links: 50
->>> entity entity#1: 'unknown entity type' adv7180 2-0020, 1 pad(s), 1 source(s)
->>> entity entity#3: 'unknown entity type' tda19971 2-0048, 1 pad(s), 1 source(s)
->>> entity entity#5: 'unknown entity type' ipu1_vdic, 3 pad(s), 2 sink(s),
->>> 1 source(s)
->>> entity entity#9: 'unknown entity type' ipu2_vdic, 3 pad(s), 2 sink(s),
->>> 1 source(s)
->>> entity entity#13: 'unknown entity type' ipu1_ic_prp, 3 pad(s), 1
->>> sink(s), 2 source(s)
->>> entity entity#17: 'unknown entity type' ipu1_ic_prpenc, 2 pad(s), 1
->>> sink(s), 1 source(s)
->>> entity entity#20: 'V4L I/O' ipu1_ic_prpenc capture, 1 pad(s), 1 sink(s)
->>> entity entity#26: 'unknown entity type' ipu1_ic_prpvf, 2 pad(s), 1
->>> sink(s), 1 source(s)
->>> entity entity#29: 'V4L I/O' ipu1_ic_prpvf capture, 1 pad(s), 1 sink(s)
->>> entity entity#35: 'unknown entity type' ipu2_ic_prp, 3 pad(s), 1
->>> sink(s), 2 source(s)
->>> entity entity#39: 'unknown entity type' ipu2_ic_prpenc, 2 pad(s), 1
->>> sink(s), 1 source(s)
->>> entity entity#42: 'V4L I/O' ipu2_ic_prpenc capture, 1 pad(s), 1 sink(s)
->>> entity entity#48: 'unknown entity type' ipu2_ic_prpvf, 2 pad(s), 1
->>> sink(s), 1 source(s)
->>> entity entity#51: 'V4L I/O' ipu2_ic_prpvf capture, 1 pad(s), 1 sink(s)
->>> entity entity#57: 'unknown entity type' ipu1_csi0, 3 pad(s), 1
->>> sink(s), 2 source(s)
->>> entity entity#61: 'V4L I/O' ipu1_csi0 capture, 1 pad(s), 1 sink(s)
->>> entity entity#67: 'unknown entity type' ipu1_csi1, 3 pad(s), 1
->>> sink(s), 2 source(s)
->>> entity entity#71: 'V4L I/O' ipu1_csi1 capture, 1 pad(s), 1 sink(s)
->>> entity entity#77: 'unknown entity type' ipu2_csi0, 3 pad(s), 1
->>> sink(s), 2 source(s)
->>> entity entity#81: 'V4L I/O' ipu2_csi0 capture, 1 pad(s), 1 sink(s)
->>> entity entity#87: 'unknown entity type' ipu2_csi1, 3 pad(s), 1
->>> sink(s), 2 source(s)
->>> entity entity#91: 'V4L I/O' ipu2_csi1 capture, 1 pad(s), 1 sink(s)
->>> entity entity#97: 'unknown entity type' ipu1_csi0_mux, 3 pad(s), 2
->>> sink(s), 1 source(s)
->>> entity entity#101: 'unknown entity type' ipu2_csi1_mux, 3 pad(s), 2
->>> sink(s), 1 source(s)
+>>> Yuck. So nobody in imx (and adv7180!) is setting a valid function.
+>>> And I see the mc_nextgen_test.c doesn't know all the latest functions
+>>> anyway.
 >>
->> Yuck. So nobody in imx (and adv7180!) is setting a valid function.
->> And I see the mc_nextgen_test.c doesn't know all the latest functions
->> anyway.
+>> That's probably because for most of the entities it's a bit unclear
+>> which function should be assigned.
 > 
-> That's probably because for most of the entities it's a bit unclear
-> which function should be assigned.
-
-Well, that's one reason. The other is that there never was a utility
-to test this :-)
-
-> ipu[12]_csi[01]_mux are video multiplexers, so MEDIA_ENT_F_VID_MUX. I
-> thought those should already be set correctly in the video-mux driver.
-
-They are. The mc_nextgen_test, media-ctl and now v4l2-ctl/v4l2-compliance
-all have their own list of functions that they know about and it's all
-different. It's one of the things I want to fix.
-
-> ipu[12]_csi[01] are the interfaces to the outside parallel busses, but
-> they can also 'downscale' by skipping, skip frames and pack or expand
-> pixels from the bus into the internal FIFOs that lead to the next
-> element. These are not MEDIA_ENT_F_VID_IF_BRIDGE, are they?
-
-Yes, they are. One limitation of the current API is that you cannot
-represent correctly devices with multiple functions. This is planned for
-a long time now, but nobody actually did the work. So for now just fill
-in the primary function with a comment that in the future other functions
-should be set as well.
-
-> ipu[12]_vdic are mainly deinterlacers, so a new function
-> MEDIA_ENT_F_PROC_VIDEO_DEINTERLACER ? These entities could also be used
-> as composers in a mem2mem scenario (MEDIA_ENT_F_PROC_VIDEO_COMPOSER ?),
-> but this is currently not supported.
-
-Yes, we need a PROC_VIDEO_DEINTERLACER function.
-
+> Well, that's one reason. The other is that there never was a utility
+> to test this :-)
 > 
-> ipu[12]_ic_prp is just a tee element that feeds both ipu[12]_ic_prpenc
-> and ipu[12]_ic_prpvf. These are both scalers and colorspace converters.
-> MEDIA_ENT_F_PROC_VIDEO_SCALER ?
-> MEDIA_ENT_F_PROC_VIDEO_PIXEL_ENC_CONV ?
-
-The tee element would be a new PROC_VIDEO_SPLITTER function.
-
-The other two would be scalers, but should add the VIDEO_PIXEL_ENC_CONV
-function once it is possible to do so.
-
+>> ipu[12]_csi[01]_mux are video multiplexers, so MEDIA_ENT_F_VID_MUX. I
+>> thought those should already be set correctly in the video-mux driver.
 > 
-> "ipu[12]_csi[01] capture" are the DMA elements writing to memory, so
-> MEDIA_ENT_F_PROC_VIDEO_PIXEL_FORMATTER ?
+> They are. The mc_nextgen_test, media-ctl and now v4l2-ctl/v4l2-compliance
+> all have their own list of functions that they know about and it's all
+> different. It's one of the things I want to fix.
+> 
+>> ipu[12]_csi[01] are the interfaces to the outside parallel busses, but
+>> they can also 'downscale' by skipping, skip frames and pack or expand
+>> pixels from the bus into the internal FIFOs that lead to the next
+>> element. These are not MEDIA_ENT_F_VID_IF_BRIDGE, are they?
+> 
+> Yes, they are. One limitation of the current API is that you cannot
+> represent correctly devices with multiple functions. This is planned for
+> a long time now, but nobody actually did the work. So for now just fill
+> in the primary function with a comment that in the future other functions
+> should be set as well.
+> 
+>> ipu[12]_vdic are mainly deinterlacers, so a new function
+>> MEDIA_ENT_F_PROC_VIDEO_DEINTERLACER ? These entities could also be used
+>> as composers in a mem2mem scenario (MEDIA_ENT_F_PROC_VIDEO_COMPOSER ?),
+>> but this is currently not supported.
+> 
+> Yes, we need a PROC_VIDEO_DEINTERLACER function.
+> 
+>>
+>> ipu[12]_ic_prp is just a tee element that feeds both ipu[12]_ic_prpenc
+>> and ipu[12]_ic_prpvf. These are both scalers and colorspace converters.
+>> MEDIA_ENT_F_PROC_VIDEO_SCALER ?
+>> MEDIA_ENT_F_PROC_VIDEO_PIXEL_ENC_CONV ?
+> 
+> The tee element would be a new PROC_VIDEO_SPLITTER function.
+> 
+> The other two would be scalers, but should add the VIDEO_PIXEL_ENC_CONV
+> function once it is possible to do so.
+> 
+>>
+>> "ipu[12]_csi[01] capture" are the DMA elements writing to memory, so
+>> MEDIA_ENT_F_PROC_VIDEO_PIXEL_FORMATTER ?
+> 
+> These are likely to be filled correctly already. I've just added a commit
+> to v4l2-compliance to make it easier to see what function is used:
+> 
+> 	v4l2-compliance -m0 -v
 
-These are likely to be filled correctly already. I've just added a commit
-to v4l2-compliance to make it easier to see what function is used:
-
-	v4l2-compliance -m0 -v
+Actually, can you run this using the latest v4l-utils version for the imx
+and post the output?
 
 Regards,
 
