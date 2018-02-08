@@ -1,68 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: Add the DT binding files entry to MAINTAINERS" to the asoc tree
-Date: Thu, 08 Feb 2018 15:41:33 +0000
-Message-ID: <E1ejoKL-0008Sx-2L@debutante>
-References: <20180205170500.8992-1-s.nawrocki@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20180205170500.8992-1-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>, Mark Brown <broonie@kernel.org>broonie@kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, jcsing.lee@samsung.com, lgirdwood@gmail.comkrzk@kernel.org, linux-kernel@vger.kernel.org, robh+dt@kernel.org, m.szyprowski@samsung.comalsa-devel@alsa-project.org
+Subject: Re: [PATCH v2] ASoC: use seq_file to dump the contents of
+ dai_list,platform_list and codec_list
+Date: Thu, 8 Feb 2018 15:42:52 +0000
+Message-ID: <20180208154252.GB27520@sirena.org.uk>
+References: <20180118053126.22082-1-dolinux.peng@gmail.com>
+ <CAHp75VcefO1L-E8ymHX7MibLiOXkRZ3+3FbkF_L+ywMV-i3Mvw@mail.gmail.com>
+ <20180123173732.GI7600@sirena.org.uk>
+ <CAErzpmt5Z_bVkO-86yCNNWMNSYXWMzvABGtTEuYV1Y1qk=2LJQ@mail.gmail.com>
+ <CAHp75Ve-Nq+hbzf9XRDjQrMz_W7BCSW_58o_vA0H1RGqEFpYrA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4SFOXa2GPu3tIq4H"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAHp75Ve-Nq+hbzf9XRDjQrMz_W7BCSW_58o_vA0H1RGqEFpYrA@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Donglin Peng <dolinux.peng@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: samsung: Add the DT binding files entry to MAINTAINERS
+--4SFOXa2GPu3tIq4H
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+On Thu, Feb 08, 2018 at 04:25:10PM +0200, Andy Shevchenko wrote:
+> On Fri, Jan 26, 2018 at 9:16 AM, Donglin Peng <dolinux.peng@gmail.com> wrote:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> > I can send another patch after the following patch is merged:
+> > https://patchwork.kernel.org/patch/10178813/
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+> It's merged. I think whenever Mark switched his repositories for new
+> cycle you may be able to submit a patch.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Send it any time, I'll just not apply it until after -rc1 comes out.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--4SFOXa2GPu3tIq4H
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlp8b/sACgkQJNaLcl1U
+h9B+RQf/YFk9qt6DHq6reakGRMOM2xxvCCq8vLPQD1kAMjyfQheixI7FeBXQ5PAN
+IEFTEcYouC+qIEoiIBQA40VROVDm2RUTkuzFgAxSA36m6pEVnqbRYQG/GFI/HUIm
+tOpVN8frG5FDKwX9C6iG3p6M6hesT6BUR0JRarTns7jo+vg+PplorW/1zn+UL4K0
+1aJc7YGdJ4N/J2ceImTyMqyOUxWM6Eb6gEjk3pLu5tLiWSUiFkPprWoSIhyBEP/B
+n+TbeJvDZXUNUDKl5FAibyywsIaxQIZNQo+KZfhH/k68DEXX8Yq7qnRTOWZHirrl
+7UJa4pxxdbgqEGinZJX6MN1pevhmEA==
+=8eH5
+-----END PGP SIGNATURE-----
 
->From 4b20f44e41b421be608756c395ccf4fcb1305824 Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Mon, 5 Feb 2018 18:05:00 +0100
-Subject: [PATCH] ASoC: samsung: Add the DT binding files entry to MAINTAINERS
-
-This patch adds missing DT binding files to the Samsung ASoC
-drivers entry.
-
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 87a5120d5d47..930fd1e32f12 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11923,6 +11923,7 @@ M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
- S:	Supported
- F:	sound/soc/samsung/
-+F:	Documentation/devicetree/bindings/sound/samsung*
- 
- SAMSUNG EXYNOS PSEUDO RANDOM NUMBER GENERATOR (RNG) DRIVER
- M:	Krzysztof Kozlowski <krzk@kernel.org>
--- 
-2.15.1
+--4SFOXa2GPu3tIq4H--
