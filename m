@@ -1,35 +1,44 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v2] ASoC: use seq_file to dump the contents of
- dai_list,platform_list and codec_list
-Date: Thu, 8 Feb 2018 16:25:10 +0200
-Message-ID: <CAHp75Ve-Nq+hbzf9XRDjQrMz_W7BCSW_58o_vA0H1RGqEFpYrA@mail.gmail.com>
-References: <20180118053126.22082-1-dolinux.peng@gmail.com>
- <CAHp75VcefO1L-E8ymHX7MibLiOXkRZ3+3FbkF_L+ywMV-i3Mvw@mail.gmail.com>
- <20180123173732.GI7600@sirena.org.uk> <CAErzpmt5Z_bVkO-86yCNNWMNSYXWMzvABGtTEuYV1Y1qk=2LJQ@mail.gmail.com>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ASoC: Intel: Skylake: make function skl_clk_round_rate static
+Date: Thu,  8 Feb 2018 14:35:30 +0000
+Message-ID: <20180208143530.11450-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAErzpmt5Z_bVkO-86yCNNWMNSYXWMzvABGtTEuYV1Y1qk=2LJQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Donglin Peng <dolinux.peng@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Stephen Boyd <sboyd@codeaurora.org>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 26, 2018 at 9:16 AM, Donglin Peng <dolinux.peng@gmail.com> wrote:
-> On Wed, Jan 24, 2018 at 1:37 AM, Mark Brown <broonie@kernel.org> wrote:
->> On Tue, Jan 23, 2018 at 07:08:15PM +0200, Andy Shevchenko wrote:
->>
->>> If it's not critical, I would suggest to wait till v4.16-rc1, where I
->>> would like to push [1], and switch to DEFINE_SHOW_ATTRIBUTE() macro.
->>
->> Too late, I already applied this - a further conversion for the new
->> macro would be good.
-> I can send another patch after the following patch is merged:
-> https://patchwork.kernel.org/patch/10178813/
+From: Colin Ian King <colin.king@canonical.com>
 
-It's merged. I think whenever Mark switched his repositories for new
-cycle you may be able to submit a patch.
+The function skl_clk_round_rate is local to the source and does not
+need to be in global scope, so make it static.
 
+Cleans up sparse warning:
+sound/soc/intel/skylake/skl-ssp-clk.c:250:6: warning: symbol
+'skl_clk_round_rate' was not declared. Should it be static?
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/intel/skylake/skl-ssp-clk.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/intel/skylake/skl-ssp-clk.c b/sound/soc/intel/skylake/skl-ssp-clk.c
+index 7fbddf5e3b00..cda1b5fa7436 100644
+--- a/sound/soc/intel/skylake/skl-ssp-clk.c
++++ b/sound/soc/intel/skylake/skl-ssp-clk.c
+@@ -247,8 +247,8 @@ static unsigned long skl_clk_recalc_rate(struct clk_hw *hw,
+ }
+ 
+ /* Not supported by clk driver. Implemented to satisfy clk fw */
+-long skl_clk_round_rate(struct clk_hw *hw, unsigned long rate,
+-				unsigned long *parent_rate)
++static long skl_clk_round_rate(struct clk_hw *hw, unsigned long rate,
++			       unsigned long *parent_rate)
+ {
+ 	return rate;
+ }
 -- 
-With Best Regards,
-Andy Shevchenko
+2.15.1
