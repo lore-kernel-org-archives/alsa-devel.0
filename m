@@ -1,76 +1,44 @@
-From: Carlo Caione <carlo@caione.org>
-Subject: [PATCH] ASoC: rt5645: Introduce mapping for ACPI-defined GPIO
-Date: Thu,  8 Feb 2018 20:09:52 +0000
-Message-ID: <20180208200952.13111-1-carlo@caione.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux@endlessm.com, bardliao@realtek.com, oder_chiou@realtek.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Carlo Caione <carlo@endlessm.com>
+From: Ulf Magnusson <ulfalizer@gmail.com>
+Subject: [PATCH] ALSA: ac97: kconfig: Remove select of undefined symbol AC97
+Date: Fri, 9 Feb 2018 00:15:36 +0100
+Message-ID: <20180208231536.xnlrldm4to4pfv57@huvuddator>
+References: <20180205012146.23981-1-ulfalizer@gmail.com>
+ <CAFkk2KRafUf3ki2R7B1pE_wzYkYn-OdeqLnvL0kScSxdzDMEXw@mail.gmail.com>
+ <87lgg587ys.fsf@belgarion.home>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-kbuild-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87lgg587ys.fsf@belgarion.home>
+Sender: linux-kbuild-owner@vger.kernel.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, perex@perex.cz, tiwai@suse.com, broonie@kernel.org, alsa-devel@alsa-project.org, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, tfiga@chromium.org, paul.burton@mips.com, Marek Szyprowski <m.szyprowski@samsung.com>, Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>, Linus Walleij <linus.walleij@linaro.org>, vgupta@synopsys.com, mgorman@techsingularity.net, hch@lst.de, mina86@mina86.com, robh@kernel.org, sboyd@codeaurora.org, paulus@ozlabs.org, will.deacon@arm.com, Tony Lindgren <tony@atomide.com>, Nicholas Piggin <npiggin@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Palmer Dabbelt <palmer@sifive.com>, Albert Ou <albert@sifive.com>, linux-riscv@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Carlo Caione <carlo@endlessm.com>
+The AC97_BUS_NEW Kconfig symbol selects the globally undefined symbol
+AC97.
 
-On at least one notebook (ECS EF20EA) the 'hp-detect' GPIO is defined in
-the DSDT table by the ACPI GpioIo resources in _CRS. Add this mapping to
-the rt5645 driver to enable the jack detection also on non-DT platforms.
+Robert Jarzmik confirmed in https://lkml.org/lkml/2018/2/7/96 that the
+select was put in by mistake and can be safely removed, with no other
+changes required. Remove it.
 
-Method (_CRS, 0, NotSerialized)
-{
-  Name (SBUF, ResourceTemplate ()
-  {
-    I2cSerialBusV2 (0x001A, ControllerInitiated, 0x00061A80,
-        AddressingMode7Bit, "\\_SB.PCI0.I2C2",
-        0x00, ResourceConsumer, , Exclusive,
-        )
-    GpioInt (Edge, ActiveBoth, SharedAndWake, PullNone, 0x0000,
-        "\\_SB.GPO3", 0x00, ResourceConsumer, ,
-        )
-        {   // Pin list
-            0x004F
-        }
-    GpioIo (Shared, PullDefault, 0x0000, 0x0000, IoRestrictionInputOnly,
-        "\\_SB.GPO3", 0x00, ResourceConsumer, ,
-        )
-        {   // Pin list
-            0x004F
-        }
-  })
-  Return (SBUF) /* \_SB_.PCI0.I2C2.RTK2._CRS.SBUF */
-}
-
-Signed-off-by: Carlo Caione <carlo@endlessm.com>
+Signed-off-by: Ulf Magnusson <ulfalizer@gmail.com>
 ---
- sound/soc/codecs/rt5645.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/ac97/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 8f140c8b93ac..7f2d83884556 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3764,6 +3764,13 @@ static int rt5645_parse_dt(struct rt5645_priv *rt5645, struct device *dev)
- 	return 0;
- }
+diff --git a/sound/ac97/Kconfig b/sound/ac97/Kconfig
+index f8a64e15e5bf..baa5f8ef89d2 100644
+--- a/sound/ac97/Kconfig
++++ b/sound/ac97/Kconfig
+@@ -5,7 +5,6 @@
  
-+static const struct acpi_gpio_params hp_detect_gpios = { 1, 0, false };
-+
-+static const struct acpi_gpio_mapping cht_rt5645_gpios[] = {
-+	{ "hp-detect-gpios", &hp_detect_gpios, 1 },
-+	{},
-+};
-+
- static int rt5645_i2c_probe(struct i2c_client *i2c,
- 		    const struct i2c_device_id *id)
- {
-@@ -3779,6 +3786,10 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 	if (rt5645 == NULL)
- 		return -ENOMEM;
- 
-+	if (ACPI_HANDLE(&i2c->dev))
-+		if (devm_acpi_dev_add_driver_gpios(&i2c->dev, cht_rt5645_gpios))
-+			dev_dbg(&i2c->dev, "Failed to add driver gpios\n");
-+
- 	rt5645->i2c = i2c;
- 	i2c_set_clientdata(i2c, rt5645);
- 
+ config AC97_BUS_NEW
+ 	tristate
+-	select AC97
+ 	help
+ 	  This is the new AC97 bus type, successor of AC97_BUS. The ported
+ 	  drivers which benefit from the AC97 automatic probing should "select"
 -- 
 2.14.1
+
