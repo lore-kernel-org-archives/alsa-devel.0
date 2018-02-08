@@ -1,87 +1,145 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH - JACK PCM plugin] jack: Write only valid
- values to the internal hw_ptr
-Date: Thu, 8 Feb 2018 11:54:13 +0100
-Message-ID: <157497e8-ce64-5b4a-9481-ae5de808b3f6@perex.cz>
-References: <1516610240-7772-1-git-send-email-twischer@de.adit-jv.com>
- <B0FB33DC1499054591F62C0EF1E013D7684F7A01@HI2EXCH01.adit-jv.com>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH v8 0/7] TDA1997x HDMI video reciver
+Date: Thu, 8 Feb 2018 12:56:25 +0100
+Message-ID: <3b95357c-e44f-eed9-efd3-e2b0e4ff9eb2@xs4all.nl>
+References: <1517948874-21681-1-git-send-email-tharvey@gateworks.com>
+ <c7771c44-a9ff-0207-38f6-28bcc06ccdee@xs4all.nl>
+ <CAJ+vNU1oiM0Y0rO-DHi57nVOqnw60A7pn_1=h5b46-BrY7_p2Q@mail.gmail.com>
+ <605fd4a8-43ab-c566-57b6-abb1c9f8f0f8@xs4all.nl>
+ <7cf38465-7a79-5d81-a995-9acfbacf5023@xs4all.nl>
+ <CAJ+vNU014FJZsb44YnidE3fFiqeB6o8A7kvGinJWu7=yq3_dhA@mail.gmail.com>
+ <d188a172-fc00-eb46-c6f5-833a86475390@xs4all.nl>
+ <1518086816.4359.4.camel@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 705C7266E55
- for <alsa-devel@alsa-project.org>; Thu,  8 Feb 2018 11:54:16 +0100 (CET)
-In-Reply-To: <B0FB33DC1499054591F62C0EF1E013D7684F7A01@HI2EXCH01.adit-jv.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <1518086816.4359.4.camel@pengutronix.de>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Wischer, Timo (ADITG/ESB)" <twischer@de.adit-jv.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Sender: linux-media-owner@vger.kernel.org
+To: Philipp Zabel <p.zabel@pengutronix.de>, Tim Harvey <tharvey@gateworks.com>
+Cc: linux-media <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>, Steve Longerbeam <slongerbeam@gmail.com>, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>
 List-Id: alsa-devel@alsa-project.org
 
-RG5lIDguMi4yMDE4IHYgMDk6NDkgV2lzY2hlciwgVGltbyAoQURJVEcvRVNCKSBuYXBzYWwoYSk6
-Cj4gSGVsbG8gYWxsLAo+IAo+IGFueSBjb21tZW50cyBzbyBmYXI/CgpUaGUgcGF0Y2ggbG9va3Mg
-Z29vZC4gQXBwbGllZC4gVGhhbmtzLgoKCQkJCUphcm9zbGF2Cgo+IAo+IEl0IHdvdWxkIGJlIGdy
-ZWF0IGlmIHNvbWVvbmUgY291bGQgaGF2ZSBhIGxvb2sKPiBiZWNhdXNlIEkgaGF2ZSBzb21lIGZ1
-cnRoZXIgZml4ZXMgcGVuZGluZy4KPiAKPiBCZXN0IHJlZ2FyZHMKPiAKPiBUaW1vIFdpc2NoZXIK
-PiAKPiBBZHZhbmNlZCBEcml2ZXIgSW5mb3JtYXRpb24gVGVjaG5vbG9neSBHbWJICj4gRW5naW5l
-ZXJpbmcgU29mdHdhcmUgQmFzZSAoQURJVEcvRVNCKQo+IFJvYmVydC1Cb3NjaC1TdHIuIDIwMAo+
-IDMxMTM5IEhpbGRlc2hlaW0KPiBHZXJtYW55Cj4gCj4gVGVsLiArNDkgNTEyMSA0OSA2OTM4Cj4g
-RmF4ICs0OSA1MTIxIDQ5IDY5OTkKPiB0d2lzY2hlckBkZS5hZGl0LWp2LmNvbQo+IAo+IEFESVQg
-aXMgYSBqb2ludCB2ZW50dXJlIGNvbXBhbnkgb2YgUm9iZXJ0IEJvc2NoIEdtYkgvUm9iZXJ0IEJv
-c2NoIENhciBNdWx0aW1lZGlhIEdtYkggYW5kIERFTlNPIENvcnBvcmF0aW9uCj4gU2l0ejogSGls
-ZGVzaGVpbSwgUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBIaWxkZXNoZWltIEhSQiAzNDM4
-Cj4gR2VzY2jDpGZ0c2bDvGhydW5nOiBXaWxoZWxtIEdyYWJvdywgS2VuIFlhZ3VjaGkKPiAKPiBf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gRnJvbTogV2lzY2hlciwg
-VGltbyAoQURJVEcvRVNCKQo+IFNlbnQ6IE1vbmRheSwgSmFudWFyeSAyMiwgMjAxOCA5OjM3IEFN
-Cj4gVG86IHBhdGNoQGFsc2EtcHJvamVjdC5vcmcKPiBDYzogYWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnOyBXaXNjaGVyLCBUaW1vIChBRElURy9FU0IpCj4gU3ViamVjdDogW1BBVENIIC0gSkFD
-SyBQQ00gcGx1Z2luXSBqYWNrOiBXcml0ZSBvbmx5IHZhbGlkIHZhbHVlcyB0byB0aGUgaW50ZXJu
-YWwgaHdfcHRyCj4gCj4gRnJvbTogVGltbyBXaXNjaGVyIDx0d2lzY2hlckBkZS5hZGl0LWp2LmNv
-bT4KPiAKPiBPdGhlcndpc2UgdGhlIEFMU0EgdGhyZWFkIGNvdWxkIGZvciBleGFtcGxlIHJlYWQg
-YSBod19wdHIgPgo+IGJ1ZmZlcl9zaXplCj4gCj4gU2lnbmVkLW9mZi1ieTogVGltbyBXaXNjaGVy
-IDx0d2lzY2hlckBkZS5hZGl0LWp2LmNvbT4KPiAKPiBkaWZmIC0tZ2l0IGEvamFjay9wY21famFj
-ay5jIGIvamFjay9wY21famFjay5jCj4gaW5kZXggNDQ2OGVkZS4uM2FlZDMzMiAxMDA2NDQKPiAt
-LS0gYS9qYWNrL3BjbV9qYWNrLmMKPiArKysgYi9qYWNrL3BjbV9qYWNrLmMKPiBAQCAtMTM3LDYg
-KzEzNyw3IEBAIHN0YXRpYyBpbnQKPiAgc25kX3BjbV9qYWNrX3Byb2Nlc3NfY2IoamFja19uZnJh
-bWVzX3QgbmZyYW1lcywgc25kX3BjbV9pb3BsdWdfdCAqaW8pCj4gIHsKPiAgICAgICAgIHNuZF9w
-Y21famFja190ICpqYWNrID0gaW8tPnByaXZhdGVfZGF0YTsKPiArICAgICAgIHNuZF9wY21fdWZy
-YW1lc190IGh3X3B0cjsKPiAgICAgICAgIGNvbnN0IHNuZF9wY21fY2hhbm5lbF9hcmVhX3QgKmFy
-ZWFzOwo+ICAgICAgICAgc25kX3BjbV91ZnJhbWVzX3QgeGZlciA9IDA7Cj4gICAgICAgICB1bnNp
-Z25lZCBpbnQgY2hhbm5lbDsKPiBAQCAtMTU1LDEyICsxNTYsMTMgQEAgc25kX3BjbV9qYWNrX3By
-b2Nlc3NfY2IoamFja19uZnJhbWVzX3QgbmZyYW1lcywgc25kX3BjbV9pb3BsdWdfdCAqaW8pCj4g
-ICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIDA7Cj4gICAgICAgICAgICAgICAgIH0KPiAg
-ICAgICAgIH0KPiAtCj4gKwo+ICsgICAgICAgaHdfcHRyID0gamFjay0+aHdfcHRyOwo+ICAgICAg
-ICAgYXJlYXMgPSBzbmRfcGNtX2lvcGx1Z19tbWFwX2FyZWFzKGlvKTsKPiAKPiAgICAgICAgIHdo
-aWxlICh4ZmVyIDwgbmZyYW1lcykgewo+ICAgICAgICAgICAgICAgICBzbmRfcGNtX3VmcmFtZXNf
-dCBmcmFtZXMgPSBuZnJhbWVzIC0geGZlcjsKPiAtICAgICAgICAgICAgICAgc25kX3BjbV91ZnJh
-bWVzX3Qgb2Zmc2V0ID0gamFjay0+aHdfcHRyOwo+ICsgICAgICAgICAgICAgICBzbmRfcGNtX3Vm
-cmFtZXNfdCBvZmZzZXQgPSBod19wdHI7Cj4gICAgICAgICAgICAgICAgIHNuZF9wY21fdWZyYW1l
-c190IGNvbnQgPSBpby0+YnVmZmVyX3NpemUgLSBvZmZzZXQ7Cj4gCj4gICAgICAgICAgICAgICAg
-IGlmIChjb250IDwgZnJhbWVzKQo+IEBAIC0xNzMsMTAgKzE3NSwxMSBAQCBzbmRfcGNtX2phY2tf
-cHJvY2Vzc19jYihqYWNrX25mcmFtZXNfdCBuZnJhbWVzLCBzbmRfcGNtX2lvcGx1Z190ICppbykK
-PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNuZF9wY21fYXJlYV9jb3B5KCZhcmVh
-c1tjaGFubmVsXSwgb2Zmc2V0LCAmamFjay0+YXJlYXNbY2hhbm5lbF0sIHhmZXIsIGZyYW1lcywg
-aW8tPmZvcm1hdCk7Cj4gICAgICAgICAgICAgICAgIH0KPiAKPiAtICAgICAgICAgICAgICAgamFj
-ay0+aHdfcHRyICs9IGZyYW1lczsKPiAtICAgICAgICAgICAgICAgamFjay0+aHdfcHRyICU9IGlv
-LT5idWZmZXJfc2l6ZTsKPiArICAgICAgICAgICAgICAgaHdfcHRyICs9IGZyYW1lczsKPiArICAg
-ICAgICAgICAgICAgaHdfcHRyICU9IGlvLT5idWZmZXJfc2l6ZTsKPiAgICAgICAgICAgICAgICAg
-eGZlciArPSBmcmFtZXM7Cj4gICAgICAgICB9Cj4gKyAgICAgICBqYWNrLT5od19wdHIgPSBod19w
-dHI7Cj4gCj4gICAgICAgICBwY21fcG9sbF91bmJsb2NrX2NoZWNrKGlvKTsgLyogdW5ibG9jayBz
-b2NrZXQgZm9yIHBvbGxpbmcgaWYgbmVlZGVkICovCj4gCj4gLS0KPiAyLjcuNAo+IAo+IF9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+IAoKCi0tIApK
-YXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6PgpMaW51eCBTb3VuZCBNYWludGFpbmVyOyBB
-TFNBIFByb2plY3Q7IFJlZCBIYXQsIEluYy4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+On 02/08/18 11:46, Philipp Zabel wrote:
+> On Wed, 2018-02-07 at 23:19 +0100, Hans Verkuil wrote:
+>> On 02/07/2018 11:05 PM, Tim Harvey wrote:
+>>> On Wed, Feb 7, 2018 at 1:09 AM, Hans Verkuil <hverkuil@xs4all.nl> wrote:
+>>>> On 02/07/18 09:22, Hans Verkuil wrote:
+>>>>> On 02/07/2018 12:29 AM, Tim Harvey wrote:
+>>>>>> Media Controller ioctls:
+>>>>>>                 fail: v4l2-test-media.cpp(141): ent.function ==
+>>>>>> MEDIA_ENT_F_V4L2_SUBDEV_UNKNOWN
+>>>>>
+>>>>> Weird, this shouldn't happen. I'll look into this a bit more.
+>>>>
+>>>> Can you run 'mc_nextgen_test -e -i' and post the output?
+>>>>
+>>>> It's found in contrib/test.
+>>>>
+>>>
+>>> root@ventana:~# ./v4l-utils/contrib/test/mc_nextgen_test -e -i
+>>> Device: imx-media (driver imx-media)
+>>> Bus:
+>>> version: 0
+>>> number of entities: 24
+>>> number of interfaces: 24
+>>> number of pads: 48
+>>> number of links: 50
+>>> entity entity#1: 'unknown entity type' adv7180 2-0020, 1 pad(s), 1 source(s)
+>>> entity entity#3: 'unknown entity type' tda19971 2-0048, 1 pad(s), 1 source(s)
+>>> entity entity#5: 'unknown entity type' ipu1_vdic, 3 pad(s), 2 sink(s),
+>>> 1 source(s)
+>>> entity entity#9: 'unknown entity type' ipu2_vdic, 3 pad(s), 2 sink(s),
+>>> 1 source(s)
+>>> entity entity#13: 'unknown entity type' ipu1_ic_prp, 3 pad(s), 1
+>>> sink(s), 2 source(s)
+>>> entity entity#17: 'unknown entity type' ipu1_ic_prpenc, 2 pad(s), 1
+>>> sink(s), 1 source(s)
+>>> entity entity#20: 'V4L I/O' ipu1_ic_prpenc capture, 1 pad(s), 1 sink(s)
+>>> entity entity#26: 'unknown entity type' ipu1_ic_prpvf, 2 pad(s), 1
+>>> sink(s), 1 source(s)
+>>> entity entity#29: 'V4L I/O' ipu1_ic_prpvf capture, 1 pad(s), 1 sink(s)
+>>> entity entity#35: 'unknown entity type' ipu2_ic_prp, 3 pad(s), 1
+>>> sink(s), 2 source(s)
+>>> entity entity#39: 'unknown entity type' ipu2_ic_prpenc, 2 pad(s), 1
+>>> sink(s), 1 source(s)
+>>> entity entity#42: 'V4L I/O' ipu2_ic_prpenc capture, 1 pad(s), 1 sink(s)
+>>> entity entity#48: 'unknown entity type' ipu2_ic_prpvf, 2 pad(s), 1
+>>> sink(s), 1 source(s)
+>>> entity entity#51: 'V4L I/O' ipu2_ic_prpvf capture, 1 pad(s), 1 sink(s)
+>>> entity entity#57: 'unknown entity type' ipu1_csi0, 3 pad(s), 1
+>>> sink(s), 2 source(s)
+>>> entity entity#61: 'V4L I/O' ipu1_csi0 capture, 1 pad(s), 1 sink(s)
+>>> entity entity#67: 'unknown entity type' ipu1_csi1, 3 pad(s), 1
+>>> sink(s), 2 source(s)
+>>> entity entity#71: 'V4L I/O' ipu1_csi1 capture, 1 pad(s), 1 sink(s)
+>>> entity entity#77: 'unknown entity type' ipu2_csi0, 3 pad(s), 1
+>>> sink(s), 2 source(s)
+>>> entity entity#81: 'V4L I/O' ipu2_csi0 capture, 1 pad(s), 1 sink(s)
+>>> entity entity#87: 'unknown entity type' ipu2_csi1, 3 pad(s), 1
+>>> sink(s), 2 source(s)
+>>> entity entity#91: 'V4L I/O' ipu2_csi1 capture, 1 pad(s), 1 sink(s)
+>>> entity entity#97: 'unknown entity type' ipu1_csi0_mux, 3 pad(s), 2
+>>> sink(s), 1 source(s)
+>>> entity entity#101: 'unknown entity type' ipu2_csi1_mux, 3 pad(s), 2
+>>> sink(s), 1 source(s)
+>>
+>> Yuck. So nobody in imx (and adv7180!) is setting a valid function.
+>> And I see the mc_nextgen_test.c doesn't know all the latest functions
+>> anyway.
+> 
+> That's probably because for most of the entities it's a bit unclear
+> which function should be assigned.
+
+Well, that's one reason. The other is that there never was a utility
+to test this :-)
+
+> ipu[12]_csi[01]_mux are video multiplexers, so MEDIA_ENT_F_VID_MUX. I
+> thought those should already be set correctly in the video-mux driver.
+
+They are. The mc_nextgen_test, media-ctl and now v4l2-ctl/v4l2-compliance
+all have their own list of functions that they know about and it's all
+different. It's one of the things I want to fix.
+
+> ipu[12]_csi[01] are the interfaces to the outside parallel busses, but
+> they can also 'downscale' by skipping, skip frames and pack or expand
+> pixels from the bus into the internal FIFOs that lead to the next
+> element. These are not MEDIA_ENT_F_VID_IF_BRIDGE, are they?
+
+Yes, they are. One limitation of the current API is that you cannot
+represent correctly devices with multiple functions. This is planned for
+a long time now, but nobody actually did the work. So for now just fill
+in the primary function with a comment that in the future other functions
+should be set as well.
+
+> ipu[12]_vdic are mainly deinterlacers, so a new function
+> MEDIA_ENT_F_PROC_VIDEO_DEINTERLACER ? These entities could also be used
+> as composers in a mem2mem scenario (MEDIA_ENT_F_PROC_VIDEO_COMPOSER ?),
+> but this is currently not supported.
+
+Yes, we need a PROC_VIDEO_DEINTERLACER function.
+
+> 
+> ipu[12]_ic_prp is just a tee element that feeds both ipu[12]_ic_prpenc
+> and ipu[12]_ic_prpvf. These are both scalers and colorspace converters.
+> MEDIA_ENT_F_PROC_VIDEO_SCALER ?
+> MEDIA_ENT_F_PROC_VIDEO_PIXEL_ENC_CONV ?
+
+The tee element would be a new PROC_VIDEO_SPLITTER function.
+
+The other two would be scalers, but should add the VIDEO_PIXEL_ENC_CONV
+function once it is possible to do so.
+
+> 
+> "ipu[12]_csi[01] capture" are the DMA elements writing to memory, so
+> MEDIA_ENT_F_PROC_VIDEO_PIXEL_FORMATTER ?
+
+These are likely to be filled correctly already. I've just added a commit
+to v4l2-compliance to make it easier to see what function is used:
+
+	v4l2-compliance -m0 -v
+
+Regards,
+
+	Hans
