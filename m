@@ -1,53 +1,67 @@
-From: Ulf Magnusson <ulfalizer@gmail.com>
-Subject: Re: [PATCH] ALSA: ac97: kconfig: Remove select of undefined symbol
- AC97
-Date: Fri, 9 Feb 2018 00:20:21 +0100
-Message-ID: <20180208232021.ygw24klb7co6shrm@huvuddator>
-References: <20180205012146.23981-1-ulfalizer@gmail.com>
- <CAFkk2KRafUf3ki2R7B1pE_wzYkYn-OdeqLnvL0kScSxdzDMEXw@mail.gmail.com>
- <87lgg587ys.fsf@belgarion.home>
- <20180208231536.xnlrldm4to4pfv57@huvuddator>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ASoC: Intel: Skylake: make function
+ skl_clk_round_rate static
+Date: Fri, 9 Feb 2018 11:07:41 +0900
+Message-ID: <88ad9256-5c68-1e36-dd72-eba8ecba66e7@sakamocchi.jp>
+References: <20180208143530.11450-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180208231536.xnlrldm4to4pfv57@huvuddator>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, perex@perex.cz, tiwai@suse.com, broonie@kernel.org, alsa-devel@alsa-project.org, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, tfiga@chromium.org, paul.burton@mips.com, Marek Szyprowski <m.szyprowski@samsung.com>, Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>, Linus Walleij <linus.walleij@linaro.org>, vgupta@synopsys.com, mgorman@techsingularity.net, hch@lst.de, mina86@mina86.com, robh@kernel.org, sboyd@codeaurora.org, paulus@ozlabs.org, will.deacon@arm.com, Tony Lindgren <tony@atomide.com>, Nicholas Piggin <npiggin@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Palmer Dabbelt <palmer@sifive.com>, Albert Ou <albert@sifive.com>, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 0971A267767
+ for <alsa-devel@alsa-project.org>; Fri,  9 Feb 2018 03:07:44 +0100 (CET)
+In-Reply-To: <20180208143530.11450-1-colin.king@canonical.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Colin King <colin.king@canonical.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Stephen Boyd <sboyd@codeaurora.org>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 09, 2018 at 12:15:36AM +0100, Ulf Magnusson wrote:
-> The AC97_BUS_NEW Kconfig symbol selects the globally undefined symbol
-> AC97.
+Hi,
+
+On Feb 8 2018 23:35, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Robert Jarzmik confirmed in https://lkml.org/lkml/2018/2/7/96 that the
-> select was put in by mistake and can be safely removed, with no other
-> changes required. Remove it.
+> The function skl_clk_round_rate is local to the source and does not
+> need to be in global scope, so make it static.
 > 
-> Signed-off-by: Ulf Magnusson <ulfalizer@gmail.com>
+> Cleans up sparse warning:
+> sound/soc/intel/skylake/skl-ssp-clk.c:250:6: warning: symbol
+> 'skl_clk_round_rate' was not declared. Should it be static?
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
->  sound/ac97/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/sound/ac97/Kconfig b/sound/ac97/Kconfig
-> index f8a64e15e5bf..baa5f8ef89d2 100644
-> --- a/sound/ac97/Kconfig
-> +++ b/sound/ac97/Kconfig
-> @@ -5,7 +5,6 @@
->  
->  config AC97_BUS_NEW
->  	tristate
-> -	select AC97
->  	help
->  	  This is the new AC97 bus type, successor of AC97_BUS. The ported
->  	  drivers which benefit from the AC97 automatic probing should "select"
-> -- 
-> 2.14.1
-> 
+>   sound/soc/intel/skylake/skl-ssp-clk.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 
-I didn't have a particular tree in mind for this patchset by the way.
-Feel free to take the patch in wherever it makes sense.
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-Cheers,
-Ulf
+> diff --git a/sound/soc/intel/skylake/skl-ssp-clk.c b/sound/soc/intel/skylake/skl-ssp-clk.c
+> index 7fbddf5e3b00..cda1b5fa7436 100644
+> --- a/sound/soc/intel/skylake/skl-ssp-clk.c
+> +++ b/sound/soc/intel/skylake/skl-ssp-clk.c
+> @@ -247,8 +247,8 @@ static unsigned long skl_clk_recalc_rate(struct clk_hw *hw,
+>   }
+>   
+>   /* Not supported by clk driver. Implemented to satisfy clk fw */
+> -long skl_clk_round_rate(struct clk_hw *hw, unsigned long rate,
+> -				unsigned long *parent_rate)
+> +static long skl_clk_round_rate(struct clk_hw *hw, unsigned long rate,
+> +			       unsigned long *parent_rate)
+>   {
+>   	return rate;
+>   }
+
+
+Thanks
+
+Takashi Sakamoto
