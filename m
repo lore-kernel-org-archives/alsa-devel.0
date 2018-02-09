@@ -1,18 +1,19 @@
-From: Donglin Peng <dolinux.peng@gmail.com>
-Subject: [PATCH v3] ASoC: use DEFINE_SHOW_ATTRIBUTE() to
-	decrease code duplication
-Date: Fri, 9 Feb 2018 23:10:55 +0800
-Message-ID: <CAErzpmuxmrJszRz5_SZXPMkdU2UWNHChrnKjnHuCWZYrs4hgTA@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: codecs: Add support for AK4458 DAC
+	driver
+Date: Fri, 9 Feb 2018 15:47:46 +0000
+Message-ID: <20180209154746.GA10104@sirena.org.uk>
+References: <1517404809-25250-1-git-send-email-cosmin.samoila@nxp.com>
+ <20180131170330.GB7763@sirena.org.uk>
+ <1518171736.19973.7.camel@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7195620427727531889=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f196.google.com (mail-qk0-f196.google.com
- [209.85.220.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 10880266E55
- for <alsa-devel@alsa-project.org>; Fri,  9 Feb 2018 16:11:17 +0100 (CET)
-Received: by mail-qk0-f196.google.com with SMTP id w128so10351887qkb.5
- for <alsa-devel@alsa-project.org>; Fri, 09 Feb 2018 07:11:17 -0800 (PST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D366266E55
+ for <alsa-devel@alsa-project.org>; Fri,  9 Feb 2018 16:47:52 +0100 (CET)
+In-Reply-To: <1518171736.19973.7.camel@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,106 +23,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andy.shevchenko@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Cosmin Samoila <cosmin.samoila@nxp.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "wakasugi.jb@om.asahi-kasei.co.jp" <wakasugi.jb@om.asahi-kasei.co.jp>, dl-linux-imx <linux-imx@nxp.com>, "mihai.serban@nxp.com" <mihai.serban@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, "mihai.serban@gmail.com" <mihai.serban@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-There is some duplicate code in soc-core.c, and the kernel provides
-DEFINE_SHOW_ATTRIBUTE() helper macro to decrease it in seq_file.h.
 
-Signed-off-by: Peng Donglin <dolinux.peng@gmail.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
-v3: [addressed comments from Andy]
- * add missing tag
+--===============7195620427727531889==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="h31gzZEtNLTqOjlF"
+Content-Disposition: inline
 
-v2: [addressed comments from Andy]
- * modify code change description
- * do not rename m -> s
----
- sound/soc/soc-core.c | 45 ++++++---------------------------------------
- 1 file changed, 6 insertions(+), 39 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 96c44f6576c9..f372f34d7702 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -349,7 +349,7 @@ static void soc_init_codec_debugfs(struct
-snd_soc_component *component)
-             "ASoC: Failed to create codec register debugfs file\n");
- }
+--h31gzZEtNLTqOjlF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--static int codec_list_seq_show(struct seq_file *m, void *v)
-+static int codec_list_show(struct seq_file *m, void *v)
- {
-     struct snd_soc_codec *codec;
+On Fri, Feb 09, 2018 at 10:22:16AM +0000, Cosmin Samoila wrote:
 
-@@ -362,20 +362,9 @@ static int codec_list_seq_show(struct seq_file *m, void *v)
+> > > +static const char * const ak4458_dac_select_texts[] = { "OFF",
+> > > "ON" };
+> > This looks like the users should be switch controls - what's the goal
+> > here?
 
-     return 0;
- }
-+DEFINE_SHOW_ATTRIBUTE(codec_list);
+> I think this is to allow users to switch off sound for all channels but
+> it seems silly to have 4 controls doing the same thing.
+> We now have two options:
+> - one control to switch off sound for all channels
+> - one controll per DAC
 
--static int codec_list_seq_open(struct inode *inode, struct file *file)
--{
--    return single_open(file, codec_list_seq_show, NULL);
--}
--
--static const struct file_operations codec_list_fops = {
--    .open = codec_list_seq_open,
--    .read = seq_read,
--    .llseek = seq_lseek,
--    .release = single_release,
--};
--
--static int dai_list_seq_show(struct seq_file *m, void *v)
-+static int dai_list_show(struct seq_file *m, void *v)
- {
-     struct snd_soc_component *component;
-     struct snd_soc_dai *dai;
-@@ -390,20 +379,9 @@ static int dai_list_seq_show(struct seq_file *m, void *v)
+If they're mutes they shouldn't be in DAPM at all, just make them
+standard controls - they should stack up with the matching volume
+controls.
 
-     return 0;
- }
-+DEFINE_SHOW_ATTRIBUTE(dai_list);
+> What do you mean by "users should be switch controls" ?
+> Should we use SND_SOC_DAPM_SWITCH instead of SND_SOC_DAPM_MUX?
 
--static int dai_list_seq_open(struct inode *inode, struct file *file)
--{
--    return single_open(file, dai_list_seq_show, NULL);
--}
--
--static const struct file_operations dai_list_fops = {
--    .open = dai_list_seq_open,
--    .read = seq_read,
--    .llseek = seq_lseek,
--    .release = single_release,
--};
--
--static int platform_list_seq_show(struct seq_file *m, void *v)
-+static int platform_list_show(struct seq_file *m, void *v)
- {
-     struct snd_soc_platform *platform;
+They quite clearly aren't muxes so if they need to be in DAPM probably
+switches but it's not clear that they need to be in DAPM.
 
-@@ -416,18 +394,7 @@ static int platform_list_seq_show(struct seq_file
-*m, void *v)
+--h31gzZEtNLTqOjlF
+Content-Type: application/pgp-signature; name="signature.asc"
 
-     return 0;
- }
--
--static int platform_list_seq_open(struct inode *inode, struct file *file)
--{
--    return single_open(file, platform_list_seq_show, NULL);
--}
--
--static const struct file_operations platform_list_fops = {
--    .open = platform_list_seq_open,
--    .read = seq_read,
--    .llseek = seq_lseek,
--    .release = single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(platform_list);
+-----BEGIN PGP SIGNATURE-----
 
- static void soc_init_card_debugfs(struct snd_soc_card *card)
- {
--- 
-2.16.1
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlp9wqIACgkQJNaLcl1U
+h9Dytwf7BvqgidVkfdFep3z7nEGdH+Z7pP7MHkL9WikBp0BQ1dNw2I2RYeRWdSeC
+I8Pg9HZnr25ofiC6VZhBZzxlk3EEFxHtWxscaqDe7atcj9RJWEjGFoJAQpBW+kwi
+BcDjUlq5Gr6wNvJ+mw58hRzI3r6rJ3Fz60k+AkeekeFxqBbvh8yOv/+fbKQ412re
+bEBk0WDYwSXyO7AoaFsYVAO5JJOkek0hhnkla9m/NjuViRP+IUnM069wmywxSp05
+KybSKljp+HO3Atg4fzZZ/i6W/XI9To/6ShS/GblUwVH+u5udaMgynplsAOtrOF33
+c2Kz91eTV/Z7CxYqp26xc8978Cm2Vg==
+=nfT0
+-----END PGP SIGNATURE-----
+
+--h31gzZEtNLTqOjlF--
+
+--===============7195620427727531889==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7195620427727531889==--
