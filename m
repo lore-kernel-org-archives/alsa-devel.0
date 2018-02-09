@@ -1,159 +1,48 @@
-From: Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
-Subject: Re: [PATCH v10 6/8] media: i2c: Add TDA1997x HDMI receiver driver
-Date: Fri, 9 Feb 2018 09:08:34 +0100
-Message-ID: <cf5c51f4-ca86-e468-ba16-d47d224a2428@xs4all.nl>
-References: <1518157956-14220-1-git-send-email-tharvey@gateworks.com>
- <1518157956-14220-7-git-send-email-tharvey@gateworks.com>
+From: Cosmin Samoila <cosmin.samoila-3arQi8VN3Tc@public.gmane.org>
+Subject: Re: [PATCH] ASoC: codecs: Add support for AK4458 DAC driver
+Date: Fri, 9 Feb 2018 10:22:16 +0000
+Message-ID: <1518171736.19973.7.camel@nxp.com>
+References: <1517404809-25250-1-git-send-email-cosmin.samoila@nxp.com>
+         <20180131170330.GB7763@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1518157956-14220-7-git-send-email-tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
+In-Reply-To: <20180131170330.GB7763-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
 Content-Language: en-US
+Content-ID: <E42495FC0835B74085021FA379D47FFD-jdb/QiT5osKcE4WynfumptQqCkab/8FMAL8bYrjMMd8@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Steve Longerbeam <slongerbeam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Hans Verkuil <hansverk-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>
+To: "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: dl-linux-imx <linux-imx-3arQi8VN3Tc@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "wakasugi.jb-r6lgfPJHJciWyREYz5tgSuqrae++aQT8@public.gmane.org" <wakasugi.jb-r6lgfPJHJciWyREYz5tgSuqrae++aQT8@public.gmane.org>, "mihai.serban-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <mihai.serban-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "S.j. Wang" <shengjiu.wang-3arQi8VN3Tc@public.gmane.org>, Daniel Baluta <daniel.baluta-3arQi8VN3Tc@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "mihai.serban-3arQi8VN3Tc@public.gmane.org" <mihai.serban-3arQi8VN3Tc@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Tim,
-
-We're almost there. Two more comments:
-
-On 02/09/2018 07:32 AM, Tim Harvey wrote:
-> +static int
-> +tda1997x_detect_std(struct tda1997x_state *state,
-> +		    struct v4l2_dv_timings *timings)
-> +{
-> +	struct v4l2_subdev *sd = &state->sd;
-> +	u32 vper;
-> +	u16 hper;
-> +	u16 hsper;
-> +	int i;
-> +
-> +	/*
-> +	 * Read the FMT registers
-> +	 *   REG_V_PER: Period of a frame (or two fields) in MCLK(27MHz) cycles
-> +	 *   REG_H_PER: Period of a line in MCLK(27MHz) cycles
-> +	 *   REG_HS_WIDTH: Period of horiz sync pulse in MCLK(27MHz) cycles
-> +	 */
-> +	vper = io_read24(sd, REG_V_PER) & MASK_VPER;
-> +	hper = io_read16(sd, REG_H_PER) & MASK_HPER;
-> +	hsper = io_read16(sd, REG_HS_WIDTH) & MASK_HSWIDTH;
-> +	if (!vper || !hper || !hsper)
-> +		return -ENOLINK;
-
-See my comment for g_input_status below. This condition looks more like a
-ENOLCK.
-
-Or perhaps it should be:
-
-	if (!vper && !hper && !hsper)
-		return -ENOLINK;
-	if (!vper || !hper || !hsper)
-		return -ENOLCK;
-
-I would recommend that you test a bit with no signal and a bad signal (perhaps
-one that uses a pixelclock that is too high for this device?).
-
-> +	v4l2_dbg(1, debug, sd, "Signal Timings: %u/%u/%u\n", vper, hper, hsper);
-> +
-> +	for (i = 0; v4l2_dv_timings_presets[i].bt.width; i++) {
-> +		const struct v4l2_bt_timings *bt;
-> +		u32 lines, width, _hper, _hsper;
-> +		u32 vmin, vmax, hmin, hmax, hsmin, hsmax;
-> +		bool vmatch, hmatch, hsmatch;
-> +
-> +		bt = &v4l2_dv_timings_presets[i].bt;
-> +		width = V4L2_DV_BT_FRAME_WIDTH(bt);
-> +		lines = V4L2_DV_BT_FRAME_HEIGHT(bt);
-> +		_hper = (u32)bt->pixelclock / width;
-> +		if (bt->interlaced)
-> +			lines /= 2;
-> +		/* vper +/- 0.7% */
-> +		vmin = ((27000000 / 1000) * 993) / _hper * lines;
-> +		vmax = ((27000000 / 1000) * 1007) / _hper * lines;
-> +		/* hper +/- 1.0% */
-> +		hmin = ((27000000 / 100) * 99) / _hper;
-> +		hmax = ((27000000 / 100) * 101) / _hper;
-> +		/* hsper +/- 2 (take care to avoid 32bit overflow) */
-> +		_hsper = 27000 * bt->hsync / ((u32)bt->pixelclock/1000);
-> +		hsmin = _hsper - 2;
-> +		hsmax = _hsper + 2;
-> +
-> +		/* vmatch matches the framerate */
-> +		vmatch = ((vper <= vmax) && (vper >= vmin)) ? 1 : 0;
-> +		/* hmatch matches the width */
-> +		hmatch = ((hper <= hmax) && (hper >= hmin)) ? 1 : 0;
-> +		/* hsmatch matches the hswidth */
-> +		hsmatch = ((hsper <= hsmax) && (hsper >= hsmin)) ? 1 : 0;
-> +		if (hmatch && vmatch && hsmatch) {
-> +			*timings = v4l2_dv_timings_presets[i];
-> +			v4l2_print_dv_timings(sd->name, "Detected format: ",
-> +					      timings, false);
-> +			return 0;
-> +		}
-> +	}
-> +
-> +	v4l_err(state->client, "no resolution match for timings: %d/%d/%d\n",
-> +		vper, hper, hsper);
-> +	return -EINVAL;
-> +}
-
--EINVAL isn't the correct error code here. I would go for -ERANGE. It's not
-perfect, but close enough.
-
--EINVAL indicates that the user filled in wrong values, but that's not the
-case here.
-
-> +static int
-> +tda1997x_g_input_status(struct v4l2_subdev *sd, u32 *status)
-> +{
-> +	struct tda1997x_state *state = to_state(sd);
-> +	u32 vper;
-> +	u16 hper;
-> +	u16 hsper;
-> +
-> +	mutex_lock(&state->lock);
-> +	v4l2_dbg(1, debug, sd, "inputs:%d/%d\n",
-> +		 state->input_detect[0], state->input_detect[1]);
-> +	if (state->input_detect[0] || state->input_detect[1])
-
-I'm confused. This device has two HDMI inputs?
-
-Does 'detecting input' equate to 'I see a signal and I am locked'?
-I gather from the irq function that sets these values that it is closer
-to 'I see a signal' and that 'I am locked' is something you would test
-by looking at the vper/hper/hsper.
-
-> +		*status = 0;
-> +	else {
-> +		vper = io_read24(sd, REG_V_PER) & MASK_VPER;
-> +		hper = io_read16(sd, REG_H_PER) & MASK_HPER;
-> +		hsper = io_read16(sd, REG_HS_WIDTH) & MASK_HSWIDTH;
-> +		v4l2_dbg(1, debug, sd, "timings:%d/%d/%d\n", vper, hper, hsper);
-> +		if (!vper || !hper || !hsper)
-> +			*status |= V4L2_IN_ST_NO_SYNC;
-> +		else
-> +			*status |= V4L2_IN_ST_NO_SIGNAL;
-
-So if we have valid vper, hper and hsper, then there is no signal? That doesn't
-make sense.
-
-I'd expect to see something like this:
-
-	if (!input_detect[0] && !input_detect[1])
-		// no signal
-	else if (!vper || !hper || !vsper)
-		// no sync
-	else
-		// have signal and sync
-
-I'm not sure about the precise meaning of input_detect, so I might be wrong about
-that bit.
-
-Regards,
-
-	Hans
+SGkgTWFyaywNCg0KPiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHNvY19lbnVtIGFrNDQ1OF9kYWNf
+ZW51bVtdID0gew0KPiA+ICsvKjAqLwlTT0NfRU5VTV9TSU5HTEUoQUs0NDU4XzAxX0NPTlRST0wy
+LCAxLA0KPiA+ICsJCQlBUlJBWV9TSVpFKGFrNDQ1OF9kZW1fc2VsZWN0X3RleHRzKSwNCj4gPiAr
+CQkJYWs0NDU4X2RlbV9zZWxlY3RfdGV4dHMpLA0KPiA+ICsvKjEqLwlTT0NfRU5VTV9TSU5HTEUo
+QUs0NDU4XzBBX0NPTlRST0w2LCAwLA0KPiBUaGUgZmFjdCB0aGF0IHlvdSBuZWVkIHRoZXNlIGNv
+bW1lbnRzIGlzIHdoeSB0aGVzZSBhcnJheXMgYXJlIGEgYmFkDQo+IGlkZWENCj4gLSBqdXN0IHVz
+ZSBpbmRpdmlkdWFsbHkgbmFtZWQgdmFyaWFibGVzIGFzIG90aGVyIGRyaXZlcnMgZG8uDQo+IA0K
+PiA+IA0KPiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9rY29udHJvbF9uZXcgYWs0NDU4X3Nu
+ZF9jb250cm9sc1tdID0gew0KPiA+ICsJU09DX1NJTkdMRV9UTFYoIkFLNDQ1OCBMMWNoIERpZ2l0
+YWwgVm9sdW1lIiwNCj4gPiArCQnCoMKgwqDCoMKgwqDCoEFLNDQ1OF8wM19MQ0hBVFQsIDAvKnNo
+aWZ0Ki8sIDB4RkYvKm1heA0KPiA+IHZhbHVlKi8sDQo+ID4gKwkJwqDCoMKgwqDCoMKgwqAwLypp
+bnZlcnQqLywgbGF0dF90bHYpLA0KPiA+ICsJU09DX1NJTkdMRV9UTFYoIkFLNDQ1OCBSMWNoIERp
+Z2l0YWwgVm9sdW1lIiwNCj4gPiArCQnCoMKgwqDCoMKgwqDCoEFLNDQ1OF8wNF9SQ0hBVFQsIDAs
+IDB4RkYsIDAsIHJhdHRfdGx2KSwNCj4gSXQnZCBiZSBtb3JlIGlkaW9tYXRpYyB0byBjb21iaW5l
+IHRoZXNlIGludG8gc3RlcmVvIHBhaXJzIHRoYW4gaGF2ZQ0KPiB0aGVtDQo+IGFzIHNpbmdsZSBj
+aGFubmVsIGNvbnRyb2xzLg0KPiANCj4gPiANCj4gPiArc3RhdGljIGNvbnN0IGNoYXIgKiBjb25z
+dCBhazQ0NThfZGFjX3NlbGVjdF90ZXh0c1tdID0geyAiT0ZGIiwNCj4gPiAiT04iIH07DQo+IFRo
+aXMgbG9va3MgbGlrZSB0aGUgdXNlcnMgc2hvdWxkIGJlIHN3aXRjaCBjb250cm9scyAtIHdoYXQn
+cyB0aGUgZ29hbA0KPiBoZXJlPw0KPiANCj4gPiANCg0KSSB0aGluayB0aGlzIGlzIHRvIGFsbG93
+IHVzZXJzIHRvIHN3aXRjaCBvZmYgc291bmQgZm9yIGFsbCBjaGFubmVscyBidXQNCml0IHNlZW1z
+IHNpbGx5IHRvIGhhdmUgNCBjb250cm9scyBkb2luZyB0aGUgc2FtZSB0aGluZy4NCldlIG5vdyBo
+YXZlIHR3byBvcHRpb25zOg0KLSBvbmUgY29udHJvbCB0byBzd2l0Y2ggb2ZmIHNvdW5kIGZvciBh
+bGwgY2hhbm5lbHMNCi0gb25lIGNvbnRyb2xsIHBlciBEQUMNCg0KV2hhdCBkbyB5b3UgbWVhbiBi
+eSAidXNlcnMgc2hvdWxkIGJlIHN3aXRjaCBjb250cm9scyIgPw0KU2hvdWxkIHdlIHVzZSBTTkRf
+U09DX0RBUE1fU1dJVENIIGluc3RlYWQgb2YgU05EX1NPQ19EQVBNX01VWD8NCg0KV2UgYXJlIHN0
+aWxsIGxlYXJpbmcgdGhlIGlubmVyIGRldGFpbHMgb2YgQVNvQy4NClRoYW5rIHlvdSBmb3IgeW91
+ciBoZWxwLg0KDQpDb3NtaW4=
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
