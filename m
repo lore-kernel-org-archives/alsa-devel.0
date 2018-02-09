@@ -1,28 +1,31 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 8/8] ASoC: samsung,tm2-audio DT binding documentation
- update
-Date: Thu, 8 Feb 2018 20:39:15 -0600
-Message-ID: <20180209023915.puuuzou5gdwrxzcq@rob-hp-laptop>
-References: <20180205154403.13520-1-s.nawrocki@samsung.com>
- <CGME20180205154537epcas1p10a9a30a574e3f472358e7dacf3cb0489@epcas1p1.samsung.com>
- <20180205154403.13520-9-s.nawrocki@samsung.com>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 2/2] ASoC: ak5558: Add bindings for AK5558 ADC
+Date: Thu, 8 Feb 2018 20:46:31 -0600
+Message-ID: <20180209024631.u24yyesvdleakull@rob-hp-laptop>
+References: <1517850115-24340-1-git-send-email-daniel.baluta@nxp.com>
+ <1517850115-24340-3-git-send-email-daniel.baluta@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <20180205154403.13520-9-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, krzk@kernel.org, jcsing.lee@samsung.com, sbkim73@samsung.com, linux-kernel@vger.kernel.org, b.zolnierkie@samsung.com, m.szyprowski@samsung.com
+In-Reply-To: <1517850115-24340-3-git-send-email-daniel.baluta-3arQi8VN3Tc@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Daniel Baluta <daniel.baluta-3arQi8VN3Tc@public.gmane.org>
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, wakasugi.jb-r6lgfPJHJciWyREYz5tgSuqrae++aQT8@public.gmane.org, shengjiu.wang-3arQi8VN3Tc@public.gmane.org, mihai.serban-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, cosmin.samoila-3arQi8VN3Tc@public.gmane.org, linux-imx-3arQi8VN3Tc@public.gmane.org, fabio.estevam-3arQi8VN3Tc@public.gmane.org, andy.shevchenko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 05, 2018 at 04:44:03PM +0100, Sylwester Nawrocki wrote:
-> This patch documents additional entries of the audio-codec and
-> i2s-controller properties required for the HDMI audio support.
+On Mon, Feb 05, 2018 at 07:01:55PM +0200, Daniel Baluta wrote:
+> Document the bindings for AK5558 ADC.
 > 
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> Signed-off-by: Daniel Baluta <daniel.baluta-3arQi8VN3Tc@public.gmane.org>
 > ---
->  .../devicetree/bindings/sound/samsung,tm2-audio.txt        | 14 +++++++++-----
->  1 file changed, 9 insertions(+), 5 deletions(-)
+>  Documentation/devicetree/bindings/sound/ak5558.txt | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/ak5558.txt
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
