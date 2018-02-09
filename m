@@ -1,7 +1,7 @@
 From: Donglin Peng <dolinux.peng@gmail.com>
 Subject: Re: [PATCH v2] ASoC: use DEFINE_SHOW_ATTRIBUTE() to decrease code duplication
-Date: Fri, 9 Feb 2018 23:00:05 +0800
-Message-ID: <CAErzpmssOG_BH5ex6U1Puh7q6Sd1RMg=gun5g4F7romUE08GTg@mail.gmail.com>
+Date: Fri, 9 Feb 2018 23:07:46 +0800
+Message-ID: <CAErzpmvANGPPKmhH-JFYO-AMeXhdnt-4O3WCG1rC1J3tOM3DWQ@mail.gmail.com>
 References: <CAErzpmuKgMyxascCdq3KuF1F1K4e2ciZq7FKsOha6WSBgg-WYw@mail.gmail.com>
  <CAHp75Vdm3O5xiemr-H_nF__g43pe_f-Gp6QsOoRW-DXAXrm+YQ@mail.gmail.com>
  <CAErzpmuLvx-61EtXJ=p8dqZ3r-wLSEvmsLOcUz9jzzLzAAsxUA@mail.gmail.com>
@@ -25,10 +25,4 @@ On Fri, Feb 9, 2018 at 10:52 PM, Andy Shevchenko
 > You missed my tag.
 >
 > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Like this:
-
-There is some duplicate code in soc-core.c, and the kernel provides
-DEFINE_SHOW_ATTRIBUTE() helper macro to decrease it in seq_file.h.
-
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Peng Donglin <dolinux.peng@gmail.com>
+Sorry, I got it.
