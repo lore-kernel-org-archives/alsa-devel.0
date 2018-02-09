@@ -1,18 +1,21 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ASoC: Intel: Skylake: make function
- skl_clk_round_rate static
-Date: Fri, 9 Feb 2018 11:07:41 +0900
-Message-ID: <88ad9256-5c68-1e36-dd72-eba8ecba66e7@sakamocchi.jp>
-References: <20180208143530.11450-1-colin.king@canonical.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCHv3] tlv320dac33: Add device tree bindings
+Date: Thu, 8 Feb 2018 20:25:14 -0600
+Message-ID: <20180209022514.ue6nxxwvv3g4nmva@rob-hp-laptop>
+References: <20180129230539.GA18280@amd> <20180131190112.GA31608@amd>
+ <20b9ff40-a869-a165-07a2-2a103830efb3@ti.com>
+ <20180205082445.GA18274@amd>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 0971A267767
- for <alsa-devel@alsa-project.org>; Fri,  9 Feb 2018 03:07:44 +0100 (CET)
-In-Reply-To: <20180208143530.11450-1-colin.king@canonical.com>
-Content-Language: en-US
+Received: from mail-pg0-f66.google.com (mail-pg0-f66.google.com [74.125.83.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B52B267767
+ for <alsa-devel@alsa-project.org>; Fri,  9 Feb 2018 03:25:16 +0100 (CET)
+Received: by mail-pg0-f66.google.com with SMTP id o1so2677153pgn.4
+ for <alsa-devel@alsa-project.org>; Thu, 08 Feb 2018 18:25:16 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20180205082445.GA18274@amd>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,46 +25,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Colin King <colin.king@canonical.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Stephen Boyd <sboyd@codeaurora.org>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Pavel Machek <pavel@ucw.cz>
+Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, tony@atomide.com, abcloriens@gmail.com, tiwai@suse.com, Peter Ujfalusi <peter.ujfalusi@ti.com>, Filip =?utf-8?Q?Matijevi=C4=87?= <filip.matijevic.pz@gmail.com>, patrikbachan@gmail.com, ivo.g.dimitrov.75@gmail.com, khilman@kernel.org, serge@hallyn.com, devicetree@vger.kernel.org, pali.rohar@gmail.com, broonie@kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, martijn@brixit.nl, aaro.koskinen@iki.fi, linux-kernel@vger.kernel.org, clayton@craftyguy.net, sakari.ailus@linux.intel.com, sre@kernel.org, bhumirks@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Feb 8 2018 23:35, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Mon, Feb 05, 2018 at 09:24:45AM +0100, Pavel Machek wrote:
 > 
-> The function skl_clk_round_rate is local to the source and does not
-> need to be in global scope, so make it static.
+> This adds device tree bindings for tlv320dac33.c.
 > 
-> Cleans up sparse warning:
-> sound/soc/intel/skylake/skl-ssp-clk.c:250:6: warning: symbol
-> 'skl_clk_round_rate' was not declared. Should it be static?
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->   sound/soc/intel/skylake/skl-ssp-clk.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+> Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> Signed-off-by: Pavel Machek <pavel@ucw.cz>
 
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-
-> diff --git a/sound/soc/intel/skylake/skl-ssp-clk.c b/sound/soc/intel/skylake/skl-ssp-clk.c
-> index 7fbddf5e3b00..cda1b5fa7436 100644
-> --- a/sound/soc/intel/skylake/skl-ssp-clk.c
-> +++ b/sound/soc/intel/skylake/skl-ssp-clk.c
-> @@ -247,8 +247,8 @@ static unsigned long skl_clk_recalc_rate(struct clk_hw *hw,
->   }
->   
->   /* Not supported by clk driver. Implemented to satisfy clk fw */
-> -long skl_clk_round_rate(struct clk_hw *hw, unsigned long rate,
-> -				unsigned long *parent_rate)
-> +static long skl_clk_round_rate(struct clk_hw *hw, unsigned long rate,
-> +			       unsigned long *parent_rate)
->   {
->   	return rate;
->   }
-
-
-Thanks
-
-Takashi Sakamoto
+Reviewed-by: Rob Herring <robh@kernel.org>
