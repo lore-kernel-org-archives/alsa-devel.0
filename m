@@ -1,19 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: codecs: Add support for AK4458 DAC
-	driver
-Date: Fri, 9 Feb 2018 15:47:46 +0000
-Message-ID: <20180209154746.GA10104@sirena.org.uk>
-References: <1517404809-25250-1-git-send-email-cosmin.samoila@nxp.com>
- <20180131170330.GB7763@sirena.org.uk>
- <1518171736.19973.7.camel@nxp.com>
+From: Connor McAdams <conmanx360@gmail.com>
+Subject: Fixing the CA0132 driver for Sound Blaster Z
+Date: Fri, 9 Feb 2018 19:15:40 -0500
+Message-ID: <CAM8Agx3qymn0b_yFtLWhJ71uWV4b4TgJCnkykczMVpOne+eyCQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7195620427727531889=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D366266E55
- for <alsa-devel@alsa-project.org>; Fri,  9 Feb 2018 16:47:52 +0100 (CET)
-In-Reply-To: <1518171736.19973.7.camel@nxp.com>
+Received: from mail-wm0-f49.google.com (mail-wm0-f49.google.com [74.125.82.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id D5999266EBE
+ for <alsa-devel@alsa-project.org>; Sat, 10 Feb 2018 01:15:41 +0100 (CET)
+Received: by mail-wm0-f49.google.com with SMTP id f3so397350wmc.1
+ for <alsa-devel@alsa-project.org>; Fri, 09 Feb 2018 16:15:41 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,66 +20,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Cosmin Samoila <cosmin.samoila@nxp.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "wakasugi.jb@om.asahi-kasei.co.jp" <wakasugi.jb@om.asahi-kasei.co.jp>, dl-linux-imx <linux-imx@nxp.com>, "mihai.serban@nxp.com" <mihai.serban@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, "mihai.serban@gmail.com" <mihai.serban@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+        Hi, first time here and first time working on any sort of Kernel
+driver,
+so I hope I'm doing things right by asking my question through this list.
 
---===============7195620427727531889==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="h31gzZEtNLTqOjlF"
-Content-Disposition: inline
+        I have managed to get audio working for the Creative Sound Blaster
+Z by
+reverse engineering the driver and firmware from Windows. I created a
+program
+to capture the HDA verbs as they happen in Windows through QEMU using vfio
+pci
+passthrough.
 
+        Now, here's where I'm kind of stumped. I created a program to send
+the
+commands that route the audio to it's output on the card. If I run these
+commands after the driver has already loaded in Linux, it works fine and I
+get
+audio. However, if I run these commands inside of the driver, there is no
+audio.
 
---h31gzZEtNLTqOjlF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        There is an 8051 cpu onboard, and I can dump the contents of its
+memory
+through HDA-verbs. I compared dumps of the 8051 while audio is working with
+the
+script to dumps when the audio is broken from putting the commands inside
+of the
+driver. Just about everything is the same, except for a region I have
+figured
+out has to do with the streams. Each audio stream seems to have an ID, and
+for
+some reason, if the commands are run inside of the driver, it seems like the
+stream ID's get messed with.
 
-On Fri, Feb 09, 2018 at 10:22:16AM +0000, Cosmin Samoila wrote:
+        My current theory is that the streams are assigned in order of
+streams
+started. So, after my command to start audio, it expects the next stream to
+be
+the output audio stream. It also seems like compared to Windows, a lot more
+stream commands are used. Maybe extra streams are being initiated that are
+unused, and are interfering with the card.
 
-> > > +static const char * const ak4458_dac_select_texts[] = { "OFF",
-> > > "ON" };
-> > This looks like the users should be switch controls - what's the goal
-> > here?
+        So, my question is, how would I go about starting a stream, maybe
+like
+a dummy stream, so it is assigned properly? Are there any examples of this?
+If someone could point me to where streams are even initiated it would be
+helpful.
 
-> I think this is to allow users to switch off sound for all channels but
-> it seems silly to have 4 controls doing the same thing.
-> We now have two options:
-> - one control to switch off sound for all channels
-> - one controll per DAC
+        My next question is the legality of distributing the firmware. I was
+able to pull the Sound Blaster Z's firmware from the Windows driver file.
+Since that is a publicly available file, is it legal to redistribute? I have
+no experience with this kind of thing. Maybe someone here has someone within
+Creative I could ask or something.
 
-If they're mutes they shouldn't be in DAPM at all, just make them
-standard controls - they should stack up with the matching volume
-controls.
+        Anyways, like I said, this is my first time doing anything like
+this.
+Please correct me if I've done anything wrong, and let me know if anyone
+needs
+to see my current driver.
 
-> What do you mean by "users should be switch controls" ?
-> Should we use SND_SOC_DAPM_SWITCH instead of SND_SOC_DAPM_MUX?
-
-They quite clearly aren't muxes so if they need to be in DAPM probably
-switches but it's not clear that they need to be in DAPM.
-
---h31gzZEtNLTqOjlF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlp9wqIACgkQJNaLcl1U
-h9Dytwf7BvqgidVkfdFep3z7nEGdH+Z7pP7MHkL9WikBp0BQ1dNw2I2RYeRWdSeC
-I8Pg9HZnr25ofiC6VZhBZzxlk3EEFxHtWxscaqDe7atcj9RJWEjGFoJAQpBW+kwi
-BcDjUlq5Gr6wNvJ+mw58hRzI3r6rJ3Fz60k+AkeekeFxqBbvh8yOv/+fbKQ412re
-bEBk0WDYwSXyO7AoaFsYVAO5JJOkek0hhnkla9m/NjuViRP+IUnM069wmywxSp05
-KybSKljp+HO3Atg4fzZZ/i6W/XI9To/6ShS/GblUwVH+u5udaMgynplsAOtrOF33
-c2Kz91eTV/Z7CxYqp26xc8978Cm2Vg==
-=nfT0
------END PGP SIGNATURE-----
-
---h31gzZEtNLTqOjlF--
-
---===============7195620427727531889==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7195620427727531889==--
+Thanks,
+        Connor M.
