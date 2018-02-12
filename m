@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak4554: replace codec to component" to
+Subject: Applied "ASoC: ak4535: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:45:46 +0000
-Message-ID: <E1elDUQ-0005Np-VJ@debutante>
-References: <877es12w8d.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:45:53 +0000
+Message-ID: <E1elDUX-0005PS-94@debutante>
+References: <87a7wx2w99.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 114F0267D0F
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:45:49 +0100 (CET)
-In-Reply-To: <877es12w8d.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 915152678E4
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:45:55 +0100 (CET)
+In-Reply-To: <87a7wx2w99.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak4554: replace codec to component
+   ASoC: ak4535: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 5aea27d59f764e346cb93923b0af6a94567cb95b Mon Sep 17 00:00:00 2001
+>From d229c0bedc6117b71419250bfebbcd83c161daa6 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 03:14:50 +0000
-Subject: [PATCH] ASoC: ak4554: replace codec to component
+Date: Mon, 29 Jan 2018 03:14:17 +0000
+Subject: [PATCH] ASoC: ak4535: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,60 +70,177 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4554.c | 27 +++++++++++----------------
- 1 file changed, 11 insertions(+), 16 deletions(-)
+ sound/soc/codecs/ak4535.c | 78 ++++++++++++++++++++++-------------------------
+ 1 file changed, 36 insertions(+), 42 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4554.c b/sound/soc/codecs/ak4554.c
-index 0bb4fe5c122a..b7ee13406d93 100644
---- a/sound/soc/codecs/ak4554.c
-+++ b/sound/soc/codecs/ak4554.c
-@@ -64,28 +64,24 @@ static struct snd_soc_dai_driver ak4554_dai = {
- 	.symmetric_rates = 1,
+diff --git a/sound/soc/codecs/ak4535.c b/sound/soc/codecs/ak4535.c
+index e3c157dc88db..31f609910bd6 100644
+--- a/sound/soc/codecs/ak4535.c
++++ b/sound/soc/codecs/ak4535.c
+@@ -251,8 +251,8 @@ static const struct snd_soc_dapm_route ak4535_audio_map[] = {
+ static int ak4535_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 	int clk_id, unsigned int freq, int dir)
+ {
+-	struct snd_soc_codec *codec = codec_dai->codec;
+-	struct ak4535_priv *ak4535 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = codec_dai->component;
++	struct ak4535_priv *ak4535 = snd_soc_component_get_drvdata(component);
+ 
+ 	ak4535->sysclk = freq;
+ 	return 0;
+@@ -262,9 +262,9 @@ static int ak4535_hw_params(struct snd_pcm_substream *substream,
+ 			    struct snd_pcm_hw_params *params,
+ 			    struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct ak4535_priv *ak4535 = snd_soc_codec_get_drvdata(codec);
+-	u8 mode2 = snd_soc_read(codec, AK4535_MODE2) & ~(0x3 << 5);
++	struct snd_soc_component *component = dai->component;
++	struct ak4535_priv *ak4535 = snd_soc_component_get_drvdata(component);
++	u8 mode2 = snd_soc_component_read32(component, AK4535_MODE2) & ~(0x3 << 5);
+ 	int rate = params_rate(params), fs = 256;
+ 
+ 	if (rate)
+@@ -283,14 +283,14 @@ static int ak4535_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	/* set rate */
+-	snd_soc_write(codec, AK4535_MODE2, mode2);
++	snd_soc_component_write(component, AK4535_MODE2, mode2);
+ 	return 0;
+ }
+ 
+ static int ak4535_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		unsigned int fmt)
+ {
+-	struct snd_soc_codec *codec = codec_dai->codec;
++	struct snd_soc_component *component = codec_dai->component;
+ 	u8 mode1 = 0;
+ 
+ 	/* interface format */
+@@ -308,37 +308,37 @@ static int ak4535_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	/* use 32 fs for BCLK to save power */
+ 	mode1 |= 0x4;
+ 
+-	snd_soc_write(codec, AK4535_MODE1, mode1);
++	snd_soc_component_write(component, AK4535_MODE1, mode1);
+ 	return 0;
+ }
+ 
+ static int ak4535_mute(struct snd_soc_dai *dai, int mute)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	u16 mute_reg = snd_soc_read(codec, AK4535_DAC);
++	struct snd_soc_component *component = dai->component;
++	u16 mute_reg = snd_soc_component_read32(component, AK4535_DAC);
+ 	if (!mute)
+-		snd_soc_write(codec, AK4535_DAC, mute_reg & ~0x20);
++		snd_soc_component_write(component, AK4535_DAC, mute_reg & ~0x20);
+ 	else
+-		snd_soc_write(codec, AK4535_DAC, mute_reg | 0x20);
++		snd_soc_component_write(component, AK4535_DAC, mute_reg | 0x20);
+ 	return 0;
+ }
+ 
+-static int ak4535_set_bias_level(struct snd_soc_codec *codec,
++static int ak4535_set_bias_level(struct snd_soc_component *component,
+ 	enum snd_soc_bias_level level)
+ {
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+-		snd_soc_update_bits(codec, AK4535_DAC, 0x20, 0);
++		snd_soc_component_update_bits(component, AK4535_DAC, 0x20, 0);
+ 		break;
+ 	case SND_SOC_BIAS_PREPARE:
+-		snd_soc_update_bits(codec, AK4535_DAC, 0x20, 0x20);
++		snd_soc_component_update_bits(component, AK4535_DAC, 0x20, 0x20);
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
+-		snd_soc_update_bits(codec, AK4535_PM1, 0x80, 0x80);
+-		snd_soc_update_bits(codec, AK4535_PM2, 0x80, 0);
++		snd_soc_component_update_bits(component, AK4535_PM1, 0x80, 0x80);
++		snd_soc_component_update_bits(component, AK4535_PM2, 0x80, 0);
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+-		snd_soc_update_bits(codec, AK4535_PM1, 0x80, 0);
++		snd_soc_component_update_bits(component, AK4535_PM1, 0x80, 0);
+ 		break;
+ 	}
+ 	return 0;
+@@ -372,9 +372,9 @@ static struct snd_soc_dai_driver ak4535_dai = {
+ 	.ops = &ak4535_dai_ops,
  };
  
--static const struct snd_soc_codec_driver soc_codec_dev_ak4554 = {
+-static int ak4535_resume(struct snd_soc_codec *codec)
++static int ak4535_resume(struct snd_soc_component *component)
+ {
+-	snd_soc_cache_sync(codec);
++	snd_soc_component_cache_sync(component);
+ 	return 0;
+ }
+ 
+@@ -390,19 +390,20 @@ static const struct regmap_config ak4535_regmap = {
+ 	.num_reg_defaults = ARRAY_SIZE(ak4535_reg_defaults),
+ };
+ 
+-static const struct snd_soc_codec_driver soc_codec_dev_ak4535 = {
+-	.resume =	ak4535_resume,
+-	.set_bias_level = ak4535_set_bias_level,
+-	.suspend_bias_off = true,
+-
 -	.component_driver = {
--		.dapm_widgets		= ak4554_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(ak4554_dapm_widgets),
--		.dapm_routes		= ak4554_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(ak4554_dapm_routes),
+-		.controls		= ak4535_snd_controls,
+-		.num_controls		= ARRAY_SIZE(ak4535_snd_controls),
+-		.dapm_widgets		= ak4535_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(ak4535_dapm_widgets),
+-		.dapm_routes		= ak4535_audio_map,
+-		.num_dapm_routes	= ARRAY_SIZE(ak4535_audio_map),
 -	},
-+static const struct snd_soc_component_driver soc_component_dev_ak4554 = {
-+	.dapm_widgets		= ak4554_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(ak4554_dapm_widgets),
-+	.dapm_routes		= ak4554_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(ak4554_dapm_routes),
++static const struct snd_soc_component_driver soc_component_dev_ak4535 = {
++	.resume			= ak4535_resume,
++	.set_bias_level		= ak4535_set_bias_level,
++	.controls		= ak4535_snd_controls,
++	.num_controls		= ARRAY_SIZE(ak4535_snd_controls),
++	.dapm_widgets		= ak4535_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(ak4535_dapm_widgets),
++	.dapm_routes		= ak4535_audio_map,
++	.num_dapm_routes	= ARRAY_SIZE(ak4535_audio_map),
++	.suspend_bias_off	= 1,
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static int ak4554_soc_probe(struct platform_device *pdev)
- {
--	return snd_soc_register_codec(&pdev->dev,
--				      &soc_codec_dev_ak4554,
-+	return devm_snd_soc_register_component(&pdev->dev,
-+				      &soc_component_dev_ak4554,
- 				      &ak4554_dai, 1);
+ static int ak4535_i2c_probe(struct i2c_client *i2c,
+@@ -425,18 +426,12 @@ static int ak4535_i2c_probe(struct i2c_client *i2c,
+ 
+ 	i2c_set_clientdata(i2c, ak4535);
+ 
+-	ret = snd_soc_register_codec(&i2c->dev,
+-			&soc_codec_dev_ak4535, &ak4535_dai, 1);
++	ret = devm_snd_soc_register_component(&i2c->dev,
++			&soc_component_dev_ak4535, &ak4535_dai, 1);
+ 
+ 	return ret;
  }
  
--static int ak4554_soc_remove(struct platform_device *pdev)
+-static int ak4535_i2c_remove(struct i2c_client *client)
 -{
--	snd_soc_unregister_codec(&pdev->dev);
+-	snd_soc_unregister_codec(&client->dev);
 -	return 0;
 -}
 -
- static const struct of_device_id ak4554_of_match[] = {
- 	{ .compatible = "asahi-kasei,ak4554" },
- 	{},
-@@ -98,7 +94,6 @@ static struct platform_driver ak4554_driver = {
- 		.of_match_table = ak4554_of_match,
+ static const struct i2c_device_id ak4535_i2c_id[] = {
+ 	{ "ak4535", 0 },
+ 	{ }
+@@ -448,7 +443,6 @@ static struct i2c_driver ak4535_i2c_driver = {
+ 		.name = "ak4535",
  	},
- 	.probe	= ak4554_soc_probe,
--	.remove	= ak4554_soc_remove,
+ 	.probe =    ak4535_i2c_probe,
+-	.remove =   ak4535_i2c_remove,
+ 	.id_table = ak4535_i2c_id,
  };
- module_platform_driver(ak4554_driver);
  
 -- 
 2.16.1
