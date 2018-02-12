@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm9090: replace codec to component" to
+Subject: Applied "ASoC: wm9712: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:46:52 +0000
-Message-ID: <E1elDVU-0005Yw-Qk@debutante>
-References: <87r2q92wg6.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:46:42 +0000
+Message-ID: <E1elDVK-0005XB-BD@debutante>
+References: <87o9ld2wf5.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F45A267DF9
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:46:55 +0100 (CET)
-In-Reply-To: <87r2q92wg6.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A3BBC267DD7
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:46:44 +0100 (CET)
+In-Reply-To: <87o9ld2wf5.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm9090: replace codec to component
+   ASoC: wm9712: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 2822e66bb812489aff9c41f4b265fcc2d8613989 Mon Sep 17 00:00:00 2001
+>From 164c976a9493991ebe7e838931ff895e6e04d7c2 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 03:10:09 +0000
-Subject: [PATCH] ASoC: wm9090: replace codec to component
+Date: Mon, 29 Jan 2018 03:10:45 +0000
+Subject: [PATCH] ASoC: wm9712: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,266 +70,210 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm9090.c | 109 ++++++++++++++++++++++------------------------
- 1 file changed, 53 insertions(+), 56 deletions(-)
+ sound/soc/codecs/wm9712.c | 109 ++++++++++++++++++++++------------------------
+ 1 file changed, 51 insertions(+), 58 deletions(-)
 
-diff --git a/sound/soc/codecs/wm9090.c b/sound/soc/codecs/wm9090.c
-index 5a131385cb2f..a9f1a0360a19 100644
---- a/sound/soc/codecs/wm9090.c
-+++ b/sound/soc/codecs/wm9090.c
-@@ -143,23 +143,23 @@ static bool wm9090_readable(struct device *dev, unsigned int reg)
- 	}
+diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
+index 4f6d1a442bc4..7aeeeec8adbd 100644
+--- a/sound/soc/codecs/wm9712.c
++++ b/sound/soc/codecs/wm9712.c
+@@ -220,8 +220,8 @@ static int wm9712_hp_mixer_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kcontrol);
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(dapm);
+-	struct wm9712_priv *wm9712 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(dapm);
++	struct wm9712_priv *wm9712 = snd_soc_component_get_drvdata(component);
+ 	unsigned int val = ucontrol->value.integer.value[0];
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+@@ -264,8 +264,8 @@ static int wm9712_hp_mixer_get(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kcontrol);
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(dapm);
+-	struct wm9712_priv *wm9712 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(dapm);
++	struct wm9712_priv *wm9712 = snd_soc_component_get_drvdata(component);
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+ 	unsigned int shift, mixer;
+@@ -527,33 +527,33 @@ static const struct snd_soc_dapm_route wm9712_audio_map[] = {
+ static int ac97_prepare(struct snd_pcm_substream *substream,
+ 			struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
++	struct snd_soc_component *component = dai->component;
+ 	int reg;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 
+-	snd_soc_update_bits(codec, AC97_EXTENDED_STATUS, 0x1, 0x1);
++	snd_soc_component_update_bits(component, AC97_EXTENDED_STATUS, 0x1, 0x1);
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		reg = AC97_PCM_FRONT_DAC_RATE;
+ 	else
+ 		reg = AC97_PCM_LR_ADC_RATE;
+ 
+-	return snd_soc_write(codec, reg, runtime->rate);
++	return snd_soc_component_write(component, reg, runtime->rate);
  }
  
--static void wait_for_dc_servo(struct snd_soc_codec *codec)
-+static void wait_for_dc_servo(struct snd_soc_component *component)
+ static int ac97_aux_prepare(struct snd_pcm_substream *substream,
+ 			    struct snd_soc_dai *dai)
  {
- 	unsigned int reg;
- 	int count = 0;
+-	struct snd_soc_codec *codec = dai->codec;
++	struct snd_soc_component *component = dai->component;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
  
--	dev_dbg(codec->dev, "Waiting for DC servo...\n");
-+	dev_dbg(component->dev, "Waiting for DC servo...\n");
- 	do {
- 		count++;
- 		msleep(1);
--		reg = snd_soc_read(codec, WM9090_DC_SERVO_READBACK_0);
--		dev_dbg(codec->dev, "DC servo status: %x\n", reg);
-+		reg = snd_soc_component_read32(component, WM9090_DC_SERVO_READBACK_0);
-+		dev_dbg(component->dev, "DC servo status: %x\n", reg);
- 	} while ((reg & WM9090_DCS_CAL_COMPLETE_MASK)
- 		 != WM9090_DCS_CAL_COMPLETE_MASK && count < 1000);
+-	snd_soc_update_bits(codec, AC97_EXTENDED_STATUS, 0x1, 0x1);
+-	snd_soc_update_bits(codec, AC97_PCI_SID, 0x8000, 0x8000);
++	snd_soc_component_update_bits(component, AC97_EXTENDED_STATUS, 0x1, 0x1);
++	snd_soc_component_update_bits(component, AC97_PCI_SID, 0x8000, 0x8000);
  
- 	if ((reg & WM9090_DCS_CAL_COMPLETE_MASK)
- 	    != WM9090_DCS_CAL_COMPLETE_MASK)
--		dev_err(codec->dev, "Timed out waiting for DC Servo\n");
-+		dev_err(component->dev, "Timed out waiting for DC Servo\n");
+ 	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
+ 		return -ENODEV;
+ 
+-	return snd_soc_write(codec, AC97_PCM_SURR_DAC_RATE, runtime->rate);
++	return snd_soc_component_write(component, AC97_PCM_SURR_DAC_RATE, runtime->rate);
  }
  
- static const DECLARE_TLV_DB_RANGE(in_tlv,
-@@ -251,22 +251,22 @@ SOC_SINGLE_TLV("MIXOUTR IN2B Volume", WM9090_OUTPUT_MIXER4, 0, 3, 1,
- static int hp_ev(struct snd_soc_dapm_widget *w,
- 		 struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
--	unsigned int reg = snd_soc_read(codec, WM9090_ANALOGUE_HP_0);
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	unsigned int reg = snd_soc_component_read32(component, WM9090_ANALOGUE_HP_0);
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
--		snd_soc_update_bits(codec, WM9090_CHARGE_PUMP_1,
-+		snd_soc_component_update_bits(component, WM9090_CHARGE_PUMP_1,
- 				    WM9090_CP_ENA, WM9090_CP_ENA);
- 
- 		msleep(5);
- 
--		snd_soc_update_bits(codec, WM9090_POWER_MANAGEMENT_1,
-+		snd_soc_component_update_bits(component, WM9090_POWER_MANAGEMENT_1,
- 				    WM9090_HPOUT1L_ENA | WM9090_HPOUT1R_ENA,
- 				    WM9090_HPOUT1L_ENA | WM9090_HPOUT1R_ENA);
- 
- 		reg |= WM9090_HPOUT1L_DLY | WM9090_HPOUT1R_DLY;
--		snd_soc_write(codec, WM9090_ANALOGUE_HP_0, reg);
-+		snd_soc_component_write(component, WM9090_ANALOGUE_HP_0, reg);
- 
- 		/* Start the DC servo.  We don't currently use the
- 		 * ability to save the state since we don't have full
-@@ -274,16 +274,16 @@ static int hp_ev(struct snd_soc_dapm_widget *w,
- 		 * DC offsets; see the WM8904 driver for an example of
- 		 * doing so.
- 		 */
--		snd_soc_write(codec, WM9090_DC_SERVO_0,
-+		snd_soc_component_write(component, WM9090_DC_SERVO_0,
- 			      WM9090_DCS_ENA_CHAN_0 |
- 			      WM9090_DCS_ENA_CHAN_1 |
- 			      WM9090_DCS_TRIG_STARTUP_1 |
- 			      WM9090_DCS_TRIG_STARTUP_0);
--		wait_for_dc_servo(codec);
-+		wait_for_dc_servo(component);
- 
- 		reg |= WM9090_HPOUT1R_OUTP | WM9090_HPOUT1R_RMV_SHORT |
- 			WM9090_HPOUT1L_OUTP | WM9090_HPOUT1L_RMV_SHORT;
--		snd_soc_write(codec, WM9090_ANALOGUE_HP_0, reg);
-+		snd_soc_component_write(component, WM9090_ANALOGUE_HP_0, reg);
- 		break;
- 
- 	case SND_SOC_DAPM_PRE_PMD:
-@@ -294,15 +294,15 @@ static int hp_ev(struct snd_soc_dapm_widget *w,
- 			 WM9090_HPOUT1R_DLY |
- 			 WM9090_HPOUT1R_OUTP);
- 
--		snd_soc_write(codec, WM9090_ANALOGUE_HP_0, reg);
-+		snd_soc_component_write(component, WM9090_ANALOGUE_HP_0, reg);
- 
--		snd_soc_write(codec, WM9090_DC_SERVO_0, 0);
-+		snd_soc_component_write(component, WM9090_DC_SERVO_0, 0);
- 
--		snd_soc_update_bits(codec, WM9090_POWER_MANAGEMENT_1,
-+		snd_soc_component_update_bits(component, WM9090_POWER_MANAGEMENT_1,
- 				    WM9090_HPOUT1L_ENA | WM9090_HPOUT1R_ENA,
- 				    0);
- 
--		snd_soc_update_bits(codec, WM9090_CHARGE_PUMP_1,
-+		snd_soc_component_update_bits(component, WM9090_CHARGE_PUMP_1,
- 				    WM9090_CP_ENA, 0);
- 		break;
- 	}
-@@ -419,10 +419,10 @@ static const struct snd_soc_dapm_route audio_map_in2_diff[] = {
- 	{ "IN2A PGA", NULL, "IN2-" },	
+ #define WM9712_AC97_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
+@@ -597,7 +597,7 @@ static struct snd_soc_dai_driver wm9712_dai[] = {
+ }
  };
  
--static int wm9090_add_controls(struct snd_soc_codec *codec)
-+static int wm9090_add_controls(struct snd_soc_component *component)
- {
--	struct wm9090_priv *wm9090 = snd_soc_codec_get_drvdata(codec);
--	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+	struct wm9090_priv *wm9090 = snd_soc_component_get_drvdata(component);
-+	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
- 	int i;
- 
- 	snd_soc_dapm_new_controls(dapm, wm9090_dapm_widgets,
-@@ -430,7 +430,7 @@ static int wm9090_add_controls(struct snd_soc_codec *codec)
- 
- 	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
- 
--	snd_soc_add_codec_controls(codec, wm9090_controls,
-+	snd_soc_add_component_controls(component, wm9090_controls,
- 			     ARRAY_SIZE(wm9090_controls));
- 
- 	if (wm9090->pdata.lin1_diff) {
-@@ -439,7 +439,7 @@ static int wm9090_add_controls(struct snd_soc_codec *codec)
- 	} else {
- 		snd_soc_dapm_add_routes(dapm, audio_map_in1_se,
- 					ARRAY_SIZE(audio_map_in1_se));
--		snd_soc_add_codec_controls(codec, wm9090_in1_se_controls,
-+		snd_soc_add_component_controls(component, wm9090_in1_se_controls,
- 				     ARRAY_SIZE(wm9090_in1_se_controls));
- 	}
- 
-@@ -449,18 +449,18 @@ static int wm9090_add_controls(struct snd_soc_codec *codec)
- 	} else {
- 		snd_soc_dapm_add_routes(dapm, audio_map_in2_se,
- 					ARRAY_SIZE(audio_map_in2_se));
--		snd_soc_add_codec_controls(codec, wm9090_in2_se_controls,
-+		snd_soc_add_component_controls(component, wm9090_in2_se_controls,
- 				     ARRAY_SIZE(wm9090_in2_se_controls));
- 	}
- 
- 	if (wm9090->pdata.agc_ena) {
- 		for (i = 0; i < ARRAY_SIZE(wm9090->pdata.agc); i++)
--			snd_soc_write(codec, WM9090_AGC_CONTROL_0 + i,
-+			snd_soc_component_write(component, WM9090_AGC_CONTROL_0 + i,
- 				      wm9090->pdata.agc[i]);
--		snd_soc_update_bits(codec, WM9090_POWER_MANAGEMENT_3,
-+		snd_soc_component_update_bits(component, WM9090_POWER_MANAGEMENT_3,
- 				    WM9090_AGC_ENA, WM9090_AGC_ENA);
- 	} else {
--		snd_soc_update_bits(codec, WM9090_POWER_MANAGEMENT_3,
-+		snd_soc_component_update_bits(component, WM9090_POWER_MANAGEMENT_3,
- 				    WM9090_AGC_ENA, 0);
- 	}
- 
-@@ -472,19 +472,19 @@ static int wm9090_add_controls(struct snd_soc_codec *codec)
-  * The machine driver should call this from their set_bias_level; if there
-  * isn't one then this can just be set as the set_bias_level function.
-  */
--static int wm9090_set_bias_level(struct snd_soc_codec *codec,
-+static int wm9090_set_bias_level(struct snd_soc_component *component,
+-static int wm9712_set_bias_level(struct snd_soc_codec *codec,
++static int wm9712_set_bias_level(struct snd_soc_component *component,
  				 enum snd_soc_bias_level level)
  {
--	struct wm9090_priv *wm9090 = snd_soc_codec_get_drvdata(codec);
-+	struct wm9090_priv *wm9090 = snd_soc_component_get_drvdata(component);
- 
  	switch (level) {
- 	case SND_SOC_BIAS_ON:
- 		break;
- 
+@@ -605,20 +605,20 @@ static int wm9712_set_bias_level(struct snd_soc_codec *codec,
  	case SND_SOC_BIAS_PREPARE:
--		snd_soc_update_bits(codec, WM9090_ANTIPOP2, WM9090_VMID_ENA,
-+		snd_soc_component_update_bits(component, WM9090_ANTIPOP2, WM9090_VMID_ENA,
- 				    WM9090_VMID_ENA);
--		snd_soc_update_bits(codec, WM9090_POWER_MANAGEMENT_1,
-+		snd_soc_component_update_bits(component, WM9090_POWER_MANAGEMENT_1,
- 				    WM9090_BIAS_ENA |
- 				    WM9090_VMID_RES_MASK,
- 				    WM9090_BIAS_ENA |
-@@ -493,7 +493,7 @@ static int wm9090_set_bias_level(struct snd_soc_codec *codec,
  		break;
- 
  	case SND_SOC_BIAS_STANDBY:
--		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
-+		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
- 			/* Restore the register cache */
- 			regcache_sync(wm9090->regmap);
- 		}
-@@ -502,9 +502,9 @@ static int wm9090_set_bias_level(struct snd_soc_codec *codec,
- 		 * ground referenced outputs and class D speaker mean that
- 		 * latency is not an issue.
- 		 */
--		snd_soc_update_bits(codec, WM9090_POWER_MANAGEMENT_1,
-+		snd_soc_component_update_bits(component, WM9090_POWER_MANAGEMENT_1,
- 				    WM9090_BIAS_ENA | WM9090_VMID_RES_MASK, 0);
--		snd_soc_update_bits(codec, WM9090_ANTIPOP2,
-+		snd_soc_component_update_bits(component, WM9090_ANTIPOP2,
- 				    WM9090_VMID_ENA, 0);
+-		snd_soc_write(codec, AC97_POWERDOWN, 0x0000);
++		snd_soc_component_write(component, AC97_POWERDOWN, 0x0000);
  		break;
- 
-@@ -515,45 +515,49 @@ static int wm9090_set_bias_level(struct snd_soc_codec *codec,
+ 	case SND_SOC_BIAS_OFF:
+ 		/* disable everything including AC link */
+-		snd_soc_write(codec, AC97_EXTENDED_MSTATUS, 0xffff);
+-		snd_soc_write(codec, AC97_POWERDOWN, 0xffff);
++		snd_soc_component_write(component, AC97_EXTENDED_MSTATUS, 0xffff);
++		snd_soc_component_write(component, AC97_POWERDOWN, 0xffff);
+ 		break;
+ 	}
  	return 0;
  }
  
--static int wm9090_probe(struct snd_soc_codec *codec)
-+static int wm9090_probe(struct snd_soc_component *component)
+-static int wm9712_soc_resume(struct snd_soc_codec *codec)
++static int wm9712_soc_resume(struct snd_soc_component *component)
  {
- 	/* Configure some defaults; they will be written out when we
- 	 * bring the bias up.
- 	 */
--	snd_soc_update_bits(codec, WM9090_IN1_LINE_INPUT_A_VOLUME,
-+	snd_soc_component_update_bits(component, WM9090_IN1_LINE_INPUT_A_VOLUME,
- 			    WM9090_IN1_VU | WM9090_IN1A_ZC,
- 			    WM9090_IN1_VU | WM9090_IN1A_ZC);
--	snd_soc_update_bits(codec, WM9090_IN1_LINE_INPUT_B_VOLUME,
-+	snd_soc_component_update_bits(component, WM9090_IN1_LINE_INPUT_B_VOLUME,
- 			    WM9090_IN1_VU | WM9090_IN1B_ZC,
- 			    WM9090_IN1_VU | WM9090_IN1B_ZC);
--	snd_soc_update_bits(codec, WM9090_IN2_LINE_INPUT_A_VOLUME,
-+	snd_soc_component_update_bits(component, WM9090_IN2_LINE_INPUT_A_VOLUME,
- 			    WM9090_IN2_VU | WM9090_IN2A_ZC,
- 			    WM9090_IN2_VU | WM9090_IN2A_ZC);
--	snd_soc_update_bits(codec, WM9090_IN2_LINE_INPUT_B_VOLUME,
-+	snd_soc_component_update_bits(component, WM9090_IN2_LINE_INPUT_B_VOLUME,
- 			    WM9090_IN2_VU | WM9090_IN2B_ZC,
- 			    WM9090_IN2_VU | WM9090_IN2B_ZC);
--	snd_soc_update_bits(codec, WM9090_SPEAKER_VOLUME_LEFT,
-+	snd_soc_component_update_bits(component, WM9090_SPEAKER_VOLUME_LEFT,
- 			    WM9090_SPKOUT_VU | WM9090_SPKOUTL_ZC,
- 			    WM9090_SPKOUT_VU | WM9090_SPKOUTL_ZC);
--	snd_soc_update_bits(codec, WM9090_LEFT_OUTPUT_VOLUME,
-+	snd_soc_component_update_bits(component, WM9090_LEFT_OUTPUT_VOLUME,
- 			    WM9090_HPOUT1_VU | WM9090_HPOUT1L_ZC,
- 			    WM9090_HPOUT1_VU | WM9090_HPOUT1L_ZC);
--	snd_soc_update_bits(codec, WM9090_RIGHT_OUTPUT_VOLUME,
-+	snd_soc_component_update_bits(component, WM9090_RIGHT_OUTPUT_VOLUME,
- 			    WM9090_HPOUT1_VU | WM9090_HPOUT1R_ZC,
- 			    WM9090_HPOUT1_VU | WM9090_HPOUT1R_ZC);
+-	struct wm9712_priv *wm9712 = snd_soc_codec_get_drvdata(codec);
++	struct wm9712_priv *wm9712 = snd_soc_component_get_drvdata(component);
+ 	int ret;
  
--	snd_soc_update_bits(codec, WM9090_CLOCKING_1,
-+	snd_soc_component_update_bits(component, WM9090_CLOCKING_1,
- 			    WM9090_TOCLK_ENA, WM9090_TOCLK_ENA);
+ 	ret = snd_ac97_reset(wm9712->ac97, true, WM9712_VENDOR_ID,
+@@ -626,17 +626,17 @@ static int wm9712_soc_resume(struct snd_soc_codec *codec)
+ 	if (ret < 0)
+ 		return ret;
  
--	wm9090_add_controls(codec);
-+	wm9090_add_controls(component);
+-	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
++	snd_soc_component_force_bias_level(component, SND_SOC_BIAS_STANDBY);
+ 
+ 	if (ret == 0)
+-		regcache_sync(codec->component.regmap);
++		snd_soc_component_cache_sync(component);
+ 
+ 	return ret;
+ }
+ 
+-static int wm9712_soc_probe(struct snd_soc_codec *codec)
++static int wm9712_soc_probe(struct snd_soc_component *component)
+ {
+-	struct wm9712_priv *wm9712 = snd_soc_codec_get_drvdata(codec);
++	struct wm9712_priv *wm9712 = snd_soc_component_get_drvdata(component);
+ 	struct regmap *regmap;
+ 	int ret;
+ 
+@@ -645,59 +645,59 @@ static int wm9712_soc_probe(struct snd_soc_codec *codec)
+ 		regmap = wm9712->mfd_pdata->regmap;
+ 	} else {
+ #ifdef CONFIG_SND_SOC_AC97_BUS
+-		wm9712->ac97 = snd_soc_new_ac97_codec(codec, WM9712_VENDOR_ID,
++		wm9712->ac97 = snd_soc_new_ac97_component(component, WM9712_VENDOR_ID,
+ 						      WM9712_VENDOR_ID_MASK);
+ 		if (IS_ERR(wm9712->ac97)) {
+ 			ret = PTR_ERR(wm9712->ac97);
+-			dev_err(codec->dev,
++			dev_err(component->dev,
+ 				"Failed to register AC97 codec: %d\n", ret);
+ 			return ret;
+ 		}
+ 
+ 		regmap = regmap_init_ac97(wm9712->ac97, &wm9712_regmap_config);
+ 		if (IS_ERR(regmap)) {
+-			snd_soc_free_ac97_codec(wm9712->ac97);
++			snd_soc_free_ac97_component(wm9712->ac97);
+ 			return PTR_ERR(regmap);
+ 		}
+ #endif
+ 	}
+ 
+-	snd_soc_codec_init_regmap(codec, regmap);
++	snd_soc_component_init_regmap(component, regmap);
+ 
+ 	/* set alc mux to none */
+-	snd_soc_update_bits(codec, AC97_VIDEO, 0x3000, 0x3000);
++	snd_soc_component_update_bits(component, AC97_VIDEO, 0x3000, 0x3000);
  
  	return 0;
  }
  
--static const struct snd_soc_codec_driver soc_codec_dev_wm9090 = {
--	.probe = 	wm9090_probe,
--	.set_bias_level = wm9090_set_bias_level,
+-static int wm9712_soc_remove(struct snd_soc_codec *codec)
++static void wm9712_soc_remove(struct snd_soc_component *component)
+ {
+ #ifdef CONFIG_SND_SOC_AC97_BUS
+-	struct wm9712_priv *wm9712 = snd_soc_codec_get_drvdata(codec);
++	struct wm9712_priv *wm9712 = snd_soc_component_get_drvdata(component);
+ 
+ 	if (!wm9712->mfd_pdata) {
+-		snd_soc_codec_exit_regmap(codec);
+-		snd_soc_free_ac97_codec(wm9712->ac97);
++		snd_soc_component_exit_regmap(component);
++		snd_soc_free_ac97_component(wm9712->ac97);
+ 	}
+ #endif
+-	return 0;
+ }
+ 
+-static const struct snd_soc_codec_driver soc_codec_dev_wm9712 = {
+-	.probe = 	wm9712_soc_probe,
+-	.remove = 	wm9712_soc_remove,
+-	.resume =	wm9712_soc_resume,
+-	.set_bias_level = wm9712_set_bias_level,
 -	.suspend_bias_off = true,
-+static const struct snd_soc_component_driver soc_component_dev_wm9090 = {
-+	.probe			= wm9090_probe,
-+	.set_bias_level		= wm9090_set_bias_level,
+-
+-	.component_driver = {
+-		.controls		= wm9712_snd_ac97_controls,
+-		.num_controls		= ARRAY_SIZE(wm9712_snd_ac97_controls),
+-		.dapm_widgets		= wm9712_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(wm9712_dapm_widgets),
+-		.dapm_routes		= wm9712_audio_map,
+-		.num_dapm_routes	= ARRAY_SIZE(wm9712_audio_map),
+-	},
++static const struct snd_soc_component_driver soc_component_dev_wm9712 = {
++	.probe			= wm9712_soc_probe,
++	.remove			= wm9712_soc_remove,
++	.resume			= wm9712_soc_resume,
++	.set_bias_level		= wm9712_set_bias_level,
++	.controls		= wm9712_snd_ac97_controls,
++	.num_controls		= ARRAY_SIZE(wm9712_snd_ac97_controls),
++	.dapm_widgets		= wm9712_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(wm9712_dapm_widgets),
++	.dapm_routes		= wm9712_audio_map,
++	.num_dapm_routes	= ARRAY_SIZE(wm9712_audio_map),
 +	.suspend_bias_off	= 1,
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
@@ -337,38 +281,38 @@ index 5a131385cb2f..a9f1a0360a19 100644
 +	.non_legacy_dai_naming	= 1,
  };
  
- static const struct regmap_config wm9090_regmap = {
-@@ -607,8 +611,8 @@ static int wm9090_i2c_probe(struct i2c_client *i2c,
+ static int wm9712_probe(struct platform_device *pdev)
+@@ -713,26 +713,19 @@ static int wm9712_probe(struct platform_device *pdev)
+ 	wm9712->mfd_pdata = dev_get_platdata(&pdev->dev);
+ 	platform_set_drvdata(pdev, wm9712);
  
- 	i2c_set_clientdata(i2c, wm9090);
- 
--	ret =  snd_soc_register_codec(&i2c->dev,
--			&soc_codec_dev_wm9090,  NULL, 0);
-+	ret =  devm_snd_soc_register_component(&i2c->dev,
-+			&soc_component_dev_wm9090,  NULL, 0);
- 	if (ret != 0) {
- 		dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
- 		return ret;
-@@ -617,12 +621,6 @@ static int wm9090_i2c_probe(struct i2c_client *i2c,
- 	return 0;
- }
- 
--static int wm9090_i2c_remove(struct i2c_client *i2c)
--{
--	snd_soc_unregister_codec(&i2c->dev);
--	return 0;
+-	return snd_soc_register_codec(&pdev->dev,
+-			&soc_codec_dev_wm9712, wm9712_dai, ARRAY_SIZE(wm9712_dai));
 -}
 -
- static const struct i2c_device_id wm9090_id[] = {
- 	{ "wm9090", 0 },
- 	{ "wm9093", 0 },
-@@ -635,7 +633,6 @@ static struct i2c_driver wm9090_i2c_driver = {
- 		.name = "wm9090",
+-static int wm9712_remove(struct platform_device *pdev)
+-{
+-	snd_soc_unregister_codec(&pdev->dev);
+-	return 0;
++	return devm_snd_soc_register_component(&pdev->dev,
++			&soc_component_dev_wm9712, wm9712_dai, ARRAY_SIZE(wm9712_dai));
+ }
+ 
+-static struct platform_driver wm9712_codec_driver = {
++static struct platform_driver wm9712_component_driver = {
+ 	.driver = {
+-		.name = "wm9712-codec",
++		.name = "wm9712-component",
  	},
- 	.probe = wm9090_i2c_probe,
--	.remove = wm9090_i2c_remove,
- 	.id_table = wm9090_id,
+ 
+ 	.probe = wm9712_probe,
+-	.remove = wm9712_remove,
  };
  
+-module_platform_driver(wm9712_codec_driver);
++module_platform_driver(wm9712_component_driver);
+ 
+ MODULE_DESCRIPTION("ASoC WM9711/WM9712 driver");
+ MODULE_AUTHOR("Liam Girdwood");
 -- 
 2.16.1
