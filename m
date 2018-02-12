@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7210: replace codec to component" to
+Subject: Applied "ASoC: da732x: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:42:49 +0000
-Message-ID: <E1elDRZ-0004xj-Kw@debutante>
-References: <87zi4xz55f.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:42:52 +0000
+Message-ID: <E1elDRc-0004yY-PP@debutante>
+References: <871si91fjc.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id ED33E267CA9
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:42:51 +0100 (CET)
-In-Reply-To: <87zi4xz55f.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A96C267CAE
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:42:55 +0100 (CET)
+In-Reply-To: <871si91fjc.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7210: replace codec to component
+   ASoC: da732x: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From d06f33aed85cf73703555879157bf33866f8af05 Mon Sep 17 00:00:00 2001
+>From 192ce2fb1a4052b4a2ee01f1cad2f39c0eebeb48 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:01:06 +0000
-Subject: [PATCH] ASoC: da7210: replace codec to component
+Date: Mon, 29 Jan 2018 04:00:47 +0000
+Subject: [PATCH] ASoC: da732x: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,430 +70,616 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7210.c | 181 +++++++++++++++++++++-------------------------
- 1 file changed, 84 insertions(+), 97 deletions(-)
+ sound/soc/codecs/da732x.c | 241 +++++++++++++++++++++++-----------------------
+ 1 file changed, 121 insertions(+), 120 deletions(-)
 
-diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
-index 1af443ccbc51..07153be52c52 100644
---- a/sound/soc/codecs/da7210.c
-+++ b/sound/soc/codecs/da7210.c
-@@ -331,12 +331,12 @@ static SOC_ENUM_SINGLE_DECL(da7210_hp_mode_sel,
- static int da7210_put_alc_sw(struct snd_kcontrol *kcontrol,
- 			     struct snd_ctl_elem_value *ucontrol)
+diff --git a/sound/soc/codecs/da732x.c b/sound/soc/codecs/da732x.c
+index 83db4d23c90b..de275df8f4ee 100644
+--- a/sound/soc/codecs/da732x.c
++++ b/sound/soc/codecs/da732x.c
+@@ -168,7 +168,7 @@ static const struct reg_default da732x_reg_cache[] = {
+ 	{ DA732X_REG_UNLOCK		, 0x00 },
+ };
+ 
+-static inline int da732x_get_input_div(struct snd_soc_codec *codec, int sysclk)
++static inline int da732x_get_input_div(struct snd_soc_component *component, int sysclk)
+ {
+ 	int val;
+ 	int ret;
+@@ -192,28 +192,28 @@ static inline int da732x_get_input_div(struct snd_soc_codec *codec, int sysclk)
+ 		return -EINVAL;
+ 	}
+ 
+-	snd_soc_write(codec, DA732X_REG_PLL_CTRL, val);
++	snd_soc_component_write(component, DA732X_REG_PLL_CTRL, val);
+ 
+ 	return ret;
+ }
+ 
+-static void da732x_set_charge_pump(struct snd_soc_codec *codec, int state)
++static void da732x_set_charge_pump(struct snd_soc_component *component, int state)
+ {
+ 	switch (state) {
+ 	case DA732X_ENABLE_CP:
+-		snd_soc_write(codec, DA732X_REG_CLK_EN2, DA732X_CP_CLK_EN);
+-		snd_soc_write(codec, DA732X_REG_CP_HP2, DA732X_HP_CP_EN |
++		snd_soc_component_write(component, DA732X_REG_CLK_EN2, DA732X_CP_CLK_EN);
++		snd_soc_component_write(component, DA732X_REG_CP_HP2, DA732X_HP_CP_EN |
+ 			      DA732X_HP_CP_REG | DA732X_HP_CP_PULSESKIP);
+-		snd_soc_write(codec, DA732X_REG_CP_CTRL1, DA732X_CP_EN |
++		snd_soc_component_write(component, DA732X_REG_CP_CTRL1, DA732X_CP_EN |
+ 			      DA732X_CP_CTRL_CPVDD1);
+-		snd_soc_write(codec, DA732X_REG_CP_CTRL2,
++		snd_soc_component_write(component, DA732X_REG_CP_CTRL2,
+ 			      DA732X_CP_MANAGE_MAGNITUDE | DA732X_CP_BOOST);
+-		snd_soc_write(codec, DA732X_REG_CP_CTRL3, DA732X_CP_1MHZ);
++		snd_soc_component_write(component, DA732X_REG_CP_CTRL3, DA732X_CP_1MHZ);
+ 		break;
+ 	case DA732X_DISABLE_CP:
+-		snd_soc_write(codec, DA732X_REG_CLK_EN2, DA732X_CP_CLK_DIS);
+-		snd_soc_write(codec, DA732X_REG_CP_HP2, DA732X_HP_CP_DIS);
+-		snd_soc_write(codec, DA732X_REG_CP_CTRL1, DA723X_CP_DIS);
++		snd_soc_component_write(component, DA732X_REG_CLK_EN2, DA732X_CP_CLK_DIS);
++		snd_soc_component_write(component, DA732X_REG_CP_HP2, DA732X_HP_CP_DIS);
++		snd_soc_component_write(component, DA732X_REG_CP_CTRL1, DA723X_CP_DIS);
+ 		break;
+ 	default:
+ 		pr_err("Wrong charge pump state\n");
+@@ -331,7 +331,7 @@ static SOC_ENUM_SINGLE_DECL(da732x_adc2_voice_filter_enum,
+ static int da732x_hpf_set(struct snd_kcontrol *kcontrol,
+ 			  struct snd_ctl_elem_value *ucontrol)
  {
 -	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
 +	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
+ 	struct soc_enum *enum_ctrl = (struct soc_enum *)kcontrol->private_value;
+ 	unsigned int reg = enum_ctrl->reg;
+ 	unsigned int sel = ucontrol->value.enumerated.item[0];
+@@ -351,7 +351,7 @@ static int da732x_hpf_set(struct snd_kcontrol *kcontrol,
+ 		return -EINVAL;
+ 	}
  
- 	if (ucontrol->value.integer.value[0]) {
- 		/* Check if noise suppression is enabled */
--		if (snd_soc_read(codec, DA7210_CONTROL) & DA7210_NOISE_SUP_EN) {
--			dev_dbg(codec->dev,
-+		if (snd_soc_component_read32(component, DA7210_CONTROL) & DA7210_NOISE_SUP_EN) {
-+			dev_dbg(component->dev,
- 				"Disable noise suppression to enable ALC\n");
+-	snd_soc_update_bits(codec, reg, DA732X_HPF_MASK, bits);
++	snd_soc_component_update_bits(component, reg, DA732X_HPF_MASK, bits);
+ 
+ 	return 0;
+ }
+@@ -359,12 +359,12 @@ static int da732x_hpf_set(struct snd_kcontrol *kcontrol,
+ static int da732x_hpf_get(struct snd_kcontrol *kcontrol,
+ 			  struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
+ 	struct soc_enum *enum_ctrl = (struct soc_enum *)kcontrol->private_value;
+ 	unsigned int reg = enum_ctrl->reg;
+ 	int val;
+ 
+-	val = snd_soc_read(codec, reg) & DA732X_HPF_MASK;
++	val = snd_soc_component_read32(component, reg) & DA732X_HPF_MASK;
+ 
+ 	switch (val) {
+ 	case DA732X_HPF_VOICE_EN:
+@@ -609,18 +609,18 @@ static const struct snd_kcontrol_new da732x_snd_controls[] = {
+ static int da732x_adc_event(struct snd_soc_dapm_widget *w,
+ 			    struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+ 		switch (w->reg) {
+ 		case DA732X_REG_ADC1_PD:
+-			snd_soc_update_bits(codec, DA732X_REG_CLK_EN3,
++			snd_soc_component_update_bits(component, DA732X_REG_CLK_EN3,
+ 					    DA732X_ADCA_BB_CLK_EN,
+ 					    DA732X_ADCA_BB_CLK_EN);
+ 			break;
+ 		case DA732X_REG_ADC2_PD:
+-			snd_soc_update_bits(codec, DA732X_REG_CLK_EN3,
++			snd_soc_component_update_bits(component, DA732X_REG_CLK_EN3,
+ 					    DA732X_ADCC_BB_CLK_EN,
+ 					    DA732X_ADCC_BB_CLK_EN);
+ 			break;
+@@ -628,24 +628,24 @@ static int da732x_adc_event(struct snd_soc_dapm_widget *w,
  			return -EINVAL;
  		}
-@@ -354,32 +354,32 @@ static int da7210_put_alc_sw(struct snd_kcontrol *kcontrol,
- static int da7210_put_noise_sup_sw(struct snd_kcontrol *kcontrol,
- 				   struct snd_ctl_elem_value *ucontrol)
+ 
+-		snd_soc_update_bits(codec, w->reg, DA732X_ADC_RST_MASK,
++		snd_soc_component_update_bits(component, w->reg, DA732X_ADC_RST_MASK,
+ 				    DA732X_ADC_SET_ACT);
+-		snd_soc_update_bits(codec, w->reg, DA732X_ADC_PD_MASK,
++		snd_soc_component_update_bits(component, w->reg, DA732X_ADC_PD_MASK,
+ 				    DA732X_ADC_ON);
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMD:
+-		snd_soc_update_bits(codec, w->reg, DA732X_ADC_PD_MASK,
++		snd_soc_component_update_bits(component, w->reg, DA732X_ADC_PD_MASK,
+ 				    DA732X_ADC_OFF);
+-		snd_soc_update_bits(codec, w->reg, DA732X_ADC_RST_MASK,
++		snd_soc_component_update_bits(component, w->reg, DA732X_ADC_RST_MASK,
+ 				    DA732X_ADC_SET_RST);
+ 
+ 		switch (w->reg) {
+ 		case DA732X_REG_ADC1_PD:
+-			snd_soc_update_bits(codec, DA732X_REG_CLK_EN3,
++			snd_soc_component_update_bits(component, DA732X_REG_CLK_EN3,
+ 					    DA732X_ADCA_BB_CLK_EN, 0);
+ 			break;
+ 		case DA732X_REG_ADC2_PD:
+-			snd_soc_update_bits(codec, DA732X_REG_CLK_EN3,
++			snd_soc_component_update_bits(component, DA732X_REG_CLK_EN3,
+ 					    DA732X_ADCC_BB_CLK_EN, 0);
+ 			break;
+ 		default:
+@@ -663,16 +663,16 @@ static int da732x_adc_event(struct snd_soc_dapm_widget *w,
+ static int da732x_out_pga_event(struct snd_soc_dapm_widget *w,
+ 				struct snd_kcontrol *kcontrol, int event)
  {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
- 	u8 val;
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
  
- 	if (ucontrol->value.integer.value[0]) {
- 		/* Check if ALC is enabled */
--		if (snd_soc_read(codec, DA7210_ADC) & DA7210_ADC_ALC_EN)
-+		if (snd_soc_component_read32(component, DA7210_ADC) & DA7210_ADC_ALC_EN)
- 			goto err;
- 
- 		/* Check ZC for HP and AUX1 PGA */
--		if ((snd_soc_read(codec, DA7210_ZERO_CROSS) &
-+		if ((snd_soc_component_read32(component, DA7210_ZERO_CROSS) &
- 			(DA7210_AUX1_L_ZC | DA7210_AUX1_R_ZC | DA7210_HP_L_ZC |
- 			DA7210_HP_R_ZC)) != (DA7210_AUX1_L_ZC |
- 			DA7210_AUX1_R_ZC | DA7210_HP_L_ZC | DA7210_HP_R_ZC))
- 			goto err;
- 
- 		/* Check INPGA_L_VOL and INPGA_R_VOL */
--		val = snd_soc_read(codec, DA7210_IN_GAIN);
-+		val = snd_soc_component_read32(component, DA7210_IN_GAIN);
- 		if (((val & DA7210_INPGA_L_VOL) < DA7210_INPGA_MIN_VOL_NS) ||
- 			(((val & DA7210_INPGA_R_VOL) >> 4) <
- 			DA7210_INPGA_MIN_VOL_NS))
- 			goto err;
- 
- 		/* Check AUX1_L_VOL and AUX1_R_VOL */
--		if (((snd_soc_read(codec, DA7210_AUX1_L) & DA7210_AUX1_L_VOL) <
-+		if (((snd_soc_component_read32(component, DA7210_AUX1_L) & DA7210_AUX1_L_VOL) <
- 		    DA7210_AUX1_MIN_VOL_NS) ||
--		    ((snd_soc_read(codec, DA7210_AUX1_R) & DA7210_AUX1_R_VOL) <
-+		    ((snd_soc_component_read32(component, DA7210_AUX1_R) & DA7210_AUX1_R_VOL) <
- 		    DA7210_AUX1_MIN_VOL_NS))
- 			goto err;
- 	}
-@@ -760,19 +760,19 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+-		snd_soc_update_bits(codec, w->reg,
++		snd_soc_component_update_bits(component, w->reg,
+ 				    (1 << w->shift) | DA732X_OUT_HIZ_EN,
+ 				    (1 << w->shift) | DA732X_OUT_HIZ_EN);
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMD:
+-		snd_soc_update_bits(codec, w->reg,
++		snd_soc_component_update_bits(component, w->reg,
+ 				    (1 << w->shift) | DA732X_OUT_HIZ_EN,
+ 				    (1 << w->shift) | DA732X_OUT_HIZ_DIS);
+ 		break;
+@@ -949,7 +949,7 @@ static int da732x_hw_params(struct snd_pcm_substream *substream,
  			    struct snd_pcm_hw_params *params,
  			    struct snd_soc_dai *dai)
  {
 -	struct snd_soc_codec *codec = dai->codec;
--	struct da7210_priv *da7210 = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_component *component = dai->component;
-+	struct da7210_priv *da7210 = snd_soc_component_get_drvdata(component);
- 	u32 dai_cfg1;
- 	u32 fs, sysclk;
- 
- 	/* set DAI source to Left and Right ADC */
--	snd_soc_write(codec, DA7210_DAI_SRC_SEL,
-+	snd_soc_component_write(component, DA7210_DAI_SRC_SEL,
- 		     DA7210_DAI_OUT_R_SRC | DA7210_DAI_OUT_L_SRC);
- 
- 	/* Enable DAI */
--	snd_soc_write(codec, DA7210_DAI_CFG3, DA7210_DAI_OE | DA7210_DAI_EN);
-+	snd_soc_component_write(component, DA7210_DAI_CFG3, DA7210_DAI_OE | DA7210_DAI_EN);
- 
--	dai_cfg1 = 0xFC & snd_soc_read(codec, DA7210_DAI_CFG1);
-+	dai_cfg1 = 0xFC & snd_soc_component_read32(component, DA7210_DAI_CFG1);
- 
- 	switch (params_width(params)) {
- 	case 16:
-@@ -791,7 +791,7 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
+ 	u32 aif = 0;
+ 	u32 reg_aif;
+ 	u32 fs;
+@@ -1011,15 +1011,15 @@ static int da732x_hw_params(struct snd_pcm_substream *substream,
  		return -EINVAL;
  	}
  
--	snd_soc_write(codec, DA7210_DAI_CFG1, dai_cfg1);
-+	snd_soc_component_write(component, DA7210_DAI_CFG1, dai_cfg1);
- 
- 	switch (params_rate(params)) {
- 	case 8000:
-@@ -839,17 +839,17 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- 	/* Disable active mode */
--	snd_soc_update_bits(codec, DA7210_STARTUP1, DA7210_SC_MST_EN, 0);
-+	snd_soc_component_update_bits(component, DA7210_STARTUP1, DA7210_SC_MST_EN, 0);
- 
--	snd_soc_update_bits(codec, DA7210_PLL, DA7210_PLL_FS_MASK, fs);
-+	snd_soc_component_update_bits(component, DA7210_PLL, DA7210_PLL_FS_MASK, fs);
- 
- 	if (da7210->mclk_rate && (da7210->mclk_rate != sysclk)) {
- 		/* PLL mode, disable PLL bypass */
--		snd_soc_update_bits(codec, DA7210_PLL_DIV3, DA7210_PLL_BYP, 0);
-+		snd_soc_component_update_bits(component, DA7210_PLL_DIV3, DA7210_PLL_BYP, 0);
- 
- 		if (!da7210->master) {
- 			/* PLL slave mode, also enable SRM */
--			snd_soc_update_bits(codec, DA7210_PLL,
-+			snd_soc_component_update_bits(component, DA7210_PLL,
- 						   (DA7210_MCLK_SRM_EN |
- 						    DA7210_MCLK_DET_EN),
- 						   (DA7210_MCLK_SRM_EN |
-@@ -857,13 +857,13 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
- 		}
- 	} else {
- 		/* PLL bypass mode, enable PLL bypass and Auto Detection */
--		snd_soc_update_bits(codec, DA7210_PLL, DA7210_MCLK_DET_EN,
-+		snd_soc_component_update_bits(component, DA7210_PLL, DA7210_MCLK_DET_EN,
- 						       DA7210_MCLK_DET_EN);
--		snd_soc_update_bits(codec, DA7210_PLL_DIV3, DA7210_PLL_BYP,
-+		snd_soc_component_update_bits(component, DA7210_PLL_DIV3, DA7210_PLL_BYP,
- 							    DA7210_PLL_BYP);
- 	}
- 	/* Enable active mode */
--	snd_soc_update_bits(codec, DA7210_STARTUP1,
-+	snd_soc_component_update_bits(component, DA7210_STARTUP1,
- 			    DA7210_SC_MST_EN, DA7210_SC_MST_EN);
- 
- 	return 0;
-@@ -874,16 +874,16 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
-  */
- static int da7210_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
- {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct da7210_priv *da7210 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct da7210_priv *da7210 = snd_soc_component_get_drvdata(component);
- 	u32 dai_cfg1;
- 	u32 dai_cfg3;
- 
--	dai_cfg1 = 0x7f & snd_soc_read(codec, DA7210_DAI_CFG1);
--	dai_cfg3 = 0xfc & snd_soc_read(codec, DA7210_DAI_CFG3);
-+	dai_cfg1 = 0x7f & snd_soc_component_read32(component, DA7210_DAI_CFG1);
-+	dai_cfg3 = 0xfc & snd_soc_component_read32(component, DA7210_DAI_CFG3);
- 
--	if ((snd_soc_read(codec, DA7210_PLL) & DA7210_PLL_EN) &&
--		(!(snd_soc_read(codec, DA7210_PLL_DIV3) & DA7210_PLL_BYP)))
-+	if ((snd_soc_component_read32(component, DA7210_PLL) & DA7210_PLL_EN) &&
-+		(!(snd_soc_component_read32(component, DA7210_PLL_DIV3) & DA7210_PLL_BYP)))
- 		return -EINVAL;
- 
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-@@ -923,21 +923,21 @@ static int da7210_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
- 	 */
- 	dai_cfg1 |= DA7210_DAI_FLEN_64BIT;
- 
--	snd_soc_write(codec, DA7210_DAI_CFG1, dai_cfg1);
--	snd_soc_write(codec, DA7210_DAI_CFG3, dai_cfg3);
-+	snd_soc_component_write(component, DA7210_DAI_CFG1, dai_cfg1);
-+	snd_soc_component_write(component, DA7210_DAI_CFG3, dai_cfg3);
+-	snd_soc_update_bits(codec, reg_aif, DA732X_AIF_WORD_MASK, aif);
+-	snd_soc_update_bits(codec, DA732X_REG_CLK_CTRL, DA732X_SR1_MASK, fs);
++	snd_soc_component_update_bits(component, reg_aif, DA732X_AIF_WORD_MASK, aif);
++	snd_soc_component_update_bits(component, DA732X_REG_CLK_CTRL, DA732X_SR1_MASK, fs);
  
  	return 0;
  }
  
- static int da7210_mute(struct snd_soc_dai *dai, int mute)
+ static int da732x_set_dai_fmt(struct snd_soc_dai *dai, u32 fmt)
  {
 -	struct snd_soc_codec *codec = dai->codec;
--	u8 mute_reg = snd_soc_read(codec, DA7210_DAC_HPF) & 0xFB;
 +	struct snd_soc_component *component = dai->component;
-+	u8 mute_reg = snd_soc_component_read32(component, DA7210_DAC_HPF) & 0xFB;
+ 	u32 aif_mclk, pc_count;
+ 	u32 reg_aif1, aif1;
+ 	u32 reg_aif3, aif3;
+@@ -1107,29 +1107,29 @@ static int da732x_set_dai_fmt(struct snd_soc_dai *dai, u32 fmt)
+ 		return -EINVAL;
+ 	}
  
- 	if (mute)
--		snd_soc_write(codec, DA7210_DAC_HPF, mute_reg | 0x4);
-+		snd_soc_component_write(component, DA7210_DAC_HPF, mute_reg | 0x4);
- 	else
--		snd_soc_write(codec, DA7210_DAC_HPF, mute_reg);
-+		snd_soc_component_write(component, DA7210_DAC_HPF, mute_reg);
+-	snd_soc_write(codec, DA732X_REG_AIF_MCLK, aif_mclk);
+-	snd_soc_update_bits(codec, reg_aif1, DA732X_AIF1_CLK_MASK, aif1);
+-	snd_soc_update_bits(codec, reg_aif3, DA732X_AIF_BCLK_INV |
++	snd_soc_component_write(component, DA732X_REG_AIF_MCLK, aif_mclk);
++	snd_soc_component_update_bits(component, reg_aif1, DA732X_AIF1_CLK_MASK, aif1);
++	snd_soc_component_update_bits(component, reg_aif3, DA732X_AIF_BCLK_INV |
+ 			    DA732X_AIF_WCLK_INV | DA732X_AIF_MODE_MASK, aif3);
+-	snd_soc_write(codec, DA732X_REG_PC_CTRL, pc_count);
++	snd_soc_component_write(component, DA732X_REG_PC_CTRL, pc_count);
+ 
  	return 0;
  }
  
-@@ -947,8 +947,8 @@ static int da7210_mute(struct snd_soc_dai *dai, int mute)
- static int da7210_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 				 int clk_id, unsigned int freq, int dir)
+ 
+ 
+-static int da732x_set_dai_pll(struct snd_soc_codec *codec, int pll_id,
++static int da732x_set_dai_pll(struct snd_soc_component *component, int pll_id,
+ 			      int source, unsigned int freq_in,
+ 			      unsigned int freq_out)
  {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct da7210_priv *da7210 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct da7210_priv *da7210 = snd_soc_component_get_drvdata(component);
+-	struct da732x_priv *da732x = snd_soc_codec_get_drvdata(codec);
++	struct da732x_priv *da732x = snd_soc_component_get_drvdata(component);
+ 	int fref, indiv;
+ 	u8 div_lo, div_mid, div_hi;
+ 	u64 frac_div;
  
- 	switch (clk_id) {
- 	case DA7210_CLKSRC_MCLK:
-@@ -988,8 +988,8 @@ static int da7210_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- static int da7210_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
- 			      int source, unsigned int fref, unsigned int fout)
+ 	/* Disable PLL */
+ 	if (freq_out == 0) {
+-		snd_soc_update_bits(codec, DA732X_REG_PLL_CTRL,
++		snd_soc_component_update_bits(component, DA732X_REG_PLL_CTRL,
+ 				    DA732X_PLL_EN, 0);
+ 		da732x->pll_en = false;
+ 		return 0;
+@@ -1147,17 +1147,17 @@ static int da732x_set_dai_pll(struct snd_soc_codec *codec, int pll_id,
+ 		case 24576000:
+ 		case 45160000:
+ 		case 49152000:
+-			snd_soc_write(codec, DA732X_REG_PLL_CTRL,
++			snd_soc_component_write(component, DA732X_REG_PLL_CTRL,
+ 				      DA732X_PLL_BYPASS);
+ 			return 0;
+ 		default:
+-			dev_err(codec->dev,
++			dev_err(component->dev,
+ 				"Cannot use PLL Bypass, invalid SYSCLK rate\n");
+ 			return -EINVAL;
+ 		}
+ 	}
+ 
+-	indiv = da732x_get_input_div(codec, da732x->sysclk);
++	indiv = da732x_get_input_div(component, da732x->sysclk);
+ 	if (indiv < 0)
+ 		return indiv;
+ 
+@@ -1168,11 +1168,11 @@ static int da732x_set_dai_pll(struct snd_soc_codec *codec, int pll_id,
+ 	div_mid = (frac_div >> DA732X_1BYTE_SHIFT) & DA732X_U8_MASK;
+ 	div_lo = (frac_div) & DA732X_U8_MASK;
+ 
+-	snd_soc_write(codec, DA732X_REG_PLL_DIV_LO, div_lo);
+-	snd_soc_write(codec, DA732X_REG_PLL_DIV_MID, div_mid);
+-	snd_soc_write(codec, DA732X_REG_PLL_DIV_HI, div_hi);
++	snd_soc_component_write(component, DA732X_REG_PLL_DIV_LO, div_lo);
++	snd_soc_component_write(component, DA732X_REG_PLL_DIV_MID, div_mid);
++	snd_soc_component_write(component, DA732X_REG_PLL_DIV_HI, div_hi);
+ 
+-	snd_soc_update_bits(codec, DA732X_REG_PLL_CTRL, DA732X_PLL_EN,
++	snd_soc_component_update_bits(component, DA732X_REG_PLL_CTRL, DA732X_PLL_EN,
+ 			    DA732X_PLL_EN);
+ 
+ 	da732x->pll_en = true;
+@@ -1183,8 +1183,8 @@ static int da732x_set_dai_pll(struct snd_soc_codec *codec, int pll_id,
+ static int da732x_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 				 unsigned int freq, int dir)
  {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct da7210_priv *da7210 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct da7210_priv *da7210 = snd_soc_component_get_drvdata(component);
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct da732x_priv *da732x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct da732x_priv *da732x = snd_soc_component_get_drvdata(component);
  
- 	u8 pll_div1, pll_div2, pll_div3, cnt;
+ 	da732x->sysclk = freq;
  
-@@ -1014,18 +1014,18 @@ static int da7210_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
- 		goto err;
- 
- 	/* Disable active mode */
--	snd_soc_update_bits(codec, DA7210_STARTUP1, DA7210_SC_MST_EN, 0);
-+	snd_soc_component_update_bits(component, DA7210_STARTUP1, DA7210_SC_MST_EN, 0);
- 	/* Write PLL dividers */
--	snd_soc_write(codec, DA7210_PLL_DIV1, pll_div1);
--	snd_soc_write(codec, DA7210_PLL_DIV2, pll_div2);
--	snd_soc_update_bits(codec, DA7210_PLL_DIV3,
-+	snd_soc_component_write(component, DA7210_PLL_DIV1, pll_div1);
-+	snd_soc_component_write(component, DA7210_PLL_DIV2, pll_div2);
-+	snd_soc_component_update_bits(component, DA7210_PLL_DIV3,
- 				   DA7210_PLL_DIV_L_MASK, pll_div3);
- 
- 	/* Enable PLL */
--	snd_soc_update_bits(codec, DA7210_PLL, DA7210_PLL_EN, DA7210_PLL_EN);
-+	snd_soc_component_update_bits(component, DA7210_PLL, DA7210_PLL_EN, DA7210_PLL_EN);
- 
- 	/* Enable active mode */
--	snd_soc_update_bits(codec, DA7210_STARTUP1, DA7210_SC_MST_EN,
-+	snd_soc_component_update_bits(component, DA7210_STARTUP1, DA7210_SC_MST_EN,
- 						    DA7210_SC_MST_EN);
- 	return 0;
- err:
-@@ -1064,53 +1064,53 @@ static struct snd_soc_dai_driver da7210_dai = {
- 	.symmetric_rates = 1,
+@@ -1268,21 +1268,21 @@ static const struct regmap_config da732x_regmap = {
  };
  
--static int da7210_probe(struct snd_soc_codec *codec)
-+static int da7210_probe(struct snd_soc_component *component)
+ 
+-static void da732x_dac_offset_adjust(struct snd_soc_codec *codec)
++static void da732x_dac_offset_adjust(struct snd_soc_component *component)
  {
--	struct da7210_priv *da7210 = snd_soc_codec_get_drvdata(codec);
-+	struct da7210_priv *da7210 = snd_soc_component_get_drvdata(component);
+ 	u8 offset[DA732X_HP_DACS];
+ 	u8 sign[DA732X_HP_DACS];
+ 	u8 step = DA732X_DAC_OFFSET_STEP;
  
--	dev_info(codec->dev, "DA7210 Audio Codec %s\n", DA7210_VERSION);
-+	dev_info(component->dev, "DA7210 Audio Codec %s\n", DA7210_VERSION);
+ 	/* Initialize DAC offset calibration circuits and registers */
+-	snd_soc_write(codec, DA732X_REG_HPL_DAC_OFFSET,
++	snd_soc_component_write(component, DA732X_REG_HPL_DAC_OFFSET,
+ 		      DA732X_HP_DAC_OFFSET_TRIM_VAL);
+-	snd_soc_write(codec, DA732X_REG_HPR_DAC_OFFSET,
++	snd_soc_component_write(component, DA732X_REG_HPR_DAC_OFFSET,
+ 		      DA732X_HP_DAC_OFFSET_TRIM_VAL);
+-	snd_soc_write(codec, DA732X_REG_HPL_DAC_OFF_CNTL,
++	snd_soc_component_write(component, DA732X_REG_HPL_DAC_OFF_CNTL,
+ 		      DA732X_HP_DAC_OFF_CALIBRATION |
+ 		      DA732X_HP_DAC_OFF_SCALE_STEPS);
+-	snd_soc_write(codec, DA732X_REG_HPR_DAC_OFF_CNTL,
++	snd_soc_component_write(component, DA732X_REG_HPR_DAC_OFF_CNTL,
+ 		      DA732X_HP_DAC_OFF_CALIBRATION |
+ 		      DA732X_HP_DAC_OFF_SCALE_STEPS);
  
- 	da7210->mclk_rate       = 0;    /* This will be set from set_sysclk() */
- 	da7210->master          = 0;    /* This will be set from set_fmt() */
+@@ -1290,9 +1290,9 @@ static void da732x_dac_offset_adjust(struct snd_soc_codec *codec)
+ 	msleep(DA732X_WAIT_FOR_STABILIZATION);
  
- 	/* Enable internal regulator & bias current */
--	snd_soc_write(codec, DA7210_CONTROL, DA7210_REG_EN | DA7210_BIAS_EN);
-+	snd_soc_component_write(component, DA7210_CONTROL, DA7210_REG_EN | DA7210_BIAS_EN);
+ 	/* Check DAC offset sign */
+-	sign[DA732X_HPL_DAC] = (snd_soc_read(codec, DA732X_REG_HPL_DAC_OFF_CNTL) &
++	sign[DA732X_HPL_DAC] = (snd_soc_component_read32(component, DA732X_REG_HPL_DAC_OFF_CNTL) &
+ 				DA732X_HP_DAC_OFF_CNTL_COMPO);
+-	sign[DA732X_HPR_DAC] = (snd_soc_read(codec, DA732X_REG_HPR_DAC_OFF_CNTL) &
++	sign[DA732X_HPR_DAC] = (snd_soc_component_read32(component, DA732X_REG_HPR_DAC_OFF_CNTL) &
+ 				DA732X_HP_DAC_OFF_CNTL_COMPO);
  
- 	/*
- 	 * ADC settings
- 	 */
+ 	/* Binary search DAC offset values (both channels at once) */
+@@ -1302,17 +1302,17 @@ static void da732x_dac_offset_adjust(struct snd_soc_codec *codec)
+ 	do {
+ 		offset[DA732X_HPL_DAC] |= step;
+ 		offset[DA732X_HPR_DAC] |= step;
+-		snd_soc_write(codec, DA732X_REG_HPL_DAC_OFFSET,
++		snd_soc_component_write(component, DA732X_REG_HPL_DAC_OFFSET,
+ 			      ~offset[DA732X_HPL_DAC] & DA732X_HP_DAC_OFF_MASK);
+-		snd_soc_write(codec, DA732X_REG_HPR_DAC_OFFSET,
++		snd_soc_component_write(component, DA732X_REG_HPR_DAC_OFFSET,
+ 			      ~offset[DA732X_HPR_DAC] & DA732X_HP_DAC_OFF_MASK);
  
- 	/* Enable Left & Right MIC PGA and Mic Bias */
--	snd_soc_write(codec, DA7210_MIC_L, DA7210_MIC_L_EN | DA7210_MICBIAS_EN);
--	snd_soc_write(codec, DA7210_MIC_R, DA7210_MIC_R_EN);
-+	snd_soc_component_write(component, DA7210_MIC_L, DA7210_MIC_L_EN | DA7210_MICBIAS_EN);
-+	snd_soc_component_write(component, DA7210_MIC_R, DA7210_MIC_R_EN);
+ 		msleep(DA732X_WAIT_FOR_STABILIZATION);
  
- 	/* Enable Left and Right input PGA */
--	snd_soc_write(codec, DA7210_INMIX_L, DA7210_IN_L_EN);
--	snd_soc_write(codec, DA7210_INMIX_R, DA7210_IN_R_EN);
-+	snd_soc_component_write(component, DA7210_INMIX_L, DA7210_IN_L_EN);
-+	snd_soc_component_write(component, DA7210_INMIX_R, DA7210_IN_R_EN);
+-		if ((snd_soc_read(codec, DA732X_REG_HPL_DAC_OFF_CNTL) &
++		if ((snd_soc_component_read32(component, DA732X_REG_HPL_DAC_OFF_CNTL) &
+ 		     DA732X_HP_DAC_OFF_CNTL_COMPO) ^ sign[DA732X_HPL_DAC])
+ 			offset[DA732X_HPL_DAC] &= ~step;
+-		if ((snd_soc_read(codec, DA732X_REG_HPR_DAC_OFF_CNTL) &
++		if ((snd_soc_component_read32(component, DA732X_REG_HPR_DAC_OFF_CNTL) &
+ 		     DA732X_HP_DAC_OFF_CNTL_COMPO) ^ sign[DA732X_HPR_DAC])
+ 			offset[DA732X_HPR_DAC] &= ~step;
  
- 	/* Enable Left and Right ADC */
--	snd_soc_write(codec, DA7210_ADC, DA7210_ADC_L_EN | DA7210_ADC_R_EN);
-+	snd_soc_component_write(component, DA7210_ADC, DA7210_ADC_L_EN | DA7210_ADC_R_EN);
+@@ -1320,19 +1320,19 @@ static void da732x_dac_offset_adjust(struct snd_soc_codec *codec)
+ 	} while (step);
  
- 	/*
- 	 * DAC settings
- 	 */
+ 	/* Write final DAC offsets to registers */
+-	snd_soc_write(codec, DA732X_REG_HPL_DAC_OFFSET,
++	snd_soc_component_write(component, DA732X_REG_HPL_DAC_OFFSET,
+ 		      ~offset[DA732X_HPL_DAC] &	DA732X_HP_DAC_OFF_MASK);
+-	snd_soc_write(codec, DA732X_REG_HPR_DAC_OFFSET,
++	snd_soc_component_write(component, DA732X_REG_HPR_DAC_OFFSET,
+ 		      ~offset[DA732X_HPR_DAC] &	DA732X_HP_DAC_OFF_MASK);
  
- 	/* Enable Left and Right DAC */
--	snd_soc_write(codec, DA7210_DAC_SEL,
-+	snd_soc_component_write(component, DA7210_DAC_SEL,
- 		     DA7210_DAC_L_SRC_DAI_L | DA7210_DAC_L_EN |
- 		     DA7210_DAC_R_SRC_DAI_R | DA7210_DAC_R_EN);
+ 	/* End DAC calibration mode */
+-	snd_soc_write(codec, DA732X_REG_HPL_DAC_OFF_CNTL,
++	snd_soc_component_write(component, DA732X_REG_HPL_DAC_OFF_CNTL,
+ 		DA732X_HP_DAC_OFF_SCALE_STEPS);
+-	snd_soc_write(codec, DA732X_REG_HPR_DAC_OFF_CNTL,
++	snd_soc_component_write(component, DA732X_REG_HPR_DAC_OFF_CNTL,
+ 		DA732X_HP_DAC_OFF_SCALE_STEPS);
+ }
  
- 	/* Enable Left and Right out PGA */
--	snd_soc_write(codec, DA7210_OUTMIX_L, DA7210_OUT_L_EN);
--	snd_soc_write(codec, DA7210_OUTMIX_R, DA7210_OUT_R_EN);
-+	snd_soc_component_write(component, DA7210_OUTMIX_L, DA7210_OUT_L_EN);
-+	snd_soc_component_write(component, DA7210_OUTMIX_R, DA7210_OUT_R_EN);
+-static void da732x_output_offset_adjust(struct snd_soc_codec *codec)
++static void da732x_output_offset_adjust(struct snd_soc_component *component)
+ {
+ 	u8 offset[DA732X_HP_AMPS];
+ 	u8 sign[DA732X_HP_AMPS];
+@@ -1342,26 +1342,26 @@ static void da732x_output_offset_adjust(struct snd_soc_codec *codec)
+ 	offset[DA732X_HPR_AMP] = DA732X_HP_OUT_TRIM_VAL;
  
- 	/* Enable Left and Right HeadPhone PGA */
--	snd_soc_write(codec, DA7210_HP_CFG,
-+	snd_soc_component_write(component, DA7210_HP_CFG,
- 		     DA7210_HP_2CAP_MODE | DA7210_HP_SENSE_EN |
- 		     DA7210_HP_L_EN | DA7210_HP_MODE | DA7210_HP_R_EN);
+ 	/* Initialize output offset calibration circuits and registers  */
+-	snd_soc_write(codec, DA732X_REG_HPL_OUT_OFFSET, DA732X_HP_OUT_TRIM_VAL);
+-	snd_soc_write(codec, DA732X_REG_HPR_OUT_OFFSET, DA732X_HP_OUT_TRIM_VAL);
+-	snd_soc_write(codec, DA732X_REG_HPL,
++	snd_soc_component_write(component, DA732X_REG_HPL_OUT_OFFSET, DA732X_HP_OUT_TRIM_VAL);
++	snd_soc_component_write(component, DA732X_REG_HPR_OUT_OFFSET, DA732X_HP_OUT_TRIM_VAL);
++	snd_soc_component_write(component, DA732X_REG_HPL,
+ 		      DA732X_HP_OUT_COMP | DA732X_HP_OUT_EN);
+-	snd_soc_write(codec, DA732X_REG_HPR,
++	snd_soc_component_write(component, DA732X_REG_HPR,
+ 		      DA732X_HP_OUT_COMP | DA732X_HP_OUT_EN);
  
- 	/* Enable ramp mode for DAC gain update */
--	snd_soc_write(codec, DA7210_SOFTMUTE, DA7210_RAMP_EN);
-+	snd_soc_component_write(component, DA7210_SOFTMUTE, DA7210_RAMP_EN);
+ 	/* Wait for voltage stabilization */
+ 	msleep(DA732X_WAIT_FOR_STABILIZATION);
  
- 	/*
- 	 * For DA7210 codec, there are two ways to enable/disable analog IOs
-@@ -1138,43 +1138,44 @@ static int da7210_probe(struct snd_soc_codec *codec)
- 	 */
+ 	/* Check output offset sign */
+-	sign[DA732X_HPL_AMP] = snd_soc_read(codec, DA732X_REG_HPL) &
++	sign[DA732X_HPL_AMP] = snd_soc_component_read32(component, DA732X_REG_HPL) &
+ 			       DA732X_HP_OUT_COMPO;
+-	sign[DA732X_HPR_AMP] = snd_soc_read(codec, DA732X_REG_HPR) &
++	sign[DA732X_HPR_AMP] = snd_soc_component_read32(component, DA732X_REG_HPR) &
+ 			       DA732X_HP_OUT_COMPO;
  
- 	/* Enable Line out amplifiers */
--	snd_soc_write(codec, DA7210_OUT1_L, DA7210_OUT1_L_EN);
--	snd_soc_write(codec, DA7210_OUT1_R, DA7210_OUT1_R_EN);
--	snd_soc_write(codec, DA7210_OUT2, DA7210_OUT2_EN |
-+	snd_soc_component_write(component, DA7210_OUT1_L, DA7210_OUT1_L_EN);
-+	snd_soc_component_write(component, DA7210_OUT1_R, DA7210_OUT1_R_EN);
-+	snd_soc_component_write(component, DA7210_OUT2, DA7210_OUT2_EN |
- 		     DA7210_OUT2_OUTMIX_L | DA7210_OUT2_OUTMIX_R);
+-	snd_soc_write(codec, DA732X_REG_HPL, DA732X_HP_OUT_COMP |
++	snd_soc_component_write(component, DA732X_REG_HPL, DA732X_HP_OUT_COMP |
+ 		      (sign[DA732X_HPL_AMP] >> DA732X_HP_OUT_COMPO_SHIFT) |
+ 		      DA732X_HP_OUT_EN);
+-	snd_soc_write(codec, DA732X_REG_HPR, DA732X_HP_OUT_COMP |
++	snd_soc_component_write(component, DA732X_REG_HPR, DA732X_HP_OUT_COMP |
+ 		      (sign[DA732X_HPR_AMP] >> DA732X_HP_OUT_COMPO_SHIFT) |
+ 		      DA732X_HP_OUT_EN);
  
- 	/* Enable Aux1 */
--	snd_soc_write(codec, DA7210_AUX1_L, DA7210_AUX1_L_EN);
--	snd_soc_write(codec, DA7210_AUX1_R, DA7210_AUX1_R_EN);
-+	snd_soc_component_write(component, DA7210_AUX1_L, DA7210_AUX1_L_EN);
-+	snd_soc_component_write(component, DA7210_AUX1_R, DA7210_AUX1_R_EN);
- 	/* Enable Aux2 */
--	snd_soc_write(codec, DA7210_AUX2, DA7210_AUX2_EN);
-+	snd_soc_component_write(component, DA7210_AUX2, DA7210_AUX2_EN);
+@@ -1369,17 +1369,17 @@ static void da732x_output_offset_adjust(struct snd_soc_codec *codec)
+ 	do {
+ 		offset[DA732X_HPL_AMP] |= step;
+ 		offset[DA732X_HPR_AMP] |= step;
+-		snd_soc_write(codec, DA732X_REG_HPL_OUT_OFFSET,
++		snd_soc_component_write(component, DA732X_REG_HPL_OUT_OFFSET,
+ 			      offset[DA732X_HPL_AMP]);
+-		snd_soc_write(codec, DA732X_REG_HPR_OUT_OFFSET,
++		snd_soc_component_write(component, DA732X_REG_HPR_OUT_OFFSET,
+ 			      offset[DA732X_HPR_AMP]);
  
- 	/* Set PLL Master clock range 10-20 MHz, enable PLL bypass */
--	snd_soc_write(codec, DA7210_PLL_DIV3, DA7210_MCLK_RANGE_10_20_MHZ |
-+	snd_soc_component_write(component, DA7210_PLL_DIV3, DA7210_MCLK_RANGE_10_20_MHZ |
- 					      DA7210_PLL_BYP);
+ 		msleep(DA732X_WAIT_FOR_STABILIZATION);
  
- 	/* Diable PLL and bypass it */
--	snd_soc_write(codec, DA7210_PLL, DA7210_PLL_FS_48000);
-+	snd_soc_component_write(component, DA7210_PLL, DA7210_PLL_FS_48000);
+-		if ((snd_soc_read(codec, DA732X_REG_HPL) &
++		if ((snd_soc_component_read32(component, DA732X_REG_HPL) &
+ 		     DA732X_HP_OUT_COMPO) ^ sign[DA732X_HPL_AMP])
+ 			offset[DA732X_HPL_AMP] &= ~step;
+-		if ((snd_soc_read(codec, DA732X_REG_HPR) &
++		if ((snd_soc_component_read32(component, DA732X_REG_HPR) &
+ 		     DA732X_HP_OUT_COMPO) ^ sign[DA732X_HPR_AMP])
+ 			offset[DA732X_HPR_AMP] &= ~step;
  
- 	/* Activate all enabled subsystem */
--	snd_soc_write(codec, DA7210_STARTUP1, DA7210_SC_MST_EN);
-+	snd_soc_component_write(component, DA7210_STARTUP1, DA7210_SC_MST_EN);
+@@ -1387,80 +1387,80 @@ static void da732x_output_offset_adjust(struct snd_soc_codec *codec)
+ 	} while (step);
  
--	dev_info(codec->dev, "DA7210 Audio Codec %s\n", DA7210_VERSION);
-+	dev_info(component->dev, "DA7210 Audio Codec %s\n", DA7210_VERSION);
+ 	/* Write final DAC offsets to registers */
+-	snd_soc_write(codec, DA732X_REG_HPL_OUT_OFFSET, offset[DA732X_HPL_AMP]);
+-	snd_soc_write(codec, DA732X_REG_HPR_OUT_OFFSET, offset[DA732X_HPR_AMP]);
++	snd_soc_component_write(component, DA732X_REG_HPL_OUT_OFFSET, offset[DA732X_HPL_AMP]);
++	snd_soc_component_write(component, DA732X_REG_HPR_OUT_OFFSET, offset[DA732X_HPR_AMP]);
+ }
  
+-static void da732x_hp_dc_offset_cancellation(struct snd_soc_codec *codec)
++static void da732x_hp_dc_offset_cancellation(struct snd_soc_component *component)
+ {
+ 	/* Make sure that we have Soft Mute enabled */
+-	snd_soc_write(codec, DA732X_REG_DAC1_SOFTMUTE, DA732X_SOFTMUTE_EN |
++	snd_soc_component_write(component, DA732X_REG_DAC1_SOFTMUTE, DA732X_SOFTMUTE_EN |
+ 		      DA732X_GAIN_RAMPED | DA732X_16_SAMPLES);
+-	snd_soc_write(codec, DA732X_REG_DAC1_SEL, DA732X_DACL_EN |
++	snd_soc_component_write(component, DA732X_REG_DAC1_SEL, DA732X_DACL_EN |
+ 		      DA732X_DACR_EN | DA732X_DACL_SDM | DA732X_DACR_SDM |
+ 		      DA732X_DACL_MUTE | DA732X_DACR_MUTE);
+-	snd_soc_write(codec, DA732X_REG_HPL, DA732X_HP_OUT_DAC_EN |
++	snd_soc_component_write(component, DA732X_REG_HPL, DA732X_HP_OUT_DAC_EN |
+ 		      DA732X_HP_OUT_MUTE | DA732X_HP_OUT_EN);
+-	snd_soc_write(codec, DA732X_REG_HPR, DA732X_HP_OUT_EN |
++	snd_soc_component_write(component, DA732X_REG_HPR, DA732X_HP_OUT_EN |
+ 		      DA732X_HP_OUT_MUTE | DA732X_HP_OUT_DAC_EN);
+ 
+-	da732x_dac_offset_adjust(codec);
+-	da732x_output_offset_adjust(codec);
++	da732x_dac_offset_adjust(component);
++	da732x_output_offset_adjust(component);
+ 
+-	snd_soc_write(codec, DA732X_REG_DAC1_SEL, DA732X_DACS_DIS);
+-	snd_soc_write(codec, DA732X_REG_HPL, DA732X_HP_DIS);
+-	snd_soc_write(codec, DA732X_REG_HPR, DA732X_HP_DIS);
++	snd_soc_component_write(component, DA732X_REG_DAC1_SEL, DA732X_DACS_DIS);
++	snd_soc_component_write(component, DA732X_REG_HPL, DA732X_HP_DIS);
++	snd_soc_component_write(component, DA732X_REG_HPR, DA732X_HP_DIS);
+ }
+ 
+-static int da732x_set_bias_level(struct snd_soc_codec *codec,
++static int da732x_set_bias_level(struct snd_soc_component *component,
+ 				 enum snd_soc_bias_level level)
+ {
+-	struct da732x_priv *da732x = snd_soc_codec_get_drvdata(codec);
++	struct da732x_priv *da732x = snd_soc_component_get_drvdata(component);
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+-		snd_soc_update_bits(codec, DA732X_REG_BIAS_EN,
++		snd_soc_component_update_bits(component, DA732X_REG_BIAS_EN,
+ 				    DA732X_BIAS_BOOST_MASK,
+ 				    DA732X_BIAS_BOOST_100PC);
+ 		break;
+ 	case SND_SOC_BIAS_PREPARE:
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
+-		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
++		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
+ 			/* Init Codec */
+-			snd_soc_write(codec, DA732X_REG_REF1,
++			snd_soc_component_write(component, DA732X_REG_REF1,
+ 				      DA732X_VMID_FASTCHG);
+-			snd_soc_write(codec, DA732X_REG_BIAS_EN,
++			snd_soc_component_write(component, DA732X_REG_BIAS_EN,
+ 				      DA732X_BIAS_EN);
+ 
+ 			mdelay(DA732X_STARTUP_DELAY);
+ 
+ 			/* Disable Fast Charge and enable DAC ref voltage */
+-			snd_soc_write(codec, DA732X_REG_REF1,
++			snd_soc_component_write(component, DA732X_REG_REF1,
+ 				      DA732X_REFBUFX2_EN);
+ 
+ 			/* Enable bypass DSP routing */
+-			snd_soc_write(codec, DA732X_REG_DATA_ROUTE,
++			snd_soc_component_write(component, DA732X_REG_DATA_ROUTE,
+ 				      DA732X_BYPASS_DSP);
+ 
+ 			/* Enable Digital subsystem */
+-			snd_soc_write(codec, DA732X_REG_DSP_CTRL,
++			snd_soc_component_write(component, DA732X_REG_DSP_CTRL,
+ 				      DA732X_DIGITAL_EN);
+ 
+-			snd_soc_write(codec, DA732X_REG_SPARE1_OUT,
++			snd_soc_component_write(component, DA732X_REG_SPARE1_OUT,
+ 				      DA732X_HP_DRIVER_EN |
+ 				      DA732X_HP_GATE_LOW |
+ 				      DA732X_HP_LOOP_GAIN_CTRL);
+-			snd_soc_write(codec, DA732X_REG_HP_LIN1_GNDSEL,
++			snd_soc_component_write(component, DA732X_REG_HP_LIN1_GNDSEL,
+ 				      DA732X_HP_OUT_GNDSEL);
+ 
+-			da732x_set_charge_pump(codec, DA732X_ENABLE_CP);
++			da732x_set_charge_pump(component, DA732X_ENABLE_CP);
+ 
+-			snd_soc_write(codec, DA732X_REG_CLK_EN1,
++			snd_soc_component_write(component, DA732X_REG_CLK_EN1,
+ 			      DA732X_SYS3_CLK_EN | DA732X_PC_CLK_EN);
+ 
+ 			/* Enable Zero Crossing */
+-			snd_soc_write(codec, DA732X_REG_INP_ZC_EN,
++			snd_soc_component_write(component, DA732X_REG_INP_ZC_EN,
+ 				      DA732X_MIC1_PRE_ZC_EN |
+ 				      DA732X_MIC1_ZC_EN |
+ 				      DA732X_MIC2_PRE_ZC_EN |
+@@ -1469,28 +1469,28 @@ static int da732x_set_bias_level(struct snd_soc_codec *codec,
+ 				      DA732X_AUXR_ZC_EN |
+ 				      DA732X_MIC3_PRE_ZC_EN |
+ 				      DA732X_MIC3_ZC_EN);
+-			snd_soc_write(codec, DA732X_REG_OUT_ZC_EN,
++			snd_soc_component_write(component, DA732X_REG_OUT_ZC_EN,
+ 				      DA732X_HPL_ZC_EN | DA732X_HPR_ZC_EN |
+ 				      DA732X_LIN2_ZC_EN | DA732X_LIN3_ZC_EN |
+ 				      DA732X_LIN4_ZC_EN);
+ 
+-			da732x_hp_dc_offset_cancellation(codec);
++			da732x_hp_dc_offset_cancellation(component);
+ 
+ 			regcache_cache_only(da732x->regmap, false);
+ 			regcache_sync(da732x->regmap);
+ 		} else {
+-			snd_soc_update_bits(codec, DA732X_REG_BIAS_EN,
++			snd_soc_component_update_bits(component, DA732X_REG_BIAS_EN,
+ 					    DA732X_BIAS_BOOST_MASK,
+ 					    DA732X_BIAS_BOOST_50PC);
+-			snd_soc_update_bits(codec, DA732X_REG_PLL_CTRL,
++			snd_soc_component_update_bits(component, DA732X_REG_PLL_CTRL,
+ 					    DA732X_PLL_EN, 0);
+ 			da732x->pll_en = false;
+ 		}
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+ 		regcache_cache_only(da732x->regmap, true);
+-		da732x_set_charge_pump(codec, DA732X_DISABLE_CP);
+-		snd_soc_update_bits(codec, DA732X_REG_BIAS_EN, DA732X_BIAS_EN,
++		da732x_set_charge_pump(component, DA732X_DISABLE_CP);
++		snd_soc_component_update_bits(component, DA732X_REG_BIAS_EN, DA732X_BIAS_EN,
+ 				    DA732X_BIAS_DIS);
+ 		da732x->pll_en = false;
+ 		break;
+@@ -1499,17 +1499,19 @@ static int da732x_set_bias_level(struct snd_soc_codec *codec,
  	return 0;
  }
  
--static const struct snd_soc_codec_driver soc_codec_dev_da7210 = {
-+static const struct snd_soc_component_driver soc_component_dev_da7210 = {
- 	.probe			= da7210_probe,
--
+-static const struct snd_soc_codec_driver soc_codec_dev_da732x = {
++static const struct snd_soc_component_driver soc_component_dev_da732x = {
+ 	.set_bias_level		= da732x_set_bias_level,
 -	.component_driver = {
--		.controls		= da7210_snd_controls,
--		.num_controls		= ARRAY_SIZE(da7210_snd_controls),
--		.dapm_widgets		= da7210_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(da7210_dapm_widgets),
--		.dapm_routes		= da7210_audio_map,
--		.num_dapm_routes	= ARRAY_SIZE(da7210_audio_map),
+-		.controls		= da732x_snd_controls,
+-		.num_controls		= ARRAY_SIZE(da732x_snd_controls),
+-		.dapm_widgets		= da732x_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(da732x_dapm_widgets),
+-		.dapm_routes		= da732x_dapm_routes,
+-		.num_dapm_routes	= ARRAY_SIZE(da732x_dapm_routes),
 -	},
-+	.controls		= da7210_snd_controls,
-+	.num_controls		= ARRAY_SIZE(da7210_snd_controls),
-+	.dapm_widgets		= da7210_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(da7210_dapm_widgets),
-+	.dapm_routes		= da7210_audio_map,
-+	.num_dapm_routes	= ARRAY_SIZE(da7210_audio_map),
++	.controls		= da732x_snd_controls,
++	.num_controls		= ARRAY_SIZE(da732x_snd_controls),
++	.dapm_widgets		= da732x_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(da732x_dapm_widgets),
++	.dapm_routes		= da732x_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(da732x_dapm_routes),
+ 	.set_pll		= da732x_set_dai_pll,
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- #if IS_ENABLED(CONFIG_I2C)
-@@ -1232,20 +1233,14 @@ static int da7210_i2c_probe(struct i2c_client *i2c,
+ static int da732x_i2c_probe(struct i2c_client *i2c,
+@@ -1543,10 +1545,11 @@ static int da732x_i2c_probe(struct i2c_client *i2c,
+ 		 (reg & DA732X_ID_MAJOR_MASK) >> 4,
+ 		 (reg & DA732X_ID_MINOR_MASK));
+ 
+-	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_da732x,
++	ret = devm_snd_soc_register_component(&i2c->dev,
++				     &soc_component_dev_da732x,
+ 				     da732x_dai, ARRAY_SIZE(da732x_dai));
  	if (ret != 0)
- 		dev_warn(&i2c->dev, "Failed to apply regmap patch: %d\n", ret);
+-		dev_err(&i2c->dev, "Failed to register codec.\n");
++		dev_err(&i2c->dev, "Failed to register component.\n");
  
--	ret =  snd_soc_register_codec(&i2c->dev,
--			&soc_codec_dev_da7210, &da7210_dai, 1);
-+	ret =  snd_soc_register_component(&i2c->dev,
-+			&soc_component_dev_da7210, &da7210_dai, 1);
- 	if (ret < 0)
--		dev_err(&i2c->dev, "Failed to register codec: %d\n", ret);
-+		dev_err(&i2c->dev, "Failed to register component: %d\n", ret);
- 
+ err:
  	return ret;
- }
+@@ -1554,8 +1557,6 @@ static int da732x_i2c_probe(struct i2c_client *i2c,
  
--static int da7210_i2c_remove(struct i2c_client *client)
--{
+ static int da732x_i2c_remove(struct i2c_client *client)
+ {
 -	snd_soc_unregister_codec(&client->dev);
--	return 0;
--}
 -
- static const struct i2c_device_id da7210_i2c_id[] = {
- 	{ "da7210", 0 },
- 	{ }
-@@ -1258,7 +1253,6 @@ static struct i2c_driver da7210_i2c_driver = {
- 		.name = "da7210",
- 	},
- 	.probe		= da7210_i2c_probe,
--	.remove		= da7210_i2c_remove,
- 	.id_table	= da7210_i2c_id,
- };
- #endif
-@@ -1325,24 +1319,17 @@ static int da7210_spi_probe(struct spi_device *spi)
- 	if (ret != 0)
- 		dev_warn(&spi->dev, "Failed to apply regmap patch: %d\n", ret);
- 
--	ret = snd_soc_register_codec(&spi->dev,
--			&soc_codec_dev_da7210, &da7210_dai, 1);
-+	ret = devm_snd_soc_register_component(&spi->dev,
-+			&soc_component_dev_da7210, &da7210_dai, 1);
- 
- 	return ret;
+ 	return 0;
  }
- 
--static int da7210_spi_remove(struct spi_device *spi)
--{
--	snd_soc_unregister_codec(&spi->dev);
--	return 0;
--}
--
- static struct spi_driver da7210_spi_driver = {
- 	.driver = {
- 		.name = "da7210",
- 	},
- 	.probe = da7210_spi_probe,
--	.remove = da7210_spi_remove
- };
- #endif
  
 -- 
 2.16.1
