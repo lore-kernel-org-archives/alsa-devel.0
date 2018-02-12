@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42l73: replace codec to component" to
+Subject: Applied "ASoC: cs35l34: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:43:49 +0000
-Message-ID: <E1elDSX-00055Q-LX@debutante>
-References: <87bmhd1foy.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:44:06 +0000
+Message-ID: <E1elDSo-00057A-2G@debutante>
+References: <87efm91fql.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D289267896
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:43:51 +0100 (CET)
-In-Reply-To: <87bmhd1foy.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B26F267A12
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:44:08 +0100 (CET)
+In-Reply-To: <87efm91fql.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs42l73: replace codec to component
+   ASoC: cs35l34: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 092631bf863d6c632afc1ec935c3acb7b45a8622 Mon Sep 17 00:00:00 2001
+>From 8a6e7dd6f07d7f537b10b0e61165c06d15dcc1f2 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 03:57:25 +0000
-Subject: [PATCH] ASoC: cs42l73: replace codec to component
+Date: Mon, 29 Jan 2018 03:56:25 +0000
+Subject: [PATCH] ASoC: cs35l34: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,326 +70,389 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42l73.c | 122 +++++++++++++++++++++------------------------
- 1 file changed, 58 insertions(+), 64 deletions(-)
+ sound/soc/codecs/cs35l34.c | 127 ++++++++++++++++++++++-----------------------
+ 1 file changed, 63 insertions(+), 64 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
-index aebaa97490b6..36b57ee00a30 100644
---- a/sound/soc/codecs/cs42l73.c
-+++ b/sound/soc/codecs/cs42l73.c
-@@ -490,8 +490,8 @@ static const struct snd_kcontrol_new cs42l73_snd_controls[] = {
- static int cs42l73_spklo_spk_amp_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
--	struct cs42l73_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	struct cs42l73_private *priv = snd_soc_component_get_drvdata(component);
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMD:
- 		/* 150 ms delay between setting PDN and MCLKDIS */
-@@ -506,8 +506,8 @@ static int cs42l73_spklo_spk_amp_event(struct snd_soc_dapm_widget *w,
- static int cs42l73_ear_amp_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
--	struct cs42l73_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	struct cs42l73_private *priv = snd_soc_component_get_drvdata(component);
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMD:
- 		/* 50 ms delay between setting PDN and MCLKDIS */
-@@ -524,8 +524,8 @@ static int cs42l73_ear_amp_event(struct snd_soc_dapm_widget *w,
- static int cs42l73_hp_amp_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
--	struct cs42l73_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	struct cs42l73_private *priv = snd_soc_component_get_drvdata(component);
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMD:
- 		/* 30 ms delay between setting PDN and MCLKDIS */
-@@ -884,8 +884,8 @@ static int cs42l73_get_mclk_coeff(int mclk, int srate)
+diff --git a/sound/soc/codecs/cs35l34.c b/sound/soc/codecs/cs35l34.c
+index 0600d5264c4c..5063c05afa27 100644
+--- a/sound/soc/codecs/cs35l34.c
++++ b/sound/soc/codecs/cs35l34.c
+@@ -43,7 +43,7 @@
+ #define CS35L34_START_DELAY 50
  
- static int cs42l73_set_mclk(struct snd_soc_dai *dai, unsigned int freq)
+ struct  cs35l34_private {
+-	struct snd_soc_codec *codec;
++	struct snd_soc_component *component;
+ 	struct cs35l34_platform_data pdata;
+ 	struct regmap *regmap;
+ 	struct regulator_bulk_data core_supplies[2];
+@@ -237,8 +237,8 @@ static bool cs35l34_precious_register(struct device *dev, unsigned int reg)
+ static int cs35l34_sdin_event(struct snd_soc_dapm_widget *w,
+ 		struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-	struct cs35l34_private *priv = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct cs35l34_private *priv = snd_soc_component_get_drvdata(component);
+ 	int ret;
+ 
+ 	switch (event) {
+@@ -250,7 +250,7 @@ static int cs35l34_sdin_event(struct snd_soc_dapm_widget *w,
+ 		ret = regmap_update_bits(priv->regmap, CS35L34_PWRCTL1,
+ 						CS35L34_PDN_ALL, 0);
+ 		if (ret < 0) {
+-			dev_err(codec->dev, "Cannot set Power bits %d\n", ret);
++			dev_err(component->dev, "Cannot set Power bits %d\n", ret);
+ 			return ret;
+ 		}
+ 		usleep_range(5000, 5100);
+@@ -272,8 +272,8 @@ static int cs35l34_sdin_event(struct snd_soc_dapm_widget *w,
+ static int cs35l34_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ 				unsigned int rx_mask, int slots, int slot_width)
  {
 -	struct snd_soc_codec *codec = dai->codec;
--	struct cs42l73_private *priv = snd_soc_codec_get_drvdata(codec);
+-	struct cs35l34_private *priv = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_component *component = dai->component;
-+	struct cs42l73_private *priv = snd_soc_component_get_drvdata(component);
++	struct cs35l34_private *priv = snd_soc_component_get_drvdata(component);
+ 	unsigned int reg, bit_pos;
+ 	int slot, slot_num;
  
- 	int mclkx_coeff;
- 	u32 mclk = 0;
-@@ -899,14 +899,14 @@ static int cs42l73_set_mclk(struct snd_soc_dai *dai, unsigned int freq)
- 	mclk = cs42l73_mclkx_coeffs[mclkx_coeff].mclkx /
- 		cs42l73_mclkx_coeffs[mclkx_coeff].ratio;
+@@ -284,7 +284,7 @@ static int cs35l34_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ 	/* scan rx_mask for aud slot */
+ 	slot = ffs(rx_mask) - 1;
+ 	if (slot >= 0)
+-		snd_soc_update_bits(codec, CS35L34_TDM_RX_CTL_1_AUDIN,
++		snd_soc_component_update_bits(component, CS35L34_TDM_RX_CTL_1_AUDIN,
+ 					CS35L34_X_LOC, slot);
  
--	dev_dbg(codec->dev, "MCLK%u %u  <-> internal MCLK %u\n",
-+	dev_dbg(component->dev, "MCLK%u %u  <-> internal MCLK %u\n",
- 		 priv->mclksel + 1, cs42l73_mclkx_coeffs[mclkx_coeff].mclkx,
- 		 mclk);
+ 	/* scan tx_mask: vmon(2 slots); imon (2 slots); vpmon (1 slot)
+@@ -294,10 +294,10 @@ static int cs35l34_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ 	slot_num = 0;
  
- 	dmmcc = (priv->mclksel << 4) |
- 		(cs42l73_mclkx_coeffs[mclkx_coeff].mclkdiv << 1);
+ 	/* disable vpmon/vbstmon: enable later if set in tx_mask */
+-	snd_soc_update_bits(codec, CS35L34_TDM_TX_CTL_3_VPMON,
++	snd_soc_component_update_bits(component, CS35L34_TDM_TX_CTL_3_VPMON,
+ 				CS35L34_X_STATE | CS35L34_X_LOC,
+ 				CS35L34_X_STATE | CS35L34_X_LOC);
+-	snd_soc_update_bits(codec, CS35L34_TDM_TX_CTL_4_VBSTMON,
++	snd_soc_component_update_bits(component, CS35L34_TDM_TX_CTL_4_VBSTMON,
+ 				CS35L34_X_STATE | CS35L34_X_LOC,
+ 				CS35L34_X_STATE | CS35L34_X_LOC);
  
--	snd_soc_write(codec, CS42L73_DMMCC, dmmcc);
-+	snd_soc_component_write(component, CS42L73_DMMCC, dmmcc);
+@@ -305,22 +305,22 @@ static int cs35l34_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ 	while (slot >= 0) {
+ 		/* configure VMON_TX_LOC */
+ 		if (slot_num == 0)
+-			snd_soc_update_bits(codec, CS35L34_TDM_TX_CTL_1_VMON,
++			snd_soc_component_update_bits(component, CS35L34_TDM_TX_CTL_1_VMON,
+ 					CS35L34_X_STATE | CS35L34_X_LOC, slot);
  
- 	priv->sysclk = mclkx_coeff;
- 	priv->mclk = mclk;
-@@ -917,8 +917,8 @@ static int cs42l73_set_mclk(struct snd_soc_dai *dai, unsigned int freq)
- static int cs42l73_set_sysclk(struct snd_soc_dai *dai,
- 			      int clk_id, unsigned int freq, int dir)
+ 		/* configure IMON_TX_LOC */
+ 		if (slot_num == 4) {
+-			snd_soc_update_bits(codec, CS35L34_TDM_TX_CTL_2_IMON,
++			snd_soc_component_update_bits(component, CS35L34_TDM_TX_CTL_2_IMON,
+ 					CS35L34_X_STATE | CS35L34_X_LOC, slot);
+ 		}
+ 		/* configure VPMON_TX_LOC */
+ 		if (slot_num == 3) {
+-			snd_soc_update_bits(codec, CS35L34_TDM_TX_CTL_3_VPMON,
++			snd_soc_component_update_bits(component, CS35L34_TDM_TX_CTL_3_VPMON,
+ 					CS35L34_X_STATE | CS35L34_X_LOC, slot);
+ 		}
+ 		/* configure VBSTMON_TX_LOC */
+ 		if (slot_num == 7) {
+-			snd_soc_update_bits(codec,
++			snd_soc_component_update_bits(component,
+ 				CS35L34_TDM_TX_CTL_4_VBSTMON,
+ 				CS35L34_X_STATE | CS35L34_X_LOC, slot);
+ 		}
+@@ -328,7 +328,7 @@ static int cs35l34_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ 		/* Enable the relevant tx slot */
+ 		reg = CS35L34_TDM_TX_SLOT_EN_4 - (slot/8);
+ 		bit_pos = slot - ((slot / 8) * (8));
+-		snd_soc_update_bits(codec, reg,
++		snd_soc_component_update_bits(component, reg,
+ 			1 << bit_pos, 1 << bit_pos);
+ 
+ 		tx_mask &= ~(1 << slot);
+@@ -342,8 +342,8 @@ static int cs35l34_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ static int cs35l34_main_amp_event(struct snd_soc_dapm_widget *w,
+ 		struct snd_kcontrol *kcontrol, int event)
  {
--	struct snd_soc_codec *codec = dai->codec;
--	struct cs42l73_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct cs42l73_private *priv = snd_soc_component_get_drvdata(component);
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-	struct cs35l34_private *priv = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct cs35l34_private *priv = snd_soc_component_get_drvdata(component);
  
- 	switch (clk_id) {
- 	case CS42L73_CLKID_MCLK1:
-@@ -930,7 +930,7 @@ static int cs42l73_set_sysclk(struct snd_soc_dai *dai,
- 	}
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+@@ -382,8 +382,8 @@ static const struct snd_kcontrol_new cs35l34_snd_controls[] = {
+ static int cs35l34_mclk_event(struct snd_soc_dapm_widget *w,
+ 		struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-	struct cs35l34_private *priv = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct cs35l34_private *priv = snd_soc_component_get_drvdata(component);
+ 	int ret, i;
+ 	unsigned int reg;
  
- 	if ((cs42l73_set_mclk(dai, freq)) < 0) {
--		dev_err(codec->dev, "Unable to set MCLK for dai %s\n",
-+		dev_err(component->dev, "Unable to set MCLK for dai %s\n",
- 			dai->name);
- 		return -EINVAL;
- 	}
-@@ -942,14 +942,14 @@ static int cs42l73_set_sysclk(struct snd_soc_dai *dai,
+@@ -524,8 +524,8 @@ static int cs35l34_get_mclk_coeff(int mclk, int srate)
  
- static int cs42l73_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ static int cs35l34_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
  {
 -	struct snd_soc_codec *codec = codec_dai->codec;
--	struct cs42l73_private *priv = snd_soc_codec_get_drvdata(codec);
+-	struct cs35l34_private *priv = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_component *component = codec_dai->component;
-+	struct cs42l73_private *priv = snd_soc_component_get_drvdata(component);
- 	u8 id = codec_dai->id;
- 	unsigned int inv, format;
- 	u8 spc, mmcc;
- 
--	spc = snd_soc_read(codec, CS42L73_SPC(id));
--	mmcc = snd_soc_read(codec, CS42L73_MMCC(id));
-+	spc = snd_soc_component_read32(component, CS42L73_SPC(id));
-+	mmcc = snd_soc_component_read32(component, CS42L73_MMCC(id));
++	struct cs35l34_private *priv = snd_soc_component_get_drvdata(component);
  
  	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
  	case SND_SOC_DAIFMT_CBM_CFM:
-@@ -974,12 +974,12 @@ static int cs42l73_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	case SND_SOC_DAIFMT_DSP_A:
- 	case SND_SOC_DAIFMT_DSP_B:
- 		if (mmcc & CS42L73_MS_MASTER) {
--			dev_err(codec->dev,
-+			dev_err(component->dev,
- 				"PCM format in slave mode only\n");
- 			return -EINVAL;
- 		}
- 		if (id == CS42L73_ASP) {
--			dev_err(codec->dev,
-+			dev_err(component->dev,
- 				"PCM format is not supported on ASP port\n");
- 			return -EINVAL;
- 		}
-@@ -1029,7 +1029,7 @@ static unsigned int cs42l73_get_xspfs_coeff(u32 rate)
- 	return 0;		/* 0 = Don't know */
- }
- 
--static void cs42l73_update_asrc(struct snd_soc_codec *codec, int id, int srate)
-+static void cs42l73_update_asrc(struct snd_soc_component *component, int id, int srate)
- {
- 	u8 spfs = 0;
- 
-@@ -1038,13 +1038,13 @@ static void cs42l73_update_asrc(struct snd_soc_codec *codec, int id, int srate)
- 
- 	switch (id) {
- 	case CS42L73_XSP:
--		snd_soc_update_bits(codec, CS42L73_VXSPFS, 0x0f, spfs);
-+		snd_soc_component_update_bits(component, CS42L73_VXSPFS, 0x0f, spfs);
- 	break;
- 	case CS42L73_ASP:
--		snd_soc_update_bits(codec, CS42L73_ASPC, 0x3c, spfs << 2);
-+		snd_soc_component_update_bits(component, CS42L73_ASPC, 0x3c, spfs << 2);
- 	break;
- 	case CS42L73_VSP:
--		snd_soc_update_bits(codec, CS42L73_VXSPFS, 0xf0, spfs << 4);
-+		snd_soc_component_update_bits(component, CS42L73_VXSPFS, 0xf0, spfs << 4);
- 	break;
- 	default:
- 	break;
-@@ -1055,8 +1055,8 @@ static int cs42l73_pcm_hw_params(struct snd_pcm_substream *substream,
+@@ -546,15 +546,15 @@ static int cs35l34_pcm_hw_params(struct snd_pcm_substream *substream,
  				 struct snd_pcm_hw_params *params,
  				 struct snd_soc_dai *dai)
  {
 -	struct snd_soc_codec *codec = dai->codec;
--	struct cs42l73_private *priv = snd_soc_codec_get_drvdata(codec);
+-	struct cs35l34_private *priv = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_component *component = dai->component;
-+	struct cs42l73_private *priv = snd_soc_component_get_drvdata(component);
- 	int id = dai->id;
- 	int mclk_coeff;
++	struct cs35l34_private *priv = snd_soc_component_get_drvdata(component);
  	int srate = params_rate(params);
-@@ -1070,7 +1070,7 @@ static int cs42l73_pcm_hw_params(struct snd_pcm_substream *substream,
- 		if (mclk_coeff < 0)
- 			return -EINVAL;
+ 	int ret;
  
--		dev_dbg(codec->dev,
-+		dev_dbg(component->dev,
- 			 "DAI[%d]: MCLK %u, srate %u, MMCC[5:0] = %x\n",
- 			 id, priv->mclk, srate,
- 			 cs42l73_mclk_coeffs[mclk_coeff].mmcc);
-@@ -1091,38 +1091,38 @@ static int cs42l73_pcm_hw_params(struct snd_pcm_substream *substream,
- 	/* Update ASRCs */
- 	priv->config[id].srate = srate;
+ 	int coeff = cs35l34_get_mclk_coeff(priv->mclk_int, srate);
  
--	snd_soc_write(codec, CS42L73_SPC(id), priv->config[id].spc);
--	snd_soc_write(codec, CS42L73_MMCC(id), priv->config[id].mmcc);
-+	snd_soc_component_write(component, CS42L73_SPC(id), priv->config[id].spc);
-+	snd_soc_component_write(component, CS42L73_MMCC(id), priv->config[id].mmcc);
- 
--	cs42l73_update_asrc(codec, id, srate);
-+	cs42l73_update_asrc(component, id, srate);
- 
- 	return 0;
- }
- 
--static int cs42l73_set_bias_level(struct snd_soc_codec *codec,
-+static int cs42l73_set_bias_level(struct snd_soc_component *component,
- 				  enum snd_soc_bias_level level)
- {
--	struct cs42l73_private *cs42l73 = snd_soc_codec_get_drvdata(codec);
-+	struct cs42l73_private *cs42l73 = snd_soc_component_get_drvdata(component);
- 
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
--		snd_soc_update_bits(codec, CS42L73_DMMCC, CS42L73_MCLKDIS, 0);
--		snd_soc_update_bits(codec, CS42L73_PWRCTL1, CS42L73_PDN, 0);
-+		snd_soc_component_update_bits(component, CS42L73_DMMCC, CS42L73_MCLKDIS, 0);
-+		snd_soc_component_update_bits(component, CS42L73_PWRCTL1, CS42L73_PDN, 0);
- 		break;
- 
- 	case SND_SOC_BIAS_PREPARE:
- 		break;
- 
- 	case SND_SOC_BIAS_STANDBY:
--		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
-+		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
- 			regcache_cache_only(cs42l73->regmap, false);
- 			regcache_sync(cs42l73->regmap);
- 		}
--		snd_soc_update_bits(codec, CS42L73_PWRCTL1, CS42L73_PDN, 1);
-+		snd_soc_component_update_bits(component, CS42L73_PWRCTL1, CS42L73_PDN, 1);
- 		break;
- 
- 	case SND_SOC_BIAS_OFF:
--		snd_soc_update_bits(codec, CS42L73_PWRCTL1, CS42L73_PDN, 1);
-+		snd_soc_component_update_bits(component, CS42L73_PWRCTL1, CS42L73_PDN, 1);
- 		if (cs42l73->shutdwn_delay > 0) {
- 			mdelay(cs42l73->shutdwn_delay);
- 			cs42l73->shutdwn_delay = 0;
-@@ -1131,7 +1131,7 @@ static int cs42l73_set_bias_level(struct snd_soc_codec *codec,
- 				     * down.
- 				     */
- 		}
--		snd_soc_update_bits(codec, CS42L73_DMMCC, CS42L73_MCLKDIS, 1);
-+		snd_soc_component_update_bits(component, CS42L73_DMMCC, CS42L73_MCLKDIS, 1);
- 		break;
+ 	if (coeff < 0) {
+-		dev_err(codec->dev, "ERROR: Invalid mclk %d and/or srate %d\n",
++		dev_err(component->dev, "ERROR: Invalid mclk %d and/or srate %d\n",
+ 			priv->mclk_int, srate);
+ 		return coeff;
  	}
- 	return 0;
-@@ -1139,10 +1139,10 @@ static int cs42l73_set_bias_level(struct snd_soc_codec *codec,
+@@ -562,7 +562,7 @@ static int cs35l34_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	ret = regmap_update_bits(priv->regmap, CS35L34_ADSP_CLK_CTL,
+ 		CS35L34_ADSP_RATE, cs35l34_mclk_coeffs[coeff].adsp_rate);
+ 	if (ret != 0)
+-		dev_err(codec->dev, "Failed to set clock state %d\n", ret);
++		dev_err(component->dev, "Failed to set clock state %d\n", ret);
  
- static int cs42l73_set_tristate(struct snd_soc_dai *dai, int tristate)
+ 	return ret;
+ }
+@@ -590,13 +590,13 @@ static int cs35l34_pcm_startup(struct snd_pcm_substream *substream,
+ static int cs35l34_set_tristate(struct snd_soc_dai *dai, int tristate)
  {
+ 
 -	struct snd_soc_codec *codec = dai->codec;
 +	struct snd_soc_component *component = dai->component;
- 	int id = dai->id;
  
--	return snd_soc_update_bits(codec, CS42L73_SPC(id), CS42L73_SP_3ST,
-+	return snd_soc_component_update_bits(component, CS42L73_SPC(id), CS42L73_SP_3ST,
- 				   tristate << 7);
+ 	if (tristate)
+-		snd_soc_update_bits(codec, CS35L34_PWRCTL3,
++		snd_soc_component_update_bits(component, CS35L34_PWRCTL3,
+ 					CS35L34_PDN_SDOUT, CS35L34_PDN_SDOUT);
+ 	else
+-		snd_soc_update_bits(codec, CS35L34_PWRCTL3,
++		snd_soc_component_update_bits(component, CS35L34_PWRCTL3,
+ 					CS35L34_PDN_SDOUT, 0);
+ 	return 0;
  }
- 
-@@ -1235,13 +1235,13 @@ static struct snd_soc_dai_driver cs42l73_dai[] = {
- 	 }
- };
- 
--static int cs42l73_probe(struct snd_soc_codec *codec)
-+static int cs42l73_probe(struct snd_soc_component *component)
+@@ -604,8 +604,8 @@ static int cs35l34_set_tristate(struct snd_soc_dai *dai, int tristate)
+ static int cs35l34_dai_set_sysclk(struct snd_soc_dai *dai,
+ 				int clk_id, unsigned int freq, int dir)
  {
--	struct cs42l73_private *cs42l73 = snd_soc_codec_get_drvdata(codec);
-+	struct cs42l73_private *cs42l73 = snd_soc_component_get_drvdata(component);
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct cs35l34_private *cs35l34 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct cs35l34_private *cs35l34 = snd_soc_component_get_drvdata(component);
+ 	unsigned int value;
  
- 	/* Set Charge Pump Frequency */
- 	if (cs42l73->pdata.chgfreq)
--		snd_soc_update_bits(codec, CS42L73_CPFCHC,
-+		snd_soc_component_update_bits(component, CS42L73_CPFCHC,
- 				    CS42L73_CHARGEPUMP_MASK,
- 					cs42l73->pdata.chgfreq << 4);
+ 	switch (freq) {
+@@ -634,7 +634,7 @@ static int cs35l34_dai_set_sysclk(struct snd_soc_dai *dai,
+ 		cs35l34->mclk_int = freq / 2;
+ 	break;
+ 	default:
+-		dev_err(codec->dev, "ERROR: Invalid Frequency %d\n", freq);
++		dev_err(component->dev, "ERROR: Invalid Frequency %d\n", freq);
+ 		cs35l34->mclk_int = 0;
+ 		return -EINVAL;
+ 	}
+@@ -676,7 +676,7 @@ static struct snd_soc_dai_driver cs35l34_dai = {
+ static int cs35l34_boost_inductor(struct cs35l34_private *cs35l34,
+ 	unsigned int inductor)
+ {
+-	struct snd_soc_codec *codec = cs35l34->codec;
++	struct snd_soc_component *component = cs35l34->component;
  
-@@ -1252,19 +1252,20 @@ static int cs42l73_probe(struct snd_soc_codec *codec)
+ 	switch (inductor) {
+ 	case 1000: /* 1 uH */
+@@ -708,19 +708,19 @@ static int cs35l34_boost_inductor(struct cs35l34_private *cs35l34,
+ 		regmap_write(cs35l34->regmap, CS35L34_BST_CONV_SW_FREQ, 3);
+ 		break;
+ 	default:
+-		dev_err(codec->dev, "%s Invalid Inductor Value %d uH\n",
++		dev_err(component->dev, "%s Invalid Inductor Value %d uH\n",
+ 			__func__, inductor);
+ 		return -EINVAL;
+ 	}
  	return 0;
  }
  
--static const struct snd_soc_codec_driver soc_codec_dev_cs42l73 = {
--	.probe = cs42l73_probe,
--	.set_bias_level = cs42l73_set_bias_level,
--	.suspend_bias_off = true,
+-static int cs35l34_probe(struct snd_soc_codec *codec)
++static int cs35l34_probe(struct snd_soc_component *component)
+ {
+ 	int ret = 0;
+-	struct cs35l34_private *cs35l34 = snd_soc_codec_get_drvdata(codec);
++	struct cs35l34_private *cs35l34 = snd_soc_component_get_drvdata(component);
+ 
+-	pm_runtime_get_sync(codec->dev);
++	pm_runtime_get_sync(component->dev);
+ 
+ 	/* Set over temperature warning attenuation to 6 dB */
+ 	regmap_update_bits(cs35l34->regmap, CS35L34_PROTECT_CTL,
+@@ -773,23 +773,24 @@ static int cs35l34_probe(struct snd_soc_codec *codec)
+ 		regmap_update_bits(cs35l34->regmap, CS35L34_ADSP_TDM_CTL,
+ 			1, 1);
+ 
+-	pm_runtime_put_sync(codec->dev);
++	pm_runtime_put_sync(component->dev);
+ 
+ 	return ret;
+ }
+ 
+ 
+-static const struct snd_soc_codec_driver soc_codec_dev_cs35l34 = {
+-	.probe = cs35l34_probe,
 -
 -	.component_driver = {
--		.controls		= cs42l73_snd_controls,
--		.num_controls		= ARRAY_SIZE(cs42l73_snd_controls),
--		.dapm_widgets		= cs42l73_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(cs42l73_dapm_widgets),
--		.dapm_routes		= cs42l73_audio_map,
--		.num_dapm_routes	= ARRAY_SIZE(cs42l73_audio_map),
+-		.dapm_widgets = cs35l34_dapm_widgets,
+-		.num_dapm_widgets = ARRAY_SIZE(cs35l34_dapm_widgets),
+-		.dapm_routes = cs35l34_audio_map,
+-		.num_dapm_routes = ARRAY_SIZE(cs35l34_audio_map),
+-		.controls = cs35l34_snd_controls,
+-		.num_controls = ARRAY_SIZE(cs35l34_snd_controls),
 -	},
-+static const struct snd_soc_component_driver soc_component_dev_cs42l73 = {
-+	.probe			= cs42l73_probe,
-+	.set_bias_level		= cs42l73_set_bias_level,
-+	.controls		= cs42l73_snd_controls,
-+	.num_controls		= ARRAY_SIZE(cs42l73_snd_controls),
-+	.dapm_widgets		= cs42l73_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(cs42l73_dapm_widgets),
-+	.dapm_routes		= cs42l73_audio_map,
-+	.num_dapm_routes	= ARRAY_SIZE(cs42l73_audio_map),
-+	.suspend_bias_off	= 1,
++static const struct snd_soc_component_driver soc_component_dev_cs35l34 = {
++	.probe			= cs35l34_probe,
++	.dapm_widgets		= cs35l34_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(cs35l34_dapm_widgets),
++	.dapm_routes		= cs35l34_audio_map,
++	.num_dapm_routes	= ARRAY_SIZE(cs35l34_audio_map),
++	.controls		= cs35l34_snd_controls,
++	.num_controls		= ARRAY_SIZE(cs35l34_snd_controls),
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static const struct regmap_config cs42l73_regmap = {
-@@ -1361,20 +1362,14 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
- 	dev_info(&i2c_client->dev,
- 		 "Cirrus Logic CS42L73, Revision: %02X\n", reg & 0xFF);
+ static struct regmap_config cs35l34_regmap = {
+@@ -864,7 +865,7 @@ static int cs35l34_handle_of_data(struct i2c_client *i2c_client,
+ static irqreturn_t cs35l34_irq_thread(int irq, void *data)
+ {
+ 	struct cs35l34_private *cs35l34 = data;
+-	struct snd_soc_codec *codec = cs35l34->codec;
++	struct snd_soc_component *component = cs35l34->component;
+ 	unsigned int sticky1, sticky2, sticky3, sticky4;
+ 	unsigned int mask1, mask2, mask3, mask4, current1;
+ 
+@@ -887,11 +888,11 @@ static irqreturn_t cs35l34_irq_thread(int irq, void *data)
+ 	regmap_read(cs35l34->regmap, CS35L34_INT_STATUS_1, &current1);
+ 
+ 	if (sticky1 & CS35L34_CAL_ERR) {
+-		dev_err(codec->dev, "Cal error\n");
++		dev_err(component->dev, "Cal error\n");
+ 
+ 		/* error is no longer asserted; safe to reset */
+ 		if (!(current1 & CS35L34_CAL_ERR)) {
+-			dev_dbg(codec->dev, "Cal error release\n");
++			dev_dbg(component->dev, "Cal error release\n");
+ 			regmap_update_bits(cs35l34->regmap,
+ 					CS35L34_PROT_RELEASE_CTL,
+ 					CS35L34_CAL_ERR_RLS, 0);
+@@ -907,14 +908,14 @@ static irqreturn_t cs35l34_irq_thread(int irq, void *data)
+ 	}
+ 
+ 	if (sticky1 & CS35L34_ALIVE_ERR)
+-		dev_err(codec->dev, "Alive error\n");
++		dev_err(component->dev, "Alive error\n");
+ 
+ 	if (sticky1 & CS35L34_AMP_SHORT) {
+-		dev_crit(codec->dev, "Amp short error\n");
++		dev_crit(component->dev, "Amp short error\n");
+ 
+ 		/* error is no longer asserted; safe to reset */
+ 		if (!(current1 & CS35L34_AMP_SHORT)) {
+-			dev_dbg(codec->dev,
++			dev_dbg(component->dev,
+ 				"Amp short error release\n");
+ 			regmap_update_bits(cs35l34->regmap,
+ 					CS35L34_PROT_RELEASE_CTL,
+@@ -930,11 +931,11 @@ static irqreturn_t cs35l34_irq_thread(int irq, void *data)
+ 	}
+ 
+ 	if (sticky1 & CS35L34_OTW) {
+-		dev_crit(codec->dev, "Over temperature warning\n");
++		dev_crit(component->dev, "Over temperature warning\n");
+ 
+ 		/* error is no longer asserted; safe to reset */
+ 		if (!(current1 & CS35L34_OTW)) {
+-			dev_dbg(codec->dev,
++			dev_dbg(component->dev,
+ 				"Over temperature warning release\n");
+ 			regmap_update_bits(cs35l34->regmap,
+ 					CS35L34_PROT_RELEASE_CTL,
+@@ -950,11 +951,11 @@ static irqreturn_t cs35l34_irq_thread(int irq, void *data)
+ 	}
+ 
+ 	if (sticky1 & CS35L34_OTE) {
+-		dev_crit(codec->dev, "Over temperature error\n");
++		dev_crit(component->dev, "Over temperature error\n");
+ 
+ 		/* error is no longer asserted; safe to reset */
+ 		if (!(current1 & CS35L34_OTE)) {
+-			dev_dbg(codec->dev,
++			dev_dbg(component->dev,
+ 				"Over temperature error release\n");
+ 			regmap_update_bits(cs35l34->regmap,
+ 					CS35L34_PROT_RELEASE_CTL,
+@@ -970,7 +971,7 @@ static irqreturn_t cs35l34_irq_thread(int irq, void *data)
+ 	}
+ 
+ 	if (sticky3 & CS35L34_BST_HIGH) {
+-		dev_crit(codec->dev, "VBST too high error; powering off!\n");
++		dev_crit(component->dev, "VBST too high error; powering off!\n");
+ 		regmap_update_bits(cs35l34->regmap, CS35L34_PWRCTL2,
+ 				CS35L34_PDN_AMP, CS35L34_PDN_AMP);
+ 		regmap_update_bits(cs35l34->regmap, CS35L34_PWRCTL1,
+@@ -978,7 +979,7 @@ static irqreturn_t cs35l34_irq_thread(int irq, void *data)
+ 	}
+ 
+ 	if (sticky3 & CS35L34_LBST_SHORT) {
+-		dev_crit(codec->dev, "LBST short error; powering off!\n");
++		dev_crit(component->dev, "LBST short error; powering off!\n");
+ 		regmap_update_bits(cs35l34->regmap, CS35L34_PWRCTL2,
+ 				CS35L34_PDN_AMP, CS35L34_PDN_AMP);
+ 		regmap_update_bits(cs35l34->regmap, CS35L34_PWRCTL1,
+@@ -1108,11 +1109,11 @@ static int cs35l34_i2c_probe(struct i2c_client *i2c_client,
+ 	pm_runtime_set_active(&i2c_client->dev);
+ 	pm_runtime_enable(&i2c_client->dev);
  
 -	ret =  snd_soc_register_codec(&i2c_client->dev,
--			&soc_codec_dev_cs42l73, cs42l73_dai,
+-			&soc_codec_dev_cs35l34, &cs35l34_dai, 1);
 +	ret = devm_snd_soc_register_component(&i2c_client->dev,
-+			&soc_component_dev_cs42l73, cs42l73_dai,
- 			ARRAY_SIZE(cs42l73_dai));
- 	if (ret < 0)
- 		return ret;
- 	return 0;
- }
++			&soc_component_dev_cs35l34, &cs35l34_dai, 1);
+ 	if (ret < 0) {
+ 		dev_err(&i2c_client->dev,
+-			"%s: Register codec failed\n", __func__);
++			"%s: Register component failed\n", __func__);
+ 		goto err_regulator;
+ 	}
  
--static int cs42l73_i2c_remove(struct i2c_client *client)
--{
+@@ -1129,8 +1130,6 @@ static int cs35l34_i2c_remove(struct i2c_client *client)
+ {
+ 	struct cs35l34_private *cs35l34 = i2c_get_clientdata(client);
+ 
 -	snd_soc_unregister_codec(&client->dev);
--	return 0;
--}
 -
- static const struct of_device_id cs42l73_of_match[] = {
- 	{ .compatible = "cirrus,cs42l73", },
- 	{},
-@@ -1395,7 +1390,6 @@ static struct i2c_driver cs42l73_i2c_driver = {
- 		   },
- 	.id_table = cs42l73_id,
- 	.probe = cs42l73_i2c_probe,
--	.remove = cs42l73_i2c_remove,
+ 	gpiod_set_value_cansleep(cs35l34->reset_gpio, 0);
  
- };
- 
+ 	pm_runtime_disable(&client->dev);
 -- 
 2.16.1
