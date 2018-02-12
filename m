@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak5386: replace codec to component" to
-	the asoc tree
-Date: Mon, 12 Feb 2018 12:46:05 +0000
-Message-ID: <E1elDUj-0005Rw-3z@debutante>
-References: <87efm92war.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: wm1250-ev1: replace codec to component"
+	to the asoc tree
+Date: Mon, 12 Feb 2018 12:46:21 +0000
+Message-ID: <E1elDUz-0005US-5v@debutante>
+References: <87k1w12wcz.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 485E3267D4D
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:46:07 +0100 (CET)
-In-Reply-To: <87efm92war.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5545C267DA7
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:46:23 +0100 (CET)
+In-Reply-To: <87k1w12wcz.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak5386: replace codec to component
+   ASoC: wm1250-ev1: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,16 +53,16 @@ to this mail.
 Thanks,
 Mark
 
->From 12132de654bbcd16f6e4e9c0bf2947356756f773 Mon Sep 17 00:00:00 2001
+>From 39506cf83bb1b4df80dee1492f8cebc26cec355e Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 03:13:23 +0000
-Subject: [PATCH] ASoC: ak5386: replace codec to component
+Date: Mon, 29 Jan 2018 03:12:02 +0000
+Subject: [PATCH] ASoC: wm1250-ev1: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
 Note:
 	xxx_codec_xxx()		->	xxx_component_xxx()
-	.idle_bias_off = 0	->	.idle_bias_on = 1
+	.idle_bias_off = 1	->	.idle_bias_on = 0
 	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
 	-			->	.endianness = 1
 	-			->	.non_legacy_dai_naming = 1
@@ -70,138 +70,76 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak5386.c | 62 +++++++++++++++++++++--------------------------
- 1 file changed, 28 insertions(+), 34 deletions(-)
+ sound/soc/codecs/wm1250-ev1.c | 27 +++++++++++++--------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/codecs/ak5386.c b/sound/soc/codecs/ak5386.c
-index d0e16c03815c..d212960b4dda 100644
---- a/sound/soc/codecs/ak5386.c
-+++ b/sound/soc/codecs/ak5386.c
-@@ -38,30 +38,29 @@ static const struct snd_soc_dapm_route ak5386_dapm_routes[] = {
- 	{ "Capture", NULL, "AINR" },
+diff --git a/sound/soc/codecs/wm1250-ev1.c b/sound/soc/codecs/wm1250-ev1.c
+index cf5f0580df6a..9727eec6d01b 100644
+--- a/sound/soc/codecs/wm1250-ev1.c
++++ b/sound/soc/codecs/wm1250-ev1.c
+@@ -32,10 +32,10 @@ struct wm1250_priv {
+ 	struct gpio gpios[WM1250_EV1_NUM_GPIOS];
  };
  
--static int ak5386_soc_probe(struct snd_soc_codec *codec)
-+static int ak5386_soc_probe(struct snd_soc_component *component)
+-static int wm1250_ev1_set_bias_level(struct snd_soc_codec *codec,
++static int wm1250_ev1_set_bias_level(struct snd_soc_component *component,
+ 				     enum snd_soc_bias_level level)
  {
--	struct ak5386_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct ak5386_priv *priv = snd_soc_component_get_drvdata(component);
- 	return regulator_bulk_enable(ARRAY_SIZE(priv->supplies), priv->supplies);
- }
+-	struct wm1250_priv *wm1250 = dev_get_drvdata(codec->dev);
++	struct wm1250_priv *wm1250 = dev_get_drvdata(component->dev);
+ 	int ena;
  
--static int ak5386_soc_remove(struct snd_soc_codec *codec)
-+static void ak5386_soc_remove(struct snd_soc_component *component)
+ 	if (wm1250)
+@@ -81,7 +81,7 @@ static int wm1250_ev1_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params,
+ 				struct snd_soc_dai *dai)
  {
--	struct ak5386_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct ak5386_priv *priv = snd_soc_component_get_drvdata(component);
- 	regulator_bulk_disable(ARRAY_SIZE(priv->supplies), priv->supplies);
--	return 0;
- }
+-	struct wm1250_priv *wm1250 = snd_soc_codec_get_drvdata(dai->codec);
++	struct wm1250_priv *wm1250 = snd_soc_component_get_drvdata(dai->component);
  
- #ifdef CONFIG_PM
--static int ak5386_soc_suspend(struct snd_soc_codec *codec)
-+static int ak5386_soc_suspend(struct snd_soc_component *component)
- {
--	struct ak5386_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct ak5386_priv *priv = snd_soc_component_get_drvdata(component);
- 	regulator_bulk_disable(ARRAY_SIZE(priv->supplies), priv->supplies);
- 	return 0;
- }
+ 	switch (params_rate(params)) {
+ 	case 8000:
+@@ -141,15 +141,15 @@ static struct snd_soc_dai_driver wm1250_ev1_dai = {
+ 	.ops = &wm1250_ev1_ops,
+ };
  
--static int ak5386_soc_resume(struct snd_soc_codec *codec)
-+static int ak5386_soc_resume(struct snd_soc_component *component)
- {
--	struct ak5386_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct ak5386_priv *priv = snd_soc_component_get_drvdata(component);
- 	return regulator_bulk_enable(ARRAY_SIZE(priv->supplies), priv->supplies);
- }
- #else
-@@ -69,28 +68,30 @@ static int ak5386_soc_resume(struct snd_soc_codec *codec)
- #define ak5386_soc_resume	NULL
- #endif /* CONFIG_PM */
- 
--static const struct snd_soc_codec_driver soc_codec_ak5386 = {
--	.probe = ak5386_soc_probe,
--	.remove = ak5386_soc_remove,
--	.suspend = ak5386_soc_suspend,
--	.resume = ak5386_soc_resume,
+-static const struct snd_soc_codec_driver soc_codec_dev_wm1250_ev1 = {
 -	.component_driver = {
--		.dapm_widgets		= ak5386_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(ak5386_dapm_widgets),
--		.dapm_routes		= ak5386_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(ak5386_dapm_routes),
+-		.dapm_widgets		= wm1250_ev1_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(wm1250_ev1_dapm_widgets),
+-		.dapm_routes		= wm1250_ev1_dapm_routes,
+-		.num_dapm_routes	= ARRAY_SIZE(wm1250_ev1_dapm_routes),
 -	},
-+static const struct snd_soc_component_driver soc_component_ak5386 = {
-+	.probe			= ak5386_soc_probe,
-+	.remove			= ak5386_soc_remove,
-+	.suspend		= ak5386_soc_suspend,
-+	.resume			= ak5386_soc_resume,
-+	.dapm_widgets		= ak5386_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(ak5386_dapm_widgets),
-+	.dapm_routes		= ak5386_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(ak5386_dapm_routes),
-+	.idle_bias_on		= 1,
+-	.set_bias_level = wm1250_ev1_set_bias_level,
+-	.idle_bias_off = true,
++static const struct snd_soc_component_driver soc_component_dev_wm1250_ev1 = {
++	.dapm_widgets		= wm1250_ev1_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(wm1250_ev1_dapm_widgets),
++	.dapm_routes		= wm1250_ev1_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(wm1250_ev1_dapm_routes),
++	.set_bias_level		= wm1250_ev1_set_bias_level,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static int ak5386_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 			      unsigned int format)
+ static int wm1250_ev1_pdata(struct i2c_client *i2c)
+@@ -224,7 +224,7 @@ static int wm1250_ev1_probe(struct i2c_client *i2c,
+ 	if (ret != 0)
+ 		return ret;
+ 
+-	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_wm1250_ev1,
++	ret = devm_snd_soc_register_component(&i2c->dev, &soc_component_dev_wm1250_ev1,
+ 				     &wm1250_ev1_dai, 1);
+ 	if (ret != 0) {
+ 		dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
+@@ -237,7 +237,6 @@ static int wm1250_ev1_probe(struct i2c_client *i2c,
+ 
+ static int wm1250_ev1_remove(struct i2c_client *i2c)
  {
--	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct snd_soc_component *component = codec_dai->component;
+-	snd_soc_unregister_codec(&i2c->dev);
+ 	wm1250_ev1_free(i2c);
  
- 	format &= SND_SOC_DAIFMT_FORMAT_MASK;
- 	if (format != SND_SOC_DAIFMT_LEFT_J &&
- 	    format != SND_SOC_DAIFMT_I2S) {
--		dev_err(codec->dev, "Invalid DAI format\n");
-+		dev_err(component->dev, "Invalid DAI format\n");
- 		return -EINVAL;
- 	}
- 
-@@ -101,8 +102,8 @@ static int ak5386_hw_params(struct snd_pcm_substream *substream,
- 			    struct snd_pcm_hw_params *params,
- 			    struct snd_soc_dai *dai)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct ak5386_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct ak5386_priv *priv = snd_soc_component_get_drvdata(component);
- 
- 	/*
- 	 * From the datasheet:
-@@ -123,8 +124,8 @@ static int ak5386_hw_params(struct snd_pcm_substream *substream,
- static int ak5386_hw_free(struct snd_pcm_substream *substream,
- 			  struct snd_soc_dai *dai)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct ak5386_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct ak5386_priv *priv = snd_soc_component_get_drvdata(component);
- 
- 	if (gpio_is_valid(priv->reset_gpio))
- 		gpio_set_value(priv->reset_gpio, 0);
-@@ -192,19 +193,12 @@ static int ak5386_probe(struct platform_device *pdev)
- 					  "AK5386 Reset"))
- 			priv->reset_gpio = -EINVAL;
- 
--	return snd_soc_register_codec(dev, &soc_codec_ak5386,
-+	return devm_snd_soc_register_component(dev, &soc_component_ak5386,
- 				      &ak5386_dai, 1);
- }
- 
--static int ak5386_remove(struct platform_device *pdev)
--{
--	snd_soc_unregister_codec(&pdev->dev);
--	return 0;
--}
--
- static struct platform_driver ak5386_driver = {
- 	.probe		= ak5386_probe,
--	.remove		= ak5386_remove,
- 	.driver		= {
- 		.name	= "ak5386",
- 		.of_match_table = of_match_ptr(ak5386_dt_ids),
+ 	return 0;
 -- 
 2.16.1
