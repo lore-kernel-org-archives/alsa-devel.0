@@ -1,252 +1,51 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8540: replace codec to component" to
-	the asoc tree
-Date: Mon, 12 Feb 2018 12:37:45 +0000
-Message-ID: <E1elDMf-00047W-OH@debutante>
-References: <87h8r5walb.wl%kuninori.morimoto.gx@renesas.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 0/9] add UniPhier audio system support
+Date: Mon, 12 Feb 2018 12:48:58 +0000
+Message-ID: <20180212124858.GC12976@sirena.org.uk>
+References: <20180119092536.22501-1-suzuki.katsuhiro@socionext.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DF0C926768C
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:37:47 +0100 (CET)
-In-Reply-To: <87h8r5walb.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="IpbVkmxF4tDyP/Kb"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20180119092536.22501-1-suzuki.katsuhiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Katsuhiro Suzuki <suzuki.katsuhiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Masahiro Yamada <yamada.masahiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>, Masami Hiramatsu <masami.hiramatsu-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Jassi Brar <jaswinder.singh-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: nau8540: replace codec to component
+--IpbVkmxF4tDyP/Kb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+On Fri, Jan 19, 2018 at 06:25:27PM +0900, Katsuhiro Suzuki wrote:
+> This series adds support for Socionext audio system for
+> UniPhier LD11/LD20 SoCs. This driver supports I2S output
+> for Line-In, Line-Out and S/PDIF output.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+These look fine so I'll apply them however a patch series from
+Morimoto-san (CCed) moving things to use components rather than
+CODEC/platform/whatever driver types that was sent about the same time
+has just gone in - the driver will require the same conversions.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+--IpbVkmxF4tDyP/Kb
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+-----BEGIN PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqBjTkACgkQJNaLcl1U
+h9B97Af/WZ98YjR9pqKv2q9x07O8um3kwXtYVGFUp3gFYX13OQZUW+sfFSg1q2YG
+W7386wNTVqEYCyA7w2O024GFRc62ued4u2vjt0VlegFTkEt8xhc07DLEjvFamGwl
+ve6DxpuOVwd9UTQxeuiq/xxQE6wtDXKjX/Xn0u9+Zc+2w0dQGyZCX0AE9jgb/dD5
+vnsn7+3EPa8uip7x4Tnur8Y+aXJl9skenvuJ0jGIWgahclRKd/nXpNxxVHcwJmJc
+ZGSD4fca4ORnPMaV2UDNavg+fnZIZet4uJaIBBHVP68N+Cn+htpOlxuVCdHj1UZz
+J0vPIhagpoWOl7k843pQgtUROpmn7A==
+=J7Qc
+-----END PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 415bc3a0bfb26c934daa4a16a8a4f589c018bdaa Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:31:51 +0000
-Subject: [PATCH] ASoC: nau8540: replace codec to component
-
-Now we can replace Codec to Component. Let's do it.
-
-Note:
-	xxx_codec_xxx()		->	xxx_component_xxx()
-	.idle_bias_off = 0	->	.idle_bias_on = 1
-	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
-	-			->	.endianness = 1
-	-			->	.non_legacy_dai_naming = 1
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/nau8540.c | 79 +++++++++++++++++++++-------------------------
- 1 file changed, 36 insertions(+), 43 deletions(-)
-
-diff --git a/sound/soc/codecs/nau8540.c b/sound/soc/codecs/nau8540.c
-index b08fb7e243c3..17104f8dc1a9 100644
---- a/sound/soc/codecs/nau8540.c
-+++ b/sound/soc/codecs/nau8540.c
-@@ -236,8 +236,8 @@ static const struct snd_kcontrol_new digital_ch1_mux =
- static int adc_power_control(struct snd_soc_dapm_widget *w,
- 		struct snd_kcontrol *k, int  event)
- {
--	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
--	struct nau8540 *nau8540 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	struct nau8540 *nau8540 = snd_soc_component_get_drvdata(component);
- 
- 	if (SND_SOC_DAPM_EVENT_ON(event)) {
- 		msleep(300);
-@@ -258,8 +258,8 @@ static int adc_power_control(struct snd_soc_dapm_widget *w,
- static int aiftx_power_control(struct snd_soc_dapm_widget *w,
- 		struct snd_kcontrol *k, int  event)
- {
--	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
--	struct nau8540 *nau8540 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	struct nau8540 *nau8540 = snd_soc_component_get_drvdata(component);
- 
- 	if (SND_SOC_DAPM_EVENT_OFF(event)) {
- 		regmap_write(nau8540->regmap, NAU8540_REG_RST, 0x0001);
-@@ -379,8 +379,8 @@ static int nau8540_clock_check(struct nau8540 *nau8540, int rate, int osr)
- static int nau8540_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct nau8540 *nau8540 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct nau8540 *nau8540 = snd_soc_component_get_drvdata(component);
- 	unsigned int val_len = 0, osr;
- 
- 	/* CLK_ADC = OSR * FS
-@@ -422,8 +422,8 @@ static int nau8540_hw_params(struct snd_pcm_substream *substream,
- 
- static int nau8540_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct nau8540 *nau8540 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct nau8540 *nau8540 = snd_soc_component_get_drvdata(component);
- 	unsigned int ctrl1_val = 0, ctrl2_val = 0;
- 
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-@@ -493,8 +493,8 @@ static int nau8540_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- static int nau8540_set_tdm_slot(struct snd_soc_dai *dai,
- 	unsigned int tx_mask, unsigned int rx_mask, int slots, int slot_width)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct nau8540 *nau8540 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct nau8540 *nau8540 = snd_soc_component_get_drvdata(component);
- 	unsigned int ctrl2_val = 0, ctrl4_val = 0;
- 
- 	if (slots > 4 || ((tx_mask & 0xf0) && (tx_mask & 0xf)))
-@@ -649,10 +649,10 @@ static void nau8540_fll_apply(struct regmap *regmap,
- }
- 
- /* freq_out must be 256*Fs in order to achieve the best performance */
--static int nau8540_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
-+static int nau8540_set_pll(struct snd_soc_component *component, int pll_id, int source,
- 		unsigned int freq_in, unsigned int freq_out)
- {
--	struct nau8540 *nau8540 = snd_soc_codec_get_drvdata(codec);
-+	struct nau8540 *nau8540 = snd_soc_component_get_drvdata(component);
- 	struct nau8540_fll fll_param;
- 	int ret, fs;
- 
-@@ -702,10 +702,10 @@ static int nau8540_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
- 	return 0;
- }
- 
--static int nau8540_set_sysclk(struct snd_soc_codec *codec,
-+static int nau8540_set_sysclk(struct snd_soc_component *component,
- 	int clk_id, int source, unsigned int freq, int dir)
- {
--	struct nau8540 *nau8540 = snd_soc_codec_get_drvdata(codec);
-+	struct nau8540 *nau8540 = snd_soc_component_get_drvdata(component);
- 
- 	switch (clk_id) {
- 	case NAU8540_CLK_DIS:
-@@ -777,9 +777,9 @@ static void nau8540_init_regs(struct nau8540 *nau8540)
- 		NAU8540_I2S_DO34_TRI, NAU8540_I2S_DO34_TRI);
- }
- 
--static int __maybe_unused nau8540_suspend(struct snd_soc_codec *codec)
-+static int __maybe_unused nau8540_suspend(struct snd_soc_component *component)
- {
--	struct nau8540 *nau8540 = snd_soc_codec_get_drvdata(codec);
-+	struct nau8540 *nau8540 = snd_soc_component_get_drvdata(component);
- 
- 	regcache_cache_only(nau8540->regmap, true);
- 	regcache_mark_dirty(nau8540->regmap);
-@@ -787,9 +787,9 @@ static int __maybe_unused nau8540_suspend(struct snd_soc_codec *codec)
- 	return 0;
- }
- 
--static int __maybe_unused nau8540_resume(struct snd_soc_codec *codec)
-+static int __maybe_unused nau8540_resume(struct snd_soc_component *component)
- {
--	struct nau8540 *nau8540 = snd_soc_codec_get_drvdata(codec);
-+	struct nau8540 *nau8540 = snd_soc_component_get_drvdata(component);
- 
- 	regcache_cache_only(nau8540->regmap, false);
- 	regcache_sync(nau8540->regmap);
-@@ -797,21 +797,22 @@ static int __maybe_unused nau8540_resume(struct snd_soc_codec *codec)
- 	return 0;
- }
- 
--static const struct snd_soc_codec_driver nau8540_codec_driver = {
--	.set_sysclk = nau8540_set_sysclk,
--	.set_pll = nau8540_set_pll,
--	.suspend = nau8540_suspend,
--	.resume = nau8540_resume,
--	.suspend_bias_off = true,
--
--	.component_driver = {
--		.controls = nau8540_snd_controls,
--		.num_controls = ARRAY_SIZE(nau8540_snd_controls),
--		.dapm_widgets = nau8540_dapm_widgets,
--		.num_dapm_widgets = ARRAY_SIZE(nau8540_dapm_widgets),
--		.dapm_routes = nau8540_dapm_routes,
--		.num_dapm_routes = ARRAY_SIZE(nau8540_dapm_routes),
--	},
-+static const struct snd_soc_component_driver nau8540_component_driver = {
-+	.set_sysclk		= nau8540_set_sysclk,
-+	.set_pll		= nau8540_set_pll,
-+	.suspend		= nau8540_suspend,
-+	.resume			= nau8540_resume,
-+	.controls		= nau8540_snd_controls,
-+	.num_controls		= ARRAY_SIZE(nau8540_snd_controls),
-+	.dapm_widgets		= nau8540_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(nau8540_dapm_widgets),
-+	.dapm_routes		= nau8540_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(nau8540_dapm_routes),
-+	.suspend_bias_off	= 1,
-+	.idle_bias_on		= 1,
-+	.use_pmdown_time	= 1,
-+	.endianness		= 1,
-+	.non_legacy_dai_naming	= 1,
- };
- 
- static const struct regmap_config nau8540_regmap_config = {
-@@ -856,17 +857,10 @@ static int nau8540_i2c_probe(struct i2c_client *i2c,
- 	nau8540_reset_chip(nau8540->regmap);
- 	nau8540_init_regs(nau8540);
- 
--	return snd_soc_register_codec(dev,
--		&nau8540_codec_driver, &nau8540_dai, 1);
--}
--
--static int nau8540_i2c_remove(struct i2c_client *client)
--{
--	snd_soc_unregister_codec(&client->dev);
--	return 0;
-+	return devm_snd_soc_register_component(dev,
-+		&nau8540_component_driver, &nau8540_dai, 1);
- }
- 
--
- static const struct i2c_device_id nau8540_i2c_ids[] = {
- 	{ "nau8540", 0 },
- 	{ }
-@@ -887,7 +881,6 @@ static struct i2c_driver nau8540_i2c_driver = {
- 		.of_match_table = of_match_ptr(nau8540_of_ids),
- 	},
- 	.probe = nau8540_i2c_probe,
--	.remove = nau8540_i2c_remove,
- 	.id_table = nau8540_i2c_ids,
- };
- module_i2c_driver(nau8540_i2c_driver);
--- 
-2.16.1
+--IpbVkmxF4tDyP/Kb--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
