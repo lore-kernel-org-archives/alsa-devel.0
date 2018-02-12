@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: haswell: replace platform to
+Subject: Applied "ASoC: intel: baytrail: replace platform to
 	component" to the asoc tree
-Date: Mon, 12 Feb 2018 12:32:09 +0000
-Message-ID: <E1elDHF-0003OA-Uq@debutante>
-References: <87lgh3gb4c.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:32:27 +0000
+Message-ID: <E1elDHX-0003PJ-MK@debutante>
+References: <87mv1jgb4t.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4153A2678C4
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:32:14 +0100 (CET)
-In-Reply-To: <87lgh3gb4c.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7C2E32678F2
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:32:32 +0100 (CET)
+In-Reply-To: <87mv1jgb4t.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: haswell: replace platform to component
+   ASoC: intel: baytrail: replace platform to component
 
 has been applied to the asoc tree at
 
@@ -53,360 +53,181 @@ to this mail.
 Thanks,
 Mark
 
->From 2ee178dbeb3974676b23751d602f79cc276f46e4 Mon Sep 17 00:00:00 2001
+>From 81dc5f3d806ad50283b4b58abebd08ef65817f87 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 02:42:21 +0000
-Subject: [PATCH] ASoC: intel: haswell: replace platform to component
+Date: Mon, 29 Jan 2018 02:42:02 +0000
+Subject: [PATCH] ASoC: intel: baytrail: replace platform to component
 
 Now platform can be replaced to component, let's do it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bdw-rt5677.c       |   3 +-
- sound/soc/intel/boards/broadwell.c        |   3 +-
- sound/soc/intel/boards/haswell.c          |   3 +-
- sound/soc/intel/haswell/sst-haswell-ipc.h |   2 +
- sound/soc/intel/haswell/sst-haswell-pcm.c | 118 +++++++++++++-----------------
- 5 files changed, 60 insertions(+), 69 deletions(-)
+ sound/soc/intel/baytrail/sst-baytrail-pcm.c | 66 +++++++++++------------------
+ 1 file changed, 25 insertions(+), 41 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
-index 058b8ccedf02..8999f8de119c 100644
---- a/sound/soc/intel/boards/bdw-rt5677.c
-+++ b/sound/soc/intel/boards/bdw-rt5677.c
-@@ -183,7 +183,8 @@ static const struct snd_soc_ops bdw_rt5677_ops = {
+diff --git a/sound/soc/intel/baytrail/sst-baytrail-pcm.c b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+index c54529320f07..aabb35bf6b96 100644
+--- a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
++++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+@@ -23,6 +23,7 @@
+ #include "../common/sst-dsp-priv.h"
+ #include "../common/sst-dsp.h"
  
- static int bdw_rt5677_rtd_init(struct snd_soc_pcm_runtime *rtd)
- {
--	struct sst_pdata *pdata = dev_get_platdata(rtd->platform->dev);
-+	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct sst_pdata *pdata = dev_get_platdata(component->dev);
- 	struct sst_hsw *broadwell = pdata->dsp;
- 	int ret;
++#define DRV_NAME "byt-dai"
+ #define BYT_PCM_COUNT		2
  
-diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
-index 6dcbbcefc25b..249b8a3290b8 100644
---- a/sound/soc/intel/boards/broadwell.c
-+++ b/sound/soc/intel/boards/broadwell.c
-@@ -132,7 +132,8 @@ static const struct snd_soc_ops broadwell_rt286_ops = {
- 
- static int broadwell_rtd_init(struct snd_soc_pcm_runtime *rtd)
- {
--	struct sst_pdata *pdata = dev_get_platdata(rtd->platform->dev);
-+	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct sst_pdata *pdata = dev_get_platdata(component->dev);
- 	struct sst_hsw *broadwell = pdata->dsp;
- 	int ret;
- 
-diff --git a/sound/soc/intel/boards/haswell.c b/sound/soc/intel/boards/haswell.c
-index 3c5160779204..eab1f439dd3f 100644
---- a/sound/soc/intel/boards/haswell.c
-+++ b/sound/soc/intel/boards/haswell.c
-@@ -87,7 +87,8 @@ static const struct snd_soc_ops haswell_rt5640_ops = {
- 
- static int haswell_rtd_init(struct snd_soc_pcm_runtime *rtd)
- {
--	struct sst_pdata *pdata = dev_get_platdata(rtd->platform->dev);
-+	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct sst_pdata *pdata = dev_get_platdata(component->dev);
- 	struct sst_hsw *haswell = pdata->dsp;
- 	int ret;
- 
-diff --git a/sound/soc/intel/haswell/sst-haswell-ipc.h b/sound/soc/intel/haswell/sst-haswell-ipc.h
-index 06d71aefa1fe..fbc14df139e4 100644
---- a/sound/soc/intel/haswell/sst-haswell-ipc.h
-+++ b/sound/soc/intel/haswell/sst-haswell-ipc.h
-@@ -22,6 +22,8 @@
- #include <linux/platform_device.h>
- #include <sound/asound.h>
- 
-+#define DRV_NAME "haswell-dai"
-+
- #define SST_HSW_NO_CHANNELS		4
- #define SST_HSW_MAX_DX_REGIONS		14
- #define SST_HSW_DX_CONTEXT_SIZE        (640 * 1024)
-diff --git a/sound/soc/intel/haswell/sst-haswell-pcm.c b/sound/soc/intel/haswell/sst-haswell-pcm.c
-index c044400540ec..fe2c826e710c 100644
---- a/sound/soc/intel/haswell/sst-haswell-pcm.c
-+++ b/sound/soc/intel/haswell/sst-haswell-pcm.c
-@@ -181,11 +181,11 @@ static inline unsigned int hsw_ipc_to_mixer(u32 value)
- static int hsw_stream_volume_put(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
- 	struct soc_mixer_control *mc =
- 		(struct soc_mixer_control *)kcontrol->private_value;
- 	struct hsw_priv_data *pdata =
--		snd_soc_platform_get_drvdata(platform);
-+		snd_soc_component_get_drvdata(component);
- 	struct hsw_pcm_data *pcm_data;
- 	struct sst_hsw *hsw = pdata->hsw;
- 	u32 volume;
-@@ -230,11 +230,11 @@ static int hsw_stream_volume_put(struct snd_kcontrol *kcontrol,
- static int hsw_stream_volume_get(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
- 	struct soc_mixer_control *mc =
- 		(struct soc_mixer_control *)kcontrol->private_value;
- 	struct hsw_priv_data *pdata =
--		snd_soc_platform_get_drvdata(platform);
-+		snd_soc_component_get_drvdata(component);
- 	struct hsw_pcm_data *pcm_data;
- 	struct sst_hsw *hsw = pdata->hsw;
- 	u32 volume;
-@@ -273,8 +273,8 @@ static int hsw_stream_volume_get(struct snd_kcontrol *kcontrol,
- static int hsw_volume_put(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
--	struct hsw_priv_data *pdata = snd_soc_platform_get_drvdata(platform);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct sst_hsw *hsw = pdata->hsw;
- 	u32 volume;
- 
-@@ -302,8 +302,8 @@ static int hsw_volume_put(struct snd_kcontrol *kcontrol,
- static int hsw_volume_get(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
--	struct hsw_priv_data *pdata = snd_soc_platform_get_drvdata(platform);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct sst_hsw *hsw = pdata->hsw;
- 	unsigned int volume = 0;
- 
-@@ -322,8 +322,8 @@ static int hsw_volume_get(struct snd_kcontrol *kcontrol,
- static int hsw_waves_switch_get(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
--	struct hsw_priv_data *pdata = snd_soc_platform_get_drvdata(platform);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct sst_hsw *hsw = pdata->hsw;
- 	enum sst_hsw_module_id id = SST_HSW_MODULE_WAVES;
- 
-@@ -336,8 +336,8 @@ static int hsw_waves_switch_get(struct snd_kcontrol *kcontrol,
- static int hsw_waves_switch_put(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
--	struct hsw_priv_data *pdata = snd_soc_platform_get_drvdata(platform);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct sst_hsw *hsw = pdata->hsw;
- 	int ret = 0;
- 	enum sst_hsw_module_id id = SST_HSW_MODULE_WAVES;
-@@ -370,8 +370,8 @@ static int hsw_waves_switch_put(struct snd_kcontrol *kcontrol,
- static int hsw_waves_param_get(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
--	struct hsw_priv_data *pdata = snd_soc_platform_get_drvdata(platform);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct sst_hsw *hsw = pdata->hsw;
- 
- 	/* return a matching line from param buffer */
-@@ -381,8 +381,8 @@ static int hsw_waves_param_get(struct snd_kcontrol *kcontrol,
- static int hsw_waves_param_put(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
--	struct hsw_priv_data *pdata = snd_soc_platform_get_drvdata(platform);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct sst_hsw *hsw = pdata->hsw;
- 	int ret;
- 	enum sst_hsw_module_id id = SST_HSW_MODULE_WAVES;
-@@ -472,8 +472,8 @@ static int hsw_pcm_hw_params(struct snd_pcm_substream *substream,
+ static const struct snd_pcm_hardware sst_byt_pcm_hardware = {
+@@ -69,8 +70,8 @@ static int sst_byt_pcm_hw_params(struct snd_pcm_substream *substream,
+ 				 struct snd_pcm_hw_params *params)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct hsw_priv_data *pdata =
+-	struct sst_byt_priv_data *pdata =
 -		snd_soc_platform_get_drvdata(rtd->platform);
 +	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct hsw_pcm_data *pcm_data;
- 	struct sst_hsw *hsw = pdata->hsw;
- 	struct sst_module *module_data;
-@@ -674,8 +674,8 @@ static int hsw_pcm_hw_free(struct snd_pcm_substream *substream)
- static int hsw_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++	struct sst_byt_priv_data *pdata = snd_soc_component_get_drvdata(component);
+ 	struct sst_byt_pcm_data *pcm_data = &pdata->pcm[substream->stream];
+ 	struct sst_byt *byt = pdata->byt;
+ 	u32 rate, bits;
+@@ -141,8 +142,8 @@ static int sst_byt_pcm_hw_free(struct snd_pcm_substream *substream)
+ static int sst_byt_pcm_restore_stream_context(struct snd_pcm_substream *substream)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct hsw_priv_data *pdata =
+-	struct sst_byt_priv_data *pdata =
 -		snd_soc_platform_get_drvdata(rtd->platform);
 +	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct hsw_pcm_data *pcm_data;
- 	struct sst_hsw_stream *sst_stream;
- 	struct sst_hsw *hsw = pdata->hsw;
-@@ -718,8 +718,8 @@ static u32 hsw_notify_pointer(struct sst_hsw_stream *stream, void *data)
++	struct sst_byt_priv_data *pdata = snd_soc_component_get_drvdata(component);
+ 	struct sst_byt_pcm_data *pcm_data = &pdata->pcm[substream->stream];
+ 	struct sst_byt *byt = pdata->byt;
+ 	int ret;
+@@ -174,8 +175,8 @@ static void sst_byt_pcm_work(struct work_struct *work)
+ static int sst_byt_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct sst_byt_priv_data *pdata =
+-		snd_soc_platform_get_drvdata(rtd->platform);
++	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct sst_byt_priv_data *pdata = snd_soc_component_get_drvdata(component);
+ 	struct sst_byt_pcm_data *pcm_data = &pdata->pcm[substream->stream];
+ 	struct sst_byt *byt = pdata->byt;
+ 
+@@ -216,8 +217,8 @@ static u32 byt_notify_pointer(struct sst_byt_stream *stream, void *data)
  	struct snd_pcm_substream *substream = pcm_data->substream;
  	struct snd_pcm_runtime *runtime = substream->runtime;
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct hsw_priv_data *pdata =
+-	struct sst_byt_priv_data *pdata =
 -		snd_soc_platform_get_drvdata(rtd->platform);
 +	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct sst_hsw *hsw = pdata->hsw;
- 	u32 pos;
- 	snd_pcm_uframes_t position = bytes_to_frames(runtime,
-@@ -783,8 +783,8 @@ static snd_pcm_uframes_t hsw_pcm_pointer(struct snd_pcm_substream *substream)
++	struct sst_byt_priv_data *pdata = snd_soc_component_get_drvdata(component);
+ 	struct sst_byt *byt = pdata->byt;
+ 	u32 pos, hw_pos;
+ 
+@@ -238,8 +239,8 @@ static snd_pcm_uframes_t sst_byt_pcm_pointer(struct snd_pcm_substream *substream
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
  	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct hsw_priv_data *pdata =
+-	struct sst_byt_priv_data *pdata =
 -		snd_soc_platform_get_drvdata(rtd->platform);
 +	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct hsw_pcm_data *pcm_data;
- 	struct sst_hsw *hsw = pdata->hsw;
- 	snd_pcm_uframes_t offset;
-@@ -807,8 +807,8 @@ static snd_pcm_uframes_t hsw_pcm_pointer(struct snd_pcm_substream *substream)
- static int hsw_pcm_open(struct snd_pcm_substream *substream)
++	struct sst_byt_priv_data *pdata = snd_soc_component_get_drvdata(component);
+ 	struct sst_byt_pcm_data *pcm_data = &pdata->pcm[substream->stream];
+ 
+ 	dev_dbg(rtd->dev, "PCM: DMA pointer %u bytes\n", pcm_data->hw_ptr);
+@@ -250,8 +251,8 @@ static snd_pcm_uframes_t sst_byt_pcm_pointer(struct snd_pcm_substream *substream
+ static int sst_byt_pcm_open(struct snd_pcm_substream *substream)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct hsw_priv_data *pdata =
+-	struct sst_byt_priv_data *pdata =
 -		snd_soc_platform_get_drvdata(rtd->platform);
 +	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct hsw_pcm_data *pcm_data;
- 	struct sst_hsw *hsw = pdata->hsw;
- 	int dai;
-@@ -840,8 +840,8 @@ static int hsw_pcm_open(struct snd_pcm_substream *substream)
- static int hsw_pcm_close(struct snd_pcm_substream *substream)
++	struct sst_byt_priv_data *pdata = snd_soc_component_get_drvdata(component);
+ 	struct sst_byt_pcm_data *pcm_data = &pdata->pcm[substream->stream];
+ 	struct sst_byt *byt = pdata->byt;
+ 
+@@ -278,8 +279,8 @@ static int sst_byt_pcm_open(struct snd_pcm_substream *substream)
+ static int sst_byt_pcm_close(struct snd_pcm_substream *substream)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct hsw_priv_data *pdata =
+-	struct sst_byt_priv_data *pdata =
 -		snd_soc_platform_get_drvdata(rtd->platform);
 +	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(component);
- 	struct hsw_pcm_data *pcm_data;
- 	struct sst_hsw *hsw = pdata->hsw;
- 	int ret, dai;
-@@ -942,9 +942,9 @@ static void hsw_pcm_free_modules(struct hsw_priv_data *pdata)
- static int hsw_pcm_new(struct snd_soc_pcm_runtime *rtd)
++	struct sst_byt_priv_data *pdata = snd_soc_component_get_drvdata(component);
+ 	struct sst_byt_pcm_data *pcm_data = &pdata->pcm[substream->stream];
+ 	struct sst_byt *byt = pdata->byt;
+ 	int ret;
+@@ -324,8 +325,8 @@ static int sst_byt_pcm_new(struct snd_soc_pcm_runtime *rtd)
  {
  	struct snd_pcm *pcm = rtd->pcm;
+ 	size_t size;
 -	struct snd_soc_platform *platform = rtd->platform;
 -	struct sst_pdata *pdata = dev_get_platdata(platform->dev);
--	struct hsw_priv_data *priv_data = dev_get_drvdata(platform->dev);
 +	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
 +	struct sst_pdata *pdata = dev_get_platdata(component->dev);
-+	struct hsw_priv_data *priv_data = dev_get_drvdata(component->dev);
- 	struct device *dev = pdata->dma_dev;
  	int ret = 0;
  
-@@ -1052,23 +1052,23 @@ static const struct snd_soc_dapm_route graph[] = {
- 	{"Analog Capture", NULL, "SSP0 CODEC IN"},
+ 	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream ||
+@@ -366,21 +367,21 @@ static struct snd_soc_dai_driver byt_dais[] = {
+ 	},
  };
  
--static int hsw_pcm_probe(struct snd_soc_platform *platform)
-+static int hsw_pcm_probe(struct snd_soc_component *component)
+-static int sst_byt_pcm_probe(struct snd_soc_platform *platform)
++static int sst_byt_pcm_probe(struct snd_soc_component *component)
  {
--	struct hsw_priv_data *priv_data = snd_soc_platform_get_drvdata(platform);
--	struct sst_pdata *pdata = dev_get_platdata(platform->dev);
-+	struct hsw_priv_data *priv_data = snd_soc_component_get_drvdata(component);
-+	struct sst_pdata *pdata = dev_get_platdata(component->dev);
- 	struct device *dma_dev, *dev;
- 	int i, ret = 0;
- 
- 	if (!pdata)
- 		return -ENODEV;
- 
--	dev = platform->dev;
-+	dev = component->dev;
- 	dma_dev = pdata->dma_dev;
- 
- 	priv_data->hsw = pdata->dsp;
--	priv_data->dev = platform->dev;
-+	priv_data->dev = dev;
- 	priv_data->pm_state = HSW_PM_STATE_D0;
--	priv_data->soc_card = platform->component.card;
-+	priv_data->soc_card = component->card;
- 
- 	/* allocate DSP buffer page tables */
- 	for (i = 0; i < ARRAY_SIZE(hsw_dais); i++) {
-@@ -1098,11 +1098,10 @@ static int hsw_pcm_probe(struct snd_soc_platform *platform)
- 		goto err;
- 
- 	/* enable runtime PM with auto suspend */
--	pm_runtime_set_autosuspend_delay(platform->dev,
--		SST_RUNTIME_SUSPEND_DELAY);
--	pm_runtime_use_autosuspend(platform->dev);
--	pm_runtime_enable(platform->dev);
--	pm_runtime_idle(platform->dev);
-+	pm_runtime_set_autosuspend_delay(dev, SST_RUNTIME_SUSPEND_DELAY);
-+	pm_runtime_use_autosuspend(dev);
-+	pm_runtime_enable(dev);
-+	pm_runtime_idle(dev);
- 
- 	return 0;
- 
-@@ -1116,13 +1115,13 @@ static int hsw_pcm_probe(struct snd_soc_platform *platform)
- 	return ret;
- }
- 
--static int hsw_pcm_remove(struct snd_soc_platform *platform)
-+static void hsw_pcm_remove(struct snd_soc_component *component)
- {
- 	struct hsw_priv_data *priv_data =
--		snd_soc_platform_get_drvdata(platform);
-+		snd_soc_component_get_drvdata(component);
+-	struct sst_pdata *plat_data = dev_get_platdata(platform->dev);
++	struct sst_pdata *plat_data = dev_get_platdata(component->dev);
+ 	struct sst_byt_priv_data *priv_data;
  	int i;
  
--	pm_runtime_disable(platform->dev);
-+	pm_runtime_disable(component->dev);
- 	hsw_pcm_free_modules(priv_data);
+ 	if (!plat_data)
+ 		return -ENODEV;
  
- 	for (i = 0; i < ARRAY_SIZE(hsw_dais); i++) {
-@@ -1131,24 +1130,19 @@ static int hsw_pcm_remove(struct snd_soc_platform *platform)
- 		if (hsw_dais[i].capture.channels_min)
- 			snd_dma_free_pages(&priv_data->dmab[i][1]);
- 	}
--
--	return 0;
+-	priv_data = devm_kzalloc(platform->dev, sizeof(*priv_data),
++	priv_data = devm_kzalloc(component->dev, sizeof(*priv_data),
+ 				 GFP_KERNEL);
+ 	if (!priv_data)
+ 		return -ENOMEM;
+ 	priv_data->byt = plat_data->dsp;
+-	snd_soc_platform_set_drvdata(platform, priv_data);
++	snd_soc_component_set_drvdata(component, priv_data);
+ 
+ 	for (i = 0; i < BYT_PCM_COUNT; i++) {
+ 		mutex_init(&priv_data->pcm[i].mutex);
+@@ -390,22 +391,13 @@ static int sst_byt_pcm_probe(struct snd_soc_platform *platform)
+ 	return 0;
  }
  
--static const struct snd_soc_platform_driver hsw_soc_platform = {
-+static const struct snd_soc_component_driver hsw_dai_component = {
-+	.name		= DRV_NAME,
- 	.probe		= hsw_pcm_probe,
- 	.remove		= hsw_pcm_remove,
- 	.ops		= &hsw_pcm_ops,
- 	.pcm_new	= hsw_pcm_new,
--};
+-static int sst_byt_pcm_remove(struct snd_soc_platform *platform)
+-{
+-	return 0;
+-}
 -
--static const struct snd_soc_component_driver hsw_dai_component = {
--	.name = "haswell-dai",
--	.controls = hsw_volume_controls,
--	.num_controls = ARRAY_SIZE(hsw_volume_controls),
--	.dapm_widgets = widgets,
-+	.controls	= hsw_volume_controls,
-+	.num_controls	= ARRAY_SIZE(hsw_volume_controls),
-+	.dapm_widgets	= widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(widgets),
--	.dapm_routes = graph,
-+	.dapm_routes	= graph,
- 	.num_dapm_routes = ARRAY_SIZE(graph),
+-static const struct snd_soc_platform_driver byt_soc_platform = {
++static const struct snd_soc_component_driver byt_dai_component = {
++	.name		= DRV_NAME,
+ 	.probe		= sst_byt_pcm_probe,
+-	.remove		= sst_byt_pcm_remove,
+ 	.ops		= &sst_byt_pcm_ops,
+ 	.pcm_new	= sst_byt_pcm_new,
  };
  
-@@ -1172,19 +1166,13 @@ static int hsw_pcm_dev_probe(struct platform_device *pdev)
- 	priv_data->hsw = sst_pdata->dsp;
- 	platform_set_drvdata(pdev, priv_data);
+-static const struct snd_soc_component_driver byt_dai_component = {
+-	.name		= "byt-dai",
+-};
+-
+ #ifdef CONFIG_PM
+ static int sst_byt_pcm_dev_suspend_late(struct device *dev)
+ {
+@@ -461,19 +453,13 @@ static int sst_byt_pcm_dev_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		return -ENODEV;
  
--	ret = snd_soc_register_platform(&pdev->dev, &hsw_soc_platform);
+-	ret = snd_soc_register_platform(&pdev->dev, &byt_soc_platform);
 -	if (ret < 0)
 -		goto err_plat;
 -
--	ret = snd_soc_register_component(&pdev->dev, &hsw_dai_component,
-+	ret = devm_snd_soc_register_component(&pdev->dev, &hsw_dai_component,
- 		hsw_dais, ARRAY_SIZE(hsw_dais));
+-	ret = snd_soc_register_component(&pdev->dev, &byt_dai_component,
++	ret = devm_snd_soc_register_component(&pdev->dev, &byt_dai_component,
+ 					 byt_dais, ARRAY_SIZE(byt_dais));
  	if (ret < 0)
 -		goto err_comp;
 +		goto err_plat;
@@ -416,15 +237,15 @@ index c044400540ec..fe2c826e710c 100644
 -err_comp:
 -	snd_soc_unregister_platform(&pdev->dev);
  err_plat:
- 	sst_hsw_dsp_free(&pdev->dev, sst_pdata);
- 	return 0;
-@@ -1194,8 +1182,6 @@ static int hsw_pcm_dev_remove(struct platform_device *pdev)
+ 	sst_byt_dsp_free(&pdev->dev, sst_pdata);
+ 	return ret;
+@@ -483,8 +469,6 @@ static int sst_byt_pcm_dev_remove(struct platform_device *pdev)
  {
  	struct sst_pdata *sst_pdata = dev_get_platdata(&pdev->dev);
  
 -	snd_soc_unregister_platform(&pdev->dev);
 -	snd_soc_unregister_component(&pdev->dev);
- 	sst_hsw_dsp_free(&pdev->dev, sst_pdata);
+ 	sst_byt_dsp_free(&pdev->dev, sst_pdata);
  
  	return 0;
 -- 
