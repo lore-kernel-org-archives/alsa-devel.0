@@ -1,130 +1,105 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v6 06/17] ASoC: fsl_ssi: Clear FIFO directly in
-	fsl_ssi_config()
-Date: Mon, 12 Feb 2018 14:03:14 -0800
-Message-ID: <1518473005-14090-7-git-send-email-nicoleotsuka@gmail.com>
+Subject: [PATCH v6 15/17] ASoC: fsl_ssi: Add bool synchronous to mark synchronous mode
+Date: Mon, 12 Feb 2018 14:03:23 -0800
+Message-ID: <1518473005-14090-16-git-send-email-nicoleotsuka@gmail.com>
 References: <1518473005-14090-1-git-send-email-nicoleotsuka@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 13F78267610
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 23:02:46 +0100 (CET)
-Received: by mail-pg0-f65.google.com with SMTP id l131so2894079pga.2
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 14:02:46 -0800 (PST)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1518473005-14090-1-git-send-email-nicoleotsuka@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, timur@tabi.org
-Cc: mail@maciej.szmigiero.name, kernel@pengutronix.de, lgirdwood@gmail.com, alsa-devel@alsa-project.org, caleb@crome.org, linux-kernel@vger.kernel.org, arnaud.mouiche@invoxia.com, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
+Cc: caleb@crome.org, mail@maciej.szmigiero.name, fabio.estevam@nxp.com, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, arnaud.mouiche@invoxia.com, lukma@denx.de, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-The FIFO clear helper function is just one line of code now.
-So it could be cleaned up by removing it and calling regmap
-directly.
-
-Meanwhile, FIFO clear could be applied to all use cases, not
-confined to AC97. So this patch also moves FIFO clear in the
-trigger() to fsl_ssi_config() and removes the AC97 check.
-
-Note that SOR register is safe from offline_config HW limit.
+Using symmetric_rates in the cpu_dai_drv is a bit implicit,
+so this patch adds a bool synchronous instead.
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Tested-by: Caleb Crome <caleb@crome.org>
 Tested-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 Reviewed-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 ---
- sound/soc/fsl/fsl_ssi.c | 33 ++++++++++-----------------------
- 1 file changed, 10 insertions(+), 23 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 0d8c800..d276b78 100644
+index ed9102d..b58fabe 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -410,17 +410,6 @@ static void fsl_ssi_rxtx_config(struct fsl_ssi *ssi, bool enable)
- }
- 
- /**
-- * Clear remaining data in the FIFO to avoid dirty data or channel slipping
-- */
--static void fsl_ssi_fifo_clear(struct fsl_ssi *ssi, bool is_rx)
--{
--	bool tx = !is_rx;
--
--	regmap_update_bits(ssi->regs, REG_SSI_SOR,
--			   SSI_SOR_xX_CLR(tx), SSI_SOR_xX_CLR(tx));
--}
--
--/**
-  * Exclude bits that are used by the opposite stream
-  *
-  * When both streams are active, disabling some bits for the current stream
-@@ -446,10 +435,11 @@ static void fsl_ssi_fifo_clear(struct fsl_ssi *ssi, bool is_rx)
- static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
- 			   struct fsl_ssi_regvals *vals)
- {
--	int adir = (&ssi->regvals[TX] == vals) ? RX : TX;
--	int dir = (&ssi->regvals[TX] == vals) ? TX : RX;
-+	bool tx = &ssi->regvals[TX] == vals;
+@@ -217,6 +217,7 @@ struct fsl_ssi_soc_data {
+  * @dai_fmt: DAI configuration this device is currently used with
+  * @streams: Mask of current active streams: BIT(TX) and BIT(RX)
+  * @i2s_net: I2S and Network mode configurations of SCR register
++ * @synchronous: Use synchronous mode - both of TX and RX use STCK and SFCK
+  * @use_dma: DMA is used or FIQ with stream filter
+  * @use_dual_fifo: DMA with support for dual FIFO mode
+  * @has_ipg_clk_name: If "ipg" is in the clock name list of device tree
+@@ -262,6 +263,7 @@ struct fsl_ssi {
+ 	unsigned int dai_fmt;
+ 	u8 streams;
+ 	u8 i2s_net;
++	bool synchronous;
+ 	bool use_dma;
+ 	bool use_dual_fifo;
+ 	bool has_ipg_clk_name;
+@@ -673,7 +675,6 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+ 	bool tx2, tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	struct fsl_ssi *ssi = snd_soc_dai_get_drvdata(dai);
  	struct regmap *regs = ssi->regs;
- 	struct fsl_ssi_regvals *avals;
-+	int adir = tx ? RX : TX;
-+	int dir = tx ? TX : RX;
- 	bool aactive;
+-	int synchronous = ssi->cpu_dai_drv.symmetric_rates, ret;
+ 	u32 pm = 999, div2, psr, stccr, mask, afreq, factor, i;
+ 	unsigned long clkrate, baudrate, tmprate;
+ 	unsigned int slots = params_channels(hw_params);
+@@ -681,6 +682,7 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+ 	u64 sub, savesub = 100000;
+ 	unsigned int freq;
+ 	bool baudclk_is_used;
++	int ret;
  
- 	/* Check if the opposite stream is active */
-@@ -489,7 +479,9 @@ static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
+ 	/* Override slots and slot_width if being specifically set... */
+ 	if (ssi->slots)
+@@ -759,7 +761,7 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+ 	mask = SSI_SxCCR_PM_MASK | SSI_SxCCR_DIV2 | SSI_SxCCR_PSR;
  
- 	/* Online configure single direction while SSI is running */
- 	if (enable) {
--		fsl_ssi_fifo_clear(ssi, vals->scr & SSI_SCR_RE);
-+		/* Clear FIFO to prevent dirty data or channel slipping */
-+		regmap_update_bits(ssi->regs, REG_SSI_SOR,
-+				   SSI_SOR_xX_CLR(tx), SSI_SOR_xX_CLR(tx));
+ 	/* STCCR is used for RX in synchronous mode */
+-	tx2 = tx || synchronous;
++	tx2 = tx || ssi->synchronous;
+ 	regmap_update_bits(regs, REG_SSI_SxCCR(tx2), mask, stccr);
  
- 		regmap_update_bits(regs, REG_SSI_SRCR, vals->srcr, vals->srcr);
- 		regmap_update_bits(regs, REG_SSI_STCR, vals->stcr, vals->stcr);
-@@ -511,6 +503,10 @@ static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
- 		regmap_update_bits(regs, REG_SSI_SRCR, srcr, 0);
- 		regmap_update_bits(regs, REG_SSI_STCR, stcr, 0);
- 		regmap_update_bits(regs, REG_SSI_SIER, sier, 0);
-+
-+		/* Clear FIFO to prevent dirty data or channel slipping */
-+		regmap_update_bits(ssi->regs, REG_SSI_SOR,
-+				   SSI_SOR_xX_CLR(tx), SSI_SOR_xX_CLR(tx));
+ 	if (!baudclk_is_used) {
+@@ -807,7 +809,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+ 	 * that should set separate configurations for STCCR and SRCCR
+ 	 * despite running in the synchronous mode.
+ 	 */
+-	if (enabled && ssi->cpu_dai_drv.symmetric_rates)
++	if (enabled && ssi->synchronous)
+ 		return 0;
+ 
+ 	if (fsl_ssi_is_i2s_master(ssi)) {
+@@ -839,7 +841,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
  	}
  
- config_done:
-@@ -1091,7 +1087,6 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct fsl_ssi *ssi = snd_soc_dai_get_drvdata(rtd->cpu_dai);
--	struct regmap *regs = ssi->regs;
+ 	/* In synchronous mode, the SSI uses STCCR for capture */
+-	tx2 = tx || ssi->cpu_dai_drv.symmetric_rates;
++	tx2 = tx || ssi->synchronous;
+ 	regmap_update_bits(regs, REG_SSI_SxCCR(tx2), SSI_SxCCR_WL_MASK, wl);
  
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -1116,14 +1111,6 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- 		return -EINVAL;
- 	}
- 
--	/* Clear corresponding FIFO */
--	if (fsl_ssi_is_ac97(ssi)) {
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--			regmap_write(regs, REG_SSI_SOR, SSI_SOR_TX_CLR);
--		else
--			regmap_write(regs, REG_SSI_SOR, SSI_SOR_RX_CLR);
--	}
--
  	return 0;
- }
+@@ -968,7 +970,7 @@ static int _fsl_ssi_set_dai_fmt(struct fsl_ssi *ssi, unsigned int fmt)
+ 	srcr = strcr;
  
+ 	/* Set SYN mode and clear RXDIR bit when using SYN or AC97 mode */
+-	if (ssi->cpu_dai_drv.symmetric_rates || fsl_ssi_is_ac97(ssi)) {
++	if (ssi->synchronous || fsl_ssi_is_ac97(ssi)) {
+ 		srcr &= ~SSI_SRCR_RXDIR;
+ 		scr |= SSI_SCR_SYN;
+ 	}
+@@ -1456,6 +1458,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 		if (!fsl_ssi_is_ac97(ssi)) {
+ 			ssi->cpu_dai_drv.symmetric_rates = 1;
+ 			ssi->cpu_dai_drv.symmetric_samplebits = 1;
++			ssi->synchronous = true;
+ 		}
+ 
+ 		ssi->cpu_dai_drv.symmetric_channels = 1;
 -- 
 2.1.4
