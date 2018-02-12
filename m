@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic26: replace codec to
-	component" to the asoc tree
-Date: Mon, 12 Feb 2018 12:40:03 +0000
-Message-ID: <E1elDOt-0004eZ-NI@debutante>
-References: <874ln5z4l8.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: adau17x1/adau1761/adau1781: replace
+	codec to component" to the asoc tree
+Date: Mon, 12 Feb 2018 12:40:10 +0000
+Message-ID: <E1elDP0-0004gB-0E@debutante>
+References: <877es1z4mm.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 11502267660
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:40:06 +0100 (CET)
-In-Reply-To: <874ln5z4l8.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5DAB3267445
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:40:12 +0100 (CET)
+In-Reply-To: <877es1z4mm.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic26: replace codec to component
+   ASoC: adau17x1/adau1761/adau1781: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,14 +53,25 @@ to this mail.
 Thanks,
 Mark
 
->From 1514613a7a4480e40f40a2d41527292fece8b362 Mon Sep 17 00:00:00 2001
+>From dd08102a9ff8aec720946f2b229a076b48bc8cf0 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:13:13 +0000
-Subject: [PATCH] ASoC: tlv320aic26: replace codec to component
+Date: Mon, 29 Jan 2018 04:12:24 +0000
+Subject: [PATCH] ASoC: adau17x1/adau1761/adau1781: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
-Note:
+Because there are many drivers which are using adau17x1,
+we need to update these all related drivers in same time.
+Otherwise compile error/warning happen
+
+adau1761:
+	xxx_codec_xxx()		->	xxx_component_xxx()
+	.idle_bias_off = 0	->	.idle_bias_on = 1
+	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
+	-			->	.endianness = 1
+	-			->	.non_legacy_dai_naming = 1
+
+adau1781:
 	xxx_codec_xxx()		->	xxx_component_xxx()
 	.idle_bias_off = 0	->	.idle_bias_on = 1
 	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
@@ -70,209 +81,550 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic26.c | 83 ++++++++++++++++++++----------------------
- 1 file changed, 39 insertions(+), 44 deletions(-)
+ sound/soc/codecs/adau1761.c | 88 +++++++++++++++++++++++----------------------
+ sound/soc/codecs/adau1781.c | 51 +++++++++++++-------------
+ sound/soc/codecs/adau17x1.c | 67 +++++++++++++++++-----------------
+ sound/soc/codecs/adau17x1.h |  8 ++---
+ 4 files changed, 108 insertions(+), 106 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic26.c b/sound/soc/codecs/tlv320aic26.c
-index 89421caaeb70..b91b8d5f1ba3 100644
---- a/sound/soc/codecs/tlv320aic26.c
-+++ b/sound/soc/codecs/tlv320aic26.c
-@@ -30,7 +30,7 @@ MODULE_LICENSE("GPL");
- struct aic26 {
- 	struct spi_device *spi;
- 	struct regmap *regmap;
--	struct snd_soc_codec *codec;
-+	struct snd_soc_component *component;
- 	int master;
- 	int datfm;
- 	int mclk;
-@@ -64,8 +64,8 @@ static int aic26_hw_params(struct snd_pcm_substream *substream,
- 			   struct snd_pcm_hw_params *params,
- 			   struct snd_soc_dai *dai)
+diff --git a/sound/soc/codecs/adau1761.c b/sound/soc/codecs/adau1761.c
+index 3bc3cc559dde..be136e981653 100644
+--- a/sound/soc/codecs/adau1761.c
++++ b/sound/soc/codecs/adau1761.c
+@@ -255,8 +255,8 @@ static const struct snd_kcontrol_new adau1761_input_mux_control =
+ static int adau1761_dejitter_fixup(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
  {
--	struct snd_soc_codec *codec = dai->codec;
--	struct aic26 *aic26 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct aic26 *aic26 = snd_soc_component_get_drvdata(component);
- 	int fsref, divisor, wlen, pval, jval, dval, qval;
- 	u16 reg;
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct adau *adau = snd_soc_component_get_drvdata(component);
  
-@@ -112,20 +112,20 @@ static int aic26_hw_params(struct snd_pcm_substream *substream,
- 	dev_dbg(&aic26->spi->dev, "Setting PLLM to %d.%04d\n", jval, dval);
- 	qval = 0;
- 	reg = 0x8000 | qval << 11 | pval << 8 | jval << 2;
--	snd_soc_write(codec, AIC26_REG_PLL_PROG1, reg);
-+	snd_soc_component_write(component, AIC26_REG_PLL_PROG1, reg);
- 	reg = dval << 2;
--	snd_soc_write(codec, AIC26_REG_PLL_PROG2, reg);
-+	snd_soc_component_write(component, AIC26_REG_PLL_PROG2, reg);
+ 	/* After any power changes have been made the dejitter circuit
+ 	 * has to be reinitialized. */
+@@ -445,10 +445,10 @@ static const struct snd_soc_dapm_route adau1761_dapm_routes[] = {
+ 	{ "Digital Clock 1", NULL, "SYSCLK" },
+ };
  
- 	/* Audio Control 3 (master mode, fsref rate) */
- 	if (aic26->master)
- 		reg = 0x0800;
- 	if (fsref == 48000)
- 		reg = 0x2000;
--	snd_soc_update_bits(codec, AIC26_REG_AUDIO_CTRL3, 0xf800, reg);
-+	snd_soc_component_update_bits(component, AIC26_REG_AUDIO_CTRL3, 0xf800, reg);
+-static int adau1761_set_bias_level(struct snd_soc_codec *codec,
++static int adau1761_set_bias_level(struct snd_soc_component *component,
+ 				 enum snd_soc_bias_level level)
+ {
+-	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++	struct adau *adau = snd_soc_component_get_drvdata(component);
  
- 	/* Audio Control 1 (FSref divisor) */
- 	reg = wlen | aic26->datfm | (divisor << 3) | divisor;
--	snd_soc_update_bits(codec, AIC26_REG_AUDIO_CTRL1, 0xfff, reg);
-+	snd_soc_component_update_bits(component, AIC26_REG_AUDIO_CTRL1, 0xfff, reg);
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+@@ -460,7 +460,7 @@ static int adau1761_set_bias_level(struct snd_soc_codec *codec,
+ 		regmap_update_bits(adau->regmap, ADAU17X1_CLOCK_CONTROL,
+ 			ADAU17X1_CLOCK_CONTROL_SYSCLK_EN,
+ 			ADAU17X1_CLOCK_CONTROL_SYSCLK_EN);
+-		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF)
++		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF)
+ 			regcache_sync(adau->regmap);
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+@@ -474,9 +474,9 @@ static int adau1761_set_bias_level(struct snd_soc_codec *codec,
+ }
  
+ static enum adau1761_output_mode adau1761_get_lineout_mode(
+-	struct snd_soc_codec *codec)
++	struct snd_soc_component *component)
+ {
+-	struct adau1761_platform_data *pdata = codec->dev->platform_data;
++	struct adau1761_platform_data *pdata = component->dev->platform_data;
+ 
+ 	if (pdata)
+ 		return pdata->lineout_mode;
+@@ -484,11 +484,11 @@ static enum adau1761_output_mode adau1761_get_lineout_mode(
+ 	return ADAU1761_OUTPUT_MODE_LINE;
+ }
+ 
+-static int adau1761_setup_digmic_jackdetect(struct snd_soc_codec *codec)
++static int adau1761_setup_digmic_jackdetect(struct snd_soc_component *component)
+ {
+-	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+-	struct adau1761_platform_data *pdata = codec->dev->platform_data;
+-	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
++	struct adau1761_platform_data *pdata = component->dev->platform_data;
++	struct adau *adau = snd_soc_component_get_drvdata(component);
+ 	enum adau1761_digmic_jackdet_pin_mode mode;
+ 	unsigned int val = 0;
+ 	int ret;
+@@ -513,7 +513,7 @@ static int adau1761_setup_digmic_jackdetect(struct snd_soc_codec *codec)
+ 		if (pdata->jackdetect_active_low)
+ 			val |= ADAU1761_DIGMIC_JACKDETECT_ACTIVE_LOW;
+ 
+-		ret = snd_soc_add_codec_controls(codec,
++		ret = snd_soc_add_component_controls(component,
+ 			adau1761_jack_detect_controls,
+ 			ARRAY_SIZE(adau1761_jack_detect_controls));
+ 		if (ret)
+@@ -546,11 +546,11 @@ static int adau1761_setup_digmic_jackdetect(struct snd_soc_codec *codec)
  	return 0;
  }
-@@ -135,8 +135,8 @@ static int aic26_hw_params(struct snd_pcm_substream *substream,
-  */
- static int aic26_mute(struct snd_soc_dai *dai, int mute)
+ 
+-static int adau1761_setup_headphone_mode(struct snd_soc_codec *codec)
++static int adau1761_setup_headphone_mode(struct snd_soc_component *component)
  {
--	struct snd_soc_codec *codec = dai->codec;
--	struct aic26 *aic26 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct aic26 *aic26 = snd_soc_component_get_drvdata(component);
- 	u16 reg;
+-	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+-	struct adau *adau = snd_soc_codec_get_drvdata(codec);
+-	struct adau1761_platform_data *pdata = codec->dev->platform_data;
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
++	struct adau *adau = snd_soc_component_get_drvdata(component);
++	struct adau1761_platform_data *pdata = component->dev->platform_data;
+ 	enum adau1761_output_mode mode;
+ 	int ret;
  
- 	dev_dbg(&aic26->spi->dev, "aic26_mute(dai=%p, mute=%i)\n",
-@@ -146,7 +146,7 @@ static int aic26_mute(struct snd_soc_dai *dai, int mute)
- 		reg = 0x8080;
- 	else
- 		reg = 0;
--	snd_soc_update_bits(codec, AIC26_REG_DAC_GAIN, 0x8000, reg);
-+	snd_soc_component_update_bits(component, AIC26_REG_DAC_GAIN, 0x8000, reg);
- 
- 	return 0;
+@@ -588,7 +588,7 @@ static int adau1761_setup_headphone_mode(struct snd_soc_codec *codec)
+ 			adau1761_capless_dapm_routes,
+ 			ARRAY_SIZE(adau1761_capless_dapm_routes));
+ 	} else {
+-		ret = snd_soc_add_codec_controls(codec, adau1761_mono_controls,
++		ret = snd_soc_add_component_controls(component, adau1761_mono_controls,
+ 			ARRAY_SIZE(adau1761_mono_controls));
+ 		if (ret)
+ 			return ret;
+@@ -640,14 +640,14 @@ static bool adau1761_readable_register(struct device *dev, unsigned int reg)
+ 	return adau17x1_readable_register(dev, reg);
  }
-@@ -154,8 +154,8 @@ static int aic26_mute(struct snd_soc_dai *dai, int mute)
- static int aic26_set_sysclk(struct snd_soc_dai *codec_dai,
- 			    int clk_id, unsigned int freq, int dir)
+ 
+-static int adau1761_codec_probe(struct snd_soc_codec *codec)
++static int adau1761_component_probe(struct snd_soc_component *component)
  {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct aic26 *aic26 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct aic26 *aic26 = snd_soc_component_get_drvdata(component);
+-	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+-	struct adau1761_platform_data *pdata = codec->dev->platform_data;
+-	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
++	struct adau1761_platform_data *pdata = component->dev->platform_data;
++	struct adau *adau = snd_soc_component_get_drvdata(component);
+ 	int ret;
  
- 	dev_dbg(&aic26->spi->dev, "aic26_set_sysclk(dai=%p, clk_id==%i,"
- 		" freq=%i, dir=%i)\n",
-@@ -171,8 +171,8 @@ static int aic26_set_sysclk(struct snd_soc_dai *codec_dai,
+-	ret = adau17x1_add_widgets(codec);
++	ret = adau17x1_add_widgets(component);
+ 	if (ret < 0)
+ 		return ret;
  
- static int aic26_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct aic26 *aic26 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct aic26 *aic26 = snd_soc_component_get_drvdata(component);
+@@ -658,20 +658,20 @@ static int adau1761_codec_probe(struct snd_soc_codec *codec)
+ 		regmap_update_bits(adau->regmap, ADAU1761_RIGHT_DIFF_INPUT_VOL,
+ 			ADAU1761_DIFF_INPUT_VOL_LDEN,
+ 			ADAU1761_DIFF_INPUT_VOL_LDEN);
+-		ret = snd_soc_add_codec_controls(codec,
++		ret = snd_soc_add_component_controls(component,
+ 			adau1761_differential_mode_controls,
+ 			ARRAY_SIZE(adau1761_differential_mode_controls));
+ 		if (ret)
+ 			return ret;
+ 	} else {
+-		ret = snd_soc_add_codec_controls(codec,
++		ret = snd_soc_add_component_controls(component,
+ 			adau1761_single_mode_controls,
+ 			ARRAY_SIZE(adau1761_single_mode_controls));
+ 		if (ret)
+ 			return ret;
+ 	}
  
- 	dev_dbg(&aic26->spi->dev, "aic26_set_fmt(dai=%p, fmt==%i)\n",
- 		codec_dai, fmt);
-@@ -265,7 +265,7 @@ static ssize_t aic26_keyclick_show(struct device *dev,
- 	struct aic26 *aic26 = dev_get_drvdata(dev);
- 	int val, amp, freq, len;
+-	switch (adau1761_get_lineout_mode(codec)) {
++	switch (adau1761_get_lineout_mode(component)) {
+ 	case ADAU1761_OUTPUT_MODE_LINE:
+ 		break;
+ 	case ADAU1761_OUTPUT_MODE_HEADPHONE:
+@@ -686,11 +686,11 @@ static int adau1761_codec_probe(struct snd_soc_codec *codec)
+ 		return -EINVAL;
+ 	}
  
--	val = snd_soc_read(aic26->codec, AIC26_REG_AUDIO_CTRL2);
-+	val = snd_soc_component_read32(aic26->component, AIC26_REG_AUDIO_CTRL2);
- 	amp = (val >> 12) & 0x7;
- 	freq = (125 << ((val >> 8) & 0x7)) >> 1;
- 	len = 2 * (1 + ((val >> 4) & 0xf));
-@@ -280,7 +280,7 @@ static ssize_t aic26_keyclick_set(struct device *dev,
- {
- 	struct aic26 *aic26 = dev_get_drvdata(dev);
- 
--	snd_soc_update_bits(aic26->codec, AIC26_REG_AUDIO_CTRL2,
-+	snd_soc_component_update_bits(aic26->component, AIC26_REG_AUDIO_CTRL2,
- 			    0x8000, 0x800);
- 
- 	return count;
-@@ -291,44 +291,46 @@ static DEVICE_ATTR(keyclick, 0644, aic26_keyclick_show, aic26_keyclick_set);
- /* ---------------------------------------------------------------------
-  * SoC CODEC portion of driver: probe and release routines
-  */
--static int aic26_probe(struct snd_soc_codec *codec)
-+static int aic26_probe(struct snd_soc_component *component)
- {
--	struct aic26 *aic26 = dev_get_drvdata(codec->dev);
-+	struct aic26 *aic26 = dev_get_drvdata(component->dev);
- 	int ret, reg;
- 
--	aic26->codec = codec;
-+	aic26->component = component;
- 
- 	/* Reset the codec to power on defaults */
--	snd_soc_write(codec, AIC26_REG_RESET, 0xBB00);
-+	snd_soc_component_write(component, AIC26_REG_RESET, 0xBB00);
- 
- 	/* Power up CODEC */
--	snd_soc_write(codec, AIC26_REG_POWER_CTRL, 0);
-+	snd_soc_component_write(component, AIC26_REG_POWER_CTRL, 0);
- 
- 	/* Audio Control 3 (master mode, fsref rate) */
--	reg = snd_soc_read(codec, AIC26_REG_AUDIO_CTRL3);
-+	reg = snd_soc_component_read32(component, AIC26_REG_AUDIO_CTRL3);
- 	reg &= ~0xf800;
- 	reg |= 0x0800; /* set master mode */
--	snd_soc_write(codec, AIC26_REG_AUDIO_CTRL3, reg);
-+	snd_soc_component_write(component, AIC26_REG_AUDIO_CTRL3, reg);
- 
- 	/* Register the sysfs files for debugging */
- 	/* Create SysFS files */
--	ret = device_create_file(codec->dev, &dev_attr_keyclick);
-+	ret = device_create_file(component->dev, &dev_attr_keyclick);
+-	ret = adau1761_setup_headphone_mode(codec);
++	ret = adau1761_setup_headphone_mode(component);
  	if (ret)
--		dev_info(codec->dev, "error creating sysfs files\n");
-+		dev_info(component->dev, "error creating sysfs files\n");
+ 		return ret;
+ 
+-	ret = adau1761_setup_digmic_jackdetect(codec);
++	ret = adau1761_setup_digmic_jackdetect(component);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -706,27 +706,28 @@ static int adau1761_codec_probe(struct snd_soc_codec *codec)
+ 			return ret;
+ 	}
+ 
+-	ret = adau17x1_add_routes(codec);
++	ret = adau17x1_add_routes(component);
+ 	if (ret < 0)
+ 		return ret;
  
  	return 0;
  }
  
--static const struct snd_soc_codec_driver aic26_soc_codec_dev = {
--	.probe = aic26_probe,
+-static const struct snd_soc_codec_driver adau1761_codec_driver = {
+-	.probe = adau1761_codec_probe,
+-	.resume	= adau17x1_resume,
+-	.set_bias_level	= adau1761_set_bias_level,
+-	.suspend_bias_off = true,
+-
 -	.component_driver = {
--		.controls		= aic26_snd_controls,
--		.num_controls		= ARRAY_SIZE(aic26_snd_controls),
--		.dapm_widgets		= tlv320aic26_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(tlv320aic26_dapm_widgets),
--		.dapm_routes		= tlv320aic26_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(tlv320aic26_dapm_routes),
+-		.controls		= adau1761_controls,
+-		.num_controls		= ARRAY_SIZE(adau1761_controls),
+-		.dapm_widgets		= adau1x61_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(adau1x61_dapm_widgets),
+-		.dapm_routes		= adau1x61_dapm_routes,
+-		.num_dapm_routes	= ARRAY_SIZE(adau1x61_dapm_routes),
 -	},
-+static const struct snd_soc_component_driver aic26_soc_component_dev = {
-+	.probe			= aic26_probe,
-+	.controls		= aic26_snd_controls,
-+	.num_controls		= ARRAY_SIZE(aic26_snd_controls),
-+	.dapm_widgets		= tlv320aic26_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(tlv320aic26_dapm_widgets),
-+	.dapm_routes		= tlv320aic26_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(tlv320aic26_dapm_routes),
++static const struct snd_soc_component_driver adau1761_component_driver = {
++	.probe			= adau1761_component_probe,
++	.resume			= adau17x1_resume,
++	.set_bias_level		= adau1761_set_bias_level,
++	.controls		= adau1761_controls,
++	.num_controls		= ARRAY_SIZE(adau1761_controls),
++	.dapm_widgets		= adau1x61_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(adau1x61_dapm_widgets),
++	.dapm_routes		= adau1x61_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(adau1x61_dapm_routes),
++	.suspend_bias_off	= 1,
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static const struct regmap_config aic26_regmap = {
-@@ -361,23 +363,16 @@ static int aic26_spi_probe(struct spi_device *spi)
- 	dev_set_drvdata(&spi->dev, aic26);
- 	aic26->master = 1;
+ #define ADAU1761_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE | \
+@@ -793,7 +794,8 @@ int adau1761_probe(struct device *dev, struct regmap *regmap,
+ 	 * reaches standby and the core clock is enabled */
+ 	regcache_cache_only(regmap, true);
  
--	ret = snd_soc_register_codec(&spi->dev,
--			&aic26_soc_codec_dev, &aic26_dai, 1);
-+	ret = devm_snd_soc_register_component(&spi->dev,
-+			&aic26_soc_component_dev, &aic26_dai, 1);
- 	return ret;
+-	return snd_soc_register_codec(dev, &adau1761_codec_driver, dai_drv, 1);
++	return devm_snd_soc_register_component(dev, &adau1761_component_driver,
++					       dai_drv, 1);
  }
+ EXPORT_SYMBOL_GPL(adau1761_probe);
  
--static int aic26_spi_remove(struct spi_device *spi)
--{
--	snd_soc_unregister_codec(&spi->dev);
--	return 0;
--}
--
- static struct spi_driver aic26_spi = {
- 	.driver = {
- 		.name = "tlv320aic26-codec",
- 	},
- 	.probe = aic26_spi_probe,
--	.remove = aic26_spi_remove,
+diff --git a/sound/soc/codecs/adau1781.c b/sound/soc/codecs/adau1781.c
+index 546071c6c0d0..6a6655730cd4 100644
+--- a/sound/soc/codecs/adau1781.c
++++ b/sound/soc/codecs/adau1781.c
+@@ -174,8 +174,8 @@ static const struct snd_kcontrol_new adau1781_mono_mixer_controls[] = {
+ static int adau1781_dejitter_fixup(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct adau *adau = snd_soc_component_get_drvdata(component);
+ 
+ 	/* After any power changes have been made the dejitter circuit
+ 	 * has to be reinitialized. */
+@@ -314,10 +314,10 @@ static const struct snd_soc_dapm_route adau1781_dmic_dapm_routes[] = {
+ 	{ "Right Decimator", NULL, "DMIC Select" },
  };
  
- module_spi_driver(aic26_spi);
+-static int adau1781_set_bias_level(struct snd_soc_codec *codec,
++static int adau1781_set_bias_level(struct snd_soc_component *component,
+ 		enum snd_soc_bias_level level)
+ {
+-	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++	struct adau *adau = snd_soc_component_get_drvdata(component);
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+@@ -380,14 +380,14 @@ static int adau1781_set_input_mode(struct adau *adau, unsigned int reg,
+ 		ADAU1781_INPUT_DIFFERNTIAL, val);
+ }
+ 
+-static int adau1781_codec_probe(struct snd_soc_codec *codec)
++static int adau1781_component_probe(struct snd_soc_component *component)
+ {
+-	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+-	struct adau1781_platform_data *pdata = dev_get_platdata(codec->dev);
+-	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
++	struct adau1781_platform_data *pdata = dev_get_platdata(component->dev);
++	struct adau *adau = snd_soc_component_get_drvdata(component);
+ 	int ret;
+ 
+-	ret = adau17x1_add_widgets(codec);
++	ret = adau17x1_add_widgets(component);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -419,27 +419,28 @@ static int adau1781_codec_probe(struct snd_soc_codec *codec)
+ 			return ret;
+ 	}
+ 
+-	ret = adau17x1_add_routes(codec);
++	ret = adau17x1_add_routes(component);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	return 0;
+ }
+ 
+-static const struct snd_soc_codec_driver adau1781_codec_driver = {
+-	.probe = adau1781_codec_probe,
+-	.resume = adau17x1_resume,
+-	.set_bias_level = adau1781_set_bias_level,
+-	.suspend_bias_off = true,
+-
+-	.component_driver = {
+-		.controls		= adau1781_controls,
+-		.num_controls		= ARRAY_SIZE(adau1781_controls),
+-		.dapm_widgets		= adau1781_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(adau1781_dapm_widgets),
+-		.dapm_routes		= adau1781_dapm_routes,
+-		.num_dapm_routes	= ARRAY_SIZE(adau1781_dapm_routes),
+-	},
++static const struct snd_soc_component_driver adau1781_component_driver = {
++	.probe			= adau1781_component_probe,
++	.resume			= adau17x1_resume,
++	.set_bias_level		= adau1781_set_bias_level,
++	.controls		= adau1781_controls,
++	.num_controls		= ARRAY_SIZE(adau1781_controls),
++	.dapm_widgets		= adau1781_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(adau1781_dapm_widgets),
++	.dapm_routes		= adau1781_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(adau1781_dapm_routes),
++	.suspend_bias_off	= 1,
++	.idle_bias_on		= 1,
++	.use_pmdown_time	= 1,
++	.endianness		= 1,
++	.non_legacy_dai_naming	= 1,
+ };
+ 
+ #define ADAU1781_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE | \
+@@ -498,7 +499,7 @@ int adau1781_probe(struct device *dev, struct regmap *regmap,
+ 	if (ret)
+ 		return ret;
+ 
+-	return snd_soc_register_codec(dev, &adau1781_codec_driver,
++	return devm_snd_soc_register_component(dev, &adau1781_component_driver,
+ 		&adau1781_dai_driver, 1);
+ }
+ EXPORT_SYMBOL_GPL(adau1781_probe);
+diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
+index 6758f789b712..df3434982b43 100644
+--- a/sound/soc/codecs/adau17x1.c
++++ b/sound/soc/codecs/adau17x1.c
+@@ -63,8 +63,8 @@ static const struct snd_kcontrol_new adau17x1_controls[] = {
+ static int adau17x1_pll_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct adau *adau = snd_soc_component_get_drvdata(component);
+ 
+ 	if (SND_SOC_DAPM_EVENT_ON(event)) {
+ 		adau->pll_regs[5] = 1;
+@@ -93,8 +93,8 @@ static int adau17x1_pll_event(struct snd_soc_dapm_widget *w,
+ static int adau17x1_adc_fixup(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct adau *adau = snd_soc_component_get_drvdata(component);
+ 
+ 	/*
+ 	 * If we are capturing, toggle the ADOSR bit in Converter Control 0 to
+@@ -177,9 +177,9 @@ static const struct snd_soc_dapm_route adau17x1_dapm_pll_route = {
+ static int adau17x1_dsp_mux_enum_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_dapm_kcontrol_codec(kcontrol);
+-	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+-	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_dapm_kcontrol_component(kcontrol);
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
++	struct adau *adau = snd_soc_component_get_drvdata(component);
+ 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+ 	struct snd_soc_dapm_update update = { 0 };
+ 	unsigned int stream = e->shift_l;
+@@ -205,7 +205,7 @@ static int adau17x1_dsp_mux_enum_put(struct snd_kcontrol *kcontrol,
+ 	else
+ 		reg = ADAU17X1_SERIAL_OUTPUT_ROUTE;
+ 
+-	change = snd_soc_test_bits(codec, reg, 0xff, val);
++	change = snd_soc_component_test_bits(component, reg, 0xff, val);
+ 	if (change) {
+ 		update.kcontrol = kcontrol;
+ 		update.mask = 0xff;
+@@ -222,8 +222,8 @@ static int adau17x1_dsp_mux_enum_put(struct snd_kcontrol *kcontrol,
+ static int adau17x1_dsp_mux_enum_get(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_dapm_kcontrol_codec(kcontrol);
+-	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_dapm_kcontrol_component(kcontrol);
++	struct adau *adau = snd_soc_component_get_drvdata(component);
+ 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+ 	unsigned int stream = e->shift_l;
+ 	unsigned int reg, val;
+@@ -328,8 +328,8 @@ EXPORT_SYMBOL_GPL(adau17x1_has_dsp);
+ static int adau17x1_set_dai_pll(struct snd_soc_dai *dai, int pll_id,
+ 	int source, unsigned int freq_in, unsigned int freq_out)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct adau *adau = snd_soc_component_get_drvdata(component);
+ 	int ret;
+ 
+ 	if (freq_in < 8000000 || freq_in > 27000000)
+@@ -353,8 +353,8 @@ static int adau17x1_set_dai_pll(struct snd_soc_dai *dai, int pll_id,
+ static int adau17x1_set_dai_sysclk(struct snd_soc_dai *dai,
+ 		int clk_id, unsigned int freq, int dir)
+ {
+-	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(dai->codec);
+-	struct adau *adau = snd_soc_codec_get_drvdata(dai->codec);
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(dai->component);
++	struct adau *adau = snd_soc_component_get_drvdata(dai->component);
+ 	bool is_pll;
+ 	bool was_pll;
+ 
+@@ -438,8 +438,8 @@ static int adau17x1_auto_pll(struct snd_soc_dai *dai,
+ static int adau17x1_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct adau *adau = snd_soc_component_get_drvdata(component);
+ 	unsigned int val, div, dsp_div;
+ 	unsigned int freq;
+ 	int ret;
+@@ -531,7 +531,7 @@ static int adau17x1_hw_params(struct snd_pcm_substream *substream,
+ static int adau17x1_set_dai_fmt(struct snd_soc_dai *dai,
+ 		unsigned int fmt)
+ {
+-	struct adau *adau = snd_soc_codec_get_drvdata(dai->codec);
++	struct adau *adau = snd_soc_component_get_drvdata(dai->component);
+ 	unsigned int ctrl0, ctrl1;
+ 	int lrclk_pol;
+ 
+@@ -603,7 +603,7 @@ static int adau17x1_set_dai_fmt(struct snd_soc_dai *dai,
+ static int adau17x1_set_dai_tdm_slot(struct snd_soc_dai *dai,
+ 	unsigned int tx_mask, unsigned int rx_mask, int slots, int slot_width)
+ {
+-	struct adau *adau = snd_soc_codec_get_drvdata(dai->codec);
++	struct adau *adau = snd_soc_component_get_drvdata(dai->component);
+ 	unsigned int ser_ctrl0, ser_ctrl1;
+ 	unsigned int conv_ctrl0, conv_ctrl1;
+ 
+@@ -728,7 +728,7 @@ static int adau17x1_set_dai_tdm_slot(struct snd_soc_dai *dai,
+ static int adau17x1_startup(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *dai)
+ {
+-	struct adau *adau = snd_soc_codec_get_drvdata(dai->codec);
++	struct adau *adau = snd_soc_component_get_drvdata(dai->component);
+ 
+ 	if (adau->sigmadsp)
+ 		return sigmadsp_restrict_params(adau->sigmadsp, substream);
+@@ -746,10 +746,10 @@ const struct snd_soc_dai_ops adau17x1_dai_ops = {
+ };
+ EXPORT_SYMBOL_GPL(adau17x1_dai_ops);
+ 
+-int adau17x1_set_micbias_voltage(struct snd_soc_codec *codec,
++int adau17x1_set_micbias_voltage(struct snd_soc_component *component,
+ 	enum adau17x1_micbias_voltage micbias)
+ {
+-	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++	struct adau *adau = snd_soc_component_get_drvdata(component);
+ 
+ 	switch (micbias) {
+ 	case ADAU17X1_MICBIAS_0_90_AVDD:
+@@ -858,13 +858,13 @@ int adau17x1_setup_firmware(struct adau *adau, unsigned int rate)
+ }
+ EXPORT_SYMBOL_GPL(adau17x1_setup_firmware);
+ 
+-int adau17x1_add_widgets(struct snd_soc_codec *codec)
++int adau17x1_add_widgets(struct snd_soc_component *component)
+ {
+-	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+-	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
++	struct adau *adau = snd_soc_component_get_drvdata(component);
+ 	int ret;
+ 
+-	ret = snd_soc_add_codec_controls(codec, adau17x1_controls,
++	ret = snd_soc_add_component_controls(component, adau17x1_controls,
+ 		ARRAY_SIZE(adau17x1_controls));
+ 	if (ret)
+ 		return ret;
+@@ -882,9 +882,9 @@ int adau17x1_add_widgets(struct snd_soc_codec *codec)
+ 		if (!adau->sigmadsp)
+ 			return 0;
+ 
+-		ret = sigmadsp_attach(adau->sigmadsp, &codec->component);
++		ret = sigmadsp_attach(adau->sigmadsp, component);
+ 		if (ret) {
+-			dev_err(codec->dev, "Failed to attach firmware: %d\n",
++			dev_err(component->dev, "Failed to attach firmware: %d\n",
+ 				ret);
+ 			return ret;
+ 		}
+@@ -894,10 +894,10 @@ int adau17x1_add_widgets(struct snd_soc_codec *codec)
+ }
+ EXPORT_SYMBOL_GPL(adau17x1_add_widgets);
+ 
+-int adau17x1_add_routes(struct snd_soc_codec *codec)
++int adau17x1_add_routes(struct snd_soc_component *component)
+ {
+-	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+-	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
++	struct adau *adau = snd_soc_component_get_drvdata(component);
+ 	int ret;
+ 
+ 	ret = snd_soc_dapm_add_routes(dapm, adau17x1_dapm_routes,
+@@ -920,12 +920,12 @@ int adau17x1_add_routes(struct snd_soc_codec *codec)
+ }
+ EXPORT_SYMBOL_GPL(adau17x1_add_routes);
+ 
+-int adau17x1_resume(struct snd_soc_codec *codec)
++int adau17x1_resume(struct snd_soc_component *component)
+ {
+-	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++	struct adau *adau = snd_soc_component_get_drvdata(component);
+ 
+ 	if (adau->switch_mode)
+-		adau->switch_mode(codec->dev);
++		adau->switch_mode(component->dev);
+ 
+ 	regcache_sync(adau->regmap);
+ 
+@@ -998,7 +998,6 @@ void adau17x1_remove(struct device *dev)
+ {
+ 	struct adau *adau = dev_get_drvdata(dev);
+ 
+-	snd_soc_unregister_codec(dev);
+ 	if (adau->mclk)
+ 		clk_disable_unprepare(adau->mclk);
+ }
+diff --git a/sound/soc/codecs/adau17x1.h b/sound/soc/codecs/adau17x1.h
+index eaf8f933bab8..a7b1cb770814 100644
+--- a/sound/soc/codecs/adau17x1.h
++++ b/sound/soc/codecs/adau17x1.h
+@@ -53,18 +53,18 @@ struct adau {
+ 	struct sigmadsp *sigmadsp;
+ };
+ 
+-int adau17x1_add_widgets(struct snd_soc_codec *codec);
+-int adau17x1_add_routes(struct snd_soc_codec *codec);
++int adau17x1_add_widgets(struct snd_soc_component *component);
++int adau17x1_add_routes(struct snd_soc_component *component);
+ int adau17x1_probe(struct device *dev, struct regmap *regmap,
+ 	enum adau17x1_type type, void (*switch_mode)(struct device *dev),
+ 	const char *firmware_name);
+ void adau17x1_remove(struct device *dev);
+-int adau17x1_set_micbias_voltage(struct snd_soc_codec *codec,
++int adau17x1_set_micbias_voltage(struct snd_soc_component *component,
+ 	enum adau17x1_micbias_voltage micbias);
+ bool adau17x1_readable_register(struct device *dev, unsigned int reg);
+ bool adau17x1_volatile_register(struct device *dev, unsigned int reg);
+ bool adau17x1_precious_register(struct device *dev, unsigned int reg);
+-int adau17x1_resume(struct snd_soc_codec *codec);
++int adau17x1_resume(struct snd_soc_component *component);
+ 
+ extern const struct snd_soc_dai_ops adau17x1_dai_ops;
+ 
 -- 
 2.16.1
