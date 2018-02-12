@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8961: replace codec to component" to
+Subject: Applied "ASoC: wm8991: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:47:18 +0000
-Message-ID: <E1elDVu-0005cW-Ia@debutante>
-References: <87wp012wi1.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:47:24 +0000
+Message-ID: <E1elDW0-0005eE-S2@debutante>
+References: <87zi4x2wiw.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EC240267E3A
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:47:20 +0100 (CET)
-In-Reply-To: <87wp012wi1.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2EC9F267E4C
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:47:27 +0100 (CET)
+In-Reply-To: <87zi4x2wiw.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8961: replace codec to component
+   ASoC: wm8991: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From ce8d1015a2b8d1301c98f7e6b774fb1c28220cea Mon Sep 17 00:00:00 2001
+>From bf338e5b6c00859a259ce3f56b9f04a3f0bb075b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 03:09:02 +0000
-Subject: [PATCH] ASoC: wm8961: replace codec to component
+Date: Mon, 29 Jan 2018 03:08:29 +0000
+Subject: [PATCH] ASoC: wm8991: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,523 +70,379 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8961.c | 241 ++++++++++++++++++++++------------------------
- 1 file changed, 117 insertions(+), 124 deletions(-)
+ sound/soc/codecs/wm8991.c | 167 ++++++++++++++++++++++------------------------
+ 1 file changed, 80 insertions(+), 87 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8961.c b/sound/soc/codecs/wm8961.c
-index e23ceac76015..f70f563d59f3 100644
---- a/sound/soc/codecs/wm8961.c
-+++ b/sound/soc/codecs/wm8961.c
-@@ -194,89 +194,89 @@ static bool wm8961_readable(struct device *dev, unsigned int reg)
- static int wm8961_hp_event(struct snd_soc_dapm_widget *w,
- 			   struct snd_kcontrol *kcontrol, int event)
+diff --git a/sound/soc/codecs/wm8991.c b/sound/soc/codecs/wm8991.c
+index 802c0694e5c3..76a639df6417 100644
+--- a/sound/soc/codecs/wm8991.c
++++ b/sound/soc/codecs/wm8991.c
+@@ -133,7 +133,7 @@ static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(out_sidetone_tlv,
+ static int wm899x_outpga_put_volsw_vu(struct snd_kcontrol *kcontrol,
+ 				      struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
+ 	int reg = kcontrol->private_value & 0xff;
+ 	int ret;
+ 	u16 val;
+@@ -143,8 +143,8 @@ static int wm899x_outpga_put_volsw_vu(struct snd_kcontrol *kcontrol,
+ 		return ret;
+ 
+ 	/* now hit the volume update bits (always bit 8) */
+-	val = snd_soc_read(codec, reg);
+-	return snd_soc_write(codec, reg, val | 0x0100);
++	val = snd_soc_component_read32(component, reg);
++	return snd_soc_component_write(component, reg, val | 0x0100);
+ }
+ 
+ static const char *wm8991_digital_sidetone[] =
+@@ -361,14 +361,14 @@ static const struct snd_kcontrol_new wm8991_snd_controls[] = {
+ static int outmixer_event(struct snd_soc_dapm_widget *w,
+ 			  struct snd_kcontrol *kcontrol, int event)
  {
 -	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
--	u16 hp_reg = snd_soc_read(codec, WM8961_ANALOGUE_HP_0);
--	u16 cp_reg = snd_soc_read(codec, WM8961_CHARGE_PUMP_1);
--	u16 pwr_reg = snd_soc_read(codec, WM8961_PWR_MGMT_2);
--	u16 dcs_reg = snd_soc_read(codec, WM8961_DC_SERVO_1);
 +	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	u16 hp_reg = snd_soc_component_read32(component, WM8961_ANALOGUE_HP_0);
-+	u16 cp_reg = snd_soc_component_read32(component, WM8961_CHARGE_PUMP_1);
-+	u16 pwr_reg = snd_soc_component_read32(component, WM8961_PWR_MGMT_2);
-+	u16 dcs_reg = snd_soc_component_read32(component, WM8961_DC_SERVO_1);
- 	int timeout = 500;
+ 	u32 reg_shift = kcontrol->private_value & 0xfff;
+ 	int ret = 0;
+ 	u16 reg;
  
- 	if (event & SND_SOC_DAPM_POST_PMU) {
- 		/* Make sure the output is shorted */
- 		hp_reg &= ~(WM8961_HPR_RMV_SHORT | WM8961_HPL_RMV_SHORT);
--		snd_soc_write(codec, WM8961_ANALOGUE_HP_0, hp_reg);
-+		snd_soc_component_write(component, WM8961_ANALOGUE_HP_0, hp_reg);
+ 	switch (reg_shift) {
+ 	case WM8991_SPEAKER_MIXER | (WM8991_LDSPK_BIT << 8):
+-		reg = snd_soc_read(codec, WM8991_OUTPUT_MIXER1);
++		reg = snd_soc_component_read32(component, WM8991_OUTPUT_MIXER1);
+ 		if (reg & WM8991_LDLO) {
+ 			printk(KERN_WARNING
+ 			       "Cannot set as Output Mixer 1 LDLO Set\n");
+@@ -377,7 +377,7 @@ static int outmixer_event(struct snd_soc_dapm_widget *w,
+ 		break;
  
- 		/* Enable the charge pump */
- 		cp_reg |= WM8961_CP_ENA;
--		snd_soc_write(codec, WM8961_CHARGE_PUMP_1, cp_reg);
-+		snd_soc_component_write(component, WM8961_CHARGE_PUMP_1, cp_reg);
- 		mdelay(5);
+ 	case WM8991_SPEAKER_MIXER | (WM8991_RDSPK_BIT << 8):
+-		reg = snd_soc_read(codec, WM8991_OUTPUT_MIXER2);
++		reg = snd_soc_component_read32(component, WM8991_OUTPUT_MIXER2);
+ 		if (reg & WM8991_RDRO) {
+ 			printk(KERN_WARNING
+ 			       "Cannot set as Output Mixer 2 RDRO Set\n");
+@@ -386,7 +386,7 @@ static int outmixer_event(struct snd_soc_dapm_widget *w,
+ 		break;
  
- 		/* Enable the PGA */
- 		pwr_reg |= WM8961_LOUT1_PGA | WM8961_ROUT1_PGA;
--		snd_soc_write(codec, WM8961_PWR_MGMT_2, pwr_reg);
-+		snd_soc_component_write(component, WM8961_PWR_MGMT_2, pwr_reg);
+ 	case WM8991_OUTPUT_MIXER1 | (WM8991_LDLO_BIT << 8):
+-		reg = snd_soc_read(codec, WM8991_SPEAKER_MIXER);
++		reg = snd_soc_component_read32(component, WM8991_SPEAKER_MIXER);
+ 		if (reg & WM8991_LDSPK) {
+ 			printk(KERN_WARNING
+ 			       "Cannot set as Speaker Mixer LDSPK Set\n");
+@@ -395,7 +395,7 @@ static int outmixer_event(struct snd_soc_dapm_widget *w,
+ 		break;
  
- 		/* Enable the amplifier */
- 		hp_reg |= WM8961_HPR_ENA | WM8961_HPL_ENA;
--		snd_soc_write(codec, WM8961_ANALOGUE_HP_0, hp_reg);
-+		snd_soc_component_write(component, WM8961_ANALOGUE_HP_0, hp_reg);
- 
- 		/* Second stage enable */
- 		hp_reg |= WM8961_HPR_ENA_DLY | WM8961_HPL_ENA_DLY;
--		snd_soc_write(codec, WM8961_ANALOGUE_HP_0, hp_reg);
-+		snd_soc_component_write(component, WM8961_ANALOGUE_HP_0, hp_reg);
- 
- 		/* Enable the DC servo & trigger startup */
- 		dcs_reg |=
- 			WM8961_DCS_ENA_CHAN_HPR | WM8961_DCS_TRIG_STARTUP_HPR |
- 			WM8961_DCS_ENA_CHAN_HPL | WM8961_DCS_TRIG_STARTUP_HPL;
--		dev_dbg(codec->dev, "Enabling DC servo\n");
-+		dev_dbg(component->dev, "Enabling DC servo\n");
- 
--		snd_soc_write(codec, WM8961_DC_SERVO_1, dcs_reg);
-+		snd_soc_component_write(component, WM8961_DC_SERVO_1, dcs_reg);
- 		do {
- 			msleep(1);
--			dcs_reg = snd_soc_read(codec, WM8961_DC_SERVO_1);
-+			dcs_reg = snd_soc_component_read32(component, WM8961_DC_SERVO_1);
- 		} while (--timeout &&
- 			 dcs_reg & (WM8961_DCS_TRIG_STARTUP_HPR |
- 				WM8961_DCS_TRIG_STARTUP_HPL));
- 		if (dcs_reg & (WM8961_DCS_TRIG_STARTUP_HPR |
- 			       WM8961_DCS_TRIG_STARTUP_HPL))
--			dev_err(codec->dev, "DC servo timed out\n");
-+			dev_err(component->dev, "DC servo timed out\n");
- 		else
--			dev_dbg(codec->dev, "DC servo startup complete\n");
-+			dev_dbg(component->dev, "DC servo startup complete\n");
- 
- 		/* Enable the output stage */
- 		hp_reg |= WM8961_HPR_ENA_OUTP | WM8961_HPL_ENA_OUTP;
--		snd_soc_write(codec, WM8961_ANALOGUE_HP_0, hp_reg);
-+		snd_soc_component_write(component, WM8961_ANALOGUE_HP_0, hp_reg);
- 
- 		/* Remove the short on the output stage */
- 		hp_reg |= WM8961_HPR_RMV_SHORT | WM8961_HPL_RMV_SHORT;
--		snd_soc_write(codec, WM8961_ANALOGUE_HP_0, hp_reg);
-+		snd_soc_component_write(component, WM8961_ANALOGUE_HP_0, hp_reg);
- 	}
- 
- 	if (event & SND_SOC_DAPM_PRE_PMD) {
- 		/* Short the output */
- 		hp_reg &= ~(WM8961_HPR_RMV_SHORT | WM8961_HPL_RMV_SHORT);
--		snd_soc_write(codec, WM8961_ANALOGUE_HP_0, hp_reg);
-+		snd_soc_component_write(component, WM8961_ANALOGUE_HP_0, hp_reg);
- 
- 		/* Disable the output stage */
- 		hp_reg &= ~(WM8961_HPR_ENA_OUTP | WM8961_HPL_ENA_OUTP);
--		snd_soc_write(codec, WM8961_ANALOGUE_HP_0, hp_reg);
-+		snd_soc_component_write(component, WM8961_ANALOGUE_HP_0, hp_reg);
- 
- 		/* Disable DC offset cancellation */
- 		dcs_reg &= ~(WM8961_DCS_ENA_CHAN_HPR |
- 			     WM8961_DCS_ENA_CHAN_HPL);
--		snd_soc_write(codec, WM8961_DC_SERVO_1, dcs_reg);
-+		snd_soc_component_write(component, WM8961_DC_SERVO_1, dcs_reg);
- 
- 		/* Finish up */
- 		hp_reg &= ~(WM8961_HPR_ENA_DLY | WM8961_HPR_ENA |
- 			    WM8961_HPL_ENA_DLY | WM8961_HPL_ENA);
--		snd_soc_write(codec, WM8961_ANALOGUE_HP_0, hp_reg);
-+		snd_soc_component_write(component, WM8961_ANALOGUE_HP_0, hp_reg);
- 
- 		/* Disable the PGA */
- 		pwr_reg &= ~(WM8961_LOUT1_PGA | WM8961_ROUT1_PGA);
--		snd_soc_write(codec, WM8961_PWR_MGMT_2, pwr_reg);
-+		snd_soc_component_write(component, WM8961_PWR_MGMT_2, pwr_reg);
- 
- 		/* Disable the charge pump */
--		dev_dbg(codec->dev, "Disabling charge pump\n");
--		snd_soc_write(codec, WM8961_CHARGE_PUMP_1,
-+		dev_dbg(component->dev, "Disabling charge pump\n");
-+		snd_soc_component_write(component, WM8961_CHARGE_PUMP_1,
- 			     cp_reg & ~WM8961_CP_ENA);
- 	}
- 
-@@ -286,28 +286,28 @@ static int wm8961_hp_event(struct snd_soc_dapm_widget *w,
- static int wm8961_spk_event(struct snd_soc_dapm_widget *w,
- 			    struct snd_kcontrol *kcontrol, int event)
+ 	case WM8991_OUTPUT_MIXER2 | (WM8991_RDRO_BIT << 8):
+-		reg = snd_soc_read(codec, WM8991_SPEAKER_MIXER);
++		reg = snd_soc_component_read32(component, WM8991_SPEAKER_MIXER);
+ 		if (reg & WM8991_RDSPK) {
+ 			printk(KERN_WARNING
+ 			       "Cannot set as Speaker Mixer RDSPK Set\n");
+@@ -927,31 +927,31 @@ static int wm8991_set_dai_pll(struct snd_soc_dai *codec_dai,
+ 			      int pll_id, int src, unsigned int freq_in, unsigned int freq_out)
  {
--	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
--	u16 pwr_reg = snd_soc_read(codec, WM8961_PWR_MGMT_2);
--	u16 spk_reg = snd_soc_read(codec, WM8961_CLASS_D_CONTROL_1);
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	u16 pwr_reg = snd_soc_component_read32(component, WM8961_PWR_MGMT_2);
-+	u16 spk_reg = snd_soc_component_read32(component, WM8961_CLASS_D_CONTROL_1);
+ 	u16 reg;
+-	struct snd_soc_codec *codec = codec_dai->codec;
++	struct snd_soc_component *component = codec_dai->component;
+ 	struct _pll_div pll_div;
  
- 	if (event & SND_SOC_DAPM_POST_PMU) {
- 		/* Enable the PGA */
- 		pwr_reg |= WM8961_SPKL_PGA | WM8961_SPKR_PGA;
--		snd_soc_write(codec, WM8961_PWR_MGMT_2, pwr_reg);
-+		snd_soc_component_write(component, WM8961_PWR_MGMT_2, pwr_reg);
+ 	if (freq_in && freq_out) {
+ 		pll_factors(&pll_div, freq_out * 4, freq_in);
  
- 		/* Enable the amplifier */
- 		spk_reg |= WM8961_SPKL_ENA | WM8961_SPKR_ENA;
--		snd_soc_write(codec, WM8961_CLASS_D_CONTROL_1, spk_reg);
-+		snd_soc_component_write(component, WM8961_CLASS_D_CONTROL_1, spk_reg);
+ 		/* Turn on PLL */
+-		reg = snd_soc_read(codec, WM8991_POWER_MANAGEMENT_2);
++		reg = snd_soc_component_read32(component, WM8991_POWER_MANAGEMENT_2);
+ 		reg |= WM8991_PLL_ENA;
+-		snd_soc_write(codec, WM8991_POWER_MANAGEMENT_2, reg);
++		snd_soc_component_write(component, WM8991_POWER_MANAGEMENT_2, reg);
+ 
+ 		/* sysclk comes from PLL */
+-		reg = snd_soc_read(codec, WM8991_CLOCKING_2);
+-		snd_soc_write(codec, WM8991_CLOCKING_2, reg | WM8991_SYSCLK_SRC);
++		reg = snd_soc_component_read32(component, WM8991_CLOCKING_2);
++		snd_soc_component_write(component, WM8991_CLOCKING_2, reg | WM8991_SYSCLK_SRC);
+ 
+ 		/* set up N , fractional mode and pre-divisor if necessary */
+-		snd_soc_write(codec, WM8991_PLL1, pll_div.n | WM8991_SDM |
++		snd_soc_component_write(component, WM8991_PLL1, pll_div.n | WM8991_SDM |
+ 			      (pll_div.div2 ? WM8991_PRESCALE : 0));
+-		snd_soc_write(codec, WM8991_PLL2, (u8)(pll_div.k>>8));
+-		snd_soc_write(codec, WM8991_PLL3, (u8)(pll_div.k & 0xFF));
++		snd_soc_component_write(component, WM8991_PLL2, (u8)(pll_div.k>>8));
++		snd_soc_component_write(component, WM8991_PLL3, (u8)(pll_div.k & 0xFF));
+ 	} else {
+ 		/* Turn on PLL */
+-		reg = snd_soc_read(codec, WM8991_POWER_MANAGEMENT_2);
++		reg = snd_soc_component_read32(component, WM8991_POWER_MANAGEMENT_2);
+ 		reg &= ~WM8991_PLL_ENA;
+-		snd_soc_write(codec, WM8991_POWER_MANAGEMENT_2, reg);
++		snd_soc_component_write(component, WM8991_POWER_MANAGEMENT_2, reg);
  	}
- 
- 	if (event & SND_SOC_DAPM_PRE_PMD) {
- 		/* Disable the amplifier */
- 		spk_reg &= ~(WM8961_SPKL_ENA | WM8961_SPKR_ENA);
--		snd_soc_write(codec, WM8961_CLASS_D_CONTROL_1, spk_reg);
-+		snd_soc_component_write(component, WM8961_CLASS_D_CONTROL_1, spk_reg);
- 
- 		/* Disable the PGA */
- 		pwr_reg &= ~(WM8961_SPKL_PGA | WM8961_SPKR_PGA);
--		snd_soc_write(codec, WM8961_PWR_MGMT_2, pwr_reg);
-+		snd_soc_component_write(component, WM8961_PWR_MGMT_2, pwr_reg);
- 	}
- 
  	return 0;
-@@ -505,15 +505,15 @@ static int wm8961_hw_params(struct snd_pcm_substream *substream,
+ }
+@@ -962,11 +962,11 @@ static int wm8991_set_dai_pll(struct snd_soc_dai *codec_dai,
+ static int wm8991_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 			      unsigned int fmt)
+ {
+-	struct snd_soc_codec *codec = codec_dai->codec;
++	struct snd_soc_component *component = codec_dai->component;
+ 	u16 audio1, audio3;
+ 
+-	audio1 = snd_soc_read(codec, WM8991_AUDIO_INTERFACE_1);
+-	audio3 = snd_soc_read(codec, WM8991_AUDIO_INTERFACE_3);
++	audio1 = snd_soc_component_read32(component, WM8991_AUDIO_INTERFACE_1);
++	audio3 = snd_soc_component_read32(component, WM8991_AUDIO_INTERFACE_3);
+ 
+ 	/* set master/slave audio interface */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+@@ -1007,37 +1007,37 @@ static int wm8991_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		return -EINVAL;
+ 	}
+ 
+-	snd_soc_write(codec, WM8991_AUDIO_INTERFACE_1, audio1);
+-	snd_soc_write(codec, WM8991_AUDIO_INTERFACE_3, audio3);
++	snd_soc_component_write(component, WM8991_AUDIO_INTERFACE_1, audio1);
++	snd_soc_component_write(component, WM8991_AUDIO_INTERFACE_3, audio3);
+ 	return 0;
+ }
+ 
+ static int wm8991_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
+ 				 int div_id, int div)
+ {
+-	struct snd_soc_codec *codec = codec_dai->codec;
++	struct snd_soc_component *component = codec_dai->component;
+ 	u16 reg;
+ 
+ 	switch (div_id) {
+ 	case WM8991_MCLK_DIV:
+-		reg = snd_soc_read(codec, WM8991_CLOCKING_2) &
++		reg = snd_soc_component_read32(component, WM8991_CLOCKING_2) &
+ 		      ~WM8991_MCLK_DIV_MASK;
+-		snd_soc_write(codec, WM8991_CLOCKING_2, reg | div);
++		snd_soc_component_write(component, WM8991_CLOCKING_2, reg | div);
+ 		break;
+ 	case WM8991_DACCLK_DIV:
+-		reg = snd_soc_read(codec, WM8991_CLOCKING_2) &
++		reg = snd_soc_component_read32(component, WM8991_CLOCKING_2) &
+ 		      ~WM8991_DAC_CLKDIV_MASK;
+-		snd_soc_write(codec, WM8991_CLOCKING_2, reg | div);
++		snd_soc_component_write(component, WM8991_CLOCKING_2, reg | div);
+ 		break;
+ 	case WM8991_ADCCLK_DIV:
+-		reg = snd_soc_read(codec, WM8991_CLOCKING_2) &
++		reg = snd_soc_component_read32(component, WM8991_CLOCKING_2) &
+ 		      ~WM8991_ADC_CLKDIV_MASK;
+-		snd_soc_write(codec, WM8991_CLOCKING_2, reg | div);
++		snd_soc_component_write(component, WM8991_CLOCKING_2, reg | div);
+ 		break;
+ 	case WM8991_BCLK_DIV:
+-		reg = snd_soc_read(codec, WM8991_CLOCKING_1) &
++		reg = snd_soc_component_read32(component, WM8991_CLOCKING_1) &
+ 		      ~WM8991_BCLK_DIV_MASK;
+-		snd_soc_write(codec, WM8991_CLOCKING_1, reg | div);
++		snd_soc_component_write(component, WM8991_CLOCKING_1, reg | div);
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -1053,8 +1053,8 @@ static int wm8991_hw_params(struct snd_pcm_substream *substream,
  			    struct snd_pcm_hw_params *params,
  			    struct snd_soc_dai *dai)
  {
 -	struct snd_soc_codec *codec = dai->codec;
--	struct wm8961_priv *wm8961 = snd_soc_codec_get_drvdata(codec);
+-	u16 audio1 = snd_soc_read(codec, WM8991_AUDIO_INTERFACE_1);
 +	struct snd_soc_component *component = dai->component;
-+	struct wm8961_priv *wm8961 = snd_soc_component_get_drvdata(component);
- 	int i, best, target, fs;
- 	u16 reg;
++	u16 audio1 = snd_soc_component_read32(component, WM8991_AUDIO_INTERFACE_1);
  
- 	fs = params_rate(params);
- 
- 	if (!wm8961->sysclk) {
--		dev_err(codec->dev, "MCLK has not been specified\n");
-+		dev_err(component->dev, "MCLK has not been specified\n");
- 		return -EINVAL;
+ 	audio1 &= ~WM8991_AIF_WL_MASK;
+ 	/* bit size */
+@@ -1072,27 +1072,27 @@ static int wm8991_hw_params(struct snd_pcm_substream *substream,
+ 		break;
  	}
  
-@@ -524,23 +524,23 @@ static int wm8961_hw_params(struct snd_pcm_substream *substream,
- 		    abs(wm8961_srate[best].rate - fs))
- 			best = i;
- 	}
--	reg = snd_soc_read(codec, WM8961_ADDITIONAL_CONTROL_3);
-+	reg = snd_soc_component_read32(component, WM8961_ADDITIONAL_CONTROL_3);
- 	reg &= ~WM8961_SAMPLE_RATE_MASK;
- 	reg |= wm8961_srate[best].val;
--	snd_soc_write(codec, WM8961_ADDITIONAL_CONTROL_3, reg);
--	dev_dbg(codec->dev, "Selected SRATE %dHz for %dHz\n",
-+	snd_soc_component_write(component, WM8961_ADDITIONAL_CONTROL_3, reg);
-+	dev_dbg(component->dev, "Selected SRATE %dHz for %dHz\n",
- 		wm8961_srate[best].rate, fs);
- 
- 	/* Select a CLK_SYS/fs ratio equal to or higher than required */
- 	target = wm8961->sysclk / fs;
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK && target < 64) {
--		dev_err(codec->dev,
-+		dev_err(component->dev,
- 			"SYSCLK must be at least 64*fs for DAC\n");
- 		return -EINVAL;
- 	}
- 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE && target < 256) {
--		dev_err(codec->dev,
-+		dev_err(component->dev,
- 			"SYSCLK must be at least 256*fs for ADC\n");
- 		return -EINVAL;
- 	}
-@@ -550,19 +550,19 @@ static int wm8961_hw_params(struct snd_pcm_substream *substream,
- 			break;
- 	}
- 	if (i == ARRAY_SIZE(wm8961_clk_sys_ratio)) {
--		dev_err(codec->dev, "Unable to generate CLK_SYS_RATE\n");
-+		dev_err(component->dev, "Unable to generate CLK_SYS_RATE\n");
- 		return -EINVAL;
- 	}
--	dev_dbg(codec->dev, "Selected CLK_SYS_RATE of %d for %d/%d=%d\n",
-+	dev_dbg(component->dev, "Selected CLK_SYS_RATE of %d for %d/%d=%d\n",
- 		wm8961_clk_sys_ratio[i].ratio, wm8961->sysclk, fs,
- 		wm8961->sysclk / fs);
- 
--	reg = snd_soc_read(codec, WM8961_CLOCKING_4);
-+	reg = snd_soc_component_read32(component, WM8961_CLOCKING_4);
- 	reg &= ~WM8961_CLK_SYS_RATE_MASK;
- 	reg |= wm8961_clk_sys_ratio[i].val << WM8961_CLK_SYS_RATE_SHIFT;
--	snd_soc_write(codec, WM8961_CLOCKING_4, reg);
-+	snd_soc_component_write(component, WM8961_CLOCKING_4, reg);
- 
--	reg = snd_soc_read(codec, WM8961_AUDIO_INTERFACE_0);
-+	reg = snd_soc_component_read32(component, WM8961_AUDIO_INTERFACE_0);
- 	reg &= ~WM8961_WL_MASK;
- 	switch (params_width(params)) {
- 	case 16:
-@@ -579,15 +579,15 @@ static int wm8961_hw_params(struct snd_pcm_substream *substream,
- 	default:
- 		return -EINVAL;
- 	}
--	snd_soc_write(codec, WM8961_AUDIO_INTERFACE_0, reg);
-+	snd_soc_component_write(component, WM8961_AUDIO_INTERFACE_0, reg);
- 
- 	/* Sloping stop-band filter is recommended for <= 24kHz */
--	reg = snd_soc_read(codec, WM8961_ADC_DAC_CONTROL_2);
-+	reg = snd_soc_component_read32(component, WM8961_ADC_DAC_CONTROL_2);
- 	if (fs <= 24000)
- 		reg |= WM8961_DACSLOPE;
- 	else
- 		reg &= ~WM8961_DACSLOPE;
--	snd_soc_write(codec, WM8961_ADC_DAC_CONTROL_2, reg);
-+	snd_soc_component_write(component, WM8961_ADC_DAC_CONTROL_2, reg);
- 
+-	snd_soc_write(codec, WM8991_AUDIO_INTERFACE_1, audio1);
++	snd_soc_component_write(component, WM8991_AUDIO_INTERFACE_1, audio1);
  	return 0;
  }
-@@ -596,25 +596,25 @@ static int wm8961_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- 			     unsigned int freq,
- 			     int dir)
+ 
+ static int wm8991_mute(struct snd_soc_dai *dai, int mute)
  {
 -	struct snd_soc_codec *codec = dai->codec;
--	struct wm8961_priv *wm8961 = snd_soc_codec_get_drvdata(codec);
--	u16 reg = snd_soc_read(codec, WM8961_CLOCKING1);
 +	struct snd_soc_component *component = dai->component;
-+	struct wm8961_priv *wm8961 = snd_soc_component_get_drvdata(component);
-+	u16 reg = snd_soc_component_read32(component, WM8961_CLOCKING1);
+ 	u16 val;
  
- 	if (freq > 33000000) {
--		dev_err(codec->dev, "MCLK must be <33MHz\n");
-+		dev_err(component->dev, "MCLK must be <33MHz\n");
- 		return -EINVAL;
- 	}
- 
- 	if (freq > 16500000) {
--		dev_dbg(codec->dev, "Using MCLK/2 for %dHz MCLK\n", freq);
-+		dev_dbg(component->dev, "Using MCLK/2 for %dHz MCLK\n", freq);
- 		reg |= WM8961_MCLKDIV;
- 		freq /= 2;
- 	} else {
--		dev_dbg(codec->dev, "Using MCLK/1 for %dHz MCLK\n", freq);
-+		dev_dbg(component->dev, "Using MCLK/1 for %dHz MCLK\n", freq);
- 		reg &= ~WM8961_MCLKDIV;
- 	}
- 
--	snd_soc_write(codec, WM8961_CLOCKING1, reg);
-+	snd_soc_component_write(component, WM8961_CLOCKING1, reg);
- 
- 	wm8961->sysclk = freq;
- 
-@@ -623,8 +623,8 @@ static int wm8961_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- 
- static int wm8961_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	u16 aif = snd_soc_read(codec, WM8961_AUDIO_INTERFACE_0);
-+	struct snd_soc_component *component = dai->component;
-+	u16 aif = snd_soc_component_read32(component, WM8961_AUDIO_INTERFACE_0);
- 
- 	aif &= ~(WM8961_BCLKINV | WM8961_LRP |
- 		 WM8961_MS | WM8961_FORMAT_MASK);
-@@ -684,26 +684,26 @@ static int wm8961_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		return -EINVAL;
- 	}
- 
--	return snd_soc_write(codec, WM8961_AUDIO_INTERFACE_0, aif);
-+	return snd_soc_component_write(component, WM8961_AUDIO_INTERFACE_0, aif);
- }
- 
- static int wm8961_set_tristate(struct snd_soc_dai *dai, int tristate)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	u16 reg = snd_soc_read(codec, WM8961_ADDITIONAL_CONTROL_2);
-+	struct snd_soc_component *component = dai->component;
-+	u16 reg = snd_soc_component_read32(component, WM8961_ADDITIONAL_CONTROL_2);
- 
- 	if (tristate)
- 		reg |= WM8961_TRIS;
- 	else
- 		reg &= ~WM8961_TRIS;
- 
--	return snd_soc_write(codec, WM8961_ADDITIONAL_CONTROL_2, reg);
-+	return snd_soc_component_write(component, WM8961_ADDITIONAL_CONTROL_2, reg);
- }
- 
- static int wm8961_digital_mute(struct snd_soc_dai *dai, int mute)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	u16 reg = snd_soc_read(codec, WM8961_ADC_DAC_CONTROL_1);
-+	struct snd_soc_component *component = dai->component;
-+	u16 reg = snd_soc_component_read32(component, WM8961_ADC_DAC_CONTROL_1);
- 
+-	val  = snd_soc_read(codec, WM8991_DAC_CTRL) & ~WM8991_DAC_MUTE;
++	val  = snd_soc_component_read32(component, WM8991_DAC_CTRL) & ~WM8991_DAC_MUTE;
  	if (mute)
- 		reg |= WM8961_DACMU;
-@@ -712,27 +712,27 @@ static int wm8961_digital_mute(struct snd_soc_dai *dai, int mute)
- 
- 	msleep(17);
- 
--	return snd_soc_write(codec, WM8961_ADC_DAC_CONTROL_1, reg);
-+	return snd_soc_component_write(component, WM8961_ADC_DAC_CONTROL_1, reg);
- }
- 
- static int wm8961_set_clkdiv(struct snd_soc_dai *dai, int div_id, int div)
- {
--	struct snd_soc_codec *codec = dai->codec;
-+	struct snd_soc_component *component = dai->component;
- 	u16 reg;
- 
- 	switch (div_id) {
- 	case WM8961_BCLK:
--		reg = snd_soc_read(codec, WM8961_CLOCKING2);
-+		reg = snd_soc_component_read32(component, WM8961_CLOCKING2);
- 		reg &= ~WM8961_BCLKDIV_MASK;
- 		reg |= div;
--		snd_soc_write(codec, WM8961_CLOCKING2, reg);
-+		snd_soc_component_write(component, WM8961_CLOCKING2, reg);
- 		break;
- 
- 	case WM8961_LRCLK:
--		reg = snd_soc_read(codec, WM8961_AUDIO_INTERFACE_2);
-+		reg = snd_soc_component_read32(component, WM8961_AUDIO_INTERFACE_2);
- 		reg &= ~WM8961_LRCLK_RATE_MASK;
- 		reg |= div;
--		snd_soc_write(codec, WM8961_AUDIO_INTERFACE_2, reg);
-+		snd_soc_component_write(component, WM8961_AUDIO_INTERFACE_2, reg);
- 		break;
- 
- 	default:
-@@ -742,7 +742,7 @@ static int wm8961_set_clkdiv(struct snd_soc_dai *dai, int div_id, int div)
+-		snd_soc_write(codec, WM8991_DAC_CTRL, val | WM8991_DAC_MUTE);
++		snd_soc_component_write(component, WM8991_DAC_CTRL, val | WM8991_DAC_MUTE);
+ 	else
+-		snd_soc_write(codec, WM8991_DAC_CTRL, val);
++		snd_soc_component_write(component, WM8991_DAC_CTRL, val);
  	return 0;
  }
  
--static int wm8961_set_bias_level(struct snd_soc_codec *codec,
-+static int wm8961_set_bias_level(struct snd_soc_component *component,
+-static int wm8991_set_bias_level(struct snd_soc_codec *codec,
++static int wm8991_set_bias_level(struct snd_soc_component *component,
  				 enum snd_soc_bias_level level)
  {
- 	u16 reg;
-@@ -757,36 +757,36 @@ static int wm8961_set_bias_level(struct snd_soc_codec *codec,
- 		break;
+-	struct wm8991_priv *wm8991 = snd_soc_codec_get_drvdata(codec);
++	struct wm8991_priv *wm8991 = snd_soc_component_get_drvdata(component);
+ 	u16 val;
+ 
+ 	switch (level) {
+@@ -1101,22 +1101,22 @@ static int wm8991_set_bias_level(struct snd_soc_codec *codec,
  
  	case SND_SOC_BIAS_PREPARE:
--		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_STANDBY) {
-+		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_STANDBY) {
- 			/* Enable bias generation */
--			reg = snd_soc_read(codec, WM8961_ANTI_POP);
-+			reg = snd_soc_component_read32(component, WM8961_ANTI_POP);
- 			reg |= WM8961_BUFIOEN | WM8961_BUFDCOPEN;
--			snd_soc_write(codec, WM8961_ANTI_POP, reg);
-+			snd_soc_component_write(component, WM8961_ANTI_POP, reg);
- 
- 			/* VMID=2*50k, VREF */
--			reg = snd_soc_read(codec, WM8961_PWR_MGMT_1);
-+			reg = snd_soc_component_read32(component, WM8961_PWR_MGMT_1);
- 			reg &= ~WM8961_VMIDSEL_MASK;
- 			reg |= (1 << WM8961_VMIDSEL_SHIFT) | WM8961_VREF;
--			snd_soc_write(codec, WM8961_PWR_MGMT_1, reg);
-+			snd_soc_component_write(component, WM8961_PWR_MGMT_1, reg);
- 		}
+ 		/* VMID=2*50k */
+-		val = snd_soc_read(codec, WM8991_POWER_MANAGEMENT_1) &
++		val = snd_soc_component_read32(component, WM8991_POWER_MANAGEMENT_1) &
+ 		      ~WM8991_VMID_MODE_MASK;
+-		snd_soc_write(codec, WM8991_POWER_MANAGEMENT_1, val | 0x2);
++		snd_soc_component_write(component, WM8991_POWER_MANAGEMENT_1, val | 0x2);
  		break;
  
  	case SND_SOC_BIAS_STANDBY:
--		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_PREPARE) {
-+		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_PREPARE) {
- 			/* VREF off */
--			reg = snd_soc_read(codec, WM8961_PWR_MGMT_1);
-+			reg = snd_soc_component_read32(component, WM8961_PWR_MGMT_1);
- 			reg &= ~WM8961_VREF;
--			snd_soc_write(codec, WM8961_PWR_MGMT_1, reg);
-+			snd_soc_component_write(component, WM8961_PWR_MGMT_1, reg);
+-		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
++		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
+ 			regcache_sync(wm8991->regmap);
+ 			/* Enable all output discharge bits */
+-			snd_soc_write(codec, WM8991_ANTIPOP1, WM8991_DIS_LLINE |
++			snd_soc_component_write(component, WM8991_ANTIPOP1, WM8991_DIS_LLINE |
+ 				      WM8991_DIS_RLINE | WM8991_DIS_OUT3 |
+ 				      WM8991_DIS_OUT4 | WM8991_DIS_LOUT |
+ 				      WM8991_DIS_ROUT);
  
- 			/* Bias generation off */
--			reg = snd_soc_read(codec, WM8961_ANTI_POP);
-+			reg = snd_soc_component_read32(component, WM8961_ANTI_POP);
- 			reg &= ~(WM8961_BUFIOEN | WM8961_BUFDCOPEN);
--			snd_soc_write(codec, WM8961_ANTI_POP, reg);
-+			snd_soc_component_write(component, WM8961_ANTI_POP, reg);
+ 			/* Enable POBCTRL, SOFT_ST, VMIDTOG and BUFDCOPEN */
+-			snd_soc_write(codec, WM8991_ANTIPOP2, WM8991_SOFTST |
++			snd_soc_component_write(component, WM8991_ANTIPOP2, WM8991_SOFTST |
+ 				      WM8991_BUFDCOPEN | WM8991_POBCTRL |
+ 				      WM8991_VMIDTOG);
  
- 			/* VMID off */
--			reg = snd_soc_read(codec, WM8961_PWR_MGMT_1);
-+			reg = snd_soc_component_read32(component, WM8961_PWR_MGMT_1);
- 			reg &= ~WM8961_VMIDSEL_MASK;
--			snd_soc_write(codec, WM8961_PWR_MGMT_1, reg);
-+			snd_soc_component_write(component, WM8961_PWR_MGMT_1, reg);
+@@ -1124,78 +1124,78 @@ static int wm8991_set_bias_level(struct snd_soc_codec *codec,
+ 			msleep(300);
+ 
+ 			/* Disable VMIDTOG */
+-			snd_soc_write(codec, WM8991_ANTIPOP2, WM8991_SOFTST |
++			snd_soc_component_write(component, WM8991_ANTIPOP2, WM8991_SOFTST |
+ 				      WM8991_BUFDCOPEN | WM8991_POBCTRL);
+ 
+ 			/* disable all output discharge bits */
+-			snd_soc_write(codec, WM8991_ANTIPOP1, 0);
++			snd_soc_component_write(component, WM8991_ANTIPOP1, 0);
+ 
+ 			/* Enable outputs */
+-			snd_soc_write(codec, WM8991_POWER_MANAGEMENT_1, 0x1b00);
++			snd_soc_component_write(component, WM8991_POWER_MANAGEMENT_1, 0x1b00);
+ 
+ 			msleep(50);
+ 
+ 			/* Enable VMID at 2x50k */
+-			snd_soc_write(codec, WM8991_POWER_MANAGEMENT_1, 0x1f02);
++			snd_soc_component_write(component, WM8991_POWER_MANAGEMENT_1, 0x1f02);
+ 
+ 			msleep(100);
+ 
+ 			/* Enable VREF */
+-			snd_soc_write(codec, WM8991_POWER_MANAGEMENT_1, 0x1f03);
++			snd_soc_component_write(component, WM8991_POWER_MANAGEMENT_1, 0x1f03);
+ 
+ 			msleep(600);
+ 
+ 			/* Enable BUFIOEN */
+-			snd_soc_write(codec, WM8991_ANTIPOP2, WM8991_SOFTST |
++			snd_soc_component_write(component, WM8991_ANTIPOP2, WM8991_SOFTST |
+ 				      WM8991_BUFDCOPEN | WM8991_POBCTRL |
+ 				      WM8991_BUFIOEN);
+ 
+ 			/* Disable outputs */
+-			snd_soc_write(codec, WM8991_POWER_MANAGEMENT_1, 0x3);
++			snd_soc_component_write(component, WM8991_POWER_MANAGEMENT_1, 0x3);
+ 
+ 			/* disable POBCTRL, SOFT_ST and BUFDCOPEN */
+-			snd_soc_write(codec, WM8991_ANTIPOP2, WM8991_BUFIOEN);
++			snd_soc_component_write(component, WM8991_ANTIPOP2, WM8991_BUFIOEN);
  		}
+ 
+ 		/* VMID=2*250k */
+-		val = snd_soc_read(codec, WM8991_POWER_MANAGEMENT_1) &
++		val = snd_soc_component_read32(component, WM8991_POWER_MANAGEMENT_1) &
+ 		      ~WM8991_VMID_MODE_MASK;
+-		snd_soc_write(codec, WM8991_POWER_MANAGEMENT_1, val | 0x4);
++		snd_soc_component_write(component, WM8991_POWER_MANAGEMENT_1, val | 0x4);
  		break;
  
-@@ -830,51 +830,51 @@ static struct snd_soc_dai_driver wm8961_dai = {
- 	.ops = &wm8961_dai_ops,
+ 	case SND_SOC_BIAS_OFF:
+ 		/* Enable POBCTRL and SOFT_ST */
+-		snd_soc_write(codec, WM8991_ANTIPOP2, WM8991_SOFTST |
++		snd_soc_component_write(component, WM8991_ANTIPOP2, WM8991_SOFTST |
+ 			      WM8991_POBCTRL | WM8991_BUFIOEN);
+ 
+ 		/* Enable POBCTRL, SOFT_ST and BUFDCOPEN */
+-		snd_soc_write(codec, WM8991_ANTIPOP2, WM8991_SOFTST |
++		snd_soc_component_write(component, WM8991_ANTIPOP2, WM8991_SOFTST |
+ 			      WM8991_BUFDCOPEN | WM8991_POBCTRL |
+ 			      WM8991_BUFIOEN);
+ 
+ 		/* mute DAC */
+-		val = snd_soc_read(codec, WM8991_DAC_CTRL);
+-		snd_soc_write(codec, WM8991_DAC_CTRL, val | WM8991_DAC_MUTE);
++		val = snd_soc_component_read32(component, WM8991_DAC_CTRL);
++		snd_soc_component_write(component, WM8991_DAC_CTRL, val | WM8991_DAC_MUTE);
+ 
+ 		/* Enable any disabled outputs */
+-		snd_soc_write(codec, WM8991_POWER_MANAGEMENT_1, 0x1f03);
++		snd_soc_component_write(component, WM8991_POWER_MANAGEMENT_1, 0x1f03);
+ 
+ 		/* Disable VMID */
+-		snd_soc_write(codec, WM8991_POWER_MANAGEMENT_1, 0x1f01);
++		snd_soc_component_write(component, WM8991_POWER_MANAGEMENT_1, 0x1f01);
+ 
+ 		msleep(300);
+ 
+ 		/* Enable all output discharge bits */
+-		snd_soc_write(codec, WM8991_ANTIPOP1, WM8991_DIS_LLINE |
++		snd_soc_component_write(component, WM8991_ANTIPOP1, WM8991_DIS_LLINE |
+ 			      WM8991_DIS_RLINE | WM8991_DIS_OUT3 |
+ 			      WM8991_DIS_OUT4 | WM8991_DIS_LOUT |
+ 			      WM8991_DIS_ROUT);
+ 
+ 		/* Disable VREF */
+-		snd_soc_write(codec, WM8991_POWER_MANAGEMENT_1, 0x0);
++		snd_soc_component_write(component, WM8991_POWER_MANAGEMENT_1, 0x0);
+ 
+ 		/* disable POBCTRL, SOFT_ST and BUFDCOPEN */
+-		snd_soc_write(codec, WM8991_ANTIPOP2, 0x0);
++		snd_soc_component_write(component, WM8991_ANTIPOP2, 0x0);
+ 		regcache_mark_dirty(wm8991->regmap);
+ 		break;
+ 	}
+@@ -1242,18 +1242,19 @@ static struct snd_soc_dai_driver wm8991_dai = {
+ 	.ops = &wm8991_ops
  };
  
--static int wm8961_probe(struct snd_soc_codec *codec)
-+static int wm8961_probe(struct snd_soc_component *component)
- {
- 	u16 reg;
- 
- 	/* Enable class W */
--	reg = snd_soc_read(codec, WM8961_CHARGE_PUMP_B);
-+	reg = snd_soc_component_read32(component, WM8961_CHARGE_PUMP_B);
- 	reg |= WM8961_CP_DYN_PWR_MASK;
--	snd_soc_write(codec, WM8961_CHARGE_PUMP_B, reg);
-+	snd_soc_component_write(component, WM8961_CHARGE_PUMP_B, reg);
- 
- 	/* Latch volume update bits (right channel only, we always
- 	 * write both out) and default ZC on. */
--	reg = snd_soc_read(codec, WM8961_ROUT1_VOLUME);
--	snd_soc_write(codec, WM8961_ROUT1_VOLUME,
-+	reg = snd_soc_component_read32(component, WM8961_ROUT1_VOLUME);
-+	snd_soc_component_write(component, WM8961_ROUT1_VOLUME,
- 		     reg | WM8961_LO1ZC | WM8961_OUT1VU);
--	snd_soc_write(codec, WM8961_LOUT1_VOLUME, reg | WM8961_LO1ZC);
--	reg = snd_soc_read(codec, WM8961_ROUT2_VOLUME);
--	snd_soc_write(codec, WM8961_ROUT2_VOLUME,
-+	snd_soc_component_write(component, WM8961_LOUT1_VOLUME, reg | WM8961_LO1ZC);
-+	reg = snd_soc_component_read32(component, WM8961_ROUT2_VOLUME);
-+	snd_soc_component_write(component, WM8961_ROUT2_VOLUME,
- 		     reg | WM8961_SPKRZC | WM8961_SPKVU);
--	snd_soc_write(codec, WM8961_LOUT2_VOLUME, reg | WM8961_SPKLZC);
-+	snd_soc_component_write(component, WM8961_LOUT2_VOLUME, reg | WM8961_SPKLZC);
- 
--	reg = snd_soc_read(codec, WM8961_RIGHT_ADC_VOLUME);
--	snd_soc_write(codec, WM8961_RIGHT_ADC_VOLUME, reg | WM8961_ADCVU);
--	reg = snd_soc_read(codec, WM8961_RIGHT_INPUT_VOLUME);
--	snd_soc_write(codec, WM8961_RIGHT_INPUT_VOLUME, reg | WM8961_IPVU);
-+	reg = snd_soc_component_read32(component, WM8961_RIGHT_ADC_VOLUME);
-+	snd_soc_component_write(component, WM8961_RIGHT_ADC_VOLUME, reg | WM8961_ADCVU);
-+	reg = snd_soc_component_read32(component, WM8961_RIGHT_INPUT_VOLUME);
-+	snd_soc_component_write(component, WM8961_RIGHT_INPUT_VOLUME, reg | WM8961_IPVU);
- 
- 	/* Use soft mute by default */
--	reg = snd_soc_read(codec, WM8961_ADC_DAC_CONTROL_2);
-+	reg = snd_soc_component_read32(component, WM8961_ADC_DAC_CONTROL_2);
- 	reg |= WM8961_DACSMM;
--	snd_soc_write(codec, WM8961_ADC_DAC_CONTROL_2, reg);
-+	snd_soc_component_write(component, WM8961_ADC_DAC_CONTROL_2, reg);
- 
- 	/* Use automatic clocking mode by default; for now this is all
- 	 * we support.
- 	 */
--	reg = snd_soc_read(codec, WM8961_CLOCKING_3);
-+	reg = snd_soc_component_read32(component, WM8961_CLOCKING_3);
- 	reg &= ~WM8961_MANUAL_MODE;
--	snd_soc_write(codec, WM8961_CLOCKING_3, reg);
-+	snd_soc_component_write(component, WM8961_CLOCKING_3, reg);
- 
- 	return 0;
- }
- 
- #ifdef CONFIG_PM
- 
--static int wm8961_resume(struct snd_soc_codec *codec)
-+static int wm8961_resume(struct snd_soc_component *component)
- {
--	snd_soc_cache_sync(codec);
-+	snd_soc_component_cache_sync(component);
- 
- 	return 0;
- }
-@@ -882,20 +882,21 @@ static int wm8961_resume(struct snd_soc_codec *codec)
- #define wm8961_resume NULL
- #endif
- 
--static const struct snd_soc_codec_driver soc_codec_dev_wm8961 = {
--	.probe =	wm8961_probe,
--	.resume =	wm8961_resume,
--	.set_bias_level = wm8961_set_bias_level,
+-static const struct snd_soc_codec_driver soc_codec_dev_wm8991 = {
+-	.set_bias_level = wm8991_set_bias_level,
 -	.suspend_bias_off = true,
 -
 -	.component_driver = {
--		.controls		= wm8961_snd_controls,
--		.num_controls		= ARRAY_SIZE(wm8961_snd_controls),
--		.dapm_widgets		= wm8961_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(wm8961_dapm_widgets),
--		.dapm_routes		= audio_paths,
--		.num_dapm_routes	= ARRAY_SIZE(audio_paths),
+-		.controls		= wm8991_snd_controls,
+-		.num_controls		= ARRAY_SIZE(wm8991_snd_controls),
+-		.dapm_widgets		= wm8991_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(wm8991_dapm_widgets),
+-		.dapm_routes		= wm8991_dapm_routes,
+-		.num_dapm_routes	= ARRAY_SIZE(wm8991_dapm_routes),
 -	},
-+static const struct snd_soc_component_driver soc_component_dev_wm8961 = {
-+	.probe			= wm8961_probe,
-+	.resume			= wm8961_resume,
-+	.set_bias_level		= wm8961_set_bias_level,
-+	.controls		= wm8961_snd_controls,
-+	.num_controls		= ARRAY_SIZE(wm8961_snd_controls),
-+	.dapm_widgets		= wm8961_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(wm8961_dapm_widgets),
-+	.dapm_routes		= audio_paths,
-+	.num_dapm_routes	= ARRAY_SIZE(audio_paths),
++static const struct snd_soc_component_driver soc_component_dev_wm8991 = {
++	.set_bias_level		= wm8991_set_bias_level,
++	.controls		= wm8991_snd_controls,
++	.num_controls		= ARRAY_SIZE(wm8991_snd_controls),
++	.dapm_widgets		= wm8991_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(wm8991_dapm_widgets),
++	.dapm_routes		= wm8991_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(wm8991_dapm_routes),
 +	.suspend_bias_off	= 1,
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
@@ -594,35 +450,35 @@ index e23ceac76015..f70f563d59f3 100644
 +	.non_legacy_dai_naming	= 1,
  };
  
- static const struct regmap_config wm8961_regmap = {
-@@ -961,19 +962,12 @@ static int wm8961_i2c_probe(struct i2c_client *i2c,
- 
- 	i2c_set_clientdata(i2c, wm8961);
+ static const struct regmap_config wm8991_regmap = {
+@@ -1319,19 +1320,12 @@ static int wm8991_i2c_probe(struct i2c_client *i2c,
+ 	regmap_write(wm8991->regmap, WM8991_RIGHT_OUTPUT_VOLUME,
+ 		     0x50 | (1<<8));
  
 -	ret = snd_soc_register_codec(&i2c->dev,
--			&soc_codec_dev_wm8961, &wm8961_dai, 1);
+-				     &soc_codec_dev_wm8991, &wm8991_dai, 1);
 +	ret = devm_snd_soc_register_component(&i2c->dev,
-+			&soc_component_dev_wm8961, &wm8961_dai, 1);
++				     &soc_component_dev_wm8991, &wm8991_dai, 1);
  
  	return ret;
  }
  
--static int wm8961_i2c_remove(struct i2c_client *client)
+-static int wm8991_i2c_remove(struct i2c_client *client)
 -{
 -	snd_soc_unregister_codec(&client->dev);
 -
 -	return 0;
 -}
 -
- static const struct i2c_device_id wm8961_i2c_id[] = {
- 	{ "wm8961", 0 },
+ static const struct i2c_device_id wm8991_i2c_id[] = {
+ 	{ "wm8991", 0 },
  	{ }
-@@ -985,7 +979,6 @@ static struct i2c_driver wm8961_i2c_driver = {
- 		.name = "wm8961",
+@@ -1343,7 +1337,6 @@ static struct i2c_driver wm8991_i2c_driver = {
+ 		.name = "wm8991",
  	},
- 	.probe =    wm8961_i2c_probe,
--	.remove =   wm8961_i2c_remove,
- 	.id_table = wm8961_i2c_id,
+ 	.probe = wm8991_i2c_probe,
+-	.remove = wm8991_i2c_remove,
+ 	.id_table = wm8991_i2c_id,
  };
  
 -- 
