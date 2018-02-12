@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5665: remove rt5668 support" to the
-	asoc tree
-Date: Mon, 12 Feb 2018 12:27:47 +0000
-Message-ID: <E1elDD1-0002pV-HU@debutante>
-References: <1517224538-29983-1-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: soc-utils: replace codec to component"
+	to the asoc tree
+Date: Mon, 12 Feb 2018 12:28:10 +0000
+Message-ID: <E1elDDO-0002s4-ON@debutante>
+References: <87h8r55q5a.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A9F64267338
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:27:50 +0100 (CET)
-In-Reply-To: <1517224538-29983-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 08201267371
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:28:12 +0100 (CET)
+In-Reply-To: <87h8r55q5a.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, shawn.lee@realtek.com, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5665: remove rt5668 support
+   ASoC: soc-utils: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,80 +53,79 @@ to this mail.
 Thanks,
 Mark
 
->From 20ebbd2f89a9b2c61c4d432aa1156fc09e37f37c Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Mon, 29 Jan 2018 19:15:38 +0800
-Subject: [PATCH] ASoC: rt5665: remove rt5668 support
+>From 03a0ddeda7ebafea8e99078581a50d856e3587a4 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 29 Jan 2018 02:58:01 +0000
+Subject: [PATCH] ASoC: soc-utils: replace codec to component
 
-Remove rt5668 support from rt5665 codec driver since rt5668 will
-not go into mass production.
+Now we can replace Codec to Component. Let's do it.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Note:
+	xxx_codec_xxx()		->	xxx_component_xxx()
+	.idle_bias_off = 0	->	.idle_bias_on = 1
+	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
+	-			->	.endianness = 1
+	-			->	.non_legacy_dai_naming	= 1
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/rt5665.txt | 4 ++--
- sound/soc/codecs/rt5665.c                          | 5 -----
- sound/soc/codecs/rt5665.h                          | 1 -
- 3 files changed, 2 insertions(+), 8 deletions(-)
+ sound/soc/soc-utils.c | 22 ++++++++--------------
+ 1 file changed, 8 insertions(+), 14 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5665.txt b/Documentation/devicetree/bindings/sound/rt5665.txt
-index 419c89219681..8df170506986 100644
---- a/Documentation/devicetree/bindings/sound/rt5665.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5665.txt
-@@ -1,10 +1,10 @@
--RT5665/RT5666/RT5668 audio CODEC
-+RT5665/RT5666 audio CODEC
- 
- This device supports I2C only.
- 
- Required properties:
- 
--- compatible : One of "realtek,rt5665", "realtek,rt5666" or "realtek,rt5668".
-+- compatible : One of "realtek,rt5665", "realtek,rt5666".
- 
- - reg : The I2C address of the device.
- 
-diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
-index 819df1a32dd4..6ba99f5ed3f4 100644
---- a/sound/soc/codecs/rt5665.c
-+++ b/sound/soc/codecs/rt5665.c
-@@ -4826,9 +4826,6 @@ static int rt5665_i2c_probe(struct i2c_client *i2c,
- 	case 0x0:
- 		rt5665->id = CODEC_5666;
- 		break;
--	case 0x6:
--		rt5665->id = CODEC_5668;
--		break;
- 	case 0x3:
- 	default:
- 		rt5665->id = CODEC_5665;
-@@ -4955,7 +4952,6 @@ static void rt5665_i2c_shutdown(struct i2c_client *client)
- static const struct of_device_id rt5665_of_match[] = {
- 	{.compatible = "realtek,rt5665"},
- 	{.compatible = "realtek,rt5666"},
--	{.compatible = "realtek,rt5668"},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, rt5665_of_match);
-@@ -4965,7 +4961,6 @@ MODULE_DEVICE_TABLE(of, rt5665_of_match);
- static const struct acpi_device_id rt5665_acpi_match[] = {
- 	{"10EC5665", 0,},
- 	{"10EC5666", 0,},
--	{"10EC5668", 0,},
- 	{},
- };
- MODULE_DEVICE_TABLE(acpi, rt5665_acpi_match);
-diff --git a/sound/soc/codecs/rt5665.h b/sound/soc/codecs/rt5665.h
-index b528e416b592..b0a98ca39c5b 100644
---- a/sound/soc/codecs/rt5665.h
-+++ b/sound/soc/codecs/rt5665.h
-@@ -1978,7 +1978,6 @@ enum {
- enum {
- 	CODEC_5665,
- 	CODEC_5666,
--	CODEC_5668,
+diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+index e237858c9ed4..2d9e98bd1530 100644
+--- a/sound/soc/soc-utils.c
++++ b/sound/soc/soc-utils.c
+@@ -288,7 +288,12 @@ static const struct snd_soc_component_driver dummy_platform = {
+ 	.ops = &dummy_dma_ops,
  };
  
- /* filter mask */
+-static const struct snd_soc_codec_driver dummy_codec;
++static const struct snd_soc_component_driver dummy_codec = {
++	.idle_bias_on		= 1,
++	.use_pmdown_time	= 1,
++	.endianness		= 1,
++	.non_legacy_dai_naming	= 1,
++};
+ 
+ #define STUB_RATES	SNDRV_PCM_RATE_8000_192000
+ #define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S8 | \
+@@ -338,33 +343,22 @@ static int snd_soc_dummy_probe(struct platform_device *pdev)
+ {
+ 	int ret;
+ 
+-	ret = snd_soc_register_codec(&pdev->dev, &dummy_codec, &dummy_dai, 1);
++	ret = devm_snd_soc_register_component(&pdev->dev,
++					      &dummy_codec, &dummy_dai, 1);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &dummy_platform,
+ 					      NULL, 0);
+-	if (ret < 0) {
+-		snd_soc_unregister_codec(&pdev->dev);
+-		return ret;
+-	}
+ 
+ 	return ret;
+ }
+ 
+-static int snd_soc_dummy_remove(struct platform_device *pdev)
+-{
+-	snd_soc_unregister_codec(&pdev->dev);
+-
+-	return 0;
+-}
+-
+ static struct platform_driver soc_dummy_driver = {
+ 	.driver = {
+ 		.name = "snd-soc-dummy",
+ 	},
+ 	.probe = snd_soc_dummy_probe,
+-	.remove = snd_soc_dummy_remove,
+ };
+ 
+ static struct platform_device *soc_dummy_dev;
 -- 
 2.16.1
