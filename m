@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak4104: replace codec to component" to
+Subject: Applied "ASoC: ak4671: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:45:57 +0000
-Message-ID: <E1elDUb-0005QJ-JW@debutante>
-References: <87bmhd2w9s.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:46:01 +0000
+Message-ID: <E1elDUf-0005R9-0C@debutante>
+References: <87d11t2wab.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B50C12678E8
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:45:59 +0100 (CET)
-In-Reply-To: <87bmhd2w9s.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F0A52678EE
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:46:03 +0100 (CET)
+In-Reply-To: <87d11t2wab.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak4104: replace codec to component
+   ASoC: ak4671: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 61feead8d78fe103dd18dba5d9acb3a67dce2567 Mon Sep 17 00:00:00 2001
+>From 57188d8875894b14f6cdd21c7ee6e96ab66c1f2b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 03:14:01 +0000
-Subject: [PATCH] ASoC: ak4104: replace codec to component
+Date: Mon, 29 Jan 2018 03:13:39 +0000
+Subject: [PATCH] ASoC: ak4671: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,167 +70,185 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4104.c | 68 +++++++++++++++++++++--------------------------
- 1 file changed, 30 insertions(+), 38 deletions(-)
+ sound/soc/codecs/ak4671.c | 67 ++++++++++++++++++++++-------------------------
+ 1 file changed, 31 insertions(+), 36 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4104.c b/sound/soc/codecs/ak4104.c
-index dbb184118f2e..32bc545c19cf 100644
---- a/sound/soc/codecs/ak4104.c
-+++ b/sound/soc/codecs/ak4104.c
-@@ -65,8 +65,8 @@ static const struct snd_soc_dapm_route ak4104_dapm_routes[] = {
- static int ak4104_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 			      unsigned int format)
+diff --git a/sound/soc/codecs/ak4671.c b/sound/soc/codecs/ak4671.c
+index dcfdff56fc5a..7133fd69c641 100644
+--- a/sound/soc/codecs/ak4671.c
++++ b/sound/soc/codecs/ak4671.c
+@@ -163,15 +163,15 @@ static const struct snd_kcontrol_new ak4671_snd_controls[] = {
+ static int ak4671_out2_event(struct snd_soc_dapm_widget *w,
+ 		struct snd_kcontrol *kcontrol, int event)
  {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct ak4104_private *ak4104 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct ak4104_private *ak4104 = snd_soc_component_get_drvdata(component);
- 	int val = 0;
- 	int ret;
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
  
-@@ -81,7 +81,7 @@ static int ak4104_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		val |= AK4104_CONTROL1_DIF0 | AK4104_CONTROL1_DIF1;
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+-		snd_soc_update_bits(codec, AK4671_LOUT2_POWER_MANAGERMENT,
++		snd_soc_component_update_bits(component, AK4671_LOUT2_POWER_MANAGERMENT,
+ 				    AK4671_MUTEN, AK4671_MUTEN);
  		break;
- 	default:
--		dev_err(codec->dev, "invalid dai format\n");
-+		dev_err(component->dev, "invalid dai format\n");
- 		return -EINVAL;
+ 	case SND_SOC_DAPM_PRE_PMD:
+-		snd_soc_update_bits(codec, AK4671_LOUT2_POWER_MANAGERMENT,
++		snd_soc_component_update_bits(component, AK4671_LOUT2_POWER_MANAGERMENT,
+ 				    AK4671_MUTEN, 0);
+ 		break;
  	}
- 
-@@ -102,8 +102,8 @@ static int ak4104_hw_params(struct snd_pcm_substream *substream,
- 			    struct snd_pcm_hw_params *params,
- 			    struct snd_soc_dai *dai)
+@@ -427,10 +427,10 @@ static int ak4671_hw_params(struct snd_pcm_substream *substream,
+ 		struct snd_pcm_hw_params *params,
+ 		struct snd_soc_dai *dai)
  {
 -	struct snd_soc_codec *codec = dai->codec;
--	struct ak4104_private *ak4104 = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_component *component = dai->component;
-+	struct ak4104_private *ak4104 = snd_soc_component_get_drvdata(component);
- 	int ret, val = 0;
+ 	u8 fs;
  
- 	/* set the IEC958 bits: consumer mode, no copyright bit */
-@@ -141,7 +141,7 @@ static int ak4104_hw_params(struct snd_pcm_substream *substream,
- 		val |= IEC958_AES3_CON_FS_192000;
- 		break;
- 	default:
--		dev_err(codec->dev, "unsupported sampling rate\n");
-+		dev_err(component->dev, "unsupported sampling rate\n");
+-	fs = snd_soc_read(codec, AK4671_PLL_MODE_SELECT0);
++	fs = snd_soc_component_read32(component, AK4671_PLL_MODE_SELECT0);
+ 	fs &= ~AK4671_FS;
+ 
+ 	switch (params_rate(params)) {
+@@ -465,7 +465,7 @@ static int ak4671_hw_params(struct snd_pcm_substream *substream,
  		return -EINVAL;
  	}
  
-@@ -174,14 +174,14 @@ static struct snd_soc_dai_driver ak4104_dai = {
- 	.ops = &ak4101_dai_ops,
- };
+-	snd_soc_write(codec, AK4671_PLL_MODE_SELECT0, fs);
++	snd_soc_component_write(component, AK4671_PLL_MODE_SELECT0, fs);
  
--static int ak4104_probe(struct snd_soc_codec *codec)
-+static int ak4104_probe(struct snd_soc_component *component)
+ 	return 0;
+ }
+@@ -473,10 +473,10 @@ static int ak4671_hw_params(struct snd_pcm_substream *substream,
+ static int ak4671_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 		unsigned int freq, int dir)
  {
--	struct ak4104_private *ak4104 = snd_soc_codec_get_drvdata(codec);
-+	struct ak4104_private *ak4104 = snd_soc_component_get_drvdata(component);
- 	int ret;
+-	struct snd_soc_codec *codec = dai->codec;
++	struct snd_soc_component *component = dai->component;
+ 	u8 pll;
  
- 	ret = regulator_enable(ak4104->regulator);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Unable to enable regulator: %d\n", ret);
-+		dev_err(component->dev, "Unable to enable regulator: %d\n", ret);
- 		return ret;
+-	pll = snd_soc_read(codec, AK4671_PLL_MODE_SELECT0);
++	pll = snd_soc_component_read32(component, AK4671_PLL_MODE_SELECT0);
+ 	pll &= ~AK4671_PLL;
+ 
+ 	switch (freq) {
+@@ -511,19 +511,19 @@ static int ak4671_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 		return -EINVAL;
  	}
  
-@@ -205,30 +205,28 @@ static int ak4104_probe(struct snd_soc_codec *codec)
- 	return ret;
- }
- 
--static int ak4104_remove(struct snd_soc_codec *codec)
-+static void ak4104_remove(struct snd_soc_component *component)
- {
--	struct ak4104_private *ak4104 = snd_soc_codec_get_drvdata(codec);
-+	struct ak4104_private *ak4104 = snd_soc_component_get_drvdata(component);
- 
- 	regmap_update_bits(ak4104->regmap, AK4104_REG_CONTROL1,
- 			   AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN, 0);
- 	regulator_disable(ak4104->regulator);
--
--	return 0;
- }
- 
- #ifdef CONFIG_PM
--static int ak4104_soc_suspend(struct snd_soc_codec *codec)
-+static int ak4104_soc_suspend(struct snd_soc_component *component)
- {
--	struct ak4104_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct ak4104_private *priv = snd_soc_component_get_drvdata(component);
- 
- 	regulator_disable(priv->regulator);
+-	snd_soc_write(codec, AK4671_PLL_MODE_SELECT0, pll);
++	snd_soc_component_write(component, AK4671_PLL_MODE_SELECT0, pll);
  
  	return 0;
  }
  
--static int ak4104_soc_resume(struct snd_soc_codec *codec)
-+static int ak4104_soc_resume(struct snd_soc_component *component)
+ static int ak4671_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
  {
--	struct ak4104_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct ak4104_private *priv = snd_soc_component_get_drvdata(component);
- 	int ret;
+-	struct snd_soc_codec *codec = dai->codec;
++	struct snd_soc_component *component = dai->component;
+ 	u8 mode;
+ 	u8 format;
  
- 	ret = regulator_enable(priv->regulator);
-@@ -242,18 +240,19 @@ static int ak4104_soc_resume(struct snd_soc_codec *codec)
- #define ak4104_soc_resume	NULL
- #endif /* CONFIG_PM */
+ 	/* set master/slave audio interface */
+-	mode = snd_soc_read(codec, AK4671_PLL_MODE_SELECT1);
++	mode = snd_soc_component_read32(component, AK4671_PLL_MODE_SELECT1);
  
--static const struct snd_soc_codec_driver soc_codec_device_ak4104 = {
--	.probe = ak4104_probe,
--	.remove = ak4104_remove,
--	.suspend = ak4104_soc_suspend,
--	.resume = ak4104_soc_resume,
--
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+@@ -537,7 +537,7 @@ static int ak4671_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	}
+ 
+ 	/* interface format */
+-	format = snd_soc_read(codec, AK4671_FORMAT_SELECT);
++	format = snd_soc_component_read32(component, AK4671_FORMAT_SELECT);
+ 	format &= ~AK4671_DIF;
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+@@ -557,24 +557,24 @@ static int ak4671_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	}
+ 
+ 	/* set mode and format */
+-	snd_soc_write(codec, AK4671_PLL_MODE_SELECT1, mode);
+-	snd_soc_write(codec, AK4671_FORMAT_SELECT, format);
++	snd_soc_component_write(component, AK4671_PLL_MODE_SELECT1, mode);
++	snd_soc_component_write(component, AK4671_FORMAT_SELECT, format);
+ 
+ 	return 0;
+ }
+ 
+-static int ak4671_set_bias_level(struct snd_soc_codec *codec,
++static int ak4671_set_bias_level(struct snd_soc_component *component,
+ 		enum snd_soc_bias_level level)
+ {
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+ 	case SND_SOC_BIAS_PREPARE:
+ 	case SND_SOC_BIAS_STANDBY:
+-		snd_soc_update_bits(codec, AK4671_AD_DA_POWER_MANAGEMENT,
++		snd_soc_component_update_bits(component, AK4671_AD_DA_POWER_MANAGEMENT,
+ 				    AK4671_PMVCM, AK4671_PMVCM);
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+-		snd_soc_write(codec, AK4671_AD_DA_POWER_MANAGEMENT, 0x00);
++		snd_soc_component_write(component, AK4671_AD_DA_POWER_MANAGEMENT, 0x00);
+ 		break;
+ 	}
+ 	return 0;
+@@ -610,16 +610,18 @@ static struct snd_soc_dai_driver ak4671_dai = {
+ 	.ops = &ak4671_dai_ops,
+ };
+ 
+-static const struct snd_soc_codec_driver soc_codec_dev_ak4671 = {
+-	.set_bias_level = ak4671_set_bias_level,
 -	.component_driver = {
--		.dapm_widgets		= ak4104_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(ak4104_dapm_widgets),
--		.dapm_routes		= ak4104_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(ak4104_dapm_routes),
--	}
-+static const struct snd_soc_component_driver soc_component_device_ak4104 = {
-+	.probe			= ak4104_probe,
-+	.remove			= ak4104_remove,
-+	.suspend		= ak4104_soc_suspend,
-+	.resume			= ak4104_soc_resume,
-+	.dapm_widgets		= ak4104_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(ak4104_dapm_widgets),
-+	.dapm_routes		= ak4104_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(ak4104_dapm_routes),
+-		.controls		= ak4671_snd_controls,
+-		.num_controls		= ARRAY_SIZE(ak4671_snd_controls),
+-		.dapm_widgets		= ak4671_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(ak4671_dapm_widgets),
+-		.dapm_routes		= ak4671_intercon,
+-		.num_dapm_routes	= ARRAY_SIZE(ak4671_intercon),
+-	},
++static const struct snd_soc_component_driver soc_component_dev_ak4671 = {
++	.set_bias_level		= ak4671_set_bias_level,
++	.controls		= ak4671_snd_controls,
++	.num_controls		= ARRAY_SIZE(ak4671_snd_controls),
++	.dapm_widgets		= ak4671_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(ak4671_dapm_widgets),
++	.dapm_routes		= ak4671_intercon,
++	.num_dapm_routes	= ARRAY_SIZE(ak4671_intercon),
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static const struct regmap_config ak4104_regmap = {
-@@ -323,17 +322,11 @@ static int ak4104_spi_probe(struct spi_device *spi)
+ static const struct regmap_config ak4671_regmap = {
+@@ -645,17 +647,11 @@ static int ak4671_i2c_probe(struct i2c_client *client,
+ 		return ret;
+ 	}
  
- 	spi_set_drvdata(spi, ak4104);
- 
--	ret = snd_soc_register_codec(&spi->dev,
--			&soc_codec_device_ak4104, &ak4104_dai, 1);
-+	ret = devm_snd_soc_register_component(&spi->dev,
-+			&soc_component_device_ak4104, &ak4104_dai, 1);
+-	ret = snd_soc_register_codec(&client->dev,
+-			&soc_codec_dev_ak4671, &ak4671_dai, 1);
++	ret = devm_snd_soc_register_component(&client->dev,
++			&soc_component_dev_ak4671, &ak4671_dai, 1);
  	return ret;
  }
  
--static int ak4104_spi_remove(struct spi_device *spi)
+-static int ak4671_i2c_remove(struct i2c_client *client)
 -{
--	snd_soc_unregister_codec(&spi->dev);
+-	snd_soc_unregister_codec(&client->dev);
 -	return 0;
 -}
 -
- static const struct of_device_id ak4104_of_match[] = {
- 	{ .compatible = "asahi-kasei,ak4104", },
+ static const struct i2c_device_id ak4671_i2c_id[] = {
+ 	{ "ak4671", 0 },
  	{ }
-@@ -353,7 +346,6 @@ static struct spi_driver ak4104_spi_driver = {
+@@ -667,7 +663,6 @@ static struct i2c_driver ak4671_i2c_driver = {
+ 		.name = "ak4671-codec",
  	},
- 	.id_table = ak4104_id_table,
- 	.probe  = ak4104_spi_probe,
--	.remove = ak4104_spi_remove,
+ 	.probe = ak4671_i2c_probe,
+-	.remove = ak4671_i2c_remove,
+ 	.id_table = ak4671_i2c_id,
  };
  
- module_spi_driver(ak4104_spi_driver);
 -- 
 2.16.1
