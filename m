@@ -1,60 +1,64 @@
-From: Krzysztof Kozlowski <krzk-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 8/8] ASoC: samsung,tm2-audio DT binding documentation update
-Date: Mon, 12 Feb 2018 10:19:27 +0100
-Message-ID: <CAJKOXPezeWHCaHz1PY03_nTFxb0qOCsgPtNjfMC4id0DsrFLqA@mail.gmail.com>
-References: <CGME20180205154537epcas1p10a9a30a574e3f472358e7dacf3cb0489@epcas1p1.samsung.com>
- <20180205154403.13520-1-s.nawrocki@samsung.com> <20180205154403.13520-9-s.nawrocki@samsung.com>
- <CAJKOXPeRFgJQpUTeJeYYo+qqAxkT1iZczSJQzRzn3O3bXmvOZA@mail.gmail.com> <67a9f473-0eba-b3d0-ae92-5602658b6958@samsung.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH 4/8] ASoC: samsung: i2s: Define the parameters list for SAMSUNG_I2S_OPCLK
+Date: Mon, 12 Feb 2018 11:00:50 +0100
+Message-ID: <CAJKOXPeHDHbt8e+aVd6RCv3M+AW7qPVep=Cb7nBJeZn3k+u5Bg@mail.gmail.com>
+References: <CGME20180205154520epcas1p4132421a187a4d767a2f75badfef5eec4@epcas1p4.samsung.com>
+ <20180205154403.13520-1-s.nawrocki@samsung.com> <20180205154403.13520-5-s.nawrocki@samsung.com>
+ <CAJKOXPf-6wFDSPttdDbc34Y2hiuc=TG2j5bb+2uQeScxGuxjZg@mail.gmail.com> <7f86ec02-2235-7622-9298-f6edd367edb2@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <67a9f473-0eba-b3d0-ae92-5602658b6958-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, jcsing.lee-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, sbkim73-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, =?UTF-8?B?QmFydMWCb21pZWogxbtvxYJuaWVya2lld2ljeg==?= <b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Marek Szyprowski <m.szyprowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <7f86ec02-2235-7622-9298-f6edd367edb2@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, robh+dt@kernel.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, jcsing.lee@samsung.com, sbkim73@samsung.com, linux-kernel@vger.kernel.org, =?UTF-8?B?QmFydMWCb21pZWogxbtvxYJuaWVya2lld2ljeg==?= <b.zolnierkie@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 7, 2018 at 5:31 PM, Sylwester Nawrocki
-<s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org> wrote:
-> On 02/06/2018 02:05 PM, Krzysztof Kozlowski wrote:
->> On Mon, Feb 5, 2018 at 4:44 PM, Sylwester Nawrocki
->> <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org> wrote:
->>> This patch documents additional entries of the audio-codec and
->>> i2s-controller properties required for the HDMI audio support.
->>>
->>> Signed-off-by: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
->>> ---
->>>  .../devicetree/bindings/sound/samsung,tm2-audio.txt        | 14 +++++++++-----
->>>  1 file changed, 9 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt b/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
->>> index 94442e5673b3..f5ccc12ddc00 100644
->>> --- a/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
->>> +++ b/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
->>> @@ -4,9 +4,13 @@ Required properties:
->>>
->>>   - compatible           : "samsung,tm2-audio"
->>>   - model                : the user-visible name of this sound complex
->>> - - audio-codec          : the phandle of the wm5110 audio codec node,
->>> -                          as described in ../mfd/arizona.txt
->>> - - i2s-controller       : the phandle of the I2S controller
->>> + - audio-codec          : the first entry should be phandle of the wm5110 audio
->>> +                          codec node, as described in ../mfd/arizona.txt;
->>> +                          the second entry should be phandle of the HDMI
->>
->> AFAIU, this property is still optional so the wording should be
->> different. Maybe just add "optional properties" paragraph?
+On Wed, Feb 7, 2018 at 5:23 PM, Sylwester Nawrocki
+<s.nawrocki@samsung.com> wrote:
+> On 02/06/2018 01:26 PM, Krzysztof Kozlowski wrote:
+>> On Mon, Feb 5, 2018 at 4:43 PM, Sylwester Nawrocki
+>> <s.nawrocki@samsung.com> wrote:
 >
-> I'd like to keep the second entries required in the documentation,
-> and the driver would still be handling the case with just single
-> entries.
+>>> diff --git a/sound/soc/samsung/i2s.h b/sound/soc/samsung/i2s.h
+>>> index 79781de2f247..a9832a9555cb 100644
+>>> --- a/sound/soc/samsung/i2s.h
+>>> +++ b/sound/soc/samsung/i2s.h
+>>> @@ -16,11 +16,16 @@
+>>>  #define SAMSUNG_I2S_DAI        "samsung-i2s"
+>>>  #define SAMSUNG_I2S_DAI_SEC    "samsung-i2s-sec"
+>>>
+>>> -#define SAMSUNG_I2S_DIV_BCLK   1
+>>> +#define SAMSUNG_I2S_DIV_BCLK           1
+>>>
+>>> -#define SAMSUNG_I2S_RCLKSRC_0  0
+>>> -#define SAMSUNG_I2S_RCLKSRC_1  1
+>>> +#define SAMSUNG_I2S_RCLKSRC_0          0
+>>> +#define SAMSUNG_I2S_RCLKSRC_1          1
+>>>  #define SAMSUNG_I2S_CDCLK              2
+>>> +/* Operation clock for IIS logic */
+>>>  #define SAMSUNG_I2S_OPCLK              3
+>>> +#define  SAMSUNG_I2S_OPCLK_CDCLK_OUT   0       /* CODEC clock out */
+>>> +#define  SAMSUNG_I2S_OPCLK_CDCLK_IN    1       /* CODEC clock in */
+>>> +#define  SAMSUNG_I2S_OPCLK_BCLK_OUT    2       /* Bit clock out */
+>>> +#define  SAMSUNG_I2S_OPCLK_PCLK                3       /* Audio bus clock */
+>>>
+>>>  #endif /* __SND_SOC_SAMSUNG_I2S_H */
+>>
+>> This part of patch seems to be unrelated (and it includes some cleanups).
+>
+> This is actually the main part of the patch, an API exported to other
+> drivers.
 
-I understand.
-Acked-by: Krzysztof Kozlowski <krzk-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+You are right, I looked at it without the context of 5/8 and I assumed
+you are changing existing user of the defines...
+
+> The whitespace changes are for keeping the alignment uniform,
+> I could just drop them.
+
+Let it be then.
+
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
 Best regards,
 Krzysztof
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
