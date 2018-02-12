@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: i2s: Ensure the RCLK rate is properly determined" to the asoc tree
-Date: Mon, 12 Feb 2018 12:52:11 +0000
-Message-ID: <E1elDad-0006V3-Vj@debutante>
-References: <20180205154403.13520-2-s.nawrocki@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20180205154403.13520-2-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>, Mark Brown <broonie@kernel.org>broonie@kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, jcsing.lee@samsung.com, lgirdwood@gmail.comkrzk@kernel.org, linux-kernel@vger.kernel.org, robh+dt@kernel.org, m.szyprowski@samsung.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: ads117x: replace codec to component" to
+	the asoc tree
+Date: Mon, 12 Feb 2018 12:38:43 +0000
+Message-ID: <E1elDNb-0004L7-Fq@debutante>
+References: <877es1xphm.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id B076E267AD6
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:38:45 +0100 (CET)
+In-Reply-To: <877es1xphm.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: i2s: Ensure the RCLK rate is properly determined
+   ASoC: ads117x: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -37,55 +53,74 @@ to this mail.
 Thanks,
 Mark
 
->From 647d04f8e07afc7c3b7a42b3ee01a8b28db29631 Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Mon, 5 Feb 2018 16:43:56 +0100
-Subject: [PATCH] ASoC: samsung: i2s: Ensure the RCLK rate is properly
- determined
+>From 9310161754511c212dbb6728860376a5afcbbcc8 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 29 Jan 2018 04:24:44 +0000
+Subject: [PATCH] ASoC: ads117x: replace codec to component
 
-If the RCLK mux clock configuration is specified in DT and no set_sysclk()
-callback is used in the sound card driver the sclk_srcrate field will remain
-set to 0, leading to an incorrect PSR divider setting.
-To fix this the frequency value is retrieved from the CLK_I2S_RCLK_SRC clock,
-so the actual RCLK mux selection is taken into account.
+Now we can replace Codec to Component. Let's do it.
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Note:
+	xxx_codec_xxx()		->	xxx_component_xxx()
+	.idle_bias_off = 0	->	.idle_bias_on = 1
+	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
+	-			->	.endianness = 1
+	-			->	.non_legacy_dai_naming = 1
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/i2s.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ sound/soc/codecs/ads117x.c | 27 +++++++++++----------------
+ 1 file changed, 11 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 233f1c9a4b6c..aeba0ae890ea 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -656,8 +656,12 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
- 		tmp |= mod_slave;
- 		break;
- 	case SND_SOC_DAIFMT_CBS_CFS:
--		/* Set default source clock in Master mode */
--		if (i2s->rclk_srcrate == 0)
-+		/*
-+		 * Set default source clock in Master mode, only when the
-+		 * CLK_I2S_RCLK_SRC clock is not exposed so we ensure any
-+		 * clock configuration assigned in DT is not overwritten.
-+		 */
-+		if (i2s->rclk_srcrate == 0 && i2s->clk_data.clks == NULL)
- 			i2s_set_sysclk(dai, SAMSUNG_I2S_RCLKSRC_0,
- 							0, SND_SOC_CLOCK_IN);
- 		break;
-@@ -881,6 +885,11 @@ static int config_setup(struct i2s_dai *i2s)
- 		return 0;
+diff --git a/sound/soc/codecs/ads117x.c b/sound/soc/codecs/ads117x.c
+index b7f0057c0239..bcd45ff5db0c 100644
+--- a/sound/soc/codecs/ads117x.c
++++ b/sound/soc/codecs/ads117x.c
+@@ -58,25 +58,21 @@ static struct snd_soc_dai_driver ads117x_dai = {
+ 		.formats = ADS117X_FORMATS,},
+ };
  
- 	if (!(i2s->quirks & QUIRK_NO_MUXPSR)) {
-+		struct clk *rclksrc = i2s->clk_table[CLK_I2S_RCLK_SRC];
-+
-+		if (i2s->rclk_srcrate == 0 && rclksrc && !IS_ERR(rclksrc))
-+			i2s->rclk_srcrate = clk_get_rate(rclksrc);
-+
- 		psr = i2s->rclk_srcrate / i2s->frmclk / rfs;
- 		writel(((psr - 1) << 8) | PSR_PSREN, i2s->addr + I2SPSR);
- 		dev_dbg(&i2s->pdev->dev,
+-static const struct snd_soc_codec_driver soc_codec_dev_ads117x = {
+-	.component_driver = {
+-		.dapm_widgets		= ads117x_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(ads117x_dapm_widgets),
+-		.dapm_routes		= ads117x_dapm_routes,
+-		.num_dapm_routes	= ARRAY_SIZE(ads117x_dapm_routes),
+-	},
++static const struct snd_soc_component_driver soc_component_dev_ads117x = {
++	.dapm_widgets		= ads117x_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(ads117x_dapm_widgets),
++	.dapm_routes		= ads117x_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(ads117x_dapm_routes),
++	.idle_bias_on		= 1,
++	.use_pmdown_time	= 1,
++	.endianness		= 1,
++	.non_legacy_dai_naming	= 1,
+ };
+ 
+ static int ads117x_probe(struct platform_device *pdev)
+ {
+-	return snd_soc_register_codec(&pdev->dev,
+-			&soc_codec_dev_ads117x, &ads117x_dai, 1);
+-}
+-
+-static int ads117x_remove(struct platform_device *pdev)
+-{
+-	snd_soc_unregister_codec(&pdev->dev);
+-	return 0;
++	return devm_snd_soc_register_component(&pdev->dev,
++			&soc_component_dev_ads117x, &ads117x_dai, 1);
+ }
+ 
+ #if defined(CONFIG_OF)
+@@ -95,7 +91,6 @@ static struct platform_driver ads117x_codec_driver = {
+ 	},
+ 
+ 	.probe = ads117x_probe,
+-	.remove = ads117x_remove,
+ };
+ 
+ module_platform_driver(ads117x_codec_driver);
 -- 
 2.16.1
