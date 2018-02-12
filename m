@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8731: replace codec to component" to
+Subject: Applied "ASoC: wm8770: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:49:42 +0000
-Message-ID: <E1elDYE-00068x-Vl@debutante>
-References: <87r2q94bch.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:50:19 +0000
+Message-ID: <E1elDYp-0006DD-Qw@debutante>
+References: <87tvv54bdc.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4DC20267F87
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:49:45 +0100 (CET)
-In-Reply-To: <87r2q94bch.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 32B1B267FE1
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:50:22 +0100 (CET)
+In-Reply-To: <87tvv54bdc.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8731: replace codec to component
+   ASoC: wm8770: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,16 +53,16 @@ to this mail.
 Thanks,
 Mark
 
->From cde596c7c07343789e3e0f1c09fc7d3c756c88d0 Mon Sep 17 00:00:00 2001
+>From 502cb3a293be22f95737480902ed3450c06b276a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 03:03:01 +0000
-Subject: [PATCH] ASoC: wm8731: replace codec to component
+Date: Mon, 29 Jan 2018 03:02:29 +0000
+Subject: [PATCH] ASoC: wm8770: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
 Note:
 	xxx_codec_xxx()		->	xxx_component_xxx()
-	.idle_bias_off = 0	->	.idle_bias_on = 1
+	.idle_bias_off = 1	->	.idle_bias_on = 0
 	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
 	-			->	.endianness = 1
 	-			->	.non_legacy_dai_naming = 1
@@ -70,268 +70,318 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8731.c | 101 +++++++++++++++++++++++-----------------------
- 1 file changed, 50 insertions(+), 51 deletions(-)
+ sound/soc/codecs/wm8770.c | 131 ++++++++++++++++++++++------------------------
+ 1 file changed, 64 insertions(+), 67 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index 4f9a1eb28120..7c8fad865d6b 100644
---- a/sound/soc/codecs/wm8731.c
-+++ b/sound/soc/codecs/wm8731.c
-@@ -88,9 +88,9 @@ static SOC_ENUM_SINGLE_DECL(wm8731_insel_enum,
+diff --git a/sound/soc/codecs/wm8770.c b/sound/soc/codecs/wm8770.c
+index d6edcbbdec12..806245c70f8b 100644
+--- a/sound/soc/codecs/wm8770.c
++++ b/sound/soc/codecs/wm8770.c
+@@ -84,7 +84,7 @@ struct wm8770_priv {
+ 	struct regmap *regmap;
+ 	struct regulator_bulk_data supplies[WM8770_NUM_SUPPLIES];
+ 	struct notifier_block disable_nb[WM8770_NUM_SUPPLIES];
+-	struct snd_soc_codec *codec;
++	struct snd_soc_component *component;
+ 	int sysclk;
+ };
  
- static int wm8731_deemph[] = { 0, 32000, 44100, 48000 };
- 
--static int wm8731_set_deemph(struct snd_soc_codec *codec)
-+static int wm8731_set_deemph(struct snd_soc_component *component)
+@@ -308,14 +308,14 @@ static const struct snd_soc_dapm_route wm8770_intercon[] = {
+ static int vout12supply_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
  {
--	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
-+	struct wm8731_priv *wm8731 = snd_soc_component_get_drvdata(component);
- 	int val, i, best;
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
  
- 	/* If we're using deemphasis select the nearest available sample
-@@ -110,17 +110,17 @@ static int wm8731_set_deemph(struct snd_soc_codec *codec)
- 		val = 0;
- 	}
- 
--	dev_dbg(codec->dev, "Set deemphasis %d (%dHz)\n",
-+	dev_dbg(component->dev, "Set deemphasis %d (%dHz)\n",
- 		best, wm8731_deemph[best]);
- 
--	return snd_soc_update_bits(codec, WM8731_APDIGI, 0x6, val);
-+	return snd_soc_component_update_bits(component, WM8731_APDIGI, 0x6, val);
- }
- 
- static int wm8731_get_deemph(struct snd_kcontrol *kcontrol,
- 			     struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct wm8731_priv *wm8731 = snd_soc_component_get_drvdata(component);
- 
- 	ucontrol->value.integer.value[0] = wm8731->deemph;
- 
-@@ -130,8 +130,8 @@ static int wm8731_get_deemph(struct snd_kcontrol *kcontrol,
- static int wm8731_put_deemph(struct snd_kcontrol *kcontrol,
- 			     struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct wm8731_priv *wm8731 = snd_soc_component_get_drvdata(component);
- 	unsigned int deemph = ucontrol->value.integer.value[0];
- 	int ret = 0;
- 
-@@ -142,7 +142,7 @@ static int wm8731_put_deemph(struct snd_kcontrol *kcontrol,
- 	if (wm8731->deemph != deemph) {
- 		wm8731->deemph = deemph;
- 
--		wm8731_set_deemph(codec);
-+		wm8731_set_deemph(component);
- 
- 		ret = 1;
- 	}
-@@ -214,8 +214,8 @@ SND_SOC_DAPM_INPUT("LLINEIN"),
- static int wm8731_check_osc(struct snd_soc_dapm_widget *source,
- 			    struct snd_soc_dapm_widget *sink)
- {
--	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
--	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(source->dapm);
-+	struct wm8731_priv *wm8731 = snd_soc_component_get_drvdata(component);
- 
- 	return wm8731->sysclk_type == WM8731_SYSCLK_XTAL;
- }
-@@ -337,16 +337,16 @@ static int wm8731_hw_params(struct snd_pcm_substream *substream,
- 			    struct snd_pcm_hw_params *params,
- 			    struct snd_soc_dai *dai)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
--	u16 iface = snd_soc_read(codec, WM8731_IFACE) & 0xfff3;
-+	struct snd_soc_component *component = dai->component;
-+	struct wm8731_priv *wm8731 = snd_soc_component_get_drvdata(component);
-+	u16 iface = snd_soc_component_read32(component, WM8731_IFACE) & 0xfff3;
- 	int i = get_coeff(wm8731->sysclk, params_rate(params));
- 	u16 srate = (coeff_div[i].sr << 2) |
- 		(coeff_div[i].bosr << 1) | coeff_div[i].usb;
- 
- 	wm8731->playback_fs = params_rate(params);
- 
--	snd_soc_write(codec, WM8731_SRATE, srate);
-+	snd_soc_component_write(component, WM8731_SRATE, srate);
- 
- 	/* bit size */
- 	switch (params_width(params)) {
-@@ -363,30 +363,30 @@ static int wm8731_hw_params(struct snd_pcm_substream *substream,
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+-		snd_soc_update_bits(codec, WM8770_OUTMUX1, 0x180, 0);
++		snd_soc_component_update_bits(component, WM8770_OUTMUX1, 0x180, 0);
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMD:
+-		snd_soc_update_bits(codec, WM8770_OUTMUX1, 0x180, 0x180);
++		snd_soc_component_update_bits(component, WM8770_OUTMUX1, 0x180, 0x180);
  		break;
  	}
  
--	wm8731_set_deemph(codec);
-+	wm8731_set_deemph(component);
- 
--	snd_soc_write(codec, WM8731_IFACE, iface);
-+	snd_soc_component_write(component, WM8731_IFACE, iface);
- 	return 0;
- }
- 
- static int wm8731_mute(struct snd_soc_dai *dai, int mute)
+@@ -325,31 +325,31 @@ static int vout12supply_event(struct snd_soc_dapm_widget *w,
+ static int vout34supply_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
  {
--	struct snd_soc_codec *codec = dai->codec;
--	u16 mute_reg = snd_soc_read(codec, WM8731_APDIGI) & 0xfff7;
-+	struct snd_soc_component *component = dai->component;
-+	u16 mute_reg = snd_soc_component_read32(component, WM8731_APDIGI) & 0xfff7;
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
  
- 	if (mute)
--		snd_soc_write(codec, WM8731_APDIGI, mute_reg | 0x8);
-+		snd_soc_component_write(component, WM8731_APDIGI, mute_reg | 0x8);
- 	else
--		snd_soc_write(codec, WM8731_APDIGI, mute_reg);
-+		snd_soc_component_write(component, WM8731_APDIGI, mute_reg);
- 	return 0;
- }
- 
- static int wm8731_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 		int clk_id, unsigned int freq, int dir)
- {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
--	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
-+	struct wm8731_priv *wm8731 = snd_soc_component_get_drvdata(component);
- 
- 	switch (clk_id) {
- 	case WM8731_SYSCLK_XTAL:
-@@ -429,7 +429,7 @@ static int wm8731_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- static int wm8731_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		unsigned int fmt)
- {
--	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct snd_soc_component *component = codec_dai->component;
- 	u16 iface = 0;
- 
- 	/* set master/slave audio interface */
-@@ -481,14 +481,14 @@ static int wm8731_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+-		snd_soc_update_bits(codec, WM8770_OUTMUX2, 0x180, 0);
++		snd_soc_component_update_bits(component, WM8770_OUTMUX2, 0x180, 0);
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMD:
+-		snd_soc_update_bits(codec, WM8770_OUTMUX2, 0x180, 0x180);
++		snd_soc_component_update_bits(component, WM8770_OUTMUX2, 0x180, 0x180);
+ 		break;
  	}
  
- 	/* set iface */
--	snd_soc_write(codec, WM8731_IFACE, iface);
-+	snd_soc_component_write(component, WM8731_IFACE, iface);
  	return 0;
  }
  
--static int wm8731_set_bias_level(struct snd_soc_codec *codec,
-+static int wm8731_set_bias_level(struct snd_soc_component *component,
+-static int wm8770_reset(struct snd_soc_codec *codec)
++static int wm8770_reset(struct snd_soc_component *component)
+ {
+-	return snd_soc_write(codec, WM8770_RESET, 0);
++	return snd_soc_component_write(component, WM8770_RESET, 0);
+ }
+ 
+ static int wm8770_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+-	struct snd_soc_codec *codec;
++	struct snd_soc_component *component;
+ 	int iface, master;
+ 
+-	codec = dai->codec;
++	component = dai->component;
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+@@ -392,8 +392,8 @@ static int wm8770_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		return -EINVAL;
+ 	}
+ 
+-	snd_soc_update_bits(codec, WM8770_IFACECTRL, 0xf, iface);
+-	snd_soc_update_bits(codec, WM8770_MSTRCTRL, 0x100, master);
++	snd_soc_component_update_bits(component, WM8770_IFACECTRL, 0xf, iface);
++	snd_soc_component_update_bits(component, WM8770_MSTRCTRL, 0x100, master);
+ 
+ 	return 0;
+ }
+@@ -411,15 +411,15 @@ static int wm8770_hw_params(struct snd_pcm_substream *substream,
+ 			    struct snd_pcm_hw_params *params,
+ 			    struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec;
++	struct snd_soc_component *component;
+ 	struct wm8770_priv *wm8770;
+ 	int i;
+ 	int iface;
+ 	int shift;
+ 	int ratio;
+ 
+-	codec = dai->codec;
+-	wm8770 = snd_soc_codec_get_drvdata(codec);
++	component = dai->component;
++	wm8770 = snd_soc_component_get_drvdata(component);
+ 
+ 	iface = 0;
+ 	switch (params_width(params)) {
+@@ -450,7 +450,7 @@ static int wm8770_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	/* Only need to set MCLK/LRCLK ratio if we're master */
+-	if (snd_soc_read(codec, WM8770_MSTRCTRL) & 0x100) {
++	if (snd_soc_component_read32(component, WM8770_MSTRCTRL) & 0x100) {
+ 		for (; i < ARRAY_SIZE(mclk_ratios); ++i) {
+ 			ratio = wm8770->sysclk / params_rate(params);
+ 			if (ratio == mclk_ratios[i])
+@@ -458,51 +458,51 @@ static int wm8770_hw_params(struct snd_pcm_substream *substream,
+ 		}
+ 
+ 		if (i == ARRAY_SIZE(mclk_ratios)) {
+-			dev_err(codec->dev,
++			dev_err(component->dev,
+ 				"Unable to configure MCLK ratio %d/%d\n",
+ 				wm8770->sysclk, params_rate(params));
+ 			return -EINVAL;
+ 		}
+ 
+-		dev_dbg(codec->dev, "MCLK is %dfs\n", mclk_ratios[i]);
++		dev_dbg(component->dev, "MCLK is %dfs\n", mclk_ratios[i]);
+ 
+-		snd_soc_update_bits(codec, WM8770_MSTRCTRL, 0x7 << shift,
++		snd_soc_component_update_bits(component, WM8770_MSTRCTRL, 0x7 << shift,
+ 				    i << shift);
+ 	}
+ 
+-	snd_soc_update_bits(codec, WM8770_IFACECTRL, 0x30, iface);
++	snd_soc_component_update_bits(component, WM8770_IFACECTRL, 0x30, iface);
+ 
+ 	return 0;
+ }
+ 
+ static int wm8770_mute(struct snd_soc_dai *dai, int mute)
+ {
+-	struct snd_soc_codec *codec;
++	struct snd_soc_component *component;
+ 
+-	codec = dai->codec;
+-	return snd_soc_update_bits(codec, WM8770_DACMUTE, 0x10,
++	component = dai->component;
++	return snd_soc_component_update_bits(component, WM8770_DACMUTE, 0x10,
+ 				   !!mute << 4);
+ }
+ 
+ static int wm8770_set_sysclk(struct snd_soc_dai *dai,
+ 			     int clk_id, unsigned int freq, int dir)
+ {
+-	struct snd_soc_codec *codec;
++	struct snd_soc_component *component;
+ 	struct wm8770_priv *wm8770;
+ 
+-	codec = dai->codec;
+-	wm8770 = snd_soc_codec_get_drvdata(codec);
++	component = dai->component;
++	wm8770 = snd_soc_component_get_drvdata(component);
+ 	wm8770->sysclk = freq;
+ 	return 0;
+ }
+ 
+-static int wm8770_set_bias_level(struct snd_soc_codec *codec,
++static int wm8770_set_bias_level(struct snd_soc_component *component,
  				 enum snd_soc_bias_level level)
  {
--	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
-+	struct wm8731_priv *wm8731 = snd_soc_component_get_drvdata(component);
  	int ret;
- 	u16 reg;
+ 	struct wm8770_priv *wm8770;
  
-@@ -503,7 +503,7 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
+-	wm8770 = snd_soc_codec_get_drvdata(codec);
++	wm8770 = snd_soc_component_get_drvdata(component);
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+@@ -510,11 +510,11 @@ static int wm8770_set_bias_level(struct snd_soc_codec *codec,
  	case SND_SOC_BIAS_PREPARE:
  		break;
  	case SND_SOC_BIAS_STANDBY:
 -		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
 +		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
- 			ret = regulator_bulk_enable(ARRAY_SIZE(wm8731->supplies),
- 						    wm8731->supplies);
- 			if (ret != 0)
-@@ -513,13 +513,13 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
- 		}
+ 			ret = regulator_bulk_enable(ARRAY_SIZE(wm8770->supplies),
+ 						    wm8770->supplies);
+ 			if (ret) {
+-				dev_err(codec->dev,
++				dev_err(component->dev,
+ 					"Failed to enable supplies: %d\n",
+ 					ret);
+ 				return ret;
+@@ -523,12 +523,12 @@ static int wm8770_set_bias_level(struct snd_soc_codec *codec,
+ 			regcache_sync(wm8770->regmap);
  
- 		/* Clear PWROFF, gate CLKOUT, everything else as-is */
--		reg = snd_soc_read(codec, WM8731_PWR) & 0xff7f;
--		snd_soc_write(codec, WM8731_PWR, reg | 0x0040);
-+		reg = snd_soc_component_read32(component, WM8731_PWR) & 0xff7f;
-+		snd_soc_component_write(component, WM8731_PWR, reg | 0x0040);
+ 			/* global powerup */
+-			snd_soc_write(codec, WM8770_PWDNCTRL, 0);
++			snd_soc_component_write(component, WM8770_PWDNCTRL, 0);
+ 		}
  		break;
  	case SND_SOC_BIAS_OFF:
- 		if (wm8731->mclk)
- 			clk_disable_unprepare(wm8731->mclk);
--		snd_soc_write(codec, WM8731_PWR, 0xffff);
-+		snd_soc_component_write(component, WM8731_PWR, 0xffff);
- 		regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies),
- 				       wm8731->supplies);
- 		regcache_mark_dirty(wm8731->regmap);
-@@ -531,7 +531,7 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
- static int wm8731_startup(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *dai)
- {
--	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(dai->codec);
-+	struct wm8731_priv *wm8731 = snd_soc_component_get_drvdata(dai->component);
+ 		/* global powerdown */
+-		snd_soc_write(codec, WM8770_PWDNCTRL, 1);
++		snd_soc_component_write(component, WM8770_PWDNCTRL, 1);
+ 		regulator_bulk_disable(ARRAY_SIZE(wm8770->supplies),
+ 				       wm8770->supplies);
+ 		break;
+@@ -567,60 +567,59 @@ static struct snd_soc_dai_driver wm8770_dai = {
+ 	.symmetric_rates = 1
+ };
  
- 	if (wm8731->constraints)
- 		snd_pcm_hw_constraint_list(substream->runtime, 0,
-@@ -628,18 +628,19 @@ static int wm8731_hw_init(struct device *dev, struct wm8731_priv *wm8731)
+-static int wm8770_probe(struct snd_soc_codec *codec)
++static int wm8770_probe(struct snd_soc_component *component)
+ {
+ 	struct wm8770_priv *wm8770;
+ 	int ret;
+ 
+-	wm8770 = snd_soc_codec_get_drvdata(codec);
+-	wm8770->codec = codec;
++	wm8770 = snd_soc_component_get_drvdata(component);
++	wm8770->component = component;
+ 
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(wm8770->supplies),
+ 				    wm8770->supplies);
+ 	if (ret) {
+-		dev_err(codec->dev, "Failed to enable supplies: %d\n", ret);
++		dev_err(component->dev, "Failed to enable supplies: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+-	ret = wm8770_reset(codec);
++	ret = wm8770_reset(component);
+ 	if (ret < 0) {
+-		dev_err(codec->dev, "Failed to issue reset: %d\n", ret);
++		dev_err(component->dev, "Failed to issue reset: %d\n", ret);
+ 		goto err_reg_enable;
+ 	}
+ 
+ 	/* latch the volume update bits */
+-	snd_soc_update_bits(codec, WM8770_MSDIGVOL, 0x100, 0x100);
+-	snd_soc_update_bits(codec, WM8770_MSALGVOL, 0x100, 0x100);
+-	snd_soc_update_bits(codec, WM8770_VOUT1RVOL, 0x100, 0x100);
+-	snd_soc_update_bits(codec, WM8770_VOUT2RVOL, 0x100, 0x100);
+-	snd_soc_update_bits(codec, WM8770_VOUT3RVOL, 0x100, 0x100);
+-	snd_soc_update_bits(codec, WM8770_VOUT4RVOL, 0x100, 0x100);
+-	snd_soc_update_bits(codec, WM8770_DAC1RVOL, 0x100, 0x100);
+-	snd_soc_update_bits(codec, WM8770_DAC2RVOL, 0x100, 0x100);
+-	snd_soc_update_bits(codec, WM8770_DAC3RVOL, 0x100, 0x100);
+-	snd_soc_update_bits(codec, WM8770_DAC4RVOL, 0x100, 0x100);
++	snd_soc_component_update_bits(component, WM8770_MSDIGVOL, 0x100, 0x100);
++	snd_soc_component_update_bits(component, WM8770_MSALGVOL, 0x100, 0x100);
++	snd_soc_component_update_bits(component, WM8770_VOUT1RVOL, 0x100, 0x100);
++	snd_soc_component_update_bits(component, WM8770_VOUT2RVOL, 0x100, 0x100);
++	snd_soc_component_update_bits(component, WM8770_VOUT3RVOL, 0x100, 0x100);
++	snd_soc_component_update_bits(component, WM8770_VOUT4RVOL, 0x100, 0x100);
++	snd_soc_component_update_bits(component, WM8770_DAC1RVOL, 0x100, 0x100);
++	snd_soc_component_update_bits(component, WM8770_DAC2RVOL, 0x100, 0x100);
++	snd_soc_component_update_bits(component, WM8770_DAC3RVOL, 0x100, 0x100);
++	snd_soc_component_update_bits(component, WM8770_DAC4RVOL, 0x100, 0x100);
+ 
+ 	/* mute all DACs */
+-	snd_soc_update_bits(codec, WM8770_DACMUTE, 0x10, 0x10);
++	snd_soc_component_update_bits(component, WM8770_DACMUTE, 0x10, 0x10);
+ 
+ err_reg_enable:
+ 	regulator_bulk_disable(ARRAY_SIZE(wm8770->supplies), wm8770->supplies);
  	return ret;
  }
  
--static const struct snd_soc_codec_driver soc_codec_dev_wm8731 = {
--	.set_bias_level = wm8731_set_bias_level,
--	.suspend_bias_off = true,
+-static const struct snd_soc_codec_driver soc_codec_dev_wm8770 = {
+-	.probe = wm8770_probe,
+-	.set_bias_level = wm8770_set_bias_level,
+-	.idle_bias_off = true,
 -
 -	.component_driver = {
--		.controls		= wm8731_snd_controls,
--		.num_controls		= ARRAY_SIZE(wm8731_snd_controls),
--		.dapm_widgets		= wm8731_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(wm8731_dapm_widgets),
--		.dapm_routes		= wm8731_intercon,
--		.num_dapm_routes	= ARRAY_SIZE(wm8731_intercon),
+-		.controls		= wm8770_snd_controls,
+-		.num_controls		= ARRAY_SIZE(wm8770_snd_controls),
+-		.dapm_widgets		= wm8770_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(wm8770_dapm_widgets),
+-		.dapm_routes		= wm8770_intercon,
+-		.num_dapm_routes	= ARRAY_SIZE(wm8770_intercon),
 -	},
-+static const struct snd_soc_component_driver soc_component_dev_wm8731 = {
-+	.set_bias_level		= wm8731_set_bias_level,
-+	.controls		= wm8731_snd_controls,
-+	.num_controls		= ARRAY_SIZE(wm8731_snd_controls),
-+	.dapm_widgets		= wm8731_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(wm8731_dapm_widgets),
-+	.dapm_routes		= wm8731_intercon,
-+	.num_dapm_routes	= ARRAY_SIZE(wm8731_intercon),
-+	.suspend_bias_off	= 1,
-+	.idle_bias_on		= 1,
++static const struct snd_soc_component_driver soc_component_dev_wm8770 = {
++	.probe			= wm8770_probe,
++	.set_bias_level		= wm8770_set_bias_level,
++	.controls		= wm8770_snd_controls,
++	.num_controls		= ARRAY_SIZE(wm8770_snd_controls),
++	.dapm_widgets		= wm8770_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(wm8770_dapm_widgets),
++	.dapm_routes		= wm8770_intercon,
++	.num_dapm_routes	= ARRAY_SIZE(wm8770_intercon),
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static const struct of_device_id wm8731_of_match[] = {
-@@ -704,8 +705,8 @@ static int wm8731_spi_probe(struct spi_device *spi)
- 	if (ret != 0)
- 		return ret;
+ static const struct of_device_id wm8770_of_match[] = {
+@@ -682,8 +681,8 @@ static int wm8770_spi_probe(struct spi_device *spi)
+ 
+ 	spi_set_drvdata(spi, wm8770);
  
 -	ret = snd_soc_register_codec(&spi->dev,
--			&soc_codec_dev_wm8731, &wm8731_dai, 1);
+-				     &soc_codec_dev_wm8770, &wm8770_dai, 1);
 +	ret = devm_snd_soc_register_component(&spi->dev,
-+			&soc_component_dev_wm8731, &wm8731_dai, 1);
- 	if (ret != 0) {
- 		dev_err(&spi->dev, "Failed to register CODEC: %d\n", ret);
- 		return ret;
-@@ -716,7 +717,6 @@ static int wm8731_spi_probe(struct spi_device *spi)
++				     &soc_component_dev_wm8770, &wm8770_dai, 1);
  
- static int wm8731_spi_remove(struct spi_device *spi)
- {
--	snd_soc_unregister_codec(&spi->dev);
- 	return 0;
+ 	return ret;
  }
+@@ -697,8 +696,6 @@ static int wm8770_spi_remove(struct spi_device *spi)
+ 		regulator_unregister_notifier(wm8770->supplies[i].consumer,
+ 					      &wm8770->disable_nb[i]);
  
-@@ -775,8 +775,8 @@ static int wm8731_i2c_probe(struct i2c_client *i2c,
- 	if (ret != 0)
- 		return ret;
- 
--	ret = snd_soc_register_codec(&i2c->dev,
--			&soc_codec_dev_wm8731, &wm8731_dai, 1);
-+	ret = devm_snd_soc_register_component(&i2c->dev,
-+			&soc_component_dev_wm8731, &wm8731_dai, 1);
- 	if (ret != 0) {
- 		dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
- 		return ret;
-@@ -787,7 +787,6 @@ static int wm8731_i2c_probe(struct i2c_client *i2c,
- 
- static int wm8731_i2c_remove(struct i2c_client *client)
- {
--	snd_soc_unregister_codec(&client->dev);
+-	snd_soc_unregister_codec(&spi->dev);
+-
  	return 0;
  }
  
