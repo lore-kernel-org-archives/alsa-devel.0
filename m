@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sn95031: remove dead makefile about
-	sn95031" to the asoc tree
-Date: Mon, 12 Feb 2018 12:28:05 +0000
-Message-ID: <E1elDDJ-0002qX-W7@debutante>
+Subject: Applied "ASoC: samsung: clean makefile about
+	inexistant files" to the asoc tree
+Date: Mon, 12 Feb 2018 12:28:08 +0000
+Message-ID: <E1elDDM-0002rG-5a@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4616426736B
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:28:07 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 33C1126735F
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:28:09 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sn95031: remove dead makefile about sn95031
+   ASoC: samsung: clean makefile about inexistant files
 
 has been applied to the asoc tree at
 
@@ -52,31 +52,41 @@ to this mail.
 Thanks,
 Mark
 
->From e0b9f3aa45fcfce1873503e5ff85d919697427cb Mon Sep 17 00:00:00 2001
+>From beff23ff26db0c1df2eaabc0dfe877bcbf05f6db Mon Sep 17 00:00:00 2001
 From: Corentin Labbe <clabbe@baylibre.com>
-Date: Mon, 29 Jan 2018 12:28:54 +0000
-Subject: [PATCH] ASoC: sn95031: remove dead makefile about sn95031
+Date: Mon, 29 Jan 2018 12:26:16 +0000
+Subject: [PATCH] ASoC: samsung: clean makefile about inexistant files
 
-All sn95031 stuff was removed in commit 987da3fe1759 ("ASoC: sn95031: remove this code")
-Since SND_SOC_SN95031 was gone, remove makefile about it.
+Clean makefile rules about inexistant files.
+Thoses files were removed in commit a076d418235f ("ASoC: samsung: Drop AC97 drivers")
 
 Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Makefile | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/samsung/Makefile | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index da1571336f1e..4053c72d852b 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -387,7 +387,6 @@ obj-$(CONFIG_SND_SOC_SIGMADSP)	+= snd-soc-sigmadsp.o
- obj-$(CONFIG_SND_SOC_SIGMADSP_I2C)	+= snd-soc-sigmadsp-i2c.o
- obj-$(CONFIG_SND_SOC_SIGMADSP_REGMAP)	+= snd-soc-sigmadsp-regmap.o
- obj-$(CONFIG_SND_SOC_SI476X)	+= snd-soc-si476x.o
--obj-$(CONFIG_SND_SOC_SN95031)	+=snd-soc-sn95031.o
- obj-$(CONFIG_SND_SOC_SPDIF)	+= snd-soc-spdif-rx.o snd-soc-spdif-tx.o
- obj-$(CONFIG_SND_SOC_SIRF_AUDIO_CODEC) += sirf-audio-codec.o
- obj-$(CONFIG_SND_SOC_SSM2518)	+= snd-soc-ssm2518.o
+diff --git a/sound/soc/samsung/Makefile b/sound/soc/samsung/Makefile
+index 030949e1e434..c3b76035f69c 100644
+--- a/sound/soc/samsung/Makefile
++++ b/sound/soc/samsung/Makefile
+@@ -21,8 +21,6 @@ obj-$(CONFIG_SND_SAMSUNG_I2S) += snd-soc-idma.o
+ # S3C24XX Machine Support
+ snd-soc-jive-wm8750-objs := jive_wm8750.o
+ snd-soc-neo1973-wm8753-objs := neo1973_wm8753.o
+-snd-soc-smdk2443-wm9710-objs := smdk2443_wm9710.o
+-snd-soc-ln2440sbc-alc650-objs := ln2440sbc_alc650.o
+ snd-soc-s3c24xx-uda134x-objs := s3c24xx_uda134x.o
+ snd-soc-s3c24xx-simtec-objs := s3c24xx_simtec.o
+ snd-soc-s3c24xx-simtec-hermes-objs := s3c24xx_simtec_hermes.o
+@@ -32,7 +30,6 @@ snd-soc-rx1950-uda1380-objs := rx1950_uda1380.o
+ snd-soc-smdk-wm8580-objs := smdk_wm8580.o
+ snd-soc-smdk-wm8994-objs := smdk_wm8994.o
+ snd-soc-snow-objs := snow.o
+-snd-soc-smdk-wm9713-objs := smdk_wm9713.o
+ snd-soc-s3c64xx-smartq-wm8987-objs := smartq_wm8987.o
+ snd-soc-smdk-spdif-objs := smdk_spdif.o
+ snd-soc-smdk-wm8994pcm-objs := smdk_wm8994pcm.o
 -- 
 2.16.1
