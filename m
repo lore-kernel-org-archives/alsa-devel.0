@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm5110: replace platform to component"
-	to the asoc tree
-Date: Mon, 12 Feb 2018 12:30:05 +0000
-Message-ID: <E1elDFF-0003D5-Tg@debutante>
-References: <877esngaz4.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rt5514-spi: replace platform to
+	component" to the asoc tree
+Date: Mon, 12 Feb 2018 12:30:26 +0000
+Message-ID: <E1elDFa-0003ED-8R@debutante>
+References: <878td3gazl.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B91D2675DF
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:30:15 +0100 (CET)
-In-Reply-To: <877esngaz4.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6FFED26753E
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:30:30 +0100 (CET)
+In-Reply-To: <878td3gazl.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Simon <horms@verge.net.au>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm5110: replace platform to component
+   ASoC: rt5514-spi: replace platform to component
 
 has been applied to the asoc tree at
 
@@ -53,123 +53,121 @@ to this mail.
 Thanks,
 Mark
 
->From 0a2b051bf63916a5f567cbdbeb86b1da6e28c4d2 Mon Sep 17 00:00:00 2001
+>From 9fe3b2bac02c6d06724d526b0245568bca49349f Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 02:45:30 +0000
-Subject: [PATCH] ASoC: wm5110: replace platform to component
+Date: Mon, 29 Jan 2018 02:45:13 +0000
+Subject: [PATCH] ASoC: rt5514-spi: replace platform to component
 
 Now platform can be replaced to component, let's do it.
+This patch merges rt5514_spi_dai_component into rt5514_spi_component
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm5110.c | 42 +++++++++++++++++-------------------------
- 1 file changed, 17 insertions(+), 25 deletions(-)
+ sound/soc/codecs/rt5514-spi.c | 32 ++++++++++++++------------------
+ 1 file changed, 14 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index fb0cf9c61f48..d5ece6c6fcb6 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index 2144edca97b0..84184d90385b 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
 @@ -35,6 +35,8 @@
  
- #define WM5110_NUM_ADSP 4
+ #include "rt5514-spi.h"
  
-+#define DRV_NAME "wm5110-codec"
++#define DRV_NAME "rt5514-spi"
 +
- struct wm5110_priv {
- 	struct arizona_priv core;
- 	struct arizona_fll fll[2];
-@@ -2229,7 +2231,8 @@ static struct snd_soc_dai_driver wm5110_dai[] = {
- static int wm5110_open(struct snd_compr_stream *stream)
+ static struct spi_device *rt5514_spi;
+ 
+ struct rt5514_dsp {
+@@ -211,8 +213,9 @@ static int rt5514_spi_hw_params(struct snd_pcm_substream *substream,
+ 			       struct snd_pcm_hw_params *hw_params)
  {
- 	struct snd_soc_pcm_runtime *rtd = stream->private_data;
--	struct wm5110_priv *priv = snd_soc_platform_get_drvdata(rtd->platform);
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct wm5110_priv *priv = snd_soc_component_get_drvdata(component);
- 	struct arizona *arizona = priv->core.arizona;
- 	int n_adsp;
+ 	struct rt5514_dsp *rt5514_dsp =
+-			snd_soc_platform_get_drvdata(rtd->platform);
++		snd_soc_component_get_drvdata(component);
+ 	int ret;
+ 	u8 buf[8];
  
-@@ -2346,6 +2349,16 @@ static unsigned int wm5110_digital_vu[] = {
- 	ARIZONA_DAC_DIGITAL_VOLUME_6R,
- };
- 
-+static struct snd_compr_ops wm5110_compr_ops = {
-+	.open		= wm5110_open,
-+	.free		= wm_adsp_compr_free,
-+	.set_params	= wm_adsp_compr_set_params,
-+	.get_caps	= wm_adsp_compr_get_caps,
-+	.trigger	= wm_adsp_compr_trigger,
-+	.pointer	= wm_adsp_compr_pointer,
-+	.copy		= wm_adsp_compr_copy,
-+};
-+
- static const struct snd_soc_codec_driver soc_codec_dev_wm5110 = {
- 	.probe = wm5110_codec_probe,
- 	.remove = wm5110_codec_remove,
-@@ -2356,6 +2369,8 @@ static const struct snd_soc_codec_driver soc_codec_dev_wm5110 = {
- 	.set_pll = wm5110_set_fll,
- 
- 	.component_driver = {
-+		.name			= DRV_NAME,
-+		.compr_ops		= &wm5110_compr_ops,
- 		.controls		= wm5110_snd_controls,
- 		.num_controls		= ARRAY_SIZE(wm5110_snd_controls),
- 		.dapm_widgets		= wm5110_dapm_widgets,
-@@ -2365,20 +2380,6 @@ static const struct snd_soc_codec_driver soc_codec_dev_wm5110 = {
- 	},
- };
- 
--static const struct snd_compr_ops wm5110_compr_ops = {
--	.open = wm5110_open,
--	.free = wm_adsp_compr_free,
--	.set_params = wm_adsp_compr_set_params,
--	.get_caps = wm_adsp_compr_get_caps,
--	.trigger = wm_adsp_compr_trigger,
--	.pointer = wm_adsp_compr_pointer,
--	.copy = wm_adsp_compr_copy,
--};
--
--static const struct snd_soc_platform_driver wm5110_compr_platform = {
--	.compr_ops = &wm5110_compr_ops,
--};
--
- static int wm5110_probe(struct platform_device *pdev)
+@@ -235,8 +238,9 @@ static int rt5514_spi_hw_params(struct snd_pcm_substream *substream,
+ static int rt5514_spi_hw_free(struct snd_pcm_substream *substream)
  {
- 	struct arizona *arizona = dev_get_drvdata(pdev->dev.parent);
-@@ -2464,23 +2465,15 @@ static int wm5110_probe(struct platform_device *pdev)
- 	if (ret < 0)
- 		goto err_dsp_irq;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct rt5514_dsp *rt5514_dsp =
+-			snd_soc_platform_get_drvdata(rtd->platform);
++		snd_soc_component_get_drvdata(component);
  
--	ret = snd_soc_register_platform(&pdev->dev, &wm5110_compr_platform);
+ 	mutex_lock(&rt5514_dsp->dma_lock);
+ 	rt5514_dsp->substream = NULL;
+@@ -252,8 +256,9 @@ static snd_pcm_uframes_t rt5514_spi_pcm_pointer(
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct rt5514_dsp *rt5514_dsp =
+-		snd_soc_platform_get_drvdata(rtd->platform);
++		snd_soc_component_get_drvdata(component);
+ 
+ 	return bytes_to_frames(runtime, rt5514_dsp->dma_offset);
+ }
+@@ -267,18 +272,18 @@ static const struct snd_pcm_ops rt5514_spi_pcm_ops = {
+ 	.page		= snd_pcm_lib_get_vmalloc_page,
+ };
+ 
+-static int rt5514_spi_pcm_probe(struct snd_soc_platform *platform)
++static int rt5514_spi_pcm_probe(struct snd_soc_component *component)
+ {
+ 	struct rt5514_dsp *rt5514_dsp;
+ 	int ret;
+ 
+-	rt5514_dsp = devm_kzalloc(platform->dev, sizeof(*rt5514_dsp),
++	rt5514_dsp = devm_kzalloc(component->dev, sizeof(*rt5514_dsp),
+ 			GFP_KERNEL);
+ 
+ 	rt5514_dsp->dev = &rt5514_spi->dev;
+ 	mutex_init(&rt5514_dsp->dma_lock);
+ 	INIT_DELAYED_WORK(&rt5514_dsp->copy_work, rt5514_spi_copy_work);
+-	snd_soc_platform_set_drvdata(platform, rt5514_dsp);
++	snd_soc_component_set_drvdata(component, rt5514_dsp);
+ 
+ 	if (rt5514_spi->irq) {
+ 		ret = devm_request_threaded_irq(&rt5514_spi->dev,
+@@ -296,15 +301,12 @@ static int rt5514_spi_pcm_probe(struct snd_soc_platform *platform)
+ 	return 0;
+ }
+ 
+-static const struct snd_soc_platform_driver rt5514_spi_platform = {
++static const struct snd_soc_component_driver rt5514_spi_component = {
++	.name  = DRV_NAME,
+ 	.probe = rt5514_spi_pcm_probe,
+ 	.ops = &rt5514_spi_pcm_ops,
+ };
+ 
+-static const struct snd_soc_component_driver rt5514_spi_dai_component = {
+-	.name		= "rt5514-spi-dai",
+-};
+-
+ /**
+  * rt5514_spi_burst_read - Read data from SPI by rt5514 address.
+  * @addr: Start address.
+@@ -445,14 +447,8 @@ static int rt5514_spi_probe(struct spi_device *spi)
+ 
+ 	rt5514_spi = spi;
+ 
+-	ret = devm_snd_soc_register_platform(&spi->dev, &rt5514_spi_platform);
 -	if (ret < 0) {
--		dev_err(&pdev->dev, "Failed to register platform: %d\n", ret);
--		goto err_spk_irqs;
+-		dev_err(&spi->dev, "Failed to register platform.\n");
+-		return ret;
 -	}
 -
- 	ret = snd_soc_register_codec(&pdev->dev, &soc_codec_dev_wm5110,
- 				      wm5110_dai, ARRAY_SIZE(wm5110_dai));
+ 	ret = devm_snd_soc_register_component(&spi->dev,
+-					      &rt5514_spi_dai_component,
++					      &rt5514_spi_component,
+ 					      &rt5514_spi_dai, 1);
  	if (ret < 0) {
- 		dev_err(&pdev->dev, "Failed to register codec: %d\n", ret);
--		goto err_platform;
-+		goto err_spk_irqs;
- 	}
- 
- 	return ret;
- 
--err_platform:
--	snd_soc_unregister_platform(&pdev->dev);
- err_spk_irqs:
- 	arizona_free_spk_irqs(arizona);
- err_dsp_irq:
-@@ -2495,7 +2488,6 @@ static int wm5110_remove(struct platform_device *pdev)
- 	struct arizona *arizona = wm5110->core.arizona;
- 	int i;
- 
--	snd_soc_unregister_platform(&pdev->dev);
- 	snd_soc_unregister_codec(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 
+ 		dev_err(&spi->dev, "Failed to register component.\n");
 -- 
 2.16.1
