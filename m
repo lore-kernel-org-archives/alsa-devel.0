@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sta529: replace codec to component" to
+Subject: Applied "ASoC: sta32x: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:38:02 +0000
-Message-ID: <E1elDMw-0004Bq-7k@debutante>
-References: <87o9ldwanx.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:38:05 +0000
+Message-ID: <E1elDMz-0004Cj-C1@debutante>
+References: <87po5twaoh.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 681CC267900
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:38:04 +0100 (CET)
-In-Reply-To: <87o9ldwanx.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B004F267923
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:38:07 +0100 (CET)
+In-Reply-To: <87po5twaoh.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sta529: replace codec to component
+   ASoC: sta32x: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 895577874dc8340fbc7dca7402870d3f18d92109 Mon Sep 17 00:00:00 2001
+>From ee18359078d017b066bd99efc6e071a3de782844 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:30:16 +0000
-Subject: [PATCH] ASoC: sta529: replace codec to component
+Date: Mon, 29 Jan 2018 04:29:57 +0000
+Subject: [PATCH] ASoC: sta32x: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,141 +70,329 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/sta529.c | 69 +++++++++++++++++++++--------------------------
- 1 file changed, 31 insertions(+), 38 deletions(-)
+ sound/soc/codecs/sta32x.c | 134 ++++++++++++++++++++++------------------------
+ 1 file changed, 64 insertions(+), 70 deletions(-)
 
-diff --git a/sound/soc/codecs/sta529.c b/sound/soc/codecs/sta529.c
-index 660734359bf3..2881a0f7bb39 100644
---- a/sound/soc/codecs/sta529.c
-+++ b/sound/soc/codecs/sta529.c
-@@ -151,28 +151,28 @@ static const struct snd_kcontrol_new sta529_snd_controls[] = {
- 	SOC_ENUM("PWM Select", pwm_src),
- };
+diff --git a/sound/soc/codecs/sta32x.c b/sound/soc/codecs/sta32x.c
+index 5b888476d9ff..d5035f2f2b2b 100644
+--- a/sound/soc/codecs/sta32x.c
++++ b/sound/soc/codecs/sta32x.c
+@@ -143,7 +143,7 @@ static const char *sta32x_supply_names[] = {
+ struct sta32x_priv {
+ 	struct regmap *regmap;
+ 	struct regulator_bulk_data supplies[ARRAY_SIZE(sta32x_supply_names)];
+-	struct snd_soc_codec *codec;
++	struct snd_soc_component *component;
+ 	struct sta32x_platform_data *pdata;
  
--static int sta529_set_bias_level(struct snd_soc_codec *codec, enum
-+static int sta529_set_bias_level(struct snd_soc_component *component, enum
- 		snd_soc_bias_level level)
+ 	unsigned int mclk;
+@@ -270,8 +270,8 @@ static int sta32x_coefficient_info(struct snd_kcontrol *kcontrol,
+ static int sta32x_coefficient_get(struct snd_kcontrol *kcontrol,
+ 				  struct snd_ctl_elem_value *ucontrol)
  {
--	struct sta529 *sta529 = snd_soc_codec_get_drvdata(codec);
-+	struct sta529 *sta529 = snd_soc_component_get_drvdata(component);
- 
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
- 	case SND_SOC_BIAS_PREPARE:
--		snd_soc_update_bits(codec, STA529_FFXCFG0, POWER_CNTLMSAK,
-+		snd_soc_component_update_bits(component, STA529_FFXCFG0, POWER_CNTLMSAK,
- 				POWER_UP);
--		snd_soc_update_bits(codec, STA529_MISC,	FFX_CLK_MSK,
-+		snd_soc_component_update_bits(component, STA529_MISC,	FFX_CLK_MSK,
- 				FFX_CLK_ENB);
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
--		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF)
-+		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF)
- 			regcache_sync(sta529->regmap);
--		snd_soc_update_bits(codec, STA529_FFXCFG0,
-+		snd_soc_component_update_bits(component, STA529_FFXCFG0,
- 					POWER_CNTLMSAK, POWER_STDBY);
- 		/* Making FFX output to zero */
--		snd_soc_update_bits(codec, STA529_FFXCFG0, FFX_MASK,
-+		snd_soc_component_update_bits(component, STA529_FFXCFG0, FFX_MASK,
- 				FFX_OFF);
--		snd_soc_update_bits(codec, STA529_MISC, FFX_CLK_MSK,
-+		snd_soc_component_update_bits(component, STA529_MISC, FFX_CLK_MSK,
- 				FFX_CLK_DIS);
- 		break;
- 	case SND_SOC_BIAS_OFF:
-@@ -187,7 +187,7 @@ static int sta529_hw_params(struct snd_pcm_substream *substream,
- 		struct snd_pcm_hw_params *params,
- 		struct snd_soc_dai *dai)
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct sta32x_priv *sta32x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct sta32x_priv *sta32x = snd_soc_component_get_drvdata(component);
+ 	int numcoef = kcontrol->private_value >> 16;
+ 	int index = kcontrol->private_value & 0xffff;
+ 	unsigned int cfud, val;
+@@ -312,8 +312,8 @@ static int sta32x_coefficient_get(struct snd_kcontrol *kcontrol,
+ static int sta32x_coefficient_put(struct snd_kcontrol *kcontrol,
+ 				  struct snd_ctl_elem_value *ucontrol)
  {
--	struct snd_soc_codec *codec = dai->codec;
-+	struct snd_soc_component *component = dai->component;
- 	int pdata, play_freq_val, record_freq_val;
- 	int bclk_to_fs_ratio;
- 
-@@ -205,7 +205,7 @@ static int sta529_hw_params(struct snd_pcm_substream *substream,
- 		bclk_to_fs_ratio = 2;
- 		break;
- 	default:
--		dev_err(codec->dev, "Unsupported format\n");
-+		dev_err(component->dev, "Unsupported format\n");
- 		return -EINVAL;
- 	}
- 
-@@ -228,23 +228,23 @@ static int sta529_hw_params(struct snd_pcm_substream *substream,
- 		record_freq_val = 0;
- 		break;
- 	default:
--		dev_err(codec->dev, "Unsupported rate\n");
-+		dev_err(component->dev, "Unsupported rate\n");
- 		return -EINVAL;
- 	}
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		snd_soc_update_bits(codec, STA529_S2PCFG1, PDATA_LEN_MSK,
-+		snd_soc_component_update_bits(component, STA529_S2PCFG1, PDATA_LEN_MSK,
- 				pdata << 6);
--		snd_soc_update_bits(codec, STA529_S2PCFG1, BCLK_TO_FS_MSK,
-+		snd_soc_component_update_bits(component, STA529_S2PCFG1, BCLK_TO_FS_MSK,
- 				bclk_to_fs_ratio << 4);
--		snd_soc_update_bits(codec, STA529_MISC, PLAY_FREQ_RANGE_MSK,
-+		snd_soc_component_update_bits(component, STA529_MISC, PLAY_FREQ_RANGE_MSK,
- 				play_freq_val << 4);
- 	} else {
--		snd_soc_update_bits(codec, STA529_P2SCFG1, PDATA_LEN_MSK,
-+		snd_soc_component_update_bits(component, STA529_P2SCFG1, PDATA_LEN_MSK,
- 				pdata << 6);
--		snd_soc_update_bits(codec, STA529_P2SCFG1, BCLK_TO_FS_MSK,
-+		snd_soc_component_update_bits(component, STA529_P2SCFG1, BCLK_TO_FS_MSK,
- 				bclk_to_fs_ratio << 4);
--		snd_soc_update_bits(codec, STA529_MISC, CAP_FREQ_RANGE_MSK,
-+		snd_soc_component_update_bits(component, STA529_MISC, CAP_FREQ_RANGE_MSK,
- 				record_freq_val << 2);
- 	}
- 
-@@ -258,14 +258,14 @@ static int sta529_mute(struct snd_soc_dai *dai, int mute)
- 	if (mute)
- 		val |= CODEC_MUTE_VAL;
- 
--	snd_soc_update_bits(dai->codec, STA529_FFXCFG0, AUDIO_MUTE_MSK, val);
-+	snd_soc_component_update_bits(dai->component, STA529_FFXCFG0, AUDIO_MUTE_MSK, val);
- 
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct sta32x_priv *sta32x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct sta32x_priv *sta32x = snd_soc_component_get_drvdata(component);
+ 	int numcoef = kcontrol->private_value >> 16;
+ 	int index = kcontrol->private_value & 0xffff;
+ 	unsigned int cfud;
+@@ -347,9 +347,9 @@ static int sta32x_coefficient_put(struct snd_kcontrol *kcontrol,
  	return 0;
  }
  
- static int sta529_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
+-static int sta32x_sync_coef_shadow(struct snd_soc_codec *codec)
++static int sta32x_sync_coef_shadow(struct snd_soc_component *component)
+ {
+-	struct sta32x_priv *sta32x = snd_soc_codec_get_drvdata(codec);
++	struct sta32x_priv *sta32x = snd_soc_component_get_drvdata(component);
+ 	unsigned int cfud;
+ 	int i;
+ 
+@@ -375,16 +375,16 @@ static int sta32x_sync_coef_shadow(struct snd_soc_codec *codec)
+ 	return 0;
+ }
+ 
+-static int sta32x_cache_sync(struct snd_soc_codec *codec)
++static int sta32x_cache_sync(struct snd_soc_component *component)
+ {
+-	struct sta32x_priv *sta32x = snd_soc_codec_get_drvdata(codec);
++	struct sta32x_priv *sta32x = snd_soc_component_get_drvdata(component);
+ 	unsigned int mute;
+ 	int rc;
+ 
+ 	/* mute during register sync */
+ 	regmap_read(sta32x->regmap, STA32X_MMUTE, &mute);
+ 	regmap_write(sta32x->regmap, STA32X_MMUTE, mute | STA32X_MMUTE_MMUTE);
+-	sta32x_sync_coef_shadow(codec);
++	sta32x_sync_coef_shadow(component);
+ 	rc = regcache_sync(sta32x->regmap);
+ 	regmap_write(sta32x->regmap, STA32X_MMUTE, mute);
+ 	return rc;
+@@ -395,17 +395,17 @@ static void sta32x_watchdog(struct work_struct *work)
+ {
+ 	struct sta32x_priv *sta32x = container_of(work, struct sta32x_priv,
+ 						  watchdog_work.work);
+-	struct snd_soc_codec *codec = sta32x->codec;
++	struct snd_soc_component *component = sta32x->component;
+ 	unsigned int confa, confa_cached;
+ 
+ 	/* check if sta32x has reset itself */
+-	confa_cached = snd_soc_read(codec, STA32X_CONFA);
++	confa_cached = snd_soc_component_read32(component, STA32X_CONFA);
+ 	regcache_cache_bypass(sta32x->regmap, true);
+-	confa = snd_soc_read(codec, STA32X_CONFA);
++	confa = snd_soc_component_read32(component, STA32X_CONFA);
+ 	regcache_cache_bypass(sta32x->regmap, false);
+ 	if (confa != confa_cached) {
+ 		regcache_mark_dirty(sta32x->regmap);
+-		sta32x_cache_sync(codec);
++		sta32x_cache_sync(component);
+ 	}
+ 
+ 	if (!sta32x->shutdown)
+@@ -582,10 +582,10 @@ static int mcs_ratio_table[3][7] = {
+ static int sta32x_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 		int clk_id, unsigned int freq, int dir)
  {
 -	struct snd_soc_codec *codec = codec_dai->codec;
+-	struct sta32x_priv *sta32x = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_component *component = codec_dai->component;
- 	u8 mode = 0;
++	struct sta32x_priv *sta32x = snd_soc_component_get_drvdata(component);
  
- 	/* interface format */
-@@ -283,7 +283,7 @@ static int sta529_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
+-	dev_dbg(codec->dev, "mclk=%u\n", freq);
++	dev_dbg(component->dev, "mclk=%u\n", freq);
+ 	sta32x->mclk = freq;
+ 
+ 	return 0;
+@@ -602,8 +602,8 @@ static int sta32x_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ static int sta32x_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 			      unsigned int fmt)
+ {
+-	struct snd_soc_codec *codec = codec_dai->codec;
+-	struct sta32x_priv *sta32x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = codec_dai->component;
++	struct sta32x_priv *sta32x = snd_soc_component_get_drvdata(component);
+ 	u8 confb = 0;
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+@@ -651,22 +651,22 @@ static int sta32x_hw_params(struct snd_pcm_substream *substream,
+ 			    struct snd_pcm_hw_params *params,
+ 			    struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct sta32x_priv *sta32x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct sta32x_priv *sta32x = snd_soc_component_get_drvdata(component);
+ 	int i, mcs = -EINVAL, ir = -EINVAL;
+ 	unsigned int confa, confb;
+ 	unsigned int rate, ratio;
+ 	int ret;
+ 
+ 	if (!sta32x->mclk) {
+-		dev_err(codec->dev,
++		dev_err(component->dev,
+ 			"sta32x->mclk is unset. Unable to determine ratio\n");
+ 		return -EIO;
+ 	}
+ 
+ 	rate = params_rate(params);
+ 	ratio = sta32x->mclk / rate;
+-	dev_dbg(codec->dev, "rate: %u, ratio: %u\n", rate, ratio);
++	dev_dbg(component->dev, "rate: %u, ratio: %u\n", rate, ratio);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(interpolation_ratios); i++) {
+ 		if (interpolation_ratios[i].fs == rate) {
+@@ -676,7 +676,7 @@ static int sta32x_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	if (ir < 0) {
+-		dev_err(codec->dev, "Unsupported samplerate: %u\n", rate);
++		dev_err(component->dev, "Unsupported samplerate: %u\n", rate);
  		return -EINVAL;
  	}
  
--	snd_soc_update_bits(codec, STA529_S2PCFG0, DATA_FORMAT_MSK, mode);
-+	snd_soc_component_update_bits(component, STA529_S2PCFG0, DATA_FORMAT_MSK, mode);
+@@ -688,7 +688,7 @@ static int sta32x_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	if (mcs < 0) {
+-		dev_err(codec->dev, "Unresolvable ratio: %u\n", ratio);
++		dev_err(component->dev, "Unresolvable ratio: %u\n", ratio);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -698,10 +698,10 @@ static int sta32x_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	switch (params_width(params)) {
+ 	case 24:
+-		dev_dbg(codec->dev, "24bit\n");
++		dev_dbg(component->dev, "24bit\n");
+ 		/* fall through */
+ 	case 32:
+-		dev_dbg(codec->dev, "24bit or 32bit\n");
++		dev_dbg(component->dev, "24bit or 32bit\n");
+ 		switch (sta32x->format) {
+ 		case SND_SOC_DAIFMT_I2S:
+ 			confb |= 0x0;
+@@ -716,7 +716,7 @@ static int sta32x_hw_params(struct snd_pcm_substream *substream,
+ 
+ 		break;
+ 	case 20:
+-		dev_dbg(codec->dev, "20bit\n");
++		dev_dbg(component->dev, "20bit\n");
+ 		switch (sta32x->format) {
+ 		case SND_SOC_DAIFMT_I2S:
+ 			confb |= 0x4;
+@@ -731,7 +731,7 @@ static int sta32x_hw_params(struct snd_pcm_substream *substream,
+ 
+ 		break;
+ 	case 18:
+-		dev_dbg(codec->dev, "18bit\n");
++		dev_dbg(component->dev, "18bit\n");
+ 		switch (sta32x->format) {
+ 		case SND_SOC_DAIFMT_I2S:
+ 			confb |= 0x8;
+@@ -746,7 +746,7 @@ static int sta32x_hw_params(struct snd_pcm_substream *substream,
+ 
+ 		break;
+ 	case 16:
+-		dev_dbg(codec->dev, "16bit\n");
++		dev_dbg(component->dev, "16bit\n");
+ 		switch (sta32x->format) {
+ 		case SND_SOC_DAIFMT_I2S:
+ 			confb |= 0x0;
+@@ -793,20 +793,20 @@ static int sta32x_startup_sequence(struct sta32x_priv *sta32x)
+ 
+ /**
+  * sta32x_set_bias_level - DAPM callback
+- * @codec: the codec device
++ * @component: the component device
+  * @level: DAPM power level
+  *
+- * This is called by ALSA to put the codec into low power mode
+- * or to wake it up.  If the codec is powered off completely
++ * This is called by ALSA to put the component into low power mode
++ * or to wake it up.  If the component is powered off completely
+  * all registers must be restored after power on.
+  */
+-static int sta32x_set_bias_level(struct snd_soc_codec *codec,
++static int sta32x_set_bias_level(struct snd_soc_component *component,
+ 				 enum snd_soc_bias_level level)
+ {
+ 	int ret;
+-	struct sta32x_priv *sta32x = snd_soc_codec_get_drvdata(codec);
++	struct sta32x_priv *sta32x = snd_soc_component_get_drvdata(component);
+ 
+-	dev_dbg(codec->dev, "level = %d\n", level);
++	dev_dbg(component->dev, "level = %d\n", level);
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+ 		break;
+@@ -819,17 +819,17 @@ static int sta32x_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 
+ 	case SND_SOC_BIAS_STANDBY:
+-		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
++		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
+ 			ret = regulator_bulk_enable(ARRAY_SIZE(sta32x->supplies),
+ 						    sta32x->supplies);
+ 			if (ret != 0) {
+-				dev_err(codec->dev,
++				dev_err(component->dev,
+ 					"Failed to enable supplies: %d\n", ret);
+ 				return ret;
+ 			}
+ 
+ 			sta32x_startup_sequence(sta32x);
+-			sta32x_cache_sync(codec);
++			sta32x_cache_sync(component);
+ 			sta32x_watchdog_start(sta32x);
+ 		}
+ 
+@@ -874,21 +874,21 @@ static struct snd_soc_dai_driver sta32x_dai = {
+ 	.ops = &sta32x_dai_ops,
+ };
+ 
+-static int sta32x_probe(struct snd_soc_codec *codec)
++static int sta32x_probe(struct snd_soc_component *component)
+ {
+-	struct sta32x_priv *sta32x = snd_soc_codec_get_drvdata(codec);
++	struct sta32x_priv *sta32x = snd_soc_component_get_drvdata(component);
+ 	struct sta32x_platform_data *pdata = sta32x->pdata;
+ 	int i, ret = 0, thermal = 0;
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(sta32x->supplies),
+ 				    sta32x->supplies);
+ 	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to enable supplies: %d\n", ret);
++		dev_err(component->dev, "Failed to enable supplies: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+ 	ret = sta32x_startup_sequence(sta32x);
+ 	if (ret < 0) {
+-		dev_err(codec->dev, "Failed to startup device\n");
++		dev_err(component->dev, "Failed to startup device\n");
+ 		return ret;
+ 	}
+ 
+@@ -968,36 +968,36 @@ static int sta32x_probe(struct snd_soc_codec *codec)
+ 	if (sta32x->pdata->needs_esd_watchdog)
+ 		INIT_DELAYED_WORK(&sta32x->watchdog_work, sta32x_watchdog);
+ 
+-	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
++	snd_soc_component_force_bias_level(component, SND_SOC_BIAS_STANDBY);
+ 	/* Bias level configuration will have done an extra enable */
+ 	regulator_bulk_disable(ARRAY_SIZE(sta32x->supplies), sta32x->supplies);
  
  	return 0;
  }
-@@ -313,14 +313,15 @@ static struct snd_soc_dai_driver sta529_dai = {
- 	.ops	= &sta529_dai_ops,
- };
  
--static const struct snd_soc_codec_driver sta529_codec_driver = {
--	.set_bias_level = sta529_set_bias_level,
--	.suspend_bias_off = true,
+-static int sta32x_remove(struct snd_soc_codec *codec)
++static void sta32x_remove(struct snd_soc_component *component)
+ {
+-	struct sta32x_priv *sta32x = snd_soc_codec_get_drvdata(codec);
++	struct sta32x_priv *sta32x = snd_soc_component_get_drvdata(component);
+ 
+ 	sta32x_watchdog_stop(sta32x);
+ 	regulator_bulk_disable(ARRAY_SIZE(sta32x->supplies), sta32x->supplies);
 -
+-	return 0;
+ }
+ 
+-static const struct snd_soc_codec_driver sta32x_codec = {
+-	.probe =		sta32x_probe,
+-	.remove =		sta32x_remove,
+-	.set_bias_level =	sta32x_set_bias_level,
+-	.suspend_bias_off =	true,
 -	.component_driver = {
--		.controls		= sta529_snd_controls,
--		.num_controls		= ARRAY_SIZE(sta529_snd_controls),
+-		.controls =		sta32x_snd_controls,
+-		.num_controls =		ARRAY_SIZE(sta32x_snd_controls),
+-		.dapm_widgets =		sta32x_dapm_widgets,
+-		.num_dapm_widgets =	ARRAY_SIZE(sta32x_dapm_widgets),
+-		.dapm_routes =		sta32x_dapm_routes,
+-		.num_dapm_routes =	ARRAY_SIZE(sta32x_dapm_routes),
 -	},
-+static const struct snd_soc_component_driver sta529_component_driver = {
-+	.set_bias_level		= sta529_set_bias_level,
-+	.controls		= sta529_snd_controls,
-+	.num_controls		= ARRAY_SIZE(sta529_snd_controls),
++static const struct snd_soc_component_driver sta32x_component = {
++	.probe			= sta32x_probe,
++	.remove			= sta32x_remove,
++	.set_bias_level		= sta32x_set_bias_level,
++	.controls		= sta32x_snd_controls,
++	.num_controls		= ARRAY_SIZE(sta32x_snd_controls),
++	.dapm_widgets		= sta32x_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(sta32x_dapm_widgets),
++	.dapm_routes		= sta32x_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(sta32x_dapm_routes),
 +	.suspend_bias_off	= 1,
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
@@ -212,37 +400,36 @@ index 660734359bf3..2881a0f7bb39 100644
 +	.non_legacy_dai_naming	= 1,
  };
  
- static const struct regmap_config sta529_regmap = {
-@@ -354,21 +355,14 @@ static int sta529_i2c_probe(struct i2c_client *i2c,
+ static const struct regmap_config sta32x_regmap = {
+@@ -1121,19 +1121,14 @@ static int sta32x_i2c_probe(struct i2c_client *i2c,
  
- 	i2c_set_clientdata(i2c, sta529);
+ 	i2c_set_clientdata(i2c, sta32x);
  
--	ret = snd_soc_register_codec(&i2c->dev,
--			&sta529_codec_driver, &sta529_dai, 1);
-+	ret = devm_snd_soc_register_component(&i2c->dev,
-+			&sta529_component_driver, &sta529_dai, 1);
- 	if (ret != 0)
- 		dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
+-	ret = snd_soc_register_codec(dev, &sta32x_codec, &sta32x_dai, 1);
++	ret = devm_snd_soc_register_component(dev, &sta32x_component,
++					      &sta32x_dai, 1);
+ 	if (ret < 0)
+-		dev_err(dev, "Failed to register codec (%d)\n", ret);
++		dev_err(dev, "Failed to register component (%d)\n", ret);
  
  	return ret;
  }
  
--static int sta529_i2c_remove(struct i2c_client *client)
+-static int sta32x_i2c_remove(struct i2c_client *client)
 -{
 -	snd_soc_unregister_codec(&client->dev);
--
 -	return 0;
 -}
 -
- static const struct i2c_device_id sta529_i2c_id[] = {
- 	{ "sta529", 0 },
- 	{ }
-@@ -387,7 +381,6 @@ static struct i2c_driver sta529_i2c_driver = {
- 		.of_match_table = sta529_of_match,
+ static const struct i2c_device_id sta32x_i2c_id[] = {
+ 	{ "sta326", 0 },
+ 	{ "sta328", 0 },
+@@ -1148,7 +1143,6 @@ static struct i2c_driver sta32x_i2c_driver = {
+ 		.of_match_table = of_match_ptr(st32x_dt_ids),
  	},
- 	.probe		= sta529_i2c_probe,
--	.remove		= sta529_i2c_remove,
- 	.id_table	= sta529_i2c_id,
+ 	.probe =    sta32x_i2c_probe,
+-	.remove =   sta32x_i2c_remove,
+ 	.id_table = sta32x_i2c_id,
  };
  
 -- 
