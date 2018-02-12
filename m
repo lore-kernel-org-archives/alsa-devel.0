@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sti-sas: replace codec to component" to
+Subject: Applied "ASoC: dmic: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:36:08 +0000
-Message-ID: <E1elDL6-0003qF-I0@debutante>
-References: <87mv0xuvlq.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:36:13 +0000
+Message-ID: <E1elDLB-0003r8-PP@debutante>
+References: <87o9lduvmh.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1332F2673D2
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:36:10 +0100 (CET)
-In-Reply-To: <87mv0xuvlq.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E1F30267A4D
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:36:15 +0100 (CET)
+In-Reply-To: <87o9lduvmh.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sti-sas: replace codec to component
+   ASoC: dmic: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 049c1bfc30f3a5c09dcb83f2edb8c3707fdb17fd Mon Sep 17 00:00:00 2001
+>From 6d6c3946d877adf1e73c6292f947bbb687452ed5 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:40:56 +0000
-Subject: [PATCH] ASoC: sti-sas: replace codec to component
+Date: Mon, 29 Jan 2018 04:40:29 +0000
+Subject: [PATCH] ASoC: dmic: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,242 +70,83 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/sti-sas.c | 84 ++++++++++++++++++++++------------------------
- 1 file changed, 40 insertions(+), 44 deletions(-)
+ sound/soc/codecs/dmic.c | 33 ++++++++++++++-------------------
+ 1 file changed, 14 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/codecs/sti-sas.c b/sound/soc/codecs/sti-sas.c
-index 62c618765224..7316c80b8179 100644
---- a/sound/soc/codecs/sti-sas.c
-+++ b/sound/soc/codecs/sti-sas.c
-@@ -106,7 +106,7 @@ static int sti_sas_write_reg(void *context, unsigned int reg,
- 	return status;
- }
- 
--static int  sti_sas_init_sas_registers(struct snd_soc_codec *codec,
-+static int  sti_sas_init_sas_registers(struct snd_soc_component *component,
- 				       struct sti_sas_data *data)
- {
- 	int ret;
-@@ -116,35 +116,35 @@ static int  sti_sas_init_sas_registers(struct snd_soc_codec *codec,
- 	 */
- 
- 	/* Initialise bi-phase formatter to disabled */
--	ret = snd_soc_update_bits(codec, STIH407_AUDIO_GLUE_CTRL,
-+	ret = snd_soc_component_update_bits(component, STIH407_AUDIO_GLUE_CTRL,
- 				  SPDIF_BIPHASE_ENABLE_MASK, 0);
- 
- 	if (!ret)
- 		/* Initialise bi-phase formatter idle value to 0 */
--		ret = snd_soc_update_bits(codec, STIH407_AUDIO_GLUE_CTRL,
-+		ret = snd_soc_component_update_bits(component, STIH407_AUDIO_GLUE_CTRL,
- 					  SPDIF_BIPHASE_IDLE_MASK, 0);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to update SPDIF registers\n");
-+		dev_err(component->dev, "Failed to update SPDIF registers\n");
- 		return ret;
- 	}
- 
- 	/* Init DAC configuration */
- 	/* init configuration */
--	ret =  snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
-+	ret =  snd_soc_component_update_bits(component, STIH407_AUDIO_DAC_CTRL,
- 				   STIH407_DAC_STANDBY_MASK,
- 				   STIH407_DAC_STANDBY_MASK);
- 
- 	if (!ret)
--		ret = snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
-+		ret = snd_soc_component_update_bits(component, STIH407_AUDIO_DAC_CTRL,
- 					  STIH407_DAC_STANDBY_ANA_MASK,
- 					  STIH407_DAC_STANDBY_ANA_MASK);
- 	if (!ret)
--		ret = snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
-+		ret = snd_soc_component_update_bits(component, STIH407_AUDIO_DAC_CTRL,
- 					  STIH407_DAC_SOFTMUTE_MASK,
- 					  STIH407_DAC_SOFTMUTE_MASK);
- 
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to update DAC registers\n");
-+		dev_err(component->dev, "Failed to update DAC registers\n");
- 		return ret;
- 	}
- 
-@@ -158,7 +158,7 @@ static int sti_sas_dac_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- {
- 	/* Sanity check only */
- 	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS) {
--		dev_err(dai->codec->dev,
-+		dev_err(dai->component->dev,
- 			"%s: ERROR: Unsupporter master mask 0x%x\n",
- 			__func__, fmt & SND_SOC_DAIFMT_MASTER_MASK);
- 		return -EINVAL;
-@@ -183,14 +183,14 @@ static const struct snd_soc_dapm_route stih407_sas_route[] = {
- 
- static int stih407_sas_dac_mute(struct snd_soc_dai *dai, int mute, int stream)
- {
--	struct snd_soc_codec *codec = dai->codec;
-+	struct snd_soc_component *component = dai->component;
- 
- 	if (mute) {
--		return snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
-+		return snd_soc_component_update_bits(component, STIH407_AUDIO_DAC_CTRL,
- 					    STIH407_DAC_SOFTMUTE_MASK,
- 					    STIH407_DAC_SOFTMUTE_MASK);
- 	} else {
--		return snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
-+		return snd_soc_component_update_bits(component, STIH407_AUDIO_DAC_CTRL,
- 					    STIH407_DAC_SOFTMUTE_MASK,
- 					    0);
- 	}
-@@ -203,7 +203,7 @@ static int sti_sas_spdif_set_fmt(struct snd_soc_dai *dai,
- 				 unsigned int fmt)
- {
- 	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS) {
--		dev_err(dai->codec->dev,
-+		dev_err(dai->component->dev,
- 			"%s: ERROR: Unsupporter master mask 0x%x\n",
- 			__func__, fmt & SND_SOC_DAIFMT_MASTER_MASK);
- 		return -EINVAL;
-@@ -221,19 +221,19 @@ static int sti_sas_spdif_set_fmt(struct snd_soc_dai *dai,
- static int sti_sas_spdif_trigger(struct snd_pcm_substream *substream, int cmd,
- 				 struct snd_soc_dai *dai)
- {
--	struct snd_soc_codec *codec = dai->codec;
-+	struct snd_soc_component *component = dai->component;
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		return snd_soc_update_bits(codec, STIH407_AUDIO_GLUE_CTRL,
-+		return snd_soc_component_update_bits(component, STIH407_AUDIO_GLUE_CTRL,
- 					    SPDIF_BIPHASE_ENABLE_MASK,
- 					    SPDIF_BIPHASE_ENABLE_MASK);
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
--		return snd_soc_update_bits(codec, STIH407_AUDIO_GLUE_CTRL,
-+		return snd_soc_component_update_bits(component, STIH407_AUDIO_GLUE_CTRL,
- 					    SPDIF_BIPHASE_ENABLE_MASK,
- 					    0);
- 	default:
-@@ -260,8 +260,8 @@ static bool sti_sas_volatile_register(struct device *dev, unsigned int reg)
- static int sti_sas_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- 			      unsigned int freq, int dir)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
-+	struct snd_soc_component *component = dai->component;
-+	struct sti_sas_data *drvdata = dev_get_drvdata(component->dev);
- 
- 	if (dir == SND_SOC_CLOCK_OUT)
- 		return 0;
-@@ -285,20 +285,20 @@ static int sti_sas_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- static int sti_sas_prepare(struct snd_pcm_substream *substream,
- 			   struct snd_soc_dai *dai)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
-+	struct snd_soc_component *component = dai->component;
-+	struct sti_sas_data *drvdata = dev_get_drvdata(component->dev);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 
- 	switch (dai->id) {
- 	case STI_SAS_DAI_SPDIF_OUT:
- 		if ((drvdata->spdif.mclk / runtime->rate) != 128) {
--			dev_err(codec->dev, "unexpected mclk-fs ratio\n");
-+			dev_err(component->dev, "unexpected mclk-fs ratio\n");
- 			return -EINVAL;
- 		}
- 		break;
- 	case STI_SAS_DAI_ANALOG_OUT:
- 		if ((drvdata->dac.mclk / runtime->rate) != 256) {
--			dev_err(codec->dev, "unexpected mclk-fs ratio\n");
-+			dev_err(component->dev, "unexpected mclk-fs ratio\n");
- 			return -EINVAL;
- 		}
- 		break;
-@@ -375,29 +375,33 @@ static struct snd_soc_dai_driver sti_sas_dai[] = {
+diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
+index cf83c423394d..32a8f71d51f1 100644
+--- a/sound/soc/codecs/dmic.c
++++ b/sound/soc/codecs/dmic.c
+@@ -71,16 +71,16 @@ static struct snd_soc_dai_driver dmic_dai = {
+ 	.ops    = &dmic_dai_ops,
  };
  
- #ifdef CONFIG_PM_SLEEP
--static int sti_sas_resume(struct snd_soc_codec *codec)
-+static int sti_sas_resume(struct snd_soc_component *component)
+-static int dmic_codec_probe(struct snd_soc_codec *codec)
++static int dmic_component_probe(struct snd_soc_component *component)
  {
--	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
-+	struct sti_sas_data *drvdata = dev_get_drvdata(component->dev);
+ 	struct gpio_desc *dmic_en;
  
--	return sti_sas_init_sas_registers(codec, drvdata);
-+	return sti_sas_init_sas_registers(component, drvdata);
+-	dmic_en = devm_gpiod_get_optional(codec->dev,
++	dmic_en = devm_gpiod_get_optional(component->dev,
+ 					"dmicen", GPIOD_OUT_LOW);
+ 	if (IS_ERR(dmic_en))
+ 		return PTR_ERR(dmic_en);
+ 
+-	snd_soc_codec_set_drvdata(codec, dmic_en);
++	snd_soc_component_set_drvdata(component, dmic_en);
+ 
+ 	return 0;
  }
- #else
- #define sti_sas_resume NULL
- #endif
+@@ -95,14 +95,16 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	{"DMIC AIF", NULL, "DMic"},
+ };
  
--static int sti_sas_codec_probe(struct snd_soc_codec *codec)
-+static int sti_sas_component_probe(struct snd_soc_component *component)
- {
--	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
-+	struct sti_sas_data *drvdata = dev_get_drvdata(component->dev);
- 	int ret;
- 
--	ret = sti_sas_init_sas_registers(codec, drvdata);
-+	ret = sti_sas_init_sas_registers(component, drvdata);
- 
- 	return ret;
- }
- 
--static struct snd_soc_codec_driver sti_sas_driver = {
--	.probe = sti_sas_codec_probe,
--	.resume = sti_sas_resume,
-+static struct snd_soc_component_driver sti_sas_driver = {
-+	.probe			= sti_sas_component_probe,
-+	.resume			= sti_sas_resume,
+-static const struct snd_soc_codec_driver soc_dmic = {
+-	.probe = dmic_codec_probe,
+-	.component_driver = {
+-		.dapm_widgets		= dmic_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(dmic_dapm_widgets),
+-		.dapm_routes		= intercon,
+-		.num_dapm_routes	= ARRAY_SIZE(intercon),
+-	},
++static const struct snd_soc_component_driver soc_dmic = {
++	.probe			= dmic_component_probe,
++	.dapm_widgets		= dmic_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(dmic_dapm_widgets),
++	.dapm_routes		= intercon,
++	.num_dapm_routes	= ARRAY_SIZE(intercon),
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static const struct of_device_id sti_sas_dev_match[] = {
-@@ -452,34 +456,26 @@ static int sti_sas_driver_probe(struct platform_device *pdev)
- 	sti_sas_dai[STI_SAS_DAI_ANALOG_OUT].ops = drvdata->dev_data->dac_ops;
+ static int dmic_dev_probe(struct platform_device *pdev)
+@@ -129,16 +131,10 @@ static int dmic_dev_probe(struct platform_device *pdev)
+ 		}
+ 	}
  
- 	/* Set dapms*/
--	sti_sas_driver.component_driver.dapm_widgets = drvdata->dev_data->dapm_widgets;
--	sti_sas_driver.component_driver.num_dapm_widgets = drvdata->dev_data->num_dapm_widgets;
-+	sti_sas_driver.dapm_widgets = drvdata->dev_data->dapm_widgets;
-+	sti_sas_driver.num_dapm_widgets = drvdata->dev_data->num_dapm_widgets;
- 
--	sti_sas_driver.component_driver.dapm_routes = drvdata->dev_data->dapm_routes;
--	sti_sas_driver.component_driver.num_dapm_routes = drvdata->dev_data->num_dapm_routes;
-+	sti_sas_driver.dapm_routes = drvdata->dev_data->dapm_routes;
-+	sti_sas_driver.num_dapm_routes = drvdata->dev_data->num_dapm_routes;
- 
- 	/* Store context */
- 	dev_set_drvdata(&pdev->dev, drvdata);
- 
--	return snd_soc_register_codec(&pdev->dev, &sti_sas_driver,
-+	return devm_snd_soc_register_component(&pdev->dev, &sti_sas_driver,
- 					sti_sas_dai,
- 					ARRAY_SIZE(sti_sas_dai));
+-	return snd_soc_register_codec(&pdev->dev,
++	return devm_snd_soc_register_component(&pdev->dev,
+ 			&soc_dmic, dai_drv, 1);
  }
  
--static int sti_sas_driver_remove(struct platform_device *pdev)
+-static int dmic_dev_remove(struct platform_device *pdev)
 -{
 -	snd_soc_unregister_codec(&pdev->dev);
--
 -	return 0;
 -}
 -
- static struct platform_driver sti_sas_platform_driver = {
- 	.driver = {
- 		.name = "sti-sas-codec",
- 		.of_match_table = sti_sas_dev_match,
+ MODULE_ALIAS("platform:dmic-codec");
+ 
+ static const struct of_device_id dmic_dev_match[] = {
+@@ -152,7 +148,6 @@ static struct platform_driver dmic_driver = {
+ 		.of_match_table = dmic_dev_match,
  	},
- 	.probe = sti_sas_driver_probe,
--	.remove = sti_sas_driver_remove,
+ 	.probe = dmic_dev_probe,
+-	.remove = dmic_dev_remove,
  };
  
- module_platform_driver(sti_sas_platform_driver);
+ module_platform_driver(dmic_driver);
 -- 
 2.16.1
