@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: imx: replace platform to
+Subject: Applied "ASoC: davinci-i2s: replace platform to
 	component" to the asoc tree
-Date: Mon, 12 Feb 2018 12:29:33 +0000
-Message-ID: <E1elDEj-00037w-VT@debutante>
-References: <87zi5jew9x.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:29:56 +0000
+Message-ID: <E1elDF6-0003An-E5@debutante>
+References: <874lnrgay7.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A73E2267475
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:29:37 +0100 (CET)
-In-Reply-To: <87zi5jew9x.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BD742673D0
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:30:00 +0100 (CET)
+In-Reply-To: <874lnrgay7.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl: imx: replace platform to component
+   ASoC: davinci-i2s: replace platform to component
 
 has been applied to the asoc tree at
 
@@ -53,49 +53,70 @@ to this mail.
 Thanks,
 Mark
 
->From 1d0a01f2d4051bc62ba5e0d73ed99272414045ba Mon Sep 17 00:00:00 2001
+>From a49cb31cc7c84eab032c790df476f57ad14c8eeb Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 02:47:02 +0000
-Subject: [PATCH] ASoC: fsl: imx: replace platform to component
+Date: Mon, 29 Jan 2018 02:46:04 +0000
+Subject: [PATCH] ASoC: davinci-i2s: replace platform to component
 
 Now platform can be replaced to component, let's do it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/imx-pcm-fiq.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/davinci/davinci-i2s.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
-index 4e5fefee111e..0578f3486847 100644
---- a/sound/soc/fsl/imx-pcm-fiq.c
-+++ b/sound/soc/fsl/imx-pcm-fiq.c
-@@ -341,7 +341,7 @@ static void imx_pcm_fiq_free(struct snd_pcm *pcm)
- 	imx_pcm_free(pcm);
- }
+diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
+index 384961651904..807040bb3921 100644
+--- a/sound/soc/davinci/davinci-i2s.c
++++ b/sound/soc/davinci/davinci-i2s.c
+@@ -34,6 +34,7 @@
+ #include "edma-pcm.h"
+ #include "davinci-i2s.h"
  
--static const struct snd_soc_platform_driver imx_soc_platform_fiq = {
-+static const struct snd_soc_component_driver imx_soc_component_fiq = {
- 	.ops		= &imx_pcm_ops,
- 	.pcm_new	= imx_pcm_fiq_new,
- 	.pcm_free	= imx_pcm_fiq_free,
-@@ -368,7 +368,8 @@ int imx_pcm_fiq_init(struct platform_device *pdev,
- 	params->dma_params_tx->maxburst = 4;
- 	params->dma_params_rx->maxburst = 6;
++#define DRV_NAME "davinci-i2s"
  
--	ret = snd_soc_register_platform(&pdev->dev, &imx_soc_platform_fiq);
-+	ret = devm_snd_soc_register_component(&pdev->dev, &imx_soc_component_fiq,
-+					      NULL, 0);
- 	if (ret)
- 		goto failed_register;
- 
-@@ -384,7 +385,6 @@ EXPORT_SYMBOL_GPL(imx_pcm_fiq_init);
- 
- void imx_pcm_fiq_exit(struct platform_device *pdev)
+ /*
+  * NOTE:  terminology here is confusing.
+@@ -190,7 +191,7 @@ static void davinci_mcbsp_start(struct davinci_mcbsp_dev *dev,
+ 		struct snd_pcm_substream *substream)
  {
--	snd_soc_unregister_platform(&pdev->dev);
- }
- EXPORT_SYMBOL_GPL(imx_pcm_fiq_exit);
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
++	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+ 	u32 spcr;
+ 	u32 mask = playback ? DAVINCI_MCBSP_SPCR_XRST : DAVINCI_MCBSP_SPCR_RRST;
+@@ -211,8 +212,8 @@ static void davinci_mcbsp_start(struct davinci_mcbsp_dev *dev,
+ 	if (playback) {
+ 		/* Stop the DMA to avoid data loss */
+ 		/* while the transmitter is out of reset to handle XSYNCERR */
+-		if (platform->driver->ops->trigger) {
+-			int ret = platform->driver->ops->trigger(substream,
++		if (component->driver->ops->trigger) {
++			int ret = component->driver->ops->trigger(substream,
+ 				SNDRV_PCM_TRIGGER_STOP);
+ 			if (ret < 0)
+ 				printk(KERN_DEBUG "Playback DMA stop failed\n");
+@@ -233,8 +234,8 @@ static void davinci_mcbsp_start(struct davinci_mcbsp_dev *dev,
+ 		toggle_clock(dev, playback);
  
+ 		/* Restart the DMA */
+-		if (platform->driver->ops->trigger) {
+-			int ret = platform->driver->ops->trigger(substream,
++		if (component->driver->ops->trigger) {
++			int ret = component->driver->ops->trigger(substream,
+ 				SNDRV_PCM_TRIGGER_START);
+ 			if (ret < 0)
+ 				printk(KERN_DEBUG "Playback DMA start failed\n");
+@@ -651,7 +652,7 @@ static struct snd_soc_dai_driver davinci_i2s_dai = {
+ };
+ 
+ static const struct snd_soc_component_driver davinci_i2s_component = {
+-	.name		= "davinci-i2s",
++	.name		= DRV_NAME,
+ };
+ 
+ static int davinci_i2s_probe(struct platform_device *pdev)
 -- 
 2.16.1
