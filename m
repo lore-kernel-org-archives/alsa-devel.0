@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: alc5632: replace codec to component" to
+Subject: Applied "ASoC: es8328: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:37:33 +0000
-Message-ID: <E1elDMT-00044D-98@debutante>
-References: <87bmhdwaij.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:37:36 +0000
+Message-ID: <E1elDMW-000450-DG@debutante>
+References: <87d11twajj.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 32F35267537
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:37:35 +0100 (CET)
-In-Reply-To: <87bmhdwaij.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B8B2E2673F3
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:37:38 +0100 (CET)
+In-Reply-To: <87d11twajj.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: alc5632: replace codec to component
+   ASoC: es8328: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From c778b7715f66c97f6b41077c72a16ad3553817ff Mon Sep 17 00:00:00 2001
+>From da4ce5607149ace4bb61af4a4910bab1dcf20a19 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:33:31 +0000
-Subject: [PATCH] ASoC: alc5632: replace codec to component
+Date: Mon, 29 Jan 2018 04:32:55 +0000
+Subject: [PATCH] ASoC: es8328: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,327 +70,448 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/alc5632.c | 138 ++++++++++++++++++++++-----------------------
- 1 file changed, 66 insertions(+), 72 deletions(-)
+ sound/soc/codecs/es8328-i2c.c |   7 --
+ sound/soc/codecs/es8328-spi.c |   7 --
+ sound/soc/codecs/es8328.c     | 147 +++++++++++++++++++++---------------------
+ 3 files changed, 73 insertions(+), 88 deletions(-)
 
-diff --git a/sound/soc/codecs/alc5632.c b/sound/soc/codecs/alc5632.c
-index adb80d8719bd..08034a6d4c5a 100644
---- a/sound/soc/codecs/alc5632.c
-+++ b/sound/soc/codecs/alc5632.c
-@@ -116,20 +116,20 @@ static inline int alc5632_reset(struct regmap *map)
- static int amp_mixer_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+diff --git a/sound/soc/codecs/es8328-i2c.c b/sound/soc/codecs/es8328-i2c.c
+index 318ab28c5351..19baa3260f85 100644
+--- a/sound/soc/codecs/es8328-i2c.c
++++ b/sound/soc/codecs/es8328-i2c.c
+@@ -39,19 +39,12 @@ static int es8328_i2c_probe(struct i2c_client *i2c,
+ 			devm_regmap_init_i2c(i2c, &es8328_regmap_config));
+ }
  
- 	/* to power-on/off class-d amp generators/speaker */
- 	/* need to write to 'index-46h' register :        */
- 	/* so write index num (here 0x46) to reg 0x6a     */
- 	/* and then 0xffff/0 to reg 0x6c                  */
--	snd_soc_write(codec, ALC5632_HID_CTRL_INDEX, 0x46);
-+	snd_soc_component_write(component, ALC5632_HID_CTRL_INDEX, 0x46);
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
--		snd_soc_write(codec, ALC5632_HID_CTRL_DATA, 0xFFFF);
-+		snd_soc_component_write(component, ALC5632_HID_CTRL_DATA, 0xFFFF);
- 		break;
- 	case SND_SOC_DAPM_POST_PMD:
--		snd_soc_write(codec, ALC5632_HID_CTRL_DATA, 0);
-+		snd_soc_component_write(component, ALC5632_HID_CTRL_DATA, 0);
- 		break;
- 	}
- 
-@@ -681,7 +681,7 @@ static int alc5632_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
- 		int source, unsigned int freq_in, unsigned int freq_out)
- {
- 	int i;
--	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct snd_soc_component *component = codec_dai->component;
- 	int gbl_clk = 0, pll_div = 0;
- 	u16 reg;
- 
-@@ -689,15 +689,15 @@ static int alc5632_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
- 		return -EINVAL;
- 
- 	/* Disable PLL power */
--	snd_soc_update_bits(codec, ALC5632_PWR_MANAG_ADD2,
-+	snd_soc_component_update_bits(component, ALC5632_PWR_MANAG_ADD2,
- 				ALC5632_PWR_ADD2_PLL1,
- 				0);
--	snd_soc_update_bits(codec, ALC5632_PWR_MANAG_ADD2,
-+	snd_soc_component_update_bits(component, ALC5632_PWR_MANAG_ADD2,
- 				ALC5632_PWR_ADD2_PLL2,
- 				0);
- 
- 	/* pll is not used in slave mode */
--	reg = snd_soc_read(codec, ALC5632_DAI_CONTROL);
-+	reg = snd_soc_component_read32(component, ALC5632_DAI_CONTROL);
- 	if (reg & ALC5632_DAI_SDP_SLAVE_MODE)
- 		return 0;
- 
-@@ -745,19 +745,19 @@ static int alc5632_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
- 		return -EINVAL;
- 
- 	/* choose MCLK/BCLK/VBCLK */
--	snd_soc_write(codec, ALC5632_GPCR2, gbl_clk);
-+	snd_soc_component_write(component, ALC5632_GPCR2, gbl_clk);
- 	/* choose PLL1 clock rate */
--	snd_soc_write(codec, ALC5632_PLL1_CTRL, pll_div);
-+	snd_soc_component_write(component, ALC5632_PLL1_CTRL, pll_div);
- 	/* enable PLL1 */
--	snd_soc_update_bits(codec, ALC5632_PWR_MANAG_ADD2,
-+	snd_soc_component_update_bits(component, ALC5632_PWR_MANAG_ADD2,
- 				ALC5632_PWR_ADD2_PLL1,
- 				ALC5632_PWR_ADD2_PLL1);
- 	/* enable PLL2 */
--	snd_soc_update_bits(codec, ALC5632_PWR_MANAG_ADD2,
-+	snd_soc_component_update_bits(component, ALC5632_PWR_MANAG_ADD2,
- 				ALC5632_PWR_ADD2_PLL2,
- 				ALC5632_PWR_ADD2_PLL2);
- 	/* use PLL1 as main SYSCLK */
--	snd_soc_update_bits(codec, ALC5632_GPCR1,
-+	snd_soc_component_update_bits(component, ALC5632_GPCR1,
- 			ALC5632_GPCR1_CLK_SYS_SRC_SEL_PLL1,
- 			ALC5632_GPCR1_CLK_SYS_SRC_SEL_PLL1);
- 
-@@ -775,9 +775,9 @@ static const struct _coeff_div coeff_div[] = {
- 	{512*1, 0x3075},
+-static int es8328_i2c_remove(struct i2c_client *i2c)
+-{
+-	snd_soc_unregister_codec(&i2c->dev);
+-	return 0;
+-}
+-
+ static struct i2c_driver es8328_i2c_driver = {
+ 	.driver = {
+ 		.name		= "es8328",
+ 		.of_match_table = es8328_of_match,
+ 	},
+ 	.probe    = es8328_i2c_probe,
+-	.remove   = es8328_i2c_remove,
+ 	.id_table = es8328_id,
  };
  
--static int get_coeff(struct snd_soc_codec *codec, int rate)
-+static int get_coeff(struct snd_soc_component *component, int rate)
- {
--	struct alc5632_priv *alc5632 = snd_soc_codec_get_drvdata(codec);
-+	struct alc5632_priv *alc5632 = snd_soc_component_get_drvdata(component);
- 	int i;
+diff --git a/sound/soc/codecs/es8328-spi.c b/sound/soc/codecs/es8328-spi.c
+index 8fbd935e1c76..d242bd1f7dcc 100644
+--- a/sound/soc/codecs/es8328-spi.c
++++ b/sound/soc/codecs/es8328-spi.c
+@@ -28,19 +28,12 @@ static int es8328_spi_probe(struct spi_device *spi)
+ 			devm_regmap_init_spi(spi, &es8328_regmap_config));
+ }
  
- 	for (i = 0; i < ARRAY_SIZE(coeff_div); i++) {
-@@ -793,8 +793,8 @@ static int get_coeff(struct snd_soc_codec *codec, int rate)
- static int alc5632_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+-static int es8328_spi_remove(struct spi_device *spi)
+-{
+-	snd_soc_unregister_codec(&spi->dev);
+-	return 0;
+-}
+-
+ static struct spi_driver es8328_spi_driver = {
+ 	.driver = {
+ 		.name		= "es8328",
+ 		.of_match_table	= es8328_of_match,
+ 	},
+ 	.probe	= es8328_spi_probe,
+-	.remove	= es8328_spi_remove,
+ };
+ 
+ module_spi_driver(es8328_spi_driver);
+diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
+index bcdb8914ec16..e9fc2fd97d2f 100644
+--- a/sound/soc/codecs/es8328.c
++++ b/sound/soc/codecs/es8328.c
+@@ -116,9 +116,9 @@ static const struct {
+ 	{ 48000, ES8328_DACCONTROL6_DEEMPH_48k },
+ };
+ 
+-static int es8328_set_deemph(struct snd_soc_codec *codec)
++static int es8328_set_deemph(struct snd_soc_component *component)
+ {
+-	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
++	struct es8328_priv *es8328 = snd_soc_component_get_drvdata(component);
+ 	int val, i, best;
+ 
+ 	/*
+@@ -138,17 +138,17 @@ static int es8328_set_deemph(struct snd_soc_codec *codec)
+ 		val = ES8328_DACCONTROL6_DEEMPH_OFF;
+ 	}
+ 
+-	dev_dbg(codec->dev, "Set deemphasis %d\n", val);
++	dev_dbg(component->dev, "Set deemphasis %d\n", val);
+ 
+-	return snd_soc_update_bits(codec, ES8328_DACCONTROL6,
++	return snd_soc_component_update_bits(component, ES8328_DACCONTROL6,
+ 			ES8328_DACCONTROL6_DEEMPH_MASK, val);
+ }
+ 
+ static int es8328_get_deemph(struct snd_kcontrol *kcontrol,
+ 			     struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct es8328_priv *es8328 = snd_soc_component_get_drvdata(component);
+ 
+ 	ucontrol->value.integer.value[0] = es8328->deemph;
+ 	return 0;
+@@ -157,15 +157,15 @@ static int es8328_get_deemph(struct snd_kcontrol *kcontrol,
+ static int es8328_put_deemph(struct snd_kcontrol *kcontrol,
+ 			     struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct es8328_priv *es8328 = snd_soc_component_get_drvdata(component);
+ 	unsigned int deemph = ucontrol->value.integer.value[0];
+ 	int ret;
+ 
+ 	if (deemph > 1)
+ 		return -EINVAL;
+ 
+-	ret = es8328_set_deemph(codec);
++	ret = es8328_set_deemph(component);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -455,7 +455,7 @@ static const struct snd_soc_dapm_route es8328_dapm_routes[] = {
+ 
+ static int es8328_mute(struct snd_soc_dai *dai, int mute)
+ {
+-	return snd_soc_update_bits(dai->codec, ES8328_DACCONTROL3,
++	return snd_soc_component_update_bits(dai->component, ES8328_DACCONTROL3,
+ 			ES8328_DACCONTROL3_DACMUTE,
+ 			mute ? ES8328_DACCONTROL3_DACMUTE : 0);
+ }
+@@ -463,8 +463,8 @@ static int es8328_mute(struct snd_soc_dai *dai, int mute)
+ static int es8328_startup(struct snd_pcm_substream *substream,
+ 			  struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct es8328_priv *es8328 = snd_soc_component_get_drvdata(component);
+ 
+ 	if (es8328->master && es8328->sysclk_constraints)
+ 		snd_pcm_hw_constraint_list(substream->runtime, 0,
+@@ -478,8 +478,8 @@ static int es8328_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params,
+ 	struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct es8328_priv *es8328 = snd_soc_component_get_drvdata(component);
+ 	int i;
+ 	int reg;
+ 	int wl;
+@@ -492,7 +492,7 @@ static int es8328_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	if (es8328->master) {
+ 		if (!es8328->sysclk_constraints) {
+-			dev_err(codec->dev, "No MCLK configured\n");
++			dev_err(component->dev, "No MCLK configured\n");
+ 			return -EINVAL;
+ 		}
+ 
+@@ -502,7 +502,7 @@ static int es8328_hw_params(struct snd_pcm_substream *substream,
+ 				break;
+ 
+ 		if (i == es8328->sysclk_constraints->count) {
+-			dev_err(codec->dev,
++			dev_err(component->dev,
+ 				"LRCLK %d unsupported with current clock\n",
+ 				params_rate(params));
+ 			return -EINVAL;
+@@ -513,7 +513,7 @@ static int es8328_hw_params(struct snd_pcm_substream *substream,
+ 		es8328->mclkdiv2 = 0;
+ 	}
+ 
+-	snd_soc_update_bits(codec, ES8328_MASTERMODE,
++	snd_soc_component_update_bits(component, ES8328_MASTERMODE,
+ 			ES8328_MASTERMODE_MCLKDIV2,
+ 			es8328->mclkdiv2 ? ES8328_MASTERMODE_MCLKDIV2 : 0);
+ 
+@@ -538,25 +538,25 @@ static int es8328_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		snd_soc_update_bits(codec, ES8328_DACCONTROL1,
++		snd_soc_component_update_bits(component, ES8328_DACCONTROL1,
+ 				ES8328_DACCONTROL1_DACWL_MASK,
+ 				wl << ES8328_DACCONTROL1_DACWL_SHIFT);
+ 
+ 		es8328->playback_fs = params_rate(params);
+-		es8328_set_deemph(codec);
++		es8328_set_deemph(component);
+ 	} else
+-		snd_soc_update_bits(codec, ES8328_ADCCONTROL4,
++		snd_soc_component_update_bits(component, ES8328_ADCCONTROL4,
+ 				ES8328_ADCCONTROL4_ADCWL_MASK,
+ 				wl << ES8328_ADCCONTROL4_ADCWL_SHIFT);
+ 
+-	return snd_soc_update_bits(codec, reg, ES8328_RATEMASK, ratio);
++	return snd_soc_component_update_bits(component, reg, ES8328_RATEMASK, ratio);
+ }
+ 
+ static int es8328_set_sysclk(struct snd_soc_dai *codec_dai,
  		int clk_id, unsigned int freq, int dir)
  {
 -	struct snd_soc_codec *codec = codec_dai->codec;
--	struct alc5632_priv *alc5632 = snd_soc_codec_get_drvdata(codec);
+-	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_component *component = codec_dai->component;
-+	struct alc5632_priv *alc5632 = snd_soc_component_get_drvdata(component);
++	struct es8328_priv *es8328 = snd_soc_component_get_drvdata(component);
+ 	int mclkdiv2 = 0;
  
  	switch (freq) {
- 	case  4096000:
-@@ -815,7 +815,7 @@ static int alc5632_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- static int alc5632_set_dai_fmt(struct snd_soc_dai *codec_dai,
+@@ -589,22 +589,22 @@ static int es8328_set_sysclk(struct snd_soc_dai *codec_dai,
+ static int es8328_set_dai_fmt(struct snd_soc_dai *codec_dai,
  		unsigned int fmt)
  {
 -	struct snd_soc_codec *codec = codec_dai->codec;
+-	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_component *component = codec_dai->component;
- 	u16 iface = 0;
++	struct es8328_priv *es8328 = snd_soc_component_get_drvdata(component);
+ 	u8 dac_mode = 0;
+ 	u8 adc_mode = 0;
  
- 	/* set master/slave audio interface */
-@@ -864,17 +864,17 @@ static int alc5632_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		return -EINVAL;
- 	}
- 
--	return snd_soc_write(codec, ALC5632_DAI_CONTROL, iface);
-+	return snd_soc_component_write(component, ALC5632_DAI_CONTROL, iface);
- }
- 
- static int alc5632_pcm_hw_params(struct snd_pcm_substream *substream,
- 		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
- {
--	struct snd_soc_codec *codec = dai->codec;
-+	struct snd_soc_component *component = dai->component;
- 	int coeff, rate;
- 	u16 iface;
- 
--	iface = snd_soc_read(codec, ALC5632_DAI_CONTROL);
-+	iface = snd_soc_component_read32(component, ALC5632_DAI_CONTROL);
- 	iface &= ~ALC5632_DAI_I2S_DL_MASK;
- 
- 	/* bit size */
-@@ -893,29 +893,29 @@ static int alc5632_pcm_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- 	/* set iface & srate */
--	snd_soc_write(codec, ALC5632_DAI_CONTROL, iface);
-+	snd_soc_component_write(component, ALC5632_DAI_CONTROL, iface);
- 	rate = params_rate(params);
--	coeff = get_coeff(codec, rate);
-+	coeff = get_coeff(component, rate);
- 	if (coeff < 0)
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+ 		/* Master serial port mode, with BCLK generated automatically */
+-		snd_soc_update_bits(codec, ES8328_MASTERMODE,
++		snd_soc_component_update_bits(component, ES8328_MASTERMODE,
+ 				    ES8328_MASTERMODE_MSC,
+ 				    ES8328_MASTERMODE_MSC);
+ 		es8328->master = true;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+ 		/* Slave serial port mode */
+-		snd_soc_update_bits(codec, ES8328_MASTERMODE,
++		snd_soc_component_update_bits(component, ES8328_MASTERMODE,
+ 				    ES8328_MASTERMODE_MSC, 0);
+ 		es8328->master = false;
+ 		break;
+@@ -634,15 +634,15 @@ static int es8328_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	if ((fmt & SND_SOC_DAIFMT_INV_MASK) != SND_SOC_DAIFMT_NB_NF)
  		return -EINVAL;
  
- 	coeff = coeff_div[coeff].regvalue;
--	snd_soc_write(codec, ALC5632_DAC_CLK_CTRL1, coeff);
-+	snd_soc_component_write(component, ALC5632_DAC_CLK_CTRL1, coeff);
+-	snd_soc_update_bits(codec, ES8328_DACCONTROL1,
++	snd_soc_component_update_bits(component, ES8328_DACCONTROL1,
+ 			ES8328_DACCONTROL1_DACFORMAT_MASK, dac_mode);
+-	snd_soc_update_bits(codec, ES8328_ADCCONTROL4,
++	snd_soc_component_update_bits(component, ES8328_ADCCONTROL4,
+ 			ES8328_ADCCONTROL4_ADCFORMAT_MASK, adc_mode);
  
  	return 0;
  }
  
- static int alc5632_mute(struct snd_soc_dai *dai, int mute)
- {
--	struct snd_soc_codec *codec = dai->codec;
-+	struct snd_soc_component *component = dai->component;
- 	u16 hp_mute = ALC5632_MISC_HP_DEPOP_MUTE_L
- 						|ALC5632_MISC_HP_DEPOP_MUTE_R;
--	u16 mute_reg = snd_soc_read(codec, ALC5632_MISC_CTRL) & ~hp_mute;
-+	u16 mute_reg = snd_soc_component_read32(component, ALC5632_MISC_CTRL) & ~hp_mute;
- 
- 	if (mute)
- 		mute_reg |= hp_mute;
- 
--	return snd_soc_write(codec, ALC5632_MISC_CTRL, mute_reg);
-+	return snd_soc_component_write(component, ALC5632_MISC_CTRL, mute_reg);
- }
- 
- #define ALC5632_ADD2_POWER_EN (ALC5632_PWR_ADD2_VREF)
-@@ -929,73 +929,73 @@ static int alc5632_mute(struct snd_soc_dai *dai, int mute)
- 		| ALC5632_PWR_ADD1_HP_OUT_ENH_AMP \
- 		| ALC5632_PWR_ADD1_MAIN_BIAS)
- 
--static void enable_power_depop(struct snd_soc_codec *codec)
-+static void enable_power_depop(struct snd_soc_component *component)
- {
--	snd_soc_update_bits(codec, ALC5632_PWR_MANAG_ADD1,
-+	snd_soc_component_update_bits(component, ALC5632_PWR_MANAG_ADD1,
- 				ALC5632_PWR_ADD1_SOFTGEN_EN,
- 				ALC5632_PWR_ADD1_SOFTGEN_EN);
- 
--	snd_soc_update_bits(codec, ALC5632_PWR_MANAG_ADD3,
-+	snd_soc_component_update_bits(component, ALC5632_PWR_MANAG_ADD3,
- 				ALC5632_ADD3_POWER_EN,
- 				ALC5632_ADD3_POWER_EN);
- 
--	snd_soc_update_bits(codec, ALC5632_MISC_CTRL,
-+	snd_soc_component_update_bits(component, ALC5632_MISC_CTRL,
- 				ALC5632_MISC_HP_DEPOP_MODE2_EN,
- 				ALC5632_MISC_HP_DEPOP_MODE2_EN);
- 
- 	/* "normal" mode: 0 @ 26 */
- 	/* set all PR0-7 mixers to 0 */
--	snd_soc_update_bits(codec, ALC5632_PWR_DOWN_CTRL_STATUS,
-+	snd_soc_component_update_bits(component, ALC5632_PWR_DOWN_CTRL_STATUS,
- 				ALC5632_PWR_DOWN_CTRL_STATUS_MASK,
- 				0);
- 
- 	msleep(500);
- 
--	snd_soc_update_bits(codec, ALC5632_PWR_MANAG_ADD2,
-+	snd_soc_component_update_bits(component, ALC5632_PWR_MANAG_ADD2,
- 				ALC5632_ADD2_POWER_EN,
- 				ALC5632_ADD2_POWER_EN);
- 
--	snd_soc_update_bits(codec, ALC5632_PWR_MANAG_ADD1,
-+	snd_soc_component_update_bits(component, ALC5632_PWR_MANAG_ADD1,
- 				ALC5632_ADD1_POWER_EN,
- 				ALC5632_ADD1_POWER_EN);
- 
- 	/* disable HP Depop2 */
--	snd_soc_update_bits(codec, ALC5632_MISC_CTRL,
-+	snd_soc_component_update_bits(component, ALC5632_MISC_CTRL,
- 				ALC5632_MISC_HP_DEPOP_MODE2_EN,
- 				0);
- 
- }
- 
--static int alc5632_set_bias_level(struct snd_soc_codec *codec,
-+static int alc5632_set_bias_level(struct snd_soc_component *component,
- 				      enum snd_soc_bias_level level)
+-static int es8328_set_bias_level(struct snd_soc_codec *codec,
++static int es8328_set_bias_level(struct snd_soc_component *component,
+ 				 enum snd_soc_bias_level level)
  {
  	switch (level) {
- 	case SND_SOC_BIAS_ON:
--		enable_power_depop(codec);
-+		enable_power_depop(component);
- 		break;
+@@ -651,8 +651,8 @@ static int es8328_set_bias_level(struct snd_soc_codec *codec,
+ 
  	case SND_SOC_BIAS_PREPARE:
+ 		/* VREF, VMID=2x50k, digital enabled */
+-		snd_soc_write(codec, ES8328_CHIPPOWER, 0);
+-		snd_soc_update_bits(codec, ES8328_CONTROL1,
++		snd_soc_component_write(component, ES8328_CHIPPOWER, 0);
++		snd_soc_component_update_bits(component, ES8328_CONTROL1,
+ 				ES8328_CONTROL1_VMIDSEL_MASK |
+ 				ES8328_CONTROL1_ENREF,
+ 				ES8328_CONTROL1_VMIDSEL_50k |
+@@ -660,8 +660,8 @@ static int es8328_set_bias_level(struct snd_soc_codec *codec,
  		break;
+ 
  	case SND_SOC_BIAS_STANDBY:
- 		/* everything off except vref/vmid, */
--		snd_soc_update_bits(codec, ALC5632_PWR_MANAG_ADD1,
-+		snd_soc_component_update_bits(component, ALC5632_PWR_MANAG_ADD1,
- 				ALC5632_PWR_MANAG_ADD1_MASK,
- 				ALC5632_PWR_ADD1_MAIN_BIAS);
--		snd_soc_update_bits(codec, ALC5632_PWR_MANAG_ADD2,
-+		snd_soc_component_update_bits(component, ALC5632_PWR_MANAG_ADD2,
- 				ALC5632_PWR_MANAG_ADD2_MASK,
- 				ALC5632_PWR_ADD2_VREF);
- 		/* "normal" mode: 0 @ 26 */
--		snd_soc_update_bits(codec, ALC5632_PWR_DOWN_CTRL_STATUS,
-+		snd_soc_component_update_bits(component, ALC5632_PWR_DOWN_CTRL_STATUS,
- 				ALC5632_PWR_DOWN_CTRL_STATUS_MASK,
- 				0xffff ^ (ALC5632_PWR_VREF_PR3
- 				| ALC5632_PWR_VREF_PR2));
+-		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
+-			snd_soc_update_bits(codec, ES8328_CONTROL1,
++		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
++			snd_soc_component_update_bits(component, ES8328_CONTROL1,
+ 					ES8328_CONTROL1_VMIDSEL_MASK |
+ 					ES8328_CONTROL1_ENREF,
+ 					ES8328_CONTROL1_VMIDSEL_5k |
+@@ -671,12 +671,12 @@ static int es8328_set_bias_level(struct snd_soc_codec *codec,
+ 			msleep(100);
+ 		}
+ 
+-		snd_soc_write(codec, ES8328_CONTROL2,
++		snd_soc_component_write(component, ES8328_CONTROL2,
+ 				ES8328_CONTROL2_OVERCURRENT_ON |
+ 				ES8328_CONTROL2_THERMAL_SHUTDOWN_ON);
+ 
+ 		/* VREF, VMID=2*500k, digital stopped */
+-		snd_soc_update_bits(codec, ES8328_CONTROL1,
++		snd_soc_component_update_bits(component, ES8328_CONTROL1,
+ 				ES8328_CONTROL1_VMIDSEL_MASK |
+ 				ES8328_CONTROL1_ENREF,
+ 				ES8328_CONTROL1_VMIDSEL_500k |
+@@ -684,7 +684,7 @@ static int es8328_set_bias_level(struct snd_soc_codec *codec,
  		break;
+ 
  	case SND_SOC_BIAS_OFF:
- 		/* everything off, dac mute, inactive */
--		snd_soc_update_bits(codec, ALC5632_PWR_MANAG_ADD2,
-+		snd_soc_component_update_bits(component, ALC5632_PWR_MANAG_ADD2,
- 				ALC5632_PWR_MANAG_ADD2_MASK, 0);
--		snd_soc_update_bits(codec, ALC5632_PWR_MANAG_ADD3,
-+		snd_soc_component_update_bits(component, ALC5632_PWR_MANAG_ADD3,
- 				ALC5632_PWR_MANAG_ADD3_MASK, 0);
--		snd_soc_update_bits(codec, ALC5632_PWR_MANAG_ADD1,
-+		snd_soc_component_update_bits(component, ALC5632_PWR_MANAG_ADD1,
- 				ALC5632_PWR_MANAG_ADD1_MASK, 0);
- 		break;
- 	}
-@@ -1038,9 +1038,9 @@ static struct snd_soc_dai_driver alc5632_dai = {
+-		snd_soc_update_bits(codec, ES8328_CONTROL1,
++		snd_soc_component_update_bits(component, ES8328_CONTROL1,
+ 				ES8328_CONTROL1_VMIDSEL_MASK |
+ 				ES8328_CONTROL1_ENREF,
+ 				0);
+@@ -721,80 +721,80 @@ static struct snd_soc_dai_driver es8328_dai = {
+ 	.symmetric_rates = 1,
  };
  
- #ifdef CONFIG_PM
--static int alc5632_resume(struct snd_soc_codec *codec)
-+static int alc5632_resume(struct snd_soc_component *component)
+-static int es8328_suspend(struct snd_soc_codec *codec)
++static int es8328_suspend(struct snd_soc_component *component)
  {
--	struct alc5632_priv *alc5632 = snd_soc_codec_get_drvdata(codec);
-+	struct alc5632_priv *alc5632 = snd_soc_component_get_drvdata(component);
+ 	struct es8328_priv *es8328;
+ 	int ret;
  
- 	regcache_sync(alc5632->regmap);
+-	es8328 = snd_soc_codec_get_drvdata(codec);
++	es8328 = snd_soc_component_get_drvdata(component);
  
-@@ -1050,13 +1050,13 @@ static int alc5632_resume(struct snd_soc_codec *codec)
- #define	alc5632_resume	NULL
- #endif
+ 	clk_disable_unprepare(es8328->clk);
  
--static int alc5632_probe(struct snd_soc_codec *codec)
-+static int alc5632_probe(struct snd_soc_component *component)
- {
--	struct alc5632_priv *alc5632 = snd_soc_codec_get_drvdata(codec);
-+	struct alc5632_priv *alc5632 = snd_soc_component_get_drvdata(component);
- 
- 	switch (alc5632->id) {
- 	case 0x5c:
--		snd_soc_add_codec_controls(codec, alc5632_vol_snd_controls,
-+		snd_soc_add_component_controls(component, alc5632_vol_snd_controls,
- 			ARRAY_SIZE(alc5632_vol_snd_controls));
- 		break;
- 	default:
-@@ -1066,20 +1066,21 @@ static int alc5632_probe(struct snd_soc_codec *codec)
+ 	ret = regulator_bulk_disable(ARRAY_SIZE(es8328->supplies),
+ 			es8328->supplies);
+ 	if (ret) {
+-		dev_err(codec->dev, "unable to disable regulators\n");
++		dev_err(component->dev, "unable to disable regulators\n");
+ 		return ret;
+ 	}
  	return 0;
  }
  
--static const struct snd_soc_codec_driver soc_codec_device_alc5632 = {
--	.probe = alc5632_probe,
--	.resume = alc5632_resume,
--	.set_bias_level = alc5632_set_bias_level,
+-static int es8328_resume(struct snd_soc_codec *codec)
++static int es8328_resume(struct snd_soc_component *component)
+ {
+-	struct regmap *regmap = dev_get_regmap(codec->dev, NULL);
++	struct regmap *regmap = dev_get_regmap(component->dev, NULL);
+ 	struct es8328_priv *es8328;
+ 	int ret;
+ 
+-	es8328 = snd_soc_codec_get_drvdata(codec);
++	es8328 = snd_soc_component_get_drvdata(component);
+ 
+ 	ret = clk_prepare_enable(es8328->clk);
+ 	if (ret) {
+-		dev_err(codec->dev, "unable to enable clock\n");
++		dev_err(component->dev, "unable to enable clock\n");
+ 		return ret;
+ 	}
+ 
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(es8328->supplies),
+ 					es8328->supplies);
+ 	if (ret) {
+-		dev_err(codec->dev, "unable to enable regulators\n");
++		dev_err(component->dev, "unable to enable regulators\n");
+ 		return ret;
+ 	}
+ 
+ 	regcache_mark_dirty(regmap);
+ 	ret = regcache_sync(regmap);
+ 	if (ret) {
+-		dev_err(codec->dev, "unable to sync regcache\n");
++		dev_err(component->dev, "unable to sync regcache\n");
+ 		return ret;
+ 	}
+ 
+ 	return 0;
+ }
+ 
+-static int es8328_codec_probe(struct snd_soc_codec *codec)
++static int es8328_component_probe(struct snd_soc_component *component)
+ {
+ 	struct es8328_priv *es8328;
+ 	int ret;
+ 
+-	es8328 = snd_soc_codec_get_drvdata(codec);
++	es8328 = snd_soc_component_get_drvdata(component);
+ 
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(es8328->supplies),
+ 					es8328->supplies);
+ 	if (ret) {
+-		dev_err(codec->dev, "unable to enable regulators\n");
++		dev_err(component->dev, "unable to enable regulators\n");
+ 		return ret;
+ 	}
+ 
+ 	/* Setup clocks */
+-	es8328->clk = devm_clk_get(codec->dev, NULL);
++	es8328->clk = devm_clk_get(component->dev, NULL);
+ 	if (IS_ERR(es8328->clk)) {
+-		dev_err(codec->dev, "codec clock missing or invalid\n");
++		dev_err(component->dev, "codec clock missing or invalid\n");
+ 		ret = PTR_ERR(es8328->clk);
+ 		goto clk_fail;
+ 	}
+ 
+ 	ret = clk_prepare_enable(es8328->clk);
+ 	if (ret) {
+-		dev_err(codec->dev, "unable to prepare codec clk\n");
++		dev_err(component->dev, "unable to prepare codec clk\n");
+ 		goto clk_fail;
+ 	}
+ 
+@@ -806,19 +806,17 @@ static int es8328_codec_probe(struct snd_soc_codec *codec)
+ 	return ret;
+ }
+ 
+-static int es8328_remove(struct snd_soc_codec *codec)
++static void es8328_remove(struct snd_soc_component *component)
+ {
+ 	struct es8328_priv *es8328;
+ 
+-	es8328 = snd_soc_codec_get_drvdata(codec);
++	es8328 = snd_soc_component_get_drvdata(component);
+ 
+ 	if (es8328->clk)
+ 		clk_disable_unprepare(es8328->clk);
+ 
+ 	regulator_bulk_disable(ARRAY_SIZE(es8328->supplies),
+ 			       es8328->supplies);
+-
+-	return 0;
+ }
+ 
+ const struct regmap_config es8328_regmap_config = {
+@@ -830,22 +828,23 @@ const struct regmap_config es8328_regmap_config = {
+ };
+ EXPORT_SYMBOL_GPL(es8328_regmap_config);
+ 
+-static const struct snd_soc_codec_driver es8328_codec_driver = {
+-	.probe		  = es8328_codec_probe,
+-	.suspend	  = es8328_suspend,
+-	.resume		  = es8328_resume,
+-	.remove		  = es8328_remove,
+-	.set_bias_level	  = es8328_set_bias_level,
 -	.suspend_bias_off = true,
 -
 -	.component_driver = {
--		.controls		= alc5632_snd_controls,
--		.num_controls		= ARRAY_SIZE(alc5632_snd_controls),
--		.dapm_widgets		= alc5632_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(alc5632_dapm_widgets),
--		.dapm_routes		= alc5632_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(alc5632_dapm_routes),
+-		.controls		= es8328_snd_controls,
+-		.num_controls		= ARRAY_SIZE(es8328_snd_controls),
+-		.dapm_widgets		= es8328_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(es8328_dapm_widgets),
+-		.dapm_routes		= es8328_dapm_routes,
+-		.num_dapm_routes	= ARRAY_SIZE(es8328_dapm_routes),
 -	},
-+static const struct snd_soc_component_driver soc_component_device_alc5632 = {
-+	.probe			= alc5632_probe,
-+	.resume			= alc5632_resume,
-+	.set_bias_level		= alc5632_set_bias_level,
-+	.controls		= alc5632_snd_controls,
-+	.num_controls		= ARRAY_SIZE(alc5632_snd_controls),
-+	.dapm_widgets		= alc5632_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(alc5632_dapm_widgets),
-+	.dapm_routes		= alc5632_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(alc5632_dapm_routes),
++static const struct snd_soc_component_driver es8328_component_driver = {
++	.probe			= es8328_component_probe,
++	.remove			= es8328_remove,
++	.suspend		= es8328_suspend,
++	.resume			= es8328_resume,
++	.set_bias_level		= es8328_set_bias_level,
++	.controls		= es8328_snd_controls,
++	.num_controls		= ARRAY_SIZE(es8328_snd_controls),
++	.dapm_widgets		= es8328_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(es8328_dapm_widgets),
++	.dapm_routes		= es8328_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(es8328_dapm_routes),
 +	.suspend_bias_off	= 1,
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
@@ -398,41 +519,17 @@ index adb80d8719bd..08034a6d4c5a 100644
 +	.non_legacy_dai_naming	= 1,
  };
  
- static const struct regmap_config alc5632_regmap = {
-@@ -1151,23 +1152,17 @@ static int alc5632_i2c_probe(struct i2c_client *client,
- 		return -EINVAL;
- 	}
+ int es8328_probe(struct device *dev, struct regmap *regmap)
+@@ -875,8 +874,8 @@ int es8328_probe(struct device *dev, struct regmap *regmap)
  
--	ret = snd_soc_register_codec(&client->dev,
--		&soc_codec_device_alc5632, &alc5632_dai, 1);
-+	ret = devm_snd_soc_register_component(&client->dev,
-+		&soc_component_device_alc5632, &alc5632_dai, 1);
+ 	dev_set_drvdata(dev, es8328);
  
- 	if (ret < 0) {
--		dev_err(&client->dev, "Failed to register codec: %d\n", ret);
-+		dev_err(&client->dev, "Failed to register component: %d\n", ret);
- 		return ret;
- 	}
- 
- 	return ret;
+-	return snd_soc_register_codec(dev,
+-			&es8328_codec_driver, &es8328_dai, 1);
++	return devm_snd_soc_register_component(dev,
++			&es8328_component_driver, &es8328_dai, 1);
  }
- 
--static int alc5632_i2c_remove(struct i2c_client *client)
--{
--	snd_soc_unregister_codec(&client->dev);
--	return 0;
--}
--
- static const struct i2c_device_id alc5632_i2c_table[] = {
- 	{"alc5632", 0x5c},
- 	{}
-@@ -1187,7 +1182,6 @@ static struct i2c_driver alc5632_i2c_driver = {
- 		.of_match_table = of_match_ptr(alc5632_of_match),
- 	},
- 	.probe = alc5632_i2c_probe,
--	.remove =  alc5632_i2c_remove,
- 	.id_table = alc5632_i2c_table,
- };
+ EXPORT_SYMBOL_GPL(es8328_probe);
  
 -- 
 2.16.1
