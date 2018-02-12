@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42l51: replace codec to component" to
+Subject: Applied "ASoC: cs42l56: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:43:16 +0000
-Message-ID: <E1elDS0-00052U-8i@debutante>
-References: <877es11fm8.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:43:29 +0000
+Message-ID: <E1elDSD-00053k-0u@debutante>
+References: <878tch1fn9.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 909D4267864
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:43:18 +0100 (CET)
-In-Reply-To: <877es11fm8.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 496CB26787B
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:43:31 +0100 (CET)
+In-Reply-To: <878tch1fn9.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs42l51: replace codec to component
+   ASoC: cs42l56: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 1fa49856cbc8f4ada62f62f30c3c96038d08f24c Mon Sep 17 00:00:00 2001
+>From e48f7466f9d93232da3f33ca722aa23a0a892f9e Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 03:59:02 +0000
-Subject: [PATCH] ASoC: cs42l51: replace codec to component
+Date: Mon, 29 Jan 2018 03:58:25 +0000
+Subject: [PATCH] ASoC: cs42l56: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,264 +70,385 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42l51-i2c.c |  8 -----
- sound/soc/codecs/cs42l51.c     | 81 +++++++++++++++++++++---------------------
- 2 files changed, 41 insertions(+), 48 deletions(-)
+ sound/soc/codecs/cs42l56.c | 158 ++++++++++++++++++++++-----------------------
+ 1 file changed, 78 insertions(+), 80 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l51-i2c.c b/sound/soc/codecs/cs42l51-i2c.c
-index 9bad478474fa..4b5731a41876 100644
---- a/sound/soc/codecs/cs42l51-i2c.c
-+++ b/sound/soc/codecs/cs42l51-i2c.c
-@@ -35,20 +35,12 @@ static int cs42l51_i2c_probe(struct i2c_client *i2c,
- 	return cs42l51_probe(&i2c->dev, devm_regmap_init_i2c(i2c, &config));
+diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
+index fd7b8d32c2b2..a5c8736fad77 100644
+--- a/sound/soc/codecs/cs42l56.c
++++ b/sound/soc/codecs/cs42l56.c
+@@ -45,7 +45,7 @@ static const char *const cs42l56_supply_names[CS42L56_NUM_SUPPLIES] = {
+ 
+ struct  cs42l56_private {
+ 	struct regmap *regmap;
+-	struct snd_soc_codec *codec;
++	struct snd_soc_component *component;
+ 	struct device *dev;
+ 	struct cs42l56_platform_data pdata;
+ 	struct regulator_bulk_data supplies[CS42L56_NUM_SUPPLIES];
+@@ -726,8 +726,8 @@ static int cs42l56_get_mclk_ratio(int mclk, int rate)
+ static int cs42l56_set_sysclk(struct snd_soc_dai *codec_dai,
+ 			int clk_id, unsigned int freq, int dir)
+ {
+-	struct snd_soc_codec *codec = codec_dai->codec;
+-	struct cs42l56_private *cs42l56 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = codec_dai->component;
++	struct cs42l56_private *cs42l56 = snd_soc_component_get_drvdata(component);
+ 
+ 	switch (freq) {
+ 	case CS42L56_MCLK_5P6448MHZ:
+@@ -753,10 +753,10 @@ static int cs42l56_set_sysclk(struct snd_soc_dai *codec_dai,
+ 	}
+ 	cs42l56->mclk = freq;
+ 
+-	snd_soc_update_bits(codec, CS42L56_CLKCTL_1,
++	snd_soc_component_update_bits(component, CS42L56_CLKCTL_1,
+ 			    CS42L56_MCLK_PREDIV_MASK,
+ 				cs42l56->mclk_prediv);
+-	snd_soc_update_bits(codec, CS42L56_CLKCTL_1,
++	snd_soc_component_update_bits(component, CS42L56_CLKCTL_1,
+ 			    CS42L56_MCLK_DIV2_MASK,
+ 				cs42l56->mclk_div2);
+ 
+@@ -765,8 +765,8 @@ static int cs42l56_set_sysclk(struct snd_soc_dai *codec_dai,
+ 
+ static int cs42l56_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ {
+-	struct snd_soc_codec *codec = codec_dai->codec;
+-	struct cs42l56_private *cs42l56 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = codec_dai->component;
++	struct cs42l56_private *cs42l56 = snd_soc_component_get_drvdata(component);
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+@@ -803,22 +803,22 @@ static int cs42l56_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 		return -EINVAL;
+ 	}
+ 
+-	snd_soc_update_bits(codec, CS42L56_CLKCTL_1,
++	snd_soc_component_update_bits(component, CS42L56_CLKCTL_1,
+ 			    CS42L56_MS_MODE_MASK, cs42l56->iface);
+-	snd_soc_update_bits(codec, CS42L56_SERIAL_FMT,
++	snd_soc_component_update_bits(component, CS42L56_SERIAL_FMT,
+ 			    CS42L56_DIG_FMT_MASK, cs42l56->iface_fmt);
+-	snd_soc_update_bits(codec, CS42L56_CLKCTL_1,
++	snd_soc_component_update_bits(component, CS42L56_CLKCTL_1,
+ 			    CS42L56_SCLK_INV_MASK, cs42l56->iface_inv);
+ 	return 0;
  }
  
--static int cs42l51_i2c_remove(struct i2c_client *i2c)
--{
--	snd_soc_unregister_codec(&i2c->dev);
+ static int cs42l56_digital_mute(struct snd_soc_dai *dai, int mute)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
++	struct snd_soc_component *component = dai->component;
+ 
+ 	if (mute) {
+ 		/* Hit the DSP Mixer first */
+-		snd_soc_update_bits(codec, CS42L56_DSP_MUTE_CTL,
++		snd_soc_component_update_bits(component, CS42L56_DSP_MUTE_CTL,
+ 				    CS42L56_ADCAMIX_MUTE_MASK |
+ 				    CS42L56_ADCBMIX_MUTE_MASK |
+ 				    CS42L56_PCMAMIX_MUTE_MASK |
+@@ -827,21 +827,21 @@ static int cs42l56_digital_mute(struct snd_soc_dai *dai, int mute)
+ 				    CS42L56_MSTA_MUTE_MASK,
+ 				    CS42L56_MUTE_ALL);
+ 		/* Mute ADC's */
+-		snd_soc_update_bits(codec, CS42L56_MISC_ADC_CTL,
++		snd_soc_component_update_bits(component, CS42L56_MISC_ADC_CTL,
+ 				    CS42L56_ADCA_MUTE_MASK |
+ 				    CS42L56_ADCB_MUTE_MASK,
+ 				    CS42L56_MUTE_ALL);
+ 		/* HP And LO */
+-		snd_soc_update_bits(codec, CS42L56_HPA_VOLUME,
++		snd_soc_component_update_bits(component, CS42L56_HPA_VOLUME,
+ 				    CS42L56_HP_MUTE_MASK, CS42L56_MUTE_ALL);
+-		snd_soc_update_bits(codec, CS42L56_HPB_VOLUME,
++		snd_soc_component_update_bits(component, CS42L56_HPB_VOLUME,
+ 				    CS42L56_HP_MUTE_MASK, CS42L56_MUTE_ALL);
+-		snd_soc_update_bits(codec, CS42L56_LOA_VOLUME,
++		snd_soc_component_update_bits(component, CS42L56_LOA_VOLUME,
+ 				    CS42L56_LO_MUTE_MASK, CS42L56_MUTE_ALL);
+-		snd_soc_update_bits(codec, CS42L56_LOB_VOLUME,
++		snd_soc_component_update_bits(component, CS42L56_LOB_VOLUME,
+ 				    CS42L56_LO_MUTE_MASK, CS42L56_MUTE_ALL);
+ 	} else {
+-		snd_soc_update_bits(codec, CS42L56_DSP_MUTE_CTL,
++		snd_soc_component_update_bits(component, CS42L56_DSP_MUTE_CTL,
+ 				    CS42L56_ADCAMIX_MUTE_MASK |
+ 				    CS42L56_ADCBMIX_MUTE_MASK |
+ 				    CS42L56_PCMAMIX_MUTE_MASK |
+@@ -850,18 +850,18 @@ static int cs42l56_digital_mute(struct snd_soc_dai *dai, int mute)
+ 				    CS42L56_MSTA_MUTE_MASK,
+ 				    CS42L56_UNMUTE);
+ 
+-		snd_soc_update_bits(codec, CS42L56_MISC_ADC_CTL,
++		snd_soc_component_update_bits(component, CS42L56_MISC_ADC_CTL,
+ 				    CS42L56_ADCA_MUTE_MASK |
+ 				    CS42L56_ADCB_MUTE_MASK,
+ 				    CS42L56_UNMUTE);
+ 
+-		snd_soc_update_bits(codec, CS42L56_HPA_VOLUME,
++		snd_soc_component_update_bits(component, CS42L56_HPA_VOLUME,
+ 				    CS42L56_HP_MUTE_MASK, CS42L56_UNMUTE);
+-		snd_soc_update_bits(codec, CS42L56_HPB_VOLUME,
++		snd_soc_component_update_bits(component, CS42L56_HPB_VOLUME,
+ 				    CS42L56_HP_MUTE_MASK, CS42L56_UNMUTE);
+-		snd_soc_update_bits(codec, CS42L56_LOA_VOLUME,
++		snd_soc_component_update_bits(component, CS42L56_LOA_VOLUME,
+ 				    CS42L56_LO_MUTE_MASK, CS42L56_UNMUTE);
+-		snd_soc_update_bits(codec, CS42L56_LOB_VOLUME,
++		snd_soc_component_update_bits(component, CS42L56_LOB_VOLUME,
+ 				    CS42L56_LO_MUTE_MASK, CS42L56_UNMUTE);
+ 	}
+ 	return 0;
+@@ -871,39 +871,39 @@ static int cs42l56_pcm_hw_params(struct snd_pcm_substream *substream,
+ 				     struct snd_pcm_hw_params *params,
+ 				     struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct cs42l56_private *cs42l56 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct cs42l56_private *cs42l56 = snd_soc_component_get_drvdata(component);
+ 	int ratio;
+ 
+ 	ratio = cs42l56_get_mclk_ratio(cs42l56->mclk, params_rate(params));
+ 	if (ratio >= 0) {
+-		snd_soc_update_bits(codec, CS42L56_CLKCTL_2,
++		snd_soc_component_update_bits(component, CS42L56_CLKCTL_2,
+ 				    CS42L56_CLK_RATIO_MASK, ratio);
+ 	} else {
+-		dev_err(codec->dev, "unsupported mclk/sclk/lrclk ratio\n");
++		dev_err(component->dev, "unsupported mclk/sclk/lrclk ratio\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	return 0;
+ }
+ 
+-static int cs42l56_set_bias_level(struct snd_soc_codec *codec,
++static int cs42l56_set_bias_level(struct snd_soc_component *component,
+ 					enum snd_soc_bias_level level)
+ {
+-	struct cs42l56_private *cs42l56 = snd_soc_codec_get_drvdata(codec);
++	struct cs42l56_private *cs42l56 = snd_soc_component_get_drvdata(component);
+ 	int ret;
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+ 		break;
+ 	case SND_SOC_BIAS_PREPARE:
+-		snd_soc_update_bits(codec, CS42L56_CLKCTL_1,
++		snd_soc_component_update_bits(component, CS42L56_CLKCTL_1,
+ 				    CS42L56_MCLK_DIS_MASK, 0);
+-		snd_soc_update_bits(codec, CS42L56_PWRCTL_1,
++		snd_soc_component_update_bits(component, CS42L56_PWRCTL_1,
+ 				    CS42L56_PDN_ALL_MASK, 0);
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
+-		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
++		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
+ 			regcache_cache_only(cs42l56->regmap, false);
+ 			regcache_sync(cs42l56->regmap);
+ 			ret = regulator_bulk_enable(ARRAY_SIZE(cs42l56->supplies),
+@@ -915,13 +915,13 @@ static int cs42l56_set_bias_level(struct snd_soc_codec *codec,
+ 				return ret;
+ 			}
+ 		}
+-		snd_soc_update_bits(codec, CS42L56_PWRCTL_1,
++		snd_soc_component_update_bits(component, CS42L56_PWRCTL_1,
+ 				    CS42L56_PDN_ALL_MASK, 1);
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+-		snd_soc_update_bits(codec, CS42L56_PWRCTL_1,
++		snd_soc_component_update_bits(component, CS42L56_PWRCTL_1,
+ 				    CS42L56_PDN_ALL_MASK, 1);
+-		snd_soc_update_bits(codec, CS42L56_CLKCTL_1,
++		snd_soc_component_update_bits(component, CS42L56_CLKCTL_1,
+ 				    CS42L56_MCLK_DIS_MASK, 1);
+ 		regcache_cache_only(cs42l56->regmap, true);
+ 		regulator_bulk_disable(ARRAY_SIZE(cs42l56->supplies),
+@@ -974,8 +974,8 @@ static void cs42l56_beep_work(struct work_struct *work)
+ {
+ 	struct cs42l56_private *cs42l56 =
+ 		container_of(work, struct cs42l56_private, beep_work);
+-	struct snd_soc_codec *codec = cs42l56->codec;
+-	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
++	struct snd_soc_component *component = cs42l56->component;
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+ 	int i;
+ 	int val = 0;
+ 	int best = 0;
+@@ -987,18 +987,18 @@ static void cs42l56_beep_work(struct work_struct *work)
+ 				best = i;
+ 		}
+ 
+-		dev_dbg(codec->dev, "Set beep rate %dHz for requested %dHz\n",
++		dev_dbg(component->dev, "Set beep rate %dHz for requested %dHz\n",
+ 			beep_freq[best], cs42l56->beep_rate);
+ 
+ 		val = (best << CS42L56_BEEP_RATE_SHIFT);
+ 
+ 		snd_soc_dapm_enable_pin(dapm, "Beep");
+ 	} else {
+-		dev_dbg(codec->dev, "Disabling beep\n");
++		dev_dbg(component->dev, "Disabling beep\n");
+ 		snd_soc_dapm_disable_pin(dapm, "Beep");
+ 	}
+ 
+-	snd_soc_update_bits(codec, CS42L56_BEEP_FREQ_ONTIME,
++	snd_soc_component_update_bits(component, CS42L56_BEEP_FREQ_ONTIME,
+ 			    CS42L56_BEEP_FREQ_MASK, val);
+ 
+ 	snd_soc_dapm_sync(dapm);
+@@ -1010,10 +1010,10 @@ static void cs42l56_beep_work(struct work_struct *work)
+ static int cs42l56_beep_event(struct input_dev *dev, unsigned int type,
+ 			     unsigned int code, int hz)
+ {
+-	struct snd_soc_codec *codec = input_get_drvdata(dev);
+-	struct cs42l56_private *cs42l56 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = input_get_drvdata(dev);
++	struct cs42l56_private *cs42l56 = snd_soc_component_get_drvdata(component);
+ 
+-	dev_dbg(codec->dev, "Beep event %x %x\n", code, hz);
++	dev_dbg(component->dev, "Beep event %x %x\n", code, hz);
+ 
+ 	switch (code) {
+ 	case SND_BELL:
+@@ -1050,14 +1050,14 @@ static ssize_t cs42l56_beep_set(struct device *dev,
+ 
+ static DEVICE_ATTR(beep, 0200, NULL, cs42l56_beep_set);
+ 
+-static void cs42l56_init_beep(struct snd_soc_codec *codec)
++static void cs42l56_init_beep(struct snd_soc_component *component)
+ {
+-	struct cs42l56_private *cs42l56 = snd_soc_codec_get_drvdata(codec);
++	struct cs42l56_private *cs42l56 = snd_soc_component_get_drvdata(component);
+ 	int ret;
+ 
+-	cs42l56->beep = devm_input_allocate_device(codec->dev);
++	cs42l56->beep = devm_input_allocate_device(component->dev);
+ 	if (!cs42l56->beep) {
+-		dev_err(codec->dev, "Failed to allocate beep device\n");
++		dev_err(component->dev, "Failed to allocate beep device\n");
+ 		return;
+ 	}
+ 
+@@ -1065,68 +1065,67 @@ static void cs42l56_init_beep(struct snd_soc_codec *codec)
+ 	cs42l56->beep_rate = 0;
+ 
+ 	cs42l56->beep->name = "CS42L56 Beep Generator";
+-	cs42l56->beep->phys = dev_name(codec->dev);
++	cs42l56->beep->phys = dev_name(component->dev);
+ 	cs42l56->beep->id.bustype = BUS_I2C;
+ 
+ 	cs42l56->beep->evbit[0] = BIT_MASK(EV_SND);
+ 	cs42l56->beep->sndbit[0] = BIT_MASK(SND_BELL) | BIT_MASK(SND_TONE);
+ 	cs42l56->beep->event = cs42l56_beep_event;
+-	cs42l56->beep->dev.parent = codec->dev;
+-	input_set_drvdata(cs42l56->beep, codec);
++	cs42l56->beep->dev.parent = component->dev;
++	input_set_drvdata(cs42l56->beep, component);
+ 
+ 	ret = input_register_device(cs42l56->beep);
+ 	if (ret != 0) {
+ 		cs42l56->beep = NULL;
+-		dev_err(codec->dev, "Failed to register beep device\n");
++		dev_err(component->dev, "Failed to register beep device\n");
+ 	}
+ 
+-	ret = device_create_file(codec->dev, &dev_attr_beep);
++	ret = device_create_file(component->dev, &dev_attr_beep);
+ 	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to create keyclick file: %d\n",
++		dev_err(component->dev, "Failed to create keyclick file: %d\n",
+ 			ret);
+ 	}
+ }
+ 
+-static void cs42l56_free_beep(struct snd_soc_codec *codec)
++static void cs42l56_free_beep(struct snd_soc_component *component)
+ {
+-	struct cs42l56_private *cs42l56 = snd_soc_codec_get_drvdata(codec);
++	struct cs42l56_private *cs42l56 = snd_soc_component_get_drvdata(component);
+ 
+-	device_remove_file(codec->dev, &dev_attr_beep);
++	device_remove_file(component->dev, &dev_attr_beep);
+ 	cancel_work_sync(&cs42l56->beep_work);
+ 	cs42l56->beep = NULL;
+ 
+-	snd_soc_update_bits(codec, CS42L56_BEEP_TONE_CFG,
++	snd_soc_component_update_bits(component, CS42L56_BEEP_TONE_CFG,
+ 			    CS42L56_BEEP_EN_MASK, 0);
+ }
+ 
+-static int cs42l56_probe(struct snd_soc_codec *codec)
++static int cs42l56_probe(struct snd_soc_component *component)
+ {
+-	cs42l56_init_beep(codec);
++	cs42l56_init_beep(component);
+ 
+ 	return 0;
+ }
+ 
+-static int cs42l56_remove(struct snd_soc_codec *codec)
++static void cs42l56_remove(struct snd_soc_component *component)
+ {
+-	cs42l56_free_beep(codec);
 -
 -	return 0;
--}
--
- static struct i2c_driver cs42l51_i2c_driver = {
- 	.driver = {
- 		.name = "cs42l51",
- 		.of_match_table = cs42l51_of_match,
- 	},
- 	.probe = cs42l51_i2c_probe,
--	.remove = cs42l51_i2c_remove,
- 	.id_table = cs42l51_i2c_id,
- };
- 
-diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index f8072f1897d4..5080d7a3c279 100644
---- a/sound/soc/codecs/cs42l51.c
-+++ b/sound/soc/codecs/cs42l51.c
-@@ -54,8 +54,8 @@ struct cs42l51_private {
- static int cs42l51_get_chan_mix(struct snd_kcontrol *kcontrol,
- 			struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	unsigned long value = snd_soc_read(codec, CS42L51_PCM_MIXER)&3;
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	unsigned long value = snd_soc_component_read32(component, CS42L51_PCM_MIXER)&3;
- 
- 	switch (value) {
- 	default:
-@@ -82,7 +82,7 @@ static int cs42l51_get_chan_mix(struct snd_kcontrol *kcontrol,
- static int cs42l51_set_chan_mix(struct snd_kcontrol *kcontrol,
- 			struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
- 	unsigned char val;
- 
- 	switch (ucontrol->value.enumerated.item[0]) {
-@@ -98,7 +98,7 @@ static int cs42l51_set_chan_mix(struct snd_kcontrol *kcontrol,
- 		break;
- 	}
- 
--	snd_soc_write(codec, CS42L51_PCM_MIXER, val);
-+	snd_soc_component_write(component, CS42L51_PCM_MIXER, val);
- 
- 	return 1;
- }
-@@ -153,17 +153,17 @@ static const struct snd_kcontrol_new cs42l51_snd_controls[] = {
- static int cs42l51_pdn_event(struct snd_soc_dapm_widget *w,
- 		struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMD:
--		snd_soc_update_bits(codec, CS42L51_POWER_CTL1,
-+		snd_soc_component_update_bits(component, CS42L51_POWER_CTL1,
- 				    CS42L51_POWER_CTL1_PDN,
- 				    CS42L51_POWER_CTL1_PDN);
- 		break;
- 	default:
- 	case SND_SOC_DAPM_POST_PMD:
--		snd_soc_update_bits(codec, CS42L51_POWER_CTL1,
-+		snd_soc_component_update_bits(component, CS42L51_POWER_CTL1,
- 				    CS42L51_POWER_CTL1_PDN, 0);
- 		break;
- 	}
-@@ -263,8 +263,8 @@ static const struct snd_soc_dapm_route cs42l51_routes[] = {
- static int cs42l51_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		unsigned int format)
- {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct cs42l51_private *cs42l51 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct cs42l51_private *cs42l51 = snd_soc_component_get_drvdata(component);
- 
- 	switch (format & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
-@@ -273,7 +273,7 @@ static int cs42l51_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		cs42l51->audio_mode = format & SND_SOC_DAIFMT_FORMAT_MASK;
- 		break;
- 	default:
--		dev_err(codec->dev, "invalid DAI format\n");
-+		dev_err(component->dev, "invalid DAI format\n");
- 		return -EINVAL;
- 	}
- 
-@@ -285,7 +285,7 @@ static int cs42l51_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		cs42l51->func = MODE_SLAVE_AUTO;
- 		break;
- 	default:
--		dev_err(codec->dev, "Unknown master/slave configuration\n");
-+		dev_err(component->dev, "Unknown master/slave configuration\n");
- 		return -EINVAL;
- 	}
- 
-@@ -326,8 +326,8 @@ static struct cs42l51_ratios slave_auto_ratios[] = {
- static int cs42l51_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 		int clk_id, unsigned int freq, int dir)
- {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct cs42l51_private *cs42l51 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct cs42l51_private *cs42l51 = snd_soc_component_get_drvdata(component);
- 
- 	cs42l51->mclk = freq;
- 	return 0;
-@@ -337,8 +337,8 @@ static int cs42l51_hw_params(struct snd_pcm_substream *substream,
- 		struct snd_pcm_hw_params *params,
- 		struct snd_soc_dai *dai)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct cs42l51_private *cs42l51 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct cs42l51_private *cs42l51 = snd_soc_component_get_drvdata(component);
- 	int ret;
- 	unsigned int i;
- 	unsigned int rate;
-@@ -370,12 +370,12 @@ static int cs42l51_hw_params(struct snd_pcm_substream *substream,
- 
- 	if (i == nr_ratios) {
- 		/* We did not find a matching ratio */
--		dev_err(codec->dev, "could not find matching ratio\n");
-+		dev_err(component->dev, "could not find matching ratio\n");
- 		return -EINVAL;
- 	}
- 
--	intf_ctl = snd_soc_read(codec, CS42L51_INTF_CTL);
--	power_ctl = snd_soc_read(codec, CS42L51_MIC_POWER_CTL);
-+	intf_ctl = snd_soc_component_read32(component, CS42L51_INTF_CTL);
-+	power_ctl = snd_soc_component_read32(component, CS42L51_MIC_POWER_CTL);
- 
- 	intf_ctl &= ~(CS42L51_INTF_CTL_MASTER | CS42L51_INTF_CTL_ADC_I2S
- 			| CS42L51_INTF_CTL_DAC_FORMAT(7));
-@@ -418,24 +418,24 @@ static int cs42l51_hw_params(struct snd_pcm_substream *substream,
- 			fmt = CS42L51_DAC_DIF_RJ24;
- 			break;
- 		default:
--			dev_err(codec->dev, "unknown format\n");
-+			dev_err(component->dev, "unknown format\n");
- 			return -EINVAL;
- 		}
- 		intf_ctl |= CS42L51_INTF_CTL_DAC_FORMAT(fmt);
- 		break;
- 	default:
--		dev_err(codec->dev, "unknown format\n");
-+		dev_err(component->dev, "unknown format\n");
- 		return -EINVAL;
- 	}
- 
- 	if (ratios[i].mclk)
- 		power_ctl |= CS42L51_MIC_POWER_CTL_MCLK_DIV2;
- 
--	ret = snd_soc_write(codec, CS42L51_INTF_CTL, intf_ctl);
-+	ret = snd_soc_component_write(component, CS42L51_INTF_CTL, intf_ctl);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = snd_soc_write(codec, CS42L51_MIC_POWER_CTL, power_ctl);
-+	ret = snd_soc_component_write(component, CS42L51_MIC_POWER_CTL, power_ctl);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -444,18 +444,18 @@ static int cs42l51_hw_params(struct snd_pcm_substream *substream,
- 
- static int cs42l51_dai_mute(struct snd_soc_dai *dai, int mute)
- {
--	struct snd_soc_codec *codec = dai->codec;
-+	struct snd_soc_component *component = dai->component;
- 	int reg;
- 	int mask = CS42L51_DAC_OUT_CTL_DACA_MUTE|CS42L51_DAC_OUT_CTL_DACB_MUTE;
- 
--	reg = snd_soc_read(codec, CS42L51_DAC_OUT_CTL);
-+	reg = snd_soc_component_read32(component, CS42L51_DAC_OUT_CTL);
- 
- 	if (mute)
- 		reg |= mask;
- 	else
- 		reg &= ~mask;
- 
--	return snd_soc_write(codec, CS42L51_DAC_OUT_CTL, reg);
-+	return snd_soc_component_write(component, CS42L51_DAC_OUT_CTL, reg);
++	cs42l56_free_beep(component);
  }
  
- static const struct snd_soc_dai_ops cs42l51_dai_ops = {
-@@ -484,7 +484,7 @@ static struct snd_soc_dai_driver cs42l51_dai = {
- 	.ops = &cs42l51_dai_ops,
- };
- 
--static int cs42l51_codec_probe(struct snd_soc_codec *codec)
-+static int cs42l51_component_probe(struct snd_soc_component *component)
- {
- 	int ret, reg;
- 
-@@ -497,24 +497,25 @@ static int cs42l51_codec_probe(struct snd_soc_codec *codec)
- 	 */
- 	reg = CS42L51_DAC_CTL_DATA_SEL(1)
- 		| CS42L51_DAC_CTL_AMUTE | CS42L51_DAC_CTL_DACSZ(0);
--	ret = snd_soc_write(codec, CS42L51_DAC_CTL, reg);
-+	ret = snd_soc_component_write(component, CS42L51_DAC_CTL, reg);
- 	if (ret < 0)
- 		return ret;
- 
- 	return 0;
- }
- 
--static const struct snd_soc_codec_driver soc_codec_device_cs42l51 = {
--	.probe = cs42l51_codec_probe,
+-static const struct snd_soc_codec_driver soc_codec_dev_cs42l56 = {
+-	.probe = cs42l56_probe,
+-	.remove = cs42l56_remove,
+-	.set_bias_level = cs42l56_set_bias_level,
+-	.suspend_bias_off = true,
 -
 -	.component_driver = {
--		.controls		= cs42l51_snd_controls,
--		.num_controls		= ARRAY_SIZE(cs42l51_snd_controls),
--		.dapm_widgets		= cs42l51_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(cs42l51_dapm_widgets),
--		.dapm_routes		= cs42l51_routes,
--		.num_dapm_routes	= ARRAY_SIZE(cs42l51_routes),
+-		.controls		= cs42l56_snd_controls,
+-		.num_controls		= ARRAY_SIZE(cs42l56_snd_controls),
+-		.dapm_widgets		= cs42l56_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(cs42l56_dapm_widgets),
+-		.dapm_routes		= cs42l56_audio_map,
+-		.num_dapm_routes	= ARRAY_SIZE(cs42l56_audio_map),
 -	},
-+static const struct snd_soc_component_driver soc_component_device_cs42l51 = {
-+	.probe			= cs42l51_component_probe,
-+	.controls		= cs42l51_snd_controls,
-+	.num_controls		= ARRAY_SIZE(cs42l51_snd_controls),
-+	.dapm_widgets		= cs42l51_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(cs42l51_dapm_widgets),
-+	.dapm_routes		= cs42l51_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(cs42l51_routes),
++static const struct snd_soc_component_driver soc_component_dev_cs42l56 = {
++	.probe			= cs42l56_probe,
++	.remove			= cs42l56_remove,
++	.set_bias_level		= cs42l56_set_bias_level,
++	.controls		= cs42l56_snd_controls,
++	.num_controls		= ARRAY_SIZE(cs42l56_snd_controls),
++	.dapm_widgets		= cs42l56_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(cs42l56_dapm_widgets),
++	.dapm_routes		= cs42l56_audio_map,
++	.num_dapm_routes	= ARRAY_SIZE(cs42l56_audio_map),
++	.suspend_bias_off	= 1,
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- const struct regmap_config cs42l51_regmap = {
-@@ -555,8 +556,8 @@ int cs42l51_probe(struct device *dev, struct regmap *regmap)
- 	dev_info(dev, "Cirrus Logic CS42L51, Revision: %02X\n",
- 		 val & CS42L51_CHIP_REV_MASK);
+ static const struct regmap_config cs42l56_regmap = {
+@@ -1315,8 +1314,8 @@ static int cs42l56_i2c_probe(struct i2c_client *i2c_client,
+ 				   CS42L56_ADAPT_PWR_MASK,
+ 				cs42l56->pdata.adaptive_pwr);
  
--	ret =  snd_soc_register_codec(dev,
--			&soc_codec_device_cs42l51, &cs42l51_dai, 1);
-+	ret = devm_snd_soc_register_component(dev,
-+			&soc_component_device_cs42l51, &cs42l51_dai, 1);
- error:
- 	return ret;
- }
+-	ret =  snd_soc_register_codec(&i2c_client->dev,
+-			&soc_codec_dev_cs42l56, &cs42l56_dai, 1);
++	ret =  devm_snd_soc_register_component(&i2c_client->dev,
++			&soc_component_dev_cs42l56, &cs42l56_dai, 1);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -1332,7 +1331,6 @@ static int cs42l56_i2c_remove(struct i2c_client *client)
+ {
+ 	struct cs42l56_private *cs42l56 = i2c_get_clientdata(client);
+ 
+-	snd_soc_unregister_codec(&client->dev);
+ 	regulator_bulk_disable(ARRAY_SIZE(cs42l56->supplies),
+ 			       cs42l56->supplies);
+ 	return 0;
 -- 
 2.16.1
