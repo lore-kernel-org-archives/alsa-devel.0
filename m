@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: uda134x: replace codec to component" to
+Subject: Applied "ASoC: si476x: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:34:08 +0000
-Message-ID: <E1elDJA-0003eZ-Ua@debutante>
-References: <878tchuvdr.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:34:13 +0000
+Message-ID: <E1elDJF-0003fn-PP@debutante>
+References: <87a7wxuvej.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C37C26767C
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:34:11 +0100 (CET)
-In-Reply-To: <878tchuvdr.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DFF41267683
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:34:15 +0100 (CET)
+In-Reply-To: <87a7wxuvej.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: uda134x: replace codec to component
+   ASoC: si476x: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 2ab7fb08fb0bd24841bd05a4e51a44b4672b34f9 Mon Sep 17 00:00:00 2001
+>From 8fcfe24c2345678000fab25bbd214025becf1154 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:45:43 +0000
-Subject: [PATCH] ASoC: uda134x: replace codec to component
+Date: Mon, 29 Jan 2018 04:45:14 +0000
+Subject: [PATCH] ASoC: si476x: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,198 +70,111 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/uda134x.c | 78 +++++++++++++++++++++-------------------------
- 1 file changed, 36 insertions(+), 42 deletions(-)
+ sound/soc/codecs/si476x.c | 42 +++++++++++++++++++-----------------------
+ 1 file changed, 19 insertions(+), 23 deletions(-)
 
-diff --git a/sound/soc/codecs/uda134x.c b/sound/soc/codecs/uda134x.c
-index 77c9cc4467b8..3c935a941129 100644
---- a/sound/soc/codecs/uda134x.c
-+++ b/sound/soc/codecs/uda134x.c
-@@ -110,9 +110,9 @@ static int uda134x_regmap_write(void *context, unsigned int reg,
+diff --git a/sound/soc/codecs/si476x.c b/sound/soc/codecs/si476x.c
+index 7b91ee267b4e..b779c2855c01 100644
+--- a/sound/soc/codecs/si476x.c
++++ b/sound/soc/codecs/si476x.c
+@@ -140,14 +140,14 @@ static int si476x_codec_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 
+ 	si476x_core_lock(core);
+ 
+-	err = snd_soc_update_bits(codec_dai->codec, SI476X_DIGITAL_IO_OUTPUT_FORMAT,
++	err = snd_soc_component_update_bits(codec_dai->component, SI476X_DIGITAL_IO_OUTPUT_FORMAT,
+ 				  SI476X_DIGITAL_IO_OUTPUT_FORMAT_MASK,
+ 				  format);
+ 
+ 	si476x_core_unlock(core);
+ 
+ 	if (err < 0) {
+-		dev_err(codec_dai->codec->dev, "Failed to set output format\n");
++		dev_err(codec_dai->component->dev, "Failed to set output format\n");
+ 		return err;
+ 	}
+ 
+@@ -163,7 +163,7 @@ static int si476x_codec_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	rate = params_rate(params);
+ 	if (rate < 32000 || rate > 48000) {
+-		dev_err(dai->codec->dev, "Rate: %d is not supported\n", rate);
++		dev_err(dai->component->dev, "Rate: %d is not supported\n", rate);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -186,19 +186,19 @@ static int si476x_codec_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	si476x_core_lock(core);
+ 
+-	err = snd_soc_write(dai->codec, SI476X_DIGITAL_IO_OUTPUT_SAMPLE_RATE,
++	err = snd_soc_component_write(dai->component, SI476X_DIGITAL_IO_OUTPUT_SAMPLE_RATE,
+ 			    rate);
+ 	if (err < 0) {
+-		dev_err(dai->codec->dev, "Failed to set sample rate\n");
++		dev_err(dai->component->dev, "Failed to set sample rate\n");
+ 		goto out;
+ 	}
+ 
+-	err = snd_soc_update_bits(dai->codec, SI476X_DIGITAL_IO_OUTPUT_FORMAT,
++	err = snd_soc_component_update_bits(dai->component, SI476X_DIGITAL_IO_OUTPUT_FORMAT,
+ 				  SI476X_DIGITAL_IO_OUTPUT_WIDTH_MASK,
+ 				  (width << SI476X_DIGITAL_IO_SLOT_SIZE_SHIFT) |
+ 				  (width << SI476X_DIGITAL_IO_SAMPLE_SIZE_SHIFT));
+ 	if (err < 0) {
+-		dev_err(dai->codec->dev, "Failed to set output width\n");
++		dev_err(dai->component->dev, "Failed to set output width\n");
+ 		goto out;
+ 	}
+ 
+@@ -239,28 +239,25 @@ static int si476x_probe(struct snd_soc_component *component)
  	return 0;
  }
  
--static inline void uda134x_reset(struct snd_soc_codec *codec)
-+static inline void uda134x_reset(struct snd_soc_component *component)
- {
--	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
-+	struct uda134x_priv *uda134x = snd_soc_component_get_drvdata(component);
- 	unsigned int mask = 1<<6;
- 
- 	regmap_update_bits(uda134x->regmap, UDA134X_STATUS0, mask, mask);
-@@ -122,7 +122,7 @@ static inline void uda134x_reset(struct snd_soc_codec *codec)
- 
- static int uda134x_mute(struct snd_soc_dai *dai, int mute)
- {
--	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(dai->codec);
-+	struct uda134x_priv *uda134x = snd_soc_component_get_drvdata(dai->component);
- 	unsigned int mask = 1<<2;
- 	unsigned int val;
- 
-@@ -139,8 +139,8 @@ static int uda134x_mute(struct snd_soc_dai *dai, int mute)
- static int uda134x_startup(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *dai)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct uda134x_priv *uda134x = snd_soc_component_get_drvdata(component);
- 	struct snd_pcm_runtime *master_runtime;
- 
- 	if (uda134x->master_substream) {
-@@ -168,8 +168,8 @@ static int uda134x_startup(struct snd_pcm_substream *substream,
- static void uda134x_shutdown(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *dai)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct uda134x_priv *uda134x = snd_soc_component_get_drvdata(component);
- 
- 	if (uda134x->master_substream == substream)
- 		uda134x->master_substream = uda134x->slave_substream;
-@@ -181,8 +181,8 @@ static int uda134x_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params,
- 	struct snd_soc_dai *dai)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct uda134x_priv *uda134x = snd_soc_component_get_drvdata(component);
- 	unsigned int hw_params = 0;
- 
- 	if (substream == uda134x->slave_substream) {
-@@ -248,8 +248,8 @@ static int uda134x_hw_params(struct snd_pcm_substream *substream,
- static int uda134x_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 				  int clk_id, unsigned int freq, int dir)
- {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct uda134x_priv *uda134x = snd_soc_component_get_drvdata(component);
- 
- 	pr_debug("%s clk_id: %d, freq: %u, dir: %d\n", __func__,
- 		 clk_id, freq, dir);
-@@ -270,8 +270,8 @@ static int uda134x_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- static int uda134x_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 			       unsigned int fmt)
- {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct uda134x_priv *uda134x = snd_soc_component_get_drvdata(component);
- 
- 	pr_debug("%s fmt: %08X\n", __func__, fmt);
- 
-@@ -294,10 +294,10 @@ static int uda134x_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	return 0;
- }
- 
--static int uda134x_set_bias_level(struct snd_soc_codec *codec,
-+static int uda134x_set_bias_level(struct snd_soc_component *component,
- 				  enum snd_soc_bias_level level)
- {
--	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
-+	struct uda134x_priv *uda134x = snd_soc_component_get_drvdata(component);
- 	struct uda134x_platform_data *pd = uda134x->pd;
- 	pr_debug("%s bias level %d\n", __func__, level);
- 
-@@ -446,10 +446,10 @@ static struct snd_soc_dai_driver uda134x_dai = {
- 	.ops = &uda134x_dai_ops,
- };
- 
--static int uda134x_soc_probe(struct snd_soc_codec *codec)
-+static int uda134x_soc_probe(struct snd_soc_component *component)
- {
--	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
--	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
-+	struct uda134x_priv *uda134x = snd_soc_component_get_drvdata(component);
- 	struct uda134x_platform_data *pd = uda134x->pd;
- 	const struct snd_soc_dapm_widget *widgets;
- 	unsigned num_widgets;
-@@ -473,7 +473,7 @@ static int uda134x_soc_probe(struct snd_soc_codec *codec)
- 	if (pd->power)
- 		pd->power(1);
- 
--	uda134x_reset(codec);
-+	uda134x_reset(component);
- 
- 	if (pd->model == UDA134X_UDA1341) {
- 		widgets = uda1341_dapm_widgets;
-@@ -493,15 +493,15 @@ static int uda134x_soc_probe(struct snd_soc_codec *codec)
- 	switch (pd->model) {
- 	case UDA134X_UDA1340:
- 	case UDA134X_UDA1344:
--		ret = snd_soc_add_codec_controls(codec, uda1340_snd_controls,
-+		ret = snd_soc_add_component_controls(component, uda1340_snd_controls,
- 					ARRAY_SIZE(uda1340_snd_controls));
- 	break;
- 	case UDA134X_UDA1341:
--		ret = snd_soc_add_codec_controls(codec, uda1341_snd_controls,
-+		ret = snd_soc_add_component_controls(component, uda1341_snd_controls,
- 					ARRAY_SIZE(uda1341_snd_controls));
- 	break;
- 	case UDA134X_UDA1345:
--		ret = snd_soc_add_codec_controls(codec, uda1345_snd_controls,
-+		ret = snd_soc_add_component_controls(component, uda1345_snd_controls,
- 					ARRAY_SIZE(uda1345_snd_controls));
- 	break;
- 	default:
-@@ -518,17 +518,18 @@ static int uda134x_soc_probe(struct snd_soc_codec *codec)
- 	return 0;
- }
- 
--static const struct snd_soc_codec_driver soc_codec_dev_uda134x = {
--	.probe =        uda134x_soc_probe,
--	.set_bias_level = uda134x_set_bias_level,
--	.suspend_bias_off = true,
--
+-static const struct snd_soc_codec_driver soc_codec_dev_si476x = {
 -	.component_driver = {
--		.dapm_widgets		= uda134x_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(uda134x_dapm_widgets),
--		.dapm_routes		= uda134x_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(uda134x_dapm_routes),
+-		.probe			= si476x_probe,
+-		.dapm_widgets		= si476x_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(si476x_dapm_widgets),
+-		.dapm_routes		= si476x_dapm_routes,
+-		.num_dapm_routes	= ARRAY_SIZE(si476x_dapm_routes),
 -	},
-+static const struct snd_soc_component_driver soc_component_dev_uda134x = {
-+	.probe			= uda134x_soc_probe,
-+	.set_bias_level		= uda134x_set_bias_level,
-+	.dapm_widgets		= uda134x_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(uda134x_dapm_widgets),
-+	.dapm_routes		= uda134x_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(uda134x_dapm_routes),
-+	.suspend_bias_off	= 1,
++static const struct snd_soc_component_driver soc_component_dev_si476x = {
++	.probe			= si476x_probe,
++	.dapm_widgets		= si476x_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(si476x_dapm_widgets),
++	.dapm_routes		= si476x_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(si476x_dapm_routes),
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static const struct regmap_config uda134x_regmap_config = {
-@@ -571,14 +572,8 @@ static int uda134x_codec_probe(struct platform_device *pdev)
- 	if (IS_ERR(uda134x->regmap))
- 		return PTR_ERR(uda134x->regmap);
+ static int si476x_platform_probe(struct platform_device *pdev)
+ {
+-	return snd_soc_register_codec(&pdev->dev, &soc_codec_dev_si476x,
++	return devm_snd_soc_register_component(&pdev->dev,
++				      &soc_component_dev_si476x,
+ 				      &si476x_dai, 1);
+ }
  
--	return snd_soc_register_codec(&pdev->dev,
--			&soc_codec_dev_uda134x, &uda134x_dai, 1);
--}
--
--static int uda134x_codec_remove(struct platform_device *pdev)
+-static int si476x_platform_remove(struct platform_device *pdev)
 -{
 -	snd_soc_unregister_codec(&pdev->dev);
 -	return 0;
-+	return devm_snd_soc_register_component(&pdev->dev,
-+			&soc_component_dev_uda134x, &uda134x_dai, 1);
- }
+-}
+-
+ MODULE_ALIAS("platform:si476x-codec");
  
- static struct platform_driver uda134x_codec_driver = {
-@@ -586,7 +581,6 @@ static struct platform_driver uda134x_codec_driver = {
- 		.name = "uda134x-codec",
+ static struct platform_driver si476x_platform_driver = {
+@@ -268,7 +265,6 @@ static struct platform_driver si476x_platform_driver = {
+ 		.name	= "si476x-codec",
  	},
- 	.probe = uda134x_codec_probe,
--	.remove = uda134x_codec_remove,
+ 	.probe		= si476x_platform_probe,
+-	.remove		= si476x_platform_remove,
  };
+ module_platform_driver(si476x_platform_driver);
  
- module_platform_driver(uda134x_codec_driver);
 -- 
 2.16.1
