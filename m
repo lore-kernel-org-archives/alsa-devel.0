@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: omap-pcm: replace platform to
+Subject: Applied "ASoC: au1x: dbdma2: replace platform to
 	component" to the asoc tree
-Date: Mon, 12 Feb 2018 12:28:40 +0000
-Message-ID: <E1elDDs-0002y3-1C@debutante>
-References: <87k1wnew4b.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:28:35 +0000
+Message-ID: <E1elDDn-0002xB-UX@debutante>
+References: <87inc7ew3u.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BAF6F267428
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:28:43 +0100 (CET)
-In-Reply-To: <87k1wnew4b.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AA63D26734C
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:28:39 +0100 (CET)
+In-Reply-To: <87inc7ew3u.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: omap-pcm: replace platform to component
+   ASoC: au1x: dbdma2: replace platform to component
 
 has been applied to the asoc tree at
 
@@ -53,41 +53,63 @@ to this mail.
 Thanks,
 Mark
 
->From 703c13e447f84a7ed8315938719540ea05ad5045 Mon Sep 17 00:00:00 2001
+>From abf33c7a536f97b78cce6d016768af2253810a15 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 02:50:19 +0000
-Subject: [PATCH] ASoC: omap-pcm: replace platform to component
+Date: Mon, 29 Jan 2018 02:50:37 +0000
+Subject: [PATCH] ASoC: au1x: dbdma2: replace platform to component
 
 Now platform can be replaced to component, let's do it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/omap/omap-pcm.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/au1x/dbdma2.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-index aca2c43d0f03..778cc8f75b6a 100644
---- a/sound/soc/omap/omap-pcm.c
-+++ b/sound/soc/omap/omap-pcm.c
-@@ -243,7 +243,7 @@ static int omap_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 	return ret;
- }
+diff --git a/sound/soc/au1x/dbdma2.c b/sound/soc/au1x/dbdma2.c
+index 6a035ca0f521..fb650659c3a3 100644
+--- a/sound/soc/au1x/dbdma2.c
++++ b/sound/soc/au1x/dbdma2.c
+@@ -32,6 +32,8 @@
  
--static const struct snd_soc_platform_driver omap_soc_platform = {
-+static const struct snd_soc_component_driver omap_soc_component = {
- 	.ops		= &omap_pcm_ops,
- 	.pcm_new	= omap_pcm_new,
- 	.pcm_free	= omap_pcm_free_dma_buffers,
-@@ -252,7 +252,8 @@ static const struct snd_soc_platform_driver omap_soc_platform = {
- int omap_pcm_platform_register(struct device *dev)
+ /*#define PCM_DEBUG*/
+ 
++#define DRV_NAME "dbdma2"
++
+ #define MSG(x...)	printk(KERN_INFO "au1xpsc_pcm: " x)
+ #ifdef PCM_DEBUG
+ #define DBG		MSG
+@@ -187,8 +189,8 @@ static int au1x_pcm_dbdma_realloc(struct au1xpsc_audio_dmadata *pcd,
+ static inline struct au1xpsc_audio_dmadata *to_dmadata(struct snd_pcm_substream *ss)
  {
- 	omap_pcm_limit_supported_formats();
--	return devm_snd_soc_register_platform(dev, &omap_soc_platform);
-+	return devm_snd_soc_register_component(dev, &omap_soc_component,
-+					       NULL, 0);
+ 	struct snd_soc_pcm_runtime *rtd = ss->private_data;
+-	struct au1xpsc_audio_dmadata *pcd =
+-				snd_soc_platform_get_drvdata(rtd->platform);
++	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct au1xpsc_audio_dmadata *pcd = snd_soc_component_get_drvdata(component);
+ 	return &pcd[ss->stream];
  }
- EXPORT_SYMBOL_GPL(omap_pcm_platform_register);
  
+@@ -327,7 +329,8 @@ static int au1xpsc_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ }
+ 
+ /* au1xpsc audio platform */
+-static struct snd_soc_platform_driver au1xpsc_soc_platform = {
++static struct snd_soc_component_driver au1xpsc_soc_component = {
++	.name		= DRV_NAME,
+ 	.ops		= &au1xpsc_pcm_ops,
+ 	.pcm_new	= au1xpsc_pcm_new,
+ };
+@@ -344,8 +347,8 @@ static int au1xpsc_pcm_drvprobe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, dmadata);
+ 
+-	return devm_snd_soc_register_platform(&pdev->dev,
+-					      &au1xpsc_soc_platform);
++	return devm_snd_soc_register_component(&pdev->dev,
++					&au1xpsc_soc_component, NULL, 0);
+ }
+ 
+ static struct platform_driver au1xpsc_pcm_driver = {
 -- 
 2.16.1
