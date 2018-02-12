@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm9867: replace codec to component" to
+Subject: Applied "ASoC: ak4613: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:46:24 +0000
-Message-ID: <E1elDV2-0005VH-9E@debutante>
-References: <87lggh2wdg.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:46:14 +0000
+Message-ID: <E1elDUs-0005Tb-HR@debutante>
+References: <87h8r52wc0.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E1FC267DBD
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:46:26 +0100 (CET)
-In-Reply-To: <87lggh2wdg.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B944E267D64
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:46:16 +0100 (CET)
+In-Reply-To: <87h8r52wc0.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm9867: replace codec to component
+   ASoC: ak4613: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 91880a6b6ba398c74420b4b0d0ef6fc3005f71ca Mon Sep 17 00:00:00 2001
+>From 9123ea9ff5bcdfdb89f7ad6f8efc56f2ca55a071 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 03:11:46 +0000
-Subject: [PATCH] ASoC: wm9867: replace codec to component
+Date: Mon, 29 Jan 2018 03:12:39 +0000
+Subject: [PATCH] ASoC: ak4613: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,173 +70,192 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max9867.c | 65 +++++++++++++++++++++-------------------------
- sound/soc/codecs/max9867.h |  2 +-
- 2 files changed, 31 insertions(+), 36 deletions(-)
+ sound/soc/codecs/ak4613.c | 73 ++++++++++++++++++++++++-----------------------
+ 1 file changed, 37 insertions(+), 36 deletions(-)
 
-diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index 2f60924fe919..a4e8fafb7e6d 100644
---- a/sound/soc/codecs/max9867.c
-+++ b/sound/soc/codecs/max9867.c
-@@ -179,8 +179,8 @@ static inline int get_ni_value(int mclk, int rate)
- static int max9867_dai_hw_params(struct snd_pcm_substream *substream,
- 		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
+index 3d1cf4784e87..a7b1e3a1ec58 100644
+--- a/sound/soc/codecs/ak4613.c
++++ b/sound/soc/codecs/ak4613.c
+@@ -243,9 +243,9 @@ static const struct snd_soc_dapm_route ak4613_intercon[] = {
+ static void ak4613_dai_shutdown(struct snd_pcm_substream *substream,
+ 			       struct snd_soc_dai *dai)
  {
 -	struct snd_soc_codec *codec = dai->codec;
--	struct max9867_priv *max9867 = snd_soc_codec_get_drvdata(codec);
+-	struct ak4613_priv *priv = snd_soc_codec_get_drvdata(codec);
+-	struct device *dev = codec->dev;
 +	struct snd_soc_component *component = dai->component;
-+	struct max9867_priv *max9867 = snd_soc_component_get_drvdata(component);
- 	unsigned int ni_h, ni_l;
- 	int value;
++	struct ak4613_priv *priv = snd_soc_component_get_drvdata(component);
++	struct device *dev = component->dev;
  
-@@ -227,7 +227,7 @@ static int max9867_dai_hw_params(struct snd_pcm_substream *substream,
- 				bclk_value = MAX9867_IFC1B_PCLK_16;
- 				break;
- 			default:
--				dev_err(codec->dev,
-+				dev_err(component->dev,
- 					"unsupported sampling rate\n");
- 				return -EINVAL;
- 			}
-@@ -239,7 +239,7 @@ static int max9867_dai_hw_params(struct snd_pcm_substream *substream,
- 			bclk_value = MAX9867_IFC1B_32BIT;
- 			break;
- 		default:
--			dev_err(codec->dev, "unsupported sampling rate\n");
-+			dev_err(component->dev, "unsupported sampling rate\n");
- 			return -EINVAL;
- 		}
- 		regmap_update_bits(max9867->regmap, MAX9867_IFC1B,
-@@ -251,8 +251,8 @@ static int max9867_dai_hw_params(struct snd_pcm_substream *substream,
- static int max9867_prepare(struct snd_pcm_substream *substream,
- 			 struct snd_soc_dai *dai)
+ 	mutex_lock(&priv->lock);
+ 	priv->cnt--;
+@@ -305,8 +305,8 @@ static void ak4613_hw_constraints(struct ak4613_priv *priv,
+ static int ak4613_dai_startup(struct snd_pcm_substream *substream,
+ 			      struct snd_soc_dai *dai)
  {
 -	struct snd_soc_codec *codec = dai->codec;
--	struct max9867_priv *max9867 = snd_soc_codec_get_drvdata(codec);
+-	struct ak4613_priv *priv = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_component *component = dai->component;
-+	struct max9867_priv *max9867 = snd_soc_component_get_drvdata(component);
++	struct ak4613_priv *priv = snd_soc_component_get_drvdata(component);
  
- 	regmap_update_bits(max9867->regmap, MAX9867_PWRMAN,
- 		MAX9867_SHTDOWN_MASK, MAX9867_SHTDOWN_MASK);
-@@ -261,8 +261,8 @@ static int max9867_prepare(struct snd_pcm_substream *substream,
+ 	priv->cnt++;
  
- static int max9867_mute(struct snd_soc_dai *dai, int mute)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct max9867_priv *max9867 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct max9867_priv *max9867 = snd_soc_component_get_drvdata(component);
- 
- 	if (mute)
- 		regmap_update_bits(max9867->regmap, MAX9867_DACLEVEL,
-@@ -276,8 +276,8 @@ static int max9867_mute(struct snd_soc_dai *dai, int mute)
- static int max9867_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 		int clk_id, unsigned int freq, int dir)
+@@ -318,8 +318,8 @@ static int ak4613_dai_startup(struct snd_pcm_substream *substream,
+ static int ak4613_dai_set_sysclk(struct snd_soc_dai *codec_dai,
+ 				 int clk_id, unsigned int freq, int dir)
  {
 -	struct snd_soc_codec *codec = codec_dai->codec;
--	struct max9867_priv *max9867 = snd_soc_codec_get_drvdata(codec);
+-	struct ak4613_priv *priv = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_component *component = codec_dai->component;
-+	struct max9867_priv *max9867 = snd_soc_component_get_drvdata(component);
- 	int value = 0;
++	struct ak4613_priv *priv = snd_soc_component_get_drvdata(component);
  
- 	/* Set the prescaler based on the master clock frequency*/
-@@ -306,8 +306,8 @@ static int max9867_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- static int max9867_dai_set_fmt(struct snd_soc_dai *codec_dai,
- 		unsigned int fmt)
+ 	priv->sysclk = freq;
+ 
+@@ -328,8 +328,8 @@ static int ak4613_dai_set_sysclk(struct snd_soc_dai *codec_dai,
+ 
+ static int ak4613_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
  {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct max9867_priv *max9867 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct max9867_priv *max9867 = snd_soc_component_get_drvdata(component);
- 	u8 iface1A = 0, iface1B = 0;
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct ak4613_priv *priv = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct ak4613_priv *priv = snd_soc_component_get_drvdata(component);
  
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-@@ -404,25 +404,27 @@ static int max9867_resume(struct device *dev)
+ 	fmt &= SND_SOC_DAIFMT_FORMAT_MASK;
+ 
+@@ -366,10 +366,10 @@ static int ak4613_dai_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params,
+ 				struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct ak4613_priv *priv = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct ak4613_priv *priv = snd_soc_component_get_drvdata(component);
+ 	const struct ak4613_interface *iface;
+-	struct device *dev = codec->dev;
++	struct device *dev = component->dev;
+ 	unsigned int width = params_width(params);
+ 	unsigned int fmt = priv->fmt;
+ 	unsigned int rate;
+@@ -434,11 +434,11 @@ static int ak4613_dai_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	fmt_ctrl = AUDIO_IFACE_TO_VAL(iface);
+ 
+-	snd_soc_update_bits(codec, CTRL1, FMT_MASK, fmt_ctrl);
+-	snd_soc_update_bits(codec, CTRL2, DFS_MASK, ctrl2);
++	snd_soc_component_update_bits(component, CTRL1, FMT_MASK, fmt_ctrl);
++	snd_soc_component_update_bits(component, CTRL2, DFS_MASK, ctrl2);
+ 
+-	snd_soc_update_bits(codec, ICTRL, ICTRL_MASK, priv->ic);
+-	snd_soc_update_bits(codec, OCTRL, OCTRL_MASK, priv->oc);
++	snd_soc_component_update_bits(component, ICTRL, ICTRL_MASK, priv->ic);
++	snd_soc_component_update_bits(component, OCTRL, OCTRL_MASK, priv->oc);
+ 
+ hw_params_end:
+ 	if (ret < 0)
+@@ -447,7 +447,7 @@ static int ak4613_dai_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
  }
- #endif
  
--static int max9867_probe(struct snd_soc_codec *codec)
-+static int max9867_probe(struct snd_soc_component *component)
+-static int ak4613_set_bias_level(struct snd_soc_codec *codec,
++static int ak4613_set_bias_level(struct snd_soc_component *component,
+ 				 enum snd_soc_bias_level level)
  {
--	struct max9867_priv *max9867 = snd_soc_codec_get_drvdata(codec);
-+	struct max9867_priv *max9867 = snd_soc_component_get_drvdata(component);
+ 	u8 mgmt1 = 0;
+@@ -467,7 +467,7 @@ static int ak4613_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
  
--	dev_dbg(codec->dev, "max98090_probe\n");
--	max9867->codec = codec;
-+	dev_dbg(component->dev, "max98090_probe\n");
-+	max9867->component = component;
+-	snd_soc_write(codec, PW_MGMT1, mgmt1);
++	snd_soc_component_write(component, PW_MGMT1, mgmt1);
+ 
+ 	return 0;
+ }
+@@ -504,8 +504,8 @@ static void ak4613_dummy_write(struct work_struct *work)
+ static int ak4613_dai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			      struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct ak4613_priv *priv = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct ak4613_priv *priv = snd_soc_component_get_drvdata(component);
+ 
+ 	/*
+ 	 * FIXME
+@@ -537,7 +537,7 @@ static int ak4613_dai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
+ 		return  0;
+ 
+-	priv->component = &codec->component;
++	priv->component = component;
+ 	schedule_work(&priv->dummy_write_work);
+ 
+ 	return 0;
+@@ -582,35 +582,37 @@ static struct snd_soc_dai_driver ak4613_dai = {
+ 	.symmetric_rates = 1,
+ };
+ 
+-static int ak4613_suspend(struct snd_soc_codec *codec)
++static int ak4613_suspend(struct snd_soc_component *component)
+ {
+-	struct regmap *regmap = dev_get_regmap(codec->dev, NULL);
++	struct regmap *regmap = dev_get_regmap(component->dev, NULL);
+ 
+ 	regcache_cache_only(regmap, true);
+ 	regcache_mark_dirty(regmap);
  	return 0;
  }
  
--static const struct snd_soc_codec_driver max9867_codec = {
--	.probe = max9867_probe,
+-static int ak4613_resume(struct snd_soc_codec *codec)
++static int ak4613_resume(struct snd_soc_component *component)
+ {
+-	struct regmap *regmap = dev_get_regmap(codec->dev, NULL);
++	struct regmap *regmap = dev_get_regmap(component->dev, NULL);
+ 
+ 	regcache_cache_only(regmap, false);
+ 	return regcache_sync(regmap);
+ }
+ 
+-static const struct snd_soc_codec_driver soc_codec_dev_ak4613 = {
++static const struct snd_soc_component_driver soc_component_dev_ak4613 = {
+ 	.suspend		= ak4613_suspend,
+ 	.resume			= ak4613_resume,
+ 	.set_bias_level		= ak4613_set_bias_level,
 -	.component_driver = {
--		.controls		= max9867_snd_controls,
--		.num_controls		= ARRAY_SIZE(max9867_snd_controls),
--		.dapm_routes		= max9867_audio_map,
--		.num_dapm_routes	= ARRAY_SIZE(max9867_audio_map),
--		.dapm_widgets		= max9867_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(max9867_dapm_widgets),
+-		.controls		= ak4613_snd_controls,
+-		.num_controls		= ARRAY_SIZE(ak4613_snd_controls),
+-		.dapm_widgets		= ak4613_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(ak4613_dapm_widgets),
+-		.dapm_routes		= ak4613_intercon,
+-		.num_dapm_routes	= ARRAY_SIZE(ak4613_intercon),
 -	},
-+static const struct snd_soc_component_driver max9867_component = {
-+	.probe			= max9867_probe,
-+	.controls		= max9867_snd_controls,
-+	.num_controls		= ARRAY_SIZE(max9867_snd_controls),
-+	.dapm_routes		= max9867_audio_map,
-+	.num_dapm_routes	= ARRAY_SIZE(max9867_audio_map),
-+	.dapm_widgets		= max9867_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(max9867_dapm_widgets),
++	.controls		= ak4613_snd_controls,
++	.num_controls		= ARRAY_SIZE(ak4613_snd_controls),
++	.dapm_widgets		= ak4613_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(ak4613_dapm_widgets),
++	.dapm_routes		= ak4613_intercon,
++	.num_dapm_routes	= ARRAY_SIZE(ak4613_intercon),
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static bool max9867_volatile_register(struct device *dev, unsigned int reg)
-@@ -497,21 +499,15 @@ static int max9867_i2c_probe(struct i2c_client *i2c,
- 		return ret;
- 	}
- 	dev_info(&i2c->dev, "device revision: %x\n", reg);
--	ret = snd_soc_register_codec(&i2c->dev, &max9867_codec,
-+	ret = devm_snd_soc_register_component(&i2c->dev, &max9867_component,
- 			max9867_dai, ARRAY_SIZE(max9867_dai));
- 	if (ret < 0) {
--		dev_err(&i2c->dev, "Failed to register codec: %d\n", ret);
-+		dev_err(&i2c->dev, "Failed to register component: %d\n", ret);
- 		return ret;
- 	}
- 	return ret;
+ static void ak4613_parse_of(struct ak4613_priv *priv,
+@@ -677,13 +679,12 @@ static int ak4613_i2c_probe(struct i2c_client *i2c,
+ 	if (IS_ERR(regmap))
+ 		return PTR_ERR(regmap);
+ 
+-	return snd_soc_register_codec(dev, &soc_codec_dev_ak4613,
++	return devm_snd_soc_register_component(dev, &soc_component_dev_ak4613,
+ 				      &ak4613_dai, 1);
  }
  
--static int max9867_i2c_remove(struct i2c_client *client)
--{
+ static int ak4613_i2c_remove(struct i2c_client *client)
+ {
 -	snd_soc_unregister_codec(&client->dev);
--	return 0;
--}
--
- static const struct i2c_device_id max9867_i2c_id[] = {
- 	{ "max9867", 0 },
- 	{ }
-@@ -535,7 +531,6 @@ static struct i2c_driver max9867_i2c_driver = {
- 		.pm = &max9867_pm_ops,
- 	},
- 	.probe  = max9867_i2c_probe,
--	.remove = max9867_i2c_remove,
- 	.id_table = max9867_i2c_id,
- };
+ 	return 0;
+ }
  
-diff --git a/sound/soc/codecs/max9867.h b/sound/soc/codecs/max9867.h
-index 65590b4ad62a..c0aea3d1f2ba 100644
---- a/sound/soc/codecs/max9867.h
-+++ b/sound/soc/codecs/max9867.h
-@@ -75,7 +75,7 @@
- /* codec private data */
- struct max9867_priv {
- 	struct regmap *regmap;
--	struct snd_soc_codec *codec;
-+	struct snd_soc_component *component;
- 	unsigned int sysclk;
- 	unsigned int pclk;
- 	unsigned int master;
 -- 
 2.16.1
