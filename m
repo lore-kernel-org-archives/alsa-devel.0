@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: si476x: replace codec to component" to
+Subject: Applied "ASoC: ml26124: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:34:13 +0000
-Message-ID: <E1elDJF-0003fn-PP@debutante>
-References: <87a7wxuvej.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:34:16 +0000
+Message-ID: <E1elDJI-0003gf-Tl@debutante>
+References: <87bmhduvfo.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DFF41267683
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:34:15 +0100 (CET)
-In-Reply-To: <87a7wxuvej.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 082A0267572
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:34:19 +0100 (CET)
+In-Reply-To: <87bmhduvfo.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: si476x: replace codec to component
+   ASoC: ml26124: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 8fcfe24c2345678000fab25bbd214025becf1154 Mon Sep 17 00:00:00 2001
+>From a9886cd02af5df2a93af178123194bf638cead03 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:45:14 +0000
-Subject: [PATCH] ASoC: si476x: replace codec to component
+Date: Mon, 29 Jan 2018 04:44:35 +0000
+Subject: [PATCH] ASoC: ml26124: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,111 +70,241 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/si476x.c | 42 +++++++++++++++++++-----------------------
- 1 file changed, 19 insertions(+), 23 deletions(-)
+ sound/soc/codecs/ml26124.c | 103 +++++++++++++++++++++------------------------
+ 1 file changed, 49 insertions(+), 54 deletions(-)
 
-diff --git a/sound/soc/codecs/si476x.c b/sound/soc/codecs/si476x.c
-index 7b91ee267b4e..b779c2855c01 100644
---- a/sound/soc/codecs/si476x.c
-+++ b/sound/soc/codecs/si476x.c
-@@ -140,14 +140,14 @@ static int si476x_codec_set_dai_fmt(struct snd_soc_dai *codec_dai,
+diff --git a/sound/soc/codecs/ml26124.c b/sound/soc/codecs/ml26124.c
+index 5cc960d8211e..a5fa490dc145 100644
+--- a/sound/soc/codecs/ml26124.c
++++ b/sound/soc/codecs/ml26124.c
+@@ -338,8 +338,8 @@ static int ml26124_hw_params(struct snd_pcm_substream *substream,
+ 			    struct snd_pcm_hw_params *hw_params,
+ 			    struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct ml26124_priv *priv = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct ml26124_priv *priv = snd_soc_component_get_drvdata(component);
+ 	int i = get_coeff(priv->mclk, params_rate(hw_params));
+ 	int srate;
  
- 	si476x_core_lock(core);
- 
--	err = snd_soc_update_bits(codec_dai->codec, SI476X_DIGITAL_IO_OUTPUT_FORMAT,
-+	err = snd_soc_component_update_bits(codec_dai->component, SI476X_DIGITAL_IO_OUTPUT_FORMAT,
- 				  SI476X_DIGITAL_IO_OUTPUT_FORMAT_MASK,
- 				  format);
- 
- 	si476x_core_unlock(core);
- 
- 	if (err < 0) {
--		dev_err(codec_dai->codec->dev, "Failed to set output format\n");
-+		dev_err(codec_dai->component->dev, "Failed to set output format\n");
- 		return err;
+@@ -351,23 +351,23 @@ static int ml26124_hw_params(struct snd_pcm_substream *substream,
+ 	if (priv->clk_in) {
+ 		switch (priv->mclk / params_rate(hw_params)) {
+ 		case 256:
+-			snd_soc_update_bits(codec, ML26124_CLK_CTL,
++			snd_soc_component_update_bits(component, ML26124_CLK_CTL,
+ 					    BIT(0) | BIT(1), 1);
+ 			break;
+ 		case 512:
+-			snd_soc_update_bits(codec, ML26124_CLK_CTL,
++			snd_soc_component_update_bits(component, ML26124_CLK_CTL,
+ 					    BIT(0) | BIT(1), 2);
+ 			break;
+ 		case 1024:
+-			snd_soc_update_bits(codec, ML26124_CLK_CTL,
++			snd_soc_component_update_bits(component, ML26124_CLK_CTL,
+ 					    BIT(0) | BIT(1), 3);
+ 			break;
+ 		default:
+-			dev_err(codec->dev, "Unsupported MCLKI\n");
++			dev_err(component->dev, "Unsupported MCLKI\n");
+ 			break;
+ 		}
+ 	} else {
+-		snd_soc_update_bits(codec, ML26124_CLK_CTL,
++		snd_soc_component_update_bits(component, ML26124_CLK_CTL,
+ 				    BIT(0) | BIT(1), 0);
  	}
  
-@@ -163,7 +163,7 @@ static int si476x_codec_hw_params(struct snd_pcm_substream *substream,
+@@ -375,35 +375,35 @@ static int ml26124_hw_params(struct snd_pcm_substream *substream,
+ 	if (srate < 0)
+ 		return srate;
  
- 	rate = params_rate(params);
- 	if (rate < 32000 || rate > 48000) {
--		dev_err(dai->codec->dev, "Rate: %d is not supported\n", rate);
-+		dev_err(dai->component->dev, "Rate: %d is not supported\n", rate);
- 		return -EINVAL;
- 	}
+-	snd_soc_update_bits(codec, ML26124_SMPLING_RATE, 0xf, srate);
+-	snd_soc_update_bits(codec, ML26124_PLLNL, 0xff, coeff_div[i].pllnl);
+-	snd_soc_update_bits(codec, ML26124_PLLNH, 0x1, coeff_div[i].pllnh);
+-	snd_soc_update_bits(codec, ML26124_PLLML, 0xff, coeff_div[i].pllml);
+-	snd_soc_update_bits(codec, ML26124_PLLMH, 0x3f, coeff_div[i].pllmh);
+-	snd_soc_update_bits(codec, ML26124_PLLDIV, 0x1f, coeff_div[i].plldiv);
++	snd_soc_component_update_bits(component, ML26124_SMPLING_RATE, 0xf, srate);
++	snd_soc_component_update_bits(component, ML26124_PLLNL, 0xff, coeff_div[i].pllnl);
++	snd_soc_component_update_bits(component, ML26124_PLLNH, 0x1, coeff_div[i].pllnh);
++	snd_soc_component_update_bits(component, ML26124_PLLML, 0xff, coeff_div[i].pllml);
++	snd_soc_component_update_bits(component, ML26124_PLLMH, 0x3f, coeff_div[i].pllmh);
++	snd_soc_component_update_bits(component, ML26124_PLLDIV, 0x1f, coeff_div[i].plldiv);
  
-@@ -186,19 +186,19 @@ static int si476x_codec_hw_params(struct snd_pcm_substream *substream,
- 
- 	si476x_core_lock(core);
- 
--	err = snd_soc_write(dai->codec, SI476X_DIGITAL_IO_OUTPUT_SAMPLE_RATE,
-+	err = snd_soc_component_write(dai->component, SI476X_DIGITAL_IO_OUTPUT_SAMPLE_RATE,
- 			    rate);
- 	if (err < 0) {
--		dev_err(dai->codec->dev, "Failed to set sample rate\n");
-+		dev_err(dai->component->dev, "Failed to set sample rate\n");
- 		goto out;
- 	}
- 
--	err = snd_soc_update_bits(dai->codec, SI476X_DIGITAL_IO_OUTPUT_FORMAT,
-+	err = snd_soc_component_update_bits(dai->component, SI476X_DIGITAL_IO_OUTPUT_FORMAT,
- 				  SI476X_DIGITAL_IO_OUTPUT_WIDTH_MASK,
- 				  (width << SI476X_DIGITAL_IO_SLOT_SIZE_SHIFT) |
- 				  (width << SI476X_DIGITAL_IO_SAMPLE_SIZE_SHIFT));
- 	if (err < 0) {
--		dev_err(dai->codec->dev, "Failed to set output width\n");
-+		dev_err(dai->component->dev, "Failed to set output width\n");
- 		goto out;
- 	}
- 
-@@ -239,28 +239,25 @@ static int si476x_probe(struct snd_soc_component *component)
  	return 0;
  }
  
--static const struct snd_soc_codec_driver soc_codec_dev_si476x = {
+ static int ml26124_mute(struct snd_soc_dai *dai, int mute)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct ml26124_priv *priv = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct ml26124_priv *priv = snd_soc_component_get_drvdata(component);
+ 
+ 	switch (priv->substream->stream) {
+ 	case SNDRV_PCM_STREAM_CAPTURE:
+-		snd_soc_update_bits(codec, ML26124_REC_PLYBAK_RUN, BIT(0), 1);
++		snd_soc_component_update_bits(component, ML26124_REC_PLYBAK_RUN, BIT(0), 1);
+ 		break;
+ 	case SNDRV_PCM_STREAM_PLAYBACK:
+-		snd_soc_update_bits(codec, ML26124_REC_PLYBAK_RUN, BIT(1), 2);
++		snd_soc_component_update_bits(component, ML26124_REC_PLYBAK_RUN, BIT(1), 2);
+ 		break;
+ 	}
+ 
+ 	if (mute)
+-		snd_soc_update_bits(codec, ML26124_DVOL_CTL, BIT(4),
++		snd_soc_component_update_bits(component, ML26124_DVOL_CTL, BIT(4),
+ 				    DVOL_CTL_DVMUTE_ON);
+ 	else
+-		snd_soc_update_bits(codec, ML26124_DVOL_CTL, BIT(4),
++		snd_soc_component_update_bits(component, ML26124_DVOL_CTL, BIT(4),
+ 				    DVOL_CTL_DVMUTE_OFF);
+ 
+ 	return 0;
+@@ -413,7 +413,7 @@ static int ml26124_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		unsigned int fmt)
+ {
+ 	unsigned char mode;
+-	struct snd_soc_codec *codec = codec_dai->codec;
++	struct snd_soc_component *component = codec_dai->component;
+ 
+ 	/* set master/slave audio interface */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+@@ -426,7 +426,7 @@ static int ml26124_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	default:
+ 		return -EINVAL;
+ 	}
+-	snd_soc_update_bits(codec, ML26124_SAI_MODE_SEL, BIT(0), mode);
++	snd_soc_component_update_bits(component, ML26124_SAI_MODE_SEL, BIT(0), mode);
+ 
+ 	/* interface format */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+@@ -450,8 +450,8 @@ static int ml26124_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ static int ml26124_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 		int clk_id, unsigned int freq, int dir)
+ {
+-	struct snd_soc_codec *codec = codec_dai->codec;
+-	struct ml26124_priv *priv = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = codec_dai->component;
++	struct ml26124_priv *priv = snd_soc_component_get_drvdata(component);
+ 
+ 	switch (clk_id) {
+ 	case ML26124_USE_PLLOUT:
+@@ -469,17 +469,17 @@ static int ml26124_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 	return 0;
+ }
+ 
+-static int ml26124_set_bias_level(struct snd_soc_codec *codec,
++static int ml26124_set_bias_level(struct snd_soc_component *component,
+ 		enum snd_soc_bias_level level)
+ {
+-	struct ml26124_priv *priv = snd_soc_codec_get_drvdata(codec);
++	struct ml26124_priv *priv = snd_soc_component_get_drvdata(component);
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+-		snd_soc_update_bits(codec, ML26124_PW_SPAMP_PW_MNG,
++		snd_soc_component_update_bits(component, ML26124_PW_SPAMP_PW_MNG,
+ 				    ML26124_R26_MASK, ML26124_BLT_PREAMP_ON);
+ 		msleep(100);
+-		snd_soc_update_bits(codec, ML26124_PW_SPAMP_PW_MNG,
++		snd_soc_component_update_bits(component, ML26124_PW_SPAMP_PW_MNG,
+ 				    ML26124_R26_MASK,
+ 				    ML26124_MICBEN_ON | ML26124_BLT_ALL_ON);
+ 		break;
+@@ -487,8 +487,8 @@ static int ml26124_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
+ 		/* VMID ON */
+-		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
+-			snd_soc_update_bits(codec, ML26124_PW_REF_PW_MNG,
++		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
++			snd_soc_component_update_bits(component, ML26124_PW_REF_PW_MNG,
+ 					    ML26124_VMID, ML26124_VMID);
+ 			msleep(500);
+ 			regcache_sync(priv->regmap);
+@@ -496,7 +496,7 @@ static int ml26124_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+ 		/* VMID OFF */
+-		snd_soc_update_bits(codec, ML26124_PW_REF_PW_MNG,
++		snd_soc_component_update_bits(component, ML26124_PW_REF_PW_MNG,
+ 				    ML26124_VMID, 0);
+ 		break;
+ 	}
+@@ -528,27 +528,29 @@ static struct snd_soc_dai_driver ml26124_dai = {
+ 	.symmetric_rates = 1,
+ };
+ 
+-static int ml26124_probe(struct snd_soc_codec *codec)
++static int ml26124_probe(struct snd_soc_component *component)
+ {
+ 	/* Software Reset */
+-	snd_soc_update_bits(codec, ML26124_SW_RST, 0x01, 1);
+-	snd_soc_update_bits(codec, ML26124_SW_RST, 0x01, 0);
++	snd_soc_component_update_bits(component, ML26124_SW_RST, 0x01, 1);
++	snd_soc_component_update_bits(component, ML26124_SW_RST, 0x01, 0);
+ 
+ 	return 0;
+ }
+ 
+-static const struct snd_soc_codec_driver soc_codec_dev_ml26124 = {
+-	.probe =	ml26124_probe,
+-	.set_bias_level = ml26124_set_bias_level,
+-	.suspend_bias_off = true,
 -	.component_driver = {
--		.probe			= si476x_probe,
--		.dapm_widgets		= si476x_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(si476x_dapm_widgets),
--		.dapm_routes		= si476x_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(si476x_dapm_routes),
+-		.controls		= ml26124_snd_controls,
+-		.num_controls		= ARRAY_SIZE(ml26124_snd_controls),
+-		.dapm_widgets		= ml26124_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(ml26124_dapm_widgets),
+-		.dapm_routes		= ml26124_intercon,
+-		.num_dapm_routes	= ARRAY_SIZE(ml26124_intercon),
 -	},
-+static const struct snd_soc_component_driver soc_component_dev_si476x = {
-+	.probe			= si476x_probe,
-+	.dapm_widgets		= si476x_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(si476x_dapm_widgets),
-+	.dapm_routes		= si476x_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(si476x_dapm_routes),
++static const struct snd_soc_component_driver soc_component_dev_ml26124 = {
++	.probe			= ml26124_probe,
++	.set_bias_level		= ml26124_set_bias_level,
++	.controls		= ml26124_snd_controls,
++	.num_controls		= ARRAY_SIZE(ml26124_snd_controls),
++	.dapm_widgets		= ml26124_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(ml26124_dapm_widgets),
++	.dapm_routes		= ml26124_intercon,
++	.num_dapm_routes	= ARRAY_SIZE(ml26124_intercon),
++	.suspend_bias_off	= 1,
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static int si476x_platform_probe(struct platform_device *pdev)
- {
--	return snd_soc_register_codec(&pdev->dev, &soc_codec_dev_si476x,
-+	return devm_snd_soc_register_component(&pdev->dev,
-+				      &soc_component_dev_si476x,
- 				      &si476x_dai, 1);
- }
+ static const struct regmap_config ml26124_i2c_regmap = {
+@@ -580,14 +582,8 @@ static int ml26124_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
  
--static int si476x_platform_remove(struct platform_device *pdev)
--{
--	snd_soc_unregister_codec(&pdev->dev);
--	return 0;
+-	return snd_soc_register_codec(&i2c->dev,
+-			&soc_codec_dev_ml26124, &ml26124_dai, 1);
 -}
 -
- MODULE_ALIAS("platform:si476x-codec");
+-static int ml26124_i2c_remove(struct i2c_client *client)
+-{
+-	snd_soc_unregister_codec(&client->dev);
+-	return 0;
++	return devm_snd_soc_register_component(&i2c->dev,
++			&soc_component_dev_ml26124, &ml26124_dai, 1);
+ }
  
- static struct platform_driver si476x_platform_driver = {
-@@ -268,7 +265,6 @@ static struct platform_driver si476x_platform_driver = {
- 		.name	= "si476x-codec",
+ static const struct i2c_device_id ml26124_i2c_id[] = {
+@@ -601,7 +597,6 @@ static struct i2c_driver ml26124_i2c_driver = {
+ 		.name = "ml26124",
  	},
- 	.probe		= si476x_platform_probe,
--	.remove		= si476x_platform_remove,
+ 	.probe = ml26124_i2c_probe,
+-	.remove = ml26124_i2c_remove,
+ 	.id_table = ml26124_i2c_id,
  };
- module_platform_driver(si476x_platform_driver);
  
 -- 
 2.16.1
