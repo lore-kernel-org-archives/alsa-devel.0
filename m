@@ -1,33 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: clean makefile about
-	inexistant files" to the asoc tree
-Date: Mon, 12 Feb 2018 12:28:08 +0000
-Message-ID: <E1elDDM-0002rG-5a@debutante>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 33C1126735F
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:28:09 +0100 (CET)
-In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Corentin Labbe <clabbe@baylibre.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: stm32: spdifrx: fix typo in function name." to the asoc tree
+Date: Mon, 12 Feb 2018 12:27:36 +0000
+Message-ID: <E1elDCq-0002ne-BX@debutante>
+References: <1517417223-21899-2-git-send-email-olivier.moysan@st.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1517417223-21899-2-git-send-email-olivier.moysan@st.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: clean makefile about inexistant files
+   ASoC: stm32: spdifrx: fix typo in function name.
 
 has been applied to the asoc tree at
 
@@ -52,41 +36,42 @@ to this mail.
 Thanks,
 Mark
 
->From beff23ff26db0c1df2eaabc0dfe877bcbf05f6db Mon Sep 17 00:00:00 2001
-From: Corentin Labbe <clabbe@baylibre.com>
-Date: Mon, 29 Jan 2018 12:26:16 +0000
-Subject: [PATCH] ASoC: samsung: clean makefile about inexistant files
+>From b9aa4716281247960e009dd55c38bcc4c2e4cb94 Mon Sep 17 00:00:00 2001
+From: olivier moysan <olivier.moysan@st.com>
+Date: Wed, 31 Jan 2018 17:47:02 +0100
+Subject: [PATCH] ASoC: stm32: spdifrx: fix typo in function name.
 
-Clean makefile rules about inexistant files.
-Thoses files were removed in commit a076d418235f ("ASoC: samsung: Drop AC97 drivers")
+Fix function name prefix for naming consistency.
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: olivier moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/Makefile | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/stm/stm32_spdifrx.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/samsung/Makefile b/sound/soc/samsung/Makefile
-index 030949e1e434..c3b76035f69c 100644
---- a/sound/soc/samsung/Makefile
-+++ b/sound/soc/samsung/Makefile
-@@ -21,8 +21,6 @@ obj-$(CONFIG_SND_SAMSUNG_I2S) += snd-soc-idma.o
- # S3C24XX Machine Support
- snd-soc-jive-wm8750-objs := jive_wm8750.o
- snd-soc-neo1973-wm8753-objs := neo1973_wm8753.o
--snd-soc-smdk2443-wm9710-objs := smdk2443_wm9710.o
--snd-soc-ln2440sbc-alc650-objs := ln2440sbc_alc650.o
- snd-soc-s3c24xx-uda134x-objs := s3c24xx_uda134x.o
- snd-soc-s3c24xx-simtec-objs := s3c24xx_simtec.o
- snd-soc-s3c24xx-simtec-hermes-objs := s3c24xx_simtec_hermes.o
-@@ -32,7 +30,6 @@ snd-soc-rx1950-uda1380-objs := rx1950_uda1380.o
- snd-soc-smdk-wm8580-objs := smdk_wm8580.o
- snd-soc-smdk-wm8994-objs := smdk_wm8994.o
- snd-soc-snow-objs := snow.o
--snd-soc-smdk-wm9713-objs := smdk_wm9713.o
- snd-soc-s3c64xx-smartq-wm8987-objs := smartq_wm8987.o
- snd-soc-smdk-spdif-objs := smdk_spdif.o
- snd-soc-smdk-wm8994pcm-objs := smdk_wm8994pcm.o
+diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
+index b9bdefcd3e10..42ad2ae22d21 100644
+--- a/sound/soc/stm/stm32_spdifrx.c
++++ b/sound/soc/stm/stm32_spdifrx.c
+@@ -858,8 +858,8 @@ static const struct of_device_id stm32_spdifrx_ids[] = {
+ 	{}
+ };
+ 
+-static int stm_spdifrx_parse_of(struct platform_device *pdev,
+-				struct stm32_spdifrx_data *spdifrx)
++static int stm32_spdifrx_parse_of(struct platform_device *pdev,
++				  struct stm32_spdifrx_data *spdifrx)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+ 	const struct of_device_id *of_id;
+@@ -914,7 +914,7 @@ static int stm32_spdifrx_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, spdifrx);
+ 
+-	ret = stm_spdifrx_parse_of(pdev, spdifrx);
++	ret = stm32_spdifrx_parse_of(pdev, spdifrx);
+ 	if (ret)
+ 		return ret;
+ 
 -- 
 2.16.1
