@@ -1,77 +1,52 @@
 From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH v2 5/5] ALSA: emu10k1: add a IOMMU workaround
-Date: Mon, 12 Feb 2018 23:13:13 +0100
-Message-ID: <b146a1cb-a1c9-442c-149d-b0d2a017f719@maciej.szmigiero.name>
-References: <13361c4f-6203-8d83-d6c3-1e150224be49@maciej.szmigiero.name>
- <s5hfu665ptx.wl-tiwai@suse.de>
+Subject: Re: [PATCH v2 4/5] ALSA: emu10k1: make sure synth DMA
+ pages are allocated with DMA functions
+Date: Mon, 12 Feb 2018 23:14:50 +0100
+Message-ID: <8df9709b-c7c5-17ac-3f15-a91e3b4903f2@maciej.szmigiero.name>
+References: <619e9569-717a-1b4b-6470-4fa6b186bf41@maciej.szmigiero.name>
+ <s5hh8qm5qed.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hfu665ptx.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D78D26757F
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 23:14:51 +0100 (CET)
+In-Reply-To: <s5hh8qm5qed.wl-tiwai@suse.de>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 12.02.2018 13:56, Takashi Iwai wrote:
-> On Sat, 27 Jan 2018 15:42:59 +0100,
+On 12.02.2018 13:44, Takashi Iwai wrote:
+> On Sat, 27 Jan 2018 15:42:47 +0100,
 >  Maciej S. Szmigiero  wrote:
 >>
->> The Audigy 2 CA0102 chip (but most likely others from the emu10k1 family,
->> too) has a problem that from time to time it likes to do few DMA reads a
->> bit beyond its normal allocation and gets very confused if these reads get
->> blocked by a IOMMU.
+>> Commit a5003fc04113 ("[ALSA] emu10k1 - simplify page allocation for synth")
+>> switched from using the DMA allocator for synth DMA pages to manually
+>> calling alloc_page().
+>> However, this usage has an implicit assumption that the DMA address space
+>> for the emu10k1-family chip is the same as the CPU physical address space
+>> which is not true for a system with a IOMMU.
 >>
->> For the first (reserved) page this happens multiple times at every
->> playback, for various synth pages it happens randomly, rarely for PCM
->> playback buffers and the page table memory itself.
->> All these reads seem to follow a similar pattern, observed read offsets
->> beyond the allocation end were 0x00, 0x40, 0x80 and 0xc0 (PCI cache line
->> multiples), so it looks like the device tries to accesses up to 256 extra
->> bytes.
->>
->> As a workaround let's widen these DMA allocations by an extra page if we
->> detect that the device is behind a non-passthrough IOMMU (the DMA memory
->> should be relatively plenty on IOMMU systems).
->>
->> Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
->> ---
->> Changes from v1: Apply this workaround also to PCM playback buffers since
->> it seems they are affected, too.
+>> Since this made the synth part of the driver non-functional on such systems
+>> let's effectively revert that commit.
 > 
-> Instead of adjusting the allocation size in the caller side, how about
-> adding a new helper to wrap around the call of snd_dma_alloc_pages()?
-> 
-> We may need a counterpart to free pages in synth, but it's a single
-> place in __synth_free_pages(), so it can be open-coded with some
-> proper comments, too.
+> Let's keep (or re-add after this revert) the simplification with
+> __synth_free_pages().  Other than that I have no objection to this
+> change.
 
-I guess you mean adding a new wrapper to the ALSA core somewhere near
-snd_dma_alloc_pages() (something named like
-snd_dma_dev_alloc_pages_maybe_wider() ?).
+Will keep the simplification via __synth_free_pages() function in a respin.
 
-Since snd_dma_alloc_pages() currently takes only a "struct device"
-per-device parameter we wouldn't have a place to store a flag indicating
-whether a device needs this workaround (or not) so we would need to
-detect it every time this wrapper function gets called - in contrast,
-in the current implementation this is done just once at the device
-initialization time in snd_emu10k1_detect_iommu().
-
-There are only 3 allocations that use snd_dma_alloc_pages() in this
-driver that would use this new wrapper function, and each time the
-overhead is just a two-line "if" block.
-If one excludes synth, since it already uses a helper function to
-compute these allocations lengths, that count lowers to only 2 places.
-
-That's why I think a driver-local change here is enough.
-
-Also, there is always a possibility to refactor the code into a common
-helper if it turns out that there are other sound card with the same
-problem.
-
-> 
 > thanks,
 > 
 > Takashi
