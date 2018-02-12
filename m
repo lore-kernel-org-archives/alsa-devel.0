@@ -1,51 +1,230 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 0/9] add UniPhier audio system support
-Date: Mon, 12 Feb 2018 12:48:58 +0000
-Message-ID: <20180212124858.GC12976@sirena.org.uk>
-References: <20180119092536.22501-1-suzuki.katsuhiro@socionext.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: tas571x: replace codec to component" to
+	the asoc tree
+Date: Mon, 12 Feb 2018 12:37:55 +0000
+Message-ID: <E1elDMp-00049v-TH@debutante>
+References: <87lgghwamq.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="IpbVkmxF4tDyP/Kb"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20180119092536.22501-1-suzuki.katsuhiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Katsuhiro Suzuki <suzuki.katsuhiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Masahiro Yamada <yamada.masahiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>, Masami Hiramatsu <masami.hiramatsu-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Jassi Brar <jaswinder.singh-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6453726791C
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:37:58 +0100 (CET)
+In-Reply-To: <87lgghwamq.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---IpbVkmxF4tDyP/Kb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: tas571x: replace codec to component
 
-On Fri, Jan 19, 2018 at 06:25:27PM +0900, Katsuhiro Suzuki wrote:
-> This series adds support for Socionext audio system for
-> UniPhier LD11/LD20 SoCs. This driver supports I2S output
-> for Line-In, Line-Out and S/PDIF output.
+has been applied to the asoc tree at
 
-These look fine so I'll apply them however a patch series from
-Morimoto-san (CCed) moving things to use components rather than
-CODEC/platform/whatever driver types that was sent about the same time
-has just gone in - the driver will require the same conversions.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
---IpbVkmxF4tDyP/Kb
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
------BEGIN PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqBjTkACgkQJNaLcl1U
-h9B97Af/WZ98YjR9pqKv2q9x07O8um3kwXtYVGFUp3gFYX13OQZUW+sfFSg1q2YG
-W7386wNTVqEYCyA7w2O024GFRc62ued4u2vjt0VlegFTkEt8xhc07DLEjvFamGwl
-ve6DxpuOVwd9UTQxeuiq/xxQE6wtDXKjX/Xn0u9+Zc+2w0dQGyZCX0AE9jgb/dD5
-vnsn7+3EPa8uip7x4Tnur8Y+aXJl9skenvuJ0jGIWgahclRKd/nXpNxxVHcwJmJc
-ZGSD4fca4ORnPMaV2UDNavg+fnZIZet4uJaIBBHVP68N+Cn+htpOlxuVCdHj1UZz
-J0vPIhagpoWOl7k843pQgtUROpmn7A==
-=J7Qc
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---IpbVkmxF4tDyP/Kb--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 2be04bab74d8c2f6493af9da37098208cb2fc44f Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 29 Jan 2018 04:31:00 +0000
+Subject: [PATCH] ASoC: tas571x: replace codec to component
+
+Now we can replace Codec to Component. Let's do it.
+
+Note:
+	xxx_codec_xxx()		->	xxx_component_xxx()
+	.idle_bias_off = 1	->	.idle_bias_on = 0
+	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
+	-			->	.endianness = 1
+	-			->	.non_legacy_dai_naming = 1
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/tas571x.c | 55 +++++++++++++++++++++++-----------------------
+ 1 file changed, 27 insertions(+), 28 deletions(-)
+
+diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
+index a09499977be4..52f34c94ec25 100644
+--- a/sound/soc/codecs/tas571x.c
++++ b/sound/soc/codecs/tas571x.c
+@@ -51,7 +51,7 @@ struct tas571x_private {
+ 	unsigned int			format;
+ 	struct gpio_desc		*reset_gpio;
+ 	struct gpio_desc		*pdn_gpio;
+-	struct snd_soc_codec_driver	codec_driver;
++	struct snd_soc_component_driver	component_driver;
+ };
+ 
+ static int tas571x_register_size(struct tas571x_private *priv, unsigned int reg)
+@@ -242,8 +242,8 @@ static int tas571x_coefficient_info(struct snd_kcontrol *kcontrol,
+ static int tas571x_coefficient_get(struct snd_kcontrol *kcontrol,
+ 				  struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct i2c_client *i2c = to_i2c_client(codec->dev);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct i2c_client *i2c = to_i2c_client(component->dev);
+ 	int numcoef = kcontrol->private_value >> 16;
+ 	int index = kcontrol->private_value & 0xffff;
+ 
+@@ -254,8 +254,8 @@ static int tas571x_coefficient_get(struct snd_kcontrol *kcontrol,
+ static int tas571x_coefficient_put(struct snd_kcontrol *kcontrol,
+ 				  struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct i2c_client *i2c = to_i2c_client(codec->dev);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct i2c_client *i2c = to_i2c_client(component->dev);
+ 	int numcoef = kcontrol->private_value >> 16;
+ 	int index = kcontrol->private_value & 0xffff;
+ 
+@@ -265,7 +265,7 @@ static int tas571x_coefficient_put(struct snd_kcontrol *kcontrol,
+ 
+ static int tas571x_set_dai_fmt(struct snd_soc_dai *dai, unsigned int format)
+ {
+-	struct tas571x_private *priv = snd_soc_codec_get_drvdata(dai->codec);
++	struct tas571x_private *priv = snd_soc_component_get_drvdata(dai->component);
+ 
+ 	priv->format = format;
+ 
+@@ -276,7 +276,7 @@ static int tas571x_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params,
+ 			     struct snd_soc_dai *dai)
+ {
+-	struct tas571x_private *priv = snd_soc_codec_get_drvdata(dai->codec);
++	struct tas571x_private *priv = snd_soc_component_get_drvdata(dai->component);
+ 	u32 val;
+ 
+ 	switch (priv->format & SND_SOC_DAIFMT_FORMAT_MASK) {
+@@ -304,13 +304,13 @@ static int tas571x_hw_params(struct snd_pcm_substream *substream,
+ 
+ static int tas571x_mute(struct snd_soc_dai *dai, int mute)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
++	struct snd_soc_component *component = dai->component;
+ 	u8 sysctl2;
+ 	int ret;
+ 
+ 	sysctl2 = mute ? TAS571X_SYS_CTRL_2_SDN_MASK : 0;
+ 
+-	ret = snd_soc_update_bits(codec,
++	ret = snd_soc_component_update_bits(component,
+ 			    TAS571X_SYS_CTRL_2_REG,
+ 		     TAS571X_SYS_CTRL_2_SDN_MASK,
+ 		     sysctl2);
+@@ -319,10 +319,10 @@ static int tas571x_mute(struct snd_soc_dai *dai, int mute)
+ 	return ret;
+ }
+ 
+-static int tas571x_set_bias_level(struct snd_soc_codec *codec,
++static int tas571x_set_bias_level(struct snd_soc_component *component,
+ 				  enum snd_soc_bias_level level)
+ {
+-	struct tas571x_private *priv = snd_soc_codec_get_drvdata(codec);
++	struct tas571x_private *priv = snd_soc_component_get_drvdata(component);
+ 	int ret;
+ 
+ 	switch (level) {
+@@ -331,11 +331,11 @@ static int tas571x_set_bias_level(struct snd_soc_codec *codec,
+ 	case SND_SOC_BIAS_PREPARE:
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
+-		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
++		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
+ 			if (!IS_ERR(priv->mclk)) {
+ 				ret = clk_prepare_enable(priv->mclk);
+ 				if (ret) {
+-					dev_err(codec->dev,
++					dev_err(component->dev,
+ 						"Failed to enable master clock: %d\n",
+ 						ret);
+ 					return ret;
+@@ -643,16 +643,15 @@ static const struct snd_soc_dapm_route tas571x_dapm_routes[] = {
+ 	{ "OUT_D", NULL, "DACR" },
+ };
+ 
+-static const struct snd_soc_codec_driver tas571x_codec = {
+-	.set_bias_level = tas571x_set_bias_level,
+-	.idle_bias_off = true,
+-
+-	.component_driver = {
+-		.dapm_widgets		= tas571x_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(tas571x_dapm_widgets),
+-		.dapm_routes		= tas571x_dapm_routes,
+-		.num_dapm_routes	= ARRAY_SIZE(tas571x_dapm_routes),
+-	},
++static const struct snd_soc_component_driver tas571x_component = {
++	.set_bias_level		= tas571x_set_bias_level,
++	.dapm_widgets		= tas571x_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(tas571x_dapm_widgets),
++	.dapm_routes		= tas571x_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(tas571x_dapm_routes),
++	.use_pmdown_time	= 1,
++	.endianness		= 1,
++	.non_legacy_dai_naming	= 1,
+ };
+ 
+ static struct snd_soc_dai_driver tas571x_dai = {
+@@ -746,9 +745,9 @@ static int tas571x_i2c_probe(struct i2c_client *client,
+ 
+ 	usleep_range(50000, 60000);
+ 
+-	memcpy(&priv->codec_driver, &tas571x_codec, sizeof(priv->codec_driver));
+-	priv->codec_driver.component_driver.controls = priv->chip->controls;
+-	priv->codec_driver.component_driver.num_controls = priv->chip->num_controls;
++	memcpy(&priv->component_driver, &tas571x_component, sizeof(priv->component_driver));
++	priv->component_driver.controls = priv->chip->controls;
++	priv->component_driver.num_controls = priv->chip->num_controls;
+ 
+ 	if (priv->chip->vol_reg_size == 2) {
+ 		/*
+@@ -761,7 +760,8 @@ static int tas571x_i2c_probe(struct i2c_client *client,
+ 			return ret;
+ 	}
+ 
+-	return snd_soc_register_codec(&client->dev, &priv->codec_driver,
++	return devm_snd_soc_register_component(&client->dev,
++				      &priv->component_driver,
+ 				      &tas571x_dai, 1);
+ }
+ 
+@@ -769,7 +769,6 @@ static int tas571x_i2c_remove(struct i2c_client *client)
+ {
+ 	struct tas571x_private *priv = i2c_get_clientdata(client);
+ 
+-	snd_soc_unregister_codec(&client->dev);
+ 	regulator_bulk_disable(priv->chip->num_supply_names, priv->supplies);
+ 
+ 	return 0;
+-- 
+2.16.1
