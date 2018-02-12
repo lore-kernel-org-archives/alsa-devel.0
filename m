@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: mmp: replace platform to
-	component" to the asoc tree
-Date: Mon, 12 Feb 2018 12:29:04 +0000
-Message-ID: <E1elDEG-00034J-Iz@debutante>
-References: <87tvvrew7x.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: dwc-pcm: replace platform to component"
+	to the asoc tree
+Date: Mon, 12 Feb 2018 12:29:22 +0000
+Message-ID: <E1elDEY-00036D-GR@debutante>
+References: <87wp0new8y.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B34C2674D6
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:29:08 +0100 (CET)
-In-Reply-To: <87tvvrew7x.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EDAF267444
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:29:26 +0100 (CET)
+In-Reply-To: <87wp0new8y.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: mmp: replace platform to component
+   ASoC: dwc-pcm: replace platform to component
 
 has been applied to the asoc tree at
 
@@ -53,61 +53,39 @@ to this mail.
 Thanks,
 Mark
 
->From 797d16971a2a4fc3aafc4e5ff13c7ebfae4bf91b Mon Sep 17 00:00:00 2001
+>From ddce03ceea3c84bbfca6f465853b543b32184ec2 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 02:48:18 +0000
-Subject: [PATCH] ASoC: pxa: mmp: replace platform to component
+Date: Mon, 29 Jan 2018 02:47:38 +0000
+Subject: [PATCH] ASoC: dwc-pcm: replace platform to component
 
 Now platform can be replaced to component, let's do it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/mmp-pcm.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ sound/soc/dwc/dwc-pcm.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/pxa/mmp-pcm.c b/sound/soc/pxa/mmp-pcm.c
-index 624d9bd5dadd..d2d4652de32c 100644
---- a/sound/soc/pxa/mmp-pcm.c
-+++ b/sound/soc/pxa/mmp-pcm.c
-@@ -25,6 +25,8 @@
- #include <sound/soc.h>
- #include <sound/dmaengine_pcm.h>
+diff --git a/sound/soc/dwc/dwc-pcm.c b/sound/soc/dwc/dwc-pcm.c
+index 406fd867117b..2cc9632024fc 100644
+--- a/sound/soc/dwc/dwc-pcm.c
++++ b/sound/soc/dwc/dwc-pcm.c
+@@ -269,7 +269,7 @@ static const struct snd_pcm_ops dw_pcm_ops = {
+ 	.pointer = dw_pcm_pointer,
+ };
  
-+#define DRV_NAME "mmp-pcm"
-+
- struct mmp_dma_data {
- 	int ssp_id;
- 	struct resource *dma_res;
-@@ -100,7 +102,8 @@ static bool filter(struct dma_chan *chan, void *param)
- static int mmp_pcm_open(struct snd_pcm_substream *substream)
+-static const struct snd_soc_platform_driver dw_pcm_platform = {
++static const struct snd_soc_component_driver dw_pcm_component = {
+ 	.pcm_new = dw_pcm_new,
+ 	.pcm_free = dw_pcm_free,
+ 	.ops = &dw_pcm_ops,
+@@ -277,5 +277,6 @@ static const struct snd_soc_platform_driver dw_pcm_platform = {
+ 
+ int dw_pcm_register(struct platform_device *pdev)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct platform_device *pdev = to_platform_device(rtd->platform->dev);
-+	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct platform_device *pdev = to_platform_device(component->dev);
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct mmp_dma_data dma_data;
- 	struct resource *r;
-@@ -211,7 +214,8 @@ static int mmp_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 	return ret;
- }
- 
--static const struct snd_soc_platform_driver mmp_soc_platform = {
-+static const struct snd_soc_component_driver mmp_soc_component = {
-+	.name		= DRV_NAME,
- 	.ops		= &mmp_pcm_ops,
- 	.pcm_new	= mmp_pcm_new,
- 	.pcm_free	= mmp_pcm_free_dma_buffers,
-@@ -231,7 +235,8 @@ static int mmp_pcm_probe(struct platform_device *pdev)
- 		mmp_pcm_hardware[SNDRV_PCM_STREAM_CAPTURE].period_bytes_max =
- 						pdata->period_max_capture;
- 	}
--	return devm_snd_soc_register_platform(&pdev->dev, &mmp_soc_platform);
-+	return devm_snd_soc_register_component(&pdev->dev, &mmp_soc_component,
+-	return devm_snd_soc_register_platform(&pdev->dev, &dw_pcm_platform);
++	return devm_snd_soc_register_component(&pdev->dev, &dw_pcm_component,
 +					       NULL, 0);
  }
- 
- static struct platform_driver mmp_pcm_driver = {
 -- 
 2.16.1
