@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5659: Remove the routing path of the
-	power widget "LDO2"" to the asoc tree
-Date: Mon, 12 Feb 2018 12:52:22 +0000
-Message-ID: <E1elDao-0006Ws-SB@debutante>
-References: <1517826596-17864-1-git-send-email-oder_chiou@realtek.com>
+Subject: Applied "ASoC: fsl_ssi: Use 'const _be *' type for
+	iprop" to the asoc tree
+Date: Mon, 12 Feb 2018 12:52:36 +0000
+Message-ID: <E1elDb2-0006Zo-Cd@debutante>
+References: <1518386001-4322-4-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E5932268160
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:52:27 +0100 (CET)
-In-Reply-To: <1517826596-17864-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E1D8267B5B
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:52:39 +0100 (CET)
+In-Reply-To: <1518386001-4322-4-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, spujar@nvidia.com, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+To: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5659: Remove the routing path of the power widget "LDO2"
+   ASoC: fsl_ssi: Use 'const _be *' type for iprop
 
 has been applied to the asoc tree at
 
@@ -52,38 +53,39 @@ to this mail.
 Thanks,
 Mark
 
->From b44483eff7fb3b8c96ee763fe4e84c7933882709 Mon Sep 17 00:00:00 2001
-From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
-Date: Mon, 5 Feb 2018 18:29:55 +0800
-Subject: [PATCH] ASoC: rt5659: Remove the routing path of the power widget
- "LDO2"
+>From da18bcf72291bd4324ba249f881d7d0c205fd00a Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Date: Sun, 11 Feb 2018 19:53:21 -0200
+Subject: [PATCH] ASoC: fsl_ssi: Use 'const _be *' type for iprop
 
-This patch removes the routing path of the power widget "LDO2", and it
-should be depended on the hardware design. The power widget "LDO2" should
-add the routing path with the MICBIAS in the machine driver that is
-reasonable.
+The 'iprop' variable is passed as an argument to the be32_to_cpup()
+function, which expects a 'const _be *' type.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Change the iprop variable type so that the following build warnings
+with W=1 are gone:
+
+sound/soc/fsl/fsl_ssi.c:1463:48: warning: incorrect type in argument 1 (different base types)
+sound/soc/fsl/fsl_ssi.c:1463:48:    expected restricted __be32 const [usertype] *p
+sound/soc/fsl/fsl_ssi.c:1463:48:    got unsigned int const [usertype] *[assigned] iprop
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5659.c | 5 -----
- 1 file changed, 5 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
-index dbc7dbfe8c6f..c4a704e9a4db 100644
---- a/sound/soc/codecs/rt5659.c
-+++ b/sound/soc/codecs/rt5659.c
-@@ -2873,11 +2873,6 @@ static const struct snd_soc_dapm_route rt5659_dapm_routes[] = {
- 	{ "I2S2", NULL, "I2S2 ASRC" },
- 	{ "I2S3", NULL, "I2S3 ASRC" },
- 
--	{ "IN1P", NULL, "LDO2" },
--	{ "IN2P", NULL, "LDO2" },
--	{ "IN3P", NULL, "LDO2" },
--	{ "IN4P", NULL, "LDO2" },
--
- 	{ "DMIC1", NULL, "DMIC L1" },
- 	{ "DMIC1", NULL, "DMIC R1" },
- 	{ "DMIC2", NULL, "DMIC L2" },
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index aecd00f7929d..24fb672f3c65 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -1377,7 +1377,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	const struct of_device_id *of_id;
+ 	const char *p, *sprop;
+-	const uint32_t *iprop;
++	const __be32 *iprop;
+ 	struct resource *res;
+ 	void __iomem *iomem;
+ 	char name[64];
 -- 
 2.16.1
