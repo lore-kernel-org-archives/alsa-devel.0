@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8804: replace codec to component" to
+Subject: Applied "ASoC: cs4271: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:51:50 +0000
-Message-ID: <E1elDaI-0006SE-PY@debutante>
-References: <87k1w14b9t.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:51:47 +0000
+Message-ID: <E1elDaF-0006RI-Lu@debutante>
+References: <87po5t1g0i.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3DB38268109
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:51:53 +0100 (CET)
-In-Reply-To: <87k1w14b9t.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 08C35267B38
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:51:50 +0100 (CET)
+In-Reply-To: <87po5t1g0i.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8804: replace codec to component
+   ASoC: cs4271: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,16 +53,16 @@ to this mail.
 Thanks,
 Mark
 
->From cf73dce9bc4947a777cc07b7fb7b9ff11f1e3b68 Mon Sep 17 00:00:00 2001
+>From cac308fcd767a077e1119901d8bdd69e31189f67 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 03:04:37 +0000
-Subject: [PATCH] ASoC: wm8804: replace codec to component
+Date: Mon, 29 Jan 2018 03:50:28 +0000
+Subject: [PATCH] ASoC: cs4271: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
 Note:
 	xxx_codec_xxx()		->	xxx_component_xxx()
-	.idle_bias_off = 1	->	.idle_bias_on = 0
+	.idle_bias_off = 0	->	.idle_bias_on = 1
 	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
 	-			->	.endianness = 1
 	-			->	.non_legacy_dai_naming = 1
@@ -70,277 +70,334 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8804.c | 100 +++++++++++++++++++++++-----------------------
- 1 file changed, 49 insertions(+), 51 deletions(-)
+ sound/soc/codecs/cs4271-i2c.c |   7 ---
+ sound/soc/codecs/cs4271-spi.c |   7 ---
+ sound/soc/codecs/cs4271.c     | 105 +++++++++++++++++++++---------------------
+ 3 files changed, 52 insertions(+), 67 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
-index fc69b87443d8..89f13249966e 100644
---- a/sound/soc/codecs/wm8804.c
-+++ b/sound/soc/codecs/wm8804.c
-@@ -137,21 +137,21 @@ static const struct snd_soc_dapm_route wm8804_dapm_routes[] = {
- static int wm8804_aif_event(struct snd_soc_dapm_widget *w,
- 			    struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
--	struct wm8804_priv *wm8804 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	struct wm8804_priv *wm8804 = snd_soc_component_get_drvdata(component);
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
- 		/* power up the aif */
- 		if (!wm8804->aif_pwr)
--			snd_soc_update_bits(codec, WM8804_PWRDN, 0x10, 0x0);
-+			snd_soc_component_update_bits(component, WM8804_PWRDN, 0x10, 0x0);
- 		wm8804->aif_pwr++;
- 		break;
- 	case SND_SOC_DAPM_POST_PMD:
- 		/* power down only both paths are disabled */
- 		wm8804->aif_pwr--;
- 		if (!wm8804->aif_pwr)
--			snd_soc_update_bits(codec, WM8804_PWRDN, 0x10, 0x10);
-+			snd_soc_component_update_bits(component, WM8804_PWRDN, 0x10, 0x10);
- 		break;
- 	}
- 
-@@ -161,8 +161,8 @@ static int wm8804_aif_event(struct snd_soc_dapm_widget *w,
- static int txsrc_put(struct snd_kcontrol *kcontrol,
- 		     struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_dapm_kcontrol_codec(kcontrol);
--	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+	struct snd_soc_component *component = snd_soc_dapm_kcontrol_component(kcontrol);
-+	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
- 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
- 	unsigned int val = ucontrol->value.enumerated.item[0] << e->shift_l;
- 	unsigned int mask = 1 << e->shift_l;
-@@ -173,18 +173,18 @@ static int txsrc_put(struct snd_kcontrol *kcontrol,
- 
- 	snd_soc_dapm_mutex_lock(dapm);
- 
--	if (snd_soc_test_bits(codec, e->reg, mask, val)) {
-+	if (snd_soc_component_test_bits(component, e->reg, mask, val)) {
- 		/* save the current power state of the transmitter */
--		txpwr = snd_soc_read(codec, WM8804_PWRDN) & 0x4;
-+		txpwr = snd_soc_component_read32(component, WM8804_PWRDN) & 0x4;
- 
- 		/* power down the transmitter */
--		snd_soc_update_bits(codec, WM8804_PWRDN, 0x4, 0x4);
-+		snd_soc_component_update_bits(component, WM8804_PWRDN, 0x4, 0x4);
- 
- 		/* set the tx source */
--		snd_soc_update_bits(codec, e->reg, mask, val);
-+		snd_soc_component_update_bits(component, e->reg, mask, val);
- 
- 		/* restore the transmitter's configuration */
--		snd_soc_update_bits(codec, WM8804_PWRDN, 0x4, txpwr);
-+		snd_soc_component_update_bits(component, WM8804_PWRDN, 0x4, txpwr);
- 	}
- 
- 	snd_soc_dapm_mutex_unlock(dapm);
-@@ -218,10 +218,10 @@ static int wm8804_soft_reset(struct wm8804_priv *wm8804)
- 
- static int wm8804_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- {
--	struct snd_soc_codec *codec;
-+	struct snd_soc_component *component;
- 	u16 format, master, bcp, lrp;
- 
--	codec = dai->codec;
-+	component = dai->component;
- 
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
-@@ -243,8 +243,8 @@ static int wm8804_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	}
- 
- 	/* set data format */
--	snd_soc_update_bits(codec, WM8804_AIFTX, 0x3, format);
--	snd_soc_update_bits(codec, WM8804_AIFRX, 0x3, format);
-+	snd_soc_component_update_bits(component, WM8804_AIFTX, 0x3, format);
-+	snd_soc_component_update_bits(component, WM8804_AIFRX, 0x3, format);
- 
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBM_CFM:
-@@ -259,7 +259,7 @@ static int wm8804_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	}
- 
- 	/* set master/slave mode */
--	snd_soc_update_bits(codec, WM8804_AIFRX, 0x40, master << 6);
-+	snd_soc_component_update_bits(component, WM8804_AIFRX, 0x40, master << 6);
- 
- 	bcp = lrp = 0;
- 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-@@ -280,9 +280,9 @@ static int wm8804_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	}
- 
- 	/* set frame inversion */
--	snd_soc_update_bits(codec, WM8804_AIFTX, 0x10 | 0x20,
-+	snd_soc_component_update_bits(component, WM8804_AIFTX, 0x10 | 0x20,
- 			    (bcp << 4) | (lrp << 5));
--	snd_soc_update_bits(codec, WM8804_AIFRX, 0x10 | 0x20,
-+	snd_soc_component_update_bits(component, WM8804_AIFRX, 0x10 | 0x20,
- 			    (bcp << 4) | (lrp << 5));
- 	return 0;
+diff --git a/sound/soc/codecs/cs4271-i2c.c b/sound/soc/codecs/cs4271-i2c.c
+index dcb3223d7d8f..ff737304d50b 100644
+--- a/sound/soc/codecs/cs4271-i2c.c
++++ b/sound/soc/codecs/cs4271-i2c.c
+@@ -33,12 +33,6 @@ static int cs4271_i2c_probe(struct i2c_client *client,
+ 			    devm_regmap_init_i2c(client, &config));
  }
-@@ -291,10 +291,10 @@ static int wm8804_hw_params(struct snd_pcm_substream *substream,
+ 
+-static int cs4271_i2c_remove(struct i2c_client *client)
+-{
+-	snd_soc_unregister_codec(&client->dev);
+-	return 0;
+-}
+-
+ static const struct i2c_device_id cs4271_i2c_id[] = {
+ 	{ "cs4271", 0 },
+ 	{ }
+@@ -51,7 +45,6 @@ static struct i2c_driver cs4271_i2c_driver = {
+ 		.of_match_table = of_match_ptr(cs4271_dt_ids),
+ 	},
+ 	.probe = cs4271_i2c_probe,
+-	.remove = cs4271_i2c_remove,
+ 	.id_table = cs4271_i2c_id,
+ };
+ module_i2c_driver(cs4271_i2c_driver);
+diff --git a/sound/soc/codecs/cs4271-spi.c b/sound/soc/codecs/cs4271-spi.c
+index 1ff5f520196a..217f6dc869e5 100644
+--- a/sound/soc/codecs/cs4271-spi.c
++++ b/sound/soc/codecs/cs4271-spi.c
+@@ -33,19 +33,12 @@ static int cs4271_spi_probe(struct spi_device *spi)
+ 	return cs4271_probe(&spi->dev, devm_regmap_init_spi(spi, &config));
+ }
+ 
+-static int cs4271_spi_remove(struct spi_device *spi)
+-{
+-	snd_soc_unregister_codec(&spi->dev);
+-	return 0;
+-}
+-
+ static struct spi_driver cs4271_spi_driver = {
+ 	.driver = {
+ 		.name	= "cs4271",
+ 		.of_match_table = of_match_ptr(cs4271_dt_ids),
+ 	},
+ 	.probe		= cs4271_spi_probe,
+-	.remove		= cs4271_spi_remove,
+ };
+ module_spi_driver(cs4271_spi_driver);
+ 
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index 49a80627af12..849fdb2cb260 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -206,8 +206,8 @@ static const struct snd_soc_dapm_route cs4271_dapm_routes[] = {
+ static int cs4271_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 				 int clk_id, unsigned int freq, int dir)
+ {
+-	struct snd_soc_codec *codec = codec_dai->codec;
+-	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = codec_dai->component;
++	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
+ 
+ 	cs4271->mclk = freq;
+ 	return 0;
+@@ -216,8 +216,8 @@ static int cs4271_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ static int cs4271_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 			      unsigned int format)
+ {
+-	struct snd_soc_codec *codec = codec_dai->codec;
+-	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = codec_dai->component;
++	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
+ 	unsigned int val = 0;
+ 	int ret;
+ 
+@@ -230,7 +230,7 @@ static int cs4271_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		val |= CS4271_MODE1_MASTER;
+ 		break;
+ 	default:
+-		dev_err(codec->dev, "Invalid DAI format\n");
++		dev_err(component->dev, "Invalid DAI format\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -250,7 +250,7 @@ static int cs4271_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 			return ret;
+ 		break;
+ 	default:
+-		dev_err(codec->dev, "Invalid DAI format\n");
++		dev_err(component->dev, "Invalid DAI format\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -263,9 +263,9 @@ static int cs4271_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 
+ static int cs4271_deemph[] = {0, 44100, 48000, 32000};
+ 
+-static int cs4271_set_deemph(struct snd_soc_codec *codec)
++static int cs4271_set_deemph(struct snd_soc_component *component)
+ {
+-	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
++	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
+ 	int i, ret;
+ 	int val = CS4271_DACCTL_DEM_DIS;
+ 
+@@ -289,8 +289,8 @@ static int cs4271_set_deemph(struct snd_soc_codec *codec)
+ static int cs4271_get_deemph(struct snd_kcontrol *kcontrol,
+ 			     struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
+ 
+ 	ucontrol->value.integer.value[0] = cs4271->deemph;
+ 	return 0;
+@@ -299,11 +299,11 @@ static int cs4271_get_deemph(struct snd_kcontrol *kcontrol,
+ static int cs4271_put_deemph(struct snd_kcontrol *kcontrol,
+ 			     struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
+ 
+ 	cs4271->deemph = ucontrol->value.integer.value[0];
+-	return cs4271_set_deemph(codec);
++	return cs4271_set_deemph(component);
+ }
+ 
+ struct cs4271_clk_cfg {
+@@ -349,8 +349,8 @@ static int cs4271_hw_params(struct snd_pcm_substream *substream,
  			    struct snd_pcm_hw_params *params,
  			    struct snd_soc_dai *dai)
  {
--	struct snd_soc_codec *codec;
-+	struct snd_soc_component *component;
- 	u16 blen;
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
+ 	int i, ret;
+ 	unsigned int ratio, val;
  
--	codec = dai->codec;
-+	component = dai->component;
+@@ -399,7 +399,7 @@ static int cs4271_hw_params(struct snd_pcm_substream *substream,
+ 			break;
  
- 	switch (params_width(params)) {
- 	case 16:
-@@ -313,8 +313,8 @@ static int wm8804_hw_params(struct snd_pcm_substream *substream,
+ 	if (i == CS4171_NR_RATIOS) {
+-		dev_err(codec->dev, "Invalid sample rate\n");
++		dev_err(component->dev, "Invalid sample rate\n");
+ 		return -EINVAL;
  	}
  
- 	/* set word length */
--	snd_soc_update_bits(codec, WM8804_AIFTX, 0xc, blen << 2);
--	snd_soc_update_bits(codec, WM8804_AIFRX, 0xc, blen << 2);
-+	snd_soc_component_update_bits(component, WM8804_AIFTX, 0xc, blen << 2);
-+	snd_soc_component_update_bits(component, WM8804_AIFRX, 0xc, blen << 2);
+@@ -410,13 +410,13 @@ static int cs4271_hw_params(struct snd_pcm_substream *substream,
+ 	if (ret < 0)
+ 		return ret;
  
- 	return 0;
+-	return cs4271_set_deemph(codec);
++	return cs4271_set_deemph(component);
  }
-@@ -405,8 +405,8 @@ static int wm8804_set_pll(struct snd_soc_dai *dai, int pll_id,
- 			  int source, unsigned int freq_in,
- 			  unsigned int freq_out)
+ 
+ static int cs4271_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
  {
 -	struct snd_soc_codec *codec = dai->codec;
--	struct wm8804_priv *wm8804 = snd_soc_codec_get_drvdata(codec);
+-	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_component *component = dai->component;
-+	struct wm8804_priv *wm8804 = snd_soc_component_get_drvdata(component);
- 	bool change;
- 
- 	if (!freq_in || !freq_out) {
-@@ -431,18 +431,18 @@ static int wm8804_set_pll(struct snd_soc_dai *dai, int pll_id,
- 			pm_runtime_get_sync(wm8804->dev);
- 
- 		/* set PLLN and PRESCALE */
--		snd_soc_update_bits(codec, WM8804_PLL4, 0xf | 0x10,
-+		snd_soc_component_update_bits(component, WM8804_PLL4, 0xf | 0x10,
- 				    pll_div.n | (pll_div.prescale << 4));
- 		/* set mclkdiv and freqmode */
--		snd_soc_update_bits(codec, WM8804_PLL5, 0x3 | 0x8,
-+		snd_soc_component_update_bits(component, WM8804_PLL5, 0x3 | 0x8,
- 				    pll_div.freqmode | (pll_div.mclkdiv << 3));
- 		/* set PLLK */
--		snd_soc_write(codec, WM8804_PLL1, pll_div.k & 0xff);
--		snd_soc_write(codec, WM8804_PLL2, (pll_div.k >> 8) & 0xff);
--		snd_soc_write(codec, WM8804_PLL3, pll_div.k >> 16);
-+		snd_soc_component_write(component, WM8804_PLL1, pll_div.k & 0xff);
-+		snd_soc_component_write(component, WM8804_PLL2, (pll_div.k >> 8) & 0xff);
-+		snd_soc_component_write(component, WM8804_PLL3, pll_div.k >> 16);
- 
- 		/* power up the PLL */
--		snd_soc_update_bits(codec, WM8804_PWRDN, 0x1, 0);
-+		snd_soc_component_update_bits(component, WM8804_PWRDN, 0x1, 0);
- 	}
- 
- 	return 0;
-@@ -451,15 +451,15 @@ static int wm8804_set_pll(struct snd_soc_dai *dai, int pll_id,
- static int wm8804_set_sysclk(struct snd_soc_dai *dai,
- 			     int clk_id, unsigned int freq, int dir)
- {
--	struct snd_soc_codec *codec;
-+	struct snd_soc_component *component;
- 
--	codec = dai->codec;
-+	component = dai->component;
- 
- 	switch (clk_id) {
- 	case WM8804_TX_CLKSRC_MCLK:
- 		if ((freq >= 10000000 && freq <= 14400000)
- 				|| (freq >= 16280000 && freq <= 27000000))
--			snd_soc_update_bits(codec, WM8804_PLL6, 0x80, 0x80);
-+			snd_soc_component_update_bits(component, WM8804_PLL6, 0x80, 0x80);
- 		else {
- 			dev_err(dai->dev, "OSCCLOCK is not within the "
- 				"recommended range: %uHz\n", freq);
-@@ -467,13 +467,13 @@ static int wm8804_set_sysclk(struct snd_soc_dai *dai,
- 		}
- 		break;
- 	case WM8804_TX_CLKSRC_PLL:
--		snd_soc_update_bits(codec, WM8804_PLL6, 0x80, 0);
-+		snd_soc_component_update_bits(component, WM8804_PLL6, 0x80, 0);
- 		break;
- 	case WM8804_CLKOUT_SRC_CLK1:
--		snd_soc_update_bits(codec, WM8804_PLL6, 0x8, 0);
-+		snd_soc_component_update_bits(component, WM8804_PLL6, 0x8, 0);
- 		break;
- 	case WM8804_CLKOUT_SRC_OSCCLK:
--		snd_soc_update_bits(codec, WM8804_PLL6, 0x8, 0x8);
-+		snd_soc_component_update_bits(component, WM8804_PLL6, 0x8, 0x8);
- 		break;
- 	default:
- 		dev_err(dai->dev, "Unknown clock source: %d\n", clk_id);
-@@ -486,17 +486,17 @@ static int wm8804_set_sysclk(struct snd_soc_dai *dai,
- static int wm8804_set_clkdiv(struct snd_soc_dai *dai,
- 			     int div_id, int div)
- {
--	struct snd_soc_codec *codec;
-+	struct snd_soc_component *component;
- 	struct wm8804_priv *wm8804;
- 
--	codec = dai->codec;
-+	component = dai->component;
- 	switch (div_id) {
- 	case WM8804_CLKOUT_DIV:
--		snd_soc_update_bits(codec, WM8804_PLL5, 0x30,
-+		snd_soc_component_update_bits(component, WM8804_PLL5, 0x30,
- 				    (div & 0x3) << 4);
- 		break;
- 	case WM8804_MCLK_DIV:
--		wm8804 = snd_soc_codec_get_drvdata(codec);
-+		wm8804 = snd_soc_component_get_drvdata(component);
- 		wm8804->mclk_div = div;
- 		break;
- 	default:
-@@ -542,15 +542,14 @@ static struct snd_soc_dai_driver wm8804_dai = {
- 	.symmetric_rates = 1
++	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
+ 	int ret;
+ 	int val_a = 0;
+ 	int val_b = 0;
+@@ -493,9 +493,9 @@ static struct snd_soc_dai_driver cs4271_dai = {
+ 	.symmetric_rates = 1,
  };
  
--static const struct snd_soc_codec_driver soc_codec_dev_wm8804 = {
--	.idle_bias_off = true,
+-static int cs4271_reset(struct snd_soc_codec *codec)
++static int cs4271_reset(struct snd_soc_component *component)
+ {
+-	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
++	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
+ 
+ 	if (gpio_is_valid(cs4271->gpio_nreset)) {
+ 		gpio_direction_output(cs4271->gpio_nreset, 0);
+@@ -508,10 +508,10 @@ static int cs4271_reset(struct snd_soc_codec *codec)
+ }
+ 
+ #ifdef CONFIG_PM
+-static int cs4271_soc_suspend(struct snd_soc_codec *codec)
++static int cs4271_soc_suspend(struct snd_soc_component *component)
+ {
+ 	int ret;
+-	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
++	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
+ 
+ 	/* Set power-down bit */
+ 	ret = regmap_update_bits(cs4271->regmap, CS4271_MODE2,
+@@ -525,20 +525,20 @@ static int cs4271_soc_suspend(struct snd_soc_codec *codec)
+ 	return 0;
+ }
+ 
+-static int cs4271_soc_resume(struct snd_soc_codec *codec)
++static int cs4271_soc_resume(struct snd_soc_component *component)
+ {
+ 	int ret;
+-	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
++	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
+ 
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(cs4271->supplies),
+ 				    cs4271->supplies);
+ 	if (ret < 0) {
+-		dev_err(codec->dev, "Failed to enable regulators: %d\n", ret);
++		dev_err(component->dev, "Failed to enable regulators: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+ 	/* Do a proper reset after power up */
+-	cs4271_reset(codec);
++	cs4271_reset(component);
+ 
+ 	/* Restore codec state */
+ 	ret = regcache_sync(cs4271->regmap);
+@@ -567,20 +567,20 @@ MODULE_DEVICE_TABLE(of, cs4271_dt_ids);
+ EXPORT_SYMBOL_GPL(cs4271_dt_ids);
+ #endif
+ 
+-static int cs4271_codec_probe(struct snd_soc_codec *codec)
++static int cs4271_component_probe(struct snd_soc_component *component)
+ {
+-	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
+-	struct cs4271_platform_data *cs4271plat = codec->dev->platform_data;
++	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
++	struct cs4271_platform_data *cs4271plat = component->dev->platform_data;
+ 	int ret;
+ 	bool amutec_eq_bmutec = false;
+ 
+ #ifdef CONFIG_OF
+-	if (of_match_device(cs4271_dt_ids, codec->dev)) {
+-		if (of_get_property(codec->dev->of_node,
++	if (of_match_device(cs4271_dt_ids, component->dev)) {
++		if (of_get_property(component->dev->of_node,
+ 				     "cirrus,amutec-eq-bmutec", NULL))
+ 			amutec_eq_bmutec = true;
+ 
+-		if (of_get_property(codec->dev->of_node,
++		if (of_get_property(component->dev->of_node,
+ 				     "cirrus,enable-soft-reset", NULL))
+ 			cs4271->enable_soft_reset = true;
+ 	}
+@@ -589,7 +589,7 @@ static int cs4271_codec_probe(struct snd_soc_codec *codec)
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(cs4271->supplies),
+ 				    cs4271->supplies);
+ 	if (ret < 0) {
+-		dev_err(codec->dev, "Failed to enable regulators: %d\n", ret);
++		dev_err(component->dev, "Failed to enable regulators: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -599,7 +599,7 @@ static int cs4271_codec_probe(struct snd_soc_codec *codec)
+ 	}
+ 
+ 	/* Reset codec */
+-	cs4271_reset(codec);
++	cs4271_reset(component);
+ 
+ 	ret = regcache_sync(cs4271->regmap);
+ 	if (ret < 0)
+@@ -625,9 +625,9 @@ static int cs4271_codec_probe(struct snd_soc_codec *codec)
+ 	return 0;
+ }
+ 
+-static int cs4271_codec_remove(struct snd_soc_codec *codec)
++static void cs4271_component_remove(struct snd_soc_component *component)
+ {
+-	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
++	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
+ 
+ 	if (gpio_is_valid(cs4271->gpio_nreset))
+ 		/* Set codec to the reset state */
+@@ -635,24 +635,23 @@ static int cs4271_codec_remove(struct snd_soc_codec *codec)
+ 
+ 	regcache_mark_dirty(cs4271->regmap);
+ 	regulator_bulk_disable(ARRAY_SIZE(cs4271->supplies), cs4271->supplies);
+-
+-	return 0;
+ };
+ 
+-static const struct snd_soc_codec_driver soc_codec_dev_cs4271 = {
+-	.probe			= cs4271_codec_probe,
+-	.remove			= cs4271_codec_remove,
++static const struct snd_soc_component_driver soc_component_dev_cs4271 = {
++	.probe			= cs4271_component_probe,
++	.remove			= cs4271_component_remove,
+ 	.suspend		= cs4271_soc_suspend,
+ 	.resume			= cs4271_soc_resume,
 -
 -	.component_driver = {
--		.dapm_widgets		= wm8804_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(wm8804_dapm_widgets),
--		.dapm_routes		= wm8804_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(wm8804_dapm_routes),
+-		.controls		= cs4271_snd_controls,
+-		.num_controls		= ARRAY_SIZE(cs4271_snd_controls),
+-		.dapm_widgets		= cs4271_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(cs4271_dapm_widgets),
+-		.dapm_routes		= cs4271_dapm_routes,
+-		.num_dapm_routes	= ARRAY_SIZE(cs4271_dapm_routes),
 -	},
-+static const struct snd_soc_component_driver soc_component_dev_wm8804 = {
-+	.dapm_widgets		= wm8804_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(wm8804_dapm_widgets),
-+	.dapm_routes		= wm8804_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(wm8804_dapm_routes),
++	.controls		= cs4271_snd_controls,
++	.num_controls		= ARRAY_SIZE(cs4271_snd_controls),
++	.dapm_widgets		= cs4271_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(cs4271_dapm_widgets),
++	.dapm_routes		= cs4271_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(cs4271_dapm_routes),
++	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- const struct regmap_config wm8804_regmap_config = {
-@@ -661,7 +660,7 @@ int wm8804_probe(struct device *dev, struct regmap *regmap)
- 		}
- 	}
+ static int cs4271_common_probe(struct device *dev,
+@@ -721,8 +720,8 @@ int cs4271_probe(struct device *dev, struct regmap *regmap)
+ 	dev_set_drvdata(dev, cs4271);
+ 	cs4271->regmap = regmap;
  
--	ret = snd_soc_register_codec(dev, &soc_codec_dev_wm8804,
-+	ret = devm_snd_soc_register_component(dev, &soc_component_dev_wm8804,
- 				     &wm8804_dai, 1);
- 	if (ret < 0) {
- 		dev_err(dev, "Failed to register CODEC: %d\n", ret);
-@@ -683,7 +682,6 @@ EXPORT_SYMBOL_GPL(wm8804_probe);
- void wm8804_remove(struct device *dev)
- {
- 	pm_runtime_disable(dev);
--	snd_soc_unregister_codec(dev);
+-	return snd_soc_register_codec(dev, &soc_codec_dev_cs4271, &cs4271_dai,
+-				      1);
++	return devm_snd_soc_register_component(dev, &soc_component_dev_cs4271,
++					       &cs4271_dai, 1);
  }
- EXPORT_SYMBOL_GPL(wm8804_remove);
+ EXPORT_SYMBOL_GPL(cs4271_probe);
  
 -- 
 2.16.1
