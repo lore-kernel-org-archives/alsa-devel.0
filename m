@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-utils: replace codec to component"
-	to the asoc tree
-Date: Mon, 12 Feb 2018 12:28:10 +0000
-Message-ID: <E1elDDO-0002s4-ON@debutante>
-References: <87h8r55q5a.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: txx9aclc: replace platform to
+	component" to the asoc tree
+Date: Mon, 12 Feb 2018 12:28:20 +0000
+Message-ID: <E1elDDY-0002uc-4S@debutante>
+References: <87efmvew2f.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 08201267371
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:28:12 +0100 (CET)
-In-Reply-To: <87h8r55q5a.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C62A1267351
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:28:24 +0100 (CET)
+In-Reply-To: <87efmvew2f.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-utils: replace codec to component
+   ASoC: txx9aclc: replace platform to component
 
 has been applied to the asoc tree at
 
@@ -53,79 +53,109 @@ to this mail.
 Thanks,
 Mark
 
->From 03a0ddeda7ebafea8e99078581a50d856e3587a4 Mon Sep 17 00:00:00 2001
+>From e049cf4e6adcb14e34c37123a67158a7e671d000 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 02:58:01 +0000
-Subject: [PATCH] ASoC: soc-utils: replace codec to component
+Date: Mon, 29 Jan 2018 02:51:26 +0000
+Subject: [PATCH] ASoC: txx9aclc: replace platform to component
 
-Now we can replace Codec to Component. Let's do it.
-
-Note:
-	xxx_codec_xxx()		->	xxx_component_xxx()
-	.idle_bias_off = 0	->	.idle_bias_on = 1
-	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
-	-			->	.endianness = 1
-	-			->	.non_legacy_dai_naming	= 1
+Now platform can be replaced to component, let's do it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-utils.c | 22 ++++++++--------------
- 1 file changed, 8 insertions(+), 14 deletions(-)
+ sound/soc/txx9/txx9aclc.c | 26 +++++++++++++++-----------
+ 1 file changed, 15 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-index e237858c9ed4..2d9e98bd1530 100644
---- a/sound/soc/soc-utils.c
-+++ b/sound/soc/soc-utils.c
-@@ -288,7 +288,12 @@ static const struct snd_soc_component_driver dummy_platform = {
- 	.ops = &dummy_dma_ops,
- };
+diff --git a/sound/soc/txx9/txx9aclc.c b/sound/soc/txx9/txx9aclc.c
+index a2bb68fea5a3..8d31fe628e2f 100644
+--- a/sound/soc/txx9/txx9aclc.c
++++ b/sound/soc/txx9/txx9aclc.c
+@@ -23,6 +23,8 @@
+ #include <sound/soc.h>
+ #include "txx9aclc.h"
  
--static const struct snd_soc_codec_driver dummy_codec;
-+static const struct snd_soc_component_driver dummy_codec = {
-+	.idle_bias_on		= 1,
-+	.use_pmdown_time	= 1,
-+	.endianness		= 1,
-+	.non_legacy_dai_naming	= 1,
-+};
- 
- #define STUB_RATES	SNDRV_PCM_RATE_8000_192000
- #define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S8 | \
-@@ -338,33 +343,22 @@ static int snd_soc_dummy_probe(struct platform_device *pdev)
++#define DRV_NAME "txx9aclc"
++
+ static struct txx9aclc_soc_device {
+ 	struct txx9aclc_dmadata dmadata[2];
+ } txx9aclc_soc_device;
+@@ -53,6 +55,7 @@ static int txx9aclc_pcm_hw_params(struct snd_pcm_substream *substream,
  {
+ 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct txx9aclc_dmadata *dmadata = runtime->private_data;
  	int ret;
  
--	ret = snd_soc_register_codec(&pdev->dev, &dummy_codec, &dummy_dai, 1);
-+	ret = devm_snd_soc_register_component(&pdev->dev,
-+					      &dummy_codec, &dummy_dai, 1);
+@@ -60,13 +63,13 @@ static int txx9aclc_pcm_hw_params(struct snd_pcm_substream *substream,
  	if (ret < 0)
  		return ret;
  
- 	ret = devm_snd_soc_register_component(&pdev->dev, &dummy_platform,
- 					      NULL, 0);
--	if (ret < 0) {
--		snd_soc_unregister_codec(&pdev->dev);
--		return ret;
--	}
- 
- 	return ret;
+-	dev_dbg(rtd->platform->dev,
++	dev_dbg(component->dev,
+ 		"runtime->dma_area = %#lx dma_addr = %#lx dma_bytes = %zd "
+ 		"runtime->min_align %ld\n",
+ 		(unsigned long)runtime->dma_area,
+ 		(unsigned long)runtime->dma_addr, runtime->dma_bytes,
+ 		runtime->min_align);
+-	dev_dbg(rtd->platform->dev,
++	dev_dbg(component->dev,
+ 		"periods %d period_bytes %d stream %d\n",
+ 		params_periods(params), params_period_bytes(params),
+ 		substream->stream);
+@@ -287,7 +290,8 @@ static int txx9aclc_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_card *card = rtd->card->snd_card;
+ 	struct snd_soc_dai *dai = rtd->cpu_dai;
+ 	struct snd_pcm *pcm = rtd->pcm;
+-	struct platform_device *pdev = to_platform_device(rtd->platform->dev);
++	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct platform_device *pdev = to_platform_device(component->dev);
+ 	struct txx9aclc_soc_device *dev;
+ 	struct resource *r;
+ 	int i;
+@@ -371,15 +375,15 @@ static int txx9aclc_dma_init(struct txx9aclc_soc_device *dev,
+ 	return 0;
  }
  
--static int snd_soc_dummy_remove(struct platform_device *pdev)
--{
--	snd_soc_unregister_codec(&pdev->dev);
--
--	return 0;
--}
--
- static struct platform_driver soc_dummy_driver = {
- 	.driver = {
- 		.name = "snd-soc-dummy",
- 	},
- 	.probe = snd_soc_dummy_probe,
--	.remove = snd_soc_dummy_remove,
- };
+-static int txx9aclc_pcm_probe(struct snd_soc_platform *platform)
++static int txx9aclc_pcm_probe(struct snd_soc_component *component)
+ {
+-	snd_soc_platform_set_drvdata(platform, &txx9aclc_soc_device);
++	snd_soc_component_set_drvdata(component, &txx9aclc_soc_device);
+ 	return 0;
+ }
  
- static struct platform_device *soc_dummy_dev;
+-static int txx9aclc_pcm_remove(struct snd_soc_platform *platform)
++static void txx9aclc_pcm_remove(struct snd_soc_component *component)
+ {
+-	struct txx9aclc_soc_device *dev = snd_soc_platform_get_drvdata(platform);
++	struct txx9aclc_soc_device *dev = snd_soc_component_get_drvdata(component);
+ 	struct txx9aclc_plat_drvdata *drvdata = txx9aclc_drvdata;
+ 	void __iomem *base = drvdata->base;
+ 	int i;
+@@ -400,10 +404,10 @@ static int txx9aclc_pcm_remove(struct snd_soc_platform *platform)
+ 		}
+ 		dev->dmadata[i].dma_chan = NULL;
+ 	}
+-	return 0;
+ }
+ 
+-static const struct snd_soc_platform_driver txx9aclc_soc_platform = {
++static const struct snd_soc_component_driver txx9aclc_soc_component = {
++	.name		= DRV_NAME,
+ 	.probe		= txx9aclc_pcm_probe,
+ 	.remove		= txx9aclc_pcm_remove,
+ 	.ops		= &txx9aclc_pcm_ops,
+@@ -412,8 +416,8 @@ static const struct snd_soc_platform_driver txx9aclc_soc_platform = {
+ 
+ static int txx9aclc_soc_platform_probe(struct platform_device *pdev)
+ {
+-	return devm_snd_soc_register_platform(&pdev->dev,
+-					      &txx9aclc_soc_platform);
++	return devm_snd_soc_register_component(&pdev->dev,
++					&txx9aclc_soc_component, NULL, 0);
+ }
+ 
+ static struct platform_driver txx9aclc_pcm_driver = {
 -- 
 2.16.1
