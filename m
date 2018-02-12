@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: xtfpga-i2s: replace platform to
-	component" to the asoc tree
-Date: Mon, 12 Feb 2018 12:28:50 +0000
-Message-ID: <E1elDE2-00030w-9P@debutante>
-References: <87o9lzew5q.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id F23A8267345
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:28:53 +0100 (CET)
-In-Reply-To: <87o9lzew5q.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: Applied "ASoC: bcm: cygnus: replace platform to component" to the asoc tree
+Date: Mon, 12 Feb 2018 12:31:52 +0000
+Message-ID: <E1elDGy-0003NC-CX@debutante>
+References: <87mv7t5eyn.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87mv7t5eyn.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: xtfpga-i2s: replace platform to component
+   ASoC: bcm: cygnus: replace platform to component
 
 has been applied to the asoc tree at
 
@@ -53,75 +37,50 @@ to this mail.
 Thanks,
 Mark
 
->From 80f23c295b0bb64a65cd19aa5f09104d21bfa165 Mon Sep 17 00:00:00 2001
+>From 540b925af4c0456adf220dea991d91bf05ad77c0 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 02:49:25 +0000
-Subject: [PATCH] ASoC: xtfpga-i2s: replace platform to component
+Date: Mon, 29 Jan 2018 02:42:37 +0000
+Subject: [PATCH] ASoC: bcm: cygnus: replace platform to component
 
 Now platform can be replaced to component, let's do it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/xtensa/xtfpga-i2s.c | 17 +++--------------
- 1 file changed, 3 insertions(+), 14 deletions(-)
+ sound/soc/bcm/cygnus-pcm.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/xtensa/xtfpga-i2s.c b/sound/soc/xtensa/xtfpga-i2s.c
-index 2472144b329e..503560916620 100644
---- a/sound/soc/xtensa/xtfpga-i2s.c
-+++ b/sound/soc/xtensa/xtfpga-i2s.c
-@@ -483,13 +483,10 @@ static const struct snd_pcm_ops xtfpga_pcm_ops = {
- 	.pointer	= xtfpga_pcm_pointer,
- };
+diff --git a/sound/soc/bcm/cygnus-pcm.c b/sound/soc/bcm/cygnus-pcm.c
+index d616e096462e..123ecf5479d7 100644
+--- a/sound/soc/bcm/cygnus-pcm.c
++++ b/sound/soc/bcm/cygnus-pcm.c
+@@ -820,7 +820,7 @@ static int cygnus_dma_new(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
  
--static const struct snd_soc_platform_driver xtfpga_soc_platform = {
--	.pcm_new	= xtfpga_pcm_new,
--	.ops		= &xtfpga_pcm_ops,
--};
--
- static const struct snd_soc_component_driver xtfpga_i2s_component = {
- 	.name		= DRV_NAME,
-+	.pcm_new	= xtfpga_pcm_new,
-+	.ops		= &xtfpga_pcm_ops,
- };
- 
- static const struct snd_soc_dai_ops xtfpga_i2s_dai_ops = {
-@@ -591,18 +588,13 @@ static int xtfpga_i2s_probe(struct platform_device *pdev)
- 		goto err;
+-static struct snd_soc_platform_driver cygnus_soc_platform = {
++static struct snd_soc_component_driver cygnus_soc_platform = {
+ 	.ops		= &cygnus_pcm_ops,
+ 	.pcm_new	= cygnus_dma_new,
+ 	.pcm_free	= cygnus_dma_free_dma_buffers,
+@@ -840,7 +840,8 @@ int cygnus_soc_platform_register(struct device *dev,
+ 		return rc;
  	}
  
--	err = snd_soc_register_platform(&pdev->dev, &xtfpga_soc_platform);
--	if (err < 0) {
--		dev_err(&pdev->dev, "couldn't register platform\n");
--		goto err;
--	}
- 	err = devm_snd_soc_register_component(&pdev->dev,
- 					      &xtfpga_i2s_component,
- 					      xtfpga_i2s_dai,
- 					      ARRAY_SIZE(xtfpga_i2s_dai));
- 	if (err < 0) {
- 		dev_err(&pdev->dev, "couldn't register component\n");
--		goto err_unregister_platform;
-+		goto err;
- 	}
+-	rc = snd_soc_register_platform(dev, &cygnus_soc_platform);
++	rc = devm_snd_soc_register_component(dev, &cygnus_soc_platform,
++					     NULL, 0);
+ 	if (rc) {
+ 		dev_err(dev, "%s failed\n", __func__);
+ 		return rc;
+@@ -851,8 +852,6 @@ int cygnus_soc_platform_register(struct device *dev,
  
- 	pm_runtime_enable(&pdev->dev);
-@@ -615,8 +607,6 @@ static int xtfpga_i2s_probe(struct platform_device *pdev)
- 
- err_pm_disable:
- 	pm_runtime_disable(&pdev->dev);
--err_unregister_platform:
--	snd_soc_unregister_platform(&pdev->dev);
- err:
- 	dev_err(&pdev->dev, "%s: err = %d\n", __func__, err);
- 	return err;
-@@ -626,7 +616,6 @@ static int xtfpga_i2s_remove(struct platform_device *pdev)
+ int cygnus_soc_platform_unregister(struct device *dev)
  {
- 	struct xtfpga_i2s *i2s = dev_get_drvdata(&pdev->dev);
+-	snd_soc_unregister_platform(dev);
+-
+ 	return 0;
+ }
  
--	snd_soc_unregister_platform(&pdev->dev);
- 	if (i2s->regmap && !IS_ERR(i2s->regmap)) {
- 		regmap_write(i2s->regmap, XTFPGA_I2S_CONFIG, 0);
- 		regmap_write(i2s->regmap, XTFPGA_I2S_INT_MASK, 0);
 -- 
 2.16.1
