@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa/mioa701_wm9713: replace codec to
+Subject: Applied "ASoC: uniphier: evea: replace codec to
 	component" to the asoc tree
-Date: Mon, 12 Feb 2018 12:33:26 +0000
-Message-ID: <E1elDIU-0003cJ-H0@debutante>
-References: <87y3l33kho.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:33:21 +0000
+Message-ID: <E1elDIP-0003bT-JZ@debutante>
+References: <874ln5uvb2.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D36B267645
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:33:30 +0100 (CET)
-In-Reply-To: <87y3l33kho.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E23ED267627
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:33:23 +0100 (CET)
+In-Reply-To: <874ln5uvb2.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa/mioa701_wm9713: replace codec to component
+   ASoC: uniphier: evea: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,84 +53,183 @@ to this mail.
 Thanks,
 Mark
 
->From acafeefe43ec897a198740322f65521809b2b9cd Mon Sep 17 00:00:00 2001
+>From f12df6614bee36c11ba0b3fb2d74b7d47b955434 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:46:53 +0000
-Subject: [PATCH] ASoC: pxa/mioa701_wm9713: replace codec to component
+Date: Mon, 29 Jan 2018 04:47:19 +0000
+Subject: [PATCH] ASoC: uniphier: evea: replace codec to component
 
-Now codec can be replaced to component, let's do it.
+Now we can replace Codec to Component. Let's do it.
+
+Note:
+	xxx_codec_xxx()		->	xxx_component_xxx()
+	.idle_bias_off = 0	->	.idle_bias_on = 1
+	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
+	-			->	.endianness = 1
+	-			->	.non_legacy_dai_naming = 1
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/mioa701_wm9713.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+ sound/soc/uniphier/evea.c | 67 +++++++++++++++++++++++------------------------
+ 1 file changed, 33 insertions(+), 34 deletions(-)
 
-diff --git a/sound/soc/pxa/mioa701_wm9713.c b/sound/soc/pxa/mioa701_wm9713.c
-index c4c6fbedc723..47052fe3f5f4 100644
---- a/sound/soc/pxa/mioa701_wm9713.c
-+++ b/sound/soc/pxa/mioa701_wm9713.c
-@@ -58,20 +58,20 @@
- #define AC97_GPIO_PULL		0x58
- 
- /* Use GPIO8 for rear speaker amplifier */
--static int rear_amp_power(struct snd_soc_codec *codec, int power)
-+static int rear_amp_power(struct snd_soc_component *component, int power)
+diff --git a/sound/soc/uniphier/evea.c b/sound/soc/uniphier/evea.c
+index 0cc9efff1d9a..cad7e60de21d 100644
+--- a/sound/soc/uniphier/evea.c
++++ b/sound/soc/uniphier/evea.c
+@@ -220,8 +220,8 @@ static void evea_update_switch_all(struct evea_priv *evea)
+ static int evea_get_switch_lin(struct snd_kcontrol *kcontrol,
+ 			       struct snd_ctl_elem_value *ucontrol)
  {
- 	unsigned short reg;
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct evea_priv *evea = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct evea_priv *evea = snd_soc_component_get_drvdata(component);
  
- 	if (power) {
--		reg = snd_soc_read(codec, AC97_GPIO_CFG);
--		snd_soc_write(codec, AC97_GPIO_CFG, reg | 0x0100);
--		reg = snd_soc_read(codec, AC97_GPIO_PULL);
--		snd_soc_write(codec, AC97_GPIO_PULL, reg | (1<<15));
-+		reg = snd_soc_component_read32(component, AC97_GPIO_CFG);
-+		snd_soc_component_write(component, AC97_GPIO_CFG, reg | 0x0100);
-+		reg = snd_soc_component_read32(component, AC97_GPIO_PULL);
-+		snd_soc_component_write(component, AC97_GPIO_PULL, reg | (1<<15));
- 	} else {
--		reg = snd_soc_read(codec, AC97_GPIO_CFG);
--		snd_soc_write(codec, AC97_GPIO_CFG, reg & ~0x0100);
--		reg = snd_soc_read(codec, AC97_GPIO_PULL);
--		snd_soc_write(codec, AC97_GPIO_PULL, reg & ~(1<<15));
-+		reg = snd_soc_component_read32(component, AC97_GPIO_CFG);
-+		snd_soc_component_write(component, AC97_GPIO_CFG, reg & ~0x0100);
-+		reg = snd_soc_component_read32(component, AC97_GPIO_PULL);
-+		snd_soc_component_write(component, AC97_GPIO_PULL, reg & ~(1<<15));
- 	}
+ 	ucontrol->value.integer.value[0] = evea->switch_lin;
  
+@@ -231,8 +231,8 @@ static int evea_get_switch_lin(struct snd_kcontrol *kcontrol,
+ static int evea_set_switch_lin(struct snd_kcontrol *kcontrol,
+ 			       struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct evea_priv *evea = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct evea_priv *evea = snd_soc_component_get_drvdata(component);
+ 
+ 	if (evea->switch_lin == ucontrol->value.integer.value[0])
+ 		return 0;
+@@ -245,8 +245,8 @@ static int evea_set_switch_lin(struct snd_kcontrol *kcontrol,
+ static int evea_get_switch_lo(struct snd_kcontrol *kcontrol,
+ 			      struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct evea_priv *evea = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct evea_priv *evea = snd_soc_component_get_drvdata(component);
+ 
+ 	ucontrol->value.integer.value[0] = evea->switch_lo;
+ 
+@@ -256,8 +256,8 @@ static int evea_get_switch_lo(struct snd_kcontrol *kcontrol,
+ static int evea_set_switch_lo(struct snd_kcontrol *kcontrol,
+ 			      struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct evea_priv *evea = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct evea_priv *evea = snd_soc_component_get_drvdata(component);
+ 
+ 	if (evea->switch_lo == ucontrol->value.integer.value[0])
+ 		return 0;
+@@ -270,8 +270,8 @@ static int evea_set_switch_lo(struct snd_kcontrol *kcontrol,
+ static int evea_get_switch_hp(struct snd_kcontrol *kcontrol,
+ 			      struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct evea_priv *evea = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct evea_priv *evea = snd_soc_component_get_drvdata(component);
+ 
+ 	ucontrol->value.integer.value[0] = evea->switch_hp;
+ 
+@@ -281,8 +281,8 @@ static int evea_get_switch_hp(struct snd_kcontrol *kcontrol,
+ static int evea_set_switch_hp(struct snd_kcontrol *kcontrol,
+ 			      struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct evea_priv *evea = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct evea_priv *evea = snd_soc_component_get_drvdata(component);
+ 
+ 	if (evea->switch_hp == ucontrol->value.integer.value[0])
+ 		return 0;
+@@ -301,9 +301,9 @@ static const struct snd_kcontrol_new eva_controls[] = {
+ 			    evea_get_switch_hp, evea_set_switch_hp),
+ };
+ 
+-static int evea_codec_probe(struct snd_soc_codec *codec)
++static int evea_codec_probe(struct snd_soc_component *component)
+ {
+-	struct evea_priv *evea = snd_soc_codec_get_drvdata(codec);
++	struct evea_priv *evea = snd_soc_component_get_drvdata(component);
+ 
+ 	evea->switch_lin = 1;
+ 	evea->switch_lo = 1;
+@@ -315,9 +315,9 @@ static int evea_codec_probe(struct snd_soc_codec *codec)
  	return 0;
-@@ -82,11 +82,11 @@ static int rear_amp_event(struct snd_soc_dapm_widget *widget,
- {
- 	struct snd_soc_card *card = widget->dapm->card;
- 	struct snd_soc_pcm_runtime *rtd;
--	struct snd_soc_codec *codec;
-+	struct snd_soc_component *component;
- 
- 	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
--	codec = rtd->codec;
--	return rear_amp_power(codec, SND_SOC_DAPM_EVENT_ON(event));
-+	component = rtd->codec_dai->component;
-+	return rear_amp_power(component, SND_SOC_DAPM_EVENT_ON(event));
  }
  
- /* mioa701 machine dapm widgets */
-@@ -129,13 +129,13 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 
- static int mioa701_wm9713_init(struct snd_soc_pcm_runtime *rtd)
+-static int evea_codec_suspend(struct snd_soc_codec *codec)
++static int evea_codec_suspend(struct snd_soc_component *component)
  {
--	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_component *component = rtd->codec_dai->component;
+-	struct evea_priv *evea = snd_soc_codec_get_drvdata(codec);
++	struct evea_priv *evea = snd_soc_component_get_drvdata(component);
  
- 	/* Prepare GPIO8 for rear speaker amplifier */
--	snd_soc_update_bits(codec, AC97_GPIO_CFG, 0x100, 0x100);
-+	snd_soc_component_update_bits(component, AC97_GPIO_CFG, 0x100, 0x100);
+ 	evea_set_power_state_off(evea);
  
- 	/* Prepare MIC input */
--	snd_soc_update_bits(codec, AC97_3D_CONTROL, 0xc000, 0xc000);
-+	snd_soc_component_update_bits(component, AC97_3D_CONTROL, 0xc000, 0xc000);
- 
+@@ -331,9 +331,9 @@ static int evea_codec_suspend(struct snd_soc_codec *codec)
  	return 0;
  }
+ 
+-static int evea_codec_resume(struct snd_soc_codec *codec)
++static int evea_codec_resume(struct snd_soc_component *component)
+ {
+-	struct evea_priv *evea = snd_soc_codec_get_drvdata(codec);
++	struct evea_priv *evea = snd_soc_component_get_drvdata(component);
+ 	int ret;
+ 
+ 	ret = clk_prepare_enable(evea->clk);
+@@ -376,19 +376,20 @@ static int evea_codec_resume(struct snd_soc_codec *codec)
+ 	return ret;
+ }
+ 
+-static struct snd_soc_codec_driver soc_codec_evea = {
+-	.probe   = evea_codec_probe,
+-	.suspend = evea_codec_suspend,
+-	.resume  = evea_codec_resume,
+-
+-	.component_driver = {
+-		.dapm_widgets = evea_widgets,
+-		.num_dapm_widgets = ARRAY_SIZE(evea_widgets),
+-		.dapm_routes = evea_routes,
+-		.num_dapm_routes = ARRAY_SIZE(evea_routes),
+-		.controls = eva_controls,
+-		.num_controls = ARRAY_SIZE(eva_controls),
+-	},
++static struct snd_soc_component_driver soc_codec_evea = {
++	.probe			= evea_codec_probe,
++	.suspend		= evea_codec_suspend,
++	.resume			= evea_codec_resume,
++	.dapm_widgets		= evea_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(evea_widgets),
++	.dapm_routes		= evea_routes,
++	.num_dapm_routes	= ARRAY_SIZE(evea_routes),
++	.controls		= eva_controls,
++	.num_controls		= ARRAY_SIZE(eva_controls),
++	.idle_bias_on		= 1,
++	.use_pmdown_time	= 1,
++	.endianness		= 1,
++	.non_legacy_dai_naming	= 1,
+ };
+ 
+ static struct snd_soc_dai_driver soc_dai_evea[] = {
+@@ -505,7 +506,7 @@ static int evea_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, evea);
+ 
+-	ret = snd_soc_register_codec(&pdev->dev, &soc_codec_evea,
++	ret = devm_snd_soc_register_component(&pdev->dev, &soc_codec_evea,
+ 				     soc_dai_evea, ARRAY_SIZE(soc_dai_evea));
+ 	if (ret)
+ 		goto err_out_reset_adamv;
+@@ -534,8 +535,6 @@ static int evea_remove(struct platform_device *pdev)
+ {
+ 	struct evea_priv *evea = platform_get_drvdata(pdev);
+ 
+-	snd_soc_unregister_codec(&pdev->dev);
+-
+ 	reset_control_assert(evea->rst_adamv);
+ 	reset_control_assert(evea->rst_exiv);
+ 	reset_control_assert(evea->rst);
 -- 
 2.16.1
