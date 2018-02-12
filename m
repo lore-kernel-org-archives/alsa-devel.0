@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs4271: replace codec to component" to
+Subject: Applied "ASoC: wm2000: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:51:47 +0000
-Message-ID: <E1elDaF-0006RI-Lu@debutante>
-References: <87po5t1g0i.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:51:41 +0000
+Message-ID: <E1elDa9-0006QK-Lf@debutante>
+References: <87d11t5q3g.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 08C35267B38
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:51:50 +0100 (CET)
-In-Reply-To: <87po5t1g0i.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6DCA12680F6
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:51:47 +0100 (CET)
+In-Reply-To: <87d11t5q3g.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs4271: replace codec to component
+   ASoC: wm2000: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From cac308fcd767a077e1119901d8bdd69e31189f67 Mon Sep 17 00:00:00 2001
+>From e5449affbf96cceaa042e33b0d1e5db0bd6ecf3c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 03:50:28 +0000
-Subject: [PATCH] ASoC: cs4271: replace codec to component
+Date: Mon, 29 Jan 2018 02:59:05 +0000
+Subject: [PATCH] ASoC: wm2000: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -68,336 +68,181 @@ Note:
 	-			->	.non_legacy_dai_naming = 1
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs4271-i2c.c |   7 ---
- sound/soc/codecs/cs4271-spi.c |   7 ---
- sound/soc/codecs/cs4271.c     | 105 +++++++++++++++++++++---------------------
- 3 files changed, 52 insertions(+), 67 deletions(-)
+ sound/soc/codecs/wm2000.c | 78 ++++++++++++++++++++++-------------------------
+ 1 file changed, 36 insertions(+), 42 deletions(-)
 
-diff --git a/sound/soc/codecs/cs4271-i2c.c b/sound/soc/codecs/cs4271-i2c.c
-index dcb3223d7d8f..ff737304d50b 100644
---- a/sound/soc/codecs/cs4271-i2c.c
-+++ b/sound/soc/codecs/cs4271-i2c.c
-@@ -33,12 +33,6 @@ static int cs4271_i2c_probe(struct i2c_client *client,
- 			    devm_regmap_init_i2c(client, &config));
- }
- 
--static int cs4271_i2c_remove(struct i2c_client *client)
--{
--	snd_soc_unregister_codec(&client->dev);
--	return 0;
--}
--
- static const struct i2c_device_id cs4271_i2c_id[] = {
- 	{ "cs4271", 0 },
- 	{ }
-@@ -51,7 +45,6 @@ static struct i2c_driver cs4271_i2c_driver = {
- 		.of_match_table = of_match_ptr(cs4271_dt_ids),
- 	},
- 	.probe = cs4271_i2c_probe,
--	.remove = cs4271_i2c_remove,
- 	.id_table = cs4271_i2c_id,
- };
- module_i2c_driver(cs4271_i2c_driver);
-diff --git a/sound/soc/codecs/cs4271-spi.c b/sound/soc/codecs/cs4271-spi.c
-index 1ff5f520196a..217f6dc869e5 100644
---- a/sound/soc/codecs/cs4271-spi.c
-+++ b/sound/soc/codecs/cs4271-spi.c
-@@ -33,19 +33,12 @@ static int cs4271_spi_probe(struct spi_device *spi)
- 	return cs4271_probe(&spi->dev, devm_regmap_init_spi(spi, &config));
- }
- 
--static int cs4271_spi_remove(struct spi_device *spi)
--{
--	snd_soc_unregister_codec(&spi->dev);
--	return 0;
--}
--
- static struct spi_driver cs4271_spi_driver = {
- 	.driver = {
- 		.name	= "cs4271",
- 		.of_match_table = of_match_ptr(cs4271_dt_ids),
- 	},
- 	.probe		= cs4271_spi_probe,
--	.remove		= cs4271_spi_remove,
- };
- module_spi_driver(cs4271_spi_driver);
- 
-diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
-index 49a80627af12..849fdb2cb260 100644
---- a/sound/soc/codecs/cs4271.c
-+++ b/sound/soc/codecs/cs4271.c
-@@ -206,8 +206,8 @@ static const struct snd_soc_dapm_route cs4271_dapm_routes[] = {
- static int cs4271_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 				 int clk_id, unsigned int freq, int dir)
- {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
- 
- 	cs4271->mclk = freq;
- 	return 0;
-@@ -216,8 +216,8 @@ static int cs4271_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- static int cs4271_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 			      unsigned int format)
- {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
- 	unsigned int val = 0;
- 	int ret;
- 
-@@ -230,7 +230,7 @@ static int cs4271_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		val |= CS4271_MODE1_MASTER;
- 		break;
- 	default:
--		dev_err(codec->dev, "Invalid DAI format\n");
-+		dev_err(component->dev, "Invalid DAI format\n");
- 		return -EINVAL;
- 	}
- 
-@@ -250,7 +250,7 @@ static int cs4271_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 			return ret;
- 		break;
- 	default:
--		dev_err(codec->dev, "Invalid DAI format\n");
-+		dev_err(component->dev, "Invalid DAI format\n");
- 		return -EINVAL;
- 	}
- 
-@@ -263,9 +263,9 @@ static int cs4271_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 
- static int cs4271_deemph[] = {0, 44100, 48000, 32000};
- 
--static int cs4271_set_deemph(struct snd_soc_codec *codec)
-+static int cs4271_set_deemph(struct snd_soc_component *component)
- {
--	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
-+	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
- 	int i, ret;
- 	int val = CS4271_DACCTL_DEM_DIS;
- 
-@@ -289,8 +289,8 @@ static int cs4271_set_deemph(struct snd_soc_codec *codec)
- static int cs4271_get_deemph(struct snd_kcontrol *kcontrol,
- 			     struct snd_ctl_elem_value *ucontrol)
+diff --git a/sound/soc/codecs/wm2000.c b/sound/soc/codecs/wm2000.c
+index abfa052c07d8..c5ae07234a00 100644
+--- a/sound/soc/codecs/wm2000.c
++++ b/sound/soc/codecs/wm2000.c
+@@ -607,8 +607,8 @@ static int wm2000_anc_set_mode(struct wm2000_priv *wm2000)
+ static int wm2000_anc_mode_get(struct snd_kcontrol *kcontrol,
+ 			       struct snd_ctl_elem_value *ucontrol)
  {
 -	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
+-	struct wm2000_priv *wm2000 = dev_get_drvdata(codec->dev);
 +	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
++	struct wm2000_priv *wm2000 = dev_get_drvdata(component->dev);
  
- 	ucontrol->value.integer.value[0] = cs4271->deemph;
- 	return 0;
-@@ -299,11 +299,11 @@ static int cs4271_get_deemph(struct snd_kcontrol *kcontrol,
- static int cs4271_put_deemph(struct snd_kcontrol *kcontrol,
- 			     struct snd_ctl_elem_value *ucontrol)
+ 	ucontrol->value.integer.value[0] = wm2000->anc_active;
+ 
+@@ -618,8 +618,8 @@ static int wm2000_anc_mode_get(struct snd_kcontrol *kcontrol,
+ static int wm2000_anc_mode_put(struct snd_kcontrol *kcontrol,
+ 			       struct snd_ctl_elem_value *ucontrol)
  {
 -	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
+-	struct wm2000_priv *wm2000 = dev_get_drvdata(codec->dev);
 +	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
- 
- 	cs4271->deemph = ucontrol->value.integer.value[0];
--	return cs4271_set_deemph(codec);
-+	return cs4271_set_deemph(component);
- }
- 
- struct cs4271_clk_cfg {
-@@ -349,8 +349,8 @@ static int cs4271_hw_params(struct snd_pcm_substream *substream,
- 			    struct snd_pcm_hw_params *params,
- 			    struct snd_soc_dai *dai)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
- 	int i, ret;
- 	unsigned int ratio, val;
- 
-@@ -399,7 +399,7 @@ static int cs4271_hw_params(struct snd_pcm_substream *substream,
- 			break;
- 
- 	if (i == CS4171_NR_RATIOS) {
--		dev_err(codec->dev, "Invalid sample rate\n");
-+		dev_err(component->dev, "Invalid sample rate\n");
- 		return -EINVAL;
- 	}
- 
-@@ -410,13 +410,13 @@ static int cs4271_hw_params(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		return ret;
- 
--	return cs4271_set_deemph(codec);
-+	return cs4271_set_deemph(component);
- }
- 
- static int cs4271_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
++	struct wm2000_priv *wm2000 = dev_get_drvdata(component->dev);
+ 	unsigned int anc_active = ucontrol->value.integer.value[0];
  	int ret;
- 	int val_a = 0;
- 	int val_b = 0;
-@@ -493,9 +493,9 @@ static struct snd_soc_dai_driver cs4271_dai = {
- 	.symmetric_rates = 1,
- };
  
--static int cs4271_reset(struct snd_soc_codec *codec)
-+static int cs4271_reset(struct snd_soc_component *component)
+@@ -640,8 +640,8 @@ static int wm2000_anc_mode_put(struct snd_kcontrol *kcontrol,
+ static int wm2000_speaker_get(struct snd_kcontrol *kcontrol,
+ 			      struct snd_ctl_elem_value *ucontrol)
  {
--	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
-+	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct wm2000_priv *wm2000 = dev_get_drvdata(codec->dev);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wm2000_priv *wm2000 = dev_get_drvdata(component->dev);
  
- 	if (gpio_is_valid(cs4271->gpio_nreset)) {
- 		gpio_direction_output(cs4271->gpio_nreset, 0);
-@@ -508,10 +508,10 @@ static int cs4271_reset(struct snd_soc_codec *codec)
- }
+ 	ucontrol->value.integer.value[0] = wm2000->spk_ena;
+ 
+@@ -651,8 +651,8 @@ static int wm2000_speaker_get(struct snd_kcontrol *kcontrol,
+ static int wm2000_speaker_put(struct snd_kcontrol *kcontrol,
+ 			      struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct wm2000_priv *wm2000 = dev_get_drvdata(codec->dev);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wm2000_priv *wm2000 = dev_get_drvdata(component->dev);
+ 	unsigned int val = ucontrol->value.integer.value[0];
+ 	int ret;
+ 
+@@ -683,8 +683,8 @@ static const struct snd_kcontrol_new wm2000_controls[] = {
+ static int wm2000_anc_power_event(struct snd_soc_dapm_widget *w,
+ 				  struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-	struct wm2000_priv *wm2000 = dev_get_drvdata(codec->dev);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wm2000_priv *wm2000 = dev_get_drvdata(component->dev);
+ 	int ret;
+ 
+ 	mutex_lock(&wm2000->lock);
+@@ -724,16 +724,16 @@ static const struct snd_soc_dapm_route wm2000_audio_map[] = {
+ };
  
  #ifdef CONFIG_PM
--static int cs4271_soc_suspend(struct snd_soc_codec *codec)
-+static int cs4271_soc_suspend(struct snd_soc_component *component)
+-static int wm2000_suspend(struct snd_soc_codec *codec)
++static int wm2000_suspend(struct snd_soc_component *component)
  {
- 	int ret;
--	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
-+	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
+-	struct wm2000_priv *wm2000 = dev_get_drvdata(codec->dev);
++	struct wm2000_priv *wm2000 = dev_get_drvdata(component->dev);
  
- 	/* Set power-down bit */
- 	ret = regmap_update_bits(cs4271->regmap, CS4271_MODE2,
-@@ -525,20 +525,20 @@ static int cs4271_soc_suspend(struct snd_soc_codec *codec)
- 	return 0;
+ 	return wm2000_anc_transition(wm2000, ANC_OFF);
  }
  
--static int cs4271_soc_resume(struct snd_soc_codec *codec)
-+static int cs4271_soc_resume(struct snd_soc_component *component)
+-static int wm2000_resume(struct snd_soc_codec *codec)
++static int wm2000_resume(struct snd_soc_component *component)
  {
- 	int ret;
--	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
-+	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
+-	struct wm2000_priv *wm2000 = dev_get_drvdata(codec->dev);
++	struct wm2000_priv *wm2000 = dev_get_drvdata(component->dev);
  
- 	ret = regulator_bulk_enable(ARRAY_SIZE(cs4271->supplies),
- 				    cs4271->supplies);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to enable regulators: %d\n", ret);
-+		dev_err(component->dev, "Failed to enable regulators: %d\n", ret);
- 		return ret;
- 	}
- 
- 	/* Do a proper reset after power up */
--	cs4271_reset(codec);
-+	cs4271_reset(component);
- 
- 	/* Restore codec state */
- 	ret = regcache_sync(cs4271->regmap);
-@@ -567,20 +567,20 @@ MODULE_DEVICE_TABLE(of, cs4271_dt_ids);
- EXPORT_SYMBOL_GPL(cs4271_dt_ids);
- #endif
- 
--static int cs4271_codec_probe(struct snd_soc_codec *codec)
-+static int cs4271_component_probe(struct snd_soc_component *component)
- {
--	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
--	struct cs4271_platform_data *cs4271plat = codec->dev->platform_data;
-+	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
-+	struct cs4271_platform_data *cs4271plat = component->dev->platform_data;
- 	int ret;
- 	bool amutec_eq_bmutec = false;
- 
- #ifdef CONFIG_OF
--	if (of_match_device(cs4271_dt_ids, codec->dev)) {
--		if (of_get_property(codec->dev->of_node,
-+	if (of_match_device(cs4271_dt_ids, component->dev)) {
-+		if (of_get_property(component->dev->of_node,
- 				     "cirrus,amutec-eq-bmutec", NULL))
- 			amutec_eq_bmutec = true;
- 
--		if (of_get_property(codec->dev->of_node,
-+		if (of_get_property(component->dev->of_node,
- 				     "cirrus,enable-soft-reset", NULL))
- 			cs4271->enable_soft_reset = true;
- 	}
-@@ -589,7 +589,7 @@ static int cs4271_codec_probe(struct snd_soc_codec *codec)
- 	ret = regulator_bulk_enable(ARRAY_SIZE(cs4271->supplies),
- 				    cs4271->supplies);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to enable regulators: %d\n", ret);
-+		dev_err(component->dev, "Failed to enable regulators: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -599,7 +599,7 @@ static int cs4271_codec_probe(struct snd_soc_codec *codec)
- 	}
- 
- 	/* Reset codec */
--	cs4271_reset(codec);
-+	cs4271_reset(component);
- 
- 	ret = regcache_sync(cs4271->regmap);
- 	if (ret < 0)
-@@ -625,9 +625,9 @@ static int cs4271_codec_probe(struct snd_soc_codec *codec)
- 	return 0;
+ 	return wm2000_anc_set_mode(wm2000);
  }
- 
--static int cs4271_codec_remove(struct snd_soc_codec *codec)
-+static void cs4271_component_remove(struct snd_soc_component *component)
- {
--	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
-+	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
- 
- 	if (gpio_is_valid(cs4271->gpio_nreset))
- 		/* Set codec to the reset state */
-@@ -635,24 +635,23 @@ static int cs4271_codec_remove(struct snd_soc_codec *codec)
- 
- 	regcache_mark_dirty(cs4271->regmap);
- 	regulator_bulk_disable(ARRAY_SIZE(cs4271->supplies), cs4271->supplies);
--
--	return 0;
+@@ -782,9 +782,9 @@ static const struct regmap_config wm2000_regmap = {
+ 	.readable_reg = wm2000_readable_reg,
  };
  
--static const struct snd_soc_codec_driver soc_codec_dev_cs4271 = {
--	.probe			= cs4271_codec_probe,
--	.remove			= cs4271_codec_remove,
-+static const struct snd_soc_component_driver soc_component_dev_cs4271 = {
-+	.probe			= cs4271_component_probe,
-+	.remove			= cs4271_component_remove,
- 	.suspend		= cs4271_soc_suspend,
- 	.resume			= cs4271_soc_resume,
+-static int wm2000_probe(struct snd_soc_codec *codec)
++static int wm2000_probe(struct snd_soc_component *component)
+ {
+-	struct wm2000_priv *wm2000 = dev_get_drvdata(codec->dev);
++	struct wm2000_priv *wm2000 = dev_get_drvdata(component->dev);
+ 
+ 	/* This will trigger a transition to standby mode by default */
+ 	wm2000_anc_set_mode(wm2000);
+@@ -792,27 +792,28 @@ static int wm2000_probe(struct snd_soc_codec *codec)
+ 	return 0;
+ }
+ 
+-static int wm2000_remove(struct snd_soc_codec *codec)
++static void wm2000_remove(struct snd_soc_component *component)
+ {
+-	struct wm2000_priv *wm2000 = dev_get_drvdata(codec->dev);
++	struct wm2000_priv *wm2000 = dev_get_drvdata(component->dev);
+ 
+-	return wm2000_anc_transition(wm2000, ANC_OFF);
++	wm2000_anc_transition(wm2000, ANC_OFF);
+ }
+ 
+-static const struct snd_soc_codec_driver soc_codec_dev_wm2000 = {
+-	.probe = wm2000_probe,
+-	.remove = wm2000_remove,
+-	.suspend = wm2000_suspend,
+-	.resume = wm2000_resume,
 -
 -	.component_driver = {
--		.controls		= cs4271_snd_controls,
--		.num_controls		= ARRAY_SIZE(cs4271_snd_controls),
--		.dapm_widgets		= cs4271_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(cs4271_dapm_widgets),
--		.dapm_routes		= cs4271_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(cs4271_dapm_routes),
+-		.controls		= wm2000_controls,
+-		.num_controls		= ARRAY_SIZE(wm2000_controls),
+-		.dapm_widgets		= wm2000_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(wm2000_dapm_widgets),
+-		.dapm_routes		= wm2000_audio_map,
+-		.num_dapm_routes	= ARRAY_SIZE(wm2000_audio_map),
 -	},
-+	.controls		= cs4271_snd_controls,
-+	.num_controls		= ARRAY_SIZE(cs4271_snd_controls),
-+	.dapm_widgets		= cs4271_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(cs4271_dapm_widgets),
-+	.dapm_routes		= cs4271_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(cs4271_dapm_routes),
++static const struct snd_soc_component_driver soc_component_dev_wm2000 = {
++	.probe			= wm2000_probe,
++	.remove			= wm2000_remove,
++	.suspend		= wm2000_suspend,
++	.resume			= wm2000_resume,
++	.controls		= wm2000_controls,
++	.num_controls		= ARRAY_SIZE(wm2000_controls),
++	.dapm_widgets		= wm2000_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(wm2000_dapm_widgets),
++	.dapm_routes		= wm2000_audio_map,
++	.num_dapm_routes	= ARRAY_SIZE(wm2000_audio_map),
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static int cs4271_common_probe(struct device *dev,
-@@ -721,8 +720,8 @@ int cs4271_probe(struct device *dev, struct regmap *regmap)
- 	dev_set_drvdata(dev, cs4271);
- 	cs4271->regmap = regmap;
+ static int wm2000_i2c_probe(struct i2c_client *i2c,
+@@ -916,7 +917,8 @@ static int wm2000_i2c_probe(struct i2c_client *i2c,
  
--	return snd_soc_register_codec(dev, &soc_codec_dev_cs4271, &cs4271_dai,
--				      1);
-+	return devm_snd_soc_register_component(dev, &soc_component_dev_cs4271,
-+					       &cs4271_dai, 1);
+ 	wm2000_reset(wm2000);
+ 
+-	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_wm2000, NULL, 0);
++	ret = devm_snd_soc_register_component(&i2c->dev,
++					&soc_component_dev_wm2000, NULL, 0);
+ 
+ err_supplies:
+ 	regulator_bulk_disable(WM2000_NUM_SUPPLIES, wm2000->supplies);
+@@ -926,13 +928,6 @@ static int wm2000_i2c_probe(struct i2c_client *i2c,
+ 	return ret;
  }
- EXPORT_SYMBOL_GPL(cs4271_probe);
+ 
+-static int wm2000_i2c_remove(struct i2c_client *i2c)
+-{
+-	snd_soc_unregister_codec(&i2c->dev);
+-
+-	return 0;
+-}
+-
+ static const struct i2c_device_id wm2000_i2c_id[] = {
+ 	{ "wm2000", 0 },
+ 	{ }
+@@ -944,7 +939,6 @@ static struct i2c_driver wm2000_i2c_driver = {
+ 		.name = "wm2000",
+ 	},
+ 	.probe = wm2000_i2c_probe,
+-	.remove = wm2000_i2c_remove,
+ 	.id_table = wm2000_i2c_id,
+ };
  
 -- 
 2.16.1
