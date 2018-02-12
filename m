@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8776: replace codec to component" to
+Subject: Applied "ASoC: wm8737: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:50:38 +0000
-Message-ID: <E1elDZ8-0006F7-Tp@debutante>
-References: <87vafl4bdt.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:50:42 +0000
+Message-ID: <E1elDZC-0006G0-8K@debutante>
+References: <87wp014bea.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5755E268021
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:50:41 +0100 (CET)
-In-Reply-To: <87vafl4bdt.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 926AC268026
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:50:44 +0100 (CET)
+In-Reply-To: <87wp014bea.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8776: replace codec to component
+   ASoC: wm8737: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 51e42c952e872ebcdbbb2418f652e9c678612072 Mon Sep 17 00:00:00 2001
+>From 840680dcc29e2d9b49aee0f2910e8e22cfdf0709 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 03:02:13 +0000
-Subject: [PATCH] ASoC: wm8776: replace codec to component
+Date: Mon, 29 Jan 2018 03:01:57 +0000
+Subject: [PATCH] ASoC: wm8737: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,201 +70,222 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8776.c | 105 ++++++++++++++++++++--------------------------
- 1 file changed, 46 insertions(+), 59 deletions(-)
+ sound/soc/codecs/wm8737.c | 109 ++++++++++++++++++++--------------------------
+ 1 file changed, 47 insertions(+), 62 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8776.c b/sound/soc/codecs/wm8776.c
-index ae30480b3976..fb357e23f221 100644
---- a/sound/soc/codecs/wm8776.c
-+++ b/sound/soc/codecs/wm8776.c
-@@ -78,9 +78,9 @@ static bool wm8776_volatile(struct device *dev, unsigned int reg)
+diff --git a/sound/soc/codecs/wm8737.c b/sound/soc/codecs/wm8737.c
+index f0cb1c4afe3c..e9ae821e7609 100644
+--- a/sound/soc/codecs/wm8737.c
++++ b/sound/soc/codecs/wm8737.c
+@@ -74,9 +74,9 @@ static bool wm8737_volatile(struct device *dev, unsigned int reg)
  	}
  }
  
--static int wm8776_reset(struct snd_soc_codec *codec)
-+static int wm8776_reset(struct snd_soc_component *component)
+-static int wm8737_reset(struct snd_soc_codec *codec)
++static int wm8737_reset(struct snd_soc_component *component)
  {
--	return snd_soc_write(codec, WM8776_RESET, 0);
-+	return snd_soc_component_write(component, WM8776_RESET, 0);
+-	return snd_soc_write(codec, WM8737_RESET, 0);
++	return snd_soc_component_write(component, WM8737_RESET, 0);
  }
  
- static const DECLARE_TLV_DB_SCALE(hp_tlv, -12100, 100, 1);
-@@ -166,7 +166,7 @@ static const struct snd_soc_dapm_route routes[] = {
- 
- static int wm8776_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- {
--	struct snd_soc_codec *codec = dai->codec;
-+	struct snd_soc_component *component = dai->component;
- 	int reg, iface, master;
- 
- 	switch (dai->driver->id) {
-@@ -224,8 +224,8 @@ static int wm8776_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	}
- 
- 	/* Finally, write out the values */
--	snd_soc_update_bits(codec, reg, 0xf, iface);
--	snd_soc_update_bits(codec, WM8776_MSTRCTRL, 0x180, master);
-+	snd_soc_component_update_bits(component, reg, 0xf, iface);
-+	snd_soc_component_update_bits(component, WM8776_MSTRCTRL, 0x180, master);
- 
- 	return 0;
- }
-@@ -243,8 +243,8 @@ static int wm8776_hw_params(struct snd_pcm_substream *substream,
+ static const DECLARE_TLV_DB_RANGE(micboost_tlv,
+@@ -328,8 +328,8 @@ static int wm8737_hw_params(struct snd_pcm_substream *substream,
  			    struct snd_pcm_hw_params *params,
  			    struct snd_soc_dai *dai)
  {
 -	struct snd_soc_codec *codec = dai->codec;
--	struct wm8776_priv *wm8776 = snd_soc_codec_get_drvdata(codec);
+-	struct wm8737_priv *wm8737 = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_component *component = dai->component;
-+	struct wm8776_priv *wm8776 = snd_soc_component_get_drvdata(component);
- 	int iface_reg, iface;
- 	int ratio_shift, master;
++	struct wm8737_priv *wm8737 = snd_soc_component_get_drvdata(component);
  	int i;
-@@ -279,13 +279,13 @@ static int wm8776_hw_params(struct snd_pcm_substream *substream,
- 		iface = 0x30;
- 		break;
- 	default:
--		dev_err(codec->dev, "Unsupported sample size: %i\n",
-+		dev_err(component->dev, "Unsupported sample size: %i\n",
- 			params_width(params));
+ 	u16 clocking = 0;
+ 	u16 af = 0;
+@@ -348,7 +348,7 @@ static int wm8737_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	if (i == ARRAY_SIZE(coeff_div)) {
+-		dev_err(codec->dev, "%dHz MCLK can't support %dHz\n",
++		dev_err(component->dev, "%dHz MCLK can't support %dHz\n",
+ 			wm8737->mclk, params_rate(params));
+ 		return -EINVAL;
+ 	}
+@@ -371,8 +371,8 @@ static int wm8737_hw_params(struct snd_pcm_substream *substream,
  		return -EINVAL;
  	}
  
- 	/* Only need to set MCLK/LRCLK ratio if we're master */
--	if (snd_soc_read(codec, WM8776_MSTRCTRL) & master) {
-+	if (snd_soc_component_read32(component, WM8776_MSTRCTRL) & master) {
- 		for (i = 0; i < ARRAY_SIZE(mclk_ratios); i++) {
- 			if (wm8776->sysclk[dai->driver->id] / params_rate(params)
- 			    == mclk_ratios[i])
-@@ -293,37 +293,37 @@ static int wm8776_hw_params(struct snd_pcm_substream *substream,
+-	snd_soc_update_bits(codec, WM8737_AUDIO_FORMAT, WM8737_WL_MASK, af);
+-	snd_soc_update_bits(codec, WM8737_CLOCKING,
++	snd_soc_component_update_bits(component, WM8737_AUDIO_FORMAT, WM8737_WL_MASK, af);
++	snd_soc_component_update_bits(component, WM8737_CLOCKING,
+ 			    WM8737_USB_MODE | WM8737_CLKDIV2 | WM8737_SR_MASK,
+ 			    clocking);
+ 
+@@ -382,8 +382,8 @@ static int wm8737_hw_params(struct snd_pcm_substream *substream,
+ static int wm8737_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 				 int clk_id, unsigned int freq, int dir)
+ {
+-	struct snd_soc_codec *codec = codec_dai->codec;
+-	struct wm8737_priv *wm8737 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = codec_dai->component;
++	struct wm8737_priv *wm8737 = snd_soc_component_get_drvdata(component);
+ 	int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(coeff_div); i++) {
+@@ -394,7 +394,7 @@ static int wm8737_set_dai_sysclk(struct snd_soc_dai *codec_dai,
  		}
- 
- 		if (i == ARRAY_SIZE(mclk_ratios)) {
--			dev_err(codec->dev,
-+			dev_err(component->dev,
- 				"Unable to configure MCLK ratio %d/%d\n",
- 				wm8776->sysclk[dai->driver->id], params_rate(params));
- 			return -EINVAL;
- 		}
- 
--		dev_dbg(codec->dev, "MCLK is %dfs\n", mclk_ratios[i]);
-+		dev_dbg(component->dev, "MCLK is %dfs\n", mclk_ratios[i]);
- 
--		snd_soc_update_bits(codec, WM8776_MSTRCTRL,
-+		snd_soc_component_update_bits(component, WM8776_MSTRCTRL,
- 				    0x7 << ratio_shift, i << ratio_shift);
- 	} else {
--		dev_dbg(codec->dev, "DAI in slave mode\n");
-+		dev_dbg(component->dev, "DAI in slave mode\n");
  	}
  
--	snd_soc_update_bits(codec, iface_reg, 0x30, iface);
-+	snd_soc_component_update_bits(component, iface_reg, 0x30, iface);
+-	dev_err(codec->dev, "MCLK rate %dHz not supported\n", freq);
++	dev_err(component->dev, "MCLK rate %dHz not supported\n", freq);
+ 
+ 	return -EINVAL;
+ }
+@@ -403,7 +403,7 @@ static int wm8737_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ static int wm8737_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		unsigned int fmt)
+ {
+-	struct snd_soc_codec *codec = codec_dai->codec;
++	struct snd_soc_component *component = codec_dai->component;
+ 	u16 af = 0;
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+@@ -445,16 +445,16 @@ static int wm8737_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		return -EINVAL;
+ 	}
+ 
+-	snd_soc_update_bits(codec, WM8737_AUDIO_FORMAT,
++	snd_soc_component_update_bits(component, WM8737_AUDIO_FORMAT,
+ 			    WM8737_FORMAT_MASK | WM8737_LRP | WM8737_MS, af);
  
  	return 0;
  }
  
- static int wm8776_mute(struct snd_soc_dai *dai, int mute)
- {
--	struct snd_soc_codec *codec = dai->codec;
-+	struct snd_soc_component *component = dai->component;
- 
--	return snd_soc_write(codec, WM8776_DACMUTE, !!mute);
-+	return snd_soc_component_write(component, WM8776_DACMUTE, !!mute);
- }
- 
- static int wm8776_set_sysclk(struct snd_soc_dai *dai,
- 			     int clk_id, unsigned int freq, int dir)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct wm8776_priv *wm8776 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct wm8776_priv *wm8776 = snd_soc_component_get_drvdata(component);
- 
- 	if (WARN_ON(dai->driver->id >= ARRAY_SIZE(wm8776->sysclk)))
- 		return -EINVAL;
-@@ -333,10 +333,10 @@ static int wm8776_set_sysclk(struct snd_soc_dai *dai,
- 	return 0;
- }
- 
--static int wm8776_set_bias_level(struct snd_soc_codec *codec,
-+static int wm8776_set_bias_level(struct snd_soc_component *component,
+-static int wm8737_set_bias_level(struct snd_soc_codec *codec,
++static int wm8737_set_bias_level(struct snd_soc_component *component,
  				 enum snd_soc_bias_level level)
  {
--	struct wm8776_priv *wm8776 = snd_soc_codec_get_drvdata(codec);
-+	struct wm8776_priv *wm8776 = snd_soc_component_get_drvdata(component);
+-	struct wm8737_priv *wm8737 = snd_soc_codec_get_drvdata(codec);
++	struct wm8737_priv *wm8737 = snd_soc_component_get_drvdata(component);
+ 	int ret;
  
  	switch (level) {
- 	case SND_SOC_BIAS_ON:
-@@ -344,16 +344,16 @@ static int wm8776_set_bias_level(struct snd_soc_codec *codec,
+@@ -463,16 +463,16 @@ static int wm8737_set_bias_level(struct snd_soc_codec *codec,
+ 
  	case SND_SOC_BIAS_PREPARE:
+ 		/* VMID at 2*75k */
+-		snd_soc_update_bits(codec, WM8737_MISC_BIAS_CONTROL,
++		snd_soc_component_update_bits(component, WM8737_MISC_BIAS_CONTROL,
+ 				    WM8737_VMIDSEL_MASK, 0);
  		break;
+ 
  	case SND_SOC_BIAS_STANDBY:
 -		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
 +		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
- 			regcache_sync(wm8776->regmap);
+ 			ret = regulator_bulk_enable(ARRAY_SIZE(wm8737->supplies),
+ 						    wm8737->supplies);
+ 			if (ret != 0) {
+-				dev_err(codec->dev,
++				dev_err(component->dev,
+ 					"Failed to enable supplies: %d\n",
+ 					ret);
+ 				return ret;
+@@ -481,12 +481,12 @@ static int wm8737_set_bias_level(struct snd_soc_codec *codec,
+ 			regcache_sync(wm8737->regmap);
  
- 			/* Disable the global powerdown; DAPM does the rest */
--			snd_soc_update_bits(codec, WM8776_PWRDOWN, 1, 0);
-+			snd_soc_component_update_bits(component, WM8776_PWRDOWN, 1, 0);
+ 			/* Fast VMID ramp at 2*2.5k */
+-			snd_soc_update_bits(codec, WM8737_MISC_BIAS_CONTROL,
++			snd_soc_component_update_bits(component, WM8737_MISC_BIAS_CONTROL,
+ 					    WM8737_VMIDSEL_MASK,
+ 					    2 << WM8737_VMIDSEL_SHIFT);
+ 
+ 			/* Bring VMID up */
+-			snd_soc_update_bits(codec, WM8737_POWER_MANAGEMENT,
++			snd_soc_component_update_bits(component, WM8737_POWER_MANAGEMENT,
+ 					    WM8737_VMID_MASK |
+ 					    WM8737_VREF_MASK,
+ 					    WM8737_VMID_MASK |
+@@ -496,14 +496,14 @@ static int wm8737_set_bias_level(struct snd_soc_codec *codec,
  		}
  
- 		break;
- 	case SND_SOC_BIAS_OFF:
--		snd_soc_update_bits(codec, WM8776_PWRDOWN, 1, 1);
-+		snd_soc_component_update_bits(component, WM8776_PWRDOWN, 1, 1);
- 		break;
- 	}
+ 		/* VMID at 2*300k */
+-		snd_soc_update_bits(codec, WM8737_MISC_BIAS_CONTROL,
++		snd_soc_component_update_bits(component, WM8737_MISC_BIAS_CONTROL,
+ 				    WM8737_VMIDSEL_MASK,
+ 				    1 << WM8737_VMIDSEL_SHIFT);
  
-@@ -407,37 +407,38 @@ static struct snd_soc_dai_driver wm8776_dai[] = {
- 	},
+ 		break;
+ 
+ 	case SND_SOC_BIAS_OFF:
+-		snd_soc_update_bits(codec, WM8737_POWER_MANAGEMENT,
++		snd_soc_component_update_bits(component, WM8737_POWER_MANAGEMENT,
+ 				    WM8737_VMID_MASK | WM8737_VREF_MASK, 0);
+ 
+ 		regulator_bulk_disable(ARRAY_SIZE(wm8737->supplies),
+@@ -537,30 +537,30 @@ static struct snd_soc_dai_driver wm8737_dai = {
+ 	.ops = &wm8737_dai_ops,
  };
  
--static int wm8776_probe(struct snd_soc_codec *codec)
-+static int wm8776_probe(struct snd_soc_component *component)
+-static int wm8737_probe(struct snd_soc_codec *codec)
++static int wm8737_probe(struct snd_soc_component *component)
  {
- 	int ret = 0;
+-	struct wm8737_priv *wm8737 = snd_soc_codec_get_drvdata(codec);
++	struct wm8737_priv *wm8737 = snd_soc_component_get_drvdata(component);
+ 	int ret;
  
--	ret = wm8776_reset(codec);
-+	ret = wm8776_reset(component);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to issue reset: %d\n", ret);
-+		dev_err(component->dev, "Failed to issue reset: %d\n", ret);
- 		return ret;
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(wm8737->supplies),
+ 				    wm8737->supplies);
+ 	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to enable supplies: %d\n", ret);
++		dev_err(component->dev, "Failed to enable supplies: %d\n", ret);
+ 		goto err_get;
  	}
  
- 	/* Latch the update bits; right channel only since we always
- 	 * update both. */
--	snd_soc_update_bits(codec, WM8776_HPRVOL, 0x100, 0x100);
--	snd_soc_update_bits(codec, WM8776_DACRVOL, 0x100, 0x100);
-+	snd_soc_component_update_bits(component, WM8776_HPRVOL, 0x100, 0x100);
-+	snd_soc_component_update_bits(component, WM8776_DACRVOL, 0x100, 0x100);
+-	ret = wm8737_reset(codec);
++	ret = wm8737_reset(component);
+ 	if (ret < 0) {
+-		dev_err(codec->dev, "Failed to issue reset\n");
++		dev_err(component->dev, "Failed to issue reset\n");
+ 		goto err_enable;
+ 	}
  
+-	snd_soc_update_bits(codec, WM8737_LEFT_PGA_VOLUME, WM8737_LVU,
++	snd_soc_component_update_bits(component, WM8737_LEFT_PGA_VOLUME, WM8737_LVU,
+ 			    WM8737_LVU);
+-	snd_soc_update_bits(codec, WM8737_RIGHT_PGA_VOLUME, WM8737_RVU,
++	snd_soc_component_update_bits(component, WM8737_RIGHT_PGA_VOLUME, WM8737_RVU,
+ 			    WM8737_RVU);
+ 
+-	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
++	snd_soc_component_force_bias_level(component, SND_SOC_BIAS_STANDBY);
+ 
+ 	/* Bias level configuration will have done an extra enable */
+ 	regulator_bulk_disable(ARRAY_SIZE(wm8737->supplies), wm8737->supplies);
+@@ -573,19 +573,20 @@ static int wm8737_probe(struct snd_soc_codec *codec)
  	return ret;
  }
  
--static const struct snd_soc_codec_driver soc_codec_dev_wm8776 = {
--	.probe = 	wm8776_probe,
--	.set_bias_level = wm8776_set_bias_level,
+-static const struct snd_soc_codec_driver soc_codec_dev_wm8737 = {
+-	.probe		= wm8737_probe,
+-	.set_bias_level = wm8737_set_bias_level,
 -	.suspend_bias_off = true,
 -
 -	.component_driver = {
--		.controls		= wm8776_snd_controls,
--		.num_controls		= ARRAY_SIZE(wm8776_snd_controls),
--		.dapm_widgets		= wm8776_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(wm8776_dapm_widgets),
--		.dapm_routes		= routes,
--		.num_dapm_routes	= ARRAY_SIZE(routes),
+-		.controls		= wm8737_snd_controls,
+-		.num_controls		= ARRAY_SIZE(wm8737_snd_controls),
+-		.dapm_widgets		= wm8737_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(wm8737_dapm_widgets),
+-		.dapm_routes		= intercon,
+-		.num_dapm_routes	= ARRAY_SIZE(intercon),
 -	},
-+static const struct snd_soc_component_driver soc_component_dev_wm8776 = {
-+	.probe			= wm8776_probe,
-+	.set_bias_level		= wm8776_set_bias_level,
-+	.controls		= wm8776_snd_controls,
-+	.num_controls		= ARRAY_SIZE(wm8776_snd_controls),
-+	.dapm_widgets		= wm8776_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(wm8776_dapm_widgets),
-+	.dapm_routes		= routes,
-+	.num_dapm_routes	= ARRAY_SIZE(routes),
++static const struct snd_soc_component_driver soc_component_dev_wm8737 = {
++	.probe			= wm8737_probe,
++	.set_bias_level		= wm8737_set_bias_level,
++	.controls		= wm8737_snd_controls,
++	.num_controls		= ARRAY_SIZE(wm8737_snd_controls),
++	.dapm_widgets		= wm8737_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(wm8737_dapm_widgets),
++	.dapm_routes		= intercon,
++	.num_dapm_routes	= ARRAY_SIZE(intercon),
 +	.suspend_bias_off	= 1,
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
@@ -272,63 +293,66 @@ index ae30480b3976..fb357e23f221 100644
 +	.non_legacy_dai_naming	= 1,
  };
  
- static const struct of_device_id wm8776_of_match[] = {
-@@ -475,25 +476,18 @@ static int wm8776_spi_probe(struct spi_device *spi)
+ static const struct of_device_id wm8737_of_match[] = {
+@@ -635,20 +636,13 @@ static int wm8737_i2c_probe(struct i2c_client *i2c,
  
- 	spi_set_drvdata(spi, wm8776);
+ 	i2c_set_clientdata(i2c, wm8737);
+ 
+-	ret =  snd_soc_register_codec(&i2c->dev,
+-				      &soc_codec_dev_wm8737, &wm8737_dai, 1);
++	ret = devm_snd_soc_register_component(&i2c->dev,
++				&soc_component_dev_wm8737, &wm8737_dai, 1);
+ 
+ 	return ret;
+ 
+ }
+ 
+-static int wm8737_i2c_remove(struct i2c_client *client)
+-{
+-	snd_soc_unregister_codec(&client->dev);
+-
+-	return 0;
+-}
+-
+ static const struct i2c_device_id wm8737_i2c_id[] = {
+ 	{ "wm8737", 0 },
+ 	{ }
+@@ -661,7 +655,6 @@ static struct i2c_driver wm8737_i2c_driver = {
+ 		.of_match_table = wm8737_of_match,
+ 	},
+ 	.probe =    wm8737_i2c_probe,
+-	.remove =   wm8737_i2c_remove,
+ 	.id_table = wm8737_i2c_id,
+ };
+ #endif
+@@ -693,26 +686,18 @@ static int wm8737_spi_probe(struct spi_device *spi)
+ 
+ 	spi_set_drvdata(spi, wm8737);
  
 -	ret = snd_soc_register_codec(&spi->dev,
--			&soc_codec_dev_wm8776, wm8776_dai, ARRAY_SIZE(wm8776_dai));
+-				     &soc_codec_dev_wm8737, &wm8737_dai, 1);
 +	ret = devm_snd_soc_register_component(&spi->dev,
-+			&soc_component_dev_wm8776, wm8776_dai, ARRAY_SIZE(wm8776_dai));
++				&soc_component_dev_wm8737, &wm8737_dai, 1);
  
  	return ret;
  }
  
--static int wm8776_spi_remove(struct spi_device *spi)
+-static int wm8737_spi_remove(struct spi_device *spi)
 -{
 -	snd_soc_unregister_codec(&spi->dev);
+-
 -	return 0;
 -}
 -
- static struct spi_driver wm8776_spi_driver = {
+ static struct spi_driver wm8737_spi_driver = {
  	.driver = {
- 		.name	= "wm8776",
- 		.of_match_table = wm8776_of_match,
+ 		.name	= "wm8737",
+ 		.of_match_table = wm8737_of_match,
  	},
- 	.probe		= wm8776_spi_probe,
--	.remove		= wm8776_spi_remove,
+ 	.probe		= wm8737_spi_probe,
+-	.remove		= wm8737_spi_remove,
  };
  #endif /* CONFIG_SPI_MASTER */
  
-@@ -515,18 +509,12 @@ static int wm8776_i2c_probe(struct i2c_client *i2c,
- 
- 	i2c_set_clientdata(i2c, wm8776);
- 
--	ret =  snd_soc_register_codec(&i2c->dev,
--			&soc_codec_dev_wm8776, wm8776_dai, ARRAY_SIZE(wm8776_dai));
-+	ret = devm_snd_soc_register_component(&i2c->dev,
-+			&soc_component_dev_wm8776, wm8776_dai, ARRAY_SIZE(wm8776_dai));
- 
- 	return ret;
- }
- 
--static int wm8776_i2c_remove(struct i2c_client *client)
--{
--	snd_soc_unregister_codec(&client->dev);
--	return 0;
--}
--
- static const struct i2c_device_id wm8776_i2c_id[] = {
- 	{ "wm8775", WM8775 },
- 	{ "wm8776", WM8776 },
-@@ -540,7 +528,6 @@ static struct i2c_driver wm8776_i2c_driver = {
- 		.of_match_table = wm8776_of_match,
- 	},
- 	.probe =    wm8776_i2c_probe,
--	.remove =   wm8776_i2c_remove,
- 	.id_table = wm8776_i2c_id,
- };
- #endif
 -- 
 2.16.1
