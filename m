@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tas5086: replace codec to component" to
+Subject: Applied "ASoC: sta529: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:37:59 +0000
-Message-ID: <E1elDMt-0004An-3z@debutante>
-References: <87mv0xwan8.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:38:02 +0000
+Message-ID: <E1elDMw-0004Bq-7k@debutante>
+References: <87o9ldwanx.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5926426744A
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:38:01 +0100 (CET)
-In-Reply-To: <87mv0xwan8.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 681CC267900
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:38:04 +0100 (CET)
+In-Reply-To: <87o9ldwanx.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tas5086: replace codec to component
+   ASoC: sta529: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 459bc024b7f2360f656b03562ec02ee5945bd033 Mon Sep 17 00:00:00 2001
+>From 895577874dc8340fbc7dca7402870d3f18d92109 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:30:43 +0000
-Subject: [PATCH] ASoC: tas5086: replace codec to component
+Date: Mon, 29 Jan 2018 04:30:16 +0000
+Subject: [PATCH] ASoC: sta529: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,275 +70,180 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas5086.c | 94 +++++++++++++++++++++++-----------------------
- 1 file changed, 47 insertions(+), 47 deletions(-)
+ sound/soc/codecs/sta529.c | 69 +++++++++++++++++++++--------------------------
+ 1 file changed, 31 insertions(+), 38 deletions(-)
 
-diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
-index 199272d5cb6a..5efc4b7145d4 100644
---- a/sound/soc/codecs/tas5086.c
-+++ b/sound/soc/codecs/tas5086.c
-@@ -261,9 +261,9 @@ struct tas5086_private {
- 
- static int tas5086_deemph[] = { 0, 32000, 44100, 48000 };
- 
--static int tas5086_set_deemph(struct snd_soc_codec *codec)
-+static int tas5086_set_deemph(struct snd_soc_component *component)
- {
--	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct tas5086_private *priv = snd_soc_component_get_drvdata(component);
- 	int i, val = 0;
- 
- 	if (priv->deemph) {
-@@ -282,8 +282,8 @@ static int tas5086_set_deemph(struct snd_soc_codec *codec)
- static int tas5086_get_deemph(struct snd_kcontrol *kcontrol,
- 			      struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct tas5086_private *priv = snd_soc_component_get_drvdata(component);
- 
- 	ucontrol->value.integer.value[0] = priv->deemph;
- 
-@@ -293,20 +293,20 @@ static int tas5086_get_deemph(struct snd_kcontrol *kcontrol,
- static int tas5086_put_deemph(struct snd_kcontrol *kcontrol,
- 			      struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct tas5086_private *priv = snd_soc_component_get_drvdata(component);
- 
- 	priv->deemph = ucontrol->value.integer.value[0];
- 
--	return tas5086_set_deemph(codec);
-+	return tas5086_set_deemph(component);
- }
- 
- 
- static int tas5086_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 				  int clk_id, unsigned int freq, int dir)
- {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct tas5086_private *priv = snd_soc_component_get_drvdata(component);
- 
- 	switch (clk_id) {
- 	case TAS5086_CLK_IDX_MCLK:
-@@ -323,12 +323,12 @@ static int tas5086_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- static int tas5086_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 			       unsigned int format)
- {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct tas5086_private *priv = snd_soc_component_get_drvdata(component);
- 
- 	/* The TAS5086 can only be slave to all clocks */
- 	if ((format & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS) {
--		dev_err(codec->dev, "Invalid clocking mode\n");
-+		dev_err(component->dev, "Invalid clocking mode\n");
- 		return -EINVAL;
- 	}
- 
-@@ -361,8 +361,8 @@ static int tas5086_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params,
- 			     struct snd_soc_dai *dai)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct tas5086_private *priv = snd_soc_component_get_drvdata(component);
- 	int val;
- 	int ret;
- 
-@@ -373,7 +373,7 @@ static int tas5086_hw_params(struct snd_pcm_substream *substream,
- 			     ARRAY_SIZE(tas5086_sample_rates), priv->rate);
- 
- 	if (val < 0) {
--		dev_err(codec->dev, "Invalid sample rate\n");
-+		dev_err(component->dev, "Invalid sample rate\n");
- 		return -EINVAL;
- 	}
- 
-@@ -387,7 +387,7 @@ static int tas5086_hw_params(struct snd_pcm_substream *substream,
- 	val = index_in_array(tas5086_ratios, ARRAY_SIZE(tas5086_ratios),
- 			     priv->mclk / priv->rate);
- 	if (val < 0) {
--		dev_err(codec->dev, "Invalid MCLK / Fs ratio\n");
-+		dev_err(component->dev, "Invalid MCLK / Fs ratio\n");
- 		return -EINVAL;
- 	}
- 
-@@ -424,7 +424,7 @@ static int tas5086_hw_params(struct snd_pcm_substream *substream,
- 		val = 0x06;
- 		break;
- 	default:
--		dev_err(codec->dev, "Invalid DAI format\n");
-+		dev_err(component->dev, "Invalid DAI format\n");
- 		return -EINVAL;
- 	}
- 
-@@ -440,7 +440,7 @@ static int tas5086_hw_params(struct snd_pcm_substream *substream,
- 		val += 2;
- 		break;
- 	default:
--		dev_err(codec->dev, "Invalid bit width\n");
-+		dev_err(component->dev, "Invalid bit width\n");
- 		return -EINVAL;
- 	}
- 
-@@ -454,13 +454,13 @@ static int tas5086_hw_params(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		return ret;
- 
--	return tas5086_set_deemph(codec);
-+	return tas5086_set_deemph(component);
- }
- 
- static int tas5086_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct tas5086_private *priv = snd_soc_component_get_drvdata(component);
- 	unsigned int val = 0;
- 
- 	if (mute)
-@@ -773,9 +773,9 @@ static struct snd_soc_dai_driver tas5086_dai = {
+diff --git a/sound/soc/codecs/sta529.c b/sound/soc/codecs/sta529.c
+index 660734359bf3..2881a0f7bb39 100644
+--- a/sound/soc/codecs/sta529.c
++++ b/sound/soc/codecs/sta529.c
+@@ -151,28 +151,28 @@ static const struct snd_kcontrol_new sta529_snd_controls[] = {
+ 	SOC_ENUM("PWM Select", pwm_src),
  };
  
- #ifdef CONFIG_PM
--static int tas5086_soc_suspend(struct snd_soc_codec *codec)
-+static int tas5086_soc_suspend(struct snd_soc_component *component)
+-static int sta529_set_bias_level(struct snd_soc_codec *codec, enum
++static int sta529_set_bias_level(struct snd_soc_component *component, enum
+ 		snd_soc_bias_level level)
  {
--	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct tas5086_private *priv = snd_soc_component_get_drvdata(component);
- 	int ret;
+-	struct sta529 *sta529 = snd_soc_codec_get_drvdata(codec);
++	struct sta529 *sta529 = snd_soc_component_get_drvdata(component);
  
- 	/* Shut down all channels */
-@@ -788,9 +788,9 @@ static int tas5086_soc_suspend(struct snd_soc_codec *codec)
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+ 	case SND_SOC_BIAS_PREPARE:
+-		snd_soc_update_bits(codec, STA529_FFXCFG0, POWER_CNTLMSAK,
++		snd_soc_component_update_bits(component, STA529_FFXCFG0, POWER_CNTLMSAK,
+ 				POWER_UP);
+-		snd_soc_update_bits(codec, STA529_MISC,	FFX_CLK_MSK,
++		snd_soc_component_update_bits(component, STA529_MISC,	FFX_CLK_MSK,
+ 				FFX_CLK_ENB);
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
+-		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF)
++		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF)
+ 			regcache_sync(sta529->regmap);
+-		snd_soc_update_bits(codec, STA529_FFXCFG0,
++		snd_soc_component_update_bits(component, STA529_FFXCFG0,
+ 					POWER_CNTLMSAK, POWER_STDBY);
+ 		/* Making FFX output to zero */
+-		snd_soc_update_bits(codec, STA529_FFXCFG0, FFX_MASK,
++		snd_soc_component_update_bits(component, STA529_FFXCFG0, FFX_MASK,
+ 				FFX_OFF);
+-		snd_soc_update_bits(codec, STA529_MISC, FFX_CLK_MSK,
++		snd_soc_component_update_bits(component, STA529_MISC, FFX_CLK_MSK,
+ 				FFX_CLK_DIS);
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+@@ -187,7 +187,7 @@ static int sta529_hw_params(struct snd_pcm_substream *substream,
+ 		struct snd_pcm_hw_params *params,
+ 		struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
++	struct snd_soc_component *component = dai->component;
+ 	int pdata, play_freq_val, record_freq_val;
+ 	int bclk_to_fs_ratio;
+ 
+@@ -205,7 +205,7 @@ static int sta529_hw_params(struct snd_pcm_substream *substream,
+ 		bclk_to_fs_ratio = 2;
+ 		break;
+ 	default:
+-		dev_err(codec->dev, "Unsupported format\n");
++		dev_err(component->dev, "Unsupported format\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -228,23 +228,23 @@ static int sta529_hw_params(struct snd_pcm_substream *substream,
+ 		record_freq_val = 0;
+ 		break;
+ 	default:
+-		dev_err(codec->dev, "Unsupported rate\n");
++		dev_err(component->dev, "Unsupported rate\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		snd_soc_update_bits(codec, STA529_S2PCFG1, PDATA_LEN_MSK,
++		snd_soc_component_update_bits(component, STA529_S2PCFG1, PDATA_LEN_MSK,
+ 				pdata << 6);
+-		snd_soc_update_bits(codec, STA529_S2PCFG1, BCLK_TO_FS_MSK,
++		snd_soc_component_update_bits(component, STA529_S2PCFG1, BCLK_TO_FS_MSK,
+ 				bclk_to_fs_ratio << 4);
+-		snd_soc_update_bits(codec, STA529_MISC, PLAY_FREQ_RANGE_MSK,
++		snd_soc_component_update_bits(component, STA529_MISC, PLAY_FREQ_RANGE_MSK,
+ 				play_freq_val << 4);
+ 	} else {
+-		snd_soc_update_bits(codec, STA529_P2SCFG1, PDATA_LEN_MSK,
++		snd_soc_component_update_bits(component, STA529_P2SCFG1, PDATA_LEN_MSK,
+ 				pdata << 6);
+-		snd_soc_update_bits(codec, STA529_P2SCFG1, BCLK_TO_FS_MSK,
++		snd_soc_component_update_bits(component, STA529_P2SCFG1, BCLK_TO_FS_MSK,
+ 				bclk_to_fs_ratio << 4);
+-		snd_soc_update_bits(codec, STA529_MISC, CAP_FREQ_RANGE_MSK,
++		snd_soc_component_update_bits(component, STA529_MISC, CAP_FREQ_RANGE_MSK,
+ 				record_freq_val << 2);
+ 	}
+ 
+@@ -258,14 +258,14 @@ static int sta529_mute(struct snd_soc_dai *dai, int mute)
+ 	if (mute)
+ 		val |= CODEC_MUTE_VAL;
+ 
+-	snd_soc_update_bits(dai->codec, STA529_FFXCFG0, AUDIO_MUTE_MSK, val);
++	snd_soc_component_update_bits(dai->component, STA529_FFXCFG0, AUDIO_MUTE_MSK, val);
+ 
  	return 0;
  }
  
--static int tas5086_soc_resume(struct snd_soc_codec *codec)
-+static int tas5086_soc_resume(struct snd_soc_component *component)
+ static int sta529_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
  {
--	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct tas5086_private *priv = snd_soc_component_get_drvdata(component);
- 	int ret;
+-	struct snd_soc_codec *codec = codec_dai->codec;
++	struct snd_soc_component *component = codec_dai->component;
+ 	u8 mode = 0;
  
- 	ret = regulator_bulk_enable(ARRAY_SIZE(priv->supplies), priv->supplies);
-@@ -800,7 +800,7 @@ static int tas5086_soc_resume(struct snd_soc_codec *codec)
- 	tas5086_reset(priv);
- 	regcache_mark_dirty(priv->regmap);
- 
--	ret = tas5086_init(codec->dev, priv);
-+	ret = tas5086_init(component->dev, priv);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -823,22 +823,22 @@ static const struct of_device_id tas5086_dt_ids[] = {
- MODULE_DEVICE_TABLE(of, tas5086_dt_ids);
- #endif
- 
--static int tas5086_probe(struct snd_soc_codec *codec)
-+static int tas5086_probe(struct snd_soc_component *component)
- {
--	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct tas5086_private *priv = snd_soc_component_get_drvdata(component);
- 	int i, ret;
- 
- 	ret = regulator_bulk_enable(ARRAY_SIZE(priv->supplies), priv->supplies);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to enable regulators: %d\n", ret);
-+		dev_err(component->dev, "Failed to enable regulators: %d\n", ret);
- 		return ret;
+ 	/* interface format */
+@@ -283,7 +283,7 @@ static int sta529_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
+ 		return -EINVAL;
  	}
  
- 	priv->pwm_start_mid_z = 0;
- 	priv->charge_period = 1300000; /* hardware default is 1300 ms */
+-	snd_soc_update_bits(codec, STA529_S2PCFG0, DATA_FORMAT_MSK, mode);
++	snd_soc_component_update_bits(component, STA529_S2PCFG0, DATA_FORMAT_MSK, mode);
  
--	if (of_match_device(of_match_ptr(tas5086_dt_ids), codec->dev)) {
--		struct device_node *of_node = codec->dev->of_node;
-+	if (of_match_device(of_match_ptr(tas5086_dt_ids), component->dev)) {
-+		struct device_node *of_node = component->dev->of_node;
- 
- 		of_property_read_u32(of_node, "ti,charge-period",
- 				     &priv->charge_period);
-@@ -855,7 +855,7 @@ static int tas5086_probe(struct snd_soc_codec *codec)
- 	}
- 
- 	tas5086_reset(priv);
--	ret = tas5086_init(codec->dev, priv);
-+	ret = tas5086_init(component->dev, priv);
- 	if (ret < 0)
- 		goto exit_disable_regulators;
- 
-@@ -872,32 +872,32 @@ static int tas5086_probe(struct snd_soc_codec *codec)
- 	return ret;
+ 	return 0;
  }
- 
--static int tas5086_remove(struct snd_soc_codec *codec)
-+static void tas5086_remove(struct snd_soc_component *component)
- {
--	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct tas5086_private *priv = snd_soc_component_get_drvdata(component);
- 
- 	if (gpio_is_valid(priv->gpio_nreset))
- 		/* Set codec to the reset state */
- 		gpio_set_value(priv->gpio_nreset, 0);
- 
- 	regulator_bulk_disable(ARRAY_SIZE(priv->supplies), priv->supplies);
--
--	return 0;
+@@ -313,14 +313,15 @@ static struct snd_soc_dai_driver sta529_dai = {
+ 	.ops	= &sta529_dai_ops,
  };
  
--static const struct snd_soc_codec_driver soc_codec_dev_tas5086 = {
-+static const struct snd_soc_component_driver soc_component_dev_tas5086 = {
- 	.probe			= tas5086_probe,
- 	.remove			= tas5086_remove,
- 	.suspend		= tas5086_soc_suspend,
- 	.resume			= tas5086_soc_resume,
+-static const struct snd_soc_codec_driver sta529_codec_driver = {
+-	.set_bias_level = sta529_set_bias_level,
+-	.suspend_bias_off = true,
+-
 -	.component_driver = {
--		.controls		= tas5086_controls,
--		.num_controls		= ARRAY_SIZE(tas5086_controls),
--		.dapm_widgets		= tas5086_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(tas5086_dapm_widgets),
--		.dapm_routes		= tas5086_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(tas5086_dapm_routes),
+-		.controls		= sta529_snd_controls,
+-		.num_controls		= ARRAY_SIZE(sta529_snd_controls),
 -	},
-+	.controls		= tas5086_controls,
-+	.num_controls		= ARRAY_SIZE(tas5086_controls),
-+	.dapm_widgets		= tas5086_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(tas5086_dapm_widgets),
-+	.dapm_routes		= tas5086_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(tas5086_dapm_routes),
++static const struct snd_soc_component_driver sta529_component_driver = {
++	.set_bias_level		= sta529_set_bias_level,
++	.controls		= sta529_snd_controls,
++	.num_controls		= ARRAY_SIZE(sta529_snd_controls),
++	.suspend_bias_off	= 1,
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static const struct i2c_device_id tas5086_i2c_id[] = {
-@@ -985,7 +985,8 @@ static int tas5086_i2c_probe(struct i2c_client *i2c,
- 	regulator_bulk_disable(ARRAY_SIZE(priv->supplies), priv->supplies);
+ static const struct regmap_config sta529_regmap = {
+@@ -354,21 +355,14 @@ static int sta529_i2c_probe(struct i2c_client *i2c,
  
- 	if (ret == 0)
--		ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_tas5086,
-+		ret = devm_snd_soc_register_component(&i2c->dev,
-+					     &soc_component_dev_tas5086,
- 					     &tas5086_dai, 1);
+ 	i2c_set_clientdata(i2c, sta529);
+ 
+-	ret = snd_soc_register_codec(&i2c->dev,
+-			&sta529_codec_driver, &sta529_dai, 1);
++	ret = devm_snd_soc_register_component(&i2c->dev,
++			&sta529_component_driver, &sta529_dai, 1);
+ 	if (ret != 0)
+ 		dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
  
  	return ret;
-@@ -993,7 +994,6 @@ static int tas5086_i2c_probe(struct i2c_client *i2c,
- 
- static int tas5086_i2c_remove(struct i2c_client *i2c)
- {
--	snd_soc_unregister_codec(&i2c->dev);
- 	return 0;
  }
+ 
+-static int sta529_i2c_remove(struct i2c_client *client)
+-{
+-	snd_soc_unregister_codec(&client->dev);
+-
+-	return 0;
+-}
+-
+ static const struct i2c_device_id sta529_i2c_id[] = {
+ 	{ "sta529", 0 },
+ 	{ }
+@@ -387,7 +381,6 @@ static struct i2c_driver sta529_i2c_driver = {
+ 		.of_match_table = sta529_of_match,
+ 	},
+ 	.probe		= sta529_i2c_probe,
+-	.remove		= sta529_i2c_remove,
+ 	.id_table	= sta529_i2c_id,
+ };
  
 -- 
 2.16.1
