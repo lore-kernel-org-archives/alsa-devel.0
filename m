@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: atom: replace platform to
+Subject: Applied "ASoC: soc-utils: replace platform to
 	component" to the asoc tree
-Date: Mon, 12 Feb 2018 12:32:45 +0000
-Message-ID: <E1elDHp-0003Rk-CO@debutante>
-References: <87h8t4zj7y.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:32:51 +0000
+Message-ID: <E1elDHv-0003TT-PX@debutante>
+References: <87k1y0zj8u.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9AAF826760F
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:32:53 +0100 (CET)
-In-Reply-To: <87h8t4zj7y.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 74DA226791A
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:32:55 +0100 (CET)
+In-Reply-To: <87k1y0zj8u.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Kp Jeeja <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: atom: replace platform to component
+   ASoC: soc-utils: replace platform to component
 
 has been applied to the asoc tree at
 
@@ -53,243 +53,49 @@ to this mail.
 Thanks,
 Mark
 
->From 6840962b0a19c2716f01f4274f24e153c8ca045c Mon Sep 17 00:00:00 2001
+>From 2d59ebd3e2531c48298e7bee6e621e04fccc4a72 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 02:41:28 +0000
-Subject: [PATCH] ASoC: intel: atom: replace platform to component
+Date: Mon, 29 Jan 2018 02:40:52 +0000
+Subject: [PATCH] ASoC: soc-utils: replace platform to component
 
 Now platform can be replaced to component, let's do it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: "Kp, Jeeja" <jeeja.kp@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst-atom-controls.c          | 36 +++++++++++------------
- sound/soc/intel/atom/sst-mfld-platform-compress.c |  4 +--
- sound/soc/intel/atom/sst-mfld-platform-pcm.c      | 32 ++++++--------------
- sound/soc/intel/atom/sst-mfld-platform.h          |  4 ++-
- 4 files changed, 32 insertions(+), 44 deletions(-)
+ sound/soc/soc-utils.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
-index 0f3604b55942..3672d36b4b66 100644
---- a/sound/soc/intel/atom/sst-atom-controls.c
-+++ b/sound/soc/intel/atom/sst-atom-controls.c
-@@ -1414,11 +1414,11 @@ static int sst_fill_module_list(struct snd_kcontrol *kctl,
-  * name. First part of control name contains the pipe name (widget name).
-  */
- static int sst_fill_widget_module_info(struct snd_soc_dapm_widget *w,
--	struct snd_soc_platform *platform)
-+	struct snd_soc_component *component)
- {
- 	struct snd_kcontrol *kctl;
- 	int index, ret = 0;
--	struct snd_card *card = platform->component.card->snd_card;
-+	struct snd_card *card = component->card->snd_card;
- 	char *idx;
- 
- 	down_read(&card->controls_rwsem);
-@@ -1468,13 +1468,13 @@ static int sst_fill_widget_module_info(struct snd_soc_dapm_widget *w,
- /**
-  * sst_fill_linked_widgets - fill the parent pointer for the linked widget
-  */
--static void sst_fill_linked_widgets(struct snd_soc_platform *platform,
-+static void sst_fill_linked_widgets(struct snd_soc_component *component,
- 						struct sst_ids *ids)
- {
- 	struct snd_soc_dapm_widget *w;
- 	unsigned int len = strlen(ids->parent_wname);
- 
--	list_for_each_entry(w, &platform->component.card->widgets, list) {
-+	list_for_each_entry(w, &component->card->widgets, list) {
- 		if (!strncmp(ids->parent_wname, w->name, len)) {
- 			ids->parent_w = w;
- 			break;
-@@ -1485,41 +1485,41 @@ static void sst_fill_linked_widgets(struct snd_soc_platform *platform,
- /**
-  * sst_map_modules_to_pipe - fill algo/gains list for all pipes
-  */
--static int sst_map_modules_to_pipe(struct snd_soc_platform *platform)
-+static int sst_map_modules_to_pipe(struct snd_soc_component *component)
- {
- 	struct snd_soc_dapm_widget *w;
- 	int ret = 0;
- 
--	list_for_each_entry(w, &platform->component.card->widgets, list) {
-+	list_for_each_entry(w, &component->card->widgets, list) {
- 		if (is_sst_dapm_widget(w) && (w->priv)) {
- 			struct sst_ids *ids = w->priv;
- 
--			dev_dbg(platform->dev, "widget type=%d name=%s\n",
-+			dev_dbg(component->dev, "widget type=%d name=%s\n",
- 					w->id, w->name);
- 			INIT_LIST_HEAD(&ids->algo_list);
- 			INIT_LIST_HEAD(&ids->gain_list);
--			ret = sst_fill_widget_module_info(w, platform);
-+			ret = sst_fill_widget_module_info(w, component);
- 
- 			if (ret < 0)
- 				return ret;
- 
- 			/* fill linked widgets */
- 			if (ids->parent_wname !=  NULL)
--				sst_fill_linked_widgets(platform, ids);
-+				sst_fill_linked_widgets(component, ids);
- 		}
- 	}
- 	return 0;
- }
- 
--int sst_dsp_init_v2_dpcm(struct snd_soc_platform *platform)
-+int sst_dsp_init_v2_dpcm(struct snd_soc_component *component)
- {
- 	int i, ret = 0;
- 	struct snd_soc_dapm_context *dapm =
--			snd_soc_component_get_dapm(&platform->component);
--	struct sst_data *drv = snd_soc_platform_get_drvdata(platform);
-+			snd_soc_component_get_dapm(component);
-+	struct sst_data *drv = snd_soc_component_get_drvdata(component);
- 	unsigned int gains = ARRAY_SIZE(sst_gain_controls)/3;
- 
--	drv->byte_stream = devm_kzalloc(platform->dev,
-+	drv->byte_stream = devm_kzalloc(component->dev,
- 					SST_MAX_BIN_BYTES, GFP_KERNEL);
- 	if (!drv->byte_stream)
- 		return -ENOMEM;
-@@ -1537,26 +1537,26 @@ int sst_dsp_init_v2_dpcm(struct snd_soc_platform *platform)
- 		sst_gains[i].ramp_duration = SST_GAIN_RAMP_DURATION_DEFAULT;
- 	}
- 
--	ret = snd_soc_add_platform_controls(platform, sst_gain_controls,
-+	ret = snd_soc_add_component_controls(component, sst_gain_controls,
- 			ARRAY_SIZE(sst_gain_controls));
- 	if (ret)
- 		return ret;
- 
- 	/* Initialize algo control params */
--	ret = sst_algo_control_init(platform->dev);
-+	ret = sst_algo_control_init(component->dev);
- 	if (ret)
- 		return ret;
--	ret = snd_soc_add_platform_controls(platform, sst_algo_controls,
-+	ret = snd_soc_add_component_controls(component, sst_algo_controls,
- 			ARRAY_SIZE(sst_algo_controls));
- 	if (ret)
- 		return ret;
- 
--	ret = snd_soc_add_platform_controls(platform, sst_slot_controls,
-+	ret = snd_soc_add_component_controls(component, sst_slot_controls,
- 			ARRAY_SIZE(sst_slot_controls));
- 	if (ret)
- 		return ret;
- 
--	ret = sst_map_modules_to_pipe(platform);
-+	ret = sst_map_modules_to_pipe(component);
- 
- 	return ret;
- }
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-compress.c b/sound/soc/intel/atom/sst-mfld-platform-compress.c
-index 1dbcab5a6ff0..6a44b19423cf 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-compress.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-compress.c
-@@ -107,8 +107,8 @@ static int sst_platform_compr_set_params(struct snd_compr_stream *cstream,
- 	struct snd_sst_params str_params;
- 	struct sst_compress_cb cb;
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
--	struct snd_soc_platform *platform = rtd->platform;
--	struct sst_data *ctx = snd_soc_platform_get_drvdata(platform);
-+	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct sst_data *ctx = snd_soc_component_get_drvdata(component);
- 
- 	stream = cstream->runtime->private_data;
- 	/* construct fw structure for this*/
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index 43e7fdd19f29..6c36da560877 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -697,26 +697,22 @@ static int sst_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 	return retval;
- }
- 
--static int sst_soc_probe(struct snd_soc_platform *platform)
-+static int sst_soc_probe(struct snd_soc_component *component)
- {
--	struct sst_data *drv = dev_get_drvdata(platform->dev);
-+	struct sst_data *drv = dev_get_drvdata(component->dev);
- 
--	drv->soc_card = platform->component.card;
--	return sst_dsp_init_v2_dpcm(platform);
-+	drv->soc_card = component->card;
-+	return sst_dsp_init_v2_dpcm(component);
- }
- 
--static const struct snd_soc_platform_driver sst_soc_platform_drv  = {
-+static const struct snd_soc_component_driver sst_soc_platform_drv  = {
-+	.name		= DRV_NAME,
- 	.probe		= sst_soc_probe,
- 	.ops		= &sst_platform_ops,
- 	.compr_ops	= &sst_platform_compr_ops,
- 	.pcm_new	= sst_pcm_new,
+diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+index bcd3da2739e2..e237858c9ed4 100644
+--- a/sound/soc/soc-utils.c
++++ b/sound/soc/soc-utils.c
+@@ -284,7 +284,7 @@ static const struct snd_pcm_ops dummy_dma_ops = {
+ 	.ioctl		= snd_pcm_lib_ioctl,
  };
  
--static const struct snd_soc_component_driver sst_component = {
--	.name		= "sst",
--};
--
--
- static int sst_platform_probe(struct platform_device *pdev)
- {
- 	struct sst_data *drv;
-@@ -740,26 +736,16 @@ static int sst_platform_probe(struct platform_device *pdev)
- 	mutex_init(&drv->lock);
- 	dev_set_drvdata(&pdev->dev, drv);
+-static const struct snd_soc_platform_driver dummy_platform = {
++static const struct snd_soc_component_driver dummy_platform = {
+ 	.ops = &dummy_dma_ops,
+ };
  
--	ret = snd_soc_register_platform(&pdev->dev, &sst_soc_platform_drv);
--	if (ret) {
--		dev_err(&pdev->dev, "registering soc platform failed\n");
--		return ret;
--	}
--
--	ret = snd_soc_register_component(&pdev->dev, &sst_component,
-+	ret = devm_snd_soc_register_component(&pdev->dev, &sst_soc_platform_drv,
- 				sst_platform_dai, ARRAY_SIZE(sst_platform_dai));
--	if (ret) {
-+	if (ret)
- 		dev_err(&pdev->dev, "registering cpu dais failed\n");
--		snd_soc_unregister_platform(&pdev->dev);
--	}
-+
- 	return ret;
- }
+@@ -342,7 +342,8 @@ static int snd_soc_dummy_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		return ret;
  
- static int sst_platform_remove(struct platform_device *pdev)
+-	ret = snd_soc_register_platform(&pdev->dev, &dummy_platform);
++	ret = devm_snd_soc_register_component(&pdev->dev, &dummy_platform,
++					      NULL, 0);
+ 	if (ret < 0) {
+ 		snd_soc_unregister_codec(&pdev->dev);
+ 		return ret;
+@@ -353,7 +354,6 @@ static int snd_soc_dummy_probe(struct platform_device *pdev)
+ 
+ static int snd_soc_dummy_remove(struct platform_device *pdev)
  {
--
--	snd_soc_unregister_component(&pdev->dev);
 -	snd_soc_unregister_platform(&pdev->dev);
- 	dev_dbg(&pdev->dev, "sst_platform_remove success\n");
+ 	snd_soc_unregister_codec(&pdev->dev);
+ 
  	return 0;
- }
-diff --git a/sound/soc/intel/atom/sst-mfld-platform.h b/sound/soc/intel/atom/sst-mfld-platform.h
-index 31a58c25472c..5f729df57bb5 100644
---- a/sound/soc/intel/atom/sst-mfld-platform.h
-+++ b/sound/soc/intel/atom/sst-mfld-platform.h
-@@ -27,6 +27,8 @@
- extern struct sst_device *sst;
- extern const struct snd_compr_ops sst_platform_compr_ops;
- 
-+#define DRV_NAME "sst"
-+
- #define SST_MONO		1
- #define SST_STEREO		2
- #define SST_MAX_CAP		5
-@@ -155,7 +157,7 @@ struct sst_device {
- 
- struct sst_data;
- 
--int sst_dsp_init_v2_dpcm(struct snd_soc_platform *platform);
-+int sst_dsp_init_v2_dpcm(struct snd_soc_component *component);
- int sst_send_pipe_gains(struct snd_soc_dai *dai, int stream, int mute);
- int send_ssp_cmd(struct snd_soc_dai *dai, const char *id, bool enable);
- int sst_handle_vb_timer(struct snd_soc_dai *dai, bool enable);
 -- 
 2.16.1
