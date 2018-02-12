@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: es8316: replace codec to component" to
+Subject: Applied "ASoC: nau8810: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:37:42 +0000
-Message-ID: <E1elDMc-00046i-KU@debutante>
-References: <87fu6pwakn.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:37:48 +0000
+Message-ID: <E1elDMi-00048J-TB@debutante>
+References: <87inblwalq.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 04A4B267601
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:37:44 +0100 (CET)
-In-Reply-To: <87fu6pwakn.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0AC062678F6
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:37:51 +0100 (CET)
+In-Reply-To: <87inblwalq.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: es8316: replace codec to component
+   ASoC: nau8810: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,16 +53,16 @@ to this mail.
 Thanks,
 Mark
 
->From 2ff52976788bae279d031632ad9c22df0f829fa2 Mon Sep 17 00:00:00 2001
+>From 61cf1c47e479ca0905d5ae54c1aa93065f69bf3e Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:32:16 +0000
-Subject: [PATCH] ASoC: es8316: replace codec to component
+Date: Mon, 29 Jan 2018 04:31:36 +0000
+Subject: [PATCH] ASoC: nau8810: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
 Note:
 	xxx_codec_xxx()		->	xxx_component_xxx()
-	.idle_bias_off = 1	->	.idle_bias_on = 0
+	.idle_bias_off = 0	->	.idle_bias_on = 1
 	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
 	-			->	.endianness = 1
 	-			->	.non_legacy_dai_naming = 1
@@ -70,204 +70,178 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/es8316.c | 80 +++++++++++++++++++++--------------------------
- 1 file changed, 36 insertions(+), 44 deletions(-)
+ sound/soc/codecs/nau8810.c | 73 +++++++++++++++++++++-------------------------
+ 1 file changed, 33 insertions(+), 40 deletions(-)
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index da2d353af5ba..e97d12d578b0 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -356,8 +356,8 @@ static const struct snd_soc_dapm_route es8316_dapm_routes[] = {
- static int es8316_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+diff --git a/sound/soc/codecs/nau8810.c b/sound/soc/codecs/nau8810.c
+index c8e2451ae0a3..ca2ba1c7bb9a 100644
+--- a/sound/soc/codecs/nau8810.c
++++ b/sound/soc/codecs/nau8810.c
+@@ -167,8 +167,8 @@ static bool nau8810_volatile_reg(struct device *dev, unsigned int reg)
+ static int nau8810_eq_get(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct nau8810 *nau8810 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct nau8810 *nau8810 = snd_soc_component_get_drvdata(component);
+ 	struct soc_bytes_ext *params = (void *)kcontrol->private_value;
+ 	int i, reg, reg_val;
+ 	u16 *val;
+@@ -198,8 +198,8 @@ static int nau8810_eq_get(struct snd_kcontrol *kcontrol,
+ static int nau8810_eq_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct nau8810 *nau8810 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct nau8810 *nau8810 = snd_soc_component_get_drvdata(component);
+ 	struct soc_bytes_ext *params = (void *)kcontrol->private_value;
+ 	void *data;
+ 	u16 *val, value;
+@@ -219,7 +219,7 @@ static int nau8810_eq_put(struct snd_kcontrol *kcontrol,
+ 		value = be16_to_cpu(*(val + i));
+ 		ret = regmap_write(nau8810->regmap, reg + i, value);
+ 		if (ret) {
+-			dev_err(codec->dev, "EQ configuration fail, register: %x ret: %d\n",
++			dev_err(component->dev, "EQ configuration fail, register: %x ret: %d\n",
+ 				reg + i, ret);
+ 			kfree(data);
+ 			return ret;
+@@ -399,8 +399,8 @@ static const struct snd_kcontrol_new nau8810_loopback =
+ static int check_mclk_select_pll(struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink)
+ {
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
+-	struct nau8810 *nau8810 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(source->dapm);
++	struct nau8810 *nau8810 = snd_soc_component_get_drvdata(component);
+ 	unsigned int value;
+ 
+ 	regmap_read(nau8810->regmap, NAU8810_REG_CLOCK, &value);
+@@ -485,8 +485,8 @@ static const struct snd_soc_dapm_route nau8810_dapm_routes[] = {
+ static int nau8810_set_sysclk(struct snd_soc_dai *dai,
  				 int clk_id, unsigned int freq, int dir)
  {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct es8316_priv *es8316 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct es8316_priv *es8316 = snd_soc_component_get_drvdata(component);
- 	int i;
- 	int count = 0;
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct nau8810 *nau8810 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct nau8810 *nau8810 = snd_soc_component_get_drvdata(component);
  
-@@ -385,19 +385,19 @@ static int es8316_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- static int es8316_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 			      unsigned int fmt)
+ 	nau8810->clk_id = clk_id;
+ 	nau8810->sysclk = freq;
+@@ -538,8 +538,8 @@ static int nau88l0_calc_pll(unsigned int pll_in,
+ static int nau8810_set_pll(struct snd_soc_dai *codec_dai, int pll_id,
+ 	int source, unsigned int freq_in, unsigned int freq_out)
  {
 -	struct snd_soc_codec *codec = codec_dai->codec;
+-	struct nau8810 *nau8810 = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_component *component = codec_dai->component;
- 	u8 serdata1 = 0;
- 	u8 serdata2 = 0;
- 	u8 clksw;
- 	u8 mask;
++	struct nau8810 *nau8810 = snd_soc_component_get_drvdata(component);
+ 	struct regmap *map = nau8810->regmap;
+ 	struct nau8810_pll *pll_param = &nau8810->pll;
+ 	int ret, fs;
+@@ -577,8 +577,8 @@ static int nau8810_set_pll(struct snd_soc_dai *codec_dai, int pll_id,
+ static int nau8810_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		unsigned int fmt)
+ {
+-	struct snd_soc_codec *codec = codec_dai->codec;
+-	struct nau8810 *nau8810 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = codec_dai->component;
++	struct nau8810 *nau8810 = snd_soc_component_get_drvdata(component);
+ 	u16 ctrl1_val = 0, ctrl2_val = 0;
  
- 	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS) {
--		dev_err(codec->dev, "Codec driver only supports slave mode\n");
-+		dev_err(component->dev, "Codec driver only supports slave mode\n");
- 		return -EINVAL;
- 	}
- 
- 	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) != SND_SOC_DAIFMT_I2S) {
--		dev_err(codec->dev, "Codec driver only supports I2S format\n");
-+		dev_err(component->dev, "Codec driver only supports I2S format\n");
- 		return -EINVAL;
- 	}
- 
-@@ -420,15 +420,15 @@ static int es8316_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	}
- 
- 	mask = ES8316_SERDATA1_MASTER | ES8316_SERDATA1_BCLK_INV;
--	snd_soc_update_bits(codec, ES8316_SERDATA1, mask, serdata1);
-+	snd_soc_component_update_bits(component, ES8316_SERDATA1, mask, serdata1);
- 
- 	mask = ES8316_SERDATA2_FMT_MASK | ES8316_SERDATA2_ADCLRP;
--	snd_soc_update_bits(codec, ES8316_SERDATA_ADC, mask, serdata2);
--	snd_soc_update_bits(codec, ES8316_SERDATA_DAC, mask, serdata2);
-+	snd_soc_component_update_bits(component, ES8316_SERDATA_ADC, mask, serdata2);
-+	snd_soc_component_update_bits(component, ES8316_SERDATA_DAC, mask, serdata2);
- 
- 	/* Enable BCLK and MCLK inputs in slave mode */
- 	clksw = ES8316_CLKMGR_CLKSW_MCLK_ON | ES8316_CLKMGR_CLKSW_BCLK_ON;
--	snd_soc_update_bits(codec, ES8316_CLKMGR_CLKSW, clksw, clksw);
-+	snd_soc_component_update_bits(component, ES8316_CLKMGR_CLKSW, clksw, clksw);
- 
- 	return 0;
- }
-@@ -436,11 +436,11 @@ static int es8316_set_dai_fmt(struct snd_soc_dai *codec_dai,
- static int es8316_pcm_startup(struct snd_pcm_substream *substream,
- 			      struct snd_soc_dai *dai)
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+@@ -667,8 +667,8 @@ static int nau8810_mclk_clkdiv(struct nau8810 *nau8810, int rate)
+ static int nau8810_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
  {
 -	struct snd_soc_codec *codec = dai->codec;
--	struct es8316_priv *es8316 = snd_soc_codec_get_drvdata(codec);
+-	struct nau8810 *nau8810 = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_component *component = dai->component;
-+	struct es8316_priv *es8316 = snd_soc_component_get_drvdata(component);
++	struct nau8810 *nau8810 = snd_soc_component_get_drvdata(component);
+ 	int val_len = 0, val_rate = 0, ret = 0;
  
- 	if (es8316->sysclk == 0) {
--		dev_err(codec->dev, "No sysclk provided\n");
-+		dev_err(component->dev, "No sysclk provided\n");
- 		return -EINVAL;
- 	}
- 
-@@ -458,13 +458,12 @@ static int es8316_pcm_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params,
- 				struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_codec *codec = rtd->codec;
--	struct es8316_priv *es8316 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct es8316_priv *es8316 = snd_soc_component_get_drvdata(component);
- 	u8 wordlen = 0;
- 
- 	if (!es8316->sysclk) {
--		dev_err(codec->dev, "No MCLK configured\n");
-+		dev_err(component->dev, "No MCLK configured\n");
- 		return -EINVAL;
- 	}
- 
-@@ -485,16 +484,16 @@ static int es8316_pcm_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
--	snd_soc_update_bits(codec, ES8316_SERDATA_DAC,
-+	snd_soc_component_update_bits(component, ES8316_SERDATA_DAC,
- 			    ES8316_SERDATA2_LEN_MASK, wordlen);
--	snd_soc_update_bits(codec, ES8316_SERDATA_ADC,
-+	snd_soc_component_update_bits(component, ES8316_SERDATA_ADC,
- 			    ES8316_SERDATA2_LEN_MASK, wordlen);
- 	return 0;
+ 	switch (params_width(params)) {
+@@ -723,10 +723,10 @@ static int nau8810_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
  }
  
- static int es8316_mute(struct snd_soc_dai *dai, int mute)
+-static int nau8810_set_bias_level(struct snd_soc_codec *codec,
++static int nau8810_set_bias_level(struct snd_soc_component *component,
+ 	enum snd_soc_bias_level level)
  {
--	snd_soc_update_bits(dai->codec, ES8316_DAC_SET1, 0x20,
-+	snd_soc_component_update_bits(dai->component, ES8316_DAC_SET1, 0x20,
- 			    mute ? 0x20 : 0);
- 	return 0;
- }
-@@ -530,42 +529,41 @@ static struct snd_soc_dai_driver es8316_dai = {
- 	.symmetric_rates = 1,
+-	struct nau8810 *nau8810 = snd_soc_codec_get_drvdata(codec);
++	struct nau8810 *nau8810 = snd_soc_component_get_drvdata(component);
+ 	struct regmap *map = nau8810->regmap;
+ 
+ 	switch (level) {
+@@ -741,7 +741,7 @@ static int nau8810_set_bias_level(struct snd_soc_codec *codec,
+ 			NAU8810_IOBUF_EN | NAU8810_ABIAS_EN,
+ 			NAU8810_IOBUF_EN | NAU8810_ABIAS_EN);
+ 
+-		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
++		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
+ 			regcache_sync(map);
+ 			regmap_update_bits(map, NAU8810_REG_POWER1,
+ 				NAU8810_REFIMP_MASK, NAU8810_REFIMP_3K);
+@@ -808,18 +808,19 @@ static const struct regmap_config nau8810_regmap_config = {
+ 	.num_reg_defaults = ARRAY_SIZE(nau8810_reg_defaults),
  };
  
--static int es8316_probe(struct snd_soc_codec *codec)
-+static int es8316_probe(struct snd_soc_component *component)
- {
- 	/* Reset codec and enable current state machine */
--	snd_soc_write(codec, ES8316_RESET, 0x3f);
-+	snd_soc_component_write(component, ES8316_RESET, 0x3f);
- 	usleep_range(5000, 5500);
--	snd_soc_write(codec, ES8316_RESET, ES8316_RESET_CSM_ON);
-+	snd_soc_component_write(component, ES8316_RESET, ES8316_RESET_CSM_ON);
- 	msleep(30);
- 
- 	/*
- 	 * Documentation is unclear, but this value from the vendor driver is
- 	 * needed otherwise audio output is silent.
- 	 */
--	snd_soc_write(codec, ES8316_SYS_VMIDSEL, 0xff);
-+	snd_soc_component_write(component, ES8316_SYS_VMIDSEL, 0xff);
- 
- 	/*
- 	 * Documentation for this register is unclear and incomplete,
- 	 * but here is a vendor-provided value that improves volume
- 	 * and quality for Intel CHT platforms.
- 	 */
--	snd_soc_write(codec, ES8316_CLKMGR_ADCOSR, 0x32);
-+	snd_soc_component_write(component, ES8316_CLKMGR_ADCOSR, 0x32);
- 
- 	return 0;
- }
- 
--static const struct snd_soc_codec_driver soc_codec_dev_es8316 = {
--	.probe		= es8316_probe,
--	.idle_bias_off	= true,
+-static const struct snd_soc_codec_driver nau8810_codec_driver = {
+-	.set_bias_level = nau8810_set_bias_level,
+-	.suspend_bias_off = true,
 -
 -	.component_driver = {
--		.controls		= es8316_snd_controls,
--		.num_controls		= ARRAY_SIZE(es8316_snd_controls),
--		.dapm_widgets		= es8316_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(es8316_dapm_widgets),
--		.dapm_routes		= es8316_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(es8316_dapm_routes),
+-		.controls = nau8810_snd_controls,
+-		.num_controls = ARRAY_SIZE(nau8810_snd_controls),
+-		.dapm_widgets = nau8810_dapm_widgets,
+-		.num_dapm_widgets = ARRAY_SIZE(nau8810_dapm_widgets),
+-		.dapm_routes = nau8810_dapm_routes,
+-		.num_dapm_routes = ARRAY_SIZE(nau8810_dapm_routes),
 -	},
-+static const struct snd_soc_component_driver soc_component_dev_es8316 = {
-+	.probe			= es8316_probe,
-+	.controls		= es8316_snd_controls,
-+	.num_controls		= ARRAY_SIZE(es8316_snd_controls),
-+	.dapm_widgets		= es8316_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(es8316_dapm_widgets),
-+	.dapm_routes		= es8316_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(es8316_dapm_routes),
++static const struct snd_soc_component_driver nau8810_component_driver = {
++	.set_bias_level		= nau8810_set_bias_level,
++	.controls		= nau8810_snd_controls,
++	.num_controls		= ARRAY_SIZE(nau8810_snd_controls),
++	.dapm_widgets		= nau8810_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(nau8810_dapm_widgets),
++	.dapm_routes		= nau8810_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(nau8810_dapm_routes),
++	.suspend_bias_off	= 1,
++	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static const struct regmap_config es8316_regmap = {
-@@ -592,16 +590,11 @@ static int es8316_i2c_probe(struct i2c_client *i2c_client,
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
+ static int nau8810_i2c_probe(struct i2c_client *i2c,
+@@ -842,15 +843,8 @@ static int nau8810_i2c_probe(struct i2c_client *i2c,
  
--	return snd_soc_register_codec(&i2c_client->dev, &soc_codec_dev_es8316,
-+	return devm_snd_soc_register_component(&i2c_client->dev,
-+				      &soc_component_dev_es8316,
- 				      &es8316_dai, 1);
- }
+ 	regmap_write(nau8810->regmap, NAU8810_REG_RESET, 0x00);
  
--static int es8316_i2c_remove(struct i2c_client *client)
--{
--	snd_soc_unregister_codec(&client->dev);
--	return 0;
+-	return snd_soc_register_codec(dev,
+-		&nau8810_codec_driver, &nau8810_dai, 1);
 -}
 -
- static const struct i2c_device_id es8316_i2c_id[] = {
- 	{"es8316", 0 },
- 	{}
-@@ -627,7 +620,6 @@ static struct i2c_driver es8316_i2c_driver = {
- 		.of_match_table		= of_match_ptr(es8316_of_match),
+-static int nau8810_i2c_remove(struct i2c_client *client)
+-{
+-	snd_soc_unregister_codec(&client->dev);
+-
+-	return 0;
++	return devm_snd_soc_register_component(dev,
++		&nau8810_component_driver, &nau8810_dai, 1);
+ }
+ 
+ static const struct i2c_device_id nau8810_i2c_id[] = {
+@@ -873,7 +867,6 @@ static struct i2c_driver nau8810_i2c_driver = {
+ 		.of_match_table = of_match_ptr(nau8810_of_match),
  	},
- 	.probe		= es8316_i2c_probe,
--	.remove		= es8316_i2c_remove,
- 	.id_table	= es8316_i2c_id,
+ 	.probe =    nau8810_i2c_probe,
+-	.remove =   nau8810_i2c_remove,
+ 	.id_table = nau8810_i2c_id,
  };
- module_i2c_driver(es8316_i2c_driver);
+ 
 -- 
 2.16.1
