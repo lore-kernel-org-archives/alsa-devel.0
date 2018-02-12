@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_utils: Use 'const _be *' type for
+Subject: Applied "ASoC: fsl_esai: Use 'const _be *' type for
 	iprop" to the asoc tree
-Date: Mon, 12 Feb 2018 12:52:55 +0000
-Message-ID: <E1elDbL-0006at-C5@debutante>
-References: <1518386001-4322-3-git-send-email-festevam@gmail.com>
+Date: Mon, 12 Feb 2018 12:52:59 +0000
+Message-ID: <E1elDbP-0006bl-0f@debutante>
+References: <1518386001-4322-2-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BC2CB267B67
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:52:57 +0100 (CET)
-In-Reply-To: <1518386001-4322-3-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 211E9268197
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:53:01 +0100 (CET)
+In-Reply-To: <1518386001-4322-2-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_utils: Use 'const _be *' type for iprop
+   ASoC: fsl_esai: Use 'const _be *' type for iprop
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From cb3981b6a64e1353b4f8ee70f97583f59c9772d0 Mon Sep 17 00:00:00 2001
+>From 0600b3e101b718557c1851c4a3ff456aa18e4956 Mon Sep 17 00:00:00 2001
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Sun, 11 Feb 2018 19:53:20 -0200
-Subject: [PATCH] ASoC: fsl_utils: Use 'const _be *' type for iprop
+Date: Sun, 11 Feb 2018 19:53:19 -0200
+Subject: [PATCH] ASoC: fsl_esai: Use 'const _be *' type for iprop
 
 The 'iprop' variable is passed as an argument to the be32_to_cpup()
 function, which expects a 'const _be *' type.
@@ -64,31 +64,28 @@ function, which expects a 'const _be *' type.
 Change the iprop variable type so that the following build warnings
 with W=1 are gone:
 
-sound/soc/fsl/fsl_utils.c:72:40: warning: incorrect type in argument 1 (different base types)
-sound/soc/fsl/fsl_utils.c:72:40:    expected restricted __be32 const [usertype] *p
-sound/soc/fsl/fsl_utils.c:72:40:    got unsigned int const [usertype] *[assigned] iprop
-sound/soc/fsl/fsl_utils.c:80:32: warning: incorrect type in argument 1 (different base types)
-sound/soc/fsl/fsl_utils.c:80:32:    expected restricted __be32 const [usertype] *p
-sound/soc/fsl/fsl_utils.c:80:32:    got unsigned int const [usertype] *[assigned] iprop
+sound/soc/fsl/fsl_esai.c:860:54: warning: incorrect type in argument 1 (different base types)
+sound/soc/fsl/fsl_esai.c:860:54:    expected restricted __be32 const [usertype] *p
+sound/soc/fsl/fsl_esai.c:860:54:    got unsigned int const [usertype] *[assigned] iprop
 
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_utils.c | 2 +-
+ sound/soc/fsl/fsl_esai.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_utils.c b/sound/soc/fsl/fsl_utils.c
-index b9e42b503a37..7592b0406370 100644
---- a/sound/soc/fsl/fsl_utils.c
-+++ b/sound/soc/fsl/fsl_utils.c
-@@ -36,7 +36,7 @@ int fsl_asoc_get_dma_channel(struct device_node *ssi_np,
- {
- 	struct resource res;
- 	struct device_node *dma_channel_np, *dma_np;
--	const u32 *iprop;
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index cef79a1a620b..40a700493f4c 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -788,7 +788,7 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct fsl_esai *esai_priv;
+ 	struct resource *res;
+-	const uint32_t *iprop;
 +	const __be32 *iprop;
- 	int ret;
+ 	void __iomem *regs;
+ 	int irq, ret;
  
- 	dma_channel_np = of_parse_phandle(ssi_np, name, 0);
 -- 
 2.16.1
