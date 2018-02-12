@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: uniphier: add support for UniPhier AIO compress audio" to the asoc tree
-Date: Mon, 12 Feb 2018 12:54:19 +0000
-Message-ID: <E1elDch-00079T-Mh@debutante>
-References: <20180119092536.22501-6-suzuki.katsuhiro@socionext.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180119092536.22501-6-suzuki.katsuhiro@socionext.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: pcm512x: replace codec to component" to
+	the asoc tree
+Date: Mon, 12 Feb 2018 12:39:26 +0000
+Message-ID: <E1elDOI-0004W9-15@debutante>
+References: <87po5txpry.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id AAF40267645
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:39:28 +0100 (CET)
+In-Reply-To: <87po5txpry.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: uniphier: add support for UniPhier AIO compress audio
+   ASoC: pcm512x: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -37,517 +53,502 @@ to this mail.
 Thanks,
 Mark
 
->From e98131222ff931a670739cede00d1fb9d6f83763 Mon Sep 17 00:00:00 2001
-From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Date: Fri, 19 Jan 2018 18:25:32 +0900
-Subject: [PATCH] ASoC: uniphier: add support for UniPhier AIO compress audio
+>From 5bdef14a35bb99e792951113487043f95f579a05 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 29 Jan 2018 04:18:32 +0000
+Subject: [PATCH] ASoC: pcm512x: replace codec to component
 
-This patch adds support of UniPhier AIO compress audio.
-For passing through compress audio to S/PDIF.
+Now we can replace Codec to Component. Let's do it.
 
-Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Note:
+	xxx_codec_xxx()		->	xxx_component_xxx()
+	.idle_bias_off = 1	->	.idle_bias_on = 0
+	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
+	-			->	.endianness = 1
+	-			->	.non_legacy_dai_naming = 1
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/uniphier/Kconfig        |   1 +
- sound/soc/uniphier/Makefile       |   2 +-
- sound/soc/uniphier/aio-compress.c | 440 ++++++++++++++++++++++++++++++++++++++
- sound/soc/uniphier/aio-dma.c      |   1 +
- sound/soc/uniphier/aio.h          |   1 +
- 5 files changed, 444 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/uniphier/aio-compress.c
+ sound/soc/codecs/pcm512x.c | 162 ++++++++++++++++++++++-----------------------
+ 1 file changed, 80 insertions(+), 82 deletions(-)
 
-diff --git a/sound/soc/uniphier/Kconfig b/sound/soc/uniphier/Kconfig
-index 78ce101d2cc2..1a55ccebd8f5 100644
---- a/sound/soc/uniphier/Kconfig
-+++ b/sound/soc/uniphier/Kconfig
-@@ -11,6 +11,7 @@ config SND_SOC_UNIPHIER
- config SND_SOC_UNIPHIER_AIO
- 	tristate "UniPhier AIO DAI Driver"
- 	select REGMAP_MMIO
-+	select SND_SOC_COMPRESS
- 	depends on SND_SOC_UNIPHIER
- 	help
- 	  This adds ASoC driver support for Socionext UniPhier
-diff --git a/sound/soc/uniphier/Makefile b/sound/soc/uniphier/Makefile
-index 3ef2784b2383..4448175c70ab 100644
---- a/sound/soc/uniphier/Makefile
-+++ b/sound/soc/uniphier/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
--snd-soc-uniphier-aio-cpu-objs := aio-core.o aio-dma.o aio-cpu.o
-+snd-soc-uniphier-aio-cpu-objs := aio-core.o aio-dma.o aio-cpu.o aio-compress.o
+diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
+index e0f3556d3872..f0f2d4fd3769 100644
+--- a/sound/soc/codecs/pcm512x.c
++++ b/sound/soc/codecs/pcm512x.c
+@@ -226,8 +226,8 @@ static bool pcm512x_volatile(struct device *dev, unsigned int reg)
+ static int pcm512x_overclock_pll_get(struct snd_kcontrol *kcontrol,
+ 				     struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct pcm512x_priv *pcm512x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
  
- obj-$(CONFIG_SND_SOC_UNIPHIER_AIO) += snd-soc-uniphier-aio-cpu.o
+ 	ucontrol->value.integer.value[0] = pcm512x->overclock_pll;
+ 	return 0;
+@@ -236,10 +236,10 @@ static int pcm512x_overclock_pll_get(struct snd_kcontrol *kcontrol,
+ static int pcm512x_overclock_pll_put(struct snd_kcontrol *kcontrol,
+ 				     struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct pcm512x_priv *pcm512x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
  
-diff --git a/sound/soc/uniphier/aio-compress.c b/sound/soc/uniphier/aio-compress.c
-new file mode 100644
-index 000000000000..7f7abe3ae99d
---- /dev/null
-+++ b/sound/soc/uniphier/aio-compress.c
-@@ -0,0 +1,440 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// Socionext UniPhier AIO Compress Audio driver.
-+//
-+// Copyright (c) 2017-2018 Socionext Inc.
-+//
-+// This program is free software; you can redistribute it and/or
-+// modify it under the terms of the GNU General Public License
-+// as published by the Free Software Foundation; version 2
-+// of the License.
-+//
-+// This program is distributed in the hope that it will be useful,
-+// but WITHOUT ANY WARRANTY; without even the implied warranty of
-+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+// GNU General Public License for more details.
-+//
-+// You should have received a copy of the GNU General Public License
-+// along with this program; if not, see <http://www.gnu.org/licenses/>.
-+
-+#include <linux/bitfield.h>
-+#include <linux/circ_buf.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/errno.h>
-+#include <linux/kernel.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/module.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+
-+#include "aio.h"
-+
-+static int uniphier_aio_compr_prepare(struct snd_compr_stream *cstream);
-+static int uniphier_aio_compr_hw_free(struct snd_compr_stream *cstream);
-+
-+static int uniphier_aio_comprdma_new(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_compr *compr = rtd->compr;
-+	struct device *dev = compr->card->dev;
-+	struct uniphier_aio *aio = uniphier_priv(rtd->cpu_dai);
-+	struct uniphier_aio_sub *sub = &aio->sub[compr->direction];
-+	size_t size = AUD_RING_SIZE;
-+	int dma_dir = DMA_FROM_DEVICE, ret;
-+
-+	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(33));
-+	if (ret)
-+		return ret;
-+
-+	sub->compr_area = kzalloc(size, GFP_KERNEL);
-+	if (!sub->compr_area)
-+		return -ENOMEM;
-+
-+	if (sub->swm->dir == PORT_DIR_OUTPUT)
-+		dma_dir = DMA_TO_DEVICE;
-+
-+	sub->compr_addr = dma_map_single(dev, sub->compr_area, size, dma_dir);
-+	ret = dma_mapping_error(dev, sub->compr_addr);
-+	if (ret) {
-+		kfree(sub->compr_area);
-+		sub->compr_area = NULL;
-+
-+		return ret;
-+	}
-+
-+	sub->compr_bytes = size;
-+
-+	return 0;
-+}
-+
-+static int uniphier_aio_comprdma_free(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_compr *compr = rtd->compr;
-+	struct device *dev = compr->card->dev;
-+	struct uniphier_aio *aio = uniphier_priv(rtd->cpu_dai);
-+	struct uniphier_aio_sub *sub = &aio->sub[compr->direction];
-+	int dma_dir = DMA_FROM_DEVICE;
-+
-+	if (sub->swm->dir == PORT_DIR_OUTPUT)
-+		dma_dir = DMA_TO_DEVICE;
-+
-+	dma_unmap_single(dev, sub->compr_addr, sub->compr_bytes, dma_dir);
-+	kfree(sub->compr_area);
-+	sub->compr_area = NULL;
-+
-+	return 0;
-+}
-+
-+static int uniphier_aio_compr_open(struct snd_compr_stream *cstream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct uniphier_aio *aio = uniphier_priv(rtd->cpu_dai);
-+	struct uniphier_aio_sub *sub = &aio->sub[cstream->direction];
-+	int ret;
-+
-+	if (sub->cstream)
-+		return -EBUSY;
-+
-+	sub->cstream = cstream;
-+	sub->pass_through = 1;
-+	sub->use_mmap = false;
-+
-+	ret = uniphier_aio_comprdma_new(rtd);
-+	if (ret)
-+		return ret;
-+
-+	ret = aio_init(sub);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int uniphier_aio_compr_free(struct snd_compr_stream *cstream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct uniphier_aio *aio = uniphier_priv(rtd->cpu_dai);
-+	struct uniphier_aio_sub *sub = &aio->sub[cstream->direction];
-+	int ret;
-+
-+	ret = uniphier_aio_compr_hw_free(cstream);
-+	if (ret)
-+		return ret;
-+	ret = uniphier_aio_comprdma_free(rtd);
-+	if (ret)
-+		return ret;
-+
-+	sub->cstream = NULL;
-+
-+	return 0;
-+}
-+
-+static int uniphier_aio_compr_get_params(struct snd_compr_stream *cstream,
-+					 struct snd_codec *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct uniphier_aio *aio = uniphier_priv(rtd->cpu_dai);
-+	struct uniphier_aio_sub *sub = &aio->sub[cstream->direction];
-+
-+	*params = sub->cparams.codec;
-+
-+	return 0;
-+}
-+
-+static int uniphier_aio_compr_set_params(struct snd_compr_stream *cstream,
-+					 struct snd_compr_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct uniphier_aio *aio = uniphier_priv(rtd->cpu_dai);
-+	struct uniphier_aio_sub *sub = &aio->sub[cstream->direction];
-+	struct device *dev = &aio->chip->pdev->dev;
-+	int ret;
-+
-+	if (params->codec.id != SND_AUDIOCODEC_IEC61937) {
-+		dev_err(dev, "Codec ID is not supported(%d)\n",
-+			params->codec.id);
-+		return -EINVAL;
-+	}
-+	if (params->codec.profile != SND_AUDIOPROFILE_IEC61937_SPDIF) {
-+		dev_err(dev, "Codec profile is not supported(%d)\n",
-+			params->codec.profile);
-+		return -EINVAL;
-+	}
-+
-+	/* IEC frame type will be changed after received valid data */
-+	sub->iec_pc = IEC61937_PC_AAC;
-+
-+	sub->cparams = *params;
-+	sub->setting = 1;
-+
-+	aio_port_reset(sub);
-+	aio_src_reset(sub);
-+
-+	ret = uniphier_aio_compr_prepare(cstream);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int uniphier_aio_compr_hw_free(struct snd_compr_stream *cstream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct uniphier_aio *aio = uniphier_priv(rtd->cpu_dai);
-+	struct uniphier_aio_sub *sub = &aio->sub[cstream->direction];
-+
-+	sub->setting = 0;
-+
-+	return 0;
-+}
-+
-+static int uniphier_aio_compr_prepare(struct snd_compr_stream *cstream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_compr_runtime *runtime = cstream->runtime;
-+	struct uniphier_aio *aio = uniphier_priv(rtd->cpu_dai);
-+	struct uniphier_aio_sub *sub = &aio->sub[cstream->direction];
-+	int bytes = runtime->fragment_size;
-+	unsigned long flags;
-+	int ret;
-+
-+	ret = aiodma_ch_set_param(sub);
-+	if (ret)
-+		return ret;
-+
-+	spin_lock_irqsave(&sub->lock, flags);
-+	ret = aiodma_rb_set_buffer(sub, sub->compr_addr,
-+				   sub->compr_addr + sub->compr_bytes,
-+				   bytes);
-+	spin_unlock_irqrestore(&sub->lock, flags);
-+	if (ret)
-+		return ret;
-+
-+	ret = aio_port_set_param(sub, sub->pass_through, &sub->params);
-+	if (ret)
-+		return ret;
-+	ret = aio_oport_set_stream_type(sub, sub->iec_pc);
-+	if (ret)
-+		return ret;
-+	aio_port_set_enable(sub, 1);
-+
-+	ret = aio_if_set_param(sub, sub->pass_through);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int uniphier_aio_compr_trigger(struct snd_compr_stream *cstream,
-+				      int cmd)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_compr_runtime *runtime = cstream->runtime;
-+	struct uniphier_aio *aio = uniphier_priv(rtd->cpu_dai);
-+	struct uniphier_aio_sub *sub = &aio->sub[cstream->direction];
-+	struct device *dev = &aio->chip->pdev->dev;
-+	int bytes = runtime->fragment_size, ret = 0;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&sub->lock, flags);
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		aiodma_rb_sync(sub, sub->compr_addr, sub->compr_bytes, bytes);
-+		aiodma_ch_set_enable(sub, 1);
-+		sub->running = 1;
-+
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		sub->running = 0;
-+		aiodma_ch_set_enable(sub, 0);
-+
-+		break;
-+	default:
-+		dev_warn(dev, "Unknown trigger(%d)\n", cmd);
-+		ret = -EINVAL;
-+	}
-+	spin_unlock_irqrestore(&sub->lock, flags);
-+
-+	return ret;
-+}
-+
-+static int uniphier_aio_compr_pointer(struct snd_compr_stream *cstream,
-+				      struct snd_compr_tstamp *tstamp)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_compr_runtime *runtime = cstream->runtime;
-+	struct uniphier_aio *aio = uniphier_priv(rtd->cpu_dai);
-+	struct uniphier_aio_sub *sub = &aio->sub[cstream->direction];
-+	int bytes = runtime->fragment_size;
-+	unsigned long flags;
-+	u32 pos;
-+
-+	spin_lock_irqsave(&sub->lock, flags);
-+
-+	aiodma_rb_sync(sub, sub->compr_addr, sub->compr_bytes, bytes);
-+
-+	if (sub->swm->dir == PORT_DIR_OUTPUT) {
-+		pos = sub->rd_offs;
-+		/* Size of AIO output format is double of IEC61937 */
-+		tstamp->copied_total = sub->rd_total / 2;
-+	} else {
-+		pos = sub->wr_offs;
-+		tstamp->copied_total = sub->rd_total;
-+	}
-+	tstamp->byte_offset = pos;
-+
-+	spin_unlock_irqrestore(&sub->lock, flags);
-+
-+	return 0;
-+}
-+
-+static int aio_compr_send_to_hw(struct uniphier_aio_sub *sub,
-+				char __user *buf, size_t dstsize)
-+{
-+	u32 __user *srcbuf = (u32 __user *)buf;
-+	u32 *dstbuf = (u32 *)(sub->compr_area + sub->wr_offs);
-+	int src = 0, dst = 0, ret;
-+	u32 frm, frm_a, frm_b;
-+
-+	while (dstsize > 0) {
-+		ret = get_user(frm, srcbuf + src);
-+		if (ret)
-+			return ret;
-+		src++;
-+
-+		frm_a = frm & 0xffff;
-+		frm_b = (frm >> 16) & 0xffff;
-+
-+		if (frm == IEC61937_HEADER_SIGN) {
-+			frm_a |= 0x01000000;
-+
-+			/* Next data is Pc and Pd */
-+			sub->iec_header = true;
-+		} else {
-+			u16 pc = be16_to_cpu((__be16)frm_a);
-+
-+			if (sub->iec_header && sub->iec_pc != pc) {
-+				/* Force overwrite IEC frame type */
-+				sub->iec_pc = pc;
-+				ret = aio_oport_set_stream_type(sub, pc);
-+				if (ret)
-+					return ret;
-+			}
-+			sub->iec_header = false;
-+		}
-+		dstbuf[dst++] = frm_a;
-+		dstbuf[dst++] = frm_b;
-+
-+		dstsize -= sizeof(u32) * 2;
-+	}
-+
-+	return 0;
-+}
-+
-+static int uniphier_aio_compr_copy(struct snd_compr_stream *cstream,
-+				   char __user *buf, size_t count)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_compr_runtime *runtime = cstream->runtime;
-+	struct device *carddev = rtd->compr->card->dev;
-+	struct uniphier_aio *aio = uniphier_priv(rtd->cpu_dai);
-+	struct uniphier_aio_sub *sub = &aio->sub[cstream->direction];
-+	size_t cnt = min_t(size_t, count, aio_rb_space_to_end(sub) / 2);
-+	int bytes = runtime->fragment_size;
-+	unsigned long flags;
-+	size_t s;
-+	int ret;
-+
-+	if (cnt < sizeof(u32))
-+		return 0;
-+
-+	if (sub->swm->dir == PORT_DIR_OUTPUT) {
-+		dma_addr_t dmapos = sub->compr_addr + sub->wr_offs;
-+
-+		/* Size of AIO output format is double of IEC61937 */
-+		s = cnt * 2;
-+
-+		dma_sync_single_for_cpu(carddev, dmapos, s, DMA_TO_DEVICE);
-+		ret = aio_compr_send_to_hw(sub, buf, s);
-+		dma_sync_single_for_device(carddev, dmapos, s, DMA_TO_DEVICE);
-+	} else {
-+		dma_addr_t dmapos = sub->compr_addr + sub->rd_offs;
-+
-+		s = cnt;
-+
-+		dma_sync_single_for_cpu(carddev, dmapos, s, DMA_FROM_DEVICE);
-+		ret = copy_to_user(buf, sub->compr_area + sub->rd_offs, s);
-+		dma_sync_single_for_device(carddev, dmapos, s, DMA_FROM_DEVICE);
-+	}
-+	if (ret)
-+		return -EFAULT;
-+
-+	spin_lock_irqsave(&sub->lock, flags);
-+
-+	sub->threshold = 2 * bytes;
-+	aiodma_rb_set_threshold(sub, sub->compr_bytes, 2 * bytes);
-+
-+	if (sub->swm->dir == PORT_DIR_OUTPUT) {
-+		sub->wr_offs += s;
-+		if (sub->wr_offs >= sub->compr_bytes)
-+			sub->wr_offs -= sub->compr_bytes;
-+	} else {
-+		sub->rd_offs += s;
-+		if (sub->rd_offs >= sub->compr_bytes)
-+			sub->rd_offs -= sub->compr_bytes;
-+	}
-+	aiodma_rb_sync(sub, sub->compr_addr, sub->compr_bytes, bytes);
-+
-+	spin_unlock_irqrestore(&sub->lock, flags);
-+
-+	return cnt;
-+}
-+
-+static int uniphier_aio_compr_get_caps(struct snd_compr_stream *cstream,
-+				       struct snd_compr_caps *caps)
-+{
-+	caps->num_codecs = 1;
-+	caps->min_fragment_size = AUD_MIN_FRAGMENT_SIZE;
-+	caps->max_fragment_size = AUD_MAX_FRAGMENT_SIZE;
-+	caps->min_fragments = AUD_MIN_FRAGMENT;
-+	caps->max_fragments = AUD_MAX_FRAGMENT;
-+	caps->codecs[0] = SND_AUDIOCODEC_IEC61937;
-+
-+	return 0;
-+}
-+
-+static const struct snd_compr_codec_caps caps_iec = {
-+	.num_descriptors = 1,
-+	.descriptor[0].max_ch = 8,
-+	.descriptor[0].num_sample_rates = 0,
-+	.descriptor[0].num_bitrates = 0,
-+	.descriptor[0].profiles = SND_AUDIOPROFILE_IEC61937_SPDIF,
-+	.descriptor[0].modes = SND_AUDIOMODE_IEC_AC3 |
-+				SND_AUDIOMODE_IEC_MPEG1 |
-+				SND_AUDIOMODE_IEC_MP3 |
-+				SND_AUDIOMODE_IEC_DTS,
-+	.descriptor[0].formats = 0,
-+};
-+
-+static int uniphier_aio_compr_get_codec_caps(struct snd_compr_stream *stream,
-+					     struct snd_compr_codec_caps *codec)
-+{
-+	if (codec->codec == SND_AUDIOCODEC_IEC61937)
-+		*codec = caps_iec;
-+	else
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+const struct snd_compr_ops uniphier_aio_compr_ops = {
-+	.open           = uniphier_aio_compr_open,
-+	.free           = uniphier_aio_compr_free,
-+	.get_params     = uniphier_aio_compr_get_params,
-+	.set_params     = uniphier_aio_compr_set_params,
-+	.trigger        = uniphier_aio_compr_trigger,
-+	.pointer        = uniphier_aio_compr_pointer,
-+	.copy           = uniphier_aio_compr_copy,
-+	.get_caps       = uniphier_aio_compr_get_caps,
-+	.get_codec_caps = uniphier_aio_compr_get_codec_caps,
-+};
-diff --git a/sound/soc/uniphier/aio-dma.c b/sound/soc/uniphier/aio-dma.c
-index 6d0ca6dde913..22f122a42442 100644
---- a/sound/soc/uniphier/aio-dma.c
-+++ b/sound/soc/uniphier/aio-dma.c
-@@ -263,6 +263,7 @@ static const struct snd_soc_platform_driver uniphier_soc_platform = {
- 	.pcm_new   = uniphier_aiodma_new,
- 	.pcm_free  = uniphier_aiodma_free,
- 	.ops       = &uniphier_aiodma_ops,
-+	.compr_ops = &uniphier_aio_compr_ops,
- };
+-	switch (snd_soc_codec_get_bias_level(codec)) {
++	switch (snd_soc_component_get_bias_level(component)) {
+ 	case SND_SOC_BIAS_OFF:
+ 	case SND_SOC_BIAS_STANDBY:
+ 		break;
+@@ -254,8 +254,8 @@ static int pcm512x_overclock_pll_put(struct snd_kcontrol *kcontrol,
+ static int pcm512x_overclock_dsp_get(struct snd_kcontrol *kcontrol,
+ 				     struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct pcm512x_priv *pcm512x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
  
- static const struct regmap_config aiodma_regmap_config = {
-diff --git a/sound/soc/uniphier/aio.h b/sound/soc/uniphier/aio.h
-index b12e2e3d7699..2cd64273fb5b 100644
---- a/sound/soc/uniphier/aio.h
-+++ b/sound/soc/uniphier/aio.h
-@@ -305,6 +305,7 @@ static inline struct uniphier_aio *uniphier_priv(struct snd_soc_dai *dai)
+ 	ucontrol->value.integer.value[0] = pcm512x->overclock_dsp;
+ 	return 0;
+@@ -264,10 +264,10 @@ static int pcm512x_overclock_dsp_get(struct snd_kcontrol *kcontrol,
+ static int pcm512x_overclock_dsp_put(struct snd_kcontrol *kcontrol,
+ 				     struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct pcm512x_priv *pcm512x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
+ 
+-	switch (snd_soc_codec_get_bias_level(codec)) {
++	switch (snd_soc_component_get_bias_level(component)) {
+ 	case SND_SOC_BIAS_OFF:
+ 	case SND_SOC_BIAS_STANDBY:
+ 		break;
+@@ -282,8 +282,8 @@ static int pcm512x_overclock_dsp_put(struct snd_kcontrol *kcontrol,
+ static int pcm512x_overclock_dac_get(struct snd_kcontrol *kcontrol,
+ 				     struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct pcm512x_priv *pcm512x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
+ 
+ 	ucontrol->value.integer.value[0] = pcm512x->overclock_dac;
+ 	return 0;
+@@ -292,10 +292,10 @@ static int pcm512x_overclock_dac_get(struct snd_kcontrol *kcontrol,
+ static int pcm512x_overclock_dac_put(struct snd_kcontrol *kcontrol,
+ 				     struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct pcm512x_priv *pcm512x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
+ 
+-	switch (snd_soc_codec_get_bias_level(codec)) {
++	switch (snd_soc_component_get_bias_level(component)) {
+ 	case SND_SOC_BIAS_OFF:
+ 	case SND_SOC_BIAS_STANDBY:
+ 		break;
+@@ -522,8 +522,8 @@ static int pcm512x_hw_rule_rate(struct snd_pcm_hw_params *params,
+ static int pcm512x_dai_startup_master(struct snd_pcm_substream *substream,
+ 				      struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct pcm512x_priv *pcm512x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
+ 	struct device *dev = dai->dev;
+ 	struct snd_pcm_hw_constraint_ratnums *constraints_no_pll;
+ 	struct snd_ratnum *rats_no_pll;
+@@ -564,8 +564,8 @@ static int pcm512x_dai_startup_master(struct snd_pcm_substream *substream,
+ static int pcm512x_dai_startup_slave(struct snd_pcm_substream *substream,
+ 				     struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct pcm512x_priv *pcm512x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
+ 	struct device *dev = dai->dev;
+ 	struct regmap *regmap = pcm512x->regmap;
+ 
+@@ -590,8 +590,8 @@ static int pcm512x_dai_startup_slave(struct snd_pcm_substream *substream,
+ static int pcm512x_dai_startup(struct snd_pcm_substream *substream,
+ 			       struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct pcm512x_priv *pcm512x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
+ 
+ 	switch (pcm512x->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+@@ -606,10 +606,10 @@ static int pcm512x_dai_startup(struct snd_pcm_substream *substream,
+ 	}
  }
  
- int uniphier_aiodma_soc_register_platform(struct platform_device *pdev);
-+extern const struct snd_compr_ops uniphier_aio_compr_ops;
+-static int pcm512x_set_bias_level(struct snd_soc_codec *codec,
++static int pcm512x_set_bias_level(struct snd_soc_component *component,
+ 				  enum snd_soc_bias_level level)
+ {
+-	struct pcm512x_priv *pcm512x = dev_get_drvdata(codec->dev);
++	struct pcm512x_priv *pcm512x = dev_get_drvdata(component->dev);
+ 	int ret;
  
- int uniphier_aio_dai_probe(struct snd_soc_dai *dai);
- int uniphier_aio_dai_remove(struct snd_soc_dai *dai);
+ 	switch (level) {
+@@ -621,7 +621,7 @@ static int pcm512x_set_bias_level(struct snd_soc_codec *codec,
+ 		ret = regmap_update_bits(pcm512x->regmap, PCM512x_POWER,
+ 					 PCM512x_RQST, 0);
+ 		if (ret != 0) {
+-			dev_err(codec->dev, "Failed to remove standby: %d\n",
++			dev_err(component->dev, "Failed to remove standby: %d\n",
+ 				ret);
+ 			return ret;
+ 		}
+@@ -631,7 +631,7 @@ static int pcm512x_set_bias_level(struct snd_soc_codec *codec,
+ 		ret = regmap_update_bits(pcm512x->regmap, PCM512x_POWER,
+ 					 PCM512x_RQST, PCM512x_RQST);
+ 		if (ret != 0) {
+-			dev_err(codec->dev, "Failed to request standby: %d\n",
++			dev_err(component->dev, "Failed to request standby: %d\n",
+ 				ret);
+ 			return ret;
+ 		}
+@@ -645,8 +645,8 @@ static unsigned long pcm512x_find_sck(struct snd_soc_dai *dai,
+ 				      unsigned long bclk_rate)
+ {
+ 	struct device *dev = dai->dev;
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct pcm512x_priv *pcm512x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
+ 	unsigned long sck_rate;
+ 	int pow2;
+ 
+@@ -691,8 +691,8 @@ static int pcm512x_find_pll_coeff(struct snd_soc_dai *dai,
+ 				  unsigned long pll_rate)
+ {
+ 	struct device *dev = dai->dev;
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct pcm512x_priv *pcm512x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
+ 	unsigned long common;
+ 	int R, J, D, P;
+ 	unsigned long K; /* 10000 * J.D */
+@@ -798,8 +798,8 @@ static unsigned long pcm512x_pllin_dac_rate(struct snd_soc_dai *dai,
+ 					    unsigned long osr_rate,
+ 					    unsigned long pllin_rate)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct pcm512x_priv *pcm512x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
+ 	unsigned long dac_rate;
+ 
+ 	if (!pcm512x->pll_out)
+@@ -829,8 +829,8 @@ static int pcm512x_set_dividers(struct snd_soc_dai *dai,
+ 				struct snd_pcm_hw_params *params)
+ {
+ 	struct device *dev = dai->dev;
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct pcm512x_priv *pcm512x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
+ 	unsigned long pllin_rate = 0;
+ 	unsigned long pll_rate;
+ 	unsigned long sck_rate;
+@@ -949,7 +949,7 @@ static int pcm512x_set_dividers(struct snd_soc_dai *dai,
+ 		ret = regmap_update_bits(pcm512x->regmap, PCM512x_DAC_REF,
+ 					 PCM512x_SDAC, PCM512x_SDAC_GPIO);
+ 		if (ret != 0) {
+-			dev_err(codec->dev,
++			dev_err(component->dev,
+ 				"Failed to set gpio as dacref: %d\n", ret);
+ 			return ret;
+ 		}
+@@ -958,7 +958,7 @@ static int pcm512x_set_dividers(struct snd_soc_dai *dai,
+ 		ret = regmap_update_bits(pcm512x->regmap, PCM512x_GPIO_DACIN,
+ 					 PCM512x_GREF, gpio);
+ 		if (ret != 0) {
+-			dev_err(codec->dev,
++			dev_err(component->dev,
+ 				"Failed to set gpio %d as dacin: %d\n",
+ 				pcm512x->pll_in, ret);
+ 			return ret;
+@@ -987,7 +987,7 @@ static int pcm512x_set_dividers(struct snd_soc_dai *dai,
+ 		ret = regmap_update_bits(pcm512x->regmap, PCM512x_DAC_REF,
+ 					 PCM512x_SDAC, PCM512x_SDAC_SCK);
+ 		if (ret != 0) {
+-			dev_err(codec->dev,
++			dev_err(component->dev,
+ 				"Failed to set sck as dacref: %d\n", ret);
+ 			return ret;
+ 		}
+@@ -1082,18 +1082,18 @@ static int pcm512x_set_dividers(struct snd_soc_dai *dai,
+ 	ret = regmap_update_bits(pcm512x->regmap, PCM512x_FS_SPEED_MODE,
+ 				 PCM512x_FSSP, fssp);
+ 	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to set fs speed: %d\n", ret);
++		dev_err(component->dev, "Failed to set fs speed: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+-	dev_dbg(codec->dev, "DSP divider %d\n", dsp_div);
+-	dev_dbg(codec->dev, "DAC divider %d\n", dac_div);
+-	dev_dbg(codec->dev, "NCP divider %d\n", ncp_div);
+-	dev_dbg(codec->dev, "OSR divider %d\n", osr_div);
+-	dev_dbg(codec->dev, "BCK divider %d\n", bclk_div);
+-	dev_dbg(codec->dev, "LRCK divider %d\n", lrclk_div);
+-	dev_dbg(codec->dev, "IDAC %d\n", idac);
+-	dev_dbg(codec->dev, "1<<FSSP %d\n", 1 << fssp);
++	dev_dbg(component->dev, "DSP divider %d\n", dsp_div);
++	dev_dbg(component->dev, "DAC divider %d\n", dac_div);
++	dev_dbg(component->dev, "NCP divider %d\n", ncp_div);
++	dev_dbg(component->dev, "OSR divider %d\n", osr_div);
++	dev_dbg(component->dev, "BCK divider %d\n", bclk_div);
++	dev_dbg(component->dev, "LRCK divider %d\n", lrclk_div);
++	dev_dbg(component->dev, "IDAC %d\n", idac);
++	dev_dbg(component->dev, "1<<FSSP %d\n", 1 << fssp);
+ 
+ 	return 0;
+ }
+@@ -1102,15 +1102,15 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params,
+ 			     struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct pcm512x_priv *pcm512x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
+ 	int alen;
+ 	int gpio;
+ 	int clock_output;
+ 	int master_mode;
+ 	int ret;
+ 
+-	dev_dbg(codec->dev, "hw_params %u Hz, %u channels\n",
++	dev_dbg(component->dev, "hw_params %u Hz, %u channels\n",
+ 		params_rate(params),
+ 		params_channels(params));
+ 
+@@ -1128,7 +1128,7 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 		alen = PCM512x_ALEN_32;
+ 		break;
+ 	default:
+-		dev_err(codec->dev, "Bad frame size: %d\n",
++		dev_err(component->dev, "Bad frame size: %d\n",
+ 			params_width(params));
+ 		return -EINVAL;
+ 	}
+@@ -1141,7 +1141,7 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 					 | PCM512x_BCKO | PCM512x_LRKO,
+ 					 0);
+ 		if (ret != 0) {
+-			dev_err(codec->dev,
++			dev_err(component->dev,
+ 				"Failed to enable slave mode: %d\n", ret);
+ 			return ret;
+ 		}
+@@ -1149,7 +1149,7 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 		ret = regmap_update_bits(pcm512x->regmap, PCM512x_ERROR_DETECT,
+ 					 PCM512x_DCAS, 0);
+ 		if (ret != 0) {
+-			dev_err(codec->dev,
++			dev_err(component->dev,
+ 				"Failed to enable clock divider autoset: %d\n",
+ 				ret);
+ 			return ret;
+@@ -1170,20 +1170,20 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 	ret = regmap_update_bits(pcm512x->regmap, PCM512x_I2S_1,
+ 				 PCM512x_ALEN, alen);
+ 	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to set frame size: %d\n", ret);
++		dev_err(component->dev, "Failed to set frame size: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+ 	if (pcm512x->pll_out) {
+ 		ret = regmap_write(pcm512x->regmap, PCM512x_FLEX_A, 0x11);
+ 		if (ret != 0) {
+-			dev_err(codec->dev, "Failed to set FLEX_A: %d\n", ret);
++			dev_err(component->dev, "Failed to set FLEX_A: %d\n", ret);
+ 			return ret;
+ 		}
+ 
+ 		ret = regmap_write(pcm512x->regmap, PCM512x_FLEX_B, 0xff);
+ 		if (ret != 0) {
+-			dev_err(codec->dev, "Failed to set FLEX_B: %d\n", ret);
++			dev_err(component->dev, "Failed to set FLEX_B: %d\n", ret);
+ 			return ret;
+ 		}
+ 
+@@ -1196,7 +1196,7 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 					 | PCM512x_IDSK | PCM512x_IDCH
+ 					 | PCM512x_DCAS);
+ 		if (ret != 0) {
+-			dev_err(codec->dev,
++			dev_err(component->dev,
+ 				"Failed to ignore auto-clock failures: %d\n",
+ 				ret);
+ 			return ret;
+@@ -1211,7 +1211,7 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 					 | PCM512x_IDSK | PCM512x_IDCH
+ 					 | PCM512x_DCAS | PCM512x_IPLK);
+ 		if (ret != 0) {
+-			dev_err(codec->dev,
++			dev_err(component->dev,
+ 				"Failed to ignore auto-clock failures: %d\n",
+ 				ret);
+ 			return ret;
+@@ -1220,7 +1220,7 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 		ret = regmap_update_bits(pcm512x->regmap, PCM512x_PLL_EN,
+ 					 PCM512x_PLLE, 0);
+ 		if (ret != 0) {
+-			dev_err(codec->dev, "Failed to disable pll: %d\n", ret);
++			dev_err(component->dev, "Failed to disable pll: %d\n", ret);
+ 			return ret;
+ 		}
+ 	}
+@@ -1233,7 +1233,7 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 		ret = regmap_update_bits(pcm512x->regmap, PCM512x_PLL_REF,
+ 					 PCM512x_SREF, PCM512x_SREF_GPIO);
+ 		if (ret != 0) {
+-			dev_err(codec->dev,
++			dev_err(component->dev,
+ 				"Failed to set gpio as pllref: %d\n", ret);
+ 			return ret;
+ 		}
+@@ -1242,7 +1242,7 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 		ret = regmap_update_bits(pcm512x->regmap, PCM512x_GPIO_PLLIN,
+ 					 PCM512x_GREF, gpio);
+ 		if (ret != 0) {
+-			dev_err(codec->dev,
++			dev_err(component->dev,
+ 				"Failed to set gpio %d as pllin: %d\n",
+ 				pcm512x->pll_in, ret);
+ 			return ret;
+@@ -1251,7 +1251,7 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 		ret = regmap_update_bits(pcm512x->regmap, PCM512x_PLL_EN,
+ 					 PCM512x_PLLE, PCM512x_PLLE);
+ 		if (ret != 0) {
+-			dev_err(codec->dev, "Failed to enable pll: %d\n", ret);
++			dev_err(component->dev, "Failed to enable pll: %d\n", ret);
+ 			return ret;
+ 		}
+ 	}
+@@ -1260,7 +1260,7 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 				 PCM512x_BCKP | PCM512x_BCKO | PCM512x_LRKO,
+ 				 clock_output);
+ 	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to enable clock output: %d\n", ret);
++		dev_err(component->dev, "Failed to enable clock output: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -1268,7 +1268,7 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 				 PCM512x_RLRK | PCM512x_RBCK,
+ 				 master_mode);
+ 	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to enable master mode: %d\n", ret);
++		dev_err(component->dev, "Failed to enable master mode: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -1277,7 +1277,7 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 		ret = regmap_update_bits(pcm512x->regmap, PCM512x_GPIO_EN,
+ 					 gpio, gpio);
+ 		if (ret != 0) {
+-			dev_err(codec->dev, "Failed to enable gpio %d: %d\n",
++			dev_err(component->dev, "Failed to enable gpio %d: %d\n",
+ 				pcm512x->pll_out, ret);
+ 			return ret;
+ 		}
+@@ -1286,7 +1286,7 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 		ret = regmap_update_bits(pcm512x->regmap, gpio,
+ 					 PCM512x_GxSL, PCM512x_GxSL_PLLCK);
+ 		if (ret != 0) {
+-			dev_err(codec->dev, "Failed to output pll on %d: %d\n",
++			dev_err(component->dev, "Failed to output pll on %d: %d\n",
+ 				ret, pcm512x->pll_out);
+ 			return ret;
+ 		}
+@@ -1295,14 +1295,14 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 	ret = regmap_update_bits(pcm512x->regmap, PCM512x_SYNCHRONIZE,
+ 				 PCM512x_RQSY, PCM512x_RQSY_HALT);
+ 	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to halt clocks: %d\n", ret);
++		dev_err(component->dev, "Failed to halt clocks: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+ 	ret = regmap_update_bits(pcm512x->regmap, PCM512x_SYNCHRONIZE,
+ 				 PCM512x_RQSY, PCM512x_RQSY_RESUME);
+ 	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to resume clocks: %d\n", ret);
++		dev_err(component->dev, "Failed to resume clocks: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -1311,8 +1311,8 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 
+ static int pcm512x_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct pcm512x_priv *pcm512x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
+ 
+ 	pcm512x->fmt = fmt;
+ 
+@@ -1341,18 +1341,17 @@ static struct snd_soc_dai_driver pcm512x_dai = {
+ 	.ops = &pcm512x_dai_ops,
+ };
+ 
+-static const struct snd_soc_codec_driver pcm512x_codec_driver = {
+-	.set_bias_level = pcm512x_set_bias_level,
+-	.idle_bias_off = true,
+-
+-	.component_driver = {
+-		.controls		= pcm512x_controls,
+-		.num_controls		= ARRAY_SIZE(pcm512x_controls),
+-		.dapm_widgets		= pcm512x_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(pcm512x_dapm_widgets),
+-		.dapm_routes		= pcm512x_dapm_routes,
+-		.num_dapm_routes	= ARRAY_SIZE(pcm512x_dapm_routes),
+-	},
++static const struct snd_soc_component_driver pcm512x_component_driver = {
++	.set_bias_level		= pcm512x_set_bias_level,
++	.controls		= pcm512x_controls,
++	.num_controls		= ARRAY_SIZE(pcm512x_controls),
++	.dapm_widgets		= pcm512x_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(pcm512x_dapm_widgets),
++	.dapm_routes		= pcm512x_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(pcm512x_dapm_routes),
++	.use_pmdown_time	= 1,
++	.endianness		= 1,
++	.non_legacy_dai_naming	= 1,
+ };
+ 
+ static const struct regmap_range_cfg pcm512x_range = {
+@@ -1498,7 +1497,7 @@ int pcm512x_probe(struct device *dev, struct regmap *regmap)
+ 	}
+ #endif
+ 
+-	ret = snd_soc_register_codec(dev, &pcm512x_codec_driver,
++	ret = devm_snd_soc_register_component(dev, &pcm512x_component_driver,
+ 				    &pcm512x_dai, 1);
+ 	if (ret != 0) {
+ 		dev_err(dev, "Failed to register CODEC: %d\n", ret);
+@@ -1523,7 +1522,6 @@ void pcm512x_remove(struct device *dev)
+ {
+ 	struct pcm512x_priv *pcm512x = dev_get_drvdata(dev);
+ 
+-	snd_soc_unregister_codec(dev);
+ 	pm_runtime_disable(dev);
+ 	if (!IS_ERR(pcm512x->sclk))
+ 		clk_disable_unprepare(pcm512x->sclk);
 -- 
 2.16.1
