@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: amd: replace platform to component" to
-	the asoc tree
-Date: Mon, 12 Feb 2018 12:30:42 +0000
-Message-ID: <E1elDFq-0003HR-S8@debutante>
-References: <87bmhzgb0n.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: sh: siu: replace platform to component"
+	to the asoc tree
+Date: Mon, 12 Feb 2018 12:30:55 +0000
+Message-ID: <E1elDG3-0003JD-7k@debutante>
+References: <87wp5jj5u1.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EC3C826755F
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:30:48 +0100 (CET)
-In-Reply-To: <87bmhzgb0n.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 363FE267672
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:30:59 +0100 (CET)
+In-Reply-To: <87wp5jj5u1.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>, MukundaVijendar <vijendar.mukunda@amd.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: amd: replace platform to component
+   ASoC: sh: siu: replace platform to component
 
 has been applied to the asoc tree at
 
@@ -53,136 +53,100 @@ to this mail.
 Thanks,
 Mark
 
->From a1042a42bc5cc03969be40521c0e163be187ec8f Mon Sep 17 00:00:00 2001
+>From be3eabe99803b2526f8829b7c7225763f0703b1f Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 02:44:23 +0000
-Subject: [PATCH] ASoC: amd: replace platform to component
+Date: Mon, 29 Jan 2018 02:43:45 +0000
+Subject: [PATCH] ASoC: sh: siu: replace platform to component
 
 Now platform can be replaced to component, let's do it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Mukunda,Vijendar <vijendar.mukunda@amd.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-pcm-dma.c | 29 ++++++++++++++++++-----------
- 1 file changed, 18 insertions(+), 11 deletions(-)
+ sound/soc/sh/siu.h     |  2 +-
+ sound/soc/sh/siu_dai.c | 10 +---------
+ sound/soc/sh/siu_pcm.c |  9 ++++++---
+ 3 files changed, 8 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index c33a512283a4..78d7b6238376 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -23,6 +23,8 @@
- #include <drm/amd_asic_type.h>
- #include "acp.h"
+diff --git a/sound/soc/sh/siu.h b/sound/soc/sh/siu.h
+index 83c3430ad797..6088d627c0e4 100644
+--- a/sound/soc/sh/siu.h
++++ b/sound/soc/sh/siu.h
+@@ -183,7 +183,7 @@ static inline u32 siu_read32(u32 __iomem *addr)
+ #define SIU_BRGBSEL	(0x108 / sizeof(u32))
+ #define SIU_BRRB	(0x10c / sizeof(u32))
  
-+#define DRV_NAME "acp_audio_dma"
-+
- #define PLAYBACK_MIN_NUM_PERIODS    2
- #define PLAYBACK_MAX_NUM_PERIODS    2
- #define PLAYBACK_MAX_PERIOD_SIZE    16384
-@@ -702,8 +704,8 @@ static int acp_dma_open(struct snd_pcm_substream *substream)
- 	int ret = 0;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_pcm_runtime *prtd = substream->private_data;
--	struct audio_drv_data *intr_data = dev_get_drvdata(prtd->platform->dev);
+-extern struct snd_soc_platform_driver siu_platform;
++extern struct snd_soc_component_driver siu_component;
+ extern struct siu_info *siu_i2s_data;
+ 
+ int siu_init_port(int port, struct siu_port **port_info, struct snd_card *card);
+diff --git a/sound/soc/sh/siu_dai.c b/sound/soc/sh/siu_dai.c
+index 160502947da2..ee2211635e92 100644
+--- a/sound/soc/sh/siu_dai.c
++++ b/sound/soc/sh/siu_dai.c
+@@ -727,10 +727,6 @@ static struct snd_soc_dai_driver siu_i2s_dai = {
+ 	.ops = &siu_dai_ops,
+ };
+ 
+-static const struct snd_soc_component_driver siu_i2s_component = {
+-	.name		= "siu-i2s",
+-};
 -
-+	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd, DRV_NAME);
-+	struct audio_drv_data *intr_data = dev_get_drvdata(component->dev);
- 	struct audio_substream_data *adata =
- 		kzalloc(sizeof(struct audio_substream_data), GFP_KERNEL);
- 	if (adata == NULL)
-@@ -730,7 +732,7 @@ static int acp_dma_open(struct snd_pcm_substream *substream)
- 	ret = snd_pcm_hw_constraint_integer(runtime,
- 					    SNDRV_PCM_HW_PARAM_PERIODS);
- 	if (ret < 0) {
--		dev_err(prtd->platform->dev, "set integer constraint failed\n");
-+		dev_err(component->dev, "set integer constraint failed\n");
- 		kfree(adata);
- 		return ret;
- 	}
-@@ -778,7 +780,8 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_runtime *runtime;
- 	struct audio_substream_data *rtd;
- 	struct snd_soc_pcm_runtime *prtd = substream->private_data;
--	struct audio_drv_data *adata = dev_get_drvdata(prtd->platform->dev);
-+	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd, DRV_NAME);
-+	struct audio_drv_data *adata = dev_get_drvdata(component->dev);
- 
- 	runtime = substream->runtime;
- 	rtd = runtime->private_data;
-@@ -907,6 +910,7 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_pcm_runtime *prtd = substream->private_data;
- 	struct audio_substream_data *rtd = runtime->private_data;
-+	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd, DRV_NAME);
- 
- 	if (!rtd)
- 		return -EINVAL;
-@@ -924,7 +928,7 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
- 			while (acp_reg_read(rtd->acp_mmio, mmACP_DMA_CH_STS) &
- 						BIT(SYSRAM_TO_ACP_CH_NUM)) {
- 				if (!loops--) {
--					dev_err(prtd->platform->dev,
-+					dev_err(component->dev,
- 						"acp dma start timeout\n");
- 					return -ETIMEDOUT;
- 				}
-@@ -970,7 +974,8 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
- static int acp_dma_new(struct snd_soc_pcm_runtime *rtd)
+ static int siu_probe(struct platform_device *pdev)
  {
- 	int ret;
--	struct audio_drv_data *adata = dev_get_drvdata(rtd->platform->dev);
-+	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct audio_drv_data *adata = dev_get_drvdata(component->dev);
+ 	const struct firmware *fw_entry;
+@@ -786,15 +782,11 @@ static int siu_probe(struct platform_device *pdev)
+ 	dev_set_drvdata(&pdev->dev, info);
  
- 	switch (adata->asic_type) {
- 	case CHIP_STONEY:
-@@ -987,7 +992,7 @@ static int acp_dma_new(struct snd_soc_pcm_runtime *rtd)
- 		break;
- 	}
+ 	/* register using ARRAY version so we can keep dai name */
+-	ret = devm_snd_soc_register_component(&pdev->dev, &siu_i2s_component,
++	ret = devm_snd_soc_register_component(&pdev->dev, &siu_component,
+ 					      &siu_i2s_dai, 1);
  	if (ret < 0)
--		dev_err(rtd->platform->dev,
-+		dev_err(component->dev,
- 				"buffer preallocation failer error:%d\n", ret);
- 	return ret;
- }
-@@ -998,7 +1003,8 @@ static int acp_dma_close(struct snd_pcm_substream *substream)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct audio_substream_data *rtd = runtime->private_data;
- 	struct snd_soc_pcm_runtime *prtd = substream->private_data;
--	struct audio_drv_data *adata = dev_get_drvdata(prtd->platform->dev);
-+	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd, DRV_NAME);
-+	struct audio_drv_data *adata = dev_get_drvdata(component->dev);
+ 		return ret;
  
- 	kfree(rtd);
- 
-@@ -1044,7 +1050,8 @@ static const struct snd_pcm_ops acp_dma_ops = {
- 	.prepare = acp_dma_prepare,
- };
- 
--static struct snd_soc_platform_driver acp_asoc_platform = {
-+static struct snd_soc_component_driver acp_asoc_platform = {
-+	.name = DRV_NAME,
- 	.ops = &acp_dma_ops,
- 	.pcm_new = acp_dma_new,
- };
-@@ -1102,7 +1109,8 @@ static int acp_audio_probe(struct platform_device *pdev)
- 		return status;
- 	}
- 
--	status = snd_soc_register_platform(&pdev->dev, &acp_asoc_platform);
-+	status = devm_snd_soc_register_component(&pdev->dev,
-+						&acp_asoc_platform, NULL, 0);
- 	if (status != 0) {
- 		dev_err(&pdev->dev, "Fail to register ALSA platform device\n");
- 		return status;
-@@ -1123,7 +1131,6 @@ static int acp_audio_remove(struct platform_device *pdev)
- 	status = acp_deinit(adata->acp_mmio);
- 	if (status)
- 		dev_err(&pdev->dev, "ACP Deinit failed status:%d\n", status);
--	snd_soc_unregister_platform(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
+-	ret = devm_snd_soc_register_platform(&pdev->dev, &siu_platform);
+-	if (ret < 0)
+-		return ret;
+-
+ 	pm_runtime_enable(&pdev->dev);
  
  	return 0;
+diff --git a/sound/soc/sh/siu_pcm.c b/sound/soc/sh/siu_pcm.c
+index 3118cb0ee3f2..172909570ed5 100644
+--- a/sound/soc/sh/siu_pcm.c
++++ b/sound/soc/sh/siu_pcm.c
+@@ -35,6 +35,7 @@
+ 
+ #include "siu.h"
+ 
++#define DRV_NAME "siu-i2s"
+ #define GET_MAX_PERIODS(buf_bytes, period_bytes) \
+ 				((buf_bytes) / (period_bytes))
+ #define PERIOD_OFFSET(buf_addr, period_num, period_bytes) \
+@@ -340,7 +341,8 @@ static int siu_pcm_open(struct snd_pcm_substream *ss)
+ {
+ 	/* Playback / Capture */
+ 	struct snd_soc_pcm_runtime *rtd = ss->private_data;
+-	struct siu_platform *pdata = rtd->platform->dev->platform_data;
++	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct siu_platform *pdata = component->dev->platform_data;
+ 	struct siu_info *info = siu_i2s_data;
+ 	struct siu_port *port_info = siu_port_info(ss);
+ 	struct siu_stream *siu_stream;
+@@ -604,9 +606,10 @@ static const struct snd_pcm_ops siu_pcm_ops = {
+ 	.pointer	= siu_pcm_pointer_dma,
+ };
+ 
+-struct snd_soc_platform_driver siu_platform = {
++struct snd_soc_component_driver siu_component = {
++	.name		= DRV_NAME,
+ 	.ops			= &siu_pcm_ops,
+ 	.pcm_new	= siu_pcm_new,
+ 	.pcm_free	= siu_pcm_free,
+ };
+-EXPORT_SYMBOL_GPL(siu_platform);
++EXPORT_SYMBOL_GPL(siu_component);
 -- 
 2.16.1
