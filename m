@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl-asoc-card: Use 'snd_pcm_format_t'
-	type when appropriate" to the asoc tree
-Date: Mon, 12 Feb 2018 12:53:11 +0000
-Message-ID: <E1elDbb-0006d1-OJ@debutante>
-References: <1518386001-4322-1-git-send-email-festevam@gmail.com>
+Subject: Applied "ASoC: rt5659: Add the support of Intel HDA
+	Header" to the asoc tree
+Date: Mon, 12 Feb 2018 12:53:27 +0000
+Message-ID: <E1elDbr-0006eO-4B@debutante>
+References: <1517826596-17864-2-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B6B72681B8
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:53:14 +0100 (CET)
-In-Reply-To: <1518386001-4322-1-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7AEE42681D2
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:53:31 +0100 (CET)
+In-Reply-To: <1517826596-17864-2-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org, timur@tabi.org
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, spujar@nvidia.com, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl-asoc-card: Use 'snd_pcm_format_t' type when appropriate
+   ASoC: rt5659: Add the support of Intel HDA Header
 
 has been applied to the asoc tree at
 
@@ -53,61 +52,195 @@ to this mail.
 Thanks,
 Mark
 
->From fc734c244ab5bad427baa57e2e729d2a623b2fa1 Mon Sep 17 00:00:00 2001
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Sun, 11 Feb 2018 19:53:18 -0200
-Subject: [PATCH] ASoC: fsl-asoc-card: Use 'snd_pcm_format_t' type when
- appropriate
+>From 041e74b71491acadad74b275e8b05add165d92b4 Mon Sep 17 00:00:00 2001
+From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
+Date: Mon, 5 Feb 2018 18:29:56 +0800
+Subject: [PATCH] ASoC: rt5659: Add the support of Intel HDA Header
 
-A better suited type for 'sample_format' and 'asrc_format' is
-'snd_pcm_format_t'.
+The patch adds the support of Intel HDA Header.
 
-Change the type so that the following build warnings with W=1 are gone:
-
-sound/soc/fsl/fsl-asoc-card.c:153:29: warning: incorrect type in assignment (different base types)
-sound/soc/fsl/fsl-asoc-card.c:153:29:    expected unsigned int [unsigned] [usertype] sample_format
-sound/soc/fsl/fsl-asoc-card.c:153:29:    got restricted snd_pcm_format_t
-sound/soc/fsl/fsl-asoc-card.c:258:44: warning: restricted snd_pcm_format_t degrades to integer
-sound/soc/fsl/fsl-asoc-card.c:525:29: warning: incorrect type in assignment (different base types)
-sound/soc/fsl/fsl-asoc-card.c:525:29:    expected unsigned int [unsigned] [usertype] sample_format
-sound/soc/fsl/fsl-asoc-card.c:525:29:    got restricted snd_pcm_format_t [usertype] <noident>
-sound/soc/fsl/fsl-asoc-card.c:680:43: warning: incorrect type in assignment (different base types)
-sound/soc/fsl/fsl-asoc-card.c:680:43:    expected unsigned int [unsigned] [usertype] asrc_format
-sound/soc/fsl/fsl-asoc-card.c:680:43:    got restricted snd_pcm_format_t [usertype] <noident>
-sound/soc/fsl/fsl-asoc-card.c:682:43: warning: incorrect type in assignment (different base types)
-sound/soc/fsl/fsl-asoc-card.c:682:43:    expected unsigned int [unsigned] [usertype] asrc_format
-sound/soc/fsl/fsl-asoc-card.c:682:43:    got restricted snd_pcm_format_t [usertype] <noident>
-
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl-asoc-card.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/sound/rt5659.h    |   1 +
+ sound/soc/codecs/rt5659.c | 118 ++++++++++++++++++++++++++++++++++++++++++++--
+ sound/soc/codecs/rt5659.h |   3 +-
+ 3 files changed, 117 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 989be518c4ed..4a6750aa3637 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -91,9 +91,9 @@ struct fsl_asoc_card_priv {
- 	struct cpu_priv cpu_priv;
- 	struct snd_soc_card card;
- 	u32 sample_rate;
--	u32 sample_format;
-+	snd_pcm_format_t sample_format;
- 	u32 asrc_rate;
--	u32 asrc_format;
-+	snd_pcm_format_t asrc_format;
- 	u32 dai_fmt;
- 	char name[32];
+diff --git a/include/sound/rt5659.h b/include/sound/rt5659.h
+index 656c4d58948d..9012e2b25360 100644
+--- a/include/sound/rt5659.h
++++ b/include/sound/rt5659.h
+@@ -30,6 +30,7 @@ enum rt5659_dmic2_data_pin {
+ enum rt5659_jd_src {
+ 	RT5659_JD_NULL,
+ 	RT5659_JD3,
++	RT5659_JD_HDA_HEADER,
  };
-@@ -199,7 +199,7 @@ static int be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
  
- 	mask = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
- 	snd_mask_none(mask);
--	snd_mask_set(mask, priv->asrc_format);
-+	snd_mask_set(mask, (__force int)priv->asrc_format);
- 
- 	return 0;
+ struct rt5659_platform_data {
+diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
+index 07e7757417bc..dbc7dbfe8c6f 100644
+--- a/sound/soc/codecs/rt5659.c
++++ b/sound/soc/codecs/rt5659.c
+@@ -1461,6 +1461,61 @@ static void rt5659_jack_detect_work(struct work_struct *work)
+ 			    SND_JACK_BTN_2 | SND_JACK_BTN_3);
  }
+ 
++static void rt5659_jack_detect_intel_hd_header(struct work_struct *work)
++{
++	struct rt5659_priv *rt5659 =
++		container_of(work, struct rt5659_priv, jack_detect_work.work);
++	unsigned int value;
++	bool hp_flag, mic_flag;
++
++	if (!rt5659->hs_jack)
++		return;
++
++	/* headphone jack */
++	regmap_read(rt5659->regmap, RT5659_GPIO_STA, &value);
++	hp_flag = (!(value & 0x8)) ? true : false;
++
++	if (hp_flag != rt5659->hda_hp_plugged) {
++		rt5659->hda_hp_plugged = hp_flag;
++
++		if (hp_flag) {
++			regmap_update_bits(rt5659->regmap, RT5659_IRQ_CTRL_1,
++				0x10, 0x0);
++			rt5659->jack_type |= SND_JACK_HEADPHONE;
++		} else {
++			regmap_update_bits(rt5659->regmap, RT5659_IRQ_CTRL_1,
++				0x10, 0x10);
++			rt5659->jack_type = rt5659->jack_type &
++				(~SND_JACK_HEADPHONE);
++		}
++
++		snd_soc_jack_report(rt5659->hs_jack, rt5659->jack_type,
++			SND_JACK_HEADPHONE);
++	}
++
++	/* mic jack */
++	regmap_read(rt5659->regmap, RT5659_4BTN_IL_CMD_1, &value);
++	regmap_write(rt5659->regmap, RT5659_4BTN_IL_CMD_1, value);
++	mic_flag = (value & 0x2000) ? true : false;
++
++	if (mic_flag != rt5659->hda_mic_plugged) {
++		rt5659->hda_mic_plugged = mic_flag;
++		if (mic_flag) {
++			regmap_update_bits(rt5659->regmap, RT5659_IRQ_CTRL_2,
++				0x2, 0x2);
++			rt5659->jack_type |= SND_JACK_MICROPHONE;
++		} else {
++			regmap_update_bits(rt5659->regmap, RT5659_IRQ_CTRL_2,
++				0x2, 0x0);
++			rt5659->jack_type = rt5659->jack_type
++				& (~SND_JACK_MICROPHONE);
++		}
++
++		snd_soc_jack_report(rt5659->hs_jack, rt5659->jack_type,
++			SND_JACK_MICROPHONE);
++	}
++}
++
+ static const struct snd_kcontrol_new rt5659_snd_controls[] = {
+ 	/* Speaker Output Volume */
+ 	SOC_DOUBLE_TLV("Speaker Playback Volume", RT5659_SPO_VOL,
+@@ -3990,6 +4045,54 @@ static void rt5659_calibrate(struct rt5659_priv *rt5659)
+ 	regmap_write(rt5659->regmap, RT5659_HP_CHARGE_PUMP_1, 0x0c16);
+ }
+ 
++void rt5659_intel_hd_header_probe_setup(struct rt5659_priv *rt5659)
++{
++	int value;
++
++	regmap_read(rt5659->regmap, RT5659_GPIO_STA, &value);
++	if (!(value & 0x8)) {
++		rt5659->hda_hp_plugged = true;
++		regmap_update_bits(rt5659->regmap, RT5659_IRQ_CTRL_1,
++			0x10, 0x0);
++	} else {
++		regmap_update_bits(rt5659->regmap, RT5659_IRQ_CTRL_1,
++			0x10, 0x10);
++	}
++
++	regmap_update_bits(rt5659->regmap, RT5659_PWR_ANLG_1,
++		RT5659_PWR_VREF2 | RT5659_PWR_MB,
++		RT5659_PWR_VREF2 | RT5659_PWR_MB);
++	msleep(20);
++	regmap_update_bits(rt5659->regmap, RT5659_PWR_ANLG_1,
++		RT5659_PWR_FV2, RT5659_PWR_FV2);
++
++	regmap_update_bits(rt5659->regmap, RT5659_PWR_ANLG_3, RT5659_PWR_LDO2,
++		RT5659_PWR_LDO2);
++	regmap_update_bits(rt5659->regmap, RT5659_PWR_ANLG_2, RT5659_PWR_MB1,
++		RT5659_PWR_MB1);
++	regmap_update_bits(rt5659->regmap, RT5659_PWR_VOL, RT5659_PWR_MIC_DET,
++		RT5659_PWR_MIC_DET);
++	msleep(20);
++
++	regmap_update_bits(rt5659->regmap, RT5659_4BTN_IL_CMD_2,
++		RT5659_4BTN_IL_MASK, RT5659_4BTN_IL_EN);
++	regmap_read(rt5659->regmap, RT5659_4BTN_IL_CMD_1, &value);
++	regmap_write(rt5659->regmap, RT5659_4BTN_IL_CMD_1, value);
++	regmap_read(rt5659->regmap, RT5659_4BTN_IL_CMD_1, &value);
++
++	if (value & 0x2000) {
++		rt5659->hda_mic_plugged = true;
++		regmap_update_bits(rt5659->regmap, RT5659_IRQ_CTRL_2,
++			0x2, 0x2);
++	} else {
++		regmap_update_bits(rt5659->regmap, RT5659_IRQ_CTRL_2,
++			0x2, 0x0);
++	}
++
++	regmap_update_bits(rt5659->regmap, RT5659_IRQ_CTRL_2,
++		RT5659_IL_IRQ_MASK, RT5659_IL_IRQ_EN);
++}
++
+ static int rt5659_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
+ {
+@@ -4174,16 +4277,23 @@ static int rt5659_i2c_probe(struct i2c_client *i2c,
+ 				RT5659_PWR_MB, RT5659_PWR_MB);
+ 		regmap_write(rt5659->regmap, RT5659_PWR_ANLG_2, 0x0001);
+ 		regmap_write(rt5659->regmap, RT5659_IRQ_CTRL_2, 0x0040);
++		INIT_DELAYED_WORK(&rt5659->jack_detect_work,
++			rt5659_jack_detect_work);
+ 		break;
+-	case RT5659_JD_NULL:
++	case RT5659_JD_HDA_HEADER:
++		regmap_write(rt5659->regmap, RT5659_GPIO_CTRL_3, 0x8000);
++		regmap_write(rt5659->regmap, RT5659_RC_CLK_CTRL, 0x0900);
++		regmap_write(rt5659->regmap, RT5659_EJD_CTRL_1,  0x70c0);
++		regmap_write(rt5659->regmap, RT5659_JD_CTRL_1,   0x2000);
++		regmap_write(rt5659->regmap, RT5659_IRQ_CTRL_1,  0x0040);
++		INIT_DELAYED_WORK(&rt5659->jack_detect_work,
++			rt5659_jack_detect_intel_hd_header);
++		rt5659_intel_hd_header_probe_setup(rt5659);
+ 		break;
+ 	default:
+-		dev_warn(&i2c->dev, "Currently, support JD3 only\n");
+ 		break;
+ 	}
+ 
+-	INIT_DELAYED_WORK(&rt5659->jack_detect_work, rt5659_jack_detect_work);
+-
+ 	if (i2c->irq) {
+ 		ret = devm_request_threaded_irq(&i2c->dev, i2c->irq, NULL,
+ 			rt5659_irq, IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
+diff --git a/sound/soc/codecs/rt5659.h b/sound/soc/codecs/rt5659.h
+index 8f1aeef08489..bea0433c164c 100644
+--- a/sound/soc/codecs/rt5659.h
++++ b/sound/soc/codecs/rt5659.h
+@@ -1810,7 +1810,8 @@ struct rt5659_priv {
+ 	int pll_out;
+ 
+ 	int jack_type;
+-
++	bool hda_hp_plugged;
++	bool hda_mic_plugged;
+ };
+ 
+ int rt5659_set_jack_detect(struct snd_soc_codec *codec,
 -- 
 2.16.1
