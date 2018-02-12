@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8523: replace codec to component" to
+Subject: Applied "ASoC: wm8510: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:50:54 +0000
-Message-ID: <E1elDZO-0006JA-J2@debutante>
-References: <871si95q00.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:51:02 +0000
+Message-ID: <E1elDZW-0006K5-Sx@debutante>
+References: <87372p5q0f.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 19D56268066
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:50:56 +0100 (CET)
-In-Reply-To: <871si95q00.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8244E267B2B
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:51:05 +0100 (CET)
+In-Reply-To: <87372p5q0f.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8523: replace codec to component
+   ASoC: wm8510: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 4bf8ae8356c982847ef5bd5f613b87311f9024ec Mon Sep 17 00:00:00 2001
+>From 51bf02cc505fb4bc0c5913e64db12c6b7e464f23 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 03:01:09 +0000
-Subject: [PATCH] ASoC: wm8523: replace codec to component
+Date: Mon, 29 Jan 2018 03:00:54 +0000
+Subject: [PATCH] ASoC: wm8510: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,224 +70,253 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8523.c | 98 ++++++++++++++++++++++-------------------------
- 1 file changed, 46 insertions(+), 52 deletions(-)
+ sound/soc/codecs/wm8510.c | 149 +++++++++++++++++++++-------------------------
+ 1 file changed, 68 insertions(+), 81 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8523.c b/sound/soc/codecs/wm8523.c
-index c7c33e98fbcb..f4a9e25fb334 100644
---- a/sound/soc/codecs/wm8523.c
-+++ b/sound/soc/codecs/wm8523.c
-@@ -125,14 +125,14 @@ static const struct {
- static int wm8523_startup(struct snd_pcm_substream *substream,
- 			  struct snd_soc_dai *dai)
+diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
+index 119ceac684ae..1a2412d73e35 100644
+--- a/sound/soc/codecs/wm8510.c
++++ b/sound/soc/codecs/wm8510.c
+@@ -106,7 +106,7 @@ static bool wm8510_volatile(struct device *dev, unsigned int reg)
+ #define WM8510_POWER1_BIASEN  0x08
+ #define WM8510_POWER1_BUFIOEN 0x10
+ 
+-#define wm8510_reset(c)	snd_soc_write(c, WM8510_RESET, 0)
++#define wm8510_reset(c)	snd_soc_component_write(c, WM8510_RESET, 0)
+ 
+ /* codec private data */
+ struct wm8510_priv {
+@@ -316,32 +316,32 @@ static void pll_factors(unsigned int target, unsigned int source)
+ static int wm8510_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
+ 		int source, unsigned int freq_in, unsigned int freq_out)
  {
--	struct snd_soc_codec *codec = dai->codec;
--	struct wm8523_priv *wm8523 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct wm8523_priv *wm8523 = snd_soc_component_get_drvdata(component);
+-	struct snd_soc_codec *codec = codec_dai->codec;
++	struct snd_soc_component *component = codec_dai->component;
+ 	u16 reg;
  
- 	/* The set of sample rates that can be supported depends on the
- 	 * MCLK supplied to the CODEC - enforce this.
- 	 */
- 	if (!wm8523->sysclk) {
--		dev_err(codec->dev,
-+		dev_err(component->dev,
- 			"No MCLK configured, call set_sysclk() on init\n");
- 		return -EINVAL;
- 	}
-@@ -148,11 +148,11 @@ static int wm8523_hw_params(struct snd_pcm_substream *substream,
- 			    struct snd_pcm_hw_params *params,
- 			    struct snd_soc_dai *dai)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct wm8523_priv *wm8523 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct wm8523_priv *wm8523 = snd_soc_component_get_drvdata(component);
- 	int i;
--	u16 aifctrl1 = snd_soc_read(codec, WM8523_AIF_CTRL1);
--	u16 aifctrl2 = snd_soc_read(codec, WM8523_AIF_CTRL2);
-+	u16 aifctrl1 = snd_soc_component_read32(component, WM8523_AIF_CTRL1);
-+	u16 aifctrl2 = snd_soc_component_read32(component, WM8523_AIF_CTRL2);
+ 	if (freq_in == 0 || freq_out == 0) {
+ 		/* Clock CODEC directly from MCLK */
+-		reg = snd_soc_read(codec, WM8510_CLOCK);
+-		snd_soc_write(codec, WM8510_CLOCK, reg & 0x0ff);
++		reg = snd_soc_component_read32(component, WM8510_CLOCK);
++		snd_soc_component_write(component, WM8510_CLOCK, reg & 0x0ff);
  
- 	/* Find a supported LRCLK ratio */
- 	for (i = 0; i < ARRAY_SIZE(lrclk_ratios); i++) {
-@@ -163,7 +163,7 @@ static int wm8523_hw_params(struct snd_pcm_substream *substream,
- 
- 	/* Should never happen, should be handled by constraints */
- 	if (i == ARRAY_SIZE(lrclk_ratios)) {
--		dev_err(codec->dev, "MCLK/fs ratio %d unsupported\n",
-+		dev_err(component->dev, "MCLK/fs ratio %d unsupported\n",
- 			wm8523->sysclk / params_rate(params));
- 		return -EINVAL;
- 	}
-@@ -178,7 +178,7 @@ static int wm8523_hw_params(struct snd_pcm_substream *substream,
- 				break;
- 
- 		if (i == ARRAY_SIZE(bclk_ratios)) {
--			dev_err(codec->dev,
-+			dev_err(component->dev,
- 				"No matching BCLK/fs ratio for word length %d\n",
- 				params_width(params));
- 			return -EINVAL;
-@@ -203,8 +203,8 @@ static int wm8523_hw_params(struct snd_pcm_substream *substream,
- 		break;
+ 		/* Turn off PLL */
+-		reg = snd_soc_read(codec, WM8510_POWER1);
+-		snd_soc_write(codec, WM8510_POWER1, reg & 0x1df);
++		reg = snd_soc_component_read32(component, WM8510_POWER1);
++		snd_soc_component_write(component, WM8510_POWER1, reg & 0x1df);
+ 		return 0;
  	}
  
--	snd_soc_write(codec, WM8523_AIF_CTRL1, aifctrl1);
--	snd_soc_write(codec, WM8523_AIF_CTRL2, aifctrl2);
-+	snd_soc_component_write(component, WM8523_AIF_CTRL1, aifctrl1);
-+	snd_soc_component_write(component, WM8523_AIF_CTRL2, aifctrl2);
+ 	pll_factors(freq_out*4, freq_in);
+ 
+-	snd_soc_write(codec, WM8510_PLLN, (pll_div.pre_div << 4) | pll_div.n);
+-	snd_soc_write(codec, WM8510_PLLK1, pll_div.k >> 18);
+-	snd_soc_write(codec, WM8510_PLLK2, (pll_div.k >> 9) & 0x1ff);
+-	snd_soc_write(codec, WM8510_PLLK3, pll_div.k & 0x1ff);
+-	reg = snd_soc_read(codec, WM8510_POWER1);
+-	snd_soc_write(codec, WM8510_POWER1, reg | 0x020);
++	snd_soc_component_write(component, WM8510_PLLN, (pll_div.pre_div << 4) | pll_div.n);
++	snd_soc_component_write(component, WM8510_PLLK1, pll_div.k >> 18);
++	snd_soc_component_write(component, WM8510_PLLK2, (pll_div.k >> 9) & 0x1ff);
++	snd_soc_component_write(component, WM8510_PLLK3, pll_div.k & 0x1ff);
++	reg = snd_soc_component_read32(component, WM8510_POWER1);
++	snd_soc_component_write(component, WM8510_POWER1, reg | 0x020);
+ 
+ 	/* Run CODEC from PLL instead of MCLK */
+-	reg = snd_soc_read(codec, WM8510_CLOCK);
+-	snd_soc_write(codec, WM8510_CLOCK, reg | 0x100);
++	reg = snd_soc_component_read32(component, WM8510_CLOCK);
++	snd_soc_component_write(component, WM8510_CLOCK, reg | 0x100);
  
  	return 0;
  }
-@@ -212,8 +212,8 @@ static int wm8523_hw_params(struct snd_pcm_substream *substream,
- static int wm8523_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 		int clk_id, unsigned int freq, int dir)
+@@ -352,29 +352,29 @@ static int wm8510_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
+ static int wm8510_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
+ 		int div_id, int div)
  {
 -	struct snd_soc_codec *codec = codec_dai->codec;
--	struct wm8523_priv *wm8523 = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_component *component = codec_dai->component;
-+	struct wm8523_priv *wm8523 = snd_soc_component_get_drvdata(component);
- 	unsigned int val;
- 	int i;
+ 	u16 reg;
  
-@@ -239,13 +239,13 @@ static int wm8523_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 		case 96000:
- 		case 176400:
- 		case 192000:
--			dev_dbg(codec->dev, "Supported sample rate: %dHz\n",
-+			dev_dbg(component->dev, "Supported sample rate: %dHz\n",
- 				val);
- 			wm8523->rate_constraint_list[i] = val;
- 			wm8523->rate_constraint.count++;
- 			break;
- 		default:
--			dev_dbg(codec->dev, "Skipping sample rate: %dHz\n",
-+			dev_dbg(component->dev, "Skipping sample rate: %dHz\n",
- 				val);
- 		}
- 	}
-@@ -261,8 +261,8 @@ static int wm8523_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- static int wm8523_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	switch (div_id) {
+ 	case WM8510_OPCLKDIV:
+-		reg = snd_soc_read(codec, WM8510_GPIO) & 0x1cf;
+-		snd_soc_write(codec, WM8510_GPIO, reg | div);
++		reg = snd_soc_component_read32(component, WM8510_GPIO) & 0x1cf;
++		snd_soc_component_write(component, WM8510_GPIO, reg | div);
+ 		break;
+ 	case WM8510_MCLKDIV:
+-		reg = snd_soc_read(codec, WM8510_CLOCK) & 0x11f;
+-		snd_soc_write(codec, WM8510_CLOCK, reg | div);
++		reg = snd_soc_component_read32(component, WM8510_CLOCK) & 0x11f;
++		snd_soc_component_write(component, WM8510_CLOCK, reg | div);
+ 		break;
+ 	case WM8510_ADCCLK:
+-		reg = snd_soc_read(codec, WM8510_ADC) & 0x1f7;
+-		snd_soc_write(codec, WM8510_ADC, reg | div);
++		reg = snd_soc_component_read32(component, WM8510_ADC) & 0x1f7;
++		snd_soc_component_write(component, WM8510_ADC, reg | div);
+ 		break;
+ 	case WM8510_DACCLK:
+-		reg = snd_soc_read(codec, WM8510_DAC) & 0x1f7;
+-		snd_soc_write(codec, WM8510_DAC, reg | div);
++		reg = snd_soc_component_read32(component, WM8510_DAC) & 0x1f7;
++		snd_soc_component_write(component, WM8510_DAC, reg | div);
+ 		break;
+ 	case WM8510_BCLKDIV:
+-		reg = snd_soc_read(codec, WM8510_CLOCK) & 0x1e3;
+-		snd_soc_write(codec, WM8510_CLOCK, reg | div);
++		reg = snd_soc_component_read32(component, WM8510_CLOCK) & 0x1e3;
++		snd_soc_component_write(component, WM8510_CLOCK, reg | div);
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -386,9 +386,9 @@ static int wm8510_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
+ static int wm8510_set_dai_fmt(struct snd_soc_dai *codec_dai,
  		unsigned int fmt)
  {
 -	struct snd_soc_codec *codec = codec_dai->codec;
--	u16 aifctrl1 = snd_soc_read(codec, WM8523_AIF_CTRL1);
 +	struct snd_soc_component *component = codec_dai->component;
-+	u16 aifctrl1 = snd_soc_component_read32(component, WM8523_AIF_CTRL1);
+ 	u16 iface = 0;
+-	u16 clk = snd_soc_read(codec, WM8510_CLOCK) & 0x1fe;
++	u16 clk = snd_soc_component_read32(component, WM8510_CLOCK) & 0x1fe;
  
- 	aifctrl1 &= ~(WM8523_BCLK_INV_MASK | WM8523_LRCLK_INV_MASK |
- 		      WM8523_FMT_MASK | WM8523_AIF_MSTR_MASK);
-@@ -312,15 +312,15 @@ static int wm8523_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	/* set master/slave audio interface */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+@@ -435,8 +435,8 @@ static int wm8510_set_dai_fmt(struct snd_soc_dai *codec_dai,
  		return -EINVAL;
  	}
  
--	snd_soc_write(codec, WM8523_AIF_CTRL1, aifctrl1);
-+	snd_soc_component_write(component, WM8523_AIF_CTRL1, aifctrl1);
- 
+-	snd_soc_write(codec, WM8510_IFACE, iface);
+-	snd_soc_write(codec, WM8510_CLOCK, clk);
++	snd_soc_component_write(component, WM8510_IFACE, iface);
++	snd_soc_component_write(component, WM8510_CLOCK, clk);
  	return 0;
  }
  
--static int wm8523_set_bias_level(struct snd_soc_codec *codec,
-+static int wm8523_set_bias_level(struct snd_soc_component *component,
- 				 enum snd_soc_bias_level level)
+@@ -444,9 +444,9 @@ static int wm8510_pcm_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params,
+ 				struct snd_soc_dai *dai)
  {
--	struct wm8523_priv *wm8523 = snd_soc_codec_get_drvdata(codec);
-+	struct wm8523_priv *wm8523 = snd_soc_component_get_drvdata(component);
- 	int ret;
+-	struct snd_soc_codec *codec = dai->codec;
+-	u16 iface = snd_soc_read(codec, WM8510_IFACE) & 0x19f;
+-	u16 adn = snd_soc_read(codec, WM8510_ADD) & 0x1f1;
++	struct snd_soc_component *component = dai->component;
++	u16 iface = snd_soc_component_read32(component, WM8510_IFACE) & 0x19f;
++	u16 adn = snd_soc_component_read32(component, WM8510_ADD) & 0x1f1;
+ 
+ 	/* bit size */
+ 	switch (params_width(params)) {
+@@ -485,56 +485,56 @@ static int wm8510_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		break;
+ 	}
+ 
+-	snd_soc_write(codec, WM8510_IFACE, iface);
+-	snd_soc_write(codec, WM8510_ADD, adn);
++	snd_soc_component_write(component, WM8510_IFACE, iface);
++	snd_soc_component_write(component, WM8510_ADD, adn);
+ 	return 0;
+ }
+ 
+ static int wm8510_mute(struct snd_soc_dai *dai, int mute)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	u16 mute_reg = snd_soc_read(codec, WM8510_DAC) & 0xffbf;
++	struct snd_soc_component *component = dai->component;
++	u16 mute_reg = snd_soc_component_read32(component, WM8510_DAC) & 0xffbf;
+ 
+ 	if (mute)
+-		snd_soc_write(codec, WM8510_DAC, mute_reg | 0x40);
++		snd_soc_component_write(component, WM8510_DAC, mute_reg | 0x40);
+ 	else
+-		snd_soc_write(codec, WM8510_DAC, mute_reg);
++		snd_soc_component_write(component, WM8510_DAC, mute_reg);
+ 	return 0;
+ }
+ 
+ /* liam need to make this lower power with dapm */
+-static int wm8510_set_bias_level(struct snd_soc_codec *codec,
++static int wm8510_set_bias_level(struct snd_soc_component *component,
+ 	enum snd_soc_bias_level level)
+ {
+-	struct wm8510_priv *wm8510 = snd_soc_codec_get_drvdata(codec);
+-	u16 power1 = snd_soc_read(codec, WM8510_POWER1) & ~0x3;
++	struct wm8510_priv *wm8510 = snd_soc_component_get_drvdata(component);
++	u16 power1 = snd_soc_component_read32(component, WM8510_POWER1) & ~0x3;
  
  	switch (level) {
-@@ -329,16 +329,16 @@ static int wm8523_set_bias_level(struct snd_soc_codec *codec,
- 
+ 	case SND_SOC_BIAS_ON:
  	case SND_SOC_BIAS_PREPARE:
- 		/* Full power on */
--		snd_soc_update_bits(codec, WM8523_PSCTRL1,
-+		snd_soc_component_update_bits(component, WM8523_PSCTRL1,
- 				    WM8523_SYS_ENA_MASK, 3);
+ 		power1 |= 0x1;  /* VMID 50k */
+-		snd_soc_write(codec, WM8510_POWER1, power1);
++		snd_soc_component_write(component, WM8510_POWER1, power1);
  		break;
  
  	case SND_SOC_BIAS_STANDBY:
+ 		power1 |= WM8510_POWER1_BIASEN | WM8510_POWER1_BUFIOEN;
+ 
 -		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
 +		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
- 			ret = regulator_bulk_enable(ARRAY_SIZE(wm8523->supplies),
- 						    wm8523->supplies);
- 			if (ret != 0) {
--				dev_err(codec->dev,
-+				dev_err(component->dev,
- 					"Failed to enable supplies: %d\n",
- 					ret);
- 				return ret;
-@@ -348,21 +348,21 @@ static int wm8523_set_bias_level(struct snd_soc_codec *codec,
- 			regcache_sync(wm8523->regmap);
+ 			regcache_sync(wm8510->regmap);
  
- 			/* Initial power up */
--			snd_soc_update_bits(codec, WM8523_PSCTRL1,
-+			snd_soc_component_update_bits(component, WM8523_PSCTRL1,
- 					    WM8523_SYS_ENA_MASK, 1);
- 
- 			msleep(100);
+ 			/* Initial cap charge at VMID 5k */
+-			snd_soc_write(codec, WM8510_POWER1, power1 | 0x3);
++			snd_soc_component_write(component, WM8510_POWER1, power1 | 0x3);
+ 			mdelay(100);
  		}
  
- 		/* Power up to mute */
--		snd_soc_update_bits(codec, WM8523_PSCTRL1,
-+		snd_soc_component_update_bits(component, WM8523_PSCTRL1,
- 				    WM8523_SYS_ENA_MASK, 2);
- 
+ 		power1 |= 0x2;  /* VMID 500k */
+-		snd_soc_write(codec, WM8510_POWER1, power1);
++		snd_soc_component_write(component, WM8510_POWER1, power1);
  		break;
  
  	case SND_SOC_BIAS_OFF:
- 		/* The chip runs through the power down sequence for us. */
--		snd_soc_update_bits(codec, WM8523_PSCTRL1,
-+		snd_soc_component_update_bits(component, WM8523_PSCTRL1,
- 				    WM8523_SYS_ENA_MASK, 0);
- 		msleep(100);
+-		snd_soc_write(codec, WM8510_POWER1, 0);
+-		snd_soc_write(codec, WM8510_POWER2, 0);
+-		snd_soc_write(codec, WM8510_POWER3, 0);
++		snd_soc_component_write(component, WM8510_POWER1, 0);
++		snd_soc_component_write(component, WM8510_POWER2, 0);
++		snd_soc_component_write(component, WM8510_POWER3, 0);
+ 		break;
+ 	}
  
-@@ -397,35 +397,36 @@ static struct snd_soc_dai_driver wm8523_dai = {
- 	.ops = &wm8523_dai_ops,
+@@ -574,26 +574,27 @@ static struct snd_soc_dai_driver wm8510_dai = {
+ 	.symmetric_rates = 1,
  };
  
--static int wm8523_probe(struct snd_soc_codec *codec)
-+static int wm8523_probe(struct snd_soc_component *component)
+-static int wm8510_probe(struct snd_soc_codec *codec)
++static int wm8510_probe(struct snd_soc_component *component)
  {
--	struct wm8523_priv *wm8523 = snd_soc_codec_get_drvdata(codec);
-+	struct wm8523_priv *wm8523 = snd_soc_component_get_drvdata(component);
- 
- 	wm8523->rate_constraint.list = &wm8523->rate_constraint_list[0];
- 	wm8523->rate_constraint.count =
- 		ARRAY_SIZE(wm8523->rate_constraint_list);
- 
- 	/* Change some default settings - latch VU and enable ZC */
--	snd_soc_update_bits(codec, WM8523_DAC_GAINR,
-+	snd_soc_component_update_bits(component, WM8523_DAC_GAINR,
- 			    WM8523_DACR_VU, WM8523_DACR_VU);
--	snd_soc_update_bits(codec, WM8523_DAC_CTRL3, WM8523_ZC, WM8523_ZC);
-+	snd_soc_component_update_bits(component, WM8523_DAC_CTRL3, WM8523_ZC, WM8523_ZC);
+-	wm8510_reset(codec);
++	wm8510_reset(component);
  
  	return 0;
  }
  
--static const struct snd_soc_codec_driver soc_codec_dev_wm8523 = {
--	.probe =	wm8523_probe,
--	.set_bias_level = wm8523_set_bias_level,
+-static const struct snd_soc_codec_driver soc_codec_dev_wm8510 = {
+-	.probe =	wm8510_probe,
+-	.set_bias_level = wm8510_set_bias_level,
 -	.suspend_bias_off = true,
 -
 -	.component_driver = {
--		.controls		= wm8523_controls,
--		.num_controls		= ARRAY_SIZE(wm8523_controls),
--		.dapm_widgets		= wm8523_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(wm8523_dapm_widgets),
--		.dapm_routes		= wm8523_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(wm8523_dapm_routes),
+-		.controls		= wm8510_snd_controls,
+-		.num_controls		= ARRAY_SIZE(wm8510_snd_controls),
+-		.dapm_widgets		= wm8510_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(wm8510_dapm_widgets),
+-		.dapm_routes		= wm8510_dapm_routes,
+-		.num_dapm_routes	= ARRAY_SIZE(wm8510_dapm_routes),
 -	},
-+static const struct snd_soc_component_driver soc_component_dev_wm8523 = {
-+	.probe			= wm8523_probe,
-+	.set_bias_level		= wm8523_set_bias_level,
-+	.controls		= wm8523_controls,
-+	.num_controls		= ARRAY_SIZE(wm8523_controls),
-+	.dapm_widgets		= wm8523_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(wm8523_dapm_widgets),
-+	.dapm_routes		= wm8523_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(wm8523_dapm_routes),
++static const struct snd_soc_component_driver soc_component_dev_wm8510 = {
++	.probe			= wm8510_probe,
++	.set_bias_level		= wm8510_set_bias_level,
++	.controls		= wm8510_snd_controls,
++	.num_controls		= ARRAY_SIZE(wm8510_snd_controls),
++	.dapm_widgets		= wm8510_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(wm8510_dapm_widgets),
++	.dapm_routes		= wm8510_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(wm8510_dapm_routes),
 +	.suspend_bias_off	= 1,
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
@@ -295,38 +324,63 @@ index c7c33e98fbcb..f4a9e25fb334 100644
 +	.non_legacy_dai_naming	= 1,
  };
  
- static const struct of_device_id wm8523_of_match[] = {
-@@ -511,8 +512,8 @@ static int wm8523_i2c_probe(struct i2c_client *i2c,
+ static const struct of_device_id wm8510_of_match[] = {
+@@ -631,25 +632,18 @@ static int wm8510_spi_probe(struct spi_device *spi)
  
- 	i2c_set_clientdata(i2c, wm8523);
+ 	spi_set_drvdata(spi, wm8510);
  
--	ret =  snd_soc_register_codec(&i2c->dev,
--			&soc_codec_dev_wm8523, &wm8523_dai, 1);
-+	ret = devm_snd_soc_register_component(&i2c->dev,
-+			&soc_component_dev_wm8523, &wm8523_dai, 1);
+-	ret = snd_soc_register_codec(&spi->dev,
+-			&soc_codec_dev_wm8510, &wm8510_dai, 1);
++	ret = devm_snd_soc_register_component(&spi->dev,
++			&soc_component_dev_wm8510, &wm8510_dai, 1);
  
- 	return ret;
- 
-@@ -521,12 +522,6 @@ static int wm8523_i2c_probe(struct i2c_client *i2c,
  	return ret;
  }
  
--static int wm8523_i2c_remove(struct i2c_client *client)
+-static int wm8510_spi_remove(struct spi_device *spi)
+-{
+-	snd_soc_unregister_codec(&spi->dev);
+-	return 0;
+-}
+-
+ static struct spi_driver wm8510_spi_driver = {
+ 	.driver = {
+ 		.name	= "wm8510",
+ 		.of_match_table = wm8510_of_match,
+ 	},
+ 	.probe		= wm8510_spi_probe,
+-	.remove		= wm8510_spi_remove,
+ };
+ #endif /* CONFIG_SPI_MASTER */
+ 
+@@ -671,18 +665,12 @@ static int wm8510_i2c_probe(struct i2c_client *i2c,
+ 
+ 	i2c_set_clientdata(i2c, wm8510);
+ 
+-	ret =  snd_soc_register_codec(&i2c->dev,
+-			&soc_codec_dev_wm8510, &wm8510_dai, 1);
++	ret = devm_snd_soc_register_component(&i2c->dev,
++			&soc_component_dev_wm8510, &wm8510_dai, 1);
+ 
+ 	return ret;
+ }
+ 
+-static int wm8510_i2c_remove(struct i2c_client *client)
 -{
 -	snd_soc_unregister_codec(&client->dev);
 -	return 0;
 -}
 -
- static const struct i2c_device_id wm8523_i2c_id[] = {
- 	{ "wm8523", 0 },
+ static const struct i2c_device_id wm8510_i2c_id[] = {
+ 	{ "wm8510", 0 },
  	{ }
-@@ -539,7 +534,6 @@ static struct i2c_driver wm8523_i2c_driver = {
- 		.of_match_table = wm8523_of_match,
+@@ -695,7 +683,6 @@ static struct i2c_driver wm8510_i2c_driver = {
+ 		.of_match_table = wm8510_of_match,
  	},
- 	.probe =    wm8523_i2c_probe,
--	.remove =   wm8523_i2c_remove,
- 	.id_table = wm8523_i2c_id,
+ 	.probe =    wm8510_i2c_probe,
+-	.remove =   wm8510_i2c_remove,
+ 	.id_table = wm8510_i2c_id,
  };
- 
+ #endif
 -- 
 2.16.1
