@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Don't init cache from DSP memory if control is write-only" to the asoc tree
-Date: Mon, 12 Feb 2018 12:52:28 +0000
-Message-ID: <E1elDau-0006Xq-1z@debutante>
-References: <20180205113817.16470-1-rf@opensource.cirrus.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180205113817.16470-1-rf@opensource.cirrus.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: sun4i: replace codec to component" to
+	the asoc tree
+Date: Mon, 12 Feb 2018 12:38:51 +0000
+Message-ID: <E1elDNj-0004N1-Dp@debutante>
+References: <87a7wxxpj8.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7E1E7267AEB
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:38:53 +0100 (CET)
+In-Reply-To: <87a7wxxpj8.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Don't init cache from DSP memory if control is write-only
+   ASoC: sun4i: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -37,49 +53,171 @@ to this mail.
 Thanks,
 Mark
 
->From 04ff40a983e864b586f189b4c3503b6f61263643 Mon Sep 17 00:00:00 2001
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-Date: Mon, 5 Feb 2018 11:38:17 +0000
-Subject: [PATCH] ASoC: wm_adsp: Don't init cache from DSP memory if control is
- write-only
+>From 77f4be16e6bf781e05a5ea95b98259c93ccf1fa2 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 29 Jan 2018 04:23:46 +0000
+Subject: [PATCH] ASoC: sun4i: replace codec to component
 
-For controls marked write-only don't initialize the cache from the
-content of the DSP memory. We stil need the cache for any new data
-that is written to this control, and we need to return something
-for a read of the ALSA control because most user-side code assumes
-all ALSA controls are readable. The cache is already created zero-
-filled so the only change needed is to skip populating it from
-DSP memory if the control isn't readable.
+Now we can replace Codec to Component. Let's do it.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Note:
+	xxx_codec_xxx()		->	xxx_component_xxx()
+	.idle_bias_off = 0	->	.idle_bias_on = 1
+	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
+	-			->	.endianness = 1
+	-			->	.non_legacy_dai_naming = 1
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ sound/soc/sunxi/sun4i-codec.c | 71 ++++++++++++++++++++++---------------------
+ 1 file changed, 37 insertions(+), 34 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 66e32f5d2917..0060aeb63a9f 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1237,9 +1237,16 @@ static int wm_coeff_init_control_caches(struct wm_adsp *dsp)
- 		if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
- 			continue;
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 886281673972..9a3cb7704810 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -792,15 +792,17 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
+ 	{ "Mic1", NULL, "VMIC" },
+ };
  
--		ret = wm_coeff_read_control(ctl, ctl->cache, ctl->len);
--		if (ret < 0)
--			return ret;
-+		/*
-+		 * For readable controls populate the cache from the DSP memory.
-+		 * For non-readable controls the cache was zero-filled when
-+		 * created so we don't need to do anything.
-+		 */
-+		if (!ctl->flags || (ctl->flags & WMFW_CTL_FLAG_READABLE)) {
-+			ret = wm_coeff_read_control(ctl, ctl->cache, ctl->len);
-+			if (ret < 0)
-+				return ret;
-+		}
+-static const struct snd_soc_codec_driver sun4i_codec_codec = {
+-	.component_driver = {
+-		.controls		= sun4i_codec_controls,
+-		.num_controls		= ARRAY_SIZE(sun4i_codec_controls),
+-		.dapm_widgets		= sun4i_codec_codec_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
+-		.dapm_routes		= sun4i_codec_codec_dapm_routes,
+-		.num_dapm_routes	= ARRAY_SIZE(sun4i_codec_codec_dapm_routes),
+-	},
++static const struct snd_soc_component_driver sun4i_codec_codec = {
++	.controls		= sun4i_codec_controls,
++	.num_controls		= ARRAY_SIZE(sun4i_codec_controls),
++	.dapm_widgets		= sun4i_codec_codec_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
++	.dapm_routes		= sun4i_codec_codec_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(sun4i_codec_codec_dapm_routes),
++	.idle_bias_on		= 1,
++	.use_pmdown_time	= 1,
++	.endianness		= 1,
++	.non_legacy_dai_naming	= 1,
+ };
+ 
+ /*** sun6i Codec ***/
+@@ -1098,15 +1100,17 @@ static const struct snd_soc_dapm_route sun6i_codec_codec_dapm_routes[] = {
+ 	{ "Right ADC", NULL, "Right ADC Mixer" },
+ };
+ 
+-static const struct snd_soc_codec_driver sun6i_codec_codec = {
+-	.component_driver = {
+-		.controls		= sun6i_codec_codec_widgets,
+-		.num_controls		= ARRAY_SIZE(sun6i_codec_codec_widgets),
+-		.dapm_widgets		= sun6i_codec_codec_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(sun6i_codec_codec_dapm_widgets),
+-		.dapm_routes		= sun6i_codec_codec_dapm_routes,
+-		.num_dapm_routes	= ARRAY_SIZE(sun6i_codec_codec_dapm_routes),
+-	},
++static const struct snd_soc_component_driver sun6i_codec_codec = {
++	.controls		= sun6i_codec_codec_widgets,
++	.num_controls		= ARRAY_SIZE(sun6i_codec_codec_widgets),
++	.dapm_widgets		= sun6i_codec_codec_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(sun6i_codec_codec_dapm_widgets),
++	.dapm_routes		= sun6i_codec_codec_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(sun6i_codec_codec_dapm_routes),
++	.idle_bias_on		= 1,
++	.use_pmdown_time	= 1,
++	.endianness		= 1,
++	.non_legacy_dai_naming	= 1,
+ };
+ 
+ /* sun8i A23 codec */
+@@ -1126,13 +1130,15 @@ static const struct snd_soc_dapm_widget sun8i_a23_codec_codec_widgets[] = {
+ 
+ };
+ 
+-static const struct snd_soc_codec_driver sun8i_a23_codec_codec = {
+-	.component_driver = {
+-		.controls		= sun8i_a23_codec_codec_controls,
+-		.num_controls		= ARRAY_SIZE(sun8i_a23_codec_codec_controls),
+-		.dapm_widgets		= sun8i_a23_codec_codec_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(sun8i_a23_codec_codec_widgets),
+-	},
++static const struct snd_soc_component_driver sun8i_a23_codec_codec = {
++	.controls		= sun8i_a23_codec_codec_controls,
++	.num_controls		= ARRAY_SIZE(sun8i_a23_codec_codec_controls),
++	.dapm_widgets		= sun8i_a23_codec_codec_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(sun8i_a23_codec_codec_widgets),
++	.idle_bias_on		= 1,
++	.use_pmdown_time	= 1,
++	.endianness		= 1,
++	.non_legacy_dai_naming	= 1,
+ };
+ 
+ static const struct snd_soc_component_driver sun4i_codec_component = {
+@@ -1450,7 +1456,7 @@ static const struct regmap_config sun8i_v3s_codec_regmap_config = {
+ 
+ struct sun4i_codec_quirks {
+ 	const struct regmap_config *regmap_config;
+-	const struct snd_soc_codec_driver *codec;
++	const struct snd_soc_component_driver *codec;
+ 	struct snd_soc_card * (*create_card)(struct device *dev);
+ 	struct reg_field reg_adc_fifoc;	/* used for regmap_field */
+ 	unsigned int reg_dac_txdata;	/* TX FIFO offset for DMA config */
+@@ -1657,7 +1663,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+ 	scodec->capture_dma_data.maxburst = 8;
+ 	scodec->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+ 
+-	ret = snd_soc_register_codec(&pdev->dev, quirks->codec,
++	ret = devm_snd_soc_register_component(&pdev->dev, quirks->codec,
+ 				     &sun4i_codec_dai, 1);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to register our codec\n");
+@@ -1669,20 +1675,20 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+ 					      &dummy_cpu_dai, 1);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to register our DAI\n");
+-		goto err_unregister_codec;
++		goto err_assert_reset;
+ 	}
+ 
+ 	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to register against DMAEngine\n");
+-		goto err_unregister_codec;
++		goto err_assert_reset;
+ 	}
+ 
+ 	card = quirks->create_card(&pdev->dev);
+ 	if (IS_ERR(card)) {
+ 		ret = PTR_ERR(card);
+ 		dev_err(&pdev->dev, "Failed to create our card\n");
+-		goto err_unregister_codec;
++		goto err_assert_reset;
+ 	}
+ 
+ 	snd_soc_card_set_drvdata(card, scodec);
+@@ -1690,13 +1696,11 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+ 	ret = snd_soc_register_card(card);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to register our card\n");
+-		goto err_unregister_codec;
++		goto err_assert_reset;
  	}
  
  	return 0;
+ 
+-err_unregister_codec:
+-	snd_soc_unregister_codec(&pdev->dev);
+ err_assert_reset:
+ 	if (scodec->rst)
+ 		reset_control_assert(scodec->rst);
+@@ -1711,7 +1715,6 @@ static int sun4i_codec_remove(struct platform_device *pdev)
+ 	struct sun4i_codec *scodec = snd_soc_card_get_drvdata(card);
+ 
+ 	snd_soc_unregister_card(card);
+-	snd_soc_unregister_codec(&pdev->dev);
+ 	if (scodec->rst)
+ 		reset_control_assert(scodec->rst);
+ 	clk_disable_unprepare(scodec->clk_apb);
 -- 
 2.16.1
