@@ -1,19 +1,16 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: tlv320aic31xx: Fix master mode clock
-	I2S bus clocks
-Date: Mon, 12 Feb 2018 17:05:31 +0200
-Message-ID: <cdf06301-8166-3035-97db-0e87d3888192@ti.com>
-References: <20180212140646.3268-1-peter.ujfalusi@ti.com>
- <b582d1d1-a027-f7cf-1f2e-a09a411f1354@ti.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH v2 0/7] ASoC: samsung: Add HDMI sound support
+	for tm2 board
+Date: Mon, 12 Feb 2018 17:15:31 +0100
+Message-ID: <20180212161538.22669-1-s.nawrocki@samsung.com>
+References: <CGME20180212161554epcas2p26c19860d14006b0e1501699dc50d3f2f@epcas2p2.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
- by alsa0.perex.cz (Postfix) with ESMTP id 89DA92673F5
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 16:05:00 +0100 (CET)
-In-Reply-To: <b582d1d1-a027-f7cf-1f2e-a09a411f1354@ti.com>
-Content-Language: en-US
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9EEBA2673A0
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 17:15:58 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,74 +20,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Andrew F. Davis" <afd@ti.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, jcsing.lee@samsung.com, lgirdwood@gmail.com, krzk@kernel.org, linux-kernel@vger.kernel.org, robh+dt@kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>, m.szyprowski@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE4LTAyLTEyIDE2OjE3LCBBbmRyZXcgRi4gRGF2aXMgd3JvdGU6Cj4gT24gMDIvMTIv
-MjAxOCAwODowNiBBTSwgUGV0ZXIgVWpmYWx1c2kgd3JvdGU6Cj4+IEluIHRoZSByZXNldCBzdGF0
-ZSBvZiB0aGUgY29kZWMgd2UgZG8gbm90IGhhdmUgY29tcGxldGUgcGxheWJhY2sgb3IgY2FwdHVy
-ZQo+PiByb3V0ZXMuCj4+Cj4+IFRoZSBhdWRpbyBwbGF5YmFjay9jYXB0dXJlIHdpbGwgbm90IHdv
-cmsgZHVlIHRvIG1pc3NpbmcgY2xvY2sgc2lnbmFscyBvbgo+PiB0aGUgSTJTIGJ1cyBpZiBQTEws
-IE1EQUMvTkRBQy9EQUMgTUFEQy9OQURDL0FEQyBpcyBwb3dlcmVkIGRvd24uCj4+Cj4+IFRvIG1h
-a2Ugc3VyZSB0aGF0IGV2ZW4gaWYgYWxsIG91dHB1dC9pbnB1dCBpcyBkaXNjb25uZWN0ZWQgdGhl
-IGNvZGVjIGlzCj4+IGdlbmVyYXRpbmcgY2xvY2tzLCB3ZSBuZWVkIHRvIGhhdmUgdmFsaWQgREFQ
-TSByb3V0ZSBpbiBldmVyeSBjYXNlIHRvIHBvd2VyCj4+IHVwIHRoZSBtdXN0IG5lZWRlZCBwYXJ0
-cyBvZiB0aGUgY29kZWMuCj4+Cj4gCj4gSWYgYWxsIG91dHB1dC9pbnB1dCBpcyBkaXNjb25uZWN0
-ZWQgd2h5IGRvIHdlIG5lZWQgdGhlIEkyQyBjbG9ja3M/Cgp3ZSBuZWVkIEkyUyBjbG9ja3Mgd2hl
-biB1c2VyIGlzIHJ1bm5pbmcgYXVkaW8sIG90aGVyd2lzZSBpdCB3aWxsIHRpbWUKb3V0IHdpdGgg
-ZXJyb3IuCgo+IE9yIGRvIHlvdSBtZWFuIGlmIG9ubHkgb25lIGlzIGRpc2Nvbm5lY3RlZCB0aGUg
-UExMIGdvZXMgZG93bj8KCklmIGJvdGggaXMgZG93biAoREFDcyBpbiBjYXNlIG9mIHBsYXliYWNr
-LCBBREMgaW4gY2FzZSBvZiBjYXB0dXJlKQoKPiBJZiB0aGF0IGlzCj4gdGhlIGNhc2UgdGhlbiBp
-dCB3b3VsZCBiZSBiZXR0ZXIgdG8gZml4IHRoZSBEQVBNIHJvdXRlIHNvIGJvdGggcGF0aHMKPiBj
-b3JyZWN0bHkgbGVhZCBiYWNrIHRvIHRoZSBQTEwuCgpUaGlzIGlzIHdoYXQgdGhlIHBhdGNoIGlz
-IGRvaW5nLCBpdCBtYWtlcyBzdXJlIHRoYXQgREFDL0FEQyBpcyBwb3dlcmVkCmFuZCBhbGwgdGhl
-IG90aGVyIHRoaW5ncyB3ZSBuZWVkIGZvciBjbG9jayBnZW5lcmF0aW9uLgoKPiAKPj4gSSBoYXZl
-IHZlcmlmaWVkIHRoYXQgc3dpdGNoaW5nIERBQyAoZHVyaW5nIHBsYXliYWNrKSBvciBBREMgKGR1
-cmluZwo+PiBjYXB0dXJlKSB3aWxsIHN0b3AgdGhlIEkyUyBjbG9ja3MsIHNvIHRoZSBvbmx5IHNv
-bHV0aW9uIGlzIHRvIGNvbm5lY3QgdGhlCj4+ICdPZmYnIHJvdXRlcyBhcyB3ZWxsIHRvIG91dHB1
-dC9pbnB1dC4KPj4KPj4gVGVzdGVkIG9uIGFtNDN4LWVwb3MtZXZtIHdpdGggYWljMzExMSBjb2Rl
-YyBpbiBtYXN0ZXIgbW9kZS4KPj4KPj4gU2lnbmVkLW9mZi1ieTogUGV0ZXIgVWpmYWx1c2kgPHBl
-dGVyLnVqZmFsdXNpQHRpLmNvbT4KPj4gLS0tCj4+ICBzb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFp
-YzMxeHguYyB8IDkgKysrKysrKysrCj4+ICAxIGZpbGUgY2hhbmdlZCwgOSBpbnNlcnRpb25zKCsp
-Cj4+Cj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFpYzMxeHguYyBiL3Nv
-dW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljMzF4eC5jCj4+IGluZGV4IDg1OGNiOGJlNDQ1Zi4uZDQy
-YTIzZWI5MTZlIDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFpYzMxeHgu
-Ywo+PiArKysgYi9zb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFpYzMxeHguYwo+PiBAQCAtNTg2LDkg
-KzU4NiwxMSBAQCBjb21tb24zMXh4X2F1ZGlvX21hcFtdID0gewo+PiAgCXsiREFDIExlZnQgSW5w
-dXQiLCAiTGVmdCBEYXRhIiwgIkRBQyBJTiJ9LAo+PiAgCXsiREFDIExlZnQgSW5wdXQiLCAiUmln
-aHQgRGF0YSIsICJEQUMgSU4ifSwKPj4gIAl7IkRBQyBMZWZ0IElucHV0IiwgIk1vbm8iLCAiREFD
-IElOIn0sCj4+ICsJeyJEQUMgTGVmdCBJbnB1dCIsICJPZmYiLCAiREFDIElOIn0sCj4+ICAJeyJE
-QUMgUmlnaHQgSW5wdXQiLCAiTGVmdCBEYXRhIiwgIkRBQyBJTiJ9LAo+PiAgCXsiREFDIFJpZ2h0
-IElucHV0IiwgIlJpZ2h0IERhdGEiLCAiREFDIElOIn0sCj4+ICAJeyJEQUMgUmlnaHQgSW5wdXQi
-LCAiTW9ubyIsICJEQUMgSU4ifSwKPj4gKwl7IkRBQyBSaWdodCBJbnB1dCIsICJPZmYiLCAiREFD
-IElOIn0sCj4+ICAJeyJEQUMgTGVmdCIsIE5VTEwsICJEQUMgTGVmdCBJbnB1dCJ9LAo+PiAgCXsi
-REFDIFJpZ2h0IiwgTlVMTCwgIkRBQyBSaWdodCBJbnB1dCJ9LAo+PiAgCj4+IEBAIC02MDEsNiAr
-NjAzLDkgQEAgY29tbW9uMzF4eF9hdWRpb19tYXBbXSA9IHsKPj4gIAl7IkhQIFJpZ2h0IiwgIlN3
-aXRjaCIsICJPdXRwdXQgUmlnaHQifSwKPj4gIAl7IkhQUiBEcml2ZXIiLCBOVUxMLCAiSFAgUmln
-aHQifSwKPj4gIAl7IkhQUiIsIE5VTEwsICJIUFIgRHJpdmVyIn0sCj4+ICsKPj4gKwl7IkhQTCIs
-IE5VTEwsICJEQUMgTGVmdCJ9LAo+PiArCXsiSFBSIiwgTlVMTCwgIkRBQyBSaWdodCJ9LAo+PiAg
-fTsKPj4gIAo+PiAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1fcm91dGUKPj4gQEAg
-LTYyMSwxNiArNjI2LDIwIEBAIGFpYzMxeHhfYXVkaW9fbWFwW10gPSB7Cj4+ICAJeyJNSUMxTFAg
-UC1UZXJtaW5hbCIsICJGRlIgMTAgT2htIiwgIk1JQzFMUCJ9LAo+PiAgCXsiTUlDMUxQIFAtVGVy
-bWluYWwiLCAiRkZSIDIwIE9obSIsICJNSUMxTFAifSwKPj4gIAl7Ik1JQzFMUCBQLVRlcm1pbmFs
-IiwgIkZGUiA0MCBPaG0iLCAiTUlDMUxQIn0sCj4+ICsJeyJNSUMxTFAgUC1UZXJtaW5hbCIsICJP
-ZmYiLCAiTUlDMUxQIn0sCj4+ICAJeyJNSUMxUlAgUC1UZXJtaW5hbCIsICJGRlIgMTAgT2htIiwg
-Ik1JQzFSUCJ9LAo+PiAgCXsiTUlDMVJQIFAtVGVybWluYWwiLCAiRkZSIDIwIE9obSIsICJNSUMx
-UlAifSwKPj4gIAl7Ik1JQzFSUCBQLVRlcm1pbmFsIiwgIkZGUiA0MCBPaG0iLCAiTUlDMVJQIn0s
-Cj4+ICsJeyJNSUMxUlAgUC1UZXJtaW5hbCIsICJPZmYiLCAiTUlDMVJQIn0sCj4+ICAJeyJNSUMx
-TE0gUC1UZXJtaW5hbCIsICJGRlIgMTAgT2htIiwgIk1JQzFMTSJ9LAo+PiAgCXsiTUlDMUxNIFAt
-VGVybWluYWwiLCAiRkZSIDIwIE9obSIsICJNSUMxTE0ifSwKPj4gIAl7Ik1JQzFMTSBQLVRlcm1p
-bmFsIiwgIkZGUiA0MCBPaG0iLCAiTUlDMUxNIn0sCj4+ICsJeyJNSUMxTE0gUC1UZXJtaW5hbCIs
-ICJPZmYiLCAiTUlDMUxNIn0sCj4+ICAKPj4gIAl7Ik1JQzFMTSBNLVRlcm1pbmFsIiwgIkZGUiAx
-MCBPaG0iLCAiTUlDMUxNIn0sCj4+ICAJeyJNSUMxTE0gTS1UZXJtaW5hbCIsICJGRlIgMjAgT2ht
-IiwgIk1JQzFMTSJ9LAo+PiAgCXsiTUlDMUxNIE0tVGVybWluYWwiLCAiRkZSIDQwIE9obSIsICJN
-SUMxTE0ifSwKPj4gKwl7Ik1JQzFMTSBNLVRlcm1pbmFsIiwgIk9mZiIsICJNSUMxTE0ifSwKPj4g
-IAo+PiAgCXsiTUlDX0dBSU5fQ1RMIiwgTlVMTCwgIk1JQzFMUCBQLVRlcm1pbmFsIn0sCj4+ICAJ
-eyJNSUNfR0FJTl9DVEwiLCBOVUxMLCAiTUlDMVJQIFAtVGVybWluYWwifSwKPj4KCi0gUMOpdGVy
-CgpUZXhhcyBJbnN0cnVtZW50cyBGaW5sYW5kIE95LCBQb3Jra2FsYW5rYXR1IDIyLCAwMDE4MCBI
-ZWxzaW5raS4KWS10dW5udXMvQnVzaW5lc3MgSUQ6IDA2MTU1MjEtNC4gS290aXBhaWtrYS9Eb21p
-Y2lsZTogSGVsc2lua2kKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+This series adds support for HDMI audio on exynos5433 tm2 board, it
+includes a few fixes for the I2S driver and an extension of the existing
+card driver to support the I2S1<->HDMI transmitter path.
+
+In v2 only support for 48k/96k/192k samples rate is left, as adjusting
+the AUD PLL output frequency might cause regressions.
+
+Sylwester Nawrocki (7):
+  ASoC: samsung: i2s: Update clock-output-names property documentation
+  ASoC: samsung: i2s: Ensure names of supplied clocks are unique
+  ASoC: samsung: i2s: Prevent external abort on exynos5433 I2S1 access
+  ASoC: samsung: i2s: Define the parameters list for SAMSUNG_I2S_OPCLK
+  ASoC: samsung,tm2-audio DT binding documentation update
+  ASoC: samsung: Add support for HDMI audio on TM2 board
+  ASoC: samsung: Add missing #sound-dai-cells property documentation
+
+ .../bindings/sound/samsung,tm2-audio.txt           |  14 +-
+ .../devicetree/bindings/sound/samsung-i2s.txt      |  22 +--
+ sound/soc/samsung/i2s-regs.h                       |  11 +-
+ sound/soc/samsung/i2s.c                            |  39 ++++--
+ sound/soc/samsung/i2s.h                            |  11 +-
+ sound/soc/samsung/tm2_wm5110.c                     | 152 +++++++++++++++++----
+ 6 files changed, 191 insertions(+), 58 deletions(-)
+
+--
+2.14.2
