@@ -1,15 +1,15 @@
 From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [asoc:topic/wm9705 1/1]
- sound/soc/codecs/wm9705.c:330:18: error: implicit declaration of function
+Subject: [asoc:topic/stac9766 1/1]
+ sound/soc/codecs/stac9766.c:281:9: error: implicit declaration of function
  'snd_soc_new_ac97_component'; did you mean 'snd_soc_new_ac97_codec'?
-Date: Mon, 12 Feb 2018 22:19:57 +0800
-Message-ID: <201802122255.cGsOCM1z%fengguang.wu@intel.com>
+Date: Mon, 12 Feb 2018 22:36:57 +0800
+Message-ID: <201802122255.iMplDcSZ%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="82I3+IH0IqGh5yIs"
+Content-Type: multipart/mixed; boundary="YZ5djTAD1cGYuMQK"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id BFF42267611
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 15:20:32 +0100 (CET)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4380526785F
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 15:37:28 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,81 +25,76 @@ Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.
 List-Id: alsa-devel@alsa-project.org
 
 
---82I3+IH0IqGh5yIs
+--YZ5djTAD1cGYuMQK
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/wm9705
-head:   93ada23cd28b04d50ddd7b3e68a93706dc28b59c
-commit: 93ada23cd28b04d50ddd7b3e68a93706dc28b59c [1/1] ASoC: wm9705: replace codec to component
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/stac9766
+head:   033bb535d0db54c7ae14f0dec14177cc424414a5
+commit: 033bb535d0db54c7ae14f0dec14177cc424414a5 [1/1] ASoC: stac9766: replace codec to component
 config: i386-allmodconfig (attached as .config)
 compiler: gcc-7 (Debian 7.3.0-1) 7.3.0
 reproduce:
-        git checkout 93ada23cd28b04d50ddd7b3e68a93706dc28b59c
+        git checkout 033bb535d0db54c7ae14f0dec14177cc424414a5
         # save the attached .config to linux build tree
         make ARCH=i386 
 
 All error/warnings (new ones prefixed by >>):
 
-   sound/soc/codecs/wm9705.c: In function 'wm9705_soc_probe':
->> sound/soc/codecs/wm9705.c:330:18: error: implicit declaration of function 'snd_soc_new_ac97_component'; did you mean 'snd_soc_new_ac97_codec'? [-Werror=implicit-function-declaration]
-      wm9705->ac97 = snd_soc_new_ac97_component(component, WM9705_VENDOR_ID,
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~~
-                     snd_soc_new_ac97_codec
->> sound/soc/codecs/wm9705.c:330:16: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
-      wm9705->ac97 = snd_soc_new_ac97_component(component, WM9705_VENDOR_ID,
-                   ^
->> sound/soc/codecs/wm9705.c:339:4: error: implicit declaration of function 'snd_soc_free_ac97_component'; did you mean 'snd_soc_free_ac97_codec'? [-Werror=implicit-function-declaration]
-       snd_soc_free_ac97_component(wm9705->ac97);
-       ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-       snd_soc_free_ac97_codec
+   sound/soc/codecs/stac9766.c: In function 'stac9766_component_probe':
+>> sound/soc/codecs/stac9766.c:281:9: error: implicit declaration of function 'snd_soc_new_ac97_component'; did you mean 'snd_soc_new_ac97_codec'? [-Werror=implicit-function-declaration]
+     ac97 = snd_soc_new_ac97_component(component, STAC9766_VENDOR_ID,
+            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+            snd_soc_new_ac97_codec
+>> sound/soc/codecs/stac9766.c:281:7: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
+     ac97 = snd_soc_new_ac97_component(component, STAC9766_VENDOR_ID,
+          ^
+>> sound/soc/codecs/stac9766.c:297:2: error: implicit declaration of function 'snd_soc_free_ac97_component'; did you mean 'snd_soc_free_ac97_codec'? [-Werror=implicit-function-declaration]
+     snd_soc_free_ac97_component(ac97);
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+     snd_soc_free_ac97_codec
    cc1: some warnings being treated as errors
 
-vim +330 sound/soc/codecs/wm9705.c
+vim +281 sound/soc/codecs/stac9766.c
 
-   319	
-   320	static int wm9705_soc_probe(struct snd_soc_component *component)
-   321	{
-   322		struct wm9705_priv *wm9705 = snd_soc_component_get_drvdata(component);
-   323		struct regmap *regmap;
-   324	
-   325		if (wm9705->mfd_pdata) {
-   326			wm9705->ac97 = wm9705->mfd_pdata->ac97;
-   327			regmap = wm9705->mfd_pdata->regmap;
-   328		} else {
-   329	#ifdef CONFIG_SND_SOC_AC97_BUS
- > 330			wm9705->ac97 = snd_soc_new_ac97_component(component, WM9705_VENDOR_ID,
-   331							      WM9705_VENDOR_ID_MASK);
-   332			if (IS_ERR(wm9705->ac97)) {
-   333				dev_err(component->dev, "Failed to register AC97 codec\n");
-   334				return PTR_ERR(wm9705->ac97);
-   335			}
-   336	
-   337			regmap = regmap_init_ac97(wm9705->ac97, &wm9705_regmap_config);
-   338			if (IS_ERR(regmap)) {
- > 339				snd_soc_free_ac97_component(wm9705->ac97);
-   340				return PTR_ERR(regmap);
-   341			}
-   342	#endif
-   343		}
-   344	
-   345		snd_soc_component_set_drvdata(component, wm9705->ac97);
-   346		snd_soc_component_init_regmap(component, regmap);
-   347	
-   348		return 0;
-   349	}
-   350	
+   274	
+   275	static int stac9766_component_probe(struct snd_soc_component *component)
+   276	{
+   277		struct snd_ac97 *ac97;
+   278		struct regmap *regmap;
+   279		int ret;
+   280	
+ > 281		ac97 = snd_soc_new_ac97_component(component, STAC9766_VENDOR_ID,
+   282				STAC9766_VENDOR_ID_MASK);
+   283		if (IS_ERR(ac97))
+   284			return PTR_ERR(ac97);
+   285	
+   286		regmap = regmap_init_ac97(ac97, &stac9766_regmap_config);
+   287		if (IS_ERR(regmap)) {
+   288			ret = PTR_ERR(regmap);
+   289			goto err_free_ac97;
+   290		}
+   291	
+   292		snd_soc_component_init_regmap(component, regmap);
+   293		snd_soc_component_set_drvdata(component, ac97);
+   294	
+   295		return 0;
+   296	err_free_ac97:
+ > 297		snd_soc_free_ac97_component(ac97);
+   298		return ret;
+   299	}
+   300	
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---82I3+IH0IqGh5yIs
+--YZ5djTAD1cGYuMQK
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICNuhgVoAAy5jb25maWcAlDzLcuQ2knd/RUV7DzMHu/WyrI0NHUAQrIKLJNgAWFXShSGr
+H4sICKelgVoAAy5jb25maWcAlDzLcuQ2knd/RUV7DzMHu/WyrI0NHUAQrIKLJNgAWFXShSGr
 q23FdEteST1r//1mJvgAQFDt8cFqZibe+Uaivv/u+xX7+vr05e714f7u8+e/Vr8dH4/Pd6/H
 j6tPD5+P/7PK1apWdiVyaX8E4vLh8euf7x/Ory5XFz+eXv548sPz/elqe3x+PH5e8afHTw+/
 fYXmD0+P330P5FzVhVx3lxeZtKuHl9Xj0+vq5fj6XQ8/XF1252fXf3nf04esjdUtt1LVXS64
@@ -1269,11 +1264,11 @@ Y52gs588dRVBH34uVgrCq+0yT4EBNE3hwTG7ZL/66XnZsYIWxz8X+ummKzw1BXSx/Llc8uEI
 0i/jCkmDl+SVPl/iBkdcIJxfcHBFccW9thvrvD/tv5TjPah9edwXIIhFjICNHWDD7f8B1ByC
 0VDlAwA=
 
---82I3+IH0IqGh5yIs
+--YZ5djTAD1cGYuMQK
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---82I3+IH0IqGh5yIs--
+--YZ5djTAD1cGYuMQK--
