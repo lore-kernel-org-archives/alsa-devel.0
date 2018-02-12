@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: inno_rk3036: replace codec to
-	component" to the asoc tree
-Date: Mon, 12 Feb 2018 12:36:25 +0000
-Message-ID: <E1elDLN-0003tZ-MM@debutante>
-References: <87shapuvop.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: sirf-audio: replace codec to component"
+	to the asoc tree
+Date: Mon, 12 Feb 2018 12:36:41 +0000
+Message-ID: <E1elDLd-0003uX-DS@debutante>
+References: <87tvv5uvpj.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EA840267A65
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:36:27 +0100 (CET)
-In-Reply-To: <87shapuvop.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 80AE82678CC
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:36:43 +0100 (CET)
+In-Reply-To: <87tvv5uvpj.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: inno_rk3036: replace codec to component
+   ASoC: sirf-audio: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 40aa60a2e9ab5242593101bb6270563ee5acdf46 Mon Sep 17 00:00:00 2001
+>From 4218bcf3e7572891eebed3389e2a9f004ff6d2b6 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:39:10 +0000
-Subject: [PATCH] ASoC: inno_rk3036: replace codec to component
+Date: Mon, 29 Jan 2018 04:38:39 +0000
+Subject: [PATCH] ASoC: sirf-audio: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,187 +70,152 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/inno_rk3036.c | 70 +++++++++++++++++++++---------------------
- 1 file changed, 35 insertions(+), 35 deletions(-)
+ sound/soc/codecs/sirf-audio-codec.c | 58 ++++++++++++++++++-------------------
+ 1 file changed, 28 insertions(+), 30 deletions(-)
 
-diff --git a/sound/soc/codecs/inno_rk3036.c b/sound/soc/codecs/inno_rk3036.c
-index 6b59b6f08298..85a336ba75f6 100644
---- a/sound/soc/codecs/inno_rk3036.c
-+++ b/sound/soc/codecs/inno_rk3036.c
-@@ -196,10 +196,10 @@ static const struct snd_soc_dapm_route rk3036_codec_dapm_routes[] = {
- 
- static int rk3036_codec_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+diff --git a/sound/soc/codecs/sirf-audio-codec.c b/sound/soc/codecs/sirf-audio-codec.c
+index 7ae8c181d1a4..e424499a8450 100644
+--- a/sound/soc/codecs/sirf-audio-codec.c
++++ b/sound/soc/codecs/sirf-audio-codec.c
+@@ -120,8 +120,8 @@ static int atlas6_codec_enable_and_reset_event(struct snd_soc_dapm_widget *w,
+ {
+ #define ATLAS6_CODEC_ENABLE_BITS (1 << 29)
+ #define ATLAS6_CODEC_RESET_BITS (1 << 28)
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-	struct sirf_audio_codec *sirf_audio_codec = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct sirf_audio_codec *sirf_audio_codec = snd_soc_component_get_drvdata(component);
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+ 		enable_and_reset_codec(sirf_audio_codec->regmap,
+@@ -143,8 +143,8 @@ static int prima2_codec_enable_and_reset_event(struct snd_soc_dapm_widget *w,
+ {
+ #define PRIMA2_CODEC_ENABLE_BITS (1 << 27)
+ #define PRIMA2_CODEC_RESET_BITS (1 << 26)
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-	struct sirf_audio_codec *sirf_audio_codec = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct sirf_audio_codec *sirf_audio_codec = snd_soc_component_get_drvdata(component);
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+ 		enable_and_reset_codec(sirf_audio_codec->regmap,
+@@ -333,8 +333,8 @@ static int sirf_audio_codec_trigger(struct snd_pcm_substream *substream,
+ 		int cmd,
+ 		struct snd_soc_dai *dai)
  {
 -	struct snd_soc_codec *codec = dai->codec;
+-	struct sirf_audio_codec *sirf_audio_codec = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_component *component = dai->component;
- 	unsigned int reg01_val = 0,  reg02_val = 0, reg03_val = 0;
++	struct sirf_audio_codec *sirf_audio_codec = snd_soc_component_get_drvdata(component);
+ 	int playback = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
  
--	dev_dbg(codec->dev, "rk3036_codec dai set fmt : %08x\n", fmt);
-+	dev_dbg(component->dev, "rk3036_codec dai set fmt : %08x\n", fmt);
- 
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBS_CFS:
-@@ -211,7 +211,7 @@ static int rk3036_codec_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 			     INNO_R01_I2SMODE_MASTER;
- 		break;
- 	default:
--		dev_err(codec->dev, "invalid fmt\n");
-+		dev_err(component->dev, "invalid fmt\n");
- 		return -EINVAL;
- 	}
- 
-@@ -229,7 +229,7 @@ static int rk3036_codec_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		reg02_val |= INNO_R02_DACM_LJM;
- 		break;
- 	default:
--		dev_err(codec->dev, "set dai format failed\n");
-+		dev_err(component->dev, "set dai format failed\n");
- 		return -EINVAL;
- 	}
- 
-@@ -251,15 +251,15 @@ static int rk3036_codec_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		reg03_val |= INNO_R03_BCP_REVERSAL;
- 		break;
- 	default:
--		dev_err(codec->dev, "set dai format failed\n");
-+		dev_err(component->dev, "set dai format failed\n");
- 		return -EINVAL;
- 	}
- 
--	snd_soc_update_bits(codec, INNO_R01, INNO_R01_I2SMODE_MSK |
-+	snd_soc_component_update_bits(component, INNO_R01, INNO_R01_I2SMODE_MSK |
- 			    INNO_R01_PINDIR_MSK, reg01_val);
--	snd_soc_update_bits(codec, INNO_R02, INNO_R02_LRCP_MSK |
-+	snd_soc_component_update_bits(component, INNO_R02, INNO_R02_LRCP_MSK |
- 			    INNO_R02_DACM_MSK, reg02_val);
--	snd_soc_update_bits(codec, INNO_R03, INNO_R03_BCP_MSK, reg03_val);
-+	snd_soc_component_update_bits(component, INNO_R03, INNO_R03_BCP_MSK, reg03_val);
- 
- 	return 0;
- }
-@@ -268,7 +268,7 @@ static int rk3036_codec_dai_hw_params(struct snd_pcm_substream *substream,
- 				      struct snd_pcm_hw_params *hw_params,
- 				      struct snd_soc_dai *dai)
- {
--	struct snd_soc_codec *codec = dai->codec;
-+	struct snd_soc_component *component = dai->component;
- 	unsigned int reg02_val = 0, reg03_val = 0;
- 
- 	switch (params_format(hw_params)) {
-@@ -291,9 +291,9 @@ static int rk3036_codec_dai_hw_params(struct snd_pcm_substream *substream,
- 	reg02_val |= INNO_R02_LRCP_NORMAL;
- 	reg03_val |= INNO_R03_FWL_32BIT | INNO_R03_DACR_WORK;
- 
--	snd_soc_update_bits(codec, INNO_R02, INNO_R02_LRCP_MSK |
-+	snd_soc_component_update_bits(component, INNO_R02, INNO_R02_LRCP_MSK |
- 			    INNO_R02_VWL_MSK, reg02_val);
--	snd_soc_update_bits(codec, INNO_R03, INNO_R03_DACR_MSK |
-+	snd_soc_component_update_bits(component, INNO_R03, INNO_R03_DACR_MSK |
- 			    INNO_R03_FWL_MSK, reg03_val);
- 	return 0;
- }
-@@ -330,43 +330,42 @@ static struct snd_soc_dai_driver rk3036_codec_dai_driver[] = {
- 	},
+ 	/*
+@@ -346,7 +346,7 @@ static int sirf_audio_codec_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		if (playback) {
+-			snd_soc_update_bits(codec, AUDIO_IC_CODEC_CTRL0,
++			snd_soc_component_update_bits(component, AUDIO_IC_CODEC_CTRL0,
+ 				IC_HSLEN | IC_HSREN, 0);
+ 			sirf_audio_codec_tx_disable(sirf_audio_codec);
+ 		} else
+@@ -357,7 +357,7 @@ static int sirf_audio_codec_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		if (playback) {
+ 			sirf_audio_codec_tx_enable(sirf_audio_codec);
+-			snd_soc_update_bits(codec, AUDIO_IC_CODEC_CTRL0,
++			snd_soc_component_update_bits(component, AUDIO_IC_CODEC_CTRL0,
+ 				IC_HSLEN | IC_HSREN, IC_HSLEN | IC_HSREN);
+ 		} else
+ 			sirf_audio_codec_rx_enable(sirf_audio_codec,
+@@ -393,29 +393,29 @@ static struct snd_soc_dai_driver sirf_audio_codec_dai = {
+ 	.ops = &sirf_audio_codec_dai_ops,
  };
  
--static void rk3036_codec_reset(struct snd_soc_codec *codec)
-+static void rk3036_codec_reset(struct snd_soc_component *component)
+-static int sirf_audio_codec_probe(struct snd_soc_codec *codec)
++static int sirf_audio_codec_probe(struct snd_soc_component *component)
  {
--	snd_soc_write(codec, INNO_R00,
-+	snd_soc_component_write(component, INNO_R00,
- 		      INNO_R00_CSR_RESET | INNO_R00_CDCR_RESET);
--	snd_soc_write(codec, INNO_R00,
-+	snd_soc_component_write(component, INNO_R00,
- 		      INNO_R00_CSR_WORK | INNO_R00_CDCR_WORK);
+-	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+ 
+-	pm_runtime_enable(codec->dev);
++	pm_runtime_enable(component->dev);
+ 
+-	if (of_device_is_compatible(codec->dev->of_node, "sirf,prima2-audio-codec")) {
++	if (of_device_is_compatible(component->dev->of_node, "sirf,prima2-audio-codec")) {
+ 		snd_soc_dapm_new_controls(dapm,
+ 			prima2_output_driver_dapm_widgets,
+ 			ARRAY_SIZE(prima2_output_driver_dapm_widgets));
+ 		snd_soc_dapm_new_controls(dapm,
+ 			&prima2_codec_clock_dapm_widget, 1);
+-		return snd_soc_add_codec_controls(codec,
++		return snd_soc_add_component_controls(component,
+ 			volume_controls_prima2,
+ 			ARRAY_SIZE(volume_controls_prima2));
+ 	}
+-	if (of_device_is_compatible(codec->dev->of_node, "sirf,atlas6-audio-codec")) {
++	if (of_device_is_compatible(component->dev->of_node, "sirf,atlas6-audio-codec")) {
+ 		snd_soc_dapm_new_controls(dapm,
+ 			atlas6_output_driver_dapm_widgets,
+ 			ARRAY_SIZE(atlas6_output_driver_dapm_widgets));
+ 		snd_soc_dapm_new_controls(dapm,
+ 			&atlas6_codec_clock_dapm_widget, 1);
+-		return snd_soc_add_codec_controls(codec,
++		return snd_soc_add_component_controls(component,
+ 			volume_controls_atlas6,
+ 			ARRAY_SIZE(volume_controls_atlas6));
+ 	}
+@@ -423,22 +423,21 @@ static int sirf_audio_codec_probe(struct snd_soc_codec *codec)
+ 	return -EINVAL;
  }
  
--static int rk3036_codec_probe(struct snd_soc_codec *codec)
-+static int rk3036_codec_probe(struct snd_soc_component *component)
+-static int sirf_audio_codec_remove(struct snd_soc_codec *codec)
++static void sirf_audio_codec_remove(struct snd_soc_component *component)
  {
--	rk3036_codec_reset(codec);
-+	rk3036_codec_reset(component);
- 	return 0;
- }
- 
--static int rk3036_codec_remove(struct snd_soc_codec *codec)
-+static void rk3036_codec_remove(struct snd_soc_component *component)
- {
--	rk3036_codec_reset(codec);
+-	pm_runtime_disable(codec->dev);
 -	return 0;
-+	rk3036_codec_reset(component);
++	pm_runtime_disable(component->dev);
  }
  
--static int rk3036_codec_set_bias_level(struct snd_soc_codec *codec,
-+static int rk3036_codec_set_bias_level(struct snd_soc_component *component,
- 				       enum snd_soc_bias_level level)
- {
- 	switch (level) {
- 	case SND_SOC_BIAS_STANDBY:
- 		/* set a big current for capacitor charging. */
--		snd_soc_write(codec, INNO_R10, INNO_R10_MAX_CUR);
-+		snd_soc_component_write(component, INNO_R10, INNO_R10_MAX_CUR);
- 		/* start precharge */
--		snd_soc_write(codec, INNO_R06, INNO_R06_DAC_PRECHARGE);
-+		snd_soc_component_write(component, INNO_R06, INNO_R06_DAC_PRECHARGE);
- 
- 		break;
- 
- 	case SND_SOC_BIAS_OFF:
- 		/* set a big current for capacitor discharging. */
--		snd_soc_write(codec, INNO_R10, INNO_R10_MAX_CUR);
-+		snd_soc_component_write(component, INNO_R10, INNO_R10_MAX_CUR);
- 		/* start discharge. */
--		snd_soc_write(codec, INNO_R06, INNO_R06_DAC_DISCHARGE);
-+		snd_soc_component_write(component, INNO_R06, INNO_R06_DAC_DISCHARGE);
- 
- 		break;
- 	default:
-@@ -376,18 +375,20 @@ static int rk3036_codec_set_bias_level(struct snd_soc_codec *codec,
- 	return 0;
- }
- 
--static const struct snd_soc_codec_driver rk3036_codec_driver = {
-+static const struct snd_soc_component_driver rk3036_codec_driver = {
- 	.probe			= rk3036_codec_probe,
- 	.remove			= rk3036_codec_remove,
- 	.set_bias_level		= rk3036_codec_set_bias_level,
+-static const struct snd_soc_codec_driver soc_codec_device_sirf_audio_codec = {
+-	.probe = sirf_audio_codec_probe,
+-	.remove = sirf_audio_codec_remove,
 -	.component_driver = {
--		.controls		= rk3036_codec_dapm_controls,
--		.num_controls		= ARRAY_SIZE(rk3036_codec_dapm_controls),
--		.dapm_routes		= rk3036_codec_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(rk3036_codec_dapm_routes),
--		.dapm_widgets		= rk3036_codec_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(rk3036_codec_dapm_widgets),
+-		.dapm_widgets = sirf_audio_codec_dapm_widgets,
+-		.num_dapm_widgets = ARRAY_SIZE(sirf_audio_codec_dapm_widgets),
+-		.dapm_routes = sirf_audio_codec_map,
+-		.num_dapm_routes = ARRAY_SIZE(sirf_audio_codec_map),
 -	},
-+	.controls		= rk3036_codec_dapm_controls,
-+	.num_controls		= ARRAY_SIZE(rk3036_codec_dapm_controls),
-+	.dapm_routes		= rk3036_codec_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(rk3036_codec_dapm_routes),
-+	.dapm_widgets		= rk3036_codec_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(rk3036_codec_dapm_widgets),
-+	.idle_bias_on		= 1,
+-	.idle_bias_off = true,
++static const struct snd_soc_component_driver soc_codec_device_sirf_audio_codec = {
++	.probe			= sirf_audio_codec_probe,
++	.remove			= sirf_audio_codec_remove,
++	.dapm_widgets		= sirf_audio_codec_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(sirf_audio_codec_dapm_widgets),
++	.dapm_routes		= sirf_audio_codec_map,
++	.num_dapm_routes	= ARRAY_SIZE(sirf_audio_codec_map),
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static const struct regmap_config rk3036_codec_regmap_config = {
-@@ -449,7 +450,7 @@ static int rk3036_codec_platform_probe(struct platform_device *pdev)
- 	priv->dev = &pdev->dev;
- 	dev_set_drvdata(&pdev->dev, priv);
+ static const struct of_device_id sirf_audio_codec_of_match[] = {
+@@ -495,7 +494,7 @@ static int sirf_audio_codec_driver_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
  
--	ret = snd_soc_register_codec(&pdev->dev, &rk3036_codec_driver,
-+	ret = devm_snd_soc_register_component(&pdev->dev, &rk3036_codec_driver,
- 				     rk3036_codec_dai_driver,
- 				     ARRAY_SIZE(rk3036_codec_dai_driver));
+-	ret = snd_soc_register_codec(&(pdev->dev),
++	ret = devm_snd_soc_register_component(&(pdev->dev),
+ 			&soc_codec_device_sirf_audio_codec,
+ 			&sirf_audio_codec_dai, 1);
  	if (ret) {
-@@ -464,7 +465,6 @@ static int rk3036_codec_platform_remove(struct platform_device *pdev)
- {
- 	struct rk3036_codec_priv *priv = dev_get_drvdata(&pdev->dev);
+@@ -525,7 +524,6 @@ static int sirf_audio_codec_driver_remove(struct platform_device *pdev)
+ 	struct sirf_audio_codec *sirf_audio_codec = platform_get_drvdata(pdev);
  
--	snd_soc_unregister_codec(&pdev->dev);
- 	clk_disable_unprepare(priv->pclk);
+ 	clk_disable_unprepare(sirf_audio_codec->clk);
+-	snd_soc_unregister_codec(&(pdev->dev));
  
  	return 0;
+ }
 -- 
 2.16.1
