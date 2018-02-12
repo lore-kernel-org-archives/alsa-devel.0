@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel-pdmic: replace codec to
+Subject: Applied "ASoC: atmel-classd: replace codec to
 	component" to the asoc tree
-Date: Mon, 12 Feb 2018 12:33:11 +0000
-Message-ID: <E1elDIF-0003Ym-Sv@debutante>
-References: <87y3khwat6.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:33:08 +0000
+Message-ID: <E1elDIC-0003Xw-PT@debutante>
+References: <87wp01wasb.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0488E26761D
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:33:14 +0100 (CET)
-In-Reply-To: <87y3khwat6.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E474C267935
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:33:10 +0100 (CET)
+In-Reply-To: <87wp01wasb.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel-pdmic: replace codec to component
+   ASoC: atmel-classd: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 716c5223171e94a4dd28c6e8891b8ed9921c93a7 Mon Sep 17 00:00:00 2001
+>From 1e8ba922c0fca2586cc43a4884e071f8c5446e49 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:27:08 +0000
-Subject: [PATCH] ASoC: atmel-pdmic: replace codec to component
+Date: Mon, 29 Jan 2018 04:27:39 +0000
+Subject: [PATCH] ASoC: atmel-classd: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,83 +70,71 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/atmel-pdmic.c | 56 +++++++++++++++++++++----------------------
- 1 file changed, 28 insertions(+), 28 deletions(-)
+ sound/soc/atmel/atmel-classd.c | 54 +++++++++++++++++++++---------------------
+ 1 file changed, 27 insertions(+), 27 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel-pdmic.c b/sound/soc/atmel/atmel-pdmic.c
-index 8e3d34be9e69..5f72baa5f5c7 100644
---- a/sound/soc/atmel/atmel-pdmic.c
-+++ b/sound/soc/atmel/atmel-pdmic.c
-@@ -288,14 +288,14 @@ static const DECLARE_TLV_DB_RANGE(mic_gain_tlv,
- static int pdmic_get_mic_volsw(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
- 	unsigned int dgain_val, scale_val;
- 	int i;
- 
--	dgain_val = (snd_soc_read(codec, PDMIC_DSPR1) & PDMIC_DSPR1_DGAIN_MASK)
-+	dgain_val = (snd_soc_component_read32(component, PDMIC_DSPR1) & PDMIC_DSPR1_DGAIN_MASK)
- 		    >> PDMIC_DSPR1_DGAIN_SHIFT;
- 
--	scale_val = (snd_soc_read(codec, PDMIC_DSPR0) & PDMIC_DSPR0_SCALE_MASK)
-+	scale_val = (snd_soc_component_read32(component, PDMIC_DSPR0) & PDMIC_DSPR0_SCALE_MASK)
- 		    >> PDMIC_DSPR0_SCALE_SHIFT;
- 
- 	for (i = 0; i < ARRAY_SIZE(mic_gain_table); i++) {
-@@ -312,7 +312,7 @@ static int pdmic_put_mic_volsw(struct snd_kcontrol *kcontrol,
- {
- 	struct soc_mixer_control *mc =
- 		(struct soc_mixer_control *)kcontrol->private_value;
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
- 	int max = mc->max;
- 	unsigned int val;
- 	int ret;
-@@ -322,12 +322,12 @@ static int pdmic_put_mic_volsw(struct snd_kcontrol *kcontrol,
- 	if (val > max)
- 		return -EINVAL;
- 
--	ret = snd_soc_update_bits(codec, PDMIC_DSPR1, PDMIC_DSPR1_DGAIN_MASK,
-+	ret = snd_soc_component_update_bits(component, PDMIC_DSPR1, PDMIC_DSPR1_DGAIN_MASK,
- 			 mic_gain_table[val].dgain << PDMIC_DSPR1_DGAIN_SHIFT);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = snd_soc_update_bits(codec, PDMIC_DSPR0, PDMIC_DSPR0_SCALE_MASK,
-+	ret = snd_soc_component_update_bits(component, PDMIC_DSPR0, PDMIC_DSPR0_SCALE_MASK,
- 			 mic_gain_table[val].scale << PDMIC_DSPR0_SCALE_SHIFT);
- 	if (ret < 0)
- 		return ret;
-@@ -346,23 +346,25 @@ SOC_SINGLE("High Pass Filter Switch", PDMIC_DSPR0,
- SOC_SINGLE("SINCC Filter Switch", PDMIC_DSPR0, PDMIC_DSPR0_SINBYP_SHIFT, 1, 1),
+diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+index ebabed69f0e6..27bb55ca07ae 100644
+--- a/sound/soc/atmel/atmel-classd.c
++++ b/sound/soc/atmel/atmel-classd.c
+@@ -247,9 +247,9 @@ static const char * const pwm_type[] = {
+ 	"Single ended", "Differential"
  };
  
--static int atmel_pdmic_codec_probe(struct snd_soc_codec *codec)
-+static int atmel_pdmic_component_probe(struct snd_soc_component *component)
+-static int atmel_classd_codec_probe(struct snd_soc_codec *codec)
++static int atmel_classd_component_probe(struct snd_soc_component *component)
  {
 -	struct snd_soc_card *card = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_card *card = snd_soc_component_get_drvdata(component);
- 	struct atmel_pdmic *dd = snd_soc_card_get_drvdata(card);
+ 	struct atmel_classd *dd = snd_soc_card_get_drvdata(card);
+ 	const struct atmel_classd_pdata *pdata = dd->pdata;
+ 	u32 mask, val;
+@@ -283,16 +283,16 @@ static int atmel_classd_codec_probe(struct snd_soc_codec *codec)
+ 		default:
+ 			val |= (CLASSD_MR_NOVR_VAL_10NS
+ 				<< CLASSD_MR_NOVR_VAL_SHIFT);
+-			dev_warn(codec->dev,
++			dev_warn(component->dev,
+ 				"non-overlapping value %d is invalid, the default value 10 is specified\n",
+ 				pdata->non_overlap_time);
+ 			break;
+ 		}
+ 	}
  
--	snd_soc_update_bits(codec, PDMIC_DSPR1, PDMIC_DSPR1_OFFSET_MASK,
-+	snd_soc_component_update_bits(component, PDMIC_DSPR1, PDMIC_DSPR1_OFFSET_MASK,
- 		     (u32)(dd->pdata->mic_offset << PDMIC_DSPR1_OFFSET_SHIFT));
+-	snd_soc_update_bits(codec, CLASSD_MR, mask, val);
++	snd_soc_component_update_bits(component, CLASSD_MR, mask, val);
  
+-	dev_info(codec->dev,
++	dev_info(component->dev,
+ 		"PWM modulation type is %s, non-overlapping is %s\n",
+ 		pwm_type[pdata->pwm_type],
+ 		pdata->non_overlap_enable?"enabled":"disabled");
+@@ -300,21 +300,23 @@ static int atmel_classd_codec_probe(struct snd_soc_codec *codec)
  	return 0;
  }
  
--static struct snd_soc_codec_driver soc_codec_dev_pdmic = {
--	.probe		= atmel_pdmic_codec_probe,
+-static int atmel_classd_codec_resume(struct snd_soc_codec *codec)
++static int atmel_classd_component_resume(struct snd_soc_component *component)
+ {
+-	struct snd_soc_card *card = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_card *card = snd_soc_component_get_drvdata(component);
+ 	struct atmel_classd *dd = snd_soc_card_get_drvdata(card);
+ 
+ 	return regcache_sync(dd->regmap);
+ }
+ 
+-static struct snd_soc_codec_driver soc_codec_dev_classd = {
+-	.probe		= atmel_classd_codec_probe,
+-	.resume		= atmel_classd_codec_resume,
 -	.component_driver = {
--		.controls		= atmel_pdmic_snd_controls,
--		.num_controls		= ARRAY_SIZE(atmel_pdmic_snd_controls),
+-		.controls		= atmel_classd_snd_controls,
+-		.num_controls		= ARRAY_SIZE(atmel_classd_snd_controls),
 -	},
-+static struct snd_soc_component_driver soc_component_dev_pdmic = {
-+	.probe			= atmel_pdmic_component_probe,
-+	.controls		= atmel_pdmic_snd_controls,
-+	.num_controls		= ARRAY_SIZE(atmel_pdmic_snd_controls),
++static struct snd_soc_component_driver soc_component_dev_classd = {
++	.probe			= atmel_classd_component_probe,
++	.resume			= atmel_classd_component_resume,
++	.controls		= atmel_classd_snd_controls,
++	.num_controls		= ARRAY_SIZE(atmel_classd_snd_controls),
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
@@ -154,88 +142,95 @@ index 8e3d34be9e69..5f72baa5f5c7 100644
  };
  
  /* codec dai component */
-@@ -375,7 +377,7 @@ atmel_pdmic_codec_dai_hw_params(struct snd_pcm_substream *substream,
+@@ -330,7 +332,7 @@ static int atmel_classd_codec_dai_startup(struct snd_pcm_substream *substream,
+ static int atmel_classd_codec_dai_digital_mute(struct snd_soc_dai *codec_dai,
+ 	int mute)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct atmel_pdmic *dd = snd_soc_card_get_drvdata(rtd->card);
 -	struct snd_soc_codec *codec = codec_dai->codec;
 +	struct snd_soc_component *component = codec_dai->component;
- 	unsigned int rate_min = substream->runtime->hw.rate_min;
- 	unsigned int rate_max = substream->runtime->hw.rate_max;
- 	int fs = params_rate(params);
-@@ -385,13 +387,13 @@ atmel_pdmic_codec_dai_hw_params(struct snd_pcm_substream *substream,
- 	u32 mr_val, dspr0_val, pclk_prescal, gclk_prescal;
+ 	u32 mask, val;
  
- 	if (params_channels(params) != 1) {
--		dev_err(codec->dev,
-+		dev_err(component->dev,
- 			"only supports one channel\n");
- 		return -EINVAL;
- 	}
+ 	mask = CLASSD_MR_LMUTE_MASK | CLASSD_MR_RMUTE_MASK;
+@@ -340,7 +342,7 @@ static int atmel_classd_codec_dai_digital_mute(struct snd_soc_dai *codec_dai,
+ 	else
+ 		val = 0;
  
- 	if ((fs < rate_min) || (fs > rate_max)) {
--		dev_err(codec->dev,
-+		dev_err(component->dev,
- 			"sample rate is %dHz, min rate is %dHz, max rate is %dHz\n",
- 			fs, rate_min, rate_max);
- 
-@@ -436,10 +438,10 @@ atmel_pdmic_codec_dai_hw_params(struct snd_pcm_substream *substream,
- 		mr_val |= PDMIC_MR_CLKS_PCK << PDMIC_MR_CLKS_SHIFT;
- 	}
- 
--	snd_soc_update_bits(codec, PDMIC_MR,
-+	snd_soc_component_update_bits(component, PDMIC_MR,
- 		PDMIC_MR_PRESCAL_MASK | PDMIC_MR_CLKS_MASK, mr_val);
- 
--	snd_soc_update_bits(codec, PDMIC_DSPR0,
-+	snd_soc_component_update_bits(component, PDMIC_DSPR0,
- 		PDMIC_DSPR0_OSR_MASK | PDMIC_DSPR0_SIZE_MASK, dspr0_val);
+-	snd_soc_update_bits(codec, CLASSD_MR, mask, val);
++	snd_soc_component_update_bits(component, CLASSD_MR, mask, val);
  
  	return 0;
-@@ -448,9 +450,9 @@ atmel_pdmic_codec_dai_hw_params(struct snd_pcm_substream *substream,
- static int atmel_pdmic_codec_dai_prepare(struct snd_pcm_substream *substream,
+ }
+@@ -379,7 +381,7 @@ atmel_classd_codec_dai_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
+-	struct snd_soc_codec *codec = codec_dai->codec;
++	struct snd_soc_component *component = codec_dai->component;
+ 	int fs;
+ 	int i, best, best_val, cur_val, ret;
+ 	u32 mask, val;
+@@ -397,7 +399,7 @@ atmel_classd_codec_dai_hw_params(struct snd_pcm_substream *substream,
+ 		}
+ 	}
+ 
+-	dev_dbg(codec->dev,
++	dev_dbg(component->dev,
+ 		"Selected SAMPLE_RATE of %dHz, GCLK_RATE of %ldHz\n",
+ 		sample_rates[best].rate, sample_rates[best].gclk_rate);
+ 
+@@ -411,7 +413,7 @@ atmel_classd_codec_dai_hw_params(struct snd_pcm_substream *substream,
+ 	val = (sample_rates[best].dsp_clk << CLASSD_INTPMR_DSP_CLK_FREQ_SHIFT)
+ 	| (sample_rates[best].sample_rate << CLASSD_INTPMR_FRAME_SHIFT);
+ 
+-	snd_soc_update_bits(codec, CLASSD_INTPMR, mask, val);
++	snd_soc_component_update_bits(component, CLASSD_INTPMR, mask, val);
+ 
+ 	return clk_prepare_enable(dd->gclk);
+ }
+@@ -429,9 +431,9 @@ atmel_classd_codec_dai_shutdown(struct snd_pcm_substream *substream,
+ static int atmel_classd_codec_dai_prepare(struct snd_pcm_substream *substream,
  					struct snd_soc_dai *codec_dai)
  {
 -	struct snd_soc_codec *codec = codec_dai->codec;
 +	struct snd_soc_component *component = codec_dai->component;
  
--	snd_soc_update_bits(codec, PDMIC_CR, PDMIC_CR_ENPDM_MASK,
-+	snd_soc_component_update_bits(component, PDMIC_CR, PDMIC_CR_ENPDM_MASK,
- 			    PDMIC_CR_ENPDM_DIS << PDMIC_CR_ENPDM_SHIFT);
- 
- 	return 0;
-@@ -459,7 +461,7 @@ static int atmel_pdmic_codec_dai_prepare(struct snd_pcm_substream *substream,
- static int atmel_pdmic_codec_dai_trigger(struct snd_pcm_substream *substream,
+-	snd_soc_update_bits(codec, CLASSD_MR,
++	snd_soc_component_update_bits(component, CLASSD_MR,
+ 				CLASSD_MR_LEN_MASK | CLASSD_MR_REN_MASK,
+ 				(CLASSD_MR_LEN_DIS << CLASSD_MR_LEN_SHIFT)
+ 				|(CLASSD_MR_REN_DIS << CLASSD_MR_REN_SHIFT));
+@@ -442,7 +444,7 @@ static int atmel_classd_codec_dai_prepare(struct snd_pcm_substream *substream,
+ static int atmel_classd_codec_dai_trigger(struct snd_pcm_substream *substream,
  					int cmd, struct snd_soc_dai *codec_dai)
  {
 -	struct snd_soc_codec *codec = codec_dai->codec;
 +	struct snd_soc_component *component = codec_dai->component;
- 	u32 val;
+ 	u32 mask, val;
  
- 	switch (cmd) {
-@@ -477,7 +479,7 @@ static int atmel_pdmic_codec_dai_trigger(struct snd_pcm_substream *substream,
+ 	mask = CLASSD_MR_LEN_MASK | CLASSD_MR_REN_MASK;
+@@ -463,7 +465,7 @@ static int atmel_classd_codec_dai_trigger(struct snd_pcm_substream *substream,
  		return -EINVAL;
  	}
  
--	snd_soc_update_bits(codec, PDMIC_CR, PDMIC_CR_ENPDM_MASK, val);
-+	snd_soc_component_update_bits(component, PDMIC_CR, PDMIC_CR_ENPDM_MASK, val);
+-	snd_soc_update_bits(codec, CLASSD_MR, mask, val);
++	snd_soc_component_update_bits(component, CLASSD_MR, mask, val);
  
  	return 0;
  }
-@@ -679,10 +681,10 @@ static int atmel_pdmic_probe(struct platform_device *pdev)
- 	/* register codec and codec dai */
- 	atmel_pdmic_codec_dai.capture.rate_min = rate_min;
- 	atmel_pdmic_codec_dai.capture.rate_max = rate_max;
--	ret = snd_soc_register_codec(dev, &soc_codec_dev_pdmic,
-+	ret = devm_snd_soc_register_component(dev, &soc_component_dev_pdmic,
- 				     &atmel_pdmic_codec_dai, 1);
+@@ -612,10 +614,10 @@ static int atmel_classd_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	ret = snd_soc_register_codec(dev, &soc_codec_dev_classd,
++	ret = devm_snd_soc_register_component(dev, &soc_component_dev_classd,
+ 					&atmel_classd_codec_dai, 1);
  	if (ret) {
 -		dev_err(dev, "could not register codec: %d\n", ret);
 +		dev_err(dev, "could not register component: %d\n", ret);
  		return ret;
  	}
  
-@@ -710,13 +712,11 @@ static int atmel_pdmic_probe(struct platform_device *pdev)
+@@ -643,13 +645,11 @@ static int atmel_classd_probe(struct platform_device *pdev)
  	return 0;
  
  unregister_codec:
@@ -243,7 +238,7 @@ index 8e3d34be9e69..5f72baa5f5c7 100644
  	return ret;
  }
  
- static int atmel_pdmic_remove(struct platform_device *pdev)
+ static int atmel_classd_remove(struct platform_device *pdev)
  {
 -	snd_soc_unregister_codec(&pdev->dev);
  	return 0;
