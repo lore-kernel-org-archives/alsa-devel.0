@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun4i: replace codec to component" to
-	the asoc tree
-Date: Mon, 12 Feb 2018 12:38:51 +0000
-Message-ID: <E1elDNj-0004N1-Dp@debutante>
-References: <87a7wxxpj8.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: spdif_transmitter: replace codec to
+	component" to the asoc tree
+Date: Mon, 12 Feb 2018 12:39:03 +0000
+Message-ID: <E1elDNv-0004QO-UA@debutante>
+References: <87fu6pxpmc.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E1E7267AEB
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:38:53 +0100 (CET)
-In-Reply-To: <87a7wxxpj8.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2005D267AF9
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:39:06 +0100 (CET)
+In-Reply-To: <87fu6pxpmc.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i: replace codec to component
+   ASoC: spdif_transmitter: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 77f4be16e6bf781e05a5ea95b98259c93ccf1fa2 Mon Sep 17 00:00:00 2001
+>From 3860978c5bf48720d1bab68ffa49e153fb9c01e8 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:23:46 +0000
-Subject: [PATCH] ASoC: sun4i: replace codec to component
+Date: Mon, 29 Jan 2018 04:21:55 +0000
+Subject: [PATCH] ASoC: spdif_transmitter: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,154 +70,62 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-codec.c | 71 ++++++++++++++++++++++---------------------
- 1 file changed, 37 insertions(+), 34 deletions(-)
+ sound/soc/codecs/spdif_transmitter.c | 26 +++++++++++---------------
+ 1 file changed, 11 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 886281673972..9a3cb7704810 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -792,15 +792,17 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
- 	{ "Mic1", NULL, "VMIC" },
+diff --git a/sound/soc/codecs/spdif_transmitter.c b/sound/soc/codecs/spdif_transmitter.c
+index 037aa1d45559..b4f7fc4acb39 100644
+--- a/sound/soc/codecs/spdif_transmitter.c
++++ b/sound/soc/codecs/spdif_transmitter.c
+@@ -38,13 +38,15 @@ static const struct snd_soc_dapm_route dit_routes[] = {
+ 	{ "spdif-out", NULL, "Playback" },
  };
  
--static const struct snd_soc_codec_driver sun4i_codec_codec = {
+-static struct snd_soc_codec_driver soc_codec_spdif_dit = {
 -	.component_driver = {
--		.controls		= sun4i_codec_controls,
--		.num_controls		= ARRAY_SIZE(sun4i_codec_controls),
--		.dapm_widgets		= sun4i_codec_codec_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
--		.dapm_routes		= sun4i_codec_codec_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(sun4i_codec_codec_dapm_routes),
+-		.dapm_widgets		= dit_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(dit_widgets),
+-		.dapm_routes		= dit_routes,
+-		.num_dapm_routes	= ARRAY_SIZE(dit_routes),
 -	},
-+static const struct snd_soc_component_driver sun4i_codec_codec = {
-+	.controls		= sun4i_codec_controls,
-+	.num_controls		= ARRAY_SIZE(sun4i_codec_controls),
-+	.dapm_widgets		= sun4i_codec_codec_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
-+	.dapm_routes		= sun4i_codec_codec_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(sun4i_codec_codec_dapm_routes),
++static struct snd_soc_component_driver soc_codec_spdif_dit = {
++	.dapm_widgets		= dit_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(dit_widgets),
++	.dapm_routes		= dit_routes,
++	.num_dapm_routes	= ARRAY_SIZE(dit_routes),
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- /*** sun6i Codec ***/
-@@ -1098,15 +1100,17 @@ static const struct snd_soc_dapm_route sun6i_codec_codec_dapm_routes[] = {
- 	{ "Right ADC", NULL, "Right ADC Mixer" },
- };
+ static struct snd_soc_dai_driver dit_stub_dai = {
+@@ -60,16 +62,11 @@ static struct snd_soc_dai_driver dit_stub_dai = {
  
--static const struct snd_soc_codec_driver sun6i_codec_codec = {
--	.component_driver = {
--		.controls		= sun6i_codec_codec_widgets,
--		.num_controls		= ARRAY_SIZE(sun6i_codec_codec_widgets),
--		.dapm_widgets		= sun6i_codec_codec_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(sun6i_codec_codec_dapm_widgets),
--		.dapm_routes		= sun6i_codec_codec_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(sun6i_codec_codec_dapm_routes),
--	},
-+static const struct snd_soc_component_driver sun6i_codec_codec = {
-+	.controls		= sun6i_codec_codec_widgets,
-+	.num_controls		= ARRAY_SIZE(sun6i_codec_codec_widgets),
-+	.dapm_widgets		= sun6i_codec_codec_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(sun6i_codec_codec_dapm_widgets),
-+	.dapm_routes		= sun6i_codec_codec_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(sun6i_codec_codec_dapm_routes),
-+	.idle_bias_on		= 1,
-+	.use_pmdown_time	= 1,
-+	.endianness		= 1,
-+	.non_legacy_dai_naming	= 1,
- };
+ static int spdif_dit_probe(struct platform_device *pdev)
+ {
+-	return snd_soc_register_codec(&pdev->dev, &soc_codec_spdif_dit,
++	return devm_snd_soc_register_component(&pdev->dev,
++			&soc_codec_spdif_dit,
+ 			&dit_stub_dai, 1);
+ }
  
- /* sun8i A23 codec */
-@@ -1126,13 +1130,15 @@ static const struct snd_soc_dapm_widget sun8i_a23_codec_codec_widgets[] = {
- 
- };
- 
--static const struct snd_soc_codec_driver sun8i_a23_codec_codec = {
--	.component_driver = {
--		.controls		= sun8i_a23_codec_codec_controls,
--		.num_controls		= ARRAY_SIZE(sun8i_a23_codec_codec_controls),
--		.dapm_widgets		= sun8i_a23_codec_codec_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(sun8i_a23_codec_codec_widgets),
--	},
-+static const struct snd_soc_component_driver sun8i_a23_codec_codec = {
-+	.controls		= sun8i_a23_codec_codec_controls,
-+	.num_controls		= ARRAY_SIZE(sun8i_a23_codec_codec_controls),
-+	.dapm_widgets		= sun8i_a23_codec_codec_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(sun8i_a23_codec_codec_widgets),
-+	.idle_bias_on		= 1,
-+	.use_pmdown_time	= 1,
-+	.endianness		= 1,
-+	.non_legacy_dai_naming	= 1,
- };
- 
- static const struct snd_soc_component_driver sun4i_codec_component = {
-@@ -1450,7 +1456,7 @@ static const struct regmap_config sun8i_v3s_codec_regmap_config = {
- 
- struct sun4i_codec_quirks {
- 	const struct regmap_config *regmap_config;
--	const struct snd_soc_codec_driver *codec;
-+	const struct snd_soc_component_driver *codec;
- 	struct snd_soc_card * (*create_card)(struct device *dev);
- 	struct reg_field reg_adc_fifoc;	/* used for regmap_field */
- 	unsigned int reg_dac_txdata;	/* TX FIFO offset for DMA config */
-@@ -1657,7 +1663,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- 	scodec->capture_dma_data.maxburst = 8;
- 	scodec->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
- 
--	ret = snd_soc_register_codec(&pdev->dev, quirks->codec,
-+	ret = devm_snd_soc_register_component(&pdev->dev, quirks->codec,
- 				     &sun4i_codec_dai, 1);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to register our codec\n");
-@@ -1669,20 +1675,20 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- 					      &dummy_cpu_dai, 1);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to register our DAI\n");
--		goto err_unregister_codec;
-+		goto err_assert_reset;
- 	}
- 
- 	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to register against DMAEngine\n");
--		goto err_unregister_codec;
-+		goto err_assert_reset;
- 	}
- 
- 	card = quirks->create_card(&pdev->dev);
- 	if (IS_ERR(card)) {
- 		ret = PTR_ERR(card);
- 		dev_err(&pdev->dev, "Failed to create our card\n");
--		goto err_unregister_codec;
-+		goto err_assert_reset;
- 	}
- 
- 	snd_soc_card_set_drvdata(card, scodec);
-@@ -1690,13 +1696,11 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- 	ret = snd_soc_register_card(card);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to register our card\n");
--		goto err_unregister_codec;
-+		goto err_assert_reset;
- 	}
- 
- 	return 0;
- 
--err_unregister_codec:
+-static int spdif_dit_remove(struct platform_device *pdev)
+-{
 -	snd_soc_unregister_codec(&pdev->dev);
- err_assert_reset:
- 	if (scodec->rst)
- 		reset_control_assert(scodec->rst);
-@@ -1711,7 +1715,6 @@ static int sun4i_codec_remove(struct platform_device *pdev)
- 	struct sun4i_codec *scodec = snd_soc_card_get_drvdata(card);
+-	return 0;
+-}
+-
+ #ifdef CONFIG_OF
+ static const struct of_device_id spdif_dit_dt_ids[] = {
+ 	{ .compatible = "linux,spdif-dit", },
+@@ -80,7 +77,6 @@ MODULE_DEVICE_TABLE(of, spdif_dit_dt_ids);
  
- 	snd_soc_unregister_card(card);
--	snd_soc_unregister_codec(&pdev->dev);
- 	if (scodec->rst)
- 		reset_control_assert(scodec->rst);
- 	clk_disable_unprepare(scodec->clk_apb);
+ static struct platform_driver spdif_dit_driver = {
+ 	.probe		= spdif_dit_probe,
+-	.remove		= spdif_dit_remove,
+ 	.driver		= {
+ 		.name	= DRV_NAME,
+ 		.of_match_table = of_match_ptr(spdif_dit_dt_ids),
 -- 
 2.16.1
