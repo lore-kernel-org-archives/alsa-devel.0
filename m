@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tscs42xx: replace codec to component"
-	to the asoc tree
-Date: Mon, 12 Feb 2018 12:39:38 +0000
-Message-ID: <E1elDOU-0004ZO-Im@debutante>
-References: <87vaflxpvi.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: tlv320aic31xx: replace codec to
+	component" to the asoc tree
+Date: Mon, 12 Feb 2018 12:39:47 +0000
+Message-ID: <E1elDOd-0004bD-VP@debutante>
+References: <87y3khxpx3.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DDC1C26795B
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:39:40 +0100 (CET)
-In-Reply-To: <87vaflxpvi.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 44BA8267B69
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:39:50 +0100 (CET)
+In-Reply-To: <87y3khxpx3.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tscs42xx: replace codec to component
+   ASoC: tlv320aic31xx: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 4e46c228c793d1a537deb1d26ed31a9b0543a20f Mon Sep 17 00:00:00 2001
+>From f2e6f95b4b1381fe81cdbdb70d2c50a85b770d8b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:16:23 +0000
-Subject: [PATCH] ASoC: tscs42xx: replace codec to component
+Date: Mon, 29 Jan 2018 04:15:27 +0000
+Subject: [PATCH] ASoC: tlv320aic31xx: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,621 +70,603 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tscs42xx.c | 222 +++++++++++++++++++++-----------------------
- 1 file changed, 108 insertions(+), 114 deletions(-)
+ sound/soc/codecs/tlv320aic31xx.c | 240 +++++++++++++++++++--------------------
+ 1 file changed, 116 insertions(+), 124 deletions(-)
 
-diff --git a/sound/soc/codecs/tscs42xx.c b/sound/soc/codecs/tscs42xx.c
-index e7661d0315e6..f4f8c613386a 100644
---- a/sound/soc/codecs/tscs42xx.c
-+++ b/sound/soc/codecs/tscs42xx.c
-@@ -91,15 +91,15 @@ static const struct regmap_config tscs42xx_regmap = {
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 858cb8be445f..d3cd924dc300 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -153,7 +153,7 @@ struct aic31xx_disable_nb {
  };
  
- #define MAX_PLL_LOCK_20MS_WAITS 1
--static bool plls_locked(struct snd_soc_codec *codec)
-+static bool plls_locked(struct snd_soc_component *component)
+ struct aic31xx_priv {
+-	struct snd_soc_codec *codec;
++	struct snd_soc_component *component;
+ 	u8 i2c_regs_status;
+ 	struct device *dev;
+ 	struct regmap *regmap;
+@@ -348,8 +348,8 @@ static int aic31xx_wait_bits(struct aic31xx_priv *aic31xx, unsigned int reg,
+ static int aic31xx_dapm_power_event(struct snd_soc_dapm_widget *w,
+ 				    struct snd_kcontrol *kcontrol, int event)
  {
- 	int ret;
- 	int count = MAX_PLL_LOCK_20MS_WAITS;
- 
- 	do {
--		ret = snd_soc_read(codec, R_PLLCTL0);
-+		ret = snd_soc_component_read32(component, R_PLLCTL0);
- 		if (ret < 0) {
--			dev_err(codec->dev,
-+			dev_err(component->dev,
- 				"Failed to read PLL lock status (%d)\n", ret);
- 			return false;
- 		} else if (ret > 0) {
-@@ -131,10 +131,10 @@ static int sample_rate_to_pll_freq_out(int sample_rate)
- }
- 
- #define DACCRSTAT_MAX_TRYS 10
--static int write_coeff_ram(struct snd_soc_codec *codec, u8 *coeff_ram,
-+static int write_coeff_ram(struct snd_soc_component *component, u8 *coeff_ram,
- 	unsigned int addr, unsigned int coeff_cnt)
- {
--	struct tscs42xx *tscs42xx = snd_soc_codec_get_drvdata(codec);
-+	struct tscs42xx *tscs42xx = snd_soc_component_get_drvdata(component);
- 	int cnt;
- 	int trys;
- 	int ret;
-@@ -142,9 +142,9 @@ static int write_coeff_ram(struct snd_soc_codec *codec, u8 *coeff_ram,
- 	for (cnt = 0; cnt < coeff_cnt; cnt++, addr++) {
- 
- 		for (trys = 0; trys < DACCRSTAT_MAX_TRYS; trys++) {
--			ret = snd_soc_read(codec, R_DACCRSTAT);
-+			ret = snd_soc_component_read32(component, R_DACCRSTAT);
- 			if (ret < 0) {
--				dev_err(codec->dev,
-+				dev_err(component->dev,
- 					"Failed to read stat (%d)\n", ret);
- 				return ret;
- 			}
-@@ -154,14 +154,14 @@ static int write_coeff_ram(struct snd_soc_codec *codec, u8 *coeff_ram,
- 
- 		if (trys == DACCRSTAT_MAX_TRYS) {
- 			ret = -EIO;
--			dev_err(codec->dev,
-+			dev_err(component->dev,
- 				"dac coefficient write error (%d)\n", ret);
- 			return ret;
- 		}
- 
- 		ret = regmap_write(tscs42xx->regmap, R_DACCRADDR, addr);
- 		if (ret < 0) {
--			dev_err(codec->dev,
-+			dev_err(component->dev,
- 				"Failed to write dac ram address (%d)\n", ret);
- 			return ret;
- 		}
-@@ -170,7 +170,7 @@ static int write_coeff_ram(struct snd_soc_codec *codec, u8 *coeff_ram,
- 			&coeff_ram[addr * COEFF_SIZE],
- 			COEFF_SIZE);
- 		if (ret < 0) {
--			dev_err(codec->dev,
-+			dev_err(component->dev,
- 				"Failed to write dac ram (%d)\n", ret);
- 			return ret;
- 		}
-@@ -179,9 +179,9 @@ static int write_coeff_ram(struct snd_soc_codec *codec, u8 *coeff_ram,
- 	return 0;
- }
- 
--static int power_up_audio_plls(struct snd_soc_codec *codec)
-+static int power_up_audio_plls(struct snd_soc_component *component)
- {
--	struct tscs42xx *tscs42xx = snd_soc_codec_get_drvdata(codec);
-+	struct tscs42xx *tscs42xx = snd_soc_component_get_drvdata(component);
- 	int freq_out;
- 	int ret;
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct aic31xx_priv *aic31xx = snd_soc_component_get_drvdata(component);
+ 	unsigned int reg = AIC31XX_DACFLAG1;
  	unsigned int mask;
-@@ -199,20 +199,20 @@ static int power_up_audio_plls(struct snd_soc_codec *codec)
+ 
+@@ -377,7 +377,7 @@ static int aic31xx_dapm_power_event(struct snd_soc_dapm_widget *w,
+ 		reg = AIC31XX_ADCFLAG;
  		break;
  	default:
- 		ret = -EINVAL;
--		dev_err(codec->dev, "Unrecognized PLL output freq (%d)\n", ret);
-+		dev_err(component->dev, "Unrecognized PLL output freq (%d)\n", ret);
- 		return ret;
- 	}
- 
- 	mutex_lock(&tscs42xx->pll_lock);
- 
--	ret = snd_soc_update_bits(codec, R_PLLCTL1C, mask, val);
-+	ret = snd_soc_component_update_bits(component, R_PLLCTL1C, mask, val);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to turn PLL on (%d)\n", ret);
-+		dev_err(component->dev, "Failed to turn PLL on (%d)\n", ret);
- 		goto exit;
- 	}
- 
--	if (!plls_locked(codec)) {
--		dev_err(codec->dev, "Failed to lock plls\n");
-+	if (!plls_locked(component)) {
-+		dev_err(component->dev, "Failed to lock plls\n");
- 		ret = -ENOMSG;
- 		goto exit;
- 	}
-@@ -224,25 +224,25 @@ static int power_up_audio_plls(struct snd_soc_codec *codec)
- 	return ret;
- }
- 
--static int power_down_audio_plls(struct snd_soc_codec *codec)
-+static int power_down_audio_plls(struct snd_soc_component *component)
- {
--	struct tscs42xx *tscs42xx = snd_soc_codec_get_drvdata(codec);
-+	struct tscs42xx *tscs42xx = snd_soc_component_get_drvdata(component);
- 	int ret;
- 
- 	mutex_lock(&tscs42xx->pll_lock);
- 
--	ret = snd_soc_update_bits(codec, R_PLLCTL1C,
-+	ret = snd_soc_component_update_bits(component, R_PLLCTL1C,
- 			RM_PLLCTL1C_PDB_PLL1,
- 			RV_PLLCTL1C_PDB_PLL1_DISABLE);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to turn PLL off (%d)\n", ret);
-+		dev_err(component->dev, "Failed to turn PLL off (%d)\n", ret);
- 		goto exit;
- 	}
--	ret = snd_soc_update_bits(codec, R_PLLCTL1C,
-+	ret = snd_soc_component_update_bits(component, R_PLLCTL1C,
- 			RM_PLLCTL1C_PDB_PLL2,
- 			RV_PLLCTL1C_PDB_PLL2_DISABLE);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to turn PLL off (%d)\n", ret);
-+		dev_err(component->dev, "Failed to turn PLL off (%d)\n", ret);
- 		goto exit;
- 	}
- 
-@@ -256,8 +256,8 @@ static int power_down_audio_plls(struct snd_soc_codec *codec)
- static int coeff_ram_get(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct tscs42xx *tscs42xx = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct tscs42xx *tscs42xx = snd_soc_component_get_drvdata(component);
- 	struct coeff_ram_ctl *ctl =
- 		(struct coeff_ram_ctl *)kcontrol->private_value;
- 	struct soc_bytes_ext *params = &ctl->bytes_ext;
-@@ -275,8 +275,8 @@ static int coeff_ram_get(struct snd_kcontrol *kcontrol,
- static int coeff_ram_put(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct tscs42xx *tscs42xx = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct tscs42xx *tscs42xx = snd_soc_component_get_drvdata(component);
- 	struct coeff_ram_ctl *ctl =
- 		(struct coeff_ram_ctl *)kcontrol->private_value;
- 	struct soc_bytes_ext *params = &ctl->bytes_ext;
-@@ -292,11 +292,11 @@ static int coeff_ram_put(struct snd_kcontrol *kcontrol,
- 
- 	mutex_lock(&tscs42xx->pll_lock);
- 
--	if (plls_locked(codec)) {
--		ret = write_coeff_ram(codec, tscs42xx->coeff_ram,
-+	if (plls_locked(component)) {
-+		ret = write_coeff_ram(component, tscs42xx->coeff_ram,
- 			ctl->addr, coeff_cnt);
- 		if (ret < 0) {
--			dev_err(codec->dev,
-+			dev_err(component->dev,
- 				"Failed to flush coeff ram cache (%d)\n", ret);
- 			goto exit;
- 		}
-@@ -358,13 +358,13 @@ static int dapm_micb_event(struct snd_soc_dapm_widget *w,
- static int pll_event(struct snd_soc_dapm_widget *w,
- 		     struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
- 	int ret;
- 
- 	if (SND_SOC_DAPM_EVENT_ON(event))
--		ret = power_up_audio_plls(codec);
-+		ret = power_up_audio_plls(component);
- 	else
--		ret = power_down_audio_plls(codec);
-+		ret = power_down_audio_plls(component);
- 
- 	return ret;
- }
-@@ -372,14 +372,14 @@ static int pll_event(struct snd_soc_dapm_widget *w,
- static int dac_event(struct snd_soc_dapm_widget *w,
- 		     struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
--	struct tscs42xx *tscs42xx = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	struct tscs42xx *tscs42xx = snd_soc_component_get_drvdata(component);
- 	int ret;
- 
- 	mutex_lock(&tscs42xx->coeff_ram_lock);
- 
- 	if (tscs42xx->coeff_ram_synced == false) {
--		ret = write_coeff_ram(codec, tscs42xx->coeff_ram, 0x00,
-+		ret = write_coeff_ram(component, tscs42xx->coeff_ram, 0x00,
- 			COEFF_RAM_COEFF_COUNT);
- 		if (ret < 0)
- 			goto exit;
-@@ -790,7 +790,7 @@ static const struct snd_kcontrol_new tscs42xx_snd_controls[] = {
- 		R_DACMBCREL3L, 2),
- };
- 
--static int setup_sample_format(struct snd_soc_codec *codec,
-+static int setup_sample_format(struct snd_soc_component *component,
- 		snd_pcm_format_t format)
- {
- 	unsigned int width;
-@@ -811,21 +811,21 @@ static int setup_sample_format(struct snd_soc_codec *codec,
- 		break;
- 	default:
- 		ret = -EINVAL;
--		dev_err(codec->dev, "Unsupported format width (%d)\n", ret);
-+		dev_err(component->dev, "Unsupported format width (%d)\n", ret);
- 		return ret;
- 	}
--	ret = snd_soc_update_bits(codec, R_AIC1, RM_AIC1_WL, width);
-+	ret = snd_soc_component_update_bits(component, R_AIC1, RM_AIC1_WL, width);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to set sample width (%d)\n", ret);
-+		dev_err(component->dev, "Failed to set sample width (%d)\n", ret);
- 		return ret;
- 	}
- 
- 	return 0;
- }
- 
--static int setup_sample_rate(struct snd_soc_codec *codec, unsigned int rate)
-+static int setup_sample_rate(struct snd_soc_component *component, unsigned int rate)
- {
--	struct tscs42xx *tscs42xx = snd_soc_codec_get_drvdata(codec);
-+	struct tscs42xx *tscs42xx = snd_soc_component_get_drvdata(component);
- 	unsigned int br, bm;
- 	int ret;
- 
-@@ -871,29 +871,29 @@ static int setup_sample_rate(struct snd_soc_codec *codec, unsigned int rate)
- 		bm = RV_DACSR_DBM_2;
- 		break;
- 	default:
--		dev_err(codec->dev, "Unsupported sample rate %d\n", rate);
-+		dev_err(component->dev, "Unsupported sample rate %d\n", rate);
+-		dev_err(codec->dev, "Unknown widget '%s' calling %s\n",
++		dev_err(component->dev, "Unknown widget '%s' calling %s\n",
+ 			w->name, __func__);
  		return -EINVAL;
  	}
+@@ -388,7 +388,7 @@ static int aic31xx_dapm_power_event(struct snd_soc_dapm_widget *w,
+ 	case SND_SOC_DAPM_POST_PMD:
+ 		return aic31xx_wait_bits(aic31xx, reg, mask, 0, 5000, 100);
+ 	default:
+-		dev_dbg(codec->dev,
++		dev_dbg(component->dev,
+ 			"Unhandled dapm widget event %d from %s\n",
+ 			event, w->name);
+ 	}
+@@ -444,23 +444,23 @@ static const struct snd_kcontrol_new aic31xx_dapm_spr_switch =
+ static int mic_bias_event(struct snd_soc_dapm_widget *w,
+ 			  struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct aic31xx_priv *aic31xx = snd_soc_component_get_drvdata(component);
  
- 	/* DAC and ADC share bit and frame clock */
--	ret = snd_soc_update_bits(codec, R_DACSR, RM_DACSR_DBR, br);
-+	ret = snd_soc_component_update_bits(component, R_DACSR, RM_DACSR_DBR, br);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to update register (%d)\n", ret);
-+		dev_err(component->dev, "Failed to update register (%d)\n", ret);
- 		return ret;
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+ 		/* change mic bias voltage to user defined */
+-		snd_soc_update_bits(codec, AIC31XX_MICBIAS,
++		snd_soc_component_update_bits(component, AIC31XX_MICBIAS,
+ 				    AIC31XX_MICBIAS_MASK,
+ 				    aic31xx->micbias_vg <<
+ 				    AIC31XX_MICBIAS_SHIFT);
+-		dev_dbg(codec->dev, "%s: turned on\n", __func__);
++		dev_dbg(component->dev, "%s: turned on\n", __func__);
+ 		break;
+ 	case SND_SOC_DAPM_PRE_PMD:
+ 		/* turn mic bias off */
+-		snd_soc_update_bits(codec, AIC31XX_MICBIAS,
++		snd_soc_component_update_bits(component, AIC31XX_MICBIAS,
+ 				    AIC31XX_MICBIAS_MASK, 0);
+-		dev_dbg(codec->dev, "%s: turned off\n", __func__);
++		dev_dbg(component->dev, "%s: turned off\n", __func__);
+ 		break;
  	}
--	ret = snd_soc_update_bits(codec, R_DACSR, RM_DACSR_DBM, bm);
-+	ret = snd_soc_component_update_bits(component, R_DACSR, RM_DACSR_DBM, bm);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to update register (%d)\n", ret);
-+		dev_err(component->dev, "Failed to update register (%d)\n", ret);
- 		return ret;
- 	}
--	ret = snd_soc_update_bits(codec, R_ADCSR, RM_DACSR_DBR, br);
-+	ret = snd_soc_component_update_bits(component, R_ADCSR, RM_DACSR_DBR, br);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to update register (%d)\n", ret);
-+		dev_err(component->dev, "Failed to update register (%d)\n", ret);
- 		return ret;
- 	}
--	ret = snd_soc_update_bits(codec, R_ADCSR, RM_DACSR_DBM, bm);
-+	ret = snd_soc_component_update_bits(component, R_ADCSR, RM_DACSR_DBM, bm);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to update register (%d)\n", ret);
-+		dev_err(component->dev, "Failed to update register (%d)\n", ret);
- 		return ret;
- 	}
+ 	return 0;
+@@ -670,34 +670,34 @@ aic310x_audio_map[] = {
+ 	{"SPK", NULL, "SPK ClassD"},
+ };
  
-@@ -1025,7 +1025,7 @@ static const struct pll_ctl *get_pll_ctl(int input_freq)
- 	return pll_ctl;
+-static int aic31xx_add_controls(struct snd_soc_codec *codec)
++static int aic31xx_add_controls(struct snd_soc_component *component)
+ {
+ 	int ret = 0;
+-	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
++	struct aic31xx_priv *aic31xx = snd_soc_component_get_drvdata(component);
+ 
+ 	if (!(aic31xx->codec_type & DAC31XX_BIT))
+-		ret = snd_soc_add_codec_controls(
+-			codec, aic31xx_snd_controls,
++		ret = snd_soc_add_component_controls(
++			component, aic31xx_snd_controls,
+ 			ARRAY_SIZE(aic31xx_snd_controls));
+ 	if (ret)
+ 		return ret;
+ 
+ 	if (aic31xx->codec_type & AIC31XX_STEREO_CLASS_D_BIT)
+-		ret = snd_soc_add_codec_controls(
+-			codec, aic311x_snd_controls,
++		ret = snd_soc_add_component_controls(
++			component, aic311x_snd_controls,
+ 			ARRAY_SIZE(aic311x_snd_controls));
+ 	else
+-		ret = snd_soc_add_codec_controls(
+-			codec, aic310x_snd_controls,
++		ret = snd_soc_add_component_controls(
++			component, aic310x_snd_controls,
+ 			ARRAY_SIZE(aic310x_snd_controls));
+ 
+ 	return ret;
  }
  
--static int set_pll_ctl_from_input_freq(struct snd_soc_codec *codec,
-+static int set_pll_ctl_from_input_freq(struct snd_soc_component *component,
- 		const int input_freq)
+-static int aic31xx_add_widgets(struct snd_soc_codec *codec)
++static int aic31xx_add_widgets(struct snd_soc_component *component)
  {
- 	int ret;
-@@ -1035,18 +1035,18 @@ static int set_pll_ctl_from_input_freq(struct snd_soc_codec *codec,
- 	pll_ctl = get_pll_ctl(input_freq);
- 	if (!pll_ctl) {
- 		ret = -EINVAL;
--		dev_err(codec->dev, "No PLL input entry for %d (%d)\n",
-+		dev_err(component->dev, "No PLL input entry for %d (%d)\n",
- 			input_freq, ret);
- 		return ret;
- 	}
+-	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+-	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
++	struct aic31xx_priv *aic31xx = snd_soc_component_get_drvdata(component);
+ 	int ret = 0;
  
- 	for (i = 0; i < PLL_REG_SETTINGS_COUNT; ++i) {
--		ret = snd_soc_update_bits(codec,
-+		ret = snd_soc_component_update_bits(component,
- 			pll_ctl->settings[i].addr,
- 			pll_ctl->settings[i].mask,
- 			pll_ctl->settings[i].val);
- 		if (ret < 0) {
--			dev_err(codec->dev, "Failed to set pll ctl (%d)\n",
-+			dev_err(component->dev, "Failed to set pll ctl (%d)\n",
- 				ret);
- 			return ret;
- 		}
-@@ -1059,33 +1059,33 @@ static int tscs42xx_hw_params(struct snd_pcm_substream *substream,
- 		struct snd_pcm_hw_params *params,
- 		struct snd_soc_dai *codec_dai)
- {
--	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct snd_soc_component *component = codec_dai->component;
- 	int ret;
- 
--	ret = setup_sample_format(codec, params_format(params));
-+	ret = setup_sample_format(component, params_format(params));
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to setup sample format (%d)\n",
-+		dev_err(component->dev, "Failed to setup sample format (%d)\n",
- 			ret);
- 		return ret;
- 	}
- 
--	ret = setup_sample_rate(codec, params_rate(params));
-+	ret = setup_sample_rate(component, params_rate(params));
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to setup sample rate (%d)\n", ret);
-+		dev_err(component->dev, "Failed to setup sample rate (%d)\n", ret);
- 		return ret;
- 	}
- 
+ 	if (aic31xx->codec_type & DAC31XX_BIT) {
+@@ -751,10 +751,10 @@ static int aic31xx_add_widgets(struct snd_soc_codec *codec)
  	return 0;
  }
  
--static inline int dac_mute(struct snd_soc_codec *codec)
-+static inline int dac_mute(struct snd_soc_component *component)
+-static int aic31xx_setup_pll(struct snd_soc_codec *codec,
++static int aic31xx_setup_pll(struct snd_soc_component *component,
+ 			     struct snd_pcm_hw_params *params)
  {
- 	int ret;
+-	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
++	struct aic31xx_priv *aic31xx = snd_soc_component_get_drvdata(component);
+ 	int bclk_score = snd_soc_params_to_frame_size(params);
+ 	int mclk_p;
+ 	int bclk_n = 0;
+@@ -762,15 +762,15 @@ static int aic31xx_setup_pll(struct snd_soc_codec *codec,
+ 	int i;
  
--	ret = snd_soc_update_bits(codec, R_CNVRTR1, RM_CNVRTR1_DACMU,
-+	ret = snd_soc_component_update_bits(component, R_CNVRTR1, RM_CNVRTR1_DACMU,
- 		RV_CNVRTR1_DACMU_ENABLE);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to mute DAC (%d)\n",
-+		dev_err(component->dev, "Failed to mute DAC (%d)\n",
- 				ret);
- 		return ret;
+ 	if (!aic31xx->sysclk || !aic31xx->p_div) {
+-		dev_err(codec->dev, "Master clock not supplied\n");
++		dev_err(component->dev, "Master clock not supplied\n");
+ 		return -EINVAL;
  	}
-@@ -1093,14 +1093,14 @@ static inline int dac_mute(struct snd_soc_codec *codec)
- 	return 0;
- }
+ 	mclk_p = aic31xx->sysclk / aic31xx->p_div;
  
--static inline int dac_unmute(struct snd_soc_codec *codec)
-+static inline int dac_unmute(struct snd_soc_component *component)
- {
- 	int ret;
+ 	/* Use PLL as CODEC_CLKIN and DAC_CLK as BDIV_CLKIN */
+-	snd_soc_update_bits(codec, AIC31XX_CLKMUX,
++	snd_soc_component_update_bits(component, AIC31XX_CLKMUX,
+ 			    AIC31XX_CODEC_CLKIN_MASK, AIC31XX_CODEC_CLKIN_PLL);
+-	snd_soc_update_bits(codec, AIC31XX_IFACE2,
++	snd_soc_component_update_bits(component, AIC31XX_IFACE2,
+ 			    AIC31XX_BDIVCLK_MASK, AIC31XX_DAC2BCLK);
  
--	ret = snd_soc_update_bits(codec, R_CNVRTR1, RM_CNVRTR1_DACMU,
-+	ret = snd_soc_component_update_bits(component, R_CNVRTR1, RM_CNVRTR1_DACMU,
- 		RV_CNVRTR1_DACMU_DISABLE);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to unmute DAC (%d)\n",
-+		dev_err(component->dev, "Failed to unmute DAC (%d)\n",
- 				ret);
- 		return ret;
+ 	for (i = 0; i < ARRAY_SIZE(aic31xx_divs); i++) {
+@@ -789,14 +789,14 @@ static int aic31xx_setup_pll(struct snd_soc_codec *codec,
  	}
-@@ -1108,14 +1108,14 @@ static inline int dac_unmute(struct snd_soc_codec *codec)
- 	return 0;
- }
  
--static inline int adc_mute(struct snd_soc_codec *codec)
-+static inline int adc_mute(struct snd_soc_component *component)
- {
- 	int ret;
- 
--	ret = snd_soc_update_bits(codec, R_CNVRTR0, RM_CNVRTR0_ADCMU,
-+	ret = snd_soc_component_update_bits(component, R_CNVRTR0, RM_CNVRTR0_ADCMU,
- 		RV_CNVRTR0_ADCMU_ENABLE);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to mute ADC (%d)\n",
-+		dev_err(component->dev, "Failed to mute ADC (%d)\n",
- 				ret);
- 		return ret;
+ 	if (match == -1) {
+-		dev_err(codec->dev,
++		dev_err(component->dev,
+ 			"%s: Sample rate (%u) and format not supported\n",
+ 			__func__, params_rate(params));
+ 		/* See bellow for details how fix this. */
+ 		return -EINVAL;
  	}
-@@ -1123,14 +1123,14 @@ static inline int adc_mute(struct snd_soc_codec *codec)
- 	return 0;
- }
+ 	if (bclk_score != 0) {
+-		dev_warn(codec->dev, "Can not produce exact bitclock");
++		dev_warn(component->dev, "Can not produce exact bitclock");
+ 		/* This is fine if using dsp format, but if using i2s
+ 		   there may be trouble. To fix the issue edit the
+ 		   aic31xx_divs table for your mclk and sample
+@@ -808,39 +808,39 @@ static int aic31xx_setup_pll(struct snd_soc_codec *codec,
+ 	i = match;
  
--static inline int adc_unmute(struct snd_soc_codec *codec)
-+static inline int adc_unmute(struct snd_soc_component *component)
- {
- 	int ret;
+ 	/* PLL configuration */
+-	snd_soc_update_bits(codec, AIC31XX_PLLPR, AIC31XX_PLL_MASK,
++	snd_soc_component_update_bits(component, AIC31XX_PLLPR, AIC31XX_PLL_MASK,
+ 			    (aic31xx->p_div << 4) | 0x01);
+-	snd_soc_write(codec, AIC31XX_PLLJ, aic31xx_divs[i].pll_j);
++	snd_soc_component_write(component, AIC31XX_PLLJ, aic31xx_divs[i].pll_j);
  
--	ret = snd_soc_update_bits(codec, R_CNVRTR0, RM_CNVRTR0_ADCMU,
-+	ret = snd_soc_component_update_bits(component, R_CNVRTR0, RM_CNVRTR0_ADCMU,
- 		RV_CNVRTR0_ADCMU_DISABLE);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to unmute ADC (%d)\n",
-+		dev_err(component->dev, "Failed to unmute ADC (%d)\n",
- 				ret);
- 		return ret;
- 	}
-@@ -1140,19 +1140,19 @@ static inline int adc_unmute(struct snd_soc_codec *codec)
+-	snd_soc_write(codec, AIC31XX_PLLDMSB,
++	snd_soc_component_write(component, AIC31XX_PLLDMSB,
+ 		      aic31xx_divs[i].pll_d >> 8);
+-	snd_soc_write(codec, AIC31XX_PLLDLSB,
++	snd_soc_component_write(component, AIC31XX_PLLDLSB,
+ 		      aic31xx_divs[i].pll_d & 0xff);
  
- static int tscs42xx_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
+ 	/* DAC dividers configuration */
+-	snd_soc_update_bits(codec, AIC31XX_NDAC, AIC31XX_PLL_MASK,
++	snd_soc_component_update_bits(component, AIC31XX_NDAC, AIC31XX_PLL_MASK,
+ 			    aic31xx_divs[i].ndac);
+-	snd_soc_update_bits(codec, AIC31XX_MDAC, AIC31XX_PLL_MASK,
++	snd_soc_component_update_bits(component, AIC31XX_MDAC, AIC31XX_PLL_MASK,
+ 			    aic31xx_divs[i].mdac);
+ 
+-	snd_soc_write(codec, AIC31XX_DOSRMSB, aic31xx_divs[i].dosr >> 8);
+-	snd_soc_write(codec, AIC31XX_DOSRLSB, aic31xx_divs[i].dosr & 0xff);
++	snd_soc_component_write(component, AIC31XX_DOSRMSB, aic31xx_divs[i].dosr >> 8);
++	snd_soc_component_write(component, AIC31XX_DOSRLSB, aic31xx_divs[i].dosr & 0xff);
+ 
+ 	/* ADC dividers configuration. Write reset value 1 if not used. */
+-	snd_soc_update_bits(codec, AIC31XX_NADC, AIC31XX_PLL_MASK,
++	snd_soc_component_update_bits(component, AIC31XX_NADC, AIC31XX_PLL_MASK,
+ 			    aic31xx_divs[i].nadc ? aic31xx_divs[i].nadc : 1);
+-	snd_soc_update_bits(codec, AIC31XX_MADC, AIC31XX_PLL_MASK,
++	snd_soc_component_update_bits(component, AIC31XX_MADC, AIC31XX_PLL_MASK,
+ 			    aic31xx_divs[i].madc ? aic31xx_divs[i].madc : 1);
+ 
+-	snd_soc_write(codec, AIC31XX_AOSR, aic31xx_divs[i].aosr);
++	snd_soc_component_write(component, AIC31XX_AOSR, aic31xx_divs[i].aosr);
+ 
+ 	/* Bit clock divider configuration. */
+-	snd_soc_update_bits(codec, AIC31XX_BCLKN,
++	snd_soc_component_update_bits(component, AIC31XX_BCLKN,
+ 			    AIC31XX_PLL_MASK, bclk_n);
+ 
+ 	aic31xx->rate_div_line = i;
+ 
+-	dev_dbg(codec->dev,
++	dev_dbg(component->dev,
+ 		"pll %d.%04d/%d dosr %d n %d m %d aosr %d n %d m %d bclk_n %d\n",
+ 		aic31xx_divs[i].pll_j,
+ 		aic31xx_divs[i].pll_d,
+@@ -861,10 +861,10 @@ static int aic31xx_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params,
+ 			     struct snd_soc_dai *dai)
  {
 -	struct snd_soc_codec *codec = dai->codec;
 +	struct snd_soc_component *component = dai->component;
- 	int ret;
+ 	u8 data = 0;
  
- 	if (mute)
- 		if (stream == SNDRV_PCM_STREAM_PLAYBACK)
--			ret = dac_mute(codec);
-+			ret = dac_mute(component);
- 		else
--			ret = adc_mute(codec);
-+			ret = adc_mute(component);
- 	else
- 		if (stream == SNDRV_PCM_STREAM_PLAYBACK)
--			ret = dac_unmute(codec);
-+			ret = dac_unmute(component);
- 		else
--			ret = adc_unmute(codec);
-+			ret = adc_unmute(component);
+-	dev_dbg(codec->dev, "## %s: width %d rate %d\n",
++	dev_dbg(component->dev, "## %s: width %d rate %d\n",
+ 		__func__, params_width(params),
+ 		params_rate(params));
  
+@@ -884,28 +884,28 @@ static int aic31xx_hw_params(struct snd_pcm_substream *substream,
+ 			AIC31XX_IFACE1_DATALEN_SHIFT);
+ 		break;
+ 	default:
+-		dev_err(codec->dev, "%s: Unsupported width %d\n",
++		dev_err(component->dev, "%s: Unsupported width %d\n",
+ 			__func__, params_width(params));
+ 		return -EINVAL;
+ 	}
+ 
+-	snd_soc_update_bits(codec, AIC31XX_IFACE1,
++	snd_soc_component_update_bits(component, AIC31XX_IFACE1,
+ 			    AIC31XX_IFACE1_DATALEN_MASK,
+ 			    data);
+ 
+-	return aic31xx_setup_pll(codec, params);
++	return aic31xx_setup_pll(component, params);
+ }
+ 
+ static int aic31xx_dac_mute(struct snd_soc_dai *codec_dai, int mute)
+ {
+-	struct snd_soc_codec *codec = codec_dai->codec;
++	struct snd_soc_component *component = codec_dai->component;
+ 
+ 	if (mute) {
+-		snd_soc_update_bits(codec, AIC31XX_DACMUTE,
++		snd_soc_component_update_bits(component, AIC31XX_DACMUTE,
+ 				    AIC31XX_DACMUTE_MASK,
+ 				    AIC31XX_DACMUTE_MASK);
+ 	} else {
+-		snd_soc_update_bits(codec, AIC31XX_DACMUTE,
++		snd_soc_component_update_bits(component, AIC31XX_DACMUTE,
+ 				    AIC31XX_DACMUTE_MASK, 0x0);
+ 	}
+ 
+@@ -915,12 +915,12 @@ static int aic31xx_dac_mute(struct snd_soc_dai *codec_dai, int mute)
+ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 			       unsigned int fmt)
+ {
+-	struct snd_soc_codec *codec = codec_dai->codec;
++	struct snd_soc_component *component = codec_dai->component;
+ 	u8 iface_reg1 = 0;
+ 	u8 iface_reg2 = 0;
+ 	u8 dsp_a_val = 0;
+ 
+-	dev_dbg(codec->dev, "## %s: fmt = 0x%x\n", __func__, fmt);
++	dev_dbg(component->dev, "## %s: fmt = 0x%x\n", __func__, fmt);
+ 
+ 	/* set master/slave audio interface */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+@@ -936,7 +936,7 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+ 		break;
+ 	default:
+-		dev_err(codec->dev, "Invalid DAI master/slave interface\n");
++		dev_err(component->dev, "Invalid DAI master/slave interface\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -948,7 +948,7 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		iface_reg2 |= AIC31XX_BCLKINV_MASK;
+ 		break;
+ 	default:
+-		dev_err(codec->dev, "Invalid DAI clock signal polarity\n");
++		dev_err(component->dev, "Invalid DAI clock signal polarity\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -977,18 +977,18 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 			       AIC31XX_IFACE1_DATATYPE_SHIFT);
+ 		break;
+ 	default:
+-		dev_err(codec->dev, "Invalid DAI interface format\n");
++		dev_err(component->dev, "Invalid DAI interface format\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	snd_soc_update_bits(codec, AIC31XX_IFACE1,
++	snd_soc_component_update_bits(component, AIC31XX_IFACE1,
+ 			    AIC31XX_IFACE1_DATATYPE_MASK |
+ 			    AIC31XX_IFACE1_MASTER_MASK,
+ 			    iface_reg1);
+-	snd_soc_update_bits(codec, AIC31XX_DATA_OFFSET,
++	snd_soc_component_update_bits(component, AIC31XX_DATA_OFFSET,
+ 			    AIC31XX_DATA_OFFSET_MASK,
+ 			    dsp_a_val);
+-	snd_soc_update_bits(codec, AIC31XX_IFACE2,
++	snd_soc_component_update_bits(component, AIC31XX_IFACE2,
+ 			    AIC31XX_BCLKINV_MASK,
+ 			    iface_reg2);
+ 
+@@ -998,11 +998,11 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ static int aic31xx_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 				  int clk_id, unsigned int freq, int dir)
+ {
+-	struct snd_soc_codec *codec = codec_dai->codec;
+-	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = codec_dai->component;
++	struct aic31xx_priv *aic31xx = snd_soc_component_get_drvdata(component);
+ 	int i;
+ 
+-	dev_dbg(codec->dev, "## %s: clk_id = %d, freq = %d, dir = %d\n",
++	dev_dbg(component->dev, "## %s: clk_id = %d, freq = %d, dir = %d\n",
+ 		__func__, clk_id, freq, dir);
+ 
+ 	for (i = 1; i < 8; i++)
+@@ -1025,7 +1025,7 @@ static int aic31xx_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 	}
+ 
+ 	/* set clock on MCLK, BCLK, or GPIO1 as PLL input */
+-	snd_soc_update_bits(codec, AIC31XX_CLKMUX, AIC31XX_PLL_CLKIN_MASK,
++	snd_soc_component_update_bits(component, AIC31XX_CLKMUX, AIC31XX_PLL_CLKIN_MASK,
+ 			    clk_id << AIC31XX_PLL_CLKIN_SHIFT);
+ 
+ 	aic31xx->sysclk = freq;
+@@ -1071,42 +1071,42 @@ static int aic31xx_reset(struct aic31xx_priv *aic31xx)
  	return ret;
  }
-@@ -1160,23 +1160,23 @@ static int tscs42xx_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- static int tscs42xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		unsigned int fmt)
+ 
+-static void aic31xx_clk_on(struct snd_soc_codec *codec)
++static void aic31xx_clk_on(struct snd_soc_component *component)
  {
--	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct snd_soc_component *component = codec_dai->component;
- 	int ret;
+-	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
++	struct aic31xx_priv *aic31xx = snd_soc_component_get_drvdata(component);
+ 	u8 mask = AIC31XX_PM_MASK;
+ 	u8 on = AIC31XX_PM_MASK;
  
- 	/* Slave mode not supported since it needs always-on frame clock */
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBM_CFM:
--		ret = snd_soc_update_bits(codec, R_AIC1, RM_AIC1_MS,
-+		ret = snd_soc_component_update_bits(component, R_AIC1, RM_AIC1_MS,
- 				RV_AIC1_MS_MASTER);
- 		if (ret < 0) {
--			dev_err(codec->dev,
-+			dev_err(component->dev,
- 				"Failed to set codec DAI master (%d)\n", ret);
- 			return ret;
- 		}
- 		break;
- 	default:
- 		ret = -EINVAL;
--		dev_err(codec->dev, "Unsupported format (%d)\n", ret);
-+		dev_err(component->dev, "Unsupported format (%d)\n", ret);
- 		return ret;
- 	}
- 
-@@ -1186,8 +1186,8 @@ static int tscs42xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
- static int tscs42xx_set_dai_bclk_ratio(struct snd_soc_dai *codec_dai,
- 		unsigned int ratio)
- {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct tscs42xx *tscs42xx = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct tscs42xx *tscs42xx = snd_soc_component_get_drvdata(component);
- 	unsigned int value;
- 	int ret = 0;
- 
-@@ -1202,18 +1202,18 @@ static int tscs42xx_set_dai_bclk_ratio(struct snd_soc_dai *codec_dai,
- 		value = RV_DACSR_DBCM_64;
- 		break;
- 	default:
--		dev_err(codec->dev, "Unsupported bclk ratio (%d)\n", ret);
-+		dev_err(component->dev, "Unsupported bclk ratio (%d)\n", ret);
- 		return -EINVAL;
- 	}
- 
--	ret = snd_soc_update_bits(codec, R_DACSR, RM_DACSR_DBCM, value);
-+	ret = snd_soc_component_update_bits(component, R_DACSR, RM_DACSR_DBCM, value);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to set DAC BCLK ratio (%d)\n", ret);
-+		dev_err(component->dev, "Failed to set DAC BCLK ratio (%d)\n", ret);
- 		return ret;
- 	}
--	ret = snd_soc_update_bits(codec, R_ADCSR, RM_ADCSR_ABCM, value);
-+	ret = snd_soc_component_update_bits(component, R_ADCSR, RM_ADCSR_ABCM, value);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to set ADC BCLK ratio (%d)\n", ret);
-+		dev_err(component->dev, "Failed to set ADC BCLK ratio (%d)\n", ret);
- 		return ret;
- 	}
- 
-@@ -1229,40 +1229,40 @@ static int tscs42xx_set_dai_bclk_ratio(struct snd_soc_dai *codec_dai,
- static int tscs42xx_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 	int clk_id, unsigned int freq, int dir)
- {
--	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct snd_soc_component *component = codec_dai->component;
- 	int ret;
- 
- 	switch (clk_id) {
- 	case TSCS42XX_PLL_SRC_XTAL:
- 	case TSCS42XX_PLL_SRC_MCLK1:
--		ret = snd_soc_write(codec, R_PLLREFSEL,
-+		ret = snd_soc_component_write(component, R_PLLREFSEL,
- 				RV_PLLREFSEL_PLL1_REF_SEL_XTAL_MCLK1 |
- 				RV_PLLREFSEL_PLL2_REF_SEL_XTAL_MCLK1);
- 		if (ret < 0) {
--			dev_err(codec->dev,
-+			dev_err(component->dev,
- 				"Failed to set pll reference input (%d)\n",
- 				ret);
- 			return ret;
- 		}
- 		break;
- 	case TSCS42XX_PLL_SRC_MCLK2:
--		ret = snd_soc_write(codec, R_PLLREFSEL,
-+		ret = snd_soc_component_write(component, R_PLLREFSEL,
- 				RV_PLLREFSEL_PLL1_REF_SEL_MCLK2 |
- 				RV_PLLREFSEL_PLL2_REF_SEL_MCLK2);
- 		if (ret < 0) {
--			dev_err(codec->dev,
-+			dev_err(component->dev,
- 				"Failed to set PLL reference (%d)\n", ret);
- 			return ret;
- 		}
- 		break;
- 	default:
--		dev_err(codec->dev, "pll src is unsupported\n");
-+		dev_err(component->dev, "pll src is unsupported\n");
- 		return -EINVAL;
- 	}
- 
--	ret = set_pll_ctl_from_input_freq(codec, freq);
-+	ret = set_pll_ctl_from_input_freq(component, freq);
- 	if (ret < 0) {
--		dev_err(codec->dev,
-+		dev_err(component->dev,
- 			"Failed to setup PLL input freq (%d)\n", ret);
- 		return ret;
- 	}
-@@ -1304,15 +1304,17 @@ static int part_is_valid(struct tscs42xx *tscs42xx)
- 	};
+-	dev_dbg(codec->dev, "codec clock -> on (rate %d)\n",
++	dev_dbg(component->dev, "codec clock -> on (rate %d)\n",
+ 		aic31xx_divs[aic31xx->rate_div_line].rate);
+-	snd_soc_update_bits(codec, AIC31XX_PLLPR, mask, on);
++	snd_soc_component_update_bits(component, AIC31XX_PLLPR, mask, on);
+ 	mdelay(10);
+-	snd_soc_update_bits(codec, AIC31XX_NDAC, mask, on);
+-	snd_soc_update_bits(codec, AIC31XX_MDAC, mask, on);
++	snd_soc_component_update_bits(component, AIC31XX_NDAC, mask, on);
++	snd_soc_component_update_bits(component, AIC31XX_MDAC, mask, on);
+ 	if (aic31xx_divs[aic31xx->rate_div_line].nadc)
+-		snd_soc_update_bits(codec, AIC31XX_NADC, mask, on);
++		snd_soc_component_update_bits(component, AIC31XX_NADC, mask, on);
+ 	if (aic31xx_divs[aic31xx->rate_div_line].madc)
+-		snd_soc_update_bits(codec, AIC31XX_MADC, mask, on);
+-	snd_soc_update_bits(codec, AIC31XX_BCLKN, mask, on);
++		snd_soc_component_update_bits(component, AIC31XX_MADC, mask, on);
++	snd_soc_component_update_bits(component, AIC31XX_BCLKN, mask, on);
  }
  
--static struct snd_soc_codec_driver soc_codec_dev_tscs42xx = {
+-static void aic31xx_clk_off(struct snd_soc_codec *codec)
++static void aic31xx_clk_off(struct snd_soc_component *component)
+ {
+ 	u8 mask = AIC31XX_PM_MASK;
+ 	u8 off = 0;
+ 
+-	dev_dbg(codec->dev, "codec clock -> off\n");
+-	snd_soc_update_bits(codec, AIC31XX_BCLKN, mask, off);
+-	snd_soc_update_bits(codec, AIC31XX_MADC, mask, off);
+-	snd_soc_update_bits(codec, AIC31XX_NADC, mask, off);
+-	snd_soc_update_bits(codec, AIC31XX_MDAC, mask, off);
+-	snd_soc_update_bits(codec, AIC31XX_NDAC, mask, off);
+-	snd_soc_update_bits(codec, AIC31XX_PLLPR, mask, off);
++	dev_dbg(component->dev, "codec clock -> off\n");
++	snd_soc_component_update_bits(component, AIC31XX_BCLKN, mask, off);
++	snd_soc_component_update_bits(component, AIC31XX_MADC, mask, off);
++	snd_soc_component_update_bits(component, AIC31XX_NADC, mask, off);
++	snd_soc_component_update_bits(component, AIC31XX_MDAC, mask, off);
++	snd_soc_component_update_bits(component, AIC31XX_NDAC, mask, off);
++	snd_soc_component_update_bits(component, AIC31XX_PLLPR, mask, off);
+ }
+ 
+-static int aic31xx_power_on(struct snd_soc_codec *codec)
++static int aic31xx_power_on(struct snd_soc_component *component)
+ {
+-	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
++	struct aic31xx_priv *aic31xx = snd_soc_component_get_drvdata(component);
+ 	int ret;
+ 
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(aic31xx->supplies),
+@@ -1123,7 +1123,7 @@ static int aic31xx_power_on(struct snd_soc_codec *codec)
+ 
+ 	ret = regcache_sync(aic31xx->regmap);
+ 	if (ret) {
+-		dev_err(codec->dev,
++		dev_err(component->dev,
+ 			"Failed to restore cache: %d\n", ret);
+ 		regcache_cache_only(aic31xx->regmap, true);
+ 		regulator_bulk_disable(ARRAY_SIZE(aic31xx->supplies),
+@@ -1134,57 +1134,57 @@ static int aic31xx_power_on(struct snd_soc_codec *codec)
+ 	return 0;
+ }
+ 
+-static void aic31xx_power_off(struct snd_soc_codec *codec)
++static void aic31xx_power_off(struct snd_soc_component *component)
+ {
+-	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
++	struct aic31xx_priv *aic31xx = snd_soc_component_get_drvdata(component);
+ 
+ 	regcache_cache_only(aic31xx->regmap, true);
+ 	regulator_bulk_disable(ARRAY_SIZE(aic31xx->supplies),
+ 			       aic31xx->supplies);
+ }
+ 
+-static int aic31xx_set_bias_level(struct snd_soc_codec *codec,
++static int aic31xx_set_bias_level(struct snd_soc_component *component,
+ 				  enum snd_soc_bias_level level)
+ {
+-	dev_dbg(codec->dev, "## %s: %d -> %d\n", __func__,
+-		snd_soc_codec_get_bias_level(codec), level);
++	dev_dbg(component->dev, "## %s: %d -> %d\n", __func__,
++		snd_soc_component_get_bias_level(component), level);
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+ 		break;
+ 	case SND_SOC_BIAS_PREPARE:
+-		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_STANDBY)
+-			aic31xx_clk_on(codec);
++		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_STANDBY)
++			aic31xx_clk_on(component);
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
+-		switch (snd_soc_codec_get_bias_level(codec)) {
++		switch (snd_soc_component_get_bias_level(component)) {
+ 		case SND_SOC_BIAS_OFF:
+-			aic31xx_power_on(codec);
++			aic31xx_power_on(component);
+ 			break;
+ 		case SND_SOC_BIAS_PREPARE:
+-			aic31xx_clk_off(codec);
++			aic31xx_clk_off(component);
+ 			break;
+ 		default:
+ 			BUG();
+ 		}
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+-		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_STANDBY)
+-			aic31xx_power_off(codec);
++		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_STANDBY)
++			aic31xx_power_off(component);
+ 		break;
+ 	}
+ 
+ 	return 0;
+ }
+ 
+-static int aic31xx_codec_probe(struct snd_soc_codec *codec)
++static int aic31xx_codec_probe(struct snd_soc_component *component)
+ {
+-	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
++	struct aic31xx_priv *aic31xx = snd_soc_component_get_drvdata(component);
+ 	int i, ret;
+ 
+ 	dev_dbg(aic31xx->dev, "## %s\n", __func__);
+ 
+-	aic31xx->codec = codec;
++	aic31xx->component = component;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(aic31xx->supplies); i++) {
+ 		aic31xx->disable_nb[i].nb.notifier_call =
+@@ -1193,7 +1193,7 @@ static int aic31xx_codec_probe(struct snd_soc_codec *codec)
+ 		ret = regulator_register_notifier(aic31xx->supplies[i].consumer,
+ 						  &aic31xx->disable_nb[i].nb);
+ 		if (ret) {
+-			dev_err(codec->dev,
++			dev_err(component->dev,
+ 				"Failed to request regulator notifier: %d\n",
+ 				ret);
+ 			return ret;
+@@ -1203,43 +1203,42 @@ static int aic31xx_codec_probe(struct snd_soc_codec *codec)
+ 	regcache_cache_only(aic31xx->regmap, true);
+ 	regcache_mark_dirty(aic31xx->regmap);
+ 
+-	ret = aic31xx_add_controls(codec);
++	ret = aic31xx_add_controls(component);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = aic31xx_add_widgets(codec);
++	ret = aic31xx_add_widgets(component);
+ 	if (ret)
+ 		return ret;
+ 
+ 	return 0;
+ }
+ 
+-static int aic31xx_codec_remove(struct snd_soc_codec *codec)
++static void aic31xx_codec_remove(struct snd_soc_component *component)
+ {
+-	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
++	struct aic31xx_priv *aic31xx = snd_soc_component_get_drvdata(component);
+ 	int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(aic31xx->supplies); i++)
+ 		regulator_unregister_notifier(aic31xx->supplies[i].consumer,
+ 					      &aic31xx->disable_nb[i].nb);
+-
+-	return 0;
+ }
+ 
+-static const struct snd_soc_codec_driver soc_codec_driver_aic31xx = {
++static const struct snd_soc_component_driver soc_codec_driver_aic31xx = {
+ 	.probe			= aic31xx_codec_probe,
+ 	.remove			= aic31xx_codec_remove,
+ 	.set_bias_level		= aic31xx_set_bias_level,
+-	.suspend_bias_off	= true,
+-
 -	.component_driver = {
--		.dapm_widgets = tscs42xx_dapm_widgets,
--		.num_dapm_widgets = ARRAY_SIZE(tscs42xx_dapm_widgets),
--		.dapm_routes = tscs42xx_intercon,
--		.num_dapm_routes = ARRAY_SIZE(tscs42xx_intercon),
--		.controls =	tscs42xx_snd_controls,
--		.num_controls = ARRAY_SIZE(tscs42xx_snd_controls),
+-		.controls		= common31xx_snd_controls,
+-		.num_controls		= ARRAY_SIZE(common31xx_snd_controls),
+-		.dapm_widgets		= common31xx_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(common31xx_dapm_widgets),
+-		.dapm_routes		= common31xx_audio_map,
+-		.num_dapm_routes	= ARRAY_SIZE(common31xx_audio_map),
 -	},
-+static struct snd_soc_component_driver soc_codec_dev_tscs42xx = {
-+	.dapm_widgets		= tscs42xx_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(tscs42xx_dapm_widgets),
-+	.dapm_routes		= tscs42xx_intercon,
-+	.num_dapm_routes	= ARRAY_SIZE(tscs42xx_intercon),
-+	.controls		= tscs42xx_snd_controls,
-+	.num_controls		= ARRAY_SIZE(tscs42xx_snd_controls),
++	.controls		= common31xx_snd_controls,
++	.num_controls		= ARRAY_SIZE(common31xx_snd_controls),
++	.dapm_widgets		= common31xx_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(common31xx_dapm_widgets),
++	.dapm_routes		= common31xx_audio_map,
++	.num_dapm_routes	= ARRAY_SIZE(common31xx_audio_map),
++	.suspend_bias_off	= 1,
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static inline void init_coeff_ram_cache(struct tscs42xx *tscs42xx)
-@@ -1407,7 +1409,7 @@ static int tscs42xx_i2c_probe(struct i2c_client *i2c,
- 	mutex_init(&tscs42xx->coeff_ram_lock);
- 	mutex_init(&tscs42xx->pll_lock);
+ static const struct snd_soc_dai_ops aic31xx_dai_ops = {
+@@ -1375,23 +1374,17 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
+ 	}
  
--	ret = snd_soc_register_codec(tscs42xx->dev, &soc_codec_dev_tscs42xx,
-+	ret = devm_snd_soc_register_component(tscs42xx->dev, &soc_codec_dev_tscs42xx,
- 			&tscs42xx_dai, 1);
- 	if (ret) {
- 		dev_err(tscs42xx->dev, "Failed to register codec (%d)\n", ret);
-@@ -1417,13 +1419,6 @@ static int tscs42xx_i2c_probe(struct i2c_client *i2c,
- 	return 0;
+ 	if (aic31xx->codec_type & DAC31XX_BIT)
+-		return snd_soc_register_codec(&i2c->dev,
++		return devm_snd_soc_register_component(&i2c->dev,
+ 				&soc_codec_driver_aic31xx,
+ 				dac31xx_dai_driver,
+ 				ARRAY_SIZE(dac31xx_dai_driver));
+ 	else
+-		return snd_soc_register_codec(&i2c->dev,
++		return devm_snd_soc_register_component(&i2c->dev,
+ 				&soc_codec_driver_aic31xx,
+ 				aic31xx_dai_driver,
+ 				ARRAY_SIZE(aic31xx_dai_driver));
  }
  
--static int tscs42xx_i2c_remove(struct i2c_client *client)
+-static int aic31xx_i2c_remove(struct i2c_client *i2c)
 -{
--	snd_soc_unregister_codec(&client->dev);
--
+-	snd_soc_unregister_codec(&i2c->dev);
 -	return 0;
 -}
 -
- static const struct i2c_device_id tscs42xx_i2c_id[] = {
- 	{ "tscs42A1", 0 },
- 	{ "tscs42A2", 0 },
-@@ -1445,7 +1440,6 @@ static struct i2c_driver tscs42xx_i2c_driver = {
- 		.of_match_table = tscs42xx_of_match,
+ static const struct i2c_device_id aic31xx_i2c_id[] = {
+ 	{ "tlv320aic310x", AIC3100 },
+ 	{ "tlv320aic311x", AIC3110 },
+@@ -1412,7 +1405,6 @@ static struct i2c_driver aic31xx_i2c_driver = {
+ 		.acpi_match_table = ACPI_PTR(aic31xx_acpi_match),
  	},
- 	.probe =    tscs42xx_i2c_probe,
--	.remove =   tscs42xx_i2c_remove,
- 	.id_table = tscs42xx_i2c_id,
+ 	.probe		= aic31xx_i2c_probe,
+-	.remove		= aic31xx_i2c_remove,
+ 	.id_table	= aic31xx_i2c_id,
  };
- 
+ module_i2c_driver(aic31xx_i2c_driver);
 -- 
 2.16.1
