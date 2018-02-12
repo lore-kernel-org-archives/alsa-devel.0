@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: uniphier: evea: replace codec to
-	component" to the asoc tree
-Date: Mon, 12 Feb 2018 12:33:21 +0000
-Message-ID: <E1elDIP-0003bT-JZ@debutante>
-References: <874ln5uvb2.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: ics43432: replace codec to component"
+	to the asoc tree
+Date: Mon, 12 Feb 2018 12:33:44 +0000
+Message-ID: <E1elDIm-0003dK-FE@debutante>
+References: <877es1uvct.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E23ED267627
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:33:23 +0100 (CET)
-In-Reply-To: <874ln5uvb2.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C36F9267660
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:33:46 +0100 (CET)
+In-Reply-To: <877es1uvct.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: uniphier: evea: replace codec to component
+   ASoC: ics43432: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From f12df6614bee36c11ba0b3fb2d74b7d47b955434 Mon Sep 17 00:00:00 2001
+>From 7c8d90592165601fc7f133e72f06d7348d476579 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:47:19 +0000
-Subject: [PATCH] ASoC: uniphier: evea: replace codec to component
+Date: Mon, 29 Jan 2018 04:46:16 +0000
+Subject: [PATCH] ASoC: ics43432: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,166 +70,49 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/uniphier/evea.c | 67 +++++++++++++++++++++++------------------------
- 1 file changed, 33 insertions(+), 34 deletions(-)
+ sound/soc/codecs/ics43432.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/uniphier/evea.c b/sound/soc/uniphier/evea.c
-index 0cc9efff1d9a..cad7e60de21d 100644
---- a/sound/soc/uniphier/evea.c
-+++ b/sound/soc/uniphier/evea.c
-@@ -220,8 +220,8 @@ static void evea_update_switch_all(struct evea_priv *evea)
- static int evea_get_switch_lin(struct snd_kcontrol *kcontrol,
- 			       struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct evea_priv *evea = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct evea_priv *evea = snd_soc_component_get_drvdata(component);
- 
- 	ucontrol->value.integer.value[0] = evea->switch_lin;
- 
-@@ -231,8 +231,8 @@ static int evea_get_switch_lin(struct snd_kcontrol *kcontrol,
- static int evea_set_switch_lin(struct snd_kcontrol *kcontrol,
- 			       struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct evea_priv *evea = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct evea_priv *evea = snd_soc_component_get_drvdata(component);
- 
- 	if (evea->switch_lin == ucontrol->value.integer.value[0])
- 		return 0;
-@@ -245,8 +245,8 @@ static int evea_set_switch_lin(struct snd_kcontrol *kcontrol,
- static int evea_get_switch_lo(struct snd_kcontrol *kcontrol,
- 			      struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct evea_priv *evea = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct evea_priv *evea = snd_soc_component_get_drvdata(component);
- 
- 	ucontrol->value.integer.value[0] = evea->switch_lo;
- 
-@@ -256,8 +256,8 @@ static int evea_get_switch_lo(struct snd_kcontrol *kcontrol,
- static int evea_set_switch_lo(struct snd_kcontrol *kcontrol,
- 			      struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct evea_priv *evea = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct evea_priv *evea = snd_soc_component_get_drvdata(component);
- 
- 	if (evea->switch_lo == ucontrol->value.integer.value[0])
- 		return 0;
-@@ -270,8 +270,8 @@ static int evea_set_switch_lo(struct snd_kcontrol *kcontrol,
- static int evea_get_switch_hp(struct snd_kcontrol *kcontrol,
- 			      struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct evea_priv *evea = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct evea_priv *evea = snd_soc_component_get_drvdata(component);
- 
- 	ucontrol->value.integer.value[0] = evea->switch_hp;
- 
-@@ -281,8 +281,8 @@ static int evea_get_switch_hp(struct snd_kcontrol *kcontrol,
- static int evea_set_switch_hp(struct snd_kcontrol *kcontrol,
- 			      struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct evea_priv *evea = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct evea_priv *evea = snd_soc_component_get_drvdata(component);
- 
- 	if (evea->switch_hp == ucontrol->value.integer.value[0])
- 		return 0;
-@@ -301,9 +301,9 @@ static const struct snd_kcontrol_new eva_controls[] = {
- 			    evea_get_switch_hp, evea_set_switch_hp),
+diff --git a/sound/soc/codecs/ics43432.c b/sound/soc/codecs/ics43432.c
+index 651206273f36..148d6d6b2a2b 100644
+--- a/sound/soc/codecs/ics43432.c
++++ b/sound/soc/codecs/ics43432.c
+@@ -37,21 +37,20 @@ static struct snd_soc_dai_driver ics43432_dai = {
+ 	},
  };
  
--static int evea_codec_probe(struct snd_soc_codec *codec)
-+static int evea_codec_probe(struct snd_soc_component *component)
- {
--	struct evea_priv *evea = snd_soc_codec_get_drvdata(codec);
-+	struct evea_priv *evea = snd_soc_component_get_drvdata(component);
- 
- 	evea->switch_lin = 1;
- 	evea->switch_lo = 1;
-@@ -315,9 +315,9 @@ static int evea_codec_probe(struct snd_soc_codec *codec)
- 	return 0;
- }
- 
--static int evea_codec_suspend(struct snd_soc_codec *codec)
-+static int evea_codec_suspend(struct snd_soc_component *component)
- {
--	struct evea_priv *evea = snd_soc_codec_get_drvdata(codec);
-+	struct evea_priv *evea = snd_soc_component_get_drvdata(component);
- 
- 	evea_set_power_state_off(evea);
- 
-@@ -331,9 +331,9 @@ static int evea_codec_suspend(struct snd_soc_codec *codec)
- 	return 0;
- }
- 
--static int evea_codec_resume(struct snd_soc_codec *codec)
-+static int evea_codec_resume(struct snd_soc_component *component)
- {
--	struct evea_priv *evea = snd_soc_codec_get_drvdata(codec);
-+	struct evea_priv *evea = snd_soc_component_get_drvdata(component);
- 	int ret;
- 
- 	ret = clk_prepare_enable(evea->clk);
-@@ -376,19 +376,20 @@ static int evea_codec_resume(struct snd_soc_codec *codec)
- 	return ret;
- }
- 
--static struct snd_soc_codec_driver soc_codec_evea = {
--	.probe   = evea_codec_probe,
--	.suspend = evea_codec_suspend,
--	.resume  = evea_codec_resume,
--
--	.component_driver = {
--		.dapm_widgets = evea_widgets,
--		.num_dapm_widgets = ARRAY_SIZE(evea_widgets),
--		.dapm_routes = evea_routes,
--		.num_dapm_routes = ARRAY_SIZE(evea_routes),
--		.controls = eva_controls,
--		.num_controls = ARRAY_SIZE(eva_controls),
--	},
-+static struct snd_soc_component_driver soc_codec_evea = {
-+	.probe			= evea_codec_probe,
-+	.suspend		= evea_codec_suspend,
-+	.resume			= evea_codec_resume,
-+	.dapm_widgets		= evea_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(evea_widgets),
-+	.dapm_routes		= evea_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(evea_routes),
-+	.controls		= eva_controls,
-+	.num_controls		= ARRAY_SIZE(eva_controls),
+-static const struct snd_soc_codec_driver ics43432_codec_driver = {
++static const struct snd_soc_component_driver ics43432_component_driver = {
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static struct snd_soc_dai_driver soc_dai_evea[] = {
-@@ -505,7 +506,7 @@ static int evea_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, evea);
- 
--	ret = snd_soc_register_codec(&pdev->dev, &soc_codec_evea,
-+	ret = devm_snd_soc_register_component(&pdev->dev, &soc_codec_evea,
- 				     soc_dai_evea, ARRAY_SIZE(soc_dai_evea));
- 	if (ret)
- 		goto err_out_reset_adamv;
-@@ -534,8 +535,6 @@ static int evea_remove(struct platform_device *pdev)
+ static int ics43432_probe(struct platform_device *pdev)
  {
- 	struct evea_priv *evea = platform_get_drvdata(pdev);
+-	return snd_soc_register_codec(&pdev->dev, &ics43432_codec_driver,
++	return devm_snd_soc_register_component(&pdev->dev,
++			&ics43432_component_driver,
+ 			&ics43432_dai, 1);
+ }
  
+-static int ics43432_remove(struct platform_device *pdev)
+-{
 -	snd_soc_unregister_codec(&pdev->dev);
+-	return 0;
+-}
 -
- 	reset_control_assert(evea->rst_adamv);
- 	reset_control_assert(evea->rst_exiv);
- 	reset_control_assert(evea->rst);
+ #ifdef CONFIG_OF
+ static const struct of_device_id ics43432_ids[] = {
+ 	{ .compatible = "invensense,ics43432", },
+@@ -66,7 +65,6 @@ static struct platform_driver ics43432_driver = {
+ 		.of_match_table = of_match_ptr(ics43432_ids),
+ 	},
+ 	.probe = ics43432_probe,
+-	.remove = ics43432_remove,
+ };
+ 
+ module_platform_driver(ics43432_driver);
 -- 
 2.16.1
