@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm179x: replace codec to component" to
-	the asoc tree
-Date: Mon, 12 Feb 2018 12:39:35 +0000
-Message-ID: <E1elDOR-0004Ya-F1@debutante>
-References: <87tvv5xpum.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8E306267B52
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:39:37 +0100 (CET)
-In-Reply-To: <87tvv5xpum.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: uniphier: add support for UniPhier AIO DMA driver" to the asoc tree
+Date: Mon, 12 Feb 2018 12:54:27 +0000
+Message-ID: <E1elDcp-0007Bq-OG@debutante>
+References: <20180119092536.22501-4-suzuki.katsuhiro@socionext.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180119092536.22501-4-suzuki.katsuhiro@socionext.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm179x: replace codec to component
+   ASoC: uniphier: add support for UniPhier AIO DMA driver
 
 has been applied to the asoc tree at
 
@@ -53,182 +37,373 @@ to this mail.
 Thanks,
 Mark
 
->From db0a11d00220cf84bec2047fe698004813096926 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:16:56 +0000
-Subject: [PATCH] ASoC: pcm179x: replace codec to component
+>From caa3e443aef6308abfe0710e8d8f602a75bed0ed Mon Sep 17 00:00:00 2001
+From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Date: Fri, 19 Jan 2018 18:25:30 +0900
+Subject: [PATCH] ASoC: uniphier: add support for UniPhier AIO DMA driver
 
-Now we can replace Codec to Component. Let's do it.
+This patch adds supports for UniPhier AIO DMA.
 
-Note:
-	xxx_codec_xxx()		->	xxx_component_xxx()
-	.idle_bias_off = 0	->	.idle_bias_on = 1
-	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
-	-			->	.endianness = 1
-	-			->	.non_legacy_dai_naming = 1
+This module shared register area with all sound devices for
+I2S, S/PDIF and so on. Since the AIO has mixed register map
+for those I/Os, it is hard to split register areas for each
+sound devices.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Reviewed-by: Michael Trimarchi <michael@amarulasolutions.com>
+Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm179x-i2c.c |  6 ------
- sound/soc/codecs/pcm179x-spi.c |  6 ------
- sound/soc/codecs/pcm179x.c     | 45 +++++++++++++++++++-----------------------
- sound/soc/codecs/pcm179x.h     |  1 -
- 4 files changed, 20 insertions(+), 38 deletions(-)
+ sound/soc/uniphier/Makefile  |   2 +-
+ sound/soc/uniphier/aio-dma.c | 317 +++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/uniphier/aio.h     |   2 +
+ 3 files changed, 320 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/uniphier/aio-dma.c
 
-diff --git a/sound/soc/codecs/pcm179x-i2c.c b/sound/soc/codecs/pcm179x-i2c.c
-index 4118106abb8d..03747966c6bc 100644
---- a/sound/soc/codecs/pcm179x-i2c.c
-+++ b/sound/soc/codecs/pcm179x-i2c.c
-@@ -39,11 +39,6 @@ static int pcm179x_i2c_probe(struct i2c_client *client,
- 	return pcm179x_common_init(&client->dev, regmap);
+diff --git a/sound/soc/uniphier/Makefile b/sound/soc/uniphier/Makefile
+index f3b36aba4879..9efe0feffdc2 100644
+--- a/sound/soc/uniphier/Makefile
++++ b/sound/soc/uniphier/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+-snd-soc-uniphier-aio-cpu-objs := aio-core.o
++snd-soc-uniphier-aio-cpu-objs := aio-core.o aio-dma.o
+ 
+ obj-$(CONFIG_SND_SOC_UNIPHIER_AIO) += snd-soc-uniphier-aio-cpu.o
+ 
+diff --git a/sound/soc/uniphier/aio-dma.c b/sound/soc/uniphier/aio-dma.c
+new file mode 100644
+index 000000000000..6d0ca6dde913
+--- /dev/null
++++ b/sound/soc/uniphier/aio-dma.c
+@@ -0,0 +1,317 @@
++// SPDX-License-Identifier: GPL-2.0
++//
++// Socionext UniPhier AIO DMA driver.
++//
++// Copyright (c) 2016-2018 Socionext Inc.
++//
++// This program is free software; you can redistribute it and/or
++// modify it under the terms of the GNU General Public License
++// as published by the Free Software Foundation; version 2
++// of the License.
++//
++// This program is distributed in the hope that it will be useful,
++// but WITHOUT ANY WARRANTY; without even the implied warranty of
++// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++// GNU General Public License for more details.
++//
++// You should have received a copy of the GNU General Public License
++// along with this program; if not, see <http://www.gnu.org/licenses/>.
++
++#include <linux/dma-mapping.h>
++#include <linux/errno.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/soc.h>
++
++#include "aio.h"
++
++static struct snd_pcm_hardware uniphier_aiodma_hw = {
++	.info = SNDRV_PCM_INFO_MMAP |
++		SNDRV_PCM_INFO_MMAP_VALID |
++		SNDRV_PCM_INFO_INTERLEAVED,
++	.period_bytes_min = 256,
++	.period_bytes_max = 4096,
++	.periods_min      = 4,
++	.periods_max      = 1024,
++	.buffer_bytes_max = 128 * 1024,
++};
++
++static void aiodma_pcm_irq(struct uniphier_aio_sub *sub)
++{
++	struct snd_pcm_runtime *runtime = sub->substream->runtime;
++	int bytes = runtime->period_size *
++		runtime->channels * samples_to_bytes(runtime, 1);
++	int ret;
++
++	spin_lock(&sub->lock);
++	ret = aiodma_rb_set_threshold(sub, runtime->dma_bytes,
++				      sub->threshold + bytes);
++	if (!ret)
++		sub->threshold += bytes;
++
++	aiodma_rb_sync(sub, runtime->dma_addr, runtime->dma_bytes, bytes);
++	aiodma_rb_clear_irq(sub);
++	spin_unlock(&sub->lock);
++
++	snd_pcm_period_elapsed(sub->substream);
++}
++
++static void aiodma_compr_irq(struct uniphier_aio_sub *sub)
++{
++	struct snd_compr_runtime *runtime = sub->cstream->runtime;
++	int bytes = runtime->fragment_size;
++	int ret;
++
++	spin_lock(&sub->lock);
++	ret = aiodma_rb_set_threshold(sub, sub->compr_bytes,
++				      sub->threshold + bytes);
++	if (!ret)
++		sub->threshold += bytes;
++
++	aiodma_rb_sync(sub, sub->compr_addr, sub->compr_bytes, bytes);
++	aiodma_rb_clear_irq(sub);
++	spin_unlock(&sub->lock);
++
++	snd_compr_fragment_elapsed(sub->cstream);
++}
++
++static irqreturn_t aiodma_irq(int irq, void *p)
++{
++	struct platform_device *pdev = p;
++	struct uniphier_aio_chip *chip = platform_get_drvdata(pdev);
++	irqreturn_t ret = IRQ_NONE;
++	int i, j;
++
++	for (i = 0; i < chip->num_aios; i++) {
++		struct uniphier_aio *aio = &chip->aios[i];
++
++		for (j = 0; j < ARRAY_SIZE(aio->sub); j++) {
++			struct uniphier_aio_sub *sub = &aio->sub[j];
++
++			/* Skip channel that does not trigger */
++			if (!sub->running || !aiodma_rb_is_irq(sub))
++				continue;
++
++			if (sub->substream)
++				aiodma_pcm_irq(sub);
++			if (sub->cstream)
++				aiodma_compr_irq(sub);
++
++			ret = IRQ_HANDLED;
++		}
++	}
++
++	return ret;
++}
++
++static int uniphier_aiodma_open(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	snd_soc_set_runtime_hwparams(substream, &uniphier_aiodma_hw);
++
++	return snd_pcm_hw_constraint_step(runtime, 0,
++		SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 256);
++}
++
++static int uniphier_aiodma_hw_params(struct snd_pcm_substream *substream,
++				     struct snd_pcm_hw_params *params)
++{
++	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
++	substream->runtime->dma_bytes = params_buffer_bytes(params);
++
++	return 0;
++}
++
++static int uniphier_aiodma_hw_free(struct snd_pcm_substream *substream)
++{
++	snd_pcm_set_runtime_buffer(substream, NULL);
++	substream->runtime->dma_bytes = 0;
++
++	return 0;
++}
++
++static int uniphier_aiodma_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
++	struct uniphier_aio *aio = uniphier_priv(rtd->cpu_dai);
++	struct uniphier_aio_sub *sub = &aio->sub[substream->stream];
++	int bytes = runtime->period_size *
++		runtime->channels * samples_to_bytes(runtime, 1);
++	unsigned long flags;
++	int ret;
++
++	ret = aiodma_ch_set_param(sub);
++	if (ret)
++		return ret;
++
++	spin_lock_irqsave(&sub->lock, flags);
++	ret = aiodma_rb_set_buffer(sub, runtime->dma_addr,
++				   runtime->dma_addr + runtime->dma_bytes,
++				   bytes);
++	spin_unlock_irqrestore(&sub->lock, flags);
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
++static int uniphier_aiodma_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
++	struct uniphier_aio *aio = uniphier_priv(rtd->cpu_dai);
++	struct uniphier_aio_sub *sub = &aio->sub[substream->stream];
++	struct device *dev = &aio->chip->pdev->dev;
++	int bytes = runtime->period_size *
++		runtime->channels * samples_to_bytes(runtime, 1);
++	unsigned long flags;
++
++	spin_lock_irqsave(&sub->lock, flags);
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		aiodma_rb_sync(sub, runtime->dma_addr, runtime->dma_bytes,
++			       bytes);
++		aiodma_ch_set_enable(sub, 1);
++		sub->running = 1;
++
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		sub->running = 0;
++		aiodma_ch_set_enable(sub, 0);
++
++		break;
++	default:
++		dev_warn(dev, "Unknown trigger(%d) ignored\n", cmd);
++		break;
++	}
++	spin_unlock_irqrestore(&sub->lock, flags);
++
++	return 0;
++}
++
++static snd_pcm_uframes_t uniphier_aiodma_pointer(
++					struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
++	struct uniphier_aio *aio = uniphier_priv(rtd->cpu_dai);
++	struct uniphier_aio_sub *sub = &aio->sub[substream->stream];
++	int bytes = runtime->period_size *
++		runtime->channels * samples_to_bytes(runtime, 1);
++	unsigned long flags;
++	snd_pcm_uframes_t pos;
++
++	spin_lock_irqsave(&sub->lock, flags);
++	aiodma_rb_sync(sub, runtime->dma_addr, runtime->dma_bytes, bytes);
++
++	if (sub->swm->dir == PORT_DIR_OUTPUT)
++		pos = bytes_to_frames(runtime, sub->rd_offs);
++	else
++		pos = bytes_to_frames(runtime, sub->wr_offs);
++	spin_unlock_irqrestore(&sub->lock, flags);
++
++	return pos;
++}
++
++static int uniphier_aiodma_mmap(struct snd_pcm_substream *substream,
++				struct vm_area_struct *vma)
++{
++	vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
++
++	return remap_pfn_range(vma, vma->vm_start,
++			       substream->dma_buffer.addr >> PAGE_SHIFT,
++			       vma->vm_end - vma->vm_start, vma->vm_page_prot);
++}
++
++static const struct snd_pcm_ops uniphier_aiodma_ops = {
++	.open      = uniphier_aiodma_open,
++	.ioctl     = snd_pcm_lib_ioctl,
++	.hw_params = uniphier_aiodma_hw_params,
++	.hw_free   = uniphier_aiodma_hw_free,
++	.prepare   = uniphier_aiodma_prepare,
++	.trigger   = uniphier_aiodma_trigger,
++	.pointer   = uniphier_aiodma_pointer,
++	.mmap      = uniphier_aiodma_mmap,
++};
++
++static int uniphier_aiodma_new(struct snd_soc_pcm_runtime *rtd)
++{
++	struct device *dev = rtd->card->snd_card->dev;
++	struct snd_pcm *pcm = rtd->pcm;
++	int ret;
++
++	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(33));
++	if (ret)
++		return ret;
++
++	return snd_pcm_lib_preallocate_pages_for_all(pcm,
++		SNDRV_DMA_TYPE_DEV, dev,
++		uniphier_aiodma_hw.buffer_bytes_max,
++		uniphier_aiodma_hw.buffer_bytes_max);
++}
++
++static void uniphier_aiodma_free(struct snd_pcm *pcm)
++{
++	snd_pcm_lib_preallocate_free_for_all(pcm);
++}
++
++static const struct snd_soc_platform_driver uniphier_soc_platform = {
++	.pcm_new   = uniphier_aiodma_new,
++	.pcm_free  = uniphier_aiodma_free,
++	.ops       = &uniphier_aiodma_ops,
++};
++
++static const struct regmap_config aiodma_regmap_config = {
++	.reg_bits      = 32,
++	.reg_stride    = 4,
++	.val_bits      = 32,
++	.max_register  = 0x7fffc,
++	.cache_type    = REGCACHE_NONE,
++};
++
++/**
++ * uniphier_aiodma_soc_register_platform - register the AIO DMA
++ * @pdev: the platform device
++ *
++ * Register and setup the DMA of AIO to transfer the sound data to device.
++ * This function need to call once at driver startup and need NOT to call
++ * unregister function.
++ *
++ * Return: Zero if successful, otherwise a negative value on error.
++ */
++int uniphier_aiodma_soc_register_platform(struct platform_device *pdev)
++{
++	struct uniphier_aio_chip *chip = platform_get_drvdata(pdev);
++	struct device *dev = &pdev->dev;
++	struct resource *res;
++	void __iomem *preg;
++	int irq, ret;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	preg = devm_ioremap_resource(dev, res);
++	if (IS_ERR(preg))
++		return PTR_ERR(preg);
++
++	chip->regmap = devm_regmap_init_mmio(dev, preg,
++					     &aiodma_regmap_config);
++	if (IS_ERR(chip->regmap))
++		return PTR_ERR(chip->regmap);
++
++	irq = platform_get_irq(pdev, 0);
++	if (irq < 0) {
++		dev_err(dev, "Could not get irq.\n");
++		return irq;
++	}
++
++	ret = devm_request_irq(dev, irq, aiodma_irq,
++			       IRQF_SHARED, dev_name(dev), pdev);
++	if (ret)
++		return ret;
++
++	return devm_snd_soc_register_platform(dev, &uniphier_soc_platform);
++}
++EXPORT_SYMBOL_GPL(uniphier_aiodma_soc_register_platform);
+diff --git a/sound/soc/uniphier/aio.h b/sound/soc/uniphier/aio.h
+index 774abae28028..3687f6ff30b1 100644
+--- a/sound/soc/uniphier/aio.h
++++ b/sound/soc/uniphier/aio.h
+@@ -304,6 +304,8 @@ static inline struct uniphier_aio *uniphier_priv(struct snd_soc_dai *dai)
+ 	return &chip->aios[dai->id];
  }
  
--static int pcm179x_i2c_remove(struct i2c_client *client)
--{
--	return pcm179x_common_exit(&client->dev);
--}
--
- static const struct of_device_id pcm179x_of_match[] = {
- 	{ .compatible = "ti,pcm1792a", },
- 	{ }
-@@ -63,7 +58,6 @@ static struct i2c_driver pcm179x_i2c_driver = {
- 	},
- 	.id_table	= pcm179x_i2c_ids,
- 	.probe		= pcm179x_i2c_probe,
--	.remove		= pcm179x_i2c_remove,
- };
- 
- module_i2c_driver(pcm179x_i2c_driver);
-diff --git a/sound/soc/codecs/pcm179x-spi.c b/sound/soc/codecs/pcm179x-spi.c
-index da924d444083..89ad715676fc 100644
---- a/sound/soc/codecs/pcm179x-spi.c
-+++ b/sound/soc/codecs/pcm179x-spi.c
-@@ -38,11 +38,6 @@ static int pcm179x_spi_probe(struct spi_device *spi)
- 	return pcm179x_common_init(&spi->dev, regmap);
- }
- 
--static int pcm179x_spi_remove(struct spi_device *spi)
--{
--	return pcm179x_common_exit(&spi->dev);
--}
--
- static const struct of_device_id pcm179x_of_match[] = {
- 	{ .compatible = "ti,pcm1792a", },
- 	{ }
-@@ -62,7 +57,6 @@ static struct spi_driver pcm179x_spi_driver = {
- 	},
- 	.id_table = pcm179x_spi_ids,
- 	.probe = pcm179x_spi_probe,
--	.remove = pcm179x_spi_remove,
- };
- 
- module_spi_driver(pcm179x_spi_driver);
-diff --git a/sound/soc/codecs/pcm179x.c b/sound/soc/codecs/pcm179x.c
-index 82a3d9db32cb..4b311c06f97d 100644
---- a/sound/soc/codecs/pcm179x.c
-+++ b/sound/soc/codecs/pcm179x.c
-@@ -77,8 +77,8 @@ struct pcm179x_private {
- static int pcm179x_set_dai_fmt(struct snd_soc_dai *codec_dai,
-                              unsigned int format)
- {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct pcm179x_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct pcm179x_private *priv = snd_soc_component_get_drvdata(component);
- 
- 	priv->format = format;
- 
-@@ -87,8 +87,8 @@ static int pcm179x_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 
- static int pcm179x_digital_mute(struct snd_soc_dai *dai, int mute)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct pcm179x_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct pcm179x_private *priv = snd_soc_component_get_drvdata(component);
- 	int ret;
- 
- 	ret = regmap_update_bits(priv->regmap, PCM179X_SOFT_MUTE,
-@@ -103,8 +103,8 @@ static int pcm179x_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params,
- 			     struct snd_soc_dai *dai)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct pcm179x_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct pcm179x_private *priv = snd_soc_component_get_drvdata(component);
- 	int val = 0, ret;
- 
- 	priv->rate = params_rate(params);
-@@ -137,7 +137,7 @@ static int pcm179x_hw_params(struct snd_pcm_substream *substream,
- 		}
- 		break;
- 	default:
--		dev_err(codec->dev, "Invalid DAI format\n");
-+		dev_err(component->dev, "Invalid DAI format\n");
- 		return -EINVAL;
- 	}
- 
-@@ -205,15 +205,17 @@ const struct regmap_config pcm179x_regmap_config = {
- };
- EXPORT_SYMBOL_GPL(pcm179x_regmap_config);
- 
--static const struct snd_soc_codec_driver soc_codec_dev_pcm179x = {
--	.component_driver = {
--		.controls		= pcm179x_controls,
--		.num_controls		= ARRAY_SIZE(pcm179x_controls),
--		.dapm_widgets		= pcm179x_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(pcm179x_dapm_widgets),
--		.dapm_routes		= pcm179x_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(pcm179x_dapm_routes),
--	},
-+static const struct snd_soc_component_driver soc_component_dev_pcm179x = {
-+	.controls		= pcm179x_controls,
-+	.num_controls		= ARRAY_SIZE(pcm179x_controls),
-+	.dapm_widgets		= pcm179x_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(pcm179x_dapm_widgets),
-+	.dapm_routes		= pcm179x_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(pcm179x_dapm_routes),
-+	.idle_bias_on		= 1,
-+	.use_pmdown_time	= 1,
-+	.endianness		= 1,
-+	.non_legacy_dai_naming	= 1,
- };
- 
- int pcm179x_common_init(struct device *dev, struct regmap *regmap)
-@@ -228,18 +230,11 @@ int pcm179x_common_init(struct device *dev, struct regmap *regmap)
- 	pcm179x->regmap = regmap;
- 	dev_set_drvdata(dev, pcm179x);
- 
--	return snd_soc_register_codec(dev,
--			&soc_codec_dev_pcm179x, &pcm179x_dai, 1);
-+	return devm_snd_soc_register_component(dev,
-+			&soc_component_dev_pcm179x, &pcm179x_dai, 1);
- }
- EXPORT_SYMBOL_GPL(pcm179x_common_init);
- 
--int pcm179x_common_exit(struct device *dev)
--{
--	snd_soc_unregister_codec(dev);
--	return 0;
--}
--EXPORT_SYMBOL_GPL(pcm179x_common_exit);
--
- MODULE_DESCRIPTION("ASoC PCM179X driver");
- MODULE_AUTHOR("Michael Trimarchi <michael@amarulasolutions.com>");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/pcm179x.h b/sound/soc/codecs/pcm179x.h
-index 11e331268aae..cf8681c9a373 100644
---- a/sound/soc/codecs/pcm179x.h
-+++ b/sound/soc/codecs/pcm179x.h
-@@ -23,6 +23,5 @@
- extern const struct regmap_config pcm179x_regmap_config;
- 
- int pcm179x_common_init(struct device *dev, struct regmap *regmap);
--int pcm179x_common_exit(struct device *dev);
- 
- #endif
++int uniphier_aiodma_soc_register_platform(struct platform_device *pdev);
++
+ u64 aio_rb_cnt(struct uniphier_aio_sub *sub);
+ u64 aio_rbt_cnt_to_end(struct uniphier_aio_sub *sub);
+ u64 aio_rb_space(struct uniphier_aio_sub *sub);
 -- 
 2.16.1
