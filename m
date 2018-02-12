@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wl1273: replace codec to component" to
-	the asoc tree
-Date: Mon, 12 Feb 2018 12:37:14 +0000
-Message-ID: <E1elDMA-0003z4-0l@debutante>
-References: <87372pwadt.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: vc4_hdmi: replace codec to component"
+	to the asoc tree
+Date: Mon, 12 Feb 2018 12:37:20 +0000
+Message-ID: <E1elDMG-00040r-9p@debutante>
+References: <87607lwafz.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4D2292678EF
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:37:16 +0100 (CET)
-In-Reply-To: <87372pwadt.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 75B7A2678F5
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:37:22 +0100 (CET)
+In-Reply-To: <87607lwafz.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wl1273: replace codec to component
+   ASoC: vc4_hdmi: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 559ab3977633e5822712c6f44bd06e7f3200f9fe Mon Sep 17 00:00:00 2001
+>From 635b1c185ee9cae61a740264d09095a7d20c019a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:36:21 +0000
-Subject: [PATCH] ASoC: wl1273: replace codec to component
+Date: Mon, 29 Jan 2018 04:35:04 +0000
+Subject: [PATCH] ASoC: vc4_hdmi: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,234 +70,93 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wl1273.c | 93 +++++++++++++++++++++++------------------------
- sound/soc/codecs/wl1273.h |  2 +-
- 2 files changed, 47 insertions(+), 48 deletions(-)
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 47 ++++++++++++++----------------------------
+ 1 file changed, 15 insertions(+), 32 deletions(-)
 
-diff --git a/sound/soc/codecs/wl1273.c b/sound/soc/codecs/wl1273.c
-index 942f1644973e..929ef1fdbb69 100644
---- a/sound/soc/codecs/wl1273.c
-+++ b/sound/soc/codecs/wl1273.c
-@@ -172,8 +172,8 @@ static int snd_wl1273_fm_set_channel_number(struct wl1273_core *core,
- static int snd_wl1273_get_audio_route(struct snd_kcontrol *kcontrol,
- 				      struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct wl1273_priv *wl1273 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct wl1273_priv *wl1273 = snd_soc_component_get_drvdata(component);
- 
- 	ucontrol->value.enumerated.item[0] = wl1273->mode;
- 
-@@ -190,14 +190,14 @@ static const char * const wl1273_audio_route[] = { "Bt", "FmRx", "FmTx" };
- static int snd_wl1273_set_audio_route(struct snd_kcontrol *kcontrol,
- 				      struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct wl1273_priv *wl1273 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct wl1273_priv *wl1273 = snd_soc_component_get_drvdata(component);
- 
- 	if (wl1273->mode == ucontrol->value.enumerated.item[0])
- 		return 0;
- 
- 	/* Do not allow changes while stream is running */
--	if (snd_soc_codec_is_active(codec))
-+	if (snd_soc_component_is_active(component))
- 		return -EPERM;
- 
- 	if (ucontrol->value.enumerated.item[0] >=  ARRAY_SIZE(wl1273_audio_route))
-@@ -213,10 +213,10 @@ static SOC_ENUM_SINGLE_EXT_DECL(wl1273_enum, wl1273_audio_route);
- static int snd_wl1273_fm_audio_get(struct snd_kcontrol *kcontrol,
- 				   struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct wl1273_priv *wl1273 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct wl1273_priv *wl1273 = snd_soc_component_get_drvdata(component);
- 
--	dev_dbg(codec->dev, "%s: enter.\n", __func__);
-+	dev_dbg(component->dev, "%s: enter.\n", __func__);
- 
- 	ucontrol->value.enumerated.item[0] = wl1273->core->audio_mode;
- 
-@@ -226,11 +226,11 @@ static int snd_wl1273_fm_audio_get(struct snd_kcontrol *kcontrol,
- static int snd_wl1273_fm_audio_put(struct snd_kcontrol *kcontrol,
- 				   struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct wl1273_priv *wl1273 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct wl1273_priv *wl1273 = snd_soc_component_get_drvdata(component);
- 	int val, r = 0;
- 
--	dev_dbg(codec->dev, "%s: enter.\n", __func__);
-+	dev_dbg(component->dev, "%s: enter.\n", __func__);
- 
- 	val = ucontrol->value.enumerated.item[0];
- 	if (wl1273->core->audio_mode == val)
-@@ -250,10 +250,10 @@ static SOC_ENUM_SINGLE_EXT_DECL(wl1273_audio_enum, wl1273_audio_strings);
- static int snd_wl1273_fm_volume_get(struct snd_kcontrol *kcontrol,
- 				    struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct wl1273_priv *wl1273 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct wl1273_priv *wl1273 = snd_soc_component_get_drvdata(component);
- 
--	dev_dbg(codec->dev, "%s: enter.\n", __func__);
-+	dev_dbg(component->dev, "%s: enter.\n", __func__);
- 
- 	ucontrol->value.integer.value[0] = wl1273->core->volume;
- 
-@@ -263,11 +263,11 @@ static int snd_wl1273_fm_volume_get(struct snd_kcontrol *kcontrol,
- static int snd_wl1273_fm_volume_put(struct snd_kcontrol *kcontrol,
- 				    struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct wl1273_priv *wl1273 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct wl1273_priv *wl1273 = snd_soc_component_get_drvdata(component);
- 	int r;
- 
--	dev_dbg(codec->dev, "%s: enter.\n", __func__);
-+	dev_dbg(component->dev, "%s: enter.\n", __func__);
- 
- 	r = wl1273->core->set_volume(wl1273->core,
- 				     ucontrol->value.integer.value[0]);
-@@ -301,8 +301,8 @@ static const struct snd_soc_dapm_route wl1273_dapm_routes[] = {
- static int wl1273_startup(struct snd_pcm_substream *substream,
- 			  struct snd_soc_dai *dai)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct wl1273_priv *wl1273 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct wl1273_priv *wl1273 = snd_soc_component_get_drvdata(component);
- 
- 	switch (wl1273->mode) {
- 	case WL1273_MODE_BT:
-@@ -335,7 +335,7 @@ static int wl1273_hw_params(struct snd_pcm_substream *substream,
- 			    struct snd_pcm_hw_params *params,
- 			    struct snd_soc_dai *dai)
- {
--	struct wl1273_priv *wl1273 = snd_soc_codec_get_drvdata(dai->codec);
-+	struct wl1273_priv *wl1273 = snd_soc_component_get_drvdata(dai->component);
- 	struct wl1273_core *core = wl1273->core;
- 	unsigned int rate, width, r;
- 
-@@ -415,14 +415,14 @@ static struct snd_soc_dai_driver wl1273_dai = {
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index 984501e3f0b0..b92c6603c7a2 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -995,15 +995,17 @@ static const struct snd_soc_dapm_route vc4_hdmi_audio_routes[] = {
+ 	{ "TX", NULL, "Playback" },
  };
  
- /* Audio interface format for the soc_card driver */
--int wl1273_get_format(struct snd_soc_codec *codec, unsigned int *fmt)
-+int wl1273_get_format(struct snd_soc_component *component, unsigned int *fmt)
- {
- 	struct wl1273_priv *wl1273;
- 
--	if (codec == NULL || fmt == NULL)
-+	if (component == NULL || fmt == NULL)
- 		return -EINVAL;
- 
--	wl1273 = snd_soc_codec_get_drvdata(codec);
-+	wl1273 = snd_soc_component_get_drvdata(component);
- 
- 	switch (wl1273->mode) {
- 	case WL1273_MODE_FM_RX:
-@@ -446,15 +446,15 @@ int wl1273_get_format(struct snd_soc_codec *codec, unsigned int *fmt)
- }
- EXPORT_SYMBOL_GPL(wl1273_get_format);
- 
--static int wl1273_probe(struct snd_soc_codec *codec)
-+static int wl1273_probe(struct snd_soc_component *component)
- {
--	struct wl1273_core **core = codec->dev->platform_data;
-+	struct wl1273_core **core = component->dev->platform_data;
- 	struct wl1273_priv *wl1273;
- 
--	dev_dbg(codec->dev, "%s.\n", __func__);
-+	dev_dbg(component->dev, "%s.\n", __func__);
- 
- 	if (!core) {
--		dev_err(codec->dev, "Platform data is missing.\n");
-+		dev_err(component->dev, "Platform data is missing.\n");
- 		return -EINVAL;
- 	}
- 
-@@ -465,44 +465,43 @@ static int wl1273_probe(struct snd_soc_codec *codec)
- 	wl1273->mode = WL1273_MODE_BT;
- 	wl1273->core = *core;
- 
--	snd_soc_codec_set_drvdata(codec, wl1273);
-+	snd_soc_component_set_drvdata(component, wl1273);
- 
- 	return 0;
- }
- 
--static int wl1273_remove(struct snd_soc_codec *codec)
-+static void wl1273_remove(struct snd_soc_component *component)
- {
--	struct wl1273_priv *wl1273 = snd_soc_codec_get_drvdata(codec);
-+	struct wl1273_priv *wl1273 = snd_soc_component_get_drvdata(component);
- 
--	dev_dbg(codec->dev, "%s\n", __func__);
-+	dev_dbg(component->dev, "%s\n", __func__);
- 	kfree(wl1273);
--
--	return 0;
- }
- 
--static const struct snd_soc_codec_driver soc_codec_dev_wl1273 = {
--	.probe = wl1273_probe,
--	.remove = wl1273_remove,
--
+-static const struct snd_soc_codec_driver vc4_hdmi_audio_codec_drv = {
 -	.component_driver = {
--		.controls		= wl1273_controls,
--		.num_controls		= ARRAY_SIZE(wl1273_controls),
--		.dapm_widgets		= wl1273_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(wl1273_dapm_widgets),
--		.dapm_routes		= wl1273_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(wl1273_dapm_routes),
+-		.controls = vc4_hdmi_audio_controls,
+-		.num_controls = ARRAY_SIZE(vc4_hdmi_audio_controls),
+-		.dapm_widgets = vc4_hdmi_audio_widgets,
+-		.num_dapm_widgets = ARRAY_SIZE(vc4_hdmi_audio_widgets),
+-		.dapm_routes = vc4_hdmi_audio_routes,
+-		.num_dapm_routes = ARRAY_SIZE(vc4_hdmi_audio_routes),
 -	},
-+static const struct snd_soc_component_driver soc_component_dev_wl1273 = {
-+	.probe			= wl1273_probe,
-+	.remove			= wl1273_remove,
-+	.controls		= wl1273_controls,
-+	.num_controls		= ARRAY_SIZE(wl1273_controls),
-+	.dapm_widgets		= wl1273_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(wl1273_dapm_widgets),
-+	.dapm_routes		= wl1273_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(wl1273_dapm_routes),
++static const struct snd_soc_component_driver vc4_hdmi_audio_component_drv = {
++	.controls		= vc4_hdmi_audio_controls,
++	.num_controls		= ARRAY_SIZE(vc4_hdmi_audio_controls),
++	.dapm_widgets		= vc4_hdmi_audio_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(vc4_hdmi_audio_widgets),
++	.dapm_routes		= vc4_hdmi_audio_routes,
++	.num_dapm_routes	= ARRAY_SIZE(vc4_hdmi_audio_routes),
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static int wl1273_platform_probe(struct platform_device *pdev)
- {
--	return snd_soc_register_codec(&pdev->dev, &soc_codec_dev_wl1273,
-+	return devm_snd_soc_register_component(&pdev->dev,
-+				      &soc_component_dev_wl1273,
- 				      &wl1273_dai, 1);
+ static const struct snd_soc_dai_ops vc4_hdmi_audio_dai_ops = {
+@@ -1101,11 +1103,11 @@ static int vc4_hdmi_audio_init(struct vc4_hdmi *hdmi)
+ 		return ret;
+ 	}
+ 
+-	/* register codec and codec dai */
+-	ret = snd_soc_register_codec(dev, &vc4_hdmi_audio_codec_drv,
++	/* register component and codec dai */
++	ret = devm_snd_soc_register_component(dev, &vc4_hdmi_audio_component_drv,
+ 				     &vc4_hdmi_audio_codec_dai_drv, 1);
+ 	if (ret) {
+-		dev_err(dev, "Could not register codec: %d\n", ret);
++		dev_err(dev, "Could not register component: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -1130,29 +1132,11 @@ static int vc4_hdmi_audio_init(struct vc4_hdmi *hdmi)
+ 	 */
+ 	snd_soc_card_set_drvdata(card, hdmi);
+ 	ret = devm_snd_soc_register_card(dev, card);
+-	if (ret) {
++	if (ret)
+ 		dev_err(dev, "Could not register sound card: %d\n", ret);
+-		goto unregister_codec;
+-	}
+-
+-	return 0;
+-
+-unregister_codec:
+-	snd_soc_unregister_codec(dev);
+ 
+ 	return ret;
+-}
+-
+-static void vc4_hdmi_audio_cleanup(struct vc4_hdmi *hdmi)
+-{
+-	struct device *dev = &hdmi->pdev->dev;
+ 
+-	/*
+-	 * If drvdata is not set this means the audio card was not
+-	 * registered, just skip codec unregistration in this case.
+-	 */
+-	if (dev_get_drvdata(dev))
+-		snd_soc_unregister_codec(dev);
  }
  
- static int wl1273_platform_remove(struct platform_device *pdev)
- {
--	snd_soc_unregister_codec(&pdev->dev);
- 	return 0;
- }
+ #ifdef CONFIG_DRM_VC4_HDMI_CEC
+@@ -1480,7 +1464,6 @@ static void vc4_hdmi_unbind(struct device *dev, struct device *master,
+ 	struct vc4_dev *vc4 = drm->dev_private;
+ 	struct vc4_hdmi *hdmi = vc4->hdmi;
  
-diff --git a/sound/soc/codecs/wl1273.h b/sound/soc/codecs/wl1273.h
-index 43ec7e668c51..43a81d5cab4d 100644
---- a/sound/soc/codecs/wl1273.h
-+++ b/sound/soc/codecs/wl1273.h
-@@ -25,6 +25,6 @@
- #ifndef __WL1273_CODEC_H__
- #define __WL1273_CODEC_H__
- 
--int wl1273_get_format(struct snd_soc_codec *codec, unsigned int *fmt);
-+int wl1273_get_format(struct snd_soc_component *component, unsigned int *fmt);
- 
- #endif	/* End of __WL1273_CODEC_H__ */
+-	vc4_hdmi_audio_cleanup(hdmi);
+ 	cec_unregister_adapter(hdmi->cec_adap);
+ 	vc4_hdmi_connector_destroy(hdmi->connector);
+ 	vc4_hdmi_encoder_destroy(hdmi->encoder);
 -- 
 2.16.1
