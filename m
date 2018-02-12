@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sh: fsi: replace platform to component"
-	to the asoc tree
-Date: Mon, 12 Feb 2018 12:31:20 +0000
-Message-ID: <E1elDGS-0003KA-MU@debutante>
-References: <87fu8ozj7k.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: sh: dma-sh7760: replace platform to
+	component" to the asoc tree
+Date: Mon, 12 Feb 2018 12:31:29 +0000
+Message-ID: <E1elDGb-0003LE-Tg@debutante>
+References: <87h8rrgb2p.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 996CA26783D
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:31:24 +0100 (CET)
-In-Reply-To: <87fu8ozj7k.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A1EC0267857
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:31:33 +0100 (CET)
+In-Reply-To: <87h8rrgb2p.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sh: fsi: replace platform to component
+   ASoC: sh: dma-sh7760: replace platform to component
 
 has been applied to the asoc tree at
 
@@ -53,83 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From f5a82fa6016ad1c2a3f45a4d44eab2ac48daf130 Mon Sep 17 00:00:00 2001
+>From eb5d510c869b95d3e219d4b01156f9095ec162f6 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 02:43:26 +0000
-Subject: [PATCH] ASoC: sh: fsi: replace platform to component
+Date: Mon, 29 Jan 2018 02:43:10 +0000
+Subject: [PATCH] ASoC: sh: dma-sh7760: replace platform to component
 
 Now platform can be replaced to component, let's do it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/fsi.c | 24 +++++-------------------
- 1 file changed, 5 insertions(+), 19 deletions(-)
+ sound/soc/sh/dma-sh7760.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-index c3aaf4788557..3bae06dd121f 100644
---- a/sound/soc/sh/fsi.c
-+++ b/sound/soc/sh/fsi.c
-@@ -1764,7 +1764,7 @@ static const struct snd_pcm_ops fsi_pcm_ops = {
+diff --git a/sound/soc/sh/dma-sh7760.c b/sound/soc/sh/dma-sh7760.c
+index 1e7d417b53ef..2dc3b762fdd9 100644
+--- a/sound/soc/sh/dma-sh7760.c
++++ b/sound/soc/sh/dma-sh7760.c
+@@ -320,14 +320,15 @@ static int camelot_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
+ 
+-static const struct snd_soc_platform_driver sh7760_soc_platform = {
++static const struct snd_soc_component_driver sh7760_soc_component = {
+ 	.ops		= &camelot_pcm_ops,
+ 	.pcm_new	= camelot_pcm_new,
  };
  
- /*
-- *		snd_soc_platform
-+ *		snd_soc_component
-  */
+ static int sh7760_soc_platform_probe(struct platform_device *pdev)
+ {
+-	return devm_snd_soc_register_platform(&pdev->dev, &sh7760_soc_platform);
++	return devm_snd_soc_register_component(&pdev->dev, &sh7760_soc_component,
++					       NULL, 0);
+ }
  
- #define PREALLOC_BUFFER		(32 * 1024)
-@@ -1818,13 +1818,10 @@ static struct snd_soc_dai_driver fsi_soc_dai[] = {
- 	},
- };
- 
--static const struct snd_soc_platform_driver fsi_soc_platform = {
--	.ops		= &fsi_pcm_ops,
--	.pcm_new	= fsi_pcm_new,
--};
--
- static const struct snd_soc_component_driver fsi_soc_component = {
- 	.name		= "fsi",
-+	.ops		= &fsi_pcm_ops,
-+	.pcm_new	= fsi_pcm_new,
- };
- 
- /*
-@@ -2007,23 +2004,15 @@ static int fsi_probe(struct platform_device *pdev)
- 		goto exit_fsib;
- 	}
- 
--	ret = snd_soc_register_platform(&pdev->dev, &fsi_soc_platform);
--	if (ret < 0) {
--		dev_err(&pdev->dev, "cannot snd soc register\n");
--		goto exit_fsib;
--	}
--
--	ret = snd_soc_register_component(&pdev->dev, &fsi_soc_component,
-+	ret = devm_snd_soc_register_component(&pdev->dev, &fsi_soc_component,
- 				    fsi_soc_dai, ARRAY_SIZE(fsi_soc_dai));
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "cannot snd component register\n");
--		goto exit_snd_soc;
-+		goto exit_fsib;
- 	}
- 
- 	return ret;
- 
--exit_snd_soc:
--	snd_soc_unregister_platform(&pdev->dev);
- exit_fsib:
- 	pm_runtime_disable(&pdev->dev);
- 	fsi_stream_remove(&master->fsib);
-@@ -2041,9 +2030,6 @@ static int fsi_remove(struct platform_device *pdev)
- 
- 	pm_runtime_disable(&pdev->dev);
- 
--	snd_soc_unregister_component(&pdev->dev);
--	snd_soc_unregister_platform(&pdev->dev);
--
- 	fsi_stream_remove(&master->fsia);
- 	fsi_stream_remove(&master->fsib);
- 
+ static struct platform_driver sh7760_pcm_driver = {
 -- 
 2.16.1
