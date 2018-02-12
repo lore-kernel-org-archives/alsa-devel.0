@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: adau1977: replace codec to component"
-	to the asoc tree
-Date: Mon, 12 Feb 2018 12:40:15 +0000
-Message-ID: <E1elDP5-0004h2-Q9@debutante>
-References: <87a7wxz4o5.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: adav80x: replace codec to component" to
+	the asoc tree
+Date: Mon, 12 Feb 2018 12:40:39 +0000
+Message-ID: <E1elDPT-0004kP-L3@debutante>
+References: <87efm9z4qf.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 38D05267668
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:40:18 +0100 (CET)
-In-Reply-To: <87a7wxz4o5.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 01AEC267BB4
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:40:42 +0100 (CET)
+In-Reply-To: <87efm9z4qf.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: adau1977: replace codec to component
+   ASoC: adav80x: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,16 +53,16 @@ to this mail.
 Thanks,
 Mark
 
->From f305fe81ab8f9e21388d416ebe03a901273ad0f2 Mon Sep 17 00:00:00 2001
+>From a05655877f8f514431158a3f406ae10b4b6c4af3 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:11:29 +0000
-Subject: [PATCH] ASoC: adau1977: replace codec to component
+Date: Mon, 29 Jan 2018 04:10:06 +0000
+Subject: [PATCH] ASoC: adav80x: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
 Note:
 	xxx_codec_xxx()		->	xxx_component_xxx()
-	.idle_bias_off = 1	->	.idle_bias_on = 0
+	.idle_bias_off = 0	->	.idle_bias_on = 1
 	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
 	-			->	.endianness = 1
 	-			->	.non_legacy_dai_naming = 1
@@ -70,212 +70,360 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/adau1977-i2c.c |  7 -----
- sound/soc/codecs/adau1977-spi.c |  7 -----
- sound/soc/codecs/adau1977.c     | 59 ++++++++++++++++++++---------------------
- 3 files changed, 29 insertions(+), 44 deletions(-)
+ sound/soc/codecs/adav801.c |   7 ---
+ sound/soc/codecs/adav803.c |   7 ---
+ sound/soc/codecs/adav80x.c | 130 ++++++++++++++++++++++-----------------------
+ 3 files changed, 65 insertions(+), 79 deletions(-)
 
-diff --git a/sound/soc/codecs/adau1977-i2c.c b/sound/soc/codecs/adau1977-i2c.c
-index 21e7394a972a..e7fe1ee5cdeb 100644
---- a/sound/soc/codecs/adau1977-i2c.c
-+++ b/sound/soc/codecs/adau1977-i2c.c
-@@ -29,12 +29,6 @@ static int adau1977_i2c_probe(struct i2c_client *client,
- 		id->driver_data, NULL);
+diff --git a/sound/soc/codecs/adav801.c b/sound/soc/codecs/adav801.c
+index 055f1228c2b4..d82f79dd1b38 100644
+--- a/sound/soc/codecs/adav801.c
++++ b/sound/soc/codecs/adav801.c
+@@ -30,18 +30,11 @@ static int adav80x_spi_probe(struct spi_device *spi)
+ 	return adav80x_bus_probe(&spi->dev, devm_regmap_init_spi(spi, &config));
  }
  
--static int adau1977_i2c_remove(struct i2c_client *client)
--{
--	snd_soc_unregister_codec(&client->dev);
--	return 0;
--}
--
- static const struct i2c_device_id adau1977_i2c_ids[] = {
- 	{ "adau1977", ADAU1977 },
- 	{ "adau1978", ADAU1978 },
-@@ -48,7 +42,6 @@ static struct i2c_driver adau1977_i2c_driver = {
- 		.name = "adau1977",
- 	},
- 	.probe = adau1977_i2c_probe,
--	.remove = adau1977_i2c_remove,
- 	.id_table = adau1977_i2c_ids,
- };
- module_i2c_driver(adau1977_i2c_driver);
-diff --git a/sound/soc/codecs/adau1977-spi.c b/sound/soc/codecs/adau1977-spi.c
-index 0b46d88b481c..84ffbde9583f 100644
---- a/sound/soc/codecs/adau1977-spi.c
-+++ b/sound/soc/codecs/adau1977-spi.c
-@@ -46,12 +46,6 @@ static int adau1977_spi_probe(struct spi_device *spi)
- 		id->driver_data, adau1977_spi_switch_mode);
- }
- 
--static int adau1977_spi_remove(struct spi_device *spi)
+-static int adav80x_spi_remove(struct spi_device *spi)
 -{
 -	snd_soc_unregister_codec(&spi->dev);
 -	return 0;
 -}
 -
- static const struct spi_device_id adau1977_spi_ids[] = {
- 	{ "adau1977", ADAU1977 },
- 	{ "adau1978", ADAU1978 },
-@@ -65,7 +59,6 @@ static struct spi_driver adau1977_spi_driver = {
- 		.name = "adau1977",
+ static struct spi_driver adav80x_spi_driver = {
+ 	.driver = {
+ 		.name	= "adav801",
  	},
- 	.probe = adau1977_spi_probe,
--	.remove = adau1977_spi_remove,
- 	.id_table = adau1977_spi_ids,
+ 	.probe		= adav80x_spi_probe,
+-	.remove		= adav80x_spi_remove,
+ 	.id_table	= adav80x_spi_id,
  };
- module_spi_driver(adau1977_spi_driver);
-diff --git a/sound/soc/codecs/adau1977.c b/sound/soc/codecs/adau1977.c
-index e384f212beb2..116af6a9ce3b 100644
---- a/sound/soc/codecs/adau1977.c
-+++ b/sound/soc/codecs/adau1977.c
-@@ -294,8 +294,8 @@ static int adau1977_lookup_mcs(struct adau1977 *adau1977, unsigned int rate,
- static int adau1977_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+ module_spi_driver(adav80x_spi_driver);
+diff --git a/sound/soc/codecs/adav803.c b/sound/soc/codecs/adav803.c
+index 52881faedcf6..deb14bc0f1f7 100644
+--- a/sound/soc/codecs/adav803.c
++++ b/sound/soc/codecs/adav803.c
+@@ -27,18 +27,11 @@ static int adav803_probe(struct i2c_client *client,
+ 		devm_regmap_init_i2c(client, &adav80x_regmap_config));
+ }
+ 
+-static int adav803_remove(struct i2c_client *client)
+-{
+-	snd_soc_unregister_codec(&client->dev);
+-	return 0;
+-}
+-
+ static struct i2c_driver adav803_driver = {
+ 	.driver = {
+ 		.name = "adav803",
+ 	},
+ 	.probe = adav803_probe,
+-	.remove = adav803_remove,
+ 	.id_table = adav803_id,
+ };
+ module_i2c_driver(adav803_driver);
+diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c
+index da7ca81f47cf..db21ecbe0762 100644
+--- a/sound/soc/codecs/adav80x.c
++++ b/sound/soc/codecs/adav80x.c
+@@ -212,8 +212,8 @@ static const struct snd_soc_dapm_widget adav80x_dapm_widgets[] = {
+ static int adav80x_dapm_sysclk_check(struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink)
+ {
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
+-	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(source->dapm);
++	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
+ 	const char *clk;
+ 
+ 	switch (adav80x->clk_src) {
+@@ -236,8 +236,8 @@ static int adav80x_dapm_sysclk_check(struct snd_soc_dapm_widget *source,
+ static int adav80x_dapm_pll_check(struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink)
+ {
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
+-	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(source->dapm);
++	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
+ 
+ 	return adav80x->pll_src == ADAV80X_PLL_SRC_XTAL;
+ }
+@@ -281,9 +281,9 @@ static const struct snd_soc_dapm_route adav80x_dapm_routes[] = {
+ 	{ "AIFAUXIN", NULL, "SYSCLK" },
+ };
+ 
+-static int adav80x_set_deemph(struct snd_soc_codec *codec)
++static int adav80x_set_deemph(struct snd_soc_component *component)
+ {
+-	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
++	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
+ 	unsigned int val;
+ 
+ 	if (adav80x->deemph) {
+@@ -315,8 +315,8 @@ static int adav80x_set_deemph(struct snd_soc_codec *codec)
+ static int adav80x_put_deemph(struct snd_kcontrol *kcontrol,
+ 		struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
+ 	unsigned int deemph = ucontrol->value.integer.value[0];
+ 
+ 	if (deemph > 1)
+@@ -324,14 +324,14 @@ static int adav80x_put_deemph(struct snd_kcontrol *kcontrol,
+ 
+ 	adav80x->deemph = deemph;
+ 
+-	return adav80x_set_deemph(codec);
++	return adav80x_set_deemph(component);
+ }
+ 
+ static int adav80x_get_deemph(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
+ 
+ 	ucontrol->value.integer.value[0] = adav80x->deemph;
+ 	return 0;
+@@ -365,8 +365,8 @@ static unsigned int adav80x_port_ctrl_regs[2][2] = {
+ 
+ static int adav80x_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
  {
 -	struct snd_soc_codec *codec = dai->codec;
--	struct adau1977 *adau1977 = snd_soc_codec_get_drvdata(codec);
+-	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_component *component = dai->component;
-+	struct adau1977 *adau1977 = snd_soc_component_get_drvdata(component);
- 	unsigned int rate = params_rate(params);
- 	unsigned int slot_width;
- 	unsigned int ctrl0, ctrl0_mask;
-@@ -471,10 +471,10 @@ static int adau1977_power_enable(struct adau1977 *adau1977)
- 	return ret;
- }
++	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
+ 	unsigned int capture = 0x00;
+ 	unsigned int playback = 0x00;
  
--static int adau1977_set_bias_level(struct snd_soc_codec *codec,
-+static int adau1977_set_bias_level(struct snd_soc_component *component,
- 	enum snd_soc_bias_level level)
- {
--	struct adau1977 *adau1977 = snd_soc_codec_get_drvdata(codec);
-+	struct adau1977 *adau1977 = snd_soc_component_get_drvdata(component);
- 	int ret = 0;
- 
- 	switch (level) {
-@@ -483,7 +483,7 @@ static int adau1977_set_bias_level(struct snd_soc_codec *codec,
- 	case SND_SOC_BIAS_PREPARE:
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
--		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF)
-+		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF)
- 			ret = adau1977_power_enable(adau1977);
- 		break;
- 	case SND_SOC_BIAS_OFF:
-@@ -497,7 +497,7 @@ static int adau1977_set_bias_level(struct snd_soc_codec *codec,
- static int adau1977_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 	unsigned int rx_mask, int slots, int width)
- {
--	struct adau1977 *adau1977 = snd_soc_codec_get_drvdata(dai->codec);
-+	struct adau1977 *adau1977 = snd_soc_component_get_drvdata(dai->component);
- 	unsigned int ctrl0, ctrl1, drv;
- 	unsigned int slot[4];
- 	unsigned int i;
-@@ -603,7 +603,7 @@ static int adau1977_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 
- static int adau1977_mute(struct snd_soc_dai *dai, int mute, int stream)
- {
--	struct adau1977 *adau1977 = snd_soc_codec_get_drvdata(dai->codec);
-+	struct adau1977 *adau1977 = snd_soc_component_get_drvdata(dai->component);
- 	unsigned int val;
- 
- 	if (mute)
-@@ -617,7 +617,7 @@ static int adau1977_mute(struct snd_soc_dai *dai, int mute, int stream)
- 
- static int adau1977_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- {
--	struct adau1977 *adau1977 = snd_soc_codec_get_drvdata(dai->codec);
-+	struct adau1977 *adau1977 = snd_soc_component_get_drvdata(dai->component);
- 	unsigned int ctrl0 = 0, ctrl1 = 0, block_power = 0;
- 	bool invert_lrclk;
- 	int ret;
-@@ -704,7 +704,7 @@ static int adau1977_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- static int adau1977_startup(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *dai)
- {
--	struct adau1977 *adau1977 = snd_soc_codec_get_drvdata(dai->codec);
-+	struct adau1977 *adau1977 = snd_soc_component_get_drvdata(dai->component);
- 	u64 formats = 0;
- 
- 	if (adau1977->slot_width == 16)
-@@ -729,7 +729,7 @@ static int adau1977_startup(struct snd_pcm_substream *substream,
- 
- static int adau1977_set_tristate(struct snd_soc_dai *dai, int tristate)
- {
--	struct adau1977 *adau1977 = snd_soc_codec_get_drvdata(dai->codec);
-+	struct adau1977 *adau1977 = snd_soc_component_get_drvdata(dai->component);
- 	unsigned int val;
- 
- 	if (tristate)
-@@ -790,10 +790,10 @@ static bool adau1977_check_sysclk(unsigned int mclk, unsigned int base_freq)
- 	return true;
- }
- 
--static int adau1977_set_sysclk(struct snd_soc_codec *codec,
-+static int adau1977_set_sysclk(struct snd_soc_component *component,
- 	int clk_id, int source, unsigned int freq, int dir)
- {
--	struct adau1977 *adau1977 = snd_soc_codec_get_drvdata(codec);
-+	struct adau1977 *adau1977 = snd_soc_component_get_drvdata(component);
- 	unsigned int mask = 0;
- 	unsigned int clk_src;
- 	unsigned int ret;
-@@ -844,10 +844,10 @@ static int adau1977_set_sysclk(struct snd_soc_codec *codec,
+@@ -415,10 +415,10 @@ static int adav80x_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
  	return 0;
  }
  
--static int adau1977_codec_probe(struct snd_soc_codec *codec)
-+static int adau1977_component_probe(struct snd_soc_component *component)
+-static int adav80x_set_adc_clock(struct snd_soc_codec *codec,
++static int adav80x_set_adc_clock(struct snd_soc_component *component,
+ 		unsigned int sample_rate)
+ {
+-	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
++	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
+ 	unsigned int val;
+ 
+ 	if (sample_rate <= 48000)
+@@ -432,10 +432,10 @@ static int adav80x_set_adc_clock(struct snd_soc_codec *codec,
+ 	return 0;
+ }
+ 
+-static int adav80x_set_dac_clock(struct snd_soc_codec *codec,
++static int adav80x_set_dac_clock(struct snd_soc_component *component,
+ 		unsigned int sample_rate)
+ {
+-	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
++	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
+ 	unsigned int val;
+ 
+ 	if (sample_rate <= 48000)
+@@ -450,10 +450,10 @@ static int adav80x_set_dac_clock(struct snd_soc_codec *codec,
+ 	return 0;
+ }
+ 
+-static int adav80x_set_capture_pcm_format(struct snd_soc_codec *codec,
++static int adav80x_set_capture_pcm_format(struct snd_soc_component *component,
+ 		struct snd_soc_dai *dai, struct snd_pcm_hw_params *params)
+ {
+-	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
++	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
+ 	unsigned int val;
+ 
+ 	switch (params_width(params)) {
+@@ -479,10 +479,10 @@ static int adav80x_set_capture_pcm_format(struct snd_soc_codec *codec,
+ 	return 0;
+ }
+ 
+-static int adav80x_set_playback_pcm_format(struct snd_soc_codec *codec,
++static int adav80x_set_playback_pcm_format(struct snd_soc_component *component,
+ 		struct snd_soc_dai *dai, struct snd_pcm_hw_params *params)
+ {
+-	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
++	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
+ 	unsigned int val;
+ 
+ 	if (adav80x->dai_fmt[dai->id] != SND_SOC_DAIFMT_RIGHT_J)
+@@ -514,32 +514,32 @@ static int adav80x_set_playback_pcm_format(struct snd_soc_codec *codec,
+ static int adav80x_hw_params(struct snd_pcm_substream *substream,
+ 		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
+ 	unsigned int rate = params_rate(params);
+ 
+ 	if (rate * 256 != adav80x->sysclk)
+ 		return -EINVAL;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		adav80x_set_playback_pcm_format(codec, dai, params);
+-		adav80x_set_dac_clock(codec, rate);
++		adav80x_set_playback_pcm_format(component, dai, params);
++		adav80x_set_dac_clock(component, rate);
+ 	} else {
+-		adav80x_set_capture_pcm_format(codec, dai, params);
+-		adav80x_set_adc_clock(codec, rate);
++		adav80x_set_capture_pcm_format(component, dai, params);
++		adav80x_set_adc_clock(component, rate);
+ 	}
+ 	adav80x->rate = rate;
+-	adav80x_set_deemph(codec);
++	adav80x_set_deemph(component);
+ 
+ 	return 0;
+ }
+ 
+-static int adav80x_set_sysclk(struct snd_soc_codec *codec,
++static int adav80x_set_sysclk(struct snd_soc_component *component,
+ 			      int clk_id, int source,
+ 			      unsigned int freq, int dir)
+ {
+-	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
+-	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
++	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+ 
+ 	if (dir == SND_SOC_CLOCK_IN) {
+ 		switch (clk_id) {
+@@ -619,11 +619,11 @@ static int adav80x_set_sysclk(struct snd_soc_codec *codec,
+ 	return 0;
+ }
+ 
+-static int adav80x_set_pll(struct snd_soc_codec *codec, int pll_id,
++static int adav80x_set_pll(struct snd_soc_component *component, int pll_id,
+ 		int source, unsigned int freq_in, unsigned int freq_out)
  {
 -	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
--	struct adau1977 *adau1977 = snd_soc_codec_get_drvdata(codec);
+-	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
-+	struct adau1977 *adau1977 = snd_soc_component_get_drvdata(component);
- 	int ret;
- 
- 	switch (adau1977->type) {
-@@ -865,20 +865,19 @@ static int adau1977_codec_probe(struct snd_soc_codec *codec)
++	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
+ 	unsigned int pll_ctrl1 = 0;
+ 	unsigned int pll_ctrl2 = 0;
+ 	unsigned int pll_src;
+@@ -694,10 +694,10 @@ static int adav80x_set_pll(struct snd_soc_codec *codec, int pll_id,
  	return 0;
  }
  
--static const struct snd_soc_codec_driver adau1977_codec_driver = {
--	.probe = adau1977_codec_probe,
--	.set_bias_level = adau1977_set_bias_level,
--	.set_sysclk = adau1977_set_sysclk,
--	.idle_bias_off = true,
+-static int adav80x_set_bias_level(struct snd_soc_codec *codec,
++static int adav80x_set_bias_level(struct snd_soc_component *component,
+ 		enum snd_soc_bias_level level)
+ {
+-	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
++	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
+ 	unsigned int mask = ADAV80X_DAC_CTRL1_PD;
+ 
+ 	switch (level) {
+@@ -722,10 +722,10 @@ static int adav80x_set_bias_level(struct snd_soc_codec *codec,
+ static int adav80x_dai_startup(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
+ 
+-	if (!snd_soc_codec_is_active(codec) || !adav80x->rate)
++	if (!snd_soc_component_is_active(component) || !adav80x->rate)
+ 		return 0;
+ 
+ 	return snd_pcm_hw_constraint_single(substream->runtime,
+@@ -735,10 +735,10 @@ static int adav80x_dai_startup(struct snd_pcm_substream *substream,
+ static void adav80x_dai_shutdown(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
+ 
+-	if (!snd_soc_codec_is_active(codec))
++	if (!snd_soc_component_is_active(component))
+ 		adav80x->rate = 0;
+ }
+ 
+@@ -799,10 +799,10 @@ static struct snd_soc_dai_driver adav80x_dais[] = {
+ 	},
+ };
+ 
+-static int adav80x_probe(struct snd_soc_codec *codec)
++static int adav80x_probe(struct snd_soc_component *component)
+ {
+-	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+-	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
++	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
+ 
+ 	/* Force PLLs on for SYSCLK output */
+ 	snd_soc_dapm_force_enable_pin(dapm, "PLL1");
+@@ -816,32 +816,32 @@ static int adav80x_probe(struct snd_soc_codec *codec)
+ 	return 0;
+ }
+ 
+-static int adav80x_resume(struct snd_soc_codec *codec)
++static int adav80x_resume(struct snd_soc_component *component)
+ {
+-	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
++	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
+ 
+ 	regcache_sync(adav80x->regmap);
+ 
+ 	return 0;
+ }
+ 
+-static const struct snd_soc_codec_driver adav80x_codec_driver = {
+-	.probe = adav80x_probe,
+-	.resume = adav80x_resume,
+-	.set_bias_level = adav80x_set_bias_level,
+-	.suspend_bias_off = true,
+-
+-	.set_pll = adav80x_set_pll,
+-	.set_sysclk = adav80x_set_sysclk,
 -
 -	.component_driver = {
--		.controls		= adau1977_snd_controls,
--		.num_controls		= ARRAY_SIZE(adau1977_snd_controls),
--		.dapm_widgets		= adau1977_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(adau1977_dapm_widgets),
--		.dapm_routes		= adau1977_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(adau1977_dapm_routes),
+-		.controls		= adav80x_controls,
+-		.num_controls		= ARRAY_SIZE(adav80x_controls),
+-		.dapm_widgets		= adav80x_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(adav80x_dapm_widgets),
+-		.dapm_routes		= adav80x_dapm_routes,
+-		.num_dapm_routes	= ARRAY_SIZE(adav80x_dapm_routes),
 -	},
-+static const struct snd_soc_component_driver adau1977_component_driver = {
-+	.probe			= adau1977_component_probe,
-+	.set_bias_level		= adau1977_set_bias_level,
-+	.set_sysclk		= adau1977_set_sysclk,
-+	.controls		= adau1977_snd_controls,
-+	.num_controls		= ARRAY_SIZE(adau1977_snd_controls),
-+	.dapm_widgets		= adau1977_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(adau1977_dapm_widgets),
-+	.dapm_routes		= adau1977_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(adau1977_dapm_routes),
++static const struct snd_soc_component_driver adav80x_component_driver = {
++	.probe			= adav80x_probe,
++	.resume			= adav80x_resume,
++	.set_bias_level		= adav80x_set_bias_level,
++	.set_pll		= adav80x_set_pll,
++	.set_sysclk		= adav80x_set_sysclk,
++	.controls		= adav80x_controls,
++	.num_controls		= ARRAY_SIZE(adav80x_controls),
++	.dapm_widgets		= adav80x_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(adav80x_dapm_widgets),
++	.dapm_routes		= adav80x_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(adav80x_dapm_routes),
++	.suspend_bias_off	= 1,
++	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static int adau1977_setup_micbias(struct adau1977 *adau1977)
-@@ -968,7 +967,7 @@ int adau1977_probe(struct device *dev, struct regmap *regmap,
- 	if (ret)
- 		return ret;
+ int adav80x_bus_probe(struct device *dev, struct regmap *regmap)
+@@ -858,7 +858,7 @@ int adav80x_bus_probe(struct device *dev, struct regmap *regmap)
+ 	dev_set_drvdata(dev, adav80x);
+ 	adav80x->regmap = regmap;
  
--	return snd_soc_register_codec(dev, &adau1977_codec_driver,
-+	return devm_snd_soc_register_component(dev, &adau1977_component_driver,
- 			&adau1977_dai, 1);
- 
- err_poweroff:
+-	return snd_soc_register_codec(dev, &adav80x_codec_driver,
++	return devm_snd_soc_register_component(dev, &adav80x_component_driver,
+ 		adav80x_dais, ARRAY_SIZE(adav80x_dais));
+ }
+ EXPORT_SYMBOL_GPL(adav80x_bus_probe);
 -- 
 2.16.1
