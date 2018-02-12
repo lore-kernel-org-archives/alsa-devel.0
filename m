@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun8i: replace codec to component" to
-	the asoc tree
-Date: Mon, 12 Feb 2018 12:38:48 +0000
-Message-ID: <E1elDNg-0004MD-9x@debutante>
-References: <878tchxpic.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9FAC226792F
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:38:50 +0100 (CET)
-In-Reply-To: <878tchxpic.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: samsung: i2s: Ensure the RCLK rate is properly determined" to the asoc tree
+Date: Mon, 12 Feb 2018 12:52:11 +0000
+Message-ID: <E1elDad-0006V3-Vj@debutante>
+References: <20180205154403.13520-2-s.nawrocki@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20180205154403.13520-2-s.nawrocki@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>, Mark Brown <broonie@kernel.org>broonie@kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, jcsing.lee@samsung.com, lgirdwood@gmail.comkrzk@kernel.org, linux-kernel@vger.kernel.org, robh+dt@kernel.org, m.szyprowski@samsung.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun8i: replace codec to component
+   ASoC: samsung: i2s: Ensure the RCLK rate is properly determined
 
 has been applied to the asoc tree at
 
@@ -53,87 +37,55 @@ to this mail.
 Thanks,
 Mark
 
->From 7ec9b872f975a7ab7a466fdb63da9509bc2c9085 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:24:17 +0000
-Subject: [PATCH] ASoC: sun8i: replace codec to component
+>From 647d04f8e07afc7c3b7a42b3ee01a8b28db29631 Mon Sep 17 00:00:00 2001
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Date: Mon, 5 Feb 2018 16:43:56 +0100
+Subject: [PATCH] ASoC: samsung: i2s: Ensure the RCLK rate is properly
+ determined
 
-Now we can replace Codec to Component. Let's do it.
+If the RCLK mux clock configuration is specified in DT and no set_sysclk()
+callback is used in the sound card driver the sclk_srcrate field will remain
+set to 0, leading to an incorrect PSR divider setting.
+To fix this the frequency value is retrieved from the CLK_I2S_RCLK_SRC clock,
+so the actual RCLK mux selection is taken into account.
 
-Note:
-	xxx_codec_xxx()		->	xxx_component_xxx()
-	.idle_bias_off = 0	->	.idle_bias_on = 1
-	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
-	-			->	.endianness = 1
-	-			->	.non_legacy_dai_naming = 1
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun8i-codec.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ sound/soc/samsung/i2s.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 7a15df924316..fb37dd927e33 100644
---- a/sound/soc/sunxi/sun8i-codec.c
-+++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -184,7 +184,7 @@ static int sun8i_codec_get_hw_rate(struct snd_pcm_hw_params *params)
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 233f1c9a4b6c..aeba0ae890ea 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -656,8 +656,12 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
+ 		tmp |= mod_slave;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+-		/* Set default source clock in Master mode */
+-		if (i2s->rclk_srcrate == 0)
++		/*
++		 * Set default source clock in Master mode, only when the
++		 * CLK_I2S_RCLK_SRC clock is not exposed so we ensure any
++		 * clock configuration assigned in DT is not overwritten.
++		 */
++		if (i2s->rclk_srcrate == 0 && i2s->clk_data.clks == NULL)
+ 			i2s_set_sysclk(dai, SAMSUNG_I2S_RCLKSRC_0,
+ 							0, SND_SOC_CLOCK_IN);
+ 		break;
+@@ -881,6 +885,11 @@ static int config_setup(struct i2s_dai *i2s)
+ 		return 0;
  
- static int sun8i_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- {
--	struct sun8i_codec *scodec = snd_soc_codec_get_drvdata(dai->codec);
-+	struct sun8i_codec *scodec = snd_soc_component_get_drvdata(dai->component);
- 	u32 value;
- 
- 	/* clock masters */
-@@ -304,7 +304,7 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
- 				 struct snd_pcm_hw_params *params,
- 				 struct snd_soc_dai *dai)
- {
--	struct sun8i_codec *scodec = snd_soc_codec_get_drvdata(dai->codec);
-+	struct sun8i_codec *scodec = snd_soc_component_get_drvdata(dai->component);
- 	int sample_rate;
- 	u8 bclk_div;
- 
-@@ -500,13 +500,15 @@ static struct snd_soc_dai_driver sun8i_codec_dai = {
- 	.ops = &sun8i_codec_dai_ops,
- };
- 
--static const struct snd_soc_codec_driver sun8i_soc_codec = {
--	.component_driver = {
--		.dapm_widgets		= sun8i_codec_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(sun8i_codec_dapm_widgets),
--		.dapm_routes		= sun8i_codec_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(sun8i_codec_dapm_routes),
--	},
-+static const struct snd_soc_component_driver sun8i_soc_component = {
-+	.dapm_widgets		= sun8i_codec_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(sun8i_codec_dapm_widgets),
-+	.dapm_routes		= sun8i_codec_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(sun8i_codec_dapm_routes),
-+	.idle_bias_on		= 1,
-+	.use_pmdown_time	= 1,
-+	.endianness		= 1,
-+	.non_legacy_dai_naming	= 1,
- };
- 
- static const struct regmap_config sun8i_codec_regmap_config = {
-@@ -566,7 +568,7 @@ static int sun8i_codec_probe(struct platform_device *pdev)
- 			goto err_pm_disable;
- 	}
- 
--	ret = snd_soc_register_codec(&pdev->dev, &sun8i_soc_codec,
-+	ret = devm_snd_soc_register_component(&pdev->dev, &sun8i_soc_component,
- 				     &sun8i_codec_dai, 1);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to register codec\n");
-@@ -594,7 +596,6 @@ static int sun8i_codec_remove(struct platform_device *pdev)
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		sun8i_codec_runtime_suspend(&pdev->dev);
- 
--	snd_soc_unregister_codec(&pdev->dev);
- 	clk_disable_unprepare(scodec->clk_module);
- 	clk_disable_unprepare(scodec->clk_bus);
- 
+ 	if (!(i2s->quirks & QUIRK_NO_MUXPSR)) {
++		struct clk *rclksrc = i2s->clk_table[CLK_I2S_RCLK_SRC];
++
++		if (i2s->rclk_srcrate == 0 && rclksrc && !IS_ERR(rclksrc))
++			i2s->rclk_srcrate = clk_get_rate(rclksrc);
++
+ 		psr = i2s->rclk_srcrate / i2s->frmclk / rfs;
+ 		writel(((psr - 1) << 8) | PSR_PSREN, i2s->addr + I2SPSR);
+ 		dev_dbg(&i2s->pdev->dev,
 -- 
 2.16.1
