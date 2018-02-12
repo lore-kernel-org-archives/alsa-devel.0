@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm1681: replace codec to component" to
+Subject: Applied "ASoC: pcm3008: replace codec to component" to
 	the asoc tree
-Date: Mon, 12 Feb 2018 12:39:29 +0000
-Message-ID: <E1elDOL-0004Wz-6W@debutante>
-References: <87r2q9xpsk.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:39:32 +0000
+Message-ID: <E1elDOO-0004Xn-B7@debutante>
+References: <87shapxpt7.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4BB44267B44
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:39:31 +0100 (CET)
-In-Reply-To: <87r2q9xpsk.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 73CDF267B4D
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:39:34 +0100 (CET)
+In-Reply-To: <87shapxpt7.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm1681: replace codec to component
+   ASoC: pcm3008: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 7dbbaa5180cb380ac28f023dda8663d8dd3b8b56 Mon Sep 17 00:00:00 2001
+>From d66827daf16d8ceb46d985b2dc423f3c3136bce0 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:18:12 +0000
-Subject: [PATCH] ASoC: pcm1681: replace codec to component
+Date: Mon, 29 Jan 2018 04:17:53 +0000
+Subject: [PATCH] ASoC: pcm3008: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,159 +70,82 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm1681.c | 62 ++++++++++++++++++++++------------------------
- 1 file changed, 29 insertions(+), 33 deletions(-)
+ sound/soc/codecs/pcm3008.c | 36 +++++++++++++++---------------------
+ 1 file changed, 15 insertions(+), 21 deletions(-)
 
-diff --git a/sound/soc/codecs/pcm1681.c b/sound/soc/codecs/pcm1681.c
-index c7e28dd2e815..84777d3fa464 100644
---- a/sound/soc/codecs/pcm1681.c
-+++ b/sound/soc/codecs/pcm1681.c
-@@ -90,9 +90,9 @@ struct pcm1681_private {
- 
- static const int pcm1681_deemph[] = { 44100, 48000, 32000 };
- 
--static int pcm1681_set_deemph(struct snd_soc_codec *codec)
-+static int pcm1681_set_deemph(struct snd_soc_component *component)
+diff --git a/sound/soc/codecs/pcm3008.c b/sound/soc/codecs/pcm3008.c
+index e59d8ffb93bd..c6ce9bd77c5e 100644
+--- a/sound/soc/codecs/pcm3008.c
++++ b/sound/soc/codecs/pcm3008.c
+@@ -32,8 +32,8 @@ static int pcm3008_dac_ev(struct snd_soc_dapm_widget *w,
+ 			  struct snd_kcontrol *kcontrol,
+ 			  int event)
  {
--	struct pcm1681_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct pcm1681_private *priv = snd_soc_component_get_drvdata(component);
- 	int i = 0, val = -1, enable = 0;
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-	struct pcm3008_setup_data *setup = codec->dev->platform_data;
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct pcm3008_setup_data *setup = component->dev->platform_data;
  
- 	if (priv->deemph) {
-@@ -120,8 +120,8 @@ static int pcm1681_set_deemph(struct snd_soc_codec *codec)
- static int pcm1681_get_deemph(struct snd_kcontrol *kcontrol,
- 			      struct snd_ctl_elem_value *ucontrol)
+ 	gpio_set_value_cansleep(setup->pdda_pin,
+ 				SND_SOC_DAPM_EVENT_ON(event));
+@@ -45,8 +45,8 @@ static int pcm3008_adc_ev(struct snd_soc_dapm_widget *w,
+ 			  struct snd_kcontrol *kcontrol,
+ 			  int event)
  {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct pcm1681_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct pcm1681_private *priv = snd_soc_component_get_drvdata(component);
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-	struct pcm3008_setup_data *setup = codec->dev->platform_data;
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct pcm3008_setup_data *setup = component->dev->platform_data;
  
- 	ucontrol->value.integer.value[0] = priv->deemph;
- 
-@@ -131,23 +131,23 @@ static int pcm1681_get_deemph(struct snd_kcontrol *kcontrol,
- static int pcm1681_put_deemph(struct snd_kcontrol *kcontrol,
- 			      struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
--	struct pcm1681_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct pcm1681_private *priv = snd_soc_component_get_drvdata(component);
- 
- 	priv->deemph = ucontrol->value.integer.value[0];
- 
--	return pcm1681_set_deemph(codec);
-+	return pcm1681_set_deemph(component);
- }
- 
- static int pcm1681_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 			      unsigned int format)
- {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct pcm1681_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct pcm1681_private *priv = snd_soc_component_get_drvdata(component);
- 
- 	/* The PCM1681 can only be slave to all clocks */
- 	if ((format & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS) {
--		dev_err(codec->dev, "Invalid clocking mode\n");
-+		dev_err(component->dev, "Invalid clocking mode\n");
- 		return -EINVAL;
- 	}
- 
-@@ -158,8 +158,8 @@ static int pcm1681_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 
- static int pcm1681_digital_mute(struct snd_soc_dai *dai, int mute)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct pcm1681_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct pcm1681_private *priv = snd_soc_component_get_drvdata(component);
- 	int val;
- 
- 	if (mute)
-@@ -174,8 +174,8 @@ static int pcm1681_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params,
- 			     struct snd_soc_dai *dai)
- {
--	struct snd_soc_codec *codec = dai->codec;
--	struct pcm1681_private *priv = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = dai->component;
-+	struct pcm1681_private *priv = snd_soc_component_get_drvdata(component);
- 	int val = 0, ret;
- 
- 	priv->rate = params_rate(params);
-@@ -200,7 +200,7 @@ static int pcm1681_hw_params(struct snd_pcm_substream *substream,
- 		val = 0x05;
- 		break;
- 	default:
--		dev_err(codec->dev, "Invalid DAI format\n");
-+		dev_err(component->dev, "Invalid DAI format\n");
- 		return -EINVAL;
- 	}
- 
-@@ -208,7 +208,7 @@ static int pcm1681_hw_params(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		return ret;
- 
--	return pcm1681_set_deemph(codec);
-+	return pcm1681_set_deemph(component);
- }
- 
- static const struct snd_soc_dai_ops pcm1681_dai_ops = {
-@@ -288,15 +288,17 @@ static const struct regmap_config pcm1681_regmap = {
- 	.readable_reg		= pcm1681_accessible_reg,
+ 	gpio_set_value_cansleep(setup->pdad_pin,
+ 				SND_SOC_DAPM_EVENT_ON(event));
+@@ -98,13 +98,15 @@ static struct snd_soc_dai_driver pcm3008_dai = {
+ 	},
  };
  
--static const struct snd_soc_codec_driver soc_codec_dev_pcm1681 = {
+-static const struct snd_soc_codec_driver soc_codec_dev_pcm3008 = {
 -	.component_driver = {
--		.controls		= pcm1681_controls,
--		.num_controls		= ARRAY_SIZE(pcm1681_controls),
--		.dapm_widgets		= pcm1681_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(pcm1681_dapm_widgets),
--		.dapm_routes		= pcm1681_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(pcm1681_dapm_routes),
+-		.dapm_widgets		= pcm3008_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(pcm3008_dapm_widgets),
+-		.dapm_routes		= pcm3008_dapm_routes,
+-		.num_dapm_routes	= ARRAY_SIZE(pcm3008_dapm_routes),
 -	},
-+static const struct snd_soc_component_driver soc_component_dev_pcm1681 = {
-+	.controls		= pcm1681_controls,
-+	.num_controls		= ARRAY_SIZE(pcm1681_controls),
-+	.dapm_widgets		= pcm1681_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(pcm1681_dapm_widgets),
-+	.dapm_routes		= pcm1681_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(pcm1681_dapm_routes),
++static const struct snd_soc_component_driver soc_component_dev_pcm3008 = {
++	.dapm_widgets		= pcm3008_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(pcm3008_dapm_widgets),
++	.dapm_routes		= pcm3008_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(pcm3008_dapm_routes),
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static const struct i2c_device_id pcm1681_i2c_id[] = {
-@@ -324,16 +326,11 @@ static int pcm1681_i2c_probe(struct i2c_client *client,
+ static int pcm3008_codec_probe(struct platform_device *pdev)
+@@ -146,22 +148,14 @@ static int pcm3008_codec_probe(struct platform_device *pdev)
+ 	if (ret != 0)
+ 		return ret;
  
- 	i2c_set_clientdata(client, priv);
- 
--	return snd_soc_register_codec(&client->dev, &soc_codec_dev_pcm1681,
-+	return devm_snd_soc_register_component(&client->dev,
-+		&soc_component_dev_pcm1681,
- 		&pcm1681_dai, 1);
- }
- 
--static int pcm1681_i2c_remove(struct i2c_client *client)
--{
--	snd_soc_unregister_codec(&client->dev);
--	return 0;
+-	return snd_soc_register_codec(&pdev->dev,
+-			&soc_codec_dev_pcm3008, &pcm3008_dai, 1);
 -}
 -
- static struct i2c_driver pcm1681_i2c_driver = {
- 	.driver = {
- 		.name	= "pcm1681",
-@@ -341,7 +338,6 @@ static struct i2c_driver pcm1681_i2c_driver = {
- 	},
- 	.id_table	= pcm1681_i2c_id,
- 	.probe		= pcm1681_i2c_probe,
--	.remove		= pcm1681_i2c_remove,
- };
+-static int pcm3008_codec_remove(struct platform_device *pdev)
+-{
+-	snd_soc_unregister_codec(&pdev->dev);
+-
+-	return 0;
++	return devm_snd_soc_register_component(&pdev->dev,
++			&soc_component_dev_pcm3008, &pcm3008_dai, 1);
+ }
  
- module_i2c_driver(pcm1681_i2c_driver);
+ MODULE_ALIAS("platform:pcm3008-codec");
+ 
+ static struct platform_driver pcm3008_codec_driver = {
+ 	.probe		= pcm3008_codec_probe,
+-	.remove		= pcm3008_codec_remove,
+ 	.driver		= {
+ 		.name	= "pcm3008-codec",
+ 	},
 -- 
 2.16.1
