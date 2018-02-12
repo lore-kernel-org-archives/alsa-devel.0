@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: remove error due to probe
-	deferral" to the asoc tree
-Date: Mon, 12 Feb 2018 12:27:44 +0000
-Message-ID: <E1elDCy-0002oU-Ve@debutante>
+Subject: Applied "ASoC: sn95031: remove dead makefile about
+	sn95031" to the asoc tree
+Date: Mon, 12 Feb 2018 12:28:05 +0000
+Message-ID: <E1elDDJ-0002qX-W7@debutante>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4343540168325747236=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8303C267328
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:27:47 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4616426736B
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:28:07 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,15 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
+To: Corentin Labbe <clabbe@baylibre.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============4343540168325747236==
-Content-Type: text/plain
-
 The patch
 
-   ASoC: soc-core: remove error due to probe deferral
+   ASoC: sn95031: remove dead makefile about sn95031
 
 has been applied to the asoc tree at
 
@@ -53,47 +52,31 @@ to this mail.
 Thanks,
 Mark
 
->From 6b49087912e311bc884d36874592595508630b88 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <mnhu@prevas.dk>
-Date: Thu, 1 Feb 2018 11:09:41 +0100
-Subject: [PATCH] ASoC: soc-core: remove error due to probe deferral
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From e0b9f3aa45fcfce1873503e5ff85d919697427cb Mon Sep 17 00:00:00 2001
+From: Corentin Labbe <clabbe@baylibre.com>
+Date: Mon, 29 Jan 2018 12:28:54 +0000
+Subject: [PATCH] ASoC: sn95031: remove dead makefile about sn95031
 
-Deferred probes shouldn't cause error messages in the boot log, so
-change the dev_err() to the more harmless dev_info().
+All sn95031 stuff was removed in commit 987da3fe1759 ("ASoC: sn95031: remove this code")
+Since SND_SOC_SN95031 was gone, remove makefile about it.
 
-Signed-off-by: Martin Hundebøll <mnhu@prevas.dk>
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/Makefile | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 96c44f6576c9..60a542f35dbd 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1100,8 +1100,8 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
- 	cpu_dai_component.dai_name = dai_link->cpu_dai_name;
- 	rtd->cpu_dai = snd_soc_find_dai(&cpu_dai_component);
- 	if (!rtd->cpu_dai) {
--		dev_err(card->dev, "ASoC: CPU DAI %s not registered\n",
--			dai_link->cpu_dai_name);
-+		dev_info(card->dev, "ASoC: CPU DAI %s not registered\n",
-+			 dai_link->cpu_dai_name);
- 		goto _err_defer;
- 	}
- 	snd_soc_rtdcom_add(rtd, rtd->cpu_dai->component);
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index da1571336f1e..4053c72d852b 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -387,7 +387,6 @@ obj-$(CONFIG_SND_SOC_SIGMADSP)	+= snd-soc-sigmadsp.o
+ obj-$(CONFIG_SND_SOC_SIGMADSP_I2C)	+= snd-soc-sigmadsp-i2c.o
+ obj-$(CONFIG_SND_SOC_SIGMADSP_REGMAP)	+= snd-soc-sigmadsp-regmap.o
+ obj-$(CONFIG_SND_SOC_SI476X)	+= snd-soc-si476x.o
+-obj-$(CONFIG_SND_SOC_SN95031)	+=snd-soc-sn95031.o
+ obj-$(CONFIG_SND_SOC_SPDIF)	+= snd-soc-spdif-rx.o snd-soc-spdif-tx.o
+ obj-$(CONFIG_SND_SOC_SIRF_AUDIO_CODEC) += sirf-audio-codec.o
+ obj-$(CONFIG_SND_SOC_SSM2518)	+= snd-soc-ssm2518.o
 -- 
 2.16.1
-
-
---===============4343540168325747236==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4343540168325747236==--
