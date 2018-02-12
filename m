@@ -1,64 +1,49 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH 4/8] ASoC: samsung: i2s: Define the parameters list for SAMSUNG_I2S_OPCLK
-Date: Mon, 12 Feb 2018 11:00:50 +0100
-Message-ID: <CAJKOXPeHDHbt8e+aVd6RCv3M+AW7qPVep=Cb7nBJeZn3k+u5Bg@mail.gmail.com>
-References: <CGME20180205154520epcas1p4132421a187a4d767a2f75badfef5eec4@epcas1p4.samsung.com>
- <20180205154403.13520-1-s.nawrocki@samsung.com> <20180205154403.13520-5-s.nawrocki@samsung.com>
- <CAJKOXPf-6wFDSPttdDbc34Y2hiuc=TG2j5bb+2uQeScxGuxjZg@mail.gmail.com> <7f86ec02-2235-7622-9298-f6edd367edb2@samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: use DEFINE_SHOW_ATTRIBUTE() to decrease code
+ duplication
+Date: Mon, 12 Feb 2018 11:49:37 +0000
+Message-ID: <20180212114937.GA12976@sirena.org.uk>
+References: <CAErzpmuxmrJszRz5_SZXPMkdU2UWNHChrnKjnHuCWZYrs4hgTA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <7f86ec02-2235-7622-9298-f6edd367edb2@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, robh+dt@kernel.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, jcsing.lee@samsung.com, sbkim73@samsung.com, linux-kernel@vger.kernel.org, =?UTF-8?B?QmFydMWCb21pZWogxbtvxYJuaWVya2lld2ljeg==?= <b.zolnierkie@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7JfCtLOvnd9MIVvH"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAErzpmuxmrJszRz5_SZXPMkdU2UWNHChrnKjnHuCWZYrs4hgTA@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Donglin Peng <dolinux.peng@gmail.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 7, 2018 at 5:23 PM, Sylwester Nawrocki
-<s.nawrocki@samsung.com> wrote:
-> On 02/06/2018 01:26 PM, Krzysztof Kozlowski wrote:
->> On Mon, Feb 5, 2018 at 4:43 PM, Sylwester Nawrocki
->> <s.nawrocki@samsung.com> wrote:
->
->>> diff --git a/sound/soc/samsung/i2s.h b/sound/soc/samsung/i2s.h
->>> index 79781de2f247..a9832a9555cb 100644
->>> --- a/sound/soc/samsung/i2s.h
->>> +++ b/sound/soc/samsung/i2s.h
->>> @@ -16,11 +16,16 @@
->>>  #define SAMSUNG_I2S_DAI        "samsung-i2s"
->>>  #define SAMSUNG_I2S_DAI_SEC    "samsung-i2s-sec"
->>>
->>> -#define SAMSUNG_I2S_DIV_BCLK   1
->>> +#define SAMSUNG_I2S_DIV_BCLK           1
->>>
->>> -#define SAMSUNG_I2S_RCLKSRC_0  0
->>> -#define SAMSUNG_I2S_RCLKSRC_1  1
->>> +#define SAMSUNG_I2S_RCLKSRC_0          0
->>> +#define SAMSUNG_I2S_RCLKSRC_1          1
->>>  #define SAMSUNG_I2S_CDCLK              2
->>> +/* Operation clock for IIS logic */
->>>  #define SAMSUNG_I2S_OPCLK              3
->>> +#define  SAMSUNG_I2S_OPCLK_CDCLK_OUT   0       /* CODEC clock out */
->>> +#define  SAMSUNG_I2S_OPCLK_CDCLK_IN    1       /* CODEC clock in */
->>> +#define  SAMSUNG_I2S_OPCLK_BCLK_OUT    2       /* Bit clock out */
->>> +#define  SAMSUNG_I2S_OPCLK_PCLK                3       /* Audio bus clock */
->>>
->>>  #endif /* __SND_SOC_SAMSUNG_I2S_H */
->>
->> This part of patch seems to be unrelated (and it includes some cleanups).
->
-> This is actually the main part of the patch, an API exported to other
-> drivers.
 
-You are right, I looked at it without the context of 5/8 and I assumed
-you are changing existing user of the defines...
+--7JfCtLOvnd9MIVvH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> The whitespace changes are for keeping the alignment uniform,
-> I could just drop them.
+On Fri, Feb 09, 2018 at 11:10:55PM +0800, Donglin Peng wrote:
 
-Let it be then.
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -349,7 +349,7 @@ static void soc_init_codec_debugfs(struct
+> snd_soc_component *component)
+>              "ASoC: Failed to create codec register debugfs file\n");
 
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Your patch has been corrupted somewhere (probably in your mail client) -
+there's word wrapping here.
 
-Best regards,
-Krzysztof
+--7JfCtLOvnd9MIVvH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqBf1AACgkQJNaLcl1U
+h9A0oQf+K1BHGQpmD2u0rbAAgnMVpBk8Bba2D3r8jGR8C7xYj+r2jQnyQfXsBzKb
+lThoUQXRQ+VjzEB+/DLtJlAXHzNyNrc2uoucrHnwhEUfDhrynJ/RDBVWbXCj5oHj
+4ifpaKfJ4fIQHU1x/fBEnsMl6MvrASNVftcXwhcKRZFVpyMCbxNyE69uXmQMqEOX
+98dhL7KtjrhcGYRKtF5JyMBhme1r6UjtTZ6a890f/5SmFCEVbBo3bd2kl1zyHXao
+tFWg6b+2yqBYQAW+LFxCuxSaSpMUB4YxW9tY3jqKqz5lXIzpgVl/LSHAa2XAh3ZT
+9gmmv4WLEZVjO310uG+K9MmJHZNkDA==
+=H/HU
+-----END PGP SIGNATURE-----
+
+--7JfCtLOvnd9MIVvH--
