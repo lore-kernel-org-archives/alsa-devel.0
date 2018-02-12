@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tas5720: replace codec to component" to
-	the asoc tree
-Date: Mon, 12 Feb 2018 12:38:57 +0000
-Message-ID: <E1elDNp-0004Of-Mh@debutante>
-References: <87d11txpki.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: spdif_receiver: replace codec to
+	component" to the asoc tree
+Date: Mon, 12 Feb 2018 12:39:00 +0000
+Message-ID: <E1elDNs-0004PU-Qc@debutante>
+References: <87efm9xplg.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 02E95267AF6
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:39:00 +0100 (CET)
-In-Reply-To: <87d11txpki.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C332267B04
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:39:03 +0100 (CET)
+In-Reply-To: <87efm9xplg.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tas5720: replace codec to component
+   ASoC: spdif_receiver: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From a06919f517001a7bc746f4d5922d2cbac2b3d0c0 Mon Sep 17 00:00:00 2001
+>From 8c6086b8b5e7e50519b6d439ec51ac06a956c656 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:23:00 +0000
-Subject: [PATCH] ASoC: tas5720: replace codec to component
+Date: Mon, 29 Jan 2018 04:22:25 +0000
+Subject: [PATCH] ASoC: spdif_receiver: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,409 +70,62 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas5720.c | 151 +++++++++++++++++++++------------------------
- 1 file changed, 70 insertions(+), 81 deletions(-)
+ sound/soc/codecs/spdif_receiver.c | 26 +++++++++++---------------
+ 1 file changed, 11 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/codecs/tas5720.c b/sound/soc/codecs/tas5720.c
-index f3006f301fe8..ae3d032ac35a 100644
---- a/sound/soc/codecs/tas5720.c
-+++ b/sound/soc/codecs/tas5720.c
-@@ -49,7 +49,7 @@ static const char * const tas5720_supply_names[] = {
- #define TAS5720_NUM_SUPPLIES	ARRAY_SIZE(tas5720_supply_names)
+diff --git a/sound/soc/codecs/spdif_receiver.c b/sound/soc/codecs/spdif_receiver.c
+index c8fd6367f6c0..ac69d495d121 100644
+--- a/sound/soc/codecs/spdif_receiver.c
++++ b/sound/soc/codecs/spdif_receiver.c
+@@ -38,13 +38,15 @@ static const struct snd_soc_dapm_route dir_routes[] = {
+ 			SNDRV_PCM_FMTBIT_S32_LE | \
+ 			SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE)
  
- struct tas5720_data {
--	struct snd_soc_codec *codec;
-+	struct snd_soc_component *component;
- 	struct regmap *regmap;
- 	struct i2c_client *tas5720_client;
- 	enum tas572x_type devtype;
-@@ -62,7 +62,7 @@ static int tas5720_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params,
- 			     struct snd_soc_dai *dai)
- {
--	struct snd_soc_codec *codec = dai->codec;
-+	struct snd_soc_component *component = dai->component;
- 	unsigned int rate = params_rate(params);
- 	bool ssz_ds;
- 	int ret;
-@@ -77,14 +77,14 @@ static int tas5720_hw_params(struct snd_pcm_substream *substream,
- 		ssz_ds = true;
- 		break;
- 	default:
--		dev_err(codec->dev, "unsupported sample rate: %u\n", rate);
-+		dev_err(component->dev, "unsupported sample rate: %u\n", rate);
- 		return -EINVAL;
- 	}
- 
--	ret = snd_soc_update_bits(codec, TAS5720_DIGITAL_CTRL1_REG,
-+	ret = snd_soc_component_update_bits(component, TAS5720_DIGITAL_CTRL1_REG,
- 				  TAS5720_SSZ_DS, ssz_ds);
- 	if (ret < 0) {
--		dev_err(codec->dev, "error setting sample rate: %d\n", ret);
-+		dev_err(component->dev, "error setting sample rate: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -93,12 +93,12 @@ static int tas5720_hw_params(struct snd_pcm_substream *substream,
- 
- static int tas5720_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- {
--	struct snd_soc_codec *codec = dai->codec;
-+	struct snd_soc_component *component = dai->component;
- 	u8 serial_format;
- 	int ret;
- 
- 	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS) {
--		dev_vdbg(codec->dev, "DAI Format master is not found\n");
-+		dev_vdbg(component->dev, "DAI Format master is not found\n");
- 		return -EINVAL;
- 	}
- 
-@@ -132,15 +132,15 @@ static int tas5720_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		serial_format = TAS5720_SAIF_LEFTJ;
- 		break;
- 	default:
--		dev_vdbg(codec->dev, "DAI Format is not found\n");
-+		dev_vdbg(component->dev, "DAI Format is not found\n");
- 		return -EINVAL;
- 	}
- 
--	ret = snd_soc_update_bits(codec, TAS5720_DIGITAL_CTRL1_REG,
-+	ret = snd_soc_component_update_bits(component, TAS5720_DIGITAL_CTRL1_REG,
- 				  TAS5720_SAIF_FORMAT_MASK,
- 				  serial_format);
- 	if (ret < 0) {
--		dev_err(codec->dev, "error setting SAIF format: %d\n", ret);
-+		dev_err(component->dev, "error setting SAIF format: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -151,12 +151,12 @@ static int tas5720_set_dai_tdm_slot(struct snd_soc_dai *dai,
- 				    unsigned int tx_mask, unsigned int rx_mask,
- 				    int slots, int slot_width)
- {
--	struct snd_soc_codec *codec = dai->codec;
-+	struct snd_soc_component *component = dai->component;
- 	unsigned int first_slot;
- 	int ret;
- 
- 	if (!tx_mask) {
--		dev_err(codec->dev, "tx masks must not be 0\n");
-+		dev_err(component->dev, "tx masks must not be 0\n");
- 		return -EINVAL;
- 	}
- 
-@@ -168,39 +168,39 @@ static int tas5720_set_dai_tdm_slot(struct snd_soc_dai *dai,
- 	first_slot = __ffs(tx_mask);
- 
- 	if (first_slot > 7) {
--		dev_err(codec->dev, "slot selection out of bounds (%u)\n",
-+		dev_err(component->dev, "slot selection out of bounds (%u)\n",
- 			first_slot);
- 		return -EINVAL;
- 	}
- 
- 	/* Enable manual TDM slot selection (instead of I2C ID based) */
--	ret = snd_soc_update_bits(codec, TAS5720_DIGITAL_CTRL1_REG,
-+	ret = snd_soc_component_update_bits(component, TAS5720_DIGITAL_CTRL1_REG,
- 				  TAS5720_TDM_CFG_SRC, TAS5720_TDM_CFG_SRC);
- 	if (ret < 0)
--		goto error_snd_soc_update_bits;
-+		goto error_snd_soc_component_update_bits;
- 
- 	/* Configure the TDM slot to process audio from */
--	ret = snd_soc_update_bits(codec, TAS5720_DIGITAL_CTRL2_REG,
-+	ret = snd_soc_component_update_bits(component, TAS5720_DIGITAL_CTRL2_REG,
- 				  TAS5720_TDM_SLOT_SEL_MASK, first_slot);
- 	if (ret < 0)
--		goto error_snd_soc_update_bits;
-+		goto error_snd_soc_component_update_bits;
- 
- 	return 0;
- 
--error_snd_soc_update_bits:
--	dev_err(codec->dev, "error configuring TDM mode: %d\n", ret);
-+error_snd_soc_component_update_bits:
-+	dev_err(component->dev, "error configuring TDM mode: %d\n", ret);
- 	return ret;
- }
- 
- static int tas5720_mute(struct snd_soc_dai *dai, int mute)
- {
--	struct snd_soc_codec *codec = dai->codec;
-+	struct snd_soc_component *component = dai->component;
- 	int ret;
- 
--	ret = snd_soc_update_bits(codec, TAS5720_DIGITAL_CTRL2_REG,
-+	ret = snd_soc_component_update_bits(component, TAS5720_DIGITAL_CTRL2_REG,
- 				  TAS5720_MUTE, mute ? TAS5720_MUTE : 0);
- 	if (ret < 0) {
--		dev_err(codec->dev, "error (un-)muting device: %d\n", ret);
-+		dev_err(component->dev, "error (un-)muting device: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -211,7 +211,7 @@ static void tas5720_fault_check_work(struct work_struct *work)
- {
- 	struct tas5720_data *tas5720 = container_of(work, struct tas5720_data,
- 			fault_check_work.work);
--	struct device *dev = tas5720->codec->dev;
-+	struct device *dev = tas5720->component->dev;
- 	unsigned int curr_fault;
- 	int ret;
- 
-@@ -267,18 +267,18 @@ static void tas5720_fault_check_work(struct work_struct *work)
- 			      msecs_to_jiffies(TAS5720_FAULT_CHECK_INTERVAL));
- }
- 
--static int tas5720_codec_probe(struct snd_soc_codec *codec)
-+static int tas5720_codec_probe(struct snd_soc_component *component)
- {
--	struct tas5720_data *tas5720 = snd_soc_codec_get_drvdata(codec);
-+	struct tas5720_data *tas5720 = snd_soc_component_get_drvdata(component);
- 	unsigned int device_id, expected_device_id;
- 	int ret;
- 
--	tas5720->codec = codec;
-+	tas5720->component = component;
- 
- 	ret = regulator_bulk_enable(ARRAY_SIZE(tas5720->supplies),
- 				    tas5720->supplies);
- 	if (ret != 0) {
--		dev_err(codec->dev, "failed to enable supplies: %d\n", ret);
-+		dev_err(component->dev, "failed to enable supplies: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -289,7 +289,7 @@ static int tas5720_codec_probe(struct snd_soc_codec *codec)
- 	 */
- 	ret = regmap_read(tas5720->regmap, TAS5720_DEVICE_ID_REG, &device_id);
- 	if (ret < 0) {
--		dev_err(codec->dev, "failed to read device ID register: %d\n",
-+		dev_err(component->dev, "failed to read device ID register: %d\n",
- 			ret);
- 		goto probe_fail;
- 	}
-@@ -302,19 +302,19 @@ static int tas5720_codec_probe(struct snd_soc_codec *codec)
- 		expected_device_id = TAS5722_DEVICE_ID;
- 		break;
- 	default:
--		dev_err(codec->dev, "unexpected private driver data\n");
-+		dev_err(component->dev, "unexpected private driver data\n");
- 		return -EINVAL;
- 	}
- 
- 	if (device_id != expected_device_id)
--		dev_warn(codec->dev, "wrong device ID. expected: %u read: %u\n",
-+		dev_warn(component->dev, "wrong device ID. expected: %u read: %u\n",
- 			 expected_device_id, device_id);
- 
- 	/* Set device to mute */
--	ret = snd_soc_update_bits(codec, TAS5720_DIGITAL_CTRL2_REG,
-+	ret = snd_soc_component_update_bits(component, TAS5720_DIGITAL_CTRL2_REG,
- 				  TAS5720_MUTE, TAS5720_MUTE);
- 	if (ret < 0)
--		goto error_snd_soc_update_bits;
-+		goto error_snd_soc_component_update_bits;
- 
- 	/*
- 	 * Enter shutdown mode - our default when not playing audio - to
-@@ -322,17 +322,17 @@ static int tas5720_codec_probe(struct snd_soc_codec *codec)
- 	 * side doing so as all device registers are preserved and the wakeup
- 	 * of the codec is rather quick which we do using a dapm widget.
- 	 */
--	ret = snd_soc_update_bits(codec, TAS5720_POWER_CTRL_REG,
-+	ret = snd_soc_component_update_bits(component, TAS5720_POWER_CTRL_REG,
- 				  TAS5720_SDZ, 0);
- 	if (ret < 0)
--		goto error_snd_soc_update_bits;
-+		goto error_snd_soc_component_update_bits;
- 
- 	INIT_DELAYED_WORK(&tas5720->fault_check_work, tas5720_fault_check_work);
- 
- 	return 0;
- 
--error_snd_soc_update_bits:
--	dev_err(codec->dev, "error configuring device registers: %d\n", ret);
-+error_snd_soc_component_update_bits:
-+	dev_err(component->dev, "error configuring device registers: %d\n", ret);
- 
- probe_fail:
- 	regulator_bulk_disable(ARRAY_SIZE(tas5720->supplies),
-@@ -340,9 +340,9 @@ static int tas5720_codec_probe(struct snd_soc_codec *codec)
- 	return ret;
- }
- 
--static int tas5720_codec_remove(struct snd_soc_codec *codec)
-+static void tas5720_codec_remove(struct snd_soc_component *component)
- {
--	struct tas5720_data *tas5720 = snd_soc_codec_get_drvdata(codec);
-+	struct tas5720_data *tas5720 = snd_soc_component_get_drvdata(component);
- 	int ret;
- 
- 	cancel_delayed_work_sync(&tas5720->fault_check_work);
-@@ -350,24 +350,22 @@ static int tas5720_codec_remove(struct snd_soc_codec *codec)
- 	ret = regulator_bulk_disable(ARRAY_SIZE(tas5720->supplies),
- 				     tas5720->supplies);
- 	if (ret < 0)
--		dev_err(codec->dev, "failed to disable supplies: %d\n", ret);
--
--	return ret;
-+		dev_err(component->dev, "failed to disable supplies: %d\n", ret);
- };
- 
- static int tas5720_dac_event(struct snd_soc_dapm_widget *w,
- 			     struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
--	struct tas5720_data *tas5720 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	struct tas5720_data *tas5720 = snd_soc_component_get_drvdata(component);
- 	int ret;
- 
- 	if (event & SND_SOC_DAPM_POST_PMU) {
- 		/* Take TAS5720 out of shutdown mode */
--		ret = snd_soc_update_bits(codec, TAS5720_POWER_CTRL_REG,
-+		ret = snd_soc_component_update_bits(component, TAS5720_POWER_CTRL_REG,
- 					  TAS5720_SDZ, TAS5720_SDZ);
- 		if (ret < 0) {
--			dev_err(codec->dev, "error waking codec: %d\n", ret);
-+			dev_err(component->dev, "error waking component: %d\n", ret);
- 			return ret;
- 		}
- 
-@@ -390,10 +388,10 @@ static int tas5720_dac_event(struct snd_soc_dapm_widget *w,
- 		cancel_delayed_work_sync(&tas5720->fault_check_work);
- 
- 		/* Place TAS5720 in shutdown mode to minimize current draw */
--		ret = snd_soc_update_bits(codec, TAS5720_POWER_CTRL_REG,
-+		ret = snd_soc_component_update_bits(component, TAS5720_POWER_CTRL_REG,
- 					  TAS5720_SDZ, 0);
- 		if (ret < 0) {
--			dev_err(codec->dev, "error shutting down codec: %d\n",
-+			dev_err(component->dev, "error shutting down component: %d\n",
- 				ret);
- 			return ret;
- 		}
-@@ -403,9 +401,9 @@ static int tas5720_dac_event(struct snd_soc_dapm_widget *w,
- }
- 
- #ifdef CONFIG_PM
--static int tas5720_suspend(struct snd_soc_codec *codec)
-+static int tas5720_suspend(struct snd_soc_component *component)
- {
--	struct tas5720_data *tas5720 = snd_soc_codec_get_drvdata(codec);
-+	struct tas5720_data *tas5720 = snd_soc_component_get_drvdata(component);
- 	int ret;
- 
- 	regcache_cache_only(tas5720->regmap, true);
-@@ -414,20 +412,20 @@ static int tas5720_suspend(struct snd_soc_codec *codec)
- 	ret = regulator_bulk_disable(ARRAY_SIZE(tas5720->supplies),
- 				     tas5720->supplies);
- 	if (ret < 0)
--		dev_err(codec->dev, "failed to disable supplies: %d\n", ret);
-+		dev_err(component->dev, "failed to disable supplies: %d\n", ret);
- 
- 	return ret;
- }
- 
--static int tas5720_resume(struct snd_soc_codec *codec)
-+static int tas5720_resume(struct snd_soc_component *component)
- {
--	struct tas5720_data *tas5720 = snd_soc_codec_get_drvdata(codec);
-+	struct tas5720_data *tas5720 = snd_soc_component_get_drvdata(component);
- 	int ret;
- 
- 	ret = regulator_bulk_enable(ARRAY_SIZE(tas5720->supplies),
- 				    tas5720->supplies);
- 	if (ret < 0) {
--		dev_err(codec->dev, "failed to enable supplies: %d\n", ret);
-+		dev_err(component->dev, "failed to enable supplies: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -435,7 +433,7 @@ static int tas5720_resume(struct snd_soc_codec *codec)
- 
- 	ret = regcache_sync(tas5720->regmap);
- 	if (ret < 0) {
--		dev_err(codec->dev, "failed to sync regcache: %d\n", ret);
-+		dev_err(component->dev, "failed to sync regcache: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -512,20 +510,21 @@ static const struct snd_soc_dapm_route tas5720_audio_map[] = {
- 	{ "OUT", NULL, "DAC" },
- };
- 
--static const struct snd_soc_codec_driver soc_codec_dev_tas5720 = {
--	.probe = tas5720_codec_probe,
--	.remove = tas5720_codec_remove,
--	.suspend = tas5720_suspend,
--	.resume = tas5720_resume,
--
+-static struct snd_soc_codec_driver soc_codec_spdif_dir = {
 -	.component_driver = {
--		.controls		= tas5720_snd_controls,
--		.num_controls		= ARRAY_SIZE(tas5720_snd_controls),
--		.dapm_widgets		= tas5720_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(tas5720_dapm_widgets),
--		.dapm_routes		= tas5720_audio_map,
--		.num_dapm_routes	= ARRAY_SIZE(tas5720_audio_map),
+-		.dapm_widgets		= dir_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(dir_widgets),
+-		.dapm_routes		= dir_routes,
+-		.num_dapm_routes	= ARRAY_SIZE(dir_routes),
 -	},
-+static const struct snd_soc_component_driver soc_component_dev_tas5720 = {
-+	.probe			= tas5720_codec_probe,
-+	.remove			= tas5720_codec_remove,
-+	.suspend		= tas5720_suspend,
-+	.resume			= tas5720_resume,
-+	.controls		= tas5720_snd_controls,
-+	.num_controls		= ARRAY_SIZE(tas5720_snd_controls),
-+	.dapm_widgets		= tas5720_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(tas5720_dapm_widgets),
-+	.dapm_routes		= tas5720_audio_map,
-+	.num_dapm_routes	= ARRAY_SIZE(tas5720_audio_map),
++static struct snd_soc_component_driver soc_codec_spdif_dir = {
++	.dapm_widgets		= dir_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(dir_widgets),
++	.dapm_routes		= dir_routes,
++	.num_dapm_routes	= ARRAY_SIZE(dir_routes),
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- /* PCM rates supported by the TAS5720 driver */
-@@ -614,26 +613,17 @@ static int tas5720_probe(struct i2c_client *client,
+ static struct snd_soc_dai_driver dir_stub_dai = {
+@@ -60,16 +62,11 @@ static struct snd_soc_dai_driver dir_stub_dai = {
  
- 	dev_set_drvdata(dev, data);
- 
--	ret = snd_soc_register_codec(&client->dev,
--				     &soc_codec_dev_tas5720,
-+	ret = devm_snd_soc_register_component(&client->dev,
-+				     &soc_component_dev_tas5720,
- 				     tas5720_dai, ARRAY_SIZE(tas5720_dai));
- 	if (ret < 0) {
--		dev_err(dev, "failed to register codec: %d\n", ret);
-+		dev_err(dev, "failed to register component: %d\n", ret);
- 		return ret;
- 	}
- 
- 	return 0;
+ static int spdif_dir_probe(struct platform_device *pdev)
+ {
+-	return snd_soc_register_codec(&pdev->dev, &soc_codec_spdif_dir,
++	return devm_snd_soc_register_component(&pdev->dev,
++			&soc_codec_spdif_dir,
+ 			&dir_stub_dai, 1);
  }
  
--static int tas5720_remove(struct i2c_client *client)
+-static int spdif_dir_remove(struct platform_device *pdev)
 -{
--	struct device *dev = &client->dev;
--
--	snd_soc_unregister_codec(dev);
--
+-	snd_soc_unregister_codec(&pdev->dev);
 -	return 0;
 -}
 -
- static const struct i2c_device_id tas5720_id[] = {
- 	{ "tas5720", TAS5720 },
- 	{ "tas5722", TAS5722 },
-@@ -656,7 +646,6 @@ static struct i2c_driver tas5720_i2c_driver = {
- 		.of_match_table = of_match_ptr(tas5720_of_match),
- 	},
- 	.probe = tas5720_probe,
--	.remove = tas5720_remove,
- 	.id_table = tas5720_id,
- };
+ #ifdef CONFIG_OF
+ static const struct of_device_id spdif_dir_dt_ids[] = {
+ 	{ .compatible = "linux,spdif-dir", },
+@@ -80,7 +77,6 @@ MODULE_DEVICE_TABLE(of, spdif_dir_dt_ids);
  
+ static struct platform_driver spdif_dir_driver = {
+ 	.probe		= spdif_dir_probe,
+-	.remove		= spdif_dir_remove,
+ 	.driver		= {
+ 		.name	= "spdif-dir",
+ 		.of_match_table = of_match_ptr(spdif_dir_dt_ids),
 -- 
 2.16.1
