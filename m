@@ -1,93 +1,88 @@
-From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [asoc:topic/uniphier 6/7]
- sound/soc/uniphier/aio-compress.c:314:34: sparse: cast to restricted __be16
-Date: Tue, 13 Feb 2018 02:19:54 +0800
-Message-ID: <201802130250.filbAbNc%fengguang.wu@intel.com>
+From: Kirill Marinushkin <k.marinushkin@gmail.com>
+Subject: Re: [PATCH] ALSA: usb-audio: Fix UAC2 get_ctl request with a RANGE
+ attribute
+Date: Mon, 12 Feb 2018 20:32:53 +0100
+Message-ID: <120bc0f8-f472-268d-1247-3245ae994fe5@gmail.com>
+References: <20180129053755.20136-1-k.marinushkin@gmail.com>
+ <s5hvaf95p4i.wl-tiwai@suse.de>
+ <40196230-8f73-4cca-08e5-d67bfbea2d6e@gmail.com>
+ <s5hinb2aauh.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 7CDAC2673EF
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 19:20:43 +0100 (CET)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <s5hinb2aauh.wl-tiwai@suse.de>
+Content-Language: en-US
+Sender: stable-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: perex@perex.cz, alsa-devel@alsa-project.org, Stephen Barber <smbarber@chromium.org>, Bhumika Goyal <bhumirks@gmail.com>, Jaejoong Kim <climbbb.kim@gmail.com>, Julian Scheel <julian@jusst.de>, linux-kernel@vger.kernel.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/uniphier
-head:   db4cb3d04eba91db48da0032c44b83ed7185973c
-commit: e98131222ff931a670739cede00d1fb9d6f83763 [6/7] ASoC: uniphier: add support for UniPhier AIO compress audio
-reproduce:
-        # apt-get install sparse
-        git checkout e98131222ff931a670739cede00d1fb9d6f83763
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF=-D__CHECK_ENDIAN__
+Hello maintainers of <stable@vger.kernel.org>,
 
 
-sparse warnings: (new ones prefixed by >>)
+As discussed earlier in this thread, I propose this patch to stable.
 
->> sound/soc/uniphier/aio-compress.c:314:34: sparse: cast to restricted __be16
->> sound/soc/uniphier/aio-compress.c:314:34: sparse: cast to restricted __be16
->> sound/soc/uniphier/aio-compress.c:314:34: sparse: cast to restricted __be16
->> sound/soc/uniphier/aio-compress.c:314:34: sparse: cast to restricted __be16
+It fixes the issue, which exists since v2.6.34.
 
-vim +314 sound/soc/uniphier/aio-compress.c
 
-   290	
-   291	static int aio_compr_send_to_hw(struct uniphier_aio_sub *sub,
-   292					char __user *buf, size_t dstsize)
-   293	{
-   294		u32 __user *srcbuf = (u32 __user *)buf;
-   295		u32 *dstbuf = (u32 *)(sub->compr_area + sub->wr_offs);
-   296		int src = 0, dst = 0, ret;
-   297		u32 frm, frm_a, frm_b;
-   298	
-   299		while (dstsize > 0) {
-   300			ret = get_user(frm, srcbuf + src);
-   301			if (ret)
-   302				return ret;
-   303			src++;
-   304	
-   305			frm_a = frm & 0xffff;
-   306			frm_b = (frm >> 16) & 0xffff;
-   307	
-   308			if (frm == IEC61937_HEADER_SIGN) {
-   309				frm_a |= 0x01000000;
-   310	
-   311				/* Next data is Pc and Pd */
-   312				sub->iec_header = true;
-   313			} else {
- > 314				u16 pc = be16_to_cpu((__be16)frm_a);
-   315	
-   316				if (sub->iec_header && sub->iec_pc != pc) {
-   317					/* Force overwrite IEC frame type */
-   318					sub->iec_pc = pc;
-   319					ret = aio_oport_set_stream_type(sub, pc);
-   320					if (ret)
-   321						return ret;
-   322				}
-   323				sub->iec_header = false;
-   324			}
-   325			dstbuf[dst++] = frm_a;
-   326			dstbuf[dst++] = frm_b;
-   327	
-   328			dstsize -= sizeof(u32) * 2;
-   329		}
-   330	
-   331		return 0;
-   332	}
-   333	
+Best Regards,
 
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+Kirill
+
+On 02/12/18 09:08, Takashi Iwai wrote:
+> On Thu, 08 Feb 2018 07:21:36 +0100,
+> Kirill Marinushkin wrote:
+>> On 02/07/18 06:45, Takashi Iwai wrote:
+>>> On Mon, 29 Jan 2018 06:37:55 +0100,
+>>> Kirill Marinushkin wrote:
+>>>> The layout of the UAC2 Control request and response varies depending on
+>>>> the request type. With the current implementation, only the Layout 2
+>>>> Parameter Block (with the 2-byte sized RANGE attribute) is handled
+>>>> properly. For the Control requests with the 1-byte sized RANGE attribute
+>>>> (Bass Control, Mid Control, Tremble Control), the response is parsed
+>>>> incorrectly.
+>>>>
+>>>> This commit:
+>>>> * fixes the wLength field value in the request
+>>>> * fixes parsing the range values from the response
+>>>>
+>>>> Fixes: 23caaf19b11e ("ALSA: usb-mixer: Add support for Audio Class v2.0")
+>>>> Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
+>>>> Cc: Jaroslav Kysela <perex@perex.cz>
+>>>> Cc: Takashi Iwai <tiwai@suse.com>
+>>>> Cc: Jaejoong Kim <climbbb.kim@gmail.com>
+>>>> Cc: Bhumika Goyal <bhumirks@gmail.com>
+>>>> Cc: Stephen Barber <smbarber@chromium.org>
+>>>> Cc: Julian Scheel <julian@jusst.de>
+>>>> Cc: alsa-devel@alsa-project.org
+>>>> Cc: linux-kernel@vger.kernel.org
+>>> Sorry for the late reply, as I've been (and still) off.
+>>>
+>>> Does this bug actually hit on any real devices, or is it only a
+>>> logical error so far?  In the former case, a Cc to stable is
+>>> mandatory.
+>>>
+>>> In anyway, I'll review and merge it properly once after I back to
+>>> work.
+>>>
+>>>
+>>> thanks,
+>>>
+>>> Takashi
+>> Hello Takashi,
+>>
+>> Thank you for your answer. I will wait until you are back to work, don't 
+>> worry about the late replies.
+>>
+>> I did not hit the issue on a real device.
+>>
+>> During my UAC2 experiments, I reproduced this issue on the development 
+>> board, and then tested my solution on it.
+> OK, if it happened on a development system, it's a real issue, and we
+> should put Cc to stable.  Now I applied the patch.
+>
+> Thanks!
+>
+>
+> Takashi
