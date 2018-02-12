@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nuc900-pcm: replace platform to
+Subject: Applied "ASoC: au1x: dma: replace platform to
 	component" to the asoc tree
-Date: Mon, 12 Feb 2018 12:28:23 +0000
-Message-ID: <E1elDDb-0002vR-8i@debutante>
-References: <87fu7bew2u.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:28:28 +0000
+Message-ID: <E1elDDg-0002wK-7U@debutante>
+References: <87h8rrew3c.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E2148267396
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:28:26 +0100 (CET)
-In-Reply-To: <87fu7bew2u.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E190D267396
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:28:31 +0100 (CET)
+In-Reply-To: <87h8rrew3c.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nuc900-pcm: replace platform to component
+   ASoC: au1x: dma: replace platform to component
 
 has been applied to the asoc tree at
 
@@ -53,40 +53,62 @@ to this mail.
 Thanks,
 Mark
 
->From bab9dc53d5bfbfa057e02c5edd97787829ee0b31 Mon Sep 17 00:00:00 2001
+>From 781a9fcccae535d3f46cd05177366c7e67aa01ef Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 02:51:09 +0000
-Subject: [PATCH] ASoC: nuc900-pcm: replace platform to component
+Date: Mon, 29 Jan 2018 02:50:54 +0000
+Subject: [PATCH] ASoC: au1x: dma: replace platform to component
 
 Now platform can be replaced to component, let's do it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/nuc900/nuc900-pcm.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/au1x/dma.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/nuc900/nuc900-pcm.c b/sound/soc/nuc900/nuc900-pcm.c
-index bd6dfa218d59..ad8392a87df9 100644
---- a/sound/soc/nuc900/nuc900-pcm.c
-+++ b/sound/soc/nuc900/nuc900-pcm.c
-@@ -299,14 +299,15 @@ static int nuc900_dma_new(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/au1x/dma.c b/sound/soc/au1x/dma.c
+index 19457e2b351e..efff1e293a1b 100644
+--- a/sound/soc/au1x/dma.c
++++ b/sound/soc/au1x/dma.c
+@@ -21,6 +21,8 @@
+ 
+ #include "psc.h"
+ 
++#define DRV_NAME "au1x_dma"
++
+ struct pcm_period {
+ 	u32 start;
+ 	u32 relative_end;	/* relative to start of buffer */
+@@ -174,7 +176,8 @@ static const struct snd_pcm_hardware alchemy_pcm_hardware = {
+ static inline struct alchemy_pcm_ctx *ss_to_ctx(struct snd_pcm_substream *ss)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = ss->private_data;
+-	return snd_soc_platform_get_drvdata(rtd->platform);
++	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	return snd_soc_component_get_drvdata(component);
+ }
+ 
+ static inline struct audio_stream *ss_to_as(struct snd_pcm_substream *ss)
+@@ -297,7 +300,8 @@ static int alchemy_pcm_new(struct snd_soc_pcm_runtime *rtd)
  	return 0;
  }
  
--static const struct snd_soc_platform_driver nuc900_soc_platform = {
-+static const struct snd_soc_component_driver nuc900_soc_component = {
- 	.ops		= &nuc900_dma_ops,
- 	.pcm_new	= nuc900_dma_new,
+-static struct snd_soc_platform_driver alchemy_pcm_soc_platform = {
++static struct snd_soc_component_driver alchemy_pcm_soc_component = {
++	.name		= DRV_NAME,
+ 	.ops		= &alchemy_pcm_ops,
+ 	.pcm_new	= alchemy_pcm_new,
  };
+@@ -312,8 +316,8 @@ static int alchemy_pcm_drvprobe(struct platform_device *pdev)
  
- static int nuc900_soc_platform_probe(struct platform_device *pdev)
- {
--	return devm_snd_soc_register_platform(&pdev->dev, &nuc900_soc_platform);
-+	return devm_snd_soc_register_component(&pdev->dev, &nuc900_soc_component,
-+					       NULL, 0);
+ 	platform_set_drvdata(pdev, ctx);
+ 
+-	return devm_snd_soc_register_platform(&pdev->dev,
+-					      &alchemy_pcm_soc_platform);
++	return devm_snd_soc_register_component(&pdev->dev,
++					&alchemy_pcm_soc_component, NULL, 0);
  }
  
- static struct platform_driver nuc900_pcm_driver = {
+ static struct platform_driver alchemy_pcmdma_driver = {
 -- 
 2.16.1
