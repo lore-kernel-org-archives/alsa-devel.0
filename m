@@ -1,20 +1,18 @@
-From: "Andrew F. Davis" <afd@ti.com>
-Subject: Re: [PATCH] ASoC: tlv320aic31xx: Fix master mode clock
-	I2S bus clocks
-Date: Mon, 12 Feb 2018 11:27:57 -0600
-Message-ID: <fe5d4632-7b31-8001-f2b9-98a6ee3ed317@ti.com>
-References: <20180212140646.3268-1-peter.ujfalusi@ti.com>
- <b582d1d1-a027-f7cf-1f2e-a09a411f1354@ti.com>
- <cdf06301-8166-3035-97db-0e87d3888192@ti.com>
+From: kbuild test robot <fengguang.wu@intel.com>
+Subject: [RFC PATCH asoc] ASoC: uniphier: aiodma_rb_get_rp()
+	can be static
+Date: Tue, 13 Feb 2018 01:53:10 +0800
+Message-ID: <20180212175310.GA13659@lkp-wsm-ep1>
+References: <201802130150.A223WMAh%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
- by alsa0.perex.cz (Postfix) with ESMTP id 9430D2673A0
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 18:27:59 +0100 (CET)
-In-Reply-To: <cdf06301-8166-3035-97db-0e87d3888192@ti.com>
-Content-Language: en-US
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id 344D9267426
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 18:53:57 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <201802130150.A223WMAh%fengguang.wu@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,92 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org
+To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDIvMTIvMjAxOCAwOTowNSBBTSwgUGV0ZXIgVWpmYWx1c2kgd3JvdGU6Cj4gCj4gCj4gT24g
-MjAxOC0wMi0xMiAxNjoxNywgQW5kcmV3IEYuIERhdmlzIHdyb3RlOgo+PiBPbiAwMi8xMi8yMDE4
-IDA4OjA2IEFNLCBQZXRlciBVamZhbHVzaSB3cm90ZToKPj4+IEluIHRoZSByZXNldCBzdGF0ZSBv
-ZiB0aGUgY29kZWMgd2UgZG8gbm90IGhhdmUgY29tcGxldGUgcGxheWJhY2sgb3IgY2FwdHVyZQo+
-Pj4gcm91dGVzLgo+Pj4KPj4+IFRoZSBhdWRpbyBwbGF5YmFjay9jYXB0dXJlIHdpbGwgbm90IHdv
-cmsgZHVlIHRvIG1pc3NpbmcgY2xvY2sgc2lnbmFscyBvbgo+Pj4gdGhlIEkyUyBidXMgaWYgUExM
-LCBNREFDL05EQUMvREFDIE1BREMvTkFEQy9BREMgaXMgcG93ZXJlZCBkb3duLgo+Pj4KPj4+IFRv
-IG1ha2Ugc3VyZSB0aGF0IGV2ZW4gaWYgYWxsIG91dHB1dC9pbnB1dCBpcyBkaXNjb25uZWN0ZWQg
-dGhlIGNvZGVjIGlzCj4+PiBnZW5lcmF0aW5nIGNsb2Nrcywgd2UgbmVlZCB0byBoYXZlIHZhbGlk
-IERBUE0gcm91dGUgaW4gZXZlcnkgY2FzZSB0byBwb3dlcgo+Pj4gdXAgdGhlIG11c3QgbmVlZGVk
-IHBhcnRzIG9mIHRoZSBjb2RlYy4KPj4+Cj4+Cj4+IElmIGFsbCBvdXRwdXQvaW5wdXQgaXMgZGlz
-Y29ubmVjdGVkIHdoeSBkbyB3ZSBuZWVkIHRoZSBJMkMgY2xvY2tzPwo+IAo+IHdlIG5lZWQgSTJT
-IGNsb2NrcyB3aGVuIHVzZXIgaXMgcnVubmluZyBhdWRpbywgb3RoZXJ3aXNlIGl0IHdpbGwgdGlt
-ZQo+IG91dCB3aXRoIGVycm9yLgo+IAoKWW91IG1lYW4gaW4gdGhlIGNhc2Ugd2VyZSB0aGV5IGhh
-dmUgdGhlIGRldmljZSBzZXQgdG8gcm91dGUgdGhlIEkyUwpzdHJlYW0gdG8gYSBkZWFkIGVuZCBp
-bnNpZGUgdGhlIENPREVDIChEQUMgSU4gLT4gT0ZGKSwgYnV0IHN0aWxsIHdhbnQgdG8KcHVzaCBk
-YXRhIGRvd24gdGhlIEkyUyBsaW5lPwoKSXMgdGhlcmUgbm8gd2F5IHRvIGNvbW11bmljYXRlIHRo
-ZSBkZXZpY2UgaXMgbXV0ZWQgYmFjayB0byB0aGUgSTJTIGRhdGEKbWFzdGVyIHRvIG5vdCB0cnkg
-dG8gcHVzaCBkYXRhPwoKPj4gT3IgZG8geW91IG1lYW4gaWYgb25seSBvbmUgaXMgZGlzY29ubmVj
-dGVkIHRoZSBQTEwgZ29lcyBkb3duPwo+IAo+IElmIGJvdGggaXMgZG93biAoREFDcyBpbiBjYXNl
-IG9mIHBsYXliYWNrLCBBREMgaW4gY2FzZSBvZiBjYXB0dXJlKQo+IAo+PiBJZiB0aGF0IGlzCj4+
-IHRoZSBjYXNlIHRoZW4gaXQgd291bGQgYmUgYmV0dGVyIHRvIGZpeCB0aGUgREFQTSByb3V0ZSBz
-byBib3RoIHBhdGhzCj4+IGNvcnJlY3RseSBsZWFkIGJhY2sgdG8gdGhlIFBMTC4KPiAKPiBUaGlz
-IGlzIHdoYXQgdGhlIHBhdGNoIGlzIGRvaW5nLCBpdCBtYWtlcyBzdXJlIHRoYXQgREFDL0FEQyBp
-cyBwb3dlcmVkCj4gYW5kIGFsbCB0aGUgb3RoZXIgdGhpbmdzIHdlIG5lZWQgZm9yIGNsb2NrIGdl
-bmVyYXRpb24uCj4gCgpJIGRvbid0IHNlZSB0aGF0LCB0byBtZSBpdCBsb29rcyBsaWtlIGEgd29y
-a2Fyb3VuZCB0byBmb3JjZSB0aGUgd2hvbGUKREFDL0FEQyBQTEwgY2xvY2sgY2hhaW4gYWN0aXZl
-IGV2ZW4gd2hlbiB0aGVyZSBpcyBubyByb3V0ZSB0byB0aGUgREFDCihvciBmcm9tIEFEQykgYmVj
-YXVzZSB3ZSBuZWVkIGEgUExMIGRlcml2ZWQgY2xvY2sgdG8gcnVuIHRoZSBJMlMgY2xvY2tzLgoK
-SSB1bmRlcnN0YW5kIHRoZSBuZWVkOiB3aGVuIGFjdGluZyBhcyB0aGUgY2xvY2sgbWFzdGVyIHRo
-ZSBDT0RFQyBzaG91bGQKYWx3YXlzIHByb3ZpZGUgYSBjbG9jayAocmlnaHQ/KSwgZXZlbiB3aGVu
-IHRoZSBDT0RFQyBpcyBtdXRlZCAob3IgdGhlCkkyUyBzaWduYWwgaGFzIG5vIHJvdXRlIHRvIHRo
-ZSBEQUMpLgoKQnV0IHdoYXQgdGhpcyBwYXRjaCBkb2VzIGlzIHRvIGxlYXZlIHRoZSBEQUMgY2xv
-Y2tzIGFsd2F5cyBvbiwgZXZlbiBpbgpjbG9jayBzbGF2ZSBtb2RlLCB3aGVyZSB0aGVyZSBpcyBu
-byBuZWVkIHRvIGhhdmUgdGhlIFBMTCBvciBEQUMgY2xvY2tzCm9uLiBJcyB0aGVyZSByZWFsbHkg
-bm8gb3RoZXIgd2F5IHRvIGZvcmNlIHRoZSBQTEwgYWx3YXlzIG9uIHdoZW4gaW4KY2xvY2sgbWFz
-dGVyIG1vZGUgb25seT8KCj4+Cj4+PiBJIGhhdmUgdmVyaWZpZWQgdGhhdCBzd2l0Y2hpbmcgREFD
-IChkdXJpbmcgcGxheWJhY2spIG9yIEFEQyAoZHVyaW5nCj4+PiBjYXB0dXJlKSB3aWxsIHN0b3Ag
-dGhlIEkyUyBjbG9ja3MsIHNvIHRoZSBvbmx5IHNvbHV0aW9uIGlzIHRvIGNvbm5lY3QgdGhlCj4+
-PiAnT2ZmJyByb3V0ZXMgYXMgd2VsbCB0byBvdXRwdXQvaW5wdXQuCj4+Pgo+Pj4gVGVzdGVkIG9u
-IGFtNDN4LWVwb3MtZXZtIHdpdGggYWljMzExMSBjb2RlYyBpbiBtYXN0ZXIgbW9kZS4KPj4+Cj4+
-PiBTaWduZWQtb2ZmLWJ5OiBQZXRlciBVamZhbHVzaSA8cGV0ZXIudWpmYWx1c2lAdGkuY29tPgo+
-Pj4gLS0tCj4+PiAgc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzMXh4LmMgfCA5ICsrKysrKysr
-Kwo+Pj4gIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKykKPj4+Cj4+PiBkaWZmIC0tZ2l0
-IGEvc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzMXh4LmMgYi9zb3VuZC9zb2MvY29kZWNzL3Rs
-djMyMGFpYzMxeHguYwo+Pj4gaW5kZXggODU4Y2I4YmU0NDVmLi5kNDJhMjNlYjkxNmUgMTAwNjQ0
-Cj4+PiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFpYzMxeHguYwo+Pj4gKysrIGIvc291
-bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzMXh4LmMKPj4+IEBAIC01ODYsOSArNTg2LDExIEBAIGNv
-bW1vbjMxeHhfYXVkaW9fbWFwW10gPSB7Cj4+PiAgCXsiREFDIExlZnQgSW5wdXQiLCAiTGVmdCBE
-YXRhIiwgIkRBQyBJTiJ9LAo+Pj4gIAl7IkRBQyBMZWZ0IElucHV0IiwgIlJpZ2h0IERhdGEiLCAi
-REFDIElOIn0sCj4+PiAgCXsiREFDIExlZnQgSW5wdXQiLCAiTW9ubyIsICJEQUMgSU4ifSwKPj4+
-ICsJeyJEQUMgTGVmdCBJbnB1dCIsICJPZmYiLCAiREFDIElOIn0sCj4+PiAgCXsiREFDIFJpZ2h0
-IElucHV0IiwgIkxlZnQgRGF0YSIsICJEQUMgSU4ifSwKPj4+ICAJeyJEQUMgUmlnaHQgSW5wdXQi
-LCAiUmlnaHQgRGF0YSIsICJEQUMgSU4ifSwKPj4+ICAJeyJEQUMgUmlnaHQgSW5wdXQiLCAiTW9u
-byIsICJEQUMgSU4ifSwKPj4+ICsJeyJEQUMgUmlnaHQgSW5wdXQiLCAiT2ZmIiwgIkRBQyBJTiJ9
-LAo+Pj4gIAl7IkRBQyBMZWZ0IiwgTlVMTCwgIkRBQyBMZWZ0IElucHV0In0sCj4+PiAgCXsiREFD
-IFJpZ2h0IiwgTlVMTCwgIkRBQyBSaWdodCBJbnB1dCJ9LAo+Pj4gIAo+Pj4gQEAgLTYwMSw2ICs2
-MDMsOSBAQCBjb21tb24zMXh4X2F1ZGlvX21hcFtdID0gewo+Pj4gIAl7IkhQIFJpZ2h0IiwgIlN3
-aXRjaCIsICJPdXRwdXQgUmlnaHQifSwKPj4+ICAJeyJIUFIgRHJpdmVyIiwgTlVMTCwgIkhQIFJp
-Z2h0In0sCj4+PiAgCXsiSFBSIiwgTlVMTCwgIkhQUiBEcml2ZXIifSwKPj4+ICsKPj4+ICsJeyJI
-UEwiLCBOVUxMLCAiREFDIExlZnQifSwKPj4+ICsJeyJIUFIiLCBOVUxMLCAiREFDIFJpZ2h0In0s
-Cj4+PiAgfTsKPj4+ICAKPj4+ICBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFwbV9yb3V0
-ZQo+Pj4gQEAgLTYyMSwxNiArNjI2LDIwIEBAIGFpYzMxeHhfYXVkaW9fbWFwW10gPSB7Cj4+PiAg
-CXsiTUlDMUxQIFAtVGVybWluYWwiLCAiRkZSIDEwIE9obSIsICJNSUMxTFAifSwKPj4+ICAJeyJN
-SUMxTFAgUC1UZXJtaW5hbCIsICJGRlIgMjAgT2htIiwgIk1JQzFMUCJ9LAo+Pj4gIAl7Ik1JQzFM
-UCBQLVRlcm1pbmFsIiwgIkZGUiA0MCBPaG0iLCAiTUlDMUxQIn0sCj4+PiArCXsiTUlDMUxQIFAt
-VGVybWluYWwiLCAiT2ZmIiwgIk1JQzFMUCJ9LAo+Pj4gIAl7Ik1JQzFSUCBQLVRlcm1pbmFsIiwg
-IkZGUiAxMCBPaG0iLCAiTUlDMVJQIn0sCj4+PiAgCXsiTUlDMVJQIFAtVGVybWluYWwiLCAiRkZS
-IDIwIE9obSIsICJNSUMxUlAifSwKPj4+ICAJeyJNSUMxUlAgUC1UZXJtaW5hbCIsICJGRlIgNDAg
-T2htIiwgIk1JQzFSUCJ9LAo+Pj4gKwl7Ik1JQzFSUCBQLVRlcm1pbmFsIiwgIk9mZiIsICJNSUMx
-UlAifSwKPj4+ICAJeyJNSUMxTE0gUC1UZXJtaW5hbCIsICJGRlIgMTAgT2htIiwgIk1JQzFMTSJ9
-LAo+Pj4gIAl7Ik1JQzFMTSBQLVRlcm1pbmFsIiwgIkZGUiAyMCBPaG0iLCAiTUlDMUxNIn0sCj4+
-PiAgCXsiTUlDMUxNIFAtVGVybWluYWwiLCAiRkZSIDQwIE9obSIsICJNSUMxTE0ifSwKPj4+ICsJ
-eyJNSUMxTE0gUC1UZXJtaW5hbCIsICJPZmYiLCAiTUlDMUxNIn0sCj4+PiAgCj4+PiAgCXsiTUlD
-MUxNIE0tVGVybWluYWwiLCAiRkZSIDEwIE9obSIsICJNSUMxTE0ifSwKPj4+ICAJeyJNSUMxTE0g
-TS1UZXJtaW5hbCIsICJGRlIgMjAgT2htIiwgIk1JQzFMTSJ9LAo+Pj4gIAl7Ik1JQzFMTSBNLVRl
-cm1pbmFsIiwgIkZGUiA0MCBPaG0iLCAiTUlDMUxNIn0sCj4+PiArCXsiTUlDMUxNIE0tVGVybWlu
-YWwiLCAiT2ZmIiwgIk1JQzFMTSJ9LAo+Pj4gIAo+Pj4gIAl7Ik1JQ19HQUlOX0NUTCIsIE5VTEws
-ICJNSUMxTFAgUC1UZXJtaW5hbCJ9LAo+Pj4gIAl7Ik1JQ19HQUlOX0NUTCIsIE5VTEwsICJNSUMx
-UlAgUC1UZXJtaW5hbCJ9LAo+Pj4KPiAKPiAtIFDDqXRlcgo+IAo+IFRleGFzIEluc3RydW1lbnRz
-IEZpbmxhbmQgT3ksIFBvcmtrYWxhbmthdHUgMjIsIDAwMTgwIEhlbHNpbmtpLgo+IFktdHVubnVz
-L0J1c2luZXNzIElEOiAwNjE1NTIxLTQuIEtvdGlwYWlra2EvRG9taWNpbGU6IEhlbHNpbmtpCj4g
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+Fixes: f37fe2f9987b ("ASoC: uniphier: add support for UniPhier AIO common driver")
+Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
+---
+ aio-core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/uniphier/aio-core.c b/sound/soc/uniphier/aio-core.c
+index 7e9451c..1e5f053 100644
+--- a/sound/soc/uniphier/aio-core.c
++++ b/sound/soc/uniphier/aio-core.c
+@@ -904,7 +904,7 @@ void aiodma_ch_set_enable(struct uniphier_aio_sub *sub, int enable)
+ 	}
+ }
+ 
+-u64 aiodma_rb_get_rp(struct uniphier_aio_sub *sub)
++static u64 aiodma_rb_get_rp(struct uniphier_aio_sub *sub)
+ {
+ 	struct regmap *r = sub->aio->chip->regmap;
+ 	u32 pos_u, pos_l;
