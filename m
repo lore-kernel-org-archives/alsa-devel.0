@@ -1,73 +1,80 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v6 10/17] ASoC: fsl_ssi: Set xFEN0 and xFEN1
-	together
-Date: Mon, 12 Feb 2018 14:03:18 -0800
-Message-ID: <1518473005-14090-11-git-send-email-nicoleotsuka@gmail.com>
-References: <1518473005-14090-1-git-send-email-nicoleotsuka@gmail.com>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH v2 5/5] ALSA: emu10k1: add a IOMMU workaround
+Date: Mon, 12 Feb 2018 23:13:13 +0100
+Message-ID: <b146a1cb-a1c9-442c-149d-b0d2a017f719@maciej.szmigiero.name>
+References: <13361c4f-6203-8d83-d6c3-1e150224be49@maciej.szmigiero.name>
+ <s5hfu665ptx.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f66.google.com (mail-pg0-f66.google.com [74.125.83.66])
- by alsa0.perex.cz (Postfix) with ESMTP id A61A426759B
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 23:02:51 +0100 (CET)
-Received: by mail-pg0-f66.google.com with SMTP id g2so8413629pgn.7
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 14:02:51 -0800 (PST)
-In-Reply-To: <1518473005-14090-1-git-send-email-nicoleotsuka@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, timur@tabi.org
-Cc: mail@maciej.szmigiero.name, kernel@pengutronix.de, lgirdwood@gmail.com, alsa-devel@alsa-project.org, caleb@crome.org, linux-kernel@vger.kernel.org, arnaud.mouiche@invoxia.com, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hfu665ptx.wl-tiwai@suse.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-It'd be safer to enable both FIFOs for TX or RX at the same time.
+On 12.02.2018 13:56, Takashi Iwai wrote:
+> On Sat, 27 Jan 2018 15:42:59 +0100,
+>  Maciej S. Szmigiero  wrote:
+>>
+>> The Audigy 2 CA0102 chip (but most likely others from the emu10k1 family,
+>> too) has a problem that from time to time it likes to do few DMA reads a
+>> bit beyond its normal allocation and gets very confused if these reads get
+>> blocked by a IOMMU.
+>>
+>> For the first (reserved) page this happens multiple times at every
+>> playback, for various synth pages it happens randomly, rarely for PCM
+>> playback buffers and the page table memory itself.
+>> All these reads seem to follow a similar pattern, observed read offsets
+>> beyond the allocation end were 0x00, 0x40, 0x80 and 0xc0 (PCI cache line
+>> multiples), so it looks like the device tries to accesses up to 256 extra
+>> bytes.
+>>
+>> As a workaround let's widen these DMA allocations by an extra page if we
+>> detect that the device is behind a non-passthrough IOMMU (the DMA memory
+>> should be relatively plenty on IOMMU systems).
+>>
+>> Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+>> ---
+>> Changes from v1: Apply this workaround also to PCM playback buffers since
+>> it seems they are affected, too.
+> 
+> Instead of adjusting the allocation size in the caller side, how about
+> adding a new helper to wrap around the call of snd_dma_alloc_pages()?
+> 
+> We may need a counterpart to free pages in synth, but it's a single
+> place in __synth_free_pages(), so it can be open-coded with some
+> proper comments, too.
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Tested-by: Caleb Crome <caleb@crome.org>
-Tested-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
-Reviewed-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
----
- sound/soc/fsl/fsl_ssi.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+I guess you mean adding a new wrapper to the ALSA core somewhere near
+snd_dma_alloc_pages() (something named like
+snd_dma_dev_alloc_pages_maybe_wider() ?).
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 156f5132..00dfdc7 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -591,6 +591,11 @@ static void fsl_ssi_setup_regvals(struct fsl_ssi *ssi)
- 	if (fsl_ssi_is_ac97(ssi))
- 		vals[RX].scr = vals[TX].scr = 0;
- 
-+	if (ssi->use_dual_fifo) {
-+		vals[RX].srcr |= SSI_SRCR_RFEN1;
-+		vals[TX].stcr |= SSI_STCR_TFEN1;
-+	}
-+
- 	if (ssi->use_dma) {
- 		vals[RX].sier |= SSI_SIER_RDMAE;
- 		vals[TX].sier |= SSI_SIER_TDMAE;
-@@ -991,14 +996,9 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- 		     SSI_SFCSR_TFWM0(wm) | SSI_SFCSR_RFWM0(wm) |
- 		     SSI_SFCSR_TFWM1(wm) | SSI_SFCSR_RFWM1(wm));
- 
--	if (ssi->use_dual_fifo) {
--		regmap_update_bits(regs, REG_SSI_SRCR,
--				   SSI_SRCR_RFEN1, SSI_SRCR_RFEN1);
--		regmap_update_bits(regs, REG_SSI_STCR,
--				   SSI_STCR_TFEN1, SSI_STCR_TFEN1);
-+	if (ssi->use_dual_fifo)
- 		regmap_update_bits(regs, REG_SSI_SCR,
- 				   SSI_SCR_TCH_EN, SSI_SCR_TCH_EN);
--	}
- 
- 	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_AC97)
- 		fsl_ssi_setup_ac97(ssi);
--- 
-2.1.4
+Since snd_dma_alloc_pages() currently takes only a "struct device"
+per-device parameter we wouldn't have a place to store a flag indicating
+whether a device needs this workaround (or not) so we would need to
+detect it every time this wrapper function gets called - in contrast,
+in the current implementation this is done just once at the device
+initialization time in snd_emu10k1_detect_iommu().
+
+There are only 3 allocations that use snd_dma_alloc_pages() in this
+driver that would use this new wrapper function, and each time the
+overhead is just a two-line "if" block.
+If one excludes synth, since it already uses a helper function to
+compute these allocations lengths, that count lowers to only 2 places.
+
+That's why I think a driver-local change here is enough.
+
+Also, there is always a possibility to refactor the code into a common
+helper if it turns out that there are other sound card with the same
+problem.
+
+> 
+> thanks,
+> 
+> Takashi
+
+Thanks,
+Maciej
