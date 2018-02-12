@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs47l24: replace platform to component"
+Subject: Applied "ASoC: atmel: replace platform to component"
 	to the asoc tree
-Date: Mon, 12 Feb 2018 12:30:39 +0000
-Message-ID: <E1elDFn-0003GY-Nu@debutante>
-References: <87a7xjgb01.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Feb 2018 12:30:47 +0000
+Message-ID: <E1elDFv-0003IM-Q6@debutante>
+References: <87d12fgb15.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id F104D26754D
- for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:30:43 +0100 (CET)
-In-Reply-To: <87a7xjgb01.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C8CD626765F
+ for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2018 13:30:51 +0100 (CET)
+In-Reply-To: <87d12fgb15.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Simon <horms@verge.net.au>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs47l24: replace platform to component
+   ASoC: atmel: replace platform to component
 
 has been applied to the asoc tree at
 
@@ -53,124 +53,109 @@ to this mail.
 Thanks,
 Mark
 
->From 48102b0426f6d134ebd9f2624d5d42d9e7a8a9fd Mon Sep 17 00:00:00 2001
+>From 6dea9df84aa2c2c1c645fac933adf1c4e0c20ac7 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 02:44:44 +0000
-Subject: [PATCH] ASoC: cs47l24: replace platform to component
+Date: Mon, 29 Jan 2018 02:44:05 +0000
+Subject: [PATCH] ASoC: atmel: replace platform to component
 
 Now platform can be replaced to component, let's do it.
-This patch merges cs47l24_compr_platform into soc_codec_dev_cs47l24
+To avoid complex operation, this patch adds device pointer
+to atmel_classd.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs47l24.c | 42 +++++++++++++++++-------------------------
- 1 file changed, 17 insertions(+), 25 deletions(-)
+ sound/soc/atmel/atmel-classd.c  | 4 +++-
+ sound/soc/atmel/atmel-pcm-pdc.c | 6 +++---
+ sound/soc/atmel/atmel-pdmic.c   | 4 +++-
+ 3 files changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-index be2750680838..3f34de5f800e 100644
---- a/sound/soc/codecs/cs47l24.c
-+++ b/sound/soc/codecs/cs47l24.c
-@@ -33,6 +33,8 @@
- #include "wm_adsp.h"
- #include "cs47l24.h"
- 
-+#define DRV_NAME "cs47l24-codec"
-+
- struct cs47l24_priv {
- 	struct arizona_priv core;
- 	struct arizona_fll fll[2];
-@@ -1069,7 +1071,8 @@ static struct snd_soc_dai_driver cs47l24_dai[] = {
- static int cs47l24_open(struct snd_compr_stream *stream)
- {
- 	struct snd_soc_pcm_runtime *rtd = stream->private_data;
--	struct cs47l24_priv *priv = snd_soc_platform_get_drvdata(rtd->platform);
-+	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct cs47l24_priv *priv = snd_soc_component_get_drvdata(component);
- 	struct arizona *arizona = priv->core.arizona;
- 	int n_adsp;
- 
-@@ -1177,6 +1180,16 @@ static unsigned int cs47l24_digital_vu[] = {
- 	ARIZONA_DAC_DIGITAL_VOLUME_4L,
+diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+index ebabed69f0e6..6bc2b729495c 100644
+--- a/sound/soc/atmel/atmel-classd.c
++++ b/sound/soc/atmel/atmel-classd.c
+@@ -32,6 +32,7 @@ struct atmel_classd {
+ 	struct regmap *regmap;
+ 	struct clk *pclk;
+ 	struct clk *gclk;
++	struct device *dev;
+ 	int irq;
+ 	const struct atmel_classd_pdata *pdata;
  };
+@@ -165,7 +166,7 @@ atmel_classd_platform_configure_dma(struct snd_pcm_substream *substream,
+ 	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
  
-+static struct snd_compr_ops cs47l24_compr_ops = {
-+	.open		= cs47l24_open,
-+	.free		= wm_adsp_compr_free,
-+	.set_params	= wm_adsp_compr_set_params,
-+	.get_caps	= wm_adsp_compr_get_caps,
-+	.trigger	= wm_adsp_compr_trigger,
-+	.pointer	= wm_adsp_compr_pointer,
-+	.copy		= wm_adsp_compr_copy,
-+};
-+
- static const struct snd_soc_codec_driver soc_codec_dev_cs47l24 = {
- 	.probe = cs47l24_codec_probe,
- 	.remove = cs47l24_codec_remove,
-@@ -1187,6 +1200,8 @@ static const struct snd_soc_codec_driver soc_codec_dev_cs47l24 = {
- 	.set_pll = cs47l24_set_fll,
- 
- 	.component_driver = {
-+		.name			= DRV_NAME,
-+		.compr_ops		= &cs47l24_compr_ops,
- 		.controls		= cs47l24_snd_controls,
- 		.num_controls		= ARRAY_SIZE(cs47l24_snd_controls),
- 		.dapm_widgets		= cs47l24_dapm_widgets,
-@@ -1196,20 +1211,6 @@ static const struct snd_soc_codec_driver soc_codec_dev_cs47l24 = {
- 	},
- };
- 
--static const struct snd_compr_ops cs47l24_compr_ops = {
--	.open = cs47l24_open,
--	.free = wm_adsp_compr_free,
--	.set_params = wm_adsp_compr_set_params,
--	.get_caps = wm_adsp_compr_get_caps,
--	.trigger = wm_adsp_compr_trigger,
--	.pointer = wm_adsp_compr_pointer,
--	.copy = wm_adsp_compr_copy,
--};
--
--static const struct snd_soc_platform_driver cs47l24_compr_platform = {
--	.compr_ops = &cs47l24_compr_ops,
--};
--
- static int cs47l24_probe(struct platform_device *pdev)
- {
- 	struct arizona *arizona = dev_get_drvdata(pdev->dev.parent);
-@@ -1298,23 +1299,15 @@ static int cs47l24_probe(struct platform_device *pdev)
- 	if (ret < 0)
- 		goto err_dsp_irq;
- 
--	ret = snd_soc_register_platform(&pdev->dev, &cs47l24_compr_platform);
--	if (ret < 0) {
--		dev_err(&pdev->dev, "Failed to register platform: %d\n", ret);
--		goto err_spk_irqs;
--	}
--
- 	ret = snd_soc_register_codec(&pdev->dev, &soc_codec_dev_cs47l24,
- 				      cs47l24_dai, ARRAY_SIZE(cs47l24_dai));
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Failed to register codec: %d\n", ret);
--		goto err_platform;
-+		goto err_spk_irqs;
+ 	if (params_physical_width(params) != 16) {
+-		dev_err(rtd->platform->dev,
++		dev_err(dd->dev,
+ 			"only supports 16-bit audio data\n");
+ 		return -EINVAL;
+ 	}
+@@ -587,6 +588,7 @@ static int atmel_classd_probe(struct platform_device *pdev)
  	}
  
- 	return ret;
+ 	dd->phy_base = res->start;
++	dd->dev = dev;
  
--err_platform:
--	snd_soc_unregister_platform(&pdev->dev);
- err_spk_irqs:
- 	arizona_free_spk_irqs(arizona);
- err_dsp_irq:
-@@ -1328,7 +1321,6 @@ static int cs47l24_remove(struct platform_device *pdev)
- 	struct cs47l24_priv *cs47l24 = platform_get_drvdata(pdev);
- 	struct arizona *arizona = cs47l24->core.arizona;
+ 	dd->regmap = devm_regmap_init_mmio(dev, io_base,
+ 					&atmel_classd_regmap_config);
+diff --git a/sound/soc/atmel/atmel-pcm-pdc.c b/sound/soc/atmel/atmel-pcm-pdc.c
+index 91b7069c3499..99ca23d527c9 100644
+--- a/sound/soc/atmel/atmel-pcm-pdc.c
++++ b/sound/soc/atmel/atmel-pcm-pdc.c
+@@ -393,7 +393,7 @@ static const struct snd_pcm_ops atmel_pcm_ops = {
+ 	.mmap		= atmel_pcm_mmap,
+ };
  
--	snd_soc_unregister_platform(&pdev->dev);
- 	snd_soc_unregister_codec(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
+-static struct snd_soc_platform_driver atmel_soc_platform = {
++static struct snd_soc_component_driver atmel_soc_platform = {
+ 	.ops		= &atmel_pcm_ops,
+ 	.pcm_new	= atmel_pcm_new,
+ 	.pcm_free	= atmel_pcm_free,
+@@ -401,13 +401,13 @@ static struct snd_soc_platform_driver atmel_soc_platform = {
  
+ int atmel_pcm_pdc_platform_register(struct device *dev)
+ {
+-	return snd_soc_register_platform(dev, &atmel_soc_platform);
++	return devm_snd_soc_register_component(dev, &atmel_soc_platform,
++					       NULL, 0);
+ }
+ EXPORT_SYMBOL(atmel_pcm_pdc_platform_register);
+ 
+ void atmel_pcm_pdc_platform_unregister(struct device *dev)
+ {
+-	snd_soc_unregister_platform(dev);
+ }
+ EXPORT_SYMBOL(atmel_pcm_pdc_platform_unregister);
+ 
+diff --git a/sound/soc/atmel/atmel-pdmic.c b/sound/soc/atmel/atmel-pdmic.c
+index 8e3d34be9e69..4eea738c1047 100644
+--- a/sound/soc/atmel/atmel-pdmic.c
++++ b/sound/soc/atmel/atmel-pdmic.c
+@@ -32,6 +32,7 @@ struct atmel_pdmic {
+ 	struct regmap *regmap;
+ 	struct clk *pclk;
+ 	struct clk *gclk;
++	struct device *dev;
+ 	int irq;
+ 	struct snd_pcm_substream *substream;
+ 	const struct atmel_pdmic_pdata *pdata;
+@@ -206,7 +207,7 @@ atmel_pdmic_platform_configure_dma(struct snd_pcm_substream *substream,
+ 	ret = snd_hwparams_to_dma_slave_config(substream, params,
+ 					       slave_config);
+ 	if (ret) {
+-		dev_err(rtd->platform->dev,
++		dev_err(dd->dev,
+ 			"hw params to dma slave configure failed\n");
+ 		return ret;
+ 	}
+@@ -596,6 +597,7 @@ static int atmel_pdmic_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	dd->pdata = pdata;
++	dd->dev = dev;
+ 
+ 	dd->irq = platform_get_irq(pdev, 0);
+ 	if (dd->irq < 0) {
 -- 
 2.16.1
