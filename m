@@ -1,178 +1,77 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v3 25/25] arm64: dts: msm8996: db820c: Add sound card support
-Date: Tue, 13 Feb 2018 16:58:37 +0000
-Message-ID: <20180213165837.1620-26-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 06/25] dt-bindings: sound: qcom: Add
+	bindings for q6adm
+Date: Tue, 13 Feb 2018 16:58:18 +0000
+Message-ID: <20180213165837.1620-7-srinivas.kandagatla@linaro.org>
 References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr0-f194.google.com (mail-wr0-f194.google.com
+ [209.85.128.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7FE49267945
+ for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 18:01:23 +0100 (CET)
+Received: by mail-wr0-f194.google.com with SMTP id w77so4814767wrc.6
+ for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 09:01:23 -0800 (PST)
 In-Reply-To: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: david.brown@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com, linux-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, robh+dt@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, spatakok@qti.qualcomm.com, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch adds hdmi sound card support to db820c via qdsp.
-
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi | 44 +++++++++++++++++++-
- arch/arm64/boot/dts/qcom/msm8996.dtsi        | 62 ++++++++++++++++++++++++++++
- 2 files changed, 105 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/sound/qcom,q6adm.txt       | 31 ++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6adm.txt
 
-diff --git a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-index 9769053957af..6f6f21501ee9 100644
---- a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-+++ b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-@@ -18,7 +18,8 @@
- #include "apq8096-db820c-pmic-pins.dtsi"
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/gpio/gpio.h>
--
-+#include <dt-bindings/sound/qcom,q6afe.h>
-+#include <dt-bindings/sound/qcom,q6asm.h>
- / {
- 	aliases {
- 		serial0 = &blsp2_uart1;
-@@ -186,6 +187,7 @@
- 
- 				core-vdda-supply = <&pm8994_l12>;
- 				core-vcc-supply = <&pm8994_s4>;
-+				#sound-dai-cells = <1>;
- 			};
- 		};
- 	};
-@@ -360,4 +362,44 @@
- 			};
- 		};
- 	};
-+	adsp-pil {
-+		power-domains = <&gcc HLOS1_VOTE_LPASS_ADSP_GDSC>;
-+		smd-edge {
-+			apr {
-+				iommus = <&lpass_q6_smmu 1>;
-+				audio {
-+					compatible = "qcom,apq8096-sndcard";
-+					qcom,model = "DB820c";
-+					qcom,audio-routing =
-+						"RX_BIAS", "MCLK";
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6adm.txt b/Documentation/devicetree/bindings/sound/qcom,q6adm.txt
+new file mode 100644
+index 000000000000..e493dccfe116
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/qcom,q6adm.txt
+@@ -0,0 +1,31 @@
++Qualcomm Audio Device Manager (Q6ADM) binding
 +
-+					fe@1 {
-+						is-fe;
-+						link-name = "MultiMedia1 Playback";
-+						cpu {
-+							sound-dai = <&q6asm  MSM_FRONTEND_DAI_MULTIMEDIA1>;
-+						};
-+						platform {
-+							sound-dai = <&q6asm  MSM_FRONTEND_DAI_MULTIMEDIA1>;
-+						};
-+					};
++Q6ADM is one of the APR audio service on Q6DSP.
++Please refer to qcom,apr.txt for details of the coommon apr service bindings
++used by the apr service device.
 +
-+					be@1 {
-+						link-name = "HDMI Playback";
-+						cpu {
-+							sound-dai = <&q6afe AFE_PORT_HDMI_RX>;
-+						};
++- but must contain the following property:
 +
-+						platform {
-+							sound-dai = <&q6adm>;
-+						};
++- compatible:
++	Usage: required
++	Value type: <stringlist>
++	Definition: must be "qcom,adm-v<MAJOR-NUMBER>.<MINOR-NUMBER>".
++		    example "qcom,adm-v2.0"
 +
-+						codec {
-+							sound-dai = <&hdmi 0>;
-+						};
-+					};
-+				};
-+			};
-+		};
-+	};
- };
-diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-index c93bbae645bd..75cb055b0c55 100644
---- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-@@ -14,6 +14,7 @@
- #include <dt-bindings/clock/qcom,gcc-msm8996.h>
- #include <dt-bindings/clock/qcom,mmcc-msm8996.h>
- #include <dt-bindings/clock/qcom,rpmcc.h>
-+#include <dt-bindings/soc/qcom,apr.h>
- 
- / {
- 	model = "Qualcomm Technologies, Inc. MSM8996";
-@@ -1287,6 +1288,34 @@
- 					      "ref_clk";
- 			};
- 		};
++- qcom,apr-svc-id
++	Usage: required
++	Value type: <prop-encoded-array>
++	Definition: Must be 8 for Audio Device Manager Service.
 +
-+	        lpass_q6_smmu: arm,smmu-lpass_q6@1600000 {
-+			compatible = "qcom,msm8996-smmu-v2";
-+	                reg = <0x1600000 0x20000>;
-+	                #iommu-cells = <1>;
-+                        power-domains = <&gcc HLOS1_VOTE_LPASS_CORE_GDSC>;
++- qcom,apr-svc-name
++	Usage: required
++	Value type: <stringlist>
++	Definition: Must be "ADM"
 +
-+			#global-interrupts = <1>;
-+		        interrupts = <GIC_SPI 404 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 226 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 393 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 394 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 395 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 396 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 397 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 398 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 399 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 400 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 401 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 402 IRQ_TYPE_LEVEL_HIGH>,
-+		                <GIC_SPI 403 IRQ_TYPE_LEVEL_HIGH>;
++= EXAMPLE
 +
-+			clocks = <&gcc GCC_HLOS1_VOTE_LPASS_CORE_SMMU_CLK>,
-+				 <&gcc GCC_HLOS1_VOTE_LPASS_ADSP_SMMU_CLK>;
-+			clock-names = "iface", "bus";
-+                        status = "okay";
-+		};
-+
- 	};
- 
- 	adsp-pil {
-@@ -1315,6 +1344,39 @@
- 			qcom,ipc = <&apcs 16 8>;
- 			qcom,smd-edge = <1>;
- 			qcom,remote-pid = <2>;
-+			apr {
-+				compatible = "qcom,apr-v2";
-+				qcom,smd-channels = "apr_audio_svc";
-+				qcom,apr-dest-domain-id = <APR_DOMAIN_ADSP>;
-+
-+				q6core {
-+					qcom,apr-svc-name = "CORE";
-+					qcom,apr-svc-id = <APR_SVC_ADSP_CORE>;
-+					compatible = "qcom,q6core";
-+				};
-+
-+				q6afe: q6afe {
-+					compatible = "qcom,q6afe";
-+					qcom,apr-svc-name = "AFE";
-+					qcom,apr-svc-id = <APR_SVC_AFE>;
-+					#sound-dai-cells = <1>;
-+				};
-+
-+				q6asm: q6asm {
-+					compatible = "qcom,q6asm";
-+					qcom,apr-svc-name = "ASM";
-+					qcom,apr-svc-id = <APR_SVC_ASM>;
-+					#sound-dai-cells = <1>;
-+				};
-+
-+				q6adm: q6adm {
-+					compatible = "qcom,q6adm";
-+					qcom,apr-svc-name = "ADM";
-+					qcom,apr-svc-id = <APR_SVC_ADM>;
-+					#sound-dai-cells = <0>;
-+				};
-+
-+			};
- 		};
- 	};
- 
++q6adm: q6adm {
++	compatible = "qcom,q6adm-v2.0";
++	qcom,apr-svc-name = "ADM";
++	qcom,apr-svc-id = <APR_SVC_ADM>;
++};
 -- 
 2.15.1
