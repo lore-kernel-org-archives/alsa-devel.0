@@ -1,149 +1,57 @@
-From: Jan-Marek Glogowski <glogow@fbihome.de>
-Subject: [RfC][PATCH v2] ALSA: hda/realtek PCI quirk for
-	Fujitsu U7x7
-Date: Tue, 13 Feb 2018 16:05:38 +0100
-Message-ID: <0973174b-bd33-0a3c-bc12-d37ef61dc743@fbihome.de>
-References: <c6ec1a50-187e-42d8-4137-f162c52e4f79@fbihome.de>
- <dcac37ef-4319-9eb3-4652-17bc6aa8fbc9@fbihome.de>
- <s5h7erh4e7z.wl-tiwai@suse.de>
- <6d34fc90-48fb-8d5a-f7a5-7a3e33ddec9b@fbihome.de>
- <s5hzi4d6t5h.wl-tiwai@suse.de>
- <791b9188-c136-dd65-61c2-cb2e93d52876@fbihome.de>
- <s5hinb12be2.wl-tiwai@suse.de>
+From: Masahiro Yamada <yamada.masahiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>
+Subject: Re: [PATCH v3 0/3] add UniPhier audio nodes
+Date: Wed, 14 Feb 2018 01:06:49 +0900
+Message-ID: <CAK7LNARaJB-ymtj3b0XQn0P7yo7se0CXgCCO6pb5oKEhCxf4CQ@mail.gmail.com>
+References: <20180213130156.27827-1-suzuki.katsuhiro@socionext.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ironchief.h-da.de (ironchief.h-da.de [141.100.10.235])
- by alsa0.perex.cz (Postfix) with ESMTP id 16B69267922
- for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 16:05:39 +0100 (CET)
-In-Reply-To: <s5hinb12be2.wl-tiwai@suse.de>
-Content-Language: en-GB
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20180213130156.27827-1-suzuki.katsuhiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Katsuhiro Suzuki <suzuki.katsuhiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>
+Cc: linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Masami Hiramatsu <masami.hiramatsu-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Jassi Brar <jaswinder.singh-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Linux Kernel Mailing List <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Am 13.02.2018 um 15:48 schrieb Takashi Iwai:
-> On Tue, 13 Feb 2018 15:21:48 +0100,
-> Jan-Marek Glogowski wrote:
->>
->> Am 13.02.2018 um 12:11 schrieb Takashi Iwai:
->>> The driver doesn't check any difference of the position for
->>> identifying the jack detection capability, so you can apply the same
->>> quirk to both models.  Then I prefer putting with SND_PCI_QUIRK().
->>
->> So the patch is implemented in the spirit of what I actually did when analysing an fixing the bug via hdajackretask. Instead of fixed numbers, it takes the original headphone pin, changes the device to microphone and updates the mics' pin config.
-> 
-> The new patch looks better, but could you try to address warnings by
-> checkpatch.pl?  The 80-chars warning for SND_PCI_QUIRK() line can be
-> ignored.
+2018-02-13 22:01 GMT+09:00 Katsuhiro Suzuki <suzuki.katsuhiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>:
+> This series adds device-tree nodes for Socionext audio system
+> for UniPhier LD11/LD20 SoCs. This one enables I2S output for
+> Line-In, Line-Out, S/PDIF output and compress audio output.
+>
+> Katsuhiro Suzuki (3):
+>   arm64: dts: uniphier: add sound node for UniPhier
+>   arm64: dts: uniphier: add speaker out for UniPhier LD11/LD20 boards
+>   arm64: dts: uniphier: add compress audio out for UniPhier LD11/LD20
 
-Not sure if I should include the first hunk, but when I implemented my function I assumed the long function parameter list was ok, seeing alc269_fixup_pincfg_no_hp_to_lineout.
 
-This passes "checkpatch.pl --strict", except for the SND_PCI_QUIRK line.
+Series, applied to linux-uniphier.  Thanks!
 
-Thanks for the quick reviews,
+Note, I locally fixed trivial things:
+ - Use #include <...> instead of #include "..." to include dt-binding header
+ - Fix DTC warnings (Character '_' not recommended in node)
+ - Remove unused labels such as 'audio', 'evea'
 
-Jan-Marek
 
-----
 
->From a1793e1510da44143a3265e98301e9ce7d8f8c54 Mon Sep 17 00:00:00 2001
-From: Jan-Marek Glogowski <jan-marek.glogowski@muenchen.de>
-Date: Wed, 24 Jan 2018 18:57:38 +0100
-Subject: [PATCH] ALSA: hda/realtek: PCI quirk for Fujitsu U7x7
+>  .../boot/dts/socionext/uniphier-ld11-global.dts    | 62 ++++++++++++++
+>  arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi   | 92 +++++++++++++++++++++
+>  .../boot/dts/socionext/uniphier-ld20-global.dts    | 62 ++++++++++++++
+>  arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi   | 96 ++++++++++++++++++++++
+>  4 files changed, 312 insertions(+)
+>
+> --
+> 2.15.1
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe devicetree" in
+> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-These laptops have a combined jack to attach headsets, the U727 on
-the left, the U757 on the right, but a headsets microphone doesn't
-work. Using hdajacksensetest I found that pin 0x19 changed the
-present state when plugging the headset, in addition to 0x21, but
-didn't have the correct configuration (shown as "Not connected").
 
-So this sets the configuration to the same values as the headphone
-pin 0x21 except for the device type microphone, which makes it
-work correctly. With the patch the configured pins for U727 are
 
-Pin 0x12 (Internal Mic, Mobile-In): present = No
-Pin 0x14 (Internal Speaker): present = No
-Pin 0x19 (Black Mic, Left side): present = No
-Pin 0x1d (Internal Aux): present = No
-Pin 0x21 (Black Headphone, Left side): present = No
-
-Signed-off-by: Jan-Marek Glogowski <glogow@fbihome.de>
----
- sound/pci/hda/patch_realtek.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 2347588..fc87d32 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3457,7 +3457,8 @@ static int alc269_resume(struct hda_codec *codec)
- #endif /* CONFIG_PM */
- 
- static void alc269_fixup_pincfg_no_hp_to_lineout(struct hda_codec *codec,
--						 const struct hda_fixup *fix, int action)
-+						 const struct hda_fixup *fix,
-+						 int action)
- {
- 	struct alc_spec *spec = codec->spec;
- 
-@@ -3465,6 +3466,20 @@ static void alc269_fixup_pincfg_no_hp_to_lineout(struct hda_codec *codec,
- 		spec->parse_flags = HDA_PINCFG_NO_HP_FIXUP;
- }
- 
-+static void alc269_fixup_pincfg_U7x7_headset_mic(struct hda_codec *codec,
-+						 const struct hda_fixup *fix,
-+						 int action)
-+{
-+	unsigned int cfg_headphone = snd_hda_codec_get_pincfg(codec, 0x21);
-+	unsigned int cfg_headset_mic = snd_hda_codec_get_pincfg(codec, 0x19);
-+
-+	if (cfg_headphone && cfg_headset_mic == 0x411111f0)
-+		// same config, but a mic instead of a headphone
-+		snd_hda_codec_set_pincfg
-+			(codec, 0x19, (cfg_headphone & ~AC_DEFCFG_DEVICE)
-+			 + (AC_JACK_MIC_IN << AC_DEFCFG_DEVICE_SHIFT));
-+}
-+
- static void alc269_fixup_hweq(struct hda_codec *codec,
- 			       const struct hda_fixup *fix, int action)
- {
-@@ -5351,6 +5366,7 @@ enum {
- 	ALC269_FIXUP_LIFEBOOK_EXTMIC,
- 	ALC269_FIXUP_LIFEBOOK_HP_PIN,
- 	ALC269_FIXUP_LIFEBOOK_NO_HP_TO_LINEOUT,
-+	ALC255_FIXUP_LIFEBOOK_U7x7_HEADSET_MIC,
- 	ALC269_FIXUP_AMIC,
- 	ALC269_FIXUP_DMIC,
- 	ALC269VB_FIXUP_AMIC,
-@@ -5556,6 +5572,10 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc269_fixup_pincfg_no_hp_to_lineout,
- 	},
-+	[ALC255_FIXUP_LIFEBOOK_U7x7_HEADSET_MIC] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc269_fixup_pincfg_U7x7_headset_mic,
-+	},
- 	[ALC269_FIXUP_AMIC] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = (const struct hda_pintbl[]) {
-@@ -6422,6 +6442,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x10cf, 0x159f, "Lifebook E780", ALC269_FIXUP_LIFEBOOK_NO_HP_TO_LINEOUT),
- 	SND_PCI_QUIRK(0x10cf, 0x15dc, "Lifebook T731", ALC269_FIXUP_LIFEBOOK_HP_PIN),
- 	SND_PCI_QUIRK(0x10cf, 0x1757, "Lifebook E752", ALC269_FIXUP_LIFEBOOK_HP_PIN),
-+	SND_PCI_QUIRK(0x10cf, 0x1629, "Lifebook U7x7", ALC255_FIXUP_LIFEBOOK_U7x7_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x10cf, 0x1845, "Lifebook U904", ALC269_FIXUP_LIFEBOOK_EXTMIC),
- 	SND_PCI_QUIRK(0x10ec, 0x10f2, "Intel Reference board", ALC700_FIXUP_INTEL_REFERENCE),
- 	SND_PCI_QUIRK(0x144d, 0xc109, "Samsung Ativ book 9 (NP900X3G)", ALC269_FIXUP_INV_DMIC),
 -- 
-2.1.4
+Best Regards
+Masahiro Yamada
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
