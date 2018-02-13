@@ -1,120 +1,108 @@
 From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: [PATCH v3 3/5] ALSA: emu10k1: add optional debug
- printouts with DMA addresses
-Date: Wed, 14 Feb 2018 00:06:18 +0100
-Message-ID: <b5fdde1e-c8ec-f1cc-94fb-780efb1b540b@maciej.szmigiero.name>
+Subject: [PATCH v3 4/5] ALSA: emu10k1: make sure synth DMA pages are allocated
+ with DMA functions
+Date: Wed, 14 Feb 2018 00:06:34 +0100
+Message-ID: <048a4aa9-4ca8-5d03-7ff6-097e87306da1@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=iso-8859-2
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
- by alsa0.perex.cz (Postfix) with ESMTP id DCE782679D9
- for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 00:06:19 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When we get a IOMMU page fault for a emu10k1 device it is very hard to
-discover which of chip many DMA allocations triggered it (since on a IOMMU
-system the DMA address space is often very different from the CPU one).
-Let's add optional debug printouts providing this information.
+Commit a5003fc04113 ("[ALSA] emu10k1 - simplify page allocation for synth")
+switched from using the DMA allocator for synth DMA pages to manually
+calling alloc_page().
+However, this usage has an implicit assumption that the DMA address space
+for the emu10k1-family chip is the same as the CPU physical address space
+which is not true for a system with a IOMMU.
 
-These debug printouts are only enabled on an explicit request via the
-kernel dynamic debug mechanism.
+Since this made the synth part of the driver non-functional on such systems
+let's effectively revert that commit (while keeping the
+__synth_free_pages() simplification).
 
 Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 ---
-Changes from v1: Fix a sparse warning by changing a variable type in
-__{get,set}_ptb_entry from u32 to __le32, don't open code EMUPAGESIZE.
+Changes from v1: None in this patch.
 
-Changes from v2: None in this patch.
+Changes from v2: Keep the __synth_free_pages() simplification.
 
- sound/pci/emu10k1/emu10k1_main.c |  8 ++++++++
- sound/pci/emu10k1/memory.c       | 15 +++++++++++----
- 2 files changed, 19 insertions(+), 4 deletions(-)
+ sound/pci/emu10k1/memory.c | 44 +++++++++++++++++++++++++++-----------------
+ 1 file changed, 27 insertions(+), 17 deletions(-)
 
-diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
-index 11e868f569d6..8decd2a7a404 100644
---- a/sound/pci/emu10k1/emu10k1_main.c
-+++ b/sound/pci/emu10k1/emu10k1_main.c
-@@ -1898,6 +1898,9 @@ int snd_emu10k1_create(struct snd_card *card,
- 		err = -ENOMEM;
- 		goto error;
- 	}
-+	dev_dbg(card->dev, "page table address range is %.8lx:%.8lx\n",
-+		(unsigned long)emu->ptb_pages.addr,
-+		(unsigned long)(emu->ptb_pages.addr + emu->ptb_pages.bytes));
- 
- 	emu->page_ptr_table = vmalloc(emu->max_cache_pages * sizeof(void *));
- 	emu->page_addr_table = vmalloc(emu->max_cache_pages *
-@@ -1912,6 +1915,11 @@ int snd_emu10k1_create(struct snd_card *card,
- 		err = -ENOMEM;
- 		goto error;
- 	}
-+	dev_dbg(card->dev, "silent page range is %.8lx:%.8lx\n",
-+		(unsigned long)emu->silent_page.addr,
-+		(unsigned long)(emu->silent_page.addr +
-+				emu->silent_page.bytes));
-+
- 	emu->memhdr = snd_util_memhdr_new(emu->max_cache_pages * PAGE_SIZE);
- 	if (emu->memhdr == NULL) {
- 		err = -ENOMEM;
 diff --git a/sound/pci/emu10k1/memory.c b/sound/pci/emu10k1/memory.c
-index eaa61024ac7f..fcb04cbbc9ab 100644
+index fcb04cbbc9ab..1d0ce7356bbd 100644
 --- a/sound/pci/emu10k1/memory.c
 +++ b/sound/pci/emu10k1/memory.c
-@@ -34,7 +34,10 @@
-  * aligned pages in others
-  */
- #define __set_ptb_entry(emu,page,addr) \
--	(((u32 *)(emu)->ptb_pages.area)[page] = cpu_to_le32(((addr) << (emu->address_mode)) | (page)))
-+	(((__le32 *)(emu)->ptb_pages.area)[page] = \
-+	 cpu_to_le32(((addr) << (emu->address_mode)) | (page)))
-+#define __get_ptb_entry(emu, page) \
-+	(le32_to_cpu(((__le32 *)(emu)->ptb_pages.area)[page]))
- 
- #define UNIT_PAGES		(PAGE_SIZE / EMUPAGESIZE)
- #define MAX_ALIGN_PAGES0		(MAXPAGES0 / UNIT_PAGES)
-@@ -44,8 +47,7 @@
- /* get offset address from aligned page */
- #define aligned_page_offset(page)	((page) << PAGE_SHIFT)
- 
--#if PAGE_SIZE == 4096
--/* page size == EMUPAGESIZE */
-+#if PAGE_SIZE == EMUPAGESIZE && !IS_ENABLED(CONFIG_DYNAMIC_DEBUG)
- /* fill PTB entrie(s) corresponding to page with addr */
- #define set_ptb_entry(emu,page,addr)	__set_ptb_entry(emu,page,addr)
- /* fill PTB entrie(s) corresponding to page with silence pointer */
-@@ -58,6 +60,8 @@ static inline void set_ptb_entry(struct snd_emu10k1 *emu, int page, dma_addr_t a
- 	page *= UNIT_PAGES;
- 	for (i = 0; i < UNIT_PAGES; i++, page++) {
- 		__set_ptb_entry(emu, page, addr);
-+		dev_dbg(emu->card->dev, "mapped page %d to entry %.8x\n", page,
-+			(unsigned int)__get_ptb_entry(emu, page));
- 		addr += EMUPAGESIZE;
- 	}
- }
-@@ -65,9 +69,12 @@ static inline void set_silent_ptb(struct snd_emu10k1 *emu, int page)
+@@ -461,10 +461,19 @@ static void get_single_page_range(struct snd_util_memhdr *hdr,
+ static void __synth_free_pages(struct snd_emu10k1 *emu, int first_page,
+ 			       int last_page)
  {
- 	int i;
- 	page *= UNIT_PAGES;
--	for (i = 0; i < UNIT_PAGES; i++, page++)
-+	for (i = 0; i < UNIT_PAGES; i++, page++) {
- 		/* do not increment ptr */
- 		__set_ptb_entry(emu, page, emu->silent_page.addr);
-+		dev_dbg(emu->card->dev, "mapped silent page %d to entry %.8x\n",
-+			page, (unsigned int)__get_ptb_entry(emu, page));
-+	}
- }
- #endif /* PAGE_SIZE */
++	struct snd_dma_buffer dmab;
+ 	int page;
  
++	dmab.dev.type = SNDRV_DMA_TYPE_DEV;
++	dmab.dev.dev = snd_dma_pci_data(emu->pci);
++
+ 	for (page = first_page; page <= last_page; page++) {
+-		free_page((unsigned long)emu->page_ptr_table[page]);
++		if (emu->page_ptr_table[page] == NULL)
++			continue;
++		dmab.area = emu->page_ptr_table[page];
++		dmab.addr = emu->page_addr_table[page];
++		dmab.bytes = PAGE_SIZE;
++		snd_dma_free_pages(&dmab);
+ 		emu->page_addr_table[page] = 0;
+ 		emu->page_ptr_table[page] = NULL;
+ 	}
+@@ -476,30 +485,31 @@ static void __synth_free_pages(struct snd_emu10k1 *emu, int first_page,
+ static int synth_alloc_pages(struct snd_emu10k1 *emu, struct snd_emu10k1_memblk *blk)
+ {
+ 	int page, first_page, last_page;
++	struct snd_dma_buffer dmab;
+ 
+ 	emu10k1_memblk_init(blk);
+ 	get_single_page_range(emu->memhdr, blk, &first_page, &last_page);
+ 	/* allocate kernel pages */
+ 	for (page = first_page; page <= last_page; page++) {
+-		/* first try to allocate from <4GB zone */
+-		struct page *p = alloc_page(GFP_KERNEL | GFP_DMA32 |
+-					    __GFP_NOWARN);
+-		if (!p || (page_to_pfn(p) & ~(emu->dma_mask >> PAGE_SHIFT))) {
+-			if (p)
+-				__free_page(p);
+-			/* try to allocate from <16MB zone */
+-			p = alloc_page(GFP_ATOMIC | GFP_DMA |
+-				       __GFP_NORETRY | /* no OOM-killer */
+-				       __GFP_NOWARN);
+-		}
+-		if (!p) {
+-			__synth_free_pages(emu, first_page, page - 1);
+-			return -ENOMEM;
++		if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
++					snd_dma_pci_data(emu->pci),
++					PAGE_SIZE, &dmab) < 0)
++			goto __fail;
++		if (!is_valid_page(emu, dmab.addr)) {
++			snd_dma_free_pages(&dmab);
++			goto __fail;
+ 		}
+-		emu->page_addr_table[page] = page_to_phys(p);
+-		emu->page_ptr_table[page] = page_address(p);
++		emu->page_addr_table[page] = dmab.addr;
++		emu->page_ptr_table[page] = dmab.area;
+ 	}
+ 	return 0;
++
++__fail:
++	/* release allocated pages */
++	last_page = page - 1;
++	__synth_free_pages(emu, first_page, last_page);
++
++	return -ENOMEM;
+ }
+ 
+ /*
