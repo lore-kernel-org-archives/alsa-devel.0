@@ -1,57 +1,107 @@
-From: Masahiro Yamada <yamada.masahiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>
-Subject: Re: [PATCH v3 0/3] add UniPhier audio nodes
-Date: Wed, 14 Feb 2018 01:06:49 +0900
-Message-ID: <CAK7LNARaJB-ymtj3b0XQn0P7yo7se0CXgCCO6pb5oKEhCxf4CQ@mail.gmail.com>
-References: <20180213130156.27827-1-suzuki.katsuhiro@socionext.com>
+From: Kirill Marinushkin <k.marinushkin@gmail.com>
+Subject: Re: [PATCH] ALSA: usb-audio: Fix UAC2 get_ctl request with a RANGE
+ attribute
+Date: Tue, 13 Feb 2018 17:27:42 +0100
+Message-ID: <1212656b-5eae-c3fe-f001-e9594d7bdb80@gmail.com>
+References: <20180129053755.20136-1-k.marinushkin@gmail.com>
+ <s5hvaf95p4i.wl-tiwai@suse.de>
+ <40196230-8f73-4cca-08e5-d67bfbea2d6e@gmail.com>
+ <s5hinb2aauh.wl-tiwai@suse.de>
+ <120bc0f8-f472-268d-1247-3245ae994fe5@gmail.com>
+ <s5hk1vh4h02.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20180213130156.27827-1-suzuki.katsuhiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Katsuhiro Suzuki <suzuki.katsuhiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>
-Cc: linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Masami Hiramatsu <masami.hiramatsu-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Jassi Brar <jaswinder.singh-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Linux Kernel Mailing List <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <s5hk1vh4h02.wl-tiwai@suse.de>
+Content-Language: en-US
+Sender: stable-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: perex@perex.cz, alsa-devel@alsa-project.org, Stephen Barber <smbarber@chromium.org>, Bhumika Goyal <bhumirks@gmail.com>, Jaejoong Kim <climbbb.kim@gmail.com>, Julian Scheel <julian@jusst.de>, linux-kernel@vger.kernel.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-2018-02-13 22:01 GMT+09:00 Katsuhiro Suzuki <suzuki.katsuhiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>:
-> This series adds device-tree nodes for Socionext audio system
-> for UniPhier LD11/LD20 SoCs. This one enables I2S output for
-> Line-In, Line-Out, S/PDIF output and compress audio output.
+On 02/13/18 06:04, Takashi Iwai wrote:
+> On Mon, 12 Feb 2018 20:32:53 +0100,
+> Kirill Marinushkin wrote:
+>> Hello maintainers of <stable@vger.kernel.org>,
+>>
+>>
+>> As discussed earlier in this thread, I propose this patch to stable.
+>>
+>> It fixes the issue, which exists since v2.6.34.
+> It's already marked in the applied patch, so you don't need to ping
+> stable kernel guys.
 >
-> Katsuhiro Suzuki (3):
->   arm64: dts: uniphier: add sound node for UniPhier
->   arm64: dts: uniphier: add speaker out for UniPhier LD11/LD20 boards
->   arm64: dts: uniphier: add compress audio out for UniPhier LD11/LD20
-
-
-Series, applied to linux-uniphier.  Thanks!
-
-Note, I locally fixed trivial things:
- - Use #include <...> instead of #include "..." to include dt-binding header
- - Fix DTC warnings (Character '_' not recommended in node)
- - Remove unused labels such as 'audio', 'evea'
-
-
-
->  .../boot/dts/socionext/uniphier-ld11-global.dts    | 62 ++++++++++++++
->  arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi   | 92 +++++++++++++++++++++
->  .../boot/dts/socionext/uniphier-ld20-global.dts    | 62 ++++++++++++++
->  arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi   | 96 ++++++++++++++++++++++
->  4 files changed, 312 insertions(+)
 >
-> --
-> 2.15.1
+> thanks,
 >
-> --
-> To unsubscribe from this list: send the line "unsubscribe devicetree" in
-> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Takashi
 
+Hello Takashi,
 
+Thank you for the clarification
 
--- 
-Best Regards
-Masahiro Yamada
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Best Regards,
+Kirill
+>
+>>
+>> Best Regards,
+>>
+>> Kirill
+>>
+>> On 02/12/18 09:08, Takashi Iwai wrote:
+>>> On Thu, 08 Feb 2018 07:21:36 +0100,
+>>> Kirill Marinushkin wrote:
+>>>> On 02/07/18 06:45, Takashi Iwai wrote:
+>>>>> On Mon, 29 Jan 2018 06:37:55 +0100,
+>>>>> Kirill Marinushkin wrote:
+>>>>>> The layout of the UAC2 Control request and response varies depending on
+>>>>>> the request type. With the current implementation, only the Layout 2
+>>>>>> Parameter Block (with the 2-byte sized RANGE attribute) is handled
+>>>>>> properly. For the Control requests with the 1-byte sized RANGE attribute
+>>>>>> (Bass Control, Mid Control, Tremble Control), the response is parsed
+>>>>>> incorrectly.
+>>>>>>
+>>>>>> This commit:
+>>>>>> * fixes the wLength field value in the request
+>>>>>> * fixes parsing the range values from the response
+>>>>>>
+>>>>>> Fixes: 23caaf19b11e ("ALSA: usb-mixer: Add support for Audio Class v2.0")
+>>>>>> Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
+>>>>>> Cc: Jaroslav Kysela <perex@perex.cz>
+>>>>>> Cc: Takashi Iwai <tiwai@suse.com>
+>>>>>> Cc: Jaejoong Kim <climbbb.kim@gmail.com>
+>>>>>> Cc: Bhumika Goyal <bhumirks@gmail.com>
+>>>>>> Cc: Stephen Barber <smbarber@chromium.org>
+>>>>>> Cc: Julian Scheel <julian@jusst.de>
+>>>>>> Cc: alsa-devel@alsa-project.org
+>>>>>> Cc: linux-kernel@vger.kernel.org
+>>>>> Sorry for the late reply, as I've been (and still) off.
+>>>>>
+>>>>> Does this bug actually hit on any real devices, or is it only a
+>>>>> logical error so far?  In the former case, a Cc to stable is
+>>>>> mandatory.
+>>>>>
+>>>>> In anyway, I'll review and merge it properly once after I back to
+>>>>> work.
+>>>>>
+>>>>>
+>>>>> thanks,
+>>>>>
+>>>>> Takashi
+>>>> Hello Takashi,
+>>>>
+>>>> Thank you for your answer. I will wait until you are back to work, don't 
+>>>> worry about the late replies.
+>>>>
+>>>> I did not hit the issue on a real device.
+>>>>
+>>>> During my UAC2 experiments, I reproduced this issue on the development 
+>>>> board, and then tested my solution on it.
+>>> OK, if it happened on a development system, it's a real issue, and we
+>>> should put Cc to stable.  Now I applied the patch.
+>>>
+>>> Thanks!
+>>>
+>>>
+>>> Takashi
