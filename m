@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: suppress rsnd_dai_call() debug
-	message" to the asoc tree
-Date: Tue, 13 Feb 2018 12:16:11 +0000
-Message-ID: <E1elZVL-0005YN-Gv@debutante>
-References: <873725lk0x.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: wm9081: fixup wm9081_digital_mute() reg
+	read" to the asoc tree
+Date: Tue, 13 Feb 2018 12:15:49 +0000
+Message-ID: <E1elZUz-0005VE-8x@debutante>
+References: <871shplhwp.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BC3B8267963
- for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 13:16:13 +0100 (CET)
-In-Reply-To: <873725lk0x.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8058B26795E
+ for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 13:16:11 +0100 (CET)
+In-Reply-To: <871shplhwp.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, hiroyuki.yokoyama.vx@renesas.com
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Mark Brown <broonie@kernel.org>, kbuild test robot <fengguang.wu@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: suppress rsnd_dai_call() debug message
+   ASoC: wm9081: fixup wm9081_digital_mute() reg read
 
 has been applied to the asoc tree at
 
@@ -53,71 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 1f6e920faae065fa8e6985b99ec86899bc3308de Mon Sep 17 00:00:00 2001
+>From 1417c5fa3962d768bb8f18f4725a5fc039dbbb0e Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 13 Feb 2018 02:09:14 +0000
-Subject: [PATCH] ASoC: rsnd: suppress rsnd_dai_call() debug message
+Date: Tue, 13 Feb 2018 02:54:58 +0000
+Subject: [PATCH] ASoC: wm9081: fixup wm9081_digital_mute() reg read
 
-rsnd_dai_call() is using dev_dbg(), but its message is sometimes
-blocks nessesary other messages. If RSND_DEBUG_NO_DAI_CALL was
-defined it will be suppressed by this patch.
+commit 48c338764296 ("ASoC: wm9081: replace codec to component")
+replaced codec to component, but it didn't keep WM9081_DAC_DIGITAL_2
+value to reg. This patch fixup it.
 
-Reported-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 11 ++++++++++-
- sound/soc/sh/rcar/rsnd.h | 10 ++++++++++
- 2 files changed, 20 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wm9081.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 64d5ecb86528..5aafc37f5119 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -93,6 +93,15 @@
-  *  [mod]->fn() -> [mod]->fn() -> [mod]->fn()...
-  *
-  */
-+
-+/*
-+ * you can enable below define if you don't need
-+ * DAI status debug message when debugging
-+ * see rsnd_dbg_dai_call()
-+ *
-+ * #define RSND_DEBUG_NO_DAI_CALL 1
-+ */
-+
- #include <linux/pm_runtime.h>
- #include "rsnd.h"
+diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
+index 52dd610cd8dc..5a0ea7b3c149 100644
+--- a/sound/soc/codecs/wm9081.c
++++ b/sound/soc/codecs/wm9081.c
+@@ -1155,7 +1155,7 @@ static int wm9081_digital_mute(struct snd_soc_dai *codec_dai, int mute)
+ 	struct snd_soc_component *component = codec_dai->component;
+ 	unsigned int reg;
  
-@@ -468,7 +477,7 @@ static int rsnd_status_update(u32 *status,
- 						__rsnd_mod_shift_##fn,	\
- 						__rsnd_mod_add_##fn,	\
- 						__rsnd_mod_call_##fn);	\
--		dev_dbg(dev, "%s[%d]\t0x%08x %s\n",			\
-+		rsnd_dbg_dai_call(dev, "%s[%d]\t0x%08x %s\n",		\
- 			rsnd_mod_name(mod), rsnd_mod_id(mod), *status,	\
- 			(func_call && (mod)->ops->fn) ? #fn : "");	\
- 		if (func_call && (mod)->ops->fn)			\
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 5241ea7cf153..172c8d612890 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -798,4 +798,14 @@ void rsnd_mod_make_sure(struct rsnd_mod *mod, enum rsnd_mod_type type);
- 	if (!IS_BUILTIN(RSND_DEBUG_NO_IRQ_STATUS))	\
- 		dev_dbg(dev, param)
+-	snd_soc_component_read32(component, WM9081_DAC_DIGITAL_2);
++	reg = snd_soc_component_read32(component, WM9081_DAC_DIGITAL_2);
  
-+/*
-+ * If you don't need rsnd_dai_call debug message,
-+ * define RSND_DEBUG_NO_DAI_CALL as 1 on top of core.c
-+ *
-+ * #define RSND_DEBUG_NO_DAI_CALL 1
-+ */
-+#define rsnd_dbg_dai_call(dev, param...)		\
-+	if (!IS_BUILTIN(RSND_DEBUG_NO_DAI_CALL))	\
-+		dev_dbg(dev, param)
-+
- #endif
+ 	if (mute)
+ 		reg |= WM9081_DAC_MUTE;
 -- 
 2.16.1
