@@ -1,404 +1,282 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v3 10/25] ASoC: qcom: q6asm: Add support to
-	memory map and unmap
-Date: Tue, 13 Feb 2018 16:58:22 +0000
-Message-ID: <20180213165837.1620-11-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 17/25] ASoC: qcom: q6afe-dai: add support to slim afe dais
+Date: Tue, 13 Feb 2018 16:58:29 +0000
+Message-ID: <20180213165837.1620-18-srinivas.kandagatla@linaro.org>
 References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B74F267763
- for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 18:01:28 +0100 (CET)
-Received: by mail-wm0-f68.google.com with SMTP id f71so17332531wmf.0
- for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 09:01:28 -0800 (PST)
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
 In-Reply-To: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-arm-msm-owner@vger.kernel.org
 To: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, robh+dt@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, spatakok@qti.qualcomm.com, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: david.brown@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com, linux-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch adds support to memory map and unmap regions commands in
-q6asm module.
+This patch adds support to SLIMBus AFE backend dais.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/q6asm.c | 312 +++++++++++++++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6asm.h |   5 +
- 2 files changed, 317 insertions(+)
+ sound/soc/qcom/qdsp6/q6afe-dai.c | 211 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 211 insertions(+)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
-index 768d9b446da9..412275edb15c 100644
---- a/sound/soc/qcom/qdsp6/q6asm.c
-+++ b/sound/soc/qcom/qdsp6/q6asm.c
-@@ -17,10 +17,47 @@
- #include "q6dsp-errno.h"
- #include "q6dsp-common.h"
+diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
+index f6a618e9db9e..39badb701be0 100644
+--- a/sound/soc/qcom/qdsp6/q6afe-dai.c
++++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
+@@ -59,6 +59,37 @@ static const struct snd_kcontrol_new q6afe_config_controls[] = {
+ 				 q6hdmi_format_put),
+ };
  
-+#define ASM_CMD_SHARED_MEM_MAP_REGIONS		0x00010D92
-+#define ASM_CMDRSP_SHARED_MEM_MAP_REGIONS	0x00010D93
-+#define ASM_CMD_SHARED_MEM_UNMAP_REGIONS	0x00010D94
-+
- #define ASM_SYNC_IO_MODE		0x0001
- #define ASM_ASYNC_IO_MODE		0x0002
- #define ASM_TUN_READ_IO_MODE		0x0004	/* tunnel read write mode */
- #define ASM_TUN_WRITE_IO_MODE		0x0008	/* tunnel read write mode */
-+#define ASM_SHIFT_GAPLESS_MODE_FLAG	31
-+#define ADSP_MEMORY_MAP_SHMEM8_4K_POOL	3
-+
-+struct avs_cmd_shared_mem_map_regions {
-+	struct apr_hdr hdr;
-+	u16 mem_pool_id;
-+	u16 num_regions;
-+	u32 property_flag;
-+} __packed;
-+
-+struct avs_shared_map_region_payload {
-+	u32 shm_addr_lsw;
-+	u32 shm_addr_msw;
-+	u32 mem_size_bytes;
-+} __packed;
-+
-+struct avs_cmd_shared_mem_unmap_regions {
-+	struct apr_hdr hdr;
-+	u32 mem_map_handle;
-+} __packed;
-+
-+struct audio_buffer {
-+	phys_addr_t phys;
-+	uint32_t used;
-+	uint32_t size;		/* size of buffer */
-+};
-+
-+struct audio_port_data {
-+	struct audio_buffer *buf;
-+	uint32_t num_periods;
-+	uint32_t dsp_buf;
-+	uint32_t mem_map_handle;
-+};
- 
- struct audio_client {
- 	int session;
-@@ -30,6 +67,8 @@ struct audio_client {
- 	uint32_t io_mode;
- 	struct apr_device *adev;
- 	struct mutex lock;
-+	/* idx:1 out port, 0: in port */
-+	struct audio_port_data port[2];
- 	wait_queue_head_t cmd_wait;
- 	int perf_mode;
- 	int stream_id;
-@@ -63,6 +102,237 @@ static bool q6asm_is_valid_audio_client(struct audio_client *ac)
- 	return false;
- }
- 
-+static inline void q6asm_add_hdr(struct audio_client *ac, struct apr_hdr *hdr,
-+				 uint32_t pkt_size, bool cmd_flg,
-+				 uint32_t stream_id)
++static int q6slim_hw_params(struct snd_pcm_substream *substream,
++			    struct snd_pcm_hw_params *params,
++			    struct snd_soc_dai *dai)
 +{
-+	hdr->hdr_field = APR_SEQ_CMD_HDR_FIELD;
-+	hdr->src_svc = ac->adev->svc_id;
-+	hdr->src_domain = APR_DOMAIN_APPS;
-+	hdr->dest_svc = APR_SVC_ASM;
-+	hdr->dest_domain = APR_DOMAIN_ADSP;
-+	hdr->src_port = ((ac->session << 8) & 0xFF00) | (stream_id);
-+	hdr->dest_port = ((ac->session << 8) & 0xFF00) | (stream_id);
-+	hdr->pkt_size = pkt_size;
-+	if (cmd_flg)
-+		hdr->token = ac->session;
-+}
 +
-+static int q6asm_apr_send_session_pkt(struct q6asm *a, struct audio_client *ac,
-+				      void *data)
-+{
-+	int rc;
++	struct q6afe_dai_data *dai_data = q6afe_get_dai_data(dai->dev);
++	struct q6afe_slim_cfg *slim = &dai_data->port_config[dai->id].slim;
 +
-+	mutex_lock(&a->session_lock);
-+	a->mem_state = 1;
-+	rc = apr_send_pkt(a->adev, data);
-+	if (rc < 0)
-+		goto err;
++	slim->num_channels = params_channels(params);
++	slim->sample_rate = params_rate(params);
 +
-+	rc = wait_event_timeout(a->mem_wait, (a->mem_state <= 0), 5 * HZ);
-+	if (!rc) {
-+		dev_err(a->dev, "CMD timeout \n");
-+		rc = -ETIMEDOUT;
-+	} else if (a->mem_state < 0) {
-+		rc =  q6dsp_errno(a->mem_state);
-+	}
-+
-+err:
-+	mutex_unlock(&a->session_lock);
-+	return rc;
-+}
-+
-+static int __q6asm_memory_unmap(struct audio_client *ac,
-+				phys_addr_t buf_add, int dir)
-+{
-+	struct avs_cmd_shared_mem_unmap_regions mem_unmap;
-+	struct q6asm *a = dev_get_drvdata(ac->dev);
-+	int rc;
-+
-+	if (ac->port[dir].mem_map_handle == 0) {
-+		dev_err(ac->dev, "invalid mem handle\n");
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++	case SNDRV_PCM_FORMAT_SPECIAL:
++		slim->bit_width = 16;
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		slim->bit_width = 24;
++		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		slim->bit_width = 32;
++		break;
++	default:
++		pr_err("%s: format %d\n",
++			__func__, params_format(params));
 +		return -EINVAL;
 +	}
-+
-+	mem_unmap.hdr.hdr_field = APR_SEQ_CMD_HDR_FIELD;
-+	mem_unmap.hdr.src_port = 0;
-+	mem_unmap.hdr.dest_port = 0;
-+	mem_unmap.hdr.pkt_size = sizeof(mem_unmap);
-+	mem_unmap.hdr.token = ((ac->session << 8) | dir);
-+
-+	mem_unmap.hdr.opcode = ASM_CMD_SHARED_MEM_UNMAP_REGIONS;
-+	mem_unmap.mem_map_handle = ac->port[dir].mem_map_handle;
-+
-+	rc = q6asm_apr_send_session_pkt(a, ac, &mem_unmap);
-+	if (rc < 0)
-+		return rc;
-+
-+	ac->port[dir].mem_map_handle = 0;
 +
 +	return 0;
 +}
 +
-+/**
-+ * q6asm_unmap_memory_regions() - unmap memory regions in the dsp.
-+ *
-+ * @dir: direction of audio stream
-+ * @ac: audio client instanace
-+ *
-+ * Return: Will be an negative value on failure or zero on success
-+ */
-+int q6asm_unmap_memory_regions(unsigned int dir, struct audio_client *ac)
-+{
-+	struct audio_port_data *port;
-+	int cnt = 0;
-+	int rc = 0;
-+
-+	mutex_lock(&ac->lock);
-+	port = &ac->port[dir];
-+	if (!port->buf) {
-+		rc = -EINVAL;
-+		goto err;
-+	}
-+	cnt = port->num_periods - 1;
-+	if (cnt >= 0) {
-+		rc = __q6asm_memory_unmap(ac, port->buf[dir].phys, dir);
-+		if (rc < 0) {
-+			dev_err(ac->dev, "%s: Memory_unmap_regions failed %d\n",
-+				__func__, rc);
-+			goto err;
-+		}
-+	}
-+
-+	port->num_periods = 0;
-+	kfree(port->buf);
-+	port->buf = NULL;
-+
-+err:
-+	mutex_unlock(&ac->lock);
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(q6asm_unmap_memory_regions);
-+
-+static int __q6asm_memory_map_regions(struct audio_client *ac, int dir,
-+				      size_t period_sz, unsigned int periods,
-+				      bool is_contiguous)
-+{
-+	struct avs_cmd_shared_mem_map_regions *cmd = NULL;
-+	struct avs_shared_map_region_payload *mregions = NULL;
-+	struct q6asm *a = dev_get_drvdata(ac->dev);
-+	struct audio_port_data *port = NULL;
-+	struct audio_buffer *ab = NULL;
-+	void *mmap_region_cmd = NULL;
-+	uint32_t num_regions, buf_sz;
-+	int rc, i, cmd_size;
-+
-+	num_regions = is_contiguous ? 1 : periods;
-+	buf_sz = is_contiguous ? (period_sz * periods) : period_sz;
-+	buf_sz = PAGE_ALIGN(buf_sz);
-+
-+	cmd_size = sizeof(*cmd) + (sizeof(*mregions) * num_regions);
-+	mmap_region_cmd = kzalloc(cmd_size, GFP_KERNEL);
-+	if (!mmap_region_cmd)
-+		return -ENOMEM;
-+
-+	cmd = mmap_region_cmd;
-+
-+	cmd->hdr.hdr_field = APR_SEQ_CMD_HDR_FIELD;
-+	cmd->hdr.src_port = 0;
-+	cmd->hdr.dest_port = 0;
-+	cmd->hdr.pkt_size = cmd_size;
-+	cmd->hdr.token = ((ac->session << 8) | dir);
-+
-+
-+	cmd->hdr.opcode = ASM_CMD_SHARED_MEM_MAP_REGIONS;
-+	cmd->mem_pool_id = ADSP_MEMORY_MAP_SHMEM8_4K_POOL;
-+	cmd->num_regions = num_regions;
-+	cmd->property_flag = 0x00;
-+
-+	mregions = mmap_region_cmd +  sizeof(*cmd);
-+
-+	port = &ac->port[dir];
-+
-+	for (i = 0; i < num_regions; i++) {
-+		ab = &port->buf[i];
-+		mregions->shm_addr_lsw = lower_32_bits(ab->phys);
-+		mregions->shm_addr_msw = upper_32_bits(ab->phys);
-+		mregions->mem_size_bytes = buf_sz;
-+		++mregions;
-+	}
-+
-+	rc = q6asm_apr_send_session_pkt(a, ac, mmap_region_cmd);
-+
-+	kfree(mmap_region_cmd);
-+
-+	return rc;
-+}
-+
-+/**
-+ * q6asm_map_memory_regions() - map memory regions in the dsp.
-+ *
-+ * @dir: direction of audio stream
-+ * @ac: audio client instanace
-+ * @phys: physcial address that needs mapping.
-+ * @period_sz: audio period size
-+ * @periods: number of periods
-+ *
-+ * Return: Will be an negative value on failure or zero on success
-+ */
-+int q6asm_map_memory_regions(unsigned int dir, struct audio_client *ac,
-+			     phys_addr_t phys,
-+			     size_t period_sz, unsigned int periods)
-+{
-+	struct audio_buffer *buf;
-+	int cnt;
-+	int rc;
-+
-+	mutex_lock(&ac->lock);
-+
-+	if (ac->port[dir].buf) {
-+		dev_err(ac->dev, "Buffer already allocated\n");
-+		rc = 0;
-+		goto err;
-+	}
-+
-+
-+	buf = kzalloc(((sizeof(struct audio_buffer)) * periods), GFP_KERNEL);
-+	if (!buf) {
-+		rc = -ENOMEM;
-+		goto err;
-+	}
-+
-+
-+	ac->port[dir].buf = buf;
-+
-+	buf[0].phys = phys;
-+	buf[0].used = !!dir;
-+	buf[0].size = period_sz;
-+
-+	for (cnt = 1; cnt < periods; cnt++) {
-+		if (period_sz > 0) {
-+			buf[cnt].phys = buf[0].phys + (cnt * period_sz);
-+			buf[cnt].used = dir ^ 1;
-+			buf[cnt].size = period_sz;
-+		}
-+	}
-+
-+	ac->port[dir].num_periods = periods;
-+
-+	rc = __q6asm_memory_map_regions(ac, dir, period_sz, periods, 1);
-+	if (rc < 0) {
-+		dev_err(ac->dev, "Memory_map_regions failed\n");
-+		ac->port[dir].num_periods = 0;
-+		kfree(buf);
-+		ac->port[dir].buf = NULL;
-+		goto err;
-+	}
-+
-+err:
-+	mutex_unlock(&ac->lock);
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(q6asm_map_memory_regions);
-+
- /**
-  * q6asm_audio_client_free() - Freee allocated audio client
-  *
-@@ -143,6 +413,48 @@ static int q6asm_srvc_callback(struct apr_device *adev,
- 		return 0;
- 	}
+ static int q6hdmi_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params,
+ 				struct snd_soc_dai *dai)
+@@ -150,6 +181,9 @@ static int q6afe_dai_prepare(struct snd_pcm_substream *substream,
+ 	if (dai->id == AFE_PORT_HDMI_RX)
+ 		q6afe_hdmi_port_prepare(dai_data->port[dai->id],
+ 					&dai_data->port_config[dai->id].hdmi);
++	else if (dai->id >= SLIMBUS_0_RX && dai->id <= SLIMBUS_6_TX)
++		q6afe_slim_port_prepare(dai_data->port[dai->id],
++					&dai_data->port_config[dai->id].slim);
  
-+	a = dev_get_drvdata(ac->dev);
-+	dir = (data->token & 0x0F);
-+	port = &ac->port[dir];
+ 	rc = q6afe_port_start(dai_data->port[dai->id]);
+ 	if (rc < 0) {
+@@ -161,8 +195,44 @@ static int q6afe_dai_prepare(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
++static int q6slim_set_channel_map(struct snd_soc_dai *dai,
++				unsigned int tx_num, unsigned int *tx_slot,
++				unsigned int rx_num, unsigned int *rx_slot)
++{
++	struct q6afe_dai_data *dai_data = q6afe_get_dai_data(dai->dev);
++	struct q6afe_port_config *pcfg = &dai_data->port_config[dai->id];
++	int i;
 +
-+	switch (data->opcode)
-+	case APR_BASIC_RSP_RESULT: {
-+		switch (result->opcode) {
-+		case ASM_CMD_SHARED_MEM_MAP_REGIONS:
-+		case ASM_CMD_SHARED_MEM_UNMAP_REGIONS:
-+			if (result->status != 0) {
-+				dev_err(ac->dev,
-+					"cmd = 0x%x retur err= 0x%x sid:%d\n",
-+					result->opcode, result->status, sid);
-+				a->mem_state = -result->status;
-+			} else {
-+				a->mem_state = 0;
-+			}
-+
-+			wake_up(&a->mem_wait);
-+			break;
-+		default:
-+			dev_err(&adev->dev, "command[0x%x] not expecting rsp\n",
-+				 result->opcode);
-+			break;
-+		}
-+		return 0;
-+	case ASM_CMDRSP_SHARED_MEM_MAP_REGIONS:
-+		a->mem_state = 0;
-+		ac->port[dir].mem_map_handle = result->opcode;
-+		wake_up(&a->mem_wait);
-+		break;
-+	case ASM_CMD_SHARED_MEM_UNMAP_REGIONS:
-+		a->mem_state = 0;
-+		ac->port[dir].mem_map_handle = 0;
-+		wake_up(&a->mem_wait);
-+		break;
-+	default:
-+		dev_dbg(&adev->dev, "command[0x%x]success [0x%x]\n",
-+			result->opcode, result->status);
-+		break;
++	if (!rx_slot) {
++		pr_err("%s: rx slot not found\n", __func__);
++		return -EINVAL;
 +	}
 +
- 	if (ac->cb)
- 		ac->cb(data->opcode, data->token, data->payload, ac->priv);
++	for (i = 0; i < rx_num; i++) {
++		pcfg->slim.ch_mapping[i] =   rx_slot[i];
++		pr_debug("%s: find number of channels[%d] ch[%d]\n",
++		       __func__, i, rx_slot[i]);
++	}
++
++	pcfg->slim.num_channels = rx_num;
++
++	pr_debug("%s: SLIMBUS_%d_RX cnt[%d] ch[%d %d]\n", __func__,
++		(dai->id - SLIMBUS_0_RX) / 2, rx_num,
++		pcfg->slim.ch_mapping[0],
++		pcfg->slim.ch_mapping[1]);
++
++	return 0;
++}
++
+ static const struct snd_soc_dapm_route q6afe_dapm_routes[] = {
+ 	{"HDMI Playback", NULL, "HDMI_RX"},
++	{"Slimbus1 Playback", NULL, "SLIMBUS_1_RX"},
++	{"Slimbus2 Playback", NULL, "SLIMBUS_2_RX"},
++	{"Slimbus3 Playback", NULL, "SLIMBUS_3_RX"},
++	{"Slimbus4 Playback", NULL, "SLIMBUS_4_RX"},
++	{"Slimbus5 Playback", NULL, "SLIMBUS_5_RX"},
++	{"Slimbus6 Playback", NULL, "SLIMBUS_6_RX"},
++
+ };
  
-diff --git a/sound/soc/qcom/qdsp6/q6asm.h b/sound/soc/qcom/qdsp6/q6asm.h
-index b13fe0d2ea61..a4f9fe636b7e 100644
---- a/sound/soc/qcom/qdsp6/q6asm.h
-+++ b/sound/soc/qcom/qdsp6/q6asm.h
-@@ -15,4 +15,9 @@ struct audio_client *q6asm_audio_client_alloc(struct device *dev,
- 					      int session_id);
- void q6asm_audio_client_free(struct audio_client *ac);
- int q6asm_get_session_id(struct audio_client *ac);
-+int q6asm_map_memory_regions(unsigned int dir,
-+			     struct audio_client *ac,
-+			     phys_addr_t phys,
-+			     size_t bufsz, unsigned int bufcnt);
-+int q6asm_unmap_memory_regions(unsigned int dir, struct audio_client *ac);
- #endif /* __Q6_ASM_H__ */
+ static struct snd_soc_dai_ops q6hdmi_ops = {
+@@ -172,6 +242,14 @@ static struct snd_soc_dai_ops q6hdmi_ops = {
+ 	.startup	= q6afe_dai_startup,
+ };
+ 
++static struct snd_soc_dai_ops q6slim_ops = {
++	.prepare	= q6afe_dai_prepare,
++	.hw_params	= q6slim_hw_params,
++	.shutdown	= q6afe_dai_shutdown,
++	.startup	= q6afe_dai_startup,
++	.set_channel_map = q6slim_set_channel_map,
++};
++
+ static int msm_dai_q6_dai_probe(struct snd_soc_dai *dai)
+ {
+ 	struct q6afe_dai_data *dai_data = q6afe_get_dai_data(dai->dev);
+@@ -218,6 +296,132 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 		.name = "HDMI",
+ 		.probe = msm_dai_q6_dai_probe,
+ 		.remove = msm_dai_q6_dai_remove,
++	}, {
++		.name = "SLIMBUS_0_RX",
++		.ops = &q6slim_ops,
++		.id = SLIMBUS_0_RX,
++		.probe = msm_dai_q6_dai_probe,
++		.remove = msm_dai_q6_dai_remove,
++		.playback = {
++			.stream_name = "Slimbus Playback",
++			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
++			SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_96000 |
++			SNDRV_PCM_RATE_192000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE |
++				SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
++			.rate_min = 8000,
++			.rate_max = 192000,
++		},
++	}, {
++		.playback = {
++			.stream_name = "Slimbus1 Playback",
++			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
++			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
++			SNDRV_PCM_RATE_192000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE |
++				SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 2,
++			.rate_min = 8000,
++			.rate_max = 192000,
++		},
++		.name = "SLIMBUS_1_RX",
++		.ops = &q6slim_ops,
++		.id = SLIMBUS_1_RX,
++		.probe = msm_dai_q6_dai_probe,
++		.remove = msm_dai_q6_dai_remove,
++	}, {
++		.playback = {
++			.stream_name = "Slimbus2 Playback",
++			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
++			SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_96000 |
++			SNDRV_PCM_RATE_192000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE |
++				SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
++			.rate_min = 8000,
++			.rate_max = 192000,
++		},
++		.name = "SLIMBUS_2_RX",
++		.ops = &q6slim_ops,
++		.id = SLIMBUS_2_RX,
++		.probe = msm_dai_q6_dai_probe,
++		.remove = msm_dai_q6_dai_remove,
++	}, {
++		.playback = {
++			.stream_name = "Slimbus3 Playback",
++			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
++			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
++			SNDRV_PCM_RATE_192000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE |
++				SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 2,
++			.rate_min = 8000,
++			.rate_max = 192000,
++		},
++		.name = "SLIMBUS_3_RX",
++		.ops = &q6slim_ops,
++		.id = SLIMBUS_3_RX,
++		.probe = msm_dai_q6_dai_probe,
++		.remove = msm_dai_q6_dai_remove,
++	}, {
++		.playback = {
++			.stream_name = "Slimbus4 Playback",
++			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
++			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
++			SNDRV_PCM_RATE_192000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE |
++				SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 2,
++			.rate_min = 8000,
++			.rate_max = 192000,
++		},
++		.name = "SLIMBUS_4_RX",
++		.ops = &q6slim_ops,
++		.id = SLIMBUS_4_RX,
++		.probe = msm_dai_q6_dai_probe,
++		.remove = msm_dai_q6_dai_remove,
++	}, {
++		.playback = {
++			.stream_name = "Slimbus5 Playback",
++			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
++			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
++			SNDRV_PCM_RATE_192000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE |
++			 SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 2,
++			.rate_min = 8000,
++			.rate_max = 192000,
++		},
++		.name = "SLIMBUS_5_RX",
++		.ops = &q6slim_ops,
++		.id = SLIMBUS_5_RX,
++		.probe = msm_dai_q6_dai_probe,
++		.remove = msm_dai_q6_dai_remove,
++	}, {
++		.playback = {
++			.stream_name = "Slimbus6 Playback",
++			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
++			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
++			SNDRV_PCM_RATE_192000 | SNDRV_PCM_RATE_44100,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE |
++				SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 2,
++			.rate_min = 8000,
++			.rate_max = 192000,
++		},
++		.ops = &q6slim_ops,
++		.name = "SLIMBUS_6_RX",
++		.id = SLIMBUS_6_RX,
++		.probe = msm_dai_q6_dai_probe,
++		.remove = msm_dai_q6_dai_remove,
+ 	},
+ };
+ 
+@@ -241,6 +445,13 @@ static int q6afe_of_xlate_dai_name(struct snd_soc_component *component,
+ 
+ static const struct snd_soc_dapm_widget q6afe_dai_widgets[] = {
+ 	SND_SOC_DAPM_AIF_OUT("HDMI_RX", "HDMI Playback", 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("SLIMBUS_0_RX", "Slimbus Playback", 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("SLIMBUS_1_RX", "Slimbus1 Playback", 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("SLIMBUS_2_RX", "Slimbus2 Playback", 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("SLIMBUS_3_RX", "Slimbus3 Playback", 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("SLIMBUS_4_RX", "Slimbus4 Playback", 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("SLIMBUS_5_RX", "Slimbus5 Playback", 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("SLIMBUS_6_RX", "Slimbus6 Playback", 0, 0, 0, 0),
+ };
+ 
+ static const struct snd_soc_component_driver q6afe_dai_component = {
 -- 
 2.15.1
