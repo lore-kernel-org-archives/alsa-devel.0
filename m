@@ -1,451 +1,276 @@
-From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v3 13/25] ASoC: qcom: qdsp6: Add support to
-	q6routing driver
-Date: Tue, 13 Feb 2018 16:58:25 +0000
-Message-ID: <20180213165837.1620-14-srinivas.kandagatla@linaro.org>
+From: srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
+Subject: [PATCH v3 16/25] ASoC: qcom: q6afe: add SLIMBus port Support
+Date: Tue, 13 Feb 2018 16:58:28 +0000
+Message-ID: <20180213165837.1620-17-srinivas.kandagatla@linaro.org>
 References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
- [209.85.128.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 504CD2679A1
- for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 18:01:33 +0100 (CET)
-Received: by mail-wr0-f193.google.com with SMTP id q11so7516439wre.8
- for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 09:01:33 -0800 (PST)
-In-Reply-To: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, robh+dt@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, spatakok@qti.qualcomm.com, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20180213165837.1620-1-srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: andy.gross-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: david.brown-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, linux-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, rohkumar-Rm6X0d1/PG5y9aJCnZT0Uw@public.gmane.org, spatakok-Rm6X0d1/PG5y9aJCnZT0Uw@public.gmane.org, Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 
-This patch adds support to q6 routing driver which configures route
-between ASM and AFE module using ADM apis.
+This patch adds support to 6 SLIMBus AFE ports, which are used as
+backend dais.
 
-This driver uses dapm widgets to setup the matrix between AFE ports and
-ASM streams.
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/qcom/qdsp6/Makefile    |   2 +-
- sound/soc/qcom/qdsp6/q6adm.h     |   3 +
- sound/soc/qcom/qdsp6/q6routing.c | 355 +++++++++++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6routing.h |   9 +
- 4 files changed, 368 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/qcom/qdsp6/q6routing.c
- create mode 100644 sound/soc/qcom/qdsp6/q6routing.h
+ include/dt-bindings/sound/qcom,q6afe.h |  14 ++++
+ sound/soc/qcom/qdsp6/q6afe.c           | 129 +++++++++++++++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6afe.h           |  16 +++-
+ 3 files changed, 158 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
-index 61f089bc0d25..660afcab98fd 100644
---- a/sound/soc/qcom/qdsp6/Makefile
-+++ b/sound/soc/qcom/qdsp6/Makefile
-@@ -1,5 +1,5 @@
- obj-$(CONFIG_SND_SOC_QDSP6_COMMON) += q6dsp-common.o
- obj-$(CONFIG_SND_SOC_QDSP6_AFE) += q6afe.o
--obj-$(CONFIG_SND_SOC_QDSP6_ADM) += q6adm.o
-+obj-$(CONFIG_SND_SOC_QDSP6_ADM) += q6adm.o q6routing.o
- obj-$(CONFIG_SND_SOC_QDSP6_ASM) += q6asm.o
- obj-$(CONFIG_SND_SOC_QDSP6_CORE) += q6core.o
-diff --git a/sound/soc/qcom/qdsp6/q6adm.h b/sound/soc/qcom/qdsp6/q6adm.h
-index 8f89210e2fcf..270cb9c0133a 100644
---- a/sound/soc/qcom/qdsp6/q6adm.h
-+++ b/sound/soc/qcom/qdsp6/q6adm.h
-@@ -14,6 +14,9 @@ struct route_payload {
- 	int port_id[MAX_COPPS_PER_PORT];
+diff --git a/include/dt-bindings/sound/qcom,q6afe.h b/include/dt-bindings/sound/qcom,q6afe.h
+index b4d82cccdc86..e9004ee39f72 100644
+--- a/include/dt-bindings/sound/qcom,q6afe.h
++++ b/include/dt-bindings/sound/qcom,q6afe.h
+@@ -4,6 +4,20 @@
+ 
+ /* Audio Front End (AFE) Ports */
+ #define AFE_PORT_HDMI_RX	8
++#define SLIMBUS_0_RX    15
++#define SLIMBUS_0_TX    16
++#define SLIMBUS_1_RX    17
++#define SLIMBUS_1_TX    18
++#define SLIMBUS_2_RX    19
++#define SLIMBUS_2_TX    20
++#define SLIMBUS_3_RX    21
++#define SLIMBUS_3_TX    22
++#define SLIMBUS_4_RX    23
++#define SLIMBUS_4_TX    24
++#define SLIMBUS_5_RX    25
++#define SLIMBUS_5_TX    26
++#define SLIMBUS_6_RX    45
++#define SLIMBUS_6_TX    46
+ 
+ #endif /* __DT_BINDINGS_Q6_AFE_H__ */
+ 
+diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+index 0a5af06bb50e..637390f5421e 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.c
++++ b/sound/soc/qcom/qdsp6/q6afe.c
+@@ -25,9 +25,45 @@
+ #define AFE_PARAM_ID_HDMI_CONFIG	0x00010210
+ #define AFE_MODULE_AUDIO_DEV_INTERFACE	0x0001020C
+ 
++#define AFE_PARAM_ID_CDC_SLIMBUS_SLAVE_CFG 0x00010235
++
++#define AFE_PARAM_ID_SLIMBUS_CONFIG    0x00010212
++
+ /* Port IDs */
+ #define AFE_API_VERSION_HDMI_CONFIG	0x1
+ #define AFE_PORT_ID_MULTICHAN_HDMI_RX	0x100E
++
++#define AFE_API_VERSION_SLIMBUS_CONFIG 0x1
++
++/* SLIMbus Rx port on channel 0. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_RX      0x4000
++/* SLIMbus Tx port on channel 0. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_TX      0x4001
++/* SLIMbus Rx port on channel 1. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_1_RX      0x4002
++/* SLIMbus Tx port on channel 1. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_1_TX      0x4003
++/* SLIMbus Rx port on channel 2. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_2_RX      0x4004
++/* SLIMbus Tx port on channel 2. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_2_TX      0x4005
++/* SLIMbus Rx port on channel 3. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_3_RX      0x4006
++/* SLIMbus Tx port on channel 3. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_3_TX      0x4007
++/* SLIMbus Rx port on channel 4. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_4_RX      0x4008
++/* SLIMbus Tx port on channel 4. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_4_TX      0x4009
++/* SLIMbus Rx port on channel 5. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_5_RX      0x400a
++/* SLIMbus Tx port on channel 5. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_5_TX      0x400b
++/* SLIMbus Rx port on channel 6. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX      0x400c
++/* SLIMbus Tx port on channel 6. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_TX      0x400d
++
+ #define TIMEOUT_MS 1000
+ #define AFE_CMD_RESP_AVAIL	0
+ #define AFE_CMD_RESP_NONE	1
+@@ -82,8 +118,53 @@ struct afe_param_id_hdmi_multi_chan_audio_cfg {
+ 	u16 reserved;
+ } __packed;
+ 
++struct afe_param_id_slimbus_cfg {
++	u32                  sb_cfg_minor_version;
++/* Minor version used for tracking the version of the SLIMBUS
++ * configuration interface.
++ * Supported values: #AFE_API_VERSION_SLIMBUS_CONFIG
++ */
++
++	u16                  slimbus_dev_id;
++/* SLIMbus hardware device ID, which is required to handle
++ * multiple SLIMbus hardware blocks.
++ * Supported values: - #AFE_SLIMBUS_DEVICE_1 - #AFE_SLIMBUS_DEVICE_2
++ */
++	u16                  bit_width;
++/* Bit width of the sample.
++ * Supported values: 16, 24
++ */
++	u16                  data_format;
++/* Data format supported by the SLIMbus hardware. The default is
++ * 0 (#AFE_SB_DATA_FORMAT_NOT_INDICATED), which indicates the
++ * hardware does not perform any format conversions before the data
++ * transfer.
++ */
++	u16                  num_channels;
++/* Number of channels.
++ * Supported values: 1 to #AFE_PORT_MAX_AUDIO_CHAN_CNT
++ */
++	u8  shared_ch_mapping[AFE_PORT_MAX_AUDIO_CHAN_CNT];
++/* Mapping of shared channel IDs (128 to 255) to which the
++ * master port is to be connected.
++ * Shared_channel_mapping[i] represents the shared channel assigned
++ * for audio channel i in multichannel audio data.
++ */
++	u32              sample_rate;
++/* Sampling rate of the port.
++ * Supported values:
++ * - #AFE_PORT_SAMPLE_RATE_8K
++ * - #AFE_PORT_SAMPLE_RATE_16K
++ * - #AFE_PORT_SAMPLE_RATE_48K
++ * - #AFE_PORT_SAMPLE_RATE_96K
++ * - #AFE_PORT_SAMPLE_RATE_192K
++ */
++} __packed;
++
++
+ union afe_port_config {
+ 	struct afe_param_id_hdmi_multi_chan_audio_cfg hdmi_multi_ch;
++	struct afe_param_id_slimbus_cfg           slim_cfg;
+ } __packed;
+ 
+ struct q6afe_port {
+@@ -114,6 +195,20 @@ struct afe_port_map {
+ static struct afe_port_map port_maps[AFE_PORT_MAX] = {
+ 	[AFE_PORT_HDMI_RX] = { AFE_PORT_ID_MULTICHAN_HDMI_RX,
+ 				AFE_PORT_HDMI_RX, 1, 1},
++	[SLIMBUS_0_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_RX,
++				SLIMBUS_0_RX, 1, 1},
++	[SLIMBUS_1_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_1_RX,
++				SLIMBUS_1_RX, 1, 1},
++	[SLIMBUS_2_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_2_RX,
++				SLIMBUS_2_RX, 1, 1},
++	[SLIMBUS_3_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_3_RX,
++				SLIMBUS_3_RX, 1, 1},
++	[SLIMBUS_4_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_4_RX,
++				SLIMBUS_4_RX, 1, 1},
++	[SLIMBUS_5_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_5_RX,
++				SLIMBUS_5_RX, 1, 1},
++	[SLIMBUS_6_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX,
++				SLIMBUS_6_RX, 1, 1},
  };
  
-+int q6pcm_routing_probe(struct device *dev);
-+int q6pcm_routing_remove(struct device *dev);
-+
- void *q6adm_get_routing_data(struct device *dev);
- void q6adm_set_routing_data(struct device *dev, void *data);
- int q6adm_open(struct device *dev, int port_id, int path, int rate,
-diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
-new file mode 100644
-index 000000000000..828243c58569
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6routing.c
-@@ -0,0 +1,355 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2011-2017, The Linux Foundation
-+ * Copyright (c) 2018, Linaro Limited
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/err.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/bitops.h>
-+#include <linux/mutex.h>
-+#include <linux/of_device.h>
-+#include <linux/slab.h>
-+#include <sound/core.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/pcm.h>
-+#include <sound/control.h>
-+#include <sound/asound.h>
-+#include <sound/pcm_params.h>
-+#include "q6afe.h"
-+#include "q6asm.h"
-+#include "q6adm.h"
-+#include "q6routing.h"
-+
-+struct session_data {
-+	int state;
-+	int port_id;
-+	int path_type;
-+	int app_type;
-+	int acdb_id;
-+	int sample_rate;
-+	int bits_per_sample;
-+	int channels;
-+	int perf_mode;
-+	int numcopps;
-+	int fedai_id;
-+	unsigned long copp_map;
-+};
-+
-+struct msm_routing_data {
-+	struct session_data sessions[MAX_SESSIONS];
-+	struct session_data port_data[AFE_MAX_PORTS];
-+	struct device *dev;
-+	struct mutex lock;
-+};
-+
-+static struct msm_routing_data *routing_data;
-+
+ static struct q6afe_port *afe_find_port(struct q6afe *afe, int token)
+@@ -372,6 +467,31 @@ void *q6afe_get_dai_data(struct device *dev)
+ }
+ EXPORT_SYMBOL_GPL(q6afe_get_dai_data);
+ 
 +/**
-+ * q6routing_stream_open() - Register a new stream for route setup
++ * q6afe_slim_port_prepare() - Prepare slim afe port.
 + *
-+ * @fedai_id: Frontend dai id.
-+ * @perf_mode: Performance mode.
-+ * @stream_id: ASM stream id to map.
-+ * @stream_type: Direction of stream
++ * @port: Instance of afe port
++ * @cfg: SLIM configuration for the afe port
 + *
-+ * Return: Will be an negative on error or a zero on success.
 + */
-+int q6routing_stream_open(int fedai_id, int perf_mode,
-+			   int stream_id, int stream_type)
++void q6afe_slim_port_prepare(struct q6afe_port *port,
++			     struct q6afe_slim_cfg *cfg)
 +{
-+	int j, topology, num_copps = 0;
-+	struct route_payload payload;
-+	int copp_idx;
-+	struct session_data *session, *pdata;
++	union afe_port_config *pcfg = &port->port_cfg;
 +
-+	if (!routing_data) {
-+		pr_err("Routing driver not yet ready\n");
-+		return -EINVAL;
-+	}
++	pcfg->slim_cfg.sb_cfg_minor_version = AFE_API_VERSION_SLIMBUS_CONFIG;
++	pcfg->slim_cfg.sample_rate = cfg->sample_rate;
++	pcfg->slim_cfg.bit_width = cfg->bit_width;
++	pcfg->slim_cfg.num_channels = cfg->num_channels;
++	pcfg->slim_cfg.data_format = cfg->data_format;
++	pcfg->slim_cfg.shared_ch_mapping[0] = cfg->ch_mapping[0];
++	pcfg->slim_cfg.shared_ch_mapping[1] = cfg->ch_mapping[1];
++	pcfg->slim_cfg.shared_ch_mapping[2] = cfg->ch_mapping[2];
++	pcfg->slim_cfg.shared_ch_mapping[3] = cfg->ch_mapping[3];
 +
-+	session = &routing_data->sessions[stream_id - 1];
-+	pdata = &routing_data->port_data[session->port_id];
-+
-+	mutex_lock(&routing_data->lock);
-+	session->fedai_id = fedai_id;
-+
-+	session->path_type = pdata->path_type;
-+	session->sample_rate = pdata->sample_rate;
-+	session->channels = pdata->channels;
-+	session->bits_per_sample = pdata->bits_per_sample;
-+
-+	payload.num_copps = 0; /* only RX needs to use payload */
-+	topology = NULL_COPP_TOPOLOGY;
-+	copp_idx = q6adm_open(routing_data->dev, session->port_id,
-+			      session->path_type, session->sample_rate,
-+			      session->channels, topology, perf_mode,
-+			      session->bits_per_sample, 0, 0);
-+
-+	if (copp_idx < 0) {
-+		mutex_unlock(&routing_data->lock);
-+		return -EINVAL;
-+	}
-+
-+	set_bit(copp_idx, &session->copp_map);
-+
-+	for_each_set_bit(j, &session->copp_map, MAX_COPPS_PER_PORT) {
-+		payload.port_id[num_copps] = session->port_id;
-+		payload.copp_idx[num_copps] = j;
-+		num_copps++;
-+	}
-+
-+	if (num_copps) {
-+		payload.num_copps = num_copps;
-+		payload.session_id = stream_id;
-+		q6adm_matrix_map(routing_data->dev, session->path_type,
-+				 payload, perf_mode);
-+	}
-+	mutex_unlock(&routing_data->lock);
-+
-+	return 0;
 +}
-+EXPORT_SYMBOL_GPL(q6routing_stream_open);
++EXPORT_SYMBOL_GPL(q6afe_slim_port_prepare);
 +
-+static struct session_data *get_session_from_id(struct msm_routing_data *data,
-+						int fedai_id)
-+{
-+	int i;
-+
-+	for (i = 0; i < MAX_SESSIONS; i++) {
-+		if (fedai_id == data->sessions[i].fedai_id)
-+			return &data->sessions[i];
-+	}
-+
-+	return NULL;
-+}
-+/**
-+ * q6routing_stream_close() - Deregister a stream
-+ *
-+ * @fedai_id: Frontend dai id.
-+ * @stream_type: Direction of stream
-+ *
-+ * Return: Will be an negative on error or a zero on success.
-+ */
-+void q6routing_stream_close(int fedai_id, int stream_type)
-+{
-+	struct session_data *session;
-+	int idx;
-+
-+	session = get_session_from_id(routing_data, fedai_id);
-+	if (!session)
-+		return;
-+
-+	for_each_set_bit(idx, &session->copp_map, MAX_COPPS_PER_PORT)
-+		q6adm_close(routing_data->dev, session->port_id,
-+			    session->perf_mode, idx);
-+
-+	session->fedai_id = -1;
-+	session->copp_map = 0;
-+}
-+EXPORT_SYMBOL_GPL(q6routing_stream_close);
-+
-+static int msm_routing_get_audio_mixer(struct snd_kcontrol *kcontrol,
-+				       struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_context *dapm =
-+	    snd_soc_dapm_kcontrol_dapm(kcontrol);
-+	struct soc_mixer_control *mc =
-+	    (struct soc_mixer_control *)kcontrol->private_value;
-+	int session_id = mc->shift;
-+	struct snd_soc_platform *platform = snd_soc_dapm_to_platform(dapm);
-+	struct msm_routing_data *priv = q6adm_get_routing_data(platform->dev);
-+	struct session_data *session = &priv->sessions[session_id];
-+
-+	if (session->port_id != -1)
-+		ucontrol->value.integer.value[0] = 1;
-+	else
-+		ucontrol->value.integer.value[0] = 0;
-+
-+	return 0;
-+}
-+
-+static int msm_routing_put_audio_mixer(struct snd_kcontrol *kcontrol,
-+				       struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_context *dapm =
-+				    snd_soc_dapm_kcontrol_dapm(kcontrol);
-+	struct snd_soc_platform *platform = snd_soc_dapm_to_platform(dapm);
-+	struct msm_routing_data *data = q6adm_get_routing_data(platform->dev);
-+	struct soc_mixer_control *mc =
-+		    (struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_soc_dapm_update *update = NULL;
-+	int be_id = mc->reg;
-+	int session_id = mc->shift;
-+	struct session_data *session = &data->sessions[session_id];
-+
-+	if (ucontrol->value.integer.value[0]) {
-+		session->port_id = be_id;
-+		snd_soc_dapm_mixer_update_power(dapm, kcontrol, 1, update);
-+	} else {
-+		session->port_id = -1;
-+		snd_soc_dapm_mixer_update_power(dapm, kcontrol, 0, update);
-+	}
-+
-+	return 1;
-+}
-+
-+static const struct snd_kcontrol_new hdmi_mixer_controls[] = {
-+	SOC_SINGLE_EXT("MultiMedia1", AFE_PORT_HDMI_RX,
-+		       MSM_FRONTEND_DAI_MULTIMEDIA1, 1, 0,
-+		       msm_routing_get_audio_mixer,
-+		       msm_routing_put_audio_mixer),
-+	SOC_SINGLE_EXT("MultiMedia2", AFE_PORT_HDMI_RX,
-+		       MSM_FRONTEND_DAI_MULTIMEDIA2, 1, 0,
-+		       msm_routing_get_audio_mixer,
-+		       msm_routing_put_audio_mixer),
-+	SOC_SINGLE_EXT("MultiMedia3", AFE_PORT_HDMI_RX,
-+		       MSM_FRONTEND_DAI_MULTIMEDIA3, 1, 0,
-+		       msm_routing_get_audio_mixer,
-+		       msm_routing_put_audio_mixer),
-+	SOC_SINGLE_EXT("MultiMedia4", AFE_PORT_HDMI_RX,
-+		       MSM_FRONTEND_DAI_MULTIMEDIA4, 1, 0,
-+		       msm_routing_get_audio_mixer,
-+		       msm_routing_put_audio_mixer),
-+	SOC_SINGLE_EXT("MultiMedia5", AFE_PORT_HDMI_RX,
-+		       MSM_FRONTEND_DAI_MULTIMEDIA5, 1, 0,
-+		       msm_routing_get_audio_mixer,
-+		       msm_routing_put_audio_mixer),
-+	SOC_SINGLE_EXT("MultiMedia6", AFE_PORT_HDMI_RX,
-+		       MSM_FRONTEND_DAI_MULTIMEDIA6, 1, 0,
-+		       msm_routing_get_audio_mixer,
-+		       msm_routing_put_audio_mixer),
-+	SOC_SINGLE_EXT("MultiMedia7", AFE_PORT_HDMI_RX,
-+		       MSM_FRONTEND_DAI_MULTIMEDIA7, 1, 0,
-+		       msm_routing_get_audio_mixer,
-+		       msm_routing_put_audio_mixer),
-+	SOC_SINGLE_EXT("MultiMedia8", AFE_PORT_HDMI_RX,
-+		       MSM_FRONTEND_DAI_MULTIMEDIA8, 1, 0,
-+		       msm_routing_get_audio_mixer,
-+		       msm_routing_put_audio_mixer),
-+};
-+
-+static const struct snd_soc_dapm_widget msm_qdsp6_widgets[] = {
-+	/* Frontend AIF */
-+	SND_SOC_DAPM_AIF_IN("MM_DL1", "MultiMedia1 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL2", "MultiMedia2 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL3", "MultiMedia3 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL4", "MultiMedia4 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL5", "MultiMedia5 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL6", "MultiMedia6 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL7", "MultiMedia7 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL8", "MultiMedia8 Playback", 0, 0, 0, 0),
-+
-+	/* Mixer definitions */
-+	SND_SOC_DAPM_MIXER("HDMI Mixer", SND_SOC_NOPM, 0, 0,
-+			   hdmi_mixer_controls,
-+			   ARRAY_SIZE(hdmi_mixer_controls)),
-+};
-+
-+static const struct snd_soc_dapm_route intercon[] = {
-+	{"HDMI Mixer", "MultiMedia1", "MM_DL1"},
-+	{"HDMI Mixer", "MultiMedia2", "MM_DL2"},
-+	{"HDMI Mixer", "MultiMedia3", "MM_DL3"},
-+	{"HDMI Mixer", "MultiMedia4", "MM_DL4"},
-+	{"HDMI Mixer", "MultiMedia5", "MM_DL5"},
-+	{"HDMI Mixer", "MultiMedia6", "MM_DL6"},
-+	{"HDMI Mixer", "MultiMedia7", "MM_DL7"},
-+	{"HDMI Mixer", "MultiMedia8", "MM_DL8"},
-+	{"HDMI_RX", NULL, "HDMI Mixer"},
-+};
-+
-+static int routing_hw_params(struct snd_pcm_substream *substream,
-+				     struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	unsigned int be_id = rtd->cpu_dai->id;
-+	struct snd_soc_platform *platform = rtd->platform;
-+	struct msm_routing_data *data = q6adm_get_routing_data(platform->dev);
-+	struct session_data *session;
-+	int path_type;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		path_type = ADM_PATH_PLAYBACK;
-+
-+	if (be_id > AFE_MAX_PORTS)
-+		return -EINVAL;
-+
-+	session = &data->port_data[be_id];
-+
-+	mutex_lock(&data->lock);
-+
-+	session->path_type = path_type;
-+	session->sample_rate = params_rate(params);
-+	session->channels = params_channels(params);
-+
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+			session->bits_per_sample = 16;
+ /**
+  * q6afe_hdmi_port_prepare() - Prepare hdmi afe port.
+  *
+@@ -433,6 +553,15 @@ struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
+ 	case AFE_PORT_ID_MULTICHAN_HDMI_RX:
+ 		cfg_type = AFE_PARAM_ID_HDMI_CONFIG;
+ 		break;
++	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_RX:
++	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_1_RX:
++	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_2_RX:
++	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_3_RX:
++	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_4_RX:
++	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_5_RX:
++	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX:
++		cfg_type = AFE_PARAM_ID_SLIMBUS_CONFIG;
 +		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+			session->bits_per_sample = 24;
-+		break;
-+	default:
-+		break;
-+	}
+ 	default:
+ 		dev_err(dev, "Invalid port id 0x%x\n", port_id);
+ 		return ERR_PTR(-EINVAL);
+diff --git a/sound/soc/qcom/qdsp6/q6afe.h b/sound/soc/qcom/qdsp6/q6afe.h
+index 647ed2d15545..aeacf1f2c9a9 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.h
++++ b/sound/soc/qcom/qdsp6/q6afe.h
+@@ -5,12 +5,15 @@
+ 
+ #include <dt-bindings/sound/qcom,q6afe.h>
+ 
+-#define AFE_PORT_MAX		9
++#define AFE_PORT_MAX		48
+ 
+ #define MSM_AFE_PORT_TYPE_RX 0
+ #define MSM_AFE_PORT_TYPE_TX 1
+ #define AFE_MAX_PORTS AFE_PORT_MAX
+ 
++#define AFE_MAX_CHAN_COUNT	8
++#define AFE_PORT_MAX_AUDIO_CHAN_CNT	0x8
 +
-+	mutex_unlock(&data->lock);
-+	return 0;
-+}
-+
-+static struct snd_pcm_ops q6pcm_routing_ops = {
-+	.hw_params = routing_hw_params,
+ struct q6afe_hdmi_cfg {
+ 	u16                  datatype;
+ 	u16                  channel_allocation;
+@@ -18,8 +21,17 @@ struct q6afe_hdmi_cfg {
+ 	u16                  bit_width;
+ };
+ 
++struct q6afe_slim_cfg {
++	u32	sample_rate;
++	u16	bit_width;
++	u16	data_format;
++	u16	num_channels;
++	u8	ch_mapping[AFE_MAX_CHAN_COUNT];
 +};
 +
-+static int msm_routing_probe(struct snd_soc_platform *platform)
-+{
-+	int i;
-+
-+	for (i = 0; i < MAX_SESSIONS; i++)
-+		routing_data->sessions[i].port_id = -1;
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_platform_driver msm_soc_routing_platform = {
-+	.ops = &q6pcm_routing_ops,
-+	.probe = msm_routing_probe,
-+	.component_driver = {
-+		.name		= "q6routing-component",
-+		.dapm_widgets = msm_qdsp6_widgets,
-+		.num_dapm_widgets = ARRAY_SIZE(msm_qdsp6_widgets),
-+		.dapm_routes = intercon,
-+		.num_dapm_routes = ARRAY_SIZE(intercon),
-+	},
-+};
-+
-+int q6pcm_routing_probe(struct device *dev)
-+{
-+	routing_data = kzalloc(sizeof(*routing_data), GFP_KERNEL);
-+	if (!routing_data)
-+		return -ENOMEM;
-+
-+	routing_data->dev = dev;
-+
-+	mutex_init(&routing_data->lock);
-+	q6adm_set_routing_data(dev, routing_data);
-+
-+	return devm_snd_soc_register_platform(dev,
-+					      &msm_soc_routing_platform);
-+}
-+EXPORT_SYMBOL_GPL(q6pcm_routing_probe);
-+
-+int q6pcm_routing_remove(struct device *dev)
-+{
-+	kfree(routing_data);
-+
-+	routing_data = NULL;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(q6pcm_routing_remove);
-+MODULE_DESCRIPTION("Q6 Routing platform");
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/qcom/qdsp6/q6routing.h b/sound/soc/qcom/qdsp6/q6routing.h
-new file mode 100644
-index 000000000000..aa41e4f45742
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6routing.h
-@@ -0,0 +1,9 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#ifndef _Q6_PCM_ROUTING_H
-+#define _Q6_PCM_ROUTING_H
-+
-+int q6routing_stream_open(int fedai_id, int perf_mode,
-+			   int stream_id, int stream_type);
-+void q6routing_stream_close(int fedai_id, int stream_type);
-+
-+#endif /*_Q6_PCM_ROUTING_H */
+ struct q6afe_port_config {
+ 	struct q6afe_hdmi_cfg hdmi;
++	struct q6afe_slim_cfg slim;
+ };
+ 
+ struct q6afe_port;
+@@ -36,5 +48,7 @@ void q6afe_port_put(struct q6afe_port *port);
+ int q6afe_get_port_id(int index);
+ void q6afe_hdmi_port_prepare(struct q6afe_port *port,
+ 			    struct q6afe_hdmi_cfg *cfg);
++void q6afe_slim_port_prepare(struct q6afe_port *port,
++			  struct q6afe_slim_cfg *cfg);
+ 
+ #endif /* __Q6AFE_H__ */
 -- 
 2.15.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
