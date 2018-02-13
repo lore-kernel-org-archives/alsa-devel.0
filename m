@@ -1,15 +1,18 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2] ASoC: tlv320aic31xx: Fix master mode clock
-	I2S bus clocks
-Date: Tue, 13 Feb 2018 13:22:26 +0200
-Message-ID: <20180213112226.31674-1-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v2] ASoC: tlv320aic31xx: Fix master mode
+ clock I2S bus clocks
+Date: Tue, 13 Feb 2018 13:25:51 +0200
+Message-ID: <9a6dcc33-9de3-63a0-b5a2-af377253dc3f@ti.com>
+References: <20180213112226.31674-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
- by alsa0.perex.cz (Postfix) with ESMTP id 23BE4266E78
- for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 12:21:56 +0100 (CET)
+Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B696266E78
+ for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 12:25:19 +0100 (CET)
+In-Reply-To: <20180213112226.31674-1-peter.ujfalusi@ti.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,119 +26,76 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jyri S
 Cc: alsa-devel@alsa-project.org, afd@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-In the reset state of the codec we do not have complete playback or capture
-routes.
-
-The audio playback/capture will not work due to missing clock signals on
-the I2S bus if PLL, MDAC/NDAC/DAC MADC/NADC/ADC is powered down.
-
-To make sure that even if all output/input is disconnected the codec is
-generating clocks, we need to have valid DAPM route in every case to power
-up the must needed parts of the codec.
-
-I have verified that switching DAC (during playback) or ADC (during
-capture) will stop the I2S clocks, so the only solution is to connect the
-'Off' routes as well to output/input.
-
-The routes only going to be added if the codec is configured as clock
-master.
-
-Tested on am43x-epos-evm with aic3111 codec in master mode.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
-Hi,
-
-Changes since v1:
-- Only apply the master mode DAPM routes when the codec is clock master
-- comments added to explain the need.
-
-Regards,
-Peter
-
- sound/soc/codecs/tlv320aic31xx.c | 46 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
-
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 858cb8be445f..15de89318ff5 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -166,6 +166,7 @@ struct aic31xx_priv {
- 	unsigned int sysclk;
- 	u8 p_div;
- 	int rate_div_line;
-+	bool master_dapm_route_applied;
- };
- 
- struct aic31xx_rate_divs {
-@@ -670,6 +671,29 @@ aic310x_audio_map[] = {
- 	{"SPK", NULL, "SPK ClassD"},
- };
- 
-+/*
-+ * Always connected DAPM routes for codec clock master modes.
-+ * If the codec is the master on the I2S bus, we need to power on components
-+ * to have valid DAC_CLK and also the DACs and ADC for playback/capture.
-+ * Otherwise the codec will not generate clocks on the bus.
-+ */
-+static const struct snd_soc_dapm_route
-+common31xx_cm_audio_map[] = {
-+	{"DAC Left Input", "Off", "DAC IN"},
-+	{"DAC Right Input", "Off", "DAC IN"},
-+
-+	{"HPL", NULL, "DAC Left"},
-+	{"HPR", NULL, "DAC Right"},
-+};
-+
-+static const struct snd_soc_dapm_route
-+aic31xx_cm_audio_map[] = {
-+	{"MIC1LP P-Terminal", "Off", "MIC1LP"},
-+	{"MIC1RP P-Terminal", "Off", "MIC1RP"},
-+	{"MIC1LM P-Terminal", "Off", "MIC1LM"},
-+	{"MIC1LM M-Terminal", "Off", "MIC1LM"},
-+};
-+
- static int aic31xx_add_controls(struct snd_soc_codec *codec)
- {
- 	int ret = 0;
-@@ -916,6 +940,7 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 			       unsigned int fmt)
- {
- 	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
- 	u8 iface_reg1 = 0;
- 	u8 iface_reg2 = 0;
- 	u8 dsp_a_val = 0;
-@@ -992,6 +1017,27 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 			    AIC31XX_BCLKINV_MASK,
- 			    iface_reg2);
- 
-+	/* Add the needed DAPM route(s) for codec clock master modes, once */
-+	if (iface_reg1 & (AIC31XX_BCLK_MASTER | AIC31XX_WCLK_MASTER) &&
-+	    !aic31xx->master_dapm_route_applied) {
-+		struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+		int ret;
-+
-+		pr_err("%s: trying to add master routes\n", __func__);
-+		ret = snd_soc_dapm_add_routes(dapm, common31xx_cm_audio_map,
-+					ARRAY_SIZE(common31xx_cm_audio_map));
-+		if (!ret && !(aic31xx->codec_type & DAC31XX_BIT))
-+			ret = snd_soc_dapm_add_routes(dapm,
-+					aic31xx_cm_audio_map,
-+					ARRAY_SIZE(aic31xx_cm_audio_map));
-+
-+		pr_err("%s: master routes added with %d\n", __func__, ret);
-+		if (ret)
-+			return ret;
-+
-+		aic31xx->master_dapm_route_applied = true;
-+	}
-+
- 	return 0;
- }
- 
--- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+YWFyZ2gsCgpPbiAyMDE4LTAyLTEzIDEzOjIyLCBQZXRlciBVamZhbHVzaSB3cm90ZToKPiBJbiB0
+aGUgcmVzZXQgc3RhdGUgb2YgdGhlIGNvZGVjIHdlIGRvIG5vdCBoYXZlIGNvbXBsZXRlIHBsYXli
+YWNrIG9yIGNhcHR1cmUKPiByb3V0ZXMuCj4gCj4gVGhlIGF1ZGlvIHBsYXliYWNrL2NhcHR1cmUg
+d2lsbCBub3Qgd29yayBkdWUgdG8gbWlzc2luZyBjbG9jayBzaWduYWxzIG9uCj4gdGhlIEkyUyBi
+dXMgaWYgUExMLCBNREFDL05EQUMvREFDIE1BREMvTkFEQy9BREMgaXMgcG93ZXJlZCBkb3duLgo+
+IAo+IFRvIG1ha2Ugc3VyZSB0aGF0IGV2ZW4gaWYgYWxsIG91dHB1dC9pbnB1dCBpcyBkaXNjb25u
+ZWN0ZWQgdGhlIGNvZGVjIGlzCj4gZ2VuZXJhdGluZyBjbG9ja3MsIHdlIG5lZWQgdG8gaGF2ZSB2
+YWxpZCBEQVBNIHJvdXRlIGluIGV2ZXJ5IGNhc2UgdG8gcG93ZXIKPiB1cCB0aGUgbXVzdCBuZWVk
+ZWQgcGFydHMgb2YgdGhlIGNvZGVjLgo+IAo+IEkgaGF2ZSB2ZXJpZmllZCB0aGF0IHN3aXRjaGlu
+ZyBEQUMgKGR1cmluZyBwbGF5YmFjaykgb3IgQURDIChkdXJpbmcKPiBjYXB0dXJlKSB3aWxsIHN0
+b3AgdGhlIEkyUyBjbG9ja3MsIHNvIHRoZSBvbmx5IHNvbHV0aW9uIGlzIHRvIGNvbm5lY3QgdGhl
+Cj4gJ09mZicgcm91dGVzIGFzIHdlbGwgdG8gb3V0cHV0L2lucHV0Lgo+IAo+IFRoZSByb3V0ZXMg
+b25seSBnb2luZyB0byBiZSBhZGRlZCBpZiB0aGUgY29kZWMgaXMgY29uZmlndXJlZCBhcyBjbG9j
+awo+IG1hc3Rlci4KPiAKPiBUZXN0ZWQgb24gYW00M3gtZXBvcy1ldm0gd2l0aCBhaWMzMTExIGNv
+ZGVjIGluIG1hc3RlciBtb2RlLgo+IAo+IFNpZ25lZC1vZmYtYnk6IFBldGVyIFVqZmFsdXNpIDxw
+ZXRlci51amZhbHVzaUB0aS5jb20+Cj4gLS0tCj4gSGksCj4gCj4gQ2hhbmdlcyBzaW5jZSB2MToK
+PiAtIE9ubHkgYXBwbHkgdGhlIG1hc3RlciBtb2RlIERBUE0gcm91dGVzIHdoZW4gdGhlIGNvZGVj
+IGlzIGNsb2NrIG1hc3Rlcgo+IC0gY29tbWVudHMgYWRkZWQgdG8gZXhwbGFpbiB0aGUgbmVlZC4K
+PiAKPiBSZWdhcmRzLAo+IFBldGVyCj4gCj4gIHNvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljMzF4
+eC5jIHwgNDYgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+ICAxIGZp
+bGUgY2hhbmdlZCwgNDYgaW5zZXJ0aW9ucygrKQo+IAo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2Mv
+Y29kZWNzL3RsdjMyMGFpYzMxeHguYyBiL3NvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljMzF4eC5j
+Cj4gaW5kZXggODU4Y2I4YmU0NDVmLi4xNWRlODkzMThmZjUgMTAwNjQ0Cj4gLS0tIGEvc291bmQv
+c29jL2NvZGVjcy90bHYzMjBhaWMzMXh4LmMKPiArKysgYi9zb3VuZC9zb2MvY29kZWNzL3RsdjMy
+MGFpYzMxeHguYwo+IEBAIC0xNjYsNiArMTY2LDcgQEAgc3RydWN0IGFpYzMxeHhfcHJpdiB7Cj4g
+IAl1bnNpZ25lZCBpbnQgc3lzY2xrOwo+ICAJdTggcF9kaXY7Cj4gIAlpbnQgcmF0ZV9kaXZfbGlu
+ZTsKPiArCWJvb2wgbWFzdGVyX2RhcG1fcm91dGVfYXBwbGllZDsKPiAgfTsKPiAgCj4gIHN0cnVj
+dCBhaWMzMXh4X3JhdGVfZGl2cyB7Cj4gQEAgLTY3MCw2ICs2NzEsMjkgQEAgYWljMzEweF9hdWRp
+b19tYXBbXSA9IHsKPiAgCXsiU1BLIiwgTlVMTCwgIlNQSyBDbGFzc0QifSwKPiAgfTsKPiAgCj4g
+Ky8qCj4gKyAqIEFsd2F5cyBjb25uZWN0ZWQgREFQTSByb3V0ZXMgZm9yIGNvZGVjIGNsb2NrIG1h
+c3RlciBtb2Rlcy4KPiArICogSWYgdGhlIGNvZGVjIGlzIHRoZSBtYXN0ZXIgb24gdGhlIEkyUyBi
+dXMsIHdlIG5lZWQgdG8gcG93ZXIgb24gY29tcG9uZW50cwo+ICsgKiB0byBoYXZlIHZhbGlkIERB
+Q19DTEsgYW5kIGFsc28gdGhlIERBQ3MgYW5kIEFEQyBmb3IgcGxheWJhY2svY2FwdHVyZS4KPiAr
+ICogT3RoZXJ3aXNlIHRoZSBjb2RlYyB3aWxsIG5vdCBnZW5lcmF0ZSBjbG9ja3Mgb24gdGhlIGJ1
+cy4KPiArICovCj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3JvdXRlCj4gK2Nv
+bW1vbjMxeHhfY21fYXVkaW9fbWFwW10gPSB7Cj4gKwl7IkRBQyBMZWZ0IElucHV0IiwgIk9mZiIs
+ICJEQUMgSU4ifSwKPiArCXsiREFDIFJpZ2h0IElucHV0IiwgIk9mZiIsICJEQUMgSU4ifSwKPiAr
+Cj4gKwl7IkhQTCIsIE5VTEwsICJEQUMgTGVmdCJ9LAo+ICsJeyJIUFIiLCBOVUxMLCAiREFDIFJp
+Z2h0In0sCj4gK307Cj4gKwo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFwbV9yb3V0
+ZQo+ICthaWMzMXh4X2NtX2F1ZGlvX21hcFtdID0gewo+ICsJeyJNSUMxTFAgUC1UZXJtaW5hbCIs
+ICJPZmYiLCAiTUlDMUxQIn0sCj4gKwl7Ik1JQzFSUCBQLVRlcm1pbmFsIiwgIk9mZiIsICJNSUMx
+UlAifSwKPiArCXsiTUlDMUxNIFAtVGVybWluYWwiLCAiT2ZmIiwgIk1JQzFMTSJ9LAo+ICsJeyJN
+SUMxTE0gTS1UZXJtaW5hbCIsICJPZmYiLCAiTUlDMUxNIn0sCj4gK307Cj4gKwo+ICBzdGF0aWMg
+aW50IGFpYzMxeHhfYWRkX2NvbnRyb2xzKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYykKPiAg
+ewo+ICAJaW50IHJldCA9IDA7Cj4gQEAgLTkxNiw2ICs5NDAsNyBAQCBzdGF0aWMgaW50IGFpYzMx
+eHhfc2V0X2RhaV9mbXQoc3RydWN0IHNuZF9zb2NfZGFpICpjb2RlY19kYWksCj4gIAkJCSAgICAg
+ICB1bnNpZ25lZCBpbnQgZm10KQo+ICB7Cj4gIAlzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMg
+PSBjb2RlY19kYWktPmNvZGVjOwo+ICsJc3RydWN0IGFpYzMxeHhfcHJpdiAqYWljMzF4eCA9IHNu
+ZF9zb2NfY29kZWNfZ2V0X2RydmRhdGEoY29kZWMpOwo+ICAJdTggaWZhY2VfcmVnMSA9IDA7Cj4g
+IAl1OCBpZmFjZV9yZWcyID0gMDsKPiAgCXU4IGRzcF9hX3ZhbCA9IDA7Cj4gQEAgLTk5Miw2ICsx
+MDE3LDI3IEBAIHN0YXRpYyBpbnQgYWljMzF4eF9zZXRfZGFpX2ZtdChzdHJ1Y3Qgc25kX3NvY19k
+YWkgKmNvZGVjX2RhaSwKPiAgCQkJICAgIEFJQzMxWFhfQkNMS0lOVl9NQVNLLAo+ICAJCQkgICAg
+aWZhY2VfcmVnMik7Cj4gIAo+ICsJLyogQWRkIHRoZSBuZWVkZWQgREFQTSByb3V0ZShzKSBmb3Ig
+Y29kZWMgY2xvY2sgbWFzdGVyIG1vZGVzLCBvbmNlICovCj4gKwlpZiAoaWZhY2VfcmVnMSAmIChB
+SUMzMVhYX0JDTEtfTUFTVEVSIHwgQUlDMzFYWF9XQ0xLX01BU1RFUikgJiYKPiArCSAgICAhYWlj
+MzF4eC0+bWFzdGVyX2RhcG1fcm91dGVfYXBwbGllZCkgewo+ICsJCXN0cnVjdCBzbmRfc29jX2Rh
+cG1fY29udGV4dCAqZGFwbSA9IHNuZF9zb2NfY29kZWNfZ2V0X2RhcG0oY29kZWMpOwo+ICsJCWlu
+dCByZXQ7Cj4gKwo+ICsJCXByX2VycigiJXM6IHRyeWluZyB0byBhZGQgbWFzdGVyIHJvdXRlc1xu
+IiwgX19mdW5jX18pOwoKTGVmdG92ZXIgZGVidWcgcHJpbnRzIDspCgo+ICsJCXJldCA9IHNuZF9z
+b2NfZGFwbV9hZGRfcm91dGVzKGRhcG0sIGNvbW1vbjMxeHhfY21fYXVkaW9fbWFwLAo+ICsJCQkJ
+CUFSUkFZX1NJWkUoY29tbW9uMzF4eF9jbV9hdWRpb19tYXApKTsKPiArCQlpZiAoIXJldCAmJiAh
+KGFpYzMxeHgtPmNvZGVjX3R5cGUgJiBEQUMzMVhYX0JJVCkpCj4gKwkJCXJldCA9IHNuZF9zb2Nf
+ZGFwbV9hZGRfcm91dGVzKGRhcG0sCj4gKwkJCQkJYWljMzF4eF9jbV9hdWRpb19tYXAsCj4gKwkJ
+CQkJQVJSQVlfU0laRShhaWMzMXh4X2NtX2F1ZGlvX21hcCkpOwo+ICsKPiArCQlwcl9lcnIoIiVz
+OiBtYXN0ZXIgcm91dGVzIGFkZGVkIHdpdGggJWRcbiIsIF9fZnVuY19fLCByZXQpOwo+ICsJCWlm
+IChyZXQpCj4gKwkJCXJldHVybiByZXQ7Cj4gKwo+ICsJCWFpYzMxeHgtPm1hc3Rlcl9kYXBtX3Jv
+dXRlX2FwcGxpZWQgPSB0cnVlOwo+ICsJfQo+ICsKPiAgCXJldHVybiAwOwo+ICB9Cj4gIAo+IAoK
+LSBQw6l0ZXIKClRleGFzIEluc3RydW1lbnRzIEZpbmxhbmQgT3ksIFBvcmtrYWxhbmthdHUgMjIs
+IDAwMTgwIEhlbHNpbmtpLgpZLXR1bm51cy9CdXNpbmVzcyBJRDogMDYxNTUyMS00LiBLb3RpcGFp
+a2thL0RvbWljaWxlOiBIZWxzaW5raQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwK
