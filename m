@@ -1,83 +1,317 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v3 08/25] dt-bindings: sound: qcom: Add
-	bindings for q6asm
-Date: Tue, 13 Feb 2018 16:58:20 +0000
-Message-ID: <20180213165837.1620-9-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 12/25] ASoC: qcom: qdsp6: Add support to Q6CORE
+Date: Tue, 13 Feb 2018 16:58:24 +0000
+Message-ID: <20180213165837.1620-13-srinivas.kandagatla@linaro.org>
 References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id AE1C726795E
- for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 18:01:25 +0100 (CET)
-Received: by mail-wm0-f65.google.com with SMTP id j21so14097575wmh.1
- for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 09:01:25 -0800 (PST)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, robh+dt@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, spatakok@qti.qualcomm.com, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: david.brown@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com, linux-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
+This patch adds support to core apr service, which is used to query
+status of other static and dynamic services on the dsp.
+
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../devicetree/bindings/sound/qcom,q6asm.txt       | 38 ++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6asm.txt
+ sound/soc/qcom/Kconfig        |   5 +
+ sound/soc/qcom/qdsp6/Makefile |   1 +
+ sound/soc/qcom/qdsp6/q6core.c | 235 ++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6core.h |   9 ++
+ 4 files changed, 250 insertions(+)
+ create mode 100644 sound/soc/qcom/qdsp6/q6core.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6core.h
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index a14d960b8fe4..8c2d65e0a28e 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -60,6 +60,10 @@ config SND_SOC_QDSP6_ASM
+ 	tristate
+ 	default n
+ 
++config SND_SOC_QDSP6_CORE
++	tristate
++	default n
++
+ config SND_SOC_QDSP6
+ 	tristate "SoC ALSA audio driver for QDSP6"
+ 	depends on QCOM_APR && HAS_DMA
+@@ -67,6 +71,7 @@ config SND_SOC_QDSP6
+ 	select SND_SOC_QDSP6_AFE
+ 	select SND_SOC_QDSP6_ADM
+ 	select SND_SOC_QDSP6_ASM
++	select SND_SOC_QDSP6_CORE
+ 	help
+ 	 To add support for MSM QDSP6 Soc Audio.
+ 	 This will enable sound soc platform specific
+diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
+index eea962315ab3..61f089bc0d25 100644
+--- a/sound/soc/qcom/qdsp6/Makefile
++++ b/sound/soc/qcom/qdsp6/Makefile
+@@ -2,3 +2,4 @@ obj-$(CONFIG_SND_SOC_QDSP6_COMMON) += q6dsp-common.o
+ obj-$(CONFIG_SND_SOC_QDSP6_AFE) += q6afe.o
+ obj-$(CONFIG_SND_SOC_QDSP6_ADM) += q6adm.o
+ obj-$(CONFIG_SND_SOC_QDSP6_ASM) += q6asm.o
++obj-$(CONFIG_SND_SOC_QDSP6_CORE) += q6core.o
+diff --git a/sound/soc/qcom/qdsp6/q6core.c b/sound/soc/qcom/qdsp6/q6core.c
 new file mode 100644
-index 000000000000..5d6a90681796
+index 000000000000..d4a3ff409a34
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-@@ -0,0 +1,38 @@
-+Qualcomm Audio Stream Manager (Q6ASM) binding
++++ b/sound/soc/qcom/qdsp6/q6core.c
+@@ -0,0 +1,235 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2011-2017, The Linux Foundation
++ * Copyright (c) 2018, Linaro Limited
++ */
 +
-+Q6ASM is one of the APR audio service on Q6DSP.
-+Please refer to qcom,apr.txt for details of the coommon apr service bindings
-+used by the apr service device.
++#include <linux/slab.h>
++#include <linux/wait.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/sched.h>
++#include <linux/of.h>
++#include <linux/jiffies.h>
++#include <linux/wait.h>
++#include <linux/soc/qcom/apr.h>
++#include "q6dsp-errno.h"
 +
-+- but must contain the following property:
++#define ADSP_STATE_READY_TIMEOUT_MS    3000
++#define Q6_READY_TIMEOUT_MS 100
++#define AVCS_CMD_ADSP_EVENT_GET_STATE		0x0001290C
++#define AVCS_CMDRSP_ADSP_EVENT_GET_STATE	0x0001290D
++#define AVCS_GET_VERSIONS       0x00012905
++#define AVCS_GET_VERSIONS_RSP   0x00012906
 +
-+- compatible:
-+	Usage: required
-+	Value type: <stringlist>
-+	Definition: must be "qcom,asm-v<MAJOR-NUMBER>.<MINOR-NUMBER>".
-+		    example "qcom,asm-v2.0"
++struct avcs_svc_info {
++	uint32_t service_id;
++	uint32_t version;
++} __packed;
 +
-+- qcom,apr-svc-id
-+	Usage: required
-+	Value type: <prop-encoded-array>
-+	Definition: Must be 7 for Audio Stream Manager Service.
-+
-+- qcom,apr-svc-name
-+	Usage: required
-+	Value type: <stringlist>
-+	Definition: Must be "ASM"
-+
-+- #sound-dai-cells
-+	Usage: required
-+	Value type: <prop-encoded-array>
-+	Definition: Must be 1
-+
-+
-+= EXAMPLE
-+
-+q6asm: q6asm {
-+	compatible = "qcom,q6asm";
-+	qcom,apr-svc-name = "ASM";
-+	qcom,apr-svc-id = <APR_SVC_ASM>;
-+	#sound-dai-cells = <1>;
++struct q6core {
++	struct apr_device *adev;
++	wait_queue_head_t wait;
++	uint32_t avcs_state;
++	bool resp_received;
++	uint32_t num_services;
++	struct avcs_svc_info *svcs_info;
 +};
++
++struct q6core *core;
++
++static int q6core_callback(struct apr_device *adev,
++			 struct apr_client_message *data)
++{
++	struct q6core *core = dev_get_drvdata(&adev->dev);
++	struct aprv2_ibasic_rsp_result_t *result;
++
++	result = data->payload;
++	switch (data->opcode) {
++	case AVCS_GET_VERSIONS_RSP:
++		core->num_services = result->status;
++
++		core->svcs_info = kcalloc(core->num_services,
++					  sizeof(*core->svcs_info),
++					  GFP_ATOMIC);
++		if (!core->svcs_info)
++			return -ENOMEM;
++
++		/* svc info is after apr result */
++		memcpy(core->svcs_info, result + sizeof(*result),
++		       core->num_services * sizeof(*core->svcs_info));
++
++		core->resp_received = true;
++		wake_up(&core->wait);
++
++		break;
++	case AVCS_CMDRSP_ADSP_EVENT_GET_STATE:
++		core->avcs_state = result->opcode;
++
++		core->resp_received = true;
++		wake_up(&core->wait);
++		break;
++	default:
++		dev_err(&adev->dev, "Message id from adsp core svc: 0x%x\n",
++			data->opcode);
++		break;
++	}
++
++	return 0;
++}
++
++static int q6core_get_svc_versions(struct q6core *core)
++{
++	struct apr_device *adev = core->adev;
++	struct apr_hdr hdr = {0};
++	int rc;
++
++	hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
++				      APR_HDR_LEN(APR_HDR_SIZE), APR_PKT_VER);
++	hdr.pkt_size = APR_HDR_SIZE;
++	hdr.opcode = AVCS_GET_VERSIONS;
++
++	rc = apr_send_pkt(adev, &hdr);
++	if (rc < 0)
++		return rc;
++
++	rc = wait_event_timeout(core->wait, (core->resp_received),
++				msecs_to_jiffies(Q6_READY_TIMEOUT_MS));
++	if (rc > 0 && core->resp_received) {
++		core->resp_received = false;
++		return 0;
++	}
++
++	return rc;
++}
++
++static bool __q6core_is_adsp_ready(struct q6core *core)
++{
++	struct apr_device *adev = core->adev;
++	struct apr_hdr hdr = {0};
++	int rc;
++
++	hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
++				      APR_HDR_LEN(APR_HDR_SIZE), APR_PKT_VER);
++	hdr.pkt_size = APR_HDR_SIZE;
++	hdr.opcode = AVCS_CMD_ADSP_EVENT_GET_STATE;
++
++	rc = apr_send_pkt(adev, &hdr);
++	if (rc < 0)
++		return false;
++
++	rc = wait_event_timeout(core->wait, (core->resp_received),
++				msecs_to_jiffies(Q6_READY_TIMEOUT_MS));
++	if (rc > 0 && core->resp_received) {
++		core->resp_received = false;
++		if (core->avcs_state == 0x1)
++			return true;
++	}
++
++	return false;
++}
++
++/**
++ * q6core_get_svc_version() - Get version number of a service.
++ *
++ * @svc_id: service id of the service.
++ *
++ * Return: Will be a valid version number on success and zero on failure.
++ * version number returned contains bits 0 to 15 as Minor version number
++ * Bits 16 to 31 as Major version number
++ */
++uint32_t q6core_get_svc_version(int svc_id)
++{
++	struct apr_device *adev;
++	struct avcs_svc_info *svcs_info;
++	int i, ret;
++
++	if (!core)
++		return 0;
++
++	if (!core->svcs_info) {
++		ret = q6core_get_svc_versions(core);
++		if (ret)
++			return ret;
++	}
++
++	adev  = core->adev;
++	svcs_info = core->svcs_info;
++
++	for (i = 0; i < core->num_services; i++)
++		if (svcs_info[i].service_id == svc_id)
++			return svcs_info[i].version;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(q6core_get_svc_version);
++
++/**
++ * q6core_is_adsp_ready() - Get status of adsp
++ *
++ * Return: Will be an true if adsp is ready and false if not.
++ */
++bool q6core_is_adsp_ready(void)
++{
++	unsigned long  timeout;
++
++	if (!core)
++		return false;
++
++	timeout = jiffies + msecs_to_jiffies(ADSP_STATE_READY_TIMEOUT_MS);
++	for (;;) {
++		if (__q6core_is_adsp_ready(core))
++			return true;
++
++		if (!time_after(timeout, jiffies))
++			return false;
++	}
++
++	return false;
++}
++EXPORT_SYMBOL_GPL(q6core_is_adsp_ready);
++
++static int q6core_probe(struct apr_device *adev)
++{
++	core = kzalloc(sizeof(*core), GFP_KERNEL);
++	if (!core)
++		return -ENOMEM;
++
++	dev_set_drvdata(&adev->dev, core);
++
++	core->adev = adev;
++	init_waitqueue_head(&core->wait);
++
++	return 0;
++}
++
++static int q6core_exit(struct apr_device *adev)
++{
++	if (core->svcs_info)
++		kfree(core->svcs_info);
++
++	kfree(core);
++	core = NULL;
++
++	return 0;
++}
++
++static const struct of_device_id q6core_device_id[]  = {
++	{ .compatible = "qcom,q6core" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, q6core_device_id);
++
++static struct apr_driver qcom_q6core_driver = {
++	.probe = q6core_probe,
++	.remove = q6core_exit,
++	.callback = q6core_callback,
++	.driver = {
++		.name = "qcom-q6core",
++		.of_match_table = of_match_ptr(q6core_device_id),
++	},
++};
++
++module_apr_driver(qcom_q6core_driver);
++MODULE_DESCRIPTION("q6 core");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/qcom/qdsp6/q6core.h b/sound/soc/qcom/qdsp6/q6core.h
+new file mode 100644
+index 000000000000..2852fbb7756e
+--- /dev/null
++++ b/sound/soc/qcom/qdsp6/q6core.h
+@@ -0,0 +1,9 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#ifndef __Q6CORE_H__
++#define __Q6CORE_H__
++
++bool q6core_is_adsp_ready(void);
++uint32_t q6core_get_svc_version(int svc_id);
++
++#endif /* __Q6CORE_H__ */
 -- 
 2.15.1
