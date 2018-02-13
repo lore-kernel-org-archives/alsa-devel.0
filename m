@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ad1980: replace codec to component" to
+Subject: Applied "ASoC: wm9705: replace codec to component" to
 	the asoc tree
-Date: Tue, 13 Feb 2018 12:14:47 +0000
-Message-ID: <E1elZTz-0005Om-8m@debutante>
-References: <871si9xpew.wl%kuninori.morimoto.gx@renesas.com>
+Date: Tue, 13 Feb 2018 12:15:00 +0000
+Message-ID: <E1elZUC-0005Q6-5n@debutante>
+References: <87po5t2wfn.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 78FEF267716
- for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 13:14:50 +0100 (CET)
-In-Reply-To: <871si9xpew.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B64D1267716
+ for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 13:15:02 +0100 (CET)
+In-Reply-To: <87po5t2wfn.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ad1980: replace codec to component
+   ASoC: wm9705: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From ac6267e34abfb322d2c408598866560922fccc22 Mon Sep 17 00:00:00 2001
+>From 28f898499f3306274c900ad85b579435f9e4c8b5 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:26:20 +0000
-Subject: [PATCH] ASoC: ad1980: replace codec to component
+Date: Mon, 29 Jan 2018 03:10:29 +0000
+Subject: [PATCH] ASoC: wm9705: replace codec to component
 
 Now we can replace Codec to Component. Let's do it.
 
@@ -70,171 +70,183 @@ Note:
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ad1980.c | 87 ++++++++++++++++++++++-------------------------
- 1 file changed, 40 insertions(+), 47 deletions(-)
+ sound/soc/codecs/wm9705.c | 83 ++++++++++++++++++++++-------------------------
+ 1 file changed, 38 insertions(+), 45 deletions(-)
 
-diff --git a/sound/soc/codecs/ad1980.c b/sound/soc/codecs/ad1980.c
-index ce89bfb42094..16dab3f00a1c 100644
---- a/sound/soc/codecs/ad1980.c
-+++ b/sound/soc/codecs/ad1980.c
-@@ -205,9 +205,9 @@ static struct snd_soc_dai_driver ad1980_dai = {
- #define AD1980_VENDOR_ID 0x41445300
- #define AD1980_VENDOR_MASK 0xffffff00
- 
--static int ad1980_reset(struct snd_soc_codec *codec, int try_warm)
-+static int ad1980_reset(struct snd_soc_component *component, int try_warm)
+diff --git a/sound/soc/codecs/wm9705.c b/sound/soc/codecs/wm9705.c
+index 2c09f71fe433..ccdf088461b7 100644
+--- a/sound/soc/codecs/wm9705.c
++++ b/sound/soc/codecs/wm9705.c
+@@ -235,17 +235,17 @@ static const struct snd_soc_dapm_route wm9705_audio_map[] = {
+ static int ac97_prepare(struct snd_pcm_substream *substream,
+ 			struct snd_soc_dai *dai)
  {
--	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_ac97 *ac97 = snd_soc_component_get_drvdata(component);
- 	unsigned int retry_cnt = 0;
- 	int ret;
+-	struct snd_soc_codec *codec = dai->codec;
++	struct snd_soc_component *component = dai->component;
+ 	int reg;
  
-@@ -223,16 +223,16 @@ static int ad1980_reset(struct snd_soc_codec *codec, int try_warm)
- 		 * case the first nibble of data is eaten by the addr. (Tag is
- 		 * always 16 bit)
- 		 */
--		snd_soc_write(codec, AC97_AD_SERIAL_CFG, 0x9900);
-+		snd_soc_component_write(component, AC97_AD_SERIAL_CFG, 0x9900);
+-	snd_soc_update_bits(codec, AC97_EXTENDED_STATUS, 0x1, 0x1);
++	snd_soc_component_update_bits(component, AC97_EXTENDED_STATUS, 0x1, 0x1);
  
- 	} while (retry_cnt++ < 10);
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		reg = AC97_PCM_FRONT_DAC_RATE;
+ 	else
+ 		reg = AC97_PCM_LR_ADC_RATE;
  
--	dev_err(codec->dev, "Failed to reset: AC97 link error\n");
-+	dev_err(component->dev, "Failed to reset: AC97 link error\n");
- 
- 	return -EIO;
+-	return snd_soc_write(codec, reg, substream->runtime->rate);
++	return snd_soc_component_write(component, reg, substream->runtime->rate);
  }
  
--static int ad1980_soc_probe(struct snd_soc_codec *codec)
-+static int ad1980_soc_probe(struct snd_soc_component *component)
+ #define WM9705_AC97_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | \
+@@ -289,18 +289,18 @@ static struct snd_soc_dai_driver wm9705_dai[] = {
+ };
+ 
+ #ifdef CONFIG_PM
+-static int wm9705_soc_suspend(struct snd_soc_codec *codec)
++static int wm9705_soc_suspend(struct snd_soc_component *component)
  {
- 	struct snd_ac97 *ac97;
- 	struct regmap *regmap;
-@@ -240,10 +240,10 @@ static int ad1980_soc_probe(struct snd_soc_codec *codec)
- 	u16 vendor_id2;
- 	u16 ext_status;
- 
--	ac97 = snd_soc_new_ac97_codec(codec, 0, 0);
-+	ac97 = snd_soc_new_ac97_component(component, 0, 0);
- 	if (IS_ERR(ac97)) {
- 		ret = PTR_ERR(ac97);
--		dev_err(codec->dev, "Failed to register AC97 codec: %d\n", ret);
-+		dev_err(component->dev, "Failed to register AC97 component: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -253,72 +253,66 @@ static int ad1980_soc_probe(struct snd_soc_codec *codec)
- 		goto err_free_ac97;
- 	}
- 
--	snd_soc_codec_init_regmap(codec, regmap);
--	snd_soc_codec_set_drvdata(codec, ac97);
-+	snd_soc_component_init_regmap(component, regmap);
-+	snd_soc_component_set_drvdata(component, ac97);
- 
--	ret = ad1980_reset(codec, 0);
-+	ret = ad1980_reset(component, 0);
- 	if (ret < 0)
- 		goto reset_err;
- 
--	vendor_id2 = snd_soc_read(codec, AC97_VENDOR_ID2);
-+	vendor_id2 = snd_soc_component_read32(component, AC97_VENDOR_ID2);
- 	if (vendor_id2 == 0x5374) {
--		dev_warn(codec->dev,
-+		dev_warn(component->dev,
- 			"Found AD1981 - only 2/2 IN/OUT Channels supported\n");
- 	}
- 
- 	/* unmute captures and playbacks volume */
--	snd_soc_write(codec, AC97_MASTER, 0x0000);
--	snd_soc_write(codec, AC97_PCM, 0x0000);
--	snd_soc_write(codec, AC97_REC_GAIN, 0x0000);
--	snd_soc_write(codec, AC97_CENTER_LFE_MASTER, 0x0000);
--	snd_soc_write(codec, AC97_SURROUND_MASTER, 0x0000);
-+	snd_soc_component_write(component, AC97_MASTER, 0x0000);
-+	snd_soc_component_write(component, AC97_PCM, 0x0000);
-+	snd_soc_component_write(component, AC97_REC_GAIN, 0x0000);
-+	snd_soc_component_write(component, AC97_CENTER_LFE_MASTER, 0x0000);
-+	snd_soc_component_write(component, AC97_SURROUND_MASTER, 0x0000);
- 
- 	/*power on LFE/CENTER/Surround DACs*/
--	ext_status = snd_soc_read(codec, AC97_EXTENDED_STATUS);
--	snd_soc_write(codec, AC97_EXTENDED_STATUS, ext_status&~0x3800);
-+	ext_status = snd_soc_component_read32(component, AC97_EXTENDED_STATUS);
-+	snd_soc_component_write(component, AC97_EXTENDED_STATUS, ext_status&~0x3800);
+-	regcache_cache_bypass(codec->component.regmap, true);
+-	snd_soc_write(codec, AC97_POWERDOWN, 0xffff);
+-	regcache_cache_bypass(codec->component.regmap, false);
++	regcache_cache_bypass(component->regmap, true);
++	snd_soc_component_write(component, AC97_POWERDOWN, 0xffff);
++	regcache_cache_bypass(component->regmap, false);
  
  	return 0;
- 
- reset_err:
--	snd_soc_codec_exit_regmap(codec);
-+	snd_soc_component_exit_regmap(component);
- err_free_ac97:
--	snd_soc_free_ac97_codec(ac97);
-+	snd_soc_free_ac97_component(ac97);
- 	return ret;
  }
  
--static int ad1980_soc_remove(struct snd_soc_codec *codec)
-+static void ad1980_soc_remove(struct snd_soc_component *component)
+-static int wm9705_soc_resume(struct snd_soc_codec *codec)
++static int wm9705_soc_resume(struct snd_soc_component *component)
  {
--	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_ac97 *ac97 = snd_soc_component_get_drvdata(component);
+-	struct wm9705_priv *wm9705 = snd_soc_codec_get_drvdata(codec);
++	struct wm9705_priv *wm9705 = snd_soc_component_get_drvdata(component);
+ 	int ret;
  
--	snd_soc_codec_exit_regmap(codec);
--	snd_soc_free_ac97_codec(ac97);
--	return 0;
-+	snd_soc_component_exit_regmap(component);
-+	snd_soc_free_ac97_component(ac97);
+ 	ret = snd_ac97_reset(wm9705->ac97, true, WM9705_VENDOR_ID,
+@@ -308,7 +308,7 @@ static int wm9705_soc_resume(struct snd_soc_codec *codec)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	regcache_sync(codec->component.regmap);
++	snd_soc_component_cache_sync(component);
+ 
+ 	return 0;
+ }
+@@ -317,9 +317,9 @@ static int wm9705_soc_resume(struct snd_soc_codec *codec)
+ #define wm9705_soc_resume NULL
+ #endif
+ 
+-static int wm9705_soc_probe(struct snd_soc_codec *codec)
++static int wm9705_soc_probe(struct snd_soc_component *component)
+ {
+-	struct wm9705_priv *wm9705 = snd_soc_codec_get_drvdata(codec);
++	struct wm9705_priv *wm9705 = snd_soc_component_get_drvdata(component);
+ 	struct regmap *regmap;
+ 
+ 	if (wm9705->mfd_pdata) {
+@@ -327,54 +327,54 @@ static int wm9705_soc_probe(struct snd_soc_codec *codec)
+ 		regmap = wm9705->mfd_pdata->regmap;
+ 	} else {
+ #ifdef CONFIG_SND_SOC_AC97_BUS
+-		wm9705->ac97 = snd_soc_new_ac97_codec(codec, WM9705_VENDOR_ID,
++		wm9705->ac97 = snd_soc_new_ac97_component(component, WM9705_VENDOR_ID,
+ 						      WM9705_VENDOR_ID_MASK);
+ 		if (IS_ERR(wm9705->ac97)) {
+-			dev_err(codec->dev, "Failed to register AC97 codec\n");
++			dev_err(component->dev, "Failed to register AC97 codec\n");
+ 			return PTR_ERR(wm9705->ac97);
+ 		}
+ 
+ 		regmap = regmap_init_ac97(wm9705->ac97, &wm9705_regmap_config);
+ 		if (IS_ERR(regmap)) {
+-			snd_soc_free_ac97_codec(wm9705->ac97);
++			snd_soc_free_ac97_component(wm9705->ac97);
+ 			return PTR_ERR(regmap);
+ 		}
+ #endif
+ 	}
+ 
+-	snd_soc_codec_set_drvdata(codec, wm9705->ac97);
+-	snd_soc_codec_init_regmap(codec, regmap);
++	snd_soc_component_set_drvdata(component, wm9705->ac97);
++	snd_soc_component_init_regmap(component, regmap);
+ 
+ 	return 0;
  }
  
--static const struct snd_soc_codec_driver soc_codec_dev_ad1980 = {
--	.probe = 	ad1980_soc_probe,
--	.remove = 	ad1980_soc_remove,
+-static int wm9705_soc_remove(struct snd_soc_codec *codec)
++static void wm9705_soc_remove(struct snd_soc_component *component)
+ {
+ #ifdef CONFIG_SND_SOC_AC97_BUS
+-	struct wm9705_priv *wm9705 = snd_soc_codec_get_drvdata(codec);
++	struct wm9705_priv *wm9705 = snd_soc_component_get_drvdata(component);
+ 
+ 	if (!wm9705->mfd_pdata) {
+-		snd_soc_codec_exit_regmap(codec);
+-		snd_soc_free_ac97_codec(wm9705->ac97);
++		snd_soc_component_exit_regmap(component);
++		snd_soc_free_ac97_component(wm9705->ac97);
+ 	}
+ #endif
+-	return 0;
+ }
+ 
+-static const struct snd_soc_codec_driver soc_codec_dev_wm9705 = {
+-	.probe = 	wm9705_soc_probe,
+-	.remove = 	wm9705_soc_remove,
+-	.suspend =	wm9705_soc_suspend,
+-	.resume =	wm9705_soc_resume,
 -
 -	.component_driver = {
--		.controls		= ad1980_snd_ac97_controls,
--		.num_controls		= ARRAY_SIZE(ad1980_snd_ac97_controls),
--		.dapm_widgets		= ad1980_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(ad1980_dapm_widgets),
--		.dapm_routes		= ad1980_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(ad1980_dapm_routes),
+-		.controls		= wm9705_snd_ac97_controls,
+-		.num_controls		= ARRAY_SIZE(wm9705_snd_ac97_controls),
+-		.dapm_widgets		= wm9705_dapm_widgets,
+-		.num_dapm_widgets	= ARRAY_SIZE(wm9705_dapm_widgets),
+-		.dapm_routes		= wm9705_audio_map,
+-		.num_dapm_routes	= ARRAY_SIZE(wm9705_audio_map),
 -	},
-+static const struct snd_soc_component_driver soc_component_dev_ad1980 = {
-+	.probe			= ad1980_soc_probe,
-+	.remove			= ad1980_soc_remove,
-+	.controls		= ad1980_snd_ac97_controls,
-+	.num_controls		= ARRAY_SIZE(ad1980_snd_ac97_controls),
-+	.dapm_widgets		= ad1980_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(ad1980_dapm_widgets),
-+	.dapm_routes		= ad1980_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(ad1980_dapm_routes),
++static const struct snd_soc_component_driver soc_component_dev_wm9705 = {
++	.probe			= wm9705_soc_probe,
++	.remove			= wm9705_soc_remove,
++	.suspend		= wm9705_soc_suspend,
++	.resume			= wm9705_soc_resume,
++	.controls		= wm9705_snd_ac97_controls,
++	.num_controls		= ARRAY_SIZE(wm9705_snd_ac97_controls),
++	.dapm_widgets		= wm9705_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(wm9705_dapm_widgets),
++	.dapm_routes		= wm9705_audio_map,
++	.num_dapm_routes	= ARRAY_SIZE(wm9705_audio_map),
 +	.idle_bias_on		= 1,
 +	.use_pmdown_time	= 1,
 +	.endianness		= 1,
 +	.non_legacy_dai_naming	= 1,
  };
  
- static int ad1980_probe(struct platform_device *pdev)
- {
+ static int wm9705_probe(struct platform_device *pdev)
+@@ -388,14 +388,8 @@ static int wm9705_probe(struct platform_device *pdev)
+ 	wm9705->mfd_pdata = dev_get_platdata(&pdev->dev);
+ 	platform_set_drvdata(pdev, wm9705);
+ 
 -	return snd_soc_register_codec(&pdev->dev,
--			&soc_codec_dev_ad1980, &ad1980_dai, 1);
+-			&soc_codec_dev_wm9705, wm9705_dai, ARRAY_SIZE(wm9705_dai));
 -}
 -
--static int ad1980_remove(struct platform_device *pdev)
+-static int wm9705_remove(struct platform_device *pdev)
 -{
 -	snd_soc_unregister_codec(&pdev->dev);
 -	return 0;
 +	return devm_snd_soc_register_component(&pdev->dev,
-+			&soc_component_dev_ad1980, &ad1980_dai, 1);
++			&soc_component_dev_wm9705, wm9705_dai, ARRAY_SIZE(wm9705_dai));
  }
  
- static struct platform_driver ad1980_codec_driver = {
-@@ -327,7 +321,6 @@ static struct platform_driver ad1980_codec_driver = {
+ static struct platform_driver wm9705_codec_driver = {
+@@ -404,7 +398,6 @@ static struct platform_driver wm9705_codec_driver = {
  	},
  
- 	.probe = ad1980_probe,
--	.remove = ad1980_remove,
+ 	.probe = wm9705_probe,
+-	.remove = wm9705_remove,
  };
  
- module_platform_driver(ad1980_codec_driver);
+ module_platform_driver(wm9705_codec_driver);
 -- 
 2.16.1
