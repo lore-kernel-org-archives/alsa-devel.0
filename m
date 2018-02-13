@@ -1,21 +1,21 @@
-From: Cosmin Samoila <cosmin.samoila@nxp.com>
-Subject: Re: [PATCH] ASoC: codecs: Add support for AK4458 DAC
-	driver
-Date: Tue, 13 Feb 2018 09:22:24 +0000
-Message-ID: <1518513744.25655.8.camel@nxp.com>
-References: <1517404809-25250-1-git-send-email-cosmin.samoila@nxp.com>
- <20180131170330.GB7763@sirena.org.uk>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH] ASoC: tlv320aic31xx: Fix master mode clock
+	I2S bus clocks
+Date: Tue, 13 Feb 2018 11:22:47 +0200
+Message-ID: <f83337ef-a2d7-5780-f6ad-34487b3ac29a@ti.com>
+References: <20180212140646.3268-1-peter.ujfalusi@ti.com>
+ <b582d1d1-a027-f7cf-1f2e-a09a411f1354@ti.com>
+ <cdf06301-8166-3035-97db-0e87d3888192@ti.com>
+ <fe5d4632-7b31-8001-f2b9-98a6ee3ed317@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com
- (mail-db5eur01on0046.outbound.protection.outlook.com [104.47.2.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 96F14266E42
- for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 10:22:27 +0100 (CET)
-In-Reply-To: <20180131170330.GB7763@sirena.org.uk>
-Content-Language: en-US
-Content-ID: <EEEC3802193D804DA3A698232AF5AA61@eurprd04.prod.outlook.com>
+Received: from lelnx194.ext.ti.com (lelnx194.ext.ti.com [198.47.27.80])
+ by alsa0.perex.cz (Postfix) with ESMTP id 574A726785C
+ for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 10:22:51 +0100 (CET)
+In-Reply-To: <fe5d4632-7b31-8001-f2b9-98a6ee3ed317@ti.com>
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,28 +25,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "broonie@kernel.org" <broonie@kernel.org>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "wakasugi.jb@om.asahi-kasei.co.jp" <wakasugi.jb@om.asahi-kasei.co.jp>, dl-linux-imx <linux-imx@nxp.com>, "mihai.serban@nxp.com" <mihai.serban@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, "mihai.serban@gmail.com" <mihai.serban@gmail.com>
+To: "Andrew F. Davis" <afd@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTWFyaywNCg0KPiA+IA0KPiA+ICtzdGF0aWMgaW50IGFrNDQ1OF9od19wYXJhbXMoc3RydWN0
-IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sDQo+ID4gKwkJCcKgwqDCoMKgc3RydWN0IHNu
-ZF9wY21faHdfcGFyYW1zICpwYXJhbXMsDQo+ID4gKwkJCcKgwqDCoMKgc3RydWN0IHNuZF9zb2Nf
-ZGFpICpkYWkpDQo+ID4gK3sNCj4gPiArCXN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYyA9IGRh
-aS0+Y29kZWM7DQo+ID4gKwlzdHJ1Y3QgYWs0NDU4X3ByaXYgKmFrNDQ1OCA9DQo+ID4gc25kX3Nv
-Y19jb2RlY19nZXRfZHJ2ZGF0YShjb2RlYyk7DQo+ID4gKwl1OCBmb3JtYXQ7DQo+ID4gKwlpbnQg
-cGNtX3dpZHRoID0gbWF4KHBhcmFtc19waHlzaWNhbF93aWR0aChwYXJhbXMpLCBhazQ0NTgtDQo+
-ID4gPnNsb3Rfd2lkdGgpOw0KPiA+ICsNCj4gPiArI2lmZGVmIEFLNDQ1OF9BQ0tTX1VTRV9NQU5V
-QUxfTU9ERQ0KPiA+ICsJdTggZGZzMSwgZGZzMjsNCj4gPiArI2VuZGlmDQo+IFdoYXQncyB0aGlz
-IGFuZCB3aHkgaXMgaXQgYSBjb21waWxlIHRpbWUgb3B0aW9uPw0KDQpUaGlzIGlzIHVzZWQgdG8g
-c2V0IHRoZSBjb2RlYyBpbiBNYW51YWwgU2V0dGluZyBNb2RlLCBtZWFuaW5nIHRoYXQNCnRoZSBk
-ZWZhdWx0IHNhbXBsaW5nIHNwZWVkIGlzIHNldCBiYXNlZCBvbiBERlMwIGFuZCBERlMxIGJpdHMu
-IEluDQpBdXRvIFNldHRpbmcgTW9kZSwgdGhlIE1DTEsgZnJlcXVlbmN5IGlzIGRldGVjdGVkIGF1
-dG9tYXRpY2FsbHkgYW5kDQpERlMgYml0cyBhcmUgaWdub3JlZC4NClRoaXMgY29tcGlsZSB0aW1l
-IG9wdGlvbiBpcyB1c2VkIHRvIGtub3cgd2hlbiB0byBzZXQgdGhlIEFDS1MgYml0IGluDQppbml0
-X3JlZyBmdW5jdGlvbiB0aGF0IHN3aXRjaGVzIGJldHdlZW4gbW9kZXMuDQpBdCB0aGlzIG1vbWVu
-dCB3ZSBhcmUgb25seSB1c2luZyBBdXRvIE1vZGUgYW5kIEkgY2FuIHJlbW92ZSBpdCBpZg0KeW91
-IHRoaW5rIGlzIG5vdCBuZWNlc3NhcnkuDQoNClRoYW5rIHlvdSwNCkNvc21pbgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 12/02/18 19:27, Andrew F. Davis wrote:
+>>> If all output/input is disconnected why do we need the I2C clocks?
+>> we need I2S clocks when user is running audio, otherwise it will time
+>> out with error.
+>>
+> You mean in the case were they have the device set to route the I2S
+> stream to a dead end inside the CODEC (DAC IN -> OFF), but still want to
+> push data down the I2S line?
+> 
+> Is there no way to communicate the device is muted back to the I2S data
+> master to not try to push data
+
+The audio device should still keep the stream flowing and continue
+draining (or pushing) the samples even if the path is muted. Doing that
+properly in any other way than keeping the I2S clocked is quite complicated.
+
+Best regards,
+Jyri
+
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
