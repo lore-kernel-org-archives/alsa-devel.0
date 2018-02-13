@@ -1,126 +1,59 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ad73311: replace codec to component" to
-	the asoc tree
-Date: Tue, 13 Feb 2018 12:15:08 +0000
-Message-ID: <E1elZUK-0005Ro-Da@debutante>
-References: <87zi4xwatx.wl%kuninori.morimoto.gx@renesas.com>
+From: Daniel Baluta <daniel.baluta-3arQi8VN3Tc@public.gmane.org>
+Subject: Re: [PATCH v3 1/2] ASoC: codecs: Add support for AK5558 ADC driver
+Date: Tue, 13 Feb 2018 12:15:20 +0000
+Message-ID: <1518524119.17642.15.camel@nxp.com>
+References: <1517850115-24340-1-git-send-email-daniel.baluta@nxp.com>
+         <1517850115-24340-2-git-send-email-daniel.baluta@nxp.com>
+         <20180212120213.GB12976@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C593C2678C8
- for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 13:15:10 +0100 (CET)
-In-Reply-To: <87zi4xwatx.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20180212120213.GB12976-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Content-Language: en-US
+Content-ID: <CDB44FFC22D9194A9A45C96998A96FBA-jdb/QiT5osKcE4WynfumptQqCkab/8FMAL8bYrjMMd8@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: dl-linux-imx <linux-imx-3arQi8VN3Tc@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Cosmin Samoila <cosmin.samoila-3arQi8VN3Tc@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "wakasugi.jb-r6lgfPJHJciWyREYz5tgSuqrae++aQT8@public.gmane.org" <wakasugi.jb-r6lgfPJHJciWyREYz5tgSuqrae++aQT8@public.gmane.org>, Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>, "andy.shevchenko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <andy.shevchenko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "mihai.serban-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <mihai.serban-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "S.j. Wang" <shengjiu.wang-3arQi8VN3Tc@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "mihai.serban-3arQi8VN3Tc@public.gmane.org" <mihai.serban-3arQi8VN3Tc@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: ad73311: replace codec to component
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From be4b1c09765c91897ecbfdb8d4e1c8239d5e0650 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 29 Jan 2018 04:26:41 +0000
-Subject: [PATCH] ASoC: ad73311: replace codec to component
-
-Now we can replace Codec to Component. Let's do it.
-
-Note:
-	xxx_codec_xxx()		->	xxx_component_xxx()
-	.idle_bias_off = 0	->	.idle_bias_on = 1
-	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
-	-			->	.endianness = 1
-	-			->	.non_legacy_dai_naming = 1
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/ad73311.c | 27 +++++++++++----------------
- 1 file changed, 11 insertions(+), 16 deletions(-)
-
-diff --git a/sound/soc/codecs/ad73311.c b/sound/soc/codecs/ad73311.c
-index d8d86a0fea60..03ee571e1b7a 100644
---- a/sound/soc/codecs/ad73311.c
-+++ b/sound/soc/codecs/ad73311.c
-@@ -54,25 +54,21 @@ static struct snd_soc_dai_driver ad73311_dai = {
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE, },
- };
- 
--static const struct snd_soc_codec_driver soc_codec_dev_ad73311 = {
--	.component_driver = {
--		.dapm_widgets		= ad73311_dapm_widgets,
--		.num_dapm_widgets	= ARRAY_SIZE(ad73311_dapm_widgets),
--		.dapm_routes		= ad73311_dapm_routes,
--		.num_dapm_routes	= ARRAY_SIZE(ad73311_dapm_routes),
--	},
-+static const struct snd_soc_component_driver soc_component_dev_ad73311 = {
-+	.dapm_widgets		= ad73311_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(ad73311_dapm_widgets),
-+	.dapm_routes		= ad73311_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(ad73311_dapm_routes),
-+	.idle_bias_on		= 1,
-+	.use_pmdown_time	= 1,
-+	.endianness		= 1,
-+	.non_legacy_dai_naming	= 1,
- };
- 
- static int ad73311_probe(struct platform_device *pdev)
- {
--	return snd_soc_register_codec(&pdev->dev,
--			&soc_codec_dev_ad73311, &ad73311_dai, 1);
--}
--
--static int ad73311_remove(struct platform_device *pdev)
--{
--	snd_soc_unregister_codec(&pdev->dev);
--	return 0;
-+	return devm_snd_soc_register_component(&pdev->dev,
-+			&soc_component_dev_ad73311, &ad73311_dai, 1);
- }
- 
- static struct platform_driver ad73311_codec_driver = {
-@@ -81,7 +77,6 @@ static struct platform_driver ad73311_codec_driver = {
- 	},
- 
- 	.probe = ad73311_probe,
--	.remove = ad73311_remove,
- };
- 
- module_platform_driver(ad73311_codec_driver);
--- 
-2.16.1
+T24gTHUsIDIwMTgtMDItMTIgYXQgMTI6MDIgKzAwMDAsIE1hcmsgQnJvd24gd3JvdGU6DQo+IE9u
+IE1vbiwgRmViIDA1LCAyMDE4IGF0IDA3OjAxOjU0UE0gKzAyMDAsIERhbmllbCBCYWx1dGEgd3Jv
+dGU6DQo+ID4gDQo+ID4gQUs1NTU4IGlzIGEgMzItYml0LCA3Njgga0haIHNhbXBsaW5nLCBkaWZm
+ZXJlbnRpYWwgaW5wdXQgQURDDQo+ID4gZm9yIGRpZ2l0YWwgYXVkaW8gc3lzdGVtcy4NCj4gPiAN
+Cj4gPiAtLS0gL2Rldi9udWxsDQo+ID4gKysrIGIvc291bmQvc29jL2NvZGVjcy9hazU1NTguYw0K
+PiA+IEBAIC0wLDAgKzEsNjE4IEBADQo+ID4gKy8qIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBH
+UEwtMi4wICovDQo+ID4gKy8qDQo+ID4gKyAqIEF1ZGlvIGRyaXZlciBmb3IgQUs1NTU4IEFEQw0K
+PiBQbGVhc2UgZG9uJ3QgbWl4IEMrKyBhbmQgQyBzdHlsZSBjb21tZW50cyAtIGp1c3QgbWFrZSB0
+aGUgZW50aXJlIGNvbW1lbnQNCj4gQysrLg0KPiANClN1cmUuIFdpbGwgdXNlOg0KLy8gU1BEWC1M
+aWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjANCg0KPiA+IA0KPiA+ICtzdGF0aWMgY29uc3QgY2hh
+ciAqIGNvbnN0IHRkbV90ZXh0c1tdID0gew0KPiA+ICsJIk9mZiIsICJURE0xMjgiLMKgwqAiVERN
+MjU2IiwgIlRETTUxMiIsDQo+ID4gK307DQo+IFRoaXMgbG9va3MgbGlrZSBpdCBzaG91bGQgYmUg
+YSBzZXRfdGRtX3Nsb3QoKSBvcGVyYXRpb24sIGFuZCBpbmRlZWQNCj4gc2V0X3RkbV9zbG90KCkg
+YXBwZWFycyB0byBiZSBpbXBsZW1lbnRlZCBhbmQgZHVwbGljYXRlIHRoaXMuDQo+IA0KDQpZdXAs
+IHdpbGwgcmVtb3ZlIHRoaXMuIEF0IGZpcnN0IHRoZXJlIHdhcyBubyBzZXRfdGRtX3Nsb3QuDQo+
+ID4gDQo+ID4gK3N0YXRpYyBjb25zdCBjaGFyICogY29uc3QgZHNkb25fdGV4dHNbXSA9IHsNCj4g
+PiArCSJQQ00iLCAiRFNEIiwNCj4gPiArfTsNCj4gVGhpcyBsb29rcyBsaWtlIGl0J3Mgc2V0dGlu
+ZyB0aGUgREFJIGZvcm1hdD8NCg0KRGl0dG8uIFdpbGwgcmVtb3ZlLg0KDQo+IA0KPiA+IA0KPiA+
+ICsJU05EX1NPQ19EQVBNX01VWCgiQUs1NTU4IENoMSBFbmFibGUiLCBTTkRfU09DX05PUE0sIDAs
+IDAsDQo+ID4gKwkJCcKgJmFrNTU1OF9jaGFubmVsMV9tdXhfY29udHJvbCksDQo+IE9uL29mZiBj
+b250cm9scyBzaG91bGQgYmUgc3dpdGNoZXMgbm90IG11eGVzLCB0aG91Z2ggaWYgdGhpcyBpcyBq
+dXN0DQo+IHNlbGVjdGluZyB3aGljaCBjaGFubmVscyBhcmUgYWN0aXZlIChyYXRoZXIgdGhhbiBh
+IG11dGUpIEknZCBub3QgZXhwZWN0DQo+IGl0IHRvIGJlIGEgY29udHJvbCBhdCBhbGwgLSB0aGUg
+Ym9hcmQgY2FuIHNheSBpZiBpbnB1dHMgYXJlIGRpc2FibGVkLg0KDQpPSywgYWdyZWUgdGhhdCBp
+ZiB3ZSB3YW50IHRvIGhhdmUgYSB3YXkgdG8gc2VsZWN0IHdoaWNoIGNoYW5uZWxzIGFyZSBhY3Rp
+dmUNCndlIHNob3VsZCB1c2UgYSBzd2l0Y2guDQoNCldpbGwgcmVtb3ZlIHRoaXMgY29udHJvbCBm
+b3Igbm93Lg0KDQo+IA0KPiA+IA0KPiA+ICtzdGF0aWMgaW50IGFrNTU1OF9zZXRfbWNraShzdHJ1
+Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMsIGludCBmcywgaW50IHJjbGspDQo+ID4gK3sNCj4gPiAr
+CXU4wqDCoG1vZGU7DQo+ID4gKw0KPiA+ICsJbW9kZSA9IHNuZF9zb2NfcmVhZChjb2RlYywgQUs1
+NTU4XzAyX0NPTlRST0wxKTsNCj4gPiArCW1vZGUgJj0gfkFLNTU1OF9DS1M7DQo+ID4gKwltb2Rl
+IHw9IEFLNTU1OF9DS1NfQVVUTzsNCj4gPiArDQo+ID4gKwlzbmRfc29jX3VwZGF0ZV9iaXRzKGNv
+ZGVjLCBBSzU1NThfMDJfQ09OVFJPTDEsIEFLNTU1OF9DS1MsIG1vZGUpOw0KPiA+ICsNCj4gPiAr
+CXJldHVybiAwOw0KPiA+ICt9DQo+IFRoaXMgYXBwZWFycyB0byBqdXN0IGlnbm9yZSB0aGUgcGFy
+YW1ldGVycz8NCg0KVGhlc2UgYXJlIGxlZnQgb3ZlcnMgZnJvbSBhIHYxIGNsZWFudXAuIFdpbGwg
+Zml4Lg0KDQoNCnRoYW5rcyBNYXJrISBXaWxsIHNlbmQgdjQgYXNhcC4NCg0KdGhhbmtzLA0KRGFu
+aWVsLg==
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
