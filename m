@@ -1,276 +1,310 @@
-From: srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
-Subject: [PATCH v3 16/25] ASoC: qcom: q6afe: add SLIMBus port Support
-Date: Tue, 13 Feb 2018 16:58:28 +0000
-Message-ID: <20180213165837.1620-17-srinivas.kandagatla@linaro.org>
+From: srinivas.kandagatla@linaro.org
+Subject: [PATCH v3 18/25] ASoC: qcom: q6routing: add support to all SLIMBus Mixers
+Date: Tue, 13 Feb 2018 16:58:30 +0000
+Message-ID: <20180213165837.1620-19-srinivas.kandagatla@linaro.org>
 References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20180213165837.1620-1-srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: andy.gross-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: david.brown-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, linux-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, rohkumar-Rm6X0d1/PG5y9aJCnZT0Uw@public.gmane.org, spatakok-Rm6X0d1/PG5y9aJCnZT0Uw@public.gmane.org, Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: david.brown@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com, linux-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch adds support to 6 SLIMBus AFE ports, which are used as
-backend dais.
+This patch adds support to SLIMBus related mixers to control mux between
+ASM stream and AFE port.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- include/dt-bindings/sound/qcom,q6afe.h |  14 ++++
- sound/soc/qcom/qdsp6/q6afe.c           | 129 +++++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6afe.h           |  16 +++-
- 3 files changed, 158 insertions(+), 1 deletion(-)
+ sound/soc/qcom/qdsp6/q6routing.c | 261 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 261 insertions(+)
 
-diff --git a/include/dt-bindings/sound/qcom,q6afe.h b/include/dt-bindings/sound/qcom,q6afe.h
-index b4d82cccdc86..e9004ee39f72 100644
---- a/include/dt-bindings/sound/qcom,q6afe.h
-+++ b/include/dt-bindings/sound/qcom,q6afe.h
-@@ -4,6 +4,20 @@
- 
- /* Audio Front End (AFE) Ports */
- #define AFE_PORT_HDMI_RX	8
-+#define SLIMBUS_0_RX    15
-+#define SLIMBUS_0_TX    16
-+#define SLIMBUS_1_RX    17
-+#define SLIMBUS_1_TX    18
-+#define SLIMBUS_2_RX    19
-+#define SLIMBUS_2_TX    20
-+#define SLIMBUS_3_RX    21
-+#define SLIMBUS_3_TX    22
-+#define SLIMBUS_4_RX    23
-+#define SLIMBUS_4_TX    24
-+#define SLIMBUS_5_RX    25
-+#define SLIMBUS_5_TX    26
-+#define SLIMBUS_6_RX    45
-+#define SLIMBUS_6_TX    46
- 
- #endif /* __DT_BINDINGS_Q6_AFE_H__ */
- 
-diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
-index 0a5af06bb50e..637390f5421e 100644
---- a/sound/soc/qcom/qdsp6/q6afe.c
-+++ b/sound/soc/qcom/qdsp6/q6afe.c
-@@ -25,9 +25,45 @@
- #define AFE_PARAM_ID_HDMI_CONFIG	0x00010210
- #define AFE_MODULE_AUDIO_DEV_INTERFACE	0x0001020C
- 
-+#define AFE_PARAM_ID_CDC_SLIMBUS_SLAVE_CFG 0x00010235
-+
-+#define AFE_PARAM_ID_SLIMBUS_CONFIG    0x00010212
-+
- /* Port IDs */
- #define AFE_API_VERSION_HDMI_CONFIG	0x1
- #define AFE_PORT_ID_MULTICHAN_HDMI_RX	0x100E
-+
-+#define AFE_API_VERSION_SLIMBUS_CONFIG 0x1
-+
-+/* SLIMbus Rx port on channel 0. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_RX      0x4000
-+/* SLIMbus Tx port on channel 0. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_TX      0x4001
-+/* SLIMbus Rx port on channel 1. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_1_RX      0x4002
-+/* SLIMbus Tx port on channel 1. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_1_TX      0x4003
-+/* SLIMbus Rx port on channel 2. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_2_RX      0x4004
-+/* SLIMbus Tx port on channel 2. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_2_TX      0x4005
-+/* SLIMbus Rx port on channel 3. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_3_RX      0x4006
-+/* SLIMbus Tx port on channel 3. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_3_TX      0x4007
-+/* SLIMbus Rx port on channel 4. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_4_RX      0x4008
-+/* SLIMbus Tx port on channel 4. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_4_TX      0x4009
-+/* SLIMbus Rx port on channel 5. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_5_RX      0x400a
-+/* SLIMbus Tx port on channel 5. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_5_TX      0x400b
-+/* SLIMbus Rx port on channel 6. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX      0x400c
-+/* SLIMbus Tx port on channel 6. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_TX      0x400d
-+
- #define TIMEOUT_MS 1000
- #define AFE_CMD_RESP_AVAIL	0
- #define AFE_CMD_RESP_NONE	1
-@@ -82,8 +118,53 @@ struct afe_param_id_hdmi_multi_chan_audio_cfg {
- 	u16 reserved;
- } __packed;
- 
-+struct afe_param_id_slimbus_cfg {
-+	u32                  sb_cfg_minor_version;
-+/* Minor version used for tracking the version of the SLIMBUS
-+ * configuration interface.
-+ * Supported values: #AFE_API_VERSION_SLIMBUS_CONFIG
-+ */
-+
-+	u16                  slimbus_dev_id;
-+/* SLIMbus hardware device ID, which is required to handle
-+ * multiple SLIMbus hardware blocks.
-+ * Supported values: - #AFE_SLIMBUS_DEVICE_1 - #AFE_SLIMBUS_DEVICE_2
-+ */
-+	u16                  bit_width;
-+/* Bit width of the sample.
-+ * Supported values: 16, 24
-+ */
-+	u16                  data_format;
-+/* Data format supported by the SLIMbus hardware. The default is
-+ * 0 (#AFE_SB_DATA_FORMAT_NOT_INDICATED), which indicates the
-+ * hardware does not perform any format conversions before the data
-+ * transfer.
-+ */
-+	u16                  num_channels;
-+/* Number of channels.
-+ * Supported values: 1 to #AFE_PORT_MAX_AUDIO_CHAN_CNT
-+ */
-+	u8  shared_ch_mapping[AFE_PORT_MAX_AUDIO_CHAN_CNT];
-+/* Mapping of shared channel IDs (128 to 255) to which the
-+ * master port is to be connected.
-+ * Shared_channel_mapping[i] represents the shared channel assigned
-+ * for audio channel i in multichannel audio data.
-+ */
-+	u32              sample_rate;
-+/* Sampling rate of the port.
-+ * Supported values:
-+ * - #AFE_PORT_SAMPLE_RATE_8K
-+ * - #AFE_PORT_SAMPLE_RATE_16K
-+ * - #AFE_PORT_SAMPLE_RATE_48K
-+ * - #AFE_PORT_SAMPLE_RATE_96K
-+ * - #AFE_PORT_SAMPLE_RATE_192K
-+ */
-+} __packed;
-+
-+
- union afe_port_config {
- 	struct afe_param_id_hdmi_multi_chan_audio_cfg hdmi_multi_ch;
-+	struct afe_param_id_slimbus_cfg           slim_cfg;
- } __packed;
- 
- struct q6afe_port {
-@@ -114,6 +195,20 @@ struct afe_port_map {
- static struct afe_port_map port_maps[AFE_PORT_MAX] = {
- 	[AFE_PORT_HDMI_RX] = { AFE_PORT_ID_MULTICHAN_HDMI_RX,
- 				AFE_PORT_HDMI_RX, 1, 1},
-+	[SLIMBUS_0_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_RX,
-+				SLIMBUS_0_RX, 1, 1},
-+	[SLIMBUS_1_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_1_RX,
-+				SLIMBUS_1_RX, 1, 1},
-+	[SLIMBUS_2_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_2_RX,
-+				SLIMBUS_2_RX, 1, 1},
-+	[SLIMBUS_3_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_3_RX,
-+				SLIMBUS_3_RX, 1, 1},
-+	[SLIMBUS_4_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_4_RX,
-+				SLIMBUS_4_RX, 1, 1},
-+	[SLIMBUS_5_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_5_RX,
-+				SLIMBUS_5_RX, 1, 1},
-+	[SLIMBUS_6_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX,
-+				SLIMBUS_6_RX, 1, 1},
+diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
+index 828243c58569..8c9b5d899ba7 100644
+--- a/sound/soc/qcom/qdsp6/q6routing.c
++++ b/sound/soc/qcom/qdsp6/q6routing.c
+@@ -232,6 +232,180 @@ static const struct snd_kcontrol_new hdmi_mixer_controls[] = {
+ 		       msm_routing_put_audio_mixer),
  };
  
- static struct q6afe_port *afe_find_port(struct q6afe *afe, int token)
-@@ -372,6 +467,31 @@ void *q6afe_get_dai_data(struct device *dev)
- }
- EXPORT_SYMBOL_GPL(q6afe_get_dai_data);
- 
-+/**
-+ * q6afe_slim_port_prepare() - Prepare slim afe port.
-+ *
-+ * @port: Instance of afe port
-+ * @cfg: SLIM configuration for the afe port
-+ *
-+ */
-+void q6afe_slim_port_prepare(struct q6afe_port *port,
-+			     struct q6afe_slim_cfg *cfg)
-+{
-+	union afe_port_config *pcfg = &port->port_cfg;
-+
-+	pcfg->slim_cfg.sb_cfg_minor_version = AFE_API_VERSION_SLIMBUS_CONFIG;
-+	pcfg->slim_cfg.sample_rate = cfg->sample_rate;
-+	pcfg->slim_cfg.bit_width = cfg->bit_width;
-+	pcfg->slim_cfg.num_channels = cfg->num_channels;
-+	pcfg->slim_cfg.data_format = cfg->data_format;
-+	pcfg->slim_cfg.shared_ch_mapping[0] = cfg->ch_mapping[0];
-+	pcfg->slim_cfg.shared_ch_mapping[1] = cfg->ch_mapping[1];
-+	pcfg->slim_cfg.shared_ch_mapping[2] = cfg->ch_mapping[2];
-+	pcfg->slim_cfg.shared_ch_mapping[3] = cfg->ch_mapping[3];
-+
-+}
-+EXPORT_SYMBOL_GPL(q6afe_slim_port_prepare);
-+
- /**
-  * q6afe_hdmi_port_prepare() - Prepare hdmi afe port.
-  *
-@@ -433,6 +553,15 @@ struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
- 	case AFE_PORT_ID_MULTICHAN_HDMI_RX:
- 		cfg_type = AFE_PARAM_ID_HDMI_CONFIG;
- 		break;
-+	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_RX:
-+	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_1_RX:
-+	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_2_RX:
-+	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_3_RX:
-+	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_4_RX:
-+	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_5_RX:
-+	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX:
-+		cfg_type = AFE_PARAM_ID_SLIMBUS_CONFIG;
-+		break;
- 	default:
- 		dev_err(dev, "Invalid port id 0x%x\n", port_id);
- 		return ERR_PTR(-EINVAL);
-diff --git a/sound/soc/qcom/qdsp6/q6afe.h b/sound/soc/qcom/qdsp6/q6afe.h
-index 647ed2d15545..aeacf1f2c9a9 100644
---- a/sound/soc/qcom/qdsp6/q6afe.h
-+++ b/sound/soc/qcom/qdsp6/q6afe.h
-@@ -5,12 +5,15 @@
- 
- #include <dt-bindings/sound/qcom,q6afe.h>
- 
--#define AFE_PORT_MAX		9
-+#define AFE_PORT_MAX		48
- 
- #define MSM_AFE_PORT_TYPE_RX 0
- #define MSM_AFE_PORT_TYPE_TX 1
- #define AFE_MAX_PORTS AFE_PORT_MAX
- 
-+#define AFE_MAX_CHAN_COUNT	8
-+#define AFE_PORT_MAX_AUDIO_CHAN_CNT	0x8
-+
- struct q6afe_hdmi_cfg {
- 	u16                  datatype;
- 	u16                  channel_allocation;
-@@ -18,8 +21,17 @@ struct q6afe_hdmi_cfg {
- 	u16                  bit_width;
- };
- 
-+struct q6afe_slim_cfg {
-+	u32	sample_rate;
-+	u16	bit_width;
-+	u16	data_format;
-+	u16	num_channels;
-+	u8	ch_mapping[AFE_MAX_CHAN_COUNT];
++static const struct snd_kcontrol_new slimbus_rx_mixer_controls[] = {
++	SOC_SINGLE_EXT("MultiMedia1", SLIMBUS_0_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA1, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia2", SLIMBUS_0_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA2, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia3", SLIMBUS_0_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA3, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia4", SLIMBUS_0_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA4, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia5", SLIMBUS_0_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA5, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia6", SLIMBUS_0_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA6, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia7", SLIMBUS_0_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA7, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia8", SLIMBUS_0_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA8, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
 +};
 +
- struct q6afe_port_config {
- 	struct q6afe_hdmi_cfg hdmi;
-+	struct q6afe_slim_cfg slim;
++static const struct snd_kcontrol_new slimbus_1_rx_mixer_controls[] = {
++	SOC_SINGLE_EXT("MultiMedia1", SLIMBUS_1_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA1, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia2", SLIMBUS_1_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA2, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia3", SLIMBUS_1_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA3, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia4", SLIMBUS_1_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA4, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia5", SLIMBUS_1_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA5, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia6", SLIMBUS_1_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA6, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia7", SLIMBUS_1_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA7, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia8", SLIMBUS_1_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA8, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++};
++
++static const struct snd_kcontrol_new slimbus_2_rx_mixer_controls[] = {
++	SOC_SINGLE_EXT("MultiMedia1", SLIMBUS_2_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA1, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia2", SLIMBUS_2_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA2, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia3", SLIMBUS_2_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA3, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia4", SLIMBUS_2_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA4, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia5", SLIMBUS_2_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA5, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia6", SLIMBUS_2_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA6, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia7", SLIMBUS_2_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA7, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia8", SLIMBUS_2_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA8, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++};
++
++static const struct snd_kcontrol_new slimbus_3_rx_mixer_controls[] = {
++	SOC_SINGLE_EXT("MultiMedia1", SLIMBUS_3_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA1, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia2", SLIMBUS_3_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA2, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia3", SLIMBUS_3_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA3, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia4", SLIMBUS_3_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA4, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia5", SLIMBUS_3_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA5, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia6", SLIMBUS_3_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA6, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia7", SLIMBUS_3_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA7, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia8", SLIMBUS_3_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA8, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++};
++
++static const struct snd_kcontrol_new slimbus_4_rx_mixer_controls[] = {
++	SOC_SINGLE_EXT("MultiMedia1", SLIMBUS_4_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA1, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia2", SLIMBUS_4_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA2, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia5", SLIMBUS_4_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA5, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++};
++
++static const struct snd_kcontrol_new slimbus_5_rx_mixer_controls[] = {
++	SOC_SINGLE_EXT("MultiMedia1", SLIMBUS_5_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA1, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia2", SLIMBUS_5_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA2, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia3", SLIMBUS_5_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA3, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia4", SLIMBUS_5_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA4, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia5", SLIMBUS_5_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA5, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia6", SLIMBUS_5_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA6, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia7", SLIMBUS_5_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA7, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia8", SLIMBUS_5_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA8, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++};
++
++static const struct snd_kcontrol_new slimbus_6_rx_mixer_controls[] = {
++	SOC_SINGLE_EXT("MultiMedia1", SLIMBUS_6_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA1, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia2", SLIMBUS_6_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA2, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia3", SLIMBUS_6_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA3, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia4", SLIMBUS_6_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA4, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia5", SLIMBUS_6_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA5, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia6", SLIMBUS_6_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA6, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia7", SLIMBUS_6_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA7, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++	SOC_SINGLE_EXT("MultiMedia8", SLIMBUS_6_RX,
++	MSM_FRONTEND_DAI_MULTIMEDIA8, 1, 0, msm_routing_get_audio_mixer,
++	msm_routing_put_audio_mixer),
++};
++
+ static const struct snd_soc_dapm_widget msm_qdsp6_widgets[] = {
+ 	/* Frontend AIF */
+ 	SND_SOC_DAPM_AIF_IN("MM_DL1", "MultiMedia1 Playback", 0, 0, 0, 0),
+@@ -247,6 +421,28 @@ static const struct snd_soc_dapm_widget msm_qdsp6_widgets[] = {
+ 	SND_SOC_DAPM_MIXER("HDMI Mixer", SND_SOC_NOPM, 0, 0,
+ 			   hdmi_mixer_controls,
+ 			   ARRAY_SIZE(hdmi_mixer_controls)),
++
++	SND_SOC_DAPM_MIXER("SLIMBUS_0_RX Audio Mixer", SND_SOC_NOPM, 0, 0,
++			   slimbus_rx_mixer_controls,
++			   ARRAY_SIZE(slimbus_rx_mixer_controls)),
++	SND_SOC_DAPM_MIXER("SLIMBUS_1_RX Audio Mixer", SND_SOC_NOPM, 0, 0,
++			   slimbus_1_rx_mixer_controls,
++			   ARRAY_SIZE(slimbus_1_rx_mixer_controls)),
++	SND_SOC_DAPM_MIXER("SLIMBUS_2_RX Audio Mixer", SND_SOC_NOPM, 0, 0,
++			   slimbus_2_rx_mixer_controls,
++			   ARRAY_SIZE(slimbus_2_rx_mixer_controls)),
++	SND_SOC_DAPM_MIXER("SLIMBUS_3_RX Audio Mixer", SND_SOC_NOPM, 0, 0,
++			   slimbus_3_rx_mixer_controls,
++			   ARRAY_SIZE(slimbus_3_rx_mixer_controls)),
++	SND_SOC_DAPM_MIXER("SLIMBUS_4_RX Audio Mixer", SND_SOC_NOPM, 0, 0,
++			   slimbus_4_rx_mixer_controls,
++			   ARRAY_SIZE(slimbus_4_rx_mixer_controls)),
++	SND_SOC_DAPM_MIXER("SLIMBUS_5_RX Audio Mixer", SND_SOC_NOPM, 0, 0,
++			   slimbus_5_rx_mixer_controls,
++			    ARRAY_SIZE(slimbus_5_rx_mixer_controls)),
++	SND_SOC_DAPM_MIXER("SLIMBUS_6_RX Audio Mixer", SND_SOC_NOPM, 0, 0,
++			   slimbus_6_rx_mixer_controls,
++			   ARRAY_SIZE(slimbus_6_rx_mixer_controls)),
  };
  
- struct q6afe_port;
-@@ -36,5 +48,7 @@ void q6afe_port_put(struct q6afe_port *port);
- int q6afe_get_port_id(int index);
- void q6afe_hdmi_port_prepare(struct q6afe_port *port,
- 			    struct q6afe_hdmi_cfg *cfg);
-+void q6afe_slim_port_prepare(struct q6afe_port *port,
-+			  struct q6afe_slim_cfg *cfg);
+ static const struct snd_soc_dapm_route intercon[] = {
+@@ -259,6 +455,71 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	{"HDMI Mixer", "MultiMedia7", "MM_DL7"},
+ 	{"HDMI Mixer", "MultiMedia8", "MM_DL8"},
+ 	{"HDMI_RX", NULL, "HDMI Mixer"},
++
++	{"SLIMBUS_0_RX Audio Mixer", "MultiMedia1", "MM_DL1"},
++	{"SLIMBUS_0_RX Audio Mixer", "MultiMedia2", "MM_DL2"},
++	{"SLIMBUS_0_RX Audio Mixer", "MultiMedia3", "MM_DL3"},
++	{"SLIMBUS_0_RX Audio Mixer", "MultiMedia4", "MM_DL4"},
++	{"SLIMBUS_0_RX Audio Mixer", "MultiMedia5", "MM_DL5"},
++	{"SLIMBUS_0_RX Audio Mixer", "MultiMedia6", "MM_DL6"},
++	{"SLIMBUS_0_RX Audio Mixer", "MultiMedia7", "MM_DL7"},
++	{"SLIMBUS_0_RX Audio Mixer", "MultiMedia8", "MM_DL8"},
++	{"SLIMBUS_0_RX", NULL, "SLIMBUS_0_RX Audio Mixer"},
++
++	{"SLIMBUS_1_RX Audio Mixer", "MultiMedia1", "MM_DL1"},
++	{"SLIMBUS_1_RX Audio Mixer", "MultiMedia2", "MM_DL2"},
++	{"SLIMBUS_1_RX Audio Mixer", "MultiMedia3", "MM_DL3"},
++	{"SLIMBUS_1_RX Audio Mixer", "MultiMedia4", "MM_DL4"},
++	{"SLIMBUS_1_RX Audio Mixer", "MultiMedia5", "MM_DL5"},
++	{"SLIMBUS_1_RX Audio Mixer", "MultiMedia6", "MM_DL6"},
++	{"SLIMBUS_1_RX Audio Mixer", "MultiMedia7", "MM_DL7"},
++	{"SLIMBUS_1_RX Audio Mixer", "MultiMedia8", "MM_DL8"},
++	{"SLIMBUS_1_RX", NULL, "SLIMBUS_1_RX Audio Mixer"},
++
++	{"SLIMBUS_2_RX Audio Mixer", "MultiMedia1", "MM_DL1"},
++	{"SLIMBUS_2_RX Audio Mixer", "MultiMedia2", "MM_DL2"},
++	{"SLIMBUS_2_RX Audio Mixer", "MultiMedia3", "MM_DL3"},
++	{"SLIMBUS_2_RX Audio Mixer", "MultiMedia4", "MM_DL4"},
++	{"SLIMBUS_2_RX Audio Mixer", "MultiMedia5", "MM_DL5"},
++	{"SLIMBUS_2_RX Audio Mixer", "MultiMedia6", "MM_DL6"},
++	{"SLIMBUS_2_RX Audio Mixer", "MultiMedia7", "MM_DL7"},
++	{"SLIMBUS_2_RX Audio Mixer", "MultiMedia8", "MM_DL8"},
++	{"SLIMBUS_2_RX", NULL, "SLIMBUS_2_RX Audio Mixer"},
++
++	{"SLIMBUS_3_RX Audio Mixer", "MultiMedia1", "MM_DL1"},
++	{"SLIMBUS_3_RX Audio Mixer", "MultiMedia2", "MM_DL2"},
++	{"SLIMBUS_3_RX Audio Mixer", "MultiMedia3", "MM_DL3"},
++	{"SLIMBUS_3_RX Audio Mixer", "MultiMedia4", "MM_DL4"},
++	{"SLIMBUS_3_RX Audio Mixer", "MultiMedia5", "MM_DL5"},
++	{"SLIMBUS_3_RX Audio Mixer", "MultiMedia6", "MM_DL6"},
++	{"SLIMBUS_3_RX Audio Mixer", "MultiMedia7", "MM_DL7"},
++	{"SLIMBUS_3_RX Audio Mixer", "MultiMedia8", "MM_DL8"},
++	{"SLIMBUS_3_RX", NULL, "SLIMBUS_3_RX Audio Mixer"},
++
++	{"SLIMBUS_4_RX Audio Mixer", "MultiMedia1", "MM_DL1"},
++	{"SLIMBUS_4_RX Audio Mixer", "MultiMedia2", "MM_DL2"},
++	{"SLIMBUS_4_RX Audio Mixer", "MultiMedia5", "MM_DL5"},
++	{"SLIMBUS_4_RX", NULL, "SLIMBUS_4_RX Audio Mixer"},
++
++	{"SLIMBUS_5_RX Audio Mixer", "MultiMedia1", "MM_DL1"},
++	{"SLIMBUS_5_RX Audio Mixer", "MultiMedia2", "MM_DL2"},
++	{"SLIMBUS_5_RX Audio Mixer", "MultiMedia3", "MM_DL3"},
++	{"SLIMBUS_5_RX Audio Mixer", "MultiMedia4", "MM_DL4"},
++	{"SLIMBUS_5_RX Audio Mixer", "MultiMedia5", "MM_DL5"},
++	{"SLIMBUS_5_RX Audio Mixer", "MultiMedia6", "MM_DL6"},
++	{"SLIMBUS_5_RX Audio Mixer", "MultiMedia7", "MM_DL7"},
++	{"SLIMBUS_5_RX Audio Mixer", "MultiMedia8", "MM_DL8"},
++	{"SLIMBUS_5_RX", NULL, "SLIMBUS_5_RX Audio Mixer"},
++
++	{"SLIMBUS_6_RX Audio Mixer", "MultiMedia1", "MM_DL1"},
++	{"SLIMBUS_6_RX Audio Mixer", "MultiMedia2", "MM_DL2"},
++	{"SLIMBUS_6_RX Audio Mixer", "MultiMedia3", "MM_DL3"},
++	{"SLIMBUS_6_RX Audio Mixer", "MultiMedia4", "MM_DL4"},
++	{"SLIMBUS_6_RX Audio Mixer", "MultiMedia5", "MM_DL5"},
++	{"SLIMBUS_6_RX Audio Mixer", "MultiMedia6", "MM_DL6"},
++	{"SLIMBUS_6_RX Audio Mixer", "MultiMedia7", "MM_DL7"},
++	{"SLIMBUS_6_RX Audio Mixer", "MultiMedia8", "MM_DL8"},
++	{"SLIMBUS_6_RX", NULL, "SLIMBUS_6_RX Audio Mixer"},
+ };
  
- #endif /* __Q6AFE_H__ */
+ static int routing_hw_params(struct snd_pcm_substream *substream,
 -- 
 2.15.1
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
