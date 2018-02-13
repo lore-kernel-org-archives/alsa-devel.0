@@ -1,56 +1,75 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: codecs: Add support for AK4458 DAC driver
-Date: Tue, 13 Feb 2018 11:55:37 +0000
-Message-ID: <20180213115537.GB5988@sirena.org.uk>
-References: <1517404809-25250-1-git-send-email-cosmin.samoila@nxp.com>
- <20180131170330.GB7763@sirena.org.uk>
- <1518513744.25655.8.camel@nxp.com>
+Subject: Re: [asoc:topic/wm9705 1/1]
+ sound/soc/codecs/wm9705.c:330:18: error: implicit declaration of function
+ 'snd_soc_new_ac97_component'; did you mean 'snd_soc_new_ac97_codec'?
+Date: Tue, 13 Feb 2018 12:05:29 +0000
+Message-ID: <20180213120529.GD5988@sirena.org.uk>
+References: <201802122255.cGsOCM1z%fengguang.wu@intel.com>
+ <20180212144911.GD12976@sirena.org.uk>
+ <87d119lobw.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="FkmkrVfFsRoUs1wW"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1518513744.25655.8.camel@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Cosmin Samoila <cosmin.samoila@nxp.com>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "wakasugi.jb@om.asahi-kasei.co.jp" <wakasugi.jb@om.asahi-kasei.co.jp>, "mihai.serban@gmail.com" <mihai.serban@gmail.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "mihai.serban@nxp.com" <mihai.serban@nxp.com>
+Content-Type: multipart/mixed; boundary="===============9188820737255294009=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3927267716
+ for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 13:05:42 +0100 (CET)
+In-Reply-To: <87d119lobw.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, kbuild test robot <fengguang.wu@intel.com>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
 
---FkmkrVfFsRoUs1wW
+--===============9188820737255294009==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="cHMo6Wbp1wrKhbfi"
+Content-Disposition: inline
+
+
+--cHMo6Wbp1wrKhbfi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 13, 2018 at 09:22:24AM +0000, Cosmin Samoila wrote:
+On Tue, Feb 13, 2018 at 12:36:20AM +0000, Kuninori Morimoto wrote:
 
-> This is used to set the codec in Manual Setting Mode, meaning that
-> the default sampling speed is set based on DFS0 and DFS1 bits. In
-> Auto Setting Mode, the MCLK frequency is detected automatically and
-> DFS bits are ignored.
+> Oops, I didn't mention (?) but ac97 related code were
+> modified, and its related driver needs to be based on it.
+> Now, mark/topic/ac97 branch has it
 
-But why is it a compile time option?
+Hrm, wonder why that didn't turn up in my grepping.  Anyway, I moved
+them all onto one branch.
 
-> This compile time option is used to know when to set the ACKS bit in
-> init_reg function that switches between modes.
-> At this moment we are only using Auto Mode and I can remove it if
-> you think is not necessary.
-
-Yes, just remove it - if there needs to be some control it should
-probably be done by the machine driver, or through DT.
-
---FkmkrVfFsRoUs1wW
+--cHMo6Wbp1wrKhbfi
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqC0jgACgkQJNaLcl1U
-h9CQjQf+M5k3oleXSIIJLz+kivFTuF85SmVDYszett34gGRAIn9hVAemj93eEcZ2
-zyIHAowZSNsXtjiVOARzZwori0NhDi7QYYLP58gREpR93g7A/4uxScHOWXNAFmfB
-rQGcfgOJzvIH5m72Uq8EP+B+0H1FYr657FpIadcueX1kMqV2APZggtpAQ2u3Lqaq
-yp4fWuXKTeEd6xzoH6QOb9MGthvi/BS+iJiFeEPJCT35fBKQXlwr1qY0UaXQmdg8
-GgPTx2Vt9RKG/Xcba2TX3XlFzpVkgUhBC1vlWotVJVNpwA9+bfq2IixkmRfjG6UG
-g7SuOgqXZRxuAIxKck4lntRsi5utBw==
-=kmAm
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqC1IkACgkQJNaLcl1U
+h9CVrgf+Kig2yz3J2n6925J77Tjdl/VK/GBwa4vU74R7o6+Rd6UqwMX+KBLusGff
+H+KW1LuF6daUPTgUZwdFAo+gHy430Bknevqlw6mKGKxjmvN1OFqu7FbKi7s1u19i
+SPALsdwS4iqZqANbLz21fIXzNml+CI80TXxUDboxs8MAeL7kZyjtlPMKYCE4tAAC
+QvXnXobvd2XX0AxnGBJB0ur8eovD2TFmcvx20sEnE3fH0MvHI4hwfSW3ua3oVnj+
+cCI3rTlf1LZm9xyQjJPmSZ9UZfjC8kRh04GYuPPR5TGLnHtP3IoXJ5jaHaV76GHD
+KoR4zgSvkSph4R+XDGv1/194xuvIjQ==
+=0Pop
 -----END PGP SIGNATURE-----
 
---FkmkrVfFsRoUs1wW--
+--cHMo6Wbp1wrKhbfi--
+
+--===============9188820737255294009==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9188820737255294009==--
