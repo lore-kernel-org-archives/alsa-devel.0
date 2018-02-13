@@ -1,107 +1,185 @@
-From: Kirill Marinushkin <k.marinushkin@gmail.com>
-Subject: Re: [PATCH] ALSA: usb-audio: Fix UAC2 get_ctl request with a RANGE
- attribute
-Date: Tue, 13 Feb 2018 17:27:42 +0100
-Message-ID: <1212656b-5eae-c3fe-f001-e9594d7bdb80@gmail.com>
-References: <20180129053755.20136-1-k.marinushkin@gmail.com>
- <s5hvaf95p4i.wl-tiwai@suse.de>
- <40196230-8f73-4cca-08e5-d67bfbea2d6e@gmail.com>
- <s5hinb2aauh.wl-tiwai@suse.de>
- <120bc0f8-f472-268d-1247-3245ae994fe5@gmail.com>
- <s5hk1vh4h02.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <s5hk1vh4h02.wl-tiwai@suse.de>
-Content-Language: en-US
-Sender: stable-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: perex@perex.cz, alsa-devel@alsa-project.org, Stephen Barber <smbarber@chromium.org>, Bhumika Goyal <bhumirks@gmail.com>, Jaejoong Kim <climbbb.kim@gmail.com>, Julian Scheel <julian@jusst.de>, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+From: srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
+Subject: [PATCH v3 00/25] ASoC: qcom: Add support to QDSP based Audio
+Date: Tue, 13 Feb 2018 16:58:12 +0000
+Message-ID: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: andy.gross-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: david.brown-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, linux-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, rohkumar-Rm6X0d1/PG5y9aJCnZT0Uw@public.gmane.org, spatakok-Rm6X0d1/PG5y9aJCnZT0Uw@public.gmane.org, Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/13/18 06:04, Takashi Iwai wrote:
-> On Mon, 12 Feb 2018 20:32:53 +0100,
-> Kirill Marinushkin wrote:
->> Hello maintainers of <stable@vger.kernel.org>,
->>
->>
->> As discussed earlier in this thread, I propose this patch to stable.
->>
->> It fixes the issue, which exists since v2.6.34.
-> It's already marked in the applied patch, so you don't need to ping
-> stable kernel guys.
->
->
-> thanks,
->
-> Takashi
+From: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 
-Hello Takashi,
+This patchset aims to provide a basic version of QCOM DSP based
+audio support which is available in downstream andriod kernels.
+This patchset support audio playback on HDMI-RX, MI2S, SLIMBus and
+will add support to other features as we move on.
 
-Thank you for the clarification
+QDSP has both static and dynamic modules. static modules like AFE
+(Audio FrontEnd), ADM (Audio Device Manager), ASM(Audio Stream Manager)
+and CORE to provide this audio services.
+All these services use APR (Asynchronous Packet Router) protocol
+via smd/glink transport to communicate with Application processor.
+More details on each module is availble in there respective patch.
 
-Best Regards,
-Kirill
->
->>
->> Best Regards,
->>
->> Kirill
->>
->> On 02/12/18 09:08, Takashi Iwai wrote:
->>> On Thu, 08 Feb 2018 07:21:36 +0100,
->>> Kirill Marinushkin wrote:
->>>> On 02/07/18 06:45, Takashi Iwai wrote:
->>>>> On Mon, 29 Jan 2018 06:37:55 +0100,
->>>>> Kirill Marinushkin wrote:
->>>>>> The layout of the UAC2 Control request and response varies depending on
->>>>>> the request type. With the current implementation, only the Layout 2
->>>>>> Parameter Block (with the 2-byte sized RANGE attribute) is handled
->>>>>> properly. For the Control requests with the 1-byte sized RANGE attribute
->>>>>> (Bass Control, Mid Control, Tremble Control), the response is parsed
->>>>>> incorrectly.
->>>>>>
->>>>>> This commit:
->>>>>> * fixes the wLength field value in the request
->>>>>> * fixes parsing the range values from the response
->>>>>>
->>>>>> Fixes: 23caaf19b11e ("ALSA: usb-mixer: Add support for Audio Class v2.0")
->>>>>> Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
->>>>>> Cc: Jaroslav Kysela <perex@perex.cz>
->>>>>> Cc: Takashi Iwai <tiwai@suse.com>
->>>>>> Cc: Jaejoong Kim <climbbb.kim@gmail.com>
->>>>>> Cc: Bhumika Goyal <bhumirks@gmail.com>
->>>>>> Cc: Stephen Barber <smbarber@chromium.org>
->>>>>> Cc: Julian Scheel <julian@jusst.de>
->>>>>> Cc: alsa-devel@alsa-project.org
->>>>>> Cc: linux-kernel@vger.kernel.org
->>>>> Sorry for the late reply, as I've been (and still) off.
->>>>>
->>>>> Does this bug actually hit on any real devices, or is it only a
->>>>> logical error so far?  In the former case, a Cc to stable is
->>>>> mandatory.
->>>>>
->>>>> In anyway, I'll review and merge it properly once after I back to
->>>>> work.
->>>>>
->>>>>
->>>>> thanks,
->>>>>
->>>>> Takashi
->>>> Hello Takashi,
->>>>
->>>> Thank you for your answer. I will wait until you are back to work, don't 
->>>> worry about the late replies.
->>>>
->>>> I did not hit the issue on a real device.
->>>>
->>>> During my UAC2 experiments, I reproduced this issue on the development 
->>>> board, and then tested my solution on it.
->>> OK, if it happened on a development system, it's a real issue, and we
->>> should put Cc to stable.  Now I applied the patch.
->>>
->>> Thanks!
->>>
->>>
->>> Takashi
+This patchset is tested on DB820c, with HDMI audio playback, MI2S on DB410c
+on top of mainline, Also tested SLIMBus analog audio using wcd9355
+with an additional patches.
+
+Here is my test branch incase somone want to try these patches
+https://git.linaro.org/people/srinivas.kandagatla/linux.git/log/?h=v4.16-rc1-dsp-audio-v3
+
+Here is block diagram to give a quick overview of the components
+
+
+  +---------+          +---------+         +---------+   
+  |  q6asm  |          |q6routing|         | q6afe   | 
+  |  fedai  | <------> |  mixers | <-----> | bedai   |  
+  +---------+          +---------+         +---------+   
+      ^                     ^                   ^
+      |                     |                   |
+      |  +------------------+----------------+  |       
+      |  |                  |                |  |       
+      v  v                  v                v  v       
+  +---------+          +---------+         +---------+ 
+  |   q6ASM |          |  q6ADM  |         |   q6AFE |  
+  +---------+          +---------+         +---------+  
+      ^                     ^                   ^          ^
+      |                     |                   | CPU Side |
+------+---------------------+-------------------+--------
+      |                     |                   |
+      |                     |APR(smd/glink)     | 
+      |                     |                   |
+      |  +------------------+----------------+  |
+      |  |                  |                |  |
++-----+--+-----------------------------------+--+-------
+      |  |                  |                |  | QDSP Side |
+      v  v                  v                v  v           v
+ +---------+          +---------+         +---------+
+ |   ASM   | <------> |   ADM   | <-----> |   AFE   |
+ +---------+          +---------+         +---------+
+                                               ^
+                                               | 
+                           +-------------------+
+                           |
+---------------------------+--------------------------
+                           |            Audio I/O |
+                           v                      v
+    +--------------------------------------------------+
+    |                Audio devices                     |
+    | CODEC | HDMI-TX | PCM  | SLIMBUS | I2S |MI2S |...|
+    |                                                  |
+    +--------------------------------------------------+
+
+Changes since v2 (https://lwn.net/Articles/741472/)
+- fixed locking issues with ASM and APR.
+- Added support to MI2S and SLIMBus ports
+- moved dma device to apr.
+- added dt bindings for ASM, ADM, AFE.
+- Fixed dt bindings for msm8996 sound card.
+- added compatible strings to ASM, ADM, AFE modules.
+- Cleaned up common code as suggested in review.
+- converted sound card driver to proper apr client driver.
+- Fixed various issues spotted by Banajit and Kasam.
+- Tested on DB410c, DB820c for both analog and digital playbacks.
+- Exported q6core functions as suggested by Rohit.
+- Fixed various issues with dsp carsh/recover usecase.
+- Added multiple ASM streams as requested in review.
+
+Srinivas Kandagatla (25):
+  dt-bindings: soc: qcom: Add bindings for APR bus
+  soc: qcom: add support to APR bus driver
+  ASoC: qcom: qdsp6: Add common qdsp6 helper functions
+  dt-bindings: sound: qcom: Add bindings for q6afe
+  ASoC: qcom: qdsp6: Add support to Q6AFE
+  dt-bindings: sound: qcom: Add bindings for q6adm
+  ASoC: qcom: qdsp6: Add support to Q6ADM
+  dt-bindings: sound: qcom: Add bindings for q6asm
+  ASoC: qcom: qdsp6: Add support to Q6ASM
+  ASoC: qcom: q6asm: Add support to memory map and unmap
+  ASoC: qcom: q6asm: add support to audio stream apis
+  ASoC: qcom: qdsp6: Add support to Q6CORE
+  ASoC: qcom: qdsp6: Add support to q6routing driver
+  ASoC: qcom: qdsp6: Add support to q6afe dai driver
+  ASoC: qcom: qdsp6: Add support to q6asm dai driver
+  ASoC: qcom: q6afe: add SLIMBus port Support
+  ASoC: qcom: q6afe-dai: add support to slim afe dais
+  ASoC: qcom: q6routing: add support to all SLIMBus Mixers
+  ASoC: qcom: q6afe: add support to MI2S ports
+  ASoC: qcom: q6afe: add support to MI2S sysclks
+  ASoC: qcom: q6afe-dai: add support to 4 MI2S ports
+  ASoC: qcom: q6routing: add support to MI2S Mixers
+  dt-bindings: sound: qcom: Add devicetree bindings for apq8096
+  ASoC: qcom: apq8096: Add db820c machine driver
+  arm64: dts: msm8996: db820c: Add sound card support
+
+ .../devicetree/bindings/soc/qcom/qcom,apr.txt      |   83 ++
+ .../devicetree/bindings/sound/qcom,apq8096.txt     |   89 ++
+ .../devicetree/bindings/sound/qcom,q6adm.txt       |   31 +
+ .../devicetree/bindings/sound/qcom,q6afe.txt       |   38 +
+ .../devicetree/bindings/sound/qcom,q6asm.txt       |   38 +
+ arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi       |   44 +-
+ arch/arm64/boot/dts/qcom/msm8996.dtsi              |   62 ++
+ drivers/soc/qcom/Kconfig                           |    9 +
+ drivers/soc/qcom/Makefile                          |    1 +
+ drivers/soc/qcom/apr.c                             |  381 +++++++
+ include/dt-bindings/soc/qcom,apr.h                 |   27 +
+ include/dt-bindings/sound/qcom,q6afe.h             |   33 +
+ include/dt-bindings/sound/qcom,q6asm.h             |   22 +
+ include/linux/mod_devicetable.h                    |   11 +
+ include/linux/soc/qcom/apr.h                       |  131 +++
+ sound/soc/qcom/Kconfig                             |   42 +
+ sound/soc/qcom/Makefile                            |    5 +
+ sound/soc/qcom/apq8096.c                           |  173 ++++
+ sound/soc/qcom/qdsp6/Makefile                      |    5 +
+ sound/soc/qcom/qdsp6/q6adm.c                       |  634 ++++++++++++
+ sound/soc/qcom/qdsp6/q6adm.h                       |   29 +
+ sound/soc/qcom/qdsp6/q6afe-dai.c                   |  645 ++++++++++++
+ sound/soc/qcom/qdsp6/q6afe.c                       |  875 ++++++++++++++++
+ sound/soc/qcom/qdsp6/q6afe.h                       |   74 ++
+ sound/soc/qcom/qdsp6/q6asm-dai.c                   |  621 ++++++++++++
+ sound/soc/qcom/qdsp6/q6asm.c                       | 1063 ++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6asm.h                       |   66 ++
+ sound/soc/qcom/qdsp6/q6core.c                      |  235 +++++
+ sound/soc/qcom/qdsp6/q6core.h                      |    9 +
+ sound/soc/qcom/qdsp6/q6dsp-common.c                |   67 ++
+ sound/soc/qcom/qdsp6/q6dsp-common.h                |   24 +
+ sound/soc/qcom/qdsp6/q6dsp-errno.h                 |   97 ++
+ sound/soc/qcom/qdsp6/q6routing.c                   |  758 ++++++++++++++
+ sound/soc/qcom/qdsp6/q6routing.h                   |    9 +
+ 34 files changed, 6430 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8096.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6adm.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6asm.txt
+ create mode 100644 drivers/soc/qcom/apr.c
+ create mode 100644 include/dt-bindings/soc/qcom,apr.h
+ create mode 100644 include/dt-bindings/sound/qcom,q6afe.h
+ create mode 100644 include/dt-bindings/sound/qcom,q6asm.h
+ create mode 100644 include/linux/soc/qcom/apr.h
+ create mode 100644 sound/soc/qcom/apq8096.c
+ create mode 100644 sound/soc/qcom/qdsp6/Makefile
+ create mode 100644 sound/soc/qcom/qdsp6/q6adm.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6adm.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6afe-dai.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6afe.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6afe.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6asm-dai.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6asm.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6asm.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6core.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6core.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6dsp-common.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6dsp-common.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6dsp-errno.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6routing.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6routing.h
+
+-- 
+2.15.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
