@@ -1,242 +1,364 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v3 19/25] ASoC: qcom: q6afe: add support to MI2S ports
-Date: Tue, 13 Feb 2018 16:58:31 +0000
-Message-ID: <20180213165837.1620-20-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 09/25] ASoC: qcom: qdsp6: Add support to
+	Q6ASM
+Date: Tue, 13 Feb 2018 16:58:21 +0000
+Message-ID: <20180213165837.1620-10-srinivas.kandagatla@linaro.org>
 References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id ECF97267975
+ for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 18:01:26 +0100 (CET)
+Received: by mail-wm0-f66.google.com with SMTP id i186so17315667wmi.4
+ for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 09:01:26 -0800 (PST)
 In-Reply-To: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: david.brown@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com, linux-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, robh+dt@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, spatakok@qti.qualcomm.com, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
+This patch adds basic support to Q6 ASM (Audio Stream Manager) module on
+Q6DSP. ASM supports up to 8 concurrent streams. each stream can be setup
+as playback/capture. ASM provides top control functions like
+Pause/flush/resume for playback and record. ASM can Create/destroy encoder,
+decoder and also provides POPP dynamic services.
+
+This patch adds support to basic features to allow hdmi playback.
+
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- include/dt-bindings/sound/qcom,q6afe.h |  10 +++
- sound/soc/qcom/qdsp6/q6afe.c           | 111 +++++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6afe.h           |  10 +++
- 3 files changed, 131 insertions(+)
+ sound/soc/qcom/Kconfig        |   5 +
+ sound/soc/qcom/qdsp6/Makefile |   1 +
+ sound/soc/qcom/qdsp6/q6asm.c  | 252 ++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6asm.h  |  18 +++
+ 4 files changed, 276 insertions(+)
+ create mode 100644 sound/soc/qcom/qdsp6/q6asm.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6asm.h
 
-diff --git a/include/dt-bindings/sound/qcom,q6afe.h b/include/dt-bindings/sound/qcom,q6afe.h
-index e9004ee39f72..3cd862262369 100644
---- a/include/dt-bindings/sound/qcom,q6afe.h
-+++ b/include/dt-bindings/sound/qcom,q6afe.h
-@@ -16,6 +16,16 @@
- #define SLIMBUS_4_TX    24
- #define SLIMBUS_5_RX    25
- #define SLIMBUS_5_TX    26
-+#define QUATERNARY_MI2S_RX	34
-+#define QUATERNARY_MI2S_TX	35
-+#define SECONDARY_MI2S_RX	36
-+#define SECONDARY_MI2S_TX	37
-+#define TERTIARY_MI2S_RX	38
-+#define TERTIARY_MI2S_TX	39
-+#define PRIMARY_MI2S_RX		40
-+#define PRIMARY_MI2S_TX		41
-+#define SECONDARY_PCM_RX	42
-+#define SECONDARY_PCM_TX	43
- #define SLIMBUS_6_RX    45
- #define SLIMBUS_6_TX    46
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index bf04e1301608..a14d960b8fe4 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -56,12 +56,17 @@ config SND_SOC_QDSP6_ADM
+ 	tristate
+ 	default n
  
-diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
-index 637390f5421e..c04caea5481c 100644
---- a/sound/soc/qcom/qdsp6/q6afe.c
-+++ b/sound/soc/qcom/qdsp6/q6afe.c
-@@ -14,6 +14,10 @@
- #include <linux/of.h>
- #include <linux/delay.h>
- #include <linux/soc/qcom/apr.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dai.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
- #include "q6dsp-errno.h"
- #include "q6afe.h"
- 
-@@ -28,6 +32,24 @@
- #define AFE_PARAM_ID_CDC_SLIMBUS_SLAVE_CFG 0x00010235
- 
- #define AFE_PARAM_ID_SLIMBUS_CONFIG    0x00010212
-+#define AFE_PARAM_ID_I2S_CONFIG	0x0001020D
++config SND_SOC_QDSP6_ASM
++	tristate
++	default n
 +
-+/* I2S config specific */
-+#define AFE_API_VERSION_I2S_CONFIG	0x1
-+#define AFE_PORT_I2S_SD0		0x1
-+#define AFE_PORT_I2S_SD1		0x2
-+#define AFE_PORT_I2S_SD2		0x3
-+#define AFE_PORT_I2S_SD3		0x4
-+#define AFE_PORT_I2S_QUAD01		0x5
-+#define AFE_PORT_I2S_QUAD23		0x6
-+#define AFE_PORT_I2S_6CHS		0x7
-+#define AFE_PORT_I2S_8CHS		0x8
-+#define AFE_PORT_I2S_MONO		0x0
-+#define AFE_PORT_I2S_STEREO		0x1
-+#define AFE_PORT_CONFIG_I2S_WS_SRC_EXTERNAL	0x0
-+#define AFE_PORT_CONFIG_I2S_WS_SRC_INTERNAL	0x1
-+#define AFE_LINEAR_PCM_DATA				0x0
-+
- 
- /* Port IDs */
- #define AFE_API_VERSION_HDMI_CONFIG	0x1
-@@ -63,6 +85,14 @@
- #define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX      0x400c
- /* SLIMbus Tx port on channel 6. */
- #define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_TX      0x400d
-+#define AFE_PORT_ID_PRIMARY_MI2S_RX         0x1000
-+#define AFE_PORT_ID_PRIMARY_MI2S_TX         0x1001
-+#define AFE_PORT_ID_SECONDARY_MI2S_RX       0x1002
-+#define AFE_PORT_ID_SECONDARY_MI2S_TX       0x1003
-+#define AFE_PORT_ID_TERTIARY_MI2S_RX        0x1004
-+#define AFE_PORT_ID_TERTIARY_MI2S_TX        0x1005
-+#define AFE_PORT_ID_QUATERNARY_MI2S_RX      0x1006
-+#define AFE_PORT_ID_QUATERNARY_MI2S_TX      0x1007
- 
- #define TIMEOUT_MS 1000
- #define AFE_CMD_RESP_AVAIL	0
-@@ -161,10 +191,21 @@ struct afe_param_id_slimbus_cfg {
-  */
- } __packed;
- 
-+struct afe_param_id_i2s_cfg {
-+	u32	i2s_cfg_minor_version;
-+	u16	bit_width;
-+	u16	channel_mode;
-+	u16	mono_stereo;
-+	u16	ws_src;
-+	u32	sample_rate;
-+	u16	data_format;
-+	u16	reserved;
-+} __packed;
- 
- union afe_port_config {
- 	struct afe_param_id_hdmi_multi_chan_audio_cfg hdmi_multi_ch;
- 	struct afe_param_id_slimbus_cfg           slim_cfg;
-+	struct afe_param_id_i2s_cfg	i2s_cfg;
- } __packed;
- 
- struct q6afe_port {
-@@ -207,6 +248,14 @@ static struct afe_port_map port_maps[AFE_PORT_MAX] = {
- 				SLIMBUS_4_RX, 1, 1},
- 	[SLIMBUS_5_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_5_RX,
- 				SLIMBUS_5_RX, 1, 1},
-+	[QUATERNARY_MI2S_RX] = { AFE_PORT_ID_QUATERNARY_MI2S_RX,
-+				QUATERNARY_MI2S_RX, 1, 1},
-+	[SECONDARY_MI2S_RX] = { AFE_PORT_ID_SECONDARY_MI2S_RX,
-+				SECONDARY_MI2S_RX, 1, 1},
-+	[TERTIARY_MI2S_RX] = { AFE_PORT_ID_TERTIARY_MI2S_RX,
-+				TERTIARY_MI2S_RX, 1, 1},
-+	[PRIMARY_MI2S_RX] = { AFE_PORT_ID_PRIMARY_MI2S_RX,
-+				PRIMARY_MI2S_RX, 1, 1},
- 	[SLIMBUS_6_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX,
- 				SLIMBUS_6_RX, 1, 1},
- };
-@@ -513,6 +562,61 @@ void q6afe_hdmi_port_prepare(struct q6afe_port *port,
- }
- EXPORT_SYMBOL_GPL(q6afe_hdmi_port_prepare);
- 
-+/**
-+ * q6afe_i2s_port_prepare() - Prepare i2s afe port.
-+ *
-+ * @port: Instance of afe port
-+ * @cfg: I2S configuration for the afe port
-+ *
+ config SND_SOC_QDSP6
+ 	tristate "SoC ALSA audio driver for QDSP6"
+ 	depends on QCOM_APR && HAS_DMA
+ 	select SND_SOC_QDSP6_COMMON
+ 	select SND_SOC_QDSP6_AFE
+ 	select SND_SOC_QDSP6_ADM
++	select SND_SOC_QDSP6_ASM
+ 	help
+ 	 To add support for MSM QDSP6 Soc Audio.
+ 	 This will enable sound soc platform specific
+diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
+index 930944425051..eea962315ab3 100644
+--- a/sound/soc/qcom/qdsp6/Makefile
++++ b/sound/soc/qcom/qdsp6/Makefile
+@@ -1,3 +1,4 @@
+ obj-$(CONFIG_SND_SOC_QDSP6_COMMON) += q6dsp-common.o
+ obj-$(CONFIG_SND_SOC_QDSP6_AFE) += q6afe.o
+ obj-$(CONFIG_SND_SOC_QDSP6_ADM) += q6adm.o
++obj-$(CONFIG_SND_SOC_QDSP6_ASM) += q6asm.o
+diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
+new file mode 100644
+index 000000000000..768d9b446da9
+--- /dev/null
++++ b/sound/soc/qcom/qdsp6/q6asm.c
+@@ -0,0 +1,252 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2011-2017, The Linux Foundation
++ * Copyright (c) 2018, Linaro Limited
 + */
-+void q6afe_i2s_port_prepare(struct q6afe_port *port, struct q6afe_i2s_cfg *cfg)
-+{
-+	union afe_port_config *pcfg = &port->port_cfg;
 +
-+	pcfg->i2s_cfg.i2s_cfg_minor_version = AFE_API_VERSION_I2S_CONFIG;
-+	pcfg->i2s_cfg.sample_rate = cfg->sample_rate;
-+	pcfg->i2s_cfg.bit_width = cfg->bit_width;
-+	pcfg->i2s_cfg.data_format = AFE_LINEAR_PCM_DATA;
++#include <linux/mutex.h>
++#include <linux/wait.h>
++#include <linux/module.h>
++#include <linux/soc/qcom/apr.h>
++#include <linux/device.h>
++#include <linux/of.h>
++#include <linux/delay.h>
++#include <linux/slab.h>
++#include <linux/mm.h>
++#include "q6asm.h"
++#include "q6dsp-errno.h"
++#include "q6dsp-common.h"
 +
-+	switch (cfg->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		pcfg->i2s_cfg.ws_src = AFE_PORT_CONFIG_I2S_WS_SRC_INTERNAL;
-+		break;
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		/* CPU is slave */
-+		pcfg->i2s_cfg.ws_src = AFE_PORT_CONFIG_I2S_WS_SRC_EXTERNAL;
-+		break;
-+	default:
-+		break;
-+	}
++#define ASM_SYNC_IO_MODE		0x0001
++#define ASM_ASYNC_IO_MODE		0x0002
++#define ASM_TUN_READ_IO_MODE		0x0004	/* tunnel read write mode */
++#define ASM_TUN_WRITE_IO_MODE		0x0008	/* tunnel read write mode */
 +
-+	switch (cfg->num_channels) {
-+	case 1:
-+			pcfg->i2s_cfg.mono_stereo = AFE_PORT_I2S_MONO;
-+			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD0;
-+		break;
-+	case 2:
-+			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD0;
-+			pcfg->i2s_cfg.mono_stereo = AFE_PORT_I2S_STEREO;
-+		break;
-+	case 3:
-+	case 4:
-+			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_QUAD01;
-+		break;
-+	case 5:
-+	case 6:
-+			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_6CHS;
-+			break;
-+	case 7:
-+	case 8:
-+			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_8CHS;
-+			break;
-+	default:
-+		break;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(q6afe_i2s_port_prepare);
-+
- /**
-  * q6afe_port_start() - Start a afe port
-  *
-@@ -562,6 +666,13 @@ struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
- 	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX:
- 		cfg_type = AFE_PARAM_ID_SLIMBUS_CONFIG;
- 		break;
-+
-+	case AFE_PORT_ID_PRIMARY_MI2S_RX:
-+	case AFE_PORT_ID_SECONDARY_MI2S_RX:
-+	case AFE_PORT_ID_TERTIARY_MI2S_RX:
-+	case AFE_PORT_ID_QUATERNARY_MI2S_RX:
-+		cfg_type = AFE_PARAM_ID_I2S_CONFIG;
-+		break;
- 	default:
- 		dev_err(dev, "Invalid port id 0x%x\n", port_id);
- 		return ERR_PTR(-EINVAL);
-diff --git a/sound/soc/qcom/qdsp6/q6afe.h b/sound/soc/qcom/qdsp6/q6afe.h
-index aeacf1f2c9a9..9114d68a79cb 100644
---- a/sound/soc/qcom/qdsp6/q6afe.h
-+++ b/sound/soc/qcom/qdsp6/q6afe.h
-@@ -29,9 +29,18 @@ struct q6afe_slim_cfg {
- 	u8	ch_mapping[AFE_MAX_CHAN_COUNT];
- };
- 
-+struct q6afe_i2s_cfg {
-+	u32	sample_rate;
-+	u16	bit_width;
-+	u16	data_format;
-+	u16	num_channels;
-+	int fmt;
++struct audio_client {
++	int session;
++	q6asm_cb cb;
++	int cmd_state;
++	void *priv;
++	uint32_t io_mode;
++	struct apr_device *adev;
++	struct mutex lock;
++	wait_queue_head_t cmd_wait;
++	int perf_mode;
++	int stream_id;
++	struct device *dev;
 +};
 +
- struct q6afe_port_config {
- 	struct q6afe_hdmi_cfg hdmi;
- 	struct q6afe_slim_cfg slim;
-+	struct q6afe_i2s_cfg i2s_cfg;
- };
- 
- struct q6afe_port;
-@@ -50,5 +59,6 @@ void q6afe_hdmi_port_prepare(struct q6afe_port *port,
- 			    struct q6afe_hdmi_cfg *cfg);
- void q6afe_slim_port_prepare(struct q6afe_port *port,
- 			  struct q6afe_slim_cfg *cfg);
-+void q6afe_i2s_port_prepare(struct q6afe_port *port, struct q6afe_i2s_cfg *cfg);
- 
- #endif /* __Q6AFE_H__ */
++struct q6asm {
++	struct apr_device *adev;
++	int mem_state;
++	struct device *dev;
++	wait_queue_head_t mem_wait;
++	struct mutex	session_lock;
++	struct platform_device *pcmdev;
++	struct audio_client *session[MAX_SESSIONS + 1];
++	void *dai_data;
++};
++
++static bool q6asm_is_valid_audio_client(struct audio_client *ac)
++{
++	struct q6asm *a = dev_get_drvdata(ac->dev);
++	int n;
++
++	if (!ac)
++		return false;
++
++	for (n = 1; n <= MAX_SESSIONS; n++) {
++		if (a->session[n] == ac)
++			return true;
++	}
++
++	return false;
++}
++
++/**
++ * q6asm_audio_client_free() - Freee allocated audio client
++ *
++ * @ac: audio client to free
++ */
++void q6asm_audio_client_free(struct audio_client *ac)
++{
++	struct q6asm *a = dev_get_drvdata(ac->dev);
++
++	mutex_lock(&a->session_lock);
++	a->session[ac->session] = NULL;
++	mutex_unlock(&a->session_lock);
++	kfree(ac);
++}
++EXPORT_SYMBOL_GPL(q6asm_audio_client_free);
++
++static struct audio_client *q6asm_get_audio_client(struct q6asm *a,
++						   int session_id)
++{
++	if ((session_id <= 0) || (session_id > MAX_SESSIONS)) {
++		dev_err(a->dev, "invalid session: %d\n", session_id);
++		return NULL;
++	}
++
++	if (!a->session[session_id]) {
++		dev_err(a->dev, "session not active: %d\n", session_id);
++		return NULL;
++	}
++
++	return a->session[session_id];
++}
++
++/**
++ * q6asm_set_dai_data() - set dai private data
++ *
++ * @dev: Pointer to asm device.
++ * @data: dai private data
++ *
++ */
++void q6asm_set_dai_data(struct device *dev, void *data)
++{
++	struct q6asm *a = dev_get_drvdata(dev);
++
++	a->dai_data = data;
++}
++EXPORT_SYMBOL_GPL(q6asm_set_dai_data);
++
++/**
++ * q6asm_get_dai_data() - get dai private data
++ *
++ * @dev: Pointer to asm device.
++ *
++ * Return: pointer to dai private data
++ */
++void *q6asm_get_dai_data(struct device *dev)
++{
++	struct q6asm *a = dev_get_drvdata(dev);
++
++	return a->dai_data;
++}
++EXPORT_SYMBOL_GPL(q6asm_get_dai_data);
++
++static int q6asm_srvc_callback(struct apr_device *adev,
++			       struct apr_client_message *data)
++{
++	struct aprv2_ibasic_rsp_result_t *result;
++	struct q6asm *a, *q6asm = dev_get_drvdata(&adev->dev);
++	struct audio_client *ac = NULL;
++	struct audio_port_data *port;
++	uint32_t dir = 0;
++	uint32_t sid = 0;
++
++	result = data->payload;
++	sid = (data->token >> 8) & 0x0F;
++	ac = q6asm_get_audio_client(q6asm, sid);
++	if (!ac) {
++		dev_err(&adev->dev, "Audio Client not active\n");
++		return 0;
++	}
++
++	if (ac->cb)
++		ac->cb(data->opcode, data->token, data->payload, ac->priv);
++
++	return 0;
++}
++
++/**
++ * q6asm_get_session_id() - get session id for audio client
++ *
++ * @ac: audio client pointer
++ *
++ * Return: Will be an session id of the audio client.
++ */
++int q6asm_get_session_id(struct audio_client *c)
++{
++	return c->session;
++}
++EXPORT_SYMBOL_GPL(q6asm_get_session_id);
++
++/**
++ * q6asm_audio_client_alloc() - Allocate a new audio client
++ *
++ * @dev: Pointer to asm child device.
++ * @cb: event callback.
++ * @priv: private data associated with this client.
++ *
++ * Return: Will be an error pointer on error or a valid audio client
++ * on success.
++ */
++struct audio_client *q6asm_audio_client_alloc(struct device *dev, q6asm_cb cb,
++					      void *priv, int stream_id)
++{
++	struct q6asm *a = dev_get_drvdata(dev);
++	struct audio_client *ac;
++
++	if (stream_id + 1 > MAX_SESSIONS)
++		return ERR_PTR(-EINVAL);
++
++	ac = kzalloc(sizeof(*ac), GFP_KERNEL);
++	if (!ac)
++		return ERR_PTR(-ENOMEM);
++
++	mutex_lock(&a->session_lock);
++	a->session[stream_id + 1] = ac;
++	mutex_unlock(&a->session_lock);
++
++	ac->session = stream_id + 1;
++	ac->cb = cb;
++	ac->dev = dev;
++	ac->priv = priv;
++	ac->io_mode = ASM_SYNC_IO_MODE;
++	ac->perf_mode = LEGACY_PCM_MODE;
++	/* DSP expects stream id from 1 */
++	ac->stream_id = 1;
++	ac->adev = a->adev;
++
++	init_waitqueue_head(&ac->cmd_wait);
++	mutex_init(&ac->lock);
++	ac->cmd_state = 0;
++
++	return ac;
++}
++EXPORT_SYMBOL_GPL(q6asm_audio_client_alloc);
++
++
++static int q6asm_probe(struct apr_device *adev)
++{
++	struct q6asm *q6asm;
++
++	q6asm = devm_kzalloc(&adev->dev, sizeof(*q6asm), GFP_KERNEL);
++	if (!q6asm)
++		return -ENOMEM;
++
++	q6asm->dev = &adev->dev;
++	q6asm->adev = adev;
++	q6asm->mem_state = 0;
++	init_waitqueue_head(&q6asm->mem_wait);
++	mutex_init(&q6asm->session_lock);
++	dev_set_drvdata(&adev->dev, q6asm);
++
++	return q6asm_dai_probe(&adev->dev);
++}
++
++static int q6asm_remove(struct apr_device *adev)
++{
++	return q6asm_dai_remove(&adev->dev);
++}
++
++static const struct of_device_id q6asm_device_id[]  = {
++	{ .compatible = "qcom,q6asm" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, q6asm_device_id);
++
++static struct apr_driver qcom_q6asm_driver = {
++	.probe = q6asm_probe,
++	.remove = q6asm_remove,
++	.callback = q6asm_srvc_callback,
++	.driver = {
++		.name = "qcom-q6asm",
++		.of_match_table = of_match_ptr(q6asm_device_id),
++	},
++};
++
++module_apr_driver(qcom_q6asm_driver);
++MODULE_DESCRIPTION("Q6 Audio Stream Manager driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/qcom/qdsp6/q6asm.h b/sound/soc/qcom/qdsp6/q6asm.h
+new file mode 100644
+index 000000000000..b13fe0d2ea61
+--- /dev/null
++++ b/sound/soc/qcom/qdsp6/q6asm.h
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: GPL-2.0
++#ifndef __Q6_ASM_H__
++#define __Q6_ASM_H__
++
++#define MAX_SESSIONS	16
++
++void q6asm_set_dai_data(struct device *dev, void *data);
++void *q6asm_get_dai_data(struct device *dev);
++
++typedef void (*q6asm_cb) (uint32_t opcode, uint32_t token,
++			  void *payload, void *priv);
++struct audio_client;
++struct audio_client *q6asm_audio_client_alloc(struct device *dev,
++					      q6asm_cb cb, void *priv,
++					      int session_id);
++void q6asm_audio_client_free(struct audio_client *ac);
++int q6asm_get_session_id(struct audio_client *ac);
++#endif /* __Q6_ASM_H__ */
 -- 
 2.15.1
