@@ -1,342 +1,124 @@
-From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Subject: [PATCH v3 1/3] arm64: dts: uniphier: add sound node for UniPhier
-Date: Tue, 13 Feb 2018 22:01:54 +0900
-Message-ID: <20180213130156.27827-2-suzuki.katsuhiro@socionext.com>
-References: <20180213130156.27827-1-suzuki.katsuhiro@socionext.com>
+From: Jan-Marek Glogowski <glogow@fbihome.de>
+Subject: Re: [RfC][PATCH] ALSA: hda/realtek PCI quirk for
+ Fujitsu U7[25]7
+Date: Tue, 13 Feb 2018 15:21:48 +0100
+Message-ID: <791b9188-c136-dd65-61c2-cb2e93d52876@fbihome.de>
+References: <c6ec1a50-187e-42d8-4137-f162c52e4f79@fbihome.de>
+ <dcac37ef-4319-9eb3-4652-17bc6aa8fbc9@fbihome.de>
+ <s5h7erh4e7z.wl-tiwai@suse.de>
+ <6d34fc90-48fb-8d5a-f7a5-7a3e33ddec9b@fbihome.de>
+ <s5hzi4d6t5h.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20180213130156.27827-1-suzuki.katsuhiro@socionext.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, Jassi Brar <jaswinder.singh@linaro.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ironchief.h-da.de (ironchief.h-da.de [141.100.10.235])
+ by alsa0.perex.cz (Postfix) with ESMTP id A7C94266C0E
+ for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 15:21:51 +0100 (CET)
+In-Reply-To: <s5hzi4d6t5h.wl-tiwai@suse.de>
+Content-Language: en-GB
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds audio controller, codec and simple card node of
-UniPhier AIO sound system for LD11/20 SoCs.
+Am 13.02.2018 um 12:11 schrieb Takashi Iwai:
+> The driver doesn't check any difference of the position for
+> identifying the jack detection capability, so you can apply the same
+> quirk to both models.  Then I prefer putting with SND_PCI_QUIRK().
 
-Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+So the patch is implemented in the spirit of what I actually did when analysing an fixing the bug via hdajackretask. Instead of fixed numbers, it takes the original headphone pin, changes the device to microphone and updates the mics' pin config.
+
+Regards,
+
+Jan-Marek
 
 ---
 
-Changes in v3:
-  - Move sound and spdif-out nodes to root from soc node
-  - Use phandle of endpoint directly instead of port node
-  - Describe connections between AIO and EVEA in *.dtsi
-    because these cores are in inside of SoC
----
- .../boot/dts/socionext/uniphier-ld11-global.dts    | 25 ++++++
- arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi   | 92 +++++++++++++++++++++
- .../boot/dts/socionext/uniphier-ld20-global.dts    | 25 ++++++
- arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi   | 96 ++++++++++++++++++++++
- 4 files changed, 238 insertions(+)
+>From 24abbbd83bf5c47e3396483b0d5287ac8f48cecd Mon Sep 17 00:00:00 2001
+From: Jan-Marek Glogowski <jan-marek.glogowski@muenchen.de>
+Date: Wed, 24 Jan 2018 18:57:38 +0100
+Subject: [PATCH] ALSA: hda/realtek: PCI quirk for Fujitsu U7x7
 
-diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld11-global.dts b/arch/arm64/boot/dts/socionext/uniphier-ld11-global.dts
-index 2452b2243f42..fb6bf435dc96 100644
---- a/arch/arm64/boot/dts/socionext/uniphier-ld11-global.dts
-+++ b/arch/arm64/boot/dts/socionext/uniphier-ld11-global.dts
-@@ -37,6 +37,27 @@
- 		device_type = "memory";
- 		reg = <0 0x80000000 0 0x40000000>;
- 	};
-+
-+	sound {
-+		compatible = "audio-graph-card";
-+		label = "UniPhier LD11";
-+		widgets = "Headphone", "Headphone Jack";
-+
-+		dais = <&i2s_port2
-+			&i2s_port4
-+			&spdif_port0>;
-+	};
-+
-+	spdif-out {
-+		compatible = "linux,spdif-dit";
-+		#sound-dai-cells = <0>;
-+
-+		port@0 {
-+			spdif_tx: endpoint {
-+				remote-endpoint = <&spdif_hiecout1>;
-+			};
-+		};
-+	};
- };
+These laptops have a combined jack to attach headsets, the U727 on
+the left, the U757 on the right, but a headsets microphone doesn't
+work. Using hdajacksensetest I found that pin 0x19 changed the
+present state when plugging the headset, in addition to 0x21, but
+didn't have the correct configuration (shown as "Not connected").
+
+So this sets the configuration to the same values as the headphone
+pin 0x21 except for the device type microphone, which makes it
+work correctly. With the patch the configured pins for U727 are
+
+Pin 0x12 (Internal Mic, Mobile-In): present = No
+Pin 0x14 (Internal Speaker): present = No
+Pin 0x19 (Black Mic, Left side): present = No
+Pin 0x1d (Internal Aux): present = No
+Pin 0x21 (Black Headphone, Left side): present = No
+
+Signed-off-by: Jan-Marek Glogowski <glogow@fbihome.de>
+---
+ sound/pci/hda/patch_realtek.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 2347588..a47b15f 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3465,6 +3465,19 @@ static void alc269_fixup_pincfg_no_hp_to_lineout(struct hda_codec *codec,
+ 		spec->parse_flags = HDA_PINCFG_NO_HP_FIXUP;
+ }
  
- &serial0 {
-@@ -72,3 +93,7 @@
- &nand {
- 	status = "okay";
- };
++static void alc269_fixup_pincfg_U7x7_headset_mic(struct hda_codec *codec,
++						 const struct hda_fixup *fix, int action)
++{
++	unsigned int cfg_headphone = snd_hda_codec_get_pincfg(codec, 0x21);
++	unsigned int cfg_headset_mic = snd_hda_codec_get_pincfg(codec, 0x19);
 +
-+&spdif_hiecout1 {
-+	remote-endpoint = <&spdif_tx>;
-+};
-diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi b/arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi
-index cd7c2d0a1f64..f4eb1c6353a5 100644
---- a/arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi
-+++ b/arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi
-@@ -187,6 +187,90 @@
- 						     <21 217 3>;
- 		};
- 
-+		audio: audio@56000000 {
-+			compatible = "socionext,uniphier-ld11-aio";
-+			reg = <0x56000000 0x80000>;
-+			interrupts = <0 144 4>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&pinctrl_aout>;
-+			clock-names = "aio";
-+			clocks = <&sys_clk 40>;
-+			reset-names = "aio";
-+			resets = <&sys_rst 40>;
-+			#sound-dai-cells = <1>;
++	if (cfg_headphone && cfg_headset_mic == 0x411111f0)
++		// same config, but a mic instead of a headphone
++		snd_hda_codec_set_pincfg(codec, 0x19,
++			(cfg_headphone & ~AC_DEFCFG_DEVICE) +
++			(AC_JACK_MIC_IN << AC_DEFCFG_DEVICE_SHIFT));
++}
 +
-+			i2s_port0: port@0 {
-+				i2s_hdmi: endpoint {
-+				};
-+			};
-+
-+			i2s_port1: port@1 {
-+				i2s_pcmin2: endpoint {
-+				};
-+			};
-+
-+			i2s_port2: port@2 {
-+				i2s_line: endpoint {
-+					dai-format = "i2s";
-+					remote-endpoint = <&evea_line>;
-+				};
-+			};
-+
-+			i2s_port3: port@3 {
-+				i2s_hpcmout1: endpoint {
-+				};
-+			};
-+
-+			i2s_port4: port@4 {
-+				i2s_hp: endpoint {
-+					dai-format = "i2s";
-+					remote-endpoint = <&evea_hp>;
-+				};
-+			};
-+
-+			spdif_port0: port@5 {
-+				spdif_hiecout1: endpoint {
-+				};
-+			};
-+
-+			src_port0: port@6 {
-+				i2s_epcmout2: endpoint {
-+				};
-+			};
-+
-+			src_port1: port@7 {
-+				i2s_epcmout3: endpoint {
-+				};
-+			};
-+
-+			comp_spdif_port0: port@8 {
-+				comp_spdif_hiecout1: endpoint {
-+				};
-+			};
-+		};
-+
-+		evea: codec@57900000 {
-+			compatible = "socionext,uniphier-evea";
-+			reg = <0x57900000 0x1000>;
-+			clock-names = "evea", "exiv";
-+			clocks = <&sys_clk 41>, <&sys_clk 42>;
-+			reset-names = "evea", "exiv", "adamv";
-+			resets = <&sys_rst 41>, <&sys_rst 42>, <&adamv_rst 0>;
-+			#sound-dai-cells = <1>;
-+
-+			evea_line_port: port@0 {
-+				evea_line: endpoint {
-+					remote-endpoint = <&i2s_line>;
-+				};
-+			};
-+
-+			evea_hp_port: port@1 {
-+				evea_hp: endpoint {
-+					remote-endpoint = <&i2s_hp>;
-+				};
-+			};
-+		};
-+
- 		adamv@57920000 {
- 			compatible = "socionext,uniphier-ld11-adamv",
- 				     "simple-mfd", "syscon";
-@@ -475,3 +559,11 @@
- };
- 
- #include "uniphier-pinctrl.dtsi"
-+
-+&pinctrl_aout {
-+	drive-strength = <4>;	/* default: 4mA */
-+	group_1 {
-+		pins = "AO1ARC";
-+		drive-strength = <8>;	/* 8mA */
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts b/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts
-index fc2bc9d75d35..2d49163cfde4 100644
---- a/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts
-+++ b/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts
-@@ -37,6 +37,27 @@
- 		device_type = "memory";
- 		reg = <0 0x80000000 0 0xc0000000>;
- 	};
-+
-+	sound {
-+		compatible = "audio-graph-card";
-+		label = "UniPhier LD20";
-+		widgets = "Headphone", "Headphone Jack";
-+
-+		dais = <&i2s_port2
-+			&i2s_port4
-+			&spdif_port0>;
-+	};
-+
-+	spdif-out {
-+		compatible = "linux,spdif-dit";
-+		#sound-dai-cells = <0>;
-+
-+		port@0 {
-+			spdif_tx: endpoint {
-+				remote-endpoint = <&spdif_hiecout1>;
-+			};
-+		};
-+	};
- };
- 
- &serial0 {
-@@ -54,3 +75,7 @@
- &nand {
- 	status = "okay";
- };
-+
-+&spdif_hiecout1 {
-+	remote-endpoint = <&spdif_tx>;
-+};
-diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi b/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi
-index 8a3276ba2da1..9d0f23f100df 100644
---- a/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi
-+++ b/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi
-@@ -287,6 +287,90 @@
- 						     <21 217 3>;
- 		};
- 
-+		audio: audio@56000000 {
-+			compatible = "socionext,uniphier-ld20-aio";
-+			reg = <0x56000000 0x80000>;
-+			interrupts = <0 144 4>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&pinctrl_aout>;
-+			clock-names = "aio";
-+			clocks = <&sys_clk 40>;
-+			reset-names = "aio";
-+			resets = <&sys_rst 40>;
-+			#sound-dai-cells = <1>;
-+
-+			i2s_port0: port@0 {
-+				i2s_hdmi: endpoint {
-+				};
-+			};
-+
-+			i2s_port1: port@1 {
-+				i2s_pcmin2: endpoint {
-+				};
-+			};
-+
-+			i2s_port2: port@2 {
-+				i2s_line: endpoint {
-+					dai-format = "i2s";
-+					remote-endpoint = <&evea_line>;
-+				};
-+			};
-+
-+			i2s_port3: port@3 {
-+				i2s_hpcmout1: endpoint {
-+				};
-+			};
-+
-+			i2s_port4: port@4 {
-+				i2s_hp: endpoint {
-+					dai-format = "i2s";
-+					remote-endpoint = <&evea_hp>;
-+				};
-+			};
-+
-+			spdif_port0: port@5 {
-+				spdif_hiecout1: endpoint {
-+				};
-+			};
-+
-+			src_port0: port@6 {
-+				i2s_epcmout2: endpoint {
-+				};
-+			};
-+
-+			src_port1: port@7 {
-+				i2s_epcmout3: endpoint {
-+				};
-+			};
-+
-+			comp_spdif_port0: port@8 {
-+				comp_spdif_hiecout1: endpoint {
-+				};
-+			};
-+		};
-+
-+		evea: codec@57900000 {
-+			compatible = "socionext,uniphier-evea";
-+			reg = <0x57900000 0x1000>;
-+			clock-names = "evea", "exiv";
-+			clocks = <&sys_clk 41>, <&sys_clk 42>;
-+			reset-names = "evea", "exiv", "adamv";
-+			resets = <&sys_rst 41>, <&sys_rst 42>, <&adamv_rst 0>;
-+			#sound-dai-cells = <1>;
-+
-+			evea_line_port: port@0 {
-+				evea_line: endpoint {
-+					remote-endpoint = <&i2s_line>;
-+				};
-+			};
-+
-+			evea_hp_port: port@1 {
-+				evea_hp: endpoint {
-+					remote-endpoint = <&i2s_hp>;
-+				};
-+			};
-+		};
-+
- 		adamv@57920000 {
- 			compatible = "socionext,uniphier-ld20-adamv",
- 				     "simple-mfd", "syscon";
-@@ -528,3 +612,15 @@
- };
- 
- #include "uniphier-pinctrl.dtsi"
-+
-+&pinctrl_aout {
-+	drive-strength = <4>;	/* default: 3.5mA */
-+	group_1 {
-+		pins = "AO1DACCK";
-+		drive-strength = <5>;	/* 5mA */
-+	};
-+	group_2 {
-+		pins = "AO1ARC";
-+		drive-strength = <11>;	/* 11mA */
-+	};
-+};
+ static void alc269_fixup_hweq(struct hda_codec *codec,
+ 			       const struct hda_fixup *fix, int action)
+ {
+@@ -5351,6 +5364,7 @@ enum {
+ 	ALC269_FIXUP_LIFEBOOK_EXTMIC,
+ 	ALC269_FIXUP_LIFEBOOK_HP_PIN,
+ 	ALC269_FIXUP_LIFEBOOK_NO_HP_TO_LINEOUT,
++	ALC255_FIXUP_LIFEBOOK_U7x7_HEADSET_MIC,
+ 	ALC269_FIXUP_AMIC,
+ 	ALC269_FIXUP_DMIC,
+ 	ALC269VB_FIXUP_AMIC,
+@@ -5556,6 +5570,10 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_pincfg_no_hp_to_lineout,
+ 	},
++	[ALC255_FIXUP_LIFEBOOK_U7x7_HEADSET_MIC] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc269_fixup_pincfg_U7x7_headset_mic,
++	},
+ 	[ALC269_FIXUP_AMIC] = {
+ 		.type = HDA_FIXUP_PINS,
+ 		.v.pins = (const struct hda_pintbl[]) {
+@@ -6422,6 +6440,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x10cf, 0x159f, "Lifebook E780", ALC269_FIXUP_LIFEBOOK_NO_HP_TO_LINEOUT),
+ 	SND_PCI_QUIRK(0x10cf, 0x15dc, "Lifebook T731", ALC269_FIXUP_LIFEBOOK_HP_PIN),
+ 	SND_PCI_QUIRK(0x10cf, 0x1757, "Lifebook E752", ALC269_FIXUP_LIFEBOOK_HP_PIN),
++	SND_PCI_QUIRK(0x10cf, 0x1629, "Lifebook U7x7", ALC255_FIXUP_LIFEBOOK_U7x7_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x10cf, 0x1845, "Lifebook U904", ALC269_FIXUP_LIFEBOOK_EXTMIC),
+ 	SND_PCI_QUIRK(0x10ec, 0x10f2, "Intel Reference board", ALC700_FIXUP_INTEL_REFERENCE),
+ 	SND_PCI_QUIRK(0x144d, 0xc109, "Samsung Ativ book 9 (NP900X3G)", ALC269_FIXUP_INV_DMIC),
 -- 
-2.15.1
+2.1.4
