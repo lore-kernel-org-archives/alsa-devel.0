@@ -1,66 +1,132 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v3 04/25] dt-bindings: sound: qcom: Add bindings for q6afe
-Date: Tue, 13 Feb 2018 16:58:16 +0000
-Message-ID: <20180213165837.1620-5-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 01/25] dt-bindings: soc: qcom: Add bindings
+	for APR bus
+Date: Tue, 13 Feb 2018 16:58:13 +0000
+Message-ID: <20180213165837.1620-2-srinivas.kandagatla@linaro.org>
 References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24764267748
+ for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 18:01:16 +0100 (CET)
+Received: by mail-wm0-f65.google.com with SMTP id r71so17415430wmd.1
+ for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2018 09:01:16 -0800 (PST)
 In-Reply-To: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: david.brown@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com, linux-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, robh+dt@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, spatakok@qti.qualcomm.com, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
+This patch add dt bindings for Qualcomm APR (Asynchronous Packet Router)
+bus driver. This bus is used for communicating with DSP which provides
+audio and various other services to cpu.
+
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../devicetree/bindings/sound/qcom,q6afe.txt       | 38 ++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+ .../devicetree/bindings/soc/qcom/qcom,apr.txt      | 83 ++++++++++++++++++++++
+ 1 file changed, 83 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
 new file mode 100644
-index 000000000000..4b389124275c
+index 000000000000..1b95fbfed348
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
-@@ -0,0 +1,38 @@
-+Qualcomm Audio Front End (Q6AFE) binding
++++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+@@ -0,0 +1,83 @@
++Qualcomm APR (Asynchronous Packet Router) binding
 +
-+AFE is one of the APR audio service on Q6DSP
-+Please refer to qcom,apr.txt for details of the coommon apr service bindings
-+used by the apr service device.
-+
-+- but must contain the following property:
++This binding describes the Qualcomm APR. APR is a IPC protocol for
++communication between Application processor and QDSP. APR is mainly
++used for audio/voice services on the QDSP.
 +
 +- compatible:
 +	Usage: required
 +	Value type: <stringlist>
-+	Definition: must be "qcom,afe-v<MAJOR-NUMBER>.<MINOR-NUMBER>".
-+		    example "qcom,afe-v2.0"
++	Definition: must be "qcom,apr-v<VERSION-NUMBER>", example "qcom,apr-v2"
++
++- qcom,apr-dest-domain-id
++	Usage: required
++	Value type: <prop-encoded-array>
++	Definition: Destination processor ID.
++	Possible values are :
++			1 - APR simulator
++			2 - PC
++			3 - MODEM
++			4 - ADSP
++			5 - APPS
++			6 - MODEM2
++			7 - APPS2
++
++= APR SERVICES
++Each subnode of the APR node can represent service tied to this apr. The name
++of the nodes are not important. The properties of these nodes are defined
++by the individual bindings for the specific service
++- but must contain the following property:
 +
 +- qcom,apr-svc-id
 +	Usage: required
 +	Value type: <prop-encoded-array>
-+	Definition: Must be 4 for Audio Front End Service.
++	Definition: APR Service ID, used for matching the service.
++	Possible values are :
++			3 - DSP Core Service
++			4 - Audio Front End Service.
++			5 - Voice Stream Manager Service.
++			6 - Voice processing manager.
++			7 - Audio Stream Manager Service.
++			8 - Audio Device Manager Service.
++			9 - Multimode voice manager.
++			10 - Core voice stream.
++			11 - Core voice processor.
++			12 - Ultrasound stream manager.
++			13 - Listen stream manager.
 +
 +- qcom,apr-svc-name
 +	Usage: required
 +	Value type: <stringlist>
-+	Definition: Must be "AFE"
++	Definition: User readable name of a APR service.
 +
-+- #sound-dai-cells
-+	Usage: required
-+	Value type: <prop-encoded-array>
-+	Definition: Must be 1
-+
++= APR DEVICES:
++Each subnode of the APR node can represent devices tied to this apr, like
++sound-card. The properties of these nodes are defined by the individual
++bindings for the specific device.
 +
 += EXAMPLE
++The following example represents a QDSP based sound card on a MSM8996 device
++which uses apr as communication between Apps and QDSP.
 +
-+q6afe {
-+	compatible = "qcom,q6afe";
-+	qcom,apr-svc-name = "AFE";
-+	qcom,apr-svc-id = <APR_SVC_AFE>;
-+	#sound-dai-cells = <1>;
-+};
++	apr {
++		compatible = "qcom,apr-v2";
++		qcom,smd-channels = "apr_audio_svc";
++		qcom,apr-dest-domain-id = <APR_DOMAIN_ADSP>;
++
++		q6core {
++			compatible = "qcom,q6core";
++			qcom,apr-svc-name = "CORE";
++			qcom,apr-svc-id = <APR_SVC_ADSP_CORE>;
++		};
++
++		q6afe {
++			compatible = "qcom,q6afe";
++			qcom,apr-svc-name = "AFE";
++			qcom,apr-svc-id = <APR_SVC_AFE>;
++		};
++
++		audio {
++			compatible = "qcom,msm8996-snd-card";
++			...
++		};
++	};
 -- 
 2.15.1
