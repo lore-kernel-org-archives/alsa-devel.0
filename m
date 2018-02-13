@@ -1,59 +1,66 @@
-From: Daniel Baluta <daniel.baluta-3arQi8VN3Tc@public.gmane.org>
-Subject: Re: [PATCH v3 1/2] ASoC: codecs: Add support for AK5558 ADC driver
-Date: Tue, 13 Feb 2018 12:15:20 +0000
-Message-ID: <1518524119.17642.15.camel@nxp.com>
-References: <1517850115-24340-1-git-send-email-daniel.baluta@nxp.com>
-         <1517850115-24340-2-git-send-email-daniel.baluta@nxp.com>
-         <20180212120213.GB12976@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20180212120213.GB12976-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Content-Language: en-US
-Content-ID: <CDB44FFC22D9194A9A45C96998A96FBA-jdb/QiT5osKcE4WynfumptQqCkab/8FMAL8bYrjMMd8@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: dl-linux-imx <linux-imx-3arQi8VN3Tc@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Cosmin Samoila <cosmin.samoila-3arQi8VN3Tc@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "wakasugi.jb-r6lgfPJHJciWyREYz5tgSuqrae++aQT8@public.gmane.org" <wakasugi.jb-r6lgfPJHJciWyREYz5tgSuqrae++aQT8@public.gmane.org>, Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>, "andy.shevchenko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <andy.shevchenko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "mihai.serban-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <mihai.serban-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "S.j. Wang" <shengjiu.wang-3arQi8VN3Tc@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "mihai.serban-3arQi8VN3Tc@public.gmane.org" <mihai.serban-3arQi8VN3Tc@public.gmane.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rt5659: rt5659_intel_hd_header_probe_setup() can be static" to the asoc tree
+Date: Tue, 13 Feb 2018 12:15:58 +0000
+Message-ID: <E1elZV8-0005WJ-IN@debutante>
+References: <20180212171606.GA15960@lkp-wsm-ep1>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180212171606.GA15960@lkp-wsm-ep1>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Fengguang Wu <fengguang.wu@intel.com>, Mark Brown <broonie@kernel.org>, "oder_chiou@realtek.com" <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, kbuild-all@01.org, Bard Liao <bardliao@realtek.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTHUsIDIwMTgtMDItMTIgYXQgMTI6MDIgKzAwMDAsIE1hcmsgQnJvd24gd3JvdGU6DQo+IE9u
-IE1vbiwgRmViIDA1LCAyMDE4IGF0IDA3OjAxOjU0UE0gKzAyMDAsIERhbmllbCBCYWx1dGEgd3Jv
-dGU6DQo+ID4gDQo+ID4gQUs1NTU4IGlzIGEgMzItYml0LCA3Njgga0haIHNhbXBsaW5nLCBkaWZm
-ZXJlbnRpYWwgaW5wdXQgQURDDQo+ID4gZm9yIGRpZ2l0YWwgYXVkaW8gc3lzdGVtcy4NCj4gPiAN
-Cj4gPiAtLS0gL2Rldi9udWxsDQo+ID4gKysrIGIvc291bmQvc29jL2NvZGVjcy9hazU1NTguYw0K
-PiA+IEBAIC0wLDAgKzEsNjE4IEBADQo+ID4gKy8qIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBH
-UEwtMi4wICovDQo+ID4gKy8qDQo+ID4gKyAqIEF1ZGlvIGRyaXZlciBmb3IgQUs1NTU4IEFEQw0K
-PiBQbGVhc2UgZG9uJ3QgbWl4IEMrKyBhbmQgQyBzdHlsZSBjb21tZW50cyAtIGp1c3QgbWFrZSB0
-aGUgZW50aXJlIGNvbW1lbnQNCj4gQysrLg0KPiANClN1cmUuIFdpbGwgdXNlOg0KLy8gU1BEWC1M
-aWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjANCg0KPiA+IA0KPiA+ICtzdGF0aWMgY29uc3QgY2hh
-ciAqIGNvbnN0IHRkbV90ZXh0c1tdID0gew0KPiA+ICsJIk9mZiIsICJURE0xMjgiLMKgwqAiVERN
-MjU2IiwgIlRETTUxMiIsDQo+ID4gK307DQo+IFRoaXMgbG9va3MgbGlrZSBpdCBzaG91bGQgYmUg
-YSBzZXRfdGRtX3Nsb3QoKSBvcGVyYXRpb24sIGFuZCBpbmRlZWQNCj4gc2V0X3RkbV9zbG90KCkg
-YXBwZWFycyB0byBiZSBpbXBsZW1lbnRlZCBhbmQgZHVwbGljYXRlIHRoaXMuDQo+IA0KDQpZdXAs
-IHdpbGwgcmVtb3ZlIHRoaXMuIEF0IGZpcnN0IHRoZXJlIHdhcyBubyBzZXRfdGRtX3Nsb3QuDQo+
-ID4gDQo+ID4gK3N0YXRpYyBjb25zdCBjaGFyICogY29uc3QgZHNkb25fdGV4dHNbXSA9IHsNCj4g
-PiArCSJQQ00iLCAiRFNEIiwNCj4gPiArfTsNCj4gVGhpcyBsb29rcyBsaWtlIGl0J3Mgc2V0dGlu
-ZyB0aGUgREFJIGZvcm1hdD8NCg0KRGl0dG8uIFdpbGwgcmVtb3ZlLg0KDQo+IA0KPiA+IA0KPiA+
-ICsJU05EX1NPQ19EQVBNX01VWCgiQUs1NTU4IENoMSBFbmFibGUiLCBTTkRfU09DX05PUE0sIDAs
-IDAsDQo+ID4gKwkJCcKgJmFrNTU1OF9jaGFubmVsMV9tdXhfY29udHJvbCksDQo+IE9uL29mZiBj
-b250cm9scyBzaG91bGQgYmUgc3dpdGNoZXMgbm90IG11eGVzLCB0aG91Z2ggaWYgdGhpcyBpcyBq
-dXN0DQo+IHNlbGVjdGluZyB3aGljaCBjaGFubmVscyBhcmUgYWN0aXZlIChyYXRoZXIgdGhhbiBh
-IG11dGUpIEknZCBub3QgZXhwZWN0DQo+IGl0IHRvIGJlIGEgY29udHJvbCBhdCBhbGwgLSB0aGUg
-Ym9hcmQgY2FuIHNheSBpZiBpbnB1dHMgYXJlIGRpc2FibGVkLg0KDQpPSywgYWdyZWUgdGhhdCBp
-ZiB3ZSB3YW50IHRvIGhhdmUgYSB3YXkgdG8gc2VsZWN0IHdoaWNoIGNoYW5uZWxzIGFyZSBhY3Rp
-dmUNCndlIHNob3VsZCB1c2UgYSBzd2l0Y2guDQoNCldpbGwgcmVtb3ZlIHRoaXMgY29udHJvbCBm
-b3Igbm93Lg0KDQo+IA0KPiA+IA0KPiA+ICtzdGF0aWMgaW50IGFrNTU1OF9zZXRfbWNraShzdHJ1
-Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMsIGludCBmcywgaW50IHJjbGspDQo+ID4gK3sNCj4gPiAr
-CXU4wqDCoG1vZGU7DQo+ID4gKw0KPiA+ICsJbW9kZSA9IHNuZF9zb2NfcmVhZChjb2RlYywgQUs1
-NTU4XzAyX0NPTlRST0wxKTsNCj4gPiArCW1vZGUgJj0gfkFLNTU1OF9DS1M7DQo+ID4gKwltb2Rl
-IHw9IEFLNTU1OF9DS1NfQVVUTzsNCj4gPiArDQo+ID4gKwlzbmRfc29jX3VwZGF0ZV9iaXRzKGNv
-ZGVjLCBBSzU1NThfMDJfQ09OVFJPTDEsIEFLNTU1OF9DS1MsIG1vZGUpOw0KPiA+ICsNCj4gPiAr
-CXJldHVybiAwOw0KPiA+ICt9DQo+IFRoaXMgYXBwZWFycyB0byBqdXN0IGlnbm9yZSB0aGUgcGFy
-YW1ldGVycz8NCg0KVGhlc2UgYXJlIGxlZnQgb3ZlcnMgZnJvbSBhIHYxIGNsZWFudXAuIFdpbGwg
-Zml4Lg0KDQoNCnRoYW5rcyBNYXJrISBXaWxsIHNlbmQgdjQgYXNhcC4NCg0KdGhhbmtzLA0KRGFu
-aWVsLg==
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+The patch
+
+   ASoC: rt5659: rt5659_intel_hd_header_probe_setup() can be static
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 2fa0b7fdf8bd16b6cdda8516793989511c9322ed Mon Sep 17 00:00:00 2001
+From: Wu Fengguang <fengguang.wu@intel.com>
+Date: Tue, 13 Feb 2018 01:16:06 +0800
+Subject: [PATCH] ASoC: rt5659: rt5659_intel_hd_header_probe_setup() can be
+ static
+
+Fixes: 041e74b71491 ("ASoC: rt5659: Add the support of Intel HDA Header")
+Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5659.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
+index ef3a44d6386b..b7721940b76f 100644
+--- a/sound/soc/codecs/rt5659.c
++++ b/sound/soc/codecs/rt5659.c
+@@ -4038,7 +4038,7 @@ static void rt5659_calibrate(struct rt5659_priv *rt5659)
+ 	regmap_write(rt5659->regmap, RT5659_HP_CHARGE_PUMP_1, 0x0c16);
+ }
+ 
+-void rt5659_intel_hd_header_probe_setup(struct rt5659_priv *rt5659)
++static void rt5659_intel_hd_header_probe_setup(struct rt5659_priv *rt5659)
+ {
+ 	int value;
+ 
+-- 
+2.16.1
