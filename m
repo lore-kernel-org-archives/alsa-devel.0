@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: uniphier: fix an error code in uniphier_aio_comprdma_new()" to the asoc tree
-Date: Wed, 14 Feb 2018 13:29:32 +0000
-Message-ID: <E1elx7s-00075e-8E@debutante>
-References: <20180214071531.GB26677@mwanda>
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <20180214071531.GB26677@mwanda>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, Mark Brown <broonie@kernel.org>Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: samsung: i2s: Update clock-output-names property documentation" to the asoc tree
+Date: Wed, 14 Feb 2018 13:29:22 +0000
+Message-ID: <E1elx7i-00072C-Rz@debutante>
+References: <20180212161538.22669-2-s.nawrocki@samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180212161538.22669-2-s.nawrocki@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>, Mark Brown <broonie@kernel.org>broonie@kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, jcsing.lee@samsung.com, lgirdwood@gmail.comkrzk@kernel.org, linux-kernel@vger.kernel.org, robh+dt@kernel.org, m.szyprowski@samsung.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: uniphier: fix an error code in uniphier_aio_comprdma_new()
+   ASoC: samsung: i2s: Update clock-output-names property documentation
 
 has been applied to the asoc tree at
 
@@ -37,42 +37,81 @@ to this mail.
 Thanks,
 Mark
 
->From 21957b5bf0ff607e6e0ed55a3a89454e969511ba Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Wed, 14 Feb 2018 10:15:31 +0300
-Subject: [PATCH] ASoC: uniphier: fix an error code in
- uniphier_aio_comprdma_new()
+>From e2ce852a7464fe3caaf72f9f3da87d2bfcf3eb84 Mon Sep 17 00:00:00 2001
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Date: Mon, 12 Feb 2018 17:15:32 +0100
+Subject: [PATCH] ASoC: samsung: i2s: Update clock-output-names property
+ documentation
 
-The dma_mapping_error() returns true or false, but we want to return
--ENOMEM if there was an error.
+The clock-output-names property is marked as deprecated. While at it,
+and few typos are fixed.
 
-Fixes: e98131222ff9 ("ASoC: uniphier: add support for UniPhier AIO compress audio")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Tested-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/uniphier/aio-compress.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ .../devicetree/bindings/sound/samsung-i2s.txt        | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/uniphier/aio-compress.c b/sound/soc/uniphier/aio-compress.c
-index 7f7abe3ae99d..4751c8bdabec 100644
---- a/sound/soc/uniphier/aio-compress.c
-+++ b/sound/soc/uniphier/aio-compress.c
-@@ -54,12 +54,11 @@ static int uniphier_aio_comprdma_new(struct snd_soc_pcm_runtime *rtd)
- 		dma_dir = DMA_TO_DEVICE;
+diff --git a/Documentation/devicetree/bindings/sound/samsung-i2s.txt b/Documentation/devicetree/bindings/sound/samsung-i2s.txt
+index bf100cd0d0f7..c1f508f18ac8 100644
+--- a/Documentation/devicetree/bindings/sound/samsung-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/samsung-i2s.txt
+@@ -7,7 +7,7 @@ Required SoC Specific Properties:
+    - samsung,s5pv210-i2s: for 8/16/24bit multichannel(5.1) I2S with
+      secondary fifo, s/w reset control and internal mux for root clk src.
+    - samsung,exynos5420-i2s: for 8/16/24bit multichannel(5.1) I2S for
+-     playback, sterio channel capture, secondary fifo using internal
++     playback, stereo channel capture, secondary fifo using internal
+      or external dma, s/w reset control, internal mux for root clk src
+      and 7.1 channel TDM support for playback. TDM (Time division multiplexing)
+      is to allow transfer of multiple channel audio data on single data line.
+@@ -25,7 +25,7 @@ Required SoC Specific Properties:
+   These strings correspond 1:1 with the ordered pairs in dmas.
+ - clocks: Handle to iis clock and RCLK source clk.
+ - clock-names:
+-  i2s0 uses some base clks from CMU and some are from audio subsystem internal
++  i2s0 uses some base clocks from CMU and some are from audio subsystem internal
+   clock controller. The clock names for i2s0 should be "iis", "i2s_opclk0" and
+   "i2s_opclk1" as shown in the example below.
+   i2s1 and i2s2 uses clocks from CMU. The clock names for i2s1 and i2s2 should
+@@ -36,9 +36,9 @@ Required SoC Specific Properties:
+ - #clock-cells: should be 1, this property must be present if the I2S device
+   is a clock provider in terms of the common clock bindings, described in
+   ../clock/clock-bindings.txt.
+-- clock-output-names: from the common clock bindings, names of the CDCLK
+-  I2S output clocks, suggested values are "i2s_cdclk0", "i2s_cdclk1",
+-  "i2s_cdclk3" for the I2S0, I2S1, I2S2 devices recpectively.
++- clock-output-names (deprecated): from the common clock bindings, names of
++  the CDCLK I2S output clocks, suggested values are "i2s_cdclk0", "i2s_cdclk1",
++  "i2s_cdclk3" for the I2S0, I2S1, I2S2 devices respectively.
  
- 	sub->compr_addr = dma_map_single(dev, sub->compr_area, size, dma_dir);
--	ret = dma_mapping_error(dev, sub->compr_addr);
--	if (ret) {
-+	if (dma_mapping_error(dev, sub->compr_addr)) {
- 		kfree(sub->compr_area);
- 		sub->compr_area = NULL;
+ There are following clocks available at the I2S device nodes:
+  CLK_I2S_CDCLK    - the CDCLK (CODECLKO) gate clock,
+@@ -49,9 +49,10 @@ There are following clocks available at the I2S device nodes:
  
--		return ret;
-+		return -ENOMEM;
- 	}
+ Refer to the SoC datasheet for availability of the above clocks.
+ The CLK_I2S_RCLK_PSR and CLK_I2S_RCLK_SRC clocks are usually only available
+-in the IIS Multi Audio Interface (I2S0).
+-Note: Old DTs may not have the #clock-cells, clock-output-names properties
+-and then not use the I2S node as a clock supplier.
++in the IIS Multi Audio Interface.
++
++Note: Old DTs may not have the #clock-cells property and then not use the I2S
++node as a clock supplier.
  
- 	sub->compr_bytes = size;
+ Optional SoC Specific Properties:
+ 
+@@ -74,8 +75,7 @@ i2s0: i2s@3830000 {
+ 		<&clock_audss EXYNOS_I2S_BUS>,
+ 		<&clock_audss EXYNOS_SCLK_I2S>;
+ 	clock-names = "iis", "i2s_opclk0", "i2s_opclk1";
+-	#clock-cells;
+-	clock-output-names = "i2s_cdclk0";
++	#clock-cells = <1>;
+ 	samsung,idma-addr = <0x03000000>;
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&i2s0_bus>;
 -- 
 2.16.1
-
