@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic3x: Use empty struct
-	initializer" to the asoc tree
-Date: Wed, 14 Feb 2018 13:29:35 +0000
-Message-ID: <E1elx7v-00076R-BE@debutante>
-References: <1518550536-16279-2-git-send-email-festevam@gmail.com>
+Subject: Applied "ASoC: wm9712: Use empty struct initializer"
+	to the asoc tree
+Date: Wed, 14 Feb 2018 13:29:38 +0000
+Message-ID: <E1elx7y-00077F-EE@debutante>
+References: <1518550536-16279-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 97D3B267B23
- for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 14:29:37 +0100 (CET)
-In-Reply-To: <1518550536-16279-2-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F985267B2F
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 14:29:40 +0100 (CET)
+In-Reply-To: <1518550536-16279-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic3x: Use empty struct initializer
+   ASoC: wm9712: Use empty struct initializer
 
 has been applied to the asoc tree at
 
@@ -53,17 +53,17 @@ to this mail.
 Thanks,
 Mark
 
->From 68fb425baea14f5647743eb56dc6675fcd8d93b3 Mon Sep 17 00:00:00 2001
+>From 60edb2006030894a4e45c84b04369cb70939d695 Mon Sep 17 00:00:00 2001
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Tue, 13 Feb 2018 17:37:51 -0200
-Subject: [PATCH] ASoC: tlv320aic3x: Use empty struct initializer
+Date: Tue, 13 Feb 2018 17:37:50 -0200
+Subject: [PATCH] ASoC: wm9712: Use empty struct initializer
 
 { 0 } only clears the first member of the structure.
 
 The first member of the snd_soc_dapm_update struct is a pointer,
 and writing 0 to a pointer results in the following sparse warning:
 
-sound/soc/codecs/tlv320aic3x.c:175:47: warning: Using plain integer as NULL pointer
+sound/soc/codecs/wm9712.c:229:47: warning: Using plain integer as NULL pointer
 
 Use the empty struct initializer that clears all the struct members
 and fixes the sparse warning.
@@ -71,21 +71,21 @@ and fixes the sparse warning.
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic3x.c | 2 +-
+ sound/soc/codecs/wm9712.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index dbfa0d8f11a3..6a271e6e6b8f 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -172,7 +172,7 @@ static int snd_soc_dapm_put_volsw_aic3x(struct snd_kcontrol *kcontrol,
- 	unsigned int mask = (1 << fls(max)) - 1;
- 	unsigned int invert = mc->invert;
- 	unsigned short val;
+diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
+index 4f6d1a442bc4..c672d5d88827 100644
+--- a/sound/soc/codecs/wm9712.c
++++ b/sound/soc/codecs/wm9712.c
+@@ -226,7 +226,7 @@ static int wm9712_hp_mixer_put(struct snd_kcontrol *kcontrol,
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+ 	unsigned int mixer, mask, shift, old;
 -	struct snd_soc_dapm_update update = { 0 };
 +	struct snd_soc_dapm_update update = {};
- 	int connect, change;
+ 	bool change;
  
- 	val = (ucontrol->value.integer.value[0] & mask);
+ 	mixer = mc->shift >> 8;
 -- 
 2.16.1
