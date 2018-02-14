@@ -1,18 +1,34 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: samsung: Add missing #sound-dai-cells property documentation" to the asoc tree
-Date: Wed, 14 Feb 2018 13:28:57 +0000
-Message-ID: <E1elx7J-0006lR-2g@debutante>
-References: <20180212161538.22669-8-s.nawrocki@samsung.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20180212161538.22669-8-s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Cc: Krzysztof Kozlowski <krzk-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, sbkim73-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, jcsing.lee-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.orgkrzk-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, m.szyprowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: tlv320aic31xx: Fix master mode clock
+	I2S bus clocks" to the asoc tree
+Date: Wed, 14 Feb 2018 13:28:52 +0000
+Message-ID: <E1elx7E-0006jR-RR@debutante>
+References: <20180214122056.5809-1-peter.ujfalusi@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2FAC42677DA
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 14:28:56 +0100 (CET)
+In-Reply-To: <20180214122056.5809-1-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, afd@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: Add missing #sound-dai-cells property documentation
+   ASoC: tlv320aic31xx: Fix master mode clock I2S bus clocks
 
 has been applied to the asoc tree at
 
@@ -37,45 +53,141 @@ to this mail.
 Thanks,
 Mark
 
->From 3f0c43e60d19e1c126ddad47c77a5e1036e52378 Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Date: Mon, 12 Feb 2018 17:15:38 +0100
-Subject: [PATCH] ASoC: samsung: Add missing #sound-dai-cells property
- documentation
+>From d460b3f861e18b9c826abe178b2db57c6dc6b3e4 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Wed, 14 Feb 2018 14:20:56 +0200
+Subject: [PATCH] ASoC: tlv320aic31xx: Fix master mode clock I2S bus clocks
 
-The #sound-dai-cells property might be helpful in selecting primary
-or secondary CPU DAI and it's already present in i2s nodes for some
-exynos SoCs so let's add it to the DT binding documentation.
+In the reset state of the codec we do not have complete playback or capture
+routes.
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Acked-by: Krzysztof Kozlowski <krzk-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+The audio playback/capture will not work due to missing clock signals on
+the I2S bus if PLL, MDAC/NDAC/DAC MADC/NADC/ADC is powered down.
+
+To make sure that even if all output/input is disconnected the codec is
+generating clocks, we need to have valid DAPM route in every case to power
+up the must needed parts of the codec.
+
+I have verified that switching DAC (during playback) or ADC (during
+capture) will stop the I2S clocks, so the only solution is to connect the
+'Off' routes as well to output/input.
+
+The routes will be only added if the codec is clock master. In case the
+role changes runtime, the applied routes are removed.
+
+Tested on am43x-epos-evm with aic3111 codec in master mode.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Reviewed-by: Jyri Sarha <jsarha@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/samsung-i2s.txt | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/tlv320aic31xx.c | 73 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 72 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/samsung-i2s.txt b/Documentation/devicetree/bindings/sound/samsung-i2s.txt
-index c1f508f18ac8..a88cb00fa096 100644
---- a/Documentation/devicetree/bindings/sound/samsung-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/samsung-i2s.txt
-@@ -60,6 +60,7 @@ Optional SoC Specific Properties:
-   sub system(used in secondary sound source).
- - pinctrl-0: Should specify pin control groups used for this controller.
- - pinctrl-names: Should contain only one value - "default".
-+- #sound-dai-cells: should be 1.
- 
- 
- Example:
-@@ -79,4 +80,5 @@ i2s0: i2s@3830000 {
- 	samsung,idma-addr = <0x03000000>;
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&i2s0_bus>;
-+	#sound-dai-cells = <1>;
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index d3cd924dc300..7090342e8285 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -166,6 +166,7 @@ struct aic31xx_priv {
+ 	unsigned int sysclk;
+ 	u8 p_div;
+ 	int rate_div_line;
++	bool master_dapm_route_applied;
  };
+ 
+ struct aic31xx_rate_divs {
+@@ -670,6 +671,29 @@ aic310x_audio_map[] = {
+ 	{"SPK", NULL, "SPK ClassD"},
+ };
+ 
++/*
++ * Always connected DAPM routes for codec clock master modes.
++ * If the codec is the master on the I2S bus, we need to power on components
++ * to have valid DAC_CLK and also the DACs and ADC for playback/capture.
++ * Otherwise the codec will not generate clocks on the bus.
++ */
++static const struct snd_soc_dapm_route
++common31xx_cm_audio_map[] = {
++	{"DAC Left Input", "Off", "DAC IN"},
++	{"DAC Right Input", "Off", "DAC IN"},
++
++	{"HPL", NULL, "DAC Left"},
++	{"HPR", NULL, "DAC Right"},
++};
++
++static const struct snd_soc_dapm_route
++aic31xx_cm_audio_map[] = {
++	{"MIC1LP P-Terminal", "Off", "MIC1LP"},
++	{"MIC1RP P-Terminal", "Off", "MIC1RP"},
++	{"MIC1LM P-Terminal", "Off", "MIC1LM"},
++	{"MIC1LM M-Terminal", "Off", "MIC1LM"},
++};
++
+ static int aic31xx_add_controls(struct snd_soc_component *component)
+ {
+ 	int ret = 0;
+@@ -912,6 +936,53 @@ static int aic31xx_dac_mute(struct snd_soc_dai *codec_dai, int mute)
+ 	return 0;
+ }
+ 
++static int aic31xx_clock_master_routes(struct snd_soc_component *component,
++				       unsigned int fmt)
++{
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
++	struct aic31xx_priv *aic31xx = snd_soc_component_get_drvdata(component);
++	int ret;
++
++	fmt &= SND_SOC_DAIFMT_MASTER_MASK;
++	if (fmt == SND_SOC_DAIFMT_CBS_CFS &&
++	    aic31xx->master_dapm_route_applied) {
++		/*
++		 * Remove the DAPM route(s) for codec clock master modes,
++		 * if applied
++		 */
++		ret = snd_soc_dapm_del_routes(dapm, common31xx_cm_audio_map,
++					ARRAY_SIZE(common31xx_cm_audio_map));
++		if (!ret && !(aic31xx->codec_type & DAC31XX_BIT))
++			ret = snd_soc_dapm_del_routes(dapm,
++					aic31xx_cm_audio_map,
++					ARRAY_SIZE(aic31xx_cm_audio_map));
++
++		if (ret)
++			return ret;
++
++		aic31xx->master_dapm_route_applied = false;
++	} else if (fmt != SND_SOC_DAIFMT_CBS_CFS &&
++		   !aic31xx->master_dapm_route_applied) {
++		/*
++		 * Add the needed DAPM route(s) for codec clock master modes,
++		 * if it is not done already
++		 */
++		ret = snd_soc_dapm_add_routes(dapm, common31xx_cm_audio_map,
++					ARRAY_SIZE(common31xx_cm_audio_map));
++		if (!ret && !(aic31xx->codec_type & DAC31XX_BIT))
++			ret = snd_soc_dapm_add_routes(dapm,
++					aic31xx_cm_audio_map,
++					ARRAY_SIZE(aic31xx_cm_audio_map));
++
++		if (ret)
++			return ret;
++
++		aic31xx->master_dapm_route_applied = true;
++	}
++
++	return 0;
++}
++
+ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 			       unsigned int fmt)
+ {
+@@ -992,7 +1063,7 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 			    AIC31XX_BCLKINV_MASK,
+ 			    iface_reg2);
+ 
+-	return 0;
++	return aic31xx_clock_master_routes(component, fmt);
+ }
+ 
+ static int aic31xx_set_dai_sysclk(struct snd_soc_dai *codec_dai,
 -- 
 2.16.1
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
