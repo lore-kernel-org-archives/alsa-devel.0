@@ -1,18 +1,20 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 1/3] ASoC: adau17x1: Use empty struct
+Subject: [PATCH 3/3] ASoC: soc-dapm: Use empty struct
 	initializer
-Date: Wed, 14 Feb 2018 13:39:03 -0200
-Message-ID: <1518622745-12162-1-git-send-email-festevam@gmail.com>
+Date: Wed, 14 Feb 2018 13:39:05 -0200
+Message-ID: <1518622745-12162-3-git-send-email-festevam@gmail.com>
+References: <1518622745-12162-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f193.google.com (mail-qk0-f193.google.com
- [209.85.220.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C23D4267194
- for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 16:39:12 +0100 (CET)
-Received: by mail-qk0-f193.google.com with SMTP id i184so16041676qkf.10
- for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 07:39:12 -0800 (PST)
+Received: from mail-qk0-f196.google.com (mail-qk0-f196.google.com
+ [209.85.220.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id B35C3267822
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 16:39:16 +0100 (CET)
+Received: by mail-qk0-f196.google.com with SMTP id c4so24839628qkm.2
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 07:39:15 -0800 (PST)
+In-Reply-To: <1518622745-12162-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,31 +30,38 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Fabio Estevam <fabio.estevam@nxp.com>
 
-{ 0 } only clears the first member of the structure.
+{ NULL } only clears the first member of the structure.
 
-The first member of the snd_soc_dapm_update struct is a pointer,
-and writing 0 to a pointer results in a sparse warning.
-
-Use the empty struct initializer that clears all the struct members
-and fixes the sparse warning.
+Even though the first member of the snd_soc_dapm_update struct is a
+pointer,it is more robust to use the empty struct initializer that
+clears all the struct members.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 ---
- sound/soc/codecs/adau17x1.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-dapm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
-index df34349..80c2a06 100644
---- a/sound/soc/codecs/adau17x1.c
-+++ b/sound/soc/codecs/adau17x1.c
-@@ -181,7 +181,7 @@ static int adau17x1_dsp_mux_enum_put(struct snd_kcontrol *kcontrol,
- 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
- 	struct adau *adau = snd_soc_component_get_drvdata(component);
- 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
--	struct snd_soc_dapm_update update = { 0 };
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 92894d9..2f34590 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3165,7 +3165,7 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
+ 	unsigned int invert = mc->invert;
+ 	unsigned int val, rval = 0;
+ 	int connect, rconnect = -1, change, reg_change = 0;
+-	struct snd_soc_dapm_update update = { NULL };
 +	struct snd_soc_dapm_update update = {};
- 	unsigned int stream = e->shift_l;
- 	unsigned int val, change;
- 	int reg;
+ 	int ret = 0;
+ 
+ 	val = (ucontrol->value.integer.value[0] & mask);
+@@ -3292,7 +3292,7 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
+ 	unsigned int *item = ucontrol->value.enumerated.item;
+ 	unsigned int val, change, reg_change = 0;
+ 	unsigned int mask;
+-	struct snd_soc_dapm_update update = { NULL };
++	struct snd_soc_dapm_update update = {};
+ 	int ret = 0;
+ 
+ 	if (item[0] >= e->items)
 -- 
 2.7.4
