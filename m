@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-dapm: Use empty struct initializer"
+Subject: Applied "ASoC: wm9713: Use empty struct initializer"
 	to the asoc tree
-Date: Wed, 14 Feb 2018 16:28:13 +0000
-Message-ID: <E1elzun-0005gX-KL@debutante>
-References: <1518622745-12162-3-git-send-email-festevam@gmail.com>
+Date: Wed, 14 Feb 2018 16:28:16 +0000
+Message-ID: <E1elzuq-0005hQ-Nb@debutante>
+References: <1518622745-12162-2-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id CF61B267B53
- for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 17:28:15 +0100 (CET)
-In-Reply-To: <1518622745-12162-3-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6373D267B6C
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 17:28:19 +0100 (CET)
+In-Reply-To: <1518622745-12162-2-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Charles Keepax <ckeepax@opensource.cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-dapm: Use empty struct initializer
+   ASoC: wm9713: Use empty struct initializer
 
 has been applied to the asoc tree at
 
@@ -53,44 +53,39 @@ to this mail.
 Thanks,
 Mark
 
->From 33d9245c6092336420c67f761b3bdcdd6c7c1d5d Mon Sep 17 00:00:00 2001
+>From 91cd00083d734258bf293dcf76793e2348be391a Mon Sep 17 00:00:00 2001
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Wed, 14 Feb 2018 13:39:05 -0200
-Subject: [PATCH] ASoC: soc-dapm: Use empty struct initializer
+Date: Wed, 14 Feb 2018 13:39:04 -0200
+Subject: [PATCH] ASoC: wm9713: Use empty struct initializer
 
-{ NULL } only clears the first member of the structure.
+{ 0 } only clears the first member of the structure.
 
-Even though the first member of the snd_soc_dapm_update struct is a
-pointer,it is more robust to use the empty struct initializer that
-clears all the struct members.
+The first member of the snd_soc_dapm_update struct is a pointer,
+and writing 0 to a pointer results in a sparse warning.
 
+Use the empty struct initializer that clears all the struct members
+and fixes the sparse warning.
+
+Cc: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm9713.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 92894d9cac19..2f34590bcb72 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3165,7 +3165,7 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
- 	unsigned int invert = mc->invert;
- 	unsigned int val, rval = 0;
- 	int connect, rconnect = -1, change, reg_change = 0;
--	struct snd_soc_dapm_update update = { NULL };
+diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
+index df7220656d98..093be043c1b0 100644
+--- a/sound/soc/codecs/wm9713.c
++++ b/sound/soc/codecs/wm9713.c
+@@ -235,7 +235,7 @@ static int wm9713_hp_mixer_put(struct snd_kcontrol *kcontrol,
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+ 	unsigned int mixer, mask, shift, old;
+-	struct snd_soc_dapm_update update = { 0 };
 +	struct snd_soc_dapm_update update = {};
- 	int ret = 0;
+ 	bool change;
  
- 	val = (ucontrol->value.integer.value[0] & mask);
-@@ -3292,7 +3292,7 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
- 	unsigned int *item = ucontrol->value.enumerated.item;
- 	unsigned int val, change, reg_change = 0;
- 	unsigned int mask;
--	struct snd_soc_dapm_update update = { NULL };
-+	struct snd_soc_dapm_update update = {};
- 	int ret = 0;
- 
- 	if (item[0] >= e->items)
+ 	mixer = mc->shift >> 8;
 -- 
 2.16.1
