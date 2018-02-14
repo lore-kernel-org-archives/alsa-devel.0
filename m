@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak4642: don't have .use_pmdown_time" to
+Subject: Applied "ASoC: ak4613: don't have .use_pmdown_time" to
 	the asoc tree
-Date: Wed, 14 Feb 2018 13:29:41 +0000
-Message-ID: <E1elx81-000783-HE@debutante>
-References: <87o9ksb7ip.wl%kuninori.morimoto.gx@renesas.com>
+Date: Wed, 14 Feb 2018 13:29:44 +0000
+Message-ID: <E1elx84-000790-Kw@debutante>
+References: <87po58b7ja.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DDAF4267B39
- for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 14:29:43 +0100 (CET)
-In-Reply-To: <87o9ksb7ip.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E18F2267B3B
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 14:29:46 +0100 (CET)
+In-Reply-To: <87po58b7ja.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak4642: don't have .use_pmdown_time
+   ASoC: ak4613: don't have .use_pmdown_time
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From fe439c7c377920d608678db9a6724d6ec91f4cda Mon Sep 17 00:00:00 2001
+>From 36372922847c8686971bd714f24ca64558dff467 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 14 Feb 2018 03:01:46 +0000
-Subject: [PATCH] ASoC: ak4642: don't have .use_pmdown_time
+Date: Wed, 14 Feb 2018 03:01:24 +0000
+Subject: [PATCH] ASoC: ak4613: don't have .use_pmdown_time
 
 snd_soc_runtime_ignore_pmdown_time() returns "ignore pmdown time"
 decision. Then, it collects each component driver's .use_pmdown_time
@@ -65,24 +65,24 @@ But, ak4613 has no reason to ignore/use pmdown time.
 Thus, It should has use_pmdown_time=0, it means it doesn't have
 decision right of "ignore pmdown time".
 
-Otherwise, ak4642 paired driver's pmdown_time settings doesn't
+Otherwise, ak4613 paired driver's pmdown_time settings doesn't
 have meaning. In other words, "ignore pmdown time" is determined
 irrespective of the value of paired driver's settings
-(= ignore will be 0 by ak4642).
+(= ignore will be 0 by ak4613).
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4642.c | 1 -
+ sound/soc/codecs/ak4613.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
-index 9c35e91d412d..605055964529 100644
---- a/sound/soc/codecs/ak4642.c
-+++ b/sound/soc/codecs/ak4642.c
-@@ -562,7 +562,6 @@ static const struct snd_soc_component_driver soc_component_dev_ak4642 = {
- 	.dapm_routes		= ak4642_intercon,
- 	.num_dapm_routes	= ARRAY_SIZE(ak4642_intercon),
+diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
+index a7b1e3a1ec58..8523ff9351cf 100644
+--- a/sound/soc/codecs/ak4613.c
++++ b/sound/soc/codecs/ak4613.c
+@@ -610,7 +610,6 @@ static const struct snd_soc_component_driver soc_component_dev_ak4613 = {
+ 	.dapm_routes		= ak4613_intercon,
+ 	.num_dapm_routes	= ARRAY_SIZE(ak4613_intercon),
  	.idle_bias_on		= 1,
 -	.use_pmdown_time	= 1,
  	.endianness		= 1,
