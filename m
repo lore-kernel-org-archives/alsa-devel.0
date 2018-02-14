@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm9712: Use empty struct initializer"
-	to the asoc tree
-Date: Wed, 14 Feb 2018 13:29:38 +0000
-Message-ID: <E1elx7y-00077F-EE@debutante>
-References: <1518550536-16279-1-git-send-email-festevam@gmail.com>
+Subject: Applied "ASoC: ak4642: don't have .use_pmdown_time" to
+	the asoc tree
+Date: Wed, 14 Feb 2018 13:29:41 +0000
+Message-ID: <E1elx81-000783-HE@debutante>
+References: <87o9ksb7ip.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F985267B2F
- for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 14:29:40 +0100 (CET)
-In-Reply-To: <1518550536-16279-1-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DDAF4267B39
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 14:29:43 +0100 (CET)
+In-Reply-To: <87o9ksb7ip.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm9712: Use empty struct initializer
+   ASoC: ak4642: don't have .use_pmdown_time
 
 has been applied to the asoc tree at
 
@@ -53,39 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From 60edb2006030894a4e45c84b04369cb70939d695 Mon Sep 17 00:00:00 2001
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Tue, 13 Feb 2018 17:37:50 -0200
-Subject: [PATCH] ASoC: wm9712: Use empty struct initializer
+>From fe439c7c377920d608678db9a6724d6ec91f4cda Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 14 Feb 2018 03:01:46 +0000
+Subject: [PATCH] ASoC: ak4642: don't have .use_pmdown_time
 
-{ 0 } only clears the first member of the structure.
+snd_soc_runtime_ignore_pmdown_time() returns "ignore pmdown time"
+decision. Then, it collects each component driver's .use_pmdown_time
+settings by using AND operation.
+But, ak4613 has no reason to ignore/use pmdown time.
+Thus, It should has use_pmdown_time=0, it means it doesn't have
+decision right of "ignore pmdown time".
 
-The first member of the snd_soc_dapm_update struct is a pointer,
-and writing 0 to a pointer results in the following sparse warning:
+Otherwise, ak4642 paired driver's pmdown_time settings doesn't
+have meaning. In other words, "ignore pmdown time" is determined
+irrespective of the value of paired driver's settings
+(= ignore will be 0 by ak4642).
 
-sound/soc/codecs/wm9712.c:229:47: warning: Using plain integer as NULL pointer
-
-Use the empty struct initializer that clears all the struct members
-and fixes the sparse warning.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm9712.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/ak4642.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index 4f6d1a442bc4..c672d5d88827 100644
---- a/sound/soc/codecs/wm9712.c
-+++ b/sound/soc/codecs/wm9712.c
-@@ -226,7 +226,7 @@ static int wm9712_hp_mixer_put(struct snd_kcontrol *kcontrol,
- 	struct soc_mixer_control *mc =
- 		(struct soc_mixer_control *)kcontrol->private_value;
- 	unsigned int mixer, mask, shift, old;
--	struct snd_soc_dapm_update update = { 0 };
-+	struct snd_soc_dapm_update update = {};
- 	bool change;
- 
- 	mixer = mc->shift >> 8;
+diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
+index 9c35e91d412d..605055964529 100644
+--- a/sound/soc/codecs/ak4642.c
++++ b/sound/soc/codecs/ak4642.c
+@@ -562,7 +562,6 @@ static const struct snd_soc_component_driver soc_component_dev_ak4642 = {
+ 	.dapm_routes		= ak4642_intercon,
+ 	.num_dapm_routes	= ARRAY_SIZE(ak4642_intercon),
+ 	.idle_bias_on		= 1,
+-	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+ 	.non_legacy_dai_naming	= 1,
+ };
 -- 
 2.16.1
