@@ -1,26 +1,16 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH 2/3] ASoC: wm9713: Use empty struct
-	initializer
-Date: Wed, 14 Feb 2018 15:19:25 -0200
-Message-ID: <CAOMZO5BmUD_+MZJ9s_mXvgurDAi6ZrM2eit2Z6hJCoGf476L9Q@mail.gmail.com>
-References: <1518622745-12162-1-git-send-email-festevam@gmail.com>
- <1518622745-12162-2-git-send-email-festevam@gmail.com>
- <938aa54c-c599-9efc-e78f-4e72db08199e@opensource.cirrus.com>
- <CAOMZO5BS9oiDPT3oEK7ROhetJcHmfWL+XGZsY9ncMJsB9Qcbww@mail.gmail.com>
- <52f37612-1e70-33d7-f4c9-e1221e6667fd@opensource.cirrus.com>
- <CAOMZO5ASMYzPg4j2LfHqmVZ6VsE6094N2_rfkquoME2vj9Ab7w@mail.gmail.com>
- <86924c5f-9f62-8d38-3a24-86e40b8cb843@opensource.cirrus.com>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ASoC: TSCS42xx: make const array norm_addrs
+	static, reduces object code size
+Date: Wed, 14 Feb 2018 17:21:53 +0000
+Message-ID: <20180214172153.5749-1-colin.king@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f65.google.com (mail-oi0-f65.google.com
- [209.85.218.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 09392267B6D
- for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 18:19:26 +0100 (CET)
-Received: by mail-oi0-f65.google.com with SMTP id b3so17042866oib.11
- for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 09:19:26 -0800 (PST)
-In-Reply-To: <86924c5f-9f62-8d38-3a24-86e40b8cb843@opensource.cirrus.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id EBC0B267B6D
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 18:22:00 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,22 +20,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 14, 2018 at 3:15 PM, Richard Fitzgerald
-<rf@opensource.cirrus.com> wrote:
+From: Colin Ian King <colin.king@canonical.com>
 
-> I gather that, so I'd have liked to your commit message to have said that.
-> But what you actually said was
->
-> "{ 0 } only clears the first member of the structure."
->
-> which is a very different message.
+Don't populate the const array norm_addrs on the stack, instead make it
+static.  Makes the object code smaller by over 230 bytes.  Also re-format
+array data as the insertion of the static keywork made the first line
+overly long.
 
-Got it. Maybe I should have written like this instead:
+Before:
+   text	   data	    bss	    dec	    hex	filename
+  53780	  34752	    256	  88788	  15ad4	linux/sound/soc/codecs/tscs42xx.o
 
-"{ 0 } only clears explicitly the first member of the structure."
+After:
+   text	   data	    bss	    dec	    hex	filename
+  53461	  34840	    256	  88557	  159ed	linux/sound/soc/codecs/tscs42xx.o
 
-Thanks for the feedback.
+(gcc version 7.2.0 x86_64)
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/codecs/tscs42xx.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/codecs/tscs42xx.c b/sound/soc/codecs/tscs42xx.c
+index e7661d0315e6..205a55a0329e 100644
+--- a/sound/soc/codecs/tscs42xx.c
++++ b/sound/soc/codecs/tscs42xx.c
+@@ -1317,11 +1317,13 @@ static struct snd_soc_codec_driver soc_codec_dev_tscs42xx = {
+ 
+ static inline void init_coeff_ram_cache(struct tscs42xx *tscs42xx)
+ {
+-	const u8 norm_addrs[] = { 0x00, 0x05, 0x0a, 0x0f, 0x14, 0x19, 0x1f,
+-		0x20, 0x25, 0x2a, 0x2f, 0x34, 0x39, 0x3f, 0x40, 0x45, 0x4a,
+-		0x4f, 0x54, 0x59, 0x5f, 0x60, 0x65, 0x6a, 0x6f, 0x74, 0x79,
+-		0x7f, 0x80, 0x85, 0x8c, 0x91, 0x96, 0x97, 0x9c, 0xa3, 0xa8,
+-		0xad, 0xaf, 0xb0, 0xb5, 0xba, 0xbf, 0xc4, 0xc9, };
++	static const u8 norm_addrs[] = {
++		0x00, 0x05, 0x0a, 0x0f, 0x14, 0x19, 0x1f, 0x20, 0x25, 0x2a,
++		0x2f, 0x34, 0x39, 0x3f, 0x40, 0x45, 0x4a, 0x4f, 0x54, 0x59,
++		0x5f, 0x60, 0x65, 0x6a, 0x6f, 0x74, 0x79, 0x7f, 0x80, 0x85,
++		0x8c, 0x91, 0x96, 0x97, 0x9c, 0xa3, 0xa8, 0xad, 0xaf, 0xb0,
++		0xb5, 0xba, 0xbf, 0xc4, 0xc9,
++	};
+ 	u8 *coeff_ram = tscs42xx->coeff_ram;
+ 	int i;
+ 
+-- 
+2.15.1
