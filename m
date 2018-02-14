@@ -1,67 +1,71 @@
-From: Philippe Ombredanne <pombredanne@nexb.com>
-Subject: Re: [PATCH v3 1/2] ASoC: codecs: Add support for AK4458 DAC driver
-Date: Wed, 14 Feb 2018 22:35:04 +0100
-Message-ID: <CAOFm3uGJU+bVAkL-F9R6Xk05rSkNgt14YT7sXSZhdE2QkrH_Bg@mail.gmail.com>
-References: <1518614467-20613-1-git-send-email-cosmin.samoila@nxp.com> <1518614467-20613-2-git-send-email-cosmin.samoila@nxp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1518614467-20613-2-git-send-email-cosmin.samoila@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
-Cc: Mark <broonie@kernel.org>, ALSA <alsa-devel@alsa-project.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Rob Herring <robh@kernel.org>, mihai.serban@gmail.com, linux-imx@nxp.com, shegjiu.wang@nxp.com, daniel.baluta@nxp.com, LKML <linux-kernel@vger.kernel.org>, Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>, Mihai Serban <mihai.serban@nxp.com>, Shengjiu Wang <shengjiu.wang@nxp.com>
+From: Sebastian Reichel <sebastian.reichel-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
+Subject: [PATCHv4 0/4] Motorola Droid 4 Audio Support
+Date: Wed, 14 Feb 2018 23:07:37 +0100
+Message-ID: <20180214220741.28306-1-sebastian.reichel@collabora.co.uk>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sebastian Reichel <sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
+Cc: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Sebastian Reichel <sebastian.reichel-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 14, 2018 at 2:21 PM, Cosmin-Gabriel Samoila
-<cosmin.samoila@nxp.com> wrote:
-> The AK4458 is a 32-bit 8ch Premium DAC that corresponds
-> to a 768kHz PCM input and an 11.2MHz DSD input at maximum.
-> It supports I2S, DSD and TDM modes with 24 or 32 bit MSB
-> or 16, 24, 32 LSB formats. Its datasheet is available here:
-> https://www.akm.com/akm/en/file/datasheet/AK4458VN.pdf
->
-> Signed-off-by: Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>
-> Signed-off-by: Mihai Serban <mihai.serban@nxp.com>
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> Signed-off-by: Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
-> ---
+Hi,
 
-> --- /dev/null
-> +++ b/sound/soc/codecs/ak4458.c
-> @@ -0,0 +1,659 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Audio driver for AK4458 DAC
-> + *
-> + * Copyright (C) 2016 Asahi Kasei Microdevices Corporation
-> + * Copyright 2018 NXP
+This adds audio support to Motorola Droid 4. I dropped the
+regulator from the DT binding as requested by Mark.
 
-Thanks for using the proper SPDX tag here.... yet see my comments below.
+Tested:
+ - Playing via both DACs using Speaker, Earpiece, Headphone
+ - Recording using internal Mic
+ - Volume Controls
 
-<snip>
+Known not to work:
+ - 3.5mm detection support (requires closed source firmware,
+   needs further investigation)
+ - Modem / Bluetooth Audio (needs different DAI/I2S config)
 
-> +MODULE_AUTHOR("Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>");
-> +MODULE_AUTHOR("Mihai Serban <mihai.serban@nxp.com>");
-> +MODULE_DESCRIPTION("ASoC AK4458 DAC driver");
-> +MODULE_LICENSE("GPL");
+Changes since PATCHv3:
+ * Drop regulator from DT binding, request VAUDIO from
+   global regulator namespace instead
 
-This means GPL-2.0+ per module.h and therefore does not match your
-GPL-2.0 SPDX tag above.
-Go one way or the other, but not both way please.
+Changes since PATCHv2:
+ * Fix a whitespace issue
+ * Fix const notes Takashi provided
+ * Fix a DAPM route issue I accidently introduced in v2
 
-> diff --git a/sound/soc/codecs/ak4458.h b/sound/soc/codecs/ak4458.h
-> new file mode 100644
-> index 0000000..16d9d22
-> --- /dev/null
-> +++ b/sound/soc/codecs/ak4458.h
-> @@ -0,0 +1,86 @@
-> +// SPDX-License-Identifier: GPL-2.0
+Changes since PATCHv1:
+ * Add patch from Tony exporting soc_dpcm_runtime_update
+ * Integrate DT patch for vaudio initial mode
+ * Split dt-binding from codec patch and add Ack from Rob
+ * Fix CPCAP position in Kconfig/Makefile
+ * Avoid "err +=" constructs
+ * Simplify reset function
+ * Drop cpcap_audio_read/write helpers
+ * Do not use tertiary operator for mute register value
+ * Update Input Mux logic
+ * Switch from simple-audio-card to audio-graph-card
 
-As weird as it sounds the style should be plain /*
-SPDX-License-Identifier: GPL-2.0 /* here per [1]
+-- Sebastian
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/license-rules.rst
+Sebastian Reichel (4):
+  dt-bindings: sound: add motorola,cpcap-audio-codec
+  ASoC: codec: cpcap: new codec
+  ARM: dts: motorola-cpcap-mapphone: add audio-codec
+  ARM: dts: omap4-droid4: add soundcard
+
+ .../bindings/sound/motorola,cpcap-audio-codec.txt  |   17 +
+ arch/arm/boot/dts/motorola-cpcap-mapphone.dtsi     |    5 +
+ arch/arm/boot/dts/omap4-droid4-xt894.dts           |   84 ++
+ sound/soc/codecs/Kconfig                           |    5 +
+ sound/soc/codecs/Makefile                          |    2 +
+ sound/soc/codecs/cpcap.c                           | 1588 ++++++++++++++++++++
+ 6 files changed, 1701 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/motorola,cpcap-audio-codec.txt
+ create mode 100644 sound/soc/codecs/cpcap.c
 
 -- 
-Cordially
-Philippe Ombredanne
+2.15.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
