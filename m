@@ -1,21 +1,23 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: ASoC: rt5640,
- rt5651 jack-detect and BYT SST suspend/resume patches / status
- update
-Date: Wed, 14 Feb 2018 08:51:23 -0600
-Message-ID: <44a0f455-94b5-0c79-87d5-3b2dd2bee524@linux.intel.com>
-References: <98d557fa-0c5d-0955-0987-0b5dc6764282@redhat.com>
- <CAL9uMOGAMz9MT6rz2-RnwtJyKnpORGcTgJ0JNBVQzyqzaOkAjg@mail.gmail.com>
- <6d689bd8-99ae-3f48-139c-f08f6399f72f@redhat.com>
+From: Donglin Peng <dolinux.peng@gmail.com>
+Subject: Re: [PATCH v3] ASoC: use DEFINE_SHOW_ATTRIBUTE() to
+	decrease code duplication
+Date: Wed, 14 Feb 2018 22:52:42 +0800
+Message-ID: <CAErzpmtW897Xa5Q_zsu1ye8XAKCFhDw-rn4YzqfsgeMQj6DcCg@mail.gmail.com>
+References: <CAErzpmuxmrJszRz5_SZXPMkdU2UWNHChrnKjnHuCWZYrs4hgTA@mail.gmail.com>
+ <20180212114937.GA12976@sirena.org.uk>
+ <CAErzpmt+HhGkVoN199iPDmQx-1z3iS3waxYQ=oxvn14Bm0R5gg@mail.gmail.com>
+ <CAHp75Vey-RoLw9kWRg1mdz7-4vBcmOUmdLxjz067f3qjN_S3NA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id F2544266EDF
- for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 15:51:23 +0100 (CET)
-In-Reply-To: <6d689bd8-99ae-3f48-139c-f08f6399f72f@redhat.com>
-Content-Language: en-US
+Received: from mail-qk0-f169.google.com (mail-qk0-f169.google.com
+ [209.85.220.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4507266EDF
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 15:53:04 +0100 (CET)
+Received: by mail-qk0-f169.google.com with SMTP id c128so26925926qkb.4
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 06:53:03 -0800 (PST)
+In-Reply-To: <CAHp75Vey-RoLw9kWRg1mdz7-4vBcmOUmdLxjz067f3qjN_S3NA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,39 +27,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Carlo Caione <carlo@endlessm.com>
-Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-
->>> Carlo or Pierre-Louis can one of you check using e.g.
->>> the left + right speaker test in gnome-control-panel's
->>> sound config-applet if that left only goes to the left
->>> speaker and right only goes to the right speaker?
->>>
->>> My bytcr-rt5651 tablet has only one speaker, but I
->>> here sound for both the left and right speaker tests
->>> which suggests some right-to-left mixing is happening
->>> which we don't want on devices with stereo speakers.
->>> Could be there is some mixing happening outside of the
->>> codec on this tablet, still it would be good to test
->>> this.
->>
->> Just tested this and it works fine on my hardware.
-> 
-> Great, thank you.
-> 
-> Note I've seem the same magic mono mixing happening on a
-> CHT + rt5651 tablet I've also been testing on. It is weird
-> how the hardware seems to magically mix the left and
-> right channels to the mono speaker without explicitly
-> enabling that in the codec/mixer settings as one needs
-> to do for the rt5640 and rt5645. But hey if it works
-> it works :)
-
-The rt5651 does not have a built-in amplifier, it provides a line out 
-that is then fed into a discrete amplifier, the mixing could happen at 
-that level too.
-We use the rt5651 for validation with a line-out -> line-in loopback and 
-there is no issue with implicit mixing with the UCM files I pushed on my 
-github (evolved from Carlo's rework).
+On Wed, Feb 14, 2018 at 10:41 PM, Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Wed, Feb 14, 2018 at 4:39 PM, Donglin Peng <dolinux.peng@gmail.com> wrote:
+>> On Mon, Feb 12, 2018 at 7:49 PM, Mark Brown <broonie@kernel.org> wrote:
+>>> On Fri, Feb 09, 2018 at 11:10:55PM +0800, Donglin Peng wrote:
+>
+>> Hi Mark, do you know the way to disable gmail word wrap in plain text mode?
+>> I find that gmail will force to wrap word at 70 characters in plain text mode.
+>
+>> There is a connection error when I use git send-email to send the patch
+>> because I am using VPN.
+>
+> You may use SMTPS port (587 IIRC?) of Gmail to send a patch via git send-email.
+Thanks, I have sent it just now.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
