@@ -1,16 +1,19 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] ASoC: uniphier: fix an error code in
- uniphier_aio_comprdma_new()
-Date: Wed, 14 Feb 2018 10:15:31 +0300
-Message-ID: <20180214071531.GB26677@mwanda>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v3] ASoC: tlv320aic31xx: Fix master mode
+ clock I2S bus clocks
+Date: Wed, 14 Feb 2018 09:59:29 +0200
+Message-ID: <60173cf6-d134-dc79-f2f4-a9920857fb3a@ti.com>
+References: <20180213112801.32698-1-peter.ujfalusi@ti.com>
+ <10b1c3a2-5bf1-e1ff-4f1f-6278dd67352f@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp2130.oracle.com (userp2130.oracle.com [156.151.31.86])
- by alsa0.perex.cz (Postfix) with ESMTP id 58C1A26778B
- for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 08:15:44 +0100 (CET)
-Content-Disposition: inline
+Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id E7C1F26778B
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 08:58:59 +0100 (CET)
+In-Reply-To: <10b1c3a2-5bf1-e1ff-4f1f-6278dd67352f@ti.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,32 +23,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Mark Brown <broonie@kernel.org>
+To: Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, afd@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-The dma_mapping_error() returns true or false, but we want to return
--ENOMEM if there was an error.
-
-Fixes: e98131222ff9 ("ASoC: uniphier: add support for UniPhier AIO compress audio")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-diff --git a/sound/soc/uniphier/aio-compress.c b/sound/soc/uniphier/aio-compress.c
-index 7f7abe3ae99d..4751c8bdabec 100644
---- a/sound/soc/uniphier/aio-compress.c
-+++ b/sound/soc/uniphier/aio-compress.c
-@@ -54,12 +54,11 @@ static int uniphier_aio_comprdma_new(struct snd_soc_pcm_runtime *rtd)
- 		dma_dir = DMA_TO_DEVICE;
- 
- 	sub->compr_addr = dma_map_single(dev, sub->compr_area, size, dma_dir);
--	ret = dma_mapping_error(dev, sub->compr_addr);
--	if (ret) {
-+	if (dma_mapping_error(dev, sub->compr_addr)) {
- 		kfree(sub->compr_area);
- 		sub->compr_area = NULL;
- 
--		return ret;
-+		return -ENOMEM;
- 	}
- 
- 	sub->compr_bytes = size;
+CgpPbiAyMDE4LTAyLTEzIDE2OjQxLCBKeXJpIFNhcmhhIHdyb3RlOgo+PiAgc3RhdGljIGludCBh
+aWMzMXh4X2FkZF9jb250cm9scyhzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMpCj4+ICB7Cj4+
+ICAJaW50IHJldCA9IDA7Cj4+IEBAIC05MTYsNiArOTQwLDcgQEAgc3RhdGljIGludCBhaWMzMXh4
+X3NldF9kYWlfZm10KHN0cnVjdCBzbmRfc29jX2RhaSAqY29kZWNfZGFpLAo+PiAgCQkJICAgICAg
+IHVuc2lnbmVkIGludCBmbXQpCj4+ICB7Cj4+ICAJc3RydWN0IHNuZF9zb2NfY29kZWMgKmNvZGVj
+ID0gY29kZWNfZGFpLT5jb2RlYzsKPj4gKwlzdHJ1Y3QgYWljMzF4eF9wcml2ICphaWMzMXh4ID0g
+c25kX3NvY19jb2RlY19nZXRfZHJ2ZGF0YShjb2RlYyk7Cj4+ICAJdTggaWZhY2VfcmVnMSA9IDA7
+Cj4+ICAJdTggaWZhY2VfcmVnMiA9IDA7Cj4+ICAJdTggZHNwX2FfdmFsID0gMDsKPj4gQEAgLTk5
+Miw2ICsxMDE3LDI1IEBAIHN0YXRpYyBpbnQgYWljMzF4eF9zZXRfZGFpX2ZtdChzdHJ1Y3Qgc25k
+X3NvY19kYWkgKmNvZGVjX2RhaSwKPj4gIAkJCSAgICBBSUMzMVhYX0JDTEtJTlZfTUFTSywKPj4g
+IAkJCSAgICBpZmFjZV9yZWcyKTsKPj4gIAo+IAo+IEkgd291bGQgcHV0IGNvbnRlbnRzIG9mIHRo
+ZSBiZWxsb3cgaWYgc3RhdGVtZW50LCB3aXRoIHRoZQo+IGFpYzMxeHgtPm1hc3Rlcl9kYXBtX3Jv
+dXRlX2FwcGxpZWQgY2hlY2sgaW50byBhIHNlcGFyYXRlIGZ1bmN0aW9uIGFuZAo+IGNhbGwgaXQg
+ZnJvbSAic3dpdGNoIChmbXQgJiBTTkRfU09DX0RBSUZNVF9NQVNURVJfTUFTSykiLXN0YXRlbWVu
+dC4gQnV0Cj4gdGhhdCBpcyBhIG1hdHRlciBvZiB0YXN0ZSBhZnRlciBhbGwuCgpNb3ZpbmcgdG8g
+YSBuZXcgZnVuY3Rpb24gaXMgbm90IGEgYmFkIGlkZWEKCj4gQnV0IHNob3VsZG4ndCB3ZSByZW1v
+dmUgdGhlIHJvdXRlcyBpZiBTTkRfU09DX0RBSUZNVF9DQlNfQ0ZTIG1vZGUgaXMgdXNlZD8KCkVz
+cGVjaWFsbHkgaWYgd2UgaGFuZGxlIHRoZSB1bmxpa2VseSB0aGF0IHRoZSBjbG9jayByb2xlIGNh
+biBjaGFuZ2UgcnVudGltZS4KCj4gCj4+ICsJLyogQWRkIHRoZSBuZWVkZWQgREFQTSByb3V0ZShz
+KSBmb3IgY29kZWMgY2xvY2sgbWFzdGVyIG1vZGVzLCBvbmNlICovCj4+ICsJaWYgKGlmYWNlX3Jl
+ZzEgJiAoQUlDMzFYWF9CQ0xLX01BU1RFUiB8IEFJQzMxWFhfV0NMS19NQVNURVIpICYmCj4+ICsJ
+ICAgICFhaWMzMXh4LT5tYXN0ZXJfZGFwbV9yb3V0ZV9hcHBsaWVkKSB7Cj4+ICsJCXN0cnVjdCBz
+bmRfc29jX2RhcG1fY29udGV4dCAqZGFwbSA9IHNuZF9zb2NfY29kZWNfZ2V0X2RhcG0oY29kZWMp
+Owo+PiArCQlpbnQgcmV0Owo+PiArCj4+ICsJCXJldCA9IHNuZF9zb2NfZGFwbV9hZGRfcm91dGVz
+KGRhcG0sIGNvbW1vbjMxeHhfY21fYXVkaW9fbWFwLAo+PiArCQkJCQlBUlJBWV9TSVpFKGNvbW1v
+bjMxeHhfY21fYXVkaW9fbWFwKSk7Cj4+ICsJCWlmICghcmV0ICYmICEoYWljMzF4eC0+Y29kZWNf
+dHlwZSAmIERBQzMxWFhfQklUKSkKPj4gKwkJCXJldCA9IHNuZF9zb2NfZGFwbV9hZGRfcm91dGVz
+KGRhcG0sCj4+ICsJCQkJCWFpYzMxeHhfY21fYXVkaW9fbWFwLAo+PiArCQkJCQlBUlJBWV9TSVpF
+KGFpYzMxeHhfY21fYXVkaW9fbWFwKSk7Cj4+ICsKPj4gKwkJaWYgKHJldCkKPj4gKwkJCXJldHVy
+biByZXQ7Cj4+ICsKPj4gKwkJYWljMzF4eC0+bWFzdGVyX2RhcG1fcm91dGVfYXBwbGllZCA9IHRy
+dWU7Cj4+ICsJfQo+PiArCj4+ICAJcmV0dXJuIDA7Cj4+ICB9Cj4+ICAKPj4KPiAKPiAKCi0gUMOp
+dGVyCgpUZXhhcyBJbnN0cnVtZW50cyBGaW5sYW5kIE95LCBQb3Jra2FsYW5rYXR1IDIyLCAwMDE4
+MCBIZWxzaW5raS4KWS10dW5udXMvQnVzaW5lc3MgSUQ6IDA2MTU1MjEtNC4gS290aXBhaWtrYS9E
+b21pY2lsZTogSGVsc2lua2kKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
