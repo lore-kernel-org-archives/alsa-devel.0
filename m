@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: adau17x1: Use empty struct initializer"
-	to the asoc tree
-Date: Wed, 14 Feb 2018 16:28:19 +0000
-Message-ID: <E1elzut-0005iF-RR@debutante>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: Re: [PATCH 2/3] ASoC: wm9713: Use empty struct
+ initializer
+Date: Wed, 14 Feb 2018 16:41:18 +0000
+Message-ID: <938aa54c-c599-9efc-e78f-4e72db08199e@opensource.cirrus.com>
 References: <1518622745-12162-1-git-send-email-festevam@gmail.com>
+ <1518622745-12162-2-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A7F53267B6B
- for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 17:28:21 +0100 (CET)
-In-Reply-To: <1518622745-12162-1-git-send-email-festevam@gmail.com>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id E36A8266F0D
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 17:41:21 +0100 (CET)
+In-Reply-To: <1518622745-12162-2-git-send-email-festevam@gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,68 +24,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org
+To: Fabio Estevam <festevam@gmail.com>, broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 14/02/18 15:39, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@nxp.com>
+> 
+> { 0 } only clears the first member of the structure.
+> 
 
-   ASoC: adau17x1: Use empty struct initializer
+Not according to the C99 and C11 standards.
+C11 6.7.9.21 (C99 has the same statement):
 
-has been applied to the asoc tree at
+   If there are fewer initializers in a brace-enclosed list than
+   there are elements or members of an aggregate, or fewer characters
+   in a string literal used to initialize an array of known size than
+   there  are  elements in the array, the remainder of the aggregate
+   shall be initialized implicitly the same as objects that have static
+   storage duration.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+C11 6.7.9.10 defines that "objects that have static storage duration"
+shall be initialized to zero.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+So according to both C11 and C99 standards {0} should (and must) 
+initialize the entire structure to zero.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> The first member of the snd_soc_dapm_update struct is a pointer,
+> and writing 0 to a pointer results in a sparse warning.
+> 
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+This is the actual problem you are trying to fix? The comment about
+{ 0 } only clearing the first member is probably bogus, your actual
+problem is that it should have been { NULL } ?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+So the fix works (because of 6.7.9.21 quoted above) but the commit 
+message is incorrect/misleading about what the problem is and why
+this is a fix for it.
 
-Thanks,
-Mark
-
->From c90ef8c7419180ee873dd64e5ae162d32faca762 Mon Sep 17 00:00:00 2001
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Wed, 14 Feb 2018 13:39:03 -0200
-Subject: [PATCH] ASoC: adau17x1: Use empty struct initializer
-
-{ 0 } only clears the first member of the structure.
-
-The first member of the snd_soc_dapm_update struct is a pointer,
-and writing 0 to a pointer results in a sparse warning.
-
-Use the empty struct initializer that clears all the struct members
-and fixes the sparse warning.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/adau17x1.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
-index df3434982b43..80c2a06285bb 100644
---- a/sound/soc/codecs/adau17x1.c
-+++ b/sound/soc/codecs/adau17x1.c
-@@ -181,7 +181,7 @@ static int adau17x1_dsp_mux_enum_put(struct snd_kcontrol *kcontrol,
- 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
- 	struct adau *adau = snd_soc_component_get_drvdata(component);
- 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
--	struct snd_soc_dapm_update update = { 0 };
-+	struct snd_soc_dapm_update update = {};
- 	unsigned int stream = e->shift_l;
- 	unsigned int val, change;
- 	int reg;
--- 
-2.16.1
+> Use the empty struct initializer that clears all the struct members
+> and fixes the sparse warning.
+> 
+> Cc: Charles Keepax <ckeepax@opensource.cirrus.com>
+> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+> ---
+>   sound/soc/codecs/wm9713.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
+> index 3d6cf00..643863b 100644
+> --- a/sound/soc/codecs/wm9713.c
+> +++ b/sound/soc/codecs/wm9713.c
+> @@ -235,7 +235,7 @@ static int wm9713_hp_mixer_put(struct snd_kcontrol *kcontrol,
+>   	struct soc_mixer_control *mc =
+>   		(struct soc_mixer_control *)kcontrol->private_value;
+>   	unsigned int mixer, mask, shift, old;
+> -	struct snd_soc_dapm_update update = { 0 };
+> +	struct snd_soc_dapm_update update = {};
+>   	bool change;
+>   
+>   	mixer = mc->shift >> 8;
+> 
