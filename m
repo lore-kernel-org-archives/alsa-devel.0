@@ -1,94 +1,129 @@
-From: Benjamin Berg <bberg@redhat.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Limit mic boost on T480
-Date: Wed, 14 Feb 2018 16:41:29 +0100
-Message-ID: <1518622889.23539.65.camel@redhat.com>
-References: <20180214122939.10069-1-bberg@redhat.com>
-         <s5hr2pn6803.wl-tiwai@suse.de>
+From: Peng Donglin <dolinux.peng@outlook.com>
+Subject: [PATCH v4] ASoC: use DEFINE_SHOW_ATTRIBUTE() to
+ decrease code duplication
+Date: Wed, 14 Feb 2018 15:00:37 +0000
+Message-ID: <MAXPR01MB02838BBCEC21E8F31814C0BA83F50@MAXPR01MB0283.INDPRD01.PROD.OUTLOOK.COM>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hr2pn6803.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org, Peter FP1 Zhang <zhangfp1@lenovo.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from APC01-PU1-obe.outbound.protection.outlook.com
+ (mail-pu1apc01lp0019.outbound.protection.outlook.com [65.55.88.19])
+ by alsa0.perex.cz (Postfix) with ESMTP id 95156267B0E
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 16:00:42 +0100 (CET)
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA512
+There is some duplicate code in soc-core.c, and the kernel provides
+DEFINE_SHOW_ATTRIBUTE() helper macro to decrease it in seq_file.h.
 
-On Wed, 2018-02-14 at 14:00 +0100, Takashi Iwai wrote:
-> On Wed, 14 Feb 2018 13:29:39 +0100,
-> Benjamin Berg wrote:
-> > 
-> > The internal mic boost on the T480 is too high. Fix this by
-> > applying the
-> > ALC269_FIXUP_LIMIT_INT_MIC_BOOST fixup to the machine to limit the
-> > gain.
-> > 
-> > Signed-off-by: Benjamin Berg <bberg@redhat.com>
-> > Tested-by: Benjamin Berg <bberg@redhat.com>
-> 
-> Applying this quirk itself is OK, but just wonder whether this model
-> has a docking station port.  Recently we fixed the dock issue, and it
-> required to apply ALC298_FIXUP_TPT470_DOCK.
+Signed-off-by: Peng Donglin <dolinux.peng@gmail.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+---
+v4:
+ * resend patch using outlook email, because I can't disable gmail
+   word wrap in plain text mode
 
-I assumed that on the T480 and similar models the audio on the dock is
-connected through USB (the dock is USB-C + further pins), but I cannot
-confirm this myself right now as I only have a T480 currently.
+v3: [addressed comments from Andy]
+ * add missing tag
 
-I have now contacted Peter Zhang of Lenovo about this and also to check
-if other 80 series models may need the same fixup.
+v2: [addressed comments from Andy]
+ * modify code change description
+ * do not rename m -> s
 
-Benjamin
+---
+ sound/soc/soc-core.c | 45 ++++++---------------------------------------
+ 1 file changed, 6 insertions(+), 39 deletions(-)
 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> > ---
-> >  sound/pci/hda/patch_realtek.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/sound/pci/hda/patch_realtek.c
-> > b/sound/pci/hda/patch_realtek.c
-> > index ce28f7ce64e6..8467ce3db767 100644
-> > --- a/sound/pci/hda/patch_realtek.c
-> > +++ b/sound/pci/hda/patch_realtek.c
-> > @@ -6510,6 +6510,7 @@ static const struct snd_pci_quirk
-> > alc269_fixup_tbl[] = {
-> >  	SND_PCI_QUIRK(0x17aa, 0x224b, "Thinkpad",
-> > ALC298_FIXUP_TPT470_DOCK),
-> >  	SND_PCI_QUIRK(0x17aa, 0x224c, "Thinkpad",
-> > ALC298_FIXUP_TPT470_DOCK),
-> >  	SND_PCI_QUIRK(0x17aa, 0x224d, "Thinkpad",
-> > ALC298_FIXUP_TPT470_DOCK),
-> > +	SND_PCI_QUIRK(0x17aa, 0x225d, "Thinkpad T480",
-> > ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
-> >  	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO",
-> > ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
-> >  	SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO",
-> > ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
-> >  	SND_PCI_QUIRK(0x17aa, 0x310c, "ThinkCentre Station",
-> > ALC294_FIXUP_LENOVO_MIC_LOCATION),
-> > -- 
-> > 2.14.3
-> > 
-> > 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEED2NO4vMS33W8E4AFq6ZWhpmFY3AFAlqEWKkACgkQq6ZWhpmF
-Y3AEyQ/7B6l4Na1GLDf11P8OdzzcXOy6grjvrLYwq6WFA3M1DirlQsPwjSbnJ7V8
-znIX30EK6My9Ip6jyvJQIpiBlaX1FKJuJ3So9mjgUeOcCQMFkwnC1fMMyyWEAWLq
-TI1s7F5w4OQwhQpwtlId4AIB7A2ZzQmP/9YqfIPDtIiNJqjd9aRruBJi8A8j3sB5
-slY1CYgCQhBUiAkUPisFrt+b4aFU5FlgINQR+6uOSKO0/IaSKq9rFwX76lOTOsBj
-kHhywIF9Qef6CvUDaAOFWjQcTA/ooDPifUsfNzo6ZHnNZIks0Cov12JeO5UrxjiD
-a3BuG6SZAVm4awfkTj5pIL0DuBAXYhTJd/hU3VMWdV0/kb0OeVONSahMzhSOCM30
-WdFKpWC0+n3TEkTWSG9QGwL6wbXiaLNZ0JRgQkcoJ9JqPVngFf9LIRBzqdMyzyCE
-UzLu/oQ9XlXQrFx1IG5KS/RJJPUwpJKhXOygSpRZx/HhmaWpPVLCu9GNg+ytoVIL
-QEg381jOTTPi+DX0k07WYK+hUEvB83cbtsm+EiEGMa4bxuhYQp2p1moGqOrzv2XK
-iEN8LfF97KJ4GtqVWybnstxMxMdS0CwXBPxUZ3OY6C03S3sdVqk/QrEpE4i0+N8P
-CcX3g+rEJVUkpsdm17Sf5u4DjeGH7HBPsDmHirrwvFdeOkTiO4E=
-=NIZ6
------END PGP SIGNATURE-----
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 96c44f6..f372f34 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -349,7 +349,7 @@ static void soc_init_codec_debugfs(struct snd_soc_component *component)
+ 			"ASoC: Failed to create codec register debugfs file\n");
+ }
+ 
+-static int codec_list_seq_show(struct seq_file *m, void *v)
++static int codec_list_show(struct seq_file *m, void *v)
+ {
+ 	struct snd_soc_codec *codec;
+ 
+@@ -362,20 +362,9 @@ static int codec_list_seq_show(struct seq_file *m, void *v)
+ 
+ 	return 0;
+ }
++DEFINE_SHOW_ATTRIBUTE(codec_list);
+ 
+-static int codec_list_seq_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, codec_list_seq_show, NULL);
+-}
+-
+-static const struct file_operations codec_list_fops = {
+-	.open = codec_list_seq_open,
+-	.read = seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-};
+-
+-static int dai_list_seq_show(struct seq_file *m, void *v)
++static int dai_list_show(struct seq_file *m, void *v)
+ {
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_dai *dai;
+@@ -390,20 +379,9 @@ static int dai_list_seq_show(struct seq_file *m, void *v)
+ 
+ 	return 0;
+ }
++DEFINE_SHOW_ATTRIBUTE(dai_list);
+ 
+-static int dai_list_seq_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, dai_list_seq_show, NULL);
+-}
+-
+-static const struct file_operations dai_list_fops = {
+-	.open = dai_list_seq_open,
+-	.read = seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-};
+-
+-static int platform_list_seq_show(struct seq_file *m, void *v)
++static int platform_list_show(struct seq_file *m, void *v)
+ {
+ 	struct snd_soc_platform *platform;
+ 
+@@ -416,18 +394,7 @@ static int platform_list_seq_show(struct seq_file *m, void *v)
+ 
+ 	return 0;
+ }
+-
+-static int platform_list_seq_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, platform_list_seq_show, NULL);
+-}
+-
+-static const struct file_operations platform_list_fops = {
+-	.open = platform_list_seq_open,
+-	.read = seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-};
++DEFINE_SHOW_ATTRIBUTE(platform_list);
+ 
+ static void soc_init_card_debugfs(struct snd_soc_card *card)
+ {
+-- 
+2.7.4
