@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: remove legacy_dai_naming from
-	snd_soc_register_dais()" to the asoc tree
-Date: Wed, 14 Feb 2018 13:29:25 +0000
-Message-ID: <E1elx7l-000732-Vs@debutante>
-References: <87tvukb7ra.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc-core: soc_probe_dai() code
+	simplification" to the asoc tree
+Date: Wed, 14 Feb 2018 13:29:29 +0000
+Message-ID: <E1elx7p-00074W-32@debutante>
+References: <87sha4b7ow.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 380C1267B0C
- for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 14:29:29 +0100 (CET)
-In-Reply-To: <87tvukb7ra.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 55E27267B15
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 14:29:31 +0100 (CET)
+In-Reply-To: <87sha4b7ow.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: remove legacy_dai_naming from snd_soc_register_dais()
+   ASoC: soc-core: soc_probe_dai() code simplification
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,58 @@ to this mail.
 Thanks,
 Mark
 
->From a8768c52c511e92d9c9816cecaec4bca77da8a89 Mon Sep 17 00:00:00 2001
+>From 7a2ccad58106696b7909815cc7ab359ae2743bcc Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 14 Feb 2018 02:56:36 +0000
-Subject: [PATCH] ASoC: soc-core: remove legacy_dai_naming from
- snd_soc_register_dais()
+Date: Wed, 14 Feb 2018 02:58:03 +0000
+Subject: [PATCH] ASoC: soc-core: soc_probe_dai() code simplification
 
-We can get legacy dai name flag from component driver.
-Thus, there is no need to have its parameter on snd_soc_register_dais().
-Let's remove unneeded parameter
+Current soc_probe_dai() is using deep nested condition.
+Thus, it is difficult to read/understand.
+This patch simplification it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ sound/soc/soc-core.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 574048a73b1c..b928c59ea775 100644
+index 60a542f35dbd..574048a73b1c 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -3150,8 +3150,7 @@ static struct snd_soc_dai *soc_add_dai(struct snd_soc_component *component,
-  *                     parent's name.
-  */
- static int snd_soc_register_dais(struct snd_soc_component *component,
--	struct snd_soc_dai_driver *dai_drv, size_t count,
--	bool legacy_dai_naming)
-+				 struct snd_soc_dai_driver *dai_drv, size_t count)
- {
- 	struct device *dev = component->dev;
- 	struct snd_soc_dai *dai;
-@@ -3163,7 +3162,7 @@ static int snd_soc_register_dais(struct snd_soc_component *component,
- 	for (i = 0; i < count; i++) {
+@@ -1624,22 +1624,21 @@ static int soc_probe_link_components(struct snd_soc_card *card,
  
- 		dai = soc_add_dai(component, dai_drv + i,
--				count == 1 && legacy_dai_naming);
-+				  count == 1 && !component->driver->non_legacy_dai_naming);
- 		if (dai == NULL) {
- 			ret = -ENOMEM;
- 			goto err;
-@@ -3444,8 +3443,7 @@ int snd_soc_add_component(struct device *dev,
+ static int soc_probe_dai(struct snd_soc_dai *dai, int order)
+ {
+-	int ret;
++	if (dai->probed ||
++	    dai->driver->probe_order != order)
++		return 0;
+ 
+-	if (!dai->probed && dai->driver->probe_order == order) {
+-		if (dai->driver->probe) {
+-			ret = dai->driver->probe(dai);
+-			if (ret < 0) {
+-				dev_err(dai->dev,
+-					"ASoC: failed to probe DAI %s: %d\n",
+-					dai->name, ret);
+-				return ret;
+-			}
++	if (dai->driver->probe) {
++		int ret = dai->driver->probe(dai);
++		if (ret < 0) {
++			dev_err(dai->dev, "ASoC: failed to probe DAI %s: %d\n",
++				dai->name, ret);
++			return ret;
  		}
+-
+-		dai->probed = 1;
  	}
  
--	ret = snd_soc_register_dais(component, dai_drv, num_dai,
--				    !component_driver->non_legacy_dai_naming);
-+	ret = snd_soc_register_dais(component, dai_drv, num_dai);
- 	if (ret < 0) {
- 		dev_err(dev, "ASoC: Failed to register DAIs: %d\n", ret);
- 		goto err_cleanup;
++	dai->probed = 1;
++
+ 	return 0;
+ }
+ 
 -- 
 2.16.1
