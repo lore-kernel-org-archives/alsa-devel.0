@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung,tm2-audio DT binding documentation update" to the asoc tree
-Date: Wed, 14 Feb 2018 13:29:08 +0000
-Message-ID: <E1elx7U-0006r6-Ss@debutante>
-References: <20180205154403.13520-9-s.nawrocki@samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180205154403.13520-9-s.nawrocki@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>, Mark Brown <broonie@kernel.org>broonie@kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, jcsing.lee@samsung.com, lgirdwood@gmail.comkrzk@kernel.org, linux-kernel@vger.kernel.org, robh+dt@kernel.org, m.szyprowski@samsung.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: uniphier: fix an error code in uniphier_aio_comprdma_new()" to the asoc tree
+Date: Wed, 14 Feb 2018 13:29:32 +0000
+Message-ID: <E1elx7s-00075e-8E@debutante>
+References: <20180214071531.GB26677@mwanda>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <20180214071531.GB26677@mwanda>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, Mark Brown <broonie@kernel.org>Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung,tm2-audio DT binding documentation update
+   ASoC: uniphier: fix an error code in uniphier_aio_comprdma_new()
 
 has been applied to the asoc tree at
 
@@ -37,53 +37,42 @@ to this mail.
 Thanks,
 Mark
 
->From 3a3ac1ea898399f14748a358dd33262c97a9a86b Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Mon, 12 Feb 2018 17:15:36 +0100
-Subject: [PATCH] ASoC: samsung,tm2-audio DT binding documentation update
+>From 21957b5bf0ff607e6e0ed55a3a89454e969511ba Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Wed, 14 Feb 2018 10:15:31 +0300
+Subject: [PATCH] ASoC: uniphier: fix an error code in
+ uniphier_aio_comprdma_new()
 
-This patch documents additional entries of the audio-codec and
-i2s-controller properties required for the HDMI audio support.
+The dma_mapping_error() returns true or false, but we want to return
+-ENOMEM if there was an error.
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Fixes: e98131222ff9 ("ASoC: uniphier: add support for UniPhier AIO compress audio")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Tested-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/samsung,tm2-audio.txt        | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ sound/soc/uniphier/aio-compress.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt b/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
-index 94442e5673b3..f5ccc12ddc00 100644
---- a/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
-+++ b/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
-@@ -4,9 +4,13 @@ Required properties:
+diff --git a/sound/soc/uniphier/aio-compress.c b/sound/soc/uniphier/aio-compress.c
+index 7f7abe3ae99d..4751c8bdabec 100644
+--- a/sound/soc/uniphier/aio-compress.c
++++ b/sound/soc/uniphier/aio-compress.c
+@@ -54,12 +54,11 @@ static int uniphier_aio_comprdma_new(struct snd_soc_pcm_runtime *rtd)
+ 		dma_dir = DMA_TO_DEVICE;
  
-  - compatible		 : "samsung,tm2-audio"
-  - model		 : the user-visible name of this sound complex
-- - audio-codec		 : the phandle of the wm5110 audio codec node,
--			   as described in ../mfd/arizona.txt
-- - i2s-controller	 : the phandle of the I2S controller
-+ - audio-codec		 : the first entry should be phandle of the wm5110 audio
-+			   codec node, as described in ../mfd/arizona.txt;
-+			   the second entry should be phandle of the HDMI
-+			   transmitter node
-+ - i2s-controller	 : the list of phandle and argument tuples pointing to
-+			   I2S controllers, the first entry should be I2S0 and
-+			   the second one I2S1
-  - audio-amplifier	 : the phandle of the MAX98504 amplifier
-  - samsung,audio-routing : a list of the connections between audio components;
- 			   each entry is a pair of strings, the first being the
-@@ -22,8 +26,8 @@ Example:
+ 	sub->compr_addr = dma_map_single(dev, sub->compr_area, size, dma_dir);
+-	ret = dma_mapping_error(dev, sub->compr_addr);
+-	if (ret) {
++	if (dma_mapping_error(dev, sub->compr_addr)) {
+ 		kfree(sub->compr_area);
+ 		sub->compr_area = NULL;
  
- sound {
- 	compatible = "samsung,tm2-audio";
--	audio-codec = <&wm5110>;
--	i2s-controller = <&i2s0>;
-+	audio-codec = <&wm5110>, <&hdmi>;
-+	i2s-controller = <&i2s0 0>, <&i2s1 0>;
- 	audio-amplifier = <&max98504>;
- 	mic-bias-gpios = <&gpr3 2 0>;
- 	model = "wm5110";
+-		return ret;
++		return -ENOMEM;
+ 	}
+ 
+ 	sub->compr_bytes = size;
 -- 
 2.16.1
+
