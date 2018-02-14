@@ -1,73 +1,67 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ASoC: TSCS42xx: make const array norm_addrs
-	static, reduces object code size
-Date: Wed, 14 Feb 2018 17:21:53 +0000
-Message-ID: <20180214172153.5749-1-colin.king@canonical.com>
+From: Philippe Ombredanne <pombredanne@nexb.com>
+Subject: Re: [PATCH v3 1/2] ASoC: codecs: Add support for AK4458 DAC driver
+Date: Wed, 14 Feb 2018 22:35:04 +0100
+Message-ID: <CAOFm3uGJU+bVAkL-F9R6Xk05rSkNgt14YT7sXSZhdE2QkrH_Bg@mail.gmail.com>
+References: <1518614467-20613-1-git-send-email-cosmin.samoila@nxp.com> <1518614467-20613-2-git-send-email-cosmin.samoila@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id EBC0B267B6D
- for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 18:22:00 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1518614467-20613-2-git-send-email-cosmin.samoila@nxp.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
+Cc: Mark <broonie@kernel.org>, ALSA <alsa-devel@alsa-project.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Rob Herring <robh@kernel.org>, mihai.serban@gmail.com, linux-imx@nxp.com, shegjiu.wang@nxp.com, daniel.baluta@nxp.com, LKML <linux-kernel@vger.kernel.org>, Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>, Mihai Serban <mihai.serban@nxp.com>, Shengjiu Wang <shengjiu.wang@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, Feb 14, 2018 at 2:21 PM, Cosmin-Gabriel Samoila
+<cosmin.samoila@nxp.com> wrote:
+> The AK4458 is a 32-bit 8ch Premium DAC that corresponds
+> to a 768kHz PCM input and an 11.2MHz DSD input at maximum.
+> It supports I2S, DSD and TDM modes with 24 or 32 bit MSB
+> or 16, 24, 32 LSB formats. Its datasheet is available here:
+> https://www.akm.com/akm/en/file/datasheet/AK4458VN.pdf
+>
+> Signed-off-by: Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>
+> Signed-off-by: Mihai Serban <mihai.serban@nxp.com>
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> Signed-off-by: Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
+> ---
 
-Don't populate the const array norm_addrs on the stack, instead make it
-static.  Makes the object code smaller by over 230 bytes.  Also re-format
-array data as the insertion of the static keywork made the first line
-overly long.
+> --- /dev/null
+> +++ b/sound/soc/codecs/ak4458.c
+> @@ -0,0 +1,659 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Audio driver for AK4458 DAC
+> + *
+> + * Copyright (C) 2016 Asahi Kasei Microdevices Corporation
+> + * Copyright 2018 NXP
 
-Before:
-   text	   data	    bss	    dec	    hex	filename
-  53780	  34752	    256	  88788	  15ad4	linux/sound/soc/codecs/tscs42xx.o
+Thanks for using the proper SPDX tag here.... yet see my comments below.
 
-After:
-   text	   data	    bss	    dec	    hex	filename
-  53461	  34840	    256	  88557	  159ed	linux/sound/soc/codecs/tscs42xx.o
+<snip>
 
-(gcc version 7.2.0 x86_64)
+> +MODULE_AUTHOR("Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>");
+> +MODULE_AUTHOR("Mihai Serban <mihai.serban@nxp.com>");
+> +MODULE_DESCRIPTION("ASoC AK4458 DAC driver");
+> +MODULE_LICENSE("GPL");
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/codecs/tscs42xx.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+This means GPL-2.0+ per module.h and therefore does not match your
+GPL-2.0 SPDX tag above.
+Go one way or the other, but not both way please.
 
-diff --git a/sound/soc/codecs/tscs42xx.c b/sound/soc/codecs/tscs42xx.c
-index e7661d0315e6..205a55a0329e 100644
---- a/sound/soc/codecs/tscs42xx.c
-+++ b/sound/soc/codecs/tscs42xx.c
-@@ -1317,11 +1317,13 @@ static struct snd_soc_codec_driver soc_codec_dev_tscs42xx = {
- 
- static inline void init_coeff_ram_cache(struct tscs42xx *tscs42xx)
- {
--	const u8 norm_addrs[] = { 0x00, 0x05, 0x0a, 0x0f, 0x14, 0x19, 0x1f,
--		0x20, 0x25, 0x2a, 0x2f, 0x34, 0x39, 0x3f, 0x40, 0x45, 0x4a,
--		0x4f, 0x54, 0x59, 0x5f, 0x60, 0x65, 0x6a, 0x6f, 0x74, 0x79,
--		0x7f, 0x80, 0x85, 0x8c, 0x91, 0x96, 0x97, 0x9c, 0xa3, 0xa8,
--		0xad, 0xaf, 0xb0, 0xb5, 0xba, 0xbf, 0xc4, 0xc9, };
-+	static const u8 norm_addrs[] = {
-+		0x00, 0x05, 0x0a, 0x0f, 0x14, 0x19, 0x1f, 0x20, 0x25, 0x2a,
-+		0x2f, 0x34, 0x39, 0x3f, 0x40, 0x45, 0x4a, 0x4f, 0x54, 0x59,
-+		0x5f, 0x60, 0x65, 0x6a, 0x6f, 0x74, 0x79, 0x7f, 0x80, 0x85,
-+		0x8c, 0x91, 0x96, 0x97, 0x9c, 0xa3, 0xa8, 0xad, 0xaf, 0xb0,
-+		0xb5, 0xba, 0xbf, 0xc4, 0xc9,
-+	};
- 	u8 *coeff_ram = tscs42xx->coeff_ram;
- 	int i;
- 
+> diff --git a/sound/soc/codecs/ak4458.h b/sound/soc/codecs/ak4458.h
+> new file mode 100644
+> index 0000000..16d9d22
+> --- /dev/null
+> +++ b/sound/soc/codecs/ak4458.h
+> @@ -0,0 +1,86 @@
+> +// SPDX-License-Identifier: GPL-2.0
+
+As weird as it sounds the style should be plain /*
+SPDX-License-Identifier: GPL-2.0 /* here per [1]
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/license-rules.rst
+
 -- 
-2.15.1
+Cordially
+Philippe Ombredanne
