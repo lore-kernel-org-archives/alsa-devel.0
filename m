@@ -1,33 +1,49 @@
-From: Benjamin Berg <bberg@redhat.com>
-Subject: [PATCH] ALSA: hda/realtek: Limit mic boost on T480
-Date: Wed, 14 Feb 2018 13:29:39 +0100
-Message-ID: <20180214122939.10069-1-bberg@redhat.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Benjamin Berg <bberg@redhat.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v4] ASoC: tlv320aic31xx: Fix master mode
+ clock I2S bus clocks
+Date: Wed, 14 Feb 2018 14:31:39 +0200
+Message-ID: <944b202f-06fc-90f5-f8dd-50dc227a06ef@ti.com>
+References: <20180214081348.4322-1-peter.ujfalusi@ti.com>
+ <20180214115703.GB12658@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
+ by alsa0.perex.cz (Postfix) with ESMTP id 55469267A72
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 13:31:08 +0100 (CET)
+In-Reply-To: <20180214115703.GB12658@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, afd@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-The internal mic boost on the T480 is too high. Fix this by applying the
-ALC269_FIXUP_LIMIT_INT_MIC_BOOST fixup to the machine to limit the gain.
 
-Signed-off-by: Benjamin Berg <bberg@redhat.com>
-Tested-by: Benjamin Berg <bberg@redhat.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index ce28f7ce64e6..8467ce3db767 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6510,6 +6510,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x224b, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x224c, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x224d, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
-+	SND_PCI_QUIRK(0x17aa, 0x225d, "Thinkpad T480", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
- 	SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
- 	SND_PCI_QUIRK(0x17aa, 0x310c, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
--- 
-2.14.3
+On 2018-02-14 13:57, Mark Brown wrote:
+> On Wed, Feb 14, 2018 at 10:13:48AM +0200, Peter Ujfalusi wrote:
+>> In the reset state of the codec we do not have complete playback or capt=
+ure
+>> routes.
+> =
+
+> Unfortuanetly this conflicts with the CODEC to component transition
+> patches that went in just after the merge window - could you rebase on
+> my current tree please?
+
+Sure, sent v5 and at the same time tested the CODEC to component
+conversion ;)
+
+- P=E9ter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
