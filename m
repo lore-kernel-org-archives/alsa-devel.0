@@ -1,14 +1,16 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: seq: Fix racy pool initializations
-Date: Wed, 14 Feb 2018 07:52:41 +0100
-Message-ID: <20180214065241.26996-1-tiwai@suse.de>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] ASoC: uniphier: fix an error code in
+ uniphier_aio_comprdma_new()
+Date: Wed, 14 Feb 2018 10:15:31 +0300
+Message-ID: <20180214071531.GB26677@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E1A0267096
- for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 07:52:53 +0100 (CET)
+Received: from userp2130.oracle.com (userp2130.oracle.com [156.151.31.86])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58C1A26778B
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 08:15:44 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,43 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: =?UTF-8?q?=E8=8C=83=E9=BE=99=E9=A3=9E?= <long7573@126.com>
+To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-QUxTQSBzZXF1ZW5jZXIgY29yZSBpbml0aWFsaXplcyB0aGUgZXZlbnQgcG9vbCBvbiBkZW1hbmQg
-YnkgaW52b2tpbmcKc25kX3NlcV9wb29sX2luaXQoKSB3aGVuIHRoZSBmaXJzdCB3cml0ZSBoYXBw
-ZW5zIGFuZCB0aGUgcG9vbCBpcwplbXB0eS4gIE1lYW53aGlsZSB1c2VyIGNhbiByZXNldCB0aGUg
-cG9vbCBzaXplIG1hbnVhbGx5IHZpYSBpb2N0bApjb25jdXJyZW50bHksIGFuZCB0aGlzIG1heSBs
-ZWFkIHRvIFVBRiBvciBvdXQtb2YtYm91bmQgYWNjZXNzZXMgc2luY2UKdGhlIGZ1bmN0aW9uIHRy
-aWVzIHRvIHZtYWxsb2MgLyB2ZnJlZSB0aGUgYnVmZmVyLgoKQSBzaW1wbGUgZml4IGlzIHRvIGp1
-c3Qgd3JhcCB0aGUgc25kX3NlcV9wb29sX2luaXQoKSBjYWxsIHdpdGggdGhlCnJlY2VudGx5IGlu
-dHJvZHVjZWQgY2xpZW50LT5pb2N0bF9tdXRleDsgYXMgdGhlIGNhbGxzIGZvcgpzbmRfc2VxX3Bv
-b2xfaW5pdCgpIGZyb20gb3RoZXIgc2lkZSBhcmUgYWx3YXlzIHByb3RlY3RlZCB3aXRoIHRoaXMK
-bXV0ZXgsIHdlIGNhbiBhdm9pZCB0aGUgcmFjZS4KClJlcG9ydGVkLWJ5OiDojIPpvpnpo54gPGxv
-bmc3NTczQDEyNi5jb20+CkNjOiA8c3RhYmxlQHZnZXIua2VybmVsLm9yZz4KU2lnbmVkLW9mZi1i
-eTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgotLS0KIHNvdW5kL2NvcmUvc2VxL3NlcV9j
-bGllbnRtZ3IuYyB8IDggKysrKysrLS0KIDEgZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKyks
-IDIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvY29yZS9zZXEvc2VxX2NsaWVudG1n
-ci5jIGIvc291bmQvY29yZS9zZXEvc2VxX2NsaWVudG1nci5jCmluZGV4IDYwZGIzMjc4NWY2Mi4u
-MDRkNGRiNDRmYWU1IDEwMDY0NAotLS0gYS9zb3VuZC9jb3JlL3NlcS9zZXFfY2xpZW50bWdyLmMK
-KysrIGIvc291bmQvY29yZS9zZXEvc2VxX2NsaWVudG1nci5jCkBAIC0xMDAzLDcgKzEwMDMsNyBA
-QCBzdGF0aWMgc3NpemVfdCBzbmRfc2VxX3dyaXRlKHN0cnVjdCBmaWxlICpmaWxlLCBjb25zdCBj
-aGFyIF9fdXNlciAqYnVmLAogewogCXN0cnVjdCBzbmRfc2VxX2NsaWVudCAqY2xpZW50ID0gZmls
-ZS0+cHJpdmF0ZV9kYXRhOwogCWludCB3cml0dGVuID0gMCwgbGVuOwotCWludCBlcnIgPSAtRUlO
-VkFMOworCWludCBlcnI7CiAJc3RydWN0IHNuZF9zZXFfZXZlbnQgZXZlbnQ7CiAKIAlpZiAoIShz
-bmRfc2VxX2ZpbGVfZmxhZ3MoZmlsZSkgJiBTTkRSVl9TRVFfTEZMR19PVVRQVVQpKQpAQCAtMTAx
-OCwxMSArMTAxOCwxNSBAQCBzdGF0aWMgc3NpemVfdCBzbmRfc2VxX3dyaXRlKHN0cnVjdCBmaWxl
-ICpmaWxlLCBjb25zdCBjaGFyIF9fdXNlciAqYnVmLAogCiAJLyogYWxsb2NhdGUgdGhlIHBvb2wg
-bm93IGlmIHRoZSBwb29sIGlzIG5vdCBhbGxvY2F0ZWQgeWV0ICovIAogCWlmIChjbGllbnQtPnBv
-b2wtPnNpemUgPiAwICYmICFzbmRfc2VxX3dyaXRlX3Bvb2xfYWxsb2NhdGVkKGNsaWVudCkpIHsK
-LQkJaWYgKHNuZF9zZXFfcG9vbF9pbml0KGNsaWVudC0+cG9vbCkgPCAwKQorCQltdXRleF9sb2Nr
-KCZjbGllbnQtPmlvY3RsX211dGV4KTsKKwkJZXJyID0gc25kX3NlcV9wb29sX2luaXQoY2xpZW50
-LT5wb29sKTsKKwkJbXV0ZXhfdW5sb2NrKCZjbGllbnQtPmlvY3RsX211dGV4KTsKKwkJaWYgKGVy
-ciA8IDApCiAJCQlyZXR1cm4gLUVOT01FTTsKIAl9CiAKIAkvKiBvbmx5IHByb2Nlc3Mgd2hvbGUg
-ZXZlbnRzICovCisJZXJyID0gLUVJTlZBTDsKIAl3aGlsZSAoY291bnQgPj0gc2l6ZW9mKHN0cnVj
-dCBzbmRfc2VxX2V2ZW50KSkgewogCQkvKiBSZWFkIGluIHRoZSBldmVudCBoZWFkZXIgZnJvbSB0
-aGUgdXNlciAqLwogCQlsZW4gPSBzaXplb2YoZXZlbnQpOwotLSAKMi4xNS4xCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+The dma_mapping_error() returns true or false, but we want to return
+-ENOMEM if there was an error.
+
+Fixes: e98131222ff9 ("ASoC: uniphier: add support for UniPhier AIO compress audio")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+diff --git a/sound/soc/uniphier/aio-compress.c b/sound/soc/uniphier/aio-compress.c
+index 7f7abe3ae99d..4751c8bdabec 100644
+--- a/sound/soc/uniphier/aio-compress.c
++++ b/sound/soc/uniphier/aio-compress.c
+@@ -54,12 +54,11 @@ static int uniphier_aio_comprdma_new(struct snd_soc_pcm_runtime *rtd)
+ 		dma_dir = DMA_TO_DEVICE;
+ 
+ 	sub->compr_addr = dma_map_single(dev, sub->compr_area, size, dma_dir);
+-	ret = dma_mapping_error(dev, sub->compr_addr);
+-	if (ret) {
++	if (dma_mapping_error(dev, sub->compr_addr)) {
+ 		kfree(sub->compr_area);
+ 		sub->compr_area = NULL;
+ 
+-		return ret;
++		return -ENOMEM;
+ 	}
+ 
+ 	sub->compr_bytes = size;
