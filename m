@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: soc_probe_dai() code
-	simplification" to the asoc tree
-Date: Wed, 14 Feb 2018 13:29:29 +0000
-Message-ID: <E1elx7p-00074W-32@debutante>
-References: <87sha4b7ow.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: tlv320aic3x: Use empty struct
+	initializer" to the asoc tree
+Date: Wed, 14 Feb 2018 13:29:35 +0000
+Message-ID: <E1elx7v-00076R-BE@debutante>
+References: <1518550536-16279-2-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 55E27267B15
- for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 14:29:31 +0100 (CET)
-In-Reply-To: <87sha4b7ow.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 97D3B267B23
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 14:29:37 +0100 (CET)
+In-Reply-To: <1518550536-16279-2-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: soc_probe_dai() code simplification
+   ASoC: tlv320aic3x: Use empty struct initializer
 
 has been applied to the asoc tree at
 
@@ -53,58 +53,39 @@ to this mail.
 Thanks,
 Mark
 
->From 7a2ccad58106696b7909815cc7ab359ae2743bcc Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 14 Feb 2018 02:58:03 +0000
-Subject: [PATCH] ASoC: soc-core: soc_probe_dai() code simplification
+>From 68fb425baea14f5647743eb56dc6675fcd8d93b3 Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Date: Tue, 13 Feb 2018 17:37:51 -0200
+Subject: [PATCH] ASoC: tlv320aic3x: Use empty struct initializer
 
-Current soc_probe_dai() is using deep nested condition.
-Thus, it is difficult to read/understand.
-This patch simplification it.
+{ 0 } only clears the first member of the structure.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+The first member of the snd_soc_dapm_update struct is a pointer,
+and writing 0 to a pointer results in the following sparse warning:
+
+sound/soc/codecs/tlv320aic3x.c:175:47: warning: Using plain integer as NULL pointer
+
+Use the empty struct initializer that clears all the struct members
+and fixes the sparse warning.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+ sound/soc/codecs/tlv320aic3x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 60a542f35dbd..574048a73b1c 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1624,22 +1624,21 @@ static int soc_probe_link_components(struct snd_soc_card *card,
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index dbfa0d8f11a3..6a271e6e6b8f 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -172,7 +172,7 @@ static int snd_soc_dapm_put_volsw_aic3x(struct snd_kcontrol *kcontrol,
+ 	unsigned int mask = (1 << fls(max)) - 1;
+ 	unsigned int invert = mc->invert;
+ 	unsigned short val;
+-	struct snd_soc_dapm_update update = { 0 };
++	struct snd_soc_dapm_update update = {};
+ 	int connect, change;
  
- static int soc_probe_dai(struct snd_soc_dai *dai, int order)
- {
--	int ret;
-+	if (dai->probed ||
-+	    dai->driver->probe_order != order)
-+		return 0;
- 
--	if (!dai->probed && dai->driver->probe_order == order) {
--		if (dai->driver->probe) {
--			ret = dai->driver->probe(dai);
--			if (ret < 0) {
--				dev_err(dai->dev,
--					"ASoC: failed to probe DAI %s: %d\n",
--					dai->name, ret);
--				return ret;
--			}
-+	if (dai->driver->probe) {
-+		int ret = dai->driver->probe(dai);
-+		if (ret < 0) {
-+			dev_err(dai->dev, "ASoC: failed to probe DAI %s: %d\n",
-+				dai->name, ret);
-+			return ret;
- 		}
--
--		dai->probed = 1;
- 	}
- 
-+	dai->probed = 1;
-+
- 	return 0;
- }
- 
+ 	val = (ucontrol->value.integer.value[0] & mask);
 -- 
 2.16.1
