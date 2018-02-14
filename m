@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "sgtl5000: change digital_mute policy" to the
-	asoc tree
-Date: Wed, 14 Feb 2018 15:37:55 +0000
-Message-ID: <E1elz87-0003qc-OG@debutante>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH 1/3] ASoC: adau17x1: Use empty struct
+	initializer
+Date: Wed, 14 Feb 2018 13:39:03 -0200
+Message-ID: <1518622745-12162-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F919267194
- for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 16:37:56 +0100 (CET)
-In-Reply-To: 
+Received: from mail-qk0-f193.google.com (mail-qk0-f193.google.com
+ [209.85.220.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C23D4267194
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 16:39:12 +0100 (CET)
+Received: by mail-qk0-f193.google.com with SMTP id i184so16041676qkf.10
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 07:39:12 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,86 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Michal Oleszczyk <oleszczyk.m@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
-   sgtl5000: change digital_mute policy
+{ 0 } only clears the first member of the structure.
 
-has been applied to the asoc tree at
+The first member of the snd_soc_dapm_update struct is a pointer,
+and writing 0 to a pointer results in a sparse warning.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Use the empty struct initializer that clears all the struct members
+and fixes the sparse warning.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From c5489f9fc053c744c609f34b32efca395cc2fdad Mon Sep 17 00:00:00 2001
-From: Michal Oleszczyk <oleszczyk.m@gmail.com>
-Date: Fri, 2 Feb 2018 13:10:29 +0100
-Subject: [PATCH] sgtl5000: change digital_mute policy
-
-Current implementation mute codec in global way (DAC block).
-That means when user routes sound not from I2S but from
-AUX source (LINE_IN) it also will be muted by alsa core.
-This should not happen.
-
-Signed-off-by: Michal Oleszczyk <oleszczyk.m@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 ---
- sound/soc/codecs/sgtl5000.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ sound/soc/codecs/adau17x1.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index e1ab5537d27a..c445a0794a27 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -529,10 +529,15 @@ static const struct snd_kcontrol_new sgtl5000_snd_controls[] = {
- static int sgtl5000_digital_mute(struct snd_soc_dai *codec_dai, int mute)
- {
- 	struct snd_soc_codec *codec = codec_dai->codec;
--	u16 adcdac_ctrl = SGTL5000_DAC_MUTE_LEFT | SGTL5000_DAC_MUTE_RIGHT;
-+	u16 i2s_pwr = SGTL5000_I2S_IN_POWERUP;
- 
--	snd_soc_update_bits(codec, SGTL5000_CHIP_ADCDAC_CTRL,
--			adcdac_ctrl, mute ? adcdac_ctrl : 0);
-+	/*
-+	 * During 'digital mute' do not mute DAC
-+	 * because LINE_IN would be muted aswell. We want to mute
-+	 * only I2S block - this can be done by powering it off
-+	 */
-+	snd_soc_update_bits(codec, SGTL5000_CHIP_DIG_POWER,
-+			i2s_pwr, mute ? 0 : i2s_pwr);
- 
- 	return 0;
- }
-@@ -1237,6 +1242,10 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
- 	 */
- 	snd_soc_write(codec, SGTL5000_DAP_CTRL, 0);
- 
-+	/* Unmute DAC after start */
-+	snd_soc_update_bits(codec, SGTL5000_CHIP_ADCDAC_CTRL,
-+		SGTL5000_DAC_MUTE_LEFT | SGTL5000_DAC_MUTE_RIGHT, 0);
-+
- 	return 0;
- 
- err:
+diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
+index df34349..80c2a06 100644
+--- a/sound/soc/codecs/adau17x1.c
++++ b/sound/soc/codecs/adau17x1.c
+@@ -181,7 +181,7 @@ static int adau17x1_dsp_mux_enum_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+ 	struct adau *adau = snd_soc_component_get_drvdata(component);
+ 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+-	struct snd_soc_dapm_update update = { 0 };
++	struct snd_soc_dapm_update update = {};
+ 	unsigned int stream = e->shift_l;
+ 	unsigned int val, change;
+ 	int reg;
 -- 
-2.16.1
+2.7.4
