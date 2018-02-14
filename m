@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: use DEFINE_SHOW_ATTRIBUTE() to decrease code duplication" to the asoc tree
-Date: Wed, 14 Feb 2018 15:19:26 +0000
-Message-ID: <E1elyqE-0002KT-59@debutante>
-References: <1518619687-31442-1-git-send-email-dolinux.peng@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1518619687-31442-1-git-send-email-dolinux.peng@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peng Donglin <dolinux.peng@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, andy.shevchenko@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "sgtl5000: change digital_mute policy" to the
+	asoc tree
+Date: Wed, 14 Feb 2018 15:37:55 +0000
+Message-ID: <E1elz87-0003qc-OG@debutante>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F919267194
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 16:37:56 +0100 (CET)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Michal Oleszczyk <oleszczyk.m@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: use DEFINE_SHOW_ATTRIBUTE() to decrease code duplication
+   sgtl5000: change digital_mute policy
 
 has been applied to the asoc tree at
 
@@ -37,100 +52,55 @@ to this mail.
 Thanks,
 Mark
 
->From 658829d5f40f764d708e544dd85061ef3c3110fd Mon Sep 17 00:00:00 2001
-From: Peng Donglin <dolinux.peng@gmail.com>
-Date: Wed, 14 Feb 2018 22:48:07 +0800
-Subject: [PATCH] ASoC: use DEFINE_SHOW_ATTRIBUTE() to decrease code
- duplication
+>From c5489f9fc053c744c609f34b32efca395cc2fdad Mon Sep 17 00:00:00 2001
+From: Michal Oleszczyk <oleszczyk.m@gmail.com>
+Date: Fri, 2 Feb 2018 13:10:29 +0100
+Subject: [PATCH] sgtl5000: change digital_mute policy
 
-There is some duplicate code in soc-core.c, and the kernel provides
-DEFINE_SHOW_ATTRIBUTE() helper macro to decrease it in seq_file.h.
+Current implementation mute codec in global way (DAC block).
+That means when user routes sound not from I2S but from
+AUX source (LINE_IN) it also will be muted by alsa core.
+This should not happen.
 
-Signed-off-by: Peng Donglin <dolinux.peng@gmail.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Michal Oleszczyk <oleszczyk.m@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 45 ++++++---------------------------------------
- 1 file changed, 6 insertions(+), 39 deletions(-)
+ sound/soc/codecs/sgtl5000.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b928c59ea775..a2c9aa473324 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -349,7 +349,7 @@ static void soc_init_codec_debugfs(struct snd_soc_component *component)
- 			"ASoC: Failed to create codec register debugfs file\n");
- }
- 
--static int codec_list_seq_show(struct seq_file *m, void *v)
-+static int codec_list_show(struct seq_file *m, void *v)
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index e1ab5537d27a..c445a0794a27 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -529,10 +529,15 @@ static const struct snd_kcontrol_new sgtl5000_snd_controls[] = {
+ static int sgtl5000_digital_mute(struct snd_soc_dai *codec_dai, int mute)
  {
- 	struct snd_soc_codec *codec;
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+-	u16 adcdac_ctrl = SGTL5000_DAC_MUTE_LEFT | SGTL5000_DAC_MUTE_RIGHT;
++	u16 i2s_pwr = SGTL5000_I2S_IN_POWERUP;
  
-@@ -362,20 +362,9 @@ static int codec_list_seq_show(struct seq_file *m, void *v)
+-	snd_soc_update_bits(codec, SGTL5000_CHIP_ADCDAC_CTRL,
+-			adcdac_ctrl, mute ? adcdac_ctrl : 0);
++	/*
++	 * During 'digital mute' do not mute DAC
++	 * because LINE_IN would be muted aswell. We want to mute
++	 * only I2S block - this can be done by powering it off
++	 */
++	snd_soc_update_bits(codec, SGTL5000_CHIP_DIG_POWER,
++			i2s_pwr, mute ? 0 : i2s_pwr);
  
  	return 0;
  }
-+DEFINE_SHOW_ATTRIBUTE(codec_list);
+@@ -1237,6 +1242,10 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
+ 	 */
+ 	snd_soc_write(codec, SGTL5000_DAP_CTRL, 0);
  
--static int codec_list_seq_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, codec_list_seq_show, NULL);
--}
--
--static const struct file_operations codec_list_fops = {
--	.open = codec_list_seq_open,
--	.read = seq_read,
--	.llseek = seq_lseek,
--	.release = single_release,
--};
--
--static int dai_list_seq_show(struct seq_file *m, void *v)
-+static int dai_list_show(struct seq_file *m, void *v)
- {
- 	struct snd_soc_component *component;
- 	struct snd_soc_dai *dai;
-@@ -390,20 +379,9 @@ static int dai_list_seq_show(struct seq_file *m, void *v)
- 
++	/* Unmute DAC after start */
++	snd_soc_update_bits(codec, SGTL5000_CHIP_ADCDAC_CTRL,
++		SGTL5000_DAC_MUTE_LEFT | SGTL5000_DAC_MUTE_RIGHT, 0);
++
  	return 0;
- }
-+DEFINE_SHOW_ATTRIBUTE(dai_list);
  
--static int dai_list_seq_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, dai_list_seq_show, NULL);
--}
--
--static const struct file_operations dai_list_fops = {
--	.open = dai_list_seq_open,
--	.read = seq_read,
--	.llseek = seq_lseek,
--	.release = single_release,
--};
--
--static int platform_list_seq_show(struct seq_file *m, void *v)
-+static int platform_list_show(struct seq_file *m, void *v)
- {
- 	struct snd_soc_platform *platform;
- 
-@@ -416,18 +394,7 @@ static int platform_list_seq_show(struct seq_file *m, void *v)
- 
- 	return 0;
- }
--
--static int platform_list_seq_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, platform_list_seq_show, NULL);
--}
--
--static const struct file_operations platform_list_fops = {
--	.open = platform_list_seq_open,
--	.read = seq_read,
--	.llseek = seq_lseek,
--	.release = single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(platform_list);
- 
- static void soc_init_card_debugfs(struct snd_soc_card *card)
- {
+ err:
 -- 
 2.16.1
