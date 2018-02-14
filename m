@@ -1,17 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4] ASoC: use DEFINE_SHOW_ATTRIBUTE() to
- decrease code duplication
-Date: Wed, 14 Feb 2018 14:53:43 +0000
-Message-ID: <20180214145343.GC12658@sirena.org.uk>
-References: <1518619687-31442-1-git-send-email-dolinux.peng@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: ASoC: rt5640,
+ rt5651 jack-detect and BYT SST suspend/resume patches / status
+ update
+Date: Wed, 14 Feb 2018 15:54:16 +0100
+Message-ID: <006845ca-357d-6407-2fb4-8dd1e79353be@redhat.com>
+References: <98d557fa-0c5d-0955-0987-0b5dc6764282@redhat.com>
+ <CAL9uMOGAMz9MT6rz2-RnwtJyKnpORGcTgJ0JNBVQzyqzaOkAjg@mail.gmail.com>
+ <6d689bd8-99ae-3f48-139c-f08f6399f72f@redhat.com>
+ <44a0f455-94b5-0c79-87d5-3b2dd2bee524@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3587023336820050375=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D09DB266EDF
- for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 15:53:49 +0100 (CET)
-In-Reply-To: <1518619687-31442-1-git-send-email-dolinux.peng@gmail.com>
+Received: from mail-wm0-f53.google.com (mail-wm0-f53.google.com [74.125.82.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E6E2267B0E
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 15:54:18 +0100 (CET)
+Received: by mail-wm0-f53.google.com with SMTP id a84so11882949wmi.5
+ for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2018 06:54:18 -0800 (PST)
+In-Reply-To: <44a0f455-94b5-0c79-87d5-3b2dd2bee524@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +28,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peng Donglin <dolinux.peng@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com, andy.shevchenko@gmail.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Carlo Caione <carlo@endlessm.com>
+Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============3587023336820050375==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="eRtJSFbw+EEWtPj3"
-Content-Disposition: inline
+On 14-02-18 15:51, Pierre-Louis Bossart wrote:
+> 
+>>>> Carlo or Pierre-Louis can one of you check using e.g.
+>>>> the left + right speaker test in gnome-control-panel's
+>>>> sound config-applet if that left only goes to the left
+>>>> speaker and right only goes to the right speaker?
+>>>>
+>>>> My bytcr-rt5651 tablet has only one speaker, but I
+>>>> here sound for both the left and right speaker tests
+>>>> which suggests some right-to-left mixing is happening
+>>>> which we don't want on devices with stereo speakers.
+>>>> Could be there is some mixing happening outside of the
+>>>> codec on this tablet, still it would be good to test
+>>>> this.
+>>>
+>>> Just tested this and it works fine on my hardware.
+>>
+>> Great, thank you.
+>>
+>> Note I've seem the same magic mono mixing happening on a
+>> CHT + rt5651 tablet I've also been testing on. It is weird
+>> how the hardware seems to magically mix the left and
+>> right channels to the mono speaker without explicitly
+>> enabling that in the codec/mixer settings as one needs
+>> to do for the rt5640 and rt5645. But hey if it works
+>> it works :)
+> 
+> The rt5651 does not have a built-in amplifier, it provides a line out that is then fed into a discrete amplifier, the mixing could happen at that level too.
 
+Yes I think that that is what is happening, thank you for your answer.
 
---eRtJSFbw+EEWtPj3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Regards,
 
-On Wed, Feb 14, 2018 at 10:48:07PM +0800, Peng Donglin wrote:
-
-> v4:
->  * resend patch using outlook email, because I can't disable gmail
->    word wrap in plain text mode
-
-Using Outlook for better interaction with the lists!
-
---eRtJSFbw+EEWtPj3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqETXYACgkQJNaLcl1U
-h9AWlQf/ZEIZR5EylU+Ppdk+R0Kup2ILGSJDd95heYvzEUzbbaowKDJoc4lOpTGd
-YT1fNhgniw02uRLfeKUGMvf9cjsICRtYk4of4UA/g4ycmqo/9m6uLMKmDsIQ7ML7
-aywjQYZrHmQYEeavKdu6m+85SIfrDIoEjyC0lCo3pMKlHfwpHQZ0gOdcSikCgU7v
-AgnZh/Of1lnm8nUxNlXyD0guoDPDjegidypwogtpMEuNEBaozzzW7SiqWdd6bk2O
-sn1p53mMwR/+2rdIn05fuyKkR2zBLO9rs1QUc1PzGWEQAtjH1ELSGrUdTlIhsRA/
-PQzONzvWNDqvoy8K2DPW+8j/9QAiaQ==
-=xT2v
------END PGP SIGNATURE-----
-
---eRtJSFbw+EEWtPj3--
-
---===============3587023336820050375==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3587023336820050375==--
+Hans
