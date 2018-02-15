@@ -1,91 +1,40 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH v2] ASoC: sgtl5000: Fix suspend/resume
-Date: Thu, 15 Feb 2018 16:36:49 -0200
-Message-ID: <1518719809-14987-1-git-send-email-festevam@gmail.com>
+From: Tim Harvey <tharvey@gateworks.com>
+Subject: Re: [PATCH v13 7/8] ARM: dts: imx: Add TDA19971 HDMI Receiver to GW54xx
+Date: Thu, 15 Feb 2018 13:19:17 -0800
+Message-ID: <CAJ+vNU3G9bJ16npp22O=7k72Pf3xSuQxW-CA2p5cbDq-nSZ4ew@mail.gmail.com>
+References: <1518717336-6271-1-git-send-email-tharvey@gateworks.com>
+ <1518717336-6271-8-git-send-email-tharvey@gateworks.com> <7732637c-93bf-fac2-5553-695782890254@xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f195.google.com (mail-qk0-f195.google.com
- [209.85.220.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 0CC67267D3E
- for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2018 19:36:51 +0100 (CET)
-Received: by mail-qk0-f195.google.com with SMTP id g2so748487qkd.12
- for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2018 10:36:51 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, eric@nelint.com, alsa-devel@alsa-project.org, max.krummenacher@toradex.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <7732637c-93bf-fac2-5553-695782890254@xs4all.nl>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Hans Verkuil <hverkuil@xs4all.nl>, Shawn Guo <shawnguo@kernel.org>
+Cc: linux-media <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Steve Longerbeam <slongerbeam@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@nxp.com>
+On Thu, Feb 15, 2018 at 10:36 AM, Hans Verkuil <hverkuil@xs4all.nl> wrote:
+> On 15/02/18 18:55, Tim Harvey wrote:
+>> The GW54xx has a front-panel microHDMI connector routed to a TDA19971
+>> which is connected the the IPU CSI when using IMX6Q.
+>
+> I assume that this and the next patch go through another subsystem for arm
+> and/or imx?
+>
+> Regards,
+>
+>         Hans
+>
 
-Commit 8419caa72702 ("ASoC: sgtl5000: Do not disable regulators in
-SND_SOC_BIAS_OFF") causes the sgtl5000 to fail after a suspend/resume
-sequence:
+Hans,
 
-# aplay /media/a2002011001-e02.wav
-Playing WAVE '/media/a2002011001-e02.wav' : Signed 16 bit Little
-Endian, Rate 44100 Hz, Stereo
-aplay: pcm_write:2051: write error: Input/output error
+Yes - Shawn should pick up the two dts patches:
+0007-ARM-dts-imx-Add-TDA19971-HDMI-Receiver-to-GW54xx.patch
+0008-ARM-dts-imx-Add-TDA19971-HDMI-Receiver-to-GW551x.patch
 
-The problem is caused by the fact that the aforementioned commit
-dropped the cache handling, so re-introduce the register map
-resync to fix the problem.
+Shawn you've seen these before but haven't ack'd them - are they good
+to merge to your imx tree?
 
-Suggested-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
----
-Changes since v1:
-- Re-introduce cache handling (Mark).
+Regards,
 
-Mark,
-
-If this gets applied into next, then I can generate the
-fixes for the 4.9 and 4.14 stable versions later.
-
-Thanks
-
- sound/soc/codecs/sgtl5000.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index c26ac22..7514c77 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -871,15 +871,26 @@ static int sgtl5000_pcm_hw_params(struct snd_pcm_substream *substream,
- static int sgtl5000_set_bias_level(struct snd_soc_component *component,
- 				   enum snd_soc_bias_level level)
- {
-+	struct sgtl5000_priv *sgtl = snd_soc_component_get_drvdata(component);
-+	int ret;
-+
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
- 	case SND_SOC_BIAS_PREPARE:
- 	case SND_SOC_BIAS_STANDBY:
-+		regcache_cache_only(sgtl->regmap, false);
-+		ret = regcache_sync(sgtl->regmap);
-+		if (ret) {
-+			regcache_cache_only(sgtl->regmap, true);
-+			return ret;
-+		}
-+
- 		snd_soc_component_update_bits(component, SGTL5000_CHIP_ANA_POWER,
- 				    SGTL5000_REFTOP_POWERUP,
- 				    SGTL5000_REFTOP_POWERUP);
- 		break;
- 	case SND_SOC_BIAS_OFF:
-+		regcache_cache_only(sgtl->regmap, true);
- 		snd_soc_component_update_bits(component, SGTL5000_CHIP_ANA_POWER,
- 				    SGTL5000_REFTOP_POWERUP, 0);
- 		break;
--- 
-2.7.4
+Tim
