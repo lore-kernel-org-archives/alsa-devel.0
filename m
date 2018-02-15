@@ -1,173 +1,105 @@
-From: Matthias Kaehlcke <mka-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Subject: Re: [PATCH] ASoC: dmic: Add optional wakeup delay
-Date: Wed, 14 Feb 2018 18:44:22 -0800
-Message-ID: <20180215024422.GA99727@google.com>
+Date: Thu, 15 Feb 2018 09:42:01 +0200
+Message-ID: <7c9d5202-bcac-f989-6be2-f286de15a5de@ti.com>
 References: <20180214235156.81589-1-mka@chromium.org>
- <20180215002253.GA12697@rodete-desktop-imager.corp.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20180215002253.GA12697-rgVyoJUnxu4fQXCR9C5MjtfHHWVUegAGYJqu5kTmcBRl57MIdRCFDg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Brian Norris <briannorris-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, huang lin <hl-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B9FB266EB0
+ for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2018 08:41:31 +0100 (CET)
+In-Reply-To: <20180214235156.81589-1-mka@chromium.org>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Matthias Kaehlcke <mka@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, huang lin <hl@rock-chips.com>, Brian Norris <briannorris@chromium.org>, linux-kernel@vger.kernel.org, Dylan Reid <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-El Wed, Feb 14, 2018 at 04:22:54PM -0800 Brian Norris ha dit:
-
-> Hi Matthias,
-> 
-> On Wed, Feb 14, 2018 at 03:51:56PM -0800, Matthias Kaehlcke wrote:
-> > On some systems a delay is needed after switching on the clocks, to allow
-> > the DMIC output to stabilize and avoid a popping noise at the beginning
-> > of the recording. Add the optional device tree property 'wakeup-delay-ms'
-> > and apply the specified delay in the new dmic_daiops_prepare().
-> > 
-> > Signed-off-by: Matthias Kaehlcke <mka-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-> > ---
-> >  .../devicetree/bindings/sound/dmic.txt        |  2 +
-> >  sound/soc/codecs/dmic.c                       | 54 ++++++++++++++-----
-> >  2 files changed, 42 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/sound/dmic.txt b/Documentation/devicetree/bindings/sound/dmic.txt
-> > index 54c8ef6498a8..de741c6609d0 100644
-> > --- a/Documentation/devicetree/bindings/sound/dmic.txt
-> > +++ b/Documentation/devicetree/bindings/sound/dmic.txt
-> > @@ -7,10 +7,12 @@ Required properties:
-> >  
-> >  Optional properties:
-> >  	- dmicen-gpios: GPIO specifier for dmic to control start and stop
-> > +	- wakeup-delay-ms: Delay (in ms) after enabling the DMIC
-> >  
-> >  Example node:
-> >  
-> >  	dmic_codec: dmic@0 {
-> >  		compatible = "dmic-codec";
-> >  		dmicen-gpios = <&gpio4 3 GPIO_ACTIVE_HIGH>;
-> > +		wakeup-delay-ms <50>;
-> >  	};
-> > diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
-> > index b88a1ee66f80..11f6abf11074 100644
-> > --- a/sound/soc/codecs/dmic.c
-> > +++ b/sound/soc/codecs/dmic.c
-> > @@ -19,6 +19,7 @@
-> >   *
-> >   */
-> >  
-> > +#include <linux/delay.h>
-> >  #include <linux/gpio.h>
-> >  #include <linux/gpio/consumer.h>
-> >  #include <linux/platform_device.h>
-> > @@ -29,24 +30,38 @@
-> >  #include <sound/soc.h>
-> >  #include <sound/soc-dapm.h>
-> >  
-> > +struct dmic {
-> > +	struct gpio_desc *gpio_en;
-> > +	int wakeup_delay;
-> > +};
-> > +
-> > +static int dmic_daiops_prepare(struct snd_pcm_substream *substream,
-> > +				struct snd_soc_dai *dai)
-> > +{
-> > +	struct dmic *dmic = snd_soc_dai_get_drvdata(dai);
-> > +
-> > +	if (dmic->gpio_en)
-> > +		gpiod_set_value(dmic->gpio_en, 1);
-> > +
-> > +	if (dmic->wakeup_delay)
-> > +		msleep(dmic->wakeup_delay);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  static int dmic_daiops_trigger(struct snd_pcm_substream *substream,
-> >  		int cmd, struct snd_soc_dai *dai)
-> >  {
-> > -	struct gpio_desc *dmic_en = snd_soc_dai_get_drvdata(dai);
-> > +	struct dmic *dmic = snd_soc_dai_get_drvdata(dai);
-> >  
-> > -	if (!dmic_en)
-> > +	if (!dmic->gpio_en)
-> >  		return 0;
-> >  
-> >  	switch (cmd) {
-> > -	case SNDRV_PCM_TRIGGER_START:
-> > -	case SNDRV_PCM_TRIGGER_RESUME:
-> > -	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> > -		gpiod_set_value(dmic_en, 1);
-> > -		break;
-> >  	case SNDRV_PCM_TRIGGER_STOP:
-> >  	case SNDRV_PCM_TRIGGER_SUSPEND:
-> >  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> > -		gpiod_set_value(dmic_en, 0);
-> > +		gpiod_set_value(dmic->gpio_en, 0);
-> >  		break;
-> 
-> N00b question: are you sure this is legit? Is it possible to get
-> START/STOP/START (or similar) with no prepare() in between?
-
-To be honest I can't answer this question with authority and have to
-defer it to the experts.
-
-> >  	}
-> >  
-> > @@ -54,6 +69,7 @@ static int dmic_daiops_trigger(struct snd_pcm_substream *substream,
-> >  }
-> >  
-> >  static const struct snd_soc_dai_ops dmic_dai_ops = {
-> > +	.prepare	= dmic_daiops_prepare,
-> >  	.trigger	= dmic_daiops_trigger,
-> >  };
-> >  
-> > @@ -73,14 +89,24 @@ static struct snd_soc_dai_driver dmic_dai = {
-> >  
-> >  static int dmic_codec_probe(struct snd_soc_codec *codec)
-> >  {
-> > -	struct gpio_desc *dmic_en;
-> > +	struct dmic *dmic;
-> > +	int err;
-> > +
-> > +	dmic = devm_kzalloc(codec->dev, sizeof(*dmic), GFP_KERNEL);
-> > +	if (!dmic)
-> > +		return -ENOMEM;
-> > +
-> > +	dmic->gpio_en = devm_gpiod_get_optional(codec->dev,
-> > +						"dmicen", GPIOD_OUT_LOW);
-> > +	if (IS_ERR(dmic->gpio_en))
-> > +		return PTR_ERR(dmic->gpio_en);
-> >  
-> > -	dmic_en = devm_gpiod_get_optional(codec->dev,
-> > -					"dmicen", GPIOD_OUT_LOW);
-> > -	if (IS_ERR(dmic_en))
-> > -		return PTR_ERR(dmic_en);
-> > +	err = device_property_read_u32(codec->dev, "wakeup-delay-ms",
-> > +				       &dmic->wakeup_delay);
-> > +	if (err && (err != -EINVAL))
-> 
-> You really want to be strict about error codes? What about -ENXIO ("no
-> suitable firmware interface is present")? Seems like we should ignore
-> that one too.
-> 
-> In practice, it looks like many drivers that are reading optional
-> properties like this just tend to ignore the return code entirely.
-
-Ok, let's follow the common practice for optional properties
-then. I'll update it in v2.
-
-Thanks
-
-Matthias
-
-> > +		return err;
-> >  
-> > -	snd_soc_codec_set_drvdata(codec, dmic_en);
-> > +	snd_soc_codec_set_drvdata(codec, dmic);
-> >  
-> >  	return 0;
-> >  }
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+CgpPbiAyMDE4LTAyLTE1IDAxOjUxLCBNYXR0aGlhcyBLYWVobGNrZSB3cm90ZToKPiBPbiBzb21l
+IHN5c3RlbXMgYSBkZWxheSBpcyBuZWVkZWQgYWZ0ZXIgc3dpdGNoaW5nIG9uIHRoZSBjbG9ja3Ms
+IHRvIGFsbG93Cj4gdGhlIERNSUMgb3V0cHV0IHRvIHN0YWJpbGl6ZSBhbmQgYXZvaWQgYSBwb3Bw
+aW5nIG5vaXNlIGF0IHRoZSBiZWdpbm5pbmcKPiBvZiB0aGUgcmVjb3JkaW5nLiBBZGQgdGhlIG9w
+dGlvbmFsIGRldmljZSB0cmVlIHByb3BlcnR5ICd3YWtldXAtZGVsYXktbXMnCj4gYW5kIGFwcGx5
+IHRoZSBzcGVjaWZpZWQgZGVsYXkgaW4gdGhlIG5ldyBkbWljX2RhaW9wc19wcmVwYXJlKCkuCj4g
+Cj4gU2lnbmVkLW9mZi1ieTogTWF0dGhpYXMgS2FlaGxja2UgPG1rYUBjaHJvbWl1bS5vcmc+Cj4g
+LS0tCj4gIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2RtaWMudHh0ICAgICAgICB8ICAy
+ICsKPiAgc291bmQvc29jL2NvZGVjcy9kbWljLmMgICAgICAgICAgICAgICAgICAgICAgIHwgNTQg
+KysrKysrKysrKysrKystLS0tLQo+ICAyIGZpbGVzIGNoYW5nZWQsIDQyIGluc2VydGlvbnMoKyks
+IDE0IGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRy
+ZWUvYmluZGluZ3Mvc291bmQvZG1pYy50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
+ZGluZ3Mvc291bmQvZG1pYy50eHQKPiBpbmRleCA1NGM4ZWY2NDk4YTguLmRlNzQxYzY2MDlkMCAx
+MDA2NDQKPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvZG1p
+Yy50eHQKPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvZG1p
+Yy50eHQKPiBAQCAtNywxMCArNywxMiBAQCBSZXF1aXJlZCBwcm9wZXJ0aWVzOgo+ICAKPiAgT3B0
+aW9uYWwgcHJvcGVydGllczoKPiAgCS0gZG1pY2VuLWdwaW9zOiBHUElPIHNwZWNpZmllciBmb3Ig
+ZG1pYyB0byBjb250cm9sIHN0YXJ0IGFuZCBzdG9wCj4gKwktIHdha2V1cC1kZWxheS1tczogRGVs
+YXkgKGluIG1zKSBhZnRlciBlbmFibGluZyB0aGUgRE1JQwo+ICAKPiAgRXhhbXBsZSBub2RlOgo+
+ICAKPiAgCWRtaWNfY29kZWM6IGRtaWNAMCB7Cj4gIAkJY29tcGF0aWJsZSA9ICJkbWljLWNvZGVj
+IjsKPiAgCQlkbWljZW4tZ3Bpb3MgPSA8JmdwaW80IDMgR1BJT19BQ1RJVkVfSElHSD47Cj4gKwkJ
+d2FrZXVwLWRlbGF5LW1zIDw1MD47Cj4gIAl9Owo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29k
+ZWNzL2RtaWMuYyBiL3NvdW5kL3NvYy9jb2RlY3MvZG1pYy5jCj4gaW5kZXggYjg4YTFlZTY2Zjgw
+Li4xMWY2YWJmMTEwNzQgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2NvZGVjcy9kbWljLmMKPiAr
+KysgYi9zb3VuZC9zb2MvY29kZWNzL2RtaWMuYwo+IEBAIC0xOSw2ICsxOSw3IEBACj4gICAqCj4g
+ICAqLwo+ICAKPiArI2luY2x1ZGUgPGxpbnV4L2RlbGF5Lmg+Cj4gICNpbmNsdWRlIDxsaW51eC9n
+cGlvLmg+Cj4gICNpbmNsdWRlIDxsaW51eC9ncGlvL2NvbnN1bWVyLmg+Cj4gICNpbmNsdWRlIDxs
+aW51eC9wbGF0Zm9ybV9kZXZpY2UuaD4KPiBAQCAtMjksMjQgKzMwLDM4IEBACj4gICNpbmNsdWRl
+IDxzb3VuZC9zb2MuaD4KPiAgI2luY2x1ZGUgPHNvdW5kL3NvYy1kYXBtLmg+Cj4gIAo+ICtzdHJ1
+Y3QgZG1pYyB7Cj4gKwlzdHJ1Y3QgZ3Bpb19kZXNjICpncGlvX2VuOwo+ICsJaW50IHdha2V1cF9k
+ZWxheTsKPiArfTsKPiArCj4gK3N0YXRpYyBpbnQgZG1pY19kYWlvcHNfcHJlcGFyZShzdHJ1Y3Qg
+c25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKPiArCQkJCXN0cnVjdCBzbmRfc29jX2RhaSAq
+ZGFpKQo+ICt7Cj4gKwlzdHJ1Y3QgZG1pYyAqZG1pYyA9IHNuZF9zb2NfZGFpX2dldF9kcnZkYXRh
+KGRhaSk7Cj4gKwo+ICsJaWYgKGRtaWMtPmdwaW9fZW4pCj4gKwkJZ3Bpb2Rfc2V0X3ZhbHVlKGRt
+aWMtPmdwaW9fZW4sIDEpOwoKWW91IGRvbid0IG5lZWQgdGhlICdpZiAoZG1pYy0+Z3Bpb19lbikn
+Cgo+ICsKPiArCWlmIChkbWljLT53YWtldXBfZGVsYXkpCj4gKwkJbXNsZWVwKGRtaWMtPndha2V1
+cF9kZWxheSk7Cj4gKwo+ICsJcmV0dXJuIDA7Cj4gK30KPiArCj4gIHN0YXRpYyBpbnQgZG1pY19k
+YWlvcHNfdHJpZ2dlcihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKPiAgCQlp
+bnQgY21kLCBzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSkKPiAgewo+IC0Jc3RydWN0IGdwaW9fZGVz
+YyAqZG1pY19lbiA9IHNuZF9zb2NfZGFpX2dldF9kcnZkYXRhKGRhaSk7Cj4gKwlzdHJ1Y3QgZG1p
+YyAqZG1pYyA9IHNuZF9zb2NfZGFpX2dldF9kcnZkYXRhKGRhaSk7Cj4gIAo+IC0JaWYgKCFkbWlj
+X2VuKQo+ICsJaWYgKCFkbWljLT5ncGlvX2VuKQo+ICAJCXJldHVybiAwOwo+ICAKPiAgCXN3aXRj
+aCAoY21kKSB7Cj4gLQljYXNlIFNORFJWX1BDTV9UUklHR0VSX1NUQVJUOgo+IC0JY2FzZSBTTkRS
+Vl9QQ01fVFJJR0dFUl9SRVNVTUU6Cj4gLQljYXNlIFNORFJWX1BDTV9UUklHR0VSX1BBVVNFX1JF
+TEVBU0U6Cj4gLQkJZ3Bpb2Rfc2V0X3ZhbHVlKGRtaWNfZW4sIDEpOwo+IC0JCWJyZWFrOwo+ICAJ
+Y2FzZSBTTkRSVl9QQ01fVFJJR0dFUl9TVE9QOgo+ICAJY2FzZSBTTkRSVl9QQ01fVFJJR0dFUl9T
+VVNQRU5EOgo+ICAJY2FzZSBTTkRSVl9QQ01fVFJJR0dFUl9QQVVTRV9QVVNIOgo+IC0JCWdwaW9k
+X3NldF92YWx1ZShkbWljX2VuLCAwKTsKPiArCQlncGlvZF9zZXRfdmFsdWUoZG1pYy0+Z3Bpb19l
+biwgMCk7Cj4gIAkJYnJlYWs7Cj4gIAl9CgpXaGF0IGlmIGluc3RlYWQgb2YgdGhpcyB0cmlja2Vy
+eSB3ZSB0cnkgdG8gaGFuZGxlIHRoZSBncGlvL2RlbGF5IHZpYQpEQVBNPyBTTkRfU09DX0RBUE1f
+QUlGX09VVF9FKCkgbWlnaHQgYmUganVzdCB3aGF0IHdlIG5lZWQ/CgpXZSBjb3VsZCByZW1vdmUg
+dGhlIHRyaWdnZXIsIGFuZCB3aWxsIGhhdmUgbm8gbmVlZCBmb3IgdGhlIHByZXBhcmUKY2FsbGJh
+Y2sgZWl0aGVyLi4KCj4gIAo+IEBAIC01NCw2ICs2OSw3IEBAIHN0YXRpYyBpbnQgZG1pY19kYWlv
+cHNfdHJpZ2dlcihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKPiAgfQo+ICAK
+PiAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhaV9vcHMgZG1pY19kYWlfb3BzID0gewo+
+ICsJLnByZXBhcmUJPSBkbWljX2RhaW9wc19wcmVwYXJlLAo+ICAJLnRyaWdnZXIJPSBkbWljX2Rh
+aW9wc190cmlnZ2VyLAo+ICB9Owo+ICAKPiBAQCAtNzMsMTQgKzg5LDI0IEBAIHN0YXRpYyBzdHJ1
+Y3Qgc25kX3NvY19kYWlfZHJpdmVyIGRtaWNfZGFpID0gewo+ICAKPiAgc3RhdGljIGludCBkbWlj
+X2NvZGVjX3Byb2JlKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYykKPiAgewo+IC0Jc3RydWN0
+IGdwaW9fZGVzYyAqZG1pY19lbjsKPiArCXN0cnVjdCBkbWljICpkbWljOwo+ICsJaW50IGVycjsK
+PiArCj4gKwlkbWljID0gZGV2bV9remFsbG9jKGNvZGVjLT5kZXYsIHNpemVvZigqZG1pYyksIEdG
+UF9LRVJORUwpOwo+ICsJaWYgKCFkbWljKQo+ICsJCXJldHVybiAtRU5PTUVNOwo+ICsKPiArCWRt
+aWMtPmdwaW9fZW4gPSBkZXZtX2dwaW9kX2dldF9vcHRpb25hbChjb2RlYy0+ZGV2LAo+ICsJCQkJ
+CQkiZG1pY2VuIiwgR1BJT0RfT1VUX0xPVyk7Cj4gKwlpZiAoSVNfRVJSKGRtaWMtPmdwaW9fZW4p
+KQo+ICsJCXJldHVybiBQVFJfRVJSKGRtaWMtPmdwaW9fZW4pOwo+ICAKPiAtCWRtaWNfZW4gPSBk
+ZXZtX2dwaW9kX2dldF9vcHRpb25hbChjb2RlYy0+ZGV2LAo+IC0JCQkJCSJkbWljZW4iLCBHUElP
+RF9PVVRfTE9XKTsKPiAtCWlmIChJU19FUlIoZG1pY19lbikpCj4gLQkJcmV0dXJuIFBUUl9FUlIo
+ZG1pY19lbik7Cj4gKwllcnIgPSBkZXZpY2VfcHJvcGVydHlfcmVhZF91MzIoY29kZWMtPmRldiwg
+Indha2V1cC1kZWxheS1tcyIsCj4gKwkJCQkgICAgICAgJmRtaWMtPndha2V1cF9kZWxheSk7Cj4g
+KwlpZiAoZXJyICYmIChlcnIgIT0gLUVJTlZBTCkpCj4gKwkJcmV0dXJuIGVycjsKPiAgCj4gLQlz
+bmRfc29jX2NvZGVjX3NldF9kcnZkYXRhKGNvZGVjLCBkbWljX2VuKTsKPiArCXNuZF9zb2NfY29k
+ZWNfc2V0X2RydmRhdGEoY29kZWMsIGRtaWMpOwo+ICAKPiAgCXJldHVybiAwOwo+ICB9Cj4gCgot
+IFDDqXRlcgoKVGV4YXMgSW5zdHJ1bWVudHMgRmlubGFuZCBPeSwgUG9ya2thbGFua2F0dSAyMiwg
+MDAxODAgSGVsc2lua2kuClktdHVubnVzL0J1c2luZXNzIElEOiAwNjE1NTIxLTQuIEtvdGlwYWlr
+a2EvRG9taWNpbGU6IEhlbHNpbmtpCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
