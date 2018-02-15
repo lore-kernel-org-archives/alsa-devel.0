@@ -1,19 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [asoc:topic/intel 4/4]
- sound/soc/codecs/hdac_hdmi.c:725:42: error: 'struct hdac_ext_device' has no
- member named 'hdac'; did you mean 'hdev'?
-Date: Thu, 15 Feb 2018 17:22:20 +0000
-Message-ID: <20180215172220.GG8374@sirena.org.uk>
-References: <201802160039.DQJdakQc%fengguang.wu@intel.com>
- <460034f7-dfbe-6df0-6eb5-ef7b1d707f31@intel.com>
+Subject: Applied "ASoC: Intel: Fix build" to the asoc tree
+Date: Thu, 15 Feb 2018 17:26:56 +0000
+Message-ID: <E1emNJA-0004U9-PB@debutante>
+References: <20180215172033.8534-1-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7029271650399080796=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F353267CAE
- for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2018 18:22:36 +0100 (CET)
-In-Reply-To: <460034f7-dfbe-6df0-6eb5-ef7b1d707f31@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 60D20267CAE
+ for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2018 18:27:12 +0100 (CET)
+In-Reply-To: <20180215172033.8534-1-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,61 +21,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Kumar, Abhijeet" <abhijeet.kumar@intel.com>
-Cc: alsa-devel@alsa-project.org, kbuild test robot <fengguang.wu@intel.com>, kbuild-all@01.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, kbuild test robot <fengguang.wu@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, abhijeet.kumar@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7029271650399080796==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="bFsKbPszpzYNtEU6"
-Content-Disposition: inline
+   ASoC: Intel: Fix build
 
+has been applied to the asoc tree at
 
---bFsKbPszpzYNtEU6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Feb 15, 2018 at 10:19:55PM +0530, Kumar, Abhijeet wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> >     sound/soc/codecs/hdac_hdmi.c: In function 'hdac_hdmi_set_power_stat=
-e':
-> > > > sound/soc/codecs/hdac_hdmi.c:725:42: error: 'struct hdac_ext_device=
-' has no member named 'hdac'; did you mean 'hdev'?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> My bad i missed it. Shared v2 for this.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-=46rom the patch applied mail:
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-| If any updates are required or you are submitting further changes they
-| should be sent as incremental updates against current git, existing
-| patches will not be replaced.
+Thanks,
+Mark
 
-I'll do the incremental patch.
+>From 0b9751c7179b8ec7a33addc3a8b2b1639d4678cb Mon Sep 17 00:00:00 2001
+From: Mark Brown <broonie@kernel.org>
+Date: Thu, 15 Feb 2018 17:14:16 +0000
+Subject: [PATCH] ASoC: Intel: Fix build
 
---bFsKbPszpzYNtEU6
-Content-Type: application/pgp-signature; name="signature.asc"
+One of the recently introduced commits hadn't been build tested, fix
+that.
 
------BEGIN PGP SIGNATURE-----
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/hdac_hdmi.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqFwcsACgkQJNaLcl1U
-h9CoFwgAhbLxJMUKX5LjOprr27RqPaCKbk7FzemFWAHC8abf8fIBW017TIH3x0Lr
-/VQYreWK3ySvt8K+mvFr1XmgyEFzEPrCcru4KdKD6OMHlu2/Ih0uehgMRKhiq57C
-DGGjlkorl2CBQ1IuTxO2LRmJ+FlVKcS2XueWYQ6Kr4eRuPtCz/G3Cgct6NS7AJVN
-HCPwJHwvLIe/oFpWzatZFEcfwJVyjiwm5rXbXJNR/HPiP2scJmwxyWdNvGIjltsp
-ZfGoz7NDKPTdZusTuQXv3FE2qIUYBrFZOqJp578sElZCaSoj8KGbPVTwa7n2qC/3
-2Uomjfry4Tnrz8iFTYlNbHxQphHrbg==
-=nKFp
------END PGP SIGNATURE-----
-
---bFsKbPszpzYNtEU6--
-
---===============7029271650399080796==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7029271650399080796==--
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 60bea9d69fc0..84f7a7a36e4b 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -722,12 +722,12 @@ static void hdac_hdmi_set_power_state(struct hdac_ext_device *edev,
+ 	unsigned int state;
+ 
+ 	if (get_wcaps(&edev->hdev, nid) & AC_WCAP_POWER) {
+-		if (!snd_hdac_check_power_state(&edev->hdac, nid, pwr_state)) {
++		if (!snd_hdac_check_power_state(&edev->hdev, nid, pwr_state)) {
+ 			for (count = 0; count < 10; count++) {
+-				snd_hdac_codec_read(&edev->hdac, nid, 0,
++				snd_hdac_codec_read(&edev->hdev, nid, 0,
+ 						AC_VERB_SET_POWER_STATE,
+ 						pwr_state);
+-				state = snd_hdac_sync_power_state(&edev->hdac,
++				state = snd_hdac_sync_power_state(&edev->hdev,
+ 						nid, pwr_state);
+ 				if (!(state & AC_PWRST_ERROR))
+ 					break;
+-- 
+2.16.1
