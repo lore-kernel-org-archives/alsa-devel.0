@@ -1,74 +1,42 @@
-From: abhijeet.kumar@intel.com
-Subject: [PATCH] ASoC: hdac_hdmi : Ensuring proper setting of
-	output widget power state
-Date: Thu, 15 Feb 2018 14:05:38 +0530
-Message-ID: <1518683739-4448-1-git-send-email-abhijeet.kumar@intel.com>
-References: <1516728657-21522-3-git-send-email-abhijeet.kumar@intel.com>
+From: "Kumar, Abhijeet" <abhijeet.kumar@intel.com>
+Subject: Re: [PATCH 3/3] ASoC: hdac_hdmi : Ensuring proper setting of output
+ widget power state
+Date: Thu, 15 Feb 2018 14:00:21 +0530
+Message-ID: <a1e2e283-656b-59b3-fbc3-09851ebd16cd@intel.com>
+References: <1515670468-9198-1-git-send-email-abhijeet.kumar@intel.com>
+ <1516728657-21522-1-git-send-email-abhijeet.kumar@intel.com>
+ <1516728657-21522-3-git-send-email-abhijeet.kumar@intel.com>
+ <20180214162044.GG12658@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 477202671AE
- for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2018 09:27:34 +0100 (CET)
-In-Reply-To: <1516728657-21522-3-git-send-email-abhijeet.kumar@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>, Puneeth Prabhu <puneethx.prabhu@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: abhijeet.kumar@intel.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180214162044.GG12658@sirena.org.uk>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Wang YanQing <udknight@gmail.com>, Bhumika Goyal <bhumirks@gmail.com>, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Abhijeet Kumar <abhijeet.kumar@intel.com>
 
-In usecases like hot plug-unplug DP panel or modeset during a playback,
-sometimes we observe no audio after codec resets. During no audio
-condition, we have noticed that the power state of the pin or the
-connector is D3. Optimizing the way we set the power mitigates the
-issue. With this changes the verb is sent to set the power state and
-waits until actual state reaches target state. Thus ensuring power
-state is set.
 
-Signed-off-by: Abhijeet Kumar <abhijeet.kumar@intel.com>
----
- sound/soc/codecs/hdac_hdmi.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+On 2/14/2018 9:50 PM, Mark Brown wrote:
+> On Tue, Jan 23, 2018 at 11:00:53PM +0530, abhijeet.kumar@intel.com wrote:
+>> From: Abhijeet Kumar <abhijeet.kumar@intel.com>
+>>
+>> In usecases like hot plug-unplug DP panel or modeset during a playback,
+>> sometimes we observe no audio after codec resets. During no audio
+>> condition, we have noticed that the power state of the pin or the
+>> connector is D3. Optimizing the way we set the power mitigates the
+>> issue. With this changes the verb is sent to set the power state and
+>> waits until actual state reaches target state. Thus ensuring power state
+>> is set.
+> This doesn't apply after the recent refactoring to move to components -
+> can you please rebase on current code and resend?  I pulled Takashi's
+> branch already, it's just this patch needs handling.
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index dba6f4c5074a..0483afc40db6 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -718,10 +718,22 @@ static struct hdac_hdmi_pcm *hdac_hdmi_get_pcm(struct hdac_ext_device *edev,
- static void hdac_hdmi_set_power_state(struct hdac_ext_device *edev,
- 			     hda_nid_t nid, unsigned int pwr_state)
- {
-+	int count;
-+	unsigned int state;
-+
- 	if (get_wcaps(&edev->hdev, nid) & AC_WCAP_POWER) {
--		if (!snd_hdac_check_power_state(&edev->hdev, nid, pwr_state))
--			snd_hdac_codec_write(&edev->hdev, nid, 0,
--				AC_VERB_SET_POWER_STATE, pwr_state);
-+		if (!snd_hdac_check_power_state(&edev->hdac, nid, pwr_state)) {
-+			for (count = 0; count < 10; count++) {
-+				snd_hdac_codec_read(&edev->hdac, nid, 0,
-+						AC_VERB_SET_POWER_STATE,
-+						pwr_state);
-+				state = snd_hdac_sync_power_state(&edev->hdac,
-+						nid, pwr_state);
-+				if (!(state & AC_PWRST_ERROR))
-+					break;
-+			}
-+		}
-+
- 	}
- }
- 
--- 
-1.9.1
+Please find the re-based patch here.
+https://patchwork.kernel.org/patch/10220549/
+
+Warm Regards,
+Abhijeet
