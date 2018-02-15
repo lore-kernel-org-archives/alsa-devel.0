@@ -1,51 +1,98 @@
-From: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
-Subject: Re: [PATCH v12 6/8] media: i2c: Add TDA1997x HDMI receiver driver
-Date: Thu, 15 Feb 2018 09:43:38 -0800
-Message-ID: <CAJ+vNU1ZZnrMJgmOA+XBRjnV0WE8uyc4OSJvdKyZ_eooWGLqRA@mail.gmail.com>
-References: <1518712767-21928-1-git-send-email-tharvey@gateworks.com>
- <1518712767-21928-7-git-send-email-tharvey@gateworks.com> <10f08dfb-cc23-a9e3-7439-95955661cb77@xs4all.nl>
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Subject: [PATCH] ASoC: sgtl5000: Fix suspend/resume
+Date: Thu, 15 Feb 2018 15:20:28 -0200
+Message-ID: <1518715228-4470-1-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <10f08dfb-cc23-a9e3-7439-95955661cb77-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
-Cc: linux-media <linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Steve Longerbeam <slongerbeam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Hans Verkuil <hansverk-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from NAM01-BN3-obe.outbound.protection.outlook.com
+ (mail-bn3nam01on0067.outbound.protection.outlook.com [104.47.33.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E826267CD7
+ for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2018 18:55:46 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, eric@nelint.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 15, 2018 at 9:16 AM, Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org> wrote:
-> On 15/02/18 17:39, Tim Harvey wrote:
->> Add support for the TDA1997x HDMI receivers.
->>
->> Cc: Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
->> Signed-off-by: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
->> ---
->> v12:
->>  - fix coccinelle warnings
->
-> Did you post the right version? I still see the owner being set and the
-> other kbuild warning ('note: in expansion of macro 'v4l_dbg'') is also
-> still there.
->
-> Note that the last one also shows these errors:
->
-> drivers/media/i2c/tda1997x.c:387:5-8: WARNING: Unsigned expression compared with zero: val < 0
-> drivers/media/i2c/tda1997x.c:391:5-8: WARNING: Unsigned expression compared with zero: val < 0
-> drivers/media/i2c/tda1997x.c:404:5-8: WARNING: Unsigned expression compared with zero: val < 0
-> drivers/media/i2c/tda1997x.c:408:5-8: WARNING: Unsigned expression compared with zero: val < 0
-> drivers/media/i2c/tda1997x.c:412:5-8: WARNING: Unsigned expression compared with zero: val < 0
-> drivers/media/i2c/tda1997x.c:427:6-9: WARNING: Unsigned expression compared with zero: val < 0
->
-> This is indeed wrong.
->
-> Regards,
->
->         Hans
+Commit 8419caa72702 ("ASoC: sgtl5000: Do not disable regulators in
+SND_SOC_BIAS_OFF") causes the sgtl5000 to fail after a suspend/resume
+sequence:
 
-oh geez... no I goofed that up. I'll send a v13 now.
+# aplay /media/a2002011001-e02.wav
+Playing WAVE '/media/a2002011001-e02.wav' : Signed 16 bit Little
+Endian, Rate 44100 Hz, Stereo
+aplay: pcm_write:2051: write error: Input/output error
 
-Tim
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Clearing the SGTL5000_REFTOP_POWERUP bit causes the issue after
+suspend/resume, so do not clear this bit in the same way we used
+to do previously to the aforementioned commit.
+
+As sgtl5000_set_bias_level() only deals with SGTL5000_REFTOP_POWERUP,
+we can simply remove it as this bit is already set inside 
+sgtl5000_set_power_regs().
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+---
+ sound/soc/codecs/sgtl5000.c | 31 -------------------------------
+ 1 file changed, 31 deletions(-)
+
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index c26ac22..7bae303 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -858,36 +858,6 @@ static int sgtl5000_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-/*
+- * set dac bias
+- * common state changes:
+- * startup:
+- * off --> standby --> prepare --> on
+- * standby --> prepare --> on
+- *
+- * stop:
+- * on --> prepare --> standby
+- */
+-static int sgtl5000_set_bias_level(struct snd_soc_component *component,
+-				   enum snd_soc_bias_level level)
+-{
+-	switch (level) {
+-	case SND_SOC_BIAS_ON:
+-	case SND_SOC_BIAS_PREPARE:
+-	case SND_SOC_BIAS_STANDBY:
+-		snd_soc_component_update_bits(component, SGTL5000_CHIP_ANA_POWER,
+-				    SGTL5000_REFTOP_POWERUP,
+-				    SGTL5000_REFTOP_POWERUP);
+-		break;
+-	case SND_SOC_BIAS_OFF:
+-		snd_soc_component_update_bits(component, SGTL5000_CHIP_ANA_POWER,
+-				    SGTL5000_REFTOP_POWERUP, 0);
+-		break;
+-	}
+-
+-	return 0;
+-}
+-
+ #define SGTL5000_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
+ 			SNDRV_PCM_FMTBIT_S20_3LE |\
+ 			SNDRV_PCM_FMTBIT_S24_LE |\
+@@ -1245,7 +1215,6 @@ static int sgtl5000_probe(struct snd_soc_component *component)
+ 
+ static const struct snd_soc_component_driver sgtl5000_driver = {
+ 	.probe			= sgtl5000_probe,
+-	.set_bias_level		= sgtl5000_set_bias_level,
+ 	.controls		= sgtl5000_snd_controls,
+ 	.num_controls		= ARRAY_SIZE(sgtl5000_snd_controls),
+ 	.dapm_widgets		= sgtl5000_dapm_widgets,
+-- 
+2.7.4
