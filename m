@@ -1,20 +1,15 @@
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH v12 6/8] media: i2c: Add TDA1997x HDMI
-	receiver driver
-Date: Thu, 15 Feb 2018 18:16:57 +0100
-Message-ID: <10f08dfb-cc23-a9e3-7439-95955661cb77@xs4all.nl>
-References: <1518712767-21928-1-git-send-email-tharvey@gateworks.com>
- <1518712767-21928-7-git-send-email-tharvey@gateworks.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: Intel: Fix build
+Date: Thu, 15 Feb 2018 17:20:33 +0000
+Message-ID: <20180215172033.8534-1-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lb2-smtp-cloud7.xs4all.net (lb2-smtp-cloud7.xs4all.net
- [194.109.24.28])
- by alsa0.perex.cz (Postfix) with ESMTP id 96D22267CAE
- for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2018 18:16:58 +0100 (CET)
-In-Reply-To: <1518712767-21928-7-git-send-email-tharvey@gateworks.com>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97A4D267CBF
+ for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2018 18:20:52 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,34 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tim Harvey <tharvey@gateworks.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>, Philipp Zabel <p.zabel@pengutronix.de>, Steve Longerbeam <slongerbeam@gmail.com>, shawnguo@kernel.org
+To: abhijeet.kumar@intel.com, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 15/02/18 17:39, Tim Harvey wrote:
-> Add support for the TDA1997x HDMI receivers.
-> 
-> Cc: Hans Verkuil <hverkuil@xs4all.nl>
-> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-> ---
-> v12:
->  - fix coccinelle warnings
+One of the recently introduced commits hadn't been build tested, fix
+that.
 
-Did you post the right version? I still see the owner being set and the
-other kbuild warning ('note: in expansion of macro 'v4l_dbg'') is also
-still there.
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/hdac_hdmi.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Note that the last one also shows these errors:
-
-drivers/media/i2c/tda1997x.c:387:5-8: WARNING: Unsigned expression compared with zero: val < 0
-drivers/media/i2c/tda1997x.c:391:5-8: WARNING: Unsigned expression compared with zero: val < 0
-drivers/media/i2c/tda1997x.c:404:5-8: WARNING: Unsigned expression compared with zero: val < 0
-drivers/media/i2c/tda1997x.c:408:5-8: WARNING: Unsigned expression compared with zero: val < 0
-drivers/media/i2c/tda1997x.c:412:5-8: WARNING: Unsigned expression compared with zero: val < 0
-drivers/media/i2c/tda1997x.c:427:6-9: WARNING: Unsigned expression compared with zero: val < 0
-
-This is indeed wrong.
-
-Regards,
-
-	Hans
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 60bea9d69fc0..84f7a7a36e4b 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -722,12 +722,12 @@ static void hdac_hdmi_set_power_state(struct hdac_ext_device *edev,
+ 	unsigned int state;
+ 
+ 	if (get_wcaps(&edev->hdev, nid) & AC_WCAP_POWER) {
+-		if (!snd_hdac_check_power_state(&edev->hdac, nid, pwr_state)) {
++		if (!snd_hdac_check_power_state(&edev->hdev, nid, pwr_state)) {
+ 			for (count = 0; count < 10; count++) {
+-				snd_hdac_codec_read(&edev->hdac, nid, 0,
++				snd_hdac_codec_read(&edev->hdev, nid, 0,
+ 						AC_VERB_SET_POWER_STATE,
+ 						pwr_state);
+-				state = snd_hdac_sync_power_state(&edev->hdac,
++				state = snd_hdac_sync_power_state(&edev->hdev,
+ 						nid, pwr_state);
+ 				if (!(state & AC_PWRST_ERROR))
+ 					break;
+-- 
+2.16.1
