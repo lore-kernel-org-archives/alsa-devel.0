@@ -1,79 +1,79 @@
-From: Philippe Ombredanne <pombredanne-od1rfyK75/E@public.gmane.org>
-Subject: Re: [PATCHv4 2/4] ASoC: codec: cpcap: new codec
-Date: Thu, 15 Feb 2018 10:50:22 +0100
-Message-ID: <CAOFm3uFJC2Xb0PuNECJ-Tvg2gQS==tMSc77p_keQoCexNqOkDg@mail.gmail.com>
-References: <20180214220741.28306-1-sebastian.reichel@collabora.co.uk> <20180214220741.28306-3-sebastian.reichel@collabora.co.uk>
+From: "Wischer, Timo (ADITG/ESB)" <twischer@de.adit-jv.com>
+Subject: Re: [PATCH - JACK PCM plugin] jack: Use boundary as
+ hw_ptr wrap around
+Date: Thu, 15 Feb 2018 10:36:21 +0000
+Message-ID: <B0FB33DC1499054591F62C0EF1E013D7684F9297@HI2EXCH01.adit-jv.com>
+References: <1516794545-9868-1-git-send-email-twischer@de.adit-jv.com>,
+ <s5hd1183jq3.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20180214220741.28306-3-sebastian.reichel-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sebastian Reichel <sebastian.reichel-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
-Cc: Sebastian Reichel <sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, LKML <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [62.225.105.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 81B46266EB0
+ for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2018 11:36:29 +0100 (CET)
+In-Reply-To: <s5hd1183jq3.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Sebastian,
+Hello Takashi,
 
-On Wed, Feb 14, 2018 at 11:07 PM, Sebastian Reichel
-<sebastian.reichel-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org> wrote:
-> Motorola CPCAP is a PMIC with audio functionality, that can be
-> found on Motorola Droid 4 and probably a few other phones from
-> Motorola's Droid series.
->
-> The driver has been written from scratch using Motorola's Android
-> driver, register dumps from running Android and datasheet for NXP
-> MC13783UG (which is similar to Motorola CPCAP, but not the same).
->
-> The chip provides two audio interfaces, that can be muxed to two
-> different audio codecs. One provides support for stereo output
-> (named StDAC or HiFi), while the other only provides mono output
-> (named Voice). Only the Voice codec provides a Capture interface.
->
-> Signed-off-by: Sebastian Reichel <sebastian.reichel-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
+> This happens only when the application uses periods=3D1,
 
-<snip>
+It can also happen with 2 periods per buffer e.g. when the user application=
+ is too late.
+I will try to illustrate the use case with the following time line:
 
-> --- /dev/null
-> +++ b/sound/soc/codecs/cpcap.c
-> @@ -0,0 +1,1588 @@
-> +/*
-> + * ALSA SoC CPCAP codec driver
-> + *
-> + * Copyright (C) 2017 - 2018 Sebastian Reichel <sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-> + *
-> + * Very loosely based on original driver from Motorola:
-> + * Copyright (C) 2007 - 2009 Motorola, Inc.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + */
+Time line: 0--R1-W1-R2--R3-W2-W3-...
 
-Could you consider using the new SPDX tags instead of this fine but
-long legalese? [1]
+0 buffer is full (2 periods)
+R1 JACK daemon reads 1 period (1 period left in the buffer)
+W1 User application writes 1 period (2 periods in the buffer)
+R2 JACK daemon reads 1 period (1 period left in the buffer)
+R3 JACK daemon reads 1 period (buffer empty)
+But it is not yet an under run because JACK has not yet read invalid data.
+Due to the blocked user application (e.g low scheduling priority) the point=
+er() callback was not called before the second read.
+In this case the next pointer() call has to result in a delta of 2 periods.
+But this is not possible if pointer() is not allowed to return >=3Dbuffer_s=
+ize.
 
-<snip>
+W2 User application writes 1 period (1 periods in the buffer)
+W3 User application writes 1 period (2 periods in the buffer)
+Continue with 0
 
-> +MODULE_ALIAS("platform:cpcap-codec");
-> +MODULE_DESCRIPTION("ASoC CPCAP codec driver");
-> +MODULE_AUTHOR("Sebastian Reichel");
-> +MODULE_LICENSE("GPL");
+> It notifies the period elapse via file-descriptor
+But this notification will be processed later if the user application is bl=
+ocked at the moment (e.g. by higher priority tasks).
 
-This does not match your license: per module.h, GPL means GPL-2.0 or
-later. You notice above is GPL-2.0, not "or later"
+Do you also see my problem, now?
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/license-rules.rst
+Best regards
 
--- 
-Cordially
-Philippe Ombredanne
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Timo Wischer
+
+Advanced Driver Information Technology GmbH
+Engineering Software Base (ADITG/ESB)
+Robert-Bosch-Str. 200
+31139 Hildesheim
+Germany
+
+Tel. +49 5121 49 6938
+Fax +49 5121 49 6999
+twischer@de.adit-jv.com
+
+ADIT is a joint venture company of Robert Bosch GmbH/Robert Bosch Car Multi=
+media GmbH and DENSO Corporation
+Sitz: Hildesheim, Registergericht: Amtsgericht Hildesheim HRB 3438
+Gesch=E4ftsf=FChrung: Wilhelm Grabow, Ken Yaguchi
