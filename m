@@ -1,17 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: dmic: Add optional wakeup delay
-Date: Thu, 15 Feb 2018 09:42:01 +0200
-Message-ID: <7c9d5202-bcac-f989-6be2-f286de15a5de@ti.com>
-References: <20180214235156.81589-1-mka@chromium.org>
+From: abhijeet.kumar@intel.com
+Subject: [PATCH] ASoC: hdac_hdmi : Ensuring proper setting of
+	output widget power state
+Date: Thu, 15 Feb 2018 14:05:38 +0530
+Message-ID: <1518683739-4448-1-git-send-email-abhijeet.kumar@intel.com>
+References: <1516728657-21522-3-git-send-email-abhijeet.kumar@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B9FB266EB0
- for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2018 08:41:31 +0100 (CET)
-In-Reply-To: <20180214235156.81589-1-mka@chromium.org>
-Content-Language: en-US
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 477202671AE
+ for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2018 09:27:34 +0100 (CET)
+In-Reply-To: <1516728657-21522-3-git-send-email-abhijeet.kumar@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,85 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matthias Kaehlcke <mka@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, huang lin <hl@rock-chips.com>, Brian Norris <briannorris@chromium.org>, linux-kernel@vger.kernel.org, Dylan Reid <dgreid@chromium.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>, Puneeth Prabhu <puneethx.prabhu@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: abhijeet.kumar@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE4LTAyLTE1IDAxOjUxLCBNYXR0aGlhcyBLYWVobGNrZSB3cm90ZToKPiBPbiBzb21l
-IHN5c3RlbXMgYSBkZWxheSBpcyBuZWVkZWQgYWZ0ZXIgc3dpdGNoaW5nIG9uIHRoZSBjbG9ja3Ms
-IHRvIGFsbG93Cj4gdGhlIERNSUMgb3V0cHV0IHRvIHN0YWJpbGl6ZSBhbmQgYXZvaWQgYSBwb3Bw
-aW5nIG5vaXNlIGF0IHRoZSBiZWdpbm5pbmcKPiBvZiB0aGUgcmVjb3JkaW5nLiBBZGQgdGhlIG9w
-dGlvbmFsIGRldmljZSB0cmVlIHByb3BlcnR5ICd3YWtldXAtZGVsYXktbXMnCj4gYW5kIGFwcGx5
-IHRoZSBzcGVjaWZpZWQgZGVsYXkgaW4gdGhlIG5ldyBkbWljX2RhaW9wc19wcmVwYXJlKCkuCj4g
-Cj4gU2lnbmVkLW9mZi1ieTogTWF0dGhpYXMgS2FlaGxja2UgPG1rYUBjaHJvbWl1bS5vcmc+Cj4g
-LS0tCj4gIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2RtaWMudHh0ICAgICAgICB8ICAy
-ICsKPiAgc291bmQvc29jL2NvZGVjcy9kbWljLmMgICAgICAgICAgICAgICAgICAgICAgIHwgNTQg
-KysrKysrKysrKysrKystLS0tLQo+ICAyIGZpbGVzIGNoYW5nZWQsIDQyIGluc2VydGlvbnMoKyks
-IDE0IGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRy
-ZWUvYmluZGluZ3Mvc291bmQvZG1pYy50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3Mvc291bmQvZG1pYy50eHQKPiBpbmRleCA1NGM4ZWY2NDk4YTguLmRlNzQxYzY2MDlkMCAx
-MDA2NDQKPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvZG1p
-Yy50eHQKPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvZG1p
-Yy50eHQKPiBAQCAtNywxMCArNywxMiBAQCBSZXF1aXJlZCBwcm9wZXJ0aWVzOgo+ICAKPiAgT3B0
-aW9uYWwgcHJvcGVydGllczoKPiAgCS0gZG1pY2VuLWdwaW9zOiBHUElPIHNwZWNpZmllciBmb3Ig
-ZG1pYyB0byBjb250cm9sIHN0YXJ0IGFuZCBzdG9wCj4gKwktIHdha2V1cC1kZWxheS1tczogRGVs
-YXkgKGluIG1zKSBhZnRlciBlbmFibGluZyB0aGUgRE1JQwo+ICAKPiAgRXhhbXBsZSBub2RlOgo+
-ICAKPiAgCWRtaWNfY29kZWM6IGRtaWNAMCB7Cj4gIAkJY29tcGF0aWJsZSA9ICJkbWljLWNvZGVj
-IjsKPiAgCQlkbWljZW4tZ3Bpb3MgPSA8JmdwaW80IDMgR1BJT19BQ1RJVkVfSElHSD47Cj4gKwkJ
-d2FrZXVwLWRlbGF5LW1zIDw1MD47Cj4gIAl9Owo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29k
-ZWNzL2RtaWMuYyBiL3NvdW5kL3NvYy9jb2RlY3MvZG1pYy5jCj4gaW5kZXggYjg4YTFlZTY2Zjgw
-Li4xMWY2YWJmMTEwNzQgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2NvZGVjcy9kbWljLmMKPiAr
-KysgYi9zb3VuZC9zb2MvY29kZWNzL2RtaWMuYwo+IEBAIC0xOSw2ICsxOSw3IEBACj4gICAqCj4g
-ICAqLwo+ICAKPiArI2luY2x1ZGUgPGxpbnV4L2RlbGF5Lmg+Cj4gICNpbmNsdWRlIDxsaW51eC9n
-cGlvLmg+Cj4gICNpbmNsdWRlIDxsaW51eC9ncGlvL2NvbnN1bWVyLmg+Cj4gICNpbmNsdWRlIDxs
-aW51eC9wbGF0Zm9ybV9kZXZpY2UuaD4KPiBAQCAtMjksMjQgKzMwLDM4IEBACj4gICNpbmNsdWRl
-IDxzb3VuZC9zb2MuaD4KPiAgI2luY2x1ZGUgPHNvdW5kL3NvYy1kYXBtLmg+Cj4gIAo+ICtzdHJ1
-Y3QgZG1pYyB7Cj4gKwlzdHJ1Y3QgZ3Bpb19kZXNjICpncGlvX2VuOwo+ICsJaW50IHdha2V1cF9k
-ZWxheTsKPiArfTsKPiArCj4gK3N0YXRpYyBpbnQgZG1pY19kYWlvcHNfcHJlcGFyZShzdHJ1Y3Qg
-c25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKPiArCQkJCXN0cnVjdCBzbmRfc29jX2RhaSAq
-ZGFpKQo+ICt7Cj4gKwlzdHJ1Y3QgZG1pYyAqZG1pYyA9IHNuZF9zb2NfZGFpX2dldF9kcnZkYXRh
-KGRhaSk7Cj4gKwo+ICsJaWYgKGRtaWMtPmdwaW9fZW4pCj4gKwkJZ3Bpb2Rfc2V0X3ZhbHVlKGRt
-aWMtPmdwaW9fZW4sIDEpOwoKWW91IGRvbid0IG5lZWQgdGhlICdpZiAoZG1pYy0+Z3Bpb19lbikn
-Cgo+ICsKPiArCWlmIChkbWljLT53YWtldXBfZGVsYXkpCj4gKwkJbXNsZWVwKGRtaWMtPndha2V1
-cF9kZWxheSk7Cj4gKwo+ICsJcmV0dXJuIDA7Cj4gK30KPiArCj4gIHN0YXRpYyBpbnQgZG1pY19k
-YWlvcHNfdHJpZ2dlcihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKPiAgCQlp
-bnQgY21kLCBzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSkKPiAgewo+IC0Jc3RydWN0IGdwaW9fZGVz
-YyAqZG1pY19lbiA9IHNuZF9zb2NfZGFpX2dldF9kcnZkYXRhKGRhaSk7Cj4gKwlzdHJ1Y3QgZG1p
-YyAqZG1pYyA9IHNuZF9zb2NfZGFpX2dldF9kcnZkYXRhKGRhaSk7Cj4gIAo+IC0JaWYgKCFkbWlj
-X2VuKQo+ICsJaWYgKCFkbWljLT5ncGlvX2VuKQo+ICAJCXJldHVybiAwOwo+ICAKPiAgCXN3aXRj
-aCAoY21kKSB7Cj4gLQljYXNlIFNORFJWX1BDTV9UUklHR0VSX1NUQVJUOgo+IC0JY2FzZSBTTkRS
-Vl9QQ01fVFJJR0dFUl9SRVNVTUU6Cj4gLQljYXNlIFNORFJWX1BDTV9UUklHR0VSX1BBVVNFX1JF
-TEVBU0U6Cj4gLQkJZ3Bpb2Rfc2V0X3ZhbHVlKGRtaWNfZW4sIDEpOwo+IC0JCWJyZWFrOwo+ICAJ
-Y2FzZSBTTkRSVl9QQ01fVFJJR0dFUl9TVE9QOgo+ICAJY2FzZSBTTkRSVl9QQ01fVFJJR0dFUl9T
-VVNQRU5EOgo+ICAJY2FzZSBTTkRSVl9QQ01fVFJJR0dFUl9QQVVTRV9QVVNIOgo+IC0JCWdwaW9k
-X3NldF92YWx1ZShkbWljX2VuLCAwKTsKPiArCQlncGlvZF9zZXRfdmFsdWUoZG1pYy0+Z3Bpb19l
-biwgMCk7Cj4gIAkJYnJlYWs7Cj4gIAl9CgpXaGF0IGlmIGluc3RlYWQgb2YgdGhpcyB0cmlja2Vy
-eSB3ZSB0cnkgdG8gaGFuZGxlIHRoZSBncGlvL2RlbGF5IHZpYQpEQVBNPyBTTkRfU09DX0RBUE1f
-QUlGX09VVF9FKCkgbWlnaHQgYmUganVzdCB3aGF0IHdlIG5lZWQ/CgpXZSBjb3VsZCByZW1vdmUg
-dGhlIHRyaWdnZXIsIGFuZCB3aWxsIGhhdmUgbm8gbmVlZCBmb3IgdGhlIHByZXBhcmUKY2FsbGJh
-Y2sgZWl0aGVyLi4KCj4gIAo+IEBAIC01NCw2ICs2OSw3IEBAIHN0YXRpYyBpbnQgZG1pY19kYWlv
-cHNfdHJpZ2dlcihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKPiAgfQo+ICAK
-PiAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhaV9vcHMgZG1pY19kYWlfb3BzID0gewo+
-ICsJLnByZXBhcmUJPSBkbWljX2RhaW9wc19wcmVwYXJlLAo+ICAJLnRyaWdnZXIJPSBkbWljX2Rh
-aW9wc190cmlnZ2VyLAo+ICB9Owo+ICAKPiBAQCAtNzMsMTQgKzg5LDI0IEBAIHN0YXRpYyBzdHJ1
-Y3Qgc25kX3NvY19kYWlfZHJpdmVyIGRtaWNfZGFpID0gewo+ICAKPiAgc3RhdGljIGludCBkbWlj
-X2NvZGVjX3Byb2JlKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYykKPiAgewo+IC0Jc3RydWN0
-IGdwaW9fZGVzYyAqZG1pY19lbjsKPiArCXN0cnVjdCBkbWljICpkbWljOwo+ICsJaW50IGVycjsK
-PiArCj4gKwlkbWljID0gZGV2bV9remFsbG9jKGNvZGVjLT5kZXYsIHNpemVvZigqZG1pYyksIEdG
-UF9LRVJORUwpOwo+ICsJaWYgKCFkbWljKQo+ICsJCXJldHVybiAtRU5PTUVNOwo+ICsKPiArCWRt
-aWMtPmdwaW9fZW4gPSBkZXZtX2dwaW9kX2dldF9vcHRpb25hbChjb2RlYy0+ZGV2LAo+ICsJCQkJ
-CQkiZG1pY2VuIiwgR1BJT0RfT1VUX0xPVyk7Cj4gKwlpZiAoSVNfRVJSKGRtaWMtPmdwaW9fZW4p
-KQo+ICsJCXJldHVybiBQVFJfRVJSKGRtaWMtPmdwaW9fZW4pOwo+ICAKPiAtCWRtaWNfZW4gPSBk
-ZXZtX2dwaW9kX2dldF9vcHRpb25hbChjb2RlYy0+ZGV2LAo+IC0JCQkJCSJkbWljZW4iLCBHUElP
-RF9PVVRfTE9XKTsKPiAtCWlmIChJU19FUlIoZG1pY19lbikpCj4gLQkJcmV0dXJuIFBUUl9FUlIo
-ZG1pY19lbik7Cj4gKwllcnIgPSBkZXZpY2VfcHJvcGVydHlfcmVhZF91MzIoY29kZWMtPmRldiwg
-Indha2V1cC1kZWxheS1tcyIsCj4gKwkJCQkgICAgICAgJmRtaWMtPndha2V1cF9kZWxheSk7Cj4g
-KwlpZiAoZXJyICYmIChlcnIgIT0gLUVJTlZBTCkpCj4gKwkJcmV0dXJuIGVycjsKPiAgCj4gLQlz
-bmRfc29jX2NvZGVjX3NldF9kcnZkYXRhKGNvZGVjLCBkbWljX2VuKTsKPiArCXNuZF9zb2NfY29k
-ZWNfc2V0X2RydmRhdGEoY29kZWMsIGRtaWMpOwo+ICAKPiAgCXJldHVybiAwOwo+ICB9Cj4gCgot
-IFDDqXRlcgoKVGV4YXMgSW5zdHJ1bWVudHMgRmlubGFuZCBPeSwgUG9ya2thbGFua2F0dSAyMiwg
-MDAxODAgSGVsc2lua2kuClktdHVubnVzL0J1c2luZXNzIElEOiAwNjE1NTIxLTQuIEtvdGlwYWlr
-a2EvRG9taWNpbGU6IEhlbHNpbmtpCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+From: Abhijeet Kumar <abhijeet.kumar@intel.com>
+
+In usecases like hot plug-unplug DP panel or modeset during a playback,
+sometimes we observe no audio after codec resets. During no audio
+condition, we have noticed that the power state of the pin or the
+connector is D3. Optimizing the way we set the power mitigates the
+issue. With this changes the verb is sent to set the power state and
+waits until actual state reaches target state. Thus ensuring power
+state is set.
+
+Signed-off-by: Abhijeet Kumar <abhijeet.kumar@intel.com>
+---
+ sound/soc/codecs/hdac_hdmi.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index dba6f4c5074a..0483afc40db6 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -718,10 +718,22 @@ static struct hdac_hdmi_pcm *hdac_hdmi_get_pcm(struct hdac_ext_device *edev,
+ static void hdac_hdmi_set_power_state(struct hdac_ext_device *edev,
+ 			     hda_nid_t nid, unsigned int pwr_state)
+ {
++	int count;
++	unsigned int state;
++
+ 	if (get_wcaps(&edev->hdev, nid) & AC_WCAP_POWER) {
+-		if (!snd_hdac_check_power_state(&edev->hdev, nid, pwr_state))
+-			snd_hdac_codec_write(&edev->hdev, nid, 0,
+-				AC_VERB_SET_POWER_STATE, pwr_state);
++		if (!snd_hdac_check_power_state(&edev->hdac, nid, pwr_state)) {
++			for (count = 0; count < 10; count++) {
++				snd_hdac_codec_read(&edev->hdac, nid, 0,
++						AC_VERB_SET_POWER_STATE,
++						pwr_state);
++				state = snd_hdac_sync_power_state(&edev->hdac,
++						nid, pwr_state);
++				if (!(state & AC_PWRST_ERROR))
++					break;
++			}
++		}
++
+ 	}
+ }
+ 
+-- 
+1.9.1
