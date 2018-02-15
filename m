@@ -1,16 +1,22 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH,
- alsa-lib 2/2] ASoC: topology: Rename clock_gated to clock_cont in
- snd_soc_tplg_hw_config
-Date: Mon, 19 Feb 2018 15:51:35 +0900
-Message-ID: <b890d16d-31df-279f-dbf0-0bb699ca7b8b@sakamocchi.jp>
-References: <20180219060758.17344-1-k.marinushkin@gmail.com>
- <20180219060758.17344-2-k.marinushkin@gmail.com>
+From: Tobias Bora <tobias.bora@gmail.com>
+Subject: Problem with microphone of ALC3236
+Date: Thu, 15 Feb 2018 15:23:34 +0100
+Message-ID: <680665f9-959e-5206-7d6b-3b12d4124f88@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20180219060758.17344-2-k.marinushkin@gmail.com>
+Received: from mail-wm0-f51.google.com (mail-wm0-f51.google.com [74.125.82.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2DD90266E42
+ for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2018 15:23:35 +0100 (CET)
+Received: by mail-wm0-f51.google.com with SMTP id j199so1158805wmj.2
+ for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2018 06:23:35 -0800 (PST)
+Received: from [172.28.44.240]
+ (roam-nat-fw-prg-194-254-61-44.net.univ-paris-diderot.fr. [194.254.61.44])
+ by smtp.googlemail.com with ESMTPSA id o6sm6849579edj.65.2018.02.15.06.23.34
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 15 Feb 2018 06:23:34 -0800 (PST)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,103 +27,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kirill Marinushkin <k.marinushkin@gmail.com>, alsa-devel@alsa-project.org
-Cc: alsa-patch@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Feb 19 2018 15:07, Kirill Marinushkin wrote:
-> In kernel `soc-dai.h`, DAI clock gating is defined as following:
-> 
-> ~~~~
-> \#define SND_SOC_DAIFMT_CONT            (1 << 4) /* continuous clock */
-> \#define SND_SOC_DAIFMT_GATED           (0 << 4) /* clock is gated */
-> ~~~~
-> 
-> Therefore, the corresponding field of struct snd_soc_tplg_hw_config should
-> be inverted compared to the current logic:
-> 
-> clock_count = 1 => SND_SOC_DAIFMT_CONT
-> clock_count = 0 => SND_SOC_DAIFMT_GATED
-> 
-> Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
-> Cc: alsa-devel@alsa-project.org
-> Cc: alsa-patch@alsa-project.org
-> ---
->   include/sound/asoc.h | 4 +++-
->   include/topology.h   | 4 +++-
->   src/topology/pcm.c   | 6 +++---
->   3 files changed, 9 insertions(+), 5 deletions(-)
-
-This change is based on breakage of ABI compatibility which I pointed in 
-this message[1]. Please take backward compatibility in account when 
-working for any change for interfaces between kernel/user spaces.
-
-> diff --git a/include/sound/asoc.h b/include/sound/asoc.h
-> index 0f5d9f9a..9f601ef0 100644
-> --- a/include/sound/asoc.h
-> +++ b/include/sound/asoc.h
-> @@ -308,7 +308,9 @@ struct snd_soc_tplg_hw_config {
->   	__le32 size;            /* in bytes of this structure */
->   	__le32 id;		/* unique ID - - used to match */
->   	__le32 fmt;		/* SND_SOC_DAI_FORMAT_ format value */
-> -	__u8 clock_gated;	/* 1 if clock can be gated to save power */
-> +	__u8 clock_cont;	/* 1 if clock is continuous, and can not be
-> +				 * gated to save power
-> +				 */
->   	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
->   	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
->   	__u8 bclk_master;	/* 1 for master of BCLK, 0 for slave */
-> diff --git a/include/topology.h b/include/topology.h
-> index 8779da4d..630fee21 100644
-> --- a/include/topology.h
-> +++ b/include/topology.h
-> @@ -997,7 +997,9 @@ struct snd_tplg_pcm_template {
->   struct snd_tplg_hw_config_template {
->   	int id;                         /* unique ID - - used to match */
->   	unsigned int fmt;               /* SND_SOC_DAI_FORMAT_ format value */
-> -	unsigned char clock_gated;      /* 1 if clock can be gated to save power */
-> +	unsigned char clock_cont;	/* 1 if clock is continuous, and can not
-> +					 * be gated to save power
-> +					 */
->   	unsigned char  invert_bclk;     /* 1 for inverted BCLK, 0 for normal */
->   	unsigned char  invert_fsync;    /* 1 for inverted frame clock, 0 for normal */
->   	unsigned char  bclk_master;     /* 1 for master of BCLK, 0 for slave */
-> diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-> index d3836677..7f280ed0 100644
-> --- a/src/topology/pcm.c
-> +++ b/src/topology/pcm.c
-> @@ -1205,12 +1205,12 @@ int tplg_parse_hw_config(snd_tplg_t *tplg, snd_config_t *cfg,
->   			continue;
->   		}
->   
-> -		if (strcmp(id, "pm_gate_clocks") == 0) {
-> +		if (strcmp(id, "pm_cont_clock") == 0) {
->   			if (snd_config_get_string(n, &val) < 0)
->   				return -EINVAL;
->   
->   			if (!strcmp(val, "true"))
-> -				hw_cfg->clock_gated = true;
-> +				hw_cfg->clock_cont = true;
->   			continue;
->   		}
->   
-> @@ -1376,7 +1376,7 @@ static int set_link_hw_config(struct snd_soc_tplg_hw_config *cfg,
->   	cfg->id = tpl->id;
->   
->   	cfg->fmt = tpl->fmt;
-> -	cfg->clock_gated = tpl->clock_gated;
-> +	cfg->clock_cont = tpl->clock_cont;
->   	cfg->invert_bclk = tpl->invert_bclk;
->   	cfg->invert_fsync = tpl->invert_fsync;
->   	cfg->bclk_master = tpl->bclk_master;
-
-
-[1] [alsa-devel] [PATCH 1/2] ASoC: topology: Rename clock_gated to 
-clock_cont in snd_soc_tplg_hw_config
-http://mailman.alsa-project.org/pipermail/alsa-devel/2018-February/132264.html
-
-Regards
-
-Takashi Sakamoto
+SGVsbG8sCgpJJ3ZlIGJlZW4gaGF2aW5nIGxvdCdzIG9mIHRyb3VibGVzIHdpdGggdGhlIG1pY3Jv
+cGhvbmVzIHdpdGggbXkgQUxDMzIzNgpzb3VuZCBjYXJkLiBCeSBkZWZhdWx0ICh0ZXN0ZWQgb24g
+dWJ1bnR1LCBmZWRvcmEsIGFuZCBjdXJyZW50bHkgb24KZGViaWFuIHNpZCkgdGhlIGludGVybmFs
+IG1pY3JvcGhvbmUgc3RvcHMgd29ya2luZyB3aGVuIHRoZSBtaWMgYm9vc3QgaXMKZW5hYmxlZCAo
+dmlhIGFsc2FtaXhlciBvciB3aGVuIHlvdSBzZXQgdGhlIHNvdW5kIHRvIG1vcmUgdGhhbiBzb21l
+dGhpbmcKbGlrZSAzMCUgb24gcHVsc2VhdWRpbykuIEFmdGVyIHJlYWRpbmcgdGhpcyBkaXNjdXRp
+b24KPGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwv
+MjAxNS1BcHJpbC8wOTEzMjUuaHRtbD4KdGhhdCB3YXMgdGFsa2luZyBhYm91dCBhIHByb2JsZW0g
+dmVyeSBzaW1pbGFyIHRvIG1pbmUsIEkgdHJpZWQgdG8gY2hhbmdlCnRoZSBmaWxlIC9ldGMvbW9k
+cHJvYmUuZC9hbHNhLWJhc2UuY29uZiBpbnRvCgpvcHRpb25zIHNuZC1oZGEtaW50ZWwgbW9kZWw9
+LGRlbGwtaGVhZHNldC1tdWx0aQoKKEkgYWxzbyB0cmllZCBsb3QncyBvZiBvdGhlciBtb2RlbHMp
+CgpCdXQgbm9uZSBvZiB0aGVtIGlzIHJlYWxseSB3b3JraW5nLiBPciBvbmx5IHRoZSBpbnRlcm5h
+bCBtaWNyb3Bob25lIGlzCndvcmtpbmcgYW5kIEkgY2FuJ3QgdXNlIGhlYWRzZXRzLCBvciBvbmx5
+IHRoZSBoZWFkc2V0cyBhcmUgdXNhYmxlIGFuZApub3QgdGhlIGludGVybmFsIG1pY3JvcGhvbmUs
+IG9yIHNvbWV0aW1lcyBuZWlndGhlciB3b3JrLi4uIERvIHlvdSBoYXZlIGEKc29sdXRpb24gZm9y
+IHRoYXQ/IEknbSBwcmV0dHkgc3VyZSB0aGF0IGl0J3MgYSBwcm9ibGVtIG9mICJiYWQgcGluCmFz
+c2lnbm1lbnQiLCBidXQgSSdtIG5vdCBhbiBleHBlcnQgYXQgYWxsIF5eCgpZb3UgY2FuIGZpbmQg
+aGVyZSA8aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1NVGJWZlJYTUoyST4gc29tZW9u
+ZQp0aGF0IGhhcyBhIHNpbWlsYXIgYnVnIG9uIE1hYyBhbmQgdGhhdCBtYW5hZ2UgdG8gc29sdmUg
+aXQgdXNpbmcgc3RyYW5nZQp0cmlja3MgaW52b2x2aW5nIHBpbiBjb25maWd1cmF0aW9uLMKgCgpE
+byB5b3Uga25vdyBob3cgSSBjb3VsZCBmaW5hbGx5IGdldCBhIHdvcmtpbmcgbWljcm9waG9uZSA/
+CgpUaGFuayB5b3UhCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
