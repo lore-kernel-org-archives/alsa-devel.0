@@ -1,17 +1,17 @@
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH 1/9] ASoC: amd: renaming pcm substream names
-	and bytescount params
-Date: Fri, 16 Feb 2018 13:03:46 +0530
-Message-ID: <1518766434-7911-2-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: [PATCH 4/9] ASoC: amd: dma descriptor changes for BT
+	I2S Instance
+Date: Fri, 16 Feb 2018 13:03:49 +0530
+Message-ID: <1518766434-7911-5-git-send-email-Vijendar.Mukunda@amd.com>
 References: <1518766434-7911-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com
- (mail-cys01nam02on0044.outbound.protection.outlook.com [104.47.37.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 76435267D6B
- for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 08:32:04 +0100 (CET)
+Received: from NAM01-BY2-obe.outbound.protection.outlook.com
+ (mail-by2nam01on0085.outbound.protection.outlook.com [104.47.34.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id 37A1A267D81
+ for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 08:32:16 +0100 (CET)
 In-Reply-To: <1518766434-7911-1-git-send-email-Vijendar.Mukunda@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,210 +26,248 @@ To: broonie@kernel.org, alsa-devel@alsa-project.org, perex@perex.cz
 Cc: tiwai@suse.de, Alexander.Deucher@amd.com, lgirdwood@gmail.com, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-With in ACP, There are three I2S controllers can be configured.
-(I2S SP ,I2S MICSP and I2S BT).These controllers can
-support both playback/capture scenarios.
-Default enabled i2s controller instance is i2s sp instance.
+As Stoney has SRAM memory limitation ,to support
+playback & capture on both the I2S controller instances
+audio buffer size is reduced to 8k.
 
-Renamed stream names and bytescount params as i2ssp.
-These changes required to distinguish with other I2S controller
-instance pcm substreams and bytescount params.
+For playback on I2S SP instance sram bank 1 will be used.
+For capture on I2S SP instance sram bank 2 will be used.
+For playback on I2S BT instance sram bank 3 will be used.
+For capture on I2S BT instance sram bank 4 will be used.
 
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- sound/soc/amd/acp-pcm-dma.c | 49 +++++++++++++++++++++++----------------------
- sound/soc/amd/acp.h         |  8 ++++----
- 2 files changed, 29 insertions(+), 28 deletions(-)
+ sound/soc/amd/acp-pcm-dma.c | 106 ++++++++++++++++++++++++++++++++++----------
+ sound/soc/amd/acp.h         |  41 +++++++++++++++--
+ 2 files changed, 120 insertions(+), 27 deletions(-)
 
 diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 78d7b62..fcc5b4f 100644
+index 963ffa7..aaee70f 100644
 --- a/sound/soc/amd/acp-pcm-dma.c
 +++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -664,7 +664,7 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
- 				       1, 0);
- 		acp_dma_start(acp_mmio, SYSRAM_TO_ACP_CH_NUM, false);
+@@ -37,7 +37,7 @@
+ #define MAX_BUFFER (PLAYBACK_MAX_PERIOD_SIZE * PLAYBACK_MAX_NUM_PERIODS)
+ #define MIN_BUFFER MAX_BUFFER
  
--		snd_pcm_period_elapsed(irq_data->play_stream);
-+		snd_pcm_period_elapsed(irq_data->play_i2ssp_stream);
+-#define ST_PLAYBACK_MAX_PERIOD_SIZE 8192
++#define ST_PLAYBACK_MAX_PERIOD_SIZE 4096
+ #define ST_CAPTURE_MAX_PERIOD_SIZE  ST_PLAYBACK_MAX_PERIOD_SIZE
+ #define ST_MAX_BUFFER (ST_PLAYBACK_MAX_PERIOD_SIZE * PLAYBACK_MAX_NUM_PERIODS)
+ #define ST_MIN_BUFFER ST_MAX_BUFFER
+@@ -320,42 +320,99 @@ static void config_acp_dma(void __iomem *acp_mmio,
+ 	u16 ch1, ch2, destination, dma_dscr_idx;
  
- 		acp_reg_write((intr_flag & BIT(ACP_TO_I2S_DMA_CH_NUM)) << 16,
- 				acp_mmio, mmACP_EXTERNAL_INTR_STAT);
-@@ -687,7 +687,7 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
- 
- 	if ((intr_flag & BIT(ACP_TO_SYSRAM_CH_NUM)) != 0) {
- 		valid_irq = true;
--		snd_pcm_period_elapsed(irq_data->capture_stream);
-+		snd_pcm_period_elapsed(irq_data->capture_i2ssp_stream);
- 		acp_reg_write((intr_flag & BIT(ACP_TO_SYSRAM_CH_NUM)) << 16,
- 				acp_mmio, mmACP_EXTERNAL_INTR_STAT);
+ 	if (audio_config->direction == SNDRV_PCM_STREAM_PLAYBACK) {
+-		pte_offset = ACP_PLAYBACK_PTE_OFFSET;
+-		ch1 = SYSRAM_TO_ACP_CH_NUM;
+-		ch2 = ACP_TO_I2S_DMA_CH_NUM;
+-		sram_bank = ACP_SHARED_RAM_BANK_1_ADDRESS;
+-		destination = TO_ACP_I2S_1;
+-
+-	} else {
+-		pte_offset = ACP_CAPTURE_PTE_OFFSET;
+-		ch1 = SYSRAM_TO_ACP_CH_NUM;
+-		ch2 = ACP_TO_I2S_DMA_CH_NUM;
+-		switch (asic_type) {
+-		case CHIP_STONEY:
++		switch (audio_config->i2s_play_instance) {
++		case I2S_BT_INSTANCE:
++			pte_offset = ACP_ST_I2S_BT_PLAYBACK_PTE_OFFSET;
++			ch1 = SYSRAM_TO_ACP_BT_INSTANCE_CH_NUM;
++			ch2 = ACP_TO_I2S_DMA_BT_INSTANCE_CH_NUM;
+ 			sram_bank = ACP_SHARED_RAM_BANK_3_ADDRESS;
++			destination = TO_BLUETOOTH;
+ 			break;
++		case I2S_SP_INSTANCE:
+ 		default:
+-			sram_bank = ACP_SHARED_RAM_BANK_5_ADDRESS;
++			switch (asic_type) {
++			case CHIP_STONEY:
++				pte_offset = ACP_ST_I2S_SP_PLAYBACK_PTE_OFFSET;
++				break;
++			default:
++				pte_offset = ACP_PLAYBACK_PTE_OFFSET;
++			}
++			ch1 = SYSRAM_TO_ACP_CH_NUM;
++			ch2 = ACP_TO_I2S_DMA_CH_NUM;
++			sram_bank = ACP_SHARED_RAM_BANK_1_ADDRESS;
++			destination = TO_ACP_I2S_1;
++		}
++	} else {
++		switch (audio_config->i2s_capture_instance) {
++		case I2S_BT_INSTANCE:
++			pte_offset = ACP_ST_I2S_BT_CAPTURE_PTE_OFFSET;
++			ch1 = ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM;
++			ch2 = I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM;
++			sram_bank = ACP_SHARED_RAM_BANK_4_ADDRESS;
++			destination = FROM_BLUETOOTH;
++			break;
++		case I2S_SP_INSTANCE:
++		default:
++			pte_offset = ACP_CAPTURE_PTE_OFFSET;
++			ch1 = SYSRAM_TO_ACP_CH_NUM;
++			ch2 = ACP_TO_I2S_DMA_CH_NUM;
++			switch (asic_type) {
++			case CHIP_STONEY:
++				sram_bank = ACP_SHARED_RAM_BANK_2_ADDRESS;
++				break;
++			default:
++				sram_bank = ACP_SHARED_RAM_BANK_5_ADDRESS;
++			}
++			destination = FROM_ACP_I2S_1;
+ 		}
+-		destination = FROM_ACP_I2S_1;
  	}
-@@ -745,11 +745,11 @@ static int acp_dma_open(struct snd_pcm_substream *substream)
- 	 * This enablement is not required for another stream, if current
- 	 * stream is not closed
- 	*/
--	if (!intr_data->play_stream && !intr_data->capture_stream)
-+	if (!intr_data->play_i2ssp_stream && !intr_data->capture_i2ssp_stream)
- 		acp_reg_write(1, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
  
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		intr_data->play_stream = substream;
-+		intr_data->play_i2ssp_stream = substream;
- 		/* For Stoney, Memory gating is disabled,i.e SRAM Banks
- 		 * won't be turned off. The default state for SRAM banks is ON.
- 		 * Setting SRAM bank state code skipped for STONEY platform.
-@@ -760,7 +760,7 @@ static int acp_dma_open(struct snd_pcm_substream *substream)
- 							bank, true);
- 		}
- 	} else {
--		intr_data->capture_stream = substream;
-+		intr_data->capture_i2ssp_stream = substream;
- 		if (intr_data->asic_type != CHIP_STONEY) {
- 			for (bank = 5; bank <= 8; bank++)
- 				acp_set_sram_bank_state(intr_data->acp_mmio,
-@@ -860,11 +860,11 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
- 	bytescount = acp_get_byte_count(rtd->acp_mmio, substream->stream);
+ 	acp_pte_config(acp_mmio, audio_config->pg, audio_config->num_of_pages,
+ 			pte_offset);
+-	if (audio_config->direction == SNDRV_PCM_STREAM_PLAYBACK)
+-		dma_dscr_idx = PLAYBACK_START_DMA_DESCR_CH12;
+-	else
+-		dma_dscr_idx = CAPTURE_START_DMA_DESCR_CH14;
++	if (audio_config->direction == SNDRV_PCM_STREAM_PLAYBACK) {
++		switch (audio_config->i2s_play_instance) {
++		case I2S_BT_INSTANCE:
++			dma_dscr_idx = PLAYBACK_START_DMA_DESCR_CH8;
++			break;
++		case I2S_SP_INSTANCE:
++		default:
++			dma_dscr_idx = PLAYBACK_START_DMA_DESCR_CH12;
++		}
++	} else {
++		switch (audio_config->i2s_capture_instance) {
++		case I2S_BT_INSTANCE:
++			dma_dscr_idx = CAPTURE_START_DMA_DESCR_CH10;
++			break;
++		case I2S_SP_INSTANCE:
++		default:
++			dma_dscr_idx = CAPTURE_START_DMA_DESCR_CH14;
++		}
++	}
  
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		if (bytescount > rtd->renderbytescount)
--			bytescount = bytescount - rtd->renderbytescount;
-+		if (bytescount > rtd->i2ssp_renderbytescount)
-+			bytescount = bytescount - rtd->i2ssp_renderbytescount;
- 	} else {
--		if (bytescount > rtd->capturebytescount)
--			bytescount = bytescount - rtd->capturebytescount;
-+		if (bytescount > rtd->i2ssp_capturebytescount)
-+			bytescount = bytescount - rtd->i2ssp_capturebytescount;
- 	}
- 	pos = do_div(bytescount, buffersize);
- 	return bytes_to_frames(runtime, pos);
-@@ -921,8 +921,8 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
- 		bytescount = acp_get_byte_count(rtd->acp_mmio,
- 						substream->stream);
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--			if (rtd->renderbytescount == 0)
--				rtd->renderbytescount = bytescount;
-+			if (rtd->i2ssp_renderbytescount == 0)
-+				rtd->i2ssp_renderbytescount = bytescount;
- 			acp_dma_start(rtd->acp_mmio,
- 						SYSRAM_TO_ACP_CH_NUM, false);
- 			while (acp_reg_read(rtd->acp_mmio, mmACP_DMA_CH_STS) &
-@@ -939,8 +939,8 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
- 					ACP_TO_I2S_DMA_CH_NUM, true);
+ 	/* Configure System memory <-> ACP SRAM DMA descriptors */
+ 	set_acp_sysmem_dma_descriptors(acp_mmio, audio_config->size,
+ 				       audio_config->direction, pte_offset,
+ 					ch1, sram_bank, dma_dscr_idx, asic_type);
  
- 		} else {
--			if (rtd->capturebytescount == 0)
--				rtd->capturebytescount = bytescount;
-+			if (rtd->i2ssp_capturebytescount == 0)
-+				rtd->i2ssp_capturebytescount = bytescount;
- 			acp_dma_start(rtd->acp_mmio,
- 					    I2S_TO_ACP_DMA_CH_NUM, true);
- 		}
-@@ -957,11 +957,11 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 			ret = acp_dma_stop(rtd->acp_mmio,
- 					ACP_TO_I2S_DMA_CH_NUM);
--			rtd->renderbytescount = 0;
-+			rtd->i2ssp_renderbytescount = 0;
- 		} else {
- 			ret = acp_dma_stop(rtd->acp_mmio,
- 					I2S_TO_ACP_DMA_CH_NUM);
--			rtd->capturebytescount = 0;
-+			rtd->i2ssp_capturebytescount = 0;
- 		}
+-	if (audio_config->direction == SNDRV_PCM_STREAM_PLAYBACK)
+-		dma_dscr_idx = PLAYBACK_START_DMA_DESCR_CH13;
+-	else
+-		dma_dscr_idx = CAPTURE_START_DMA_DESCR_CH15;
++	if (audio_config->direction == SNDRV_PCM_STREAM_PLAYBACK) {
++		switch (audio_config->i2s_play_instance) {
++		case I2S_BT_INSTANCE:
++			dma_dscr_idx = PLAYBACK_START_DMA_DESCR_CH9;
++			break;
++		case I2S_SP_INSTANCE:
++		default:
++			dma_dscr_idx = PLAYBACK_START_DMA_DESCR_CH13;
++		}
++	} else {
++		switch (audio_config->i2s_capture_instance) {
++		case I2S_BT_INSTANCE:
++			dma_dscr_idx = CAPTURE_START_DMA_DESCR_CH11;
++			break;
++		case I2S_SP_INSTANCE:
++		default:
++			dma_dscr_idx = CAPTURE_START_DMA_DESCR_CH15;
++		}
++	}
+ 	/* Configure ACP SRAM <-> I2S DMA descriptors */
+ 	set_acp_to_i2s_dma_descriptors(acp_mmio, audio_config->size,
+ 					audio_config->direction, sram_bank,
+@@ -385,6 +442,9 @@ static void acp_dma_start(void __iomem *acp_mmio,
+ 	case ACP_TO_I2S_DMA_CH_NUM:
+ 	case ACP_TO_SYSRAM_CH_NUM:
+ 	case I2S_TO_ACP_DMA_CH_NUM:
++	case ACP_TO_I2S_DMA_BT_INSTANCE_CH_NUM:
++	case ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM:
++	case I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM:
+ 		dma_ctrl |= ACP_DMA_CNTL_0__DMAChIOCEn_MASK;
  		break;
  	default:
-@@ -1009,7 +1009,7 @@ static int acp_dma_close(struct snd_pcm_substream *substream)
- 	kfree(rtd);
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		adata->play_stream = NULL;
-+		adata->play_i2ssp_stream = NULL;
- 		/* For Stoney, Memory gating is disabled,i.e SRAM Banks
- 		 * won't be turned off. The default state for SRAM banks is ON.
- 		 * Setting SRAM bank state code skipped for STONEY platform.
-@@ -1021,7 +1021,7 @@ static int acp_dma_close(struct snd_pcm_substream *substream)
- 				false);
- 		}
- 	} else  {
--		adata->capture_stream = NULL;
-+		adata->capture_i2ssp_stream = NULL;
- 		if (adata->asic_type != CHIP_STONEY) {
- 			for (bank = 5; bank <= 8; bank++)
- 				acp_set_sram_bank_state(adata->acp_mmio, bank,
-@@ -1032,7 +1032,7 @@ static int acp_dma_close(struct snd_pcm_substream *substream)
- 	/* Disable ACP irq, when the current stream is being closed and
- 	 * another stream is also not active.
- 	*/
--	if (!adata->play_stream && !adata->capture_stream)
-+	if (!adata->play_i2ssp_stream && !adata->capture_i2ssp_stream)
- 		acp_reg_write(0, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
- 
- 	return 0;
-@@ -1083,8 +1083,9 @@ static int acp_audio_probe(struct platform_device *pdev)
- 	 * and device doesn't generate any interrupts.
- 	 */
- 
--	audio_drv_data->play_stream = NULL;
--	audio_drv_data->capture_stream = NULL;
-+	audio_drv_data->play_i2ssp_stream = NULL;
-+	audio_drv_data->capture_i2ssp_stream = NULL;
-+
- 	audio_drv_data->asic_type =  *pdata;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-@@ -1148,7 +1149,7 @@ static int acp_pcm_resume(struct device *dev)
- 		return status;
- 	}
- 
--	if (adata->play_stream && adata->play_stream->runtime) {
-+	if (adata->play_i2ssp_stream && adata->play_i2ssp_stream->runtime) {
- 		/* For Stoney, Memory gating is disabled,i.e SRAM Banks
- 		 * won't be turned off. The default state for SRAM banks is ON.
- 		 * Setting SRAM bank state code skipped for STONEY platform.
-@@ -1159,17 +1160,17 @@ static int acp_pcm_resume(struct device *dev)
- 						true);
- 		}
- 		config_acp_dma(adata->acp_mmio,
--			adata->play_stream->runtime->private_data,
-+			adata->play_i2ssp_stream->runtime->private_data,
- 			adata->asic_type);
- 	}
--	if (adata->capture_stream && adata->capture_stream->runtime) {
-+	if (adata->capture_i2ssp_stream && adata->capture_i2ssp_stream->runtime) {
- 		if (adata->asic_type != CHIP_STONEY) {
- 			for (bank = 5; bank <= 8; bank++)
- 				acp_set_sram_bank_state(adata->acp_mmio, bank,
- 						true);
- 		}
- 		config_acp_dma(adata->acp_mmio,
--			adata->capture_stream->runtime->private_data,
-+			adata->capture_i2ssp_stream->runtime->private_data,
- 			adata->asic_type);
- 	}
- 	acp_reg_write(1, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
 diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
-index ecb4589..27803b2 100644
+index 366474f..0292433 100644
 --- a/sound/soc/amd/acp.h
 +++ b/sound/soc/amd/acp.h
-@@ -84,14 +84,14 @@ struct audio_substream_data {
- 	u16 num_of_pages;
- 	u16 direction;
- 	uint64_t size;
--	u64 renderbytescount;
--	u64 capturebytescount;
-+	u64 i2ssp_renderbytescount;
-+	u64 i2ssp_capturebytescount;
- 	void __iomem *acp_mmio;
- };
+@@ -10,17 +10,29 @@
+ #define ACP_PLAYBACK_PTE_OFFSET			10
+ #define ACP_CAPTURE_PTE_OFFSET			0
  
- struct audio_drv_data {
--	struct snd_pcm_substream *play_stream;
--	struct snd_pcm_substream *capture_stream;
-+	struct snd_pcm_substream *play_i2ssp_stream;
-+	struct snd_pcm_substream *capture_i2ssp_stream;
- 	void __iomem *acp_mmio;
- 	u32 asic_type;
- };
++/* Playback and Capture Offset for Stoney */
++#define ACP_ST_I2S_SP_PLAYBACK_PTE_OFFSET	0x04
++#define ACP_ST_I2S_SP_CAPTURE_PTE_OFFSET	0x00
++#define ACP_ST_I2S_BT_PLAYBACK_PTE_OFFSET	0x08
++#define ACP_ST_I2S_BT_CAPTURE_PTE_OFFSET	0x0c
++
+ #define ACP_GARLIC_CNTL_DEFAULT			0x00000FB4
+ #define ACP_ONION_CNTL_DEFAULT			0x00000FB4
+ 
+ #define ACP_PHYSICAL_BASE			0x14000
+ 
+-/* Playback SRAM address (as a destination in dma descriptor) */
++/* In case of  I2S SP controller instance, Stoney uses SRAM bank 1 for
++ * playback and SRAM Bank 2 for capture where as in case of BT I2S
++ * Instance ,Stoney uses SRAM Bank 3 for playback & SRAM Bank 4 will
++ * be used for capture.Carrizo uses I2S SP controller instance.SRAM Banks
++ * 1,2,3,4 will be used for playback & SRAM Banks 5,6,7,8 will be used
++ * for capture scenario.
++ */
+ #define ACP_SHARED_RAM_BANK_1_ADDRESS		0x4002000
+-
+-/* Capture SRAM address (as a source in dma descriptor) */
+-#define ACP_SHARED_RAM_BANK_5_ADDRESS		0x400A000
++#define ACP_SHARED_RAM_BANK_2_ADDRESS		0x4004000
+ #define ACP_SHARED_RAM_BANK_3_ADDRESS		0x4006000
++#define ACP_SHARED_RAM_BANK_4_ADDRESS		0x4008000
++#define ACP_SHARED_RAM_BANK_5_ADDRESS		0x400A000
+ 
+ #define ACP_DMA_RESET_TIME			10000
+ #define ACP_CLOCK_EN_TIME_OUT_VALUE		0x000000FF
+@@ -35,8 +47,10 @@
+ 
+ #define TO_ACP_I2S_1   0x2
+ #define TO_ACP_I2S_2   0x4
++#define TO_BLUETOOTH   0x3
+ #define FROM_ACP_I2S_1 0xa
+ #define FROM_ACP_I2S_2 0xb
++#define FROM_BLUETOOTH 0xb
+ 
+ #define ACP_TILE_ON_MASK                0x03
+ #define ACP_TILE_OFF_MASK               0x02
+@@ -57,6 +71,14 @@
+ #define ACP_TO_SYSRAM_CH_NUM 14
+ #define I2S_TO_ACP_DMA_CH_NUM 15
+ 
++/* Playback DMA Channels for I2S BT instance */
++#define SYSRAM_TO_ACP_BT_INSTANCE_CH_NUM  8
++#define ACP_TO_I2S_DMA_BT_INSTANCE_CH_NUM 9
++
++/* Capture DMA Channels for I2S BT Instance */
++#define ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM 10
++#define I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM 11
++
+ #define NUM_DSCRS_PER_CHANNEL 2
+ 
+ #define PLAYBACK_START_DMA_DESCR_CH12 0
+@@ -69,6 +91,17 @@
+ #define CAPTURE_START_DMA_DESCR_CH15 6
+ #define CAPTURE_END_DMA_DESCR_CH15 7
+ 
++/* I2S BT Instance DMA Descriptors */
++#define PLAYBACK_START_DMA_DESCR_CH8 8
++#define PLAYBACK_END_DMA_DESCR_CH8 9
++#define PLAYBACK_START_DMA_DESCR_CH9 10
++#define PLAYBACK_END_DMA_DESCR_CH9 11
++
++#define CAPTURE_START_DMA_DESCR_CH10 12
++#define CAPTURE_END_DMA_DESCR_CH10 13
++#define CAPTURE_START_DMA_DESCR_CH11 14
++#define CAPTURE_END_DMA_DESCR_CH11 15
++
+ #define mmACP_I2S_16BIT_RESOLUTION_EN       0x5209
+ #define I2S_SP_INSTANCE 1
+ #define I2S_BT_INSTANCE 3
 -- 
 2.7.4
