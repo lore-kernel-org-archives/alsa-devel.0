@@ -1,83 +1,86 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: DA7219: Exposes clock enable as a
-	mixer setting
-Date: Fri, 16 Feb 2018 16:02:43 +0000
-Message-ID: <20180216160243.GL5886@sirena.org.uk>
-References: <1518766875-15164-1-git-send-email-akshu.agrawal@amd.com>
- <1518766875-15164-3-git-send-email-akshu.agrawal@amd.com>
+From: Matthias Kaehlcke <mka@chromium.org>
+Subject: Re: [PATCH v2] ASoC: dmic: Add optional wakeup delay
+Date: Fri, 16 Feb 2018 08:47:45 -0800
+Message-ID: <20180216164745.GC99727@google.com>
+References: <20180216022416.208265-1-mka@chromium.org>
+ <20180216024728.GA93733@rodete-desktop-imager.corp.google.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0480098113266822259=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EF4A2267E69
- for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 17:02:45 +0100 (CET)
-In-Reply-To: <1518766875-15164-3-git-send-email-akshu.agrawal@amd.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Akshu Agrawal <akshu.agrawal@amd.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180216024728.GA93733@rodete-desktop-imager.corp.google.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Brian Norris <briannorris@chromium.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Dylan Reid <dgreid@chromium.org>, huang lin <hl@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
+El Thu, Feb 15, 2018 at 06:47:29PM -0800 Brian Norris ha dit:
 
---===============0480098113266822259==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="YIleam+9adpUeYf+"
-Content-Disposition: inline
+> Hi,
+> 
+> On Thu, Feb 15, 2018 at 06:24:16PM -0800, Matthias Kaehlcke wrote:
+> > On some systems a delay is needed after switching on the clocks, to allow
+> > the output to stabilize and avoid a popping noise at the beginning of
+> > the recording. Add the optional device tree property 'wakeup-delay-ms'
+> > and apply the specified delay after enabling the mic. A blocking delay
+> > can't be applied in dmic_daiops_trigger() since the function is called
+> > in atomic context. Instead use a DAPM event handler to set the enable
+> > GPIO and apply the delay in the handler.
+> > 
+> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> > ---
+> > Changes in v2:
+> > - use DAPM event handler instead of _prepare() and get rid of
+> >   _trigger()
+> > - skip error check for optional 'wakeup-delay-ms' property
+> > - updated commit message
+> 
+> Looks good to me in general:
+> 
+> Brian Norris <briannorris@chromium.org>
+> 
+> But I don't know much about the audio subsystem. One comment below.
+> 
+> > 
+> >  .../devicetree/bindings/sound/dmic.txt        |  2 +
+> >  sound/soc/codecs/dmic.c                       | 63 ++++++++++---------
+> >  2 files changed, 37 insertions(+), 28 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/sound/dmic.txt b/Documentation/devicetree/bindings/sound/dmic.txt
+> > index f7bf65611453..e957b4136716 100644
+> > --- a/Documentation/devicetree/bindings/sound/dmic.txt
+> > +++ b/Documentation/devicetree/bindings/sound/dmic.txt
+> > @@ -8,6 +8,7 @@ Required properties:
+> >  Optional properties:
+> >  	- dmicen-gpios: GPIO specifier for dmic to control start and stop
+> >  	- num-channels: Number of microphones on this DAI
+> > +	- wakeup-delay-ms: Delay (in ms) after enabling the DMIC
+> >  
+> >  Example node:
+> >  
+> > @@ -15,4 +16,5 @@ Example node:
+> >  		compatible = "dmic-codec";
+> >  		dmicen-gpios = <&gpio4 3 GPIO_ACTIVE_HIGH>;
+> >  		num-channels = <1>;
+> > +		wakeup-delay-ms <50>;
+> >  	};
+> > diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
+> > index cf83c423394d..b5f60ac22ace 100644
+> > --- a/sound/soc/codecs/dmic.c
+> > +++ b/sound/soc/codecs/dmic.c
+> [...]
+> 
+> >  static const struct snd_soc_dapm_widget dmic_dapm_widgets[] = {
+> > -	SND_SOC_DAPM_AIF_OUT("DMIC AIF", "Capture", 0,
+> > -			     SND_SOC_NOPM, 0, 0),
+> > +	SND_SOC_DAPM_AIF_OUT_E("DMIC AIF", "Capture", 0,
+> > +			       SND_SOC_NOPM, 0, 0, dmic_aif_event,
+> > +			       SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
+> 
+> Any good reason both are _POST_? It seems like you'd want them to be
+> inverses (e.g., power-power-up, and pre-power-down).
 
-
---YIleam+9adpUeYf+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Feb 16, 2018 at 01:11:14PM +0530, Akshu Agrawal wrote:
-
-> This is required for designs which uses da7219 in master mode
-> and same clks are shared with other codecs. We need to enable
-> and disable the clk during playback and capture on other codecs.
-
-> +	/* Clock Enable */
-> +	SOC_SINGLE("Clock Enable", DA7219_DAI_CLK_MODE,
-> +		   DA7219_DAI_CLK_EN_SHIFT, DA7219_SWITCH_EN_MAX,
-> +		   DA7219_NO_INVERT),
-
-No, this isn't something users should be confronted with or have to
-manage.  We have a clock API in the kernel, you should arrange for the
-CODEC driver to provide a clock via that API and then the users should
-be clock API consumers and enable it when they need it.
-
-It's also an on/off control=20
-
---YIleam+9adpUeYf+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqHAKIACgkQJNaLcl1U
-h9CiEAf/dfXUDzfvf35dIGUYzUnXxrHBRv0Nih535NT4H2zquyaG8JzglHwfG6cU
-uMsd7fIcv+S0g5dpMNj31aY/9OmwEjx5P2hqCyZxuFnxkHsYI4FKBRvS0I3khkNm
-iGfFvzrqZmDyeLrQQ1l/gd+5qRa6y/66P/RM0QwvSpaRKaIwHkQdn6KzjY+ibTjR
-rwyQCP8oY5W0sz7j7wrR52JEiNcUbb+asqyjaecDYLvdjjKnN20rXoRsvA9utPra
-/uVWN0GcT3moguArvnby27vNDhJL2FlFIlJsmKjo8xfepbN6/2MotZ7Ecff2e5id
-legLJs1GoMr+curjjGG8xHvlHvQNaQ==
-=sZvp
------END PGP SIGNATURE-----
-
---YIleam+9adpUeYf+--
-
---===============0480098113266822259==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0480098113266822259==--
+Post-power-up is needed to avoid a popping noise when the clock is
+enabled (see 3a6f9dce6116 ("ASoC: rk3399_gru_sound: fix recording pop
+at first attempt") and disabling the mic before switching off the
+clock (pre-power-down) could cause noise at the end of the recording.
