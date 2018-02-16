@@ -1,78 +1,97 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv4 1/4] dt-bindings: sound: add motorola,cpcap-audio-codec
-Date: Fri, 16 Feb 2018 15:16:09 +0000
-Message-ID: <20180216151609.GK5886@sirena.org.uk>
-References: <20180214220741.28306-1-sebastian.reichel@collabora.co.uk>
- <20180214220741.28306-2-sebastian.reichel@collabora.co.uk>
- <20180216113008.GB5886@sirena.org.uk>
- <20180216132537.lkd4wzfg7uuoyx7k@earth.universe>
- <20180216134448.GI5886@sirena.org.uk>
- <20180216141237.rd75sbix7bopi7zu@earth.universe>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rnP2AJ7yb1j09OW/"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180216141237.rd75sbix7bopi7zu@earth.universe>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Tony Lindgren <tony@atomide.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Applied "ASoC: sgtl5000: Fix suspend/resume" to the asoc tree
+Date: Fri, 16 Feb 2018 15:21:13 +0000
+Message-ID: <E1emhp3-0003Sk-Gi@debutante>
+References: <1518789534-11828-1-git-send-email-festevam@gmail.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1518789534-11828-1-git-send-email-festevam@gmail.com>
+Sender: stable-owner@vger.kernel.org
+To: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgbroonie@kernel.org, eric@nelint.com, alsa-devel@alsa-project.orgstable@vger.kernel.org, max.krummenacher@toradex.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---rnP2AJ7yb1j09OW/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: sgtl5000: Fix suspend/resume
 
-On Fri, Feb 16, 2018 at 03:12:37PM +0100, Sebastian Reichel wrote:
-> On Fri, Feb 16, 2018 at 01:44:48PM +0000, Mark Brown wrote:
-> > On Fri, Feb 16, 2018 at 02:25:38PM +0100, Sebastian Reichel wrote:
+has been applied to the asoc tree at
 
-> > > While it looks empty in the DT binding file, it's actually not empty
-> > > once some standard properties are added to support audio-graph-card.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> > This tells me you're missing something in the binding defining the
-> > DAIs and...
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> Well it is described by the following document:
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Documentation/devicetree/bindings/sound/audio-graph-card.txt
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-You still need to say which DAIs exist on the device and how they are
-identified - if there's only one DAI it's obviously easy but if a device
-has multiple DAIs then there's some naming to do.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> > ...that still doesn't require a compatible here.
+Thanks,
+Mark
 
-> I agree, that it's not required. Also the node is not required.
-> Everything could be dumped into the main node. Many things are
-> not required, but they make implementations easier and help in
-> regards to DT readability and consistency. Having the compatible
-> means, that all sub-functions _can_ be handled equally by the
-> operating system. Not having the compatible means you _always_
-> need special handling for the audio codec. This basically makes
-> the codec node different for the simple purpose of "because it is
-> not strictly required". If we have a compatible node, other
-> operating systems can still decide to ignore it, right?
+>From a8992973edbb2555e956b90f6fe97c4bc14d761d Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Date: Fri, 16 Feb 2018 11:58:54 -0200
+Subject: [PATCH] ASoC: sgtl5000: Fix suspend/resume
 
-It's not just other operating systems, it's also other versions of
-Linux we have to think about here.  The most obvious issue with audio is
-the clocking where the division between ASoC and clock APIs is not super
-obvious and could easily change in the future.
+Commit 8419caa72702 ("ASoC: sgtl5000: Do not disable regulators in
+SND_SOC_BIAS_OFF") causes the sgtl5000 to fail after a suspend/resume
+sequence:
 
---rnP2AJ7yb1j09OW/
-Content-Type: application/pgp-signature; name="signature.asc"
+Playing WAVE '/media/a2002011001-e02.wav' : Signed 16 bit Little
+Endian, Rate 44100 Hz, Stereo
+aplay: pcm_write:2051: write error: Input/output error
 
------BEGIN PGP SIGNATURE-----
+The problem is caused by the fact that the aforementioned commit
+dropped the cache handling, so re-introduce the register map
+resync to fix the problem.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqG9bgACgkQJNaLcl1U
-h9DNMAf9H7GcnGs/G4OlpnokwAudl2Uu5fmmOrtocEShD2M27kg7Xy+yFHxw/hP5
-NFntlCoM7ctaz3qW49nmcD7mgvXOVNiTRXvJGnH5j1n3iSHiBk2PRLt6OG4UdYod
-5iGTyz65gpUXEbeQ7iJEGhQJd9gYsiMQMGiWGe0eiVGiqiCvfclFlBkP7mILBvTu
-pdn2FGvD/BpYQ5LH538ocQLVJCSpXK/tyqJAC/fTTw1WPCBpLGuEJ0RqbUUny6F/
-+jfYvCq6RhtiOnxrAQKyByblZ7vmbVx0cgirvEDIC5qDDQ328VQJkWm5qzvwtlFe
-6CfbmZaqLpkt0At0H9yQ+ZQdn4iKFA==
-=xZoD
------END PGP SIGNATURE-----
+Suggested-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: <stable@vger.kernel.org>
+---
+ sound/soc/codecs/sgtl5000.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---rnP2AJ7yb1j09OW/--
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index c445a0794a27..c5c76ab8ccf1 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -876,15 +876,26 @@ static int sgtl5000_pcm_hw_params(struct snd_pcm_substream *substream,
+ static int sgtl5000_set_bias_level(struct snd_soc_codec *codec,
+ 				   enum snd_soc_bias_level level)
+ {
++	struct sgtl5000_priv *sgtl = snd_soc_codec_get_drvdata(codec);
++	int ret;
++
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+ 	case SND_SOC_BIAS_PREPARE:
+ 	case SND_SOC_BIAS_STANDBY:
++		regcache_cache_only(sgtl->regmap, false);
++		ret = regcache_sync(sgtl->regmap);
++		if (ret) {
++			regcache_cache_only(sgtl->regmap, true);
++			return ret;
++		}
++
+ 		snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
+ 				    SGTL5000_REFTOP_POWERUP,
+ 				    SGTL5000_REFTOP_POWERUP);
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
++		regcache_cache_only(sgtl->regmap, true);
+ 		snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
+ 				    SGTL5000_REFTOP_POWERUP, 0);
+ 		break;
+-- 
+2.16.1
