@@ -1,18 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak4458: ak4458_regmap can be static" to
-	the asoc tree
-Date: Fri, 16 Feb 2018 15:21:36 +0000
-Message-ID: <E1emhpQ-0003Uw-Ei@debutante>
-References: <20180216135527.GA1304@lkp-ne02>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCHv4 1/4] dt-bindings: sound: add motorola,
+	cpcap-audio-codec
+Date: Fri, 16 Feb 2018 07:57:07 -0800
+Message-ID: <20180216155706.GS6364@atomide.com>
+References: <20180214220741.28306-1-sebastian.reichel@collabora.co.uk>
+ <20180214220741.28306-2-sebastian.reichel@collabora.co.uk>
+ <20180216113008.GB5886@sirena.org.uk>
+ <20180216132537.lkd4wzfg7uuoyx7k@earth.universe>
+ <20180216134448.GI5886@sirena.org.uk>
+ <20180216141237.rd75sbix7bopi7zu@earth.universe>
+ <20180216151609.GK5886@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 39D91267E5E
- for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 16:21:58 +0100 (CET)
-In-Reply-To: <20180216135527.GA1304@lkp-ne02>
+Received: from muru.com (muru.com [72.249.23.125])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BE1726701D
+ for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 16:57:12 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20180216151609.GK5886@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,69 +28,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Shengjiu Wang <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>, Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>, Liam Girdwood <lgirdwood@gmail.com>, Mihai Serban <mihai.serban@nxp.com>, Andy Shevchenko <andy.shevchenko@gmail.com>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org, Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>, Fengguang Wu <fengguang.wu@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+* Mark Brown <broonie@kernel.org> [180216 15:17]:
+> On Fri, Feb 16, 2018 at 03:12:37PM +0100, Sebastian Reichel wrote:
+> > On Fri, Feb 16, 2018 at 01:44:48PM +0000, Mark Brown wrote:
+> > > On Fri, Feb 16, 2018 at 02:25:38PM +0100, Sebastian Reichel wrote:
+> 
+> > > > While it looks empty in the DT binding file, it's actually not empty
+> > > > once some standard properties are added to support audio-graph-card.
+> 
+> > > This tells me you're missing something in the binding defining the
+> > > DAIs and...
+> 
+> > Well it is described by the following document:
+> 
+> > Documentation/devicetree/bindings/sound/audio-graph-card.txt
+> 
+> You still need to say which DAIs exist on the device and how they are
+> identified - if there's only one DAI it's obviously easy but if a device
+> has multiple DAIs then there's some naming to do.
+> 
+> > > ...that still doesn't require a compatible here.
+> 
+> > I agree, that it's not required. Also the node is not required.
+> > Everything could be dumped into the main node. Many things are
+> > not required, but they make implementations easier and help in
+> > regards to DT readability and consistency. Having the compatible
+> > means, that all sub-functions _can_ be handled equally by the
+> > operating system. Not having the compatible means you _always_
+> > need special handling for the audio codec. This basically makes
+> > the codec node different for the simple purpose of "because it is
+> > not strictly required". If we have a compatible node, other
+> > operating systems can still decide to ignore it, right?
+> 
+> It's not just other operating systems, it's also other versions of
+> Linux we have to think about here.  The most obvious issue with audio is
+> the clocking where the division between ASoC and clock APIs is not super
+> obvious and could easily change in the future.
 
-   ASoC: ak4458: ak4458_regmap can be static
+Yeah let's stick to describing how the hardware is wired in the
+dts files. In this case it's really only the routing to the SoC,
+right?
 
-has been applied to the asoc tree at
+One advantage of using a compatible property for the pmic subdevices
+though is that it leaves out a dependency between various device
+drivers things happen automagically. The mfd core driver can be
+minimal and just implement interrupt handling and regmap. So no need
+to to parse the child nodes in the pmic mfd driver :)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+So personally I'd prefer the option that requires least amount
+of custom code if compatible vs no compatible property is the
+only issue here.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Regards,
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 71ca54b6e87df90ecab3ce1968d60543750c7507 Mon Sep 17 00:00:00 2001
-From: kbuild test robot <fengguang.wu@intel.com>
-Date: Fri, 16 Feb 2018 21:55:28 +0800
-Subject: [PATCH] ASoC: ak4458: ak4458_regmap can be static
-
-Fixes: 08660086eff9 ("ASoC: ak4458: Add support for AK4458 DAC driver")
-Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/ak4458.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
-index b579cda8e418..c9762162b53f 100644
---- a/sound/soc/codecs/ak4458.c
-+++ b/sound/soc/codecs/ak4458.c
-@@ -574,7 +574,7 @@ struct snd_soc_codec_driver soc_codec_dev_ak4458 = {
- 	},
- };
- 
--const struct regmap_config ak4458_regmap = {
-+static const struct regmap_config ak4458_regmap = {
- 	.reg_bits = 8,
- 	.val_bits = 8,
- 
-@@ -584,7 +584,7 @@ const struct regmap_config ak4458_regmap = {
- 	.cache_type = REGCACHE_RBTREE,
- };
- 
--const struct dev_pm_ops ak4458_pm = {
-+static const struct dev_pm_ops ak4458_pm = {
- 	SET_RUNTIME_PM_OPS(ak4458_runtime_suspend, ak4458_runtime_resume, NULL)
- 	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
- 				pm_runtime_force_resume)
--- 
-2.16.1
+Tony
