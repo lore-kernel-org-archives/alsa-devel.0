@@ -1,18 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Need help implementing an external PCM/control
-	plugin pair
-Date: Fri, 16 Feb 2018 19:38:06 +0900
-Message-ID: <4deee929-ae8c-c330-d9d1-865c558a3b75@sakamocchi.jp>
-References: <0daf8a5e-c1dd-224e-52e7-7467d93aa045@gmail.com>
+From: Stefan Wahren <stefan.wahren@i2se.com>
+Subject: [PATCH V3 1/2 RESEND] dt-bindings: bcm283x: Fix
+	register ranges of bcm2835-i2s
+Date: Fri, 16 Feb 2018 11:55:33 +0100
+Message-ID: <1518778534-3328-2-git-send-email-stefan.wahren@i2se.com>
+References: <1518778534-3328-1-git-send-email-stefan.wahren@i2se.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 7517E267DC1
- for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 11:38:08 +0100 (CET)
-In-Reply-To: <0daf8a5e-c1dd-224e-52e7-7467d93aa045@gmail.com>
-Content-Language: en-US
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.13])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B3FB267DC1
+ for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 11:56:13 +0100 (CET)
+In-Reply-To: <1518778534-3328-1-git-send-email-stefan.wahren@i2se.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,76 +21,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papavasiliou <dpapavas@gmail.com>, alsa-devel@alsa-project.org
+To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Eric Anholt <eric@anholt.net>
+Cc: Stefan Wahren <stefan.wahren@i2se.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiBGZWIgMTYgMjAxOCAxOToxMiwgRGltaXRyaXMgUGFwYXZhc2lsaW91IHdyb3RlOgo+
-IEknbSBpbiB0aGUgcHJvY2VzcyBvZiBwdXR0aW5nIHRvZ2V0aGVyIGEgbG91ZG5lc3MgY29tcGVu
-c2F0aW9uIHBsdWdpbiAKPiBmb3IgQUxTQS7CoCBUaGUgZmlsdGVyaW5nIHBhcnQgaXMgaW1wbGVt
-ZW50ZWQgYXMgYW4gZXh0ZXJuYWwgUENNIHBsdWdpbiAKPiBhbmQgaXQgaXMsIG1vcmUgb3IgbGVz
-cywgcmVhZHksIG1lYW5pbmcgdGhhdCB5b3UgY2FuIHNldCBpdHMgcGFyYW1ldGVycyAKPiB2aWEg
-Y29uZmlndXJhdGlvbiBvcHRpb25zIGFuZCBpdCdsbCBoYXBwaWx5IGZpbHRlciBhd2F5IGluIHJl
-YWwgdGltZS4gCj4gSSdtIHRyeWluZyBub3cgdG8gY3JlYXRlIGEgbWF0Y2hpbmcgbWl4ZXIgcGx1
-Z2luLCB0byBhbGxvdyBvbi10aGUtZmx5IAo+IGFkanVzdG1lbnQgb2YgdGhlIHBhcmFtZXRlcnMs
-IGFuZCBJJ20gbm90IHN1cmUgd2hhdCB0aGUgYmVzdCB3YXkgb2YgCj4gYWNjb21wbGlzaGluZyB0
-aGF0IHdvdWxkIGJlLsKgIE15IG1haW4gY29uY2VybnMgYXJlOgo+Cj4gMS4gSSd2ZSBmaWd1cmVk
-IG91dCBob3cgdG8gY3JlYXRlIGEgYmFzaWMgZXh0ZXJuYWwgY29udHJvbCBwbHVnaW4sIHRoYXQg
-Cj4gd291bGQgYWxsb3cgbWUgdG8gZXhwb3NlIGEgc2V0IG9mIGNvbnRyb2xzLCB3aGljaCB0aGUg
-dXNlciBjYW4gZmlkZGxlIAo+IHdpdGgsIHVzaW5nIGFsc2FtaXhlciBldCBhbC4sIGJ1dCB3aGF0
-IHdvdWxkIGJlIHRoZSBiZXN0IHdheSBvZiAKPiBjb21tdW5pY2F0aW5nIGNoYW5nZXMgaW4gdGhl
-IHZhbHVlcyB0byB0aGUgUENNIHBsdWdpbj/CoCBJIGNvdWxkIGltYWdpbmUgCj4gdXNpbmcgbWV0
-aG9kcyBleHRlcm5hbCB0byBBTFNBLCBzdWNoIGFzIGEgZmlsZSB3aXRoIHN0b3JlZCB2YWx1ZXMs
-IHdoaWNoIAo+IHRoZSBjdGwgcGx1Z2luIHVwZGF0ZXMgYW5kIHdoaWNoIHRoZSBQQ00gcGx1Z2lu
-IG1vbml0b3JzIGZvciBjaGFuZ2VzLCBvciAKPiBwZXJoYXBzIEkgY291bGQgdHJ5IHRvIG9wZW4g
-dGhlIG1peGVyIGZyb20gaW5zaWRlIHRoZSBQQ00gcGx1Z2luLCBzZXQgCj4gY2FsbGJhY2tzIGZv
-ciBlYWNoIG9mIGl0cyBlbGVtZW50cyBhbmQgZW50ZXIgYSAKPiBzbmRfbWl4ZXJfd2FpdC9zbmRf
-bWl4ZXJfaGFuZGxlX2V2ZW50cyBsb29wLCBpbiBhIHNlcGFyYXRlIHRocmVhZCBvZiAKPiBjb3Vy
-c2UuwqAgSXMgdGhlcmUgcmVhc29uIHRvIHByZWZlciBvbmUgd2F5IG92ZXIgdGhlIG90aGVyP8Kg
-IFBlcmhhcHMgCj4gdGhlcmUgaXMgYSBiZXR0ZXIgd2F5LCBJJ20gbm90IGF3YXJlIG9mPwo+Cj4g
-Mi4gSSdkIGxpa2UgdG8gc3VwcG9ydCBldmVudCBzdWJzY3JpcHRpb24vbm90aWZpY2F0aW9uLCBi
-dXQgSSdtIG5vdCBzdXJlIAo+IGhvdyB0byBtYWtlIHRoYXQgd29yay7CoCBNeSB1bmRlcnN0YW5k
-aW5nIChmcm9tIHNlYXJjaGluZyB0aGUgbmV0IGFuZCAKPiBsb29raW5nIGF0IEFMU0EncyBzb3Vy
-Y2UpLCBpcyB0aGF0IEkgbmVlZCB0byBwcm92aWRlIHNvbWUgc29ydCBvZiBmaWxlIAo+IGRlc2Ny
-aXB0b3IsIHdoaWNoIHRoZSBzdWJzY3JpYmluZyBjb2RlIGNhbiBwb2xsLCBzbyBhcyB0byBibG9j
-ayB1bnRpbCAKPiB0aGVyZSdzIGFuIHVwZGF0ZS7CoCBTaW5jZSBJIGhhdmUgbm8gb2J2aW91cyBj
-YW5kaWRhdGVzIGZvciBzdWNoIGEgZmlsZSwgCj4gSSd2ZSB0cmllZCBjcmVhdGluZyBhIHBpcGUs
-IGhhbmRpbmcgb25lIGVuZCB0byB0aGUgY29udHJvbCBwbHVnaW4gdXBvbiAKPiBpbml0aWFsaXph
-dGlvbiBhbmQgdGhlbiB3cml0aW5nIHNpbmdsZSBieXRlcyB0byB0aGUgb3RoZXIgZW5kIHdoZW4g
-Cj4gdGhlcmUncyBhIGNoYW5nZSBpbiBvbmUgb2YgdGhlIGNvbnRyb2xzLsKgIFRoaXMgd29ya3Mg
-YnV0LCBhcyBmYXIgYXMgSSAKPiBjYW4gc2VlLCB0aGUgcGlwZSBpcyBuZXZlciBhY3R1YWxseSBy
-ZWFkIGZyb20sIGZyb20gdGhlIHN1YnNjcmliaW5nIAo+IGNvZGUsIHNvIHRoYXQgSSB3b3VsZCBo
-YXZlIHRvIG1hbnVhbGx5IHJlYWQgZnJvbSBpdCBzb21laHdlcmUsIHNheSBpbiAKPiB0aGUgcmVh
-ZF9ldmVudCBjYWxsYmFjaywgaW4gb3JkZXIgdG8gZmx1c2ggaXQuwqAgSW4gdGhlIGVuZCwgSSds
-bCAKPiBwcm9iYWJseSB1c2UgdGhlIGRlc2NyaXB0b3IgZnJvbSBhbiBpbm90aWZ5IHdhdGNoIG9u
-IHRoZSBmaWxlIHdoZXJlIHRoZSAKPiBwbHVnaW4gc3RvcmVzIHRoZSBjb250cm9sIHNldHRpbmdz
-LCBidXQgaXMgdGhpcyBhIHZhbGlkIGFwcHJvYWNoIAo+IG92ZXJhbGw/wqAgSXMgdGhlcmUgc29t
-ZSBkb2N1bWVudGF0aW9uIHNwZWNpZnlpbmcgdGhlIGV4YWN0IHdheSBpbiB3aGljaCAKPiBwb2xs
-IGRlc2NyaXB0b3JzIGFyZSBoYW5kbGVkIGJ5IEFMU0EgKGluIHRoZSBjYXNlIG9mIGFuIGV4dHJu
-YWwgQ1RMIAo+IHBsdWdpbiksIHRoYXQgSSd2ZSBtaXNzZWQ/wqAgSWYgbm90LCBhcmUgbXkgYXNz
-dW1wdGlvbnMgYWJvdmUgKHRoYXQgdGhlIAo+IGRlc2NyaXB0b3IgaXMgb25seSBwb2xsZWQgYW5k
-IHRoYXQgaXRzIGNvbnRlbnRzIGFyZSBuZXZlciBhY3R1YWxseSByZWFkKSAKPiBjb3JyZWN0Pwo+
-IAo+IDMuIEZpbmFsbHksIGFuZCBhbHRob3VnaCB0aGlzIGlzIG5vdCBlc3NlbnRpYWwsIEknZCBs
-aWtlIHRvIHByb3ZpZGUgCj4gbWV0YWRhdGEgZm9yIHNvbWUgY29udHJvbHMsIHRvIHN1cHBvcnQg
-ZEIgcmFuZ2VzLCBhcyB0aGF0J3MgdGhlIG1vc3QgCj4gbmF0dXJhbCB3YXkgdG8gc2V0IHRoZW0u
-wqAgSSBzZWUgaGludHMgdGhhdCB0aGlzIGlzIHN1cHBvcnRlZCBmb3IgCj4gZXh0ZXJuYWwgY29u
-dHJvbCBwbHVnaW5zIChTTkRfQ1RMX0VYVF9BQ0NFU1NfVExWX1JFQUQvV1JJVEUsIHRoZSAKPiBz
-bmRfY3RsX2V4dF90bHZfcndfdCBjYWxsYmFjayksIGJ1dCBJJ20gbm90IHN1cmUgaG93IHRvIGlt
-cGxlbWVudCBpdC4gSXMgCj4gaXQgZG9jdW1lbnRlZCBzb21ld2hlcmU/wqAgSWYgbm90LCBjb3Vs
-ZCBzb21lb25lIGRlc2NyaWJlIHRoZSBiYXNpYyAKPiBhcHByb2FjaD8KCkFMU0EgY29udHJvbCBj
-b3JlIGhhcyBhIGZlYXR1cmUgY2FsbGVkIGFzICd1c2VyLWRlZmluZWQgY29udHJvbCBlbGVtZW50
-IApzZXQnLiBUaGlzIHdpbGwgaGVscCB5b3VyIHdvcmssIGluIG15IG9waW5pb24uIEZvciBleGFt
-cGxlLCBhbHNhLWxpYiAKJ3NvZnR2b2wnIFBDTSBwbHVnaW4gdXRpbGl6ZXMgdGhpcyBmZWF0dXJl
-IHRvIGFjY29tcGxpc2htZW50IApjb25maWd1cmFibGUgdm9sdW1lcyBieSB0aGUgb3RoZXJzWzFd
-LiBUaGlzIGZlYXR1cmUgc3VwcG9ydHMgbWV0YWRhdGEgYnkgClRMViAoVHlwZS1MZW5ndGgtVmFs
-dWUpIGFuZCBldmVudGluZyB0byBzdWJzY3JpYmVycyBhcyB3ZWxsLgoKVGhlIGFsc2EtbGliIGlu
-Y2x1ZGVzIGEgdGVzdCBwcm9ncmFtIGZvciB0aGlzIGZlYXR1cmUsIHdoaWNoIEkgd3JvdGVbMl0u
-IApUaGlzIG1heSBoZWxwIHlvdXIgd29yayBieSBpdHMgYWN0dWFsIGNvZGUsIEkgdGhpbmtbMl0u
-CgpbMV0gCmh0dHA6Ly9naXQuYWxzYS1wcm9qZWN0Lm9yZy8/cD1hbHNhLWxpYi5naXQ7YT1ibG9i
-O2Y9c3JjL3BjbS9wY21fc29mdHZvbC5jO2g9OGJiNGEzOTdiODBlYmJhNTJhOTk1YTQ2NDE3YjY5
-ZTc4ZjVlYTUyYjtoYj1IRUFEI2w3MTQKWzJdIApodHRwOi8vZ2l0LmFsc2EtcHJvamVjdC5vcmcv
-P3A9YWxzYS1saWIuZ2l0O2E9YmxvYjtmPXRlc3QvdXNlci1jdGwtZWxlbWVudC1zZXQuYztoPWU5
-NDE1MmI5NTJlNGQ3MjRiYzEwOTM5M2RmMjliZjQ1MTlmNjBiMzE7aGI9SEVBRAoKClJlZ2FyZHMK
-ClRha2FzaGkgU2FrYW1vdG8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+Since 517e7a1537a ("ASoC: bcm2835: move to use the clock framework")
+the bcm2835-i2s requires a clock as DT property. Unfortunately
+the necessary DT change has never been applied. While we are at it
+also fix the first PCM register range to cover the PCM_GRAY register.
+
+This patch only fixes the affected dt-bindings.
+
+Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
+Reviewed-by: Eric Anholt <eric@anholt.net>
+---
+ Documentation/devicetree/bindings/dma/brcm,bcm2835-dma.txt   | 4 ++--
+ Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt | 9 ++++-----
+ 2 files changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/dma/brcm,bcm2835-dma.txt b/Documentation/devicetree/bindings/dma/brcm,bcm2835-dma.txt
+index baf9b34..b6a8cc0 100644
+--- a/Documentation/devicetree/bindings/dma/brcm,bcm2835-dma.txt
++++ b/Documentation/devicetree/bindings/dma/brcm,bcm2835-dma.txt
+@@ -74,8 +74,8 @@ Example:
+ 
+ bcm2835_i2s: i2s@7e203000 {
+ 	compatible = "brcm,bcm2835-i2s";
+-	reg = <	0x7e203000 0x20>,
+-	      < 0x7e101098 0x02>;
++	reg = <	0x7e203000 0x24>;
++	clocks = <&clocks BCM2835_CLOCK_PCM>;
+ 
+ 	dmas = <&dma 2>,
+ 	       <&dma 3>;
+diff --git a/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt b/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt
+index 65783de..7bb0362 100644
+--- a/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt
+@@ -2,9 +2,8 @@
+ 
+ Required properties:
+ - compatible: "brcm,bcm2835-i2s"
+-- reg: A list of base address and size entries:
+-	* The first entry should cover the PCM registers
+-	* The second entry should cover the PCM clock registers
++- reg: Should contain PCM registers location and length.
++- clocks: the (PCM) clock to use
+ - dmas: List of DMA controller phandle and DMA request line ordered pairs.
+ - dma-names: Identifier string for each DMA request line in the dmas property.
+   These strings correspond 1:1 with the ordered pairs in dmas.
+@@ -16,8 +15,8 @@ Example:
+ 
+ bcm2835_i2s: i2s@7e203000 {
+ 	compatible = "brcm,bcm2835-i2s";
+-	reg = <0x7e203000 0x20>,
+-	      <0x7e101098 0x02>;
++	reg = <0x7e203000 0x24>;
++	clocks = <&clocks BCM2835_CLOCK_PCM>;
+ 
+ 	dmas = <&dma 2>,
+ 	       <&dma 3>;
+-- 
+2.7.4
