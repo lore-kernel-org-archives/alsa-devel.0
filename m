@@ -1,17 +1,17 @@
-From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [asoc:topic/ak4458 1/2]
- sound/soc/codecs/ak4458.c:577:28: sparse: symbol 'ak4458_regmap' was not
- declared. Should it be static?
-Date: Fri, 16 Feb 2018 21:55:27 +0800
-Message-ID: <201802162144.qKMmP0uq%fengguang.wu@intel.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH v3] ASoC: sgtl5000: Fix suspend/resume
+Date: Fri, 16 Feb 2018 11:58:54 -0200
+Message-ID: <1518789534-11828-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id A7601266FC9
- for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 14:55:50 +0100 (CET)
-Content-Disposition: inline
+Received: from mail-qk0-f195.google.com (mail-qk0-f195.google.com
+ [209.85.220.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 503A3267E3C
+ for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 14:58:55 +0100 (CET)
+Received: by mail-qk0-f195.google.com with SMTP id o7so3866451qkc.1
+ for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 05:58:55 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,27 +21,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
-Cc: alsa-devel@alsa-project.org, Shengjiu Wang <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>, Andy Shevchenko <andy.shevchenko@gmail.com>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org, Mihai Serban <mihai.serban@nxp.com>
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, eric@nelint.com, alsa-devel@alsa-project.org, stable@vger.kernel.org, max.krummenacher@toradex.com
 List-Id: alsa-devel@alsa-project.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/ak4458
-head:   17e2304f0ad31d3f9bba4285b7024bf3c3626600
-commit: 08660086eff9e9e69246a65ee48aba5c3901bf5e [1/2] ASoC: ak4458: Add support for AK4458 DAC driver
-reproduce:
-        # apt-get install sparse
-        git checkout 08660086eff9e9e69246a65ee48aba5c3901bf5e
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF=-D__CHECK_ENDIAN__
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
+Commit 8419caa72702 ("ASoC: sgtl5000: Do not disable regulators in
+SND_SOC_BIAS_OFF") causes the sgtl5000 to fail after a suspend/resume
+sequence:
 
-sparse warnings: (new ones prefixed by >>)
+# aplay /media/a2002011001-e02.wav
+Playing WAVE '/media/a2002011001-e02.wav' : Signed 16 bit Little
+Endian, Rate 44100 Hz, Stereo
+aplay: pcm_write:2051: write error: Input/output error
 
->> sound/soc/codecs/ak4458.c:577:28: sparse: symbol 'ak4458_regmap' was not declared. Should it be
->> sound/soc/codecs/ak4458.c:587:25: sparse: symbol 'ak4458_pm' was not declared. Should it be
+The problem is caused by the fact that the aforementioned commit
+dropped the cache handling, so re-introduce the register map
+resync to fix the problem.
 
-Please review and possibly fold the followup patch.
-
+Cc: <stable@vger.kernel.org>
+Suggested-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 ---
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+Changes since v2:
+- Rebased against Linus' tree
+
+ sound/soc/codecs/sgtl5000.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index e1ab553..7ff5cb7 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -871,15 +871,26 @@ static int sgtl5000_pcm_hw_params(struct snd_pcm_substream *substream,
+ static int sgtl5000_set_bias_level(struct snd_soc_codec *codec,
+ 				   enum snd_soc_bias_level level)
+ {
++	struct sgtl5000_priv *sgtl = snd_soc_codec_get_drvdata(codec);
++	int ret;
++
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+ 	case SND_SOC_BIAS_PREPARE:
+ 	case SND_SOC_BIAS_STANDBY:
++		regcache_cache_only(sgtl->regmap, false);
++		ret = regcache_sync(sgtl->regmap);
++		if (ret) {
++			regcache_cache_only(sgtl->regmap, true);
++			return ret;
++		}
++
+ 		snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
+ 				    SGTL5000_REFTOP_POWERUP,
+ 				    SGTL5000_REFTOP_POWERUP);
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
++		regcache_cache_only(sgtl->regmap, true);
+ 		snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
+ 				    SGTL5000_REFTOP_POWERUP, 0);
+ 		break;
+-- 
+2.7.4
