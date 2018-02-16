@@ -1,75 +1,88 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 1/2] ASoC: codecs: Add support for
-	AK5558 ADC driver
-Date: Fri, 16 Feb 2018 12:14:45 +0000
-Message-ID: <20180216121445.GH5886@sirena.org.uk>
-References: <1518532174-11350-1-git-send-email-daniel.baluta@nxp.com>
- <1518532174-11350-2-git-send-email-daniel.baluta@nxp.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8158829309619776806=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4DD80267E10
- for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 13:14:48 +0100 (CET)
-In-Reply-To: <1518532174-11350-2-git-send-email-daniel.baluta@nxp.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh@kernel.org, shengjiu.wang@nxp.com, linux-kernel@vger.kernel.org, wakasugi.jb@om.asahi-kasei.co.jp, cosmin.samoila@nxp.com, andy.shevchenko@gmail.com, daniel.baluta@gmail.com, linux-imx@nxp.com, fabio.estevam@nxp.com, Mihai Serban <mihai.serban@nxp.com>, mihai.serban@gmail.com
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: ak5558: Add bindings for AK5558 ADC" to the asoc tree
+Date: Fri, 16 Feb 2018 12:16:19 +0000
+Message-ID: <E1emew7-0006lX-7w@debutante>
+References: <1517850115-24340-3-git-send-email-daniel.baluta@nxp.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1517850115-24340-3-git-send-email-daniel.baluta-3arQi8VN3Tc@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, shengjiu.wang-3arQi8VN3Tc@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, wakasugi.jb-r6lgfPJHJciWyREYz5tgSuqrae++aQT8@public.gmane.org, fabio.estevam-3arQi8VN3Tc@public.gmane.org, andy.shevchenko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-imx-3arQi8VN3Tc@public.gmane.org, cosmin.samoila-3arQi8VN3Tc@public.gmane.org, daniel.baluta-3arQi8VN3Tc@public.gmane.org, mihai.serban-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============8158829309619776806==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="X+8siUETKMkW99st"
-Content-Disposition: inline
+   ASoC: ak5558: Add bindings for AK5558 ADC
 
+has been applied to the asoc tree at
 
---X+8siUETKMkW99st
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Feb 13, 2018 at 04:29:33PM +0200, Daniel Baluta wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +++ b/sound/soc/codecs/ak5558.c
-> @@ -0,0 +1,417 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Just make this a C++ commment, don't mix C and C++ - it looks neater.
-Otherwise this looks good so I'll apply, please send a followup patch
-for the above.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---X+8siUETKMkW99st
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqGyzUACgkQJNaLcl1U
-h9DT7Af/Umwkug7QvVOl/p5SxKtPTAhEmUo7COO9Mf4yIYyVYDSMzfETYdtTz54v
-JblysLH1WXtSw6E532leFC8EGn/3Na+Y5AcZRTWImf1Vzo2KFUji12MrWptK15W/
-HdxwZZRFVgVGrvSZrfGju2h68bveFHQf+vh3QQH3Lx/bKQiWAcEnzS0M8upBIYd8
-hHll8RqqAzc2so2P5O5tGWsK9TtNIAf18TnKo87xQ7+pJAv5ZBxcI59qxdnYXwQj
-Rdss+sLVRF+93wff9KfShVOX8Yu4aUP1Sb9uQGqS6f5HcBxbe1Xz0189HW9GXoDQ
-i3FCfAdV0ntR5HHmJpV+CId6tLsQdg==
-=DTcU
------END PGP SIGNATURE-----
+>From af0424e44c180d66c2ddfb0a99c52382de8f69f8 Mon Sep 17 00:00:00 2001
+From: Daniel Baluta <daniel.baluta-3arQi8VN3Tc@public.gmane.org>
+Date: Tue, 13 Feb 2018 16:29:34 +0200
+Subject: [PATCH] ASoC: ak5558: Add bindings for AK5558 ADC
 
---X+8siUETKMkW99st--
+Document the bindings for AK5558 ADC.
 
---===============8158829309619776806==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Reviewed-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Daniel Baluta <daniel.baluta-3arQi8VN3Tc@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+---
+ Documentation/devicetree/bindings/sound/ak5558.txt | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/ak5558.txt
 
+diff --git a/Documentation/devicetree/bindings/sound/ak5558.txt b/Documentation/devicetree/bindings/sound/ak5558.txt
+new file mode 100644
+index 000000000000..7d67ca6ced80
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/ak5558.txt
+@@ -0,0 +1,22 @@
++AK5558 8 channel differential 32-bit delta-sigma ADC
++
++This device supports I2C mode only.
++
++Required properties:
++
++- compatible : "asahi-kasei,ak5558"
++- reg : The I2C address of the device.
++
++Optional properties:
++
++- reset-gpios: A GPIO specifier for the power down & reset pin.
++
++Example:
++
++&i2c {
++	ak5558: adc@10 {
++		compatible = "asahi-kasei,ak5558";
++		reg = <0x10>;
++		reset-gpios = <&gpio1 10 GPIO_ACTIVE_LOW>;
++	};
++};
+-- 
+2.16.1
 
---===============8158829309619776806==--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
