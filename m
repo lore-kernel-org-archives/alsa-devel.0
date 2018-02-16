@@ -1,16 +1,17 @@
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH] ASoC: wm_adsp: Fix some signedness errors in
-	register access
-Date: Fri, 16 Feb 2018 14:36:10 +0000
-Message-ID: <20180216143610.12048-1-rf@opensource.cirrus.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] MAINTAINERS: Add myself as sgtl5000 maintainer
+Date: Fri, 16 Feb 2018 12:45:13 -0200
+Message-ID: <1518792313-12582-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id E230826701D
- for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 15:36:23 +0100 (CET)
+Received: from mail-qt0-f196.google.com (mail-qt0-f196.google.com
+ [209.85.216.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5066626701D
+ for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 15:45:19 +0100 (CET)
+Received: by mail-qt0-f196.google.com with SMTP id f4so4014147qtj.6
+ for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 06:45:19 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,40 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: broonie@kernel.org
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-base and sysclk_reg should be unsigned int, as that is what
-regmap takes as a register address.
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
-sysclk_mask is used to mask unsigned register values so
-should be unsigned.
+I would like helping maintaining and reviewing/testing sgtl5000
+related patches.
 
-sysclk_shift is a shift value so is not allowed to be negative.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 ---
- sound/soc/codecs/wm_adsp.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ MAINTAINERS | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 41cc11c19b83..d4042c95315e 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -64,10 +64,10 @@ struct wm_adsp {
- 	struct regmap *regmap;
- 	struct snd_soc_codec *codec;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9a7f76e..c488c8a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9922,6 +9922,13 @@ F:	Documentation/ABI/stable/sysfs-bus-nvmem
+ F:	include/linux/nvmem-consumer.h
+ F:	include/linux/nvmem-provider.h
  
--	int base;
--	int sysclk_reg;
--	int sysclk_mask;
--	int sysclk_shift;
-+	unsigned int base;
-+	unsigned int sysclk_reg;
-+	unsigned int sysclk_mask;
-+	unsigned int sysclk_shift;
- 
- 	struct list_head alg_regions;
- 
++NXP SGTL5000 DRIVER
++M:	Fabio Estevam <fabio.estevam@nxp.com>
++L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
++S:	Maintained
++F:	Documentation/devicetree/bindings/sound/sgtl5000.txt
++F:	sound/soc/codecs/sgtl5000*
++
+ NXP TDA998X DRM DRIVER
+ M:	Russell King <linux@armlinux.org.uk>
+ S:	Supported
 -- 
-2.11.0
+2.7.4
