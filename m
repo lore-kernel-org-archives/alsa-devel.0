@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sgtl5000: Fix suspend/resume" to the asoc tree
-Date: Fri, 16 Feb 2018 15:21:13 +0000
-Message-ID: <E1emhp3-0003Sk-Gi@debutante>
-References: <1518789534-11828-1-git-send-email-festevam@gmail.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1518789534-11828-1-git-send-email-festevam@gmail.com>
-Sender: stable-owner@vger.kernel.org
+Subject: Applied "MAINTAINERS: Add myself as sgtl5000
+	maintainer" to the asoc tree
+Date: Fri, 16 Feb 2018 15:21:30 +0000
+Message-ID: <E1emhpK-0003Tr-3x@debutante>
+References: <1518792313-12582-1-git-send-email-festevam@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id C2E8D267E5E
+ for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 16:21:32 +0100 (CET)
+In-Reply-To: <1518792313-12582-1-git-send-email-festevam@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgbroonie@kernel.org, eric@nelint.com, alsa-devel@alsa-project.orgstable@vger.kernel.org, max.krummenacher@toradex.comalsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sgtl5000: Fix suspend/resume
+   MAINTAINERS: Add myself as sgtl5000 maintainer
 
 has been applied to the asoc tree at
 
@@ -37,61 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From a8992973edbb2555e956b90f6fe97c4bc14d761d Mon Sep 17 00:00:00 2001
+>From aba62a9e9a4064c5ea9deb33b5b1392f263cad24 Mon Sep 17 00:00:00 2001
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Fri, 16 Feb 2018 11:58:54 -0200
-Subject: [PATCH] ASoC: sgtl5000: Fix suspend/resume
+Date: Fri, 16 Feb 2018 12:45:13 -0200
+Subject: [PATCH] MAINTAINERS: Add myself as sgtl5000 maintainer
 
-Commit 8419caa72702 ("ASoC: sgtl5000: Do not disable regulators in
-SND_SOC_BIAS_OFF") causes the sgtl5000 to fail after a suspend/resume
-sequence:
+I would like helping maintaining and reviewing/testing sgtl5000
+related patches.
 
-Playing WAVE '/media/a2002011001-e02.wav' : Signed 16 bit Little
-Endian, Rate 44100 Hz, Stereo
-aplay: pcm_write:2051: write error: Input/output error
-
-The problem is caused by the fact that the aforementioned commit
-dropped the cache handling, so re-introduce the register map
-resync to fix the problem.
-
-Suggested-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: <stable@vger.kernel.org>
 ---
- sound/soc/codecs/sgtl5000.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ MAINTAINERS | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index c445a0794a27..c5c76ab8ccf1 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -876,15 +876,26 @@ static int sgtl5000_pcm_hw_params(struct snd_pcm_substream *substream,
- static int sgtl5000_set_bias_level(struct snd_soc_codec *codec,
- 				   enum snd_soc_bias_level level)
- {
-+	struct sgtl5000_priv *sgtl = snd_soc_codec_get_drvdata(codec);
-+	int ret;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 3bdc260e36b7..4e283d131def 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9921,6 +9921,13 @@ F:	Documentation/ABI/stable/sysfs-bus-nvmem
+ F:	include/linux/nvmem-consumer.h
+ F:	include/linux/nvmem-provider.h
+ 
++NXP SGTL5000 DRIVER
++M:	Fabio Estevam <fabio.estevam@nxp.com>
++L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
++S:	Maintained
++F:	Documentation/devicetree/bindings/sound/sgtl5000.txt
++F:	sound/soc/codecs/sgtl5000*
 +
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
- 	case SND_SOC_BIAS_PREPARE:
- 	case SND_SOC_BIAS_STANDBY:
-+		regcache_cache_only(sgtl->regmap, false);
-+		ret = regcache_sync(sgtl->regmap);
-+		if (ret) {
-+			regcache_cache_only(sgtl->regmap, true);
-+			return ret;
-+		}
-+
- 		snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
- 				    SGTL5000_REFTOP_POWERUP,
- 				    SGTL5000_REFTOP_POWERUP);
- 		break;
- 	case SND_SOC_BIAS_OFF:
-+		regcache_cache_only(sgtl->regmap, true);
- 		snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
- 				    SGTL5000_REFTOP_POWERUP, 0);
- 		break;
+ NXP TDA998X DRM DRIVER
+ M:	Russell King <linux@armlinux.org.uk>
+ S:	Supported
 -- 
 2.16.1
