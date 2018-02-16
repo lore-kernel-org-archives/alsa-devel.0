@@ -1,86 +1,45 @@
-From: Matthias Kaehlcke <mka@chromium.org>
-Subject: Re: [PATCH v2] ASoC: dmic: Add optional wakeup delay
-Date: Fri, 16 Feb 2018 08:47:45 -0800
-Message-ID: <20180216164745.GC99727@google.com>
-References: <20180216022416.208265-1-mka@chromium.org>
- <20180216024728.GA93733@rodete-desktop-imager.corp.google.com>
+From: Dimitris Papavasiliou <dpapavas@gmail.com>
+Subject: Re: Need help implementing an external PCM/control
+	plugin pair
+Date: Fri, 16 Feb 2018 18:49:48 +0200
+Message-ID: <73722bf0-9477-6a7e-3cb6-4bb72c1a3fde@gmail.com>
+References: <0daf8a5e-c1dd-224e-52e7-7467d93aa045@gmail.com>
+ <4deee929-ae8c-c330-d9d1-865c558a3b75@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180216024728.GA93733@rodete-desktop-imager.corp.google.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Dylan Reid <dgreid@chromium.org>, huang lin <hl@rock-chips.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr0-f176.google.com (mail-wr0-f176.google.com
+ [209.85.128.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id A0AB0267E69
+ for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 17:49:51 +0100 (CET)
+Received: by mail-wr0-f176.google.com with SMTP id b52so3510149wrd.10
+ for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 08:49:51 -0800 (PST)
+In-Reply-To: <4deee929-ae8c-c330-d9d1-865c558a3b75@sakamocchi.jp>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-El Thu, Feb 15, 2018 at 06:47:29PM -0800 Brian Norris ha dit:
+On 02/16/2018 12:38 PM, Takashi Sakamoto wrote:
+> ALSA control core has a feature called as 'user-defined control element 
+> set'. This will help your work, in my opinion. For example, alsa-lib 
+> 'softvol' PCM plugin utilizes this feature to accomplishment 
+> configurable volumes by the others[1]. This feature supports metadata by 
+> TLV (Type-Length-Value) and eventing to subscribers as well.
+> 
+> The alsa-lib includes a test program for this feature, which I wrote[2]. 
+> This may help your work by its actual code, I think[2].
 
-> Hi,
-> 
-> On Thu, Feb 15, 2018 at 06:24:16PM -0800, Matthias Kaehlcke wrote:
-> > On some systems a delay is needed after switching on the clocks, to allow
-> > the output to stabilize and avoid a popping noise at the beginning of
-> > the recording. Add the optional device tree property 'wakeup-delay-ms'
-> > and apply the specified delay after enabling the mic. A blocking delay
-> > can't be applied in dmic_daiops_trigger() since the function is called
-> > in atomic context. Instead use a DAPM event handler to set the enable
-> > GPIO and apply the delay in the handler.
-> > 
-> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> > ---
-> > Changes in v2:
-> > - use DAPM event handler instead of _prepare() and get rid of
-> >   _trigger()
-> > - skip error check for optional 'wakeup-delay-ms' property
-> > - updated commit message
-> 
-> Looks good to me in general:
-> 
-> Brian Norris <briannorris@chromium.org>
-> 
-> But I don't know much about the audio subsystem. One comment below.
-> 
-> > 
-> >  .../devicetree/bindings/sound/dmic.txt        |  2 +
-> >  sound/soc/codecs/dmic.c                       | 63 ++++++++++---------
-> >  2 files changed, 37 insertions(+), 28 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/sound/dmic.txt b/Documentation/devicetree/bindings/sound/dmic.txt
-> > index f7bf65611453..e957b4136716 100644
-> > --- a/Documentation/devicetree/bindings/sound/dmic.txt
-> > +++ b/Documentation/devicetree/bindings/sound/dmic.txt
-> > @@ -8,6 +8,7 @@ Required properties:
-> >  Optional properties:
-> >  	- dmicen-gpios: GPIO specifier for dmic to control start and stop
-> >  	- num-channels: Number of microphones on this DAI
-> > +	- wakeup-delay-ms: Delay (in ms) after enabling the DMIC
-> >  
-> >  Example node:
-> >  
-> > @@ -15,4 +16,5 @@ Example node:
-> >  		compatible = "dmic-codec";
-> >  		dmicen-gpios = <&gpio4 3 GPIO_ACTIVE_HIGH>;
-> >  		num-channels = <1>;
-> > +		wakeup-delay-ms <50>;
-> >  	};
-> > diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
-> > index cf83c423394d..b5f60ac22ace 100644
-> > --- a/sound/soc/codecs/dmic.c
-> > +++ b/sound/soc/codecs/dmic.c
-> [...]
-> 
-> >  static const struct snd_soc_dapm_widget dmic_dapm_widgets[] = {
-> > -	SND_SOC_DAPM_AIF_OUT("DMIC AIF", "Capture", 0,
-> > -			     SND_SOC_NOPM, 0, 0),
-> > +	SND_SOC_DAPM_AIF_OUT_E("DMIC AIF", "Capture", 0,
-> > +			       SND_SOC_NOPM, 0, 0, dmic_aif_event,
-> > +			       SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
-> 
-> Any good reason both are _POST_? It seems like you'd want them to be
-> inverses (e.g., power-power-up, and pre-power-down).
+Many thanks for your prompt reply Takashi!  I'll study your example code 
+and report back, should I need further guidance.
 
-Post-power-up is needed to avoid a popping noise when the clock is
-enabled (see 3a6f9dce6116 ("ASoC: rk3399_gru_sound: fix recording pop
-at first attempt") and disabling the mic before switching off the
-clock (pre-power-down) could cause noise at the end of the recording.
+D.
