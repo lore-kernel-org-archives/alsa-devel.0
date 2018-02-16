@@ -1,89 +1,57 @@
-From: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Subject: Re: [PATCHv4 2/4] ASoC: codec: cpcap: new codec
-Date: Fri, 16 Feb 2018 14:51:13 +0100
-Message-ID: <20180216135113.akicejkodhbjpp2w@earth.universe>
-References: <20180214220741.28306-1-sebastian.reichel@collabora.co.uk>
- <20180214220741.28306-3-sebastian.reichel@collabora.co.uk>
- <20180216113901.GC5886@sirena.org.uk>
+From: kbuild test robot <fengguang.wu@intel.com>
+Subject: [RFC PATCH asoc] ASoC: ak4458: ak4458_regmap can be
+	static
+Date: Fri, 16 Feb 2018 21:55:28 +0800
+Message-ID: <20180216135527.GA1304@lkp-ne02>
+References: <201802162144.qKMmP0uq%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qnpszhyifoopthl6"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id E31ED266FC9
+ for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 14:55:53 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20180216113901.GC5886@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Tony Lindgren <tony@atomide.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <201802162144.qKMmP0uq%fengguang.wu@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
+Cc: alsa-devel@alsa-project.org, Shengjiu Wang <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>, Andy Shevchenko <andy.shevchenko@gmail.com>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org, Mihai Serban <mihai.serban@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---qnpszhyifoopthl6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 08660086eff9 ("ASoC: ak4458: Add support for AK4458 DAC driver")
+Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
+---
+ ak4458.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Hi Mark,
-
-On Fri, Feb 16, 2018 at 11:39:01AM +0000, Mark Brown wrote:
-> On Wed, Feb 14, 2018 at 11:07:39PM +0100, Sebastian Reichel wrote:
->=20
-> > +config SND_SOC_CPCAP
-> > +	tristate "Motorola CPCAP codec"
-> > +	depends on MFD_CPCAP
-> > +	default MFD_CPCAP
-> > +
->=20
-> We don't have default lines like this for other MFDs...
-
-Is there a reason not to add them? It looks very useful to me:
-
-99% of people are not interested in the MFD. They don't enable
-it and are not affected at all. They do not even see extra
-configuration entry due to the dependency.
-
-0.9% of people have the MFD in their system and want their
-hardware to 'just work'. With this line it's enough to enable
-the MFD and the audio subsystem, so less knowledge and configuration
-is required.
-
-0.1% of people have special requirements and want the MFD
-and generic audio support, but no support for the MFD audio
-codec. There is a high chance, that they know how to configure
-it properly :)
-
-> > +	SOC_ENUM("Hifi Left Phase Playback Switch",
-> > +		cpcap_hifi_l_phase_inv_enum),
-> > +	SOC_ENUM("Ext Left Phase Playback Switch",
-> > +		cpcap_ext_l_phase_inv_enum),
->=20
-> If this is a Switch control it should be a simple on/off binary control.
-> If it's an enumeration it shouldn't have Switch at the end of the name
-> since that's a keyword interpreted by userspace.  Either option seems
-> fine in this case, if it's a switch it should be "Foo Invert Switch" or
-> similar.
-
-Ok.
-
--- Sebastian
-
---qnpszhyifoopthl6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAlqG4c8ACgkQ2O7X88g7
-+prytxAApQfU9evuavpOT0hbpERznCy64y2UYXCdwCBq8vG900eNN/Cxcepl5Sln
-eq9HNjceGrYgLb83ynHNL9I4enp7Rf7wMIAu6NLPRYzuNgoABLWWOlLoiEf+dWzE
-kojXaxu9uFdi50+kGy723cxXFzXGddUhEHic5L9GOKt/BawV76ZWX7DkGa5HKgO3
-L2UPSv68U1GdOV1zYYFvAa5TBu+klr8OHwG1v/EQ4H3F+8R59QiFRhotfRjah8d6
-+z+xRA1wLlyh+h8nbVRM5Q1V9964n79zkE67U3LsZ9j8xdeO8njW2L0Fwdkcl+G4
-+7o7VZSRTWP5FftXacvFQ9LqxYLi7G84CG/1XU0+630kdfdNUpYz7rIBlhjBU52u
-qJJkVIHsSCeJwMoRGhkrlsIxjiYQa6JgNS9cqdEWerJv33q6wyhMcRWC79VIcYB8
-Y5nSPjym8Ph+brG0B5TApUtm/2/yMTZLp0rG8s8x+7BjSAXqF19SVhVux6XzE6BG
-haStiWk9V+lpWaxM3gcyVcPYgcsRn2FDmjw9jRHQ5LCFUlAwEw9nB+V8qnJhDHo2
-lpTas0MFwOs5yM2tUerhivD7MttWNXfdrvlE6A4SDOlFBy0u3kwGTcu3T0mjgCyt
-aAuSo828I/3GLQY3I6EwdS+e0LrjRls6vtBP70s+pwa9JgnA8qo=
-=Swer
------END PGP SIGNATURE-----
-
---qnpszhyifoopthl6--
+diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
+index b579cda..c976216 100644
+--- a/sound/soc/codecs/ak4458.c
++++ b/sound/soc/codecs/ak4458.c
+@@ -574,7 +574,7 @@ struct snd_soc_codec_driver soc_codec_dev_ak4458 = {
+ 	},
+ };
+ 
+-const struct regmap_config ak4458_regmap = {
++static const struct regmap_config ak4458_regmap = {
+ 	.reg_bits = 8,
+ 	.val_bits = 8,
+ 
+@@ -584,7 +584,7 @@ const struct regmap_config ak4458_regmap = {
+ 	.cache_type = REGCACHE_RBTREE,
+ };
+ 
+-const struct dev_pm_ops ak4458_pm = {
++static const struct dev_pm_ops ak4458_pm = {
+ 	SET_RUNTIME_PM_OPS(ak4458_runtime_suspend, ak4458_runtime_resume, NULL)
+ 	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
+ 				pm_runtime_force_resume)
