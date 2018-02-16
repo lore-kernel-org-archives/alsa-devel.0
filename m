@@ -1,52 +1,89 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 1/2] ASoC: codecs: Add support for AK4458 DAC driver
-Date: Fri, 16 Feb 2018 11:54:36 +0000
-Message-ID: <20180216115436.GF5886@sirena.org.uk>
-References: <1518614467-20613-1-git-send-email-cosmin.samoila@nxp.com>
- <1518614467-20613-2-git-send-email-cosmin.samoila@nxp.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="V4b9U9vrdWczvw78"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1518614467-20613-2-git-send-email-cosmin.samoila@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, robh@kernel.org, mihai.serban@gmail.com, linux-imx@nxp.com, shegjiu.wang@nxp.com, daniel.baluta@nxp.com, linux-kernel@vger.kernel.org, Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>, Mihai Serban <mihai.serban@nxp.com>, Shengjiu Wang <shengjiu.wang@nxp.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: ak4458: Add bindings for AK4458 DAC" to the asoc tree
+Date: Fri, 16 Feb 2018 12:04:20 +0000
+Message-ID: <E1emekW-00053C-Hz@debutante>
+References: <1518614467-20613-3-git-send-email-cosmin.samoila@nxp.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1518614467-20613-3-git-send-email-cosmin.samoila-3arQi8VN3Tc@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Cosmin-Gabriel Samoila <cosmin.samoila-3arQi8VN3Tc@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, shegjiu.wang-3arQi8VN3Tc@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-imx-3arQi8VN3Tc@public.gmane.org, daniel.baluta-3arQi8VN3Tc@public.gmane.org, mihai.serban-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---V4b9U9vrdWczvw78
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: ak4458: Add bindings for AK4458 DAC
 
-On Wed, Feb 14, 2018 at 03:21:06PM +0200, Cosmin-Gabriel Samoila wrote:
+has been applied to the asoc tree at
 
-> --- /dev/null
-> +++ b/sound/soc/codecs/ak4458.c
-> @@ -0,0 +1,659 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Audio driver for AK4458 DAC
-> + *
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Please don't mix C and C++ comments line this, just make the entire
-block a C++ comment.  Since this looks otherwise good I'll apply this,
-please send a followup patch fixing the above.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---V4b9U9vrdWczvw78
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqGxnsACgkQJNaLcl1U
-h9A0cwf+M273FLdr5luerf/pSFQ8Ill9TfoBPOaPdnMWysZTvUhHiCrx5/okTE4C
-m8gS2iBV7pF09JiC5+NjJu8n8mAdQQQ6ISTJewZVsRMEuDoBE022DIXVrCTzaCZO
-WtaT+nemH/7RA6E4gzHaY17Rl00+xlKER6PdM6jj8sTwNJ2Z3dsUq64Q6wEOJzrZ
-6fxcGkWdrfrwqvmmI6U8ipqXThDII4SCfIm5TDtmhsOTnzYcCM5NYNQlGbsDoseI
-rHK02ILoHYXDUQQodHJSmm/7/8bD+CuIcFVoI1eyWPr6n/M4cwWutTi5tYrDzQGz
-ybJthCJww6lsxe6vWy4xkfq3+BSOcQ==
-=YIZA
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---V4b9U9vrdWczvw78--
+Thanks,
+Mark
+
+>From 17e2304f0ad31d3f9bba4285b7024bf3c3626600 Mon Sep 17 00:00:00 2001
+From: Cosmin-Gabriel Samoila <cosmin.samoila-3arQi8VN3Tc@public.gmane.org>
+Date: Wed, 14 Feb 2018 15:21:07 +0200
+Subject: [PATCH] ASoC: ak4458: Add bindings for AK4458 DAC
+
+Document the bindings for AK4458 DAC
+
+Signed-off-by: Cosmin-Gabriel Samoila <cosmin.samoila-3arQi8VN3Tc@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+---
+ Documentation/devicetree/bindings/sound/ak4458.txt | 23 ++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/ak4458.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/ak4458.txt b/Documentation/devicetree/bindings/sound/ak4458.txt
+new file mode 100644
+index 000000000000..7839be78448d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/ak4458.txt
+@@ -0,0 +1,23 @@
++AK4458 audio DAC
++
++This device supports I2C mode.
++
++Required properties:
++
++- compatible : "asahi-kasei,ak4458"
++- reg : The I2C address of the device for I2C
++
++Optional properties:
++- reset-gpios: A GPIO specifier for the power down & reset pin
++- mute-gpios: A GPIO specifier for the soft mute pin
++
++Example:
++
++&i2c {
++	ak4458: dac@10 {
++		compatible = "asahi-kasei,ak4458";
++		reg = <0x10>;
++		reset-gpios = <&gpio1 10 GPIO_ACTIVE_LOW>
++		mute-gpios = <&gpio1 11 GPIO_ACTIVE_HIGH>
++	};
++};
+-- 
+2.16.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
