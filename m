@@ -1,88 +1,166 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dwc: Extends DW_I2S_QUIRK_COMP_PARAM1
-	to playback" to the asoc tree
-Date: Fri, 16 Feb 2018 17:12:02 +0000
-Message-ID: <E1emjYI-0007yh-Do@debutante>
-References: <1518766875-15164-4-git-send-email-akshu.agrawal@amd.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EEA79267E69
- for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 18:12:06 +0100 (CET)
-In-Reply-To: <1518766875-15164-4-git-send-email-akshu.agrawal@amd.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, akshu.agrawal@amd.com
+From: Matthias Kaehlcke <mka-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Subject: [PATCH v3] ASoC: dmic: Add optional wakeup delay
+Date: Fri, 16 Feb 2018 09:53:12 -0800
+Message-ID: <20180216175312.88465-1-mka@chromium.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Brian Norris <briannorris-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, huang lin <hl-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Matthias Kaehlcke <mka-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On some systems a delay is needed after switching on the clocks, to allow
+the output to stabilize and avoid a popping noise at the beginning of
+the recording. Add the optional device tree property 'wakeup-delay-ms'
+and apply the specified delay after enabling the mic. A blocking delay
+can't be applied in dmic_daiops_trigger() since the function is called
+in atomic context. Instead use a DAPM event handler to set the enable
+GPIO and apply the delay in the handler.
 
-   ASoC: dwc: Extends DW_I2S_QUIRK_COMP_PARAM1 to playback
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 97a865d3c3438041913756a08e523fb1d0bbbe3c Mon Sep 17 00:00:00 2001
-From: Akshu Agrawal <akshu.agrawal@amd.com>
-Date: Fri, 16 Feb 2018 13:11:15 +0530
-Subject: [PATCH] ASoC: dwc: Extends DW_I2S_QUIRK_COMP_PARAM1 to playback
-
-When we have same register to tell capture and playback capability
-of a device and we want separate cpu dais for playback and
-capture. Then, DW_I2S_QUIRK_COMP_PARAM1 is used to enable one
-capability per dai.
-
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Matthias Kaehlcke <mka-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
 ---
- sound/soc/dwc/dwc-i2s.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Changes in v3:
+- rebased on latest dmic topic branch
 
-diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
-index e27e21f8569a..65112b9d8588 100644
---- a/sound/soc/dwc/dwc-i2s.c
-+++ b/sound/soc/dwc/dwc-i2s.c
-@@ -491,6 +491,10 @@ static int dw_configure_dai(struct dw_i2s_dev *dev,
- 			dev->quirks & DW_I2S_QUIRK_COMP_PARAM1)
- 		comp1 = comp1 & ~BIT(5);
+Changes in v2:
+- use DAPM event handler instead of _prepare() and get rid of
+  _trigger()
+- skip error check for optional 'wakeup-delay-ms' property
+- updated commit message
+
+ .../devicetree/bindings/sound/dmic.txt        |  2 +
+ sound/soc/codecs/dmic.c                       | 63 ++++++++++---------
+ 2 files changed, 37 insertions(+), 28 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/dmic.txt b/Documentation/devicetree/bindings/sound/dmic.txt
+index f7bf65611453..e957b4136716 100644
+--- a/Documentation/devicetree/bindings/sound/dmic.txt
++++ b/Documentation/devicetree/bindings/sound/dmic.txt
+@@ -8,6 +8,7 @@ Required properties:
+ Optional properties:
+ 	- dmicen-gpios: GPIO specifier for dmic to control start and stop
+ 	- num-channels: Number of microphones on this DAI
++	- wakeup-delay-ms: Delay (in ms) after enabling the DMIC
  
-+	if (dev->capability & DWC_I2S_PLAY &&
-+			dev->quirks & DW_I2S_QUIRK_COMP_PARAM1)
-+		comp1 = comp1 & ~BIT(6);
+ Example node:
+ 
+@@ -15,4 +16,5 @@ Example node:
+ 		compatible = "dmic-codec";
+ 		dmicen-gpios = <&gpio4 3 GPIO_ACTIVE_HIGH>;
+ 		num-channels = <1>;
++		wakeup-delay-ms <50>;
+ 	};
+diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
+index 32a8f71d51f1..bac5bbb2dd59 100644
+--- a/sound/soc/codecs/dmic.c
++++ b/sound/soc/codecs/dmic.c
+@@ -19,6 +19,7 @@
+  *
+  */
+ 
++#include <linux/delay.h>
+ #include <linux/gpio.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/platform_device.h>
+@@ -29,34 +30,33 @@
+ #include <sound/soc.h>
+ #include <sound/soc-dapm.h>
+ 
+-static int dmic_daiops_trigger(struct snd_pcm_substream *substream,
+-		int cmd, struct snd_soc_dai *dai)
+-{
+-	struct gpio_desc *dmic_en = snd_soc_dai_get_drvdata(dai);
++struct dmic {
++	struct gpio_desc *gpio_en;
++	int wakeup_delay;
++};
+ 
+-	if (!dmic_en)
+-		return 0;
++static int dmic_aif_event(struct snd_soc_dapm_widget *w,
++			  struct snd_kcontrol *kcontrol, int event) {
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct dmic *dmic = snd_soc_codec_get_drvdata(codec);
+ 
+-	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+-	case SNDRV_PCM_TRIGGER_RESUME:
+-	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		gpiod_set_value(dmic_en, 1);
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		if (dmic->gpio_en)
++			gpiod_set_value(dmic->gpio_en, 1);
 +
- 	if (COMP1_TX_ENABLED(comp1)) {
- 		dev_dbg(dev->dev, " designware: play supported\n");
- 		idx = COMP1_TX_WORDSIZE_0(comp1);
++		if (dmic->wakeup_delay)
++			msleep(dmic->wakeup_delay);
+ 		break;
+-	case SNDRV_PCM_TRIGGER_STOP:
+-	case SNDRV_PCM_TRIGGER_SUSPEND:
+-	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		gpiod_set_value(dmic_en, 0);
++	case SND_SOC_DAPM_POST_PMD:
++		if (dmic->gpio_en)
++			gpiod_set_value(dmic->gpio_en, 0);
+ 		break;
+ 	}
+ 
+ 	return 0;
+ }
+ 
+-static const struct snd_soc_dai_ops dmic_dai_ops = {
+-	.trigger	= dmic_daiops_trigger,
+-};
+-
+ static struct snd_soc_dai_driver dmic_dai = {
+ 	.name = "dmic-hifi",
+ 	.capture = {
+@@ -68,26 +68,33 @@ static struct snd_soc_dai_driver dmic_dai = {
+ 			| SNDRV_PCM_FMTBIT_S24_LE
+ 			| SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
+-	.ops    = &dmic_dai_ops,
+ };
+ 
+ static int dmic_component_probe(struct snd_soc_component *component)
+ {
+-	struct gpio_desc *dmic_en;
++	struct dmic *dmic;
++
++	dmic = devm_kzalloc(component->dev, sizeof(*dmic), GFP_KERNEL);
++	if (!dmic)
++		return -ENOMEM;
++
++	dmic->gpio_en = devm_gpiod_get_optional(component->dev,
++						"dmicen", GPIOD_OUT_LOW);
++	if (IS_ERR(dmic->gpio_en))
++		return PTR_ERR(dmic->gpio_en);
+ 
+-	dmic_en = devm_gpiod_get_optional(component->dev,
+-					"dmicen", GPIOD_OUT_LOW);
+-	if (IS_ERR(dmic_en))
+-		return PTR_ERR(dmic_en);
++	device_property_read_u32(component->dev, "wakeup-delay-ms",
++				 &dmic->wakeup_delay);
+ 
+-	snd_soc_component_set_drvdata(component, dmic_en);
++	snd_soc_component_set_drvdata(component, dmic);
+ 
+ 	return 0;
+ }
+ 
+ static const struct snd_soc_dapm_widget dmic_dapm_widgets[] = {
+-	SND_SOC_DAPM_AIF_OUT("DMIC AIF", "Capture", 0,
+-			     SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_OUT_E("DMIC AIF", "Capture", 0,
++			       SND_SOC_NOPM, 0, 0, dmic_aif_event,
++			       SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
+ 	SND_SOC_DAPM_INPUT("DMic"),
+ };
+ 
 -- 
-2.16.1
+2.16.1.291.g4437f3f132-goog
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
