@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv4 2/4] ASoC: codec: cpcap: new codec
-Date: Fri, 16 Feb 2018 11:39:01 +0000
-Message-ID: <20180216113901.GC5886@sirena.org.uk>
-References: <20180214220741.28306-1-sebastian.reichel@collabora.co.uk>
- <20180214220741.28306-3-sebastian.reichel@collabora.co.uk>
+Subject: Re: [PATCH 0/1] Use of shared resource in designware
+Date: Fri, 16 Feb 2018 11:47:54 +0000
+Message-ID: <20180216114754.GD5886@sirena.org.uk>
+References: <1518767009-15232-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2390728037833373288=="
+Content-Type: multipart/mixed; boundary="===============0319715640333296588=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E36A267C4D
- for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 12:39:09 +0100 (CET)
-In-Reply-To: <20180214220741.28306-3-sebastian.reichel@collabora.co.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B837267761
+ for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 12:47:56 +0100 (CET)
+In-Reply-To: <1518767009-15232-1-git-send-email-akshu.agrawal@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,64 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Sebastian Reichel <sre@kernel.org>, linux-omap@vger.kernel.org
+To: Akshu Agrawal <akshu.agrawal@amd.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2390728037833373288==
+--===============0319715640333296588==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="jy6Sn24JjFx/iggw"
+	protocol="application/pgp-signature"; boundary="iVCmgExH7+hIHJ1A"
 Content-Disposition: inline
 
 
---jy6Sn24JjFx/iggw
+--iVCmgExH7+hIHJ1A
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 14, 2018 at 11:07:39PM +0100, Sebastian Reichel wrote:
+On Fri, Feb 16, 2018 at 01:13:28PM +0530, Akshu Agrawal wrote:
+> This patch will allow the driver to map same registers
+> to multiple instances of driver.
+>=20
+> It is useful when playback and capture have same regsiters
+> and are required to be present on separate cpu dais.
 
-> +config SND_SOC_CPCAP
-> +	tristate "Motorola CPCAP codec"
-> +	depends on MFD_CPCAP
-> +	default MFD_CPCAP
-> +
+Please don't send cover letters for single patches, if there is anything
+that needs saying put it in the changelog of the patch or after the ---
+if it's administrative stuff.  This reduces mail volume and ensures that=20
+any important information is recorded in the changelog rather than being
+lost.=20
 
-We don't have default lines like this for other MFDs...
-
-> +	SOC_ENUM("Hifi Left Phase Playback Switch",
-> +		cpcap_hifi_l_phase_inv_enum),
-> +	SOC_ENUM("Ext Left Phase Playback Switch",
-> +		cpcap_ext_l_phase_inv_enum),
-
-If this is a Switch control it should be a simple on/off binary control.
-If it's an enumeration it shouldn't have Switch at the end of the name
-since that's a keyword interpreted by userspace.  Either option seems
-fine in this case, if it's a switch it should be "Foo Invert Switch" or
-similar.
-
---jy6Sn24JjFx/iggw
+--iVCmgExH7+hIHJ1A
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqGwtUACgkQJNaLcl1U
-h9Bl0Qf9G0/FzroOGeLykBCGn9UJFAuxOww1IVCOSq1yX5MXbRzKLndkj7wl8xSr
-0LZlqyI9uEMR7neVga+k982xlUUNz1OfJxbBJyiH/26Y3BXi1kZ+DOnjb/LItj8Y
-IAHYvEn3ND6HjZtm2jf73BBCvkyAxBt/KuT87P/eOPov/F/ASsGhKZhs4agvGAId
-2rUnSrG3X++fgMd2GhxOgl58MsGW+5O2CEgwom06UUTeiPgCoF1HaEuZoh3p4dZY
-r6SPYStZlMFCNRqWrlfy2Yi5KwNCJwd2Y7u9spg94xMXI7j2V5Vbt42yrH1F6uz2
-fReE5awls/jlY8KpC4hmo4tb0zDutQ==
-=vnov
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqGxOoACgkQJNaLcl1U
+h9DSrAf+KpSF+O+8ZPwzM7BG4jBdOKM/QKij8LqTJpjfKVLe6kcYT8mWNqjg5mmJ
+MKRXdv8vsK2g2MRBiCrGPYu7w8umQ+IDznIdVGDmJyPN9GLCHHwiKCW0SZQJQ55y
+sjpVuXWbk1wMcRo5K1apkHsSmeb0v9jAjE89oRVDlfEk68/aXXSK6269EWG7IexR
+QHvMQ0ZTnBreUHCopl9y/vj65OB4R29Asg5mKoUrENgd5UU/YGnV8ZiJLxpgCotO
+3Np2/d+mikTOxPS+PfUjORFS/RymO5W3xW0cqr1AGEm2FuY5vXYk8d4VEurggvkk
+/7O0FDduVvCtwst6by8ipCW1CVmNbg==
+=RGMV
 -----END PGP SIGNATURE-----
 
---jy6Sn24JjFx/iggw--
+--iVCmgExH7+hIHJ1A--
 
---===============2390728037833373288==
+--===============0319715640333296588==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2390728037833373288==--
+--===============0319715640333296588==--
