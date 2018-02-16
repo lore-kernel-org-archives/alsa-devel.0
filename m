@@ -1,17 +1,24 @@
-From: Akshu Agrawal <akshu.agrawal@amd.com>
-Subject: [PATCH 1/1] ASoC: dwc: Use devm_ioremap_shared_resource
-Date: Fri, 16 Feb 2018 13:13:29 +0530
-Message-ID: <1518767009-15232-2-git-send-email-akshu.agrawal@amd.com>
-References: <1518767009-15232-1-git-send-email-akshu.agrawal@amd.com>
+From: Dimitris Papavasiliou <dpapavas@gmail.com>
+Subject: Need help implementing an external PCM/control plugin
+	pair
+Date: Fri, 16 Feb 2018 12:12:43 +0200
+Message-ID: <0daf8a5e-c1dd-224e-52e7-7467d93aa045@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com
- (mail-cys01nam02on0062.outbound.protection.outlook.com [104.47.37.62])
- by alsa0.perex.cz (Postfix) with ESMTP id C7E7B26778B
- for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 08:56:46 +0100 (CET)
-In-Reply-To: <1518767009-15232-1-git-send-email-akshu.agrawal@amd.com>
+Received: from mail-wr0-f174.google.com (mail-wr0-f174.google.com
+ [209.85.128.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id A74F2267C4D
+ for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 11:12:49 +0100 (CET)
+Received: by mail-wr0-f174.google.com with SMTP id o76so2332126wrb.7
+ for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 02:12:49 -0800 (PST)
+Received: from [192.168.1.106] (ipa1.211.tellas.gr. [62.169.211.1])
+ by smtp.gmail.com with ESMTPSA id b136sm12228831wme.34.2018.02.16.02.12.44
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 16 Feb 2018 02:12:44 -0800 (PST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +28,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, lgirdwood@gmail.com, akshu.agrawal@amd.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In the event when resgiters are same, this patch checks shared
-flag and uses devm_ioremap_shared_resource for mapping. This allows
-us to have 2 separate cpu dais for playback and capture having same
-register set.
+Hi,
 
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
----
- include/sound/designware_i2s.h |  1 +
- sound/soc/dwc/dwc-i2s.c        | 18 +++++++++++++++---
- 2 files changed, 16 insertions(+), 3 deletions(-)
+I'm in the process of putting together a loudness compensation plugin 
+for ALSA.  The filtering part is implemented as an external PCM plugin 
+and it is, more or less, ready, meaning that you can set its parameters 
+via configuration options and it'll happily filter away in real time. 
+I'm trying now to create a matching mixer plugin, to allow on-the-fly 
+adjustment of the parameters, and I'm not sure what the best way of 
+accomplishing that would be.  My main concerns are:
 
-diff --git a/include/sound/designware_i2s.h b/include/sound/designware_i2s.h
-index 830f5ca..a43a3708 100644
---- a/include/sound/designware_i2s.h
-+++ b/include/sound/designware_i2s.h
-@@ -56,6 +56,7 @@ struct i2s_platform_data {
- 	void *capture_dma_data;
- 	bool (*filter)(struct dma_chan *chan, void *slave);
- 	int (*i2s_clk_cfg)(struct i2s_clk_config_data *config);
-+	bool shared;
- };
- 
- struct i2s_dma_data {
-diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
-index e27e21f..1e7c285 100644
---- a/sound/soc/dwc/dwc-i2s.c
-+++ b/sound/soc/dwc/dwc-i2s.c
-@@ -629,9 +629,21 @@ static int dw_i2s_probe(struct platform_device *pdev)
- 	dw_i2s_dai->resume = dw_i2s_resume;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	dev->i2s_base = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(dev->i2s_base))
--		return PTR_ERR(dev->i2s_base);
-+	/* For devices which use the same registers for playback
-+	 * and capture, we would set shared flag for registering
-+	 * the second cpu dai.
-+	 */
-+	if (pdata && pdata->shared) {
-+			dev->i2s_base =
-+				devm_ioremap_shared_resource(&pdev->dev, res);
-+			if (IS_ERR(dev->i2s_base))
-+				return PTR_ERR(dev->i2s_base);
-+	} else {
-+			dev->i2s_base =
-+				devm_ioremap_resource(&pdev->dev, res);
-+			if (IS_ERR(dev->i2s_base))
-+				return PTR_ERR(dev->i2s_base);
-+	}
- 
- 	dev->dev = &pdev->dev;
- 
--- 
-1.9.1
+1. I've figured out how to create a basic external control plugin, that 
+would allow me to expose a set of controls, which the user can fiddle 
+with, using alsamixer et al., but what would be the best way of 
+communicating changes in the values to the PCM plugin?  I could imagine 
+using methods external to ALSA, such as a file with stored values, which 
+the ctl plugin updates and which the PCM plugin monitors for changes, or 
+perhaps I could try to open the mixer from inside the PCM plugin, set 
+callbacks for each of its elements and enter a 
+snd_mixer_wait/snd_mixer_handle_events loop, in a separate thread of 
+course.  Is there reason to prefer one way over the other?  Perhaps 
+there is a better way, I'm not aware of?
+
+2. I'd like to support event subscription/notification, but I'm not sure 
+how to make that work.  My understanding (from searching the net and 
+looking at ALSA's source), is that I need to provide some sort of file 
+descriptor, which the subscribing code can poll, so as to block until 
+there's an update.  Since I have no obvious candidates for such a file, 
+I've tried creating a pipe, handing one end to the control plugin upon 
+initialization and then writing single bytes to the other end when 
+there's a change in one of the controls.  This works but, as far as I 
+can see, the pipe is never actually read from, from the subscribing 
+code, so that I would have to manually read from it somehwere, say in 
+the read_event callback, in order to flush it.  In the end, I'll 
+probably use the descriptor from an inotify watch on the file where the 
+plugin stores the control settings, but is this a valid approach 
+overall?  Is there some documentation specifying the exact way in which 
+poll descriptors are handled by ALSA (in the case of an extrnal CTL 
+plugin), that I've missed?  If not, are my assumptions above (that the 
+descriptor is only polled and that its contents are never actually read) 
+correct?
+
+3. Finally, and although this is not essential, I'd like to provide 
+metadata for some controls, to support dB ranges, as that's the most 
+natural way to set them.  I see hints that this is supported for 
+external control plugins (SND_CTL_EXT_ACCESS_TLV_READ/WRITE, the 
+snd_ctl_ext_tlv_rw_t callback), but I'm not sure how to implement it. Is 
+it documented somewhere?  If not, could someone describe the basic approach?
+
+Thanks,
+Dimitris
