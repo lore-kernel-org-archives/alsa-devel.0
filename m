@@ -1,23 +1,17 @@
-From: Dimitris Papavasiliou <dpapavas@gmail.com>
-Subject: Need help implementing an external PCM/control plugin
-	pair
-Date: Fri, 16 Feb 2018 12:12:43 +0200
-Message-ID: <0daf8a5e-c1dd-224e-52e7-7467d93aa045@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: Need help implementing an external PCM/control
+	plugin pair
+Date: Fri, 16 Feb 2018 19:38:06 +0900
+Message-ID: <4deee929-ae8c-c330-d9d1-865c558a3b75@sakamocchi.jp>
+References: <0daf8a5e-c1dd-224e-52e7-7467d93aa045@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f174.google.com (mail-wr0-f174.google.com
- [209.85.128.174])
- by alsa0.perex.cz (Postfix) with ESMTP id A74F2267C4D
- for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 11:12:49 +0100 (CET)
-Received: by mail-wr0-f174.google.com with SMTP id o76so2332126wrb.7
- for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 02:12:49 -0800 (PST)
-Received: from [192.168.1.106] (ipa1.211.tellas.gr. [62.169.211.1])
- by smtp.gmail.com with ESMTPSA id b136sm12228831wme.34.2018.02.16.02.12.44
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 16 Feb 2018 02:12:44 -0800 (PST)
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 7517E267DC1
+ for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 11:38:08 +0100 (CET)
+In-Reply-To: <0daf8a5e-c1dd-224e-52e7-7467d93aa045@gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,56 +22,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Dimitris Papavasiliou <dpapavas@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-I'm in the process of putting together a loudness compensation plugin 
-for ALSA.  The filtering part is implemented as an external PCM plugin 
-and it is, more or less, ready, meaning that you can set its parameters 
-via configuration options and it'll happily filter away in real time. 
-I'm trying now to create a matching mixer plugin, to allow on-the-fly 
-adjustment of the parameters, and I'm not sure what the best way of 
-accomplishing that would be.  My main concerns are:
-
-1. I've figured out how to create a basic external control plugin, that 
-would allow me to expose a set of controls, which the user can fiddle 
-with, using alsamixer et al., but what would be the best way of 
-communicating changes in the values to the PCM plugin?  I could imagine 
-using methods external to ALSA, such as a file with stored values, which 
-the ctl plugin updates and which the PCM plugin monitors for changes, or 
-perhaps I could try to open the mixer from inside the PCM plugin, set 
-callbacks for each of its elements and enter a 
-snd_mixer_wait/snd_mixer_handle_events loop, in a separate thread of 
-course.  Is there reason to prefer one way over the other?  Perhaps 
-there is a better way, I'm not aware of?
-
-2. I'd like to support event subscription/notification, but I'm not sure 
-how to make that work.  My understanding (from searching the net and 
-looking at ALSA's source), is that I need to provide some sort of file 
-descriptor, which the subscribing code can poll, so as to block until 
-there's an update.  Since I have no obvious candidates for such a file, 
-I've tried creating a pipe, handing one end to the control plugin upon 
-initialization and then writing single bytes to the other end when 
-there's a change in one of the controls.  This works but, as far as I 
-can see, the pipe is never actually read from, from the subscribing 
-code, so that I would have to manually read from it somehwere, say in 
-the read_event callback, in order to flush it.  In the end, I'll 
-probably use the descriptor from an inotify watch on the file where the 
-plugin stores the control settings, but is this a valid approach 
-overall?  Is there some documentation specifying the exact way in which 
-poll descriptors are handled by ALSA (in the case of an extrnal CTL 
-plugin), that I've missed?  If not, are my assumptions above (that the 
-descriptor is only polled and that its contents are never actually read) 
-correct?
-
-3. Finally, and although this is not essential, I'd like to provide 
-metadata for some controls, to support dB ranges, as that's the most 
-natural way to set them.  I see hints that this is supported for 
-external control plugins (SND_CTL_EXT_ACCESS_TLV_READ/WRITE, the 
-snd_ctl_ext_tlv_rw_t callback), but I'm not sure how to implement it. Is 
-it documented somewhere?  If not, could someone describe the basic approach?
-
-Thanks,
-Dimitris
+SGksCgpPbiBGZWIgMTYgMjAxOCAxOToxMiwgRGltaXRyaXMgUGFwYXZhc2lsaW91IHdyb3RlOgo+
+IEknbSBpbiB0aGUgcHJvY2VzcyBvZiBwdXR0aW5nIHRvZ2V0aGVyIGEgbG91ZG5lc3MgY29tcGVu
+c2F0aW9uIHBsdWdpbiAKPiBmb3IgQUxTQS7CoCBUaGUgZmlsdGVyaW5nIHBhcnQgaXMgaW1wbGVt
+ZW50ZWQgYXMgYW4gZXh0ZXJuYWwgUENNIHBsdWdpbiAKPiBhbmQgaXQgaXMsIG1vcmUgb3IgbGVz
+cywgcmVhZHksIG1lYW5pbmcgdGhhdCB5b3UgY2FuIHNldCBpdHMgcGFyYW1ldGVycyAKPiB2aWEg
+Y29uZmlndXJhdGlvbiBvcHRpb25zIGFuZCBpdCdsbCBoYXBwaWx5IGZpbHRlciBhd2F5IGluIHJl
+YWwgdGltZS4gCj4gSSdtIHRyeWluZyBub3cgdG8gY3JlYXRlIGEgbWF0Y2hpbmcgbWl4ZXIgcGx1
+Z2luLCB0byBhbGxvdyBvbi10aGUtZmx5IAo+IGFkanVzdG1lbnQgb2YgdGhlIHBhcmFtZXRlcnMs
+IGFuZCBJJ20gbm90IHN1cmUgd2hhdCB0aGUgYmVzdCB3YXkgb2YgCj4gYWNjb21wbGlzaGluZyB0
+aGF0IHdvdWxkIGJlLsKgIE15IG1haW4gY29uY2VybnMgYXJlOgo+Cj4gMS4gSSd2ZSBmaWd1cmVk
+IG91dCBob3cgdG8gY3JlYXRlIGEgYmFzaWMgZXh0ZXJuYWwgY29udHJvbCBwbHVnaW4sIHRoYXQg
+Cj4gd291bGQgYWxsb3cgbWUgdG8gZXhwb3NlIGEgc2V0IG9mIGNvbnRyb2xzLCB3aGljaCB0aGUg
+dXNlciBjYW4gZmlkZGxlIAo+IHdpdGgsIHVzaW5nIGFsc2FtaXhlciBldCBhbC4sIGJ1dCB3aGF0
+IHdvdWxkIGJlIHRoZSBiZXN0IHdheSBvZiAKPiBjb21tdW5pY2F0aW5nIGNoYW5nZXMgaW4gdGhl
+IHZhbHVlcyB0byB0aGUgUENNIHBsdWdpbj/CoCBJIGNvdWxkIGltYWdpbmUgCj4gdXNpbmcgbWV0
+aG9kcyBleHRlcm5hbCB0byBBTFNBLCBzdWNoIGFzIGEgZmlsZSB3aXRoIHN0b3JlZCB2YWx1ZXMs
+IHdoaWNoIAo+IHRoZSBjdGwgcGx1Z2luIHVwZGF0ZXMgYW5kIHdoaWNoIHRoZSBQQ00gcGx1Z2lu
+IG1vbml0b3JzIGZvciBjaGFuZ2VzLCBvciAKPiBwZXJoYXBzIEkgY291bGQgdHJ5IHRvIG9wZW4g
+dGhlIG1peGVyIGZyb20gaW5zaWRlIHRoZSBQQ00gcGx1Z2luLCBzZXQgCj4gY2FsbGJhY2tzIGZv
+ciBlYWNoIG9mIGl0cyBlbGVtZW50cyBhbmQgZW50ZXIgYSAKPiBzbmRfbWl4ZXJfd2FpdC9zbmRf
+bWl4ZXJfaGFuZGxlX2V2ZW50cyBsb29wLCBpbiBhIHNlcGFyYXRlIHRocmVhZCBvZiAKPiBjb3Vy
+c2UuwqAgSXMgdGhlcmUgcmVhc29uIHRvIHByZWZlciBvbmUgd2F5IG92ZXIgdGhlIG90aGVyP8Kg
+IFBlcmhhcHMgCj4gdGhlcmUgaXMgYSBiZXR0ZXIgd2F5LCBJJ20gbm90IGF3YXJlIG9mPwo+Cj4g
+Mi4gSSdkIGxpa2UgdG8gc3VwcG9ydCBldmVudCBzdWJzY3JpcHRpb24vbm90aWZpY2F0aW9uLCBi
+dXQgSSdtIG5vdCBzdXJlIAo+IGhvdyB0byBtYWtlIHRoYXQgd29yay7CoCBNeSB1bmRlcnN0YW5k
+aW5nIChmcm9tIHNlYXJjaGluZyB0aGUgbmV0IGFuZCAKPiBsb29raW5nIGF0IEFMU0EncyBzb3Vy
+Y2UpLCBpcyB0aGF0IEkgbmVlZCB0byBwcm92aWRlIHNvbWUgc29ydCBvZiBmaWxlIAo+IGRlc2Ny
+aXB0b3IsIHdoaWNoIHRoZSBzdWJzY3JpYmluZyBjb2RlIGNhbiBwb2xsLCBzbyBhcyB0byBibG9j
+ayB1bnRpbCAKPiB0aGVyZSdzIGFuIHVwZGF0ZS7CoCBTaW5jZSBJIGhhdmUgbm8gb2J2aW91cyBj
+YW5kaWRhdGVzIGZvciBzdWNoIGEgZmlsZSwgCj4gSSd2ZSB0cmllZCBjcmVhdGluZyBhIHBpcGUs
+IGhhbmRpbmcgb25lIGVuZCB0byB0aGUgY29udHJvbCBwbHVnaW4gdXBvbiAKPiBpbml0aWFsaXph
+dGlvbiBhbmQgdGhlbiB3cml0aW5nIHNpbmdsZSBieXRlcyB0byB0aGUgb3RoZXIgZW5kIHdoZW4g
+Cj4gdGhlcmUncyBhIGNoYW5nZSBpbiBvbmUgb2YgdGhlIGNvbnRyb2xzLsKgIFRoaXMgd29ya3Mg
+YnV0LCBhcyBmYXIgYXMgSSAKPiBjYW4gc2VlLCB0aGUgcGlwZSBpcyBuZXZlciBhY3R1YWxseSBy
+ZWFkIGZyb20sIGZyb20gdGhlIHN1YnNjcmliaW5nIAo+IGNvZGUsIHNvIHRoYXQgSSB3b3VsZCBo
+YXZlIHRvIG1hbnVhbGx5IHJlYWQgZnJvbSBpdCBzb21laHdlcmUsIHNheSBpbiAKPiB0aGUgcmVh
+ZF9ldmVudCBjYWxsYmFjaywgaW4gb3JkZXIgdG8gZmx1c2ggaXQuwqAgSW4gdGhlIGVuZCwgSSds
+bCAKPiBwcm9iYWJseSB1c2UgdGhlIGRlc2NyaXB0b3IgZnJvbSBhbiBpbm90aWZ5IHdhdGNoIG9u
+IHRoZSBmaWxlIHdoZXJlIHRoZSAKPiBwbHVnaW4gc3RvcmVzIHRoZSBjb250cm9sIHNldHRpbmdz
+LCBidXQgaXMgdGhpcyBhIHZhbGlkIGFwcHJvYWNoIAo+IG92ZXJhbGw/wqAgSXMgdGhlcmUgc29t
+ZSBkb2N1bWVudGF0aW9uIHNwZWNpZnlpbmcgdGhlIGV4YWN0IHdheSBpbiB3aGljaCAKPiBwb2xs
+IGRlc2NyaXB0b3JzIGFyZSBoYW5kbGVkIGJ5IEFMU0EgKGluIHRoZSBjYXNlIG9mIGFuIGV4dHJu
+YWwgQ1RMIAo+IHBsdWdpbiksIHRoYXQgSSd2ZSBtaXNzZWQ/wqAgSWYgbm90LCBhcmUgbXkgYXNz
+dW1wdGlvbnMgYWJvdmUgKHRoYXQgdGhlIAo+IGRlc2NyaXB0b3IgaXMgb25seSBwb2xsZWQgYW5k
+IHRoYXQgaXRzIGNvbnRlbnRzIGFyZSBuZXZlciBhY3R1YWxseSByZWFkKSAKPiBjb3JyZWN0Pwo+
+IAo+IDMuIEZpbmFsbHksIGFuZCBhbHRob3VnaCB0aGlzIGlzIG5vdCBlc3NlbnRpYWwsIEknZCBs
+aWtlIHRvIHByb3ZpZGUgCj4gbWV0YWRhdGEgZm9yIHNvbWUgY29udHJvbHMsIHRvIHN1cHBvcnQg
+ZEIgcmFuZ2VzLCBhcyB0aGF0J3MgdGhlIG1vc3QgCj4gbmF0dXJhbCB3YXkgdG8gc2V0IHRoZW0u
+wqAgSSBzZWUgaGludHMgdGhhdCB0aGlzIGlzIHN1cHBvcnRlZCBmb3IgCj4gZXh0ZXJuYWwgY29u
+dHJvbCBwbHVnaW5zIChTTkRfQ1RMX0VYVF9BQ0NFU1NfVExWX1JFQUQvV1JJVEUsIHRoZSAKPiBz
+bmRfY3RsX2V4dF90bHZfcndfdCBjYWxsYmFjayksIGJ1dCBJJ20gbm90IHN1cmUgaG93IHRvIGlt
+cGxlbWVudCBpdC4gSXMgCj4gaXQgZG9jdW1lbnRlZCBzb21ld2hlcmU/wqAgSWYgbm90LCBjb3Vs
+ZCBzb21lb25lIGRlc2NyaWJlIHRoZSBiYXNpYyAKPiBhcHByb2FjaD8KCkFMU0EgY29udHJvbCBj
+b3JlIGhhcyBhIGZlYXR1cmUgY2FsbGVkIGFzICd1c2VyLWRlZmluZWQgY29udHJvbCBlbGVtZW50
+IApzZXQnLiBUaGlzIHdpbGwgaGVscCB5b3VyIHdvcmssIGluIG15IG9waW5pb24uIEZvciBleGFt
+cGxlLCBhbHNhLWxpYiAKJ3NvZnR2b2wnIFBDTSBwbHVnaW4gdXRpbGl6ZXMgdGhpcyBmZWF0dXJl
+IHRvIGFjY29tcGxpc2htZW50IApjb25maWd1cmFibGUgdm9sdW1lcyBieSB0aGUgb3RoZXJzWzFd
+LiBUaGlzIGZlYXR1cmUgc3VwcG9ydHMgbWV0YWRhdGEgYnkgClRMViAoVHlwZS1MZW5ndGgtVmFs
+dWUpIGFuZCBldmVudGluZyB0byBzdWJzY3JpYmVycyBhcyB3ZWxsLgoKVGhlIGFsc2EtbGliIGlu
+Y2x1ZGVzIGEgdGVzdCBwcm9ncmFtIGZvciB0aGlzIGZlYXR1cmUsIHdoaWNoIEkgd3JvdGVbMl0u
+IApUaGlzIG1heSBoZWxwIHlvdXIgd29yayBieSBpdHMgYWN0dWFsIGNvZGUsIEkgdGhpbmtbMl0u
+CgpbMV0gCmh0dHA6Ly9naXQuYWxzYS1wcm9qZWN0Lm9yZy8/cD1hbHNhLWxpYi5naXQ7YT1ibG9i
+O2Y9c3JjL3BjbS9wY21fc29mdHZvbC5jO2g9OGJiNGEzOTdiODBlYmJhNTJhOTk1YTQ2NDE3YjY5
+ZTc4ZjVlYTUyYjtoYj1IRUFEI2w3MTQKWzJdIApodHRwOi8vZ2l0LmFsc2EtcHJvamVjdC5vcmcv
+P3A9YWxzYS1saWIuZ2l0O2E9YmxvYjtmPXRlc3QvdXNlci1jdGwtZWxlbWVudC1zZXQuYztoPWU5
+NDE1MmI5NTJlNGQ3MjRiYzEwOTM5M2RmMjliZjQ1MTlmNjBiMzE7aGI9SEVBRAoKClJlZ2FyZHMK
+ClRha2FzaGkgU2FrYW1vdG8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
