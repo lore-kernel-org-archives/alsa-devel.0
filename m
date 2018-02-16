@@ -1,48 +1,95 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: Re: [PATCH v4 1/2] ASoC: codecs: Add support for AK5558 ADC driver
-Date: Fri, 16 Feb 2018 12:28:21 +0000
-Message-ID: <1518784101.9517.21.camel@nxp.com>
-References: <1518532174-11350-1-git-send-email-daniel.baluta@nxp.com>
-         <1518532174-11350-2-git-send-email-daniel.baluta@nxp.com>
-         <20180216121445.GH5886@sirena.org.uk>
+From: Sebastian Reichel <sebastian.reichel-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
+Subject: Re: [PATCHv4 1/4] dt-bindings: sound: add motorola,cpcap-audio-codec
+Date: Fri, 16 Feb 2018 14:25:38 +0100
+Message-ID: <20180216132537.lkd4wzfg7uuoyx7k@earth.universe>
+References: <20180214220741.28306-1-sebastian.reichel@collabora.co.uk>
+ <20180214220741.28306-2-sebastian.reichel@collabora.co.uk>
+ <20180216113008.GB5886@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180216121445.GH5886@sirena.org.uk>
-Content-Language: en-US
-Content-ID: <E59F09E99505474789D8B931C8BFEA55@eurprd04.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "pombredanne@nexb.com" <pombredanne@nexb.com>, "broonie@kernel.org" <broonie@kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Cosmin Samoila <cosmin.samoila@nxp.com>, "daniel.baluta@gmail.com" <daniel.baluta@gmail.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "wakasugi.jb@om.asahi-kasei.co.jp" <wakasugi.jb@om.asahi-kasei.co.jp>, "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, "mihai.serban@gmail.com" <mihai.serban@gmail.com>, "robh@kernel.org" <robh@kernel.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "mihai.serban@nxp.com" <mihai.serban@nxp.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4wgqgt55vm2fopkt"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20180216113008.GB5886-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVmksIDIwMTgtMDItMTYgYXQgMTI6MTQgKzAwMDAsIE1hcmsgQnJvd24gd3JvdGU6DQo+IE9u
-IFR1ZSwgRmViIDEzLCAyMDE4IGF0IDA0OjI5OjMzUE0gKzAyMDAsIERhbmllbCBCYWx1dGEgd3Jv
-dGU6DQo+IA0KPiA+IA0KPiA+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3MvYWs1NTU4LmMNCj4gPiBA
-QCAtMCwwICsxLDQxNyBAQA0KPiA+ICsvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIu
-MA0KPiA+ICsvKg0KPiBKdXN0IG1ha2UgdGhpcyBhIEMrKyBjb21tbWVudCwgZG9uJ3QgbWl4IEMg
-YW5kIEMrKyAtIGl0IGxvb2tzIG5lYXRlci4NCj4gT3RoZXJ3aXNlIHRoaXMgbG9va3MgZ29vZCBz
-byBJJ2xsIGFwcGx5LCBwbGVhc2Ugc2VuZCBhIGZvbGxvd3VwIHBhdGNoDQo+IGZvciB0aGUgYWJv
-dmUuDQoNCkhpIE1hcmssDQoNCldpbGwgc2VuZCBhIHNlcGFyYXRlIHBhdGNoIHRvIGZpeCB0aGlz
-Lg0KDQpBbnlob3csIGxldHMgbWFrZSBzdXJlIHRoYXQgSSBnb3QgaXQgcmlnaHQgYmVjYXVzZSBs
-b29raW5nIGludG8NCnNvdW5kL3NvYy9jb2RlY3MgSSBjYW4gc2VlIGEgbWl4ZXMgb2Ygc3R5bGVz
-Lg0KDQpTbywgZm9yIGFrNTU1OC5jIHRoZSBjb3JyZWN0IGNvZGUgc2hvdWxkIGJlOg0KDQovLyBT
-UERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMA0KLy8NCi8vIEF1ZGlvIGRyaXZlciBmb3Ig
-QUs1NTU4IEFEQw0KLy8NCi8vIENvcHlyaWdodCAoQykgMjAxNSBBc2FoaSBLYXNlaSBNaWNyb2Rl
-dmljZXMgQ29ycG9yYXRpb24NCi8vIENvcHlyaWdodCAyMDE4IE5YUA0KLy8NCg0KTm93LCBmb3Ig
-dGhlIC5oIHRoZXJlIGlzIGEgdG90YWwgZGlmZmVyZW50IHN0b3J5LiBBcyBwZXLCoFBoaWxpcHBl
-J3MNCmxpbmsgdG8gZG9jdW1lbnRhdGlvbiBbMV0NCg0KdGhlIC5oIGZpbGUgc2hvdWxkIHN0YXJ0
-IHdpdGg6DQoNCkMgaGVhZGVyOgkvKiBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogPFNQRFggTGlj
-ZW5zZSBFeHByZXNzaW9uPiAqLw0KDQpTbywgaXMgdGhlIGhlYWRlciBhazU1NTguaCBsb29raW5n
-IGxpa2UgdGhpcywgYWxsIHJpZ2h0Pw0KDQoNCi8qIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBH
-UEwtMi4wICovDQovKg0KwqAqIEF1ZGlvIGRyaXZlciBoZWFkZXIgZm9yIEFLNTU1OA0KwqAqDQrC
-oCogQ29weXJpZ2h0IChDKSAyMDE2IEFzYWhpIEthc2VpIE1pY3JvZGV2aWNlcyBDb3Jwb3JhdGlv
-bg0KwqAqIENvcHlyaWdodCAyMDE4IE5YUA0KwqAqLw0KDQpBcmUgeW91IHdpbGxpbmcgdG8gdGFr
-ZSBwYXRjaGVzIGZpeGluZyB0aGUgU1BEWCBpZGVudGlmaWVyIGZvciB0aGUgcmVzdCBvZiB0aGUg
-Y29kZWNzIGluIHNvdW5jL3NvYy9jb2RlY3M/DQoNCkkndmUgZ290IGEgYnVuY2ggb2Ygc3R1ZGVu
-dHMgbG9va2luZyBmb3IgY2xlYW51cCBwYXRjaGVzIGluIHRoZWlyIGFwcGxpY2F0aW9uIGZvciBH
-b29nbGUgU3VtbWVyIG9mIENvZGUgOikuDQoNCnRoYW5rcywNCkRhbmllbC4NCg0KWzFdaHR0cHM6
-Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXgu
-Z2l0L3RyZWUvRG9jdW1lbnRhdGlvbi9wcm9jZXNzL2xpY2Vuc2UtcnVsZXMucnN0I242Nw0KDQoN
-Cg0K
+
+--4wgqgt55vm2fopkt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Mark,
+
+On Fri, Feb 16, 2018 at 11:30:08AM +0000, Mark Brown wrote:
+> On Wed, Feb 14, 2018 at 11:07:38PM +0100, Sebastian Reichel wrote:
+>=20
+> > +&cpcap {
+> > +	audio-codec {
+> > +		compatible =3D "motorola,cpcap-audio-codec";
+> > +	};
+>=20
+> Why are we adding a separate DT node with no content for this?  This is
+> a single chip, we already know that the CODEC part is there from the DT
+> telling us that the chip is there and what we decide is part of the
+> CODEC is going to depend on what the OS running on the system is doing.
+
+While it looks empty in the DT binding file, it's actually not empty
+once some standard properties are added to support audio-graph-card.
+A real world example looks like this:
+
+&cpcap {
+    audio-codec {
+        compatible =3D "motorola,cpcap-audio-codec";
+        #sound-dai-cells =3D <1>;
+
+        port@0 {
+            cpcap_audio_codec0: endpoint {
+                remote-endpoint =3D <&cpu_dai2>;
+            };
+        };
+
+        port@1 {
+            cpcap_audio_codec1: endpoint {
+                remote-endpoint =3D <&cpu_dai3>;
+            };
+       };
+    };
+};
+
+Having all of this directly in the cpcap node doesn't look like
+an improvement for any OS. Once there is a node it makes sense
+to add a compatible IMHO. As a side effect this also avoids having
+special handling for the audio codec. This is the last missing
+sub-component, see arch/arm/boot/dts/motorola-cpcap-mapphone.dtsi
+
+-- Sebastian
+
+--4wgqgt55vm2fopkt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAlqG288ACgkQ2O7X88g7
++pq/YQ/5AeXjVP0rUKWE/VZHRZnyxD1lwAtgMODqFJ93v5TulzMIHghoCHRlngXY
+czWjZ/kXQn9Y8ZciuV07005OjBY6mJdC22gtvZuq/Ufk4luGTdAK/P/KFKcoEsLB
+yKLph76WcHSUAEXFpN0Hp0jnbOkiXxDPQHW7VJM6AILAQR3u4jKHU923m0ibNjyi
+WG3i6C1ykXOpPX0Pdj4XmPeNZA8P2ZHt3Sk60fHG+ePyxXOZB9IJ5Nny98Qxh3gY
+ldYOcmIbXWtlf7G7bD/vlXMoc600jYN/CT7seLrWjDrn9e2pxRMrGbbSLJeiL6Km
+3unsXXNY99sDBdoHXyESfWF+F/90bz24pU6C+i0PgISv/LlSkx9Z63/6uMNmi6DV
+Qm1nelOxDjNlNCgjRU+R90jG3aFEwnJunTywtQNrJcBOgFgmhVag9fGH+HoDX4gB
+EbTxruuSfKwMaCV6/sWtLj1LgsZCRC0Q+Zvjx8SOvF9iwi3euzHWrovlZo9Yn6+Z
+DPVQ0+Ns6Pq/pWVN7Xl5HLh00AQAR/FQP1eJdsBas60tNmbPRlMPN6MoV31okRcd
+uXPhQfIU5vwsRC6fPdzPadbVAnTfS4FhZHLULFjEuWSZyPVVqK9/xlRBQgBkxHvk
+K43NPiu7MM6fZkOxpTCkR4PPtADCyz4OdVOhxHdR6fJbmAJt2qo=
+=2OjM
+-----END PGP SIGNATURE-----
+
+--4wgqgt55vm2fopkt--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
