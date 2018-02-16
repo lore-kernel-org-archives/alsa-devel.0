@@ -1,18 +1,33 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: ak4458: Add support for AK4458 DAC driver" to the asoc tree
-Date: Fri, 16 Feb 2018 12:04:41 +0000
-Message-ID: <E1emekr-00054k-1k@debutante>
-References: <1518614467-20613-2-git-send-email-cosmin.samoila@nxp.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1518614467-20613-2-git-send-email-cosmin.samoila-3arQi8VN3Tc@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Cosmin-Gabriel Samoila <cosmin.samoila-3arQi8VN3Tc@public.gmane.org>
-Cc: Junichi Wakasugi <wakasugi.jb-r6lgfPJHJciWyREYz5tgSuqrae++aQT8@public.gmane.org>, Mihai Serban <mihai.serban-3arQi8VN3Tc@public.gmane.org>, Shengjiu Wang <shengjiu.wang-3arQi8VN3Tc@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, shegjiu.wang-3arQi8VN3Tc@public.gmane.orgShengjiu Wang <shengjiu.wang-3arQi8VN3Tc@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.orgJunichi Wakasugi <wakasugi.jb-r6lgfPJHJciWyREYz5tgSuqrae++aQT8@public.gmane.org>Mihai Serban <mihai.serban-3arQi8VN3Tc@public.gmane.org>, linux-imx-3arQi8VN3Tc@public.gmane.org, daniel.baluta-3arQi8VN3Tc@public.gmane.org, mihai.serban-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: Add Kabylake-y Dialog Maxim
+	machine driver" to the asoc tree
+Date: Fri, 16 Feb 2018 12:05:22 +0000
+Message-ID: <E1emelW-000576-C7@debutante>
+References: <1517804997-13776-2-git-send-email-naveen.m@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A44C267E17
+ for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2018 13:05:28 +0100 (CET)
+In-Reply-To: <1517804997-13776-2-git-send-email-naveen.m@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, harshapriya.n@intel.com, broonie@kernel.org, naveen.m@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak4458: Add support for AK4458 DAC driver
+   ASoC: Intel: Add Kabylake-y Dialog Maxim machine driver
 
 has been applied to the asoc tree at
 
@@ -37,837 +52,687 @@ to this mail.
 Thanks,
 Mark
 
->From 08660086eff9e9e69246a65ee48aba5c3901bf5e Mon Sep 17 00:00:00 2001
-From: Cosmin-Gabriel Samoila <cosmin.samoila-3arQi8VN3Tc@public.gmane.org>
-Date: Wed, 14 Feb 2018 15:21:06 +0200
-Subject: [PATCH] ASoC: ak4458: Add support for AK4458 DAC driver
+>From b3ea70ee64ea50d6719f09f781ff11ac9c86d0c2 Mon Sep 17 00:00:00 2001
+From: Naveen Manohar <naveen.m@intel.com>
+Date: Mon, 5 Feb 2018 09:59:56 +0530
+Subject: [PATCH] ASoC: Intel: Add Kabylake-y Dialog Maxim machine driver
 
-The AK4458 is a 32-bit 8ch Premium DAC that corresponds
-to a 768kHz PCM input and an 11.2MHz DSD input at maximum.
-It supports I2S, DSD and TDM modes with 24 or 32 bit MSB
-or 16, 24, 32 LSB formats. Its datasheet is available here:
-https://www.akm.com/akm/en/file/datasheet/AK4458VN.pdf
+This patch adds Kabylake-y I2S machine driver which uses
+DA7219 as headset on ssp1 and MAX98357A codec as speaker
+on ssp0.
 
-Signed-off-by: Junichi Wakasugi <wakasugi.jb-r6lgfPJHJciWyREYz5tgSuqrae++aQT8@public.gmane.org>
-Signed-off-by: Mihai Serban <mihai.serban-3arQi8VN3Tc@public.gmane.org>
-Signed-off-by: Shengjiu Wang <shengjiu.wang-3arQi8VN3Tc@public.gmane.org>
-Signed-off-by: Cosmin-Gabriel Samoila <cosmin.samoila-3arQi8VN3Tc@public.gmane.org>
-Reviewed-by: Andy Shevchenko <andy.shevchenko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Naveen Manohar <naveen.m@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Kconfig  |   6 +
- sound/soc/codecs/Makefile |   2 +
- sound/soc/codecs/ak4458.c | 659 ++++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/ak4458.h |  86 ++++++
- 4 files changed, 753 insertions(+)
- create mode 100644 sound/soc/codecs/ak4458.c
- create mode 100644 sound/soc/codecs/ak4458.h
+ sound/soc/intel/boards/Kconfig                |  14 +
+ sound/soc/intel/boards/Makefile               |   2 +
+ sound/soc/intel/boards/kbl_da7219_max98357a.c | 613 ++++++++++++++++++++++++++
+ 3 files changed, 629 insertions(+)
+ create mode 100644 sound/soc/intel/boards/kbl_da7219_max98357a.c
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 2b331f7266ab..7f6fb5e234f1 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -35,6 +35,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_ADAU7002
- 	select SND_SOC_ADS117X
- 	select SND_SOC_AK4104 if SPI_MASTER
-+	select SND_SOC_AK4458 if I2C
- 	select SND_SOC_AK4535 if I2C
- 	select SND_SOC_AK4554
- 	select SND_SOC_AK4613 if I2C
-@@ -375,6 +376,11 @@ config SND_SOC_AK4104
- 	tristate "AKM AK4104 CODEC"
- 	depends on SPI_MASTER
- 
-+config SND_SOC_AK4458
-+	tristate "AKM AK4458 CODEC"
-+	depends on I2C
-+	select REGMAP_I2C
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index fefb1ee9fec6..eedc83b96fbb 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -256,6 +256,20 @@ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
+           create an alsa sound card for RT5663 + RT5514 + MAX98927.
+           Say Y or m if you have such a device. This is a recommended option.
+           If unsure select "N".
 +
- config SND_SOC_AK4535
- 	tristate
++config SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH
++	tristate "KBL with DA7219 and MAX98357A in I2S Mode"
++	depends on MFD_INTEL_LPSS && I2C && ACPI
++	select SND_SOC_DA7219
++	select SND_SOC_MAX98357A
++	select SND_SOC_DMIC
++	select SND_SOC_HDAC_HDMI
++	help
++	  This adds support for ASoC Onboard Codec I2S machine driver. This will
++	  create an alsa sound card for DA7219 + MAX98357A I2S audio codec.
++	  Say Y if you have such a device.
++	  If unsure select "N".
++
+ endif ## SND_SOC_INTEL_SKYLAKE
  
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index da1571336f1e..7f5d57517a5e 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -27,6 +27,7 @@ snd-soc-adav801-objs := adav801.o
- snd-soc-adav803-objs := adav803.o
- snd-soc-ads117x-objs := ads117x.o
- snd-soc-ak4104-objs := ak4104.o
-+snd-soc-ak4458-objs := ak4458.o
- snd-soc-ak4535-objs := ak4535.o
- snd-soc-ak4554-objs := ak4554.o
- snd-soc-ak4613-objs := ak4613.o
-@@ -270,6 +271,7 @@ obj-$(CONFIG_SND_SOC_ADAV801)  += snd-soc-adav801.o
- obj-$(CONFIG_SND_SOC_ADAV803)  += snd-soc-adav803.o
- obj-$(CONFIG_SND_SOC_ADS117X)	+= snd-soc-ads117x.o
- obj-$(CONFIG_SND_SOC_AK4104)	+= snd-soc-ak4104.o
-+obj-$(CONFIG_SND_SOC_AK4458)	+= snd-soc-ak4458.o
- obj-$(CONFIG_SND_SOC_AK4535)	+= snd-soc-ak4535.o
- obj-$(CONFIG_SND_SOC_AK4554)	+= snd-soc-ak4554.o
- obj-$(CONFIG_SND_SOC_AK4613)	+= snd-soc-ak4613.o
-diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
+ endif ## SND_SOC_INTEL_MACH
+diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
+index 69d2dfaeb00c..6fae506c40fa 100644
+--- a/sound/soc/intel/boards/Makefile
++++ b/sound/soc/intel/boards/Makefile
+@@ -14,6 +14,7 @@ snd-soc-sst-cht-bsw-max98090_ti-objs := cht_bsw_max98090_ti.o
+ snd-soc-sst-byt-cht-da7213-objs := bytcht_da7213.o
+ snd-soc-sst-byt-cht-es8316-objs := bytcht_es8316.o
+ snd-soc-sst-byt-cht-nocodec-objs := bytcht_nocodec.o
++snd-soc-kbl_da7219_max98357a-objs := kbl_da7219_max98357a.o
+ snd-soc-kbl_rt5663_max98927-objs := kbl_rt5663_max98927.o
+ snd-soc-kbl_rt5663_rt5514_max98927-objs := kbl_rt5663_rt5514_max98927.o
+ snd-soc-skl_rt286-objs := skl_rt286.o
+@@ -35,6 +36,7 @@ obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH) += snd-soc-sst-cht-bsw-max9
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_DA7213_MACH) += snd-soc-sst-byt-cht-da7213.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_ES8316_MACH) += snd-soc-sst-byt-cht-es8316.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH) += snd-soc-sst-byt-cht-nocodec.o
++obj-$(CONFIG_SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH) += snd-soc-kbl_da7219_max98357a.o
+ obj-$(CONFIG_SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH) += snd-soc-kbl_rt5663_max98927.o
+ obj-$(CONFIG_SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH) += snd-soc-kbl_rt5663_rt5514_max98927.o
+ obj-$(CONFIG_SND_SOC_INTEL_SKL_RT286_MACH) += snd-soc-skl_rt286.o
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
 new file mode 100644
-index 000000000000..b579cda8e418
+index 000000000000..d689124f6687
 --- /dev/null
-+++ b/sound/soc/codecs/ak4458.c
-@@ -0,0 +1,659 @@
++++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+@@ -0,0 +1,613 @@
 +// SPDX-License-Identifier: GPL-2.0
++// Copyright(c) 2017-18 Intel Corporation.
++
 +/*
-+ * Audio driver for AK4458 DAC
++ * Intel Kabylake I2S Machine Driver with MAX98357A & DA7219 Codecs
 + *
-+ * Copyright (C) 2016 Asahi Kasei Microdevices Corporation
-+ * Copyright 2018 NXP
++ * Modified from:
++ *   Intel Kabylake I2S Machine driver supporting MAXIM98927 and
++ *   RT5663 codecs
 + */
 +
++#include <linux/input.h>
 +#include <linux/module.h>
-+#include <linux/delay.h>
-+#include <linux/slab.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/of_device.h>
-+#include <linux/of_gpio.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/i2c.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/initval.h>
-+#include <sound/tlv.h>
++#include <linux/platform_device.h>
++#include <sound/core.h>
++#include <sound/jack.h>
++#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include "../../codecs/da7219.h"
++#include "../../codecs/hdac_hdmi.h"
++#include "../skylake/skl.h"
++#include "../../codecs/da7219-aad.h"
 +
-+#include "ak4458.h"
++#define KBL_DIALOG_CODEC_DAI "da7219-hifi"
++#define KBL_MAXIM_CODEC_DAI "HiFi"
++#define MAXIM_DEV0_NAME "MX98357A:00"
++#define DUAL_CHANNEL 2
++#define QUAD_CHANNEL 4
 +
-+/* AK4458 Codec Private Data */
-+struct ak4458_priv {
-+	struct device *dev;
-+	struct regmap *regmap;
-+	struct gpio_desc *reset_gpiod;
-+	struct gpio_desc *mute_gpiod;
-+	int digfil;	/* SSLOW, SD, SLOW bits */
-+	int fs;		/* sampling rate */
-+	int fmt;
-+	int slots;
-+	int slot_width;
++static struct snd_soc_card *kabylake_audio_card;
++static struct snd_soc_jack skylake_hdmi[3];
++
++struct kbl_hdmi_pcm {
++	struct list_head head;
++	struct snd_soc_dai *codec_dai;
++	int device;
 +};
 +
-+static const struct reg_default ak4458_reg_defaults[] = {
-+	{ 0x00, 0x0C },	/*	0x00	AK4458_00_CONTROL1	*/
-+	{ 0x01, 0x22 },	/*	0x01	AK4458_01_CONTROL2	*/
-+	{ 0x02, 0x00 },	/*	0x02	AK4458_02_CONTROL3	*/
-+	{ 0x03, 0xFF },	/*	0x03	AK4458_03_LCHATT	*/
-+	{ 0x04, 0xFF },	/*	0x04	AK4458_04_RCHATT	*/
-+	{ 0x05, 0x00 },	/*	0x05	AK4458_05_CONTROL4	*/
-+	{ 0x06, 0x00 },	/*	0x06	AK4458_06_DSD1		*/
-+	{ 0x07, 0x03 },	/*	0x07	AK4458_07_CONTROL5	*/
-+	{ 0x08, 0x00 },	/*	0x08	AK4458_08_SOUND_CONTROL	*/
-+	{ 0x09, 0x00 },	/*	0x09	AK4458_09_DSD2		*/
-+	{ 0x0A, 0x0D },	/*	0x0A	AK4458_0A_CONTROL6	*/
-+	{ 0x0B, 0x0C },	/*	0x0B	AK4458_0B_CONTROL7	*/
-+	{ 0x0C, 0x00 },	/*	0x0C	AK4458_0C_CONTROL8	*/
-+	{ 0x0D, 0x00 },	/*	0x0D	AK4458_0D_CONTROL9	*/
-+	{ 0x0E, 0x50 },	/*	0x0E	AK4458_0E_CONTROL10	*/
-+	{ 0x0F, 0xFF },	/*	0x0F	AK4458_0F_L2CHATT	*/
-+	{ 0x10, 0xFF },	/*	0x10	AK4458_10_R2CHATT	*/
-+	{ 0x11, 0xFF },	/*	0x11	AK4458_11_L3CHATT	*/
-+	{ 0x12, 0xFF },	/*	0x12	AK4458_12_R3CHATT	*/
-+	{ 0x13, 0xFF },	/*	0x13	AK4458_13_L4CHATT	*/
-+	{ 0x14, 0xFF },	/*	0x14	AK4458_14_R4CHATT	*/
++struct kbl_codec_private {
++	struct snd_soc_jack kabylake_headset;
++	struct list_head hdmi_pcm_list;
 +};
 +
-+/*
-+ * Volume control:
-+ * from -127 to 0 dB in 0.5 dB steps (mute instead of -127.5 dB)
-+ */
-+static DECLARE_TLV_DB_SCALE(dac_tlv, -12750, 50, 1);
-+
-+/*
-+ * DEM1 bit DEM0 bit Mode
-+ * 0 0 44.1kHz
-+ * 0 1 OFF (default)
-+ * 1 0 48kHz
-+ * 1 1 32kHz
-+ */
-+static const char * const ak4458_dem_select_texts[] = {
-+	"44.1kHz", "OFF", "48kHz", "32kHz"
++enum {
++	KBL_DPCM_AUDIO_PB = 0,
++	KBL_DPCM_AUDIO_CP,
++	KBL_DPCM_AUDIO_DMIC_CP,
++	KBL_DPCM_AUDIO_HDMI1_PB,
++	KBL_DPCM_AUDIO_HDMI2_PB,
++	KBL_DPCM_AUDIO_HDMI3_PB,
 +};
 +
-+/*
-+ * SSLOW, SD, SLOW bits Digital Filter Setting
-+ * 0, 0, 0 : Sharp Roll-Off Filter
-+ * 0, 0, 1 : Slow Roll-Off Filter
-+ * 0, 1, 0 : Short delay Sharp Roll-Off Filter
-+ * 0, 1, 1 : Short delay Slow Roll-Off Filter
-+ * 1, *, * : Super Slow Roll-Off Filter
-+ */
-+static const char * const ak4458_digfil_select_texts[] = {
-+	"Sharp Roll-Off Filter",
-+	"Slow Roll-Off Filter",
-+	"Short delay Sharp Roll-Off Filter",
-+	"Short delay Slow Roll-Off Filter",
-+	"Super Slow Roll-Off Filter"
-+};
-+
-+/*
-+ * DZFB: Inverting Enable of DZF
-+ * 0: DZF goes H at Zero Detection
-+ * 1: DZF goes L at Zero Detection
-+ */
-+static const char * const ak4458_dzfb_select_texts[] = {"H", "L"};
-+
-+/*
-+ * SC1-0 bits: Sound Mode Setting
-+ * 0 0 : Sound Mode 0
-+ * 0 1 : Sound Mode 1
-+ * 1 0 : Sound Mode 2
-+ * 1 1 : Reserved
-+ */
-+static const char * const ak4458_sc_select_texts[] = {
-+	"Sound Mode 0", "Sound Mode 1", "Sound Mode 2"
-+};
-+
-+/* FIR2-0 bits: FIR Filter Mode Setting */
-+static const char * const ak4458_fir_select_texts[] = {
-+	"Mode 0", "Mode 1", "Mode 2", "Mode 3",
-+	"Mode 4", "Mode 5", "Mode 6", "Mode 7",
-+};
-+
-+/* ATS1-0 bits Attenuation Speed */
-+static const char * const ak4458_ats_select_texts[] = {
-+	"4080/fs", "2040/fs", "510/fs", "255/fs",
-+};
-+
-+/* DIF2 bit Audio Interface Format Setting(BICK fs) */
-+static const char * const ak4458_dif_select_texts[] = {"32fs,48fs", "64fs",};
-+
-+static const struct soc_enum ak4458_dac1_dem_enum =
-+	SOC_ENUM_SINGLE(AK4458_01_CONTROL2, 1,
-+			ARRAY_SIZE(ak4458_dem_select_texts),
-+			ak4458_dem_select_texts);
-+static const struct soc_enum ak4458_dac2_dem_enum =
-+	SOC_ENUM_SINGLE(AK4458_0A_CONTROL6, 0,
-+			ARRAY_SIZE(ak4458_dem_select_texts),
-+			ak4458_dem_select_texts);
-+static const struct soc_enum ak4458_dac3_dem_enum =
-+	SOC_ENUM_SINGLE(AK4458_0E_CONTROL10, 4,
-+			ARRAY_SIZE(ak4458_dem_select_texts),
-+			ak4458_dem_select_texts);
-+static const struct soc_enum ak4458_dac4_dem_enum =
-+	SOC_ENUM_SINGLE(AK4458_0E_CONTROL10, 6,
-+			ARRAY_SIZE(ak4458_dem_select_texts),
-+			ak4458_dem_select_texts);
-+static const struct soc_enum ak4458_digfil_enum =
-+	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(ak4458_digfil_select_texts),
-+			    ak4458_digfil_select_texts);
-+static const struct soc_enum ak4458_dzfb_enum =
-+	SOC_ENUM_SINGLE(AK4458_02_CONTROL3, 2,
-+			ARRAY_SIZE(ak4458_dzfb_select_texts),
-+			ak4458_dzfb_select_texts);
-+static const struct soc_enum ak4458_sm_enum =
-+	SOC_ENUM_SINGLE(AK4458_08_SOUND_CONTROL, 0,
-+			ARRAY_SIZE(ak4458_sc_select_texts),
-+			ak4458_sc_select_texts);
-+static const struct soc_enum ak4458_fir_enum =
-+	SOC_ENUM_SINGLE(AK4458_0C_CONTROL8, 0,
-+			ARRAY_SIZE(ak4458_fir_select_texts),
-+			ak4458_fir_select_texts);
-+static const struct soc_enum ak4458_ats_enum =
-+	SOC_ENUM_SINGLE(AK4458_0B_CONTROL7, 6,
-+			ARRAY_SIZE(ak4458_ats_select_texts),
-+			ak4458_ats_select_texts);
-+static const struct soc_enum ak4458_dif_enum =
-+	SOC_ENUM_SINGLE(AK4458_00_CONTROL1, 3,
-+			ARRAY_SIZE(ak4458_dif_select_texts),
-+			ak4458_dif_select_texts);
-+
-+static int get_digfil(struct snd_kcontrol *kcontrol,
-+		      struct snd_ctl_elem_value *ucontrol)
++static int platform_clock_control(struct snd_soc_dapm_widget *w,
++					struct snd_kcontrol *k, int  event)
 +{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct ak4458_priv *ak4458 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_dapm_context *dapm = w->dapm;
++	struct snd_soc_card *card = dapm->card;
++	struct snd_soc_dai *codec_dai;
++	int ret = 0;
 +
-+	ucontrol->value.enumerated.item[0] = ak4458->digfil;
-+
-+	return 0;
-+}
-+
-+static int set_digfil(struct snd_kcontrol *kcontrol,
-+		      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct ak4458_priv *ak4458 = snd_soc_codec_get_drvdata(codec);
-+	int num;
-+
-+	num = ucontrol->value.enumerated.item[0];
-+	if (num > 4)
-+		return -EINVAL;
-+
-+	ak4458->digfil = num;
-+
-+	/* write SD bit */
-+	snd_soc_update_bits(codec, AK4458_01_CONTROL2,
-+			    AK4458_SD_MASK,
-+			    ((ak4458->digfil & 0x02) << 4));
-+
-+	/* write SLOW bit */
-+	snd_soc_update_bits(codec, AK4458_02_CONTROL3,
-+			    AK4458_SLOW_MASK,
-+			    (ak4458->digfil & 0x01));
-+
-+	/* write SSLOW bit */
-+	snd_soc_update_bits(codec, AK4458_05_CONTROL4,
-+			    AK4458_SSLOW_MASK,
-+			    ((ak4458->digfil & 0x04) >> 2));
-+
-+	return 0;
-+}
-+
-+static const struct snd_kcontrol_new ak4458_snd_controls[] = {
-+	SOC_DOUBLE_R_TLV("DAC1 Playback Volume", AK4458_03_LCHATT,
-+			 AK4458_04_RCHATT, 0, 0xFF, 0, dac_tlv),
-+	SOC_DOUBLE_R_TLV("DAC2 Playback Volume", AK4458_0F_L2CHATT,
-+			 AK4458_10_R2CHATT, 0, 0xFF, 0, dac_tlv),
-+	SOC_DOUBLE_R_TLV("DAC3 Playback Volume", AK4458_11_L3CHATT,
-+			 AK4458_12_R3CHATT, 0, 0xFF, 0, dac_tlv),
-+	SOC_DOUBLE_R_TLV("DAC4 Playback Volume", AK4458_13_L4CHATT,
-+			 AK4458_14_R4CHATT, 0, 0xFF, 0, dac_tlv),
-+	SOC_ENUM("AK4458 De-emphasis Response DAC1", ak4458_dac1_dem_enum),
-+	SOC_ENUM("AK4458 De-emphasis Response DAC2", ak4458_dac2_dem_enum),
-+	SOC_ENUM("AK4458 De-emphasis Response DAC3", ak4458_dac3_dem_enum),
-+	SOC_ENUM("AK4458 De-emphasis Response DAC4", ak4458_dac4_dem_enum),
-+	SOC_ENUM_EXT("AK4458 Digital Filter Setting", ak4458_digfil_enum,
-+		     get_digfil, set_digfil),
-+	SOC_ENUM("AK4458 Inverting Enable of DZFB", ak4458_dzfb_enum),
-+	SOC_ENUM("AK4458 Sound Mode", ak4458_sm_enum),
-+	SOC_ENUM("AK4458 FIR Filter Mode Setting", ak4458_fir_enum),
-+	SOC_ENUM("AK4458 Attenuation transition Time Setting",
-+		 ak4458_ats_enum),
-+	SOC_ENUM("AK4458 BICK fs Setting", ak4458_dif_enum),
-+};
-+
-+/* ak4458 dapm widgets */
-+static const struct snd_soc_dapm_widget ak4458_dapm_widgets[] = {
-+	SND_SOC_DAPM_DAC("AK4458 DAC1", NULL, AK4458_0A_CONTROL6, 2, 0),/*pw*/
-+	SND_SOC_DAPM_AIF_IN("AK4458 SDTI", "Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_OUTPUT("AK4458 AOUTA"),
-+
-+	SND_SOC_DAPM_DAC("AK4458 DAC2", NULL, AK4458_0A_CONTROL6, 3, 0),/*pw*/
-+	SND_SOC_DAPM_OUTPUT("AK4458 AOUTB"),
-+
-+	SND_SOC_DAPM_DAC("AK4458 DAC3", NULL, AK4458_0B_CONTROL7, 2, 0),/*pw*/
-+	SND_SOC_DAPM_OUTPUT("AK4458 AOUTC"),
-+
-+	SND_SOC_DAPM_DAC("AK4458 DAC4", NULL, AK4458_0B_CONTROL7, 3, 0),/*pw*/
-+	SND_SOC_DAPM_OUTPUT("AK4458 AOUTD"),
-+};
-+
-+static const struct snd_soc_dapm_route ak4458_intercon[] = {
-+	{"AK4458 DAC1",		NULL,	"AK4458 SDTI"},
-+	{"AK4458 AOUTA",	NULL,	"AK4458 DAC1"},
-+
-+	{"AK4458 DAC2",		NULL,	"AK4458 SDTI"},
-+	{"AK4458 AOUTB",	NULL,	"AK4458 DAC2"},
-+
-+	{"AK4458 DAC3",		NULL,	"AK4458 SDTI"},
-+	{"AK4458 AOUTC",	NULL,	"AK4458 DAC3"},
-+
-+	{"AK4458 DAC4",		NULL,	"AK4458 SDTI"},
-+	{"AK4458 AOUTD",	NULL,	"AK4458 DAC4"},
-+};
-+
-+static int ak4458_rstn_control(struct snd_soc_codec *codec, int bit)
-+{
-+	int ret;
-+
-+	if (bit)
-+		ret = snd_soc_update_bits(codec,
-+					  AK4458_00_CONTROL1,
-+					  AK4458_RSTN_MASK,
-+					  0x1);
-+	else
-+		ret = snd_soc_update_bits(codec,
-+					  AK4458_00_CONTROL1,
-+					  AK4458_RSTN_MASK,
-+					  0x0);
-+	return ret;
-+}
-+
-+static int ak4458_hw_params(struct snd_pcm_substream *substream,
-+			    struct snd_pcm_hw_params *params,
-+			    struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct ak4458_priv *ak4458 = snd_soc_codec_get_drvdata(codec);
-+	int pcm_width = max(params_physical_width(params), ak4458->slot_width);
-+	int nfs1;
-+	u8 format;
-+
-+	nfs1 = params_rate(params);
-+	ak4458->fs = nfs1;
-+
-+	/* Master Clock Frequency Auto Setting Mode Enable */
-+	snd_soc_update_bits(codec, AK4458_00_CONTROL1, 0x80, 0x80);
-+
-+	switch (pcm_width) {
-+	case 16:
-+		if (ak4458->fmt == SND_SOC_DAIFMT_I2S)
-+			format = AK4458_DIF_24BIT_I2S;
-+		else
-+			format = AK4458_DIF_16BIT_LSB;
-+		break;
-+	case 32:
-+		switch (ak4458->fmt) {
-+		case SND_SOC_DAIFMT_I2S:
-+			format = AK4458_DIF_32BIT_I2S;
-+			break;
-+		case SND_SOC_DAIFMT_LEFT_J:
-+			format = AK4458_DIF_32BIT_MSB;
-+			break;
-+		case SND_SOC_DAIFMT_RIGHT_J:
-+			format = AK4458_DIF_32BIT_LSB;
-+			break;
-+		case SND_SOC_DAIFMT_DSP_B:
-+			format = AK4458_DIF_32BIT_MSB;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+		break;
-+	default:
-+		return -EINVAL;
++	codec_dai = snd_soc_card_get_codec_dai(card, KBL_DIALOG_CODEC_DAI);
++	if (!codec_dai) {
++		dev_err(card->dev, "Codec dai not found; Unable to set/unset codec pll\n");
++		return -EIO;
 +	}
 +
-+	snd_soc_update_bits(codec, AK4458_00_CONTROL1,
-+			    AK4458_DIF_MASK, format);
-+
-+	ak4458_rstn_control(codec, 0);
-+	ak4458_rstn_control(codec, 1);
-+
-+	return 0;
-+}
-+
-+static int ak4458_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct ak4458_priv *ak4458 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBS_CFS: /* Slave Mode */
-+		break;
-+	case SND_SOC_DAIFMT_CBM_CFM: /* Master Mode is not supported */
-+	case SND_SOC_DAIFMT_CBS_CFM:
-+	case SND_SOC_DAIFMT_CBM_CFS:
-+	default:
-+		dev_err(codec->dev, "Master mode unsupported\n");
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+	case SND_SOC_DAIFMT_LEFT_J:
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+	case SND_SOC_DAIFMT_DSP_B:
-+		ak4458->fmt = fmt & SND_SOC_DAIFMT_FORMAT_MASK;
-+		break;
-+	default:
-+		dev_err(codec->dev, "Audio format 0x%02X unsupported\n",
-+			fmt & SND_SOC_DAIFMT_FORMAT_MASK);
-+		return -EINVAL;
-+	}
-+
-+	ak4458_rstn_control(codec, 0);
-+	ak4458_rstn_control(codec, 1);
-+
-+	return 0;
-+}
-+
-+static const int att_speed[] = { 4080, 2040, 510, 255 };
-+
-+static int ak4458_set_dai_mute(struct snd_soc_dai *dai, int mute)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct ak4458_priv *ak4458 = snd_soc_codec_get_drvdata(codec);
-+	int nfs, ndt, ret, reg;
-+	int ats;
-+
-+	nfs = ak4458->fs;
-+
-+	reg = snd_soc_read(codec, AK4458_0B_CONTROL7);
-+	ats = (reg & AK4458_ATS_MASK) >> AK4458_ATS_SHIFT;
-+
-+	ndt = att_speed[ats] / (nfs / 1000);
-+
-+	if (mute) {
-+		ret = snd_soc_update_bits(codec, AK4458_01_CONTROL2,  0x01, 1);
-+		mdelay(ndt);
-+		if (ak4458->mute_gpiod)
-+			gpiod_set_value_cansleep(ak4458->mute_gpiod, 1);
-+	} else {
-+		if (ak4458->mute_gpiod)
-+			gpiod_set_value_cansleep(ak4458->mute_gpiod, 0);
-+		ret = snd_soc_update_bits(codec, AK4458_01_CONTROL2, 0x01, 0);
-+		mdelay(ndt);
-+	}
-+
-+	return 0;
-+}
-+
-+static int ak4458_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
-+			       unsigned int rx_mask, int slots, int slot_width)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct ak4458_priv *ak4458 = snd_soc_codec_get_drvdata(codec);
-+	int mode;
-+
-+	ak4458->slots = slots;
-+	ak4458->slot_width = slot_width;
-+
-+	switch (slots * slot_width) {
-+	case 128:
-+		mode = AK4458_MODE_TDM128;
-+		break;
-+	case 256:
-+		mode = AK4458_MODE_TDM256;
-+		break;
-+	case 512:
-+		mode = AK4458_MODE_TDM512;
-+		break;
-+	default:
-+		mode = AK4458_MODE_NORMAL;
-+		break;
-+	}
-+
-+	snd_soc_update_bits(codec, AK4458_0A_CONTROL6,
-+			    AK4458_MODE_MASK,
-+			    mode);
-+
-+	return 0;
-+}
-+
-+#define AK4458_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE |\
-+			 SNDRV_PCM_FMTBIT_S24_LE |\
-+			 SNDRV_PCM_FMTBIT_S32_LE)
-+
-+static const unsigned int ak4458_rates[] = {
-+	8000, 11025,  16000, 22050,
-+	32000, 44100, 48000, 88200,
-+	96000, 176400, 192000, 352800,
-+	384000, 705600, 768000, 1411200,
-+	2822400,
-+};
-+
-+static const struct snd_pcm_hw_constraint_list ak4458_rate_constraints = {
-+	.count = ARRAY_SIZE(ak4458_rates),
-+	.list = ak4458_rates,
-+};
-+
-+static int ak4458_startup(struct snd_pcm_substream *substream,
-+			  struct snd_soc_dai *dai)
-+{
-+	int ret;
-+
-+	ret = snd_pcm_hw_constraint_list(substream->runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_RATE,
-+					 &ak4458_rate_constraints);
-+
-+	return ret;
-+}
-+
-+static struct snd_soc_dai_ops ak4458_dai_ops = {
-+	.startup        = ak4458_startup,
-+	.hw_params	= ak4458_hw_params,
-+	.set_fmt	= ak4458_set_dai_fmt,
-+	.digital_mute	= ak4458_set_dai_mute,
-+	.set_tdm_slot	= ak4458_set_tdm_slot,
-+};
-+
-+static struct snd_soc_dai_driver ak4458_dai = {
-+	.name = "ak4458-aif",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 1,
-+		.channels_max = 8,
-+		.rates = SNDRV_PCM_RATE_KNOT,
-+		.formats = AK4458_FORMATS,
-+	},
-+	.ops = &ak4458_dai_ops,
-+};
-+
-+static void ak4458_power_off(struct ak4458_priv *ak4458)
-+{
-+	if (ak4458->reset_gpiod) {
-+		gpiod_set_value_cansleep(ak4458->reset_gpiod, 0);
-+		usleep_range(1000, 2000);
-+	}
-+}
-+
-+static void ak4458_power_on(struct ak4458_priv *ak4458)
-+{
-+	if (ak4458->reset_gpiod) {
-+		gpiod_set_value_cansleep(ak4458->reset_gpiod, 1);
-+		usleep_range(1000, 2000);
-+	}
-+}
-+
-+static void ak4458_init(struct snd_soc_codec *codec)
-+{
-+	struct ak4458_priv *ak4458 = snd_soc_codec_get_drvdata(codec);
-+
-+	/* External Mute ON */
-+	if (ak4458->mute_gpiod)
-+		gpiod_set_value_cansleep(ak4458->mute_gpiod, 1);
-+
-+	ak4458_power_on(ak4458);
-+
-+	snd_soc_update_bits(codec, AK4458_00_CONTROL1,
-+			    0x80, 0x80);   /* ACKS bit = 1; 10000000 */
-+
-+	ak4458_rstn_control(codec, 1);
-+}
-+
-+static int ak4458_probe(struct snd_soc_codec *codec)
-+{
-+	struct ak4458_priv *ak4458 = snd_soc_codec_get_drvdata(codec);
-+
-+	ak4458_init(codec);
-+
-+	ak4458->fs = 48000;
-+
-+	return 0;
-+}
-+
-+static int ak4458_remove(struct snd_soc_codec *codec)
-+{
-+	struct ak4458_priv *ak4458 = snd_soc_codec_get_drvdata(codec);
-+
-+	ak4458_power_off(ak4458);
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+static int __maybe_unused ak4458_runtime_suspend(struct device *dev)
-+{
-+	struct ak4458_priv *ak4458 = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(ak4458->regmap, true);
-+
-+	ak4458_power_off(ak4458);
-+
-+	if (ak4458->mute_gpiod)
-+		gpiod_set_value_cansleep(ak4458->mute_gpiod, 0);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused ak4458_runtime_resume(struct device *dev)
-+{
-+	struct ak4458_priv *ak4458 = dev_get_drvdata(dev);
-+
-+	if (ak4458->mute_gpiod)
-+		gpiod_set_value_cansleep(ak4458->mute_gpiod, 1);
-+
-+	ak4458_power_off(ak4458);
-+	ak4458_power_on(ak4458);
-+
-+	regcache_cache_only(ak4458->regmap, false);
-+	regcache_mark_dirty(ak4458->regmap);
-+
-+	return regcache_sync(ak4458->regmap);
-+}
-+#endif /* CONFIG_PM */
-+
-+struct snd_soc_codec_driver soc_codec_dev_ak4458 = {
-+	.probe = ak4458_probe,
-+	.remove = ak4458_remove,
-+	.component_driver = {
-+		.controls = ak4458_snd_controls,
-+		.num_controls = ARRAY_SIZE(ak4458_snd_controls),
-+		.dapm_widgets = ak4458_dapm_widgets,
-+		.num_dapm_widgets = ARRAY_SIZE(ak4458_dapm_widgets),
-+		.dapm_routes = ak4458_intercon,
-+		.num_dapm_routes = ARRAY_SIZE(ak4458_intercon),
-+	},
-+};
-+
-+const struct regmap_config ak4458_regmap = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+
-+	.max_register = AK4458_14_R4CHATT,
-+	.reg_defaults = ak4458_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(ak4458_reg_defaults),
-+	.cache_type = REGCACHE_RBTREE,
-+};
-+
-+const struct dev_pm_ops ak4458_pm = {
-+	SET_RUNTIME_PM_OPS(ak4458_runtime_suspend, ak4458_runtime_resume, NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
-+};
-+
-+static int ak4458_i2c_probe(struct i2c_client *i2c)
-+{
-+	struct ak4458_priv *ak4458;
-+	int ret;
-+
-+	ak4458 = devm_kzalloc(&i2c->dev, sizeof(*ak4458), GFP_KERNEL);
-+	if (!ak4458)
-+		return -ENOMEM;
-+
-+	ak4458->regmap = devm_regmap_init_i2c(i2c, &ak4458_regmap);
-+	if (IS_ERR(ak4458->regmap))
-+		return PTR_ERR(ak4458->regmap);
-+
-+	i2c_set_clientdata(i2c, ak4458);
-+	ak4458->dev = &i2c->dev;
-+
-+	ak4458->reset_gpiod = devm_gpiod_get_optional(ak4458->dev, "reset",
-+						      GPIOD_OUT_LOW);
-+	if (IS_ERR(ak4458->reset_gpiod))
-+		return PTR_ERR(ak4458->reset_gpiod);
-+
-+	ak4458->mute_gpiod = devm_gpiod_get_optional(ak4458->dev, "mute",
-+						     GPIOD_OUT_LOW);
-+	if (IS_ERR(ak4458->mute_gpiod))
-+		return PTR_ERR(ak4458->mute_gpiod);
-+
-+	ret = snd_soc_register_codec(ak4458->dev, &soc_codec_dev_ak4458,
-+				     &ak4458_dai, 1);
-+	if (ret < 0) {
-+		dev_err(ak4458->dev, "Failed to register CODEC: %d\n", ret);
++	/* Configure sysclk for codec */
++	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
++				     SND_SOC_CLOCK_IN);
++	if (ret) {
++		dev_err(card->dev, "can't set codec sysclk configuration\n");
 +		return ret;
 +	}
 +
-+	pm_runtime_enable(&i2c->dev);
++	if (SND_SOC_DAPM_EVENT_OFF(event)) {
++		ret = snd_soc_dai_set_pll(codec_dai, 0,
++				     DA7219_SYSCLK_MCLK, 0, 0);
++		if (ret)
++			dev_err(card->dev, "failed to stop PLL: %d\n", ret);
++	} else if (SND_SOC_DAPM_EVENT_ON(event)) {
++		ret = snd_soc_dai_set_pll(codec_dai, 0,	DA7219_SYSCLK_PLL_SRM,
++				     0, DA7219_PLL_FREQ_OUT_98304);
++		if (ret)
++			dev_err(card->dev, "failed to start PLL: %d\n", ret);
++	}
 +
-+	return 0;
++	return ret;
 +}
 +
-+static int ak4458_i2c_remove(struct i2c_client *i2c)
++static const struct snd_kcontrol_new kabylake_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
++	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++	SOC_DAPM_PIN_SWITCH("Spk"),
++};
++
++static const struct snd_soc_dapm_widget kabylake_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone Jack", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++	SND_SOC_DAPM_SPK("Spk", NULL),
++	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
++	SND_SOC_DAPM_SPK("DP", NULL),
++	SND_SOC_DAPM_SPK("HDMI", NULL),
++	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
++			platform_clock_control, SND_SOC_DAPM_PRE_PMU |
++			SND_SOC_DAPM_POST_PMD),
++};
++
++static const struct snd_soc_dapm_route kabylake_map[] = {
++	{ "Headphone Jack", NULL, "HPL" },
++	{ "Headphone Jack", NULL, "HPR" },
++
++	/* speaker */
++	{ "Spk", NULL, "Speaker" },
++
++	/* other jacks */
++	{ "MIC", NULL, "Headset Mic" },
++	{ "DMic", NULL, "SoC DMIC" },
++
++	{ "HDMI", NULL, "hif5 Output" },
++	{ "DP", NULL, "hif6 Output" },
++
++	/* CODEC BE connections */
++	{ "HiFi Playback", NULL, "ssp0 Tx" },
++	{ "ssp0 Tx", NULL, "codec0_out" },
++
++	{ "Playback", NULL, "ssp1 Tx" },
++	{ "ssp1 Tx", NULL, "codec1_out" },
++
++	{ "codec0_in", NULL, "ssp1 Rx" },
++	{ "ssp1 Rx", NULL, "Capture" },
++
++	/* DMIC */
++	{ "dmic01_hifi", NULL, "DMIC01 Rx" },
++	{ "DMIC01 Rx", NULL, "DMIC AIF" },
++
++	{ "hifi1", NULL, "iDisp1 Tx" },
++	{ "iDisp1 Tx", NULL, "iDisp1_out" },
++	{ "hifi2", NULL, "iDisp2 Tx" },
++	{ "iDisp2 Tx", NULL, "iDisp2_out" },
++	{ "hifi3", NULL, "iDisp3 Tx"},
++	{ "iDisp3 Tx", NULL, "iDisp3_out"},
++
++	{ "Headphone Jack", NULL, "Platform Clock" },
++	{ "Headset Mic", NULL, "Platform Clock" },
++};
++
++static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
++			struct snd_pcm_hw_params *params)
 +{
-+	snd_soc_unregister_codec(&i2c->dev);
-+	pm_runtime_disable(&i2c->dev);
++	struct snd_interval *rate = hw_param_interval(params,
++			SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params,
++			SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
++
++	/* The ADSP will convert the FE rate to 48k, stereo */
++	rate->min = rate->max = 48000;
++	channels->min = channels->max = DUAL_CHANNEL;
++
++	/* set SSP to 24 bit */
++	snd_mask_none(fmt);
++	snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
 +
 +	return 0;
 +}
 +
-+static const struct of_device_id ak4458_of_match[] = {
-+	{ .compatible = "asahi-kasei,ak4458", },
-+	{ },
++static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
++	struct snd_soc_codec *codec = rtd->codec;
++	struct snd_soc_jack *jack;
++	int ret;
++
++	/*
++	 * Headset buttons map to the google Reference headset.
++	 * These can be configured by userspace.
++	 */
++	ret = snd_soc_card_jack_new(kabylake_audio_card, "Headset Jack",
++			SND_JACK_HEADSET | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++			SND_JACK_BTN_2 | SND_JACK_BTN_3 | SND_JACK_LINEOUT,
++			&ctx->kabylake_headset, NULL, 0);
++	if (ret) {
++		dev_err(rtd->dev, "Headset Jack creation failed: %d\n", ret);
++		return ret;
++	}
++
++	jack = &ctx->kabylake_headset;
++
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_MEDIA);
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
++	da7219_aad_jack_det(codec, &ctx->kabylake_headset);
++
++	ret = snd_soc_dapm_ignore_suspend(&rtd->card->dapm, "SoC DMIC");
++	if (ret)
++		dev_err(rtd->dev, "SoC DMIC - Ignore suspend failed %d\n", ret);
++
++	return ret;
++}
++
++static int kabylake_hdmi_init(struct snd_soc_pcm_runtime *rtd, int device)
++{
++	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
++	struct snd_soc_dai *dai = rtd->codec_dai;
++	struct kbl_hdmi_pcm *pcm;
++
++	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
++	if (!pcm)
++		return -ENOMEM;
++
++	pcm->device = device;
++	pcm->codec_dai = dai;
++
++	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
++
++	return 0;
++}
++
++static int kabylake_hdmi1_init(struct snd_soc_pcm_runtime *rtd)
++{
++	return kabylake_hdmi_init(rtd, KBL_DPCM_AUDIO_HDMI1_PB);
++}
++
++static int kabylake_hdmi2_init(struct snd_soc_pcm_runtime *rtd)
++{
++	return kabylake_hdmi_init(rtd, KBL_DPCM_AUDIO_HDMI2_PB);
++}
++
++static int kabylake_hdmi3_init(struct snd_soc_pcm_runtime *rtd)
++{
++	return kabylake_hdmi_init(rtd, KBL_DPCM_AUDIO_HDMI3_PB);
++}
++
++static int kabylake_da7219_fe_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_dapm_context *dapm;
++	struct snd_soc_component *component = rtd->cpu_dai->component;
++
++	dapm = snd_soc_component_get_dapm(component);
++	snd_soc_dapm_ignore_suspend(dapm, "Reference Capture");
++
++	return 0;
++}
++
++static const unsigned int rates[] = {
++	48000,
 +};
 +
-+static struct i2c_driver ak4458_i2c_driver = {
++static const struct snd_pcm_hw_constraint_list constraints_rates = {
++	.count = ARRAY_SIZE(rates),
++	.list  = rates,
++	.mask = 0,
++};
++
++static const unsigned int channels[] = {
++	DUAL_CHANNEL,
++};
++
++static const struct snd_pcm_hw_constraint_list constraints_channels = {
++	.count = ARRAY_SIZE(channels),
++	.list = channels,
++	.mask = 0,
++};
++
++static unsigned int channels_quad[] = {
++	QUAD_CHANNEL,
++};
++
++static struct snd_pcm_hw_constraint_list constraints_channels_quad = {
++	.count = ARRAY_SIZE(channels_quad),
++	.list = channels_quad,
++	.mask = 0,
++};
++
++static int kbl_fe_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	/*
++	 * On this platform for PCM device we support,
++	 * 48Khz
++	 * stereo
++	 * 16 bit audio
++	 */
++
++	runtime->hw.channels_max = DUAL_CHANNEL;
++	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++					   &constraints_channels);
++
++	runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
++	snd_pcm_hw_constraint_msbits(runtime, 0, 16, 16);
++
++	snd_pcm_hw_constraint_list(runtime, 0,
++				SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
++
++	return 0;
++}
++
++static const struct snd_soc_ops kabylake_da7219_fe_ops = {
++	.startup = kbl_fe_startup,
++};
++
++static int kabylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
++		struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *channels = hw_param_interval(params,
++				SNDRV_PCM_HW_PARAM_CHANNELS);
++
++	/*
++	 * set BE channel constraint as user FE channels
++	 */
++
++	if (params_channels(params) == 2)
++		channels->min = channels->max = 2;
++	else
++		channels->min = channels->max = 4;
++
++	return 0;
++}
++
++static int kabylake_dmic_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	runtime->hw.channels_min = runtime->hw.channels_max = QUAD_CHANNEL;
++	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++			&constraints_channels_quad);
++
++	return snd_pcm_hw_constraint_list(substream->runtime, 0,
++			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
++}
++
++static struct snd_soc_ops kabylake_dmic_ops = {
++	.startup = kabylake_dmic_startup,
++};
++
++static const unsigned int rates_16000[] = {
++	16000,
++};
++
++static const struct snd_pcm_hw_constraint_list constraints_16000 = {
++	.count = ARRAY_SIZE(rates_16000),
++	.list  = rates_16000,
++};
++
++static const unsigned int ch_mono[] = {
++	1,
++};
++
++/* kabylake digital audio interface glue - connects codec <--> CPU */
++static struct snd_soc_dai_link kabylake_dais[] = {
++	/* Front End DAI links */
++	[KBL_DPCM_AUDIO_PB] = {
++		.name = "Kbl Audio Port",
++		.stream_name = "Audio",
++		.cpu_dai_name = "System Pin",
++		.platform_name = "0000:00:1f.3",
++		.dynamic = 1,
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.nonatomic = 1,
++		.init = kabylake_da7219_fe_init,
++		.trigger = {
++			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.dpcm_playback = 1,
++		.ops = &kabylake_da7219_fe_ops,
++	},
++	[KBL_DPCM_AUDIO_CP] = {
++		.name = "Kbl Audio Capture Port",
++		.stream_name = "Audio Record",
++		.cpu_dai_name = "System Pin",
++		.platform_name = "0000:00:1f.3",
++		.dynamic = 1,
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.nonatomic = 1,
++		.trigger = {
++			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.dpcm_capture = 1,
++	},
++	[KBL_DPCM_AUDIO_DMIC_CP] = {
++		.name = "Kbl Audio DMIC cap",
++		.stream_name = "dmiccap",
++		.cpu_dai_name = "DMIC Pin",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:1f.3",
++		.init = NULL,
++		.dpcm_capture = 1,
++		.nonatomic = 1,
++		.dynamic = 1,
++		.ops = &kabylake_dmic_ops,
++	},
++	[KBL_DPCM_AUDIO_HDMI1_PB] = {
++		.name = "Kbl HDMI Port1",
++		.stream_name = "Hdmi1",
++		.cpu_dai_name = "HDMI1 Pin",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:1f.3",
++		.dpcm_playback = 1,
++		.init = NULL,
++		.trigger = {
++			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.nonatomic = 1,
++		.dynamic = 1,
++	},
++	[KBL_DPCM_AUDIO_HDMI2_PB] = {
++		.name = "Kbl HDMI Port2",
++		.stream_name = "Hdmi2",
++		.cpu_dai_name = "HDMI2 Pin",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:1f.3",
++		.dpcm_playback = 1,
++		.init = NULL,
++		.trigger = {
++			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.nonatomic = 1,
++		.dynamic = 1,
++	},
++	[KBL_DPCM_AUDIO_HDMI3_PB] = {
++		.name = "Kbl HDMI Port3",
++		.stream_name = "Hdmi3",
++		.cpu_dai_name = "HDMI3 Pin",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:1f.3",
++		.trigger = {
++			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.dpcm_playback = 1,
++		.init = NULL,
++		.nonatomic = 1,
++		.dynamic = 1,
++	},
++
++	/* Back End DAI links */
++	{
++		/* SSP0 - Codec */
++		.name = "SSP0-Codec",
++		.id = 0,
++		.cpu_dai_name = "SSP0 Pin",
++		.platform_name = "0000:00:1f.3",
++		.no_pcm = 1,
++		.codec_name = MAXIM_DEV0_NAME,
++		.codec_dai_name = KBL_MAXIM_CODEC_DAI,
++		.dai_fmt = SND_SOC_DAIFMT_I2S |
++			SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CBS_CFS,
++		.ignore_pmdown_time = 1,
++		.be_hw_params_fixup = kabylake_ssp_fixup,
++		.dpcm_playback = 1,
++	},
++	{
++		/* SSP1 - Codec */
++		.name = "SSP1-Codec",
++		.id = 1,
++		.cpu_dai_name = "SSP1 Pin",
++		.platform_name = "0000:00:1f.3",
++		.no_pcm = 1,
++		.codec_name = "i2c-DLGS7219:00",
++		.codec_dai_name = KBL_DIALOG_CODEC_DAI,
++		.init = kabylake_da7219_codec_init,
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CBS_CFS,
++		.ignore_pmdown_time = 1,
++		.be_hw_params_fixup = kabylake_ssp_fixup,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++	},
++	{
++		.name = "dmic01",
++		.id = 2,
++		.cpu_dai_name = "DMIC01 Pin",
++		.codec_name = "dmic-codec",
++		.codec_dai_name = "dmic-hifi",
++		.platform_name = "0000:00:1f.3",
++		.be_hw_params_fixup = kabylake_dmic_fixup,
++		.ignore_suspend = 1,
++		.dpcm_capture = 1,
++		.no_pcm = 1,
++	},
++	{
++		.name = "iDisp1",
++		.id = 3,
++		.cpu_dai_name = "iDisp1 Pin",
++		.codec_name = "ehdaudio0D2",
++		.codec_dai_name = "intel-hdmi-hifi1",
++		.platform_name = "0000:00:1f.3",
++		.dpcm_playback = 1,
++		.init = kabylake_hdmi1_init,
++		.no_pcm = 1,
++	},
++	{
++		.name = "iDisp2",
++		.id = 4,
++		.cpu_dai_name = "iDisp2 Pin",
++		.codec_name = "ehdaudio0D2",
++		.codec_dai_name = "intel-hdmi-hifi2",
++		.platform_name = "0000:00:1f.3",
++		.init = kabylake_hdmi2_init,
++		.dpcm_playback = 1,
++		.no_pcm = 1,
++	},
++	{
++		.name = "iDisp3",
++		.id = 5,
++		.cpu_dai_name = "iDisp3 Pin",
++		.codec_name = "ehdaudio0D2",
++		.codec_dai_name = "intel-hdmi-hifi3",
++		.platform_name = "0000:00:1f.3",
++		.init = kabylake_hdmi3_init,
++		.dpcm_playback = 1,
++		.no_pcm = 1,
++	},
++};
++
++#define NAME_SIZE	32
++static int kabylake_card_late_probe(struct snd_soc_card *card)
++{
++	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(card);
++	struct kbl_hdmi_pcm *pcm;
++	struct snd_soc_codec *codec = NULL;
++	int err, i = 0;
++	char jack_name[NAME_SIZE];
++
++	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
++		codec = pcm->codec_dai->codec;
++		snprintf(jack_name, sizeof(jack_name),
++			"HDMI/DP, pcm=%d Jack", pcm->device);
++		err = snd_soc_card_jack_new(card, jack_name,
++					SND_JACK_AVOUT, &skylake_hdmi[i],
++					NULL, 0);
++
++		if (err)
++			return err;
++
++		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device,
++				&skylake_hdmi[i]);
++		if (err < 0)
++			return err;
++
++		i++;
++
++	}
++
++	if (!codec)
++		return -EINVAL;
++
++	return hdac_hdmi_jack_port_init(codec, &card->dapm);
++}
++
++/* kabylake audio machine driver for SPT + DA7219 */
++static struct snd_soc_card kabylake_audio_card_da7219_m98357a = {
++	.name = "kblda7219max",
++	.owner = THIS_MODULE,
++	.dai_link = kabylake_dais,
++	.num_links = ARRAY_SIZE(kabylake_dais),
++	.controls = kabylake_controls,
++	.num_controls = ARRAY_SIZE(kabylake_controls),
++	.dapm_widgets = kabylake_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(kabylake_widgets),
++	.dapm_routes = kabylake_map,
++	.num_dapm_routes = ARRAY_SIZE(kabylake_map),
++	.fully_routed = true,
++	.late_probe = kabylake_card_late_probe,
++};
++
++static int kabylake_audio_probe(struct platform_device *pdev)
++{
++	struct kbl_codec_private *ctx;
++
++	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
++	if (!ctx)
++		return -ENOMEM;
++
++	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
++
++	kabylake_audio_card =
++		(struct snd_soc_card *)pdev->id_entry->driver_data;
++
++	kabylake_audio_card->dev = &pdev->dev;
++	snd_soc_card_set_drvdata(kabylake_audio_card, ctx);
++	return devm_snd_soc_register_card(&pdev->dev, kabylake_audio_card);
++}
++
++static const struct platform_device_id kbl_board_ids[] = {
++	{
++		.name = "kbl_da7219_max98357a",
++		.driver_data =
++			(kernel_ulong_t)&kabylake_audio_card_da7219_m98357a,
++	},
++	{ }
++};
++
++static struct platform_driver kabylake_audio = {
++	.probe = kabylake_audio_probe,
 +	.driver = {
-+		.name = "ak4458",
-+		.pm = &ak4458_pm,
-+		.of_match_table = ak4458_of_match,
-+		},
-+	.probe_new = ak4458_i2c_probe,
-+	.remove = ak4458_i2c_remove,
++		.name = "kbl_da7219_max98357a",
++		.pm = &snd_soc_pm_ops,
++	},
++	.id_table = kbl_board_ids,
 +};
 +
-+module_i2c_driver(ak4458_i2c_driver);
++module_platform_driver(kabylake_audio)
 +
-+MODULE_AUTHOR("Junichi Wakasugi <wakasugi.jb-r6lgfPJHJciWyREYz5tgSuqrae++aQT8@public.gmane.org>");
-+MODULE_AUTHOR("Mihai Serban <mihai.serban-3arQi8VN3Tc@public.gmane.org>");
-+MODULE_DESCRIPTION("ASoC AK4458 DAC driver");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/ak4458.h b/sound/soc/codecs/ak4458.h
-new file mode 100644
-index 000000000000..16d9d22a413a
---- /dev/null
-+++ b/sound/soc/codecs/ak4458.h
-@@ -0,0 +1,86 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Audio driver for AK4458
-+ *
-+ * Copyright (C) 2016 Asahi Kasei Microdevices Corporation
-+ * Copyright 2018 NXP
-+ */
-+
-+#ifndef _AK4458_H
-+#define _AK4458_H
-+
-+#include <linux/regmap.h>
-+
-+/* Settings */
-+
-+#define AK4458_00_CONTROL1			0x00
-+#define AK4458_01_CONTROL2			0x01
-+#define AK4458_02_CONTROL3			0x02
-+#define AK4458_03_LCHATT			0x03
-+#define AK4458_04_RCHATT			0x04
-+#define AK4458_05_CONTROL4			0x05
-+#define AK4458_06_DSD1				0x06
-+#define AK4458_07_CONTROL5			0x07
-+#define AK4458_08_SOUND_CONTROL			0x08
-+#define AK4458_09_DSD2				0x09
-+#define AK4458_0A_CONTROL6			0x0A
-+#define AK4458_0B_CONTROL7			0x0B
-+#define AK4458_0C_CONTROL8			0x0C
-+#define AK4458_0D_CONTROL9			0x0D
-+#define AK4458_0E_CONTROL10			0x0E
-+#define AK4458_0F_L2CHATT			0x0F
-+#define AK4458_10_R2CHATT			0x10
-+#define AK4458_11_L3CHATT			0x11
-+#define AK4458_12_R3CHATT			0x12
-+#define AK4458_13_L4CHATT			0x13
-+#define AK4458_14_R4CHATT			0x14
-+
-+/* Bitfield Definitions */
-+
-+/* AK4458_00_CONTROL1 (0x00) Fields
-+ * Addr Register Name  D7     D6    D5    D4    D3    D2    D1    D0
-+ * 00H  Control 1      ACKS   0     0     0     DIF2  DIF1  DIF0  RSTN
-+ */
-+
-+/* Digital Filter (SD, SLOW, SSLOW) */
-+#define AK4458_SD_MASK		GENMASK(5, 5)
-+#define AK4458_SLOW_MASK	GENMASK(0, 0)
-+#define AK4458_SSLOW_MASK	GENMASK(0, 0)
-+
-+/* DIF2	1 0
-+ *  x	1 0 MSB justified  Figure 3 (default)
-+ *  x	1 1 I2S Compliment  Figure 4
-+ */
-+#define AK4458_DIF_SHIFT	1
-+#define AK4458_DIF_MASK		GENMASK(3, 1)
-+
-+#define AK4458_DIF_16BIT_LSB	(0 << 1)
-+#define AK4458_DIF_24BIT_I2S	(3 << 1)
-+#define AK4458_DIF_32BIT_LSB	(5 << 1)
-+#define AK4458_DIF_32BIT_MSB	(6 << 1)
-+#define AK4458_DIF_32BIT_I2S	(7 << 1)
-+
-+/* AK4458_00_CONTROL1 (0x00) D0 bit */
-+#define AK4458_RSTN_MASK	GENMASK(0, 0)
-+#define AK4458_RSTN		(0x1 << 0)
-+
-+/* AK4458_0A_CONTROL6 Mode bits */
-+#define AK4458_MODE_SHIFT	6
-+#define AK4458_MODE_MASK	GENMASK(7, 6)
-+#define AK4458_MODE_NORMAL	(0 << AK4458_MODE_SHIFT)
-+#define AK4458_MODE_TDM128	(1 << AK4458_MODE_SHIFT)
-+#define AK4458_MODE_TDM256	(2 << AK4458_MODE_SHIFT)
-+#define AK4458_MODE_TDM512	(3 << AK4458_MODE_SHIFT)
-+
-+/* DAC Digital attenuator transition time setting
-+ * Table 19
-+ * Mode	ATS1	ATS2	ATT speed
-+ * 0	0	0	4080/fs
-+ * 1	0	1	2040/fs
-+ * 2	1	0	510/fs
-+ * 3	1	1	255/fs
-+ * */
-+#define AK4458_ATS_SHIFT	6
-+#define AK4458_ATS_MASK		GENMASK(7, 6)
-+
-+#endif /* _AK4458_H */
++/* Module information */
++MODULE_DESCRIPTION("Audio Machine driver-DA7219 & MAX98357A in I2S mode");
++MODULE_AUTHOR("Naveen Manohar <naveen.m@intel.com>");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:kbl_da7219_max98357a");
 -- 
 2.16.1
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
