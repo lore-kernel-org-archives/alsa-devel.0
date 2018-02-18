@@ -1,90 +1,191 @@
-From: Lukas Wunner <lukas@wunner.de>
-Subject: [PATCH 7/7] drm/nouveau: Runtime suspend despite HDA being unbound
-Date: Sun, 18 Feb 2018 09:38:32 +0100
-Message-ID: <7f8b25446be941000f2b01da9b227d435c5d879f.1518941073.git.lukas@wunner.de>
-References: <cover.1518941072.git.lukas@wunner.de>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v3 01/25] dt-bindings: soc: qcom: Add
+	bindings for APR bus
+Date: Sun, 18 Feb 2018 17:04:14 -0600
+Message-ID: <20180218230414.dkd6kb6kd35arcyv@rob-hp-laptop>
+References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
+ <20180213165837.1620-2-srinivas.kandagatla@linaro.org>
+ <20180213231244.ama4bwsehzuh5sr7@rob-hp-laptop>
+ <ae65a9c8-85a3-5494-f4cc-1038fd8c9bd1@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <cover.1518941072.git.lukas@wunner.de>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: dri-devel@lists.freedesktop.org
-Cc: alsa-devel@alsa-project.org, linux-pm@vger.kernel.org, nouveau@lists.freedesktop.org, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Hans de Goede <hdegoede@redhat.com>, Peter Wu <peter@lekensteyn.nl>, Bastien Nocera <hadess@hadess.net>, Alex Deucher <alexander.deucher@amd.com>, Dave Airlie <airlied@redhat.com>, Ben Skeggs <bskeggs@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ot0-f196.google.com (mail-ot0-f196.google.com
+ [74.125.82.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC874266C0E
+ for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 00:04:17 +0100 (CET)
+Received: by mail-ot0-f196.google.com with SMTP id e64so7088177ote.4
+ for <alsa-devel@alsa-project.org>; Sun, 18 Feb 2018 15:04:17 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <ae65a9c8-85a3-5494-f4cc-1038fd8c9bd1@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, andy.gross@linaro.org, linux-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Q29tbWl0IDVhZGRjZjBhNWYwZiAoIm5vdXZlYXU6IGFkZCBydW50aW1lIFBNIHN1cHBvcnQgKHYw
-LjkpIikgcHJldmVudHMKcnVudGltZSBzdXNwZW5kIG9mIHRoZSBHUFUgaWYgaXRzIGludGVncmF0
-ZWQgSERBIGNvbnRyb2xsZXIgaXMgbm90IGJvdW5kCnRvIGEgZHJpdmVyLiAgVGhlIHJhdGlvbmFs
-ZSBhcHBlYXJzIHRvIGJlIHRoYXQgcHJvYmluZyB0aGUgSERBIGZhaWxzIGlmCnRoZSBHUFUgaXMg
-aW4gRDNjb2xkLgoKSG93ZXZlciB3ZSBub3cgdXNlIGEgZGV2aWNlIGxpbmsgdG8gZW5zdXJlIHRo
-YXQgdGhlIEdQVSBpcyBydW50aW1lCnJlc3VtZWQgd2hpbGUgdGhlIEhEQSBjb250cm9sbGVyIGlz
-IHByb2JlZCwgcmVuZGVyaW5nIHRoaXMgc2FmZXR5Cm1lYXN1cmUgb2Jzb2xldGUuICBSZW1vdmUg
-aXQuCgpDYzogRGF2ZSBBaXJsaWUgPGFpcmxpZWRAcmVkaGF0LmNvbT4KQ2M6IEJlbiBTa2VnZ3Mg
-PGJza2VnZ3NAcmVkaGF0LmNvbT4KQ2M6IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4KQ2M6
-IFBldGVyIFd1IDxwZXRlckBsZWtlbnN0ZXluLm5sPgpDYzogQWxleCBEZXVjaGVyIDxhbGV4YW5k
-ZXIuZGV1Y2hlckBhbWQuY29tPgpDYzogUmFmYWVsIEouIFd5c29ja2kgPHJhZmFlbC5qLnd5c29j
-a2lAaW50ZWwuY29tPgpTaWduZWQtb2ZmLWJ5OiBMdWthcyBXdW5uZXIgPGx1a2FzQHd1bm5lci5k
-ZT4KLS0tCiBkcml2ZXJzL2dwdS9kcm0vbm91dmVhdS9ub3V2ZWF1X2RybS5jIHwgNDQgLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIGRyaXZlcnMvZ3B1L2RybS9ub3V2ZWF1L25v
-dXZlYXVfZHJ2LmggfCAgMSAtCiAyIGZpbGVzIGNoYW5nZWQsIDQ1IGRlbGV0aW9ucygtKQoKZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9ub3V2ZWF1L25vdXZlYXVfZHJtLmMgYi9kcml2ZXJz
-L2dwdS9kcm0vbm91dmVhdS9ub3V2ZWF1X2RybS5jCmluZGV4IDY5NTk5NTFkNDVkNi4uYmJiZjM1
-MzY4MmUxIDEwMDY0NAotLS0gYS9kcml2ZXJzL2dwdS9kcm0vbm91dmVhdS9ub3V2ZWF1X2RybS5j
-CisrKyBiL2RyaXZlcnMvZ3B1L2RybS9ub3V2ZWF1L25vdXZlYXVfZHJtLmMKQEAgLTUxMCwzNyAr
-NTEwLDYgQEAgc3RhdGljIGludCBub3V2ZWF1X2RybV9wcm9iZShzdHJ1Y3QgcGNpX2RldiAqcGRl
-diwKIAlyZXR1cm4gMDsKIH0KIAotI2RlZmluZSBQQ0lfQ0xBU1NfTVVMVElNRURJQV9IRF9BVURJ
-TyAweDA0MDMKLQotc3RhdGljIHZvaWQKLW5vdXZlYXVfZ2V0X2hkbWlfZGV2KHN0cnVjdCBub3V2
-ZWF1X2RybSAqZHJtKQotewotCXN0cnVjdCBwY2lfZGV2ICpwZGV2ID0gZHJtLT5kZXYtPnBkZXY7
-Ci0KLQlpZiAoIXBkZXYpIHsKLQkJTlZfREVCVUcoZHJtLCAibm90IGEgUENJIGRldmljZTsgbm8g
-SERNSVxuIik7Ci0JCWRybS0+aGRtaV9kZXZpY2UgPSBOVUxMOwotCQlyZXR1cm47Ci0JfQotCi0J
-Lyogc3ViZnVuY3Rpb24gb25lIGlzIGEgaGRtaSBhdWRpbyBkZXZpY2U/ICovCi0JZHJtLT5oZG1p
-X2RldmljZSA9IHBjaV9nZXRfZG9tYWluX2J1c19hbmRfc2xvdChwY2lfZG9tYWluX25yKHBkZXYt
-PmJ1cyksCi0JCQkJCQkodW5zaWduZWQgaW50KXBkZXYtPmJ1cy0+bnVtYmVyLAotCQkJCQkJUENJ
-X0RFVkZOKFBDSV9TTE9UKHBkZXYtPmRldmZuKSwgMSkpOwotCi0JaWYgKCFkcm0tPmhkbWlfZGV2
-aWNlKSB7Ci0JCU5WX0RFQlVHKGRybSwgImhkbWkgZGV2aWNlIG5vdCBmb3VuZCAlZCAlZCAlZFxu
-IiwgcGRldi0+YnVzLT5udW1iZXIsIFBDSV9TTE9UKHBkZXYtPmRldmZuKSwgMSk7Ci0JCXJldHVy
-bjsKLQl9Ci0KLQlpZiAoKGRybS0+aGRtaV9kZXZpY2UtPmNsYXNzID4+IDgpICE9IFBDSV9DTEFT
-U19NVUxUSU1FRElBX0hEX0FVRElPKSB7Ci0JCU5WX0RFQlVHKGRybSwgInBvc3NpYmxlIGhkbWkg
-ZGV2aWNlIG5vdCBhdWRpbyAlZFxuIiwgZHJtLT5oZG1pX2RldmljZS0+Y2xhc3MpOwotCQlwY2lf
-ZGV2X3B1dChkcm0tPmhkbWlfZGV2aWNlKTsKLQkJZHJtLT5oZG1pX2RldmljZSA9IE5VTEw7Ci0J
-CXJldHVybjsKLQl9Ci19Ci0KIHN0YXRpYyBpbnQKIG5vdXZlYXVfZHJtX2xvYWQoc3RydWN0IGRy
-bV9kZXZpY2UgKmRldiwgdW5zaWduZWQgbG9uZyBmbGFncykKIHsKQEAgLTU2OCw4ICs1MzcsNiBA
-QCBub3V2ZWF1X2RybV9sb2FkKHN0cnVjdCBkcm1fZGV2aWNlICpkZXYsIHVuc2lnbmVkIGxvbmcg
-ZmxhZ3MpCiAJSU5JVF9MSVNUX0hFQUQoJmRybS0+Y2xpZW50cyk7CiAJc3Bpbl9sb2NrX2luaXQo
-JmRybS0+dGlsZS5sb2NrKTsKIAotCW5vdXZlYXVfZ2V0X2hkbWlfZGV2KGRybSk7Ci0KIAkvKiB3
-b3JrYXJvdW5kIGFuIG9kZCBpc3N1ZSBvbiBudmMxIGJ5IGRpc2FibGluZyB0aGUgZGV2aWNlJ3MK
-IAkgKiBub3Nub29wIGNhcGFiaWxpdHkuICBob3BlZnVsbHkgd29uJ3QgY2F1c2UgaXNzdWVzIHVu
-dGlsIGEKIAkgKiBiZXR0ZXIgZml4IGlzIGZvdW5kIC0gYXNzdW1pbmcgdGhlcmUgaXMgb25lLi4u
-CkBAIC02NTUsOCArNjIyLDYgQEAgbm91dmVhdV9kcm1fdW5sb2FkKHN0cnVjdCBkcm1fZGV2aWNl
-ICpkZXYpCiAJbm91dmVhdV90dG1fZmluaShkcm0pOwogCW5vdXZlYXVfdmdhX2ZpbmkoZHJtKTsK
-IAotCWlmIChkcm0tPmhkbWlfZGV2aWNlKQotCQlwY2lfZGV2X3B1dChkcm0tPmhkbWlfZGV2aWNl
-KTsKIAlub3V2ZWF1X2NsaV9maW5pKCZkcm0tPmNsaWVudCk7CiAJbm91dmVhdV9jbGlfZmluaSgm
-ZHJtLT5tYXN0ZXIpOwogCWtmcmVlKGRybSk7CkBAIC05MTEsMTUgKzg3Niw2IEBAIG5vdXZlYXVf
-cG1vcHNfcnVudGltZV9pZGxlKHN0cnVjdCBkZXZpY2UgKmRldikKIAkJcmV0dXJuIC1FQlVTWTsK
-IAl9CiAKLQkvKiBpZiB3ZSBoYXZlIGEgaGRtaSBhdWRpbyBkZXZpY2UgLSBtYWtlIHN1cmUgaXQg
-aGFzIGEgZHJpdmVyIGxvYWRlZCAqLwotCWlmIChkcm0tPmhkbWlfZGV2aWNlKSB7Ci0JCWlmICgh
-ZHJtLT5oZG1pX2RldmljZS0+ZHJpdmVyKSB7Ci0JCQlEUk1fREVCVUdfRFJJVkVSKCJmYWlsaW5n
-IHRvIHBvd2VyIG9mZiAtIG5vIEhETUkgYXVkaW8gZHJpdmVyIGxvYWRlZFxuIik7Ci0JCQlwbV9y
-dW50aW1lX21hcmtfbGFzdF9idXN5KGRldik7Ci0JCQlyZXR1cm4gLUVCVVNZOwotCQl9Ci0JfQot
-CiAJbGlzdF9mb3JfZWFjaF9lbnRyeShjcnRjLCAmZHJtLT5kZXYtPm1vZGVfY29uZmlnLmNydGNf
-bGlzdCwgaGVhZCkgewogCQlpZiAoY3J0Yy0+ZW5hYmxlZCkgewogCQkJRFJNX0RFQlVHX0RSSVZF
-UigiZmFpbGluZyB0byBwb3dlciBvZmYgLSBjcnRjIGFjdGl2ZVxuIik7CmRpZmYgLS1naXQgYS9k
-cml2ZXJzL2dwdS9kcm0vbm91dmVhdS9ub3V2ZWF1X2Rydi5oIGIvZHJpdmVycy9ncHUvZHJtL25v
-dXZlYXUvbm91dmVhdV9kcnYuaAppbmRleCA5NmY2YmQ4YWVlNWQuLjg4MWI0NGI4OWEwMSAxMDA2
-NDQKLS0tIGEvZHJpdmVycy9ncHUvZHJtL25vdXZlYXUvbm91dmVhdV9kcnYuaAorKysgYi9kcml2
-ZXJzL2dwdS9kcm0vbm91dmVhdS9ub3V2ZWF1X2Rydi5oCkBAIC0yMDgsNyArMjA4LDYgQEAgc3Ry
-dWN0IG5vdXZlYXVfZHJtIHsKIAlib29sIGhhdmVfZGlzcF9wb3dlcl9yZWY7CiAKIAlzdHJ1Y3Qg
-ZGV2X3BtX2RvbWFpbiB2Z2FfcG1fZG9tYWluOwotCXN0cnVjdCBwY2lfZGV2ICpoZG1pX2Rldmlj
-ZTsKIH07CiAKIHN0YXRpYyBpbmxpbmUgc3RydWN0IG5vdXZlYXVfZHJtICoKLS0gCjIuMTUuMQoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+On Wed, Feb 14, 2018 at 09:13:23AM +0000, Srinivas Kandagatla wrote:
+> Thanks for the review,
+> 
+> On 13/02/18 23:12, Rob Herring wrote:
+> > On Tue, Feb 13, 2018 at 04:58:13PM +0000, srinivas.kandagatla@linaro.org wrote:
+> > > From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> > > 
+> > > This patch add dt bindings for Qualcomm APR (Asynchronous Packet Router)
+> > > bus driver. This bus is used for communicating with DSP which provides
+> > > audio and various other services to cpu.
+> > > 
+> > > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> > > ---
+> > >   .../devicetree/bindings/soc/qcom/qcom,apr.txt      | 83 ++++++++++++++++++++++
+> > >   1 file changed, 83 insertions(+)
+> > >   create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+> > > new file mode 100644
+> > > index 000000000000..1b95fbfed348
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+> > > @@ -0,0 +1,83 @@
+> > > +Qualcomm APR (Asynchronous Packet Router) binding
+> > > +
+> > > +This binding describes the Qualcomm APR. APR is a IPC protocol for
+> > > +communication between Application processor and QDSP. APR is mainly
+> > > +used for audio/voice services on the QDSP.
+> > > +
+> > > +- compatible:
+> > > +	Usage: required
+> > > +	Value type: <stringlist>
+> > > +	Definition: must be "qcom,apr-v<VERSION-NUMBER>", example "qcom,apr-v2"
+> > > +
+> > > +- qcom,apr-dest-domain-id
+> > > +	Usage: required
+> > > +	Value type: <prop-encoded-array>
+> > > +	Definition: Destination processor ID.
+> > > +	Possible values are :
+> > > +			1 - APR simulator
+> > > +			2 - PC
+> > > +			3 - MODEM
+> > > +			4 - ADSP
+> > > +			5 - APPS
+> > > +			6 - MODEM2
+> > > +			7 - APPS2
+> > > +
+> > > += APR SERVICES
+> > > +Each subnode of the APR node can represent service tied to this apr. The name
+> > > +of the nodes are not important. The properties of these nodes are defined
+> > > +by the individual bindings for the specific service
+> > > +- but must contain the following property:
+> > > +
+> ...
+> > > += APR DEVICES:
+> > > +Each subnode of the APR node can represent devices tied to this apr, like
+> > > +sound-card. The properties of these nodes are defined by the individual
+> > > +bindings for the specific device.
+> > 
+> > It's not a good design generally to mix different types of nodes at one
+> > level.
+> 
+> I agree, may be I can split the services and devices into different subnodes
+> like below, which should avoid mixing different types of nodes.
+> 
+> Does this sound good to you?
+
+Seems your original example wasn't so complete...
+
+I don't see why you need all these nodes in the first place. For a 
+single SoC, how much does all this vary?
+
+> 
+> apr {
+>         compatible = "qcom,apr-v2";
+>         qcom,smd-channels = "apr_audio_svc";
+>         qcom,apr-dest-domain-id = <APR_DOMAIN_ADSP>;
+> 
+>         apr-services {
+>                 q6core {
+>                         qcom,apr-svc-name = "CORE";
+>                         qcom,apr-svc-id = <APR_SVC_ADSP_CORE>;
+>                         compatible = "qcom,q6core";
+>                 };
+> 
+>                 q6afe: q6afe {
+>                         compatible = "qcom,q6afe";
+>                         qcom,apr-svc-name = "AFE";
+>                         qcom,apr-svc-id = <APR_SVC_AFE>;
+>                         #sound-dai-cells = <1>;
+>                 };
+> 
+>                 q6asm: q6asm {
+>                         compatible = "qcom,q6asm";
+>                         qcom,apr-svc-name = "ASM";
+>                         qcom,apr-svc-id = <APR_SVC_ASM>;
+>                         #sound-dai-cells = <1>;
+>                 };
+> 
+>                 q6adm: q6adm {
+>                         compatible = "qcom,q6adm";
+>                         qcom,apr-svc-name = "ADM";
+>                         qcom,apr-svc-id = <APR_SVC_ADM>;
+>                         #sound-dai-cells = <0>;
+>                 };
+
+All these DAI nodes could be a single node and the cell value be the 
+svc-id?
+
+>         };
+> 
+>         apr-devices {
+>                 audio {
+>                         compatible = "qcom,msm8996-snd-card";
+
+This is a pseudo device. Why not put it at the top level like other 
+sound cards?
+
+>                         ...
+>                 };
+>         };
+> };
+> 
+> 
+> 
+> 
+> > 
+> > > +
+> > > += EXAMPLE
+> > > +The following example represents a QDSP based sound card on a MSM8996 device
+> > > +which uses apr as communication between Apps and QDSP.
+> > > +
+> > > +	apr {
+> > > +		compatible = "qcom,apr-v2";
+> > > +		qcom,smd-channels = "apr_audio_svc";
+> > > +		qcom,apr-dest-domain-id = <APR_DOMAIN_ADSP>;
+> > > +
+> > > +		q6core {
+> > > +			compatible = "qcom,q6core";
+> > > +			qcom,apr-svc-name = "CORE";
+> > > +			qcom,apr-svc-id = <APR_SVC_ADSP_CORE>;
+> > > +		};
+> > > +
+> > > +		q6afe {
+> > > +			compatible = "qcom,q6afe";
+> > > +			qcom,apr-svc-name = "AFE";
+> > > +			qcom,apr-svc-id = <APR_SVC_AFE>;
+> > > +		};
+> > > +
+> > > +		audio {
+> > > +			compatible = "qcom,msm8996-snd-card";
+> > > +			...
+> > > +		};
+> > > +	};
+> > > -- 
+> > > 2.15.1
+> > > 
