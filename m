@@ -1,15 +1,21 @@
-From: Kirill Marinushkin <k.marinushkin@gmail.com>
-Subject: [PATCH,
-	alsa-lib 2/2] ASoC: topology: Rename clock_gated to clock_cont in
-	snd_soc_tplg_hw_config
-Date: Mon, 19 Feb 2018 07:07:58 +0100
-Message-ID: <20180219060758.17344-2-k.marinushkin@gmail.com>
-References: <20180219060758.17344-1-k.marinushkin@gmail.com>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: [Xen-devel][PATCH 0/2] sndif: add explicit back
+ and front synchronization
+Date: Mon, 19 Feb 2018 08:31:34 +0200
+Message-ID: <f06d5327-adc8-fa26-2f73-c292071cd94a@gmail.com>
+References: <1517819100-1029-1-git-send-email-andr2000@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20180219060758.17344-1-k.marinushkin@gmail.com>
+Received: from mail-lf0-f66.google.com (mail-lf0-f66.google.com
+ [209.85.215.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5467E266C0E
+ for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 07:31:38 +0100 (CET)
+Received: by mail-lf0-f66.google.com with SMTP id h78so11549149lfg.6
+ for <alsa-devel@alsa-project.org>; Sun, 18 Feb 2018 22:31:38 -0800 (PST)
+In-Reply-To: <1517819100-1029-1-git-send-email-andr2000@gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,89 +25,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: alsa-patch@alsa-project.org, Kirill Marinushkin <k.marinushkin@gmail.com>
+To: alsa-devel@alsa-project.org, xen-devel@lists.xenproject.org
+Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-In kernel `soc-dai.h`, DAI clock gating is defined as following:
-
-~~~~
-\#define SND_SOC_DAIFMT_CONT            (1 << 4) /* continuous clock */
-\#define SND_SOC_DAIFMT_GATED           (0 << 4) /* clock is gated */
-~~~~
-
-Therefore, the corresponding field of struct snd_soc_tplg_hw_config should
-be inverted compared to the current logic:
-
-clock_count = 1 => SND_SOC_DAIFMT_CONT
-clock_count = 0 => SND_SOC_DAIFMT_GATED
-
-Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
-Cc: alsa-devel@alsa-project.org
-Cc: alsa-patch@alsa-project.org
----
- include/sound/asoc.h | 4 +++-
- include/topology.h   | 4 +++-
- src/topology/pcm.c   | 6 +++---
- 3 files changed, 9 insertions(+), 5 deletions(-)
-
-diff --git a/include/sound/asoc.h b/include/sound/asoc.h
-index 0f5d9f9a..9f601ef0 100644
---- a/include/sound/asoc.h
-+++ b/include/sound/asoc.h
-@@ -308,7 +308,9 @@ struct snd_soc_tplg_hw_config {
- 	__le32 size;            /* in bytes of this structure */
- 	__le32 id;		/* unique ID - - used to match */
- 	__le32 fmt;		/* SND_SOC_DAI_FORMAT_ format value */
--	__u8 clock_gated;	/* 1 if clock can be gated to save power */
-+	__u8 clock_cont;	/* 1 if clock is continuous, and can not be
-+				 * gated to save power
-+				 */
- 	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
- 	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
- 	__u8 bclk_master;	/* 1 for master of BCLK, 0 for slave */
-diff --git a/include/topology.h b/include/topology.h
-index 8779da4d..630fee21 100644
---- a/include/topology.h
-+++ b/include/topology.h
-@@ -997,7 +997,9 @@ struct snd_tplg_pcm_template {
- struct snd_tplg_hw_config_template {
- 	int id;                         /* unique ID - - used to match */
- 	unsigned int fmt;               /* SND_SOC_DAI_FORMAT_ format value */
--	unsigned char clock_gated;      /* 1 if clock can be gated to save power */
-+	unsigned char clock_cont;	/* 1 if clock is continuous, and can not
-+					 * be gated to save power
-+					 */
- 	unsigned char  invert_bclk;     /* 1 for inverted BCLK, 0 for normal */
- 	unsigned char  invert_fsync;    /* 1 for inverted frame clock, 0 for normal */
- 	unsigned char  bclk_master;     /* 1 for master of BCLK, 0 for slave */
-diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index d3836677..7f280ed0 100644
---- a/src/topology/pcm.c
-+++ b/src/topology/pcm.c
-@@ -1205,12 +1205,12 @@ int tplg_parse_hw_config(snd_tplg_t *tplg, snd_config_t *cfg,
- 			continue;
- 		}
- 
--		if (strcmp(id, "pm_gate_clocks") == 0) {
-+		if (strcmp(id, "pm_cont_clock") == 0) {
- 			if (snd_config_get_string(n, &val) < 0)
- 				return -EINVAL;
- 
- 			if (!strcmp(val, "true"))
--				hw_cfg->clock_gated = true;
-+				hw_cfg->clock_cont = true;
- 			continue;
- 		}
- 
-@@ -1376,7 +1376,7 @@ static int set_link_hw_config(struct snd_soc_tplg_hw_config *cfg,
- 	cfg->id = tpl->id;
- 
- 	cfg->fmt = tpl->fmt;
--	cfg->clock_gated = tpl->clock_gated;
-+	cfg->clock_cont = tpl->clock_cont;
- 	cfg->invert_bclk = tpl->invert_bclk;
- 	cfg->invert_fsync = tpl->invert_fsync;
- 	cfg->bclk_master = tpl->bclk_master;
--- 
-2.13.6
+cGluZwoKT24gMDIvMDUvMjAxOCAxMDoyNCBBTSwgT2xla3NhbmRyIEFuZHJ1c2hjaGVua28gd3Jv
+dGU6Cj4gRnJvbTogT2xla3NhbmRyIEFuZHJ1c2hjaGVua28gPG9sZWtzYW5kcl9hbmRydXNoY2hl
+bmtvQGVwYW0uY29tPgo+Cj4gSGksIGFsbCEKPgo+IEZvcmV3b3JkCj4gPT09PT09PT0KPgo+IFRo
+aXMgY2hhbmdlIGlzIGFpbWVkIHRvIGFkZCBzdXBwb3J0IGZvciBleHBsaWNpdCBiYWNrIGFuZCBm
+cm9udAo+IHN5bmNocm9uaXphdGlvbiBkdXJpbmcgcGxheWJhY2sgYW5kIGNhcHR1cmUgaW4gcmVz
+cG9uc2UgdG8gY29tbWVudHMKPiByYWlzZWQgZHVyaW5nIHVwc3RyZWFtIGF0dGVtcHQgb2YgdGhl
+IHBhcmEtdmlydHVhbGl6ZWQgc291bmQgZnJvbnRlbmQKPiBkcml2ZXIgZm9yIFhlbiBbMV0sIFsy
+XSBhbmQgZ2F0aGVyIG9waW5pb25zIGZyb20gdGhlIHJlbGV2YW50IGNvbW11bml0aWVzCj4gKEFM
+U0EsIFhlbikgb24gdGhlIGNoYW5nZS4KPgo+IFRoZSByZWxldmFudCBiYWNrZW5kIGlzIGltcGxl
+bWVudGVkIGFzIGEgdXNlci1zcGFjZSBhcHBsaWNhdGlvbiBbM10KPiBhbmQgdXNlcyBhY2NvbXBh
+bnlpbmcgaGVscGVyIGxpYnJhcnkgWzRdLgo+Cj4gQm90aCBmcm9udGVuZCBkcml2ZXIgYW5kIGJh
+Y2tlbmQgd2VyZSB0ZXN0ZWQgb24gcmVhbCBIVyBydW5uaW5nIFhlbiBoeXBlcnZpc29yCj4gKFJl
+bmVzYXMgUi1DYXIgQVJNIGJhc2VkIEgzL00zIGJvYXJkcywgeDg2KSB0byBtYWtlIHN1cmUgdGhl
+IHByb3Bvc2VkCj4gc29sdXRpb24gZG9lcyB3b3JrLgo+Cj4gUmF0aW9uYWxlCj4gPT09PT09PT09
+Cj4KPiBEdXJpbmcgdGhlIGZpcnN0IGF0dGVtcHQgdG8gdXBzdHJlYW0gdGhlIExpbnV4IGZyb250
+IGRyaXZlciBbNV0gbnVtYmVyCj4gb2YgY29tbWVudHMgYW5kIGNvbmNlcm5zIHdlcmUgcmFpc2Vk
+LCBvbmUgb2YgdGhlIGJpZ2dlc3QgZmxhd3MgaW4gdGhlCj4gZGVzaWduIHdlcmUgcXVlc3Rpb25l
+ZCBieSBib3RoIENsZW1lbnMgTGFkaXNjaCBbNl0gYW5kCj4gVGFrYXNoaSBTYWthbW90byBbN106
+IHRoZSBhYnNlbmNlIG9mIHN5bmNocm9uaXphdGlvbiBiZXR3ZWVuIGZyb250ZW5kCj4gYW5kIGJh
+Y2tlbmQgZHVyaW5nIGNhcHR1cmUvcGxheWJhY2suIFR3byBvcHRpb25zIHdlcmUgZGlzY3Vzc2Vk
+Ogo+Cj4g4oCcSW4gZGVzaWduIG9mIEFMU0EgUENNIGNvcmUsIGRyaXZlcnMgYXJlIGV4cGVjdGVk
+IHRvIHN5bmNocm9uaXplIHRvCj4gYWN0dWFsIGhhcmR3YXJlcyBmb3Igc2VtaS1yZWFsdGltZSBk
+YXRhIHRyYW5zbWlzc2lvbi4gVGhlCj4gc3luY2hyb25pemF0aW9uIGlzIGRvbmUgYnkgdHdvIHBv
+aW50czoKPiAxKSBJbnRlcnJ1cHRzIHRvIHJlc3BvbmQgZXZlbnRzIGZyb20gYWN0dWFsIGhhcmR3
+YXJlcy4KPiAyKSBQb3NpdGlvbnMgb2YgYWN0dWFsIGRhdGEgdHJhbnNtaXNzaW9uIGluIGFueSBz
+ZXJpYWwgc291bmQgaW50ZXJmYWNlcwo+ICAgICAgb2YgYWN0dWFsIGhhcmR3YXJlcy4KPiDigJwK
+Pgo+IGFuZCBmaW5hbGx5IGEgY2hhbmdlIHRvIHRoZSBleGlzdGluZyBwcm90b2NvbCB3YXMgc3Vn
+Z2VzdGVkOgo+Cj4g4oCcSW4gJ2luY2x1ZGUveGVuL2ludGVyZmFjZS9pby9zbmRpZi5oJywgdGhl
+cmUncyBubyBmdW5jdGlvbmFsaXRpZXMgSQo+IGRlc2NyaWJlZCB0aGUgYWJvdmU6Cj4gMS4gbm90
+aWZpY2F0aW9ucyBmcm9tIERvbVUgdG8gRG9tMCBhYm91dCB0aGUgc2l6ZSBvZiBwZXJpb2QgZm9y
+Cj4gICAgICBpbnRlcnJ1cHRzIGZyb20gYWN0dWFsIGhhcmR3YXJlcy4gT3Igbm8gd2F5IGZyb20g
+RG9tMCB0byBEb21VIGFib3V0Cj4gICAgICB0aGUgY29uZmlndXJlZCBzaXplIG9mIHRoZSBwZXJp
+b2QuCj4gMi4gbm90aWZpY2F0aW9ucyBvZiB0aGUgaW50ZXJydXB0cyBmcm9tIGFjdHVhbCBoYXJk
+d2FyZXMgdG8gRG9tVS7igJ0KPgo+IFRoaXMgaXMgaW1wbGVtZW50ZWQgYXMgYSBjaGFuZ2UgdG8g
+dGhlIHNuZGlmIHByb3RvY29sIGFuZCBhbGxvd3MgcmVtb3ZpbmcKPiBwZXJpb2QgZW11bGF0aW9u
+Ogo+IDEuIEludHJvZHVjZWQgYSBuZXcgZXZlbnQgY2hhbm5lbCBmcm9tIGJhY2sgdG8gZnJvbnQK
+PiAyLiBOZXcgZXZlbnQgd2l0aCBudW1iZXIgb2YgYnl0ZXMgcGxheWVkL2NhcHR1cmVkIChYRU5T
+TkRfRVZUX0NVUl9QT1MsCj4gICAgIHRvIGJlIHVzZWQgZm9yIHNlbmRpbmcgc25kX3BjbV9wZXJp
+b2RfZWxhcHNlZCBhdCBmcm9udGVuZCAoaW4gTGludXgKPiAgICAgaW1wbGVtZW50YXRpb24pLiBT
+ZW50IGluIGJ5dGVzLCBub3QgZnJhbWVzIHRvIG1ha2UgdGhlIHByb3RvY29sCj4gICAgIGdlbmVy
+aWMgYW5kIGNvbnNpc3RlbnQpCj4gMy4gTmV3IHJlcXVlc3QgZm9yIHBsYXliYWNrL2NhcHR1cmUg
+Y29udHJvbCAoWEVOU05EX09QX1RSSUdHRVIpIHdpdGgKPiAgICAgc3RhcnQvcGF1c2Uvc3RvcC9y
+ZXN1bWUgc3ViLW9wcwo+IDQuIFBsYXliYWNrL2NhcHR1cmUgYnVmZmVyIHNpemUgaXMgc2V0IG9u
+IHRoZSBiYWNrZW5kIHNpZGUgdmlhCj4gICAgIFhFTlNORF9GSUVMRF9CVUZGRVJfU0laRSBYZW5T
+dG9yZSBlbnRyeQo+Cj4gV2FpdGluZyBmb3IgeW91ciB2YWx1YWJsZSBjb21tZW50cywKPgo+IFRo
+YW5rIHlvdSwKPiBPbGVrc2FuZHIKPgo+IFsxXSBodHRwczovL2dpdGh1Yi5jb20vYW5kcjIwMDAv
+bGludXgvY29tbWl0cy9zbmRfdXBzdHJlYW1fdjEKPiBbMl0gaHR0cHM6Ly9naXQua2VybmVsLm9y
+Zy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L3RyZWUvaW5jbHVk
+ZS94ZW4vaW50ZXJmYWNlL2lvL3NuZGlmLmgKPiBbM10gaHR0cHM6Ly9naXRodWIuY29tL3hlbi10
+cm9vcHMvc25kX2JlCj4gWzRdIGh0dHBzOi8vZ2l0aHViLmNvbS94ZW4tdHJvb3BzL2xpYnhlbmJl
+Cj4gWzVdIGh0dHBzOi8vbGttbC5vcmcvbGttbC8yMDE3LzgvNy8zNjMKPiBbNl0gaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8yMDE3LUF1Z3VzdC8x
+MjM2MTcuaHRtbAo+IFs3XSBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFp
+bC9hbHNhLWRldmVsLzIwMTctQXVndXN0LzEyMzc0NC5odG1sCj4KPgo+IE9sZWtzYW5kciBBbmRy
+dXNoY2hlbmtvICgyKToKPiAgICBzbmRpZjogaW50cm9kdWNlIHByb3RvY29sIHZlcnNpb24KPiAg
+ICBzbmRpZjogYWRkIGV4cGxpY2l0IGJhY2sgYW5kIGZyb250IHN5bmNocm9uaXphdGlvbgo+Cj4g
+ICB4ZW4vaW5jbHVkZS9wdWJsaWMvaW8vc25kaWYuaCB8IDE3MyArKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKy0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAxNzAgaW5zZXJ0aW9u
+cygrKSwgMyBkZWxldGlvbnMoLSkKPgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
