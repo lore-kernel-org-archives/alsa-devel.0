@@ -1,17 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v3] ASoC: dmic: Add optional wakeup delay
-Date: Mon, 19 Feb 2018 10:16:18 +0200
-Message-ID: <252b54f0-48fd-c6dd-6094-d45a78c5ea42@ti.com>
-References: <20180216175312.88465-1-mka@chromium.org>
+Subject: [PATCH 1/2] ASoC: tlv320aic31xx: Rename AIF_IN from
+	'DAC IN' to 'AIF IN'
+Date: Mon, 19 Feb 2018 11:45:07 +0200
+Message-ID: <20180219094508.26662-2-peter.ujfalusi@ti.com>
+References: <20180219094508.26662-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
- by alsa0.perex.cz (Postfix) with ESMTP id 9FAF0266EB0
- for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 09:15:44 +0100 (CET)
-In-Reply-To: <20180216175312.88465-1-mka@chromium.org>
-Content-Language: en-US
+Received: from lelnx194.ext.ti.com (lelnx194.ext.ti.com [198.47.27.80])
+ by alsa0.perex.cz (Postfix) with ESMTP id AC4B8266EB0
+ for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 10:44:37 +0100 (CET)
+In-Reply-To: <20180219094508.26662-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,99 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matthias Kaehlcke <mka@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, huang lin <hl@rock-chips.com>, Brian Norris <briannorris@chromium.org>, linux-kernel@vger.kernel.org, Dylan Reid <dgreid@chromium.org>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, s.mueller-klieser@phytec.de, afd@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIDIwMTgtMDItMTYgMTk6NTMsIE1hdHRoaWFzIEthZWhsY2tlIHdyb3RlOgo+IE9uIHNvbWUg
-c3lzdGVtcyBhIGRlbGF5IGlzIG5lZWRlZCBhZnRlciBzd2l0Y2hpbmcgb24gdGhlIGNsb2Nrcywg
-dG8gYWxsb3cKPiB0aGUgb3V0cHV0IHRvIHN0YWJpbGl6ZSBhbmQgYXZvaWQgYSBwb3BwaW5nIG5v
-aXNlIGF0IHRoZSBiZWdpbm5pbmcgb2YKPiB0aGUgcmVjb3JkaW5nLiBBZGQgdGhlIG9wdGlvbmFs
-IGRldmljZSB0cmVlIHByb3BlcnR5ICd3YWtldXAtZGVsYXktbXMnCj4gYW5kIGFwcGx5IHRoZSBz
-cGVjaWZpZWQgZGVsYXkgYWZ0ZXIgZW5hYmxpbmcgdGhlIG1pYy4gQSBibG9ja2luZyBkZWxheQo+
-IGNhbid0IGJlIGFwcGxpZWQgaW4gZG1pY19kYWlvcHNfdHJpZ2dlcigpIHNpbmNlIHRoZSBmdW5j
-dGlvbiBpcyBjYWxsZWQKPiBpbiBhdG9taWMgY29udGV4dC4gSW5zdGVhZCB1c2UgYSBEQVBNIGV2
-ZW50IGhhbmRsZXIgdG8gc2V0IHRoZSBlbmFibGUKPiBHUElPIGFuZCBhcHBseSB0aGUgZGVsYXkg
-aW4gdGhlIGhhbmRsZXIuCj4gCj4gU2lnbmVkLW9mZi1ieTogTWF0dGhpYXMgS2FlaGxja2UgPG1r
-YUBjaHJvbWl1bS5vcmc+CgpSZXZpZXdlZC1ieTogUGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVqZmFs
-dXNpQHRpLmNvbT4KCj4gLS0tCj4gQ2hhbmdlcyBpbiB2MzoKPiAtIHJlYmFzZWQgb24gbGF0ZXN0
-IGRtaWMgdG9waWMgYnJhbmNoCj4gCj4gQ2hhbmdlcyBpbiB2MjoKPiAtIHVzZSBEQVBNIGV2ZW50
-IGhhbmRsZXIgaW5zdGVhZCBvZiBfcHJlcGFyZSgpIGFuZCBnZXQgcmlkIG9mCj4gICBfdHJpZ2dl
-cigpCj4gLSBza2lwIGVycm9yIGNoZWNrIGZvciBvcHRpb25hbCAnd2FrZXVwLWRlbGF5LW1zJyBw
-cm9wZXJ0eQo+IC0gdXBkYXRlZCBjb21taXQgbWVzc2FnZQo+IAo+ICAuLi4vZGV2aWNldHJlZS9i
-aW5kaW5ncy9zb3VuZC9kbWljLnR4dCAgICAgICAgfCAgMiArCj4gIHNvdW5kL3NvYy9jb2RlY3Mv
-ZG1pYy5jICAgICAgICAgICAgICAgICAgICAgICB8IDYzICsrKysrKysrKystLS0tLS0tLS0KPiAg
-MiBmaWxlcyBjaGFuZ2VkLCAzNyBpbnNlcnRpb25zKCspLCAyOCBkZWxldGlvbnMoLSkKPiAKPiBk
-aWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2RtaWMu
-dHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2RtaWMudHh0Cj4g
-aW5kZXggZjdiZjY1NjExNDUzLi5lOTU3YjQxMzY3MTYgMTAwNjQ0Cj4gLS0tIGEvRG9jdW1lbnRh
-dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2RtaWMudHh0Cj4gKysrIGIvRG9jdW1lbnRh
-dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2RtaWMudHh0Cj4gQEAgLTgsNiArOCw3IEBA
-IFJlcXVpcmVkIHByb3BlcnRpZXM6Cj4gIE9wdGlvbmFsIHByb3BlcnRpZXM6Cj4gIAktIGRtaWNl
-bi1ncGlvczogR1BJTyBzcGVjaWZpZXIgZm9yIGRtaWMgdG8gY29udHJvbCBzdGFydCBhbmQgc3Rv
-cAo+ICAJLSBudW0tY2hhbm5lbHM6IE51bWJlciBvZiBtaWNyb3Bob25lcyBvbiB0aGlzIERBSQo+
-ICsJLSB3YWtldXAtZGVsYXktbXM6IERlbGF5IChpbiBtcykgYWZ0ZXIgZW5hYmxpbmcgdGhlIERN
-SUMKPiAgCj4gIEV4YW1wbGUgbm9kZToKPiAgCj4gQEAgLTE1LDQgKzE2LDUgQEAgRXhhbXBsZSBu
-b2RlOgo+ICAJCWNvbXBhdGlibGUgPSAiZG1pYy1jb2RlYyI7Cj4gIAkJZG1pY2VuLWdwaW9zID0g
-PCZncGlvNCAzIEdQSU9fQUNUSVZFX0hJR0g+Owo+ICAJCW51bS1jaGFubmVscyA9IDwxPjsKPiAr
-CQl3YWtldXAtZGVsYXktbXMgPDUwPjsKPiAgCX07Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9j
-b2RlY3MvZG1pYy5jIGIvc291bmQvc29jL2NvZGVjcy9kbWljLmMKPiBpbmRleCAzMmE4ZjcxZDUx
-ZjEuLmJhYzViYmIyZGQ1OSAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL2RtaWMuYwo+
-ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3MvZG1pYy5jCj4gQEAgLTE5LDYgKzE5LDcgQEAKPiAgICoK
-PiAgICovCj4gIAo+ICsjaW5jbHVkZSA8bGludXgvZGVsYXkuaD4KPiAgI2luY2x1ZGUgPGxpbnV4
-L2dwaW8uaD4KPiAgI2luY2x1ZGUgPGxpbnV4L2dwaW8vY29uc3VtZXIuaD4KPiAgI2luY2x1ZGUg
-PGxpbnV4L3BsYXRmb3JtX2RldmljZS5oPgo+IEBAIC0yOSwzNCArMzAsMzMgQEAKPiAgI2luY2x1
-ZGUgPHNvdW5kL3NvYy5oPgo+ICAjaW5jbHVkZSA8c291bmQvc29jLWRhcG0uaD4KPiAgCj4gLXN0
-YXRpYyBpbnQgZG1pY19kYWlvcHNfdHJpZ2dlcihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1
-YnN0cmVhbSwKPiAtCQlpbnQgY21kLCBzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSkKPiAtewo+IC0J
-c3RydWN0IGdwaW9fZGVzYyAqZG1pY19lbiA9IHNuZF9zb2NfZGFpX2dldF9kcnZkYXRhKGRhaSk7
-Cj4gK3N0cnVjdCBkbWljIHsKPiArCXN0cnVjdCBncGlvX2Rlc2MgKmdwaW9fZW47Cj4gKwlpbnQg
-d2FrZXVwX2RlbGF5Owo+ICt9Owo+ICAKPiAtCWlmICghZG1pY19lbikKPiAtCQlyZXR1cm4gMDsK
-PiArc3RhdGljIGludCBkbWljX2FpZl9ldmVudChzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCAq
-dywKPiArCQkJICBzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwgaW50IGV2ZW50KSB7Cj4g
-KwlzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMgPSBzbmRfc29jX2RhcG1fdG9fY29kZWMody0+
-ZGFwbSk7Cj4gKwlzdHJ1Y3QgZG1pYyAqZG1pYyA9IHNuZF9zb2NfY29kZWNfZ2V0X2RydmRhdGEo
-Y29kZWMpOwo+ICAKPiAtCXN3aXRjaCAoY21kKSB7Cj4gLQljYXNlIFNORFJWX1BDTV9UUklHR0VS
-X1NUQVJUOgo+IC0JY2FzZSBTTkRSVl9QQ01fVFJJR0dFUl9SRVNVTUU6Cj4gLQljYXNlIFNORFJW
-X1BDTV9UUklHR0VSX1BBVVNFX1JFTEVBU0U6Cj4gLQkJZ3Bpb2Rfc2V0X3ZhbHVlKGRtaWNfZW4s
-IDEpOwo+ICsJc3dpdGNoIChldmVudCkgewo+ICsJY2FzZSBTTkRfU09DX0RBUE1fUE9TVF9QTVU6
-Cj4gKwkJaWYgKGRtaWMtPmdwaW9fZW4pCj4gKwkJCWdwaW9kX3NldF92YWx1ZShkbWljLT5ncGlv
-X2VuLCAxKTsKPiArCj4gKwkJaWYgKGRtaWMtPndha2V1cF9kZWxheSkKPiArCQkJbXNsZWVwKGRt
-aWMtPndha2V1cF9kZWxheSk7Cj4gIAkJYnJlYWs7Cj4gLQljYXNlIFNORFJWX1BDTV9UUklHR0VS
-X1NUT1A6Cj4gLQljYXNlIFNORFJWX1BDTV9UUklHR0VSX1NVU1BFTkQ6Cj4gLQljYXNlIFNORFJW
-X1BDTV9UUklHR0VSX1BBVVNFX1BVU0g6Cj4gLQkJZ3Bpb2Rfc2V0X3ZhbHVlKGRtaWNfZW4sIDAp
-Owo+ICsJY2FzZSBTTkRfU09DX0RBUE1fUE9TVF9QTUQ6Cj4gKwkJaWYgKGRtaWMtPmdwaW9fZW4p
-Cj4gKwkJCWdwaW9kX3NldF92YWx1ZShkbWljLT5ncGlvX2VuLCAwKTsKPiAgCQlicmVhazsKPiAg
-CX0KPiAgCj4gIAlyZXR1cm4gMDsKPiAgfQo+ICAKPiAtc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRf
-c29jX2RhaV9vcHMgZG1pY19kYWlfb3BzID0gewo+IC0JLnRyaWdnZXIJPSBkbWljX2RhaW9wc190
-cmlnZ2VyLAo+IC19Owo+IC0KPiAgc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhaV9kcml2ZXIgZG1p
-Y19kYWkgPSB7Cj4gIAkubmFtZSA9ICJkbWljLWhpZmkiLAo+ICAJLmNhcHR1cmUgPSB7Cj4gQEAg
-LTY4LDI2ICs2OCwzMyBAQCBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX2RyaXZlciBkbWljX2Rh
-aSA9IHsKPiAgCQkJfCBTTkRSVl9QQ01fRk1UQklUX1MyNF9MRQo+ICAJCQl8IFNORFJWX1BDTV9G
-TVRCSVRfUzE2X0xFLAo+ICAJfSwKPiAtCS5vcHMgICAgPSAmZG1pY19kYWlfb3BzLAo+ICB9Owo+
-ICAKPiAgc3RhdGljIGludCBkbWljX2NvbXBvbmVudF9wcm9iZShzdHJ1Y3Qgc25kX3NvY19jb21w
-b25lbnQgKmNvbXBvbmVudCkKPiAgewo+IC0Jc3RydWN0IGdwaW9fZGVzYyAqZG1pY19lbjsKPiAr
-CXN0cnVjdCBkbWljICpkbWljOwo+ICsKPiArCWRtaWMgPSBkZXZtX2t6YWxsb2MoY29tcG9uZW50
-LT5kZXYsIHNpemVvZigqZG1pYyksIEdGUF9LRVJORUwpOwo+ICsJaWYgKCFkbWljKQo+ICsJCXJl
-dHVybiAtRU5PTUVNOwo+ICsKPiArCWRtaWMtPmdwaW9fZW4gPSBkZXZtX2dwaW9kX2dldF9vcHRp
-b25hbChjb21wb25lbnQtPmRldiwKPiArCQkJCQkJImRtaWNlbiIsIEdQSU9EX09VVF9MT1cpOwo+
-ICsJaWYgKElTX0VSUihkbWljLT5ncGlvX2VuKSkKPiArCQlyZXR1cm4gUFRSX0VSUihkbWljLT5n
-cGlvX2VuKTsKPiAgCj4gLQlkbWljX2VuID0gZGV2bV9ncGlvZF9nZXRfb3B0aW9uYWwoY29tcG9u
-ZW50LT5kZXYsCj4gLQkJCQkJImRtaWNlbiIsIEdQSU9EX09VVF9MT1cpOwo+IC0JaWYgKElTX0VS
-UihkbWljX2VuKSkKPiAtCQlyZXR1cm4gUFRSX0VSUihkbWljX2VuKTsKPiArCWRldmljZV9wcm9w
-ZXJ0eV9yZWFkX3UzMihjb21wb25lbnQtPmRldiwgIndha2V1cC1kZWxheS1tcyIsCj4gKwkJCQkg
-JmRtaWMtPndha2V1cF9kZWxheSk7Cj4gIAo+IC0Jc25kX3NvY19jb21wb25lbnRfc2V0X2RydmRh
-dGEoY29tcG9uZW50LCBkbWljX2VuKTsKPiArCXNuZF9zb2NfY29tcG9uZW50X3NldF9kcnZkYXRh
-KGNvbXBvbmVudCwgZG1pYyk7Cj4gIAo+ICAJcmV0dXJuIDA7Cj4gIH0KPiAgCj4gIHN0YXRpYyBj
-b25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCBkbWljX2RhcG1fd2lkZ2V0c1tdID0gewo+
-IC0JU05EX1NPQ19EQVBNX0FJRl9PVVQoIkRNSUMgQUlGIiwgIkNhcHR1cmUiLCAwLAo+IC0JCQkg
-ICAgIFNORF9TT0NfTk9QTSwgMCwgMCksCj4gKwlTTkRfU09DX0RBUE1fQUlGX09VVF9FKCJETUlD
-IEFJRiIsICJDYXB0dXJlIiwgMCwKPiArCQkJICAgICAgIFNORF9TT0NfTk9QTSwgMCwgMCwgZG1p
-Y19haWZfZXZlbnQsCj4gKwkJCSAgICAgICBTTkRfU09DX0RBUE1fUE9TVF9QTVUgfCBTTkRfU09D
-X0RBUE1fUE9TVF9QTUQpLAo+ICAJU05EX1NPQ19EQVBNX0lOUFVUKCJETWljIiksCj4gIH07Cj4g
-IAo+IAoKLSBQw6l0ZXIKClRleGFzIEluc3RydW1lbnRzIEZpbmxhbmQgT3ksIFBvcmtrYWxhbmth
-dHUgMjIsIDAwMTgwIEhlbHNpbmtpLgpZLXR1bm51cy9CdXNpbmVzcyBJRDogMDYxNTUyMS00LiBL
-b3RpcGFpa2thL0RvbWljaWxlOiBIZWxzaW5raQpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwK
+The audio interface is not really the DAC input. Use more generic name for
+it.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ sound/soc/codecs/tlv320aic31xx.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 7090342e8285..e5a1e2be17aa 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -468,7 +468,7 @@ static int mic_bias_event(struct snd_soc_dapm_widget *w,
+ }
+ 
+ static const struct snd_soc_dapm_widget common31xx_dapm_widgets[] = {
+-	SND_SOC_DAPM_AIF_IN("DAC IN", "DAC Playback", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_IN("AIF IN", "Playback", 0, SND_SOC_NOPM, 0, 0),
+ 
+ 	SND_SOC_DAPM_MUX("DAC Left Input",
+ 			 SND_SOC_NOPM, 0, 0, &ldac_in_control),
+@@ -584,12 +584,12 @@ static const struct snd_soc_dapm_widget aic310x_dapm_widgets[] = {
+ static const struct snd_soc_dapm_route
+ common31xx_audio_map[] = {
+ 	/* DAC Input Routing */
+-	{"DAC Left Input", "Left Data", "DAC IN"},
+-	{"DAC Left Input", "Right Data", "DAC IN"},
+-	{"DAC Left Input", "Mono", "DAC IN"},
+-	{"DAC Right Input", "Left Data", "DAC IN"},
+-	{"DAC Right Input", "Right Data", "DAC IN"},
+-	{"DAC Right Input", "Mono", "DAC IN"},
++	{"DAC Left Input", "Left Data", "AIF IN"},
++	{"DAC Left Input", "Right Data", "AIF IN"},
++	{"DAC Left Input", "Mono", "AIF IN"},
++	{"DAC Right Input", "Left Data", "AIF IN"},
++	{"DAC Right Input", "Right Data", "AIF IN"},
++	{"DAC Right Input", "Mono", "AIF IN"},
+ 	{"DAC Left", NULL, "DAC Left Input"},
+ 	{"DAC Right", NULL, "DAC Right Input"},
+ 
+@@ -679,8 +679,8 @@ aic310x_audio_map[] = {
+  */
+ static const struct snd_soc_dapm_route
+ common31xx_cm_audio_map[] = {
+-	{"DAC Left Input", "Off", "DAC IN"},
+-	{"DAC Right Input", "Off", "DAC IN"},
++	{"DAC Left Input", "Off", "AIF IN"},
++	{"DAC Right Input", "Off", "AIF IN"},
+ 
+ 	{"HPL", NULL, "DAC Left"},
+ 	{"HPR", NULL, "DAC Right"},
+-- 
+Peter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
