@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic31xx: Rename AIF_IN from 'DAC
-	IN' to 'AIF IN'" to the asoc tree
-Date: Mon, 19 Feb 2018 12:18:46 +0000
-Message-ID: <E1enkP8-0002ln-Ao@debutante>
-References: <20180219094508.26662-2-peter.ujfalusi@ti.com>
+Subject: Applied "ASoC: ak5558: replace codec to component" to
+	the asoc tree
+Date: Mon, 19 Feb 2018 12:18:55 +0000
+Message-ID: <E1enkPH-0002nD-6F@debutante>
+References: <87o9klobs9.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id AB1C1267409
- for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 13:18:48 +0100 (CET)
-In-Reply-To: <20180219094508.26662-2-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8456B267475
+ for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 13:19:31 +0100 (CET)
+In-Reply-To: <87o9klobs9.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, s.mueller-klieser@phytec.de, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, afd@ti.com, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Harsha Priya <harshapriya.n@intel.com>, Shengjiu Wang <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>, Mark Brown <broonie@kernel.org>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Mihai Serban <mihai.serban@nxp.com>, Naveen Manohar <naveen.m@intel.com>, Dylan Reid <dgreid@chromium.org>, Akshu Agrawal <akshu.agrawal@amd.com>, Daniel Baluta <daniel.baluta@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>, Alex Deucher <alexander.deucher@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic31xx: Rename AIF_IN from 'DAC IN' to 'AIF IN'
+   ASoC: ak5558: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -53,62 +53,199 @@ to this mail.
 Thanks,
 Mark
 
->From 7d41bc28e9fa3fed28691019ca0fe36ed68d7b86 Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Mon, 19 Feb 2018 11:45:07 +0200
-Subject: [PATCH] ASoC: tlv320aic31xx: Rename AIF_IN from 'DAC IN' to 'AIF IN'
+>From 3f15aa198fb88a6a0db8c7ba136637d566effb55 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 19 Feb 2018 04:17:16 +0000
+Subject: [PATCH] ASoC: ak5558: replace codec to component
 
-The audio interface is not really the DAC input. Use more generic name for
-it.
+Now we can replace Codec to Component. Let's do it.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Note:
+	xxx_codec_xxx()		->	xxx_component_xxx()
+	.idle_bias_off = 0	->	.idle_bias_on = 1
+	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
+	-			->	.endianness = 1
+	-			->	.non_legacy_dai_naming = 1
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ sound/soc/codecs/ak5558.c | 67 +++++++++++++++++++++++------------------------
+ 1 file changed, 33 insertions(+), 34 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 7090342e8285..e5a1e2be17aa 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -468,7 +468,7 @@ static int mic_bias_event(struct snd_soc_dapm_widget *w,
+diff --git a/sound/soc/codecs/ak5558.c b/sound/soc/codecs/ak5558.c
+index 225173ff4efa..f2248315677e 100644
+--- a/sound/soc/codecs/ak5558.c
++++ b/sound/soc/codecs/ak5558.c
+@@ -25,7 +25,7 @@
+ 
+ /* AK5558 Codec Private Data */
+ struct ak5558_priv {
+-	struct snd_soc_codec codec;
++	struct snd_soc_component component;
+ 	struct regmap *regmap;
+ 	struct i2c_client *i2c;
+ 	struct gpio_desc *reset_gpiod; /* Reset & Power down GPIO */
+@@ -116,9 +116,9 @@ static const struct snd_soc_dapm_route ak5558_intercon[] = {
+ 	{"SDTO", NULL, "ADC Ch8"},
+ };
+ 
+-static int ak5558_set_mcki(struct snd_soc_codec *codec)
++static int ak5558_set_mcki(struct snd_soc_component *component)
+ {
+-	return snd_soc_update_bits(codec, AK5558_02_CONTROL1, AK5558_CKS,
++	return snd_soc_component_update_bits(component, AK5558_02_CONTROL1, AK5558_CKS,
+ 				   AK5558_CKS_AUTO);
  }
  
- static const struct snd_soc_dapm_widget common31xx_dapm_widgets[] = {
--	SND_SOC_DAPM_AIF_IN("DAC IN", "DAC Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("AIF IN", "Playback", 0, SND_SOC_NOPM, 0, 0),
+@@ -126,13 +126,13 @@ static int ak5558_hw_params(struct snd_pcm_substream *substream,
+ 			    struct snd_pcm_hw_params *params,
+ 			    struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct ak5558_priv *ak5558 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct ak5558_priv *ak5558 = snd_soc_component_get_drvdata(component);
+ 	u8 bits;
+ 	int pcm_width = max(params_physical_width(params), ak5558->slot_width);
  
- 	SND_SOC_DAPM_MUX("DAC Left Input",
- 			 SND_SOC_NOPM, 0, 0, &ldac_in_control),
-@@ -584,12 +584,12 @@ static const struct snd_soc_dapm_widget aic310x_dapm_widgets[] = {
- static const struct snd_soc_dapm_route
- common31xx_audio_map[] = {
- 	/* DAC Input Routing */
--	{"DAC Left Input", "Left Data", "DAC IN"},
--	{"DAC Left Input", "Right Data", "DAC IN"},
--	{"DAC Left Input", "Mono", "DAC IN"},
--	{"DAC Right Input", "Left Data", "DAC IN"},
--	{"DAC Right Input", "Right Data", "DAC IN"},
--	{"DAC Right Input", "Mono", "DAC IN"},
-+	{"DAC Left Input", "Left Data", "AIF IN"},
-+	{"DAC Left Input", "Right Data", "AIF IN"},
-+	{"DAC Left Input", "Mono", "AIF IN"},
-+	{"DAC Right Input", "Left Data", "AIF IN"},
-+	{"DAC Right Input", "Right Data", "AIF IN"},
-+	{"DAC Right Input", "Mono", "AIF IN"},
- 	{"DAC Left", NULL, "DAC Left Input"},
- 	{"DAC Right", NULL, "DAC Right Input"},
+ 	/* set master/slave audio interface */
+-	bits = snd_soc_read(codec, AK5558_02_CONTROL1);
++	bits = snd_soc_component_read32(component, AK5558_02_CONTROL1);
+ 	bits &= ~AK5558_BITS;
  
-@@ -679,8 +679,8 @@ aic310x_audio_map[] = {
-  */
- static const struct snd_soc_dapm_route
- common31xx_cm_audio_map[] = {
--	{"DAC Left Input", "Off", "DAC IN"},
--	{"DAC Right Input", "Off", "DAC IN"},
-+	{"DAC Left Input", "Off", "AIF IN"},
-+	{"DAC Right Input", "Off", "AIF IN"},
+ 	switch (pcm_width) {
+@@ -146,14 +146,14 @@ static int ak5558_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
  
- 	{"HPL", NULL, "DAC Left"},
- 	{"HPR", NULL, "DAC Right"},
+-	snd_soc_update_bits(codec, AK5558_02_CONTROL1, AK5558_BITS, bits);
++	snd_soc_component_update_bits(component, AK5558_02_CONTROL1, AK5558_BITS, bits);
+ 
+ 	return 0;
+ }
+ 
+ static int ak5558_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
++	struct snd_soc_component *component = dai->component;
+ 	u8 format;
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+@@ -169,7 +169,7 @@ static int ak5558_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	}
+ 
+ 	/* set master/slave audio interface */
+-	format = snd_soc_read(codec, AK5558_02_CONTROL1);
++	format = snd_soc_component_read32(component, AK5558_02_CONTROL1);
+ 	format &= ~AK5558_DIF;
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+@@ -186,7 +186,7 @@ static int ak5558_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		return -EINVAL;
+ 	}
+ 
+-	snd_soc_update_bits(codec, AK5558_02_CONTROL1, AK5558_DIF, format);
++	snd_soc_component_update_bits(component, AK5558_02_CONTROL1, AK5558_DIF, format);
+ 
+ 	return 0;
+ }
+@@ -195,8 +195,8 @@ static int ak5558_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ 			       unsigned int rx_mask, int slots,
+ 			       int slot_width)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct ak5558_priv *ak5558 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_component *component = dai->component;
++	struct ak5558_priv *ak5558 = snd_soc_component_get_drvdata(component);
+ 	int tdm_mode;
+ 
+ 	ak5558->slots = slots;
+@@ -217,7 +217,7 @@ static int ak5558_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ 		break;
+ 	}
+ 
+-	snd_soc_update_bits(codec, AK5558_03_CONTROL2, AK5558_MODE_BITS,
++	snd_soc_component_update_bits(component, AK5558_03_CONTROL2, AK5558_MODE_BITS,
+ 			    tdm_mode);
+ 	return 0;
+ }
+@@ -285,21 +285,19 @@ static void ak5558_power_on(struct ak5558_priv *ak5558)
+ 	usleep_range(1000, 2000);
+ }
+ 
+-static int ak5558_probe(struct snd_soc_codec *codec)
++static int ak5558_probe(struct snd_soc_component *component)
+ {
+-	struct ak5558_priv *ak5558 = snd_soc_codec_get_drvdata(codec);
++	struct ak5558_priv *ak5558 = snd_soc_component_get_drvdata(component);
+ 
+ 	ak5558_power_on(ak5558);
+-	return ak5558_set_mcki(codec);
++	return ak5558_set_mcki(component);
+ }
+ 
+-static int ak5558_remove(struct snd_soc_codec *codec)
++static void ak5558_remove(struct snd_soc_component *component)
+ {
+-	struct ak5558_priv *ak5558 = snd_soc_codec_get_drvdata(codec);
++	struct ak5558_priv *ak5558 = snd_soc_component_get_drvdata(component);
+ 
+ 	ak5558_power_off(ak5558);
+-
+-	return 0;
+ }
+ 
+ static int __maybe_unused ak5558_runtime_suspend(struct device *dev)
+@@ -331,18 +329,19 @@ const struct dev_pm_ops ak5558_pm = {
+ 				pm_runtime_force_resume)
+ };
+ 
+-struct snd_soc_codec_driver soc_codec_dev_ak5558 = {
+-	.probe = ak5558_probe,
+-	.remove = ak5558_remove,
+-
+-	.component_driver = {
+-		.controls = ak5558_snd_controls,
+-		.num_controls = ARRAY_SIZE(ak5558_snd_controls),
+-		.dapm_widgets = ak5558_dapm_widgets,
+-		.num_dapm_widgets = ARRAY_SIZE(ak5558_dapm_widgets),
+-		.dapm_routes = ak5558_intercon,
+-		.num_dapm_routes = ARRAY_SIZE(ak5558_intercon),
+-	},
++struct snd_soc_component_driver soc_codec_dev_ak5558 = {
++	.probe			= ak5558_probe,
++	.remove			= ak5558_remove,
++	.controls		= ak5558_snd_controls,
++	.num_controls		= ARRAY_SIZE(ak5558_snd_controls),
++	.dapm_widgets		= ak5558_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(ak5558_dapm_widgets),
++	.dapm_routes		= ak5558_intercon,
++	.num_dapm_routes	= ARRAY_SIZE(ak5558_intercon),
++	.idle_bias_on		= 1,
++	.use_pmdown_time	= 1,
++	.endianness		= 1,
++	.non_legacy_dai_naming	= 1,
+ };
+ 
+ static const struct regmap_config ak5558_regmap = {
+@@ -376,7 +375,8 @@ static int ak5558_i2c_probe(struct i2c_client *i2c)
+ 	if (IS_ERR(ak5558->reset_gpiod))
+ 		return PTR_ERR(ak5558->reset_gpiod);
+ 
+-	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_ak5558,
++	ret = devm_snd_soc_register_component(&i2c->dev,
++				     &soc_codec_dev_ak5558,
+ 				     &ak5558_dai, 1);
+ 	if (ret)
+ 		return ret;
+@@ -388,7 +388,6 @@ static int ak5558_i2c_probe(struct i2c_client *i2c)
+ 
+ static int ak5558_i2c_remove(struct i2c_client *i2c)
+ {
+-	snd_soc_unregister_codec(&i2c->dev);
+ 	pm_runtime_disable(&i2c->dev);
+ 
+ 	return 0;
 -- 
 2.16.1
