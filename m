@@ -1,15 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 0/2] ASoC: tlv320aic31xx: Optimize the master
-	mode I2S clock handling
-Date: Mon, 19 Feb 2018 11:45:06 +0200
-Message-ID: <20180219094508.26662-1-peter.ujfalusi@ti.com>
+Subject: [PATCH 2/2] ASoC: tlv320aic31xx: Do not force power on
+	the DAC/ADC in clock master mode
+Date: Mon, 19 Feb 2018 11:45:08 +0200
+Message-ID: <20180219094508.26662-3-peter.ujfalusi@ti.com>
+References: <20180219094508.26662-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
- by alsa0.perex.cz (Postfix) with ESMTP id 30996266E7D
- for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 10:44:34 +0100 (CET)
+Received: from lelnx194.ext.ti.com (lelnx194.ext.ti.com [198.47.27.80])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F935267079
+ for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 10:44:39 +0100 (CET)
+In-Reply-To: <20180219094508.26662-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,30 +25,73 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jyri S
 Cc: alsa-devel@alsa-project.org, s.mueller-klieser@phytec.de, afd@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-Instead of forcing DAC/ADC to be turned on, we can use P0 R29, Bit2 to let the
-I2S clocks running, but we do not want it to run all the time and we do not want
-I2S clocks when it is not needed (analog loopback mode).
-
-Use DAPM_SUPPLY for the bit and connect it to the in/out AIF.
-
-The DAPM routes can be modify to not include the DAC/ADC.
-
-Regards,
-Peter
----
-Peter Ujfalusi (2):
-  ASoC: tlv320aic31xx: Rename AIF_IN from 'DAC IN' to 'AIF IN'
-  ASoC: tlv320aic31xx: Do not force power on the DAC/ADC in clock master
-    mode
-
- sound/soc/codecs/tlv320aic31xx.c | 46 +++++++++++++++++++++++++---------------
- sound/soc/codecs/tlv320aic31xx.h |  1 +
- 2 files changed, 30 insertions(+), 17 deletions(-)
-
--- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+V2l0aCBQMCBSMjksIEJpdDIgc2V0IHRoZSBJMlMgY2xvY2tzIHdpbGwgYmUgcnVubmluZyB3aGVu
+IHRoZSBEQUMvQURDIGlzCnBvd2VyZWQgZG93biwgYnV0IHN0aWxsIHRoZSBjb2RlYyBuZWVkIHRv
+IGJlIHBvd2VyZWQgdXAgYnkgbmVlZGluZyBhdCBsZWFzdApvbmUgY29tcGxldGUgREFQTSBwYXRo
+IGZvciB0aGUgc3RyZWFtLgoKSWYgdGhlIEFJRiBpcyBub3QgbmVlZGVkIChhbmFsb2cgbG9vcGJh
+Y2sgZm9yIGV4YW1wbGUpIHRoZSBJMlMgY2xvY2tzIHdpbGwKbm90IHJ1biBhcyB0aGV5IGFyZSBu
+b3QgbmVlZGVkLgoKU2lnbmVkLW9mZi1ieTogUGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVqZmFsdXNp
+QHRpLmNvbT4KU3VnZ2VzdGVkLWJ5OiBTdGVmYW4gTcO8bGxlci1LbGllc2VyIDxzLm11ZWxsZXIt
+a2xpZXNlckBwaHl0ZWMuZGU+Ci0tLQogc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzMXh4LmMg
+fCAzMiArKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLQogc291bmQvc29jL2NvZGVjcy90
+bHYzMjBhaWMzMXh4LmggfCAgMSArCiAyIGZpbGVzIGNoYW5nZWQsIDIzIGluc2VydGlvbnMoKyks
+IDEwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWlj
+MzF4eC5jIGIvc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzMXh4LmMKaW5kZXggZTVhMWUyYmUx
+N2FhLi5iZjkyZDM2YjhmOGEgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWlj
+MzF4eC5jCisrKyBiL3NvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljMzF4eC5jCkBAIC01MDEsNiAr
+NTAxLDEwIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCBjb21tb24z
+MXh4X2RhcG1fd2lkZ2V0c1tdID0gewogCVNORF9TT0NfREFQTV9TVVBQTFkoIk1JQ0JJQVMiLCBT
+TkRfU09DX05PUE0sIDAsIDAsIG1pY19iaWFzX2V2ZW50LAogCQkJICAgIFNORF9TT0NfREFQTV9Q
+T1NUX1BNVSB8IFNORF9TT0NfREFQTV9QUkVfUE1EKSwKIAorCS8qIEtlZXAgQkNMSy9XQ0xLIGVu
+YWJsZWQgZXZlbiBpZiBEQUMvQURDIGlzIHBvd2VyZWQgZG93biAqLworCVNORF9TT0NfREFQTV9T
+VVBQTFkoIkFjdGl2YXRlIEkyUyBjbG9ja3MiLCBBSUMzMVhYX0lGQUNFMiwgMiwgMCwKKwkJCSAg
+ICBOVUxMLCAwKSwKKwogCS8qIE91dHB1dHMgKi8KIAlTTkRfU09DX0RBUE1fT1VUUFVUKCJIUEwi
+KSwKIAlTTkRfU09DX0RBUE1fT1VUUFVUKCJIUFIiKSwKQEAgLTU1Myw2ICs1NTcsOCBAQCBzdGF0
+aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFwbV93aWRnZXQgYWljMzF4eF9kYXBtX3dpZGdldHNb
+XSA9IHsKIAlTTkRfU09DX0RBUE1fTUlYRVIoIk91dHB1dCBSaWdodCIsIFNORF9TT0NfTk9QTSwg
+MCwgMCwKIAkJCSAgIGFpYzMxeHhfcmlnaHRfb3V0cHV0X3N3aXRjaGVzLAogCQkJICAgQVJSQVlf
+U0laRShhaWMzMXh4X3JpZ2h0X291dHB1dF9zd2l0Y2hlcykpLAorCisJU05EX1NPQ19EQVBNX0FJ
+Rl9PVVQoIkFJRiBPVVQiLCAiQ2FwdHVyZSIsIDAsIFNORF9TT0NfTk9QTSwgMCwgMCksCiB9Owog
+CiBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFwbV93aWRnZXQgYWljMzExeF9kYXBtX3dp
+ZGdldHNbXSA9IHsKQEAgLTY0MCw2ICs2NDYsOCBAQCBhaWMzMXh4X2F1ZGlvX21hcFtdID0gewog
+CiAJeyJBREMiLCBOVUxMLCAiTUlDX0dBSU5fQ1RMIn0sCiAKKwl7IkFJRiBPVVQiLCBOVUxMLCAi
+QURDIn0sCisKIAkvKiBMZWZ0IE91dHB1dCAqLwogCXsiT3V0cHV0IExlZnQiLCAiRnJvbSBMZWZ0
+IERBQyIsICJEQUMgTGVmdCJ9LAogCXsiT3V0cHV0IExlZnQiLCAiRnJvbSBNSUMxTFAiLCAiTUlD
+MUxQIn0sCkBAIC02NzMsMjUgKzY4MSwyOSBAQCBhaWMzMTB4X2F1ZGlvX21hcFtdID0gewogCiAv
+KgogICogQWx3YXlzIGNvbm5lY3RlZCBEQVBNIHJvdXRlcyBmb3IgY29kZWMgY2xvY2sgbWFzdGVy
+IG1vZGVzLgotICogSWYgdGhlIGNvZGVjIGlzIHRoZSBtYXN0ZXIgb24gdGhlIEkyUyBidXMsIHdl
+IG5lZWQgdG8gcG93ZXIgb24gY29tcG9uZW50cwotICogdG8gaGF2ZSB2YWxpZCBEQUNfQ0xLIGFu
+ZCBhbHNvIHRoZSBEQUNzIGFuZCBBREMgZm9yIHBsYXliYWNrL2NhcHR1cmUuCisgKiBJZiB0aGUg
+Y29kZWMgaXMgdGhlIG1hc3RlciBvbiB0aGUgSTJTIGJ1cywgd2UgbmVlZCB0byBwb3dlciB1cCBj
+b21wb25lbnRzCisgKiB0byBoYXZlIHZhbGlkIERBQ19DTEsuCisgKgorICogSW4gb3JkZXIgdG8g
+aGF2ZSB0aGUgSTJTIGNsb2NrcyBvbiB0aGUgYnVzIGVpdGhlciB0aGUgREFDcy9BREMgbmVlZCB0
+byBiZQorICogZW5hYmxlZCwgb3IgdGhlIFAwL1IyOS9EMiAoS2VlcCBiY2xrL3djbGsgaW4gcG93
+ZXIgZG93bikgbmVlZCB0byBiZSBzZXQuCisgKgogICogT3RoZXJ3aXNlIHRoZSBjb2RlYyB3aWxs
+IG5vdCBnZW5lcmF0ZSBjbG9ja3Mgb24gdGhlIGJ1cy4KICAqLwogc3RhdGljIGNvbnN0IHN0cnVj
+dCBzbmRfc29jX2RhcG1fcm91dGUKIGNvbW1vbjMxeHhfY21fYXVkaW9fbWFwW10gPSB7Ci0JeyJE
+QUMgTGVmdCBJbnB1dCIsICJPZmYiLCAiQUlGIElOIn0sCi0JeyJEQUMgUmlnaHQgSW5wdXQiLCAi
+T2ZmIiwgIkFJRiBJTiJ9LAorCXsiSFBMIiwgTlVMTCwgIkFJRiBJTiJ9LAorCXsiSFBSIiwgTlVM
+TCwgIkFJRiBJTiJ9LAogCi0JeyJIUEwiLCBOVUxMLCAiREFDIExlZnQifSwKLQl7IkhQUiIsIE5V
+TEwsICJEQUMgUmlnaHQifSwKKwl7IkFJRiBJTiIsIE5VTEwsICJBY3RpdmF0ZSBJMlMgY2xvY2tz
+In0sCiB9OwogCiBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFwbV9yb3V0ZQogYWljMzF4
+eF9jbV9hdWRpb19tYXBbXSA9IHsKLQl7Ik1JQzFMUCBQLVRlcm1pbmFsIiwgIk9mZiIsICJNSUMx
+TFAifSwKLQl7Ik1JQzFSUCBQLVRlcm1pbmFsIiwgIk9mZiIsICJNSUMxUlAifSwKLQl7Ik1JQzFM
+TSBQLVRlcm1pbmFsIiwgIk9mZiIsICJNSUMxTE0ifSwKLQl7Ik1JQzFMTSBNLVRlcm1pbmFsIiwg
+Ik9mZiIsICJNSUMxTE0ifSwKKwl7IkFJRiBPVVQiLCBOVUxMLCAiTUlDMUxQIn0sCisJeyJBSUYg
+T1VUIiwgTlVMTCwgIk1JQzFSUCJ9LAorCXsiQUlGIE9VVCIsIE5VTEwsICJNSUMxTE0ifSwKKwor
+CXsiQUlGIE9VVCIsIE5VTEwsICJBY3RpdmF0ZSBJMlMgY2xvY2tzIn0sCiB9OwogCiBzdGF0aWMg
+aW50IGFpYzMxeHhfYWRkX2NvbnRyb2xzKHN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqY29tcG9u
+ZW50KQpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzMXh4LmggYi9zb3Vu
+ZC9zb2MvY29kZWNzL3RsdjMyMGFpYzMxeHguaAppbmRleCAxNWFjN2NiYTg2ZmUuLjBiNTg3NTg1
+YjM4YiAxMDA2NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzMXh4LmgKKysrIGIv
+c291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzMXh4LmgKQEAgLTE2MCw2ICsxNjAsNyBAQCBzdHJ1
+Y3QgYWljMzF4eF9wZGF0YSB7CiAjZGVmaW5lIEFJQzMxWFhfREFDTU9EMkJDTEsJCTB4MDEKICNk
+ZWZpbmUgQUlDMzFYWF9BREMyQkNMSwkJMHgwMgogI2RlZmluZSBBSUMzMVhYX0FEQ01PRDJCQ0xL
+CQkweDAzCisjZGVmaW5lIEFJQzMxWFhfS0VFUF9JMlNDTEsJCUJJVCgyKQogCiAvKiBBSUMzMVhY
+X0FEQ0ZMQUcgKi8KICNkZWZpbmUgQUlDMzFYWF9BRENQV1JTVEFUVVNfTUFTSwlCSVQoNikKLS0g
+ClBldGVyCgpUZXhhcyBJbnN0cnVtZW50cyBGaW5sYW5kIE95LCBQb3Jra2FsYW5rYXR1IDIyLCAw
+MDE4MCBIZWxzaW5raS4KWS10dW5udXMvQnVzaW5lc3MgSUQ6IDA2MTU1MjEtNC4gS290aXBhaWtr
+YS9Eb21pY2lsZTogSGVsc2lua2kKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
