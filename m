@@ -1,14 +1,16 @@
 From: Olivier Moysan <olivier.moysan@st.com>
-Subject: [RFC PATCH 0/3] ASoC: stm32: add S/PDIF support to SAI
-Date: Mon, 19 Feb 2018 16:00:34 +0100
-Message-ID: <1519052437-24011-1-git-send-email-olivier.moysan@st.com>
+Subject: [RFC PATCH 1/3] ASoC: stm32: Add S/PDIF to SAI bindings
+Date: Mon, 19 Feb 2018 16:00:35 +0100
+Message-ID: <1519052437-24011-2-git-send-email-olivier.moysan@st.com>
+References: <1519052437-24011-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 75CE1267396
- for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 16:00:42 +0100 (CET)
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 936B5267409
+ for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 16:00:45 +0100 (CET)
+In-Reply-To: <1519052437-24011-1-git-send-email-olivier.moysan@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,48 +24,29 @@ To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mco
 Cc: arnaud.pouliquen@st.com, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch-set adds S/PDIF IEC6958 protocol support to STM32 SAI.
-Only S/PDIF playback is supported here, as SAI peripheral does not support S/PDIF capture.
+Add S/PDIF IEC6958 protocol support to STM32 SAI bindings.
 
-SAI peripheral does not take as input full IEC60958 frames as it generates preamble and parity bit.
-However, it cannot handle raw PCM data, as it is not designed to insert channel status and user data
-in the generated IEC frames.
+Signed-off-by: olivier moysan <olivier.moysan@st.com>
+---
+ Documentation/devicetree/bindings/sound/st,stm32-sai.txt | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Moreover, SAI data register format does not match exactly IEC60958 subframe format.
-(see figure below). Channel status (C) and User data (U) are at 26-25 bits position,
-in data register, instead of 30-29 bits position.
-    
-IEC60958 subframe bits:
-31-28                       27-4                         3-0
-P    C    U    V            data (16|24 bits)            preamble
-
-SAI data register format:
-27-24                        23-0						
-P     C    U    V            data (16|24 bits)
-
-The impact in software is that the data have to be processed before DMA transfer.
-These constraints should be managed at driver level to minimize the impact on application.
-This means that a callback is necessary to perform data processing (shift and channel status insertion)
-
-This patch-set introduces a callback to allow processing on samples.
-The implementation is based on previous discussions available here:
-https://patchwork.kernel.org/patch/9570255/
-
-BRs
-Olivier
-
-Olivier Moysan (3):
-  ASoC: stm32: Add S/PDIF to SAI bindings
-  ASoC: dmaengine_pcm: add processing support
-  ASoC: stm32: sai: Add support of S/PDIF playback
-
- .../devicetree/bindings/sound/st,stm32-sai.txt     |   6 +
- include/sound/dmaengine_pcm.h                      |   3 +
- sound/soc/soc-generic-dmaengine-pcm.c              |  62 ++++++++-
- sound/soc/stm/stm32_sai.c                          |   2 +
- sound/soc/stm/stm32_sai.h                          |   2 +
- sound/soc/stm/stm32_sai_sub.c                      | 153 +++++++++++++++++----
- 6 files changed, 202 insertions(+), 26 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+index b1acc1a..f301cdf 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
++++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+@@ -45,6 +45,12 @@ SAI subnodes Optional properties:
+ 	This property sets SAI sub-block as slave of another SAI sub-block.
+ 	Must contain the phandle and index of the sai sub-block providing
+ 	the synchronization.
++  - st,iec60958: support S/PDIF IEC6958 protocol for playback
++	IEC60958 protocol is not available for capture.
++	By default, custom protocol is assumed, meaning that protocol is
++	configured according to protocol defined in related DAI link node,
++	such as i2s, left justified, right justified, dsp and pdm protocols.
++	Note: ac97 protocol is not supported by SAI driver
+ 
+ The device node should contain one 'port' child node with one child 'endpoint'
+ node, according to the bindings defined in Documentation/devicetree/bindings/
 -- 
 1.9.1
