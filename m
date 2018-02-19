@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sgtl5000: add 'Audio Switch' block
-	implementation" to the asoc tree
-Date: Mon, 19 Feb 2018 12:18:23 +0000
-Message-ID: <E1enkOl-0002js-IY@debutante>
+Subject: Applied "ASoC: tlv320aic31xx: Do not force power on
+	the DAC/ADC in clock master mode" to the asoc tree
+Date: Mon, 19 Feb 2018 12:18:26 +0000
+Message-ID: <E1enkOo-0002ko-4K@debutante>
+References: <20180219094508.26662-3-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0229433784841117872=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 831D12673F2
- for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 13:18:24 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id EF453266EBE
+ for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 13:18:28 +0100 (CET)
+In-Reply-To: <20180219094508.26662-3-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +21,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Michal Oleszczyk <oleszczyk.m@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, s.mueller-klieser@phytec.de, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, afd@ti.com, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
+
+--===============0229433784841117872==
+Content-Type: text/plain
 
 The patch
 
-   ASoC: sgtl5000: add 'Audio Switch' block implementation
+   ASoC: tlv320aic31xx: Do not force power on the DAC/ADC in clock master mode
 
 has been applied to the asoc tree at
 
@@ -52,154 +55,124 @@ to this mail.
 Thanks,
 Mark
 
->From 7f7d5239f56cfd25ba8470354d9705815c079157 Mon Sep 17 00:00:00 2001
-From: Michal Oleszczyk <oleszczyk.m@gmail.com>
-Date: Mon, 19 Feb 2018 10:03:45 +0100
-Subject: [PATCH] ASoC: sgtl5000: add 'Audio Switch' block implementation
+>From a16be2a6e2ffa8ad5e24e96289f317e1b5b8c17a Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Mon, 19 Feb 2018 11:45:08 +0200
+Subject: [PATCH] ASoC: tlv320aic31xx: Do not force power on the DAC/ADC in
+ clock master mode
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Add mux for choosing DAC source: ADC, I2S or DAP. DAP - digital
-audio processing block. Moreover create choosing mux for DAP main
-source (ADC or I2S) and DAP mixer source (ADC or I2S). Mixer block
-allows summing DAP main and mixer sources togheter with defined
-volumes.
+With P0 R29, Bit2 set the I2S clocks will be running when the DAC/ADC is
+powered down, but still the codec need to be powered up by needing at least
+one complete DAPM path for the stream.
 
-Signed-off-by: Michal Oleszczyk <oleszczyk.m@gmail.com>
+If the AIF is not needed (analog loopback for example) the I2S clocks will
+not run as they are not needed.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Suggested-by: Stefan Müller-Klieser <s.mueller-klieser@phytec.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/sgtl5000.c | 78 ++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 67 insertions(+), 11 deletions(-)
+ sound/soc/codecs/tlv320aic31xx.c | 32 ++++++++++++++++++++++----------
+ sound/soc/codecs/tlv320aic31xx.h |  1 +
+ 2 files changed, 23 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 05592ddcf0e6..1724c4622052 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -216,17 +216,54 @@ static SOC_ENUM_SINGLE_DECL(adc_enum,
- static const struct snd_kcontrol_new adc_mux =
- SOC_DAPM_ENUM("Capture Mux", adc_enum);
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index e5a1e2be17aa..bf92d36b8f8a 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -501,6 +501,10 @@ static const struct snd_soc_dapm_widget common31xx_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SUPPLY("MICBIAS", SND_SOC_NOPM, 0, 0, mic_bias_event,
+ 			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
  
-+/* input sources for headphone */
-+static const char *hp_mux_text[] = {
-+	"DAC", "LINE_IN"
-+};
++	/* Keep BCLK/WCLK enabled even if DAC/ADC is powered down */
++	SND_SOC_DAPM_SUPPLY("Activate I2S clocks", AIC31XX_IFACE2, 2, 0,
++			    NULL, 0),
 +
-+static SOC_ENUM_SINGLE_DECL(hp_enum,
-+			    SGTL5000_CHIP_ANA_CTRL, 6,
-+			    hp_mux_text);
+ 	/* Outputs */
+ 	SND_SOC_DAPM_OUTPUT("HPL"),
+ 	SND_SOC_DAPM_OUTPUT("HPR"),
+@@ -553,6 +557,8 @@ static const struct snd_soc_dapm_widget aic31xx_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MIXER("Output Right", SND_SOC_NOPM, 0, 0,
+ 			   aic31xx_right_output_switches,
+ 			   ARRAY_SIZE(aic31xx_right_output_switches)),
 +
-+static const struct snd_kcontrol_new hp_mux =
-+SOC_DAPM_ENUM("Headphone Mux", hp_enum);
-+
- /* input sources for DAC */
- static const char *dac_mux_text[] = {
--	"DAC", "LINE_IN"
-+	"ADC", "I2S", "Rsvrd", "DAP"
++	SND_SOC_DAPM_AIF_OUT("AIF OUT", "Capture", 0, SND_SOC_NOPM, 0, 0),
  };
  
- static SOC_ENUM_SINGLE_DECL(dac_enum,
--			    SGTL5000_CHIP_ANA_CTRL, 6,
-+			    SGTL5000_CHIP_SSS_CTRL, SGTL5000_DAC_SEL_SHIFT,
- 			    dac_mux_text);
+ static const struct snd_soc_dapm_widget aic311x_dapm_widgets[] = {
+@@ -640,6 +646,8 @@ aic31xx_audio_map[] = {
  
- static const struct snd_kcontrol_new dac_mux =
--SOC_DAPM_ENUM("Headphone Mux", dac_enum);
-+SOC_DAPM_ENUM("Digital Input Mux", dac_enum);
-+
-+/* input sources for DAP */
-+static const char *dap_mux_text[] = {
-+	"ADC", "I2S"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(dap_enum,
-+			    SGTL5000_CHIP_SSS_CTRL, SGTL5000_DAP_SEL_SHIFT,
-+			    dap_mux_text);
-+
-+static const struct snd_kcontrol_new dap_mux =
-+SOC_DAPM_ENUM("DAP Mux", dap_enum);
-+
-+/* input sources for DAP mix */
-+static const char *dapmix_mux_text[] = {
-+	"ADC", "I2S"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(dapmix_enum,
-+			    SGTL5000_CHIP_SSS_CTRL, SGTL5000_DAP_MIX_SEL_SHIFT,
-+			    dapmix_mux_text);
-+
-+static const struct snd_kcontrol_new dapmix_mux =
-+SOC_DAPM_ENUM("DAP MIX Mux", dapmix_enum);
-+
+ 	{"ADC", NULL, "MIC_GAIN_CTL"},
  
- static const struct snd_soc_dapm_widget sgtl5000_dapm_widgets[] = {
- 	SND_SOC_DAPM_INPUT("LINE_IN"),
-@@ -243,7 +280,12 @@ static const struct snd_soc_dapm_widget sgtl5000_dapm_widgets[] = {
- 	SND_SOC_DAPM_PGA("LO", SGTL5000_CHIP_ANA_POWER, 0, 0, NULL, 0),
- 
- 	SND_SOC_DAPM_MUX("Capture Mux", SND_SOC_NOPM, 0, 0, &adc_mux),
--	SND_SOC_DAPM_MUX("Headphone Mux", SND_SOC_NOPM, 0, 0, &dac_mux),
-+	SND_SOC_DAPM_MUX("Headphone Mux", SND_SOC_NOPM, 0, 0, &hp_mux),
-+	SND_SOC_DAPM_MUX("Digital Input Mux", SND_SOC_NOPM, 0, 0, &dac_mux),
-+	SND_SOC_DAPM_MUX("DAP Mux", SGTL5000_DAP_CTRL, 0, 0, &dap_mux),
-+	SND_SOC_DAPM_MUX("DAP MIX Mux", SGTL5000_DAP_CTRL, 4, 0, &dapmix_mux),
-+	SND_SOC_DAPM_MIXER("DAP", SGTL5000_CHIP_DIG_POWER, 4, 0, NULL, 0),
++	{"AIF OUT", NULL, "ADC"},
 +
+ 	/* Left Output */
+ 	{"Output Left", "From Left DAC", "DAC Left"},
+ 	{"Output Left", "From MIC1LP", "MIC1LP"},
+@@ -673,25 +681,29 @@ aic310x_audio_map[] = {
  
- 	/* aif for i2s input */
- 	SND_SOC_DAPM_AIF_IN("AIFIN", "Playback",
-@@ -270,7 +312,19 @@ static const struct snd_soc_dapm_route sgtl5000_dapm_routes[] = {
- 	{"ADC", NULL, "Capture Mux"},		/* adc_mux --> adc */
- 	{"AIFOUT", NULL, "ADC"},		/* adc --> i2s_out */
+ /*
+  * Always connected DAPM routes for codec clock master modes.
+- * If the codec is the master on the I2S bus, we need to power on components
+- * to have valid DAC_CLK and also the DACs and ADC for playback/capture.
++ * If the codec is the master on the I2S bus, we need to power up components
++ * to have valid DAC_CLK.
++ *
++ * In order to have the I2S clocks on the bus either the DACs/ADC need to be
++ * enabled, or the P0/R29/D2 (Keep bclk/wclk in power down) need to be set.
++ *
+  * Otherwise the codec will not generate clocks on the bus.
+  */
+ static const struct snd_soc_dapm_route
+ common31xx_cm_audio_map[] = {
+-	{"DAC Left Input", "Off", "AIF IN"},
+-	{"DAC Right Input", "Off", "AIF IN"},
++	{"HPL", NULL, "AIF IN"},
++	{"HPR", NULL, "AIF IN"},
  
--	{"DAC", NULL, "AIFIN"},			/* i2s-->dac,skip audio mux */
-+	{"DAP Mux", "ADC", "ADC"},		/* adc --> DAP mux */
-+	{"DAP Mux", NULL, "AIFIN"},		/* i2s --> DAP mux */
-+	{"DAP", NULL, "DAP Mux"},		/* DAP mux --> dap */
+-	{"HPL", NULL, "DAC Left"},
+-	{"HPR", NULL, "DAC Right"},
++	{"AIF IN", NULL, "Activate I2S clocks"},
+ };
+ 
+ static const struct snd_soc_dapm_route
+ aic31xx_cm_audio_map[] = {
+-	{"MIC1LP P-Terminal", "Off", "MIC1LP"},
+-	{"MIC1RP P-Terminal", "Off", "MIC1RP"},
+-	{"MIC1LM P-Terminal", "Off", "MIC1LM"},
+-	{"MIC1LM M-Terminal", "Off", "MIC1LM"},
++	{"AIF OUT", NULL, "MIC1LP"},
++	{"AIF OUT", NULL, "MIC1RP"},
++	{"AIF OUT", NULL, "MIC1LM"},
 +
-+	{"DAP MIX Mux", "ADC", "ADC"},		/* adc --> DAP MIX mux */
-+	{"DAP MIX Mux", NULL, "AIFIN"},		/* i2s --> DAP MIX mux */
-+	{"DAP", NULL, "DAP MIX Mux"},		/* DAP MIX mux --> dap */
-+
-+	{"Digital Input Mux", "ADC", "ADC"},	/* adc --> audio mux */
-+	{"Digital Input Mux", NULL, "AIFIN"},	/* i2s --> audio mux */
-+	{"Digital Input Mux", NULL, "DAP"},	/* dap --> audio mux */
-+	{"DAC", NULL, "Digital Input Mux"},	/* audio mux --> dac */
-+
- 	{"Headphone Mux", "DAC", "DAC"},	/* dac --> hp_mux */
- 	{"LO", NULL, "DAC"},			/* dac --> line_out */
++	{"AIF OUT", NULL, "Activate I2S clocks"},
+ };
  
-@@ -463,6 +517,9 @@ static const DECLARE_TLV_DB_RANGE(mic_gain_tlv,
- 	1, 3, TLV_DB_SCALE_ITEM(2000, 1000, 0)
- );
+ static int aic31xx_add_controls(struct snd_soc_component *component)
+diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
+index 15ac7cba86fe..0b587585b38b 100644
+--- a/sound/soc/codecs/tlv320aic31xx.h
++++ b/sound/soc/codecs/tlv320aic31xx.h
+@@ -160,6 +160,7 @@ struct aic31xx_pdata {
+ #define AIC31XX_DACMOD2BCLK		0x01
+ #define AIC31XX_ADC2BCLK		0x02
+ #define AIC31XX_ADCMOD2BCLK		0x03
++#define AIC31XX_KEEP_I2SCLK		BIT(2)
  
-+/* tlv for DAP channels, 0% - 100% - 200% */
-+static const DECLARE_TLV_DB_SCALE(dap_volume, 0, 1, 0);
-+
- /* tlv for hp volume, -51.5db to 12.0db, step .5db */
- static const DECLARE_TLV_DB_SCALE(headphone_volume, -5150, 50, 0);
- 
-@@ -514,6 +571,11 @@ static const struct snd_kcontrol_new sgtl5000_snd_controls[] = {
- 			lineout_volume),
- 	SOC_SINGLE("Lineout Playback Switch", SGTL5000_CHIP_ANA_CTRL, 8, 1, 1),
- 
-+	SOC_SINGLE_TLV("DAP Main channel", SGTL5000_DAP_MAIN_CHAN,
-+	0, 0xffff, 0, dap_volume),
-+
-+	SOC_SINGLE_TLV("DAP Mix channel", SGTL5000_DAP_MIX_CHAN,
-+	0, 0xffff, 0, dap_volume),
- 	/* Automatic Volume Control (DAP AVC) */
- 	SOC_SINGLE("AVC Switch", SGTL5000_DAP_AVC_CTRL, 0, 1, 0),
- 	SOC_SINGLE("AVC Hard Limiter Switch", SGTL5000_DAP_AVC_CTRL, 5, 1, 0),
-@@ -1217,12 +1279,6 @@ static int sgtl5000_probe(struct snd_soc_component *component)
- 	/* disable short cut detector */
- 	snd_soc_component_write(component, SGTL5000_CHIP_SHORT_CTRL, 0);
- 
--	/*
--	 * set i2s as default input of sound switch
--	 * TODO: add sound switch to control and dapm widge.
--	 */
--	snd_soc_component_write(component, SGTL5000_CHIP_SSS_CTRL,
--			SGTL5000_DAC_SEL_I2S_IN << SGTL5000_DAC_SEL_SHIFT);
- 	snd_soc_component_write(component, SGTL5000_CHIP_DIG_POWER,
- 			SGTL5000_ADC_EN | SGTL5000_DAC_EN);
- 
+ /* AIC31XX_ADCFLAG */
+ #define AIC31XX_ADCPWRSTATUS_MASK	BIT(6)
 -- 
 2.16.1
+
+
+--===============0229433784841117872==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0229433784841117872==--
