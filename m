@@ -1,18 +1,22 @@
-From: Kirill Marinushkin <k.marinushkin@gmail.com>
-Subject: Re: [PATCH,
- alsa-lib 2/2] ASoC: topology: Rename clock_gated to clock_cont in
- snd_soc_tplg_hw_config
-Date: Mon, 19 Feb 2018 20:01:49 +0100
-Message-ID: <d4a24c59-0448-c133-c85c-8ada695afb36@gmail.com>
-References: <20180219060758.17344-1-k.marinushkin@gmail.com>
- <20180219060758.17344-2-k.marinushkin@gmail.com>
- <b890d16d-31df-279f-dbf0-0bb699ca7b8b@sakamocchi.jp>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH V3 1/2 RESEND] dt-bindings: bcm283x: Fix
+ register ranges of bcm2835-i2s
+Date: Mon, 19 Feb 2018 13:35:44 -0600
+Message-ID: <20180219193544.eih76l5j7tlde6ul@rob-hp-laptop>
+References: <1518778534-3328-1-git-send-email-stefan.wahren@i2se.com>
+ <1518778534-3328-2-git-send-email-stefan.wahren@i2se.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <b890d16d-31df-279f-dbf0-0bb699ca7b8b@sakamocchi.jp>
-Content-Language: en-US
+Received: from mail-ot0-f194.google.com (mail-ot0-f194.google.com
+ [74.125.82.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E510266DFD
+ for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 20:35:46 +0100 (CET)
+Received: by mail-ot0-f194.google.com with SMTP id 41so4316095otd.13
+ for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 11:35:46 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <1518778534-3328-2-git-send-email-stefan.wahren@i2se.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,91 +26,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org
-Cc: alsa-patch@alsa-project.org
+To: Stefan Wahren <stefan.wahren@i2se.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Eric Anholt <eric@anholt.net>, Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDIvMTkvMTggMDc6NTEsIFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4gSGksCj4KPiBPbiBG
-ZWIgMTkgMjAxOCAxNTowNywgS2lyaWxsIE1hcmludXNoa2luIHdyb3RlOgo+PiBJbiBrZXJuZWwg
-YHNvYy1kYWkuaGAsIERBSSBjbG9jayBnYXRpbmcgaXMgZGVmaW5lZCBhcyBmb2xsb3dpbmc6Cj4+
-Cj4+IH5+fn4KPj4gXCNkZWZpbmUgU05EX1NPQ19EQUlGTVRfQ09OVMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgKDEgPDwgNCkgLyogY29udGludW91cyBjbG9jayAqLwo+PiBcI2RlZmluZSBTTkRfU09D
-X0RBSUZNVF9HQVRFRMKgwqDCoMKgwqDCoMKgwqDCoMKgICgwIDw8IDQpIC8qIGNsb2NrIGlzIGdh
-dGVkICovCj4+IH5+fn4KPj4KPj4gVGhlcmVmb3JlLCB0aGUgY29ycmVzcG9uZGluZyBmaWVsZCBv
-ZiBzdHJ1Y3Qgc25kX3NvY190cGxnX2h3X2NvbmZpZyBzaG91bGQKPj4gYmUgaW52ZXJ0ZWQgY29t
-cGFyZWQgdG8gdGhlIGN1cnJlbnQgbG9naWM6Cj4+Cj4+IGNsb2NrX2NvdW50ID0gMSA9PiBTTkRf
-U09DX0RBSUZNVF9DT05UCj4+IGNsb2NrX2NvdW50ID0gMCA9PiBTTkRfU09DX0RBSUZNVF9HQVRF
-RAo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBLaXJpbGwgTWFyaW51c2hraW4gPGsubWFyaW51c2hraW5A
-Z21haWwuY29tPgo+PiBDYzogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4+IENjOiBhbHNh
-LXBhdGNoQGFsc2EtcHJvamVjdC5vcmcKPj4gLS0tCj4+IMKgIGluY2x1ZGUvc291bmQvYXNvYy5o
-IHwgNCArKystCj4+IMKgIGluY2x1ZGUvdG9wb2xvZ3kuaMKgwqAgfCA0ICsrKy0KPj4gwqAgc3Jj
-L3RvcG9sb2d5L3BjbS5jwqDCoCB8IDYgKysrLS0tCj4+IMKgIDMgZmlsZXMgY2hhbmdlZCwgOSBp
-bnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQo+Cj4gVGhpcyBjaGFuZ2UgaXMgYmFzZWQgb24g
-YnJlYWthZ2Ugb2YgQUJJIGNvbXBhdGliaWxpdHkgd2hpY2ggSSBwb2ludGVkIGluIHRoaXMgbWVz
-c2FnZVsxXS4gUGxlYXNlIHRha2UgYmFja3dhcmQgY29tcGF0aWJpbGl0eSBpbiBhY2NvdW50IHdo
-ZW4gd29ya2luZyBmb3IgYW55IGNoYW5nZSBmb3IgaW50ZXJmYWNlcyBiZXR3ZWVuIGtlcm5lbC91
-c2VyIHNwYWNlcy4KPgo+PiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9zb3VuZC9hc29jLmggYi9pbmNs
-dWRlL3NvdW5kL2Fzb2MuaAo+PiBpbmRleCAwZjVkOWY5YS4uOWY2MDFlZjAgMTAwNjQ0Cj4+IC0t
-LSBhL2luY2x1ZGUvc291bmQvYXNvYy5oCj4+ICsrKyBiL2luY2x1ZGUvc291bmQvYXNvYy5oCj4+
-IEBAIC0zMDgsNyArMzA4LDkgQEAgc3RydWN0IHNuZF9zb2NfdHBsZ19od19jb25maWcgewo+PiDC
-oMKgwqDCoMKgIF9fbGUzMiBzaXplO8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLyogaW4gYnl0ZXMg
-b2YgdGhpcyBzdHJ1Y3R1cmUgKi8KPj4gwqDCoMKgwqDCoCBfX2xlMzIgaWQ7wqDCoMKgwqDCoMKg
-wqAgLyogdW5pcXVlIElEIC0gLSB1c2VkIHRvIG1hdGNoICovCj4+IMKgwqDCoMKgwqAgX19sZTMy
-IGZtdDvCoMKgwqDCoMKgwqDCoCAvKiBTTkRfU09DX0RBSV9GT1JNQVRfIGZvcm1hdCB2YWx1ZSAq
-Lwo+PiAtwqDCoMKgIF9fdTggY2xvY2tfZ2F0ZWQ7wqDCoMKgIC8qIDEgaWYgY2xvY2sgY2FuIGJl
-IGdhdGVkIHRvIHNhdmUgcG93ZXIgKi8KPj4gK8KgwqDCoCBfX3U4IGNsb2NrX2NvbnQ7wqDCoMKg
-IC8qIDEgaWYgY2xvY2sgaXMgY29udGludW91cywgYW5kIGNhbiBub3QgYmUKPj4gK8KgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICogZ2F0ZWQgdG8gc2F2ZSBwb3dlcgo+PiArwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKi8KPj4gwqDCoMKgwqDCoCBfX3U4IGludmVydF9i
-Y2xrO8KgwqDCoCAvKiAxIGZvciBpbnZlcnRlZCBCQ0xLLCAwIGZvciBub3JtYWwgKi8KPj4gwqDC
-oMKgwqDCoCBfX3U4IGludmVydF9mc3luYzvCoMKgwqAgLyogMSBmb3IgaW52ZXJ0ZWQgZnJhbWUg
-Y2xvY2ssIDAgZm9yIG5vcm1hbCAqLwo+PiDCoMKgwqDCoMKgIF9fdTggYmNsa19tYXN0ZXI7wqDC
-oMKgIC8qIDEgZm9yIG1hc3RlciBvZiBCQ0xLLCAwIGZvciBzbGF2ZSAqLwo+PiBkaWZmIC0tZ2l0
-IGEvaW5jbHVkZS90b3BvbG9neS5oIGIvaW5jbHVkZS90b3BvbG9neS5oCj4+IGluZGV4IDg3Nzlk
-YTRkLi42MzBmZWUyMSAxMDA2NDQKPj4gLS0tIGEvaW5jbHVkZS90b3BvbG9neS5oCj4+ICsrKyBi
-L2luY2x1ZGUvdG9wb2xvZ3kuaAo+PiBAQCAtOTk3LDcgKzk5Nyw5IEBAIHN0cnVjdCBzbmRfdHBs
-Z19wY21fdGVtcGxhdGUgewo+PiDCoCBzdHJ1Y3Qgc25kX3RwbGdfaHdfY29uZmlnX3RlbXBsYXRl
-IHsKPj4gwqDCoMKgwqDCoCBpbnQgaWQ7wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIC8qIHVuaXF1ZSBJRCAtIC0gdXNlZCB0byBtYXRjaCAqLwo+PiDCoMKg
-wqDCoMKgIHVuc2lnbmVkIGludCBmbXQ7wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAvKiBT
-TkRfU09DX0RBSV9GT1JNQVRfIGZvcm1hdCB2YWx1ZSAqLwo+PiAtwqDCoMKgIHVuc2lnbmVkIGNo
-YXIgY2xvY2tfZ2F0ZWQ7wqDCoMKgwqDCoCAvKiAxIGlmIGNsb2NrIGNhbiBiZSBnYXRlZCB0byBz
-YXZlIHBvd2VyICovCj4+ICvCoMKgwqAgdW5zaWduZWQgY2hhciBjbG9ja19jb250O8KgwqDCoCAv
-KiAxIGlmIGNsb2NrIGlzIGNvbnRpbnVvdXMsIGFuZCBjYW4gbm90Cj4+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICogYmUgZ2F0ZWQgdG8gc2F2ZSBwb3dlcgo+PiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqLwo+PiDCoMKgwqDCoMKg
-IHVuc2lnbmVkIGNoYXLCoCBpbnZlcnRfYmNsazvCoMKgwqDCoCAvKiAxIGZvciBpbnZlcnRlZCBC
-Q0xLLCAwIGZvciBub3JtYWwgKi8KPj4gwqDCoMKgwqDCoCB1bnNpZ25lZCBjaGFywqAgaW52ZXJ0
-X2ZzeW5jO8KgwqDCoCAvKiAxIGZvciBpbnZlcnRlZCBmcmFtZSBjbG9jaywgMCBmb3Igbm9ybWFs
-ICovCj4+IMKgwqDCoMKgwqAgdW5zaWduZWQgY2hhcsKgIGJjbGtfbWFzdGVyO8KgwqDCoMKgIC8q
-IDEgZm9yIG1hc3RlciBvZiBCQ0xLLCAwIGZvciBzbGF2ZSAqLwo+PiBkaWZmIC0tZ2l0IGEvc3Jj
-L3RvcG9sb2d5L3BjbS5jIGIvc3JjL3RvcG9sb2d5L3BjbS5jCj4+IGluZGV4IGQzODM2Njc3Li43
-ZjI4MGVkMCAxMDA2NDQKPj4gLS0tIGEvc3JjL3RvcG9sb2d5L3BjbS5jCj4+ICsrKyBiL3NyYy90
-b3BvbG9neS9wY20uYwo+PiBAQCAtMTIwNSwxMiArMTIwNSwxMiBAQCBpbnQgdHBsZ19wYXJzZV9o
-d19jb25maWcoc25kX3RwbGdfdCAqdHBsZywgc25kX2NvbmZpZ190ICpjZmcsCj4+IMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIGNvbnRpbnVlOwo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgfQo+PiDC
-oCAtwqDCoMKgwqDCoMKgwqAgaWYgKHN0cmNtcChpZCwgInBtX2dhdGVfY2xvY2tzIikgPT0gMCkg
-ewo+PiArwqDCoMKgwqDCoMKgwqAgaWYgKHN0cmNtcChpZCwgInBtX2NvbnRfY2xvY2siKSA9PSAw
-KSB7Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmIChzbmRfY29uZmlnX2dldF9zdHJp
-bmcobiwgJnZhbCkgPCAwKQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJl
-dHVybiAtRUlOVkFMOwo+PiDCoCDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoIXN0cmNt
-cCh2YWwsICJ0cnVlIikpCj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaHdfY2Zn
-LT5jbG9ja19nYXRlZCA9IHRydWU7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-aHdfY2ZnLT5jbG9ja19jb250ID0gdHJ1ZTsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-Y29udGludWU7Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoCB9Cj4+IMKgIEBAIC0xMzc2LDcgKzEzNzYs
-NyBAQCBzdGF0aWMgaW50IHNldF9saW5rX2h3X2NvbmZpZyhzdHJ1Y3Qgc25kX3NvY190cGxnX2h3
-X2NvbmZpZyAqY2ZnLAo+PiDCoMKgwqDCoMKgIGNmZy0+aWQgPSB0cGwtPmlkOwo+PiDCoCDCoMKg
-wqDCoMKgIGNmZy0+Zm10ID0gdHBsLT5mbXQ7Cj4+IC3CoMKgwqAgY2ZnLT5jbG9ja19nYXRlZCA9
-IHRwbC0+Y2xvY2tfZ2F0ZWQ7Cj4+ICvCoMKgwqAgY2ZnLT5jbG9ja19jb250ID0gdHBsLT5jbG9j
-a19jb250Owo+PiDCoMKgwqDCoMKgIGNmZy0+aW52ZXJ0X2JjbGsgPSB0cGwtPmludmVydF9iY2xr
-Owo+PiDCoMKgwqDCoMKgIGNmZy0+aW52ZXJ0X2ZzeW5jID0gdHBsLT5pbnZlcnRfZnN5bmM7Cj4+
-IMKgwqDCoMKgwqAgY2ZnLT5iY2xrX21hc3RlciA9IHRwbC0+YmNsa19tYXN0ZXI7Cj4KPgo+IFsx
-XSBbYWxzYS1kZXZlbF0gW1BBVENIIDEvMl0gQVNvQzogdG9wb2xvZ3k6IFJlbmFtZSBjbG9ja19n
-YXRlZCB0byBjbG9ja19jb250IGluIHNuZF9zb2NfdHBsZ19od19jb25maWcKPiBodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTgtRmVicnVhcnkv
-MTMyMjY0Lmh0bWwKPgo+IFJlZ2FyZHMKPgo+IFRha2FzaGkgU2FrYW1vdG8KCkhlbGxvIFRha2Fz
-aGkgU2FrYW1vdG8sCgpJIHdpbGwgcHJvcG9zZSBhIGJhY2t3YXJkcy1jb21wYXRpYmxlIHNvbHV0
-aW9uIGFzIGEgUEFUQ0ggdjIuCgpCZXN0IFJlZ2FyZHMsCktpcmlsbApfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Fri, Feb 16, 2018 at 11:55:33AM +0100, Stefan Wahren wrote:
+> Since 517e7a1537a ("ASoC: bcm2835: move to use the clock framework")
+> the bcm2835-i2s requires a clock as DT property. Unfortunately
+> the necessary DT change has never been applied. While we are at it
+> also fix the first PCM register range to cover the PCM_GRAY register.
+> 
+> This patch only fixes the affected dt-bindings.
+> 
+> Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
+> Reviewed-by: Eric Anholt <eric@anholt.net>
+> ---
+>  Documentation/devicetree/bindings/dma/brcm,bcm2835-dma.txt   | 4 ++--
+>  Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt | 9 ++++-----
+>  2 files changed, 6 insertions(+), 7 deletions(-)
+
+Reviewed-by: Rob Herring <robh@kernel.org> 
