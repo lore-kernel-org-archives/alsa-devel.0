@@ -1,18 +1,19 @@
 From: Kirill Marinushkin <k.marinushkin@gmail.com>
-Subject: [PATCH 1/2] ASoC: topology: Rename clock_gated to
-	clock_cont in snd_soc_tplg_hw_config
-Date: Mon, 19 Feb 2018 07:05:30 +0100
-Message-ID: <20180219060531.17276-1-k.marinushkin@gmail.com>
+Subject: [PATCH 2/2] ASoC: topology: Add missing clock gating
+	parameter when parsing hw_configs
+Date: Mon, 19 Feb 2018 07:05:31 +0100
+Message-ID: <20180219060531.17276-2-k.marinushkin@gmail.com>
+References: <20180219060531.17276-1-k.marinushkin@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
- [209.85.128.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A8D2266E7D
- for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 07:05:51 +0100 (CET)
-Received: by mail-wr0-f193.google.com with SMTP id l43so8421451wrc.2
- for <alsa-devel@alsa-project.org>; Sun, 18 Feb 2018 22:05:51 -0800 (PST)
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2BD08267351
+ for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 07:06:10 +0100 (CET)
+Received: by mail-wm0-f65.google.com with SMTP id t3so12872410wmc.2
+ for <alsa-devel@alsa-project.org>; Sun, 18 Feb 2018 22:06:10 -0800 (PST)
+In-Reply-To: <20180219060531.17276-1-k.marinushkin@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,45 +24,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Kirill Marinushkin <k.marinushkin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Kirill Marinushkin <k.marinushkin@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-In kernel `soc-dai.h`, DAI clock gating is defined as following:
+Clock gating parameter is a part of `dai_fmt`. It is supported by
+`alsa-lib` when creating a topology binary file, but ignored by kernel
+when loading this topology file.
+
+After applying this commit, the clock gating parameter is not ignored any
+more. The old behaviour is not broken, as by default the parameter value
+is 0.
+
+For example, the following config, based on
+alsa-lib/src/conf/topology/broadwell/broadwell.conf, is now supported:
 
 ~~~~
-\#define SND_SOC_DAIFMT_CONT		(1 << 4) /* continuous clock */
-\#define SND_SOC_DAIFMT_GATED		(0 << 4) /* clock is gated */
+SectionHWConfig."CodecHWConfig" {
+        id "1"
+        format "I2S"            # physical audio format.
+        bclk   "master"         # Platform is master of bit clock
+        fsync  "master"         # platform is master of fsync
+        pm_cont_clock "true"    # clock is continuous, and can not be gated
+}
+
+SectionLink."Codec" {
+
+        # used for binding to the physical link
+        id "0"
+
+        hw_configs [
+                "CodecHWConfig"
+        ]
+
+        default_hw_conf_id "1"
+}
 ~~~~
-
-Therefore, the corresponding field of struct snd_soc_tplg_hw_config should
-be inverted compared to the current logic:
-
-clock_count = 1 => SND_SOC_DAIFMT_CONT
-clock_count = 0 => SND_SOC_DAIFMT_GATED
 
 Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
 Cc: Jaroslav Kysela <perex@perex.cz>
 Cc: Takashi Iwai <tiwai@suse.com>
 Cc: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org
 ---
- include/uapi/sound/asoc.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/soc-topology.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 69c37ecbff7e..10188850dede 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -312,7 +312,9 @@ struct snd_soc_tplg_hw_config {
- 	__le32 size;            /* in bytes of this structure */
- 	__le32 id;		/* unique ID - - used to match */
- 	__le32 fmt;		/* SND_SOC_DAI_FORMAT_ format value */
--	__u8 clock_gated;	/* 1 if clock can be gated to save power */
-+	__u8 clock_cont;	/* 1 if clock is continuous, and can not be
-+				 * gated to save power
-+				 */
- 	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
- 	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
- 	__u8 bclk_master;	/* 1 for master of BCLK, 0 for slave */
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 01a50413c66f..21bd4f96348d 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1981,6 +1981,12 @@ static void set_link_hw_format(struct snd_soc_dai_link *link,
+ 
+ 		link->dai_fmt = hw_config->fmt & SND_SOC_DAIFMT_FORMAT_MASK;
+ 
++		/* clock gating */
++		if (hw_config->clock_cont)
++			link->dai_fmt |= SND_SOC_DAIFMT_CONT;
++		else
++			link->dai_fmt |= SND_SOC_DAIFMT_GATED;
++
+ 		/* clock signal polarity */
+ 		invert_bclk = hw_config->invert_bclk;
+ 		invert_fsync = hw_config->invert_fsync;
 -- 
 2.13.6
