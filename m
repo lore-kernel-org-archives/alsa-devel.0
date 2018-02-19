@@ -1,22 +1,15 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: Add DT bindings documentation
- for max9759 amplifier
-Date: Mon, 19 Feb 2018 14:47:59 -0600
-Message-ID: <20180219204759.aofqbmmxc7sys2wc@rob-hp-laptop>
-References: <1519047958-22583-1-git-send-email-narmstrong@baylibre.com>
- <1519047958-22583-2-git-send-email-narmstrong@baylibre.com>
+From: Kirill Marinushkin <k.marinushkin@gmail.com>
+Subject: [PATCH,
+	alsa-lib v2 1/2] topology: Fix parsing config with multiple
+	hw_configs
+Date: Mon, 19 Feb 2018 21:38:42 +0100
+Message-ID: <20180219203843.3781-1-k.marinushkin@gmail.com>
+References: <b890d16d-31df-279f-dbf0-0bb699ca7b8b@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f65.google.com (mail-oi0-f65.google.com
- [209.85.218.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D743266DFD
- for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 21:48:01 +0100 (CET)
-Received: by mail-oi0-f65.google.com with SMTP id u6so7985967oiv.9
- for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 12:48:01 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <1519047958-22583-2-git-send-email-narmstrong@baylibre.com>
+In-Reply-To: <b890d16d-31df-279f-dbf0-0bb699ca7b8b@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,18 +19,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Neil Armstrong <narmstrong@baylibre.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org, linux-kernel@vger.kernel.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, Kirill Marinushkin <k.marinushkin@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 19, 2018 at 02:45:57PM +0100, Neil Armstrong wrote:
-> This patch adds DT bindings documentation for Maxim MAX9759
-> speaker amplifier.
-> 
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> ---
->  .../devicetree/bindings/sound/maxim,max9759.txt        | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/maxim,max9759.txt
+Currently, if the config file includes several hw_configs sections,
+parse_hw_config_refs() returns after parsing only the first section.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+For example, the following config, based on
+alsa-lib/src/conf/topology/broadwell/broadwell.conf, is parsed incorrectly:
+
+~~~~
+SectionHWConfig."CodecHWConfig" {
+        id "1"
+        format "I2S"            # physical audio format.
+        bclk   "master"         # Platform is master of bit clock
+        fsync  "master"         # platform is master of fsync
+}
+
+SectionHWConfig."CodecHWConfig2" {
+        id "2"
+        format "AC97"
+}
+
+SectionLink."Codec" {
+
+        # used for binding to the physical link
+        id "0"
+
+        hw_configs [
+                "CodecHWConfig"
+                "CodecHWConfig2"
+        ]
+
+        default_hw_conf_id "2"
+}
+~~~~
+
+Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
+Cc: alsa-devel@alsa-project.org
+Cc: patch@alsa-project.org
+---
+ src/topology/pcm.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/src/topology/pcm.c b/src/topology/pcm.c
+index 58cee31d..d3836677 100644
+--- a/src/topology/pcm.c
++++ b/src/topology/pcm.c
+@@ -882,6 +882,7 @@ static int parse_hw_config_refs(snd_tplg_t *tplg, snd_config_t *cfg,
+ 	/* refer to a list of HW configs */
+ 	snd_config_for_each(i, next, cfg) {
+ 		const char *val;
++		int err;
+ 
+ 		n = snd_config_iterator_entry(i);
+ 		if (snd_config_get_string(n, &val) < 0)
+@@ -893,7 +894,9 @@ static int parse_hw_config_refs(snd_tplg_t *tplg, snd_config_t *cfg,
+ 		}
+ 
+ 		link->num_hw_configs++;
+-		return tplg_ref_add(elem, SND_TPLG_TYPE_HW_CONFIG, val);
++		err = tplg_ref_add(elem, SND_TPLG_TYPE_HW_CONFIG, val);
++		if (err < 0)
++			return err;
+ 	}
+ 
+ 	return 0;
+-- 
+2.13.6
