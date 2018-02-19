@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 7/9] ASoC: amd: modifications in dma stop
-	sequence
-Date: Mon, 19 Feb 2018 16:50:56 +0000
-Message-ID: <20180219165055.GK32761@sirena.org.uk>
-References: <1518766434-7911-1-git-send-email-Vijendar.Mukunda@amd.com>
- <1518766434-7911-8-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: Applied "ASoC: ADAU7002: Adding ACPI id" to the asoc
+	tree
+Date: Mon, 19 Feb 2018 16:57:16 +0000
+Message-ID: <E1enoke-0002Dy-HI@debutante>
+References: <1518766875-15164-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6353949889381749944=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B31FF266E78
- for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 17:50:58 +0100 (CET)
-In-Reply-To: <1518766434-7911-8-git-send-email-Vijendar.Mukunda@amd.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 63451266E78
+ for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 17:57:20 +0100 (CET)
+In-Reply-To: <1518766875-15164-1-git-send-email-akshu.agrawal@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +22,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc: tiwai@suse.de, Alexander.Deucher@amd.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, akshu.agrawal@amd.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============6353949889381749944==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="sU4rRG038CsJurvk"
-Content-Disposition: inline
+   ASoC: ADAU7002: Adding ACPI id
 
+has been applied to the asoc tree at
 
---sU4rRG038CsJurvk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Feb 16, 2018 at 01:03:52PM +0530, Vijendar Mukunda wrote:
-> As per design, non-circular dma also need to be
-> stopped explicitly for both playback and capture
-> scenarios.
->=20
-> Added condition checks to stop non-circular dma for
-> both the I2S controller instances.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Shouldn't this have been going in as a bugfix at the start of the
-series?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---sU4rRG038CsJurvk
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqLAG8ACgkQJNaLcl1U
-h9Crbwf/UnTUctcDtxaIIkeA6ZgdNI6y5RA9O6wq+hW9RzqxNYMMxRHx1T43vzvX
-SvhJYRPnoTVpw6M/8FlNbP59ywgkSISYnOMrJMtEM9ti7qDm3Ult4WPlYLPYTbib
-5MDsXEeXj8a5joZPjXuJITDDRVsdHvXNiCj2nuCTUhaVdXhQVFagFeP23Vf8VlBx
-ZMc1gcZdNLQxdYoc9xXxFrmUctK0fkoytQKDWbVfrKRejF+synOjlx2RZ2PbE0oT
-kCsMlIrFBcswLTMfRsPZY093ofqEtBqViwfnPDw9LuyGxzd3D7gWr6pbQywdD0g2
-BrIbKEUAAdQJEd27WhaQgaFYGjNBVA==
-=Xw4x
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---sU4rRG038CsJurvk--
+>From ba7a3a971d2726affba6335496b5452a6e288e61 Mon Sep 17 00:00:00 2001
+From: Akshu Agrawal <akshu.agrawal@amd.com>
+Date: Fri, 16 Feb 2018 13:11:12 +0530
+Subject: [PATCH] ASoC: ADAU7002: Adding ACPI id
 
---===============6353949889381749944==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Adding ACPI entry id for probing the driver.
 
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/adau7002.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---===============6353949889381749944==--
+diff --git a/sound/soc/codecs/adau7002.c b/sound/soc/codecs/adau7002.c
+index 49475e36a4e4..fdff86878287 100644
+--- a/sound/soc/codecs/adau7002.c
++++ b/sound/soc/codecs/adau7002.c
+@@ -7,6 +7,7 @@
+  * Licensed under the GPL-2.
+  */
+ 
++#include <linux/acpi.h>
+ #include <linux/init.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+@@ -69,10 +70,19 @@ static const struct of_device_id adau7002_dt_ids[] = {
+ MODULE_DEVICE_TABLE(of, adau7002_dt_ids);
+ #endif
+ 
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id adau7002_acpi_match[] = {
++	{ "ADAU7002", 0 },
++	{},
++};
++MODULE_DEVICE_TABLE(acpi, adau7002_acpi_match);
++#endif
++
+ static struct platform_driver adau7002_driver = {
+ 	.driver = {
+ 		.name = "adau7002",
+ 		.of_match_table	= of_match_ptr(adau7002_dt_ids),
++		.acpi_match_table = ACPI_PTR(adau7002_acpi_match),
+ 	},
+ 	.probe = adau7002_probe,
+ 	.remove = adau7002_remove,
+-- 
+2.16.1
