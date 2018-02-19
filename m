@@ -1,17 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 1/2] ASoC: topology: Rename clock_gated to
- clock_cont in snd_soc_tplg_hw_config
-Date: Mon, 19 Feb 2018 15:47:32 +0900
-Message-ID: <458b66ab-da0a-8063-6555-13fb152c83a4@sakamocchi.jp>
-References: <20180219060531.17276-1-k.marinushkin@gmail.com>
+Subject: Re: [PATCH,
+ alsa-lib 2/2] ASoC: topology: Rename clock_gated to clock_cont in
+ snd_soc_tplg_hw_config
+Date: Mon, 19 Feb 2018 15:51:35 +0900
+Message-ID: <b890d16d-31df-279f-dbf0-0bb699ca7b8b@sakamocchi.jp>
+References: <20180219060758.17344-1-k.marinushkin@gmail.com>
+ <20180219060758.17344-2-k.marinushkin@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id AA8B0266C0E
- for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 07:47:36 +0100 (CET)
-In-Reply-To: <20180219060531.17276-1-k.marinushkin@gmail.com>
+In-Reply-To: <20180219060758.17344-2-k.marinushkin@gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,18 +21,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kirill Marinushkin <k.marinushkin@gmail.com>, linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+To: Kirill Marinushkin <k.marinushkin@gmail.com>, alsa-devel@alsa-project.org
+Cc: alsa-patch@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-On Feb 19 2018 15:05, Kirill Marinushkin wrote:
+On Feb 19 2018 15:07, Kirill Marinushkin wrote:
 > In kernel `soc-dai.h`, DAI clock gating is defined as following:
 > 
 > ~~~~
-> \#define SND_SOC_DAIFMT_CONT		(1 << 4) /* continuous clock */
-> \#define SND_SOC_DAIFMT_GATED		(0 << 4) /* clock is gated */
+> \#define SND_SOC_DAIFMT_CONT            (1 << 4) /* continuous clock */
+> \#define SND_SOC_DAIFMT_GATED           (0 << 4) /* clock is gated */
 > ~~~~
 > 
 > Therefore, the corresponding field of struct snd_soc_tplg_hw_config should
@@ -43,19 +42,23 @@ On Feb 19 2018 15:05, Kirill Marinushkin wrote:
 > clock_count = 0 => SND_SOC_DAIFMT_GATED
 > 
 > Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
 > Cc: alsa-devel@alsa-project.org
-> Cc: linux-kernel@vger.kernel.org
+> Cc: alsa-patch@alsa-project.org
 > ---
->   include/uapi/sound/asoc.h | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-> index 69c37ecbff7e..10188850dede 100644
-> --- a/include/uapi/sound/asoc.h
-> +++ b/include/uapi/sound/asoc.h
-> @@ -312,7 +312,9 @@ struct snd_soc_tplg_hw_config {
+>   include/sound/asoc.h | 4 +++-
+>   include/topology.h   | 4 +++-
+>   src/topology/pcm.c   | 6 +++---
+>   3 files changed, 9 insertions(+), 5 deletions(-)
+
+This change is based on breakage of ABI compatibility which I pointed in 
+this message[1]. Please take backward compatibility in account when 
+working for any change for interfaces between kernel/user spaces.
+
+> diff --git a/include/sound/asoc.h b/include/sound/asoc.h
+> index 0f5d9f9a..9f601ef0 100644
+> --- a/include/sound/asoc.h
+> +++ b/include/sound/asoc.h
+> @@ -308,7 +308,9 @@ struct snd_soc_tplg_hw_config {
 >   	__le32 size;            /* in bytes of this structure */
 >   	__le32 id;		/* unique ID - - used to match */
 >   	__le32 fmt;		/* SND_SOC_DAI_FORMAT_ format value */
@@ -66,26 +69,54 @@ On Feb 19 2018 15:05, Kirill Marinushkin wrote:
 >   	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
 >   	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
 >   	__u8 bclk_master;	/* 1 for master of BCLK, 0 for slave */
-
-This structure was added at a commit 676c6b5208f7 ('ASoC: topology: ABI 
-- Update physical DAI link configuration for version 5') in a 
-development period for v4.10.
-
-This file is a part of UAPI, thus this structure has already been 
-exposed to application developers. Any change can break userspace 
-applications in a point of backward compatibility for this subsystem.
-
-It's better for you to investigate another solution for your two 
-patches[1][2].
+> diff --git a/include/topology.h b/include/topology.h
+> index 8779da4d..630fee21 100644
+> --- a/include/topology.h
+> +++ b/include/topology.h
+> @@ -997,7 +997,9 @@ struct snd_tplg_pcm_template {
+>   struct snd_tplg_hw_config_template {
+>   	int id;                         /* unique ID - - used to match */
+>   	unsigned int fmt;               /* SND_SOC_DAI_FORMAT_ format value */
+> -	unsigned char clock_gated;      /* 1 if clock can be gated to save power */
+> +	unsigned char clock_cont;	/* 1 if clock is continuous, and can not
+> +					 * be gated to save power
+> +					 */
+>   	unsigned char  invert_bclk;     /* 1 for inverted BCLK, 0 for normal */
+>   	unsigned char  invert_fsync;    /* 1 for inverted frame clock, 0 for normal */
+>   	unsigned char  bclk_master;     /* 1 for master of BCLK, 0 for slave */
+> diff --git a/src/topology/pcm.c b/src/topology/pcm.c
+> index d3836677..7f280ed0 100644
+> --- a/src/topology/pcm.c
+> +++ b/src/topology/pcm.c
+> @@ -1205,12 +1205,12 @@ int tplg_parse_hw_config(snd_tplg_t *tplg, snd_config_t *cfg,
+>   			continue;
+>   		}
+>   
+> -		if (strcmp(id, "pm_gate_clocks") == 0) {
+> +		if (strcmp(id, "pm_cont_clock") == 0) {
+>   			if (snd_config_get_string(n, &val) < 0)
+>   				return -EINVAL;
+>   
+>   			if (!strcmp(val, "true"))
+> -				hw_cfg->clock_gated = true;
+> +				hw_cfg->clock_cont = true;
+>   			continue;
+>   		}
+>   
+> @@ -1376,7 +1376,7 @@ static int set_link_hw_config(struct snd_soc_tplg_hw_config *cfg,
+>   	cfg->id = tpl->id;
+>   
+>   	cfg->fmt = tpl->fmt;
+> -	cfg->clock_gated = tpl->clock_gated;
+> +	cfg->clock_cont = tpl->clock_cont;
+>   	cfg->invert_bclk = tpl->invert_bclk;
+>   	cfg->invert_fsync = tpl->invert_fsync;
+>   	cfg->bclk_master = tpl->bclk_master;
 
 
 [1] [alsa-devel] [PATCH 1/2] ASoC: topology: Rename clock_gated to 
 clock_cont in snd_soc_tplg_hw_config
-http://mailman.alsa-project.org/pipermail/alsa-devel/2018-February/132258.html
-[2] [alsa-devel] [PATCH 2/2] ASoC: topology: Add missing clock gating 
-parameter when parsing hw_configs
-http://mailman.alsa-project.org/pipermail/alsa-devel/2018-February/132259.html
-
+http://mailman.alsa-project.org/pipermail/alsa-devel/2018-February/132264.html
 
 Regards
 
