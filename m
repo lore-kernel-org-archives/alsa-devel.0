@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: amd: acp-da7219-max98357: replace codec
-	to component" to the asoc tree
-Date: Mon, 19 Feb 2018 12:19:41 +0000
-Message-ID: <E1enkQ1-0002qZ-7F@debutante>
-References: <87371xpzx0.wl%kuninori.morimoto.gx@renesas.com>
+From: =?UTF-8?Q?Stefan_M=c3=bcller-Klieser?= <s.mueller-klieser@phytec.de>
+Subject: Re: [PATCH 2/2] ASoC: tlv320aic31xx: Do not force
+ power on the DAC/ADC in clock master mode
+Date: Mon, 19 Feb 2018 13:52:40 +0100
+Message-ID: <33c260dc-a460-f650-b59b-12896c04ad46@phytec.de>
+References: <20180219094508.26662-1-peter.ujfalusi@ti.com>
+ <20180219094508.26662-3-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 88DC92674CE
- for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 13:20:01 +0100 (CET)
-In-Reply-To: <87371xpzx0.wl%kuninori.morimoto.gx@renesas.com>
+Received: from root.phytec.de (mail.phytec.eu [217.6.246.34])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EB57266D7D
+ for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 13:52:40 +0100 (CET)
+In-Reply-To: <20180219094508.26662-3-peter.ujfalusi@ti.com>
+Content-Language: de-CH
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,72 +23,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Harsha Priya <harshapriya.n@intel.com>, Shengjiu Wang <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>, Mark Brown <broonie@kernel.org>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Mihai Serban <mihai.serban@nxp.com>, Naveen Manohar <naveen.m@intel.com>, Dylan Reid <dgreid@chromium.org>, Akshu Agrawal <akshu.agrawal@amd.com>, Daniel Baluta <daniel.baluta@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>, Alex Deucher <alexander.deucher@amd.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, afd@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: amd: acp-da7219-max98357: replace codec to component
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 9a60cde2dd63e10b421e87e1397641304dd1ef13 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 19 Feb 2018 04:16:06 +0000
-Subject: [PATCH] ASoC: amd: acp-da7219-max98357: replace codec to component
-
-Now we can replace Codec to Component. Let's do it.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/amd/acp-da7219-max98357a.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index e51a878890ce..bbe0f103e6a8 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -47,8 +47,8 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	int ret;
- 	struct snd_soc_card *card = rtd->card;
--	struct snd_soc_codec *codec = rtd->codec;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_component *component = codec_dai->component;
- 
- 	dev_info(rtd->dev, "codec dai name = %s\n", codec_dai->name);
- 
-@@ -76,7 +76,7 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
- 		return ret;
- 	}
- 
--	da7219_aad_jack_det(codec, &cz_jack);
-+	da7219_aad_jack_det(component, &cz_jack);
- 
- 	return 0;
- }
--- 
-2.16.1
+SGkgUGV0ZXIsCgpPbiAxOS4wMi4yMDE4IDEwOjQ1LCBQZXRlciBVamZhbHVzaSB3cm90ZToKPiBX
+aXRoIFAwIFIyOSwgQml0MiBzZXQgdGhlIEkyUyBjbG9ja3Mgd2lsbCBiZSBydW5uaW5nIHdoZW4g
+dGhlIERBQy9BREMgaXMKPiBwb3dlcmVkIGRvd24sIGJ1dCBzdGlsbCB0aGUgY29kZWMgbmVlZCB0
+byBiZSBwb3dlcmVkIHVwIGJ5IG5lZWRpbmcgYXQgbGVhc3QKPiBvbmUgY29tcGxldGUgREFQTSBw
+YXRoIGZvciB0aGUgc3RyZWFtLgo+IAo+IElmIHRoZSBBSUYgaXMgbm90IG5lZWRlZCAoYW5hbG9n
+IGxvb3BiYWNrIGZvciBleGFtcGxlKSB0aGUgSTJTIGNsb2NrcyB3aWxsCj4gbm90IHJ1biBhcyB0
+aGV5IGFyZSBub3QgbmVlZGVkLgoKVGhhbmtzIGZvciB0aGUgd29yayEgVGhpcyBsb29rcyBnb29k
+LiBTYWRseSwgSSBkb24ndCBoYXZlIGFuIGFpYzMxIGhhcmR3YXJlIGZvcgp0ZXN0aW5nIGF0IGhh
+bmQuClN0ZWZhbgoKPiAKPiBTaWduZWQtb2ZmLWJ5OiBQZXRlciBVamZhbHVzaSA8cGV0ZXIudWpm
+YWx1c2lAdGkuY29tPgo+IFN1Z2dlc3RlZC1ieTogU3RlZmFuIE3DvGxsZXItS2xpZXNlciA8cy5t
+dWVsbGVyLWtsaWVzZXJAcGh5dGVjLmRlPgo+IC0tLQo+ICBzb3VuZC9zb2MvY29kZWNzL3RsdjMy
+MGFpYzMxeHguYyB8IDMyICsrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tCj4gIHNvdW5k
+L3NvYy9jb2RlY3MvdGx2MzIwYWljMzF4eC5oIHwgIDEgKwo+ICAyIGZpbGVzIGNoYW5nZWQsIDIz
+IGluc2VydGlvbnMoKyksIDEwIGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9zb3VuZC9z
+b2MvY29kZWNzL3RsdjMyMGFpYzMxeHguYyBiL3NvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljMzF4
+eC5jCj4gaW5kZXggZTVhMWUyYmUxN2FhLi5iZjkyZDM2YjhmOGEgMTAwNjQ0Cj4gLS0tIGEvc291
+bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzMXh4LmMKPiArKysgYi9zb3VuZC9zb2MvY29kZWNzL3Rs
+djMyMGFpYzMxeHguYwo+IEBAIC01MDEsNiArNTAxLDEwIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
+c25kX3NvY19kYXBtX3dpZGdldCBjb21tb24zMXh4X2RhcG1fd2lkZ2V0c1tdID0gewo+ICAJU05E
+X1NPQ19EQVBNX1NVUFBMWSgiTUlDQklBUyIsIFNORF9TT0NfTk9QTSwgMCwgMCwgbWljX2JpYXNf
+ZXZlbnQsCj4gIAkJCSAgICBTTkRfU09DX0RBUE1fUE9TVF9QTVUgfCBTTkRfU09DX0RBUE1fUFJF
+X1BNRCksCj4gIAo+ICsJLyogS2VlcCBCQ0xLL1dDTEsgZW5hYmxlZCBldmVuIGlmIERBQy9BREMg
+aXMgcG93ZXJlZCBkb3duICovCj4gKwlTTkRfU09DX0RBUE1fU1VQUExZKCJBY3RpdmF0ZSBJMlMg
+Y2xvY2tzIiwgQUlDMzFYWF9JRkFDRTIsIDIsIDAsCj4gKwkJCSAgICBOVUxMLCAwKSwKPiArCj4g
+IAkvKiBPdXRwdXRzICovCj4gIAlTTkRfU09DX0RBUE1fT1VUUFVUKCJIUEwiKSwKPiAgCVNORF9T
+T0NfREFQTV9PVVRQVVQoIkhQUiIpLAo+IEBAIC01NTMsNiArNTU3LDggQEAgc3RhdGljIGNvbnN0
+IHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0IGFpYzMxeHhfZGFwbV93aWRnZXRzW10gPSB7Cj4g
+IAlTTkRfU09DX0RBUE1fTUlYRVIoIk91dHB1dCBSaWdodCIsIFNORF9TT0NfTk9QTSwgMCwgMCwK
+PiAgCQkJICAgYWljMzF4eF9yaWdodF9vdXRwdXRfc3dpdGNoZXMsCj4gIAkJCSAgIEFSUkFZX1NJ
+WkUoYWljMzF4eF9yaWdodF9vdXRwdXRfc3dpdGNoZXMpKSwKPiArCj4gKwlTTkRfU09DX0RBUE1f
+QUlGX09VVCgiQUlGIE9VVCIsICJDYXB0dXJlIiwgMCwgU05EX1NPQ19OT1BNLCAwLCAwKSwKPiAg
+fTsKPiAgCj4gIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCBhaWMzMTF4
+X2RhcG1fd2lkZ2V0c1tdID0gewo+IEBAIC02NDAsNiArNjQ2LDggQEAgYWljMzF4eF9hdWRpb19t
+YXBbXSA9IHsKPiAgCj4gIAl7IkFEQyIsIE5VTEwsICJNSUNfR0FJTl9DVEwifSwKPiAgCj4gKwl7
+IkFJRiBPVVQiLCBOVUxMLCAiQURDIn0sCj4gKwo+ICAJLyogTGVmdCBPdXRwdXQgKi8KPiAgCXsi
+T3V0cHV0IExlZnQiLCAiRnJvbSBMZWZ0IERBQyIsICJEQUMgTGVmdCJ9LAo+ICAJeyJPdXRwdXQg
+TGVmdCIsICJGcm9tIE1JQzFMUCIsICJNSUMxTFAifSwKPiBAQCAtNjczLDI1ICs2ODEsMjkgQEAg
+YWljMzEweF9hdWRpb19tYXBbXSA9IHsKPiAgCj4gIC8qCj4gICAqIEFsd2F5cyBjb25uZWN0ZWQg
+REFQTSByb3V0ZXMgZm9yIGNvZGVjIGNsb2NrIG1hc3RlciBtb2Rlcy4KPiAtICogSWYgdGhlIGNv
+ZGVjIGlzIHRoZSBtYXN0ZXIgb24gdGhlIEkyUyBidXMsIHdlIG5lZWQgdG8gcG93ZXIgb24gY29t
+cG9uZW50cwo+IC0gKiB0byBoYXZlIHZhbGlkIERBQ19DTEsgYW5kIGFsc28gdGhlIERBQ3MgYW5k
+IEFEQyBmb3IgcGxheWJhY2svY2FwdHVyZS4KPiArICogSWYgdGhlIGNvZGVjIGlzIHRoZSBtYXN0
+ZXIgb24gdGhlIEkyUyBidXMsIHdlIG5lZWQgdG8gcG93ZXIgdXAgY29tcG9uZW50cwo+ICsgKiB0
+byBoYXZlIHZhbGlkIERBQ19DTEsuCj4gKyAqCj4gKyAqIEluIG9yZGVyIHRvIGhhdmUgdGhlIEky
+UyBjbG9ja3Mgb24gdGhlIGJ1cyBlaXRoZXIgdGhlIERBQ3MvQURDIG5lZWQgdG8gYmUKPiArICog
+ZW5hYmxlZCwgb3IgdGhlIFAwL1IyOS9EMiAoS2VlcCBiY2xrL3djbGsgaW4gcG93ZXIgZG93bikg
+bmVlZCB0byBiZSBzZXQuCj4gKyAqCj4gICAqIE90aGVyd2lzZSB0aGUgY29kZWMgd2lsbCBub3Qg
+Z2VuZXJhdGUgY2xvY2tzIG9uIHRoZSBidXMuCj4gICAqLwo+ICBzdGF0aWMgY29uc3Qgc3RydWN0
+IHNuZF9zb2NfZGFwbV9yb3V0ZQo+ICBjb21tb24zMXh4X2NtX2F1ZGlvX21hcFtdID0gewo+IC0J
+eyJEQUMgTGVmdCBJbnB1dCIsICJPZmYiLCAiQUlGIElOIn0sCj4gLQl7IkRBQyBSaWdodCBJbnB1
+dCIsICJPZmYiLCAiQUlGIElOIn0sCj4gKwl7IkhQTCIsIE5VTEwsICJBSUYgSU4ifSwKPiArCXsi
+SFBSIiwgTlVMTCwgIkFJRiBJTiJ9LAo+ICAKPiAtCXsiSFBMIiwgTlVMTCwgIkRBQyBMZWZ0In0s
+Cj4gLQl7IkhQUiIsIE5VTEwsICJEQUMgUmlnaHQifSwKPiArCXsiQUlGIElOIiwgTlVMTCwgIkFj
+dGl2YXRlIEkyUyBjbG9ja3MifSwKPiAgfTsKPiAgCj4gIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25k
+X3NvY19kYXBtX3JvdXRlCj4gIGFpYzMxeHhfY21fYXVkaW9fbWFwW10gPSB7Cj4gLQl7Ik1JQzFM
+UCBQLVRlcm1pbmFsIiwgIk9mZiIsICJNSUMxTFAifSwKPiAtCXsiTUlDMVJQIFAtVGVybWluYWwi
+LCAiT2ZmIiwgIk1JQzFSUCJ9LAo+IC0JeyJNSUMxTE0gUC1UZXJtaW5hbCIsICJPZmYiLCAiTUlD
+MUxNIn0sCj4gLQl7Ik1JQzFMTSBNLVRlcm1pbmFsIiwgIk9mZiIsICJNSUMxTE0ifSwKPiArCXsi
+QUlGIE9VVCIsIE5VTEwsICJNSUMxTFAifSwKPiArCXsiQUlGIE9VVCIsIE5VTEwsICJNSUMxUlAi
+fSwKPiArCXsiQUlGIE9VVCIsIE5VTEwsICJNSUMxTE0ifSwKPiArCj4gKwl7IkFJRiBPVVQiLCBO
+VUxMLCAiQWN0aXZhdGUgSTJTIGNsb2NrcyJ9LAo+ICB9Owo+ICAKPiAgc3RhdGljIGludCBhaWMz
+MXh4X2FkZF9jb250cm9scyhzdHJ1Y3Qgc25kX3NvY19jb21wb25lbnQgKmNvbXBvbmVudCkKPiBk
+aWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzMXh4LmggYi9zb3VuZC9zb2Mv
+Y29kZWNzL3RsdjMyMGFpYzMxeHguaAo+IGluZGV4IDE1YWM3Y2JhODZmZS4uMGI1ODc1ODViMzhi
+IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljMzF4eC5oCj4gKysrIGIv
+c291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzMXh4LmgKPiBAQCAtMTYwLDYgKzE2MCw3IEBAIHN0
+cnVjdCBhaWMzMXh4X3BkYXRhIHsKPiAgI2RlZmluZSBBSUMzMVhYX0RBQ01PRDJCQ0xLCQkweDAx
+Cj4gICNkZWZpbmUgQUlDMzFYWF9BREMyQkNMSwkJMHgwMgo+ICAjZGVmaW5lIEFJQzMxWFhfQURD
+TU9EMkJDTEsJCTB4MDMKPiArI2RlZmluZSBBSUMzMVhYX0tFRVBfSTJTQ0xLCQlCSVQoMikKPiAg
+Cj4gIC8qIEFJQzMxWFhfQURDRkxBRyAqLwo+ICAjZGVmaW5lIEFJQzMxWFhfQURDUFdSU1RBVFVT
+X01BU0sJQklUKDYpCj4gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
