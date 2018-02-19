@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sgtl5000: add 5 band graphic equalizer"
-	to the asoc tree
-Date: Mon, 19 Feb 2018 12:18:21 +0000
-Message-ID: <E1enkOj-0002j9-Cl@debutante>
+Subject: Applied "ASoC: sgtl5000: add 'Audio Switch' block
+	implementation" to the asoc tree
+Date: Mon, 19 Feb 2018 12:18:23 +0000
+Message-ID: <E1enkOl-0002js-IY@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E32C2673D6
- for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 13:18:22 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 831D12673F2
+ for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 13:18:24 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sgtl5000: add 5 band graphic equalizer
+   ASoC: sgtl5000: add 'Audio Switch' block implementation
 
 has been applied to the asoc tree at
 
@@ -52,88 +52,154 @@ to this mail.
 Thanks,
 Mark
 
->From 92a2742f9813ef65da19145a77e8067d6abbc822 Mon Sep 17 00:00:00 2001
+>From 7f7d5239f56cfd25ba8470354d9705815c079157 Mon Sep 17 00:00:00 2001
 From: Michal Oleszczyk <oleszczyk.m@gmail.com>
-Date: Mon, 19 Feb 2018 10:03:46 +0100
-Subject: [PATCH] ASoC: sgtl5000: add 5 band graphic equalizer
+Date: Mon, 19 Feb 2018 10:03:45 +0100
+Subject: [PATCH] ASoC: sgtl5000: add 'Audio Switch' block implementation
 
-Enable 5-band graphic equalizer which allows manipulation of
-gain in range -11.75dB to 12dB for 5 specific sound bands:
-115Hz, 330Hz, 990Hz, 3000Hz, 9900Hz.
+Add mux for choosing DAC source: ADC, I2S or DAP. DAP - digital
+audio processing block. Moreover create choosing mux for DAP main
+source (ADC or I2S) and DAP mixer source (ADC or I2S). Mixer block
+allows summing DAP main and mixer sources togheter with defined
+volumes.
 
 Signed-off-by: Michal Oleszczyk <oleszczyk.m@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/sgtl5000.c | 24 +++++++++++++++++++++---
- sound/soc/codecs/sgtl5000.h |  7 +++++++
- 2 files changed, 28 insertions(+), 3 deletions(-)
+ sound/soc/codecs/sgtl5000.c | 78 ++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 67 insertions(+), 11 deletions(-)
 
 diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 1724c4622052..7c1d65830c05 100644
+index 05592ddcf0e6..1724c4622052 100644
 --- a/sound/soc/codecs/sgtl5000.c
 +++ b/sound/soc/codecs/sgtl5000.c
-@@ -520,6 +520,9 @@ static const DECLARE_TLV_DB_RANGE(mic_gain_tlv,
- /* tlv for DAP channels, 0% - 100% - 200% */
- static const DECLARE_TLV_DB_SCALE(dap_volume, 0, 1, 0);
+@@ -216,17 +216,54 @@ static SOC_ENUM_SINGLE_DECL(adc_enum,
+ static const struct snd_kcontrol_new adc_mux =
+ SOC_DAPM_ENUM("Capture Mux", adc_enum);
  
-+/* tlv for bass bands, -11.75db to 12.0db, step .25db */
-+static const DECLARE_TLV_DB_SCALE(bass_band, -1175, 25, 0);
++/* input sources for headphone */
++static const char *hp_mux_text[] = {
++	"DAC", "LINE_IN"
++};
++
++static SOC_ENUM_SINGLE_DECL(hp_enum,
++			    SGTL5000_CHIP_ANA_CTRL, 6,
++			    hp_mux_text);
++
++static const struct snd_kcontrol_new hp_mux =
++SOC_DAPM_ENUM("Headphone Mux", hp_enum);
++
+ /* input sources for DAC */
+ static const char *dac_mux_text[] = {
+-	"DAC", "LINE_IN"
++	"ADC", "I2S", "Rsvrd", "DAP"
+ };
+ 
+ static SOC_ENUM_SINGLE_DECL(dac_enum,
+-			    SGTL5000_CHIP_ANA_CTRL, 6,
++			    SGTL5000_CHIP_SSS_CTRL, SGTL5000_DAC_SEL_SHIFT,
+ 			    dac_mux_text);
+ 
+ static const struct snd_kcontrol_new dac_mux =
+-SOC_DAPM_ENUM("Headphone Mux", dac_enum);
++SOC_DAPM_ENUM("Digital Input Mux", dac_enum);
++
++/* input sources for DAP */
++static const char *dap_mux_text[] = {
++	"ADC", "I2S"
++};
++
++static SOC_ENUM_SINGLE_DECL(dap_enum,
++			    SGTL5000_CHIP_SSS_CTRL, SGTL5000_DAP_SEL_SHIFT,
++			    dap_mux_text);
++
++static const struct snd_kcontrol_new dap_mux =
++SOC_DAPM_ENUM("DAP Mux", dap_enum);
++
++/* input sources for DAP mix */
++static const char *dapmix_mux_text[] = {
++	"ADC", "I2S"
++};
++
++static SOC_ENUM_SINGLE_DECL(dapmix_enum,
++			    SGTL5000_CHIP_SSS_CTRL, SGTL5000_DAP_MIX_SEL_SHIFT,
++			    dapmix_mux_text);
++
++static const struct snd_kcontrol_new dapmix_mux =
++SOC_DAPM_ENUM("DAP MIX Mux", dapmix_enum);
++
+ 
+ static const struct snd_soc_dapm_widget sgtl5000_dapm_widgets[] = {
+ 	SND_SOC_DAPM_INPUT("LINE_IN"),
+@@ -243,7 +280,12 @@ static const struct snd_soc_dapm_widget sgtl5000_dapm_widgets[] = {
+ 	SND_SOC_DAPM_PGA("LO", SGTL5000_CHIP_ANA_POWER, 0, 0, NULL, 0),
+ 
+ 	SND_SOC_DAPM_MUX("Capture Mux", SND_SOC_NOPM, 0, 0, &adc_mux),
+-	SND_SOC_DAPM_MUX("Headphone Mux", SND_SOC_NOPM, 0, 0, &dac_mux),
++	SND_SOC_DAPM_MUX("Headphone Mux", SND_SOC_NOPM, 0, 0, &hp_mux),
++	SND_SOC_DAPM_MUX("Digital Input Mux", SND_SOC_NOPM, 0, 0, &dac_mux),
++	SND_SOC_DAPM_MUX("DAP Mux", SGTL5000_DAP_CTRL, 0, 0, &dap_mux),
++	SND_SOC_DAPM_MUX("DAP MIX Mux", SGTL5000_DAP_CTRL, 4, 0, &dapmix_mux),
++	SND_SOC_DAPM_MIXER("DAP", SGTL5000_CHIP_DIG_POWER, 4, 0, NULL, 0),
++
+ 
+ 	/* aif for i2s input */
+ 	SND_SOC_DAPM_AIF_IN("AIFIN", "Playback",
+@@ -270,7 +312,19 @@ static const struct snd_soc_dapm_route sgtl5000_dapm_routes[] = {
+ 	{"ADC", NULL, "Capture Mux"},		/* adc_mux --> adc */
+ 	{"AIFOUT", NULL, "ADC"},		/* adc --> i2s_out */
+ 
+-	{"DAC", NULL, "AIFIN"},			/* i2s-->dac,skip audio mux */
++	{"DAP Mux", "ADC", "ADC"},		/* adc --> DAP mux */
++	{"DAP Mux", NULL, "AIFIN"},		/* i2s --> DAP mux */
++	{"DAP", NULL, "DAP Mux"},		/* DAP mux --> dap */
++
++	{"DAP MIX Mux", "ADC", "ADC"},		/* adc --> DAP MIX mux */
++	{"DAP MIX Mux", NULL, "AIFIN"},		/* i2s --> DAP MIX mux */
++	{"DAP", NULL, "DAP MIX Mux"},		/* DAP MIX mux --> dap */
++
++	{"Digital Input Mux", "ADC", "ADC"},	/* adc --> audio mux */
++	{"Digital Input Mux", NULL, "AIFIN"},	/* i2s --> audio mux */
++	{"Digital Input Mux", NULL, "DAP"},	/* dap --> audio mux */
++	{"DAC", NULL, "Digital Input Mux"},	/* audio mux --> dac */
++
+ 	{"Headphone Mux", "DAC", "DAC"},	/* dac --> hp_mux */
+ 	{"LO", NULL, "DAC"},			/* dac --> line_out */
+ 
+@@ -463,6 +517,9 @@ static const DECLARE_TLV_DB_RANGE(mic_gain_tlv,
+ 	1, 3, TLV_DB_SCALE_ITEM(2000, 1000, 0)
+ );
+ 
++/* tlv for DAP channels, 0% - 100% - 200% */
++static const DECLARE_TLV_DB_SCALE(dap_volume, 0, 1, 0);
 +
  /* tlv for hp volume, -51.5db to 12.0db, step .5db */
  static const DECLARE_TLV_DB_SCALE(headphone_volume, -5150, 50, 0);
  
-@@ -585,6 +588,21 @@ static const struct snd_kcontrol_new sgtl5000_snd_controls[] = {
- 	SOC_SINGLE_EXT_TLV("AVC Threshold Volume", SGTL5000_DAP_AVC_THRESHOLD,
- 			0, 96, 0, avc_get_threshold, avc_put_threshold,
- 			avc_threshold),
-+
-+	SOC_SINGLE_TLV("BASS 0", SGTL5000_DAP_EQ_BASS_BAND0,
-+	0, 0x5F, 0, bass_band),
-+
-+	SOC_SINGLE_TLV("BASS 1", SGTL5000_DAP_EQ_BASS_BAND1,
-+	0, 0x5F, 0, bass_band),
-+
-+	SOC_SINGLE_TLV("BASS 2", SGTL5000_DAP_EQ_BASS_BAND2,
-+	0, 0x5F, 0, bass_band),
-+
-+	SOC_SINGLE_TLV("BASS 3", SGTL5000_DAP_EQ_BASS_BAND3,
-+	0, 0x5F, 0, bass_band),
-+
-+	SOC_SINGLE_TLV("BASS 4", SGTL5000_DAP_EQ_BASS_BAND4,
-+	0, 0x5F, 0, bass_band),
- };
+@@ -514,6 +571,11 @@ static const struct snd_kcontrol_new sgtl5000_snd_controls[] = {
+ 			lineout_volume),
+ 	SOC_SINGLE("Lineout Playback Switch", SGTL5000_CHIP_ANA_CTRL, 8, 1, 1),
  
- /* mute the codec used by alsa core */
-@@ -1303,11 +1321,11 @@ static int sgtl5000_probe(struct snd_soc_component *component)
- 			SGTL5000_BIAS_VOLT_MASK,
- 			sgtl5000->micbias_voltage << SGTL5000_BIAS_VOLT_SHIFT);
- 	/*
--	 * disable DAP
-+	 * enable DAP Graphic EQ
- 	 * TODO:
--	 * Enable DAP in kcontrol and dapm.
-+	 * Add control for changing between PEQ/Tone Control/GEQ
- 	 */
--	snd_soc_component_write(component, SGTL5000_DAP_CTRL, 0);
-+	snd_soc_component_write(component, SGTL5000_DAP_AUDIO_EQ, SGTL5000_DAP_SEL_GEQ);
- 
- 	/* Unmute DAC after start */
- 	snd_soc_component_update_bits(component, SGTL5000_CHIP_ADCDAC_CTRL,
-diff --git a/sound/soc/codecs/sgtl5000.h b/sound/soc/codecs/sgtl5000.h
-index 22f3442af982..28cf637155bb 100644
---- a/sound/soc/codecs/sgtl5000.h
-+++ b/sound/soc/codecs/sgtl5000.h
-@@ -399,4 +399,11 @@
- #define SGTL5000_SYSCLK				0x00
- #define SGTL5000_LRCLK				0x01
- 
-+/*
-+ * SGTL5000_DAP_AUDIO_EQ
-+ */
-+#define SGTL5000_DAP_SEL_PEQ			1
-+#define SGTL5000_DAP_SEL_TONE_CTRL		2
-+#define SGTL5000_DAP_SEL_GEQ			3
++	SOC_SINGLE_TLV("DAP Main channel", SGTL5000_DAP_MAIN_CHAN,
++	0, 0xffff, 0, dap_volume),
 +
- #endif
++	SOC_SINGLE_TLV("DAP Mix channel", SGTL5000_DAP_MIX_CHAN,
++	0, 0xffff, 0, dap_volume),
+ 	/* Automatic Volume Control (DAP AVC) */
+ 	SOC_SINGLE("AVC Switch", SGTL5000_DAP_AVC_CTRL, 0, 1, 0),
+ 	SOC_SINGLE("AVC Hard Limiter Switch", SGTL5000_DAP_AVC_CTRL, 5, 1, 0),
+@@ -1217,12 +1279,6 @@ static int sgtl5000_probe(struct snd_soc_component *component)
+ 	/* disable short cut detector */
+ 	snd_soc_component_write(component, SGTL5000_CHIP_SHORT_CTRL, 0);
+ 
+-	/*
+-	 * set i2s as default input of sound switch
+-	 * TODO: add sound switch to control and dapm widge.
+-	 */
+-	snd_soc_component_write(component, SGTL5000_CHIP_SSS_CTRL,
+-			SGTL5000_DAC_SEL_I2S_IN << SGTL5000_DAC_SEL_SHIFT);
+ 	snd_soc_component_write(component, SGTL5000_CHIP_DIG_POWER,
+ 			SGTL5000_ADC_EN | SGTL5000_DAC_EN);
+ 
 -- 
 2.16.1
