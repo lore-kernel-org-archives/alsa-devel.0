@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5651: Fix regcache sync errors on
-	resume" to the asoc tree
-Date: Mon, 19 Feb 2018 12:18:19 +0000
-Message-ID: <E1enkOh-0002i6-6s@debutante>
+Subject: Applied "ASoC: tlv320aic31xx: Rename AIF_IN from 'DAC
+	IN' to 'AIF IN'" to the asoc tree
+Date: Mon, 19 Feb 2018 12:18:46 +0000
+Message-ID: <E1enkP8-0002ln-Ao@debutante>
+References: <20180219094508.26662-2-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 006262673F6
- for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 13:18:22 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id AB1C1267409
+ for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 13:18:48 +0100 (CET)
+In-Reply-To: <20180219094508.26662-2-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, s.mueller-klieser@phytec.de, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, afd@ti.com, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5651: Fix regcache sync errors on resume
+   ASoC: tlv320aic31xx: Rename AIF_IN from 'DAC IN' to 'AIF IN'
 
 has been applied to the asoc tree at
 
@@ -52,36 +53,62 @@ to this mail.
 Thanks,
 Mark
 
->From 2d30e9494f1ea320aaaad0cff9ddd92c87eac355 Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 18 Feb 2018 23:01:44 +0100
-Subject: [PATCH] ASoC: rt5651: Fix regcache sync errors on resume
+>From 7d41bc28e9fa3fed28691019ca0fe36ed68d7b86 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Mon, 19 Feb 2018 11:45:07 +0200
+Subject: [PATCH] ASoC: tlv320aic31xx: Rename AIF_IN from 'DAC IN' to 'AIF IN'
 
-The ALC5651 does not like multi-write accesses, avoid them. This fixes:
+The audio interface is not really the DAC input. Use more generic name for
+it.
 
-rt5651 i2c-10EC5651:00: Unable to sync registers 0x27-0x28. -121
-
-Errors on resume (and all registers after the registers in the error not
-being synced).
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/rt5651.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/tlv320aic31xx.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index 831b297978a4..45a73049cf64 100644
---- a/sound/soc/codecs/rt5651.c
-+++ b/sound/soc/codecs/rt5651.c
-@@ -1722,6 +1722,7 @@ static const struct regmap_config rt5651_regmap = {
- 	.num_reg_defaults = ARRAY_SIZE(rt5651_reg),
- 	.ranges = rt5651_ranges,
- 	.num_ranges = ARRAY_SIZE(rt5651_ranges),
-+	.use_single_rw = true,
- };
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 7090342e8285..e5a1e2be17aa 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -468,7 +468,7 @@ static int mic_bias_event(struct snd_soc_dapm_widget *w,
+ }
  
- #if defined(CONFIG_OF)
+ static const struct snd_soc_dapm_widget common31xx_dapm_widgets[] = {
+-	SND_SOC_DAPM_AIF_IN("DAC IN", "DAC Playback", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_IN("AIF IN", "Playback", 0, SND_SOC_NOPM, 0, 0),
+ 
+ 	SND_SOC_DAPM_MUX("DAC Left Input",
+ 			 SND_SOC_NOPM, 0, 0, &ldac_in_control),
+@@ -584,12 +584,12 @@ static const struct snd_soc_dapm_widget aic310x_dapm_widgets[] = {
+ static const struct snd_soc_dapm_route
+ common31xx_audio_map[] = {
+ 	/* DAC Input Routing */
+-	{"DAC Left Input", "Left Data", "DAC IN"},
+-	{"DAC Left Input", "Right Data", "DAC IN"},
+-	{"DAC Left Input", "Mono", "DAC IN"},
+-	{"DAC Right Input", "Left Data", "DAC IN"},
+-	{"DAC Right Input", "Right Data", "DAC IN"},
+-	{"DAC Right Input", "Mono", "DAC IN"},
++	{"DAC Left Input", "Left Data", "AIF IN"},
++	{"DAC Left Input", "Right Data", "AIF IN"},
++	{"DAC Left Input", "Mono", "AIF IN"},
++	{"DAC Right Input", "Left Data", "AIF IN"},
++	{"DAC Right Input", "Right Data", "AIF IN"},
++	{"DAC Right Input", "Mono", "AIF IN"},
+ 	{"DAC Left", NULL, "DAC Left Input"},
+ 	{"DAC Right", NULL, "DAC Right Input"},
+ 
+@@ -679,8 +679,8 @@ aic310x_audio_map[] = {
+  */
+ static const struct snd_soc_dapm_route
+ common31xx_cm_audio_map[] = {
+-	{"DAC Left Input", "Off", "DAC IN"},
+-	{"DAC Right Input", "Off", "DAC IN"},
++	{"DAC Left Input", "Off", "AIF IN"},
++	{"DAC Right Input", "Off", "AIF IN"},
+ 
+ 	{"HPL", NULL, "DAC Left"},
+ 	{"HPR", NULL, "DAC Right"},
 -- 
 2.16.1
