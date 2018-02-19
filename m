@@ -1,17 +1,22 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: ASoC: Failed to create component debugfs directory
-Date: Mon, 19 Feb 2018 15:49:11 -0300
-Message-ID: <CAOMZO5D071pPr4fL7eLwWgX6h8Mppwic2u4mUCGzUZiss-+3MQ@mail.gmail.com>
+From: Kirill Marinushkin <k.marinushkin@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: topology: Rename clock_gated to
+ clock_cont in snd_soc_tplg_hw_config
+Date: Mon, 19 Feb 2018 20:00:45 +0100
+Message-ID: <5f4279ef-bbf5-6d3d-50ef-59004d3b6053@gmail.com>
+References: <20180219060531.17276-1-k.marinushkin@gmail.com>
+ <458b66ab-da0a-8063-6555-13fb152c83a4@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f178.google.com (mail-ot0-f178.google.com
- [74.125.82.178])
- by alsa0.perex.cz (Postfix) with ESMTP id 71268266DFD
- for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 19:49:13 +0100 (CET)
-Received: by mail-ot0-f178.google.com with SMTP id p8so6482468otf.2
- for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 10:49:13 -0800 (PST)
+Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
+ [209.85.128.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E6E19266EDF
+ for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 20:00:30 +0100 (CET)
+Received: by mail-wr0-f193.google.com with SMTP id o76so10685000wrb.7
+ for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 11:00:30 -0800 (PST)
+In-Reply-To: <458b66ab-da0a-8063-6555-13fb152c83a4@sakamocchi.jp>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,22 +26,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On linux-next I see the following errors on imx6 wandboard:
-
-[    3.040897] fsl-ssi-dai 2028000.ssi: ASoC: Failed to create
-component debugfs directory
-[    3.065722] fsl-spdif-dai 2004000.spdif: ASoC: Failed to create
-component debugfs directory
-
-I haven't started debugging this yet and not sure if this is something
-fsl driver specific.
-
-Any ideas?
-
-Thanks
+T24gMDIvMTkvMTggMDc6NDcsIFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4gSGksCj4KPiBPbiBG
+ZWIgMTkgMjAxOCAxNTowNSwgS2lyaWxsIE1hcmludXNoa2luIHdyb3RlOgo+PiBJbiBrZXJuZWwg
+YHNvYy1kYWkuaGAsIERBSSBjbG9jayBnYXRpbmcgaXMgZGVmaW5lZCBhcyBmb2xsb3dpbmc6Cj4+
+Cj4+IH5+fn4KPj4gXCNkZWZpbmUgU05EX1NPQ19EQUlGTVRfQ09OVMKgwqDCoMKgwqDCoMKgICgx
+IDw8IDQpIC8qIGNvbnRpbnVvdXMgY2xvY2sgKi8KPj4gXCNkZWZpbmUgU05EX1NPQ19EQUlGTVRf
+R0FURUTCoMKgwqDCoMKgwqDCoCAoMCA8PCA0KSAvKiBjbG9jayBpcyBnYXRlZCAqLwo+PiB+fn5+
+Cj4+Cj4+IFRoZXJlZm9yZSwgdGhlIGNvcnJlc3BvbmRpbmcgZmllbGQgb2Ygc3RydWN0IHNuZF9z
+b2NfdHBsZ19od19jb25maWcgc2hvdWxkCj4+IGJlIGludmVydGVkIGNvbXBhcmVkIHRvIHRoZSBj
+dXJyZW50IGxvZ2ljOgo+Pgo+PiBjbG9ja19jb3VudCA9IDEgPT4gU05EX1NPQ19EQUlGTVRfQ09O
+VAo+PiBjbG9ja19jb3VudCA9IDAgPT4gU05EX1NPQ19EQUlGTVRfR0FURUQKPj4KPj4gU2lnbmVk
+LW9mZi1ieTogS2lyaWxsIE1hcmludXNoa2luIDxrLm1hcmludXNoa2luQGdtYWlsLmNvbT4KPj4g
+Q2M6IEphcm9zbGF2IEt5c2VsYSA8cGVyZXhAcGVyZXguY3o+Cj4+IENjOiBUYWthc2hpIEl3YWkg
+PHRpd2FpQHN1c2UuY29tPgo+PiBDYzogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4+IENj
+OiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnCj4+IC0tLQo+PiDCoCBpbmNsdWRlL3VhcGkv
+c291bmQvYXNvYy5oIHwgNCArKystCj4+IMKgIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMo
+KyksIDEgZGVsZXRpb24oLSkKPj4KPj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvdWFwaS9zb3VuZC9h
+c29jLmggYi9pbmNsdWRlL3VhcGkvc291bmQvYXNvYy5oCj4+IGluZGV4IDY5YzM3ZWNiZmY3ZS4u
+MTAxODg4NTBkZWRlIDEwMDY0NAo+PiAtLS0gYS9pbmNsdWRlL3VhcGkvc291bmQvYXNvYy5oCj4+
+ICsrKyBiL2luY2x1ZGUvdWFwaS9zb3VuZC9hc29jLmgKPj4gQEAgLTMxMiw3ICszMTIsOSBAQCBz
+dHJ1Y3Qgc25kX3NvY190cGxnX2h3X2NvbmZpZyB7Cj4+IMKgwqDCoMKgwqAgX19sZTMyIHNpemU7
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAvKiBpbiBieXRlcyBvZiB0aGlzIHN0cnVjdHVyZSAqLwo+
+PiDCoMKgwqDCoMKgIF9fbGUzMiBpZDvCoMKgwqDCoMKgwqDCoCAvKiB1bmlxdWUgSUQgLSAtIHVz
+ZWQgdG8gbWF0Y2ggKi8KPj4gwqDCoMKgwqDCoCBfX2xlMzIgZm10O8KgwqDCoMKgwqDCoMKgIC8q
+IFNORF9TT0NfREFJX0ZPUk1BVF8gZm9ybWF0IHZhbHVlICovCj4+IC3CoMKgwqAgX191OCBjbG9j
+a19nYXRlZDvCoMKgwqAgLyogMSBpZiBjbG9jayBjYW4gYmUgZ2F0ZWQgdG8gc2F2ZSBwb3dlciAq
+Lwo+PiArwqDCoMKgIF9fdTggY2xvY2tfY29udDvCoMKgwqAgLyogMSBpZiBjbG9jayBpcyBjb250
+aW51b3VzLCBhbmQgY2FuIG5vdCBiZQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgKiBnYXRlZCB0byBzYXZlIHBvd2VyCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCAqLwo+PiDCoMKgwqDCoMKgIF9fdTggaW52ZXJ0X2JjbGs7wqDCoMKgIC8qIDEgZm9yIGlu
+dmVydGVkIEJDTEssIDAgZm9yIG5vcm1hbCAqLwo+PiDCoMKgwqDCoMKgIF9fdTggaW52ZXJ0X2Zz
+eW5jO8KgwqDCoCAvKiAxIGZvciBpbnZlcnRlZCBmcmFtZSBjbG9jaywgMCBmb3Igbm9ybWFsICov
+Cj4+IMKgwqDCoMKgwqAgX191OCBiY2xrX21hc3RlcjvCoMKgwqAgLyogMSBmb3IgbWFzdGVyIG9m
+IEJDTEssIDAgZm9yIHNsYXZlICovCj4KPiBUaGlzIHN0cnVjdHVyZSB3YXMgYWRkZWQgYXQgYSBj
+b21taXQgNjc2YzZiNTIwOGY3ICgnQVNvQzogdG9wb2xvZ3k6IEFCSSAtIFVwZGF0ZSBwaHlzaWNh
+bCBEQUkgbGluayBjb25maWd1cmF0aW9uIGZvciB2ZXJzaW9uIDUnKSBpbiBhIGRldmVsb3BtZW50
+IHBlcmlvZCBmb3IgdjQuMTAuCj4KPiBUaGlzIGZpbGUgaXMgYSBwYXJ0IG9mIFVBUEksIHRodXMg
+dGhpcyBzdHJ1Y3R1cmUgaGFzIGFscmVhZHkgYmVlbiBleHBvc2VkIHRvIGFwcGxpY2F0aW9uIGRl
+dmVsb3BlcnMuIEFueSBjaGFuZ2UgY2FuIGJyZWFrIHVzZXJzcGFjZSBhcHBsaWNhdGlvbnMgaW4g
+YSBwb2ludCBvZiBiYWNrd2FyZCBjb21wYXRpYmlsaXR5IGZvciB0aGlzIHN1YnN5c3RlbS4KPgo+
+IEl0J3MgYmV0dGVyIGZvciB5b3UgdG8gaW52ZXN0aWdhdGUgYW5vdGhlciBzb2x1dGlvbiBmb3Ig
+eW91ciB0d28gcGF0Y2hlc1sxXVsyXS4KPgo+Cj4gWzFdIFthbHNhLWRldmVsXSBbUEFUQ0ggMS8y
+XSBBU29DOiB0b3BvbG9neTogUmVuYW1lIGNsb2NrX2dhdGVkIHRvIGNsb2NrX2NvbnQgaW4gc25k
+X3NvY190cGxnX2h3X2NvbmZpZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlw
+ZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxOC1GZWJydWFyeS8xMzIyNTguaHRtbAo+IFsyXSBbYWxzYS1k
+ZXZlbF0gW1BBVENIIDIvMl0gQVNvQzogdG9wb2xvZ3k6IEFkZCBtaXNzaW5nIGNsb2NrIGdhdGlu
+ZyBwYXJhbWV0ZXIgd2hlbiBwYXJzaW5nIGh3X2NvbmZpZ3MKPiBodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTgtRmVicnVhcnkvMTMyMjU5Lmh0
+bWwKPgo+Cj4gUmVnYXJkcwo+Cj4gVGFrYXNoaSBTYWthbW90bwoKSGVsbG8gVGFrYXNoaSBTYWth
+bW90bywKCkkgd2lsbCBwcm9wb3NlIGEgYmFja3dhcmRzLWNvbXBhdGlibGUgc29sdXRpb24gYXMg
+YSBQQVRDSCB2Mi4KCkJlc3QgUmVnYXJkcywKS2lyaWxsCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
