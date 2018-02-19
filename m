@@ -1,96 +1,681 @@
-From: "Rafael J. Wysocki" <rafael-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/7] PCI: Restore BARs on runtime resume
- despite being unbound
-Date: Mon, 19 Feb 2018 10:49:15 +0100
-Message-ID: <CAJZ5v0jr0dM7VAPUvjEh0HoVgORzvFov3vPvyaO2nynKyJhNjg@mail.gmail.com>
-References: <cover.1518941072.git.lukas@wunner.de>
- <f7593132608eb9a83d7268cc5b3ef12b3dd9c52d.1518941073.git.lukas@wunner.de>
+From: Rohit Kumar <rohitkr@codeaurora.org>
+Subject: Re: [alsa-devel] [PATCH v3 05/25] ASoC: qcom: qdsp6: Add support to
+ Q6AFE
+Date: Mon, 19 Feb 2018 16:00:32 +0530
+Message-ID: <2465335e-4d45-02d7-2e64-0a1c28a44ff1@codeaurora.org>
+References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
+ <20180213165837.1620-6-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-In-Reply-To: <f7593132608eb9a83d7268cc5b3ef12b3dd9c52d.1518941073.git.lukas-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/nouveau>,
- <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/nouveau>
-List-Post: <mailto:nouveau-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/nouveau>,
- <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "Nouveau" <nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: Lukas Wunner <lukas-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Linux PM <linux-pm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, nouveau-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, "Rafael J. Wysocki" <rafael.j.wysocki-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, dri-devel <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Ben Skeggs <bskeggs-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Bastien Nocera <hadess-0MeiytkfxGOsTnJN9+BGXg@public.gmane.org>, Linux PCI <linux-pci-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, Dave Airlie <airlied-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Bjorn Helgaas <bhelgaas-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20180213165837.1620-6-srinivas.kandagatla@linaro.org>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: srinivas.kandagatla@linaro.org, andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, lgirdwood@gmail.com, plai@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, david.brown@linaro.org, robh+dt@kernel.org, spatakok@qti.qualcomm.com, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCBGZWIgMTgsIDIwMTggYXQgOTozOCBBTSwgTHVrYXMgV3VubmVyIDxsdWthc0B3dW5u
-ZXIuZGU+IHdyb3RlOgo+IFBDSSBkZXZpY2VzIG5vdCBib3VuZCB0byBhIGRyaXZlciBhcmUgc3Vw
-cG9zZWQgdG8gc3RheSBpbiBEMCBkdXJpbmcKPiBydW50aW1lIHN1c3BlbmQuICBCdXQgdGhleSBt
-YXkgaGF2ZSBhIHBhcmVudCB3aGljaCBpcyBib3VuZCBhbmQgY2FuIGJlCj4gdHJhbnNpdGlvbmVk
-IHRvIEQzY29sZCBhdCBydW50aW1lLiAgT25jZSB0aGUgcGFyZW50IGdvZXMgdG8gRDNjb2xkLCB0
-aGUKPiB1bmJvdW5kIGNoaWxkIG1heSBnbyB0byBEM2NvbGQgYXMgd2VsbC4gIFdoZW4gdGhlIGNo
-aWxkIGNvbWVzIG91dCBvZgo+IEQzY29sZCwgaXRzIEJBUnMgYXJlIHVuaW5pdGlhbGl6ZWQgYW5k
-IHRodXMgaW5hY2Nlc3NpYmxlIHdoZW4gYSBkcml2ZXIKPiB0cmllcyB0byBwcm9iZS4KPgo+IE9u
-ZSBleGFtcGxlIGFyZSByZWNlbnQgaHlicmlkIGdyYXBoaWNzIGxhcHRvcHMgd2hpY2ggY3V0IHBv
-d2VyIHRvIHRoZQo+IGRpc2NyZXRlIEdQVSB3aGVuIHRoZSByb290IHBvcnQgYWJvdmUgaXQgZ29l
-cyB0byBBQ1BJIHBvd2VyIHN0YXRlIEQzLgo+IFVzZXJzIG1heSBwcm92b2tlIHRoaXMgYnkgdW5i
-aW5kaW5nIHRoZSBHUFUgZHJpdmVyIGFuZCBhbGxvd2luZyBydW50aW1lCj4gUE0gb24gdGhlIEdQ
-VSB2aWEgc3lzZnM6ICBUaGUgUE0gY29yZSB3aWxsIHRoZW4gdHJlYXQgdGhlIEdQVSBhcwo+ICJz
-dXNwZW5kZWQiLCB3aGljaCBpbiB0dXJuIGFsbG93cyB0aGUgcm9vdCBwb3J0IHRvIHJ1bnRpbWUg
-c3VzcGVuZCwKPiBjYXVzaW5nIHRoZSBwb3dlciByZXNvdXJjZXMgbGlzdGVkIGluIGl0cyBfUFIz
-IG9iamVjdCB0byBiZSBwb3dlcmVkIG9mZi4KPiBUaGUgR1BVJ3MgQkFScyB3aWxsIGJlIHVuaW5p
-dGlhbGl6ZWQgd2hlbiBhIGRyaXZlciBsYXRlciBwcm9iZXMgaXQuCj4KPiBBbm90aGVyIGV4YW1w
-bGUgYXJlIGh5YnJpZCBncmFwaGljcyBsYXB0b3BzIHdoZXJlIHRoZSBHUFUgaXRzZWxmIChyYXRo
-ZXIKPiB0aGFuIHRoZSByb290IHBvcnQpIGlzIGNhcGFibGUgb2YgcnVudGltZSBzdXNwZW5kaW5n
-IHRvIEQzY29sZC4gIElmIHRoZQo+IEdQVSdzIGludGVncmF0ZWQgSERBIGNvbnRyb2xsZXIgaXMg
-bm90IGJvdW5kIGFuZCB0aGUgR1BVJ3MgZHJpdmVyCj4gZGVjaWRlcyB0byBydW50aW1lIHN1c3Bl
-bmQgdG8gRDNjb2xkLCB0aGUgSERBIGNvbnRyb2xsZXIncyBCQVJzIHdpbGwgYmUKPiB1bmluaXRp
-YWxpemVkIHdoZW4gYSBkcml2ZXIgbGF0ZXIgcHJvYmVzIGl0Lgo+Cj4gRml4IGJ5IHJlc3Rvcmlu
-ZyB0aGUgQkFScyBvbiBydW50aW1lIHJlc3VtZSBpZiB0aGUgZGV2aWNlIGlzIG5vdCBib3VuZC4K
-PiBUaGlzIGlzIHN1ZmZpY2llbnQgdG8gZml4IHRoZSBhYm92ZS1tZW50aW9uZWQgdXNlIGNhc2Vz
-LiAgT3RoZXIgdXNlCj4gY2FzZXMgbWlnaHQgcmVxdWlyZSBhIGZ1bGwtYmxvd24gcGNpX3NhdmVf
-c3RhdGUoKSAvIHBjaV9yZXN0b3JlX3N0YXRlKCkKPiBvciBleGVjdXRpb24gb2YgZml4dXBzLiAg
-V2UgY2FuIGFkZCB0aGF0IG9uY2UgdXNlIGNhc2VzIG1hdGVyaWFsaXplLAo+IGxldCdzIG5vdCBp
-bmZsYXRlIHRoZSBjb2RlIHVubmVjZXNzYXJpbHkuCj4KPiBDYzogQmpvcm4gSGVsZ2FhcyA8Ymhl
-bGdhYXNAZ29vZ2xlLmNvbT4KPiBDYzogUmFmYWVsIEouIFd5c29ja2kgPHJhZmFlbC5qLnd5c29j
-a2lAaW50ZWwuY29tPgo+IFNpZ25lZC1vZmYtYnk6IEx1a2FzIFd1bm5lciA8bHVrYXNAd3VubmVy
-LmRlPgoKUmV2aWV3ZWQtYnk6IFJhZmFlbCBKLiBXeXNvY2tpIDxyYWZhZWwuai53eXNvY2tpQGlu
-dGVsLmNvbT4KCj4gLS0tCj4gIGRyaXZlcnMvcGNpL3BjaS1kcml2ZXIuYyB8IDggKysrKysrLS0K
-PiAgZHJpdmVycy9wY2kvcGNpLmMgICAgICAgIHwgMiArLQo+ICBkcml2ZXJzL3BjaS9wY2kuaCAg
-ICAgICAgfCAxICsKPiAgMyBmaWxlcyBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDMgZGVsZXRp
-b25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvcGNpLWRyaXZlci5jIGIvZHJpdmVy
-cy9wY2kvcGNpLWRyaXZlci5jCj4gaW5kZXggM2JlZDZiZWRhMDUxLi41MWIxMWNiZDQ4ZjYgMTAw
-NjQ0Cj4gLS0tIGEvZHJpdmVycy9wY2kvcGNpLWRyaXZlci5jCj4gKysrIGIvZHJpdmVycy9wY2kv
-cGNpLWRyaXZlci5jCj4gQEAgLTEyNzcsMTAgKzEyNzcsMTQgQEAgc3RhdGljIGludCBwY2lfcG1f
-cnVudGltZV9yZXN1bWUoc3RydWN0IGRldmljZSAqZGV2KQo+Cj4gICAgICAgICAvKgo+ICAgICAg
-ICAgICogSWYgcGNpX2Rldi0+ZHJpdmVyIGlzIG5vdCBzZXQgKHVuYm91bmQpLCB0aGUgZGV2aWNl
-IHNob3VsZAo+IC0gICAgICAgICogYWx3YXlzIHJlbWFpbiBpbiBEMCByZWdhcmRsZXNzIG9mIHRo
-ZSBydW50aW1lIFBNIHN0YXR1cwo+ICsgICAgICAgICogYWx3YXlzIHJlbWFpbiBpbiBEMCByZWdh
-cmRsZXNzIG9mIHRoZSBydW50aW1lIFBNIHN0YXR1cy4KPiArICAgICAgICAqIEJ1dCBpZiBpdHMg
-cGFyZW50IGNhbiBnbyB0byBEM2NvbGQsIHRoaXMgZGV2aWNlIG1heSBoYXZlCj4gKyAgICAgICAg
-KiBiZWVuIGluIEQzY29sZCBhcyB3ZWxsIGFuZCByZXF1aXJlIHJlc3RvcmF0aW9uIG9mIGl0cyBC
-QVJzLgo+ICAgICAgICAgICovCj4gLSAgICAgICBpZiAoIXBjaV9kZXYtPmRyaXZlcikKPiArICAg
-ICAgIGlmICghcGNpX2Rldi0+ZHJpdmVyKSB7Cj4gKyAgICAgICAgICAgICAgIHBjaV9yZXN0b3Jl
-X2JhcnMocGNpX2Rldik7Cj4gICAgICAgICAgICAgICAgIHJldHVybiAwOwo+ICsgICAgICAgfQo+
-Cj4gICAgICAgICBpZiAoIXBtIHx8ICFwbS0+cnVudGltZV9yZXN1bWUpCj4gICAgICAgICAgICAg
-ICAgIHJldHVybiAtRU5PU1lTOwo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BjaS9wY2kuYyBiL2Ry
-aXZlcnMvcGNpL3BjaS5jCj4gaW5kZXggZjZhNGRkMTBkOWIwLi5mNjk0NjUwMjM1ZjIgMTAwNjQ0
-Cj4gLS0tIGEvZHJpdmVycy9wY2kvcGNpLmMKPiArKysgYi9kcml2ZXJzL3BjaS9wY2kuYwo+IEBA
-IC01NjMsNyArNTYzLDcgQEAgaW50IHBjaV93YWl0X2Zvcl9wZW5kaW5nKHN0cnVjdCBwY2lfZGV2
-ICpkZXYsIGludCBwb3MsIHUxNiBtYXNrKQo+ICAgKiBSZXN0b3JlIHRoZSBCQVIgdmFsdWVzIGZv
-ciBhIGdpdmVuIGRldmljZSwgc28gYXMgdG8gbWFrZSBpdAo+ICAgKiBhY2Nlc3NpYmxlIGJ5IGl0
-cyBkcml2ZXIuCj4gICAqLwo+IC1zdGF0aWMgdm9pZCBwY2lfcmVzdG9yZV9iYXJzKHN0cnVjdCBw
-Y2lfZGV2ICpkZXYpCj4gK3ZvaWQgcGNpX3Jlc3RvcmVfYmFycyhzdHJ1Y3QgcGNpX2RldiAqZGV2
-KQo+ICB7Cj4gICAgICAgICBpbnQgaTsKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BjaS9wY2ku
-aCBiL2RyaXZlcnMvcGNpL3BjaS5oCj4gaW5kZXggZmNkODE5MTFiMTI3Li4yOWRjMTViYmUzYmYg
-MTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9wY2kvcGNpLmgKPiArKysgYi9kcml2ZXJzL3BjaS9wY2ku
-aAo+IEBAIC04Myw2ICs4Myw3IEBAIHZvaWQgcGNpX2FsbG9jYXRlX2NhcF9zYXZlX2J1ZmZlcnMo
-c3RydWN0IHBjaV9kZXYgKmRldik7Cj4gIHZvaWQgcGNpX2ZyZWVfY2FwX3NhdmVfYnVmZmVycyhz
-dHJ1Y3QgcGNpX2RldiAqZGV2KTsKPiAgYm9vbCBwY2lfYnJpZGdlX2QzX3Bvc3NpYmxlKHN0cnVj
-dCBwY2lfZGV2ICpkZXYpOwo+ICB2b2lkIHBjaV9icmlkZ2VfZDNfdXBkYXRlKHN0cnVjdCBwY2lf
-ZGV2ICpkZXYpOwo+ICt2b2lkIHBjaV9yZXN0b3JlX2JhcnMoc3RydWN0IHBjaV9kZXYgKmRldik7
-Cj4KPiAgc3RhdGljIGlubGluZSB2b2lkIHBjaV93YWtldXBfZXZlbnQoc3RydWN0IHBjaV9kZXYg
-KmRldikKPiAgewo+IC0tCj4gMi4xNS4xCj4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KTm91dmVhdSBtYWlsaW5nIGxpc3QKTm91dmVhdUBsaXN0cy5mcmVl
-ZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9ub3V2ZWF1Cg==
+
+On 2/13/2018 10:28 PM, srinivas.kandagatla@linaro.org wrote:
+> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>
+> This patch adds support to Q6AFE (Audio Front End) module on Q6DSP.
+>
+> AFE module sits right at the other end of cpu where the codec/audio
+> devices are connected.
+>
+> AFE provides abstraced interfaces to both hardware and virtual devices.
+> Each AFE tx/rx port can be configured to connect to one of the hardware
+> devices like codec, hdmi, slimbus, i2s and so on. AFE services include
+> starting, stopping, and if needed, any configurations of the ports.
+>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>   include/dt-bindings/sound/qcom,q6afe.h |   9 +
+>   sound/soc/qcom/Kconfig                 |   5 +
+>   sound/soc/qcom/Makefile                |   5 +
+>   sound/soc/qcom/qdsp6/Makefile          |   1 +
+>   sound/soc/qcom/qdsp6/q6afe.c           | 520 +++++++++++++++++++++++++++++++++
+>   sound/soc/qcom/qdsp6/q6afe.h           |  37 +++
+>   6 files changed, 577 insertions(+)
+>   create mode 100644 include/dt-bindings/sound/qcom,q6afe.h
+>   create mode 100644 sound/soc/qcom/qdsp6/q6afe.c
+>   create mode 100644 sound/soc/qcom/qdsp6/q6afe.h
+>
+> diff --git a/include/dt-bindings/sound/qcom,q6afe.h b/include/dt-bindings/sound/qcom,q6afe.h
+> new file mode 100644
+> index 000000000000..b4d82cccdc86
+> --- /dev/null
+> +++ b/include/dt-bindings/sound/qcom,q6afe.h
+> @@ -0,0 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#ifndef __DT_BINDINGS_Q6_AFE_H__
+> +#define __DT_BINDINGS_Q6_AFE_H__
+> +
+> +/* Audio Front End (AFE) Ports */
+> +#define AFE_PORT_HDMI_RX	8
+> +
+> +#endif /* __DT_BINDINGS_Q6_AFE_H__ */
+> +
+> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+> index b01f347b427d..caeaf8b1b561 100644
+> --- a/sound/soc/qcom/Kconfig
+> +++ b/sound/soc/qcom/Kconfig
+> @@ -48,10 +48,15 @@ config SND_SOC_QDSP6_COMMON
+>   	tristate
+>   	default n
+>   
+> +config SND_SOC_QDSP6_AFE
+> +	tristate
+> +	default n
+> +
+>   config SND_SOC_QDSP6
+>   	tristate "SoC ALSA audio driver for QDSP6"
+>   	depends on QCOM_APR && HAS_DMA
+>   	select SND_SOC_QDSP6_COMMON
+> +	select SND_SOC_QDSP6_AFE
+>   	help
+>   	 To add support for MSM QDSP6 Soc Audio.
+>   	 This will enable sound soc platform specific
+> diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
+> index d5280355c24f..748f5e891dcf 100644
+> --- a/sound/soc/qcom/Makefile
+> +++ b/sound/soc/qcom/Makefile
+> @@ -13,6 +13,11 @@ obj-$(CONFIG_SND_SOC_LPASS_APQ8016) += snd-soc-lpass-apq8016.o
+>   # Machine
+>   snd-soc-storm-objs := storm.o
+>   snd-soc-apq8016-sbc-objs := apq8016_sbc.o
+> +snd-soc-msm8996-objs := apq8096.o
+>   
+This needs to be moved out of this patch
+>   obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
+>   obj-$(CONFIG_SND_SOC_APQ8016_SBC) += snd-soc-apq8016-sbc.o
+> +obj-$(CONFIG_SND_SOC_MSM8996) += snd-soc-msm8996.o
+> +
+> +#DSP lib
+> +obj-$(CONFIG_SND_SOC_QDSP6) += qdsp6/
+> diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
+> index accebdb49306..9ec951e0833b 100644
+> --- a/sound/soc/qcom/qdsp6/Makefile
+> +++ b/sound/soc/qcom/qdsp6/Makefile
+> @@ -1 +1,2 @@
+>   obj-$(CONFIG_SND_SOC_QDSP6_COMMON) += q6dsp-common.o
+> +obj-$(CONFIG_SND_SOC_QDSP6_AFE) += q6afe.o
+> diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+> new file mode 100644
+> index 000000000000..0a5af06bb50e
+> --- /dev/null
+> +++ b/sound/soc/qcom/qdsp6/q6afe.c
+> @@ -0,0 +1,520 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2011-2017, The Linux Foundation
+> + * Copyright (c) 2018, Linaro Limited
+> + */
+> +
+> +#include <linux/slab.h>
+> +#include <linux/kernel.h>
+> +#include <linux/uaccess.h>
+> +#include <linux/wait.h>
+> +#include <linux/jiffies.h>
+> +#include <linux/sched.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/delay.h>
+> +#include <linux/soc/qcom/apr.h>
+> +#include "q6dsp-errno.h"
+> +#include "q6afe.h"
+> +
+> +/* AFE CMDs */
+> +#define AFE_PORT_CMD_DEVICE_START	0x000100E5
+> +#define AFE_PORT_CMD_DEVICE_STOP	0x000100E6
+> +#define AFE_PORT_CMD_SET_PARAM_V2	0x000100EF
+> +#define AFE_PORT_CMDRSP_GET_PARAM_V2	0x00010106
+> +#define AFE_PARAM_ID_HDMI_CONFIG	0x00010210
+> +#define AFE_MODULE_AUDIO_DEV_INTERFACE	0x0001020C
+> +
+> +/* Port IDs */
+> +#define AFE_API_VERSION_HDMI_CONFIG	0x1
+> +#define AFE_PORT_ID_MULTICHAN_HDMI_RX	0x100E
+> +#define TIMEOUT_MS 1000
+> +#define AFE_CMD_RESP_AVAIL	0
+> +#define AFE_CMD_RESP_NONE	1
+> +
+> +struct q6afe {
+> +	struct apr_device *apr;
+> +	struct device *dev;
+> +	int state;
+> +	int status;
+> +
+> +	struct mutex lock;
+> +	struct list_head port_list;
+> +	spinlock_t port_list_lock;
+> +	struct list_head node;
+> +	void *dai_data;
+> +};
+> +
+> +struct afe_port_cmd_device_start {
+> +	struct apr_hdr hdr;
+> +	u16 port_id;
+> +	u16 reserved;
+> +} __packed;
+> +
+> +struct afe_port_cmd_device_stop {
+> +	struct apr_hdr hdr;
+> +	u16 port_id;
+> +	u16 reserved;
+> +/* Reserved for 32-bit alignment. This field must be set to 0.*/
+> +} __packed;
+> +
+> +struct afe_port_param_data_v2 {
+> +	u32 module_id;
+> +	u32 param_id;
+> +	u16 param_size;
+> +	u16 reserved;
+> +} __packed;
+> +
+> +struct afe_port_cmd_set_param_v2 {
+> +	u16 port_id;
+> +	u16 payload_size;
+> +	u32 payload_address_lsw;
+> +	u32 payload_address_msw;
+> +	u32 mem_map_handle;
+> +} __packed;
+> +
+> +struct afe_param_id_hdmi_multi_chan_audio_cfg {
+> +	u32 hdmi_cfg_minor_version;
+> +	u16 datatype;
+> +	u16 channel_allocation;
+> +	u32 sample_rate;
+> +	u16 bit_width;
+> +	u16 reserved;
+> +} __packed;
+> +
+> +union afe_port_config {
+> +	struct afe_param_id_hdmi_multi_chan_audio_cfg hdmi_multi_ch;
+> +} __packed;
+> +
+> +struct q6afe_port {
+> +	wait_queue_head_t wait;
+> +	union afe_port_config port_cfg;
+> +	int token;
+> +	int id;
+> +	int cfg_type;
+> +	struct q6afe *afe;
+> +	struct list_head	node;
+> +};
+> +
+> +struct afe_audioif_config_command {
+> +	struct apr_hdr hdr;
+> +	struct afe_port_cmd_set_param_v2 param;
+> +	struct afe_port_param_data_v2 pdata;
+> +	union afe_port_config port;
+> +} __packed;
+> +
+> +struct afe_port_map {
+> +	int port_id;
+> +	int token;
+> +	int is_rx;
+> +	int is_dig_pcm;
+> +};
+> +
+> +/* Port map of index vs real hw port ids */
+> +static struct afe_port_map port_maps[AFE_PORT_MAX] = {
+> +	[AFE_PORT_HDMI_RX] = { AFE_PORT_ID_MULTICHAN_HDMI_RX,
+> +				AFE_PORT_HDMI_RX, 1, 1},
+> +};
+> +
+> +static struct q6afe_port *afe_find_port(struct q6afe *afe, int token)
+> +{
+> +	struct q6afe_port *p = NULL;
+> +
+> +	spin_lock(&afe->port_list_lock);
+> +	list_for_each_entry(p, &afe->port_list, node)
+> +		if (p->token == token)
+> +			break;
+> +
+> +	spin_unlock(&afe->port_list_lock);
+> +	return p;
+> +}
+> +
+> +static int afe_callback(struct apr_device *adev,
+> +			struct apr_client_message *data)
+> +{
+> +	struct q6afe *afe = dev_get_drvdata(&adev->dev);
+> +	struct aprv2_ibasic_rsp_result_t *res;
+> +	struct q6afe_port *port;
+> +
+> +	if (!data->payload_size)
+> +		return 0;
+> +
+> +	res = data->payload;
+> +	if (data->opcode == APR_BASIC_RSP_RESULT) {
+> +		if (res->status) {
+> +			afe->status = res->status;
+> +			dev_err(afe->dev, "cmd = 0x%x returned error = 0x%x\n",
+> +				res->opcode, res->status);
+> +		}
+> +
+> +		switch (res->opcode) {
+> +		case AFE_PORT_CMD_SET_PARAM_V2:
+> +		case AFE_PORT_CMD_DEVICE_STOP:
+> +		case AFE_PORT_CMD_DEVICE_START:
+> +			afe->state = AFE_CMD_RESP_AVAIL;
+> +			port = afe_find_port(afe, data->token);
+> +			if (port)
+> +				wake_up(&port->wait);
+> +
+> +			break;
+> +		default:
+> +			dev_err(afe->dev, "Unknown cmd 0x%x\n",	res->opcode);
+> +			break;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +/**
+> + * q6afe_get_port_id() - Get port id from a given port index
+> + *
+> + * @index: port index
+> + *
+> + * Return: Will be an negative on error or valid port_id on success
+> + */
+> +int q6afe_get_port_id(int index)
+> +{
+> +	if (index < 0 || index > AFE_PORT_MAX)
+> +		return -EINVAL;
+> +
+> +	return port_maps[index].port_id;
+> +}
+> +EXPORT_SYMBOL_GPL(q6afe_get_port_id);
+> +
+> +static int afe_apr_send_pkt(struct q6afe *afe, void *data,
+> +			    wait_queue_head_t *wait)
+> +{
+> +	int ret;
+> +
+> +	mutex_lock(&afe->lock);
+> +	afe->status = 0;
+> +	afe->state = AFE_CMD_RESP_NONE;
+> +
+> +	ret = apr_send_pkt(afe->apr, data);
+> +	if (ret < 0) {
+> +		dev_err(afe->dev, "packet not transmitted\n");
+> +		ret = -EINVAL;
+> +		goto err;
+> +	}
+> +
+> +	ret = wait_event_timeout(*wait, (afe->state == AFE_CMD_RESP_AVAIL),
+> +				 msecs_to_jiffies(TIMEOUT_MS));
+> +	if (!ret) {
+> +		ret = -ETIMEDOUT;
+> +	} else if (afe->status > 0) {
+> +		dev_err(afe->dev, "DSP returned error[%s]\n",
+> +		       q6dsp_strerror(afe->status));
+> +		ret = q6dsp_errno(afe->status);
+> +	} else {
+> +		ret = 0;
+> +	}
+> +
+> +err:
+> +	mutex_unlock(&afe->lock);
+> +
+> +	return ret;
+> +}
+> +
+> +static int afe_send_cmd_port_start(struct q6afe_port *port)
+> +{
+> +	u16 port_id = port->id;
+> +	struct afe_port_cmd_device_start start;
+> +	struct q6afe *afe = port->afe;
+> +	int ret;
+> +
+> +	start.hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
+> +					    APR_HDR_LEN(APR_HDR_SIZE),
+> +					    APR_PKT_VER);
+> +	start.hdr.pkt_size = sizeof(start);
+> +	start.hdr.src_port = 0;
+> +	start.hdr.dest_port = 0;
+> +	start.hdr.token = port->token;
+> +	start.hdr.opcode = AFE_PORT_CMD_DEVICE_START;
+> +	start.port_id = port_id;
+> +
+> +	ret = afe_apr_send_pkt(afe, &start, &port->wait);
+> +	if (ret)
+> +		dev_err(afe->dev, "AFE enable for port 0x%x failed %d\n",
+> +		       port_id, ret);
+> +
+> +	return ret;
+> +}
+> +
+> +static int q6afe_port_set_param_v2(struct q6afe_port *port, void *data,
+> +				   int param_id, int psize)
+> +{
+> +	struct apr_hdr *hdr;
+> +	struct afe_port_cmd_set_param_v2 *param;
+> +	struct afe_port_param_data_v2 *pdata;
+> +	struct q6afe *afe = port->afe;
+> +	u16 port_id = port->id;
+> +	int ret;
+> +
+> +	hdr = data;
+> +	param = data + sizeof(*hdr);
+> +	pdata = data + sizeof(*hdr) + sizeof(*param);
+> +
+> +	hdr->hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
+> +					      APR_HDR_LEN(APR_HDR_SIZE),
+> +					      APR_PKT_VER);
+> +	hdr->pkt_size = sizeof(*hdr) + sizeof(*param) +
+> +			sizeof(*pdata) + psize;
+> +	hdr->src_port = 0;
+> +	hdr->dest_port = 0;
+> +	hdr->token = port->token;
+> +	hdr->opcode = AFE_PORT_CMD_SET_PARAM_V2;
+> +	param->port_id = port_id;
+> +	param->payload_size = sizeof(*pdata) + psize;
+> +	param->payload_address_lsw = 0x00;
+> +	param->payload_address_msw = 0x00;
+> +	param->mem_map_handle = 0x00;
+> +	pdata->module_id = AFE_MODULE_AUDIO_DEV_INTERFACE;
+> +	pdata->param_id = param_id;
+> +	pdata->param_size = psize;
+> +
+> +	ret = afe_apr_send_pkt(afe, data, &port->wait);
+> +	if (ret)
+> +		dev_err(afe->dev, "AFE enable for port 0x%x failed %d\n",
+> +		       port_id, ret);
+> +
+> +
+> +	return ret;
+> +}
+> +
+> +static int afe_port_start(struct q6afe_port *port,
+> +			  union afe_port_config *afe_config)
+> +{
+> +	struct afe_audioif_config_command config = {0,};
+> +	struct q6afe *afe = port->afe;
+> +	int port_id = port->id;
+> +	int ret, param_id = port->cfg_type;
+> +
+> +	config.port = *afe_config;
+> +
+> +	ret  = q6afe_port_set_param_v2(port, &config, param_id,
+> +				       sizeof(*afe_config));
+> +	if (ret) {
+> +		dev_err(afe->dev, "AFE enable for port 0x%x failed %d\n",
+> +			port_id, ret);
+> +		return ret;
+> +	}
+> +	return afe_send_cmd_port_start(port);
+> +}
+> +
+> +/**
+> + * q6afe_port_stop() - Stop a afe port
+> + *
+> + * @port: Instance of port to stop
+> + *
+> + * Return: Will be an negative on packet size on success.
+> + */
+> +int q6afe_port_stop(struct q6afe_port *port)
+> +{
+> +	int port_id = port->id;
+> +	struct afe_port_cmd_device_stop stop;
+> +	struct q6afe *afe = port->afe;
+> +	int ret = 0;
+> +	int index = 0;
+> +
+> +	port_id = port->id;
+> +	index = port->token;
+> +	if (index < 0 || index > AFE_PORT_MAX) {
+> +		dev_err(afe->dev, "AFE port index[%d] invalid!\n", index);
+> +		return -EINVAL;
+> +	}
+> +
+> +	stop.hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
+> +					   APR_HDR_LEN(APR_HDR_SIZE),
+> +					   APR_PKT_VER);
+> +	stop.hdr.pkt_size = sizeof(stop);
+> +	stop.hdr.src_port = 0;
+> +	stop.hdr.dest_port = 0;
+> +	stop.hdr.token = index;
+> +	stop.hdr.opcode = AFE_PORT_CMD_DEVICE_STOP;
+> +	stop.port_id = port_id;
+> +	stop.reserved = 0;
+> +
+> +	ret = afe_apr_send_pkt(afe, &stop, &port->wait);
+> +	if (ret)
+> +		dev_err(afe->dev, "AFE close failed %d\n", ret);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(q6afe_port_stop);
+> +
+> +/**
+> + * q6afe_set_dai_data() - set dai private data
+> + *
+> + * @dev: Pointer to afe device.
+> + * @data: dai private data
+> + *
+> + */
+> +void q6afe_set_dai_data(struct device *dev, void *data)
+> +{
+> +	struct q6afe *afe = dev_get_drvdata(dev);
+> +
+> +	afe->dai_data = data;
+> +}
+> +EXPORT_SYMBOL_GPL(q6afe_set_dai_data);
+> +
+> +/**
+> + * q6afe_get_dai_data() - get dai private data
+> + *
+> + * @dev: Pointer to afe device.
+> + *
+> + * Return: pointer to dai private data
+> + */
+> +void *q6afe_get_dai_data(struct device *dev)
+> +{
+> +	struct q6afe *afe = dev_get_drvdata(dev);
+> +
+> +	return afe->dai_data;
+> +}
+> +EXPORT_SYMBOL_GPL(q6afe_get_dai_data);
+> +
+> +/**
+> + * q6afe_hdmi_port_prepare() - Prepare hdmi afe port.
+> + *
+> + * @port: Instance of afe port
+> + * @cfg: HDMI configuration for the afe port
+> + *
+> + */
+> +void q6afe_hdmi_port_prepare(struct q6afe_port *port,
+> +			     struct q6afe_hdmi_cfg *cfg)
+> +{
+> +	union afe_port_config *pcfg = &port->port_cfg;
+> +
+> +	pcfg->hdmi_multi_ch.hdmi_cfg_minor_version =
+> +					AFE_API_VERSION_HDMI_CONFIG;
+> +	pcfg->hdmi_multi_ch.datatype = cfg->datatype;
+> +	pcfg->hdmi_multi_ch.channel_allocation = cfg->channel_allocation;
+> +	pcfg->hdmi_multi_ch.sample_rate = cfg->sample_rate;
+> +	pcfg->hdmi_multi_ch.bit_width = cfg->bit_width;
+> +}
+> +EXPORT_SYMBOL_GPL(q6afe_hdmi_port_prepare);
+> +
+> +/**
+> + * q6afe_port_start() - Start a afe port
+> + *
+> + * @port: Instance of port to start
+> + *
+> + * Return: Will be an negative on packet size on success.
+> + */
+> +int q6afe_port_start(struct q6afe_port *port)
+> +{
+> +	return afe_port_start(port, &port->port_cfg);
+> +}
+> +EXPORT_SYMBOL_GPL(q6afe_port_start);
+> +
+> +/**
+> + * q6afe_port_get_from_id() - Get port instance from a port id
+> + *
+> + * @dev: Pointer to afe child device.
+> + * @id: port id
+> + *
+> + * Return: Will be an error pointer on error or a valid afe port
+> + * on success.
+> + */
+> +struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
+> +{
+> +	int port_id;
+> +	struct q6afe *afe = dev_get_drvdata(dev);
+> +	struct q6afe_port *port;
+> +	int cfg_type;
+> +
+> +	if (id < 0 || id > AFE_PORT_MAX) {
+> +		dev_err(dev, "AFE port token[%d] invalid!\n", id);
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	port_id = port_maps[id].port_id;
+> +
+> +	switch (port_id) {
+> +	case AFE_PORT_ID_MULTICHAN_HDMI_RX:
+> +		cfg_type = AFE_PARAM_ID_HDMI_CONFIG;
+> +		break;
+> +	default:
+> +		dev_err(dev, "Invalid port id 0x%x\n", port_id);
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	port = devm_kzalloc(dev, sizeof(*port), GFP_KERNEL);
+> +	if (!port)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	init_waitqueue_head(&port->wait);
+> +
+> +	port->token = id;
+> +	port->id = port_id;
+> +	port->afe = afe;
+> +	port->cfg_type = cfg_type;
+> +
+> +	spin_lock(&afe->port_list_lock);
+> +	list_add_tail(&port->node, &afe->port_list);
+> +	spin_unlock(&afe->port_list_lock);
+> +
+> +	return port;
+> +
+> +}
+> +EXPORT_SYMBOL_GPL(q6afe_port_get_from_id);
+> +
+> +/**
+> + * q6afe_port_put() - Release port reference
+> + *
+> + * @port: Instance of port to put
+> + */
+> +void q6afe_port_put(struct q6afe_port *port)
+> +{
+> +	struct q6afe *afe = port->afe;
+> +
+> +	spin_lock(&afe->port_list_lock);
+> +	list_del(&port->node);
+> +	spin_unlock(&afe->port_list_lock);
+> +}
+> +EXPORT_SYMBOL_GPL(q6afe_port_put);
+> +
+> +static int q6afev2_probe(struct apr_device *adev)
+> +{
+> +	struct q6afe *afe;
+> +	struct device *dev = &adev->dev;
+> +
+> +	afe = devm_kzalloc(dev, sizeof(*afe), GFP_KERNEL);
+> +	if (!afe)
+> +		return -ENOMEM;
+> +
+> +	afe->apr = adev;
+> +	mutex_init(&afe->lock);
+> +	afe->dev = dev;
+> +	INIT_LIST_HEAD(&afe->port_list);
+> +	spin_lock_init(&afe->port_list_lock);
+> +
+> +	dev_set_drvdata(dev, afe);
+> +
+> +	return q6afe_dai_dev_probe(dev);
+> +}
+> +
+> +static int q6afev2_remove(struct apr_device *adev)
+> +{
+> +	return q6afe_dai_dev_remove(&adev->dev);
+> +}
+> +
+> +static const struct of_device_id q6afe_device_id[]  = {
+> +	{ .compatible = "qcom,q6afe" },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, q6afe_device_id);
+> +
+> +static struct apr_driver qcom_q6afe_driver = {
+> +	.probe = q6afev2_probe,
+> +	.remove = q6afev2_remove,
+> +	.callback = afe_callback,
+> +	.driver = {
+> +		.name = "qcom-q6afe",
+> +		.of_match_table = of_match_ptr(q6afe_device_id),
+> +
+> +	},
+> +};
+> +
+> +module_apr_driver(qcom_q6afe_driver);
+> +MODULE_DESCRIPTION("Q6 Audio Front End");
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/sound/soc/qcom/qdsp6/q6afe.h b/sound/soc/qcom/qdsp6/q6afe.h
+> new file mode 100644
+> index 000000000000..43df524f01bb
+> --- /dev/null
+> +++ b/sound/soc/qcom/qdsp6/q6afe.h
+> @@ -0,0 +1,37 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#ifndef __Q6AFE_H__
+> +#define __Q6AFE_H__
+> +
+> +#include <dt-bindings/sound/qcom,q6afe.h>
+> +
+> +#define AFE_PORT_MAX		9
+> +
+> +#define MSM_AFE_PORT_TYPE_RX 0
+> +#define MSM_AFE_PORT_TYPE_TX 1
+> +#define AFE_MAX_PORTS AFE_PORT_MAX
+> +
+> +struct q6afe_hdmi_cfg {
+> +	u16                  datatype;
+> +	u16                  channel_allocation;
+> +	u32                  sample_rate;
+> +	u16                  bit_width;
+> +};
+> +
+> +struct q6afe_port_config {
+> +	struct q6afe_hdmi_cfg hdmi;
+> +};
+> +
+> +struct q6afe_port;
+> +void q6afe_set_dai_data(struct device *dev, void *data);
+> +void *q6afe_get_dai_data(struct device *dev);
+> +
+> +struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id);
+> +int q6afe_port_start(struct q6afe_port *port);
+> +int q6afe_port_stop(struct q6afe_port *port);
+> +void q6afe_port_put(struct q6afe_port *port);
+> +int q6afe_get_port_id(int index);
+> +void q6afe_hdmi_port_prepare(struct q6afe_port *port,
+> +			    struct q6afe_hdmi_cfg *cfg);
+> +
+> +#endif /* __Q6AFE_H__ */
