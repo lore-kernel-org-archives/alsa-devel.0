@@ -1,17 +1,18 @@
 From: Kirill Marinushkin <k.marinushkin@gmail.com>
-Subject: [PATCH] ASoC: Intel: Skylake: Fix compiler warning
-	-Wmaybe-uninitialized
-Date: Mon, 19 Feb 2018 07:02:29 +0100
-Message-ID: <20180219060229.17215-1-k.marinushkin@gmail.com>
+Subject: [PATCH 1/2] ASoC: topology: Rename clock_gated to
+	clock_cont in snd_soc_tplg_hw_config
+Date: Mon, 19 Feb 2018 07:05:30 +0100
+Message-ID: <20180219060531.17276-1-k.marinushkin@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id BA9E1266C0E
- for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 07:04:43 +0100 (CET)
-Received: by mail-wm0-f65.google.com with SMTP id t74so12910246wme.3
- for <alsa-devel@alsa-project.org>; Sun, 18 Feb 2018 22:04:43 -0800 (PST)
+Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
+ [209.85.128.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A8D2266E7D
+ for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 07:05:51 +0100 (CET)
+Received: by mail-wr0-f193.google.com with SMTP id l43so8421451wrc.2
+ for <alsa-devel@alsa-project.org>; Sun, 18 Feb 2018 22:05:51 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,51 +23,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: linux-kernel@vger.kernel.org
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Harsha Priya N <harshapriya.n@intel.com>, Mark Brown <broonie@kernel.org>, Naveen Manohar <naveen.m@intel.com>, Kirill Marinushkin <k.marinushkin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Kirill Marinushkin <k.marinushkin@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Configuration:
+In kernel `soc-dai.h`, DAI clock gating is defined as following:
 
-SND_SOC_INTEL_SKYLAKE=y
-PM_SLEEP=y
+~~~~
+\#define SND_SOC_DAIFMT_CONT		(1 << 4) /* continuous clock */
+\#define SND_SOC_DAIFMT_GATED		(0 << 4) /* clock is gated */
+~~~~
 
-Warning message:
+Therefore, the corresponding field of struct snd_soc_tplg_hw_config should
+be inverted compared to the current logic:
 
-sound/soc/intel/skylake/skl.c: In function 'skl_resume':
-sound/soc/intel/skylake/skl.c:326:6: warning: 'ret' may be used
-uninitialized in this function [-Wmaybe-uninitialized]
-  int ret;
-      ^~~
+clock_count = 1 => SND_SOC_DAIFMT_CONT
+clock_count = 0 => SND_SOC_DAIFMT_GATED
 
-Fixes: 4557c305d4fc ("ASoC: Intel: Skylake: Add support for active suspend")
 Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
 Cc: Jaroslav Kysela <perex@perex.cz>
 Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Vinod Koul <vinod.koul@intel.com>
-Cc: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Cc: Naveen Manohar <naveen.m@intel.com>
-Cc: Harsha Priya N <harshapriya.n@intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org
 ---
- sound/soc/intel/skylake/skl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/uapi/sound/asoc.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 31d8634e8aa1..273a9ab75489 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -323,7 +323,7 @@ static int skl_resume(struct device *dev)
- 	struct skl *skl  = ebus_to_skl(ebus);
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
- 	struct hdac_ext_link *hlink = NULL;
--	int ret;
-+	int ret = 0;
- 
- 	/* Turned OFF in HDMI codec driver after codec reconfiguration */
- 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index 69c37ecbff7e..10188850dede 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -312,7 +312,9 @@ struct snd_soc_tplg_hw_config {
+ 	__le32 size;            /* in bytes of this structure */
+ 	__le32 id;		/* unique ID - - used to match */
+ 	__le32 fmt;		/* SND_SOC_DAI_FORMAT_ format value */
+-	__u8 clock_gated;	/* 1 if clock can be gated to save power */
++	__u8 clock_cont;	/* 1 if clock is continuous, and can not be
++				 * gated to save power
++				 */
+ 	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
+ 	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
+ 	__u8 bclk_master;	/* 1 for master of BCLK, 0 for slave */
 -- 
 2.13.6
