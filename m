@@ -1,37 +1,68 @@
-From: Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
-Subject: [PATCH 0/2] Fix coding style issues in AK4458 DAC
-Date: Tue, 20 Feb 2018 10:56:06 +0200
-Message-ID: <1519116968-31759-1-git-send-email-cosmin.samoila@nxp.com>
+From: Masami Hiramatsu <masami.hiramatsu@linaro.org>
+Subject: Re: [PATCH] ASoC: uniphier: evea: fix typo 'eva' -> 'evea'
+Date: Tue, 20 Feb 2018 19:21:43 +0900
+Message-ID: <CAA93ih00RV2rhfMyLupxe+-3xvkLyA-TgpzybPKm4E0FqTJKOg@mail.gmail.com>
+References: <20180220095310.13464-1-suzuki.katsuhiro@socionext.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM01-BY2-obe.outbound.protection.outlook.com
- (mail-by2nam01on0065.outbound.protection.outlook.com [104.47.34.65])
- by alsa0.perex.cz (Postfix) with ESMTP id A5238267505
- for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 10:55:46 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
-Cc: shengjiu.wang@nxp.com, linux-kernel@vger.kernel.org, wakasugi.jb@om.asahi-kasei.co.jp, linux-imx@nxp.com, Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>, daniel.baluta@nxp.com, mihai.serban@gmail.com
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20180220095310.13464-1-suzuki.katsuhiro@socionext.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Cc: Jassi Brar <jaswinder.singh@linaro.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Linux kernel mailing list <linux-kernel@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Modify SPDX license comment style and sort headers alphabetically.
+2018-02-20 18:53 GMT+09:00 Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>:
 
-Cosmin-Gabriel Samoila (2):
-  ASoC: ak4458: Modify SPDX license format
-  ASoC: ak4458: Sort headers alphabetically
+Looks good to me:)
 
- sound/soc/codecs/ak4458.c | 23 +++++++++++------------
- sound/soc/codecs/ak4458.h |  2 +-
- 2 files changed, 12 insertions(+), 13 deletions(-)
+Reviewed-by: Masami Hiramatsu <masami.hiramatsu@linaro.org>
+
+Thanks,
+
+> Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+> ---
+>  sound/soc/uniphier/evea.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/sound/soc/uniphier/evea.c b/sound/soc/uniphier/evea.c
+> index cad7e60de21d..ac2d30b55fb6 100644
+> --- a/sound/soc/uniphier/evea.c
+> +++ b/sound/soc/uniphier/evea.c
+> @@ -292,7 +292,7 @@ static int evea_set_switch_hp(struct snd_kcontrol *kcontrol,
+>         return evea_update_switch_hp(evea);
+>  }
+>
+> -static const struct snd_kcontrol_new eva_controls[] = {
+> +static const struct snd_kcontrol_new evea_controls[] = {
+>         SOC_SINGLE_BOOL_EXT("Line Capture Switch", 0,
+>                             evea_get_switch_lin, evea_set_switch_lin),
+>         SOC_SINGLE_BOOL_EXT("Line Playback Switch", 0,
+> @@ -384,8 +384,8 @@ static struct snd_soc_component_driver soc_codec_evea = {
+>         .num_dapm_widgets       = ARRAY_SIZE(evea_widgets),
+>         .dapm_routes            = evea_routes,
+>         .num_dapm_routes        = ARRAY_SIZE(evea_routes),
+> -       .controls               = eva_controls,
+> -       .num_controls           = ARRAY_SIZE(eva_controls),
+> +       .controls               = evea_controls,
+> +       .num_controls           = ARRAY_SIZE(evea_controls),
+>         .idle_bias_on           = 1,
+>         .use_pmdown_time        = 1,
+>         .endianness             = 1,
+> --
+> 2.16.1
+>
+
+
 
 -- 
-2.7.4
+Masami Hiramatsu
