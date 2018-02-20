@@ -1,22 +1,22 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v3 02/25] soc: qcom: add support to APR bus
-	driver
-Date: Tue, 20 Feb 2018 09:33:39 +0000
-Message-ID: <6be00df2-de80-0d40-9603-8b0fd94efa41@linaro.org>
+Subject: Re: [PATCH v3 05/25] ASoC: qcom: qdsp6: Add support to
+ Q6AFE
+Date: Tue, 20 Feb 2018 09:34:39 +0000
+Message-ID: <2360f3a9-f207-bc84-b0da-2675b7c9f0e0@linaro.org>
 References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
- <20180213165837.1620-3-srinivas.kandagatla@linaro.org>
- <20180219030819.qovj4swuvged6c24@rob-hp-laptop>
+ <20180213165837.1620-6-srinivas.kandagatla@linaro.org>
+ <2465335e-4d45-02d7-2e64-0a1c28a44ff1@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f194.google.com (mail-wr0-f194.google.com
- [209.85.128.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A7E9267096
- for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 10:33:41 +0100 (CET)
-Received: by mail-wr0-f194.google.com with SMTP id v65so12316283wrc.11
- for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 01:33:41 -0800 (PST)
-In-Reply-To: <20180219030819.qovj4swuvged6c24@rob-hp-laptop>
+Received: from mail-wr0-f173.google.com (mail-wr0-f173.google.com
+ [209.85.128.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id EE095267096
+ for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 10:34:41 +0100 (CET)
+Received: by mail-wr0-f173.google.com with SMTP id v65so12324603wrc.11
+ for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 01:34:41 -0800 (PST)
+In-Reply-To: <2465335e-4d45-02d7-2e64-0a1c28a44ff1@codeaurora.org>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,46 +27,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, andy.gross@linaro.org, linux-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Rohit Kumar <rohitkr@codeaurora.org>, andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, lgirdwood@gmail.com, plai@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, david.brown@linaro.org, robh+dt@kernel.org, spatakok@qti.qualcomm.com, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for review comments,
+Thanks for your review comments
 
-On 19/02/18 03:08, Rob Herring wrote:
-> On Tue, Feb 13, 2018 at 04:58:14PM +0000,srinivas.kandagatla@linaro.org  wrote:
->> From: Srinivas Kandagatla<srinivas.kandagatla@linaro.org>
->>
->> This patch adds support toi APR bus (Asynchronous Packet Router) driver.
->> ARP driver is made as a bus driver so that the apr devices can added removed
->> more dynamically depending on the state of the services on the dsp.
->> APR is used for communication between application processor and QDSP to
->> use services on QDSP like Audio and others.
->>
->> Signed-off-by: Srinivas Kandagatla<srinivas.kandagatla@linaro.org>
->> ---
->>   drivers/soc/qcom/Kconfig           |   9 +
->>   drivers/soc/qcom/Makefile          |   1 +
->>   drivers/soc/qcom/apr.c             | 381 +++++++++++++++++++++++++++++++++++++
->>   include/dt-bindings/soc/qcom,apr.h |  27 +++
-> This belongs in the binding patch.
-> 
-I agree, will fix it in next version.
->>   include/linux/mod_devicetable.h    |  11 ++
->>   include/linux/soc/qcom/apr.h       | 131 +++++++++++++
->>   6 files changed, 560 insertions(+)
->>   create mode 100644 drivers/soc/qcom/apr.c
->>   create mode 100644 include/dt-bindings/soc/qcom,apr.h
->>   create mode 100644 include/linux/soc/qcom/apr.h
-> 
->> diff --git a/include/dt-bindings/soc/qcom,apr.h b/include/dt-bindings/soc/qcom,apr.h
->> new file mode 100644
->> index 000000000000..fb162ac4ca0e
->> --- /dev/null
->> +++ b/include/dt-bindings/soc/qcom,apr.h
->> @@ -0,0 +1,27 @@
-> SPDX tag
 
-Thanks for reminding this.. Will fix it in next spin.
 
-> 
+On 19/02/18 10:30, Rohit Kumar wrote:
+>> diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
+>> index d5280355c24f..748f5e891dcf 100644
+>> --- a/sound/soc/qcom/Makefile
+>> +++ b/sound/soc/qcom/Makefile
+>> @@ -13,6 +13,11 @@ obj-$(CONFIG_SND_SOC_LPASS_APQ8016) += 
+>> snd-soc-lpass-apq8016.o
+>>   # Machine
+>>   snd-soc-storm-objs := storm.o
+>>   snd-soc-apq8016-sbc-objs := apq8016_sbc.o
+>> +snd-soc-msm8996-objs := apq8096.o
+> This needs to be moved out of this patch
+
+Will fix it in next version.
+
+>>   obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
+>>   obj-$(CONFIG_SND_SOC_APQ8016_SBC) += snd-soc-apq8016-sbc.o
+>> +obj-$(CONFIG_SND_SOC_MSM8996) += snd-soc-msm8996.o
+>> +
+>> +#DSP lib 
