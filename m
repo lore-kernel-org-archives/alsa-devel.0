@@ -1,20 +1,22 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: ASoC: Failed to create component debugfs directory
-Date: Tue, 20 Feb 2018 13:40:53 -0300
-Message-ID: <CAOMZO5DVkrj3t63f5mkdotRCGsSoADdEH_pdmACwx_1K-vYPoQ@mail.gmail.com>
-References: <CAOMZO5D071pPr4fL7eLwWgX6h8Mppwic2u4mUCGzUZiss-+3MQ@mail.gmail.com>
- <CAOMZO5C3joR2QS+yFDmQUs1Q69PfuVw8tBMNd+F+cjDnUMEPSQ@mail.gmail.com>
+From: Kirill Marinushkin <k.marinushkin@gmail.com>
+Subject: Re: Applied "ASoC: topology: Add missing clock gating
+ parameter when parsing hw_configs" to the asoc tree
+Date: Tue, 20 Feb 2018 17:56:18 +0100
+Message-ID: <3036a35d-ab93-c7aa-edf7-5872faeacfe7@gmail.com>
+References: <20180219203636.3692-2-k.marinushkin@gmail.com>
+ <E1eo6jW-00039l-Ts@debutante> <20180220134527.GF6378@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f173.google.com (mail-ot0-f173.google.com
- [74.125.82.173])
- by alsa0.perex.cz (Postfix) with ESMTP id BE622266F0D
- for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 17:40:58 +0100 (CET)
-Received: by mail-ot0-f173.google.com with SMTP id 95so10446726ote.5
- for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 08:40:58 -0800 (PST)
-In-Reply-To: <CAOMZO5C3joR2QS+yFDmQUs1Q69PfuVw8tBMNd+F+cjDnUMEPSQ@mail.gmail.com>
+Received: from mail-wr0-f195.google.com (mail-wr0-f195.google.com
+ [209.85.128.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3F8FC267502
+ for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 17:56:08 +0100 (CET)
+Received: by mail-wr0-f195.google.com with SMTP id k9so16337907wre.9
+ for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 08:56:08 -0800 (PST)
+In-Reply-To: <20180220134527.GF6378@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,28 +27,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 20, 2018 at 11:18 AM, Fabio Estevam <festevam@gmail.com> wrote:
+On 02/20/18 14:45, Mark Brown wrote:
+> On Tue, Feb 20, 2018 at 12:09:18PM +0000, Mark Brown wrote:
+>> The patch
+>>
+>>    ASoC: topology: Add missing clock gating parameter when parsing hw_configs
+>>
+>> has been applied to the asoc tree at
+>>
+>>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> This broke the build so I dropped it.
 
-> Any ideas why this second debugfs registration is being attempted?
+This patch is part 2 of 2. I failed to send both of them as a single patch series.
+I will resend them properly in a new thread.
 
-The change below avoids the double component debugfs registration:
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 3987673..270109c 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -329,6 +329,8 @@ static void soc_init_component_debugfs(struct
-snd_soc_component *component)
-
-        if (component->init_debugfs)
-                component->init_debugfs(component);
-+
-+       component->card->debugfs_card_root = NULL;
- }
-
- static void soc_cleanup_component_debugfs(struct snd_soc_component *component)
-
-Not sure what a proper fix would be.
+Best Regards,
+Kirill
