@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: uniphier: evea: fix typo 'eva' ->
-	'evea'" to the asoc tree
-Date: Tue, 20 Feb 2018 12:09:37 +0000
-Message-ID: <E1eo6jp-0003Aq-Hk@debutante>
-References: <20180220095310.13464-1-suzuki.katsuhiro@socionext.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: hdmi-codec: Fix module unloading caused
+	kernel crash
+Date: Tue, 20 Feb 2018 14:30:10 +0200
+Message-ID: <20180220123010.5373-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0BC68267546
- for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 13:09:52 +0100 (CET)
-In-Reply-To: <20180220095310.13464-1-suzuki.katsuhiro@socionext.com>
+Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id E1530266F0D
+ for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 13:29:35 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,72 +19,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Cc: alsa-devel@alsa-project.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.org, Jassi Brar <jaswinder.singh@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, arnaud.pouliquen@st.com, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+The hcp->chmap_info must not be freed up in the hdmi_codec_remove()
+function as it leads to kernel crash due ALSA core's
+pcm_chmap_ctl_private_free() is trying to free it up again when the card
+destroyed via snd_card_free.
 
-   ASoC: uniphier: evea: fix typo 'eva' -> 'evea'
+Since the driver was converted to devm_snd_soc_register_component() the
+whole platform_device.remove can be removed.
 
-has been applied to the asoc tree at
+Commit cd6111b26280a ("ASoC: hdmi-codec: add channel mapping control")
+should not have added the kfree(hcp->chmap_info); to the hdmi_codec_remove
+function.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 09ad28a31c27df439e838ee5700d4e2dfea0e462 Mon Sep 17 00:00:00 2001
-From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Date: Tue, 20 Feb 2018 18:53:10 +0900
-Subject: [PATCH] ASoC: uniphier: evea: fix typo 'eva' -> 'evea'
-
-Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Reviewed-by: Masami Hiramatsu <masami.hiramatsu@linaro.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/uniphier/evea.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/hdmi-codec.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-diff --git a/sound/soc/uniphier/evea.c b/sound/soc/uniphier/evea.c
-index cad7e60de21d..ac2d30b55fb6 100644
---- a/sound/soc/uniphier/evea.c
-+++ b/sound/soc/uniphier/evea.c
-@@ -292,7 +292,7 @@ static int evea_set_switch_hp(struct snd_kcontrol *kcontrol,
- 	return evea_update_switch_hp(evea);
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 42df579cb507..6fa11888672d 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -798,23 +798,11 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 	return 0;
  }
  
--static const struct snd_kcontrol_new eva_controls[] = {
-+static const struct snd_kcontrol_new evea_controls[] = {
- 	SOC_SINGLE_BOOL_EXT("Line Capture Switch", 0,
- 			    evea_get_switch_lin, evea_set_switch_lin),
- 	SOC_SINGLE_BOOL_EXT("Line Playback Switch", 0,
-@@ -384,8 +384,8 @@ static struct snd_soc_component_driver soc_codec_evea = {
- 	.num_dapm_widgets	= ARRAY_SIZE(evea_widgets),
- 	.dapm_routes		= evea_routes,
- 	.num_dapm_routes	= ARRAY_SIZE(evea_routes),
--	.controls		= eva_controls,
--	.num_controls		= ARRAY_SIZE(eva_controls),
-+	.controls		= evea_controls,
-+	.num_controls		= ARRAY_SIZE(evea_controls),
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
+-static int hdmi_codec_remove(struct platform_device *pdev)
+-{
+-	struct device *dev = &pdev->dev;
+-	struct hdmi_codec_priv *hcp;
+-
+-	hcp = dev_get_drvdata(dev);
+-	kfree(hcp->chmap_info);
+-
+-	return 0;
+-}
+-
+ static struct platform_driver hdmi_codec_driver = {
+ 	.driver = {
+ 		.name = HDMI_CODEC_DRV_NAME,
+ 	},
+ 	.probe = hdmi_codec_probe,
+-	.remove = hdmi_codec_remove,
+ };
+ 
+ module_platform_driver(hdmi_codec_driver);
 -- 
-2.16.1
+Peter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
