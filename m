@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak4458: Modify SPDX license format" to
-	the asoc tree
-Date: Tue, 20 Feb 2018 12:09:15 +0000
-Message-ID: <E1eo6jT-00038Y-30@debutante>
-References: <1519116968-31759-2-git-send-email-cosmin.samoila@nxp.com>
+Subject: Applied "ASoC: topology: Add missing clock gating
+	parameter when parsing hw_configs" to the asoc tree
+Date: Tue, 20 Feb 2018 12:09:18 +0000
+Message-ID: <E1eo6jW-00039l-Ts@debutante>
+References: <20180219203636.3692-2-k.marinushkin@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C0EE267538
- for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 13:09:19 +0100 (CET)
-In-Reply-To: <1519116968-31759-2-git-send-email-cosmin.samoila@nxp.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B8B9426755C
+ for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 13:09:30 +0100 (CET)
+In-Reply-To: <20180219203636.3692-2-k.marinushkin@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, shengjiu.wang@nxp.com, linux-kernel@vger.kernel.org, wakasugi.jb@om.asahi-kasei.co.jp, broonie@kernel.org, linux-imx@nxp.com, daniel.baluta@nxp.com, mihai.serban@gmail.com
+To: Kirill Marinushkin <k.marinushkin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak4458: Modify SPDX license format
+   ASoC: topology: Add missing clock gating parameter when parsing hw_configs
 
 has been applied to the asoc tree at
 
@@ -53,57 +53,75 @@ to this mail.
 Thanks,
 Mark
 
->From 05aa6165cfdb796916197da6b8ef93b22a62e3a9 Mon Sep 17 00:00:00 2001
-From: Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
-Date: Tue, 20 Feb 2018 10:56:07 +0200
-Subject: [PATCH] ASoC: ak4458: Modify SPDX license format
+>From bdb86c40e8c5d2abe2ec7be964d621c1b7c27081 Mon Sep 17 00:00:00 2001
+From: Kirill Marinushkin <k.marinushkin@gmail.com>
+Date: Mon, 19 Feb 2018 21:36:35 +0100
+Subject: [PATCH] ASoC: topology: Add missing clock gating parameter when
+ parsing hw_configs
 
-Modify SPDX comment style to match the rules. Since the original
-code had a GPL-2.0 license and SPDX is compatible with GPL-2.0+,
-we also modified the MODULE_LICENSE.
+Clock gating parameter is a part of `dai_fmt`. It is supported by
+`alsa-lib` when creating a topology binary file, but ignored by kernel
+when loading this topology file.
 
-Signed-off-by: Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
+After applying this commit, the clock gating parameter is not ignored any
+more. The old behaviour is not broken, as by default the parameter value
+is 0.
+
+For example, the following config, based on
+alsa-lib/src/conf/topology/broadwell/broadwell.conf, is now supported:
+
+~~~~
+SectionHWConfig."CodecHWConfig" {
+        id "1"
+        format "I2S"            # physical audio format.
+        bclk   "master"         # Platform is master of bit clock
+        fsync  "master"         # platform is master of fsync
+        pm_gate_clocks "true"   # clock can be gated
+}
+
+SectionLink."Codec" {
+
+        # used for binding to the physical link
+        id "0"
+
+        hw_configs [
+                "CodecHWConfig"
+        ]
+
+        default_hw_conf_id "1"
+}
+~~~~
+
+Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
+Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4458.c | 13 ++++++-------
- sound/soc/codecs/ak4458.h |  2 +-
- 2 files changed, 7 insertions(+), 8 deletions(-)
+ sound/soc/soc-topology.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
-index d2815ac9cffa..8a49dd24e6b7 100644
---- a/sound/soc/codecs/ak4458.c
-+++ b/sound/soc/codecs/ak4458.c
-@@ -1,10 +1,9 @@
- // SPDX-License-Identifier: GPL-2.0
--/*
-- * Audio driver for AK4458 DAC
-- *
-- * Copyright (C) 2016 Asahi Kasei Microdevices Corporation
-- * Copyright 2018 NXP
-- */
-+//
-+// Audio driver for AK4458 DAC
-+//
-+// Copyright (C) 2016 Asahi Kasei Microdevices Corporation
-+// Copyright 2018 NXP
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 01a50413c66f..bac70676a6b4 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1981,6 +1981,13 @@ static void set_link_hw_format(struct snd_soc_dai_link *link,
  
- #include <linux/module.h>
- #include <linux/delay.h>
-@@ -655,4 +654,4 @@ module_i2c_driver(ak4458_i2c_driver);
- MODULE_AUTHOR("Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>");
- MODULE_AUTHOR("Mihai Serban <mihai.serban@nxp.com>");
- MODULE_DESCRIPTION("ASoC AK4458 DAC driver");
--MODULE_LICENSE("GPL");
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/codecs/ak4458.h b/sound/soc/codecs/ak4458.h
-index 16d9d22a413a..f906215f7e4e 100644
---- a/sound/soc/codecs/ak4458.h
-+++ b/sound/soc/codecs/ak4458.h
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: GPL-2.0
-+/* SPDX-License-Identifier: GPL-2.0 */
- /*
-  * Audio driver for AK4458
-  *
+ 		link->dai_fmt = hw_config->fmt & SND_SOC_DAIFMT_FORMAT_MASK;
+ 
++		/* clock gating */
++		if (hw_config->clock_gated == SND_SOC_TPLG_DAI_CLK_GATE_GATED)
++			link->dai_fmt |= SND_SOC_DAIFMT_GATED;
++		else if (hw_config->clock_gated ==
++			 SND_SOC_TPLG_DAI_CLK_GATE_CONT)
++			link->dai_fmt |= SND_SOC_DAIFMT_CONT;
++
+ 		/* clock signal polarity */
+ 		invert_bclk = hw_config->invert_bclk;
+ 		invert_fsync = hw_config->invert_fsync;
 -- 
 2.16.1
