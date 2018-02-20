@@ -1,46 +1,105 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: ASoC: Failed to create component debugfs directory
-Date: Tue, 20 Feb 2018 15:43:17 -0300
-Message-ID: <CAOMZO5AHCkFOmjCVU1BZ__QWsNYtps5WCU5zhBg2hYcX7Z_kxg@mail.gmail.com>
-References: <CAOMZO5D071pPr4fL7eLwWgX6h8Mppwic2u4mUCGzUZiss-+3MQ@mail.gmail.com>
- <2bf70c96-1ecc-50b5-b936-7372c4b23276@linaro.org>
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Subject: Re: [PATCH] drm/i915: Remove unused IRQ chip data of
+ HDMI LPE audio
+Date: Tue, 20 Feb 2018 20:49:36 +0200
+Message-ID: <20180220184936.GI5453@intel.com>
+References: <20171208093323.2212-1-augustine.chen@intel.com>
+ <20171208114404.GN10981@intel.com>
+ <alpine.DEB.2.20.1712082340400.2301@nanos>
+ <F6867404AABACB4D8EC371BF802A4B7C5790D206@fmsmsx101.amr.corp.intel.com>
+ <alpine.DEB.2.20.1712121804570.1794@nanos>
+ <F6867404AABACB4D8EC371BF802A4B7C5790F9A8@fmsmsx101.amr.corp.intel.com>
+ <alpine.DEB.2.20.1712131232090.1885@nanos>
+ <s5hshce7skk.wl-tiwai@suse.de>
+ <alpine.DEB.2.20.1712131452550.1885@nanos>
+ <20180129170922.GR5453@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f175.google.com (mail-ot0-f175.google.com
- [74.125.82.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B3C9267502
- for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 19:43:19 +0100 (CET)
-Received: by mail-ot0-f175.google.com with SMTP id s4so12328197oth.7
- for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 10:43:19 -0800 (PST)
-In-Reply-To: <2bf70c96-1ecc-50b5-b936-7372c4b23276@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <20180129170922.GR5453@intel.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Juergen Gross <jgross@suse.com>, Dou Liyang <douly.fnst@cn.fujitsu.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Jiang Liu <jiang.liu@linux.intel.com>, "Chen,
+ Augustine" <augustine.chen@intel.com>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Srinivas,
-
-On Tue, Feb 20, 2018 at 3:37 PM, Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
-
-> I hit something similar while testing some of the qcom sound card.
->
-> This patch fixed the issue for me:
->
->
-> https://git.linaro.org/people/srinivas.kandagatla/linux.git/commit/?h=v4.16-rc1-dsp-audio-v3&id=b91fa95c38912dd8a9f56ebdb9b59449252798ef
->
-> Its basically to do with nested device tree nodes, the device name seems to
-> exceed the NAME_SIZE of 32 bytes.
-
-Thanks for the suggestion, but this does not solve the issue on my case.
+T24gTW9uLCBKYW4gMjksIDIwMTggYXQgMDc6MDk6MjJQTSArMDIwMCwgVmlsbGUgU3lyasOkbMOk
+IHdyb3RlOgo+IE9uIFdlZCwgRGVjIDEzLCAyMDE3IGF0IDAzOjA2OjU1UE0gKzAxMDAsIFRob21h
+cyBHbGVpeG5lciB3cm90ZToKPiA+IE9uIFdlZCwgMTMgRGVjIDIwMTcsIFRha2FzaGkgSXdhaSB3
+cm90ZToKPiA+ID4gT24gV2VkLCAxMyBEZWMgMjAxNyAxMjozNTo1NCArMDEwMCwKPiA+ID4gVGhv
+bWFzIEdsZWl4bmVyIHdyb3RlOgo+ID4gPiA+IAo+ID4gPiA+ID4gPiBPbiBNb24sIDExIERlYyAy
+MDE3LCBBbmFuZCwgSmVyb21lIHdyb3RlOgo+ID4gPiA+ID4gPiA+ID4gT24gRnJpLCA4IERlYyAy
+MDE3LCBWaWxsZSBTeXJqw6Rsw6Qgd3JvdGU6Cj4gPiA+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+
+ID4gPiBPbiBGcmksIERlYyAwOCwgMjAxNyBhdCAwNTozMzoyM1BNICswODAwLCBBdWd1c3RpbmUu
+Q2hlbiB3cm90ZToKPiA+ID4gPiA+ID4gPiA+ID4gPiBUaGUgY2hpcCBkYXRhIG9mIEhETUkgTFBF
+IGF1ZGlvIGlzIHNldCB0byBkcm1faTkxNV9wcml2YXRlIHdoaWNoCj4gPiA+ID4gPiA+ID4gPiA+
+ID4gaXMgbm90IGNvbnNpc3RlbnQgd2l0aCB0aGUgZXhwZWN0YXRpb24gYnkgeDg2IEFQSUMgZHJp
+dmVyLgo+ID4gPiA+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+ID4gPiBIbW0uIFdoeSBpcyB0aGUg
+YXBpYyBjb2RlIGxvb2tpbmcgYXQgZGF0YSBmb3IgYW4gaXJxIGNoaXAgaXQKPiA+ID4gPiA+ID4g
+PiA+ID4gaGFzbid0IGNyZWF0ZWQ/Cj4gPiA+ID4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4KPiA+
+ID4gPiA+ID4gPiBhcGljIGNvZGUgZXhwZWN0cyBhbiBpcnEgZG9tYWluIHRvIGJlIHBsYWNlIGFz
+IGdlbmVyaWMgYXBwcm9hY2guCj4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiBBUElDIGNvZGUgZG9l
+cyBub3QgZXZlbiBzZWUgdGhhdCBpbnRlcnJ1cHQgYXQgYWxsLiBJdCdzIGNvbXBsZXRlbHkgZGlz
+Y29ubmVjdGVkLgo+ID4gPiA+ID4gPiAKPiA+ID4gPiA+IAo+ID4gPiA+ID4gVGhhdCdzIHRoZSBw
+cm9ibGVtIC0gQVBJQyBqdXN0IGNvbnZlcnRzIHRoZSBjaGlwIGRhdGEgdG8gaXRzIGludGVybmFs
+Cj4gPiA+ID4gPiBmb3JtYXQgYW5kIGZhaWxzLgo+ID4gPiA+IAo+ID4gPiA+IEhvdyBkb2VzIEFQ
+SUMgY29kZSBlbmQgdXAgdG8gdG91Y2ggdGhhdCBpbnRlcnJ1cHQgYXQgYWxsPyBDYWxsIHN0YWNr
+IHBsZWFzZS4KPiA+ID4gCj4gPiA+IEl0J3MgZm91bmQgaW4gdGhlIGJ1Z3ppbGxhIHJlZmVycmVk
+IGluIHRoZSBwYXRjaDoKPiA+ID4gICBodHRwczovL2J1Z3MuZnJlZWRlc2t0b3Aub3JnL3Nob3df
+YnVnLmNnaT9pZD0xMDM3MzEKPiA+ID4gCj4gPiA+IFsgICA4Ny4zNTMwNzJdIGlycSAyOTggaWRh
+dGEtPmNoaXAtPm5hbWUgaGRtaV9scGVfYXVkaW9faXJxY2hpcAo+ID4gPiBbICAgODcuMzUzMDcy
+XSBpcnEgMjk4IGFwaWNfY2hpcF9kYXRhCj4gPiA+IFsgICA4Ny4zNTMwNzNdIGlycSAyOTggZGF0
+YS0+ZG9tYWluIGlzIE5VTEwKPiA+ID4gWyAgIDg3LjM1MzEyMF0gQlVHOiB1bmFibGUgdG8gaGFu
+ZGxlIGtlcm5lbCBOVUxMIHBvaW50ZXIgZGVyZWZlcmVuY2UgYXQgKG51bGwpCj4gPiA+IFsgICA4
+Ny4zNTMxMzJdIElQOiBzZXR1cF92ZWN0b3JfaXJxKzB4MWJhLzB4MjMwCj4gPiA+IFsgICA4Ny4z
+NTMxMzNdIFBHRCAwCj4gPiA+IAo+ID4gPiBJZiBteSB1bmRlcnN0YW5kaW5nIGlzIGNvcnJlY3Qs
+IGl0IGhhcHBlbnMgb25seSB3aXRoIDQuMTQgYW5kIGVhcmxpZXIKPiA+ID4ga2VybmVscyB3aGVy
+ZSBfX3NldHVwX3ZlY3Rvcl9pcnEoKSBsb29wcyBvdmVyIHRoZSBhbGwgaXJxczoKPiA+ID4gCj4g
+PiA+IHN0YXRpYyB2b2lkIF9fc2V0dXBfdmVjdG9yX2lycShpbnQgY3B1KQo+ID4gPiB7Cj4gPiA+
+IAlzdHJ1Y3QgYXBpY19jaGlwX2RhdGEgKmRhdGE7Cj4gPiA+IAlzdHJ1Y3QgaXJxX2Rlc2MgKmRl
+c2M7Cj4gPiA+IAlpbnQgaXJxLCB2ZWN0b3I7Cj4gPiA+IAo+ID4gPiAJLyogTWFyayB0aGUgaW51
+c2UgdmVjdG9ycyAqLwo+ID4gPiAJZm9yX2VhY2hfaXJxX2Rlc2MoaXJxLCBkZXNjKSB7Cj4gPiA+
+IAkJc3RydWN0IGlycV9kYXRhICppZGF0YSA9IGlycV9kZXNjX2dldF9pcnFfZGF0YShkZXNjKTsK
+PiA+ID4gCj4gPiA+IAkJZGF0YSA9IGFwaWNfY2hpcF9kYXRhKGlkYXRhKTsKPiA+ID4gCQlpZiAo
+IWRhdGEgfHwgIWNwdW1hc2tfdGVzdF9jcHUoY3B1LCBkYXRhLT5kb21haW4pKQo+ID4gPiAJCQlj
+b250aW51ZTsKPiA+ID4gCQkuLi4uCj4gPiA+IAo+ID4gPiBBbmQgc2luY2Ugd2UgaGF2ZSBhc3Np
+Z25lZCBhIG5vbi1BUElDIGNoaXAgZGF0YSBpbiB0aGUgZHJpdmVyLCB0aGUKPiA+ID4gY29kZSBh
+Ym92ZSByZWZlcnMgdG8gYSB3cm9uZyBvYmplY3QsIGxlYWRpbmcgdG8gT29wcy4KPiA+IAo+ID4g
+QmFoIGNyYXAuIFRoaXMgaW5mb3JtYXRpb24gc2hvdWxkIGhhdmUgYmVlbiBwcm92aWRlZCBlYXJs
+aWVyIGluc3RlYWQgb2YKPiA+IGhhbmR3YXZ5ICdkb2VzbnQgd29yayB3aXRoIENPTkZJR19GT08g
+YW5kIGhvdHBsdWcnLgo+ID4gCj4gPiA+IEFzIGEgZnVydGhlciBub3RlLCB0aGUgc2V0dXBfdmVj
+dG9yX2lycSgpIGNvZGUgaGFzIGJlZW4gY2hhbmdlZCBpbgo+ID4gPiA0LjE1LCBhbmQgc3VjaCBh
+IHJlZmVyZW5jZSB3b24ndCBoYXBwZW4gYW55IGxvbmdlci4gIFNvIHRoZSBwYXRjaAo+ID4gPiBp
+c24ndCBuZWNlc3NhcnkgZm9yIG5vdywgYWx0aG91Z2ggaXQncyBub3QgYmFkIHRvIHRha2UgYXMg
+YSBjbGVhbnVwLgo+ID4gPiBBbmQgd2UgY2FuIGV2ZW50dWFsbHkgcHV0IENjIHRvIHN0YWJsZSB0
+aGVyZSBzaW5jZSBpdCBhY3R1YWxseSB3b3Jrcwo+ID4gPiBhcm91bmQgdGhlIGlzc3VlIGFib3Zl
+IGZvciB0aGUgb2xkZXIga2VybmVscyAtLSBvZiBjb3Vyc2UsIHdpdGggbW9yZQo+ID4gPiBkZXRh
+aWxlZCBkZXNjcmlwdGlvbnMgYWJvdXQgdGhlIGJhY2tncm91bmQuCj4gPiAKPiA+IE5vLCB0aGF0
+J3MganVzdCB0aW5rZXJpbmcuIFRoZSBwcm9wZXIgZml4IGlzIHRvIG1ha2UgdGhhdCBjb2RlIHJv
+YnVzdC4KPiA+IAo+ID4gU29tZXRoaW5nIGxpa2UgdGhlIGNvbXBsZXRlbHkgdW50ZXN0ZWQgcGF0
+Y2ggYmVsb3cgc2hvdWxkIGRvIHRoZSB0cmljay4KPiA+IAo+ID4gVGhhbmtzLAo+ID4gCj4gPiAJ
+dGdseAo+ID4gLS0tCj4gPiBkaWZmIC0tZ2l0IGEvYXJjaC94ODYva2VybmVsL2FwaWMvdmVjdG9y
+LmMgYi9hcmNoL3g4Ni9rZXJuZWwvYXBpYy92ZWN0b3IuYwo+ID4gaW5kZXggZjM1NTdhMWViNTYy
+Li4wMmU2YTNjYzBkNzQgMTAwNjQ0Cj4gPiAtLS0gYS9hcmNoL3g4Ni9rZXJuZWwvYXBpYy92ZWN0
+b3IuYwo+ID4gKysrIGIvYXJjaC94ODYva2VybmVsL2FwaWMvdmVjdG9yLmMKPiA+IEBAIC01OCw2
+ICs1OCw5IEBAIHN0YXRpYyBzdHJ1Y3QgYXBpY19jaGlwX2RhdGEgKmFwaWNfY2hpcF9kYXRhKHN0
+cnVjdCBpcnFfZGF0YSAqaXJxX2RhdGEpCj4gPiAgCXdoaWxlIChpcnFfZGF0YS0+cGFyZW50X2Rh
+dGEpCj4gPiAgCQlpcnFfZGF0YSA9IGlycV9kYXRhLT5wYXJlbnRfZGF0YTsKPiA+ICAKPiA+ICsJ
+aWYgKGlycV9kYXRhLT5kb21haW4gIT0geDg2X3ZlY3Rvcl9kb21haW4pCj4gPiArCQlyZXR1cm4g
+TlVMTDsKPiA+ICsKPiA+ICAJcmV0dXJuIGlycV9kYXRhLT5jaGlwX2RhdGE7Cj4gPiAgfQo+ID4g
+IAo+ID4gCj4gCj4gRGlkIHRoaXMgcGF0Y2ggcmVzb2x2ZSB0aGUgaXNzdWU/CgpQaW5nLgoKLS0g
+ClZpbGxlIFN5cmrDpGzDpApJbnRlbCBPVEMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMu
+ZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlz
+dGluZm8vaW50ZWwtZ2Z4Cg==
