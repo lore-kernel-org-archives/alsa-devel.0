@@ -1,116 +1,152 @@
-From: Bjorn Helgaas <helgaas@kernel.org>
-Subject: Re: [PATCH 1/7] PCI: Restore BARs on runtime resume despite being
- unbound
-Date: Tue, 20 Feb 2018 15:29:22 -0600
-Message-ID: <20180220212922.GC32228@bhelgaas-glaptop.roam.corp.google.com>
-References: <cover.1518941072.git.lukas@wunner.de>
- <f7593132608eb9a83d7268cc5b3ef12b3dd9c52d.1518941073.git.lukas@wunner.de>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH 02/11] ASoC: rt5651: Remove is_sys_clk_from_pll,
+	it has ordering issues
+Date: Tue, 20 Feb 2018 23:15:02 +0100
+Message-ID: <20180220221511.22861-2-hdegoede@redhat.com>
+References: <20180220221511.22861-1-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <f7593132608eb9a83d7268cc5b3ef12b3dd9c52d.1518941073.git.lukas@wunner.de>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Lukas Wunner <lukas@wunner.de>
-Cc: alsa-devel@alsa-project.org, linux-pm@vger.kernel.org, nouveau@lists.freedesktop.org, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Takashi Iwai <tiwai@suse.com>, dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>, Hans de Goede <hdegoede@redhat.com>, Ben Skeggs <bskeggs@redhat.com>, Bastien Nocera <hadess@hadess.net>, linux-pci@vger.kernel.org, Alex Deucher <alexander.deucher@amd.com>, Dave Airlie <airlied@redhat.com>, Bjorn Helgaas <bhelgaas@google.com>, Peter Wu <peter@lekensteyn.nl>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id BE2C8267502
+ for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 23:15:20 +0100 (CET)
+In-Reply-To: <20180220221511.22861-1-hdegoede@redhat.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCBGZWIgMTgsIDIwMTggYXQgMDk6Mzg6MzJBTSArMDEwMCwgTHVrYXMgV3VubmVyIHdy
-b3RlOgo+IFBDSSBkZXZpY2VzIG5vdCBib3VuZCB0byBhIGRyaXZlciBhcmUgc3VwcG9zZWQgdG8g
-c3RheSBpbiBEMCBkdXJpbmcKPiBydW50aW1lIHN1c3BlbmQuCgpEb2Vzbid0ICJydW50aW1lIHN1
-c3BlbmQiIG1lYW4gYW4gaW5kaXZpZHVhbCBkZXZpY2UgaXMgc3VzcGVuZGVkIHdoaWxlCnRoZSBy
-ZXN0IG9mIHRoZSBzeXN0ZW0gcmVtYWlucyBhY3RpdmU/CgpJZiBzbywgbWF5YmUgaXQgd291bGQg
-YmUgbW9yZSBkaXJlY3QgdG8gc2F5ICJQQ0kgZGV2aWNlcyBub3QgYm91bmQgdG8KYSBkcml2ZXIg
-Y2Fubm90IGJlIHJ1bnRpbWUgc3VzcGVuZGVkIj8KCihJdCdzIGEgc2VwYXJhdGUgcXVlc3Rpb24g
-bm90IHJlbGV2YW50IHRvIHRoaXMgcGF0Y2gsIGJ1dCBJJ20gbm90CmNvbnZpbmNlZCB0aGF0ICJQ
-Q0kgZGV2aWNlcyB3aXRob3V0IGEgZHJpdmVyIGNhbm5vdCBiZSBzdXNwZW5kZWQiCnNob3VsZCBi
-ZSBhY2NlcHRlZCBhcyBhIHJ1bGUuICBJZiBpdCBpcyBhIHJ1bGUsIHdlIHNob3VsZCBiZSBhYmxl
-IHRvCmRlZHVjZSBpdCBmcm9tIHRoZSBzcGVjcy4pCgo+IEJ1dCB0aGV5IG1heSBoYXZlIGEgcGFy
-ZW50IHdoaWNoIGlzIGJvdW5kIGFuZCBjYW4gYmUKPiB0cmFuc2l0aW9uZWQgdG8gRDNjb2xkIGF0
-IHJ1bnRpbWUuICBPbmNlIHRoZSBwYXJlbnQgZ29lcyB0byBEM2NvbGQsIHRoZQo+IHVuYm91bmQg
-Y2hpbGQgbWF5IGdvIHRvIEQzY29sZCBhcyB3ZWxsLiAgV2hlbiB0aGUgY2hpbGQgY29tZXMgb3V0
-IG9mCj4gRDNjb2xkLCBpdHMgQkFScyBhcmUgdW5pbml0aWFsaXplZCBhbmQgdGh1cyBpbmFjY2Vz
-c2libGUgd2hlbiBhIGRyaXZlcgo+IHRyaWVzIHRvIHByb2JlLgo+IAo+IE9uZSBleGFtcGxlIGFy
-ZSByZWNlbnQgaHlicmlkIGdyYXBoaWNzIGxhcHRvcHMgd2hpY2ggY3V0IHBvd2VyIHRvIHRoZQo+
-IGRpc2NyZXRlIEdQVSB3aGVuIHRoZSByb290IHBvcnQgYWJvdmUgaXQgZ29lcyB0byBBQ1BJIHBv
-d2VyIHN0YXRlIEQzLgo+IFVzZXJzIG1heSBwcm92b2tlIHRoaXMgYnkgdW5iaW5kaW5nIHRoZSBH
-UFUgZHJpdmVyIGFuZCBhbGxvd2luZyBydW50aW1lCj4gUE0gb24gdGhlIEdQVSB2aWEgc3lzZnM6
-ICBUaGUgUE0gY29yZSB3aWxsIHRoZW4gdHJlYXQgdGhlIEdQVSBhcwo+ICJzdXNwZW5kZWQiLCB3
-aGljaCBpbiB0dXJuIGFsbG93cyB0aGUgcm9vdCBwb3J0IHRvIHJ1bnRpbWUgc3VzcGVuZCwKPiBj
-YXVzaW5nIHRoZSBwb3dlciByZXNvdXJjZXMgbGlzdGVkIGluIGl0cyBfUFIzIG9iamVjdCB0byBi
-ZSBwb3dlcmVkIG9mZi4KPiBUaGUgR1BVJ3MgQkFScyB3aWxsIGJlIHVuaW5pdGlhbGl6ZWQgd2hl
-biBhIGRyaXZlciBsYXRlciBwcm9iZXMgaXQuCj4gCj4gQW5vdGhlciBleGFtcGxlIGFyZSBoeWJy
-aWQgZ3JhcGhpY3MgbGFwdG9wcyB3aGVyZSB0aGUgR1BVIGl0c2VsZiAocmF0aGVyCj4gdGhhbiB0
-aGUgcm9vdCBwb3J0KSBpcyBjYXBhYmxlIG9mIHJ1bnRpbWUgc3VzcGVuZGluZyB0byBEM2NvbGQu
-ICBJZiB0aGUKPiBHUFUncyBpbnRlZ3JhdGVkIEhEQSBjb250cm9sbGVyIGlzIG5vdCBib3VuZCBh
-bmQgdGhlIEdQVSdzIGRyaXZlcgo+IGRlY2lkZXMgdG8gcnVudGltZSBzdXNwZW5kIHRvIEQzY29s
-ZCwgdGhlIEhEQSBjb250cm9sbGVyJ3MgQkFScyB3aWxsIGJlCj4gdW5pbml0aWFsaXplZCB3aGVu
-IGEgZHJpdmVyIGxhdGVyIHByb2JlcyBpdC4KPiAKPiBGaXggYnkgcmVzdG9yaW5nIHRoZSBCQVJz
-IG9uIHJ1bnRpbWUgcmVzdW1lIGlmIHRoZSBkZXZpY2UgaXMgbm90IGJvdW5kLgo+IFRoaXMgaXMg
-c3VmZmljaWVudCB0byBmaXggdGhlIGFib3ZlLW1lbnRpb25lZCB1c2UgY2FzZXMuICBPdGhlciB1
-c2UKPiBjYXNlcyBtaWdodCByZXF1aXJlIGEgZnVsbC1ibG93biBwY2lfc2F2ZV9zdGF0ZSgpIC8g
-cGNpX3Jlc3RvcmVfc3RhdGUoKQo+IG9yIGV4ZWN1dGlvbiBvZiBmaXh1cHMuICBXZSBjYW4gYWRk
-IHRoYXQgb25jZSB1c2UgY2FzZXMgbWF0ZXJpYWxpemUsCj4gbGV0J3Mgbm90IGluZmxhdGUgdGhl
-IGNvZGUgdW5uZWNlc3NhcmlseS4KCldoeSB3b3VsZCB3ZSBub3QgZG8gYSBmdWxsLWJsb3duIHJl
-c3RvcmU/ICBXaXRoIHRoaXMgcGF0Y2gsIEkgdGhpbmsKc29tZSBjb25maWd1cmF0aW9uIGRvbmUg
-ZHVyaW5nIGVudW1lcmF0aW9uLCBlLmcuLCBBU1BNIGFuZCBNUFMsIHdpbGwKYmUgbG9zdC4gICJs
-c3BjaSAtdnYiIG9mIHRoZSBIREEgYmVmb3JlIGFuZCBhZnRlciB0aGUgc3VzcGVuZCBtYXkgc2hv
-dwpkaWZmZXJlbnQgdGhpbmdzLCB3aGljaCBzZWVtcyBjb3VudGVyLWludHVpdGl2ZS4KCkkgd291
-bGRuJ3QgdGhpbmsgb2YgYSBmdWxsLWJsb3duIHJlc3RvcmUgYXMgImluZmxhdGluZyB0aGUgY29k
-ZSI7IEkKd291bGQgdGhpbmsgb2YgaXQgYXMgImhhdmluZyBmZXdlciBzcGVjaWFsIGNhc2VzIiwg
-aS5lLiwgd2UgYWx3YXlzIHVzZQp0aGUgc2FtZSByZXN0b3JlIHBhdGggaW5zdGVhZCBvZiBoYXZp
-bmcgdGhlIG1haW4gb25lIHBsdXMgYSBzcGVjaWFsCm9uZSBmb3IgdW5ib3VuZCBkZXZpY2VzLgoK
-PiBDYzogQmpvcm4gSGVsZ2FhcyA8YmhlbGdhYXNAZ29vZ2xlLmNvbT4KPiBDYzogUmFmYWVsIEou
-IFd5c29ja2kgPHJhZmFlbC5qLnd5c29ja2lAaW50ZWwuY29tPgo+IFNpZ25lZC1vZmYtYnk6IEx1
-a2FzIFd1bm5lciA8bHVrYXNAd3VubmVyLmRlPgo+IC0tLQo+ICBkcml2ZXJzL3BjaS9wY2ktZHJp
-dmVyLmMgfCA4ICsrKysrKy0tCj4gIGRyaXZlcnMvcGNpL3BjaS5jICAgICAgICB8IDIgKy0KPiAg
-ZHJpdmVycy9wY2kvcGNpLmggICAgICAgIHwgMSArCj4gIDMgZmlsZXMgY2hhbmdlZCwgOCBpbnNl
-cnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BjaS9w
-Y2ktZHJpdmVyLmMgYi9kcml2ZXJzL3BjaS9wY2ktZHJpdmVyLmMKPiBpbmRleCAzYmVkNmJlZGEw
-NTEuLjUxYjExY2JkNDhmNiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL3BjaS9wY2ktZHJpdmVyLmMK
-PiArKysgYi9kcml2ZXJzL3BjaS9wY2ktZHJpdmVyLmMKPiBAQCAtMTI3NywxMCArMTI3NywxNCBA
-QCBzdGF0aWMgaW50IHBjaV9wbV9ydW50aW1lX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYpCj4g
-IAo+ICAJLyoKPiAgCSAqIElmIHBjaV9kZXYtPmRyaXZlciBpcyBub3Qgc2V0ICh1bmJvdW5kKSwg
-dGhlIGRldmljZSBzaG91bGQKPiAtCSAqIGFsd2F5cyByZW1haW4gaW4gRDAgcmVnYXJkbGVzcyBv
-ZiB0aGUgcnVudGltZSBQTSBzdGF0dXMKPiArCSAqIGFsd2F5cyByZW1haW4gaW4gRDAgcmVnYXJk
-bGVzcyBvZiB0aGUgcnVudGltZSBQTSBzdGF0dXMuCj4gKwkgKiBCdXQgaWYgaXRzIHBhcmVudCBj
-YW4gZ28gdG8gRDNjb2xkLCB0aGlzIGRldmljZSBtYXkgaGF2ZQo+ICsJICogYmVlbiBpbiBEM2Nv
-bGQgYXMgd2VsbCBhbmQgcmVxdWlyZSByZXN0b3JhdGlvbiBvZiBpdHMgQkFScy4KPiAgCSAqLwo+
-IC0JaWYgKCFwY2lfZGV2LT5kcml2ZXIpCj4gKwlpZiAoIXBjaV9kZXYtPmRyaXZlcikgewo+ICsJ
-CXBjaV9yZXN0b3JlX2JhcnMocGNpX2Rldik7CgpJZiB3ZSBkbyBkZWNpZGUgbm90IHRvIGRvIGEg
-ZnVsbC1ibG93biByZXN0b3JlLCBob3cgZG8gd2UgZGVjaWRlCndoZXRoZXIgdG8gdXNlIHBjaV9y
-ZXN0b3JlX2JhcnMoKSBvciBwY2lfcmVzdG9yZV9jb25maWdfc3BhY2UoKT8KCkknbSBub3Qgc3Vy
-ZSB3aHkgd2UgaGF2ZSBib3RoLiAgVGhlIHBjaV9yZXN0b3JlX2JhcnMoKSBwYXRoIGxvb2tzIGEK
-bGl0dGxlIHNtYXJ0ZXIgaW4gdGhhdCBpdCBpcyBtb3JlIGNhcmVmdWwgd2hlbiB1cGRhdGluZyA2
-NC1iaXQgQkFScwp0aGF0IGNhbid0IGJlIHVwZGF0ZWQgYXRvbWljYWxseS4KCj4gIAkJcmV0dXJu
-IDA7Cj4gKwl9Cj4gIAo+ICAJaWYgKCFwbSB8fCAhcG0tPnJ1bnRpbWVfcmVzdW1lKQo+ICAJCXJl
-dHVybiAtRU5PU1lTOwo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BjaS9wY2kuYyBiL2RyaXZlcnMv
-cGNpL3BjaS5jCj4gaW5kZXggZjZhNGRkMTBkOWIwLi5mNjk0NjUwMjM1ZjIgMTAwNjQ0Cj4gLS0t
-IGEvZHJpdmVycy9wY2kvcGNpLmMKPiArKysgYi9kcml2ZXJzL3BjaS9wY2kuYwo+IEBAIC01NjMs
-NyArNTYzLDcgQEAgaW50IHBjaV93YWl0X2Zvcl9wZW5kaW5nKHN0cnVjdCBwY2lfZGV2ICpkZXYs
-IGludCBwb3MsIHUxNiBtYXNrKQo+ICAgKiBSZXN0b3JlIHRoZSBCQVIgdmFsdWVzIGZvciBhIGdp
-dmVuIGRldmljZSwgc28gYXMgdG8gbWFrZSBpdAo+ICAgKiBhY2Nlc3NpYmxlIGJ5IGl0cyBkcml2
-ZXIuCj4gICAqLwo+IC1zdGF0aWMgdm9pZCBwY2lfcmVzdG9yZV9iYXJzKHN0cnVjdCBwY2lfZGV2
-ICpkZXYpCj4gK3ZvaWQgcGNpX3Jlc3RvcmVfYmFycyhzdHJ1Y3QgcGNpX2RldiAqZGV2KQo+ICB7
-Cj4gIAlpbnQgaTsKPiAgCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGNpL3BjaS5oIGIvZHJpdmVy
-cy9wY2kvcGNpLmgKPiBpbmRleCBmY2Q4MTkxMWIxMjcuLjI5ZGMxNWJiZTNiZiAxMDA2NDQKPiAt
-LS0gYS9kcml2ZXJzL3BjaS9wY2kuaAo+ICsrKyBiL2RyaXZlcnMvcGNpL3BjaS5oCj4gQEAgLTgz
-LDYgKzgzLDcgQEAgdm9pZCBwY2lfYWxsb2NhdGVfY2FwX3NhdmVfYnVmZmVycyhzdHJ1Y3QgcGNp
-X2RldiAqZGV2KTsKPiAgdm9pZCBwY2lfZnJlZV9jYXBfc2F2ZV9idWZmZXJzKHN0cnVjdCBwY2lf
-ZGV2ICpkZXYpOwo+ICBib29sIHBjaV9icmlkZ2VfZDNfcG9zc2libGUoc3RydWN0IHBjaV9kZXYg
-KmRldik7Cj4gIHZvaWQgcGNpX2JyaWRnZV9kM191cGRhdGUoc3RydWN0IHBjaV9kZXYgKmRldik7
-Cj4gK3ZvaWQgcGNpX3Jlc3RvcmVfYmFycyhzdHJ1Y3QgcGNpX2RldiAqZGV2KTsKPiAgCj4gIHN0
-YXRpYyBpbmxpbmUgdm9pZCBwY2lfd2FrZXVwX2V2ZW50KHN0cnVjdCBwY2lfZGV2ICpkZXYpCj4g
-IHsKPiAtLSAKPiAyLjE1LjEKPiAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRl
-c2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8v
-ZHJpLWRldmVsCg==
+dapm_power_widgets() first builds a list of which widgets to power-up
+before actually powering any of them up. For dapm-supply widgets their
+connected method, in our case is_sys_clk_from_pll() get called at this
+point.
+
+Before this commit is_sys_clk_from_pll() was looking at the actually
+selected clock in the RT5651_GBL_CLK register. But the sysclk itself is
+selected by another dapm-supply (the "Platform Clock" supply in the
+machine driver) and any changes to that supply part of the same power-
+transition get executed after building the list, causing
+is_sys_clk_from_pll() to return the wrong value.
+
+This sometimes leads to the PWR_PLL bit not getting set even though we
+have configured an active audio chain and RT5651_GBL_CLK does point to
+PLL1 as the sysclk-source.
+
+Note that even if we do not have an active audio chain we should still keep
+the PWR_PLL bit set if PLL1 is our sysclk-source, because we must always
+have a working sysclk-source, otherwise e.g. jack-detection will not work.
+
+If we don't have an active audio-chain then the machine-driver should
+switch the sysclk-source to the RCCLK and if does not then that is a
+machine-driver (or UCM config) problem and not something we should try
+to work around by disabling our sysclk-source and breaking jack-detect.
+
+TL;DR: The PLL1-supply must always be powered up when PLL1 is the sysclk
+source and we can simply set the RT5651_PWR_PLL bit when selecting PLL1.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+Note that many of the other rt56?? drivers have the same
+is_sys_clk_from_pll() stuff and may need similar fixes.
+---
+ sound/soc/codecs/rt5651.c | 25 +++++--------------------
+ 1 file changed, 5 insertions(+), 20 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index c5d19a80506b..a48278f6205d 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -393,20 +393,6 @@ static int set_dmic_clk(struct snd_soc_dapm_widget *w,
+ 	return idx;
+ }
+ 
+-static int is_sysclk_from_pll(struct snd_soc_dapm_widget *source,
+-			 struct snd_soc_dapm_widget *sink)
+-{
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
+-	unsigned int val;
+-
+-	val = snd_soc_read(codec, RT5651_GLB_CLK);
+-	val &= RT5651_SCLK_SRC_MASK;
+-	if (val == RT5651_SCLK_SRC_PLL1)
+-		return 1;
+-	else
+-		return 0;
+-}
+-
+ /* Digital Mixer */
+ static const struct snd_kcontrol_new rt5651_sto1_adc_l_mix[] = {
+ 	SOC_DAPM_SINGLE("ADC1 Switch", RT5651_STO1_ADC_MIXER,
+@@ -878,8 +864,6 @@ static const struct snd_soc_dapm_widget rt5651_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SUPPLY_S("ADC ASRC", 1, RT5651_PLL_MODE_2,
+ 			      11, 0, NULL, 0),
+ 
+-	SND_SOC_DAPM_SUPPLY("PLL1", RT5651_PWR_ANLG2,
+-			RT5651_PWR_PLL_BIT, 0, NULL, 0),
+ 	/* Input Side */
+ 	SND_SOC_DAPM_SUPPLY("JD Power", RT5651_PWR_ANLG2,
+ 		RT5651_PWM_JD_M_BIT, 0, NULL, 0),
+@@ -1162,7 +1146,6 @@ static const struct snd_soc_dapm_route rt5651_dapm_routes[] = {
+ 	{"Stereo1 ADC MIXL", "ADC1 Switch", "Stereo1 ADC L1 Mux"},
+ 	{"Stereo1 ADC MIXL", "ADC2 Switch", "Stereo1 ADC L2 Mux"},
+ 	{"Stereo1 ADC MIXL", NULL, "Stereo1 Filter"},
+-	{"Stereo1 Filter", NULL, "PLL1", is_sysclk_from_pll},
+ 	{"Stereo1 Filter", NULL, "ADC ASRC"},
+ 
+ 	{"Stereo1 ADC MIXR", "ADC1 Switch", "Stereo1 ADC R1 Mux"},
+@@ -1172,7 +1155,6 @@ static const struct snd_soc_dapm_route rt5651_dapm_routes[] = {
+ 	{"Stereo2 ADC MIXL", "ADC1 Switch", "Stereo2 ADC L1 Mux"},
+ 	{"Stereo2 ADC MIXL", "ADC2 Switch", "Stereo2 ADC L2 Mux"},
+ 	{"Stereo2 ADC MIXL", NULL, "Stereo2 Filter"},
+-	{"Stereo2 Filter", NULL, "PLL1", is_sysclk_from_pll},
+ 	{"Stereo2 Filter", NULL, "ADC ASRC"},
+ 
+ 	{"Stereo2 ADC MIXR", "ADC1 Switch", "Stereo2 ADC R1 Mux"},
+@@ -1239,10 +1221,8 @@ static const struct snd_soc_dapm_route rt5651_dapm_routes[] = {
+ 	{"PDM R Mux", "DD MIX", "DAC MIXR"},
+ 
+ 	{"DAC L1", NULL, "Stereo DAC MIXL"},
+-	{"DAC L1", NULL, "PLL1", is_sysclk_from_pll},
+ 	{"DAC L1", NULL, "DAC L1 Power"},
+ 	{"DAC R1", NULL, "Stereo DAC MIXR"},
+-	{"DAC R1", NULL, "PLL1", is_sysclk_from_pll},
+ 	{"DAC R1", NULL, "DAC R1 Power"},
+ 
+ 	{"DD MIXL", "DAC L1 Switch", "DAC MIXL"},
+@@ -1438,6 +1418,7 @@ static int rt5651_set_dai_sysclk(struct snd_soc_dai *dai,
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct rt5651_priv *rt5651 = snd_soc_codec_get_drvdata(codec);
+ 	unsigned int reg_val = 0;
++	unsigned int pll_bit = 0;
+ 
+ 	if (freq == rt5651->sysclk && clk_id == rt5651->sysclk_src)
+ 		return 0;
+@@ -1448,6 +1429,7 @@ static int rt5651_set_dai_sysclk(struct snd_soc_dai *dai,
+ 		break;
+ 	case RT5651_SCLK_S_PLL1:
+ 		reg_val |= RT5651_SCLK_SRC_PLL1;
++		pll_bit |= RT5651_PWR_PLL;
+ 		break;
+ 	case RT5651_SCLK_S_RCCLK:
+ 		reg_val |= RT5651_SCLK_SRC_RCCLK;
+@@ -1456,6 +1438,9 @@ static int rt5651_set_dai_sysclk(struct snd_soc_dai *dai,
+ 		dev_err(codec->dev, "Invalid clock id (%d)\n", clk_id);
+ 		return -EINVAL;
+ 	}
++
++	snd_soc_update_bits(codec, RT5651_PWR_ANLG2,
++		RT5651_PWR_PLL, pll_bit);
+ 	snd_soc_update_bits(codec, RT5651_GLB_CLK,
+ 		RT5651_SCLK_SRC_MASK, reg_val);
+ 	rt5651->sysclk = freq;
+-- 
+2.14.3
