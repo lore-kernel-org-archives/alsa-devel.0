@@ -1,75 +1,116 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: ASoC: Failed to create component debugfs directory
-Date: Tue, 20 Feb 2018 16:37:33 -0300
-Message-ID: <CAOMZO5CA99p+2DYrbWQnLzh5Lj8syX4j18V8R8WPV2KDZz-DVQ@mail.gmail.com>
-References: <CAOMZO5D071pPr4fL7eLwWgX6h8Mppwic2u4mUCGzUZiss-+3MQ@mail.gmail.com>
- <CAOMZO5C3joR2QS+yFDmQUs1Q69PfuVw8tBMNd+F+cjDnUMEPSQ@mail.gmail.com>
- <5b591fd8-d4d5-27bb-0850-a376da20d7f3@metafoo.de>
- <CAOMZO5Ai-EtFo--OYLKhsB+63u6D+Vyjx_hKVeG3EGXbHkY5jw@mail.gmail.com>
- <99ce1244-6646-6292-2c50-151819b01cfa@metafoo.de>
+From: Bjorn Helgaas <helgaas@kernel.org>
+Subject: Re: [PATCH 1/7] PCI: Restore BARs on runtime resume despite being
+ unbound
+Date: Tue, 20 Feb 2018 15:29:22 -0600
+Message-ID: <20180220212922.GC32228@bhelgaas-glaptop.roam.corp.google.com>
+References: <cover.1518941072.git.lukas@wunner.de>
+ <f7593132608eb9a83d7268cc5b3ef12b3dd9c52d.1518941073.git.lukas@wunner.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f45.google.com (mail-oi0-f45.google.com
- [209.85.218.45])
- by alsa0.perex.cz (Postfix) with ESMTP id D1E11266F0D
- for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 20:37:35 +0100 (CET)
-Received: by mail-oi0-f45.google.com with SMTP id c12so3520427oic.7
- for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 11:37:35 -0800 (PST)
-In-Reply-To: <99ce1244-6646-6292-2c50-151819b01cfa@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <f7593132608eb9a83d7268cc5b3ef12b3dd9c52d.1518941073.git.lukas@wunner.de>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Lukas Wunner <lukas@wunner.de>
+Cc: alsa-devel@alsa-project.org, linux-pm@vger.kernel.org, nouveau@lists.freedesktop.org, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Takashi Iwai <tiwai@suse.com>, dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>, Hans de Goede <hdegoede@redhat.com>, Ben Skeggs <bskeggs@redhat.com>, Bastien Nocera <hadess@hadess.net>, linux-pci@vger.kernel.org, Alex Deucher <alexander.deucher@amd.com>, Dave Airlie <airlied@redhat.com>, Bjorn Helgaas <bhelgaas@google.com>, Peter Wu <peter@lekensteyn.nl>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 20, 2018 at 4:30 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
-
-> Because on linux-next they are all components now, before one was a
-> platform, the other a component. So they were created in different
-> sub-directories. Now they are created in the same sub-directory.
-
-Thanks for your clarification.
-
-What is the best way to avoid the "Failed to create
-component debugfs directory" warning?
-
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -319,8 +319,6 @@ static void soc_init_component_debugfs(struct
-snd_soc_component *component)
-        }
-
-        if (!component->debugfs_root) {
--               dev_warn(component->dev,
--                       "ASoC: Failed to create component debugfs directory\n");
-                return;
-        }
-
-
-or
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 3987673..270109c 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -329,6 +329,8 @@ static void soc_init_component_debugfs(struct
-snd_soc_component *component)
-
-        if (component->init_debugfs)
-                component->init_debugfs(component);
-+
-+       component->card->debugfs_card_root = NULL;
- }
-
- static void soc_cleanup_component_debugfs(struct snd_soc_component *component)
-
-Thanks
+T24gU3VuLCBGZWIgMTgsIDIwMTggYXQgMDk6Mzg6MzJBTSArMDEwMCwgTHVrYXMgV3VubmVyIHdy
+b3RlOgo+IFBDSSBkZXZpY2VzIG5vdCBib3VuZCB0byBhIGRyaXZlciBhcmUgc3VwcG9zZWQgdG8g
+c3RheSBpbiBEMCBkdXJpbmcKPiBydW50aW1lIHN1c3BlbmQuCgpEb2Vzbid0ICJydW50aW1lIHN1
+c3BlbmQiIG1lYW4gYW4gaW5kaXZpZHVhbCBkZXZpY2UgaXMgc3VzcGVuZGVkIHdoaWxlCnRoZSBy
+ZXN0IG9mIHRoZSBzeXN0ZW0gcmVtYWlucyBhY3RpdmU/CgpJZiBzbywgbWF5YmUgaXQgd291bGQg
+YmUgbW9yZSBkaXJlY3QgdG8gc2F5ICJQQ0kgZGV2aWNlcyBub3QgYm91bmQgdG8KYSBkcml2ZXIg
+Y2Fubm90IGJlIHJ1bnRpbWUgc3VzcGVuZGVkIj8KCihJdCdzIGEgc2VwYXJhdGUgcXVlc3Rpb24g
+bm90IHJlbGV2YW50IHRvIHRoaXMgcGF0Y2gsIGJ1dCBJJ20gbm90CmNvbnZpbmNlZCB0aGF0ICJQ
+Q0kgZGV2aWNlcyB3aXRob3V0IGEgZHJpdmVyIGNhbm5vdCBiZSBzdXNwZW5kZWQiCnNob3VsZCBi
+ZSBhY2NlcHRlZCBhcyBhIHJ1bGUuICBJZiBpdCBpcyBhIHJ1bGUsIHdlIHNob3VsZCBiZSBhYmxl
+IHRvCmRlZHVjZSBpdCBmcm9tIHRoZSBzcGVjcy4pCgo+IEJ1dCB0aGV5IG1heSBoYXZlIGEgcGFy
+ZW50IHdoaWNoIGlzIGJvdW5kIGFuZCBjYW4gYmUKPiB0cmFuc2l0aW9uZWQgdG8gRDNjb2xkIGF0
+IHJ1bnRpbWUuICBPbmNlIHRoZSBwYXJlbnQgZ29lcyB0byBEM2NvbGQsIHRoZQo+IHVuYm91bmQg
+Y2hpbGQgbWF5IGdvIHRvIEQzY29sZCBhcyB3ZWxsLiAgV2hlbiB0aGUgY2hpbGQgY29tZXMgb3V0
+IG9mCj4gRDNjb2xkLCBpdHMgQkFScyBhcmUgdW5pbml0aWFsaXplZCBhbmQgdGh1cyBpbmFjY2Vz
+c2libGUgd2hlbiBhIGRyaXZlcgo+IHRyaWVzIHRvIHByb2JlLgo+IAo+IE9uZSBleGFtcGxlIGFy
+ZSByZWNlbnQgaHlicmlkIGdyYXBoaWNzIGxhcHRvcHMgd2hpY2ggY3V0IHBvd2VyIHRvIHRoZQo+
+IGRpc2NyZXRlIEdQVSB3aGVuIHRoZSByb290IHBvcnQgYWJvdmUgaXQgZ29lcyB0byBBQ1BJIHBv
+d2VyIHN0YXRlIEQzLgo+IFVzZXJzIG1heSBwcm92b2tlIHRoaXMgYnkgdW5iaW5kaW5nIHRoZSBH
+UFUgZHJpdmVyIGFuZCBhbGxvd2luZyBydW50aW1lCj4gUE0gb24gdGhlIEdQVSB2aWEgc3lzZnM6
+ICBUaGUgUE0gY29yZSB3aWxsIHRoZW4gdHJlYXQgdGhlIEdQVSBhcwo+ICJzdXNwZW5kZWQiLCB3
+aGljaCBpbiB0dXJuIGFsbG93cyB0aGUgcm9vdCBwb3J0IHRvIHJ1bnRpbWUgc3VzcGVuZCwKPiBj
+YXVzaW5nIHRoZSBwb3dlciByZXNvdXJjZXMgbGlzdGVkIGluIGl0cyBfUFIzIG9iamVjdCB0byBi
+ZSBwb3dlcmVkIG9mZi4KPiBUaGUgR1BVJ3MgQkFScyB3aWxsIGJlIHVuaW5pdGlhbGl6ZWQgd2hl
+biBhIGRyaXZlciBsYXRlciBwcm9iZXMgaXQuCj4gCj4gQW5vdGhlciBleGFtcGxlIGFyZSBoeWJy
+aWQgZ3JhcGhpY3MgbGFwdG9wcyB3aGVyZSB0aGUgR1BVIGl0c2VsZiAocmF0aGVyCj4gdGhhbiB0
+aGUgcm9vdCBwb3J0KSBpcyBjYXBhYmxlIG9mIHJ1bnRpbWUgc3VzcGVuZGluZyB0byBEM2NvbGQu
+ICBJZiB0aGUKPiBHUFUncyBpbnRlZ3JhdGVkIEhEQSBjb250cm9sbGVyIGlzIG5vdCBib3VuZCBh
+bmQgdGhlIEdQVSdzIGRyaXZlcgo+IGRlY2lkZXMgdG8gcnVudGltZSBzdXNwZW5kIHRvIEQzY29s
+ZCwgdGhlIEhEQSBjb250cm9sbGVyJ3MgQkFScyB3aWxsIGJlCj4gdW5pbml0aWFsaXplZCB3aGVu
+IGEgZHJpdmVyIGxhdGVyIHByb2JlcyBpdC4KPiAKPiBGaXggYnkgcmVzdG9yaW5nIHRoZSBCQVJz
+IG9uIHJ1bnRpbWUgcmVzdW1lIGlmIHRoZSBkZXZpY2UgaXMgbm90IGJvdW5kLgo+IFRoaXMgaXMg
+c3VmZmljaWVudCB0byBmaXggdGhlIGFib3ZlLW1lbnRpb25lZCB1c2UgY2FzZXMuICBPdGhlciB1
+c2UKPiBjYXNlcyBtaWdodCByZXF1aXJlIGEgZnVsbC1ibG93biBwY2lfc2F2ZV9zdGF0ZSgpIC8g
+cGNpX3Jlc3RvcmVfc3RhdGUoKQo+IG9yIGV4ZWN1dGlvbiBvZiBmaXh1cHMuICBXZSBjYW4gYWRk
+IHRoYXQgb25jZSB1c2UgY2FzZXMgbWF0ZXJpYWxpemUsCj4gbGV0J3Mgbm90IGluZmxhdGUgdGhl
+IGNvZGUgdW5uZWNlc3NhcmlseS4KCldoeSB3b3VsZCB3ZSBub3QgZG8gYSBmdWxsLWJsb3duIHJl
+c3RvcmU/ICBXaXRoIHRoaXMgcGF0Y2gsIEkgdGhpbmsKc29tZSBjb25maWd1cmF0aW9uIGRvbmUg
+ZHVyaW5nIGVudW1lcmF0aW9uLCBlLmcuLCBBU1BNIGFuZCBNUFMsIHdpbGwKYmUgbG9zdC4gICJs
+c3BjaSAtdnYiIG9mIHRoZSBIREEgYmVmb3JlIGFuZCBhZnRlciB0aGUgc3VzcGVuZCBtYXkgc2hv
+dwpkaWZmZXJlbnQgdGhpbmdzLCB3aGljaCBzZWVtcyBjb3VudGVyLWludHVpdGl2ZS4KCkkgd291
+bGRuJ3QgdGhpbmsgb2YgYSBmdWxsLWJsb3duIHJlc3RvcmUgYXMgImluZmxhdGluZyB0aGUgY29k
+ZSI7IEkKd291bGQgdGhpbmsgb2YgaXQgYXMgImhhdmluZyBmZXdlciBzcGVjaWFsIGNhc2VzIiwg
+aS5lLiwgd2UgYWx3YXlzIHVzZQp0aGUgc2FtZSByZXN0b3JlIHBhdGggaW5zdGVhZCBvZiBoYXZp
+bmcgdGhlIG1haW4gb25lIHBsdXMgYSBzcGVjaWFsCm9uZSBmb3IgdW5ib3VuZCBkZXZpY2VzLgoK
+PiBDYzogQmpvcm4gSGVsZ2FhcyA8YmhlbGdhYXNAZ29vZ2xlLmNvbT4KPiBDYzogUmFmYWVsIEou
+IFd5c29ja2kgPHJhZmFlbC5qLnd5c29ja2lAaW50ZWwuY29tPgo+IFNpZ25lZC1vZmYtYnk6IEx1
+a2FzIFd1bm5lciA8bHVrYXNAd3VubmVyLmRlPgo+IC0tLQo+ICBkcml2ZXJzL3BjaS9wY2ktZHJp
+dmVyLmMgfCA4ICsrKysrKy0tCj4gIGRyaXZlcnMvcGNpL3BjaS5jICAgICAgICB8IDIgKy0KPiAg
+ZHJpdmVycy9wY2kvcGNpLmggICAgICAgIHwgMSArCj4gIDMgZmlsZXMgY2hhbmdlZCwgOCBpbnNl
+cnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BjaS9w
+Y2ktZHJpdmVyLmMgYi9kcml2ZXJzL3BjaS9wY2ktZHJpdmVyLmMKPiBpbmRleCAzYmVkNmJlZGEw
+NTEuLjUxYjExY2JkNDhmNiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL3BjaS9wY2ktZHJpdmVyLmMK
+PiArKysgYi9kcml2ZXJzL3BjaS9wY2ktZHJpdmVyLmMKPiBAQCAtMTI3NywxMCArMTI3NywxNCBA
+QCBzdGF0aWMgaW50IHBjaV9wbV9ydW50aW1lX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYpCj4g
+IAo+ICAJLyoKPiAgCSAqIElmIHBjaV9kZXYtPmRyaXZlciBpcyBub3Qgc2V0ICh1bmJvdW5kKSwg
+dGhlIGRldmljZSBzaG91bGQKPiAtCSAqIGFsd2F5cyByZW1haW4gaW4gRDAgcmVnYXJkbGVzcyBv
+ZiB0aGUgcnVudGltZSBQTSBzdGF0dXMKPiArCSAqIGFsd2F5cyByZW1haW4gaW4gRDAgcmVnYXJk
+bGVzcyBvZiB0aGUgcnVudGltZSBQTSBzdGF0dXMuCj4gKwkgKiBCdXQgaWYgaXRzIHBhcmVudCBj
+YW4gZ28gdG8gRDNjb2xkLCB0aGlzIGRldmljZSBtYXkgaGF2ZQo+ICsJICogYmVlbiBpbiBEM2Nv
+bGQgYXMgd2VsbCBhbmQgcmVxdWlyZSByZXN0b3JhdGlvbiBvZiBpdHMgQkFScy4KPiAgCSAqLwo+
+IC0JaWYgKCFwY2lfZGV2LT5kcml2ZXIpCj4gKwlpZiAoIXBjaV9kZXYtPmRyaXZlcikgewo+ICsJ
+CXBjaV9yZXN0b3JlX2JhcnMocGNpX2Rldik7CgpJZiB3ZSBkbyBkZWNpZGUgbm90IHRvIGRvIGEg
+ZnVsbC1ibG93biByZXN0b3JlLCBob3cgZG8gd2UgZGVjaWRlCndoZXRoZXIgdG8gdXNlIHBjaV9y
+ZXN0b3JlX2JhcnMoKSBvciBwY2lfcmVzdG9yZV9jb25maWdfc3BhY2UoKT8KCkknbSBub3Qgc3Vy
+ZSB3aHkgd2UgaGF2ZSBib3RoLiAgVGhlIHBjaV9yZXN0b3JlX2JhcnMoKSBwYXRoIGxvb2tzIGEK
+bGl0dGxlIHNtYXJ0ZXIgaW4gdGhhdCBpdCBpcyBtb3JlIGNhcmVmdWwgd2hlbiB1cGRhdGluZyA2
+NC1iaXQgQkFScwp0aGF0IGNhbid0IGJlIHVwZGF0ZWQgYXRvbWljYWxseS4KCj4gIAkJcmV0dXJu
+IDA7Cj4gKwl9Cj4gIAo+ICAJaWYgKCFwbSB8fCAhcG0tPnJ1bnRpbWVfcmVzdW1lKQo+ICAJCXJl
+dHVybiAtRU5PU1lTOwo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BjaS9wY2kuYyBiL2RyaXZlcnMv
+cGNpL3BjaS5jCj4gaW5kZXggZjZhNGRkMTBkOWIwLi5mNjk0NjUwMjM1ZjIgMTAwNjQ0Cj4gLS0t
+IGEvZHJpdmVycy9wY2kvcGNpLmMKPiArKysgYi9kcml2ZXJzL3BjaS9wY2kuYwo+IEBAIC01NjMs
+NyArNTYzLDcgQEAgaW50IHBjaV93YWl0X2Zvcl9wZW5kaW5nKHN0cnVjdCBwY2lfZGV2ICpkZXYs
+IGludCBwb3MsIHUxNiBtYXNrKQo+ICAgKiBSZXN0b3JlIHRoZSBCQVIgdmFsdWVzIGZvciBhIGdp
+dmVuIGRldmljZSwgc28gYXMgdG8gbWFrZSBpdAo+ICAgKiBhY2Nlc3NpYmxlIGJ5IGl0cyBkcml2
+ZXIuCj4gICAqLwo+IC1zdGF0aWMgdm9pZCBwY2lfcmVzdG9yZV9iYXJzKHN0cnVjdCBwY2lfZGV2
+ICpkZXYpCj4gK3ZvaWQgcGNpX3Jlc3RvcmVfYmFycyhzdHJ1Y3QgcGNpX2RldiAqZGV2KQo+ICB7
+Cj4gIAlpbnQgaTsKPiAgCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGNpL3BjaS5oIGIvZHJpdmVy
+cy9wY2kvcGNpLmgKPiBpbmRleCBmY2Q4MTkxMWIxMjcuLjI5ZGMxNWJiZTNiZiAxMDA2NDQKPiAt
+LS0gYS9kcml2ZXJzL3BjaS9wY2kuaAo+ICsrKyBiL2RyaXZlcnMvcGNpL3BjaS5oCj4gQEAgLTgz
+LDYgKzgzLDcgQEAgdm9pZCBwY2lfYWxsb2NhdGVfY2FwX3NhdmVfYnVmZmVycyhzdHJ1Y3QgcGNp
+X2RldiAqZGV2KTsKPiAgdm9pZCBwY2lfZnJlZV9jYXBfc2F2ZV9idWZmZXJzKHN0cnVjdCBwY2lf
+ZGV2ICpkZXYpOwo+ICBib29sIHBjaV9icmlkZ2VfZDNfcG9zc2libGUoc3RydWN0IHBjaV9kZXYg
+KmRldik7Cj4gIHZvaWQgcGNpX2JyaWRnZV9kM191cGRhdGUoc3RydWN0IHBjaV9kZXYgKmRldik7
+Cj4gK3ZvaWQgcGNpX3Jlc3RvcmVfYmFycyhzdHJ1Y3QgcGNpX2RldiAqZGV2KTsKPiAgCj4gIHN0
+YXRpYyBpbmxpbmUgdm9pZCBwY2lfd2FrZXVwX2V2ZW50KHN0cnVjdCBwY2lfZGV2ICpkZXYpCj4g
+IHsKPiAtLSAKPiAyLjE1LjEKPiAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRl
+c2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8v
+ZHJpLWRldmVsCg==
