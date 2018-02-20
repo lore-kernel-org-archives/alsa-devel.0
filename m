@@ -1,22 +1,23 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH V3 1/2 RESEND] dt-bindings: bcm283x: Fix
- register ranges of bcm2835-i2s
-Date: Mon, 19 Feb 2018 13:35:44 -0600
-Message-ID: <20180219193544.eih76l5j7tlde6ul@rob-hp-laptop>
-References: <1518778534-3328-1-git-send-email-stefan.wahren@i2se.com>
- <1518778534-3328-2-git-send-email-stefan.wahren@i2se.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v3 02/25] soc: qcom: add support to APR bus
+	driver
+Date: Tue, 20 Feb 2018 09:33:39 +0000
+Message-ID: <6be00df2-de80-0d40-9603-8b0fd94efa41@linaro.org>
+References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
+ <20180213165837.1620-3-srinivas.kandagatla@linaro.org>
+ <20180219030819.qovj4swuvged6c24@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f194.google.com (mail-ot0-f194.google.com
- [74.125.82.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E510266DFD
- for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 20:35:46 +0100 (CET)
-Received: by mail-ot0-f194.google.com with SMTP id 41so4316095otd.13
- for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2018 11:35:46 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <1518778534-3328-2-git-send-email-stefan.wahren@i2se.com>
+Received: from mail-wr0-f194.google.com (mail-wr0-f194.google.com
+ [209.85.128.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A7E9267096
+ for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 10:33:41 +0100 (CET)
+Received: by mail-wr0-f194.google.com with SMTP id v65so12316283wrc.11
+ for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 01:33:41 -0800 (PST)
+In-Reply-To: <20180219030819.qovj4swuvged6c24@rob-hp-laptop>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,23 +27,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stefan Wahren <stefan.wahren@i2se.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Eric Anholt <eric@anholt.net>, Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: Rob Herring <robh@kernel.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, andy.gross@linaro.org, linux-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 16, 2018 at 11:55:33AM +0100, Stefan Wahren wrote:
-> Since 517e7a1537a ("ASoC: bcm2835: move to use the clock framework")
-> the bcm2835-i2s requires a clock as DT property. Unfortunately
-> the necessary DT change has never been applied. While we are at it
-> also fix the first PCM register range to cover the PCM_GRAY register.
-> 
-> This patch only fixes the affected dt-bindings.
-> 
-> Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
-> Reviewed-by: Eric Anholt <eric@anholt.net>
-> ---
->  Documentation/devicetree/bindings/dma/brcm,bcm2835-dma.txt   | 4 ++--
->  Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt | 9 ++++-----
->  2 files changed, 6 insertions(+), 7 deletions(-)
+Thanks for review comments,
 
-Reviewed-by: Rob Herring <robh@kernel.org> 
+On 19/02/18 03:08, Rob Herring wrote:
+> On Tue, Feb 13, 2018 at 04:58:14PM +0000,srinivas.kandagatla@linaro.org  wrote:
+>> From: Srinivas Kandagatla<srinivas.kandagatla@linaro.org>
+>>
+>> This patch adds support toi APR bus (Asynchronous Packet Router) driver.
+>> ARP driver is made as a bus driver so that the apr devices can added removed
+>> more dynamically depending on the state of the services on the dsp.
+>> APR is used for communication between application processor and QDSP to
+>> use services on QDSP like Audio and others.
+>>
+>> Signed-off-by: Srinivas Kandagatla<srinivas.kandagatla@linaro.org>
+>> ---
+>>   drivers/soc/qcom/Kconfig           |   9 +
+>>   drivers/soc/qcom/Makefile          |   1 +
+>>   drivers/soc/qcom/apr.c             | 381 +++++++++++++++++++++++++++++++++++++
+>>   include/dt-bindings/soc/qcom,apr.h |  27 +++
+> This belongs in the binding patch.
+> 
+I agree, will fix it in next version.
+>>   include/linux/mod_devicetable.h    |  11 ++
+>>   include/linux/soc/qcom/apr.h       | 131 +++++++++++++
+>>   6 files changed, 560 insertions(+)
+>>   create mode 100644 drivers/soc/qcom/apr.c
+>>   create mode 100644 include/dt-bindings/soc/qcom,apr.h
+>>   create mode 100644 include/linux/soc/qcom/apr.h
+> 
+>> diff --git a/include/dt-bindings/soc/qcom,apr.h b/include/dt-bindings/soc/qcom,apr.h
+>> new file mode 100644
+>> index 000000000000..fb162ac4ca0e
+>> --- /dev/null
+>> +++ b/include/dt-bindings/soc/qcom,apr.h
+>> @@ -0,0 +1,27 @@
+> SPDX tag
+
+Thanks for reminding this.. Will fix it in next spin.
+
+> 
