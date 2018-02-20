@@ -1,17 +1,17 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [4.4-stable 10/22] ASoC: Intel: Kconfig: fix build
-	when ACPI is not enabled
-Date: Tue, 20 Feb 2018 12:54:57 +0100
-Message-ID: <20180220115527.1806578-11-arnd@arndb.de>
-References: <20180220115527.1806578-1-arnd@arndb.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: max9759: Add Amplifier Driver
+Date: Tue, 20 Feb 2018 12:05:21 +0000
+Message-ID: <20180220120521.GC6378@sirena.org.uk>
+References: <1519047958-22583-1-git-send-email-narmstrong@baylibre.com>
+ <1519047958-22583-3-git-send-email-narmstrong@baylibre.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5208672026671580661=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
- by alsa0.perex.cz (Postfix) with ESMTP id D9455266F0D
- for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 12:59:11 +0100 (CET)
-In-Reply-To: <20180220115527.1806578-1-arnd@arndb.de>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F22C266F0D
+ for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 13:05:23 +0100 (CET)
+In-Reply-To: <1519047958-22583-3-git-send-email-narmstrong@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,84 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: stable@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Vinod Koul <vinod.koul@intel.com>, Greg KH <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Neil Armstrong <narmstrong@baylibre.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Vinod Koul <vinod.koul@intel.com>
 
-commit 3493d4a86457c7de9f1e602b4267c9b0f9ec1c9f upstream.
+--===============5208672026671580661==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Fig2xvG2VGoz8o/s"
+Content-Disposition: inline
 
-Randy reported following error when ACPI is not enabled:
 
-warning: (SND_SOC_INTEL_BYTCR_RT5640_MACH && SND_SOC_INTEL_BYTCR_RT5651_MACH
-&& SND_SOC_INTEL_CHT_BSW_RT5672_MACH && SND_SOC_INTEL_CHT_BSW_RT5645_MACH &&
-SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH) selects SND_SST_IPC_ACPI
-+which has unmet direct dependencies (SOUND && !M68K && !UML && SND &&
-SND_SOC && ACPI)
+--Fig2xvG2VGoz8o/s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-causing these build errors:
+On Mon, Feb 19, 2018 at 02:45:58PM +0100, Neil Armstrong wrote:
 
-In file included from ../sound/soc/intel/atom/sst/sst_acpi.c:40:0:
-../include/acpi/acpi_bus.h:65:20: error: conflicting types for
-'acpi_evaluate_dsm'
- union acpi_object *acpi_evaluate_dsm(acpi_handle handle, const u8 *uuid,
-In file included from ../sound/soc/intel/atom/sst/sst_acpi.c:31:0:
-../include/linux/acpi.h:676:34: note: previous definition of
-'acpi_evaluate_dsm' was here
- static inline union acpi_object *acpi_evaluate_dsm(acpi_handle handle,
+> +++ b/sound/soc/codecs/max9759.c
+> @@ -0,0 +1,207 @@
+> +// SPDX-Licence-Identifier: GPL-2.0
+> +/*
+> + * MAX9759 Amplifier Driver
+> + *
 
-CONFIG_SND_SST_IPC_ACPI was already dependent upon ACPI, but that was not
-solving it. So move the depends up to machine drivers and remove from
-CONFIG_SND_SST_IPC_ACPI.
+Please don't mix C and C++ style comments like this, make it all a C++
+comment - it looks more intentional.  Otherwise this looks good so I'll
+apply, please send an incremental fixup.
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-[arnd: rebased to 4.4-stable kernel]
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/soc/intel/Kconfig | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+--Fig2xvG2VGoz8o/s
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index d430ef5a4f38..79c29330c56a 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -24,7 +24,6 @@ config SND_SST_IPC_PCI
- config SND_SST_IPC_ACPI
- 	tristate
- 	select SND_SST_IPC
--	depends on ACPI
- 
- config SND_SOC_INTEL_SST
- 	tristate
-@@ -91,7 +90,7 @@ config SND_SOC_INTEL_BROADWELL_MACH
- 
- config SND_SOC_INTEL_BYTCR_RT5640_MACH
- 	tristate "ASoC Audio DSP Support for MID BYT Platform"
--	depends on X86 && I2C
-+	depends on X86 && I2C && ACPI
- 	select SND_SOC_RT5640
- 	select SND_SST_MFLD_PLATFORM
- 	select SND_SST_IPC_ACPI
-@@ -103,7 +102,7 @@ config SND_SOC_INTEL_BYTCR_RT5640_MACH
- 
- config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
-         tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5672 codec"
--        depends on X86_INTEL_LPSS && I2C
-+        depends on X86_INTEL_LPSS && I2C && ACPI
-         select SND_SOC_RT5670
-         select SND_SST_MFLD_PLATFORM
-         select SND_SST_IPC_ACPI
-@@ -115,7 +114,7 @@ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
- 
- config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
- 	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5645/5650 codec"
--	depends on X86_INTEL_LPSS && I2C
-+	depends on X86_INTEL_LPSS && I2C && ACPI
- 	select SND_SOC_RT5645
- 	select SND_SST_MFLD_PLATFORM
- 	select SND_SST_IPC_ACPI
--- 
-2.9.0
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqMDwEACgkQJNaLcl1U
+h9BKqQf+I8r9vpHpGAJfRSiXdFwKEDA9HVOxBRLQVV4FOhfaThFShCf1TPJMbMS7
+oGAbl6/DuKNlpabrrkCv7jWipyVCDOWPN/YvvpWph6RbIHwUhBZEF4BucOclXGhD
+kgKEEQBsSCpjZfALXqRKfdCWTe8gFnX+pAi/eP3cDChfvmDdQSlEx1siEh6ffTDW
+wKoGAl/DlYmygtOKzBe4I8/KHgbV2Dmd9/WvPqdTPCiGD0LpFJV3RmYM6TlQjQxA
+DAYRtPQ9+DU0ZvDV4lKKa7Pso18edxsVyk1L7mBp+HOqOTxkByHRq/R+ZOJKuDkg
+GfODTxFqESv8pyFbXA54t4Q6Dv25dA==
+=1WAN
+-----END PGP SIGNATURE-----
+
+--Fig2xvG2VGoz8o/s--
+
+--===============5208672026671580661==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5208672026671580661==--
