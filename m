@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Add missing clock gating
-	parameter when parsing hw_configs" to the asoc tree
-Date: Tue, 20 Feb 2018 12:09:18 +0000
-Message-ID: <E1eo6jW-00039l-Ts@debutante>
-References: <20180219203636.3692-2-k.marinushkin@gmail.com>
+Subject: Applied "ASoC: uniphier: evea: fix typo 'eva' ->
+	'evea'" to the asoc tree
+Date: Tue, 20 Feb 2018 12:09:37 +0000
+Message-ID: <E1eo6jp-0003Aq-Hk@debutante>
+References: <20180220095310.13464-1-suzuki.katsuhiro@socionext.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B8B9426755C
- for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 13:09:30 +0100 (CET)
-In-Reply-To: <20180219203636.3692-2-k.marinushkin@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BC68267546
+ for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 13:09:52 +0100 (CET)
+In-Reply-To: <20180220095310.13464-1-suzuki.katsuhiro@socionext.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kirill Marinushkin <k.marinushkin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Cc: alsa-devel@alsa-project.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.org, Jassi Brar <jaswinder.singh@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: Add missing clock gating parameter when parsing hw_configs
+   ASoC: uniphier: evea: fix typo 'eva' -> 'evea'
 
 has been applied to the asoc tree at
 
@@ -53,75 +53,41 @@ to this mail.
 Thanks,
 Mark
 
->From bdb86c40e8c5d2abe2ec7be964d621c1b7c27081 Mon Sep 17 00:00:00 2001
-From: Kirill Marinushkin <k.marinushkin@gmail.com>
-Date: Mon, 19 Feb 2018 21:36:35 +0100
-Subject: [PATCH] ASoC: topology: Add missing clock gating parameter when
- parsing hw_configs
+>From 09ad28a31c27df439e838ee5700d4e2dfea0e462 Mon Sep 17 00:00:00 2001
+From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Date: Tue, 20 Feb 2018 18:53:10 +0900
+Subject: [PATCH] ASoC: uniphier: evea: fix typo 'eva' -> 'evea'
 
-Clock gating parameter is a part of `dai_fmt`. It is supported by
-`alsa-lib` when creating a topology binary file, but ignored by kernel
-when loading this topology file.
-
-After applying this commit, the clock gating parameter is not ignored any
-more. The old behaviour is not broken, as by default the parameter value
-is 0.
-
-For example, the following config, based on
-alsa-lib/src/conf/topology/broadwell/broadwell.conf, is now supported:
-
-~~~~
-SectionHWConfig."CodecHWConfig" {
-        id "1"
-        format "I2S"            # physical audio format.
-        bclk   "master"         # Platform is master of bit clock
-        fsync  "master"         # platform is master of fsync
-        pm_gate_clocks "true"   # clock can be gated
-}
-
-SectionLink."Codec" {
-
-        # used for binding to the physical link
-        id "0"
-
-        hw_configs [
-                "CodecHWConfig"
-        ]
-
-        default_hw_conf_id "1"
-}
-~~~~
-
-Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
-Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Reviewed-by: Masami Hiramatsu <masami.hiramatsu@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/uniphier/evea.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 01a50413c66f..bac70676a6b4 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1981,6 +1981,13 @@ static void set_link_hw_format(struct snd_soc_dai_link *link,
+diff --git a/sound/soc/uniphier/evea.c b/sound/soc/uniphier/evea.c
+index cad7e60de21d..ac2d30b55fb6 100644
+--- a/sound/soc/uniphier/evea.c
++++ b/sound/soc/uniphier/evea.c
+@@ -292,7 +292,7 @@ static int evea_set_switch_hp(struct snd_kcontrol *kcontrol,
+ 	return evea_update_switch_hp(evea);
+ }
  
- 		link->dai_fmt = hw_config->fmt & SND_SOC_DAIFMT_FORMAT_MASK;
- 
-+		/* clock gating */
-+		if (hw_config->clock_gated == SND_SOC_TPLG_DAI_CLK_GATE_GATED)
-+			link->dai_fmt |= SND_SOC_DAIFMT_GATED;
-+		else if (hw_config->clock_gated ==
-+			 SND_SOC_TPLG_DAI_CLK_GATE_CONT)
-+			link->dai_fmt |= SND_SOC_DAIFMT_CONT;
-+
- 		/* clock signal polarity */
- 		invert_bclk = hw_config->invert_bclk;
- 		invert_fsync = hw_config->invert_fsync;
+-static const struct snd_kcontrol_new eva_controls[] = {
++static const struct snd_kcontrol_new evea_controls[] = {
+ 	SOC_SINGLE_BOOL_EXT("Line Capture Switch", 0,
+ 			    evea_get_switch_lin, evea_set_switch_lin),
+ 	SOC_SINGLE_BOOL_EXT("Line Playback Switch", 0,
+@@ -384,8 +384,8 @@ static struct snd_soc_component_driver soc_codec_evea = {
+ 	.num_dapm_widgets	= ARRAY_SIZE(evea_widgets),
+ 	.dapm_routes		= evea_routes,
+ 	.num_dapm_routes	= ARRAY_SIZE(evea_routes),
+-	.controls		= eva_controls,
+-	.num_controls		= ARRAY_SIZE(eva_controls),
++	.controls		= evea_controls,
++	.num_controls		= ARRAY_SIZE(evea_controls),
+ 	.idle_bias_on		= 1,
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
 -- 
 2.16.1
