@@ -1,15 +1,18 @@
 From: Kirill Marinushkin <k.marinushkin@gmail.com>
-Subject: Re: [PATCH,
- alsa-lib 1/2] topology: Fix parsing config with multiple hw_configs
-Date: Tue, 20 Feb 2018 18:08:14 +0100
-Message-ID: <c63ec947-839b-392f-8df6-acb498ce3b36@gmail.com>
-References: <20180219060758.17344-1-k.marinushkin@gmail.com>
+Subject: [RESEND PATCH v2 0/2] ASoC: topology: Add parsing
+	clock gating
+Date: Tue, 20 Feb 2018 18:44:44 +0100
+Message-ID: <20180220174446.7784-1-k.marinushkin@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20180219060758.17344-1-k.marinushkin@gmail.com>
-Content-Language: en-US
+Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
+ [209.85.128.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 27FF5267502
+ for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 18:44:39 +0100 (CET)
+Received: by mail-wr0-f193.google.com with SMTP id 34so16744710wre.13
+ for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 09:44:39 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,77 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: patch@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Kirill Marinushkin <k.marinushkin@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/19/18 07:07, Kirill Marinushkin wrote:
-> Currently, if the config file includes several hw_configs sections,
-> parse_hw_config_refs() returns after parsing only the first section.
->
-> For example, the following config, based on
-> alsa-lib/src/conf/topology/broadwell/broadwell.conf, is parsed incorrectly:
->
-> ~~~~
-> SectionHWConfig."CodecHWConfig" {
->         id "1"
->         format "I2S"            # physical audio format.
->         bclk   "master"         # Platform is master of bit clock
->         fsync  "master"         # platform is master of fsync
-> }
->
-> SectionHWConfig."CodecHWConfig2" {
->         id "2"
->         format "AC97"
-> }
->
-> SectionLink."Codec" {
->
->         # used for binding to the physical link
->         id "0"
->
->         hw_configs [
->                 "CodecHWConfig"
->                 "CodecHWConfig2"
->         ]
->
->         default_hw_conf_id "2"
-> }
-> ~~~~
->
-> Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
-> Cc: alsa-devel@alsa-project.org
-> Cc: patch@alsa-project.org
-> ---
->  src/topology/pcm.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-> index 58cee31d..d3836677 100644
-> --- a/src/topology/pcm.c
-> +++ b/src/topology/pcm.c
-> @@ -882,6 +882,7 @@ static int parse_hw_config_refs(snd_tplg_t *tplg, snd_config_t *cfg,
->  	/* refer to a list of HW configs */
->  	snd_config_for_each(i, next, cfg) {
->  		const char *val;
-> +		int err;
->  
->  		n = snd_config_iterator_entry(i);
->  		if (snd_config_get_string(n, &val) < 0)
-> @@ -893,7 +894,9 @@ static int parse_hw_config_refs(snd_tplg_t *tplg, snd_config_t *cfg,
->  		}
->  
->  		link->num_hw_configs++;
-> -		return tplg_ref_add(elem, SND_TPLG_TYPE_HW_CONFIG, val);
-> +		err = tplg_ref_add(elem, SND_TPLG_TYPE_HW_CONFIG, val);
-> +		if (err < 0)
-> +			return err;
->  	}
->  
->  	return 0;
+This patch series adds parsing the topology clock gating parameter, which
+is currently can be set by alsa-lib, but ignored by kernel.
 
+The patch 1/2 modifies the UAPI header. If it is applied, the corresponded
+patch should be applied in alsa-lib [2].
 
-This patch is outdated. Patch v2 is sent in a different thread to replace it.
+Related, but not required alsa-lib patch: [1].
 
-Best Regards,
-Kirill
+[1]. [alsa-lib,v2,1/2] topology: Fix parsing config with multiple
+  hw_configs
+[2]. [alsa-lib,v2,2/2] ASoC: topology: Add defines for
+  snd_soc_tplg_hw_config.clock_gated
+
+Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
+
+Kirill Marinushkin (2):
+  ASoC: topology: Add defines for snd_soc_tplg_hw_config.clock_gated
+  ASoC: topology: Add missing clock gating parameter when parsing
+    hw_configs
+
+ include/uapi/sound/asoc.h | 7 ++++++-
+ sound/soc/soc-topology.c  | 7 +++++++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
+
+-- 
+2.13.6
