@@ -1,68 +1,79 @@
-From: Masami Hiramatsu <masami.hiramatsu@linaro.org>
-Subject: Re: [PATCH] ASoC: uniphier: evea: fix typo 'eva' -> 'evea'
-Date: Tue, 20 Feb 2018 19:21:43 +0900
-Message-ID: <CAA93ih00RV2rhfMyLupxe+-3xvkLyA-TgpzybPKm4E0FqTJKOg@mail.gmail.com>
-References: <20180220095310.13464-1-suzuki.katsuhiro@socionext.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: ASoC: Failed to create component debugfs directory
+Date: Tue, 20 Feb 2018 11:47:08 +0000
+Message-ID: <20180220114708.GA6378@sirena.org.uk>
+References: <CAOMZO5D071pPr4fL7eLwWgX6h8Mppwic2u4mUCGzUZiss-+3MQ@mail.gmail.com>
+ <20180219201440.GA10420@Asurada>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20180220095310.13464-1-suzuki.katsuhiro@socionext.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Cc: Jassi Brar <jaswinder.singh@linaro.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Linux kernel mailing list <linux-kernel@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/mixed; boundary="===============8257123620644519413=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id C9807267079
+ for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2018 12:47:09 +0100 (CET)
+In-Reply-To: <20180219201440.GA10420@Asurada>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-2018-02-20 18:53 GMT+09:00 Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>:
 
-Looks good to me:)
-
-Reviewed-by: Masami Hiramatsu <masami.hiramatsu@linaro.org>
-
-Thanks,
-
-> Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-> ---
->  sound/soc/uniphier/evea.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/sound/soc/uniphier/evea.c b/sound/soc/uniphier/evea.c
-> index cad7e60de21d..ac2d30b55fb6 100644
-> --- a/sound/soc/uniphier/evea.c
-> +++ b/sound/soc/uniphier/evea.c
-> @@ -292,7 +292,7 @@ static int evea_set_switch_hp(struct snd_kcontrol *kcontrol,
->         return evea_update_switch_hp(evea);
->  }
->
-> -static const struct snd_kcontrol_new eva_controls[] = {
-> +static const struct snd_kcontrol_new evea_controls[] = {
->         SOC_SINGLE_BOOL_EXT("Line Capture Switch", 0,
->                             evea_get_switch_lin, evea_set_switch_lin),
->         SOC_SINGLE_BOOL_EXT("Line Playback Switch", 0,
-> @@ -384,8 +384,8 @@ static struct snd_soc_component_driver soc_codec_evea = {
->         .num_dapm_widgets       = ARRAY_SIZE(evea_widgets),
->         .dapm_routes            = evea_routes,
->         .num_dapm_routes        = ARRAY_SIZE(evea_routes),
-> -       .controls               = eva_controls,
-> -       .num_controls           = ARRAY_SIZE(eva_controls),
-> +       .controls               = evea_controls,
-> +       .num_controls           = ARRAY_SIZE(evea_controls),
->         .idle_bias_on           = 1,
->         .use_pmdown_time        = 1,
->         .endianness             = 1,
-> --
-> 2.16.1
->
+--===============8257123620644519413==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="4Ckj6UjgE2iN1+kY"
+Content-Disposition: inline
 
 
+--4Ckj6UjgE2iN1+kY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-Masami Hiramatsu
+On Mon, Feb 19, 2018 at 12:14:41PM -0800, Nicolin Chen wrote:
+> On Mon, Feb 19, 2018 at 03:49:11PM -0300, Fabio Estevam wrote:
+
+> > [    3.065722] fsl-spdif-dai 2004000.spdif: ASoC: Failed to create
+> > component debugfs directory
+
+> > I haven't started debugging this yet and not sure if this is something
+> > fsl driver specific.
+
+> I think it's because we recently changed all CPU dai drivers to
+> component drivers, so our drivers should probably add something
+> to create debugfs directories I guess...will take a look at it.
+
+Hrm, that's not the goal - if every driver has to do it there's
+something wrong.
+
+--4Ckj6UjgE2iN1+kY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqMCrkACgkQJNaLcl1U
+h9AHpgf/YRWihlik6GS9CMpA6dd09D2/Vnnj3I0+O7jXtuVBQZxiA9v5glVO8BuB
+LytqqQyFpjZxpdxzHN5Okn1S6zw8HHAAKeOlh5mfarIhjfE0+TYGECDrBKbXqSbR
+k/4RTgcWK67qfhfQ8YBVqV1Z9STKTkhPTumc7t9Qaa46Zy5H+tcslmjYtDiTq6DW
+irIRHoGLII+kpYlVOs++HzAF7bCcsQdvAtBbIZ//q9g7x5sPUJQLM/EZkMD0DEAJ
+5Ngrd8ZC8VnWQcQXZjGBwe6c96volNckewXxAkQnEcKzmYh4BN3LSHlzn3qWtj1M
+raIRyqiqljgAQs2Wd1ydfXZEFGu7Mw==
+=OTI2
+-----END PGP SIGNATURE-----
+
+--4Ckj6UjgE2iN1+kY--
+
+--===============8257123620644519413==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8257123620644519413==--
