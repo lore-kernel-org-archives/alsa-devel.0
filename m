@@ -1,98 +1,100 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: ASoC: Failed to create component debugfs directory
-Date: Wed, 21 Feb 2018 13:02:41 +0000
-Message-ID: <20180221130241.GI8334@sirena.org.uk>
-References: <CAOMZO5D071pPr4fL7eLwWgX6h8Mppwic2u4mUCGzUZiss-+3MQ@mail.gmail.com>
- <CAOMZO5C3joR2QS+yFDmQUs1Q69PfuVw8tBMNd+F+cjDnUMEPSQ@mail.gmail.com>
- <5b591fd8-d4d5-27bb-0850-a376da20d7f3@metafoo.de>
- <CAOMZO5Ai-EtFo--OYLKhsB+63u6D+Vyjx_hKVeG3EGXbHkY5jw@mail.gmail.com>
- <99ce1244-6646-6292-2c50-151819b01cfa@metafoo.de>
- <CAOMZO5CA99p+2DYrbWQnLzh5Lj8syX4j18V8R8WPV2KDZz-DVQ@mail.gmail.com>
+From: "Katsuhiro Suzuki" <suzuki.katsuhiro@socionext.com>
+Subject: Re: [PATCH 2/2] ASoC: support ROHM BD28623 codec
+Date: Wed, 21 Feb 2018 22:15:52 +0900
+Message-ID: <002601d3ab16$195fdf20$4c1f9d60$@socionext.com>
+References: <20180221043311.25840-1-suzuki.katsuhiro@socionext.com>
+ <20180221043311.25840-3-suzuki.katsuhiro@socionext.com>
+ <20180221122639.GH8334@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4616681959058308180=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C0A1E2675B4
- for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 14:02:42 +0100 (CET)
-In-Reply-To: <CAOMZO5CA99p+2DYrbWQnLzh5Lj8syX4j18V8R8WPV2KDZz-DVQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20180221122639.GH8334@sirena.org.uk>
+Content-Language: ja
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: 'Mark Brown' <broonie@kernel.org>, =?iso-2022-jp?B?U3V6dWtpLCBLYXRzdWhpcm8vGyRCTmtMWhsoQiAbJEI+IUduGyhC?= <suzuki.katsuhiro@socionext.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.org, Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello Mark,
 
---===============4616681959058308180==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="NyChO5MpGs3JHJbz"
-Content-Disposition: inline
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Wednesday, February 21, 2018 9:27 PM
+> To: Suzuki, Katsuhiro <suzuki.katsuhiro@socionext.com>
+> Cc: alsa-devel@alsa-project.org; Rob Herring <robh+dt@kernel.org>; devicetree@vger.kernel.org; Masami Hiramatsu
+> <masami.hiramatsu@linaro.org>; Jassi Brar <jaswinder.singh@linaro.org>; linux-arm-kernel@lists.infradead.org;
+> linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH 2/2] ASoC: support ROHM BD28623 codec
+> 
+> On Wed, Feb 21, 2018 at 01:33:11PM +0900, Katsuhiro Suzuki wrote:
+> 
+> > +++ b/sound/soc/codecs/bd28623.c
+> > @@ -0,0 +1,258 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * ROHM BD28623MUV class D speaker amplifier codec driver.
+> > + *
+> 
+> Please make the entire comment C++ so this looks intentional.
+> 
+> > +		dev_err(dev, "Failed to enable supplies: %d\n", ret);
+> > +		return ret;
+> > +	}
+> > +
+> > +	gpiod_set_value(bd->reset_gpio, 0);
+> 
+> Since this GPIO is not needed in atomic contexts you should use the
+> _cansleep() versions of the GPIO functions - it doesn't cost you
+> anything and means that if for some reason someone wired this up to a
+> GPIO that can't be used in atomic context the driver will just work.
+> 
 
-
---NyChO5MpGs3JHJbz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Feb 20, 2018 at 04:37:33PM -0300, Fabio Estevam wrote:
-
-> Thanks for your clarification.
-
-> What is the best way to avoid the "Failed to create
-> component debugfs directory" warning?
-
-It's a legit warning - we shouldn't really be creating two components
-for the same device.  However this is a bit of a corner case as it's the
-dmaengine platform driver which is kind of a virtual device, it's not
-really the device that we use with DMA that's being represented but
-rather the link between that and the DMA controller.
-
-Does the below patch (completely untested) help here?  It adds a prefix
-to the name for deduplication. =20
-
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-=
-dmaengine-pcm.c
-index d53786498b61..d5a6eea64036 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -431,6 +431,7 @@ int snd_dmaengine_pcm_register(struct device *dev,
- 	if (!pcm)
- 		return -ENOMEM;
-=20
-+	pcm->platform.component.name_prefix =3D "dma";
- 	pcm->config =3D config;
- 	pcm->flags =3D flags;
-=20
-
---NyChO5MpGs3JHJbz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqNbfAACgkQJNaLcl1U
-h9D2Lgf9F9ps3/Y+c0VL9SXWWcRoX68vJQD9QfhogRmqad6inG350XGETUkIrPxp
-o8Ad1mqhOJ3vXbCFP25iH9ApPeCCZTbTpSZU5rpAjXAAWxXlTKsmQWFPlCk8B47V
-ovGM6BrpdGvVcLnsRalIaocEMOwYE556leNZh7PZUBUvIhgXhbyoB9PegxIJLd1c
-OXPbp+ftxnrjXcNfRyOWVUjTmEyiCbAiAct/KDSiI2hMb5joCnomlzwDYSgsmSzk
-+ooJS3tj9t7y7XCUY/OGR5ISWkseRNhc7hlTh37rQXFQAuJ1mQPsube9lZRlrCZS
-GX8QPXf2z+qIi1tzaqlf34iq0pFvcg==
-=bxs7
------END PGP SIGNATURE-----
-
---NyChO5MpGs3JHJbz--
-
---===============4616681959058308180==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Thank you, I'll fix it.
 
 
---===============4616681959058308180==--
+> > +	bd->reset_gpio = devm_gpiod_get_optional(dev, "reset",
+> > +						 GPIOD_OUT_HIGH);
+> 
+> > +	bd->mute_gpio = devm_gpiod_get_optional(dev, "mute",
+> > +						GPIOD_OUT_HIGH);
+> 
+> These properties were documented as mandatory in the binding but are
+> optional here.  It's fine that they're optional but I'd expect the
+> binding to be consistent with this.
+> 
+
+These GPIO is optional if board vendor connects directly RSTX and MUTEX pins
+to VCC. So I think I should fix DT-bindings document.
+
+
+> > +static int bd28623_remove(struct platform_device *pdev)
+> > +{
+> > +	struct bd28623_priv *bd = platform_get_drvdata(pdev);
+> > +
+> > +	regulator_bulk_disable(ARRAY_SIZE(bd->supplies), bd->supplies);
+> > +
+> > +	return 0;
+> > +}
+> 
+> We don't enable the supplies explicitly as part of the probe function so
+> it feels wrong to disable on remove() - I'm sure it is fine in practice
+> as-is but I'd have to think too hard to confirm that.  I'd put this in a
+> component level remove function instead so that it's consistent.
+
+Ah, indeed. I will use component driver's remove() function instead of platform.
+
+Thank you for review!
+
+
+Regards,
+--
+Katsuhiro Suzuki
