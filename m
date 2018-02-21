@@ -1,22 +1,22 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 04/11] ASoC: rt5651: Simplify
-	set_bias_level()
-Date: Wed, 21 Feb 2018 21:11:34 +0100
-Message-ID: <92dc88f0-c928-3c15-3295-b77a5dedbd58@redhat.com>
-References: <20180220221511.22861-1-hdegoede@redhat.com>
- <20180220221511.22861-4-hdegoede@redhat.com>
- <20180221114328.GC8334@sirena.org.uk>
+From: Kirill Marinushkin <k.marinushkin@gmail.com>
+Subject: Re: [RESEND PATCH v2 2/2] ASoC: topology: Add missing
+ clock gating parameter when parsing hw_configs
+Date: Wed, 21 Feb 2018 21:16:15 +0100
+Message-ID: <c30eb9d9-11ff-f5c9-bb4e-ab0f9a8f4c09@gmail.com>
+References: <20180220174446.7784-1-k.marinushkin@gmail.com>
+ <20180220174446.7784-3-k.marinushkin@gmail.com>
+ <CAHp75Vc451W4GvvVCv-70EO6Cgn99Y+HV9xb530nJ72aT79rLQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wr0-f176.google.com (mail-wr0-f176.google.com
  [209.85.128.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 08DE4267634
- for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 21:11:36 +0100 (CET)
-Received: by mail-wr0-f176.google.com with SMTP id u49so7944489wrc.10
- for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 12:11:36 -0800 (PST)
-In-Reply-To: <20180221114328.GC8334@sirena.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5884C267645
+ for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 21:16:08 +0100 (CET)
+Received: by mail-wr0-f176.google.com with SMTP id k9so7985277wre.9
+ for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 12:16:08 -0800 (PST)
+In-Reply-To: <CAHp75Vc451W4GvvVCv-70EO6Cgn99Y+HV9xb530nJ72aT79rLQ@mail.gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,44 +27,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 02/21/18 15:50, Andy Shevchenko wrote:
+> On Tue, Feb 20, 2018 at 7:44 PM, Kirill Marinushkin
+> <k.marinushkin@gmail.com> wrote:
+>> Clock gating parameter is a part of `dai_fmt`. It is supported by
+>> `alsa-lib` when creating a topology binary file, but ignored by kernel
+>> when loading this topology file.
+>> +               /* clock gating */
+>> +               if (hw_config->clock_gated == SND_SOC_TPLG_DAI_CLK_GATE_GATED)
+>> +                       link->dai_fmt |= SND_SOC_DAIFMT_GATED;
+>> +               else if (hw_config->clock_gated ==
+>> +                        SND_SOC_TPLG_DAI_CLK_GATE_CONT)
+> A nit, I would leave it on the same line, even if it ~2-3 characters
+> longer than 80.
 
-On 21-02-18 12:43, Mark Brown wrote:
-> On Tue, Feb 20, 2018 at 11:15:04PM +0100, Hans de Goede wrote:
->> There is no need to set the LDO voltage to 1.2 volt each time we enter
->> standby, instead always leave it 1.2 volt on BIAS_OFF. Note we do a
->> snd_soc_codec_force_bias_level(BIAS_OFF) on probe, so this will configure
->> it correctly right from the start.
-> 
-> That force on probe sounds like a problem...  if this is being done once
-> at startup it should be done in the probe function, not in the bias
-> level configuration.
+Hello Andy,
 
-This is more like "we do a snd_soc_codec_force_bias_level(BIAS_OFF)
-on probe anyways and that already sets the level to 1.2 volt, so
-we don't need to do this explicitly at probe time".
+Thank you for the comment.
 
-> Also, are you sure this is a good fix?  If the bias voltage is being
-> configured all the time does that perhaps indicate that for better
-> performance or something it should have been being set to some other
-> voltage when the device is in standby?
+I think it is important to stay in the length of 80. I understand your point, but from my perspective, the coding style is a higher priority guideline.
 
-We switch the LDO off when in the bias level is BIAS_OFF and on
-at 1.2 volt when in standby or higher. Before this commit we would
-unconditionally write 0 to PWR_ANLG1 not only turning off all
-supplies, but additionally changing the LDO voltage control bits
-to 00, which requires reprogramming them when we go back to
-standby. The value of the LDO voltage controls bits when in
-BIAS_OFF does not matter as the LDO on/off bit is set to off,
-so the purpose of this commit is to replace the blindly setting
-of PWR_ANLG1 to 0 with setting all the bits in PWR_ANLG1 to 0,
-while leaving the 2 LDO voltage-control bits as-is, so that
-we don't need to reprogram these 2 bits when entering standby.
+Therefore I would prefer to keep this line as it is now.
 
-Regards,
+Beast Regards,
+Kirill
 
-Hans
+>> +                       link->dai_fmt |= SND_SOC_DAIFMT_CONT;
+>> +
