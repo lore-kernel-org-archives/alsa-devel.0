@@ -1,20 +1,21 @@
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH 1/7] PCI: Restore BARs on runtime resume
-	despite being unbound
-Date: Wed, 21 Feb 2018 13:39:34 +0100
-Message-ID: <6131920.sr0PL0JerP@aspire.rjw.lan>
-References: <cover.1518941072.git.lukas@wunner.de>
- <20180220212922.GC32228@bhelgaas-glaptop.roam.corp.google.com>
- <CAJZ5v0h+qipaKKDxxFFpkwUKgMjnoaUB8_p+FRDb+fSM_v+wBw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: ASoC: Failed to create component debugfs directory
+Date: Wed, 21 Feb 2018 13:02:41 +0000
+Message-ID: <20180221130241.GI8334@sirena.org.uk>
+References: <CAOMZO5D071pPr4fL7eLwWgX6h8Mppwic2u4mUCGzUZiss-+3MQ@mail.gmail.com>
+ <CAOMZO5C3joR2QS+yFDmQUs1Q69PfuVw8tBMNd+F+cjDnUMEPSQ@mail.gmail.com>
+ <5b591fd8-d4d5-27bb-0850-a376da20d7f3@metafoo.de>
+ <CAOMZO5Ai-EtFo--OYLKhsB+63u6D+Vyjx_hKVeG3EGXbHkY5jw@mail.gmail.com>
+ <99ce1244-6646-6292-2c50-151819b01cfa@metafoo.de>
+ <CAOMZO5CA99p+2DYrbWQnLzh5Lj8syX4j18V8R8WPV2KDZz-DVQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4616681959058308180=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl
- [79.96.170.134])
- by alsa0.perex.cz (Postfix) with ESMTP id CD64A267016
- for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 13:38:39 +0100 (CET)
-In-Reply-To: <CAJZ5v0h+qipaKKDxxFFpkwUKgMjnoaUB8_p+FRDb+fSM_v+wBw@mail.gmail.com>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0A1E2675B4
+ for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 14:02:42 +0100 (CET)
+In-Reply-To: <CAOMZO5CA99p+2DYrbWQnLzh5Lj8syX4j18V8R8WPV2KDZz-DVQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,168 +25,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Pierre Moreau <pierre.morrow@free.fr>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Lyude Paul <lyude@redhat.com>, Linux PM <linux-pm@vger.kernel.org>, nouveau@lists.freedesktop.org, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Takashi Iwai <tiwai@suse.com>, dri-devel <dri-devel@lists.freedesktop.org>, Hans de Goede <hdegoede@redhat.com>, Lukas Wunner <lukas@wunner.de>, Peter Wu <peter@lekensteyn.nl>, Bastien Nocera <hadess@hadess.net>, Linux PCI <linux-pci@vger.kernel.org>, Alex Deucher <alexander.deucher@amd.com>, Dave Airlie <airlied@redhat.com>, Bjorn Helgaas <bhelgaas@google.com>, Ben Skeggs <bskeggs@redhat.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday, February 21, 2018 10:57:14 AM CET Rafael J. Wysocki wrote:
-> On Tue, Feb 20, 2018 at 10:29 PM, Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > On Sun, Feb 18, 2018 at 09:38:32AM +0100, Lukas Wunner wrote:
-> >> PCI devices not bound to a driver are supposed to stay in D0 during
-> >> runtime suspend.
-> >
-> > Doesn't "runtime suspend" mean an individual device is suspended while
-> > the rest of the system remains active?
-> >
-> > If so, maybe it would be more direct to say "PCI devices not bound to
-> > a driver cannot be runtime suspended"?
-> >
-> > (It's a separate question not relevant to this patch, but I'm not
-> > convinced that "PCI devices without a driver cannot be suspended"
-> > should be accepted as a rule.  If it is a rule, we should be able to
-> > deduce it from the specs.)
-> >
-> >> But they may have a parent which is bound and can be
-> >> transitioned to D3cold at runtime.  Once the parent goes to D3cold, the
-> >> unbound child may go to D3cold as well.  When the child comes out of
-> >> D3cold, its BARs are uninitialized and thus inaccessible when a driver
-> >> tries to probe.
-> >>
-> >> One example are recent hybrid graphics laptops which cut power to the
-> >> discrete GPU when the root port above it goes to ACPI power state D3.
-> >> Users may provoke this by unbinding the GPU driver and allowing runtime
-> >> PM on the GPU via sysfs:  The PM core will then treat the GPU as
-> >> "suspended", which in turn allows the root port to runtime suspend,
-> >> causing the power resources listed in its _PR3 object to be powered off.
-> >> The GPU's BARs will be uninitialized when a driver later probes it.
-> >>
-> >> Another example are hybrid graphics laptops where the GPU itself (rather
-> >> than the root port) is capable of runtime suspending to D3cold.  If the
-> >> GPU's integrated HDA controller is not bound and the GPU's driver
-> >> decides to runtime suspend to D3cold, the HDA controller's BARs will be
-> >> uninitialized when a driver later probes it.
-> >>
-> >> Fix by restoring the BARs on runtime resume if the device is not bound.
-> >> This is sufficient to fix the above-mentioned use cases.  Other use
-> >> cases might require a full-blown pci_save_state() / pci_restore_state()
-> >> or execution of fixups.  We can add that once use cases materialize,
-> >> let's not inflate the code unnecessarily.
-> >
-> > Why would we not do a full-blown restore?  With this patch, I think
-> > some configuration done during enumeration, e.g., ASPM and MPS, will
-> > be lost.  "lspci -vv" of the HDA before and after the suspend may show
-> > different things, which seems counter-intuitive.
-> 
-> Right.
-> 
-> > I wouldn't think of a full-blown restore as "inflating the code"; I
-> > would think of it as "having fewer special cases", i.e., we always use
-> > the same restore path instead of having the main one plus a special
-> > one for unbound devices.
-> 
-> That is a fair point, but if you look at pci_pm_runtime_suspend(), it
-> doesn't actually save anything for devices without drivers, so we'd
-> just restore the original initial state for them every time.
-> 
-> If we are to restore the entire state on runtime resume,
-> pci_pm_runtime_suspend() should be changed to call pci_save_state()
-> before returning 0 in the !dev->driver case AFAICS.
-> 
-> >> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> >> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >> Signed-off-by: Lukas Wunner <lukas@wunner.de>
-> >> ---
-> >>  drivers/pci/pci-driver.c | 8 ++++++--
-> >>  drivers/pci/pci.c        | 2 +-
-> >>  drivers/pci/pci.h        | 1 +
-> >>  3 files changed, 8 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
-> >> index 3bed6beda051..51b11cbd48f6 100644
-> >> --- a/drivers/pci/pci-driver.c
-> >> +++ b/drivers/pci/pci-driver.c
-> >> @@ -1277,10 +1277,14 @@ static int pci_pm_runtime_resume(struct device *dev)
-> >>
-> >>       /*
-> >>        * If pci_dev->driver is not set (unbound), the device should
-> >> -      * always remain in D0 regardless of the runtime PM status
-> >> +      * always remain in D0 regardless of the runtime PM status.
-> >> +      * But if its parent can go to D3cold, this device may have
-> >> +      * been in D3cold as well and require restoration of its BARs.
-> >>        */
-> >> -     if (!pci_dev->driver)
-> >> +     if (!pci_dev->driver) {
-> >> +             pci_restore_bars(pci_dev);
-> >
-> > If we do decide not to do a full-blown restore, how do we decide
-> > whether to use pci_restore_bars() or pci_restore_config_space()?
-> >
-> > I'm not sure why we have both.
-> 
-> Me neither.
-> 
-> > The pci_restore_bars() path looks a
-> > little smarter in that it is more careful when updating 64-bit BARs
-> > that can't be updated atomically.
-> >
-> >>               return 0;
-> >> +     }
-> >>
-> >>       if (!pm || !pm->runtime_resume)
-> >>               return -ENOSYS;
-> 
-> So if pci_pm_runtime_suspend() is modified to call pci_save_state()
-> before returning 0 in the !dev->driver case, we can just move the
-> pci_restore_standard_config() invocation in pci_pm_runtime_resume() up
-> to the very top and check dev->driver later.
 
-I mean something like the patch below, overall (untested).
+--===============4616681959058308180==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="NyChO5MpGs3JHJbz"
+Content-Disposition: inline
 
-Tentatively-signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/pci/pci-driver.c |   16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
 
-Index: linux-pm/drivers/pci/pci-driver.c
-===================================================================
---- linux-pm.orig/drivers/pci/pci-driver.c
-+++ linux-pm/drivers/pci/pci-driver.c
-@@ -1224,11 +1224,14 @@ static int pci_pm_runtime_suspend(struct
- 	int error;
- 
- 	/*
--	 * If pci_dev->driver is not set (unbound), the device should
--	 * always remain in D0 regardless of the runtime PM status
-+	 * If pci_dev->driver is not set (unbound), the device may go to D3cold,
-+	 * but only if the bridge above it is suspended.  In case that happens,
-+	 * save its config space.
- 	 */
--	if (!pci_dev->driver)
-+	if (!pci_dev->driver) {
-+		pci_save_state(pci_dev);
- 		return 0;
-+	}
- 
- 	if (!pm || !pm->runtime_suspend)
- 		return -ENOSYS;
-@@ -1276,16 +1279,17 @@ static int pci_pm_runtime_resume(struct
- 	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
- 
- 	/*
--	 * If pci_dev->driver is not set (unbound), the device should
--	 * always remain in D0 regardless of the runtime PM status
-+	 * Regardless of whether or not the driver is there, the device might
-+	 * have been put into D3cold as a result of suspending the bridge above
-+	 * it, so restore the config spaces of all devices here.
- 	 */
-+	pci_restore_standard_config(pci_dev);
- 	if (!pci_dev->driver)
- 		return 0;
- 
- 	if (!pm || !pm->runtime_resume)
- 		return -ENOSYS;
- 
--	pci_restore_standard_config(pci_dev);
- 	pci_fixup_device(pci_fixup_resume_early, pci_dev);
- 	pci_enable_wake(pci_dev, PCI_D0, false);
- 	pci_fixup_device(pci_fixup_resume, pci_dev);
+--NyChO5MpGs3JHJbz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Feb 20, 2018 at 04:37:33PM -0300, Fabio Estevam wrote:
+
+> Thanks for your clarification.
+
+> What is the best way to avoid the "Failed to create
+> component debugfs directory" warning?
+
+It's a legit warning - we shouldn't really be creating two components
+for the same device.  However this is a bit of a corner case as it's the
+dmaengine platform driver which is kind of a virtual device, it's not
+really the device that we use with DMA that's being represented but
+rather the link between that and the DMA controller.
+
+Does the below patch (completely untested) help here?  It adds a prefix
+to the name for deduplication. =20
+
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-=
+dmaengine-pcm.c
+index d53786498b61..d5a6eea64036 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -431,6 +431,7 @@ int snd_dmaengine_pcm_register(struct device *dev,
+ 	if (!pcm)
+ 		return -ENOMEM;
+=20
++	pcm->platform.component.name_prefix =3D "dma";
+ 	pcm->config =3D config;
+ 	pcm->flags =3D flags;
+=20
+
+--NyChO5MpGs3JHJbz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqNbfAACgkQJNaLcl1U
+h9D2Lgf9F9ps3/Y+c0VL9SXWWcRoX68vJQD9QfhogRmqad6inG350XGETUkIrPxp
+o8Ad1mqhOJ3vXbCFP25iH9ApPeCCZTbTpSZU5rpAjXAAWxXlTKsmQWFPlCk8B47V
+ovGM6BrpdGvVcLnsRalIaocEMOwYE556leNZh7PZUBUvIhgXhbyoB9PegxIJLd1c
+OXPbp+ftxnrjXcNfRyOWVUjTmEyiCbAiAct/KDSiI2hMb5joCnomlzwDYSgsmSzk
++ooJS3tj9t7y7XCUY/OGR5ISWkseRNhc7hlTh37rQXFQAuJ1mQPsube9lZRlrCZS
+GX8QPXf2z+qIi1tzaqlf34iq0pFvcg==
+=bxs7
+-----END PGP SIGNATURE-----
+
+--NyChO5MpGs3JHJbz--
+
+--===============4616681959058308180==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4616681959058308180==--
