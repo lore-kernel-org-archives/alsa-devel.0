@@ -1,15 +1,18 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: x86: hdmi: Add single_port option for
-	compatible behavior
-Date: Wed, 21 Feb 2018 16:53:56 +0100
-Message-ID: <20180221155356.22886-1-tiwai@suse.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH v2] ASoC: soc-generic-dmaengine-pcm: Add a DMA
+	debugfs_prefix entry
+Date: Wed, 21 Feb 2018 14:57:33 -0300
+Message-ID: <1519235853-29856-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id BA7DE2675EE
- for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 18:49:03 +0100 (CET)
+Received: from mail-qt0-f196.google.com (mail-qt0-f196.google.com
+ [209.85.216.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id B70812675FD
+ for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 18:57:32 +0100 (CET)
+Received: by mail-qt0-f196.google.com with SMTP id d26so2993199qtk.10
+ for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 09:57:32 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,87 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Hubert Mantel <mantel@metadox.de>
+To: broonie@kernel.org
+Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, lars@metafoo.de, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
-The recent support for the multiple PCM devices allowed user to use
-multiple HDMI/DP outputs, but at the same time, the PCM stream
-assignment has been changed, too.  Due to that, the former PCM#0
-(there was only one stream in the past) is likely assigned to a
-different one (e.g. PCM#2), and it ends up with the regression when
-user sticks with the fixed configuration using the device#0.
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
-Although the multiple monitor support shouldn't matter when user
-deploys the backend like PulseAudio that checks the jack detection
-state, the behavior change isn't always acceptable for some users.
+After the conversion from platform to component the following warnings
+are seen:
 
-As a mitigation, this patch introduces an option to switch the
-behavior back to the old-good-days: when the new option,
-single_port=1, is passed, the driver creates only a single PCM device,
-and it's assigned to the first connected one, like the earlier
-versions did.  The option is turned off as default still to support
-the multiple monitors.
+fsl-ssi-dai 2028000.ssi: ASoC: Failed to create component debugfs
+directory
+fsl-spdif-dai 2004000.spdif: ASoC: Failed to create component debugfs
+directory
 
-Fixes: 8a2d6ae1f737 ("ALSA: x86: Register multiple PCM devices for the LPE audio card")
-Reported-and-tested-by: Hubert Mantel <mantel@metadox.de>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+As explained by Mark Brown:
+
+"It's a legit warning - we shouldn't really be creating two components
+for the same device.  However this is a bit of a corner case as it's the
+dmaengine platform driver which is kind of a virtual device, it's not
+really the device that we use with DMA that's being represented but
+rather the link between that and the DMA controller."
+
+Disambiguate the DMA component name by adding a "dma" debugfs_prefix
+entry.
+
+Suggested-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 ---
- sound/x86/intel_hdmi_audio.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+Changes since v1:
+- Fixed typo in commit log "createcomponent"
 
-diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
-index a0951505c7f5..96115c401292 100644
---- a/sound/x86/intel_hdmi_audio.c
-+++ b/sound/x86/intel_hdmi_audio.c
-@@ -50,6 +50,7 @@
- /*standard module options for ALSA. This module supports only one card*/
- static int hdmi_card_index = SNDRV_DEFAULT_IDX1;
- static char *hdmi_card_id = SNDRV_DEFAULT_STR1;
-+static bool single_port;
+ sound/soc/soc-generic-dmaengine-pcm.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index c07d5c7..768247f 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -442,6 +442,9 @@ int snd_dmaengine_pcm_register(struct device *dev,
+ 	if (!pcm)
+ 		return -ENOMEM;
  
- module_param_named(index, hdmi_card_index, int, 0444);
- MODULE_PARM_DESC(index,
-@@ -57,6 +58,9 @@ MODULE_PARM_DESC(index,
- module_param_named(id, hdmi_card_id, charp, 0444);
- MODULE_PARM_DESC(id,
- 		"ID string for INTEL Intel HDMI Audio controller.");
-+module_param(single_port, bool, 0444);
-+MODULE_PARM_DESC(single_port,
-+		"Single-port mode (for compatibility)");
++#ifdef CONFIG_DEBUG_FS
++	pcm->component.debugfs_prefix = "dma";
++#endif
+ 	pcm->config = config;
+ 	pcm->flags = flags;
  
- /*
-  * ELD SA bits in the CEA Speaker Allocation data block
-@@ -1579,7 +1583,11 @@ static irqreturn_t display_pipe_interrupt_handler(int irq, void *dev_id)
- static void notify_audio_lpe(struct platform_device *pdev, int port)
- {
- 	struct snd_intelhad_card *card_ctx = platform_get_drvdata(pdev);
--	struct snd_intelhad *ctx = &card_ctx->pcm_ctx[port];
-+	struct snd_intelhad *ctx;
-+
-+	ctx = &card_ctx->pcm_ctx[single_port ? 0 : port];
-+	if (single_port)
-+		ctx->port = port;
- 
- 	schedule_work(&ctx->hdmi_audio_wq);
- }
-@@ -1816,7 +1824,7 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
- 	init_channel_allocations();
- 
- 	card_ctx->num_pipes = pdata->num_pipes;
--	card_ctx->num_ports = pdata->num_ports;
-+	card_ctx->num_ports = single_port ? 1 : pdata->num_ports;
- 
- 	for_each_port(card_ctx, port) {
- 		struct snd_intelhad *ctx = &card_ctx->pcm_ctx[port];
-@@ -1824,7 +1832,7 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
- 
- 		ctx->card_ctx = card_ctx;
- 		ctx->dev = card_ctx->dev;
--		ctx->port = port;
-+		ctx->port = single_port ? -1 : port;
- 		ctx->pipe = -1;
- 
- 		INIT_WORK(&ctx->hdmi_audio_wq, had_audio_wq);
 -- 
-2.16.1
+2.7.4
