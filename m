@@ -1,114 +1,196 @@
-From: "Rafael J. Wysocki" <rafael-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/7] PCI: Restore BARs on runtime resume
- despite being unbound
-Date: Wed, 21 Feb 2018 10:57:14 +0100
-Message-ID: <CAJZ5v0h+qipaKKDxxFFpkwUKgMjnoaUB8_p+FRDb+fSM_v+wBw@mail.gmail.com>
-References: <cover.1518941072.git.lukas@wunner.de>
- <f7593132608eb9a83d7268cc5b3ef12b3dd9c52d.1518941073.git.lukas@wunner.de>
- <20180220212922.GC32228@bhelgaas-glaptop.roam.corp.google.com>
+From: Rohit Kumar <rohitkr@codeaurora.org>
+Subject: Re: [PATCH v3 15/25] ASoC: qcom: qdsp6: Add support to
+ q6asm dai driver
+Date: Wed, 21 Feb 2018 16:44:24 +0530
+Message-ID: <6ea65838-f01a-ecbf-70cd-0dc9299eae80@codeaurora.org>
+References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
+ <20180213165837.1620-16-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-In-Reply-To: <20180220212922.GC32228-1RhO1Y9PlrlHTL0Zs8A6p5iNqAH0jzoTYJqu5kTmcBRl57MIdRCFDg@public.gmane.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/nouveau>,
- <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/nouveau>
-List-Post: <mailto:nouveau-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/nouveau>,
- <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "Nouveau" <nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: Bjorn Helgaas <helgaas-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Linux PM <linux-pm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, nouveau-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, "Rafael J. Wysocki" <rafael.j.wysocki-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, dri-devel <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Bastien Nocera <hadess-0MeiytkfxGOsTnJN9+BGXg@public.gmane.org>, Linux PCI <linux-pci-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, Dave Airlie <airlied-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Bjorn Helgaas <bhelgaas-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Ben Skeggs <bskeggs-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id DFB372674F8
+ for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 12:14:34 +0100 (CET)
+In-Reply-To: <20180213165837.1620-16-srinivas.kandagatla@linaro.org>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: srinivas.kandagatla@linaro.org, andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, lgirdwood@gmail.com, plai@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, david.brown@linaro.org, robh+dt@kernel.org, spatakok@qti.qualcomm.com, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBGZWIgMjAsIDIwMTggYXQgMTA6MjkgUE0sIEJqb3JuIEhlbGdhYXMgPGhlbGdhYXNA
-a2VybmVsLm9yZz4gd3JvdGU6Cj4gT24gU3VuLCBGZWIgMTgsIDIwMTggYXQgMDk6Mzg6MzJBTSAr
-MDEwMCwgTHVrYXMgV3VubmVyIHdyb3RlOgo+PiBQQ0kgZGV2aWNlcyBub3QgYm91bmQgdG8gYSBk
-cml2ZXIgYXJlIHN1cHBvc2VkIHRvIHN0YXkgaW4gRDAgZHVyaW5nCj4+IHJ1bnRpbWUgc3VzcGVu
-ZC4KPgo+IERvZXNuJ3QgInJ1bnRpbWUgc3VzcGVuZCIgbWVhbiBhbiBpbmRpdmlkdWFsIGRldmlj
-ZSBpcyBzdXNwZW5kZWQgd2hpbGUKPiB0aGUgcmVzdCBvZiB0aGUgc3lzdGVtIHJlbWFpbnMgYWN0
-aXZlPwo+Cj4gSWYgc28sIG1heWJlIGl0IHdvdWxkIGJlIG1vcmUgZGlyZWN0IHRvIHNheSAiUENJ
-IGRldmljZXMgbm90IGJvdW5kIHRvCj4gYSBkcml2ZXIgY2Fubm90IGJlIHJ1bnRpbWUgc3VzcGVu
-ZGVkIj8KPgo+IChJdCdzIGEgc2VwYXJhdGUgcXVlc3Rpb24gbm90IHJlbGV2YW50IHRvIHRoaXMg
-cGF0Y2gsIGJ1dCBJJ20gbm90Cj4gY29udmluY2VkIHRoYXQgIlBDSSBkZXZpY2VzIHdpdGhvdXQg
-YSBkcml2ZXIgY2Fubm90IGJlIHN1c3BlbmRlZCIKPiBzaG91bGQgYmUgYWNjZXB0ZWQgYXMgYSBy
-dWxlLiAgSWYgaXQgaXMgYSBydWxlLCB3ZSBzaG91bGQgYmUgYWJsZSB0bwo+IGRlZHVjZSBpdCBm
-cm9tIHRoZSBzcGVjcy4pCj4KPj4gQnV0IHRoZXkgbWF5IGhhdmUgYSBwYXJlbnQgd2hpY2ggaXMg
-Ym91bmQgYW5kIGNhbiBiZQo+PiB0cmFuc2l0aW9uZWQgdG8gRDNjb2xkIGF0IHJ1bnRpbWUuICBP
-bmNlIHRoZSBwYXJlbnQgZ29lcyB0byBEM2NvbGQsIHRoZQo+PiB1bmJvdW5kIGNoaWxkIG1heSBn
-byB0byBEM2NvbGQgYXMgd2VsbC4gIFdoZW4gdGhlIGNoaWxkIGNvbWVzIG91dCBvZgo+PiBEM2Nv
-bGQsIGl0cyBCQVJzIGFyZSB1bmluaXRpYWxpemVkIGFuZCB0aHVzIGluYWNjZXNzaWJsZSB3aGVu
-IGEgZHJpdmVyCj4+IHRyaWVzIHRvIHByb2JlLgo+Pgo+PiBPbmUgZXhhbXBsZSBhcmUgcmVjZW50
-IGh5YnJpZCBncmFwaGljcyBsYXB0b3BzIHdoaWNoIGN1dCBwb3dlciB0byB0aGUKPj4gZGlzY3Jl
-dGUgR1BVIHdoZW4gdGhlIHJvb3QgcG9ydCBhYm92ZSBpdCBnb2VzIHRvIEFDUEkgcG93ZXIgc3Rh
-dGUgRDMuCj4+IFVzZXJzIG1heSBwcm92b2tlIHRoaXMgYnkgdW5iaW5kaW5nIHRoZSBHUFUgZHJp
-dmVyIGFuZCBhbGxvd2luZyBydW50aW1lCj4+IFBNIG9uIHRoZSBHUFUgdmlhIHN5c2ZzOiAgVGhl
-IFBNIGNvcmUgd2lsbCB0aGVuIHRyZWF0IHRoZSBHUFUgYXMKPj4gInN1c3BlbmRlZCIsIHdoaWNo
-IGluIHR1cm4gYWxsb3dzIHRoZSByb290IHBvcnQgdG8gcnVudGltZSBzdXNwZW5kLAo+PiBjYXVz
-aW5nIHRoZSBwb3dlciByZXNvdXJjZXMgbGlzdGVkIGluIGl0cyBfUFIzIG9iamVjdCB0byBiZSBw
-b3dlcmVkIG9mZi4KPj4gVGhlIEdQVSdzIEJBUnMgd2lsbCBiZSB1bmluaXRpYWxpemVkIHdoZW4g
-YSBkcml2ZXIgbGF0ZXIgcHJvYmVzIGl0Lgo+Pgo+PiBBbm90aGVyIGV4YW1wbGUgYXJlIGh5YnJp
-ZCBncmFwaGljcyBsYXB0b3BzIHdoZXJlIHRoZSBHUFUgaXRzZWxmIChyYXRoZXIKPj4gdGhhbiB0
-aGUgcm9vdCBwb3J0KSBpcyBjYXBhYmxlIG9mIHJ1bnRpbWUgc3VzcGVuZGluZyB0byBEM2NvbGQu
-ICBJZiB0aGUKPj4gR1BVJ3MgaW50ZWdyYXRlZCBIREEgY29udHJvbGxlciBpcyBub3QgYm91bmQg
-YW5kIHRoZSBHUFUncyBkcml2ZXIKPj4gZGVjaWRlcyB0byBydW50aW1lIHN1c3BlbmQgdG8gRDNj
-b2xkLCB0aGUgSERBIGNvbnRyb2xsZXIncyBCQVJzIHdpbGwgYmUKPj4gdW5pbml0aWFsaXplZCB3
-aGVuIGEgZHJpdmVyIGxhdGVyIHByb2JlcyBpdC4KPj4KPj4gRml4IGJ5IHJlc3RvcmluZyB0aGUg
-QkFScyBvbiBydW50aW1lIHJlc3VtZSBpZiB0aGUgZGV2aWNlIGlzIG5vdCBib3VuZC4KPj4gVGhp
-cyBpcyBzdWZmaWNpZW50IHRvIGZpeCB0aGUgYWJvdmUtbWVudGlvbmVkIHVzZSBjYXNlcy4gIE90
-aGVyIHVzZQo+PiBjYXNlcyBtaWdodCByZXF1aXJlIGEgZnVsbC1ibG93biBwY2lfc2F2ZV9zdGF0
-ZSgpIC8gcGNpX3Jlc3RvcmVfc3RhdGUoKQo+PiBvciBleGVjdXRpb24gb2YgZml4dXBzLiAgV2Ug
-Y2FuIGFkZCB0aGF0IG9uY2UgdXNlIGNhc2VzIG1hdGVyaWFsaXplLAo+PiBsZXQncyBub3QgaW5m
-bGF0ZSB0aGUgY29kZSB1bm5lY2Vzc2FyaWx5Lgo+Cj4gV2h5IHdvdWxkIHdlIG5vdCBkbyBhIGZ1
-bGwtYmxvd24gcmVzdG9yZT8gIFdpdGggdGhpcyBwYXRjaCwgSSB0aGluawo+IHNvbWUgY29uZmln
-dXJhdGlvbiBkb25lIGR1cmluZyBlbnVtZXJhdGlvbiwgZS5nLiwgQVNQTSBhbmQgTVBTLCB3aWxs
-Cj4gYmUgbG9zdC4gICJsc3BjaSAtdnYiIG9mIHRoZSBIREEgYmVmb3JlIGFuZCBhZnRlciB0aGUg
-c3VzcGVuZCBtYXkgc2hvdwo+IGRpZmZlcmVudCB0aGluZ3MsIHdoaWNoIHNlZW1zIGNvdW50ZXIt
-aW50dWl0aXZlLgoKUmlnaHQuCgo+IEkgd291bGRuJ3QgdGhpbmsgb2YgYSBmdWxsLWJsb3duIHJl
-c3RvcmUgYXMgImluZmxhdGluZyB0aGUgY29kZSI7IEkKPiB3b3VsZCB0aGluayBvZiBpdCBhcyAi
-aGF2aW5nIGZld2VyIHNwZWNpYWwgY2FzZXMiLCBpLmUuLCB3ZSBhbHdheXMgdXNlCj4gdGhlIHNh
-bWUgcmVzdG9yZSBwYXRoIGluc3RlYWQgb2YgaGF2aW5nIHRoZSBtYWluIG9uZSBwbHVzIGEgc3Bl
-Y2lhbAo+IG9uZSBmb3IgdW5ib3VuZCBkZXZpY2VzLgoKVGhhdCBpcyBhIGZhaXIgcG9pbnQsIGJ1
-dCBpZiB5b3UgbG9vayBhdCBwY2lfcG1fcnVudGltZV9zdXNwZW5kKCksIGl0CmRvZXNuJ3QgYWN0
-dWFsbHkgc2F2ZSBhbnl0aGluZyBmb3IgZGV2aWNlcyB3aXRob3V0IGRyaXZlcnMsIHNvIHdlJ2QK
-anVzdCByZXN0b3JlIHRoZSBvcmlnaW5hbCBpbml0aWFsIHN0YXRlIGZvciB0aGVtIGV2ZXJ5IHRp
-bWUuCgpJZiB3ZSBhcmUgdG8gcmVzdG9yZSB0aGUgZW50aXJlIHN0YXRlIG9uIHJ1bnRpbWUgcmVz
-dW1lLApwY2lfcG1fcnVudGltZV9zdXNwZW5kKCkgc2hvdWxkIGJlIGNoYW5nZWQgdG8gY2FsbCBw
-Y2lfc2F2ZV9zdGF0ZSgpCmJlZm9yZSByZXR1cm5pbmcgMCBpbiB0aGUgIWRldi0+ZHJpdmVyIGNh
-c2UgQUZBSUNTLgoKPj4gQ2M6IEJqb3JuIEhlbGdhYXMgPGJoZWxnYWFzQGdvb2dsZS5jb20+Cj4+
-IENjOiBSYWZhZWwgSi4gV3lzb2NraSA8cmFmYWVsLmoud3lzb2NraUBpbnRlbC5jb20+Cj4+IFNp
-Z25lZC1vZmYtYnk6IEx1a2FzIFd1bm5lciA8bHVrYXNAd3VubmVyLmRlPgo+PiAtLS0KPj4gIGRy
-aXZlcnMvcGNpL3BjaS1kcml2ZXIuYyB8IDggKysrKysrLS0KPj4gIGRyaXZlcnMvcGNpL3BjaS5j
-ICAgICAgICB8IDIgKy0KPj4gIGRyaXZlcnMvcGNpL3BjaS5oICAgICAgICB8IDEgKwo+PiAgMyBm
-aWxlcyBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCj4+Cj4+IGRpZmYg
-LS1naXQgYS9kcml2ZXJzL3BjaS9wY2ktZHJpdmVyLmMgYi9kcml2ZXJzL3BjaS9wY2ktZHJpdmVy
-LmMKPj4gaW5kZXggM2JlZDZiZWRhMDUxLi41MWIxMWNiZDQ4ZjYgMTAwNjQ0Cj4+IC0tLSBhL2Ry
-aXZlcnMvcGNpL3BjaS1kcml2ZXIuYwo+PiArKysgYi9kcml2ZXJzL3BjaS9wY2ktZHJpdmVyLmMK
-Pj4gQEAgLTEyNzcsMTAgKzEyNzcsMTQgQEAgc3RhdGljIGludCBwY2lfcG1fcnVudGltZV9yZXN1
-bWUoc3RydWN0IGRldmljZSAqZGV2KQo+Pgo+PiAgICAgICAvKgo+PiAgICAgICAgKiBJZiBwY2lf
-ZGV2LT5kcml2ZXIgaXMgbm90IHNldCAodW5ib3VuZCksIHRoZSBkZXZpY2Ugc2hvdWxkCj4+IC0g
-ICAgICAqIGFsd2F5cyByZW1haW4gaW4gRDAgcmVnYXJkbGVzcyBvZiB0aGUgcnVudGltZSBQTSBz
-dGF0dXMKPj4gKyAgICAgICogYWx3YXlzIHJlbWFpbiBpbiBEMCByZWdhcmRsZXNzIG9mIHRoZSBy
-dW50aW1lIFBNIHN0YXR1cy4KPj4gKyAgICAgICogQnV0IGlmIGl0cyBwYXJlbnQgY2FuIGdvIHRv
-IEQzY29sZCwgdGhpcyBkZXZpY2UgbWF5IGhhdmUKPj4gKyAgICAgICogYmVlbiBpbiBEM2NvbGQg
-YXMgd2VsbCBhbmQgcmVxdWlyZSByZXN0b3JhdGlvbiBvZiBpdHMgQkFScy4KPj4gICAgICAgICov
-Cj4+IC0gICAgIGlmICghcGNpX2Rldi0+ZHJpdmVyKQo+PiArICAgICBpZiAoIXBjaV9kZXYtPmRy
-aXZlcikgewo+PiArICAgICAgICAgICAgIHBjaV9yZXN0b3JlX2JhcnMocGNpX2Rldik7Cj4KPiBJ
-ZiB3ZSBkbyBkZWNpZGUgbm90IHRvIGRvIGEgZnVsbC1ibG93biByZXN0b3JlLCBob3cgZG8gd2Ug
-ZGVjaWRlCj4gd2hldGhlciB0byB1c2UgcGNpX3Jlc3RvcmVfYmFycygpIG9yIHBjaV9yZXN0b3Jl
-X2NvbmZpZ19zcGFjZSgpPwo+Cj4gSSdtIG5vdCBzdXJlIHdoeSB3ZSBoYXZlIGJvdGguCgpNZSBu
-ZWl0aGVyLgoKPiBUaGUgcGNpX3Jlc3RvcmVfYmFycygpIHBhdGggbG9va3MgYQo+IGxpdHRsZSBz
-bWFydGVyIGluIHRoYXQgaXQgaXMgbW9yZSBjYXJlZnVsIHdoZW4gdXBkYXRpbmcgNjQtYml0IEJB
-UnMKPiB0aGF0IGNhbid0IGJlIHVwZGF0ZWQgYXRvbWljYWxseS4KPgo+PiAgICAgICAgICAgICAg
-IHJldHVybiAwOwo+PiArICAgICB9Cj4+Cj4+ICAgICAgIGlmICghcG0gfHwgIXBtLT5ydW50aW1l
-X3Jlc3VtZSkKPj4gICAgICAgICAgICAgICByZXR1cm4gLUVOT1NZUzsKClNvIGlmIHBjaV9wbV9y
-dW50aW1lX3N1c3BlbmQoKSBpcyBtb2RpZmllZCB0byBjYWxsIHBjaV9zYXZlX3N0YXRlKCkKYmVm
-b3JlIHJldHVybmluZyAwIGluIHRoZSAhZGV2LT5kcml2ZXIgY2FzZSwgd2UgY2FuIGp1c3QgbW92
-ZSB0aGUKcGNpX3Jlc3RvcmVfc3RhbmRhcmRfY29uZmlnKCkgaW52b2NhdGlvbiBpbiBwY2lfcG1f
-cnVudGltZV9yZXN1bWUoKSB1cAp0byB0aGUgdmVyeSB0b3AgYW5kIGNoZWNrIGRldi0+ZHJpdmVy
-IGxhdGVyLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpO
-b3V2ZWF1IG1haWxpbmcgbGlzdApOb3V2ZWF1QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczov
-L2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL25vdXZlYXUK
+
+
+On 2/13/2018 10:28 PM, srinivas.kandagatla@linaro.org wrote:
+> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>
+> This patch adds support to q6asm dai driver which configures Q6ASM streams
+> to pass pcm data.
+>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+[..]
+> diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
+> new file mode 100644
+> index 000000000000..7c5e94b2ced4
+> --- /dev/null
+> +++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
+> @@ -0,0 +1,621 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2011-2016, The Linux Foundation
+> + * Copyright (c) 2017, Linaro Limited
+> + */
+> +
+> +#include <linux/init.h>
+> +#include <linux/err.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +#include <sound/soc.h>
+> +#include <sound/soc-dapm.h>
+> +#include <sound/pcm.h>
+> +#include <asm/dma.h>
+[..]
+> +static struct snd_pcm_hw_constraint_list constraints_sample_rates = {
+> +	.count = ARRAY_SIZE(supported_sample_rates),
+> +	.list = supported_sample_rates,
+> +	.mask = 0,
+> +};
+> +
+> +static void event_handler(uint32_t opcode, uint32_t token,
+> +			  uint32_t *payload, void *priv)
+> +{
+> +	struct q6asm_dai_rtd *prtd = priv;
+> +	struct snd_pcm_substream *substream = prtd->substream;
+> +
+> +	switch (opcode) {
+> +	case ASM_CLIENT_EVENT_CMD_RUN_DONE:
+Need to add support for V2 version of opcodes
+> +		q6asm_write_async(prtd->audio_client,
+> +				   prtd->pcm_count, 0, 0, NO_TIMESTAMP);
+> +		break;
+> +	case ASM_CLIENT_EVENT_CMD_EOS_DONE:
+> +		prtd->state = Q6ASM_STREAM_STOPPED;
+> +		break;
+> +	case ASM_CLIENT_EVENT_DATA_WRITE_DONE: {
+> +		prtd->pcm
+[..]
+> +
+> +static int q6asm_dai_trigger(struct snd_pcm_substream *substream, int cmd)
+> +{
+> +	int ret = 0;
+> +	struct snd_pcm_runtime *runtime = substream->runtime;
+> +	struct q6asm_dai_rtd *prtd = runtime->private_data;
+> +
+> +	switch (cmd) {
+> +	case SNDRV_PCM_TRIGGER_START:
+> +		ret = q6asm_run_nowait(prtd->audio_client, 0, 0, 0);
+> +		break;
+below two cases can be combined with START if no change
+> +	case SNDRV_PCM_TRIGGER_RESUME:
+> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> +		ret = q6asm_run_nowait(prtd->audio_client, 0, 0, 0);
+> +		break;
+> +	case SNDRV_PCM_TRIGGER_STOP:
+> +		prtd->state = Q6ASM_STREAM_STOPPED;
+> +		ret = q6asm_cmd_nowait(prtd->audio_client, CMD_EOS);
+> +		break;
+> +	case SNDRV_PCM_TRIGGER_SUSPEND:
+> +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> +		ret = q6asm_cmd_nowait(prtd->audio_client, CMD_PAUSE);
+> +		break;
+> +	default:
+> +		ret = -EINVAL;
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int q6asm_dai_open(struct snd_pcm_substream *substream)
+> +{
+> +	struct snd_pcm_runtime *runtime = substream->runtime;
+> +	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
+> +	struct snd_soc_dai *cpu_dai = soc_prtd->cpu_dai;
+> +
+> +	struct q6asm_dai_rtd *prtd;
+> +	struct q6asm_dai_data *pdata;
+> +	struct device *dev = soc_prtd->platform->dev;
+> +	int ret = 0;
+> +	int stream_id;
+> +
+> +	stream_id = cpu_dai->driver->id;
+> +
+> +	pdata = q6asm_get_dai_data(dev);
+> +	if (!pdata) {
+> +		pr_err("Platform data not found ..\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	prtd = kzalloc(sizeof(struct q6asm_dai_rtd), GFP_KERNEL);
+> +	if (prtd == NULL)
+> +		return -ENOMEM;
+> +
+> +	prtd->substream = substream;
+> +	prtd->audio_client = q6asm_audio_client_alloc(dev,
+> +				(q6asm_cb)event_handler, prtd, stream_id);
+> +	if (!prtd->audio_client) {
+> +		pr_info("%s: Could not allocate memory\n", __func__);
+> +		kfree(prtd);
+> +		return -ENOMEM;
+> +	}
+> +
+> +//	prtd->audio_client->dev = dev;
+cleanup this
+> +
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +		runtime->hw = q6asm_dai_hardware_playback;
+> +
+> +	ret = snd_pcm_hw_constraint_list(runtime, 0,
+> +				SNDRV_PCM_HW_PARAM_RATE,
+> +				&constraints_sample_rates);
+[..]
+> +
+> +static int q6asm_dai_pcm_new(struct snd_soc_pcm_runtime *rtd)
+> +{
+> +	struct snd_pcm_substream *substream;
+> +	struct of_phandle_args args;
+> +	struct device_node *node;
+> +	struct q6asm_dai_data *pdata;
+> +	struct snd_pcm *pcm = rtd->pcm;
+> +	struct device *dev;
+> +	int size, ret;
+> +
+> +	dev = rtd->platform->dev->parent;
+> +	node = dev->of_node;
+> +	pdata = q6asm_get_dai_data(rtd->platform->dev);
+> +
+> +	ret = of_parse_phandle_with_fixed_args(node, "iommus", 1, 0, &args);
+> +	if (ret < 0)
+> +		pdata->sid = -1;
+> +	else
+> +		pdata->sid = args.args[0];
+> +
+> +
+> +
+iommus for sdm845 is 16bit value. we need to have sid_mask which is 0x1 
+in sdm845. We need to mask sid with 0x1 to get proper sid.
+pdata->sid &= 0x1;
+> +	substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
+> +	size = q6asm_dai_hardware_playback.buffer_bytes_max;
+> +	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, dev, size,
+> +				  &substream->dma_buffer);
+> +	if (ret)
+> +		dev_err(dev, "Cannot allocate buffer(s)\n");
+> +
+> +	return ret;
+> +}
+> +
