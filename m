@@ -1,100 +1,134 @@
-From: "Katsuhiro Suzuki" <suzuki.katsuhiro@socionext.com>
-Subject: Re: [PATCH 2/2] ASoC: support ROHM BD28623 codec
-Date: Wed, 21 Feb 2018 22:15:52 +0900
-Message-ID: <002601d3ab16$195fdf20$4c1f9d60$@socionext.com>
-References: <20180221043311.25840-1-suzuki.katsuhiro@socionext.com>
- <20180221043311.25840-3-suzuki.katsuhiro@socionext.com>
- <20180221122639.GH8334@sirena.org.uk>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: ASoC: Failed to create component debugfs directory
+Date: Wed, 21 Feb 2018 10:43:27 -0300
+Message-ID: <CAOMZO5DZ0W5q6OAvrRWv+8GNbWn5ttLk3q035H=4fLton-1mgg@mail.gmail.com>
+References: <CAOMZO5D071pPr4fL7eLwWgX6h8Mppwic2u4mUCGzUZiss-+3MQ@mail.gmail.com>
+ <CAOMZO5C3joR2QS+yFDmQUs1Q69PfuVw8tBMNd+F+cjDnUMEPSQ@mail.gmail.com>
+ <5b591fd8-d4d5-27bb-0850-a376da20d7f3@metafoo.de>
+ <CAOMZO5Ai-EtFo--OYLKhsB+63u6D+Vyjx_hKVeG3EGXbHkY5jw@mail.gmail.com>
+ <99ce1244-6646-6292-2c50-151819b01cfa@metafoo.de>
+ <CAOMZO5CA99p+2DYrbWQnLzh5Lj8syX4j18V8R8WPV2KDZz-DVQ@mail.gmail.com>
+ <20180221130241.GI8334@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20180221122639.GH8334@sirena.org.uk>
-Content-Language: ja
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: 'Mark Brown' <broonie@kernel.org>, =?iso-2022-jp?B?U3V6dWtpLCBLYXRzdWhpcm8vGyRCTmtMWhsoQiAbJEI+IUduGyhC?= <suzuki.katsuhiro@socionext.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.org, Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f53.google.com (mail-oi0-f53.google.com
+ [209.85.218.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 85FCC267530
+ for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 14:43:29 +0100 (CET)
+Received: by mail-oi0-f53.google.com with SMTP id 24so1129302oij.3
+ for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 05:43:29 -0800 (PST)
+In-Reply-To: <20180221130241.GI8334@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Mark,
+Hi Mark,
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Wednesday, February 21, 2018 9:27 PM
-> To: Suzuki, Katsuhiro <suzuki.katsuhiro@socionext.com>
-> Cc: alsa-devel@alsa-project.org; Rob Herring <robh+dt@kernel.org>; devicetree@vger.kernel.org; Masami Hiramatsu
-> <masami.hiramatsu@linaro.org>; Jassi Brar <jaswinder.singh@linaro.org>; linux-arm-kernel@lists.infradead.org;
-> linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH 2/2] ASoC: support ROHM BD28623 codec
-> 
-> On Wed, Feb 21, 2018 at 01:33:11PM +0900, Katsuhiro Suzuki wrote:
-> 
-> > +++ b/sound/soc/codecs/bd28623.c
-> > @@ -0,0 +1,258 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * ROHM BD28623MUV class D speaker amplifier codec driver.
-> > + *
-> 
-> Please make the entire comment C++ so this looks intentional.
-> 
-> > +		dev_err(dev, "Failed to enable supplies: %d\n", ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	gpiod_set_value(bd->reset_gpio, 0);
-> 
-> Since this GPIO is not needed in atomic contexts you should use the
-> _cansleep() versions of the GPIO functions - it doesn't cost you
-> anything and means that if for some reason someone wired this up to a
-> GPIO that can't be used in atomic context the driver will just work.
-> 
+On Wed, Feb 21, 2018 at 10:02 AM, Mark Brown <broonie@kernel.org> wrote:
 
-Thank you, I'll fix it.
+> It's a legit warning - we shouldn't really be creating two components
+> for the same device.  However this is a bit of a corner case as it's the
+> dmaengine platform driver which is kind of a virtual device, it's not
+> really the device that we use with DMA that's being represented but
+> rather the link between that and the DMA controller.
+>
+> Does the below patch (completely untested) help here?  It adds a prefix
+> to the name for deduplication.
+>
+> diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+> index d53786498b61..d5a6eea64036 100644
+> --- a/sound/soc/soc-generic-dmaengine-pcm.c
+> +++ b/sound/soc/soc-generic-dmaengine-pcm.c
+> @@ -431,6 +431,7 @@ int snd_dmaengine_pcm_register(struct device *dev,
+>         if (!pcm)
+>                 return -ENOMEM;
+>
+> +       pcm->platform.component.name_prefix = "dma";
 
+Had to change it to pcm->component.name_prefix = "dma"; but still see
+the warnings.
 
-> > +	bd->reset_gpio = devm_gpiod_get_optional(dev, "reset",
-> > +						 GPIOD_OUT_HIGH);
-> 
-> > +	bd->mute_gpio = devm_gpiod_get_optional(dev, "mute",
-> > +						GPIOD_OUT_HIGH);
-> 
-> These properties were documented as mandatory in the binding but are
-> optional here.  It's fine that they're optional but I'd expect the
-> binding to be consistent with this.
-> 
+Here are the suggested change plus some additional debug lines:
 
-These GPIO is optional if board vendor connects directly RSTX and MUTEX pins
-to VCC. So I think I should fix DT-bindings document.
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -303,6 +303,8 @@ static void soc_init_component_debugfs(struct
+snd_soc_component *component)
+        if (!component->card->debugfs_card_root)
+                return;
 
++       pr_err("************** component name is %s\n", component->name);
++
+        if (component->debugfs_prefix) {
+                char *name;
 
-> > +static int bd28623_remove(struct platform_device *pdev)
-> > +{
-> > +	struct bd28623_priv *bd = platform_get_drvdata(pdev);
-> > +
-> > +	regulator_bulk_disable(ARRAY_SIZE(bd->supplies), bd->supplies);
-> > +
-> > +	return 0;
-> > +}
-> 
-> We don't enable the supplies explicitly as part of the probe function so
-> it feels wrong to disable on remove() - I'm sure it is fine in practice
-> as-is but I'd have to think too hard to confirm that.  I'd put this in a
-> component level remove function instead so that it's consistent.
+@@ -318,6 +320,12 @@ static void soc_init_component_debugfs(struct
+snd_soc_component *component)
+                                component->card->debugfs_card_root);
+        }
 
-Ah, indeed. I will use component driver's remove() function instead of platform.
++       if (component->debugfs_root) {
++               dev_warn(component->dev,
++                       "ASoC: Succeded to create component debugfs
+directory\n");
++               return;
++       }
++
+        if (!component->debugfs_root) {
+                dev_warn(component->dev,
+                        "ASoC: Failed to create component debugfs directory\n");
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c
+b/sound/soc/soc-generic-dmaengine-pcm.c
+index c07d5c7..16995dd 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -442,6 +442,7 @@ int snd_dmaengine_pcm_register(struct device *dev,
+        if (!pcm)
+                return -ENOMEM;
 
-Thank you for review!
++       pcm->component.name_prefix = "dma";
+        pcm->config = config;
+        pcm->flags = flags;
 
+and the log looks like this:
 
-Regards,
---
-Katsuhiro Suzuki
+[    2.062294] sgtl5000 1-000a: sgtl5000 revision 0x11
+[    2.069367] sgtl5000 1-000a: Using internal LDO instead of VDDD:
+check ER1 erratum
+[    2.113827] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
+[    2.123954] fsl-ssi-dai 2028000.ssi: No cache defaults, reading back from HW
+[    2.326451] [drm] Cannot find any crtc or sizes
+[    2.501744] ************** component name is 2028000.ssi
+[    2.507217] fsl-ssi-dai 2028000.ssi: ASoC: Succeded to create
+component debugfs directory
+[    2.515429] ************** component name is sgtl5000.1-000a
+[    2.521194] sgtl5000 1-000a: ASoC: Succeded to create component
+debugfs directory
+[    2.544264] ************** component name is 2028000.ssi
+[    2.549879] fsl-ssi-dai 2028000.ssi: ASoC: Failed to create
+component debugfs directory
+[    2.565605] imx-sgtl5000 sound: sgtl5000 <-> 2028000.ssi mapping ok
+[    2.584074] ************** component name is 2004000.spdif
+[    2.589721] fsl-spdif-dai 2004000.spdif: ASoC: Succeded to create
+component debugfs directory
+[    2.598437] ************** component name is 2004000.spdif
+[    2.603978] fsl-spdif-dai 2004000.spdif: ASoC: Failed to create
+component debugfs directory
+[    2.616340] imx-spdif sound-spdif: snd-soc-dummy-dai <->
+2004000.spdif mapping ok
+
+Looks like the 'dma' prefix did not take effect, as we are still
+trying to register the same name twice.
+
+Thanks
