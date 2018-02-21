@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 04/11] ASoC: rt5651: Simplify
-	set_bias_level()
-Date: Wed, 21 Feb 2018 11:43:28 +0000
-Message-ID: <20180221114328.GC8334@sirena.org.uk>
+Subject: Re: [PATCH 01/11] ASoC: rt5651: Avoid duplicating DMI
+ quirks between codec and machine driver
+Date: Wed, 21 Feb 2018 11:54:52 +0000
+Message-ID: <20180221115452.GD8334@sirena.org.uk>
 References: <20180220221511.22861-1-hdegoede@redhat.com>
- <20180220221511.22861-4-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6386339335440231184=="
+Content-Type: multipart/mixed; boundary="===============0164181136570966590=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id F27D9267502
- for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 12:43:31 +0100 (CET)
-In-Reply-To: <20180220221511.22861-4-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id EE32C267567
+ for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 12:54:56 +0100 (CET)
+In-Reply-To: <20180220221511.22861-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,53 +26,56 @@ Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Carlo Caione 
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6386339335440231184==
+--===============0164181136570966590==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="PuGuTyElPB9bOcsM"
+	protocol="application/pgp-signature"; boundary="OROCMA9jn6tkzFBc"
 Content-Disposition: inline
 
 
---PuGuTyElPB9bOcsM
+--OROCMA9jn6tkzFBc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 20, 2018 at 11:15:04PM +0100, Hans de Goede wrote:
-> There is no need to set the LDO voltage to 1.2 volt each time we enter
-> standby, instead always leave it 1.2 volt on BIAS_OFF. Note we do a
-> snd_soc_codec_force_bias_level(BIAS_OFF) on probe, so this will configure
-> it correctly right from the start.
+On Tue, Feb 20, 2018 at 11:15:01PM +0100, Hans de Goede wrote:
+> Instead of duplicating the DMI quirks between the codec and machine driver,
+> add a rt5651_set_pdata() codec private function which the machine driver
+> can use to pass in pdata.
 
-That force on probe sounds like a problem...  if this is being done once
-at startup it should be done in the probe function, not in the bias
-level configuration.
+It's not clear to me that this is a great idea.  The goal in general is
+to keep as much of the CODEC configuration in the CODEC driver as
+possible so we can move more towards generic machine drivers, this is
+moving us in the opposite drection quite dramatically.  That might get
+in the way of improvements we could be making when we get the component
+based changes further on and can avoid having all the DPCM stuff in the
+Intel drivers.
 
-Also, are you sure this is a good fix?  If the bias voltage is being
-configured all the time does that perhaps indicate that for better
-performance or something it should have been being set to some other
-voltage when the device is in standby?
+It is really unfortunate that ACPI based systems aren't embracing
+standards here and using this mess of open coded quirks but it feels
+like the way to do this is to keep the code as close as possible to well
+designed firmware interfaces and hope that they come round.
 
---PuGuTyElPB9bOcsM
+--OROCMA9jn6tkzFBc
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqNW18ACgkQJNaLcl1U
-h9BNMgf/aGwJs3snk2VE8BVMyJ46vLbyZA0TyeuimVS1ctKYByTueH1Y0geJEuvK
-eB3SXM7wOjvk5Qr/idW/0Gk9QtfojarKaFxLaWE75vhdRahfNGqyAksQtrXU4Usf
-tDSbnA/bZlCE4FlCXRXdI7DURt5Xrw3D1yh4c+q885n7sThA0y3t0wx4JeZGoRFB
-P1wGNY34AjvsTZM+Yf58YnoqTCZ+V7pwt13QV2K/0xZzTaqXpcogEIpwh3Go5+Fu
-7qfIGd3HvcB+rM9kuKOg61DUp1idrOLBh9uIQ6BjM/95css18Zz/9AgU9L2vn/zi
-Ef3nvaMtibhz70LXXopJe8rmgjCoOA==
-=9lv/
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqNXgsACgkQJNaLcl1U
+h9DX2wf/ceuqRbLLWkCVuVyhqTxB1Tz21zK+5u0WRMP3wnDfwydJcw4hxEEyKkto
+CeDB1uTlpYJwEdxzODtGgzF2jQCdRE4T6AfNVYuXmRcdOBISm+/0KzU+3puW6JGa
+Hq+e+iDPoCbZPuLHQkfWwyAOuNYCEJB3tzA1bO8UAOXBAtLcOeqYIg/l+NAsU2wy
+w8Ds2ScF6gjz8zQYki1CEegCVYIkQVBX4zgW+xwcKKeLo2/sjtbFU11YJf08jjWy
+NrXEtx4+pq3WFj4BGk9rbMUk2TrZ0n4FGQMmfvj/KfsrinyjsrZRxfZzg5mBUyGY
+7BjaX7tUqpVPqu0g15z3HKzncX62rQ==
+=MQnE
 -----END PGP SIGNATURE-----
 
---PuGuTyElPB9bOcsM--
+--OROCMA9jn6tkzFBc--
 
---===============6386339335440231184==
+--===============0164181136570966590==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6386339335440231184==--
+--===============0164181136570966590==--
