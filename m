@@ -1,350 +1,114 @@
-From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Subject: [PATCH 2/2] ASoC: support ROHM BD28623 codec
-Date: Wed, 21 Feb 2018 13:33:11 +0900
-Message-ID: <20180221043311.25840-3-suzuki.katsuhiro@socionext.com>
-References: <20180221043311.25840-1-suzuki.katsuhiro@socionext.com>
+From: "Rafael J. Wysocki" <rafael-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 1/7] PCI: Restore BARs on runtime resume
+ despite being unbound
+Date: Wed, 21 Feb 2018 10:57:14 +0100
+Message-ID: <CAJZ5v0h+qipaKKDxxFFpkwUKgMjnoaUB8_p+FRDb+fSM_v+wBw@mail.gmail.com>
+References: <cover.1518941072.git.lukas@wunner.de>
+ <f7593132608eb9a83d7268cc5b3ef12b3dd9c52d.1518941073.git.lukas@wunner.de>
+ <20180220212922.GC32228@bhelgaas-glaptop.roam.corp.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx.socionext.com (mx.socionext.com [202.248.49.38])
- by alsa0.perex.cz (Postfix) with ESMTP id B179A26751B
- for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 05:33:18 +0100 (CET)
-In-Reply-To: <20180221043311.25840-1-suzuki.katsuhiro@socionext.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Cc: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+In-Reply-To: <20180220212922.GC32228-1RhO1Y9PlrlHTL0Zs8A6p5iNqAH0jzoTYJqu5kTmcBRl57MIdRCFDg@public.gmane.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/nouveau>,
+ <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/nouveau>
+List-Post: <mailto:nouveau-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Help: <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/nouveau>,
+ <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
+Errors-To: nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Sender: "Nouveau" <nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+To: Bjorn Helgaas <helgaas-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Linux PM <linux-pm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, nouveau-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, "Rafael J. Wysocki" <rafael.j.wysocki-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, dri-devel <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Bastien Nocera <hadess-0MeiytkfxGOsTnJN9+BGXg@public.gmane.org>, Linux PCI <linux-pci-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, Dave Airlie <airlied-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Bjorn Helgaas <bhelgaas-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Ben Skeggs <bskeggs-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds support of the ROHM BD28623MUV
-Class D speaker amplifier for Flat-panel TVs.
-This IC delivers an output power of 20W + 20W.
-
-Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
----
- sound/soc/codecs/Kconfig   |   8 ++
- sound/soc/codecs/Makefile  |   2 +
- sound/soc/codecs/bd28623.c | 258 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 268 insertions(+)
- create mode 100644 sound/soc/codecs/bd28623.c
-
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index f72a90104a58..6a53e188ead6 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -47,6 +47,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_ALC5623 if I2C
- 	select SND_SOC_ALC5632 if I2C
- 	select SND_SOC_BT_SCO
-+	select SND_SOC_BD28623
- 	select SND_SOC_CQ0093VC
- 	select SND_SOC_CS35L32 if I2C
- 	select SND_SOC_CS35L33 if I2C
-@@ -418,6 +419,13 @@ config SND_SOC_ALC5623
- config SND_SOC_ALC5632
- 	tristate
- 
-+config SND_SOC_BD28623
-+	tristate "ROHM BD28623 CODEC"
-+	help
-+	  Enable support for ROHM BD28623MUV Class D speaker amplifier.
-+	  This codec does not have any control buses such as I2C, it
-+	  detect format of I2S automatically.
-+
- config SND_SOC_BT_SCO
- 	tristate "Dummy BT SCO codec driver"
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 56c3252820d2..f2c710e16557 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -37,6 +37,7 @@ snd-soc-ak4671-objs := ak4671.o
- snd-soc-ak5386-objs := ak5386.o
- snd-soc-ak5558-objs := ak5558.o
- snd-soc-arizona-objs := arizona.o
-+snd-soc-bd28623-objs := bd28623.o
- snd-soc-bt-sco-objs := bt-sco.o
- snd-soc-cq93vc-objs := cq93vc.o
- snd-soc-cs35l32-objs := cs35l32.o
-@@ -285,6 +286,7 @@ obj-$(CONFIG_SND_SOC_AK5558)	+= snd-soc-ak5558.o
- obj-$(CONFIG_SND_SOC_ALC5623)    += snd-soc-alc5623.o
- obj-$(CONFIG_SND_SOC_ALC5632)	+= snd-soc-alc5632.o
- obj-$(CONFIG_SND_SOC_ARIZONA)	+= snd-soc-arizona.o
-+obj-$(CONFIG_SND_SOC_BD28623)	+= snd-soc-bd28623.o
- obj-$(CONFIG_SND_SOC_BT_SCO)	+= snd-soc-bt-sco.o
- obj-$(CONFIG_SND_SOC_CQ0093VC) += snd-soc-cq93vc.o
- obj-$(CONFIG_SND_SOC_CS35L32)	+= snd-soc-cs35l32.o
-diff --git a/sound/soc/codecs/bd28623.c b/sound/soc/codecs/bd28623.c
-new file mode 100644
-index 000000000000..672c8e790e24
---- /dev/null
-+++ b/sound/soc/codecs/bd28623.c
-@@ -0,0 +1,258 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * ROHM BD28623MUV class D speaker amplifier codec driver.
-+ *
-+ * Copyright (c) 2018 Socionext Inc.
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/regulator/consumer.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+
-+#define BD28623_NUM_SUPPLIES    3
-+
-+static const char *const bd28623_supply_names[BD28623_NUM_SUPPLIES] = {
-+	"VCCA",
-+	"VCCP1",
-+	"VCCP2",
-+};
-+
-+struct bd28623_priv {
-+	struct platform_device *pdev;
-+	struct regulator_bulk_data supplies[BD28623_NUM_SUPPLIES];
-+	struct gpio_desc *reset_gpio;
-+	struct gpio_desc *mute_gpio;
-+
-+	int switch_spk;
-+};
-+
-+static const struct snd_soc_dapm_widget bd28623_widgets[] = {
-+	SND_SOC_DAPM_DAC("DAC", "Playback", SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_OUTPUT("OUT1P"),
-+	SND_SOC_DAPM_OUTPUT("OUT1N"),
-+	SND_SOC_DAPM_OUTPUT("OUT2P"),
-+	SND_SOC_DAPM_OUTPUT("OUT2N"),
-+};
-+
-+static const struct snd_soc_dapm_route bd28623_routes[] = {
-+	{ "OUT1P", NULL, "DAC" },
-+	{ "OUT1N", NULL, "DAC" },
-+	{ "OUT2P", NULL, "DAC" },
-+	{ "OUT2N", NULL, "DAC" },
-+};
-+
-+static int bd28623_power_on(struct bd28623_priv *bd)
-+{
-+	struct device *dev = &bd->pdev->dev;
-+	int ret;
-+
-+	ret = regulator_bulk_enable(ARRAY_SIZE(bd->supplies), bd->supplies);
-+	if (ret) {
-+		dev_err(dev, "Failed to enable supplies: %d\n", ret);
-+		return ret;
-+	}
-+
-+	gpiod_set_value(bd->reset_gpio, 0);
-+	usleep_range(300000, 400000);
-+
-+	return 0;
-+}
-+
-+static void bd28623_power_off(struct bd28623_priv *bd)
-+{
-+	gpiod_set_value(bd->reset_gpio, 1);
-+
-+	regulator_bulk_disable(ARRAY_SIZE(bd->supplies), bd->supplies);
-+}
-+
-+static int bd28623_update_switch_spk(struct bd28623_priv *bd)
-+{
-+	if (bd->switch_spk)
-+		gpiod_set_value(bd->mute_gpio, 0);
-+	else
-+		gpiod_set_value(bd->mute_gpio, 1);
-+
-+	return 0;
-+}
-+
-+static int bd28623_get_switch_spk(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_kcontrol_component(kcontrol);
-+	struct bd28623_priv *bd = snd_soc_component_get_drvdata(component);
-+
-+	ucontrol->value.integer.value[0] = bd->switch_spk;
-+
-+	return 0;
-+}
-+
-+static int bd28623_set_switch_spk(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_kcontrol_component(kcontrol);
-+	struct bd28623_priv *bd = snd_soc_component_get_drvdata(component);
-+
-+	if (bd->switch_spk == ucontrol->value.integer.value[0])
-+		return 0;
-+
-+	bd->switch_spk = ucontrol->value.integer.value[0];
-+
-+	return bd28623_update_switch_spk(bd);
-+}
-+
-+static const struct snd_kcontrol_new bd28623_controls[] = {
-+	SOC_SINGLE_BOOL_EXT("Speaker Switch", 0,
-+			    bd28623_get_switch_spk, bd28623_set_switch_spk),
-+};
-+
-+static int bd28623_codec_probe(struct snd_soc_component *component)
-+{
-+	struct bd28623_priv *bd = snd_soc_component_get_drvdata(component);
-+	int ret;
-+
-+	bd->switch_spk = 1;
-+
-+	ret = bd28623_power_on(bd);
-+	if (ret)
-+		return ret;
-+
-+	bd28623_update_switch_spk(bd);
-+
-+	return 0;
-+}
-+
-+static int bd28623_codec_suspend(struct snd_soc_component *component)
-+{
-+	struct bd28623_priv *bd = snd_soc_component_get_drvdata(component);
-+
-+	bd28623_power_off(bd);
-+
-+	return 0;
-+}
-+
-+static int bd28623_codec_resume(struct snd_soc_component *component)
-+{
-+	struct bd28623_priv *bd = snd_soc_component_get_drvdata(component);
-+	int ret;
-+
-+	ret = bd28623_power_on(bd);
-+	if (ret)
-+		return ret;
-+
-+	bd28623_update_switch_spk(bd);
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_component_driver soc_codec_bd = {
-+	.probe			= bd28623_codec_probe,
-+	.suspend		= bd28623_codec_suspend,
-+	.resume			= bd28623_codec_resume,
-+	.dapm_widgets		= bd28623_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(bd28623_widgets),
-+	.dapm_routes		= bd28623_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(bd28623_routes),
-+	.controls		= bd28623_controls,
-+	.num_controls		= ARRAY_SIZE(bd28623_controls),
-+	.idle_bias_on		= 1,
-+	.use_pmdown_time	= 1,
-+	.endianness		= 1,
-+	.non_legacy_dai_naming	= 1,
-+};
-+
-+static struct snd_soc_dai_driver soc_dai_bd = {
-+	.name     = "bd28623-speaker",
-+	.playback = {
-+		.stream_name  = "Playback",
-+		.formats      = SNDRV_PCM_FMTBIT_S32_LE |
-+				SNDRV_PCM_FMTBIT_S24_LE |
-+				SNDRV_PCM_FMTBIT_S16_LE,
-+		.rates        = SNDRV_PCM_RATE_48000 |
-+				SNDRV_PCM_RATE_44100 |
-+				SNDRV_PCM_RATE_32000,
-+		.channels_min = 2,
-+		.channels_max = 2,
-+	},
-+};
-+
-+static int bd28623_probe(struct platform_device *pdev)
-+{
-+	struct bd28623_priv *bd;
-+	struct device *dev = &pdev->dev;
-+	int i, ret;
-+
-+	bd = devm_kzalloc(&pdev->dev, sizeof(struct bd28623_priv), GFP_KERNEL);
-+	if (!bd)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < ARRAY_SIZE(bd->supplies); i++)
-+		bd->supplies[i].supply = bd28623_supply_names[i];
-+
-+	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(bd->supplies),
-+				      bd->supplies);
-+	if (ret) {
-+		dev_err(dev, "Failed to get supplies: %d\n", ret);
-+		return ret;
-+	}
-+
-+	bd->reset_gpio = devm_gpiod_get_optional(dev, "reset",
-+						 GPIOD_OUT_HIGH);
-+	if (IS_ERR(bd->reset_gpio)) {
-+		dev_err(dev, "Failed to request reset_gpio: %ld\n",
-+			PTR_ERR(bd->reset_gpio));
-+		return PTR_ERR(bd->reset_gpio);
-+	}
-+
-+	bd->mute_gpio = devm_gpiod_get_optional(dev, "mute",
-+						GPIOD_OUT_HIGH);
-+	if (IS_ERR(bd->mute_gpio)) {
-+		dev_err(dev, "Failed to request mute_gpio: %ld\n",
-+			PTR_ERR(bd->mute_gpio));
-+		return PTR_ERR(bd->mute_gpio);
-+	}
-+
-+	platform_set_drvdata(pdev, bd);
-+	bd->pdev = pdev;
-+
-+	ret = devm_snd_soc_register_component(dev, &soc_codec_bd,
-+					      &soc_dai_bd, 1);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int bd28623_remove(struct platform_device *pdev)
-+{
-+	struct bd28623_priv *bd = platform_get_drvdata(pdev);
-+
-+	regulator_bulk_disable(ARRAY_SIZE(bd->supplies), bd->supplies);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id bd28623_of_match[] = {
-+	{ .compatible = "rohm,bd28623", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, bd28623_of_match);
-+
-+static struct platform_driver bd28623_codec_driver = {
-+	.driver = {
-+		.name = "bd28623",
-+		.of_match_table = of_match_ptr(bd28623_of_match),
-+	},
-+	.probe  = bd28623_probe,
-+	.remove = bd28623_remove,
-+};
-+module_platform_driver(bd28623_codec_driver);
-+
-+MODULE_AUTHOR("Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>");
-+MODULE_DESCRIPTION("ROHM BD28623 speaker amplifier driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.16.1
+T24gVHVlLCBGZWIgMjAsIDIwMTggYXQgMTA6MjkgUE0sIEJqb3JuIEhlbGdhYXMgPGhlbGdhYXNA
+a2VybmVsLm9yZz4gd3JvdGU6Cj4gT24gU3VuLCBGZWIgMTgsIDIwMTggYXQgMDk6Mzg6MzJBTSAr
+MDEwMCwgTHVrYXMgV3VubmVyIHdyb3RlOgo+PiBQQ0kgZGV2aWNlcyBub3QgYm91bmQgdG8gYSBk
+cml2ZXIgYXJlIHN1cHBvc2VkIHRvIHN0YXkgaW4gRDAgZHVyaW5nCj4+IHJ1bnRpbWUgc3VzcGVu
+ZC4KPgo+IERvZXNuJ3QgInJ1bnRpbWUgc3VzcGVuZCIgbWVhbiBhbiBpbmRpdmlkdWFsIGRldmlj
+ZSBpcyBzdXNwZW5kZWQgd2hpbGUKPiB0aGUgcmVzdCBvZiB0aGUgc3lzdGVtIHJlbWFpbnMgYWN0
+aXZlPwo+Cj4gSWYgc28sIG1heWJlIGl0IHdvdWxkIGJlIG1vcmUgZGlyZWN0IHRvIHNheSAiUENJ
+IGRldmljZXMgbm90IGJvdW5kIHRvCj4gYSBkcml2ZXIgY2Fubm90IGJlIHJ1bnRpbWUgc3VzcGVu
+ZGVkIj8KPgo+IChJdCdzIGEgc2VwYXJhdGUgcXVlc3Rpb24gbm90IHJlbGV2YW50IHRvIHRoaXMg
+cGF0Y2gsIGJ1dCBJJ20gbm90Cj4gY29udmluY2VkIHRoYXQgIlBDSSBkZXZpY2VzIHdpdGhvdXQg
+YSBkcml2ZXIgY2Fubm90IGJlIHN1c3BlbmRlZCIKPiBzaG91bGQgYmUgYWNjZXB0ZWQgYXMgYSBy
+dWxlLiAgSWYgaXQgaXMgYSBydWxlLCB3ZSBzaG91bGQgYmUgYWJsZSB0bwo+IGRlZHVjZSBpdCBm
+cm9tIHRoZSBzcGVjcy4pCj4KPj4gQnV0IHRoZXkgbWF5IGhhdmUgYSBwYXJlbnQgd2hpY2ggaXMg
+Ym91bmQgYW5kIGNhbiBiZQo+PiB0cmFuc2l0aW9uZWQgdG8gRDNjb2xkIGF0IHJ1bnRpbWUuICBP
+bmNlIHRoZSBwYXJlbnQgZ29lcyB0byBEM2NvbGQsIHRoZQo+PiB1bmJvdW5kIGNoaWxkIG1heSBn
+byB0byBEM2NvbGQgYXMgd2VsbC4gIFdoZW4gdGhlIGNoaWxkIGNvbWVzIG91dCBvZgo+PiBEM2Nv
+bGQsIGl0cyBCQVJzIGFyZSB1bmluaXRpYWxpemVkIGFuZCB0aHVzIGluYWNjZXNzaWJsZSB3aGVu
+IGEgZHJpdmVyCj4+IHRyaWVzIHRvIHByb2JlLgo+Pgo+PiBPbmUgZXhhbXBsZSBhcmUgcmVjZW50
+IGh5YnJpZCBncmFwaGljcyBsYXB0b3BzIHdoaWNoIGN1dCBwb3dlciB0byB0aGUKPj4gZGlzY3Jl
+dGUgR1BVIHdoZW4gdGhlIHJvb3QgcG9ydCBhYm92ZSBpdCBnb2VzIHRvIEFDUEkgcG93ZXIgc3Rh
+dGUgRDMuCj4+IFVzZXJzIG1heSBwcm92b2tlIHRoaXMgYnkgdW5iaW5kaW5nIHRoZSBHUFUgZHJp
+dmVyIGFuZCBhbGxvd2luZyBydW50aW1lCj4+IFBNIG9uIHRoZSBHUFUgdmlhIHN5c2ZzOiAgVGhl
+IFBNIGNvcmUgd2lsbCB0aGVuIHRyZWF0IHRoZSBHUFUgYXMKPj4gInN1c3BlbmRlZCIsIHdoaWNo
+IGluIHR1cm4gYWxsb3dzIHRoZSByb290IHBvcnQgdG8gcnVudGltZSBzdXNwZW5kLAo+PiBjYXVz
+aW5nIHRoZSBwb3dlciByZXNvdXJjZXMgbGlzdGVkIGluIGl0cyBfUFIzIG9iamVjdCB0byBiZSBw
+b3dlcmVkIG9mZi4KPj4gVGhlIEdQVSdzIEJBUnMgd2lsbCBiZSB1bmluaXRpYWxpemVkIHdoZW4g
+YSBkcml2ZXIgbGF0ZXIgcHJvYmVzIGl0Lgo+Pgo+PiBBbm90aGVyIGV4YW1wbGUgYXJlIGh5YnJp
+ZCBncmFwaGljcyBsYXB0b3BzIHdoZXJlIHRoZSBHUFUgaXRzZWxmIChyYXRoZXIKPj4gdGhhbiB0
+aGUgcm9vdCBwb3J0KSBpcyBjYXBhYmxlIG9mIHJ1bnRpbWUgc3VzcGVuZGluZyB0byBEM2NvbGQu
+ICBJZiB0aGUKPj4gR1BVJ3MgaW50ZWdyYXRlZCBIREEgY29udHJvbGxlciBpcyBub3QgYm91bmQg
+YW5kIHRoZSBHUFUncyBkcml2ZXIKPj4gZGVjaWRlcyB0byBydW50aW1lIHN1c3BlbmQgdG8gRDNj
+b2xkLCB0aGUgSERBIGNvbnRyb2xsZXIncyBCQVJzIHdpbGwgYmUKPj4gdW5pbml0aWFsaXplZCB3
+aGVuIGEgZHJpdmVyIGxhdGVyIHByb2JlcyBpdC4KPj4KPj4gRml4IGJ5IHJlc3RvcmluZyB0aGUg
+QkFScyBvbiBydW50aW1lIHJlc3VtZSBpZiB0aGUgZGV2aWNlIGlzIG5vdCBib3VuZC4KPj4gVGhp
+cyBpcyBzdWZmaWNpZW50IHRvIGZpeCB0aGUgYWJvdmUtbWVudGlvbmVkIHVzZSBjYXNlcy4gIE90
+aGVyIHVzZQo+PiBjYXNlcyBtaWdodCByZXF1aXJlIGEgZnVsbC1ibG93biBwY2lfc2F2ZV9zdGF0
+ZSgpIC8gcGNpX3Jlc3RvcmVfc3RhdGUoKQo+PiBvciBleGVjdXRpb24gb2YgZml4dXBzLiAgV2Ug
+Y2FuIGFkZCB0aGF0IG9uY2UgdXNlIGNhc2VzIG1hdGVyaWFsaXplLAo+PiBsZXQncyBub3QgaW5m
+bGF0ZSB0aGUgY29kZSB1bm5lY2Vzc2FyaWx5Lgo+Cj4gV2h5IHdvdWxkIHdlIG5vdCBkbyBhIGZ1
+bGwtYmxvd24gcmVzdG9yZT8gIFdpdGggdGhpcyBwYXRjaCwgSSB0aGluawo+IHNvbWUgY29uZmln
+dXJhdGlvbiBkb25lIGR1cmluZyBlbnVtZXJhdGlvbiwgZS5nLiwgQVNQTSBhbmQgTVBTLCB3aWxs
+Cj4gYmUgbG9zdC4gICJsc3BjaSAtdnYiIG9mIHRoZSBIREEgYmVmb3JlIGFuZCBhZnRlciB0aGUg
+c3VzcGVuZCBtYXkgc2hvdwo+IGRpZmZlcmVudCB0aGluZ3MsIHdoaWNoIHNlZW1zIGNvdW50ZXIt
+aW50dWl0aXZlLgoKUmlnaHQuCgo+IEkgd291bGRuJ3QgdGhpbmsgb2YgYSBmdWxsLWJsb3duIHJl
+c3RvcmUgYXMgImluZmxhdGluZyB0aGUgY29kZSI7IEkKPiB3b3VsZCB0aGluayBvZiBpdCBhcyAi
+aGF2aW5nIGZld2VyIHNwZWNpYWwgY2FzZXMiLCBpLmUuLCB3ZSBhbHdheXMgdXNlCj4gdGhlIHNh
+bWUgcmVzdG9yZSBwYXRoIGluc3RlYWQgb2YgaGF2aW5nIHRoZSBtYWluIG9uZSBwbHVzIGEgc3Bl
+Y2lhbAo+IG9uZSBmb3IgdW5ib3VuZCBkZXZpY2VzLgoKVGhhdCBpcyBhIGZhaXIgcG9pbnQsIGJ1
+dCBpZiB5b3UgbG9vayBhdCBwY2lfcG1fcnVudGltZV9zdXNwZW5kKCksIGl0CmRvZXNuJ3QgYWN0
+dWFsbHkgc2F2ZSBhbnl0aGluZyBmb3IgZGV2aWNlcyB3aXRob3V0IGRyaXZlcnMsIHNvIHdlJ2QK
+anVzdCByZXN0b3JlIHRoZSBvcmlnaW5hbCBpbml0aWFsIHN0YXRlIGZvciB0aGVtIGV2ZXJ5IHRp
+bWUuCgpJZiB3ZSBhcmUgdG8gcmVzdG9yZSB0aGUgZW50aXJlIHN0YXRlIG9uIHJ1bnRpbWUgcmVz
+dW1lLApwY2lfcG1fcnVudGltZV9zdXNwZW5kKCkgc2hvdWxkIGJlIGNoYW5nZWQgdG8gY2FsbCBw
+Y2lfc2F2ZV9zdGF0ZSgpCmJlZm9yZSByZXR1cm5pbmcgMCBpbiB0aGUgIWRldi0+ZHJpdmVyIGNh
+c2UgQUZBSUNTLgoKPj4gQ2M6IEJqb3JuIEhlbGdhYXMgPGJoZWxnYWFzQGdvb2dsZS5jb20+Cj4+
+IENjOiBSYWZhZWwgSi4gV3lzb2NraSA8cmFmYWVsLmoud3lzb2NraUBpbnRlbC5jb20+Cj4+IFNp
+Z25lZC1vZmYtYnk6IEx1a2FzIFd1bm5lciA8bHVrYXNAd3VubmVyLmRlPgo+PiAtLS0KPj4gIGRy
+aXZlcnMvcGNpL3BjaS1kcml2ZXIuYyB8IDggKysrKysrLS0KPj4gIGRyaXZlcnMvcGNpL3BjaS5j
+ICAgICAgICB8IDIgKy0KPj4gIGRyaXZlcnMvcGNpL3BjaS5oICAgICAgICB8IDEgKwo+PiAgMyBm
+aWxlcyBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCj4+Cj4+IGRpZmYg
+LS1naXQgYS9kcml2ZXJzL3BjaS9wY2ktZHJpdmVyLmMgYi9kcml2ZXJzL3BjaS9wY2ktZHJpdmVy
+LmMKPj4gaW5kZXggM2JlZDZiZWRhMDUxLi41MWIxMWNiZDQ4ZjYgMTAwNjQ0Cj4+IC0tLSBhL2Ry
+aXZlcnMvcGNpL3BjaS1kcml2ZXIuYwo+PiArKysgYi9kcml2ZXJzL3BjaS9wY2ktZHJpdmVyLmMK
+Pj4gQEAgLTEyNzcsMTAgKzEyNzcsMTQgQEAgc3RhdGljIGludCBwY2lfcG1fcnVudGltZV9yZXN1
+bWUoc3RydWN0IGRldmljZSAqZGV2KQo+Pgo+PiAgICAgICAvKgo+PiAgICAgICAgKiBJZiBwY2lf
+ZGV2LT5kcml2ZXIgaXMgbm90IHNldCAodW5ib3VuZCksIHRoZSBkZXZpY2Ugc2hvdWxkCj4+IC0g
+ICAgICAqIGFsd2F5cyByZW1haW4gaW4gRDAgcmVnYXJkbGVzcyBvZiB0aGUgcnVudGltZSBQTSBz
+dGF0dXMKPj4gKyAgICAgICogYWx3YXlzIHJlbWFpbiBpbiBEMCByZWdhcmRsZXNzIG9mIHRoZSBy
+dW50aW1lIFBNIHN0YXR1cy4KPj4gKyAgICAgICogQnV0IGlmIGl0cyBwYXJlbnQgY2FuIGdvIHRv
+IEQzY29sZCwgdGhpcyBkZXZpY2UgbWF5IGhhdmUKPj4gKyAgICAgICogYmVlbiBpbiBEM2NvbGQg
+YXMgd2VsbCBhbmQgcmVxdWlyZSByZXN0b3JhdGlvbiBvZiBpdHMgQkFScy4KPj4gICAgICAgICov
+Cj4+IC0gICAgIGlmICghcGNpX2Rldi0+ZHJpdmVyKQo+PiArICAgICBpZiAoIXBjaV9kZXYtPmRy
+aXZlcikgewo+PiArICAgICAgICAgICAgIHBjaV9yZXN0b3JlX2JhcnMocGNpX2Rldik7Cj4KPiBJ
+ZiB3ZSBkbyBkZWNpZGUgbm90IHRvIGRvIGEgZnVsbC1ibG93biByZXN0b3JlLCBob3cgZG8gd2Ug
+ZGVjaWRlCj4gd2hldGhlciB0byB1c2UgcGNpX3Jlc3RvcmVfYmFycygpIG9yIHBjaV9yZXN0b3Jl
+X2NvbmZpZ19zcGFjZSgpPwo+Cj4gSSdtIG5vdCBzdXJlIHdoeSB3ZSBoYXZlIGJvdGguCgpNZSBu
+ZWl0aGVyLgoKPiBUaGUgcGNpX3Jlc3RvcmVfYmFycygpIHBhdGggbG9va3MgYQo+IGxpdHRsZSBz
+bWFydGVyIGluIHRoYXQgaXQgaXMgbW9yZSBjYXJlZnVsIHdoZW4gdXBkYXRpbmcgNjQtYml0IEJB
+UnMKPiB0aGF0IGNhbid0IGJlIHVwZGF0ZWQgYXRvbWljYWxseS4KPgo+PiAgICAgICAgICAgICAg
+IHJldHVybiAwOwo+PiArICAgICB9Cj4+Cj4+ICAgICAgIGlmICghcG0gfHwgIXBtLT5ydW50aW1l
+X3Jlc3VtZSkKPj4gICAgICAgICAgICAgICByZXR1cm4gLUVOT1NZUzsKClNvIGlmIHBjaV9wbV9y
+dW50aW1lX3N1c3BlbmQoKSBpcyBtb2RpZmllZCB0byBjYWxsIHBjaV9zYXZlX3N0YXRlKCkKYmVm
+b3JlIHJldHVybmluZyAwIGluIHRoZSAhZGV2LT5kcml2ZXIgY2FzZSwgd2UgY2FuIGp1c3QgbW92
+ZSB0aGUKcGNpX3Jlc3RvcmVfc3RhbmRhcmRfY29uZmlnKCkgaW52b2NhdGlvbiBpbiBwY2lfcG1f
+cnVudGltZV9yZXN1bWUoKSB1cAp0byB0aGUgdmVyeSB0b3AgYW5kIGNoZWNrIGRldi0+ZHJpdmVy
+IGxhdGVyLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpO
+b3V2ZWF1IG1haWxpbmcgbGlzdApOb3V2ZWF1QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczov
+L2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL25vdXZlYXUK
