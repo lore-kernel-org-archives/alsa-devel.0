@@ -1,22 +1,22 @@
-From: Kirill Marinushkin <k.marinushkin@gmail.com>
-Subject: Re: [RESEND PATCH v2 2/2] ASoC: topology: Add missing
- clock gating parameter when parsing hw_configs
-Date: Wed, 21 Feb 2018 21:16:15 +0100
-Message-ID: <c30eb9d9-11ff-f5c9-bb4e-ab0f9a8f4c09@gmail.com>
-References: <20180220174446.7784-1-k.marinushkin@gmail.com>
- <20180220174446.7784-3-k.marinushkin@gmail.com>
- <CAHp75Vc451W4GvvVCv-70EO6Cgn99Y+HV9xb530nJ72aT79rLQ@mail.gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 06/11] ASoC: rt5651: Improve headphone vs
+ headset detection
+Date: Wed, 21 Feb 2018 21:22:13 +0100
+Message-ID: <68d4cfb3-0b7a-64fb-35af-61912bf678f5@redhat.com>
+References: <20180220221511.22861-1-hdegoede@redhat.com>
+ <20180220221511.22861-6-hdegoede@redhat.com>
+ <20180221120557.GE8334@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f176.google.com (mail-wr0-f176.google.com
- [209.85.128.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 5884C267645
- for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 21:16:08 +0100 (CET)
-Received: by mail-wr0-f176.google.com with SMTP id k9so7985277wre.9
- for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 12:16:08 -0800 (PST)
-In-Reply-To: <CAHp75Vc451W4GvvVCv-70EO6Cgn99Y+HV9xb530nJ72aT79rLQ@mail.gmail.com>
+Received: from mail-wr0-f196.google.com (mail-wr0-f196.google.com
+ [209.85.128.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B7F626762A
+ for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 21:22:16 +0100 (CET)
+Received: by mail-wr0-f196.google.com with SMTP id v65so8018495wrc.11
+ for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 12:22:16 -0800 (PST)
+In-Reply-To: <20180221120557.GE8334@sirena.org.uk>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,34 +27,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Mark Brown <broonie@kernel.org>
+Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/21/18 15:50, Andy Shevchenko wrote:
-> On Tue, Feb 20, 2018 at 7:44 PM, Kirill Marinushkin
-> <k.marinushkin@gmail.com> wrote:
->> Clock gating parameter is a part of `dai_fmt`. It is supported by
->> `alsa-lib` when creating a topology binary file, but ignored by kernel
->> when loading this topology file.
->> +               /* clock gating */
->> +               if (hw_config->clock_gated == SND_SOC_TPLG_DAI_CLK_GATE_GATED)
->> +                       link->dai_fmt |= SND_SOC_DAIFMT_GATED;
->> +               else if (hw_config->clock_gated ==
->> +                        SND_SOC_TPLG_DAI_CLK_GATE_CONT)
-> A nit, I would leave it on the same line, even if it ~2-3 characters
-> longer than 80.
+Hi,
 
-Hello Andy,
+On 21-02-18 13:05, Mark Brown wrote:
+> On Tue, Feb 20, 2018 at 11:15:06PM +0100, Hans de Goede wrote:
+> 
+>> This commit ports my work to make this reliable on the rt5640 over to the
+>> rt5651, making the following OVCD changes, each of which has been tested
+>> individually and each of which has shown to be necessary on the rt5651:
+> 
+> It's a big rewrite everything commit :(
 
-Thank you for the comment.
+Yes your right, given that the headphone vs headset detection was pretty
+broken before this commit I just ported my pending rt5640 work over
+in one go. I will split this up better for the next version.
 
-I think it is important to stay in the length of 80. I understand your point, but from my perspective, the coding style is a higher priority guideline.
+>> +/*
+>> + * Note we do not toggle the RT5651_MIC1_OVCD_EN bit in these 2 functions,
+>> + * to ensure reliable OVCD operation it *must* be enabled before enabling
+>> + * the supplies, which may already be enabled.
+>> + */
+>> +static void rt5651_enable_micbias1_ovcd(struct snd_soc_codec *codec)
+>> +{
+> 
+> I'm finding this comment pretty confusing - it would probably be clearer
+> if it said something like "since the supplies may also be enabled by
+> other DAPM operations we toggle the bit in $PLACE instead and only make
+> sure the supplies are enabled here".
 
-Therefore I would prefer to keep this line as it is now.
+Ok I will update the comment.
 
-Beast Regards,
-Kirill
+>> +static bool rt5651_jack_inserted(struct snd_soc_codec *codec)
+>> +{
+> 
+> BTW all these changes are in terms of snd_soc_codec not
+> snd_soc_component, we're trying to move everytihng up a level so that
+> all devices are components.  A bunch of refactoring went in just after
+> the merge window doing that.
 
->> +                       link->dai_fmt |= SND_SOC_DAIFMT_CONT;
->> +
+Ugh, just my luck to hit a refactoring like that with a big series.
+Ah well I will rebase everything on top of your -next and try to use
+component instead of codec everywhere.
+
+Regards,
+
+Hans
