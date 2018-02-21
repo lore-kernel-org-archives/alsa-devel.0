@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 01/11] ASoC: rt5651: Avoid duplicating DMI
- quirks between codec and machine driver
-Date: Wed, 21 Feb 2018 11:54:52 +0000
-Message-ID: <20180221115452.GD8334@sirena.org.uk>
+Subject: Re: [PATCH 06/11] ASoC: rt5651: Improve headphone vs
+ headset detection
+Date: Wed, 21 Feb 2018 12:05:57 +0000
+Message-ID: <20180221120557.GE8334@sirena.org.uk>
 References: <20180220221511.22861-1-hdegoede@redhat.com>
+ <20180220221511.22861-6-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0164181136570966590=="
+Content-Type: multipart/mixed; boundary="===============2990219876326880257=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EE32C267567
- for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 12:54:56 +0100 (CET)
-In-Reply-To: <20180220221511.22861-1-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C5AA926756F
+ for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 13:06:04 +0100 (CET)
+In-Reply-To: <20180220221511.22861-6-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,56 +27,67 @@ Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Carlo Caione 
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0164181136570966590==
+--===============2990219876326880257==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="OROCMA9jn6tkzFBc"
+	protocol="application/pgp-signature"; boundary="d8Lz2Tf5e5STOWUP"
 Content-Disposition: inline
 
 
---OROCMA9jn6tkzFBc
+--d8Lz2Tf5e5STOWUP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 20, 2018 at 11:15:01PM +0100, Hans de Goede wrote:
-> Instead of duplicating the DMI quirks between the codec and machine driver,
-> add a rt5651_set_pdata() codec private function which the machine driver
-> can use to pass in pdata.
+On Tue, Feb 20, 2018 at 11:15:06PM +0100, Hans de Goede wrote:
 
-It's not clear to me that this is a great idea.  The goal in general is
-to keep as much of the CODEC configuration in the CODEC driver as
-possible so we can move more towards generic machine drivers, this is
-moving us in the opposite drection quite dramatically.  That might get
-in the way of improvements we could be making when we get the component
-based changes further on and can avoid having all the DPCM stuff in the
-Intel drivers.
+> This commit ports my work to make this reliable on the rt5640 over to the
+> rt5651, making the following OVCD changes, each of which has been tested
+> individually and each of which has shown to be necessary on the rt5651:
 
-It is really unfortunate that ACPI based systems aren't embracing
-standards here and using this mess of open coded quirks but it feels
-like the way to do this is to keep the code as close as possible to well
-designed firmware interfaces and hope that they come round.
+It's a big rewrite everything commit :(
 
---OROCMA9jn6tkzFBc
+> +/*
+> + * Note we do not toggle the RT5651_MIC1_OVCD_EN bit in these 2 functions,
+> + * to ensure reliable OVCD operation it *must* be enabled before enabling
+> + * the supplies, which may already be enabled.
+> + */
+> +static void rt5651_enable_micbias1_ovcd(struct snd_soc_codec *codec)
+> +{
+
+I'm finding this comment pretty confusing - it would probably be clearer
+if it said something like "since the supplies may also be enabled by
+other DAPM operations we toggle the bit in $PLACE instead and only make
+sure the supplies are enabled here".
+
+> +static bool rt5651_jack_inserted(struct snd_soc_codec *codec)
+> +{
+
+BTW all these changes are in terms of snd_soc_codec not
+snd_soc_component, we're trying to move everytihng up a level so that
+all devices are components.  A bunch of refactoring went in just after
+the merge window doing that.
+
+--d8Lz2Tf5e5STOWUP
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqNXgsACgkQJNaLcl1U
-h9DX2wf/ceuqRbLLWkCVuVyhqTxB1Tz21zK+5u0WRMP3wnDfwydJcw4hxEEyKkto
-CeDB1uTlpYJwEdxzODtGgzF2jQCdRE4T6AfNVYuXmRcdOBISm+/0KzU+3puW6JGa
-Hq+e+iDPoCbZPuLHQkfWwyAOuNYCEJB3tzA1bO8UAOXBAtLcOeqYIg/l+NAsU2wy
-w8Ds2ScF6gjz8zQYki1CEegCVYIkQVBX4zgW+xwcKKeLo2/sjtbFU11YJf08jjWy
-NrXEtx4+pq3WFj4BGk9rbMUk2TrZ0n4FGQMmfvj/KfsrinyjsrZRxfZzg5mBUyGY
-7BjaX7tUqpVPqu0g15z3HKzncX62rQ==
-=MQnE
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqNYKQACgkQJNaLcl1U
+h9A5rQf/TTDYORB9b56k+Wa/vk1F77z2HFPxyaqrWanDxSnDoJSXWRv+vfm5oa3X
+uub2un45Jp1kZWTzxgu5D+AzPBa5vT6ziPoHmsooI1LZD9+Z+GL1j6mFwbBWelBm
+yHQQ9Nq3KtQteFbBmvfVvRqEZ7Mvz1S3iAoPs0qYrBZBvFTTRG2ELLcsTmpRbyMK
+KEWIq2d66p1Nu7nAo1bMf7jFqonrWNA9R5n9XX7Ny16K4y99NwX3l2NAf/ZQ8O4Q
+7udtUueqJl28rh8WDZMiUtEq43izd100o1Sr112k0EnEhUNP4EFzX6AsTrfidrHJ
+FX9NUBZln4pdar+GkMrZqHvrzskBJA==
+=pxhU
 -----END PGP SIGNATURE-----
 
---OROCMA9jn6tkzFBc--
+--d8Lz2Tf5e5STOWUP--
 
---===============0164181136570966590==
+--===============2990219876326880257==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0164181136570966590==--
+--===============2990219876326880257==--
