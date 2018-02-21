@@ -1,57 +1,191 @@
-From: "Katsuhiro Suzuki" <suzuki.katsuhiro@socionext.com>
-Subject: Re: [PATCH 1/2] ASoC: add DT bindings documentation for ROHM BD28623
- codec
-Date: Wed, 21 Feb 2018 21:26:50 +0900
-Message-ID: <001801d3ab0f$3fe07490$bfa15db0$@socionext.com>
-References: <20180221043311.25840-1-suzuki.katsuhiro@socionext.com>
- <20180221043311.25840-2-suzuki.katsuhiro@socionext.com>
- <20180221121354.GG8334@sirena.org.uk>
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH 1/7] PCI: Restore BARs on runtime resume
+	despite being unbound
+Date: Wed, 21 Feb 2018 13:39:34 +0100
+Message-ID: <6131920.sr0PL0JerP@aspire.rjw.lan>
+References: <cover.1518941072.git.lukas@wunner.de>
+ <20180220212922.GC32228@bhelgaas-glaptop.roam.corp.google.com>
+ <CAJZ5v0h+qipaKKDxxFFpkwUKgMjnoaUB8_p+FRDb+fSM_v+wBw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20180221121354.GG8334@sirena.org.uk>
-Content-Language: ja
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: 'Mark Brown' <broonie@kernel.org>, =?iso-2022-jp?B?U3V6dWtpLCBLYXRzdWhpcm8vGyRCTmtMWhsoQiAbJEI+IUduGyhC?= <suzuki.katsuhiro@socionext.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.org, Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl
+ [79.96.170.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id CD64A267016
+ for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 13:38:39 +0100 (CET)
+In-Reply-To: <CAJZ5v0h+qipaKKDxxFFpkwUKgMjnoaUB8_p+FRDb+fSM_v+wBw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Pierre Moreau <pierre.morrow@free.fr>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Lyude Paul <lyude@redhat.com>, Linux PM <linux-pm@vger.kernel.org>, nouveau@lists.freedesktop.org, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Takashi Iwai <tiwai@suse.com>, dri-devel <dri-devel@lists.freedesktop.org>, Hans de Goede <hdegoede@redhat.com>, Lukas Wunner <lukas@wunner.de>, Peter Wu <peter@lekensteyn.nl>, Bastien Nocera <hadess@hadess.net>, Linux PCI <linux-pci@vger.kernel.org>, Alex Deucher <alexander.deucher@amd.com>, Dave Airlie <airlied@redhat.com>, Bjorn Helgaas <bhelgaas@google.com>, Ben Skeggs <bskeggs@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Mark,
-
-Thank you for your review.
-
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Wednesday, February 21, 2018 9:14 PM
-> To: Suzuki, Katsuhiro <suzuki.katsuhiro@socionext.com>
-> Cc: alsa-devel@alsa-project.org; Rob Herring <robh+dt@kernel.org>; devicetree@vger.kernel.org; Masami Hiramatsu
-> <masami.hiramatsu@linaro.org>; Jassi Brar <jaswinder.singh@linaro.org>; linux-arm-kernel@lists.infradead.org;
-> linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH 1/2] ASoC: add DT bindings documentation for ROHM BD28623 codec
+On Wednesday, February 21, 2018 10:57:14 AM CET Rafael J. Wysocki wrote:
+> On Tue, Feb 20, 2018 at 10:29 PM, Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > On Sun, Feb 18, 2018 at 09:38:32AM +0100, Lukas Wunner wrote:
+> >> PCI devices not bound to a driver are supposed to stay in D0 during
+> >> runtime suspend.
+> >
+> > Doesn't "runtime suspend" mean an individual device is suspended while
+> > the rest of the system remains active?
+> >
+> > If so, maybe it would be more direct to say "PCI devices not bound to
+> > a driver cannot be runtime suspended"?
+> >
+> > (It's a separate question not relevant to this patch, but I'm not
+> > convinced that "PCI devices without a driver cannot be suspended"
+> > should be accepted as a rule.  If it is a rule, we should be able to
+> > deduce it from the specs.)
+> >
+> >> But they may have a parent which is bound and can be
+> >> transitioned to D3cold at runtime.  Once the parent goes to D3cold, the
+> >> unbound child may go to D3cold as well.  When the child comes out of
+> >> D3cold, its BARs are uninitialized and thus inaccessible when a driver
+> >> tries to probe.
+> >>
+> >> One example are recent hybrid graphics laptops which cut power to the
+> >> discrete GPU when the root port above it goes to ACPI power state D3.
+> >> Users may provoke this by unbinding the GPU driver and allowing runtime
+> >> PM on the GPU via sysfs:  The PM core will then treat the GPU as
+> >> "suspended", which in turn allows the root port to runtime suspend,
+> >> causing the power resources listed in its _PR3 object to be powered off.
+> >> The GPU's BARs will be uninitialized when a driver later probes it.
+> >>
+> >> Another example are hybrid graphics laptops where the GPU itself (rather
+> >> than the root port) is capable of runtime suspending to D3cold.  If the
+> >> GPU's integrated HDA controller is not bound and the GPU's driver
+> >> decides to runtime suspend to D3cold, the HDA controller's BARs will be
+> >> uninitialized when a driver later probes it.
+> >>
+> >> Fix by restoring the BARs on runtime resume if the device is not bound.
+> >> This is sufficient to fix the above-mentioned use cases.  Other use
+> >> cases might require a full-blown pci_save_state() / pci_restore_state()
+> >> or execution of fixups.  We can add that once use cases materialize,
+> >> let's not inflate the code unnecessarily.
+> >
+> > Why would we not do a full-blown restore?  With this patch, I think
+> > some configuration done during enumeration, e.g., ASPM and MPS, will
+> > be lost.  "lspci -vv" of the HDA before and after the suspend may show
+> > different things, which seems counter-intuitive.
 > 
-> On Wed, Feb 21, 2018 at 01:33:10PM +0900, Katsuhiro Suzuki wrote:
+> Right.
 > 
-> > +Optional properties:
-> > +- VCCA-supply : regulator phandle for the VCCA supply
-> > +- VCCP1-supply: regulator phandle for the VCCP1 supply
-> > +- VCCP2-supply: regulator phandle for the VCCP2 supply
+> > I wouldn't think of a full-blown restore as "inflating the code"; I
+> > would think of it as "having fewer special cases", i.e., we always use
+> > the same restore path instead of having the main one plus a special
+> > one for unbound devices.
 > 
-> These should be documented as mandatory unless the device genuinely
-> operates without power which seems unlikely.
+> That is a fair point, but if you look at pci_pm_runtime_suspend(), it
+> doesn't actually save anything for devices without drivers, so we'd
+> just restore the original initial state for them every time.
+> 
+> If we are to restore the entire state on runtime resume,
+> pci_pm_runtime_suspend() should be changed to call pci_save_state()
+> before returning 0 in the !dev->driver case AFAICS.
+> 
+> >> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> >> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >> Signed-off-by: Lukas Wunner <lukas@wunner.de>
+> >> ---
+> >>  drivers/pci/pci-driver.c | 8 ++++++--
+> >>  drivers/pci/pci.c        | 2 +-
+> >>  drivers/pci/pci.h        | 1 +
+> >>  3 files changed, 8 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
+> >> index 3bed6beda051..51b11cbd48f6 100644
+> >> --- a/drivers/pci/pci-driver.c
+> >> +++ b/drivers/pci/pci-driver.c
+> >> @@ -1277,10 +1277,14 @@ static int pci_pm_runtime_resume(struct device *dev)
+> >>
+> >>       /*
+> >>        * If pci_dev->driver is not set (unbound), the device should
+> >> -      * always remain in D0 regardless of the runtime PM status
+> >> +      * always remain in D0 regardless of the runtime PM status.
+> >> +      * But if its parent can go to D3cold, this device may have
+> >> +      * been in D3cold as well and require restoration of its BARs.
+> >>        */
+> >> -     if (!pci_dev->driver)
+> >> +     if (!pci_dev->driver) {
+> >> +             pci_restore_bars(pci_dev);
+> >
+> > If we do decide not to do a full-blown restore, how do we decide
+> > whether to use pci_restore_bars() or pci_restore_config_space()?
+> >
+> > I'm not sure why we have both.
+> 
+> Me neither.
+> 
+> > The pci_restore_bars() path looks a
+> > little smarter in that it is more careful when updating 64-bit BARs
+> > that can't be updated atomically.
+> >
+> >>               return 0;
+> >> +     }
+> >>
+> >>       if (!pm || !pm->runtime_resume)
+> >>               return -ENOSYS;
+> 
+> So if pci_pm_runtime_suspend() is modified to call pci_save_state()
+> before returning 0 in the !dev->driver case, we can just move the
+> pci_restore_standard_config() invocation in pci_pm_runtime_resume() up
+> to the very top and check dev->driver later.
 
-Indeed, this IC does not work correctly if VCC power supply is lost.
-It's not optional. I'll fix it and send V2.
+I mean something like the patch below, overall (untested).
 
+Tentatively-signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/pci/pci-driver.c |   16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-Regards,
---
-Katsuhiro Suzuki
+Index: linux-pm/drivers/pci/pci-driver.c
+===================================================================
+--- linux-pm.orig/drivers/pci/pci-driver.c
++++ linux-pm/drivers/pci/pci-driver.c
+@@ -1224,11 +1224,14 @@ static int pci_pm_runtime_suspend(struct
+ 	int error;
+ 
+ 	/*
+-	 * If pci_dev->driver is not set (unbound), the device should
+-	 * always remain in D0 regardless of the runtime PM status
++	 * If pci_dev->driver is not set (unbound), the device may go to D3cold,
++	 * but only if the bridge above it is suspended.  In case that happens,
++	 * save its config space.
+ 	 */
+-	if (!pci_dev->driver)
++	if (!pci_dev->driver) {
++		pci_save_state(pci_dev);
+ 		return 0;
++	}
+ 
+ 	if (!pm || !pm->runtime_suspend)
+ 		return -ENOSYS;
+@@ -1276,16 +1279,17 @@ static int pci_pm_runtime_resume(struct
+ 	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+ 
+ 	/*
+-	 * If pci_dev->driver is not set (unbound), the device should
+-	 * always remain in D0 regardless of the runtime PM status
++	 * Regardless of whether or not the driver is there, the device might
++	 * have been put into D3cold as a result of suspending the bridge above
++	 * it, so restore the config spaces of all devices here.
+ 	 */
++	pci_restore_standard_config(pci_dev);
+ 	if (!pci_dev->driver)
+ 		return 0;
+ 
+ 	if (!pm || !pm->runtime_resume)
+ 		return -ENOSYS;
+ 
+-	pci_restore_standard_config(pci_dev);
+ 	pci_fixup_device(pci_fixup_resume_early, pci_dev);
+ 	pci_enable_wake(pci_dev, PCI_D0, false);
+ 	pci_fixup_device(pci_fixup_resume, pci_dev);
