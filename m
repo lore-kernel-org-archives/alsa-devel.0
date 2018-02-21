@@ -1,22 +1,22 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 03/11] ASoC: rt5651: Fix bias_level
- confusion / overcurrent detection deps
-Date: Wed, 21 Feb 2018 20:43:47 +0100
-Message-ID: <361a97ba-4af8-8a99-f092-4c63c5570348@redhat.com>
+Subject: Re: [PATCH 04/11] ASoC: rt5651: Simplify
+	set_bias_level()
+Date: Wed, 21 Feb 2018 21:11:34 +0100
+Message-ID: <92dc88f0-c928-3c15-3295-b77a5dedbd58@redhat.com>
 References: <20180220221511.22861-1-hdegoede@redhat.com>
- <20180220221511.22861-3-hdegoede@redhat.com>
- <20180221114045.GB8334@sirena.org.uk>
+ <20180220221511.22861-4-hdegoede@redhat.com>
+ <20180221114328.GC8334@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f182.google.com (mail-wr0-f182.google.com
- [209.85.128.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 079E126762C
- for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 20:43:49 +0100 (CET)
-Received: by mail-wr0-f182.google.com with SMTP id o76so7750801wrb.7
- for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 11:43:49 -0800 (PST)
-In-Reply-To: <20180221114045.GB8334@sirena.org.uk>
+Received: from mail-wr0-f176.google.com (mail-wr0-f176.google.com
+ [209.85.128.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 08DE4267634
+ for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 21:11:36 +0100 (CET)
+Received: by mail-wr0-f176.google.com with SMTP id u49so7944489wrc.10
+ for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 12:11:36 -0800 (PST)
+In-Reply-To: <20180221114328.GC8334@sirena.org.uk>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,68 +33,37 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-On 21-02-18 12:40, Mark Brown wrote:
-> On Tue, Feb 20, 2018 at 11:15:03PM +0100, Hans de Goede wrote:
->> Overcurrent detection (ovcd) requires the following to be on:
->> 1) The LDO supply
->> 2) The micbias1 supply
->> 3) General analog voltages such as vref aka a bias_level of standby
->>
->> Before this commit deps 2. and 3. were not met (unless a stream recording
->> from the mic was active).
+On 21-02-18 12:43, Mark Brown wrote:
+> On Tue, Feb 20, 2018 at 11:15:04PM +0100, Hans de Goede wrote:
+>> There is no need to set the LDO voltage to 1.2 volt each time we enter
+>> standby, instead always leave it 1.2 volt on BIAS_OFF. Note we do a
+>> snd_soc_codec_force_bias_level(BIAS_OFF) on probe, so this will configure
+>> it correctly right from the start.
 > 
-> What does the overcurrent detection detect overcurrent on?
+> That force on probe sounds like a problem...  if this is being done once
+> at startup it should be done in the probe function, not in the bias
+> level configuration.
 
-On the micbias current, which is why we need the micbias1 supply on
-to do OVCD, which we use to determine if we've a headset (speakers
-+ microphone) or headphones (speakers only, mic contact shorted to
-ground) plugged in.
+This is more like "we do a snd_soc_codec_force_bias_level(BIAS_OFF)
+on probe anyways and that already sets the level to 1.2 volt, so
+we don't need to do this explicitly at probe time".
 
->> 3. Is not met because rt5651_set_bias_level() was only enabling this when
->> reaching a bias level of prepared instead of doing this in the normal
->> standby bias level, which the dapm core will select as soon as any pins /
->> supplies are on. This commit fixes by making rt5651_set_bias_level() behave
->> as a normal set_bias function for other codecs and already enabling these
->> things at standby level.
-> 
-> ...
-> 
->> 2. is fixed by simply force-enabling "micbias1" when doing ovcd, this
->> commit also adds code to turn both the micbias1 and the LDO supplies of
->> again when we're done, note they will only really get turned off if the
->> ovcd was the only user.
->>
->> The snd_soc_codec_force_bias_level(BIAS_OFF) call done in rt5651_probe()
->> will now turn off PWR_ANLG1, so the programming of PWR_ANLG1 before the
->> snd_soc_codec_force_bias_level() now is a no-op and can be removed.
-> 
-> This is two or three changes combined into a single commit which makes
-> it harder to review :(
+> Also, are you sure this is a good fix?  If the bias voltage is being
+> configured all the time does that perhaps indicate that for better
+> performance or something it should have been being set to some other
+> voltage when the device is in standby?
 
-I can split this up, but I cannot guarantee then that there will not
-be a state between 1 of the commits where OVCD is not even more broken
-then before.
-
->> @@ -1811,8 +1795,11 @@ static int rt5651_jack_detect(struct snd_soc_codec *codec, int jack_insert)
->>   	int jack_type;
->>   
->>   	if (jack_insert) {
->> -		snd_soc_dapm_force_enable_pin(dapm, "LDO");
->> -		snd_soc_dapm_sync(dapm);
->> +		snd_soc_dapm_mutex_lock(dapm);
->> +		snd_soc_dapm_force_enable_pin_unlocked(dapm, "LDO");
->> +		snd_soc_dapm_force_enable_pin_unlocked(dapm, "micbias1");
->> +		snd_soc_dapm_sync_unlocked(dapm);
->> +		snd_soc_dapm_mutex_unlock(dapm);
->>   
->>   		snd_soc_update_bits(codec, RT5651_MICBIAS,
->>   				    RT5651_MIC1_OVCD_MASK |
-> 
-> This is now only enabling the LDO and bias when the jack is inserted -
-> is that enough?
-
-Yes, we only need to do OVCD on an insertion event to differ between
-headset vs headphones.
+We switch the LDO off when in the bias level is BIAS_OFF and on
+at 1.2 volt when in standby or higher. Before this commit we would
+unconditionally write 0 to PWR_ANLG1 not only turning off all
+supplies, but additionally changing the LDO voltage control bits
+to 00, which requires reprogramming them when we go back to
+standby. The value of the LDO voltage controls bits when in
+BIAS_OFF does not matter as the LDO on/off bit is set to off,
+so the purpose of this commit is to replace the blindly setting
+of PWR_ANLG1 to 0 with setting all the bits in PWR_ANLG1 to 0,
+while leaving the 2 LDO voltage-control bits as-is, so that
+we don't need to reprogram these 2 bits when entering standby.
 
 Regards,
 
