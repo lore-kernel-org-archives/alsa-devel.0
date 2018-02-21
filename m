@@ -1,21 +1,22 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 01/11] ASoC: rt5651: Avoid duplicating DMI
- quirks between codec and machine driver
-Date: Wed, 21 Feb 2018 20:23:01 +0100
-Message-ID: <b2c6c047-eb86-a639-197e-b6aa1eae0ad5@redhat.com>
+Subject: Re: [PATCH 02/11] ASoC: rt5651: Remove
+ is_sys_clk_from_pll, it has ordering issues
+Date: Wed, 21 Feb 2018 20:38:01 +0100
+Message-ID: <7c0a41b1-6765-13e6-be96-b354c744ba29@redhat.com>
 References: <20180220221511.22861-1-hdegoede@redhat.com>
- <20180221115452.GD8334@sirena.org.uk>
+ <20180220221511.22861-2-hdegoede@redhat.com>
+ <20180221111821.GA8334@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f194.google.com (mail-wr0-f194.google.com
- [209.85.128.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 3750B267071
- for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 20:23:03 +0100 (CET)
-Received: by mail-wr0-f194.google.com with SMTP id s5so7633636wra.0
- for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 11:23:03 -0800 (PST)
-In-Reply-To: <20180221115452.GD8334@sirena.org.uk>
+Received: from mail-wr0-f170.google.com (mail-wr0-f170.google.com
+ [209.85.128.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 25167267046
+ for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 20:38:03 +0100 (CET)
+Received: by mail-wr0-f170.google.com with SMTP id 34so7700905wre.13
+ for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2018 11:38:03 -0800 (PST)
+In-Reply-To: <20180221111821.GA8334@sirena.org.uk>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,58 +33,69 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-On 21-02-18 12:54, Mark Brown wrote:
-> On Tue, Feb 20, 2018 at 11:15:01PM +0100, Hans de Goede wrote:
->> Instead of duplicating the DMI quirks between the codec and machine driver,
->> add a rt5651_set_pdata() codec private function which the machine driver
->> can use to pass in pdata.
+On 21-02-18 12:18, Mark Brown wrote:
+> On Tue, Feb 20, 2018 at 11:15:02PM +0100, Hans de Goede wrote:
 > 
-> It's not clear to me that this is a great idea.  The goal in general is
-> to keep as much of the CODEC configuration in the CODEC driver as
-> possible so we can move more towards generic machine drivers, this is
-> moving us in the opposite drection quite dramatically.
-
-Not really, instead of having Intel/ACPI specific quirks in the codec
-driver it moves everything over to pdata, so in a way this unifies the
-device-tree and ACPI paths.
-
-Also to me it seems that the Intel specific machine driver is the
-logical place to put quirks for Intel platforms rather then poluting the
-platform-agnostic codec driver with this.
-
-> That might get
-> in the way of improvements we could be making when we get the component
-> based changes further on and can avoid having all the DPCM stuff in the
-> Intel drivers.
+>> TL;DR: The PLL1-supply must always be powered up when PLL1 is the sysclk
+>> source and we can simply set the RT5651_PWR_PLL bit when selecting PLL1.
 > 
-> It is really unfortunate that ACPI based systems aren't embracing
-> standards here and using this mess of open coded quirks but it feels
-> like the way to do this is to keep the code as close as possible to well
-> designed firmware interfaces and hope that they come round.
+> Only if jack detection is enabled, if jack detection is not in use for
+> some reason then the PLL isn't required and should be powered off - this
+> is normally handled by having the jack detection code force enable
+> things.
 
-Both devicetree and ACPI code-paths are filling pdata and that is the
-only thing the codec driver cares about after this patch. so this is
-using a well designed interface (but a non firmware one). I can understand
-if you would prefer to use the functions from include/linux/property.h
-for this, but those simply do not work for ACPI platforms atm.
+As the commit message tries to explain, the code this removes is fundamentally
+broken and this is not jack-detection related:
 
-If you look further in this series then quirks for at least 2 more models
-are added and I expect more to show up in the future, I really do not want
-to duplicate these over 2 files.
+    "dapm_power_widgets() first builds a list of which widgets to power-up
+     before actually powering any of them up. For dapm-supply widgets their
+     connected method, in our case is_sys_clk_from_pll() get called at this
+     point.
 
-One possible solution here would be to add device-properties to the codec
-i2c-device from the machine-driver using device_add_properties() and make
-the codec driver consume those.
+     Before this commit is_sys_clk_from_pll() was looking at the actually
+     selected clock in the RT5651_GBL_CLK register. But the sysclk itself is
+     selected by another dapm-supply (the "Platform Clock" supply in the
+     machine driver) and any changes to that supply part of the same power-
+     transition get executed after building the list, causing
+     is_sys_clk_from_pll() to return the wrong value."
 
-This has probe-ordering issues, but those can be worked around by exporting
-something like the rt5651_apply_pdata() function from this patch and make
-the machine driver call that after it has attached the properties.
+I actually wrote this patch for the rt5640 driver first (but my rt5640
+work / patch-series is not finished yet). I saw the following problem
+on rt5640 boards before even introducing jack-detect:
 
-I'm not sure if this extra level of indirection buys us much though, the
-DT binding maintainers will not accept binding docs for these kind of
-kernel internal only device-properties until there are actual DT users
-of them, so for now this would mainly add a bunch of extra code for
-little gain.
+1) Have a generic UCM file
+2) Start recording
+3) Select an input which is not part of the input-map quirk in the machine driver
+4) Switch to an input which is part of the input-map
+5) Notice how only silence is recorded
+6) Use i2c-get to get the PWR_ANLG2 register, observe that the PLL-bit is OFF at
+    this point despite a stream being recorded due to the ordering issues
+7) Use i2c-get to get the GLB_CLK register notice that it does point to PLL1,
+    so is_sys_clk_from_pll() will return 1 if called *NOW*, but clearly it
+    returned 0 when called as proven by 6) which shows the ordering issue is real
+8) Use i2c-set to enable the PLL-bit in PWR_ANLG2 and the recording starts working
+
+As I tried to explain in the commit message the is_sys_clk_from_pll() thingie
+simply can NOT work because it should check for what the GLB_CLK register will
+be *after* the dapm transaction / transition but in reality it checks for what it
+was *before* the transition, which means that it will only return the right thing
+if 2 transitions are made in a row where the second transition preserves the
+GLB_CLK value of the first.
+
+As for that the PLL should be powered-off when not needed, I agree but that
+is controlled by the machine-driver through the "Platform Clock" dapm supply
+and if that leaves things on for some reason then that is the problem which
+we actually need to fix, e.g. this will also leave the MCLK input clk enabled
+needlessly.
+
+I really don't see how configuring a broken sysclk (GBL_CLK points to PLL1,
+but PLL-bit in PWR_ANLG2 is OFF) is ever a good thing, instead we should make
+sure we always switch to the RCCLK when we don't need the SYSCLK.
+
+Last force-enabling the PLL bit on all machines where we can do jack-detection
+(not only over-current, but the JD irq in general needs a valid sysclk) would
+in practice mean always force-enabling the PLL bit since almost all boards have
+jack-detection once we add the necessary quirks, so this really is not a solution.
 
 Regards,
 
