@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: Setup AC97 in
-	fsl_ssi_hw_init()" to the asoc tree
-Date: Thu, 22 Feb 2018 13:16:28 +0000
-Message-ID: <E1eoqjc-0006Gi-N5@debutante>
+Subject: Applied "ASoC: fsl_ssi: Move one-time configurations
+	to probe()" to the asoc tree
+Date: Thu, 22 Feb 2018 13:16:30 +0000
+Message-ID: <E1eoqje-0006HV-Sj@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B25926772F
- for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 14:16:30 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7C2BF267737
+ for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 14:16:32 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: Setup AC97 in fsl_ssi_hw_init()
+   ASoC: fsl_ssi: Move one-time configurations to probe()
 
 has been applied to the asoc tree at
 
@@ -52,25 +52,13 @@ to this mail.
 Thanks,
 Mark
 
->From 37ac30a4bdc397cf1311111264ac35dc8473e1de Mon Sep 17 00:00:00 2001
+>From a1d154ac2765cf982be0d4d378bc6ba342c467a3 Mon Sep 17 00:00:00 2001
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Date: Mon, 12 Feb 2018 14:03:21 -0800
-Subject: [PATCH] ASoC: fsl_ssi: Setup AC97 in fsl_ssi_hw_init()
+Date: Mon, 12 Feb 2018 14:03:20 -0800
+Subject: [PATCH] ASoC: fsl_ssi: Move one-time configurations to probe()
 
-AC97 configures most of registers earlier to start a communication
-with CODECs in order to successfully initialize CODEC. Currently,
-_fsl_ssi_set_dai_fmt() and fsl_ssi_setup_ac97() are called to get
-all SSI registers properly set.
-
-Since now the driver has a fsl_ssi_hw_init() to handle all register
-initial settings, this patch moves those register settings of AC97
-to the fsl_ssi_hw_init() as well.
-
-Meanwhile it applies _fsl_ssi_set_dai_fmt() call to AC97 only since
-other formats would be configured via normal set_dai_fmt() directly.
-
-This patch also adds fsl_ssi_hw_clean() to cleanup control bits for
-AC97 in the platform remote() function.
+The probe() could handle some one-time configurations since
+they will not be changed once being configured.
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Tested-by: Caleb Crome <caleb@crome.org>
@@ -78,76 +66,86 @@ Tested-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 Reviewed-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 33 +++++++++++++++++++++++++++------
- 1 file changed, 27 insertions(+), 6 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 39 ++++++++++++++++++++++++++-------------
+ 1 file changed, 26 insertions(+), 13 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 36f3d51c5c43..dfb0da3cedda 100644
+index 7e15b30d4f94..36f3d51c5c43 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -987,9 +987,6 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+@@ -865,7 +865,6 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+ {
+ 	struct regmap *regs = ssi->regs;
+ 	u32 strcr = 0, stcr, srcr, scr, mask;
+-	u8 wm;
+ 
+ 	ssi->dai_fmt = fmt;
+ 
+@@ -874,8 +873,6 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+ 		return -EINVAL;
+ 	}
+ 
+-	fsl_ssi_setup_regvals(ssi);
+-
+ 	regmap_read(regs, REG_SSI_SCR, &scr);
+ 	scr &= ~(SSI_SCR_SYN | SSI_SCR_I2S_MODE_MASK);
+ 	/* Synchronize frame sync clock for TE to avoid data slipping */
+@@ -990,16 +987,6 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
  	regmap_write(regs, REG_SSI_SRCR, srcr);
  	regmap_write(regs, REG_SSI_SCR, scr);
  
--	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_AC97)
--		fsl_ssi_setup_ac97(ssi);
+-	wm = ssi->fifo_watermark;
 -
- 	return 0;
- }
+-	regmap_write(regs, REG_SSI_SFCSR,
+-		     SSI_SFCSR_TFWM0(wm) | SSI_SFCSR_RFWM0(wm) |
+-		     SSI_SFCSR_TFWM1(wm) | SSI_SFCSR_RFWM1(wm));
+-
+-	if (ssi->use_dual_fifo)
+-		regmap_update_bits(regs, REG_SSI_SCR,
+-				   SSI_SCR_TCH_EN, SSI_SCR_TCH_EN);
+-
+ 	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_AC97)
+ 		fsl_ssi_setup_ac97(ssi);
  
-@@ -1255,9 +1252,33 @@ static int fsl_ssi_hw_init(struct fsl_ssi *ssi)
- 		regmap_update_bits(ssi->regs, REG_SSI_SCR,
- 				   SSI_SCR_TCH_EN, SSI_SCR_TCH_EN);
- 
-+	/* AC97 should start earlier to communicate with CODECs */
-+	if (fsl_ssi_is_ac97(ssi)) {
-+		_fsl_ssi_set_dai_fmt(ssi->dev, ssi, ssi->dai_fmt);
-+		fsl_ssi_setup_ac97(ssi);
-+	}
-+
- 	return 0;
- }
+@@ -1248,6 +1235,29 @@ static struct snd_ac97_bus_ops fsl_ssi_ac97_ops = {
+ 	.write = fsl_ssi_ac97_write,
+ };
  
 +/**
-+ * Clear SSI registers
++ * Initialize SSI registers
 + */
-+static void fsl_ssi_hw_clean(struct fsl_ssi *ssi)
++static int fsl_ssi_hw_init(struct fsl_ssi *ssi)
 +{
-+	/* Disable registers for AC97 */
-+	if (fsl_ssi_is_ac97(ssi)) {
-+		/* Disable TE and RE bits first */
++	u32 wm = ssi->fifo_watermark;
++
++	/* Initialize regvals */
++	fsl_ssi_setup_regvals(ssi);
++
++	/* Set watermarks */
++	regmap_write(ssi->regs, REG_SSI_SFCSR,
++		     SSI_SFCSR_TFWM0(wm) | SSI_SFCSR_RFWM0(wm) |
++		     SSI_SFCSR_TFWM1(wm) | SSI_SFCSR_RFWM1(wm));
++
++	/* Enable Dual FIFO mode */
++	if (ssi->use_dual_fifo)
 +		regmap_update_bits(ssi->regs, REG_SSI_SCR,
-+				   SSI_SCR_TE | SSI_SCR_RE, 0);
-+		/* Disable AC97 mode */
-+		regmap_write(ssi->regs, REG_SSI_SACNT, 0);
-+		/* Unset WAIT bits */
-+		regmap_write(ssi->regs, REG_SSI_SOR, 0);
-+		/* Disable SSI -- software reset */
-+		regmap_update_bits(ssi->regs, REG_SSI_SCR, SSI_SCR_SSIEN, 0);
-+	}
++				   SSI_SCR_TCH_EN, SSI_SCR_TCH_EN);
++
++	return 0;
 +}
++
  /**
   * Make every character in a string lower-case
   */
-@@ -1540,9 +1561,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	}
+@@ -1533,6 +1543,9 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	if (ssi->dai_fmt)
+ 		_fsl_ssi_set_dai_fmt(dev, ssi, ssi->dai_fmt);
  
- done:
--	if (ssi->dai_fmt)
--		_fsl_ssi_set_dai_fmt(dev, ssi, ssi->dai_fmt);
--
- 	/* Initially configures SSI registers */
- 	fsl_ssi_hw_init(ssi);
- 
-@@ -1592,6 +1610,9 @@ static int fsl_ssi_remove(struct platform_device *pdev)
- 	if (ssi->pdev)
- 		platform_device_unregister(ssi->pdev);
- 
-+	/* Clean up SSI registers */
-+	fsl_ssi_hw_clean(ssi);
++	/* Initially configures SSI registers */
++	fsl_ssi_hw_init(ssi);
 +
- 	if (ssi->soc->imx)
- 		fsl_ssi_imx_clean(pdev, ssi);
+ 	if (fsl_ssi_is_ac97(ssi)) {
+ 		u32 ssi_idx;
  
 -- 
 2.16.1
