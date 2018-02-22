@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: Set xFEN0 and xFEN1 together"
-	to the asoc tree
-Date: Thu, 22 Feb 2018 13:16:36 +0000
-Message-ID: <E1eoqjk-0006Jt-MP@debutante>
-References: <1513702819-42310-9-git-send-email-nicoleotsuka@gmail.com>
+Subject: Applied "ASoC: fsl_ssi: Clean up
+	fsl_ssi_setup_regvals()" to the asoc tree
+Date: Thu, 22 Feb 2018 13:16:39 +0000
+Message-ID: <E1eoqjn-0006L5-S6@debutante>
+References: <1513702819-42310-8-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8057F267748
- for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 14:16:51 +0100 (CET)
-In-Reply-To: <1513702819-42310-9-git-send-email-nicoleotsuka@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 18E5226778A
+ for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 14:16:53 +0100 (CET)
+In-Reply-To: <1513702819-42310-8-git-send-email-nicoleotsuka@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: Set xFEN0 and xFEN1 together
+   ASoC: fsl_ssi: Clean up fsl_ssi_setup_regvals()
 
 has been applied to the asoc tree at
 
@@ -53,12 +53,14 @@ to this mail.
 Thanks,
 Mark
 
->From 702d7965e402a8dcd88e964fd5bba6f5f159d625 Mon Sep 17 00:00:00 2001
+>From 501bc1d70cf5ba8ccd9775ce987c90485034464e Mon Sep 17 00:00:00 2001
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Date: Mon, 12 Feb 2018 14:03:18 -0800
-Subject: [PATCH] ASoC: fsl_ssi: Set xFEN0 and xFEN1 together
+Date: Mon, 12 Feb 2018 14:03:17 -0800
+Subject: [PATCH] ASoC: fsl_ssi: Clean up fsl_ssi_setup_regvals()
 
-It'd be safer to enable both FIFOs for TX or RX at the same time.
+This patch cleans fsl_ssi_setup_regvals() by following changes:
+1) Moving DBG bits to the first lines.
+2) Setting SSIE, RE/TE as default and cleaning it for AC97
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Tested-by: Caleb Crome <caleb@crome.org>
@@ -66,40 +68,47 @@ Tested-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 Reviewed-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 156f5132feba..00dfdc77b567 100644
+index fc5768d243d1..156f5132feba 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -591,6 +591,11 @@ static void fsl_ssi_setup_regvals(struct fsl_ssi *ssi)
- 	if (fsl_ssi_is_ac97(ssi))
- 		vals[RX].scr = vals[TX].scr = 0;
+@@ -580,18 +580,16 @@ static void fsl_ssi_setup_regvals(struct fsl_ssi *ssi)
+ {
+ 	struct fsl_ssi_regvals *vals = ssi->regvals;
  
-+	if (ssi->use_dual_fifo) {
-+		vals[RX].srcr |= SSI_SRCR_RFEN1;
-+		vals[TX].stcr |= SSI_STCR_TFEN1;
-+	}
-+
+-	vals[RX].sier = SSI_SIER_RFF0_EN;
++	vals[RX].sier = SSI_SIER_RFF0_EN | FSLSSI_SIER_DBG_RX_FLAGS;
+ 	vals[RX].srcr = SSI_SRCR_RFEN0;
+-	vals[RX].scr = 0;
+-	vals[TX].sier = SSI_SIER_TFE0_EN;
++	vals[RX].scr = SSI_SCR_SSIEN | SSI_SCR_RE;
++	vals[TX].sier = SSI_SIER_TFE0_EN | FSLSSI_SIER_DBG_TX_FLAGS;
+ 	vals[TX].stcr = SSI_STCR_TFEN0;
+-	vals[TX].scr = 0;
++	vals[TX].scr = SSI_SCR_SSIEN | SSI_SCR_TE;
+ 
+ 	/* AC97 has already enabled SSIEN, RE and TE, so ignore them */
+-	if (!fsl_ssi_is_ac97(ssi)) {
+-		vals[RX].scr = SSI_SCR_SSIEN | SSI_SCR_RE;
+-		vals[TX].scr = SSI_SCR_SSIEN | SSI_SCR_TE;
+-	}
++	if (fsl_ssi_is_ac97(ssi))
++		vals[RX].scr = vals[TX].scr = 0;
+ 
  	if (ssi->use_dma) {
  		vals[RX].sier |= SSI_SIER_RDMAE;
- 		vals[TX].sier |= SSI_SIER_TDMAE;
-@@ -991,14 +996,9 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- 		     SSI_SFCSR_TFWM0(wm) | SSI_SFCSR_RFWM0(wm) |
- 		     SSI_SFCSR_TFWM1(wm) | SSI_SFCSR_RFWM1(wm));
+@@ -600,9 +598,6 @@ static void fsl_ssi_setup_regvals(struct fsl_ssi *ssi)
+ 		vals[RX].sier |= SSI_SIER_RIE;
+ 		vals[TX].sier |= SSI_SIER_TIE;
+ 	}
+-
+-	vals[RX].sier |= FSLSSI_SIER_DBG_RX_FLAGS;
+-	vals[TX].sier |= FSLSSI_SIER_DBG_TX_FLAGS;
+ }
  
--	if (ssi->use_dual_fifo) {
--		regmap_update_bits(regs, REG_SSI_SRCR,
--				   SSI_SRCR_RFEN1, SSI_SRCR_RFEN1);
--		regmap_update_bits(regs, REG_SSI_STCR,
--				   SSI_STCR_TFEN1, SSI_STCR_TFEN1);
-+	if (ssi->use_dual_fifo)
- 		regmap_update_bits(regs, REG_SSI_SCR,
- 				   SSI_SCR_TCH_EN, SSI_SCR_TCH_EN);
--	}
- 
- 	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_AC97)
- 		fsl_ssi_setup_ac97(ssi);
+ static void fsl_ssi_setup_ac97(struct fsl_ssi *ssi)
 -- 
 2.16.1
