@@ -1,21 +1,20 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v3 15/25] ASoC: qcom: qdsp6: Add support to
- q6asm dai driver
-Date: Thu, 22 Feb 2018 11:16:26 +0000
-Message-ID: <d0f42d37-ed4b-fb19-17ce-d825bb78fe40@linaro.org>
-References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
- <20180213165837.1620-16-srinivas.kandagatla@linaro.org>
- <6ea65838-f01a-ecbf-70cd-0dc9299eae80@codeaurora.org>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [RFC 0/1] ALSA: hda: Add a power_save blacklist
+Date: Thu, 22 Feb 2018 12:22:19 +0100
+Message-ID: <1e70d667-12d5-66f9-ed5b-7d5575110739@redhat.com>
+References: <20180222105352.5408-1-hdegoede@redhat.com>
+ <s5hmv01e0yv.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
- by alsa0.perex.cz (Postfix) with ESMTP id BDEA22676D6
- for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 12:16:28 +0100 (CET)
-Received: by mail-wm0-f67.google.com with SMTP id a20so1961002wmd.1
- for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 03:16:28 -0800 (PST)
-In-Reply-To: <6ea65838-f01a-ecbf-70cd-0dc9299eae80@codeaurora.org>
+Received: from mail-wr0-f195.google.com (mail-wr0-f195.google.com
+ [209.85.128.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 873C42676E7
+ for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 12:22:21 +0100 (CET)
+Received: by mail-wr0-f195.google.com with SMTP id z12so10179829wrg.4
+ for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 03:22:21 -0800 (PST)
+In-Reply-To: <s5hmv01e0yv.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,194 +25,133 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rohit Kumar <rohitkr@codeaurora.org>, andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, lgirdwood@gmail.com, plai@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, david.brown@linaro.org, robh+dt@kernel.org, spatakok@qti.qualcomm.com, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for your review Rohit,
+Hi,
 
-On 21/02/18 11:14, Rohit Kumar wrote:
-> 
-> 
-> On 2/13/2018 10:28 PM, srinivas.kandagatla@linaro.org wrote:
->> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+On 22-02-18 12:08, Takashi Iwai wrote:
+> On Thu, 22 Feb 2018 11:53:51 +0100,
+> Hans de Goede wrote:
 >>
->> This patch adds support to q6asm dai driver which configures Q6ASM 
->> streams
->> to pass pcm data.
+>> Hi All,
 >>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> [..]
->> diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c 
->> b/sound/soc/qcom/qdsp6/q6asm-dai.c
->> new file mode 100644
->> index 000000000000..7c5e94b2ced4
->> --- /dev/null
->> +++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
->> @@ -0,0 +1,621 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (c) 2011-2016, The Linux Foundation
->> + * Copyright (c) 2017, Linaro Limited
->> + */
->> +
->> +#include <linux/init.h>
->> +#include <linux/err.h>
->> +#include <linux/module.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/slab.h>
->> +#include <sound/soc.h>
->> +#include <sound/soc-dapm.h>
->> +#include <sound/pcm.h>
->> +#include <asm/dma.h>
-> [..]
->> +static struct snd_pcm_hw_constraint_list constraints_sample_rates = {
->> +    .count = ARRAY_SIZE(supported_sample_rates),
->> +    .list = supported_sample_rates,
->> +    .mask = 0,
->> +};
->> +
->> +static void event_handler(uint32_t opcode, uint32_t token,
->> +              uint32_t *payload, void *priv)
->> +{
->> +    struct q6asm_dai_rtd *prtd = priv;
->> +    struct snd_pcm_substream *substream = prtd->substream;
->> +
->> +    switch (opcode) {
->> +    case ASM_CLIENT_EVENT_CMD_RUN_DONE:
-> Need to add support for V2 version of opcodes
-Makes sense, I will add them.
-
->> +        q6asm_write_async(prtd->audio_client,
->> +                   prtd->pcm_count, 0, 0, NO_TIMESTAMP);
->> +        break;
->> +    case ASM_CLIENT_EVENT_CMD_EOS_DONE:
->> +        prtd->state = Q6ASM_STREAM_STOPPED;
->> +        break;
->> +    case ASM_CLIENT_EVENT_DATA_WRITE_DONE: {
->> +        prtd->pcm
-> [..]
->> +
->> +static int q6asm_dai_trigger(struct snd_pcm_substream *substream, int 
->> cmd)
->> +{
->> +    int ret = 0;
->> +    struct snd_pcm_runtime *runtime = substream->runtime;
->> +    struct q6asm_dai_rtd *prtd = runtime->private_data;
->> +
->> +    switch (cmd) {
->> +    case SNDRV_PCM_TRIGGER_START:
->> +        ret = q6asm_run_nowait(prtd->audio_client, 0, 0, 0);
->> +        break;
-> below two cases can be combined with START if no change
-Yep, I will do that in next version.
-
->> +    case SNDRV_PCM_TRIGGER_RESUME:
->> +    case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
->> +        ret = q6asm_run_nowait(prtd->audio_client, 0, 0, 0);
->> +        break;
->> +    case SNDRV_PCM_TRIGGER_STOP:
->> +        prtd->state = Q6ASM_STREAM_STOPPED;
->> +        ret = q6asm_cmd_nowait(prtd->audio_client, CMD_EOS);
->> +        break;
->> +    case SNDRV_PCM_TRIGGER_SUSPEND:
->> +    case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
->> +        ret = q6asm_cmd_nowait(prtd->audio_client, CMD_PAUSE);
->> +        break;
->> +    default:
->> +        ret = -EINVAL;
->> +        break;
->> +    }
->> +
->> +    return ret;
->> +}
->> +
->> +static int q6asm_dai_open(struct snd_pcm_substream *substream)
->> +{
->> +    struct snd_pcm_runtime *runtime = substream->runtime;
->> +    struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
->> +    struct snd_soc_dai *cpu_dai = soc_prtd->cpu_dai;
->> +
->> +    struct q6asm_dai_rtd *prtd;
->> +    struct q6asm_dai_data *pdata;
->> +    struct device *dev = soc_prtd->platform->dev;
->> +    int ret = 0;
->> +    int stream_id;
->> +
->> +    stream_id = cpu_dai->driver->id;
->> +
->> +    pdata = q6asm_get_dai_data(dev);
->> +    if (!pdata) {
->> +        pr_err("Platform data not found ..\n");
->> +        return -EINVAL;
->> +    }
->> +
->> +    prtd = kzalloc(sizeof(struct q6asm_dai_rtd), GFP_KERNEL);
->> +    if (prtd == NULL)
->> +        return -ENOMEM;
->> +
->> +    prtd->substream = substream;
->> +    prtd->audio_client = q6asm_audio_client_alloc(dev,
->> +                (q6asm_cb)event_handler, prtd, stream_id);
->> +    if (!prtd->audio_client) {
->> +        pr_info("%s: Could not allocate memory\n", __func__);
->> +        kfree(prtd);
->> +        return -ENOMEM;
->> +    }
->> +
->> +//    prtd->audio_client->dev = dev;
-> cleanup this
-Sure!
-
->> +
->> +    if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
->> +        runtime->hw = q6asm_dai_hardware_playback;
->> +
->> +    ret = snd_pcm_hw_constraint_list(runtime, 0,
->> +                SNDRV_PCM_HW_PARAM_RATE,
->> +                &constraints_sample_rates);
-> [..]
->> +
->> +static int q6asm_dai_pcm_new(struct snd_soc_pcm_runtime *rtd)
->> +{
->> +    struct snd_pcm_substream *substream;
->> +    struct of_phandle_args args;
->> +    struct device_node *node;
->> +    struct q6asm_dai_data *pdata;
->> +    struct snd_pcm *pcm = rtd->pcm;
->> +    struct device *dev;
->> +    int size, ret;
->> +
->> +    dev = rtd->platform->dev->parent;
->> +    node = dev->of_node;
->> +    pdata = q6asm_get_dai_data(rtd->platform->dev);
->> +
->> +    ret = of_parse_phandle_with_fixed_args(node, "iommus", 1, 0, &args);
->> +    if (ret < 0)
->> +        pdata->sid = -1;
->> +    else
->> +        pdata->sid = args.args[0];
->> +
->> +
->> +
-> iommus for sdm845 is 16bit value. we need to have sid_mask which is 0x1 
-> in sdm845. We need to mask sid with 0x1 to get proper sid.
-> pdata->sid &= 0x1;
-
-Okay, I will take closer look at sdm845 and other socs, and make it more 
-generic in next version.
-
-
-
->> +    substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
->> +    size = q6asm_dai_hardware_playback.buffer_bytes_max;
->> +    ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, dev, size,
->> +                  &substream->dma_buffer);
->> +    if (ret)
->> +        dev_err(dev, "Cannot allocate buffer(s)\n");
->> +
->> +    return ret;
->> +}
->> +
+>> On some boards setting power_save to a non 0 value leads to clicking /
+>> popping sounds when ever we enter/leave powersaving mode. Ideally we would
+>> figure out how to avoid these sounds, but that is not always feasible.
+>>
+>> This commit adds a blacklist for devices where powersaving is known to
+>> cause problems and disables it on these devices.
+>>
+>> Note this patch ATM is a RFC because I still need to get test-feedback
+>> that it actually works on affected boards.
+>>
+>> I tried to put this blacklist in userspace first:
+>> https://github.com/systemd/systemd/pull/8128
+>>
+>> But the systemd maintainers rightfully pointed out that it would be
+>> impossible to then later remove entries once we actually find a way to
+>> make power-saving work on listed boards without issues. Having this list
+>> in the kernel will allow removal of the blacklist entry in the same commit
+>> which fixes the clicks / plops.
+>>
+>> I've chosen to also apply the blacklist to changes made through
+>> /sys/module/snd_hda_intel/parameters/power_save, since tools such as
+>> powertop and TLP do this automatically.
+>>
+>> About the choice to also apply this to changes made through
+>> /sys/module/snd_hda_intel/parameters/power_save, one could argue that this
+>> will get in the way of users who want the power-saving anyways and are
+>> willing to live with the clicks/plops. An alternative approach would be to
+>> only apply this to the value of the module-parameter at boot and then only
+>> when it matches CONFIG_SND_HDA_POWER_SAVE_DEFAULT. I'm open to changing this.
 > 
+> IMO, we shouldn't prevent user to set the explicit power_save mode
+> even if it's blacklisted.  That is, if any, I prefer blacklist
+> influencing only on the default value, a patch like below.
+
+Ok, luckily I've not yet started a test-kernel build for people to test,
+so I will rework this as you suggest and then do the test-build.
+
+> But, before adding to the blacklist, it's better to investigate the
+> cause.
+
+I completely agree, but with power_save defaulting to 1 in the upcoming
+Fedora 28 I'm not sure we will have time to fully investigate every
+issue, also not every reporter may have the time to work with us on this,
+I still have one bugreport open where I'm waiting for "lspci -v -nn"
+output...
+
+I see this blacklist as a way to give people a working config / fix
+regressions quickly, as said already I completely agree that actually
+fixing things is better. I'm just not sure that is feasible in all cases.
+
+> For example, Lenovo X1 is definitely a thing to be looked at.
+> Often a simple turn-off of "Loopback Mixing" element is enough.
+
+Hmm, we've already tried several of the quirks from patch_realtek.c
+on this one, but they have not helped. Another member of my team has
+access to one and is more then happy to test better fixes, see:
+https://bugzilla.kernel.org/show_bug.cgi?id=198611
+
+So if you've anything he can try to fix this please leave a comment
+there.
+
+> We need alsa-info.sh output for further investigation for each case,
+> in anyway.
+
+Ok, note I've added a bugzilla link to each blacklist entry exactly
+so that we can follow up and try to come up with a better fix.
+
+I will ask all reporters to run alsa-info.sh and attach the generated
+file to the bugs.
+
+Regards,
+
+Hans
+
+
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> ===
+> 
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index c71dcacea807..f21bf0add9f0 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -181,7 +181,7 @@ static const struct kernel_param_ops param_ops_xint = {
+>   };
+>   #define param_check_xint param_check_int
+>   
+> -static int power_save = CONFIG_SND_HDA_POWER_SAVE_DEFAULT;
+> +static int power_save = -1; /* default */
+>   module_param(power_save, xint, 0644);
+>   MODULE_PARM_DESC(power_save, "Automatic power-saving timeout "
+>   		 "(in second, 0 = disable).");
+> @@ -2198,6 +2198,7 @@ static int azx_probe_continue(struct azx *chip)
+>   	struct hdac_bus *bus = azx_bus(chip);
+>   	struct pci_dev *pci = chip->pci;
+>   	int dev = chip->dev_index;
+> +	int val;
+>   	int err;
+>   
+>   	hda->probe_continued = 1;
+> @@ -2278,7 +2279,11 @@ static int azx_probe_continue(struct azx *chip)
+>   
+>   	chip->running = 1;
+>   	azx_add_card_list(chip);
+> -	snd_hda_set_power_save(&chip->bus, power_save * 1000);
+> +	val = power_save;
+> +	if (val < 0 && !is_power_save_blacklisted(chip))
+> +		val = CONFIG_SND_HDA_POWER_SAVE_DEFAULT;
+> +	if (val >= 0)
+> +		snd_hda_set_power_save(&chip->bus, val * 1000);
+>   	if (azx_has_pm_runtime(chip) || hda->use_vga_switcheroo)
+>   		pm_runtime_put_autosuspend(&pci->dev);
+>   
 > 
