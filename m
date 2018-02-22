@@ -1,16 +1,25 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [RFC] ALSA: hda: Add a power_save blacklist
-Date: Thu, 22 Feb 2018 11:53:52 +0100
-Message-ID: <20180222105352.5408-2-hdegoede@redhat.com>
-References: <20180222105352.5408-1-hdegoede@redhat.com>
+Subject: Re: [PATCH 02/11] ASoC: rt5651: Remove
+ is_sys_clk_from_pll, it has ordering issues
+Date: Thu, 22 Feb 2018 12:00:35 +0100
+Message-ID: <1af26369-fc76-8862-86bf-f554c3559a41@redhat.com>
+References: <20180220221511.22861-1-hdegoede@redhat.com>
+ <20180220221511.22861-2-hdegoede@redhat.com>
+ <20180221111821.GA8334@sirena.org.uk>
+ <7c0a41b1-6765-13e6-be96-b354c744ba29@redhat.com>
+ <20180222104816.GA5905@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 7944D267699
- for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 11:53:56 +0100 (CET)
-In-Reply-To: <20180222105352.5408-1-hdegoede@redhat.com>
+Received: from mail-wr0-f181.google.com (mail-wr0-f181.google.com
+ [209.85.128.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 10AEA2675F4
+ for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 12:00:37 +0100 (CET)
+Received: by mail-wr0-f181.google.com with SMTP id u15so10119357wrg.3
+ for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 03:00:37 -0800 (PST)
+In-Reply-To: <20180222104816.GA5905@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,100 +29,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, stable@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-On some boards setting power_save to a non 0 value leads to clicking /
-popping sounds when ever we enter/leave powersaving mode. Ideally we would
-figure out how to avoid these sounds, but that is not always feasible.
+Hi,
 
-This commit adds a blacklist for devices where powersaving is known to
-cause problems and disables it on these devices.
+On 22-02-18 11:48, Mark Brown wrote:
+> On Wed, Feb 21, 2018 at 08:38:01PM +0100, Hans de Goede wrote:
+>> On 21-02-18 12:18, Mark Brown wrote:
+>>> On Tue, Feb 20, 2018 at 11:15:02PM +0100, Hans de Goede wrote:
+> 
+>>> Only if jack detection is enabled, if jack detection is not in use for
+>>> some reason then the PLL isn't required and should be powered off - this
+>>> is normally handled by having the jack detection code force enable
+>>> things.
+> 
+>> As the commit message tries to explain, the code this removes is fundamentally
+>> broken and this is not jack-detection related:
+> 
+>>     "dapm_power_widgets() first builds a list of which widgets to power-up
+>>      before actually powering any of them up. For dapm-supply widgets their
+>>      connected method, in our case is_sys_clk_from_pll() get called at this
+>>      point.
+> 
+>>      Before this commit is_sys_clk_from_pll() was looking at the actually
+>>      selected clock in the RT5651_GBL_CLK register. But the sysclk itself is
+>>      selected by another dapm-supply (the "Platform Clock" supply in the
+>>      machine driver) and any changes to that supply part of the same power-
+>>      transition get executed after building the list, causing
+>>      is_sys_clk_from_pll() to return the wrong value."
+> 
 
-Note I tried to put this blacklist in userspace first:
-https://github.com/systemd/systemd/pull/8128
+> Right, but there's a couple of jumps in your reasoning with the actual
+> solution.
+> 
+>> As for that the PLL should be powered-off when not needed, I agree but that
+>> is controlled by the machine-driver through the "Platform Clock" dapm supply
+>> and if that leaves things on for some reason then that is the problem which
+>> we actually need to fix, e.g. this will also leave the MCLK input clk enabled
+>> needlessly.
+> 
+> I don't follow this bit, sorry.  If there's a DAPM supply that's being
+> enabled when it's not needed then we should just disable it.
 
-But the systemd maintainers rightfully pointed out that it would be
-impossible to then later remove entries once we actually find a way to
-make power-saving work on listed boards without issues. Having this list
-in the kernel will allow removal of the blacklist entry in the same commit
-which fixes the clicks / plops.
+Right, that is exactly what I'm saying too.
 
-I've chosen to also apply the blacklist to changes made through
-/sys/module/snd_hda_intel/parameters/power_save, since tools such as
-powertop and TLP do this automatically.
+Whether we use PLL1 as sys-clk or the RCCLK is controlled by the
+"Platform Clock" dapm supply. If we proper disable that supply when we don't
+need PLL1, then it will switch to RCCLK and we can simply have
+rt5651_set_dai_sysclk() enable / disable the PLL pwr bit in PWR_ANLG2 when
+we switch clock rather then using the is_sys_clk_from_pll() check.
 
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1525104
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1533858
-Cc: stable@vger.kernel.org
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
-About the choice to also apply this to changes made through
-/sys/module/snd_hda_intel/parameters/power_save, one could argue that this
-will get in the way of users who want the power-saving anyways and are
-willing to live with the clicks/plops. An alternative approach would be to
-only apply this to the value of the module-parameter at boot and then only
-when it matches CONFIG_SND_HDA_POWER_SAVE_DEFAULT. I'm open to changing this
-for v2.
----
- sound/pci/hda/hda_intel.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+I hope this helps clear up the confusion surrounding this patch. And I guess
+I need to improve the commit message...
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index c71dcacea807..ea612aeb1663 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -936,6 +936,34 @@ static unsigned int azx_get_pos_skl(struct azx *chip, struct azx_dev *azx_dev)
- 	return azx_get_pos_posbuf(chip, azx_dev);
- }
- 
-+/* On some boards setting power_save to a non 0 value leads to clicking /
-+ * popping sounds when ever we enter/leave powersaving mode. Ideally we would
-+ * figure out how to avoid these sounds, but that is not always feasible.
-+ * So we keep a list of devices where we disable powersaving as its known to
-+ * causes problems on these devices.
-+ */
-+static struct snd_pci_quirk power_save_blacklist[] = {
-+	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
-+	SND_PCI_QUIRK(0x1849, 0x0c0c, "Asrock B85M-ITX", 0),
-+	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
-+	SND_PCI_QUIRK(0x1043, 0x8733, "Asus Prime X370-Pro", 0),
-+	/* https://bugzilla.redhat.com/show_bug.cgi?id=1533858 */
-+	SND_PCI_QUIRK(0x17aa, 0x2227, "Lenovo X1 Carbon 3rd Gen", 0),
-+	{}
-+};
-+
-+static void check_power_save_blacklist(struct azx *chip)
-+{
-+	const struct snd_pci_quirk *q;
-+
-+	q = snd_pci_quirk_lookup(chip->pci, power_save_blacklist);
-+	if (q && power_save) {
-+		dev_info(chip->card->dev, "device %04x:%04x is on the power_save blacklist, forcing power_save to 0\n",
-+			 q->subvendor, q->subdevice);
-+		power_save = 0;
-+	}
-+}
-+
- #ifdef CONFIG_PM
- static DEFINE_MUTEX(card_list_lock);
- static LIST_HEAD(card_list);
-@@ -972,6 +1000,7 @@ static int param_set_xint(const char *val, const struct kernel_param *kp)
- 		chip = &hda->chip;
- 		if (!hda->probe_continued || chip->disabled)
- 			continue;
-+		check_power_save_blacklist(chip);
- 		snd_hda_set_power_save(&chip->bus, power_save * 1000);
- 	}
- 	mutex_unlock(&card_list_lock);
-@@ -2278,6 +2307,7 @@ static int azx_probe_continue(struct azx *chip)
- 
- 	chip->running = 1;
- 	azx_add_card_list(chip);
-+	check_power_save_blacklist(chip);
- 	snd_hda_set_power_save(&chip->bus, power_save * 1000);
- 	if (azx_has_pm_runtime(chip) || hda->use_vga_switcheroo)
- 		pm_runtime_put_autosuspend(&pci->dev);
--- 
-2.14.3
+Regards,
+
+Hans
