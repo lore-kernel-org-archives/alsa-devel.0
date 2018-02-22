@@ -1,209 +1,57 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 01/25] dt-bindings: soc: qcom: Add bindings for APR bus
-Date: Wed, 21 Feb 2018 18:14:04 -0600
-Message-ID: <CAL_JsqK3KFBGqpHRaURSrHew1HhObUvFYxuhND-FOQ4tCUaAHg@mail.gmail.com>
-References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
- <20180213165837.1620-2-srinivas.kandagatla@linaro.org>
- <20180213231244.ama4bwsehzuh5sr7@rob-hp-laptop>
- <ae65a9c8-85a3-5494-f4cc-1038fd8c9bd1@linaro.org>
- <20180218230414.dkd6kb6kd35arcyv@rob-hp-laptop>
- <636d4ac2-3bc2-7290-1645-0451c089cb8a@linaro.org>
+From: Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH v13 7/8] ARM: dts: imx: Add TDA19971 HDMI
+ Receiver to GW54xx
+Date: Thu, 22 Feb 2018 14:13:38 +0800
+Message-ID: <20180222061336.GI3217@dragon>
+References: <1518717336-6271-1-git-send-email-tharvey@gateworks.com>
+ <1518717336-6271-8-git-send-email-tharvey@gateworks.com>
+ <7732637c-93bf-fac2-5553-695782890254@xs4all.nl>
+ <CAJ+vNU3G9bJ16npp22O=7k72Pf3xSuQxW-CA2p5cbDq-nSZ4ew@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <636d4ac2-3bc2-7290-1645-0451c089cb8a@linaro.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Banajit Goswami <bgoswami@codeaurora.org>, rohkumar@qti.qualcomm.com, linux-arm-msm <linux-arm-msm@vger.kernel.org>, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, David Brown <david.brown@linaro.org>, Mark Brown <broonie@kernel.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, spatakok@qti.qualcomm.com, Andy Gross <andy.gross@linaro.org>, "open list:ARM/QUALCOMM SUPPORT" <linux-soc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ by alsa0.perex.cz (Postfix) with ESMTP id 93E7B267608
+ for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 07:13:48 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CAJ+vNU3G9bJ16npp22O=7k72Pf3xSuQxW-CA2p5cbDq-nSZ4ew@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tim Harvey <tharvey@gateworks.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>, Mauro Carvalho Chehab <mchehab@s-opensource.com>, Philipp Zabel <p.zabel@pengutronix.de>, Steve Longerbeam <slongerbeam@gmail.com>, Hans Verkuil <hansverk@cisco.com>, linux-media <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 20, 2018 at 3:33 AM, Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
-> Thanks for your review comments,
->
->
-> On 18/02/18 23:04, Rob Herring wrote:
->>
->> On Wed, Feb 14, 2018 at 09:13:23AM +0000, Srinivas Kandagatla wrote:
->>>
->>> Thanks for the review,
->>>
->>> On 13/02/18 23:12, Rob Herring wrote:
->>>>
->>>> On Tue, Feb 13, 2018 at 04:58:13PM +0000, srinivas.kandagatla@linaro.org
->>>> wrote:
->>>>>
->>>>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>>>>
->>>>> This patch add dt bindings for Qualcomm APR (Asynchronous Packet
->>>>> Router)
->>>>> bus driver. This bus is used for communicating with DSP which provides
->>>>> audio and various other services to cpu.
->>>>>
->>>>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>>>> ---
->>>>>    .../devicetree/bindings/soc/qcom/qcom,apr.txt      | 83
->>>>> ++++++++++++++++++++++
->>>>>    1 file changed, 83 insertions(+)
->>>>>    create mode 100644
->>>>> Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
->>>>>
->>>>> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
->>>>> b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
->>>>> new file mode 100644
->>>>> index 000000000000..1b95fbfed348
->>>>> --- /dev/null
->>>>> +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
->>>>> @@ -0,0 +1,83 @@
->>>>> +Qualcomm APR (Asynchronous Packet Router) binding
->>>>> +
->>>>> +This binding describes the Qualcomm APR. APR is a IPC protocol for
->>>>> +communication between Application processor and QDSP. APR is mainly
->>>>> +used for audio/voice services on the QDSP.
->>>>> +
->>>>> +- compatible:
->>>>> +       Usage: required
->>>>> +       Value type: <stringlist>
->>>>> +       Definition: must be "qcom,apr-v<VERSION-NUMBER>", example
->>>>> "qcom,apr-v2"
->>>>> +
->>>>> +- qcom,apr-dest-domain-id
->>>>> +       Usage: required
->>>>> +       Value type: <prop-encoded-array>
->>>>> +       Definition: Destination processor ID.
->>>>> +       Possible values are :
->>>>> +                       1 - APR simulator
->>>>> +                       2 - PC
->>>>> +                       3 - MODEM
->>>>> +                       4 - ADSP
->>>>> +                       5 - APPS
->>>>> +                       6 - MODEM2
->>>>> +                       7 - APPS2
->>>>> +
->>>>> += APR SERVICES
->>>>> +Each subnode of the APR node can represent service tied to this apr.
->>>>> The name
->>>>> +of the nodes are not important. The properties of these nodes are
->>>>> defined
->>>>> +by the individual bindings for the specific service
->>>>> +- but must contain the following property:
->>>>> +
->>>
->>> ...
->>>>>
->>>>> += APR DEVICES:
->>>>> +Each subnode of the APR node can represent devices tied to this apr,
->>>>> like
->>>>> +sound-card. The properties of these nodes are defined by the
->>>>> individual
->>>>> +bindings for the specific device.
->>>>
->>>>
->>>> It's not a good design generally to mix different types of nodes at one
->>>> level.
->>>
->>>
->>> I agree, may be I can split the services and devices into different
->>> subnodes
->>> like below, which should avoid mixing different types of nodes.
->>>
->>> Does this sound good to you?
->>
->>
->> Seems your original example wasn't so complete...
->>
-> Yep, I will fix it in next version.
->>
->> I don't see why you need all these nodes in the first place. For a
->> single SoC, how much does all this vary?
->>
-> It might not vary for a given SoC, but It does vary across the SoCs.
-> Also the versions of each service are independent to each other.
+On Thu, Feb 15, 2018 at 01:19:17PM -0800, Tim Harvey wrote:
+> On Thu, Feb 15, 2018 at 10:36 AM, Hans Verkuil <hverkuil@xs4all.nl> wrote:
+> > On 15/02/18 18:55, Tim Harvey wrote:
+> >> The GW54xx has a front-panel microHDMI connector routed to a TDA19971
+> >> which is connected the the IPU CSI when using IMX6Q.
+> >
+> > I assume that this and the next patch go through another subsystem for arm
+> > and/or imx?
+> >
+> > Regards,
+> >
+> >         Hans
+> >
+> 
+> Hans,
+> 
+> Yes - Shawn should pick up the two dts patches:
+> 0007-ARM-dts-imx-Add-TDA19971-HDMI-Receiver-to-GW54xx.patch
+> 0008-ARM-dts-imx-Add-TDA19971-HDMI-Receiver-to-GW551x.patch
+> 
+> Shawn you've seen these before but haven't ack'd them - are they good
+> to merge to your imx tree?
 
-Not sure I follow the last statement. Meaning firmware updates change
-the services?
+Yes.  I will pick up the dts patches after Hans merges driver part.
 
-I don't see any versioning of services here.
-
->
->>>
->>> apr {
->>>          compatible = "qcom,apr-v2";
->>>          qcom,smd-channels = "apr_audio_svc";
->>>          qcom,apr-dest-domain-id = <APR_DOMAIN_ADSP>;
->>>
->>>          apr-services {
->>>                  q6core {
->>>                          qcom,apr-svc-name = "CORE";
->>>                          qcom,apr-svc-id = <APR_SVC_ADSP_CORE>;
->>>                          compatible = "qcom,q6core";
->>>                  };
->>>
->>>                  q6afe: q6afe {
->>>                          compatible = "qcom,q6afe";
->>>                          qcom,apr-svc-name = "AFE";
->>>                          qcom,apr-svc-id = <APR_SVC_AFE>;
->>>                          #sound-dai-cells = <1>;
->>>                  };
->>>
->>>                  q6asm: q6asm {
->>>                          compatible = "qcom,q6asm";
->>>                          qcom,apr-svc-name = "ASM";
->>>                          qcom,apr-svc-id = <APR_SVC_ASM>;
->>>                          #sound-dai-cells = <1>;
->>>                  };
->>>
->>>                  q6adm: q6adm {
->>>                          compatible = "qcom,q6adm";
->>>                          qcom,apr-svc-name = "ADM";
->>>                          qcom,apr-svc-id = <APR_SVC_ADM>;
->>>                          #sound-dai-cells = <0>;
->>>                  };
->>
->>
->> All these DAI nodes could be a single node and the cell value be the
->> svc-id?
->
-> No, DAI's here are both backends and frontends, and some of the services
-> like core, USM are not DAI's
->
-> Are you also saying that we should have a single driver entity for all these
-> services?
-
-DT nodes do not equate driver entities. A driver can instantiate other drivers.
-
-Am I saying a single DT node for this? Yes, perhaps.
-
->
->>
->>>          };
->>>
->>>          apr-devices {
->>>                  audio {
->>>                          compatible = "qcom,msm8996-snd-card";
->>
->>
->> This is a pseudo device. Why not put it at the top level like other
->> sound cards?
->
->
-> APR bus depends on the state of DSP services, which can go off if the DSP
-> crashes or DSP is stopped. If we remove this sound card out of apr bus then
-> the sound card dependency on apr bus is totally lost.
->
-> Main purpose of having sound card under this bus is that the sound card
-> should register/unregister depending up the apr channel presence/absence
-> respectively.
-
-Okay, that seems sensible.
-
-Rob
+Shawn
