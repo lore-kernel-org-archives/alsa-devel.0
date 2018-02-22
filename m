@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: uniphier: evea: fix lisence comment
-	style" to the asoc tree
-Date: Thu, 22 Feb 2018 13:16:08 +0000
-Message-ID: <E1eoqjI-0006Aq-Rz@debutante>
-References: <20180221234232.5252-1-suzuki.katsuhiro@socionext.com>
+Subject: Applied "ASoC: fsl_ssi: Setup AC97 in
+	fsl_ssi_hw_init()" to the asoc tree
+Date: Thu, 22 Feb 2018 13:16:28 +0000
+Message-ID: <E1eoqjc-0006Gi-N5@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A1ABC267720
- for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 14:16:26 +0100 (CET)
-In-Reply-To: <20180221234232.5252-1-suzuki.katsuhiro@socionext.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B25926772F
+ for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 14:16:30 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Cc: alsa-devel@alsa-project.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.org, Jassi Brar <jaswinder.singh@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Caleb Crome <caleb@crome.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: uniphier: evea: fix lisence comment style
+   ASoC: fsl_ssi: Setup AC97 in fsl_ssi_hw_init()
 
 has been applied to the asoc tree at
 
@@ -53,51 +52,102 @@ to this mail.
 Thanks,
 Mark
 
->From 24745dca8e7e17c20b6cf2bfb94a9acd09dce1b9 Mon Sep 17 00:00:00 2001
-From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Date: Thu, 22 Feb 2018 08:42:32 +0900
-Subject: [PATCH] ASoC: uniphier: evea: fix lisence comment style
+>From 37ac30a4bdc397cf1311111264ac35dc8473e1de Mon Sep 17 00:00:00 2001
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Date: Mon, 12 Feb 2018 14:03:21 -0800
+Subject: [PATCH] ASoC: fsl_ssi: Setup AC97 in fsl_ssi_hw_init()
 
-This patch changes lisence comment style from C to C++.
-And use SPDX instead of boiler plate of GPLv2, as same as
-other audio codec drivers.
+AC97 configures most of registers earlier to start a communication
+with CODECs in order to successfully initialize CODEC. Currently,
+_fsl_ssi_set_dai_fmt() and fsl_ssi_setup_ac97() are called to get
+all SSI registers properly set.
 
-Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Since now the driver has a fsl_ssi_hw_init() to handle all register
+initial settings, this patch moves those register settings of AC97
+to the fsl_ssi_hw_init() as well.
+
+Meanwhile it applies _fsl_ssi_set_dai_fmt() call to AC97 only since
+other formats would be configured via normal set_dai_fmt() directly.
+
+This patch also adds fsl_ssi_hw_clean() to cleanup control bits for
+AC97 in the platform remote() function.
+
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Tested-by: Caleb Crome <caleb@crome.org>
+Tested-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+Reviewed-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/uniphier/evea.c | 22 ++++------------------
- 1 file changed, 4 insertions(+), 18 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 33 +++++++++++++++++++++++++++------
+ 1 file changed, 27 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/uniphier/evea.c b/sound/soc/uniphier/evea.c
-index ac2d30b55fb6..439f14f91b23 100644
---- a/sound/soc/uniphier/evea.c
-+++ b/sound/soc/uniphier/evea.c
-@@ -1,22 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
--/*
-- * Socionext UniPhier EVEA ADC/DAC codec driver.
-- *
-- * Copyright (c) 2016-2017 Socionext Inc.
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License
-- * as published by the Free Software Foundation; version 2
-- * of the License.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, see <http://www.gnu.org/licenses/>.
-- */
-+//
-+// Socionext UniPhier EVEA ADC/DAC codec driver.
-+//
-+// Copyright (c) 2016-2017 Socionext Inc.
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 36f3d51c5c43..dfb0da3cedda 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -987,9 +987,6 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+ 	regmap_write(regs, REG_SSI_SRCR, srcr);
+ 	regmap_write(regs, REG_SSI_SCR, scr);
  
- #include <linux/clk.h>
- #include <linux/module.h>
+-	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_AC97)
+-		fsl_ssi_setup_ac97(ssi);
+-
+ 	return 0;
+ }
+ 
+@@ -1255,9 +1252,33 @@ static int fsl_ssi_hw_init(struct fsl_ssi *ssi)
+ 		regmap_update_bits(ssi->regs, REG_SSI_SCR,
+ 				   SSI_SCR_TCH_EN, SSI_SCR_TCH_EN);
+ 
++	/* AC97 should start earlier to communicate with CODECs */
++	if (fsl_ssi_is_ac97(ssi)) {
++		_fsl_ssi_set_dai_fmt(ssi->dev, ssi, ssi->dai_fmt);
++		fsl_ssi_setup_ac97(ssi);
++	}
++
+ 	return 0;
+ }
+ 
++/**
++ * Clear SSI registers
++ */
++static void fsl_ssi_hw_clean(struct fsl_ssi *ssi)
++{
++	/* Disable registers for AC97 */
++	if (fsl_ssi_is_ac97(ssi)) {
++		/* Disable TE and RE bits first */
++		regmap_update_bits(ssi->regs, REG_SSI_SCR,
++				   SSI_SCR_TE | SSI_SCR_RE, 0);
++		/* Disable AC97 mode */
++		regmap_write(ssi->regs, REG_SSI_SACNT, 0);
++		/* Unset WAIT bits */
++		regmap_write(ssi->regs, REG_SSI_SOR, 0);
++		/* Disable SSI -- software reset */
++		regmap_update_bits(ssi->regs, REG_SSI_SCR, SSI_SCR_SSIEN, 0);
++	}
++}
+ /**
+  * Make every character in a string lower-case
+  */
+@@ -1540,9 +1561,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	}
+ 
+ done:
+-	if (ssi->dai_fmt)
+-		_fsl_ssi_set_dai_fmt(dev, ssi, ssi->dai_fmt);
+-
+ 	/* Initially configures SSI registers */
+ 	fsl_ssi_hw_init(ssi);
+ 
+@@ -1592,6 +1610,9 @@ static int fsl_ssi_remove(struct platform_device *pdev)
+ 	if (ssi->pdev)
+ 		platform_device_unregister(ssi->pdev);
+ 
++	/* Clean up SSI registers */
++	fsl_ssi_hw_clean(ssi);
++
+ 	if (ssi->soc->imx)
+ 		fsl_ssi_imx_clean(pdev, ssi);
+ 
 -- 
 2.16.1
