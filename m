@@ -1,18 +1,20 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 1/2] ASoC: soc-generic-dmaengine-pcm: Fix error
-	handling
-Date: Thu, 22 Feb 2018 16:02:21 -0300
-Message-ID: <1519326142-26421-1-git-send-email-festevam@gmail.com>
+Subject: [PATCH 2/2] ASoC: soc-generic-dmaengine-pcm: Fix
+	sparse warnings
+Date: Thu, 22 Feb 2018 16:02:22 -0300
+Message-ID: <1519326142-26421-2-git-send-email-festevam@gmail.com>
+References: <1519326142-26421-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f196.google.com (mail-qt0-f196.google.com
- [209.85.216.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D8EF2677F6
- for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 20:02:37 +0100 (CET)
-Received: by mail-qt0-f196.google.com with SMTP id d8so7656536qtm.0
- for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 11:02:37 -0800 (PST)
+Received: from mail-qk0-f194.google.com (mail-qk0-f194.google.com
+ [209.85.220.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 149482677F6
+ for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 20:02:39 +0100 (CET)
+Received: by mail-qk0-f194.google.com with SMTP id v124so7772004qkh.11
+ for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 11:02:39 -0800 (PST)
+In-Reply-To: <1519326142-26421-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,36 +30,58 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Fabio Estevam <fabio.estevam@nxp.com>
 
-When dmaengine_pcm_request_chan_of() fails it should release
-the previously acquired resources, which in this case is to
-call kfree(pcm), so jump to the correct point in the error
-path.
+Currently the following sparse warnings are observed:
+
+sound/soc/soc-generic-dmaengine-pcm.c:185:34: warning: restricted snd_pcm_format_t degrades to integer
+sound/soc/soc-generic-dmaengine-pcm.c:186:66: warning: incorrect type in argument 1 (different base types)
+sound/soc/soc-generic-dmaengine-pcm.c:186:66:    expected restricted snd_pcm_format_t [usertype] format
+sound/soc/soc-generic-dmaengine-pcm.c:186:66:    got int [signed] [assigned] i
+
+Fix it by changing the loop variable to be of 'snd_pcm_format_t'.
+
+Also introduce a SNDRV_PCM_FORMAT_FIRST label, which corresponds to the
+first member (index 0) of the snd_pcm_format_t formats.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 ---
- sound/soc/soc-generic-dmaengine-pcm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/uapi/sound/asound.h           | 1 +
+ sound/soc/soc-generic-dmaengine-pcm.c | 5 +++--
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index 07d6158..ed0a120 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -242,6 +242,7 @@ typedef int __bitwise snd_pcm_format_t;
+ #define	SNDRV_PCM_FORMAT_DSD_U16_BE	((__force snd_pcm_format_t) 51) /* DSD, 2-byte samples DSD (x16), big endian */
+ #define	SNDRV_PCM_FORMAT_DSD_U32_BE	((__force snd_pcm_format_t) 52) /* DSD, 4-byte samples DSD (x32), big endian */
+ #define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_DSD_U32_BE
++#define	SNDRV_PCM_FORMAT_FIRST		SNDRV_PCM_FORMAT_S8
+ 
+ #ifdef SNDRV_LITTLE_ENDIAN
+ #define	SNDRV_PCM_FORMAT_S16		SNDRV_PCM_FORMAT_S16_LE
 diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 768247f..32ea16d 100644
+index 32ea16d..785f25e 100644
 --- a/sound/soc/soc-generic-dmaengine-pcm.c
 +++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -450,7 +450,7 @@ int snd_dmaengine_pcm_register(struct device *dev,
+@@ -132,7 +132,8 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
+ 	u32 addr_widths = BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) |
+ 			  BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) |
+ 			  BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
+-	int i, ret;
++	snd_pcm_format_t i;
++	int ret;
  
- 	ret = dmaengine_pcm_request_chan_of(pcm, dev, config);
- 	if (ret)
--		goto err_free_dma;
-+		goto err_free_pcm;
+ 	if (pcm->config && pcm->config->pcm_hardware)
+ 		return snd_soc_set_runtime_hwparams(substream,
+@@ -182,7 +183,7 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
+ 		 * default assumption is that it supports 1, 2 and 4 bytes
+ 		 * widths.
+ 		 */
+-		for (i = 0; i <= SNDRV_PCM_FORMAT_LAST; i++) {
++		for (i = SNDRV_PCM_FORMAT_FIRST; i <= SNDRV_PCM_FORMAT_LAST; i++) {
+ 			int bits = snd_pcm_format_physical_width(i);
  
- 	ret = snd_soc_add_component(dev, &pcm->component,
- 				    &dmaengine_pcm_component, NULL, 0);
-@@ -461,6 +461,7 @@ int snd_dmaengine_pcm_register(struct device *dev,
- 
- err_free_dma:
- 	dmaengine_pcm_release_chan(pcm);
-+err_free_pcm:
- 	kfree(pcm);
- 	return ret;
- }
+ 			/*
 -- 
 2.7.4
