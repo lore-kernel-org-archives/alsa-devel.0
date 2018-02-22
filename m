@@ -1,18 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: Redefine RX and TX macros" to
-	the asoc tree
-Date: Thu, 22 Feb 2018 13:17:13 +0000
-Message-ID: <E1eoqkL-0006UU-Na@debutante>
-References: <1515990087-11598-2-git-send-email-nicoleotsuka@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: [RFC v3] ALSA: hda: Add a power_save blacklist
+Date: Thu, 22 Feb 2018 14:20:35 +0100
+Message-ID: <20180222132035.1554-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id F03642677F9
- for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 14:17:24 +0100 (CET)
-In-Reply-To: <1515990087-11598-2-git-send-email-nicoleotsuka@gmail.com>
+Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id 210E726778C
+ for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 14:20:38 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,88 +18,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: alsa-devel@alsa-project.org, arnaud.mouiche@invoxia.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, mail@maciej.szmigiero.name, caleb@crome.org, timur@tabi.org, broonie@kernel.org, kernel@pengutronix.de, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On some boards setting power_save to a non 0 value leads to clicking /
+popping sounds when ever we enter/leave powersaving mode. Ideally we would
+figure out how to avoid these sounds, but that is not always feasible.
 
-   ASoC: fsl_ssi: Redefine RX and TX macros
+This commit adds a blacklist for devices where powersaving is known to
+cause problems and disables it on these devices.
 
-has been applied to the asoc tree at
+Note I tried to put this blacklist in userspace first:
+https://github.com/systemd/systemd/pull/8128
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+But the systemd maintainers rightfully pointed out that it would be
+impossible to then later remove entries once we actually find a way to
+make power-saving work on listed boards without issues. Having this list
+in the kernel will allow removal of the blacklist entry in the same commit
+which fixes the clicks / plops.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+The blacklist only applies to the default power_save module-option value,
+if a user explicitly sets the module-option then the blacklist is not
+used.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 1476105c3f4a6b8f0c6c1fe07295fc85cbffbd83 Mon Sep 17 00:00:00 2001
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Date: Mon, 12 Feb 2018 14:03:09 -0800
-Subject: [PATCH] ASoC: fsl_ssi: Redefine RX and TX macros
-
-The RX and TX macros were defined implicitly and there was
-a potential risk if someone changes their values.
-
-Since they were defined to index the array ssi->regvals[2],
-this patch moves these two macros to fsl_ssi.c, closer to
-its owner ssi->regvals. And it also puts some comments here
-to limit their value within [0, 1].
-
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Tested-by: Caleb Crome <caleb@crome.org>
-Tested-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
-Reviewed-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1525104
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=198611
+Cc: stable@vger.kernel.org
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/fsl/fsl_ssi.c | 4 ++++
- sound/soc/fsl/fsl_ssi.h | 3 ---
- 2 files changed, 4 insertions(+), 3 deletions(-)
+Changes in RFC v2:
+-Only use the blacklist if the power_save module-option is not explicitly
+ set by the user
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 24fb672f3c65..3c8dd609e42e 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -56,6 +56,10 @@
- #include "fsl_ssi.h"
- #include "imx-pcm.h"
+Changes in RFC v2:
+-Fix logic to work on boards with more then 1 HDA device
+---
+ sound/pci/hda/hda_intel.c | 33 +++++++++++++++++++++++++++++++--
+ 1 file changed, 31 insertions(+), 2 deletions(-)
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index c71dcacea807..9d67b6b0ec95 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -181,7 +181,7 @@ static const struct kernel_param_ops param_ops_xint = {
+ };
+ #define param_check_xint param_check_int
  
-+/* Define RX and TX to index ssi->regvals array; Can be 0 or 1 only */
-+#define RX 0
-+#define TX 1
+-static int power_save = CONFIG_SND_HDA_POWER_SAVE_DEFAULT;
++static int power_save = -1;
+ module_param(power_save, xint, 0644);
+ MODULE_PARM_DESC(power_save, "Automatic power-saving timeout "
+ 		 "(in second, 0 = disable).");
+@@ -2186,6 +2186,22 @@ static int azx_probe(struct pci_dev *pci,
+ 	return err;
+ }
+ 
++/* On some boards setting power_save to a non 0 value leads to clicking /
++ * popping sounds when ever we enter/leave powersaving mode. Ideally we would
++ * figure out how to avoid these sounds, but that is not always feasible.
++ * So we keep a list of devices where we disable powersaving as its known
++ * to causes problems on these devices.
++ */
++static struct snd_pci_quirk power_save_blacklist[] = {
++	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
++	SND_PCI_QUIRK(0x1849, 0x0c0c, "Asrock B85M-ITX", 0),
++	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
++	SND_PCI_QUIRK(0x1043, 0x8733, "Asus Prime X370-Pro", 0),
++	/* https://bugzilla.kernel.org/show_bug.cgi?id=198611 */
++	SND_PCI_QUIRK(0x17aa, 0x2227, "Lenovo X1 Carbon 3rd Gen", 0),
++	{}
++};
 +
- /**
-  * FSLSSI_I2S_FORMATS: audio formats supported by the SSI
-  *
-diff --git a/sound/soc/fsl/fsl_ssi.h b/sound/soc/fsl/fsl_ssi.h
-index de2fdc5db726..18f8dd5209d5 100644
---- a/sound/soc/fsl/fsl_ssi.h
-+++ b/sound/soc/fsl/fsl_ssi.h
-@@ -12,9 +12,6 @@
- #ifndef _MPC8610_I2S_H
- #define _MPC8610_I2S_H
+ /* number of codec slots for each chipset: 0 = default slots (i.e. 4) */
+ static unsigned int azx_max_codecs[AZX_NUM_DRIVERS] = {
+ 	[AZX_DRIVER_NVIDIA] = 8,
+@@ -2197,7 +2213,9 @@ static int azx_probe_continue(struct azx *chip)
+ 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+ 	struct hdac_bus *bus = azx_bus(chip);
+ 	struct pci_dev *pci = chip->pci;
++	const struct snd_pci_quirk *q;
+ 	int dev = chip->dev_index;
++	int val;
+ 	int err;
  
--#define RX 0
--#define TX 1
--
- /* -- SSI Register Map -- */
+ 	hda->probe_continued = 1;
+@@ -2278,7 +2296,18 @@ static int azx_probe_continue(struct azx *chip)
  
- /* SSI Transmit Data Register 0 */
+ 	chip->running = 1;
+ 	azx_add_card_list(chip);
+-	snd_hda_set_power_save(&chip->bus, power_save * 1000);
++
++	val = power_save;
++	if (val == -1) {
++		val = CONFIG_SND_HDA_POWER_SAVE_DEFAULT;
++		q = snd_pci_quirk_lookup(chip->pci, power_save_blacklist);
++		if (q && val) {
++			dev_info(chip->card->dev, "device %04x:%04x is on the power_save blacklist, forcing power_save to 0\n",
++				 q->subvendor, q->subdevice);
++			val = 0;
++		}
++	}
++	snd_hda_set_power_save(&chip->bus, val * 1000);
+ 	if (azx_has_pm_runtime(chip) || hda->use_vga_switcheroo)
+ 		pm_runtime_put_autosuspend(&pci->dev);
+ 
 -- 
-2.16.1
+2.14.3
