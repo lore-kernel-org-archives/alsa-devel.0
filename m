@@ -1,92 +1,63 @@
-From: Bjorn Helgaas <helgaas-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 2/7] PCI: Make pci_wakeup_bus() &
- pci_bus_set_current_state() public
-Date: Thu, 22 Feb 2018 11:45:11 -0600
-Message-ID: <20180222174511.GA16519@bhelgaas-glaptop.roam.corp.google.com>
-References: <cover.1518941072.git.lukas@wunner.de>
- <9d36522bc3d7e0ed1c1d5f653514d9fb0d34c0a8.1518941073.git.lukas@wunner.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH 1/2] ASoC: soc-generic-dmaengine-pcm: Fix error
+	handling
+Date: Thu, 22 Feb 2018 16:02:21 -0300
+Message-ID: <1519326142-26421-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <9d36522bc3d7e0ed1c1d5f653514d9fb0d34c0a8.1518941073.git.lukas-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/nouveau>,
- <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/nouveau>
-List-Post: <mailto:nouveau-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/nouveau>,
- <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "Nouveau" <nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: Lukas Wunner <lukas-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-pm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, nouveau-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, "Rafael J. Wysocki" <rafael.j.wysocki-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Ben Skeggs <bskeggs-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Bastien Nocera <hadess-0MeiytkfxGOsTnJN9+BGXg@public.gmane.org>, linux-pci-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, Dave Airlie <airlied-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Bjorn Helgaas <bhelgaas-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qt0-f196.google.com (mail-qt0-f196.google.com
+ [209.85.216.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D8EF2677F6
+ for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 20:02:37 +0100 (CET)
+Received: by mail-qt0-f196.google.com with SMTP id d8so7656536qtm.0
+ for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 11:02:37 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, lars@metafoo.de
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCBGZWIgMTgsIDIwMTggYXQgMDk6Mzg6MzJBTSArMDEwMCwgTHVrYXMgV3VubmVyIHdy
-b3RlOgo+IFRoZXJlIGFyZSBQQ0kgZGV2aWNlcyB3aGljaCBhcmUgcG93ZXItbWFuYWdlYWJsZSBi
-eSBhIG5vbnN0YW5kYXJkIG1lYW5zLAo+IHN1Y2ggYXMgYSBjdXN0b20gQUNQSSBtZXRob2QuICBP
-bmUgZXhhbXBsZSBhcmUgZGlzY3JldGUgR1BVcyBpbiBoeWJyaWQKPiBncmFwaGljcyBsYXB0b3Bz
-LCBhbm90aGVyIGFyZSBUaHVuZGVyYm9sdCBjb250cm9sbGVycyBpbiBNYWNzLgo+IAo+IFN1Y2gg
-ZGV2aWNlcyBjYW4ndCBiZSBwdXQgaW50byBEM2NvbGQgd2l0aCBwY2lfc2V0X3Bvd2VyX3N0YXRl
-KCkgYmVjYXVzZQo+IHBjaV9wbGF0Zm9ybV9wb3dlcl90cmFuc2l0aW9uKCkgZmFpbHMgd2l0aCAt
-RU5PREVWLiAgSW5zdGVhZCB0aGV5J3JlIHB1dAo+IGludG8gRDNob3QgYnkgcGNpX3NldF9wb3dl
-cl9zdGF0ZSgpIGFuZCBzdWJzZXF1ZW50bHkgaW50byBEM2NvbGQgYnkKPiBpbnZva2luZyB0aGUg
-bm9uc3RhbmRhcmQgbWVhbnMuICBIb3dldmVyIGFzIGEgY29uc2VxdWVuY2UgdGhlIGNhY2hlZAo+
-IGN1cnJlbnRfc3RhdGUgaXMgaW5jb3JyZWN0bHkgbGVmdCBhdCBEM2hvdC4KPiAKPiBXaGF0IHdl
-IG5lZWQgdG8gZG8gaXMgd2FsayB0aGUgaGllcmFyY2h5IGJlbG93IHN1Y2ggYSBQQ0kgZGV2aWNl
-IG9uCj4gcG93ZXJkb3duIGFuZCB1cGRhdGUgdGhlIGN1cnJlbnRfc3RhdGUgdG8gRDNjb2xkLiAg
-T24gcG93ZXJ1cCB0aGUgUENJCj4gZGV2aWNlIGl0c2VsZiBhbmQgdGhlIGhpZXJhcmNoeSBiZWxv
-dyBpdCBpcyBpbiBEMHVuaW5pdGlhbGl6ZWQsIHNvIHdlCj4gbmVlZCB0byB3YWxrIHRoZSBoaWVy
-YXJjaHkgYWdhaW4gYW5kIHdha2UgYWxsIGRldmljZXMsIGNhdXNpbmcgdGhlbSB0bwo+IGJlIHB1
-dCBpbnRvIEQwYWN0aXZlIGFuZCB0aGVuIGxldHRpbmcgdGhlbSBhdXRvc3VzcGVuZCBhcyB0aGV5
-IHNlZSBmaXQuCj4gCj4gVG8gdGhpcyBlbmQgbWFrZSBwY2lfd2FrZXVwX2J1cygpICYgcGNpX2J1
-c19zZXRfY3VycmVudF9zdGF0ZSgpIHB1YmxpYwo+IHNvIFBDSSBkcml2ZXJzIGRvbid0IGhhdmUg
-dG8gcmVpbnZlbnQgdGhlIHdoZWVsLgo+IAo+IENjOiBCam9ybiBIZWxnYWFzIDxiaGVsZ2Fhc0Bn
-b29nbGUuY29tPgo+IENjOiBSYWZhZWwgSi4gV3lzb2NraSA8cmFmYWVsLmoud3lzb2NraUBpbnRl
-bC5jb20+Cj4gU2lnbmVkLW9mZi1ieTogTHVrYXMgV3VubmVyIDxsdWthc0B3dW5uZXIuZGU+CgpB
-Y2tlZC1ieTogQmpvcm4gSGVsZ2FhcyA8YmhlbGdhYXNAZ29vZ2xlLmNvbT4KCj4gLS0tCj4gIGRy
-aXZlcnMvcGNpL3BjaS5jICAgfCA4ICsrKystLS0tCj4gIGluY2x1ZGUvbGludXgvcGNpLmggfCAy
-ICsrCj4gIDIgZmlsZXMgY2hhbmdlZCwgNiBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQo+
-IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BjaS9wY2kuYyBiL2RyaXZlcnMvcGNpL3BjaS5jCj4g
-aW5kZXggZjY5NDY1MDIzNWYyLi42ZTZlMzIyYTVhN2QgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9w
-Y2kvcGNpLmMKPiArKysgYi9kcml2ZXJzL3BjaS9wY2kuYwo+IEBAIC04MDAsNyArODAwLDcgQEAg
-c3RhdGljIGludCBwY2lfd2FrZXVwKHN0cnVjdCBwY2lfZGV2ICpwY2lfZGV2LCB2b2lkICppZ24p
-Cj4gICAqIHBjaV93YWtldXBfYnVzIC0gV2FsayBnaXZlbiBidXMgYW5kIHdha2UgdXAgZGV2aWNl
-cyBvbiBpdAo+ICAgKiBAYnVzOiBUb3AgYnVzIG9mIHRoZSBzdWJ0cmVlIHRvIHdhbGsuCj4gICAq
-Lwo+IC1zdGF0aWMgdm9pZCBwY2lfd2FrZXVwX2J1cyhzdHJ1Y3QgcGNpX2J1cyAqYnVzKQo+ICt2
-b2lkIHBjaV93YWtldXBfYnVzKHN0cnVjdCBwY2lfYnVzICpidXMpCj4gIHsKPiAgCWlmIChidXMp
-Cj4gIAkJcGNpX3dhbGtfYnVzKGJ1cywgcGNpX3dha2V1cCwgTlVMTCk7Cj4gQEAgLTg1MCwxMSAr
-ODUwLDExIEBAIHN0YXRpYyBpbnQgX19wY2lfZGV2X3NldF9jdXJyZW50X3N0YXRlKHN0cnVjdCBw
-Y2lfZGV2ICpkZXYsIHZvaWQgKmRhdGEpCj4gIH0KPiAgCj4gIC8qKgo+IC0gKiBfX3BjaV9idXNf
-c2V0X2N1cnJlbnRfc3RhdGUgLSBXYWxrIGdpdmVuIGJ1cyBhbmQgc2V0IGN1cnJlbnQgc3RhdGUg
-b2YgZGV2aWNlcwo+ICsgKiBwY2lfYnVzX3NldF9jdXJyZW50X3N0YXRlIC0gV2FsayBnaXZlbiBi
-dXMgYW5kIHNldCBjdXJyZW50IHN0YXRlIG9mIGRldmljZXMKPiAgICogQGJ1czogVG9wIGJ1cyBv
-ZiB0aGUgc3VidHJlZSB0byB3YWxrLgo+ICAgKiBAc3RhdGU6IHN0YXRlIHRvIGJlIHNldAo+ICAg
-Ki8KPiAtc3RhdGljIHZvaWQgX19wY2lfYnVzX3NldF9jdXJyZW50X3N0YXRlKHN0cnVjdCBwY2lf
-YnVzICpidXMsIHBjaV9wb3dlcl90IHN0YXRlKQo+ICt2b2lkIHBjaV9idXNfc2V0X2N1cnJlbnRf
-c3RhdGUoc3RydWN0IHBjaV9idXMgKmJ1cywgcGNpX3Bvd2VyX3Qgc3RhdGUpCj4gIHsKPiAgCWlm
-IChidXMpCj4gIAkJcGNpX3dhbGtfYnVzKGJ1cywgX19wY2lfZGV2X3NldF9jdXJyZW50X3N0YXRl
-LCAmc3RhdGUpOwo+IEBAIC04NzYsNyArODc2LDcgQEAgaW50IF9fcGNpX2NvbXBsZXRlX3Bvd2Vy
-X3RyYW5zaXRpb24oc3RydWN0IHBjaV9kZXYgKmRldiwgcGNpX3Bvd2VyX3Qgc3RhdGUpCj4gIAly
-ZXQgPSBwY2lfcGxhdGZvcm1fcG93ZXJfdHJhbnNpdGlvbihkZXYsIHN0YXRlKTsKPiAgCS8qIFBv
-d2VyIG9mZiB0aGUgYnJpZGdlIG1heSBwb3dlciBvZmYgdGhlIHdob2xlIGhpZXJhcmNoeSAqLwo+
-ICAJaWYgKCFyZXQgJiYgc3RhdGUgPT0gUENJX0QzY29sZCkKPiAtCQlfX3BjaV9idXNfc2V0X2N1
-cnJlbnRfc3RhdGUoZGV2LT5zdWJvcmRpbmF0ZSwgUENJX0QzY29sZCk7Cj4gKwkJcGNpX2J1c19z
-ZXRfY3VycmVudF9zdGF0ZShkZXYtPnN1Ym9yZGluYXRlLCBQQ0lfRDNjb2xkKTsKPiAgCXJldHVy
-biByZXQ7Cj4gIH0KPiAgRVhQT1JUX1NZTUJPTF9HUEwoX19wY2lfY29tcGxldGVfcG93ZXJfdHJh
-bnNpdGlvbik7Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvcGNpLmggYi9pbmNsdWRlL2xp
-bnV4L3BjaS5oCj4gaW5kZXggMDI0YTFiZWRhMDA4Li5hZTQyMjg5NjYyZGYgMTAwNjQ0Cj4gLS0t
-IGEvaW5jbHVkZS9saW51eC9wY2kuaAo+ICsrKyBiL2luY2x1ZGUvbGludXgvcGNpLmgKPiBAQCAt
-MTE0Nyw2ICsxMTQ3LDggQEAgdm9pZCBwY2lfcG1lX3dha2V1cF9idXMoc3RydWN0IHBjaV9idXMg
-KmJ1cyk7Cj4gIHZvaWQgcGNpX2QzY29sZF9lbmFibGUoc3RydWN0IHBjaV9kZXYgKmRldik7Cj4g
-IHZvaWQgcGNpX2QzY29sZF9kaXNhYmxlKHN0cnVjdCBwY2lfZGV2ICpkZXYpOwo+ICBib29sIHBj
-aWVfcmVsYXhlZF9vcmRlcmluZ19lbmFibGVkKHN0cnVjdCBwY2lfZGV2ICpkZXYpOwo+ICt2b2lk
-IHBjaV93YWtldXBfYnVzKHN0cnVjdCBwY2lfYnVzICpidXMpOwo+ICt2b2lkIHBjaV9idXNfc2V0
-X2N1cnJlbnRfc3RhdGUoc3RydWN0IHBjaV9idXMgKmJ1cywgcGNpX3Bvd2VyX3Qgc3RhdGUpOwo+
-ICAKPiAgLyogUENJIFZpcnR1YWwgQ2hhbm5lbCAqLwo+ICBpbnQgcGNpX3NhdmVfdmNfc3RhdGUo
-c3RydWN0IHBjaV9kZXYgKmRldik7Cj4gLS0gCj4gMi4xNS4xCj4gCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCk5vdXZlYXUgbWFpbGluZyBsaXN0Ck5vdXZl
-YXVAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21h
-aWxtYW4vbGlzdGluZm8vbm91dmVhdQo=
+From: Fabio Estevam <fabio.estevam@nxp.com>
+
+When dmaengine_pcm_request_chan_of() fails it should release
+the previously acquired resources, which in this case is to
+call kfree(pcm), so jump to the correct point in the error
+path.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+---
+ sound/soc/soc-generic-dmaengine-pcm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index 768247f..32ea16d 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -450,7 +450,7 @@ int snd_dmaengine_pcm_register(struct device *dev,
+ 
+ 	ret = dmaengine_pcm_request_chan_of(pcm, dev, config);
+ 	if (ret)
+-		goto err_free_dma;
++		goto err_free_pcm;
+ 
+ 	ret = snd_soc_add_component(dev, &pcm->component,
+ 				    &dmaengine_pcm_component, NULL, 0);
+@@ -461,6 +461,7 @@ int snd_dmaengine_pcm_register(struct device *dev,
+ 
+ err_free_dma:
+ 	dmaengine_pcm_release_chan(pcm);
++err_free_pcm:
+ 	kfree(pcm);
+ 	return ret;
+ }
+-- 
+2.7.4
