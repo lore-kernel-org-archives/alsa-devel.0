@@ -1,17 +1,15 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCHv5 0/5] Motorola Droid 4 Audio Support
-Date: Fri, 23 Feb 2018 14:24:11 -0800
-Message-ID: <20180223222411.GD5593@atomide.com>
-References: <20180223200254.25685-1-sebastian.reichel@collabora.co.uk>
+From: Xiuli Pan <xiuli.pan@linux.intel.com>
+Subject: [FIX][PATCH] ASoC: topology: Fix logical inversion in
+	set_link_hw_format()
+Date: Fri, 23 Feb 2018 06:01:28 +0800
+Message-ID: <1519336888-71831-1-git-send-email-xiuli.pan@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from muru.com (muru.com [72.249.23.125])
- by alsa0.perex.cz (Postfix) with ESMTP id 7811F267282
- for <alsa-devel@alsa-project.org>; Fri, 23 Feb 2018 23:24:15 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20180223200254.25685-1-sebastian.reichel@collabora.co.uk>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 17443267871
+ for <alsa-devel@alsa-project.org>; Fri, 23 Feb 2018 08:43:06 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,26 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Sebastian Reichel <sre@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, linux-omap@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Pan Xiuli <xiuli.pan@linux.intel.com>, xiuli.pan@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-* Sebastian Reichel <sebastian.reichel@collabora.co.uk> [180223 20:03]:
-> Hi,
-> 
-> This adds audio support to Motorola Droid 4. I dropped the
-> regulator from the DT binding as requested by Mark.
+From: Pan Xiuli <xiuli.pan@linux.intel.com>
 
-Still works for me. Mark, are you happy now with the way
-the nodes are set up?
+The master/slave conventions are wrt. the codec. The topology code
+contains a logical inversion, fix to follow ASoC usage.
 
-For the binding and driver changes:
+Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
+---
+ sound/soc/soc-topology.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Acked-by: Tony Lindgren <tony@atomide.com>
-
-Then I'll be picking up the dts related patches after
-no more comments.
-
-Regards,
-
-Tony
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 561f74d..2931248 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -2030,11 +2030,11 @@ static void set_link_hw_format(struct snd_soc_dai_link *link,
+ 		/* clock masters */
+ 		bclk_master = hw_config->bclk_master;
+ 		fsync_master = hw_config->fsync_master;
+-		if (!bclk_master && !fsync_master)
++		if (bclk_master && fsync_master)
+ 			link->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
+-		else if (bclk_master && !fsync_master)
+-			link->dai_fmt |= SND_SOC_DAIFMT_CBS_CFM;
+ 		else if (!bclk_master && fsync_master)
++			link->dai_fmt |= SND_SOC_DAIFMT_CBS_CFM;
++		else if (bclk_master && !fsync_master)
+ 			link->dai_fmt |= SND_SOC_DAIFMT_CBM_CFS;
+ 		else
+ 			link->dai_fmt |= SND_SOC_DAIFMT_CBS_CFS;
+-- 
+2.7.4
