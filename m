@@ -1,23 +1,20 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 01/11] ASoC: rt5651: Avoid duplicating DMI
- quirks between codec and machine driver
-Date: Thu, 22 Feb 2018 12:08:29 +0100
-Message-ID: <cc96d6a4-c8a5-1df5-8410-7671a73e6d4a@redhat.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 04/11] ASoC: rt5651: Simplify
+	set_bias_level()
+Date: Thu, 22 Feb 2018 11:12:54 +0000
+Message-ID: <20180222111254.GC5905@sirena.org.uk>
 References: <20180220221511.22861-1-hdegoede@redhat.com>
- <20180221115452.GD8334@sirena.org.uk>
- <b2c6c047-eb86-a639-197e-b6aa1eae0ad5@redhat.com>
+ <20180220221511.22861-4-hdegoede@redhat.com>
+ <20180221114328.GC8334@sirena.org.uk>
+ <92dc88f0-c928-3c15-3295-b77a5dedbd58@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============6858929032879199629=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f173.google.com (mail-wr0-f173.google.com
- [209.85.128.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 068262676C7
- for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 12:08:31 +0100 (CET)
-Received: by mail-wr0-f173.google.com with SMTP id z12so10134994wrg.4
- for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 03:08:31 -0800 (PST)
-In-Reply-To: <b2c6c047-eb86-a639-197e-b6aa1eae0ad5@redhat.com>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id CA57A2676C6
+ for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 12:12:59 +0100 (CET)
+In-Reply-To: <92dc88f0-c928-3c15-3295-b77a5dedbd58@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,92 +24,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
+To: Hans de Goede <hdegoede@redhat.com>
 Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-On 21-02-18 20:23, Hans de Goede wrote:
-> Hi,
-> =
+--===============6858929032879199629==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Bu8it7iiRSEf40bY"
+Content-Disposition: inline
 
-> On 21-02-18 12:54, Mark Brown wrote:
->> On Tue, Feb 20, 2018 at 11:15:01PM +0100, Hans de Goede wrote:
->>> Instead of duplicating the DMI quirks between the codec and machine dri=
-ver,
->>> add a rt5651_set_pdata() codec private function which the machine driver
->>> can use to pass in pdata.
->>
->> It's not clear to me that this is a great idea.=A0 The goal in general is
->> to keep as much of the CODEC configuration in the CODEC driver as
->> possible so we can move more towards generic machine drivers, this is
->> moving us in the opposite drection quite dramatically.
-> =
 
-> Not really, instead of having Intel/ACPI specific quirks in the codec
-> driver it moves everything over to pdata, so in a way this unifies the
-> device-tree and ACPI paths.
-> =
+--Bu8it7iiRSEf40bY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Also to me it seems that the Intel specific machine driver is the
-> logical place to put quirks for Intel platforms rather then poluting the
-> platform-agnostic codec driver with this.
-> =
+On Wed, Feb 21, 2018 at 09:11:34PM +0100, Hans de Goede wrote:
+> On 21-02-18 12:43, Mark Brown wrote:
+> > On Tue, Feb 20, 2018 at 11:15:04PM +0100, Hans de Goede wrote:
+> > > There is no need to set the LDO voltage to 1.2 volt each time we enter
+> > > standby, instead always leave it 1.2 volt on BIAS_OFF. Note we do a
+> > > snd_soc_codec_force_bias_level(BIAS_OFF) on probe, so this will configure
+> > > it correctly right from the start.
 
->> That might get
->> in the way of improvements we could be making when we get the component
->> based changes further on and can avoid having all the DPCM stuff in the
->> Intel drivers.
->>
->> It is really unfortunate that ACPI based systems aren't embracing
->> standards here and using this mess of open coded quirks but it feels
->> like the way to do this is to keep the code as close as possible to well
->> designed firmware interfaces and hope that they come round.
-> =
+> > That force on probe sounds like a problem...  if this is being done once
+> > at startup it should be done in the probe function, not in the bias
+> > level configuration.
 
-> Both devicetree and ACPI code-paths are filling pdata and that is the
-> only thing the codec driver cares about after this patch. so this is
-> using a well designed interface (but a non firmware one). I can understand
-> if you would prefer to use the functions from include/linux/property.h
-> for this, but those simply do not work for ACPI platforms atm.
-> =
+> This is more like "we do a snd_soc_codec_force_bias_level(BIAS_OFF)
+> on probe anyways and that already sets the level to 1.2 volt, so
+> we don't need to do this explicitly at probe time".
 
-> If you look further in this series then quirks for at least 2 more models
-> are added and I expect more to show up in the future, I really do not want
-> to duplicate these over 2 files.
-> =
+What I'm saying is that if the code is written such that you need to do
+that _force_bias_level() then it's not very idiomatic which is a bit
+worrying - it might be safer to reorganize the code so that this isn't
+required any more.
 
-> One possible solution here would be to add device-properties to the codec
-> i2c-device from the machine-driver using device_add_properties() and make
-> the codec driver consume those.
-> =
+> > Also, are you sure this is a good fix?  If the bias voltage is being
+> > configured all the time does that perhaps indicate that for better
+> > performance or something it should have been being set to some other
+> > voltage when the device is in standby?
 
-> This has probe-ordering issues, but those can be worked around by exporti=
-ng
-> something like the rt5651_apply_pdata() function from this patch and make
-> the machine driver call that after it has attached the properties.
-> =
+> We switch the LDO off when in the bias level is BIAS_OFF and on
+> at 1.2 volt when in standby or higher. Before this commit we would
 
-> I'm not sure if this extra level of indirection buys us much though, the
-> DT binding maintainers will not accept binding docs for these kind of
-> kernel internal only device-properties until there are actual DT users
-> of them, so for now this would mainly add a bunch of extra code for
-> little gain.
+OK.
 
-So thinking more about this I think that having the codec driver only
-check device-properties and completely killing platform_data is the best
-way forward / best way to clean this up.
+--Bu8it7iiRSEf40bY
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Combined with either device-tree or the machine driver setting these device
-properties for now, and in the future the ACPI tables can set these propert=
-ies
-directly and we can hopefully won't need to add new quirks to the machine
-driver.
+-----BEGIN PGP SIGNATURE-----
 
-I plan to start reworking this series this afternoon, so any feedback
-on the device-properties plan would be appreciated...
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqOpbUACgkQJNaLcl1U
+h9BiBQf7BTgIWFHQ6p8IyhWQaOmFyIThcOnEb10d/rKydSx7Jp/Z2zSqc82aMsIm
+3Xe7ceDWy9w0cJhNz5uSrv5iPs2aJhB/K9t2+bx5pAr1dNm9DPYJWbDSTf/lsfeo
+1fO+xopK5GUmWefuPryyGoJA+7EwLMqJy6Y4cnwF3X4Wy2hFR28nt6QCe6H9e0JW
+GXiOI/dYgpQSoc9NyTUwMwgYHV1hQb8Nud+VUKk0qYw6zHpa9w1FClrLZCRj/6OW
+sbAt+zk4LW9HxFFvmc4Vk/U54BMoVYtjwrwWMtovXag9pV4XHXnTvHtKAzZ5o1gN
+xvrtSU4S0HXRRbfUq8WQ7b26igXHLw==
+=OhFs
+-----END PGP SIGNATURE-----
 
-Regards,
+--Bu8it7iiRSEf40bY--
 
-Hans
+--===============6858929032879199629==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6858929032879199629==--
