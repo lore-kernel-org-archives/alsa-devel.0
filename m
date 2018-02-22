@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: Use snd_soc_init_dma_data
-	instead" to the asoc tree
-Date: Thu, 22 Feb 2018 13:16:33 +0000
-Message-ID: <E1eoqjh-0006Ii-GC@debutante>
-References: <1513702819-42310-10-git-send-email-nicoleotsuka@gmail.com>
+Subject: Applied "ASoC: fsl_ssi: Set xFEN0 and xFEN1 together"
+	to the asoc tree
+Date: Thu, 22 Feb 2018 13:16:36 +0000
+Message-ID: <E1eoqjk-0006Jt-MP@debutante>
+References: <1513702819-42310-9-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DC58F26775F
- for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 14:16:43 +0100 (CET)
-In-Reply-To: <1513702819-42310-10-git-send-email-nicoleotsuka@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8057F267748
+ for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 14:16:51 +0100 (CET)
+In-Reply-To: <1513702819-42310-9-git-send-email-nicoleotsuka@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: Use snd_soc_init_dma_data instead
+   ASoC: fsl_ssi: Set xFEN0 and xFEN1 together
 
 has been applied to the asoc tree at
 
@@ -53,12 +53,12 @@ to this mail.
 Thanks,
 Mark
 
->From 40f2563377006b14b94a4f5e9547b8e4498125af Mon Sep 17 00:00:00 2001
+>From 702d7965e402a8dcd88e964fd5bba6f5f159d625 Mon Sep 17 00:00:00 2001
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Date: Mon, 12 Feb 2018 14:03:19 -0800
-Subject: [PATCH] ASoC: fsl_ssi: Use snd_soc_init_dma_data instead
+Date: Mon, 12 Feb 2018 14:03:18 -0800
+Subject: [PATCH] ASoC: fsl_ssi: Set xFEN0 and xFEN1 together
 
-Since there is a helper function, use it to help readability.
+It'd be safer to enable both FIFOs for TX or RX at the same time.
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Tested-by: Caleb Crome <caleb@crome.org>
@@ -66,26 +66,40 @@ Tested-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 Reviewed-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 00dfdc77b567..7e15b30d4f94 100644
+index 156f5132feba..00dfdc77b567 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1110,10 +1110,9 @@ static int fsl_ssi_dai_probe(struct snd_soc_dai *dai)
- {
- 	struct fsl_ssi *ssi = snd_soc_dai_get_drvdata(dai);
+@@ -591,6 +591,11 @@ static void fsl_ssi_setup_regvals(struct fsl_ssi *ssi)
+ 	if (fsl_ssi_is_ac97(ssi))
+ 		vals[RX].scr = vals[TX].scr = 0;
  
--	if (ssi->soc->imx && ssi->use_dma) {
--		dai->playback_dma_data = &ssi->dma_params_tx;
--		dai->capture_dma_data = &ssi->dma_params_rx;
++	if (ssi->use_dual_fifo) {
++		vals[RX].srcr |= SSI_SRCR_RFEN1;
++		vals[TX].stcr |= SSI_STCR_TFEN1;
++	}
++
+ 	if (ssi->use_dma) {
+ 		vals[RX].sier |= SSI_SIER_RDMAE;
+ 		vals[TX].sier |= SSI_SIER_TDMAE;
+@@ -991,14 +996,9 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+ 		     SSI_SFCSR_TFWM0(wm) | SSI_SFCSR_RFWM0(wm) |
+ 		     SSI_SFCSR_TFWM1(wm) | SSI_SFCSR_RFWM1(wm));
+ 
+-	if (ssi->use_dual_fifo) {
+-		regmap_update_bits(regs, REG_SSI_SRCR,
+-				   SSI_SRCR_RFEN1, SSI_SRCR_RFEN1);
+-		regmap_update_bits(regs, REG_SSI_STCR,
+-				   SSI_STCR_TFEN1, SSI_STCR_TFEN1);
++	if (ssi->use_dual_fifo)
+ 		regmap_update_bits(regs, REG_SSI_SCR,
+ 				   SSI_SCR_TCH_EN, SSI_SCR_TCH_EN);
 -	}
-+	if (ssi->soc->imx && ssi->use_dma)
-+		snd_soc_dai_init_dma_data(dai, &ssi->dma_params_tx,
-+					  &ssi->dma_params_rx);
  
- 	return 0;
- }
+ 	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_AC97)
+ 		fsl_ssi_setup_ac97(ssi);
 -- 
 2.16.1
