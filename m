@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: Move one-time configurations
-	to probe()" to the asoc tree
-Date: Thu, 22 Feb 2018 13:16:30 +0000
-Message-ID: <E1eoqje-0006HV-Sj@debutante>
+Subject: Applied "ASoC: fsl_ssi: Add bool synchronous to mark
+	synchronous mode" to the asoc tree
+Date: Thu, 22 Feb 2018 13:16:20 +0000
+Message-ID: <E1eoqjU-0006Ed-V7@debutante>
+References: <1515990087-11598-16-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C2BF267737
+ by alsa0.perex.cz (Postfix) with ESMTP id C338026773D
  for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 14:16:32 +0100 (CET)
-In-Reply-To: 
+In-Reply-To: <1515990087-11598-16-git-send-email-nicoleotsuka@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Caleb Crome <caleb@crome.org>
+Cc: alsa-devel@alsa-project.org, arnaud.mouiche@invoxia.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, mail@maciej.szmigiero.name, caleb@crome.org, timur@tabi.org, broonie@kernel.org, kernel@pengutronix.de, lukma@denx.de, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: Move one-time configurations to probe()
+   ASoC: fsl_ssi: Add bool synchronous to mark synchronous mode
 
 has been applied to the asoc tree at
 
@@ -52,13 +53,13 @@ to this mail.
 Thanks,
 Mark
 
->From a1d154ac2765cf982be0d4d378bc6ba342c467a3 Mon Sep 17 00:00:00 2001
+>From badc9595bc15686be3b01e3554421647de348df0 Mon Sep 17 00:00:00 2001
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Date: Mon, 12 Feb 2018 14:03:20 -0800
-Subject: [PATCH] ASoC: fsl_ssi: Move one-time configurations to probe()
+Date: Mon, 12 Feb 2018 14:03:23 -0800
+Subject: [PATCH] ASoC: fsl_ssi: Add bool synchronous to mark synchronous mode
 
-The probe() could handle some one-time configurations since
-they will not be changed once being configured.
+Using symmetric_rates in the cpu_dai_drv is a bit implicit,
+so this patch adds a bool synchronous instead.
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Tested-by: Caleb Crome <caleb@crome.org>
@@ -66,86 +67,88 @@ Tested-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 Reviewed-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 39 ++++++++++++++++++++++++++-------------
- 1 file changed, 26 insertions(+), 13 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 7e15b30d4f94..36f3d51c5c43 100644
+index ed9102d91cf5..b58fabe77c6f 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -865,7 +865,6 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- {
+@@ -217,6 +217,7 @@ struct fsl_ssi_soc_data {
+  * @dai_fmt: DAI configuration this device is currently used with
+  * @streams: Mask of current active streams: BIT(TX) and BIT(RX)
+  * @i2s_net: I2S and Network mode configurations of SCR register
++ * @synchronous: Use synchronous mode - both of TX and RX use STCK and SFCK
+  * @use_dma: DMA is used or FIQ with stream filter
+  * @use_dual_fifo: DMA with support for dual FIFO mode
+  * @has_ipg_clk_name: If "ipg" is in the clock name list of device tree
+@@ -262,6 +263,7 @@ struct fsl_ssi {
+ 	unsigned int dai_fmt;
+ 	u8 streams;
+ 	u8 i2s_net;
++	bool synchronous;
+ 	bool use_dma;
+ 	bool use_dual_fifo;
+ 	bool has_ipg_clk_name;
+@@ -673,7 +675,6 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+ 	bool tx2, tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	struct fsl_ssi *ssi = snd_soc_dai_get_drvdata(dai);
  	struct regmap *regs = ssi->regs;
- 	u32 strcr = 0, stcr, srcr, scr, mask;
--	u8 wm;
+-	int synchronous = ssi->cpu_dai_drv.symmetric_rates, ret;
+ 	u32 pm = 999, div2, psr, stccr, mask, afreq, factor, i;
+ 	unsigned long clkrate, baudrate, tmprate;
+ 	unsigned int slots = params_channels(hw_params);
+@@ -681,6 +682,7 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+ 	u64 sub, savesub = 100000;
+ 	unsigned int freq;
+ 	bool baudclk_is_used;
++	int ret;
  
- 	ssi->dai_fmt = fmt;
+ 	/* Override slots and slot_width if being specifically set... */
+ 	if (ssi->slots)
+@@ -759,7 +761,7 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+ 	mask = SSI_SxCCR_PM_MASK | SSI_SxCCR_DIV2 | SSI_SxCCR_PSR;
  
-@@ -874,8 +873,6 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- 		return -EINVAL;
+ 	/* STCCR is used for RX in synchronous mode */
+-	tx2 = tx || synchronous;
++	tx2 = tx || ssi->synchronous;
+ 	regmap_update_bits(regs, REG_SSI_SxCCR(tx2), mask, stccr);
+ 
+ 	if (!baudclk_is_used) {
+@@ -807,7 +809,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+ 	 * that should set separate configurations for STCCR and SRCCR
+ 	 * despite running in the synchronous mode.
+ 	 */
+-	if (enabled && ssi->cpu_dai_drv.symmetric_rates)
++	if (enabled && ssi->synchronous)
+ 		return 0;
+ 
+ 	if (fsl_ssi_is_i2s_master(ssi)) {
+@@ -839,7 +841,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
  	}
  
--	fsl_ssi_setup_regvals(ssi);
--
- 	regmap_read(regs, REG_SSI_SCR, &scr);
- 	scr &= ~(SSI_SCR_SYN | SSI_SCR_I2S_MODE_MASK);
- 	/* Synchronize frame sync clock for TE to avoid data slipping */
-@@ -990,16 +987,6 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- 	regmap_write(regs, REG_SSI_SRCR, srcr);
- 	regmap_write(regs, REG_SSI_SCR, scr);
+ 	/* In synchronous mode, the SSI uses STCCR for capture */
+-	tx2 = tx || ssi->cpu_dai_drv.symmetric_rates;
++	tx2 = tx || ssi->synchronous;
+ 	regmap_update_bits(regs, REG_SSI_SxCCR(tx2), SSI_SxCCR_WL_MASK, wl);
  
--	wm = ssi->fifo_watermark;
--
--	regmap_write(regs, REG_SSI_SFCSR,
--		     SSI_SFCSR_TFWM0(wm) | SSI_SFCSR_RFWM0(wm) |
--		     SSI_SFCSR_TFWM1(wm) | SSI_SFCSR_RFWM1(wm));
--
--	if (ssi->use_dual_fifo)
--		regmap_update_bits(regs, REG_SSI_SCR,
--				   SSI_SCR_TCH_EN, SSI_SCR_TCH_EN);
--
- 	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_AC97)
- 		fsl_ssi_setup_ac97(ssi);
+ 	return 0;
+@@ -968,7 +970,7 @@ static int _fsl_ssi_set_dai_fmt(struct fsl_ssi *ssi, unsigned int fmt)
+ 	srcr = strcr;
  
-@@ -1248,6 +1235,29 @@ static struct snd_ac97_bus_ops fsl_ssi_ac97_ops = {
- 	.write = fsl_ssi_ac97_write,
- };
+ 	/* Set SYN mode and clear RXDIR bit when using SYN or AC97 mode */
+-	if (ssi->cpu_dai_drv.symmetric_rates || fsl_ssi_is_ac97(ssi)) {
++	if (ssi->synchronous || fsl_ssi_is_ac97(ssi)) {
+ 		srcr &= ~SSI_SRCR_RXDIR;
+ 		scr |= SSI_SCR_SYN;
+ 	}
+@@ -1456,6 +1458,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 		if (!fsl_ssi_is_ac97(ssi)) {
+ 			ssi->cpu_dai_drv.symmetric_rates = 1;
+ 			ssi->cpu_dai_drv.symmetric_samplebits = 1;
++			ssi->synchronous = true;
+ 		}
  
-+/**
-+ * Initialize SSI registers
-+ */
-+static int fsl_ssi_hw_init(struct fsl_ssi *ssi)
-+{
-+	u32 wm = ssi->fifo_watermark;
-+
-+	/* Initialize regvals */
-+	fsl_ssi_setup_regvals(ssi);
-+
-+	/* Set watermarks */
-+	regmap_write(ssi->regs, REG_SSI_SFCSR,
-+		     SSI_SFCSR_TFWM0(wm) | SSI_SFCSR_RFWM0(wm) |
-+		     SSI_SFCSR_TFWM1(wm) | SSI_SFCSR_RFWM1(wm));
-+
-+	/* Enable Dual FIFO mode */
-+	if (ssi->use_dual_fifo)
-+		regmap_update_bits(ssi->regs, REG_SSI_SCR,
-+				   SSI_SCR_TCH_EN, SSI_SCR_TCH_EN);
-+
-+	return 0;
-+}
-+
- /**
-  * Make every character in a string lower-case
-  */
-@@ -1533,6 +1543,9 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	if (ssi->dai_fmt)
- 		_fsl_ssi_set_dai_fmt(dev, ssi, ssi->dai_fmt);
- 
-+	/* Initially configures SSI registers */
-+	fsl_ssi_hw_init(ssi);
-+
- 	if (fsl_ssi_is_ac97(ssi)) {
- 		u32 ssi_idx;
- 
+ 		ssi->cpu_dai_drv.symmetric_channels = 1;
 -- 
 2.16.1
