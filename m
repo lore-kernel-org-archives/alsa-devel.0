@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-generic-dmaengine-pcm: Add a DMA
-	debugfs_prefix entry" to the asoc tree
-Date: Thu, 22 Feb 2018 13:16:05 +0000
-Message-ID: <E1eoqjF-00069X-Jb@debutante>
-References: <1519227780-26632-1-git-send-email-festevam@gmail.com>
+Subject: Applied "ASoC: uniphier: evea: fix lisence comment
+	style" to the asoc tree
+Date: Thu, 22 Feb 2018 13:16:08 +0000
+Message-ID: <E1eoqjI-0006Aq-Rz@debutante>
+References: <20180221234232.5252-1-suzuki.katsuhiro@socionext.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 64B93267718
- for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 14:16:13 +0100 (CET)
-In-Reply-To: <1519227780-26632-1-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A1ABC267720
+ for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 14:16:26 +0100 (CET)
+In-Reply-To: <20180221234232.5252-1-suzuki.katsuhiro@socionext.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org, lars@metafoo.de, kuninori.morimoto.gx@renesas.com
+To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Cc: alsa-devel@alsa-project.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.org, Jassi Brar <jaswinder.singh@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-generic-dmaengine-pcm: Add a DMA debugfs_prefix entry
+   ASoC: uniphier: evea: fix lisence comment style
 
 has been applied to the asoc tree at
 
@@ -53,51 +53,51 @@ to this mail.
 Thanks,
 Mark
 
->From f0b3bdbd5c63c3f69f3b6a869355c676d22fd348 Mon Sep 17 00:00:00 2001
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Wed, 21 Feb 2018 14:57:33 -0300
-Subject: [PATCH] ASoC: soc-generic-dmaengine-pcm: Add a DMA debugfs_prefix
- entry
+>From 24745dca8e7e17c20b6cf2bfb94a9acd09dce1b9 Mon Sep 17 00:00:00 2001
+From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Date: Thu, 22 Feb 2018 08:42:32 +0900
+Subject: [PATCH] ASoC: uniphier: evea: fix lisence comment style
 
-After the conversion from platform to component the following warnings
-are seen:
+This patch changes lisence comment style from C to C++.
+And use SPDX instead of boiler plate of GPLv2, as same as
+other audio codec drivers.
 
-fsl-ssi-dai 2028000.ssi: ASoC: Failed to create component debugfs
-directory
-fsl-spdif-dai 2004000.spdif: ASoC: Failed to create component debugfs
-directory
-
-As explained by Mark Brown:
-
-"It's a legit warning - we shouldn't really be creating two components
-for the same device.  However this is a bit of a corner case as it's the
-dmaengine platform driver which is kind of a virtual device, it's not
-really the device that we use with DMA that's being represented but
-rather the link between that and the DMA controller."
-
-Disambiguate the DMA component name by adding a "dma" debugfs_prefix
-entry.
-
-Suggested-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-generic-dmaengine-pcm.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/uniphier/evea.c | 22 ++++------------------
+ 1 file changed, 4 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index d53786498b61..8fb828bb8a7f 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -431,6 +431,9 @@ int snd_dmaengine_pcm_register(struct device *dev,
- 	if (!pcm)
- 		return -ENOMEM;
+diff --git a/sound/soc/uniphier/evea.c b/sound/soc/uniphier/evea.c
+index ac2d30b55fb6..439f14f91b23 100644
+--- a/sound/soc/uniphier/evea.c
++++ b/sound/soc/uniphier/evea.c
+@@ -1,22 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0
+-/*
+- * Socionext UniPhier EVEA ADC/DAC codec driver.
+- *
+- * Copyright (c) 2016-2017 Socionext Inc.
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License
+- * as published by the Free Software Foundation; version 2
+- * of the License.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, see <http://www.gnu.org/licenses/>.
+- */
++//
++// Socionext UniPhier EVEA ADC/DAC codec driver.
++//
++// Copyright (c) 2016-2017 Socionext Inc.
  
-+#ifdef CONFIG_DEBUG_FS
-+	pcm->component.debugfs_prefix = "dma";
-+#endif
- 	pcm->config = config;
- 	pcm->flags = flags;
- 
+ #include <linux/clk.h>
+ #include <linux/module.h>
 -- 
 2.16.1
