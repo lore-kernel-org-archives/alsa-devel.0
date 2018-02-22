@@ -1,17 +1,25 @@
-From: Eric Anholt <eric@anholt.net>
-Subject: Re: [PATCH V3 2/2 RESEND] ARM: dts: bcm283x: Fix
-	probing of bcm2835-i2s
-Date: Thu, 22 Feb 2018 12:11:55 -0800
-Message-ID: <871shcaino.fsf@anholt.net>
-References: <1518778534-3328-1-git-send-email-stefan.wahren@i2se.com>
- <1518778534-3328-3-git-send-email-stefan.wahren@i2se.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 01/11] ASoC: rt5651: Avoid duplicating DMI
+ quirks between codec and machine driver
+Date: Thu, 22 Feb 2018 21:38:05 +0100
+Message-ID: <8107ea4e-6f28-c31a-45bb-da80afecd137@redhat.com>
+References: <20180220221511.22861-1-hdegoede@redhat.com>
+ <20180221115452.GD8334@sirena.org.uk>
+ <b2c6c047-eb86-a639-197e-b6aa1eae0ad5@redhat.com>
+ <cc96d6a4-c8a5-1df5-8410-7671a73e6d4a@redhat.com>
+ <20180222113548.GF5905@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2003072645562715533=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from anholt.net (anholt.net [50.246.234.109])
- by alsa0.perex.cz (Postfix) with ESMTP id 70E9026782F
- for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 21:11:59 +0100 (CET)
-In-Reply-To: <1518778534-3328-3-git-send-email-stefan.wahren@i2se.com>
+Received: from mail-wr0-f195.google.com (mail-wr0-f195.google.com
+ [209.85.128.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C89A26782E
+ for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 21:38:07 +0100 (CET)
+Received: by mail-wr0-f195.google.com with SMTP id 34so11900926wre.13
+ for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 12:38:07 -0800 (PST)
+In-Reply-To: <20180222113548.GF5905@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +29,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: Stefan Wahren <stefan.wahren@i2se.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============2003072645562715533==
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
+Hi,
 
---=-=-=
-Content-Type: text/plain
+On 22-02-18 12:35, Mark Brown wrote:
+> On Thu, Feb 22, 2018 at 12:08:29PM +0100, Hans de Goede wrote:
+> 
+>> So thinking more about this I think that having the codec driver only
+>> check device-properties and completely killing platform_data is the best
+>> way forward / best way to clean this up.
+> 
+>> Combined with either device-tree or the machine driver setting these device
+>> properties for now, and in the future the ACPI tables can set these properties
+>> directly and we can hopefully won't need to add new quirks to the machine
+>> driver.
+> 
+> The device properties thing seems reasonable enough.  I'm still not
+> super convinced the machine driver is the right place, but let's see the
+> code.  I think ideally the arch code would have a way to put all the
+> device property based quirks for these systems like we IIRC do for some
+> DT fixups.
 
-Stefan Wahren <stefan.wahren@i2se.com> writes:
+We've already tried something like that for fixing a similar situation
+(not enough info in ACPI for the driver to function) for silead
+touchscreens:
 
-> Since 517e7a1537a ("ASoC: bcm2835: move to use the clock framework")
-> the bcm2835-i2s requires a clock as DT property. Unfortunately
-> the necessary DT change has never been applied. While we are at it
-> also fix the first PCM register range to cover the PCM_GRAY register.
->
-> Fixes: 517e7a1537a ("ASoC: bcm2835: move to use the clock framework")
-> Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
-> Reviewed-by: Eric Anholt <eric@anholt.net>
-> Tested-by: Matthias Reichl <hias@horus.com>
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/drivers/platform/x86/silead_dmi.c
 
-I've applied these 2 to bcm2835-dt-next.  Thanks!
+Note that this device-property providing driver can only be
+builtin, it cannot be built as a module (otherwise we're back
+to having ordering issues). We (Dmitry and I) have gotten quite
+some flack about needlessly growing the bzImage size with data
+only used on a small subset of x86 devices and this construction
+is not something which I want to repeat (nor would advise
+others to repeat).
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+We really need to have a way to have these quirks table in a module
+which only loads on devices which need it. So in my mind the
+machine driver is a good place for this.
 
------BEGIN PGP SIGNATURE-----
+Regards,
 
-iQIzBAEBCgAdFiEE/JuuFDWp9/ZkuCBXtdYpNtH8nugFAlqPJAsACgkQtdYpNtH8
-nuhpWA//Ycq4jAee62ig9gVmxi7DOXtC9xoDJFZL9f5jx4+i4LeEy2Wf2EATx/sr
-er/e24DTTJQEUOVZB7/iYUHmBi1Wx4bedCIWmTVqav98N+nZXI0EG4JKzz6btG0j
-DIzVt2Jwf/Z2H5hy3mDEAH7HBxKkA77XBTb9tfN/TDUMGBzxMDGJkbF8uYg7NnwV
-qT4Z4FBe1y8BbKP017+KYBk5pQnRcH4uC69mqkGaW5yRXrvfYNTw4N0bUPyY6tVr
-FrD2Wlm31zB9elRY71miVb/PoIdxRt3eEOLHFH86ARV9fwzkf5L1C7bHwpaDmAHB
-O9NTyZa+8bz0Ol6FOhf9oZ8LUM3BGR9xH5rfLGT94Ex7nnLu2eN6d3qcEszUWgyt
-yGGOjJ8q9ncnVYIkdYrFRDZTV3VQJdycJ0UH4R9oZeAxijltN0ysuO4cznXXjOVA
-5JZru0/7wkmmIkc8jaUVqBFpDMCnSbG8xt4IYkyAhnGfn+1kNmXPjhpU3eRckvNO
-jaxGSXLo+jG7az3+RAWblLq9uTRUBCIkeehmwdX5pvl4vaIQz/aZP97DDYShVjts
-pdpDCbfoRV+uFvF8mWA7K38LOMzkrGwCsvQ9Vsaoo2AfbkJ2PV7jzgJ7S0XAH1Z4
-IbH3ylnH2AeQDczCEeGLYQ4XUI9dmt80XAcdZGeZwAeicPQRaN0=
-=xbJw
------END PGP SIGNATURE-----
---=-=-=--
-
---===============2003072645562715533==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2003072645562715533==--
+Hans
