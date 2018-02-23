@@ -1,18 +1,18 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v1 2/9] ASoC: Intel: Skylake: Add entry in
- sst_acpi_mach for HDA codecs
-Date: Fri, 23 Feb 2018 10:42:33 -0600
-Message-ID: <9f6781f5-d581-3ee9-c89c-c695e28bb4fb@linux.intel.com>
+Subject: Re: [PATCH v1 5/9] ALSA: hda - split snd_hda_codec_new
+	function
+Date: Fri, 23 Feb 2018 10:50:19 -0600
+Message-ID: <96204f32-54ea-baaa-c3ed-94774f7728c5@linux.intel.com>
 References: <1519373550-2545-1-git-send-email-rakesh.a.ughreja@intel.com>
- <1519373550-2545-3-git-send-email-rakesh.a.ughreja@intel.com>
+ <1519373550-2545-6-git-send-email-rakesh.a.ughreja@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- by alsa0.perex.cz (Postfix) with ESMTP id C1728267902
- for <alsa-devel@alsa-project.org>; Fri, 23 Feb 2018 17:42:36 +0100 (CET)
-In-Reply-To: <1519373550-2545-3-git-send-email-rakesh.a.ughreja@intel.com>
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D00D26790E
+ for <alsa-devel@alsa-project.org>; Fri, 23 Feb 2018 17:50:23 +0100 (CET)
+In-Reply-To: <1519373550-2545-6-git-send-email-rakesh.a.ughreja@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,140 +28,169 @@ Cc: vinod.koul@intel.com, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 On 2/23/18 2:12 AM, Rakesh Ughreja wrote:
-> When no I2S based codec entries are found in the BIOS, check if there are
-> any HDA codecs detected on the bus. If there are two (i.e. iDisp + HDA)
-> HDA codecs found on the bus, load the HDA machine driver.
+> Split snd_hda_codec_new into two separate functions.
+> snd_hda_codec_device_init allocates memory and registers with bus.
+> snd_hda_codec_device_new initialializes the fields and performs
+> snd_device_new. This enables reuse of legacy HDA codec drivers as ASoC
+> codec drivers.
+> 
+> In addition mark some functions with EXPORT_SYMBOL_GPL so that it can be
+> called by ASoC codec drivers.
 
-What if you have a headless device with no codec, that means no HDMI 
-support? Why is this restriction necessary?
+I don't get the commit message.
+You first say that we can now reuse legacy HDaudio codec drivers in an 
+ASoC framework, then say that there will be additional ASoC codec 
+drivers? Why would we do this, it seems like a contradicting goal?
 
 > 
 > Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 > ---
->   sound/soc/intel/skylake/skl.c | 59 +++++++++++++++++++++++++++++++++++++++----
->   1 file changed, 54 insertions(+), 5 deletions(-)
+>   sound/pci/hda/hda_codec.c | 67 +++++++++++++++++++++++++++++++++++------------
+>   sound/pci/hda/hda_codec.h |  2 ++
+>   2 files changed, 52 insertions(+), 17 deletions(-)
 > 
-> diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-> index f948f29..ac64416 100644
-> --- a/sound/soc/intel/skylake/skl.c
-> +++ b/sound/soc/intel/skylake/skl.c
-> @@ -442,6 +442,24 @@ static struct skl_ssp_clk skl_ssp_clks[] = {
->   						{.name = "ssp5_sclkfs"},
->   };
+> diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+> index 5bc3a74..c487411 100644
+> --- a/sound/pci/hda/hda_codec.c
+> +++ b/sound/pci/hda/hda_codec.c
+> @@ -856,6 +856,38 @@ static void snd_hda_codec_dev_release(struct device *dev)
+>   	kfree(codec);
+>   }
 >   
-> +static struct snd_soc_acpi_mach *skl_find_hda_machine(struct skl *skl,
-> +					struct snd_soc_acpi_mach *machines)
+> +static int snd_hda_codec_device_init(struct hda_bus *bus, struct snd_card *card,
+> +			unsigned int codec_addr, struct hda_codec **codecp)
 > +{
+> +	int err;
+> +	char component[31];
+
+looks like magic number?
+
+> +	struct hda_codec *codec;
+
+reverse x-mas tree order?
+
 > +
-> +	struct snd_soc_acpi_mach *mach;
-> +	struct hdac_bus *bus = skl_to_bus(skl);
+> +	dev_dbg(card->dev, "%s: entry\n", __func__);
 > +
-> +	/* check if we have two HDA codecs */
-> +	if (hweight_long(bus->codec_mask) != 2)
-> +		return NULL;
+> +	if (snd_BUG_ON(!bus))
+> +		return -EINVAL;
+> +	if (snd_BUG_ON(codec_addr > HDA_MAX_CODEC_ADDRESS))
+> +		return -EINVAL;
 > +
-> +	for (mach = machines; mach->id[0]; mach++) {
-> +		if (!strcmp(mach->id, "HDA_GEN"))
-> +			return mach;
+> +	codec = kzalloc(sizeof(*codec), GFP_KERNEL);
+> +	if (!codec)
+> +		return -ENOMEM;
+> +
+> +	sprintf(component, "hdaudioC%dD%d", card->number, codec_addr);
+> +	err = snd_hdac_device_init(&codec->core, &bus->core, component,
+> +				   codec_addr);
+> +	if (err < 0) {
+> +		kfree(codec);
+> +		return err;
 > +	}
-
-that's not really testing if there are actual HDaudio devices, is this 
-loop just there to point to a firmware file?
-
-> +	return NULL;
+> +
+> +	codec->core.type = HDA_DEV_LEGACY;
+> +	*codecp = codec;
+> +
+> +	return err;
 > +}
 > +
->   static int skl_find_machine(struct skl *skl, void *driver_data)
+>   /**
+>    * snd_hda_codec_new - create a HDA codec
+>    * @bus: the bus to assign
+> @@ -867,7 +899,19 @@ static void snd_hda_codec_dev_release(struct device *dev)
+>   int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
+>   		      unsigned int codec_addr, struct hda_codec **codecp)
 >   {
->   	struct hdac_bus *bus = skl_to_bus(skl);
-> @@ -450,8 +468,12 @@ static int skl_find_machine(struct skl *skl, void *driver_data)
+> -	struct hda_codec *codec;
+> +	int ret;
+> +
+> +	ret = snd_hda_codec_device_init(bus, card, codec_addr, codecp);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return snd_hda_codec_device_new(bus, card, codec_addr, *codecp);
+> +}
+> +EXPORT_SYMBOL_GPL(snd_hda_codec_new);
+> +
+> +int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
+> +			unsigned int codec_addr, struct hda_codec *codec)
+> +{
+>   	char component[31];
+>   	hda_nid_t fg;
+>   	int err;
+> @@ -877,25 +921,14 @@ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
+>   		.dev_free = snd_hda_codec_dev_free,
+>   	};
 >   
->   	mach = snd_soc_acpi_find_machine(mach);
->   	if (mach == NULL) {
-> -		dev_err(bus->dev, "No matching machine driver found\n");
-> -		return -ENODEV;
-> +		dev_dbg(bus->dev, "No matching I2S machine driver found\n");
-> +		mach = skl_find_hda_machine(skl, driver_data);
-> +		if (mach == NULL) {
-> +			dev_err(bus->dev, "No matching machine driver found\n");
-> +			return -ENODEV;
-> +		}
->   	}
+> +	dev_dbg(card->dev, "%s: entry\n", __func__);
+> +
+>   	if (snd_BUG_ON(!bus))
+>   		return -EINVAL;
+>   	if (snd_BUG_ON(codec_addr > HDA_MAX_CODEC_ADDRESS))
+>   		return -EINVAL;
 >   
->   	skl->mach = mach;
-> @@ -466,8 +488,9 @@ static int skl_find_machine(struct skl *skl, void *driver_data)
->   
->   static int skl_machine_device_register(struct skl *skl)
->   {
-> -	struct hdac_bus *bus = skl_to_bus(skl);
->   	struct snd_soc_acpi_mach *mach = skl->mach;
-> +	struct hdac_bus *bus = skl_to_bus(skl);
-> +	struct skl_machine_pdata *pdata;
->   	struct platform_device *pdev;
->   	int ret;
->   
-> @@ -484,8 +507,11 @@ static int skl_machine_device_register(struct skl *skl)
->   		return -EIO;
->   	}
->   
-> -	if (mach->pdata)
-> +	if (mach->pdata) {
-> +		pdata = (struct skl_machine_pdata *)mach->pdata;
-> +		pdata->platform = dev_name(bus->dev);
->   		dev_set_drvdata(&pdev->dev, mach->pdata);
-> +	}
->   
->   	skl->i2s_dev = pdev;
->   
-> @@ -1030,6 +1056,14 @@ static struct snd_soc_acpi_mach sst_skl_devdata[] = {
->   		.quirk_data = &skl_codecs,
->   		.pdata = &skl_dmic_data
->   	},
-> +	{
-> +		.id = "HDA_GEN",
-> +		.drv_name = "skl_hda_generic",
-> +		.fw_filename = "intel/dsp_fw_release.bin",
-> +		.machine_quirk = NULL,
-> +		.quirk_data = NULL,
-> +		.pdata = &cnl_pdata,
-
-this is odd, the cnl_pdata says the topology_pcm is used, I thought this 
-was not applicable for SKL/KBL. Or put differently, why is this used for 
-the hda case only?
-
-> +	},
->   	{}
->   };
->   
-> @@ -1046,6 +1080,14 @@ static struct snd_soc_acpi_mach sst_bxtp_devdata[] = {
->   		.machine_quirk = snd_soc_acpi_codec_list,
->   		.quirk_data = &bxt_codecs,
->   	},
-> +	{
-> +		.id = "HDA_GEN",
-> +		.drv_name = "skl_hda_generic",
-> +		.fw_filename = "intel/dsp_fw_bxtn.bin",
-> +		.machine_quirk = NULL,
-> +		.quirk_data = NULL,
-> +		.pdata = &cnl_pdata,
-> +	},
->   	{}
->   };
->   
-> @@ -1100,7 +1142,14 @@ static struct snd_soc_acpi_mach sst_kbl_devdata[] = {
->   		.quirk_data = &kbl_7219_98357_codecs,
->   		.pdata = &skl_dmic_data
->   	},
+> -	codec = kzalloc(sizeof(*codec), GFP_KERNEL);
+> -	if (!codec)
+> -		return -ENOMEM;
 > -
-> +	{
-> +		.id = "HDA_GEN",
-> +		.drv_name = "skl_hda_generic",
-> +		.fw_filename = "intel/dsp_fw_kbl.bin",
-> +		.machine_quirk = NULL,
-> +		.quirk_data = NULL,
-> +		.pdata = &cnl_pdata,
-> +	},
->   	{}
->   };
+> -	sprintf(component, "hdaudioC%dD%d", card->number, codec_addr);
+> -	err = snd_hdac_device_init(&codec->core, &bus->core, component,
+> -				   codec_addr);
+> -	if (err < 0) {
+> -		kfree(codec);
+> -		return err;
+> -	}
+> -
+>   	codec->core.dev.release = snd_hda_codec_dev_release;
+> -	codec->core.type = HDA_DEV_LEGACY;
+>   	codec->core.exec_verb = codec_exec_verb;
+>   
+>   	codec->bus = bus;
+> @@ -955,15 +988,13 @@ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
+>   	if (err < 0)
+>   		goto error;
+>   
+> -	if (codecp)
+> -		*codecp = codec;
+>   	return 0;
+>   
+>    error:
+>   	put_device(hda_codec_dev(codec));
+>   	return err;
+>   }
+> -EXPORT_SYMBOL_GPL(snd_hda_codec_new);
+> +EXPORT_SYMBOL_GPL(snd_hda_codec_device_new);
+>   
+>   /**
+>    * snd_hda_codec_update_widgets - Refresh widget caps and pin defaults
+> @@ -2979,6 +3010,7 @@ int snd_hda_codec_build_controls(struct hda_codec *codec)
+>   	sync_power_up_states(codec);
+>   	return 0;
+>   }
+> +EXPORT_SYMBOL_GPL(snd_hda_codec_build_controls);
+>   
+>   /*
+>    * PCM stuff
+> @@ -3184,6 +3216,7 @@ int snd_hda_codec_parse_pcms(struct hda_codec *codec)
+>   
+>   	return 0;
+>   }
+> +EXPORT_SYMBOL_GPL(snd_hda_codec_parse_pcms);
+>   
+>   /* assign all PCMs of the given codec */
+>   int snd_hda_codec_build_pcms(struct hda_codec *codec)
+> diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+> index 681c360..8bbedf7 100644
+> --- a/sound/pci/hda/hda_codec.h
+> +++ b/sound/pci/hda/hda_codec.h
+> @@ -307,6 +307,8 @@ struct hda_codec {
+>    */
+>   int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
+>   		      unsigned int codec_addr, struct hda_codec **codecp);
+> +int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
+> +		      unsigned int codec_addr, struct hda_codec *codec);
+>   int snd_hda_codec_configure(struct hda_codec *codec);
+>   int snd_hda_codec_update_widgets(struct hda_codec *codec);
 >   
 > 
