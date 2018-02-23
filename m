@@ -1,124 +1,77 @@
-From: <twischer@de.adit-jv.com>
-Subject: [PATCH - JACK PCM plugin] jack: Use boundary as hw_ptr
-	wrap around
-Date: Fri, 23 Feb 2018 15:18:08 +0100
-Message-ID: <1519395488-6735-1-git-send-email-twischer@de.adit-jv.com>
-References: <s5heflbizjq.wl-tiwai@suse.de>
+From: Bjorn Helgaas <helgaas-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 5/7] vga_switcheroo: Use device link for HDA
+ controller
+Date: Fri, 23 Feb 2018 08:23:21 -0600
+Message-ID: <20180223142321.GI14632@bhelgaas-glaptop.roam.corp.google.com>
+References: <cover.1518941072.git.lukas@wunner.de>
+ <99358da18f1c61b226678c7c70240e4407ac575b.1518941073.git.lukas@wunner.de>
+ <20180220222059.GD32228@bhelgaas-glaptop.roam.corp.google.com>
+ <20180223095147.GB17092@wunner.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [62.225.105.245])
- by alsa0.perex.cz (Postfix) with ESMTP id BB16F2678CE
- for <alsa-devel@alsa-project.org>; Fri, 23 Feb 2018 15:18:36 +0100 (CET)
-In-Reply-To: <s5heflbizjq.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20180223095147.GB17092-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/nouveau>,
+ <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/nouveau>
+List-Post: <mailto:nouveau-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Help: <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/nouveau>,
+ <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
+Errors-To: nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Sender: "Nouveau" <nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+To: Lukas Wunner <lukas-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-pm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, nouveau-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, "Rafael J. Wysocki" <rafael.j.wysocki-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Ben Skeggs <bskeggs-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Bastien Nocera <hadess-0MeiytkfxGOsTnJN9+BGXg@public.gmane.org>, linux-pci-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, Dave Airlie <airlied-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, George Cherian <george.cherian-YGCgFSpz5w/QT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Timo Wischer <twischer@de.adit-jv.com>
-
-instead of using buffer_size as wrap around.
-
-This is required to detect Xruns.
-
-It is also required to allow the JACK thread
-to processes the whole ALSA audio buffer at once
-without calling snd_pcm_avail_update() in between.
-
-For example when the hw_ptr will be updated with
-hw_ptr += buffer_size
-and it is using the buffer_size as wrap around
-hw_ptr %= buffer_size
-would result in the same value as before the add operation.
-
-Due to that the user application would not recognize
-that the complete audio buffer was copied.
-
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
-
----
-
-Here the updated version which only returns
-hw_ptr >= buffer_size if supported
-by the ALSA library on compile time
-
-diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
-index 3aed332..c547cbb 100644
---- a/jack/pcm_jack.c
-+++ b/jack/pcm_jack.c
-@@ -40,7 +40,8 @@ typedef struct {
- 
- 	char **port_names;
- 	unsigned int num_ports;
--	unsigned int hw_ptr;
-+	snd_pcm_uframes_t boundary;
-+	snd_pcm_uframes_t hw_ptr;
- 	unsigned int sample_bits;
- 	snd_pcm_uframes_t min_avail;
- 
-@@ -130,7 +131,12 @@ static int snd_pcm_jack_poll_revents(snd_pcm_ioplug_t *io,
- static snd_pcm_sframes_t snd_pcm_jack_pointer(snd_pcm_ioplug_t *io)
- {
- 	snd_pcm_jack_t *jack = io->private_data;
-+
-+#ifdef SND_PCM_IOPLUG_FLAG_BOUNDARY_WA
- 	return jack->hw_ptr;
-+#else
-+	return jack->hw_ptr % io->buffer_size;
-+#endif
- }
- 
- static int
-@@ -162,7 +168,7 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
- 
- 	while (xfer < nframes) {
- 		snd_pcm_uframes_t frames = nframes - xfer;
--		snd_pcm_uframes_t offset = hw_ptr;
-+		snd_pcm_uframes_t offset = hw_ptr % io->buffer_size;
- 		snd_pcm_uframes_t cont = io->buffer_size - offset;
- 
- 		if (cont < frames)
-@@ -176,7 +182,8 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
- 		}
- 		
- 		hw_ptr += frames;
--		hw_ptr %= io->buffer_size;
-+		if (hw_ptr >= jack->boundary)
-+			hw_ptr -= jack->boundary;
- 		xfer += frames;
- 	}
- 	jack->hw_ptr = hw_ptr;
-@@ -200,6 +207,8 @@ static int snd_pcm_jack_prepare(snd_pcm_ioplug_t *io)
- 	err = snd_pcm_sw_params_current(io->pcm, swparams);
- 	if (err == 0) {
- 		snd_pcm_sw_params_get_avail_min(swparams, &jack->min_avail);
-+		/* get boundary for available calulation */
-+		snd_pcm_sw_params_get_boundary(swparams, &jack->boundary);
- 	}
- 
- 	/* deactivate jack connections if this is XRUN recovery */
-@@ -452,6 +461,12 @@ static int snd_pcm_jack_open(snd_pcm_t **pcmp, const char *name,
- 	jack->io.poll_events = POLLIN;
- 	jack->io.mmap_rw = 1;
- 
-+#ifdef SND_PCM_IOPLUG_FLAG_BOUNDARY_WA
-+	jack->io.flags = SND_PCM_IOPLUG_FLAG_BOUNDARY_WA;
-+#else
-+#warning hw_ptr updates of buffer_size will not be recognized by the ALSA library. Consider to update your ALSA library.
-+#endif
-+
- 	err = snd_pcm_ioplug_create(&jack->io, name, stream, mode);
- 	if (err < 0) {
- 		snd_pcm_jack_free(jack);
--- 
-2.7.4
+WytjYyBHZW9yZ2VdCgpPbiBGcmksIEZlYiAyMywgMjAxOCBhdCAxMDo1MTo0N0FNICswMTAwLCBM
+dWthcyBXdW5uZXIgd3JvdGU6Cj4gT24gVHVlLCBGZWIgMjAsIDIwMTggYXQgMDQ6MjA6NTlQTSAt
+MDYwMCwgQmpvcm4gSGVsZ2FhcyB3cm90ZToKPiA+IE9uIFN1biwgRmViIDE4LCAyMDE4IGF0IDA5
+OjM4OjMyQU0gKzAxMDAsIEx1a2FzIFd1bm5lciB3cm90ZToKPiA+ID4gVGhlIGRldmljZSBsaW5r
+IGlzIGFkZGVkIGluIGEgUENJIHF1aXJrIHJhdGhlciB0aGFuIGluIGhkYV9pbnRlbC5jLgo+ID4g
+PiBJdCBpcyB0aGVyZWZvcmUgbGVnYWwgZm9yIHRoZSBHUFUgdG8gcnVudGltZSBzdXNwZW5kIHRv
+IEQzY29sZCBldmVuIGlmCj4gPiA+IHRoZSBIREEgY29udHJvbGxlciBpcyBub3QgYm91bmQgdG8g
+YSBkcml2ZXIgb3IgaWYgQ09ORklHX1NORF9IREFfSU5URUwKPiA+ID4gaXMgbm90IGVuYWJsZWQs
+IGZvciBhY2Nlc3NlcyB0byB0aGUgSERBIGNvbnRyb2xsZXIgd2lsbCBjYXVzZSB0aGUgR1BVIHRv
+Cj4gPiA+IHdha2UgdXAgcmVnYXJkbGVzcyBpZiB0aGV5J3JlIG9jY3VycmluZyBvdXRzaWRlIG9m
+IGhkYV9pbnRlbC5jICh0aGluawo+ID4gPiBjb25maWcgc3BhY2UgcmVhZG91dCB2aWEgc3lzZnMp
+Lgo+ID4gCj4gPiBJIGd1ZXNzIHRoaXMgR1BVIHdha2V1cCBoYXBwZW5zICppZiogdGhlIHBhdGgg
+YWNjZXNzaW5nIHRoZSBIREEKPiA+IGNvbnRyb2xsZXIgY2FsbHMgcG1fcnVudGltZV9nZXRfc3lu
+YygpIG9yIHNpbWlsYXIsIHJpZ2h0Pwo+IAo+IFJpZ2h0Lgo+IAo+ID4gV2UgZG8gaGF2ZQo+ID4g
+dGhhdCBpbiB0aGUgc3lzZnMgY29uZmlnIGFjY2Vzc29ycyB2aWEgcGNpX2NvbmZpZ19wbV9ydW50
+aW1lX2dldCgpLAo+ID4gYnV0IG5vdCBpbiB0aGUgc3lzZnMgbW1hcCBwYXRocy4gIEkgdGhpbmsg
+dGhhdCdzIGEgbGF0ZW50IFBDSSBjb3JlCj4gPiBkZWZlY3QgaW5kZXBlbmRlbnQgb2YgdGhpcyBz
+ZXJpZXMuCj4gCj4gWWVzLCB0aGVyZSBtYXkgYmUgYSBmZXcgcGxhY2VzIHdoZXJlIHRoZSBwYXJl
+bnQgb2YgdGhlIGRldmljZSBpcwo+IGVycm9uZW91c2x5IG5vdCBydW50aW1lIHJlc3VtZWQgd2hl
+biBzeXNmcyBmaWxlcyBhcmUgYWNjZXNzZWQuCj4gSSd2ZSBuZXZlciB1c2VkIHRoZSBzeXNmcyBt
+bWFwIGZlYXR1cmUsIHNvIG5ldmVyIHdpdG5lc3NlZCBpc3N1ZXMKPiB3aXRoIGl0Lgo+IAo+ID4g
+V2UgYWxzbyBkb24ndCBoYXZlIHRoYXQgaW4gUENJIGNvcmUgY29uZmlnIGFjY2Vzc29ycy4gIFRo
+YXQgbWF5YmUKPiA+IGRvZXNuJ3QgbWF0dGVyIGJlY2F1c2UgdGhlIGNvcmUgcHJvYmFibHkgc2hv
+dWxkbid0IGJlIHRvdWNoaW5nIGRldmljZXMKPiA+IGFmdGVyIGVudW1lcmF0aW9uIChhbHRob3Vn
+aCB0aGVyZSBtaWdodCBiZSBob2xlcyB0aGVyZSBmb3IgdGhpbmdzIGxpa2UKPiA+IEFTUE0gd2hl
+cmUgYSBzeXNmcyBmaWxlIGNhbiBjYXVzZSByZWNvbmZpZ3VyYXRpb24gb2Ygc2V2ZXJhbCBkZXZp
+Y2VzKS4KPiAKPiBJIGFzc3VtZSB3aXRoIFBDSSBjb3JlIGNvbmZpZyBhY2Nlc3NvcnMgeW91J3Jl
+IHJlZmVycmluZyB0bwo+IHBjaV9yZWFkX2NvbmZpZ193b3JkKCkgYW5kIGZyaWVuZHM/ICBUaG9z
+ZSBhcmUgYXJndWFibHkgaG90cGF0aHMKPiB3aGVyZSB3ZSB3b3VsZG4ndCB3YW50IHRoZSBvdmVy
+aGVhZCB0byBjaGVjayBydW50aW1lIFBNIHN0YXR1cwo+IGV2ZXJ5dGltZS4gIFRoZXkgbWlnaHQg
+YWxzbyBiZSBjYWxsZWQgZnJvbSBhdG9taWMgY29udGV4dCwgSSdtCj4gbm90IHN1cmUsIGFuZCB0
+aGUgcnVudGltZSBQTSBjYWxsYmFja3MgbWF5IHNsZWVwIGJ5IGRlZmF1bHQKPiAodW5sZXNzIHBt
+X3J1bnRpbWVfaXJxX3NhZmUoKSB3YXMgY2FsbGVkKS4KClllcywgSSB3YXMgdGhpbmtpbmcgb2Yg
+cGNpX3JlYWRfY29uZmlnX3dvcmQoKSwgZXRjLiAgVGhleSdyZSB1c2VkIGJ5CnRoZSBjb3JlIGR1
+cmluZyBlbnVtZXJhdGlvbiBhbmQgb2NjYXNpb25hbGx5IGJ5IGRyaXZlcnMsIGFuZCBib3RoCmNh
+c2VzIGFscmVhZHkgcGF5IGF0dGVudGlvbiB0byBQTS4gIEkgdGhpbmsgd2UgaGF2ZSBhIGZldyBo
+b2xlcyBpbiB0aGUKcnVudGltZSBzeXNmcyBhcmVhLCBidXQgSSB0aGluayBpdCdzIHJlYXNvbmFi
+bGUgdG8gZGVhbCB3aXRoIHRob3NlIGluCnRoZSBjYWxsZXJzLgoKU28gSSBkb24ndCB0aGluayB0
+aG9zZSBuZWVkIHRvIGFjdHVhbGx5ICpkbyogYW55dGhpbmcgd2l0aCBQTSBzdGF0dXMsCmFsdGhv
+dWdoIGl0IG1pZ2h0IGJlIGludGVyZXN0aW5nIHRvIGFkZCBzb21lIChvcHRpb25hbCkgY2hlY2tp
+bmcKdGhlcmUuICBHZW9yZ2UgQ2hlcmlhbiBpcyB0dXJuaW5nIHVwIHNvbWUgaXNzdWVzIGluIHRo
+aXMgYXJlYSBiZWNhdXNlCmhlIGhhcyBhIHJvb3QgcG9ydCB0aGF0IHJlcG9ydHMgZXJyb3JzIHdp
+dGggYW4gZXhjZXB0aW9uIGluc3RlYWQgb2YKc2lsZW50bHkgc3ludGhlc2l6aW5nIGFsbCBvbmVz
+IGRhdGEgbGlrZSBtb3N0IGhhcmR3YXJlIGRvZXMgWzFdLgoKQmpvcm4KClsxXSBodHRwczovL2xr
+bWwua2VybmVsLm9yZy9yLzE1MTc1NTQ4NDYtMTY3MDMtMS1naXQtc2VuZC1lbWFpbC1nZW9yZ2Uu
+Y2hlcmlhbkBjYXZpdW0uY29tCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCk5vdXZlYXUgbWFpbGluZyBsaXN0Ck5vdXZlYXVAbGlzdHMuZnJlZWRlc2t0b3Au
+b3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vbm91dmVh
+dQo=
