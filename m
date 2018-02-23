@@ -1,115 +1,68 @@
-From: <twischer@de.adit-jv.com>
-Subject: [PATCH IO plug API 1/1] ioplug: Use boundary for wrap
-	around
-Date: Fri, 23 Feb 2018 10:28:51 +0100
-Message-ID: <1519378131-18139-1-git-send-email-twischer@de.adit-jv.com>
-References: <s5hpo56o5e3.wl-tiwai@suse.de>
+From: Lukas Wunner <lukas-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>
+Subject: Re: [PATCH 5/7] vga_switcheroo: Use device link for HDA
+ controller
+Date: Fri, 23 Feb 2018 10:51:47 +0100
+Message-ID: <20180223095147.GB17092@wunner.de>
+References: <cover.1518941072.git.lukas@wunner.de>
+ <99358da18f1c61b226678c7c70240e4407ac575b.1518941073.git.lukas@wunner.de>
+ <20180220222059.GD32228@bhelgaas-glaptop.roam.corp.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [62.225.105.245])
- by alsa0.perex.cz (Postfix) with ESMTP id D3C93267232
- for <alsa-devel@alsa-project.org>; Fri, 23 Feb 2018 10:29:02 +0100 (CET)
-In-Reply-To: <s5hpo56o5e3.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20180220222059.GD32228-1RhO1Y9PlrlHTL0Zs8A6p5iNqAH0jzoTYJqu5kTmcBRl57MIdRCFDg@public.gmane.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/nouveau>,
+ <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/nouveau>
+List-Post: <mailto:nouveau-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Help: <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/nouveau>,
+ <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
+Errors-To: nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Sender: "Nouveau" <nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+To: Bjorn Helgaas <helgaas-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-pm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, nouveau-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, "Rafael J. Wysocki" <rafael.j.wysocki-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Ben Skeggs <bskeggs-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Bastien Nocera <hadess-0MeiytkfxGOsTnJN9+BGXg@public.gmane.org>, linux-pci-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, Dave Airlie <airlied-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Timo Wischer <twischer@de.adit-jv.com>
-
-if requested by the IO plugin
-
-Without this changes an IO plugin is not able to report
-that buffer_size frames were read from the buffer.
-When the buffer was full this is a valid action and
-has not to be handled as an under run.
-
-For example when the hw_ptr will be updated with
-hw_ptr += buffer_size
-and it is using the buffer_size as wrap around
-hw_ptr %= buffer_size
-would result in the same value as before the add operation.
-
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
----
-Hello Takashi,
-
-> If you need to improve such a situation, you'd have to fix in the
-> ioplug implementation itself, not the jack plugin.
-
-A have attached a patch which improves the IO plug API.
-If you are happy with this solution I would also adapt the pending
-JACK plugin patch and set the SND_PCM_IOPLUG_FLAG_BOUNDARY_WA flag.
-
-diff --git a/include/pcm_ioplug.h b/include/pcm_ioplug.h
-index 1c84594..e75f973 100644
---- a/include/pcm_ioplug.h
-+++ b/include/pcm_ioplug.h
-@@ -65,6 +65,8 @@ typedef snd_pcm_ioplug_callback snd_pcm_ioplug_callback_t;
-  */
- #define SND_PCM_IOPLUG_FLAG_LISTED	(1<<0)		/**< list up this PCM */
- #define SND_PCM_IOPLUG_FLAG_MONOTONIC	(1<<1)		/**< monotonic timestamps */
-+/** hw pointer wrap around at boundary instead of buffer_size */
-+#define SND_PCM_IOPLUG_FLAG_BOUNDARY_WA	(1<<2)
- 
- /*
-  * Protocol version
-@@ -133,6 +135,9 @@ struct snd_pcm_ioplug_callback {
- 	int (*stop)(snd_pcm_ioplug_t *io);
- 	/**
- 	 * get the current DMA position; required, called inside mutex lock
-+	 * \return buffer position up to buffer_size or
-+	 * when #SND_PCM_IOPLUG_FLAG_BOUNDARY_WA flag is set up to boundary or
-+	 * a negative error code for Xrun
- 	 */
- 	snd_pcm_sframes_t (*pointer)(snd_pcm_ioplug_t *io);
- 	/**
-diff --git a/src/pcm/pcm_ioplug.c b/src/pcm/pcm_ioplug.c
-index 7a782e6..9970646 100644
---- a/src/pcm/pcm_ioplug.c
-+++ b/src/pcm/pcm_ioplug.c
-@@ -42,7 +42,7 @@ const char *_snd_module_pcm_ioplug = "";
- typedef struct snd_pcm_ioplug_priv {
- 	snd_pcm_ioplug_t *data;
- 	struct snd_ext_parm params[SND_PCM_IOPLUG_HW_PARAMS];
--	unsigned int last_hw;
-+	snd_pcm_uframes_t last_hw;
- 	snd_pcm_uframes_t avail_max;
- 	snd_htimestamp_t trigger_tstamp;
- } ioplug_priv_t;
-@@ -56,13 +56,18 @@ static void snd_pcm_ioplug_hw_ptr_update(snd_pcm_t *pcm)
- 
- 	hw = io->data->callback->pointer(io->data);
- 	if (hw >= 0) {
--		unsigned int delta;
--		if ((unsigned int)hw >= io->last_hw)
-+		snd_pcm_uframes_t delta;
-+
-+		if ((snd_pcm_uframes_t)hw >= io->last_hw)
- 			delta = hw - io->last_hw;
--		else
--			delta = pcm->buffer_size + hw - io->last_hw;
-+		else {
-+			const snd_pcm_uframes_t wrap_point =
-+				(io->data->flags & SND_PCM_IOPLUG_FLAG_BOUNDARY_WA) ?
-+					pcm->boundary : pcm->buffer_size;
-+			delta = wrap_point + hw - io->last_hw;
-+		}
- 		snd_pcm_mmap_hw_forward(io->data->pcm, delta);
--		io->last_hw = hw;
-+		io->last_hw = (snd_pcm_uframes_t)hw;
- 	} else
- 		io->data->state = SNDRV_PCM_STATE_XRUN;
- }
--- 
-2.7.4
+T24gVHVlLCBGZWIgMjAsIDIwMTggYXQgMDQ6MjA6NTlQTSAtMDYwMCwgQmpvcm4gSGVsZ2FhcyB3
+cm90ZToKPiBPbiBTdW4sIEZlYiAxOCwgMjAxOCBhdCAwOTozODozMkFNICswMTAwLCBMdWthcyBX
+dW5uZXIgd3JvdGU6Cj4gPiBUaGUgZGV2aWNlIGxpbmsgaXMgYWRkZWQgaW4gYSBQQ0kgcXVpcmsg
+cmF0aGVyIHRoYW4gaW4gaGRhX2ludGVsLmMuCj4gPiBJdCBpcyB0aGVyZWZvcmUgbGVnYWwgZm9y
+IHRoZSBHUFUgdG8gcnVudGltZSBzdXNwZW5kIHRvIEQzY29sZCBldmVuIGlmCj4gPiB0aGUgSERB
+IGNvbnRyb2xsZXIgaXMgbm90IGJvdW5kIHRvIGEgZHJpdmVyIG9yIGlmIENPTkZJR19TTkRfSERB
+X0lOVEVMCj4gPiBpcyBub3QgZW5hYmxlZCwgZm9yIGFjY2Vzc2VzIHRvIHRoZSBIREEgY29udHJv
+bGxlciB3aWxsIGNhdXNlIHRoZSBHUFUgdG8KPiA+IHdha2UgdXAgcmVnYXJkbGVzcyBpZiB0aGV5
+J3JlIG9jY3VycmluZyBvdXRzaWRlIG9mIGhkYV9pbnRlbC5jICh0aGluawo+ID4gY29uZmlnIHNw
+YWNlIHJlYWRvdXQgdmlhIHN5c2ZzKS4KPiAKPiBJIGd1ZXNzIHRoaXMgR1BVIHdha2V1cCBoYXBw
+ZW5zICppZiogdGhlIHBhdGggYWNjZXNzaW5nIHRoZSBIREEKPiBjb250cm9sbGVyIGNhbGxzIHBt
+X3J1bnRpbWVfZ2V0X3N5bmMoKSBvciBzaW1pbGFyLCByaWdodD8KClJpZ2h0LgoKPiBXZSBkbyBo
+YXZlCj4gdGhhdCBpbiB0aGUgc3lzZnMgY29uZmlnIGFjY2Vzc29ycyB2aWEgcGNpX2NvbmZpZ19w
+bV9ydW50aW1lX2dldCgpLAo+IGJ1dCBub3QgaW4gdGhlIHN5c2ZzIG1tYXAgcGF0aHMuICBJIHRo
+aW5rIHRoYXQncyBhIGxhdGVudCBQQ0kgY29yZQo+IGRlZmVjdCBpbmRlcGVuZGVudCBvZiB0aGlz
+IHNlcmllcy4KClllcywgdGhlcmUgbWF5IGJlIGEgZmV3IHBsYWNlcyB3aGVyZSB0aGUgcGFyZW50
+IG9mIHRoZSBkZXZpY2UgaXMKZXJyb25lb3VzbHkgbm90IHJ1bnRpbWUgcmVzdW1lZCB3aGVuIHN5
+c2ZzIGZpbGVzIGFyZSBhY2Nlc3NlZC4KSSd2ZSBuZXZlciB1c2VkIHRoZSBzeXNmcyBtbWFwIGZl
+YXR1cmUsIHNvIG5ldmVyIHdpdG5lc3NlZCBpc3N1ZXMKd2l0aCBpdC4KCj4gV2UgYWxzbyBkb24n
+dCBoYXZlIHRoYXQgaW4gUENJIGNvcmUgY29uZmlnIGFjY2Vzc29ycy4gIFRoYXQgbWF5YmUKPiBk
+b2Vzbid0IG1hdHRlciBiZWNhdXNlIHRoZSBjb3JlIHByb2JhYmx5IHNob3VsZG4ndCBiZSB0b3Vj
+aGluZyBkZXZpY2VzCj4gYWZ0ZXIgZW51bWVyYXRpb24gKGFsdGhvdWdoIHRoZXJlIG1pZ2h0IGJl
+IGhvbGVzIHRoZXJlIGZvciB0aGluZ3MgbGlrZQo+IEFTUE0gd2hlcmUgYSBzeXNmcyBmaWxlIGNh
+biBjYXVzZSByZWNvbmZpZ3VyYXRpb24gb2Ygc2V2ZXJhbCBkZXZpY2VzKS4KCkkgYXNzdW1lIHdp
+dGggUENJIGNvcmUgY29uZmlnIGFjY2Vzc29ycyB5b3UncmUgcmVmZXJyaW5nIHRvCnBjaV9yZWFk
+X2NvbmZpZ193b3JkKCkgYW5kIGZyaWVuZHM/ICBUaG9zZSBhcmUgYXJndWFibHkgaG90cGF0aHMK
+d2hlcmUgd2Ugd291bGRuJ3Qgd2FudCB0aGUgb3ZlcmhlYWQgdG8gY2hlY2sgcnVudGltZSBQTSBz
+dGF0dXMKZXZlcnl0aW1lLiAgVGhleSBtaWdodCBhbHNvIGJlIGNhbGxlZCBmcm9tIGF0b21pYyBj
+b250ZXh0LCBJJ20Kbm90IHN1cmUsIGFuZCB0aGUgcnVudGltZSBQTSBjYWxsYmFja3MgbWF5IHNs
+ZWVwIGJ5IGRlZmF1bHQKKHVubGVzcyBwbV9ydW50aW1lX2lycV9zYWZlKCkgd2FzIGNhbGxlZCku
+Cgo+ID4gK3N0YXRpYyB2b2lkIHF1aXJrX2dwdV9oZGEoc3RydWN0IHBjaV9kZXYgKmhkYSkKPiA+
+ICt7Cj4gPiArCXN0cnVjdCBwY2lfZGV2ICpncHUgPSBOVUxMOwo+ID4gKwo+ID4gKwlpZiAoUENJ
+X0ZVTkMoaGRhLT5kZXZmbikgIT0gMSkKPiA+ICsJCXJldHVybjsKPiA+ICsKPiA+ICsJZ3B1ID0g
+cGNpX2dldF9kb21haW5fYnVzX2FuZF9zbG90KHBjaV9kb21haW5fbnIoaGRhLT5idXMpLAo+IAo+
+IFVubmVjZXNzYXJ5IGluaXRpYWxpemF0aW9uLgoKVGhhbmtzIGZvciBzcG90dGluZyB0aGlzLCBp
+dCdzIGEgcmVtbmFudCBvZiBhbiBlYXJsaWVyIHZlcnNpb24gb2YgdGhlCnBhdGNoIHdoaWNoIGNh
+bGxlZCBwY2lfZGV2X3B1dChncHUpIGluIHRoZSAoUENJX0ZVTkMoaGRhLT5kZXZmbikgIT0gMSkK
+Y2FzZS4KCkJlc3QgcmVnYXJkcywKCkx1a2FzCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCk5vdXZlYXUgbWFpbGluZyBsaXN0Ck5vdXZlYXVAbGlzdHMuZnJl
+ZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGlu
+Zm8vbm91dmVhdQo=
