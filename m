@@ -1,25 +1,17 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 01/11] ASoC: rt5651: Avoid duplicating DMI
- quirks between codec and machine driver
-Date: Thu, 22 Feb 2018 21:38:05 +0100
-Message-ID: <8107ea4e-6f28-c31a-45bb-da80afecd137@redhat.com>
-References: <20180220221511.22861-1-hdegoede@redhat.com>
- <20180221115452.GD8334@sirena.org.uk>
- <b2c6c047-eb86-a639-197e-b6aa1eae0ad5@redhat.com>
- <cc96d6a4-c8a5-1df5-8410-7671a73e6d4a@redhat.com>
- <20180222113548.GF5905@sirena.org.uk>
+From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Subject: [PATCH v2 1/2] ASoC: add DT bindings documentation for
+	ROHM BD28623 codec
+Date: Fri, 23 Feb 2018 10:17:16 +0900
+Message-ID: <20180223011717.2799-2-suzuki.katsuhiro@socionext.com>
+References: <20180223011717.2799-1-suzuki.katsuhiro@socionext.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f195.google.com (mail-wr0-f195.google.com
- [209.85.128.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C89A26782E
- for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 21:38:07 +0100 (CET)
-Received: by mail-wr0-f195.google.com with SMTP id 34so11900926wre.13
- for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2018 12:38:07 -0800 (PST)
-In-Reply-To: <20180222113548.GF5905@sirena.org.uk>
-Content-Language: en-US
+Received: from mx.socionext.com (mx.socionext.com [202.248.49.38])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2002E267845
+ for <alsa-devel@alsa-project.org>; Fri, 23 Feb 2018 02:17:25 +0100 (CET)
+In-Reply-To: <20180223011717.2799-1-suzuki.katsuhiro@socionext.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,48 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Cc: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This patch adds DT bindings documentation for ROHM BD28623MUV
+class D speaker amplifier.
 
-On 22-02-18 12:35, Mark Brown wrote:
-> On Thu, Feb 22, 2018 at 12:08:29PM +0100, Hans de Goede wrote:
-> 
->> So thinking more about this I think that having the codec driver only
->> check device-properties and completely killing platform_data is the best
->> way forward / best way to clean this up.
-> 
->> Combined with either device-tree or the machine driver setting these device
->> properties for now, and in the future the ACPI tables can set these properties
->> directly and we can hopefully won't need to add new quirks to the machine
->> driver.
-> 
-> The device properties thing seems reasonable enough.  I'm still not
-> super convinced the machine driver is the right place, but let's see the
-> code.  I think ideally the arch code would have a way to put all the
-> device property based quirks for these systems like we IIRC do for some
-> DT fixups.
+Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
 
-We've already tried something like that for fixing a similar situation
-(not enough info in ACPI for the driver to function) for silead
-touchscreens:
+---
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/drivers/platform/x86/silead_dmi.c
+Changes in v2:
+  - Change gpio properties to optional
+  - Change VCCA, VCCP-supply to mandatory
+---
+ .../devicetree/bindings/sound/rohm,bd28623.txt     | 29 ++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/rohm,bd28623.txt
 
-Note that this device-property providing driver can only be
-builtin, it cannot be built as a module (otherwise we're back
-to having ordering issues). We (Dmitry and I) have gotten quite
-some flack about needlessly growing the bzImage size with data
-only used on a small subset of x86 devices and this construction
-is not something which I want to repeat (nor would advise
-others to repeat).
-
-We really need to have a way to have these quirks table in a module
-which only loads on devices which need it. So in my mind the
-machine driver is a good place for this.
-
-Regards,
-
-Hans
+diff --git a/Documentation/devicetree/bindings/sound/rohm,bd28623.txt b/Documentation/devicetree/bindings/sound/rohm,bd28623.txt
+new file mode 100644
+index 000000000000..d84557c2686e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/rohm,bd28623.txt
+@@ -0,0 +1,29 @@
++ROHM BD28623MUV Class D speaker amplifier for digital input
++
++This codec does not have any control buses such as I2C, it detect format and
++rate of I2S signal automatically. It has two signals that can be connected
++to GPIOs: reset and mute.
++
++Required properties:
++- compatible      : should be "rohm,bd28623"
++- #sound-dai-cells: should be 0.
++- VCCA-supply     : regulator phandle for the VCCA supply
++- VCCP1-supply    : regulator phandle for the VCCP1 supply
++- VCCP2-supply    : regulator phandle for the VCCP2 supply
++
++Optional properties:
++- reset-gpios     : GPIO specifier for the active low reset line
++- mute-gpios      : GPIO specifier for the active low mute line
++
++Example:
++
++	codec {
++		compatible = "rohm,bd28623";
++		#sound-dai-cells = <0>;
++
++		VCCA-supply = <&vcc_reg>;
++		VCCP1-supply = <&vcc_reg>;
++		VCCP2-supply = <&vcc_reg>;
++		reset-gpios = <&gpio 0 GPIO_ACTIVE_LOW>;
++		mute-gpios = <&gpio 1 GPIO_ACTIVE_LOW>;
++	};
+-- 
+2.16.1
