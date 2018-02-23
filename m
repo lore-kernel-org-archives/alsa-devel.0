@@ -1,17 +1,15 @@
 From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
-Subject: [PATCH v1 3/3] ALSA: hdac: Remove usage of struct
-	hdac_ext_driver, use hdac_driver instead
-Date: Fri, 23 Feb 2018 13:41:38 +0530
-Message-ID: <1519373498-2496-4-git-send-email-rakesh.a.ughreja@intel.com>
-References: <1519373498-2496-1-git-send-email-rakesh.a.ughreja@intel.com>
+Subject: [PATCH v1 0/9] Enable HDA Codec support on Intel
+	Platforms (Series2)
+Date: Fri, 23 Feb 2018 13:42:21 +0530
+Message-ID: <1519373550-2545-1-git-send-email-rakesh.a.ughreja@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- by alsa0.perex.cz (Postfix) with ESMTP id EA6A82678A2
- for <alsa-devel@alsa-project.org>; Fri, 23 Feb 2018 09:09:44 +0100 (CET)
-In-Reply-To: <1519373498-2496-1-git-send-email-rakesh.a.ughreja@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B3A726789E
+ for <alsa-devel@alsa-project.org>; Fri, 23 Feb 2018 09:10:09 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,163 +23,51 @@ To: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, liam.r.girdw
 Cc: vinod.koul@intel.com, patches.audio@intel.com, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch removes the hdac_ext_driver structure. The legacy and
-enhanced HDaudio capabilities can be handled in a backward-compatible
-way without separate definitions.
+Many Intel platforms (SKL, KBL) etc. in the market supports enhanced 
+audio capabilities which also includes DSP processing. This patch carry
+forwards the work that is done in the previous series to enable HD Audio
+codecs on such platforms.
 
-Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
----
- include/sound/hdaudio.h      |  5 +++++
- include/sound/hdaudio_ext.h  | 17 ++---------------
- sound/hda/ext/hdac_ext_bus.c | 30 ++++++++++++++----------------
- sound/soc/codecs/hdac_hdmi.c | 12 +++++-------
- 4 files changed, 26 insertions(+), 38 deletions(-)
+This patch series adds ASoC HDA codec driver for Intel platforms. It is
+written by reusing the legacy HDA ALSA codec driver. Intention is to
+maximize the reuse and minimize the changes in the legacy HDA codec driver.
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index 548885a..01d3103 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -188,6 +188,11 @@ struct hdac_driver {
- 	const struct hda_device_id *id_table;
- 	int (*match)(struct hdac_device *dev, struct hdac_driver *drv);
- 	void (*unsol_event)(struct hdac_device *dev, unsigned int event);
-+
-+	/* fields used by ext bus APIs */
-+	int (*probe)(struct hdac_device *dev);
-+	int (*remove)(struct hdac_device *dev);
-+	void (*shutdown)(struct hdac_device *dev);
- };
- 
- #define drv_to_hdac_driver(_drv) container_of(_drv, struct hdac_driver, driver)
-diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
-index e5b0cd1..3c30247 100644
---- a/include/sound/hdaudio_ext.h
-+++ b/include/sound/hdaudio_ext.h
-@@ -160,20 +160,7 @@ struct hdac_ext_dma_params {
- 	u8 stream_tag;
- };
- 
--/*
-- * HD-audio codec base driver
-- */
--struct hdac_ext_driver {
--	struct hdac_driver hdac;
--
--	int	(*probe)(struct hdac_device *dev);
--	int	(*remove)(struct hdac_device *dev);
--	void	(*shutdown)(struct hdac_device *dev);
--};
--
--int snd_hda_ext_driver_register(struct hdac_ext_driver *drv);
--void snd_hda_ext_driver_unregister(struct hdac_ext_driver *drv);
--
--#define to_ehdac_driver(_drv) container_of(_drv, struct hdac_ext_driver, hdac)
-+int snd_hda_ext_driver_register(struct hdac_driver *drv);
-+void snd_hda_ext_driver_unregister(struct hdac_driver *drv);
- 
- #endif /* __SOUND_HDAUDIO_EXT_H */
-diff --git a/sound/hda/ext/hdac_ext_bus.c b/sound/hda/ext/hdac_ext_bus.c
-index 77547ed..52f0776 100644
---- a/sound/hda/ext/hdac_ext_bus.c
-+++ b/sound/hda/ext/hdac_ext_bus.c
-@@ -200,12 +200,10 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_device_remove);
- #define dev_to_hdac(dev) (container_of((dev), \
- 			struct hdac_device, dev))
- 
--static inline struct hdac_ext_driver *get_edrv(struct device *dev)
-+static inline struct hdac_driver *get_hdrv(struct device *dev)
- {
- 	struct hdac_driver *hdrv = drv_to_hdac_driver(dev->driver);
--	struct hdac_ext_driver *edrv = to_ehdac_driver(hdrv);
--
--	return edrv;
-+	return hdrv;
- }
- 
- static inline struct hdac_device *get_hdev(struct device *dev)
-@@ -216,17 +214,17 @@ static inline struct hdac_device *get_hdev(struct device *dev)
- 
- static int hda_ext_drv_probe(struct device *dev)
- {
--	return (get_edrv(dev))->probe(get_hdev(dev));
-+	return (get_hdrv(dev))->probe(get_hdev(dev));
- }
- 
- static int hdac_ext_drv_remove(struct device *dev)
- {
--	return (get_edrv(dev))->remove(get_hdev(dev));
-+	return (get_hdrv(dev))->remove(get_hdev(dev));
- }
- 
- static void hdac_ext_drv_shutdown(struct device *dev)
- {
--	return (get_edrv(dev))->shutdown(get_hdev(dev));
-+	return (get_hdrv(dev))->shutdown(get_hdev(dev));
- }
- 
- /**
-@@ -234,20 +232,20 @@ static void hdac_ext_drv_shutdown(struct device *dev)
-  *
-  * @drv: ext hda driver structure
-  */
--int snd_hda_ext_driver_register(struct hdac_ext_driver *drv)
-+int snd_hda_ext_driver_register(struct hdac_driver *drv)
- {
--	drv->hdac.type = HDA_DEV_ASOC;
--	drv->hdac.driver.bus = &snd_hda_bus_type;
-+	drv->type = HDA_DEV_ASOC;
-+	drv->driver.bus = &snd_hda_bus_type;
- 	/* we use default match */
- 
- 	if (drv->probe)
--		drv->hdac.driver.probe = hda_ext_drv_probe;
-+		drv->driver.probe = hda_ext_drv_probe;
- 	if (drv->remove)
--		drv->hdac.driver.remove = hdac_ext_drv_remove;
-+		drv->driver.remove = hdac_ext_drv_remove;
- 	if (drv->shutdown)
--		drv->hdac.driver.shutdown = hdac_ext_drv_shutdown;
-+		drv->driver.shutdown = hdac_ext_drv_shutdown;
- 
--	return driver_register(&drv->hdac.driver);
-+	return driver_register(&drv->driver);
- }
- EXPORT_SYMBOL_GPL(snd_hda_ext_driver_register);
- 
-@@ -256,8 +254,8 @@ EXPORT_SYMBOL_GPL(snd_hda_ext_driver_register);
-  *
-  * @drv: ext hda driver structure
-  */
--void snd_hda_ext_driver_unregister(struct hdac_ext_driver *drv)
-+void snd_hda_ext_driver_unregister(struct hdac_driver *drv)
- {
--	driver_unregister(&drv->hdac.driver);
-+	driver_unregister(&drv->driver);
- }
- EXPORT_SYMBOL_GPL(snd_hda_ext_driver_unregister);
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 8321775..99458f7 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -2186,14 +2186,12 @@ static const struct hda_device_id hdmi_list[] = {
- 
- MODULE_DEVICE_TABLE(hdaudio, hdmi_list);
- 
--static struct hdac_ext_driver hdmi_driver = {
--	. hdac = {
--		.driver = {
--			.name   = "HDMI HDA Codec",
--			.pm = &hdac_hdmi_pm,
--		},
--		.id_table       = hdmi_list,
-+static struct hdac_driver hdmi_driver = {
-+	.driver = {
-+		.name   = "HDMI HDA Codec",
-+		.pm = &hdac_hdmi_pm,
- 	},
-+	.id_table       = hdmi_list,
- 	.probe          = hdac_hdmi_dev_probe,
- 	.remove         = hdac_hdmi_dev_remove,
- };
+Rakesh Ughreja (9):
+  ASoC: Intel: Boards: Machine driver for Intel platforms
+  ASoC: Intel: Skylake: Add entry in sst_acpi_mach for HDA codecs
+  ASoC: Intel: Skylake: add HDA BE DAIs
+  ASoC: Intel: Skylake: use hda_bus instead of hdac_bus
+  ALSA: hda - split snd_hda_codec_new function
+  ALSA: hdac: remove memory allocation from snd_hdac_ext_bus_device_init
+  ALSA: hdac: add extended ops in the hdac_bus
+  ASoC: hdac_hda: add asoc extension for legacy HDA codec drivers
+  ASoC: Intel: Boards: add support for HDA codecs
+
+ include/sound/hdaudio.h                      |   9 +
+ include/sound/hdaudio_ext.h                  |   6 +-
+ sound/hda/ext/hdac_ext_bus.c                 |  12 +-
+ sound/pci/hda/hda_bind.c                     |   6 +
+ sound/pci/hda/hda_codec.c                    |  67 +++-
+ sound/pci/hda/hda_codec.h                    |   2 +
+ sound/soc/codecs/Kconfig                     |   5 +
+ sound/soc/codecs/Makefile                    |   2 +
+ sound/soc/codecs/hdac_hda.c                  | 448 +++++++++++++++++++++++++++
+ sound/soc/codecs/hdac_hda.h                  |  23 ++
+ sound/soc/intel/Kconfig                      |   1 +
+ sound/soc/intel/boards/Kconfig               |  10 +
+ sound/soc/intel/boards/Makefile              |   2 +
+ sound/soc/intel/boards/skl_hda_dsp_common.c  | 131 ++++++++
+ sound/soc/intel/boards/skl_hda_dsp_common.h  |  34 ++
+ sound/soc/intel/boards/skl_hda_dsp_generic.c | 143 +++++++++
+ sound/soc/intel/skylake/skl-pcm.c            |  50 ++-
+ sound/soc/intel/skylake/skl.c                |  98 +++++-
+ sound/soc/intel/skylake/skl.h                |  11 +-
+ 19 files changed, 1011 insertions(+), 49 deletions(-)
+ create mode 100644 sound/soc/codecs/hdac_hda.c
+ create mode 100644 sound/soc/codecs/hdac_hda.h
+ create mode 100644 sound/soc/intel/boards/skl_hda_dsp_common.c
+ create mode 100644 sound/soc/intel/boards/skl_hda_dsp_common.h
+ create mode 100644 sound/soc/intel/boards/skl_hda_dsp_generic.c
+
 -- 
 2.7.4
