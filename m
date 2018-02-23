@@ -1,77 +1,46 @@
-From: Bjorn Helgaas <helgaas-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 5/7] vga_switcheroo: Use device link for HDA
- controller
-Date: Fri, 23 Feb 2018 08:23:21 -0600
-Message-ID: <20180223142321.GI14632@bhelgaas-glaptop.roam.corp.google.com>
-References: <cover.1518941072.git.lukas@wunner.de>
- <99358da18f1c61b226678c7c70240e4407ac575b.1518941073.git.lukas@wunner.de>
- <20180220222059.GD32228@bhelgaas-glaptop.roam.corp.google.com>
- <20180223095147.GB17092@wunner.de>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ASoC: pxa: remove duplicated bit-wise or of
+ SNDRV_PCM_FMTBIT_S24_LE
+Date: Fri, 23 Feb 2018 14:37:38 +0000
+Message-ID: <20180223143738.29600-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20180223095147.GB17092-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/nouveau>,
- <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/nouveau>
-List-Post: <mailto:nouveau-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/nouveau>,
- <mailto:nouveau-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "Nouveau" <nouveau-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: Lukas Wunner <lukas-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-pm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, nouveau-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, "Rafael J. Wysocki" <rafael.j.wysocki-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Ben Skeggs <bskeggs-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Bastien Nocera <hadess-0MeiytkfxGOsTnJN9+BGXg@public.gmane.org>, linux-pci-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, Dave Airlie <airlied-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, George Cherian <george.cherian-YGCgFSpz5w/QT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-WytjYyBHZW9yZ2VdCgpPbiBGcmksIEZlYiAyMywgMjAxOCBhdCAxMDo1MTo0N0FNICswMTAwLCBM
-dWthcyBXdW5uZXIgd3JvdGU6Cj4gT24gVHVlLCBGZWIgMjAsIDIwMTggYXQgMDQ6MjA6NTlQTSAt
-MDYwMCwgQmpvcm4gSGVsZ2FhcyB3cm90ZToKPiA+IE9uIFN1biwgRmViIDE4LCAyMDE4IGF0IDA5
-OjM4OjMyQU0gKzAxMDAsIEx1a2FzIFd1bm5lciB3cm90ZToKPiA+ID4gVGhlIGRldmljZSBsaW5r
-IGlzIGFkZGVkIGluIGEgUENJIHF1aXJrIHJhdGhlciB0aGFuIGluIGhkYV9pbnRlbC5jLgo+ID4g
-PiBJdCBpcyB0aGVyZWZvcmUgbGVnYWwgZm9yIHRoZSBHUFUgdG8gcnVudGltZSBzdXNwZW5kIHRv
-IEQzY29sZCBldmVuIGlmCj4gPiA+IHRoZSBIREEgY29udHJvbGxlciBpcyBub3QgYm91bmQgdG8g
-YSBkcml2ZXIgb3IgaWYgQ09ORklHX1NORF9IREFfSU5URUwKPiA+ID4gaXMgbm90IGVuYWJsZWQs
-IGZvciBhY2Nlc3NlcyB0byB0aGUgSERBIGNvbnRyb2xsZXIgd2lsbCBjYXVzZSB0aGUgR1BVIHRv
-Cj4gPiA+IHdha2UgdXAgcmVnYXJkbGVzcyBpZiB0aGV5J3JlIG9jY3VycmluZyBvdXRzaWRlIG9m
-IGhkYV9pbnRlbC5jICh0aGluawo+ID4gPiBjb25maWcgc3BhY2UgcmVhZG91dCB2aWEgc3lzZnMp
-Lgo+ID4gCj4gPiBJIGd1ZXNzIHRoaXMgR1BVIHdha2V1cCBoYXBwZW5zICppZiogdGhlIHBhdGgg
-YWNjZXNzaW5nIHRoZSBIREEKPiA+IGNvbnRyb2xsZXIgY2FsbHMgcG1fcnVudGltZV9nZXRfc3lu
-YygpIG9yIHNpbWlsYXIsIHJpZ2h0Pwo+IAo+IFJpZ2h0Lgo+IAo+ID4gV2UgZG8gaGF2ZQo+ID4g
-dGhhdCBpbiB0aGUgc3lzZnMgY29uZmlnIGFjY2Vzc29ycyB2aWEgcGNpX2NvbmZpZ19wbV9ydW50
-aW1lX2dldCgpLAo+ID4gYnV0IG5vdCBpbiB0aGUgc3lzZnMgbW1hcCBwYXRocy4gIEkgdGhpbmsg
-dGhhdCdzIGEgbGF0ZW50IFBDSSBjb3JlCj4gPiBkZWZlY3QgaW5kZXBlbmRlbnQgb2YgdGhpcyBz
-ZXJpZXMuCj4gCj4gWWVzLCB0aGVyZSBtYXkgYmUgYSBmZXcgcGxhY2VzIHdoZXJlIHRoZSBwYXJl
-bnQgb2YgdGhlIGRldmljZSBpcwo+IGVycm9uZW91c2x5IG5vdCBydW50aW1lIHJlc3VtZWQgd2hl
-biBzeXNmcyBmaWxlcyBhcmUgYWNjZXNzZWQuCj4gSSd2ZSBuZXZlciB1c2VkIHRoZSBzeXNmcyBt
-bWFwIGZlYXR1cmUsIHNvIG5ldmVyIHdpdG5lc3NlZCBpc3N1ZXMKPiB3aXRoIGl0Lgo+IAo+ID4g
-V2UgYWxzbyBkb24ndCBoYXZlIHRoYXQgaW4gUENJIGNvcmUgY29uZmlnIGFjY2Vzc29ycy4gIFRo
-YXQgbWF5YmUKPiA+IGRvZXNuJ3QgbWF0dGVyIGJlY2F1c2UgdGhlIGNvcmUgcHJvYmFibHkgc2hv
-dWxkbid0IGJlIHRvdWNoaW5nIGRldmljZXMKPiA+IGFmdGVyIGVudW1lcmF0aW9uIChhbHRob3Vn
-aCB0aGVyZSBtaWdodCBiZSBob2xlcyB0aGVyZSBmb3IgdGhpbmdzIGxpa2UKPiA+IEFTUE0gd2hl
-cmUgYSBzeXNmcyBmaWxlIGNhbiBjYXVzZSByZWNvbmZpZ3VyYXRpb24gb2Ygc2V2ZXJhbCBkZXZp
-Y2VzKS4KPiAKPiBJIGFzc3VtZSB3aXRoIFBDSSBjb3JlIGNvbmZpZyBhY2Nlc3NvcnMgeW91J3Jl
-IHJlZmVycmluZyB0bwo+IHBjaV9yZWFkX2NvbmZpZ193b3JkKCkgYW5kIGZyaWVuZHM/ICBUaG9z
-ZSBhcmUgYXJndWFibHkgaG90cGF0aHMKPiB3aGVyZSB3ZSB3b3VsZG4ndCB3YW50IHRoZSBvdmVy
-aGVhZCB0byBjaGVjayBydW50aW1lIFBNIHN0YXR1cwo+IGV2ZXJ5dGltZS4gIFRoZXkgbWlnaHQg
-YWxzbyBiZSBjYWxsZWQgZnJvbSBhdG9taWMgY29udGV4dCwgSSdtCj4gbm90IHN1cmUsIGFuZCB0
-aGUgcnVudGltZSBQTSBjYWxsYmFja3MgbWF5IHNsZWVwIGJ5IGRlZmF1bHQKPiAodW5sZXNzIHBt
-X3J1bnRpbWVfaXJxX3NhZmUoKSB3YXMgY2FsbGVkKS4KClllcywgSSB3YXMgdGhpbmtpbmcgb2Yg
-cGNpX3JlYWRfY29uZmlnX3dvcmQoKSwgZXRjLiAgVGhleSdyZSB1c2VkIGJ5CnRoZSBjb3JlIGR1
-cmluZyBlbnVtZXJhdGlvbiBhbmQgb2NjYXNpb25hbGx5IGJ5IGRyaXZlcnMsIGFuZCBib3RoCmNh
-c2VzIGFscmVhZHkgcGF5IGF0dGVudGlvbiB0byBQTS4gIEkgdGhpbmsgd2UgaGF2ZSBhIGZldyBo
-b2xlcyBpbiB0aGUKcnVudGltZSBzeXNmcyBhcmVhLCBidXQgSSB0aGluayBpdCdzIHJlYXNvbmFi
-bGUgdG8gZGVhbCB3aXRoIHRob3NlIGluCnRoZSBjYWxsZXJzLgoKU28gSSBkb24ndCB0aGluayB0
-aG9zZSBuZWVkIHRvIGFjdHVhbGx5ICpkbyogYW55dGhpbmcgd2l0aCBQTSBzdGF0dXMsCmFsdGhv
-dWdoIGl0IG1pZ2h0IGJlIGludGVyZXN0aW5nIHRvIGFkZCBzb21lIChvcHRpb25hbCkgY2hlY2tp
-bmcKdGhlcmUuICBHZW9yZ2UgQ2hlcmlhbiBpcyB0dXJuaW5nIHVwIHNvbWUgaXNzdWVzIGluIHRo
-aXMgYXJlYSBiZWNhdXNlCmhlIGhhcyBhIHJvb3QgcG9ydCB0aGF0IHJlcG9ydHMgZXJyb3JzIHdp
-dGggYW4gZXhjZXB0aW9uIGluc3RlYWQgb2YKc2lsZW50bHkgc3ludGhlc2l6aW5nIGFsbCBvbmVz
-IGRhdGEgbGlrZSBtb3N0IGhhcmR3YXJlIGRvZXMgWzFdLgoKQmpvcm4KClsxXSBodHRwczovL2xr
-bWwua2VybmVsLm9yZy9yLzE1MTc1NTQ4NDYtMTY3MDMtMS1naXQtc2VuZC1lbWFpbC1nZW9yZ2Uu
-Y2hlcmlhbkBjYXZpdW0uY29tCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCk5vdXZlYXUgbWFpbGluZyBsaXN0Ck5vdXZlYXVAbGlzdHMuZnJlZWRlc2t0b3Au
-b3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vbm91dmVh
-dQo=
+From: Colin Ian King <colin.king@canonical.com>
+
+Bit pattern SNDRV_PCM_FMTBIT_S24_LE is being bit-wise or'd twice; remove
+the redundant 2nd SNDRV_PCM_FMTBIT_S24_LE
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/pxa/mmp-sspa.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/sound/soc/pxa/mmp-sspa.c b/sound/soc/pxa/mmp-sspa.c
+index 64b85e30c1f8..7c998ea4ebee 100644
+--- a/sound/soc/pxa/mmp-sspa.c
++++ b/sound/soc/pxa/mmp-sspa.c
+@@ -377,7 +377,6 @@ static int mmp_sspa_probe(struct snd_soc_dai *dai)
+ #define MMP_SSPA_FORMATS (SNDRV_PCM_FMTBIT_S8 | \
+ 		SNDRV_PCM_FMTBIT_S16_LE | \
+ 		SNDRV_PCM_FMTBIT_S24_LE | \
+-		SNDRV_PCM_FMTBIT_S24_LE | \
+ 		SNDRV_PCM_FMTBIT_S32_LE)
+ 
+ static const struct snd_soc_dai_ops mmp_sspa_dai_ops = {
+-- 
+2.15.1
