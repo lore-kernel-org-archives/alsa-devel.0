@@ -1,18 +1,18 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v1 8/9] ASoC: hdac_hda: add asoc extension
- for legacy HDA codec drivers
-Date: Fri, 23 Feb 2018 10:54:44 -0600
-Message-ID: <c000a722-0ad0-2c52-fd00-f4134ca47858@linux.intel.com>
+Subject: Re: [PATCH v1 9/9] ASoC: Intel: Boards: add support
+	for HDA codecs
+Date: Fri, 23 Feb 2018 11:04:09 -0600
+Message-ID: <2536565b-4783-0829-536e-ee24e435c041@linux.intel.com>
 References: <1519373550-2545-1-git-send-email-rakesh.a.ughreja@intel.com>
- <1519373550-2545-9-git-send-email-rakesh.a.ughreja@intel.com>
+ <1519373550-2545-10-git-send-email-rakesh.a.ughreja@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 8355E267925
- for <alsa-devel@alsa-project.org>; Fri, 23 Feb 2018 17:54:46 +0100 (CET)
-In-Reply-To: <1519373550-2545-9-git-send-email-rakesh.a.ughreja@intel.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id DF33326791D
+ for <alsa-devel@alsa-project.org>; Fri, 23 Feb 2018 18:04:12 +0100 (CET)
+In-Reply-To: <1519373550-2545-10-git-send-email-rakesh.a.ughreja@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,573 +28,206 @@ Cc: vinod.koul@intel.com, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 On 2/23/18 2:12 AM, Rakesh Ughreja wrote:
-> This patch adds a kernel module which is used by the legacy HDA
-> codec drivers as library. This implements hdac_ext_bus_ops to enable
-> the reuse of legacy HDA codec drivers with ASoC platform drivers.
+> Add support for HDA codecs. add required widgets, controls, routes
+> and dai links for the same.
 > 
 > Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 > ---
->   sound/pci/hda/hda_bind.c    |   6 +
->   sound/soc/codecs/Kconfig    |   5 +
->   sound/soc/codecs/Makefile   |   2 +
->   sound/soc/codecs/hdac_hda.c | 448 ++++++++++++++++++++++++++++++++++++++++++++
->   sound/soc/codecs/hdac_hda.h |  23 +++
->   5 files changed, 484 insertions(+)
->   create mode 100644 sound/soc/codecs/hdac_hda.c
->   create mode 100644 sound/soc/codecs/hdac_hda.h
-
-so now we have both hdac_hdmi and hdac_hda?
-Not sure I get it.
-
+>   sound/soc/intel/Kconfig                      |  1 +
+>   sound/soc/intel/boards/skl_hda_dsp_common.c  | 24 +++++++++++++++++++++++
+>   sound/soc/intel/boards/skl_hda_dsp_common.h  |  2 +-
+>   sound/soc/intel/boards/skl_hda_dsp_generic.c | 29 ++++++++++++++++++++++++++++
+>   sound/soc/intel/skylake/skl.c                | 27 ++++++++++++++++++++++----
+>   5 files changed, 78 insertions(+), 5 deletions(-)
 > 
-> diff --git a/sound/pci/hda/hda_bind.c b/sound/pci/hda/hda_bind.c
-> index d361bb7..ec8f846 100644
-> --- a/sound/pci/hda/hda_bind.c
-> +++ b/sound/pci/hda/hda_bind.c
-> @@ -81,6 +81,9 @@ static int hda_codec_driver_probe(struct device *dev)
->   	hda_codec_patch_t patch;
+> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+> index ceb105c..d44cf1e 100644
+> --- a/sound/soc/intel/Kconfig
+> +++ b/sound/soc/intel/Kconfig
+> @@ -107,6 +107,7 @@ config SND_SOC_INTEL_SKYLAKE
+>   	select SND_HDA_DSP_LOADER
+>   	select SND_SOC_TOPOLOGY
+>   	select SND_SOC_INTEL_SST
+> +	select SND_SOC_HDAC_HDA if SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH
+
+This looks odd, it beats the purpose of the clean split between platform 
+and machine Kconfig added in 2017. You should select SND_SOC_HDAC_HDA in 
+the config for SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH
+
+>   	select SND_SOC_ACPI_INTEL_MATCH
+>   	help
+>   	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
+> diff --git a/sound/soc/intel/boards/skl_hda_dsp_common.c b/sound/soc/intel/boards/skl_hda_dsp_common.c
+> index 7066bed..f5fa475 100644
+> --- a/sound/soc/intel/boards/skl_hda_dsp_common.c
+> +++ b/sound/soc/intel/boards/skl_hda_dsp_common.c
+> @@ -73,6 +73,30 @@ struct snd_soc_dai_link skl_hda_be_dai_links[HDA_DSP_MAX_BE_DAI_LINKS] = {
+>   		.dpcm_playback = 1,
+>   		.no_pcm = 1,
+>   	},
+> +	{
+> +		.name = "Analog Playback and Capture",
+> +		.id = 4,
+> +		.cpu_dai_name = "Analog CPU DAI",
+> +		.codec_name = "ehdaudio0D0",
+> +		.codec_dai_name = "Analog Codec DAI",
+> +		.platform_name = "0000:00:1f.3",
+> +		.dpcm_playback = 1,
+> +		.dpcm_capture = 1,
+> +		.init = NULL,
+> +		.no_pcm = 1,
+> +	},
+> +	{
+> +		.name = "Digital Playback and Capture",
+> +		.id = 5,
+> +		.cpu_dai_name = "Digital CPU DAI",
+> +		.codec_name = "ehdaudio0D0",
+> +		.codec_dai_name = "Digital Codec DAI",
+> +		.platform_name = "0000:00:1f.3",
+> +		.dpcm_playback = 1,
+> +		.dpcm_capture = 1,
+> +		.init = NULL,
+> +		.no_pcm = 1,
+> +	},
+>   };
+>   
+>   int skl_hda_hdmi_jack_init(struct snd_soc_card *card)
+> diff --git a/sound/soc/intel/boards/skl_hda_dsp_common.h b/sound/soc/intel/boards/skl_hda_dsp_common.h
+> index adbf552..a9bc92b 100644
+> --- a/sound/soc/intel/boards/skl_hda_dsp_common.h
+> +++ b/sound/soc/intel/boards/skl_hda_dsp_common.h
+> @@ -13,7 +13,7 @@
+>   #include <sound/core.h>
+>   #include <sound/jack.h>
+>   
+> -#define HDA_DSP_MAX_BE_DAI_LINKS 3
+> +#define HDA_DSP_MAX_BE_DAI_LINKS 5
+>   
+>   struct skl_hda_hdmi_pcm {
+>   	struct list_head head;
+> diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
+> index 9e925ba..009683d 100644
+> --- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
+> +++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
+> @@ -18,8 +18,33 @@
+>   
+>   static const char *platform_name = "0000:00:1f.3";
+>   
+> +static const struct snd_kcontrol_new skl_hda_controls[] = {
+> +	SOC_DAPM_PIN_SWITCH("Headphone"),
+> +	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+> +};
+> +
+> +static const struct snd_soc_dapm_widget skl_hda_widgets[] = {
+> +	SND_SOC_DAPM_HP("Headphone", NULL),
+> +	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+> +	SND_SOC_DAPM_SPK("Codec Speaker", NULL),
+> +	SND_SOC_DAPM_MIC("Codec Mic", NULL),
+> +};
+
+what about all the other outputs, e.g. line out? And how does this work 
+with pin retasking?
+
+> +
+>   static const struct snd_soc_dapm_route skl_hda_map[] = {
+>   
+> +	/* HP jack connectors - unknown if we have jack detection */
+> +	{ "Headphone", NULL, "Codec Output Pin1" },
+> +	{ "Codec Speaker", NULL, "Codec Output Pin2" },
+> +	{ "Codec Input Pin2", NULL, "Codec Mic" },
+> +	{ "Codec Input Pin1", NULL, "Headset Mic" },
+> +
+> +	/* CODEC BE connections */
+> +	{ "Analog Codec Playback", NULL, "Analog CPU Playback" },
+> +	{ "Analog CPU Playback", NULL, "codec0_out" },
+> +
+> +	{ "codec0_in", NULL, "Analog CPU Capture" },
+> +	{ "Analog CPU Capture", NULL, "Analog Codec Capture" },
+> +
+>   	{ "hifi3", NULL, "iDisp3 Tx"},
+>   	{ "iDisp3 Tx", NULL, "iDisp3_out"},
+>   	{ "hifi2", NULL, "iDisp2 Tx"},
+> @@ -56,6 +81,10 @@ static struct snd_soc_card hda_soc_card = {
+>   	.owner = THIS_MODULE,
+>   	.dai_link = skl_hda_be_dai_links,
+>   	.num_links = ARRAY_SIZE(skl_hda_be_dai_links),
+> +	.controls = skl_hda_controls,
+> +	.num_controls = ARRAY_SIZE(skl_hda_controls),
+> +	.dapm_widgets = skl_hda_widgets,
+> +	.num_dapm_widgets = ARRAY_SIZE(skl_hda_widgets),
+>   	.dapm_routes = skl_hda_map,
+>   	.num_dapm_routes = ARRAY_SIZE(skl_hda_map),
+>   	.add_dai_link = skl_hda_add_dai_link,
+> diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+> index 1a5ac1b..d6a008b 100644
+> --- a/sound/soc/intel/skylake/skl.c
+> +++ b/sound/soc/intel/skylake/skl.c
+> @@ -36,6 +36,7 @@
+>   #include "skl-sst-dsp.h"
+>   #include "skl-sst-ipc.h"
+>   #include "../../../pci/hda/hda_codec.h"
+> +#include "../../../soc/codecs/hdac_hda.h"
+>   
+>   static struct skl_machine_pdata skl_dmic_data;
+>   
+> @@ -632,7 +633,9 @@ static int probe_codec(struct hdac_bus *bus, int addr)
+>   		(AC_VERB_PARAMETERS << 8) | AC_PAR_VENDOR_ID;
+>   	unsigned int res = -1;
+>   	struct skl *skl = bus_to_skl(bus);
+> +	struct hdac_hda_priv *hda_codec;
+>   	struct hdac_device *hdev;
+> +	int err;
+>   
+>   	mutex_lock(&bus->cmd_mutex);
+>   	snd_hdac_bus_send_cmd(bus, cmd);
+> @@ -642,11 +645,22 @@ static int probe_codec(struct hdac_bus *bus, int addr)
+>   		return -EIO;
+>   	dev_dbg(bus->dev, "codec #%d probed OK: %x\n", addr, res);
+>   
+> -	hdev = devm_kzalloc(&skl->pci->dev, sizeof(*hdev), GFP_KERNEL);
+> -	if (!hdev)
+> +	hda_codec = devm_kzalloc(&skl->pci->dev, sizeof(*hda_codec),
+> +								GFP_KERNEL);
+> +	if (!hda_codec)
+>   		return -ENOMEM;
+>   
+> -	return snd_hdac_ext_bus_device_init(bus, addr, hdev);
+> +	hda_codec->codec.bus = skl_to_hbus(skl);
+> +	hdev = &hda_codec->codec.core;
+> +
+> +	err = snd_hdac_ext_bus_device_init(bus, addr, hdev);
+> +	if (err < 0)
+> +		return err;
+> +
+> +	if ((res & 0xFFFF0000) != 0x80860000)
+> +		hdev->type = HDA_DEV_LEGACY;
+
+I don't get what this test does?
+
+> +
+> +	return 0;
+>   }
+>   
+>   /* Codec initialization */
+> @@ -784,6 +798,7 @@ static int skl_create(struct pci_dev *pci,
+>   	struct skl *skl;
+>   	struct hdac_bus *bus;
+>   	struct hda_bus *hbus;
+> +	struct hdac_ext_bus_ops *ext_ops = NULL;
+>   
 >   	int err;
 >   
-> +	if ((codec->bus->core.ext_ops) && (codec->bus->core.ext_ops->probe))
-> +		return codec->bus->core.ext_ops->probe(&codec->core);
-> +
->   	if (WARN_ON(!codec->preset))
->   		return -EINVAL;
+> @@ -801,7 +816,11 @@ static int skl_create(struct pci_dev *pci,
 >   
-> @@ -134,6 +137,9 @@ static int hda_codec_driver_remove(struct device *dev)
->   {
->   	struct hda_codec *codec = dev_to_hda_codec(dev);
->   
-> +	if ((codec->bus->core.ext_ops) && (codec->bus->core.ext_ops->remove))
-> +		return codec->bus->core.ext_ops->remove(&codec->core);
-> +
->   	if (codec->patch_ops.free)
->   		codec->patch_ops.free(codec);
->   	snd_hda_codec_cleanup_for_unbind(codec);
-> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-> index f72a901..87a166f 100644
-> --- a/sound/soc/codecs/Kconfig
-> +++ b/sound/soc/codecs/Kconfig
-> @@ -81,6 +81,7 @@ config SND_SOC_ALL_CODECS
->   	select SND_SOC_ES7134
->   	select SND_SOC_GTM601
->   	select SND_SOC_HDAC_HDMI
-> +	select SND_SOC_HDAC_HDA
->   	select SND_SOC_ICS43432
->   	select SND_SOC_INNO_RK3036
->   	select SND_SOC_ISABELLE if I2C
-> @@ -595,6 +596,10 @@ config SND_SOC_HDAC_HDMI
->   	select SND_PCM_ELD
->   	select HDMI
->   
-> +config SND_SOC_HDAC_HDA
-> +	tristate
-> +	select SND_HDA
-> +
->   config SND_SOC_ICS43432
->   	tristate
->   
-> diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-> index 56c3252..8fec3a7 100644
-> --- a/sound/soc/codecs/Makefile
-> +++ b/sound/soc/codecs/Makefile
-> @@ -75,6 +75,7 @@ snd-soc-es8328-i2c-objs := es8328-i2c.o
->   snd-soc-es8328-spi-objs := es8328-spi.o
->   snd-soc-gtm601-objs := gtm601.o
->   snd-soc-hdac-hdmi-objs := hdac_hdmi.o
-> +snd-soc-hdac-hda-objs := hdac_hda.o
->   snd-soc-ics43432-objs := ics43432.o
->   snd-soc-inno-rk3036-objs := inno_rk3036.o
->   snd-soc-isabelle-objs := isabelle.o
-> @@ -323,6 +324,7 @@ obj-$(CONFIG_SND_SOC_ES8328_I2C)+= snd-soc-es8328-i2c.o
->   obj-$(CONFIG_SND_SOC_ES8328_SPI)+= snd-soc-es8328-spi.o
->   obj-$(CONFIG_SND_SOC_GTM601)    += snd-soc-gtm601.o
->   obj-$(CONFIG_SND_SOC_HDAC_HDMI) += snd-soc-hdac-hdmi.o
-> +obj-$(CONFIG_SND_SOC_HDAC_HDA) += snd-soc-hdac-hda.o
->   obj-$(CONFIG_SND_SOC_ICS43432)	+= snd-soc-ics43432.o
->   obj-$(CONFIG_SND_SOC_INNO_RK3036)	+= snd-soc-inno-rk3036.o
->   obj-$(CONFIG_SND_SOC_ISABELLE)	+= snd-soc-isabelle.o
-> diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
-> new file mode 100644
-> index 0000000..33b6667
-> --- /dev/null
-> +++ b/sound/soc/codecs/hdac_hda.c
-> @@ -0,0 +1,448 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright(c) 2015-17 Intel Corporation.
-> +
-> +/*
-> + * hdac_hda.c - ASoC exntensions to reuse the legacy HDA codec drivers
-> + * with ASoC platform drivers. These APIs are called by the legacy HDA
-> + * codec drivers using hdac_ext_bus_ops ops.
-> + */
-> +
-> +#include <linux/init.h>
-> +#include <linux/delay.h>
-> +#include <linux/module.h>
-> +#include <linux/pm_runtime.h>
-> +#include <sound/pcm_params.h>
-> +#include <sound/soc.h>
-> +#include <sound/hdaudio_ext.h>
-> +#include <sound/hda_register.h>
-> +#include "../../hda/local.h"
-> +#include "../../pci/hda/hda_codec.h"
-> +#include "hdac_hda.h"
-> +
-> +#define HDAC_ANALOG_DAI_ID     0
-> +#define HDAC_DIGITAL_DAI_ID    1
-> +
-> +#define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S8 | \
-> +			SNDRV_PCM_FMTBIT_U8 | \
-> +			SNDRV_PCM_FMTBIT_S16_LE | \
-> +			SNDRV_PCM_FMTBIT_U16_LE | \
-> +			SNDRV_PCM_FMTBIT_S24_LE | \
-> +			SNDRV_PCM_FMTBIT_U24_LE | \
-> +			SNDRV_PCM_FMTBIT_S32_LE | \
-> +			SNDRV_PCM_FMTBIT_U32_LE | \
-> +			SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE)
-> +
-> +static int hdac_hda_dai_open(struct snd_pcm_substream *substream,
-> +			struct snd_soc_dai *dai);
-> +static void hdac_hda_dai_close(struct snd_pcm_substream *substream,
-> +		struct snd_soc_dai *dai);
-> +static int hdac_hda_dai_prepare(struct snd_pcm_substream *substream,
-> +				struct snd_soc_dai *dai);
-> +static int hdac_hda_dai_hw_free(struct snd_pcm_substream *substream,
-> +				struct snd_soc_dai *dai);
-> +static int hdac_hda_dai_set_tdm_slot(struct snd_soc_dai *dai,
-> +		unsigned int tx_mask, unsigned int rx_mask,
-> +		int slots, int slot_width);
-> +static struct hda_pcm *snd_soc_find_pcm_from_dai(struct hdac_hda_priv *hda_pvt,
-> +						struct snd_soc_dai *dai);
-> +
-> +static struct snd_soc_dai_ops hdac_hda_dai_ops = {
-> +	.startup = hdac_hda_dai_open,
-> +	.shutdown = hdac_hda_dai_close,
-> +	.prepare = hdac_hda_dai_prepare,
-> +	.hw_free = hdac_hda_dai_hw_free,
-> +	.set_tdm_slot = hdac_hda_dai_set_tdm_slot,
-> +};
-> +
-> +static struct snd_soc_dai_driver hdac_hda_dais[] = {
-> +{
-> +	.id = HDAC_ANALOG_DAI_ID,
-> +	.name = "Analog Codec DAI",
-> +	.ops = &hdac_hda_dai_ops,
-> +	.playback = {
-> +		.stream_name	= "Analog Codec Playback",
-> +		.channels_min	= 1,
-> +		.channels_max	= 16,
-> +		.rates		= SNDRV_PCM_RATE_8000_192000,
-> +		.formats	= STUB_FORMATS,
-> +		.sig_bits	= 24,
-> +	},
-> +	.capture = {
-> +		.stream_name    = "Analog Codec Capture",
-> +		.channels_min   = 1,
-> +		.channels_max   = 16,
-> +		.rates = SNDRV_PCM_RATE_8000_192000,
-> +		.formats = STUB_FORMATS,
-> +		.sig_bits = 24,
-> +	},
-> +},
-> +{
-> +	.id = HDAC_DIGITAL_DAI_ID,
-> +	.name = "Digital Codec DAI",
-> +	.ops = &hdac_hda_dai_ops,
-> +	.playback = {
-> +		.stream_name    = "Digital Codec Playback",
-> +		.channels_min   = 1,
-> +		.channels_max   = 16,
-> +		.rates          = SNDRV_PCM_RATE_8000_192000,
-> +		.formats        = STUB_FORMATS,
-> +		.sig_bits = 24,
-> +	},
-> +	.capture = {
-> +		.stream_name    = "Digital Codec Capture",
-> +		.channels_min   = 1,
-> +		.channels_max   = 16,
-> +		.rates = SNDRV_PCM_RATE_8000_192000,
-> +		.formats = STUB_FORMATS,
-> +		.sig_bits = 24,
-> +	},
-> +}
-> +};
-> +
-> +static int hdac_hda_dai_set_tdm_slot(struct snd_soc_dai *dai,
-> +		unsigned int tx_mask, unsigned int rx_mask,
-> +		int slots, int slot_width)
-> +{
-> +	struct hdac_hda_priv *hda_pvt = snd_soc_dai_get_drvdata(dai);
-> +	struct hdac_hda_pcm *pcm;
-> +
-> +	pcm = &hda_pvt->pcm[dai->id];
-> +	if (tx_mask)
-> +		pcm[dai->id].stream_tag[SNDRV_PCM_STREAM_PLAYBACK] = tx_mask;
-> +	else
-> +		pcm[dai->id].stream_tag[SNDRV_PCM_STREAM_CAPTURE] = rx_mask;
-> +
-> +	return 0;
-> +}
-> +
-> +static int hdac_hda_dai_hw_free(struct snd_pcm_substream *substream,
-> +				struct snd_soc_dai *dai)
-> +{
-> +	struct hdac_hda_priv *hda_pvt = snd_soc_dai_get_drvdata(dai);
-> +	struct hda_pcm_stream *hda_stream;
-> +	struct hda_pcm *pcm;
-> +
-> +	pcm = snd_soc_find_pcm_from_dai(hda_pvt, dai);
-> +	if (pcm == NULL)
-> +		return -EINVAL;
-> +
-> +	hda_stream = &pcm->stream[substream->stream];
-> +	snd_hda_codec_cleanup(&hda_pvt->codec, hda_stream, substream);
-> +
-> +	return 0;
-> +}
-> +
-> +static int hdac_hda_dai_prepare(struct snd_pcm_substream *substream,
-> +				struct snd_soc_dai *dai)
-> +{
-> +	struct hdac_hda_priv *hda_pvt = snd_soc_dai_get_drvdata(dai);
-> +	struct snd_pcm_runtime *runtime = substream->runtime;
-> +	struct hdac_device *hdev = &hda_pvt->codec.core;
-> +	struct hda_pcm_stream *hda_stream;
-> +	unsigned int format_val;
-> +	struct hda_pcm *pcm;
-> +	int ret = 0;
-> +
-> +	pcm = snd_soc_find_pcm_from_dai(hda_pvt, dai);
-> +	if (pcm == NULL)
-> +		return -EINVAL;
-> +
-> +	hda_stream = &pcm->stream[substream->stream];
-> +
-> +	format_val = snd_hdac_calc_stream_format(runtime->rate,
-> +						runtime->channels,
-> +						runtime->format,
-> +						hda_stream->maxbps,
-> +						0);
-> +	if (!format_val) {
-> +		dev_err(&hdev->dev,
-> +			"invalid format_val, rate=%d, ch=%d, format=%d\n",
-> +			runtime->rate, runtime->channels, runtime->format);
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = snd_hda_codec_prepare(&hda_pvt->codec, hda_stream,
-> +			hda_pvt->pcm[dai->id].stream_tag[substream->stream],
-> +			format_val, substream);
-> +	if (ret < 0) {
-> +		dev_err(&hdev->dev, "codec prepare failed %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int hdac_hda_dai_open(struct snd_pcm_substream *substream,
-> +			struct snd_soc_dai *dai)
-> +{
-> +	struct hdac_hda_priv *hda_pvt = snd_soc_dai_get_drvdata(dai);
-> +	struct hda_pcm_stream *hda_stream;
-> +	struct hda_pcm *pcm;
-> +	int ret = -ENODEV;
-> +
-> +	pcm = snd_soc_find_pcm_from_dai(hda_pvt, dai);
-> +	if (pcm == NULL)
-> +		return -EINVAL;
-> +
-> +	snd_hda_codec_pcm_get(pcm);
-> +
-> +	hda_stream = &pcm->stream[substream->stream];
-> +	if (hda_stream->ops.open)
-> +		ret = hda_stream->ops.open(hda_stream, &hda_pvt->codec,
-> +								substream);
-> +	return ret;
-> +}
-> +
-> +static void hdac_hda_dai_close(struct snd_pcm_substream *substream,
-> +		struct snd_soc_dai *dai)
-> +{
-> +	struct hdac_hda_priv *hda_pvt = snd_soc_dai_get_drvdata(dai);
-> +	struct hda_pcm_stream *hda_stream;
-> +	struct hda_pcm *pcm;
-> +
-> +	pcm = snd_soc_find_pcm_from_dai(hda_pvt, dai);
-> +	if (pcm == NULL)
-> +		return;
-> +
-> +	hda_stream = &pcm->stream[substream->stream];
-> +	if (hda_stream->ops.close)
-> +		hda_stream->ops.close(hda_stream, &hda_pvt->codec, substream);
-> +
-> +	snd_hda_codec_pcm_put(pcm);
-> +}
-> +
-> +static struct hda_pcm *snd_soc_find_pcm_from_dai(struct hdac_hda_priv *hda_pvt,
-> +						struct snd_soc_dai *dai)
-> +{
-> +
-> +	struct hda_codec *hcodec = &hda_pvt->codec;
-> +	struct hda_pcm *cpcm;
-> +	const char *pcm_name;
-> +
-> +	if (dai->id == HDAC_ANALOG_DAI_ID)
-> +		pcm_name = "Analog";
-> +	else
-> +		pcm_name = "Digital";
-> +
-> +	list_for_each_entry(cpcm, &hcodec->pcm_list_head, list) {
-> +		if (strpbrk(cpcm->name, pcm_name))
-> +			return cpcm;
-> +	}
-> +
-> +	dev_err(&hcodec->core.dev, "didn't find PCM for DAI %s\n", dai->name);
-> +	return NULL;
-> +}
-> +
-> +static int hdac_hda_codec_probe(struct snd_soc_codec *codec)
-> +{
-> +	struct hdac_hda_priv *hda_pvt = snd_soc_codec_get_drvdata(codec);
-> +	struct snd_soc_dapm_context *dapm =
-> +			snd_soc_component_get_dapm(&codec->component);
-> +	struct hdac_device *hdev = &hda_pvt->codec.core;
-> +	struct hda_codec *hcodec = &hda_pvt->codec;
-> +	struct hdac_ext_link *hlink = NULL;
-> +	hda_codec_patch_t patch;
-> +	int ret, i = 0;
-> +	u16 codec_mask;
-> +
-> +	hda_pvt->scodec = codec;
-> +	hlink = snd_hdac_ext_bus_get_link(hdev->bus, dev_name(&hdev->dev));
-> +	if (!hlink) {
-> +		dev_err(&hdev->dev, "hdac link not found\n");
-> +		return -EIO;
-> +	}
-> +
-> +	ret = snd_hdac_ext_bus_link_get(hdev->bus, hlink);
-> +
-> +	udelay(1000);
-> +	do {
-> +		codec_mask = snd_hdac_chip_readw(hdev->bus, STATESTS);
-> +		if (codec_mask)
-> +			break;
-> +		i++;
-> +		udelay(100);
-> +	} while (i < 100);
-> +
-> +	if (!codec_mask) {
-> +		dev_err(&hdev->dev, "No codecs found after link reset\n");
-> +		return -EIO;
-> +	}
-> +
-> +	snd_hdac_chip_writew(hdev->bus, STATESTS, STATESTS_INT_MASK);
-> +
-> +	ret = snd_hda_codec_device_new(hcodec->bus,
-> +			codec->component.card->snd_card, hdev->addr, hcodec);
-> +	if (ret < 0) {
-> +		dev_err(codec->dev, "failed to create hda codec %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	/*
-> +	 * snd_hda_codec_new1 decrements the usage count and so get the pm
-> +	 * count else the device will be powered off
-> +	 */
-> +	pm_runtime_get_noresume(&hdev->dev);
-> +
-> +	hcodec->bus->card = dapm->card->snd_card;
-> +
-> +	patch = (hda_codec_patch_t)hcodec->preset->driver_data;
-> +	if (patch) {
-> +		ret = patch(hcodec);
-> +		if (ret < 0) {
-> +			dev_err(codec->dev, "patch failed %d\n", ret);
-> +			return ret;
-> +		}
-> +	} else {
-> +		dev_dbg(&hdev->dev, "no patch file found\n");
-> +	}
-> +
-> +	ret = snd_hda_codec_set_name(hcodec, hcodec->preset->name);
-> +	if (ret < 0) {
-> +		dev_err(codec->dev, "name failed %s\n", hcodec->preset->name);
-> +		return ret;
-> +	}
-> +
-> +	ret = snd_hdac_regmap_init(&hcodec->core);
-> +	if (ret < 0) {
-> +		dev_err(codec->dev, "regmap init failed\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = snd_hda_codec_parse_pcms(hcodec);
-> +	if (ret < 0) {
-> +		dev_err(&hdev->dev, "unable to map pcms to dai %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = snd_hda_codec_build_controls(hcodec);
-> +	if (ret < 0) {
-> +		dev_err(&hdev->dev, "unable to create controls %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	hcodec->core.lazy_cache = true;
-> +
-> +	/*
-> +	 * hdac_device core already sets the state to active and calls
-> +	 * get_noresume. So enable runtime and set the device to suspend.
-> +	 * pm_runtime_enable is also called during codec registeration
-> +	 */
-> +	pm_runtime_put(&hdev->dev);
-> +	pm_runtime_suspend(&hdev->dev);
-> +
-> +	return 0;
-> +}
-> +
-> +static int hdac_hda_codec_remove(struct snd_soc_codec *codec)
-> +{
-> +	struct hdac_hda_priv *hda_pvt = snd_soc_codec_get_drvdata(codec);
-> +	struct hdac_device *hdev = &hda_pvt->codec.core;
-> +	struct hdac_ext_link *hlink = NULL;
-> +
-> +	hlink = snd_hdac_ext_bus_get_link(hdev->bus, dev_name(&hdev->dev));
-> +	if (!hlink) {
-> +		dev_err(&hdev->dev, "hdac link not found\n");
-> +		return -EIO;
-> +	}
-> +
-> +	snd_hdac_ext_bus_link_put(hdev->bus, hlink);
-> +	pm_runtime_disable(&hdev->dev);
-> +
-> +	return 0;
-> +}
-> +
-> +
-> +static const struct snd_soc_dapm_route hdac_hda_dapm_routes[] = {
-> +	{"AIF1TX", NULL, "Codec Input Pin1"},
-> +	{"AIF2TX", NULL, "Codec Input Pin2"},
-> +
-> +	{"Codec Output Pin1", NULL, "AIF1RX"},
-> +	{"Codec Output Pin2", NULL, "AIF2RX"},
-> +};
-> +
-> +static const struct snd_soc_dapm_widget hdac_hda_dapm_widgets[] = {
-> +
-> +	/* Audio Interface */
-> +	SND_SOC_DAPM_AIF_IN("AIF1RX", "Analog Codec Playback", 0,
-> +							SND_SOC_NOPM, 0, 0),
-> +	SND_SOC_DAPM_AIF_IN("AIF2RX", "Digital Codec Playback", 0,
-> +							SND_SOC_NOPM, 0, 0),
-> +	SND_SOC_DAPM_AIF_OUT("AIF1TX", "Analog Codec Capture", 0,
-> +							SND_SOC_NOPM, 0, 0),
-> +	SND_SOC_DAPM_AIF_OUT("AIF2TX", "Digital Codec Capture", 0,
-> +							SND_SOC_NOPM, 0, 0),
-> +
-> +	/* Input Pins */
-> +	SND_SOC_DAPM_INPUT("Codec Input Pin1"),
-> +	SND_SOC_DAPM_INPUT("Codec Input Pin2"),
-> +
-> +	/* Output Pins */
-> +	SND_SOC_DAPM_OUTPUT("Codec Output Pin1"),
-> +	SND_SOC_DAPM_OUTPUT("Codec Output Pin2"),
-> +};
-> +
-> +
-> +static struct snd_soc_codec_driver hdac_hda_codec = {
-> +	.probe		= hdac_hda_codec_probe,
-> +	.remove		= hdac_hda_codec_remove,
-> +	.idle_bias_off = true,
-> +	.component_driver = {
-> +		.dapm_widgets           = hdac_hda_dapm_widgets,
-> +		.num_dapm_widgets       = ARRAY_SIZE(hdac_hda_dapm_widgets),
-> +		.dapm_routes            = hdac_hda_dapm_routes,
-> +		.num_dapm_routes        = ARRAY_SIZE(hdac_hda_dapm_routes),
-> +	},
-> +};
-> +
-> +static int hdac_hda_dev_probe(struct hdac_device *hdev)
-> +{
-> +	struct hdac_ext_link *hlink = NULL;
-> +	struct hdac_hda_priv *hda_pvt;
-> +	int ret;
-> +
-> +	/* hold the ref while we probe */
-> +	hlink = snd_hdac_ext_bus_get_link(hdev->bus, dev_name(&hdev->dev));
-> +	if (!hlink) {
-> +		dev_err(&hdev->dev, "hdac link not found\n");
-> +		return -EIO;
-> +	}
-> +	snd_hdac_ext_bus_link_get(hdev->bus, hlink);
-> +
-> +	hda_pvt = hdac_to_hda_priv(hdev);
-> +	if (hda_pvt == NULL)
-> +		return -ENOMEM;
-> +
-> +	/* ASoC specific initialization */
-> +	ret = snd_soc_register_codec(&hdev->dev, &hdac_hda_codec, hdac_hda_dais,
-> +					 ARRAY_SIZE(hdac_hda_dais));
-> +	if (ret < 0) {
-> +		dev_err(&hdev->dev, "failed to register HDA codec %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	dev_set_drvdata(&hdev->dev, hda_pvt);
-> +	snd_hdac_ext_bus_link_put(hdev->bus, hlink);
-> +
-> +	return ret;
-> +}
-> +
-> +static int hdac_hda_dev_remove(struct hdac_device *hdev)
-> +{
-> +	snd_soc_unregister_codec(&hdev->dev);
-> +	return 0;
-> +}
-> +
-> +static struct hdac_ext_bus_ops hdac_ops = {
-> +	.probe          = hdac_hda_dev_probe,
-> +	.remove         = hdac_hda_dev_remove,
-> +};
-> +
-> +struct hdac_ext_bus_ops *snd_soc_hdac_hda_get_ops(void)
-> +{
-> +	return &hdac_ops;
-> +}
-> +EXPORT_SYMBOL_GPL(snd_soc_hdac_hda_get_ops);
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_DESCRIPTION("ASoC Extensions for legacy HDA Drivers");
-> +MODULE_AUTHOR("Rakesh Ughreja<rakesh.a.ughreja@intel.com>");
-> diff --git a/sound/soc/codecs/hdac_hda.h b/sound/soc/codecs/hdac_hda.h
-> new file mode 100644
-> index 0000000..61ce64a
-> --- /dev/null
-> +++ b/sound/soc/codecs/hdac_hda.h
-> @@ -0,0 +1,23 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright(c) 2015-17 Intel Corporation.
-> +
-> +#ifndef __HDAC_HDA_H__
-> +#define __HDAC_HDA_H__
-> +
-> +struct hdac_hda_pcm {
-> +	int stream_tag[2];
-> +};
-> +
-> +struct hdac_hda_priv {
-> +	struct hda_codec codec;
-> +	struct snd_soc_codec *scodec;
-> +	struct hdac_hda_pcm pcm[2];
-> +};
-> +
-> +#define hdac_to_hda_priv(_hdac) \
-> +			container_of(_hdac, struct hdac_hda_priv, codec.core)
-> +#define hdac_to_hda_codec(_hdac) container_of(_hdac, struct hda_codec, core)
-> +
-> +struct hdac_ext_bus_ops *snd_soc_hdac_hda_get_ops(void);
-> +
-> +#endif /* __HDAC_HDA_H__ */
+>   	hbus = skl_to_hbus(skl);
+>   	bus = skl_to_bus(skl);
+> -	snd_hdac_ext_bus_init(bus, &pci->dev, &bus_core_ops, io_ops, NULL);
+> +
+> +#if IS_ENABLED(CONFIG_SND_SOC_HDAC_HDA)
+> +	ext_ops = snd_soc_hdac_hda_get_ops();
+> +#endif
+> +	snd_hdac_ext_bus_init(bus, &pci->dev, &bus_core_ops, io_ops, ext_ops);
+>   	bus->use_posbuf = 1;
+>   	skl->pci = pci;
+>   	INIT_WORK(&skl->probe_work, skl_probe_work);
 > 
