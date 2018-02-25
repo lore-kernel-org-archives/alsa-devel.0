@@ -1,15 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v2 08/32] ASoC: rt5651: Fix bias_level confusion
-Date: Sun, 25 Feb 2018 11:46:49 +0100
-Message-ID: <20180225104713.4745-9-hdegoede@redhat.com>
+Subject: [PATCH v2 07/32] ASoC: rt5651: Remove
+	is_sys_clk_from_pll()
+Date: Sun, 25 Feb 2018 11:46:48 +0100
+Message-ID: <20180225104713.4745-8-hdegoede@redhat.com>
 References: <20180225104713.4745-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id BCC2C2673C9
- for <alsa-devel@alsa-project.org>; Sun, 25 Feb 2018 11:47:29 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 234DA2673C4
+ for <alsa-devel@alsa-project.org>; Sun, 25 Feb 2018 11:47:28 +0100 (CET)
 In-Reply-To: <20180225104713.4745-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,55 +25,120 @@ To: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chio
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-The rt5651_set_bias_level() function was turning everything off at
-SND_SOC_BIAS_STANDBY, rather then at SND_SOC_BIAS_OFF, requiring the bias-
-level to be raised to SND_SOC_BIAS_PREPARE before turning anything on.
+is_sys_clk_from_pll() is used as a snd_soc_dapm_route.connected callback,
+checking RT5651_GBL_CLK to determine if the sys-clk is PLL1 and thus the
+PWR_PLL bit in reg PWR_ANLG2 must be set.
 
-This is not how the bias-levels are supposed to work, this commit fixes
-this by turning everything off at the SND_SOC_BIAS_OFF level and enabling
-the pwr-bits needed for minimum functionality at SND_SOC_BIAS_STANDBY.
+RT5651_GBL_CLK is changed by rt5651_set_dai_sysclk(), which gets called by
+the pre_pmu / post_pmd functions of the "Platform Clock" dapm-supply.
 
-This fixes the minimum set of pwr-bits not getting enabled when
-force-enabling some dapm-supplies (e.g. for jack type detection),
-which raises the bias-level to standby.
+This creates an ordering issue, during a dapm transition first all
+connected() callbacks are called to build a list of supplies to enable
+and then the complete list is walked to enable the supplies. Since the
+connected() check happens before enabling any supplies,
+is_sys_clk_from_pll() ends up deciding if the PWR_PLL bit should be set
+based on the state the "Platform Clock" supply had *before* the transition.
+This sometimes results in PWR_PLL being off, even though *after* the
+transition PLL1 is configured as sys-clk.
 
+This commit removes is_sys_clk_from_pll() instead simply setting / clearing
+PWR_PLL in rt5651_set_dai_sysclk() based on the selected sys-clk, which
+fixes this and as a bonus results in a nice cleanup.
+
+Tested-by: Carlo Caione <carlo@endlessm.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/codecs/rt5651.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+Note that many of the other rt56?? drivers have a similar
+is_sys_clk_from_pll() functon and may need a similar fix.
+---
+ sound/soc/codecs/rt5651.c | 24 ++++--------------------
+ 1 file changed, 4 insertions(+), 20 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index d4a2a1ef87b2..90e800416a8e 100644
+index 7d2bb6fbde4e..d4a2a1ef87b2 100644
 --- a/sound/soc/codecs/rt5651.c
 +++ b/sound/soc/codecs/rt5651.c
-@@ -1521,6 +1521,13 @@ static int rt5651_set_bias_level(struct snd_soc_component *component,
- 	switch (level) {
- 	case SND_SOC_BIAS_PREPARE:
- 		if (SND_SOC_BIAS_STANDBY == snd_soc_component_get_bias_level(component)) {
-+			if (snd_soc_component_read32(component, RT5651_PLL_MODE_1) & 0x9200)
-+				snd_soc_component_update_bits(component, RT5651_D_MISC,
-+						    0xc00, 0xc00);
-+		}
-+		break;
-+	case SND_SOC_BIAS_STANDBY:
-+		if (SND_SOC_BIAS_OFF == snd_soc_component_get_bias_level(component)) {
- 			snd_soc_component_update_bits(component, RT5651_PWR_ANLG1,
- 				RT5651_PWR_VREF1 | RT5651_PWR_MB |
- 				RT5651_PWR_BG | RT5651_PWR_VREF2,
-@@ -1534,13 +1541,10 @@ static int rt5651_set_bias_level(struct snd_soc_component *component,
- 				RT5651_PWR_LDO_DVO_MASK,
- 				RT5651_PWR_LDO_DVO_1_2V);
- 			snd_soc_component_update_bits(component, RT5651_D_MISC, 0x1, 0x1);
--			if (snd_soc_component_read32(component, RT5651_PLL_MODE_1) & 0x9200)
--				snd_soc_component_update_bits(component, RT5651_D_MISC,
--						    0xc00, 0xc00);
- 		}
- 		break;
+@@ -393,20 +393,6 @@ static int set_dmic_clk(struct snd_soc_dapm_widget *w,
+ 	return idx;
+ }
  
--	case SND_SOC_BIAS_STANDBY:
-+	case SND_SOC_BIAS_OFF:
- 		snd_soc_component_write(component, RT5651_D_MISC, 0x0010);
- 		snd_soc_component_write(component, RT5651_PWR_DIG1, 0x0000);
- 		snd_soc_component_write(component, RT5651_PWR_DIG2, 0x0000);
+-static int is_sysclk_from_pll(struct snd_soc_dapm_widget *source,
+-			 struct snd_soc_dapm_widget *sink)
+-{
+-	struct snd_soc_component *component = snd_soc_dapm_to_component(source->dapm);
+-	unsigned int val;
+-
+-	val = snd_soc_component_read32(component, RT5651_GLB_CLK);
+-	val &= RT5651_SCLK_SRC_MASK;
+-	if (val == RT5651_SCLK_SRC_PLL1)
+-		return 1;
+-	else
+-		return 0;
+-}
+-
+ /* Digital Mixer */
+ static const struct snd_kcontrol_new rt5651_sto1_adc_l_mix[] = {
+ 	SOC_DAPM_SINGLE("ADC1 Switch", RT5651_STO1_ADC_MIXER,
+@@ -878,8 +864,6 @@ static const struct snd_soc_dapm_widget rt5651_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SUPPLY_S("ADC ASRC", 1, RT5651_PLL_MODE_2,
+ 			      11, 0, NULL, 0),
+ 
+-	SND_SOC_DAPM_SUPPLY("PLL1", RT5651_PWR_ANLG2,
+-			RT5651_PWR_PLL_BIT, 0, NULL, 0),
+ 	/* Input Side */
+ 	SND_SOC_DAPM_SUPPLY("JD Power", RT5651_PWR_ANLG2,
+ 		RT5651_PWM_JD_M_BIT, 0, NULL, 0),
+@@ -1162,7 +1146,6 @@ static const struct snd_soc_dapm_route rt5651_dapm_routes[] = {
+ 	{"Stereo1 ADC MIXL", "ADC1 Switch", "Stereo1 ADC L1 Mux"},
+ 	{"Stereo1 ADC MIXL", "ADC2 Switch", "Stereo1 ADC L2 Mux"},
+ 	{"Stereo1 ADC MIXL", NULL, "Stereo1 Filter"},
+-	{"Stereo1 Filter", NULL, "PLL1", is_sysclk_from_pll},
+ 	{"Stereo1 Filter", NULL, "ADC ASRC"},
+ 
+ 	{"Stereo1 ADC MIXR", "ADC1 Switch", "Stereo1 ADC R1 Mux"},
+@@ -1172,7 +1155,6 @@ static const struct snd_soc_dapm_route rt5651_dapm_routes[] = {
+ 	{"Stereo2 ADC MIXL", "ADC1 Switch", "Stereo2 ADC L1 Mux"},
+ 	{"Stereo2 ADC MIXL", "ADC2 Switch", "Stereo2 ADC L2 Mux"},
+ 	{"Stereo2 ADC MIXL", NULL, "Stereo2 Filter"},
+-	{"Stereo2 Filter", NULL, "PLL1", is_sysclk_from_pll},
+ 	{"Stereo2 Filter", NULL, "ADC ASRC"},
+ 
+ 	{"Stereo2 ADC MIXR", "ADC1 Switch", "Stereo2 ADC R1 Mux"},
+@@ -1239,10 +1221,8 @@ static const struct snd_soc_dapm_route rt5651_dapm_routes[] = {
+ 	{"PDM R Mux", "DD MIX", "DAC MIXR"},
+ 
+ 	{"DAC L1", NULL, "Stereo DAC MIXL"},
+-	{"DAC L1", NULL, "PLL1", is_sysclk_from_pll},
+ 	{"DAC L1", NULL, "DAC L1 Power"},
+ 	{"DAC R1", NULL, "Stereo DAC MIXR"},
+-	{"DAC R1", NULL, "PLL1", is_sysclk_from_pll},
+ 	{"DAC R1", NULL, "DAC R1 Power"},
+ 
+ 	{"DD MIXL", "DAC L1 Switch", "DAC MIXL"},
+@@ -1438,6 +1418,7 @@ static int rt5651_set_dai_sysclk(struct snd_soc_dai *dai,
+ 	struct snd_soc_component *component = dai->component;
+ 	struct rt5651_priv *rt5651 = snd_soc_component_get_drvdata(component);
+ 	unsigned int reg_val = 0;
++	unsigned int pll_bit = 0;
+ 
+ 	if (freq == rt5651->sysclk && clk_id == rt5651->sysclk_src)
+ 		return 0;
+@@ -1448,6 +1429,7 @@ static int rt5651_set_dai_sysclk(struct snd_soc_dai *dai,
+ 		break;
+ 	case RT5651_SCLK_S_PLL1:
+ 		reg_val |= RT5651_SCLK_SRC_PLL1;
++		pll_bit |= RT5651_PWR_PLL;
+ 		break;
+ 	case RT5651_SCLK_S_RCCLK:
+ 		reg_val |= RT5651_SCLK_SRC_RCCLK;
+@@ -1456,6 +1438,8 @@ static int rt5651_set_dai_sysclk(struct snd_soc_dai *dai,
+ 		dev_err(component->dev, "Invalid clock id (%d)\n", clk_id);
+ 		return -EINVAL;
+ 	}
++	snd_soc_component_update_bits(component, RT5651_PWR_ANLG2,
++		RT5651_PWR_PLL, pll_bit);
+ 	snd_soc_component_update_bits(component, RT5651_GLB_CLK,
+ 		RT5651_SCLK_SRC_MASK, reg_val);
+ 	rt5651->sysclk = freq;
 -- 
 2.14.3
