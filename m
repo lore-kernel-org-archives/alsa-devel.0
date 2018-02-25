@@ -1,17 +1,21 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v2 32/32] ASoC: Intel: bytcr_rt5651: Select
-	RCCLK on init()
-Date: Sun, 25 Feb 2018 11:47:13 +0100
-Message-ID: <20180225104713.4745-33-hdegoede@redhat.com>
+Subject: Re: [PATCH v2 00/32] ASoC: rt5651: jack-detect fixes
+	and improvements
+Date: Sun, 25 Feb 2018 11:58:32 +0100
+Message-ID: <d4a45fd7-de2c-e554-a9d0-d5128c8bcee6@redhat.com>
 References: <20180225104713.4745-1-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 684FC267972
- for <alsa-devel@alsa-project.org>; Sun, 25 Feb 2018 11:48:02 +0100 (CET)
+Received: from mail-wr0-f178.google.com (mail-wr0-f178.google.com
+ [209.85.128.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id BC01F2673C4
+ for <alsa-devel@alsa-project.org>; Sun, 25 Feb 2018 11:58:34 +0100 (CET)
+Received: by mail-wr0-f178.google.com with SMTP id k9so18289373wre.9
+ for <alsa-devel@alsa-project.org>; Sun, 25 Feb 2018 02:58:34 -0800 (PST)
 In-Reply-To: <20180225104713.4745-1-hdegoede@redhat.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,33 +26,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-When the BYT_RT5651_MCLK_EN quirk is set, we disable the MCLK from
-byt_rt5651_init(), we need to select the RCCLK as sysclk before doing this
-to make sure that jack-detect works directly after boot.
+Hi,
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/intel/boards/bytcr_rt5651.c | 5 +++++
- 1 file changed, 5 insertions(+)
+On 25-02-18 11:46, Hans de Goede wrote:
+> Hi All,
+> 
+> Here is v2 of my rt5651 codec and Intel machine-driver series which mainly
+> consists of various jack-detect related fixes and improvements.
+> 
+> As discussed in the review of v1 I've made the following changes:
+> 
+> 1) Get rid of platform_data and use device-properties instead
+> 
+> 2) Split up a couple of the micbias / OVCD / jack-detect patches into
+> smaller patches, as they were doing too much in a single patch
+> 
+> 3) Improved commit messages
+> 
+> 4) Concentrate the knowledge that SSP0 is 16 bits on BYTCR in the fixup
+> function and extract the sample-format from the hw_params in other places
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index c695247341f3..ceb3858a0e41 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -425,6 +425,11 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
- 
- 	card->dapm.idle_bias_off = true;
- 
-+	/* Start with RC clk for jack-detect (we disable MCLK below) */
-+	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN)
-+		snd_soc_component_update_bits(codec, RT5651_GLB_CLK,
-+			RT5651_SCLK_SRC_MASK, RT5651_SCLK_SRC_RCCLK);
-+
- 	switch (BYT_RT5651_MAP(byt_rt5651_quirk)) {
- 	case BYT_RT5651_IN1_MAP:
- 		custom_map = byt_rt5651_intmic_in1_map;
--- 
-2.14.3
+p.s.
+
+This series was testen on the following devices:
+
+    -Chuwi Hi8 Pro (Cherry Trail)
+    -Chuwi Vi8 Plus (Cherry Trail)
+    -I.T.Works TW701 (Bay Trail CR)
+    -Trekstor Surftab Wintron 7.0 ST70416-6 (Bay Trail CR)
+
+Regards,
+
+Hans
