@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v2 20/32] ASoC: rt5651: Add
-	rt5651_jack_inserted() helper
-Date: Sun, 25 Feb 2018 11:47:01 +0100
-Message-ID: <20180225104713.4745-21-hdegoede@redhat.com>
+Subject: [PATCH v2 21/32] ASoC: rt5651: Rewrite jack-type
+	detection
+Date: Sun, 25 Feb 2018 11:47:02 +0100
+Message-ID: <20180225104713.4745-22-hdegoede@redhat.com>
 References: <20180225104713.4745-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 71ACD267480
- for <alsa-devel@alsa-project.org>; Sun, 25 Feb 2018 11:47:46 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id BF8EE267441
+ for <alsa-devel@alsa-project.org>; Sun, 25 Feb 2018 11:47:47 +0100 (CET)
 In-Reply-To: <20180225104713.4745-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,82 +25,187 @@ To: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chio
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add rt5651_jack_inserted() helper to get the jack-detect switch status,
-This is a preparation patch for rewriting the jack type-detection to
-make it more reliable.
+We get the insertion event before the jack is fully inserted at which point
+the second ring on a TRRS connector may short the 2nd ring and sleeve
+contacts. Testing has shown that this short-circuit may happen as late
+as 500ms after the insertion event, but it never lasts longer then 300ms.
+
+This commit changes the detection algorithm to require 5 identical OVCD
+values in a row at 100 ms intervals to fix the jack-type sometimes getting
+mis-detected.
 
 Tested-by: Carlo Caione <carlo@endlessm.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/codecs/rt5651.c | 45 ++++++++++++++++++++++++++++-----------------
- 1 file changed, 28 insertions(+), 17 deletions(-)
+ sound/soc/codecs/rt5651.c | 110 +++++++++++++++++++++++++++++-----------------
+ sound/soc/codecs/rt5651.h |   2 +-
+ 2 files changed, 70 insertions(+), 42 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index 2d0c5ec451cd..b88585d652ea 100644
+index b88585d652ea..ee6f951fdbb9 100644
 --- a/sound/soc/codecs/rt5651.c
 +++ b/sound/soc/codecs/rt5651.c
-@@ -1597,6 +1597,31 @@ static bool rt5651_micbias1_ovcd(struct snd_soc_component *component)
- 	return (val & RT5651_MB1_OC_CLR);
+@@ -1622,12 +1622,76 @@ static bool rt5651_jack_inserted(struct snd_soc_component *component)
+ 	return val == 0;
  }
  
-+static bool rt5651_jack_inserted(struct snd_soc_component *component)
++/* Jack detect timings */
++#define JACK_SETTLE_TIME	100 /* milli seconds */
++#define JACK_DETECT_COUNT	5
++#define JACK_DETECT_MAXCOUNT	20  /* Aprox. 2 seconds worth of tries */
++
++static int rt5651_detect_headset(struct snd_soc_component *component)
 +{
-+	struct rt5651_priv *rt5651 = snd_soc_component_get_drvdata(component);
-+	int val;
++	int i, headset_count = 0, headphone_count = 0;
 +
-+	val = snd_soc_component_read32(component, RT5651_INT_IRQ_ST);
-+	dev_dbg(component->dev, "irq status %#04x\n", val);
++	/*
++	 * We get the insertion event before the jack is fully inserted at which
++	 * point the second ring on a TRRS connector may short the 2nd ring and
++	 * sleeve contacts, also the overcurrent detection is not entirely
++	 * reliable. So we try several times with a wait in between until we
++	 * detect the same type JACK_DETECT_COUNT times in a row.
++	 */
++	for (i = 0; i < JACK_DETECT_MAXCOUNT; i++) {
++		/* Clear any previous over-current status flag */
++		rt5651_clear_micbias1_ovcd(component);
 +
-+	switch (rt5651->jd_src) {
-+	case RT5651_JD1_1:
-+		val &= 0x1000;
-+		break;
-+	case RT5651_JD1_2:
-+		val &= 0x2000;
-+		break;
-+	case RT5651_JD2:
-+		val &= 0x4000;
-+		break;
-+	default:
-+		break;
++		msleep(JACK_SETTLE_TIME);
++
++		/* Check the jack is still connected before checking ovcd */
++		if (!rt5651_jack_inserted(component))
++			return 0;
++
++		if (rt5651_micbias1_ovcd(component)) {
++			/*
++			 * Over current detected, there is a short between the
++			 * 2nd ring contact and the ground, so a TRS connector
++			 * without a mic contact and thus plain headphones.
++			 */
++			dev_dbg(component->dev, "mic-gnd shorted\n");
++			headset_count = 0;
++			headphone_count++;
++			if (headphone_count == JACK_DETECT_COUNT)
++				return SND_JACK_HEADPHONE;
++		} else {
++			dev_dbg(component->dev, "mic-gnd open\n");
++			headphone_count = 0;
++			headset_count++;
++			if (headset_count == JACK_DETECT_COUNT)
++				return SND_JACK_HEADSET;
++		}
 +	}
 +
-+	return val == 0;
++	dev_err(component->dev, "Error detecting headset vs headphones, bad contact?, assuming headphones\n");
++	return SND_JACK_HEADPHONE;
++}
++
++static void rt5651_jack_detect_work(struct work_struct *work)
++{
++	struct rt5651_priv *rt5651 =
++		container_of(work, struct rt5651_priv, jack_detect_work);
++	int report = 0;
++
++	if (rt5651_jack_inserted(rt5651->component)) {
++		rt5651_enable_micbias1_for_ovcd(rt5651->component);
++		report = rt5651_detect_headset(rt5651->component);
++		rt5651_disable_micbias1_for_ovcd(rt5651->component);
++	}
++
++	snd_soc_jack_report(rt5651->hp_jack, report, SND_JACK_HEADSET);
 +}
 +
  static irqreturn_t rt5651_irq(int irq, void *data)
  {
  	struct rt5651_priv *rt5651 = data;
-@@ -1921,27 +1946,13 @@ static void rt5651_jack_detect_work(struct work_struct *work)
- {
- 	struct rt5651_priv *rt5651 =
- 		container_of(work, struct rt5651_priv, jack_detect_work.work);
+ 
+-	queue_delayed_work(system_power_efficient_wq,
+-			   &rt5651->jack_detect_work, msecs_to_jiffies(250));
++	queue_work(system_power_efficient_wq, &rt5651->jack_detect_work);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -1756,8 +1820,7 @@ static int rt5651_set_jack(struct snd_soc_component *component,
+ 	}
+ 
+ 	/* sync initial jack state */
+-	queue_delayed_work(system_power_efficient_wq,
+-			   &rt5651->jack_detect_work, 0);
++	queue_work(system_power_efficient_wq, &rt5651->jack_detect_work);
+ 
+ 	return 0;
+ }
+@@ -1922,41 +1985,6 @@ static const struct i2c_device_id rt5651_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, rt5651_i2c_id);
+ 
+-static int rt5651_jack_detect(struct snd_soc_component *component, int jack_insert)
+-{
+-	int jack_type;
 -
--	int report, val = 0;
-+	int report, jack_inserted;
- 
- 	if (!rt5651->component)
- 		return;
- 
--	switch (rt5651->jd_src) {
--	case RT5651_JD1_1:
--		val = snd_soc_component_read32(rt5651->component, RT5651_INT_IRQ_ST) & 0x1000;
--		break;
--	case RT5651_JD1_2:
--		val = snd_soc_component_read32(rt5651->component, RT5651_INT_IRQ_ST) & 0x2000;
--		break;
--	case RT5651_JD2:
--		val = snd_soc_component_read32(rt5651->component, RT5651_INT_IRQ_ST) & 0x4000;
--		break;
--	default:
--		break;
+-	if (jack_insert) {
+-		rt5651_enable_micbias1_for_ovcd(component);
+-		rt5651_clear_micbias1_ovcd(component);
+-		msleep(100);
+-		if (rt5651_micbias1_ovcd(component))
+-			jack_type = SND_JACK_HEADPHONE;
+-		else
+-			jack_type = SND_JACK_HEADSET;
+-		rt5651_disable_micbias1_for_ovcd(component);
+-	} else { /* jack out */
+-		jack_type = 0;
 -	}
 -
--	report = rt5651_jack_detect(rt5651->component, !val);
-+	jack_inserted = rt5651_jack_inserted(rt5651->component);
-+	report = rt5651_jack_detect(rt5651->component, jack_inserted);
+-	return jack_type;
+-}
+-
+-static void rt5651_jack_detect_work(struct work_struct *work)
+-{
+-	struct rt5651_priv *rt5651 =
+-		container_of(work, struct rt5651_priv, jack_detect_work.work);
+-	int report, jack_inserted;
+-
+-	if (!rt5651->component)
+-		return;
+-
+-	jack_inserted = rt5651_jack_inserted(rt5651->component);
+-	report = rt5651_jack_detect(rt5651->component, jack_inserted);
+-
+-	snd_soc_jack_report(rt5651->hp_jack, report, SND_JACK_HEADSET);
+-}
+-
+ static int rt5651_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
+ {
+@@ -1995,7 +2023,7 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
+ 	rt5651->irq = i2c->irq;
+ 	rt5651->hp_mute = 1;
  
- 	snd_soc_jack_report(rt5651->hp_jack, report, SND_JACK_HEADSET);
+-	INIT_DELAYED_WORK(&rt5651->jack_detect_work, rt5651_jack_detect_work);
++	INIT_WORK(&rt5651->jack_detect_work, rt5651_jack_detect_work);
+ 
+ 	ret = devm_snd_soc_register_component(&i2c->dev,
+ 				&soc_component_dev_rt5651,
+@@ -2008,7 +2036,7 @@ static int rt5651_i2c_remove(struct i2c_client *i2c)
+ {
+ 	struct rt5651_priv *rt5651 = i2c_get_clientdata(i2c);
+ 
+-	cancel_delayed_work_sync(&rt5651->jack_detect_work);
++	cancel_work_sync(&rt5651->jack_detect_work);
+ 
+ 	return 0;
  }
+diff --git a/sound/soc/codecs/rt5651.h b/sound/soc/codecs/rt5651.h
+index 5fb25f7e2a8c..6f0e4a8e1378 100644
+--- a/sound/soc/codecs/rt5651.h
++++ b/sound/soc/codecs/rt5651.h
+@@ -2072,7 +2072,7 @@ struct rt5651_priv {
+ 	struct snd_soc_component *component;
+ 	struct regmap *regmap;
+ 	struct snd_soc_jack *hp_jack;
+-	struct delayed_work jack_detect_work;
++	struct work_struct jack_detect_work;
+ 	enum rt5651_jd_src jd_src;
+ 
+ 	int irq;
 -- 
 2.14.3
