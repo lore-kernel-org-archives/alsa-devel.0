@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v2 22/32] ASoC: Intel: bytcr_rt5651: Actually
-	honor the DMIC_EN quirk if specified
-Date: Sun, 25 Feb 2018 11:47:03 +0100
-Message-ID: <20180225104713.4745-23-hdegoede@redhat.com>
+Subject: [PATCH v2 23/32] ASoC: Intel: bytcr_rt5651: Only
+	create jack if we have a jack-detect source
+Date: Sun, 25 Feb 2018 11:47:04 +0100
+Message-ID: <20180225104713.4745-24-hdegoede@redhat.com>
 References: <20180225104713.4745-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 1709E2674CE
- for <alsa-devel@alsa-project.org>; Sun, 25 Feb 2018 11:47:49 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 683DE267441
+ for <alsa-devel@alsa-project.org>; Sun, 25 Feb 2018 11:47:50 +0100 (CET)
 In-Reply-To: <20180225104713.4745-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,59 +25,47 @@ To: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chio
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Before this commit it was possible to set the DMIC_EN quirk in the machine
-driver, but it would never be passed to the codec driver so it was a nop.
+Only create the jack if we have a valid jack-detect source and properly
+check the snd_soc_component_set_jack() return value.
 
-This commit adds code to actually pass the quirk to the codec driver.
-
-Since the DMIC_EN quirk was ignored before, this commit removes it from
-the default quirk settings, to avoid this causing an unexpected functional
-change. If we really want the DMIC_EN behavior anywhere it should be
-specifically enabled by follow up commits.
-
+Tested-by: Carlo Caione <carlo@endlessm.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 0af855d2df49..1cae89e0b843 100644
+index 1cae89e0b843..4a9026a55ce9 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -56,8 +56,8 @@ enum {
- #define BYT_RT5651_MCLK_EN		BIT(17)
- #define BYT_RT5651_MCLK_25MHZ		BIT(18)
+@@ -388,17 +388,21 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
  
--/* jack-detect-source + terminating empty entry */
--#define MAX_NO_PROPS 2
-+/* jack-detect-source + dmic-en + terminating empty entry */
-+#define MAX_NO_PROPS 3
+ 	rt5651_apply_properties(codec);
  
- struct byt_rt5651_private {
- 	struct clk *mclk;
-@@ -65,7 +65,6 @@ struct byt_rt5651_private {
- };
- 
- static unsigned long byt_rt5651_quirk = BYT_RT5651_DMIC_MAP |
--					BYT_RT5651_DMIC_EN |
- 					BYT_RT5651_MCLK_EN;
- 
- static void log_quirks(struct device *dev)
-@@ -380,10 +379,15 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
- 	props[cnt++] = PROPERTY_ENTRY_U32("realtek,jack-detect-source",
- 				BYT_RT5651_JDSRC(byt_rt5651_quirk));
- 
-+	if (byt_rt5651_quirk & BYT_RT5651_DMIC_EN)
-+		props[cnt++] = PROPERTY_ENTRY_BOOL("realtek,dmic-en");
-+
- 	ret = device_add_properties(codec->dev, props);
- 	if (ret)
- 		return ret;
- 
-+	rt5651_apply_properties(codec);
-+
- 	ret = snd_soc_card_jack_new(runtime->card, "Headset",
+-	ret = snd_soc_card_jack_new(runtime->card, "Headset",
++	if (BYT_RT5651_JDSRC(byt_rt5651_quirk)) {
++		ret = snd_soc_card_jack_new(runtime->card, "Headset",
  				    SND_JACK_HEADSET, &priv->jack,
  				    bytcr_jack_pins, ARRAY_SIZE(bytcr_jack_pins));
+-	if (ret) {
+-		dev_err(runtime->dev, "Headset jack creation failed %d\n", ret);
+-		return ret;
+-	}
++		if (ret) {
++			dev_err(runtime->dev, "jack creation failed %d\n", ret);
++			return ret;
++		}
+ 
+-	snd_soc_component_set_jack(codec, &priv->jack, NULL);
++		ret = snd_soc_component_set_jack(codec, &priv->jack, NULL);
++		if (ret)
++			return ret;
++	}
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static const struct snd_soc_pcm_stream byt_rt5651_dai_params = {
 -- 
 2.14.3
