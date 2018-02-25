@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v2 02/32] ASoC: rt5651: Move all jack-detect
-	initialization to rt5651_set_jack_detect
-Date: Sun, 25 Feb 2018 11:46:43 +0100
-Message-ID: <20180225104713.4745-3-hdegoede@redhat.com>
+Subject: [PATCH v2 06/32] ASoC: rt5651: Configure jack-detect
+	source through a device-property
+Date: Sun, 25 Feb 2018 11:46:47 +0100
+Message-ID: <20180225104713.4745-7-hdegoede@redhat.com>
 References: <20180225104713.4745-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 573B8267253
- for <alsa-devel@alsa-project.org>; Sun, 25 Feb 2018 11:47:21 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C8E8F26739D
+ for <alsa-devel@alsa-project.org>; Sun, 25 Feb 2018 11:47:26 +0100 (CET)
 In-Reply-To: <20180225104713.4745-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,197 +22,215 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, devicetree@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Move all jack-detect initialization to rt5651_set_jack_detect. The main
-reason to do this is so that platform code can setup jack-detect properties
-after the device has been probed, which unfortunately is necessary on some
-platforms.
+Configure the jack-detect source through a device-property which can be
+set by code outside of the codec driver. Rather then putting platform
+specific DMI quirks inside the generic codec driver.
 
-This has 2 additional advantages:
-1) Grouping all jack-detect init together makes it easier to follow what
-is happening and results in a small reduction in the number of loc.
-2) Before we would register the irq handler before rt5651->hp_jack was
-assigned, leading to a potential NULL deref if the jack_detect work runs
-before the machine driver has called set_jack.
+And move the jack-detect-source quirk for the KIANO SlimNote 14.2, which
+was present inside the codec driver to the machine driver, where we can
+bundle it together with the other quirks already present for this laptop.
 
-Tested-by: Carlo Caione <carlo@endlessm.com>
+Cc: devicetree@vger.kernel.org
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/codecs/rt5651.c | 119 ++++++++++++++++++++++------------------------
- sound/soc/codecs/rt5651.h |   1 +
- 2 files changed, 58 insertions(+), 62 deletions(-)
+ Documentation/devicetree/bindings/sound/rt5651.txt |  6 ++++
+ include/sound/rt5651.h                             |  4 +++
+ sound/soc/codecs/rt5651.c                          | 31 ++++----------------
+ sound/soc/intel/boards/bytcr_rt5651.c              | 34 ++++++++++++++++++----
+ 4 files changed, 44 insertions(+), 31 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/sound/rt5651.txt b/Documentation/devicetree/bindings/sound/rt5651.txt
+index 3875233095f5..1632c0cf6123 100644
+--- a/Documentation/devicetree/bindings/sound/rt5651.txt
++++ b/Documentation/devicetree/bindings/sound/rt5651.txt
+@@ -16,6 +16,12 @@ Optional properties:
+ - realtek,dmic-en
+   Boolean. true if dmic is used.
+ 
++- realtek,jack-detect-source
++  u32. Valid values:
++  1: Use JD1_1 pin for jack-dectect
++  2: Use JD1_2 pin for jack-dectect
++  3: Use JD2 pin for jack-dectect
++
+ Pins on the device (for linking into audio routes) for RT5651:
+ 
+   * DMIC L1
+diff --git a/include/sound/rt5651.h b/include/sound/rt5651.h
+index 1612462bf5ad..725b36c329d0 100644
+--- a/include/sound/rt5651.h
++++ b/include/sound/rt5651.h
+@@ -11,6 +11,10 @@
+ #ifndef __LINUX_SND_RT5651_H
+ #define __LINUX_SND_RT5651_H
+ 
++/*
++ * Note these MUST match the values from the DT binding:
++ * Documentation/devicetree/bindings/sound/rt5651.txt
++ */
+ enum rt5651_jd_src {
+ 	RT5651_JD_NULL,
+ 	RT5651_JD1_1,
 diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index 2aa070554743..de3f071f8695 100644
+index 79a839c713ec..7d2bb6fbde4e 100644
 --- a/sound/soc/codecs/rt5651.c
 +++ b/sound/soc/codecs/rt5651.c
-@@ -1586,7 +1586,6 @@ static int rt5651_set_bias_level(struct snd_soc_component *component,
- static int rt5651_probe(struct snd_soc_component *component)
- {
- 	struct rt5651_priv *rt5651 = snd_soc_component_get_drvdata(component);
--	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+@@ -19,7 +19,6 @@
+ #include <linux/platform_device.h>
+ #include <linux/spi/spi.h>
+ #include <linux/acpi.h>
+-#include <linux/dmi.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -32,8 +31,6 @@
+ #include "rl6231.h"
+ #include "rt5651.h"
  
- 	rt5651->component = component;
- 
-@@ -1602,15 +1601,6 @@ static int rt5651_probe(struct snd_soc_component *component)
- 
- 	snd_soc_component_force_bias_level(component, SND_SOC_BIAS_OFF);
- 
--	if (rt5651->jd_src) {
--		snd_soc_dapm_force_enable_pin(dapm, "JD Power");
--		snd_soc_dapm_force_enable_pin(dapm, "LDO");
--		snd_soc_dapm_sync(dapm);
+-#define RT5651_JD_MAP(quirk)	((quirk) & GENMASK(7, 0))
 -
--		regmap_update_bits(rt5651->regmap, RT5651_MICBIAS,
--				   0x38, 0x38);
--	}
+ #define RT5651_DEVICE_ID_VALUE 0x6281
+ 
+ #define RT5651_PR_RANGE_BASE (0xff + 1)
+@@ -41,8 +38,6 @@
+ 
+ #define RT5651_PR_BASE (RT5651_PR_RANGE_BASE + (0 * RT5651_PR_SPACING))
+ 
+-static unsigned long rt5651_quirk;
 -
- 	return 0;
- }
- 
-@@ -1841,10 +1831,65 @@ static void rt5651_jack_detect_work(struct work_struct *work)
- int rt5651_set_jack_detect(struct snd_soc_component *component,
- 			   struct snd_soc_jack *hp_jack)
- {
-+	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+ static const struct regmap_range_cfg rt5651_ranges[] = {
+ 	{ .name = "PR", .range_min = RT5651_PR_BASE,
+ 	  .range_max = RT5651_PR_BASE + 0xb4,
+@@ -1599,6 +1594,11 @@ static int rt5651_set_jack(struct snd_soc_component *component,
+ 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
  	struct rt5651_priv *rt5651 = snd_soc_component_get_drvdata(component);
-+	int ret;
+ 	int ret;
++	u32 val;
 +
-+	if (!rt5651->irq)
-+		return -EINVAL;
-+
-+	/* IRQ output on GPIO1 */
-+	snd_soc_component_update_bits(component, RT5651_GPIO_CTRL1,
-+		RT5651_GP1_PIN_MASK, RT5651_GP1_PIN_IRQ);
-+
-+	/* Select jack detect source */
-+	switch (rt5651->jd_src) {
-+	case RT5651_JD1_1:
-+		snd_soc_component_update_bits(component, RT5651_JD_CTRL2,
-+			RT5651_JD_TRG_SEL_MASK, RT5651_JD_TRG_SEL_JD1_1);
-+		snd_soc_component_update_bits(component, RT5651_IRQ_CTRL1,
-+			RT5651_JD1_1_IRQ_EN, RT5651_JD1_1_IRQ_EN);
-+		break;
-+	case RT5651_JD1_2:
-+		snd_soc_component_update_bits(component, RT5651_JD_CTRL2,
-+			RT5651_JD_TRG_SEL_MASK, RT5651_JD_TRG_SEL_JD1_2);
-+		snd_soc_component_update_bits(component, RT5651_IRQ_CTRL1,
-+			RT5651_JD1_2_IRQ_EN, RT5651_JD1_2_IRQ_EN);
-+		break;
-+	case RT5651_JD2:
-+		snd_soc_component_update_bits(component, RT5651_JD_CTRL2,
-+			RT5651_JD_TRG_SEL_MASK, RT5651_JD_TRG_SEL_JD2);
-+		snd_soc_component_update_bits(component, RT5651_IRQ_CTRL1,
-+			RT5651_JD2_IRQ_EN, RT5651_JD2_IRQ_EN);
-+		break;
-+	case RT5651_JD_NULL:
-+		return 0;
-+	default:
-+		dev_err(component->dev, "Currently only JD1_1 / JD1_2 / JD2 are supported\n");
-+		return -EINVAL;
-+	}
-+
-+	snd_soc_dapm_force_enable_pin(dapm, "JD Power");
-+	snd_soc_dapm_force_enable_pin(dapm, "LDO");
-+	snd_soc_dapm_sync(dapm);
-+
-+	snd_soc_component_update_bits(component, RT5651_MICBIAS, 0x38, 0x38);
++	if (device_property_read_u32(component->dev,
++				     "realtek,jack-detect-source", &val) == 0)
++		rt5651->jd_src = val;
  
- 	rt5651->hp_jack = hp_jack;
--	rt5651_irq(0, rt5651);
+ 	if (!rt5651->irq)
+ 		return -EINVAL;
+@@ -1826,24 +1826,6 @@ static const struct i2c_device_id rt5651_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, rt5651_i2c_id);
+ 
+-static int rt5651_quirk_cb(const struct dmi_system_id *id)
+-{
+-	rt5651_quirk = (unsigned long) id->driver_data;
+-	return 1;
+-}
+-
+-static const struct dmi_system_id rt5651_quirk_table[] = {
+-	{
+-		.callback = rt5651_quirk_cb,
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "KIANO"),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "KIANO SlimNote 14.2"),
+-		},
+-		.driver_data = (unsigned long *) RT5651_JD1_1,
+-	},
+-	{}
+-};
+-
+ static int rt5651_jack_detect(struct snd_soc_component *component, int jack_insert)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+@@ -1922,9 +1904,6 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
+ 
+ 	i2c_set_clientdata(i2c, rt5651);
+ 
+-	dmi_check_system(rt5651_quirk_table);
+-	rt5651->jd_src = RT5651_JD_MAP(rt5651_quirk);
+-
+ 	rt5651->regmap = devm_regmap_init_i2c(i2c, &rt5651_regmap);
+ 	if (IS_ERR(rt5651->regmap)) {
+ 		ret = PTR_ERR(rt5651->regmap);
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 8008a027cc93..0af855d2df49 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -20,6 +20,7 @@
+ #include <linux/init.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/acpi.h>
+ #include <linux/clk.h>
+ #include <linux/device.h>
+@@ -42,10 +43,21 @@ enum {
+ 	BYT_RT5651_IN3_MAP,
+ };
+ 
+-#define BYT_RT5651_MAP(quirk)	((quirk) & GENMASK(7, 0))
+-#define BYT_RT5651_DMIC_EN	BIT(16)
+-#define BYT_RT5651_MCLK_EN	BIT(17)
+-#define BYT_RT5651_MCLK_25MHZ	BIT(18)
++enum {
++	BYT_RT5651_JD_NULL	= (RT5651_JD_NULL << 4),
++	BYT_RT5651_JD1_1	= (RT5651_JD1_1 << 4),
++	BYT_RT5651_JD1_2	= (RT5651_JD1_2 << 4),
++	BYT_RT5651_JD2		= (RT5651_JD2 << 4),
++};
 +
-+	ret = devm_request_threaded_irq(component->dev, rt5651->irq, NULL,
-+					rt5651_irq,
-+					IRQF_TRIGGER_RISING |
-+					IRQF_TRIGGER_FALLING |
-+					IRQF_ONESHOT, "rt5651", rt5651);
-+	if (ret) {
-+		dev_err(component->dev, "Failed to reguest IRQ: %d\n", ret);
++#define BYT_RT5651_MAP(quirk)		((quirk) & GENMASK(3, 0))
++#define BYT_RT5651_JDSRC(quirk)		(((quirk) & GENMASK(7, 4)) >> 4)
++#define BYT_RT5651_DMIC_EN		BIT(16)
++#define BYT_RT5651_MCLK_EN		BIT(17)
++#define BYT_RT5651_MCLK_25MHZ		BIT(18)
++
++/* jack-detect-source + terminating empty entry */
++#define MAX_NO_PROPS 2
+ 
+ struct byt_rt5651_private {
+ 	struct clk *mclk;
+@@ -66,6 +78,9 @@ static void log_quirks(struct device *dev)
+ 		dev_info(dev, "quirk IN2_MAP enabled");
+ 	if (BYT_RT5651_MAP(byt_rt5651_quirk) == BYT_RT5651_IN3_MAP)
+ 		dev_info(dev, "quirk IN3_MAP enabled");
++	if (BYT_RT5651_JDSRC(byt_rt5651_quirk))
++		dev_info(dev, "quirk realtek,jack-detect-source %ld\n",
++			 BYT_RT5651_JDSRC(byt_rt5651_quirk));
+ 	if (byt_rt5651_quirk & BYT_RT5651_DMIC_EN)
+ 		dev_info(dev, "quirk DMIC enabled");
+ 	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN)
+@@ -288,6 +303,7 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "KIANO SlimNote 14.2"),
+ 		},
+ 		.driver_data = (void *)(BYT_RT5651_MCLK_EN |
++					BYT_RT5651_JD1_1 |
+ 					BYT_RT5651_IN1_IN2_MAP),
+ 	},
+ 	{}
+@@ -298,8 +314,9 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+ 	struct snd_soc_card *card = runtime->card;
+ 	struct snd_soc_component *codec = runtime->codec_dai->component;
+ 	struct byt_rt5651_private *priv = snd_soc_card_get_drvdata(card);
++	struct property_entry props[MAX_NO_PROPS] = {};
+ 	const struct snd_soc_dapm_route *custom_map;
+-	int num_routes;
++	int num_routes, cnt = 0;
+ 	int ret;
+ 
+ 	card->dapm.idle_bias_off = true;
+@@ -360,6 +377,13 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+ 			dev_err(card->dev, "unable to set MCLK rate\n");
+ 	}
+ 
++	props[cnt++] = PROPERTY_ENTRY_U32("realtek,jack-detect-source",
++				BYT_RT5651_JDSRC(byt_rt5651_quirk));
++
++	ret = device_add_properties(codec->dev, props);
++	if (ret)
 +		return ret;
-+	}
 +
-+	/* sync initial jack state */
-+	queue_delayed_work(system_power_efficient_wq,
-+			   &rt5651->jack_detect_work, 0);
- 
- 	return 0;
- }
-@@ -1896,61 +1941,11 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
- 		regmap_update_bits(rt5651->regmap, RT5651_GPIO_CTRL1,
- 				RT5651_GP2_PIN_MASK, RT5651_GP2_PIN_DMIC1_SCL);
- 
-+	rt5651->irq = i2c->irq;
- 	rt5651->hp_mute = 1;
- 
--	if (rt5651->jd_src) {
--
--		/* IRQ output on GPIO1 */
--		regmap_update_bits(rt5651->regmap, RT5651_GPIO_CTRL1,
--				   RT5651_GP1_PIN_MASK, RT5651_GP1_PIN_IRQ);
--
--		switch (rt5651->jd_src) {
--		case RT5651_JD1_1:
--			regmap_update_bits(rt5651->regmap, RT5651_JD_CTRL2,
--					   RT5651_JD_TRG_SEL_MASK,
--					   RT5651_JD_TRG_SEL_JD1_1);
--			regmap_update_bits(rt5651->regmap, RT5651_IRQ_CTRL1,
--					   RT5651_JD1_1_IRQ_EN,
--					   RT5651_JD1_1_IRQ_EN);
--			break;
--		case RT5651_JD1_2:
--			regmap_update_bits(rt5651->regmap, RT5651_JD_CTRL2,
--					   RT5651_JD_TRG_SEL_MASK,
--					   RT5651_JD_TRG_SEL_JD1_2);
--			regmap_update_bits(rt5651->regmap, RT5651_IRQ_CTRL1,
--					   RT5651_JD1_2_IRQ_EN,
--					   RT5651_JD1_2_IRQ_EN);
--			break;
--		case RT5651_JD2:
--			regmap_update_bits(rt5651->regmap, RT5651_JD_CTRL2,
--					   RT5651_JD_TRG_SEL_MASK,
--					   RT5651_JD_TRG_SEL_JD2);
--			regmap_update_bits(rt5651->regmap, RT5651_IRQ_CTRL1,
--					   RT5651_JD2_IRQ_EN,
--					   RT5651_JD2_IRQ_EN);
--			break;
--		case RT5651_JD_NULL:
--			break;
--		default:
--			dev_warn(&i2c->dev, "Currently only JD1_1 / JD1_2 / JD2 are supported\n");
--			break;
--		}
--	}
--
- 	INIT_DELAYED_WORK(&rt5651->jack_detect_work, rt5651_jack_detect_work);
- 
--	if (i2c->irq) {
--		ret = devm_request_threaded_irq(&i2c->dev, i2c->irq, NULL,
--						rt5651_irq,
--						IRQF_TRIGGER_RISING |
--						IRQF_TRIGGER_FALLING |
--						IRQF_ONESHOT, "rt5651", rt5651);
--		if (ret) {
--			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
--			return ret;
--		}
--	}
--
- 	ret = devm_snd_soc_register_component(&i2c->dev,
- 				&soc_component_dev_rt5651,
- 				rt5651_dai, ARRAY_SIZE(rt5651_dai));
-diff --git a/sound/soc/codecs/rt5651.h b/sound/soc/codecs/rt5651.h
-index 148e139e6a26..8f128d057ff0 100644
---- a/sound/soc/codecs/rt5651.h
-+++ b/sound/soc/codecs/rt5651.h
-@@ -2065,6 +2065,7 @@ struct rt5651_priv {
- 	struct delayed_work jack_detect_work;
- 	enum rt5651_jd_src jd_src;
- 
-+	int irq;
- 	int sysclk;
- 	int sysclk_src;
- 	int lrck[RT5651_AIFS];
+ 	ret = snd_soc_card_jack_new(runtime->card, "Headset",
+ 				    SND_JACK_HEADSET, &priv->jack,
+ 				    bytcr_jack_pins, ARRAY_SIZE(bytcr_jack_pins));
 -- 
 2.14.3
