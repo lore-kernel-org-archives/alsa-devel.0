@@ -1,15 +1,22 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: regression v4.16 on Nokia N900:/dev/input/event6 aka
- AV Jack support disappeared
-Date: Sat, 24 Feb 2018 22:46:17 +0100
-Message-ID: <20180224214617.GA22619@amd>
+From: Lukas Wunner <lukas@wunner.de>
+Subject: Re: [PATCH 1/7] PCI: Restore BARs on runtime resume
+ despite being unbound
+Date: Sun, 25 Feb 2018 09:59:00 +0100
+Message-ID: <20180225085900.GA923@wunner.de>
+References: <cover.1518941072.git.lukas@wunner.de>
+ <20180220212922.GC32228@bhelgaas-glaptop.roam.corp.google.com>
+ <CAJZ5v0h+qipaKKDxxFFpkwUKgMjnoaUB8_p+FRDb+fSM_v+wBw@mail.gmail.com>
+ <6131920.sr0PL0JerP@aspire.rjw.lan>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7166571092126423223=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
- [195.113.26.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6201C26731A
- for <alsa-devel@alsa-project.org>; Sat, 24 Feb 2018 22:46:18 +0100 (CET)
+Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net
+ [83.223.95.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 88978267048
+ for <alsa-devel@alsa-project.org>; Sun, 25 Feb 2018 09:59:01 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <6131920.sr0PL0JerP@aspire.rjw.lan>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,82 +26,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: pali.rohar@gmail.com, sre@kernel.org, kernel list <linux-kernel@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-omap@vger.kernel.org, tony@atomide.com, khilman@kernel.org, aaro.koskinen@iki.fi, ivo.g.dimitrov.75@gmail.com, patrikbachan@gmail.com, serge@hallyn.com, abcloriens@gmail.com, clayton@craftyguy.net, martijn@brixit.nl, sakari.ailus@linux.intel.com, Filip =?utf-8?Q?Matijevi=C4=87?= <filip.matijevic.pz@gmail.com>, afd@ti.com
-Cc: peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, broonie@kernel.org
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Pierre Moreau <pierre.morrow@free.fr>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Lyude Paul <lyude@redhat.com>, Linux PM <linux-pm@vger.kernel.org>, nouveau@lists.freedesktop.org, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Takashi Iwai <tiwai@suse.com>, dri-devel <dri-devel@lists.freedesktop.org>, Hans de Goede <hdegoede@redhat.com>, Bjorn Helgaas <helgaas@kernel.org>, Peter Wu <peter@lekensteyn.nl>, Bastien Nocera <hadess@hadess.net>, Linux PCI <linux-pci@vger.kernel.org>, Alex Deucher <alexander.deucher@amd.com>, Dave Airlie <airlied@redhat.com>, Bjorn Helgaas <bhelgaas@google.com>, Ben Skeggs <bskeggs@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Feb 21, 2018 at 01:39:34PM +0100, Rafael J. Wysocki wrote:
+> On Wednesday, February 21, 2018 10:57:14 AM CET Rafael J. Wysocki wrote:
+> > So if pci_pm_runtime_suspend() is modified to call pci_save_state()
+> > before returning 0 in the !dev->driver case, we can just move the
+> > pci_restore_standard_config() invocation in pci_pm_runtime_resume() up
+> > to the very top and check dev->driver later.
+> 
+> I mean something like the patch below, overall (untested).
+> 
+> Tentatively-signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
---===============7166571092126423223==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DocE+STaALJfprDB"
-Content-Disposition: inline
+Okay I've tested this successfully now.  I'll have to respin the series
+at least one more time to address the unnecessary initialization Bjorn
+spotted in patch [5/7] and will then replace patch [1/7] with this one.
 
+I'll wait a few more days before respinning to allow for further
+comments, in particular I'm hoping for feedback from Takashi and
+someone testing this on Optimus/ATPX.
 
---DocE+STaALJfprDB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks!
 
-Hi!
+Lukas
 
-In v4.16, AV jack support disappeared.
-
-This one is suspect:
-
-commit 7be4b5dc7ffa9499ac6ef33a5ffa9ff43f9b7057
-Author: Andrew F. Davis <afd@ti.com>
-Date:   Wed Nov 29 11:13:59 2017 -0600
-
-    ARM: dts: omap3-n900: Fix the audio CODEC's reset pin
-
-    The correct DT property for specifying a GPIO used for reset
-        is "reset-gpios", fix this here.
-
-    Fixes: 14e3e295b2b9 ("ARM: dts: omap3-n900: Add TLV320AIC3X
-    support")
-
-Signed-off-by: Andrew F. Davis <afd@ti.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-
-How was it tested? It reverts polarity of reset pin, but
-sound/soc/codecs/tlv320aic3x.c treats those as aliases:
-
- ret =3D of_get_named_gpio(np, "reset-gpios", 0);
- if (ret >=3D 0) {
-    aic3x->gpio_reset =3D ret;
- } else {
- ret =3D of_get_named_gpio(np, "gpio-reset", 0);
- if (ret > 0) {
-    dev_warn(&i2c->dev, "Using deprecated property \"gpio-r\eset\", please =
-update your DT");
-    aic3x->gpio_reset =3D ret;
-
-
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---DocE+STaALJfprDB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlqR3SkACgkQMOfwapXb+vKArwCfU1sALPGd+Be9AcXOY3fYdiSn
-7T4AnidKF80FJYtN+KRr7C4tHi9OsrYB
-=tU/B
------END PGP SIGNATURE-----
-
---DocE+STaALJfprDB--
-
---===============7166571092126423223==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7166571092126423223==--
+> ---
+>  drivers/pci/pci-driver.c |   16 ++++++++++------
+>  1 file changed, 10 insertions(+), 6 deletions(-)
+> 
+> Index: linux-pm/drivers/pci/pci-driver.c
+> ===================================================================
+> --- linux-pm.orig/drivers/pci/pci-driver.c
+> +++ linux-pm/drivers/pci/pci-driver.c
+> @@ -1224,11 +1224,14 @@ static int pci_pm_runtime_suspend(struct
+>  	int error;
+>  
+>  	/*
+> -	 * If pci_dev->driver is not set (unbound), the device should
+> -	 * always remain in D0 regardless of the runtime PM status
+> +	 * If pci_dev->driver is not set (unbound), the device may go to D3cold,
+> +	 * but only if the bridge above it is suspended.  In case that happens,
+> +	 * save its config space.
+>  	 */
+> -	if (!pci_dev->driver)
+> +	if (!pci_dev->driver) {
+> +		pci_save_state(pci_dev);
+>  		return 0;
+> +	}
+>  
+>  	if (!pm || !pm->runtime_suspend)
+>  		return -ENOSYS;
+> @@ -1276,16 +1279,17 @@ static int pci_pm_runtime_resume(struct
+>  	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+>  
+>  	/*
+> -	 * If pci_dev->driver is not set (unbound), the device should
+> -	 * always remain in D0 regardless of the runtime PM status
+> +	 * Regardless of whether or not the driver is there, the device might
+> +	 * have been put into D3cold as a result of suspending the bridge above
+> +	 * it, so restore the config spaces of all devices here.
+>  	 */
+> +	pci_restore_standard_config(pci_dev);
+>  	if (!pci_dev->driver)
+>  		return 0;
+>  
+>  	if (!pm || !pm->runtime_resume)
+>  		return -ENOSYS;
+>  
+> -	pci_restore_standard_config(pci_dev);
+>  	pci_fixup_device(pci_fixup_resume_early, pci_dev);
+>  	pci_enable_wake(pci_dev, PCI_D0, false);
+>  	pci_fixup_device(pci_fixup_resume, pci_dev);
+> 
