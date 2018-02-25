@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v2 21/32] ASoC: rt5651: Rewrite jack-type
-	detection
-Date: Sun, 25 Feb 2018 11:47:02 +0100
-Message-ID: <20180225104713.4745-22-hdegoede@redhat.com>
+Subject: [PATCH v2 22/32] ASoC: Intel: bytcr_rt5651: Actually
+	honor the DMIC_EN quirk if specified
+Date: Sun, 25 Feb 2018 11:47:03 +0100
+Message-ID: <20180225104713.4745-23-hdegoede@redhat.com>
 References: <20180225104713.4745-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id BF8EE267441
- for <alsa-devel@alsa-project.org>; Sun, 25 Feb 2018 11:47:47 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1709E2674CE
+ for <alsa-devel@alsa-project.org>; Sun, 25 Feb 2018 11:47:49 +0100 (CET)
 In-Reply-To: <20180225104713.4745-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,187 +25,59 @@ To: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chio
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-We get the insertion event before the jack is fully inserted at which point
-the second ring on a TRRS connector may short the 2nd ring and sleeve
-contacts. Testing has shown that this short-circuit may happen as late
-as 500ms after the insertion event, but it never lasts longer then 300ms.
+Before this commit it was possible to set the DMIC_EN quirk in the machine
+driver, but it would never be passed to the codec driver so it was a nop.
 
-This commit changes the detection algorithm to require 5 identical OVCD
-values in a row at 100 ms intervals to fix the jack-type sometimes getting
-mis-detected.
+This commit adds code to actually pass the quirk to the codec driver.
 
-Tested-by: Carlo Caione <carlo@endlessm.com>
+Since the DMIC_EN quirk was ignored before, this commit removes it from
+the default quirk settings, to avoid this causing an unexpected functional
+change. If we really want the DMIC_EN behavior anywhere it should be
+specifically enabled by follow up commits.
+
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/codecs/rt5651.c | 110 +++++++++++++++++++++++++++++-----------------
- sound/soc/codecs/rt5651.h |   2 +-
- 2 files changed, 70 insertions(+), 42 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index b88585d652ea..ee6f951fdbb9 100644
---- a/sound/soc/codecs/rt5651.c
-+++ b/sound/soc/codecs/rt5651.c
-@@ -1622,12 +1622,76 @@ static bool rt5651_jack_inserted(struct snd_soc_component *component)
- 	return val == 0;
- }
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 0af855d2df49..1cae89e0b843 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -56,8 +56,8 @@ enum {
+ #define BYT_RT5651_MCLK_EN		BIT(17)
+ #define BYT_RT5651_MCLK_25MHZ		BIT(18)
  
-+/* Jack detect timings */
-+#define JACK_SETTLE_TIME	100 /* milli seconds */
-+#define JACK_DETECT_COUNT	5
-+#define JACK_DETECT_MAXCOUNT	20  /* Aprox. 2 seconds worth of tries */
-+
-+static int rt5651_detect_headset(struct snd_soc_component *component)
-+{
-+	int i, headset_count = 0, headphone_count = 0;
-+
-+	/*
-+	 * We get the insertion event before the jack is fully inserted at which
-+	 * point the second ring on a TRRS connector may short the 2nd ring and
-+	 * sleeve contacts, also the overcurrent detection is not entirely
-+	 * reliable. So we try several times with a wait in between until we
-+	 * detect the same type JACK_DETECT_COUNT times in a row.
-+	 */
-+	for (i = 0; i < JACK_DETECT_MAXCOUNT; i++) {
-+		/* Clear any previous over-current status flag */
-+		rt5651_clear_micbias1_ovcd(component);
-+
-+		msleep(JACK_SETTLE_TIME);
-+
-+		/* Check the jack is still connected before checking ovcd */
-+		if (!rt5651_jack_inserted(component))
-+			return 0;
-+
-+		if (rt5651_micbias1_ovcd(component)) {
-+			/*
-+			 * Over current detected, there is a short between the
-+			 * 2nd ring contact and the ground, so a TRS connector
-+			 * without a mic contact and thus plain headphones.
-+			 */
-+			dev_dbg(component->dev, "mic-gnd shorted\n");
-+			headset_count = 0;
-+			headphone_count++;
-+			if (headphone_count == JACK_DETECT_COUNT)
-+				return SND_JACK_HEADPHONE;
-+		} else {
-+			dev_dbg(component->dev, "mic-gnd open\n");
-+			headphone_count = 0;
-+			headset_count++;
-+			if (headset_count == JACK_DETECT_COUNT)
-+				return SND_JACK_HEADSET;
-+		}
-+	}
-+
-+	dev_err(component->dev, "Error detecting headset vs headphones, bad contact?, assuming headphones\n");
-+	return SND_JACK_HEADPHONE;
-+}
-+
-+static void rt5651_jack_detect_work(struct work_struct *work)
-+{
-+	struct rt5651_priv *rt5651 =
-+		container_of(work, struct rt5651_priv, jack_detect_work);
-+	int report = 0;
-+
-+	if (rt5651_jack_inserted(rt5651->component)) {
-+		rt5651_enable_micbias1_for_ovcd(rt5651->component);
-+		report = rt5651_detect_headset(rt5651->component);
-+		rt5651_disable_micbias1_for_ovcd(rt5651->component);
-+	}
-+
-+	snd_soc_jack_report(rt5651->hp_jack, report, SND_JACK_HEADSET);
-+}
-+
- static irqreturn_t rt5651_irq(int irq, void *data)
- {
- 	struct rt5651_priv *rt5651 = data;
+-/* jack-detect-source + terminating empty entry */
+-#define MAX_NO_PROPS 2
++/* jack-detect-source + dmic-en + terminating empty entry */
++#define MAX_NO_PROPS 3
  
--	queue_delayed_work(system_power_efficient_wq,
--			   &rt5651->jack_detect_work, msecs_to_jiffies(250));
-+	queue_work(system_power_efficient_wq, &rt5651->jack_detect_work);
- 
- 	return IRQ_HANDLED;
- }
-@@ -1756,8 +1820,7 @@ static int rt5651_set_jack(struct snd_soc_component *component,
- 	}
- 
- 	/* sync initial jack state */
--	queue_delayed_work(system_power_efficient_wq,
--			   &rt5651->jack_detect_work, 0);
-+	queue_work(system_power_efficient_wq, &rt5651->jack_detect_work);
- 
- 	return 0;
- }
-@@ -1922,41 +1985,6 @@ static const struct i2c_device_id rt5651_i2c_id[] = {
+ struct byt_rt5651_private {
+ 	struct clk *mclk;
+@@ -65,7 +65,6 @@ struct byt_rt5651_private {
  };
- MODULE_DEVICE_TABLE(i2c, rt5651_i2c_id);
  
--static int rt5651_jack_detect(struct snd_soc_component *component, int jack_insert)
--{
--	int jack_type;
--
--	if (jack_insert) {
--		rt5651_enable_micbias1_for_ovcd(component);
--		rt5651_clear_micbias1_ovcd(component);
--		msleep(100);
--		if (rt5651_micbias1_ovcd(component))
--			jack_type = SND_JACK_HEADPHONE;
--		else
--			jack_type = SND_JACK_HEADSET;
--		rt5651_disable_micbias1_for_ovcd(component);
--	} else { /* jack out */
--		jack_type = 0;
--	}
--
--	return jack_type;
--}
--
--static void rt5651_jack_detect_work(struct work_struct *work)
--{
--	struct rt5651_priv *rt5651 =
--		container_of(work, struct rt5651_priv, jack_detect_work.work);
--	int report, jack_inserted;
--
--	if (!rt5651->component)
--		return;
--
--	jack_inserted = rt5651_jack_inserted(rt5651->component);
--	report = rt5651_jack_detect(rt5651->component, jack_inserted);
--
--	snd_soc_jack_report(rt5651->hp_jack, report, SND_JACK_HEADSET);
--}
--
- static int rt5651_i2c_probe(struct i2c_client *i2c,
- 		    const struct i2c_device_id *id)
- {
-@@ -1995,7 +2023,7 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
- 	rt5651->irq = i2c->irq;
- 	rt5651->hp_mute = 1;
+ static unsigned long byt_rt5651_quirk = BYT_RT5651_DMIC_MAP |
+-					BYT_RT5651_DMIC_EN |
+ 					BYT_RT5651_MCLK_EN;
  
--	INIT_DELAYED_WORK(&rt5651->jack_detect_work, rt5651_jack_detect_work);
-+	INIT_WORK(&rt5651->jack_detect_work, rt5651_jack_detect_work);
+ static void log_quirks(struct device *dev)
+@@ -380,10 +379,15 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+ 	props[cnt++] = PROPERTY_ENTRY_U32("realtek,jack-detect-source",
+ 				BYT_RT5651_JDSRC(byt_rt5651_quirk));
  
- 	ret = devm_snd_soc_register_component(&i2c->dev,
- 				&soc_component_dev_rt5651,
-@@ -2008,7 +2036,7 @@ static int rt5651_i2c_remove(struct i2c_client *i2c)
- {
- 	struct rt5651_priv *rt5651 = i2c_get_clientdata(i2c);
++	if (byt_rt5651_quirk & BYT_RT5651_DMIC_EN)
++		props[cnt++] = PROPERTY_ENTRY_BOOL("realtek,dmic-en");
++
+ 	ret = device_add_properties(codec->dev, props);
+ 	if (ret)
+ 		return ret;
  
--	cancel_delayed_work_sync(&rt5651->jack_detect_work);
-+	cancel_work_sync(&rt5651->jack_detect_work);
- 
- 	return 0;
- }
-diff --git a/sound/soc/codecs/rt5651.h b/sound/soc/codecs/rt5651.h
-index 5fb25f7e2a8c..6f0e4a8e1378 100644
---- a/sound/soc/codecs/rt5651.h
-+++ b/sound/soc/codecs/rt5651.h
-@@ -2072,7 +2072,7 @@ struct rt5651_priv {
- 	struct snd_soc_component *component;
- 	struct regmap *regmap;
- 	struct snd_soc_jack *hp_jack;
--	struct delayed_work jack_detect_work;
-+	struct work_struct jack_detect_work;
- 	enum rt5651_jd_src jd_src;
- 
- 	int irq;
++	rt5651_apply_properties(codec);
++
+ 	ret = snd_soc_card_jack_new(runtime->card, "Headset",
+ 				    SND_JACK_HEADSET, &priv->jack,
+ 				    bytcr_jack_pins, ARRAY_SIZE(bytcr_jack_pins));
 -- 
 2.14.3
