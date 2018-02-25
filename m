@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v2 31/32] ASoC: Intel: bytcr_rt5651: Change
-	defaults to enable jack-detect, analog mics
-Date: Sun, 25 Feb 2018 11:47:12 +0100
-Message-ID: <20180225104713.4745-32-hdegoede@redhat.com>
+Subject: [PATCH v2 32/32] ASoC: Intel: bytcr_rt5651: Select
+	RCCLK on init()
+Date: Sun, 25 Feb 2018 11:47:13 +0100
+Message-ID: <20180225104713.4745-33-hdegoede@redhat.com>
 References: <20180225104713.4745-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 1604526796D
- for <alsa-devel@alsa-project.org>; Sun, 25 Feb 2018 11:48:01 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 684FC267972
+ for <alsa-devel@alsa-project.org>; Sun, 25 Feb 2018 11:48:02 +0100 (CET)
 In-Reply-To: <20180225104713.4745-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,58 +25,30 @@ To: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chio
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Change the default quirk settings to enable jack-detect, analog mics.
-
-The old default input mapping of DMIC for non Bay Trail CR devices seems
-like a poor default as I'm not aware of any Intel SST + rt5651 using
-devices with a DMIC.
-
-All Cherry Trail devices using the bytcr_rt5651 machine driver seem to be
-modelled after BYT-CR devices, And the only non CR Bay Trail devices with
-a rt5651 codec I'm aware of are the Minnow boards for which we already have
-board specific quirks. So it seems better to me to use the BYT-CR defaults
-everywhere.
-
-This e.g. makes the Chuwi Hi8 Pro (CWI513) work ootb without needing a
-quirk.
+When the BYT_RT5651_MCLK_EN quirk is set, we disable the MCLK from
+byt_rt5651_init(), we need to select the RCCLK as sysclk before doing this
+to make sure that jack-detect works directly after boot.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index e395c9c179a1..c695247341f3 100644
+index c695247341f3..ceb3858a0e41 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -84,7 +84,12 @@ struct byt_rt5651_private {
- 	struct snd_soc_jack jack;
- };
+@@ -425,6 +425,11 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
  
--static unsigned long byt_rt5651_quirk = BYT_RT5651_MCLK_EN;
-+/* Default: jack-detect on JD1_1, internal mic on in2, headsetmic on in3 */
-+static unsigned long byt_rt5651_quirk = BYT_RT5651_MCLK_EN |
-+					BYT_RT5651_JD1_1 |
-+					BYT_RT5651_OVCD_TH_2000UA |
-+					BYT_RT5651_OVCD_SF_0P75 |
-+					BYT_RT5651_IN2_HS_IN3_MAP;
+ 	card->dapm.idle_bias_off = true;
  
- static void log_quirks(struct device *dev)
- {
-@@ -791,14 +796,6 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 			/* no BIOS indications, assume SSP0-AIF2 connection */
- 			byt_rt5651_quirk |= BYT_RT5651_SSP0_AIF2;
- 		}
--
--		/* change defaults for Baytrail-CR capture */
--		byt_rt5651_quirk |= BYT_RT5651_JD1_1 |
--				    BYT_RT5651_OVCD_TH_2000UA |
--				    BYT_RT5651_OVCD_SF_0P75 |
--				    BYT_RT5651_IN2_HS_IN3_MAP;
--	} else {
--		byt_rt5651_quirk |= BYT_RT5651_DMIC_MAP;
- 	}
- 
- 	/* check quirks before creating card */
++	/* Start with RC clk for jack-detect (we disable MCLK below) */
++	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN)
++		snd_soc_component_update_bits(codec, RT5651_GLB_CLK,
++			RT5651_SCLK_SRC_MASK, RT5651_SCLK_SRC_RCCLK);
++
+ 	switch (BYT_RT5651_MAP(byt_rt5651_quirk)) {
+ 	case BYT_RT5651_IN1_MAP:
+ 		custom_map = byt_rt5651_intmic_in1_map;
 -- 
 2.14.3
