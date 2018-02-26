@@ -1,56 +1,100 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Applied "ASoC: topology: Fix logical inversion in
- set_link_hw_format()" to the asoc tree
-Date: Mon, 26 Feb 2018 19:47:55 +0000
-Message-ID: <20180226194755.GC6681@sirena.org.uk>
-References: <E1eqGmV-0005Rk-Jt@debutante>
- <20180226183407.22335-1-k.marinushkin@gmail.com>
+Subject: Applied "ASoC: Revert "ASoC:
+	soc-generic-dmaengine-pcm: Fix error handling"" to the asoc tree
+Date: Mon, 26 Feb 2018 20:00:32 +0000
+Message-ID: <E1eqOwq-0006v9-PC@debutante>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="p2kqVDKq5asng8Dg"
-Return-path: <stable-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180226183407.22335-1-k.marinushkin@gmail.com>
-Sender: stable-owner@vger.kernel.org
-To: Kirill Marinushkin <k.marinushkin@gmail.com>
-Cc: Pan Xiuli <xiuli.pan@linux.intel.com>, alsa-devel@alsa-project.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 202A0267516
+ for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2018 21:00:35 +0100 (CET)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---p2kqVDKq5asng8Dg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: Revert "ASoC: soc-generic-dmaengine-pcm: Fix error handling"
 
-On Mon, Feb 26, 2018 at 07:34:07PM +0100, Kirill Marinushkin wrote:
+has been applied to the asoc tree at
 
-> 2. The suggested commit breaks the existing ASoC.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> The existing functionality already works with several existing ASoC by
-> Intel. The suggested commit will break it for the following reason:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> The ALSA topology mechanism loads the binary topology file into ASoC. The
-> suggested commit modifies the parser, but the binaries are already created for
-> the existing functionality. As a result, all existing binaries will be parsed
-> incorrectly.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Are there actual binaries using the existing code or is that just
-theoretical?  My impression was that this was fixing things for existing
-binaries which were shipped for non-mainline kernels, is that not the
-case?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---p2kqVDKq5asng8Dg
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqUZGoACgkQJNaLcl1U
-h9BV0wf+MnEgey/kA7HAcjeqsTX4vi86P3zsbAnGfZYhXuwF9pkef8IpXuhkegtu
-A84aSCBlVh5FHlbtEJ7lBIb6I2wL2LWhQa2OhZGOAM3zov5UzOzx0aUaeryKG1vZ
-0Q82EHSiggGXxIbWkx6e0y8ffeG0LudgFdPmc72YRt/TkwV+HQEjE+fliw30QGl8
-yjvQZaSCjPUMliQ5LEcMU6cjkp06qXyTFLGB5bCDXoP+GTvfCQhB8y12Ie0pQ+g6
-by37Wf3Kr1K61QIIme5mVr++gC0XCi40xqaOTC5PUnLfEpN220iwv82AZ6JyadxI
-iQouk4ykjSiPAOyNQJF02oPQ8k9JTg==
-=DETx
------END PGP SIGNATURE-----
+>From b84acf44d5b86597cebcb6aca16e7dd9ca2b0294 Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Date: Mon, 26 Feb 2018 15:55:25 -0300
+Subject: [PATCH] ASoC: Revert "ASoC: soc-generic-dmaengine-pcm: Fix error
+ handling"
 
---p2kqVDKq5asng8Dg--
+This reverts commit f91b1e73ccde71d4bc69ae10d475196df38844ab.
+
+As explained by Lars-Peter Clausen:
+
+"This creates a resource leak. dmaengine_pcm_request_chan_of() requests
+bothtransmit and receive channels. It might return with an error if one
+of them fails, but the other one succeeded. In this case we need to call
+dmaengine_pcm_release_chan() to free the requested channel"
+
+So revert the commit.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-generic-dmaengine-pcm.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index 567fbdfd1ca9..56a541b9ff9e 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -504,7 +504,7 @@ int snd_dmaengine_pcm_register(struct device *dev,
+ 
+ 	ret = dmaengine_pcm_request_chan_of(pcm, dev, config);
+ 	if (ret)
+-		goto err_free_pcm;
++		goto err_free_dma;
+ 
+ 	if (config && config->process)
+ 		ret = snd_soc_add_component(dev, &pcm->component,
+@@ -520,7 +520,6 @@ int snd_dmaengine_pcm_register(struct device *dev,
+ 
+ err_free_dma:
+ 	dmaengine_pcm_release_chan(pcm);
+-err_free_pcm:
+ 	kfree(pcm);
+ 	return ret;
+ }
+-- 
+2.16.1
