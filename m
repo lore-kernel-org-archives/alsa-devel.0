@@ -1,86 +1,69 @@
-From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
-Subject: Re: [PATCH v1 5/9] ALSA: hda - split
-	snd_hda_codec_new	function
-Date: Mon, 26 Feb 2018 09:09:54 +0000
-Message-ID: <85DFEED57DC57344B2483EF7BF8CB60579B2A1B1@BGSMSX104.gar.corp.intel.com>
-References: <1519373550-2545-1-git-send-email-rakesh.a.ughreja@intel.com>
- <1519373550-2545-6-git-send-email-rakesh.a.ughreja@intel.com>
- <s5hpo4vhco5.wl-tiwai@suse.de>
- <85DFEED57DC57344B2483EF7BF8CB60579B29AE3@BGSMSX104.gar.corp.intel.com>
- <s5hefl8gn2k.wl-tiwai@suse.de>
+From: Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: Re: regression v4.16 on Nokia N900:/dev/input/event6 aka AV Jack
+ support disappeared
+Date: Mon, 26 Feb 2018 10:47:45 +0100
+Message-ID: <71aa88ec-d4df-b49c-7d73-27197f468491@leemhuis.info>
+References: <20180224214617.GA22619@amd>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- by alsa0.perex.cz (Postfix) with ESMTP id F0B80267A2F
- for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2018 10:10:01 +0100 (CET)
-In-Reply-To: <s5hefl8gn2k.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul,
- Vinod" <vinod.koul@intel.com>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, "broonie@kernel.org" <broonie@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180224214617.GA22619@amd>
+Content-Language: en-MW
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pavel Machek <pavel@ucw.cz>, pali.rohar@gmail.com, sre@kernel.org, kernel list <linux-kernel@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-omap@vger.kernel.org, tony@atomide.com, khilman@kernel.org, aaro.koskinen@iki.fi, ivo.g.dimitrov.75@gmail.com, patrikbachan@gmail.com, serge@hallyn.com, abcloriens@gmail.com, clayton@craftyguy.net, martijn@brixit.nl, sakari.ailus@linux.intel.com, =?UTF-8?Q?Filip_Matijevi=c4=87?= <filip.matijevic.pz@gmail.com>, afd@ti.com
+Cc: broonie@kernel.org, peter.ujfalusi@ti.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+JFYI: This issues is tracked in the regression reports for Linux 4.16
+(http://bit.ly/lnxregrep416 ) with this id:
 
+Linux-Regression-ID: lr#4b650f
 
->-----Original Message-----
->From: Takashi Iwai [mailto:tiwai@suse.de]
->Sent: Monday, February 26, 2018 2:11 PM
->To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>
->Cc: alsa-devel@alsa-project.org; broonie@kernel.org;
->liam.r.girdwood@linux.intel.com; Koul, Vinod <vinod.koul@intel.com>; Patches
->Audio <patches.audio@intel.com>; pierre-louis.bossart@linux.intel.com
->Subject: Re: [alsa-devel] [PATCH v1 5/9] ALSA: hda - split snd_hda_codec_new
->function
->
->On Mon, 26 Feb 2018 09:33:01 +0100,
->Ughreja, Rakesh A wrote:
->>
->>
->>
->> >-----Original Message-----
->> >From: Takashi Iwai [mailto:tiwai@suse.de]
->> >Sent: Friday, February 23, 2018 10:22 PM
->> >To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>
->> >Cc: alsa-devel@alsa-project.org; broonie@kernel.org;
->> >liam.r.girdwood@linux.intel.com; Koul, Vinod <vinod.koul@intel.com>;
->Patches
->> >Audio <patches.audio@intel.com>; pierre-louis.bossart@linux.intel.com
->> >Subject: Re: [alsa-devel] [PATCH v1 5/9] ALSA: hda - split snd_hda_codec_new
->> >function
->> >
->> >On Fri, 23 Feb 2018 09:12:26 +0100,
->> >Rakesh Ughreja wrote:
->> >>
->> >> +int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card
->*card,
->> >> +			unsigned int codec_addr, struct hda_codec *codec)
->> >> +{
->> >>  	char component[31];
->> >
->> >Unused after the patch?
->>
->> We still use the component variable to construct the name, so I think we still
->> need it. Following code,
->>
->> +	sprintf(component, "hdaudioC%dD%d", card->number, codec_addr);
->> +	err = snd_hdac_device_init(&codec->core, &bus->core, component,
->> +				   codec_addr);
->
->Ah yeah, I re-sused the variable for the name string.
->It should have been named as "name" or such.
+Please include this line in the comment section of patches that are
+supposed to fix the issue. Please also mention the string once in other
+mailinglist threads or different bug tracking entries if you or someone
+else start to discuss the issue there. By including that string you make
+it a whole lot easier to track where an issue gets discussed and how far
+patches to fix it have made it. For more details on this please see
+here: http://bit.ly/lnxregtrackid
 
-Let me correct it then. I will rename it to char name[DEVICE_NAME_LEN];
+Thx for your help. Ciao, Thorsten
 
-Regards,
-Rakesh
+On 24.02.2018 22:46, Pavel Machek wrote:
+> Hi!
+> 
+> In v4.16, AV jack support disappeared.
+> 
+> This one is suspect:
+> 
+> commit 7be4b5dc7ffa9499ac6ef33a5ffa9ff43f9b7057
+> Author: Andrew F. Davis <afd@ti.com>
+> Date:   Wed Nov 29 11:13:59 2017 -0600
+> 
+>     ARM: dts: omap3-n900: Fix the audio CODEC's reset pin
+> 
+>     The correct DT property for specifying a GPIO used for reset
+>         is "reset-gpios", fix this here.
+> 
+>     Fixes: 14e3e295b2b9 ("ARM: dts: omap3-n900: Add TLV320AIC3X
+>     support")
+> 
+> Signed-off-by: Andrew F. Davis <afd@ti.com>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> 
+> How was it tested? It reverts polarity of reset pin, but
+> sound/soc/codecs/tlv320aic3x.c treats those as aliases:
+> 
+>  ret = of_get_named_gpio(np, "reset-gpios", 0);
+>  if (ret >= 0) {
+>     aic3x->gpio_reset = ret;
+>  } else {
+>  ret = of_get_named_gpio(np, "gpio-reset", 0);
+>  if (ret > 0) {
+>     dev_warn(&i2c->dev, "Using deprecated property \"gpio-r\eset\", please update your DT");
+>     aic3x->gpio_reset = ret;
+> 
+> 
+> 									Pavel
+> 
