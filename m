@@ -1,69 +1,70 @@
-From: Thorsten Leemhuis <regressions@leemhuis.info>
-Subject: Re: regression v4.16 on Nokia N900:/dev/input/event6 aka AV Jack
- support disappeared
-Date: Mon, 26 Feb 2018 10:47:45 +0100
-Message-ID: <71aa88ec-d4df-b49c-7d73-27197f468491@leemhuis.info>
-References: <20180224214617.GA22619@amd>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCHv5 1/5] dt-bindings: mfd: motorola-cpcap:
+ document audio-codec
+Date: Mon, 26 Feb 2018 10:08:36 +0000
+Message-ID: <20180226100836.GA6681@sirena.org.uk>
+References: <20180223200254.25685-1-sebastian.reichel@collabora.co.uk>
+ <20180223200254.25685-2-sebastian.reichel@collabora.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180224214617.GA22619@amd>
-Content-Language: en-MW
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pavel Machek <pavel@ucw.cz>, pali.rohar@gmail.com, sre@kernel.org, kernel list <linux-kernel@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-omap@vger.kernel.org, tony@atomide.com, khilman@kernel.org, aaro.koskinen@iki.fi, ivo.g.dimitrov.75@gmail.com, patrikbachan@gmail.com, serge@hallyn.com, abcloriens@gmail.com, clayton@craftyguy.net, martijn@brixit.nl, sakari.ailus@linux.intel.com, =?UTF-8?Q?Filip_Matijevi=c4=87?= <filip.matijevic.pz@gmail.com>, afd@ti.com
-Cc: broonie@kernel.org, peter.ujfalusi@ti.com, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============0467356757974097013=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id B3A41267A07
+ for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2018 11:08:46 +0100 (CET)
+In-Reply-To: <20180223200254.25685-2-sebastian.reichel@collabora.co.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Liam Girdwood <lgirdwood@gmail.com>, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Sebastian Reichel <sre@kernel.org>, Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-JFYI: This issues is tracked in the regression reports for Linux 4.16
-(http://bit.ly/lnxregrep416 ) with this id:
 
-Linux-Regression-ID: lr#4b650f
+--===============0467356757974097013==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="cWoXeonUoKmBZSoM"
+Content-Disposition: inline
 
-Please include this line in the comment section of patches that are
-supposed to fix the issue. Please also mention the string once in other
-mailinglist threads or different bug tracking entries if you or someone
-else start to discuss the issue there. By including that string you make
-it a whole lot easier to track where an issue gets discussed and how far
-patches to fix it have made it. For more details on this please see
-here: http://bit.ly/lnxregtrackid
 
-Thx for your help. Ciao, Thorsten
+--cWoXeonUoKmBZSoM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 24.02.2018 22:46, Pavel Machek wrote:
-> Hi!
-> 
-> In v4.16, AV jack support disappeared.
-> 
-> This one is suspect:
-> 
-> commit 7be4b5dc7ffa9499ac6ef33a5ffa9ff43f9b7057
-> Author: Andrew F. Davis <afd@ti.com>
-> Date:   Wed Nov 29 11:13:59 2017 -0600
-> 
->     ARM: dts: omap3-n900: Fix the audio CODEC's reset pin
-> 
->     The correct DT property for specifying a GPIO used for reset
->         is "reset-gpios", fix this here.
-> 
->     Fixes: 14e3e295b2b9 ("ARM: dts: omap3-n900: Add TLV320AIC3X
->     support")
-> 
-> Signed-off-by: Andrew F. Davis <afd@ti.com>
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> 
-> How was it tested? It reverts polarity of reset pin, but
-> sound/soc/codecs/tlv320aic3x.c treats those as aliases:
-> 
->  ret = of_get_named_gpio(np, "reset-gpios", 0);
->  if (ret >= 0) {
->     aic3x->gpio_reset = ret;
->  } else {
->  ret = of_get_named_gpio(np, "gpio-reset", 0);
->  if (ret > 0) {
->     dev_warn(&i2c->dev, "Using deprecated property \"gpio-r\eset\", please update your DT");
->     aic3x->gpio_reset = ret;
-> 
-> 
-> 									Pavel
-> 
+On Fri, Feb 23, 2018 at 09:02:50PM +0100, Sebastian Reichel wrote:
+> This adds the DT binding for the audio-codec sub-module found
+> inside the Motorola CPCAP PMIC.
+
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--cWoXeonUoKmBZSoM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqT3KEACgkQJNaLcl1U
+h9DMHwf/SxL4YjgjlUiilDIxIrtHpbqJaqqXfwvwuYGZwLeVRvYaOzeH94LxxMSX
+maSLSjSgUh5UUBAfMmvH0e9zE+bnsFV6cRB4Y2Z2D8TXD8ZtwwvUFMK1tdP86J57
+b3Pap7Rxv1cIVuTf9kyyIJF4IH9+UqWF+/e/ysOvgsaP61CKMLRvvjVRJLG4c2z4
+0KY1gCdkJxW+CwK6LKdZTIrb90e7s8zh5wvzxmKzoCeqUdZFeH7mFa00MjGxC8Cr
+TxCNNWh6hSdeENZ8exBe7HyziYy9jHsq8hCkv4IsIozovrhwb2zA8kmXUolB4sJw
+OBSClQSg985LTZJ8vJweVjj3Eltt9A==
+=hQJt
+-----END PGP SIGNATURE-----
+
+--cWoXeonUoKmBZSoM--
+
+--===============0467356757974097013==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0467356757974097013==--
