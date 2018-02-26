@@ -1,17 +1,17 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH v2] ASoC: imx-wm8962: Remove machine driver
-Date: Mon, 26 Feb 2018 16:15:35 -0300
-Message-ID: <1519672535-26589-1-git-send-email-festevam@gmail.com>
+Subject: [PATCH v3] ASoC: imx-wm8962: Remove machine driver
+Date: Mon, 26 Feb 2018 16:22:03 -0300
+Message-ID: <1519672923-26886-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f66.google.com (mail-vk0-f66.google.com
- [209.85.213.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F2DA267AA5
- for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2018 20:15:28 +0100 (CET)
-Received: by mail-vk0-f66.google.com with SMTP id y127so10585190vky.9
- for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2018 11:15:27 -0800 (PST)
+Received: from mail-ua0-f196.google.com (mail-ua0-f196.google.com
+ [209.85.217.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 55DE7267605
+ for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2018 20:21:54 +0100 (CET)
+Received: by mail-ua0-f196.google.com with SMTP id z3so11373893uae.12
+ for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2018 11:21:54 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,16 +35,76 @@ Remove the imx-wm8962 machine driver.
 Suggested-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 ---
-Changes since v1:
-- Instead of fixing the imx-wm8962 driver private strcuc, 
-better remove it as wm8962 can be handled by fsl-asoc-card. (Nicolin)
+Changes since v2:
+- Also remove the dt-bindings
 
- sound/soc/fsl/Kconfig      |  11 --
- sound/soc/fsl/Makefile     |   2 -
- sound/soc/fsl/imx-wm8962.c | 312 ---------------------------------------------
- 3 files changed, 325 deletions(-)
+ .../devicetree/bindings/sound/imx-audio-wm8962.txt |  53 ----
+ sound/soc/fsl/Kconfig                              |  11 -
+ sound/soc/fsl/Makefile                             |   2 -
+ sound/soc/fsl/imx-wm8962.c                         | 312 ---------------------
+ 4 files changed, 378 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/imx-audio-wm8962.txt
  delete mode 100644 sound/soc/fsl/imx-wm8962.c
 
+diff --git a/Documentation/devicetree/bindings/sound/imx-audio-wm8962.txt b/Documentation/devicetree/bindings/sound/imx-audio-wm8962.txt
+deleted file mode 100644
+index acea71b..0000000
+--- a/Documentation/devicetree/bindings/sound/imx-audio-wm8962.txt
++++ /dev/null
+@@ -1,53 +0,0 @@
+-Freescale i.MX audio complex with WM8962 codec
+-
+-Required properties:
+-
+-  - compatible		: "fsl,imx-audio-wm8962"
+-
+-  - model		: The user-visible name of this sound complex
+-
+-  - ssi-controller	: The phandle of the i.MX SSI controller
+-
+-  - audio-codec		: The phandle of the WM8962 audio codec
+-
+-  - audio-routing	: A list of the connections between audio components.
+-			  Each entry is a pair of strings, the first being the
+-			  connection's sink, the second being the connection's
+-			  source. Valid names could be power supplies, WM8962
+-			  pins, and the jacks on the board:
+-
+-			  Power supplies:
+-			   * Mic Bias
+-
+-			  Board connectors:
+-			   * Mic Jack
+-			   * Headphone Jack
+-			   * Ext Spk
+-
+-  - mux-int-port	: The internal port of the i.MX audio muxer (AUDMUX)
+-
+-  - mux-ext-port	: The external port of the i.MX audio muxer
+-
+-Note: The AUDMUX port numbering should start at 1, which is consistent with
+-hardware manual.
+-
+-Example:
+-
+-sound {
+-	compatible = "fsl,imx6q-sabresd-wm8962",
+-		     "fsl,imx-audio-wm8962";
+-	model = "wm8962-audio";
+-	ssi-controller = <&ssi2>;
+-	audio-codec = <&codec>;
+-		audio-routing =
+-		"Headphone Jack", "HPOUTL",
+-		"Headphone Jack", "HPOUTR",
+-		"Ext Spk", "SPKOUTL",
+-		"Ext Spk", "SPKOUTR",
+-		"MICBIAS", "AMIC",
+-		"IN3R", "MICBIAS",
+-		"DMIC", "MICBIAS",
+-		"DMICDAT", "DMIC";
+-	mux-int-port = <2>;
+-	mux-ext-port = <3>;
+-};
 diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
 index 37f9b62..6ec19fb 100644
 --- a/sound/soc/fsl/Kconfig
