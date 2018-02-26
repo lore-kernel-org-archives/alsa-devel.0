@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Support streams which can
-	start/stop with DSP active" to the asoc tree
-Date: Mon, 26 Feb 2018 11:17:22 +0000
-Message-ID: <E1eqGmY-0005Sc-OJ@debutante>
-References: <20180226104947.32037-1-ckeepax@opensource.cirrus.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 13F57267A57
- for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2018 12:17:25 +0100 (CET)
-In-Reply-To: <20180226104947.32037-1-ckeepax@opensource.cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+Subject: Applied "ASoC: pxa: remove duplicated bit-wise or of SNDRV_PCM_FMTBIT_S24_LE" to the asoc tree
+Date: Mon, 26 Feb 2018 11:17:28 +0000
+Message-ID: <E1eqGme-0005UW-4n@debutante>
+References: <20180223143738.29600-1-colin.king@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180223143738.29600-1-colin.king@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Mark Brown <broonie@kernel.org>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Support streams which can start/stop with DSP active
+   ASoC: pxa: remove duplicated bit-wise or of SNDRV_PCM_FMTBIT_S24_LE
 
 has been applied to the asoc tree at
 
@@ -53,77 +37,32 @@ to this mail.
 Thanks,
 Mark
 
->From 61fc060c40e6b92350c08a210619fc7d93c61e42 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Mon, 26 Feb 2018 10:49:47 +0000
-Subject: [PATCH] ASoC: wm_adsp: Support streams which can start/stop with DSP
- active
+>From 8b597ff47053c9f53384a3a26dcc4c4316a375e5 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Fri, 23 Feb 2018 14:37:38 +0000
+Subject: [PATCH] ASoC: pxa: remove duplicated bit-wise or of
+ SNDRV_PCM_FMTBIT_S24_LE
 
-Clear the buffer data structure on each trigger start such that the
-buffer is in a sensible state even if the DSP itself didn't restart.
-This is necessary to support voice control streams which can trigger
-multiple times without reloading the firmware.
+Bit pattern SNDRV_PCM_FMTBIT_S24_LE is being bit-wise or'd twice; remove
+the redundant 2nd SNDRV_PCM_FMTBIT_S24_LE
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 28 ++++++++++++++++++----------
- 1 file changed, 18 insertions(+), 10 deletions(-)
+ sound/soc/pxa/mmp-sspa.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 0060aeb63a9f..ab91f1320ad5 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -3258,6 +3258,13 @@ static int wm_adsp_buffer_populate(struct wm_adsp_compr_buf *buf)
- 	return 0;
- }
+diff --git a/sound/soc/pxa/mmp-sspa.c b/sound/soc/pxa/mmp-sspa.c
+index 64b85e30c1f8..7c998ea4ebee 100644
+--- a/sound/soc/pxa/mmp-sspa.c
++++ b/sound/soc/pxa/mmp-sspa.c
+@@ -377,7 +377,6 @@ static int mmp_sspa_probe(struct snd_soc_dai *dai)
+ #define MMP_SSPA_FORMATS (SNDRV_PCM_FMTBIT_S8 | \
+ 		SNDRV_PCM_FMTBIT_S16_LE | \
+ 		SNDRV_PCM_FMTBIT_S24_LE | \
+-		SNDRV_PCM_FMTBIT_S24_LE | \
+ 		SNDRV_PCM_FMTBIT_S32_LE)
  
-+static void wm_adsp_buffer_clear(struct wm_adsp_compr_buf *buf)
-+{
-+	buf->irq_count = 0xFFFFFFFF;
-+	buf->read_index = -1;
-+	buf->avail = 0;
-+}
-+
- static int wm_adsp_buffer_init(struct wm_adsp *dsp)
- {
- 	struct wm_adsp_compr_buf *buf;
-@@ -3268,8 +3275,8 @@ static int wm_adsp_buffer_init(struct wm_adsp *dsp)
- 		return -ENOMEM;
- 
- 	buf->dsp = dsp;
--	buf->read_index = -1;
--	buf->irq_count = 0xFFFFFFFF;
-+
-+	wm_adsp_buffer_clear(buf);
- 
- 	ret = wm_adsp_buffer_locate(buf);
- 	if (ret < 0) {
-@@ -3327,16 +3334,17 @@ int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd)
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
--		if (wm_adsp_compr_attached(compr))
--			break;
--
--		ret = wm_adsp_compr_attach(compr);
--		if (ret < 0) {
--			adsp_err(dsp, "Failed to link buffer and stream: %d\n",
--				 ret);
--			break;
-+		if (!wm_adsp_compr_attached(compr)) {
-+			ret = wm_adsp_compr_attach(compr);
-+			if (ret < 0) {
-+				adsp_err(dsp, "Failed to link buffer and stream: %d\n",
-+					 ret);
-+				break;
-+			}
- 		}
- 
-+		wm_adsp_buffer_clear(compr->buf);
-+
- 		/* Trigger the IRQ at one fragment of data */
- 		ret = wm_adsp_buffer_write(compr->buf,
- 					   HOST_BUFFER_FIELD(high_water_mark),
+ static const struct snd_soc_dai_ops mmp_sspa_dai_ops = {
 -- 
 2.16.1
