@@ -1,14 +1,19 @@
-From: "Wischer, Timo (ADITG/ESB)" <twischer@de.adit-jv.com>
-Subject: Re: [PATCH - JACK PCM plugin] jack: Do not Xrun the
-	ALSA buffer
-Date: Mon, 26 Feb 2018 08:14:11 +0000
-Message-ID: <B0FB33DC1499054591F62C0EF1E013D7684FB83A@HI2EXCH01.adit-jv.com>
-References: <1516794784-9993-1-git-send-email-twischer@de.adit-jv.com>
+From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
+Subject: Re: [PATCH v1 2/9] ASoC: Intel: Skylake: Add entry in
+ sst_acpi_mach for HDA codecs
+Date: Mon, 26 Feb 2018 08:17:57 +0000
+Message-ID: <85DFEED57DC57344B2483EF7BF8CB60579B29A74@BGSMSX104.gar.corp.intel.com>
+References: <1519373550-2545-1-git-send-email-rakesh.a.ughreja@intel.com>
+ <1519373550-2545-3-git-send-email-rakesh.a.ughreja@intel.com>
+ <9f6781f5-d581-3ee9-c89c-c695e28bb4fb@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1516794784-9993-1-git-send-email-twischer@de.adit-jv.com>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 610A8267045
+ for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2018 09:18:03 +0100 (CET)
+In-Reply-To: <9f6781f5-d581-3ee9-c89c-c695e28bb4fb@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -19,288 +24,152 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "patch@alsa-project.org" <patch@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>
+Cc: "Koul, Vinod" <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
-
-Due to merged [1] (see [2]) [3] can be merged without conflicts, now.
-
-@Takashi: Thanks for merging [2].
-
-Please give a feedback if there is anything which has to be changed.
-
-The biggest change in snd_pcm_jack_process_cb() occurs =
-
-due to the movement of the snd_pcm_area_silence() call to the end of this f=
-unction.
-This is required to fill the buffer with silence if there is not enough aud=
-io data available for JACK.
-
-[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-January/13098=
-6.html
-[2] http://git.alsa-project.org/?p=3Dalsa-plugins.git;a=3Dcommit;h=3D3e6ace=
-6fe045c580dc5490d87eff6b616f7769ef
-[3] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-January/13098=
-7.html
-
-Best regards
-
-Timo Wischer
-
-Advanced Driver Information Technology GmbH
-Engineering Software Base (ADITG/ESB)
-Robert-Bosch-Str. 200
-31139 Hildesheim
-Germany
-
-Tel. +49 5121 49 6938
-Fax +49 5121 49 6999
-twischer@de.adit-jv.com
-
-ADIT is a joint venture company of Robert Bosch GmbH/Robert Bosch Car Multi=
-media GmbH and DENSO Corporation
-Sitz: Hildesheim, Registergericht: Amtsgericht Hildesheim HRB 3438
-Gesch=E4ftsf=FChrung: Wilhelm Grabow, Ken Yaguchi
-
-________________________________________
-From: Wischer, Timo (ADITG/ESB)
-Sent: Wednesday, January 24, 2018 12:53 PM
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org; Wischer, Timo (ADITG/ESB)
-Subject: [PATCH - JACK PCM plugin] jack: Do not Xrun the ALSA buffer
-
-From: Timo Wischer <twischer@de.adit-jv.com>
-
-when the JACK thread is requesting too many audio frames
-
-Playback:
-Without this commit the ALSA audio buffer
-will be played with endless repeats as long as the user application
-has not provided new audio data.
-Therefore this garbage will be played as long as the user application
-has not called snd_pcm_stop() after an Xrun.
-With this fix the rest of the JACK buffer will be filled
-with silence.
-
-Capture:
-Without this commit the audio data in the ALSA buffer would be
-overwritten.
-With this commit the new data from the JACK buffer
-will not be copied.
-Therefore the existing data in the ALSA buffer
-will not be overwritten.
-
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
----
-
-This patch is depending on
-http://mailman.alsa-project.org/pipermail/alsa-devel/2018-January/130986.ht=
-ml
 
 
-diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
-index c22a5d0..a4f35f4 100644
---- a/jack/pcm_jack.c
-+++ b/jack/pcm_jack.c
-@@ -54,6 +54,68 @@ typedef struct {
+>-----Original Message-----
+>From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
+>Sent: Friday, February 23, 2018 10:13 PM
+>To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>; alsa-devel@alsa-
+>project.org; broonie@kernel.org; tiwai@suse.de;
+>liam.r.girdwood@linux.intel.com
+>Cc: Koul, Vinod <vinod.koul@intel.com>; Patches Audio
+><patches.audio@intel.com>
+>Subject: Re: [PATCH v1 2/9] ASoC: Intel: Skylake: Add entry in sst_acpi_mach for
+>HDA codecs
+>
+>On 2/23/18 2:12 AM, Rakesh Ughreja wrote:
+>> When no I2S based codec entries are found in the BIOS, check if there are
+>> any HDA codecs detected on the bus. If there are two (i.e. iDisp + HDA)
+>> HDA codecs found on the bus, load the HDA machine driver.
+>
+>What if you have a headless device with no codec, that means no HDMI
+>support? Why is this restriction necessary?
 
- static int snd_pcm_jack_stop(snd_pcm_ioplug_t *io);
+This machine driver handles HDA and iDisp combination only.
 
-+
-+static inline snd_pcm_uframes_t snd_pcm_jack_playback_avail(const snd_pcm_=
-ioplug_t* const io,
-+                                                            const snd_pcm_=
-uframes_t hw_ptr,
-+                                                            const snd_pcm_=
-uframes_t appl_ptr)
-+{
-+       const snd_pcm_jack_t* const jack =3D io->private_data;
-+
-+       /* cannot use io->hw_ptr without calling snd_pcm_avail_update()
-+        * because it is not guranteed that snd_pcm_jack_pointer() was alre=
-ady
-+        * called
-+        */
-+       snd_pcm_sframes_t avail;
-+       avail =3D hw_ptr + io->buffer_size - appl_ptr;
-+       if (avail < 0)
-+               avail +=3D jack->boundary;
-+       else if ((snd_pcm_uframes_t) avail >=3D jack->boundary)
-+               avail -=3D jack->boundary;
-+       return avail;
-+}
-+
-+static inline snd_pcm_uframes_t snd_pcm_jack_capture_avail(const snd_pcm_i=
-oplug_t* const io,
-+                                                           const snd_pcm_u=
-frames_t hw_ptr,
-+                                                           const snd_pcm_u=
-frames_t appl_ptr)
-+{
-+       const snd_pcm_jack_t* const jack =3D io->private_data;
-+
-+       /* cannot use io->hw_ptr without calling snd_pcm_avail_update()
-+        * because it is not guranteed that snd_pcm_jack_pointer() was alre=
-ady
-+        * called
-+        */
-+       snd_pcm_sframes_t avail;
-+       avail =3D hw_ptr - appl_ptr;
-+       if (avail < 0)
-+               avail +=3D jack->boundary;
-+       return avail;
-+}
-+
-+static inline snd_pcm_uframes_t snd_pcm_jack_avail(const snd_pcm_ioplug_t*=
- const io,
-+                                                   const snd_pcm_uframes_t=
- hw_ptr,
-+                                                   const snd_pcm_uframes_t=
- appl_ptr)
-+{
-+       return (io->stream =3D=3D SND_PCM_STREAM_PLAYBACK) ?
-+                               snd_pcm_jack_playback_avail(io, hw_ptr, app=
-l_ptr) :
-+                               snd_pcm_jack_capture_avail(io, hw_ptr, appl=
-_ptr);
-+}
-+
-+static inline snd_pcm_uframes_t snd_pcm_jack_hw_avail(const snd_pcm_ioplug=
-_t* const io,
-+                                                      const snd_pcm_uframe=
-s_t hw_ptr,
-+                                                      const snd_pcm_uframe=
-s_t appl_ptr)
-+{
-+       /* available data/space which can be transfered by the user applica=
-tion */
-+       const snd_pcm_uframes_t user_avail =3D snd_pcm_jack_avail(io, hw_pt=
-r,
-+                                                               appl_ptr);
-+
-+       if (user_avail > io->buffer_size) {
-+               /* there was an Xrun */
-+               return 0;
-+       }
-+       /* available data/space which can be transfered by the DMA */
-+       return io->buffer_size - user_avail;
-+}
-+
- static int pcm_poll_block_check(snd_pcm_ioplug_t *io)
- {
-        static char buf[32];
-@@ -154,7 +216,6 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm=
-_ioplug_t *io)
- {
-        snd_pcm_jack_t *jack =3D io->private_data;
-        snd_pcm_uframes_t hw_ptr;
--       const snd_pcm_channel_area_t *areas;
-        snd_pcm_uframes_t xfer =3D 0;
-        unsigned int channel;
+If you want to handle only iDisp or only HDA or more than one HDA
+different machine driver needs to be written or this machine
+driver needs to be enhanced.
 
-@@ -164,40 +225,57 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_p=
-cm_ioplug_t *io)
-                jack->areas[channel].first =3D 0;
-                jack->areas[channel].step =3D jack->sample_bits;
-        }
--
--       if (io->state !=3D SND_PCM_STATE_RUNNING) {
--               if (io->stream =3D=3D SND_PCM_STREAM_PLAYBACK) {
--                       for (channel =3D 0; channel < io->channels; channel=
-++)
--                               snd_pcm_area_silence(&jack->areas[channel],=
- 0, nframes, io->format);
--                       return 0;
--               }
--       }
+Machine driver has BE DAI link information and so it is specific to those
+many devices for a given platform.
 
-        hw_ptr =3D jack->hw_ptr;
--       areas =3D snd_pcm_ioplug_mmap_areas(io);
--
--       while (xfer < nframes) {
--               snd_pcm_uframes_t frames =3D nframes - xfer;
--               snd_pcm_uframes_t offset =3D hw_ptr % io->buffer_size;
--               snd_pcm_uframes_t cont =3D io->buffer_size - offset;
--
--               if (cont < frames)
--                       frames =3D cont;
-+       if (io->state =3D=3D SND_PCM_STATE_RUNNING) {
-+               const snd_pcm_channel_area_t *areas =3D snd_pcm_ioplug_mmap=
-_areas(io);
-+
-+               while (xfer < nframes) {
-+                       snd_pcm_uframes_t frames =3D nframes - xfer;
-+                       snd_pcm_uframes_t offset =3D hw_ptr % io->buffer_si=
-ze;
-+                       snd_pcm_uframes_t cont =3D io->buffer_size - offset;
-+                       snd_pcm_uframes_t hw_avail =3D
-+                                       snd_pcm_jack_hw_avail(io, hw_ptr,
-+                                                             io->appl_ptr);
-+
-+                       /* stop copying if there is no more data available =
-*/
-+                       if (hw_avail <=3D 0)
-+                               break;
-+
-+                       /* split the snd_pcm_area_copy() function into two =
-parts
-+                        * if the data to copy passes the buffer wrap around
-+                        */
-+                       if (cont < frames)
-+                               frames =3D cont;
-+
-+                       if (hw_avail < frames)
-+                               frames =3D hw_avail;
-+
-+                       for (channel =3D 0; channel < io->channels; channel=
-++) {
-+                               if (io->stream =3D=3D SND_PCM_STREAM_PLAYBA=
-CK)
-+                                       snd_pcm_area_copy(&jack->areas[chan=
-nel], xfer, &areas[channel], offset, frames, io->format);
-+                               else
-+                                       snd_pcm_area_copy(&areas[channel], =
-offset, &jack->areas[channel], xfer, frames, io->format);
-+                       }
+>
+>>
+>> Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+>> ---
+>>   sound/soc/intel/skylake/skl.c | 59
+>+++++++++++++++++++++++++++++++++++++++----
+>>   1 file changed, 54 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+>> index f948f29..ac64416 100644
+>> --- a/sound/soc/intel/skylake/skl.c
+>> +++ b/sound/soc/intel/skylake/skl.c
+>> @@ -442,6 +442,24 @@ static struct skl_ssp_clk skl_ssp_clks[] = {
+>>   						{.name = "ssp5_sclkfs"},
+>>   };
+>>
+>> +static struct snd_soc_acpi_mach *skl_find_hda_machine(struct skl *skl,
+>> +					struct snd_soc_acpi_mach
+>*machines)
+>> +{
+>> +
+>> +	struct snd_soc_acpi_mach *mach;
+>> +	struct hdac_bus *bus = skl_to_bus(skl);
+>> +
+>> +	/* check if we have two HDA codecs */
+>> +	if (hweight_long(bus->codec_mask) != 2)
+>> +		return NULL;
+>> +
+>> +	for (mach = machines; mach->id[0]; mach++) {
+>> +		if (!strcmp(mach->id, "HDA_GEN"))
+>> +			return mach;
+>> +	}
+>
+>that's not really testing if there are actual HDaudio devices, is this
+>loop just there to point to a firmware file?
 
--               for (channel =3D 0; channel < io->channels; channel++) {
--                       if (io->stream =3D=3D SND_PCM_STREAM_PLAYBACK)
--                               snd_pcm_area_copy(&jack->areas[channel], xf=
-er, &areas[channel], offset, frames, io->format);
--                       else
--                               snd_pcm_area_copy(&areas[channel], offset, =
-&jack->areas[channel], xfer, frames, io->format);
-+                       hw_ptr +=3D frames;
-+                       if (hw_ptr >=3D jack->boundary)
-+                               hw_ptr -=3D jack->boundary;
-+                       xfer +=3D frames;
-                }
--
--               hw_ptr +=3D frames;
--               if (hw_ptr >=3D jack->boundary)
--                       hw_ptr -=3D jack->boundary;
--               xfer +=3D frames;
-        }
-        jack->hw_ptr =3D hw_ptr;
+There is a check for number of codecs in the previous line.
+By default the iDisp codec would always be present so the check
+is for count 2.
 
-+       /* check if requested frames were copied */
-+       if (xfer < nframes) {
-+               /* always fill the not yet written JACK buffer with silence=
- */
-+               if (io->stream =3D=3D SND_PCM_STREAM_PLAYBACK) {
-+                       const snd_pcm_uframes_t samples =3D nframes - xfer;
-+                       for (channel =3D 0; channel < io->channels; channel=
-++)
-+                               snd_pcm_area_silence(&jack->areas[channel],=
- xfer, samples, io->format);
-+               }
-+       }
-+
-        pcm_poll_unblock_check(io); /* unblock socket for polling if needed=
- */
+>
+>> +	return NULL;
+>> +}
+>> +
+>>   static int skl_find_machine(struct skl *skl, void *driver_data)
+>>   {
+>>   	struct hdac_bus *bus = skl_to_bus(skl);
+>> @@ -450,8 +468,12 @@ static int skl_find_machine(struct skl *skl, void
+>*driver_data)
+>>
+>>   	mach = snd_soc_acpi_find_machine(mach);
+>>   	if (mach == NULL) {
+>> -		dev_err(bus->dev, "No matching machine driver found\n");
+>> -		return -ENODEV;
+>> +		dev_dbg(bus->dev, "No matching I2S machine driver found\n");
+>> +		mach = skl_find_hda_machine(skl, driver_data);
+>> +		if (mach == NULL) {
+>> +			dev_err(bus->dev, "No matching machine driver
+>found\n");
+>> +			return -ENODEV;
+>> +		}
+>>   	}
+>>
+>>   	skl->mach = mach;
+>> @@ -466,8 +488,9 @@ static int skl_find_machine(struct skl *skl, void
+>*driver_data)
+>>
+>>   static int skl_machine_device_register(struct skl *skl)
+>>   {
+>> -	struct hdac_bus *bus = skl_to_bus(skl);
+>>   	struct snd_soc_acpi_mach *mach = skl->mach;
+>> +	struct hdac_bus *bus = skl_to_bus(skl);
+>> +	struct skl_machine_pdata *pdata;
+>>   	struct platform_device *pdev;
+>>   	int ret;
+>>
+>> @@ -484,8 +507,11 @@ static int skl_machine_device_register(struct skl *skl)
+>>   		return -EIO;
+>>   	}
+>>
+>> -	if (mach->pdata)
+>> +	if (mach->pdata) {
+>> +		pdata = (struct skl_machine_pdata *)mach->pdata;
+>> +		pdata->platform = dev_name(bus->dev);
+>>   		dev_set_drvdata(&pdev->dev, mach->pdata);
+>> +	}
+>>
+>>   	skl->i2s_dev = pdev;
+>>
+>> @@ -1030,6 +1056,14 @@ static struct snd_soc_acpi_mach sst_skl_devdata[]
+>= {
+>>   		.quirk_data = &skl_codecs,
+>>   		.pdata = &skl_dmic_data
+>>   	},
+>> +	{
+>> +		.id = "HDA_GEN",
+>> +		.drv_name = "skl_hda_generic",
+>> +		.fw_filename = "intel/dsp_fw_release.bin",
+>> +		.machine_quirk = NULL,
+>> +		.quirk_data = NULL,
+>> +		.pdata = &cnl_pdata,
+>
+>this is odd, the cnl_pdata says the topology_pcm is used, I thought this
+>was not applicable for SKL/KBL. Or put differently, why is this used for
+>the hda case only?
 
-        return 0;
---
-2.7.4
+This flag is used for using the topology framework for creating the 
+FE DAIs and DAI Links. The other I2S machine drivers which are
+up-streamed some time back don't have support for creating
+DAIs and DAI Links from topology file. Based on your comments
+given in the RFC, I have added this support for HDA machine drivers
+even for SKL, KBL also.
+
+Regards,
+Rakesh
