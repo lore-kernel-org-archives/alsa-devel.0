@@ -1,20 +1,20 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v1 5/9] ALSA: hda - split snd_hda_codec_new
- function
-Date: Mon, 26 Feb 2018 12:14:11 -0700
-Message-ID: <ba0d428f-a194-55cf-1470-76648f99680c@linux.intel.com>
+Subject: Re: [PATCH v1 9/9] ASoC: Intel: Boards: add support
+ for HDA codecs
+Date: Mon, 26 Feb 2018 12:37:02 -0700
+Message-ID: <9bcab530-3517-5a27-7a49-65af8aff6ba5@linux.intel.com>
 References: <1519373550-2545-1-git-send-email-rakesh.a.ughreja@intel.com>
- <1519373550-2545-6-git-send-email-rakesh.a.ughreja@intel.com>
- <96204f32-54ea-baaa-c3ed-94774f7728c5@linux.intel.com>
- <85DFEED57DC57344B2483EF7BF8CB60579B29AC2@BGSMSX104.gar.corp.intel.com>
+ <1519373550-2545-10-git-send-email-rakesh.a.ughreja@intel.com>
+ <2536565b-4783-0829-536e-ee24e435c041@linux.intel.com>
+ <85DFEED57DC57344B2483EF7BF8CB60579B2A59B@BGSMSX104.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 54F6126763F
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 69638267663
  for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 02:49:17 +0100 (CET)
-In-Reply-To: <85DFEED57DC57344B2483EF7BF8CB60579B29AC2@BGSMSX104.gar.corp.intel.com>
+In-Reply-To: <85DFEED57DC57344B2483EF7BF8CB60579B2A59B@BGSMSX104.gar.corp.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,39 +29,96 @@ To: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>, "alsa-devel@alsa-project.o
 Cc: "Koul, Vinod" <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2/26/18 1:28 AM, Ughreja, Rakesh A wrote:
-> 
-> 
->> -----Original Message-----
->> From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
->> Sent: Friday, February 23, 2018 10:20 PM
->> To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>; alsa-devel@alsa-
->> project.org; broonie@kernel.org; tiwai@suse.de;
->> liam.r.girdwood@linux.intel.com
->> Cc: Koul, Vinod <vinod.koul@intel.com>; Patches Audio
->> <patches.audio@intel.com>
->> Subject: Re: [PATCH v1 5/9] ALSA: hda - split snd_hda_codec_new function
->>
->> On 2/23/18 2:12 AM, Rakesh Ughreja wrote:
->>> Split snd_hda_codec_new into two separate functions.
->>> snd_hda_codec_device_init allocates memory and registers with bus.
->>> snd_hda_codec_device_new initialializes the fields and performs
->>> snd_device_new. This enables reuse of legacy HDA codec drivers as ASoC
->>> codec drivers.
->>>
->>> In addition mark some functions with EXPORT_SYMBOL_GPL so that it can be
->>> called by ASoC codec drivers.
->>
->> I don't get the commit message.
->> You first say that we can now reuse legacy HDaudio codec drivers in an
->> ASoC framework, then say that there will be additional ASoC codec
->> drivers? Why would we do this, it seems like a contradicting goal?
->>
-> 
-> Yes, its misleading, so correcting the line as,
-> 
-> In addition mark some functions with EXPORT_SYMBOL_GPL so that it can be
-> called by ASoC wrapper around the legacy HDA driver (hdac_hda).
 
-Still confusing. You are both reusing codec drivers and defining a 
-wrapper, so are you reusing parts of the codec drivers only?
+>>> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+>>> index ceb105c..d44cf1e 100644
+>>> --- a/sound/soc/intel/Kconfig
+>>> +++ b/sound/soc/intel/Kconfig
+>>> @@ -107,6 +107,7 @@ config SND_SOC_INTEL_SKYLAKE
+>>>    	select SND_HDA_DSP_LOADER
+>>>    	select SND_SOC_TOPOLOGY
+>>>    	select SND_SOC_INTEL_SST
+>>> +	select SND_SOC_HDAC_HDA if
+>> SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH
+>>
+>> This looks odd, it beats the purpose of the clean split between platform
+>> and machine Kconfig added in 2017. You should select SND_SOC_HDAC_HDA in
+>> the config for SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH
+> 
+> If I move into the machine driver Kconfig, then it will be loaded after
+> the SKL platform driver loads and so symbol dependency will create an issue.
+> 
+> hdac_hda needs to be loaded before the SKL driver, so that it can
+> get the ops from library. So I will have to load it manually in the platform
+> driver code. Let me try that, if it does not work, I will come back on this
+> topic.
+
+I don't believe the Kconfig selection has any bearing on how the codecs 
+are loaded. In fact the existing I2S-based machine drivers are a 
+counter-example, the machine drivers depend on a codec driver in 
+Kconfig, but the latter needs to be loaded first so that the machine 
+driver finds the relevant DAIs.
+
+>>> +static const struct snd_kcontrol_new skl_hda_controls[] = {
+>>> +	SOC_DAPM_PIN_SWITCH("Headphone"),
+>>> +	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+>>> +};
+>>> +
+>>> +static const struct snd_soc_dapm_widget skl_hda_widgets[] = {
+>>> +	SND_SOC_DAPM_HP("Headphone", NULL),
+>>> +	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+>>> +	SND_SOC_DAPM_SPK("Codec Speaker", NULL),
+>>> +	SND_SOC_DAPM_MIC("Codec Mic", NULL),
+>>> +};
+>>
+>> what about all the other outputs, e.g. line out? And how does this work
+>> with pin retasking?
+> 
+> Good point.
+> 
+> The hdac_hda is just a wrapper around the legacy codec driver
+> and so it relies on the functionality of the legacy HDA codec driver
+> for all the functionality including pin re-tasking.
+> 
+> The widget names that you see above is just to complete the
+> DAPM route. Based on your comment I am planning to rename it as
+> following
+> 
+> Analog In Endpoint
+> Analog Output Endpoint
+> Digital In Endpoint
+> Digital Out Endpoint
+> 
+> and will connect it to the Codec Pins.
+> 
+> Also I think it makes sense to rename the codec Pin names accordingly
+> 
+> Codec Analog Input Pin
+> Codec Analog Output Pin
+> Codec Digital Input Pin
+> Codec Digital Output Pin
+
+Humm, what if you have more than one analog input? It's almost as if 
+this list should be created dynamically based on what is exposed by the 
+codec, I don't see how a static list will cover all configurations.
+
+
+>>> +	err = snd_hdac_ext_bus_device_init(bus, addr, hdev);
+>>> +	if (err < 0)
+>>> +		return err;
+>>> +
+>>> +	if ((res & 0xFFFF0000) != 0x80860000)
+>>> +		hdev->type = HDA_DEV_LEGACY;
+>>
+>> I don't get what this test does?
+> 
+> I am using the legacy HDA codec drivers only for the HDA codecs.
+> For iDisp I will continue to use the ASoC hdac_hdmi driver, which
+> is using ASOC BUS.
+> 
+> To make it more clear I will convert the if condition into inline
+> function with proper name.
+
+As written in my previous email, this is fine for now but long term we'd 
+want to avoid having duplication of functionality. Fixing issues in two 
+locations is not efficient, I vote to deprecate hdac_hdmi at some point.
