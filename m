@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Revert "ASoC:
-	soc-generic-dmaengine-pcm: Fix error handling"" to the asoc tree
-Date: Mon, 26 Feb 2018 20:00:32 +0000
-Message-ID: <E1eqOwq-0006v9-PC@debutante>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: regression v4.16 on Nokia N900: sound does not work
+Date: Tue, 27 Feb 2018 00:13:36 +0100
+Message-ID: <20180226231336.GA18565@amd>
+References: <20180224214617.GA22619@amd>
+ <71aa88ec-d4df-b49c-7d73-27197f468491@leemhuis.info>
+ <20180226131318.GA14045@amd>
+ <CAEnQRZBbMTeaxb+=AaarX6PSGasfVjtAUdpbPvJavZyTRMpdgQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0697714206306230627=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 202A0267516
- for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2018 21:00:35 +0100 (CET)
-In-Reply-To: 
+Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
+ [195.113.26.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F492267046
+ for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 00:13:34 +0100 (CET)
+In-Reply-To: <CAEnQRZBbMTeaxb+=AaarX6PSGasfVjtAUdpbPvJavZyTRMpdgQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,80 +23,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Daniel Baluta <daniel.baluta@gmail.com>, linus.walleij@linaro.org
+Cc: martijn@brixit.nl, Linux-ALSA <alsa-devel@alsa-project.org>, ivo.g.dimitrov.75@gmail.com, khilman@kernel.org, tony@atomide.com, Mark Brown <broonie@kernel.org>, aaro.koskinen@iki.fi, kernel list <linux-kernel@vger.kernel.org>, sre@kernel.org, peter.ujfalusi@ti.com, Filip =?utf-8?Q?Matijevi=C4=87?= <filip.matijevic.pz@gmail.com>, Thorsten Leemhuis <regressions@leemhuis.info>, abcloriens@gmail.com, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, sakari.ailus@linux.intel.com, pali.rohar@gmail.com, clayton@craftyguy.net, linux-omap@vger.kernel.org, patrikbachan@gmail.com, "Andrew F . Davis" <afd@ti.com>, serge@hallyn.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: Revert "ASoC: soc-generic-dmaengine-pcm: Fix error handling"
+--===============0697714206306230627==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/04w6evG8XlLl3ft"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--/04w6evG8XlLl3ft
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon 2018-02-26 16:02:22, Daniel Baluta wrote:
+> On Mon, Feb 26, 2018 at 3:13 PM, Pavel Machek <pavel@ucw.cz> wrote:
+> > Hi!
+> >
+> >> JFYI: This issues is tracked in the regression reports for Linux 4.16
+> >> (http://bit.ly/lnxregrep416 ) with this id:
+> >>
+> >> Linux-Regression-ID: lr#4b650f
+> >
+> > Ok, so it seems that issue is bigger: whole sound subsystem does not
+> > work. /proc/asound/cards is empty.
+> >
+> > 7e6127c1240ed569cdda2a67c8f03836f9f28c05 seems to be bad already.
+> >
+> > I tried to revert sound/soc changes, and sound is broken, too. Nasty
+>=20
+>=20
+> dmesg log?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Partial dmesg is at:
+https://github.com/pavelmachek/missy/blob/master/db/phone/nokia/n900/pavel/=
+2018.1291171648263/dmesg.out
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+I should be able to get full one...
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+I did git bisect, and the winner seems to be:
 
-Thanks,
-Mark
+pavel@duo:/data/l/linux-n900$ git bisect bad
+c85823390215e52d68d3826df92a447ed31e5c80 is the first bad commit
+commit c85823390215e52d68d3826df92a447ed31e5c80
+Author: Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed Dec 27 16:37:44 2017 +0100
 
->From b84acf44d5b86597cebcb6aca16e7dd9ca2b0294 Mon Sep 17 00:00:00 2001
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Mon, 26 Feb 2018 15:55:25 -0300
-Subject: [PATCH] ASoC: Revert "ASoC: soc-generic-dmaengine-pcm: Fix error
- handling"
+    gpio: of: Support SPI nonstandard GPIO properties
 
-This reverts commit f91b1e73ccde71d4bc69ae10d475196df38844ab.
+    Before it was clearly established that all GPIO properties in the
+        device tree shall be named "foo-gpios" (with the deprecated
+        variant
+	    "foo-gpio" for single lines) we unfortunately merged a few
+        bindings
+	    which named the lines "gpio-foo" instead.
 
-As explained by Lars-Peter Clausen:
+    This is most prominent in the GPIO SPI driver in Linux which names
+        the lines "gpio-sck", "gpio-mosi" and "gpio-miso".
 
-"This creates a resource leak. dmaengine_pcm_request_chan_of() requests
-bothtransmit and receive channels. It might return with an error if one
-of them fails, but the other one succeeded. In this case we need to call
-dmaengine_pcm_release_chan() to free the requested channel"
+    As we want to switch the GPIO SPI driver to using descriptors, we
+        need devm_gpiod_get() to return something reasonable when
+        looking
+	    up these in the device tree.
 
-So revert the commit.
+    Put in a special #ifdef:ed kludge to do this special lookup only
+        for the SPI case and gets compiled out if we're not enabling
+        SPI.
+	    If we have more oddly defined legacy GPIOs like this, they
+        can be
+	    handled in a similar manner.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-generic-dmaengine-pcm.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+    Reviewed-by: Rob Herring <robh@kernel.org>
+        Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 567fbdfd1ca9..56a541b9ff9e 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -504,7 +504,7 @@ int snd_dmaengine_pcm_register(struct device *dev,
- 
- 	ret = dmaengine_pcm_request_chan_of(pcm, dev, config);
- 	if (ret)
--		goto err_free_pcm;
-+		goto err_free_dma;
- 
- 	if (config && config->process)
- 		ret = snd_soc_add_component(dev, &pcm->component,
-@@ -520,7 +520,6 @@ int snd_dmaengine_pcm_register(struct device *dev,
- 
- err_free_dma:
- 	dmaengine_pcm_release_chan(pcm);
--err_free_pcm:
- 	kfree(pcm);
- 	return ret;
- }
--- 
-2.16.1
+Unfortunately, it does not seem to revert cleanly on my v4.16 branch.
+
+									Pavel
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--/04w6evG8XlLl3ft
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlqUlJ8ACgkQMOfwapXb+vKASQCfdxxKqVMl+wtMQMhG4xobuWfg
+aGMAoJAYqZc27+2AfYbfRnKyCDcd4vKm
+=XNfI
+-----END PGP SIGNATURE-----
+
+--/04w6evG8XlLl3ft--
+
+--===============0697714206306230627==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0697714206306230627==--
