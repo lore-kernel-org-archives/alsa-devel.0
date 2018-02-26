@@ -1,20 +1,20 @@
-From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
-Subject: Re: [PATCH v1 8/9] ASoC: hdac_hda: add asoc extension
- for legacy HDA codec drivers
-Date: Mon, 26 Feb 2018 08:44:02 +0000
-Message-ID: <85DFEED57DC57344B2483EF7BF8CB60579B29B12@BGSMSX104.gar.corp.intel.com>
-References: <1519373550-2545-1-git-send-email-rakesh.a.ughreja@intel.com>
- <1519373550-2545-9-git-send-email-rakesh.a.ughreja@intel.com>
- <c000a722-0ad0-2c52-fd00-f4134ca47858@linux.intel.com>
+From: Peter FP1 Zhang <zhangfp1@lenovo.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Limit mic boost on T480
+Date: Mon, 26 Feb 2018 08:46:35 +0000
+Message-ID: <FA1DB435B97D5A4192BAE54A4EA542A99ABF1F5E@CNMAILEX04.lenovo.com>
+References: <20180214122939.10069-1-bberg@redhat.com>
+ <s5hr2pn6803.wl-tiwai@suse.de>	<1518622889.23539.65.camel@redhat.com>
+ <FA1DB435B97D5A4192BAE54A4EA542A99ABF1473@CNMAILEX04.lenovo.com>
+ <s5heflfhdbr.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D1FF267A23
- for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2018 09:44:11 +0100 (CET)
-In-Reply-To: <c000a722-0ad0-2c52-fd00-f4134ca47858@linux.intel.com>
-Content-Language: en-US
+Received: from mail1.bemta8.messagelabs.com (mail1.bemta8.messagelabs.com
+ [216.82.243.197])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0CA2B267A21
+ for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2018 09:46:59 +0100 (CET)
+Content-Language: zh-CN
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,55 +24,112 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>
-Cc: "Koul, Vinod" <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>
+To: Benjamin Berg <bberg@redhat.com>, Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-
->-----Original Message-----
->From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
->Sent: Friday, February 23, 2018 10:25 PM
->To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>; alsa-devel@alsa-
->project.org; broonie@kernel.org; tiwai@suse.de;
->liam.r.girdwood@linux.intel.com
->Cc: Koul, Vinod <vinod.koul@intel.com>; Patches Audio
-><patches.audio@intel.com>
->Subject: Re: [PATCH v1 8/9] ASoC: hdac_hda: add asoc extension for legacy HDA
->codec drivers
->
->On 2/23/18 2:12 AM, Rakesh Ughreja wrote:
->> This patch adds a kernel module which is used by the legacy HDA
->> codec drivers as library. This implements hdac_ext_bus_ops to enable
->> the reuse of legacy HDA codec drivers with ASoC platform drivers.
->>
->> Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
->> ---
->>   sound/pci/hda/hda_bind.c    |   6 +
->>   sound/soc/codecs/Kconfig    |   5 +
->>   sound/soc/codecs/Makefile   |   2 +
->>   sound/soc/codecs/hdac_hda.c | 448
->++++++++++++++++++++++++++++++++++++++++++++
->>   sound/soc/codecs/hdac_hda.h |  23 +++
->>   5 files changed, 484 insertions(+)
->>   create mode 100644 sound/soc/codecs/hdac_hda.c
->>   create mode 100644 sound/soc/codecs/hdac_hda.h
->
->so now we have both hdac_hdmi and hdac_hda?
->Not sure I get it.
-
-hdac_hdmi is the ASoC HDMI driver which exists today. All the
-intel ASoC driver which are primarily used for I2S codecs uses it.
-I am not deleting or removing the support for that.
-
-hdac_hda is the ASoC wrapper around the legacy HDA drivers.
-
-Now with this patch series, we have two choices for HDMI/iDisp
-codec driver. Either to use the legacy HDMI codec driver by using
-the ASoC wrapper or use the existing ASoC hdac_hdmi driver.
-
-Since Intel ASoC platform driver is already proven and tested 
-with ASoC hdac_hdmi driver, I am using that in this patch series.
-
-Regards,
-Rakesh
+SGkgQmVuLCBUYWthc2hpLA0KDQpUaGUgZm9sbG93aW5nIGNvbW1lbnRzIGZyb20gb3VyIEFjY2Vz
+c29yeSBCVSBoYXJkd2FyZSB0ZWFtIEZZSS4NCi8vDQpNb3N0IG9mIGRvY2sgYXVkaW8gaXMgY29u
+dmVydGVkIGZyb20gVVNCIGlmIGl0IGlzIGNvbm5lY3RlZCBieSBjYWJsZSwgYnV0IENTMTMgTWVj
+aG5pY2FsIGRvY2sgaXMgbm90LiBXZSBuZWVkIHRvIGtub3cgdGhlIHNwZWNpZmljIGRvY2sgbW9k
+ZWwgZmlyc3QuDQovLw0KDQpUaGFua3MsDQoNClBldGVyIFpoYW5nIFwg5byg56aP5bmzLCAgUE1Q
+DQpUaGlua1BhZCAmIFRoaW5rU3RhdGlvbiBMaW51eCBTb2x1dGlvbnMNClRlbDogKCs4NikgMTgx
+LTE2MTEtODAwNSB8IExlbm92byBTaGFuZ2hhaQ0KDQpMaW51eCBmb3IgVGhvc2UgV2hvIERvIC0g
+aHR0cDovL3d3dy5sZW5vdm8uY29tL2xpbnV4DQoNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0t
+LS0NCkZyb206IFBldGVyIEZQMSBaaGFuZyANClNlbnQ6IFdlZG5lc2RheSwgRmVicnVhcnkgMjEs
+IDIwMTggMTI6MDcgQU0NClRvOiAnVGFrYXNoaSBJd2FpJw0KQ2M6IEJlbmphbWluIEJlcmc7IGFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgSmFyb3NsYXYgS3lzZWxhOyBsaW51eC1rZXJuZWxA
+dmdlci5rZXJuZWwub3JnOyBrYWlsYW5nQHJlYWx0ZWsuY29tDQpTdWJqZWN0OiBSRTogW1BBVENI
+XSBBTFNBOiBoZGEvcmVhbHRlazogTGltaXQgbWljIGJvb3N0IG9uIFQ0ODANCg0KVGhhbmsgeW91
+IFRha2FzaGkuIA0KSSB3aWxsIGFsc28gZG91YmxlIGNvbmZpcm0gaXQgd2l0aCBvdXIgQWNjZXNz
+b3J5IEJVIGd1eXMgYWJvdXQgQmVuJ3MgcXVlc3Rpb24gd2hlbiBJIGJhY2sgdG8gbXkgb2ZmaWNl
+LiBBbmQgd2lsbCBsZXQgeW91IGtub3cgaWYgdGhlcmUgd2FzIGFueSBkaWZmZXJlbnQgYW5zd2Vy
+IGZyb20gdGhlbS4NCg0KDQpQZXRlciBaaGFuZyBcIOW8oOemj+W5sywgIFBNUA0KVGhpbmtQYWQg
+JiBUaGlua1N0YXRpb24gTGludXggU29sdXRpb25zDQpUZWw6ICgrODYpIDE4MS0xNjExLTgwMDUg
+fCBMZW5vdm8gU2hhbmdoYWkNCg0KTGludXggZm9yIFRob3NlIFdobyBEbyAtIGh0dHA6Ly93d3cu
+bGVub3ZvLmNvbS9saW51eA0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogVGFr
+YXNoaSBJd2FpIFttYWlsdG86dGl3YWlAc3VzZS5kZV0NClNlbnQ6IFR1ZXNkYXksIEZlYnJ1YXJ5
+IDIwLCAyMDE4IDExOjQ4IFBNDQpUbzogUGV0ZXIgRlAxIFpoYW5nDQpDYzogQmVuamFtaW4gQmVy
+ZzsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBKYXJvc2xhdiBLeXNlbGE7IGxpbnV4LWtl
+cm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGthaWxhbmdAcmVhbHRlay5jb20NClN1YmplY3Q6IFJlOiBb
+UEFUQ0hdIEFMU0E6IGhkYS9yZWFsdGVrOiBMaW1pdCBtaWMgYm9vc3Qgb24gVDQ4MA0KDQpPbiBT
+YXQsIDE3IEZlYiAyMDE4IDE0OjU0OjAyICswMTAwLA0KUGV0ZXIgRlAxIFpoYW5nIHdyb3RlOg0K
+PiANCj4gSGkgQmVuLA0KPiANCj4gTXkgdW5kZXJzdGFuZGluZyBpcyBzYW1lIGFzIHlvdXJzLiBS
+ZWNlbnRseSBSZWFsdGVrIEF1ZGlvIGV4cGVydCBLYWlsYW5nIChvbiBjb3B5KSBzdWJtaXR0ZWQg
+YSBwYXRjaCBmb3IgRG9jayBhcyB0aGUgYXR0YWNoZWQsIGFyZSB5b3UgYXNraW5nIHRoZSBzYW1l
+IHRoaW5nPw0KPiBMb29rcyBsaWtlIHRoZSBpc3N1ZSBpcyByZWxhdGVkIHRvIERvY2sgbW9kZWws
+IHRoZXJlIGFyZSBtYW55IGRpZmZlcmVudCBEb2NrIG1vZGVscywgY291bGQgeW91IHBsZWFzZSBs
+ZXQgdXMga25vdyB3aGljaCBzcGVjaWZpYyBkb2NrIG1vZGVsIHlvdSBtZWFuPyBUaGFua3MuDQo+
+IA0KPiBAS2FpbGFuZywgRG8geW91IGhhdmUgYW55IHN1Z2dlc3Rpb25zIG9yIGNvbW1lbnRzPw0K
+DQpGWUksIGJlY2F1c2Ugb2YgdGhpcyB1bmNsZWFybmVzcywgdGhlIHBhdGNoIGZyb20gQmVuamFt
+aW4gaXMgc3RpbGwgcGVuZGluZy4gIEknbSBPSyB0byBhcHBseSBpdCBhdCBmaXJzdCwgdGhlbiBh
+ZGp1c3QgbGF0ZXIgaWYgdGhlIGRvY2tpbmcgc3RhdGlvbiBxdWlyayBpcyByZXF1aXJlZCwgdG9v
+LiAgSnVzdCBsZXQgbWUga25vdy4NCg0KDQp0aGFua3MsDQoNClRha2FzaGkNCg0KPiANCj4gVGhh
+bmtzLA0KPiANCj4gUGV0ZXIgWmhhbmcgXCDlvKDnpo/lubMsICBQTVANCj4gVGhpbmtQYWQgJiBU
+aGlua1N0YXRpb24gTGludXggU29sdXRpb25zDQo+IFRlbDogKCs4NikgMTgxLTE2MTEtODAwNSB8
+IExlbm92byBTaGFuZ2hhaQ0KPiANCj4gTGludXggZm9yIFRob3NlIFdobyBEbyAtIGh0dHA6Ly93
+d3cubGVub3ZvLmNvbS9saW51eA0KPiANCj4gDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0t
+DQo+IEZyb206IEJlbmphbWluIEJlcmcgW21haWx0bzpiYmVyZ0ByZWRoYXQuY29tXQ0KPiBTZW50
+OiBXZWRuZXNkYXksIEZlYnJ1YXJ5IDE0LCAyMDE4IDExOjQxIFBNDQo+IFRvOiBUYWthc2hpIEl3
+YWkNCj4gQ2M6IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgSmFyb3NsYXYgS3lzZWxhOyAN
+Cj4gbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgUGV0ZXIgRlAxIFpoYW5nDQo+IFN1Ympl
+Y3Q6IFJlOiBbUEFUQ0hdIEFMU0E6IGhkYS9yZWFsdGVrOiBMaW1pdCBtaWMgYm9vc3Qgb24gVDQ4
+MA0KPiANCj4gLS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQ0KPiBIYXNoOiBTSEE1
+MTINCj4gDQo+IE9uIFdlZCwgMjAxOC0wMi0xNCBhdCAxNDowMCArMDEwMCwgVGFrYXNoaSBJd2Fp
+IHdyb3RlOg0KPiA+IE9uIFdlZCwgMTQgRmViIDIwMTggMTM6Mjk6MzkgKzAxMDAsDQo+ID4gQmVu
+amFtaW4gQmVyZyB3cm90ZToNCj4gPiA+IA0KPiA+ID4gVGhlIGludGVybmFsIG1pYyBib29zdCBv
+biB0aGUgVDQ4MCBpcyB0b28gaGlnaC4gRml4IHRoaXMgYnkgDQo+ID4gPiBhcHBseWluZyB0aGUg
+QUxDMjY5X0ZJWFVQX0xJTUlUX0lOVF9NSUNfQk9PU1QgZml4dXAgdG8gdGhlIG1hY2hpbmUgDQo+
+ID4gPiB0byBsaW1pdCB0aGUgZ2Fpbi4NCj4gPiA+IA0KPiA+ID4gU2lnbmVkLW9mZi1ieTogQmVu
+amFtaW4gQmVyZyA8YmJlcmdAcmVkaGF0LmNvbT4NCj4gPiA+IFRlc3RlZC1ieTogQmVuamFtaW4g
+QmVyZyA8YmJlcmdAcmVkaGF0LmNvbT4NCj4gPiANCj4gPiBBcHBseWluZyB0aGlzIHF1aXJrIGl0
+c2VsZiBpcyBPSywgYnV0IGp1c3Qgd29uZGVyIHdoZXRoZXIgdGhpcyBtb2RlbCANCj4gPiBoYXMg
+YSBkb2NraW5nIHN0YXRpb24gcG9ydC4gIFJlY2VudGx5IHdlIGZpeGVkIHRoZSBkb2NrIGlzc3Vl
+LCBhbmQgDQo+ID4gaXQgcmVxdWlyZWQgdG8gYXBwbHkgQUxDMjk4X0ZJWFVQX1RQVDQ3MF9ET0NL
+Lg0KPiANCj4gSSBhc3N1bWVkIHRoYXQgb24gdGhlIFQ0ODAgYW5kIHNpbWlsYXIgbW9kZWxzIHRo
+ZSBhdWRpbyBvbiB0aGUgZG9jayBpcyBjb25uZWN0ZWQgdGhyb3VnaCBVU0IgKHRoZSBkb2NrIGlz
+IFVTQi1DICsgZnVydGhlciBwaW5zKSwgYnV0IEkgY2Fubm90IGNvbmZpcm0gdGhpcyBteXNlbGYg
+cmlnaHQgbm93IGFzIEkgb25seSBoYXZlIGEgVDQ4MCBjdXJyZW50bHkuDQo+IA0KPiBJIGhhdmUg
+bm93IGNvbnRhY3RlZCBQZXRlciBaaGFuZyBvZiBMZW5vdm8gYWJvdXQgdGhpcyBhbmQgYWxzbyB0
+byBjaGVjayBpZiBvdGhlciA4MCBzZXJpZXMgbW9kZWxzIG1heSBuZWVkIHRoZSBzYW1lIGZpeHVw
+Lg0KPiANCj4gQmVuamFtaW4NCj4gDQo+ID4gDQo+ID4gdGhhbmtzLA0KPiA+IA0KPiA+IFRha2Fz
+aGkNCj4gPiANCj4gPiA+IC0tLQ0KPiA+ID4gIHNvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5j
+IHwgMSArDQo+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspDQo+ID4gPiANCj4g
+PiA+IGRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyANCj4gPiA+IGIv
+c291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgaW5kZXggY2UyOGY3Y2U2NGU2Li44NDY3Y2Uz
+ZGI3NjcNCj4gPiA+IDEwMDY0NA0KPiA+ID4gLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFs
+dGVrLmMNCj4gPiA+ICsrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jDQo+ID4gPiBA
+QCAtNjUxMCw2ICs2NTEwLDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfcGNpX3F1aXJrIA0K
+PiA+ID4gYWxjMjY5X2ZpeHVwX3RibFtdID0gew0KPiA+ID4gIAlTTkRfUENJX1FVSVJLKDB4MTdh
+YSwgMHgyMjRiLCAiVGhpbmtwYWQiLCANCj4gPiA+IEFMQzI5OF9GSVhVUF9UUFQ0NzBfRE9DSyks
+DQo+ID4gPiAgCVNORF9QQ0lfUVVJUksoMHgxN2FhLCAweDIyNGMsICJUaGlua3BhZCIsIA0KPiA+
+ID4gQUxDMjk4X0ZJWFVQX1RQVDQ3MF9ET0NLKSwNCj4gPiA+ICAJU05EX1BDSV9RVUlSSygweDE3
+YWEsIDB4MjI0ZCwgIlRoaW5rcGFkIiwgDQo+ID4gPiBBTEMyOThfRklYVVBfVFBUNDcwX0RPQ0sp
+LA0KPiA+ID4gKwlTTkRfUENJX1FVSVJLKDB4MTdhYSwgMHgyMjVkLCAiVGhpbmtwYWQgVDQ4MCIs
+DQo+ID4gPiBBTEMyNjlfRklYVVBfTElNSVRfSU5UX01JQ19CT09TVCksDQo+ID4gPiAgCVNORF9Q
+Q0lfUVVJUksoMHgxN2FhLCAweDMwYmIsICJUaGlua0NlbnRyZSBBSU8iLCANCj4gPiA+IEFMQzIz
+M19GSVhVUF9MRU5PVk9fTElORTJfTUlDX0hPVEtFWSksDQo+ID4gPiAgCVNORF9QQ0lfUVVJUkso
+MHgxN2FhLCAweDMwZTIsICJUaGlua0NlbnRyZSBBSU8iLCANCj4gPiA+IEFMQzIzM19GSVhVUF9M
+RU5PVk9fTElORTJfTUlDX0hPVEtFWSksDQo+ID4gPiAgCVNORF9QQ0lfUVVJUksoMHgxN2FhLCAw
+eDMxMGMsICJUaGlua0NlbnRyZSBTdGF0aW9uIiwgDQo+ID4gPiBBTEMyOTRfRklYVVBfTEVOT1ZP
+X01JQ19MT0NBVElPTiksDQo+ID4gPiAtLQ0KPiA+ID4gMi4xNC4zDQo+ID4gPiANCj4gPiA+IA0K
+PiAtLS0tLUJFR0lOIFBHUCBTSUdOQVRVUkUtLS0tLQ0KPiANCj4gaVFJekJBRUJDZ0FkRmlFRUQy
+Tk80dk1TMzNXOEU0QUZxNlpXaHBtRlkzQUZBbHFFV0trQUNna1FxNlpXaHBtRg0KPiBZM0FFeVEv
+N0I2bDROYTFHTERmMTFQOE9kenpjWE95NmdyanZyTFl3cTZXRkEzTTFEaXJsUXNQd2pTYm5KN1Y4
+DQo+IHpuSVgzMEVLNk15OUlwNmp5dkpRSXBpQmxhWDFGS0p1SjNTbzltamdVZU9jQ1FNRmt3bkMx
+Zk1NeXlXRUFXTHENCj4gVEkxczdGNXc0T1F3aFFwd3RsSWQ0QUlCN0EyWnpRbVAvOVlxZklQRHRJ
+aU5KcWpkOWFScnVCSmk4QThqM3NCNQ0KPiBzbFkxQ1lnQ1FoQlVpQWtVUGlzRnJ0K2I0YUZVNUZs
+Z0lOUVIrNnVPU0tPMC9JYVNLcTlyRndYNzZsT1RPc0JqDQo+IGtIaHl3SUY5UWVmNkN2VURhQU9G
+V2pRY1RBL29vRFBpZlVzZk56bzZaSG5OWklrczBDb3YxMkplTzVVcnhqaUQNCj4gYTNCdUc2U1pB
+Vm00YXdma1RqNXBJTDBEdUJBWFloVEpkL2hVM1ZNV2RWMC9rYjBPZVZPTlNhaE16aFNPQ00zMA0K
+PiBXZEZLcFdDMCtuM1RFa1RXU0c5UUd3TDZ3YlhpYUxOWjBKUmdRa2NvSjlKcVBWbmdGZjlMSVJC
+enFkTXl6eUNFDQo+IFV6THUvb1E5WGxYUXJGeDFJRzVLUy9SSkpQVXdwSktoWE95Z1NwUlp4L0ho
+bWFXcFBWTEN1OUdOZyt5dG9WSUwNCj4gUUVnMzgxak9UVFBpK0RYMGswN1dZSytoVUV2QjgzY2J0
+c20rRWlFR01hNGJ4dWhZUXAycDFtb0dxT3J6djJYSw0KPiBpRU44TGZGOTdLSjRHdHFWV3libnN0
+eE14TWRTMEN3WEJQeFVaM09ZNkMwM1Mzc2RWcWsvUXJFcEU0aTArTjhQDQo+IENjWDNnK3JFSlZV
+a3BzZG0xN1NmNXU0RGplR0g3SEJQc0RtSGlycnd2RmRlT2tUaU80RT0NCj4gPU5JWjYNCj4gLS0t
+LS1FTkQgUEdQIFNJR05BVFVSRS0tLS0tDQo+IA0KPiBbMiAwMDAwLWFsYzI5OC10aGlua3BhZC1k
+b2NrLnBhdGNoIDxhcHBsaWNhdGlvbi9vY3RldC1zdHJlYW0gDQo+IChiYXNlNjQpPl0NCj4gDQpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
