@@ -1,75 +1,43 @@
-From: kbuild test robot <lkp@intel.com>
-Subject: Re: [alsa-devel] [PATCHv5 2/5] ASoC: codec: cpcap: new codec
-Date: Mon, 26 Feb 2018 09:36:42 +0800
-Message-ID: <201802260921.u5yCEY8U%fengguang.wu@intel.com>
-References: <20180223200254.25685-3-sebastian.reichel@collabora.co.uk>
+From: Yong Deng <yong.deng-+3dxTMOEIRNWk0Htik3J/w@public.gmane.org>
+Subject: [PATCH] ASoC: sun4i-i2s: Fix RX slot number of SUN8I
+Date: Mon, 26 Feb 2018 10:43:52 +0800
+Message-ID: <1519613032-10244-1-git-send-email-yong.deng@magewell.com>
+Reply-To: yong.deng-+3dxTMOEIRNWk0Htik3J/w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180223200254.25685-3-sebastian.reichel@collabora.co.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: kbuild-all@01.org, Sebastian Reichel <sre@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Tony Lindgren <tony@atomide.com>, Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBD2JNYHK4MEBBVHJZXKAKGQEVOC6ESI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Yong Deng <yong.deng-+3dxTMOEIRNWk0Htik3J/w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Sebastian,
+I2S's RX slot number of SUN8I should be shifted 4 bit to left.
 
-I love your patch! Perhaps something to improve:
+Fixes: 7d2993811a1e ("ASoC: sun4i-i2s: Add support for H3")
 
-[auto build test WARNING on robh/for-next]
-[also build test WARNING on v4.16-rc2 next-20180223]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
-
-url:    https://github.com/0day-ci/linux/commits/Sebastian-Reichel/Motorola-Droid-4-Audio-Support/20180226-063007
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-reproduce:
-        # apt-get install sparse
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF=-D__CHECK_ENDIAN__
-
-
-sparse warnings: (new ones prefixed by >>)
-
->> sound/soc/codecs/cpcap.c:1406:54: sparse: restricted snd_pcm_format_t degrades to integer
-
-vim +1406 sound/soc/codecs/cpcap.c
-
-  1396	
-  1397	static struct snd_soc_dai_driver cpcap_dai[] = {
-  1398	{
-  1399		.id = 0,
-  1400		.name = "cpcap-hifi",
-  1401		.playback = {
-  1402			.stream_name = "HiFi Playback",
-  1403			.channels_min = 2,
-  1404			.channels_max = 2,
-  1405			.rates = SNDRV_PCM_RATE_8000_48000,
-> 1406			.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FORMAT_S24_LE,
-  1407		},
-  1408		.ops = &cpcap_dai_hifi_ops,
-  1409	},
-  1410	{
-  1411		.id = 1,
-  1412		.name = "cpcap-voice",
-  1413		.playback = {
-  1414			.stream_name = "Voice Playback",
-  1415			.channels_min = 1,
-  1416			.channels_max = 1,
-  1417			.rates = SNDRV_PCM_RATE_8000_48000,
-  1418			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-  1419		},
-  1420		.capture = {
-  1421			.stream_name = "Voice Capture",
-  1422			.channels_min = 1,
-  1423			.channels_max = 2,
-  1424			.rates = SNDRV_PCM_RATE_8000_48000,
-  1425			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-  1426		},
-  1427		.ops = &cpcap_dai_voice_ops,
-  1428	},
-  1429	};
-  1430	
-
+Signed-off-by: Yong Deng <yong.deng-+3dxTMOEIRNWk0Htik3J/w@public.gmane.org>
 ---
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+ sound/soc/sunxi/sun4i-i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index dca1143c1150..a4aa931ebfae 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -104,7 +104,7 @@
+ 
+ #define SUN8I_I2S_CHAN_CFG_REG		0x30
+ #define SUN8I_I2S_CHAN_CFG_RX_SLOT_NUM_MASK	GENMASK(6, 4)
+-#define SUN8I_I2S_CHAN_CFG_RX_SLOT_NUM(chan)	(chan - 1)
++#define SUN8I_I2S_CHAN_CFG_RX_SLOT_NUM(chan)	((chan - 1) << 4)
+ #define SUN8I_I2S_CHAN_CFG_TX_SLOT_NUM_MASK	GENMASK(2, 0)
+ #define SUN8I_I2S_CHAN_CFG_TX_SLOT_NUM(chan)	(chan - 1)
+ 
+-- 
+1.8.3.1
