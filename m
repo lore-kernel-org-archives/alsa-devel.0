@@ -1,20 +1,18 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: regression v4.16 on Nokia N900: sound does not work
-Date: Mon, 26 Feb 2018 16:02:22 +0200
-Message-ID: <CAEnQRZBbMTeaxb+=AaarX6PSGasfVjtAUdpbPvJavZyTRMpdgQ@mail.gmail.com>
-References: <20180224214617.GA22619@amd>
- <71aa88ec-d4df-b49c-7d73-27197f468491@leemhuis.info>
- <20180226131318.GA14045@amd>
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Subject: Commit 8f7206d69a ("ASoC: imx-wm8962: Remove global
+ variables") looks strange
+Date: Mon, 26 Feb 2018 14:21:00 +0000
+Message-ID: <1519654860.13463.95.camel@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f51.google.com (mail-wm0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 32815267530
- for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2018 15:02:23 +0100 (CET)
-Received: by mail-wm0-f51.google.com with SMTP id t3so17672742wmc.2
- for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2018 06:02:23 -0800 (PST)
-In-Reply-To: <20180226131318.GA14045@amd>
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur01on0046.outbound.protection.outlook.com [104.47.0.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9FD3226754A
+ for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2018 15:21:04 +0100 (CET)
+Content-Language: en-US
+Content-ID: <E9B3D7535B9C9E449826E970FBD47BF5@eurprd04.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,24 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pavel Machek <pavel@ucw.cz>
-Cc: martijn@brixit.nl, Linux-ALSA <alsa-devel@alsa-project.org>, ivo.g.dimitrov.75@gmail.com, khilman@kernel.org, tony@atomide.com, Mark Brown <broonie@kernel.org>, aaro.koskinen@iki.fi, kernel list <linux-kernel@vger.kernel.org>, sre@kernel.org, peter.ujfalusi@ti.com, =?UTF-8?Q?Filip_Matijevi=C4=87?= <filip.matijevic.pz@gmail.com>, Thorsten Leemhuis <regressions@leemhuis.info>, abcloriens@gmail.com, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, sakari.ailus@linux.intel.com, pali.rohar@gmail.com, clayton@craftyguy.net, linux-omap@vger.kernel.org, patrikbachan@gmail.com, "Andrew F . Davis" <afd@ti.com>, serge@hallyn.com
+To: "festevam@gmail.com" <festevam@gmail.com>
+Cc: "S.j. Wang" <shengjiu.wang@nxp.com>, Leonard Crestez <leonard.crestez@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 26, 2018 at 3:13 PM, Pavel Machek <pavel@ucw.cz> wrote:
-> Hi!
->
->> JFYI: This issues is tracked in the regression reports for Linux 4.16
->> (http://bit.ly/lnxregrep416 ) with this id:
->>
->> Linux-Regression-ID: lr#4b650f
->
-> Ok, so it seems that issue is bigger: whole sound subsystem does not
-> work. /proc/asound/cards is empty.
->
-> 7e6127c1240ed569cdda2a67c8f03836f9f28c05 seems to be bad already.
->
-> I tried to revert sound/soc changes, and sound is broken, too. Nasty
-
-
-dmesg log?
+SGkgRmFiaW8sDQoNCkxlb25hcmQgKENjJ2VkKSBub3RpY2VkIHRoYXQgY29tbWl0IGluICRzdWJq
+ZWN0IGxvb2tzIHZlcnkgc3RyYW5nZS4NCg0KRm9yIGV4YW1wbGU6DQoNCkBAIC0xMzksNyArMTQw
+LDcgQEAgc3RhdGljIGludCBpbXhfd204OTYyX2xhdGVfcHJvYmUoc3RydWN0IHNuZF9zb2NfY2Fy
+ZCAqY2FyZCkNCsKgew0KwqDCoMKgwqDCoMKgwqDCoHN0cnVjdCBzbmRfc29jX3BjbV9ydW50aW1l
+ICpydGQ7DQrCoMKgwqDCoMKgwqDCoMKgc3RydWN0IHNuZF9zb2NfZGFpICpjb2RlY19kYWk7DQot
+wqDCoMKgwqDCoMKgwqBzdHJ1Y3QgaW14X3ByaXYgKnByaXYgPSAmY2FyZF9wcml2Ow0KK8KgwqDC
+oMKgwqDCoMKgc3RydWN0IGlteF9wcml2ICpwcml2ID0gc25kX3NvY19jYXJkX2dldF9kcnZkYXRh
+KGNhcmQpOw0KwqDCoMKgwqDCoMKgwqDCoHN0cnVjdCBpbXhfd204OTYyX2RhdGEgKmRhdGEgPSBz
+bmRfc29jX2NhcmRfZ2V0X2RydmRhdGEoY2FyZCk7DQoNClNvLCBub3cgZGF0YSBhbmQgcHJpdiBw
+b2ludCB0byB0aGUgc2FtZSBtZW1vcnkgYXJlYSBidXQgdGhleSBhcmUgY29tcGxldGVseQ0KZGlm
+ZmVyZW50IHN0cnVjdHVyZXMhDQoNClVubGVzcyB3ZSBhcmUgbWlzc2luZyBzb21ldGhpbmcgdGhp
+cyBpcyBvYnZpb3VzbHkgYSBidWcuIEkgd2lsbCB0cnkgdG8gaGF2ZSBhIGxvb2sgYXQNCnRoZSBl
+bmQgb2YgdGhlIHdlZWssIGJ1dCBhbnkgY29tbWVudHMgYXJlIHdlbGNvbWUuDQoNCkkgdGhpbmsg
+dGhlIGZpeCB3b3VsZCBiZSB0byBoYXZlIG9uZSBnbG9iYWwgcHJpdiBzdHJ1Y3R1cmUgYW5kIHRv
+IHVuaWZ5wqBpbXhfd204OTYyX2RhdGENCndpdGjCoGlteF9wcml2Lg0KDQp0aGFua3MsDQpEYW5p
+ZWwuDQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
