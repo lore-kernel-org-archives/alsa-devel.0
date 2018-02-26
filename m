@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-generic-dmaengine-pcm: Fix sparse
-	warnings" to the asoc tree
-Date: Mon, 26 Feb 2018 11:17:13 +0000
-Message-ID: <E1eqGmP-0005Pg-BS@debutante>
-References: <1519326142-26421-2-git-send-email-festevam@gmail.com>
+Subject: Applied "ASoC: soc-generic-dmaengine-pcm: Fix error
+	handling" to the asoc tree
+Date: Mon, 26 Feb 2018 11:17:16 +0000
+Message-ID: <E1eqGmS-0005Qb-FD@debutante>
+References: <1519326142-26421-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DEF1C267990
- for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2018 12:17:15 +0100 (CET)
-In-Reply-To: <1519326142-26421-2-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F147E267990
+ for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2018 12:17:18 +0100 (CET)
+In-Reply-To: <1519326142-26421-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-generic-dmaengine-pcm: Fix sparse warnings
+   ASoC: soc-generic-dmaengine-pcm: Fix error handling
 
 has been applied to the asoc tree at
 
@@ -53,64 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From 7ed310bd51bec0b440a551fc4da1993c7f6cd231 Mon Sep 17 00:00:00 2001
+>From f91b1e73ccde71d4bc69ae10d475196df38844ab Mon Sep 17 00:00:00 2001
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Thu, 22 Feb 2018 16:02:22 -0300
-Subject: [PATCH] ASoC: soc-generic-dmaengine-pcm: Fix sparse warnings
+Date: Thu, 22 Feb 2018 16:02:21 -0300
+Subject: [PATCH] ASoC: soc-generic-dmaengine-pcm: Fix error handling
 
-Currently the following sparse warnings are observed:
-
-sound/soc/soc-generic-dmaengine-pcm.c:185:34: warning: restricted snd_pcm_format_t degrades to integer
-sound/soc/soc-generic-dmaengine-pcm.c:186:66: warning: incorrect type in argument 1 (different base types)
-sound/soc/soc-generic-dmaengine-pcm.c:186:66:    expected restricted snd_pcm_format_t [usertype] format
-sound/soc/soc-generic-dmaengine-pcm.c:186:66:    got int [signed] [assigned] i
-
-Fix it by changing the loop variable to be of 'snd_pcm_format_t'.
-
-Also introduce a SNDRV_PCM_FORMAT_FIRST label, which corresponds to the
-first member (index 0) of the snd_pcm_format_t formats.
+When dmaengine_pcm_request_chan_of() fails it should release
+the previously acquired resources, which in this case is to
+call kfree(pcm), so jump to the correct point in the error
+path.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/uapi/sound/asound.h           | 1 +
- sound/soc/soc-generic-dmaengine-pcm.c | 5 +++--
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/soc-generic-dmaengine-pcm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 07d61583fd02..ed0a120d4f08 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -242,6 +242,7 @@ typedef int __bitwise snd_pcm_format_t;
- #define	SNDRV_PCM_FORMAT_DSD_U16_BE	((__force snd_pcm_format_t) 51) /* DSD, 2-byte samples DSD (x16), big endian */
- #define	SNDRV_PCM_FORMAT_DSD_U32_BE	((__force snd_pcm_format_t) 52) /* DSD, 4-byte samples DSD (x32), big endian */
- #define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_DSD_U32_BE
-+#define	SNDRV_PCM_FORMAT_FIRST		SNDRV_PCM_FORMAT_S8
- 
- #ifdef SNDRV_LITTLE_ENDIAN
- #define	SNDRV_PCM_FORMAT_S16		SNDRV_PCM_FORMAT_S16_LE
 diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 32ea16d062b1..785f25ede3e5 100644
+index 768247fd92c5..32ea16d062b1 100644
 --- a/sound/soc/soc-generic-dmaengine-pcm.c
 +++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -132,7 +132,8 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
- 	u32 addr_widths = BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) |
- 			  BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) |
- 			  BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
--	int i, ret;
-+	snd_pcm_format_t i;
-+	int ret;
+@@ -450,7 +450,7 @@ int snd_dmaengine_pcm_register(struct device *dev,
  
- 	if (pcm->config && pcm->config->pcm_hardware)
- 		return snd_soc_set_runtime_hwparams(substream,
-@@ -182,7 +183,7 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
- 		 * default assumption is that it supports 1, 2 and 4 bytes
- 		 * widths.
- 		 */
--		for (i = 0; i <= SNDRV_PCM_FORMAT_LAST; i++) {
-+		for (i = SNDRV_PCM_FORMAT_FIRST; i <= SNDRV_PCM_FORMAT_LAST; i++) {
- 			int bits = snd_pcm_format_physical_width(i);
+ 	ret = dmaengine_pcm_request_chan_of(pcm, dev, config);
+ 	if (ret)
+-		goto err_free_dma;
++		goto err_free_pcm;
  
- 			/*
+ 	ret = snd_soc_add_component(dev, &pcm->component,
+ 				    &dmaengine_pcm_component, NULL, 0);
+@@ -461,6 +461,7 @@ int snd_dmaengine_pcm_register(struct device *dev,
+ 
+ err_free_dma:
+ 	dmaengine_pcm_release_chan(pcm);
++err_free_pcm:
+ 	kfree(pcm);
+ 	return ret;
+ }
 -- 
 2.16.1
