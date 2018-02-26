@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: remove duplicated bit-wise or of SNDRV_PCM_FMTBIT_S24_LE" to the asoc tree
-Date: Mon, 26 Feb 2018 11:17:28 +0000
-Message-ID: <E1eqGme-0005UW-4n@debutante>
-References: <20180223143738.29600-1-colin.king@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180223143738.29600-1-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Applied "ASoC: sirf: remove duplicated bit-wise or of
+	USP_RXFIFO_THD_INT" to the asoc tree
+Date: Mon, 26 Feb 2018 11:17:31 +0000
+Message-ID: <E1eqGmh-0005VX-8k@debutante>
+References: <20180223124117.24686-1-colin.king@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 584E2267A73
+ for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2018 12:17:43 +0100 (CET)
+In-Reply-To: <20180223124117.24686-1-colin.king@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Cc: Barry Song <baohua@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: remove duplicated bit-wise or of SNDRV_PCM_FMTBIT_S24_LE
+   ASoC: sirf: remove duplicated bit-wise or of USP_RXFIFO_THD_INT
 
 has been applied to the asoc tree at
 
@@ -37,32 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From 8b597ff47053c9f53384a3a26dcc4c4316a375e5 Mon Sep 17 00:00:00 2001
+>From f49f49aa1541615f1f77bf2c62f184459825ed92 Mon Sep 17 00:00:00 2001
 From: Colin Ian King <colin.king@canonical.com>
-Date: Fri, 23 Feb 2018 14:37:38 +0000
-Subject: [PATCH] ASoC: pxa: remove duplicated bit-wise or of
- SNDRV_PCM_FMTBIT_S24_LE
+Date: Fri, 23 Feb 2018 12:41:17 +0000
+Subject: [PATCH] ASoC: sirf: remove duplicated bit-wise or of
+ USP_RXFIFO_THD_INT
 
-Bit pattern SNDRV_PCM_FMTBIT_S24_LE is being bit-wise or'd twice; remove
-the redundant 2nd SNDRV_PCM_FMTBIT_S24_LE
+Bit pattern USP_RXFIFO_THD_INT is being bit-wise or'd twice;
+remove the redundant 2nd USP_RXFIFO_THD_INT
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/mmp-sspa.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/sirf/sirf-usp.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/pxa/mmp-sspa.c b/sound/soc/pxa/mmp-sspa.c
-index 64b85e30c1f8..7c998ea4ebee 100644
---- a/sound/soc/pxa/mmp-sspa.c
-+++ b/sound/soc/pxa/mmp-sspa.c
-@@ -377,7 +377,6 @@ static int mmp_sspa_probe(struct snd_soc_dai *dai)
- #define MMP_SSPA_FORMATS (SNDRV_PCM_FMTBIT_S8 | \
- 		SNDRV_PCM_FMTBIT_S16_LE | \
- 		SNDRV_PCM_FMTBIT_S24_LE | \
--		SNDRV_PCM_FMTBIT_S24_LE | \
- 		SNDRV_PCM_FMTBIT_S32_LE)
+diff --git a/sound/soc/sirf/sirf-usp.h b/sound/soc/sirf/sirf-usp.h
+index bf0201cb15bc..e22e13a619e8 100644
+--- a/sound/soc/sirf/sirf-usp.h
++++ b/sound/soc/sirf/sirf-usp.h
+@@ -154,7 +154,7 @@
+ 					USP_RX_IO_DMA_INT|\
+ 					USP_RXFIFO_FULL_INT|\
+ 					USP_RXFIFO_THD_INT|\
+-					USP_RXFIFO_THD_INT|USP_RX_TIMEOUT_INT)
++					USP_RX_TIMEOUT_INT)
  
- static const struct snd_soc_dai_ops mmp_sspa_dai_ops = {
+ #define USP_INT_ALL        0x1FFF
+ 
 -- 
 2.16.1
