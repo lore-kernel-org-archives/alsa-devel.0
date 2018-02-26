@@ -1,29 +1,75 @@
-From: Mike Lothian <mike@fireburn.co.uk>
-Subject: Re: [PATCH 0/7] Modernize vga_switcheroo by using device link for HDA
-Date: Sun, 25 Feb 2018 23:24:57 +0000
-Message-ID: <CAHbf0-FnF=h9xoPCRS5k81D3o6cJbd1Y37QpdrRse_6AALFCJQ@mail.gmail.com>
-References: <cover.1518941072.git.lukas@wunner.de>
+From: kbuild test robot <lkp@intel.com>
+Subject: Re: [alsa-devel] [PATCHv5 2/5] ASoC: codec: cpcap: new codec
+Date: Mon, 26 Feb 2018 09:36:42 +0800
+Message-ID: <201802260921.u5yCEY8U%fengguang.wu@intel.com>
+References: <20180223200254.25685-3-sebastian.reichel@collabora.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <cover.1518941072.git.lukas@wunner.de>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Lukas Wunner <lukas@wunner.de>
-Cc: alsa-devel@alsa-project.org, Linux PM list <linux-pm@vger.kernel.org>, nouveau@lists.freedesktop.org, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Takashi Iwai <tiwai@suse.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Jaroslav Kysela <perex@perex.cz>, Hans de Goede <hdegoede@redhat.com>, Peter Wu <peter@lekensteyn.nl>, Bastien Nocera <hadess@hadess.net>, linux-pci@vger.kernel.org, Alex Deucher <alexander.deucher@amd.com>, Dave Airlie <airlied@redhat.com>, Bjorn Helgaas <bhelgaas@google.com>, Ben Skeggs <bskeggs@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180223200254.25685-3-sebastian.reichel@collabora.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: kbuild-all@01.org, Sebastian Reichel <sre@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Tony Lindgren <tony@atomide.com>, Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkKCkkndmUgbm90IHNlZW4gYW55dGhpbmcgdW50b3dhcmQgd2l0aCB0aGVzZSBwYXRjaGVzIHdp
-dGggbXkgQU1EIFBSSU1FIHN5c3RlbSBoZXJlCgpUZXN0ZWQtYnk6IE1pa2UgTG90aGlhbiA8bWlr
-ZUBmaXJlYnVybi5jby51az4KCkNoZWVycwoKTWlrZQpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBs
-aXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9kcmktZGV2ZWwK
+Hi Sebastian,
+
+I love your patch! Perhaps something to improve:
+
+[auto build test WARNING on robh/for-next]
+[also build test WARNING on v4.16-rc2 next-20180223]
+[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+
+url:    https://github.com/0day-ci/linux/commits/Sebastian-Reichel/Motorola-Droid-4-Audio-Support/20180226-063007
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+reproduce:
+        # apt-get install sparse
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF=-D__CHECK_ENDIAN__
+
+
+sparse warnings: (new ones prefixed by >>)
+
+>> sound/soc/codecs/cpcap.c:1406:54: sparse: restricted snd_pcm_format_t degrades to integer
+
+vim +1406 sound/soc/codecs/cpcap.c
+
+  1396	
+  1397	static struct snd_soc_dai_driver cpcap_dai[] = {
+  1398	{
+  1399		.id = 0,
+  1400		.name = "cpcap-hifi",
+  1401		.playback = {
+  1402			.stream_name = "HiFi Playback",
+  1403			.channels_min = 2,
+  1404			.channels_max = 2,
+  1405			.rates = SNDRV_PCM_RATE_8000_48000,
+> 1406			.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FORMAT_S24_LE,
+  1407		},
+  1408		.ops = &cpcap_dai_hifi_ops,
+  1409	},
+  1410	{
+  1411		.id = 1,
+  1412		.name = "cpcap-voice",
+  1413		.playback = {
+  1414			.stream_name = "Voice Playback",
+  1415			.channels_min = 1,
+  1416			.channels_max = 1,
+  1417			.rates = SNDRV_PCM_RATE_8000_48000,
+  1418			.formats = SNDRV_PCM_FMTBIT_S16_LE,
+  1419		},
+  1420		.capture = {
+  1421			.stream_name = "Voice Capture",
+  1422			.channels_min = 1,
+  1423			.channels_max = 2,
+  1424			.rates = SNDRV_PCM_RATE_8000_48000,
+  1425			.formats = SNDRV_PCM_FMTBIT_S16_LE,
+  1426		},
+  1427		.ops = &cpcap_dai_voice_ops,
+  1428	},
+  1429	};
+  1430	
+
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
