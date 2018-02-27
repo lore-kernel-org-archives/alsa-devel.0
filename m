@@ -1,16 +1,19 @@
 From: Vishal Thanki <vishalthanki@gmail.com>
-Subject: [PATCH 0/1] Handling of serializers
-Date: Tue, 27 Feb 2018 15:51:03 +0100
-Message-ID: <20180227145104.5868-1-vishalthanki@gmail.com>
+Subject: [PATCH 1/1] ASoC: davinci-mcasp: Only disable inactive
+	serializer
+Date: Tue, 27 Feb 2018 15:51:04 +0100
+Message-ID: <20180227145104.5868-2-vishalthanki@gmail.com>
+References: <20180227145104.5868-1-vishalthanki@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f42.google.com (mail-wm0-f42.google.com [74.125.82.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B293266D7D
- for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 15:51:22 +0100 (CET)
-Received: by mail-wm0-f42.google.com with SMTP id t74so24749248wme.3
- for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 06:51:22 -0800 (PST)
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92C622671A9
+ for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 15:51:34 +0100 (CET)
+Received: by mail-wm0-f66.google.com with SMTP id s206so22036825wme.0
+ for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 06:51:34 -0800 (PST)
+In-Reply-To: <20180227145104.5868-1-vishalthanki@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,21 +27,36 @@ To: alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, christophe.jaillet@wanad
 Cc: Vishal Thanki <vishalthanki@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On a custom AM33xx based platform, we use 4 channels for audio output (2
-* Left/Right) by making use of two TX serializers. The audio input path
-only uses 2 channels, hence one RX serializer. If the recording is
-started before the playback, the playback cannot make use of all 4
-channels because of the imposed max number of channels by recording. And
-if playback is started before recording, the hw_params set during
-recording stream would disable an active TX serializer which causes
-audio distortion. I have tried to fix this unwanted behavior in
-following patch. Please comment if this should be done differently.
+As a side effect of the following commit, the active TX
+serializer may get disabled which may result in distorted
+audio output.
 
-Vishal Thanki (1):
-  ASoC: davinci-mcasp: Only disable inactive serializer
+ASoC: davinci-mcasp: Add support for multichannel playback
+(2952b27e2e463b28d5c0f04000f96b968137ca42)
 
+For example, if a 4 channel I2S playback with two TX serializers
+is activated. Later on, if a recording of 2 channels, with only 1 RX
+serializer is started, which will also disable one of the TX
+serializer because max_active_serializers is only calculated for
+RX (recording) stream. This patch fixes this issue.
+
+Signed-off-by: Vishal Thanki <vishalthanki@gmail.com>
+---
  sound/soc/davinci/davinci-mcasp.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 03ba218160ca..f382dd55cae0 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -789,7 +789,7 @@ static int mcasp_common_hw_param(struct davinci_mcasp *mcasp, int stream,
+ 					rx_ser < max_active_serializers) {
+ 			mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AXR(i));
+ 			rx_ser++;
+-		} else {
++		} else if (mcasp->serial_dir[i] == INACTIVE_MODE) {
+ 			mcasp_mod_bits(mcasp, DAVINCI_MCASP_XRSRCTL_REG(i),
+ 				       SRMOD_INACTIVE, SRMOD_MASK);
+ 		}
 -- 
 2.14.3
