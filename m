@@ -1,19 +1,15 @@
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: Re: [PATCH 6/7] ASoC: max9867: Fix BSEL value in
-	master mode.
-Date: Tue, 27 Feb 2018 18:23:09 +0100
-Message-ID: <20180227172309.GG1479@piout.net>
-References: <20180130110604.GA18123@lenoch>
- <20180130111033.GG18123@lenoch>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH] ALSA: control: Fix a bunch of whitespace errors
+Date: Tue, 27 Feb 2018 17:29:54 +0000
+Message-ID: <20180227172954.24819-1-rf@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bootlin.com (mail.bootlin.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id DB9832676FB
- for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 18:23:10 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20180130111033.GG18123@lenoch>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D6E72676E7
+ for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 18:33:32 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,89 +19,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, anish kumar <yesanishhere@gmail.com>
+To: perex@perex.cz, tiwai@suse.com
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This also needs a proper commit message.
+Remove a bunch of trailing whitespace errors. They are
+fairly annoying if you have your editor set to strip trailing
+whitespace because you find you've introduced more changes
+than you were trying to make.
 
-On 30/01/2018 at 12:10:33 +0100, Ladislav Michl wrote:
-> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
-> ---
->  Note: It should be reconsidered where BSEL should be set.
-> 
->  sound/soc/codecs/max9867.c | 43 +++----------------------------------------
->  1 file changed, 3 insertions(+), 40 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-> index 026b7cf94910..6272cf5df4a9 100644
-> --- a/sound/soc/codecs/max9867.c
-> +++ b/sound/soc/codecs/max9867.c
-> @@ -148,46 +148,6 @@ static int max9867_dai_hw_params(struct snd_pcm_substream *substream,
->  			MAX9867_RAPID_LOCK, MAX9867_RAPID_LOCK);
->  		regmap_update_bits(max9867->regmap, MAX9867_AUDIOCLKHIGH,
->  			MAX9867_PLL, MAX9867_PLL);
-> -	} else {
-> -		unsigned long int bclk_rate, pclk_bclk_ratio;
-> -		int bclk_value;
-> -
-> -		bclk_rate = params_rate(params) * 2 * params_width(params);
-> -		pclk_bclk_ratio = max9867->pclk/bclk_rate;
-> -		switch (params_width(params)) {
-> -		case 8:
-> -		case 16:
-> -			switch (pclk_bclk_ratio) {
-> -			case 2:
-> -				bclk_value = MAX9867_IFC1B_PCLK_2;
-> -				break;
-> -			case 4:
-> -				bclk_value = MAX9867_IFC1B_PCLK_4;
-> -				break;
-> -			case 8:
-> -				bclk_value = MAX9867_IFC1B_PCLK_8;
-> -				break;
-> -			case 16:
-> -				bclk_value = MAX9867_IFC1B_PCLK_16;
-> -				break;
-> -			default:
-> -				dev_err(codec->dev,
-> -					"unsupported sampling rate\n");
-> -				return -EINVAL;
-> -			}
-> -			break;
-> -		case 24:
-> -			bclk_value = MAX9867_IFC1B_24BIT;
-> -			break;
-> -		case 32:
-> -			bclk_value = MAX9867_IFC1B_32BIT;
-> -			break;
-> -		default:
-> -			dev_err(codec->dev, "unsupported sampling rate\n");
-> -			return -EINVAL;
-> -		}
-> -		regmap_update_bits(max9867->regmap, MAX9867_IFC1B,
-> -			MAX9867_IFC1B_BCLK_MASK, bclk_value);
->  	}
->  	return 0;
->  }
-> @@ -244,6 +204,9 @@ static int max9867_set_dai_sysclk(struct snd_soc_dai *codec_dai,
->  	value &= ~MAX9867_FREQ_MASK;
->  	regmap_update_bits(max9867->regmap, MAX9867_SYSCLK,
->  			MAX9867_PSCLK_MASK, value);
-> +	regmap_update_bits(max9867->regmap, MAX9867_IFC1B,
-> +			MAX9867_IFC1B_BCLK_MASK, 0x010);
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ sound/core/control.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-This magic value has to be defined somewhere.
-
-> +
->  	return 0;
->  }
->  
-> -- 
-> 2.15.1
-> 
-
+diff --git a/sound/core/control.c b/sound/core/control.c
+index 8a77620a3854..69734b0eafd0 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -105,7 +105,7 @@ static void snd_ctl_empty_read_queue(struct snd_ctl_file * ctl)
+ {
+ 	unsigned long flags;
+ 	struct snd_kctl_event *cread;
+-	
++
+ 	spin_lock_irqsave(&ctl->read_lock, flags);
+ 	while (!list_empty(&ctl->events)) {
+ 		cread = snd_kctl_event(ctl->events.next);
+@@ -159,7 +159,7 @@ void snd_ctl_notify(struct snd_card *card, unsigned int mask,
+ 	unsigned long flags;
+ 	struct snd_ctl_file *ctl;
+ 	struct snd_kctl_event *ev;
+-	
++
+ 	if (snd_BUG_ON(!card || !id))
+ 		return;
+ 	if (card->shutdown)
+@@ -213,7 +213,7 @@ static int snd_ctl_new(struct snd_kcontrol **kctl, unsigned int count,
+ {
+ 	unsigned int size;
+ 	unsigned int idx;
+-	
++
+ 	if (count == 0 || count > MAX_CONTROL_COUNT)
+ 		return -EINVAL;
+ 
+@@ -238,7 +238,7 @@ static int snd_ctl_new(struct snd_kcontrol **kctl, unsigned int count,
+  * @ncontrol: the initialization record
+  * @private_data: the private data to set
+  *
+- * Allocates a new struct snd_kcontrol instance and initialize from the given 
++ * Allocates a new struct snd_kcontrol instance and initialize from the given
+  * template.  When the access field of ncontrol is 0, it's assumed as
+  * READWRITE access. When the count field is 0, it's assumes as one.
+  *
+@@ -251,7 +251,7 @@ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new *ncontrol,
+ 	unsigned int count;
+ 	unsigned int access;
+ 	int err;
+-	
++
+ 	if (snd_BUG_ON(!ncontrol || !ncontrol->info))
+ 		return NULL;
+ 
+@@ -753,7 +753,7 @@ static int snd_ctl_elem_list(struct snd_card *card,
+ 	struct snd_ctl_elem_id id;
+ 	unsigned int offset, space, jidx;
+ 	int err = 0;
+-	
++
+ 	if (copy_from_user(&list, _list, sizeof(list)))
+ 		return -EFAULT;
+ 	offset = list.offset;
+@@ -827,7 +827,7 @@ static int snd_ctl_elem_info(struct snd_ctl_file *ctl,
+ 	struct snd_kcontrol_volatile *vd;
+ 	unsigned int index_offset;
+ 	int result;
+-	
++
+ 	down_read(&card->controls_rwsem);
+ 	kctl = snd_ctl_find_id(card, &info->id);
+ 	if (kctl == NULL) {
+@@ -992,7 +992,7 @@ static int snd_ctl_elem_lock(struct snd_ctl_file *file,
+ 	struct snd_kcontrol *kctl;
+ 	struct snd_kcontrol_volatile *vd;
+ 	int result;
+-	
++
+ 	if (copy_from_user(&id, _id, sizeof(id)))
+ 		return -EFAULT;
+ 	down_write(&card->controls_rwsem);
+@@ -1020,7 +1020,7 @@ static int snd_ctl_elem_unlock(struct snd_ctl_file *file,
+ 	struct snd_kcontrol *kctl;
+ 	struct snd_kcontrol_volatile *vd;
+ 	int result;
+-	
++
+ 	if (copy_from_user(&id, _id, sizeof(id)))
+ 		return -EFAULT;
+ 	down_write(&card->controls_rwsem);
 -- 
-Alexandre Belloni, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.11.0
