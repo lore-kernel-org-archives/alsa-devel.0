@@ -1,59 +1,72 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv5 2/5] ASoC: codec: cpcap: new codec
-Date: Tue, 27 Feb 2018 11:03:15 +0000
-Message-ID: <20180227110315.GB11822@sirena.org.uk>
-References: <20180223200254.25685-1-sebastian.reichel@collabora.co.uk>
- <20180223200254.25685-3-sebastian.reichel@collabora.co.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: Use scnprintf() instead of snprintf()
+Date: Tue, 27 Feb 2018 20:09:38 +0900
+Message-ID: <368fc7e7-9517-8766-acee-4512bebb34b4@sakamocchi.jp>
+References: <1519697759-31062-1-git-send-email-climbbb.kim@gmail.com>
+ <6fa09080-a0f4-c3c1-20c0-69baa00dbc38@sakamocchi.jp>
+ <CAL6iAaLHC3u3vuCsE8OY8sLH+M0AwpxxAGWARN34c4M5L0oW1Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hHWLQfXTYDoKhP50"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180223200254.25685-3-sebastian.reichel@collabora.co.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Cc: Sebastian Reichel <sre@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Tony Lindgren <tony@atomide.com>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 0C5E0267684
+ for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 12:09:44 +0100 (CET)
+In-Reply-To: <CAL6iAaLHC3u3vuCsE8OY8sLH+M0AwpxxAGWARN34c4M5L0oW1Q@mail.gmail.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaejoong Kim <climbbb.kim@gmail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---hHWLQfXTYDoKhP50
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Feb 27 2018 15:12, Jaejoong Kim wrote:
+>> We can see below explanation in 'Documentation/filesystems
+>> /sysfs.txt'[1]:
+>>
+>> ```
+>> - show() methods should return the number of bytes printed into the
+>>    buffer. This is the return value of scnprintf().
+>>
+>> - show() must not use snprintf() when formatting the value to be
+>>    returned to user space. If you can guarantee that an overflow
+>>    will never happen you can use sprintf() otherwise you must use
+>>    scnprintf().
+>> ```
+>>
+>> Actually, 'snprintf()' returns written bytes excluding trailing _null_
+>> byte for end output to strings and we need to use 'scnprintf()'.
+> 
+> Strictly speaking, that is half the truth.
+> 
+> snprintf() does not return the length actually written to the buffer,
+> but rather to
+> return the length that it was intended to be written to. So, in case
+> of the formated
+> buffer size is much bigger, 'snprintf()' will return formated buffer
+> size not written bytes.
+> 
+> Please refer to the LWN about snprintf
+> https://lwn.net/Articles/69419/
+> 
+> I do NOT think the original codes will happen if snprintf() return a
+> number larger than PAGE_SIZE.
+> Nevertheless, it is better to use scnprintf () for the show method
+> because of the snprintf () behavior.
 
-On Fri, Feb 23, 2018 at 09:02:51PM +0100, Sebastian Reichel wrote:
+Ah... Exactly. I failed to get your intention, sorry... (I should have 
+read your commit comment carefully...)
 
-> +	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-> +	case SND_SOC_DAIFMT_I2S:
-> +		val |= BIT(CPCAP_BIT_ST_DIG_AUD_FS0);
-> +		val |= BIT(CPCAP_BIT_ST_DIG_AUD_FS1);
-> +		break;
-> +	default:
-> +		/* 01 - 4 slots network mode */
-> +		val |= BIT(CPCAP_BIT_ST_DIG_AUD_FS0);
-> +		val &= ~BIT(CPCAP_BIT_ST_DIG_AUD_FS1);
-> +		/* L on slot 1 */
-> +		val |= BIT(CPCAP_BIT_ST_L_TIMESLOT0);
-> +		break;
-> +	}
 
-The default case here is really one specific mode, it looks like it's
-either DSP_A or DSP_B.  Most likely DSP_A but you should check.
-Otherwise this looks good so I'll apply it, please send a followup patch
-fixing this to match only the specific mode that's actually supported.
+Thanks
 
---hHWLQfXTYDoKhP50
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqVOvIACgkQJNaLcl1U
-h9DYbwf7BcnQly6YhUxqDK9VVhh77y0p1LW+LHXuIKaGjAzvy7b2LIvkkgSwOvEM
-zvKR7VU+wC22mEBj8WVBeGv4/tVTziH8N4/8q5n2vrg+TKSkvsGdniiifw2080hA
-IV2fkLXQRyoZLuACBXSQzapwsFdI+UoRDERJ9HDuENitog1sddFMGgV+spzT/gZO
-LSkEpODQBp5MRvgFZY+kdplq+z1Mi1tDiZ2ZYFRsEtcStVr5zgwCE4gDw5tJxIxT
-01NWyKtlvDq6+OHdstA5qGuxTtFEY7Xccjezbyg4Yn1LWrrdsXXM7mLjTjnX7g04
-k3RpsBb5rjLLTJ0QSj4WxOFzrsdATQ==
-=YQU8
------END PGP SIGNATURE-----
-
---hHWLQfXTYDoKhP50--
+Takashi Sakamoto
