@@ -1,22 +1,16 @@
-From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
-Subject: Re: [PATCH v1 8/9] ASoC: hdac_hda: add asoc extension
- for legacy HDA codec drivers
-Date: Tue, 27 Feb 2018 03:34:43 +0000
-Message-ID: <85DFEED57DC57344B2483EF7BF8CB60579B2AAE9@BGSMSX104.gar.corp.intel.com>
-References: <1519373550-2545-1-git-send-email-rakesh.a.ughreja@intel.com>
- <1519373550-2545-9-git-send-email-rakesh.a.ughreja@intel.com>
- <s5hmv00ggc4.wl-tiwai@suse.de>
- <85DFEED57DC57344B2483EF7BF8CB60579B2A211@BGSMSX104.gar.corp.intel.com>
- <s5h606krqt1.wl-tiwai@suse.de>
- <48068a1a-7638-292f-bab4-ca0c2446c595@linux.intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: Use scnprintf() instead of snprintf()
+Date: Tue, 27 Feb 2018 12:40:40 +0900
+Message-ID: <6fa09080-a0f4-c3c1-20c0-69baa00dbc38@sakamocchi.jp>
+References: <1519697759-31062-1-git-send-email-climbbb.kim@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 899CC267ADD
- for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 04:34:53 +0100 (CET)
-In-Reply-To: <48068a1a-7638-292f-bab4-ca0c2446c595@linux.intel.com>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 034B1267AE4
+ for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 04:40:48 +0100 (CET)
+In-Reply-To: <1519697759-31062-1-git-send-email-climbbb.kim@gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,111 +21,154 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: "Koul, Vinod" <vinod.koul@intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, Patches Audio <patches.audio@intel.com>
+To: Jaejoong Kim <climbbb.kim@gmail.com>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
+
+On Feb 27 2018 11:15, Jaejoong Kim wrote:
+> The show() method should use scnprintf() not snprintf() because snprintf()
+> may returns a value that exceeds its second argument.
+> 
+> Signed-off-by: Jaejoong Kim <climbbb.kim@gmail.com>
+> ---
+>   sound/core/init.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/core/init.c b/sound/core/init.c
+> index 168ae03..4a51a06 100644
+> --- a/sound/core/init.c
+> +++ b/sound/core/init.c
+> @@ -670,7 +670,7 @@ card_id_show_attr(struct device *dev,
+>   		  struct device_attribute *attr, char *buf)
+>   {
+>   	struct snd_card *card = container_of(dev, struct snd_card, card_dev);
+> -	return snprintf(buf, PAGE_SIZE, "%s\n", card->id);
+> +	return scnprintf(buf, PAGE_SIZE, "%s\n", card->id);
+>   }
+>   
+>   static ssize_t
+> @@ -710,7 +710,7 @@ card_number_show_attr(struct device *dev,
+>   		     struct device_attribute *attr, char *buf)
+>   {
+>   	struct snd_card *card = container_of(dev, struct snd_card, card_dev);
+> -	return snprintf(buf, PAGE_SIZE, "%i\n", card->number);
+> +	return scnprintf(buf, PAGE_SIZE, "%i\n", card->number);
+>   }
+>   
+>   static DEVICE_ATTR(number, S_IRUGO, card_number_show_attr, NULL);
+
+In my opinion, original codes are good because it has a trailing '\n'
+instead of '\0'.
+
+We can see below explanation in 'Documentation/filesystems
+/sysfs.txt'[1]:
+
+```
+- show() methods should return the number of bytes printed into the
+   buffer. This is the return value of scnprintf().
+
+- show() must not use snprintf() when formatting the value to be
+   returned to user space. If you can guarantee that an overflow
+   will never happen you can use sprintf() otherwise you must use
+   scnprintf().
+```
+
+Actually, 'snprintf()' returns written bytes excluding trailing _null_
+byte for end output to strings and we need to use 'scnprintf()'.
+
+However, for our cases, the trailing letter is '\n' and 'snprintf()'
+counts correctly including it.
+
+Let's test:
+
+```
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+#include <unistd.h>
+
+#include <string.h>
+#include <errno.h>
+
+int main(int argc, char **argv)
+{
+     int fd;
+     char buf[8];
+     ssize_t len;
+
+     if (argc < 2) {
+         printf("At least, one argument is required for path to sysfs 
+node.\n");
+         return EXIT_FAILURE;
+     }
+
+     fd = open(*(argv + 1), O_RDONLY);
+     if (fd < 0) {
+         printf("open(2): %s\n", strerror(errno));
+         return EXIT_FAILURE;
+     }
+
+     // 'C' is a canary.
+     memset(buf, 'C', sizeof(buf));
+
+     len = read(fd, buf, sizeof(buf));
+     if (len < 0) {
+         printf("read(2): %s\n", strerror(errno));
+         close(fd);
+         return EXIT_FAILURE;
+     }
+
+     printf("len = %zd\n", len);
+     for (int i = 0; i < sizeof(buf); ++i) {
+             printf("%02x\n", buf[i]);
+     }
+
+     close(fd);
+
+     return EXIT_SUCCESS;
+}
+```
+
+```
+$ cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version k4.13.0-36-generic.
+$ /tmp/test 
+'/sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/0000:02:00.0/fw1/fw1.0/sound/card2/number'
+len = 2
+32
+0a
+43
+43
+43
+43
+43
+43
+$ /tmp/test 
+'/sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/0000:02:00.0/fw1/fw1.0/sound/card2/id'
+len = 5
+53
+6f
+6c
+6f
+0a
+43
+43
+43
+```
+
+Looks good.
 
 
->-----Original Message-----
->From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
->Sent: Tuesday, February 27, 2018 12:49 AM
->To: Takashi Iwai <tiwai@suse.de>; Ughreja, Rakesh A
-><rakesh.a.ughreja@intel.com>
->Cc: alsa-devel@alsa-project.org; Koul, Vinod <vinod.koul@intel.com>;
->liam.r.girdwood@linux.intel.com; Patches Audio <patches.audio@intel.com>;
->broonie@kernel.org
->Subject: Re: [alsa-devel] [PATCH v1 8/9] ASoC: hdac_hda: add asoc extension for
->legacy HDA codec drivers
->
->On 2/26/18 3:25 AM, Takashi Iwai wrote:
->> On Mon, 26 Feb 2018 11:11:44 +0100,
->> Ughreja, Rakesh A wrote:
->>>
->>>
->>>
->>>> -----Original Message-----
->>>> From: Takashi Iwai [mailto:tiwai@suse.de]
->>>> Sent: Friday, February 23, 2018 3:48 PM
->>>> To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>
->>>> Cc: alsa-devel@alsa-project.org; broonie@kernel.org;
->>>> liam.r.girdwood@linux.intel.com; pierre-louis.bossart@linux.intel.com; Koul,
->>>> Vinod <vinod.koul@intel.com>; Patches Audio <patches.audio@intel.com>
->>>> Subject: Re: [PATCH v1 8/9] ASoC: hdac_hda: add asoc extension for legacy
->HDA
->>>> codec drivers
->>>>
->>>> On Fri, 23 Feb 2018 09:12:29 +0100,
->>>> Rakesh Ughreja wrote:
->>>>>
->>>>> +static int hdac_hda_codec_probe(struct snd_soc_codec *codec)
->>>>> +{
->>>>> +	struct hdac_hda_priv *hda_pvt = snd_soc_codec_get_drvdata(codec);
->>>>> +	struct snd_soc_dapm_context *dapm =
->>>>> +			snd_soc_component_get_dapm(&codec-
->>>>> component);
->>>>> +	struct hdac_device *hdev = &hda_pvt->codec.core;
->>>>> +	struct hda_codec *hcodec = &hda_pvt->codec;
->>>>> +	struct hdac_ext_link *hlink = NULL;
->>>>> +	hda_codec_patch_t patch;
->>>>> +	int ret, i = 0;
->>>>> +	u16 codec_mask;
->>>>> +
->>>>> +	hda_pvt->scodec = codec;
->>>>> +	hlink = snd_hdac_ext_bus_get_link(hdev->bus, dev_name(&hdev->dev));
->>>>> +	if (!hlink) {
->>>>> +		dev_err(&hdev->dev, "hdac link not found\n");
->>>>> +		return -EIO;
->>>>> +	}
->>>>> +
->>>>> +	ret = snd_hdac_ext_bus_link_get(hdev->bus, hlink);
->>>>
->>>> So this is the essential part for the ext-hda stuff.  But...
->>>>
->>>>> +
->>>>> +	udelay(1000);
->>>>> +	do {
->>>>> +		codec_mask = snd_hdac_chip_readw(hdev->bus, STATESTS);
->>>>> +		if (codec_mask)
->>>>> +			break;
->>>>> +		i++;
->>>>> +		udelay(100);
->>>>> +	} while (i < 100);
->>>>> +
->>>>> +	if (!codec_mask) {
->>>>> +		dev_err(&hdev->dev, "No codecs found after link reset\n");
->>>>> +		return -EIO;
->>>>> +	}
->>>>> +
->>>>> +	snd_hdac_chip_writew(hdev->bus, STATESTS, STATESTS_INT_MASK);
->>>>
->>>> Why do you need this?  The callback gets called by the HD-audio
->>>> controller driver and it already should have checked the codec mask
->>>> bits.
->>>
->>> With the multiple link support on the same HDA controller, when the link
->>> gets turned ON immediately codec may not indicate its presence. As per
->>> the HDA spec, it may take up to 521uSec before the codec responds.
->>>
->>> In the legacy HDA the link was turned ON/OFF only during CRST time, but
->>> now it can happen anytime.
->>
->> This must be documented.  Otherwise no one understands it.
->>
->> And I still don't think such stuff belonging to the codec driver.
->> It's rather a job of the controller driver to assure the codec access.
->> If any, we should fix that side instead.
->
->
->I missed what the 'multiple-link' notion means or which part of the spec
->this is referring to?
->The code here assumes one analog codec and one iDisp, there isn't any
->support for additional codecs.
->What am I missing?
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/filesystems/sysfs.txt
 
-HDA Spec section 4.3 - Codec discovery.
-In SKL onwards there are two links and both are individually
-powered ON/OFF.
 
-Regards,
-Rakesh
+Thanks
+
+Takashi Sakamoto
