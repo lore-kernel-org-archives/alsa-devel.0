@@ -1,22 +1,20 @@
-From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
-Subject: Re: [PATCH v1 1/9] ASoC: Intel: Boards: Machine driver
- for Intel platforms
-Date: Tue, 27 Feb 2018 05:12:51 +0000
-Message-ID: <85DFEED57DC57344B2483EF7BF8CB60579B2AC53@BGSMSX104.gar.corp.intel.com>
-References: <1519373550-2545-1-git-send-email-rakesh.a.ughreja@intel.com>
- <1519373550-2545-2-git-send-email-rakesh.a.ughreja@intel.com>
- <caa12ca2-324a-3b6b-2e60-6c67272162c8@linux.intel.com>
- <85DFEED57DC57344B2483EF7BF8CB60579B29A8C@BGSMSX104.gar.corp.intel.com>
- <aef6e261-aa47-2f29-197c-fa913c945b05@linux.intel.com>
+From: Jaejoong Kim <climbbb.kim@gmail.com>
+Subject: Re: [PATCH] ALSA: Use scnprintf() instead of snprintf()
+Date: Tue, 27 Feb 2018 15:12:59 +0900
+Message-ID: <CAL6iAaLHC3u3vuCsE8OY8sLH+M0AwpxxAGWARN34c4M5L0oW1Q@mail.gmail.com>
+References: <1519697759-31062-1-git-send-email-climbbb.kim@gmail.com>
+ <6fa09080-a0f4-c3c1-20c0-69baa00dbc38@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A85B267AFC
- for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 06:12:57 +0100 (CET)
-In-Reply-To: <aef6e261-aa47-2f29-197c-fa913c945b05@linux.intel.com>
-Content-Language: en-US
+Received: from mail-it0-f66.google.com (mail-it0-f66.google.com
+ [209.85.214.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 89E3E267B04
+ for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 07:13:01 +0100 (CET)
+Received: by mail-it0-f66.google.com with SMTP id j7so12599890ita.3
+ for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2018 22:13:01 -0800 (PST)
+In-Reply-To: <6fa09080-a0f4-c3c1-20c0-69baa00dbc38@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,146 +24,184 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>
-Cc: "Koul, Vinod" <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi, Takashi
 
+Thanks for your reviewing.
 
->-----Original Message-----
->From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
->Sent: Tuesday, February 27, 2018 12:41 AM
->To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>; alsa-devel@alsa-
->project.org; broonie@kernel.org; tiwai@suse.de;
->liam.r.girdwood@linux.intel.com
->Cc: Koul, Vinod <vinod.koul@intel.com>; Patches Audio
-><patches.audio@intel.com>
->Subject: Re: [alsa-devel] [PATCH v1 1/9] ASoC: Intel: Boards: Machine driver for
->Intel platforms
+2018-02-27 12:40 GMT+09:00 Takashi Sakamoto <o-takashi@sakamocchi.jp>:
+> Hi,
 >
->
->>>> +	select SND_SOC_HDAC_HDMI
->>>> +	help
->>>> +	  This adds support for ASoC Onboard Codec HDA machine driver. This
->>> will
->>>> +	  create an alsa sound card for HDA Codecs.
->>>
->>> does this handle idisp as well? If yes, does this option conflict with
->>> the enablement of the other machine drivers which use the hdac_hdmi codec?
+> On Feb 27 2018 11:15, Jaejoong Kim wrote:
 >>
->> Yes, the machine driver does handle iDisp codec. I didn't understand your
->> comment about conflict and other machine driver using the hdac_hdmi
->> codec. There is only one iDisp codec and so what is the reason for having
->> two machine drivers accessing the same codec ?
->
->thinking a bit more, all the existing machine drivers which provide
->support for HDMI/iDisp also cater to I2S codecs. Since you deal with
->HDaudio only if you haven't found a known I2S codec there is no real
->source of conflict.
->
-
-So is it clear now ? Do I need to change anything ?
-
->
->>>> +/* skl_hda_digital audio interface glue - connects codec <--> CPU */
->>>> +struct snd_soc_dai_link
->skl_hda_be_dai_links[HDA_DSP_MAX_BE_DAI_LINKS]
->>> = {
->>>> +
->>>> +	/* Back End DAI links */
->>>> +	{
->>>> +		.name = "iDisp1",
->>>> +		.id = 1,
->>>> +		.cpu_dai_name = "iDisp1 Pin",
->>>> +		.codec_name = "ehdaudio0D2",
->>>> +		.codec_dai_name = "intel-hdmi-hifi1",
->>>> +		.platform_name = "0000:00:1f.3",
->>>
->>> what happens if you run on a device with a different ID, e.g. APL or GLK?
+>> The show() method should use scnprintf() not snprintf() because snprintf()
+>> may returns a value that exceeds its second argument.
 >>
->> This is just a default ID. The same machine driver should work.
->> The platform name (ID) is passed from platform driver using platform_data.
->> You can see that in the later part of the code. So this name gets overwritten.
->
->i don't see the point of having a default then? It could just as well be
->"deadbeef" or not initialized to avoid storing useless strings.
->
-
-Yes, I can make default as NULL.
-
->
->>>> +static const char *platform_name = "0000:00:1f.3";
->>>
->>> same comment as above, this is not constant across all devices
+>> Signed-off-by: Jaejoong Kim <climbbb.kim@gmail.com>
+>> ---
+>>   sound/core/init.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
 >>
->> Yes and its overwritten when it is received from platform driver.
->> You can see in the later part of the code.
->>
->> Copy/pasting the code here
->>
->>>> +	pdata = dev_get_drvdata(&pdev->dev);
->>>> +	if (pdata && pdata->platform) {
->>>> +		platform_name = pdata->platform;
+>> diff --git a/sound/core/init.c b/sound/core/init.c
+>> index 168ae03..4a51a06 100644
+>> --- a/sound/core/init.c
+>> +++ b/sound/core/init.c
+>> @@ -670,7 +670,7 @@ card_id_show_attr(struct device *dev,
+>>                   struct device_attribute *attr, char *buf)
+>>   {
+>>         struct snd_card *card = container_of(dev, struct snd_card,
+>> card_dev);
+>> -       return snprintf(buf, PAGE_SIZE, "%s\n", card->id);
+>> +       return scnprintf(buf, PAGE_SIZE, "%s\n", card->id);
+>>   }
+>>     static ssize_t
+>> @@ -710,7 +710,7 @@ card_number_show_attr(struct device *dev,
+>>                      struct device_attribute *attr, char *buf)
+>>   {
+>>         struct snd_card *card = container_of(dev, struct snd_card,
+>> card_dev);
+>> -       return snprintf(buf, PAGE_SIZE, "%i\n", card->number);
+>> +       return scnprintf(buf, PAGE_SIZE, "%i\n", card->number);
+>>   }
+>>     static DEVICE_ATTR(number, S_IRUGO, card_number_show_attr, NULL);
 >
->can be be a const char * then?
+>
+> In my opinion, original codes are good because it has a trailing '\n'
+> instead of '\0'.
 
-Since its used only within the file, I marked it as 
-static const char *
-
->
->>>> +		for (i = 0; i < ctx->pcm_count; i++)
->>>> +			skl_hda_be_dai_links[i].platform_name =
->>> platform_name;
->
->and why do you need a static variable in the first place, wouldn't
->
->skl_hda_be_dai_links[i].platform_name = pdata->platform work just as well?
-
-platform_name variable is used in skl_hda_add_dai_link as well.
-
->
->
->>>> +static const struct platform_device_id skl_hda_board_ids[] = {
->>>> +	{ .name = "skl_hda_generic" },
->>>> +	{ }
->>>> +};
->>>> +
->>>> +static struct platform_driver skl_hda_audio = {
->>>> +	.probe = skl_hda_audio_probe,
->>>> +	.driver = {
->>>> +		.name = "skl_hda_generic",
->>>> +		.pm = &snd_soc_pm_ops,
->>>> +	},
->>>> +	.id_table = skl_hda_board_ids,
->>>
->>> is this needed if you have a single id?
->>
->> I did the way other machine drivers are doing.
->> But I think it's not needed for single ID. But I think it's this way so that
->> more IDs can be added ? So I will keep it as it is.
->
->what other IDS would you use?
-
-I would like to use different IDs for different combination of the codecs.
-e.g. HDMI Only, HDA+HDMI to begin with.
+I agree with you.
 
 >
->>
->>>
->>>> +};
->>>> +
->>>> +module_platform_driver(skl_hda_audio)
->>>> +
->>>> +/* Module information */
->>>> +MODULE_DESCRIPTION("SKL/KBL HDA Generic Machine driver");
->>>
->>> I don't see how this handles HDAudio codecs in general, is this limited
->>> to iDISP/HDMI support?
->>
->> In this patch only the iDisp/HDMI support is added. In the later patches
->> [Patch 9/9] support for HDA codec is added.
+> We can see below explanation in 'Documentation/filesystems
+> /sysfs.txt'[1]:
 >
->yes, but I have to go read 8 patches before finding it out... I comment
->patches one by one.
+> ```
+> - show() methods should return the number of bytes printed into the
+>   buffer. This is the return value of scnprintf().
+>
+> - show() must not use snprintf() when formatting the value to be
+>   returned to user space. If you can guarantee that an overflow
+>   will never happen you can use sprintf() otherwise you must use
+>   scnprintf().
+> ```
+>
+> Actually, 'snprintf()' returns written bytes excluding trailing _null_
+> byte for end output to strings and we need to use 'scnprintf()'.
 
-This is mentioned in the commit message.
+Strictly speaking, that is half the truth.
+
+snprintf() does not return the length actually written to the buffer,
+but rather to
+return the length that it was intended to be written to. So, in case
+of the formated
+buffer size is much bigger, 'snprintf()' will return formated buffer
+size not written bytes.
+
+Please refer to the LWN about snprintf
+https://lwn.net/Articles/69419/
+
+I do NOT think the original codes will happen if snprintf() return a
+number larger than PAGE_SIZE.
+Nevertheless, it is better to use scnprintf () for the show method
+because of the snprintf () behavior.
+
+Thanks,
+Jaejoong
+>
+> However, for our cases, the trailing letter is '\n' and 'snprintf()'
+> counts correctly including it.
+>
+> Let's test:
+>
+> ```
+> #include <stdio.h>
+> #include <stdlib.h>
+>
+> #include <sys/types.h>
+> #include <sys/stat.h>
+> #include <fcntl.h>
+>
+> #include <unistd.h>
+>
+> #include <string.h>
+> #include <errno.h>
+>
+> int main(int argc, char **argv)
+> {
+>     int fd;
+>     char buf[8];
+>     ssize_t len;
+>
+>     if (argc < 2) {
+>         printf("At least, one argument is required for path to sysfs
+> node.\n");
+>         return EXIT_FAILURE;
+>     }
+>
+>     fd = open(*(argv + 1), O_RDONLY);
+>     if (fd < 0) {
+>         printf("open(2): %s\n", strerror(errno));
+>         return EXIT_FAILURE;
+>     }
+>
+>     // 'C' is a canary.
+>     memset(buf, 'C', sizeof(buf));
+>
+>     len = read(fd, buf, sizeof(buf));
+>     if (len < 0) {
+>         printf("read(2): %s\n", strerror(errno));
+>         close(fd);
+>         return EXIT_FAILURE;
+>     }
+>
+>     printf("len = %zd\n", len);
+>     for (int i = 0; i < sizeof(buf); ++i) {
+>             printf("%02x\n", buf[i]);
+>     }
+>
+>     close(fd);
+>
+>     return EXIT_SUCCESS;
+> }
+> ```
+>
+> ```
+> $ cat /proc/asound/version
+> Advanced Linux Sound Architecture Driver Version k4.13.0-36-generic.
+> $ /tmp/test
+> '/sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/0000:02:00.0/fw1/fw1.0/sound/card2/number'
+> len = 2
+> 32
+> 0a
+> 43
+> 43
+> 43
+> 43
+> 43
+> 43
+> $ /tmp/test
+> '/sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/0000:02:00.0/fw1/fw1.0/sound/card2/id'
+> len = 5
+> 53
+> 6f
+> 6c
+> 6f
+> 0a
+> 43
+> 43
+> 43
+> ```
+>
+> Looks good.
+>
+>
+> [1]
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/filesystems/sysfs.txt
+>
+>
+> Thanks
+>
+> Takashi Sakamoto
