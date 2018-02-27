@@ -1,15 +1,24 @@
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH] ALSA: control: Fix a bunch of whitespace errors
-Date: Tue, 27 Feb 2018 17:29:54 +0000
-Message-ID: <20180227172954.24819-1-rf@opensource.cirrus.com>
+From: Ladislav Michl <ladis@linux-mips.org>
+Subject: Re: [PATCH 2/7] ASoC: atmel_ssc_dai: Fix TCMR settings
+ in I2S slave mode
+Date: Tue, 27 Feb 2018 19:50:15 +0100
+Message-ID: <20180227185015.GA1961@lenoch>
+References: <20180130110604.GA18123@lenoch> <20180130110810.GC18123@lenoch>
+ <20180227170921.GE1479@piout.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D6E72676E7
- for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 18:33:32 +0100 (CET)
+Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2534426770A
+ for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 19:50:19 +0100 (CET)
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23990864AbeB0SuRmmma7 (ORCPT
+ <rfc822;alsa-devel@alsa-project.org>);
+ Tue, 27 Feb 2018 19:50:17 +0100
+Content-Disposition: inline
+In-Reply-To: <20180227170921.GE1479@piout.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,104 +28,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: perex@perex.cz, tiwai@suse.com
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, anish kumar <yesanishhere@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Remove a bunch of trailing whitespace errors. They are
-fairly annoying if you have your editor set to strip trailing
-whitespace because you find you've introduced more changes
-than you were trying to make.
+On Tue, Feb 27, 2018 at 06:09:21PM +0100, Alexandre Belloni wrote:
+> This one needs a proper git message because it is not obvious what this
+> is fixing.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/core/control.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+And is also incomplete, as all synchronous slave modes need fixing :)
 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index 8a77620a3854..69734b0eafd0 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -105,7 +105,7 @@ static void snd_ctl_empty_read_queue(struct snd_ctl_file * ctl)
- {
- 	unsigned long flags;
- 	struct snd_kctl_event *cread;
--	
-+
- 	spin_lock_irqsave(&ctl->read_lock, flags);
- 	while (!list_empty(&ctl->events)) {
- 		cread = snd_kctl_event(ctl->events.next);
-@@ -159,7 +159,7 @@ void snd_ctl_notify(struct snd_card *card, unsigned int mask,
- 	unsigned long flags;
- 	struct snd_ctl_file *ctl;
- 	struct snd_kctl_event *ev;
--	
-+
- 	if (snd_BUG_ON(!card || !id))
- 		return;
- 	if (card->shutdown)
-@@ -213,7 +213,7 @@ static int snd_ctl_new(struct snd_kcontrol **kctl, unsigned int count,
- {
- 	unsigned int size;
- 	unsigned int idx;
--	
-+
- 	if (count == 0 || count > MAX_CONTROL_COUNT)
- 		return -EINVAL;
- 
-@@ -238,7 +238,7 @@ static int snd_ctl_new(struct snd_kcontrol **kctl, unsigned int count,
-  * @ncontrol: the initialization record
-  * @private_data: the private data to set
-  *
-- * Allocates a new struct snd_kcontrol instance and initialize from the given 
-+ * Allocates a new struct snd_kcontrol instance and initialize from the given
-  * template.  When the access field of ncontrol is 0, it's assumed as
-  * READWRITE access. When the count field is 0, it's assumes as one.
-  *
-@@ -251,7 +251,7 @@ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new *ncontrol,
- 	unsigned int count;
- 	unsigned int access;
- 	int err;
--	
-+
- 	if (snd_BUG_ON(!ncontrol || !ncontrol->info))
- 		return NULL;
- 
-@@ -753,7 +753,7 @@ static int snd_ctl_elem_list(struct snd_card *card,
- 	struct snd_ctl_elem_id id;
- 	unsigned int offset, space, jidx;
- 	int err = 0;
--	
-+
- 	if (copy_from_user(&list, _list, sizeof(list)))
- 		return -EFAULT;
- 	offset = list.offset;
-@@ -827,7 +827,7 @@ static int snd_ctl_elem_info(struct snd_ctl_file *ctl,
- 	struct snd_kcontrol_volatile *vd;
- 	unsigned int index_offset;
- 	int result;
--	
-+
- 	down_read(&card->controls_rwsem);
- 	kctl = snd_ctl_find_id(card, &info->id);
- 	if (kctl == NULL) {
-@@ -992,7 +992,7 @@ static int snd_ctl_elem_lock(struct snd_ctl_file *file,
- 	struct snd_kcontrol *kctl;
- 	struct snd_kcontrol_volatile *vd;
- 	int result;
--	
-+
- 	if (copy_from_user(&id, _id, sizeof(id)))
- 		return -EFAULT;
- 	down_write(&card->controls_rwsem);
-@@ -1020,7 +1020,7 @@ static int snd_ctl_elem_unlock(struct snd_ctl_file *file,
- 	struct snd_kcontrol *kctl;
- 	struct snd_kcontrol_volatile *vd;
- 	int result;
--	
-+
- 	if (copy_from_user(&id, _id, sizeof(id)))
- 		return -EFAULT;
- 	down_write(&card->controls_rwsem);
--- 
-2.11.0
+> Also, this doesn't exactly fix salve mode. Instead it is enabled
+> synchronous mode. Maybe we need a new DT property to handle sychronous
+> RX/TX. Probably something like what is done here:
+> 
+> https://elixir.bootlin.com/linux/latest/source/Documentation/devicetree/bindings/sound/fsl-sai.txt#L39
+
+Thank you for usefull pointer, will send v2.
+
+> But our default would be asynchronous.
+>
+> On 30/01/2018 at 12:08:10 +0100, Ladislav Michl wrote:
+> > Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+> > ---
+> >  sound/soc/atmel/atmel_ssc_dai.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+> > index a1e2c5682dcd..8e145487cb18 100644
+> > --- a/sound/soc/atmel/atmel_ssc_dai.c
+> > +++ b/sound/soc/atmel/atmel_ssc_dai.c
+> > @@ -647,7 +647,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+> >  
+> >  		tcmr =	  SSC_BF(TCMR_PERIOD, 0)
+> >  			| SSC_BF(TCMR_STTDLY, START_DELAY)
+> > -			| SSC_BF(TCMR_START, SSC_START_FALLING_RF)
+> > +			| SSC_BF(TCMR_START, SSC_START_TX_RX)
+> >  			| SSC_BF(TCMR_CKI, SSC_CKI_FALLING)
+> >  			| SSC_BF(TCMR_CKO, SSC_CKO_NONE)
+> >  			| SSC_BF(TCMR_CKS, ssc->clk_from_rk_pin ?
+> > -- 
+> > 2.15.1
+> > 
+> 
+> -- 
+> Alexandre Belloni, Bootlin (formerly Free Electrons)
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
