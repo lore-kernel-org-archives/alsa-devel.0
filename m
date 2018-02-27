@@ -1,7 +1,7 @@
 From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?= <mylene.josserand@bootlin.com>
-Subject: [PATCH v1 1/4] ASoC: codecs: pcm179x: Add PCM1789 id
-Date: Tue, 27 Feb 2018 22:24:30 +0100
-Message-ID: <20180227212433.2189-2-mylene.josserand@bootlin.com>
+Subject: [PATCH v1 3/4] ASoC: codecs: pcm179x: Add reset gpio
+Date: Tue, 27 Feb 2018 22:24:32 +0100
+Message-ID: <20180227212433.2189-4-mylene.josserand@bootlin.com>
 References: <20180227212433.2189-1-mylene.josserand@bootlin.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -13,93 +13,64 @@ To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@ar
 Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, mylene.josserand@bootlin.com, alexandre.belloni@bootlin.com, thomas.petazzoni@bootlin.com
 List-Id: alsa-devel@alsa-project.org
 
-To prepare the support for the PCM1789, add a new compatible
-and use the i2c_id to handle, later, the differences between
-these two DACs even if they are pretty similar.
+Add a reset gpio to be able to reset this line at startup.
 
 Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>
 ---
- Documentation/devicetree/bindings/sound/pcm179x.txt | 2 +-
- sound/soc/codecs/pcm179x-i2c.c                      | 6 ++++--
- sound/soc/codecs/pcm179x.c                          | 3 ++-
- sound/soc/codecs/pcm179x.h                          | 8 +++++++-
- 4 files changed, 14 insertions(+), 5 deletions(-)
+ sound/soc/codecs/pcm179x.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/pcm179x.txt b/Documentation/devicetree/bindings/sound/pcm179x.txt
-index 436c2b247693..bf725d302958 100644
---- a/Documentation/devicetree/bindings/sound/pcm179x.txt
-+++ b/Documentation/devicetree/bindings/sound/pcm179x.txt
-@@ -4,7 +4,7 @@ This driver supports both the I2C and SPI bus.
- 
- Required properties:
- 
-- - compatible: "ti,pcm1792a"
-+ - compatible: "ti,pcm1792a" or "ti,pcm1789"
- 
- For required properties on SPI, please consult
- Documentation/devicetree/bindings/spi/spi-bus.txt
-diff --git a/sound/soc/codecs/pcm179x-i2c.c b/sound/soc/codecs/pcm179x-i2c.c
-index 03747966c6bc..795a0657c097 100644
---- a/sound/soc/codecs/pcm179x-i2c.c
-+++ b/sound/soc/codecs/pcm179x-i2c.c
-@@ -36,17 +36,19 @@ static int pcm179x_i2c_probe(struct i2c_client *client,
- 		return ret;
- 	}
- 
--	return pcm179x_common_init(&client->dev, regmap);
-+	return pcm179x_common_init(&client->dev, regmap, id->driver_data);
- }
- 
- static const struct of_device_id pcm179x_of_match[] = {
- 	{ .compatible = "ti,pcm1792a", },
-+	{ .compatible = "ti,pcm1789", },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, pcm179x_of_match);
- 
- static const struct i2c_device_id pcm179x_i2c_ids[] = {
--	{ "pcm179x", 0 },
-+	{ "pcm179x", PCM179X },
-+	{ "pcm1789", PCM1789 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, pcm179x_i2c_ids);
 diff --git a/sound/soc/codecs/pcm179x.c b/sound/soc/codecs/pcm179x.c
-index 4b311c06f97d..81cbf09319f6 100644
+index 2285a51ff9e9..0242dfd67b53 100644
 --- a/sound/soc/codecs/pcm179x.c
 +++ b/sound/soc/codecs/pcm179x.c
-@@ -218,7 +218,8 @@ static const struct snd_soc_component_driver soc_component_dev_pcm179x = {
- 	.non_legacy_dai_naming	= 1,
+@@ -22,6 +22,8 @@
+ #include <linux/device.h>
+ 
+ #include <sound/core.h>
++#include <linux/gpio.h>
++#include <linux/of_gpio.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/initval.h>
+@@ -106,6 +108,7 @@ struct pcm179x_private {
+ 	struct regmap *regmap;
+ 	unsigned int format;
+ 	unsigned int rate;
++	int reset;
  };
  
--int pcm179x_common_init(struct device *dev, struct regmap *regmap)
-+int pcm179x_common_init(struct device *dev, struct regmap *regmap,
-+			enum pcm17xx_type type)
+ static int pcm179x_set_dai_fmt(struct snd_soc_dai *codec_dai,
+@@ -381,6 +384,8 @@ int pcm179x_common_init(struct device *dev, struct regmap *regmap,
+ 			enum pcm17xx_type type)
  {
  	struct pcm179x_private *pcm179x;
++	struct device_node *np = dev->of_node;
++	int ret;
  
-diff --git a/sound/soc/codecs/pcm179x.h b/sound/soc/codecs/pcm179x.h
-index cf8681c9a373..8c08689e3b8b 100644
---- a/sound/soc/codecs/pcm179x.h
-+++ b/sound/soc/codecs/pcm179x.h
-@@ -17,11 +17,17 @@
- #ifndef __PCM179X_H__
- #define __PCM179X_H__
+ 	pcm179x = devm_kzalloc(dev, sizeof(struct pcm179x_private),
+ 				GFP_KERNEL);
+@@ -390,6 +395,21 @@ int pcm179x_common_init(struct device *dev, struct regmap *regmap,
+ 	pcm179x->regmap = regmap;
+ 	dev_set_drvdata(dev, pcm179x);
  
-+enum pcm17xx_type {
-+	PCM179X,
-+	PCM1789,
-+};
++	pcm179x->reset = of_get_named_gpio(np, "reset-gpios", 0);
++	if (gpio_is_valid(pcm179x->reset)) {
++		ret = devm_gpio_request_one(dev, pcm179x->reset,
++					    GPIOF_OUT_INIT_LOW,
++					    "pcm179x reset");
++		if (ret) {
++			dev_err(dev,
++				"Failed to request GPIO %d as reset pin, error %d\n",
++				pcm179x->reset, ret);
++			return ret;
++		}
 +
- #define PCM1792A_FORMATS (SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S24_LE | \
- 			  SNDRV_PCM_FMTBIT_S16_LE)
- 
- extern const struct regmap_config pcm179x_regmap_config;
- 
--int pcm179x_common_init(struct device *dev, struct regmap *regmap);
-+int pcm179x_common_init(struct device *dev, struct regmap *regmap,
-+			enum pcm17xx_type type);
- 
- #endif
++		gpio_set_value(pcm179x->reset, 1);
++	}
++
+ 	if (type == PCM1789)
+ 		return devm_snd_soc_register_component(dev,
+ 						       &soc_component_dev_pcm1789,
 -- 
 2.11.0
