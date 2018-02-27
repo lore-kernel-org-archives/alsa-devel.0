@@ -1,24 +1,24 @@
 From: Ladislav Michl <ladis@linux-mips.org>
-Subject: Re: [PATCH 2/7] ASoC: atmel_ssc_dai: Fix TCMR settings
- in I2S slave mode
-Date: Tue, 27 Feb 2018 19:50:15 +0100
-Message-ID: <20180227185015.GA1961@lenoch>
-References: <20180130110604.GA18123@lenoch> <20180130110810.GC18123@lenoch>
- <20180227170921.GE1479@piout.net>
+Subject: Re: [PATCH 6/7] ASoC: max9867: Fix BSEL value in
+	master mode.
+Date: Tue, 27 Feb 2018 20:03:38 +0100
+Message-ID: <20180227190338.GB1961@lenoch>
+References: <20180130110604.GA18123@lenoch> <20180130111033.GG18123@lenoch>
+ <20180227172309.GG1479@piout.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 2534426770A
- for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 19:50:19 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id E4DA5267702
+ for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 20:04:00 +0100 (CET)
 Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
  (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23990864AbeB0SuRmmma7 (ORCPT
+ id S23991096AbeB0TEATAOl7 (ORCPT
  <rfc822;alsa-devel@alsa-project.org>);
- Tue, 27 Feb 2018 19:50:17 +0100
+ Tue, 27 Feb 2018 20:04:00 +0100
 Content-Disposition: inline
-In-Reply-To: <20180227170921.GE1479@piout.net>
+In-Reply-To: <20180227172309.GG1479@piout.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,41 +32,92 @@ To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, anish kumar <yesanishhere@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 27, 2018 at 06:09:21PM +0100, Alexandre Belloni wrote:
-> This one needs a proper git message because it is not obvious what this
-> is fixing.
+On Tue, Feb 27, 2018 at 06:23:09PM +0100, Alexandre Belloni wrote:
+> This also needs a proper commit message.
 
-And is also incomplete, as all synchronous slave modes need fixing :)
+Meanwhile more patches for this driver accumulated, so I'll send simple ones
+first and those I'm uncertain of later.
 
-> Also, this doesn't exactly fix salve mode. Instead it is enabled
-> synchronous mode. Maybe we need a new DT property to handle sychronous
-> RX/TX. Probably something like what is done here:
-> 
-> https://elixir.bootlin.com/linux/latest/source/Documentation/devicetree/bindings/sound/fsl-sai.txt#L39
+Now few questions:
+- should hw_params emit any error message when asked to set for example
+  unsupported sample rate? Many drivers do so, but it seems strange.
+- table used in this driver is overkill, frequencies can be calculated
+  directly (patch ready), but that brings question about
+  SNDRV_PCM_RATE_CONTINUOUS: what does it exactly mean? What if codec is
+  able to set "any" rate, but there are rounding errors?
 
-Thank you for usefull pointer, will send v2.
-
-> But our default would be asynchronous.
->
-> On 30/01/2018 at 12:08:10 +0100, Ladislav Michl wrote:
+> On 30/01/2018 at 12:10:33 +0100, Ladislav Michl wrote:
 > > Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
 > > ---
-> >  sound/soc/atmel/atmel_ssc_dai.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >  Note: It should be reconsidered where BSEL should be set.
 > > 
-> > diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-> > index a1e2c5682dcd..8e145487cb18 100644
-> > --- a/sound/soc/atmel/atmel_ssc_dai.c
-> > +++ b/sound/soc/atmel/atmel_ssc_dai.c
-> > @@ -647,7 +647,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+> >  sound/soc/codecs/max9867.c | 43 +++----------------------------------------
+> >  1 file changed, 3 insertions(+), 40 deletions(-)
+> > 
+> > diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+> > index 026b7cf94910..6272cf5df4a9 100644
+> > --- a/sound/soc/codecs/max9867.c
+> > +++ b/sound/soc/codecs/max9867.c
+> > @@ -148,46 +148,6 @@ static int max9867_dai_hw_params(struct snd_pcm_substream *substream,
+> >  			MAX9867_RAPID_LOCK, MAX9867_RAPID_LOCK);
+> >  		regmap_update_bits(max9867->regmap, MAX9867_AUDIOCLKHIGH,
+> >  			MAX9867_PLL, MAX9867_PLL);
+> > -	} else {
+> > -		unsigned long int bclk_rate, pclk_bclk_ratio;
+> > -		int bclk_value;
+> > -
+> > -		bclk_rate = params_rate(params) * 2 * params_width(params);
+> > -		pclk_bclk_ratio = max9867->pclk/bclk_rate;
+> > -		switch (params_width(params)) {
+> > -		case 8:
+> > -		case 16:
+> > -			switch (pclk_bclk_ratio) {
+> > -			case 2:
+> > -				bclk_value = MAX9867_IFC1B_PCLK_2;
+> > -				break;
+> > -			case 4:
+> > -				bclk_value = MAX9867_IFC1B_PCLK_4;
+> > -				break;
+> > -			case 8:
+> > -				bclk_value = MAX9867_IFC1B_PCLK_8;
+> > -				break;
+> > -			case 16:
+> > -				bclk_value = MAX9867_IFC1B_PCLK_16;
+> > -				break;
+> > -			default:
+> > -				dev_err(codec->dev,
+> > -					"unsupported sampling rate\n");
+> > -				return -EINVAL;
+> > -			}
+> > -			break;
+> > -		case 24:
+> > -			bclk_value = MAX9867_IFC1B_24BIT;
+> > -			break;
+> > -		case 32:
+> > -			bclk_value = MAX9867_IFC1B_32BIT;
+> > -			break;
+> > -		default:
+> > -			dev_err(codec->dev, "unsupported sampling rate\n");
+> > -			return -EINVAL;
+> > -		}
+> > -		regmap_update_bits(max9867->regmap, MAX9867_IFC1B,
+> > -			MAX9867_IFC1B_BCLK_MASK, bclk_value);
+> >  	}
+> >  	return 0;
+> >  }
+> > @@ -244,6 +204,9 @@ static int max9867_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+> >  	value &= ~MAX9867_FREQ_MASK;
+> >  	regmap_update_bits(max9867->regmap, MAX9867_SYSCLK,
+> >  			MAX9867_PSCLK_MASK, value);
+> > +	regmap_update_bits(max9867->regmap, MAX9867_IFC1B,
+> > +			MAX9867_IFC1B_BCLK_MASK, 0x010);
+> 
+> This magic value has to be defined somewhere.
+> 
+> > +
+> >  	return 0;
+> >  }
 > >  
-> >  		tcmr =	  SSC_BF(TCMR_PERIOD, 0)
-> >  			| SSC_BF(TCMR_STTDLY, START_DELAY)
-> > -			| SSC_BF(TCMR_START, SSC_START_FALLING_RF)
-> > +			| SSC_BF(TCMR_START, SSC_START_TX_RX)
-> >  			| SSC_BF(TCMR_CKI, SSC_CKI_FALLING)
-> >  			| SSC_BF(TCMR_CKO, SSC_CKO_NONE)
-> >  			| SSC_BF(TCMR_CKS, ssc->clk_from_rk_pin ?
 > > -- 
 > > 2.15.1
 > > 
