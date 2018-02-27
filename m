@@ -1,21 +1,21 @@
 From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
-Subject: Re: [PATCH v1 5/9] ALSA: hda - split snd_hda_codec_new
- function
-Date: Tue, 27 Feb 2018 03:28:54 +0000
-Message-ID: <85DFEED57DC57344B2483EF7BF8CB60579B2AAAF@BGSMSX104.gar.corp.intel.com>
+Subject: Re: [PATCH v1 8/9] ASoC: hdac_hda: add asoc extension
+ for legacy HDA codec drivers
+Date: Tue, 27 Feb 2018 03:31:22 +0000
+Message-ID: <85DFEED57DC57344B2483EF7BF8CB60579B2AAC7@BGSMSX104.gar.corp.intel.com>
 References: <1519373550-2545-1-git-send-email-rakesh.a.ughreja@intel.com>
- <1519373550-2545-6-git-send-email-rakesh.a.ughreja@intel.com>
- <96204f32-54ea-baaa-c3ed-94774f7728c5@linux.intel.com>
- <85DFEED57DC57344B2483EF7BF8CB60579B29AC2@BGSMSX104.gar.corp.intel.com>
- <ba0d428f-a194-55cf-1470-76648f99680c@linux.intel.com>
+ <1519373550-2545-9-git-send-email-rakesh.a.ughreja@intel.com>
+ <c000a722-0ad0-2c52-fd00-f4134ca47858@linux.intel.com>
+ <85DFEED57DC57344B2483EF7BF8CB60579B29B12@BGSMSX104.gar.corp.intel.com>
+ <dbfd0e9e-b8fc-040d-5e2c-de1fe3839ea2@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id F376F267AD3
- for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 04:29:01 +0100 (CET)
-In-Reply-To: <ba0d428f-a194-55cf-1470-76648f99680c@linux.intel.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 56604267AD8
+ for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 04:31:27 +0100 (CET)
+In-Reply-To: <dbfd0e9e-b8fc-040d-5e2c-de1fe3839ea2@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,58 +34,68 @@ List-Id: alsa-devel@alsa-project.org
 
 >-----Original Message-----
 >From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
->Sent: Tuesday, February 27, 2018 12:44 AM
+>Sent: Tuesday, February 27, 2018 12:56 AM
 >To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>; alsa-devel@alsa-
 >project.org; broonie@kernel.org; tiwai@suse.de;
 >liam.r.girdwood@linux.intel.com
 >Cc: Koul, Vinod <vinod.koul@intel.com>; Patches Audio
 ><patches.audio@intel.com>
->Subject: Re: [alsa-devel] [PATCH v1 5/9] ALSA: hda - split snd_hda_codec_new
->function
+>Subject: Re: [alsa-devel] [PATCH v1 8/9] ASoC: hdac_hda: add asoc extension for
+>legacy HDA codec drivers
 >
->On 2/26/18 1:28 AM, Ughreja, Rakesh A wrote:
+>On 2/26/18 1:44 AM, Ughreja, Rakesh A wrote:
 >>
 >>
 >>> -----Original Message-----
 >>> From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
->>> Sent: Friday, February 23, 2018 10:20 PM
+>>> Sent: Friday, February 23, 2018 10:25 PM
 >>> To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>; alsa-devel@alsa-
 >>> project.org; broonie@kernel.org; tiwai@suse.de;
 >>> liam.r.girdwood@linux.intel.com
 >>> Cc: Koul, Vinod <vinod.koul@intel.com>; Patches Audio
 >>> <patches.audio@intel.com>
->>> Subject: Re: [PATCH v1 5/9] ALSA: hda - split snd_hda_codec_new function
+>>> Subject: Re: [PATCH v1 8/9] ASoC: hdac_hda: add asoc extension for legacy
+>HDA
+>>> codec drivers
 >>>
 >>> On 2/23/18 2:12 AM, Rakesh Ughreja wrote:
->>>> Split snd_hda_codec_new into two separate functions.
->>>> snd_hda_codec_device_init allocates memory and registers with bus.
->>>> snd_hda_codec_device_new initialializes the fields and performs
->>>> snd_device_new. This enables reuse of legacy HDA codec drivers as ASoC
->>>> codec drivers.
+>>>> This patch adds a kernel module which is used by the legacy HDA
+>>>> codec drivers as library. This implements hdac_ext_bus_ops to enable
+>>>> the reuse of legacy HDA codec drivers with ASoC platform drivers.
 >>>>
->>>> In addition mark some functions with EXPORT_SYMBOL_GPL so that it can be
->>>> called by ASoC codec drivers.
+>>>> Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+>>>> ---
+>>>>    sound/pci/hda/hda_bind.c    |   6 +
+>>>>    sound/soc/codecs/Kconfig    |   5 +
+>>>>    sound/soc/codecs/Makefile   |   2 +
+>>>>    sound/soc/codecs/hdac_hda.c | 448
+>>> ++++++++++++++++++++++++++++++++++++++++++++
+>>>>    sound/soc/codecs/hdac_hda.h |  23 +++
+>>>>    5 files changed, 484 insertions(+)
+>>>>    create mode 100644 sound/soc/codecs/hdac_hda.c
+>>>>    create mode 100644 sound/soc/codecs/hdac_hda.h
 >>>
->>> I don't get the commit message.
->>> You first say that we can now reuse legacy HDaudio codec drivers in an
->>> ASoC framework, then say that there will be additional ASoC codec
->>> drivers? Why would we do this, it seems like a contradicting goal?
->>>
+>>> so now we have both hdac_hdmi and hdac_hda?
+>>> Not sure I get it.
 >>
->> Yes, its misleading, so correcting the line as,
+>> hdac_hdmi is the ASoC HDMI driver which exists today. All the
+>> intel ASoC driver which are primarily used for I2S codecs uses it.
+>> I am not deleting or removing the support for that.
 >>
->> In addition mark some functions with EXPORT_SYMBOL_GPL so that it can be
->> called by ASoC wrapper around the legacy HDA driver (hdac_hda).
+>> hdac_hda is the ASoC wrapper around the legacy HDA drivers.
+>>
+>> Now with this patch series, we have two choices for HDMI/iDisp
+>> codec driver. Either to use the legacy HDMI codec driver by using
+>> the ASoC wrapper or use the existing ASoC hdac_hdmi driver.
+>>
+>> Since Intel ASoC platform driver is already proven and tested
+>> with ASoC hdac_hdmi driver, I am using that in this patch series.
 >
->Still confusing. You are both reusing codec drivers and defining a
->wrapper, so are you reusing parts of the codec drivers only?
+>I get your point, but I will assert that the legacy HDMI codec has been
+>tested a lot more than the ASoC one (only for Chromebooks) so I wonder
+>if we shouldn't deprecate hdac_hdmi moving forward. Having two codec
+>implementations which both talk to the i915 driver makes no sense for
+>long term support. We don't need to do this now but it should be on the
+>TODO list along with topology support in machine drivers.
 
-There is a kernel module called snd-hda-codec and it reused by all the legacy
-codec drivers. I am marking few additional functions with EXPORT_SYMBOL
-in the snd-hda-codec and not in the codec driver. 
-These new additional functions are used by hdac_hda kernel module.
-
-Existing legacy codec driver is reused completely as it is and not in parts.
-
-Regards,
-Rakesh
+Sure, I can add that in the TODO.
