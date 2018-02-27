@@ -1,16 +1,21 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: Use scnprintf() instead of snprintf()
-Date: Tue, 27 Feb 2018 12:40:40 +0900
-Message-ID: <6fa09080-a0f4-c3c1-20c0-69baa00dbc38@sakamocchi.jp>
-References: <1519697759-31062-1-git-send-email-climbbb.kim@gmail.com>
+From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
+Subject: Re: [PATCH v1 2/9] ASoC: Intel: Skylake: Add entry in
+ sst_acpi_mach for HDA codecs
+Date: Tue, 27 Feb 2018 03:45:04 +0000
+Message-ID: <85DFEED57DC57344B2483EF7BF8CB60579B2AB39@BGSMSX104.gar.corp.intel.com>
+References: <1519373550-2545-1-git-send-email-rakesh.a.ughreja@intel.com>
+ <1519373550-2545-3-git-send-email-rakesh.a.ughreja@intel.com>
+ <9f6781f5-d581-3ee9-c89c-c695e28bb4fb@linux.intel.com>
+ <85DFEED57DC57344B2483EF7BF8CB60579B29A74@BGSMSX104.gar.corp.intel.com>
+ <ae6c53d7-bea3-8e80-ed50-8a1c187a3f20@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 034B1267AE4
- for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 04:40:48 +0100 (CET)
-In-Reply-To: <1519697759-31062-1-git-send-email-climbbb.kim@gmail.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1E5C6267ADF
+ for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 04:45:11 +0100 (CET)
+In-Reply-To: <ae6c53d7-bea3-8e80-ed50-8a1c187a3f20@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,154 +26,192 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaejoong Kim <climbbb.kim@gmail.com>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>
+Cc: "Koul, Vinod" <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Feb 27 2018 11:15, Jaejoong Kim wrote:
-> The show() method should use scnprintf() not snprintf() because snprintf()
-> may returns a value that exceeds its second argument.
-> 
-> Signed-off-by: Jaejoong Kim <climbbb.kim@gmail.com>
-> ---
->   sound/core/init.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/core/init.c b/sound/core/init.c
-> index 168ae03..4a51a06 100644
-> --- a/sound/core/init.c
-> +++ b/sound/core/init.c
-> @@ -670,7 +670,7 @@ card_id_show_attr(struct device *dev,
->   		  struct device_attribute *attr, char *buf)
->   {
->   	struct snd_card *card = container_of(dev, struct snd_card, card_dev);
-> -	return snprintf(buf, PAGE_SIZE, "%s\n", card->id);
-> +	return scnprintf(buf, PAGE_SIZE, "%s\n", card->id);
->   }
->   
->   static ssize_t
-> @@ -710,7 +710,7 @@ card_number_show_attr(struct device *dev,
->   		     struct device_attribute *attr, char *buf)
->   {
->   	struct snd_card *card = container_of(dev, struct snd_card, card_dev);
-> -	return snprintf(buf, PAGE_SIZE, "%i\n", card->number);
-> +	return scnprintf(buf, PAGE_SIZE, "%i\n", card->number);
->   }
->   
->   static DEVICE_ATTR(number, S_IRUGO, card_number_show_attr, NULL);
-
-In my opinion, original codes are good because it has a trailing '\n'
-instead of '\0'.
-
-We can see below explanation in 'Documentation/filesystems
-/sysfs.txt'[1]:
-
-```
-- show() methods should return the number of bytes printed into the
-   buffer. This is the return value of scnprintf().
-
-- show() must not use snprintf() when formatting the value to be
-   returned to user space. If you can guarantee that an overflow
-   will never happen you can use sprintf() otherwise you must use
-   scnprintf().
-```
-
-Actually, 'snprintf()' returns written bytes excluding trailing _null_
-byte for end output to strings and we need to use 'scnprintf()'.
-
-However, for our cases, the trailing letter is '\n' and 'snprintf()'
-counts correctly including it.
-
-Let's test:
-
-```
-#include <stdio.h>
-#include <stdlib.h>
-
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-
-#include <unistd.h>
-
-#include <string.h>
-#include <errno.h>
-
-int main(int argc, char **argv)
-{
-     int fd;
-     char buf[8];
-     ssize_t len;
-
-     if (argc < 2) {
-         printf("At least, one argument is required for path to sysfs 
-node.\n");
-         return EXIT_FAILURE;
-     }
-
-     fd = open(*(argv + 1), O_RDONLY);
-     if (fd < 0) {
-         printf("open(2): %s\n", strerror(errno));
-         return EXIT_FAILURE;
-     }
-
-     // 'C' is a canary.
-     memset(buf, 'C', sizeof(buf));
-
-     len = read(fd, buf, sizeof(buf));
-     if (len < 0) {
-         printf("read(2): %s\n", strerror(errno));
-         close(fd);
-         return EXIT_FAILURE;
-     }
-
-     printf("len = %zd\n", len);
-     for (int i = 0; i < sizeof(buf); ++i) {
-             printf("%02x\n", buf[i]);
-     }
-
-     close(fd);
-
-     return EXIT_SUCCESS;
-}
-```
-
-```
-$ cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version k4.13.0-36-generic.
-$ /tmp/test 
-'/sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/0000:02:00.0/fw1/fw1.0/sound/card2/number'
-len = 2
-32
-0a
-43
-43
-43
-43
-43
-43
-$ /tmp/test 
-'/sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/0000:02:00.0/fw1/fw1.0/sound/card2/id'
-len = 5
-53
-6f
-6c
-6f
-0a
-43
-43
-43
-```
-
-Looks good.
 
 
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/filesystems/sysfs.txt
+>-----Original Message-----
+>From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
+>Sent: Tuesday, February 27, 2018 12:25 AM
+>To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>; alsa-devel@alsa-
+>project.org; broonie@kernel.org; tiwai@suse.de;
+>liam.r.girdwood@linux.intel.com
+>Cc: Koul, Vinod <vinod.koul@intel.com>; Patches Audio
+><patches.audio@intel.com>
+>Subject: Re: [alsa-devel] [PATCH v1 2/9] ASoC: Intel: Skylake: Add entry in
+>sst_acpi_mach for HDA codecs
+>
+>On 2/26/18 1:17 AM, Ughreja, Rakesh A wrote:
+>>
+>>
+>>> -----Original Message-----
+>>> From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
+>>> Sent: Friday, February 23, 2018 10:13 PM
+>>> To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>; alsa-devel@alsa-
+>>> project.org; broonie@kernel.org; tiwai@suse.de;
+>>> liam.r.girdwood@linux.intel.com
+>>> Cc: Koul, Vinod <vinod.koul@intel.com>; Patches Audio
+>>> <patches.audio@intel.com>
+>>> Subject: Re: [PATCH v1 2/9] ASoC: Intel: Skylake: Add entry in sst_acpi_mach
+>for
+>>> HDA codecs
+>>>
+>>> On 2/23/18 2:12 AM, Rakesh Ughreja wrote:
+>>>> When no I2S based codec entries are found in the BIOS, check if there are
+>>>> any HDA codecs detected on the bus. If there are two (i.e. iDisp + HDA)
+>>>> HDA codecs found on the bus, load the HDA machine driver.
+>>>
+>>> What if you have a headless device with no codec, that means no HDMI
+>>> support? Why is this restriction necessary?
+>>
+>> This machine driver handles HDA and iDisp combination only.
+>>
+>> If you want to handle only iDisp or only HDA or more than one HDA
+>> different machine driver needs to be written or this machine
+>> driver needs to be enhanced.
+>>
+>> Machine driver has BE DAI link information and so it is specific to those
+>> many devices for a given platform.
+>
+>You could pass a flag in the machine driver pdata stating if there is a
+>codec in addition to iDisp and add the relevant backends as needed.
 
+Yes, I can do that. Will fix it in the next revision.
 
-Thanks
+>
+>>
+>>>
+>>>>
+>>>> Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+>>>> ---
+>>>>    sound/soc/intel/skylake/skl.c | 59
+>>> +++++++++++++++++++++++++++++++++++++++----
+>>>>    1 file changed, 54 insertions(+), 5 deletions(-)
+>>>>
+>>>> diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+>>>> index f948f29..ac64416 100644
+>>>> --- a/sound/soc/intel/skylake/skl.c
+>>>> +++ b/sound/soc/intel/skylake/skl.c
+>>>> @@ -442,6 +442,24 @@ static struct skl_ssp_clk skl_ssp_clks[] = {
+>>>>    						{.name = "ssp5_sclkfs"},
+>>>>    };
+>>>>
+>>>> +static struct snd_soc_acpi_mach *skl_find_hda_machine(struct skl *skl,
+>>>> +					struct snd_soc_acpi_mach
+>>> *machines)
+>>>> +{
+>>>> +
+>>>> +	struct snd_soc_acpi_mach *mach;
+>>>> +	struct hdac_bus *bus = skl_to_bus(skl);
+>>>> +
+>>>> +	/* check if we have two HDA codecs */
+>>>> +	if (hweight_long(bus->codec_mask) != 2)
+>>>> +		return NULL;
+>>>> +
+>>>> +	for (mach = machines; mach->id[0]; mach++) {
+>>>> +		if (!strcmp(mach->id, "HDA_GEN"))
+>>>> +			return mach;
+>>>> +	}
+>>>
+>>> that's not really testing if there are actual HDaudio devices, is this
+>>> loop just there to point to a firmware file?
+>>
+>> There is a check for number of codecs in the previous line.
+>> By default the iDisp codec would always be present so the check
+>> is for count 2.
+>
+>I was referring to the for(mach= loop. I am not sure what the test on
+>"HDA_GEN" actually does beyond providing information for the platform
+>driver.
 
-Takashi Sakamoto
+Right, it just finds the entry and provides information to platform driver.
+
+>
+>>
+>>>
+>>>> +	return NULL;
+>>>> +}
+>>>> +
+>>>>    static int skl_find_machine(struct skl *skl, void *driver_data)
+>>>>    {
+>>>>    	struct hdac_bus *bus = skl_to_bus(skl);
+>>>> @@ -450,8 +468,12 @@ static int skl_find_machine(struct skl *skl, void
+>>> *driver_data)
+>>>>
+>>>>    	mach = snd_soc_acpi_find_machine(mach);
+>>>>    	if (mach == NULL) {
+>>>> -		dev_err(bus->dev, "No matching machine driver found\n");
+>>>> -		return -ENODEV;
+>>>> +		dev_dbg(bus->dev, "No matching I2S machine driver found\n");
+>>>> +		mach = skl_find_hda_machine(skl, driver_data);
+>>>> +		if (mach == NULL) {
+>>>> +			dev_err(bus->dev, "No matching machine driver
+>>> found\n");
+>>>> +			return -ENODEV;
+>>>> +		}
+>>>>    	}
+>>>>
+>>>>    	skl->mach = mach;
+>>>> @@ -466,8 +488,9 @@ static int skl_find_machine(struct skl *skl, void
+>>> *driver_data)
+>>>>
+>>>>    static int skl_machine_device_register(struct skl *skl)
+>>>>    {
+>>>> -	struct hdac_bus *bus = skl_to_bus(skl);
+>>>>    	struct snd_soc_acpi_mach *mach = skl->mach;
+>>>> +	struct hdac_bus *bus = skl_to_bus(skl);
+>>>> +	struct skl_machine_pdata *pdata;
+>>>>    	struct platform_device *pdev;
+>>>>    	int ret;
+>>>>
+>>>> @@ -484,8 +507,11 @@ static int skl_machine_device_register(struct skl
+>*skl)
+>>>>    		return -EIO;
+>>>>    	}
+>>>>
+>>>> -	if (mach->pdata)
+>>>> +	if (mach->pdata) {
+>>>> +		pdata = (struct skl_machine_pdata *)mach->pdata;
+>>>> +		pdata->platform = dev_name(bus->dev);
+>>>>    		dev_set_drvdata(&pdev->dev, mach->pdata);
+>>>> +	}
+>>>>
+>>>>    	skl->i2s_dev = pdev;
+>>>>
+>>>> @@ -1030,6 +1056,14 @@ static struct snd_soc_acpi_mach
+>sst_skl_devdata[]
+>>> = {
+>>>>    		.quirk_data = &skl_codecs,
+>>>>    		.pdata = &skl_dmic_data
+>>>>    	},
+>>>> +	{
+>>>> +		.id = "HDA_GEN",
+>>>> +		.drv_name = "skl_hda_generic",
+>>>> +		.fw_filename = "intel/dsp_fw_release.bin",
+>>>> +		.machine_quirk = NULL,
+>>>> +		.quirk_data = NULL,
+>>>> +		.pdata = &cnl_pdata,
+>>>
+>>> this is odd, the cnl_pdata says the topology_pcm is used, I thought this
+>>> was not applicable for SKL/KBL. Or put differently, why is this used for
+>>> the hda case only?
+>>
+>> This flag is used for using the topology framework for creating the
+>> FE DAIs and DAI Links. The other I2S machine drivers which are
+>> up-streamed some time back don't have support for creating
+>> DAIs and DAI Links from topology file. Based on your comments
+>> given in the RFC, I have added this support for HDA machine drivers
+>> even for SKL, KBL also.
+>
+>What prevents us from updating the machine drivers to use the topology
+>in all cases and avoid differences across platforms? I understand that
+>some early versions made a choice due to schedule, but for upstream this
+>can be realigned.
+
+Certainly that can be done. But that is completely independent work.
+That work has no dependency on this patch series.
+
+Regards,
+Rakesh
