@@ -1,58 +1,59 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] Applied "ASoC: topology: Fix logical inversion in
- set_link_hw_format()" to the asoc tree
-Date: Tue, 27 Feb 2018 10:38:49 +0000
-Message-ID: <20180227103848.GA11822@sirena.org.uk>
-References: <E1eqGmV-0005Rk-Jt@debutante>
- <20180226183407.22335-1-k.marinushkin@gmail.com>
- <e25d592b-0fab-68f8-d9e0-e5061c54f4e0@linux.intel.com>
+Subject: Re: [PATCHv5 2/5] ASoC: codec: cpcap: new codec
+Date: Tue, 27 Feb 2018 11:03:15 +0000
+Message-ID: <20180227110315.GB11822@sirena.org.uk>
+References: <20180223200254.25685-1-sebastian.reichel@collabora.co.uk>
+ <20180223200254.25685-3-sebastian.reichel@collabora.co.uk>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="MGYHOYXEY6WxJCY8"
-Return-path: <stable-owner@vger.kernel.org>
+        protocol="application/pgp-signature"; boundary="hHWLQfXTYDoKhP50"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <e25d592b-0fab-68f8-d9e0-e5061c54f4e0@linux.intel.com>
-Sender: stable-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Kirill Marinushkin <k.marinushkin@gmail.com>, alsa-devel@alsa-project.org, Pan Xiuli <xiuli.pan@linux.intel.com>, stable@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+In-Reply-To: <20180223200254.25685-3-sebastian.reichel@collabora.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+Cc: Sebastian Reichel <sre@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Tony Lindgren <tony@atomide.com>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
 List-Id: alsa-devel@alsa-project.org
 
 
---MGYHOYXEY6WxJCY8
+--hHWLQfXTYDoKhP50
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Feb 26, 2018 at 06:30:15PM -0800, Pierre-Louis Bossart wrote:
-> On 2/26/18 10:34 AM, Kirill Marinushkin wrote:
+On Fri, Feb 23, 2018 at 09:02:51PM +0100, Sebastian Reichel wrote:
 
-> > According to the comment, the existing functionality works correctly "WRT the
-> > interface". The suggested commit doesn't fix the behaviour: instead, it reverts
-> > the logic to "WRT the codec". But the existing implementation is also valid.
+> +	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+> +	case SND_SOC_DAIFMT_I2S:
+> +		val |= BIT(CPCAP_BIT_ST_DIG_AUD_FS0);
+> +		val |= BIT(CPCAP_BIT_ST_DIG_AUD_FS1);
+> +		break;
+> +	default:
+> +		/* 01 - 4 slots network mode */
+> +		val |= BIT(CPCAP_BIT_ST_DIG_AUD_FS0);
+> +		val &= ~BIT(CPCAP_BIT_ST_DIG_AUD_FS1);
+> +		/* L on slot 1 */
+> +		val |= BIT(CPCAP_BIT_ST_L_TIMESLOT0);
+> +		break;
+> +	}
 
-> Look at all the machine drivers, they always use the mask by looking at the
-> codec side. The comment on top means that the SOC side ('the interface') is
-> the dual of the codec side.
+The default case here is really one specific mode, it looks like it's
+either DSP_A or DSP_B.  Most likely DSP_A but you should check.
+Otherwise this looks good so I'll apply it, please send a followup patch
+fixing this to match only the specific mode that's actually supported.
 
-> This issue was found during the development of SOF (Sound Open Firmware)
-> where we get the reverse of the intended behavior when using the same
-> conventions in topology files as in machine drivers.
-
-Is this perhaps something that the earlier firmware is handling inside
-the firmware?
-
---MGYHOYXEY6WxJCY8
+--hHWLQfXTYDoKhP50
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqVNTYACgkQJNaLcl1U
-h9Aazgf+MUDp30qZ5U+NfobyAYb6Ddqp3RwPl2slmQX8MfWfCHR4+hlkO4qSgDZB
-plLkqP2MDYz8f6v4KOIUNal5nsI9w/ycXAZ9jYC7P23zcn/sK4zFd4m77/0BGLuS
-a8s5VywPtjtkyn2xdy7ywJsX15YvzgxdoTRm49ojDixFlCSe7KWRuEaeLaYVMzTc
-SnCjIgan7oqAZ03gk7undXbBfDlErbJ/ocaz6f+Bohz7jgUI8VGr2XzJ8RWxXDY1
-u0TsbcFKDRGJxagtf9b5tYno5d+RsJBmVTUvk32WBlNxrzpDfPO+uacUhQt2sbQH
-haQp4qC3ajBHrKxZ5hWhfdcriDtBeg==
-=Tnwa
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqVOvIACgkQJNaLcl1U
+h9DYbwf7BcnQly6YhUxqDK9VVhh77y0p1LW+LHXuIKaGjAzvy7b2LIvkkgSwOvEM
+zvKR7VU+wC22mEBj8WVBeGv4/tVTziH8N4/8q5n2vrg+TKSkvsGdniiifw2080hA
+IV2fkLXQRyoZLuACBXSQzapwsFdI+UoRDERJ9HDuENitog1sddFMGgV+spzT/gZO
+LSkEpODQBp5MRvgFZY+kdplq+z1Mi1tDiZ2ZYFRsEtcStVr5zgwCE4gDw5tJxIxT
+01NWyKtlvDq6+OHdstA5qGuxTtFEY7Xccjezbyg4Yn1LWrrdsXXM7mLjTjnX7g04
+k3RpsBb5rjLLTJ0QSj4WxOFzrsdATQ==
+=YQU8
 -----END PGP SIGNATURE-----
 
---MGYHOYXEY6WxJCY8--
+--hHWLQfXTYDoKhP50--
