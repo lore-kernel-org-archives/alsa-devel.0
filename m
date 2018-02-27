@@ -1,100 +1,91 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] Applied "ASoC: topology: Fix logical inversion in
- set_link_hw_format()" to the asoc tree
-Date: Mon, 26 Feb 2018 18:30:15 -0800
-Message-ID: <e25d592b-0fab-68f8-d9e0-e5061c54f4e0@linux.intel.com>
-References: <E1eqGmV-0005Rk-Jt@debutante>
- <20180226183407.22335-1-k.marinushkin@gmail.com>
+From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
+Subject: Re: [PATCH v1 5/9] ALSA: hda - split snd_hda_codec_new
+ function
+Date: Tue, 27 Feb 2018 03:28:54 +0000
+Message-ID: <85DFEED57DC57344B2483EF7BF8CB60579B2AAAF@BGSMSX104.gar.corp.intel.com>
+References: <1519373550-2545-1-git-send-email-rakesh.a.ughreja@intel.com>
+ <1519373550-2545-6-git-send-email-rakesh.a.ughreja@intel.com>
+ <96204f32-54ea-baaa-c3ed-94774f7728c5@linux.intel.com>
+ <85DFEED57DC57344B2483EF7BF8CB60579B29AC2@BGSMSX104.gar.corp.intel.com>
+ <ba0d428f-a194-55cf-1470-76648f99680c@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20180226183407.22335-1-k.marinushkin@gmail.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id F376F267AD3
+ for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2018 04:29:01 +0100 (CET)
+In-Reply-To: <ba0d428f-a194-55cf-1470-76648f99680c@linux.intel.com>
 Content-Language: en-US
-Sender: stable-owner@vger.kernel.org
-To: Kirill Marinushkin <k.marinushkin@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Pan Xiuli <xiuli.pan@linux.intel.com>, stable@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>
+Cc: "Koul, Vinod" <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2/26/18 10:34 AM, Kirill Marinushkin wrote:
-> Hello Mark Brown, Pan Xiuli,
-> 
-> As far as I understand, the suggested commit *breaks* the functionality instead
-> of fixing it, and should not be applied. Please correct me if I am wrong.
-> 
-> 
-> 1. The existing functionality works correctly, nothing to fix here.
-> 
-> Below is a comment from include/sound/soc-dai.h:77
-> 
-> ~~~~
-> /*
->   * DAI hardware clock masters.
->   *
->   * This is wrt the codec, the inverse is true for the interface
->   * i.e. if the codec is clk and FRM master then the interface is
->   * clk and frame slave.
->   */
-> #define SND_SOC_DAIFMT_CBM_CFM		(1 << 12) /* codec clk & FRM master */
-> #define SND_SOC_DAIFMT_CBS_CFM		(2 << 12) /* codec clk slave & FRM master */
-> #define SND_SOC_DAIFMT_CBM_CFS		(3 << 12) /* codec clk master & frame slave */
-> #define SND_SOC_DAIFMT_CBS_CFS		(4 << 12) /* codec clk & FRM slave */
-> ~~~~
-> 
-> According to the comment, the existing functionality works correctly "WRT the
-> interface". The suggested commit doesn't fix the behaviour: instead, it reverts
-> the logic to "WRT the codec". But the existing implementation is also valid.
 
-Look at all the machine drivers, they always use the mask by looking at 
-the codec side. The comment on top means that the SOC side ('the 
-interface') is the dual of the codec side.
 
-This issue was found during the development of SOF (Sound Open Firmware) 
-where we get the reverse of the intended behavior when using the same 
-conventions in topology files as in machine drivers.
+>-----Original Message-----
+>From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
+>Sent: Tuesday, February 27, 2018 12:44 AM
+>To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>; alsa-devel@alsa-
+>project.org; broonie@kernel.org; tiwai@suse.de;
+>liam.r.girdwood@linux.intel.com
+>Cc: Koul, Vinod <vinod.koul@intel.com>; Patches Audio
+><patches.audio@intel.com>
+>Subject: Re: [alsa-devel] [PATCH v1 5/9] ALSA: hda - split snd_hda_codec_new
+>function
+>
+>On 2/26/18 1:28 AM, Ughreja, Rakesh A wrote:
+>>
+>>
+>>> -----Original Message-----
+>>> From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
+>>> Sent: Friday, February 23, 2018 10:20 PM
+>>> To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>; alsa-devel@alsa-
+>>> project.org; broonie@kernel.org; tiwai@suse.de;
+>>> liam.r.girdwood@linux.intel.com
+>>> Cc: Koul, Vinod <vinod.koul@intel.com>; Patches Audio
+>>> <patches.audio@intel.com>
+>>> Subject: Re: [PATCH v1 5/9] ALSA: hda - split snd_hda_codec_new function
+>>>
+>>> On 2/23/18 2:12 AM, Rakesh Ughreja wrote:
+>>>> Split snd_hda_codec_new into two separate functions.
+>>>> snd_hda_codec_device_init allocates memory and registers with bus.
+>>>> snd_hda_codec_device_new initialializes the fields and performs
+>>>> snd_device_new. This enables reuse of legacy HDA codec drivers as ASoC
+>>>> codec drivers.
+>>>>
+>>>> In addition mark some functions with EXPORT_SYMBOL_GPL so that it can be
+>>>> called by ASoC codec drivers.
+>>>
+>>> I don't get the commit message.
+>>> You first say that we can now reuse legacy HDaudio codec drivers in an
+>>> ASoC framework, then say that there will be additional ASoC codec
+>>> drivers? Why would we do this, it seems like a contradicting goal?
+>>>
+>>
+>> Yes, its misleading, so correcting the line as,
+>>
+>> In addition mark some functions with EXPORT_SYMBOL_GPL so that it can be
+>> called by ASoC wrapper around the legacy HDA driver (hdac_hda).
+>
+>Still confusing. You are both reusing codec drivers and defining a
+>wrapper, so are you reusing parts of the codec drivers only?
 
-> 
-> 
-> 2. The suggested commit breaks the existing ASoC.
-> 
-> The existing functionality already works with several existing ASoC by
-> Intel. The suggested commit will break it for the following reason:
-> 
-> The ALSA topology mechanism loads the binary topology file into ASoC. The
-> suggested commit modifies the parser, but the binaries are already created for
-> the existing functionality. As a result, all existing binaries will be parsed
-> incorrectly.
+There is a kernel module called snd-hda-codec and it reused by all the legacy
+codec drivers. I am marking few additional functions with EXPORT_SYMBOL
+in the snd-hda-codec and not in the codec driver. 
+These new additional functions are used by hdac_hda kernel module.
 
-I know there is a similar inversion in the alsa-lib topology files for 
-Broadwell, the codec is marked as master when it really is slave. I 
-don't know how Intel handled this on SKL.
+Existing legacy codec driver is reused completely as it is and not in parts.
 
-But you have a point that if people used this inversion in the past it'd 
-break functionality on existing devices which retrieve topology 
-information from ACPI tables and binary files.
-
-Gah. Maybe we should keep this inversion then, document it and 
-compensate for it in topology creating tools. Liam, what do you think?
-
-> 
-> 
-> 3. The suggested commit should not go into stable.
-> 
-> For the reasons explained earlier, applying the suggested commit into stable
-> kernel will break the stable kernel.
-> 
-> As I am not in the mailing list, I will not be able to stop Greg K-H
-> <gregkh@linuxfoundation.org> when he will ask "If you, or anyone else, feels it
-> should not be added to the stable tree, please let <stable@vger.kernel.org> know
-> about it."
-> 
-> @Mark Brown could you please add me to the thread if such situation happens, so
-> that I could share my point for the stable patches.
-> 
-> Best Regards,
-> Kirill
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+Regards,
+Rakesh
