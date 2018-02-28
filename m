@@ -1,21 +1,27 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH,
- alsa-lib] ASoC: topology: Fix bclk and fsync inversion in
- set_link_hw_format()
-Date: Wed, 28 Feb 2018 15:59:10 +0000
-Message-ID: <20180228155910.GC6722@sirena.org.uk>
-References: <20180227203317.17274-2-k.marinushkin@gmail.com>
- <20180227203541.17343-1-k.marinushkin@gmail.com>
- <20180228152403.GB6722@sirena.org.uk>
- <s5h7eqxm8th.wl-tiwai@suse.de>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v3 01/25] dt-bindings: soc: qcom: Add
+	bindings for APR bus
+Date: Wed, 28 Feb 2018 18:55:15 +0000
+Message-ID: <62ee863c-c3e8-ac81-0d83-8162da8d0458@linaro.org>
+References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
+ <20180213165837.1620-2-srinivas.kandagatla@linaro.org>
+ <20180213231244.ama4bwsehzuh5sr7@rob-hp-laptop>
+ <ae65a9c8-85a3-5494-f4cc-1038fd8c9bd1@linaro.org>
+ <20180218230414.dkd6kb6kd35arcyv@rob-hp-laptop>
+ <636d4ac2-3bc2-7290-1645-0451c089cb8a@linaro.org>
+ <CAL_JsqK3KFBGqpHRaURSrHew1HhObUvFYxuhND-FOQ4tCUaAHg@mail.gmail.com>
+ <465a2ca7-9f74-8977-37ea-29fe3944c27c@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7569773402899554042=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B20F2677AC
- for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2018 16:59:14 +0100 (CET)
-In-Reply-To: <s5h7eqxm8th.wl-tiwai@suse.de>
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D98A2677B5
+ for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2018 19:55:17 +0100 (CET)
+Received: by mail-wm0-f66.google.com with SMTP id a20so27568085wmd.1
+ for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2018 10:55:17 -0800 (PST)
+In-Reply-To: <465a2ca7-9f74-8977-37ea-29fe3944c27c@linaro.org>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,56 +31,165 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Pan Xiuli <xiuli.pan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Kirill Marinushkin <k.marinushkin@gmail.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Banajit Goswami <bgoswami@codeaurora.org>, rohkumar@qti.qualcomm.com, linux-arm-msm <linux-arm-msm@vger.kernel.org>, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <david.brown@linaro.org>, Mark Brown <broonie@kernel.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, spatakok@qti.qualcomm.com, Andy Gross <andy.gross@linaro.org>, "open list:ARM/QUALCOMM SUPPORT" <linux-soc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7569773402899554042==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="/e2eDi0V/xtL+Mc8"
-Content-Disposition: inline
+
+On 22/02/18 10:03, Srinivas Kandagatla wrote:
+>>> Also the versions of each service are independent to each other.
+>>
+>> Not sure I follow the last statement. Meaning firmware updates change
+>> the services?
+> Sorry for not being clear, so the services like AFE, ASM, ADM have 
+> different version numbers for a given SoC/firmware.
+> 
+> Not 100% sure if firmware updates would change the service version 
+> number, even if it does, it can be queried dynamically on new B family 
+> SoCs, and on older A Family SoCs I have not seen the firmware updates in 
+> last 4 years.
+> 
+>> I don't see any versioning of services here.
+> 
+> Yes, Plan is that it will be part of the compatible string in cases 
+> where version query is not supported on older QCOM A family SoCs.
+> On B Family SoCs we can query the version dynamically.
+> 
+>>
+>>>
+>>>>>
+>>>>> apr {
+>>>>>           compatible = "qcom,apr-v2";
+>>>>>           qcom,smd-channels = "apr_audio_svc";
+>>>>>           qcom,apr-dest-domain-id = <APR_DOMAIN_ADSP>;
+>>>>>
+>>>>>           apr-services {
+>>>>>                   q6core {
+>>>>>                           qcom,apr-svc-name = "CORE";
+>>>>>                           qcom,apr-svc-id = <APR_SVC_ADSP_CORE>;
+>>>>>                           compatible = "qcom,q6core";
+>>>>>                   };
+>>>>>
+>>>>>                   q6afe: q6afe {
+>>>>>                           compatible = "qcom,q6afe";
+>>>>>                           qcom,apr-svc-name = "AFE";
+>>>>>                           qcom,apr-svc-id = <APR_SVC_AFE>;
+>>>>>                           #sound-dai-cells = <1>;
+>>>>>                   };
+>>>>>
+>>>>>                   q6asm: q6asm {
+>>>>>                           compatible = "qcom,q6asm";
+>>>>>                           qcom,apr-svc-name = "ASM";
+>>>>>                           qcom,apr-svc-id = <APR_SVC_ASM>;
+>>>>>                           #sound-dai-cells = <1>;
+>>>>>                   };
+>>>>>
+>>>>>                   q6adm: q6adm {, "external-sleep"
+>>>>>                           compatible = "qcom,q6adm";
+>>>>>                           qcom,apr-svc-name = "ADM";
+>>>>>                           qcom,apr-svc-id = <APR_SVC_ADM>;
+>>>>>                           #sound-dai-cells = <0>;
+>>>>>                   };
+>>>>
+>>>>
+>>>> All these DAI nodes could be a single node and the cell value be the
+>>>> svc-id?
+>>>
+> So we will have 2 cell values, one representing the apr service and 
+> other the dai.
+> 
+>>> No, DAI's here are both backends and frontends, and some of the services
+>>> like core, USM are not DAI's
+>>>
+>>> Are you also saying that we should have a single driver entity for 
+>>> all these
+>>> services?
+>>
+>> DT nodes do not equate driver entities. A driver can instantiate other 
+>> drivers.
+>>
+>> Am I saying a single DT node for this? Yes, perhaps.
+> Yes, I will give that a go.
+
+I did try your suggestion of making audio services into a single node 
+and it ended up more messy and non scalable.
+
+Mainly because q6afe node has more than one interface type of backend 
+dais (child nodes).
+
+Each of this backend dai may need board specific setting ex: MI2S case 
+where board could wire up specific tx and rx lines from 4 possible lines 
+for that board. Also other type of dais also have some interface 
+specific properties.
+
+MI2S example:
+apr {
+	...
+	q6afe: q6afe {
+		compatible = "qcom,q6afe";
+		qcom,apr-svc-name = "AFE";
+		qcom,apr-svc-id = <APR_SVC_AFE>;
+		pinctrl-0 = <&ext_sec_tlmm_lines_act>;
+		pinctrl-names = "default";
+		#sound-dai-cells = <1>;
+
+                 mi2s_prim_rx_dai@34{
+			reg = <34>;
+			rx-lines = <0>;
+			...
+		};
+
+		mi2s_prim_tx_dai@35{
+			reg = <35>;
+			tx-lines = <1 2>
+			...
+		};
+	     	...
+	};
+};
+
+Here is block diagram to give a quick overview of the components
 
 
---/e2eDi0V/xtL+Mc8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   +---------+          +---------+         +---------+
+   |  q6asm  |          |q6routing|         | q6afe   |
+   |  fedai  | <------> |  mixers | <-----> | bedai   |
+   +---------+          +---------+         +---------+
+       ^                     ^                   ^
+       |                     |                   |
+       |  +------------------+----------------+  |
+       |  |                  |                |  |
+       v  v                  v                v  v
+   +---------+          +---------+         +---------+
+   |   q6ASM |          |  q6ADM  |         |   q6AFE |
+   +---------+          +---------+         +---------+
+       ^                     ^                   ^          ^
+       |                     |                   | CPU Side |
+------+---------------------+-------------------+--------
+       |                     |                   |
+       |APR                  |APR                |APR
+       |                     |                   |
+       |  +------------------+----------------+  |
+       |  |                  |                |  |
++-----+--+-----------------------------------+--+-------
+       |  |                  |                |  | QDSP Side |
+       v  v                  v                v  v           v
+  +---------+          +---------+         +---------+
+  |   ASM   | <------> |   ADM   | <-----> |   AFE   |
+  +---------+          +---------+         +---------+
+                                                ^
+                                                |
+                            +-------------------+
+                            |
+---------------------------+--------------------------
+                            |            Audio I/O |
+                            v                      v
+     +--------------------------------------------------+
+     |                Audio devices                     |
+     | CODEC | HDMI-TX | PCM  | SLIMBUS | I2S |MI2S |...|
+     |                                                  |
+     +--------------------------------------------------+
 
-On Wed, Feb 28, 2018 at 04:29:30PM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
-
-> > Should we warn on use of "master" since it's being deprecated here (and
-> > might be confusing for users)?
-
-> Maybe.  OTOH, it looks fully backward-compatible, so far, so it's not
-> that confusing yet.
-
-Not a compatibility issue, yeah - more just that we've clearly already
-got people confused so pushing people to the more explicit name might
-avoid further issues down the line.
-
---/e2eDi0V/xtL+Mc8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqW0c4ACgkQJNaLcl1U
-h9CCkQf/d8QIiO1QjCJjqFPrJF6ovsKbLDEHCCLPodua2/Nb+xSiI8GejYeTduOC
-UtZDWzKE/fGsQopGz20uHITji+FYtYpDF0omdhn3WbQzOR/NZ+LrIcGmY6Qno+y9
-P8XxZyDhLT1VEKR+btyBToChkuBB7ORgurXqP8CerITiDlTROgvBaD0Jr82rDvCP
-YvkSJ8JZiyIz6cowyqvJygaPl2zmIBW+tolX5Ykkjr0Flh7vx9O7/tvVaiJWzXUR
-ueVs3n/9J5VJ9DHt3wtfARW/zTT0sJJiBqbXGLqAXib8zsVXHfwcGW8ZzASwzzEv
-0aktJW+6P+mvqlfCJahYfntKjQuU/w==
-=Quxb
------END PGP SIGNATURE-----
-
---/e2eDi0V/xtL+Mc8--
-
---===============7569773402899554042==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7569773402899554042==--
+thanks,
+srini
