@@ -1,20 +1,19 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: x86: Fix potential crash at error
-	path
-Date: Wed, 28 Feb 2018 08:52:54 +0100
-Message-ID: <20180228075254.15649-2-tiwai@suse.de>
-References: <20180228075254.15649-1-tiwai@suse.de>
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Subject: Re: [PATCH 6/7] ASoC: max9867: Fix BSEL value in
+	master mode.
+Date: Wed, 28 Feb 2018 11:00:54 +0100
+Message-ID: <20180228100054.GJ1479@piout.net>
+References: <20180130110604.GA18123@lenoch> <20180130111033.GG18123@lenoch>
+ <20180227172309.GG1479@piout.net> <20180227190338.GB1961@lenoch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 12FF72671EE
- for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2018 08:52:57 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 1D78AAD4D
- for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2018 07:52:57 +0000 (UTC)
-In-Reply-To: <20180228075254.15649-1-tiwai@suse.de>
+Received: from mail.bootlin.com (mail.bootlin.com [62.4.15.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F9452671EC
+ for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2018 11:01:05 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20180227190338.GB1961@lenoch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,75 +23,114 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, anish kumar <yesanishhere@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-When LPE audio driver gets some error at probing, it may lead to a
-crash because of canceling the pending work in hdmi_lpe_audio_free(),
-since some of ports might be still not initialized.
+On 27/02/2018 at 20:03:38 +0100, Ladislav Michl wrote:
+> On Tue, Feb 27, 2018 at 06:23:09PM +0100, Alexandre Belloni wrote:
+> > This also needs a proper commit message.
+> 
+> Meanwhile more patches for this driver accumulated, so I'll send simple ones
+> first and those I'm uncertain of later.
+> 
+> Now few questions:
+> - should hw_params emit any error message when asked to set for example
+>   unsupported sample rate? Many drivers do so, but it seems strange.
 
-For assuring the proper free of each port, initialize all ports at the
-beginning of the probe.
+I would thin that is correct because then the eror goes up to userspace
+and it knows it has to resample.
 
-Fixes: b4eb0d522fcb ("ALSA: x86: Split snd_intelhad into card and PCM specific structures")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/x86/intel_hdmi_audio.c | 27 +++++++++++++++++----------
- 1 file changed, 17 insertions(+), 10 deletions(-)
+> - table used in this driver is overkill, frequencies can be calculated
+>   directly (patch ready), but that brings question about
+>   SNDRV_PCM_RATE_CONTINUOUS: what does it exactly mean? What if codec is
+>   able to set "any" rate, but there are rounding errors?
+> 
 
-diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
-index cec62f9b7085..4ed9d0c41843 100644
---- a/sound/x86/intel_hdmi_audio.c
-+++ b/sound/x86/intel_hdmi_audio.c
-@@ -1751,6 +1751,7 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
- {
- 	struct snd_card *card;
- 	struct snd_intelhad_card *card_ctx;
-+	struct snd_intelhad *ctx;
- 	struct snd_pcm *pcm;
- 	struct intel_hdmi_lpe_audio_pdata *pdata;
- 	int irq;
-@@ -1795,6 +1796,21 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, card_ctx);
- 
-+	card_ctx->num_pipes = pdata->num_pipes;
-+	card_ctx->num_ports = single_port ? 1 : pdata->num_ports;
-+
-+	for_each_port(card_ctx, port) {
-+		ctx = &card_ctx->pcm_ctx[port];
-+		ctx->card_ctx = card_ctx;
-+		ctx->dev = card_ctx->dev;
-+		ctx->port = single_port ? -1 : port;
-+		ctx->pipe = -1;
-+
-+		spin_lock_init(&ctx->had_spinlock);
-+		mutex_init(&ctx->mutex);
-+		INIT_WORK(&ctx->hdmi_audio_wq, had_audio_wq);
-+	}
-+
- 	dev_dbg(&pdev->dev, "%s: mmio_start = 0x%x, mmio_end = 0x%x\n",
- 		__func__, (unsigned int)res_mmio->start,
- 		(unsigned int)res_mmio->end);
-@@ -1827,18 +1843,9 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
- 	card_ctx->num_ports = single_port ? 1 : pdata->num_ports;
- 
- 	for_each_port(card_ctx, port) {
--		struct snd_intelhad *ctx = &card_ctx->pcm_ctx[port];
- 		int i;
- 
--		ctx->card_ctx = card_ctx;
--		ctx->dev = card_ctx->dev;
--		ctx->port = single_port ? -1 : port;
--		ctx->pipe = -1;
--
--		spin_lock_init(&ctx->had_spinlock);
--		mutex_init(&ctx->mutex);
--		INIT_WORK(&ctx->hdmi_audio_wq, had_audio_wq);
--
-+		ctx = &card_ctx->pcm_ctx[port];
- 		ret = snd_pcm_new(card, INTEL_HAD, port, MAX_PB_STREAMS,
- 				  MAX_CAP_STREAMS, &pcm);
- 		if (ret)
+That is a good question I can't answer.
+
+> > On 30/01/2018 at 12:10:33 +0100, Ladislav Michl wrote:
+> > > Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+> > > ---
+> > >  Note: It should be reconsidered where BSEL should be set.
+> > > 
+> > >  sound/soc/codecs/max9867.c | 43 +++----------------------------------------
+> > >  1 file changed, 3 insertions(+), 40 deletions(-)
+> > > 
+> > > diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+> > > index 026b7cf94910..6272cf5df4a9 100644
+> > > --- a/sound/soc/codecs/max9867.c
+> > > +++ b/sound/soc/codecs/max9867.c
+> > > @@ -148,46 +148,6 @@ static int max9867_dai_hw_params(struct snd_pcm_substream *substream,
+> > >  			MAX9867_RAPID_LOCK, MAX9867_RAPID_LOCK);
+> > >  		regmap_update_bits(max9867->regmap, MAX9867_AUDIOCLKHIGH,
+> > >  			MAX9867_PLL, MAX9867_PLL);
+> > > -	} else {
+> > > -		unsigned long int bclk_rate, pclk_bclk_ratio;
+> > > -		int bclk_value;
+> > > -
+> > > -		bclk_rate = params_rate(params) * 2 * params_width(params);
+> > > -		pclk_bclk_ratio = max9867->pclk/bclk_rate;
+> > > -		switch (params_width(params)) {
+> > > -		case 8:
+> > > -		case 16:
+> > > -			switch (pclk_bclk_ratio) {
+> > > -			case 2:
+> > > -				bclk_value = MAX9867_IFC1B_PCLK_2;
+> > > -				break;
+> > > -			case 4:
+> > > -				bclk_value = MAX9867_IFC1B_PCLK_4;
+> > > -				break;
+> > > -			case 8:
+> > > -				bclk_value = MAX9867_IFC1B_PCLK_8;
+> > > -				break;
+> > > -			case 16:
+> > > -				bclk_value = MAX9867_IFC1B_PCLK_16;
+> > > -				break;
+> > > -			default:
+> > > -				dev_err(codec->dev,
+> > > -					"unsupported sampling rate\n");
+> > > -				return -EINVAL;
+> > > -			}
+> > > -			break;
+> > > -		case 24:
+> > > -			bclk_value = MAX9867_IFC1B_24BIT;
+> > > -			break;
+> > > -		case 32:
+> > > -			bclk_value = MAX9867_IFC1B_32BIT;
+> > > -			break;
+> > > -		default:
+> > > -			dev_err(codec->dev, "unsupported sampling rate\n");
+> > > -			return -EINVAL;
+> > > -		}
+> > > -		regmap_update_bits(max9867->regmap, MAX9867_IFC1B,
+> > > -			MAX9867_IFC1B_BCLK_MASK, bclk_value);
+> > >  	}
+> > >  	return 0;
+> > >  }
+> > > @@ -244,6 +204,9 @@ static int max9867_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+> > >  	value &= ~MAX9867_FREQ_MASK;
+> > >  	regmap_update_bits(max9867->regmap, MAX9867_SYSCLK,
+> > >  			MAX9867_PSCLK_MASK, value);
+> > > +	regmap_update_bits(max9867->regmap, MAX9867_IFC1B,
+> > > +			MAX9867_IFC1B_BCLK_MASK, 0x010);
+> > 
+> > This magic value has to be defined somewhere.
+> > 
+> > > +
+> > >  	return 0;
+> > >  }
+> > >  
+> > > -- 
+> > > 2.15.1
+> > > 
+> > 
+> > -- 
+> > Alexandre Belloni, Bootlin (formerly Free Electrons)
+> > Embedded Linux and Kernel engineering
+> > https://bootlin.com
+
 -- 
-2.16.2
+Alexandre Belloni, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
