@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: For TLV controls only register TLV get/set" to the asoc tree
-Date: Wed, 28 Feb 2018 11:06:04 +0000
-Message-ID: <E1eqzYi-0005BJ-Eq@debutante>
-References: <20180228103110.2055-1-rf@opensource.cirrus.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20180228103110.2055-1-rf@opensource.cirrus.com>
-Sender: stable-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgbroonie@kernel.org, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: support ROHM BD28623 codec" to the asoc
+	tree
+Date: Wed, 28 Feb 2018 11:06:23 +0000
+Message-ID: <E1eqzZ1-0005DV-Rw@debutante>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 623FC267781
+ for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2018 12:06:27 +0100 (CET)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: For TLV controls only register TLV get/set
+   ASoC: support ROHM BD28623 codec
 
 has been applied to the asoc tree at
 
@@ -37,56 +52,317 @@ to this mail.
 Thanks,
 Mark
 
->From d7789f5bcdb298c4a302db471b1b20f74a20de95 Mon Sep 17 00:00:00 2001
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-Date: Wed, 28 Feb 2018 10:31:10 +0000
-Subject: [PATCH] ASoC: wm_adsp: For TLV controls only register TLV get/set
+>From f6d4b052175d84c6f2b73e884f3ab8c83c5f4d45 Mon Sep 17 00:00:00 2001
+From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Date: Fri, 23 Feb 2018 10:17:17 +0900
+Subject: [PATCH] ASoC: support ROHM BD28623 codec
 
-Normal 512-byte get/set of a TLV isn't supported but we were
-registering the normal get/set anyway and relying on omitting
-the SNDRV_CTL_ELEM_ACCESS_[READ|WRITE] flags to prevent them
-being called.
+This patch adds support of the ROHM BD28623MUV
+Class D speaker amplifier for Flat-panel TVs.
+This IC delivers an output power of 20W + 20W.
 
-Trouble is if this gets broken in the core ALSA code - as it has
-been since at least 4.14 - the standard get/set can be called
-unexpectedly and corrupt memory.
-
-There's no point providing functions that won't be called and
-it's a trivial change. The benefit is that if the ALSA core gets
-broken again we get a big fat immediate NULL dereference instead
-of a memory corruption timebomb.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/wm_adsp.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ sound/soc/codecs/Kconfig   |   8 ++
+ sound/soc/codecs/Makefile  |   2 +
+ sound/soc/codecs/bd28623.c | 242 +++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 252 insertions(+)
+ create mode 100644 sound/soc/codecs/bd28623.c
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 66e32f5d2917..989d093abda7 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1204,12 +1204,14 @@ static int wmfw_add_ctl(struct wm_adsp *dsp, struct wm_coeff_ctl *ctl)
- 		kcontrol->put = wm_coeff_put_acked;
- 		break;
- 	default:
--		kcontrol->get = wm_coeff_get;
--		kcontrol->put = wm_coeff_put;
--
--		ctl->bytes_ext.max = ctl->len;
--		ctl->bytes_ext.get = wm_coeff_tlv_get;
--		ctl->bytes_ext.put = wm_coeff_tlv_put;
-+		if (kcontrol->access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
-+			ctl->bytes_ext.max = ctl->len;
-+			ctl->bytes_ext.get = wm_coeff_tlv_get;
-+			ctl->bytes_ext.put = wm_coeff_tlv_put;
-+		} else {
-+			kcontrol->get = wm_coeff_get;
-+			kcontrol->put = wm_coeff_put;
-+		}
- 		break;
- 	}
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 2b331f7266ab..4545f8fde220 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -45,6 +45,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_ALC5623 if I2C
+ 	select SND_SOC_ALC5632 if I2C
+ 	select SND_SOC_BT_SCO
++	select SND_SOC_BD28623
+ 	select SND_SOC_CQ0093VC
+ 	select SND_SOC_CS35L32 if I2C
+ 	select SND_SOC_CS35L33 if I2C
+@@ -405,6 +406,13 @@ config SND_SOC_ALC5623
+ config SND_SOC_ALC5632
+ 	tristate
  
++config SND_SOC_BD28623
++	tristate "ROHM BD28623 CODEC"
++	help
++	  Enable support for ROHM BD28623MUV Class D speaker amplifier.
++	  This codec does not have any control buses such as I2C, it
++	  detect format of I2S automatically.
++
+ config SND_SOC_BT_SCO
+ 	tristate "Dummy BT SCO codec driver"
+ 
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index da1571336f1e..6df2fb32fc7e 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -35,6 +35,7 @@ snd-soc-ak4642-objs := ak4642.o
+ snd-soc-ak4671-objs := ak4671.o
+ snd-soc-ak5386-objs := ak5386.o
+ snd-soc-arizona-objs := arizona.o
++snd-soc-bd28623-objs := bd28623.o
+ snd-soc-bt-sco-objs := bt-sco.o
+ snd-soc-cq93vc-objs := cq93vc.o
+ snd-soc-cs35l32-objs := cs35l32.o
+@@ -280,6 +281,7 @@ obj-$(CONFIG_SND_SOC_AK5386)	+= snd-soc-ak5386.o
+ obj-$(CONFIG_SND_SOC_ALC5623)    += snd-soc-alc5623.o
+ obj-$(CONFIG_SND_SOC_ALC5632)	+= snd-soc-alc5632.o
+ obj-$(CONFIG_SND_SOC_ARIZONA)	+= snd-soc-arizona.o
++obj-$(CONFIG_SND_SOC_BD28623)	+= snd-soc-bd28623.o
+ obj-$(CONFIG_SND_SOC_BT_SCO)	+= snd-soc-bt-sco.o
+ obj-$(CONFIG_SND_SOC_CQ0093VC) += snd-soc-cq93vc.o
+ obj-$(CONFIG_SND_SOC_CS35L32)	+= snd-soc-cs35l32.o
+diff --git a/sound/soc/codecs/bd28623.c b/sound/soc/codecs/bd28623.c
+new file mode 100644
+index 000000000000..31904ef5c88b
+--- /dev/null
++++ b/sound/soc/codecs/bd28623.c
+@@ -0,0 +1,242 @@
++// SPDX-License-Identifier: GPL-2.0
++//
++// ROHM BD28623MUV class D speaker amplifier codec driver.
++//
++// Copyright (c) 2018 Socionext Inc.
++
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/regulator/consumer.h>
++#include <sound/pcm.h>
++#include <sound/soc.h>
++
++#define BD28623_NUM_SUPPLIES    3
++
++static const char *const bd28623_supply_names[BD28623_NUM_SUPPLIES] = {
++	"VCCA",
++	"VCCP1",
++	"VCCP2",
++};
++
++struct bd28623_priv {
++	struct device *dev;
++	struct regulator_bulk_data supplies[BD28623_NUM_SUPPLIES];
++	struct gpio_desc *reset_gpio;
++	struct gpio_desc *mute_gpio;
++
++	int switch_spk;
++};
++
++static const struct snd_soc_dapm_widget bd28623_widgets[] = {
++	SND_SOC_DAPM_DAC("DAC", "Playback", SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_OUTPUT("OUT1P"),
++	SND_SOC_DAPM_OUTPUT("OUT1N"),
++	SND_SOC_DAPM_OUTPUT("OUT2P"),
++	SND_SOC_DAPM_OUTPUT("OUT2N"),
++};
++
++static const struct snd_soc_dapm_route bd28623_routes[] = {
++	{ "OUT1P", NULL, "DAC" },
++	{ "OUT1N", NULL, "DAC" },
++	{ "OUT2P", NULL, "DAC" },
++	{ "OUT2N", NULL, "DAC" },
++};
++
++static int bd28623_power_on(struct bd28623_priv *bd)
++{
++	int ret;
++
++	ret = regulator_bulk_enable(ARRAY_SIZE(bd->supplies), bd->supplies);
++	if (ret) {
++		dev_err(bd->dev, "Failed to enable supplies: %d\n", ret);
++		return ret;
++	}
++
++	gpiod_set_value_cansleep(bd->reset_gpio, 0);
++	usleep_range(300000, 400000);
++
++	return 0;
++}
++
++static void bd28623_power_off(struct bd28623_priv *bd)
++{
++	gpiod_set_value_cansleep(bd->reset_gpio, 1);
++
++	regulator_bulk_disable(ARRAY_SIZE(bd->supplies), bd->supplies);
++}
++
++static int bd28623_get_switch_spk(struct snd_kcontrol *kcontrol,
++				  struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component =
++		snd_soc_kcontrol_component(kcontrol);
++	struct bd28623_priv *bd = snd_soc_component_get_drvdata(component);
++
++	ucontrol->value.integer.value[0] = bd->switch_spk;
++
++	return 0;
++}
++
++static int bd28623_set_switch_spk(struct snd_kcontrol *kcontrol,
++				  struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component =
++		snd_soc_kcontrol_component(kcontrol);
++	struct bd28623_priv *bd = snd_soc_component_get_drvdata(component);
++
++	if (bd->switch_spk == ucontrol->value.integer.value[0])
++		return 0;
++
++	bd->switch_spk = ucontrol->value.integer.value[0];
++
++	gpiod_set_value_cansleep(bd->mute_gpio, bd->switch_spk ? 0 : 1);
++
++	return 0;
++}
++
++static const struct snd_kcontrol_new bd28623_controls[] = {
++	SOC_SINGLE_BOOL_EXT("Speaker Switch", 0,
++			    bd28623_get_switch_spk, bd28623_set_switch_spk),
++};
++
++static int bd28623_codec_probe(struct snd_soc_component *component)
++{
++	struct bd28623_priv *bd = snd_soc_component_get_drvdata(component);
++	int ret;
++
++	bd->switch_spk = 1;
++
++	ret = bd28623_power_on(bd);
++	if (ret)
++		return ret;
++
++	gpiod_set_value_cansleep(bd->mute_gpio, bd->switch_spk ? 0 : 1);
++
++	return 0;
++}
++
++static void bd28623_codec_remove(struct snd_soc_component *component)
++{
++	struct bd28623_priv *bd = snd_soc_component_get_drvdata(component);
++
++	bd28623_power_off(bd);
++}
++
++static int bd28623_codec_suspend(struct snd_soc_component *component)
++{
++	struct bd28623_priv *bd = snd_soc_component_get_drvdata(component);
++
++	bd28623_power_off(bd);
++
++	return 0;
++}
++
++static int bd28623_codec_resume(struct snd_soc_component *component)
++{
++	struct bd28623_priv *bd = snd_soc_component_get_drvdata(component);
++	int ret;
++
++	ret = bd28623_power_on(bd);
++	if (ret)
++		return ret;
++
++	gpiod_set_value_cansleep(bd->mute_gpio, bd->switch_spk ? 0 : 1);
++
++	return 0;
++}
++
++static const struct snd_soc_component_driver soc_codec_bd = {
++	.probe			= bd28623_codec_probe,
++	.remove			= bd28623_codec_remove,
++	.suspend		= bd28623_codec_suspend,
++	.resume			= bd28623_codec_resume,
++	.dapm_widgets		= bd28623_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(bd28623_widgets),
++	.dapm_routes		= bd28623_routes,
++	.num_dapm_routes	= ARRAY_SIZE(bd28623_routes),
++	.controls		= bd28623_controls,
++	.num_controls		= ARRAY_SIZE(bd28623_controls),
++	.idle_bias_on		= 1,
++	.use_pmdown_time	= 1,
++	.endianness		= 1,
++	.non_legacy_dai_naming	= 1,
++};
++
++static struct snd_soc_dai_driver soc_dai_bd = {
++	.name     = "bd28623-speaker",
++	.playback = {
++		.stream_name  = "Playback",
++		.formats      = SNDRV_PCM_FMTBIT_S32_LE |
++				SNDRV_PCM_FMTBIT_S24_LE |
++				SNDRV_PCM_FMTBIT_S16_LE,
++		.rates        = SNDRV_PCM_RATE_48000 |
++				SNDRV_PCM_RATE_44100 |
++				SNDRV_PCM_RATE_32000,
++		.channels_min = 2,
++		.channels_max = 2,
++	},
++};
++
++static int bd28623_probe(struct platform_device *pdev)
++{
++	struct bd28623_priv *bd;
++	struct device *dev = &pdev->dev;
++	int i, ret;
++
++	bd = devm_kzalloc(&pdev->dev, sizeof(struct bd28623_priv), GFP_KERNEL);
++	if (!bd)
++		return -ENOMEM;
++
++	for (i = 0; i < ARRAY_SIZE(bd->supplies); i++)
++		bd->supplies[i].supply = bd28623_supply_names[i];
++
++	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(bd->supplies),
++				      bd->supplies);
++	if (ret) {
++		dev_err(dev, "Failed to get supplies: %d\n", ret);
++		return ret;
++	}
++
++	bd->reset_gpio = devm_gpiod_get_optional(dev, "reset",
++						 GPIOD_OUT_HIGH);
++	if (IS_ERR(bd->reset_gpio)) {
++		dev_err(dev, "Failed to request reset_gpio: %ld\n",
++			PTR_ERR(bd->reset_gpio));
++		return PTR_ERR(bd->reset_gpio);
++	}
++
++	bd->mute_gpio = devm_gpiod_get_optional(dev, "mute",
++						GPIOD_OUT_HIGH);
++	if (IS_ERR(bd->mute_gpio)) {
++		dev_err(dev, "Failed to request mute_gpio: %ld\n",
++			PTR_ERR(bd->mute_gpio));
++		return PTR_ERR(bd->mute_gpio);
++	}
++
++	platform_set_drvdata(pdev, bd);
++	bd->dev = dev;
++
++	return devm_snd_soc_register_component(dev, &soc_codec_bd,
++					       &soc_dai_bd, 1);
++}
++
++static const struct of_device_id bd28623_of_match[] = {
++	{ .compatible = "rohm,bd28623", },
++	{}
++};
++MODULE_DEVICE_TABLE(of, bd28623_of_match);
++
++static struct platform_driver bd28623_codec_driver = {
++	.driver = {
++		.name = "bd28623",
++		.of_match_table = of_match_ptr(bd28623_of_match),
++	},
++	.probe  = bd28623_probe,
++};
++module_platform_driver(bd28623_codec_driver);
++
++MODULE_AUTHOR("Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>");
++MODULE_DESCRIPTION("ROHM BD28623 speaker amplifier driver");
++MODULE_LICENSE("GPL v2");
 -- 
 2.16.1
