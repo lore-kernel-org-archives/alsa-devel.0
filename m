@@ -1,20 +1,16 @@
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: Re: [PATCH 6/7] ASoC: max9867: Fix BSEL value in
-	master mode.
-Date: Wed, 28 Feb 2018 11:28:49 +0100
-Message-ID: <20180228102849.GK1479@piout.net>
-References: <20180130110604.GA18123@lenoch> <20180130111033.GG18123@lenoch>
- <20180227172309.GG1479@piout.net> <20180227190338.GB1961@lenoch>
- <20180228100054.GJ1479@piout.net> <20180228102313.GA12699@lenoch>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH] ASoC: wm_adsp: For TLV controls only register
+	TLV get/set
+Date: Wed, 28 Feb 2018 10:31:10 +0000
+Message-ID: <20180228103110.2055-1-rf@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bootlin.com (mail.bootlin.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 202CD267277
- for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2018 11:29:00 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20180228102313.GA12699@lenoch>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id DDD7B267773
+ for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2018 11:31:15 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,201 +20,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, anish kumar <yesanishhere@gmail.com>
+To: broonie@kernel.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 28/02/2018 at 11:23:13 +0100, Ladislav Michl wrote:
-> On Wed, Feb 28, 2018 at 11:00:54AM +0100, Alexandre Belloni wrote:
-> > On 27/02/2018 at 20:03:38 +0100, Ladislav Michl wrote:
-> > > On Tue, Feb 27, 2018 at 06:23:09PM +0100, Alexandre Belloni wrote:
-> > > > This also needs a proper commit message.
-> > > 
-> > > Meanwhile more patches for this driver accumulated, so I'll send simple ones
-> > > first and those I'm uncertain of later.
-> > > 
-> > > Now few questions:
-> > > - should hw_params emit any error message when asked to set for example
-> > >   unsupported sample rate? Many drivers do so, but it seems strange.
-> > 
-> > I would thin that is correct because then the eror goes up to userspace
-> > and it knows it has to resample.
-> 
-> Perhaps I didn't express it clearly enough. I mean all those
-> dev_err(dev, "sunsupported rate\n");
-> Here only human sitting in realspace is able to react somehow, but I'd say
-> he's only annoyed.
-> 
-> I would expect driver is able to set any rate it is advertising, so returned
-> -EINVAL is considered to be a programming error (which shouldn't clutter
-> kernel log).
-> 
+Normal 512-byte get/set of a TLV isn't supported but we were
+registering the normal get/set anyway and relying on omitting
+the SNDRV_CTL_ELEM_ACCESS_[READ|WRITE] flags to prevent them
+being called.
 
-Ah yes, please feel free to remove the dev_err messages. I also find
-that they clutter the kernel output needlessly.
+Trouble is if this gets broken in the core ALSA code - as it has
+been since at least 4.14 - the standard get/set can be called
+unexpectedly and corrupt memory.
 
-> > > - table used in this driver is overkill, frequencies can be calculated
-> > >   directly (patch ready), but that brings question about
-> > >   SNDRV_PCM_RATE_CONTINUOUS: what does it exactly mean? What if codec is
-> > >   able to set "any" rate, but there are rounding errors?
-> > 
-> > That is a good question I can't answer.
-> 
-> Thank you anyway, hopefully someone else would be able to answer.
-> 
+There's no point providing functions that won't be called and
+it's a trivial change. The benefit is that if the ALSA core gets
+broken again we get a big fat immediate NULL dereference instead
+of a memory corruption timebomb.
 
-Well, Mark is not Cced, you'd have to get his attention somehow ;)
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ sound/soc/codecs/wm_adsp.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-> Consider patch bellow - with introduced change codec is able to set any rate
-> in master mode (it is an example only, it needs more work), but not any rate
-> will be matched exactly. Of course, for each master clock rate it is possible
-> to compute exact supported rates and advertise them. Is that way forward or
-> is there any trick with SNDRV_PCM_RATE_CONTINUOUS?
-> 
-> Subject: ASoC: max9867: Use continuous sample rate
-> 
-> Drop "Common NI Values Table" and calculate LRCLK divider.
-> 
-> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
-> 
-> diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-> index 0a6bd9f4d00a..d9b81a95a200 100644
-> --- a/sound/soc/codecs/max9867.c
-> +++ b/sound/soc/codecs/max9867.c
-> @@ -126,75 +126,19 @@ static const struct snd_soc_dapm_route max9867_audio_map[] = {
->  	{"LINE_IN", NULL, "Right Line"},
->  };
->  
-> -enum rates {
-> -	pcm_rate_8, pcm_rate_16, pcm_rate_24,
-> -	pcm_rate_32, pcm_rate_44,
-> -	pcm_rate_48, max_pcm_rate,
-> -};
-> -
-> -static const struct ni_div_rates {
-> -	u32 mclk;
-> -	u16 ni[max_pcm_rate];
-> -} ni_div[] = {
-> -	{11289600, {0x116A, 0x22D4, 0x343F, 0x45A9, 0x6000, 0x687D} },
-> -	{12000000, {0x1062, 0x20C5, 0x3127, 0x4189, 0x5A51, 0x624E} },
-> -	{12288000, {0x1000, 0x2000, 0x3000, 0x4000, 0x5833, 0x6000} },
-> -	{13000000, {0x0F20, 0x1E3F, 0x2D5F, 0x3C7F, 0x535F, 0x5ABE} },
-> -	{19200000, {0x0A3D, 0x147B, 0x1EB8, 0x28F6, 0x3873, 0x3D71} },
-> -	{24000000, {0x1062, 0x20C5, 0x1893, 0x4189, 0x5A51, 0x624E} },
-> -	{26000000, {0x0F20, 0x1E3F, 0x16AF, 0x3C7F, 0x535F, 0x5ABE} },
-> -	{27000000, {0x0E90, 0x1D21, 0x15D8, 0x3A41, 0x5048, 0x5762} },
-> -};
-> -
-> -static inline int get_ni_value(int mclk, int rate)
-> -{
-> -	int i, ret = 0;
-> -
-> -	/* find the closest rate index*/
-> -	for (i = 0; i < ARRAY_SIZE(ni_div); i++) {
-> -		if (ni_div[i].mclk >= mclk)
-> -			break;
-> -	}
-> -	if (i == ARRAY_SIZE(ni_div))
-> -		return -EINVAL;
-> -
-> -	switch (rate) {
-> -	case 8000:
-> -		return ni_div[i].ni[pcm_rate_8];
-> -	case 16000:
-> -		return ni_div[i].ni[pcm_rate_16];
-> -	case 32000:
-> -		return ni_div[i].ni[pcm_rate_32];
-> -	case 44100:
-> -		return ni_div[i].ni[pcm_rate_44];
-> -	case 48000:
-> -		return ni_div[i].ni[pcm_rate_48];
-> -	default:
-> -		pr_err("%s wrong rate %d\n", __func__, rate);
-> -		ret = -EINVAL;
-> -	}
-> -	return ret;
-> -}
-> -
->  static int max9867_dai_hw_params(struct snd_pcm_substream *substream,
->  		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
->  {
->  	struct snd_soc_component *component = dai->component;
->  	struct max9867_priv *max9867 = snd_soc_component_get_drvdata(component);
-> -	unsigned int ni_h, ni_l;
-> -	int value;
-> +	unsigned int ni = DIV_ROUND_CLOSEST_ULL(96ULL * 0x10000 * params_rate(params),
-> +						max9867->pclk);
->  
-> -	value = get_ni_value(max9867->sysclk, params_rate(params));
-> -	if (value < 0)
-> -		return value;
-> -
-> -	ni_h = (0xFF00 & value) >> 8;
-> -	ni_l = 0x00FF & value;
->  	/* set up the ni value */
->  	regmap_update_bits(max9867->regmap, MAX9867_AUDIOCLKHIGH,
-> -		MAX9867_NI_HIGH_MASK, ni_h);
-> +		MAX9867_NI_HIGH_MASK, (0xFF00 & ni) >> 8);
->  	regmap_update_bits(max9867->regmap, MAX9867_AUDIOCLKLOW,
-> -		MAX9867_NI_LOW_MASK, ni_l);
-> +		MAX9867_NI_LOW_MASK, 0x00FF & ni);
->  	if (!max9867->master) {
->  		/*
->  		 * digital pll locks on to any externally supplied LRCLK signal
-> @@ -241,13 +185,13 @@ static int max9867_set_dai_sysclk(struct snd_soc_dai *codec_dai,
->  	/* Set the prescaler based on the master clock frequency*/
->  	if (freq >= 10000000 && freq <= 20000000) {
->  		value |= MAX9867_PSCLK_10_20;
-> -		max9867->pclk =  freq;
-> +		max9867->pclk = freq;
->  	} else if (freq >= 20000000 && freq <= 40000000) {
->  		value |= MAX9867_PSCLK_20_40;
-> -		max9867->pclk =  freq/2;
-> +		max9867->pclk = freq / 2;
->  	} else if (freq >= 40000000 && freq <= 60000000) {
->  		value |= MAX9867_PSCLK_40_60;
-> -		max9867->pclk =  freq/4;
-> +		max9867->pclk = freq / 4;
->  	} else {
->  		dev_err(component->dev,
->  			"Invalid clock frequency %uHz (required 10-60MHz)\n",
-> @@ -322,10 +266,6 @@ static const struct snd_soc_dai_ops max9867_dai_ops = {
->  	.hw_params = max9867_dai_hw_params,
->  };
->  
-> -#define MAX9867_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
-> -	SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000)
-> -#define MAX9867_FORMATS (SNDRV_PCM_FMTBIT_S16_LE)
-> -
->  static struct snd_soc_dai_driver max9867_dai[] = {
->  	{
->  	.name = "max9867-aif1",
-> @@ -333,15 +273,19 @@ static struct snd_soc_dai_driver max9867_dai[] = {
->  		.stream_name = "HiFi Playback",
->  		.channels_min = 1,
->  		.channels_max = 2,
-> -		.rates = MAX9867_RATES,
-> -		.formats = MAX9867_FORMATS,
-> +		.rates = SNDRV_PCM_RATE_CONTINUOUS,
-> +		.rate_min = 8000,
-> +		.rate_max = 48000,
-> +		.formats = SNDRV_PCM_FMTBIT_S16_LE,
->  	},
->  	.capture = {
->  		.stream_name = "HiFi Capture",
->  		.channels_min = 1,
->  		.channels_max = 2,
-> -		.rates = MAX9867_RATES,
-> -		.formats = MAX9867_FORMATS,
-> +		.rates = SNDRV_PCM_RATE_CONTINUOUS,
-> +		.rate_min = 8000,
-> +		.rate_max = 48000,
-> +		.formats = SNDRV_PCM_FMTBIT_S16_LE,
->  	},
->  	.ops = &max9867_dai_ops,
->  	}
-
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 9b27390cf4f1..82b0927e6ed7 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -1204,12 +1204,14 @@ static int wmfw_add_ctl(struct wm_adsp *dsp, struct wm_coeff_ctl *ctl)
+ 		kcontrol->put = wm_coeff_put_acked;
+ 		break;
+ 	default:
+-		kcontrol->get = wm_coeff_get;
+-		kcontrol->put = wm_coeff_put;
+-
+-		ctl->bytes_ext.max = ctl->len;
+-		ctl->bytes_ext.get = wm_coeff_tlv_get;
+-		ctl->bytes_ext.put = wm_coeff_tlv_put;
++		if (kcontrol->access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
++			ctl->bytes_ext.max = ctl->len;
++			ctl->bytes_ext.get = wm_coeff_tlv_get;
++			ctl->bytes_ext.put = wm_coeff_tlv_put;
++		} else {
++			kcontrol->get = wm_coeff_get;
++			kcontrol->put = wm_coeff_put;
++		}
+ 		break;
+ 	}
+ 
 -- 
-Alexandre Belloni, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.11.0
