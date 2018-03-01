@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 6/6] ASoC: max9867: Use continuous sample
-	rate
-Date: Thu, 1 Mar 2018 18:22:02 +0000
-Message-ID: <20180301182202.GH12864@sirena.org.uk>
-References: <20180301141843.GB30722@lenoch>
- <20180301142216.GH30722@lenoch>
+From: Waldemar Brodkorb <wbx@openadk.org>
+Subject: Re: xhci: Not enough bandwidth for new device state
+Date: Thu, 1 Mar 2018 19:33:12 +0100
+Message-ID: <20180301183311.GA12535@waldemar-brodkorb.de>
+References: <20180228210753.GA3131@waldemar-brodkorb.de>
+ <20180301070757.GY12535@waldemar-brodkorb.de>
+ <ac4654e7-819d-29d5-d1c0-9f377ee8be83@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1652032816630119552=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F0132672B9
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 19:22:03 +0100 (CET)
-In-Reply-To: <20180301142216.GH30722@lenoch>
+Received: from helium.openadk.org (helium.openadk.org [89.238.66.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id E4D5A267B73
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 19:33:12 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <ac4654e7-819d-29d5-d1c0-9f377ee8be83@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +23,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: alsa-devel@alsa-project.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Clemens,
+Clemens Ladisch wrote,
 
---===============1652032816630119552==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="PW0Eas8rCkcu1VkF"
-Content-Disposition: inline
+> Waldemar Brodkorb wrote:
+> >> [  547.352746] usb 3-5.2: 3:1: usb_set_interface failed (-28)
+> >> [  548.352865] usb 3-5.3: Not enough bandwidth for new device state.
+> >> [  548.352868] usb 3-5.3: Not enough bandwidth for altsetting 1
+> >>
+> >> I have connected a 7-Port USB 3.0 Hub to my machine.
+> >> I have 6 different Headsets and USB Soundcards connected to the HUB.
+> >>
+> >> As soon as I start a C++ application which opens all ALSA devices
+> >> I get these errors and the USB stopps working correctly.
+> >>
+> >> I think the maximum count of USB sound devices, which behave stable
+> >> is three or four.
+> >>
+> >> Is this some miscalculation of the Linux kernel regarding the USB
+> >> bandwidth usage? How I can determine how much bandwidth the USB
+> >> sound card driver preallocates?
+> >>
+> >> Or are five USB soundcards really too much for an USB 3.0 bus?
+> >
+> > There is no webcam involved, which usually uses MaxPacketsize of 1024,
+> > so why I get the overallocation?
+> 
+> AFAIK on xHCI controllers, the kernel and the controller's firmware
+> must work together to handle this.
+> 
+> It's possible that a USB 2.0 hub might work better.
+> 
+> Try asking on the linux-usb list.
 
+Indeed todays tests have shown that just simply disabling
+xhci in the BIOS of the machines and just using ehci driver works
+perfectly well in our usecase.
 
---PW0Eas8rCkcu1VkF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Mar 01, 2018 at 03:22:16PM +0100, Ladislav Michl wrote:
-
->  what is exact meaning of SNDRV_PCM_RATE_CONTINUOUS? What if codec is
->  able to set "any" rate, but there are rounding errors?
->  Shall we pick exact matches based on master clock frequency?
->  Few other drivers are also setting SNDRV_PCM_RATE_CONTINUOUS, but
->  certainly cannot set any rate exactly.
-
-It means being able to set any rate exactly.  Many devices have hardware
-which is only specified to work at specific rates but some are more
-flexible.  Devices don't need to be able to do this independently, you
-can have a flexible external clock tree for example.
-
---PW0Eas8rCkcu1VkF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqYRMkACgkQJNaLcl1U
-h9Bb5gf/UaELG0m9h6vM0UB6BdrHkZ9miq9dYUCDXTsGlxBWT9cKb4A6LCl5aqIt
-6axTMfFdmPlrwNWaR3wZBsuwyy9XEWKWVEaXzz7dS2EUS0Knj67jARfg6RoeMfdm
-bSxtyrAz0qP+EYBkR53P9pO2DVbgBiw4J5gH/C4B2PSTNzE9N1f43ssYDd5v7CaX
-MuDwVPLjWZPC4I9Uc57VfW30Vx3PNVGr/iWwRl1Pp3lBrhuh5HzRcDGQ+VDZLTvI
-Ebp07kCJZlEodrOHA8LfRkBQqWzqe7yHEGalW97Z7ILMvdrYWYe09J6E+506tuiN
-G/0udkuxYPCNKUwHRMBHNhS+lIWEPg==
-=IZmn
------END PGP SIGNATURE-----
-
---PW0Eas8rCkcu1VkF--
-
---===============1652032816630119552==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1652032816630119552==--
+best regards
+ Waldemar
