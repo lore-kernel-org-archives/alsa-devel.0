@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: add nau8824 sound card" to the
-	asoc tree
-Date: Thu, 01 Mar 2018 18:07:04 +0000
-Message-ID: <E1erSbg-0005u7-EX@debutante>
+Subject: Applied "ASoC: Intel: sst: Free streams on suspend,
+	re-alloc on resume" to the asoc tree
+Date: Thu, 01 Mar 2018 18:07:09 +0000
+Message-ID: <E1erSbl-0005vs-Sa@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D4496267B50
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 19:07:08 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id F0B8E267B56
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 19:07:11 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
+To: Hans de Goede <hdegoede@redhat.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: add nau8824 sound card
+   ASoC: Intel: sst: Free streams on suspend, re-alloc on resume
 
 has been applied to the asoc tree at
 
@@ -52,373 +52,172 @@ to this mail.
 Thanks,
 Mark
 
->From 5b00ce63e07fac692400db80d3e1fbd1f1f65701 Mon Sep 17 00:00:00 2001
-From: John Hsu <KCHSU0@nuvoton.com>
-Date: Tue, 6 Feb 2018 15:02:43 +0800
-Subject: [PATCH] ASoC: Intel: add nau8824 sound card
+>From bf642bf57398572327072d306e26e38aebd94fa7 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sun, 18 Feb 2018 23:01:43 +0100
+Subject: [PATCH] ASoC: Intel: sst: Free streams on suspend, re-alloc on resume
 
-Create sound card with NAU88L24 codec in Intel Cherryview-based platforms,
-Cherrytrail and Braswell.
+The Bay Trail SST-DSP firmware version looses track of all streams over a
+suspend/resume, failing any attempts to resume and/or free streams, with
+a SST_ERR_INVALID_STREAM_ID error.
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+This commit adds support for free-ing the streams on suspend and
+re-allocating them on resume, fixing suspend/resume issues on devices
+using this firmware version.
+
+This new behavior gets triggered by a new flag in sst_platform_info which
+only gets set on Bay Trail platforms.
+
+This has been tested on the following devices:
+-Asus T100TA,    Bay Trail    + ALC5642 codec
+-Ployer MOMO7W,  Bay Trail CR + ALC5652 codec
+
+Tested-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/Kconfig                    |  11 +
- sound/soc/intel/boards/Makefile                   |   2 +
- sound/soc/intel/boards/cht_bsw_nau8824.c          | 282 ++++++++++++++++++++++
- sound/soc/intel/common/soc-acpi-intel-cht-match.c |   9 +
- 4 files changed, 304 insertions(+)
- create mode 100644 sound/soc/intel/boards/cht_bsw_nau8824.c
+ arch/x86/include/asm/platform_sst_audio.h |  1 +
+ sound/soc/intel/atom/sst/sst.c            | 24 +++++++++++++++++++++++-
+ sound/soc/intel/atom/sst/sst.h            |  4 ++++
+ sound/soc/intel/atom/sst/sst_acpi.c       |  3 ++-
+ sound/soc/intel/atom/sst/sst_stream.c     | 24 +++++++++++++++++++++++-
+ 5 files changed, 53 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index eedc83b96fbb..24797482a3d2 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -125,6 +125,17 @@ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
- 	  Say Y or m if you have such a device. This is a recommended option.
- 	  If unsure select "N".
+diff --git a/arch/x86/include/asm/platform_sst_audio.h b/arch/x86/include/asm/platform_sst_audio.h
+index 5973a2f3db3d..059823bb8af7 100644
+--- a/arch/x86/include/asm/platform_sst_audio.h
++++ b/arch/x86/include/asm/platform_sst_audio.h
+@@ -135,6 +135,7 @@ struct sst_platform_info {
+ 	const struct sst_res_info *res_info;
+ 	const struct sst_lib_dnld_info *lib_info;
+ 	const char *platform;
++	bool streams_lost_on_suspend;
+ };
+ int add_sst_platform_device(void);
+ #endif
+diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
+index 8afdff457579..0962bc9adc62 100644
+--- a/sound/soc/intel/atom/sst/sst.c
++++ b/sound/soc/intel/atom/sst/sst.c
+@@ -449,6 +449,13 @@ static int intel_sst_suspend(struct device *dev)
+ 			dev_err(dev, "stream %d is running, can't suspend, abort\n", i);
+ 			return -EBUSY;
+ 		}
++
++		if (ctx->pdata->streams_lost_on_suspend) {
++			stream->resume_status = stream->status;
++			stream->resume_prev = stream->prev;
++			if (stream->status != STREAM_UN_INIT)
++				sst_free_stream(ctx, i);
++		}
+ 	}
+ 	synchronize_irq(ctx->irq_num);
+ 	flush_workqueue(ctx->post_msg_wq);
+@@ -509,8 +516,8 @@ static int intel_sst_resume(struct device *dev)
+ {
+ 	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
+ 	struct sst_fw_save *fw_save = ctx->fw_save;
+-	int ret = 0;
+ 	struct sst_block *block;
++	int i, ret = 0;
  
-+config SND_SOC_INTEL_CHT_BSW_NAU8824_MACH
-+	tristate "Cherrytrail & Braswell with NAU88L24 codec"
-+	depends on X86_INTEL_LPSS && I2C && ACPI
-+	select SND_SOC_ACPI
-+	select SND_SOC_NAU8824
-+	help
-+	  This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
-+	  platforms with NAU88L24 audio codec.
-+	  Say Y or m if you have such a device. This is a recommended option.
-+	  If unsure select "N".
+ 	if (!fw_save)
+ 		return 0;
+@@ -550,6 +557,21 @@ static int intel_sst_resume(struct device *dev)
+ 		sst_set_fw_state_locked(ctx, SST_FW_RUNNING);
+ 	}
+ 
++	if (ctx->pdata->streams_lost_on_suspend) {
++		for (i = 1; i <= ctx->info.max_streams; i++) {
++			struct stream_info *stream = &ctx->streams[i];
 +
- config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
- 	tristate "Baytrail & Cherrytrail with DA7212/7213 codec"
- 	depends on X86_INTEL_LPSS && I2C && ACPI
-diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
-index 6fae506c40fa..92b5507291af 100644
---- a/sound/soc/intel/boards/Makefile
-+++ b/sound/soc/intel/boards/Makefile
-@@ -11,6 +11,7 @@ snd-soc-sst-bytcr-rt5651-objs := bytcr_rt5651.o
- snd-soc-sst-cht-bsw-rt5672-objs := cht_bsw_rt5672.o
- snd-soc-sst-cht-bsw-rt5645-objs := cht_bsw_rt5645.o
- snd-soc-sst-cht-bsw-max98090_ti-objs := cht_bsw_max98090_ti.o
-+snd-soc-sst-cht-bsw-nau8824-objs := cht_bsw_nau8824.o
- snd-soc-sst-byt-cht-da7213-objs := bytcht_da7213.o
- snd-soc-sst-byt-cht-es8316-objs := bytcht_es8316.o
- snd-soc-sst-byt-cht-nocodec-objs := bytcht_nocodec.o
-@@ -33,6 +34,7 @@ obj-$(CONFIG_SND_SOC_INTEL_BYTCR_RT5651_MACH) += snd-soc-sst-bytcr-rt5651.o
- obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_RT5672_MACH) += snd-soc-sst-cht-bsw-rt5672.o
- obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_RT5645_MACH) += snd-soc-sst-cht-bsw-rt5645.o
- obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH) += snd-soc-sst-cht-bsw-max98090_ti.o
-+obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_NAU8824_MACH) += snd-soc-sst-cht-bsw-nau8824.o
- obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_DA7213_MACH) += snd-soc-sst-byt-cht-da7213.o
- obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_ES8316_MACH) += snd-soc-sst-byt-cht-es8316.o
- obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH) += snd-soc-sst-byt-cht-nocodec.o
-diff --git a/sound/soc/intel/boards/cht_bsw_nau8824.c b/sound/soc/intel/boards/cht_bsw_nau8824.c
-new file mode 100644
-index 000000000000..08d0b8128fab
---- /dev/null
-+++ b/sound/soc/intel/boards/cht_bsw_nau8824.c
-@@ -0,0 +1,282 @@
-+/*
-+ *  cht-bsw-nau8824.c - ASoc Machine driver for Intel Cherryview-based
-+ *          platforms Cherrytrail and Braswell, with nau8824 codec.
-+ *
-+ *  Copyright (C) 2018 Intel Corp
-+ *  Copyright (C) 2018 Nuvoton Technology Corp
-+ *
-+ *  Author: Wang, Joseph C <joequant@gmail.com>
-+ *  Co-author: John Hsu <KCHSU0@nuvoton.com>
-+ *  This file is based on cht_bsw_rt5672.c and cht-bsw-max98090.c
-+ *
-+ *  This program is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License as published by
-+ *  the Free Software Foundation; version 2 of the License.
-+ *
-+ *  This program is distributed in the hope that it will be useful, but
-+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ *  General Public License for more details.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/jack.h>
-+#include <linux/input.h>
-+#include "../atom/sst-atom-controls.h"
-+#include "../../codecs/nau8824.h"
-+
-+struct cht_mc_private {
-+	struct snd_soc_jack jack;
-+};
-+
-+static struct snd_soc_jack_pin cht_bsw_jack_pins[] = {
-+	{
-+		.pin = "Headphone",
-+		.mask = SND_JACK_HEADPHONE,
-+	},
-+	{
-+		.pin = "Headset Mic",
-+		.mask = SND_JACK_MICROPHONE,
-+	},
-+};
-+
-+static const struct snd_soc_dapm_widget cht_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_MIC("Int Mic", NULL),
-+	SND_SOC_DAPM_SPK("Ext Spk", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route cht_audio_map[] = {
-+	{"Ext Spk", NULL, "SPKOUTL"},
-+	{"Ext Spk", NULL, "SPKOUTR"},
-+	{"Headphone", NULL, "HPOL"},
-+	{"Headphone", NULL, "HPOR"},
-+	{"MIC1", NULL, "Int Mic"},
-+	{"MIC2", NULL, "Int Mic"},
-+	{"HSMIC1", NULL, "Headset Mic"},
-+	{"HSMIC2", NULL, "Headset Mic"},
-+	{"Playback", NULL, "ssp2 Tx"},
-+	{"ssp2 Tx", NULL, "codec_out0"},
-+	{"ssp2 Tx", NULL, "codec_out1"},
-+	{"codec_in0", NULL, "ssp2 Rx" },
-+	{"codec_in1", NULL, "ssp2 Rx" },
-+	{"ssp2 Rx", NULL, "Capture"},
-+};
-+
-+static const struct snd_kcontrol_new cht_mc_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Headphone"),
-+	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-+	SOC_DAPM_PIN_SWITCH("Int Mic"),
-+	SOC_DAPM_PIN_SWITCH("Ext Spk"),
-+};
-+
-+static int cht_aif1_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int ret;
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai, NAU8824_CLK_FLL_FS, 0,
-+		SND_SOC_CLOCK_IN);
-+	if (ret < 0) {
-+		dev_err(codec_dai->dev, "can't set FS clock %d\n", ret);
-+		return ret;
-+	}
-+	ret = snd_soc_dai_set_pll(codec_dai, 0, 0, params_rate(params),
-+		params_rate(params) * 256);
-+	if (ret < 0) {
-+		dev_err(codec_dai->dev, "can't set FLL: %d\n", ret);
-+		return ret;
++			if (stream->resume_status != STREAM_UN_INIT) {
++				dev_dbg(ctx->dev, "Re-allocing stream %d status %d prev %d\n",
++					i, stream->resume_status,
++					stream->resume_prev);
++				sst_realloc_stream(ctx, i);
++				stream->status = stream->resume_status;
++				stream->prev = stream->resume_prev;
++			}
++		}
 +	}
 +
-+	return 0;
-+}
+ 	sst_free_block(ctx, block);
+ 	return ret;
+ }
+diff --git a/sound/soc/intel/atom/sst/sst.h b/sound/soc/intel/atom/sst/sst.h
+index a357cd615b59..b2a705dc9304 100644
+--- a/sound/soc/intel/atom/sst/sst.h
++++ b/sound/soc/intel/atom/sst/sst.h
+@@ -179,6 +179,8 @@ struct sst_block {
+  *
+  * @status : stream current state
+  * @prev : stream prev state
++ * @resume_status : stream current state to restore on resume
++ * @resume_prev : stream prev state to restore on resume
+  * @lock : stream mutex for protecting state
+  * @alloc_param : parameters used for stream (re-)allocation
+  * @pcm_substream : PCM substream
+@@ -189,6 +191,8 @@ struct sst_block {
+ struct stream_info {
+ 	unsigned int		status;
+ 	unsigned int		prev;
++	unsigned int		resume_status;
++	unsigned int		resume_prev;
+ 	struct mutex		lock;
+ 	struct snd_sst_alloc_mrfld alloc_param;
+ 
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 6cd481bec275..c90b04cc071d 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -143,10 +143,11 @@ static struct sst_platform_info byt_rvp_platform_data = {
+ 	.lib_info = &byt_lib_dnld_info,
+ 	.res_info = &byt_rvp_res_info,
+ 	.platform = "sst-mfld-platform",
++	.streams_lost_on_suspend = true,
+ };
+ 
+ /* Cherryview (Cherrytrail and Braswell) uses same mrfld dpcm fw as Baytrail,
+- * so pdata is same as Baytrail.
++ * so pdata is same as Baytrail, minus the streams_lost_on_suspend quirk.
+  */
+ static struct sst_platform_info chv_platform_data = {
+ 	.probe_data = &byt_fwparse_info,
+diff --git a/sound/soc/intel/atom/sst/sst_stream.c b/sound/soc/intel/atom/sst/sst_stream.c
+index fcedaa237505..107271f7dd63 100644
+--- a/sound/soc/intel/atom/sst/sst_stream.c
++++ b/sound/soc/intel/atom/sst/sst_stream.c
+@@ -302,7 +302,29 @@ int sst_resume_stream(struct intel_sst_drv *sst_drv_ctx, int str_id)
+ 		return -EINVAL;
+ 	if (str_info->status == STREAM_RUNNING)
+ 		return 0;
+-	if (str_info->status == STREAM_PAUSED) {
 +
-+static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
-+{
-+	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
-+	struct snd_soc_jack *jack = &ctx->jack;
-+	struct snd_soc_codec *codec = runtime->codec;
-+	struct snd_soc_dai *codec_dai = runtime->codec_dai;
-+	int ret, jack_type;
-+
-+	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
-+	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xf, 0x1, 4, 24);
-+	if (ret < 0) {
-+		dev_err(runtime->dev, "can't set codec TDM slot %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* NAU88L24 supports 4 butons headset detection
-+	 * KEY_MEDIA
-+	 * KEY_VOICECOMMAND
-+	 * KEY_VOLUMEUP
-+	 * KEY_VOLUMEDOWN
-+	 */
-+	jack_type = SND_JACK_HEADPHONE | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+		SND_JACK_BTN_2 | SND_JACK_BTN_3;
-+	ret = snd_soc_card_jack_new(runtime->card, "Headset", jack_type, jack,
-+		cht_bsw_jack_pins, ARRAY_SIZE(cht_bsw_jack_pins));
-+	if (ret) {
-+		dev_err(runtime->dev,
-+			"Headset Jack creation failed %d\n", ret);
-+		return ret;
-+	}
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_MEDIA);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-+
-+	nau8824_enable_jack_detect(codec, jack);
-+
-+	return ret;
-+}
-+
-+static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_interval *rate = hw_param_interval(params,
-+		SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels = hw_param_interval(params,
-+		SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_mask *fmt =
-+		hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
-+
-+	/* The DSP will covert the FE rate to 48k, stereo, 24bits */
-+	rate->min = rate->max = 48000;
-+	channels->min = channels->max = 2;
-+
-+	/* set SSP2 to 24-bit */
-+	snd_mask_none(fmt);
-+	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
-+
-+	return 0;
-+}
-+
-+static int cht_aif1_startup(struct snd_pcm_substream *substream)
-+{
-+	return snd_pcm_hw_constraint_single(substream->runtime,
-+		SNDRV_PCM_HW_PARAM_RATE, 48000);
-+}
-+
-+static const struct snd_soc_ops cht_aif1_ops = {
-+	.startup = cht_aif1_startup,
-+};
-+
-+static const struct snd_soc_ops cht_be_ssp2_ops = {
-+	.hw_params = cht_aif1_hw_params,
-+};
-+
-+static struct snd_soc_dai_link cht_dailink[] = {
-+	/* Front End DAI links */
-+	[MERR_DPCM_AUDIO] = {
-+		.name = "Audio Port",
-+		.stream_name = "Audio",
-+		.cpu_dai_name = "media-cpu-dai",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.codec_name = "snd-soc-dummy",
-+		.platform_name = "sst-mfld-platform",
-+		.nonatomic = true,
-+		.dynamic = 1,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+		.ops = &cht_aif1_ops,
-+	},
-+	[MERR_DPCM_DEEP_BUFFER] = {
-+		.name = "Deep-Buffer Audio Port",
-+		.stream_name = "Deep-Buffer Audio",
-+		.cpu_dai_name = "deepbuffer-cpu-dai",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.codec_name = "snd-soc-dummy",
-+		.platform_name = "sst-mfld-platform",
-+		.nonatomic = true,
-+		.dynamic = 1,
-+		.dpcm_playback = 1,
-+		.ops = &cht_aif1_ops,
-+	},
-+	[MERR_DPCM_COMPR] = {
-+		.name = "Compressed Port",
-+		.stream_name = "Compress",
-+		.cpu_dai_name = "compress-cpu-dai",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.codec_name = "snd-soc-dummy",
-+		.platform_name = "sst-mfld-platform",
-+	},
-+	/* Back End DAI links */
-+	{
-+		/* SSP2 - Codec */
-+		.name = "SSP2-Codec",
-+		.id = 1,
-+		.cpu_dai_name = "ssp2-port",
-+		.platform_name = "sst-mfld-platform",
-+		.no_pcm = 1,
-+		.codec_dai_name = NAU8824_CODEC_DAI,
-+		.codec_name = "i2c-10508824:00",
-+		.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_IB_NF
-+			| SND_SOC_DAIFMT_CBS_CFS,
-+		.init = cht_codec_init,
-+		.be_hw_params_fixup = cht_codec_fixup,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+		.ops = &cht_be_ssp2_ops,
-+	},
-+};
-+
-+/* SoC card */
-+static struct snd_soc_card snd_soc_card_cht = {
-+	.name = "chtnau8824",
-+	.owner = THIS_MODULE,
-+	.dai_link = cht_dailink,
-+	.num_links = ARRAY_SIZE(cht_dailink),
-+	.dapm_widgets = cht_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(cht_dapm_widgets),
-+	.dapm_routes = cht_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(cht_audio_map),
-+	.controls = cht_mc_controls,
-+	.num_controls = ARRAY_SIZE(cht_mc_controls),
-+};
-+
-+static int snd_cht_mc_probe(struct platform_device *pdev)
-+{
-+	struct cht_mc_private *drv;
-+	int ret_val;
-+
-+	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_ATOMIC);
-+	if (!drv)
-+		return -ENOMEM;
-+	snd_soc_card_set_drvdata(&snd_soc_card_cht, drv);
-+
-+	/* register the soc card */
-+	snd_soc_card_cht.dev = &pdev->dev;
-+	ret_val = devm_snd_soc_register_card(&pdev->dev, &snd_soc_card_cht);
-+	if (ret_val) {
-+		dev_err(&pdev->dev,
-+			"snd_soc_register_card failed %d\n", ret_val);
-+		return ret_val;
-+	}
-+	platform_set_drvdata(pdev, &snd_soc_card_cht);
-+
-+	return ret_val;
-+}
-+
-+static struct platform_driver snd_cht_mc_driver = {
-+	.driver = {
-+		.name = "cht-bsw-nau8824",
-+	},
-+	.probe = snd_cht_mc_probe,
-+};
-+
-+module_platform_driver(snd_cht_mc_driver);
-+
-+MODULE_DESCRIPTION("ASoC Intel(R) Baytrail CR Machine driver");
-+MODULE_AUTHOR("Wang, Joseph C <joequant@gmail.com>");
-+MODULE_AUTHOR("John Hsu <KCHSU0@nuvoton.com>");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:cht-bsw-nau8824");
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cht-match.c b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-index b50a0d53846b..ad1eb2d644be 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-@@ -117,6 +117,15 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 		.sof_tplg_filename = "intel/reef-cht-max98090.tplg",
- 		.asoc_plat_name = "sst-mfld-platform",
- 	},
-+	{
-+		.id = "10508824",
-+		.drv_name = "cht-bsw-nau8824",
-+		.fw_filename = "intel/fw_sst_22a8.bin",
-+		.board = "cht-bsw",
-+		.sof_fw_filename = "intel/reef-cht.ri",
-+		.sof_tplg_filename = "intel/reef-cht-nau8824.tplg",
-+		.asoc_plat_name = "sst-mfld-platform",
-+	},
- 	{
- 		.id = "DLGS7212",
- 		.drv_name = "bytcht_da7213",
++	if (str_info->resume_status == STREAM_PAUSED &&
++	    str_info->resume_prev == STREAM_RUNNING) {
++		/*
++		 * Stream was running before suspend and re-created on resume,
++		 * start it to get back to running state.
++		 */
++		dev_dbg(sst_drv_ctx->dev, "restart recreated stream after resume\n");
++		str_info->status = STREAM_RUNNING;
++		str_info->prev = STREAM_PAUSED;
++		retval = sst_start_stream(sst_drv_ctx, str_id);
++		str_info->resume_status = STREAM_UN_INIT;
++	} else if (str_info->resume_status == STREAM_PAUSED &&
++		   str_info->resume_prev == STREAM_INIT) {
++		/*
++		 * Stream was idle before suspend and re-created on resume,
++		 * keep it as is.
++		 */
++		dev_dbg(sst_drv_ctx->dev, "leaving recreated stream idle after resume\n");
++		str_info->status = STREAM_INIT;
++		str_info->prev = STREAM_PAUSED;
++		str_info->resume_status = STREAM_UN_INIT;
++	} else if (str_info->status == STREAM_PAUSED) {
+ 		retval = sst_prepare_and_post_msg(sst_drv_ctx, str_info->task_id,
+ 				IPC_CMD, IPC_IA_RESUME_STREAM_MRFLD,
+ 				str_info->pipe_id, 0, NULL, NULL,
 -- 
 2.16.2
