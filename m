@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 04/25] dt-bindings: sound: qcom: Add
-	bindings for q6afe
-Date: Thu, 1 Mar 2018 20:41:33 +0000
-Message-ID: <20180301204133.GP12864@sirena.org.uk>
+Subject: Re: [PATCH v3 05/25] ASoC: qcom: qdsp6: Add support to
+ Q6AFE
+Date: Thu, 1 Mar 2018 20:42:00 +0000
+Message-ID: <20180301204200.GQ12864@sirena.org.uk>
 References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
- <20180213165837.1620-5-srinivas.kandagatla@linaro.org>
+ <20180213165837.1620-6-srinivas.kandagatla@linaro.org>
+ <2465335e-4d45-02d7-2e64-0a1c28a44ff1@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2373277592384872643=="
+Content-Type: multipart/mixed; boundary="===============3891569993252846390=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3AA9A267C25
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 21:41:35 +0100 (CET)
-In-Reply-To: <20180213165837.1620-5-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id EBBD7267C2B
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 21:42:02 +0100 (CET)
+In-Reply-To: <2465335e-4d45-02d7-2e64-0a1c28a44ff1@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: srinivas.kandagatla@linaro.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, andy.gross@linaro.org, linux-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Rohit Kumar <rohitkr@codeaurora.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, david.brown@linaro.org, robh+dt@kernel.org, srinivas.kandagatla@linaro.org, spatakok@qti.qualcomm.com, andy.gross@linaro.org, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2373277592384872643==
+--===============3891569993252846390==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="9pS2hy4/DrI8BQlq"
+	protocol="application/pgp-signature"; boundary="4T94Hejb80K+e1gX"
 Content-Disposition: inline
 
 
---9pS2hy4/DrI8BQlq
+--4T94Hejb80K+e1gX
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2018 at 04:58:16PM +0000, srinivas.kandagatla@linaro.org wrote:
-> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+On Mon, Feb 19, 2018 at 04:00:32PM +0530, Rohit Kumar wrote:
+>=20
+> On 2/13/2018 10:28 PM, srinivas.kandagatla@linaro.org wrote:
+> > From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> >=20
+> > This patch adds support to Q6AFE (Audio Front End) module on Q6DSP.
+> >=20
+> > AFE module sits right at the other end of cpu where the codec/audio
+> > devices are connected.
 
-Please submit patches using subject lines reflecting the style for the
-subsystem.  This makes it easier for people to identify relevant
-patches.  Look at what existing commits in the area you're changing are
-doing and make sure your subject lines visually resemble what they're
-doing.
+Please delete unneeded context from mails when replying.  Doing this
+makes it much easier to find your reply in the message, helping ensure
+it won't be missed by people scrolling through the irrelevant quoted
+material.
 
-> +- but must contain the following property:
-> +
-> +- compatible:
-> +- qcom,apr-svc-id
-> +- qcom,apr-svc-name
-> +- #sound-dai-cells
-
-Property or properties?  It's a bit surprising that both the ID and the
-name are mandatory, does the name actually get used for non-diagnostic
-reasons?
-
---9pS2hy4/DrI8BQlq
+--4T94Hejb80K+e1gX
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqYZX0ACgkQJNaLcl1U
-h9DVswgAgNJ4G1f96WfH9ZdNbYjqbFopiIHLA51w5qPJCavaMFl900adibi+E4Wd
-I77+PJxyz5HuLtxuZi/ioi2rzhy7HVoPRx/laRpn+PgVE5fwtUfAIHCL4/tqBpA7
-e/rqmW5dbv1H/OuG8sICw164RmcpSB+9IQ03IiJS+sfIP3qRv4ygPiP1353Ba7Jw
-zBER6PLEQ2VL+ASqf/Bhdu4pLJfAUu9OgFoR+7DpK6AFskRaLFCsYqKs7w2y4LWk
-1RcNXjflfvfwlXKO86oONrNcB8wiJSGp8gbRXLEDIG1ydJnr4hLLJ1hjkgl+HwTN
-Ux/aViDUZMRPrqBWIm7mtDotwLUmvg==
-=tDFr
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqYZZgACgkQJNaLcl1U
+h9DtOAf+JOjxq69qku/Nea4t7d4rn53+qUcNeXlMiCV53Qv3E0blYecahZ6X6UIL
+MeYtK2Z2mXMReoW7pvtjXawZv/FvKmGgtJZGP2Od1IkKXKls4fn/W7fOtFJZjbu9
+9UsBBw+f95LMi/2BxnFVizw05UJllYTCpXbE1F7/eBQhSRiwD/huUNHKD83RRn0n
+xtiLXxIESBpbsBh4zmpMb4HoDr4x+r1z3/jpT6ErMOOaIl3igVvIPff14jBUXjw4
+5MpsmlQncXgFQtYuixB25bFQCCCdlMA3u5GZWgHg1gvZsRQO4mYErw6mmPEI+Gog
+W6fNi7Cq2UpUd1EZoyaPD1GhqqVTig==
+=k78j
 -----END PGP SIGNATURE-----
 
---9pS2hy4/DrI8BQlq--
+--4T94Hejb80K+e1gX--
 
---===============2373277592384872643==
+--===============3891569993252846390==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2373277592384872643==--
+--===============3891569993252846390==--
