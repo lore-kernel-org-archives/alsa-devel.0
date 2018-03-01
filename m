@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/6] ASoC: max9867: Drop probe function
-Date: Thu, 1 Mar 2018 20:39:03 +0000
-Message-ID: <20180301203903.GO12864@sirena.org.uk>
-References: <20180301141843.GB30722@lenoch> <20180301142027.GE30722@lenoch>
- <20180301175654.GF12864@sirena.org.uk>
- <20180301200618.GB2304@lenoch>
+Subject: Re: [PATCH v3 04/25] dt-bindings: sound: qcom: Add
+	bindings for q6afe
+Date: Thu, 1 Mar 2018 20:41:33 +0000
+Message-ID: <20180301204133.GP12864@sirena.org.uk>
+References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
+ <20180213165837.1620-5-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3903644256915077036=="
+Content-Type: multipart/mixed; boundary="===============2373277592384872643=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BBE51267C1B
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 21:39:04 +0100 (CET)
-In-Reply-To: <20180301200618.GB2304@lenoch>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3AA9A267C25
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 21:41:35 +0100 (CET)
+In-Reply-To: <20180213165837.1620-5-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: alsa-devel@alsa-project.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>
+To: srinivas.kandagatla@linaro.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, andy.gross@linaro.org, linux-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3903644256915077036==
+--===============2373277592384872643==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="f9b3biUB1f7FHqGn"
+	protocol="application/pgp-signature"; boundary="9pS2hy4/DrI8BQlq"
 Content-Disposition: inline
 
 
---f9b3biUB1f7FHqGn
+--9pS2hy4/DrI8BQlq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Mar 01, 2018 at 09:06:18PM +0100, Ladislav Michl wrote:
-> On Thu, Mar 01, 2018 at 05:56:54PM +0000, Mark Brown wrote:
+On Tue, Feb 13, 2018 at 04:58:16PM +0000, srinivas.kandagatla@linaro.org wrote:
+> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-> > This doesn't apply against current code, please check and resend.
+Please submit patches using subject lines reflecting the style for the
+subsystem.  This makes it easier for people to identify relevant
+patches.  Look at what existing commits in the area you're changing are
+doing and make sure your subject lines visually resemble what they're
+doing.
 
-> It was generated and tested against next-20180301. Which version do
-> you want me to generate against? Based on 4.16-rc1 it'll fail to
-> merge later.
+> +- but must contain the following property:
+> +
+> +- compatible:
+> +- qcom,apr-svc-id
+> +- qcom,apr-svc-name
+> +- #sound-dai-cells
 
-That is my current tree but I don't have a topic for this device other
-than your patches...  please resend and I'll take a look what git didn't
-like.
+Property or properties?  It's a bit surprising that both the ID and the
+name are mandatory, does the name actually get used for non-diagnostic
+reasons?
 
---f9b3biUB1f7FHqGn
+--9pS2hy4/DrI8BQlq
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqYZOYACgkQJNaLcl1U
-h9Ck0wf9G2jFKqcgXD0YDt6FQAGOzzOFFIl1wudCfsk7XED/LDg9dPUjY5nHTysQ
-viYXQebQWeVpXurU3J/CLmBjyy4BUCefaE+hncOiA0KRReeQYzVRXaaFy+o5PYrk
-7zjAy4AuZWN/OeqjWDaZiQKs8Rnug5BP/s/QxKP95Lp+/IglT5KzszyuKZfsl/HZ
-N+/qwM4vId7u8IMXKHgoC11h4lPdbr51KtpLWNi+1K4uHQVKC78ESj4blOVjE08+
-66f/4Qxrdh98YIooDKaKqjPAPH7HfSXsjsYB7JzrKXDRRrmBH7x3HWri58acPNFk
-XK7rRe4AsRACQ824sdAMbh9FHCC9TA==
-=Y8Ko
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqYZX0ACgkQJNaLcl1U
+h9DVswgAgNJ4G1f96WfH9ZdNbYjqbFopiIHLA51w5qPJCavaMFl900adibi+E4Wd
+I77+PJxyz5HuLtxuZi/ioi2rzhy7HVoPRx/laRpn+PgVE5fwtUfAIHCL4/tqBpA7
+e/rqmW5dbv1H/OuG8sICw164RmcpSB+9IQ03IiJS+sfIP3qRv4ygPiP1353Ba7Jw
+zBER6PLEQ2VL+ASqf/Bhdu4pLJfAUu9OgFoR+7DpK6AFskRaLFCsYqKs7w2y4LWk
+1RcNXjflfvfwlXKO86oONrNcB8wiJSGp8gbRXLEDIG1ydJnr4hLLJ1hjkgl+HwTN
+Ux/aViDUZMRPrqBWIm7mtDotwLUmvg==
+=tDFr
 -----END PGP SIGNATURE-----
 
---f9b3biUB1f7FHqGn--
+--9pS2hy4/DrI8BQlq--
 
---===============3903644256915077036==
+--===============2373277592384872643==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3903644256915077036==--
+--===============2373277592384872643==--
