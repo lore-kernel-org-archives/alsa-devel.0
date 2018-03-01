@@ -1,22 +1,20 @@
-From: "Pan, Xiuli" <xiuli.pan@linux.intel.com>
-Subject: Re: [PATCH,
- alsa-lib] ASoC: topology: Fix bclk and fsync inversion in
- set_link_hw_format()
-Date: Thu, 1 Mar 2018 14:03:54 +0800
-Message-ID: <0e4c1741-a026-ecc1-1098-1c69a8114eb4@linux.intel.com>
-References: <20180227203317.17274-2-k.marinushkin@gmail.com>
- <20180227203541.17343-1-k.marinushkin@gmail.com>
- <20180228152403.GB6722@sirena.org.uk> <s5h7eqxm8th.wl-tiwai@suse.de>
- <20180228155910.GC6722@sirena.org.uk>
- <321dc0b3-0a62-0aa1-ce60-a2ac8036ffcc@gmail.com>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: [Xen-devel][PATCH 0/2] sndif: add explicit back
+ and front synchronization
+Date: Thu, 1 Mar 2018 08:29:32 +0200
+Message-ID: <6c1096ea-3cb7-15c3-18df-b0204d1b9abb@gmail.com>
+References: <1517819100-1029-1-git-send-email-andr2000@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id E24392677F6
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 07:03:58 +0100 (CET)
-In-Reply-To: <321dc0b3-0a62-0aa1-ce60-a2ac8036ffcc@gmail.com>
+Received: from mail-lf0-f66.google.com (mail-lf0-f66.google.com
+ [209.85.215.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA9D926780C
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 07:29:35 +0100 (CET)
+Received: by mail-lf0-f66.google.com with SMTP id f75so7149171lfg.6
+ for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2018 22:29:35 -0800 (PST)
+In-Reply-To: <1517819100-1029-1-git-send-email-andr2000@gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,57 +25,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kirill Marinushkin <k.marinushkin@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+To: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Clemens Ladisch <clemens@ladisch.de>
+Cc: Oleksandr Andrushchenko <andr2000@gmail.com>, xen-devel@lists.xenproject.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 3/1/2018 04:07, Kirill Marinushkin wrote:
-> @Pierre-Louis
->
->> That looks acceptable to me, Xiuli can you test with with the matching change
->> in the SOF topology macros (we can keep the 'slave' in M4 files but expand to
->> 'codec_slave' in the .conf to avoid making this exception visible).
-> I don't see any comments from Pan Xiuli in the whole mailing thread.
-> Do we still wait for his feedback?
-
-Sorry about the late reply, I have some wrong setting with my mail 
-client and found all the mails related in the junk folder.
-Thanks Pierre to remind me. I will do the test with the SOF topology and 
-sent patch later.
-The patches look good to me, we need to keep the old things work. The 
-modify is simple but efficient. I will also send a reminder letter about 
-these alsa-lib changes to our sof developer.
-
->
-> @Mark
->
->>>> Should we warn on use of "master" since it's being deprecated here (and
->>>> might be confusing for users)?
->>> Maybe. OTOH, it looks fully backward-compatible, so far, so it's not that
->>> confusing yet.
->> Not a compatibility issue, yeah - more just that we've clearly already got people
->> confused so pushing people to the more explicit name might avoid further
->> issues down the line.
-> Agree with that. I will add a warning and send it as a patch v2.
->
->
-> @Takashi
->
->> Yep, please at the next time. (And, don't stick with an old thread, but refresh a
->> new thread.)
-> Yes, I will do so. I want to do this clean, so let me clarify before I start:
->
-> 1. I will start a new thread, with linux [patch v2]
-> 2. I will send the [patch, alsa-lib v2] in-reply to that linux [patch v2]
-> 3. I will add all currently involved people as CC
->
-> Does it look correct?
-I will look forward to test with new patches.
-
-Thanks
-Xiuli
-
-> Best Regards,
-> Kirill
+SGVsbG8sCktvbnJhZCwgVGFrYXNoaSwgVGFrYXNoaSBhbmQgQ2xlbWVucyEKCkNvdWxkIHlvdSBw
+bGVhc2UgdGFrZSBhIGxvb2sgYXQgdGhpcyBzZXJpZXMgaWYgaXQgbWVldHMKQUxTQSBleHBlY3Rh
+dGlvbnMgb24gcGFyYS12aXJ0dWFsaXplZCBzb3VuZCBmb3IgWGVuPwoKVGhhbmsgeW91LApPbGVr
+c2FuZHIKCk9uIDAyLzA1LzIwMTggMTA6MjQgQU0sIE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIHdy
+b3RlOgo+IEZyb206IE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIDxvbGVrc2FuZHJfYW5kcnVzaGNo
+ZW5rb0BlcGFtLmNvbT4KPgo+IEhpLCBhbGwhCj4KPiBGb3Jld29yZAo+ID09PT09PT09Cj4KPiBU
+aGlzIGNoYW5nZSBpcyBhaW1lZCB0byBhZGQgc3VwcG9ydCBmb3IgZXhwbGljaXQgYmFjayBhbmQg
+ZnJvbnQKPiBzeW5jaHJvbml6YXRpb24gZHVyaW5nIHBsYXliYWNrIGFuZCBjYXB0dXJlIGluIHJl
+c3BvbnNlIHRvIGNvbW1lbnRzCj4gcmFpc2VkIGR1cmluZyB1cHN0cmVhbSBhdHRlbXB0IG9mIHRo
+ZSBwYXJhLXZpcnR1YWxpemVkIHNvdW5kIGZyb250ZW5kCj4gZHJpdmVyIGZvciBYZW4gWzFdLCBb
+Ml0gYW5kIGdhdGhlciBvcGluaW9ucyBmcm9tIHRoZSByZWxldmFudCBjb21tdW5pdGllcwo+IChB
+TFNBLCBYZW4pIG9uIHRoZSBjaGFuZ2UuCj4KPiBUaGUgcmVsZXZhbnQgYmFja2VuZCBpcyBpbXBs
+ZW1lbnRlZCBhcyBhIHVzZXItc3BhY2UgYXBwbGljYXRpb24gWzNdCj4gYW5kIHVzZXMgYWNjb21w
+YW55aW5nIGhlbHBlciBsaWJyYXJ5IFs0XS4KPgo+IEJvdGggZnJvbnRlbmQgZHJpdmVyIGFuZCBi
+YWNrZW5kIHdlcmUgdGVzdGVkIG9uIHJlYWwgSFcgcnVubmluZyBYZW4gaHlwZXJ2aXNvcgo+IChS
+ZW5lc2FzIFItQ2FyIEFSTSBiYXNlZCBIMy9NMyBib2FyZHMsIHg4NikgdG8gbWFrZSBzdXJlIHRo
+ZSBwcm9wb3NlZAo+IHNvbHV0aW9uIGRvZXMgd29yay4KPgo+IFJhdGlvbmFsZQo+ID09PT09PT09
+PQo+Cj4gRHVyaW5nIHRoZSBmaXJzdCBhdHRlbXB0IHRvIHVwc3RyZWFtIHRoZSBMaW51eCBmcm9u
+dCBkcml2ZXIgWzVdIG51bWJlcgo+IG9mIGNvbW1lbnRzIGFuZCBjb25jZXJucyB3ZXJlIHJhaXNl
+ZCwgb25lIG9mIHRoZSBiaWdnZXN0IGZsYXdzIGluIHRoZQo+IGRlc2lnbiB3ZXJlIHF1ZXN0aW9u
+ZWQgYnkgYm90aCBDbGVtZW5zIExhZGlzY2ggWzZdIGFuZAo+IFRha2FzaGkgU2FrYW1vdG8gWzdd
+OiB0aGUgYWJzZW5jZSBvZiBzeW5jaHJvbml6YXRpb24gYmV0d2VlbiBmcm9udGVuZAo+IGFuZCBi
+YWNrZW5kIGR1cmluZyBjYXB0dXJlL3BsYXliYWNrLiBUd28gb3B0aW9ucyB3ZXJlIGRpc2N1c3Nl
+ZDoKPgo+IOKAnEluIGRlc2lnbiBvZiBBTFNBIFBDTSBjb3JlLCBkcml2ZXJzIGFyZSBleHBlY3Rl
+ZCB0byBzeW5jaHJvbml6ZSB0bwo+IGFjdHVhbCBoYXJkd2FyZXMgZm9yIHNlbWktcmVhbHRpbWUg
+ZGF0YSB0cmFuc21pc3Npb24uIFRoZQo+IHN5bmNocm9uaXphdGlvbiBpcyBkb25lIGJ5IHR3byBw
+b2ludHM6Cj4gMSkgSW50ZXJydXB0cyB0byByZXNwb25kIGV2ZW50cyBmcm9tIGFjdHVhbCBoYXJk
+d2FyZXMuCj4gMikgUG9zaXRpb25zIG9mIGFjdHVhbCBkYXRhIHRyYW5zbWlzc2lvbiBpbiBhbnkg
+c2VyaWFsIHNvdW5kIGludGVyZmFjZXMKPiAgICAgIG9mIGFjdHVhbCBoYXJkd2FyZXMuCj4g4oCc
+Cj4KPiBhbmQgZmluYWxseSBhIGNoYW5nZSB0byB0aGUgZXhpc3RpbmcgcHJvdG9jb2wgd2FzIHN1
+Z2dlc3RlZDoKPgo+IOKAnEluICdpbmNsdWRlL3hlbi9pbnRlcmZhY2UvaW8vc25kaWYuaCcsIHRo
+ZXJlJ3Mgbm8gZnVuY3Rpb25hbGl0aWVzIEkKPiBkZXNjcmliZWQgdGhlIGFib3ZlOgo+IDEuIG5v
+dGlmaWNhdGlvbnMgZnJvbSBEb21VIHRvIERvbTAgYWJvdXQgdGhlIHNpemUgb2YgcGVyaW9kIGZv
+cgo+ICAgICAgaW50ZXJydXB0cyBmcm9tIGFjdHVhbCBoYXJkd2FyZXMuIE9yIG5vIHdheSBmcm9t
+IERvbTAgdG8gRG9tVSBhYm91dAo+ICAgICAgdGhlIGNvbmZpZ3VyZWQgc2l6ZSBvZiB0aGUgcGVy
+aW9kLgo+IDIuIG5vdGlmaWNhdGlvbnMgb2YgdGhlIGludGVycnVwdHMgZnJvbSBhY3R1YWwgaGFy
+ZHdhcmVzIHRvIERvbVUu4oCdCj4KPiBUaGlzIGlzIGltcGxlbWVudGVkIGFzIGEgY2hhbmdlIHRv
+IHRoZSBzbmRpZiBwcm90b2NvbCBhbmQgYWxsb3dzIHJlbW92aW5nCj4gcGVyaW9kIGVtdWxhdGlv
+bjoKPiAxLiBJbnRyb2R1Y2VkIGEgbmV3IGV2ZW50IGNoYW5uZWwgZnJvbSBiYWNrIHRvIGZyb250
+Cj4gMi4gTmV3IGV2ZW50IHdpdGggbnVtYmVyIG9mIGJ5dGVzIHBsYXllZC9jYXB0dXJlZCAoWEVO
+U05EX0VWVF9DVVJfUE9TLAo+ICAgICB0byBiZSB1c2VkIGZvciBzZW5kaW5nIHNuZF9wY21fcGVy
+aW9kX2VsYXBzZWQgYXQgZnJvbnRlbmQgKGluIExpbnV4Cj4gICAgIGltcGxlbWVudGF0aW9uKS4g
+U2VudCBpbiBieXRlcywgbm90IGZyYW1lcyB0byBtYWtlIHRoZSBwcm90b2NvbAo+ICAgICBnZW5l
+cmljIGFuZCBjb25zaXN0ZW50KQo+IDMuIE5ldyByZXF1ZXN0IGZvciBwbGF5YmFjay9jYXB0dXJl
+IGNvbnRyb2wgKFhFTlNORF9PUF9UUklHR0VSKSB3aXRoCj4gICAgIHN0YXJ0L3BhdXNlL3N0b3Av
+cmVzdW1lIHN1Yi1vcHMKPiA0LiBQbGF5YmFjay9jYXB0dXJlIGJ1ZmZlciBzaXplIGlzIHNldCBv
+biB0aGUgYmFja2VuZCBzaWRlIHZpYQo+ICAgICBYRU5TTkRfRklFTERfQlVGRkVSX1NJWkUgWGVu
+U3RvcmUgZW50cnkKPgo+IFdhaXRpbmcgZm9yIHlvdXIgdmFsdWFibGUgY29tbWVudHMsCj4KPiBU
+aGFuayB5b3UsCj4gT2xla3NhbmRyCj4KPiBbMV0gaHR0cHM6Ly9naXRodWIuY29tL2FuZHIyMDAw
+L2xpbnV4L2NvbW1pdHMvc25kX3Vwc3RyZWFtX3YxCj4gWzJdIGh0dHBzOi8vZ2l0Lmtlcm5lbC5v
+cmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdC90cmVlL2luY2x1
+ZGUveGVuL2ludGVyZmFjZS9pby9zbmRpZi5oCj4gWzNdIGh0dHBzOi8vZ2l0aHViLmNvbS94ZW4t
+dHJvb3BzL3NuZF9iZQo+IFs0XSBodHRwczovL2dpdGh1Yi5jb20veGVuLXRyb29wcy9saWJ4ZW5i
+ZQo+IFs1XSBodHRwczovL2xrbWwub3JnL2xrbWwvMjAxNy84LzcvMzYzCj4gWzZdIGh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxNy1BdWd1c3Qv
+MTIzNjE3Lmh0bWwKPiBbN10gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1h
+aWwvYWxzYS1kZXZlbC8yMDE3LUF1Z3VzdC8xMjM3NDQuaHRtbAo+Cj4KPiBPbGVrc2FuZHIgQW5k
+cnVzaGNoZW5rbyAoMik6Cj4gICAgc25kaWY6IGludHJvZHVjZSBwcm90b2NvbCB2ZXJzaW9uCj4g
+ICAgc25kaWY6IGFkZCBleHBsaWNpdCBiYWNrIGFuZCBmcm9udCBzeW5jaHJvbml6YXRpb24KPgo+
+ICAgeGVuL2luY2x1ZGUvcHVibGljL2lvL3NuZGlmLmggfCAxNzMgKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKystCj4gICAxIGZpbGUgY2hhbmdlZCwgMTcwIGluc2VydGlv
+bnMoKyksIDMgZGVsZXRpb25zKC0pCj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYWxzYS1kZXZlbAo=
