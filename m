@@ -1,19 +1,19 @@
 From: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Subject: Re: [Xen-devel][PATCH 2/2] sndif: add explicit back
- and front synchronization
-Date: Thu, 1 Mar 2018 17:11:56 -0500
-Message-ID: <20180301221156.GC32676@char.us.oracle.com>
+Subject: Re: [Xen-devel] [PATCH 1/2] sndif: introduce protocol
+	version
+Date: Thu, 1 Mar 2018 17:12:18 -0500
+Message-ID: <20180301221218.GD32676@char.us.oracle.com>
 References: <1517819100-1029-1-git-send-email-andr2000@gmail.com>
- <1517819100-1029-3-git-send-email-andr2000@gmail.com>
+ <1517819100-1029-2-git-send-email-andr2000@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
- by alsa0.perex.cz (Postfix) with ESMTP id A8C0026731A
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 23:12:11 +0100 (CET)
+Received: from aserp2130.oracle.com (aserp2130.oracle.com [141.146.126.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id C8FA0267C75
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 23:12:22 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1517819100-1029-3-git-send-email-andr2000@gmail.com>
+In-Reply-To: <1517819100-1029-2-git-send-email-andr2000@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,41 +24,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Oleksandr Andrushchenko <andr2000@gmail.com>
-Cc: alsa-devel@alsa-project.org, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Oleksandr Grytsov <oleksandr_grytsov@epam.com>, xen-devel@lists.xenproject.org
+Cc: xen-devel@lists.xenproject.org, alsa-devel@alsa-project.org, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
->   * +----------------+----------------+----------------+----------------+
->   * |                           gref_directory                          | 24
->   * +----------------+----------------+----------------+----------------+
-> - * |                             reserved                              | 28
-> - * +----------------+----------------+----------------+----------------+
-> - * |/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/|
-> + * |                             period_sz                             | 28
->   * +----------------+----------------+----------------+----------------+
->   * |                             reserved                              | 32
->   * +----------------+----------------+----------------+----------------+
-> @@ -578,6 +616,14 @@
->   * pcm_channels - uint8_t, number of channels of this stream,
->   *   [channels-min; channels-max]
->   * buffer_sz - uint32_t, buffer size to be allocated, octets
-> + * period_sz - uint32_t, recommended event period size, octets
-> + *   This is the recommended (hint) value of the period at which frontend would
-> + *   like to receive XENSND_EVT_CUR_POS notifications from the backend when
-> + *   stream position advances during playback/capture.
-> + *   It shows how many octets are expected to be played/captured before
-> + *   sending such an event.
-> + *   If set to 0 no XENSND_EVT_CUR_POS events are sent by the backend.
-> + *
+On Mon, Feb 05, 2018 at 10:24:59AM +0200, Oleksandr Andrushchenko wrote:
+> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+> 
+> Protocol version was referenced in the protocol description,
+> but missed its definition. Fix this by adding a constant
+> for current protocol version.
+> 
+> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Reviewed-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
 
-I would gate this based on the version. That is if version 0 then this
-field does not exist.
->   * gref_directory - grant_ref_t, a reference to the first shared page
->   *   describing shared buffer references. At least one page exists. If shared
->   *   buffer size  (buffer_sz) exceeds what can be addressed by this single page,
-> @@ -592,6 +638,7 @@ struct xensnd_open_req {
->      uint16_t reserved;
->      uint32_t buffer_sz;
->      grant_ref_t gref_directory;
-> +    uint32_t period_sz;
-
-The same here. Just put a comment mentioning the version part.
+Thank you!
+> ---
+>  xen/include/public/io/sndif.h | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/xen/include/public/io/sndif.h b/xen/include/public/io/sndif.h
+> index c5c1978406b3..b0e6ac35e131 100644
+> --- a/xen/include/public/io/sndif.h
+> +++ b/xen/include/public/io/sndif.h
+> @@ -38,6 +38,13 @@
+>  
+>  /*
+>   ******************************************************************************
+> + *                           Protocol version
+> + ******************************************************************************
+> + */
+> +#define XENSND_PROTOCOL_VERSION         "1"
+> +
+> +/*
+> + ******************************************************************************
+>   *                  Feature and Parameter Negotiation
+>   ******************************************************************************
+>   *
+> -- 
+> 2.7.4
+> 
+> 
+> _______________________________________________
+> Xen-devel mailing list
+> Xen-devel@lists.xenproject.org
+> https://lists.xenproject.org/mailman/listinfo/xen-devel
