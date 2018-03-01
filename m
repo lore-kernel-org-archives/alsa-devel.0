@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: board: Add BE DAI link for WoV
-	and update DAPM machine map." to the asoc tree
-Date: Thu, 01 Mar 2018 19:42:08 +0000
-Message-ID: <E1erU5g-0003PL-C7@debutante>
-References: <20180127042025.22042-4-guneshwor.o.singh@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Add BE DAI for WoV
+	usecase" to the asoc tree
+Date: Thu, 01 Mar 2018 19:42:16 +0000
+Message-ID: <E1erU5o-0003Qk-Jv@debutante>
+References: <20180127042025.22042-3-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20180127042025.22042-4-guneshwor.o.singh@intel.com>
+In-Reply-To: <20180127042025.22042-3-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,7 +25,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: board: Add BE DAI link for WoV and update DAPM machine map.
+   ASoC: Intel: Skylake: Add BE DAI for WoV usecase
 
 has been applied to the asoc tree at
 
@@ -50,53 +50,47 @@ to this mail.
 Thanks,
 Mark
 
->From 8913f97d2317f363d4d525fdbff5817942bda6d1 Mon Sep 17 00:00:00 2001
+>From 66b4860641cd459cd5e189ed5db6e9f339c31a0f Mon Sep 17 00:00:00 2001
 From: "Pawse, GuruprasadX" <guruprasadx.pawse@intel.com>
-Date: Sat, 27 Jan 2018 09:50:23 +0530
-Subject: [PATCH] ASoC: Intel: board: Add BE DAI link for WoV and update DAPM
- machine map.
+Date: Sat, 27 Jan 2018 09:50:22 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add BE DAI for WoV usecase
 
-Create BE DAI link for WoV and accordingly update the DAPM machine map
+Currently DMIC capture and WoV usecase uses same BE DAI but operate at
+different sampling rates, this results in config mismatch for WoV when
+DMIC is already running in parallel.
+
+DMIC has two slots which can operate with some constraints, so add BE
+DAI for DMICvoice pin which can used for WoV usecases to capture 4ch,
+16KHz, 16bit data.
 
 Signed-off-by: Pawse, GuruprasadX <guruprasadx.pawse@intel.com>
 Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bxt_rt298.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ sound/soc/intel/skylake/skl-pcm.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
-index 875d85119c66..c7e9024e65ef 100644
---- a/sound/soc/intel/boards/bxt_rt298.c
-+++ b/sound/soc/intel/boards/bxt_rt298.c
-@@ -146,6 +146,9 @@ static const struct snd_soc_dapm_route geminilake_rt298_map[] = {
- 	{ "dmic01_hifi", NULL, "DMIC01 Rx" },
- 	{ "DMIC01 Rx", NULL, "Capture" },
- 
-+	{ "dmic_voice", NULL, "DMIC16k Rx" },
-+	{ "DMIC16k Rx", NULL, "Capture" },
-+
- 	{ "hifi3", NULL, "iDisp3 Tx"},
- 	{ "iDisp3 Tx", NULL, "iDisp3_out"},
- 	{ "hifi2", NULL, "iDisp2 Tx"},
-@@ -456,6 +459,18 @@ static struct snd_soc_dai_link broxton_rt298_dais[] = {
- 		.dpcm_capture = 1,
- 		.no_pcm = 1,
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index e46828533826..2685d511c06f 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -958,6 +958,17 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
  	},
-+	{
-+		.name = "dmic16k",
-+		.id = 2,
-+		.cpu_dai_name = "DMIC16k Pin",
-+		.codec_name = "dmic-codec",
-+		.codec_dai_name = "dmic-hifi",
-+		.platform_name = "0000:00:0e.0",
-+		.be_hw_params_fixup = broxton_dmic_fixup,
-+		.ignore_suspend = 1,
-+		.dpcm_capture = 1,
-+		.no_pcm = 1,
+ },
++{
++	.name = "DMIC16k Pin",
++	.ops = &skl_dmic_dai_ops,
++	.capture = {
++		.stream_name = "DMIC16k Rx",
++		.channels_min = HDA_MONO,
++		.channels_max = HDA_QUAD,
++		.rates = SNDRV_PCM_RATE_16000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
 +	},
- 	{
- 		.name = "iDisp1",
- 		.id = 3,
++},
+ {
+ 	.name = "HD-Codec Pin",
+ 	.ops = &skl_link_dai_ops,
 -- 
 2.16.2
