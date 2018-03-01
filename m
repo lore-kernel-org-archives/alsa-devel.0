@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: sst: Fix error-code check in
-	sst_pause_stream()" to the asoc tree
-Date: Thu, 01 Mar 2018 18:07:20 +0000
-Message-ID: <E1erSbw-0005zY-Uh@debutante>
+Subject: Applied "ASoC: Intel: kbl: Enable mclk and ssp sclk
+	early for rt5663" to the asoc tree
+Date: Thu, 01 Mar 2018 18:07:07 +0000
+Message-ID: <E1erSbj-0005v8-2w@debutante>
+References: <1519008302-24432-1-git-send-email-naveen.m@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 19261267B6F
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 19:07:23 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 5524F267B64
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 19:07:24 +0100 (CET)
+In-Reply-To: <1519008302-24432-1-git-send-email-naveen.m@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, broonie@kernel.org, Kevin Cheng <kevin.cheng@intel.com>, naveen.m@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: sst: Fix error-code check in sst_pause_stream()
+   ASoC: Intel: kbl: Enable mclk and ssp sclk early for rt5663
 
 has been applied to the asoc tree at
 
@@ -52,33 +52,43 @@ to this mail.
 Thanks,
 Mark
 
->From 6f5062773747b3d3eb9f957030ac1be98e983ac2 Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 18 Feb 2018 23:01:38 +0100
-Subject: [PATCH] ASoC: Intel: sst: Fix error-code check in sst_pause_stream()
+>From 256ac58a7ea343600bd6d0e3df3eb7eebb2d65e0 Mon Sep 17 00:00:00 2001
+From: Naveen Manohar <naveen.m@intel.com>
+Date: Mon, 19 Feb 2018 08:15:02 +0530
+Subject: [PATCH] ASoC: Intel: kbl: Enable mclk and ssp sclk early for rt5663
 
-The value returned by sst_prepare_and_post_msg() is a negated SST_ERR_*
-value, so we must check for -SST_ERR_INVALID_STREAM_ID. Note that
-sst_pause_resume() already has the correct check.
+rt5663 requires mclk/sclk early to synchronize its internal clocks.
+Enable these clocks early.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Naveen Manohar <naveen.m@intel.com>
+Signed-off-by: Kevin Cheng <kevin.cheng@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst_stream.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/boards/kbl_rt5663_max98927.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/intel/atom/sst/sst_stream.c b/sound/soc/intel/atom/sst/sst_stream.c
-index 7ee6aeb7e0af..b082b0922a7a 100644
---- a/sound/soc/intel/atom/sst/sst_stream.c
-+++ b/sound/soc/intel/atom/sst/sst_stream.c
-@@ -253,7 +253,7 @@ int sst_pause_stream(struct intel_sst_drv *sst_drv_ctx, int str_id)
- 		if (retval == 0) {
- 			str_info->prev = str_info->status;
- 			str_info->status = STREAM_PAUSED;
--		} else if (retval == SST_ERR_INVALID_STREAM_ID) {
-+		} else if (retval == -SST_ERR_INVALID_STREAM_ID) {
- 			retval = -EINVAL;
- 			mutex_lock(&sst_drv_ctx->sst_lock);
- 			sst_clean_stream(str_info);
+diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+index 3c9585eb6860..0e6b7e79441c 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+@@ -204,13 +204,18 @@ static const struct snd_soc_dapm_widget kabylake_5663_widgets[] = {
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+ 	SND_SOC_DAPM_SPK("DP", NULL),
+ 	SND_SOC_DAPM_SPK("HDMI", NULL),
++	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
++			platform_clock_control, SND_SOC_DAPM_PRE_PMU |
++			SND_SOC_DAPM_POST_PMD),
+ };
+ 
+ static const struct snd_soc_dapm_route kabylake_5663_map[] = {
++	{ "Headphone Jack", NULL, "Platform Clock" },
+ 	{ "Headphone Jack", NULL, "HPOL" },
+ 	{ "Headphone Jack", NULL, "HPOR" },
+ 
+ 	/* other jacks */
++	{ "Headset Mic", NULL, "Platform Clock" },
+ 	{ "IN1P", NULL, "Headset Mic" },
+ 	{ "IN1N", NULL, "Headset Mic" },
+ 
 -- 
 2.16.2
