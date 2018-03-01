@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5651: Do not modify the LDO voltage
-	control bits from set_bias_level()" to the asoc tree
-Date: Thu, 01 Mar 2018 19:26:16 +0000
-Message-ID: <E1erTqK-0001YJ-Tt@debutante>
-References: <20180225104713.4745-10-hdegoede@redhat.com>
+Subject: Applied "ASoC: rt5651: Fix bias_level confusion" to
+	the asoc tree
+Date: Thu, 01 Mar 2018 19:26:20 +0000
+Message-ID: <E1erTqO-0001ZG-2X@debutante>
+References: <20180225104713.4745-9-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B475F267BAC
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 20:26:25 +0100 (CET)
-In-Reply-To: <20180225104713.4745-10-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CA7EB267BAA
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 20:26:28 +0100 (CET)
+In-Reply-To: <20180225104713.4745-9-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5651: Do not modify the LDO voltage control bits from set_bias_level()
+   ASoC: rt5651: Fix bias_level confusion
 
 has been applied to the asoc tree at
 
@@ -53,49 +53,61 @@ to this mail.
 Thanks,
 Mark
 
->From bba4e685dae8643469ca6fac22f10ca81554586e Mon Sep 17 00:00:00 2001
+>From 984c803f9a2ad6f1d2bea0b7ef2e3c18d69fbdfd Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 25 Feb 2018 11:46:50 +0100
-Subject: [PATCH] ASoC: rt5651: Do not modify the LDO voltage control bits from
- set_bias_level()
+Date: Sun, 25 Feb 2018 11:46:49 +0100
+Subject: [PATCH] ASoC: rt5651: Fix bias_level confusion
 
-The PWR_ANLG1 reg not only contains various power on/off bits, it also
-contains 2 bits which select if the LDO generates 1.0, 1.1 or 1.2V. Note
-there is a separate on/off bit for the LDO.
+The rt5651_set_bias_level() function was turning everything off at
+SND_SOC_BIAS_STANDBY, rather then at SND_SOC_BIAS_OFF, requiring the bias-
+level to be raised to SND_SOC_BIAS_PREPARE before turning anything on.
 
-rt5651_set_bias_level(BIAS_OFF) used to unconditionally clear the entire
-register, when jack-detection support was introduced a special case for
-jack-detect was added which hard-codes a register value to keep the LDO
-voltage at 1.2 volt.
+This is not how the bias-levels are supposed to work, this commit fixes
+this by turning everything off at the SND_SOC_BIAS_OFF level and enabling
+the pwr-bits needed for minimum functionality at SND_SOC_BIAS_STANDBY.
 
-This commit removes the jack-detect special case, instead simply always
-leaving the LDO voltage control bits as is on BIAS_OFF.
+This fixes the minimum set of pwr-bits not getting enabled when
+force-enabling some dapm-supplies (e.g. for jack type detection),
+which raises the bias-level to standby.
 
-Tested-by: Carlo Caione <carlo@endlessm.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5651.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5651.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index c565607f95f7..c93539ee2200 100644
+index 8548f9406520..c565607f95f7 100644
 --- a/sound/soc/codecs/rt5651.c
 +++ b/sound/soc/codecs/rt5651.c
-@@ -1555,11 +1555,12 @@ static int rt5651_set_bias_level(struct snd_soc_component *component,
- 		snd_soc_component_write(component, RT5651_PWR_DIG2, 0x0000);
- 		snd_soc_component_write(component, RT5651_PWR_VOL, 0x0000);
- 		snd_soc_component_write(component, RT5651_PWR_MIXER, 0x0000);
-+		/* Do not touch the LDO voltage select bits on bias-off */
-+		snd_soc_component_update_bits(component, RT5651_PWR_ANLG1,
-+			~RT5651_PWR_LDO_DVO_MASK, 0);
- 		if (rt5651->jd_src) {
- 			snd_soc_component_write(component, RT5651_PWR_ANLG2, 0x0204);
--			snd_soc_component_write(component, RT5651_PWR_ANLG1, 0x0002);
- 		} else {
--			snd_soc_component_write(component, RT5651_PWR_ANLG1, 0x0000);
- 			snd_soc_component_write(component, RT5651_PWR_ANLG2, 0x0000);
+@@ -1526,6 +1526,13 @@ static int rt5651_set_bias_level(struct snd_soc_component *component,
+ 	switch (level) {
+ 	case SND_SOC_BIAS_PREPARE:
+ 		if (SND_SOC_BIAS_STANDBY == snd_soc_component_get_bias_level(component)) {
++			if (snd_soc_component_read32(component, RT5651_PLL_MODE_1) & 0x9200)
++				snd_soc_component_update_bits(component, RT5651_D_MISC,
++						    0xc00, 0xc00);
++		}
++		break;
++	case SND_SOC_BIAS_STANDBY:
++		if (SND_SOC_BIAS_OFF == snd_soc_component_get_bias_level(component)) {
+ 			snd_soc_component_update_bits(component, RT5651_PWR_ANLG1,
+ 				RT5651_PWR_VREF1 | RT5651_PWR_MB |
+ 				RT5651_PWR_BG | RT5651_PWR_VREF2,
+@@ -1539,13 +1546,10 @@ static int rt5651_set_bias_level(struct snd_soc_component *component,
+ 				RT5651_PWR_LDO_DVO_MASK,
+ 				RT5651_PWR_LDO_DVO_1_2V);
+ 			snd_soc_component_update_bits(component, RT5651_D_MISC, 0x1, 0x1);
+-			if (snd_soc_component_read32(component, RT5651_PLL_MODE_1) & 0x9200)
+-				snd_soc_component_update_bits(component, RT5651_D_MISC,
+-						    0xc00, 0xc00);
  		}
  		break;
+ 
+-	case SND_SOC_BIAS_STANDBY:
++	case SND_SOC_BIAS_OFF:
+ 		snd_soc_component_write(component, RT5651_D_MISC, 0x0010);
+ 		snd_soc_component_write(component, RT5651_PWR_DIG1, 0x0000);
+ 		snd_soc_component_write(component, RT5651_PWR_DIG2, 0x0000);
 -- 
 2.16.2
