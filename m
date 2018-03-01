@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: sst: Free streams on suspend,
-	re-alloc on resume" to the asoc tree
-Date: Thu, 01 Mar 2018 18:07:09 +0000
-Message-ID: <E1erSbl-0005vs-Sa@debutante>
+Subject: Applied "ASoC: Intel: sst: Add sst_realloc_stream()
+	function" to the asoc tree
+Date: Thu, 01 Mar 2018 18:07:12 +0000
+Message-ID: <E1erSbo-0005wc-2D@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id F0B8E267B56
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 19:07:11 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C623267B53
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 19:07:14 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: sst: Free streams on suspend, re-alloc on resume
+   ASoC: Intel: sst: Add sst_realloc_stream() function
 
 has been applied to the asoc tree at
 
@@ -52,172 +52,186 @@ to this mail.
 Thanks,
 Mark
 
->From bf642bf57398572327072d306e26e38aebd94fa7 Mon Sep 17 00:00:00 2001
+>From 473858cad1ea3d4e6c287bad23961cd5fb7382d9 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 18 Feb 2018 23:01:43 +0100
-Subject: [PATCH] ASoC: Intel: sst: Free streams on suspend, re-alloc on resume
+Date: Sun, 18 Feb 2018 23:01:42 +0100
+Subject: [PATCH] ASoC: Intel: sst: Add sst_realloc_stream() function
 
-The Bay Trail SST-DSP firmware version looses track of all streams over a
-suspend/resume, failing any attempts to resume and/or free streams, with
-a SST_ERR_INVALID_STREAM_ID error.
+Move the struct snd_sst_alloc_mrfld alloc parameters from the stack
+into struct stream_info and add a new sst_realloc_stream() function which
+can re-alloc a stream with the same parameters as before.
 
-This commit adds support for free-ing the streams on suspend and
-re-allocating them on resume, fixing suspend/resume issues on devices
-using this firmware version.
+This is a preparation patch for fixing suspend/resume issues with some
+SST / DSP firmware versions.
 
-This new behavior gets triggered by a new flag in sst_platform_info which
-only gets set on Bay Trail platforms.
-
-This has been tested on the following devices:
--Asus T100TA,    Bay Trail    + ALC5642 codec
--Ployer MOMO7W,  Bay Trail CR + ALC5652 codec
-
-Tested-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- arch/x86/include/asm/platform_sst_audio.h |  1 +
- sound/soc/intel/atom/sst/sst.c            | 24 +++++++++++++++++++++++-
- sound/soc/intel/atom/sst/sst.h            |  4 ++++
- sound/soc/intel/atom/sst/sst_acpi.c       |  3 ++-
- sound/soc/intel/atom/sst/sst_stream.c     | 24 +++++++++++++++++++++++-
- 5 files changed, 53 insertions(+), 3 deletions(-)
+ sound/soc/intel/atom/sst/sst.h        |  3 ++
+ sound/soc/intel/atom/sst/sst_stream.c | 88 +++++++++++++++++++++--------------
+ 2 files changed, 56 insertions(+), 35 deletions(-)
 
-diff --git a/arch/x86/include/asm/platform_sst_audio.h b/arch/x86/include/asm/platform_sst_audio.h
-index 5973a2f3db3d..059823bb8af7 100644
---- a/arch/x86/include/asm/platform_sst_audio.h
-+++ b/arch/x86/include/asm/platform_sst_audio.h
-@@ -135,6 +135,7 @@ struct sst_platform_info {
- 	const struct sst_res_info *res_info;
- 	const struct sst_lib_dnld_info *lib_info;
- 	const char *platform;
-+	bool streams_lost_on_suspend;
- };
- int add_sst_platform_device(void);
- #endif
-diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
-index 8afdff457579..0962bc9adc62 100644
---- a/sound/soc/intel/atom/sst/sst.c
-+++ b/sound/soc/intel/atom/sst/sst.c
-@@ -449,6 +449,13 @@ static int intel_sst_suspend(struct device *dev)
- 			dev_err(dev, "stream %d is running, can't suspend, abort\n", i);
- 			return -EBUSY;
- 		}
-+
-+		if (ctx->pdata->streams_lost_on_suspend) {
-+			stream->resume_status = stream->status;
-+			stream->resume_prev = stream->prev;
-+			if (stream->status != STREAM_UN_INIT)
-+				sst_free_stream(ctx, i);
-+		}
- 	}
- 	synchronize_irq(ctx->irq_num);
- 	flush_workqueue(ctx->post_msg_wq);
-@@ -509,8 +516,8 @@ static int intel_sst_resume(struct device *dev)
- {
- 	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
- 	struct sst_fw_save *fw_save = ctx->fw_save;
--	int ret = 0;
- 	struct sst_block *block;
-+	int i, ret = 0;
- 
- 	if (!fw_save)
- 		return 0;
-@@ -550,6 +557,21 @@ static int intel_sst_resume(struct device *dev)
- 		sst_set_fw_state_locked(ctx, SST_FW_RUNNING);
- 	}
- 
-+	if (ctx->pdata->streams_lost_on_suspend) {
-+		for (i = 1; i <= ctx->info.max_streams; i++) {
-+			struct stream_info *stream = &ctx->streams[i];
-+
-+			if (stream->resume_status != STREAM_UN_INIT) {
-+				dev_dbg(ctx->dev, "Re-allocing stream %d status %d prev %d\n",
-+					i, stream->resume_status,
-+					stream->resume_prev);
-+				sst_realloc_stream(ctx, i);
-+				stream->status = stream->resume_status;
-+				stream->prev = stream->resume_prev;
-+			}
-+		}
-+	}
-+
- 	sst_free_block(ctx, block);
- 	return ret;
- }
 diff --git a/sound/soc/intel/atom/sst/sst.h b/sound/soc/intel/atom/sst/sst.h
-index a357cd615b59..b2a705dc9304 100644
+index f4fd442080b2..a357cd615b59 100644
 --- a/sound/soc/intel/atom/sst/sst.h
 +++ b/sound/soc/intel/atom/sst/sst.h
-@@ -179,6 +179,8 @@ struct sst_block {
-  *
+@@ -180,6 +180,7 @@ struct sst_block {
   * @status : stream current state
   * @prev : stream prev state
-+ * @resume_status : stream current state to restore on resume
-+ * @resume_prev : stream prev state to restore on resume
   * @lock : stream mutex for protecting state
-  * @alloc_param : parameters used for stream (re-)allocation
++ * @alloc_param : parameters used for stream (re-)allocation
   * @pcm_substream : PCM substream
-@@ -189,6 +191,8 @@ struct sst_block {
- struct stream_info {
+  * @period_elapsed : PCM period elapsed callback
+  * @sfreq : stream sampling freq
+@@ -189,6 +190,7 @@ struct stream_info {
  	unsigned int		status;
  	unsigned int		prev;
-+	unsigned int		resume_status;
-+	unsigned int		resume_prev;
  	struct mutex		lock;
- 	struct snd_sst_alloc_mrfld alloc_param;
++	struct snd_sst_alloc_mrfld alloc_param;
  
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index 6cd481bec275..c90b04cc071d 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -143,10 +143,11 @@ static struct sst_platform_info byt_rvp_platform_data = {
- 	.lib_info = &byt_lib_dnld_info,
- 	.res_info = &byt_rvp_res_info,
- 	.platform = "sst-mfld-platform",
-+	.streams_lost_on_suspend = true,
+ 	void			*pcm_substream;
+ 	void (*period_elapsed)(void *pcm_substream);
+@@ -429,6 +431,7 @@ struct intel_sst_ops {
+ 	void (*post_download)(struct intel_sst_drv *sst);
  };
  
- /* Cherryview (Cherrytrail and Braswell) uses same mrfld dpcm fw as Baytrail,
-- * so pdata is same as Baytrail.
-+ * so pdata is same as Baytrail, minus the streams_lost_on_suspend quirk.
-  */
- static struct sst_platform_info chv_platform_data = {
- 	.probe_data = &byt_fwparse_info,
++int sst_realloc_stream(struct intel_sst_drv *sst_drv_ctx, int str_id);
+ int sst_pause_stream(struct intel_sst_drv *sst_drv_ctx, int id);
+ int sst_resume_stream(struct intel_sst_drv *sst_drv_ctx, int id);
+ int sst_drop_stream(struct intel_sst_drv *sst_drv_ctx, int id);
 diff --git a/sound/soc/intel/atom/sst/sst_stream.c b/sound/soc/intel/atom/sst/sst_stream.c
-index fcedaa237505..107271f7dd63 100644
+index 7cf5dd1993bc..fcedaa237505 100644
 --- a/sound/soc/intel/atom/sst/sst_stream.c
 +++ b/sound/soc/intel/atom/sst/sst_stream.c
-@@ -302,7 +302,29 @@ int sst_resume_stream(struct intel_sst_drv *sst_drv_ctx, int str_id)
- 		return -EINVAL;
- 	if (str_info->status == STREAM_RUNNING)
- 		return 0;
--	if (str_info->status == STREAM_PAUSED) {
+@@ -35,29 +35,31 @@
+ 
+ int sst_alloc_stream_mrfld(struct intel_sst_drv *sst_drv_ctx, void *params)
+ {
+-	struct snd_sst_alloc_mrfld alloc_param;
++	struct snd_pcm_params *pcm_params;
+ 	struct snd_sst_params *str_params;
+ 	struct snd_sst_tstamp fw_tstamp;
+ 	struct stream_info *str_info;
+-	struct snd_sst_alloc_response *response;
+-	unsigned int str_id, pipe_id, task_id;
+-	int i, num_ch, ret = 0;
+-	void *data = NULL;
++	int i, num_ch, str_id;
+ 
+ 	dev_dbg(sst_drv_ctx->dev, "Enter\n");
+ 
+ 	str_params = (struct snd_sst_params *)params;
+-	memset(&alloc_param, 0, sizeof(alloc_param));
+-	alloc_param.operation = str_params->ops;
+-	alloc_param.codec_type = str_params->codec;
+-	alloc_param.sg_count = str_params->aparams.sg_count;
+-	alloc_param.ring_buf_info[0].addr =
++	str_id = str_params->stream_id;
++	str_info = get_stream_info(sst_drv_ctx, str_id);
++	if (!str_info)
++		return -EINVAL;
 +
-+	if (str_info->resume_status == STREAM_PAUSED &&
-+	    str_info->resume_prev == STREAM_RUNNING) {
-+		/*
-+		 * Stream was running before suspend and re-created on resume,
-+		 * start it to get back to running state.
-+		 */
-+		dev_dbg(sst_drv_ctx->dev, "restart recreated stream after resume\n");
-+		str_info->status = STREAM_RUNNING;
-+		str_info->prev = STREAM_PAUSED;
-+		retval = sst_start_stream(sst_drv_ctx, str_id);
-+		str_info->resume_status = STREAM_UN_INIT;
-+	} else if (str_info->resume_status == STREAM_PAUSED &&
-+		   str_info->resume_prev == STREAM_INIT) {
-+		/*
-+		 * Stream was idle before suspend and re-created on resume,
-+		 * keep it as is.
-+		 */
-+		dev_dbg(sst_drv_ctx->dev, "leaving recreated stream idle after resume\n");
-+		str_info->status = STREAM_INIT;
-+		str_info->prev = STREAM_PAUSED;
-+		str_info->resume_status = STREAM_UN_INIT;
-+	} else if (str_info->status == STREAM_PAUSED) {
- 		retval = sst_prepare_and_post_msg(sst_drv_ctx, str_info->task_id,
- 				IPC_CMD, IPC_IA_RESUME_STREAM_MRFLD,
- 				str_info->pipe_id, 0, NULL, NULL,
++	memset(&str_info->alloc_param, 0, sizeof(str_info->alloc_param));
++	str_info->alloc_param.operation = str_params->ops;
++	str_info->alloc_param.codec_type = str_params->codec;
++	str_info->alloc_param.sg_count = str_params->aparams.sg_count;
++	str_info->alloc_param.ring_buf_info[0].addr =
+ 		str_params->aparams.ring_buf_info[0].addr;
+-	alloc_param.ring_buf_info[0].size =
++	str_info->alloc_param.ring_buf_info[0].size =
+ 		str_params->aparams.ring_buf_info[0].size;
+-	alloc_param.frag_size = str_params->aparams.frag_size;
++	str_info->alloc_param.frag_size = str_params->aparams.frag_size;
+ 
+-	memcpy(&alloc_param.codec_params, &str_params->sparams,
++	memcpy(&str_info->alloc_param.codec_params, &str_params->sparams,
+ 			sizeof(struct snd_sst_stream_params));
+ 
+ 	/*
+@@ -67,46 +69,62 @@ int sst_alloc_stream_mrfld(struct intel_sst_drv *sst_drv_ctx, void *params)
+ 	 * Currently hardcoding as per FW reqm.
+ 	 */
+ 	num_ch = sst_get_num_channel(str_params);
++	pcm_params = &str_info->alloc_param.codec_params.uc.pcm_params;
+ 	for (i = 0; i < 8; i++) {
+ 		if (i < num_ch)
+-			alloc_param.codec_params.uc.pcm_params.channel_map[i] = i;
++			pcm_params->channel_map[i] = i;
+ 		else
+-			alloc_param.codec_params.uc.pcm_params.channel_map[i] = 0xFF;
++			pcm_params->channel_map[i] = 0xff;
+ 	}
+ 
+-	str_id = str_params->stream_id;
+-	str_info = get_stream_info(sst_drv_ctx, str_id);
+-	if (str_info == NULL) {
+-		dev_err(sst_drv_ctx->dev, "get stream info returned null\n");
+-		return -EINVAL;
+-	}
+-
+-	pipe_id = str_params->device_type;
+-	task_id = str_params->task;
+ 	sst_drv_ctx->streams[str_id].status = STREAM_INIT;
+ 	sst_drv_ctx->streams[str_id].prev = STREAM_UN_INIT;
+-	sst_drv_ctx->streams[str_id].pipe_id = pipe_id;
+-	sst_drv_ctx->streams[str_id].task_id = task_id;
++	sst_drv_ctx->streams[str_id].pipe_id = str_params->device_type;
++	sst_drv_ctx->streams[str_id].task_id = str_params->task;
+ 	sst_drv_ctx->streams[str_id].num_ch = num_ch;
+ 
+ 	if (sst_drv_ctx->info.lpe_viewpt_rqd)
+-		alloc_param.ts = sst_drv_ctx->info.mailbox_start +
++		str_info->alloc_param.ts = sst_drv_ctx->info.mailbox_start +
+ 			sst_drv_ctx->tstamp + (str_id * sizeof(fw_tstamp));
+ 	else
+-		alloc_param.ts = sst_drv_ctx->mailbox_add +
++		str_info->alloc_param.ts = sst_drv_ctx->mailbox_add +
+ 			sst_drv_ctx->tstamp + (str_id * sizeof(fw_tstamp));
+ 
+ 	dev_dbg(sst_drv_ctx->dev, "alloc tstamp location = 0x%x\n",
+-			alloc_param.ts);
++			str_info->alloc_param.ts);
+ 	dev_dbg(sst_drv_ctx->dev, "assigned pipe id 0x%x to task %d\n",
+-			pipe_id, task_id);
++			str_info->pipe_id, str_info->task_id);
++
++	return sst_realloc_stream(sst_drv_ctx, str_id);
++}
++
++/**
++ * sst_realloc_stream - Send msg for (re-)allocating a stream using the
++ * @sst_drv_ctx  intel_sst_drv context pointer
++ * @str_id:	 stream ID
++ *
++ * Send a msg for (re-)allocating a stream using the parameters previously
++ * passed to sst_alloc_stream_mrfld() for the same stream ID.
++ * Return: 0 or negative errno value.
++ */
++int sst_realloc_stream(struct intel_sst_drv *sst_drv_ctx, int str_id)
++{
++	struct snd_sst_alloc_response *response;
++	struct stream_info *str_info;
++	void *data = NULL;
++	int ret;
++
++	str_info = get_stream_info(sst_drv_ctx, str_id);
++	if (!str_info)
++		return -EINVAL;
+ 
+-	/* allocate device type context */
+ 	dev_dbg(sst_drv_ctx->dev, "Alloc for str %d pipe %#x\n",
+-			str_id, pipe_id);
+-	ret = sst_prepare_and_post_msg(sst_drv_ctx, task_id, IPC_CMD,
+-			IPC_IA_ALLOC_STREAM_MRFLD, pipe_id, sizeof(alloc_param),
+-			&alloc_param, &data, true, true, false, true);
++		str_id, str_info->pipe_id);
++
++	ret = sst_prepare_and_post_msg(sst_drv_ctx, str_info->task_id, IPC_CMD,
++			IPC_IA_ALLOC_STREAM_MRFLD, str_info->pipe_id,
++			sizeof(str_info->alloc_param), &str_info->alloc_param,
++			&data, true, true, false, true);
+ 
+ 	if (ret < 0) {
+ 		dev_err(sst_drv_ctx->dev, "FW alloc failed ret %d\n", ret);
 -- 
 2.16.2
