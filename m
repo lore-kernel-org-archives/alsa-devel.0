@@ -1,17 +1,22 @@
-From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [asoc:for-next 32/53]
- sound/soc/intel/boards/cht_bsw_nau8824.c:137:36: sparse: incorrect type in
- argument 1 (different base types)
-Date: Fri, 2 Mar 2018 06:28:22 +0800
-Message-ID: <201803020619.H8QS6VYS%fengguang.wu@intel.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v2 06/32] ASoC: rt5651: Configure
+ jack-detect source through a device-property
+Date: Thu, 1 Mar 2018 23:35:30 +0100
+Message-ID: <032d0e59-0d64-7df1-4fca-1709430b754c@redhat.com>
+References: <20180225104713.4745-1-hdegoede@redhat.com>
+ <20180225104713.4745-7-hdegoede@redhat.com>
+ <20180301193046.GJ12864@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id BCBFC267196
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 23:29:02 +0100 (CET)
-Content-Disposition: inline
+Received: from mail-wm0-f52.google.com (mail-wm0-f52.google.com [74.125.82.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1491267C7E
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 23:35:31 +0100 (CET)
+Received: by mail-wm0-f52.google.com with SMTP id h21so15047715wmd.1
+ for <alsa-devel@alsa-project.org>; Thu, 01 Mar 2018 14:35:31 -0800 (PST)
+In-Reply-To: <20180301193046.GJ12864@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,84 +27,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, kbuild-all@01.org
+Cc: Oder Chiou <oder_chiou@realtek.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Carlo Caione <carlo@endlessm.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-head:   392b22b9bc76706334efdfe11d3747c9ef8962bf
-commit: 77348ef86e9b9fdab2fbb059b8e00c80adfa98ca [32/53] Merge remote-tracking branches 'asoc/topic/msm8916-wcd-digital', 'asoc/topic/nau8540', 'asoc/topic/nau8810' and 'asoc/topic/nau8824' into asoc-next
-reproduce:
-        # apt-get install sparse
-        git checkout 77348ef86e9b9fdab2fbb059b8e00c80adfa98ca
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF=-D__CHECK_ENDIAN__
+Hi,
 
+On 01-03-18 20:30, Mark Brown wrote:
+> On Sun, Feb 25, 2018 at 11:46:47AM +0100, Hans de Goede wrote:
+>> Configure the jack-detect source through a device-property which can be
+>> set by code outside of the codec driver. Rather then putting platform
+>> specific DMI quirks inside the generic codec driver.
+> 
+>> And move the jack-detect-source quirk for the KIANO SlimNote 14.2, which
+>> was present inside the codec driver to the machine driver, where we can
+>> bundle it together with the other quirks already present for this laptop.
+> 
+> Multiple things in a patch again :/
 
-sparse warnings: (new ones prefixed by >>)
+Yes because the property replaces the quirk, I can split the changes between
+the codec and machine driver into 2 patches but then the intermediate state
+will be that the jack-detection no longer works.
 
->> sound/soc/intel/boards/cht_bsw_nau8824.c:137:36: sparse: incorrect type in argument 1 (different base types) @@    expected struct snd_soc_component *component @@    got ct snd_soc_component *component @@
-   sound/soc/intel/boards/cht_bsw_nau8824.c:137:36:    expected struct snd_soc_component *component
-   sound/soc/intel/boards/cht_bsw_nau8824.c:137:36:    got struct snd_soc_codec *codec
-   sound/soc/intel/boards/cht_bsw_nau8824.c: In function 'cht_codec_init':
-   sound/soc/intel/boards/cht_bsw_nau8824.c:137:29: error: passing argument 1 of 'nau8824_enable_jack_detect' from incompatible pointer type [-Werror=incompatible-pointer-types]
-     nau8824_enable_jack_detect(codec, jack);
-                                ^~~~~
-   In file included from sound/soc/intel/boards/cht_bsw_nau8824.c:31:0:
-   sound/soc/intel/boards/../../codecs/nau8824.h:474:5: note: expected 'struct snd_soc_component *' but argument is of type 'struct snd_soc_codec *'
-    int nau8824_enable_jack_detect(struct snd_soc_component *component,
-        ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
+> The property itself is fine but...
+> 
+>> @@ -360,6 +377,13 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+>>   			dev_err(card->dev, "unable to set MCLK rate\n");
+>>   	}
+>>   
+>> +	props[cnt++] = PROPERTY_ENTRY_U32("realtek,jack-detect-source",
+>> +				BYT_RT5651_JDSRC(byt_rt5651_quirk));
+>> +
+>> +	ret = device_add_properties(codec->dev, props);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>>   	ret = snd_soc_card_jack_new(runtime->card, "Headset",
+> 
+> I'm having a hard time geting comfortable with this; it's all a bit
+> fragile feeling to me - someone deciding to centralise the property
+> parsing (eg, if they are using a platform where platform data makes
+> sense or want to cross-validate with some other property on probe) could
+> easily break things and there's not even a comment in the CODEC driver.
 
-vim +137 sound/soc/intel/boards/cht_bsw_nau8824.c
+It is not _that_ fragile, but I agree that it would be good to add
+a comment about not moving the property-parsing to the codec driver.
 
-5b00ce63 John Hsu 2018-02-06  101  
-5b00ce63 John Hsu 2018-02-06  102  static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
-5b00ce63 John Hsu 2018-02-06  103  {
-5b00ce63 John Hsu 2018-02-06  104  	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
-5b00ce63 John Hsu 2018-02-06  105  	struct snd_soc_jack *jack = &ctx->jack;
-5b00ce63 John Hsu 2018-02-06  106  	struct snd_soc_codec *codec = runtime->codec;
-5b00ce63 John Hsu 2018-02-06  107  	struct snd_soc_dai *codec_dai = runtime->codec_dai;
-5b00ce63 John Hsu 2018-02-06  108  	int ret, jack_type;
-5b00ce63 John Hsu 2018-02-06  109  
-5b00ce63 John Hsu 2018-02-06  110  	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
-5b00ce63 John Hsu 2018-02-06  111  	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xf, 0x1, 4, 24);
-5b00ce63 John Hsu 2018-02-06  112  	if (ret < 0) {
-5b00ce63 John Hsu 2018-02-06  113  		dev_err(runtime->dev, "can't set codec TDM slot %d\n", ret);
-5b00ce63 John Hsu 2018-02-06  114  		return ret;
-5b00ce63 John Hsu 2018-02-06  115  	}
-5b00ce63 John Hsu 2018-02-06  116  
-5b00ce63 John Hsu 2018-02-06  117  	/* NAU88L24 supports 4 butons headset detection
-5b00ce63 John Hsu 2018-02-06  118  	 * KEY_MEDIA
-5b00ce63 John Hsu 2018-02-06  119  	 * KEY_VOICECOMMAND
-5b00ce63 John Hsu 2018-02-06  120  	 * KEY_VOLUMEUP
-5b00ce63 John Hsu 2018-02-06  121  	 * KEY_VOLUMEDOWN
-5b00ce63 John Hsu 2018-02-06  122  	 */
-5b00ce63 John Hsu 2018-02-06  123  	jack_type = SND_JACK_HEADPHONE | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-5b00ce63 John Hsu 2018-02-06  124  		SND_JACK_BTN_2 | SND_JACK_BTN_3;
-5b00ce63 John Hsu 2018-02-06  125  	ret = snd_soc_card_jack_new(runtime->card, "Headset", jack_type, jack,
-5b00ce63 John Hsu 2018-02-06  126  		cht_bsw_jack_pins, ARRAY_SIZE(cht_bsw_jack_pins));
-5b00ce63 John Hsu 2018-02-06  127  	if (ret) {
-5b00ce63 John Hsu 2018-02-06  128  		dev_err(runtime->dev,
-5b00ce63 John Hsu 2018-02-06  129  			"Headset Jack creation failed %d\n", ret);
-5b00ce63 John Hsu 2018-02-06  130  		return ret;
-5b00ce63 John Hsu 2018-02-06  131  	}
-5b00ce63 John Hsu 2018-02-06  132  	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_MEDIA);
-5b00ce63 John Hsu 2018-02-06  133  	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-5b00ce63 John Hsu 2018-02-06  134  	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-5b00ce63 John Hsu 2018-02-06  135  	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-5b00ce63 John Hsu 2018-02-06  136  
-5b00ce63 John Hsu 2018-02-06 @137  	nau8824_enable_jack_detect(codec, jack);
-5b00ce63 John Hsu 2018-02-06  138  
-5b00ce63 John Hsu 2018-02-06  139  	return ret;
-5b00ce63 John Hsu 2018-02-06  140  }
-5b00ce63 John Hsu 2018-02-06  141  
+I will rebase and submit a new version with a comment added.
+Do you want me to split this patch into separate codec and machine
+driver patches while at it?
 
-:::::: The code at line 137 was first introduced by commit
-:::::: 5b00ce63e07fac692400db80d3e1fbd1f1f65701 ASoC: Intel: add nau8824 sound card
+> It'll work but it doesn't seem to match expectations for how firmware
+> data is provided which is what's bugging me here.
 
-:::::: TO: John Hsu <KCHSU0@nuvoton.com>
-:::::: CC: Mark Brown <broonie@kernel.org>
+The problem here is that the data is not coming from the firmware,
+which is a reality we have to deal with leading to some sort of
+compromise.
 
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+> It at least needs a
+> "here be dragons" style comment in the code.
+
+Ack.
+
+> Ideally we'd have a general way to massage the ACPI data at init time
+> and could have board files that are instantiated from DMI to do that
+> (like are needed even more for SFI) but that's a long way off.
+
+Something like DT overlays for ACPI? With the overlays being triggered
+by a DMI match? Interesting concept, but given how much discussion there
+still is surrounding DT overlays I don't see this happening anytime soon.
+
+Regards,
+
+Hans
