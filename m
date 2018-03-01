@@ -1,43 +1,65 @@
 From: =?UTF-8?B?TXlsw6huZQ==?= Josserand <mylene.josserand@bootlin.com>
-Subject: Re: [PATCH v1 3/4] ASoC: codecs: pcm179x: Add reset
-	gpio
-Date: Thu, 1 Mar 2018 08:48:15 +0100
-Message-ID: <20180301084815.75b5aaaf@dell-desktop.home>
+Subject: Re: [PATCH v1 3/4] ASoC: codecs: pcm179x: Add reset gpio
+Date: Thu, 1 Mar 2018 09:13:47 +0100
+Message-ID: <20180301091347.6575e621@dell-desktop.home>
 References: <20180227212433.2189-1-mylene.josserand@bootlin.com>
- <20180227212433.2189-4-mylene.josserand@bootlin.com>
- <20180227230200.67d8ae45@windsurf.lan>
+        <20180227212433.2189-4-mylene.josserand@bootlin.com>
+        <CAOMZO5C+Ub2R6srR+2jv2pY8zwjwkPSecpO1gbXvmXMTTnhU8Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bootlin.com (mail.bootlin.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 45E49267896
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 08:48:27 +0100 (CET)
-In-Reply-To: <20180227230200.67d8ae45@windsurf.lan>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, alexandre.belloni@bootlin.com, linux-kernel@vger.kernel.org, tiwai@suse.com, robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAOMZO5C+Ub2R6srR+2jv2pY8zwjwkPSecpO1gbXvmXMTTnhU8Q@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, alexandre.belloni@bootlin.com, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8sCgpPbiBUdWUsIDI3IEZlYiAyMDE4IDIzOjAyOjAwICswMTAwClRob21hcyBQZXRhenpv
-bmkgPHRob21hcy5wZXRhenpvbmlAYm9vdGxpbi5jb20+IHdyb3RlOgoKPiBIZWxsbywKPiAKPiBP
-biBUdWUsIDI3IEZlYiAyMDE4IDIyOjI0OjMyICswMTAwLCBNeWzDqG5lIEpvc3NlcmFuZCB3cm90
-ZToKPiA+IEFkZCBhIHJlc2V0IGdwaW8gdG8gYmUgYWJsZSB0byByZXNldCB0aGlzIGxpbmUgYXQg
-c3RhcnR1cC4KPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogTXlsw6huZSBKb3NzZXJhbmQgPG15bGVu
-ZS5qb3NzZXJhbmRAYm9vdGxpbi5jb20+ICAKPiAKPiBUaGlzIG5lZWRzIGFuIHVwZGF0ZWQgb2Yg
-dGhlIERUIGJpbmRpbmcsIHNpbmNlIGl0J3MgYWRkaW5nIHN1cHBvcnQgZm9yCj4gYSBuZXcgcmVz
-ZXQtZ3Bpb3MgcHJvcGVydHkuCgpUcnVlLCBJIHdpbGwgYWRkIGl0IGluIG15IG5ldyBzZXJpZXMu
-Cgo+IAo+IFRoYW5rcyEKPiAKPiBUaG9tYXMKClRoYW5rcywKCk15bMOobmUKCi0tIApNeWzDqG5l
-IEpvc3NlcmFuZCwgQm9vdGxpbiAoZm9ybWVybHkgRnJlZSBFbGVjdHJvbnMpCkVtYmVkZGVkIExp
-bnV4IGFuZCBLZXJuZWwgZW5naW5lZXJpbmcKaHR0cDovL2Jvb3RsaW4uY29tCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hello Fabio,
+
+Thank you for the review!
+
+On Tue, 27 Feb 2018 19:30:11 -0300
+Fabio Estevam <festevam@gmail.com> wrote:
+
+> On Tue, Feb 27, 2018 at 6:24 PM, Mylène Josserand
+> <mylene.josserand@bootlin.com> wrote:
+> 
+> > +       pcm179x->reset = of_get_named_gpio(np, "reset-gpios", 0);
+> > +       if (gpio_is_valid(pcm179x->reset)) {
+> > +               ret = devm_gpio_request_one(dev, pcm179x->reset,
+> > +                                           GPIOF_OUT_INIT_LOW,
+> > +                                           "pcm179x reset");
+> > +               if (ret) {
+> > +                       dev_err(dev,
+> > +                               "Failed to request GPIO %d as reset pin, error %d\n",
+> > +                               pcm179x->reset, ret);
+> > +                       return ret;
+> > +               }
+> > +
+> > +               gpio_set_value(pcm179x->reset, 1);  
+> 
+> It would be better to use the gpiod API, which takes the GPIO polarity
+> into account.
+> 
+> There may be systems that have an inverter connected to this pin, and
+> this can be changed in dts via GPIO_ACTIVE_HIGH.
+
+Oh, true, I should have used gpiod. Thanks for pointing me out.
+
+> 
+> Also, as the reset pin can be connected to an I2C expander, for
+> example, so it is safer to use the cansleep variant:
+> 
+> gpiod_set_value_cansleep(pcm179x->reset, 0);
+
+Sure, I will update it.
+
+Thanks,
+
+Mylène
+
+-- 
+Mylène Josserand, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+http://bootlin.com
