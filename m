@@ -1,8 +1,7 @@
 From: <twischer@de.adit-jv.com>
-Subject: [PATCH - JACK plugin 3/4] jack: Report Xruns to user
-	application
-Date: Thu, 1 Mar 2018 14:14:07 +0100
-Message-ID: <1519910048-19732-4-git-send-email-twischer@de.adit-jv.com>
+Subject: [PATCH - JACK plugin 4/4] jack: Support snd_pcm_drain()
+Date: Thu, 1 Mar 2018 14:14:08 +0100
+Message-ID: <1519910048-19732-5-git-send-email-twischer@de.adit-jv.com>
 References: <s5hd10qyg05.wl-tiwai@suse.de>
  <1519910048-19732-1-git-send-email-twischer@de.adit-jv.com>
 Mime-Version: 1.0
@@ -10,8 +9,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [62.225.105.245])
- by alsa0.perex.cz (Postfix) with ESMTP id D75772678AD
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 14:14:59 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C486B2678F3
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 14:15:05 +0100 (CET)
 In-Reply-To: <1519910048-19732-1-git-send-email-twischer@de.adit-jv.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,73 +27,130 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Timo Wischer <twischer@de.adit-jv.com>
 
-Only increasing the hw_ptr is not sufficient
-because it will not be evaluated by the ALSA library
-to detect an Xrun.
+Block on drain till available samples played
 
-In addition there is a raise where and Xrun detected by the JACK thread
-could not be detected in the ALSA thread.
-- In playback use case
-- The hw_ptr will be increased by the JACK thread (hw_ptr > appl_ptr =>
-over run)
-- But the ALSA thread increases the appl_ptr before evaluating the
-hw_ptr
-- Therefore the hw_ptr < appl_ptr again
-- ALSA will not detect the over run which was already detected by the
-JACK thread
-
-Therefore an additional variable is required to report an Xrun from the
-JACK thread to ALSA.
+Without this commit the JACK thread will be stopped
+before the ALSA buffer was completely forwarded to
+the JACK daemon.
 
 Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
 
 diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
-index 0dff0d2..79aa79b 100644
+index 79aa79b..f457dc4 100644
 --- a/jack/pcm_jack.c
 +++ b/jack/pcm_jack.c
-@@ -198,6 +198,17 @@ static snd_pcm_sframes_t snd_pcm_jack_pointer(snd_pcm_ioplug_t *io)
- {
+@@ -28,6 +28,17 @@
+ #include <alsa/asoundlib.h>
+ #include <alsa/pcm_external.h>
+ 
++/* ALSA supports up to 64 periods per buffer.
++ * Therefore at least 64 retries are valid and
++ * should not be handled as an error case
++ */
++#define MAX_DRAIN_RETRIES	100
++/* ALSA supports a a period with 8192 frames.
++ * This would result in ~170ms at 48kHz.
++ * Therefore a time out of 1 second is sufficient
++ */
++#define DRAIN_TIMEOUT		1000
++
+ typedef enum _jack_format {
+ 	SND_PCM_JACK_FORMAT_RAW
+ } snd_pcm_jack_format_t;
+@@ -146,7 +157,13 @@ static int pcm_poll_unblock_check(snd_pcm_ioplug_t *io)
  	snd_pcm_jack_t *jack = io->private_data;
  
-+#ifdef TEST_SIMULATE_XRUNS
-+	static int i=0;
-+	if (++i > 1000) {
-+		i = 0;
-+		return -EPIPE;
-+	}
-+#endif
-+
-+	if (jack->state == SND_PCM_STATE_XRUN)
-+		return -EPIPE;
-+
- #ifdef SND_PCM_IOPLUG_FLAG_BOUNDARY_WA
- 	return jack->hw_ptr;
- #else
-@@ -268,6 +279,25 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
- 			for (channel = 0; channel < io->channels; channel++)
- 				snd_pcm_area_silence(&jack->areas[channel], xfer, samples, io->format);
- 		}
-+
-+		if (io->stream == SND_PCM_STREAM_PLAYBACK &&
-+		    jack->state == SND_PCM_STATE_PREPARED) {
-+			/* After activating this JACK client with
-+			 * jack_activate() this process callback will be called.
-+			 * But the processing of snd_pcm_jack_start() would take
-+			 * a while longer due to the jack_connect() calls.
-+			 * Therefore the device was already started
-+			 * but it is not yet in RUNNING state.
-+			 * Due to this expected behaviour it is not an under run.
-+			 * In Capture use case the buffer should be filled
-+			 * and if the application is not fast enough
-+			 * to read the data in the buffer
-+			 * it is a valid over run.
-+			 */
-+		} else {
-+			/* report Xrun to user application */
-+			jack->state = SND_PCM_STATE_XRUN;
-+		}
+ 	avail = snd_pcm_avail_update(io->pcm);
+-	if (avail < 0 || avail >= jack->min_avail) {
++	/* In draining state poll_fd is used to wait
++	 * till all pending frames are played.
++	 * Therefore it has to be guarantee that a poll event is also generated
++	 * if the buffer contains less than min_avail frames
++	 */
++	if (avail < 0 || avail >= jack->min_avail ||
++	    jack->state == SND_PCM_STATE_DRAINING) {
+ 		write(jack->fd, &buf, 1);
+ 		return 1;
+ 	}
+@@ -232,7 +249,8 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
  	}
  
- 	pcm_poll_unblock_check(io); /* unblock socket for polling if needed */
+ 	hw_ptr = jack->hw_ptr;
+-	if (jack->state == SND_PCM_STATE_RUNNING) {
++	if (jack->state == SND_PCM_STATE_RUNNING ||
++	    jack->state == SND_PCM_STATE_DRAINING) {
+ 		const snd_pcm_channel_area_t *areas = snd_pcm_ioplug_mmap_areas(io);
+ 
+ 		while (xfer < nframes) {
+@@ -392,6 +410,61 @@ static int snd_pcm_jack_start(snd_pcm_ioplug_t *io)
+ 	return err;
+ }
+ 
++static int snd_pcm_jack_drain(snd_pcm_ioplug_t *io)
++{
++	snd_pcm_jack_t *jack = io->private_data;
++	const snd_pcm_state_t state = jack->state;
++	unsigned int retries = MAX_DRAIN_RETRIES;
++	char buf[32];
++
++	/* Immediately stop on capture device.
++	 * snd_pcm_jack_stop() will be automatically called
++	 * by snd_pcm_ioplug_drain()
++	 */
++	if (io->stream == SND_PCM_STREAM_CAPTURE) {
++		return 0;
++	}
++
++	if (snd_pcm_jack_hw_avail(io, jack->hw_ptr, io->appl_ptr) <= 0) {
++		/* No data pending. Nothing to drain. */
++		return 0;
++	}
++
++	/* start device if not yet done */
++	if (state == SND_PCM_STATE_PREPARED) {
++		snd_pcm_jack_start(io);
++	}
++
++	/* FIXME: io->state will not be set to SND_PCM_STATE_DRAINING by the
++	 * ALSA library before calling this function.
++	 * Therefore this state has to be stored internally.
++	 */
++	jack->state = SND_PCM_STATE_DRAINING;
++
++	struct pollfd pfd;
++	pfd.fd = io->poll_fd;
++	pfd.events = io->poll_events | POLLERR | POLLNVAL;
++
++	while (snd_pcm_jack_hw_avail(io, jack->hw_ptr, io->appl_ptr) > 0) {
++		if (retries <= 0) {
++			SNDERR("Pending frames not yet processed.");
++			return -ETIMEDOUT;
++		}
++
++		if (poll(&pfd, 1, DRAIN_TIMEOUT) < 0) {
++			SNDERR("Waiting for next JACK process callback failed (err %d)",
++			       -errno);
++			return -errno;
++		}
++
++		/* clean pending events. */
++		while (read(io->poll_fd, &buf, sizeof(buf)) == sizeof(buf))
++			;
++	}
++
++	return 0;
++}
++
+ static int snd_pcm_jack_stop(snd_pcm_ioplug_t *io)
+ {
+ 	snd_pcm_jack_t *jack = io->private_data;
+@@ -423,6 +496,7 @@ static snd_pcm_ioplug_callback_t jack_pcm_callback = {
+ 	.stop = snd_pcm_jack_stop,
+ 	.pointer = snd_pcm_jack_pointer,
+ 	.prepare = snd_pcm_jack_prepare,
++	.drain = snd_pcm_jack_drain,
+ 	.poll_revents = snd_pcm_jack_poll_revents,
+ };
+ 
 -- 
 2.7.4
