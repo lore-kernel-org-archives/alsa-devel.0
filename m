@@ -1,18 +1,18 @@
 From: Ladislav Michl <ladis@linux-mips.org>
-Subject: [PATCH v2] ASoC: max9867: Drop probe function
-Date: Thu, 1 Mar 2018 22:57:01 +0100
-Message-ID: <20180301215701.GB4302@lenoch>
+Subject: [PATCH v2] ASoC: max9867: Improve error logging
+Date: Thu, 1 Mar 2018 23:03:57 +0100
+Message-ID: <20180301220357.GA6104@lenoch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 10A7B267C57
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 22:57:05 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A56A267C6E
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 23:04:03 +0100 (CET)
 Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
  (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23992615AbeCAV5EpzHqk (ORCPT
- <rfc822;alsa-devel@alsa-project.org>); Thu, 1 Mar 2018 22:57:04 +0100
+ id S23992615AbeCAWEDBN6Zk (ORCPT
+ <rfc822;alsa-devel@alsa-project.org>); Thu, 1 Mar 2018 23:04:03 +0100
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,58 +24,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Driver probe function has no use and can be deleted.
+Tell user what are clock rate limits and reindent log messages.
 
 Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
 ---
  Changes:
- - v2: Rebased against Mark's current tree
- 
- Mark,
+ - v2: Rebase against current branch
 
- is this what you asked for? It does not make much sense to me
- as you have to redo the work I wanted to save you...
-
- sound/soc/codecs/max9867.c | 10 ----------
- sound/soc/codecs/max9867.h |  1 -
- 2 files changed, 11 deletions(-)
+ sound/soc/codecs/max9867.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index 2f60924fe919..6b128dd6c5dd 100644
+index 6b128dd6c5dd..b2a613e54fc7 100644
 --- a/sound/soc/codecs/max9867.c
 +++ b/sound/soc/codecs/max9867.c
-@@ -404,17 +404,7 @@ static int max9867_resume(struct device *dev)
- }
- #endif
- 
--static int max9867_probe(struct snd_soc_codec *codec)
--{
--	struct max9867_priv *max9867 = snd_soc_codec_get_drvdata(codec);
--
--	dev_dbg(codec->dev, "max98090_probe\n");
--	max9867->codec = codec;
--	return 0;
--}
--
- static const struct snd_soc_codec_driver max9867_codec = {
--	.probe = max9867_probe,
- 	.component_driver = {
- 		.controls		= max9867_snd_controls,
- 		.num_controls		= ARRAY_SIZE(max9867_snd_controls),
-diff --git a/sound/soc/codecs/max9867.h b/sound/soc/codecs/max9867.h
-index 65590b4ad62a..55cd9976ff47 100644
---- a/sound/soc/codecs/max9867.h
-+++ b/sound/soc/codecs/max9867.h
-@@ -75,7 +75,6 @@
- /* codec private data */
- struct max9867_priv {
- 	struct regmap *regmap;
--	struct snd_soc_codec *codec;
- 	unsigned int sysclk;
- 	unsigned int pclk;
- 	unsigned int master;
+@@ -291,7 +291,9 @@ static int max9867_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 		value |= MAX9867_PSCLK_40_60;
+ 		max9867->pclk =  freq/4;
+ 	} else {
+-		pr_err("bad clock frequency %d", freq);
++		dev_err(codec->dev,
++			"Invalid clock frequency %uHz (required 10-60MHz)\n",
++			freq);
+ 		return -EINVAL;
+ 	}
+ 	value = value << MAX9867_PSCLK_SHIFT;
+@@ -476,8 +478,7 @@ static int max9867_i2c_probe(struct i2c_client *i2c,
+ 	max9867->regmap = devm_regmap_init_i2c(i2c, &max9867_regmap);
+ 	if (IS_ERR(max9867->regmap)) {
+ 		ret = PTR_ERR(max9867->regmap);
+-		dev_err(&i2c->dev,
+-				"Failed to allocate regmap: %d\n", ret);
++		dev_err(&i2c->dev, "Failed to allocate regmap: %d\n", ret);
+ 		return ret;
+ 	}
+ 	ret = regmap_read(max9867->regmap,
 -- 
 2.16.2
