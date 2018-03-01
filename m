@@ -1,70 +1,55 @@
-From: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Subject: Re: [Xen-devel] [PATCH 1/2] sndif: introduce protocol
-	version
-Date: Thu, 1 Mar 2018 17:12:18 -0500
-Message-ID: <20180301221218.GD32676@char.us.oracle.com>
-References: <1517819100-1029-1-git-send-email-andr2000@gmail.com>
- <1517819100-1029-2-git-send-email-andr2000@gmail.com>
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
+Subject: Re: [BUG] Kernel crash on Allwinner H3 due to sound core changes
+Date: Thu, 01 Mar 2018 23:23:57 +0100
+Message-ID: <63331816.68OamKINx1@jernej-laptop>
+References: <2424862.oPtAVTfrB9@jernej-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aserp2130.oracle.com (aserp2130.oracle.com [141.146.126.79])
- by alsa0.perex.cz (Postfix) with ESMTP id C8FA0267C75
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 23:12:22 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1517819100-1029-2-git-send-email-andr2000@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Oleksandr Andrushchenko <andr2000@gmail.com>
-Cc: xen-devel@lists.xenproject.org, alsa-devel@alsa-project.org, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <2424862.oPtAVTfrB9@jernej-laptop>
+Sender: linux-kernel-owner@vger.kernel.org
+To: kuninori.morimoto.gx@renesas.com
+Cc: broonie@kernel.org, maxime.ripard@free-electrons.com, wens@csie.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 05, 2018 at 10:24:59AM +0200, Oleksandr Andrushchenko wrote:
-> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-> 
-> Protocol version was referenced in the protocol description,
-> but missed its definition. Fix this by adding a constant
-> for current protocol version.
-> 
-> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-Reviewed-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Hi Kuninori,
 
-Thank you!
-> ---
->  xen/include/public/io/sndif.h | 7 +++++++
->  1 file changed, 7 insertions(+)
+I'm responding to my own mail, since I didn't received yours for some reason 
+but I still saw your response in mailing list archive.
+
+Dne sreda, 28. februar 2018 ob 22:02:09 CET je Jernej Škrabec napisal(a):
+> Hi all,
 > 
-> diff --git a/xen/include/public/io/sndif.h b/xen/include/public/io/sndif.h
-> index c5c1978406b3..b0e6ac35e131 100644
-> --- a/xen/include/public/io/sndif.h
-> +++ b/xen/include/public/io/sndif.h
-> @@ -38,6 +38,13 @@
->  
->  /*
->   ******************************************************************************
-> + *                           Protocol version
-> + ******************************************************************************
-> + */
-> +#define XENSND_PROTOCOL_VERSION         "1"
-> +
-> +/*
-> + ******************************************************************************
->   *                  Feature and Parameter Negotiation
->   ******************************************************************************
->   *
-> -- 
-> 2.7.4
+> with todays linux-next (next-20180228), kernel on Allwinner H3 SoC crashes
+> with dmesg like that: https://pastebin.com/raw/0D5JeaJ8
 > 
+> I bisected the kernel and first offending commit is:
+> be7ee5f32a9a ("ASoC: soc-generic-dmaengine-pcm: replace platform to
+> component")
 > 
-> _______________________________________________
-> Xen-devel mailing list
-> Xen-devel@lists.xenproject.org
-> https://lists.xenproject.org/mailman/listinfo/xen-devel
+> I know that crash message is completely unrelated to sound subsystem, but it
+> turns out that if I disable CONFIG_SND_SUN4I_CODEC kernel works ok, but
+> this way I lose analog audio output.
+> 
+> Any suggestions what can be the issue?
+
+I did a bit of research and I can tell you that different kernel options (some 
+drivers added or removed) change how or where kernel crashes. That would 
+suggest some kind of memory corruption.
+
+I removed parts of the code from the sun4i codec driver and interestingly it 
+doesn't crash if I remove following lines:
+
+ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+if (ret) {
+	dev_err(&pdev->dev, "Failed to register against DMAEngine\n");
+	goto err_assert_reset;
+}
+
+Is it possible that NULL pointer causes troubles somewhere down the line?
+
+I tested this on linux-next, next-20180228 tag.
+
+Best regards,
+Jernej
