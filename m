@@ -1,64 +1,119 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: xhci: Not enough bandwidth for new device state
-Date: Thu, 1 Mar 2018 12:16:37 +0100
-Message-ID: <ac4654e7-819d-29d5-d1c0-9f377ee8be83@ladisch.de>
-References: <20180228210753.GA3131@waldemar-brodkorb.de>
- <20180301070757.GY12535@waldemar-brodkorb.de>
+From: Joey Pabalinas <joeypabalinas@gmail.com>
+Subject: [PATCH] sound/pci/ice1712: replace strcpy() with scnprintf()
+Date: Thu, 1 Mar 2018 01:45:35 -1000
+Message-ID: <20180301114535.bf3ibzcpvohyjweu@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.184])
- by alsa0.perex.cz (Postfix) with ESMTP id 1285B267332
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 12:16:09 +0100 (CET)
-Received: from [10.1.2.4] (unknown [94.101.37.79])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id BE46155807F4
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 12:16:06 +0100 (CET)
-In-Reply-To: <20180301070757.GY12535@waldemar-brodkorb.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="pzq3s3rhinyipkia"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Joey Pabalinas <joeypabalinas@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Waldemar Brodkorb wrote:
->> [  547.352746] usb 3-5.2: 3:1: usb_set_interface failed (-28)
->> [  548.352865] usb 3-5.3: Not enough bandwidth for new device state.
->> [  548.352868] usb 3-5.3: Not enough bandwidth for altsetting 1
->>
->> I have connected a 7-Port USB 3.0 Hub to my machine.
->> I have 6 different Headsets and USB Soundcards connected to the HUB.
->>
->> As soon as I start a C++ application which opens all ALSA devices
->> I get these errors and the USB stopps working correctly.
->>
->> I think the maximum count of USB sound devices, which behave stable
->> is three or four.
->>
->> Is this some miscalculation of the Linux kernel regarding the USB
->> bandwidth usage? How I can determine how much bandwidth the USB
->> sound card driver preallocates?
->>
->> Or are five USB soundcards really too much for an USB 3.0 bus?
->
-> There is no webcam involved, which usually uses MaxPacketsize of 1024,
-> so why I get the overallocation?
 
-AFAIK on xHCI controllers, the kernel and the controller's firmware
-must work together to handle this.
+--pzq3s3rhinyipkia
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It's possible that a USB 2.0 hub might work better.
+Replace unsafe uses of strcpy() to copy the name
+argument into the sid.name buffer with scnprintf()
+to guard against possible buffer overflows.
 
-Try asking on the linux-usb list.
+Even though we don't actually care about the return
+value in this specific case, scnprintf() is still
+preferred over snprintf() due to scnprintf() returning
+the much more logical length of what was *actually* encoded
+into the destination array instead of returning length
+the resulting string *would* be, assuming it all fit
+into the destination array as snprintf() does.
 
+Maybe one day someone will use the return value, and
+since the behavior is exactly the same apart from the
+return value it would be better to account for that
+possibility and program defensively.
 
-Regards,
-Clemens
+Signed-off-by: Joey Pabalinas <joeypabalinas@gmail.com>
+
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/sound/pci/ice1712/juli.c b/sound/pci/ice1712/juli.c
+index 0dbaccf61f33270608..0abacc64168f895d53 100644
+--- a/sound/pci/ice1712/juli.c
++++ b/sound/pci/ice1712/juli.c
+@@ -26,6 +26,7 @@
+ #include <linux/delay.h>
+ #include <linux/interrupt.h>
+ #include <linux/init.h>
++#include <linux/kernel.h>
+ #include <linux/slab.h>
+ #include <sound/core.h>
+ #include <sound/tlv.h>
+@@ -425,10 +426,9 @@ DECLARE_TLV_DB_SCALE(juli_master_db_scale, -6350, 50, =
+1);
+ static struct snd_kcontrol *ctl_find(struct snd_card *card,
+ 				     const char *name)
+ {
+-	struct snd_ctl_elem_id sid;
+-	memset(&sid, 0, sizeof(sid));
+-	/* FIXME: strcpy is bad. */
+-	strcpy(sid.name, name);
++	struct snd_ctl_elem_id sid =3D {0};
++
++	scnprintf(sid.name, sizeof(sid.name), "%s", name);
+ 	sid.iface =3D SNDRV_CTL_ELEM_IFACE_MIXER;
+ 	return snd_ctl_find_id(card, &sid);
+ }
+diff --git a/sound/pci/ice1712/quartet.c b/sound/pci/ice1712/quartet.c
+index d145b5eb7ff86d978d..332f6226548c6a089a 100644
+--- a/sound/pci/ice1712/quartet.c
++++ b/sound/pci/ice1712/quartet.c
+@@ -25,6 +25,7 @@
+ #include <linux/delay.h>
+ #include <linux/interrupt.h>
+ #include <linux/init.h>
++#include <linux/kernel.h>
+ #include <linux/slab.h>
+ #include <sound/core.h>
+ #include <sound/tlv.h>
+@@ -785,10 +786,9 @@ DECLARE_TLV_DB_SCALE(qtet_master_db_scale, -6350, 50, =
+1);
+ static struct snd_kcontrol *ctl_find(struct snd_card *card,
+ 				     const char *name)
+ {
+-	struct snd_ctl_elem_id sid;
+-	memset(&sid, 0, sizeof(sid));
+-	/* FIXME: strcpy is bad. */
+-	strcpy(sid.name, name);
++	struct snd_ctl_elem_id sid =3D {0};
++
++	scnprintf(sid.name, sizeof(sid.name), "%s", name);
+ 	sid.iface =3D SNDRV_CTL_ELEM_IFACE_MIXER;
+ 	return snd_ctl_find_id(card, &sid);
+ }
+--=20
+2.16.2
+
+--pzq3s3rhinyipkia
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKlZXrihdNOcUPZTNruvLfWhyVBkFAlqX598ACgkQruvLfWhy
+VBlsZBAAhllgpGNi4srM1CNx+LXINi3MmCpkniGncV6c0zhJMaYN1fXOY25r3Z6b
+pw7qQr5uM02YC2d7Ca2dMQNZpOULO4TLXQw69cXqm6j7y0XA6T8CX2zCfUzTSfVt
+lMkMjMKoXYvnbfh9HMwPvVjk9DlRZbmjOh4ovrm+FrZ3ZAYLCTuPK4x6DVPDG4zb
+860Cx34A4siLVj9lhC+WSHaq2BaTrer3FTF7U7yQYO3eiJwTZKelCywAiCpr/P1T
+/sJpTDJNJKzdbP4Xn3CYSWfF6C9/Y0iciPFYoa437RNBJZDWi1aF4+rP5rKheQKU
+Kh0jBVEDfOb5VsTWZR8QiYa00g1HV0+IrC0z2Al3eMuv6SOYH0qxIx0y9/OhzcAt
+65yVUyS9XCuCs1jMhRqe+KVL/JOZAJgQupv0XoPYMicYhJ1nWjSX/rIGbUFqcWjC
+vImP7CB0ZYpmkXgcWt7twPFuvF/m0ubWOPlDHr0hzCf6s+6MgVMSReA28veMqbT3
+XqgbmsTtHi9DP8I/48PPiDhrxlHbL1FBCYdNtKZcXWn4tQ51wM70V6NUkQgR8SOQ
+RBWXMwld28CfroM69W2CNPfXPixGT/XY9N0ARTZkl9jt6QpJwgQcBmLLGLWnO8t4
+QvY+LScpo3vPCaXye/oeZVSauCiR+4jHmr7Hm0hTppMjDVcZxgg=
+=YKWX
+-----END PGP SIGNATURE-----
+
+--pzq3s3rhinyipkia--
