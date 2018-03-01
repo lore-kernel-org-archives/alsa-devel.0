@@ -1,65 +1,110 @@
-From: =?UTF-8?B?TXlsw6huZQ==?= Josserand <mylene.josserand@bootlin.com>
-Subject: Re: [PATCH v1 3/4] ASoC: codecs: pcm179x: Add reset gpio
-Date: Thu, 1 Mar 2018 09:13:47 +0100
-Message-ID: <20180301091347.6575e621@dell-desktop.home>
+From: Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
+Subject: Re: [PATCH v1 1/4] ASoC: codecs: pcm179x: Add PCM1789
+	id
+Date: Thu, 1 Mar 2018 10:04:11 +0100
+Message-ID: <CAOf5uw=9aydTjTQbWJrZW4fFudcS9cp9=c4RhowyLyoWG97Q1A@mail.gmail.com>
 References: <20180227212433.2189-1-mylene.josserand@bootlin.com>
-        <20180227212433.2189-4-mylene.josserand@bootlin.com>
-        <CAOMZO5C+Ub2R6srR+2jv2pY8zwjwkPSecpO1gbXvmXMTTnhU8Q@mail.gmail.com>
+ <20180227212433.2189-2-mylene.josserand@bootlin.com>
+ <20180227225140.6f9902b8@windsurf.lan>
+ <20180301084315.0811f712@dell-desktop.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAOMZO5C+Ub2R6srR+2jv2pY8zwjwkPSecpO1gbXvmXMTTnhU8Q@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, alexandre.belloni@bootlin.com, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-it0-f68.google.com (mail-it0-f68.google.com
+ [209.85.214.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A8122678A2
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 10:04:12 +0100 (CET)
+Received: by mail-it0-f68.google.com with SMTP id e64so803335ita.5
+ for <alsa-devel@alsa-project.org>; Thu, 01 Mar 2018 01:04:12 -0800 (PST)
+In-Reply-To: <20180301084315.0811f712@dell-desktop.home>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?Q?Myl=C3=A8ne_Josserand?= <mylene.josserand@bootlin.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, alexandre.belloni@bootlin.com, LKML <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Fabio,
-
-Thank you for the review!
-
-On Tue, 27 Feb 2018 19:30:11 -0300
-Fabio Estevam <festevam@gmail.com> wrote:
-
-> On Tue, Feb 27, 2018 at 6:24 PM, Mylène Josserand
-> <mylene.josserand@bootlin.com> wrote:
-> 
-> > +       pcm179x->reset = of_get_named_gpio(np, "reset-gpios", 0);
-> > +       if (gpio_is_valid(pcm179x->reset)) {
-> > +               ret = devm_gpio_request_one(dev, pcm179x->reset,
-> > +                                           GPIOF_OUT_INIT_LOW,
-> > +                                           "pcm179x reset");
-> > +               if (ret) {
-> > +                       dev_err(dev,
-> > +                               "Failed to request GPIO %d as reset pin, error %d\n",
-> > +                               pcm179x->reset, ret);
-> > +                       return ret;
-> > +               }
-> > +
-> > +               gpio_set_value(pcm179x->reset, 1);  
-> 
-> It would be better to use the gpiod API, which takes the GPIO polarity
-> into account.
-> 
-> There may be systems that have an inverter connected to this pin, and
-> this can be changed in dts via GPIO_ACTIVE_HIGH.
-
-Oh, true, I should have used gpiod. Thanks for pointing me out.
-
-> 
-> Also, as the reset pin can be connected to an I2C expander, for
-> example, so it is safer to use the cansleep variant:
-> 
-> gpiod_set_value_cansleep(pcm179x->reset, 0);
-
-Sure, I will update it.
-
-Thanks,
-
-Mylène
-
--- 
-Mylène Josserand, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-http://bootlin.com
+SGkKCk9uIFRodSwgTWFyIDEsIDIwMTggYXQgODo0MyBBTSwgTXlsw6huZSBKb3NzZXJhbmQKPG15
+bGVuZS5qb3NzZXJhbmRAYm9vdGxpbi5jb20+IHdyb3RlOgo+IEhlbGxvLAo+Cj4gVGhhbmsgeW91
+IGZvciB0aGUgcmV2aWV3Lgo+Cj4gT24gVHVlLCAyNyBGZWIgMjAxOCAyMjo1MTo0MCArMDEwMAo+
+IFRob21hcyBQZXRhenpvbmkgPHRob21hcy5wZXRhenpvbmlAYm9vdGxpbi5jb20+IHdyb3RlOgo+
+Cj4+IEhlbGxvLAo+Pgo+PiBPbiBUdWUsIDI3IEZlYiAyMDE4IDIyOjI0OjMwICswMTAwLCBNeWzD
+qG5lIEpvc3NlcmFuZCB3cm90ZToKPj4gPiBUbyBwcmVwYXJlIHRoZSBzdXBwb3J0IGZvciB0aGUg
+UENNMTc4OSwgYWRkIGEgbmV3IGNvbXBhdGlibGUKPj4gPiBhbmQgdXNlIHRoZSBpMmNfaWQgdG8g
+aGFuZGxlLCBsYXRlciwgdGhlIGRpZmZlcmVuY2VzIGJldHdlZW4KPj4gPiB0aGVzZSB0d28gREFD
+cyBldmVuIGlmIHRoZXkgYXJlIHByZXR0eSBzaW1pbGFyLgo+PiA+Cj4+ID4gU2lnbmVkLW9mZi1i
+eTogTXlsw6huZSBKb3NzZXJhbmQgPG15bGVuZS5qb3NzZXJhbmRAYm9vdGxpbi5jb20+Cj4+ID4g
+LS0tCj4+ID4gIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9wY20xNzl4
+LnR4dCB8IDIgKy0KPj4KPj4gVGhlIERUIGJpbmRpbmcgY2hhbmdlIHNob3VsZCBiZSBpbiBhIHNl
+cGFyYXRlIHBhdGNoLgo+Pgo+PiA+ICBzb3VuZC9zb2MvY29kZWNzL3BjbTE3OXgtaTJjLmMgICAg
+ICAgICAgICAgICAgICAgICAgfCA2ICsrKystLQo+PiA+ICBzb3VuZC9zb2MvY29kZWNzL3BjbTE3
+OXguYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAzICsrLQo+PiA+ICBzb3VuZC9zb2MvY29k
+ZWNzL3BjbTE3OXguaCAgICAgICAgICAgICAgICAgICAgICAgICAgfCA4ICsrKysrKystCj4+Cj4+
+IEFuZCB0aGlzIHNob3VsZCBiZSB0b2dldGhlciB3aXRoIHRoZSBQQ00xNzg5IHN1cHBvcnQgcGF0
+Y2guIE90aGVyd2lzZQo+PiB5b3VyIHNlcmllcyBpcyBub3QgYmlzZWN0YWJsZTogaWYgd2UgYXBw
+bHkgb25seSBQQVRDSCAxLzQsIHRoZSBkcml2ZXIKPj4gc3VwcG9ydHMgdGhlIG5ldyBjb21wYXRp
+YmxlIHN0cmluZywgYnV0IGl0IGRvZXNuJ3QgaGF2ZSB0aGUgYWN0dWFsIGNvZGUKPj4gdG8gaGFu
+ZGxlIFBDTTE3ODkuIEFtIEkgbWlzc2luZyBzb21ldGhpbmcgaGVyZSA/Cj4KPiBObywgeW91IGFy
+ZSByaWdodCwgSSB3aWxsIG1lcmdlIGl0IHdpdGggcGF0Y2ggMDIuCj4KCkNhbiB5b3UgcGxlYXNl
+IGluY2x1ZGUgbWUgaW4gbmV4dCBzZXJpZXM/CgpJIGhhdmUgc2V2ZXJhbCBoYXJkd2FyZSBydW5u
+aW5nIG9uIHBjbTE3OXggZmFtaWx5CgpNaWNoYWVsCgo+Pgo+PiA+IC0gICByZXR1cm4gcGNtMTc5
+eF9jb21tb25faW5pdCgmY2xpZW50LT5kZXYsIHJlZ21hcCk7Cj4+ID4gKyAgIHJldHVybiBwY20x
+Nzl4X2NvbW1vbl9pbml0KCZjbGllbnQtPmRldiwgcmVnbWFwLCBpZC0+ZHJpdmVyX2RhdGEpOwo+
+Pgo+PiBUaGlzIGNhbiBiZSBkb25lIGluIGEgcHJlcGFyYXRpb24gcGF0Y2guCj4+Cj4+ID4gIH0K
+Pj4gPgo+PiA+ICBzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9pZCBwY20xNzl4X29mX21h
+dGNoW10gPSB7Cj4+ID4gICAgIHsgLmNvbXBhdGlibGUgPSAidGkscGNtMTc5MmEiLCB9LAo+PiA+
+ICsgICB7IC5jb21wYXRpYmxlID0gInRpLHBjbTE3ODkiLCB9LAo+PiA+ICAgICB7IH0KPj4gPiAg
+fTsKPj4gPiAgTU9EVUxFX0RFVklDRV9UQUJMRShvZiwgcGNtMTc5eF9vZl9tYXRjaCk7Cj4+ID4K
+Pj4gPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBpMmNfZGV2aWNlX2lkIHBjbTE3OXhfaTJjX2lkc1td
+ID0gewo+PiA+IC0gICB7ICJwY20xNzl4IiwgMCB9LAo+PiA+ICsgICB7ICJwY20xNzl4IiwgUENN
+MTc5WCB9LAo+Pgo+PiBBbmQgYWxzbyB0aGlzIGFkZGl0aW9uLgo+Pgo+PiA+ICsgICB7ICJwY20x
+Nzg5IiwgUENNMTc4OSB9LAo+PiA+ICAgICB7IH0KPj4gPiAgfTsKPj4gPiAgTU9EVUxFX0RFVklD
+RV9UQUJMRShpMmMsIHBjbTE3OXhfaTJjX2lkcyk7Cj4+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3Nv
+Yy9jb2RlY3MvcGNtMTc5eC5jIGIvc291bmQvc29jL2NvZGVjcy9wY20xNzl4LmMKPj4gPiBpbmRl
+eCA0YjMxMWMwNmY5N2QuLjgxY2JmMDkzMTlmNiAxMDA2NDQKPj4gPiAtLS0gYS9zb3VuZC9zb2Mv
+Y29kZWNzL3BjbTE3OXguYwo+PiA+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3MvcGNtMTc5eC5jCj4+
+ID4gQEAgLTIxOCw3ICsyMTgsOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfY29tcG9u
+ZW50X2RyaXZlciBzb2NfY29tcG9uZW50X2Rldl9wY20xNzl4ID0gewo+PiA+ICAgICAubm9uX2xl
+Z2FjeV9kYWlfbmFtaW5nICA9IDEsCj4+ID4gIH07Cj4+ID4KPj4gPiAtaW50IHBjbTE3OXhfY29t
+bW9uX2luaXQoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgcmVnbWFwICpyZWdtYXApCj4+ID4g
+K2ludCBwY20xNzl4X2NvbW1vbl9pbml0KHN0cnVjdCBkZXZpY2UgKmRldiwgc3RydWN0IHJlZ21h
+cCAqcmVnbWFwLAo+PiA+ICsgICAgICAgICAgICAgICAgICAgZW51bSBwY20xN3h4X3R5cGUgdHlw
+ZSkKPj4KPj4gQW5kIHRoaXMgZG9uZS4KPj4KPj4gPiAgewo+PiA+ICAgICBzdHJ1Y3QgcGNtMTc5
+eF9wcml2YXRlICpwY20xNzl4Owo+PiA+Cj4+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2Rl
+Y3MvcGNtMTc5eC5oIGIvc291bmQvc29jL2NvZGVjcy9wY20xNzl4LmgKPj4gPiBpbmRleCBjZjg2
+ODFjOWEzNzMuLjhjMDg2ODllM2I4YiAxMDA2NDQKPj4gPiAtLS0gYS9zb3VuZC9zb2MvY29kZWNz
+L3BjbTE3OXguaAo+PiA+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3MvcGNtMTc5eC5oCj4+ID4gQEAg
+LTE3LDExICsxNywxNyBAQAo+PiA+ICAjaWZuZGVmIF9fUENNMTc5WF9IX18KPj4gPiAgI2RlZmlu
+ZSBfX1BDTTE3OVhfSF9fCj4+ID4KPj4gPiArZW51bSBwY20xN3h4X3R5cGUgewo+PiA+ICsgICBQ
+Q00xNzlYLAo+Pgo+PiBBbmQgdGhpcyBvbmUuCj4+Cj4+ID4gKyAgIFBDTTE3ODksCj4+ID4gK307
+Cj4+ID4gKwo+PiA+ICAjZGVmaW5lIFBDTTE3OTJBX0ZPUk1BVFMgKFNORFJWX1BDTV9GTVRCSVRf
+UzMyX0xFIHwgU05EUlZfUENNX0ZNVEJJVF9TMjRfTEUgfCBcCj4+ID4gICAgICAgICAgICAgICAg
+ICAgICAgIFNORFJWX1BDTV9GTVRCSVRfUzE2X0xFKQo+PiA+Cj4+ID4gIGV4dGVybiBjb25zdCBz
+dHJ1Y3QgcmVnbWFwX2NvbmZpZyBwY20xNzl4X3JlZ21hcF9jb25maWc7Cj4+ID4KPj4gPiAtaW50
+IHBjbTE3OXhfY29tbW9uX2luaXQoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgcmVnbWFwICpy
+ZWdtYXApOwo+PiA+ICtpbnQgcGNtMTc5eF9jb21tb25faW5pdChzdHJ1Y3QgZGV2aWNlICpkZXYs
+IHN0cnVjdCByZWdtYXAgKnJlZ21hcCwKPj4gPiArICAgICAgICAgICAgICAgICAgIGVudW0gcGNt
+MTd4eF90eXBlIHR5cGUpOwo+Pgo+PiBBbmQgdGhpcyBvbmUuIEp1c3QgYXMgYSAicHJlcGFyYXRp
+b24gcGF0Y2giIHRvIHN1cHBvcnQgbXVsdGlwbGUgY29kZWNzCj4+IGluIHRoZSBleGlzdGluZyBw
+Y20xNzl4LmMgZHJpdmVyLgo+Pgo+PiBUaGFua3MhCj4+Cj4+IFRob21hcwo+Cj4gVGhhbmtzLAo+
+Cj4gTXlsw6huZQo+Cj4gLS0KPiBNeWzDqG5lIEpvc3NlcmFuZCwgQm9vdGxpbiAoZm9ybWVybHkg
+RnJlZSBFbGVjdHJvbnMpCj4gRW1iZWRkZWQgTGludXggYW5kIEtlcm5lbCBlbmdpbmVlcmluZwo+
+IGh0dHA6Ly9ib290bGluLmNvbQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAoKCgotLSAKfCBNaWNoYWVsIE5henphcmVubyBUcmltYXJjaGkgICAg
+ICAgICAgICAgICAgICAgICBBbWFydWxhIFNvbHV0aW9ucyBCViB8CnwgQ09PICAtICBGb3VuZGVy
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBDcnVxdWl1c2thZGUgNDcgfAp8
+ICszMSgwKTg1MTExOTE3MiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEFtc3RlcmRh
+bSAxMDE4IEFNIE5MIHwKfCAgICAgICAgICAgICAgICAgIFtgYXNdIGh0dHA6Ly93d3cuYW1hcnVs
+YXNvbHV0aW9ucy5jb20gICAgICAgICAgICAgICB8Cl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
+bGlzdGluZm8vYWxzYS1kZXZlbAo=
