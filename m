@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel: Remove redundant dev_err() call
-	in probe function" to the asoc tree
-Date: Thu, 01 Mar 2018 18:06:31 +0000
-Message-ID: <E1erSb9-0005kZ-7J@debutante>
-References: <20180130110654.GB18123@lenoch>
+Subject: Applied "ASoC: max9867: Improve error logging" to the
+	asoc tree
+Date: Thu, 01 Mar 2018 18:06:40 +0000
+Message-ID: <E1erSbI-0005n3-Kk@debutante>
+References: <20180301141953.GD30722@lenoch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 14E9F26798F
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 19:06:39 +0100 (CET)
-In-Reply-To: <20180130110654.GB18123@lenoch>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9983C26798F
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 19:06:41 +0100 (CET)
+In-Reply-To: <20180301141953.GD30722@lenoch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Ladislav Michl <ladis@linux-mips.org>
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, anish kumar <yesanishhere@gmail.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel: Remove redundant dev_err() call in probe function
+   ASoC: max9867: Improve error logging
 
 has been applied to the asoc tree at
 
@@ -53,59 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From 1f598e6861ab1d3cc46d6eff155c0a0a6736de38 Mon Sep 17 00:00:00 2001
+>From 8b9c716aada77e72e2fe82320aba5a95b75ca400 Mon Sep 17 00:00:00 2001
 From: Ladislav Michl <ladis@linux-mips.org>
-Date: Thu, 1 Mar 2018 14:37:31 +0100
-Subject: [PATCH] ASoC: atmel: Remove redundant dev_err() call in probe
- function
+Date: Thu, 1 Mar 2018 15:19:53 +0100
+Subject: [PATCH] ASoC: max9867: Improve error logging
 
-There is an error message within devm_ioremap_resource already,
-so remove the redundant dev_err() call.
+Tell user what are clock rate limits and reindent log messages.
 
 Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/atmel-classd.c | 7 ++-----
- sound/soc/atmel/atmel-pdmic.c  | 7 ++-----
- 2 files changed, 4 insertions(+), 10 deletions(-)
+ sound/soc/codecs/max9867.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
-index 27bb55ca07ae..709a13221d79 100644
---- a/sound/soc/atmel/atmel-classd.c
-+++ b/sound/soc/atmel/atmel-classd.c
-@@ -582,11 +582,8 @@ static int atmel_classd_probe(struct platform_device *pdev)
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	io_base = devm_ioremap_resource(dev, res);
--	if (IS_ERR(io_base)) {
--		ret =  PTR_ERR(io_base);
--		dev_err(dev, "failed to remap register memory: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(io_base))
-+		return PTR_ERR(io_base);
- 
- 	dd->phy_base = res->start;
- 
-diff --git a/sound/soc/atmel/atmel-pdmic.c b/sound/soc/atmel/atmel-pdmic.c
-index 5f72baa5f5c7..53217dfac5fe 100644
---- a/sound/soc/atmel/atmel-pdmic.c
-+++ b/sound/soc/atmel/atmel-pdmic.c
-@@ -631,11 +631,8 @@ static int atmel_pdmic_probe(struct platform_device *pdev)
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	io_base = devm_ioremap_resource(dev, res);
--	if (IS_ERR(io_base)) {
--		ret = PTR_ERR(io_base);
--		dev_err(dev, "failed to remap register memory: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(io_base))
-+		return PTR_ERR(io_base);
- 
- 	dd->phy_base = res->start;
- 
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index 2f60924fe919..ac30213deac4 100644
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -291,7 +291,9 @@ static int max9867_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 		value |= MAX9867_PSCLK_40_60;
+ 		max9867->pclk =  freq/4;
+ 	} else {
+-		pr_err("bad clock frequency %d", freq);
++		dev_err(component->dev,
++			"Invalid clock frequency %uHz (required 10-60MHz)\n",
++			freq);
+ 		return -EINVAL;
+ 	}
+ 	value = value << MAX9867_PSCLK_SHIFT;
+@@ -486,8 +488,7 @@ static int max9867_i2c_probe(struct i2c_client *i2c,
+ 	max9867->regmap = devm_regmap_init_i2c(i2c, &max9867_regmap);
+ 	if (IS_ERR(max9867->regmap)) {
+ 		ret = PTR_ERR(max9867->regmap);
+-		dev_err(&i2c->dev,
+-				"Failed to allocate regmap: %d\n", ret);
++		dev_err(&i2c->dev, "Failed to allocate regmap: %d\n", ret);
+ 		return ret;
+ 	}
+ 	ret = regmap_read(max9867->regmap,
 -- 
 2.16.2
