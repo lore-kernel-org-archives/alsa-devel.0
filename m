@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5651: Move all jack-detect
-	initialization to rt5651_set_jack_detect" to the asoc tree
-Date: Thu, 01 Mar 2018 18:06:58 +0000
-Message-ID: <E1erSba-0005sL-H3@debutante>
-References: <20180225104713.4745-3-hdegoede@redhat.com>
+Subject: Applied "ASoC: rt5651: Remove unused
+	rt5651_platform_data" to the asoc tree
+Date: Thu, 01 Mar 2018 18:07:01 +0000
+Message-ID: <E1erSbd-0005tL-M8@debutante>
+References: <20180222170738.8508-2-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A7EA267B36
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 19:07:08 +0100 (CET)
-In-Reply-To: <20180225104713.4745-3-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A027267B33
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 19:07:10 +0100 (CET)
+In-Reply-To: <20180222170738.8508-2-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Hans de Goede <hdegoede@redhat.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Carlo Caione <carlo@endlessm.com>, Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Carlo Caione <carlo@endlessm.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5651: Move all jack-detect initialization to rt5651_set_jack_detect
+   ASoC: rt5651: Remove unused rt5651_platform_data
 
 has been applied to the asoc tree at
 
@@ -53,201 +53,174 @@ to this mail.
 Thanks,
 Mark
 
->From f06da4fdb5fc2b78d52f62c32aec65b7819178b0 Mon Sep 17 00:00:00 2001
+>From 54e3a3a152a6f466f3a94b28be10f08b86905bc0 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 25 Feb 2018 11:46:43 +0100
-Subject: [PATCH] ASoC: rt5651: Move all jack-detect initialization to
- rt5651_set_jack_detect
+Date: Sun, 25 Feb 2018 11:46:42 +0100
+Subject: [PATCH] ASoC: rt5651: Remove unused rt5651_platform_data
 
-Move all jack-detect initialization to rt5651_set_jack_detect. The main
-reason to do this is so that platform code can setup jack-detect properties
-after the device has been probed, which unfortunately is necessary on some
-platforms.
+There are no in tree users of platform-data for the rt5651 codec driver,
+so lets remove support for it.
 
-This has 2 additional advantages:
-1) Grouping all jack-detect init together makes it easier to follow what
-is happening and results in a small reduction in the number of loc.
-2) Before we would register the irq handler before rt5651->hp_jack was
-assigned, leading to a potential NULL deref if the jack_detect work runs
-before the machine driver has called set_jack.
-
-Tested-by: Carlo Caione <carlo@endlessm.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5651.c | 119 ++++++++++++++++++++++------------------------
- sound/soc/codecs/rt5651.h |   1 +
- 2 files changed, 58 insertions(+), 62 deletions(-)
+ include/sound/rt5651.h    |  8 --------
+ sound/soc/codecs/rt5651.c | 47 +++++++++--------------------------------------
+ sound/soc/codecs/rt5651.h |  2 +-
+ 3 files changed, 10 insertions(+), 47 deletions(-)
 
+diff --git a/include/sound/rt5651.h b/include/sound/rt5651.h
+index 18b79a761f10..1612462bf5ad 100644
+--- a/include/sound/rt5651.h
++++ b/include/sound/rt5651.h
+@@ -18,12 +18,4 @@ enum rt5651_jd_src {
+ 	RT5651_JD2,
+ };
+ 
+-struct rt5651_platform_data {
+-	/* IN2 can optionally be differential */
+-	bool in2_diff;
+-
+-	bool dmic_en;
+-	enum rt5651_jd_src jd_src;
+-};
+-
+ #endif
 diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index eecd6e662210..390cab134ba0 100644
+index 3a844725684b..eecd6e662210 100644
 --- a/sound/soc/codecs/rt5651.c
 +++ b/sound/soc/codecs/rt5651.c
-@@ -1586,7 +1586,6 @@ static int rt5651_set_bias_level(struct snd_soc_component *component,
- static int rt5651_probe(struct snd_soc_component *component)
- {
- 	struct rt5651_priv *rt5651 = snd_soc_component_get_drvdata(component);
--	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+@@ -33,8 +33,6 @@
+ #include "rt5651.h"
  
- 	rt5651->component = component;
+ #define RT5651_JD_MAP(quirk)	((quirk) & GENMASK(7, 0))
+-#define RT5651_IN2_DIFF		BIT(16)
+-#define RT5651_DMIC_EN		BIT(17)
  
-@@ -1602,15 +1601,6 @@ static int rt5651_probe(struct snd_soc_component *component)
+ #define RT5651_DEVICE_ID_VALUE 0x6281
+ 
+@@ -1569,7 +1567,7 @@ static int rt5651_set_bias_level(struct snd_soc_component *component,
+ 		snd_soc_component_write(component, RT5651_PWR_DIG2, 0x0000);
+ 		snd_soc_component_write(component, RT5651_PWR_VOL, 0x0000);
+ 		snd_soc_component_write(component, RT5651_PWR_MIXER, 0x0000);
+-		if (rt5651->pdata.jd_src) {
++		if (rt5651->jd_src) {
+ 			snd_soc_component_write(component, RT5651_PWR_ANLG2, 0x0204);
+ 			snd_soc_component_write(component, RT5651_PWR_ANLG1, 0x0002);
+ 		} else {
+@@ -1604,7 +1602,7 @@ static int rt5651_probe(struct snd_soc_component *component)
  
  	snd_soc_component_force_bias_level(component, SND_SOC_BIAS_OFF);
  
--	if (rt5651->jd_src) {
--		snd_soc_dapm_force_enable_pin(dapm, "JD Power");
--		snd_soc_dapm_force_enable_pin(dapm, "LDO");
--		snd_soc_dapm_sync(dapm);
--
--		regmap_update_bits(rt5651->regmap, RT5651_MICBIAS,
--				   0x38, 0x38);
--	}
--
- 	return 0;
- }
+-	if (rt5651->pdata.jd_src) {
++	if (rt5651->jd_src) {
+ 		snd_soc_dapm_force_enable_pin(dapm, "JD Power");
+ 		snd_soc_dapm_force_enable_pin(dapm, "LDO");
+ 		snd_soc_dapm_sync(dapm);
+@@ -1764,26 +1762,6 @@ static const struct dmi_system_id rt5651_quirk_table[] = {
+ 	{}
+ };
  
-@@ -1840,10 +1830,65 @@ static void rt5651_jack_detect_work(struct work_struct *work)
- int rt5651_set_jack_detect(struct snd_soc_component *component,
- 			   struct snd_soc_jack *hp_jack)
+-static int rt5651_parse_dt(struct rt5651_priv *rt5651, struct device_node *np)
+-{
+-	if (of_property_read_bool(np, "realtek,in2-differential"))
+-		rt5651_quirk |= RT5651_IN2_DIFF;
+-	if (of_property_read_bool(np, "realtek,dmic-en"))
+-		rt5651_quirk |= RT5651_DMIC_EN;
+-
+-	return 0;
+-}
+-
+-static void rt5651_set_pdata(struct rt5651_priv *rt5651)
+-{
+-	if (rt5651_quirk & RT5651_IN2_DIFF)
+-		rt5651->pdata.in2_diff = true;
+-	if (rt5651_quirk & RT5651_DMIC_EN)
+-		rt5651->pdata.dmic_en = true;
+-	if (RT5651_JD_MAP(rt5651_quirk))
+-		rt5651->pdata.jd_src = RT5651_JD_MAP(rt5651_quirk);
+-}
+-
+ static irqreturn_t rt5651_irq(int irq, void *data)
  {
-+	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
- 	struct rt5651_priv *rt5651 = snd_soc_component_get_drvdata(component);
-+	int ret;
-+
-+	if (!rt5651->irq)
-+		return -EINVAL;
-+
-+	/* IRQ output on GPIO1 */
-+	snd_soc_component_update_bits(component, RT5651_GPIO_CTRL1,
-+		RT5651_GP1_PIN_MASK, RT5651_GP1_PIN_IRQ);
-+
-+	/* Select jack detect source */
+ 	struct rt5651_priv *rt5651 = data;
+@@ -1840,7 +1818,7 @@ static void rt5651_jack_detect_work(struct work_struct *work)
+ 	if (!rt5651->component)
+ 		return;
+ 
+-	switch (rt5651->pdata.jd_src) {
 +	switch (rt5651->jd_src) {
-+	case RT5651_JD1_1:
-+		snd_soc_component_update_bits(component, RT5651_JD_CTRL2,
-+			RT5651_JD_TRG_SEL_MASK, RT5651_JD_TRG_SEL_JD1_1);
-+		snd_soc_component_update_bits(component, RT5651_IRQ_CTRL1,
-+			RT5651_JD1_1_IRQ_EN, RT5651_JD1_1_IRQ_EN);
-+		break;
-+	case RT5651_JD1_2:
-+		snd_soc_component_update_bits(component, RT5651_JD_CTRL2,
-+			RT5651_JD_TRG_SEL_MASK, RT5651_JD_TRG_SEL_JD1_2);
-+		snd_soc_component_update_bits(component, RT5651_IRQ_CTRL1,
-+			RT5651_JD1_2_IRQ_EN, RT5651_JD1_2_IRQ_EN);
-+		break;
-+	case RT5651_JD2:
-+		snd_soc_component_update_bits(component, RT5651_JD_CTRL2,
-+			RT5651_JD_TRG_SEL_MASK, RT5651_JD_TRG_SEL_JD2);
-+		snd_soc_component_update_bits(component, RT5651_IRQ_CTRL1,
-+			RT5651_JD2_IRQ_EN, RT5651_JD2_IRQ_EN);
-+		break;
-+	case RT5651_JD_NULL:
-+		return 0;
-+	default:
-+		dev_err(component->dev, "Currently only JD1_1 / JD1_2 / JD2 are supported\n");
-+		return -EINVAL;
-+	}
-+
-+	snd_soc_dapm_force_enable_pin(dapm, "JD Power");
-+	snd_soc_dapm_force_enable_pin(dapm, "LDO");
-+	snd_soc_dapm_sync(dapm);
-+
-+	snd_soc_component_update_bits(component, RT5651_MICBIAS, 0x38, 0x38);
+ 	case RT5651_JD1_1:
+ 		val = snd_soc_component_read32(rt5651->component, RT5651_INT_IRQ_ST) & 0x1000;
+ 		break;
+@@ -1874,7 +1852,6 @@ EXPORT_SYMBOL_GPL(rt5651_set_jack_detect);
+ static int rt5651_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
+ {
+-	struct rt5651_platform_data *pdata = dev_get_platdata(&i2c->dev);
+ 	struct rt5651_priv *rt5651;
+ 	int ret;
  
- 	rt5651->hp_jack = hp_jack;
--	rt5651_irq(0, rt5651);
-+
-+	ret = devm_request_threaded_irq(component->dev, rt5651->irq, NULL,
-+					rt5651_irq,
-+					IRQF_TRIGGER_RISING |
-+					IRQF_TRIGGER_FALLING |
-+					IRQF_ONESHOT, "rt5651", rt5651);
-+	if (ret) {
-+		dev_err(component->dev, "Failed to reguest IRQ: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* sync initial jack state */
-+	queue_delayed_work(system_power_efficient_wq,
-+			   &rt5651->jack_detect_work, 0);
+@@ -1885,14 +1862,8 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
  
- 	return 0;
- }
-@@ -1895,61 +1940,11 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
+ 	i2c_set_clientdata(i2c, rt5651);
+ 
+-	if (pdata)
+-		rt5651->pdata = *pdata;
+-	else if (i2c->dev.of_node)
+-		rt5651_parse_dt(rt5651, i2c->dev.of_node);
+-	else
+-		dmi_check_system(rt5651_quirk_table);
+-
+-	rt5651_set_pdata(rt5651);
++	dmi_check_system(rt5651_quirk_table);
++	rt5651->jd_src = RT5651_JD_MAP(rt5651_quirk);
+ 
+ 	rt5651->regmap = devm_regmap_init_i2c(i2c, &rt5651_regmap);
+ 	if (IS_ERR(rt5651->regmap)) {
+@@ -1916,23 +1887,23 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
+ 	if (ret != 0)
+ 		dev_warn(&i2c->dev, "Failed to apply regmap patch: %d\n", ret);
+ 
+-	if (rt5651->pdata.in2_diff)
++	if (device_property_read_bool(&i2c->dev, "realtek,in2-differential"))
+ 		regmap_update_bits(rt5651->regmap, RT5651_IN1_IN2,
+ 					RT5651_IN_DF2, RT5651_IN_DF2);
+ 
+-	if (rt5651->pdata.dmic_en)
++	if (device_property_read_bool(&i2c->dev, "realtek,dmic-en"))
  		regmap_update_bits(rt5651->regmap, RT5651_GPIO_CTRL1,
  				RT5651_GP2_PIN_MASK, RT5651_GP2_PIN_DMIC1_SCL);
  
-+	rt5651->irq = i2c->irq;
  	rt5651->hp_mute = 1;
  
--	if (rt5651->jd_src) {
--
--		/* IRQ output on GPIO1 */
--		regmap_update_bits(rt5651->regmap, RT5651_GPIO_CTRL1,
--				   RT5651_GP1_PIN_MASK, RT5651_GP1_PIN_IRQ);
--
--		switch (rt5651->jd_src) {
--		case RT5651_JD1_1:
--			regmap_update_bits(rt5651->regmap, RT5651_JD_CTRL2,
--					   RT5651_JD_TRG_SEL_MASK,
--					   RT5651_JD_TRG_SEL_JD1_1);
--			regmap_update_bits(rt5651->regmap, RT5651_IRQ_CTRL1,
--					   RT5651_JD1_1_IRQ_EN,
--					   RT5651_JD1_1_IRQ_EN);
--			break;
--		case RT5651_JD1_2:
--			regmap_update_bits(rt5651->regmap, RT5651_JD_CTRL2,
--					   RT5651_JD_TRG_SEL_MASK,
--					   RT5651_JD_TRG_SEL_JD1_2);
--			regmap_update_bits(rt5651->regmap, RT5651_IRQ_CTRL1,
--					   RT5651_JD1_2_IRQ_EN,
--					   RT5651_JD1_2_IRQ_EN);
--			break;
--		case RT5651_JD2:
--			regmap_update_bits(rt5651->regmap, RT5651_JD_CTRL2,
--					   RT5651_JD_TRG_SEL_MASK,
--					   RT5651_JD_TRG_SEL_JD2);
--			regmap_update_bits(rt5651->regmap, RT5651_IRQ_CTRL1,
--					   RT5651_JD2_IRQ_EN,
--					   RT5651_JD2_IRQ_EN);
--			break;
--		case RT5651_JD_NULL:
--			break;
--		default:
--			dev_warn(&i2c->dev, "Currently only JD1_1 / JD1_2 / JD2 are supported\n");
--			break;
--		}
--	}
--
- 	INIT_DELAYED_WORK(&rt5651->jack_detect_work, rt5651_jack_detect_work);
+-	if (rt5651->pdata.jd_src) {
++	if (rt5651->jd_src) {
  
--	if (i2c->irq) {
--		ret = devm_request_threaded_irq(&i2c->dev, i2c->irq, NULL,
--						rt5651_irq,
--						IRQF_TRIGGER_RISING |
--						IRQF_TRIGGER_FALLING |
--						IRQF_ONESHOT, "rt5651", rt5651);
--		if (ret) {
--			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
--			return ret;
--		}
--	}
--
- 	ret = devm_snd_soc_register_component(&i2c->dev,
- 				&soc_component_dev_rt5651,
- 				rt5651_dai, ARRAY_SIZE(rt5651_dai));
+ 		/* IRQ output on GPIO1 */
+ 		regmap_update_bits(rt5651->regmap, RT5651_GPIO_CTRL1,
+ 				   RT5651_GP1_PIN_MASK, RT5651_GP1_PIN_IRQ);
+ 
+-		switch (rt5651->pdata.jd_src) {
++		switch (rt5651->jd_src) {
+ 		case RT5651_JD1_1:
+ 			regmap_update_bits(rt5651->regmap, RT5651_JD_CTRL2,
+ 					   RT5651_JD_TRG_SEL_MASK,
 diff --git a/sound/soc/codecs/rt5651.h b/sound/soc/codecs/rt5651.h
-index 148e139e6a26..8f128d057ff0 100644
+index 1ef38429e6a0..148e139e6a26 100644
 --- a/sound/soc/codecs/rt5651.h
 +++ b/sound/soc/codecs/rt5651.h
-@@ -2065,6 +2065,7 @@ struct rt5651_priv {
- 	struct delayed_work jack_detect_work;
- 	enum rt5651_jd_src jd_src;
+@@ -2060,10 +2060,10 @@ struct rt5651_pll_code {
  
-+	int irq;
+ struct rt5651_priv {
+ 	struct snd_soc_component *component;
+-	struct rt5651_platform_data pdata;
+ 	struct regmap *regmap;
+ 	struct snd_soc_jack *hp_jack;
+ 	struct delayed_work jack_detect_work;
++	enum rt5651_jd_src jd_src;
+ 
  	int sysclk;
  	int sysclk_src;
- 	int lrck[RT5651_AIFS];
 -- 
 2.16.2
