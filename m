@@ -1,20 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/6] ASoC: max9867: Drop probe function
-Date: Thu, 1 Mar 2018 21:37:41 +0000
-Message-ID: <20180301213741.GX12864@sirena.org.uk>
-References: <20180301141843.GB30722@lenoch> <20180301142027.GE30722@lenoch>
- <20180301175654.GF12864@sirena.org.uk>
- <20180301200618.GB2304@lenoch>
- <20180301203903.GO12864@sirena.org.uk>
- <20180301213242.GA3833@lenoch>
+From: Ladislav Michl <ladis@linux-mips.org>
+Subject: Re: [PATCH 6/6] ASoC: max9867: Use continuous sample
+	rate
+Date: Thu, 1 Mar 2018 22:47:08 +0100
+Message-ID: <20180301214708.GA4302@lenoch>
+References: <20180301141843.GB30722@lenoch> <20180301142216.GH30722@lenoch>
+ <20180301182202.GH12864@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0508847672974752282=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5DFFD267C5D
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 22:37:42 +0100 (CET)
-In-Reply-To: <20180301213242.GA3833@lenoch>
+Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BCC4267C62
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 22:47:11 +0100 (CET)
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23992966AbeCAVrKd8Lik (ORCPT
+ <rfc822;alsa-devel@alsa-project.org>); Thu, 1 Mar 2018 22:47:10 +0100
+Content-Disposition: inline
+In-Reply-To: <20180301182202.GH12864@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,63 +27,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ladislav Michl <ladis@linux-mips.org>
+To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Mar 01, 2018 at 06:22:02PM +0000, Mark Brown wrote:
+> On Thu, Mar 01, 2018 at 03:22:16PM +0100, Ladislav Michl wrote:
+> 
+> >  what is exact meaning of SNDRV_PCM_RATE_CONTINUOUS? What if codec is
+> >  able to set "any" rate, but there are rounding errors?
+> >  Shall we pick exact matches based on master clock frequency?
+> >  Few other drivers are also setting SNDRV_PCM_RATE_CONTINUOUS, but
+> >  certainly cannot set any rate exactly.
+> 
+> It means being able to set any rate exactly.  Many devices have hardware
+> which is only specified to work at specific rates but some are more
+> flexible.  Devices don't need to be able to do this independently, you
+> can have a flexible external clock tree for example.
 
---===============0508847672974752282==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="e9ndEBTQFD7P4kUb"
-Content-Disposition: inline
+Thanks for clarifying this. So in this particular case we should use
+snd_pcm_hw_constraint_list for SNDRV_PCM_HW_PARAM_RATE to enforce only
+supported rates based on master clock, right? I'll rework this patch then.
 
-
---e9ndEBTQFD7P4kUb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Mar 01, 2018 at 10:32:43PM +0100, Ladislav Michl wrote:
-> On Thu, Mar 01, 2018 at 08:39:03PM +0000, Mark Brown wrote:
-> > On Thu, Mar 01, 2018 at 09:06:18PM +0100, Ladislav Michl wrote:
-> > > On Thu, Mar 01, 2018 at 05:56:54PM +0000, Mark Brown wrote:
-
-> > > > This doesn't apply against current code, please check and resend.
-
-> > > It was generated and tested against next-20180301. Which version do
-> > > you want me to generate against? Based on 4.16-rc1 it'll fail to
-> > > merge later.
-
-> > That is my current tree but I don't have a topic for this device other
-> > than your patches...  please resend and I'll take a look what git didn't
-> > like.
-
-> Well, in fact you have, but it is misnamed as topic/wm9867. So I guess
-> once you merge these two topic branches, things will get fixed.
-
-Sorry, meant to reply here: as I said above, please resend.
-
---e9ndEBTQFD7P4kUb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqYcqQACgkQJNaLcl1U
-h9DSjgf/U4F8Od9pqCixtJgZNFwjee1DCrKSka1MHkHdIFKl402olKwKGZYYP0hS
-3adBGPOtk3VeY3mMEbGgComg12sbno1yGupWgA1UolCeB13Yy++XHtXOPn3276y0
-BX6YL+WvGSQE71gdxGWHuRYjizIPo4iqPj0RJUhForyjWAqDgk5jFMtqZV0oy1ee
-S6IdTHW6RiIsniWU2uJB/66Vi0XGhxpElijChPhnmBsZLLeVAwnRprZF6xDWsKMi
-hyqge59AciKH+1/Mnh/XavyoUbCkSnkC/JmtEuXDE47JLg69colxhEXzS2fJ/7+h
-PqHgON76OOUZZUNQtPfiA9KRDhbTMQ==
-=Kp+q
------END PGP SIGNATURE-----
-
---e9ndEBTQFD7P4kUb--
-
---===============0508847672974752282==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0508847672974752282==--
+	ladis
