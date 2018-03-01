@@ -1,12 +1,12 @@
 From: Joey Pabalinas <joeypabalinas@gmail.com>
-Subject: Re: [PATCH] sound/pci/ice1712: replace strcpy() with scnprintf()
-Date: Thu, 1 Mar 2018 04:10:23 -1000
-Message-ID: <20180301141023.kc2cb7xrjx2csgvr@gmail.com>
+Subject: [PATCH v2] sound/pci/ice1712: replace strcpy() with strlcpy()
+Date: Thu, 1 Mar 2018 04:17:07 -1000
+Message-ID: <20180301141707.cp5dc6zbh6bur4xw@gmail.com>
 References: <20180301114535.bf3ibzcpvohyjweu@gmail.com>
  <CAHp75Vf6kfPE_sRPj_mLMvLQfn9Fe9B_MeXqnGAHGAdzR7HX+Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="gp33v5kaniw4op3d"
+        protocol="application/pgp-signature"; boundary="5nv5xths47pkr5ye"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
 In-Reply-To: <CAHp75Vf6kfPE_sRPj_mLMvLQfn9Fe9B_MeXqnGAHGAdzR7HX+Q@mail.gmail.com>
@@ -16,39 +16,95 @@ Cc: Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, ALSA Develo
 List-Id: alsa-devel@alsa-project.org
 
 
---gp33v5kaniw4op3d
+--5nv5xths47pkr5ye
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 01, 2018 at 03:55:09PM +0200, Andy Shevchenko wrote:
-> So, why not just use strlcpy()?
-> scnprintf() here adds an overhead for no benefit.
+Replace unsafe usages of strcpy() to copy the name
+argument into the sid.name buffer with strlcpy()
+to guard against possible buffer overflows.
 
-That's a good point, actually. Revising it now; patch
-will follow shortly.
+Signed-off-by: Joey Pabalinas <joeypabalinas@gmail.com>
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/sound/pci/ice1712/juli.c b/sound/pci/ice1712/juli.c
+index 0dbaccf61f33270608..21806bab4757241a9e 100644
+--- a/sound/pci/ice1712/juli.c
++++ b/sound/pci/ice1712/juli.c
+@@ -27,6 +27,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/init.h>
+ #include <linux/slab.h>
++#include <linux/string.h>
+ #include <sound/core.h>
+ #include <sound/tlv.h>
+=20
+@@ -425,10 +426,9 @@ DECLARE_TLV_DB_SCALE(juli_master_db_scale, -6350, 50, =
+1);
+ static struct snd_kcontrol *ctl_find(struct snd_card *card,
+ 				     const char *name)
+ {
+-	struct snd_ctl_elem_id sid;
+-	memset(&sid, 0, sizeof(sid));
+-	/* FIXME: strcpy is bad. */
+-	strcpy(sid.name, name);
++	struct snd_ctl_elem_id sid =3D {0};
++
++	strlcpy(sid.name, name, sizeof(sid.name));
+ 	sid.iface =3D SNDRV_CTL_ELEM_IFACE_MIXER;
+ 	return snd_ctl_find_id(card, &sid);
+ }
+diff --git a/sound/pci/ice1712/quartet.c b/sound/pci/ice1712/quartet.c
+index d145b5eb7ff86d978d..5bc836241c977feb51 100644
+--- a/sound/pci/ice1712/quartet.c
++++ b/sound/pci/ice1712/quartet.c
+@@ -26,6 +26,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/init.h>
+ #include <linux/slab.h>
++#include <linux/string.h>
+ #include <sound/core.h>
+ #include <sound/tlv.h>
+ #include <sound/info.h>
+@@ -785,10 +786,9 @@ DECLARE_TLV_DB_SCALE(qtet_master_db_scale, -6350, 50, =
+1);
+ static struct snd_kcontrol *ctl_find(struct snd_card *card,
+ 				     const char *name)
+ {
+-	struct snd_ctl_elem_id sid;
+-	memset(&sid, 0, sizeof(sid));
+-	/* FIXME: strcpy is bad. */
+-	strcpy(sid.name, name);
++	struct snd_ctl_elem_id sid =3D {0};
++
++	strlcpy(sid.name, name, sizeof(sid.name));
+ 	sid.iface =3D SNDRV_CTL_ELEM_IFACE_MIXER;
+ 	return snd_ctl_find_id(card, &sid);
+ }
 --=20
-Joey Pabalinas
+2.16.2
 
---gp33v5kaniw4op3d
+--5nv5xths47pkr5ye
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEKlZXrihdNOcUPZTNruvLfWhyVBkFAlqYCc8ACgkQruvLfWhy
-VBkFbxAA00gW8MQfUAF1PfYBbmjQ4KO4dP0n81ubPP9OMqQnZYUGz5huKZ/E+eM4
-9XYvmEyh2k76zftRf2ILQPFVKpbL/rXSb9QWdmtoIWmNErRDF2c3k9zsE58v7Jf9
-BL90eAGRweD5Pv3X30EqhVyQVNdxIrh9ewBaez7YORoWrv6RXyGW9gxfndT63WX8
-ak5SL2UsO4+zRwl8hjW2j1AnbadnBuIY2Lq62spyO74bvKDsi+AkIczlNFLeTgNY
-DRdAkAquwhH2iwq9EUMK+DcZQXIVTyHje3SJyqUhm/5WLVUuV6CYFMkoFmZo6A2B
-i5ZNla3qlbf6qPXk5Baaw19Mmwt/ldyHs0dpvDUGCux7sa2ZEX3RHrppBrmtazZH
-/KleVJWGtrn1yKQB+geRDswaUe4h9rm2X2u4QPqfspwWDb76WKizNU4kJ+N96xcT
-sC6BS3j5dfTuDyKaAmWAHQRFz3n/gzFTKE8gpi5KMXAcl+lZTtlpmnGmpaS/Or+D
-eWruPiHePrwqKObVa9pqmA1wzD6xEWjG8n0ZZ1ErhvOFH3uoMC6d6wU6qzVVS1jT
-cx9I073u0XMABhPv2JXjh7X4IUwKj3U/QeFhhFYUPtzV0w3v6pC4wwEjZ1A/QMJH
-P7EyMQWuAlJIw64GQBvTjMyi5tNFecfM7ZFwy7H1C00bY7glASA=
-=zY+5
+iQIzBAEBCAAdFiEEKlZXrihdNOcUPZTNruvLfWhyVBkFAlqYC2MACgkQruvLfWhy
+VBnS6A/9Hvtn6RWzEjUFO9rAVKI8bodYigHidWTkmrZ/9/v9AWhoF9n2/SZWtzPa
+1nz4ycET3qvGvHCWAwkPdUm5MfN7oBlIi1DxV6pacpEOVeor9yNOhnrBcTe8a9Vn
+wmXCWaNyhvco0zSQ1tHWQQojtB6WnQU0MDi0RzaNRqMu7cqWvHCvFPuCvdzYn3jK
+1u+WbXSqvSCUdew+tXRdcnKZ5ZIomsmymsbUivFUH/Lg38GUC9otmt1ZWVNr2dOl
+TyiAsnVCLziT+Vvn1XsiEDYCn+mNQ7F6RipXgY2URZkRjIIuhAZdBwpavNhBCMvl
+cbujtepxg3nib/v7dgeH7CfvszODSwM8mu/b348elhsLtBMsKc5KOHK3G4Z6R1LI
++BuTh/CaSpW7kOWK3ApmsPsYBnYeBheM2YmqRtH19pz/UVjkf01XBrireddUUjC/
+1muSK3Yrg0Ww5Ja25mkgI8nPg0gDMBHf3cVd9Fb9iJLt3NmsJS2oEvC2MsPy6Fs7
+/T0MO9PHWoVuK2E+rDuKXiphQRNB5+j+LDxgEVgr9/cfO8qPu/gaRwUb81DVCPXL
+g0n+FHvoX0mPgU0iBPrFbJ1zl6J5iapUMRO4ZxBMZ6EvHFxAqbhCpGNGixbs6+hR
+nBRhoqVz+klW406GWAmiv+Y7Vy/Ia1elgQG8/eY/grby/0Srjpk=
+=gZ4i
 -----END PGP SIGNATURE-----
 
---gp33v5kaniw4op3d--
+--5nv5xths47pkr5ye--
