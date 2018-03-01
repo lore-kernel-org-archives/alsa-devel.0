@@ -1,19 +1,19 @@
-From: Ladislav Michl <ladis@linux-mips.org>
-Subject: [PATCH v2] ASoC: max9867: Improve error logging
-Date: Thu, 1 Mar 2018 23:03:57 +0100
-Message-ID: <20180301220357.GA6104@lenoch>
+From: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Subject: Re: [Xen-devel][PATCH 2/2] sndif: add explicit back
+ and front synchronization
+Date: Thu, 1 Mar 2018 17:11:56 -0500
+Message-ID: <20180301221156.GC32676@char.us.oracle.com>
+References: <1517819100-1029-1-git-send-email-andr2000@gmail.com>
+ <1517819100-1029-3-git-send-email-andr2000@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A56A267C6E
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 23:04:03 +0100 (CET)
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23992615AbeCAWEDBN6Zk (ORCPT
- <rfc822;alsa-devel@alsa-project.org>); Thu, 1 Mar 2018 23:04:03 +0100
+Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8C0026731A
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 23:12:11 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <1517819100-1029-3-git-send-email-andr2000@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,44 +23,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Oleksandr Andrushchenko <andr2000@gmail.com>
+Cc: alsa-devel@alsa-project.org, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Oleksandr Grytsov <oleksandr_grytsov@epam.com>, xen-devel@lists.xenproject.org
 List-Id: alsa-devel@alsa-project.org
 
-Tell user what are clock rate limits and reindent log messages.
+>   * +----------------+----------------+----------------+----------------+
+>   * |                           gref_directory                          | 24
+>   * +----------------+----------------+----------------+----------------+
+> - * |                             reserved                              | 28
+> - * +----------------+----------------+----------------+----------------+
+> - * |/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/|
+> + * |                             period_sz                             | 28
+>   * +----------------+----------------+----------------+----------------+
+>   * |                             reserved                              | 32
+>   * +----------------+----------------+----------------+----------------+
+> @@ -578,6 +616,14 @@
+>   * pcm_channels - uint8_t, number of channels of this stream,
+>   *   [channels-min; channels-max]
+>   * buffer_sz - uint32_t, buffer size to be allocated, octets
+> + * period_sz - uint32_t, recommended event period size, octets
+> + *   This is the recommended (hint) value of the period at which frontend would
+> + *   like to receive XENSND_EVT_CUR_POS notifications from the backend when
+> + *   stream position advances during playback/capture.
+> + *   It shows how many octets are expected to be played/captured before
+> + *   sending such an event.
+> + *   If set to 0 no XENSND_EVT_CUR_POS events are sent by the backend.
+> + *
 
-Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
----
- Changes:
- - v2: Rebase against current branch
+I would gate this based on the version. That is if version 0 then this
+field does not exist.
+>   * gref_directory - grant_ref_t, a reference to the first shared page
+>   *   describing shared buffer references. At least one page exists. If shared
+>   *   buffer size  (buffer_sz) exceeds what can be addressed by this single page,
+> @@ -592,6 +638,7 @@ struct xensnd_open_req {
+>      uint16_t reserved;
+>      uint32_t buffer_sz;
+>      grant_ref_t gref_directory;
+> +    uint32_t period_sz;
 
- sound/soc/codecs/max9867.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index 6b128dd6c5dd..b2a613e54fc7 100644
---- a/sound/soc/codecs/max9867.c
-+++ b/sound/soc/codecs/max9867.c
-@@ -291,7 +291,9 @@ static int max9867_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 		value |= MAX9867_PSCLK_40_60;
- 		max9867->pclk =  freq/4;
- 	} else {
--		pr_err("bad clock frequency %d", freq);
-+		dev_err(codec->dev,
-+			"Invalid clock frequency %uHz (required 10-60MHz)\n",
-+			freq);
- 		return -EINVAL;
- 	}
- 	value = value << MAX9867_PSCLK_SHIFT;
-@@ -476,8 +478,7 @@ static int max9867_i2c_probe(struct i2c_client *i2c,
- 	max9867->regmap = devm_regmap_init_i2c(i2c, &max9867_regmap);
- 	if (IS_ERR(max9867->regmap)) {
- 		ret = PTR_ERR(max9867->regmap);
--		dev_err(&i2c->dev,
--				"Failed to allocate regmap: %d\n", ret);
-+		dev_err(&i2c->dev, "Failed to allocate regmap: %d\n", ret);
- 		return ret;
- 	}
- 	ret = regmap_read(max9867->regmap,
--- 
-2.16.2
+The same here. Just put a comment mentioning the version part.
