@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: kbl: Enable mclk and ssp sclk
-	early for rt5663" to the asoc tree
-Date: Thu, 01 Mar 2018 18:07:07 +0000
-Message-ID: <E1erSbj-0005v8-2w@debutante>
-References: <1519008302-24432-1-git-send-email-naveen.m@intel.com>
+Subject: Re: [PATCH 6/6] ASoC: max9867: Use continuous sample
+	rate
+Date: Thu, 1 Mar 2018 18:22:02 +0000
+Message-ID: <20180301182202.GH12864@sirena.org.uk>
+References: <20180301141843.GB30722@lenoch>
+ <20180301142216.GH30722@lenoch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1652032816630119552=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5524F267B64
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 19:07:24 +0100 (CET)
-In-Reply-To: <1519008302-24432-1-git-send-email-naveen.m@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F0132672B9
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 19:22:03 +0100 (CET)
+In-Reply-To: <20180301142216.GH30722@lenoch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,73 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, broonie@kernel.org, Kevin Cheng <kevin.cheng@intel.com>, naveen.m@intel.com, pierre-louis.bossart@intel.com
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: alsa-devel@alsa-project.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: Intel: kbl: Enable mclk and ssp sclk early for rt5663
+--===============1652032816630119552==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="PW0Eas8rCkcu1VkF"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--PW0Eas8rCkcu1VkF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Thu, Mar 01, 2018 at 03:22:16PM +0100, Ladislav Michl wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+>  what is exact meaning of SNDRV_PCM_RATE_CONTINUOUS? What if codec is
+>  able to set "any" rate, but there are rounding errors?
+>  Shall we pick exact matches based on master clock frequency?
+>  Few other drivers are also setting SNDRV_PCM_RATE_CONTINUOUS, but
+>  certainly cannot set any rate exactly.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+It means being able to set any rate exactly.  Many devices have hardware
+which is only specified to work at specific rates but some are more
+flexible.  Devices don't need to be able to do this independently, you
+can have a flexible external clock tree for example.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--PW0Eas8rCkcu1VkF
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
 
->From 256ac58a7ea343600bd6d0e3df3eb7eebb2d65e0 Mon Sep 17 00:00:00 2001
-From: Naveen Manohar <naveen.m@intel.com>
-Date: Mon, 19 Feb 2018 08:15:02 +0530
-Subject: [PATCH] ASoC: Intel: kbl: Enable mclk and ssp sclk early for rt5663
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqYRMkACgkQJNaLcl1U
+h9Bb5gf/UaELG0m9h6vM0UB6BdrHkZ9miq9dYUCDXTsGlxBWT9cKb4A6LCl5aqIt
+6axTMfFdmPlrwNWaR3wZBsuwyy9XEWKWVEaXzz7dS2EUS0Knj67jARfg6RoeMfdm
+bSxtyrAz0qP+EYBkR53P9pO2DVbgBiw4J5gH/C4B2PSTNzE9N1f43ssYDd5v7CaX
+MuDwVPLjWZPC4I9Uc57VfW30Vx3PNVGr/iWwRl1Pp3lBrhuh5HzRcDGQ+VDZLTvI
+Ebp07kCJZlEodrOHA8LfRkBQqWzqe7yHEGalW97Z7ILMvdrYWYe09J6E+506tuiN
+G/0udkuxYPCNKUwHRMBHNhS+lIWEPg==
+=IZmn
+-----END PGP SIGNATURE-----
 
-rt5663 requires mclk/sclk early to synchronize its internal clocks.
-Enable these clocks early.
+--PW0Eas8rCkcu1VkF--
 
-Signed-off-by: Naveen Manohar <naveen.m@intel.com>
-Signed-off-by: Kevin Cheng <kevin.cheng@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/boards/kbl_rt5663_max98927.c | 5 +++++
- 1 file changed, 5 insertions(+)
+--===============1652032816630119552==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index 3c9585eb6860..0e6b7e79441c 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -204,13 +204,18 @@ static const struct snd_soc_dapm_widget kabylake_5663_widgets[] = {
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
- 	SND_SOC_DAPM_SPK("DP", NULL),
- 	SND_SOC_DAPM_SPK("HDMI", NULL),
-+	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
-+			platform_clock_control, SND_SOC_DAPM_PRE_PMU |
-+			SND_SOC_DAPM_POST_PMD),
- };
- 
- static const struct snd_soc_dapm_route kabylake_5663_map[] = {
-+	{ "Headphone Jack", NULL, "Platform Clock" },
- 	{ "Headphone Jack", NULL, "HPOL" },
- 	{ "Headphone Jack", NULL, "HPOR" },
- 
- 	/* other jacks */
-+	{ "Headset Mic", NULL, "Platform Clock" },
- 	{ "IN1P", NULL, "Headset Mic" },
- 	{ "IN1N", NULL, "Headset Mic" },
- 
--- 
-2.16.2
+
+--===============1652032816630119552==--
