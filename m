@@ -1,21 +1,22 @@
-From: Ladislav Michl <ladis@linux-mips.org>
-Subject: [PATCH 5/6] ASoC: max9867: DSP mode
-Date: Thu, 1 Mar 2018 15:21:30 +0100
-Message-ID: <20180301142130.GG30722@lenoch>
-References: <20180301141843.GB30722@lenoch>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v2] sound/pci/ice1712: replace strcpy()
+	with strlcpy()
+Date: Thu, 1 Mar 2018 16:21:55 +0200
+Message-ID: <CAHp75VfLvYJfX=zTy=XUyL3AcvE+h3yTXwjDGdaFQk9mNjF8GA@mail.gmail.com>
+References: <20180301114535.bf3ibzcpvohyjweu@gmail.com>
+ <CAHp75Vf6kfPE_sRPj_mLMvLQfn9Fe9B_MeXqnGAHGAdzR7HX+Q@mail.gmail.com>
+ <20180301141707.cp5dc6zbh6bur4xw@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 02D71267946
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 15:21:32 +0100 (CET)
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23993890AbeCAOVbkaLHy (ORCPT
- <rfc822;alsa-devel@alsa-project.org>); Thu, 1 Mar 2018 15:21:31 +0100
-Content-Disposition: inline
-In-Reply-To: <20180301141843.GB30722@lenoch>
+Received: from mail-qk0-f195.google.com (mail-qk0-f195.google.com
+ [209.85.220.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE09D26794C
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 15:21:56 +0100 (CET)
+Received: by mail-qk0-f195.google.com with SMTP id s188so7710256qkb.2
+ for <alsa-devel@alsa-project.org>; Thu, 01 Mar 2018 06:21:56 -0800 (PST)
+In-Reply-To: <20180301141707.cp5dc6zbh6bur4xw@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,41 +26,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>
+To: Joey Pabalinas <joeypabalinas@gmail.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add configuration for DSP mode.
+On Thu, Mar 1, 2018 at 4:17 PM, Joey Pabalinas <joeypabalinas@gmail.com> wrote:
+> Replace unsafe usages of strcpy() to copy the name
+> argument into the sid.name buffer with strlcpy()
+> to guard against possible buffer overflows.
+>
+> Signed-off-by: Joey Pabalinas <joeypabalinas@gmail.com>
+> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
----
- sound/soc/codecs/max9867.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index 4160523ea720..4ea3287162ad 100644
---- a/sound/soc/codecs/max9867.c
-+++ b/sound/soc/codecs/max9867.c
-@@ -325,10 +325,16 @@ static int max9867_dai_set_fmt(struct snd_soc_dai *codec_dai,
- 		return -EINVAL;
- 	}
- 
--	/* for i2s compatible mode */
--	iface1A |= MAX9867_I2S_DLY;
--	/* SDOUT goes to hiz state after all data is transferred */
--	iface1A |= MAX9867_SDOUT_HIZ;
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		iface1A |= MAX9867_I2S_DLY;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_A:
-+		iface1A |= MAX9867_TDM_MODE | MAX9867_SDOUT_HIZ;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
- 
- 	/* Clock inversion bits, BCI and WCI */
- 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+>  2 files changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/sound/pci/ice1712/juli.c b/sound/pci/ice1712/juli.c
+> index 0dbaccf61f33270608..21806bab4757241a9e 100644
+> --- a/sound/pci/ice1712/juli.c
+> +++ b/sound/pci/ice1712/juli.c
+> @@ -27,6 +27,7 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/init.h>
+>  #include <linux/slab.h>
+> +#include <linux/string.h>
+>  #include <sound/core.h>
+>  #include <sound/tlv.h>
+>
+> @@ -425,10 +426,9 @@ DECLARE_TLV_DB_SCALE(juli_master_db_scale, -6350, 50, 1);
+>  static struct snd_kcontrol *ctl_find(struct snd_card *card,
+>                                      const char *name)
+>  {
+> -       struct snd_ctl_elem_id sid;
+> -       memset(&sid, 0, sizeof(sid));
+> -       /* FIXME: strcpy is bad. */
+> -       strcpy(sid.name, name);
+> +       struct snd_ctl_elem_id sid = {0};
+> +
+> +       strlcpy(sid.name, name, sizeof(sid.name));
+>         sid.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+>         return snd_ctl_find_id(card, &sid);
+>  }
+> diff --git a/sound/pci/ice1712/quartet.c b/sound/pci/ice1712/quartet.c
+> index d145b5eb7ff86d978d..5bc836241c977feb51 100644
+> --- a/sound/pci/ice1712/quartet.c
+> +++ b/sound/pci/ice1712/quartet.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/init.h>
+>  #include <linux/slab.h>
+> +#include <linux/string.h>
+>  #include <sound/core.h>
+>  #include <sound/tlv.h>
+>  #include <sound/info.h>
+> @@ -785,10 +786,9 @@ DECLARE_TLV_DB_SCALE(qtet_master_db_scale, -6350, 50, 1);
+>  static struct snd_kcontrol *ctl_find(struct snd_card *card,
+>                                      const char *name)
+>  {
+> -       struct snd_ctl_elem_id sid;
+> -       memset(&sid, 0, sizeof(sid));
+> -       /* FIXME: strcpy is bad. */
+> -       strcpy(sid.name, name);
+> +       struct snd_ctl_elem_id sid = {0};
+> +
+> +       strlcpy(sid.name, name, sizeof(sid.name));
+>         sid.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+>         return snd_ctl_find_id(card, &sid);
+>  }
+> --
+> 2.16.2
+
+
+
 -- 
-2.16.2
+With Best Regards,
+Andy Shevchenko
