@@ -1,21 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [asoc:topic/max9867 2/4]
- sound/soc/codecs/max9867.c:294:11: error: 'component' undeclared;
- did you mean 'complete'?
-Date: Thu, 1 Mar 2018 21:36:30 +0000
-Message-ID: <20180301213630.GW12864@sirena.org.uk>
-References: <201803020314.sOjeazAH%fengguang.wu@intel.com>
- <20180301200155.GA2304@lenoch>
- <20180301200430.GA23704@sirena.org.uk>
- <20180301213436.GB3833@lenoch>
+Subject: Re: [PATCH 3/6] ASoC: max9867: Drop probe function
+Date: Thu, 1 Mar 2018 21:37:41 +0000
+Message-ID: <20180301213741.GX12864@sirena.org.uk>
+References: <20180301141843.GB30722@lenoch> <20180301142027.GE30722@lenoch>
+ <20180301175654.GF12864@sirena.org.uk>
+ <20180301200618.GB2304@lenoch>
+ <20180301203903.GO12864@sirena.org.uk>
+ <20180301213242.GA3833@lenoch>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0573605390197060152=="
+Content-Type: multipart/mixed; boundary="===============0508847672974752282=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E9A2A267C56
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 22:36:37 +0100 (CET)
-In-Reply-To: <20180301213436.GB3833@lenoch>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5DFFD267C5D
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 22:37:42 +0100 (CET)
+In-Reply-To: <20180301213242.GA3833@lenoch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,52 +25,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Ladislav Michl <ladis@linux-mips.org>
-Cc: alsa-devel@alsa-project.org, kbuild test robot <fengguang.wu@intel.com>, kbuild-all@01.org
+Cc: alsa-devel@alsa-project.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0573605390197060152==
+--===============0508847672974752282==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="kjzasy1UhXmRStS5"
+	protocol="application/pgp-signature"; boundary="e9ndEBTQFD7P4kUb"
 Content-Disposition: inline
 
 
---kjzasy1UhXmRStS5
+--e9ndEBTQFD7P4kUb
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Mar 01, 2018 at 10:34:37PM +0100, Ladislav Michl wrote:
-> On Thu, Mar 01, 2018 at 08:04:30PM +0000, Mark Brown wrote:
+On Thu, Mar 01, 2018 at 10:32:43PM +0100, Ladislav Michl wrote:
+> On Thu, Mar 01, 2018 at 08:39:03PM +0000, Mark Brown wrote:
+> > On Thu, Mar 01, 2018 at 09:06:18PM +0100, Ladislav Michl wrote:
+> > > On Thu, Mar 01, 2018 at 05:56:54PM +0000, Mark Brown wrote:
 
-> > Which other commits in my tree does this depend on?
+> > > > This doesn't apply against current code, please check and resend.
 
-> 91880a6b6ba3 ("ASoC: wm9867: replace codec to component")
-> Note, we have naming problem here...
+> > > It was generated and tested against next-20180301. Which version do
+> > > you want me to generate against? Based on 4.16-rc1 it'll fail to
+> > > merge later.
 
-Ah, I see.  Like I say, please resend.
+> > That is my current tree but I don't have a topic for this device other
+> > than your patches...  please resend and I'll take a look what git didn't
+> > like.
 
---kjzasy1UhXmRStS5
+> Well, in fact you have, but it is misnamed as topic/wm9867. So I guess
+> once you merge these two topic branches, things will get fixed.
+
+Sorry, meant to reply here: as I said above, please resend.
+
+--e9ndEBTQFD7P4kUb
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqYcl4ACgkQJNaLcl1U
-h9Bf8Af+PO2ji62oAWc4Isl/3K+cxBW2VpUU6+Rc4t6ZCIYvMa+09HmuLXk7OKBw
-PSC539rIRZuuB/A5EORtez24MQ3TKmdjfxgDgFdXE4pSo66eaW3eowKZhxrQbXis
-S77Y/bdGHm2HgMFGF8qS7aUjjPFnF385VKQ235mkCFM6eTlp1vf4qXGOfjjNvXu6
-twztlnTp2rXi+AiDzTXzgDc9GiY+k1KSv01mI3uYAjgMCXJ0O0BMUPUf9DzK/sd4
-bTfLcnn623xPTm9i+VOk3MpX5orF6IKCoZqMQNxOhAHVd0X4qbSJjWatGVUHRuou
-rxXbOX9fE8BJgtmRyhSjhnQIkPpaCA==
-=lGvw
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqYcqQACgkQJNaLcl1U
+h9DSjgf/U4F8Od9pqCixtJgZNFwjee1DCrKSka1MHkHdIFKl402olKwKGZYYP0hS
+3adBGPOtk3VeY3mMEbGgComg12sbno1yGupWgA1UolCeB13Yy++XHtXOPn3276y0
+BX6YL+WvGSQE71gdxGWHuRYjizIPo4iqPj0RJUhForyjWAqDgk5jFMtqZV0oy1ee
+S6IdTHW6RiIsniWU2uJB/66Vi0XGhxpElijChPhnmBsZLLeVAwnRprZF6xDWsKMi
+hyqge59AciKH+1/Mnh/XavyoUbCkSnkC/JmtEuXDE47JLg69colxhEXzS2fJ/7+h
+PqHgON76OOUZZUNQtPfiA9KRDhbTMQ==
+=Kp+q
 -----END PGP SIGNATURE-----
 
---kjzasy1UhXmRStS5--
+--e9ndEBTQFD7P4kUb--
 
---===============0573605390197060152==
+--===============0508847672974752282==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0573605390197060152==--
+--===============0508847672974752282==--
