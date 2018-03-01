@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5651: Remove programming of PWR regs
-	before force_bias_level() call" to the asoc tree
-Date: Thu, 01 Mar 2018 19:26:09 +0000
-Message-ID: <E1erTqD-0001WJ-WB@debutante>
-References: <20180225104713.4745-12-hdegoede@redhat.com>
+Subject: Applied "ASoC: rt5651: Always keep OVCD enabled" to
+	the asoc tree
+Date: Thu, 01 Mar 2018 19:25:49 +0000
+Message-ID: <E1erTpt-0001RC-HK@debutante>
+References: <20180225104713.4745-17-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id F1028267BC2
+ by alsa0.perex.cz (Postfix) with ESMTP id CB3B3267BBF
  for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 20:27:23 +0100 (CET)
-In-Reply-To: <20180225104713.4745-12-hdegoede@redhat.com>
+In-Reply-To: <20180225104713.4745-17-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5651: Remove programming of PWR regs before force_bias_level() call
+   ASoC: rt5651: Always keep OVCD enabled
 
 has been applied to the asoc tree at
 
@@ -53,43 +53,55 @@ to this mail.
 Thanks,
 Mark
 
->From a25fe11746846f5dd3286cf690b470e3d049797f Mon Sep 17 00:00:00 2001
+>From f1088d4b813fb4d20fc9e8e8db5ca252923f25eb Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 25 Feb 2018 11:46:52 +0100
-Subject: [PATCH] ASoC: rt5651: Remove programming of PWR regs before
- force_bias_level() call
+Date: Sun, 25 Feb 2018 11:46:57 +0100
+Subject: [PATCH] ASoC: rt5651: Always keep OVCD enabled
 
-Remove the setup of the PWR_ANLG1 reg which was done directly before
-calling snd_soc_component_force_bias_level(SND_SOC_BIAS_OFF), as the
-latter will override any settings done to PWR_ANLG1 immediately anyways.
+OVCD is not only useful for jack-type detection, but is also useful
+to protect against over-current faults in general, so always keep
+OVCD enabled, instead of only enabling it for jack-type detection.
 
 Tested-by: Carlo Caione <carlo@endlessm.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5651.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ sound/soc/codecs/rt5651.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index d4fb16686889..74f83af3b6be 100644
+index 41d7c192ac03..55bcc74e344f 100644
 --- a/sound/soc/codecs/rt5651.c
 +++ b/sound/soc/codecs/rt5651.c
-@@ -1662,16 +1662,6 @@ static int rt5651_probe(struct snd_soc_component *component)
+@@ -1642,7 +1642,7 @@ static int rt5651_set_jack(struct snd_soc_component *component,
+ 				      RT5651_MIC1_OVTH_MASK |
+ 				      RT5651_PWR_CLK12M_MASK |
+ 				      RT5651_PWR_MB_MASK,
+-				      RT5651_MIC1_OVCD_DIS |
++				      RT5651_MIC1_OVCD_EN |
+ 				      RT5651_MIC1_OVTH_600UA |
+ 				      RT5651_PWR_MB_PU |
+ 				      RT5651_PWR_CLK12M_PU);
+@@ -1849,9 +1849,6 @@ static int rt5651_jack_detect(struct snd_soc_component *component, int jack_inse
  
- 	rt5651->component = component;
- 
--	snd_soc_component_update_bits(component, RT5651_PWR_ANLG1,
--		RT5651_PWR_VREF1 | RT5651_PWR_MB |
--		RT5651_PWR_BG | RT5651_PWR_VREF2,
--		RT5651_PWR_VREF1 | RT5651_PWR_MB |
--		RT5651_PWR_BG | RT5651_PWR_VREF2);
--	usleep_range(10000, 15000);
--	snd_soc_component_update_bits(component, RT5651_PWR_ANLG1,
--		RT5651_PWR_FV1 | RT5651_PWR_FV2,
--		RT5651_PWR_FV1 | RT5651_PWR_FV2);
+ 	if (jack_insert) {
+ 		rt5651_enable_micbias1_for_ovcd(component);
+-		snd_soc_component_update_bits(component, RT5651_MICBIAS,
+-				    RT5651_MIC1_OVCD_MASK,
+-				    RT5651_MIC1_OVCD_EN);
+ 		msleep(100);
+ 		if (snd_soc_component_read32(component, RT5651_IRQ_CTRL2) & RT5651_MB1_OC_CLR)
+ 			jack_type = SND_JACK_HEADPHONE;
+@@ -1862,10 +1859,6 @@ static int rt5651_jack_detect(struct snd_soc_component *component, int jack_inse
+ 		rt5651_disable_micbias1_for_ovcd(component);
+ 	} else { /* jack out */
+ 		jack_type = 0;
 -
- 	snd_soc_component_force_bias_level(component, SND_SOC_BIAS_OFF);
+-		snd_soc_component_update_bits(component, RT5651_MICBIAS,
+-				    RT5651_MIC1_OVCD_MASK,
+-				    RT5651_MIC1_OVCD_DIS);
+ 	}
  
- 	rt5651_apply_properties(component);
+ 	return jack_type;
 -- 
 2.16.2
