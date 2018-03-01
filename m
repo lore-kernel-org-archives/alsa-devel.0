@@ -1,88 +1,173 @@
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: Re: [PATCH v2] ASoC: atmel: Remove redundant dev_err()
- call in probe function
-Date: Thu, 1 Mar 2018 14:42:54 +0100
-Message-ID: <20180301134254.GW1479@piout.net>
-References: <20180301133731.GA30722@lenoch>
+From: =?UTF-8?B?TXlsw6huZQ==?= Josserand <mylene.josserand@bootlin.com>
+Subject: Re: [alsa-devel] [PATCH v1 1/4] ASoC: codecs: pcm179x: Add PCM1789
+ id
+Date: Thu, 1 Mar 2018 14:53:16 +0100
+Message-ID: <20180301145316.4c5355b4@dell-desktop.home>
+References: <20180227212433.2189-1-mylene.josserand@bootlin.com>
+        <20180227212433.2189-2-mylene.josserand@bootlin.com>
+        <20180227225140.6f9902b8@windsurf.lan>
+        <20180301084315.0811f712@dell-desktop.home>
+        <CAOf5uw=9aydTjTQbWJrZW4fFudcS9cp9=c4RhowyLyoWG97Q1A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bootlin.com (mail.bootlin.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id D0BD926790A
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 14:42:55 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20180301133731.GA30722@lenoch>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAOf5uw=9aydTjTQbWJrZW4fFudcS9cp9=c4RhowyLyoWG97Q1A@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, alexandre.belloni@bootlin.com, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/03/2018 at 14:37:31 +0100, Ladislav Michl wrote:
-> There is an error message within devm_ioremap_resource already,
-> so remove the redundant dev_err() call.
-> 
-> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
-> Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Hello,
 
-> ---
->  Changes:
->  - v2: None, just added Ack.
+On Thu, 1 Mar 2018 10:04:11 +0100
+Michael Nazzareno Trimarchi <michael@amarulasolutions.com> wrote:
+
+> Hi
 > 
->  sound/soc/atmel/atmel-classd.c | 7 ++-----
->  sound/soc/atmel/atmel-pdmic.c  | 7 ++-----
->  2 files changed, 4 insertions(+), 10 deletions(-)
+> On Thu, Mar 1, 2018 at 8:43 AM, Mylène Josserand
+> <mylene.josserand@bootlin.com> wrote:
+> > Hello,
+> >
+> > Thank you for the review.
+> >
+> > On Tue, 27 Feb 2018 22:51:40 +0100
+> > Thomas Petazzoni <thomas.petazzoni@bootlin.com> wrote:
+> >  
+> >> Hello,
+> >>
+> >> On Tue, 27 Feb 2018 22:24:30 +0100, Mylène Josserand wrote:  
+> >> > To prepare the support for the PCM1789, add a new compatible
+> >> > and use the i2c_id to handle, later, the differences between
+> >> > these two DACs even if they are pretty similar.
+> >> >
+> >> > Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>
+> >> > ---
+> >> >  Documentation/devicetree/bindings/sound/pcm179x.txt | 2 +-  
+> >>
+> >> The DT binding change should be in a separate patch.
+> >>  
+> >> >  sound/soc/codecs/pcm179x-i2c.c                      | 6 ++++--
+> >> >  sound/soc/codecs/pcm179x.c                          | 3 ++-
+> >> >  sound/soc/codecs/pcm179x.h                          | 8 +++++++-  
+> >>
+> >> And this should be together with the PCM1789 support patch. Otherwise
+> >> your series is not bisectable: if we apply only PATCH 1/4, the driver
+> >> supports the new compatible string, but it doesn't have the actual code
+> >> to handle PCM1789. Am I missing something here ?  
+> >
+> > No, you are right, I will merge it with patch 02.
+> >  
 > 
-> diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
-> index 9baaf6bc5fbd..3d70061901a0 100644
-> --- a/sound/soc/atmel/atmel-classd.c
-> +++ b/sound/soc/atmel/atmel-classd.c
-> @@ -583,11 +583,8 @@ static int atmel_classd_probe(struct platform_device *pdev)
->  
->  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	io_base = devm_ioremap_resource(dev, res);
-> -	if (IS_ERR(io_base)) {
-> -		ret =  PTR_ERR(io_base);
-> -		dev_err(dev, "failed to remap register memory: %d\n", ret);
-> -		return ret;
-> -	}
-> +	if (IS_ERR(io_base))
-> +		return PTR_ERR(io_base);
->  
->  	dd->phy_base = res->start;
->  	dd->dev = dev;
-> diff --git a/sound/soc/atmel/atmel-pdmic.c b/sound/soc/atmel/atmel-pdmic.c
-> index 94f852574a44..915c2b064de1 100644
-> --- a/sound/soc/atmel/atmel-pdmic.c
-> +++ b/sound/soc/atmel/atmel-pdmic.c
-> @@ -633,11 +633,8 @@ static int atmel_pdmic_probe(struct platform_device *pdev)
->  
->  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	io_base = devm_ioremap_resource(dev, res);
-> -	if (IS_ERR(io_base)) {
-> -		ret = PTR_ERR(io_base);
-> -		dev_err(dev, "failed to remap register memory: %d\n", ret);
-> -		return ret;
-> -	}
-> +	if (IS_ERR(io_base))
-> +		return PTR_ERR(io_base);
->  
->  	dd->phy_base = res->start;
->  
-> -- 
-> 2.16.2
+> Can you please include me in next series?
+
+Sure, I will do it.
+
+> 
+> I have several hardware running on pcm179x family
+
+Currently, some colleagues recommend me to create a new file for this
+driver instead of adding it in PCM179x driver. I think that I will not
+touch pcm179x driver anymore in my next series.
+
+Best regards,
+
+Mylène
+
+> 
+> Michael
+> 
+> >>  
+> >> > -   return pcm179x_common_init(&client->dev, regmap);
+> >> > +   return pcm179x_common_init(&client->dev, regmap, id->driver_data);  
+> >>
+> >> This can be done in a preparation patch.
+> >>  
+> >> >  }
+> >> >
+> >> >  static const struct of_device_id pcm179x_of_match[] = {
+> >> >     { .compatible = "ti,pcm1792a", },
+> >> > +   { .compatible = "ti,pcm1789", },
+> >> >     { }
+> >> >  };
+> >> >  MODULE_DEVICE_TABLE(of, pcm179x_of_match);
+> >> >
+> >> >  static const struct i2c_device_id pcm179x_i2c_ids[] = {
+> >> > -   { "pcm179x", 0 },
+> >> > +   { "pcm179x", PCM179X },  
+> >>
+> >> And also this addition.
+> >>  
+> >> > +   { "pcm1789", PCM1789 },
+> >> >     { }
+> >> >  };
+> >> >  MODULE_DEVICE_TABLE(i2c, pcm179x_i2c_ids);
+> >> > diff --git a/sound/soc/codecs/pcm179x.c b/sound/soc/codecs/pcm179x.c
+> >> > index 4b311c06f97d..81cbf09319f6 100644
+> >> > --- a/sound/soc/codecs/pcm179x.c
+> >> > +++ b/sound/soc/codecs/pcm179x.c
+> >> > @@ -218,7 +218,8 @@ static const struct snd_soc_component_driver soc_component_dev_pcm179x = {
+> >> >     .non_legacy_dai_naming  = 1,
+> >> >  };
+> >> >
+> >> > -int pcm179x_common_init(struct device *dev, struct regmap *regmap)
+> >> > +int pcm179x_common_init(struct device *dev, struct regmap *regmap,
+> >> > +                   enum pcm17xx_type type)  
+> >>
+> >> And this done.
+> >>  
+> >> >  {
+> >> >     struct pcm179x_private *pcm179x;
+> >> >
+> >> > diff --git a/sound/soc/codecs/pcm179x.h b/sound/soc/codecs/pcm179x.h
+> >> > index cf8681c9a373..8c08689e3b8b 100644
+> >> > --- a/sound/soc/codecs/pcm179x.h
+> >> > +++ b/sound/soc/codecs/pcm179x.h
+> >> > @@ -17,11 +17,17 @@
+> >> >  #ifndef __PCM179X_H__
+> >> >  #define __PCM179X_H__
+> >> >
+> >> > +enum pcm17xx_type {
+> >> > +   PCM179X,  
+> >>
+> >> And this one.
+> >>  
+> >> > +   PCM1789,
+> >> > +};
+> >> > +
+> >> >  #define PCM1792A_FORMATS (SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S24_LE | \
+> >> >                       SNDRV_PCM_FMTBIT_S16_LE)
+> >> >
+> >> >  extern const struct regmap_config pcm179x_regmap_config;
+> >> >
+> >> > -int pcm179x_common_init(struct device *dev, struct regmap *regmap);
+> >> > +int pcm179x_common_init(struct device *dev, struct regmap *regmap,
+> >> > +                   enum pcm17xx_type type);  
+> >>
+> >> And this one. Just as a "preparation patch" to support multiple codecs
+> >> in the existing pcm179x.c driver.
+> >>
+> >> Thanks!
+> >>
+> >> Thomas  
+> >
+> > Thanks,
+> >
+> > Mylène
+> >
+> > --
+> > Mylène Josserand, Bootlin (formerly Free Electrons)
+> > Embedded Linux and Kernel engineering
+> > http://bootlin.com
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel  
+> 
+> 
 > 
 
 -- 
-Alexandre Belloni, Bootlin (formerly Free Electrons)
+Mylène Josserand, Bootlin (formerly Free Electrons)
 Embedded Linux and Kernel engineering
-https://bootlin.com
+http://bootlin.com
