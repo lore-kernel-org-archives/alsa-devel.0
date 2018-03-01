@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: sst: Remove 2 unused members
-	from stream_info struct" to the asoc tree
-Date: Thu, 01 Mar 2018 18:07:18 +0000
-Message-ID: <E1erSbu-0005yp-NX@debutante>
+Subject: Applied "ASoC: Intel: sst: Fix error-code check in
+	sst_pause_stream()" to the asoc tree
+Date: Thu, 01 Mar 2018 18:07:20 +0000
+Message-ID: <E1erSbw-0005zY-Uh@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DCB59267B33
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 19:07:20 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 19261267B6F
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 19:07:23 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: sst: Remove 2 unused members from stream_info struct
+   ASoC: Intel: sst: Fix error-code check in sst_pause_stream()
 
 has been applied to the asoc tree at
 
@@ -52,69 +52,33 @@ to this mail.
 Thanks,
 Mark
 
->From bd47469c9985b50831a55bdda5a36f4672452764 Mon Sep 17 00:00:00 2001
+>From 6f5062773747b3d3eb9f957030ac1be98e983ac2 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 18 Feb 2018 23:01:39 +0100
-Subject: [PATCH] ASoC: Intel: sst: Remove 2 unused members from stream_info
- struct
+Date: Sun, 18 Feb 2018 23:01:38 +0100
+Subject: [PATCH] ASoC: Intel: sst: Fix error-code check in sst_pause_stream()
 
-Remove the unused ops and str_id members from the stream_info struct.
-
-While at it also remove some kernel-doc comments for members which have
-already been removed in the past.
+The value returned by sst_prepare_and_post_msg() is a negated SST_ERR_*
+value, so we must check for -SST_ERR_INVALID_STREAM_ID. Note that
+sst_pause_resume() already has the correct check.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst.h     | 7 -------
- sound/soc/intel/atom/sst/sst_pvt.c | 1 -
- 2 files changed, 8 deletions(-)
+ sound/soc/intel/atom/sst/sst_stream.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/atom/sst/sst.h b/sound/soc/intel/atom/sst/sst.h
-index e02e2b4cc08f..1f3107909044 100644
---- a/sound/soc/intel/atom/sst/sst.h
-+++ b/sound/soc/intel/atom/sst/sst.h
-@@ -181,21 +181,15 @@ struct sst_block {
-  *
-  * @status : stream current state
-  * @prev : stream prev state
-- * @ops : stream operation pb/cp/drm...
-- * @bufs: stream buffer list
-  * @lock : stream mutex for protecting state
-  * @pcm_substream : PCM substream
-  * @period_elapsed : PCM period elapsed callback
-  * @sfreq : stream sampling freq
-- * @str_type : stream type
-  * @cumm_bytes : cummulative bytes decoded
-- * @str_type : stream type
-- * @src : stream source
-  */
- struct stream_info {
- 	unsigned int		status;
- 	unsigned int		prev;
--	unsigned int		ops;
- 	struct mutex		lock;
- 
- 	void			*pcm_substream;
-@@ -212,7 +206,6 @@ struct stream_info {
- 
- 	unsigned int		num_ch;
- 	unsigned int		pipe_id;
--	unsigned int		str_id;
- 	unsigned int		task_id;
- };
- 
-diff --git a/sound/soc/intel/atom/sst/sst_pvt.c b/sound/soc/intel/atom/sst/sst_pvt.c
-index b1e6b8f34a6a..d7d38b0f68db 100644
---- a/sound/soc/intel/atom/sst/sst_pvt.c
-+++ b/sound/soc/intel/atom/sst/sst_pvt.c
-@@ -365,7 +365,6 @@ void sst_init_stream(struct stream_info *stream,
- {
- 	stream->status = STREAM_INIT;
- 	stream->prev = STREAM_UN_INIT;
--	stream->ops = ops;
- }
- 
- int sst_validate_strid(
+diff --git a/sound/soc/intel/atom/sst/sst_stream.c b/sound/soc/intel/atom/sst/sst_stream.c
+index 7ee6aeb7e0af..b082b0922a7a 100644
+--- a/sound/soc/intel/atom/sst/sst_stream.c
++++ b/sound/soc/intel/atom/sst/sst_stream.c
+@@ -253,7 +253,7 @@ int sst_pause_stream(struct intel_sst_drv *sst_drv_ctx, int str_id)
+ 		if (retval == 0) {
+ 			str_info->prev = str_info->status;
+ 			str_info->status = STREAM_PAUSED;
+-		} else if (retval == SST_ERR_INVALID_STREAM_ID) {
++		} else if (retval == -SST_ERR_INVALID_STREAM_ID) {
+ 			retval = -EINVAL;
+ 			mutex_lock(&sst_drv_ctx->sst_lock);
+ 			sst_clean_stream(str_info);
 -- 
 2.16.2
