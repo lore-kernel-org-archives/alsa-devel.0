@@ -1,96 +1,93 @@
-From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: Re: [Xen-devel][PATCH 0/2] sndif: add explicit back
- and front synchronization
-Date: Thu, 1 Mar 2018 08:29:32 +0200
-Message-ID: <6c1096ea-3cb7-15c3-18df-b0204d1b9abb@gmail.com>
-References: <1517819100-1029-1-git-send-email-andr2000@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f66.google.com (mail-lf0-f66.google.com
- [209.85.215.66])
- by alsa0.perex.cz (Postfix) with ESMTP id AA9D926780C
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 07:29:35 +0100 (CET)
-Received: by mail-lf0-f66.google.com with SMTP id f75so7149171lfg.6
- for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2018 22:29:35 -0800 (PST)
-In-Reply-To: <1517819100-1029-1-git-send-email-andr2000@gmail.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Clemens Ladisch <clemens@ladisch.de>
-Cc: Oleksandr Andrushchenko <andr2000@gmail.com>, xen-devel@lists.xenproject.org, alsa-devel@alsa-project.org
+From: Kirill Marinushkin <k.marinushkin@gmail.com>
+Subject: [PATCH v2] ASoC: topology: Fix bclk and fsync inversion in set_link_hw_format()
+Date: Thu,  1 Mar 2018 07:45:56 +0100
+Message-ID: <20180301064556.5387-1-k.marinushkin@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Pan Xiuli <xiuli.pan@linux.intel.com>
+Cc: Kirill Marinushkin <k.marinushkin@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8sCktvbnJhZCwgVGFrYXNoaSwgVGFrYXNoaSBhbmQgQ2xlbWVucyEKCkNvdWxkIHlvdSBw
-bGVhc2UgdGFrZSBhIGxvb2sgYXQgdGhpcyBzZXJpZXMgaWYgaXQgbWVldHMKQUxTQSBleHBlY3Rh
-dGlvbnMgb24gcGFyYS12aXJ0dWFsaXplZCBzb3VuZCBmb3IgWGVuPwoKVGhhbmsgeW91LApPbGVr
-c2FuZHIKCk9uIDAyLzA1LzIwMTggMTA6MjQgQU0sIE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIHdy
-b3RlOgo+IEZyb206IE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIDxvbGVrc2FuZHJfYW5kcnVzaGNo
-ZW5rb0BlcGFtLmNvbT4KPgo+IEhpLCBhbGwhCj4KPiBGb3Jld29yZAo+ID09PT09PT09Cj4KPiBU
-aGlzIGNoYW5nZSBpcyBhaW1lZCB0byBhZGQgc3VwcG9ydCBmb3IgZXhwbGljaXQgYmFjayBhbmQg
-ZnJvbnQKPiBzeW5jaHJvbml6YXRpb24gZHVyaW5nIHBsYXliYWNrIGFuZCBjYXB0dXJlIGluIHJl
-c3BvbnNlIHRvIGNvbW1lbnRzCj4gcmFpc2VkIGR1cmluZyB1cHN0cmVhbSBhdHRlbXB0IG9mIHRo
-ZSBwYXJhLXZpcnR1YWxpemVkIHNvdW5kIGZyb250ZW5kCj4gZHJpdmVyIGZvciBYZW4gWzFdLCBb
-Ml0gYW5kIGdhdGhlciBvcGluaW9ucyBmcm9tIHRoZSByZWxldmFudCBjb21tdW5pdGllcwo+IChB
-TFNBLCBYZW4pIG9uIHRoZSBjaGFuZ2UuCj4KPiBUaGUgcmVsZXZhbnQgYmFja2VuZCBpcyBpbXBs
-ZW1lbnRlZCBhcyBhIHVzZXItc3BhY2UgYXBwbGljYXRpb24gWzNdCj4gYW5kIHVzZXMgYWNjb21w
-YW55aW5nIGhlbHBlciBsaWJyYXJ5IFs0XS4KPgo+IEJvdGggZnJvbnRlbmQgZHJpdmVyIGFuZCBi
-YWNrZW5kIHdlcmUgdGVzdGVkIG9uIHJlYWwgSFcgcnVubmluZyBYZW4gaHlwZXJ2aXNvcgo+IChS
-ZW5lc2FzIFItQ2FyIEFSTSBiYXNlZCBIMy9NMyBib2FyZHMsIHg4NikgdG8gbWFrZSBzdXJlIHRo
-ZSBwcm9wb3NlZAo+IHNvbHV0aW9uIGRvZXMgd29yay4KPgo+IFJhdGlvbmFsZQo+ID09PT09PT09
-PQo+Cj4gRHVyaW5nIHRoZSBmaXJzdCBhdHRlbXB0IHRvIHVwc3RyZWFtIHRoZSBMaW51eCBmcm9u
-dCBkcml2ZXIgWzVdIG51bWJlcgo+IG9mIGNvbW1lbnRzIGFuZCBjb25jZXJucyB3ZXJlIHJhaXNl
-ZCwgb25lIG9mIHRoZSBiaWdnZXN0IGZsYXdzIGluIHRoZQo+IGRlc2lnbiB3ZXJlIHF1ZXN0aW9u
-ZWQgYnkgYm90aCBDbGVtZW5zIExhZGlzY2ggWzZdIGFuZAo+IFRha2FzaGkgU2FrYW1vdG8gWzdd
-OiB0aGUgYWJzZW5jZSBvZiBzeW5jaHJvbml6YXRpb24gYmV0d2VlbiBmcm9udGVuZAo+IGFuZCBi
-YWNrZW5kIGR1cmluZyBjYXB0dXJlL3BsYXliYWNrLiBUd28gb3B0aW9ucyB3ZXJlIGRpc2N1c3Nl
-ZDoKPgo+IOKAnEluIGRlc2lnbiBvZiBBTFNBIFBDTSBjb3JlLCBkcml2ZXJzIGFyZSBleHBlY3Rl
-ZCB0byBzeW5jaHJvbml6ZSB0bwo+IGFjdHVhbCBoYXJkd2FyZXMgZm9yIHNlbWktcmVhbHRpbWUg
-ZGF0YSB0cmFuc21pc3Npb24uIFRoZQo+IHN5bmNocm9uaXphdGlvbiBpcyBkb25lIGJ5IHR3byBw
-b2ludHM6Cj4gMSkgSW50ZXJydXB0cyB0byByZXNwb25kIGV2ZW50cyBmcm9tIGFjdHVhbCBoYXJk
-d2FyZXMuCj4gMikgUG9zaXRpb25zIG9mIGFjdHVhbCBkYXRhIHRyYW5zbWlzc2lvbiBpbiBhbnkg
-c2VyaWFsIHNvdW5kIGludGVyZmFjZXMKPiAgICAgIG9mIGFjdHVhbCBoYXJkd2FyZXMuCj4g4oCc
-Cj4KPiBhbmQgZmluYWxseSBhIGNoYW5nZSB0byB0aGUgZXhpc3RpbmcgcHJvdG9jb2wgd2FzIHN1
-Z2dlc3RlZDoKPgo+IOKAnEluICdpbmNsdWRlL3hlbi9pbnRlcmZhY2UvaW8vc25kaWYuaCcsIHRo
-ZXJlJ3Mgbm8gZnVuY3Rpb25hbGl0aWVzIEkKPiBkZXNjcmliZWQgdGhlIGFib3ZlOgo+IDEuIG5v
-dGlmaWNhdGlvbnMgZnJvbSBEb21VIHRvIERvbTAgYWJvdXQgdGhlIHNpemUgb2YgcGVyaW9kIGZv
-cgo+ICAgICAgaW50ZXJydXB0cyBmcm9tIGFjdHVhbCBoYXJkd2FyZXMuIE9yIG5vIHdheSBmcm9t
-IERvbTAgdG8gRG9tVSBhYm91dAo+ICAgICAgdGhlIGNvbmZpZ3VyZWQgc2l6ZSBvZiB0aGUgcGVy
-aW9kLgo+IDIuIG5vdGlmaWNhdGlvbnMgb2YgdGhlIGludGVycnVwdHMgZnJvbSBhY3R1YWwgaGFy
-ZHdhcmVzIHRvIERvbVUu4oCdCj4KPiBUaGlzIGlzIGltcGxlbWVudGVkIGFzIGEgY2hhbmdlIHRv
-IHRoZSBzbmRpZiBwcm90b2NvbCBhbmQgYWxsb3dzIHJlbW92aW5nCj4gcGVyaW9kIGVtdWxhdGlv
-bjoKPiAxLiBJbnRyb2R1Y2VkIGEgbmV3IGV2ZW50IGNoYW5uZWwgZnJvbSBiYWNrIHRvIGZyb250
-Cj4gMi4gTmV3IGV2ZW50IHdpdGggbnVtYmVyIG9mIGJ5dGVzIHBsYXllZC9jYXB0dXJlZCAoWEVO
-U05EX0VWVF9DVVJfUE9TLAo+ICAgICB0byBiZSB1c2VkIGZvciBzZW5kaW5nIHNuZF9wY21fcGVy
-aW9kX2VsYXBzZWQgYXQgZnJvbnRlbmQgKGluIExpbnV4Cj4gICAgIGltcGxlbWVudGF0aW9uKS4g
-U2VudCBpbiBieXRlcywgbm90IGZyYW1lcyB0byBtYWtlIHRoZSBwcm90b2NvbAo+ICAgICBnZW5l
-cmljIGFuZCBjb25zaXN0ZW50KQo+IDMuIE5ldyByZXF1ZXN0IGZvciBwbGF5YmFjay9jYXB0dXJl
-IGNvbnRyb2wgKFhFTlNORF9PUF9UUklHR0VSKSB3aXRoCj4gICAgIHN0YXJ0L3BhdXNlL3N0b3Av
-cmVzdW1lIHN1Yi1vcHMKPiA0LiBQbGF5YmFjay9jYXB0dXJlIGJ1ZmZlciBzaXplIGlzIHNldCBv
-biB0aGUgYmFja2VuZCBzaWRlIHZpYQo+ICAgICBYRU5TTkRfRklFTERfQlVGRkVSX1NJWkUgWGVu
-U3RvcmUgZW50cnkKPgo+IFdhaXRpbmcgZm9yIHlvdXIgdmFsdWFibGUgY29tbWVudHMsCj4KPiBU
-aGFuayB5b3UsCj4gT2xla3NhbmRyCj4KPiBbMV0gaHR0cHM6Ly9naXRodWIuY29tL2FuZHIyMDAw
-L2xpbnV4L2NvbW1pdHMvc25kX3Vwc3RyZWFtX3YxCj4gWzJdIGh0dHBzOi8vZ2l0Lmtlcm5lbC5v
-cmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdC90cmVlL2luY2x1
-ZGUveGVuL2ludGVyZmFjZS9pby9zbmRpZi5oCj4gWzNdIGh0dHBzOi8vZ2l0aHViLmNvbS94ZW4t
-dHJvb3BzL3NuZF9iZQo+IFs0XSBodHRwczovL2dpdGh1Yi5jb20veGVuLXRyb29wcy9saWJ4ZW5i
-ZQo+IFs1XSBodHRwczovL2xrbWwub3JnL2xrbWwvMjAxNy84LzcvMzYzCj4gWzZdIGh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxNy1BdWd1c3Qv
-MTIzNjE3Lmh0bWwKPiBbN10gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1h
-aWwvYWxzYS1kZXZlbC8yMDE3LUF1Z3VzdC8xMjM3NDQuaHRtbAo+Cj4KPiBPbGVrc2FuZHIgQW5k
-cnVzaGNoZW5rbyAoMik6Cj4gICAgc25kaWY6IGludHJvZHVjZSBwcm90b2NvbCB2ZXJzaW9uCj4g
-ICAgc25kaWY6IGFkZCBleHBsaWNpdCBiYWNrIGFuZCBmcm9udCBzeW5jaHJvbml6YXRpb24KPgo+
-ICAgeGVuL2luY2x1ZGUvcHVibGljL2lvL3NuZGlmLmggfCAxNzMgKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKystCj4gICAxIGZpbGUgY2hhbmdlZCwgMTcwIGluc2VydGlv
-bnMoKyksIDMgZGVsZXRpb25zKC0pCj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYWxzYS1kZXZlbAo=
+The values of bclk and fsync are inverted WRT the codec. But the existing
+solution already works for Broadwell, see the alsa-lib config:
+
+`alsa-lib/src/conf/topology/broadwell/broadwell.conf`
+
+This commit provides the backwards-compatible solution to fix this misuse.
+This commit goes in pair with the corresponding patch for alsa-lib.
+
+Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Pan Xiuli <xiuli.pan@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
+---
+ include/uapi/sound/asoc.h | 16 ++++++++++++++--
+ sound/soc/soc-topology.c  | 12 +++++++-----
+ 2 files changed, 21 insertions(+), 7 deletions(-)
+
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index 69c37ecbff7e..f0e5e21efa54 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -160,6 +160,18 @@
+ #define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
+ #define SND_SOC_TPLG_LNK_FLGBIT_VOICE_WAKEUP            (1 << 3)
+ 
++/* DAI topology BCLK parameter
++ * For the backwards capability, by default codec is bclk master
++ */
++#define SND_SOC_TPLG_BCLK_CM         0 /* codec is bclk master */
++#define SND_SOC_TPLG_BCLK_CS         1 /* codec is bclk slave */
++
++/* DAI topology FSYNC parameter
++ * For the backwards capability, by default codec is fsync master
++ */
++#define SND_SOC_TPLG_FSYNC_CM         0 /* codec is fsync master */
++#define SND_SOC_TPLG_FSYNC_CS         1 /* codec is fsync slave */
++
+ /*
+  * Block Header.
+  * This header precedes all object and object arrays below.
+@@ -315,8 +327,8 @@ struct snd_soc_tplg_hw_config {
+ 	__u8 clock_gated;	/* 1 if clock can be gated to save power */
+ 	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
+ 	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
+-	__u8 bclk_master;	/* 1 for master of BCLK, 0 for slave */
+-	__u8 fsync_master;	/* 1 for master of FSYNC, 0 for slave */
++	__u8 bclk_master;	/* SND_SOC_TPLG_BCLK_ value */
++	__u8 fsync_master;	/* SND_SOC_TPLG_FSYNC_ value */
+ 	__u8 mclk_direction;    /* 0 for input, 1 for output */
+ 	__le16 reserved;	/* for 32bit alignment */
+ 	__le32 mclk_rate;	/* MCLK or SYSCLK freqency in Hz */
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 01a50413c66f..c5bdc673b195 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1994,13 +1994,15 @@ static void set_link_hw_format(struct snd_soc_dai_link *link,
+ 			link->dai_fmt |= SND_SOC_DAIFMT_IB_IF;
+ 
+ 		/* clock masters */
+-		bclk_master = hw_config->bclk_master;
+-		fsync_master = hw_config->fsync_master;
+-		if (!bclk_master && !fsync_master)
++		bclk_master = (hw_config->bclk_master ==
++			       SND_SOC_TPLG_BCLK_CM);
++		fsync_master = (hw_config->fsync_master ==
++				SND_SOC_TPLG_FSYNC_CM);
++		if (bclk_master && fsync_master)
+ 			link->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
+-		else if (bclk_master && !fsync_master)
+-			link->dai_fmt |= SND_SOC_DAIFMT_CBS_CFM;
+ 		else if (!bclk_master && fsync_master)
++			link->dai_fmt |= SND_SOC_DAIFMT_CBS_CFM;
++		else if (bclk_master && !fsync_master)
+ 			link->dai_fmt |= SND_SOC_DAIFMT_CBM_CFS;
+ 		else
+ 			link->dai_fmt |= SND_SOC_DAIFMT_CBS_CFS;
+-- 
+2.13.6
