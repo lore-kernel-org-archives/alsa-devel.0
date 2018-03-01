@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 05/25] ASoC: qcom: qdsp6: Add support to
-	Q6AFE
-Date: Thu, 1 Mar 2018 20:59:40 +0000
-Message-ID: <20180301205940.GR12864@sirena.org.uk>
+Subject: Re: [PATCH v3 03/25] ASoC: qcom: qdsp6: Add common
+ qdsp6 helper functions
+Date: Thu, 1 Mar 2018 21:04:28 +0000
+Message-ID: <20180301210428.GS12864@sirena.org.uk>
 References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
- <20180213165837.1620-6-srinivas.kandagatla@linaro.org>
+ <20180213165837.1620-4-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8214453956114578680=="
+Content-Type: multipart/mixed; boundary="===============1650483308727754455=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id ADADE267C1A
- for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 21:59:42 +0100 (CET)
-In-Reply-To: <20180213165837.1620-6-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7E00C267C36
+ for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2018 22:04:30 +0100 (CET)
+In-Reply-To: <20180213165837.1620-4-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,229 +27,80 @@ Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.or
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8214453956114578680==
+--===============1650483308727754455==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="XAEV7zm15O60d1Zf"
+	protocol="application/pgp-signature"; boundary="/U0GMd1Pus0mbMSS"
 Content-Disposition: inline
 
 
---XAEV7zm15O60d1Zf
+--/U0GMd1Pus0mbMSS
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2018 at 04:58:17PM +0000, srinivas.kandagatla@linaro.org wr=
-ote:
+On Tue, Feb 13, 2018 at 04:58:15PM +0000, srinivas.kandagatla@linaro.org wrote:
 
-> +// SPDX-License-Identifier: GPL-2.0
-> +#ifndef __DT_BINDINGS_Q6_AFE_H__
-> +#define __DT_BINDINGS_Q6_AFE_H__
-> +
-> +/* Audio Front End (AFE) Ports */
-> +#define AFE_PORT_HDMI_RX	8
-> +
-> +#endif /* __DT_BINDINGS_Q6_AFE_H__ */
-
-Please use a C++ comment here as well for consistency, it looks more
-intentional.
-
-> +config SND_SOC_QDSP6_AFE
+> +config SND_SOC_QDSP6_COMMON
 > +	tristate
 > +	default n
 > +
 
-n is the default anyway, no need to specify it (I know some uses already
-slipped through here but it'd be better to fix those).
+Ah, the other default n that had snuck in was actually in an earlier
+patch in the series!  I'm fairly sure this has come up with earlier
+drivers you've submitted...
 
-> index 000000000000..0a5af06bb50e
-> --- /dev/null
-> +++ b/sound/soc/qcom/qdsp6/q6afe.c
-> @@ -0,0 +1,520 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2011-2017, The Linux Foundation
-> + * Copyright (c) 2018, Linaro Limited
-> + */
-
-Same here with the comment, just make the whole comment a C++ comment
-rather than having one comment using both styles.  Similar things apply
-elsewhere.
-
-> +/* Port map of index vs real hw port ids */
-> +static struct afe_port_map port_maps[AFE_PORT_MAX] =3D {
-> +	[AFE_PORT_HDMI_RX] =3D { AFE_PORT_ID_MULTICHAN_HDMI_RX,
-> +				AFE_PORT_HDMI_RX, 1, 1},
-> +};
-
-Is this not device specific in any way?  It looks likely to be.
-
-> +static struct q6afe_port *afe_find_port(struct q6afe *afe, int token)
+> +int q6dsp_map_channels(u8 ch_map[PCM_FORMAT_MAX_NUM_CHANNEL], int ch)
 > +{
-> +	struct q6afe_port *p =3D NULL;
+> +	memset(ch_map, 0, PCM_FORMAT_MAX_NUM_CHANNEL);
 > +
-> +	spin_lock(&afe->port_list_lock);
-> +	list_for_each_entry(p, &afe->port_list, node)
-> +		if (p->token =3D=3D token)
-> +			break;
-> +
-> +	spin_unlock(&afe->port_list_lock);
+> +	switch (ch) {
+> +	case 1:
+> +			ch_map[0] = PCM_CHANNEL_FC;
+> +		break;
+> +	case 2:
+> +			ch_map[0] = PCM_CHANNEL_FL;
+> +			ch_map[1] = PCM_CHANNEL_FR;
+> +		break;
 
-Why do we need to lock the port list, what are we protecting it against?
-We don't write here which suggests either there's some kind of race
-condition in this lookup or the lock is not doing anything.
+That's some really funky indentation there...
 
-> +static int afe_callback(struct apr_device *adev,
-> +			struct apr_client_message *data)
+> +static inline int q6dsp_errno(u32 error)
 > +{
-> +	struct q6afe *afe =3D dev_get_drvdata(&adev->dev);
-> +	struct aprv2_ibasic_rsp_result_t *res;
-> +	struct q6afe_port *port;
+> +	int ret = -EINVAL;
 > +
-> +	if (!data->payload_size)
-> +		return 0;
+> +	if (error <= ARRAY_SIZE(q6dsp_err_codes))
+> +		ret = q6dsp_err_codes[error].lnx_err_code;
 > +
-> +	res =3D data->payload;
-> +	if (data->opcode =3D=3D APR_BASIC_RSP_RESULT) {
-> +		if (res->status) {
-
-Shouldn't we use a switch statement here in case we want to handle
-something else?
-
-> +		switch (res->opcode) {
-> +		case AFE_PORT_CMD_SET_PARAM_V2:
-> +		case AFE_PORT_CMD_DEVICE_STOP:
-> +		case AFE_PORT_CMD_DEVICE_START:
-> +			afe->state =3D AFE_CMD_RESP_AVAIL;
-> +			port =3D afe_find_port(afe, data->token);
-> +			if (port)
-> +				wake_up(&port->wait);
-
-No locking here?  It seems a bit odd that the AFE global state is being
-set to say there's a response available but we wake a specific port.
-
-> +	ret =3D apr_send_pkt(afe->apr, data);
-> +	if (ret < 0) {
-> +		dev_err(afe->dev, "packet not transmitted\n");
-> +		ret =3D -EINVAL;
-> +		goto err;
-
-Why squash the error code here?  We don't even print it.
-
-> +	}
-> +
-> +	ret =3D wait_event_timeout(*wait, (afe->state =3D=3D AFE_CMD_RESP_AVAIL=
-),
-> +				 msecs_to_jiffies(TIMEOUT_MS));
-> +	if (!ret) {
-> +		ret =3D -ETIMEDOUT;
-> +	} else if (afe->status > 0) {
-> +		dev_err(afe->dev, "DSP returned error[%s]\n",
-> +		       q6dsp_strerror(afe->status));
-> +		ret =3D q6dsp_errno(afe->status);
-
-If we time out here and the DSP delivers a response later it looks like
-we'll get data corruption - the DSP will happily deliver the response
-into shared state.
-
-> +static int afe_port_start(struct q6afe_port *port,
-> +			  union afe_port_config *afe_config)
-> +{
-> +	struct afe_audioif_config_command config =3D {0,};
-> +	struct q6afe *afe =3D port->afe;
-> +	int port_id =3D port->id;
-> +	int ret, param_id =3D port->cfg_type;
-> +
-> +	config.port =3D *afe_config;
-> +
-> +	ret  =3D q6afe_port_set_param_v2(port, &config, param_id,
-> +				       sizeof(*afe_config));
-> +	if (ret) {
-> +		dev_err(afe->dev, "AFE enable for port 0x%x failed %d\n",
-> +			port_id, ret);
-> +		return ret;
-> +	}
-> +	return afe_send_cmd_port_start(port);
-
-Why not just inline this function here?  It appears to have only this
-user.
-
-> +	int index =3D 0;
-
-We set index to 0...
-> +
-> +	port_id =3D port->id;
-> +	index =3D port->token;
-
-=2E..the unconditionally overwrite it?
-
-> +/**
-> + * q6afe_port_start() - Start a afe port
-> + *
-> + * @port: Instance of port to start
-> + *
-> + * Return: Will be an negative on packet size on success.
-> + */
-> +int q6afe_port_start(struct q6afe_port *port)
-> +{
-> +	return afe_port_start(port, &port->port_cfg);
+> +	return ret;
 > +}
-> +EXPORT_SYMBOL_GPL(q6afe_port_start);
 
-This is the third level of wrapper for the port start command in this
-file.  Do we *really* need all these wrappers?
+Is the error handling such a hot path that we need to make the lookup
+functions (and the data table with the lookups) static inlines in a
+header or could we just move the functions and the data into a C file?
+Especially given the string lookups for the errors (which are really
+nice to have) it seems wasteful.
 
-> +struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
-> +{
-
-> +	port =3D devm_kzalloc(dev, sizeof(*port), GFP_KERNEL);
-> +	if (!port)
-> +		return ERR_PTR(-ENOMEM);
-
-The _port_get_ function is allocating data but...
-
-> +/**
-> + * q6afe_port_put() - Release port reference
-> + *
-> + * @port: Instance of port to put
-> + */
-> +void q6afe_port_put(struct q6afe_port *port)
-> +{
-> +	struct q6afe *afe =3D port->afe;
-> +
-> +	spin_lock(&afe->port_list_lock);
-> +	list_del(&port->node);
-> +	spin_unlock(&afe->port_list_lock);
-> +}
-> +EXPORT_SYMBOL_GPL(q6afe_port_put);
-
-=2E..the _port_put() function isn't freeing it.  That seems leaky.  I'm
-also a bit worried about this being a spinlock that we're using for
-allocation, and not even spin_lock_irqsave().  Presumably this is
-protecting against interrupts otherwise we'd not need a spinlock but
-for that to work we'd need the _irqsave()? =20
-
---XAEV7zm15O60d1Zf
+--/U0GMd1Pus0mbMSS
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqYabsACgkQJNaLcl1U
-h9B9qQf/WATKLGQAmk8TiQplsSUEPDHMqf6jgYzWoXgWRnT06NKKpBZnO9l2rmmz
-SsznY8MTqmf42p5w8l602GHRTB1KFc6Qj7sko3A2Bu7KbtQINdWiAtBbk0X6UGyF
-LBdgKSW4DM2xttG1FxvmqfBLGBLK0XUUCpjIn0+Z1ZAcAqWC3BmdoYMiy5tHYb13
-FIFNTA4ZWI06MMJXG2Xh1utLPJqfAnFhCpLXRyxWXRTyOiXmeeqm/h4n3IrcWXBe
-uFAOM34+0UQQ4370eBUWrtU/hQcpx6tqxaKSxIBFZK8VFMm8LXAF9Mi6kaJsjC5n
-4lroING3TpBGjikBw5/mjaBvxlq++w==
-=DqGK
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqYatsACgkQJNaLcl1U
+h9BlTQf9GxyaM1vTkhv2OQa2s4bd3M3jGz+u9SFXCfM90dcKPeEDbXWDaBKWXDBp
+VmUXFJwdYWrj3IYA5woFFLEitl3qam5OOfnOIWCHNmcA+sNM0JSCxiWVzmC9WUrK
+Lqpn9Ggy41EDKePr5b6Fz5Me2rpyq6ijANzRtQcsHo2CaAXjj3vmdrRccO5QD0aH
+0A1nZFC6xGwRRKC3MTHlOcH+1oAGw23VkRydKJLUxCCx5d5BlRWj7/bw0FPtK/3z
+TV/h38Zf1xDntDxJRAYPkBGSgvlILe+0qyCIHC5dHPfILceOFjXXXHsU7am8SKju
+KlyMhmcoyBGHOzYFHNx9ev5yoojkOA==
+=k4hS
 -----END PGP SIGNATURE-----
 
---XAEV7zm15O60d1Zf--
+--/U0GMd1Pus0mbMSS--
 
---===============8214453956114578680==
+--===============1650483308727754455==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8214453956114578680==--
+--===============1650483308727754455==--
