@@ -1,8 +1,8 @@
 From: <twischer@de.adit-jv.com>
-Subject: [PATCH - PCM 2/3] pcm: ioplug: Provide hw_avail helper
-	function for plugins
-Date: Fri, 2 Mar 2018 17:21:12 +0100
-Message-ID: <1520007674-14618-2-git-send-email-twischer@de.adit-jv.com>
+Subject: [PATCH - PCM 3/3] pcm: Provide areas_copy function
+	which handles buffer wrap around
+Date: Fri, 2 Mar 2018 17:21:13 +0100
+Message-ID: <1520007674-14618-3-git-send-email-twischer@de.adit-jv.com>
 References: <s5hfu5jizsv.wl-tiwai@suse.de>
  <1520007674-14618-1-git-send-email-twischer@de.adit-jv.com>
 Mime-Version: 1.0
@@ -10,8 +10,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [62.225.105.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 91681267440
- for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 17:21:46 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B12126743A
+ for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 17:22:00 +0100 (CET)
 In-Reply-To: <1520007674-14618-1-git-send-email-twischer@de.adit-jv.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,124 +28,62 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Timo Wischer <twischer@de.adit-jv.com>
 
-This function can be called without calling snd_pcm_avail_update().
-
-The call to snd_pcm_avail_update() can take some time.
-Therefore some developers would not like to call it from a real-time
-context (e.g. from JACK client context).
-
 Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
 
-diff --git a/include/pcm_ioplug.h b/include/pcm_ioplug.h
-index e75f973..778d9c6 100644
---- a/include/pcm_ioplug.h
-+++ b/include/pcm_ioplug.h
-@@ -234,6 +234,9 @@ int snd_pcm_ioplug_set_param_list(snd_pcm_ioplug_t *io, int type, unsigned int n
- /* change PCM status */
- int snd_pcm_ioplug_set_state(snd_pcm_ioplug_t *ioplug, snd_pcm_state_t state);
+diff --git a/include/pcm.h b/include/pcm.h
+index 2619c8c..d880a1c 100644
+--- a/include/pcm.h
++++ b/include/pcm.h
+@@ -1147,6 +1147,9 @@ int snd_pcm_area_copy(const snd_pcm_channel_area_t *dst_channel, snd_pcm_uframes
+ int snd_pcm_areas_copy(const snd_pcm_channel_area_t *dst_channels, snd_pcm_uframes_t dst_offset,
+ 		       const snd_pcm_channel_area_t *src_channels, snd_pcm_uframes_t src_offset,
+ 		       unsigned int channels, snd_pcm_uframes_t frames, snd_pcm_format_t format);
++int snd_pcm_areas_copy_wrap(const snd_pcm_channel_area_t *dst_channels, snd_pcm_uframes_t dst_offset, const snd_pcm_uframes_t dst_size,
++		       const snd_pcm_channel_area_t *src_channels, snd_pcm_uframes_t src_offset, const snd_pcm_uframes_t src_size,
++		       const unsigned int channels, snd_pcm_uframes_t frames, const snd_pcm_format_t format);
  
-+/* calucalte the available frames */
-+snd_pcm_uframes_t snd_pcm_ioplug_hw_avail(const snd_pcm_ioplug_t* const ioplug, const snd_pcm_uframes_t hw_ptr, const snd_pcm_uframes_t appl_ptr);
-+
  /** \} */
  
- #endif /* __ALSA_PCM_IOPLUG_H */
-diff --git a/src/pcm/pcm_ioplug.c b/src/pcm/pcm_ioplug.c
-index 9970646..a0cb778 100644
---- a/src/pcm/pcm_ioplug.c
-+++ b/src/pcm/pcm_ioplug.c
-@@ -1148,3 +1148,27 @@ int snd_pcm_ioplug_set_state(snd_pcm_ioplug_t *ioplug, snd_pcm_state_t state)
- 	ioplug->state = state;
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index d53ed98..77898db 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -3289,6 +3289,36 @@ int snd_pcm_areas_copy(const snd_pcm_channel_area_t *dst_areas, snd_pcm_uframes_
  	return 0;
  }
-+
-+/**
-+ * \brief Get the available frames. This function can be used to calculate the
-+ * the available frames before calling #snd_pcm_avail_update()
-+ * \param ioplug the ioplug handle
-+ * \param hw_ptr hardware pointer in frames
-+ * \param appl_ptr application pointer in frames
-+ * \return available frames for the hardware
-+ */
-+snd_pcm_uframes_t snd_pcm_ioplug_hw_avail(const snd_pcm_ioplug_t* const ioplug,
-+                                          const snd_pcm_uframes_t hw_ptr,
-+                                          const snd_pcm_uframes_t appl_ptr)
+ 
++int snd_pcm_areas_copy_wrap(const snd_pcm_channel_area_t *dst_channels, snd_pcm_uframes_t dst_offset, const snd_pcm_uframes_t dst_size,
++		       const snd_pcm_channel_area_t *src_channels, snd_pcm_uframes_t src_offset, const snd_pcm_uframes_t src_size,
++		       const unsigned int channels, snd_pcm_uframes_t frames, const snd_pcm_format_t format)
 +{
-+	/* available data/space which can be transfered by the user application */
-+	const snd_pcm_uframes_t user_avail = __snd_pcm_avail(ioplug->pcm, hw_ptr,
-+	                                                     appl_ptr);
++	while (frames > 0) {
++		int err;
++		snd_pcm_uframes_t xfer = frames;
++		/* do not write above the destination buffer */
++		if ( (dst_offset + xfer) > dst_size )
++			xfer = dst_size - dst_offset;
++		/* do not read from above the source buffer */
++		if ( (src_offset + xfer) > src_size )
++			xfer = src_size - src_offset;
++		err = snd_pcm_areas_copy(dst_channels, dst_offset, src_channels,
++		                              src_offset, channels, xfer, format);
++		if (err < 0)
++			return err;
 +
-+	if (user_avail > ioplug->pcm->buffer_size) {
-+		/* there was an Xrun */
-+		return 0;
++		dst_offset += xfer;
++		if (dst_offset >= dst_size)
++			dst_offset = 0;
++		src_offset += xfer;
++		if (src_offset >= src_size)
++			src_offset = 0;
++		frames -= xfer;
 +	}
-+	/* available data/space which can be transfered by the DMA */
-+	return ioplug->pcm->buffer_size - user_avail;
-+}
-diff --git a/src/pcm/pcm_local.h b/src/pcm/pcm_local.h
-index 3d95e17..b695b92 100644
---- a/src/pcm/pcm_local.h
-+++ b/src/pcm/pcm_local.h
-@@ -467,10 +467,12 @@ static inline int snd_pcm_check_error(snd_pcm_t *pcm, int err)
- 	return err;
- }
- 
--static inline snd_pcm_uframes_t snd_pcm_mmap_playback_avail(snd_pcm_t *pcm)
-+static inline snd_pcm_uframes_t __snd_pcm_playback_avail(snd_pcm_t *pcm,
-+                                                       const snd_pcm_uframes_t hw_ptr,
-+                                                       const snd_pcm_uframes_t appl_ptr)
- {
- 	snd_pcm_sframes_t avail;
--	avail = *pcm->hw.ptr + pcm->buffer_size - *pcm->appl.ptr;
-+	avail = hw_ptr + pcm->buffer_size - appl_ptr;
- 	if (avail < 0)
- 		avail += pcm->boundary;
- 	else if ((snd_pcm_uframes_t) avail >= pcm->boundary)
-@@ -478,21 +480,40 @@ static inline snd_pcm_uframes_t snd_pcm_mmap_playback_avail(snd_pcm_t *pcm)
- 	return avail;
- }
- 
--static inline snd_pcm_uframes_t snd_pcm_mmap_capture_avail(snd_pcm_t *pcm)
-+static inline snd_pcm_uframes_t snd_pcm_mmap_playback_avail(snd_pcm_t *pcm)
-+{
-+	return __snd_pcm_playback_avail(pcm, *pcm->hw.ptr, *pcm->appl.ptr);
++
++	return 0;
 +}
 +
-+static inline snd_pcm_uframes_t __snd_pcm_capture_avail(snd_pcm_t *pcm,
-+                                                      const snd_pcm_uframes_t hw_ptr,
-+                                                      const snd_pcm_uframes_t appl_ptr)
+ static void dump_one_param(snd_pcm_hw_params_t *params, unsigned int k, snd_output_t *out)
  {
- 	snd_pcm_sframes_t avail;
--	avail = *pcm->hw.ptr - *pcm->appl.ptr;
-+	avail = hw_ptr - appl_ptr;
- 	if (avail < 0)
- 		avail += pcm->boundary;
- 	return avail;
- }
- 
--static inline snd_pcm_uframes_t snd_pcm_mmap_avail(snd_pcm_t *pcm)
-+static inline snd_pcm_uframes_t snd_pcm_mmap_playback_avail(snd_pcm_t *pcm)
-+{
-+	return __snd_pcm_capture_avail(pcm, *pcm->hw.ptr, *pcm->appl.ptr);
-+}
-+
-+static inline snd_pcm_uframes_t __snd_pcm_avail(snd_pcm_t *pcm,
-+                                                const snd_pcm_uframes_t hw_ptr,
-+                                                const snd_pcm_uframes_t appl_ptr)
- {
- 	if (pcm->stream == SND_PCM_STREAM_PLAYBACK)
--		return snd_pcm_mmap_playback_avail(pcm);
-+		return snd_pcm_playback_avail(pcm, hw_ptr, appl_ptr);
- 	else
--		return snd_pcm_mmap_capture_avail(pcm);
-+		return snd_pcm_capture_avail(pcm, hw_ptr, appl_ptr);
-+}
-+
-+static inline snd_pcm_uframes_t snd_pcm_mmap_avail(snd_pcm_t *pcm)
-+{
-+	return __snd_pcm_avail(pcm, *pcm->hw.ptr, *pcm->appl.ptr);
- }
- 
- static inline snd_pcm_sframes_t snd_pcm_mmap_playback_hw_avail(snd_pcm_t *pcm)
+ 	snd_output_printf(out, "%s: ", snd_pcm_hw_param_name(k));
 -- 
 2.7.4
