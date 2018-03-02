@@ -1,18 +1,25 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: fix argument error in nau8824
-	machine" to the asoc tree
-Date: Fri, 02 Mar 2018 12:55:05 +0000
-Message-ID: <E1erkDJ-0004Rj-V4@debutante>
-References: <1519958714-30352-1-git-send-email-KCHSU0@nuvoton.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v2 06/32] ASoC: rt5651: Configure
+ jack-detect source through a device-property
+Date: Fri, 2 Mar 2018 13:58:53 +0100
+Message-ID: <bbe1b540-201a-bf6e-9008-0f8d5d4a2a9d@redhat.com>
+References: <20180225104713.4745-1-hdegoede@redhat.com>
+ <20180225104713.4745-7-hdegoede@redhat.com>
+ <20180301193046.GJ12864@sirena.org.uk>
+ <032d0e59-0d64-7df1-4fca-1709430b754c@redhat.com>
+ <2ac828b2-04e1-4b5f-f4db-a543ad5e3535@redhat.com>
+ <20180302121801.GE6255@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E44F22673CC
- for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 13:55:26 +0100 (CET)
-In-Reply-To: <1519958714-30352-1-git-send-email-KCHSU0@nuvoton.com>
+Received: from mail-wm0-f50.google.com (mail-wm0-f50.google.com [74.125.82.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4237B2673CC
+ for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 13:58:55 +0100 (CET)
+Received: by mail-wm0-f50.google.com with SMTP id i3so2879998wmi.4
+ for <alsa-devel@alsa-project.org>; Fri, 02 Mar 2018 04:58:55 -0800 (PST)
+In-Reply-To: <20180302121801.GE6255@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,78 +29,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, vinod.koul@intel.com, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, YHCHuang@nuvoton.com, WTLI@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Carlo Caione <carlo@endlessm.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi,
 
-   ASoC: Intel: fix argument error in nau8824 machine
+On 02-03-18 13:18, Mark Brown wrote:
+> On Fri, Mar 02, 2018 at 10:32:25AM +0100, Hans de Goede wrote:
+>> On 01-03-18 23:35, Hans de Goede wrote:
+> 
+>>> It is not _that_ fragile, but I agree that it would be good to add
+>>> a comment about not moving the property-parsing to the codec driver.
+> 
+>> So one other solution which comes to mind here is to move the
+>> snd_soc_card_jack_new() call into the codec driver's
+>> rt5651_apply_properties() function (conditional on a jack src being
+>> set in the properties).
+> 
+>> This would make the machine driver code look like this:
+>>
+>> 	props[cnt++] = PROPERTY_ENTRY_...
+>> 	props[cnt++] = PROPERTY_ENTRY_...
+>> 	props[cnt++] = PROPERTY_ENTRY_...
+>> 	props[cnt++] = PROPERTY_ENTRY_...
+> 
+>> 	ret = device_add_properties(codec->dev, props);
+>> 	if (ret)
+>> 		return ret;
+> 
+>> 	ret = rt5651_apply_properties(codec);
+>> 	if (ret)
+>> 		return ret;
+> 
+>> Which makes the ordering really clear without needing any
+>> comments.
+> 
+> It's still unusual to have something outside the driver trigger property
+> parsing, though the EXPORT_SYMBOL_GPL() would make that apparent.
+> 
+>> This will also make the jack-detect device-properties work with
+>> devicetree platforms without any changes to their platform code,
+>> which currently is not the case since the non Intel platform-code
+>> does not call snd_soc_component_set_jack().
+> 
+> What makes you claim that?  Any board with jack detection wired up will
+> call that function.  Not all boards have that configured of course but
+> there's absolutely nothing Intel specific about that interface.
 
-has been applied to the asoc tree at
+Right I'm not claiming the interface is Intel specific, what I'm trying
+to say is that the need for some code outside of the codec driver
+to create the jack means that adding jack-support to DT platforms
+cannot be done through just adding DT properties (once this patch
+is merged), it will still require platform code changes.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+That is fine, I was just thinking it would be convenient if DT
+platforms could lift on the jack-detect work being done for
+the rt5651 driver now with just some DT changes and no other
+changes required.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+>> Thinking more about this I believe that doing the
+>> snd_soc_card_jack_new() call inside the codec driver based on
+>> device-properties is a better solution then doing it in the
+>> machine driver.
+> 
+> No, that's really not a good idea.  Any jacks in the system are part of
+> the system specific wiring, they're not something that's intrinsic to
+> the CODEC.  Even with fairly basic setups you've got options like having
+> a headset jack or separate microphone and headphone jacks.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+OK, so if doing the jack creation in the machine-driver / platform
+code is by design and you want to keep things that way, then I
+assume that what needs changing for v3 of this patch is:
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+1) Split the patch in separate codec + machine-drv patches
+2) Add comments to make the ordering requirements clear to
+both the codec- and machine-driver.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Correct?
 
-Thanks,
-Mark
+Regards,
 
->From 3bf045d15f52529e8abe26543dbe22af44efb41a Mon Sep 17 00:00:00 2001
-From: John Hsu <KCHSU0@nuvoton.com>
-Date: Fri, 2 Mar 2018 10:45:14 +0800
-Subject: [PATCH] ASoC: Intel: fix argument error in nau8824 machine
-
-Fix the error: passing argument 1 of 'nau8824_enable_jack_detect'
-from incompatible pointer type
-  nau8824_enable_jack_detect(codec, jack);
-                             ^~~~~
-Which expects 'struct snd_soc_component *' but argument is of type
-'struct snd_soc_codec *'
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/boards/cht_bsw_nau8824.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/intel/boards/cht_bsw_nau8824.c b/sound/soc/intel/boards/cht_bsw_nau8824.c
-index 08d0b8128fab..680f2b3a24f9 100644
---- a/sound/soc/intel/boards/cht_bsw_nau8824.c
-+++ b/sound/soc/intel/boards/cht_bsw_nau8824.c
-@@ -103,8 +103,8 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- {
- 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
- 	struct snd_soc_jack *jack = &ctx->jack;
--	struct snd_soc_codec *codec = runtime->codec;
- 	struct snd_soc_dai *codec_dai = runtime->codec_dai;
-+	struct snd_soc_component *component = codec_dai->component;
- 	int ret, jack_type;
- 
- 	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
-@@ -134,7 +134,7 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- 	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
- 	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
- 
--	nau8824_enable_jack_detect(codec, jack);
-+	nau8824_enable_jack_detect(component, jack);
- 
- 	return ret;
- }
--- 
-2.16.2
+Hans
