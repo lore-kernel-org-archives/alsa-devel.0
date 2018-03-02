@@ -1,25 +1,15 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: regression v4.16 on Nokia N900: sound does not work
-Date: Fri, 2 Mar 2018 10:33:24 +0100
-Message-ID: <CACRpkda=deFSmk2iyrtde3Z-aj6rW9_jNfE3Ep4X=ejprGxRUw@mail.gmail.com>
-References: <20180224214617.GA22619@amd>
- <71aa88ec-d4df-b49c-7d73-27197f468491@leemhuis.info>
- <20180226131318.GA14045@amd>
- <CAEnQRZBbMTeaxb+=AaarX6PSGasfVjtAUdpbPvJavZyTRMpdgQ@mail.gmail.com>
- <20180226231336.GA18565@amd>
- <CACRpkdarR_7HqGMPwfa8YpG9wnFs5mJrNwuctycn=MrdwaRxyw@mail.gmail.com>
- <20180302091025.GC30267@amd>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH] ASoC: Intel: Fix cht_bsw_nau8824 machine
+	driver build error
+Date: Fri,  2 Mar 2018 11:22:58 +0100
+Message-ID: <20180302102258.10081-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f67.google.com (mail-it0-f67.google.com
- [209.85.214.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 569BD267CD2
- for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 10:33:26 +0100 (CET)
-Received: by mail-it0-f67.google.com with SMTP id d13so1138639itf.0
- for <alsa-devel@alsa-project.org>; Fri, 02 Mar 2018 01:33:25 -0800 (PST)
-In-Reply-To: <20180302091025.GC30267@amd>
+Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id 424EB267261
+ for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 11:23:01 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,47 +19,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pavel Machek <pavel@ucw.cz>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, ext Tony Lindgren <tony@atomide.com>, =?UTF-8?B?TWlja3Vsw6HFoSBRd2VydHo=?= <abcloriens@gmail.com>, Sebastian Reichel <sre@kernel.org>, Martijn Braam <martijn@brixit.nl>, =?UTF-8?Q?Filip_Matijevi=C4=87?= <filip.matijevic.pz@gmail.com>, Patrik Bachan <patrikbachan@gmail.com>, Ivajlo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Kevin Hilman <khilman@kernel.org>, serge@hallyn.com, Mark Brown <broonie@kernel.org>, Linux-OMAP <linux-omap@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Daniel Baluta <daniel.baluta@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, kernel list <linux-kernel@vger.kernel.org>, "Andrew F . Davis" <afd@ti.com>, Thorsten Leemhuis <regressions@leemhuis.info>, clayton@craftyguy.net, Sakari Ailus <sakari.ailus@linux.intel.com>, =?UTF-8?Q?Pali_Roh=C3=
+To: Mark Brown <broonie@kernel.org>
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, John Hsu <KCHSU0@nuvoton.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 2, 2018 at 10:10 AM, Pavel Machek <pavel@ucw.cz> wrote:
-> Linux-Regression-ID: lr#4b650f
->
-> On Tue 2018-02-27 09:43:32, Linus Walleij wrote:
->> On Tue, Feb 27, 2018 at 12:13 AM, Pavel Machek <pavel@ucw.cz> wrote:
->>
->> > I did git bisect, and the winner seems to be:
->> >
->> > pavel@duo:/data/l/linux-n900$ git bisect bad
->> > c85823390215e52d68d3826df92a447ed31e5c80 is the first bad commit
->> > commit c85823390215e52d68d3826df92a447ed31e5c80
->> > Author: Linus Walleij <linus.walleij@linaro.org>
->> > Date:   Wed Dec 27 16:37:44 2017 +0100
->> >
->> >     gpio: of: Support SPI nonstandard GPIO properties
->>
->> I have fixes queued for this, tried to send a pull request yesterday
->> but it turns out the fixes need fixing... OK I'm onto it anyways.
->
-> Do you have any updates? Is there way to fix dts so that this does not
-> trigger on N900?
->
-> If this is taking longer to fix, should c85823390215 be reverted in
-> the meantime? It does not seem particulary important/urgent...
+The cht_bsw_nau8824 machine driver is passing snd_soc_codec to
+nau8824_enable_jack_detect(), but that expects a snd_soc_component
+as argument, causing a compile error.
 
-No patience between the v4.16 release candidates eh ;)
+This commit fixes this.
 
-commit 6662ae6af82df10259a70c7569b4c12ea7f3ba93
-("gpiolib: Keep returning EPROBE_DEFER when we should")
+Fixes: 5b00ce63e07f ("ASoC: Intel: add nau8824 sound card")
+Cc: John Hsu <KCHSU0@nuvoton.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ sound/soc/intel/boards/cht_bsw_nau8824.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-and
-
-commit ce27fb2c56db6ccfe8099343bb4afdab15e77e7b
-("gpio: Handle deferred probing in of_find_gpio() properly")
-
-that are both in Torvalds' tree since yesterday should be fixing
-this, I think? Did you try just using the upstream HEAD?
-
-Yours,
-Linus Walleij
+diff --git a/sound/soc/intel/boards/cht_bsw_nau8824.c b/sound/soc/intel/boards/cht_bsw_nau8824.c
+index 08d0b8128fab..5913ad159cc1 100644
+--- a/sound/soc/intel/boards/cht_bsw_nau8824.c
++++ b/sound/soc/intel/boards/cht_bsw_nau8824.c
+@@ -103,7 +103,6 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ {
+ 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
+ 	struct snd_soc_jack *jack = &ctx->jack;
+-	struct snd_soc_codec *codec = runtime->codec;
+ 	struct snd_soc_dai *codec_dai = runtime->codec_dai;
+ 	int ret, jack_type;
+ 
+@@ -134,7 +133,7 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
+ 	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
+ 
+-	nau8824_enable_jack_detect(codec, jack);
++	nau8824_enable_jack_detect(codec_dai->component, jack);
+ 
+ 	return ret;
+ }
+-- 
+2.14.3
