@@ -1,16 +1,16 @@
 From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
-Subject: [PATCH v2 1/3] ALSA: hdac: Remove usage of struct
-	hdac_ext_device and use hdac_device instead
-Date: Fri,  2 Mar 2018 16:21:54 +0530
-Message-ID: <1519987916-5436-2-git-send-email-rakesh.a.ughreja@intel.com>
+Subject: [PATCH v2 2/3] ALSA: hdac: Remove usage of struct
+	hdac_ext_bus and use hdac_bus instead
+Date: Fri,  2 Mar 2018 16:21:55 +0530
+Message-ID: <1519987916-5436-3-git-send-email-rakesh.a.ughreja@intel.com>
 References: <1519987916-5436-1-git-send-email-rakesh.a.ughreja@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 0BA7A267CE5
- for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 11:49:38 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 395FC267CE8
+ for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 11:49:42 +0100 (CET)
 In-Reply-To: <1519987916-5436-1-git-send-email-rakesh.a.ughreja@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,1357 +25,2175 @@ To: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, liam.r.girdw
 Cc: vinod.koul@intel.com, patches.audio@intel.com, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch removes the hdac_ext_device structure. The legacy and
+This patch removes the hdac_ext_bus structure. The legacy and
 enhanced HDaudio capabilities can be handled in a backward-compatible
 way without separate definitions.
 
-Follow-up patches in this series handle the bus and driver definitions.
+Follow-up patches in this series handle the driver definition.
 
 Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 ---
- include/sound/hdaudio_ext.h  |  36 +---
- sound/hda/ext/hdac_ext_bus.c |  25 ++-
- sound/soc/codecs/hdac_hdmi.c | 396 +++++++++++++++++++++----------------------
- 3 files changed, 204 insertions(+), 253 deletions(-)
+ include/sound/hdaudio.h                |  15 +++
+ include/sound/hdaudio_ext.h            |  74 +++++---------
+ sound/hda/ext/hdac_ext_bus.c           |  27 +++--
+ sound/hda/ext/hdac_ext_controller.c    |  55 +++++-----
+ sound/hda/ext/hdac_ext_stream.c        | 104 +++++++++----------
+ sound/soc/codecs/hdac_hdmi.c           |  22 ++--
+ sound/soc/intel/skylake/skl-messages.c |  50 ++++-----
+ sound/soc/intel/skylake/skl-nhlt.c     |   8 +-
+ sound/soc/intel/skylake/skl-pcm.c      | 112 ++++++++++-----------
+ sound/soc/intel/skylake/skl-topology.c |  20 ++--
+ sound/soc/intel/skylake/skl-topology.h |   6 +-
+ sound/soc/intel/skylake/skl.c          | 178 +++++++++++++++------------------
+ sound/soc/intel/skylake/skl.h          |   7 +-
+ 13 files changed, 306 insertions(+), 372 deletions(-)
 
+diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+index 4c93ff5..548885a 100644
+--- a/include/sound/hdaudio.h
++++ b/include/sound/hdaudio.h
+@@ -253,6 +253,11 @@ struct hdac_rb {
+  * @mlcap: MultiLink capabilities pointer
+  * @gtscap: gts capabilities pointer
+  * @drsmcap: dma resume capabilities pointer
++ * @num_streams: streams supported
++ * @idx: HDA link index
++ * @hlink_list: link list of HDA links
++ * @lock: lock for link mgmt
++ * @cmd_dma_state: state of cmd DMAs: CORB and RIRB
+  */
+ struct hdac_bus {
+ 	struct device *dev;
+@@ -320,6 +325,16 @@ struct hdac_bus {
+ 	/* i915 component interface */
+ 	struct i915_audio_component *audio_component;
+ 	int i915_power_refcount;
++
++	/* parameters required for enhanced capabilities */
++	int num_streams;
++	int idx;
++
++	struct list_head hlink_list;
++
++	struct mutex lock;
++	bool cmd_dma_state;
++
+ };
+ 
+ int snd_hdac_bus_init(struct hdac_bus *bus, struct device *dev,
 diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
-index 9c14e21..c1a5ad0 100644
+index c1a5ad0..e5b0cd1 100644
 --- a/include/sound/hdaudio_ext.h
 +++ b/include/sound/hdaudio_ext.h
-@@ -181,48 +181,20 @@ struct hda_dai_map {
- 	u32	maxbps;
- };
+@@ -4,38 +4,14 @@
  
--#define HDA_MAX_NIDS 16
--
+ #include <sound/hdaudio.h>
+ 
 -/**
-- * struct hdac_ext_device - HDAC Ext device
+- * hdac_ext_bus: HDAC extended bus for extended HDA caps
 - *
-- * @hdac: hdac core device
-- * @nid_list - the dai map which matches the dai-name with the nid
-- * @map_cur_idx - the idx in use in dai_map
-- * @ops - the hda codec ops common to all codec drivers
-- * @pvt_data - private data, for asoc contains asoc codec object
+- * @bus: hdac bus
+- * @num_streams: streams supported
+- * @hlink_list: link list of HDA links
+- * @lock: lock for link mgmt
+- * @cmd_dma_state: state of cmd DMAs: CORB and RIRB
 - */
--struct hdac_ext_device {
--	struct hdac_device hdev;
--	struct hdac_ext_bus *ebus;
+-struct hdac_ext_bus {
+-	struct hdac_bus bus;
+-	int num_streams;
+-	int idx;
 -
--	/* soc-dai to nid map */
--	struct hda_dai_map nid_list[HDA_MAX_NIDS];
--	unsigned int map_cur_idx;
+-	struct list_head hlink_list;
 -
--	/* codec ops */
--	struct hdac_ext_codec_ops ops;
--
--	struct snd_card *card;
--	void *scodec;
--	void *private_data;
+-	struct mutex lock;
+-	bool cmd_dma_state;
 -};
 -
- struct hdac_ext_dma_params {
- 	u32 format;
- 	u8 stream_tag;
- };
--#define to_ehdac_device(dev) (container_of((dev), \
--				 struct hdac_ext_device, hdev))
-+
- /*
-  * HD-audio codec base driver
-  */
- struct hdac_ext_driver {
- 	struct hdac_driver hdac;
+-int snd_hdac_ext_bus_init(struct hdac_ext_bus *sbus, struct device *dev,
++int snd_hdac_ext_bus_init(struct hdac_bus *bus, struct device *dev,
+ 		      const struct hdac_bus_ops *ops,
+ 		      const struct hdac_io_ops *io_ops);
  
--	int	(*probe)(struct hdac_ext_device *dev);
--	int	(*remove)(struct hdac_ext_device *dev);
--	void	(*shutdown)(struct hdac_ext_device *dev);
-+	int	(*probe)(struct hdac_device *dev);
-+	int	(*remove)(struct hdac_device *dev);
-+	void	(*shutdown)(struct hdac_device *dev);
- };
+-void snd_hdac_ext_bus_exit(struct hdac_ext_bus *sbus);
+-int snd_hdac_ext_bus_device_init(struct hdac_ext_bus *sbus, int addr);
++void snd_hdac_ext_bus_exit(struct hdac_bus *bus);
++int snd_hdac_ext_bus_device_init(struct hdac_bus *bus, int addr);
+ void snd_hdac_ext_bus_device_exit(struct hdac_device *hdev);
+-void snd_hdac_ext_bus_device_remove(struct hdac_ext_bus *ebus);
+-
+-#define ebus_to_hbus(ebus)	(&(ebus)->bus)
+-#define hbus_to_ebus(_bus) \
+-	container_of(_bus, struct hdac_ext_bus, bus)
++void snd_hdac_ext_bus_device_remove(struct hdac_bus *bus);
  
- int snd_hda_ext_driver_register(struct hdac_ext_driver *drv);
+ #define HDA_CODEC_REV_EXT_ENTRY(_vid, _rev, _name, drv_data) \
+ 	{ .vendor_id = (_vid), .rev_id = (_rev), .name = (_name), \
+@@ -44,14 +20,14 @@ void snd_hdac_ext_bus_device_remove(struct hdac_ext_bus *ebus);
+ #define HDA_CODEC_EXT_ENTRY(_vid, _revid, _name, _drv_data) \
+ 	HDA_CODEC_REV_EXT_ENTRY(_vid, _revid, _name, _drv_data)
+ 
+-void snd_hdac_ext_bus_ppcap_enable(struct hdac_ext_bus *chip, bool enable);
+-void snd_hdac_ext_bus_ppcap_int_enable(struct hdac_ext_bus *chip, bool enable);
++void snd_hdac_ext_bus_ppcap_enable(struct hdac_bus *chip, bool enable);
++void snd_hdac_ext_bus_ppcap_int_enable(struct hdac_bus *chip, bool enable);
+ 
+-void snd_hdac_ext_stream_spbcap_enable(struct hdac_ext_bus *chip,
++void snd_hdac_ext_stream_spbcap_enable(struct hdac_bus *chip,
+ 				 bool enable, int index);
+ 
+-int snd_hdac_ext_bus_get_ml_capabilities(struct hdac_ext_bus *bus);
+-struct hdac_ext_link *snd_hdac_ext_bus_get_link(struct hdac_ext_bus *bus,
++int snd_hdac_ext_bus_get_ml_capabilities(struct hdac_bus *bus);
++struct hdac_ext_link *snd_hdac_ext_bus_get_link(struct hdac_bus *bus,
+ 						const char *codec_name);
+ 
+ enum hdac_ext_stream_type {
+@@ -100,28 +76,28 @@ struct hdac_ext_stream {
+ #define stream_to_hdac_ext_stream(s) \
+ 	container_of(s, struct hdac_ext_stream, hstream)
+ 
+-void snd_hdac_ext_stream_init(struct hdac_ext_bus *bus,
++void snd_hdac_ext_stream_init(struct hdac_bus *bus,
+ 				struct hdac_ext_stream *stream, int idx,
+ 				int direction, int tag);
+-int snd_hdac_ext_stream_init_all(struct hdac_ext_bus *ebus, int start_idx,
++int snd_hdac_ext_stream_init_all(struct hdac_bus *bus, int start_idx,
+ 		int num_stream, int dir);
+-void snd_hdac_stream_free_all(struct hdac_ext_bus *ebus);
+-void snd_hdac_link_free_all(struct hdac_ext_bus *ebus);
+-struct hdac_ext_stream *snd_hdac_ext_stream_assign(struct hdac_ext_bus *bus,
++void snd_hdac_stream_free_all(struct hdac_bus *bus);
++void snd_hdac_link_free_all(struct hdac_bus *bus);
++struct hdac_ext_stream *snd_hdac_ext_stream_assign(struct hdac_bus *bus,
+ 					   struct snd_pcm_substream *substream,
+ 					   int type);
+ void snd_hdac_ext_stream_release(struct hdac_ext_stream *azx_dev, int type);
+-void snd_hdac_ext_stream_decouple(struct hdac_ext_bus *bus,
++void snd_hdac_ext_stream_decouple(struct hdac_bus *bus,
+ 				struct hdac_ext_stream *azx_dev, bool decouple);
+-void snd_hdac_ext_stop_streams(struct hdac_ext_bus *sbus);
++void snd_hdac_ext_stop_streams(struct hdac_bus *bus);
+ 
+-int snd_hdac_ext_stream_set_spib(struct hdac_ext_bus *ebus,
++int snd_hdac_ext_stream_set_spib(struct hdac_bus *bus,
+ 				 struct hdac_ext_stream *stream, u32 value);
+-int snd_hdac_ext_stream_get_spbmaxfifo(struct hdac_ext_bus *ebus,
++int snd_hdac_ext_stream_get_spbmaxfifo(struct hdac_bus *bus,
+ 				 struct hdac_ext_stream *stream);
+-void snd_hdac_ext_stream_drsm_enable(struct hdac_ext_bus *ebus,
++void snd_hdac_ext_stream_drsm_enable(struct hdac_bus *bus,
+ 				bool enable, int index);
+-int snd_hdac_ext_stream_set_dpibr(struct hdac_ext_bus *ebus,
++int snd_hdac_ext_stream_set_dpibr(struct hdac_bus *bus,
+ 				struct hdac_ext_stream *stream, u32 value);
+ int snd_hdac_ext_stream_set_lpib(struct hdac_ext_stream *stream, u32 value);
+ 
+@@ -144,17 +120,15 @@ struct hdac_ext_link {
+ 
+ int snd_hdac_ext_bus_link_power_up(struct hdac_ext_link *link);
+ int snd_hdac_ext_bus_link_power_down(struct hdac_ext_link *link);
+-int snd_hdac_ext_bus_link_power_up_all(struct hdac_ext_bus *ebus);
+-int snd_hdac_ext_bus_link_power_down_all(struct hdac_ext_bus *ebus);
++int snd_hdac_ext_bus_link_power_up_all(struct hdac_bus *bus);
++int snd_hdac_ext_bus_link_power_down_all(struct hdac_bus *bus);
+ void snd_hdac_ext_link_set_stream_id(struct hdac_ext_link *link,
+ 				 int stream);
+ void snd_hdac_ext_link_clear_stream_id(struct hdac_ext_link *link,
+ 				 int stream);
+ 
+-int snd_hdac_ext_bus_link_get(struct hdac_ext_bus *ebus,
+-				struct hdac_ext_link *link);
+-int snd_hdac_ext_bus_link_put(struct hdac_ext_bus *ebus,
+-				struct hdac_ext_link *link);
++int snd_hdac_ext_bus_link_get(struct hdac_bus *bus, struct hdac_ext_link *link);
++int snd_hdac_ext_bus_link_put(struct hdac_bus *bus, struct hdac_ext_link *link);
+ 
+ /* update register macro */
+ #define snd_hdac_updatel(addr, reg, mask, val)		\
 diff --git a/sound/hda/ext/hdac_ext_bus.c b/sound/hda/ext/hdac_ext_bus.c
-index 0daf313..0e4823f 100644
+index 0e4823f..77547ed 100644
 --- a/sound/hda/ext/hdac_ext_bus.c
 +++ b/sound/hda/ext/hdac_ext_bus.c
-@@ -137,17 +137,16 @@ static void default_release(struct device *dev)
+@@ -87,7 +87,7 @@ static const struct hdac_io_ops hdac_ext_default_io = {
+  *
+  * Returns 0 if successful, or a negative error code.
   */
- int snd_hdac_ext_bus_device_init(struct hdac_ext_bus *ebus, int addr)
+-int snd_hdac_ext_bus_init(struct hdac_ext_bus *ebus, struct device *dev,
++int snd_hdac_ext_bus_init(struct hdac_bus *bus, struct device *dev,
+ 			const struct hdac_bus_ops *ops,
+ 			const struct hdac_io_ops *io_ops)
  {
--	struct hdac_ext_device *edev;
+@@ -98,15 +98,15 @@ int snd_hdac_ext_bus_init(struct hdac_ext_bus *ebus, struct device *dev,
+ 	if (io_ops == NULL)
+ 		io_ops = &hdac_ext_default_io;
+ 
+-	ret = snd_hdac_bus_init(&ebus->bus, dev, ops, io_ops);
++	ret = snd_hdac_bus_init(bus, dev, ops, io_ops);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	INIT_LIST_HEAD(&ebus->hlink_list);
+-	ebus->idx = idx++;
++	INIT_LIST_HEAD(&bus->hlink_list);
++	bus->idx = idx++;
+ 
+-	mutex_init(&ebus->lock);
+-	ebus->cmd_dma_state = true;
++	mutex_init(&bus->lock);
++	bus->cmd_dma_state = true;
+ 
+ 	return 0;
+ }
+@@ -116,10 +116,10 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_init);
+  * snd_hdac_ext_bus_exit - clean up a HD-audio extended bus
+  * @ebus: the pointer to extended bus object
+  */
+-void snd_hdac_ext_bus_exit(struct hdac_ext_bus *ebus)
++void snd_hdac_ext_bus_exit(struct hdac_bus *bus)
+ {
+-	snd_hdac_bus_exit(&ebus->bus);
+-	WARN_ON(!list_empty(&ebus->hlink_list));
++	snd_hdac_bus_exit(bus);
++	WARN_ON(!list_empty(&bus->hlink_list));
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_exit);
+ 
+@@ -135,10 +135,9 @@ static void default_release(struct device *dev)
+  *
+  * Returns zero for success or a negative error code.
+  */
+-int snd_hdac_ext_bus_device_init(struct hdac_ext_bus *ebus, int addr)
++int snd_hdac_ext_bus_device_init(struct hdac_bus *bus, int addr)
+ {
  	struct hdac_device *hdev = NULL;
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
  	char name[15];
  	int ret;
  
--	edev = kzalloc(sizeof(*edev), GFP_KERNEL);
--	if (!edev)
-+	hdev = kzalloc(sizeof(*hdev), GFP_KERNEL);
-+	if (!hdev)
- 		return -ENOMEM;
--	hdev = &edev->hdev;
--	edev->ebus = ebus;
-+
-+	hdev->bus = bus;
+@@ -148,7 +147,7 @@ int snd_hdac_ext_bus_device_init(struct hdac_ext_bus *ebus, int addr)
  
- 	snprintf(name, sizeof(name), "ehdaudio%dD%d", ebus->idx, addr);
+ 	hdev->bus = bus;
  
-@@ -176,10 +175,8 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_device_init);
+-	snprintf(name, sizeof(name), "ehdaudio%dD%d", ebus->idx, addr);
++	snprintf(name, sizeof(name), "ehdaudio%dD%d", bus->idx, addr);
+ 
+ 	ret  = snd_hdac_device_init(hdev, bus, name, addr);
+ 	if (ret < 0) {
+@@ -185,14 +184,14 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_device_exit);
+  *
+  * @ebus: HD-audio extended bus
   */
- void snd_hdac_ext_bus_device_exit(struct hdac_device *hdev)
+-void snd_hdac_ext_bus_device_remove(struct hdac_ext_bus *ebus)
++void snd_hdac_ext_bus_device_remove(struct hdac_bus *bus)
  {
--	struct hdac_ext_device *edev = to_ehdac_device(hdev);
--
- 	snd_hdac_device_exit(hdev);
--	kfree(edev);
-+	kfree(hdev);
- }
- EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_device_exit);
- 
-@@ -212,27 +209,25 @@ static inline struct hdac_ext_driver *get_edrv(struct device *dev)
- 	return edrv;
- }
- 
--static inline struct hdac_ext_device *get_edev(struct device *dev)
-+static inline struct hdac_device *get_hdev(struct device *dev)
- {
- 	struct hdac_device *hdev = dev_to_hdac_dev(dev);
--	struct hdac_ext_device *edev = to_ehdac_device(hdev);
--
--	return edev;
-+	return hdev;
- }
- 
- static int hda_ext_drv_probe(struct device *dev)
- {
--	return (get_edrv(dev))->probe(get_edev(dev));
-+	return (get_edrv(dev))->probe(get_hdev(dev));
- }
- 
- static int hdac_ext_drv_remove(struct device *dev)
- {
--	return (get_edrv(dev))->remove(get_edev(dev));
-+	return (get_edrv(dev))->remove(get_hdev(dev));
- }
- 
- static void hdac_ext_drv_shutdown(struct device *dev)
- {
--	return (get_edrv(dev))->shutdown(get_edev(dev));
-+	return (get_edrv(dev))->shutdown(get_hdev(dev));
- }
- 
- /**
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 84f7a7a..4cf4fa3 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -85,7 +85,7 @@ struct hdac_hdmi_pin {
- 	bool mst_capable;
- 	struct hdac_hdmi_port *ports;
- 	int num_ports;
--	struct hdac_ext_device *edev;
-+	struct hdac_device *hdev;
- };
- 
- struct hdac_hdmi_port {
-@@ -126,6 +126,9 @@ struct hdac_hdmi_drv_data {
- };
- 
- struct hdac_hdmi_priv {
-+	struct hdac_device *hdev;
-+	struct snd_soc_component *component;
-+	struct snd_card *card;
- 	struct hdac_hdmi_dai_port_map dai_map[HDA_MAX_CVTS];
- 	struct list_head pin_list;
- 	struct list_head cvt_list;
-@@ -139,7 +142,7 @@ struct hdac_hdmi_priv {
- 	struct snd_soc_dai_driver *dai_drv;
- };
- 
--#define hdev_to_hdmi_priv(_hdev) ((to_ehdac_device(_hdev))->private_data)
-+#define hdev_to_hdmi_priv(_hdev) dev_get_drvdata(&_hdev->dev)
- 
- static struct hdac_hdmi_pcm *
- hdac_hdmi_get_pcm_from_cvt(struct hdac_hdmi_priv *hdmi,
-@@ -158,7 +161,7 @@ hdac_hdmi_get_pcm_from_cvt(struct hdac_hdmi_priv *hdmi,
- static void hdac_hdmi_jack_report(struct hdac_hdmi_pcm *pcm,
- 		struct hdac_hdmi_port *port, bool is_connect)
- {
--	struct hdac_ext_device *edev = port->pin->edev;
-+	struct hdac_device *hdev = port->pin->hdev;
- 
- 	if (is_connect)
- 		snd_soc_dapm_enable_pin(port->dapm, port->jack_pin);
-@@ -172,7 +175,7 @@ static void hdac_hdmi_jack_report(struct hdac_hdmi_pcm *pcm,
- 		 * ports.
- 		 */
- 		if (pcm->jack_event == 0) {
--			dev_dbg(&edev->hdev.dev,
-+			dev_dbg(&hdev->dev,
- 					"jack report for pcm=%d\n",
- 					pcm->pcm_id);
- 			snd_soc_jack_report(pcm->jack, SND_JACK_AVOUT,
-@@ -198,19 +201,18 @@ static void hdac_hdmi_jack_report(struct hdac_hdmi_pcm *pcm,
- /*
-  * Get the no devices that can be connected to a port on the Pin widget.
-  */
--static int hdac_hdmi_get_port_len(struct hdac_ext_device *edev, hda_nid_t nid)
-+static int hdac_hdmi_get_port_len(struct hdac_device *hdev, hda_nid_t nid)
- {
- 	unsigned int caps;
- 	unsigned int type, param;
- 
--	caps = get_wcaps(&edev->hdev, nid);
-+	caps = get_wcaps(hdev, nid);
- 	type = get_wcaps_type(caps);
- 
- 	if (!(caps & AC_WCAP_DIGITAL) || (type != AC_WID_PIN))
- 		return 0;
- 
--	param = snd_hdac_read_parm_uncached(&edev->hdev, nid,
--					AC_PAR_DEVLIST_LEN);
-+	param = snd_hdac_read_parm_uncached(hdev, nid, AC_PAR_DEVLIST_LEN);
- 	if (param == -1)
- 		return param;
- 
-@@ -222,10 +224,10 @@ static int hdac_hdmi_get_port_len(struct hdac_ext_device *edev, hda_nid_t nid)
-  * id selected on the pin. Return 0 means the first port entry
-  * is selected or MST is not supported.
-  */
--static int hdac_hdmi_port_select_get(struct hdac_ext_device *edev,
-+static int hdac_hdmi_port_select_get(struct hdac_device *hdev,
- 					struct hdac_hdmi_port *port)
- {
--	return snd_hdac_codec_read(&edev->hdev, port->pin->nid,
-+	return snd_hdac_codec_read(hdev, port->pin->nid,
- 				0, AC_VERB_GET_DEVICE_SEL, 0);
- }
- 
-@@ -233,7 +235,7 @@ static int hdac_hdmi_port_select_get(struct hdac_ext_device *edev,
-  * Sets the selected port entry for the configuring Pin widget verb.
-  * returns error if port set is not equal to port get otherwise success
-  */
--static int hdac_hdmi_port_select_set(struct hdac_ext_device *edev,
-+static int hdac_hdmi_port_select_set(struct hdac_device *hdev,
- 					struct hdac_hdmi_port *port)
- {
- 	int num_ports;
-@@ -242,8 +244,7 @@ static int hdac_hdmi_port_select_set(struct hdac_ext_device *edev,
- 		return 0;
- 
- 	/* AC_PAR_DEVLIST_LEN is 0 based. */
--	num_ports = hdac_hdmi_get_port_len(edev, port->pin->nid);
--
-+	num_ports = hdac_hdmi_get_port_len(hdev, port->pin->nid);
- 	if (num_ports < 0)
- 		return -EIO;
+ 	struct hdac_device *codec, *__codec;
  	/*
-@@ -253,13 +254,13 @@ static int hdac_hdmi_port_select_set(struct hdac_ext_device *edev,
- 	if (num_ports + 1  < port->id)
- 		return 0;
- 
--	snd_hdac_codec_write(&edev->hdev, port->pin->nid, 0,
-+	snd_hdac_codec_write(hdev, port->pin->nid, 0,
- 			AC_VERB_SET_DEVICE_SEL, port->id);
- 
--	if (port->id != hdac_hdmi_port_select_get(edev, port))
-+	if (port->id != hdac_hdmi_port_select_get(hdev, port))
- 		return -EIO;
- 
--	dev_dbg(&edev->hdev.dev, "Selected the port=%d\n", port->id);
-+	dev_dbg(&hdev->dev, "Selected the port=%d\n", port->id);
- 
- 	return 0;
- }
-@@ -277,13 +278,6 @@ static struct hdac_hdmi_pcm *get_hdmi_pcm_from_id(struct hdac_hdmi_priv *hdmi,
- 	return NULL;
- }
- 
--static inline struct hdac_ext_device *to_hda_ext_device(struct device *dev)
--{
--	struct hdac_device *hdev = dev_to_hdac_dev(dev);
--
--	return to_ehdac_device(hdev);
--}
--
- static unsigned int sad_format(const u8 *sad)
- {
- 	return ((sad[0] >> 0x3) & 0x1f);
-@@ -324,15 +318,13 @@ static int hdac_hdmi_eld_limit_formats(struct snd_pcm_runtime *runtime,
- }
- 
- static void
--hdac_hdmi_set_dip_index(struct hdac_ext_device *edev, hda_nid_t pin_nid,
-+hdac_hdmi_set_dip_index(struct hdac_device *hdev, hda_nid_t pin_nid,
- 				int packet_index, int byte_index)
- {
- 	int val;
- 
- 	val = (packet_index << 5) | (byte_index & 0x1f);
--
--	snd_hdac_codec_write(&edev->hdev, pin_nid, 0,
--				AC_VERB_SET_HDMI_DIP_INDEX, val);
-+	snd_hdac_codec_write(hdev, pin_nid, 0, AC_VERB_SET_HDMI_DIP_INDEX, val);
- }
- 
- struct dp_audio_infoframe {
-@@ -347,14 +339,14 @@ struct dp_audio_infoframe {
- 	u8 LFEPBL01_LSV36_DM_INH7;
- };
- 
--static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *edev,
-+static int hdac_hdmi_setup_audio_infoframe(struct hdac_device *hdev,
- 		   struct hdac_hdmi_pcm *pcm, struct hdac_hdmi_port *port)
- {
- 	uint8_t buffer[HDMI_INFOFRAME_HEADER_SIZE + HDMI_AUDIO_INFOFRAME_SIZE];
- 	struct hdmi_audio_infoframe frame;
- 	struct hdac_hdmi_pin *pin = port->pin;
- 	struct dp_audio_infoframe dp_ai;
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
- 	struct hdac_hdmi_cvt *cvt = pcm->cvt;
- 	u8 *dip;
- 	int ret;
-@@ -363,11 +355,11 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *edev,
- 	u8 conn_type;
- 	int channels, ca;
- 
--	ca = snd_hdac_channel_allocation(&edev->hdev, port->eld.info.spk_alloc,
-+	ca = snd_hdac_channel_allocation(hdev, port->eld.info.spk_alloc,
- 			pcm->channels, pcm->chmap_set, true, pcm->chmap);
- 
- 	channels = snd_hdac_get_active_channels(ca);
--	hdmi->chmap.ops.set_channel_count(&edev->hdev, cvt->nid, channels);
-+	hdmi->chmap.ops.set_channel_count(hdev, cvt->nid, channels);
- 
- 	snd_hdac_setup_channel_mapping(&hdmi->chmap, pin->nid, false, ca,
- 				pcm->channels, pcm->chmap, pcm->chmap_set);
-@@ -400,32 +392,31 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *edev,
- 		break;
- 
- 	default:
--		dev_err(&edev->hdev.dev, "Invalid connection type: %d\n",
--						conn_type);
-+		dev_err(&hdev->dev, "Invalid connection type: %d\n", conn_type);
- 		return -EIO;
+ 	 * we need to remove all the codec devices objects created in the
+ 	 * snd_hdac_ext_bus_device_init
+ 	 */
+-	list_for_each_entry_safe(codec, __codec, &ebus->bus.codec_list, list) {
++	list_for_each_entry_safe(codec, __codec, &bus->codec_list, list) {
+ 		snd_hdac_device_unregister(codec);
+ 		put_device(&codec->dev);
  	}
- 
- 	/* stop infoframe transmission */
--	hdac_hdmi_set_dip_index(edev, pin->nid, 0x0, 0x0);
--	snd_hdac_codec_write(&edev->hdev, pin->nid, 0,
-+	hdac_hdmi_set_dip_index(hdev, pin->nid, 0x0, 0x0);
-+	snd_hdac_codec_write(hdev, pin->nid, 0,
- 			AC_VERB_SET_HDMI_DIP_XMIT, AC_DIPXMIT_DISABLE);
- 
- 
- 	/*  Fill infoframe. Index auto-incremented */
--	hdac_hdmi_set_dip_index(edev, pin->nid, 0x0, 0x0);
-+	hdac_hdmi_set_dip_index(hdev, pin->nid, 0x0, 0x0);
- 	if (conn_type == DRM_ELD_CONN_TYPE_HDMI) {
- 		for (i = 0; i < sizeof(buffer); i++)
--			snd_hdac_codec_write(&edev->hdev, pin->nid, 0,
-+			snd_hdac_codec_write(hdev, pin->nid, 0,
- 				AC_VERB_SET_HDMI_DIP_DATA, buffer[i]);
- 	} else {
- 		for (i = 0; i < sizeof(dp_ai); i++)
--			snd_hdac_codec_write(&edev->hdev, pin->nid, 0,
-+			snd_hdac_codec_write(hdev, pin->nid, 0,
- 				AC_VERB_SET_HDMI_DIP_DATA, dip[i]);
- 	}
- 
- 	/* Start infoframe */
--	hdac_hdmi_set_dip_index(edev, pin->nid, 0x0, 0x0);
--	snd_hdac_codec_write(&edev->hdev, pin->nid, 0,
-+	hdac_hdmi_set_dip_index(hdev, pin->nid, 0x0, 0x0);
-+	snd_hdac_codec_write(hdev, pin->nid, 0,
- 			AC_VERB_SET_HDMI_DIP_XMIT, AC_DIPXMIT_BEST);
- 
- 	return 0;
-@@ -435,12 +426,12 @@ static int hdac_hdmi_set_tdm_slot(struct snd_soc_dai *dai,
- 		unsigned int tx_mask, unsigned int rx_mask,
- 		int slots, int slot_width)
- {
--	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_hdmi_priv *hdmi = snd_soc_dai_get_drvdata(dai);
-+	struct hdac_device *hdev = hdmi->hdev;
- 	struct hdac_hdmi_dai_port_map *dai_map;
- 	struct hdac_hdmi_pcm *pcm;
- 
--	dev_dbg(&edev->hdev.dev, "%s: strm_tag: %d\n", __func__, tx_mask);
-+	dev_dbg(&hdev->dev, "%s: strm_tag: %d\n", __func__, tx_mask);
- 
- 	dai_map = &hdmi->dai_map[dai->id];
- 
-@@ -455,8 +446,8 @@ static int hdac_hdmi_set_tdm_slot(struct snd_soc_dai *dai,
- static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *hparams, struct snd_soc_dai *dai)
- {
--	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_hdmi_priv *hdmi = snd_soc_dai_get_drvdata(dai);
-+	struct hdac_device *hdev = hdmi->hdev;
- 	struct hdac_hdmi_dai_port_map *dai_map;
- 	struct hdac_hdmi_port *port;
- 	struct hdac_hdmi_pcm *pcm;
-@@ -469,7 +460,7 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
- 		return -ENODEV;
- 
- 	if ((!port->eld.monitor_present) || (!port->eld.eld_valid)) {
--		dev_err(&edev->hdev.dev,
-+		dev_err(&hdev->dev,
- 			"device is not configured for this pin:port%d:%d\n",
- 					port->pin->nid, port->id);
- 		return -ENODEV;
-@@ -489,28 +480,28 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int hdac_hdmi_query_port_connlist(struct hdac_ext_device *edev,
-+static int hdac_hdmi_query_port_connlist(struct hdac_device *hdev,
- 					struct hdac_hdmi_pin *pin,
- 					struct hdac_hdmi_port *port)
- {
--	if (!(get_wcaps(&edev->hdev, pin->nid) & AC_WCAP_CONN_LIST)) {
--		dev_warn(&edev->hdev.dev,
-+	if (!(get_wcaps(hdev, pin->nid) & AC_WCAP_CONN_LIST)) {
-+		dev_warn(&hdev->dev,
- 			"HDMI: pin %d wcaps %#x does not support connection list\n",
--			pin->nid, get_wcaps(&edev->hdev, pin->nid));
-+			pin->nid, get_wcaps(hdev, pin->nid));
- 		return -EINVAL;
- 	}
- 
--	if (hdac_hdmi_port_select_set(edev, port) < 0)
-+	if (hdac_hdmi_port_select_set(hdev, port) < 0)
- 		return -EIO;
- 
--	port->num_mux_nids = snd_hdac_get_connections(&edev->hdev, pin->nid,
-+	port->num_mux_nids = snd_hdac_get_connections(hdev, pin->nid,
- 			port->mux_nids, HDA_MAX_CONNECTIONS);
- 	if (port->num_mux_nids == 0)
--		dev_warn(&edev->hdev.dev,
-+		dev_warn(&hdev->dev,
- 			"No connections found for pin:port %d:%d\n",
- 						pin->nid, port->id);
- 
--	dev_dbg(&edev->hdev.dev, "num_mux_nids %d for pin:port %d:%d\n",
-+	dev_dbg(&hdev->dev, "num_mux_nids %d for pin:port %d:%d\n",
- 			port->num_mux_nids, pin->nid, port->id);
- 
- 	return port->num_mux_nids;
-@@ -526,7 +517,7 @@ static int hdac_hdmi_query_port_connlist(struct hdac_ext_device *edev,
-  * connected.
+diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
+index 84f3b81..7277411 100644
+--- a/sound/hda/ext/hdac_ext_controller.c
++++ b/sound/hda/ext/hdac_ext_controller.c
+@@ -39,9 +39,8 @@
+  * @ebus: HD-audio extended core bus
+  * @enable: flag to turn on/off the capability
   */
- static struct hdac_hdmi_port *hdac_hdmi_get_port_from_cvt(
--			struct hdac_ext_device *edev,
-+			struct hdac_device *hdev,
- 			struct hdac_hdmi_priv *hdmi,
- 			struct hdac_hdmi_cvt *cvt)
+-void snd_hdac_ext_bus_ppcap_enable(struct hdac_ext_bus *ebus, bool enable)
++void snd_hdac_ext_bus_ppcap_enable(struct hdac_bus *bus, bool enable)
  {
-@@ -541,7 +532,7 @@ static struct hdac_hdmi_port *hdac_hdmi_get_port_from_cvt(
+-	struct hdac_bus *bus = &ebus->bus;
  
- 			list_for_each_entry(port, &pcm->port_list, head) {
- 				mutex_lock(&pcm->lock);
--				ret = hdac_hdmi_query_port_connlist(edev,
-+				ret = hdac_hdmi_query_port_connlist(hdev,
- 							port->pin, port);
- 				mutex_unlock(&pcm->lock);
- 				if (ret < 0)
-@@ -568,8 +559,8 @@ static struct hdac_hdmi_port *hdac_hdmi_get_port_from_cvt(
- static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 			struct snd_soc_dai *dai)
- {
--	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_hdmi_priv *hdmi = snd_soc_dai_get_drvdata(dai);
-+	struct hdac_device *hdev = hdmi->hdev;
- 	struct hdac_hdmi_dai_port_map *dai_map;
- 	struct hdac_hdmi_cvt *cvt;
- 	struct hdac_hdmi_port *port;
-@@ -578,7 +569,7 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 	dai_map = &hdmi->dai_map[dai->id];
- 
- 	cvt = dai_map->cvt;
--	port = hdac_hdmi_get_port_from_cvt(edev, hdmi, cvt);
-+	port = hdac_hdmi_get_port_from_cvt(hdev, hdmi, cvt);
- 
- 	/*
- 	 * To make PA and other userland happy.
-@@ -589,7 +580,7 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 	if ((!port->eld.monitor_present) ||
- 			(!port->eld.eld_valid)) {
- 
--		dev_warn(&edev->hdev.dev,
-+		dev_warn(&hdev->dev,
- 			"Failed: present?:%d ELD valid?:%d pin:port: %d:%d\n",
- 			port->eld.monitor_present, port->eld.eld_valid,
- 			port->pin->nid, port->id);
-@@ -611,8 +602,7 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
--	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_hdmi_priv *hdmi = snd_soc_dai_get_drvdata(dai);
- 	struct hdac_hdmi_dai_port_map *dai_map;
- 	struct hdac_hdmi_pcm *pcm;
- 
-@@ -695,10 +685,10 @@ static void hdac_hdmi_fill_route(struct snd_soc_dapm_route *route,
- 	route->connected = handler;
- }
- 
--static struct hdac_hdmi_pcm *hdac_hdmi_get_pcm(struct hdac_ext_device *edev,
-+static struct hdac_hdmi_pcm *hdac_hdmi_get_pcm(struct hdac_device *hdev,
- 					struct hdac_hdmi_port *port)
- {
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
- 	struct hdac_hdmi_pcm *pcm = NULL;
- 	struct hdac_hdmi_port *p;
- 
-@@ -715,33 +705,32 @@ static struct hdac_hdmi_pcm *hdac_hdmi_get_pcm(struct hdac_ext_device *edev,
- 	return NULL;
- }
- 
--static void hdac_hdmi_set_power_state(struct hdac_ext_device *edev,
-+static void hdac_hdmi_set_power_state(struct hdac_device *hdev,
- 			     hda_nid_t nid, unsigned int pwr_state)
- {
- 	int count;
- 	unsigned int state;
- 
--	if (get_wcaps(&edev->hdev, nid) & AC_WCAP_POWER) {
--		if (!snd_hdac_check_power_state(&edev->hdev, nid, pwr_state)) {
-+	if (get_wcaps(hdev, nid) & AC_WCAP_POWER) {
-+		if (!snd_hdac_check_power_state(hdev, nid, pwr_state)) {
- 			for (count = 0; count < 10; count++) {
--				snd_hdac_codec_read(&edev->hdev, nid, 0,
-+				snd_hdac_codec_read(hdev, nid, 0,
- 						AC_VERB_SET_POWER_STATE,
- 						pwr_state);
--				state = snd_hdac_sync_power_state(&edev->hdev,
-+				state = snd_hdac_sync_power_state(hdev,
- 						nid, pwr_state);
- 				if (!(state & AC_PWRST_ERROR))
- 					break;
- 			}
- 		}
--
- 	}
- }
- 
--static void hdac_hdmi_set_amp(struct hdac_ext_device *edev,
-+static void hdac_hdmi_set_amp(struct hdac_device *hdev,
- 				   hda_nid_t nid, int val)
- {
--	if (get_wcaps(&edev->hdev, nid) & AC_WCAP_OUT_AMP)
--		snd_hdac_codec_write(&edev->hdev, nid, 0,
-+	if (get_wcaps(hdev, nid) & AC_WCAP_OUT_AMP)
-+		snd_hdac_codec_write(hdev, nid, 0,
- 					AC_VERB_SET_AMP_GAIN_MUTE, val);
- }
- 
-@@ -750,40 +739,40 @@ static int hdac_hdmi_pin_output_widget_event(struct snd_soc_dapm_widget *w,
- 					struct snd_kcontrol *kc, int event)
- {
- 	struct hdac_hdmi_port *port = w->priv;
--	struct hdac_ext_device *edev = to_hda_ext_device(w->dapm->dev);
-+	struct hdac_device *hdev = dev_to_hdac_dev(w->dapm->dev);
- 	struct hdac_hdmi_pcm *pcm;
- 
--	dev_dbg(&edev->hdev.dev, "%s: widget: %s event: %x\n",
-+	dev_dbg(&hdev->dev, "%s: widget: %s event: %x\n",
- 			__func__, w->name, event);
- 
--	pcm = hdac_hdmi_get_pcm(edev, port);
-+	pcm = hdac_hdmi_get_pcm(hdev, port);
- 	if (!pcm)
- 		return -EIO;
- 
- 	/* set the device if pin is mst_capable */
--	if (hdac_hdmi_port_select_set(edev, port) < 0)
-+	if (hdac_hdmi_port_select_set(hdev, port) < 0)
- 		return -EIO;
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
--		hdac_hdmi_set_power_state(edev, port->pin->nid, AC_PWRST_D0);
-+		hdac_hdmi_set_power_state(hdev, port->pin->nid, AC_PWRST_D0);
- 
- 		/* Enable out path for this pin widget */
--		snd_hdac_codec_write(&edev->hdev, port->pin->nid, 0,
-+		snd_hdac_codec_write(hdev, port->pin->nid, 0,
- 				AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
- 
--		hdac_hdmi_set_amp(edev, port->pin->nid, AMP_OUT_UNMUTE);
-+		hdac_hdmi_set_amp(hdev, port->pin->nid, AMP_OUT_UNMUTE);
- 
--		return hdac_hdmi_setup_audio_infoframe(edev, pcm, port);
-+		return hdac_hdmi_setup_audio_infoframe(hdev, pcm, port);
- 
- 	case SND_SOC_DAPM_POST_PMD:
--		hdac_hdmi_set_amp(edev, port->pin->nid, AMP_OUT_MUTE);
-+		hdac_hdmi_set_amp(hdev, port->pin->nid, AMP_OUT_MUTE);
- 
- 		/* Disable out path for this pin widget */
--		snd_hdac_codec_write(&edev->hdev, port->pin->nid, 0,
-+		snd_hdac_codec_write(hdev, port->pin->nid, 0,
- 				AC_VERB_SET_PIN_WIDGET_CONTROL, 0);
- 
--		hdac_hdmi_set_power_state(edev, port->pin->nid, AC_PWRST_D3);
-+		hdac_hdmi_set_power_state(hdev, port->pin->nid, AC_PWRST_D3);
- 		break;
- 
- 	}
-@@ -795,11 +784,11 @@ static int hdac_hdmi_cvt_output_widget_event(struct snd_soc_dapm_widget *w,
- 					struct snd_kcontrol *kc, int event)
- {
- 	struct hdac_hdmi_cvt *cvt = w->priv;
--	struct hdac_ext_device *edev = to_hda_ext_device(w->dapm->dev);
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_device *hdev = dev_to_hdac_dev(w->dapm->dev);
-+	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
- 	struct hdac_hdmi_pcm *pcm;
- 
--	dev_dbg(&edev->hdev.dev, "%s: widget: %s event: %x\n",
-+	dev_dbg(&hdev->dev, "%s: widget: %s event: %x\n",
- 			__func__, w->name, event);
- 
- 	pcm = hdac_hdmi_get_pcm_from_cvt(hdmi, cvt);
-@@ -808,29 +797,29 @@ static int hdac_hdmi_cvt_output_widget_event(struct snd_soc_dapm_widget *w,
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
--		hdac_hdmi_set_power_state(edev, cvt->nid, AC_PWRST_D0);
-+		hdac_hdmi_set_power_state(hdev, cvt->nid, AC_PWRST_D0);
- 
- 		/* Enable transmission */
--		snd_hdac_codec_write(&edev->hdev, cvt->nid, 0,
-+		snd_hdac_codec_write(hdev, cvt->nid, 0,
- 			AC_VERB_SET_DIGI_CONVERT_1, 1);
- 
- 		/* Category Code (CC) to zero */
--		snd_hdac_codec_write(&edev->hdev, cvt->nid, 0,
-+		snd_hdac_codec_write(hdev, cvt->nid, 0,
- 			AC_VERB_SET_DIGI_CONVERT_2, 0);
- 
--		snd_hdac_codec_write(&edev->hdev, cvt->nid, 0,
-+		snd_hdac_codec_write(hdev, cvt->nid, 0,
- 				AC_VERB_SET_CHANNEL_STREAMID, pcm->stream_tag);
--		snd_hdac_codec_write(&edev->hdev, cvt->nid, 0,
-+		snd_hdac_codec_write(hdev, cvt->nid, 0,
- 				AC_VERB_SET_STREAM_FORMAT, pcm->format);
- 		break;
- 
- 	case SND_SOC_DAPM_POST_PMD:
--		snd_hdac_codec_write(&edev->hdev, cvt->nid, 0,
-+		snd_hdac_codec_write(hdev, cvt->nid, 0,
- 				AC_VERB_SET_CHANNEL_STREAMID, 0);
--		snd_hdac_codec_write(&edev->hdev, cvt->nid, 0,
-+		snd_hdac_codec_write(hdev, cvt->nid, 0,
- 				AC_VERB_SET_STREAM_FORMAT, 0);
- 
--		hdac_hdmi_set_power_state(edev, cvt->nid, AC_PWRST_D3);
-+		hdac_hdmi_set_power_state(hdev, cvt->nid, AC_PWRST_D3);
- 		break;
- 
- 	}
-@@ -842,10 +831,10 @@ static int hdac_hdmi_pin_mux_widget_event(struct snd_soc_dapm_widget *w,
- 					struct snd_kcontrol *kc, int event)
- {
- 	struct hdac_hdmi_port *port = w->priv;
--	struct hdac_ext_device *edev = to_hda_ext_device(w->dapm->dev);
-+	struct hdac_device *hdev = dev_to_hdac_dev(w->dapm->dev);
- 	int mux_idx;
- 
--	dev_dbg(&edev->hdev.dev, "%s: widget: %s event: %x\n",
-+	dev_dbg(&hdev->dev, "%s: widget: %s event: %x\n",
- 			__func__, w->name, event);
- 
- 	if (!kc)
-@@ -854,11 +843,11 @@ static int hdac_hdmi_pin_mux_widget_event(struct snd_soc_dapm_widget *w,
- 	mux_idx = dapm_kcontrol_get_value(kc);
- 
- 	/* set the device if pin is mst_capable */
--	if (hdac_hdmi_port_select_set(edev, port) < 0)
-+	if (hdac_hdmi_port_select_set(hdev, port) < 0)
- 		return -EIO;
- 
- 	if (mux_idx > 0) {
--		snd_hdac_codec_write(&edev->hdev, port->pin->nid, 0,
-+		snd_hdac_codec_write(hdev, port->pin->nid, 0,
- 			AC_VERB_SET_CONNECT_SEL, (mux_idx - 1));
- 	}
- 
-@@ -877,8 +866,8 @@ static int hdac_hdmi_set_pin_port_mux(struct snd_kcontrol *kcontrol,
- 	struct snd_soc_dapm_widget *w = snd_soc_dapm_kcontrol_widget(kcontrol);
- 	struct snd_soc_dapm_context *dapm = w->dapm;
- 	struct hdac_hdmi_port *port = w->priv;
--	struct hdac_ext_device *edev = to_hda_ext_device(dapm->dev);
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_device *hdev = dev_to_hdac_dev(dapm->dev);
-+	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
- 	struct hdac_hdmi_pcm *pcm = NULL;
- 	const char *cvt_name =  e->texts[ucontrol->value.enumerated.item[0]];
- 
-@@ -931,12 +920,12 @@ static int hdac_hdmi_set_pin_port_mux(struct snd_kcontrol *kcontrol,
-  * care of selecting the right one and leaving all other inputs selected to
-  * "NONE"
+ 	if (!bus->ppcap) {
+ 		dev_err(bus->dev, "Address of PP capability is NULL");
+@@ -60,9 +59,8 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_ppcap_enable);
+  * @ebus: HD-audio extended core bus
+  * @enable: flag to enable/disable interrupt
   */
--static int hdac_hdmi_create_pin_port_muxs(struct hdac_ext_device *edev,
-+static int hdac_hdmi_create_pin_port_muxs(struct hdac_device *hdev,
- 				struct hdac_hdmi_port *port,
- 				struct snd_soc_dapm_widget *widget,
- 				const char *widget_name)
+-void snd_hdac_ext_bus_ppcap_int_enable(struct hdac_ext_bus *ebus, bool enable)
++void snd_hdac_ext_bus_ppcap_int_enable(struct hdac_bus *bus, bool enable)
  {
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
- 	struct hdac_hdmi_pin *pin = port->pin;
- 	struct snd_kcontrol_new *kc;
- 	struct hdac_hdmi_cvt *cvt;
-@@ -948,17 +937,17 @@ static int hdac_hdmi_create_pin_port_muxs(struct hdac_ext_device *edev,
- 	int i = 0;
- 	int num_items = hdmi->num_cvt + 1;
+-	struct hdac_bus *bus = &ebus->bus;
  
--	kc = devm_kzalloc(&edev->hdev.dev, sizeof(*kc), GFP_KERNEL);
-+	kc = devm_kzalloc(&hdev->dev, sizeof(*kc), GFP_KERNEL);
- 	if (!kc)
- 		return -ENOMEM;
- 
--	se = devm_kzalloc(&edev->hdev.dev, sizeof(*se), GFP_KERNEL);
-+	se = devm_kzalloc(&hdev->dev, sizeof(*se), GFP_KERNEL);
- 	if (!se)
- 		return -ENOMEM;
- 
- 	snprintf(kc_name, NAME_SIZE, "Pin %d port %d Input",
- 						pin->nid, port->id);
--	kc->name = devm_kstrdup(&edev->hdev.dev, kc_name, GFP_KERNEL);
-+	kc->name = devm_kstrdup(&hdev->dev, kc_name, GFP_KERNEL);
- 	if (!kc->name)
- 		return -ENOMEM;
- 
-@@ -976,35 +965,35 @@ static int hdac_hdmi_create_pin_port_muxs(struct hdac_ext_device *edev,
- 	se->mask = roundup_pow_of_two(se->items) - 1;
- 
- 	sprintf(mux_items, "NONE");
--	items[i] = devm_kstrdup(&edev->hdev.dev, mux_items, GFP_KERNEL);
-+	items[i] = devm_kstrdup(&hdev->dev, mux_items, GFP_KERNEL);
- 	if (!items[i])
- 		return -ENOMEM;
- 
- 	list_for_each_entry(cvt, &hdmi->cvt_list, head) {
- 		i++;
- 		sprintf(mux_items, "cvt %d", cvt->nid);
--		items[i] = devm_kstrdup(&edev->hdev.dev, mux_items, GFP_KERNEL);
-+		items[i] = devm_kstrdup(&hdev->dev, mux_items, GFP_KERNEL);
- 		if (!items[i])
- 			return -ENOMEM;
- 	}
- 
--	se->texts = devm_kmemdup(&edev->hdev.dev, items,
-+	se->texts = devm_kmemdup(&hdev->dev, items,
- 			(num_items  * sizeof(char *)), GFP_KERNEL);
- 	if (!se->texts)
- 		return -ENOMEM;
- 
--	return hdac_hdmi_fill_widget_info(&edev->hdev.dev, widget,
-+	return hdac_hdmi_fill_widget_info(&hdev->dev, widget,
- 			snd_soc_dapm_mux, port, widget_name, NULL, kc, 1,
- 			hdac_hdmi_pin_mux_widget_event,
- 			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_REG);
- }
- 
- /* Add cvt <- input <- mux route map */
--static void hdac_hdmi_add_pinmux_cvt_route(struct hdac_ext_device *edev,
-+static void hdac_hdmi_add_pinmux_cvt_route(struct hdac_device *hdev,
- 			struct snd_soc_dapm_widget *widgets,
- 			struct snd_soc_dapm_route *route, int rindex)
- {
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
- 	const struct snd_kcontrol_new *kc;
- 	struct soc_enum *se;
- 	int mux_index = hdmi->num_cvt + hdmi->num_ports;
-@@ -1046,8 +1035,8 @@ static int create_fill_widget_route_map(struct snd_soc_dapm_context *dapm)
- {
- 	struct snd_soc_dapm_widget *widgets;
- 	struct snd_soc_dapm_route *route;
--	struct hdac_ext_device *edev = to_hda_ext_device(dapm->dev);
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_device *hdev = dev_to_hdac_dev(dapm->dev);
-+	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
- 	struct snd_soc_dai_driver *dai_drv = hdmi->dai_drv;
- 	char widget_name[NAME_SIZE];
- 	struct hdac_hdmi_cvt *cvt;
-@@ -1099,7 +1088,7 @@ static int create_fill_widget_route_map(struct snd_soc_dapm_context *dapm)
- 		for (j = 0; j < pin->num_ports; j++) {
- 			sprintf(widget_name, "Pin%d-Port%d Mux",
- 				pin->nid, pin->ports[j].id);
--			ret = hdac_hdmi_create_pin_port_muxs(edev,
-+			ret = hdac_hdmi_create_pin_port_muxs(hdev,
- 						&pin->ports[j], &widgets[i],
- 						widget_name);
- 			if (ret < 0)
-@@ -1134,7 +1123,7 @@ static int create_fill_widget_route_map(struct snd_soc_dapm_context *dapm)
- 		}
- 	}
- 
--	hdac_hdmi_add_pinmux_cvt_route(edev, widgets, route, i);
-+	hdac_hdmi_add_pinmux_cvt_route(hdev, widgets, route, i);
- 
- 	snd_soc_dapm_new_controls(dapm, widgets,
- 		((2 * hdmi->num_ports) + hdmi->num_cvt));
-@@ -1146,9 +1135,9 @@ static int create_fill_widget_route_map(struct snd_soc_dapm_context *dapm)
- 
- }
- 
--static int hdac_hdmi_init_dai_map(struct hdac_ext_device *edev)
-+static int hdac_hdmi_init_dai_map(struct hdac_device *hdev)
- {
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
- 	struct hdac_hdmi_dai_port_map *dai_map;
- 	struct hdac_hdmi_cvt *cvt;
- 	int dai_id = 0;
-@@ -1164,7 +1153,7 @@ static int hdac_hdmi_init_dai_map(struct hdac_ext_device *edev)
- 		dai_id++;
- 
- 		if (dai_id == HDA_MAX_CVTS) {
--			dev_warn(&edev->hdev.dev,
-+			dev_warn(&hdev->dev,
- 				"Max dais supported: %d\n", dai_id);
- 			break;
- 		}
-@@ -1173,9 +1162,9 @@ static int hdac_hdmi_init_dai_map(struct hdac_ext_device *edev)
- 	return 0;
- }
- 
--static int hdac_hdmi_add_cvt(struct hdac_ext_device *edev, hda_nid_t nid)
-+static int hdac_hdmi_add_cvt(struct hdac_device *hdev, hda_nid_t nid)
- {
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
- 	struct hdac_hdmi_cvt *cvt;
- 	char name[NAME_SIZE];
- 
-@@ -1190,10 +1179,10 @@ static int hdac_hdmi_add_cvt(struct hdac_ext_device *edev, hda_nid_t nid)
- 	list_add_tail(&cvt->head, &hdmi->cvt_list);
- 	hdmi->num_cvt++;
- 
--	return hdac_hdmi_query_cvt_params(&edev->hdev, cvt);
-+	return hdac_hdmi_query_cvt_params(hdev, cvt);
- }
- 
--static int hdac_hdmi_parse_eld(struct hdac_ext_device *edev,
-+static int hdac_hdmi_parse_eld(struct hdac_device *hdev,
- 			struct hdac_hdmi_port *port)
- {
- 	unsigned int ver, mnl;
-@@ -1202,7 +1191,7 @@ static int hdac_hdmi_parse_eld(struct hdac_ext_device *edev,
- 						>> DRM_ELD_VER_SHIFT;
- 
- 	if (ver != ELD_VER_CEA_861D && ver != ELD_VER_PARTIAL) {
--		dev_err(&edev->hdev.dev, "HDMI: Unknown ELD version %d\n", ver);
-+		dev_err(&hdev->dev, "HDMI: Unknown ELD version %d\n", ver);
- 		return -EINVAL;
- 	}
- 
-@@ -1210,7 +1199,7 @@ static int hdac_hdmi_parse_eld(struct hdac_ext_device *edev,
- 		DRM_ELD_MNL_MASK) >> DRM_ELD_MNL_SHIFT;
- 
- 	if (mnl > ELD_MAX_MNL) {
--		dev_err(&edev->hdev.dev, "HDMI: MNL Invalid %d\n", mnl);
-+		dev_err(&hdev->dev, "HDMI: MNL Invalid %d\n", mnl);
- 		return -EINVAL;
- 	}
- 
-@@ -1222,8 +1211,8 @@ static int hdac_hdmi_parse_eld(struct hdac_ext_device *edev,
- static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
- 				    struct hdac_hdmi_port *port)
- {
--	struct hdac_ext_device *edev = pin->edev;
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_device *hdev = pin->hdev;
-+	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
- 	struct hdac_hdmi_pcm *pcm;
- 	int size = 0;
- 	int port_id = -1;
-@@ -1241,14 +1230,14 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
- 	if (pin->mst_capable)
- 		port_id = port->id;
- 
--	size = snd_hdac_acomp_get_eld(&edev->hdev, pin->nid, port_id,
-+	size = snd_hdac_acomp_get_eld(hdev, pin->nid, port_id,
- 				&port->eld.monitor_present,
- 				port->eld.eld_buffer,
- 				ELD_MAX_SIZE);
- 
- 	if (size > 0) {
- 		size = min(size, ELD_MAX_SIZE);
--		if (hdac_hdmi_parse_eld(edev, port) < 0)
-+		if (hdac_hdmi_parse_eld(hdev, port) < 0)
- 			size = -EINVAL;
- 	}
- 
-@@ -1260,11 +1249,11 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
- 		port->eld.eld_size = 0;
- 	}
- 
--	pcm = hdac_hdmi_get_pcm(edev, port);
-+	pcm = hdac_hdmi_get_pcm(hdev, port);
- 
- 	if (!port->eld.monitor_present || !port->eld.eld_valid) {
- 
--		dev_err(&edev->hdev.dev, "%s: disconnect for pin:port %d:%d\n",
-+		dev_err(&hdev->dev, "%s: disconnect for pin:port %d:%d\n",
- 						__func__, pin->nid, port->id);
- 
- 		/*
-@@ -1316,9 +1305,9 @@ static int hdac_hdmi_add_ports(struct hdac_hdmi_priv *hdmi,
- 	return 0;
- }
- 
--static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
-+static int hdac_hdmi_add_pin(struct hdac_device *hdev, hda_nid_t nid)
- {
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
- 	struct hdac_hdmi_pin *pin;
- 	int ret;
- 
-@@ -1328,7 +1317,7 @@ static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
- 
- 	pin->nid = nid;
- 	pin->mst_capable = false;
--	pin->edev = edev;
-+	pin->hdev = hdev;
- 	ret = hdac_hdmi_add_ports(hdmi, pin);
- 	if (ret < 0)
- 		return ret;
-@@ -1459,15 +1448,14 @@ static int hdac_hdmi_create_dais(struct hdac_device *hdev,
-  * Parse all nodes and store the cvt/pin nids in array
-  * Add one time initialization for pin and cvt widgets
+ 	if (!bus->ppcap) {
+ 		dev_err(bus->dev, "Address of PP capability is NULL\n");
+@@ -89,12 +87,11 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_ppcap_int_enable);
+  * in hlink_list of extended hdac bus
+  * Note: this will be freed on bus exit by driver
   */
--static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev,
-+static int hdac_hdmi_parse_and_map_nid(struct hdac_device *hdev,
- 		struct snd_soc_dai_driver **dais, int *num_dais)
+-int snd_hdac_ext_bus_get_ml_capabilities(struct hdac_ext_bus *ebus)
++int snd_hdac_ext_bus_get_ml_capabilities(struct hdac_bus *bus)
  {
- 	hda_nid_t nid;
- 	int i, num_nodes;
- 	struct hdac_hdmi_cvt *temp_cvt, *cvt_next;
- 	struct hdac_hdmi_pin *temp_pin, *pin_next;
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
--	struct hdac_device *hdev = &edev->hdev;
-+	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
- 	int ret;
+ 	int idx;
+ 	u32 link_count;
+ 	struct hdac_ext_link *hlink;
+-	struct hdac_bus *bus = &ebus->bus;
  
- 	hdac_hdmi_skl_enable_all_pins(hdev);
-@@ -1492,13 +1480,13 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev,
- 		switch (type) {
+ 	link_count = readl(bus->mlcap + AZX_REG_ML_MLCD) + 1;
  
- 		case AC_WID_AUD_OUT:
--			ret = hdac_hdmi_add_cvt(edev, nid);
-+			ret = hdac_hdmi_add_cvt(hdev, nid);
- 			if (ret < 0)
- 				goto free_widgets;
- 			break;
+@@ -114,7 +111,7 @@ int snd_hdac_ext_bus_get_ml_capabilities(struct hdac_ext_bus *ebus)
+ 		/* since link in On, update the ref */
+ 		hlink->ref_count = 1;
  
- 		case AC_WID_PIN:
--			ret = hdac_hdmi_add_pin(edev, nid);
-+			ret = hdac_hdmi_add_pin(hdev, nid);
- 			if (ret < 0)
- 				goto free_widgets;
- 			break;
-@@ -1518,7 +1506,7 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev,
+-		list_add_tail(&hlink->list, &ebus->hlink_list);
++		list_add_tail(&hlink->list, &bus->hlink_list);
  	}
  
- 	*num_dais = hdmi->num_cvt;
--	ret = hdac_hdmi_init_dai_map(edev);
-+	ret = hdac_hdmi_init_dai_map(hdev);
- 	if (ret < 0)
- 		goto free_widgets;
+ 	return 0;
+@@ -127,12 +124,12 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_get_ml_capabilities);
+  * @ebus: HD-audio ext core bus
+  */
  
-@@ -1544,17 +1532,17 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev,
- 
- static void hdac_hdmi_eld_notify_cb(void *aptr, int port, int pipe)
+-void snd_hdac_link_free_all(struct hdac_ext_bus *ebus)
++void snd_hdac_link_free_all(struct hdac_bus *bus)
  {
--	struct hdac_ext_device *edev = aptr;
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_device *hdev = aptr;
-+	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
- 	struct hdac_hdmi_pin *pin = NULL;
- 	struct hdac_hdmi_port *hport = NULL;
--	struct snd_soc_component *component = edev->scodec;
-+	struct snd_soc_component *component = hdmi->component;
- 	int i;
+ 	struct hdac_ext_link *l;
  
- 	/* Don't know how this mapping is derived */
- 	hda_nid_t pin_nid = port + 0x04;
- 
--	dev_dbg(&edev->hdev.dev, "%s: for pin:%d port=%d\n", __func__,
-+	dev_dbg(&hdev->dev, "%s: for pin:%d port=%d\n", __func__,
- 							pin_nid, pipe);
- 
- 	/*
-@@ -1567,7 +1555,7 @@ static void hdac_hdmi_eld_notify_cb(void *aptr, int port, int pipe)
- 			SNDRV_CTL_POWER_D0)
- 		return;
- 
--	if (atomic_read(&edev->hdev.in_pm))
-+	if (atomic_read(&hdev->in_pm))
- 		return;
- 
- 	list_for_each_entry(pin, &hdmi->pin_list, head) {
-@@ -1614,15 +1602,15 @@ static struct snd_pcm *hdac_hdmi_get_pcm_from_id(struct snd_soc_card *card,
- 
- /* create jack pin kcontrols */
- static int create_fill_jack_kcontrols(struct snd_soc_card *card,
--				    struct hdac_ext_device *edev)
-+				    struct hdac_device *hdev)
- {
- 	struct hdac_hdmi_pin *pin;
- 	struct snd_kcontrol_new *kc;
- 	char kc_name[NAME_SIZE], xname[NAME_SIZE];
- 	char *name;
- 	int i = 0, j;
--	struct snd_soc_component *component = edev->scodec;
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
-+	struct snd_soc_component *component = hdmi->component;
- 
- 	kc = devm_kcalloc(component->dev, hdmi->num_ports,
- 				sizeof(*kc), GFP_KERNEL);
-@@ -1659,8 +1647,8 @@ static int create_fill_jack_kcontrols(struct snd_soc_card *card,
- int hdac_hdmi_jack_port_init(struct snd_soc_component *component,
- 			struct snd_soc_dapm_context *dapm)
- {
--	struct hdac_ext_device *edev = snd_soc_component_get_drvdata(component);
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_hdmi_priv *hdmi = snd_soc_component_get_drvdata(component);
-+	struct hdac_device *hdev = hdmi->hdev;
- 	struct hdac_hdmi_pin *pin;
- 	struct snd_soc_dapm_widget *widgets;
- 	struct snd_soc_dapm_route *route;
-@@ -1715,7 +1703,7 @@ int hdac_hdmi_jack_port_init(struct snd_soc_component *component,
- 		return ret;
- 
- 	/* Add Jack Pin switch Kcontrol */
--	ret = create_fill_jack_kcontrols(dapm->card, edev);
-+	ret = create_fill_jack_kcontrols(dapm->card, hdev);
- 
- 	if (ret < 0)
- 		return ret;
-@@ -1735,8 +1723,8 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device,
- 				struct snd_soc_jack *jack)
- {
- 	struct snd_soc_component *component = dai->component;
--	struct hdac_ext_device *edev = snd_soc_component_get_drvdata(component);
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_hdmi_priv *hdmi = snd_soc_component_get_drvdata(component);
-+	struct hdac_device *hdev = hdmi->hdev;
- 	struct hdac_hdmi_pcm *pcm;
- 	struct snd_pcm *snd_pcm;
- 	int err;
-@@ -1758,7 +1746,7 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device,
- 	if (snd_pcm) {
- 		err = snd_hdac_add_chmap_ctls(snd_pcm, device, &hdmi->chmap);
- 		if (err < 0) {
--			dev_err(&edev->hdev.dev,
-+			dev_err(&hdev->dev,
- 				"chmap control add failed with err: %d for pcm: %d\n",
- 				err, device);
- 			kfree(pcm);
-@@ -1772,7 +1760,7 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device,
- }
- EXPORT_SYMBOL_GPL(hdac_hdmi_jack_init);
- 
--static void hdac_hdmi_present_sense_all_pins(struct hdac_ext_device *edev,
-+static void hdac_hdmi_present_sense_all_pins(struct hdac_device *hdev,
- 			struct hdac_hdmi_priv *hdmi, bool detect_pin_caps)
+-	while (!list_empty(&ebus->hlink_list)) {
+-		l = list_first_entry(&ebus->hlink_list, struct hdac_ext_link, list);
++	while (!list_empty(&bus->hlink_list)) {
++		l = list_first_entry(&bus->hlink_list, struct hdac_ext_link, list);
+ 		list_del(&l->list);
+ 		kfree(l);
+ 	}
+@@ -144,7 +141,7 @@ EXPORT_SYMBOL_GPL(snd_hdac_link_free_all);
+  * @ebus: HD-audio extended core bus
+  * @codec_name: codec name
+  */
+-struct hdac_ext_link *snd_hdac_ext_bus_get_link(struct hdac_ext_bus *ebus,
++struct hdac_ext_link *snd_hdac_ext_bus_get_link(struct hdac_bus *bus,
+ 						 const char *codec_name)
  {
  	int i;
-@@ -1781,7 +1769,7 @@ static void hdac_hdmi_present_sense_all_pins(struct hdac_ext_device *edev,
- 	list_for_each_entry(pin, &hdmi->pin_list, head) {
- 		if (detect_pin_caps) {
+@@ -153,10 +150,10 @@ struct hdac_ext_link *snd_hdac_ext_bus_get_link(struct hdac_ext_bus *ebus,
  
--			if (hdac_hdmi_get_port_len(edev, pin->nid)  == 0)
-+			if (hdac_hdmi_get_port_len(hdev, pin->nid)  == 0)
- 				pin->mst_capable = false;
- 			else
- 				pin->mst_capable = true;
-@@ -1798,68 +1786,68 @@ static void hdac_hdmi_present_sense_all_pins(struct hdac_ext_device *edev,
+ 	if (sscanf(codec_name, "ehdaudio%dD%d", &bus_idx, &addr) != 2)
+ 		return NULL;
+-	if (ebus->idx != bus_idx)
++	if (bus->idx != bus_idx)
+ 		return NULL;
  
- static int hdmi_codec_probe(struct snd_soc_component *component)
+-	list_for_each_entry(hlink, &ebus->hlink_list, list) {
++	list_for_each_entry(hlink, &bus->hlink_list, list) {
+ 		for (i = 0; i < HDA_MAX_CODECS; i++) {
+ 			if (hlink->lsdiid & (0x1 << addr))
+ 				return hlink;
+@@ -219,12 +216,12 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_power_down);
+  * snd_hdac_ext_bus_link_power_up_all -power up all hda link
+  * @ebus: HD-audio extended bus
+  */
+-int snd_hdac_ext_bus_link_power_up_all(struct hdac_ext_bus *ebus)
++int snd_hdac_ext_bus_link_power_up_all(struct hdac_bus *bus)
  {
--	struct hdac_ext_device *edev = snd_soc_component_get_drvdata(component);
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_hdmi_priv *hdmi = snd_soc_component_get_drvdata(component);
-+	struct hdac_device *hdev = hdmi->hdev;
- 	struct snd_soc_dapm_context *dapm =
- 		snd_soc_component_get_dapm(component);
  	struct hdac_ext_link *hlink = NULL;
  	int ret;
  
--	edev->scodec = component;
-+	hdmi->component = component;
+-	list_for_each_entry(hlink, &ebus->hlink_list, list) {
++	list_for_each_entry(hlink, &bus->hlink_list, list) {
+ 		snd_hdac_updatel(hlink->ml_addr,
+ 				AZX_REG_ML_LCTL, 0, AZX_MLCTL_SPA);
+ 		ret = check_hdac_link_power_active(hlink, true);
+@@ -240,12 +237,12 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_power_up_all);
+  * snd_hdac_ext_bus_link_power_down_all -power down all hda link
+  * @ebus: HD-audio extended bus
+  */
+-int snd_hdac_ext_bus_link_power_down_all(struct hdac_ext_bus *ebus)
++int snd_hdac_ext_bus_link_power_down_all(struct hdac_bus *bus)
+ {
+ 	struct hdac_ext_link *hlink = NULL;
+ 	int ret;
+ 
+-	list_for_each_entry(hlink, &ebus->hlink_list, list) {
++	list_for_each_entry(hlink, &bus->hlink_list, list) {
+ 		snd_hdac_updatel(hlink->ml_addr, AZX_REG_ML_LCTL, AZX_MLCTL_SPA, 0);
+ 		ret = check_hdac_link_power_active(hlink, false);
+ 		if (ret < 0)
+@@ -256,39 +253,39 @@ int snd_hdac_ext_bus_link_power_down_all(struct hdac_ext_bus *ebus)
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_power_down_all);
+ 
+-int snd_hdac_ext_bus_link_get(struct hdac_ext_bus *ebus,
++int snd_hdac_ext_bus_link_get(struct hdac_bus *bus,
+ 				struct hdac_ext_link *link)
+ {
+ 	int ret = 0;
+ 
+-	mutex_lock(&ebus->lock);
++	mutex_lock(&bus->lock);
  
  	/*
+ 	 * if we move from 0 to 1, count will be 1 so power up this link
+ 	 * as well, also check the dma status and trigger that
+ 	 */
+ 	if (++link->ref_count == 1) {
+-		if (!ebus->cmd_dma_state) {
+-			snd_hdac_bus_init_cmd_io(&ebus->bus);
+-			ebus->cmd_dma_state = true;
++		if (!bus->cmd_dma_state) {
++			snd_hdac_bus_init_cmd_io(bus);
++			bus->cmd_dma_state = true;
+ 		}
+ 
+ 		ret = snd_hdac_ext_bus_link_power_up(link);
+ 	}
+ 
+-	mutex_unlock(&ebus->lock);
++	mutex_unlock(&bus->lock);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_get);
+ 
+-int snd_hdac_ext_bus_link_put(struct hdac_ext_bus *ebus,
++int snd_hdac_ext_bus_link_put(struct hdac_bus *bus,
+ 				struct hdac_ext_link *link)
+ {
+ 	int ret = 0;
+ 	struct hdac_ext_link *hlink;
+ 	bool link_up = false;
+ 
+-	mutex_lock(&ebus->lock);
++	mutex_lock(&bus->lock);
+ 
+ 	/*
+ 	 * if we move from 1 to 0, count will be 0
+@@ -301,7 +298,7 @@ int snd_hdac_ext_bus_link_put(struct hdac_ext_bus *ebus,
+ 		 * now check if all links are off, if so turn off
+ 		 * cmd dma as well
+ 		 */
+-		list_for_each_entry(hlink, &ebus->hlink_list, list) {
++		list_for_each_entry(hlink, &bus->hlink_list, list) {
+ 			if (hlink->ref_count) {
+ 				link_up = true;
+ 				break;
+@@ -309,12 +306,12 @@ int snd_hdac_ext_bus_link_put(struct hdac_ext_bus *ebus,
+ 		}
+ 
+ 		if (!link_up) {
+-			snd_hdac_bus_stop_cmd_io(&ebus->bus);
+-			ebus->cmd_dma_state = false;
++			snd_hdac_bus_stop_cmd_io(bus);
++			bus->cmd_dma_state = false;
+ 		}
+ 	}
+ 
+-	mutex_unlock(&ebus->lock);
++	mutex_unlock(&bus->lock);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_put);
+diff --git a/sound/hda/ext/hdac_ext_stream.c b/sound/hda/ext/hdac_ext_stream.c
+index c96d7a7..1bd2757 100644
+--- a/sound/hda/ext/hdac_ext_stream.c
++++ b/sound/hda/ext/hdac_ext_stream.c
+@@ -25,7 +25,7 @@
+ 
+ /**
+  * snd_hdac_ext_stream_init - initialize each stream (aka device)
+- * @ebus: HD-audio ext core bus
++ * @bus: HD-audio core bus
+  * @stream: HD-audio ext core stream object to initialize
+  * @idx: stream index number
+  * @direction: stream direction (SNDRV_PCM_STREAM_PLAYBACK or SNDRV_PCM_STREAM_CAPTURE)
+@@ -34,18 +34,16 @@
+  * initialize the stream, if ppcap is enabled then init those and then
+  * invoke hdac stream initialization routine
+  */
+-void snd_hdac_ext_stream_init(struct hdac_ext_bus *ebus,
++void snd_hdac_ext_stream_init(struct hdac_bus *bus,
+ 				struct hdac_ext_stream *stream,
+ 				int idx, int direction, int tag)
+ {
+-	struct hdac_bus *bus = &ebus->bus;
+-
+ 	if (bus->ppcap) {
+ 		stream->pphc_addr = bus->ppcap + AZX_PPHC_BASE +
+ 				AZX_PPHC_INTERVAL * idx;
+ 
+ 		stream->pplc_addr = bus->ppcap + AZX_PPLC_BASE +
+-				AZX_PPLC_MULTI * ebus->num_streams +
++				AZX_PPLC_MULTI * bus->num_streams +
+ 				AZX_PPLC_INTERVAL * idx;
+ 	}
+ 
+@@ -71,12 +69,12 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_init);
+ /**
+  * snd_hdac_ext_stream_init_all - create and initialize the stream objects
+  *   for an extended hda bus
+- * @ebus: HD-audio ext core bus
++ * @bus: HD-audio core bus
+  * @start_idx: start index for streams
+  * @num_stream: number of streams to initialize
+  * @dir: direction of streams
+  */
+-int snd_hdac_ext_stream_init_all(struct hdac_ext_bus *ebus, int start_idx,
++int snd_hdac_ext_stream_init_all(struct hdac_bus *bus, int start_idx,
+ 		int num_stream, int dir)
+ {
+ 	int stream_tag = 0;
+@@ -88,7 +86,7 @@ int snd_hdac_ext_stream_init_all(struct hdac_ext_bus *ebus, int start_idx,
+ 		if (!stream)
+ 			return -ENOMEM;
+ 		tag = ++stream_tag;
+-		snd_hdac_ext_stream_init(ebus, stream, idx, dir, tag);
++		snd_hdac_ext_stream_init(bus, stream, idx, dir, tag);
+ 		idx++;
+ 	}
+ 
+@@ -100,17 +98,16 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_init_all);
+ /**
+  * snd_hdac_stream_free_all - free hdac extended stream objects
+  *
+- * @ebus: HD-audio ext core bus
++ * @bus: HD-audio core bus
+  */
+-void snd_hdac_stream_free_all(struct hdac_ext_bus *ebus)
++void snd_hdac_stream_free_all(struct hdac_bus *bus)
+ {
+ 	struct hdac_stream *s, *_s;
+ 	struct hdac_ext_stream *stream;
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
+ 
+ 	list_for_each_entry_safe(s, _s, &bus->stream_list, list) {
+ 		stream = stream_to_hdac_ext_stream(s);
+-		snd_hdac_ext_stream_decouple(ebus, stream, false);
++		snd_hdac_ext_stream_decouple(bus, stream, false);
+ 		list_del(&s->list);
+ 		kfree(stream);
+ 	}
+@@ -119,15 +116,14 @@ EXPORT_SYMBOL_GPL(snd_hdac_stream_free_all);
+ 
+ /**
+  * snd_hdac_ext_stream_decouple - decouple the hdac stream
+- * @ebus: HD-audio ext core bus
++ * @bus: HD-audio core bus
+  * @stream: HD-audio ext core stream object to initialize
+  * @decouple: flag to decouple
+  */
+-void snd_hdac_ext_stream_decouple(struct hdac_ext_bus *ebus,
++void snd_hdac_ext_stream_decouple(struct hdac_bus *bus,
+ 				struct hdac_ext_stream *stream, bool decouple)
+ {
+ 	struct hdac_stream *hstream = &stream->hstream;
+-	struct hdac_bus *bus = &ebus->bus;
+ 	u32 val;
+ 	int mask = AZX_PPCTL_PROCEN(hstream->index);
+ 
+@@ -251,19 +247,18 @@ void snd_hdac_ext_link_clear_stream_id(struct hdac_ext_link *link,
+ EXPORT_SYMBOL_GPL(snd_hdac_ext_link_clear_stream_id);
+ 
+ static struct hdac_ext_stream *
+-hdac_ext_link_stream_assign(struct hdac_ext_bus *ebus,
++hdac_ext_link_stream_assign(struct hdac_bus *bus,
+ 				struct snd_pcm_substream *substream)
+ {
+ 	struct hdac_ext_stream *res = NULL;
+ 	struct hdac_stream *stream = NULL;
+-	struct hdac_bus *hbus = &ebus->bus;
+ 
+-	if (!hbus->ppcap) {
+-		dev_err(hbus->dev, "stream type not supported\n");
++	if (!bus->ppcap) {
++		dev_err(bus->dev, "stream type not supported\n");
+ 		return NULL;
+ 	}
+ 
+-	list_for_each_entry(stream, &hbus->stream_list, list) {
++	list_for_each_entry(stream, &bus->stream_list, list) {
+ 		struct hdac_ext_stream *hstream = container_of(stream,
+ 						struct hdac_ext_stream,
+ 						hstream);
+@@ -277,34 +272,33 @@ hdac_ext_link_stream_assign(struct hdac_ext_bus *ebus,
+ 		}
+ 
+ 		if (!hstream->link_locked) {
+-			snd_hdac_ext_stream_decouple(ebus, hstream, true);
++			snd_hdac_ext_stream_decouple(bus, hstream, true);
+ 			res = hstream;
+ 			break;
+ 		}
+ 	}
+ 	if (res) {
+-		spin_lock_irq(&hbus->reg_lock);
++		spin_lock_irq(&bus->reg_lock);
+ 		res->link_locked = 1;
+ 		res->link_substream = substream;
+-		spin_unlock_irq(&hbus->reg_lock);
++		spin_unlock_irq(&bus->reg_lock);
+ 	}
+ 	return res;
+ }
+ 
+ static struct hdac_ext_stream *
+-hdac_ext_host_stream_assign(struct hdac_ext_bus *ebus,
++hdac_ext_host_stream_assign(struct hdac_bus *bus,
+ 				struct snd_pcm_substream *substream)
+ {
+ 	struct hdac_ext_stream *res = NULL;
+ 	struct hdac_stream *stream = NULL;
+-	struct hdac_bus *hbus = &ebus->bus;
+ 
+-	if (!hbus->ppcap) {
+-		dev_err(hbus->dev, "stream type not supported\n");
++	if (!bus->ppcap) {
++		dev_err(bus->dev, "stream type not supported\n");
+ 		return NULL;
+ 	}
+ 
+-	list_for_each_entry(stream, &hbus->stream_list, list) {
++	list_for_each_entry(stream, &bus->stream_list, list) {
+ 		struct hdac_ext_stream *hstream = container_of(stream,
+ 						struct hdac_ext_stream,
+ 						hstream);
+@@ -313,17 +307,17 @@ hdac_ext_host_stream_assign(struct hdac_ext_bus *ebus,
+ 
+ 		if (!stream->opened) {
+ 			if (!hstream->decoupled)
+-				snd_hdac_ext_stream_decouple(ebus, hstream, true);
++				snd_hdac_ext_stream_decouple(bus, hstream, true);
+ 			res = hstream;
+ 			break;
+ 		}
+ 	}
+ 	if (res) {
+-		spin_lock_irq(&hbus->reg_lock);
++		spin_lock_irq(&bus->reg_lock);
+ 		res->hstream.opened = 1;
+ 		res->hstream.running = 0;
+ 		res->hstream.substream = substream;
+-		spin_unlock_irq(&hbus->reg_lock);
++		spin_unlock_irq(&bus->reg_lock);
+ 	}
+ 
+ 	return res;
+@@ -331,7 +325,7 @@ hdac_ext_host_stream_assign(struct hdac_ext_bus *ebus,
+ 
+ /**
+  * snd_hdac_ext_stream_assign - assign a stream for the PCM
+- * @ebus: HD-audio ext core bus
++ * @bus: HD-audio core bus
+  * @substream: PCM substream to assign
+  * @type: type of stream (coupled, host or link stream)
+  *
+@@ -346,27 +340,26 @@ hdac_ext_host_stream_assign(struct hdac_ext_bus *ebus,
+  * the same stream object when it's used beforehand.  when a stream is
+  * decoupled, it becomes a host stream and link stream.
+  */
+-struct hdac_ext_stream *snd_hdac_ext_stream_assign(struct hdac_ext_bus *ebus,
++struct hdac_ext_stream *snd_hdac_ext_stream_assign(struct hdac_bus *bus,
+ 					   struct snd_pcm_substream *substream,
+ 					   int type)
+ {
+ 	struct hdac_ext_stream *hstream = NULL;
+ 	struct hdac_stream *stream = NULL;
+-	struct hdac_bus *hbus = &ebus->bus;
+ 
+ 	switch (type) {
+ 	case HDAC_EXT_STREAM_TYPE_COUPLED:
+-		stream = snd_hdac_stream_assign(hbus, substream);
++		stream = snd_hdac_stream_assign(bus, substream);
+ 		if (stream)
+ 			hstream = container_of(stream,
+ 					struct hdac_ext_stream, hstream);
+ 		return hstream;
+ 
+ 	case HDAC_EXT_STREAM_TYPE_HOST:
+-		return hdac_ext_host_stream_assign(ebus, substream);
++		return hdac_ext_host_stream_assign(bus, substream);
+ 
+ 	case HDAC_EXT_STREAM_TYPE_LINK:
+-		return hdac_ext_link_stream_assign(ebus, substream);
++		return hdac_ext_link_stream_assign(bus, substream);
+ 
+ 	default:
+ 		return NULL;
+@@ -384,7 +377,6 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_assign);
+ void snd_hdac_ext_stream_release(struct hdac_ext_stream *stream, int type)
+ {
+ 	struct hdac_bus *bus = stream->hstream.bus;
+-	struct hdac_ext_bus *ebus = hbus_to_ebus(bus);
+ 
+ 	switch (type) {
+ 	case HDAC_EXT_STREAM_TYPE_COUPLED:
+@@ -393,13 +385,13 @@ void snd_hdac_ext_stream_release(struct hdac_ext_stream *stream, int type)
+ 
+ 	case HDAC_EXT_STREAM_TYPE_HOST:
+ 		if (stream->decoupled && !stream->link_locked)
+-			snd_hdac_ext_stream_decouple(ebus, stream, false);
++			snd_hdac_ext_stream_decouple(bus, stream, false);
+ 		snd_hdac_stream_release(&stream->hstream);
+ 		break;
+ 
+ 	case HDAC_EXT_STREAM_TYPE_LINK:
+ 		if (stream->decoupled && !stream->hstream.opened)
+-			snd_hdac_ext_stream_decouple(ebus, stream, false);
++			snd_hdac_ext_stream_decouple(bus, stream, false);
+ 		spin_lock_irq(&bus->reg_lock);
+ 		stream->link_locked = 0;
+ 		stream->link_substream = NULL;
+@@ -415,16 +407,15 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_release);
+ 
+ /**
+  * snd_hdac_ext_stream_spbcap_enable - enable SPIB for a stream
+- * @ebus: HD-audio ext core bus
++ * @bus: HD-audio core bus
+  * @enable: flag to enable/disable SPIB
+  * @index: stream index for which SPIB need to be enabled
+  */
+-void snd_hdac_ext_stream_spbcap_enable(struct hdac_ext_bus *ebus,
++void snd_hdac_ext_stream_spbcap_enable(struct hdac_bus *bus,
+ 				 bool enable, int index)
+ {
+ 	u32 mask = 0;
+ 	u32 register_mask = 0;
+-	struct hdac_bus *bus = &ebus->bus;
+ 
+ 	if (!bus->spbcap) {
+ 		dev_err(bus->dev, "Address of SPB capability is NULL\n");
+@@ -446,14 +437,13 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_spbcap_enable);
+ 
+ /**
+  * snd_hdac_ext_stream_set_spib - sets the spib value of a stream
+- * @ebus: HD-audio ext core bus
++ * @bus: HD-audio core bus
+  * @stream: hdac_ext_stream
+  * @value: spib value to set
+  */
+-int snd_hdac_ext_stream_set_spib(struct hdac_ext_bus *ebus,
++int snd_hdac_ext_stream_set_spib(struct hdac_bus *bus,
+ 				 struct hdac_ext_stream *stream, u32 value)
+ {
+-	struct hdac_bus *bus = &ebus->bus;
+ 
+ 	if (!bus->spbcap) {
+ 		dev_err(bus->dev, "Address of SPB capability is NULL\n");
+@@ -468,15 +458,14 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_set_spib);
+ 
+ /**
+  * snd_hdac_ext_stream_get_spbmaxfifo - gets the spib value of a stream
+- * @ebus: HD-audio ext core bus
++ * @bus: HD-audio core bus
+  * @stream: hdac_ext_stream
+  *
+  * Return maxfifo for the stream
+  */
+-int snd_hdac_ext_stream_get_spbmaxfifo(struct hdac_ext_bus *ebus,
++int snd_hdac_ext_stream_get_spbmaxfifo(struct hdac_bus *bus,
+ 				 struct hdac_ext_stream *stream)
+ {
+-	struct hdac_bus *bus = &ebus->bus;
+ 
+ 	if (!bus->spbcap) {
+ 		dev_err(bus->dev, "Address of SPB capability is NULL\n");
+@@ -490,11 +479,10 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_get_spbmaxfifo);
+ 
+ /**
+  * snd_hdac_ext_stop_streams - stop all stream if running
+- * @ebus: HD-audio ext core bus
++ * @bus: HD-audio core bus
+  */
+-void snd_hdac_ext_stop_streams(struct hdac_ext_bus *ebus)
++void snd_hdac_ext_stop_streams(struct hdac_bus *bus)
+ {
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
+ 	struct hdac_stream *stream;
+ 
+ 	if (bus->chip_init) {
+@@ -507,16 +495,15 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_stop_streams);
+ 
+ /**
+  * snd_hdac_ext_stream_drsm_enable - enable DMA resume for a stream
+- * @ebus: HD-audio ext core bus
++ * @bus: HD-audio core bus
+  * @enable: flag to enable/disable DRSM
+  * @index: stream index for which DRSM need to be enabled
+  */
+-void snd_hdac_ext_stream_drsm_enable(struct hdac_ext_bus *ebus,
++void snd_hdac_ext_stream_drsm_enable(struct hdac_bus *bus,
+ 				bool enable, int index)
+ {
+ 	u32 mask = 0;
+ 	u32 register_mask = 0;
+-	struct hdac_bus *bus = &ebus->bus;
+ 
+ 	if (!bus->drsmcap) {
+ 		dev_err(bus->dev, "Address of DRSM capability is NULL\n");
+@@ -538,14 +525,13 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_drsm_enable);
+ 
+ /**
+  * snd_hdac_ext_stream_set_dpibr - sets the dpibr value of a stream
+- * @ebus: HD-audio ext core bus
++ * @bus: HD-audio core bus
+  * @stream: hdac_ext_stream
+  * @value: dpib value to set
+  */
+-int snd_hdac_ext_stream_set_dpibr(struct hdac_ext_bus *ebus,
++int snd_hdac_ext_stream_set_dpibr(struct hdac_bus *bus,
+ 				 struct hdac_ext_stream *stream, u32 value)
+ {
+-	struct hdac_bus *bus = &ebus->bus;
+ 
+ 	if (!bus->drsmcap) {
+ 		dev_err(bus->dev, "Address of DRSM capability is NULL\n");
+@@ -560,7 +546,7 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_set_dpibr);
+ 
+ /**
+  * snd_hdac_ext_stream_set_lpib - sets the lpib value of a stream
+- * @ebus: HD-audio ext core bus
++ * @bus: HD-audio core bus
+  * @stream: hdac_ext_stream
+  * @value: lpib value to set
+  */
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 4cf4fa3..8321775 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -1799,14 +1799,13 @@ static int hdmi_codec_probe(struct snd_soc_component *component)
  	 * hold the ref while we probe, also no need to drop the ref on
  	 * exit, we call pm_runtime_suspend() so that will do for us
  	 */
--	hlink = snd_hdac_ext_bus_get_link(edev->ebus, dev_name(&edev->hdev.dev));
-+	hlink = snd_hdac_ext_bus_get_link(hbus_to_ebus(hdev->bus),
-+						dev_name(&hdev->dev));
+-	hlink = snd_hdac_ext_bus_get_link(hbus_to_ebus(hdev->bus),
+-						dev_name(&hdev->dev));
++	hlink = snd_hdac_ext_bus_get_link(hdev->bus, dev_name(&hdev->dev));
  	if (!hlink) {
--		dev_err(&edev->hdev.dev, "hdac link not found\n");
-+		dev_err(&hdev->dev, "hdac link not found\n");
+ 		dev_err(&hdev->dev, "hdac link not found\n");
  		return -EIO;
  	}
  
--	snd_hdac_ext_bus_link_get(edev->ebus, hlink);
-+	snd_hdac_ext_bus_link_get(hbus_to_ebus(hdev->bus), hlink);
+-	snd_hdac_ext_bus_link_get(hbus_to_ebus(hdev->bus), hlink);
++	snd_hdac_ext_bus_link_get(hdev->bus, hlink);
  
  	ret = create_fill_widget_route_map(dapm);
  	if (ret < 0)
- 		return ret;
+@@ -1984,14 +1983,13 @@ static int hdac_hdmi_dev_probe(struct hdac_device *hdev)
+ 	const struct hda_device_id *hdac_id = hdac_get_device_id(hdev, hdrv);
  
--	aops.audio_ptr = edev;
-+	aops.audio_ptr = hdev;
- 	ret = snd_hdac_i915_register_notifier(&aops);
- 	if (ret < 0) {
--		dev_err(&edev->hdev.dev, "notifier register failed: err: %d\n",
--				ret);
-+		dev_err(&hdev->dev, "notifier register failed: err: %d\n", ret);
- 		return ret;
+ 	/* hold the ref while we probe */
+-	hlink = snd_hdac_ext_bus_get_link(hbus_to_ebus(hdev->bus),
+-						dev_name(&hdev->dev));
++	hlink = snd_hdac_ext_bus_get_link(hdev->bus, dev_name(&hdev->dev));
+ 	if (!hlink) {
+ 		dev_err(&hdev->dev, "hdac link not found\n");
+ 		return -EIO;
  	}
  
--	hdac_hdmi_present_sense_all_pins(edev, hdmi, true);
-+	hdac_hdmi_present_sense_all_pins(hdev, hdmi, true);
- 	/* Imp: Store the card pointer in hda_codec */
--	edev->card = dapm->card->snd_card;
-+	hdmi->card = dapm->card->snd_card;
+-	snd_hdac_ext_bus_link_get(hbus_to_ebus(hdev->bus), hlink);
++	snd_hdac_ext_bus_link_get(hdev->bus, hlink);
+ 
+ 	hdmi_priv = devm_kzalloc(&hdev->dev, sizeof(*hdmi_priv), GFP_KERNEL);
+ 	if (hdmi_priv == NULL)
+@@ -2044,7 +2042,7 @@ static int hdac_hdmi_dev_probe(struct hdac_device *hdev)
+ 	ret = devm_snd_soc_register_component(&hdev->dev, &hdmi_hda_codec,
+ 					hdmi_dais, num_dais);
+ 
+-	snd_hdac_ext_bus_link_put(hbus_to_ebus(hdev->bus), hlink);
++	snd_hdac_ext_bus_link_put(hdev->bus, hlink);
+ 
+ 	return ret;
+ }
+@@ -2093,7 +2091,6 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+ {
+ 	struct hdac_device *hdev = dev_to_hdac_dev(dev);
+ 	struct hdac_bus *bus = hdev->bus;
+-	struct hdac_ext_bus *ebus = hbus_to_ebus(bus);
+ 	struct hdac_ext_link *hlink = NULL;
+ 	int err;
+ 
+@@ -2118,13 +2115,13 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+ 		return err;
+ 	}
+ 
+-	hlink = snd_hdac_ext_bus_get_link(ebus, dev_name(dev));
++	hlink = snd_hdac_ext_bus_get_link(bus, dev_name(dev));
+ 	if (!hlink) {
+ 		dev_err(dev, "hdac link not found\n");
+ 		return -EIO;
+ 	}
+ 
+-	snd_hdac_ext_bus_link_put(ebus, hlink);
++	snd_hdac_ext_bus_link_put(bus, hlink);
+ 
+ 	return 0;
+ }
+@@ -2133,7 +2130,6 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
+ {
+ 	struct hdac_device *hdev = dev_to_hdac_dev(dev);
+ 	struct hdac_bus *bus = hdev->bus;
+-	struct hdac_ext_bus *ebus = hbus_to_ebus(bus);
+ 	struct hdac_ext_link *hlink = NULL;
+ 	int err;
+ 
+@@ -2143,13 +2139,13 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
+ 	if (!bus)
+ 		return 0;
+ 
+-	hlink = snd_hdac_ext_bus_get_link(ebus, dev_name(dev));
++	hlink = snd_hdac_ext_bus_get_link(bus, dev_name(dev));
+ 	if (!hlink) {
+ 		dev_err(dev, "hdac link not found\n");
+ 		return -EIO;
+ 	}
+ 
+-	snd_hdac_ext_bus_link_get(ebus, hlink);
++	snd_hdac_ext_bus_link_get(bus, hlink);
+ 
+ 	err = snd_hdac_display_power(bus, true);
+ 	if (err < 0) {
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 60d76ad..24ad3c3 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -33,8 +33,7 @@
+ static int skl_alloc_dma_buf(struct device *dev,
+ 		struct snd_dma_buffer *dmab, size_t size)
+ {
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = dev_get_drvdata(dev);
+ 
+ 	if (!bus)
+ 		return -ENODEV;
+@@ -44,8 +43,7 @@ static int skl_alloc_dma_buf(struct device *dev,
+ 
+ static int skl_free_dma_buf(struct device *dev, struct snd_dma_buffer *dmab)
+ {
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = dev_get_drvdata(dev);
+ 
+ 	if (!bus)
+ 		return -ENODEV;
+@@ -89,8 +87,7 @@ void skl_dsp_enable_notification(struct skl_sst *ctx, bool enable)
+ static int skl_dsp_setup_spib(struct device *dev, unsigned int size,
+ 				int stream_tag, int enable)
+ {
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = dev_get_drvdata(dev);
+ 	struct hdac_stream *stream = snd_hdac_get_stream(bus,
+ 			SNDRV_PCM_STREAM_PLAYBACK, stream_tag);
+ 	struct hdac_ext_stream *estream;
+@@ -100,10 +97,10 @@ static int skl_dsp_setup_spib(struct device *dev, unsigned int size,
+ 
+ 	estream = stream_to_hdac_ext_stream(stream);
+ 	/* enable/disable SPIB for this hdac stream */
+-	snd_hdac_ext_stream_spbcap_enable(ebus, enable, stream->index);
++	snd_hdac_ext_stream_spbcap_enable(bus, enable, stream->index);
+ 
+ 	/* set the spib value */
+-	snd_hdac_ext_stream_set_spib(ebus, estream, size);
++	snd_hdac_ext_stream_set_spib(bus, estream, size);
+ 
+ 	return 0;
+ }
+@@ -111,8 +108,7 @@ static int skl_dsp_setup_spib(struct device *dev, unsigned int size,
+ static int skl_dsp_prepare(struct device *dev, unsigned int format,
+ 			unsigned int size, struct snd_dma_buffer *dmab)
+ {
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = dev_get_drvdata(dev);
+ 	struct hdac_ext_stream *estream;
+ 	struct hdac_stream *stream;
+ 	struct snd_pcm_substream substream;
+@@ -124,7 +120,7 @@ static int skl_dsp_prepare(struct device *dev, unsigned int format,
+ 	memset(&substream, 0, sizeof(substream));
+ 	substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
+ 
+-	estream = snd_hdac_ext_stream_assign(ebus, &substream,
++	estream = snd_hdac_ext_stream_assign(bus, &substream,
+ 					HDAC_EXT_STREAM_TYPE_HOST);
+ 	if (!estream)
+ 		return -ENODEV;
+@@ -143,9 +139,8 @@ static int skl_dsp_prepare(struct device *dev, unsigned int format,
+ 
+ static int skl_dsp_trigger(struct device *dev, bool start, int stream_tag)
+ {
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
++	struct hdac_bus *bus = dev_get_drvdata(dev);
+ 	struct hdac_stream *stream;
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
+ 
+ 	if (!bus)
+ 		return -ENODEV;
+@@ -163,10 +158,9 @@ static int skl_dsp_trigger(struct device *dev, bool start, int stream_tag)
+ static int skl_dsp_cleanup(struct device *dev,
+ 		struct snd_dma_buffer *dmab, int stream_tag)
+ {
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
++	struct hdac_bus *bus = dev_get_drvdata(dev);
+ 	struct hdac_stream *stream;
+ 	struct hdac_ext_stream *estream;
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
+ 
+ 	if (!bus)
+ 		return -ENODEV;
+@@ -270,8 +264,7 @@ const struct skl_dsp_ops *skl_get_dsp_ops(int pci_id)
+ int skl_init_dsp(struct skl *skl)
+ {
+ 	void __iomem *mmio_base;
+-	struct hdac_ext_bus *ebus = &skl->ebus;
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = skl_to_bus(skl);
+ 	struct skl_dsp_loader_ops loader_ops;
+ 	int irq = bus->irq;
+ 	const struct skl_dsp_ops *ops;
+@@ -279,8 +272,8 @@ int skl_init_dsp(struct skl *skl)
+ 	int ret;
+ 
+ 	/* enable ppcap interrupt */
+-	snd_hdac_ext_bus_ppcap_enable(&skl->ebus, true);
+-	snd_hdac_ext_bus_ppcap_int_enable(&skl->ebus, true);
++	snd_hdac_ext_bus_ppcap_enable(bus, true);
++	snd_hdac_ext_bus_ppcap_int_enable(bus, true);
+ 
+ 	/* read the BAR of the ADSP MMIO */
+ 	mmio_base = pci_ioremap_bar(skl->pci, 4);
+@@ -335,12 +328,11 @@ int skl_init_dsp(struct skl *skl)
+ 
+ int skl_free_dsp(struct skl *skl)
+ {
+-	struct hdac_ext_bus *ebus = &skl->ebus;
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = skl_to_bus(skl);
+ 	struct skl_sst *ctx = skl->skl_sst;
+ 
+ 	/* disable  ppcap interrupt */
+-	snd_hdac_ext_bus_ppcap_int_enable(&skl->ebus, false);
++	snd_hdac_ext_bus_ppcap_int_enable(bus, false);
+ 
+ 	ctx->dsp_ops->cleanup(bus->dev, ctx);
+ 
+@@ -383,10 +375,11 @@ int skl_suspend_late_dsp(struct skl *skl)
+ int skl_suspend_dsp(struct skl *skl)
+ {
+ 	struct skl_sst *ctx = skl->skl_sst;
++	struct hdac_bus *bus = skl_to_bus(skl);
+ 	int ret;
+ 
+ 	/* if ppcap is not supported return 0 */
+-	if (!skl->ebus.bus.ppcap)
++	if (!bus->ppcap)
+ 		return 0;
+ 
+ 	ret = skl_dsp_sleep(ctx->dsp);
+@@ -394,8 +387,8 @@ int skl_suspend_dsp(struct skl *skl)
+ 		return ret;
+ 
+ 	/* disable ppcap interrupt */
+-	snd_hdac_ext_bus_ppcap_int_enable(&skl->ebus, false);
+-	snd_hdac_ext_bus_ppcap_enable(&skl->ebus, false);
++	snd_hdac_ext_bus_ppcap_int_enable(bus, false);
++	snd_hdac_ext_bus_ppcap_enable(bus, false);
+ 
+ 	return 0;
+ }
+@@ -403,15 +396,16 @@ int skl_suspend_dsp(struct skl *skl)
+ int skl_resume_dsp(struct skl *skl)
+ {
+ 	struct skl_sst *ctx = skl->skl_sst;
++	struct hdac_bus *bus = skl_to_bus(skl);
+ 	int ret;
+ 
+ 	/* if ppcap is not supported return 0 */
+-	if (!skl->ebus.bus.ppcap)
++	if (!bus->ppcap)
+ 		return 0;
+ 
+ 	/* enable ppcap interrupt */
+-	snd_hdac_ext_bus_ppcap_enable(&skl->ebus, true);
+-	snd_hdac_ext_bus_ppcap_int_enable(&skl->ebus, true);
++	snd_hdac_ext_bus_ppcap_enable(bus, true);
++	snd_hdac_ext_bus_ppcap_int_enable(bus, true);
+ 
+ 	/* check if DSP 1st boot is done */
+ 	if (skl->skl_sst->is_first_boot == true)
+diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
+index b9b1402..01a050c 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.c
++++ b/sound/soc/intel/skylake/skl-nhlt.c
+@@ -141,7 +141,7 @@ struct nhlt_specific_cfg
+ {
+ 	struct nhlt_fmt *fmt;
+ 	struct nhlt_endpoint *epnt;
+-	struct hdac_bus *bus = ebus_to_hbus(&skl->ebus);
++	struct hdac_bus *bus = skl_to_bus(skl);
+ 	struct device *dev = bus->dev;
+ 	struct nhlt_specific_cfg *sp_config;
+ 	struct nhlt_acpi_table *nhlt = skl->nhlt;
+@@ -228,7 +228,7 @@ static void skl_nhlt_trim_space(char *trim)
+ int skl_nhlt_update_topology_bin(struct skl *skl)
+ {
+ 	struct nhlt_acpi_table *nhlt = (struct nhlt_acpi_table *)skl->nhlt;
+-	struct hdac_bus *bus = ebus_to_hbus(&skl->ebus);
++	struct hdac_bus *bus = skl_to_bus(skl);
+ 	struct device *dev = bus->dev;
+ 
+ 	dev_dbg(dev, "oem_id %.6s, oem_table_id %8s oem_revision %d\n",
+@@ -248,8 +248,8 @@ static ssize_t skl_nhlt_platform_id_show(struct device *dev,
+ 			struct device_attribute *attr, char *buf)
+ {
+ 	struct pci_dev *pci = to_pci_dev(dev);
+-	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
+-	struct skl *skl = ebus_to_skl(ebus);
++	struct hdac_bus *bus = pci_get_drvdata(pci);
++	struct skl *skl = bus_to_skl(bus);
+ 	struct nhlt_acpi_table *nhlt = (struct nhlt_acpi_table *)skl->nhlt;
+ 	char platform_id[32];
+ 
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 84e40fa..8d11bed 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -67,16 +67,15 @@ struct hdac_ext_stream *get_hdac_ext_stream(struct snd_pcm_substream *substream)
+ 	return substream->runtime->private_data;
+ }
+ 
+-static struct hdac_ext_bus *get_bus_ctx(struct snd_pcm_substream *substream)
++static struct hdac_bus *get_bus_ctx(struct snd_pcm_substream *substream)
+ {
+ 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
+ 	struct hdac_stream *hstream = hdac_stream(stream);
+ 	struct hdac_bus *bus = hstream->bus;
+-
+-	return hbus_to_ebus(bus);
++	return bus;
+ }
+ 
+-static int skl_substream_alloc_pages(struct hdac_ext_bus *ebus,
++static int skl_substream_alloc_pages(struct hdac_bus *bus,
+ 				 struct snd_pcm_substream *substream,
+ 				 size_t size)
+ {
+@@ -95,7 +94,7 @@ static int skl_substream_free_pages(struct hdac_bus *bus,
+ 	return snd_pcm_lib_free_pages(substream);
+ }
+ 
+-static void skl_set_pcm_constrains(struct hdac_ext_bus *ebus,
++static void skl_set_pcm_constrains(struct hdac_bus *bus,
+ 				 struct snd_pcm_runtime *runtime)
+ {
+ 	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
+@@ -105,9 +104,9 @@ static void skl_set_pcm_constrains(struct hdac_ext_bus *ebus,
+ 				     20, 178000000);
+ }
+ 
+-static enum hdac_ext_stream_type skl_get_host_stream_type(struct hdac_ext_bus *ebus)
++static enum hdac_ext_stream_type skl_get_host_stream_type(struct hdac_bus *bus)
+ {
+-	if ((ebus_to_hbus(ebus))->ppcap)
++	if (bus->ppcap)
+ 		return HDAC_EXT_STREAM_TYPE_HOST;
+ 	else
+ 		return HDAC_EXT_STREAM_TYPE_COUPLED;
+@@ -123,9 +122,9 @@ static enum hdac_ext_stream_type skl_get_host_stream_type(struct hdac_ext_bus *e
+ static void skl_set_suspend_active(struct snd_pcm_substream *substream,
+ 					 struct snd_soc_dai *dai, bool enable)
+ {
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
++	struct hdac_bus *bus = dev_get_drvdata(dai->dev);
+ 	struct snd_soc_dapm_widget *w;
+-	struct skl *skl = ebus_to_skl(ebus);
++	struct skl *skl = bus_to_skl(bus);
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		w = dai->playback_widget;
+@@ -140,8 +139,7 @@ static void skl_set_suspend_active(struct snd_pcm_substream *substream,
+ 
+ int skl_pcm_host_dma_prepare(struct device *dev, struct skl_pipe_params *params)
+ {
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = dev_get_drvdata(dev);
+ 	unsigned int format_val;
+ 	struct hdac_stream *hstream;
+ 	struct hdac_ext_stream *stream;
+@@ -153,7 +151,7 @@ int skl_pcm_host_dma_prepare(struct device *dev, struct skl_pipe_params *params)
+ 		return -EINVAL;
+ 
+ 	stream = stream_to_hdac_ext_stream(hstream);
+-	snd_hdac_ext_stream_decouple(ebus, stream, true);
++	snd_hdac_ext_stream_decouple(bus, stream, true);
+ 
+ 	format_val = snd_hdac_calc_stream_format(params->s_freq,
+ 			params->ch, params->format, params->host_bps, 0);
+@@ -177,8 +175,7 @@ int skl_pcm_host_dma_prepare(struct device *dev, struct skl_pipe_params *params)
+ 
+ int skl_pcm_link_dma_prepare(struct device *dev, struct skl_pipe_params *params)
+ {
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = dev_get_drvdata(dev);
+ 	unsigned int format_val;
+ 	struct hdac_stream *hstream;
+ 	struct hdac_ext_stream *stream;
+@@ -190,7 +187,7 @@ int skl_pcm_link_dma_prepare(struct device *dev, struct skl_pipe_params *params)
+ 		return -EINVAL;
+ 
+ 	stream = stream_to_hdac_ext_stream(hstream);
+-	snd_hdac_ext_stream_decouple(ebus, stream, true);
++	snd_hdac_ext_stream_decouple(bus, stream, true);
+ 	format_val = snd_hdac_calc_stream_format(params->s_freq, params->ch,
+ 					params->format, params->link_bps, 0);
+ 
+@@ -201,7 +198,7 @@ int skl_pcm_link_dma_prepare(struct device *dev, struct skl_pipe_params *params)
+ 
+ 	snd_hdac_ext_link_stream_setup(stream, format_val);
+ 
+-	list_for_each_entry(link, &ebus->hlink_list, list) {
++	list_for_each_entry(link, &bus->hlink_list, list) {
+ 		if (link->index == params->link_index)
+ 			snd_hdac_ext_link_set_stream_id(link,
+ 					hstream->stream_tag);
+@@ -215,7 +212,7 @@ int skl_pcm_link_dma_prepare(struct device *dev, struct skl_pipe_params *params)
+ static int skl_pcm_open(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
++	struct hdac_bus *bus = dev_get_drvdata(dai->dev);
+ 	struct hdac_ext_stream *stream;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct skl_dma_params *dma_params;
+@@ -224,12 +221,12 @@ static int skl_pcm_open(struct snd_pcm_substream *substream,
+ 
+ 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
+ 
+-	stream = snd_hdac_ext_stream_assign(ebus, substream,
+-					skl_get_host_stream_type(ebus));
++	stream = snd_hdac_ext_stream_assign(bus, substream,
++					skl_get_host_stream_type(bus));
+ 	if (stream == NULL)
+ 		return -EBUSY;
+ 
+-	skl_set_pcm_constrains(ebus, runtime);
++	skl_set_pcm_constrains(bus, runtime);
  
  	/*
- 	 * hdac_device core already sets the state to active and calls
- 	 * get_noresume. So enable runtime and set the device to suspend.
+ 	 * disable WALLCLOCK timestamps for capture streams
+@@ -285,7 +282,7 @@ static int skl_pcm_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params,
+ 				struct snd_soc_dai *dai)
+ {
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
++	struct hdac_bus *bus = dev_get_drvdata(dai->dev);
+ 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct skl_pipe_params p_params = {0};
+@@ -293,7 +290,7 @@ static int skl_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	int ret, dma_id;
+ 
+ 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
+-	ret = skl_substream_alloc_pages(ebus, substream,
++	ret = skl_substream_alloc_pages(bus, substream,
+ 					  params_buffer_bytes(params));
+ 	if (ret < 0)
+ 		return ret;
+@@ -327,14 +324,14 @@ static void skl_pcm_close(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+ 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
++	struct hdac_bus *bus = dev_get_drvdata(dai->dev);
+ 	struct skl_dma_params *dma_params = NULL;
+-	struct skl *skl = ebus_to_skl(ebus);
++	struct skl *skl = bus_to_skl(bus);
+ 	struct skl_module_cfg *mconfig;
+ 
+ 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
+ 
+-	snd_hdac_ext_stream_release(stream, skl_get_host_stream_type(ebus));
++	snd_hdac_ext_stream_release(stream, skl_get_host_stream_type(bus));
+ 
+ 	dma_params = snd_soc_dai_get_dma_data(dai, substream);
+ 	/*
+@@ -364,7 +361,7 @@ static void skl_pcm_close(struct snd_pcm_substream *substream,
+ static int skl_pcm_hw_free(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
++	struct hdac_bus *bus = dev_get_drvdata(dai->dev);
+ 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
+ 
+ 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
+@@ -372,7 +369,7 @@ static int skl_pcm_hw_free(struct snd_pcm_substream *substream,
+ 	snd_hdac_stream_cleanup(hdac_stream(stream));
+ 	hdac_stream(stream)->prepared = 0;
+ 
+-	return skl_substream_free_pages(ebus_to_hbus(ebus), substream);
++	return skl_substream_free_pages(bus, substream);
+ }
+ 
+ static int skl_be_hw_params(struct snd_pcm_substream *substream,
+@@ -392,8 +389,7 @@ static int skl_be_hw_params(struct snd_pcm_substream *substream,
+ static int skl_decoupled_trigger(struct snd_pcm_substream *substream,
+ 		int cmd)
+ {
+-	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = get_bus_ctx(substream);
+ 	struct hdac_ext_stream *stream;
+ 	int start;
+ 	unsigned long cookie;
+@@ -442,7 +438,7 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	struct skl *skl = get_skl_ctx(dai->dev);
+ 	struct skl_sst *ctx = skl->skl_sst;
+ 	struct skl_module_cfg *mconfig;
+-	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
++	struct hdac_bus *bus = get_bus_ctx(substream);
+ 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
+ 	struct snd_soc_dapm_widget *w;
+ 	int ret;
+@@ -464,9 +460,9 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			 * dpib & lpib position to resume before starting the
+ 			 * DMA
+ 			 */
+-			snd_hdac_ext_stream_drsm_enable(ebus, true,
++			snd_hdac_ext_stream_drsm_enable(bus, true,
+ 						hdac_stream(stream)->index);
+-			snd_hdac_ext_stream_set_dpibr(ebus, stream,
++			snd_hdac_ext_stream_set_dpibr(bus, stream,
+ 							stream->lpib);
+ 			snd_hdac_ext_stream_set_lpib(stream, stream->lpib);
+ 		}
+@@ -500,14 +496,14 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		ret = skl_decoupled_trigger(substream, cmd);
+ 		if ((cmd == SNDRV_PCM_TRIGGER_SUSPEND) && !w->ignore_suspend) {
+ 			/* save the dpib and lpib positions */
+-			stream->dpib = readl(ebus->bus.remap_addr +
++			stream->dpib = readl(bus->remap_addr +
+ 					AZX_REG_VS_SDXDPIB_XBASE +
+ 					(AZX_REG_VS_SDXDPIB_XINTERVAL *
+ 					hdac_stream(stream)->index));
+ 
+ 			stream->lpib = snd_hdac_stream_get_pos_lpib(
+ 							hdac_stream(stream));
+-			snd_hdac_ext_stream_decouple(ebus, stream, false);
++			snd_hdac_ext_stream_decouple(bus, stream, false);
+ 		}
+ 		break;
+ 
+@@ -518,11 +514,12 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	return 0;
+ }
+ 
++
+ static int skl_link_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params,
+ 				struct snd_soc_dai *dai)
+ {
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
++	struct hdac_bus *bus = dev_get_drvdata(dai->dev);
+ 	struct hdac_ext_stream *link_dev;
+ 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+@@ -530,14 +527,14 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
+ 	struct hdac_ext_link *link;
+ 	int stream_tag;
+ 
+-	link_dev = snd_hdac_ext_stream_assign(ebus, substream,
++	link_dev = snd_hdac_ext_stream_assign(bus, substream,
+ 					HDAC_EXT_STREAM_TYPE_LINK);
+ 	if (!link_dev)
+ 		return -EBUSY;
+ 
+ 	snd_soc_dai_set_dma_data(dai, substream, (void *)link_dev);
+ 
+-	link = snd_hdac_ext_bus_get_link(ebus, codec_dai->component->name);
++	link = snd_hdac_ext_bus_get_link(bus, codec_dai->component->name);
+ 	if (!link)
+ 		return -EINVAL;
+ 
+@@ -582,7 +579,7 @@ static int skl_link_pcm_trigger(struct snd_pcm_substream *substream,
+ {
+ 	struct hdac_ext_stream *link_dev =
+ 				snd_soc_dai_get_dma_data(dai, substream);
+-	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
++	struct hdac_bus *bus = get_bus_ctx(substream);
+ 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
+ 
+ 	dev_dbg(dai->dev, "In %s cmd=%d\n", __func__, cmd);
+@@ -598,7 +595,7 @@ static int skl_link_pcm_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 		snd_hdac_ext_link_stream_clear(link_dev);
+ 		if (cmd == SNDRV_PCM_TRIGGER_SUSPEND)
+-			snd_hdac_ext_stream_decouple(ebus, stream, false);
++			snd_hdac_ext_stream_decouple(bus, stream, false);
+ 		break;
+ 
+ 	default:
+@@ -610,7 +607,7 @@ static int skl_link_pcm_trigger(struct snd_pcm_substream *substream,
+ static int skl_link_hw_free(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
++	struct hdac_bus *bus = dev_get_drvdata(dai->dev);
+ 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
+ 	struct hdac_ext_stream *link_dev =
+ 				snd_soc_dai_get_dma_data(dai, substream);
+@@ -620,7 +617,7 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
+ 
+ 	link_dev->link_prepared = 0;
+ 
+-	link = snd_hdac_ext_bus_get_link(ebus, rtd->codec_dai->component->name);
++	link = snd_hdac_ext_bus_get_link(bus, rtd->codec_dai->component->name);
+ 	if (!link)
+ 		return -EINVAL;
+ 
+@@ -1013,8 +1010,7 @@ static int skl_platform_open(struct snd_pcm_substream *substream)
+ static int skl_coupled_trigger(struct snd_pcm_substream *substream,
+ 					int cmd)
+ {
+-	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = get_bus_ctx(substream);
+ 	struct hdac_ext_stream *stream;
+ 	struct snd_pcm_substream *s;
+ 	bool start;
+@@ -1087,9 +1083,9 @@ static int skl_coupled_trigger(struct snd_pcm_substream *substream,
+ static int skl_platform_pcm_trigger(struct snd_pcm_substream *substream,
+ 					int cmd)
+ {
+-	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
++	struct hdac_bus *bus = get_bus_ctx(substream);
+ 
+-	if (!(ebus_to_hbus(ebus))->ppcap)
++	if (!bus->ppcap)
+ 		return skl_coupled_trigger(substream, cmd);
+ 
+ 	return 0;
+@@ -1099,7 +1095,7 @@ static snd_pcm_uframes_t skl_platform_pcm_pointer
+ 			(struct snd_pcm_substream *substream)
+ {
+ 	struct hdac_ext_stream *hstream = get_hdac_ext_stream(substream);
+-	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
++	struct hdac_bus *bus = get_bus_ctx(substream);
+ 	unsigned int pos;
+ 
+ 	/*
+@@ -1124,12 +1120,12 @@ static snd_pcm_uframes_t skl_platform_pcm_pointer
  	 */
--	pm_runtime_enable(&edev->hdev.dev);
--	pm_runtime_put(&edev->hdev.dev);
--	pm_runtime_suspend(&edev->hdev.dev);
-+	pm_runtime_enable(&hdev->dev);
-+	pm_runtime_put(&hdev->dev);
-+	pm_runtime_suspend(&hdev->dev);
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		pos = readl(ebus->bus.remap_addr + AZX_REG_VS_SDXDPIB_XBASE +
++		pos = readl(bus->remap_addr + AZX_REG_VS_SDXDPIB_XBASE +
+ 				(AZX_REG_VS_SDXDPIB_XINTERVAL *
+ 				hdac_stream(hstream)->index));
+ 	} else {
+ 		udelay(20);
+-		readl(ebus->bus.remap_addr +
++		readl(bus->remap_addr +
+ 				AZX_REG_VS_SDXDPIB_XBASE +
+ 				(AZX_REG_VS_SDXDPIB_XINTERVAL *
+ 				 hdac_stream(hstream)->index));
+@@ -1214,11 +1210,11 @@ static void skl_pcm_free(struct snd_pcm *pcm)
+ static int skl_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_dai *dai = rtd->cpu_dai;
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
++	struct hdac_bus *bus = dev_get_drvdata(dai->dev);
+ 	struct snd_pcm *pcm = rtd->pcm;
+ 	unsigned int size;
+ 	int retval = 0;
+-	struct skl *skl = ebus_to_skl(ebus);
++	struct skl *skl = bus_to_skl(bus);
+ 
+ 	if (dai->driver->playback.channels_min ||
+ 		dai->driver->capture.channels_min) {
+@@ -1328,19 +1324,19 @@ static int skl_populate_modules(struct skl *skl)
+ 
+ static int skl_platform_soc_probe(struct snd_soc_component *component)
+ {
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(component->dev);
+-	struct skl *skl = ebus_to_skl(ebus);
++	struct hdac_bus *bus = dev_get_drvdata(component->dev);
++	struct skl *skl = bus_to_skl(bus);
+ 	const struct skl_dsp_ops *ops;
+ 	int ret;
+ 
+ 	pm_runtime_get_sync(component->dev);
+-	if ((ebus_to_hbus(ebus))->ppcap) {
++	if (bus->ppcap) {
+ 		skl->component = component;
+ 
+ 		/* init debugfs */
+ 		skl->debugfs = skl_debugfs_init(skl);
+ 
+-		ret = skl_tplg_init(component, ebus);
++		ret = skl_tplg_init(component, bus);
+ 		if (ret < 0) {
+ 			dev_err(component->dev, "Failed to init topology!\n");
+ 			return ret;
+@@ -1392,10 +1388,10 @@ static const struct snd_soc_component_driver skl_component  = {
+ int skl_platform_register(struct device *dev)
+ {
+ 	int ret;
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
+-	struct skl *skl = ebus_to_skl(ebus);
+ 	struct snd_soc_dai_driver *dais;
+ 	int num_dais = ARRAY_SIZE(skl_platform_dai);
++	struct hdac_bus *bus = dev_get_drvdata(dev);
++	struct skl *skl = bus_to_skl(bus);
+ 
+ 	INIT_LIST_HEAD(&skl->ppl_list);
+ 	INIT_LIST_HEAD(&skl->bind_list);
+@@ -1431,8 +1427,8 @@ int skl_platform_register(struct device *dev)
+ 
+ int skl_platform_unregister(struct device *dev)
+ {
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
+-	struct skl *skl = ebus_to_skl(ebus);
++	struct hdac_bus *bus = dev_get_drvdata(dev);
++	struct skl *skl = bus_to_skl(bus);
+ 	struct skl_module_deferred_bind *modules, *tmp;
+ 
+ 	if (!list_empty(&skl->bind_list)) {
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 3b1dca4..611e53d 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -933,7 +933,7 @@ static int skl_tplg_find_moduleid_from_uuid(struct skl *skl,
+ 	struct soc_bytes_ext *sb = (void *) k->private_value;
+ 	struct skl_algo_data *bc = (struct skl_algo_data *)sb->dobj.private;
+ 	struct skl_kpb_params *uuid_params, *params;
+-	struct hdac_bus *bus = ebus_to_hbus(skl_to_ebus(skl));
++	struct hdac_bus *bus = skl_to_bus(skl);
+ 	int i, size, module_id;
+ 
+ 	if (bc->set_params == SKL_PARAM_BIND && bc->max) {
+@@ -2856,9 +2856,8 @@ static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
+ 				struct snd_soc_tplg_dapm_widget *tplg_w)
+ {
+ 	int ret;
+-	struct hdac_ext_bus *ebus = snd_soc_component_get_drvdata(cmpnt);
+-	struct skl *skl = ebus_to_skl(ebus);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = snd_soc_component_get_drvdata(cmpnt);
++	struct skl *skl = bus_to_skl(bus);
+ 	struct skl_module_cfg *mconfig;
+ 
+ 	if (!tplg_w->priv.size)
+@@ -2964,8 +2963,7 @@ static int skl_tplg_control_load(struct snd_soc_component *cmpnt,
+ 	struct soc_bytes_ext *sb;
+ 	struct snd_soc_tplg_bytes_control *tplg_bc;
+ 	struct snd_soc_tplg_enum_control *tplg_ec;
+-	struct hdac_ext_bus *ebus  = snd_soc_component_get_drvdata(cmpnt);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus  = snd_soc_component_get_drvdata(cmpnt);
+ 	struct soc_enum *se;
+ 
+ 	switch (hdr->ops.info) {
+@@ -3449,9 +3447,8 @@ static int skl_tplg_get_manifest_data(struct snd_soc_tplg_manifest *manifest,
+ static int skl_manifest_load(struct snd_soc_component *cmpnt,
+ 				struct snd_soc_tplg_manifest *manifest)
+ {
+-	struct hdac_ext_bus *ebus = snd_soc_component_get_drvdata(cmpnt);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
+-	struct skl *skl = ebus_to_skl(ebus);
++	struct hdac_bus *bus = snd_soc_component_get_drvdata(cmpnt);
++	struct skl *skl = bus_to_skl(bus);
+ 
+ 	/* proceed only if we have private data defined */
+ 	if (manifest->priv.size == 0)
+@@ -3540,12 +3537,11 @@ static void skl_tplg_set_pipe_type(struct skl *skl, struct skl_pipe *pipe)
+ /*
+  * SKL topology init routine
+  */
+-int skl_tplg_init(struct snd_soc_component *component, struct hdac_ext_bus *ebus)
++int skl_tplg_init(struct snd_soc_component *component, struct hdac_bus *bus)
+ {
+ 	int ret;
+ 	const struct firmware *fw;
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
+-	struct skl *skl = ebus_to_skl(ebus);
++	struct skl *skl = bus_to_skl(bus);
+ 	struct skl_pipeline *ppl;
+ 
+ 	ret = request_firmware(&fw, skl->tplg_name, bus->dev);
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index b1e0667..f5ec41b 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -458,9 +458,9 @@ enum skl_channel {
+ 
+ static inline struct skl *get_skl_ctx(struct device *dev)
+ {
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
++	struct hdac_bus *bus = dev_get_drvdata(dev);
+ 
+-	return ebus_to_skl(ebus);
++	return bus_to_skl(bus);
+ }
+ 
+ int skl_tplg_be_update_params(struct snd_soc_dai *dai,
+@@ -470,7 +470,7 @@ int skl_dsp_set_dma_control(struct skl_sst *ctx, u32 *caps,
+ void skl_tplg_set_be_dmic_config(struct snd_soc_dai *dai,
+ 	struct skl_pipe_params *params, int stream);
+ int skl_tplg_init(struct snd_soc_component *component,
+-				struct hdac_ext_bus *ebus);
++				struct hdac_bus *ebus);
+ struct skl_module_cfg *skl_tplg_fe_get_cpr_module(
+ 		struct snd_soc_dai *dai, int stream);
+ int skl_tplg_update_pipe_params(struct device *dev,
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index aa9edc8..f948f29 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -54,7 +54,7 @@ static void skl_update_pci_byte(struct pci_dev *pci, unsigned int reg,
+ 
+ static void skl_init_pci(struct skl *skl)
+ {
+-	struct hdac_ext_bus *ebus = &skl->ebus;
++	struct hdac_bus *bus = skl_to_bus(skl);
+ 
+ 	/*
+ 	 * Clear bits 0-2 of PCI register TCSEL (at offset 0x44)
+@@ -63,7 +63,7 @@ static void skl_init_pci(struct skl *skl)
+ 	 * codecs.
+ 	 * The PCI register TCSEL is defined in the Intel manuals.
+ 	 */
+-	dev_dbg(ebus_to_hbus(ebus)->dev, "Clearing TCSEL\n");
++	dev_dbg(bus->dev, "Clearing TCSEL\n");
+ 	skl_update_pci_byte(skl->pci, AZX_PCIREG_TCSEL, 0x07, 0);
+ }
+ 
+@@ -113,8 +113,7 @@ static int skl_init_chip(struct hdac_bus *bus, bool full_reset)
+ void skl_update_d0i3c(struct device *dev, bool enable)
+ {
+ 	struct pci_dev *pci = to_pci_dev(dev);
+-	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = pci_get_drvdata(pci);
+ 	u8 reg;
+ 	int timeout = 50;
+ 
+@@ -164,8 +163,7 @@ static void skl_stream_update(struct hdac_bus *bus, struct hdac_stream *hstr)
+ 
+ static irqreturn_t skl_interrupt(int irq, void *dev_id)
+ {
+-	struct hdac_ext_bus *ebus = dev_id;
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = dev_id;
+ 	u32 status;
+ 
+ 	if (!pm_runtime_active(bus->dev))
+@@ -194,8 +192,7 @@ static irqreturn_t skl_interrupt(int irq, void *dev_id)
+ 
+ static irqreturn_t skl_threaded_handler(int irq, void *dev_id)
+ {
+-	struct hdac_ext_bus *ebus = dev_id;
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = dev_id;
+ 	u32 status;
+ 
+ 	status = snd_hdac_chip_readl(bus, INTSTS);
+@@ -205,16 +202,15 @@ static irqreturn_t skl_threaded_handler(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static int skl_acquire_irq(struct hdac_ext_bus *ebus, int do_disconnect)
++static int skl_acquire_irq(struct hdac_bus *bus, int do_disconnect)
+ {
+-	struct skl *skl = ebus_to_skl(ebus);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct skl *skl = bus_to_skl(bus);
+ 	int ret;
+ 
+ 	ret = request_threaded_irq(skl->pci->irq, skl_interrupt,
+ 			skl_threaded_handler,
+ 			IRQF_SHARED,
+-			KBUILD_MODNAME, ebus);
++			KBUILD_MODNAME, bus);
+ 	if (ret) {
+ 		dev_err(bus->dev,
+ 			"unable to grab IRQ %d, disabling device\n",
+@@ -231,21 +227,20 @@ static int skl_acquire_irq(struct hdac_ext_bus *ebus, int do_disconnect)
+ static int skl_suspend_late(struct device *dev)
+ {
+ 	struct pci_dev *pci = to_pci_dev(dev);
+-	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
+-	struct skl *skl = ebus_to_skl(ebus);
++	struct hdac_bus *bus = pci_get_drvdata(pci);
++	struct skl *skl = bus_to_skl(bus);
+ 
+ 	return skl_suspend_late_dsp(skl);
+ }
+ 
+ #ifdef CONFIG_PM
+-static int _skl_suspend(struct hdac_ext_bus *ebus)
++static int _skl_suspend(struct hdac_bus *bus)
+ {
+-	struct skl *skl = ebus_to_skl(ebus);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct skl *skl = bus_to_skl(bus);
+ 	struct pci_dev *pci = to_pci_dev(bus->dev);
+ 	int ret;
+ 
+-	snd_hdac_ext_bus_link_power_down_all(ebus);
++	snd_hdac_ext_bus_link_power_down_all(bus);
+ 
+ 	ret = skl_suspend_dsp(skl);
+ 	if (ret < 0)
+@@ -262,10 +257,9 @@ static int _skl_suspend(struct hdac_ext_bus *ebus)
+ 	return 0;
+ }
+ 
+-static int _skl_resume(struct hdac_ext_bus *ebus)
++static int _skl_resume(struct hdac_bus *bus)
+ {
+-	struct skl *skl = ebus_to_skl(ebus);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct skl *skl = bus_to_skl(bus);
+ 
+ 	skl_init_pci(skl);
+ 	skl_init_chip(bus, true);
+@@ -281,9 +275,8 @@ static int _skl_resume(struct hdac_ext_bus *ebus)
+ static int skl_suspend(struct device *dev)
+ {
+ 	struct pci_dev *pci = to_pci_dev(dev);
+-	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
+-	struct skl *skl  = ebus_to_skl(ebus);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = pci_get_drvdata(pci);
++	struct skl *skl  = bus_to_skl(bus);
+ 	int ret = 0;
+ 
+ 	/*
+@@ -292,15 +285,15 @@ static int skl_suspend(struct device *dev)
+ 	 */
+ 	if (skl->supend_active) {
+ 		/* turn off the links and stop the CORB/RIRB DMA if it is On */
+-		snd_hdac_ext_bus_link_power_down_all(ebus);
++		snd_hdac_ext_bus_link_power_down_all(bus);
+ 
+-		if (ebus->cmd_dma_state)
+-			snd_hdac_bus_stop_cmd_io(&ebus->bus);
++		if (bus->cmd_dma_state)
++			snd_hdac_bus_stop_cmd_io(bus);
+ 
+ 		enable_irq_wake(bus->irq);
+ 		pci_save_state(pci);
+ 	} else {
+-		ret = _skl_suspend(ebus);
++		ret = _skl_suspend(bus);
+ 		if (ret < 0)
+ 			return ret;
+ 		skl->skl_sst->fw_loaded = false;
+@@ -319,9 +312,8 @@ static int skl_suspend(struct device *dev)
+ static int skl_resume(struct device *dev)
+ {
+ 	struct pci_dev *pci = to_pci_dev(dev);
+-	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
+-	struct skl *skl  = ebus_to_skl(ebus);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = pci_get_drvdata(pci);
++	struct skl *skl  = bus_to_skl(bus);
+ 	struct hdac_ext_link *hlink = NULL;
+ 	int ret;
+ 
+@@ -341,32 +333,32 @@ static int skl_resume(struct device *dev)
+ 	 */
+ 	if (skl->supend_active) {
+ 		pci_restore_state(pci);
+-		snd_hdac_ext_bus_link_power_up_all(ebus);
++		snd_hdac_ext_bus_link_power_up_all(bus);
+ 		disable_irq_wake(bus->irq);
+ 		/*
+ 		 * turn On the links which are On before active suspend
+ 		 * and start the CORB/RIRB DMA if On before
+ 		 * active suspend.
+ 		 */
+-		list_for_each_entry(hlink, &ebus->hlink_list, list) {
++		list_for_each_entry(hlink, &bus->hlink_list, list) {
+ 			if (hlink->ref_count)
+ 				snd_hdac_ext_bus_link_power_up(hlink);
+ 		}
+ 
+-		if (ebus->cmd_dma_state)
+-			snd_hdac_bus_init_cmd_io(&ebus->bus);
+ 		ret = 0;
++		if (bus->cmd_dma_state)
++			snd_hdac_bus_init_cmd_io(bus);
+ 	} else {
+-		ret = _skl_resume(ebus);
++		ret = _skl_resume(bus);
+ 
+ 		/* turn off the links which are off before suspend */
+-		list_for_each_entry(hlink, &ebus->hlink_list, list) {
++		list_for_each_entry(hlink, &bus->hlink_list, list) {
+ 			if (!hlink->ref_count)
+ 				snd_hdac_ext_bus_link_power_down(hlink);
+ 		}
+ 
+-		if (!ebus->cmd_dma_state)
+-			snd_hdac_bus_stop_cmd_io(&ebus->bus);
++		if (!bus->cmd_dma_state)
++			snd_hdac_bus_stop_cmd_io(bus);
+ 	}
+ 
+ 	return ret;
+@@ -377,23 +369,21 @@ static int skl_resume(struct device *dev)
+ static int skl_runtime_suspend(struct device *dev)
+ {
+ 	struct pci_dev *pci = to_pci_dev(dev);
+-	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = pci_get_drvdata(pci);
+ 
+ 	dev_dbg(bus->dev, "in %s\n", __func__);
+ 
+-	return _skl_suspend(ebus);
++	return _skl_suspend(bus);
+ }
+ 
+ static int skl_runtime_resume(struct device *dev)
+ {
+ 	struct pci_dev *pci = to_pci_dev(dev);
+-	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = pci_get_drvdata(pci);
+ 
+ 	dev_dbg(bus->dev, "in %s\n", __func__);
+ 
+-	return _skl_resume(ebus);
++	return _skl_resume(bus);
+ }
+ #endif /* CONFIG_PM */
+ 
+@@ -406,20 +396,19 @@ static const struct dev_pm_ops skl_pm = {
+ /*
+  * destructor
+  */
+-static int skl_free(struct hdac_ext_bus *ebus)
++static int skl_free(struct hdac_bus *bus)
+ {
+-	struct skl *skl  = ebus_to_skl(ebus);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct skl *skl  = bus_to_skl(bus);
+ 
+ 	skl->init_done = 0; /* to be sure */
+ 
+-	snd_hdac_ext_stop_streams(ebus);
++	snd_hdac_ext_stop_streams(bus);
+ 
+ 	if (bus->irq >= 0)
+-		free_irq(bus->irq, (void *)ebus);
++		free_irq(bus->irq, (void *)bus);
+ 	snd_hdac_bus_free_stream_pages(bus);
+-	snd_hdac_stream_free_all(ebus);
+-	snd_hdac_link_free_all(ebus);
++	snd_hdac_stream_free_all(bus);
++	snd_hdac_link_free_all(bus);
+ 
+ 	if (bus->remap_addr)
+ 		iounmap(bus->remap_addr);
+@@ -427,11 +416,11 @@ static int skl_free(struct hdac_ext_bus *ebus)
+ 	pci_release_regions(skl->pci);
+ 	pci_disable_device(skl->pci);
+ 
+-	snd_hdac_ext_bus_exit(ebus);
++	snd_hdac_ext_bus_exit(bus);
+ 
+ 	cancel_work_sync(&skl->probe_work);
+ 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
+-		snd_hdac_i915_exit(&ebus->bus);
++		snd_hdac_i915_exit(bus);
+ 
+ 	return 0;
+ }
+@@ -455,8 +444,8 @@ static struct skl_ssp_clk skl_ssp_clks[] = {
+ 
+ static int skl_find_machine(struct skl *skl, void *driver_data)
+ {
++	struct hdac_bus *bus = skl_to_bus(skl);
+ 	struct snd_soc_acpi_mach *mach = driver_data;
+-	struct hdac_bus *bus = ebus_to_hbus(&skl->ebus);
+ 	struct skl_machine_pdata *pdata;
+ 
+ 	mach = snd_soc_acpi_find_machine(mach);
+@@ -477,7 +466,7 @@ static int skl_find_machine(struct skl *skl, void *driver_data)
+ 
+ static int skl_machine_device_register(struct skl *skl)
+ {
+-	struct hdac_bus *bus = ebus_to_hbus(&skl->ebus);
++	struct hdac_bus *bus = skl_to_bus(skl);
+ 	struct snd_soc_acpi_mach *mach = skl->mach;
+ 	struct platform_device *pdev;
+ 	int ret;
+@@ -511,7 +500,7 @@ static void skl_machine_device_unregister(struct skl *skl)
+ 
+ static int skl_dmic_device_register(struct skl *skl)
+ {
+-	struct hdac_bus *bus = ebus_to_hbus(&skl->ebus);
++	struct hdac_bus *bus = skl_to_bus(skl);
+ 	struct platform_device *pdev;
+ 	int ret;
+ 
+@@ -610,9 +599,8 @@ static void skl_clock_device_unregister(struct skl *skl)
+ /*
+  * Probe the given codec address
+  */
+-static int probe_codec(struct hdac_ext_bus *ebus, int addr)
++static int probe_codec(struct hdac_bus *bus, int addr)
+ {
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
+ 	unsigned int cmd = (addr << 28) | (AC_NODE_ROOT << 20) |
+ 		(AC_VERB_PARAMETERS << 8) | AC_PAR_VENDOR_ID;
+ 	unsigned int res = -1;
+@@ -625,13 +613,12 @@ static int probe_codec(struct hdac_ext_bus *ebus, int addr)
+ 		return -EIO;
+ 	dev_dbg(bus->dev, "codec #%d probed OK\n", addr);
+ 
+-	return snd_hdac_ext_bus_device_init(ebus, addr);
++	return snd_hdac_ext_bus_device_init(bus, addr);
+ }
+ 
+ /* Codec initialization */
+-static void skl_codec_create(struct hdac_ext_bus *ebus)
++static void skl_codec_create(struct hdac_bus *bus)
+ {
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
+ 	int c, max_slots;
+ 
+ 	max_slots = HDA_MAX_CODECS;
+@@ -639,7 +626,7 @@ static void skl_codec_create(struct hdac_ext_bus *ebus)
+ 	/* First try to probe all given codec slots */
+ 	for (c = 0; c < max_slots; c++) {
+ 		if ((bus->codec_mask & (1 << c))) {
+-			if (probe_codec(ebus, c) < 0) {
++			if (probe_codec(bus, c) < 0) {
+ 				/*
+ 				 * Some BIOSen give you wrong codec addresses
+ 				 * that don't exist
+@@ -689,8 +676,7 @@ static int skl_i915_init(struct hdac_bus *bus)
+ static void skl_probe_work(struct work_struct *work)
+ {
+ 	struct skl *skl = container_of(work, struct skl, probe_work);
+-	struct hdac_ext_bus *ebus = &skl->ebus;
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = skl_to_bus(skl);
+ 	struct hdac_ext_link *hlink = NULL;
+ 	int err;
+ 
+@@ -711,7 +697,7 @@ static void skl_probe_work(struct work_struct *work)
+ 		dev_info(bus->dev, "no hda codecs found!\n");
+ 
+ 	/* create codec instances */
+-	skl_codec_create(ebus);
++	skl_codec_create(bus);
+ 
+ 	/* register platform dai and controls */
+ 	err = skl_platform_register(bus->dev);
+@@ -740,8 +726,8 @@ static void skl_probe_work(struct work_struct *work)
+ 	/*
+ 	 * we are done probing so decrement link counts
+ 	 */
+-	list_for_each_entry(hlink, &ebus->hlink_list, list)
+-		snd_hdac_ext_bus_link_put(ebus, hlink);
++	list_for_each_entry(hlink, &bus->hlink_list, list)
++		snd_hdac_ext_bus_link_put(bus, hlink);
+ 
+ 	/* configure PM */
+ 	pm_runtime_put_noidle(bus->dev);
+@@ -763,7 +749,7 @@ static int skl_create(struct pci_dev *pci,
+ 		      struct skl **rskl)
+ {
+ 	struct skl *skl;
+-	struct hdac_ext_bus *ebus;
++	struct hdac_bus *bus;
+ 
+ 	int err;
+ 
+@@ -778,23 +764,22 @@ static int skl_create(struct pci_dev *pci,
+ 		pci_disable_device(pci);
+ 		return -ENOMEM;
+ 	}
+-	ebus = &skl->ebus;
+-	snd_hdac_ext_bus_init(ebus, &pci->dev, &bus_core_ops, io_ops);
+-	ebus->bus.use_posbuf = 1;
++
++	bus = skl_to_bus(skl);
++	snd_hdac_ext_bus_init(bus, &pci->dev, &bus_core_ops, io_ops);
++	bus->use_posbuf = 1;
+ 	skl->pci = pci;
+ 	INIT_WORK(&skl->probe_work, skl_probe_work);
+-
+-	ebus->bus.bdl_pos_adj = 0;
++	bus->bdl_pos_adj = 0;
+ 
+ 	*rskl = skl;
  
  	return 0;
  }
  
- static void hdmi_codec_remove(struct snd_soc_component *component)
+-static int skl_first_init(struct hdac_ext_bus *ebus)
++static int skl_first_init(struct hdac_bus *bus)
  {
--	struct hdac_ext_device *edev = snd_soc_component_get_drvdata(component);
-+	struct hdac_hdmi_priv *hdmi = snd_soc_component_get_drvdata(component);
-+	struct hdac_device *hdev = hdmi->hdev;
+-	struct skl *skl = ebus_to_skl(ebus);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct skl *skl = bus_to_skl(bus);
+ 	struct pci_dev *pci = skl->pci;
+ 	int err;
+ 	unsigned short gcap;
+@@ -815,7 +800,7 @@ static int skl_first_init(struct hdac_ext_bus *ebus)
  
--	pm_runtime_disable(&edev->hdev.dev);
-+	pm_runtime_disable(&hdev->dev);
+ 	snd_hdac_bus_parse_capabilities(bus);
+ 
+-	if (skl_acquire_irq(ebus, 0) < 0)
++	if (skl_acquire_irq(bus, 0) < 0)
+ 		return -EBUSY;
+ 
+ 	pci_set_master(pci);
+@@ -839,14 +824,14 @@ static int skl_first_init(struct hdac_ext_bus *ebus)
+ 	if (!pb_streams && !cp_streams)
+ 		return -EIO;
+ 
+-	ebus->num_streams = cp_streams + pb_streams;
++	bus->num_streams = cp_streams + pb_streams;
+ 
+ 	/* initialize streams */
+ 	snd_hdac_ext_stream_init_all
+-		(ebus, 0, cp_streams, SNDRV_PCM_STREAM_CAPTURE);
++		(bus, 0, cp_streams, SNDRV_PCM_STREAM_CAPTURE);
+ 	start_idx = cp_streams;
+ 	snd_hdac_ext_stream_init_all
+-		(ebus, start_idx, pb_streams, SNDRV_PCM_STREAM_PLAYBACK);
++		(bus, start_idx, pb_streams, SNDRV_PCM_STREAM_PLAYBACK);
+ 
+ 	err = snd_hdac_bus_alloc_stream_pages(bus);
+ 	if (err < 0)
+@@ -862,7 +847,6 @@ static int skl_probe(struct pci_dev *pci,
+ 		     const struct pci_device_id *pci_id)
+ {
+ 	struct skl *skl;
+-	struct hdac_ext_bus *ebus = NULL;
+ 	struct hdac_bus *bus = NULL;
+ 	int err;
+ 
+@@ -871,10 +855,9 @@ static int skl_probe(struct pci_dev *pci,
+ 	if (err < 0)
+ 		return err;
+ 
+-	ebus = &skl->ebus;
+-	bus = ebus_to_hbus(ebus);
++	bus = skl_to_bus(skl);
+ 
+-	err = skl_first_init(ebus);
++	err = skl_first_init(bus);
+ 	if (err < 0)
+ 		goto out_free;
+ 
+@@ -895,7 +878,7 @@ static int skl_probe(struct pci_dev *pci,
+ 
+ 	skl_nhlt_update_topology_bin(skl);
+ 
+-	pci_set_drvdata(skl->pci, ebus);
++	pci_set_drvdata(skl->pci, bus);
+ 
+ 	skl_dmic_data.dmic_num = skl_get_dmic_geo(skl);
+ 
+@@ -918,7 +901,7 @@ static int skl_probe(struct pci_dev *pci,
+ 		skl->skl_sst->enable_miscbdcge = skl_enable_miscbdcge;
+ 	}
+ 	if (bus->mlcap)
+-		snd_hdac_ext_bus_get_ml_capabilities(ebus);
++		snd_hdac_ext_bus_get_ml_capabilities(bus);
+ 
+ 	snd_hdac_bus_stop_chip(bus);
+ 
+@@ -938,31 +921,30 @@ static int skl_probe(struct pci_dev *pci,
+ out_nhlt_free:
+ 	skl_nhlt_free(skl->nhlt);
+ out_free:
+-	skl_free(ebus);
++	skl_free(bus);
+ 
+ 	return err;
  }
  
- #ifdef CONFIG_PM
- static int hdmi_codec_prepare(struct device *dev)
+ static void skl_shutdown(struct pci_dev *pci)
  {
--	struct hdac_ext_device *edev = to_hda_ext_device(dev);
--	struct hdac_device *hdev = &edev->hdev;
-+	struct hdac_device *hdev = dev_to_hdac_dev(dev);
+-	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_bus *bus = pci_get_drvdata(pci);
+ 	struct hdac_stream *s;
+ 	struct hdac_ext_stream *stream;
+ 	struct skl *skl;
  
--	pm_runtime_get_sync(&edev->hdev.dev);
-+	pm_runtime_get_sync(&hdev->dev);
+-	if (ebus == NULL)
++	if (bus == NULL)
+ 		return;
  
- 	/*
- 	 * Power down afg.
-@@ -1876,16 +1864,15 @@ static int hdmi_codec_prepare(struct device *dev)
+-	skl = ebus_to_skl(ebus);
++	skl = bus_to_skl(bus);
  
- static void hdmi_codec_complete(struct device *dev)
+ 	if (!skl->init_done)
+ 		return;
+ 
+-	snd_hdac_ext_stop_streams(ebus);
++	snd_hdac_ext_stop_streams(bus);
+ 	list_for_each_entry(s, &bus->stream_list, list) {
+ 		stream = stream_to_hdac_ext_stream(s);
+-		snd_hdac_ext_stream_decouple(ebus, stream, false);
++		snd_hdac_ext_stream_decouple(bus, stream, false);
+ 	}
+ 
+ 	snd_hdac_bus_stop_chip(bus);
+@@ -970,15 +952,15 @@ static void skl_shutdown(struct pci_dev *pci)
+ 
+ static void skl_remove(struct pci_dev *pci)
  {
--	struct hdac_ext_device *edev = to_hda_ext_device(dev);
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
--	struct hdac_device *hdev = &edev->hdev;
-+	struct hdac_device *hdev = dev_to_hdac_dev(dev);
-+	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
+-	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
+-	struct skl *skl = ebus_to_skl(ebus);
++	struct hdac_bus *bus = pci_get_drvdata(pci);
++	struct skl *skl = bus_to_skl(bus);
  
- 	/* Power up afg */
- 	snd_hdac_codec_read(hdev, hdev->afg, 0,	AC_VERB_SET_POWER_STATE,
- 							AC_PWRST_D0);
+ 	release_firmware(skl->tplg);
  
--	hdac_hdmi_skl_enable_all_pins(&edev->hdev);
--	hdac_hdmi_skl_enable_dp12(&edev->hdev);
-+	hdac_hdmi_skl_enable_all_pins(hdev);
-+	hdac_hdmi_skl_enable_dp12(hdev);
+ 	pm_runtime_get_noresume(&pci->dev);
  
- 	/*
- 	 * As the ELD notify callback request is not entertained while the
-@@ -1893,9 +1880,9 @@ static void hdmi_codec_complete(struct device *dev)
- 	 * all pins here. pin capablity change is not support, so use the
- 	 * already set pin caps.
- 	 */
--	hdac_hdmi_present_sense_all_pins(edev, hdmi, false);
-+	hdac_hdmi_present_sense_all_pins(hdev, hdmi, false);
+ 	/* codec removal, invoke bus_device_remove */
+-	snd_hdac_ext_bus_device_remove(ebus);
++	snd_hdac_ext_bus_device_remove(bus);
  
--	pm_runtime_put_sync(&edev->hdev.dev);
-+	pm_runtime_put_sync(&hdev->dev);
- }
- #else
- #define hdmi_codec_prepare NULL
-@@ -1922,7 +1909,6 @@ static void hdac_hdmi_get_chmap(struct hdac_device *hdev, int pcm_idx,
- static void hdac_hdmi_set_chmap(struct hdac_device *hdev, int pcm_idx,
- 				unsigned char *chmap, int prepared)
- {
--	struct hdac_ext_device *edev = to_ehdac_device(hdev);
- 	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
- 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
- 	struct hdac_hdmi_port *port;
-@@ -1938,7 +1924,7 @@ static void hdac_hdmi_set_chmap(struct hdac_device *hdev, int pcm_idx,
- 	memcpy(pcm->chmap, chmap, ARRAY_SIZE(pcm->chmap));
- 	list_for_each_entry(port, &pcm->port_list, head)
- 		if (prepared)
--			hdac_hdmi_setup_audio_infoframe(edev, pcm, port);
-+			hdac_hdmi_setup_audio_infoframe(hdev, pcm, port);
- 	mutex_unlock(&pcm->lock);
+ 	skl->debugfs = NULL;
+ 	skl_platform_unregister(&pci->dev);
+@@ -988,7 +970,7 @@ static void skl_remove(struct pci_dev *pci)
+ 	skl_clock_device_unregister(skl);
+ 	skl_nhlt_remove_sysfs(skl);
+ 	skl_nhlt_free(skl->nhlt);
+-	skl_free(ebus);
++	skl_free(bus);
+ 	dev_set_drvdata(&pci->dev, NULL);
  }
  
-@@ -1987,10 +1973,9 @@ static struct hdac_hdmi_drv_data intel_drv_data  = {
- 	.vendor_nid = INTEL_VENDOR_NID,
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index ca46ad1..75adce8 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -67,7 +67,7 @@ struct skl_fw_config {
  };
  
--static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
-+static int hdac_hdmi_dev_probe(struct hdac_device *hdev)
- {
--	struct hdac_device *hdev = &edev->hdev;
--	struct hdac_hdmi_priv *hdmi_priv;
-+	struct hdac_hdmi_priv *hdmi_priv = NULL;
- 	struct snd_soc_dai_driver *hdmi_dais = NULL;
- 	struct hdac_ext_link *hlink = NULL;
- 	int num_dais = 0;
-@@ -1999,24 +1984,25 @@ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
- 	const struct hda_device_id *hdac_id = hdac_get_device_id(hdev, hdrv);
+ struct skl {
+-	struct hdac_ext_bus ebus;
++	struct hdac_bus hbus;
+ 	struct pci_dev *pci;
  
- 	/* hold the ref while we probe */
--	hlink = snd_hdac_ext_bus_get_link(edev->ebus, dev_name(&edev->hdev.dev));
-+	hlink = snd_hdac_ext_bus_get_link(hbus_to_ebus(hdev->bus),
-+						dev_name(&hdev->dev));
- 	if (!hlink) {
--		dev_err(&edev->hdev.dev, "hdac link not found\n");
-+		dev_err(&hdev->dev, "hdac link not found\n");
- 		return -EIO;
- 	}
+ 	unsigned int init_done:1; /* delayed init status */
+@@ -101,9 +101,8 @@ struct skl {
+ 	struct snd_soc_acpi_mach *mach;
+ };
  
--	snd_hdac_ext_bus_link_get(edev->ebus, hlink);
-+	snd_hdac_ext_bus_link_get(hbus_to_ebus(hdev->bus), hlink);
+-#define skl_to_ebus(s)	(&(s)->ebus)
+-#define ebus_to_skl(sbus) \
+-	container_of(sbus, struct skl, sbus)
++#define skl_to_bus(s)  (&(s)->hbus)
++#define bus_to_skl(bus) container_of(bus, struct skl, hbus)
  
- 	hdmi_priv = devm_kzalloc(&hdev->dev, sizeof(*hdmi_priv), GFP_KERNEL);
- 	if (hdmi_priv == NULL)
- 		return -ENOMEM;
- 
--	edev->private_data = hdmi_priv;
- 	snd_hdac_register_chmap_ops(hdev, &hdmi_priv->chmap);
- 	hdmi_priv->chmap.ops.get_chmap = hdac_hdmi_get_chmap;
- 	hdmi_priv->chmap.ops.set_chmap = hdac_hdmi_set_chmap;
- 	hdmi_priv->chmap.ops.is_pcm_attached = is_hdac_hdmi_pcm_attached;
- 	hdmi_priv->chmap.ops.get_spk_alloc = hdac_hdmi_get_spk_alloc;
-+	hdmi_priv->hdev = hdev;
- 
- 	if (!hdac_id)
- 		return -ENODEV;
-@@ -2027,7 +2013,7 @@ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
- 	else
- 		hdmi_priv->drv_data = &intel_drv_data;
- 
--	dev_set_drvdata(&hdev->dev, edev);
-+	dev_set_drvdata(&hdev->dev, hdmi_priv);
- 
- 	INIT_LIST_HEAD(&hdmi_priv->pin_list);
- 	INIT_LIST_HEAD(&hdmi_priv->cvt_list);
-@@ -2038,15 +2024,15 @@ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
- 	 * Turned off in the runtime_suspend during the first explicit
- 	 * pm_runtime_suspend call.
- 	 */
--	ret = snd_hdac_display_power(edev->hdev.bus, true);
-+	ret = snd_hdac_display_power(hdev->bus, true);
- 	if (ret < 0) {
--		dev_err(&edev->hdev.dev,
-+		dev_err(&hdev->dev,
- 			"Cannot turn on display power on i915 err: %d\n",
- 			ret);
- 		return ret;
- 	}
- 
--	ret = hdac_hdmi_parse_and_map_nid(edev, &hdmi_dais, &num_dais);
-+	ret = hdac_hdmi_parse_and_map_nid(hdev, &hdmi_dais, &num_dais);
- 	if (ret < 0) {
- 		dev_err(&hdev->dev,
- 			"Failed in parse and map nid with err: %d\n", ret);
-@@ -2058,14 +2044,14 @@ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
- 	ret = devm_snd_soc_register_component(&hdev->dev, &hdmi_hda_codec,
- 					hdmi_dais, num_dais);
- 
--	snd_hdac_ext_bus_link_put(edev->ebus, hlink);
-+	snd_hdac_ext_bus_link_put(hbus_to_ebus(hdev->bus), hlink);
- 
- 	return ret;
- }
- 
--static int hdac_hdmi_dev_remove(struct hdac_ext_device *edev)
-+static int hdac_hdmi_dev_remove(struct hdac_device *hdev)
- {
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
-+	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
- 	struct hdac_hdmi_pin *pin, *pin_next;
- 	struct hdac_hdmi_cvt *cvt, *cvt_next;
- 	struct hdac_hdmi_pcm *pcm, *pcm_next;
-@@ -2105,8 +2091,7 @@ static int hdac_hdmi_dev_remove(struct hdac_ext_device *edev)
- #ifdef CONFIG_PM
- static int hdac_hdmi_runtime_suspend(struct device *dev)
- {
--	struct hdac_ext_device *edev = to_hda_ext_device(dev);
--	struct hdac_device *hdev = &edev->hdev;
-+	struct hdac_device *hdev = dev_to_hdac_dev(dev);
- 	struct hdac_bus *bus = hdev->bus;
- 	struct hdac_ext_bus *ebus = hbus_to_ebus(bus);
- 	struct hdac_ext_link *hlink = NULL;
-@@ -2129,7 +2114,7 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
- 							AC_PWRST_D3);
- 	err = snd_hdac_display_power(bus, false);
- 	if (err < 0) {
--		dev_err(bus->dev, "Cannot turn on display power on i915\n");
-+		dev_err(dev, "Cannot turn on display power on i915\n");
- 		return err;
- 	}
- 
-@@ -2146,8 +2131,7 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
- 
- static int hdac_hdmi_runtime_resume(struct device *dev)
- {
--	struct hdac_ext_device *edev = to_hda_ext_device(dev);
--	struct hdac_device *hdev = &edev->hdev;
-+	struct hdac_device *hdev = dev_to_hdac_dev(dev);
- 	struct hdac_bus *bus = hdev->bus;
- 	struct hdac_ext_bus *ebus = hbus_to_ebus(bus);
- 	struct hdac_ext_link *hlink = NULL;
-@@ -2169,12 +2153,12 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
- 
- 	err = snd_hdac_display_power(bus, true);
- 	if (err < 0) {
--		dev_err(bus->dev, "Cannot turn on display power on i915\n");
-+		dev_err(dev, "Cannot turn on display power on i915\n");
- 		return err;
- 	}
- 
--	hdac_hdmi_skl_enable_all_pins(&edev->hdev);
--	hdac_hdmi_skl_enable_dp12(&edev->hdev);
-+	hdac_hdmi_skl_enable_all_pins(hdev);
-+	hdac_hdmi_skl_enable_dp12(hdev);
- 
- 	/* Power up afg */
- 	snd_hdac_codec_read(hdev, hdev->afg, 0,	AC_VERB_SET_POWER_STATE,
+ /* to pass dai dma data */
+ struct skl_dma_params {
 -- 
 2.7.4
