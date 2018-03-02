@@ -1,21 +1,25 @@
-From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: Re: [Xen-devel][PATCH 0/2] sndif: add explicit back
- and front synchronization
-Date: Fri, 2 Mar 2018 18:52:28 +0200
-Message-ID: <fe39e29c-7ab3-9997-149b-7229ddd8703d@gmail.com>
-References: <1517819100-1029-1-git-send-email-andr2000@gmail.com>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: regression v4.16 on Nokia N900: sound does not work
+Date: Fri, 2 Mar 2018 17:53:21 +0100
+Message-ID: <20180302165321.GG28931@amd>
+References: <20180224214617.GA22619@amd>
+ <71aa88ec-d4df-b49c-7d73-27197f468491@leemhuis.info>
+ <20180226131318.GA14045@amd>
+ <CAEnQRZBbMTeaxb+=AaarX6PSGasfVjtAUdpbPvJavZyTRMpdgQ@mail.gmail.com>
+ <20180226231336.GA18565@amd>
+ <CACRpkdarR_7HqGMPwfa8YpG9wnFs5mJrNwuctycn=MrdwaRxyw@mail.gmail.com>
+ <20180302091025.GC30267@amd>
+ <CACRpkda=deFSmk2iyrtde3Z-aj6rW9_jNfE3Ep4X=ejprGxRUw@mail.gmail.com>
+ <20180302111040.GA6344@amd>
+ <0f090cc7-2b72-a038-26ee-d43077cb9663@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============3561972999218363336=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f67.google.com (mail-lf0-f67.google.com
- [209.85.215.67])
- by alsa0.perex.cz (Postfix) with ESMTP id E2F99267408
- for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 17:52:31 +0100 (CET)
-Received: by mail-lf0-f67.google.com with SMTP id 37so14248862lfs.7
- for <alsa-devel@alsa-project.org>; Fri, 02 Mar 2018 08:52:31 -0800 (PST)
-In-Reply-To: <1517819100-1029-1-git-send-email-andr2000@gmail.com>
-Content-Language: en-US
+Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
+ [195.113.26.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB7F4267408
+ for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 17:53:22 +0100 (CET)
+In-Reply-To: <0f090cc7-2b72-a038-26ee-d43077cb9663@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,72 +29,152 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, xen-devel@lists.xenproject.org
-Cc: Juergen Gross <jgross@suse.com>, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+To: "Andrew F. Davis" <afd@ti.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, ext Tony Lindgren <tony@atomide.com>, Linus Walleij <linus.walleij@linaro.org>, =?utf-8?B?TWlja3Vsw6HFoQ==?= Qwertz <abcloriens@gmail.com>, Sebastian Reichel <sre@kernel.org>, Martijn Braam <martijn@brixit.nl>, Filip =?utf-8?Q?Matijevi=C4=87?= <filip.matijevic.pz@gmail.com>, Patrik Bachan <patrikbachan@gmail.com>, Ivajlo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Kevin Hilman <khilman@kernel.org>, serge@hallyn.com, Thorsten Leemhuis <regressions@leemhuis.info>, Linux-OMAP <linux-omap@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Daniel Baluta <daniel.baluta@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, kernel list <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, clayton@craftyguy.net, Sakari Ailus <sakari.ailus@linux.intel.com>, Pali
 List-Id: alsa-devel@alsa-project.org
 
-QW55IGNoYW5jZSBBTFNBIGNvbW11bml0eSBtYXkgYWxzbyByZXZpZXcgdGhlIGJlbG93PwoKQlRX
-LCB0aGUgZHJpdmVyLCB3aXRoIHRoZSBjaGFuZ2VzIHByb3Bvc2VkLCBpcyBhdCBbMV0KClRoYW5r
-IHlvdSwKCk9sZWtzYW5kcgoKT24gMDIvMDUvMjAxOCAxMDoyNCBBTSwgT2xla3NhbmRyIEFuZHJ1
-c2hjaGVua28gd3JvdGU6Cj4gRnJvbTogT2xla3NhbmRyIEFuZHJ1c2hjaGVua28gPG9sZWtzYW5k
-cl9hbmRydXNoY2hlbmtvQGVwYW0uY29tPgo+Cj4gSGksIGFsbCEKPgo+IEZvcmV3b3JkCj4gPT09
-PT09PT0KPgo+IFRoaXMgY2hhbmdlIGlzIGFpbWVkIHRvIGFkZCBzdXBwb3J0IGZvciBleHBsaWNp
-dCBiYWNrIGFuZCBmcm9udAo+IHN5bmNocm9uaXphdGlvbiBkdXJpbmcgcGxheWJhY2sgYW5kIGNh
-cHR1cmUgaW4gcmVzcG9uc2UgdG8gY29tbWVudHMKPiByYWlzZWQgZHVyaW5nIHVwc3RyZWFtIGF0
-dGVtcHQgb2YgdGhlIHBhcmEtdmlydHVhbGl6ZWQgc291bmQgZnJvbnRlbmQKPiBkcml2ZXIgZm9y
-IFhlbiBbMV0sIFsyXSBhbmQgZ2F0aGVyIG9waW5pb25zIGZyb20gdGhlIHJlbGV2YW50IGNvbW11
-bml0aWVzCj4gKEFMU0EsIFhlbikgb24gdGhlIGNoYW5nZS4KPgo+IFRoZSByZWxldmFudCBiYWNr
-ZW5kIGlzIGltcGxlbWVudGVkIGFzIGEgdXNlci1zcGFjZSBhcHBsaWNhdGlvbiBbM10KPiBhbmQg
-dXNlcyBhY2NvbXBhbnlpbmcgaGVscGVyIGxpYnJhcnkgWzRdLgo+Cj4gQm90aCBmcm9udGVuZCBk
-cml2ZXIgYW5kIGJhY2tlbmQgd2VyZSB0ZXN0ZWQgb24gcmVhbCBIVyBydW5uaW5nIFhlbiBoeXBl
-cnZpc29yCj4gKFJlbmVzYXMgUi1DYXIgQVJNIGJhc2VkIEgzL00zIGJvYXJkcywgeDg2KSB0byBt
-YWtlIHN1cmUgdGhlIHByb3Bvc2VkCj4gc29sdXRpb24gZG9lcyB3b3JrLgo+Cj4gUmF0aW9uYWxl
-Cj4gPT09PT09PT09Cj4KPiBEdXJpbmcgdGhlIGZpcnN0IGF0dGVtcHQgdG8gdXBzdHJlYW0gdGhl
-IExpbnV4IGZyb250IGRyaXZlciBbNV0gbnVtYmVyCj4gb2YgY29tbWVudHMgYW5kIGNvbmNlcm5z
-IHdlcmUgcmFpc2VkLCBvbmUgb2YgdGhlIGJpZ2dlc3QgZmxhd3MgaW4gdGhlCj4gZGVzaWduIHdl
-cmUgcXVlc3Rpb25lZCBieSBib3RoIENsZW1lbnMgTGFkaXNjaCBbNl0gYW5kCj4gVGFrYXNoaSBT
-YWthbW90byBbN106IHRoZSBhYnNlbmNlIG9mIHN5bmNocm9uaXphdGlvbiBiZXR3ZWVuIGZyb250
-ZW5kCj4gYW5kIGJhY2tlbmQgZHVyaW5nIGNhcHR1cmUvcGxheWJhY2suIFR3byBvcHRpb25zIHdl
-cmUgZGlzY3Vzc2VkOgo+Cj4g4oCcSW4gZGVzaWduIG9mIEFMU0EgUENNIGNvcmUsIGRyaXZlcnMg
-YXJlIGV4cGVjdGVkIHRvIHN5bmNocm9uaXplIHRvCj4gYWN0dWFsIGhhcmR3YXJlcyBmb3Igc2Vt
-aS1yZWFsdGltZSBkYXRhIHRyYW5zbWlzc2lvbi4gVGhlCj4gc3luY2hyb25pemF0aW9uIGlzIGRv
-bmUgYnkgdHdvIHBvaW50czoKPiAxKSBJbnRlcnJ1cHRzIHRvIHJlc3BvbmQgZXZlbnRzIGZyb20g
-YWN0dWFsIGhhcmR3YXJlcy4KPiAyKSBQb3NpdGlvbnMgb2YgYWN0dWFsIGRhdGEgdHJhbnNtaXNz
-aW9uIGluIGFueSBzZXJpYWwgc291bmQgaW50ZXJmYWNlcwo+ICAgICAgb2YgYWN0dWFsIGhhcmR3
-YXJlcy4KPiDigJwKPgo+IGFuZCBmaW5hbGx5IGEgY2hhbmdlIHRvIHRoZSBleGlzdGluZyBwcm90
-b2NvbCB3YXMgc3VnZ2VzdGVkOgo+Cj4g4oCcSW4gJ2luY2x1ZGUveGVuL2ludGVyZmFjZS9pby9z
-bmRpZi5oJywgdGhlcmUncyBubyBmdW5jdGlvbmFsaXRpZXMgSQo+IGRlc2NyaWJlZCB0aGUgYWJv
-dmU6Cj4gMS4gbm90aWZpY2F0aW9ucyBmcm9tIERvbVUgdG8gRG9tMCBhYm91dCB0aGUgc2l6ZSBv
-ZiBwZXJpb2QgZm9yCj4gICAgICBpbnRlcnJ1cHRzIGZyb20gYWN0dWFsIGhhcmR3YXJlcy4gT3Ig
-bm8gd2F5IGZyb20gRG9tMCB0byBEb21VIGFib3V0Cj4gICAgICB0aGUgY29uZmlndXJlZCBzaXpl
-IG9mIHRoZSBwZXJpb2QuCj4gMi4gbm90aWZpY2F0aW9ucyBvZiB0aGUgaW50ZXJydXB0cyBmcm9t
-IGFjdHVhbCBoYXJkd2FyZXMgdG8gRG9tVS7igJ0KPgo+IFRoaXMgaXMgaW1wbGVtZW50ZWQgYXMg
-YSBjaGFuZ2UgdG8gdGhlIHNuZGlmIHByb3RvY29sIGFuZCBhbGxvd3MgcmVtb3ZpbmcKPiBwZXJp
-b2QgZW11bGF0aW9uOgo+IDEuIEludHJvZHVjZWQgYSBuZXcgZXZlbnQgY2hhbm5lbCBmcm9tIGJh
-Y2sgdG8gZnJvbnQKPiAyLiBOZXcgZXZlbnQgd2l0aCBudW1iZXIgb2YgYnl0ZXMgcGxheWVkL2Nh
-cHR1cmVkIChYRU5TTkRfRVZUX0NVUl9QT1MsCj4gICAgIHRvIGJlIHVzZWQgZm9yIHNlbmRpbmcg
-c25kX3BjbV9wZXJpb2RfZWxhcHNlZCBhdCBmcm9udGVuZCAoaW4gTGludXgKPiAgICAgaW1wbGVt
-ZW50YXRpb24pLiBTZW50IGluIGJ5dGVzLCBub3QgZnJhbWVzIHRvIG1ha2UgdGhlIHByb3RvY29s
-Cj4gICAgIGdlbmVyaWMgYW5kIGNvbnNpc3RlbnQpCj4gMy4gTmV3IHJlcXVlc3QgZm9yIHBsYXli
-YWNrL2NhcHR1cmUgY29udHJvbCAoWEVOU05EX09QX1RSSUdHRVIpIHdpdGgKPiAgICAgc3RhcnQv
-cGF1c2Uvc3RvcC9yZXN1bWUgc3ViLW9wcwo+IDQuIFBsYXliYWNrL2NhcHR1cmUgYnVmZmVyIHNp
-emUgaXMgc2V0IG9uIHRoZSBiYWNrZW5kIHNpZGUgdmlhCj4gICAgIFhFTlNORF9GSUVMRF9CVUZG
-RVJfU0laRSBYZW5TdG9yZSBlbnRyeQo+Cj4gV2FpdGluZyBmb3IgeW91ciB2YWx1YWJsZSBjb21t
-ZW50cywKPgo+IFRoYW5rIHlvdSwKPiBPbGVrc2FuZHIKPgo+IFsxXSBodHRwczovL2dpdGh1Yi5j
-b20vYW5kcjIwMDAvbGludXgvY29tbWl0cy9zbmRfdXBzdHJlYW1fdjEKPiBbMl0gaHR0cHM6Ly9n
-aXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0
-L3RyZWUvaW5jbHVkZS94ZW4vaW50ZXJmYWNlL2lvL3NuZGlmLmgKPiBbM10gaHR0cHM6Ly9naXRo
-dWIuY29tL3hlbi10cm9vcHMvc25kX2JlCj4gWzRdIGh0dHBzOi8vZ2l0aHViLmNvbS94ZW4tdHJv
-b3BzL2xpYnhlbmJlCj4gWzVdIGh0dHBzOi8vbGttbC5vcmcvbGttbC8yMDE3LzgvNy8zNjMKPiBb
-Nl0gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8y
-MDE3LUF1Z3VzdC8xMjM2MTcuaHRtbAo+IFs3XSBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTctQXVndXN0LzEyMzc0NC5odG1sCj4KPgo+IE9s
-ZWtzYW5kciBBbmRydXNoY2hlbmtvICgyKToKPiAgICBzbmRpZjogaW50cm9kdWNlIHByb3RvY29s
-IHZlcnNpb24KPiAgICBzbmRpZjogYWRkIGV4cGxpY2l0IGJhY2sgYW5kIGZyb250IHN5bmNocm9u
-aXphdGlvbgo+Cj4gICB4ZW4vaW5jbHVkZS9wdWJsaWMvaW8vc25kaWYuaCB8IDE3MyArKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAx
-NzAgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKPgpbMV0gCmh0dHBzOi8vZ2l0aHViLmNv
-bS9hbmRyMjAwMC9saW51eC9jb21taXRzL3Rpd2FpX3NvdW5kX2Zvcl9uZXh0X3B2X3NuZF91cHN0
-cmVhbV92MQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--===============3561972999218363336==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="bFsKbPszpzYNtEU6"
+Content-Disposition: inline
+
+
+--bFsKbPszpzYNtEU6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri 2018-03-02 08:22:52, Andrew F. Davis wrote:
+> On 03/02/2018 05:10 AM, Pavel Machek wrote:
+> > Hi!
+> >=20
+> >>> If this is taking longer to fix, should c85823390215 be reverted in
+> >>> the meantime? It does not seem particulary important/urgent...
+> >>
+> >> No patience between the v4.16 release candidates eh ;)
+> >>
+> >> commit 6662ae6af82df10259a70c7569b4c12ea7f3ba93
+> >> ("gpiolib: Keep returning EPROBE_DEFER when we should")
+> >>
+> >> and
+> >>
+> >> commit ce27fb2c56db6ccfe8099343bb4afdab15e77e7b
+> >> ("gpio: Handle deferred probing in of_find_gpio() properly")
+> >>
+> >> that are both in Torvalds' tree since yesterday should be fixing
+> >> this, I think? Did you try just using the upstream HEAD?
+> >=20
+> > Ok, so this code looks pretty crazy to me: I tried removing the
+> > "of_find_spi_gpio" part, and audio started working.
+> >=20
+> > What is going on with the ()s around =3D=3D s? You made me look up C
+> > operator precedence.
+> >=20
+> > Hmm, and it is also wrong, right? It turns any error code into ENOENT,
+> > as it tries to do the "special handling".
+> >=20
+> >                  *                                                     =
+                =20
+> >                  * This means we don't need to look any further for    =
+                =20
+> >                  * alternate name conventions, and we should really    =
+                =20
+> >                  * preserve the return code for our user to be able to =
+                =20
+> >                  * retry probing later.                                =
+                =20
+> >                  */
+> >                 if (IS_ERR(desc) && PTR_ERR(desc) =3D=3D -EPROBE_DEFER)
+> >                         return desc;
+> >=20
+> >                 if (!IS_ERR(desc) || (PTR_ERR(desc) !=3D -ENOENT))
+> >                         break;
+> >         }
+> >=20
+> >         /* Special handling for SPI GPIOs if used */
+> >         if (IS_ERR(desc))
+> >                 desc =3D of_find_spi_gpio(dev, con_id, &of_flags);
+> >=20
+> >         /* Special handling for regulator GPIOs if used */
+> >         if (IS_ERR(desc) && PTR_ERR(desc) !=3D -EPROBE_DEFER)
+> >                 desc =3D of_find_regulator_gpio(dev, con_id, &of_flags);
+> >=20
+> > Something like this?
+> >=20
+> > diff --git a/drivers/gpio/gpiolib-of.c b/drivers/gpio/gpiolib-of.c
+> > index 84e5a9d..f0fab26 100644
+> > --- a/drivers/gpio/gpiolib-of.c
+> > +++ b/drivers/gpio/gpiolib-of.c
+> > @@ -241,29 +241,17 @@ struct gpio_desc *of_find_gpio(struct device *dev=
+, const char *con_id,
+> > =20
+> >  		desc =3D of_get_named_gpiod_flags(dev->of_node, prop_name, idx,
+> >  						&of_flags);
+> > -		/*
+> > -		 * -EPROBE_DEFER in our case means that we found a
+> > -		 * valid GPIO property, but no controller has been
+> > -		 * registered so far.
+> > -		 *
+> > -		 * This means we don't need to look any further for
+> > -		 * alternate name conventions, and we should really
+> > -		 * preserve the return code for our user to be able to
+> > -		 * retry probing later.
+> > -		 */
+> > -		if (IS_ERR(desc) && PTR_ERR(desc) =3D=3D -EPROBE_DEFER)
+> > -			return desc;
+> > =20
+> > -		if (!IS_ERR(desc) || (PTR_ERR(desc) !=3D -ENOENT))
+> > +		if (!IS_ERR(desc) || PTR_ERR(desc) !=3D -ENOENT)
+>=20
+>=20
+> I rather like the () so one doesn't always have to look up C operator
+> precedence to verify..
+
+Well, Ok, but then the ()s should be at the other ifs nearby, too. See?
+
+>=20
+> >  			break;
+> >  	}
+> > =20
+> >  	/* Special handling for SPI GPIOs if used */
+> > -	if (IS_ERR(desc))
+> > +	if (IS_ERR(desc) && PTR_ERR(desc) =3D=3D -ENOENT)
+> >  		desc =3D of_find_spi_gpio(dev, con_id, &of_flags);
+> > =20
+> >  	/* Special handling for regulator GPIOs if used */
+> > -	if (IS_ERR(desc) && PTR_ERR(desc) !=3D -EPROBE_DEFER)
+> > +	if (IS_ERR(desc) && PTR_ERR(desc) =3D=3D -ENOENT)
+> >  		desc =3D of_find_regulator_gpio(dev, con_id, &of_flags);
+> > =20
+> >  	if (IS_ERR(desc))
+> >
+									Pavel
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--bFsKbPszpzYNtEU6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlqZgYEACgkQMOfwapXb+vKYrgCgq/LotlSJkgk8G9ReSt1U59PP
+lvcAn1zphgqZ/jPIgpqJhh/0Q7kLFG2r
+=LNlr
+-----END PGP SIGNATURE-----
+
+--bFsKbPszpzYNtEU6--
+
+--===============3561972999218363336==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3561972999218363336==--
