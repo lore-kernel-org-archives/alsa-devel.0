@@ -1,15 +1,23 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH] ASoC: Intel: Fix cht_bsw_nau8824 machine
-	driver build error
-Date: Fri,  2 Mar 2018 11:22:58 +0100
-Message-ID: <20180302102258.10081-1-hdegoede@redhat.com>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: regression v4.16 on Nokia N900: sound does not work
+Date: Fri, 2 Mar 2018 11:31:27 +0100
+Message-ID: <20180302103127.GA2081@amd>
+References: <20180224214617.GA22619@amd>
+ <71aa88ec-d4df-b49c-7d73-27197f468491@leemhuis.info>
+ <20180226131318.GA14045@amd>
+ <CAEnQRZBbMTeaxb+=AaarX6PSGasfVjtAUdpbPvJavZyTRMpdgQ@mail.gmail.com>
+ <20180226231336.GA18565@amd>
+ <CACRpkdarR_7HqGMPwfa8YpG9wnFs5mJrNwuctycn=MrdwaRxyw@mail.gmail.com>
+ <20180302091025.GC30267@amd>
+ <CACRpkda=deFSmk2iyrtde3Z-aj6rW9_jNfE3Ep4X=ejprGxRUw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7494893879143010751=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 424EB267261
- for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 11:23:01 +0100 (CET)
+Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
+ [195.113.26.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B986C267063
+ for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 11:31:28 +0100 (CET)
+In-Reply-To: <CACRpkda=deFSmk2iyrtde3Z-aj6rW9_jNfE3Ep4X=ejprGxRUw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,43 +27,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, John Hsu <KCHSU0@nuvoton.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, ext Tony Lindgren <tony@atomide.com>, =?utf-8?B?TWlja3Vsw6HFoQ==?= Qwertz <abcloriens@gmail.com>, Sebastian Reichel <sre@kernel.org>, Martijn Braam <martijn@brixit.nl>, Filip =?utf-8?Q?Matijevi=C4=87?= <filip.matijevic.pz@gmail.com>, Patrik Bachan <patrikbachan@gmail.com>, Ivajlo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Kevin Hilman <khilman@kernel.org>, serge@hallyn.com, Mark Brown <broonie@kernel.org>, Linux-OMAP <linux-omap@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Daniel Baluta <daniel.baluta@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, kernel list <linux-kernel@vger.kernel.org>, "Andrew F . Davis" <afd@ti.com>, Thorsten Leemhuis <regressions@leemhuis.info>, clayton@craftyguy.net, Sakari Ailus <sakari.ailus@linux.intel.com>, Pali
 List-Id: alsa-devel@alsa-project.org
 
-The cht_bsw_nau8824 machine driver is passing snd_soc_codec to
-nau8824_enable_jack_detect(), but that expects a snd_soc_component
-as argument, causing a compile error.
 
-This commit fixes this.
+--===============7494893879143010751==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="oyUTqETQ0mS9luUI"
+Content-Disposition: inline
 
-Fixes: 5b00ce63e07f ("ASoC: Intel: add nau8824 sound card")
-Cc: John Hsu <KCHSU0@nuvoton.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/intel/boards/cht_bsw_nau8824.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_nau8824.c b/sound/soc/intel/boards/cht_bsw_nau8824.c
-index 08d0b8128fab..5913ad159cc1 100644
---- a/sound/soc/intel/boards/cht_bsw_nau8824.c
-+++ b/sound/soc/intel/boards/cht_bsw_nau8824.c
-@@ -103,7 +103,6 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- {
- 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
- 	struct snd_soc_jack *jack = &ctx->jack;
--	struct snd_soc_codec *codec = runtime->codec;
- 	struct snd_soc_dai *codec_dai = runtime->codec_dai;
- 	int ret, jack_type;
- 
-@@ -134,7 +133,7 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- 	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
- 	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
- 
--	nau8824_enable_jack_detect(codec, jack);
-+	nau8824_enable_jack_detect(codec_dai->component, jack);
- 
- 	return ret;
- }
--- 
-2.14.3
+--oyUTqETQ0mS9luUI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri 2018-03-02 10:33:24, Linus Walleij wrote:
+> On Fri, Mar 2, 2018 at 10:10 AM, Pavel Machek <pavel@ucw.cz> wrote:
+> > Linux-Regression-ID: lr#4b650f
+> >
+> > On Tue 2018-02-27 09:43:32, Linus Walleij wrote:
+> >> On Tue, Feb 27, 2018 at 12:13 AM, Pavel Machek <pavel@ucw.cz> wrote:
+> >>
+> >> > I did git bisect, and the winner seems to be:
+> >> >
+> >> > pavel@duo:/data/l/linux-n900$ git bisect bad
+> >> > c85823390215e52d68d3826df92a447ed31e5c80 is the first bad commit
+> >> > commit c85823390215e52d68d3826df92a447ed31e5c80
+> >> > Author: Linus Walleij <linus.walleij@linaro.org>
+> >> > Date:   Wed Dec 27 16:37:44 2017 +0100
+> >> >
+> >> >     gpio: of: Support SPI nonstandard GPIO properties
+> >>
+> >> I have fixes queued for this, tried to send a pull request yesterday
+> >> but it turns out the fixes need fixing... OK I'm onto it anyways.
+> >
+> > Do you have any updates? Is there way to fix dts so that this does not
+> > trigger on N900?
+> >
+> > If this is taking longer to fix, should c85823390215 be reverted in
+> > the meantime? It does not seem particulary important/urgent...
+>=20
+> No patience between the v4.16 release candidates eh ;)
+>=20
+> commit 6662ae6af82df10259a70c7569b4c12ea7f3ba93
+> ("gpiolib: Keep returning EPROBE_DEFER when we should")
+>=20
+> and
+>=20
+> commit ce27fb2c56db6ccfe8099343bb4afdab15e77e7b
+> ("gpio: Handle deferred probing in of_find_gpio() properly")
+>=20
+> that are both in Torvalds' tree since yesterday should be fixing
+> this, I think? Did you try just using the upstream HEAD?
+
+After I spent hours bisecting, I was kind of assuming you'd cc me on
+merge request or something like that... so that I could test it before
+going mainline. Which of those should fix it?
+
+I tested today's mainline, and... sound fails, different way:
+
+pavel@n900:~$ cat /proc/asound/cards
+ 0 [RX51           ]: RX-51 - RX-51
+                       RX-51
+pavel@n900:~$ cd g/tui/ofone/
+pavel@n900:~/g/tui/ofone$ cd
+pavel@n900:~$ festival --tts
+		       ahoj
+		       ^D
+		       uname -a
+
+(Festival is hung).
+
+Let me try the revert again...
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--oyUTqETQ0mS9luUI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlqZJ/8ACgkQMOfwapXb+vIjsQCfVWPavHtmnT4ZTXfP3lP1GsNS
+yMcAoIIIyhaBP9p/UdGZydbGoZuF4L7K
+=4w8F
+-----END PGP SIGNATURE-----
+
+--oyUTqETQ0mS9luUI--
+
+--===============7494893879143010751==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7494893879143010751==--
