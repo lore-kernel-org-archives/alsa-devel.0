@@ -1,8 +1,7 @@
 From: <twischer@de.adit-jv.com>
-Subject: [PATCH - PCM 3/3] pcm: Provide areas_copy function
-	which handles buffer wrap around
-Date: Fri, 2 Mar 2018 17:21:13 +0100
-Message-ID: <1520007674-14618-3-git-send-email-twischer@de.adit-jv.com>
+Subject: [PATCH - JACK 1/1] jack: Do not Xrun the ALSA buffer
+Date: Fri, 2 Mar 2018 17:21:14 +0100
+Message-ID: <1520007674-14618-4-git-send-email-twischer@de.adit-jv.com>
 References: <s5hfu5jizsv.wl-tiwai@suse.de>
  <1520007674-14618-1-git-send-email-twischer@de.adit-jv.com>
 Mime-Version: 1.0
@@ -10,8 +9,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [62.225.105.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B12126743A
- for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 17:22:00 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id DFDD2267445
+ for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 17:22:06 +0100 (CET)
 In-Reply-To: <1520007674-14618-1-git-send-email-twischer@de.adit-jv.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,62 +27,113 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Timo Wischer <twischer@de.adit-jv.com>
 
+when the JACK thread is requesting too many audio frames
+
+Playback:
+Without this commit the ALSA audio buffer
+will be played with endless repeats as long as the user application
+has not provided new audio data.
+Therefore this garbage will be played as long as the user application
+has not called snd_pcm_stop() after an Xrun.
+With this fix the rest of the JACK buffer will be filled
+with silence.
+
+Capture:
+Without this commit the audio data in the ALSA buffer would be
+overwritten.
+With this commit the new data from the JACK buffer
+will not be copied.
+Therefore the existing data in the ALSA buffer
+will not be overwritten.
+
 Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
 
-diff --git a/include/pcm.h b/include/pcm.h
-index 2619c8c..d880a1c 100644
---- a/include/pcm.h
-+++ b/include/pcm.h
-@@ -1147,6 +1147,9 @@ int snd_pcm_area_copy(const snd_pcm_channel_area_t *dst_channel, snd_pcm_uframes
- int snd_pcm_areas_copy(const snd_pcm_channel_area_t *dst_channels, snd_pcm_uframes_t dst_offset,
- 		       const snd_pcm_channel_area_t *src_channels, snd_pcm_uframes_t src_offset,
- 		       unsigned int channels, snd_pcm_uframes_t frames, snd_pcm_format_t format);
-+int snd_pcm_areas_copy_wrap(const snd_pcm_channel_area_t *dst_channels, snd_pcm_uframes_t dst_offset, const snd_pcm_uframes_t dst_size,
-+		       const snd_pcm_channel_area_t *src_channels, snd_pcm_uframes_t src_offset, const snd_pcm_uframes_t src_size,
-+		       const unsigned int channels, snd_pcm_uframes_t frames, const snd_pcm_format_t format);
+diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
+index c547cbb..18425e9 100644
+--- a/jack/pcm_jack.c
++++ b/jack/pcm_jack.c
+@@ -54,6 +54,7 @@ typedef struct {
  
- /** \} */
+ static int snd_pcm_jack_stop(snd_pcm_ioplug_t *io);
  
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index d53ed98..77898db 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -3289,6 +3289,36 @@ int snd_pcm_areas_copy(const snd_pcm_channel_area_t *dst_areas, snd_pcm_uframes_
- 	return 0;
- }
- 
-+int snd_pcm_areas_copy_wrap(const snd_pcm_channel_area_t *dst_channels, snd_pcm_uframes_t dst_offset, const snd_pcm_uframes_t dst_size,
-+		       const snd_pcm_channel_area_t *src_channels, snd_pcm_uframes_t src_offset, const snd_pcm_uframes_t src_size,
-+		       const unsigned int channels, snd_pcm_uframes_t frames, const snd_pcm_format_t format)
-+{
-+	while (frames > 0) {
-+		int err;
-+		snd_pcm_uframes_t xfer = frames;
-+		/* do not write above the destination buffer */
-+		if ( (dst_offset + xfer) > dst_size )
-+			xfer = dst_size - dst_offset;
-+		/* do not read from above the source buffer */
-+		if ( (src_offset + xfer) > src_size )
-+			xfer = src_size - src_offset;
-+		err = snd_pcm_areas_copy(dst_channels, dst_offset, src_channels,
-+		                              src_offset, channels, xfer, format);
-+		if (err < 0)
-+			return err;
 +
-+		dst_offset += xfer;
-+		if (dst_offset >= dst_size)
-+			dst_offset = 0;
-+		src_offset += xfer;
-+		if (src_offset >= src_size)
-+			src_offset = 0;
-+		frames -= xfer;
+ static int pcm_poll_block_check(snd_pcm_ioplug_t *io)
+ {
+ 	static char buf[32];
+@@ -144,7 +145,6 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
+ {
+ 	snd_pcm_jack_t *jack = io->private_data;
+ 	snd_pcm_uframes_t hw_ptr;
+-	const snd_pcm_channel_area_t *areas;
+ 	snd_pcm_uframes_t xfer = 0;
+ 	unsigned int channel;
+ 	
+@@ -154,40 +154,43 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
+ 		jack->areas[channel].first = 0;
+ 		jack->areas[channel].step = jack->sample_bits;
+ 	}
+-		
+-	if (io->state != SND_PCM_STATE_RUNNING) {
+-		if (io->stream == SND_PCM_STREAM_PLAYBACK) {
+-			for (channel = 0; channel < io->channels; channel++)
+-				snd_pcm_area_silence(&jack->areas[channel], 0, nframes, io->format);
+-			return 0;
+-		}
+-	}
+ 
+ 	hw_ptr = jack->hw_ptr;
+-	areas = snd_pcm_ioplug_mmap_areas(io);
++	if (io->state == SND_PCM_STATE_RUNNING) {
++		const snd_pcm_channel_area_t *areas = snd_pcm_ioplug_mmap_areas(io);
++
++		snd_pcm_uframes_t hw_avail = snd_pcm_ioplug_hw_avail(io, hw_ptr,
++		                                      io->appl_ptr);
+ 
+-	while (xfer < nframes) {
+-		snd_pcm_uframes_t frames = nframes - xfer;
+-		snd_pcm_uframes_t offset = hw_ptr % io->buffer_size;
+-		snd_pcm_uframes_t cont = io->buffer_size - offset;
++		if (hw_avail > 0) {
++			snd_pcm_uframes_t frames = nframes - xfer;
++			snd_pcm_uframes_t offset = hw_ptr % io->buffer_size;
+ 
+-		if (cont < frames)
+-			frames = cont;
++			if (hw_avail < frames)
++				frames = hw_avail;
+ 
+-		for (channel = 0; channel < io->channels; channel++) {
+ 			if (io->stream == SND_PCM_STREAM_PLAYBACK)
+-				snd_pcm_area_copy(&jack->areas[channel], xfer, &areas[channel], offset, frames, io->format);
++				snd_pcm_areas_copy_wrap(jack->areas, xfer, io->buffer_size, areas, offset, io->buffer_size, io->channels, frames, io->format);
+ 			else
+-				snd_pcm_area_copy(&areas[channel], offset, &jack->areas[channel], xfer, frames, io->format);
++				snd_pcm_areas_copy_wrap(areas, offset, io->buffer_size, jack->areas, xfer, io->buffer_size, io->channels, frames, io->format);
++
++			hw_ptr += frames;
++			if (hw_ptr >= jack->boundary)
++				hw_ptr -= jack->boundary;
++			xfer += frames;
+ 		}
+-		
+-		hw_ptr += frames;
+-		if (hw_ptr >= jack->boundary)
+-			hw_ptr -= jack->boundary;
+-		xfer += frames;
+ 	}
+ 	jack->hw_ptr = hw_ptr;
+ 
++	/* check if requested frames were copied */
++	if (xfer < nframes) {
++		/* always fill the not yet written JACK buffer with silence */
++		if (io->stream == SND_PCM_STREAM_PLAYBACK) {
++			const snd_pcm_uframes_t frames = nframes - xfer;
++			snd_pcm_areas_silence(jack->areas, io->channels, xfer, frames, io->format);
++		}
 +	}
 +
-+	return 0;
-+}
-+
- static void dump_one_param(snd_pcm_hw_params_t *params, unsigned int k, snd_output_t *out)
- {
- 	snd_output_printf(out, "%s: ", snd_pcm_hw_param_name(k));
+ 	pcm_poll_unblock_check(io); /* unblock socket for polling if needed */
+ 
+ 	return 0;
 -- 
 2.7.4
