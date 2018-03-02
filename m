@@ -1,21 +1,29 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 06/32] ASoC: rt5651: Configure
- jack-detect source through a device-property
-Date: Fri, 2 Mar 2018 12:18:01 +0000
-Message-ID: <20180302121801.GE6255@sirena.org.uk>
-References: <20180225104713.4745-1-hdegoede@redhat.com>
- <20180225104713.4745-7-hdegoede@redhat.com>
- <20180301193046.GJ12864@sirena.org.uk>
- <032d0e59-0d64-7df1-4fca-1709430b754c@redhat.com>
- <2ac828b2-04e1-4b5f-f4db-a543ad5e3535@redhat.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: regression v4.16 on Nokia N900: sound does not work
+Date: Fri, 2 Mar 2018 13:33:04 +0100
+Message-ID: <CACRpkdawRd6aGpj7hjVPv7TZ+YqLjgJaqphkDnkX6xR+3Gx-xA@mail.gmail.com>
+References: <20180224214617.GA22619@amd>
+ <71aa88ec-d4df-b49c-7d73-27197f468491@leemhuis.info>
+ <20180226131318.GA14045@amd>
+ <CAEnQRZBbMTeaxb+=AaarX6PSGasfVjtAUdpbPvJavZyTRMpdgQ@mail.gmail.com>
+ <20180226231336.GA18565@amd>
+ <CACRpkdarR_7HqGMPwfa8YpG9wnFs5mJrNwuctycn=MrdwaRxyw@mail.gmail.com>
+ <20180302091025.GC30267@amd>
+ <CACRpkda=deFSmk2iyrtde3Z-aj6rW9_jNfE3Ep4X=ejprGxRUw@mail.gmail.com>
+ <20180302103127.GA2081@amd>
+ <CACRpkda-VLsMVqYx3Y6+3JtLJERhmeJZF5g4Gd9ecvgR1Nnr0A@mail.gmail.com>
+ <20180302121442.GB28931@amd>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3052902658727071918=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A47BD267377
- for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 13:18:14 +0100 (CET)
-In-Reply-To: <2ac828b2-04e1-4b5f-f4db-a543ad5e3535@redhat.com>
+Received: from mail-io0-f177.google.com (mail-io0-f177.google.com
+ [209.85.223.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id BD8DA267377
+ for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 13:33:06 +0100 (CET)
+Received: by mail-io0-f177.google.com with SMTP id e30so10468099ioc.3
+ for <alsa-devel@alsa-project.org>; Fri, 02 Mar 2018 04:33:05 -0800 (PST)
+In-Reply-To: <20180302121442.GB28931@amd>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,95 +33,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Carlo Caione <carlo@endlessm.com>, Bard Liao <bardliao@realtek.com>
+To: Pavel Machek <pavel@ucw.cz>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, ext Tony Lindgren <tony@atomide.com>, =?UTF-8?B?TWlja3Vsw6HFoSBRd2VydHo=?= <abcloriens@gmail.com>, Sebastian Reichel <sre@kernel.org>, Martijn Braam <martijn@brixit.nl>, =?UTF-8?Q?Filip_Matijevi=C4=87?= <filip.matijevic.pz@gmail.com>, Patrik Bachan <patrikbachan@gmail.com>, Ivajlo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Kevin Hilman <khilman@kernel.org>, serge@hallyn.com, Mark Brown <broonie@kernel.org>, Linux-OMAP <linux-omap@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Daniel Baluta <daniel.baluta@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, kernel list <linux-kernel@vger.kernel.org>, "Andrew F . Davis" <afd@ti.com>, Thorsten Leemhuis <regressions@leemhuis.info>, clayton@craftyguy.net, Sakari Ailus <sakari.ailus@linux.intel.com>, =?UTF-8?Q?Pali_Roh=C3=
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Mar 2, 2018 at 1:14 PM, Pavel Machek <pavel@ucw.cz> wrote:
+>> >> Ok, so this code looks pretty crazy to me: I tried removing the
+>> >> "of_find_spi_gpio" part, and audio started working.
+>> >
+>> > Hmm. Looks like audio is working w/o any changes, too. Not sure why
+>> > festival hung on me before.
+>>
+>> Does it mean that mainline is working find for you or
+>> do we need to look deeper into the problem in the OF
+>> lookup?
+>
+> It now works for me.
+>
+> (But take a look at the patch I sent -- I believe you are still
+> overwriting return values in a bad way, and code is quite confusing).
 
---===============3052902658727071918==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="6WlEvdN9Dv0WHSBl"
-Content-Disposition: inline
+I think that code is a result of piled fixes, so noone
+really designed it to look like that.
 
+I'll try to look at it, I am a bit afraid of the code since I've
+broken so many things with it.
 
---6WlEvdN9Dv0WHSBl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Mar 02, 2018 at 10:32:25AM +0100, Hans de Goede wrote:
-> On 01-03-18 23:35, Hans de Goede wrote:
-
-> > It is not _that_ fragile, but I agree that it would be good to add
-> > a comment about not moving the property-parsing to the codec driver.
-
-> So one other solution which comes to mind here is to move the
-> snd_soc_card_jack_new() call into the codec driver's
-> rt5651_apply_properties() function (conditional on a jack src being
-> set in the properties).
-
-> This would make the machine driver code look like this:
->=20
-> 	props[cnt++] =3D PROPERTY_ENTRY_...
-> 	props[cnt++] =3D PROPERTY_ENTRY_...
-> 	props[cnt++] =3D PROPERTY_ENTRY_...
-> 	props[cnt++] =3D PROPERTY_ENTRY_...
-
-> 	ret =3D device_add_properties(codec->dev, props);
-> 	if (ret)
-> 		return ret;
-
-> 	ret =3D rt5651_apply_properties(codec);
-> 	if (ret)
-> 		return ret;
-
-> Which makes the ordering really clear without needing any
-> comments.
-
-It's still unusual to have something outside the driver trigger property
-parsing, though the EXPORT_SYMBOL_GPL() would make that apparent.
-
-> This will also make the jack-detect device-properties work with
-> devicetree platforms without any changes to their platform code,
-> which currently is not the case since the non Intel platform-code
-> does not call snd_soc_component_set_jack().
-
-What makes you claim that?  Any board with jack detection wired up will
-call that function.  Not all boards have that configured of course but
-there's absolutely nothing Intel specific about that interface.
-
-> Thinking more about this I believe that doing the
-> snd_soc_card_jack_new() call inside the codec driver based on
-> device-properties is a better solution then doing it in the
-> machine driver.
-
-No, that's really not a good idea.  Any jacks in the system are part of
-the system specific wiring, they're not something that's intrinsic to
-the CODEC.  Even with fairly basic setups you've got options like having
-a headset jack or separate microphone and headphone jacks.
-
---6WlEvdN9Dv0WHSBl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqZQPgACgkQJNaLcl1U
-h9B5Ggf/bI/MBrSTefhM8ofJLQwap4HcDsFcWjiFQVxs2JHBQWu34KUCmHc0U348
-XYks6DuCMjFs0CprzcAv8w58ANBQaN8H0b+IZ2+ZE9efvZRvj+ic/vOOMz0MMqv7
-k2hdeRAi5ntbh2++sYBCkacw5IZTWDJg0u6pDSpLQC+SqmWvzSU01wzclw6NIJrD
-jxT6rHZ1L7bN3+mRuT5IwemE5qyBAcPCUatfgAgHSD8zVcvGL0cH4aokLz86czXG
-uN1/ATrJ726YSFYtqE9PPO/9P2UmKQvMOHn2RzktP3mTNHAzJog/AVh8iAP6SCRD
-UnJKrkYjhjWQxFHmb8YrWqHr+K6XDg==
-=sLle
------END PGP SIGNATURE-----
-
---6WlEvdN9Dv0WHSBl--
-
---===============3052902658727071918==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3052902658727071918==--
+Yours,
+Linus Walleij
