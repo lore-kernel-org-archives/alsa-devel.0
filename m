@@ -1,62 +1,39 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH] ASoC: Intel: fix argument error in nau8824
-	machine
-Date: Fri, 2 Mar 2018 10:45:14 +0800
-Message-ID: <1519958714-30352-1-git-send-email-KCHSU0@nuvoton.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A33826733D
- for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 03:45:31 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, John Hsu <KCHSU0@nuvoton.com>, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, YHCHuang@nuvoton.com, WTLI@nuvoton.com, CTLIN0@nuvoton.com
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - Fix a wrong FIXUP for alc289 on Dell machines
+Date: Fri,  2 Mar 2018 13:05:36 +0800
+Message-ID: <1519967136-8955-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: stable@vger.kernel.org, kailang@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Fix the error: passing argument 1 of 'nau8824_enable_jack_detect'
-from incompatible pointer type
-  nau8824_enable_jack_detect(codec, jack);
-                             ^~~~~
-Which expects 'struct snd_soc_component *' but argument is of type
-'struct snd_soc_codec *'
+With the alc289, the Pin 0x1b is Headphone-Mic, so we should assign
+ALC269_FIXUP_DELL4_MIC_NO_PRESENCE rather than
+ALC225_FIXUP_DELL1_MIC_NO_PRESENCE to it. And this change is suggested
+by Kailang of Realtek and is verified on the machine.
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+(This fixes the commit 3f2f7c55)
+
+Cc: Kailang Yang <kailang@realtek.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
- sound/soc/intel/boards/cht_bsw_nau8824.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_realtek.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_nau8824.c b/sound/soc/intel/boards/cht_bsw_nau8824.c
-index 08d0b81..680f2b3 100644
---- a/sound/soc/intel/boards/cht_bsw_nau8824.c
-+++ b/sound/soc/intel/boards/cht_bsw_nau8824.c
-@@ -103,8 +103,8 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- {
- 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
- 	struct snd_soc_jack *jack = &ctx->jack;
--	struct snd_soc_codec *codec = runtime->codec;
- 	struct snd_soc_dai *codec_dai = runtime->codec_dai;
-+	struct snd_soc_component *component = codec_dai->component;
- 	int ret, jack_type;
- 
- 	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
-@@ -134,7 +134,7 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- 	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
- 	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
- 
--	nau8824_enable_jack_detect(codec, jack);
-+	nau8824_enable_jack_detect(component, jack);
- 
- 	return ret;
- }
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index b9c93fa..7a9a867 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6872,7 +6872,7 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x12, 0x90a60120},
+ 		{0x14, 0x90170110},
+ 		{0x21, 0x0321101f}),
+-	SND_HDA_PIN_QUIRK(0x10ec0289, 0x1028, "Dell", ALC225_FIXUP_DELL1_MIC_NO_PRESENCE,
++	SND_HDA_PIN_QUIRK(0x10ec0289, 0x1028, "Dell", ALC269_FIXUP_DELL4_MIC_NO_PRESENCE,
+ 		{0x12, 0xb7a60130},
+ 		{0x14, 0x90170110},
+ 		{0x21, 0x04211020}),
 -- 
-2.6.4
+2.7.4
