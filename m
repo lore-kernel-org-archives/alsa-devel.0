@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 14/25] ASoC: qcom: qdsp6: Add support to
- q6afe dai driver
-Date: Fri, 2 Mar 2018 12:50:54 +0000
-Message-ID: <20180302125054.GH6255@sirena.org.uk>
-References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
- <20180213165837.1620-15-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: Intel: fix argument error in nau8824
+	machine" to the asoc tree
+Date: Fri, 02 Mar 2018 12:55:05 +0000
+Message-ID: <E1erkDJ-0004Rj-V4@debutante>
+References: <1519958714-30352-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8000169565753567295=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 163A9267377
- for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 13:50:56 +0100 (CET)
-In-Reply-To: <20180213165837.1620-15-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id E44F22673CC
+ for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 13:55:26 +0100 (CET)
+In-Reply-To: <1519958714-30352-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,136 +22,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: srinivas.kandagatla@linaro.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, andy.gross@linaro.org, linux-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, vinod.koul@intel.com, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, YHCHuang@nuvoton.com, WTLI@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============8000169565753567295==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="sClP8c1IaQxyux9v"
-Content-Disposition: inline
+   ASoC: Intel: fix argument error in nau8824 machine
 
+has been applied to the asoc tree at
 
---sClP8c1IaQxyux9v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Feb 13, 2018 at 04:58:26PM +0000, srinivas.kandagatla@linaro.org wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +static int q6hdmi_format_put(struct snd_kcontrol *kcontrol,
-> +				struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct q6afe_dai_data *dai_data = kcontrol->private_data;
-> +	int value = ucontrol->value.integer.value[0];
-> +
-> +	dai_data->port_config[AFE_PORT_HDMI_RX].hdmi.datatype = value;
-> +
-> +	return 0;
-> +}
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-No validation, and do we not need to tell a currently running stream if
-the format changed on it (or block such changes if they're not going to
-work, which seems more likely)?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> +static int q6hdmi_hw_params(struct snd_pcm_substream *substream,
-> +				struct snd_pcm_hw_params *params,
-> +				struct snd_soc_dai *dai)
-> +{
-> +	struct q6afe_dai_data *dai_data = q6afe_get_dai_data(dai->dev);
-> +	int channels = params_channels(params);
-> +	struct q6afe_hdmi_cfg *hdmi = &dai_data->port_config[dai->id].hdmi;
-> +
-> +	hdmi->sample_rate = params_rate(params);
-> +	switch (params_format(params)) {
-> +	case SNDRV_PCM_FORMAT_S16_LE:
-> +		hdmi->bit_width = 16;
-> +		break;
-> +	case SNDRV_PCM_FORMAT_S24_LE:
-> +		hdmi->bit_width = 24;
-> +		break;
-> +	}
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-This silently accepts invalid values.
+Thanks,
+Mark
 
-> +	/*refer to HDMI spec CEA-861-E: Table 28 Audio InfoFrame Data Byte 4*/
+>From 3bf045d15f52529e8abe26543dbe22af44efb41a Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Fri, 2 Mar 2018 10:45:14 +0800
+Subject: [PATCH] ASoC: Intel: fix argument error in nau8824 machine
 
-Coding style, spaces around the /* */.
+Fix the error: passing argument 1 of 'nau8824_enable_jack_detect'
+from incompatible pointer type
+  nau8824_enable_jack_detect(codec, jack);
+                             ^~~~~
+Which expects 'struct snd_soc_component *' but argument is of type
+'struct snd_soc_codec *'
 
-> +static int q6afe_dai_startup(struct snd_pcm_substream *substream,
-> +				struct snd_soc_dai *dai)
-> +{
-> +	struct q6afe_dai_data *dai_data = q6afe_get_dai_data(dai->dev);
-> +
-> +	dai_data->is_port_started[dai->id] = false;
-> +
-> +	return 0;
-> +}
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/cht_bsw_nau8824.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-If this is needed it makes me a bit worried that we've got some kind of
-bug with not shutting things down properly somewhere - what's going on
-here?
-
-> +static void q6afe_dai_shutdown(struct snd_pcm_substream *substream,
-> +				struct snd_soc_dai *dai)
-> +{
-> +	struct q6afe_dai_data *dai_data = q6afe_get_dai_data(dai->dev);
-> +	int rc;
-> +
-> +	rc = q6afe_port_stop(dai_data->port[dai->id]);
-> +	if (rc < 0)
-> +		dev_err(dai->dev, "fail to close AFE port\n");
-
-Better to print the error code so users have more information to debug
-the problem.
-
-> +			.stream_name = "HDMI Playback",
-> +			.rates = SNDRV_PCM_RATE_48000 |
-> +				 SNDRV_PCM_RATE_96000 |
-> +			 SNDRV_PCM_RATE_192000,
-
-Indentation again.
-
-> +static int q6afe_of_xlate_dai_name(struct snd_soc_component *component,
-> +				   struct of_phandle_args *args,
-> +				   const char **dai_name)
-> +{
-> +	int id = args->args[0];
-> +	int i, ret = -EINVAL;
-
-Coding style, don't mix initialization in with other variable
-declarations on the same line like this.
-
-> +int q6afe_dai_dev_remove(struct device *dev)
-> +{
-> +	return 0;
-> +}
-
-Remove empty functions, if they can't be removed it's probably not OK
-for them to be empty either.
-
---sClP8c1IaQxyux9v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqZSK0ACgkQJNaLcl1U
-h9CX4wf9FyO3+9VdszcJuUMqWPGnm25kNgL5Q/LXibxkdzUI05azL7NAuYsrbbYl
-oVS99PY9j+ssXfxaxx1Juiqf0qrnomKZXnbyp6iTLA0TlrNzc8Mwph+b1mbwfge3
-wtLZBZZXLOZ2zIut+wi6OjACdJ7to2RtbCzB5zTjDAEhe8VN3lXEG0RnQnurOEaM
-HK7pdQKLjMc1B2xVQaV0boaVau+Tnqv7c+662SBuCOWWX1qHFCh9ijZ8TdP2kJrR
-Ir6SR/Kzhy/9KfaRmCuKeQqBTp1TKTXgMFd6NDMnUU4ckfPpF1PuUgQQszKtbwkM
-TTk6x5PTIPeZTvwpdx0IFTno5tdRRg==
-=AW+P
------END PGP SIGNATURE-----
-
---sClP8c1IaQxyux9v--
-
---===============8000169565753567295==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8000169565753567295==--
+diff --git a/sound/soc/intel/boards/cht_bsw_nau8824.c b/sound/soc/intel/boards/cht_bsw_nau8824.c
+index 08d0b8128fab..680f2b3a24f9 100644
+--- a/sound/soc/intel/boards/cht_bsw_nau8824.c
++++ b/sound/soc/intel/boards/cht_bsw_nau8824.c
+@@ -103,8 +103,8 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ {
+ 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
+ 	struct snd_soc_jack *jack = &ctx->jack;
+-	struct snd_soc_codec *codec = runtime->codec;
+ 	struct snd_soc_dai *codec_dai = runtime->codec_dai;
++	struct snd_soc_component *component = codec_dai->component;
+ 	int ret, jack_type;
+ 
+ 	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
+@@ -134,7 +134,7 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
+ 	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
+ 
+-	nau8824_enable_jack_detect(codec, jack);
++	nau8824_enable_jack_detect(component, jack);
+ 
+ 	return ret;
+ }
+-- 
+2.16.2
