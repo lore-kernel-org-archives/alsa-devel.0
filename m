@@ -1,26 +1,23 @@
-From: "Andrew F. Davis" <afd@ti.com>
-Subject: Re: regression v4.16 on Nokia N900: sound does not work
-Date: Fri, 2 Mar 2018 11:18:10 -0600
-Message-ID: <8cf3f026-4d65-71ac-60ed-3e9427139843@ti.com>
-References: <20180224214617.GA22619@amd>
- <71aa88ec-d4df-b49c-7d73-27197f468491@leemhuis.info>
- <20180226131318.GA14045@amd>
- <CAEnQRZBbMTeaxb+=AaarX6PSGasfVjtAUdpbPvJavZyTRMpdgQ@mail.gmail.com>
- <20180226231336.GA18565@amd>
- <CACRpkdarR_7HqGMPwfa8YpG9wnFs5mJrNwuctycn=MrdwaRxyw@mail.gmail.com>
- <20180302091025.GC30267@amd>
- <CACRpkda=deFSmk2iyrtde3Z-aj6rW9_jNfE3Ep4X=ejprGxRUw@mail.gmail.com>
- <20180302111040.GA6344@amd> <0f090cc7-2b72-a038-26ee-d43077cb9663@ti.com>
- <20180302170841.GP28231@n2100.armlinux.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 06/32] ASoC: rt5651: Configure
+ jack-detect source through a device-property
+Date: Fri, 2 Mar 2018 17:41:11 +0000
+Message-ID: <20180302174111.GA3482@sirena.org.uk>
+References: <20180225104713.4745-1-hdegoede@redhat.com>
+ <20180225104713.4745-7-hdegoede@redhat.com>
+ <20180301193046.GJ12864@sirena.org.uk>
+ <032d0e59-0d64-7df1-4fca-1709430b754c@redhat.com>
+ <2ac828b2-04e1-4b5f-f4db-a543ad5e3535@redhat.com>
+ <20180302121801.GE6255@sirena.org.uk>
+ <bbe1b540-201a-bf6e-9008-0f8d5d4a2a9d@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7978703334853146564=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelnx194.ext.ti.com (lelnx194.ext.ti.com [198.47.27.80])
- by alsa0.perex.cz (Postfix) with ESMTP id D3162267437
- for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 18:18:13 +0100 (CET)
-In-Reply-To: <20180302170841.GP28231@n2100.armlinux.org.uk>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id B0917267408
+ for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 18:41:21 +0100 (CET)
+In-Reply-To: <bbe1b540-201a-bf6e-9008-0f8d5d4a2a9d@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,78 +27,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@armlinux.org.uk>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, ext Tony Lindgren <tony@atomide.com>, Linus Walleij <linus.walleij@linaro.org>, =?UTF-8?B?TWlja3Vsw6HFoSBRd2VydHo=?= <abcloriens@gmail.com>, Sebastian Reichel <sre@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, =?UTF-8?Q?Filip_Matijevi=c4=87?= <filip.matijevic.pz@gmail.com>, Pavel Machek <pavel@ucw.cz>, Patrik Bachan <patrikbachan@gmail.com>, Ivajlo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Kevin Hilman <khilman@kernel.org>, serge@hallyn.com, Thorsten Leemhuis <regressions@leemhuis.info>, Linux-OMAP <linux-omap@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Martijn Braam <martijn@brixit.nl>, Daniel Baluta <daniel.baluta@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, kernel list <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, clayton@craftyguy.net, Sakari Ailus <sakari.ailus@lin>
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Carlo Caione <carlo@endlessm.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/02/2018 11:08 AM, Russell King - ARM Linux wrote:
-> On Fri, Mar 02, 2018 at 08:22:52AM -0600, Andrew F. Davis wrote:
->>> diff --git a/drivers/gpio/gpiolib-of.c b/drivers/gpio/gpiolib-of.c
->>> index 84e5a9d..f0fab26 100644
->>> --- a/drivers/gpio/gpiolib-of.c
->>> +++ b/drivers/gpio/gpiolib-of.c
->>> @@ -241,29 +241,17 @@ struct gpio_desc *of_find_gpio(struct device *dev, const char *con_id,
->>>  
->>>  		desc = of_get_named_gpiod_flags(dev->of_node, prop_name, idx,
->>>  						&of_flags);
->>> -		/*
->>> -		 * -EPROBE_DEFER in our case means that we found a
->>> -		 * valid GPIO property, but no controller has been
->>> -		 * registered so far.
->>> -		 *
->>> -		 * This means we don't need to look any further for
->>> -		 * alternate name conventions, and we should really
->>> -		 * preserve the return code for our user to be able to
->>> -		 * retry probing later.
->>> -		 */
->>> -		if (IS_ERR(desc) && PTR_ERR(desc) == -EPROBE_DEFER)
->>> -			return desc;
->>>  
->>> -		if (!IS_ERR(desc) || (PTR_ERR(desc) != -ENOENT))
->>> +		if (!IS_ERR(desc) || PTR_ERR(desc) != -ENOENT)
->>
->>
->> I rather like the () so one doesn't always have to look up C operator
->> precedence to verify..
-> 
-> Too many make it impossible to see which close paren ties up with
-> which open paren.  I've spent way too long in the past reformatting
-> code, where people think that () are a good thing, to work out what
-> the comparison is actually doing before then rewriting the damn
-> thing with less () and in a much clearer way.  I'm now convinced
-> that unnecessary () are a very bad thing as they severely harm
-> readability as test complexity increases.
-> 
+
+--===============7978703334853146564==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="C7zPtVaVf+AK4Oqc"
+Content-Disposition: inline
 
 
-Fair enough, I personally prefer always having a new line per condition
-when doing chained conditionals:
+--C7zPtVaVf+AK4Oqc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-if (something &&
-    this == that &&
-    !not_this)
+On Fri, Mar 02, 2018 at 01:58:53PM +0100, Hans de Goede wrote:
+> On 02-03-18 13:18, Mark Brown wrote:
+
+> > What makes you claim that?  Any board with jack detection wired up will
+> > call that function.  Not all boards have that configured of course but
+> > there's absolutely nothing Intel specific about that interface.
+
+> Right I'm not claiming the interface is Intel specific, what I'm trying
+> to say is that the need for some code outside of the codec driver
+> to create the jack means that adding jack-support to DT platforms
+> cannot be done through just adding DT properties (once this patch
+> is merged), it will still require platform code changes.
+
+On DT the situation with generic drivers is much better than it is on
+ACPI so we're actually able to create jacks purely from DT with both the
+simple and graph cards.  This was what drove the creation of the generic
+jack operation rather than device specific function calls, Bard realized
+that the device specific calls were all very similar and adding the call
+allowed the generic cards to work with jacks.
+
+> > No, that's really not a good idea.  Any jacks in the system are part of
+> > the system specific wiring, they're not something that's intrinsic to
+> > the CODEC.  Even with fairly basic setups you've got options like having
+> > a headset jack or separate microphone and headphone jacks.
+
+> OK, so if doing the jack creation in the machine-driver / platform
+> code is by design and you want to keep things that way, then I
+> assume that what needs changing for v3 of this patch is:
+
+> 1) Split the patch in separate codec + machine-drv patches
+> 2) Add comments to make the ordering requirements clear to
+> both the codec- and machine-driver.
+
+> Correct?
+
+Yes, I think so.
+
+--C7zPtVaVf+AK4Oqc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqZjLcACgkQJNaLcl1U
+h9Cgdgf/SXcy7/OgfxIfUJi3slNV1Atfw7uOgkrH3nIS8T2Uu1QwE+NI3O4Cdcdj
+5JSEf3bMpuwYxmizN8y/8vPegZhW5FE4iwmhGjDQKzcIDqN7YCN1sPQst31Lqn74
+QbJQvQvbC4vOnSranBpFHsb6eMG30RciJVpdqTqr/sQkYyFLrkJfa5rBhfmmO7Cu
+RpjaTFHGlV+UDRlaV2cFeav4W8PrIMuZ1ADF8fBwnjylBtWnVtkxxp1wAuql94Aq
+VQjDaABXJl4usiQvAXMqwrrMfY3A5Zs9jLx0VrdRSBe3fQ8Hh9tmWlzgdySP91oi
+YHDf4BAw33vEnccTk/2UOWngYgrivQ==
+=rWX0
+-----END PGP SIGNATURE-----
+
+--C7zPtVaVf+AK4Oqc--
+
+--===============7978703334853146564==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
->>
->>
->>>  			break;
->>>  	}
->>>  
->>>  	/* Special handling for SPI GPIOs if used */
->>> -	if (IS_ERR(desc))
->>> +	if (IS_ERR(desc) && PTR_ERR(desc) == -ENOENT)
-> 
-> These can be simplified to:
-> 
-> 	if (desc == ERR_PTR(-ENOENT))
-> 
-> since error pointers are unique - ERR_PTR(-ENOENT) is what was
-> returned as an error-pointer, and if IS_ERR(ERR_PTR(-ENOMENT)) etc
-> were false, we'd have big problems as it'd mean we couldn't detect
-> error pointers!
-> 
-> As an added bonus, they don't involve any operator precedence
-> questions either.
-> 
-
-Looks like your suggestion clears up this one anyway.
+--===============7978703334853146564==--
