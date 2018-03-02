@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: max9867: Drop probe function
-Date: Fri, 2 Mar 2018 12:43:15 +0000
-Message-ID: <20180302124315.GG6255@sirena.org.uk>
-References: <20180301215701.GB4302@lenoch>
+Subject: Re: [PATCH v3 14/25] ASoC: qcom: qdsp6: Add support to
+ q6afe dai driver
+Date: Fri, 2 Mar 2018 12:50:54 +0000
+Message-ID: <20180302125054.GH6255@sirena.org.uk>
+References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
+ <20180213165837.1620-15-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0832459244517597331=="
+Content-Type: multipart/mixed; boundary="===============8000169565753567295=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A6A532673A4
- for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 13:43:16 +0100 (CET)
-In-Reply-To: <20180301215701.GB4302@lenoch>
+ by alsa0.perex.cz (Postfix) with ESMTP id 163A9267377
+ for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 13:50:56 +0100 (CET)
+In-Reply-To: <20180213165837.1620-15-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +22,136 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: alsa-devel@alsa-project.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>
+To: srinivas.kandagatla@linaro.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, andy.gross@linaro.org, linux-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0832459244517597331==
+--===============8000169565753567295==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="s5/bjXLgkIwAv6Hi"
+	protocol="application/pgp-signature"; boundary="sClP8c1IaQxyux9v"
 Content-Disposition: inline
 
 
---s5/bjXLgkIwAv6Hi
+--sClP8c1IaQxyux9v
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 01, 2018 at 10:57:01PM +0100, Ladislav Michl wrote:
-> Driver probe function has no use and can be deleted.
->=20
-> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
-> ---
->  Changes:
->  - v2: Rebased against Mark's current tree
-> =20
->  Mark,
->=20
->  is this what you asked for? It does not make much sense to me
->  as you have to redo the work I wanted to save you...
+On Tue, Feb 13, 2018 at 04:58:26PM +0000, srinivas.kandagatla@linaro.org wrote:
 
-No, this doesn't apply - please resend what you originally sent.
+> +static int q6hdmi_format_put(struct snd_kcontrol *kcontrol,
+> +				struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct q6afe_dai_data *dai_data = kcontrol->private_data;
+> +	int value = ucontrol->value.integer.value[0];
+> +
+> +	dai_data->port_config[AFE_PORT_HDMI_RX].hdmi.datatype = value;
+> +
+> +	return 0;
+> +}
 
---s5/bjXLgkIwAv6Hi
+No validation, and do we not need to tell a currently running stream if
+the format changed on it (or block such changes if they're not going to
+work, which seems more likely)?
+
+> +static int q6hdmi_hw_params(struct snd_pcm_substream *substream,
+> +				struct snd_pcm_hw_params *params,
+> +				struct snd_soc_dai *dai)
+> +{
+> +	struct q6afe_dai_data *dai_data = q6afe_get_dai_data(dai->dev);
+> +	int channels = params_channels(params);
+> +	struct q6afe_hdmi_cfg *hdmi = &dai_data->port_config[dai->id].hdmi;
+> +
+> +	hdmi->sample_rate = params_rate(params);
+> +	switch (params_format(params)) {
+> +	case SNDRV_PCM_FORMAT_S16_LE:
+> +		hdmi->bit_width = 16;
+> +		break;
+> +	case SNDRV_PCM_FORMAT_S24_LE:
+> +		hdmi->bit_width = 24;
+> +		break;
+> +	}
+
+This silently accepts invalid values.
+
+> +	/*refer to HDMI spec CEA-861-E: Table 28 Audio InfoFrame Data Byte 4*/
+
+Coding style, spaces around the /* */.
+
+> +static int q6afe_dai_startup(struct snd_pcm_substream *substream,
+> +				struct snd_soc_dai *dai)
+> +{
+> +	struct q6afe_dai_data *dai_data = q6afe_get_dai_data(dai->dev);
+> +
+> +	dai_data->is_port_started[dai->id] = false;
+> +
+> +	return 0;
+> +}
+
+If this is needed it makes me a bit worried that we've got some kind of
+bug with not shutting things down properly somewhere - what's going on
+here?
+
+> +static void q6afe_dai_shutdown(struct snd_pcm_substream *substream,
+> +				struct snd_soc_dai *dai)
+> +{
+> +	struct q6afe_dai_data *dai_data = q6afe_get_dai_data(dai->dev);
+> +	int rc;
+> +
+> +	rc = q6afe_port_stop(dai_data->port[dai->id]);
+> +	if (rc < 0)
+> +		dev_err(dai->dev, "fail to close AFE port\n");
+
+Better to print the error code so users have more information to debug
+the problem.
+
+> +			.stream_name = "HDMI Playback",
+> +			.rates = SNDRV_PCM_RATE_48000 |
+> +				 SNDRV_PCM_RATE_96000 |
+> +			 SNDRV_PCM_RATE_192000,
+
+Indentation again.
+
+> +static int q6afe_of_xlate_dai_name(struct snd_soc_component *component,
+> +				   struct of_phandle_args *args,
+> +				   const char **dai_name)
+> +{
+> +	int id = args->args[0];
+> +	int i, ret = -EINVAL;
+
+Coding style, don't mix initialization in with other variable
+declarations on the same line like this.
+
+> +int q6afe_dai_dev_remove(struct device *dev)
+> +{
+> +	return 0;
+> +}
+
+Remove empty functions, if they can't be removed it's probably not OK
+for them to be empty either.
+
+--sClP8c1IaQxyux9v
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqZRuIACgkQJNaLcl1U
-h9BPeAf/cMxH74b1YMEvewec0my8XSgLq6+eXNFf1MMfc/o7j8UP9mHER4q3nqbq
-fgvuCKSXGgl0UxCOaDxjsDRvLS9t89BtZfZJYlJPoFyMOcE2vadHSbr5DtekG2u2
-oL0NjjO5gHiPbjbEi8DRk0+64MXNxEb+WwN4C4/xQeU4cQjhVCtQM7V4f9e+48QQ
-AoSMWE+u67q9S88mmYha+XwkRSmiGK/3oXY+rmRQnqGL2jdZurpMfTFqGs5Gj2qS
-mcw7CdnnDxH1mAxufNvDuTwCi466cT6PcK4rWlRBsGSJb07RI9PE1FqlbeBsMaAa
-H3bPV3HwGTsWT1vxhxOiS4mxub3HfQ==
-=KdhZ
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqZSK0ACgkQJNaLcl1U
+h9CX4wf9FyO3+9VdszcJuUMqWPGnm25kNgL5Q/LXibxkdzUI05azL7NAuYsrbbYl
+oVS99PY9j+ssXfxaxx1Juiqf0qrnomKZXnbyp6iTLA0TlrNzc8Mwph+b1mbwfge3
+wtLZBZZXLOZ2zIut+wi6OjACdJ7to2RtbCzB5zTjDAEhe8VN3lXEG0RnQnurOEaM
+HK7pdQKLjMc1B2xVQaV0boaVau+Tnqv7c+662SBuCOWWX1qHFCh9ijZ8TdP2kJrR
+Ir6SR/Kzhy/9KfaRmCuKeQqBTp1TKTXgMFd6NDMnUU4ckfPpF1PuUgQQszKtbwkM
+TTk6x5PTIPeZTvwpdx0IFTno5tdRRg==
+=AW+P
 -----END PGP SIGNATURE-----
 
---s5/bjXLgkIwAv6Hi--
+--sClP8c1IaQxyux9v--
 
---===============0832459244517597331==
+--===============8000169565753567295==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0832459244517597331==--
+--===============8000169565753567295==--
