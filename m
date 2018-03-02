@@ -1,28 +1,18 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v3 01/25] dt-bindings: soc: qcom: Add
-	bindings for APR bus
-Date: Fri, 2 Mar 2018 13:13:20 +0000
-Message-ID: <2608d36a-cf4e-5b06-a26a-8d4ee0bb41ad@linaro.org>
-References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
- <20180213165837.1620-2-srinivas.kandagatla@linaro.org>
- <20180213231244.ama4bwsehzuh5sr7@rob-hp-laptop>
- <ae65a9c8-85a3-5494-f4cc-1038fd8c9bd1@linaro.org>
- <20180218230414.dkd6kb6kd35arcyv@rob-hp-laptop>
- <636d4ac2-3bc2-7290-1645-0451c089cb8a@linaro.org>
- <CAL_JsqK3KFBGqpHRaURSrHew1HhObUvFYxuhND-FOQ4tCUaAHg@mail.gmail.com>
- <465a2ca7-9f74-8977-37ea-29fe3944c27c@linaro.org>
- <20180301203413.GN12864@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: max9867: Drop probe function" to the
+	asoc tree
+Date: Fri, 02 Mar 2018 13:17:52 +0000
+Message-ID: <E1erkZM-0006EF-Fr@debutante>
+References: <20180301142027.GE30722@lenoch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 40298267377
- for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 14:13:22 +0100 (CET)
-Received: by mail-wm0-f68.google.com with SMTP id t3so3067142wmc.2
- for <alsa-devel@alsa-project.org>; Fri, 02 Mar 2018 05:13:22 -0800 (PST)
-In-Reply-To: <20180301203413.GN12864@sirena.org.uk>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 12919267377
+ for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 14:17:54 +0100 (CET)
+In-Reply-To: <20180301142027.GE30722@lenoch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,41 +22,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Banajit Goswami <bgoswami@codeaurora.org>, rohkumar@qti.qualcomm.com, devicetree@vger.kernel.org, linux-arm-msm <linux-arm-msm@vger.kernel.org>, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <david.brown@linaro.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, spatakok@qti.qualcomm.com, Andy Gross <andy.gross@linaro.org>, "open list:ARM/QUALCOMM SUPPORT" <linux-soc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the review,
+The patch
 
-On 01/03/18 20:34, Mark Brown wrote:
-> On Thu, Feb 22, 2018 at 10:03:42AM +0000, Srinivas Kandagatla wrote:
->> On 22/02/18 00:14, Rob Herring wrote:
-> 
->>> Am I saying a single DT node for this? Yes, perhaps.
->> Yes, I will give that a go.
->>
->> So we will endup having something like this in DT for one frontend and
->> backend dailink:
-> 
-> Let's not start encoding DPCM into DT, DPCM is very much an
-> implemntation detail of the current stack which we're gradually pushing
-> towards replacing with something better.  What we want to be doing is
-> just treating components inside the SoC the same as components in a
-> CODEC, the routing within a SoC being the same as in a CODEC and
-> similarly for externally connected devices.
-> 
->> 		fe@1 {
->>                  	is-fe;
->>                          link-name = "MultiMedia1";
-> 
-> In particular having the concept of "front end" in the DT is *very*
-> implementation specific.  We should just be describing the connections
-> that exist in the system.
-Yep, it makes sense. is-fe flag will be removed in next version, we can 
-determine this based on codec dai, so from DT side FE or BE should not 
-be any different.
+   ASoC: max9867: Drop probe function
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-srini
+Mark
 
-> 
+>From b3e9c3f0d98135d8b9991c2a34e42627c20664a4 Mon Sep 17 00:00:00 2001
+From: Ladislav Michl <ladis@linux-mips.org>
+Date: Fri, 2 Mar 2018 14:11:00 +0100
+Subject: [PATCH] ASoC: max9867: Drop probe function
+
+Driver probe function has no use and can be deleted.
+
+Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/max9867.c | 10 ----------
+ sound/soc/codecs/max9867.h |  1 -
+ 2 files changed, 11 deletions(-)
+
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index 349d9cc116ee..4ea3287162ad 100644
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -413,17 +413,7 @@ static int max9867_resume(struct device *dev)
+ }
+ #endif
+ 
+-static int max9867_probe(struct snd_soc_component *component)
+-{
+-	struct max9867_priv *max9867 = snd_soc_component_get_drvdata(component);
+-
+-	dev_dbg(component->dev, "max98090_probe\n");
+-	max9867->component = component;
+-	return 0;
+-}
+-
+ static const struct snd_soc_component_driver max9867_component = {
+-	.probe			= max9867_probe,
+ 	.controls		= max9867_snd_controls,
+ 	.num_controls		= ARRAY_SIZE(max9867_snd_controls),
+ 	.dapm_routes		= max9867_audio_map,
+diff --git a/sound/soc/codecs/max9867.h b/sound/soc/codecs/max9867.h
+index c0aea3d1f2ba..55cd9976ff47 100644
+--- a/sound/soc/codecs/max9867.h
++++ b/sound/soc/codecs/max9867.h
+@@ -75,7 +75,6 @@
+ /* codec private data */
+ struct max9867_priv {
+ 	struct regmap *regmap;
+-	struct snd_soc_component *component;
+ 	unsigned int sysclk;
+ 	unsigned int pclk;
+ 	unsigned int master;
+-- 
+2.16.2
