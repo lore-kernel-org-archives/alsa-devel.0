@@ -1,19 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 6/6] ASoC: max9867: Use continuous sample
-	rate
-Date: Fri, 2 Mar 2018 10:50:02 +0000
-Message-ID: <20180302105002.GA6255@sirena.org.uk>
-References: <20180301141843.GB30722@lenoch> <20180301142216.GH30722@lenoch>
- <20180301182202.GH12864@sirena.org.uk>
- <20180301214708.GA4302@lenoch>
+From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+Subject: [PATCH v2 00/10] Enable HDA Codec support on Intel
+	Platforms (Series2)
+Date: Fri,  2 Mar 2018 16:22:28 +0530
+Message-ID: <1519987958-5482-1-git-send-email-rakesh.a.ughreja@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1971925443685325752=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E69A267CF6
- for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 11:50:05 +0100 (CET)
-In-Reply-To: <20180301214708.GA4302@lenoch>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id E903F267D10
+ for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 11:50:12 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,55 +19,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: alsa-devel@alsa-project.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>
+To: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com
+Cc: vinod.koul@intel.com, patches.audio@intel.com, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
+Many Intel platforms (SKL, KBL) etc. in the market supports enhanced 
+audio capabilities which also includes DSP processing. This patch carry
+forwards the work that is done in the previous series to enable HD Audio
+codecs on such platforms.
 
---===============1971925443685325752==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="NzB8fVQJ5HfG6fxh"
-Content-Disposition: inline
+This patch series adds ASoC HDA codec driver for Intel platforms. It is
+written by reusing the legacy HDA ALSA codec driver. Intention is to
+maximize the reuse and minimize the changes in the legacy HDA codec driver.
 
+Changes in v2:
+- Resolved review comments and rebased to latest kernel.
+- added module load support for codec drivers.
 
---NzB8fVQJ5HfG6fxh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Rakesh Ughreja (10):
+  ALSA - Ext hda: add wait for codec to respond after link reset
+  ASoC: Intel: Boards: Machine driver for Intel platforms
+  ASoC: Intel: Skylake: Add entry in sst_acpi_mach for HDA codecs
+  ASoC: Intel: Skylake: add HDA BE DAIs
+  ASoC: Intel: Skylake: use hda_bus instead of hdac_bus
+  ALSA: hda - split snd_hda_codec_new function
+  ALSA: hdac: remove memory allocation from snd_hdac_ext_bus_device_init
+  ALSA: hdac: add extended ops in the hdac_bus
+  ASoC: hdac_hda: add asoc extension for legacy HDA codec drivers
+  ASoC: Intel: Boards: add support for HDA codecs
 
-On Thu, Mar 01, 2018 at 10:47:08PM +0100, Ladislav Michl wrote:
-> On Thu, Mar 01, 2018 at 06:22:02PM +0000, Mark Brown wrote:
+ include/sound/hdaudio.h                      |   9 +
+ include/sound/hdaudio_ext.h                  |   6 +-
+ sound/hda/ext/hdac_ext_bus.c                 |  12 +-
+ sound/hda/ext/hdac_ext_controller.c          |   8 +
+ sound/pci/hda/hda_bind.c                     |  12 +
+ sound/pci/hda/hda_codec.c                    |  68 +++-
+ sound/pci/hda/hda_codec.h                    |   2 +
+ sound/soc/codecs/Kconfig                     |   5 +
+ sound/soc/codecs/Makefile                    |   2 +
+ sound/soc/codecs/hdac_hda.c                  | 464 +++++++++++++++++++++++++++
+ sound/soc/codecs/hdac_hda.h                  |  23 ++
+ sound/soc/intel/boards/Kconfig               |   9 +
+ sound/soc/intel/boards/Makefile              |   2 +
+ sound/soc/intel/boards/skl_hda_dsp_common.c  | 131 ++++++++
+ sound/soc/intel/boards/skl_hda_dsp_common.h  |  35 ++
+ sound/soc/intel/boards/skl_hda_dsp_generic.c | 175 ++++++++++
+ sound/soc/intel/skylake/skl-pcm.c            |  70 +++-
+ sound/soc/intel/skylake/skl.c                | 119 ++++++-
+ sound/soc/intel/skylake/skl.h                |  12 +-
+ 19 files changed, 1115 insertions(+), 49 deletions(-)
+ create mode 100644 sound/soc/codecs/hdac_hda.c
+ create mode 100644 sound/soc/codecs/hdac_hda.h
+ create mode 100644 sound/soc/intel/boards/skl_hda_dsp_common.c
+ create mode 100644 sound/soc/intel/boards/skl_hda_dsp_common.h
+ create mode 100644 sound/soc/intel/boards/skl_hda_dsp_generic.c
 
-> > flexible.  Devices don't need to be able to do this independently, you
-> > can have a flexible external clock tree for example.
-
-> Thanks for clarifying this. So in this particular case we should use
-> snd_pcm_hw_constraint_list for SNDRV_PCM_HW_PARAM_RATE to enforce only
-> supported rates based on master clock, right? I'll rework this patch then.
-
-Yes, that's the ideal.
-
---NzB8fVQJ5HfG6fxh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqZLFcACgkQJNaLcl1U
-h9BVZAgAhBjjx7B7rgziDwoK086iJi8vwzc5P0BcoFEqMaw7D45e620ZYISFFTXN
-MPQUf3a5W6HyyR/mQdH+OrxZTZeDEqiNPdX3A1y9J7+5fysyIq+nnLuzXuLnXN2o
-f+tPImQImVTyIRIlwv/1efTvmGnkaLCMpevM0WhvpZi/WjDv2eoEsN2aq9Yb4FSX
-Wuwb6BPNznkZQhyG3ibw+VPAjuKRXCowcive3cKHLcxhlVZyNVJZbuEO2Bm/hiCP
-SUlcz5bgIn8FMzGlwvsBFmx85ClozYRGe4AS+JFrMyznrGjdNTNQYzuDEZP60W2n
-1TaKNrji73DSPrh8wwlQ9UTtoAKjWw==
-=IxEr
------END PGP SIGNATURE-----
-
---NzB8fVQJ5HfG6fxh--
-
---===============1971925443685325752==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1971925443685325752==--
+-- 
+2.7.4
