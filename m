@@ -1,21 +1,23 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: regression v4.16 on Nokia N900: sound does not work
-Date: Fri, 2 Mar 2018 10:10:26 +0100
-Message-ID: <20180302091025.GC30267@amd>
-References: <20180224214617.GA22619@amd>
- <71aa88ec-d4df-b49c-7d73-27197f468491@leemhuis.info>
- <20180226131318.GA14045@amd>
- <CAEnQRZBbMTeaxb+=AaarX6PSGasfVjtAUdpbPvJavZyTRMpdgQ@mail.gmail.com>
- <20180226231336.GA18565@amd>
- <CACRpkdarR_7HqGMPwfa8YpG9wnFs5mJrNwuctycn=MrdwaRxyw@mail.gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v2 06/32] ASoC: rt5651: Configure
+ jack-detect source through a device-property
+Date: Fri, 2 Mar 2018 10:32:25 +0100
+Message-ID: <2ac828b2-04e1-4b5f-f4db-a543ad5e3535@redhat.com>
+References: <20180225104713.4745-1-hdegoede@redhat.com>
+ <20180225104713.4745-7-hdegoede@redhat.com>
+ <20180301193046.GJ12864@sirena.org.uk>
+ <032d0e59-0d64-7df1-4fca-1709430b754c@redhat.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2377627769956060394=="
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
- [195.113.26.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5588126797B
- for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 10:10:26 +0100 (CET)
-In-Reply-To: <CACRpkdarR_7HqGMPwfa8YpG9wnFs5mJrNwuctycn=MrdwaRxyw@mail.gmail.com>
+Received: from mail-wm0-f46.google.com (mail-wm0-f46.google.com [74.125.82.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 86F82267CCC
+ for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 10:32:27 +0100 (CET)
+Received: by mail-wm0-f46.google.com with SMTP id t6so1829310wmt.5
+ for <alsa-devel@alsa-project.org>; Fri, 02 Mar 2018 01:32:27 -0800 (PST)
+In-Reply-To: <032d0e59-0d64-7df1-4fca-1709430b754c@redhat.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,73 +27,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, ext Tony Lindgren <tony@atomide.com>, abcloriens@gmail.com, Sebastian Reichel <sre@kernel.org>, martijn@brixit.nl, Filip =?utf-8?Q?Matijevi=C4=87?= <filip.matijevic.pz@gmail.com>, patrikbachan@gmail.com, Ivajlo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Kevin Hilman <khilman@kernel.org>, serge@hallyn.com, Mark Brown <broonie@kernel.org>, Linux-OMAP <linux-omap@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Daniel Baluta <daniel.baluta@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, kernel list <linux-kernel@vger.kernel.org>, "Andrew F . Davis" <afd@ti.com>, Thorsten Leemhuis <regressions@leemhuis.info>, clayton@craftyguy.net, Sakari Ailus <sakari.ailus@linux.intel.com>, Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Carlo Caione <carlo@endlessm.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============2377627769956060394==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="32u276st3Jlj2kUU"
-Content-Disposition: inline
+On 01-03-18 23:35, Hans de Goede wrote:
+> Hi,
+> =
 
+> On 01-03-18 20:30, Mark Brown wrote:
+>> On Sun, Feb 25, 2018 at 11:46:47AM +0100, Hans de Goede wrote:
+>>> Configure the jack-detect source through a device-property which can be
+>>> set by code outside of the codec driver. Rather then putting platform
+>>> specific DMI quirks inside the generic codec driver.
+>>
+>>> And move the jack-detect-source quirk for the KIANO SlimNote 14.2, which
+>>> was present inside the codec driver to the machine driver, where we can
+>>> bundle it together with the other quirks already present for this lapto=
+p.
+>>
+>> Multiple things in a patch again :/
+> =
 
---32u276st3Jlj2kUU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Yes because the property replaces the quirk, I can split the changes betw=
+een
+> the codec and machine driver into 2 patches but then the intermediate sta=
+te
+> will be that the jack-detection no longer works.
+> =
 
-Hi!
+>> The property itself is fine but...
+>>
+>>> @@ -360,6 +377,13 @@ static int byt_rt5651_init(struct snd_soc_pcm_runt=
+ime *runtime)
+>>> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 dev_err(card->dev, "unable to s=
+et MCLK rate\n");
+>>> =A0=A0=A0=A0=A0 }
+>>> +=A0=A0=A0 props[cnt++] =3D PROPERTY_ENTRY_U32("realtek,jack-detect-sou=
+rce",
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 BYT_RT5651_JDSRC(byt_rt5=
+651_quirk));
+>>> +
+>>> +=A0=A0=A0 ret =3D device_add_properties(codec->dev, props);
+>>> +=A0=A0=A0 if (ret)
+>>> +=A0=A0=A0=A0=A0=A0=A0 return ret;
+>>> +
+>>> =A0=A0=A0=A0=A0 ret =3D snd_soc_card_jack_new(runtime->card, "Headset",
+>>
+>> I'm having a hard time geting comfortable with this; it's all a bit
+>> fragile feeling to me - someone deciding to centralise the property
+>> parsing (eg, if they are using a platform where platform data makes
+>> sense or want to cross-validate with some other property on probe) could
+>> easily break things and there's not even a comment in the CODEC driver.
+> =
 
-Linux-Regression-ID: lr#4b650f
+> It is not _that_ fragile, but I agree that it would be good to add
+> a comment about not moving the property-parsing to the codec driver.
 
-On Tue 2018-02-27 09:43:32, Linus Walleij wrote:
-> On Tue, Feb 27, 2018 at 12:13 AM, Pavel Machek <pavel@ucw.cz> wrote:
->=20
-> > I did git bisect, and the winner seems to be:
-> >
-> > pavel@duo:/data/l/linux-n900$ git bisect bad
-> > c85823390215e52d68d3826df92a447ed31e5c80 is the first bad commit
-> > commit c85823390215e52d68d3826df92a447ed31e5c80
-> > Author: Linus Walleij <linus.walleij@linaro.org>
-> > Date:   Wed Dec 27 16:37:44 2017 +0100
-> >
-> >     gpio: of: Support SPI nonstandard GPIO properties
->=20
-> I have fixes queued for this, tried to send a pull request yesterday
-> but it turns out the fixes need fixing... OK I'm onto it anyways.
+So one other solution which comes to mind here is to move the
+snd_soc_card_jack_new() call into the codec driver's
+rt5651_apply_properties() function (conditional on a jack src being
+set in the properties).
 
-Do you have any updates? Is there way to fix dts so that this does not
-trigger on N900?
+This would make the machine driver code look like this:
 
-If this is taking longer to fix, should c85823390215 be reverted in
-the meantime? It does not seem particulary important/urgent...
+	props[cnt++] =3D PROPERTY_ENTRY_...
+	props[cnt++] =3D PROPERTY_ENTRY_...
+	props[cnt++] =3D PROPERTY_ENTRY_...
+	props[cnt++] =3D PROPERTY_ENTRY_...
 
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
+	ret =3D device_add_properties(codec->dev, props);
+	if (ret)
+		return ret;
 
---32u276st3Jlj2kUU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+	ret =3D rt5651_apply_properties(codec);
+	if (ret)
+		return ret;
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+Which makes the ordering really clear without needing any
+comments.
 
-iEYEARECAAYFAlqZFQEACgkQMOfwapXb+vKi0QCgisW7TTYD3Wz6Rl2Pke3fLMBu
-b6kAoLv/GtwT7M1red+ajx/xDTaISMP9
-=Yzct
------END PGP SIGNATURE-----
+This will also make the jack-detect device-properties work with
+devicetree platforms without any changes to their platform code,
+which currently is not the case since the non Intel platform-code
+does not call snd_soc_component_set_jack().
 
---32u276st3Jlj2kUU--
+Thinking more about this I believe that doing the
+snd_soc_card_jack_new() call inside the codec driver based on
+device-properties is a better solution then doing it in the
+machine driver.
 
---===============2377627769956060394==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Please let me know if you agree then I will rework the remaining
+patches accordingly.
 
+Regards,
 
---===============2377627769956060394==--
+Hans
