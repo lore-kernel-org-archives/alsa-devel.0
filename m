@@ -1,17 +1,21 @@
-From: <twischer@de.adit-jv.com>
-Subject: [PATCH - JACK 1/1] jack: Do not Xrun the ALSA buffer
-Date: Fri, 2 Mar 2018 17:21:14 +0100
-Message-ID: <1520007674-14618-4-git-send-email-twischer@de.adit-jv.com>
-References: <s5hfu5jizsv.wl-tiwai@suse.de>
- <1520007674-14618-1-git-send-email-twischer@de.adit-jv.com>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: [Xen-devel][PATCH 0/2] sndif: add explicit back
+ and front synchronization
+Date: Fri, 2 Mar 2018 18:52:28 +0200
+Message-ID: <fe39e29c-7ab3-9997-149b-7229ddd8703d@gmail.com>
+References: <1517819100-1029-1-git-send-email-andr2000@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [62.225.105.245])
- by alsa0.perex.cz (Postfix) with ESMTP id DFDD2267445
- for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 17:22:06 +0100 (CET)
-In-Reply-To: <1520007674-14618-1-git-send-email-twischer@de.adit-jv.com>
+Received: from mail-lf0-f67.google.com (mail-lf0-f67.google.com
+ [209.85.215.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id E2F99267408
+ for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 17:52:31 +0100 (CET)
+Received: by mail-lf0-f67.google.com with SMTP id 37so14248862lfs.7
+ for <alsa-devel@alsa-project.org>; Fri, 02 Mar 2018 08:52:31 -0800 (PST)
+In-Reply-To: <1517819100-1029-1-git-send-email-andr2000@gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,119 +25,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, xen-devel@lists.xenproject.org
+Cc: Juergen Gross <jgross@suse.com>, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Timo Wischer <twischer@de.adit-jv.com>
-
-when the JACK thread is requesting too many audio frames
-
-Playback:
-Without this commit the ALSA audio buffer
-will be played with endless repeats as long as the user application
-has not provided new audio data.
-Therefore this garbage will be played as long as the user application
-has not called snd_pcm_stop() after an Xrun.
-With this fix the rest of the JACK buffer will be filled
-with silence.
-
-Capture:
-Without this commit the audio data in the ALSA buffer would be
-overwritten.
-With this commit the new data from the JACK buffer
-will not be copied.
-Therefore the existing data in the ALSA buffer
-will not be overwritten.
-
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
-
-diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
-index c547cbb..18425e9 100644
---- a/jack/pcm_jack.c
-+++ b/jack/pcm_jack.c
-@@ -54,6 +54,7 @@ typedef struct {
- 
- static int snd_pcm_jack_stop(snd_pcm_ioplug_t *io);
- 
-+
- static int pcm_poll_block_check(snd_pcm_ioplug_t *io)
- {
- 	static char buf[32];
-@@ -144,7 +145,6 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
- {
- 	snd_pcm_jack_t *jack = io->private_data;
- 	snd_pcm_uframes_t hw_ptr;
--	const snd_pcm_channel_area_t *areas;
- 	snd_pcm_uframes_t xfer = 0;
- 	unsigned int channel;
- 	
-@@ -154,40 +154,43 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
- 		jack->areas[channel].first = 0;
- 		jack->areas[channel].step = jack->sample_bits;
- 	}
--		
--	if (io->state != SND_PCM_STATE_RUNNING) {
--		if (io->stream == SND_PCM_STREAM_PLAYBACK) {
--			for (channel = 0; channel < io->channels; channel++)
--				snd_pcm_area_silence(&jack->areas[channel], 0, nframes, io->format);
--			return 0;
--		}
--	}
- 
- 	hw_ptr = jack->hw_ptr;
--	areas = snd_pcm_ioplug_mmap_areas(io);
-+	if (io->state == SND_PCM_STATE_RUNNING) {
-+		const snd_pcm_channel_area_t *areas = snd_pcm_ioplug_mmap_areas(io);
-+
-+		snd_pcm_uframes_t hw_avail = snd_pcm_ioplug_hw_avail(io, hw_ptr,
-+		                                      io->appl_ptr);
- 
--	while (xfer < nframes) {
--		snd_pcm_uframes_t frames = nframes - xfer;
--		snd_pcm_uframes_t offset = hw_ptr % io->buffer_size;
--		snd_pcm_uframes_t cont = io->buffer_size - offset;
-+		if (hw_avail > 0) {
-+			snd_pcm_uframes_t frames = nframes - xfer;
-+			snd_pcm_uframes_t offset = hw_ptr % io->buffer_size;
- 
--		if (cont < frames)
--			frames = cont;
-+			if (hw_avail < frames)
-+				frames = hw_avail;
- 
--		for (channel = 0; channel < io->channels; channel++) {
- 			if (io->stream == SND_PCM_STREAM_PLAYBACK)
--				snd_pcm_area_copy(&jack->areas[channel], xfer, &areas[channel], offset, frames, io->format);
-+				snd_pcm_areas_copy_wrap(jack->areas, xfer, io->buffer_size, areas, offset, io->buffer_size, io->channels, frames, io->format);
- 			else
--				snd_pcm_area_copy(&areas[channel], offset, &jack->areas[channel], xfer, frames, io->format);
-+				snd_pcm_areas_copy_wrap(areas, offset, io->buffer_size, jack->areas, xfer, io->buffer_size, io->channels, frames, io->format);
-+
-+			hw_ptr += frames;
-+			if (hw_ptr >= jack->boundary)
-+				hw_ptr -= jack->boundary;
-+			xfer += frames;
- 		}
--		
--		hw_ptr += frames;
--		if (hw_ptr >= jack->boundary)
--			hw_ptr -= jack->boundary;
--		xfer += frames;
- 	}
- 	jack->hw_ptr = hw_ptr;
- 
-+	/* check if requested frames were copied */
-+	if (xfer < nframes) {
-+		/* always fill the not yet written JACK buffer with silence */
-+		if (io->stream == SND_PCM_STREAM_PLAYBACK) {
-+			const snd_pcm_uframes_t frames = nframes - xfer;
-+			snd_pcm_areas_silence(jack->areas, io->channels, xfer, frames, io->format);
-+		}
-+	}
-+
- 	pcm_poll_unblock_check(io); /* unblock socket for polling if needed */
- 
- 	return 0;
--- 
-2.7.4
+QW55IGNoYW5jZSBBTFNBIGNvbW11bml0eSBtYXkgYWxzbyByZXZpZXcgdGhlIGJlbG93PwoKQlRX
+LCB0aGUgZHJpdmVyLCB3aXRoIHRoZSBjaGFuZ2VzIHByb3Bvc2VkLCBpcyBhdCBbMV0KClRoYW5r
+IHlvdSwKCk9sZWtzYW5kcgoKT24gMDIvMDUvMjAxOCAxMDoyNCBBTSwgT2xla3NhbmRyIEFuZHJ1
+c2hjaGVua28gd3JvdGU6Cj4gRnJvbTogT2xla3NhbmRyIEFuZHJ1c2hjaGVua28gPG9sZWtzYW5k
+cl9hbmRydXNoY2hlbmtvQGVwYW0uY29tPgo+Cj4gSGksIGFsbCEKPgo+IEZvcmV3b3JkCj4gPT09
+PT09PT0KPgo+IFRoaXMgY2hhbmdlIGlzIGFpbWVkIHRvIGFkZCBzdXBwb3J0IGZvciBleHBsaWNp
+dCBiYWNrIGFuZCBmcm9udAo+IHN5bmNocm9uaXphdGlvbiBkdXJpbmcgcGxheWJhY2sgYW5kIGNh
+cHR1cmUgaW4gcmVzcG9uc2UgdG8gY29tbWVudHMKPiByYWlzZWQgZHVyaW5nIHVwc3RyZWFtIGF0
+dGVtcHQgb2YgdGhlIHBhcmEtdmlydHVhbGl6ZWQgc291bmQgZnJvbnRlbmQKPiBkcml2ZXIgZm9y
+IFhlbiBbMV0sIFsyXSBhbmQgZ2F0aGVyIG9waW5pb25zIGZyb20gdGhlIHJlbGV2YW50IGNvbW11
+bml0aWVzCj4gKEFMU0EsIFhlbikgb24gdGhlIGNoYW5nZS4KPgo+IFRoZSByZWxldmFudCBiYWNr
+ZW5kIGlzIGltcGxlbWVudGVkIGFzIGEgdXNlci1zcGFjZSBhcHBsaWNhdGlvbiBbM10KPiBhbmQg
+dXNlcyBhY2NvbXBhbnlpbmcgaGVscGVyIGxpYnJhcnkgWzRdLgo+Cj4gQm90aCBmcm9udGVuZCBk
+cml2ZXIgYW5kIGJhY2tlbmQgd2VyZSB0ZXN0ZWQgb24gcmVhbCBIVyBydW5uaW5nIFhlbiBoeXBl
+cnZpc29yCj4gKFJlbmVzYXMgUi1DYXIgQVJNIGJhc2VkIEgzL00zIGJvYXJkcywgeDg2KSB0byBt
+YWtlIHN1cmUgdGhlIHByb3Bvc2VkCj4gc29sdXRpb24gZG9lcyB3b3JrLgo+Cj4gUmF0aW9uYWxl
+Cj4gPT09PT09PT09Cj4KPiBEdXJpbmcgdGhlIGZpcnN0IGF0dGVtcHQgdG8gdXBzdHJlYW0gdGhl
+IExpbnV4IGZyb250IGRyaXZlciBbNV0gbnVtYmVyCj4gb2YgY29tbWVudHMgYW5kIGNvbmNlcm5z
+IHdlcmUgcmFpc2VkLCBvbmUgb2YgdGhlIGJpZ2dlc3QgZmxhd3MgaW4gdGhlCj4gZGVzaWduIHdl
+cmUgcXVlc3Rpb25lZCBieSBib3RoIENsZW1lbnMgTGFkaXNjaCBbNl0gYW5kCj4gVGFrYXNoaSBT
+YWthbW90byBbN106IHRoZSBhYnNlbmNlIG9mIHN5bmNocm9uaXphdGlvbiBiZXR3ZWVuIGZyb250
+ZW5kCj4gYW5kIGJhY2tlbmQgZHVyaW5nIGNhcHR1cmUvcGxheWJhY2suIFR3byBvcHRpb25zIHdl
+cmUgZGlzY3Vzc2VkOgo+Cj4g4oCcSW4gZGVzaWduIG9mIEFMU0EgUENNIGNvcmUsIGRyaXZlcnMg
+YXJlIGV4cGVjdGVkIHRvIHN5bmNocm9uaXplIHRvCj4gYWN0dWFsIGhhcmR3YXJlcyBmb3Igc2Vt
+aS1yZWFsdGltZSBkYXRhIHRyYW5zbWlzc2lvbi4gVGhlCj4gc3luY2hyb25pemF0aW9uIGlzIGRv
+bmUgYnkgdHdvIHBvaW50czoKPiAxKSBJbnRlcnJ1cHRzIHRvIHJlc3BvbmQgZXZlbnRzIGZyb20g
+YWN0dWFsIGhhcmR3YXJlcy4KPiAyKSBQb3NpdGlvbnMgb2YgYWN0dWFsIGRhdGEgdHJhbnNtaXNz
+aW9uIGluIGFueSBzZXJpYWwgc291bmQgaW50ZXJmYWNlcwo+ICAgICAgb2YgYWN0dWFsIGhhcmR3
+YXJlcy4KPiDigJwKPgo+IGFuZCBmaW5hbGx5IGEgY2hhbmdlIHRvIHRoZSBleGlzdGluZyBwcm90
+b2NvbCB3YXMgc3VnZ2VzdGVkOgo+Cj4g4oCcSW4gJ2luY2x1ZGUveGVuL2ludGVyZmFjZS9pby9z
+bmRpZi5oJywgdGhlcmUncyBubyBmdW5jdGlvbmFsaXRpZXMgSQo+IGRlc2NyaWJlZCB0aGUgYWJv
+dmU6Cj4gMS4gbm90aWZpY2F0aW9ucyBmcm9tIERvbVUgdG8gRG9tMCBhYm91dCB0aGUgc2l6ZSBv
+ZiBwZXJpb2QgZm9yCj4gICAgICBpbnRlcnJ1cHRzIGZyb20gYWN0dWFsIGhhcmR3YXJlcy4gT3Ig
+bm8gd2F5IGZyb20gRG9tMCB0byBEb21VIGFib3V0Cj4gICAgICB0aGUgY29uZmlndXJlZCBzaXpl
+IG9mIHRoZSBwZXJpb2QuCj4gMi4gbm90aWZpY2F0aW9ucyBvZiB0aGUgaW50ZXJydXB0cyBmcm9t
+IGFjdHVhbCBoYXJkd2FyZXMgdG8gRG9tVS7igJ0KPgo+IFRoaXMgaXMgaW1wbGVtZW50ZWQgYXMg
+YSBjaGFuZ2UgdG8gdGhlIHNuZGlmIHByb3RvY29sIGFuZCBhbGxvd3MgcmVtb3ZpbmcKPiBwZXJp
+b2QgZW11bGF0aW9uOgo+IDEuIEludHJvZHVjZWQgYSBuZXcgZXZlbnQgY2hhbm5lbCBmcm9tIGJh
+Y2sgdG8gZnJvbnQKPiAyLiBOZXcgZXZlbnQgd2l0aCBudW1iZXIgb2YgYnl0ZXMgcGxheWVkL2Nh
+cHR1cmVkIChYRU5TTkRfRVZUX0NVUl9QT1MsCj4gICAgIHRvIGJlIHVzZWQgZm9yIHNlbmRpbmcg
+c25kX3BjbV9wZXJpb2RfZWxhcHNlZCBhdCBmcm9udGVuZCAoaW4gTGludXgKPiAgICAgaW1wbGVt
+ZW50YXRpb24pLiBTZW50IGluIGJ5dGVzLCBub3QgZnJhbWVzIHRvIG1ha2UgdGhlIHByb3RvY29s
+Cj4gICAgIGdlbmVyaWMgYW5kIGNvbnNpc3RlbnQpCj4gMy4gTmV3IHJlcXVlc3QgZm9yIHBsYXli
+YWNrL2NhcHR1cmUgY29udHJvbCAoWEVOU05EX09QX1RSSUdHRVIpIHdpdGgKPiAgICAgc3RhcnQv
+cGF1c2Uvc3RvcC9yZXN1bWUgc3ViLW9wcwo+IDQuIFBsYXliYWNrL2NhcHR1cmUgYnVmZmVyIHNp
+emUgaXMgc2V0IG9uIHRoZSBiYWNrZW5kIHNpZGUgdmlhCj4gICAgIFhFTlNORF9GSUVMRF9CVUZG
+RVJfU0laRSBYZW5TdG9yZSBlbnRyeQo+Cj4gV2FpdGluZyBmb3IgeW91ciB2YWx1YWJsZSBjb21t
+ZW50cywKPgo+IFRoYW5rIHlvdSwKPiBPbGVrc2FuZHIKPgo+IFsxXSBodHRwczovL2dpdGh1Yi5j
+b20vYW5kcjIwMDAvbGludXgvY29tbWl0cy9zbmRfdXBzdHJlYW1fdjEKPiBbMl0gaHR0cHM6Ly9n
+aXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0
+L3RyZWUvaW5jbHVkZS94ZW4vaW50ZXJmYWNlL2lvL3NuZGlmLmgKPiBbM10gaHR0cHM6Ly9naXRo
+dWIuY29tL3hlbi10cm9vcHMvc25kX2JlCj4gWzRdIGh0dHBzOi8vZ2l0aHViLmNvbS94ZW4tdHJv
+b3BzL2xpYnhlbmJlCj4gWzVdIGh0dHBzOi8vbGttbC5vcmcvbGttbC8yMDE3LzgvNy8zNjMKPiBb
+Nl0gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8y
+MDE3LUF1Z3VzdC8xMjM2MTcuaHRtbAo+IFs3XSBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTctQXVndXN0LzEyMzc0NC5odG1sCj4KPgo+IE9s
+ZWtzYW5kciBBbmRydXNoY2hlbmtvICgyKToKPiAgICBzbmRpZjogaW50cm9kdWNlIHByb3RvY29s
+IHZlcnNpb24KPiAgICBzbmRpZjogYWRkIGV4cGxpY2l0IGJhY2sgYW5kIGZyb250IHN5bmNocm9u
+aXphdGlvbgo+Cj4gICB4ZW4vaW5jbHVkZS9wdWJsaWMvaW8vc25kaWYuaCB8IDE3MyArKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAx
+NzAgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKPgpbMV0gCmh0dHBzOi8vZ2l0aHViLmNv
+bS9hbmRyMjAwMC9saW51eC9jb21taXRzL3Rpd2FpX3NvdW5kX2Zvcl9uZXh0X3B2X3NuZF91cHN0
+cmVhbV92MQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
