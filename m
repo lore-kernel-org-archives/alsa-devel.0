@@ -1,29 +1,18 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: regression v4.16 on Nokia N900: sound does not work
-Date: Fri, 2 Mar 2018 13:33:04 +0100
-Message-ID: <CACRpkdawRd6aGpj7hjVPv7TZ+YqLjgJaqphkDnkX6xR+3Gx-xA@mail.gmail.com>
-References: <20180224214617.GA22619@amd>
- <71aa88ec-d4df-b49c-7d73-27197f468491@leemhuis.info>
- <20180226131318.GA14045@amd>
- <CAEnQRZBbMTeaxb+=AaarX6PSGasfVjtAUdpbPvJavZyTRMpdgQ@mail.gmail.com>
- <20180226231336.GA18565@amd>
- <CACRpkdarR_7HqGMPwfa8YpG9wnFs5mJrNwuctycn=MrdwaRxyw@mail.gmail.com>
- <20180302091025.GC30267@amd>
- <CACRpkda=deFSmk2iyrtde3Z-aj6rW9_jNfE3Ep4X=ejprGxRUw@mail.gmail.com>
- <20180302103127.GA2081@amd>
- <CACRpkda-VLsMVqYx3Y6+3JtLJERhmeJZF5g4Gd9ecvgR1Nnr0A@mail.gmail.com>
- <20180302121442.GB28931@amd>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [BUG] Kernel crash on Allwinner H3 due to sound
+	core changes
+Date: Fri, 2 Mar 2018 12:40:50 +0000
+Message-ID: <20180302124050.GF6255@sirena.org.uk>
+References: <2424862.oPtAVTfrB9@jernej-laptop>
+ <63331816.68OamKINx1@jernej-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0183911518392999439=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f177.google.com (mail-io0-f177.google.com
- [209.85.223.177])
- by alsa0.perex.cz (Postfix) with ESMTP id BD8DA267377
- for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 13:33:06 +0100 (CET)
-Received: by mail-io0-f177.google.com with SMTP id e30so10468099ioc.3
- for <alsa-devel@alsa-project.org>; Fri, 02 Mar 2018 04:33:05 -0800 (PST)
-In-Reply-To: <20180302121442.GB28931@amd>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5AB752673A4
+ for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 13:41:03 +0100 (CET)
+In-Reply-To: <63331816.68OamKINx1@jernej-laptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,31 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pavel Machek <pavel@ucw.cz>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, ext Tony Lindgren <tony@atomide.com>, =?UTF-8?B?TWlja3Vsw6HFoSBRd2VydHo=?= <abcloriens@gmail.com>, Sebastian Reichel <sre@kernel.org>, Martijn Braam <martijn@brixit.nl>, =?UTF-8?Q?Filip_Matijevi=C4=87?= <filip.matijevic.pz@gmail.com>, Patrik Bachan <patrikbachan@gmail.com>, Ivajlo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Kevin Hilman <khilman@kernel.org>, serge@hallyn.com, Mark Brown <broonie@kernel.org>, Linux-OMAP <linux-omap@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Daniel Baluta <daniel.baluta@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, kernel list <linux-kernel@vger.kernel.org>, "Andrew F . Davis" <afd@ti.com>, Thorsten Leemhuis <regressions@leemhuis.info>, clayton@craftyguy.net, Sakari Ailus <sakari.ailus@linux.intel.com>, =?UTF-8?Q?Pali_Roh=C3=
+To: Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org, wens@csie.org, maxime.ripard@free-electrons.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 2, 2018 at 1:14 PM, Pavel Machek <pavel@ucw.cz> wrote:
->> >> Ok, so this code looks pretty crazy to me: I tried removing the
->> >> "of_find_spi_gpio" part, and audio started working.
->> >
->> > Hmm. Looks like audio is working w/o any changes, too. Not sure why
->> > festival hung on me before.
->>
->> Does it mean that mainline is working find for you or
->> do we need to look deeper into the problem in the OF
->> lookup?
->
-> It now works for me.
->
-> (But take a look at the patch I sent -- I believe you are still
-> overwriting return values in a bad way, and code is quite confusing).
 
-I think that code is a result of piled fixes, so noone
-really designed it to look like that.
+--===============0183911518392999439==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="phCU5ROyZO6kBE05"
+Content-Disposition: inline
 
-I'll try to look at it, I am a bit afraid of the code since I've
-broken so many things with it.
 
-Yours,
-Linus Walleij
+--phCU5ROyZO6kBE05
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Mar 01, 2018 at 11:23:57PM +0100, Jernej =C5=A0krabec wrote:
+
+> I removed parts of the code from the sun4i codec driver and interestingly=
+ it=20
+> doesn't crash if I remove following lines:
+
+> ret =3D devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+> if (ret) {
+> 	dev_err(&pdev->dev, "Failed to register against DMAEngine\n");
+> 	goto err_assert_reset;
+> }
+
+> Is it possible that NULL pointer causes troubles somewhere down the line?
+
+Shouldn't be, that's just the configuration which is optional and not
+what we're crashing trying to register, we can mostly configure things
+by querying the capabilities of the DMA controller via the dmaengine API
+these days.  You're removing all the DMA support there so cutting out a
+huge segment of the initialization of both this driver and the machine
+driver.  Other sunxi devices seem to be starting happily in -next so
+there's something system dependent here...
+
+--phCU5ROyZO6kBE05
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqZRlEACgkQJNaLcl1U
+h9BgIgf/Q3GZOlQCfAnUF4m/v9NaH4QxNM0OA/bgzS8qZecbkX1umIBvadiVvQk2
+5iUAggTvZY64JxScseXyAkR2/KnzUcrzn3wCzA+7tRbuHzAliU3hLw4ZKjJPjhPP
+3MJ6D1S4OXijQBQV6ASWXU7D1IEWucfCo57SY1BVwCVuCXOy1UQixQrrRWbDG76e
+Epe/i0ZFTxzI2+v2xJF2b3JKf0KaIUKFeVOYo5XtGBMqPjyDJcaIIg9xyBt5Oz63
+e9zNDJ+7zQ/ydK0eGNLKCB4GvPTKGFkddbgArI9GJnfrb4fEzaavaqif+4ub5qm1
+0F+GgKNInRSl0+f0HaDQorBPVNHf9A==
+=6y1d
+-----END PGP SIGNATURE-----
+
+--phCU5ROyZO6kBE05--
+
+--===============0183911518392999439==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0183911518392999439==--
