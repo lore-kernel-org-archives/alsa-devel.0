@@ -1,17 +1,25 @@
-From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [asoc:topic/intel 22/22]
- sound/soc/intel/boards/cht_bsw_nau8824.c:137:36: sparse: incorrect type in
- argument 1 (different base types)
-Date: Fri, 2 Mar 2018 22:19:04 +0800
-Message-ID: <201803022202.Ejpect8F%fengguang.wu@intel.com>
+From: "Andrew F. Davis" <afd@ti.com>
+Subject: Re: regression v4.16 on Nokia N900: sound does not work
+Date: Fri, 2 Mar 2018 08:22:52 -0600
+Message-ID: <0f090cc7-2b72-a038-26ee-d43077cb9663@ti.com>
+References: <20180224214617.GA22619@amd>
+ <71aa88ec-d4df-b49c-7d73-27197f468491@leemhuis.info>
+ <20180226131318.GA14045@amd>
+ <CAEnQRZBbMTeaxb+=AaarX6PSGasfVjtAUdpbPvJavZyTRMpdgQ@mail.gmail.com>
+ <20180226231336.GA18565@amd>
+ <CACRpkdarR_7HqGMPwfa8YpG9wnFs5mJrNwuctycn=MrdwaRxyw@mail.gmail.com>
+ <20180302091025.GC30267@amd>
+ <CACRpkda=deFSmk2iyrtde3Z-aj6rW9_jNfE3Ep4X=ejprGxRUw@mail.gmail.com>
+ <20180302111040.GA6344@amd>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 3CA35267377
- for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 15:19:43 +0100 (CET)
-Content-Disposition: inline
+Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C22A267377
+ for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2018 15:22:55 +0100 (CET)
+In-Reply-To: <20180302111040.GA6344@amd>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,79 +29,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
+To: Pavel Machek <pavel@ucw.cz>, Linus Walleij <linus.walleij@linaro.org>
+Cc: Martijn Braam <martijn@brixit.nl>, Daniel Baluta <daniel.baluta@gmail.com>, Ivajlo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Kevin Hilman <khilman@kernel.org>, ext Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@kernel.org>, Aaro Koskinen <aaro.koskinen@iki.fi>, =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, kernel list <linux-kernel@vger.kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, =?UTF-8?Q?Filip_Matijevi=c4=87?= <filip.matijevic.pz@gmail.com>, Thorsten Leemhuis <regressions@leemhuis.info>, =?UTF-8?B?TWlja3Vsw6HFoSBRd2VydHo=?= <abcloriens@gmail.com>, Sakari Ailus <sakari.ailus@linux.intel.com>, Sebastian Reichel <sre@kernel.org>, clayton@craftyguy.net, Linux-OMAP <linux-omap@vger.kernel.org>, Patrik Bachan <patrikbachan@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, serge@hallyn.com
 List-Id: alsa-devel@alsa-project.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/intel
-head:   3bf045d15f52529e8abe26543dbe22af44efb41a
-commit: 3bf045d15f52529e8abe26543dbe22af44efb41a [22/22] ASoC: Intel: fix argument error in nau8824 machine
-reproduce:
-        # apt-get install sparse
-        git checkout 3bf045d15f52529e8abe26543dbe22af44efb41a
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF=-D__CHECK_ENDIAN__
+On 03/02/2018 05:10 AM, Pavel Machek wrote:
+> Hi!
+> 
+>>> If this is taking longer to fix, should c85823390215 be reverted in
+>>> the meantime? It does not seem particulary important/urgent...
+>>
+>> No patience between the v4.16 release candidates eh ;)
+>>
+>> commit 6662ae6af82df10259a70c7569b4c12ea7f3ba93
+>> ("gpiolib: Keep returning EPROBE_DEFER when we should")
+>>
+>> and
+>>
+>> commit ce27fb2c56db6ccfe8099343bb4afdab15e77e7b
+>> ("gpio: Handle deferred probing in of_find_gpio() properly")
+>>
+>> that are both in Torvalds' tree since yesterday should be fixing
+>> this, I think? Did you try just using the upstream HEAD?
+> 
+> Ok, so this code looks pretty crazy to me: I tried removing the
+> "of_find_spi_gpio" part, and audio started working.
+> 
+> What is going on with the ()s around == s? You made me look up C
+> operator precedence.
+> 
+> Hmm, and it is also wrong, right? It turns any error code into ENOENT,
+> as it tries to do the "special handling".
+> 
+>                  *                                                                      
+>                  * This means we don't need to look any further for                     
+>                  * alternate name conventions, and we should really                     
+>                  * preserve the return code for our user to be able to                  
+>                  * retry probing later.                                                 
+>                  */
+>                 if (IS_ERR(desc) && PTR_ERR(desc) == -EPROBE_DEFER)
+>                         return desc;
+> 
+>                 if (!IS_ERR(desc) || (PTR_ERR(desc) != -ENOENT))
+>                         break;
+>         }
+> 
+>         /* Special handling for SPI GPIOs if used */
+>         if (IS_ERR(desc))
+>                 desc = of_find_spi_gpio(dev, con_id, &of_flags);
+> 
+>         /* Special handling for regulator GPIOs if used */
+>         if (IS_ERR(desc) && PTR_ERR(desc) != -EPROBE_DEFER)
+>                 desc = of_find_regulator_gpio(dev, con_id, &of_flags);
+> 
+> Something like this?
+> 
+> diff --git a/drivers/gpio/gpiolib-of.c b/drivers/gpio/gpiolib-of.c
+> index 84e5a9d..f0fab26 100644
+> --- a/drivers/gpio/gpiolib-of.c
+> +++ b/drivers/gpio/gpiolib-of.c
+> @@ -241,29 +241,17 @@ struct gpio_desc *of_find_gpio(struct device *dev, const char *con_id,
+>  
+>  		desc = of_get_named_gpiod_flags(dev->of_node, prop_name, idx,
+>  						&of_flags);
+> -		/*
+> -		 * -EPROBE_DEFER in our case means that we found a
+> -		 * valid GPIO property, but no controller has been
+> -		 * registered so far.
+> -		 *
+> -		 * This means we don't need to look any further for
+> -		 * alternate name conventions, and we should really
+> -		 * preserve the return code for our user to be able to
+> -		 * retry probing later.
+> -		 */
+> -		if (IS_ERR(desc) && PTR_ERR(desc) == -EPROBE_DEFER)
+> -			return desc;
+>  
+> -		if (!IS_ERR(desc) || (PTR_ERR(desc) != -ENOENT))
+> +		if (!IS_ERR(desc) || PTR_ERR(desc) != -ENOENT)
 
 
-sparse warnings: (new ones prefixed by >>)
+I rather like the () so one doesn't always have to look up C operator
+precedence to verify..
 
->> sound/soc/intel/boards/cht_bsw_nau8824.c:137:36: sparse: incorrect type in argument 1 (different base types) @@    expected struct snd_soc_codec *codec @@    got strustruct snd_soc_codec *codec @@
-   sound/soc/intel/boards/cht_bsw_nau8824.c:137:36:    expected struct snd_soc_codec *codec
-   sound/soc/intel/boards/cht_bsw_nau8824.c:137:36:    got struct snd_soc_component *component
-   sound/soc/intel/boards/cht_bsw_nau8824.c: In function 'cht_codec_init':
-   sound/soc/intel/boards/cht_bsw_nau8824.c:137:29: error: passing argument 1 of 'nau8824_enable_jack_detect' from incompatible pointer type [-Werror=incompatible-pointer-types]
-     nau8824_enable_jack_detect(component, jack);
-                                ^~~~~~~~~
-   In file included from sound/soc/intel/boards/cht_bsw_nau8824.c:31:0:
-   sound/soc/intel/boards/../../codecs/nau8824.h:474:5: note: expected 'struct snd_soc_codec *' but argument is of type 'struct snd_soc_component *'
-    int nau8824_enable_jack_detect(struct snd_soc_codec *codec,
-        ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
 
-vim +137 sound/soc/intel/boards/cht_bsw_nau8824.c
-
-   101	
-   102	static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
-   103	{
-   104		struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
-   105		struct snd_soc_jack *jack = &ctx->jack;
-   106		struct snd_soc_dai *codec_dai = runtime->codec_dai;
-   107		struct snd_soc_component *component = codec_dai->component;
-   108		int ret, jack_type;
-   109	
-   110		/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
-   111		ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xf, 0x1, 4, 24);
-   112		if (ret < 0) {
-   113			dev_err(runtime->dev, "can't set codec TDM slot %d\n", ret);
-   114			return ret;
-   115		}
-   116	
-   117		/* NAU88L24 supports 4 butons headset detection
-   118		 * KEY_MEDIA
-   119		 * KEY_VOICECOMMAND
-   120		 * KEY_VOLUMEUP
-   121		 * KEY_VOLUMEDOWN
-   122		 */
-   123		jack_type = SND_JACK_HEADPHONE | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-   124			SND_JACK_BTN_2 | SND_JACK_BTN_3;
-   125		ret = snd_soc_card_jack_new(runtime->card, "Headset", jack_type, jack,
-   126			cht_bsw_jack_pins, ARRAY_SIZE(cht_bsw_jack_pins));
-   127		if (ret) {
-   128			dev_err(runtime->dev,
-   129				"Headset Jack creation failed %d\n", ret);
-   130			return ret;
-   131		}
-   132		snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_MEDIA);
-   133		snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-   134		snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-   135		snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-   136	
- > 137		nau8824_enable_jack_detect(component, jack);
-   138	
-   139		return ret;
-   140	}
-   141	
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+>  			break;
+>  	}
+>  
+>  	/* Special handling for SPI GPIOs if used */
+> -	if (IS_ERR(desc))
+> +	if (IS_ERR(desc) && PTR_ERR(desc) == -ENOENT)
+>  		desc = of_find_spi_gpio(dev, con_id, &of_flags);
+>  
+>  	/* Special handling for regulator GPIOs if used */
+> -	if (IS_ERR(desc) && PTR_ERR(desc) != -EPROBE_DEFER)
+> +	if (IS_ERR(desc) && PTR_ERR(desc) == -ENOENT)
+>  		desc = of_find_regulator_gpio(dev, con_id, &of_flags);
+>  
+>  	if (IS_ERR(desc))
+> 
