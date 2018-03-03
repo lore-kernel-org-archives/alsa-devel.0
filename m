@@ -1,36 +1,45 @@
-From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH 2/2] ASoC: add tda7419 audio processor driver
-Date: Sat, 3 Mar 2018 06:48:09 +0800
-Message-ID: <201803030612.VHNIieNt%fengguang.wu@intel.com>
-References: <20180227225128.17815-3-mporter@konsulko.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [alsa-devel] [PATCH] ALSA: hda - Fix a wrong FIXUP for alc289 on
+ Dell machines
+Date: Sat, 3 Mar 2018 20:38:54 +0800
+Message-ID: <07f431b1-5523-f525-421b-0ecbaf93409b@canonical.com>
+References: <1519967136-8955-1-git-send-email-hui.wang@canonical.com>
+ <s5hy3jahmym.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180227225128.17815-3-mporter@konsulko.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Matt Porter <mporter@konsulko.com>
-Cc: kbuild-all@01.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <s5hy3jahmym.wl-tiwai@suse.de>
+Content-Language: en-US
+Sender: stable-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, kailang@realtek.com, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Matt,
+On 2018年03月02日 16:59, Takashi Iwai wrote:
+> On Fri, 02 Mar 2018 06:05:36 +0100,
+> Hui Wang wrote:
+>> With the alc289, the Pin 0x1b is Headphone-Mic, so we should assign
+>> ALC269_FIXUP_DELL4_MIC_NO_PRESENCE rather than
+>> ALC225_FIXUP_DELL1_MIC_NO_PRESENCE to it. And this change is suggested
+>> by Kailang of Realtek and is verified on the machine.
+>>
+>> (This fixes the commit 3f2f7c55)
+> Please use "Fixes:" tag to indicate that.
+Got it, will use "Fixes:" in future.
 
-I love your patch! Perhaps something to improve:
-
-[auto build test WARNING on asoc/for-next]
-[also build test WARNING on v4.16-rc3 next-20180302]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
-
-url:    https://github.com/0day-ci/linux/commits/Matt-Porter/TDA7419-audio-processor-driver/20180303-042824
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-
-coccinelle warnings: (new ones prefixed by >>)
-
->> sound/soc/codecs/tda7419.c:151:9-10: WARNING: return of 0/1 in function 'tda7419_vol_is_stereo' with return type bool
-
-Please review and possibly fold the followup patch.
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+Thanks,
+Hui.
+>
+>> Cc: Kailang Yang <kailang@realtek.com>
+>> Cc: <stable@vger.kernel.org>
+>> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+> Applied now, thanks.
+>
+>
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
