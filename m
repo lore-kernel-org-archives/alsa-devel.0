@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v3 14/22] ASoC: Intel: bytcr_rt5651: Add quirk
-	micbias OVCD configuration
-Date: Sun,  4 Mar 2018 15:36:02 +0100
-Message-ID: <20180304143610.21125-15-hdegoede@redhat.com>
+Subject: [PATCH v3 15/22] ASoC: Intel: bytcr_rt5651: Configure
+	PLL1 before using it
+Date: Sun,  4 Mar 2018 15:36:03 +0100
+Message-ID: <20180304143610.21125-16-hdegoede@redhat.com>
 References: <20180304143610.21125-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 5580B2673DC
- for <alsa-devel@alsa-project.org>; Sun,  4 Mar 2018 15:36:33 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F43A2673E8
+ for <alsa-devel@alsa-project.org>; Sun,  4 Mar 2018 15:36:34 +0100 (CET)
 In-Reply-To: <20180304143610.21125-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,92 +25,123 @@ To: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chio
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add support for setting the micbias OVCD limits device-properties through
-quirks.
+When platform_clock_control() first selects PLL1 as sysclk the PLL_CTRL
+registers have not been setup yet and we effectively have an invalid clock
+configuration until byt_rt5651_aif1_hw_params() gets called.
 
-And set the limits for this to 2000uA with a scale-factor of 0.75 for the
-KIANO SlimNote 14.2 device, which is the only device on which
-jack-detection is currently enabled.
+Add a new byt_rt5651_prepare_and_enable_pll1() helper and use that from
+both platform_clock_control() and byt_rt5651_aif1_hw_params() to fix this.
 
 Tested-by: Carlo Caione <carlo@endlessm.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 34 +++++++++++++++++++++++++++++++---
- 1 file changed, 31 insertions(+), 3 deletions(-)
+Changes in v2:
+-Make bclk_ratio configurable instead of hardcoding it to 50, this will be
+ used when adding SSP0 support
+---
+ sound/soc/intel/boards/bytcr_rt5651.c | 73 +++++++++++++++++------------------
+ 1 file changed, 35 insertions(+), 38 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 3f71c018aa8e..c7ca423f025c 100644
+index c7ca423f025c..987051161c9f 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -51,14 +51,29 @@ enum {
- 	BYT_RT5651_JD2		= (RT5651_JD2 << 4),
- };
+@@ -111,6 +111,38 @@ static void log_quirks(struct device *dev)
  
-+enum {
-+	BYT_RT5651_OVCD_TH_600UA  = (6 << 8),
-+	BYT_RT5651_OVCD_TH_1500UA = (15 << 8),
-+	BYT_RT5651_OVCD_TH_2000UA = (20 << 8),
-+};
+ #define BYT_CODEC_DAI1	"rt5651-aif1"
+ 
++static int byt_rt5651_prepare_and_enable_pll1(struct snd_soc_dai *codec_dai,
++					      int rate, int bclk_ratio)
++{
++	int clk_id, clk_freq, ret;
 +
-+enum {
-+	BYT_RT5651_OVCD_SF_0P5	= (RT5651_OVCD_SF_0P5 << 13),
-+	BYT_RT5651_OVCD_SF_0P75	= (RT5651_OVCD_SF_0P75 << 13),
-+	BYT_RT5651_OVCD_SF_1P0	= (RT5651_OVCD_SF_1P0 << 13),
-+	BYT_RT5651_OVCD_SF_1P5	= (RT5651_OVCD_SF_1P5 << 13),
-+};
-+
- #define BYT_RT5651_MAP(quirk)		((quirk) & GENMASK(3, 0))
- #define BYT_RT5651_JDSRC(quirk)		(((quirk) & GENMASK(7, 4)) >> 4)
-+#define BYT_RT5651_OVCD_TH(quirk)	(((quirk) & GENMASK(12, 8)) >> 8)
-+#define BYT_RT5651_OVCD_SF(quirk)	(((quirk) & GENMASK(14, 13)) >> 13)
- #define BYT_RT5651_DMIC_EN		BIT(16)
- #define BYT_RT5651_MCLK_EN		BIT(17)
- #define BYT_RT5651_MCLK_25MHZ		BIT(18)
- 
--/* jack-detect-source + dmic-en + terminating empty entry */
--#define MAX_NO_PROPS 3
-+/* jack-detect-source + dmic-en + ovcd-th + -sf + terminating empty entry */
-+#define MAX_NO_PROPS 5
- 
- struct byt_rt5651_private {
- 	struct clk *mclk;
-@@ -78,9 +93,14 @@ static void log_quirks(struct device *dev)
- 		dev_info(dev, "quirk IN2_MAP enabled");
- 	if (BYT_RT5651_MAP(byt_rt5651_quirk) == BYT_RT5651_IN3_MAP)
- 		dev_info(dev, "quirk IN3_MAP enabled");
--	if (BYT_RT5651_JDSRC(byt_rt5651_quirk))
-+	if (BYT_RT5651_JDSRC(byt_rt5651_quirk)) {
- 		dev_info(dev, "quirk realtek,jack-detect-source %ld\n",
- 			 BYT_RT5651_JDSRC(byt_rt5651_quirk));
-+		dev_info(dev, "quirk realtek,over-current-threshold-microamp %ld\n",
-+			 BYT_RT5651_OVCD_TH(byt_rt5651_quirk) * 100);
-+		dev_info(dev, "quirk realtek,over-current-scale-factor %ld\n",
-+			 BYT_RT5651_OVCD_SF(byt_rt5651_quirk));
++	/* Configure the PLL before selecting it */
++	if (!(byt_rt5651_quirk & BYT_RT5651_MCLK_EN)) {
++		clk_id = RT5651_PLL1_S_BCLK1,
++		clk_freq = rate * bclk_ratio;
++	} else {
++		clk_id = RT5651_PLL1_S_MCLK;
++		if (byt_rt5651_quirk & BYT_RT5651_MCLK_25MHZ)
++			clk_freq = 25000000;
++		else
++			clk_freq = 19200000;
 +	}
- 	if (byt_rt5651_quirk & BYT_RT5651_DMIC_EN)
- 		dev_info(dev, "quirk DMIC enabled");
- 	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN)
-@@ -304,6 +324,8 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
- 		},
- 		.driver_data = (void *)(BYT_RT5651_MCLK_EN |
- 					BYT_RT5651_JD1_1 |
-+					BYT_RT5651_OVCD_TH_2000UA |
-+					BYT_RT5651_OVCD_SF_0P75 |
- 					BYT_RT5651_IN1_IN2_MAP),
- 	},
- 	{}
-@@ -326,6 +348,12 @@ static int byt_rt5651_add_codec_device_props(const char *i2c_dev_name)
- 	props[cnt++] = PROPERTY_ENTRY_U32("realtek,jack-detect-source",
- 				BYT_RT5651_JDSRC(byt_rt5651_quirk));
- 
-+	props[cnt++] = PROPERTY_ENTRY_U32("realtek,over-current-threshold-microamp",
-+				BYT_RT5651_OVCD_TH(byt_rt5651_quirk) * 100);
++	ret = snd_soc_dai_set_pll(codec_dai, 0, clk_id, clk_freq, rate * 512);
++	if (ret < 0) {
++		dev_err(codec_dai->codec->dev, "can't set pll: %d\n", ret);
++		return ret;
++	}
 +
-+	props[cnt++] = PROPERTY_ENTRY_U32("realtek,over-current-scale-factor",
-+				BYT_RT5651_OVCD_SF(byt_rt5651_quirk));
++	ret = snd_soc_dai_set_sysclk(codec_dai, RT5651_SCLK_S_PLL1,
++				     rate * 512, SND_SOC_CLOCK_IN);
++	if (ret < 0) {
++		dev_err(codec_dai->codec->dev, "can't set clock %d\n", ret);
++		return ret;
++	}
 +
- 	if (byt_rt5651_quirk & BYT_RT5651_DMIC_EN)
- 		props[cnt++] = PROPERTY_ENTRY_BOOL("realtek,dmic-en");
++	return 0;
++}
++
+ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 				  struct snd_kcontrol *k, int  event)
+ {
+@@ -136,9 +168,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 				return ret;
+ 			}
+ 		}
+-		ret = snd_soc_dai_set_sysclk(codec_dai, RT5651_SCLK_S_PLL1,
+-					     48000 * 512,
+-					     SND_SOC_CLOCK_IN);
++		ret = byt_rt5651_prepare_and_enable_pll1(codec_dai, 48000, 50);
+ 	} else {
+ 		/*
+ 		 * Set codec clock source to internal clock before
+@@ -252,44 +282,11 @@ static int byt_rt5651_aif1_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	int ret;
++	int rate = params_rate(params);
  
+ 	snd_soc_dai_set_bclk_ratio(codec_dai, 50);
+ 
+-	ret = snd_soc_dai_set_sysclk(codec_dai, RT5651_SCLK_S_PLL1,
+-				     params_rate(params) * 512,
+-				     SND_SOC_CLOCK_IN);
+-	if (ret < 0) {
+-		dev_err(rtd->dev, "can't set codec clock %d\n", ret);
+-		return ret;
+-	}
+-
+-	if (!(byt_rt5651_quirk & BYT_RT5651_MCLK_EN)) {
+-		/* 2x25 bit slots on SSP2 */
+-		ret = snd_soc_dai_set_pll(codec_dai, 0,
+-					RT5651_PLL1_S_BCLK1,
+-					params_rate(params) * 50,
+-					params_rate(params) * 512);
+-	} else {
+-		if (byt_rt5651_quirk & BYT_RT5651_MCLK_25MHZ) {
+-			ret = snd_soc_dai_set_pll(codec_dai, 0,
+-						RT5651_PLL1_S_MCLK,
+-						25000000,
+-						params_rate(params) * 512);
+-		} else {
+-			ret = snd_soc_dai_set_pll(codec_dai, 0,
+-						RT5651_PLL1_S_MCLK,
+-						19200000,
+-						params_rate(params) * 512);
+-		}
+-	}
+-
+-	if (ret < 0) {
+-		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
+-		return ret;
+-	}
+-
+-	return 0;
++	return byt_rt5651_prepare_and_enable_pll1(codec_dai, rate, 50);
+ }
+ 
+ static int byt_rt5651_quirk_cb(const struct dmi_system_id *id)
 -- 
 2.14.3
