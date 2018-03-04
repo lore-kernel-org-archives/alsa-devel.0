@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v3 21/22] ASoC: Intel: bytcr_rt5651: Change
-	defaults to enable jack-detect, analog mics
-Date: Sun,  4 Mar 2018 15:36:09 +0100
-Message-ID: <20180304143610.21125-22-hdegoede@redhat.com>
+Subject: [PATCH v3 20/22] ASoC: Intel: bytcr_rt5651: Add quirk
+	for the VIOS LTH17 laptop
+Date: Sun,  4 Mar 2018 15:36:08 +0100
+Message-ID: <20180304143610.21125-21-hdegoede@redhat.com>
 References: <20180304143610.21125-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 7BD55267439
- for <alsa-devel@alsa-project.org>; Sun,  4 Mar 2018 15:36:42 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 38A3B26743C
+ for <alsa-devel@alsa-project.org>; Sun,  4 Mar 2018 15:36:41 +0100 (CET)
 In-Reply-To: <20180304143610.21125-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,58 +25,37 @@ To: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chio
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Change the default quirk settings to enable jack-detect, analog mics.
-
-The old default input mapping of DMIC for non Bay Trail CR devices seems
-like a poor default as I'm not aware of any Intel SST + rt5651 using
-devices with a DMIC.
-
-All Cherry Trail devices using the bytcr_rt5651 machine driver seem to be
-modelled after BYT-CR devices, And the only non CR Bay Trail devices with
-a rt5651 codec I'm aware of are the Minnow boards for which we already have
-board specific quirks. So it seems better to me to use the BYT-CR defaults
-everywhere.
-
-This e.g. makes the Chuwi Hi8 Pro (CWI513) work ootb without needing a
-quirk.
+Add a quirk setting up jack-detect and input routing for the
+VIOS LTH17 laptop.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 4c150ce2c8f0..b35ec60b21bf 100644
+index 1f48b2920f48..4c150ce2c8f0 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -85,7 +85,12 @@ struct byt_rt5651_private {
- 	struct snd_soc_jack jack;
- };
- 
--static unsigned long byt_rt5651_quirk = BYT_RT5651_MCLK_EN;
-+/* Default: jack-detect on JD1_1, internal mic on in2, headsetmic on in3 */
-+static unsigned long byt_rt5651_quirk = BYT_RT5651_MCLK_EN |
+@@ -393,6 +393,19 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
+ 					BYT_RT5651_OVCD_SF_0P75 |
+ 					BYT_RT5651_IN2_HS_IN3_MAP),
+ 	},
++	{
++		/* VIOS LTH17 */
++		.callback = byt_rt5651_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "VIOS"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "LTH17"),
++		},
++		.driver_data = (void *)(BYT_RT5651_MCLK_EN |
 +					BYT_RT5651_JD1_1 |
 +					BYT_RT5651_OVCD_TH_2000UA |
-+					BYT_RT5651_OVCD_SF_0P75 |
-+					BYT_RT5651_IN2_HS_IN3_MAP;
++					BYT_RT5651_OVCD_SF_1P0 |
++					BYT_RT5651_IN1_IN2_MAP),
++	},
+ 	{}
+ };
  
- static void log_quirks(struct device *dev)
- {
-@@ -806,14 +811,6 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 			/* no BIOS indications, assume SSP0-AIF2 connection */
- 			byt_rt5651_quirk |= BYT_RT5651_SSP0_AIF2;
- 		}
--
--		/* change defaults for Baytrail-CR capture */
--		byt_rt5651_quirk |= BYT_RT5651_JD1_1 |
--				    BYT_RT5651_OVCD_TH_2000UA |
--				    BYT_RT5651_OVCD_SF_0P75 |
--				    BYT_RT5651_IN2_HS_IN3_MAP;
--	} else {
--		byt_rt5651_quirk |= BYT_RT5651_DMIC_MAP;
- 	}
- 
- 	/* check quirks before creating card */
 -- 
 2.14.3
