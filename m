@@ -1,17 +1,22 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v3 22/22] ASoC: Intel: bytcr_rt5651: Select
-	RCCLK on init()
-Date: Sun,  4 Mar 2018 15:36:10 +0100
-Message-ID: <20180304143610.21125-23-hdegoede@redhat.com>
-References: <20180304143610.21125-1-hdegoede@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: =?windows-1252?Q?Ren=E9_Rebe?= <rene@exactcode.de>
+Subject: [RFC] hda/realtek filtered headphone output
+Date: Sun, 4 Mar 2018 16:05:44 +0100
+Message-ID: <52CB25E0-9FF0-4383-BE2A-F31488B5B1A8@exactcode.de>
+Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id BA5E4267445
- for <alsa-devel@alsa-project.org>; Sun,  4 Mar 2018 15:36:43 +0100 (CET)
-In-Reply-To: <20180304143610.21125-1-hdegoede@redhat.com>
+Received: from mx.exactcode.de (mx.exactcode.de [144.76.154.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 07514267016
+ for <alsa-devel@alsa-project.org>; Sun,  4 Mar 2018 16:05:55 +0100 (CET)
+Received: from exactco.de ([90.187.5.221])
+ by mx.exactcode.de with esmtp (Exim 4.82)
+ (envelope-from <rene@exactcode.de>) id 1esVDZ-000739-8V
+ for alsa-devel@alsa-project.org; Sun, 04 Mar 2018 15:06:29 +0000
+Received: from [192.168.2.174] (helo=[192.168.2.174])
+ by exactco.de with esmtpsa (TLSv1:AES128-SHA:128) (Exim 4.54)
+ id 1esUC1-0005eC-7m
+ for alsa-devel@alsa-project.org; Sun, 04 Mar 2018 14:00:59 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,34 +26,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When the BYT_RT5651_MCLK_EN quirk is set, we disable the MCLK from
-byt_rt5651_init(), we need to select the RCCLK as sysclk before doing this
-to make sure that jack-detect works directly after boot.
+Hi all,
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/intel/boards/bytcr_rt5651.c | 5 +++++
- 1 file changed, 5 insertions(+)
+testing some new laptops, I noticed the headphone frequency response was la=
+cking
+bass. First I noticed this in the Lenovo T470s, and later I found this also=
+ be the case
+on Surface Pro 2 and 3. The Dell XPS13 may also be affected, but I had to r=
+eturn it
+before I found out the solution on the other machines:
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index b35ec60b21bf..65a81ce83f17 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -457,6 +457,11 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
- 
- 	card->dapm.idle_bias_off = true;
- 
-+	/* Start with RC clk for jack-detect (we disable MCLK below) */
-+	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN)
-+		snd_soc_component_update_bits(codec, RT5651_GLB_CLK,
-+			RT5651_SCLK_SRC_MASK, RT5651_SCLK_SRC_RCCLK);
-+
- 	switch (BYT_RT5651_MAP(byt_rt5651_quirk)) {
- 	case BYT_RT5651_IN1_MAP:
- 		custom_map = byt_rt5651_intmic_in1_map;
--- 
-2.14.3
+	https://www.youtube.com/watch?v=3Da1YkPtfC4LI
+
+I had not yet sent the patch because a) I was too busy and b) I wanted to r=
+eview this further.
+
+As the other day I got a Lenovo ideapad 720s to test with exactly the same =
+issue, here is the
+current hacked patch:
+
+	https://svn.exactcode.de/t2/trunk/package/base/linux/surface-audio.patch
+
+However, given that all newer realtek codecs that came on my desk are affec=
+ted,
+maybe there is something wrong with the hda_auto_parser.c - I did not yet f=
+ully grasp
+all the logic of that.
+
+As you can see in the patch and video (=85) the problem is the signal routi=
+ng of NID 0x15
+or 0x21 (depending whether it is an older, or newer codec). This is the hea=
+dphone out,
+and as far as I can see the auto_parser assigned the index 0 pcm output (NI=
+D 0x0c)
+which result in this filtered frequency response, likely intended for the l=
+aptop=92s speakers?
+Using the next NID (I guess that was 0xd?) results in a full frequency resp=
+onse and at
+least to my ears is immediately hearable and obvious.
+
+Without this fixed routing the headphone sounds like a PC speaker in a coke=
+ can.
+
+So the question for the authors and HDA experts: Can this be fixed in the a=
+uto_parser,
+or is my patch (which btw. has to small unrelated cleanups) modulo potentia=
+lly some
+renaming of the enum and function, now that more than the Surface is affect=
+ed, the
+way to go? If this can be fixed more generally I would be happy to hear!
+
+Greetings from Berlin,
+	Ren=E9 Rebe
+
+-- =
+
+ExactCODE GmbH, Lietzenburger Str. 42, DE-10789 Berlin
+http://exactcode.com | http://exactscan.com | http://ocrkit.com | http://t2=
+-project.org | http://rene.rebe.de
