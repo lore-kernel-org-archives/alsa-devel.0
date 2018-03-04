@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v3 05/22] ASoC: rt5651: Allow specifying the
-	OVCD scale-factor through a device-property
-Date: Sun,  4 Mar 2018 15:35:53 +0100
-Message-ID: <20180304143610.21125-6-hdegoede@redhat.com>
+Subject: [PATCH v3 06/22] ASoC: rt5651: Enable sticky mode for
+	OVCD
+Date: Sun,  4 Mar 2018 15:35:54 +0100
+Message-ID: <20180304143610.21125-7-hdegoede@redhat.com>
 References: <20180304143610.21125-1-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 322F52672AF
- for <alsa-devel@alsa-project.org>; Sun,  4 Mar 2018 15:36:21 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 541F9267338
+ for <alsa-devel@alsa-project.org>; Sun,  4 Mar 2018 15:36:22 +0100 (CET)
 In-Reply-To: <20180304143610.21125-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,83 +25,82 @@ To: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chio
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-T1Zlci1DdXJyZW50LURldGVjdGlvbiAoT1ZDRCkgZm9yIHRoZSBtaWNiaWFzIGN1cnJlbnQgaXMg
-dXNlZCB0byBkZXRlY3QgaWYKYW4gaW5zZXJ0ZWQgamFjayBpcyBhIGhlYWRzZXQgb3IgaGVhZHBo
-b25lcyAobWljIHNob3J0ZWQgdG8gZ3JvdW5kKS4KClRoZSB0aHJlc2hvbGQgZm9yIGF0IHdoaWNo
-IGN1cnJlbnQgdGhlIE9WQ0QgdHJpZ2dlcnMgb24gdGhlIHJ0NTY1MSBpcyBub3QKb25seSBjb250
-cm9sbGVkIGJ5IHNldHRpbmcgdGhlIGFic29sdXRlIGN1cnJlbnQgbGltaXQsIGJ1dCBhbHNvIGJ5
-IHNldHRpbmcKYSBzY2FsZSBmYWN0b3Igd2hpY2ggYXBwbGllcyB0byB0aGUgbGltaXQuIFRlc3Rp
-bmcgaGFzIHNob3duIHRoYXQgd2UgbmVlZAp0byBzZXQgYm90aCAoZGVwZW5kaW5nIG9uIHRoZSBi
-b2FyZCkuCgpUaGlzIGNvbW1pdCBhZGRzIHN1cHBvcnQgZm9yIHRoZSBzb2ZhciB1bnVzZWQgT1ZD
-RCBzY2FsZS1mYWN0b3IgcmVnaXN0ZXIKYW5kIGFkZHMgc3VwcG9ydCBmb3Igc3BlY2lmeWluZyBu
-b24tZGVmYXVsdCB2YWx1ZXMgZm9yIGl0IHRocm91Z2ggdGhlCiJyZWFsdGVrLG92ZXItY3VycmVu
-dC1zY2FsZS1mYWN0b3IiIGRldmljZS1wcm9wZXJ0eS4KClNpZ25lZC1vZmYtYnk6IEhhbnMgZGUg
-R29lZGUgPGhkZWdvZWRlQHJlZGhhdC5jb20+Ci0tLQpDaGFuZ2VzIGluIHYzOgotU3BsaXQgb3V0
-IHRoZSBjaGFuZ2VzIGFkZGluZyBPVkNELXNjYWxlLWZhY3RvciBzdXBwb3J0IGZyb20gdGhvc2Ug
-bWFraW5nCiB0aGUgT1ZDRC1jdXJyZW50LWxpbWl0IGNvbmZpZ3VyYWJsZQotLS0KIGluY2x1ZGUv
-c291bmQvcnQ1NjUxLmggICAgfCAxMSArKysrKysrKysrKwogc291bmQvc29jL2NvZGVjcy9ydDU2
-NTEuYyB8IDE5ICsrKysrKysrKysrKysrKysrKysKIHNvdW5kL3NvYy9jb2RlY3MvcnQ1NjUxLmgg
-fCAxMSArKysrKysrKysrKwogMyBmaWxlcyBjaGFuZ2VkLCA0MSBpbnNlcnRpb25zKCspCgpkaWZm
-IC0tZ2l0IGEvaW5jbHVkZS9zb3VuZC9ydDU2NTEuaCBiL2luY2x1ZGUvc291bmQvcnQ1NjUxLmgK
-aW5kZXggNzI1YjM2YzMyOWQwLi42NDAzYjg2MmZiOWEgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvc291
-bmQvcnQ1NjUxLmgKKysrIGIvaW5jbHVkZS9zb3VuZC9ydDU2NTEuaApAQCAtMjIsNCArMjIsMTUg
-QEAgZW51bSBydDU2NTFfamRfc3JjIHsKIAlSVDU2NTFfSkQyLAogfTsKIAorLyoKKyAqIE5vdGUg
-dGhlc2UgTVVTVCBtYXRjaCB0aGUgdmFsdWVzIGZyb20gdGhlIERUIGJpbmRpbmc6CisgKiBEb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvcnQ1NjUxLnR4dAorICovCitlbnVt
-IHJ0NTY1MV9vdmNkX3NmIHsKKwlSVDU2NTFfT1ZDRF9TRl8wUDUsCisJUlQ1NjUxX09WQ0RfU0Zf
-MFA3NSwKKwlSVDU2NTFfT1ZDRF9TRl8xUDAsCisJUlQ1NjUxX09WQ0RfU0ZfMVA1LAorfTsKKwog
-I2VuZGlmCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3J0NTY1MS5jIGIvc291bmQvc29j
-L2NvZGVjcy9ydDU2NTEuYwppbmRleCAxOWY3Yzg5ZDFlN2EuLjRmNzg2OTRhZGY3MCAxMDA2NDQK
-LS0tIGEvc291bmQvc29jL2NvZGVjcy9ydDU2NTEuYworKysgYi9zb3VuZC9zb2MvY29kZWNzL3J0
-NTY1MS5jCkBAIC0xNjMyLDYgKzE2MzIsMTAgQEAgc3RhdGljIGludCBydDU2NTFfc2V0X2phY2so
-c3RydWN0IHNuZF9zb2NfY29tcG9uZW50ICpjb21wb25lbnQsCiAJc25kX3NvY19jb21wb25lbnRf
-dXBkYXRlX2JpdHMoY29tcG9uZW50LCBSVDU2NTFfUFdSX0FOTEcyLAogCQlSVDU2NTFfUFdSX0pE
-X00sIFJUNTY1MV9QV1JfSkRfTSk7CiAKKwkvKiBTZXQgT1ZDRCB0aHJlc2hvbGQgY3VycmVudCBh
-bmQgc2NhbGUtZmFjdG9yICovCisJc25kX3NvY19jb21wb25lbnRfd3JpdGUoY29tcG9uZW50LCBS
-VDU2NTFfUFJfQkFTRSArIFJUNTY1MV9CSUFTX0NVUjQsCisJCQkJMHhhODAwIHwgcnQ1NjUxLT5v
-dmNkX3NmKTsKKwogCXNuZF9zb2NfY29tcG9uZW50X3VwZGF0ZV9iaXRzKGNvbXBvbmVudCwgUlQ1
-NjUxX01JQ0JJQVMsCiAJCQkJICAgICAgUlQ1NjUxX01JQzFfT1ZDRF9NQVNLIHwKIAkJCQkgICAg
-ICBSVDU2NTFfTUlDMV9PVlRIX01BU0sgfApAQCAtMTY4NSw3ICsxNjg5LDEzIEBAIHN0YXRpYyB2
-b2lkIHJ0NTY1MV9hcHBseV9wcm9wZXJ0aWVzKHN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqY29t
-cG9uZW50KQogCQkJCSAgICAgInJlYWx0ZWssamFjay1kZXRlY3Qtc291cmNlIiwgJnZhbCkgPT0g
-MCkKIAkJcnQ1NjUxLT5qZF9zcmMgPSB2YWw7CiAKKwkvKgorCSAqIFRlc3Rpbmcgb24gdmFyaW91
-cyBib2FyZHMgaGFzIHNob3duIHRoYXQgZ29vZCBkZWZhdWx0cyBmb3IgdGhlIE9WQ0QKKwkgKiB0
-aHJlc2hvbGQgYW5kIHNjYWxlLWZhY3RvciBhcmUgMjAwMMK1QSBhbmQgMC43NS4gRm9yIGFuIGVm
-ZmVjdGl2ZQorCSAqIGxpbWl0IG9mIDE1MDDCtUEsIHRoaXMgc2VlbXMgdG8gYmUgbW9yZSByZWxp
-YWJsZSB0aGVuIDE1MDDCtUEgYW5kIDEuMC4KKwkgKi8KIAlydDU2NTEtPm92Y2RfdGggPSBSVDU2
-NTFfTUlDMV9PVlRIXzIwMDBVQTsKKwlydDU2NTEtPm92Y2Rfc2YgPSBSVDU2NTFfTUlDX09WQ0Rf
-U0ZfMFA3NTsKIAogCWlmIChkZXZpY2VfcHJvcGVydHlfcmVhZF91MzIoY29tcG9uZW50LT5kZXYs
-CiAJCQkicmVhbHRlayxvdmVyLWN1cnJlbnQtdGhyZXNob2xkLW1pY3JvYW1wIiwgJnZhbCkgPT0g
-MCkgewpAQCAtMTcwNCw2ICsxNzE0LDE1IEBAIHN0YXRpYyB2b2lkIHJ0NTY1MV9hcHBseV9wcm9w
-ZXJ0aWVzKHN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqY29tcG9uZW50KQogCQkJCSB2YWwpOwog
-CQl9CiAJfQorCisJaWYgKGRldmljZV9wcm9wZXJ0eV9yZWFkX3UzMihjb21wb25lbnQtPmRldiwK
-KwkJCSJyZWFsdGVrLG92ZXItY3VycmVudC1zY2FsZS1mYWN0b3IiLCAmdmFsKSA9PSAwKSB7CisJ
-CWlmICh2YWwgPD0gUlQ1NjUxX09WQ0RfU0ZfMVA1KQorCQkJcnQ1NjUxLT5vdmNkX3NmID0gdmFs
-IDw8IFJUNTY1MV9NSUNfT1ZDRF9TRl9TRlQ7CisJCWVsc2UKKwkJCWRldl93YXJuKGNvbXBvbmVu
-dC0+ZGV2LCAiV2FybmluZzogSW52YWxpZCBvdmVyLWN1cnJlbnQtc2NhbGUtZmFjdG9yIHZhbHVl
-OiAlZCwgZGVmYXVsdGluZyB0byAwLjc1XG4iLAorCQkJCSB2YWwpOworCX0KIH0KIAogc3RhdGlj
-IGludCBydDU2NTFfcHJvYmUoc3RydWN0IHNuZF9zb2NfY29tcG9uZW50ICpjb21wb25lbnQpCmRp
-ZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3J0NTY1MS5oIGIvc291bmQvc29jL2NvZGVjcy9y
-dDU2NTEuaAppbmRleCA5Y2Q1YzI3OWQwZDYuLjcxNzM4YWI5M2ZiOSAxMDA2NDQKLS0tIGEvc291
-bmQvc29jL2NvZGVjcy9ydDU2NTEuaAorKysgYi9zb3VuZC9zb2MvY29kZWNzL3J0NTY1MS5oCkBA
-IC0xMzgsNiArMTM4LDcgQEAKIC8qIEluZGV4IG9mIENvZGVjIFByaXZhdGUgUmVnaXN0ZXIgZGVm
-aW5pdGlvbiAqLwogI2RlZmluZSBSVDU2NTFfQklBU19DVVIxCQkJMHgxMgogI2RlZmluZSBSVDU2
-NTFfQklBU19DVVIzCQkJMHgxNAorI2RlZmluZSBSVDU2NTFfQklBU19DVVI0CQkJMHgxNQogI2Rl
-ZmluZSBSVDU2NTFfQ0xTRF9JTlRfUkVHMQkJCTB4MWMKICNkZWZpbmUgUlQ1NjUxX0NIUFVNUF9J
-TlRfUkVHMQkJCTB4MjQKICNkZWZpbmUgUlQ1NjUxX01BTVBfSU5UX1JFRzIJCQkweDM3CkBAIC0x
-OTY2LDYgKzE5NjcsMTUgQEAKICNkZWZpbmUgUlQ1NjUxX0RfR0FURV9FTl9TRlQJCQkwCiAKIC8q
-IENvZGVjIFByaXZhdGUgUmVnaXN0ZXIgZGVmaW5pdGlvbiAqLworCisvKiBNSUMgT3ZlciBjdXJy
-ZW50IHRocmVzaG9sZCBzY2FsZSBmYWN0b3IgKDB4MTUpICovCisjZGVmaW5lIFJUNTY1MV9NSUNf
-T1ZDRF9TRl9NQVNLCQkJKDB4MyA8PCA4KQorI2RlZmluZSBSVDU2NTFfTUlDX09WQ0RfU0ZfU0ZU
-CQkJOAorI2RlZmluZSBSVDU2NTFfTUlDX09WQ0RfU0ZfMFA1CQkJKDB4MCA8PCA4KQorI2RlZmlu
-ZSBSVDU2NTFfTUlDX09WQ0RfU0ZfMFA3NQkJCSgweDEgPDwgOCkKKyNkZWZpbmUgUlQ1NjUxX01J
-Q19PVkNEX1NGXzFQMAkJCSgweDIgPDwgOCkKKyNkZWZpbmUgUlQ1NjUxX01JQ19PVkNEX1NGXzFQ
-NQkJCSgweDMgPDwgOCkKKwogLyogM0QgU3BlYWtlciBDb250cm9sICgweDYzKSAqLwogI2RlZmlu
-ZSBSVDU2NTFfM0RfU1BLX01BU0sJCQkoMHgxIDw8IDE1KQogI2RlZmluZSBSVDU2NTFfM0RfU1BL
-X1NGVAkJCTE1CkBAIC0yMDY1LDYgKzIwNzUsNyBAQCBzdHJ1Y3QgcnQ1NjUxX3ByaXYgewogCXN0
-cnVjdCBkZWxheWVkX3dvcmsgamFja19kZXRlY3Rfd29yazsKIAllbnVtIHJ0NTY1MV9qZF9zcmMg
-amRfc3JjOwogCXVuc2lnbmVkIGludCBvdmNkX3RoOworCXVuc2lnbmVkIGludCBvdmNkX3NmOwog
-CiAJaW50IGlycTsKIAlpbnQgc3lzY2xrOwotLSAKMi4xNC4zCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+When the mic-gnd contacts are short-circuited by a headphones plug, the
+hardware periodically retries if it can apply the bias-current leading to
+the OVCD status flip-flopping 1-0-1 with it being 0 about 10% of the time.
+This commit enables the sticky bit for the OVCD status to deal with this.
+
+This commit also introduces 2 helper functions to deal with the OVCD
+status bit, this may seem a bit overkill now, but these will also be
+used in future patches.
+
+Tested-by: Carlo Caione <carlo@endlessm.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ sound/soc/codecs/rt5651.c | 33 ++++++++++++++++++++++++++++++---
+ 1 file changed, 30 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index 4f78694adf70..3a439c121b0c 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -1578,6 +1578,22 @@ static void rt5651_disable_micbias1_for_ovcd(struct snd_soc_component *component
+ 	snd_soc_dapm_mutex_unlock(dapm);
+ }
+ 
++static void rt5651_clear_micbias1_ovcd(struct snd_soc_component *component)
++{
++	snd_soc_component_update_bits(component, RT5651_IRQ_CTRL2,
++		RT5651_MB1_OC_CLR, 0);
++}
++
++static bool rt5651_micbias1_ovcd(struct snd_soc_component *component)
++{
++	int val;
++
++	val = snd_soc_component_read32(component, RT5651_IRQ_CTRL2);
++	dev_dbg(component->dev, "irq ctrl2 %#04x\n", val);
++
++	return (val & RT5651_MB1_OC_CLR);
++}
++
+ static irqreturn_t rt5651_irq(int irq, void *data)
+ {
+ 	struct rt5651_priv *rt5651 = data;
+@@ -1646,6 +1662,18 @@ static int rt5651_set_jack(struct snd_soc_component *component,
+ 				      RT5651_PWR_MB_PU |
+ 				      RT5651_PWR_CLK12M_PU);
+ 
++	/*
++	 * The over-current-detect is only reliable in detecting the absence
++	 * of over-current, when the mic-contact in the jack is short-circuited,
++	 * the hardware periodically retries if it can apply the bias-current
++	 * leading to the ovcd status flip-flopping 1-0-1 with it being 0 about
++	 * 10% of the time, as we poll the ovcd status bit we might hit that
++	 * 10%, so we enable sticky mode and when checking OVCD we clear the
++	 * status, msleep() a bit and then check to get a reliable reading.
++	 */
++	snd_soc_component_update_bits(component, RT5651_IRQ_CTRL2,
++		RT5651_MB1_OC_STKY_MASK, RT5651_MB1_OC_STKY_EN);
++
+ 	rt5651->hp_jack = hp_jack;
+ 
+ 	ret = devm_request_threaded_irq(component->dev, rt5651->irq, NULL,
+@@ -1879,13 +1907,12 @@ static int rt5651_jack_detect(struct snd_soc_component *component, int jack_inse
+ 
+ 	if (jack_insert) {
+ 		rt5651_enable_micbias1_for_ovcd(component);
++		rt5651_clear_micbias1_ovcd(component);
+ 		msleep(100);
+-		if (snd_soc_component_read32(component, RT5651_IRQ_CTRL2) & RT5651_MB1_OC_CLR)
++		if (rt5651_micbias1_ovcd(component))
+ 			jack_type = SND_JACK_HEADPHONE;
+ 		else
+ 			jack_type = SND_JACK_HEADSET;
+-		snd_soc_component_update_bits(component, RT5651_IRQ_CTRL2,
+-				    RT5651_MB1_OC_CLR, 0);
+ 		rt5651_disable_micbias1_for_ovcd(component);
+ 	} else { /* jack out */
+ 		jack_type = 0;
+-- 
+2.14.3
