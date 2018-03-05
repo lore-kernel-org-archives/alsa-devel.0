@@ -1,54 +1,56 @@
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-Subject: Re: [BUG] Kernel crash on Allwinner H3 due to sound
-	core changes
-Date: Mon, 05 Mar 2018 22:30:23 +0100
-Message-ID: <26212674.B0xcQEiVyd@jernej-laptop>
-References: <2424862.oPtAVTfrB9@jernej-laptop>
- <63331816.68OamKINx1@jernej-laptop> <20180302124050.GF6255@sirena.org.uk>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: add tda7419 audio processor binding
+Date: Mon, 5 Mar 2018 16:29:54 -0600
+Message-ID: <20180305222954.chitmlvsklszods7@rob-hp-laptop>
+References: <20180227225128.17815-1-mporter@konsulko.com>
+ <20180227225128.17815-2-mporter@konsulko.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.siol.net (mailoutvs4.siol.net [213.250.19.137])
- by alsa0.perex.cz (Postfix) with ESMTP id 9BF6026709D
- for <alsa-devel@alsa-project.org>; Mon,  5 Mar 2018 22:30:26 +0100 (CET)
-In-Reply-To: <20180302124050.GF6255@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org, wens@csie.org, maxime.ripard@free-electrons.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180227225128.17815-2-mporter@konsulko.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Matt Porter <mporter@konsulko.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpEbmUgcGV0ZWssIDAyLiBtYXJlYyAyMDE4IG9iIDEzOjQwOjUwIENFVCBqZSBNYXJrIEJy
-b3duIG5hcGlzYWwoYSk6Cj4gT24gVGh1LCBNYXIgMDEsIDIwMTggYXQgMTE6MjM6NTdQTSArMDEw
-MCwgSmVybmVqIMWga3JhYmVjIHdyb3RlOgo+ID4gSSByZW1vdmVkIHBhcnRzIG9mIHRoZSBjb2Rl
-IGZyb20gdGhlIHN1bjRpIGNvZGVjIGRyaXZlciBhbmQgaW50ZXJlc3RpbmdseQo+ID4gaXQgZG9l
-c24ndCBjcmFzaCBpZiBJIHJlbW92ZSBmb2xsb3dpbmcgbGluZXM6Cj4gPiAKPiA+IHJldCA9IGRl
-dm1fc25kX2RtYWVuZ2luZV9wY21fcmVnaXN0ZXIoJnBkZXYtPmRldiwgTlVMTCwgMCk7Cj4gPiBp
-ZiAocmV0KSB7Cj4gPiAKPiA+IAlkZXZfZXJyKCZwZGV2LT5kZXYsICJGYWlsZWQgdG8gcmVnaXN0
-ZXIgYWdhaW5zdCBETUFFbmdpbmVcbiIpOwo+ID4gCWdvdG8gZXJyX2Fzc2VydF9yZXNldDsKPiA+
-IAo+ID4gfQo+ID4gCj4gPiBJcyBpdCBwb3NzaWJsZSB0aGF0IE5VTEwgcG9pbnRlciBjYXVzZXMg
-dHJvdWJsZXMgc29tZXdoZXJlIGRvd24gdGhlIGxpbmU/Cj4gCj4gU2hvdWxkbid0IGJlLCB0aGF0
-J3MganVzdCB0aGUgY29uZmlndXJhdGlvbiB3aGljaCBpcyBvcHRpb25hbCBhbmQgbm90Cj4gd2hh
-dCB3ZSdyZSBjcmFzaGluZyB0cnlpbmcgdG8gcmVnaXN0ZXIsIHdlIGNhbiBtb3N0bHkgY29uZmln
-dXJlIHRoaW5ncwo+IGJ5IHF1ZXJ5aW5nIHRoZSBjYXBhYmlsaXRpZXMgb2YgdGhlIERNQSBjb250
-cm9sbGVyIHZpYSB0aGUgZG1hZW5naW5lIEFQSQo+IHRoZXNlIGRheXMuICBZb3UncmUgcmVtb3Zp
-bmcgYWxsIHRoZSBETUEgc3VwcG9ydCB0aGVyZSBzbyBjdXR0aW5nIG91dCBhCj4gaHVnZSBzZWdt
-ZW50IG9mIHRoZSBpbml0aWFsaXphdGlvbiBvZiBib3RoIHRoaXMgZHJpdmVyIGFuZCB0aGUgbWFj
-aGluZQo+IGRyaXZlci4gIE90aGVyIHN1bnhpIGRldmljZXMgc2VlbSB0byBiZSBzdGFydGluZyBo
-YXBwaWx5IGluIC1uZXh0IHNvCj4gdGhlcmUncyBzb21ldGhpbmcgc3lzdGVtIGRlcGVuZGVudCBo
-ZXJlLi4uCgpJIGVuYWJsZWQgbWVtb3J5IGRlYnVnZ2luZyBhbmQgaXQgc2VlbXMgdGhhdCB0aGVy
-ZSBpcyBhbiBpc3N1ZSBjYXVzZWQgYnkgCmxvYWRpbmcgc3VuNGktY29kZWMgZHJpdmVyIGFuZCBp
-dCBpcyBzb21laG93IGNvbm5lY3RlZCB0byAKc25kX2RtYWVuZ2luZV9wY21fdW5yZWdpc3Rlcigp
-LgoKSGVyZSBpcyByZWxldmFudCBkbWVzZzogaHR0cHM6Ly9wYXN0ZWJpbi5jb20vcmF3LzgwSzlH
-UG5CCgpEb2VzIHRoaXMgdGVsbCBhbnl0aGluZz8KCkJlc3QgcmVnYXJkcywKSmVybmVqCgoKCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Tue, Feb 27, 2018 at 05:51:27PM -0500, Matt Porter wrote:
+> DeviceTree binding for the tda7419 audio processor.
+> 
+> Signed-off-by: Matt Porter <mporter@konsulko.com>
+> ---
+>  Documentation/devicetree/bindings/sound/tda7419.txt | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/tda7419.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/tda7419.txt b/Documentation/devicetree/bindings/sound/tda7419.txt
+> new file mode 100644
+> index 000000000000..919318315600
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/tda7419.txt
+> @@ -0,0 +1,15 @@
+> +TDA7419 audio processor
+> +
+> +This device supports I2C only.
+> +
+> +Required properties:
+> +
+> +- compatible : "st,tda7419"
+> +- reg : the I2C address of the device.
+
+For completeness:
+
+st,mute-gpios for MUTE pin?
+
+vdd-supply?
+
+> +
+> +Example:
+> +
+> +ap: tda7419@44 {
+> +	compatible = "st,tda7419";
+> +	reg = <0x44>;
+> +};
+> -- 
+> 2.11.0
+> 
