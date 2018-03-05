@@ -1,78 +1,66 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/2] ASoC: codecs: Add support for
-	PCM1789
-Date: Mon, 5 Mar 2018 15:59:38 +0000
-Message-ID: <20180305155938.GL8588@sirena.org.uk>
-References: <20180305124817.7421-1-mylene.josserand@bootlin.com>
- <20180305124817.7421-2-mylene.josserand@bootlin.com>
- <20180305154910.GJ8588@sirena.org.uk>
- <20180305155715.GJ3035@piout.net>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7806872185062814237=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EAC90266F68
- for <alsa-devel@alsa-project.org>; Mon,  5 Mar 2018 16:59:47 +0100 (CET)
-In-Reply-To: <20180305155715.GJ3035@piout.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, michael@amarulasolutions.com, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org, thomas.petazzoni@bootlin.com, =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@bootlin.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix typo" to the asoc tree
+Date: Mon, 05 Mar 2018 17:18:02 +0000
+Message-ID: <E1estkQ-0007tK-Ej@debutante>
+References: <1520106400-22664-1-git-send-email-abhijeet.kumar@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1520106400-22664-1-git-send-email-abhijeet.kumar@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Dharageswari R <dharageswari.r@intel.com>, G Kranthi <gudishax.kranthikumar@intel.com>, Pradeep Tewani <pradeep.d.tewani@intel.com>, Ramesh Babu <ramesh.babu@intel.com>, Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, abhijeet.kumar@intel.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7806872185062814237==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="j3olVFx0FsM75XyV"
-Content-Disposition: inline
+   ASoC: Intel: Skylake: Fix typo
 
+has been applied to the asoc tree at
 
---j3olVFx0FsM75XyV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Mar 05, 2018 at 04:57:15PM +0100, Alexandre Belloni wrote:
-> On 05/03/2018 at 15:49:10 +0000, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > Please don't mix C and C++ style comments in a single comment like this
-> > - it looks unintentional.  Just use the same style for the whole thing.
-> > You also don't need to include all the boilerplate with the SPDX header.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> I think Linus made it clear that he wants the SPDX header to be a
-> C++ comment, the documentation has:
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Sure, so make the entire thing a C++ comment then.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---j3olVFx0FsM75XyV
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From 12af5004145a3fa53246cca4cbb2c57d18dde202 Mon Sep 17 00:00:00 2001
+From: Abhijeet Kumar <abhijeet.kumar@intel.com>
+Date: Sun, 4 Mar 2018 01:16:39 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix typo
 
-iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqdaWkACgkQJNaLcl1U
-h9CiUgf40Hp+gzXwR2TkhGpq5wjdnZSOKngsP8WUfonuZTnnEkE2ejOVjAMVgpOM
-U0ljr1dg/Hg6tfbWNFRYflY31V+PPjfw+KnPuqNxjNFYj1t5GTL3sTrjrLf8RwSU
-v1mgbevFejwxwk4vDhhdx869XZIiWUfnGk7vfAxJIQDi0BWfB6b31nBQmPv11sO0
-pXi/l/ZBtmP29pfLoM1XxzKC3zwZ3dn9ESVkKMgKlnBUGGjsqHpNZTEmj+VB3KHL
-Sg9nTyqmF5zwiNBNnddqriWee+2M+/7ZUBUWj+inCCfC7mLkbFZfB43BHVfl20cl
-kY2El6N9CDLWgJHJUYA4Y8RQRhAe
-=er+z
------END PGP SIGNATURE-----
+Spelling mistake in state. So fixing it.
 
---j3olVFx0FsM75XyV--
+Signed-off-by: Abhijeet Kumar <abhijeet.kumar@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/skylake/skl-messages.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---===============7806872185062814237==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7806872185062814237==--
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 60d76adade43..f161907859f3 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -1210,7 +1210,7 @@ int skl_bind_modules(struct skl_sst *ctx,
+ static int skl_set_pipe_state(struct skl_sst *ctx, struct skl_pipe *pipe,
+ 	enum skl_ipc_pipeline_state state)
+ {
+-	dev_dbg(ctx->dev, "%s: pipe_satate = %d\n", __func__, state);
++	dev_dbg(ctx->dev, "%s: pipe_state = %d\n", __func__, state);
+ 
+ 	return skl_ipc_set_pipeline_state(&ctx->ipc, pipe->ppl_id, state);
+ }
+-- 
+2.16.2
