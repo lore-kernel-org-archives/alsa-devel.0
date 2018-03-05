@@ -1,84 +1,80 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/2] ASoC: codecs: Add support for PCM1789
-Date: Mon, 5 Mar 2018 15:49:10 +0000
-Message-ID: <20180305154910.GJ8588@sirena.org.uk>
-References: <20180305124817.7421-1-mylene.josserand@bootlin.com>
- <20180305124817.7421-2-mylene.josserand@bootlin.com>
+Subject: Re: [RFC PATCH] ASoC: dapm: add support to pinctrl dapm
+Date: Mon, 5 Mar 2018 15:52:08 +0000
+Message-ID: <20180305155208.GK8588@sirena.org.uk>
+References: <20180305123213.2045-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="n8884J15jRwcBTvu"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180305124817.7421-2-mylene.josserand@bootlin.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@bootlin.com>
-Cc: lgirdwood@gmail.com, robh+dt@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alexandre.belloni@bootlin.com, thomas.petazzoni@bootlin.com, michael@amarulasolutions.com
+Content-Type: multipart/mixed; boundary="===============2539348093352906645=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id A92482671A8
+ for <alsa-devel@alsa-project.org>; Mon,  5 Mar 2018 16:52:17 +0100 (CET)
+In-Reply-To: <20180305123213.2045-1-srinivas.kandagatla@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: srinivas.kandagatla@linaro.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---n8884J15jRwcBTvu
-Content-Type: text/plain; charset=iso-8859-1
+--===============2539348093352906645==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="2WS97oupGEGbYNpW"
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 05, 2018 at 01:48:16PM +0100, Myl=E8ne Josserand wrote:
 
-> --- /dev/null
-> +++ b/sound/soc/codecs/pcm1789-i2c.c
-> @@ -0,0 +1,76 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * PCM1789 ASoC I2C driver
-> + *
-> + * Copyright (c) Bootlin 2018
-> + *
-> + * Myl=E8ne Josserand <mylene.josserand@bootlin.com>
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License
+--2WS97oupGEGbYNpW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Please don't mix C and C++ style comments in a single comment like this
-- it looks unintentional.  Just use the same style for the whole thing.
-You also don't need to include all the boilerplate with the SPDX header.
+On Mon, Mar 05, 2018 at 12:32:13PM +0000, srinivas.kandagatla@linaro.org wrote:
 
-> +static bool pcm1789_accessible_reg(struct device *dev, unsigned int reg)
+> +int dapm_pinctrl_event(struct snd_soc_dapm_widget *w,
+> +		       struct snd_kcontrol *kcontrol, int event)
 > +{
-> +	return reg >=3D PCM1789_MUTE_CONTROL && reg <=3D PCM1789_DAC_VOL_RIGHT;
-> +}
+> +	struct snd_soc_dapm_pinctrl_priv *priv = w->priv;
+> +	struct pinctrl *p = w->pinctrl;
+> +	struct pinctrl_state *s;
 > +
-> +static bool pcm1789_writeable_reg(struct device *dev, unsigned int reg)
-> +{
-> +	return pcm1789_accessible_reg(dev, reg);
-> +}
-
-> +static void pcm1789_work_queue(struct work_struct *work)
-> +{
-> +	struct pcm1789_private *priv =3D container_of(work,
-> +						    struct pcm1789_private,
-> +						    work);
+> +	if (!p || !priv)
+> +		return -EIO;
 > +
-> +	/* Perform a software reset to remove codec from desynchronized state */
-> +	if (regmap_update_bits(priv->regmap, PCM1789_MUTE_CONTROL,
-> +			       0x3 << PCM1789_MUTE_SRET, 0) < 0)
-> +		dev_err(priv->dev, "Error while setting SRET");
-> +}
+> +	soc_dapm_async_complete(w->dapm);
 
-A reset sounds like we'd also need to resync the register map,
-presumably this is something else?  The comment could be clearer.
+This doesn't look right - we're trying to synchronize with the DAPM
+async queue from something that should be run inside that very queue.
+What is this supposed to be doing?
 
---n8884J15jRwcBTvu
+--2WS97oupGEGbYNpW
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqdZvUACgkQJNaLcl1U
-h9ArPgf/doY6KKkVX5LZMkHvKd+IQYpFQit1dIzFg1IQEU63IJnFwKu29BMIVMk0
-8czRzrLQQkM/S9+vEHqRYLJYUjAVZFA0I1QeVsc504gnIHl9eDLZE0heXbOTWkpu
-rN6lTw8+7t8rm9b1wPnp8SXsqWM+3NaF+Kc02T0bvb2xW+gM/gYvYDqfM2oV2Kfm
-267+/ekaYiYGolHbFlK6zmyH/2EyawKnDXQw5dTJ9dA9AlyYXMKFFoiigBVzcYFM
-GK6R7PRZqCPj44nUBsGirId6WeE7CJU+DI9ZAZRIBugJrcsuS0+oxuafBkhkaUZH
-BmjWvGV7wGXis0ecQ3munLn5Bsw/Bg==
-=+ja3
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqdZ6gACgkQJNaLcl1U
+h9Cf2Qf+LEcnkBxz5K9/VMMvmHzkz6BFHGu6MjMGN3KKJAiV/NN5mKOnL0jFqlci
+to7GQdx9HMXBCq6osQqHuDOYtY57kYWN0KpBG0i3dddvJLF4kGc+QZnzB7WpBfeu
+0Vb1T/nE9h6J7wSqfIdYqxUw/7cAdIqxL/qrV8PQWTgZFKAV/45VuQ/bEYVZsmFM
+uXqUuGwJm0OFkU66pkHVg4b1fPBIP3XfX9UohgO3Gejj8N7gBIBI4tPD3J42Eu49
+CEGHaf0888RmXYQprZZcUE8NOQH+zsbkU6TNhf0JFVVL1u9QF0ofR1mz6IaIZ/lL
+A9B8c0OT+3Z8CRMxSB0VFL5wnqKm6g==
+=hY2d
 -----END PGP SIGNATURE-----
 
---n8884J15jRwcBTvu--
+--2WS97oupGEGbYNpW--
+
+--===============2539348093352906645==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2539348093352906645==--
