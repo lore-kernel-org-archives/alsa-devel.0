@@ -1,215 +1,66 @@
-From: Benjamin Berg <bberg@redhat.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Limit mic boost on T480
-Date: Tue, 06 Mar 2018 11:04:35 +0100
-Message-ID: <1520330675.13868.17.camel@redhat.com>
-References: <20180214122939.10069-1-bberg@redhat.com>
-         <s5hr2pn6803.wl-tiwai@suse.de> <1518622889.23539.65.camel@redhat.com>
-         <FA1DB435B97D5A4192BAE54A4EA542A99ABF1473@CNMAILEX04.lenovo.com>
-         <s5heflfhdbr.wl-tiwai@suse.de>
-          <FA1DB435B97D5A4192BAE54A4EA542A99ABF1F5E@CNMAILEX04.lenovo.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: Dell new AIO platform
+Date: Tue, 6 Mar 2018 18:19:17 +0800
+Message-ID: <20937c52-8b17-5175-bd73-f15a2d737a7d@canonical.com>
+References: <6FAB7C47BCF00940BB0999A99BE3547A1840D1D9@RTITMBSV02.realtek.com.tw>
+ <s5hd10hpp25.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A1840D225@RTITMBSV02.realtek.com.tw>
+ <s5h6069po2y.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A1840D23B@RTITMBSV02.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <FA1DB435B97D5A4192BAE54A4EA542A99ABF1F5E@CNMAILEX04.lenovo.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter FP1 Zhang <zhangfp1@lenovo.com>, Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@perex.cz>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="big5"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id D44812671A3
+ for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2018 11:19:23 +0100 (CET)
+In-Reply-To: <6FAB7C47BCF00940BB0999A99BE3547A1840D23B@RTITMBSV02.realtek.com.tw>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kailang <kailang@realtek.com>, Takashi Iwai <tiwai@suse.de>
+Cc: "(alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA512
-
-Hi Peter,
-
-On Mon, 2018-02-26 at 08:46 +0000, Peter FP1 Zhang wrote:
-> The following comments from our Accessory BU hardware team FYI.
-> //
-> Most of dock audio is converted from USB if it is connected by cable,
-> but CS13 Mechnical dock is not. We need to know the specific dock
-> model first.
-> //
-
-I think that basically answers the question and we can conclude that
-the 80s series has USB audio on the docking stations.
-
-CS13 is the previous generation docking (at the bottom of the laptops)
-while the new models have a new docking connector at the side (which is
-USB-C + 14 pins primarily for Ethernet incl. LEDs and likely some other
-purpose).
-
-Thanks,
-Benjamin
-
-> -----Original Message-----
-> From: Peter FP1 Zhang 
-> Sent: Wednesday, February 21, 2018 12:07 AM
-> To: 'Takashi Iwai'
-> Cc: Benjamin Berg; alsa-devel@alsa-project.org; Jaroslav Kysela; linu
-> x-kernel@vger.kernel.org; kailang@realtek.com
-> Subject: RE: [PATCH] ALSA: hda/realtek: Limit mic boost on T480
-> 
-> Thank you Takashi. 
-> I will also double confirm it with our Accessory BU guys about Ben's
-> question when I back to my office. And will let you know if there was
-> any different answer from them.
-> 
-> 
-> Peter Zhang \ 张福平,  PMP
-> ThinkPad & ThinkStation Linux Solutions
-> Tel: (+86) 181-1611-8005 | Lenovo Shanghai
-> 
-> Linux for Those Who Do - http://www.lenovo.com/linux
-> 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Tuesday, February 20, 2018 11:48 PM
-> To: Peter FP1 Zhang
-> Cc: Benjamin Berg; alsa-devel@alsa-project.org; Jaroslav Kysela; linu
-> x-kernel@vger.kernel.org; kailang@realtek.com
-> Subject: Re: [PATCH] ALSA: hda/realtek: Limit mic boost on T480
-> 
-> On Sat, 17 Feb 2018 14:54:02 +0100,
-> Peter FP1 Zhang wrote:
-> > 
-> > Hi Ben,
-> > 
-> > My understanding is same as yours. Recently Realtek Audio expert
-> > Kailang (on copy) submitted a patch for Dock as the attached, are
-> > you asking the same thing?
-> > Looks like the issue is related to Dock model, there are many
-> > different Dock models, could you please let us know which specific
-> > dock model you mean? Thanks.
-> > 
-> > @Kailang, Do you have any suggestions or comments?
-> 
-> FYI, because of this unclearness, the patch from Benjamin is still
-> pending.  I'm OK to apply it at first, then adjust later if the
-> docking station quirk is required, too.  Just let me know.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> > 
-> > Thanks,
-> > 
-> > Peter Zhang \ 张福平,  PMP
-> > ThinkPad & ThinkStation Linux Solutions
-> > Tel: (+86) 181-1611-8005 | Lenovo Shanghai
-> > 
-> > Linux for Those Who Do - http://www.lenovo.com/linux
-> > 
-> > 
-> > -----Original Message-----
-> > From: Benjamin Berg [mailto:bberg@redhat.com]
-> > Sent: Wednesday, February 14, 2018 11:41 PM
-> > To: Takashi Iwai
-> > Cc: alsa-devel@alsa-project.org; Jaroslav Kysela; 
-> > linux-kernel@vger.kernel.org; Peter FP1 Zhang
-> > Subject: Re: [PATCH] ALSA: hda/realtek: Limit mic boost on T480
-> > 
-> > -----BEGIN PGP SIGNED MESSAGE-----
-> > Hash: SHA512
-> > 
-> > On Wed, 2018-02-14 at 14:00 +0100, Takashi Iwai wrote:
-> > > On Wed, 14 Feb 2018 13:29:39 +0100,
-> > > Benjamin Berg wrote:
-> > > > 
-> > > > The internal mic boost on the T480 is too high. Fix this by 
-> > > > applying the ALC269_FIXUP_LIMIT_INT_MIC_BOOST fixup to the
-> > > > machine 
-> > > > to limit the gain.
-> > > > 
-> > > > Signed-off-by: Benjamin Berg <bberg@redhat.com>
-> > > > Tested-by: Benjamin Berg <bberg@redhat.com>
-> > > 
-> > > Applying this quirk itself is OK, but just wonder whether this
-> > > model 
-> > > has a docking station port.  Recently we fixed the dock issue,
-> > > and 
-> > > it required to apply ALC298_FIXUP_TPT470_DOCK.
-> > 
-> > I assumed that on the T480 and similar models the audio on the dock
-> > is connected through USB (the dock is USB-C + further pins), but I
-> > cannot confirm this myself right now as I only have a T480
-> > currently.
-> > 
-> > I have now contacted Peter Zhang of Lenovo about this and also to
-> > check if other 80 series models may need the same fixup.
-> > 
-> > Benjamin
-> > 
-> > > 
-> > > thanks,
-> > > 
-> > > Takashi
-> > > 
-> > > > ---
-> > > >  sound/pci/hda/patch_realtek.c | 1 +
-> > > >  1 file changed, 1 insertion(+)
-> > > > 
-> > > > diff --git a/sound/pci/hda/patch_realtek.c 
-> > > > b/sound/pci/hda/patch_realtek.c index
-> > > > ce28f7ce64e6..8467ce3db767
-> > > > 100644
-> > > > --- a/sound/pci/hda/patch_realtek.c
-> > > > +++ b/sound/pci/hda/patch_realtek.c
-> > > > @@ -6510,6 +6510,7 @@ static const struct snd_pci_quirk 
-> > > > alc269_fixup_tbl[] = {
-> > > >  	SND_PCI_QUIRK(0x17aa, 0x224b, "Thinkpad", 
-> > > > ALC298_FIXUP_TPT470_DOCK),
-> > > >  	SND_PCI_QUIRK(0x17aa, 0x224c, "Thinkpad", 
-> > > > ALC298_FIXUP_TPT470_DOCK),
-> > > >  	SND_PCI_QUIRK(0x17aa, 0x224d, "Thinkpad", 
-> > > > ALC298_FIXUP_TPT470_DOCK),
-> > > > +	SND_PCI_QUIRK(0x17aa, 0x225d, "Thinkpad T480",
-> > > > ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
-> > > >  	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", 
-> > > > ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
-> > > >  	SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", 
-> > > > ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
-> > > >  	SND_PCI_QUIRK(0x17aa, 0x310c, "ThinkCentre Station", 
-> > > > ALC294_FIXUP_LENOVO_MIC_LOCATION),
-> > > > --
-> > > > 2.14.3
-> > > > 
-> > > > 
-> > 
-> > -----BEGIN PGP SIGNATURE-----
-> > 
-> > iQIzBAEBCgAdFiEED2NO4vMS33W8E4AFq6ZWhpmFY3AFAlqEWKkACgkQq6ZWhpmF
-> > Y3AEyQ/7B6l4Na1GLDf11P8OdzzcXOy6grjvrLYwq6WFA3M1DirlQsPwjSbnJ7V8
-> > znIX30EK6My9Ip6jyvJQIpiBlaX1FKJuJ3So9mjgUeOcCQMFkwnC1fMMyyWEAWLq
-> > TI1s7F5w4OQwhQpwtlId4AIB7A2ZzQmP/9YqfIPDtIiNJqjd9aRruBJi8A8j3sB5
-> > slY1CYgCQhBUiAkUPisFrt+b4aFU5FlgINQR+6uOSKO0/IaSKq9rFwX76lOTOsBj
-> > kHhywIF9Qef6CvUDaAOFWjQcTA/ooDPifUsfNzo6ZHnNZIks0Cov12JeO5UrxjiD
-> > a3BuG6SZAVm4awfkTj5pIL0DuBAXYhTJd/hU3VMWdV0/kb0OeVONSahMzhSOCM30
-> > WdFKpWC0+n3TEkTWSG9QGwL6wbXiaLNZ0JRgQkcoJ9JqPVngFf9LIRBzqdMyzyCE
-> > UzLu/oQ9XlXQrFx1IG5KS/RJJPUwpJKhXOygSpRZx/HhmaWpPVLCu9GNg+ytoVIL
-> > QEg381jOTTPi+DX0k07WYK+hUEvB83cbtsm+EiEGMa4bxuhYQp2p1moGqOrzv2XK
-> > iEN8LfF97KJ4GtqVWybnstxMxMdS0CwXBPxUZ3OY6C03S3sdVqk/QrEpE4i0+N8P
-> > CcX3g+rEJVUkpsdm17Sf5u4DjeGH7HBPsDmHirrwvFdeOkTiO4E=
-> > =NIZ6
-> > -----END PGP SIGNATURE-----
-> > 
-> > [2 0000-alc298-thinkpad-dock.patch <application/octet-stream 
-> > (base64)>]
-> > 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEED2NO4vMS33W8E4AFq6ZWhpmFY3AFAlqeZ7MACgkQq6ZWhpmF
-Y3CUIRAAnZ40ojWpK/oQmBvZCo5tEuiLKuJtQYhsw3yOxs96Ud2u1W/pSx3ED1Re
-qm0TNk9sj7oNPmVnUuSMN5JIj4erW/K3fQ/yM69Sen7LFgDYuSvVEEdhHQbPjpC0
-4C9AHA/InFmecWFjHZ8OLC1DvkXPoHmlw3MpJ4delf1qYZgq6jSrpQFJd2ClnNln
-wvinsIPo71lHLHB33aQd+Gii6C2GplW8V/j77qDVU3KAQQSSz9LDHitZ8oFxEk5U
-kX+nsCN8LXrnBBNGNcVsKaKdJUEfBcelnxz/3I15NPLEroOA5kZnzArj6OBBnYvB
-axpYlXKv1+eSdkq/qGq3H2Me7Ln38kNVYcu7wJKwsBxcMMwhXAoQRLwwr7tEKW+z
-lA8leioxjeCR9ncqxbuUuqOAa6W/PRd6dH9Xp3UVaTg/EPC/kZfg9R2iY7I/ZQOT
-2rcLcsVxlLWg0BGAnV/2o3gRwXymHxKYT8R0MS3TFqVq+fZj9K+SXeueBid1qW78
-wHs9hHjFOO5pZprkOmLWbybV39qi9gEeBV+Q+bIyAlJiYXT2tBCe/t19+6ktCxNa
-8/BWeOvk+rRamtanwX+cXaYOVoh/Ney1nODJs70i58yrTpKM4RwQlhx515S7a+UQ
-Hnx+xw8/wd9IPH67yc7D97iKSFHk5ObmeNB6IHUQhm7CyP6Yedw=
-=+cS7
------END PGP SIGNATURE-----
+CgpPbiAyMDE4pn4wM6TrMDak6SAxNzoxMywgS2FpbGFuZyB3cm90ZToKPiAgIAo+Cj4+IC0tLS0t
+T3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4+IEZyb206IFRha2FzaGkgSXdhaSBbbWFpbHRvOnRpd2Fp
+QHN1c2UuZGVdCj4+IFNlbnQ6IFR1ZXNkYXksIE1hcmNoIDA2LCAyMDE4IDU6MTAgUE0KPj4gVG86
+IEthaWxhbmcKPj4gQ2M6IEh1aSBXYW5nOyAoYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnKQo+
+PiBTdWJqZWN0OiBSZTogRGVsbCBuZXcgQUlPIHBsYXRmb3JtCj4+Cj4+IE9uIFR1ZSwgMDYgTWFy
+IDIwMTggMTA6MDM6MzggKzAxMDAsCj4+IEthaWxhbmcgd3JvdGU6Cj4+PiAgIAo+Pj4KPj4+PiAt
+LS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+Pj4+IEZyb206IFRha2FzaGkgSXdhaSBbbWFpbHRv
+OnRpd2FpQHN1c2UuZGVdCj4+Pj4gU2VudDogVHVlc2RheSwgTWFyY2ggMDYsIDIwMTggNDo0OSBQ
+TQo+Pj4+IFRvOiBLYWlsYW5nCj4+Pj4gQ2M6IChhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcp
+Cj4+Pj4gU3ViamVjdDogUmU6IERlbGwgbmV3IEFJTyBwbGF0Zm9ybQo+Pj4+Cj4+Pj4gT24gVHVl
+LCAwNiBNYXIgMjAxOCAwODo1NDozOSArMDEwMCwKPj4+PiBLYWlsYW5nIHdyb3RlOgo+Pj4+PiBI
+aSBUYWthc2hpLAo+Pj4+Pgo+Pj4+PiBUaGlzIHBsYXRmb3JtIHdhcyBvbmx5IG9uZSBwaG9uZSBK
+YWNrLgo+Pj4+PiBBZGQgZHVtbXkgbGluZW91dCB2ZXJiIHRvIGZpeCBhdXRvbXV0ZSBtb2RlIGRp
+c2FibGUuCj4+Pj4+IFRoaXMganVzdCB0aGUgd29ya2Fycm91bmQuCj4+Pj4gSSdtIG5vdCBzdXJl
+IHdoeSB0aGlzIHBoYW50b20gbGluZSBwaW4gaXMgbmVlZGVkLgo+Pj4+IFdoYXQgaGFwcGVucyB3
+aXRob3V0IHRoYXQ/Cj4+PiBMb29rcyBsaWtlIEkgZmluZCB0aGUgcm9vdCBjYXVzZSBmb3IgdGhp
+cyBpc3N1ZSwgc2luY2UKPj4gdGhlcmUgaXMgb25seSBvbmUgb3V0cHV0IGRldmljZSAoaGVhZHBo
+b25loV6hQSBzbyB0aGUgQXV0by1tdXRlCj4+IGlzIG5vdCBzdXBwb3J0ZWQgb24gdGhpcyBtYWNo
+aW5lLCBhcyBhIHJlc3VsdCwgd2hlbiB1c2Vycwo+PiBwbHVnIGhlYWRwaG9uZSB0byB0aGUgamFj
+aywgYXVkb211dGVfaG9vayBvciBocF9hdXRvbXV0ZV9ob29rCj4+IHdpbGwgbm90IGJlIGNhbGxl
+ZCwgdGhlbiB0aGUgYWxjX3VwZGF0ZV9oZWFkc2V0X21vZGUoKSB3aWxsCj4+IG5vdCBiZSBjYWxs
+ZWQsIGFuZCBhbGNfaGVhZHNldF9tb2RlX2RlZmF1bHQoKSB3aWxsIG5vdCBiZQo+PiBjYWxsZWQu
+IHRoZSBoZWFkc2V0IGphY2sgaXMgYWx3YXlzIGluIHRoZQo+PiBhbGNfaGVhZHNldF9tb2RlX3Vu
+cGx1Z2dlZCgpIHN0YXRlLgo+Pgo+PiBPSywgbm93IHVuZGVyc3Rvb2QuCj4+Cj4+IEkgY2FuIHRh
+a2UgdGhlIHBhdGNoIGFzIGEgdGVudGF0aXZlIHdvcmthcm91bmQuCj4+IEJ1dCBmb3IgdGhlIHBy
+b3BlciBmaXgsIGNvdWxkIHlvdSBnaXZlIGFsc2EtaW5mby5zaCBvdXRwdXQ/Cj4gSSBoYWQgbm8g
+bWFjaGluZSBpbiBteSBzaXRlLgo+Cj4gSGkgSHVpIFdhbmcsCj4KPiBDb3VsZCB5b3UgaGVscCB0
+byBzZW5kIGFsc2EtaW5mby5zaCBvdXRwdXQgdG8gVGFrYXNoaT8KCk9LLCBJIHdpbGwgY29sbGVj
+dCB0aGUgYWxzYS1pbmZvLnR4dCB0b21vcnJvdy4KClJlZ2FyZHMsCkh1aS4KCj4+Cj4+IHRoYW5r
+cywKPj4KPj4gVGFrYXNoaQo+Pgo+PiAtLS0tLS1QbGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25t
+ZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFpbC4KCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
