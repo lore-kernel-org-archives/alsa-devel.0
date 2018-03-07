@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5651: Enable sticky mode for OVCD" to
-	the asoc tree
-Date: Wed, 07 Mar 2018 14:14:03 +0000
-Message-ID: <E1etZpT-0001Pu-AE@debutante>
-References: <20180225104713.4745-19-hdegoede@redhat.com>
+Subject: Applied "ASoC: rt5651: Allow specifying the OVCD
+	scale-factor through a device-property" to the asoc tree
+Date: Wed, 07 Mar 2018 14:14:07 +0000
+Message-ID: <E1etZpX-0001Qy-6c@debutante>
+References: <20180304143610.21125-6-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1737221003849420499=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 591E42673D6
- for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 15:14:09 +0100 (CET)
-In-Reply-To: <20180225104713.4745-19-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8423B267048
+ for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 15:14:12 +0100 (CET)
+In-Reply-To: <20180304143610.21125-6-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,9 +25,12 @@ To: Hans de Goede <hdegoede@redhat.com>
 Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Carlo Caione <carlo@endlessm.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
+--===============1737221003849420499==
+Content-Type: text/plain
+
 The patch
 
-   ASoC: rt5651: Enable sticky mode for OVCD
+   ASoC: rt5651: Allow specifying the OVCD scale-factor through a device-property
 
 has been applied to the asoc tree at
 
@@ -53,88 +55,142 @@ to this mail.
 Thanks,
 Mark
 
->From 1b1ad83539a701a6bdcb25dc9160386e71f6016e Mon Sep 17 00:00:00 2001
+>From e6eb0207597afa1cdd4914a17a727b101cc859ff Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 4 Mar 2018 15:35:54 +0100
-Subject: [PATCH] ASoC: rt5651: Enable sticky mode for OVCD
+Date: Sun, 4 Mar 2018 15:35:53 +0100
+Subject: [PATCH] ASoC: rt5651: Allow specifying the OVCD scale-factor through
+ a device-property
 
-When the mic-gnd contacts are short-circuited by a headphones plug, the
-hardware periodically retries if it can apply the bias-current leading to
-the OVCD status flip-flopping 1-0-1 with it being 0 about 10% of the time.
-This commit enables the sticky bit for the OVCD status to deal with this.
+OVer-Current-Detection (OVCD) for the micbias current is used to detect if
+an inserted jack is a headset or headphones (mic shorted to ground).
 
-This commit also introduces 2 helper functions to deal with the OVCD
-status bit, this may seem a bit overkill now, but these will also be
-used in future patches.
+The threshold for at which current the OVCD triggers on the rt5651 is not
+only controlled by setting the absolute current limit, but also by setting
+a scale factor which applies to the limit. Testing has shown that we need
+to set both (depending on the board).
 
-Tested-by: Carlo Caione <carlo@endlessm.com>
+This commit adds support for the sofar unused OVCD scale-factor register
+and adds support for specifying non-default values for it through the
+"realtek,over-current-scale-factor" device-property.
+
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5651.c | 33 ++++++++++++++++++++++++++++++---
- 1 file changed, 30 insertions(+), 3 deletions(-)
+ include/sound/rt5651.h    | 11 +++++++++++
+ sound/soc/codecs/rt5651.c | 19 +++++++++++++++++++
+ sound/soc/codecs/rt5651.h | 11 +++++++++++
+ 3 files changed, 41 insertions(+)
 
+diff --git a/include/sound/rt5651.h b/include/sound/rt5651.h
+index 725b36c329d0..6403b862fb9a 100644
+--- a/include/sound/rt5651.h
++++ b/include/sound/rt5651.h
+@@ -22,4 +22,15 @@ enum rt5651_jd_src {
+ 	RT5651_JD2,
+ };
+ 
++/*
++ * Note these MUST match the values from the DT binding:
++ * Documentation/devicetree/bindings/sound/rt5651.txt
++ */
++enum rt5651_ovcd_sf {
++	RT5651_OVCD_SF_0P5,
++	RT5651_OVCD_SF_0P75,
++	RT5651_OVCD_SF_1P0,
++	RT5651_OVCD_SF_1P5,
++};
++
+ #endif
 diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index 486817809b7b..62918f7e8270 100644
+index 7ff1bc892cfd..486817809b7b 100644
 --- a/sound/soc/codecs/rt5651.c
 +++ b/sound/soc/codecs/rt5651.c
-@@ -1578,6 +1578,22 @@ static void rt5651_disable_micbias1_for_ovcd(struct snd_soc_component *component
- 	snd_soc_dapm_mutex_unlock(dapm);
- }
+@@ -1632,6 +1632,10 @@ static int rt5651_set_jack(struct snd_soc_component *component,
+ 	snd_soc_component_update_bits(component, RT5651_PWR_ANLG2,
+ 		RT5651_PWR_JD_M, RT5651_PWR_JD_M);
  
-+static void rt5651_clear_micbias1_ovcd(struct snd_soc_component *component)
-+{
-+	snd_soc_component_update_bits(component, RT5651_IRQ_CTRL2,
-+		RT5651_MB1_OC_CLR, 0);
-+}
++	/* Set OVCD threshold current and scale-factor */
++	snd_soc_component_write(component, RT5651_PR_BASE + RT5651_BIAS_CUR4,
++				0xa800 | rt5651->ovcd_sf);
 +
-+static bool rt5651_micbias1_ovcd(struct snd_soc_component *component)
-+{
-+	int val;
-+
-+	val = snd_soc_component_read32(component, RT5651_IRQ_CTRL2);
-+	dev_dbg(component->dev, "irq ctrl2 %#04x\n", val);
-+
-+	return (val & RT5651_MB1_OC_CLR);
-+}
-+
- static irqreturn_t rt5651_irq(int irq, void *data)
- {
- 	struct rt5651_priv *rt5651 = data;
-@@ -1646,6 +1662,18 @@ static int rt5651_set_jack(struct snd_soc_component *component,
- 				      RT5651_PWR_MB_PU |
- 				      RT5651_PWR_CLK12M_PU);
+ 	snd_soc_component_update_bits(component, RT5651_MICBIAS,
+ 				      RT5651_MIC1_OVCD_MASK |
+ 				      RT5651_MIC1_OVTH_MASK |
+@@ -1685,7 +1689,13 @@ static void rt5651_apply_properties(struct snd_soc_component *component)
+ 				     "realtek,jack-detect-source", &val) == 0)
+ 		rt5651->jd_src = val;
  
 +	/*
-+	 * The over-current-detect is only reliable in detecting the absence
-+	 * of over-current, when the mic-contact in the jack is short-circuited,
-+	 * the hardware periodically retries if it can apply the bias-current
-+	 * leading to the ovcd status flip-flopping 1-0-1 with it being 0 about
-+	 * 10% of the time, as we poll the ovcd status bit we might hit that
-+	 * 10%, so we enable sticky mode and when checking OVCD we clear the
-+	 * status, msleep() a bit and then check to get a reliable reading.
++	 * Testing on various boards has shown that good defaults for the OVCD
++	 * threshold and scale-factor are 2000µA and 0.75. For an effective
++	 * limit of 1500µA, this seems to be more reliable then 1500µA and 1.0.
 +	 */
-+	snd_soc_component_update_bits(component, RT5651_IRQ_CTRL2,
-+		RT5651_MB1_OC_STKY_MASK, RT5651_MB1_OC_STKY_EN);
+ 	rt5651->ovcd_th = RT5651_MIC1_OVTH_2000UA;
++	rt5651->ovcd_sf = RT5651_MIC_OVCD_SF_0P75;
+ 
+ 	if (device_property_read_u32(component->dev,
+ 			"realtek,over-current-threshold-microamp", &val) == 0) {
+@@ -1704,6 +1714,15 @@ static void rt5651_apply_properties(struct snd_soc_component *component)
+ 				 val);
+ 		}
+ 	}
 +
- 	rt5651->hp_jack = hp_jack;
++	if (device_property_read_u32(component->dev,
++			"realtek,over-current-scale-factor", &val) == 0) {
++		if (val <= RT5651_OVCD_SF_1P5)
++			rt5651->ovcd_sf = val << RT5651_MIC_OVCD_SF_SFT;
++		else
++			dev_warn(component->dev, "Warning: Invalid over-current-scale-factor value: %d, defaulting to 0.75\n",
++				 val);
++	}
+ }
  
- 	ret = devm_request_threaded_irq(component->dev, rt5651->irq, NULL,
-@@ -1878,13 +1906,12 @@ static int rt5651_jack_detect(struct snd_soc_component *component, int jack_inse
+ static int rt5651_probe(struct snd_soc_component *component)
+diff --git a/sound/soc/codecs/rt5651.h b/sound/soc/codecs/rt5651.h
+index 9cd5c279d0d6..71738ab93fb9 100644
+--- a/sound/soc/codecs/rt5651.h
++++ b/sound/soc/codecs/rt5651.h
+@@ -138,6 +138,7 @@
+ /* Index of Codec Private Register definition */
+ #define RT5651_BIAS_CUR1			0x12
+ #define RT5651_BIAS_CUR3			0x14
++#define RT5651_BIAS_CUR4			0x15
+ #define RT5651_CLSD_INT_REG1			0x1c
+ #define RT5651_CHPUMP_INT_REG1			0x24
+ #define RT5651_MAMP_INT_REG2			0x37
+@@ -1966,6 +1967,15 @@
+ #define RT5651_D_GATE_EN_SFT			0
  
- 	if (jack_insert) {
- 		rt5651_enable_micbias1_for_ovcd(component);
-+		rt5651_clear_micbias1_ovcd(component);
- 		msleep(100);
--		if (snd_soc_component_read32(component, RT5651_IRQ_CTRL2) & RT5651_MB1_OC_CLR)
-+		if (rt5651_micbias1_ovcd(component))
- 			jack_type = SND_JACK_HEADPHONE;
- 		else
- 			jack_type = SND_JACK_HEADSET;
--		snd_soc_component_update_bits(component, RT5651_IRQ_CTRL2,
--				    RT5651_MB1_OC_CLR, 0);
- 		rt5651_disable_micbias1_for_ovcd(component);
- 	} else { /* jack out */
- 		jack_type = 0;
+ /* Codec Private Register definition */
++
++/* MIC Over current threshold scale factor (0x15) */
++#define RT5651_MIC_OVCD_SF_MASK			(0x3 << 8)
++#define RT5651_MIC_OVCD_SF_SFT			8
++#define RT5651_MIC_OVCD_SF_0P5			(0x0 << 8)
++#define RT5651_MIC_OVCD_SF_0P75			(0x1 << 8)
++#define RT5651_MIC_OVCD_SF_1P0			(0x2 << 8)
++#define RT5651_MIC_OVCD_SF_1P5			(0x3 << 8)
++
+ /* 3D Speaker Control (0x63) */
+ #define RT5651_3D_SPK_MASK			(0x1 << 15)
+ #define RT5651_3D_SPK_SFT			15
+@@ -2065,6 +2075,7 @@ struct rt5651_priv {
+ 	struct delayed_work jack_detect_work;
+ 	enum rt5651_jd_src jd_src;
+ 	unsigned int ovcd_th;
++	unsigned int ovcd_sf;
+ 
+ 	int irq;
+ 	int sysclk;
 -- 
 2.16.2
+
+
+--===============1737221003849420499==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1737221003849420499==--
