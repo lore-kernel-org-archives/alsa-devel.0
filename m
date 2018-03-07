@@ -1,17 +1,22 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: dt-bindings: wm8524: Remove unit address
-Date: Wed,  7 Mar 2018 00:24:13 -0300
-Message-ID: <1520393053-24132-1-git-send-email-festevam@gmail.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: Dell new AIO platform
+Date: Wed, 7 Mar 2018 16:42:25 +0800
+Message-ID: <814fc7e5-be58-d726-513a-14b9b20d4289@canonical.com>
+References: <6FAB7C47BCF00940BB0999A99BE3547A1840D1D9@RTITMBSV02.realtek.com.tw>
+ <s5hd10hpp25.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A1840D225@RTITMBSV02.realtek.com.tw>
+ <s5h6069po2y.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A1840D23B@RTITMBSV02.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f196.google.com (mail-qt0-f196.google.com
- [209.85.216.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 9644D267196
- for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 04:24:25 +0100 (CET)
-Received: by mail-qt0-f196.google.com with SMTP id t6so999888qtn.9
- for <alsa-devel@alsa-project.org>; Tue, 06 Mar 2018 19:24:25 -0800 (PST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 497CB2671E9
+ for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 09:42:33 +0100 (CET)
+In-Reply-To: <6FAB7C47BCF00940BB0999A99BE3547A1840D23B@RTITMBSV02.realtek.com.tw>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,33 +26,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, robh+dt@kernel.org, Fabio Estevam <festevam@gmail.com>
+To: Kailang <kailang@realtek.com>, Takashi Iwai <tiwai@suse.de>
+Cc: "(alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-WM8524 does not use I2C nor SPI, hence no 'reg' property is used,
-so remove the unit address from the bindings example to conform.
-
-This avoids users getting dtc warnings when they copy the
-binding example to a real dts file.
-
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
----
- Documentation/devicetree/bindings/sound/wm8524.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/wm8524.txt b/Documentation/devicetree/bindings/sound/wm8524.txt
-index 20c6200..0f05535 100644
---- a/Documentation/devicetree/bindings/sound/wm8524.txt
-+++ b/Documentation/devicetree/bindings/sound/wm8524.txt
-@@ -10,7 +10,7 @@ Required properties:
- 
- Example:
- 
--codec: wm8524@0 {
-+codec: wm8524 {
- 	compatible = "wlf,wm8524";
- 	wlf,mute-gpios = <&gpio1 8 GPIO_ACTIVE_LOW>;
- };
--- 
-2.7.4
+VGhpcyBpcyB0aGUgYWxzYS1pbmZvLnR4dCBmb3IgdGhlIG1hY2hpbmUgb2YgenVtYS1wICh0aGUg
+bWFjaGluZSBrYWlsYW5nIApzZW50IHRoZSBwYXRjaCBmb3IpOgoKaHR0cHM6Ly9wYXN0ZWJpbi51
+YnVudHUuY29tL3AvVjRRZ1dXWTVOai8KCgpBbmQgd2UgaGF2ZSBhIHNpbWlsYXIgYnVnIHdpdGgg
+dGhpcyBvbmUsIGJ1dCBpdCBpcyBub3QgZm9yIG91dHB1dCwgaXQgaXMgCmZvciBpbnB1dC4gT24g
+b25lIG9mIERlbGwgZGVza3RvcHMsIHRoZXJlIGlzIG5vIGludGVybmFsIG1pY3JvcGhvbmUsIHRo
+ZSAKb25seSBpbnB1dCBkZXZpY2VzIGFyZSAiSGVhZHBob25lIE1pYz0weDFhIiBhbmQgIkhlYWRz
+ZXQgTWljPTB4MTkiLCBzbyAKdGhlIGltdXhfcGluc1tzcGVjLT5nZW4uY3VyX211eFswXV0gaXMg
+aGVhZHBob25lIG1pYyBvciBoZWFkc2V0IG1pYyzCoCAKbGV0IHVzIHN1cHBvc2UgaXQgaXMgaGVh
+ZHNldCBtaWMsIGFuZCB3ZSBhcmUgdW5sdWNreSB0aGF0IHRoZSBhdXRvLW11dGUgCmlzIGRpc2Fi
+bGVkLCBhbmQgdGhlbiB1bnBsdWcgYSBoZWFkc2V0IGZyb20gdGhlIGphY2sswqAgdGhlIGF1ZGlv
+IGlzIG5vdyAKaW7CoCB1bnBsdWdnZWQgbW9kZSAoYWxjX2hlYWRzZXRfbW9kZV91bnBsdWdnZWQo
+Y29kZWMpOyksIHRoZW4gbmV4dCB0aW1lIAp3ZSBwbHVnIHRoZSBoZWFkc2V0IGludG8gdGhlIGph
+Y2ssIHRoZSAid2hhdC1kaWQteW91LXBsdWciIGRpYWxvZ3VlIHdpbGwgCnBvcCB1cCwgd2Ugc2Vs
+ZWN0IGhlYWRzZXQtbWljLCBzaW5jZSB0aGUgaW11eF9waW5zW3NwZWMtPmdlbi5jdXJfbXV4WzBd
+XSAKaXMgYWxyZWFkeSB0aGUgaGVhZHNldCBtaWMgKG5vdCBpbnRlcm5hbCBtaWNyb3Bob25lIHNp
+bmNlIHRoZXJlIGlzIG5vIAppbnRlcm5hbCBtaWNyb3Bob25lIG9uIHRoaXMgbWFjaGluZSksIHRo
+ZSBhbGNfdXBkYXRlX2hlYWRzZXRfbW9kZSgpIHdpbGwgCm5vdCBiZSBjYWxsZWQgYW5kIHRoZW4g
+YWxjX2RldGVybWluZV9oZWFkc2V0X3R5cGUoKSwgCmFsY19oZWFkc2V0X21vZGVfY3RpYSgpIGFu
+ZCBhbGNfaGVhZHNldF9tb2RlX29tdHAoKSB3aWxsIG5vdCBiZSBjYWxsZWQswqAgCmFzIGEgcmVz
+dWx0IHRoZSBoZWFkc2V0IG1pYyBjYW4ndCByZWNvcmQgc291bmQuCgpTbyBmYXIsIEkgaGF2ZSBu
+byBpZGVhIGhvdyB0byBmaXggdGhpcyBwcm9ibGVtLiBBbmQgdGhlIGFsc2EtaW5mby50eHQgCmZv
+ciBteSBtYWNoaW5lIGlzIGFzIGJlbG93IHNob3duOgoKaHR0cHM6Ly9wYXN0ZWJpbi51YnVudHUu
+Y29tL3AvU05NTmpiUmduVC8KCgpSZWdhcmRzLApIdWkuCgoKCgpPbiAyMDE45bm0MDPmnIgwNuaX
+pSAxNzoxMywgS2FpbGFuZyB3cm90ZToKPiAgIAo+Cj4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0t
+LS0tCj4+IEZyb206IFRha2FzaGkgSXdhaSBbbWFpbHRvOnRpd2FpQHN1c2UuZGVdCj4+IFNlbnQ6
+IFR1ZXNkYXksIE1hcmNoIDA2LCAyMDE4IDU6MTAgUE0KPj4gVG86IEthaWxhbmcKPj4gQ2M6IEh1
+aSBXYW5nOyAoYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnKSIKPj4gU3ViamVjdDogUmU6IERl
+bGwgbmV3IEFJTyBwbGF0Zm9ybQo+Pgo+PiBPbiBUdWUsIDA2IE1hciAyMDE4IDEwOjAzOjM4ICsw
+MTAwLAo+PiBLYWlsYW5nIHdyb3RlOgo+Pj4gICAKPj4+Cj4+Pj4gLS0tLS1PcmlnaW5hbCBNZXNz
+YWdlLS0tLS0KPj4+PiBGcm9tOiBUYWthc2hpIEl3YWkgW21haWx0bzp0aXdhaUBzdXNlLmRlXQo+
+Pj4+IFNlbnQ6IFR1ZXNkYXksIE1hcmNoIDA2LCAyMDE4IDQ6NDkgUE0KPj4+PiBUbzogS2FpbGFu
+Zwo+Pj4+IENjOiAoYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnKQo+Pj4+IFN1YmplY3Q6IFJl
+OiBEZWxsIG5ldyBBSU8gcGxhdGZvcm0KPj4+Pgo+Pj4+IE9uIFR1ZSwgMDYgTWFyIDIwMTggMDg6
+NTQ6MzkgKzAxMDAsCj4+Pj4gS2FpbGFuZyB3cm90ZToKPj4+Pj4gSGkgVGFrYXNoaSwKPj4+Pj4K
+Pj4+Pj4gVGhpcyBwbGF0Zm9ybSB3YXMgb25seSBvbmUgcGhvbmUgSmFjay4KPj4+Pj4gQWRkIGR1
+bW15IGxpbmVvdXQgdmVyYiB0byBmaXggYXV0b211dGUgbW9kZSBkaXNhYmxlLgo+Pj4+PiBUaGlz
+IGp1c3QgdGhlIHdvcmthcnJvdW5kLgo+Pj4+IEknbSBub3Qgc3VyZSB3aHkgdGhpcyBwaGFudG9t
+IGxpbmUgcGluIGlzIG5lZWRlZC4KPj4+PiBXaGF0IGhhcHBlbnMgd2l0aG91dCB0aGF0Pwo+Pj4g
+TG9va3MgbGlrZSBJIGZpbmQgdGhlIHJvb3QgY2F1c2UgZm9yIHRoaXMgaXNzdWUsIHNpbmNlCj4+
+IHRoZXJlIGlzIG9ubHkgb25lIG91dHB1dCBkZXZpY2UgKGhlYWRwaG9uZe+8ie+8jCBzbyB0aGUg
+QXV0by1tdXRlCj4+IGlzIG5vdCBzdXBwb3J0ZWQgb24gdGhpcyBtYWNoaW5lLCBhcyBhIHJlc3Vs
+dCwgd2hlbiB1c2Vycwo+PiBwbHVnIGhlYWRwaG9uZSB0byB0aGUgamFjaywgYXVkb211dGVfaG9v
+ayBvciBocF9hdXRvbXV0ZV9ob29rCj4+IHdpbGwgbm90IGJlIGNhbGxlZCwgdGhlbiB0aGUgYWxj
+X3VwZGF0ZV9oZWFkc2V0X21vZGUoKSB3aWxsCj4+IG5vdCBiZSBjYWxsZWQsIGFuZCBhbGNfaGVh
+ZHNldF9tb2RlX2RlZmF1bHQoKSB3aWxsIG5vdCBiZQo+PiBjYWxsZWQuIHRoZSBoZWFkc2V0IGph
+Y2sgaXMgYWx3YXlzIGluIHRoZQo+PiBhbGNfaGVhZHNldF9tb2RlX3VucGx1Z2dlZCgpIHN0YXRl
+Lgo+Pgo+PiBPSywgbm93IHVuZGVyc3Rvb2QuCj4+Cj4+IEkgY2FuIHRha2UgdGhlIHBhdGNoIGFz
+IGEgdGVudGF0aXZlIHdvcmthcm91bmQuCj4+IEJ1dCBmb3IgdGhlIHByb3BlciBmaXgsIGNvdWxk
+IHlvdSBnaXZlIGFsc2EtaW5mby5zaCBvdXRwdXQ/Cj4gSSBoYWQgbm8gbWFjaGluZSBpbiBteSBz
+aXRlLgo+Cj4gSGkgSHVpIFdhbmcsCj4KPiBDb3VsZCB5b3UgaGVscCB0byBzZW5kIGFsc2EtaW5m
+by5zaCBvdXRwdXQgdG8gVGFrYXNoaT8KPgo+Pgo+PiB0aGFua3MsCj4+Cj4+IFRha2FzaGkKPj4K
+Pj4gLS0tLS0tUGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZvcmUgcHJpbnRpbmcg
+dGhpcyBlLW1haWwuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
