@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5651: Select RCCLK on
-	init()" to the asoc tree
-Date: Wed, 07 Mar 2018 14:21:32 +0000
-Message-ID: <E1etZwi-0002fH-FM@debutante>
-References: <20180225104713.4745-33-hdegoede@redhat.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5651: Change defaults to
+	enable jack-detect, analog mics" to the asoc tree
+Date: Wed, 07 Mar 2018 14:21:48 +0000
+Message-ID: <E1etZwy-0002gW-TM@debutante>
+References: <20180225104713.4745-32-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B26BE267048
- for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 15:21:38 +0100 (CET)
-In-Reply-To: <20180225104713.4745-33-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6960A267048
+ for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 15:21:54 +0100 (CET)
+In-Reply-To: <20180225104713.4745-32-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5651: Select RCCLK on init()
+   ASoC: Intel: bytcr_rt5651: Change defaults to enable jack-detect, analog mics
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,65 @@ to this mail.
 Thanks,
 Mark
 
->From c22969d70fc9253112e88da55116e04074cdeac4 Mon Sep 17 00:00:00 2001
+>From b4b6377e07727df8292539062d9a56e6bd83ba89 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 4 Mar 2018 15:36:10 +0100
-Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Select RCCLK on init()
+Date: Sun, 4 Mar 2018 15:36:09 +0100
+Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Change defaults to enable
+ jack-detect, analog mics
 
-When the BYT_RT5651_MCLK_EN quirk is set, we disable the MCLK from
-byt_rt5651_init(), we need to select the RCCLK as sysclk before doing this
-to make sure that jack-detect works directly after boot.
+Change the default quirk settings to enable jack-detect, analog mics.
+
+The old default input mapping of DMIC for non Bay Trail CR devices seems
+like a poor default as I'm not aware of any Intel SST + rt5651 using
+devices with a DMIC.
+
+All Cherry Trail devices using the bytcr_rt5651 machine driver seem to be
+modelled after BYT-CR devices, And the only non CR Bay Trail devices with
+a rt5651 codec I'm aware of are the Minnow boards for which we already have
+board specific quirks. So it seems better to me to use the BYT-CR defaults
+everywhere.
+
+This e.g. makes the Chuwi Hi8 Pro (CWI513) work ootb without needing a
+quirk.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5651.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 6efd7c9e7407..53ce313024f1 100644
+index d5a3d48294d2..6efd7c9e7407 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -457,6 +457,11 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+@@ -85,7 +85,12 @@ struct byt_rt5651_private {
+ 	struct snd_soc_jack jack;
+ };
  
- 	card->dapm.idle_bias_off = true;
+-static unsigned long byt_rt5651_quirk = BYT_RT5651_MCLK_EN;
++/* Default: jack-detect on JD1_1, internal mic on in2, headsetmic on in3 */
++static unsigned long byt_rt5651_quirk = BYT_RT5651_MCLK_EN |
++					BYT_RT5651_JD1_1 |
++					BYT_RT5651_OVCD_TH_2000UA |
++					BYT_RT5651_OVCD_SF_0P75 |
++					BYT_RT5651_IN2_HS_IN3_MAP;
  
-+	/* Start with RC clk for jack-detect (we disable MCLK below) */
-+	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN)
-+		snd_soc_component_update_bits(codec, RT5651_GLB_CLK,
-+			RT5651_SCLK_SRC_MASK, RT5651_SCLK_SRC_RCCLK);
-+
- 	switch (BYT_RT5651_MAP(byt_rt5651_quirk)) {
- 	case BYT_RT5651_IN1_MAP:
- 		custom_map = byt_rt5651_intmic_in1_map;
+ static void log_quirks(struct device *dev)
+ {
+@@ -809,14 +814,6 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 			/* no BIOS indications, assume SSP0-AIF2 connection */
+ 			byt_rt5651_quirk |= BYT_RT5651_SSP0_AIF2;
+ 		}
+-
+-		/* change defaults for Baytrail-CR capture */
+-		byt_rt5651_quirk |= BYT_RT5651_JD1_1 |
+-				    BYT_RT5651_OVCD_TH_2000UA |
+-				    BYT_RT5651_OVCD_SF_0P75 |
+-				    BYT_RT5651_IN2_HS_IN3_MAP;
+-	} else {
+-		byt_rt5651_quirk |= BYT_RT5651_DMIC_MAP;
+ 	}
+ 
+ 	/* check quirks before creating card */
 -- 
 2.16.2
