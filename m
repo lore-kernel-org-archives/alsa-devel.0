@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5651: Add rt5651_jack_inserted()
-	helper" to the asoc tree
-Date: Wed, 07 Mar 2018 14:13:46 +0000
-Message-ID: <E1etZpC-0001NU-Hf@debutante>
-References: <20180225104713.4745-21-hdegoede@redhat.com>
+Subject: Applied "ASoC: rt5651: Enable Platform Clock during
+	jack-type detect" to the asoc tree
+Date: Wed, 07 Mar 2018 14:13:55 +0000
+Message-ID: <E1etZpL-0001Of-Ec@debutante>
+References: <20180225104713.4745-20-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 71E11267380
- for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 15:13:51 +0100 (CET)
-In-Reply-To: <20180225104713.4745-21-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E17E2673CC
+ for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 15:14:00 +0100 (CET)
+In-Reply-To: <20180225104713.4745-20-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5651: Add rt5651_jack_inserted() helper
+   ASoC: rt5651: Enable Platform Clock during jack-type detect
 
 has been applied to the asoc tree at
 
@@ -53,88 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From 0fe9474598890b4bd8a7228c9b1872ed7fe3c2c5 Mon Sep 17 00:00:00 2001
+>From 4b4a373c0212e084045530e47071374a87a3761e Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 4 Mar 2018 15:35:56 +0100
-Subject: [PATCH] ASoC: rt5651: Add rt5651_jack_inserted() helper
+Date: Sun, 4 Mar 2018 15:35:55 +0100
+Subject: [PATCH] ASoC: rt5651: Enable Platform Clock during jack-type detect
 
-Add rt5651_jack_inserted() helper to get the jack-detect switch status,
-This is a preparation patch for rewriting the jack type-detection to
-make it more reliable.
+When using RCCLK instead of MCLK / PLL1 the OVCD status often gets stuck
+at its last value, which breaks jack-type detection.
+
+This commit fixes this by force-enabling the platform clock when doing
+jack-type detection.
 
 Tested-by: Carlo Caione <carlo@endlessm.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5651.c | 45 ++++++++++++++++++++++++++++-----------------
- 1 file changed, 28 insertions(+), 17 deletions(-)
+ sound/soc/codecs/rt5651.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index 873af6798d7a..41fc574dbc3d 100644
+index 62918f7e8270..873af6798d7a 100644
 --- a/sound/soc/codecs/rt5651.c
 +++ b/sound/soc/codecs/rt5651.c
-@@ -1597,6 +1597,31 @@ static bool rt5651_micbias1_ovcd(struct snd_soc_component *component)
- 	return (val & RT5651_MB1_OC_CLR);
+@@ -1563,6 +1563,8 @@ static void rt5651_enable_micbias1_for_ovcd(struct snd_soc_component *component)
+ 	snd_soc_dapm_mutex_lock(dapm);
+ 	snd_soc_dapm_force_enable_pin_unlocked(dapm, "LDO");
+ 	snd_soc_dapm_force_enable_pin_unlocked(dapm, "micbias1");
++	/* OVCD is unreliable when used with RCCLK as sysclk-source */
++	snd_soc_dapm_force_enable_pin_unlocked(dapm, "Platform Clock");
+ 	snd_soc_dapm_sync_unlocked(dapm);
+ 	snd_soc_dapm_mutex_unlock(dapm);
  }
+@@ -1572,6 +1574,7 @@ static void rt5651_disable_micbias1_for_ovcd(struct snd_soc_component *component
+ 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
  
-+static bool rt5651_jack_inserted(struct snd_soc_component *component)
-+{
-+	struct rt5651_priv *rt5651 = snd_soc_component_get_drvdata(component);
-+	int val;
-+
-+	val = snd_soc_component_read32(component, RT5651_INT_IRQ_ST);
-+	dev_dbg(component->dev, "irq status %#04x\n", val);
-+
-+	switch (rt5651->jd_src) {
-+	case RT5651_JD1_1:
-+		val &= 0x1000;
-+		break;
-+	case RT5651_JD1_2:
-+		val &= 0x2000;
-+		break;
-+	case RT5651_JD2:
-+		val &= 0x4000;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return val == 0;
-+}
-+
- static irqreturn_t rt5651_irq(int irq, void *data)
- {
- 	struct rt5651_priv *rt5651 = data;
-@@ -1927,27 +1952,13 @@ static void rt5651_jack_detect_work(struct work_struct *work)
- {
- 	struct rt5651_priv *rt5651 =
- 		container_of(work, struct rt5651_priv, jack_detect_work.work);
--
--	int report, val = 0;
-+	int report, jack_inserted;
- 
- 	if (!rt5651->component)
- 		return;
- 
--	switch (rt5651->jd_src) {
--	case RT5651_JD1_1:
--		val = snd_soc_component_read32(rt5651->component, RT5651_INT_IRQ_ST) & 0x1000;
--		break;
--	case RT5651_JD1_2:
--		val = snd_soc_component_read32(rt5651->component, RT5651_INT_IRQ_ST) & 0x2000;
--		break;
--	case RT5651_JD2:
--		val = snd_soc_component_read32(rt5651->component, RT5651_INT_IRQ_ST) & 0x4000;
--		break;
--	default:
--		break;
--	}
--
--	report = rt5651_jack_detect(rt5651->component, !val);
-+	jack_inserted = rt5651_jack_inserted(rt5651->component);
-+	report = rt5651_jack_detect(rt5651->component, jack_inserted);
- 
- 	snd_soc_jack_report(rt5651->hp_jack, report, SND_JACK_HEADSET);
- }
+ 	snd_soc_dapm_mutex_lock(dapm);
++	snd_soc_dapm_disable_pin_unlocked(dapm, "Platform Clock");
+ 	snd_soc_dapm_disable_pin_unlocked(dapm, "micbias1");
+ 	snd_soc_dapm_disable_pin_unlocked(dapm, "LDO");
+ 	snd_soc_dapm_sync_unlocked(dapm);
 -- 
 2.16.2
