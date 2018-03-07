@@ -1,22 +1,18 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: Dell new AIO platform
-Date: Wed, 7 Mar 2018 17:12:55 +0800
-Message-ID: <21972250-162d-cf97-7ca7-822a4c6157fa@canonical.com>
-References: <6FAB7C47BCF00940BB0999A99BE3547A1840D1D9@RTITMBSV02.realtek.com.tw>
- <s5hd10hpp25.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A1840D225@RTITMBSV02.realtek.com.tw>
- <s5h6069po2y.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A1840D23B@RTITMBSV02.realtek.com.tw>
- <814fc7e5-be58-d726-513a-14b9b20d4289@canonical.com>
+From: Rohit Kumar <rohitkr@codeaurora.org>
+Subject: Re: [PATCH v3 19/25] ASoC: qcom: q6afe: add support to
+ MI2S ports
+Date: Wed, 7 Mar 2018 15:05:17 +0530
+Message-ID: <7d3c344c-ccb5-78b8-e184-3ab65bdef6ac@codeaurora.org>
+References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
+ <20180213165837.1620-20-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 502BB266EBE
- for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 10:13:01 +0100 (CET)
-In-Reply-To: <814fc7e5-be58-d726-513a-14b9b20d4289@canonical.com>
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id 09087266EBE
+ for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 10:35:42 +0100 (CET)
+In-Reply-To: <20180213165837.1620-20-srinivas.kandagatla@linaro.org>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,68 +23,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kailang <kailang@realtek.com>, Takashi Iwai <tiwai@suse.de>
-Cc: "(alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+To: srinivas.kandagatla@linaro.org, andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, lgirdwood@gmail.com, plai@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, david.brown@linaro.org, robh+dt@kernel.org, spatakok@qti.qualcomm.com, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE45bm0MDPmnIgwN+aXpSAxNjo0MiwgSHVpIFdhbmcgd3JvdGU6Cj4gVGhpcyBpcyB0
-aGUgYWxzYS1pbmZvLnR4dCBmb3IgdGhlIG1hY2hpbmUgb2YgenVtYS1wICh0aGUgbWFjaGluZSAK
-PiBrYWlsYW5nIHNlbnQgdGhlIHBhdGNoIGZvcik6Cj4KPiBodHRwczovL3Bhc3RlYmluLnVidW50
-dS5jb20vcC9WNFFnV1dZNU5qLwo+Cj4KPiBBbmQgd2UgaGF2ZSBhIHNpbWlsYXIgYnVnIHdpdGgg
-dGhpcyBvbmUsIGJ1dCBpdCBpcyBub3QgZm9yIG91dHB1dCwgaXQgCj4gaXMgZm9yIGlucHV0LiBP
-biBvbmUgb2YgRGVsbCBkZXNrdG9wcywgdGhlcmUgaXMgbm8gaW50ZXJuYWwgCj4gbWljcm9waG9u
-ZSwgdGhlIG9ubHkgaW5wdXQgZGV2aWNlcyBhcmUgIkhlYWRwaG9uZSBNaWM9MHgxYSIgYW5kIAo+
-ICJIZWFkc2V0IE1pYz0weDE5Iiwgc28gdGhlIGltdXhfcGluc1tzcGVjLT5nZW4uY3VyX211eFsw
-XV0gaXMgCj4gaGVhZHBob25lIG1pYyBvciBoZWFkc2V0IG1pYyzCoCBsZXQgdXMgc3VwcG9zZSBp
-dCBpcyBoZWFkc2V0IG1pYywgYW5kIAo+IHdlIGFyZSB1bmx1Y2t5IHRoYXQgdGhlIGF1dG8tbXV0
-ZSBpcyBkaXNhYmxlZCwgYW5kIHRoZW4gdW5wbHVnIGEgCj4gaGVhZHNldCBmcm9tIHRoZSBqYWNr
-LMKgIHRoZSBhdWRpbyBpcyBub3cgaW7CoCB1bnBsdWdnZWQgbW9kZSAKPiAoYWxjX2hlYWRzZXRf
-bW9kZV91bnBsdWdnZWQoY29kZWMpOyksIHRoZW4gbmV4dCB0aW1lIHdlIHBsdWcgdGhlIAo+IGhl
-YWRzZXQgaW50byB0aGUgamFjaywgdGhlICJ3aGF0LWRpZC15b3UtcGx1ZyIgZGlhbG9ndWUgd2ls
-bCBwb3AgdXAsIAo+IHdlIHNlbGVjdCBoZWFkc2V0LW1pYywgc2luY2UgdGhlIGltdXhfcGluc1tz
-cGVjLT5nZW4uY3VyX211eFswXV0gaXMgCj4gYWxyZWFkeSB0aGUgaGVhZHNldCBtaWMgKG5vdCBp
-bnRlcm5hbCBtaWNyb3Bob25lIHNpbmNlIHRoZXJlIGlzIG5vIAo+IGludGVybmFsIG1pY3JvcGhv
-bmUgb24gdGhpcyBtYWNoaW5lKSwgdGhlIGFsY191cGRhdGVfaGVhZHNldF9tb2RlKCkgCj4gd2ls
-bCBub3QgYmUgY2FsbGVkIGFuZCB0aGVuIGFsY19kZXRlcm1pbmVfaGVhZHNldF90eXBlKCksIAo+
-IGFsY19oZWFkc2V0X21vZGVfY3RpYSgpIGFuZCBhbGNfaGVhZHNldF9tb2RlX29tdHAoKSB3aWxs
-IG5vdCBiZSAKPiBjYWxsZWQswqAgYXMgYSByZXN1bHQgdGhlIGhlYWRzZXQgbWljIGNhbid0IHJl
-Y29yZCBzb3VuZC4KPgo+IFNvIGZhciwgSSBoYXZlIG5vIGlkZWEgaG93IHRvIGZpeCB0aGlzIHBy
-b2JsZW0uIEFuZCB0aGUgYWxzYS1pbmZvLnR4dCAKPiBmb3IgbXkgbWFjaGluZSBpcyBhcyBiZWxv
-dyBzaG93bjoKSSBmb3VuZCBpZiB3ZSBkb24ndCBjYWxsIGFsY19oZWFkc2V0X21vZGVfdW5wbHVn
-Z2VkKGNvZGVjKSAoY29tbWVudCB0aGlzIApsaW5lIGZvcm0gcGF0Y2hfcmVhbHRlay5jKSwgdGhl
-IGlucHV0IGRldmljZXMgd29yayBiZXR0ZXIgb24gbXkgbWFjaGluZS4KPgo+IGh0dHBzOi8vcGFz
-dGViaW4udWJ1bnR1LmNvbS9wL1NOTU5qYlJnblQvCj4KPgo+IFJlZ2FyZHMsCj4gSHVpLgo+Cj4K
-Pgo+Cj4gT24gMjAxOOW5tDAz5pyIMDbml6UgMTc6MTMsIEthaWxhbmcgd3JvdGU6Cj4+Cj4+PiAt
-LS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+Pj4gRnJvbTogVGFrYXNoaSBJd2FpIFttYWlsdG86
-dGl3YWlAc3VzZS5kZV0KPj4+IFNlbnQ6IFR1ZXNkYXksIE1hcmNoIDA2LCAyMDE4IDU6MTAgUE0K
-Pj4+IFRvOiBLYWlsYW5nCj4+PiBDYzogSHVpIFdhbmc7IChhbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcpIgo+Pj4gU3ViamVjdDogUmU6IERlbGwgbmV3IEFJTyBwbGF0Zm9ybQo+Pj4KPj4+IE9u
-IFR1ZSwgMDYgTWFyIDIwMTggMTA6MDM6MzggKzAxMDAsCj4+PiBLYWlsYW5nIHdyb3RlOgo+Pj4+
-Cj4+Pj4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4+Pj4+IEZyb206IFRha2FzaGkgSXdh
-aSBbbWFpbHRvOnRpd2FpQHN1c2UuZGVdCj4+Pj4+IFNlbnQ6IFR1ZXNkYXksIE1hcmNoIDA2LCAy
-MDE4IDQ6NDkgUE0KPj4+Pj4gVG86IEthaWxhbmcKPj4+Pj4gQ2M6IChhbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcpCj4+Pj4+IFN1YmplY3Q6IFJlOiBEZWxsIG5ldyBBSU8gcGxhdGZvcm0KPj4+
-Pj4KPj4+Pj4gT24gVHVlLCAwNiBNYXIgMjAxOCAwODo1NDozOSArMDEwMCwKPj4+Pj4gS2FpbGFu
-ZyB3cm90ZToKPj4+Pj4+IEhpIFRha2FzaGksCj4+Pj4+Pgo+Pj4+Pj4gVGhpcyBwbGF0Zm9ybSB3
-YXMgb25seSBvbmUgcGhvbmUgSmFjay4KPj4+Pj4+IEFkZCBkdW1teSBsaW5lb3V0IHZlcmIgdG8g
-Zml4IGF1dG9tdXRlIG1vZGUgZGlzYWJsZS4KPj4+Pj4+IFRoaXMganVzdCB0aGUgd29ya2Fycm91
-bmQuCj4+Pj4+IEknbSBub3Qgc3VyZSB3aHkgdGhpcyBwaGFudG9tIGxpbmUgcGluIGlzIG5lZWRl
-ZC4KPj4+Pj4gV2hhdCBoYXBwZW5zIHdpdGhvdXQgdGhhdD8KPj4+PiBMb29rcyBsaWtlIEkgZmlu
-ZCB0aGUgcm9vdCBjYXVzZSBmb3IgdGhpcyBpc3N1ZSwgc2luY2UKPj4+IHRoZXJlIGlzIG9ubHkg
-b25lIG91dHB1dCBkZXZpY2UgKGhlYWRwaG9uZe+8ie+8jCBzbyB0aGUgQXV0by1tdXRlCj4+PiBp
-cyBub3Qgc3VwcG9ydGVkIG9uIHRoaXMgbWFjaGluZSwgYXMgYSByZXN1bHQsIHdoZW4gdXNlcnMK
-Pj4+IHBsdWcgaGVhZHBob25lIHRvIHRoZSBqYWNrLCBhdWRvbXV0ZV9ob29rIG9yIGhwX2F1dG9t
-dXRlX2hvb2sKPj4+IHdpbGwgbm90IGJlIGNhbGxlZCwgdGhlbiB0aGUgYWxjX3VwZGF0ZV9oZWFk
-c2V0X21vZGUoKSB3aWxsCj4+PiBub3QgYmUgY2FsbGVkLCBhbmQgYWxjX2hlYWRzZXRfbW9kZV9k
-ZWZhdWx0KCkgd2lsbCBub3QgYmUKPj4+IGNhbGxlZC4gdGhlIGhlYWRzZXQgamFjayBpcyBhbHdh
-eXMgaW4gdGhlCj4+PiBhbGNfaGVhZHNldF9tb2RlX3VucGx1Z2dlZCgpIHN0YXRlLgo+Pj4KPj4+
-IE9LLCBub3cgdW5kZXJzdG9vZC4KPj4+Cj4+PiBJIGNhbiB0YWtlIHRoZSBwYXRjaCBhcyBhIHRl
-bnRhdGl2ZSB3b3JrYXJvdW5kLgo+Pj4gQnV0IGZvciB0aGUgcHJvcGVyIGZpeCwgY291bGQgeW91
-IGdpdmUgYWxzYS1pbmZvLnNoIG91dHB1dD8KPj4gSSBoYWQgbm8gbWFjaGluZSBpbiBteSBzaXRl
-Lgo+Pgo+PiBIaSBIdWkgV2FuZywKPj4KPj4gQ291bGQgeW91IGhlbHAgdG8gc2VuZCBhbHNhLWlu
-Zm8uc2ggb3V0cHV0IHRvIFRha2FzaGk/Cj4+Cj4+Pgo+Pj4gdGhhbmtzLAo+Pj4KPj4+IFRha2Fz
-aGkKPj4+Cj4+PiAtLS0tLS1QbGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25tZW50IGJlZm9yZSBw
-cmludGluZyB0aGlzIGUtbWFpbC4KPgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hbHNhLWRldmVsCg==
+
+
+On 2/13/2018 10:28 PM, srinivas.kandagatla@linaro.org wrote:
+> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>   include/dt-bindings/sound/qcom,q6afe.h |  10 +++
+>   sound/soc/qcom/qdsp6/q6afe.c           | 111 +++++++++++++++++++++++++++++++++
+>   sound/soc/qcom/qdsp6/q6afe.h           |  10 +++
+>   3 files changed, 131 insertions(+)
+>
+> diff --git a/include/dt-bindings/sound/qcom,q6afe.h b/include/dt-bindings/sound/qcom,q6afe.h
+> index e9004ee39f72..3cd862262369 100644
+> --- a/include/dt-bindings/sound/qcom,q6afe.h
+> +++ b/include/dt-bindings/sound/qcom,q6afe.h
+> @@ -16,6 +16,16 @@
+>   #define SLIMBUS_4_TX    24
+>   #define SLIMBUS_5_RX    25
+>   #define SLIMBUS_5_TX    26
+> +#define QUATERNARY_MI2S_RX	34
+> +#define QUATERNARY_MI2S_TX	35
+> +#define SECONDARY_MI2S_RX	36
+> +#define SECONDARY_MI2S_TX	37
+> +#define TERTIARY_MI2S_RX	38
+> +#define TERTIARY_MI2S_TX	39
+> +#define PRIMARY_MI2S_RX		40
+> +#define PRIMARY_MI2S_TX		41
+Can we assign ids to Primary, secondary, tertiary and quaternary MI2S 
+ports in sequence starting with Primary.
+> +#define SECONDARY_PCM_RX	42
+> +#define SECONDARY_PCM_TX	43
+Why only SECONDARY_PCM_RX ? This is not required for MI2S right?
+>   #define SLIMBUS_6_RX    45
+>   #define SLIMBUS_6_TX    46
+>
+[..]
