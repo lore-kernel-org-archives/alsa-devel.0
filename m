@@ -1,21 +1,32 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: Dell new AIO platform
-Date: Wed, 7 Mar 2018 16:42:25 +0800
-Message-ID: <814fc7e5-be58-d726-513a-14b9b20d4289@canonical.com>
-References: <6FAB7C47BCF00940BB0999A99BE3547A1840D1D9@RTITMBSV02.realtek.com.tw>
- <s5hd10hpp25.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A1840D225@RTITMBSV02.realtek.com.tw>
- <s5h6069po2y.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A1840D23B@RTITMBSV02.realtek.com.tw>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: [Xen-devel][PATCH 0/2] sndif: add explicit back
+ and front synchronization
+Date: Wed, 7 Mar 2018 10:49:24 +0200
+Message-ID: <397eb20c-096a-f8d1-1e63-3662d79f14cf@gmail.com>
+References: <1517819100-1029-1-git-send-email-andr2000@gmail.com>
+ <s5hd10hcw6t.wl-tiwai@suse.de>
+ <d460d2f9-8a93-7046-dbe3-fe921c2da130@gmail.com>
+ <s5h4lltcud4.wl-tiwai@suse.de>
+ <1531a22b-5df6-a66e-72ee-775538aeff4d@gmail.com>
+ <s5hwoypbc3c.wl-tiwai@suse.de>
+ <e11de1a2-5095-6297-184b-00405300bfe7@gmail.com>
+ <s5hpo4hb9hg.wl-tiwai@suse.de>
+ <621aaaa9-5994-176c-b243-c2fc9823a699@gmail.com>
+ <s5hfu5db7pd.wl-tiwai@suse.de>
+ <18f6eced-a932-ad82-0097-e18ac1a562ae@gmail.com>
+ <s5ha7vlb5vl.wl-tiwai@suse.de>
+ <670e6d78-1dbd-dcc9-fd82-813c2f45c5d3@gmail.com>
+ <s5hwoyp9nem.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="------------E342242EB9E1B5DE96F903FB"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 497CB2671E9
- for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 09:42:33 +0100 (CET)
-In-Reply-To: <6FAB7C47BCF00940BB0999A99BE3547A1840D23B@RTITMBSV02.realtek.com.tw>
+Received: from mail-lf0-f51.google.com (mail-lf0-f51.google.com
+ [209.85.215.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CF732671E9
+ for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 09:49:27 +0100 (CET)
+Received: by mail-lf0-f51.google.com with SMTP id 37-v6so2050927lfs.7
+ for <alsa-devel@alsa-project.org>; Wed, 07 Mar 2018 00:49:27 -0800 (PST)
+In-Reply-To: <s5hwoyp9nem.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,63 +37,432 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kailang <kailang@realtek.com>, Takashi Iwai <tiwai@suse.de>
-Cc: "(alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: xen-devel@lists.xenproject.org, alsa-devel@alsa-project.org, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBpcyB0aGUgYWxzYS1pbmZvLnR4dCBmb3IgdGhlIG1hY2hpbmUgb2YgenVtYS1wICh0aGUg
-bWFjaGluZSBrYWlsYW5nIApzZW50IHRoZSBwYXRjaCBmb3IpOgoKaHR0cHM6Ly9wYXN0ZWJpbi51
-YnVudHUuY29tL3AvVjRRZ1dXWTVOai8KCgpBbmQgd2UgaGF2ZSBhIHNpbWlsYXIgYnVnIHdpdGgg
-dGhpcyBvbmUsIGJ1dCBpdCBpcyBub3QgZm9yIG91dHB1dCwgaXQgaXMgCmZvciBpbnB1dC4gT24g
-b25lIG9mIERlbGwgZGVza3RvcHMsIHRoZXJlIGlzIG5vIGludGVybmFsIG1pY3JvcGhvbmUsIHRo
-ZSAKb25seSBpbnB1dCBkZXZpY2VzIGFyZSAiSGVhZHBob25lIE1pYz0weDFhIiBhbmQgIkhlYWRz
-ZXQgTWljPTB4MTkiLCBzbyAKdGhlIGltdXhfcGluc1tzcGVjLT5nZW4uY3VyX211eFswXV0gaXMg
-aGVhZHBob25lIG1pYyBvciBoZWFkc2V0IG1pYyzCoCAKbGV0IHVzIHN1cHBvc2UgaXQgaXMgaGVh
-ZHNldCBtaWMsIGFuZCB3ZSBhcmUgdW5sdWNreSB0aGF0IHRoZSBhdXRvLW11dGUgCmlzIGRpc2Fi
-bGVkLCBhbmQgdGhlbiB1bnBsdWcgYSBoZWFkc2V0IGZyb20gdGhlIGphY2sswqAgdGhlIGF1ZGlv
-IGlzIG5vdyAKaW7CoCB1bnBsdWdnZWQgbW9kZSAoYWxjX2hlYWRzZXRfbW9kZV91bnBsdWdnZWQo
-Y29kZWMpOyksIHRoZW4gbmV4dCB0aW1lIAp3ZSBwbHVnIHRoZSBoZWFkc2V0IGludG8gdGhlIGph
-Y2ssIHRoZSAid2hhdC1kaWQteW91LXBsdWciIGRpYWxvZ3VlIHdpbGwgCnBvcCB1cCwgd2Ugc2Vs
-ZWN0IGhlYWRzZXQtbWljLCBzaW5jZSB0aGUgaW11eF9waW5zW3NwZWMtPmdlbi5jdXJfbXV4WzBd
-XSAKaXMgYWxyZWFkeSB0aGUgaGVhZHNldCBtaWMgKG5vdCBpbnRlcm5hbCBtaWNyb3Bob25lIHNp
-bmNlIHRoZXJlIGlzIG5vIAppbnRlcm5hbCBtaWNyb3Bob25lIG9uIHRoaXMgbWFjaGluZSksIHRo
-ZSBhbGNfdXBkYXRlX2hlYWRzZXRfbW9kZSgpIHdpbGwgCm5vdCBiZSBjYWxsZWQgYW5kIHRoZW4g
-YWxjX2RldGVybWluZV9oZWFkc2V0X3R5cGUoKSwgCmFsY19oZWFkc2V0X21vZGVfY3RpYSgpIGFu
-ZCBhbGNfaGVhZHNldF9tb2RlX29tdHAoKSB3aWxsIG5vdCBiZSBjYWxsZWQswqAgCmFzIGEgcmVz
-dWx0IHRoZSBoZWFkc2V0IG1pYyBjYW4ndCByZWNvcmQgc291bmQuCgpTbyBmYXIsIEkgaGF2ZSBu
-byBpZGVhIGhvdyB0byBmaXggdGhpcyBwcm9ibGVtLiBBbmQgdGhlIGFsc2EtaW5mby50eHQgCmZv
-ciBteSBtYWNoaW5lIGlzIGFzIGJlbG93IHNob3duOgoKaHR0cHM6Ly9wYXN0ZWJpbi51YnVudHUu
-Y29tL3AvU05NTmpiUmduVC8KCgpSZWdhcmRzLApIdWkuCgoKCgpPbiAyMDE45bm0MDPmnIgwNuaX
-pSAxNzoxMywgS2FpbGFuZyB3cm90ZToKPiAgIAo+Cj4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0t
-LS0tCj4+IEZyb206IFRha2FzaGkgSXdhaSBbbWFpbHRvOnRpd2FpQHN1c2UuZGVdCj4+IFNlbnQ6
-IFR1ZXNkYXksIE1hcmNoIDA2LCAyMDE4IDU6MTAgUE0KPj4gVG86IEthaWxhbmcKPj4gQ2M6IEh1
-aSBXYW5nOyAoYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnKSIKPj4gU3ViamVjdDogUmU6IERl
-bGwgbmV3IEFJTyBwbGF0Zm9ybQo+Pgo+PiBPbiBUdWUsIDA2IE1hciAyMDE4IDEwOjAzOjM4ICsw
-MTAwLAo+PiBLYWlsYW5nIHdyb3RlOgo+Pj4gICAKPj4+Cj4+Pj4gLS0tLS1PcmlnaW5hbCBNZXNz
-YWdlLS0tLS0KPj4+PiBGcm9tOiBUYWthc2hpIEl3YWkgW21haWx0bzp0aXdhaUBzdXNlLmRlXQo+
-Pj4+IFNlbnQ6IFR1ZXNkYXksIE1hcmNoIDA2LCAyMDE4IDQ6NDkgUE0KPj4+PiBUbzogS2FpbGFu
-Zwo+Pj4+IENjOiAoYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnKQo+Pj4+IFN1YmplY3Q6IFJl
-OiBEZWxsIG5ldyBBSU8gcGxhdGZvcm0KPj4+Pgo+Pj4+IE9uIFR1ZSwgMDYgTWFyIDIwMTggMDg6
-NTQ6MzkgKzAxMDAsCj4+Pj4gS2FpbGFuZyB3cm90ZToKPj4+Pj4gSGkgVGFrYXNoaSwKPj4+Pj4K
-Pj4+Pj4gVGhpcyBwbGF0Zm9ybSB3YXMgb25seSBvbmUgcGhvbmUgSmFjay4KPj4+Pj4gQWRkIGR1
-bW15IGxpbmVvdXQgdmVyYiB0byBmaXggYXV0b211dGUgbW9kZSBkaXNhYmxlLgo+Pj4+PiBUaGlz
-IGp1c3QgdGhlIHdvcmthcnJvdW5kLgo+Pj4+IEknbSBub3Qgc3VyZSB3aHkgdGhpcyBwaGFudG9t
-IGxpbmUgcGluIGlzIG5lZWRlZC4KPj4+PiBXaGF0IGhhcHBlbnMgd2l0aG91dCB0aGF0Pwo+Pj4g
-TG9va3MgbGlrZSBJIGZpbmQgdGhlIHJvb3QgY2F1c2UgZm9yIHRoaXMgaXNzdWUsIHNpbmNlCj4+
-IHRoZXJlIGlzIG9ubHkgb25lIG91dHB1dCBkZXZpY2UgKGhlYWRwaG9uZe+8ie+8jCBzbyB0aGUg
-QXV0by1tdXRlCj4+IGlzIG5vdCBzdXBwb3J0ZWQgb24gdGhpcyBtYWNoaW5lLCBhcyBhIHJlc3Vs
-dCwgd2hlbiB1c2Vycwo+PiBwbHVnIGhlYWRwaG9uZSB0byB0aGUgamFjaywgYXVkb211dGVfaG9v
-ayBvciBocF9hdXRvbXV0ZV9ob29rCj4+IHdpbGwgbm90IGJlIGNhbGxlZCwgdGhlbiB0aGUgYWxj
-X3VwZGF0ZV9oZWFkc2V0X21vZGUoKSB3aWxsCj4+IG5vdCBiZSBjYWxsZWQsIGFuZCBhbGNfaGVh
-ZHNldF9tb2RlX2RlZmF1bHQoKSB3aWxsIG5vdCBiZQo+PiBjYWxsZWQuIHRoZSBoZWFkc2V0IGph
-Y2sgaXMgYWx3YXlzIGluIHRoZQo+PiBhbGNfaGVhZHNldF9tb2RlX3VucGx1Z2dlZCgpIHN0YXRl
-Lgo+Pgo+PiBPSywgbm93IHVuZGVyc3Rvb2QuCj4+Cj4+IEkgY2FuIHRha2UgdGhlIHBhdGNoIGFz
-IGEgdGVudGF0aXZlIHdvcmthcm91bmQuCj4+IEJ1dCBmb3IgdGhlIHByb3BlciBmaXgsIGNvdWxk
-IHlvdSBnaXZlIGFsc2EtaW5mby5zaCBvdXRwdXQ/Cj4gSSBoYWQgbm8gbWFjaGluZSBpbiBteSBz
-aXRlLgo+Cj4gSGkgSHVpIFdhbmcsCj4KPiBDb3VsZCB5b3UgaGVscCB0byBzZW5kIGFsc2EtaW5m
-by5zaCBvdXRwdXQgdG8gVGFrYXNoaT8KPgo+Pgo+PiB0aGFua3MsCj4+Cj4+IFRha2FzaGkKPj4K
-Pj4gLS0tLS0tUGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZvcmUgcHJpbnRpbmcg
-dGhpcyBlLW1haWwuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+This is a multi-part message in MIME format.
+--------------E342242EB9E1B5DE96F903FB
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+On 03/06/2018 06:30 PM, Takashi Iwai wrote:
+> On Tue, 06 Mar 2018 17:04:41 +0100,
+> Oleksandr Andrushchenko wrote:
+>>>>>> If we decide to negotiate the parameters, then it can't be done
+>>>>>> at .open stage as well, as at this moment we don't know stream
+>>>>>> parameters yet, e.g. we don't know the number of channels, PCM
+>>>>>> format etc., so we cannot explain to the backend what we want.
+>>>>>> Thus, it seems that we need to move the negotiation to .hw_params
+>>>>>> callback where stream properties are known. But this leaves the
+>>>>>> only option to ask the backend if it can handle the requested
+>>>>>> buffer/period and other parameters or not... This is what I do now :(
+>>>>> The additional parameter setup can be done via hw_constraints.  The hw
+>>>>> constraint is basically a function call for each parameter change to
+>>>>> narrow down the range of the given parameter.
+>>>>>
+>>>>> snd_pcm_hw_constraint_integer() in the above is just an example.
+>>>>> The actual function to adjust values can be freely written.
+>>>> Yes, this is clear, the question here mostly was not
+>>>> *how* to set the constraints, but *where* to get those
+>>> ... and here comes the hw constraint into the play.
+>>>
+>>> For each parameter change, for example, the frontend just passes the
+>>> inquiry to the backend.  The basis of the hw constraint is nothing but
+>>> to reduce the range of the given parameter.  It's either interval
+>>> (range, used for period/buffer size or sample rate) or the list (for
+>>> the format).  When any parameter is changed, ALSA PCM core invokes the
+>>> corresponding hw constraint function, and the function reduces the
+>>> range.  It's repeated until all parameters are set and settled down.
+>>>
+>>> So, for your driver, the frontend just passes the hw constraint for
+>>> each of basic 5 parameters to the backend.  For example, at beginning,
+>>> the hw constraint for the buffer size will pass the range (1,INTMAX).
+>>> Then the backend returns the range like (1024,65536).   This already
+>>> gives users the min/max buffer size information.  The similar
+>>> procedure will be done for all other parameters.
+>>>
+>>> In addition, you can put the implicit rule like the integer periods,
+>>> which makes things easier.
+>>>
+>> Thank you very much for such a detailed explanation.
+>> Could you please give me an example of ALSA driver which
+>> code I can read in order to understand how it is supposed
+>> to be used, e.g. which meets the expectations we have for
+>> Xen PV sound driver?
+> This is the most difficult part, apparently :)
+> There are lots of codes deploying the own hw constraints, but nothing
+> is similar like your case.
+>
+> Suppose that we negotiate from the frontend to the backend like
+>
+> 	int query_hw_param(int parm, int *min_p, int *max_p);
+>
+> so that you can call like
+> 	err = query_hw_param(PARM_RATE, &min_rate, &max_rate);
+>
+> This assumes that min_rate and max_rate were already filled by the
+> values requested from frontend user-space.  In query_hw_parm, the
+> backend receives this range, checks it, and fills again the actually
+> applicable range that satisfies the given range in return.
+>
+> In that way, user-space will reduce the configuration space
+> repeatedly.  And at the last step, the configurator chooses the
+> optimal values that fit in the given configuration space.
+>
+> As mentioned in the previous post, in your driver at open, you'd need
+> to add the hw constraint for each parameter.  That would be like:
+>
+> 	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
+> 				  hw_rule_rate, NULL, -1);
+>
+> and hw_rule_rate() would look like:
+>
+> static int hw_rule_rate(struct snd_pcm_hw_params *params,
+> 			struct snd_pcm_hw_rule *rule)
+> {
+> 	struct snd_interval *p =
+> 		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
+> 	int min_rate = p->min;
+> 	int max_rate = p->max;
+> 	struct snd_interval t;
+> 	int err;
+>
+> 	err = query_hw_param(PARM_RATE, &min_rate, &max_rate);
+> 	if (err < 0)
+> 		return err;
+>
+> 	t.min = min_rate;
+> 	t.max = max_rate;
+> 	t.openmin = t.openmax = 0;
+> 	t.integer = 1;
+>
+> 	return snd_interval_refine(p, &t);
+> }
+>
+> The above is simplified not to allow the open min/max and assume only
+> integer, which should be enough for your cases, I suppose.
+>
+> And the above function can be generalized like
+>
+> static int hw_rule_interval(struct snd_pcm_hw_params *params,
+> 			    struct snd_pcm_hw_rule *rule)
+> {
+> 	struct snd_interval *p =
+> 		hw_param_interval(params, rule->var);
+> 	int min_val = p->min;
+> 	int max_val = p->max;
+> 	struct snd_interval t;
+> 	int err;
+>
+> 	err = query_hw_param(alsa_parm_to_xen_parm(rule->var),
+> 			&min_val, &max_val);
+> 	if (err < 0)
+> 		return err;
+>
+> 	t.min = min_val;
+> 	t.max = max_val;
+> 	t.openmin = t.openmax = 0;
+> 	t.integer = 1;
+>
+> 	return snd_interval_refine(p, &t);
+> }
+>
+> and registering this via
+>
+> 	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
+> 				  hw_rule_interval, NULL, -1);
+>
+> In the above NULL can be referred in the callback via rule->private,
+> if you need some closure in the function, too.
+Thank you so much for that detailed explanation and code sample!!!
+This is really great to see such a comprehensive response.
+Meanwhile, I did a yet another change to the protocol (please find
+attached) which will be added to those two found in this patch set
+already:
+In order to provide explicit stream parameter negotiation between
+     backend and frontend the following changes are introduced in the 
+protocol:
+      - add XENSND_OP_HW_PARAM_SET request to set one of the stream
+        parameters: frame rate, sample rate, number of channels,
+        buffer and period sizes
+      - add XENSND_OP_HW_PARAM_QUERY request to read a reduced
+        configuration space for the parameter given: in the response
+        to this request return min/max interval for the parameter
+        given
+      - add minimum buffer size to XenStore configuration
+
+With this change:
+1. Frontend sends XENSND_OP_HW_PARAM_SET to the backend in response
+to user space's snd_pcm_hw_params_set_XXX calls, using XenStore entries
+as initial configuration space (this is what returned on 
+snd_pcm_hw_params_any)
+2. Frontend uses snd_pcm_hw_rule_add to set the rules (for sample rate,
+format, number of channels, buffer and period sizes) as you described
+above: querying is done with XENSND_OP_HW_PARAM_QUERY request
+3. Finally, frontend issues XENSND_OP_OPEN request with all the negotiated
+configuration values
+
+Questions:
+
+1. For XENSND_OP_HW_PARAM_SET I will need a hook in the frontend driver
+so I can intercept snd_pcm_hw_params_set_XXX calls - is this available 
+in ALSA?
+
+2. From backend side, if it runs as ALSA client, it is almost 1:1
+mapping for XENSND_OP_HW_PARAM_SET/snd_pcm_hw_params_set_XXX, so I can 
+imagine
+how to do that. But what do I do if I run the backend as PulseAudio client?
+
+3. Period size rules will not allow the check you mentioned before, e.g.
+require that buffer_size % period_size == 0). Can frontend driver assume
+that on its own? So, I simply add the rule regardless of what backend can?
+
+4. Do you think the attached change together with the previous one (
+which adds sync event) makes the protocol look good? Do we need any 
+other change?
+>
+> Takashi
+Thank you very much for helping with this,
+Oleksandr
+
+--------------E342242EB9E1B5DE96F903FB
+Content-Type: text/x-patch;
+ name="0001-sndif-add-explicit-back-and-front-parameter-negotiat.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-sndif-add-explicit-back-and-front-parameter-negotiat.pa";
+ filename*1="tch"
+
+>From 267fb5f74026b8313a54c47fcecdeb8c644f3257 Mon Sep 17 00:00:00 2001
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Date: Wed, 7 Mar 2018 10:21:20 +0200
+Subject: [PATCH] sndif: add explicit back and front parameter negotiation
+
+In order to provide explicit stream parameter negotiation between
+backend and frontend the following changes are introduced in the protocol:
+ - add XENSND_OP_HW_PARAM_SET request to set one of the stream
+   parameters: frame rate, sample rate, number of channels,
+   buffer and period sizes
+ - add XENSND_OP_HW_PARAM_QUERY request to read a reduced
+   configuration space for the parameter given: in the response
+   to this request return min/max interval for the parameter
+   given
+ - add minimum buffer size to XenStore configuration
+
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc: Takashi Iwai <tiwai@suse.de>
+
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+---
+ xen/include/public/io/sndif.h | 127 +++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 120 insertions(+), 7 deletions(-)
+
+diff --git a/xen/include/public/io/sndif.h b/xen/include/public/io/sndif.h
+index e38644423c0a..8036c5c2f212 100644
+--- a/xen/include/public/io/sndif.h
++++ b/xen/include/public/io/sndif.h
+@@ -250,6 +250,11 @@
+  *
+  *      The maximum size in octets of the buffer to allocate per stream.
+  *
++ * buffer-size-min
++ *      Values:         <uint32_t>
++ *
++ *      The minimum size in octets of the buffer to allocate per stream.
++ *
+  *----------------------- Virtual sound card settings -------------------------
+  * short-name
+  *      Values:         <char[32]>
+@@ -465,12 +470,20 @@
+ #define XENSND_OP_MUTE                  6
+ #define XENSND_OP_UNMUTE                7
+ #define XENSND_OP_TRIGGER               8
++#define XENSND_OP_HW_PARAM_SET          9
++#define XENSND_OP_HW_PARAM_QUERY        10
+ 
+ #define XENSND_OP_TRIGGER_START         0
+ #define XENSND_OP_TRIGGER_PAUSE         1
+ #define XENSND_OP_TRIGGER_STOP          2
+ #define XENSND_OP_TRIGGER_RESUME        3
+ 
++#define XENSND_OP_HW_PARAM_FORMAT       0
++#define XENSND_OP_HW_PARAM_RATE         1
++#define XENSND_OP_HW_PARAM_BUFFER       2
++#define XENSND_OP_HW_PARAM_PERIOD       3
++#define XENSND_OP_HW_PARAM_CHANNELS     4
++
+ /*
+  ******************************************************************************
+  *                                 EVENT CODES
+@@ -503,6 +516,7 @@
+ #define XENSND_FIELD_SAMPLE_RATES       "sample-rates"
+ #define XENSND_FIELD_SAMPLE_FORMATS     "sample-formats"
+ #define XENSND_FIELD_BUFFER_SIZE        "buffer-size"
++#define XENSND_FIELD_BUFFER_SIZE_MIN    "buffer-size-min"
+ 
+ /* Stream type field values. */
+ #define XENSND_STREAM_TYPE_PLAYBACK     "p"
+@@ -828,28 +842,122 @@ struct xensnd_trigger_req {
+ };
+ 
+ /*
++ * Request stream configuration parameter selection:
++ *   Sound device configuration for a particular stream is a limited subset
++ *   of the multidimensional configuration available on XenStore, e.g.
++ *   once the frame rate has been selected there is a limited supported range
++ *   for sample rates becomes available (which might be the same set configured
++ *   on XenStore or less). For example, selecting 96kHz sample rate may limit
++ *   number of channels available for such configuration from 4 to 2 etc.
++ *   Thus, each call to XENSND_OP_SET_HW_PARAM will reduce configuration space
++ *   making it possible to iteratively get the final stream configuration,
++ *   used in XENSND_OP_OPEN request.
++ *
++ *         0                1                 2               3        octet
++ * +----------------+----------------+----------------+----------------+
++ * |               id                |_OP_SET_HW_PARAM|    reserved    | 4
++ * +----------------+----------------+----------------+----------------+
++ * |                             reserved                              | 8
++ * +----------------+----------------+----------------+----------------+
++ * |                               value                               | 12
++ * +----------------+----------------+----------------+----------------+
++ * |      type      |                     reserved                     | 16
++ * +----------------+----------------+----------------+----------------+
++ * |                             reserved                              | 20
++ * +----------------+----------------+----------------+----------------+
++ * |                             reserved                              | 24
++ * +----------------+----------------+----------------+----------------+
++ * |                             reserved                              | 28
++ * +----------------+----------------+----------------+----------------+
++ * |                             reserved                              | 32
++ * +----------------+----------------+----------------+----------------+
++ *
++ * value - uint32_t, requested value of the parameter
++ * type - uint8_t, XENSND_OP_HW_PARAM_XXX value
++ */
++
++struct xensnd_set_hw_param_req {
++    uint32_t value;
++    uint8_t type;
++};
++
++/*
++ * Request stream configuration parameter interval: request interval of
++ *   supported values for the parameter given. See response format for this
++ *   request.
++ *
++ *         0                1                 2               3        octet
++ * +----------------+----------------+----------------+----------------+
++ * |               id                | _HW_PARAM_QUERY|    reserved    | 4
++ * +----------------+----------------+----------------+----------------+
++ * |                             reserved                              | 8
++ * +----------------+----------------+----------------+----------------+
++ * |      type      |                     reserved                     | 16
++ * +----------------+----------------+----------------+----------------+
++ * |                             reserved                              | 16
++ * +----------------+----------------+----------------+----------------+
++ * |                             reserved                              | 20
++ * +----------------+----------------+----------------+----------------+
++ * |                             reserved                              | 24
++ * +----------------+----------------+----------------+----------------+
++ * |                             reserved                              | 28
++ * +----------------+----------------+----------------+----------------+
++ * |                             reserved                              | 32
++ * +----------------+----------------+----------------+----------------+
++ *
++ * type - uint8_t, XENSND_OP_HW_PARAM_XXX value
++ */
++
++struct xensnd_query_hw_param_req {
++    uint8_t type;
++};
++
++/*
+  *---------------------------------- Responses --------------------------------
+  *
+  * All response packets have the same length (32 octets)
+  *
+- * Response for all requests:
++ * All response packets have common header:
+  *         0                1                 2               3        octet
+  * +----------------+----------------+----------------+----------------+
+  * |               id                |    operation   |    reserved    | 4
+  * +----------------+----------------+----------------+----------------+
+  * |                              status                               | 8
+  * +----------------+----------------+----------------+----------------+
+- * |                             reserved                              | 12
++ *
++ * id - uint16_t, copied from the request
++ * operation - uint8_t, XENSND_OP_* - copied from request
++ * status - int32_t, response status, zero on success and -XEN_EXX on failure
++ *
++ *
++ * HW parameter query response - response for XENSND_OP_HW_PARAM_QUERY:
++ *         0                1                 2               3        octet
++ * +----------------+----------------+----------------+----------------+
++ * |               id                |    operation   |    reserved    | 4
++ * +----------------+----------------+----------------+----------------+
++ * |                              status                               | 8
++ * +----------------+----------------+----------------+----------------+
++ * |                                min                                | 12
++ * +----------------+----------------+----------------+----------------+
++ * |                                max                                | 16
++ * +----------------+----------------+----------------+----------------+
++ * |                             reserved                              | 20
+  * +----------------+----------------+----------------+----------------+
+  * |/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/|
+  * +----------------+----------------+----------------+----------------+
+  * |                             reserved                              | 32
+  * +----------------+----------------+----------------+----------------+
+  *
+- * id - uint16_t, copied from the request
+- * operation - uint8_t, XENSND_OP_* - copied from request
+- * status - int32_t, response status, zero on success and -XEN_EXX on failure
+- *
++ * min - uint32_t, minimum value of the parameter that can be used
++ * max - uint32_t, maximum value of the parameter that can be used
++ */
++
++struct xensnd_query_hw_param_resp {
++    uint32_t min;
++    uint32_t max;
++};
++
++/*
+  *----------------------------------- Events ----------------------------------
+  *
+  * Events are sent via a shared page allocated by the front and propagated by
+@@ -902,6 +1010,8 @@ struct xensnd_req {
+         struct xensnd_open_req open;
+         struct xensnd_rw_req rw;
+         struct xensnd_trigger_req trigger;
++        struct xensnd_set_hw_param_req set_hw_param;
++        struct xensnd_query_hw_param_req query_hw_param;
+         uint8_t reserved[24];
+     } op;
+ };
+@@ -911,7 +1021,10 @@ struct xensnd_resp {
+     uint8_t operation;
+     uint8_t reserved;
+     int32_t status;
+-    uint8_t reserved1[24];
++    union {
++        struct xensnd_query_hw_param_resp hw_param;
++        uint8_t reserved1[24];
++    } resp;
+ };
+ 
+ struct xensnd_evt {
+-- 
+2.7.4
+
+
+--------------E342242EB9E1B5DE96F903FB
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------E342242EB9E1B5DE96F903FB--
