@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5651: Only create jack
-	if we have a jack-detect source" to the asoc tree
-Date: Wed, 07 Mar 2018 14:22:33 +0000
-Message-ID: <E1etZxh-0002pk-Iz@debutante>
-References: <20180304143610.21125-14-hdegoede@redhat.com>
+Subject: Applied "ASoC: wm8524: Remove unit address" to the
+	asoc tree
+Date: Wed, 07 Mar 2018 14:22:44 +0000
+Message-ID: <E1etZxs-0002sg-9C@debutante>
+References: <1520393053-24132-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E3098267339
- for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 15:22:38 +0100 (CET)
-In-Reply-To: <20180304143610.21125-14-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 506732673F6
+ for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 15:22:45 +0100 (CET)
+In-Reply-To: <1520393053-24132-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Carlo Caione <carlo@endlessm.com>, Bard Liao <bardliao@realtek.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5651: Only create jack if we have a jack-detect source
+   ASoC: wm8524: Remove unit address
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From aed859a2c7ac8c44ba9b3a6f82b5f08da8a0a975 Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 4 Mar 2018 15:36:01 +0100
-Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Only create jack if we have a
- jack-detect source
+>From 09f7fcfa727966361d576fcfdb9c5ad77ddf5092 Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <festevam@gmail.com>
+Date: Wed, 7 Mar 2018 00:24:13 -0300
+Subject: [PATCH] ASoC: wm8524: Remove unit address
 
-Only create the jack if we have a valid jack-detect source and properly
-check the snd_soc_component_set_jack() return value.
+WM8524 does not use I2C nor SPI, hence no 'reg' property is used,
+so remove the unit address from the bindings example to conform.
 
-Tested-by: Carlo Caione <carlo@endlessm.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+This avoids users getting dtc warnings when they copy the
+binding example to a real dts file.
+
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ Documentation/devicetree/bindings/sound/wm8524.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index a874bba3aec0..56f1f076d92c 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -404,17 +404,21 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
- 			dev_err(card->dev, "unable to set MCLK rate\n");
- 	}
+diff --git a/Documentation/devicetree/bindings/sound/wm8524.txt b/Documentation/devicetree/bindings/sound/wm8524.txt
+index 20c62002cbcd..0f0553563fc1 100644
+--- a/Documentation/devicetree/bindings/sound/wm8524.txt
++++ b/Documentation/devicetree/bindings/sound/wm8524.txt
+@@ -10,7 +10,7 @@ Required properties:
  
--	ret = snd_soc_card_jack_new(runtime->card, "Headset",
-+	if (BYT_RT5651_JDSRC(byt_rt5651_quirk)) {
-+		ret = snd_soc_card_jack_new(runtime->card, "Headset",
- 				    SND_JACK_HEADSET, &priv->jack,
- 				    bytcr_jack_pins, ARRAY_SIZE(bytcr_jack_pins));
--	if (ret) {
--		dev_err(runtime->dev, "Headset jack creation failed %d\n", ret);
--		return ret;
--	}
-+		if (ret) {
-+			dev_err(runtime->dev, "jack creation failed %d\n", ret);
-+			return ret;
-+		}
+ Example:
  
--	snd_soc_component_set_jack(codec, &priv->jack, NULL);
-+		ret = snd_soc_component_set_jack(codec, &priv->jack, NULL);
-+		if (ret)
-+			return ret;
-+	}
- 
--	return ret;
-+	return 0;
- }
- 
- static const struct snd_soc_pcm_stream byt_rt5651_dai_params = {
+-codec: wm8524@0 {
++codec: wm8524 {
+ 	compatible = "wlf,wm8524";
+ 	wlf,mute-gpios = <&gpio1 8 GPIO_ACTIVE_LOW>;
+ };
 -- 
 2.16.2
