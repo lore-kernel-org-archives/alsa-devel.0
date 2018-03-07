@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5651: Add devicetree-bindings for
-	jack-detect" to the asoc tree
-Date: Wed, 07 Mar 2018 14:14:50 +0000
-Message-ID: <E1etZqE-0001Um-6P@debutante>
-References: <20180304143610.21125-3-hdegoede@redhat.com>
+Subject: Applied "ASoC: rt5651: Make rt5651_apply_properties()
+	private" to the asoc tree
+Date: Wed, 07 Mar 2018 14:14:56 +0000
+Message-ID: <E1etZqK-0001Vs-5X@debutante>
+References: <20180304143610.21125-2-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5320124451221362825=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 70578267048
- for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 15:14:55 +0100 (CET)
-In-Reply-To: <20180304143610.21125-3-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 49E41267339
+ for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 15:15:01 +0100 (CET)
+In-Reply-To: <20180304143610.21125-2-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,15 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Hans de Goede <hdegoede@redhat.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Carlo Caione <carlo@endlessm.com>, Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Carlo Caione <carlo@endlessm.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
-
---===============5320124451221362825==
-Content-Type: text/plain
 
 The patch
 
-   ASoC: rt5651: Add devicetree-bindings for jack-detect
+   ASoC: rt5651: Make rt5651_apply_properties() private
 
 has been applied to the asoc tree at
 
@@ -55,58 +53,82 @@ to this mail.
 Thanks,
 Mark
 
->From 9db7d4b32cbccb5807e2e1f22e2fafc80034ee6d Mon Sep 17 00:00:00 2001
+>From 1cf5b50426136fe54380a7dd1ca7eb49973cae5a Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 4 Mar 2018 15:35:50 +0100
-Subject: [PATCH] ASoC: rt5651: Add devicetree-bindings for jack-detect
+Date: Sun, 4 Mar 2018 15:35:49 +0100
+Subject: [PATCH] ASoC: rt5651: Make rt5651_apply_properties() private
 
-Add new properties to the rt5651 dt-bindings for configuring the
-jack-detect source and over-current detect settings.
+The idea behind exporting rt5651_apply_properties(), was for it to be used
+on platforms where the platform code may need to add device-properties,
+rather then relying only on properties set by the firmware. The platform
+code could then call rt5651_apply_properties() after adding properties to
+make sure that the codec driver was aware of the new properties.
 
-Cc: devicetree@vger.kernel.org
+But this is not necessary, as long as we do all property parsing from
+the codec component-driver's probe function (or later) then the machine
+driver can attach properties before calling snd_soc_register_card and
+calling rt5651_apply_properties() for ordering reasons is not necessary.
+
+This commit makes rt5651_apply_properties() private and adds 2 comments
+documenting that all property parsing must be done from the codec
+component-driver's probe function.
+
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/rt5651.txt | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ sound/soc/codecs/rt5651.c | 14 ++++++++++++--
+ sound/soc/codecs/rt5651.h |  2 --
+ 2 files changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5651.txt b/Documentation/devicetree/bindings/sound/rt5651.txt
-index 3875233095f5..7890aa9477f8 100644
---- a/Documentation/devicetree/bindings/sound/rt5651.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5651.txt
-@@ -16,6 +16,23 @@ Optional properties:
- - realtek,dmic-en
-   Boolean. true if dmic is used.
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index 55bcc74e344f..767a05e009df 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -1666,7 +1666,14 @@ static int rt5651_set_jack(struct snd_soc_component *component,
+ 	return 0;
+ }
  
-+- realtek,jack-detect-source
-+  u32. Valid values:
-+  1: Use JD1_1 pin for jack-dectect
-+  2: Use JD1_2 pin for jack-dectect
-+  3: Use JD2 pin for jack-dectect
-+
-+- realtek,over-current-threshold-microamp
-+  u32, micbias over-current detection threshold in µA, valid values are
-+  600, 1500 and 2000µA.
-+
-+- realtek,over-current-scale-factor
-+  u32, micbias over-current detection scale-factor, valid values are:
-+  0: Scale current by 0.5
-+  1: Scale current by 0.75
-+  2: Scale current by 1.0
-+  3: Scale current by 1.5
-+
- Pins on the device (for linking into audio routes) for RT5651:
+-void rt5651_apply_properties(struct snd_soc_component *component)
++/*
++ * Note on some platforms the platform code may need to add device-properties,
++ * rather then relying only on properties set by the firmware. Therefor the
++ * property parsing MUST be done from the component driver's probe function,
++ * rather then from the i2c driver's probe function, so that the platform-code
++ * can attach extra properties before calling snd_soc_register_card().
++ */
++static void rt5651_apply_properties(struct snd_soc_component *component)
+ {
+ 	if (device_property_read_bool(component->dev, "realtek,in2-differential"))
+ 		snd_soc_component_update_bits(component, RT5651_IN1_IN2,
+@@ -1676,7 +1683,6 @@ void rt5651_apply_properties(struct snd_soc_component *component)
+ 		snd_soc_component_update_bits(component, RT5651_GPIO_CTRL1,
+ 				RT5651_GP2_PIN_MASK, RT5651_GP2_PIN_DMIC1_SCL);
+ }
+-EXPORT_SYMBOL_GPL(rt5651_apply_properties);
  
-   * DMIC L1
+ static int rt5651_probe(struct snd_soc_component *component)
+ {
+@@ -1893,6 +1899,10 @@ static void rt5651_jack_detect_work(struct work_struct *work)
+ 	snd_soc_jack_report(rt5651->hp_jack, report, SND_JACK_HEADSET);
+ }
+ 
++/*
++ * Note this function MUST not look at device-properties, see the comment
++ * above rt5651_apply_properties().
++ */
+ static int rt5651_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
+ {
+diff --git a/sound/soc/codecs/rt5651.h b/sound/soc/codecs/rt5651.h
+index 7d9d5fa09d6f..f3158488fc89 100644
+--- a/sound/soc/codecs/rt5651.h
++++ b/sound/soc/codecs/rt5651.h
+@@ -2080,6 +2080,4 @@ struct rt5651_priv {
+ 	bool hp_mute;
+ };
+ 
+-void rt5651_apply_properties(struct snd_soc_component *component);
+-
+ #endif /* __RT5651_H__ */
 -- 
 2.16.2
-
-
---===============5320124451221362825==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5320124451221362825==--
