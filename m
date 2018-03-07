@@ -1,22 +1,22 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [RFC PATCH] ASoC: dapm: add support to pinctrl dapm
-Date: Wed, 7 Mar 2018 16:20:37 +0000
-Message-ID: <a9ebf59b-401b-27b2-f6d8-025438f0e16e@linaro.org>
-References: <20180305123213.2045-1-srinivas.kandagatla@linaro.org>
- <20180305155208.GK8588@sirena.org.uk>
- <21635274-1d7b-5ed9-6832-2e12fd844f7a@linaro.org>
- <20180307151329.GJ7290@sirena.org.uk>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCHv5 1/5] dt-bindings: mfd: motorola-cpcap:
+ document audio-codec
+Date: Wed, 7 Mar 2018 16:30:45 +0000
+Message-ID: <20180307163045.cwufiv2xhi4fdxo2@dell>
+References: <20180223200254.25685-1-sebastian.reichel@collabora.co.uk>
+ <20180223200254.25685-2-sebastian.reichel@collabora.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f45.google.com (mail-wm0-f45.google.com [74.125.82.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A635267255
- for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 17:20:39 +0100 (CET)
-Received: by mail-wm0-f45.google.com with SMTP id w128so5939801wmw.0
- for <alsa-devel@alsa-project.org>; Wed, 07 Mar 2018 08:20:39 -0800 (PST)
-In-Reply-To: <20180307151329.GJ7290@sirena.org.uk>
-Content-Language: en-US
+Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
+ [209.85.128.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B872D267255
+ for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 17:30:48 +0100 (CET)
+Received: by mail-wr0-f193.google.com with SMTP id u49so2786793wrc.10
+ for <alsa-devel@alsa-project.org>; Wed, 07 Mar 2018 08:30:48 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20180223200254.25685-2-sebastian.reichel@collabora.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,29 +26,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
+To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Liam Girdwood <lgirdwood@gmail.com>, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Sebastian Reichel <sre@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 07/03/18 15:13, Mark Brown wrote:
-> On Mon, Mar 05, 2018 at 08:35:48PM +0000, Srinivas Kandagatla wrote:
->> On 05/03/18 15:52, Mark Brown wrote:
-> 
->>> This doesn't look right - we're trying to synchronize with the DAPM
->>> async queue from something that should be run inside that very queue.
->>> What is this supposed to be doing?
-> 
->> I thought this is supposed to ensure that any pending asynchronous I/O is
->> completed before touching pinctrl framework.
-> 
-> No, it completes all the pending DAPM operations.  async I/O is part of
-> that but it's not the only thing.
-
-Thanks for explaining, I will remove the synchronizing part and send a 
-next version,
-
-thanks,
-srini
-> 
+T24gRnJpLCAyMyBGZWIgMjAxOCwgU2ViYXN0aWFuIFJlaWNoZWwgd3JvdGU6Cgo+IFRoaXMgYWRk
+cyB0aGUgRFQgYmluZGluZyBmb3IgdGhlIGF1ZGlvLWNvZGVjIHN1Yi1tb2R1bGUgZm91bmQKPiBp
+bnNpZGUgdGhlIE1vdG9yb2xhIENQQ0FQIFBNSUMuCj4gCj4gU2lnbmVkLW9mZi1ieTogU2ViYXN0
+aWFuIFJlaWNoZWwgPHNlYmFzdGlhbi5yZWljaGVsQGNvbGxhYm9yYS5jby51az4KPiAtLS0KPiAg
+Li4uL2RldmljZXRyZWUvYmluZGluZ3MvbWZkL21vdG9yb2xhLWNwY2FwLnR4dCAgICAgfCA0MiAr
+KysrKysrKysrKysrKysrKysrKysrCj4gIDEgZmlsZSBjaGFuZ2VkLCA0MiBpbnNlcnRpb25zKCsp
+Cj4gCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZmQv
+bW90b3JvbGEtY3BjYXAudHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21m
+ZC9tb3Rvcm9sYS1jcGNhcC50eHQKPiBpbmRleCAxNWJjODg1ZjlkZjQuLjgyYzNhNzE0MDY2MCAx
+MDA2NDQKPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWZkL21vdG9y
+b2xhLWNwY2FwLnR4dAo+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9t
+ZmQvbW90b3JvbGEtY3BjYXAudHh0Cj4gQEAgLTEyLDYgKzEyLDMwIEBAIFJlcXVpcmVkIHByb3Bl
+cnRpZXM6Cj4gIC0gc3BpLW1heC1mcmVxdWVuY3kJOiBUeXBpY2FsbHkgc2V0IHRvIDMwMDAwMDAK
+PiAgLSBzcGktY3MtaGlnaAkJOiBTUEkgY2hpcCBzZWxlY3QgZGlyZWN0aW9uCj4gIAo+ICtPcHRp
+b25hbCBzdWJub2RlczoKPiArCj4gK1RoZSBzdWItZnVuY3Rpb25zIG9mIENQQ0FQIGdldCB0aGVp
+ciBvd24gbm9kZSB3aXRoIHRoZWlyIG93biBjb21wYXRpYmxlIHZhbHVlcywKPiArd2hpY2ggYXJl
+IGRlc2NyaWJlZCBpbiB0aGUgZm9sbG93aW5nIGZpbGVzOgo+ICsKPiArLSBEb2N1bWVudGF0aW9u
+L2RldmljZXRyZWUvYmluZGluZ3MvcG93ZXIvc3VwcGx5L2NwY2FwLWJhdHRlcnkudHh0Cj4gKy0g
+RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3Bvd2VyL3N1cHBseS9jcGNhcC1jaGFy
+Z2VyLnR4dAo+ICstIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9yZWd1bGF0b3Iv
+Y3BjYXAtcmVndWxhdG9yLnR4dAo+ICstIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
+cy9waHkvcGh5LWNwY2FwLXVzYi50eHQKPiArLSBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
+ZGluZ3MvaW5wdXQvY3BjYXAtcHdyYnV0dG9uLnR4dAo+ICstIERvY3VtZW50YXRpb24vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9ydGMvY3BjYXAtcnRjLnR4dAo+ICstIERvY3VtZW50YXRpb24vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9sZWRzL2xlZHMtY3BjYXAudHh0Cj4gKy0gRG9jdW1lbnRhdGlvbi9kZXZp
+Y2V0cmVlL2JpbmRpbmdzL2lpby9hZGMvY3BjYXAtYWRjLnR4dAoKTml0OiBCZXN0IHRvIHVzZSBy
+ZWxhdGl2ZSBwYXRoIG5hbWVzIGhlcmUgKGhpbnQ6IERUIGRvY3MgbWlnaHQgbm90CmxpdmUgaW4g
+dGhlcmUga2VybmVsIGZvcmV2ZXIpLgoKT3RoZXIgdGhhbiB0aGF0OgoKRm9yIG15IG93biByZWZl
+cmVuY2U6CiAgQWNrZWQtZm9yLU1GRC1ieTogTGVlIEpvbmVzIDxsZWUuam9uZXNAbGluYXJvLm9y
+Zz4KCi0tIApMZWUgSm9uZXMKTGluYXJvIFNlcnZpY2VzIFRlY2huaWNhbCBMZWFkCkxpbmFyby5v
+cmcg4pSCIE9wZW4gc291cmNlIHNvZnR3YXJlIGZvciBBUk0gU29DcwpGb2xsb3cgTGluYXJvOiBG
+YWNlYm9vayB8IFR3aXR0ZXIgfCBCbG9nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYWxzYS1kZXZlbAo=
