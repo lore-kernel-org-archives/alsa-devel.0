@@ -1,19 +1,18 @@
-From: Rohit Kumar <rohitkr@codeaurora.org>
-Subject: Re: [PATCH v3 19/25] ASoC: qcom: q6afe: add support to
- MI2S ports
-Date: Wed, 7 Mar 2018 15:05:17 +0530
-Message-ID: <7d3c344c-ccb5-78b8-e184-3ab65bdef6ac@codeaurora.org>
-References: <20180213165837.1620-1-srinivas.kandagatla@linaro.org>
- <20180213165837.1620-20-srinivas.kandagatla@linaro.org>
+From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Subject: [PATCH] slimbus: core: use put_device() instead of
+	kfree()
+Date: Wed,  7 Mar 2018 15:52:38 +0530
+Message-ID: <9d7f5ca30baa3a336b145a96a631a8c093f54d8b.1520418001.git.arvind.yadav.cs@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
- by alsa0.perex.cz (Postfix) with ESMTP id 09087266EBE
- for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 10:35:42 +0100 (CET)
-In-Reply-To: <20180213165837.1620-20-srinivas.kandagatla@linaro.org>
-Content-Language: en-US
+Received: from mail-it0-f66.google.com (mail-it0-f66.google.com
+ [209.85.214.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 81AC526705A
+ for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 11:23:29 +0100 (CET)
+Received: by mail-it0-f66.google.com with SMTP id v194so2789431itb.0
+ for <alsa-devel@alsa-project.org>; Wed, 07 Mar 2018 02:23:28 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,44 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: srinivas.kandagatla@linaro.org, andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, lgirdwood@gmail.com, plai@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, david.brown@linaro.org, robh+dt@kernel.org, spatakok@qti.qualcomm.com, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: srinivas.kandagatla@linaro.org, broonie@kernel.org, gregkh@linuxfoundation.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Never directly free @dev after calling device_register(), even
+if it returned an error! Always use put_device() to give up the
+reference initialized.
 
+Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+---
+ drivers/slimbus/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 2/13/2018 10:28 PM, srinivas.kandagatla@linaro.org wrote:
-> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->   include/dt-bindings/sound/qcom,q6afe.h |  10 +++
->   sound/soc/qcom/qdsp6/q6afe.c           | 111 +++++++++++++++++++++++++++++++++
->   sound/soc/qcom/qdsp6/q6afe.h           |  10 +++
->   3 files changed, 131 insertions(+)
->
-> diff --git a/include/dt-bindings/sound/qcom,q6afe.h b/include/dt-bindings/sound/qcom,q6afe.h
-> index e9004ee39f72..3cd862262369 100644
-> --- a/include/dt-bindings/sound/qcom,q6afe.h
-> +++ b/include/dt-bindings/sound/qcom,q6afe.h
-> @@ -16,6 +16,16 @@
->   #define SLIMBUS_4_TX    24
->   #define SLIMBUS_5_RX    25
->   #define SLIMBUS_5_TX    26
-> +#define QUATERNARY_MI2S_RX	34
-> +#define QUATERNARY_MI2S_TX	35
-> +#define SECONDARY_MI2S_RX	36
-> +#define SECONDARY_MI2S_TX	37
-> +#define TERTIARY_MI2S_RX	38
-> +#define TERTIARY_MI2S_TX	39
-> +#define PRIMARY_MI2S_RX		40
-> +#define PRIMARY_MI2S_TX		41
-Can we assign ids to Primary, secondary, tertiary and quaternary MI2S 
-ports in sequence starting with Primary.
-> +#define SECONDARY_PCM_RX	42
-> +#define SECONDARY_PCM_TX	43
-Why only SECONDARY_PCM_RX ? This is not required for MI2S right?
->   #define SLIMBUS_6_RX    45
->   #define SLIMBUS_6_TX    46
->
-[..]
+diff --git a/drivers/slimbus/core.c b/drivers/slimbus/core.c
+index 4988a8f..7ddfc67 100644
+--- a/drivers/slimbus/core.c
++++ b/drivers/slimbus/core.c
+@@ -141,7 +141,7 @@ static struct slim_device *slim_alloc_device(struct slim_controller *ctrl,
+ 	sbdev->e_addr = *eaddr;
+ 	ret = slim_add_device(ctrl, sbdev, node);
+ 	if (ret) {
+-		kfree(sbdev);
++		put_device(&sbdev->dev);
+ 		return NULL;
+ 	}
+ 
+-- 
+1.9.1
