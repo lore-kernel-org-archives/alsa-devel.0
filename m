@@ -1,79 +1,82 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH] ASoC: Use proper DT compatible string for
- Hardkernel Odroid boards
-Date: Wed, 07 Mar 2018 18:46:25 +0100
-Message-ID: <20180307174625.16597-1-s.nawrocki@samsung.com>
-References: <CGME20180307174638epcas2p33f071928807ccaa40ad07922c15be31c@epcas2p3.samsung.com>
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
+Subject: Re: [BUG] Kernel crash on Allwinner H3 due to sound core changes
+Date: Wed, 07 Mar 2018 22:11:56 +0100
+Message-ID: <1832733.mujlD9skaR@jernej-laptop>
+References: <2424862.oPtAVTfrB9@jernej-laptop> <20180302124050.GF6255@sirena.org.uk> <26212674.B0xcQEiVyd@jernej-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
- by alsa0.perex.cz (Postfix) with ESMTP id A7EBB267255
- for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 18:46:43 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, lgirdwood@gmail.com, robh+dt@kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>, m.szyprowski@samsung.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <26212674.B0xcQEiVyd@jernej-laptop>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: kuninori.morimoto.gx@renesas.com, maxime.ripard@free-electrons.com, wens@csie.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The Odroid boards are manufactured by Hardkernel, not Samsung. New compatible
-string entries are added, with "hardkernel," instead of "samsung," vendor
-prefix. Support for the old compatible strings is going to be removed after
-some time.
+Hi,
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
----
- Documentation/devicetree/bindings/sound/samsung,odroid.txt | 6 +++---
- sound/soc/samsung/odroid.c                                 | 4 +++-
- 2 files changed, 6 insertions(+), 4 deletions(-)
+Dne ponedeljek, 05. marec 2018 ob 22:30:23 CET je Jernej Škrabec napisal(a):
+> Hi,
+> 
+> Dne petek, 02. marec 2018 ob 13:40:50 CET je Mark Brown napisal(a):
+> > On Thu, Mar 01, 2018 at 11:23:57PM +0100, Jernej Škrabec wrote:
+> > > I removed parts of the code from the sun4i codec driver and
+> > > interestingly
+> > > it doesn't crash if I remove following lines:
+> > > 
+> > > ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+> > > if (ret) {
+> > > 
+> > > 	dev_err(&pdev->dev, "Failed to register against DMAEngine\n");
+> > > 	goto err_assert_reset;
+> > > 
+> > > }
+> > > 
+> > > Is it possible that NULL pointer causes troubles somewhere down the
+> > > line?
+> > 
+> > Shouldn't be, that's just the configuration which is optional and not
+> > what we're crashing trying to register, we can mostly configure things
+> > by querying the capabilities of the DMA controller via the dmaengine API
+> > these days.  You're removing all the DMA support there so cutting out a
+> > huge segment of the initialization of both this driver and the machine
+> > driver.  Other sunxi devices seem to be starting happily in -next so
+> > there's something system dependent here...
+> 
+> I enabled memory debugging and it seems that there is an issue caused by
+> loading sun4i-codec driver and it is somehow connected to
+> snd_dmaengine_pcm_unregister().
+> 
+> Here is relevant dmesg: https://pastebin.com/raw/80K9GPnB
+> 
 
-diff --git a/Documentation/devicetree/bindings/sound/samsung,odroid.txt b/Documentation/devicetree/bindings/sound/samsung,odroid.txt
-index 625b1b18fd02..f35a2694eb04 100644
---- a/Documentation/devicetree/bindings/sound/samsung,odroid.txt
-+++ b/Documentation/devicetree/bindings/sound/samsung,odroid.txt
-@@ -2,8 +2,8 @@ Samsung Exynos Odroid XU3/XU4 audio complex with MAX98090 codec
- 
- Required properties:
- 
-- - compatible - "samsung,odroidxu3-audio" - for Odroid XU3 board,
--		"samsung,odroidxu4-audio" - for Odroid XU4 board
-+ - compatible - "hardkernel,odroid-xu3-audio" - for Odroid XU3 board,
-+		"hardkernel,odroid-xu4-audio" - for Odroid XU4 board
-  - model - the user-visible name of this sound complex
-  - clocks - should contain entries matching clock names in the clock-names
-     property
-@@ -35,7 +35,7 @@ Required sub-nodes:
- Example:
- 
- sound {
--	compatible = "samsung,odroidxu3-audio";
-+	compatible = "hardkernel,odroid-xu3-audio";
- 	model = "Odroid-XU3";
- 	samsung,audio-routing =
- 		"Headphone Jack", "HPL",
-diff --git a/sound/soc/samsung/odroid.c b/sound/soc/samsung/odroid.c
-index 44b6de5a331a..92d750806d1d 100644
---- a/sound/soc/samsung/odroid.c
-+++ b/sound/soc/samsung/odroid.c
-@@ -213,8 +213,10 @@ static int odroid_audio_remove(struct platform_device *pdev)
- }
- 
- static const struct of_device_id odroid_audio_of_match[] = {
-+	{ .compatible	= "hardkernel,odroid-xu3-audio" },
-+	{ .compatible	= "hardkernel,odroid-xu4-audio" },
- 	{ .compatible	= "samsung,odroid-xu3-audio" },
--	{ .compatible	= "samsung,odroid-xu4-audio"},
-+	{ .compatible	= "samsung,odroid-xu4-audio" },
- 	{ },
+I found the issue. Commit be7ee5f32a9a ("ASoC: soc-generic-dmaengine-pcm: 
+replace platform to component") changes struct dmaengine_pcm:
+
+ struct dmaengine_pcm {
+ 	struct dma_chan *chan[SNDRV_PCM_STREAM_LAST + 1];
+ 	const struct snd_dmaengine_pcm_config *config;
+-	struct snd_soc_platform platform;
++	struct snd_soc_component component;
+ 	unsigned int flags;
  };
- MODULE_DEVICE_TABLE(of, odroid_audio_of_match);
--- 
-2.14.2
+
+In snd_dmaengine_pcm_register():
+ret = snd_soc_add_component(dev, &pcm->component,
+				    &dmaengine_pcm_component, NULL, 0);
+
+And now, sun4i-codec first time returns -EPROBE_DEFER since driver for analog 
+part is not yet loaded. Because of that, all components get destroyed.
+
+snd_dmaengine_pcm_unregister() calls snd_soc_unregister_component() and that 
+one calls __snd_soc_unregister_component() multiple times (until it fails).
+
+Issue is that __snd_soc_unregister_component() uses kfree() on component 
+pointer and that naturally can't succed since component was never kmalloc'ed 
+since it is a part of a bigger structure - struct dmaengine_pcm.
+
+What would be the best fix? Changing struct dmaengine_pcm to have pointer to a 
+component, so it can be freed?
+
+Best regards,
+Jernej
