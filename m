@@ -1,49 +1,94 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] slimbus: core: use put_device() instead of kfree()
-Date: Wed, 7 Mar 2018 10:45:50 +0000
-Message-ID: <55c2399e-3136-4a90-26ac-0ebcb2918a15@linaro.org>
-References: <9d7f5ca30baa3a336b145a96a631a8c093f54d8b.1520418001.git.arvind.yadav.cs@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 03/22] ASoC: rt5651: Configure
+ jack-detect source through a device-property
+Date: Wed, 7 Mar 2018 12:34:25 +0000
+Message-ID: <20180307123425.GC7290@sirena.org.uk>
+References: <20180304143610.21125-1-hdegoede@redhat.com>
+ <20180304143610.21125-4-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <9d7f5ca30baa3a336b145a96a631a8c093f54d8b.1520418001.git.arvind.yadav.cs@gmail.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arvind Yadav <arvind.yadav.cs@gmail.com>, broonie@kernel.org, gregkh@linuxfoundation.org
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============0350951709908989519=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id C923526705A
+ for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2018 13:34:36 +0100 (CET)
+In-Reply-To: <20180304143610.21125-4-hdegoede@redhat.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Carlo Caione <carlo@endlessm.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
+--===============0350951709908989519==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="rQ2U398070+RC21q"
+Content-Disposition: inline
 
-On 07/03/18 10:22, Arvind Yadav wrote:
-> Never directly free @dev after calling device_register(), even
-> if it returned an error! Always use put_device() to give up the
-> reference initialized.
-> 
-> Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
-> ---
->   drivers/slimbus/core.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-Looks good for me,
 
-Will queue it up.
+--rQ2U398070+RC21q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> diff --git a/drivers/slimbus/core.c b/drivers/slimbus/core.c
-> index 4988a8f..7ddfc67 100644
-> --- a/drivers/slimbus/core.c
-> +++ b/drivers/slimbus/core.c
-> @@ -141,7 +141,7 @@ static struct slim_device *slim_alloc_device(struct slim_controller *ctrl,
->   	sbdev->e_addr = *eaddr;
->   	ret = slim_add_device(ctrl, sbdev, node);
->   	if (ret) {
-> -		kfree(sbdev);
-> +		put_device(&sbdev->dev);
->   		return NULL;
->   	}
->   
-> 
+On Sun, Mar 04, 2018 at 03:35:51PM +0100, Hans de Goede wrote:
 
-thanks,
-srini
+> +/*
+> + * Note these MUST match the values from the DT binding:
+> + * Documentation/devicetree/bindings/sound/rt5651.txt
+> + */
+>  enum rt5651_jd_src {
+>  	RT5651_JD_NULL,
+>  	RT5651_JD1_1,
+
+It's normal to put values like this in a header in include/dt-bindings
+so it's easy to get things right in actual DT bindings (and possibly
+ACPI tables as well if the machinery for that does the right thing) -
+can you send a followup doing that please?
+
+> -static const struct dmi_system_id rt5651_quirk_table[] = {
+> -	{
+> -		.callback = rt5651_quirk_cb,
+> -		.matches = {
+> -			DMI_MATCH(DMI_SYS_VENDOR, "KIANO"),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "KIANO SlimNote 14.2"),
+> -		},
+> -		.driver_data = (unsigned long *) RT5651_JD1_1,
+> -	},
+> -	{}
+> -};
+> -
+
+I'm still not thrilled about this bit but oh well :(
+
+--rQ2U398070+RC21q
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqf3FAACgkQJNaLcl1U
+h9D3kAf+Lxeu+eSfrwj3VaVjcx+dXJ5PeR/Ke2Lns/bTfH+m65kqZ72zDDjpr5pm
+/zgITsxve6MimWirBj49VAE0nzakRCYxNbbqe8wX7uxRLMriCn4IvnG7nbLhPa23
+GkmYPCPpeVchhONHk8Wea5nUbRNocLCTssZCN+GNne2t8nSDTWVv9Kxti6SJdUcc
+QGS+gLbYVXrXCjJytO5D1o1ENYQ40bnvYo8IeWMyo7KTP01C2ze65MV9N7MiDCVN
+5uHllyWNxQsaSZSgniOT28TJC2r3cVNkeK6pvs5XhgJ8YwOhibWG/CAN69wHEl8N
+xKmwSYeh6TrIF5YUtmPC4J+uEbwLkw==
+=IcVU
+-----END PGP SIGNATURE-----
+
+--rQ2U398070+RC21q--
+
+--===============0350951709908989519==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0350951709908989519==--
