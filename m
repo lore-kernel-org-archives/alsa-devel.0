@@ -1,90 +1,104 @@
-From: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Subject: Re: [PATCHv5 3/5] mfd: motorola-cpcap: Add audio-codec support
-Date: Thu, 8 Mar 2018 10:46:52 +0100
-Message-ID: <20180308094652.qg4atjw5c3hayaz3@earth.universe>
-References: <20180223200254.25685-1-sebastian.reichel@collabora.co.uk>
- <20180223200254.25685-4-sebastian.reichel@collabora.co.uk>
- <20180307163211.rytfli5tb47yhtug@dell>
+From: Lukas Wunner <lukas@wunner.de>
+Subject: Re: [PATCH v2 3/3] ALSA: hda: Disabled unused audio
+ controller for Dell platforms with Switchable Graphics
+Date: Thu, 8 Mar 2018 12:30:20 +0100
+Message-ID: <20180308113020.GA23073@wunner.de>
+References: <20180308091023.9061-1-kai.heng.feng@canonical.com>
+ <20180308091023.9061-3-kai.heng.feng@canonical.com>
+ <20180308093848.GA24068@wunner.de>
+ <1A1B9259-DC5B-4C1A-96BD-7FCACDBFFBB3@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="apgfiynhdwpmzzxl"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net
+ [176.9.242.62]) by alsa0.perex.cz (Postfix) with ESMTP id BEF4426705A
+ for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 12:30:21 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20180307163211.rytfli5tb47yhtug@dell>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Tony Lindgren <tony@atomide.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
+In-Reply-To: <1A1B9259-DC5B-4C1A-96BD-7FCACDBFFBB3@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kai Heng Feng <kai.heng.feng@canonical.com>
+Cc: mjg59@srcf.ucam.org, alsa-devel@alsa-project.org, Mario Limonciello <mario.limonciello@dell.com>, tiwai@suse.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, pali.rohar@gmail.com, dvhart@infradead.org, platform-driver-x86@vger.kernel.org, andy@infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Mar 08, 2018 at 06:38:45PM +0800, Kai Heng Feng wrote:
+> >On Mar 8, 2018, at 5:38 PM, Lukas Wunner <lukas@wunner.de> wrote:
+> >On Thu, Mar 08, 2018 at 05:10:23PM +0800, Kai-Heng Feng wrote:
+> >>Some Dell platforms (Preicsion 7510/7710/7520/7720) have a BIOS option
+> >>"Switchable Graphics" (SG).
+> >>
+> >>When SG is enabled, we have:
+> >>00:02.0 VGA compatible controller: Intel Corporation Device 591b (rev 04)
+> >>00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (rev 31)
+> >>01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
+> >>[AMD/ATI] Ellesmere [Polaris10]
+> >>01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere
+> >>[Radeon RX 580]
+> >>
+> >>The Intel Audio outputs all the sound, including HDMI audio. The audio
+> >>controller comes with AMD graphics doesn't get used.
+> >>
+> >>When SG is disabled, we have:
+> >>00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (rev 31)
+> >>01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
+> >>[AMD/ATI] Ellesmere [Polaris10]
+> >>01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere
+> >>[Radeon RX 580]
+> >>
+> >>Now it's a typical discrete-only system. HDMI audio comes from AMD audio
+> >>controller, others from Intel audio controller.
+> >>
+> >>When SG is enabled, the unused AMD audio controller still exposes its
+> >>sysfs, so userspace still opens the control file and stream. If
+> >>userspace tries to output sound through the stream, it hangs when
+> >>runtime suspend kicks in:
+> >>[ 12.796265] snd_hda_intel 0000:01:00.1: Disabling via vga_switcheroo
+> >>[ 12.796367] snd_hda_intel 0000:01:00.1: Cannot lock devices!
+> >
+> >This should be fixed by the following series:
+> >https://lists.freedesktop.org/archives/dri-devel/2018-March/168012.html
+> >
+> >Please verify that by testing the series on the machine in question.
+> >I'm hoping to get those patches in for 4.17.  I suspect that your
+> >patch may not be necessary then.
+> 
+> I no longer see the warning message with your patch. Thanks!
 
---apgfiynhdwpmzzxl
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Awesome, thanks for testing!
 
-Hi Lee,
 
-On Wed, Mar 07, 2018 at 04:32:11PM +0000, Lee Jones wrote:
-> On Fri, 23 Feb 2018, Sebastian Reichel wrote:
-> > +static const struct mfd_cell cpcap_mfd_devices[] =3D {
+> >>Since the discrete audio controller isn't useful when SG enabled, we
+> >>should just disable the device.
+> >
+> >I don't quite follow, when SG is enabled but hda_intel doesn't bind
+> >to the AMD audio device, how are you going to stream audio to
+> >external displays?  Are external DP/HDMI ports muxed to the integrated
+> >GPU when SG is enabled?
+> 
+> Yes. It's a muxed port.
+> The can directly output via integrated Intel GPU when SG is enabled.
+> The discrete audio controller never gets used when SG is enabled.
 
-[...]
+Okay, that's a crucial piece of information which I think should be
+made more explicit in the commit message and probably also in a code
+comment so that someone reading through hda_intel.c doesn't have to
+look in the git history to understand what's going on.
 
-> > +	}, {
-> > +		.name          =3D "cpcap-led",
-> > +		.id            =3D 4,
-> > +		.of_compatible =3D "motorola,cpcap-led-cp",
-> > +	}, {
-> > +		.name          =3D "cpcap-codec",
-> > +	}
-> > +};
->=20
-> With none of the entries containing platform_data /me wonders why you
-> can't still use devm_of_platform_populate()?
+I'd remove the portion of the commit message pertaining to runtime
+suspend and instead write something like:
 
-Because devm_of_platform_populate works with compatible properties and
-cpcap-codec does not have one after I removed it for Mark.
+    If Switchable Graphics is enabled, external DP/HDMI ports are
+    muxed to the Intel GPU and HDA controller and therefore those
+    on the AMD HDA controller shouldn't be exposed to user space.
 
--- Sebastian
+Thanks,
 
-> >  static int cpcap_probe(struct spi_device *spi)
-> >  {
-> >  	const struct of_device_id *match;
-> > @@ -260,7 +308,8 @@ static int cpcap_probe(struct spi_device *spi)
-> >  	if (ret)
-> >  		return ret;
-> > =20
-> > -	return devm_of_platform_populate(&cpcap->spi->dev);
-> > +	return devm_mfd_add_devices(&spi->dev, 0, cpcap_mfd_devices,
-> > +				    ARRAY_SIZE(cpcap_mfd_devices), NULL, 0, NULL);
-> >  }
-> > =20
-> >  static struct spi_driver cpcap_driver =3D {
->=20
-> --=20
-> Lee Jones
-> Linaro Services Technical Lead
-> Linaro.org =E2=94=82 Open source software for ARM SoCs
-> Follow Linaro: Facebook | Twitter | Blog
-
---apgfiynhdwpmzzxl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAlqhBnsACgkQ2O7X88g7
-+pqSmBAAgX8CzEdb4wxp/qgqjQaEcdjL7sz7MkodTGO2PkqWChQCuWYK+IDa2k36
-KcJ+YZ/cEw0QgD1cmMz+swhz9UrvDYriqsBZ0A4Bcu8Tbc0JR12QIQEjVWYrvhQi
-Tj5nMbsF7t70J3Eg6i3Eorkx5ipyON5L/Uu08Mog8xZOK46aAeG5W6K44pg6GJ8v
-ov1EE7ubCZIL1gPXOkjXjbl9uetAAXWDYvKURSELm+EeRtrvcfB8iSQy8IF2QPOh
-Nk1p+eRuOTw2ZCBypqDF8o1TGciKLeS3RRGN4hhCV+j+EDc/tmIY/a70MqaVqywh
-Vw514RImpP6B5X2UZqxZg7SSg1ERx2CYPNE7ctZCDpGg+jIJ5YAHHzyJlcTJQHl2
-AxEQF6sLgFfPp/f2wCAjf5wlp+a2SkWlKfM34JPT1+gUNW8Tw/lUwuAVBmFBTOzp
-1DOGROzoeVwrKINAueyzf3FHyuGZ8f60IKMyU3kOwJRaOK/tww2KcltdilcjVx3V
-ESlbEB0XuLn5mbgC61JuCagsIFIBc9d6OTGHfar/DKU2+oE5Kqg7rW4SSwGThEim
-/ivMveujAR7c9NWgkyukzeiNG1o5XYj74c9AUljqBKdnRWTbIkmNwjlcQgHl7OxR
-lhVfMGJu0EvVbcKBoQXeM0W3YoibCRZwx2Vabzc/d1zIEK+O0Ww=
-=dxXu
------END PGP SIGNATURE-----
-
---apgfiynhdwpmzzxl--
+Lukas
