@@ -1,68 +1,89 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: uniphier: remove superfluous <linux/mfd/syscon.h> inclusion" to the asoc tree
-Date: Thu, 08 Mar 2018 17:22:37 +0000
-Message-ID: <E1etzFV-0007XV-Lg@debutante>
-References: <1520496569-32032-1-git-send-email-yamada.masahiro@socionext.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1520496569-32032-1-git-send-email-yamada.masahiro@socionext.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.orgMark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.orgKatsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, Jassi Brar <jaswinder.singh@linaro.org>, Masami Hiramatsu <mhiramat@kernel.org>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+From: Kees Cook <keescook@chromium.org>
+Subject: Re: linux-next on n900: oops in codec_reg_show() when
+	grepping sysfs
+Date: Thu, 8 Mar 2018 11:47:50 -0800
+Message-ID: <CAGXu5jK1cvTOCT_OZVwk20LCNt6QLEM5CoLBXpT9JaHpwEKeJg@mail.gmail.com>
+References: <20180308151421.GA13160@amd>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ua0-f196.google.com (mail-ua0-f196.google.com
+ [209.85.217.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20F822673F5
+ for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 20:47:52 +0100 (CET)
+Received: by mail-ua0-f196.google.com with SMTP id b13so640656uam.10
+ for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2018 11:47:52 -0800 (PST)
+In-Reply-To: <20180308151421.GA13160@amd>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pavel Machek <pavel@ucw.cz>
+Cc: peter.ujfalusi@ti.com, moderated for non-subscribers <alsa-devel@alsa-project.org>, ivo.g.dimitrov.75@gmail.com, Kevin Hilman <khilman@kernel.org>, Tony Lindgren <tony@atomide.com>, security@kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>, kernel list <linux-kernel@vger.kernel.org>, sre@kernel.org, martijn@brixit.nl, =?UTF-8?Q?Filip_Matijevi=C4=87?= <filip.matijevic.pz@gmail.com>, Mark Brown <broonie@kernel.org>, abcloriens@gmail.com, Sakari Ailus <sakari.ailus@linux.intel.com>, pali.rohar@gmail.com, Clayton Craft <clayton@craftyguy.net>, linux-omap@vger.kernel.org, patrikbachan@gmail.com, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, "Serge E. Hallyn" <serge@hallyn.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Thu, Mar 8, 2018 at 7:14 AM, Pavel Machek <pavel@ucw.cz> wrote:
+> Hi!
+>
+> pavel@n900:/sys$ uname -a
+> Linux n900 4.16.0-rc4-next-20180308 #71 Thu Mar 8 15:27:49 CET 2018
+> armv7l GNU/Linux
+> pavel@n900:/sys$ grep -ri fasdfasdf .
+>
+> leads to an oops:
+>
+> [ 2278.331878] DSS: context saved
+> [ 2278.820343] Unable to handle kernel NULL pointer dereference at
+> virtual address 00000004
+> [ 2278.828948] pgd = c36040a2
+> [ 2278.831787] [00000004] *pgd=876c4831, *pte=00000000, *ppte=00000000
+> [ 2278.838439] Internal error: Oops: 17 [#1] ARM
+> [ 2278.843017] Modules linked in:
+> [ 2278.846221] CPU: 0 PID: 16337 Comm: grep Tainted: G        W
+> 4.16.0-rc4-next-20180308 #71
+> [ 2278.855529] Hardware name: Nokia RX-51 board
+> [ 2278.860015] PC is at soc_codec_reg_show+0x8/0x19c
+> [ 2278.864959] LR is at codec_reg_show+0x28/0x30
 
-   ASoC: uniphier: remove superfluous <linux/mfd/syscon.h> inclusion
+Looks like a NULL codec (driver has offsetof of 0x4).
 
-has been applied to the asoc tree at
+static ssize_t soc_codec_reg_show(struct snd_soc_codec *codec, char *buf,
+                                  size_t count, loff_t pos)
+{
+...
+        loff_t p = 0;
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+        wordsize = min_bytes_needed(codec->driver->reg_cache_size) * 2;
+        regsize = codec->driver->reg_word_size * 2;
+...
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+This would paper over it. I have no idea that the lifetime expectation
+are for codec and driver...
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 96c44f6576c9..78ad165ad424 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -137,6 +137,9 @@ static ssize_t soc_codec_reg_show(struct
+snd_soc_codec *codec, char *buf,
+        size_t total = 0;
+        loff_t p = 0;
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
++       if (!codec || !codec->driver)
++               return 0;
++
+        wordsize = min_bytes_needed(codec->driver->reg_cache_size) * 2;
+        regsize = codec->driver->reg_word_size * 2;
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
 
-Thanks,
-Mark
+-Kees
 
->From d2b9430771cae7edc9927b36ce0e76a336fd952c Mon Sep 17 00:00:00 2001
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Thu, 8 Mar 2018 17:09:29 +0900
-Subject: [PATCH] ASoC: uniphier: remove superfluous <linux/mfd/syscon.h>
- inclusion
-
-None of aio-compress.c depends on the syscon header.
-
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-Acked-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/uniphier/aio-compress.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/soc/uniphier/aio-compress.c b/sound/soc/uniphier/aio-compress.c
-index 4751c8bdabec..4c1027aa615e 100644
---- a/sound/soc/uniphier/aio-compress.c
-+++ b/sound/soc/uniphier/aio-compress.c
-@@ -22,7 +22,6 @@
- #include <linux/dma-mapping.h>
- #include <linux/errno.h>
- #include <linux/kernel.h>
--#include <linux/mfd/syscon.h>
- #include <linux/module.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
 -- 
-2.16.2
+Kees Cook
+Pixel Security
