@@ -1,45 +1,67 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] ASoC: Use proper DT compatible string for
- Hardkernel Odroid boards
-Date: Wed, 7 Mar 2018 20:42:46 -0600
-Message-ID: <20180308024246.iwaecyxek56xhr5d@rob-hp-laptop>
-References: <CGME20180307174638epcas2p33f071928807ccaa40ad07922c15be31c@epcas2p3.samsung.com>
- <20180307174625.16597-1-s.nawrocki@samsung.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f66.google.com (mail-oi0-f66.google.com
- [209.85.218.66])
- by alsa0.perex.cz (Postfix) with ESMTP id B7ADF26732A
- for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 03:42:48 +0100 (CET)
-Received: by mail-oi0-f66.google.com with SMTP id j79so3307297oib.12
- for <alsa-devel@alsa-project.org>; Wed, 07 Mar 2018 18:42:48 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20180307174625.16597-1-s.nawrocki@samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, lgirdwood@gmail.com, broonie@kernel.org, m.szyprowski@samsung.com
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: [PATCH v2 1/3] dell-led: Change dell-led.h to dell-common.h
+Date: Thu,  8 Mar 2018 17:10:21 +0800
+Message-ID: <20180308091023.9061-1-kai.heng.feng@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: mjg59@srcf.ucam.org, pali.rohar@gmail.com, dvhart@infradead.org, andy@infradead.org, mario.limonciello@dell.com, tiwai@suse.com
+Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 07, 2018 at 06:46:25PM +0100, Sylwester Nawrocki wrote:
-> The Odroid boards are manufactured by Hardkernel, not Samsung. New compatible
-> string entries are added, with "hardkernel," instead of "samsung," vendor
-> prefix. Support for the old compatible strings is going to be removed after
-> some time.
-> 
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
->  Documentation/devicetree/bindings/sound/samsung,odroid.txt | 6 +++---
->  sound/soc/samsung/odroid.c                                 | 4 +++-
->  2 files changed, 6 insertions(+), 4 deletions(-)
+This header will be used for more than just led. Change it to a more
+generic name.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v2: Mario suggested to squash the HDA part into the same series.
+
+ drivers/platform/x86/dell-laptop.c          | 2 +-
+ include/linux/{dell-led.h => dell-common.h} | 4 ++--
+ sound/pci/hda/dell_wmi_helper.c             | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+ rename include/linux/{dell-led.h => dell-common.h} (61%)
+
+diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
+index c52c6723374b..8ba820e6c3d0 100644
+--- a/drivers/platform/x86/dell-laptop.c
++++ b/drivers/platform/x86/dell-laptop.c
+@@ -29,7 +29,7 @@
+ #include <linux/mm.h>
+ #include <linux/i8042.h>
+ #include <linux/debugfs.h>
+-#include <linux/dell-led.h>
++#include <linux/dell-common.h>
+ #include <linux/seq_file.h>
+ #include <acpi/video.h>
+ #include "dell-rbtn.h"
+diff --git a/include/linux/dell-led.h b/include/linux/dell-common.h
+similarity index 61%
+rename from include/linux/dell-led.h
+rename to include/linux/dell-common.h
+index 92521471517f..37e4b614dd74 100644
+--- a/include/linux/dell-led.h
++++ b/include/linux/dell-common.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef __DELL_LED_H__
+-#define __DELL_LED_H__
++#ifndef __DELL_COMMON_H__
++#define __DELL_COMMON_H__
+ 
+ int dell_micmute_led_set(int on);
+ 
+diff --git a/sound/pci/hda/dell_wmi_helper.c b/sound/pci/hda/dell_wmi_helper.c
+index 1b48a8c19d28..56050cc3c0ee 100644
+--- a/sound/pci/hda/dell_wmi_helper.c
++++ b/sound/pci/hda/dell_wmi_helper.c
+@@ -4,7 +4,7 @@
+  */
+ 
+ #if IS_ENABLED(CONFIG_DELL_LAPTOP)
+-#include <linux/dell-led.h>
++#include <linux/dell-common.h>
+ 
+ enum {
+ 	MICMUTE_LED_ON,
+-- 
+2.15.1
