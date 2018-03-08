@@ -1,67 +1,62 @@
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: [PATCH v2 1/3] dell-led: Change dell-led.h to dell-common.h
-Date: Thu,  8 Mar 2018 17:10:21 +0800
-Message-ID: <20180308091023.9061-1-kai.heng.feng@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: mjg59@srcf.ucam.org, pali.rohar@gmail.com, dvhart@infradead.org, andy@infradead.org, mario.limonciello@dell.com, tiwai@suse.com
-Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCHv5 3/5] mfd: motorola-cpcap: Add audio-codec
+	support
+Date: Thu, 8 Mar 2018 10:48:31 +0000
+Message-ID: <20180308104831.fflq2arj5dxgntia@dell>
+References: <20180223200254.25685-1-sebastian.reichel@collabora.co.uk>
+ <20180223200254.25685-4-sebastian.reichel@collabora.co.uk>
+ <20180307163211.rytfli5tb47yhtug@dell>
+ <20180308094652.qg4atjw5c3hayaz3@earth.universe>
+ <20180308095315.mpcmx2ob6yhsnrm6@dell>
+ <20180308102757.jyi7uo566n6nuct5@earth.universe>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9311D2674D2
+ for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 11:48:35 +0100 (CET)
+Received: by mail-wm0-f65.google.com with SMTP id i3so10106574wmi.4
+ for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2018 02:48:35 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20180308102757.jyi7uo566n6nuct5@earth.universe>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, kernel@collabora.com, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This header will be used for more than just led. Change it to a more
-generic name.
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
-v2: Mario suggested to squash the HDA part into the same series.
-
- drivers/platform/x86/dell-laptop.c          | 2 +-
- include/linux/{dell-led.h => dell-common.h} | 4 ++--
- sound/pci/hda/dell_wmi_helper.c             | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
- rename include/linux/{dell-led.h => dell-common.h} (61%)
-
-diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
-index c52c6723374b..8ba820e6c3d0 100644
---- a/drivers/platform/x86/dell-laptop.c
-+++ b/drivers/platform/x86/dell-laptop.c
-@@ -29,7 +29,7 @@
- #include <linux/mm.h>
- #include <linux/i8042.h>
- #include <linux/debugfs.h>
--#include <linux/dell-led.h>
-+#include <linux/dell-common.h>
- #include <linux/seq_file.h>
- #include <acpi/video.h>
- #include "dell-rbtn.h"
-diff --git a/include/linux/dell-led.h b/include/linux/dell-common.h
-similarity index 61%
-rename from include/linux/dell-led.h
-rename to include/linux/dell-common.h
-index 92521471517f..37e4b614dd74 100644
---- a/include/linux/dell-led.h
-+++ b/include/linux/dell-common.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 */
--#ifndef __DELL_LED_H__
--#define __DELL_LED_H__
-+#ifndef __DELL_COMMON_H__
-+#define __DELL_COMMON_H__
- 
- int dell_micmute_led_set(int on);
- 
-diff --git a/sound/pci/hda/dell_wmi_helper.c b/sound/pci/hda/dell_wmi_helper.c
-index 1b48a8c19d28..56050cc3c0ee 100644
---- a/sound/pci/hda/dell_wmi_helper.c
-+++ b/sound/pci/hda/dell_wmi_helper.c
-@@ -4,7 +4,7 @@
-  */
- 
- #if IS_ENABLED(CONFIG_DELL_LAPTOP)
--#include <linux/dell-led.h>
-+#include <linux/dell-common.h>
- 
- enum {
- 	MICMUTE_LED_ON,
--- 
-2.15.1
+T24gVGh1LCAwOCBNYXIgMjAxOCwgU2ViYXN0aWFuIFJlaWNoZWwgd3JvdGU6Cj4gT24gVGh1LCBN
+YXIgMDgsIDIwMTggYXQgMDk6NTM6MTVBTSArMDAwMCwgTGVlIEpvbmVzIHdyb3RlOgo+ID4gT24g
+VGh1LCAwOCBNYXIgMjAxOCwgU2ViYXN0aWFuIFJlaWNoZWwgd3JvdGU6Cj4gPiA+IE9uIFdlZCwg
+TWFyIDA3LCAyMDE4IGF0IDA0OjMyOjExUE0gKzAwMDAsIExlZSBKb25lcyB3cm90ZToKPiA+ID4g
+PiBPbiBGcmksIDIzIEZlYiAyMDE4LCBTZWJhc3RpYW4gUmVpY2hlbCB3cm90ZToKPiA+ID4gPiA+
+ICtzdGF0aWMgY29uc3Qgc3RydWN0IG1mZF9jZWxsIGNwY2FwX21mZF9kZXZpY2VzW10gPSB7Cj4g
+PiA+IAo+ID4gPiBbLi4uXQo+ID4gPiAKPiA+ID4gPiA+ICsJfSwgewo+ID4gPiA+ID4gKwkJLm5h
+bWUgICAgICAgICAgPSAiY3BjYXAtbGVkIiwKPiA+ID4gPiA+ICsJCS5pZCAgICAgICAgICAgID0g
+NCwKPiA+ID4gPiA+ICsJCS5vZl9jb21wYXRpYmxlID0gIm1vdG9yb2xhLGNwY2FwLWxlZC1jcCIs
+Cj4gPiA+ID4gPiArCX0sIHsKPiA+ID4gPiA+ICsJCS5uYW1lICAgICAgICAgID0gImNwY2FwLWNv
+ZGVjIiwKPiA+ID4gPiA+ICsJfQo+ID4gPiA+ID4gK307Cj4gPiA+ID4gCj4gPiA+ID4gV2l0aCBu
+b25lIG9mIHRoZSBlbnRyaWVzIGNvbnRhaW5pbmcgcGxhdGZvcm1fZGF0YSAvbWUgd29uZGVycyB3
+aHkgeW91Cj4gPiA+ID4gY2FuJ3Qgc3RpbGwgdXNlIGRldm1fb2ZfcGxhdGZvcm1fcG9wdWxhdGUo
+KT8KPiA+ID4gCj4gPiA+IEJlY2F1c2UgZGV2bV9vZl9wbGF0Zm9ybV9wb3B1bGF0ZSB3b3JrcyB3
+aXRoIGNvbXBhdGlibGUgcHJvcGVydGllcyBhbmQKPiA+ID4gY3BjYXAtY29kZWMgZG9lcyBub3Qg
+aGF2ZSBvbmUgYWZ0ZXIgSSByZW1vdmVkIGl0IGZvciBNYXJrLgo+ID4gCj4gPiBTb3JyeSwgSSBt
+aXNzZWQgdGhhdCBjb252ZXJzYXRpb24uICBXaHkgd2FzIGl0IHJlbW92ZWQ/Cj4gCj4gSSBoYWQg
+aXQgaW4gUEFUQ0h2MS1QQVRDSHY0LiBJdCB3YXMgcmVtb3ZlZCwgc2luY2UgTWFyayBkaWRuJ3Qg
+d2FudAo+IHRvIGhhdmUgaXQgaW4gdGhlIERUIEFCSS4KClJpZ2h0LCBidXQgd2h5PyAgSXMgaXQg
+bm90IGEgaGFyZHdhcmUgZGV2aWNlPyAgSSB0aGluayBjb252ZXJ0aW5nIGZyb20KZGV2bV9vZl9w
+bGF0Zm9ybV9wb3B1bGF0ZSgpIGZvciBvbmUgc3ViLWRldmljZSBpcyBhIGJpdCBkcmFzdGljLgoK
+LS0gCkxlZSBKb25lcyBb5p2O55C85pavXQpMaW5hcm8gU2VydmljZXMgVGVjaG5pY2FsIExlYWQK
+TGluYXJvLm9yZyDilIIgT3BlbiBzb3VyY2Ugc29mdHdhcmUgZm9yIEFSTSBTb0NzCkZvbGxvdyBM
+aW5hcm86IEZhY2Vib29rIHwgVHdpdHRlciB8IEJsb2cKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
