@@ -1,42 +1,45 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 4/6] ASoC: Snow Chromebook DT bindings
-	update
-Date: Wed, 7 Mar 2018 20:40:19 -0600
-Message-ID: <20180308024019.72hy3ffidk4dsyx6@rob-hp-laptop>
-References: <CGME20180307170309epcas1p40ae0381dbd69168307cf23f0d993e8b3@epcas1p4.samsung.com>
- <20180307170249.14057-1-s.nawrocki@samsung.com>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH] ASoC: uniphier: remove superfluous <linux/mfd/syscon.h>
+ inclusion
+Date: Thu,  8 Mar 2018 17:09:29 +0900
+Message-ID: <1520496569-32032-1-git-send-email-yamada.masahiro@socionext.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f193.google.com (mail-ot0-f193.google.com
- [74.125.82.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5548126732A
- for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 03:40:22 +0100 (CET)
-Received: by mail-ot0-f193.google.com with SMTP id y11so4109601otg.0
- for <alsa-devel@alsa-project.org>; Wed, 07 Mar 2018 18:40:21 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20180307170249.14057-1-s.nawrocki@samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, lgirdwood@gmail.com, broonie@kernel.org, m.szyprowski@samsung.com
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, Jassi Brar <jaswinder.singh@linaro.org>, Masami Hiramatsu <mhiramat@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 07, 2018 at 06:02:49PM +0100, Sylwester Nawrocki wrote:
-> The new DT bindings are introduced so sound on the HDMI interface
-> is also supported.
-> 
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
->  Documentation/devicetree/bindings/sound/snow.txt | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
+None of aio-compress.c depends on the syscon header.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Acked-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+---
+
+ sound/soc/uniphier/aio-compress.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/sound/soc/uniphier/aio-compress.c b/sound/soc/uniphier/aio-compress.c
+index 4751c8b..4c1027a 100644
+--- a/sound/soc/uniphier/aio-compress.c
++++ b/sound/soc/uniphier/aio-compress.c
+@@ -22,7 +22,6 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/errno.h>
+ #include <linux/kernel.h>
+-#include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+-- 
+2.7.4
