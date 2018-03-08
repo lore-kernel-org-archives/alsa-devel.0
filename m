@@ -1,20 +1,19 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: vmaster: Zero-clear ctl before
-	calling slave get
-Date: Thu,  8 Mar 2018 08:40:40 +0100
-Message-ID: <20180308074040.16151-2-tiwai@suse.de>
-References: <20180308074040.16151-1-tiwai@suse.de>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [PATCH 6/6] ASoC: samsung: Add HDMI audio support
+ for Chromebook Snow
+Date: Thu, 08 Mar 2018 12:52:31 +0100
+Message-ID: <fe2fe1cd-b1a7-9f16-5c68-110c0f375dca@samsung.com>
+References: <CGME20180307170502epcas1p187b4623a868daa6045465836903e591f@epcas1p1.samsung.com>
+ <20180307170450.14182-1-s.nawrocki@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3363C267403
- for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 08:40:49 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 8DDFDAE19
- for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 07:40:49 +0000 (UTC)
-In-Reply-To: <20180308074040.16151-1-tiwai@suse.de>
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7665426753C
+ for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 12:52:39 +0100 (CET)
+In-reply-to: <20180307170450.14182-1-s.nawrocki@samsung.com>
+Content-language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,30 +23,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, lgirdwood@gmail.com, robh+dt@kernel.org, m.szyprowski@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-Use kzalloc() instead of kmalloc() so that we don't need to rely fully
-on the slave get() callback to clear the control value that might be
-copied to user-space.
+On 03/07/2018 06:04 PM, Sylwester Nawrocki wrote:
+> +	/* In the multi-codec case codec_dai 0 is HDMI and 1 is MAX98095. */
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/vmaster.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Oops, it should be the other way around, now it contradicts the DT binding
+documentation. I'm going to post v2.
 
-diff --git a/sound/core/vmaster.c b/sound/core/vmaster.c
-index b67de2bb06a2..9e96186742d0 100644
---- a/sound/core/vmaster.c
-+++ b/sound/core/vmaster.c
-@@ -63,7 +63,7 @@ static int slave_update(struct link_slave *slave)
- 	struct snd_ctl_elem_value *uctl;
- 	int err, ch;
- 
--	uctl = kmalloc(sizeof(*uctl), GFP_KERNEL);
-+	uctl = kzalloc(sizeof(*uctl), GFP_KERNEL);
- 	if (!uctl)
- 		return -ENOMEM;
- 	uctl->id = slave->slave.id;
--- 
-2.16.2
+> +	if (rtd->num_codecs > 1)
+> +		codec_dai = rtd->codec_dais[1];
+> +	else
+> +		codec_dai = rtd->codec_dai;
