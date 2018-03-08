@@ -1,102 +1,190 @@
-From: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Subject: Re: [PATCHv5 3/5] mfd: motorola-cpcap: Add audio-codec support
-Date: Thu, 8 Mar 2018 11:27:57 +0100
-Message-ID: <20180308102757.jyi7uo566n6nuct5@earth.universe>
-References: <20180223200254.25685-1-sebastian.reichel@collabora.co.uk>
- <20180223200254.25685-4-sebastian.reichel@collabora.co.uk>
- <20180307163211.rytfli5tb47yhtug@dell>
- <20180308094652.qg4atjw5c3hayaz3@earth.universe>
- <20180308095315.mpcmx2ob6yhsnrm6@dell>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zsrhboitvomsevkd"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180308095315.mpcmx2ob6yhsnrm6@dell>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Tony Lindgren <tony@atomide.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
+From: Kai Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH v2 3/3] ALSA: hda: Disabled unused audio
+ controller for Dell platforms with Switchable Graphics
+Date: Thu, 8 Mar 2018 18:38:45 +0800
+Message-ID: <1A1B9259-DC5B-4C1A-96BD-7FCACDBFFBB3@canonical.com>
+References: <20180308091023.9061-1-kai.heng.feng@canonical.com>
+ <20180308091023.9061-3-kai.heng.feng@canonical.com>
+ <20180308093848.GA24068@wunner.de>
+Mime-Version: 1.0 (Mac OS X Mail 11.3 \(3445.6.15\))
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="yes"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id DE6622674D2
+ for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 11:38:52 +0100 (CET)
+Received: from mail-pl0-f72.google.com ([209.85.160.72])
+ by youngberry.canonical.com with esmtps (TLS1.0:RSA_AES_128_CBC_SHA1:16)
+ (Exim 4.76) (envelope-from <kai.heng.feng@canonical.com>)
+ id 1etswm-0000Gc-4B
+ for alsa-devel@alsa-project.org; Thu, 08 Mar 2018 10:38:52 +0000
+Received: by mail-pl0-f72.google.com with SMTP id az5-v6so2667406plb.14
+ for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2018 02:38:52 -0800 (PST)
+In-Reply-To: <20180308093848.GA24068@wunner.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lukas Wunner <lukas@wunner.de>
+Cc: mjg59@srcf.ucam.org, alsa-devel@alsa-project.org, Mario Limonciello <mario.limonciello@dell.com>, tiwai@suse.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, pali.rohar@gmail.com, dvhart@infradead.org, platform-driver-x86@vger.kernel.org, andy@infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---zsrhboitvomsevkd
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
+> On Mar 8, 2018, at 5:38 PM, Lukas Wunner <lukas@wunner.de> wrote:
+>
+> On Thu, Mar 08, 2018 at 05:10:23PM +0800, Kai-Heng Feng wrote:
+>> Some Dell platforms (Preicsion 7510/7710/7520/7720) have a BIOS option
+>> "Switchable Graphics" (SG).
+>>
+>> When SG is enabled, we have:
+>> 00:02.0 VGA compatible controller: Intel Corporation Device 591b (rev 04)
+>> 00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (rev 31)
+>> 01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.   
+>> [AMD/ATI] Ellesmere [Polaris10]
+>> 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere  
+>> [Radeon RX 580]
+>>
+>> The Intel Audio outputs all the sound, including HDMI audio. The audio
+>> controller comes with AMD graphics doesn't get used.
+>>
+>> When SG is disabled, we have:
+>> 00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (rev 31)
+>> 01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.   
+>> [AMD/ATI] Ellesmere [Polaris10]
+>> 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere  
+>> [Radeon RX 580]
+>>
+>> Now it's a typical discrete-only system. HDMI audio comes from AMD audio
+>> controller, others from Intel audio controller.
+>>
+>> When SG is enabled, the unused AMD audio controller still exposes its
+>> sysfs, so userspace still opens the control file and stream. If
+>> userspace tries to output sound through the stream, it hangs when
+>> runtime suspend kicks in:
+>> [ 12.796265] snd_hda_intel 0000:01:00.1: Disabling via vga_switcheroo
+>> [ 12.796367] snd_hda_intel 0000:01:00.1: Cannot lock devices!
+>
+> This should be fixed by the following series:
+> https://lists.freedesktop.org/archives/dri-devel/2018-March/168012.html
+>
+> Please verify that by testing the series on the machine in question.
+> I'm hoping to get those patches in for 4.17.  I suspect that your
+> patch may not be necessary then.
 
-On Thu, Mar 08, 2018 at 09:53:15AM +0000, Lee Jones wrote:
-> On Thu, 08 Mar 2018, Sebastian Reichel wrote:
-> > On Wed, Mar 07, 2018 at 04:32:11PM +0000, Lee Jones wrote:
-> > > On Fri, 23 Feb 2018, Sebastian Reichel wrote:
-> > > > +static const struct mfd_cell cpcap_mfd_devices[] =3D {
-> >=20
-> > [...]
-> >=20
-> > > > +	}, {
-> > > > +		.name          =3D "cpcap-led",
-> > > > +		.id            =3D 4,
-> > > > +		.of_compatible =3D "motorola,cpcap-led-cp",
-> > > > +	}, {
-> > > > +		.name          =3D "cpcap-codec",
-> > > > +	}
-> > > > +};
-> > >=20
-> > > With none of the entries containing platform_data /me wonders why you
-> > > can't still use devm_of_platform_populate()?
-> >=20
-> > Because devm_of_platform_populate works with compatible properties and
-> > cpcap-codec does not have one after I removed it for Mark.
->=20
-> Sorry, I missed that conversation.  Why was it removed?
+I no longer see the warning message with your patch. Thanks!
 
-I had it in PATCHv1-PATCHv4. It was removed, since Mark didn't want
-to have it in the DT ABI.
+>
+>
+>> Since the discrete audio controller isn't useful when SG enabled, we
+>> should just disable the device.
+>
+> I don't quite follow, when SG is enabled but hda_intel doesn't bind
+> to the AMD audio device, how are you going to stream audio to
+> external displays?  Are external DP/HDMI ports muxed to the integrated
+> GPU when SG is enabled?
 
--- Sebastian
+Yes. It's a muxed port.
+The can directly output via integrated Intel GPU when SG is enabled.
+The discrete audio controller never gets used when SG is enabled.
 
-> > > >  static int cpcap_probe(struct spi_device *spi)
-> > > >  {
-> > > >  	const struct of_device_id *match;
-> > > > @@ -260,7 +308,8 @@ static int cpcap_probe(struct spi_device *spi)
-> > > >  	if (ret)
-> > > >  		return ret;
-> > > > =20
-> > > > -	return devm_of_platform_populate(&cpcap->spi->dev);
-> > > > +	return devm_mfd_add_devices(&spi->dev, 0, cpcap_mfd_devices,
-> > > > +				    ARRAY_SIZE(cpcap_mfd_devices), NULL, 0, NULL);
-> > > >  }
-> > > > =20
-> > > >  static struct spi_driver cpcap_driver =3D {
-> > >=20
->=20
->=20
->=20
-> --=20
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Linaro Services Technical Lead
-> Linaro.org =E2=94=82 Open source software for ARM SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+The unused discrete audio controller still gets opened by userspace:
+# lsof /dev/snd/controlC1
+COMMAND    PID USER   FD   TYPE DEVICE SIZE/OFF  NODE NAME
+pulseaudi  965  gdm   18u   CHR  116,2      0t0 17913 /dev/snd/controlC1
+pulseaudi 1423    u   17u   CHR  116,2      0t0 17913 /dev/snd/controlC1
+pulseaudi 1423    u   24u   CHR  116,2      0t0 17913 /dev/snd/controlC1
 
---zsrhboitvomsevkd
-Content-Type: application/pgp-signature; name="signature.asc"
+Also pcms:
+# ls /dev/snd/pcmC1*
+/dev/snd/pcmC1D10p  /dev/snd/pcmC1D11p  /dev/snd/pcmC1D3p   
+/dev/snd/pcmC1D7p  /dev/snd/pcmC1D8p  /dev/snd/pcmC1D9p
 
------BEGIN PGP SIGNATURE-----
+So I think my patch is still needed.
 
-iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAlqhECkACgkQ2O7X88g7
-+poVWw/+OSqG/ke08GEveyHvyECKhfxk6wW0ijT0H2UKBrs/8jO1ePyXLOrBlteV
-RyXSGWg5Z3IUKeepp67ON9UgPfYI23oT8RulwRtVxs/Zhxv0nlRMrED3SSa3rC3P
-i5ffXHxzyM8zMBqXJnLvDObUHORL+SRpEl3KmySr1oujiS6JS30eHJZSfIfneZ8O
-7xM25vSquYCBWI/36leOljBuffRJM+S+p8Wtihn3EEFQ9MB0kyZ+4l7WSak+lmBf
-AzLREilx+Y88vX6XSxvpHt2m+daK/VHhLI0I3biN4qfI6fUlh3PyiFEigdhmDmJL
-Ip8SsNGnHvIc2GlyJ3VX5QwurgTXI7pqLknhbfT9nNORczesr+w7sRunBIX8xcqh
-prHXvDtUBFY3jdIswcu49EFf5Bq5h3Aa3nCeHGYnC3Yx/y2szoOMZ4c/las4oTqZ
-/wUJs3WiUm+q8W09pvbK16tExZIHdGPXsDX27bKslLrF2Fcye8lCEJcAgaZfP78A
-hfAOD2IMF9a/v+bAQJz9o4HU46CWXEZ/kTD4ETJKXS5huT1oj1lAd6Mip5rMgWQt
-cTfd+YCd0C/2fdRcy/xPtRDc9KKz4HobhGqQQBNjVrKKE6/9jzVSnrajgbqXLLU0
-rpeVuih04pgjestGMcpDzDuQNKs5VzGCqY4D4JFEGeNa8O0EaJA=
-=gES4
------END PGP SIGNATURE-----
-
---zsrhboitvomsevkd--
+>
+> Thanks,
+>
+> Lukas
+>
+>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>> ---
+>> v2: Mario suggested to squash the HDA part into the same series.
+>>
+>>  sound/pci/hda/hda_intel.c | 35 +++++++++++++++++++++++++++++++++++
+>>  1 file changed, 35 insertions(+)
+>>
+>> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+>> index 96143df19b21..8e3e8b88624a 100644
+>> --- a/sound/pci/hda/hda_intel.c
+>> +++ b/sound/pci/hda/hda_intel.c
+>> @@ -49,6 +49,7 @@
+>>  #include <linux/clocksource.h>
+>>  #include <linux/time.h>
+>>  #include <linux/completion.h>
+>> +#include <linux/dell-common.h>
+>>
+>>  #ifdef CONFIG_X86
+>>  /* for snoop control */
+>> @@ -1620,6 +1621,35 @@ static void check_msi(struct azx *chip)
+>>  	}
+>>  }
+>>
+>> +#if IS_ENABLED(CONFIG_DELL_LAPTOP)
+>> +static bool check_dell_switchable_gfx(struct pci_dev *pdev)
+>> +{
+>> +	static int (*dell_switchable_gfx_enabled_func)(bool *);
+>> +	bool enabled;
+>> +	int err;
+>> +
+>> +	if (pdev->vendor != PCI_VENDOR_ID_ATI ||
+>> +	    pdev->subsystem_vendor != PCI_VENDOR_ID_DELL)
+>> +		return false;
+>> +
+>> +	dell_switchable_gfx_enabled_func =
+>> +		symbol_request(dell_switchable_gfx_enabled);
+>> +	if (!dell_switchable_gfx_enabled_func)
+>> +		return false;
+>> +
+>> +	err = dell_switchable_gfx_enabled_func(&enabled);
+>> +
+>> +	symbol_put(dell_switchable_gfx_enabled);
+>> +
+>> +	return !err ? enabled : false;
+>> +}
+>> +#else
+>> +static bool check_dell_switchable_gfx(struct pci_dev *pdev)
+>> +{
+>> +	return false;
+>> +}
+>> +#endif
+>> +
+>>  /* check the snoop mode availability */
+>>  static void azx_check_snoop_available(struct azx *chip)
+>>  {
+>> @@ -1702,6 +1732,11 @@ static int azx_create(struct snd_card *card,  
+>> struct pci_dev *pci,
+>>  	if (err < 0)
+>>  		return err;
+>>
+>> +	if (check_dell_switchable_gfx(pci)) {
+>> +		pci_disable_device(pci);
+>> +		return -ENODEV;
+>> +	}
+>> +
+>>  	hda = kzalloc(sizeof(*hda), GFP_KERNEL);
+>>  	if (!hda) {
+>>  		pci_disable_device(pci);
+>> -- 
+>> 2.15.1
+>>
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
