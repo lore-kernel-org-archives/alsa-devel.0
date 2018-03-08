@@ -1,53 +1,90 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 0/2] More hardening for ALSA sequencer
-	write/ioctl races
-Date: Thu,  8 Mar 2018 08:18:54 +0100
-Message-ID: <20180308071856.12149-1-tiwai@suse.de>
+From: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+Subject: Re: [PATCHv5 3/5] mfd: motorola-cpcap: Add audio-codec support
+Date: Thu, 8 Mar 2018 10:46:52 +0100
+Message-ID: <20180308094652.qg4atjw5c3hayaz3@earth.universe>
+References: <20180223200254.25685-1-sebastian.reichel@collabora.co.uk>
+ <20180223200254.25685-4-sebastian.reichel@collabora.co.uk>
+ <20180307163211.rytfli5tb47yhtug@dell>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 99819267403
- for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 08:18:59 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: =?UTF-8?q?=E8=8C=83=E9=BE=99=E9=A3=9E?= <long7573@126.com>, Nicolai Stange <nstange@suse.de>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="apgfiynhdwpmzzxl"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180307163211.rytfli5tb47yhtug@dell>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Tony Lindgren <tony@atomide.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-here is two patches to paper over the still remaining races in ALSA
-sequencer write and ioctl that have been leaked in the previous fix
-for CVE-2018-1000004.
+--apgfiynhdwpmzzxl
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The reports came up totally individually, so both people are put as
-Reported-by tag here.
+Hi Lee,
 
+On Wed, Mar 07, 2018 at 04:32:11PM +0000, Lee Jones wrote:
+> On Fri, 23 Feb 2018, Sebastian Reichel wrote:
+> > +static const struct mfd_cell cpcap_mfd_devices[] =3D {
 
-thanks,
+[...]
 
-Takashi
+> > +	}, {
+> > +		.name          =3D "cpcap-led",
+> > +		.id            =3D 4,
+> > +		.of_compatible =3D "motorola,cpcap-led-cp",
+> > +	}, {
+> > +		.name          =3D "cpcap-codec",
+> > +	}
+> > +};
+>=20
+> With none of the entries containing platform_data /me wonders why you
+> can't still use devm_of_platform_populate()?
 
-===
+Because devm_of_platform_populate works with compatible properties and
+cpcap-codec does not have one after I removed it for Mark.
 
-Takashi Iwai (2):
-  ALSA: seq: Don't allow resizing pool in use
-  ALSA: seq: More protection for concurrent write and ioctl races
+-- Sebastian
 
- sound/core/seq/seq_clientmgr.c | 21 ++++++++++++++-------
- sound/core/seq/seq_fifo.c      |  2 +-
- sound/core/seq/seq_memory.c    | 14 ++++++++++----
- sound/core/seq/seq_memory.h    |  3 ++-
- 4 files changed, 27 insertions(+), 13 deletions(-)
+> >  static int cpcap_probe(struct spi_device *spi)
+> >  {
+> >  	const struct of_device_id *match;
+> > @@ -260,7 +308,8 @@ static int cpcap_probe(struct spi_device *spi)
+> >  	if (ret)
+> >  		return ret;
+> > =20
+> > -	return devm_of_platform_populate(&cpcap->spi->dev);
+> > +	return devm_mfd_add_devices(&spi->dev, 0, cpcap_mfd_devices,
+> > +				    ARRAY_SIZE(cpcap_mfd_devices), NULL, 0, NULL);
+> >  }
+> > =20
+> >  static struct spi_driver cpcap_driver =3D {
+>=20
+> --=20
+> Lee Jones
+> Linaro Services Technical Lead
+> Linaro.org =E2=94=82 Open source software for ARM SoCs
+> Follow Linaro: Facebook | Twitter | Blog
 
--- 
-2.16.2
+--apgfiynhdwpmzzxl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAlqhBnsACgkQ2O7X88g7
++pqSmBAAgX8CzEdb4wxp/qgqjQaEcdjL7sz7MkodTGO2PkqWChQCuWYK+IDa2k36
+KcJ+YZ/cEw0QgD1cmMz+swhz9UrvDYriqsBZ0A4Bcu8Tbc0JR12QIQEjVWYrvhQi
+Tj5nMbsF7t70J3Eg6i3Eorkx5ipyON5L/Uu08Mog8xZOK46aAeG5W6K44pg6GJ8v
+ov1EE7ubCZIL1gPXOkjXjbl9uetAAXWDYvKURSELm+EeRtrvcfB8iSQy8IF2QPOh
+Nk1p+eRuOTw2ZCBypqDF8o1TGciKLeS3RRGN4hhCV+j+EDc/tmIY/a70MqaVqywh
+Vw514RImpP6B5X2UZqxZg7SSg1ERx2CYPNE7ctZCDpGg+jIJ5YAHHzyJlcTJQHl2
+AxEQF6sLgFfPp/f2wCAjf5wlp+a2SkWlKfM34JPT1+gUNW8Tw/lUwuAVBmFBTOzp
+1DOGROzoeVwrKINAueyzf3FHyuGZ8f60IKMyU3kOwJRaOK/tww2KcltdilcjVx3V
+ESlbEB0XuLn5mbgC61JuCagsIFIBc9d6OTGHfar/DKU2+oE5Kqg7rW4SSwGThEim
+/ivMveujAR7c9NWgkyukzeiNG1o5XYj74c9AUljqBKdnRWTbIkmNwjlcQgHl7OxR
+lhVfMGJu0EvVbcKBoQXeM0W3YoibCRZwx2Vabzc/d1zIEK+O0Ww=
+=dxXu
+-----END PGP SIGNATURE-----
+
+--apgfiynhdwpmzzxl--
