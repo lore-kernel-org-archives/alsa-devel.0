@@ -1,23 +1,25 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv5 3/5] mfd: motorola-cpcap: Add audio-codec
-	support
-Date: Thu, 8 Mar 2018 11:25:28 +0000
-Message-ID: <20180308112528.GC6019@sirena.org.uk>
-References: <20180223200254.25685-1-sebastian.reichel@collabora.co.uk>
- <20180223200254.25685-4-sebastian.reichel@collabora.co.uk>
- <20180307163211.rytfli5tb47yhtug@dell>
- <20180308094652.qg4atjw5c3hayaz3@earth.universe>
- <20180308095315.mpcmx2ob6yhsnrm6@dell>
- <20180308102757.jyi7uo566n6nuct5@earth.universe>
- <20180308104831.fflq2arj5dxgntia@dell>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH] ASoC: Use proper DT compatible string for
+ Hardkernel Odroid boards
+Date: Thu, 8 Mar 2018 12:24:34 +0100
+Message-ID: <CAJKOXPf0KwotgJ=6SeoX9dXSqe6cpX1ajsYpjTjkTmWyLq8djg@mail.gmail.com>
+References: <CGME20180307174638epcas2p33f071928807ccaa40ad07922c15be31c@epcas2p3.samsung.com>
+ <20180307174625.16597-1-s.nawrocki@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4194265201790113491=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id ED1E0267530
- for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 12:25:37 +0100 (CET)
-In-Reply-To: <20180308104831.fflq2arj5dxgntia@dell>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ by alsa0.perex.cz (Postfix) with ESMTP id 84042267530
+ for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 12:24:37 +0100 (CET)
+Received: from mail-wm0-f51.google.com (mail-wm0-f51.google.com [74.125.82.51])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 0DB0B2177C
+ for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 11:24:36 +0000 (UTC)
+Received: by mail-wm0-f51.google.com with SMTP id 188so10348394wme.1
+ for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2018 03:24:35 -0800 (PST)
+In-Reply-To: <20180307174625.16597-1-s.nawrocki@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,60 +29,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, kernel@collabora.com, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, =?UTF-8?B?QmFydMWCb21pZWogxbtvxYJuaWVya2lld2ljeg==?= <b.zolnierkie@samsung.com>, lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Mar 7, 2018 at 6:46 PM, Sylwester Nawrocki
+<s.nawrocki@samsung.com> wrote:
+> The Odroid boards are manufactured by Hardkernel, not Samsung. New compatible
+> string entries are added, with "hardkernel," instead of "samsung," vendor
+> prefix. Support for the old compatible strings is going to be removed after
+> some time.
+>
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> ---
+>  Documentation/devicetree/bindings/sound/samsung,odroid.txt | 6 +++---
+>  sound/soc/samsung/odroid.c                                 | 4 +++-
+>  2 files changed, 6 insertions(+), 4 deletions(-)
 
---===============4194265201790113491==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="0vzXIDBeUiKkjNJl"
-Content-Disposition: inline
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-
---0vzXIDBeUiKkjNJl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Mar 08, 2018 at 10:48:31AM +0000, Lee Jones wrote:
-> On Thu, 08 Mar 2018, Sebastian Reichel wrote:
-
-> > I had it in PATCHv1-PATCHv4. It was removed, since Mark didn't want
-> > to have it in the DT ABI.
-
-> Right, but why?  Is it not a hardware device?  I think converting from
-> devm_of_platform_populate() for one sub-device is a bit drastic.
-
-It's not a separate physical device or IP and doesn't exist outside of
-the MFD, it's just how Linux is currently choosing to divide up the chip
-right now but that's totally open to change even in future versions of
-Linux.  Clocks are a big issue with audio stuff, right now sections of
-the clock tree get handled in the CODEC driver but we're going to want
-to push them out to a clock driver so we're not reimplementing handling
-for clocks.
-
---0vzXIDBeUiKkjNJl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqhHacACgkQJNaLcl1U
-h9DETQf/QrTCO70nd6nwMsr13HX5SYWEaNAyWx8yHUHtSH0zKyR5fF5Csf/EcYaI
-kaOQbe+fe9keFmT5nD0eZfBLfUyZ6qG1TtR0/nmQpi4BtW3war9/za9dvozmRqSk
-Vani9yJlf0P1SgziEKPETn5hNXDG/GJD9qGlVoowZuzWY22F+nqxPb9A9d5lYMxG
-3SpxrgfEPG7ymXTgvkkGNURbhoKw0JQ9JLpJNLM3PRD3VykNFv6FKrQOu4edHKL2
-BNzfTIWDO9tU85UnZoyelnE9t6D0+PJN+AptOuyZulU1trdSj31Zb33IVwZorKLn
-noxhrkV4JK4XZbuFIhSzfQKC66nv3A==
-=T9Ey
------END PGP SIGNATURE-----
-
---0vzXIDBeUiKkjNJl--
-
---===============4194265201790113491==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4194265201790113491==--
+Best regards,
+Krzysztof
