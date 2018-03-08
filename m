@@ -1,20 +1,19 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH] ASoC: Use proper DT compatible string for
- Hardkernel Odroid boards
-Date: Thu, 08 Mar 2018 16:29:46 +0100
-Message-ID: <8e54b22b-623b-d19f-7b05-b4718391d56d@samsung.com>
-References: <CGME20180307174638epcas2p33f071928807ccaa40ad07922c15be31c@epcas2p3.samsung.com>
- <20180307174625.16597-1-s.nawrocki@samsung.com>
- <20180308104054.GA6019@sirena.org.uk>
+From: Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>
+Subject: Re: [PATCH v2 2/3] platform/x86: dell-*: Add interface
+ for switchable graphics status query
+Date: Thu, 8 Mar 2018 17:38:37 +0100
+Message-ID: <20180308163837.myfmnowz5ogto52w@pali>
+References: <20180308091023.9061-1-kai.heng.feng@canonical.com>
+ <20180308091023.9061-2-kai.heng.feng@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2578405435568653213=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
- by alsa0.perex.cz (Postfix) with ESMTP id A59492673F5
- for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 16:29:55 +0100 (CET)
-In-reply-to: <20180308104054.GA6019@sirena.org.uk>
-Content-language: en-GB
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 798DE2673F5
+ for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 17:38:40 +0100 (CET)
+Received: by mail-wm0-f65.google.com with SMTP id 188so479239wme.1
+ for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2018 08:38:40 -0800 (PST)
+In-Reply-To: <20180308091023.9061-2-kai.heng.feng@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,22 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, lgirdwood@gmail.com, Krzysztof Kozlowski <krzk@kernel.org>, robh+dt@kernel.org, m.szyprowski@samsung.com
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: mjg59@srcf.ucam.org, alsa-devel@alsa-project.org, mario.limonciello@dell.com, linux-kernel@vger.kernel.org, tiwai@suse.com, platform-driver-x86@vger.kernel.org, dvhart@infradead.org, andy@infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/08/2018 11:40 AM, Mark Brown wrote:
-> On Wed, Mar 07, 2018 at 06:46:25PM +0100, Sylwester Nawrocki wrote:
->> The Odroid boards are manufactured by Hardkernel, not Samsung. New compatible
->> string entries are added, with "hardkernel," instead of "samsung," vendor
->> prefix. Support for the old compatible strings is going to be removed after
->> some time.
-> 
-> Acked-by: Mark Brown <broonie@kernel.org>
 
-Mark, I thought this can be applied through ASoC tree for 4.17-rc1 and then 
-I would post related dts patch for subsequent kernel release.
+--===============2578405435568653213==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qk6dsxcavtjhuczj"
+Content-Disposition: inline
 
--- 
-Thanks,
-Sylwester
+
+--qk6dsxcavtjhuczj
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thursday 08 March 2018 17:10:22 Kai-Heng Feng wrote:
+> +int dell_switchable_gfx_enabled(bool *enabled);
+
+What about following API?
+
+bool dell_switchable_gfx_is_enabled(void);
+
+Are you really interested in errors? Then what about?
+
+int dell_switchable_gfx_is_enabled(void);
+
+with e.g.
+  < 0 - error
+  =3D 0 - disabled
+  > 0 - enabled
+
+--=20
+Pali Roh=C3=A1r
+pali.rohar@gmail.com
+
+--qk6dsxcavtjhuczj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQS4VrIQdKium2krgIWL8Mk9A+RDUgUCWqFnBgAKCRCL8Mk9A+RD
+Uv37AKDH/cgvznJjDKcmEdMbu1ruHksJogCfV+C3N7NwJFZfaToBx9dNPNj7ze4=
+=lj6p
+-----END PGP SIGNATURE-----
+
+--qk6dsxcavtjhuczj--
+
+--===============2578405435568653213==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2578405435568653213==--
