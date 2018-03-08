@@ -1,69 +1,51 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v2 2/2] ASoC: Add bindings for PCM1789
-Date: Wed, 7 Mar 2018 16:30:48 -0600
-Message-ID: <20180307223048.lqnryaazr5egg2m7@rob-hp-laptop>
-References: <20180305124817.7421-1-mylene.josserand@bootlin.com>
- <20180305124817.7421-3-mylene.josserand@bootlin.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [BUG] Kernel crash on Allwinner H3 due to sound core changes
+Date: Thu, 8 Mar 2018 11:13:48 +0000
+Message-ID: <20180308111348.GB6019@sirena.org.uk>
+References: <2424862.oPtAVTfrB9@jernej-laptop>
+ <20180302124050.GF6255@sirena.org.uk>
+ <26212674.B0xcQEiVyd@jernej-laptop>
+ <1832733.mujlD9skaR@jernej-laptop>
+ <87efkvtldx.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cvVnyQ+4j833TQvp"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20180305124817.7421-3-mylene.josserand@bootlin.com>
+In-Reply-To: <87efkvtldx.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@bootlin.com>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alexandre.belloni@bootlin.com, thomas.petazzoni@bootlin.com, michael@amarulasolutions.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>, maxime.ripard@free-electrons.com, wens@csie.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 05, 2018 at 01:48:17PM +0100, Mylène Josserand wrote:
-> Add a device-tree binding for Texas Instrument's PCM1789 codec.
-> For the moment, only I2C bus is supported but SPI could be added
-> in future.
-> 
-> Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>
-> ---
->  Documentation/devicetree/bindings/sound/pcm1789.txt | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/pcm1789.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/pcm1789.txt b/Documentation/devicetree/bindings/sound/pcm1789.txt
-> new file mode 100644
-> index 000000000000..a6cdc2c83c98
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/pcm1789.txt
-> @@ -0,0 +1,21 @@
-> +Texas Instruments pcm1789 DT bindings
 
-What function does this device provide?
+--cvVnyQ+4j833TQvp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +
-> +This driver supports the I2C bus.
+On Thu, Mar 08, 2018 at 01:21:02AM +0000, Kuninori Morimoto wrote:
 
-Bindings describe h/w, not drivers.
+> Ahh.. indeed. Good catch !
+> How about to add such flag ?
+> This is just idea. No tested, No compiled, but can help you ?
 
-> +
-> +Required properties:
-> +
-> + - compatible: "ti,pcm1789"
-> +
-> +Required properties on I2C:
-> +
-> + - reg: the I2C address
-> + - reset-gpios: GPIO to control the RESET pin
-> +
-> +Examples:
-> +
-> +	codec: pcm1789@4c {
+I think this makes sense as a patch.  We might want to disallow
+allocating components as part of a bigger struct so everything is more
+consistent but that's a bigger thing.
 
-audio-codec@4c
+--cvVnyQ+4j833TQvp
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If that's the function...
+-----BEGIN PGP SIGNATURE-----
 
-> +		compatible = "ti,pcm1789";
-> +		reg = <0x4c>;
-> +		reset-gpios = <&gpio2 14 GPIO_ACTIVE_LOW>;
-> +		#sound-dai-cells = <0>;
-> +	};
-> -- 
-> 2.11.0
-> 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqhGuwACgkQJNaLcl1U
+h9AUAgf+MJiAYUpRZy23aEevSZgmNgAduCG2s0RlN9hiuqqD8OEbMFcqo71h6m7j
+7PohlRTqyKiwx9yAkbHaga8dzm+0sizBz8chgUEp/tbWCsVwfkx/Gd8xek4/ygFC
+yGmlvUFhNLM7G+wQLYaz7U8lzFXH5Mr2DvAkVRW7HD7rdsm0QAmOqhLpm9yU5547
+PuhXVEMXt88zaXldwgMeQ5KAIn0sRqIIPHMAP0vaEAyy8fBLX8pBSDrrF9zzVYUY
+zaflBqqwzKcMXEvTyIFaaK4jRHG4xL6H7JGIAq5H8Szz5c291GJfiTl17l8ER7KA
+jSIiCgNGWckHqyX+VAzkNudAkpkJwQ==
+=HqiJ
+-----END PGP SIGNATURE-----
+
+--cvVnyQ+4j833TQvp--
