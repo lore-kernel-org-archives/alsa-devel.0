@@ -1,72 +1,111 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Use proper DT compatible string for
- Hardkernel Odroid boards
-Date: Thu, 8 Mar 2018 10:40:54 +0000
-Message-ID: <20180308104054.GA6019@sirena.org.uk>
-References: <CGME20180307174638epcas2p33f071928807ccaa40ad07922c15be31c@epcas2p3.samsung.com>
- <20180307174625.16597-1-s.nawrocki@samsung.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6867409056689916381=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 21773267463
- for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 11:40:56 +0100 (CET)
-In-Reply-To: <20180307174625.16597-1-s.nawrocki@samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, lgirdwood@gmail.com, robh+dt@kernel.org, m.szyprowski@samsung.com
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: [PATCH v2 3/3] ALSA: hda: Disabled unused audio controller for Dell platforms with Switchable Graphics
+Date: Thu,  8 Mar 2018 17:10:23 +0800
+Message-ID: <20180308091023.9061-3-kai.heng.feng@canonical.com>
+References: <20180308091023.9061-1-kai.heng.feng@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180308091023.9061-1-kai.heng.feng@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: mjg59@srcf.ucam.org, pali.rohar@gmail.com, dvhart@infradead.org, andy@infradead.org, mario.limonciello@dell.com, tiwai@suse.com
+Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+Some Dell platforms (Preicsion 7510/7710/7520/7720) have a BIOS option
+"Switchable Graphics" (SG).
 
---===============6867409056689916381==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
-Content-Disposition: inline
+When SG is enabled, we have:
+00:02.0 VGA compatible controller: Intel Corporation Device 591b (rev 04)
+00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (rev 31)
+01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.  [AMD/ATI] Ellesmere [Polaris10]
+01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere [Radeon RX 580]
 
+The Intel Audio outputs all the sound, including HDMI audio. The audio
+controller comes with AMD graphics doesn't get used.
 
---mP3DRpeJDSE+ciuQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+When SG is disabled, we have:
+00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (rev 31)
+01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.  [AMD/ATI] Ellesmere [Polaris10]
+01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere [Radeon RX 580]
 
-On Wed, Mar 07, 2018 at 06:46:25PM +0100, Sylwester Nawrocki wrote:
-> The Odroid boards are manufactured by Hardkernel, not Samsung. New compatible
-> string entries are added, with "hardkernel," instead of "samsung," vendor
-> prefix. Support for the old compatible strings is going to be removed after
-> some time.
+Now it's a typical discrete-only system. HDMI audio comes from AMD audio
+controller, others from Intel audio controller.
 
-Acked-by: Mark Brown <broonie@kernel.org>
+When SG is enabled, the unused AMD audio controller still exposes its
+sysfs, so userspace still opens the control file and stream. If
+userspace tries to output sound through the stream, it hangs when
+runtime suspend kicks in:
+[ 12.796265] snd_hda_intel 0000:01:00.1: Disabling via vga_switcheroo
+[ 12.796367] snd_hda_intel 0000:01:00.1: Cannot lock devices!
 
---mP3DRpeJDSE+ciuQ
-Content-Type: application/pgp-signature; name="signature.asc"
+Since the discrete audio controller isn't useful when SG enabled, we
+should just disable the device.
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v2: Mario suggested to squash the HDA part into the same series.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqhEzIACgkQJNaLcl1U
-h9Bgsgf/V8hGKfUtgONhXn77+UYhFKqAk3/zFF5mJcsU/RV5vsC1A2joXqp9NhRn
-GpsInXIkiIKhXh2nKF7IR7VoWPV74mqiC8g7q2E4iWS9uAKMT0umhhHDSq/H74LY
-8xzQdZktIXu+kvdupO2xkKWN95NThGzZQimI6nrNpG1dLlPtH6LojjdRnWWtLnlU
-azcwW7mJyMI0/abvy7b2n4rSLn1U+xb34lEygxEaTiKJlL7Ad6ZZoQw+358Jl9OC
-k4uejlKqOsbGPoPDbkur9TijUsmCPmHLAY4+23EJQ+QvWq2Jk6m6KsrTfMlh4x7x
-A71CitI7AqZ3Pl6CNYdDgaQ0Be3Fww==
-=v7wv
------END PGP SIGNATURE-----
+ sound/pci/hda/hda_intel.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
---mP3DRpeJDSE+ciuQ--
-
---===============6867409056689916381==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6867409056689916381==--
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 96143df19b21..8e3e8b88624a 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -49,6 +49,7 @@
+ #include <linux/clocksource.h>
+ #include <linux/time.h>
+ #include <linux/completion.h>
++#include <linux/dell-common.h>
+ 
+ #ifdef CONFIG_X86
+ /* for snoop control */
+@@ -1620,6 +1621,35 @@ static void check_msi(struct azx *chip)
+ 	}
+ }
+ 
++#if IS_ENABLED(CONFIG_DELL_LAPTOP)
++static bool check_dell_switchable_gfx(struct pci_dev *pdev)
++{
++	static int (*dell_switchable_gfx_enabled_func)(bool *);
++	bool enabled;
++	int err;
++
++	if (pdev->vendor != PCI_VENDOR_ID_ATI ||
++	    pdev->subsystem_vendor != PCI_VENDOR_ID_DELL)
++		return false;
++
++	dell_switchable_gfx_enabled_func =
++		symbol_request(dell_switchable_gfx_enabled);
++	if (!dell_switchable_gfx_enabled_func)
++		return false;
++
++	err = dell_switchable_gfx_enabled_func(&enabled);
++
++	symbol_put(dell_switchable_gfx_enabled);
++
++	return !err ? enabled : false;
++}
++#else
++static bool check_dell_switchable_gfx(struct pci_dev *pdev)
++{
++	return false;
++}
++#endif
++
+ /* check the snoop mode availability */
+ static void azx_check_snoop_available(struct azx *chip)
+ {
+@@ -1702,6 +1732,11 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
+ 	if (err < 0)
+ 		return err;
+ 
++	if (check_dell_switchable_gfx(pci)) {
++		pci_disable_device(pci);
++		return -ENODEV;
++	}
++
+ 	hda = kzalloc(sizeof(*hda), GFP_KERNEL);
+ 	if (!hda) {
+ 		pci_disable_device(pci);
+-- 
+2.15.1
