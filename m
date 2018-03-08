@@ -1,25 +1,22 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCHv5 3/5] mfd: motorola-cpcap: Add audio-codec
-	support
-Date: Thu, 8 Mar 2018 10:48:31 +0000
-Message-ID: <20180308104831.fflq2arj5dxgntia@dell>
-References: <20180223200254.25685-1-sebastian.reichel@collabora.co.uk>
- <20180223200254.25685-4-sebastian.reichel@collabora.co.uk>
- <20180307163211.rytfli5tb47yhtug@dell>
- <20180308094652.qg4atjw5c3hayaz3@earth.universe>
- <20180308095315.mpcmx2ob6yhsnrm6@dell>
- <20180308102757.jyi7uo566n6nuct5@earth.universe>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 4/6] ASoC: Snow Chromebook DT bindings
+	update
+Date: Wed, 7 Mar 2018 20:40:19 -0600
+Message-ID: <20180308024019.72hy3ffidk4dsyx6@rob-hp-laptop>
+References: <CGME20180307170309epcas1p40ae0381dbd69168307cf23f0d993e8b3@epcas1p4.samsung.com>
+ <20180307170249.14057-1-s.nawrocki@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 9311D2674D2
- for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 11:48:35 +0100 (CET)
-Received: by mail-wm0-f65.google.com with SMTP id i3so10106574wmi.4
- for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2018 02:48:35 -0800 (PST)
+Received: from mail-ot0-f193.google.com (mail-ot0-f193.google.com
+ [74.125.82.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5548126732A
+ for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 03:40:22 +0100 (CET)
+Received: by mail-ot0-f193.google.com with SMTP id y11so4109601otg.0
+ for <alsa-devel@alsa-project.org>; Wed, 07 Mar 2018 18:40:21 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <20180308102757.jyi7uo566n6nuct5@earth.universe>
+In-Reply-To: <20180307170249.14057-1-s.nawrocki@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,34 +26,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, kernel@collabora.com, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, lgirdwood@gmail.com, broonie@kernel.org, m.szyprowski@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAwOCBNYXIgMjAxOCwgU2ViYXN0aWFuIFJlaWNoZWwgd3JvdGU6Cj4gT24gVGh1LCBN
-YXIgMDgsIDIwMTggYXQgMDk6NTM6MTVBTSArMDAwMCwgTGVlIEpvbmVzIHdyb3RlOgo+ID4gT24g
-VGh1LCAwOCBNYXIgMjAxOCwgU2ViYXN0aWFuIFJlaWNoZWwgd3JvdGU6Cj4gPiA+IE9uIFdlZCwg
-TWFyIDA3LCAyMDE4IGF0IDA0OjMyOjExUE0gKzAwMDAsIExlZSBKb25lcyB3cm90ZToKPiA+ID4g
-PiBPbiBGcmksIDIzIEZlYiAyMDE4LCBTZWJhc3RpYW4gUmVpY2hlbCB3cm90ZToKPiA+ID4gPiA+
-ICtzdGF0aWMgY29uc3Qgc3RydWN0IG1mZF9jZWxsIGNwY2FwX21mZF9kZXZpY2VzW10gPSB7Cj4g
-PiA+IAo+ID4gPiBbLi4uXQo+ID4gPiAKPiA+ID4gPiA+ICsJfSwgewo+ID4gPiA+ID4gKwkJLm5h
-bWUgICAgICAgICAgPSAiY3BjYXAtbGVkIiwKPiA+ID4gPiA+ICsJCS5pZCAgICAgICAgICAgID0g
-NCwKPiA+ID4gPiA+ICsJCS5vZl9jb21wYXRpYmxlID0gIm1vdG9yb2xhLGNwY2FwLWxlZC1jcCIs
-Cj4gPiA+ID4gPiArCX0sIHsKPiA+ID4gPiA+ICsJCS5uYW1lICAgICAgICAgID0gImNwY2FwLWNv
-ZGVjIiwKPiA+ID4gPiA+ICsJfQo+ID4gPiA+ID4gK307Cj4gPiA+ID4gCj4gPiA+ID4gV2l0aCBu
-b25lIG9mIHRoZSBlbnRyaWVzIGNvbnRhaW5pbmcgcGxhdGZvcm1fZGF0YSAvbWUgd29uZGVycyB3
-aHkgeW91Cj4gPiA+ID4gY2FuJ3Qgc3RpbGwgdXNlIGRldm1fb2ZfcGxhdGZvcm1fcG9wdWxhdGUo
-KT8KPiA+ID4gCj4gPiA+IEJlY2F1c2UgZGV2bV9vZl9wbGF0Zm9ybV9wb3B1bGF0ZSB3b3JrcyB3
-aXRoIGNvbXBhdGlibGUgcHJvcGVydGllcyBhbmQKPiA+ID4gY3BjYXAtY29kZWMgZG9lcyBub3Qg
-aGF2ZSBvbmUgYWZ0ZXIgSSByZW1vdmVkIGl0IGZvciBNYXJrLgo+ID4gCj4gPiBTb3JyeSwgSSBt
-aXNzZWQgdGhhdCBjb252ZXJzYXRpb24uICBXaHkgd2FzIGl0IHJlbW92ZWQ/Cj4gCj4gSSBoYWQg
-aXQgaW4gUEFUQ0h2MS1QQVRDSHY0LiBJdCB3YXMgcmVtb3ZlZCwgc2luY2UgTWFyayBkaWRuJ3Qg
-d2FudAo+IHRvIGhhdmUgaXQgaW4gdGhlIERUIEFCSS4KClJpZ2h0LCBidXQgd2h5PyAgSXMgaXQg
-bm90IGEgaGFyZHdhcmUgZGV2aWNlPyAgSSB0aGluayBjb252ZXJ0aW5nIGZyb20KZGV2bV9vZl9w
-bGF0Zm9ybV9wb3B1bGF0ZSgpIGZvciBvbmUgc3ViLWRldmljZSBpcyBhIGJpdCBkcmFzdGljLgoK
-LS0gCkxlZSBKb25lcyBb5p2O55C85pavXQpMaW5hcm8gU2VydmljZXMgVGVjaG5pY2FsIExlYWQK
-TGluYXJvLm9yZyDilIIgT3BlbiBzb3VyY2Ugc29mdHdhcmUgZm9yIEFSTSBTb0NzCkZvbGxvdyBM
-aW5hcm86IEZhY2Vib29rIHwgVHdpdHRlciB8IEJsb2cKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Wed, Mar 07, 2018 at 06:02:49PM +0100, Sylwester Nawrocki wrote:
+> The new DT bindings are introduced so sound on the HDMI interface
+> is also supported.
+> 
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> ---
+>  Documentation/devicetree/bindings/sound/snow.txt | 13 +++++++++++--
+>  1 file changed, 11 insertions(+), 2 deletions(-)
+
+Reviewed-by: Rob Herring <robh@kernel.org>
