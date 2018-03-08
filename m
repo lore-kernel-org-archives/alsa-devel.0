@@ -1,25 +1,23 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH] ASoC: Use proper DT compatible string for
- Hardkernel Odroid boards
-Date: Thu, 8 Mar 2018 12:24:34 +0100
-Message-ID: <CAJKOXPf0KwotgJ=6SeoX9dXSqe6cpX1ajsYpjTjkTmWyLq8djg@mail.gmail.com>
-References: <CGME20180307174638epcas2p33f071928807ccaa40ad07922c15be31c@epcas2p3.samsung.com>
- <20180307174625.16597-1-s.nawrocki@samsung.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCHv5 3/5] mfd: motorola-cpcap: Add audio-codec
+	support
+Date: Thu, 8 Mar 2018 09:53:15 +0000
+Message-ID: <20180308095315.mpcmx2ob6yhsnrm6@dell>
+References: <20180223200254.25685-1-sebastian.reichel@collabora.co.uk>
+ <20180223200254.25685-4-sebastian.reichel@collabora.co.uk>
+ <20180307163211.rytfli5tb47yhtug@dell>
+ <20180308094652.qg4atjw5c3hayaz3@earth.universe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- by alsa0.perex.cz (Postfix) with ESMTP id 84042267530
- for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 12:24:37 +0100 (CET)
-Received: from mail-wm0-f51.google.com (mail-wm0-f51.google.com [74.125.82.51])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0DB0B2177C
- for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 11:24:36 +0000 (UTC)
-Received: by mail-wm0-f51.google.com with SMTP id 188so10348394wme.1
- for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2018 03:24:35 -0800 (PST)
-In-Reply-To: <20180307174625.16597-1-s.nawrocki@samsung.com>
+Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 46908267463
+ for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2018 10:53:18 +0100 (CET)
+Received: by mail-wm0-f67.google.com with SMTP id e194so10047438wmd.3
+ for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2018 01:53:18 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20180308094652.qg4atjw5c3hayaz3@earth.universe>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,24 +27,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, =?UTF-8?B?QmFydMWCb21pZWogxbtvxYJuaWVya2lld2ljeg==?= <b.zolnierkie@samsung.com>, lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>
+To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, kernel@collabora.com, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 7, 2018 at 6:46 PM, Sylwester Nawrocki
-<s.nawrocki@samsung.com> wrote:
-> The Odroid boards are manufactured by Hardkernel, not Samsung. New compatible
-> string entries are added, with "hardkernel," instead of "samsung," vendor
-> prefix. Support for the old compatible strings is going to be removed after
-> some time.
->
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
->  Documentation/devicetree/bindings/sound/samsung,odroid.txt | 6 +++---
->  sound/soc/samsung/odroid.c                                 | 4 +++-
->  2 files changed, 6 insertions(+), 4 deletions(-)
-
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-
-Best regards,
-Krzysztof
+T24gVGh1LCAwOCBNYXIgMjAxOCwgU2ViYXN0aWFuIFJlaWNoZWwgd3JvdGU6Cj4gT24gV2VkLCBN
+YXIgMDcsIDIwMTggYXQgMDQ6MzI6MTFQTSArMDAwMCwgTGVlIEpvbmVzIHdyb3RlOgo+ID4gT24g
+RnJpLCAyMyBGZWIgMjAxOCwgU2ViYXN0aWFuIFJlaWNoZWwgd3JvdGU6Cj4gPiA+ICtzdGF0aWMg
+Y29uc3Qgc3RydWN0IG1mZF9jZWxsIGNwY2FwX21mZF9kZXZpY2VzW10gPSB7Cj4gCj4gWy4uLl0K
+PiAKPiA+ID4gKwl9LCB7Cj4gPiA+ICsJCS5uYW1lICAgICAgICAgID0gImNwY2FwLWxlZCIsCj4g
+PiA+ICsJCS5pZCAgICAgICAgICAgID0gNCwKPiA+ID4gKwkJLm9mX2NvbXBhdGlibGUgPSAibW90
+b3JvbGEsY3BjYXAtbGVkLWNwIiwKPiA+ID4gKwl9LCB7Cj4gPiA+ICsJCS5uYW1lICAgICAgICAg
+ID0gImNwY2FwLWNvZGVjIiwKPiA+ID4gKwl9Cj4gPiA+ICt9Owo+ID4gCj4gPiBXaXRoIG5vbmUg
+b2YgdGhlIGVudHJpZXMgY29udGFpbmluZyBwbGF0Zm9ybV9kYXRhIC9tZSB3b25kZXJzIHdoeSB5
+b3UKPiA+IGNhbid0IHN0aWxsIHVzZSBkZXZtX29mX3BsYXRmb3JtX3BvcHVsYXRlKCk/Cj4gCj4g
+QmVjYXVzZSBkZXZtX29mX3BsYXRmb3JtX3BvcHVsYXRlIHdvcmtzIHdpdGggY29tcGF0aWJsZSBw
+cm9wZXJ0aWVzIGFuZAo+IGNwY2FwLWNvZGVjIGRvZXMgbm90IGhhdmUgb25lIGFmdGVyIEkgcmVt
+b3ZlZCBpdCBmb3IgTWFyay4KClNvcnJ5LCBJIG1pc3NlZCB0aGF0IGNvbnZlcnNhdGlvbi4gIFdo
+eSB3YXMgaXQgcmVtb3ZlZD8KCj4gPiA+ICBzdGF0aWMgaW50IGNwY2FwX3Byb2JlKHN0cnVjdCBz
+cGlfZGV2aWNlICpzcGkpCj4gPiA+ICB7Cj4gPiA+ICAJY29uc3Qgc3RydWN0IG9mX2RldmljZV9p
+ZCAqbWF0Y2g7Cj4gPiA+IEBAIC0yNjAsNyArMzA4LDggQEAgc3RhdGljIGludCBjcGNhcF9wcm9i
+ZShzdHJ1Y3Qgc3BpX2RldmljZSAqc3BpKQo+ID4gPiAgCWlmIChyZXQpCj4gPiA+ICAJCXJldHVy
+biByZXQ7Cj4gPiA+ICAKPiA+ID4gLQlyZXR1cm4gZGV2bV9vZl9wbGF0Zm9ybV9wb3B1bGF0ZSgm
+Y3BjYXAtPnNwaS0+ZGV2KTsKPiA+ID4gKwlyZXR1cm4gZGV2bV9tZmRfYWRkX2RldmljZXMoJnNw
+aS0+ZGV2LCAwLCBjcGNhcF9tZmRfZGV2aWNlcywKPiA+ID4gKwkJCQkgICAgQVJSQVlfU0laRShj
+cGNhcF9tZmRfZGV2aWNlcyksIE5VTEwsIDAsIE5VTEwpOwo+ID4gPiAgfQo+ID4gPiAgCj4gPiA+
+ICBzdGF0aWMgc3RydWN0IHNwaV9kcml2ZXIgY3BjYXBfZHJpdmVyID0gewo+ID4gCgoKCi0tIApM
+ZWUgSm9uZXMgW+adjueQvOaWr10KTGluYXJvIFNlcnZpY2VzIFRlY2huaWNhbCBMZWFkCkxpbmFy
+by5vcmcg4pSCIE9wZW4gc291cmNlIHNvZnR3YXJlIGZvciBBUk0gU29DcwpGb2xsb3cgTGluYXJv
+OiBGYWNlYm9vayB8IFR3aXR0ZXIgfCBCbG9nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
