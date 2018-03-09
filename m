@@ -1,19 +1,23 @@
-From: Jorge Fernandez Monteagudo <jorgefm@cirsa.com>
-Subject: Re: Cirrus CS4207 not working on 4.14.24
-Date: Fri, 9 Mar 2018 14:30:59 +0000
-Message-ID: <DB5PR0701MB20071C5255C2A787AD32CD5DA1DE0@DB5PR0701MB2007.eurprd07.prod.outlook.com>
-References: <DB5PR0701MB2007E6A97934EB7DC869DEA6A1DE0@DB5PR0701MB2007.eurprd07.prod.outlook.com>,
- <s5hd10d5nrx.wl-tiwai@suse.de>
+From: Matt Porter <mporter@konsulko.com>
+Subject: Re: [PATCH 2/2] ASoC: add tda7419 audio processor
+	driver
+Date: Fri, 9 Mar 2018 09:35:48 -0500
+Message-ID: <20180309143548.xuajwfhiwuua7jg5@bacon.ohporter.com>
+References: <20180227225128.17815-1-mporter@konsulko.com>
+ <20180227225128.17815-3-mporter@konsulko.com>
+ <20180228110038.GA6722@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR03-DB5-obe.outbound.protection.outlook.com
- (mail-eopbgr40139.outbound.protection.outlook.com [40.107.4.139])
- by alsa0.perex.cz (Postfix) with ESMTP id AA174266EBE
- for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2018 15:31:02 +0100 (CET)
-In-Reply-To: <s5hd10d5nrx.wl-tiwai@suse.de>
-Content-Language: es-ES
+Received: from mail-io0-f170.google.com (mail-io0-f170.google.com
+ [209.85.223.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 44470266EBE
+ for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2018 15:35:52 +0100 (CET)
+Received: by mail-io0-f170.google.com with SMTP id q24so3735465ioh.8
+ for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2018 06:35:52 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20180228110038.GA6722@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,72 +27,121 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Oh, I know... That's not possible. It's a custom carrier and we only have connected
+On Wed, Feb 28, 2018 at 11:00:38AM +0000, Mark Brown wrote:
+> On Tue, Feb 27, 2018 at 05:51:28PM -0500, Matt Porter wrote:
+> 
+> > +static bool tda7419_writeable_reg(struct device *dev, unsigned int reg)
+> > +{
+> > +	return true;
+> > +}
+> 
+> This is the default behaviour, may as well omit it (but equally it does
+> no harm).
 
-the Line Out 1 (node 0x03, node 0x0A) and the S/PDIF Out 1 (node 0x08, node 0x10)
+Ok.
 
-to external devices.
+> 
+> > +static inline int tda7419_vol_get_value(int val, unsigned int mask,
+> > +					int thresh, unsigned int invert)
+> > +{
+> > +	val &= mask;
+> > +	if (val < thresh) {
+> > +		if (invert)
+> > +			val = 0 - val;
+> > +	} else if (val > thresh) {
+> 
+> This feels like something some other device might want to use so might
+> warrant pulling out into a general control at some point but I'd not
+> insist on doing it now.
 
-________________________________
-De: Takashi Iwai <tiwai@suse.de>
-Enviado: viernes, 9 de marzo de 2018 15:25:38
-Para: Jorge Fernandez Monteagudo
-Cc: alsa-devel@alsa-project.org
-Asunto: Re: [alsa-devel] Cirrus CS4207 not working on 4.14.24
+Ok, yeah, I was also thinking it should be moved to a general helper
+when the next user shows up. The most likely case is another part in
+this family may have a similar register layout.
 
-On Fri, 09 Mar 2018 15:24:10 +0100,
-Jorge Fernandez Monteagudo wrote:
->
-> Sorry for the dumb question, but when you say "testing from the speaker" or "testing from the headphone"
->
-> it's enough using alsamixer to mute headphone or mute speaker and run an aplay when running alsa-info.sh?
+> > +static struct snd_kcontrol_new tda7419_controls[] = {
+> > +SOC_ENUM("Main Source Select", soc_enum_main_src_sel),
+> 
+> Should this be a DAPM route?
 
-No, I meant actually plugging and unplugging the headphone jack (and
-the corresponding mixer changes).
+Ultimately yes. I initially took the path of ignoring DAPM support in
+interests of getting some clean done. Is it ok to merge DAPM support
+later or do you prefer just having it in the intitial driver? For
+routes, it'll include Main/Second source selects, the Rear Source
+switch, and Mix enable at least.
 
+> > +SOC_SINGLE("Main Source AutoZero", TDA7419_MAIN_SRC_REG,
+> > +	   TDA7419_MAIN_SRC_AUTOZERO, 1, 1),
+> 
+> There's a lot of on/off switches for various things in here - these
+> should all have Switch at the end of their names so that userspace can
+> see how it's expected to display them.  Most of the controls with a max
+> value of 1 probably fall into this category.
 
-Takashi
+I see. I'll fix that.
 
->
-> ________________________________
-> De: Takashi Iwai <tiwai@suse.de>
-> Enviado: viernes, 9 de marzo de 2018 14:09:52
-> Para: Jorge Fernandez Monteagudo
-> Cc: alsa-devel@alsa-project.org
-> Asunto: Re: [alsa-devel] Cirrus CS4207 not working on 4.14.24
->
-> On Fri, 09 Mar 2018 10:45:35 +0100,
-> Jorge Fernandez Monteagudo wrote:
-> >
-> > Hi!
-> >
-> >
-> > Your little patch works! I've attached the alsa-info for the 4.14.24 kernel once the
-> >
-> > system is running and no sound is available.
-> >
-> >
-> > The nodes are related to audio output. 0x03 DAC2 PCM linked to 0x0A: Line Out1
-> >
-> > I suspect nodes 0x09, 0x0A and 0x0B are not able to recover from D3 state.
->
-> That explains better.  But NID 0x0b has no power control, so it
-> shouldn't be affected by itself.  Rather NID 0x04 power-down can be
-> the issue, at least, for speaker outputs.  For the headphone, both NID
-> 0x09 and 0x03 are used.
->
-> Please try the driver without the patch, and get alsa-info.sh output
-> while testing from the speaker, and while testing the headphone,
-> individually.  Attach both outputs for comparison.  Maybe better to
-> compressed, otherwise it becomes too long.
->
->
-> thanks,
->
-> Please
-> [2  <text/html; us-ascii (quoted-printable)>]
->
+> > +SOC_SINGLE("Clock Fast Mode", TDA7419_MUTE_CLK_REG,
+> > +	   TDA7419_CLK_FAST_MODE, 1, 1),
+> 
+> What does this do - should it be in set_sysclk() or something?
+
+This is where things get hazy, unfortunately. The datasheet is partially
+garbage. So there's no description or guidance on clock management at
+all. It's not clear what clock this is or what specifically "fast" does.
+Because there's no concept of an external clock, the sysclk is clearly
+internally generated. Because of the register labeling of clock
+generator, it's probably sysclk but I'm not 100% sure what the relevance
+is of fast mode. The working settings were divined from trial and error
+as well a couple microcontroller projects scattered across the
+interwebs.
+
+On second look at this, I think I should at least remove this switch
+and hard code it for now or move to set_sysclk(). I'm hesistant of the
+latter because of the lack of information on this setting.
+
+> > +	/* Configure registers */
+> > +	regmap_write(tda7419->regmap, TDA7419_VOLUME_REG, 0xe0);
+> > +	regmap_write(tda7419->regmap, TDA7419_MIXING_GAIN_REG, 0x0f);
+> > +	regmap_write(tda7419->regmap, TDA7419_ATTENUATOR_LF_REG, 0xe0);
+> > +	regmap_write(tda7419->regmap, TDA7419_ATTENUATOR_RF_REG, 0xe0);
+> > +	regmap_write(tda7419->regmap, TDA7419_ATTENUATOR_LR_REG, 0xe0);
+> > +	regmap_write(tda7419->regmap, TDA7419_ATTENUATOR_RR_REG, 0xe0);
+> > +	regmap_write(tda7419->regmap, TDA7419_MIXING_LEVEL_REG, 0xe0);
+> > +	regmap_write(tda7419->regmap, TDA7419_ATTENUATOR_SUB_REG, 0xe0);
+> 
+> This looks like it's setting default volumes - just leave those at the
+> chip defaults and let userspace handle setting them, what works for one
+> board may be totally inappropriate on another board and using the chip
+> default means we've got some fixed thing we don't need to discuss.
+
+This is actually setting the default/cache to the first mute value due
+to the assumption in my implementation of the tda7419-specific get/set
+for these registers. It simplified the code a bit to have these
+initialized like this. e.g. for the attenuator group of registers,
+x11xxxxx are all mute values, so 0xe0 is setting these regs to that
+first mute value to simplify things. I'll take another look at
+eliminating this. As it is, it does not change the fact that the actual
+reset value of 0xff is also mute from a user POV.
+
+> > +static int tda7419_remove(struct i2c_client *i2c)
+> > +{
+> > +	int i;
+> > +	struct tda7419_data *tda7419 = i2c_get_clientdata(i2c);
+> > +
+> > +	/* Reset registers to defaults */
+> > +	for (i = 0; i < ARRAY_SIZE(tda7419_regmap_defaults); i++)
+> > +		regmap_write(tda7419->regmap,
+> > +			     tda7419_regmap_defaults[i].reg,
+> > +			     tda7419_regmap_defaults[i].def);
+> 
+> Why are we doing this?  Other drivers don't do it...  if anything I'd
+> expect a reset on probe in case the bootloader or something left the
+> chip configured.
+
+Good point, I'll move this into probe. The part doesn't have a soft
+reset provision so we need to do it manually like this.
+
+-Matt
