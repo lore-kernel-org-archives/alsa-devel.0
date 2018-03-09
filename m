@@ -1,18 +1,19 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/2] ALSA: seq: Fix possible UAF in
-	snd_seq_check_queue()
-Date: Fri,  9 Mar 2018 23:24:09 +0100
-Message-ID: <20180309222410.2390-1-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v3 19/22] ASoC: Intel: bytcr_rt5651: Add
+ support for Bay Trail CR / SSP0 using boards
+Date: Fri, 9 Mar 2018 17:30:16 -0600
+Message-ID: <e4558b54-415e-a7f0-e696-27b9b9eb0a31@linux.intel.com>
+References: <20180304143610.21125-1-hdegoede@redhat.com>
+ <20180304143610.21125-20-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id BDE3A2675EE
- for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2018 23:24:14 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id CA8A6AEB8
- for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2018 22:24:12 +0000 (UTC)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2862266D7D
+ for <alsa-devel@alsa-project.org>; Sat, 10 Mar 2018 00:30:20 +0100 (CET)
+In-Reply-To: <20180304143610.21125-20-hdegoede@redhat.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,172 +23,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
+Cc: alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Although we've covered the races between concurrent write() and
-ioctl() in the previous patch series, there is still a possible UAF in
-the following scenario:
 
-A: user client closed		B: timer irq
-  -> snd_seq_release()		  -> snd_seq_timer_interrupt()
-    -> snd_seq_free_client()	    -> snd_seq_check_queue()
-				      -> cell = snd_seq_prioq_cell_peek()
-      -> snd_seq_prioq_leave()
-         .... removing all cells
-      -> snd_seq_pool_done()
-         .... vfree()
-				      -> snd_seq_compare_tick_time(cell)
-				         ... Oops
+Sorry about the delay, I've only found the time to look at this machine 
+driver changes this afternoon while I was doing the SOF integration
 
-So the problem is that a cell is peeked and accessed without any
-protection until it's retrieved from the queue again via
-snd_seq_prioq_cell_out().
+> @@ -291,9 +332,16 @@ static int byt_rt5651_aif1_hw_params(struct snd_pcm_substream *substream,
+>   {
+>   	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>   	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+> +	snd_pcm_format_t format = params_format(params);
+>   	int rate = params_rate(params);
+> +	int bclk_ratio;
+>   
+> -	return byt_rt5651_prepare_and_enable_pll1(codec_dai, rate, 50);
+> +	if (format == SNDRV_PCM_FORMAT_S16_LE)
+> +		bclk_ratio = 32;
 
-This patch tries to address it, also cleans up the code by a slight
-refactoring.  snd_seq_prioq_cell_out() now receives an extra pointer
-argument.  When it's non-NULL, the function checks the event timestamp
-with the given pointer.  The caller needs to pass the right reference
-either to snd_seq_tick or snd_seq_realtime depending on the event
-timestamp type.
+I don't think we can generate a 32x ratio with a 19.2 MHz clock, even 
+less so with a 25MHz reference.
+And in addition in the bytcr_rt5640 case we could never get any audio on 
+bytcr which uses the SSP0 link without the mclk enabled, so this 
+SSP0+blck mode was never tested (maybe precisely because this ratio was 
+wrong...)
 
-A good news is that the above change allows us to remove the
-snd_seq_prioq_cell_peek(), too, thus the patch actually reduces the
-code size.
+In other words there is a test gap here for the case using SSP0+bclk as 
+a reference with the rt5651 as well. Does anyone have access to a BYT-CR 
+platform w/ rt5651 to test this?
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/seq/seq_prioq.c | 28 ++++++++++++++--------------
- sound/core/seq/seq_prioq.h |  6 ++----
- sound/core/seq/seq_queue.c | 28 +++++++++-------------------
- 3 files changed, 25 insertions(+), 37 deletions(-)
+The other comment I have is that this run-time definition of the 
+bclk_ratio is inconsistent with the hard-coded value I see in 
+platform_clock_control()
+ret = byt_rt5651_prepare_and_enable_pll1(codec_dai, 48000, 50);
 
-diff --git a/sound/core/seq/seq_prioq.c b/sound/core/seq/seq_prioq.c
-index bc1c8488fc2a..2bc6759e4adc 100644
---- a/sound/core/seq/seq_prioq.c
-+++ b/sound/core/seq/seq_prioq.c
-@@ -87,7 +87,7 @@ void snd_seq_prioq_delete(struct snd_seq_prioq **fifo)
- 	if (f->cells > 0) {
- 		/* drain prioQ */
- 		while (f->cells > 0)
--			snd_seq_cell_free(snd_seq_prioq_cell_out(f));
-+			snd_seq_cell_free(snd_seq_prioq_cell_out(f, NULL));
- 	}
- 	
- 	kfree(f);
-@@ -214,8 +214,18 @@ int snd_seq_prioq_cell_in(struct snd_seq_prioq * f,
- 	return 0;
- }
- 
-+/* return 1 if the current time >= event timestamp */
-+static int event_is_ready(struct snd_seq_event *ev, void *current_time)
-+{
-+	if ((ev->flags & SNDRV_SEQ_TIME_STAMP_MASK) == SNDRV_SEQ_TIME_STAMP_TICK)
-+		return snd_seq_compare_tick_time(current_time, &ev->time.tick);
-+	else
-+		return snd_seq_compare_real_time(current_time, &ev->time.time);
-+}
-+
- /* dequeue cell from prioq */
--struct snd_seq_event_cell *snd_seq_prioq_cell_out(struct snd_seq_prioq *f)
-+struct snd_seq_event_cell *snd_seq_prioq_cell_out(struct snd_seq_prioq *f,
-+						  void *current_time)
- {
- 	struct snd_seq_event_cell *cell;
- 	unsigned long flags;
-@@ -227,6 +237,8 @@ struct snd_seq_event_cell *snd_seq_prioq_cell_out(struct snd_seq_prioq *f)
- 	spin_lock_irqsave(&f->lock, flags);
- 
- 	cell = f->head;
-+	if (cell && current_time && !event_is_ready(&cell->event, current_time))
-+		cell = NULL;
- 	if (cell) {
- 		f->head = cell->next;
- 
-@@ -252,18 +264,6 @@ int snd_seq_prioq_avail(struct snd_seq_prioq * f)
- 	return f->cells;
- }
- 
--
--/* peek at cell at the head of the prioq */
--struct snd_seq_event_cell *snd_seq_prioq_cell_peek(struct snd_seq_prioq * f)
--{
--	if (f == NULL) {
--		pr_debug("ALSA: seq: snd_seq_prioq_cell_in() called with NULL prioq\n");
--		return NULL;
--	}
--	return f->head;
--}
--
--
- static inline int prioq_match(struct snd_seq_event_cell *cell,
- 			      int client, int timestamp)
- {
-diff --git a/sound/core/seq/seq_prioq.h b/sound/core/seq/seq_prioq.h
-index d38bb78d9345..2c315ca10fc4 100644
---- a/sound/core/seq/seq_prioq.h
-+++ b/sound/core/seq/seq_prioq.h
-@@ -44,14 +44,12 @@ void snd_seq_prioq_delete(struct snd_seq_prioq **fifo);
- int snd_seq_prioq_cell_in(struct snd_seq_prioq *f, struct snd_seq_event_cell *cell);
- 
- /* dequeue cell from prioq */ 
--struct snd_seq_event_cell *snd_seq_prioq_cell_out(struct snd_seq_prioq *f);
-+struct snd_seq_event_cell *snd_seq_prioq_cell_out(struct snd_seq_prioq *f,
-+						  void *current_time);
- 
- /* return number of events available in prioq */
- int snd_seq_prioq_avail(struct snd_seq_prioq *f);
- 
--/* peek at cell at the head of the prioq */
--struct snd_seq_event_cell *snd_seq_prioq_cell_peek(struct snd_seq_prioq *f);
--
- /* client left queue */
- void snd_seq_prioq_leave(struct snd_seq_prioq *f, int client, int timestamp);        
- 
-diff --git a/sound/core/seq/seq_queue.c b/sound/core/seq/seq_queue.c
-index 0428e9061b47..b377f5048352 100644
---- a/sound/core/seq/seq_queue.c
-+++ b/sound/core/seq/seq_queue.c
-@@ -277,30 +277,20 @@ void snd_seq_check_queue(struct snd_seq_queue *q, int atomic, int hop)
- 
-       __again:
- 	/* Process tick queue... */
--	while ((cell = snd_seq_prioq_cell_peek(q->tickq)) != NULL) {
--		if (snd_seq_compare_tick_time(&q->timer->tick.cur_tick,
--					      &cell->event.time.tick)) {
--			cell = snd_seq_prioq_cell_out(q->tickq);
--			if (cell)
--				snd_seq_dispatch_event(cell, atomic, hop);
--		} else {
--			/* event remains in the queue */
-+	for (;;) {
-+		cell = snd_seq_prioq_cell_out(q->tickq,
-+					      &q->timer->tick.cur_tick);
-+		if (!cell)
- 			break;
--		}
-+		snd_seq_dispatch_event(cell, atomic, hop);
- 	}
- 
--
- 	/* Process time queue... */
--	while ((cell = snd_seq_prioq_cell_peek(q->timeq)) != NULL) {
--		if (snd_seq_compare_real_time(&q->timer->cur_time,
--					      &cell->event.time.time)) {
--			cell = snd_seq_prioq_cell_out(q->timeq);
--			if (cell)
--				snd_seq_dispatch_event(cell, atomic, hop);
--		} else {
--			/* event remains in the queue */
-+	for (;;) {
-+		cell = snd_seq_prioq_cell_out(q->timeq, &q->timer->cur_time);
-+		if (!cell)
- 			break;
--		}
-+		snd_seq_dispatch_event(cell, atomic, hop);
- 	}
- 
- 	/* free lock */
--- 
-2.15.0
+Looks good otherwise.
+Cheers
+-Pierre
