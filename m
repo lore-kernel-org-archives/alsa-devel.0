@@ -1,109 +1,58 @@
-From: Kai Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [alsa-devel] [PATCH v2 3/3] ALSA: hda: Disabled unused audio
- controller for Dell platforms with Switchable Graphics
-Date: Fri, 9 Mar 2018 16:22:06 +0800
-Message-ID: <30D08909-0674-4D2E-8AF0-332A735FC245@canonical.com>
-References: <20180308091023.9061-1-kai.heng.feng@canonical.com>
- <20180308091023.9061-3-kai.heng.feng@canonical.com>
- <20180308093848.GA24068@wunner.de>
- <1A1B9259-DC5B-4C1A-96BD-7FCACDBFFBB3@canonical.com>
- <20180308113020.GA23073@wunner.de>
-Mime-Version: 1.0 (Mac OS X Mail 11.3 \(3445.6.15\))
-Content-Type: text/plain;
-        charset=us-ascii;
-        delsp=yes;
-        format=flowed
-Content-Transfer-Encoding: 7bit
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCHv5 3/5] mfd: motorola-cpcap: Add audio-codec support
+Date: Fri, 9 Mar 2018 08:34:14 +0000
+Message-ID: <20180309083414.s57eq3kw325magwz@dell>
+References: <20180223200254.25685-1-sebastian.reichel@collabora.co.uk>
+ <20180223200254.25685-4-sebastian.reichel@collabora.co.uk>
+ <20180307163211.rytfli5tb47yhtug@dell>
+ <20180308094652.qg4atjw5c3hayaz3@earth.universe>
+ <20180308095315.mpcmx2ob6yhsnrm6@dell>
+ <20180308102757.jyi7uo566n6nuct5@earth.universe>
+ <20180308104831.fflq2arj5dxgntia@dell>
+ <20180308112528.GC6019@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180308113020.GA23073@wunner.de>
+Content-Disposition: inline
+In-Reply-To: <20180308112528.GC6019@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Lukas Wunner <lukas@wunner.de>
-Cc: mjg59@srcf.ucam.org, pali.rohar@gmail.com, dvhart@infradead.org, andy@infradead.org, Mario Limonciello <mario.limonciello@dell.com>, tiwai@suse.com, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Sebastian Reichel <sebastian.reichel@collabora.co.uk>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Tony Lindgren <tony@atomide.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 08 Mar 2018, Mark Brown wrote:
 
+> On Thu, Mar 08, 2018 at 10:48:31AM +0000, Lee Jones wrote:
+> > On Thu, 08 Mar 2018, Sebastian Reichel wrote:
+> 
+> > > I had it in PATCHv1-PATCHv4. It was removed, since Mark didn't want
+> > > to have it in the DT ABI.
+> 
+> > Right, but why?  Is it not a hardware device?  I think converting from
+> > devm_of_platform_populate() for one sub-device is a bit drastic.
+> 
+> It's not a separate physical device or IP and doesn't exist outside of
+> the MFD, it's just how Linux is currently choosing to divide up the chip
+> right now but that's totally open to change even in future versions of
+> Linux.  Clocks are a big issue with audio stuff, right now sections of
+> the clock tree get handled in the CODEC driver but we're going to want
+> to push them out to a clock driver so we're not reimplementing handling
+> for clocks.
 
-> On Mar 8, 2018, at 7:30 PM, Lukas Wunner <lukas@wunner.de> wrote:
->
-> On Thu, Mar 08, 2018 at 06:38:45PM +0800, Kai Heng Feng wrote:
->>> On Mar 8, 2018, at 5:38 PM, Lukas Wunner <lukas@wunner.de> wrote:
->>> On Thu, Mar 08, 2018 at 05:10:23PM +0800, Kai-Heng Feng wrote:
->>>> Some Dell platforms (Preicsion 7510/7710/7520/7720) have a BIOS option
->>>> "Switchable Graphics" (SG).
->>>>
->>>> When SG is enabled, we have:
->>>> 00:02.0 VGA compatible controller: Intel Corporation Device 591b (rev  
->>>> 04)
->>>> 00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (rev  
->>>> 31)
->>>> 01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
->>>> [AMD/ATI] Ellesmere [Polaris10]
->>>> 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere
->>>> [Radeon RX 580]
->>>>
->>>> The Intel Audio outputs all the sound, including HDMI audio. The audio
->>>> controller comes with AMD graphics doesn't get used.
->>>>
->>>> When SG is disabled, we have:
->>>> 00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (rev  
->>>> 31)
->>>> 01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
->>>> [AMD/ATI] Ellesmere [Polaris10]
->>>> 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere
->>>> [Radeon RX 580]
->>>>
->>>> Now it's a typical discrete-only system. HDMI audio comes from AMD audio
->>>> controller, others from Intel audio controller.
->>>>
->>>> When SG is enabled, the unused AMD audio controller still exposes its
->>>> sysfs, so userspace still opens the control file and stream. If
->>>> userspace tries to output sound through the stream, it hangs when
->>>> runtime suspend kicks in:
->>>> [ 12.796265] snd_hda_intel 0000:01:00.1: Disabling via vga_switcheroo
->>>> [ 12.796367] snd_hda_intel 0000:01:00.1: Cannot lock devices!
->>>
->>> This should be fixed by the following series:
->>> https://lists.freedesktop.org/archives/dri-devel/2018-March/168012.html
->>>
->>> Please verify that by testing the series on the machine in question.
->>> I'm hoping to get those patches in for 4.17.  I suspect that your
->>> patch may not be necessary then.
->>
->> I no longer see the warning message with your patch. Thanks!
->
-> Awesome, thanks for testing!
->
->
->>>> Since the discrete audio controller isn't useful when SG enabled, we
->>>> should just disable the device.
->>>
->>> I don't quite follow, when SG is enabled but hda_intel doesn't bind
->>> to the AMD audio device, how are you going to stream audio to
->>> external displays?  Are external DP/HDMI ports muxed to the integrated
->>> GPU when SG is enabled?
->>
->> Yes. It's a muxed port.
->> The can directly output via integrated Intel GPU when SG is enabled.
->> The discrete audio controller never gets used when SG is enabled.
->
-> Okay, that's a crucial piece of information which I think should be
-> made more explicit in the commit message and probably also in a code
-> comment so that someone reading through hda_intel.c doesn't have to
-> look in the git history to understand what's going on.
->
-> I'd remove the portion of the commit message pertaining to runtime
-> suspend and instead write something like:
->
->     If Switchable Graphics is enabled, external DP/HDMI ports are
->     muxed to the Intel GPU and HDA controller and therefore those
->     on the AMD HDA controller shouldn't be exposed to user space.
+How is the CODEC controlled?  Does it have its own registers?  I guess
+by "it's not a separate device or IP" you mean that it doesn't.  But
+that begs the question, how does this then device differ from all the
+other devices (adc, battery, charger, regulator, rtc, pwrbutton,
+usb-phy and led)?
 
-I'll add the explanation to both comment and commit log.
-Thanks for all the info.
+I'm asking, not to be awkward, but to avoid 50 lines of potentially
+unnecessary static code.  If this is a real (sub-)device, even if it's
+part of a larger, single device (MFD) then there is no reason why it
+can't be represented as a single, albeit empty node.
 
-Kai-Heng
-
->
-> Thanks,
->
-> Lukas
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
