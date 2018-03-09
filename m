@@ -1,24 +1,19 @@
-From: Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>
-Subject: Re: [PATCH v2 3/3] ALSA: hda: Disabled unused audio
- controller for Dell platforms with Switchable Graphics
-Date: Fri, 9 Mar 2018 10:46:00 +0100
-Message-ID: <20180309094600.m24d3zbzdsmls7aw@pali>
-References: <20180308091023.9061-1-kai.heng.feng@canonical.com>
- <20180308091023.9061-3-kai.heng.feng@canonical.com>
- <20180309090223.xb55ltac4pfesdrh@pali>
- <723DA929-C9FA-4F69-8D3A-03D8A75D09A6@canonical.com>
- <014795f5a3014cd3bf55de26f76a5af8@ausx13mpc124.AMER.DELL.COM>
+From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Subject: Re: [PATCH 0/9] Enablement of BT I2S controller
+	instance for AMD APUs
+Date: Fri, 9 Mar 2018 15:29:19 +0530
+Message-ID: <5e68283a-5e9c-5ddc-7c11-0f6251f1a77d@amd.com>
+References: <1518766434-7911-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
- by alsa0.perex.cz (Postfix) with ESMTP id BCFEB2675E6
- for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2018 10:46:02 +0100 (CET)
-Received: by mail-wm0-f66.google.com with SMTP id 188so2760936wme.1
- for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2018 01:46:02 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <014795f5a3014cd3bf55de26f76a5af8@ausx13mpc124.AMER.DELL.COM>
+Received: from NAM03-DM3-obe.outbound.protection.outlook.com
+ (mail-dm3nam03on0046.outbound.protection.outlook.com [104.47.41.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D16B26742D
+ for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2018 10:57:08 +0100 (CET)
+In-Reply-To: <1518766434-7911-1-git-send-email-Vijendar.Mukunda@amd.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,113 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mario.Limonciello@dell.com
-Cc: mjg59@srcf.ucam.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, platform-driver-x86@vger.kernel.org, kai.heng.feng@canonical.com, dvhart@infradead.org, andy@infradead.org
+To: broonie@kernel.org, alsa-devel@alsa-project.org, perex@perex.cz
+Cc: tiwai@suse.de, Alexander.Deucher@amd.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpZGF5IDA5IE1hcmNoIDIwMTggMDk6MzQ6MDEgTWFyaW8uTGltb25jaWVsbG9AZGVsbC5j
-b20gd3JvdGU6Cj4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+ID4gRnJvbTogS2FpIEhl
-bmcgRmVuZyBbbWFpbHRvOmthaS5oZW5nLmZlbmdAY2Fub25pY2FsLmNvbV0KPiA+IFNlbnQ6IEZy
-aWRheSwgTWFyY2ggOSwgMjAxOCA1OjMwIFBNCj4gPiBUbzogUGFsaSBSb2jDoXIgPHBhbGkucm9o
-YXJAZ21haWwuY29tPgo+ID4gQ2M6IG1qZzU5QHNyY2YudWNhbS5vcmc7IGR2aGFydEBpbmZyYWRl
-YWQub3JnOyBhbmR5QGluZnJhZGVhZC5vcmc7Cj4gPiBMaW1vbmNpZWxsbywgTWFyaW8gPE1hcmlv
-X0xpbW9uY2llbGxvQERlbGwuY29tPjsgdGl3YWlAc3VzZS5jb207IHBsYXRmb3JtLQo+ID4gZHJp
-dmVyLXg4NkB2Z2VyLmtlcm5lbC5vcmc7IExpbnV4IEtlcm5lbCBNYWlsaW5nIExpc3QgPGxpbnV4
-LQo+ID4ga2VybmVsQHZnZXIua2VybmVsLm9yZz47IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-Zwo+ID4gU3ViamVjdDogUmU6IFtQQVRDSCB2MiAzLzNdIEFMU0E6IGhkYTogRGlzYWJsZWQgdW51
-c2VkIGF1ZGlvIGNvbnRyb2xsZXIgZm9yIERlbGwKPiA+IHBsYXRmb3JtcyB3aXRoIFN3aXRjaGFi
-bGUgR3JhcGhpY3MKPiA+IAo+ID4gCj4gPiA+IE9uIE1hciA5LCAyMDE4LCBhdCA1OjAyIFBNLCBQ
-YWxpIFJvaMOhciA8cGFsaS5yb2hhckBnbWFpbC5jb20+IHdyb3RlOgo+ID4gPgo+ID4gPiBPbiBU
-aHVyc2RheSAwOCBNYXJjaCAyMDE4IDE3OjEwOjIzIEthaS1IZW5nIEZlbmcgd3JvdGU6Cj4gPiA+
-PiBTb21lIERlbGwgcGxhdGZvcm1zIChQcmVpY3Npb24gNzUxMC83NzEwLzc1MjAvNzcyMCkgaGF2
-ZSBhIEJJT1Mgb3B0aW9uCj4gPiA+PiAiU3dpdGNoYWJsZSBHcmFwaGljcyIgKFNHKS4KPiA+ID4+
-Cj4gPiA+PiBXaGVuIFNHIGlzIGVuYWJsZWQsIHdlIGhhdmU6Cj4gPiA+PiAwMDowMi4wIFZHQSBj
-b21wYXRpYmxlIGNvbnRyb2xsZXI6IEludGVsIENvcnBvcmF0aW9uIERldmljZSA1OTFiIChyZXYg
-MDQpCj4gPiA+PiAwMDoxZi4zIEF1ZGlvIGRldmljZTogSW50ZWwgQ29ycG9yYXRpb24gQ00yMzgg
-SEQgQXVkaW8gQ29udHJvbGxlciAocmV2IDMxKQo+ID4gPj4gMDE6MDAuMCBWR0EgY29tcGF0aWJs
-ZSBjb250cm9sbGVyOiBBZHZhbmNlZCBNaWNybyBEZXZpY2VzLCBJbmMuCj4gPiA+PiBbQU1EL0FU
-SV0gRWxsZXNtZXJlIFtQb2xhcmlzMTBdCj4gPiA+PiAwMTowMC4xIEF1ZGlvIGRldmljZTogQWR2
-YW5jZWQgTWljcm8gRGV2aWNlcywgSW5jLiBbQU1EL0FUSV0gRWxsZXNtZXJlCj4gPiA+PiBbUmFk
-ZW9uIFJYIDU4MF0KPiA+ID4+Cj4gPiA+PiBUaGUgSW50ZWwgQXVkaW8gb3V0cHV0cyBhbGwgdGhl
-IHNvdW5kLCBpbmNsdWRpbmcgSERNSSBhdWRpby4gVGhlIGF1ZGlvCj4gPiA+PiBjb250cm9sbGVy
-IGNvbWVzIHdpdGggQU1EIGdyYXBoaWNzIGRvZXNuJ3QgZ2V0IHVzZWQuCj4gPiA+Pgo+ID4gPj4g
-V2hlbiBTRyBpcyBkaXNhYmxlZCwgd2UgaGF2ZToKPiA+ID4+IDAwOjFmLjMgQXVkaW8gZGV2aWNl
-OiBJbnRlbCBDb3Jwb3JhdGlvbiBDTTIzOCBIRCBBdWRpbyBDb250cm9sbGVyIChyZXYgMzEpCj4g
-PiA+PiAwMTowMC4wIFZHQSBjb21wYXRpYmxlIGNvbnRyb2xsZXI6IEFkdmFuY2VkIE1pY3JvIERl
-dmljZXMsIEluYy4KPiA+ID4+IFtBTUQvQVRJXSBFbGxlc21lcmUgW1BvbGFyaXMxMF0KPiA+ID4+
-IDAxOjAwLjEgQXVkaW8gZGV2aWNlOiBBZHZhbmNlZCBNaWNybyBEZXZpY2VzLCBJbmMuIFtBTUQv
-QVRJXSBFbGxlc21lcmUKPiA+ID4+IFtSYWRlb24gUlggNTgwXQo+ID4gPj4KPiA+ID4+IE5vdyBp
-dCdzIGEgdHlwaWNhbCBkaXNjcmV0ZS1vbmx5IHN5c3RlbS4gSERNSSBhdWRpbyBjb21lcyBmcm9t
-IEFNRCBhdWRpbwo+ID4gPj4gY29udHJvbGxlciwgb3RoZXJzIGZyb20gSW50ZWwgYXVkaW8gY29u
-dHJvbGxlci4KPiA+ID4+Cj4gPiA+PiBXaGVuIFNHIGlzIGVuYWJsZWQsIHRoZSB1bnVzZWQgQU1E
-IGF1ZGlvIGNvbnRyb2xsZXIgc3RpbGwgZXhwb3NlcyBpdHMKPiA+ID4+IHN5c2ZzLCBzbyB1c2Vy
-c3BhY2Ugc3RpbGwgb3BlbnMgdGhlIGNvbnRyb2wgZmlsZSBhbmQgc3RyZWFtLiBJZgo+ID4gPj4g
-dXNlcnNwYWNlIHRyaWVzIHRvIG91dHB1dCBzb3VuZCB0aHJvdWdoIHRoZSBzdHJlYW0sIGl0IGhh
-bmdzIHdoZW4KPiA+ID4+IHJ1bnRpbWUgc3VzcGVuZCBraWNrcyBpbjoKPiA+ID4+IFsgMTIuNzk2
-MjY1XSBzbmRfaGRhX2ludGVsIDAwMDA6MDE6MDAuMTogRGlzYWJsaW5nIHZpYSB2Z2Ffc3dpdGNo
-ZXJvbwo+ID4gPj4gWyAxMi43OTYzNjddIHNuZF9oZGFfaW50ZWwgMDAwMDowMTowMC4xOiBDYW5u
-b3QgbG9jayBkZXZpY2VzIQo+ID4gPj4KPiA+ID4+IFNpbmNlIHRoZSBkaXNjcmV0ZSBhdWRpbyBj
-b250cm9sbGVyIGlzbid0IHVzZWZ1bCB3aGVuIFNHIGVuYWJsZWQsIHdlCj4gPiA+PiBzaG91bGQg
-anVzdCBkaXNhYmxlIHRoZSBkZXZpY2UuCj4gPiA+Pgo+ID4gPj4gU2lnbmVkLW9mZi1ieTogS2Fp
-LUhlbmcgRmVuZyA8a2FpLmhlbmcuZmVuZ0BjYW5vbmljYWwuY29tPgo+ID4gPj4gLS0tCj4gPiA+
-PiB2MjogTWFyaW8gc3VnZ2VzdGVkIHRvIHNxdWFzaCB0aGUgSERBIHBhcnQgaW50byB0aGUgc2Ft
-ZSBzZXJpZXMuCj4gPiA+Pgo+ID4gPj4gIHNvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMgfCAzNSAr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+ID4gPj4gIDEgZmlsZSBjaGFuZ2Vk
-LCAzNSBpbnNlcnRpb25zKCspCj4gPiA+Pgo+ID4gPj4gZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9o
-ZGEvaGRhX2ludGVsLmMgYi9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jCj4gPiA+PiBpbmRleCA5
-NjE0M2RmMTliMjEuLjhlM2U4Yjg4NjI0YSAxMDA2NDQKPiA+ID4+IC0tLSBhL3NvdW5kL3BjaS9o
-ZGEvaGRhX2ludGVsLmMKPiA+ID4+ICsrKyBiL3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMKPiA+
-ID4+IEBAIC00OSw2ICs0OSw3IEBACj4gPiA+PiAgI2luY2x1ZGUgPGxpbnV4L2Nsb2Nrc291cmNl
-Lmg+Cj4gPiA+PiAgI2luY2x1ZGUgPGxpbnV4L3RpbWUuaD4KPiA+ID4+ICAjaW5jbHVkZSA8bGlu
-dXgvY29tcGxldGlvbi5oPgo+ID4gPj4gKyNpbmNsdWRlIDxsaW51eC9kZWxsLWNvbW1vbi5oPgo+
-ID4gPj4KPiA+ID4+ICAjaWZkZWYgQ09ORklHX1g4Ngo+ID4gPj4gIC8qIGZvciBzbm9vcCBjb250
-cm9sICovCj4gPiA+PiBAQCAtMTYyMCw2ICsxNjIxLDM1IEBAIHN0YXRpYyB2b2lkIGNoZWNrX21z
-aShzdHJ1Y3QgYXp4ICpjaGlwKQo+ID4gPj4gIAl9Cj4gPiA+PiAgfQo+ID4gPj4KPiA+ID4+ICsj
-aWYgSVNfRU5BQkxFRChDT05GSUdfREVMTF9MQVBUT1ApCj4gPiA+PiArc3RhdGljIGJvb2wgY2hl
-Y2tfZGVsbF9zd2l0Y2hhYmxlX2dmeChzdHJ1Y3QgcGNpX2RldiAqcGRldikKPiA+ID4+ICt7Cj4g
-PiA+PiArCXN0YXRpYyBpbnQgKCpkZWxsX3N3aXRjaGFibGVfZ2Z4X2VuYWJsZWRfZnVuYykoYm9v
-bCAqKTsKPiA+ID4+ICsJYm9vbCBlbmFibGVkOwo+ID4gPj4gKwlpbnQgZXJyOwo+ID4gPj4gKwo+
-ID4gPj4gKwlpZiAocGRldi0+dmVuZG9yICE9IFBDSV9WRU5ET1JfSURfQVRJIHx8Cj4gPiA+PiAr
-CSAgICBwZGV2LT5zdWJzeXN0ZW1fdmVuZG9yICE9IFBDSV9WRU5ET1JfSURfREVMTCkKPiA+ID4+
-ICsJCXJldHVybiBmYWxzZTsKPiA+ID4KPiA+ID4gQXJlIHlvdSBzdXJlIHRoYXQgeW91IHdhbnQg
-dG8gZG8gdGhpcyBjaGVjayB1bmNvbmRpdGlvbmFsbHkgb24gYWxsCj4gPiA+IG1hY2hpbmVzIHdo
-aWNoIGhhdmUgZW5hYmxlZCBDT05GSUdfREVMTF9MQVBUT1A/Cj4gPiA+Cj4gPiA+IFN1YnZlbmRv
-ciBJRF9ERUxMIGZvciBkZWxsIHNwZWNpZmljIGNvZGUgaXMgbm90IHN1c3BpY2lvdXMsIGJ1dCBJ
-RF9BVEkKPiA+ID4gaXMuIFdoYXQgd291bGQgaGFwcGVuIGlmIEFUSSB2ZW5kb3IgY2hhbmdlcyB0
-byBOVklESUEgb3Igb3RoZXIgd2hpY2ggaXMKPiA+ID4gbm90IHJlbGF0ZWQgdG8gRGVsbD8KPiA+
-IAo+ID4gV2Ugb25seSBjaGVjayBpdCB3aGVuIGl0J3MgYm90aCBBVEkgYW5kIERFTEwsIG90aGVy
-d2lzZSBqdXN0IHJldHVybiBmYWxzZT8KPiA+IAo+ID4gVGhlIHBsYXRmb3JtIGRvZXMgaGF2ZSBh
-IE5WSURJQSB2YXJpYW50LCBidXQgdGhlIGRpc2NyZXRlIE5WSURJQSBoYXZlIGEKPiA+IGF1ZGlv
-IGNvbnRyb2xsZXIsIGhlbmNlIGl0IGRvZXNuJ3QgaGF2ZSB0aGUgaXNzdWUuCj4gPiBUaGUgaXNz
-dWUgb25seSBoYXBwZW5zIHRvIEFNRC9BVEkgY29uZmlncyB3aXRoICJTd2l0Y2hhYmxlIEdyYXBo
-aWNzIiBvcHRpb24uCj4gPiAKPiAKPiBQYWxpIGlzIHlvdXIgY29uY2VybiB0aGF0IHRoaXMgY29k
-ZSBmb3IgbWF0Y2hpbmcgdmVuZG9yL3N1YnN5c3RlbSBpcyBydW5uaW5nCj4gb24gbm9uLURlbGwg
-dG9vPyAgVGhlIG9ubHkgb3RoZXIgcmVjb21tZW5kYXRpb24gSSB0aGluayB0aGF0IGNhbiBiZSB0
-byByZXN0cmljdAo+IHRvIG1hdGNoaW5nIERlbGwgT0VNIHN0cmluZ3MgaW4gU01CSU9TIHRhYmxl
-LCBidXQgSSBkb24ndCB0aGluayB0aGF0J3MgYW55IGJldHRlcgo+IHRoYW4gdGhlIG1hdGNoaW5n
-IGZvciBWSUQvU1NWSUQuCgpNeSBjb25jZXJuIGlzIGFib3V0IGFkZGluZyBhIG5ldyBtYWNoaW5l
-IHNwZWNpZmljIGNvZGUgaW50byBnZW5lcmljCmRyaXZlciwgd2hpY2ggY2hlY2sgaXMgZG9uZSBq
-dXN0IGJ5IFBDSSB2ZW5kb3IgYW5kIHN1YnZlbmRvci4KCkluIGZ1dHVyZSB0aGVyZSBjYW4gYmUg
-bmV3IG1vZGVscyBvciBvdGhlciBQQ0kgZGV2aWNlcyB3aGljaCBtYXRjaGVzCmFib3ZlIGNvbmRp
-dGlvbiBldmVuIHRoZXkgd291bGQgbm90IGhhdmUgYW55IHN3aXRjaGFibGUgZ3JhcGhpY3MsIG5v
-cgp0aGV5IHdvdWxkIG1hbnVmYWN0dXJlZCBieSBEZWxsLgoKQWxzbyBJIGNhbiBpbWFnaW5lIHRo
-YXQgaW4gZnV0dXJlIChvciBtYXliZSBhbHJlYWR5IG5vdz8pIGl0IGlzIHBvc3NpYmxlCnRvIGZp
-bmQgUENJIGRldmljZSB3aGljaCBwYXNzIGFib3ZlIGNoZWNrcyBhbmQgY29ubmVjdCB0aGlzIFBD
-SSBkZXZpY2UKaW50byBkZXNrdG9wIC9zZXJ2ZXIgLyBhbnkgbm9uLWxhcHRvcCBkZXZpY2UuCgpJ
-ZiB0aGlzIHN3aXRjaGFibGUgZ3JhcGhpY3Mgc29sdXRpb24gaXMgc3BlY2lmaWMgdG8gZGVsbCBs
-YXB0b3BzLCB0aGVuCnJhdGhlciBjaGVja2luZyBmb3IgUENJIHZlbmRvci9zdWJ2ZXZlbmRvciBt
-YWluIGNoZWNrLCB0aGVyZSBzaG91bGQgYmUKbWFpbiBjaGVjayB2aWEgRE1JIHN0cmluZ3MuCgpI
-YXJkd2FyZSBpcyBjaGFuZ2luZyByZWxhdGl2ZWx5IHF1aWNrbHkgYW5kIHRoZXJlIGlzIGFic29s
-dXRlbHkgbm8KZ3VhcmFudGVlIHRoYXQgZS5nLiBOVklESUEgd291bGQgbm90IHN0YXJ0IHByb3Zp
-ZGluZyBhdWRpbyBjb250cm9sbGVyIGluCnNpbWlsYXIgbGlrZSBBTUQgYW5kIGl0IHdvdWxkIGJl
-IHB1dCBpbiB0aG9zZSBEZWxsIG1hY2hpbmVzLgoKPiA+ID4KPiA+ID4gSW50ZXJlc3RpbmcgcXVl
-c3Rpb24gd291bGQgYmUsIGhvdyBoYW5kbGUgdGhpcyBzaXR1YXRpb24gV2luZG93cz8KPiA+IAo+
-ID4gSSBkb24ndCBrbm93IGhvdyB0aGlzIHBsYXRmb3JtIGhhbmRsZXMgdGhpcyBvbiBXaW5kb3dz
-LCBJIGd1ZXNzIHdlIG5lZWQKPiA+IE1hcmlvIHRvIHNoZWQgc29tZSBsaWdodHMgaGVyZS4KPiAK
-PiBTb3JyeSBJIGRvbid0IGhhdmUgdGhpcyBpbmZvcm1hdGlvbiB0byBzaGFyZS4gICBJIGRvbid0
-IHRoaW5rIGl0J3MgdG9vIHVzZWZ1bCBoZXJlCj4gYW55d2F5IHRob3VnaCBiZWNhdXNlIFdpbmRv
-d3MgZHJpdmVyIGFyY2hpdGVjdHVyZSBpcyBtdWNoIGRpZmZlcmVudCBpbiB0aGlzCj4gYXJlYS4K
-PiAKPiAKCi0tIApQYWxpIFJvaMOhcgpwYWxpLnJvaGFyQGdtYWlsLmNvbQpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+On Friday 16 February 2018 01:03 PM, Vijendar Mukunda wrote:
+> This patch set updates Audio CoProcessor (ACP) audio drivers to enable BT I2S controller instance.
+> Default enabled I2S controller instance is I2S SP instance.
+> There is a requirement to enable BT I2S controller Instance along with I2S SP controller instance.
+> This patch set bring up functionality to render & capture on BT I2S controller instance.
+>
+> The current code is based on asoc-next, but I'm happy to rebase on whatever tree this ends up going through if there are any problems applying.
+>
+> Vijendar Mukunda (9):
+>    ASoC: amd: renaming pcm substream names and bytescount params
+>    ASoC: amd: Coding style changes for acp dma driver
+>    ASoC: amd: dma driver changes for BT I2S controller instance
+>    ASoC: amd: dma descriptor changes for BT I2S Instance
+>    ASoC: amd: Interrupt handler changes for BT I2S instance
+>    ASoC: amd: pcm callbacks modifications for bt i2s instance
+>    ASoC: amd: modifications in dma stop sequence
+>    ASoC: amd: 16bit resolution support for bt i2s instance
+>    ASoC: amd: enabling bt i2s config after acp reset
+>
+>   sound/soc/amd/acp-pcm-dma.c | 623 ++++++++++++++++++++++++++++++++------------
+>   sound/soc/amd/acp.h         |  61 ++++-
+>   2 files changed, 514 insertions(+), 170 deletions(-)
+>
+
+Below two patches are merged.
+
+  ASoC: amd: renaming pcm substream names and bytescount params
+  ASoC: amd: Coding style changes for acp dma driver
+
+Squashing the rest of the patch set as few patches need to be submitted as bug fixes and requires reordering .
