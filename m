@@ -1,68 +1,60 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH] dt-bindings: exynos: Document #sound-dai-cells property
- of the HDMI node
-Date: Fri, 09 Mar 2018 12:10:45 +0100
-Message-ID: <6e9a0ba4-2997-b7c5-f5c3-461870b7d3e5@samsung.com>
-References: <CGME20180307171131epcas1p4687ef394d1a0a6d0eb2de2691c977c3f@epcas1p4.samsung.com>
- <20180307171111.14551-1-s.nawrocki@samsung.com>
- <5AA0B59F.3070402@samsung.com>
- <3c68c3da-a0c3-4e4e-da6b-3e4b1af6d19d@samsung.com>
- <5AA0DD39.3040108@samsung.com>
- <9f1e8619-974d-cd07-79c3-c6d9a4dc0f97@samsung.com>
- <5AA0F10D.9010602@samsung.com>
- <e3e1c628-d88f-6fb4-171e-a49c7ee38135@samsung.com>
- <5AA1F30B.8010607@samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [BUG] Kernel crash on Allwinner H3 due to sound core changes
+Date: Fri, 9 Mar 2018 11:14:19 +0000
+Message-ID: <20180309111419.GA5252@sirena.org.uk>
+References: <2424862.oPtAVTfrB9@jernej-laptop>
+ <20180302124050.GF6255@sirena.org.uk>
+ <26212674.B0xcQEiVyd@jernej-laptop>
+ <1832733.mujlD9skaR@jernej-laptop>
+ <87efkvtldx.wl%kuninori.morimoto.gx@renesas.com>
+ <20180308111348.GB6019@sirena.org.uk>
+ <87h8pq166i.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-reply-to: <5AA1F30B.8010607@samsung.com>
-Content-language: en-GB
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Inki Dae <inki.dae@samsung.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sw0312.kim@samsung.com, dri-devel@lists.freedesktop.org, robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org, Marek Szyprowski <m.szyprowski@samsung.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mYCpIKhGyMATD0i+"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87h8pq166i.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>, maxime.ripard@free-electrons.com, wens@csie.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDMvMDkvMjAxOCAwMzozNSBBTSwgSW5raSBEYWUgd3JvdGU6Cj4gMjAxOOuFhCAwM+yblCAw
-OOydvCAyMDoyMuyXkCBTeWx3ZXN0ZXIgTmF3cm9ja2kg7J20KOqwgCkg7JO0IOq4gDoKPj4gT24g
-MDMvMDgvMjAxOCAwOToxNSBBTSwgSW5raSBEYWUgd3JvdGU6ClsuLi5dCj4+PiBJcyB0aGVyZSBh
-IHBvc3NpYmlsaXR5IGZvciBvdGhlciBib2FyZHMgYmFzZWQgb24gRXh5bm9zNDIxMC80MjEyLzU0
-MjAvNTQzMyAKPj4+IFNvQyB0byB1c2UgdGhpcyBwcm9wZXJ0eSBsYXRlcj8KPj4KPj4gQWxsIHRo
-ZXNlIFNvQ3MgaGF2ZSB0aGUgSERNSSBJUCBibG9jayB3aGljaCBoYXMgb25lIGlucHV0IERBSSwg
-Y29ubmVjdGVkIAo+PiBpbnRlcm5hbGx5IG92ZXIgSTJTIGJ1cyB3aXRoIHRoZSBJMlMgY29udHJv
-bGxlci4KPj4KPj4gSSB0aGluayB0aGVyZSBpcyBubyBhZHZhbnRhZ2UgaW4gbGltaXRpbmcgb3Vy
-c2VsdmVzIG5vdyBvbmx5IHRvIFNvQydzIAo+PiBmb3Igd2hpY2ggd2UgY3VycmVudGx5IHJlbHkg
-b24gdGhhdCBEVCBwcm9wZXJ0eSBpbiBjdXJyZW50IGtlcm5lbCBjb2RlLCAKPj4ganVzdCB0byB1
-cGRhdGUgdGhpcyBkb2N1bWVudGF0aW9uIGxhdGVyIHdoZW4gd2UgYWN0dWFsbHkgcHV0IHRoZSBw
-cm9wZXJ0eSAKPj4gaW4gZHRzIGZpbGVzLgo+Pgo+PiBJbiBjYXNlIG9mIGV4eW5vczU0MjAgd2Ug
-YWxyZWFkeSByZXF1aXJlICNzb3VuZC1kYWktY2VsbHMgZm9yIE9kcm9pZCBhbmQKPiAKPiBNYXli
-ZSBleHlub3M1NDIyPyBPZHJvaWQgWFUzLzQgdXNlIEV4eW5vczU0MjIuCgpZZXMsIG15IG1pc3Rh
-a2UsIEV4eW5vczU0MjIgZm9yIE9kcm9pZCBhbmQgRXh5bm9zNTQyMCBmb3IgUGVhY2gtUGl0LgpJ
-dCBqdXN0IGhhcHBlbnMgd2UgdXNlICJzYW1zdW5nLGV4eW5vczU0MjAtaGRtaSIgY29tcGF0aWJs
-ZSBmb3IgdGhhdCBib3RoClNvQ3MuCiAKCj4gU2VlbXMgdGhhdCAnI3NvdW5kLWRhaS1jZWxscycg
-aXMgcmVxdWlyZWQgbWFuZGF0b3JpbHkgaW4gY2FzZSBvZiBFeHlub3M1NDIyIAo+IGJlY2F1c2Ug
-T2Ryb2lkIFhVMy80IEF1ZGlvIGRyaXZlciBjaGVja3MgdGhpcyBwcm9wZXJ0eSwgYW5kIHRoZSBk
-cml2ZXIgCj4gcmV0dXJucyBlcnJvciBpZiB0aGUgcHJvcGVydHkgZG9lc24ndCBleGlzdCBpbiBp
-dHMgZGV2aWNlIHRyZWUuCj4gQW5kIGlmIG90aGVyIFNvQ3MgLSBFeHlub3M0MjEwLzQyMTIvNTI1
-MC81NDIwLzU0MzMgLSByZXF1aXJlIHRoaXMgcHJvcGVydHkgCj4gd2l0aCBhZGRpdGlvbmFsIGRy
-aXZlciB3b3JrcyBsYXRlciB0aGVuIHRoaXMgcHJvcGVydHkgd291bGQgYWxzbyBiZSByZXF1aXJl
-ZCAKPiBtYW5kYXRvcmlseSBmb3IgdGhlbSBub3Qgb3B0aW9uYWxseS4gSW4gdGhpcyBjYXNlIHdl
-IG1heSBuZWVkIHRvIG1vZGlmeSB0aGUgCj4gZGVzY3JpcHRpb24gYWdhaW4uCj4gCj4gU28gbXkg
-b3BpbmlvbiBpcyB0byBhZGQgb25seSB0aGUgZGVzY3JpcHRpb24gcmVxdWlyZWQgbWFuZGF0b3Jp
-bHkgaWYgSSAKPiB1bmRlcnN0b29kIGNvcnJlY3RseS4KCllvdSBhcmUgcmlnaHQsIGl0IHdvdWxk
-IGJlIGJldHRlciB0byBtYWtlIHRoaXMgYSBtYW5kYXRvcnkgcHJvcGVydHksIEkgb25seQptYWRl
-IGl0IG9wdGlvbmFsIGJlY2F1c2Ugbm93IHRoaXMgcHJvcGVydHkgaXMgbWlzc2luZyBpbiBtYW55
-IGR0cyBmaWxlcy4KTGV0IG1lIHJlc2VuZCB3aXRoICNzb3VuZC1kYWktY2VsbHMgZGVzY3JpcHRp
-b24gbW92ZWQgdG8gdGhlICJSZXF1aXJlZCAKcHJvcGVydGllcyIgcGFyYWdyYXBoLgoKLS0KVGhh
-bmtzLApTeWx3ZXN0ZXIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9w
-Lm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1k
-ZXZlbAo=
+
+--mYCpIKhGyMATD0i+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Mar 08, 2018 at 11:49:18PM +0000, Kuninori Morimoto wrote:
+
+> previous my patch used new flag (= .alloced_component),
+> but I think it is not good idea.
+> And I noticed that snd_soc_add_component() is
+> also calling kfree(component) (= has same bug).
+
+> So how about below one ?
+> I want to post it instead of previous.
+
+That should work also.
+
+> # I will go to ELC next week, thus posting patch will be
+> # 2weeks later
+
+I'll be there as well.
+
+--mYCpIKhGyMATD0i+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqibIkACgkQJNaLcl1U
+h9BdMwf/dgi+zRusODM3QHazDsSRySwq2A6zHxuxsw4nCcucFQr+cM4Ai6+znXV9
+iDL6Ex3x39TGs2viCeuD/5V7Tq2YFmXvVpBkokjEzcUSVF1Np4fILcJZNb4KQSIq
+0gBSCOSgrlIjmdkL4k69wLowg7V9ZNfJvOUlmDCr9/kjZjw4cwew8Xe++eQ9OdlY
+TYbE21c1swh7/tZRTufgVXjdJyYBY8WxyqC6SerK8HeZXOV6Apv/ITk/8xSTqZld
+QKqjo4o/lOCbLn81LiQB8747er13/H76Gnknlv2hPxgtDEStb6ykMS3rSzw3y4nS
+tklNiPuvj6ysesBpv8geQyt2zJTVeA==
+=uLw5
+-----END PGP SIGNATURE-----
+
+--mYCpIKhGyMATD0i+--
