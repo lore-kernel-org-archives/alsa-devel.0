@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: TSCS42xx: Add missing headers" to the asoc tree
-Date: Fri, 09 Mar 2018 18:04:02 +0000
-Message-ID: <E1euMN8-00022l-Dx@debutante>
-References: <20180309031332.GA27764@t7-ThinkPad-E560>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180309031332.GA27764@t7-ThinkPad-E560>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: amd: 16bit resolution support for i2s
+	sp instance" to the asoc tree
+Date: Fri, 09 Mar 2018 18:03:43 +0000
+Message-ID: <E1euMMp-00021T-Ld@debutante>
+References: <1520610182-13122-1-git-send-email-Vijendar.Mukunda@amd.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 07EB426763C
+ for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2018 19:03:47 +0100 (CET)
+In-Reply-To: <1520610182-13122-1-git-send-email-Vijendar.Mukunda@amd.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, broonie@kernel.org, Alexander.Deucher@amd.com, Akshu.Agrawal@amd.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: TSCS42xx: Add missing headers
+   ASoC: amd: 16bit resolution support for i2s sp instance
 
 has been applied to the asoc tree at
 
@@ -37,44 +53,76 @@ to this mail.
 Thanks,
 Mark
 
->From 641eea3f8b95a47d5e5db28dd92a0f586cd85390 Mon Sep 17 00:00:00 2001
-From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Date: Thu, 8 Mar 2018 21:13:40 -0600
-Subject: [PATCH] ASoC: TSCS42xx: Add missing headers
+>From a37d48e32303d535bdfd554c57952ce31f428b3a Mon Sep 17 00:00:00 2001
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Date: Fri, 9 Mar 2018 21:13:02 +0530
+Subject: [PATCH] ASoC: amd: 16bit resolution support for i2s sp instance
 
-Add missing headers
+Moved 16bit resolution condition check for stoney platform
+to acp_hw_params.Depending upon substream required register
+value need to be programmed rather than enabling 16bit resolution
+support all time in acp init.
 
-Signed-off-by: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tscs42xx.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ sound/soc/amd/acp-pcm-dma.c | 16 +++++++++-------
+ sound/soc/amd/acp.h         |  2 ++
+ 2 files changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/tscs42xx.c b/sound/soc/codecs/tscs42xx.c
-index e915261fa1cb..cfc71b5411ee 100644
---- a/sound/soc/codecs/tscs42xx.c
-+++ b/sound/soc/codecs/tscs42xx.c
-@@ -3,14 +3,19 @@
- // Copyright 2017 Tempo Semiconductor, Inc.
- // Author: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index c33a512283a4..9fb356db3ab2 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -579,13 +579,6 @@ static int acp_init(void __iomem *acp_mmio, u32 asic_type)
+ 		for (bank = 1; bank < 48; bank++)
+ 			acp_set_sram_bank_state(acp_mmio, bank, false);
+ 	}
+-
+-	/* Stoney supports 16bit resolution */
+-	if (asic_type == CHIP_STONEY) {
+-		val = acp_reg_read(acp_mmio, mmACP_I2S_16BIT_RESOLUTION_EN);
+-		val |= 0x03;
+-		acp_reg_write(val, acp_mmio, mmACP_I2S_16BIT_RESOLUTION_EN);
+-	}
+ 	return 0;
+ }
  
-+#include <linux/kernel.h>
-+#include <linux/device.h>
-+#include <linux/regmap.h>
- #include <linux/i2c.h>
-+#include <linux/err.h>
-+#include <linux/string.h>
- #include <linux/module.h>
-+#include <linux/delay.h>
- #include <linux/mutex.h>
--#include <linux/regmap.h>
-+#include <sound/tlv.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/soc-dapm.h>
--#include <sound/tlv.h>
+@@ -774,6 +767,7 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	int status;
+ 	uint64_t size;
++	u32 val = 0;
+ 	struct page *pg;
+ 	struct snd_pcm_runtime *runtime;
+ 	struct audio_substream_data *rtd;
+@@ -786,6 +780,14 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
+ 	if (WARN_ON(!rtd))
+ 		return -EINVAL;
  
- #include "tscs42xx.h"
++	if (adata->asic_type == CHIP_STONEY) {
++		val = acp_reg_read(adata->acp_mmio, mmACP_I2S_16BIT_RESOLUTION_EN);
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			val |= ACP_I2S_SP_16BIT_RESOLUTION_EN;
++		else
++			val |= ACP_I2S_MIC_16BIT_RESOLUTION_EN;
++		acp_reg_write(val, adata->acp_mmio, mmACP_I2S_16BIT_RESOLUTION_EN);
++	}
+ 	size = params_buffer_bytes(params);
+ 	status = snd_pcm_lib_malloc_pages(substream, size);
+ 	if (status < 0)
+diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
+index ecb458935d1e..9293f179f272 100644
+--- a/sound/soc/amd/acp.h
++++ b/sound/soc/amd/acp.h
+@@ -70,6 +70,8 @@
+ #define CAPTURE_END_DMA_DESCR_CH15 7
  
+ #define mmACP_I2S_16BIT_RESOLUTION_EN       0x5209
++#define ACP_I2S_MIC_16BIT_RESOLUTION_EN 0x01
++#define ACP_I2S_SP_16BIT_RESOLUTION_EN	0x02
+ enum acp_dma_priority_level {
+ 	/* 0x0 Specifies the DMA channel is given normal priority */
+ 	ACP_DMA_PRIORITY_LEVEL_NORMAL = 0x0,
 -- 
 2.16.2
