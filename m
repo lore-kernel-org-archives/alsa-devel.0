@@ -1,51 +1,85 @@
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: [PATCH] ASoC: topology: create TLV data for dapm
-	widgets
-Date: Fri,  9 Mar 2018 11:11:17 -0800
-Message-ID: <20180309191117.9028-1-ranjani.sridharan@linux.intel.com>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH] ASoC: soc-core: Add missing NULL check
+Date: Fri, 9 Mar 2018 20:35:23 +0100
+Message-ID: <20180309193523.GA2977@amd>
+References: <20180308200653.GA47801@beast>
+ <20180309125050.GD5252@sirena.org.uk>
+ <CAGXu5jJo2JVXKV+nieGwzH0XOPpzzo4DmYy0L05iZD6wwO1vGg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id F259B266F68
- for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2018 20:11:19 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, broonie@kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="/9DWx/yDrRhgMJTb"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAGXu5jJo2JVXKV+nieGwzH0XOPpzzo4DmYy0L05iZD6wwO1vGg@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kees Cook <keescook@chromium.org>
+Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, moderated for non-subscribers <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds the change required to create the TLV data
-for dapm widget kcontrols from topology. This also fixes the following
-TLV read error shown in amixer while showing the card control contents.
-"amixer: Control hw:1 element TLV read error: No such device or address"
 
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
----
- sound/soc/soc-topology.c | 3 +++
- 1 file changed, 3 insertions(+)
+--/9DWx/yDrRhgMJTb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 293124855cf6..dc6f06e853d0 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1294,6 +1294,9 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
- 			kfree(sm);
- 			continue;
- 		}
-+
-+		/* create any TLV data */
-+		soc_tplg_create_tlv(tplg, &kc[i], &mc->hdr);
- 	}
- 	return kc;
- 
--- 
-2.14.1
+On Fri 2018-03-09 10:45:16, Kees Cook wrote:
+> On Fri, Mar 9, 2018 at 4:50 AM, Mark Brown <broonie@kernel.org> wrote:
+> > On Thu, Mar 08, 2018 at 12:06:53PM -0800, Kees Cook wrote:
+> >
+> >> If a codec is not attached to the sound soc, a NULL deref is possible =
+as a
+> >> regular user in /sys.
+> >
+> > I can't parse this, sorry.  What is the "sound soc"?
+>=20
+> SoC's sound component? I'm not sure either. :) I was just sending the
+> patch that I mentioned from the thread where Pavel mentioned this
+> Oops.
+>=20
+> Pavel, can you isolate the specific file that is causing the oops?
+> (Maybe this patch should be a WARN() instead of silent return 0, since
+> we still don't want to crash, but it should be considered a bug...)
+
+Crash is reproducible on linux-next on Nokia N900. But I seen hang on
+Nokia N9, with different kernel, that may be related.
+
+And yes, WARN() would be nicer.
+
+> >> +++ b/sound/soc/soc-core.c
+> >> @@ -137,6 +137,9 @@ static ssize_t soc_codec_reg_show(struct snd_soc_c=
+odec *codec, char *buf,
+> >>       size_t total =3D 0;
+> >>       loff_t p =3D 0;
+> >>
+> >> +     if (!codec || !codec->driver)
+> >> +             return 0;
+> >> +
+> >
+> > How are we managing to create a sysfs file for a CODEC which doesn't
+> > have a CODEC struct associated with it?  That is obviously nonsensical
+> > and suggests we've got some more serious problem going on here - if
+> > there's no CODEC those sysfs attributes simply shouldn't be there.
+>=20
+> No idea! Hopefully Pavel has more details...
+
+Pavel probably can reproduce it...
+
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--/9DWx/yDrRhgMJTb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlqi4fsACgkQMOfwapXb+vLbIQCgnLjHPQpsXjX6HNyg7+Wcx3z6
+5fMAoIIqbOg+YWWcLv0MEgToQ8EJY188
+=d5yl
+-----END PGP SIGNATURE-----
+
+--/9DWx/yDrRhgMJTb--
