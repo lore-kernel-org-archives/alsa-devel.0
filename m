@@ -1,60 +1,61 @@
-From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Subject: Re: [PATCH 0/9] Enablement of BT I2S controller
-	instance for AMD APUs
-Date: Fri, 9 Mar 2018 15:29:19 +0530
-Message-ID: <5e68283a-5e9c-5ddc-7c11-0f6251f1a77d@amd.com>
-References: <1518766434-7911-1-git-send-email-Vijendar.Mukunda@amd.com>
+From: <Mario.Limonciello@dell.com>
+Subject: RE: [PATCH v2 3/3] ALSA: hda: Disabled unused audio controller for
+ Dell platforms with Switchable Graphics
+Date: Fri, 9 Mar 2018 09:59:39 +0000
+Message-ID: <09eadabb264f401a88b427744505adf8@ausx13mpc124.AMER.DELL.COM>
+References: <20180308091023.9061-1-kai.heng.feng@canonical.com>
+ <20180308091023.9061-3-kai.heng.feng@canonical.com>
+ <20180309090223.xb55ltac4pfesdrh@pali>
+ <723DA929-C9FA-4F69-8D3A-03D8A75D09A6@canonical.com>
+ <014795f5a3014cd3bf55de26f76a5af8@ausx13mpc124.AMER.DELL.COM>
+ <20180309094600.m24d3zbzdsmls7aw@pali>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM03-DM3-obe.outbound.protection.outlook.com
- (mail-dm3nam03on0046.outbound.protection.outlook.com [104.47.41.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D16B26742D
- for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2018 10:57:08 +0100 (CET)
-In-Reply-To: <1518766434-7911-1-git-send-email-Vijendar.Mukunda@amd.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180309094600.m24d3zbzdsmls7aw@pali>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org, perex@perex.cz
-Cc: tiwai@suse.de, Alexander.Deucher@amd.com, lgirdwood@gmail.com
+Sender: linux-kernel-owner@vger.kernel.org
+To: pali.rohar@gmail.com
+Cc: kai.heng.feng@canonical.com, mjg59@srcf.ucam.org, dvhart@infradead.org, andy@infradead.org, tiwai@suse.com, platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-On Friday 16 February 2018 01:03 PM, Vijendar Mukunda wrote:
-> This patch set updates Audio CoProcessor (ACP) audio drivers to enable BT I2S controller instance.
-> Default enabled I2S controller instance is I2S SP instance.
-> There is a requirement to enable BT I2S controller Instance along with I2S SP controller instance.
-> This patch set bring up functionality to render & capture on BT I2S controller instance.
->
-> The current code is based on asoc-next, but I'm happy to rebase on whatever tree this ends up going through if there are any problems applying.
->
-> Vijendar Mukunda (9):
->    ASoC: amd: renaming pcm substream names and bytescount params
->    ASoC: amd: Coding style changes for acp dma driver
->    ASoC: amd: dma driver changes for BT I2S controller instance
->    ASoC: amd: dma descriptor changes for BT I2S Instance
->    ASoC: amd: Interrupt handler changes for BT I2S instance
->    ASoC: amd: pcm callbacks modifications for bt i2s instance
->    ASoC: amd: modifications in dma stop sequence
->    ASoC: amd: 16bit resolution support for bt i2s instance
->    ASoC: amd: enabling bt i2s config after acp reset
->
->   sound/soc/amd/acp-pcm-dma.c | 623 ++++++++++++++++++++++++++++++++------------
->   sound/soc/amd/acp.h         |  61 ++++-
->   2 files changed, 514 insertions(+), 170 deletions(-)
->
-
-Below two patches are merged.
-
-  ASoC: amd: renaming pcm substream names and bytescount params
-  ASoC: amd: Coding style changes for acp dma driver
-
-Squashing the rest of the patch set as few patches need to be submitted as bug fixes and requires reordering .
+PiA+IFBhbGkgaXMgeW91ciBjb25jZXJuIHRoYXQgdGhpcyBjb2RlIGZvciBtYXRjaGluZyB2ZW5k
+b3Ivc3Vic3lzdGVtIGlzIHJ1bm5pbmcNCj4gPiBvbiBub24tRGVsbCB0b28/ICBUaGUgb25seSBv
+dGhlciByZWNvbW1lbmRhdGlvbiBJIHRoaW5rIHRoYXQgY2FuIGJlIHRvIHJlc3RyaWN0DQo+ID4g
+dG8gbWF0Y2hpbmcgRGVsbCBPRU0gc3RyaW5ncyBpbiBTTUJJT1MgdGFibGUsIGJ1dCBJIGRvbid0
+IHRoaW5rIHRoYXQncyBhbnkgYmV0dGVyDQo+ID4gdGhhbiB0aGUgbWF0Y2hpbmcgZm9yIFZJRC9T
+U1ZJRC4NCj4gDQo+IE15IGNvbmNlcm4gaXMgYWJvdXQgYWRkaW5nIGEgbmV3IG1hY2hpbmUgc3Bl
+Y2lmaWMgY29kZSBpbnRvIGdlbmVyaWMNCj4gZHJpdmVyLCB3aGljaCBjaGVjayBpcyBkb25lIGp1
+c3QgYnkgUENJIHZlbmRvciBhbmQgc3VidmVuZG9yLg0KPiANCj4gSW4gZnV0dXJlIHRoZXJlIGNh
+biBiZSBuZXcgbW9kZWxzIG9yIG90aGVyIFBDSSBkZXZpY2VzIHdoaWNoIG1hdGNoZXMNCj4gYWJv
+dmUgY29uZGl0aW9uIGV2ZW4gdGhleSB3b3VsZCBub3QgaGF2ZSBhbnkgc3dpdGNoYWJsZSBncmFw
+aGljcywgbm9yDQo+IHRoZXkgd291bGQgbWFudWZhY3R1cmVkIGJ5IERlbGwuDQoNClVoIERlbGwg
+c3Vic3lzdGVtIElEIG1lYW5zIGl0J3MgRGVsbCBubz8NCg0KPiANCj4gQWxzbyBJIGNhbiBpbWFn
+aW5lIHRoYXQgaW4gZnV0dXJlIChvciBtYXliZSBhbHJlYWR5IG5vdz8pIGl0IGlzIHBvc3NpYmxl
+DQo+IHRvIGZpbmQgUENJIGRldmljZSB3aGljaCBwYXNzIGFib3ZlIGNoZWNrcyBhbmQgY29ubmVj
+dCB0aGlzIFBDSSBkZXZpY2UNCj4gaW50byBkZXNrdG9wIC9zZXJ2ZXIgLyBhbnkgbm9uLWxhcHRv
+cCBkZXZpY2UuDQo+IA0KPiBJZiB0aGlzIHN3aXRjaGFibGUgZ3JhcGhpY3Mgc29sdXRpb24gaXMg
+c3BlY2lmaWMgdG8gZGVsbCBsYXB0b3BzLCB0aGVuDQo+IHJhdGhlciBjaGVja2luZyBmb3IgUENJ
+IHZlbmRvci9zdWJ2ZXZlbmRvciBtYWluIGNoZWNrLCB0aGVyZSBzaG91bGQgYmUNCj4gbWFpbiBj
+aGVjayB2aWEgRE1JIHN0cmluZ3MuDQoNClJpZ2h0IG5vdyB0aGlzIGlzIGFmZmVjdGVkIHRvIGJv
+dGggQUlPIGRlc2t0b3AgYW5kIGxhcHRvcHMuDQoNCklJUkMgeW91IHdvbid0IGVuZCB1cCB3aXRo
+IHN3aXRjaGFibGUgZ3JhcGhpY3MgaW4gdHJhZGl0aW9uYWwgZGVza3RvcCB0aGF0IHlvdQ0KY2Fu
+IHJlbW92ZSBQQ0kgY2FyZC4gIElmIHRoaXMgY29kZSB3YXMgcnVuIG9uIGEgdHJhZGl0aW9uYWwg
+ZGVza3RvcCB3aXRoIGEgDQpBTUQgUENJIGNhcmQgdGhhdCBCSU9TIHF1ZXJ5IHJlc3VsdCBzaG91
+bGQgYmUgaW52YWxpZCB0b2tlbiAod2hpY2ggd2lsbCBpbmZlcg0Kc3dpdGNoYWJsZSBvZmYgdG8g
+dGhpcyByb3V0aW5lKS4NCg0KPiANCj4gSGFyZHdhcmUgaXMgY2hhbmdpbmcgcmVsYXRpdmVseSBx
+dWlja2x5IGFuZCB0aGVyZSBpcyBhYnNvbHV0ZWx5IG5vDQo+IGd1YXJhbnRlZSB0aGF0IGUuZy4g
+TlZJRElBIHdvdWxkIG5vdCBzdGFydCBwcm92aWRpbmcgYXVkaW8gY29udHJvbGxlciBpbg0KPiBz
+aW1pbGFyIGxpa2UgQU1EIGFuZCBpdCB3b3VsZCBiZSBwdXQgaW4gdGhvc2UgRGVsbCBtYWNoaW5l
+cy4NCg0KS2FpIEhlbmcgY2FuIGV4cGxhaW4gZXhhY3RseSB3aHkgTlZJRElBIGlzbid0IGFmZmVj
+dGVkLg0KVGhpcyBpcyBwcm9iYWJseSBnb29kIGluZm9ybWF0aW9uIHRvIGluY2x1ZGUgaW4gdGhl
+IGNvbW1pdCBtZXNzYWdlIHRvby4NCg0KPiANCj4gPiA+ID4NCj4gPiA+ID4gSW50ZXJlc3Rpbmcg
+cXVlc3Rpb24gd291bGQgYmUsIGhvdyBoYW5kbGUgdGhpcyBzaXR1YXRpb24gV2luZG93cz8NCj4g
+PiA+DQo+ID4gPiBJIGRvbid0IGtub3cgaG93IHRoaXMgcGxhdGZvcm0gaGFuZGxlcyB0aGlzIG9u
+IFdpbmRvd3MsIEkgZ3Vlc3Mgd2UgbmVlZA0KPiA+ID4gTWFyaW8gdG8gc2hlZCBzb21lIGxpZ2h0
+cyBoZXJlLg0KPiA+DQo+ID4gU29ycnkgSSBkb24ndCBoYXZlIHRoaXMgaW5mb3JtYXRpb24gdG8g
+c2hhcmUuICAgSSBkb24ndCB0aGluayBpdCdzIHRvbyB1c2VmdWwgaGVyZQ0KPiA+IGFueXdheSB0
+aG91Z2ggYmVjYXVzZSBXaW5kb3dzIGRyaXZlciBhcmNoaXRlY3R1cmUgaXMgbXVjaCBkaWZmZXJl
+bnQgaW4gdGhpcw0KPiA+IGFyZWEuDQo+ID4NCj4gPg0KPiANCj4gLS0NCj4gUGFsaSBSb2jDoXIN
+Cj4gcGFsaS5yb2hhckBnbWFpbC5jb20NCg==
