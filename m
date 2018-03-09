@@ -1,52 +1,51 @@
-From: Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] ASoC: soc-core: Add missing NULL check
-Date: Fri, 9 Mar 2018 10:45:16 -0800
-Message-ID: <CAGXu5jJo2JVXKV+nieGwzH0XOPpzzo4DmYy0L05iZD6wwO1vGg@mail.gmail.com>
-References: <20180308200653.GA47801@beast> <20180309125050.GD5252@sirena.org.uk>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: [PATCH] ASoC: topology: create TLV data for dapm
+	widgets
+Date: Fri,  9 Mar 2018 11:11:17 -0800
+Message-ID: <20180309191117.9028-1-ranjani.sridharan@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180309125050.GD5252@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.com>, Pavel Machek <pavel@ucw.cz>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, moderated for non-subscribers <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id F259B266F68
+ for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2018 20:11:19 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 9, 2018 at 4:50 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Thu, Mar 08, 2018 at 12:06:53PM -0800, Kees Cook wrote:
->
->> If a codec is not attached to the sound soc, a NULL deref is possible as a
->> regular user in /sys.
->
-> I can't parse this, sorry.  What is the "sound soc"?
+This patch adds the change required to create the TLV data
+for dapm widget kcontrols from topology. This also fixes the following
+TLV read error shown in amixer while showing the card control contents.
+"amixer: Control hw:1 element TLV read error: No such device or address"
 
-SoC's sound component? I'm not sure either. :) I was just sending the
-patch that I mentioned from the thread where Pavel mentioned this
-Oops.
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+---
+ sound/soc/soc-topology.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Pavel, can you isolate the specific file that is causing the oops?
-(Maybe this patch should be a WARN() instead of silent return 0, since
-we still don't want to crash, but it should be considered a bug...)
-
->
->> +++ b/sound/soc/soc-core.c
->> @@ -137,6 +137,9 @@ static ssize_t soc_codec_reg_show(struct snd_soc_codec *codec, char *buf,
->>       size_t total = 0;
->>       loff_t p = 0;
->>
->> +     if (!codec || !codec->driver)
->> +             return 0;
->> +
->
-> How are we managing to create a sysfs file for a CODEC which doesn't
-> have a CODEC struct associated with it?  That is obviously nonsensical
-> and suggests we've got some more serious problem going on here - if
-> there's no CODEC those sysfs attributes simply shouldn't be there.
-
-No idea! Hopefully Pavel has more details...
-
--Kees
-
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 293124855cf6..dc6f06e853d0 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1294,6 +1294,9 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
+ 			kfree(sm);
+ 			continue;
+ 		}
++
++		/* create any TLV data */
++		soc_tplg_create_tlv(tplg, &kc[i], &mc->hdr);
+ 	}
+ 	return kc;
+ 
 -- 
-Kees Cook
-Pixel Security
+2.14.1
