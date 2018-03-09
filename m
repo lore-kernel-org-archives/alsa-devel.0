@@ -1,58 +1,102 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCHv5 3/5] mfd: motorola-cpcap: Add audio-codec support
-Date: Fri, 9 Mar 2018 08:34:14 +0000
-Message-ID: <20180309083414.s57eq3kw325magwz@dell>
-References: <20180223200254.25685-1-sebastian.reichel@collabora.co.uk>
- <20180223200254.25685-4-sebastian.reichel@collabora.co.uk>
- <20180307163211.rytfli5tb47yhtug@dell>
- <20180308094652.qg4atjw5c3hayaz3@earth.universe>
- <20180308095315.mpcmx2ob6yhsnrm6@dell>
- <20180308102757.jyi7uo566n6nuct5@earth.universe>
- <20180308104831.fflq2arj5dxgntia@dell>
- <20180308112528.GC6019@sirena.org.uk>
+From: Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>
+Subject: Re: [PATCH v2 3/3] ALSA: hda: Disabled unused audio
+ controller for Dell platforms with Switchable Graphics
+Date: Fri, 9 Mar 2018 10:02:23 +0100
+Message-ID: <20180309090223.xb55ltac4pfesdrh@pali>
+References: <20180308091023.9061-1-kai.heng.feng@canonical.com>
+ <20180308091023.9061-3-kai.heng.feng@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78ADA26742D
+ for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2018 10:02:26 +0100 (CET)
+Received: by mail-wm0-f65.google.com with SMTP id z9so2513919wmb.3
+ for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2018 01:02:26 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <20180308112528.GC6019@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Sebastian Reichel <sebastian.reichel@collabora.co.uk>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Tony Lindgren <tony@atomide.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
+In-Reply-To: <20180308091023.9061-3-kai.heng.feng@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: mjg59@srcf.ucam.org, alsa-devel@alsa-project.org, mario.limonciello@dell.com, linux-kernel@vger.kernel.org, tiwai@suse.com, platform-driver-x86@vger.kernel.org, dvhart@infradead.org, andy@infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 08 Mar 2018, Mark Brown wrote:
-
-> On Thu, Mar 08, 2018 at 10:48:31AM +0000, Lee Jones wrote:
-> > On Thu, 08 Mar 2018, Sebastian Reichel wrote:
-> 
-> > > I had it in PATCHv1-PATCHv4. It was removed, since Mark didn't want
-> > > to have it in the DT ABI.
-> 
-> > Right, but why?  Is it not a hardware device?  I think converting from
-> > devm_of_platform_populate() for one sub-device is a bit drastic.
-> 
-> It's not a separate physical device or IP and doesn't exist outside of
-> the MFD, it's just how Linux is currently choosing to divide up the chip
-> right now but that's totally open to change even in future versions of
-> Linux.  Clocks are a big issue with audio stuff, right now sections of
-> the clock tree get handled in the CODEC driver but we're going to want
-> to push them out to a clock driver so we're not reimplementing handling
-> for clocks.
-
-How is the CODEC controlled?  Does it have its own registers?  I guess
-by "it's not a separate device or IP" you mean that it doesn't.  But
-that begs the question, how does this then device differ from all the
-other devices (adc, battery, charger, regulator, rtc, pwrbutton,
-usb-phy and led)?
-
-I'm asking, not to be awkward, but to avoid 50 lines of potentially
-unnecessary static code.  If this is a real (sub-)device, even if it's
-part of a larger, single device (MFD) then there is no reason why it
-can't be represented as a single, albeit empty node.
-
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+T24gVGh1cnNkYXkgMDggTWFyY2ggMjAxOCAxNzoxMDoyMyBLYWktSGVuZyBGZW5nIHdyb3RlOgo+
+IFNvbWUgRGVsbCBwbGF0Zm9ybXMgKFByZWljc2lvbiA3NTEwLzc3MTAvNzUyMC83NzIwKSBoYXZl
+IGEgQklPUyBvcHRpb24KPiAiU3dpdGNoYWJsZSBHcmFwaGljcyIgKFNHKS4KPiAKPiBXaGVuIFNH
+IGlzIGVuYWJsZWQsIHdlIGhhdmU6Cj4gMDA6MDIuMCBWR0EgY29tcGF0aWJsZSBjb250cm9sbGVy
+OiBJbnRlbCBDb3Jwb3JhdGlvbiBEZXZpY2UgNTkxYiAocmV2IDA0KQo+IDAwOjFmLjMgQXVkaW8g
+ZGV2aWNlOiBJbnRlbCBDb3Jwb3JhdGlvbiBDTTIzOCBIRCBBdWRpbyBDb250cm9sbGVyIChyZXYg
+MzEpCj4gMDE6MDAuMCBWR0EgY29tcGF0aWJsZSBjb250cm9sbGVyOiBBZHZhbmNlZCBNaWNybyBE
+ZXZpY2VzLCBJbmMuICBbQU1EL0FUSV0gRWxsZXNtZXJlIFtQb2xhcmlzMTBdCj4gMDE6MDAuMSBB
+dWRpbyBkZXZpY2U6IEFkdmFuY2VkIE1pY3JvIERldmljZXMsIEluYy4gW0FNRC9BVEldIEVsbGVz
+bWVyZSBbUmFkZW9uIFJYIDU4MF0KPiAKPiBUaGUgSW50ZWwgQXVkaW8gb3V0cHV0cyBhbGwgdGhl
+IHNvdW5kLCBpbmNsdWRpbmcgSERNSSBhdWRpby4gVGhlIGF1ZGlvCj4gY29udHJvbGxlciBjb21l
+cyB3aXRoIEFNRCBncmFwaGljcyBkb2Vzbid0IGdldCB1c2VkLgo+IAo+IFdoZW4gU0cgaXMgZGlz
+YWJsZWQsIHdlIGhhdmU6Cj4gMDA6MWYuMyBBdWRpbyBkZXZpY2U6IEludGVsIENvcnBvcmF0aW9u
+IENNMjM4IEhEIEF1ZGlvIENvbnRyb2xsZXIgKHJldiAzMSkKPiAwMTowMC4wIFZHQSBjb21wYXRp
+YmxlIGNvbnRyb2xsZXI6IEFkdmFuY2VkIE1pY3JvIERldmljZXMsIEluYy4gIFtBTUQvQVRJXSBF
+bGxlc21lcmUgW1BvbGFyaXMxMF0KPiAwMTowMC4xIEF1ZGlvIGRldmljZTogQWR2YW5jZWQgTWlj
+cm8gRGV2aWNlcywgSW5jLiBbQU1EL0FUSV0gRWxsZXNtZXJlIFtSYWRlb24gUlggNTgwXQo+IAo+
+IE5vdyBpdCdzIGEgdHlwaWNhbCBkaXNjcmV0ZS1vbmx5IHN5c3RlbS4gSERNSSBhdWRpbyBjb21l
+cyBmcm9tIEFNRCBhdWRpbwo+IGNvbnRyb2xsZXIsIG90aGVycyBmcm9tIEludGVsIGF1ZGlvIGNv
+bnRyb2xsZXIuCj4gCj4gV2hlbiBTRyBpcyBlbmFibGVkLCB0aGUgdW51c2VkIEFNRCBhdWRpbyBj
+b250cm9sbGVyIHN0aWxsIGV4cG9zZXMgaXRzCj4gc3lzZnMsIHNvIHVzZXJzcGFjZSBzdGlsbCBv
+cGVucyB0aGUgY29udHJvbCBmaWxlIGFuZCBzdHJlYW0uIElmCj4gdXNlcnNwYWNlIHRyaWVzIHRv
+IG91dHB1dCBzb3VuZCB0aHJvdWdoIHRoZSBzdHJlYW0sIGl0IGhhbmdzIHdoZW4KPiBydW50aW1l
+IHN1c3BlbmQga2lja3MgaW46Cj4gWyAxMi43OTYyNjVdIHNuZF9oZGFfaW50ZWwgMDAwMDowMTow
+MC4xOiBEaXNhYmxpbmcgdmlhIHZnYV9zd2l0Y2hlcm9vCj4gWyAxMi43OTYzNjddIHNuZF9oZGFf
+aW50ZWwgMDAwMDowMTowMC4xOiBDYW5ub3QgbG9jayBkZXZpY2VzIQo+IAo+IFNpbmNlIHRoZSBk
+aXNjcmV0ZSBhdWRpbyBjb250cm9sbGVyIGlzbid0IHVzZWZ1bCB3aGVuIFNHIGVuYWJsZWQsIHdl
+Cj4gc2hvdWxkIGp1c3QgZGlzYWJsZSB0aGUgZGV2aWNlLgo+IAo+IFNpZ25lZC1vZmYtYnk6IEth
+aS1IZW5nIEZlbmcgPGthaS5oZW5nLmZlbmdAY2Fub25pY2FsLmNvbT4KPiAtLS0KPiB2MjogTWFy
+aW8gc3VnZ2VzdGVkIHRvIHNxdWFzaCB0aGUgSERBIHBhcnQgaW50byB0aGUgc2FtZSBzZXJpZXMu
+Cj4gCj4gIHNvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMgfCAzNSArKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKwo+ICAxIGZpbGUgY2hhbmdlZCwgMzUgaW5zZXJ0aW9ucygrKQo+IAo+
+IGRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jIGIvc291bmQvcGNpL2hkYS9o
+ZGFfaW50ZWwuYwo+IGluZGV4IDk2MTQzZGYxOWIyMS4uOGUzZThiODg2MjRhIDEwMDY0NAo+IC0t
+LSBhL3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMKPiArKysgYi9zb3VuZC9wY2kvaGRhL2hkYV9p
+bnRlbC5jCj4gQEAgLTQ5LDYgKzQ5LDcgQEAKPiAgI2luY2x1ZGUgPGxpbnV4L2Nsb2Nrc291cmNl
+Lmg+Cj4gICNpbmNsdWRlIDxsaW51eC90aW1lLmg+Cj4gICNpbmNsdWRlIDxsaW51eC9jb21wbGV0
+aW9uLmg+Cj4gKyNpbmNsdWRlIDxsaW51eC9kZWxsLWNvbW1vbi5oPgo+ICAKPiAgI2lmZGVmIENP
+TkZJR19YODYKPiAgLyogZm9yIHNub29wIGNvbnRyb2wgKi8KPiBAQCAtMTYyMCw2ICsxNjIxLDM1
+IEBAIHN0YXRpYyB2b2lkIGNoZWNrX21zaShzdHJ1Y3QgYXp4ICpjaGlwKQo+ICAJfQo+ICB9Cj4g
+IAo+ICsjaWYgSVNfRU5BQkxFRChDT05GSUdfREVMTF9MQVBUT1ApCj4gK3N0YXRpYyBib29sIGNo
+ZWNrX2RlbGxfc3dpdGNoYWJsZV9nZngoc3RydWN0IHBjaV9kZXYgKnBkZXYpCj4gK3sKPiArCXN0
+YXRpYyBpbnQgKCpkZWxsX3N3aXRjaGFibGVfZ2Z4X2VuYWJsZWRfZnVuYykoYm9vbCAqKTsKPiAr
+CWJvb2wgZW5hYmxlZDsKPiArCWludCBlcnI7Cj4gKwo+ICsJaWYgKHBkZXYtPnZlbmRvciAhPSBQ
+Q0lfVkVORE9SX0lEX0FUSSB8fAo+ICsJICAgIHBkZXYtPnN1YnN5c3RlbV92ZW5kb3IgIT0gUENJ
+X1ZFTkRPUl9JRF9ERUxMKQo+ICsJCXJldHVybiBmYWxzZTsKCkFyZSB5b3Ugc3VyZSB0aGF0IHlv
+dSB3YW50IHRvIGRvIHRoaXMgY2hlY2sgdW5jb25kaXRpb25hbGx5IG9uIGFsbAptYWNoaW5lcyB3
+aGljaCBoYXZlIGVuYWJsZWQgQ09ORklHX0RFTExfTEFQVE9QPwoKU3VidmVuZG9yIElEX0RFTEwg
+Zm9yIGRlbGwgc3BlY2lmaWMgY29kZSBpcyBub3Qgc3VzcGljaW91cywgYnV0IElEX0FUSQppcy4g
+V2hhdCB3b3VsZCBoYXBwZW4gaWYgQVRJIHZlbmRvciBjaGFuZ2VzIHRvIE5WSURJQSBvciBvdGhl
+ciB3aGljaCBpcwpub3QgcmVsYXRlZCB0byBEZWxsPwoKSW50ZXJlc3RpbmcgcXVlc3Rpb24gd291
+bGQgYmUsIGhvdyBoYW5kbGUgdGhpcyBzaXR1YXRpb24gV2luZG93cz8KCj4gKwlkZWxsX3N3aXRj
+aGFibGVfZ2Z4X2VuYWJsZWRfZnVuYyA9Cj4gKwkJc3ltYm9sX3JlcXVlc3QoZGVsbF9zd2l0Y2hh
+YmxlX2dmeF9lbmFibGVkKTsKPiArCWlmICghZGVsbF9zd2l0Y2hhYmxlX2dmeF9lbmFibGVkX2Z1
+bmMpCj4gKwkJcmV0dXJuIGZhbHNlOwo+ICsKPiArCWVyciA9IGRlbGxfc3dpdGNoYWJsZV9nZnhf
+ZW5hYmxlZF9mdW5jKCZlbmFibGVkKTsKPiArCj4gKwlzeW1ib2xfcHV0KGRlbGxfc3dpdGNoYWJs
+ZV9nZnhfZW5hYmxlZCk7Cj4gKwo+ICsJcmV0dXJuICFlcnIgPyBlbmFibGVkIDogZmFsc2U7Cj4g
+K30KPiArI2Vsc2UKPiArc3RhdGljIGJvb2wgY2hlY2tfZGVsbF9zd2l0Y2hhYmxlX2dmeChzdHJ1
+Y3QgcGNpX2RldiAqcGRldikKPiArewo+ICsJcmV0dXJuIGZhbHNlOwo+ICt9Cj4gKyNlbmRpZgo+
+ICsKPiAgLyogY2hlY2sgdGhlIHNub29wIG1vZGUgYXZhaWxhYmlsaXR5ICovCj4gIHN0YXRpYyB2
+b2lkIGF6eF9jaGVja19zbm9vcF9hdmFpbGFibGUoc3RydWN0IGF6eCAqY2hpcCkKPiAgewo+IEBA
+IC0xNzAyLDYgKzE3MzIsMTEgQEAgc3RhdGljIGludCBhenhfY3JlYXRlKHN0cnVjdCBzbmRfY2Fy
+ZCAqY2FyZCwgc3RydWN0IHBjaV9kZXYgKnBjaSwKPiAgCWlmIChlcnIgPCAwKQo+ICAJCXJldHVy
+biBlcnI7Cj4gIAo+ICsJaWYgKGNoZWNrX2RlbGxfc3dpdGNoYWJsZV9nZngocGNpKSkgewo+ICsJ
+CXBjaV9kaXNhYmxlX2RldmljZShwY2kpOwo+ICsJCXJldHVybiAtRU5PREVWOwo+ICsJfQo+ICsK
+PiAgCWhkYSA9IGt6YWxsb2Moc2l6ZW9mKCpoZGEpLCBHRlBfS0VSTkVMKTsKPiAgCWlmICghaGRh
+KSB7Cj4gIAkJcGNpX2Rpc2FibGVfZGV2aWNlKHBjaSk7CgotLSAKUGFsaSBSb2jDoXIKcGFsaS5y
+b2hhckBnbWFpbC5jb20KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCg==
