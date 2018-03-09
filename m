@@ -1,48 +1,85 @@
-From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Subject: [alsa-devel][PATCH v1] ASoC: TSCS42xx: Add missing headers
-Date: Thu, 8 Mar 2018 21:13:40 -0600
-Message-ID: <20180309031332.GA27764@t7-ThinkPad-E560>
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
+Subject: Re: [alsa-devel] [BUG] Kernel crash on Allwinner H3 due to sound core changes
+Date: Fri, 09 Mar 2018 07:33:33 +0100
+Message-ID: <2477367.T7DEPNfgqC@jernej-laptop>
+References: <2424862.oPtAVTfrB9@jernej-laptop> <20180308111348.GB6019@sirena.org.uk> <87h8pq166i.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <87h8pq166i.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, wens@csie.org, maxime.ripard@free-electrons.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Add missing headers
+Hi,
 
-Signed-off-by: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
----
- sound/soc/codecs/tscs42xx.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Dne petek, 09. marec 2018 ob 00:49:18 CET je Kuninori Morimoto napisal(a):
+> Hi Mark,Jernej
+> 
+> > > Ahh.. indeed. Good catch !
+> > > How about to add such flag ?
+> > > This is just idea. No tested, No compiled, but can help you ?
+> > 
+> > I think this makes sense as a patch.  We might want to disallow
+> > allocating components as part of a bigger struct so everything is more
+> > consistent but that's a bigger thing.
+> 
+> (snip)
+> 
+> > I tested this patch and there is no crash anymore. If you will send it as
+> > a
+> > fix, you can add:
+> > 
+> > Reported-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> > Tested-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> 
+> previous my patch used new flag (= .alloced_component),
+> but I think it is not good idea.
+> And I noticed that snd_soc_add_component() is
+> also calling kfree(component) (= has same bug).
+> 
+> So how about below one ?
+> I want to post it instead of previous.
+> 
+> # I will go to ELC next week, thus posting patch will be
+> # 2weeks later
+> 
+> ------------
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index c0edac8..4a8de23 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -3476,7 +3476,6 @@ int snd_soc_add_component(struct device *dev,
+>  err_cleanup:
+>  	snd_soc_component_cleanup(component);
+>  err_free:
+> -	kfree(component);
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(snd_soc_add_component);
+> @@ -3488,7 +3487,7 @@ int snd_soc_register_component(struct device *dev,
+>  {
+>  	struct snd_soc_component *component;
+> 
+> -	component = kzalloc(sizeof(*component), GFP_KERNEL);
+> +	component = devm_kzalloc(dev, sizeof(*component), GFP_KERNEL);
+>  	if (!component)
+>  		return -ENOMEM;
+> 
+> @@ -3523,7 +3522,6 @@ static int __snd_soc_unregister_component(struct
+> device *dev)
+> 
+>  	if (found) {
+>  		snd_soc_component_cleanup(component);
+> -		kfree(component);
+>  	}
+> 
+>  	return found;
 
-diff --git a/sound/soc/codecs/tscs42xx.c b/sound/soc/codecs/tscs42xx.c
-index e915261fa1cb..cfc71b5411ee 100644
---- a/sound/soc/codecs/tscs42xx.c
-+++ b/sound/soc/codecs/tscs42xx.c
-@@ -3,14 +3,19 @@
- // Copyright 2017 Tempo Semiconductor, Inc.
- // Author: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
- 
-+#include <linux/kernel.h>
-+#include <linux/device.h>
-+#include <linux/regmap.h>
- #include <linux/i2c.h>
-+#include <linux/err.h>
-+#include <linux/string.h>
- #include <linux/module.h>
-+#include <linux/delay.h>
- #include <linux/mutex.h>
--#include <linux/regmap.h>
-+#include <sound/tlv.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/soc-dapm.h>
--#include <sound/tlv.h>
- 
- #include "tscs42xx.h"
- 
--- 
-2.15.1
+That patch also prevents the crash, so you can add my tested-by and reported-
+by tags for this patch too.
+
+Best regards,
+Jernej
