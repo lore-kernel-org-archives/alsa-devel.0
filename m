@@ -1,20 +1,16 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH 2/3] ASoC: Add Multi CPU DAI support for
- PCM ops
-Date: Fri, 9 Mar 2018 15:53:58 +0000
-Message-ID: <20180309155358.34d6xo2wip2zodcd@localhost.localdomain>
-References: <1520334030-8018-1-git-send-email-shreyas.nc@intel.com>
- <1520334030-8018-3-git-send-email-shreyas.nc@intel.com>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: [PATCH] ASoC: da7219: Add common clock usage for
+	providing DAI clks
+Date: Fri, 9 Mar 2018 16:25:43 +0000
+Message-ID: <20180309162544.783133FB14@swsrvapps-01.diasemi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id ACA30266EBE
- for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2018 16:54:03 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1520334030-8018-3-git-send-email-shreyas.nc@intel.com>
+Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
+ [195.245.231.145])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5671D267442
+ for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2018 17:25:46 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,211 +20,280 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shreyas NC <shreyas.nc@intel.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, kuninori.morimoto.gx@renesas.com, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, linux-kernel@vger.kernel.org, Akshu Agrawal <akshu.agrawal@amd.com>, Daniel Kurtz <djkurtz@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 06, 2018 at 04:30:29PM +0530, Shreyas NC wrote:
-> This adds support for Multi CPU DAIs in PCM ops and stream
-> handling functions.
-> 
-> Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
-> ---
-> @@ -313,13 +333,17 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
->  static bool soc_pcm_has_symmetry(struct snd_pcm_substream *substream)
->  {
->  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> -	struct snd_soc_dai_driver *cpu_driver = rtd->cpu_dai->driver;
->  	struct snd_soc_dai_link *link = rtd->dai_link;
-> -	unsigned int symmetry, i;
-> +	unsigned int symmetry = 0, i;
->  
-> -	symmetry = cpu_driver->symmetric_rates || link->symmetric_rates ||
-> -		cpu_driver->symmetric_channels || link->symmetric_channels ||
-> -		cpu_driver->symmetric_samplebits || link->symmetric_samplebits;
-> +	/* Apply symmetery for multiple cpu dais */
-> +	for (i = 0; i < rtd->num_cpu_dai; i++)
-> +		symmetry = rtd->cpu_dais[i]->driver->symmetric_rates ||
-> +						link->symmetric_rates ||
-> +			rtd->cpu_dais[i]->driver->symmetric_channels ||
-> +						link->symmetric_channels ||
-> +			rtd->cpu_dais[i]->driver->symmetric_samplebits ||
-> +						link->symmetric_samplebits;
+There is a need to use DA7219 as DAI clock master for other codecs
+within a system, which means that the DAI clocks are required to
+remain, regardless of whether the codec is actually running
+playback/capture. To be able to expose control of the DAI clocking
+the common clock framework has been employed.
 
-No need to bring the link-> stuff into the loop, it won't change
-on each iteration. Would also make the code look neater to leave
-it before the loop.
+The current implementation adds a simple clock gate for enabling
+and disabling the DAI clocks, with no rate control supported
+(this is still handled through standard hw_params() functions as
+before). If DT is enabled then the clock is added to the OF
+providers list, otherwise a clkdev lookup is used.
 
->  
->  	for (i = 0; i < rtd->num_codecs; i++)
->  		symmetry = symmetry ||
-> @@ -347,10 +371,10 @@ static void soc_pcm_set_msb(struct snd_pcm_substream *substream, int bits)
->  static void soc_pcm_apply_msb(struct snd_pcm_substream *substream)
->  {
->  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> -	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-> +	struct snd_soc_dai *cpu_dai;
->  	struct snd_soc_dai *codec_dai;
->  	int i;
-> -	unsigned int bits = 0, cpu_bits;
-> +	unsigned int bits = 0, cpu_bits = 0;
->  
->  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->  		for (i = 0; i < rtd->num_codecs; i++) {
-> @@ -361,7 +385,17 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream)
->  			}
->  			bits = max(codec_dai->driver->playback.sig_bits, bits);
->  		}
-> -		cpu_bits = cpu_dai->driver->playback.sig_bits;
-> +
-> +		for (i = 0; i < rtd->num_cpu_dai; i++) {
-> +			cpu_dai = rtd->cpu_dais[i];
-> +			if (cpu_dai->driver->playback.sig_bits == 0) {
-> +				cpu_bits = 0;
-> +				break;
-> +			}
-> +
-> +			cpu_bits = max(
-> +				    cpu_dai->driver->playback.sig_bits,	bits);
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+---
+ Documentation/devicetree/bindings/sound/da7219.txt |   6 +
+ include/sound/da7219.h                             |   2 +
+ sound/soc/codecs/da7219.c                          | 129 +++++++++++++++++++--
+ sound/soc/codecs/da7219.h                          |   9 ++
+ 4 files changed, 138 insertions(+), 8 deletions(-)
 
-Can help but feel this would look nicer if you only wrapped the
-second argument down a line. Although tbf its only 1 character so
-you could probably just run over the line length as well.
-
-> @@ -427,30 +464,41 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
->  		rates = snd_pcm_rate_mask_intersect(codec_stream->rates, rates);
->  	}
->  
-> -	/*
-> -	 * chan min/max cannot be enforced if there are multiple CODEC DAIs
-> -	 * connected to a single CPU DAI, use CPU DAI's directly and let
-> -	 * channel allocation be fixed up later
-> -	 */
-> -	if (rtd->num_codecs > 1) {
-> -		chan_min = cpu_stream->channels_min;
-> -		chan_max = cpu_stream->channels_max;
-> -	}
-> +	for (i = 0; i < rtd->num_cpu_dai; i++) {
-> +		cpu_dai_drv = rtd->cpu_dais[i]->driver;
->  
-> -	hw->channels_min = max(chan_min, cpu_stream->channels_min);
-> -	hw->channels_max = min(chan_max, cpu_stream->channels_max);
-> -	if (hw->formats)
-> -		hw->formats &= formats & cpu_stream->formats;
-> -	else
-> -		hw->formats = formats & cpu_stream->formats;
-> -	hw->rates = snd_pcm_rate_mask_intersect(rates, cpu_stream->rates);
-> +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> +			cpu_stream = &cpu_dai_drv->playback;
-> +		else
-> +			cpu_stream = &cpu_dai_drv->capture;
->  
-> -	snd_pcm_limit_hw_rates(runtime);
-> +		/*
-> +		 * chan min/max cannot be enforced if there are multiple
-> +		 * CODEC DAIs connected to a single CPU DAI, use CPU DAI's
-> +		 * directly and let channel allocation be fixed up later
-> +		 */
-> +		if (rtd->num_codecs > 1) {
-> +			chan_min = cpu_stream->channels_min;
-> +			chan_max = cpu_stream->channels_max;
-> +		}
-> +
-> +		hw->channels_min = max(chan_min, cpu_stream->channels_min);
-> +		hw->channels_max = min(chan_max, cpu_stream->channels_max);
-> +		if (hw->formats)
-> +			hw->formats &= formats & cpu_stream->formats;
-> +		else
-> +			hw->formats = formats & cpu_stream->formats;
->  
-
-I don't think actually ends up with the correct values in
-hw->channels_min/max. Nothing compares one iteration of the
-loop to the previous one so you don't end up with the min/max for
-all the CPU DAIs you just end up with the values from the last
-CPU DAI.
-
->  /*
-> @@ -465,12 +513,15 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
->  	struct snd_soc_platform *platform = rtd->platform;
->  	struct snd_soc_component *component;
->  	struct snd_soc_rtdcom_list *rtdcom;
-> -	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-> +	struct snd_soc_dai *cpu_dai;
->  	struct snd_soc_dai *codec_dai;
->  	const char *codec_dai_name = "multicodec";
-> -	int i, ret = 0, __ret;
-> +	const char *cpu_dai_name = "multicpu";
-> +	int i, ret = 0, __ret, j;
-> +
-> +	for (i = 0; i < rtd->num_cpu_dai; i++)
-> +		pinctrl_pm_select_default_state(rtd->cpu_dais[i]->dev);
->  
-> -	pinctrl_pm_select_default_state(cpu_dai->dev);
->  	for (i = 0; i < rtd->num_codecs; i++)
->  		pinctrl_pm_select_default_state(rtd->codec_dais[i]->dev);
->  
-> @@ -483,12 +534,15 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
->  	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
->  
->  	/* startup the audio subsystem */
-> -	if (cpu_dai->driver->ops->startup) {
-> -		ret = cpu_dai->driver->ops->startup(substream, cpu_dai);
-> -		if (ret < 0) {
-> -			dev_err(cpu_dai->dev, "ASoC: can't open interface"
-> -				" %s: %d\n", cpu_dai->name, ret);
-> -			goto out;
-> +	for (i = 0; i < rtd->num_cpu_dai; i++) {
-> +		cpu_dai = rtd->cpu_dais[i];
-> +		if (cpu_dai->driver->ops->startup) {
-> +			ret = cpu_dai->driver->ops->startup(substream, cpu_dai);
-> +			if (ret < 0) {
-> +				dev_err(cpu_dai->dev, "ASoC: can't open interface %s: %d\n",
-> +							cpu_dai->name, ret);
-> +				goto out;
-
-I don't believe this jumps to the right place anymore since you
-need to shutdown any CPU DAIs you have already started up.
-
-> @@ -1276,8 +1388,12 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
->  		break;
->  	}
->  
-> -	if (cpu_dai->driver->ops->delay)
-> -		delay += cpu_dai->driver->ops->delay(substream, cpu_dai);
-> +	for (i = 0; i < rtd->num_cpu_dai; i++) {
-> +		cpu_dai = rtd->cpu_dais[i];
-> +		if (cpu_dai->driver->ops->delay)
-> +			delay += cpu_dai->driver->ops->delay(substream,
-> +								cpu_dai);
-> +	}
-
-I am not clear we should be adding the delays here can't they all
-run in parallel? In which case shouldn't we be taking the max?
-
-> @@ -2998,8 +3139,13 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
->  				capture = 1;
->  		}
->  
-> -		capture = capture && cpu_dai->driver->capture.channels_min;
-> -		playback = playback && cpu_dai->driver->playback.channels_min;
-> +		for (i = 0; i < rtd->num_cpu_dai; i++) {
-> +			cpu_dai = rtd->cpu_dais[i];
-> +			capture = capture &&
-> +					cpu_dai->driver->capture.channels_min;
-> +			playback = playback &&
-> +					cpu_dai->driver->playback.channels_min;
-> +		}
-
-This doesn't look right either since you will end up with the
-values for the last CPU DAI surely you want some sort of combined
-value.
-
-I am also a little nervous about the mapping between widgets and
-DAIs in dpcm_prune_paths. But I don't think I really understand
-that bit of the code well enough to provide good comments.
-Hopefully someone with more understanding than me can have a look
-:-)
-
-Thanks,
-Charles
+diff --git a/Documentation/devicetree/bindings/sound/da7219.txt b/Documentation/devicetree/bindings/sound/da7219.txt
+index 5b54d2d..c3df92d 100644
+--- a/Documentation/devicetree/bindings/sound/da7219.txt
++++ b/Documentation/devicetree/bindings/sound/da7219.txt
+@@ -25,6 +25,9 @@ Optional properties:
+   interrupt is to be used to wake system, otherwise "irq" should be used.
+ - wakeup-source: Flag to indicate this device can wake system (suspend/resume).
+ 
++- #clock-cells :  Should be set to '<0>', only one clock source provided;
++- clock-output-names : Name given for DAI clocks output;
++
+ - clocks : phandle and clock specifier for codec MCLK.
+ - clock-names : Clock name string for 'clocks' attribute, should be "mclk".
+ 
+@@ -83,6 +86,9 @@ Example:
+ 		VDDMIC-supply = <&reg_audio>;
+ 		VDDIO-supply = <&reg_audio>;
+ 
++		#clock-cells = <0>;
++		clock-output-names = "dai-clks";
++
+ 		clocks = <&clks 201>;
+ 		clock-names = "mclk";
+ 
+diff --git a/include/sound/da7219.h b/include/sound/da7219.h
+index 409ef139..1bfcb16 100644
+--- a/include/sound/da7219.h
++++ b/include/sound/da7219.h
+@@ -36,6 +36,8 @@ enum da7219_mic_amp_in_sel {
+ struct da7219_pdata {
+ 	bool wakeup_source;
+ 
++	const char *dai_clks_name;
++
+ 	/* Mic */
+ 	enum da7219_micbias_voltage micbias_lvl;
+ 	enum da7219_mic_amp_in_sel mic_amp_in_sel;
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 5e043d0..4412159 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -13,6 +13,8 @@
+ 
+ #include <linux/acpi.h>
+ #include <linux/clk.h>
++#include <linux/clkdev.h>
++#include <linux/clk-provider.h>
+ #include <linux/i2c.h>
+ #include <linux/of_device.h>
+ #include <linux/property.h>
+@@ -772,16 +774,27 @@ static int da7219_dai_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+ 	struct da7219_priv *da7219 = snd_soc_component_get_drvdata(component);
+ 	u8 pll_ctrl, pll_status;
+-	int i = 0;
++	int i = 0, ret;
+ 	bool srm_lock = false;
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+-		if (da7219->master)
++		if (da7219->master) {
+ 			/* Enable DAI clks for master mode */
+-			snd_soc_component_update_bits(component, DA7219_DAI_CLK_MODE,
+-					    DA7219_DAI_CLK_EN_MASK,
+-					    DA7219_DAI_CLK_EN_MASK);
++			if (da7219->dai_clks) {
++				ret = clk_prepare_enable(da7219->dai_clks);
++				if (ret) {
++					dev_err(component->dev,
++						"Failed to enable dai_clks\n");
++					return ret;
++				}
++			} else {
++				snd_soc_component_update_bits(component,
++							      DA7219_DAI_CLK_MODE,
++							      DA7219_DAI_CLK_EN_MASK,
++							      DA7219_DAI_CLK_EN_MASK);
++			}
++		}
+ 
+ 		/* PC synchronised to DAI */
+ 		snd_soc_component_update_bits(component, DA7219_PC_COUNT,
+@@ -814,9 +827,16 @@ static int da7219_dai_event(struct snd_soc_dapm_widget *w,
+ 				    DA7219_PC_FREERUN_MASK);
+ 
+ 		/* Disable DAI clks if in master mode */
+-		if (da7219->master)
+-			snd_soc_component_update_bits(component, DA7219_DAI_CLK_MODE,
+-					    DA7219_DAI_CLK_EN_MASK, 0);
++		if (da7219->master) {
++			if (da7219->dai_clks)
++				clk_disable_unprepare(da7219->dai_clks);
++			else
++				snd_soc_component_update_bits(component,
++							      DA7219_DAI_CLK_MODE,
++							      DA7219_DAI_CLK_EN_MASK,
++							      0);
++		}
++
+ 		return 0;
+ 	default:
+ 		return -EINVAL;
+@@ -1598,6 +1618,12 @@ static struct da7219_pdata *da7219_fw_to_pdata(struct snd_soc_component *compone
+ 
+ 	pdata->wakeup_source = device_property_read_bool(dev, "wakeup-source");
+ 
++	pdata->dai_clks_name = "da7219-dai-clks";
++	if (device_property_read_string(dev, "clock-output-names",
++					&pdata->dai_clks_name))
++		dev_warn(dev, "Using default clk name: %s\n",
++			 pdata->dai_clks_name);
++
+ 	if (device_property_read_u32(dev, "dlg,micbias-lvl", &of_val32) >= 0)
+ 		pdata->micbias_lvl = da7219_fw_micbias_lvl(dev, of_val32);
+ 	else
+@@ -1712,6 +1738,88 @@ static int da7219_handle_supplies(struct snd_soc_component *component)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_COMMON_CLK
++static int da7219_dai_clks_prepare(struct clk_hw *hw)
++{
++	struct da7219_priv *da7219 =
++		container_of(hw, struct da7219_priv, dai_clks_hw);
++	struct snd_soc_component *component = da7219->aad->component;
++
++	snd_soc_component_update_bits(component, DA7219_DAI_CLK_MODE,
++				      DA7219_DAI_CLK_EN_MASK,
++				      DA7219_DAI_CLK_EN_MASK);
++
++	return 0;
++}
++
++static void da7219_dai_clks_unprepare(struct clk_hw *hw)
++{
++	struct da7219_priv *da7219 =
++		container_of(hw, struct da7219_priv, dai_clks_hw);
++	struct snd_soc_component *component = da7219->aad->component;
++
++	snd_soc_component_update_bits(component, DA7219_DAI_CLK_MODE,
++				      DA7219_DAI_CLK_EN_MASK, 0);
++}
++
++static int da7219_dai_clks_is_prepared(struct clk_hw *hw)
++{
++	struct da7219_priv *da7219 =
++		container_of(hw, struct da7219_priv, dai_clks_hw);
++	struct snd_soc_component *component = da7219->aad->component;
++	u8 clk_reg;
++
++	clk_reg = snd_soc_component_read32(component, DA7219_DAI_CLK_MODE);
++
++	return !!(clk_reg & DA7219_DAI_CLK_EN_MASK);
++}
++
++const struct clk_ops da7219_dai_clks_ops = {
++	.prepare = da7219_dai_clks_prepare,
++	.unprepare = da7219_dai_clks_unprepare,
++	.is_prepared = da7219_dai_clks_is_prepared,
++};
++
++static void da7219_register_dai_clks(struct snd_soc_component *component)
++{
++	struct device *dev = component->dev;
++	struct da7219_priv *da7219 = snd_soc_component_get_drvdata(component);
++	struct da7219_pdata *pdata = da7219->pdata;
++	struct clk_init_data init = {};
++	struct clk *dai_clks;
++	struct clk_lookup *dai_clks_lookup;
++
++	init.parent_names = NULL;
++	init.num_parents = 0;
++	init.name = pdata->dai_clks_name;
++	init.ops = &da7219_dai_clks_ops;
++	da7219->dai_clks_hw.init = &init;
++
++	dai_clks = devm_clk_register(dev, &da7219->dai_clks_hw);
++	if (IS_ERR(dai_clks)) {
++		dev_warn(dev, "Failed to register DAI clocks: %ld\n",
++			 PTR_ERR(dai_clks));
++		return;
++	}
++	da7219->dai_clks = dai_clks;
++
++	/* If we're using DT, then register as provider accordingly */
++	if (dev->of_node) {
++		devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get,
++					    &da7219->dai_clks_hw);
++	} else {
++		dai_clks_lookup = clkdev_create(dai_clks, pdata->dai_clks_name,
++						"%s", dev_name(dev));
++		if (!dai_clks_lookup)
++			dev_warn(dev, "Failed to create DAI clkdev");
++		else
++			da7219->dai_clks_lookup = dai_clks_lookup;
++	}
++}
++#else
++static inline void da7219_register_dai_clks(struct snd_soc_component *component) {}
++#endif /* CONFIG_COMMON_CLK */
++
+ static void da7219_handle_pdata(struct snd_soc_component *component)
+ {
+ 	struct da7219_priv *da7219 = snd_soc_component_get_drvdata(component);
+@@ -1722,6 +1830,8 @@ static void da7219_handle_pdata(struct snd_soc_component *component)
+ 
+ 		da7219->wakeup_source = pdata->wakeup_source;
+ 
++		da7219_register_dai_clks(component);
++
+ 		/* Mic Bias voltages */
+ 		switch (pdata->micbias_lvl) {
+ 		case DA7219_MICBIAS_1_6V:
+@@ -1856,6 +1966,9 @@ static void da7219_remove(struct snd_soc_component *component)
+ 
+ 	da7219_aad_exit(component);
+ 
++	if (da7219->dai_clks_lookup)
++		clkdev_drop(da7219->dai_clks_lookup);
++
+ 	/* Supplies */
+ 	regulator_bulk_disable(DA7219_NUM_SUPPLIES, da7219->supplies);
+ }
+diff --git a/sound/soc/codecs/da7219.h b/sound/soc/codecs/da7219.h
+index 1acb34c..1b00023 100644
+--- a/sound/soc/codecs/da7219.h
++++ b/sound/soc/codecs/da7219.h
+@@ -14,6 +14,9 @@
+ #ifndef __DA7219_H
+ #define __DA7219_H
+ 
++#include <linux/clk.h>
++#include <linux/clkdev.h>
++#include <linux/clk-provider.h>
+ #include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
+ #include <sound/da7219.h>
+@@ -813,6 +816,12 @@ struct da7219_priv {
+ 	struct mutex ctrl_lock;
+ 	struct mutex pll_lock;
+ 
++#ifdef CONFIG_COMMON_CLK
++	struct clk_hw dai_clks_hw;
++#endif
++	struct clk_lookup *dai_clks_lookup;
++	struct clk *dai_clks;
++
+ 	struct clk *mclk;
+ 	unsigned int mclk_rate;
+ 	int clk_src;
+-- 
+1.9.1
