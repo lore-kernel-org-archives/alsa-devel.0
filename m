@@ -1,78 +1,48 @@
-From: Inki Dae <inki.dae@samsung.com>
-Subject: Re: [PATCH] dt-bindings: exynos: Document #sound-dai-cells property
- of the HDMI node
-Date: Fri, 09 Mar 2018 11:35:55 +0900
-Message-ID: <5AA1F30B.8010607@samsung.com>
-References: <CGME20180307171131epcas1p4687ef394d1a0a6d0eb2de2691c977c3f@epcas1p4.samsung.com>
- <20180307171111.14551-1-s.nawrocki@samsung.com>
- <5AA0B59F.3070402@samsung.com>
- <3c68c3da-a0c3-4e4e-da6b-3e4b1af6d19d@samsung.com>
- <5AA0DD39.3040108@samsung.com>
- <9f1e8619-974d-cd07-79c3-c6d9a4dc0f97@samsung.com>
- <5AA0F10D.9010602@samsung.com>
- <e3e1c628-d88f-6fb4-171e-a49c7ee38135@samsung.com>
+From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+Subject: [alsa-devel][PATCH v1] ASoC: TSCS42xx: Add missing headers
+Date: Thu, 8 Mar 2018 21:13:40 -0600
+Message-ID: <20180309031332.GA27764@t7-ThinkPad-E560>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-reply-to: <e3e1c628-d88f-6fb4-171e-a49c7ee38135@samsung.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sw0312.kim@samsung.com, dri-devel@lists.freedesktop.org, robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org, Marek Szyprowski <m.szyprowski@samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgU3lsd2VzdGVyLAoKMjAxOOuFhCAwM+yblCAwOOydvCAyMDoyMuyXkCBTeWx3ZXN0ZXIgTmF3
-cm9ja2kg7J20KOqwgCkg7JO0IOq4gDoKPiBIaSBJbmtpLAo+IAo+IENjOiBhbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKPiAKPiBPbiAwMy8wOC8yMDE4IDA5OjE1IEFNLCBJbmtpIERhZSB3cm90
-ZToKPj4gQnkgdGhlIHdheSwgaXQgc2VlbXMgJ3NvdW5kLWRhaS1jZWxscycgcHJvcGVydHkgbmV2
-ZXIgYWZmZWN0IEV4eW5vczQyMTAvNDIxMj4gNTQyMC81NDMzLiBJdCBzZWVtcyB0aGF0IGV2ZW4g
-dGhyb3VnaCBBTFNBIFRNMiBhdWRpbyBkcml2ZXIodG0yX3dtNTExMC5jKSAKPj4gZXhpc3RzIHRo
-ZSBkcml2ZXIgbmV2ZXIgY2hlY2sgdGhlIHByb3BlcnR5Lgo+Pgo+PiBIb3dldmVyLCB0aGlzIHBh
-dGNoIGFkZHMgYmVsb3cgZGVzY3JpcHRpb24uCj4+Cj4+ICJPcHRpb25hbCBwcm9wZXJ0aWVzIGZv
-ciBFeHlub3MgNDIxMCwgNDIxMiwgNTQyMCBhbmQgNTQzMyIKPj4KPj4gSXMgdGhlcmUgYSBwb3Nz
-aWJpbGl0eSBmb3Igb3RoZXIgYm9hcmRzIGJhc2VkIG9uIEV4eW5vczQyMTAvNDIxMi81NDIwLzU0
-MzMgCj4+IFNvQyB0byB1c2UgdGhpcyBwcm9wZXJ0eSBsYXRlcj8KPiAKPiBBbGwgdGhlc2UgU29D
-cyBoYXZlIHRoZSBIRE1JIElQIGJsb2NrIHdoaWNoIGhhcyBvbmUgaW5wdXQgREFJLCBjb25uZWN0
-ZWQgCj4gaW50ZXJuYWxseSBvdmVyIEkyUyBidXMgd2l0aCB0aGUgSVMyIGNvbnRyb2xsZXIuCj4g
-Cj4gSSB0aGluayB0aGVyZSBpcyBubyBhZHZhbnRhZ2UgaW4gbGltaXRpbmcgb3Vyc2VsdmVzIG5v
-dyBvbmx5IHRvIFNvQydzIAo+IGZvciB3aGljaCB3ZSBjdXJyZW50bHkgcmVseSBvbiB0aGF0IERU
-IHByb3BlcnR5IGluIGN1cnJlbnQga2VybmVsIGNvZGUsIAo+IGp1c3QgdG8gdXBkYXRlIHRoaXMg
-ZG9jdW1lbnRhdGlvbiBsYXRlciB3aGVuIHdlIGFjdHVhbGx5IHB1dCB0aGUgcHJvcGVydHkgCj4g
-aW4gZHRzIGZpbGVzLgo+IAo+IEluIGNhc2Ugb2YgZXh5bm9zNTQyMCB3ZSBhbHJlYWR5IHJlcXVp
-cmUgI3NvdW5kLWRhaS1jZWxscyBmb3IgT2Ryb2lkIGFuZAoKTWF5YmUgZXh5bm9zNTQyMj8gT2Ry
-b2lkIFhVMy80IHVzZSBFeHlub3M1NDIyLgogCj4gSSBoYXZlIGFsc28gYSBwYXRjaCBmb3IgZXh5
-bm9zNTQyMC1wZWFjaC1waXQgYm9hcmQgd2hpY2ggd2lsbCBuZWVkIGl0IGFzIAo+IHdlbGwuCj4g
-Cj4gQXMgZmFyIGFzIGV4eW5vczQyMTAgYW5kIGV4eW5vczQyMTIgYXJlIGNvbmNlcm5lZCBpdCdz
-IGEgbWF0dGVyIG9mIGFkZGluZwo+IHN1cHBvcnQgZm9yIE9kcm9pZC1VMywgdGhlbiB3ZSB3aWxs
-IGFsc28gbmVlZCB0aGlzIHByb3BlcnR5IGJlY2F1c2UKPiB3ZSBhcmUgZ29pbmcgdG8gdXNlICJt
-dWx0aS1jb2RlYyIgKEhETUkgYW5kIGV4dGVybmFsIEkyUzAgcGlucyBmb3IgQ09ERUMKPiBhcmUg
-d2lyZWQgaW4gcGFyYWxsZWwpLgo+IAo+IEluIGNhc2Ugb2YgZXh5bm9zNTQzMyBpdCBqdXN0IGhh
-cHBlbnMgdGhhdCB0aGUgY29kZSBpbiBjdXJyZW50IGRyaXZlciAKPiBkb2Vzbid0IHJlcXVpcmUg
-I3NvdW5kLWRhaS1jZWxscyBwcm9wZXJ0eSAtIG9uZSBvZiB0aGUgcmVhc29ucyBJIG1hZGUgaXQK
-PiB0aGlzIHdheSB3YXMgdG8gYXZvaWQgZGVwZW5kZW5jeSBvbiBkdHMsIGJ1dCBpdCBkb2Vzbid0
-IGltcGx5IHdlIHNob3VsZCAKPiBkZXNjcmliZSB0aGUgSFcgaW4gRFQgaW5jb21wbGV0ZWx5LiBP
-bmNlIHRoZSBwcm9wZXJ0eSBpcyBpbiBkdGJzIHdlIGNhbiAKPiB1cGRhdGUgdGhlIGRyaXZlciB0
-byB1c2UgbW9yZSBnZW5lcmljIGNvZGUsIGluc3RlYWQgb2Ygb3BlbiBjb2RpbmcgdGhpbmdzLgo+
-IAoKR29vZCBpZGVhLgoKPiBBY3R1YWxseSBJIGhhdmUgZm9yZ290dGVuIHRvIGFkZCBhbHNvIGV4
-eW5vczUyNTAgdG8gdGhlIGxpc3QuCgpTZWVtcyB0aGF0ICcjc291bmQtZGFpLWNlbGxzJyBpcyBy
-ZXF1aXJlZCBtYW5kYXRvcmlseSBpbiBjYXNlIG9mIEV4eW5vczU0MjIgYmVjYXVzZSBPZHJvaWQg
-WFUzLzQgQXVkaW8gZHJpdmVyIGNoZWNrcyB0aGlzIHByb3BlcnR5LCBhbmQgdGhlIGRyaXZlciBy
-ZXR1cm5zIGVycm9yIGlmIHRoZSBwcm9wZXJ0eSBkb2Vzbid0IGV4aXN0IGluIGl0cyBkZXZpY2Ug
-dHJlZS4KQW5kIGlmIG90aGVyIFNvQ3MgLSBFeHlub3M0MjEwLzQyMTIvNTI1MC81NDIwLzU0MzMg
-LSByZXF1aXJlIHRoaXMgcHJvcGVydHkgd2l0aCBhZGRpdGlvbmFsIGRyaXZlciB3b3JrcyBsYXRl
-ciB0aGVuIHRoaXMgcHJvcGVydHkgd291bGQgYWxzbyBiZSByZXF1aXJlZCBtYW5kYXRvcmlseSBm
-b3IgdGhlbSBub3Qgb3B0aW9uYWxseS4gSW4gdGhpcyBjYXNlIHdlIG1heSBuZWVkIHRvIG1vZGlm
-eSB0aGUgZGVzY3JpcHRpb24gYWdhaW4uCgpTbyBteSBvcGluaW9uIGlzIHRvIGFkZCBvbmx5IHRo
-ZSBkZXNjcmlwdGlvbiByZXF1aXJlZCBtYW5kYXRvcmlseSBpZiBJIHVuZGVyc3Rvb2QgY29ycmVj
-dGx5LgoKVGhhbmtzLApJbmtpIERhZQoKPiAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMu
-ZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlz
-dGluZm8vZHJpLWRldmVsCg==
+Add missing headers
+
+Signed-off-by: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+---
+ sound/soc/codecs/tscs42xx.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/tscs42xx.c b/sound/soc/codecs/tscs42xx.c
+index e915261fa1cb..cfc71b5411ee 100644
+--- a/sound/soc/codecs/tscs42xx.c
++++ b/sound/soc/codecs/tscs42xx.c
+@@ -3,14 +3,19 @@
+ // Copyright 2017 Tempo Semiconductor, Inc.
+ // Author: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+ 
++#include <linux/kernel.h>
++#include <linux/device.h>
++#include <linux/regmap.h>
+ #include <linux/i2c.h>
++#include <linux/err.h>
++#include <linux/string.h>
+ #include <linux/module.h>
++#include <linux/delay.h>
+ #include <linux/mutex.h>
+-#include <linux/regmap.h>
++#include <sound/tlv.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include <sound/soc-dapm.h>
+-#include <sound/tlv.h>
+ 
+ #include "tscs42xx.h"
+ 
+-- 
+2.15.1
