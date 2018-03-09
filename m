@@ -1,332 +1,318 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH v2 7/7] ASoC: samsung: Add HDMI audio support
- for Chromebook Snow
-Date: Fri, 09 Mar 2018 18:48:58 +0100
-Message-ID: <20180309174858.24017-7-s.nawrocki@samsung.com>
-References: <20180309174858.24017-1-s.nawrocki@samsung.com>
- <CGME20180309175019epcas2p34a7fd706117cb18d31109dbc9c8cf60b@epcas2p3.samsung.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
- by alsa0.perex.cz (Postfix) with ESMTP id B8886267442
- for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2018 18:50:22 +0100 (CET)
-In-reply-to: <20180309174858.24017-1-s.nawrocki@samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, lgirdwood@gmail.com, krzk@kernel.org, javierm@redhat.com, robh+dt@kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>, m.szyprowski@samsung.com
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: da7219: Add common clock usage for providing DAI clks" to the asoc tree
+Date: Fri, 09 Mar 2018 18:03:16 +0000
+Message-ID: <E1euMMO-0001y5-67@debutante>
+References: <20180309162544.783133FB14@swsrvapps-01.diasemi.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180309162544.783133FB14@swsrvapps-01.diasemi.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, linux-kernel@vger.kernel.org, Akshu Agrawal <akshu.agrawal@amd.com>, Daniel Kurtz <djkurtz@google.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch updates the driver so, in addition to current DT bindings,
-the new DT bindings with cpu, codec subnodes can be used, in order to
-support sound on the HDMI interface.
+The patch
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+   ASoC: da7219: Add common clock usage for providing DAI clks
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From fc8f7ea2d6c074baaad202c9187962bfa493ef13 Mon Sep 17 00:00:00 2001
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date: Fri, 9 Mar 2018 16:25:43 +0000
+Subject: [PATCH] ASoC: da7219: Add common clock usage for providing DAI clks
+
+There is a need to use DA7219 as DAI clock master for other codecs
+within a system, which means that the DAI clocks are required to
+remain, regardless of whether the codec is actually running
+playback/capture. To be able to expose control of the DAI clocking
+the common clock framework has been employed.
+
+The current implementation adds a simple clock gate for enabling
+and disabling the DAI clocks, with no rate control supported
+(this is still handled through standard hw_params() functions as
+before). If DT is enabled then the clock is added to the OF
+providers list, otherwise a clkdev lookup is used.
+
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
-Changes since v1:
- - adjustments to changed order of codecs in codec/cpu-dai property,
- - fixed errors in snow_remove().
----
- sound/soc/samsung/snow.c | 226 +++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 178 insertions(+), 48 deletions(-)
+ Documentation/devicetree/bindings/sound/da7219.txt |   6 +
+ include/sound/da7219.h                             |   2 +
+ sound/soc/codecs/da7219.c                          | 129 +++++++++++++++++++--
+ sound/soc/codecs/da7219.h                          |   9 ++
+ 4 files changed, 138 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/samsung/snow.c b/sound/soc/samsung/snow.c
-index fc62110f500f..f00ca1ca0171 100644
---- a/sound/soc/samsung/snow.c
-+++ b/sound/soc/samsung/snow.c
-@@ -11,92 +11,207 @@
-  * General Public License for more details.
-  */
-
-+#include <linux/clk.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/of.h>
+diff --git a/Documentation/devicetree/bindings/sound/da7219.txt b/Documentation/devicetree/bindings/sound/da7219.txt
+index 5b54d2d045c3..c3df92d31c4b 100644
+--- a/Documentation/devicetree/bindings/sound/da7219.txt
++++ b/Documentation/devicetree/bindings/sound/da7219.txt
+@@ -25,6 +25,9 @@ Optional properties:
+   interrupt is to be used to wake system, otherwise "irq" should be used.
+ - wakeup-source: Flag to indicate this device can wake system (suspend/resume).
+ 
++- #clock-cells :  Should be set to '<0>', only one clock source provided;
++- clock-output-names : Name given for DAI clocks output;
++
+ - clocks : phandle and clock specifier for codec MCLK.
+ - clock-names : Clock name string for 'clocks' attribute, should be "mclk".
+ 
+@@ -83,6 +86,9 @@ Example:
+ 		VDDMIC-supply = <&reg_audio>;
+ 		VDDIO-supply = <&reg_audio>;
+ 
++		#clock-cells = <0>;
++		clock-output-names = "dai-clks";
++
+ 		clocks = <&clks 201>;
+ 		clock-names = "mclk";
+ 
+diff --git a/include/sound/da7219.h b/include/sound/da7219.h
+index 409ef1397fd3..1bfcb16f2d10 100644
+--- a/include/sound/da7219.h
++++ b/include/sound/da7219.h
+@@ -36,6 +36,8 @@ struct da7219_aad_pdata;
+ struct da7219_pdata {
+ 	bool wakeup_source;
+ 
++	const char *dai_clks_name;
++
+ 	/* Mic */
+ 	enum da7219_micbias_voltage micbias_lvl;
+ 	enum da7219_mic_amp_in_sel mic_amp_in_sel;
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 5e043d082f4b..441215997273 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -13,6 +13,8 @@
+ 
+ #include <linux/acpi.h>
+ #include <linux/clk.h>
++#include <linux/clkdev.h>
++#include <linux/clk-provider.h>
+ #include <linux/i2c.h>
  #include <linux/of_device.h>
--
-+#include <sound/pcm_params.h>
- #include <sound/soc.h>
-
- #include "i2s.h"
-
--#define FIN_PLL_RATE		24000000
-+#define FIN_PLL_RATE		24000000UL
-
--static struct snd_soc_dai_link snow_dai[] = {
--	{
--		.name = "Primary",
--		.stream_name = "Primary",
--		.codec_dai_name = "HiFi",
--		.dai_fmt = SND_SOC_DAIFMT_I2S |
--				SND_SOC_DAIFMT_NB_NF |
--				SND_SOC_DAIFMT_CBS_CFS,
--	},
-+struct snow_priv {
-+	struct snd_soc_dai_link dai_link;
-+	struct clk *clk_i2s_bus;
-+};
-+
-+static int snow_card_hw_params(struct snd_pcm_substream *substream,
-+				      struct snd_pcm_hw_params *params)
-+{
-+	static const unsigned int pll_rate[] = {
-+		73728000U, 67737602U, 49152000U, 45158401U, 32768001U
-+	};
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snow_priv *priv = snd_soc_card_get_drvdata(rtd->card);
-+	int bfs, psr, rfs, bitwidth;
-+	unsigned long int rclk;
-+	long int freq = -EINVAL;
-+	int ret, i;
-+
-+	bitwidth = snd_pcm_format_width(params_format(params));
-+	if (bitwidth < 0) {
-+		dev_err(rtd->card->dev, "Invalid bit-width: %d\n", bitwidth);
-+		return bitwidth;
-+	}
-+
-+	if (bitwidth != 16 && bitwidth != 24) {
-+		dev_err(rtd->card->dev, "Unsupported bit-width: %d\n", bitwidth);
-+		return -EINVAL;
-+	}
-+
-+	bfs = 2 * bitwidth;
-+
-+	switch (params_rate(params)) {
-+	case 16000:
-+	case 22050:
-+	case 24000:
-+	case 32000:
-+	case 44100:
-+	case 48000:
-+	case 88200:
-+	case 96000:
-+		rfs = 8 * bfs;
-+		break;
-+	case 64000:
-+		rfs = 384;
-+		break;
-+	case 8000:
-+	case 11025:
-+	case 12000:
-+		rfs = 16 * bfs;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	rclk = params_rate(params) * rfs;
-+
-+	for (psr = 8; psr > 0; psr /= 2) {
-+		for (i = 0; i < ARRAY_SIZE(pll_rate); i++) {
-+			if ((pll_rate[i] - rclk * psr) <= 2) {
-+				freq = pll_rate[i];
-+				break;
+ #include <linux/property.h>
+@@ -772,16 +774,27 @@ static int da7219_dai_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+ 	struct da7219_priv *da7219 = snd_soc_component_get_drvdata(component);
+ 	u8 pll_ctrl, pll_status;
+-	int i = 0;
++	int i = 0, ret;
+ 	bool srm_lock = false;
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+-		if (da7219->master)
++		if (da7219->master) {
+ 			/* Enable DAI clks for master mode */
+-			snd_soc_component_update_bits(component, DA7219_DAI_CLK_MODE,
+-					    DA7219_DAI_CLK_EN_MASK,
+-					    DA7219_DAI_CLK_EN_MASK);
++			if (da7219->dai_clks) {
++				ret = clk_prepare_enable(da7219->dai_clks);
++				if (ret) {
++					dev_err(component->dev,
++						"Failed to enable dai_clks\n");
++					return ret;
++				}
++			} else {
++				snd_soc_component_update_bits(component,
++							      DA7219_DAI_CLK_MODE,
++							      DA7219_DAI_CLK_EN_MASK,
++							      DA7219_DAI_CLK_EN_MASK);
 +			}
 +		}
-+	}
-+	if (freq < 0) {
-+		dev_err(rtd->card->dev, "Unsupported RCLK rate: %lu\n", rclk);
-+		return -EINVAL;
-+	}
+ 
+ 		/* PC synchronised to DAI */
+ 		snd_soc_component_update_bits(component, DA7219_PC_COUNT,
+@@ -814,9 +827,16 @@ static int da7219_dai_event(struct snd_soc_dapm_widget *w,
+ 				    DA7219_PC_FREERUN_MASK);
+ 
+ 		/* Disable DAI clks if in master mode */
+-		if (da7219->master)
+-			snd_soc_component_update_bits(component, DA7219_DAI_CLK_MODE,
+-					    DA7219_DAI_CLK_EN_MASK, 0);
++		if (da7219->master) {
++			if (da7219->dai_clks)
++				clk_disable_unprepare(da7219->dai_clks);
++			else
++				snd_soc_component_update_bits(component,
++							      DA7219_DAI_CLK_MODE,
++							      DA7219_DAI_CLK_EN_MASK,
++							      0);
++		}
 +
-+	ret = clk_set_rate(priv->clk_i2s_bus, freq);
-+	if (ret < 0) {
-+		dev_err(rtd->card->dev, "I2S bus clock rate set failed\n");
-+		return ret;
-+	}
+ 		return 0;
+ 	default:
+ 		return -EINVAL;
+@@ -1598,6 +1618,12 @@ static struct da7219_pdata *da7219_fw_to_pdata(struct snd_soc_component *compone
+ 
+ 	pdata->wakeup_source = device_property_read_bool(dev, "wakeup-source");
+ 
++	pdata->dai_clks_name = "da7219-dai-clks";
++	if (device_property_read_string(dev, "clock-output-names",
++					&pdata->dai_clks_name))
++		dev_warn(dev, "Using default clk name: %s\n",
++			 pdata->dai_clks_name);
 +
-+	return 0;
-+}
-+
-+static const struct snd_soc_ops snow_card_ops = {
-+	.hw_params = snow_card_hw_params,
- };
-
- static int snow_late_probe(struct snd_soc_card *card)
- {
- 	struct snd_soc_pcm_runtime *rtd;
- 	struct snd_soc_dai *codec_dai;
--	struct snd_soc_dai *cpu_dai;
--	int ret;
-
- 	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
--	codec_dai = rtd->codec_dai;
--	cpu_dai = rtd->cpu_dai;
--
--	/* Set the MCLK rate for the codec */
--	ret = snd_soc_dai_set_sysclk(codec_dai, 0,
--					FIN_PLL_RATE, SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
-
-+	/* In the multi-codec case codec_dais 0 is MAX98095 and 1 is HDMI. */
-+	if (rtd->num_codecs > 1)
-+		codec_dai = rtd->codec_dais[0];
-+	else
-+		codec_dai = rtd->codec_dai;
-
--	return 0;
-+	/* Set the MCLK rate for the codec */
-+	return snd_soc_dai_set_sysclk(codec_dai, 0,
-+				FIN_PLL_RATE, SND_SOC_CLOCK_IN);
+ 	if (device_property_read_u32(dev, "dlg,micbias-lvl", &of_val32) >= 0)
+ 		pdata->micbias_lvl = da7219_fw_micbias_lvl(dev, of_val32);
+ 	else
+@@ -1712,6 +1738,88 @@ static int da7219_handle_supplies(struct snd_soc_component *component)
+ 	return 0;
  }
-
- static struct snd_soc_card snow_snd = {
- 	.name = "Snow-I2S",
- 	.owner = THIS_MODULE,
--	.dai_link = snow_dai,
--	.num_links = ARRAY_SIZE(snow_dai),
--
- 	.late_probe = snow_late_probe,
- };
-
- static int snow_probe(struct platform_device *pdev)
- {
-+	struct device *dev = &pdev->dev;
- 	struct snd_soc_card *card = &snow_snd;
--	struct device_node *i2s_node, *codec_node;
--	int i, ret;
--
--	i2s_node = of_parse_phandle(pdev->dev.of_node,
--				    "samsung,i2s-controller", 0);
--	if (!i2s_node) {
--		dev_err(&pdev->dev,
--			"Property 'i2s-controller' missing or invalid\n");
--		return -EINVAL;
--	}
-+	struct device_node *cpu, *codec;
-+	struct snd_soc_dai_link *link;
-+	struct snow_priv *priv;
-+	int ret;
-
--	codec_node = of_parse_phandle(pdev->dev.of_node,
--				      "samsung,audio-codec", 0);
--	if (!codec_node) {
--		dev_err(&pdev->dev,
--			"Property 'audio-codec' missing or invalid\n");
--		return -EINVAL;
--	}
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	link = &priv->dai_link;
-+
-+	link->dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+			SND_SOC_DAIFMT_CBS_CFS;
-+
-+	link->name = "Primary";
-+	link->stream_name = link->name;
-+
-+	card->dai_link = link;
-+	card->num_links = 1;
-+	card->dev = dev;
-+
-+	/* Try new DT bindings with HDMI support first. */
-+	cpu = of_get_child_by_name(dev->of_node, "cpu");
-+
-+	if (cpu) {
-+		link->ops = &snow_card_ops;
-
--	for (i = 0; i < ARRAY_SIZE(snow_dai); i++) {
--		snow_dai[i].codec_of_node = codec_node;
--		snow_dai[i].cpu_of_node = i2s_node;
--		snow_dai[i].platform_of_node = i2s_node;
-+		link->cpu_of_node = of_parse_phandle(cpu, "sound-dai", 0);
-+		of_node_put(cpu);
-+
-+		if (!link->cpu_of_node) {
-+			dev_err(dev, "Failed parsing cpu/sound-dai property\n");
-+			return -EINVAL;
-+		}
-+
-+		codec = of_get_child_by_name(dev->of_node, "codec");
-+		ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
-+		of_node_put(codec);
-+
-+		if (ret < 0) {
-+			of_node_put(link->cpu_of_node);
-+			dev_err(dev, "Failed parsing codec node\n");
-+			return ret;
-+		}
-+
-+		priv->clk_i2s_bus = of_clk_get_by_name(link->cpu_of_node,
-+						       "i2s_opclk0");
-+		if (IS_ERR(priv->clk_i2s_bus)) {
-+			snd_soc_of_put_dai_link_codecs(link);
-+			of_node_put(link->cpu_of_node);
-+			return PTR_ERR(priv->clk_i2s_bus);
-+		}
-+	} else {
-+		link->codec_dai_name = "HiFi",
-+
-+		link->cpu_of_node = of_parse_phandle(dev->of_node,
-+						"samsung,i2s-controller", 0);
-+		if (!link->cpu_of_node) {
-+			dev_err(dev, "i2s-controller property parse error\n");
-+			return -EINVAL;
-+		}
-+
-+		link->codec_of_node = of_parse_phandle(dev->of_node,
-+						"samsung,audio-codec", 0);
-+		if (!link->codec_of_node) {
-+			of_node_put(link->cpu_of_node);
-+			dev_err(dev, "audio-codec property parse error\n");
-+			return -EINVAL;
-+		}
- 	}
-
--	card->dev = &pdev->dev;
-+	link->platform_of_node = link->cpu_of_node;
-
- 	/* Update card-name if provided through DT, else use default name */
- 	snd_soc_of_parse_card_name(card, "samsung,model");
-
--	ret = devm_snd_soc_register_card(&pdev->dev, card);
-+	snd_soc_card_set_drvdata(card, priv);
-+
-+	ret = devm_snd_soc_register_card(dev, card);
- 	if (ret) {
- 		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
- 		return ret;
-@@ -105,6 +220,20 @@ static int snow_probe(struct platform_device *pdev)
- 	return ret;
- }
-
-+static int snow_remove(struct platform_device *pdev)
+ 
++#ifdef CONFIG_COMMON_CLK
++static int da7219_dai_clks_prepare(struct clk_hw *hw)
 +{
-+	struct snow_priv *priv = platform_get_drvdata(pdev);
-+	struct snd_soc_dai_link *link = &priv->dai_link;
++	struct da7219_priv *da7219 =
++		container_of(hw, struct da7219_priv, dai_clks_hw);
++	struct snd_soc_component *component = da7219->aad->component;
 +
-+	of_node_put(link->cpu_of_node);
-+	of_node_put(link->codec_of_node);
-+	snd_soc_of_put_dai_link_codecs(link);
-+
-+	clk_put(priv->clk_i2s_bus);
++	snd_soc_component_update_bits(component, DA7219_DAI_CLK_MODE,
++				      DA7219_DAI_CLK_EN_MASK,
++				      DA7219_DAI_CLK_EN_MASK);
 +
 +	return 0;
 +}
 +
- static const struct of_device_id snow_of_match[] = {
- 	{ .compatible = "google,snow-audio-max98090", },
- 	{ .compatible = "google,snow-audio-max98091", },
-@@ -120,6 +249,7 @@ static struct platform_driver snow_driver = {
- 		.of_match_table = snow_of_match,
- 	},
- 	.probe = snow_probe,
-+	.remove = snow_remove,
- };
-
- module_platform_driver(snow_driver);
---
-2.14.2
++static void da7219_dai_clks_unprepare(struct clk_hw *hw)
++{
++	struct da7219_priv *da7219 =
++		container_of(hw, struct da7219_priv, dai_clks_hw);
++	struct snd_soc_component *component = da7219->aad->component;
++
++	snd_soc_component_update_bits(component, DA7219_DAI_CLK_MODE,
++				      DA7219_DAI_CLK_EN_MASK, 0);
++}
++
++static int da7219_dai_clks_is_prepared(struct clk_hw *hw)
++{
++	struct da7219_priv *da7219 =
++		container_of(hw, struct da7219_priv, dai_clks_hw);
++	struct snd_soc_component *component = da7219->aad->component;
++	u8 clk_reg;
++
++	clk_reg = snd_soc_component_read32(component, DA7219_DAI_CLK_MODE);
++
++	return !!(clk_reg & DA7219_DAI_CLK_EN_MASK);
++}
++
++const struct clk_ops da7219_dai_clks_ops = {
++	.prepare = da7219_dai_clks_prepare,
++	.unprepare = da7219_dai_clks_unprepare,
++	.is_prepared = da7219_dai_clks_is_prepared,
++};
++
++static void da7219_register_dai_clks(struct snd_soc_component *component)
++{
++	struct device *dev = component->dev;
++	struct da7219_priv *da7219 = snd_soc_component_get_drvdata(component);
++	struct da7219_pdata *pdata = da7219->pdata;
++	struct clk_init_data init = {};
++	struct clk *dai_clks;
++	struct clk_lookup *dai_clks_lookup;
++
++	init.parent_names = NULL;
++	init.num_parents = 0;
++	init.name = pdata->dai_clks_name;
++	init.ops = &da7219_dai_clks_ops;
++	da7219->dai_clks_hw.init = &init;
++
++	dai_clks = devm_clk_register(dev, &da7219->dai_clks_hw);
++	if (IS_ERR(dai_clks)) {
++		dev_warn(dev, "Failed to register DAI clocks: %ld\n",
++			 PTR_ERR(dai_clks));
++		return;
++	}
++	da7219->dai_clks = dai_clks;
++
++	/* If we're using DT, then register as provider accordingly */
++	if (dev->of_node) {
++		devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get,
++					    &da7219->dai_clks_hw);
++	} else {
++		dai_clks_lookup = clkdev_create(dai_clks, pdata->dai_clks_name,
++						"%s", dev_name(dev));
++		if (!dai_clks_lookup)
++			dev_warn(dev, "Failed to create DAI clkdev");
++		else
++			da7219->dai_clks_lookup = dai_clks_lookup;
++	}
++}
++#else
++static inline void da7219_register_dai_clks(struct snd_soc_component *component) {}
++#endif /* CONFIG_COMMON_CLK */
++
+ static void da7219_handle_pdata(struct snd_soc_component *component)
+ {
+ 	struct da7219_priv *da7219 = snd_soc_component_get_drvdata(component);
+@@ -1722,6 +1830,8 @@ static void da7219_handle_pdata(struct snd_soc_component *component)
+ 
+ 		da7219->wakeup_source = pdata->wakeup_source;
+ 
++		da7219_register_dai_clks(component);
++
+ 		/* Mic Bias voltages */
+ 		switch (pdata->micbias_lvl) {
+ 		case DA7219_MICBIAS_1_6V:
+@@ -1856,6 +1966,9 @@ static void da7219_remove(struct snd_soc_component *component)
+ 
+ 	da7219_aad_exit(component);
+ 
++	if (da7219->dai_clks_lookup)
++		clkdev_drop(da7219->dai_clks_lookup);
++
+ 	/* Supplies */
+ 	regulator_bulk_disable(DA7219_NUM_SUPPLIES, da7219->supplies);
+ }
+diff --git a/sound/soc/codecs/da7219.h b/sound/soc/codecs/da7219.h
+index 1acb34cd12ad..1b00023e33cd 100644
+--- a/sound/soc/codecs/da7219.h
++++ b/sound/soc/codecs/da7219.h
+@@ -14,6 +14,9 @@
+ #ifndef __DA7219_H
+ #define __DA7219_H
+ 
++#include <linux/clk.h>
++#include <linux/clkdev.h>
++#include <linux/clk-provider.h>
+ #include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
+ #include <sound/da7219.h>
+@@ -813,6 +816,12 @@ struct da7219_priv {
+ 	struct mutex ctrl_lock;
+ 	struct mutex pll_lock;
+ 
++#ifdef CONFIG_COMMON_CLK
++	struct clk_hw dai_clks_hw;
++#endif
++	struct clk_lookup *dai_clks_lookup;
++	struct clk *dai_clks;
++
+ 	struct clk *mclk;
+ 	unsigned int mclk_rate;
+ 	int clk_src;
+-- 
+2.16.2
