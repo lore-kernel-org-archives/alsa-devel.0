@@ -1,811 +1,780 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v4 19/24] ASoC: qdsp6: q6afe: Add q6afe dai driver
-Date: Sat, 10 Mar 2018 02:24:51 +0000
-Message-ID: <20180310022456.26739-20-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v4 11/24] ASoC: qdsp6: q6adm: Add q6adm driver
+Date: Sat, 10 Mar 2018 02:24:43 +0000
+Message-ID: <20180310022456.26739-12-srinivas.kandagatla@linaro.org>
 References: <20180310022456.26739-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE0CD267677
+ for <alsa-devel@alsa-project.org>; Sat, 10 Mar 2018 03:27:56 +0100 (CET)
+Received: by mail-wm0-f67.google.com with SMTP id 139so7008788wmn.2
+ for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2018 18:27:56 -0800 (PST)
 In-Reply-To: <20180310022456.26739-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
-Cc: gregkh@linuxfoundation.org, david.brown@linaro.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, bgoswami@codeaurora.org, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com, srinivas.kandagatla@linaro.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, plai@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, srinivas.kandagatla@linaro.org, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch adds support to q6afe backend dais driver.
+This patch adds support to Q6ADM (Audio Device Manager) module in
+q6dsp. ADM performs routing between audio streams and AFE ports.
+It does Rate matching for streams going to devices driven by
+different clocks, it handles volume ramping, Mixing with channel
+and bit-width. ADM creates and destroys dynamic COPP services
+for device-related audio processing as needed.
+
+This patch adds basic support to ADM.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/Kconfig           |   4 +
- sound/soc/qcom/qdsp6/Makefile    |   1 +
- sound/soc/qcom/qdsp6/q6afe-dai.c | 746 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 751 insertions(+)
- create mode 100644 sound/soc/qcom/qdsp6/q6afe-dai.c
+ sound/soc/qcom/Kconfig        |   4 +
+ sound/soc/qcom/qdsp6/Makefile |   1 +
+ sound/soc/qcom/qdsp6/q6adm.c  | 664 ++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6adm.h  |  25 ++
+ 4 files changed, 694 insertions(+)
+ create mode 100644 sound/soc/qcom/qdsp6/q6adm.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6adm.h
 
 diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 7a868a6fac1b..9b630686eb19 100644
+index f50c76d712c0..5090ffa75648 100644
 --- a/sound/soc/qcom/Kconfig
 +++ b/sound/soc/qcom/Kconfig
-@@ -50,6 +50,9 @@ config SND_SOC_QDSP6_COMMON
+@@ -50,11 +50,15 @@ config SND_SOC_QDSP6_COMMON
  config SND_SOC_QDSP6_AFE
  	tristate
  
-+config SND_SOC_QDSP6_AFE_DAI
++config SND_SOC_QDSP6_ADM
 +	tristate
 +
- config SND_SOC_QDSP6_ADM
- 	tristate
- 
-@@ -67,6 +70,7 @@ config SND_SOC_QDSP6
+ config SND_SOC_QDSP6
+ 	tristate "SoC ALSA audio driver for QDSP6"
  	depends on QCOM_APR && HAS_DMA
  	select SND_SOC_QDSP6_COMMON
  	select SND_SOC_QDSP6_AFE
-+	select SND_SOC_QDSP6_AFE_DAI
- 	select SND_SOC_QDSP6_ADM
- 	select SND_SOC_QDSP6_ROUTING
- 	select SND_SOC_QDSP6_ASM
++	select SND_SOC_QDSP6_ADM
+ 	help
+ 	 To add support for MSM QDSP6 Soc Audio.
+ 	 This will enable sound soc platform specific
 diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
-index 6640bceccc18..6a8ae698f22f 100644
+index 9ec951e0833b..930944425051 100644
 --- a/sound/soc/qcom/qdsp6/Makefile
 +++ b/sound/soc/qcom/qdsp6/Makefile
-@@ -1,5 +1,6 @@
+@@ -1,2 +1,3 @@
  obj-$(CONFIG_SND_SOC_QDSP6_COMMON) += q6dsp-common.o
  obj-$(CONFIG_SND_SOC_QDSP6_AFE) += q6afe.o
-+obj-$(CONFIG_SND_SOC_QDSP6_AFE_DAI) += q6afe-dai.o
- obj-$(CONFIG_SND_SOC_QDSP6_ADM) += q6adm.o
- obj-$(CONFIG_SND_SOC_QDSP6_ROUTING) += q6routing.o
- obj-$(CONFIG_SND_SOC_QDSP6_ASM) += q6asm.o
-diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
++obj-$(CONFIG_SND_SOC_QDSP6_ADM) += q6adm.o
+diff --git a/sound/soc/qcom/qdsp6/q6adm.c b/sound/soc/qcom/qdsp6/q6adm.c
 new file mode 100644
-index 000000000000..5cb8b59a8cd9
+index 000000000000..4b4c604cb998
 --- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
-@@ -0,0 +1,746 @@
++++ b/sound/soc/qcom/qdsp6/q6adm.c
+@@ -0,0 +1,664 @@
 +// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2011-2016, The Linux Foundation
++// Copyright (c) 2011-2017, The Linux Foundation
 +// Copyright (c) 2018, Linaro Limited
 +
-+#include <linux/err.h>
-+#include <linux/init.h>
-+#include <linux/component.h>
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/platform_device.h>
 +#include <linux/slab.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/pcm_params.h>
++#include <linux/wait.h>
++#include <linux/kernel.h>
++#include <linux/device.h>
++#include <linux/module.h>
++#include <linux/sched.h>
++#include <linux/jiffies.h>
++#include <linux/of.h>
++#include <linux/of_platform.h>
++#include <linux/kref.h>
++#include <linux/wait.h>
++#include <linux/soc/qcom/apr.h>
++#include <linux/platform_device.h>
++#include <sound/asound.h>
++#include "q6adm.h"
 +#include "q6afe.h"
++#include "q6core.h"
++#include "q6dsp-errno.h"
++#include "q6dsp-common.h"
 +
-+struct q6afe_dai_priv_data {
-+	uint32_t sd_line_mask;
++#define ADM_CMD_DEVICE_OPEN_V5		0x00010326
++#define ADM_CMDRSP_DEVICE_OPEN_V5	0x00010329
++#define ADM_CMD_DEVICE_CLOSE_V5		0x00010327
++#define ADM_CMD_MATRIX_MAP_ROUTINGS_V5	0x00010325
++
++#define TIMEOUT_MS 1000
++#define RESET_COPP_ID 99
++#define INVALID_COPP_ID 0xFF
++/* Definition for a legacy device session. */
++#define ADM_LEGACY_DEVICE_SESSION	0
++#define ADM_MATRIX_ID_AUDIO_RX		0
++#define ADM_MATRIX_ID_AUDIO_TX		1
++
++struct copp {
++	int afe_port;
++	int copp_idx;
++	int id;
++	int topology;
++	int mode;
++	int rate;
++	int bit_width;
++	int channels;
++	int app_type;
++	int acdb_id;
++
++	struct aprv2_ibasic_rsp_result_t result;
++	struct kref refcount;
++	wait_queue_head_t wait;
++	struct list_head node;
++	struct q6adm *adm;
 +};
 +
-+struct q6afe_dai_data {
-+	struct q6afe_port *port[AFE_PORT_MAX];
-+	struct q6afe_port_config port_config[AFE_PORT_MAX];
-+	bool is_port_started[AFE_PORT_MAX];
-+	struct q6afe_dai_priv_data priv[AFE_PORT_MAX];
++struct q6adm {
++	struct apr_device *apr;
++	struct device *dev;
++	struct q6core_svc_api_info ainfo;
++	unsigned long copp_bitmap[AFE_MAX_PORTS];
++	struct list_head copps_list;
++	spinlock_t copps_list_lock;
++	struct aprv2_ibasic_rsp_result_t result;
++	struct mutex lock;
++	wait_queue_head_t matrix_map_wait;
++	void *routing_data;
++	struct platform_device *pdev_routing;
 +};
 +
-+static int q6slim_hw_params(struct snd_pcm_substream *substream,
-+			    struct snd_pcm_hw_params *params,
-+			    struct snd_soc_dai *dai)
++struct adm_cmd_device_open_v5 {
++	struct apr_hdr hdr;
++	u16 flags;
++	u16 mode_of_operation;
++	u16 endpoint_id_1;
++	u16 endpoint_id_2;
++	u32 topology_id;
++	u16 dev_num_channel;
++	u16 bit_width;
++	u32 sample_rate;
++	u8 dev_channel_mapping[8];
++} __packed;
++
++struct adm_cmd_matrix_map_routings_v5 {
++	struct apr_hdr hdr;
++	u32 matrix_id;
++	u32 num_sessions;
++} __packed;
++
++struct adm_session_map_node_v5 {
++	u16 session_id;
++	u16 num_copps;
++} __packed;
++
++static struct copp *adm_find_copp(struct q6adm *adm, int port_idx,
++				  int copp_idx)
 +{
++	struct copp *c = NULL;
++	unsigned long flags;
 +
-+	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	struct q6afe_slim_cfg *slim = &dai_data->port_config[dai->id].slim;
-+
-+	slim->num_channels = params_channels(params);
-+	slim->sample_rate = params_rate(params);
-+
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+	case SNDRV_PCM_FORMAT_SPECIAL:
-+		slim->bit_width = 16;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		slim->bit_width = 24;
-+		break;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		slim->bit_width = 32;
-+		break;
-+	default:
-+		pr_err("%s: format %d\n",
-+			__func__, params_format(params));
-+		return -EINVAL;
++	spin_lock_irqsave(&adm->copps_list_lock, flags);
++	list_for_each_entry(c, &adm->copps_list, node) {
++		if ((port_idx == c->afe_port) && (copp_idx == c->copp_idx))
++			break;
 +	}
 +
-+	return 0;
++	spin_unlock_irqrestore(&adm->copps_list_lock, flags);
++
++	return c;
++
 +}
 +
-+static int q6hdmi_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params,
-+				struct snd_soc_dai *dai)
++static int q6adm_callback(struct apr_device *adev,
++			struct apr_client_message *data)
 +{
-+	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	int channels = params_channels(params);
-+	struct q6afe_hdmi_cfg *hdmi = &dai_data->port_config[dai->id].hdmi;
++	struct aprv2_ibasic_rsp_result_t *result = data->payload;
++	int port_idx, copp_idx;
++	struct copp *copp;
++	struct q6adm *adm = dev_get_drvdata(&adev->dev);
 +
-+	hdmi->sample_rate = params_rate(params);
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		hdmi->bit_width = 16;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		hdmi->bit_width = 24;
-+		break;
++	if (!data->payload_size)
++		return 0;
++
++	copp_idx = (data->token) & 0XFF;
++	port_idx = ((data->token) >> 16) & 0xFF;
++	if (port_idx < 0 || port_idx >= AFE_MAX_PORTS) {
++		dev_err(&adev->dev, "Invalid port idx %d token %d\n",
++		       port_idx, data->token);
++		return 0;
++	}
++	if (copp_idx < 0 || copp_idx >= MAX_COPPS_PER_PORT) {
++		dev_err(&adev->dev, "Invalid copp idx %d token %d\n",
++			copp_idx, data->token);
++		return 0;
 +	}
 +
-+	/* HDMI spec CEA-861-E: Table 28 Audio InfoFrame Data Byte 4 */
-+	switch (channels) {
-+	case 2:
-+		hdmi->channel_allocation = 0;
-+		break;
-+	case 3:
-+		hdmi->channel_allocation = 0x02;
-+		break;
-+	case 4:
-+		hdmi->channel_allocation = 0x06;
-+		break;
-+	case 5:
-+		hdmi->channel_allocation = 0x0A;
-+		break;
-+	case 6:
-+		hdmi->channel_allocation = 0x0B;
-+		break;
-+	case 7:
-+		hdmi->channel_allocation = 0x12;
-+		break;
-+	case 8:
-+		hdmi->channel_allocation = 0x13;
-+		break;
-+	default:
-+		dev_err(dai->dev, "invalid Channels = %u\n", channels);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int q6i2s_hw_params(struct snd_pcm_substream *substream,
-+			   struct snd_pcm_hw_params *params,
-+			   struct snd_soc_dai *dai)
-+{
-+	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	struct q6afe_i2s_cfg *i2s = &dai_data->port_config[dai->id].i2s_cfg;
-+
-+	i2s->sample_rate = params_rate(params);
-+	i2s->bit_width = params_width(params);
-+	i2s->num_channels = params_channels(params);
-+	i2s->sd_line_mask = dai_data->priv[dai->id].sd_line_mask;
-+
-+	return 0;
-+}
-+
-+static int q6i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-+{
-+	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	struct q6afe_i2s_cfg *i2s = &dai_data->port_config[dai->id].i2s_cfg;
-+
-+	i2s->fmt = fmt;
-+
-+	return 0;
-+}
-+
-+static void q6afe_dai_shutdown(struct snd_pcm_substream *substream,
-+				struct snd_soc_dai *dai)
-+{
-+	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	int rc;
-+
-+	rc = q6afe_port_stop(dai_data->port[dai->id]);
-+	if (rc < 0)
-+		dev_err(dai->dev, "fail to close AFE port (%d)\n", rc);
-+
-+	dai_data->is_port_started[dai->id] = false;
-+
-+}
-+
-+static int q6afe_mi2s_prepare(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
-+{
-+	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	int rc;
-+
-+	if (dai_data->is_port_started[dai->id]) {
-+		/* stop the port and restart with new port config */
-+		rc = q6afe_port_stop(dai_data->port[dai->id]);
-+		if (rc < 0) {
-+			dev_err(dai->dev, "fail to close AFE port (%d)\n", rc);
-+			return rc;
++	switch (data->opcode) {
++	case APR_BASIC_RSP_RESULT: {
++		if (result->status != 0) {
++			dev_err(&adev->dev, "cmd = 0x%x return error = 0x%x\n",
++				result->opcode, result->status);
 +		}
-+	}
++		switch (result->opcode) {
++		case ADM_CMD_DEVICE_OPEN_V5:
++		case ADM_CMD_DEVICE_CLOSE_V5:
++			copp = adm_find_copp(adm, port_idx, copp_idx);
++			if (!copp)
++				return 0;
 +
-+	rc = q6afe_i2s_port_prepare(dai_data->port[dai->id],
-+			       &dai_data->port_config[dai->id].i2s_cfg);
-+	if (rc < 0) {
-+		dev_err(dai->dev, "fail to prepare AFE port %x\n", dai->id);
-+		return rc;
-+	}
++			copp->result = *result;
++			wake_up(&copp->wait);
++			break;
++		case ADM_CMD_MATRIX_MAP_ROUTINGS_V5:
++			adm->result = *result;
++			wake_up(&adm->matrix_map_wait);
++			break;
 +
-+	rc = q6afe_port_start(dai_data->port[dai->id]);
-+	if (rc < 0) {
-+		dev_err(dai->dev, "fail to start AFE port %x\n", dai->id);
-+		return rc;
-+	}
-+	dai_data->is_port_started[dai->id] = true;
-+
-+	return 0;
-+}
-+
-+static int q6afe_dai_prepare(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
-+{
-+	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	int rc;
-+
-+	if (dai_data->is_port_started[dai->id]) {
-+		/* stop the port and restart with new port config */
-+		rc = q6afe_port_stop(dai_data->port[dai->id]);
-+		if (rc < 0) {
-+			dev_err(dai->dev, "fail to close AFE port (%d)\n", rc);
-+			return rc;
-+		}
-+	}
-+
-+	if (dai->id == HDMI_RX)
-+		q6afe_hdmi_port_prepare(dai_data->port[dai->id],
-+					&dai_data->port_config[dai->id].hdmi);
-+	else if (dai->id >= SLIMBUS_0_RX && dai->id <= SLIMBUS_6_TX)
-+		q6afe_slim_port_prepare(dai_data->port[dai->id],
-+					&dai_data->port_config[dai->id].slim);
-+
-+	rc = q6afe_port_start(dai_data->port[dai->id]);
-+	if (rc < 0) {
-+		dev_err(dai->dev, "fail to start AFE port %x\n", dai->id);
-+		return rc;
-+	}
-+	dai_data->is_port_started[dai->id] = true;
-+
-+	return 0;
-+}
-+
-+static int q6slim_set_channel_map(struct snd_soc_dai *dai,
-+				unsigned int tx_num, unsigned int *tx_slot,
-+				unsigned int rx_num, unsigned int *rx_slot)
-+{
-+	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	struct q6afe_port_config *pcfg = &dai_data->port_config[dai->id];
-+	int i;
-+
-+	if (!rx_slot) {
-+		pr_err("%s: rx slot not found\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	for (i = 0; i < rx_num; i++) {
-+		pcfg->slim.ch_mapping[i] =   rx_slot[i];
-+		pr_debug("%s: find number of channels[%d] ch[%d]\n",
-+		       __func__, i, rx_slot[i]);
-+	}
-+
-+	pcfg->slim.num_channels = rx_num;
-+
-+	pr_debug("%s: SLIMBUS_%d_RX cnt[%d] ch[%d %d]\n", __func__,
-+		(dai->id - SLIMBUS_0_RX) / 2, rx_num,
-+		pcfg->slim.ch_mapping[0],
-+		pcfg->slim.ch_mapping[1]);
-+
-+	return 0;
-+}
-+
-+static int q6afe_mi2s_set_sysclk(struct snd_soc_dai *dai,
-+		int clk_id, unsigned int freq, int dir)
-+{
-+	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	struct q6afe_port *port = dai_data->port[dai->id];
-+
-+	switch (clk_id) {
-+	case LPAIF_DIG_CLK:
-+		return q6afe_port_set_sysclk(port, clk_id, 0, 5, freq, dir);
-+	case LPAIF_BIT_CLK:
-+	case LPAIF_OSR_CLK:
-+		return q6afe_port_set_sysclk(port, clk_id,
-+					     Q6AFE_LPASS_CLK_SRC_INTERNAL,
-+					     Q6AFE_LPASS_CLK_ROOT_DEFAULT,
-+					     freq, dir);
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_route q6afe_dapm_routes[] = {
-+	{"HDMI Playback", NULL, "HDMI_RX"},
-+	{"Slimbus1 Playback", NULL, "SLIMBUS_1_RX"},
-+	{"Slimbus2 Playback", NULL, "SLIMBUS_2_RX"},
-+	{"Slimbus3 Playback", NULL, "SLIMBUS_3_RX"},
-+	{"Slimbus4 Playback", NULL, "SLIMBUS_4_RX"},
-+	{"Slimbus5 Playback", NULL, "SLIMBUS_5_RX"},
-+	{"Slimbus6 Playback", NULL, "SLIMBUS_6_RX"},
-+
-+	{"Primary MI2S Playback", NULL, "PRI_MI2S_RX"},
-+	{"Secondary MI2S Playback", NULL, "SEC_MI2S_RX"},
-+	{"Tertiary MI2S Playback", NULL, "TERT_MI2S_RX"},
-+	{"Quaternary MI2S Playback", NULL, "QUAT_MI2S_RX"},
-+
-+	{"TERT_MI2S_TX", NULL, "Tertiary MI2S Capture"},
-+	{"PRI_MI2S_TX", NULL, "Primary MI2S Capture"},
-+	{"SEC_MI2S_TX", NULL, "Secondary MI2S Capture"},
-+	{"QUAT_MI2S_TX", NULL, "Quaternary MI2S Capture"},
-+};
-+
-+static struct snd_soc_dai_ops q6hdmi_ops = {
-+	.prepare	= q6afe_dai_prepare,
-+	.hw_params	= q6hdmi_hw_params,
-+	.shutdown	= q6afe_dai_shutdown,
-+};
-+
-+static struct snd_soc_dai_ops q6i2s_ops = {
-+	.prepare	= q6afe_mi2s_prepare,
-+	.hw_params	= q6i2s_hw_params,
-+	.set_fmt	= q6i2s_set_fmt,
-+	.shutdown	= q6afe_dai_shutdown,
-+	.set_sysclk	= q6afe_mi2s_set_sysclk,
-+};
-+
-+static struct snd_soc_dai_ops q6slim_ops = {
-+	.prepare	= q6afe_dai_prepare,
-+	.hw_params	= q6slim_hw_params,
-+	.shutdown	= q6afe_dai_shutdown,
-+	.set_channel_map = q6slim_set_channel_map,
-+};
-+
-+static int msm_dai_q6_dai_probe(struct snd_soc_dai *dai)
-+{
-+	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	struct snd_soc_dapm_context *dapm;
-+	struct q6afe_port *port;
-+
-+	dapm = snd_soc_component_get_dapm(dai->component);
-+
-+	port = q6afe_port_get_from_id(dai->dev, dai->id);
-+	if (IS_ERR(port)) {
-+		dev_err(dai->dev, "Unable to get afe port\n");
-+		return -EINVAL;
-+	}
-+	dai_data->port[dai->id] = port;
-+
-+	return 0;
-+}
-+
-+static int msm_dai_q6_dai_remove(struct snd_soc_dai *dai)
-+{
-+	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+
-+	q6afe_port_put(dai_data->port[dai->id]);
-+	dai_data->port[dai->id] = NULL;
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_driver q6afe_dais[] = {
-+	{
-+		.playback = {
-+			.stream_name = "HDMI Playback",
-+			.rates = SNDRV_PCM_RATE_48000 |
-+				 SNDRV_PCM_RATE_96000 |
-+				 SNDRV_PCM_RATE_192000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S24_LE,
-+			.channels_min = 2,
-+			.channels_max = 8,
-+			.rate_max =     192000,
-+			.rate_min =	48000,
-+		},
-+		.ops = &q6hdmi_ops,
-+		.id = HDMI_RX,
-+		.name = "HDMI",
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.name = "SLIMBUS_0_RX",
-+		.ops = &q6slim_ops,
-+		.id = SLIMBUS_0_RX,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+		.playback = {
-+			.stream_name = "Slimbus Playback",
-+			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
-+				 SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_96000 |
-+				 SNDRV_PCM_RATE_192000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S24_LE,
-+			.channels_min = 1,
-+			.channels_max = 8,
-+			.rate_min = 8000,
-+			.rate_max = 192000,
-+		},
-+	}, {
-+		.playback = {
-+			.stream_name = "Slimbus1 Playback",
-+			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
-+				 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
-+				 SNDRV_PCM_RATE_192000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S24_LE,
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rate_min = 8000,
-+			.rate_max = 192000,
-+		},
-+		.name = "SLIMBUS_1_RX",
-+		.ops = &q6slim_ops,
-+		.id = SLIMBUS_1_RX,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.playback = {
-+			.stream_name = "Slimbus2 Playback",
-+			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
-+				 SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_96000 |
-+				 SNDRV_PCM_RATE_192000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S24_LE,
-+			.channels_min = 1,
-+			.channels_max = 8,
-+			.rate_min = 8000,
-+			.rate_max = 192000,
-+		},
-+		.name = "SLIMBUS_2_RX",
-+		.ops = &q6slim_ops,
-+		.id = SLIMBUS_2_RX,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.playback = {
-+			.stream_name = "Slimbus3 Playback",
-+			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
-+				 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
-+				 SNDRV_PCM_RATE_192000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S24_LE,
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rate_min = 8000,
-+			.rate_max = 192000,
-+		},
-+		.name = "SLIMBUS_3_RX",
-+		.ops = &q6slim_ops,
-+		.id = SLIMBUS_3_RX,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.playback = {
-+			.stream_name = "Slimbus4 Playback",
-+			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
-+				 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
-+				 SNDRV_PCM_RATE_192000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S24_LE,
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rate_min = 8000,
-+			.rate_max = 192000,
-+		},
-+		.name = "SLIMBUS_4_RX",
-+		.ops = &q6slim_ops,
-+		.id = SLIMBUS_4_RX,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.playback = {
-+			.stream_name = "Slimbus5 Playback",
-+			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
-+				 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
-+				 SNDRV_PCM_RATE_192000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S24_LE,
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rate_min = 8000,
-+			.rate_max = 192000,
-+		},
-+		.name = "SLIMBUS_5_RX",
-+		.ops = &q6slim_ops,
-+		.id = SLIMBUS_5_RX,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.playback = {
-+			.stream_name = "Slimbus6 Playback",
-+			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
-+				 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
-+				 SNDRV_PCM_RATE_192000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S24_LE,
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rate_min = 8000,
-+			.rate_max = 192000,
-+		},
-+		.ops = &q6slim_ops,
-+		.name = "SLIMBUS_6_RX",
-+		.id = SLIMBUS_6_RX,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.playback = {
-+			.stream_name = "Primary MI2S Playback",
-+			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
-+				 SNDRV_PCM_RATE_16000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S24_LE,
-+			.rate_min =     8000,
-+			.rate_max =     48000,
-+		},
-+		.id = PRIMARY_MI2S_RX,
-+		.name = "PRI_MI2S_RX",
-+		.ops = &q6i2s_ops,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.capture = {
-+			.stream_name = "Primary MI2S Capture",
-+			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
-+				 SNDRV_PCM_RATE_16000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S24_LE,
-+			.rate_min =     8000,
-+			.rate_max =     48000,
-+		},
-+		.id = PRIMARY_MI2S_TX,
-+		.name = "PRI_MI2S_TX",
-+		.ops = &q6i2s_ops,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.playback = {
-+			.stream_name = "Secondary MI2S Playback",
-+			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
-+				 SNDRV_PCM_RATE_16000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+			.rate_min =     8000,
-+			.rate_max =     48000,
-+		},
-+		.name = "SEC_MI2S_RX",
-+		.id = SECONDARY_MI2S_RX,
-+		.ops = &q6i2s_ops,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.capture = {
-+			.stream_name = "Secondary MI2S Capture",
-+			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
-+				 SNDRV_PCM_RATE_16000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S24_LE,
-+			.rate_min =     8000,
-+			.rate_max =     48000,
-+		},
-+		.id = SECONDARY_MI2S_TX,
-+		.name = "SEC_MI2S_TX",
-+		.ops = &q6i2s_ops,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.playback = {
-+			.stream_name = "Tertiary MI2S Playback",
-+			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
-+				 SNDRV_PCM_RATE_16000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+			.rate_min =     8000,
-+			.rate_max =     48000,
-+		},
-+		.name = "TERT_MI2S_RX",
-+		.id = TERTIARY_MI2S_RX,
-+		.ops = &q6i2s_ops,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.capture = {
-+			.stream_name = "Tertiary MI2S Capture",
-+			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
-+				 SNDRV_PCM_RATE_16000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S24_LE,
-+			.rate_min =     8000,
-+			.rate_max =     48000,
-+		},
-+		.id = TERTIARY_MI2S_TX,
-+		.name = "TERT_MI2S_TX",
-+		.ops = &q6i2s_ops,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.playback = {
-+			.stream_name = "Quaternary MI2S Playback",
-+			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
-+				 SNDRV_PCM_RATE_16000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+			.rate_min =     8000,
-+			.rate_max =     48000,
-+		},
-+		.name = "QUAT_MI2S_RX",
-+		.id = QUATERNARY_MI2S_RX,
-+		.ops = &q6i2s_ops,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.capture = {
-+			.stream_name = "Quaternary MI2S Capture",
-+			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
-+				 SNDRV_PCM_RATE_16000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S24_LE,
-+			.rate_min =     8000,
-+			.rate_max =     48000,
-+		},
-+		.id = QUATERNARY_MI2S_TX,
-+		.name = "QUAT_MI2S_TX",
-+		.ops = &q6i2s_ops,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	},
-+};
-+
-+static int q6afe_of_xlate_dai_name(struct snd_soc_component *component,
-+				   struct of_phandle_args *args,
-+				   const char **dai_name)
-+{
-+	int id = args->args[0];
-+	int ret = -EINVAL;
-+	int i;
-+
-+	for (i = 0; i  < ARRAY_SIZE(q6afe_dais); i++) {
-+		if (q6afe_dais[i].id == id) {
-+			*dai_name = q6afe_dais[i].name;
-+			ret = 0;
++		default:
++			dev_err(&adev->dev, "Unknown Cmd: 0x%x\n",
++				result->opcode);
 +			break;
 +		}
++		return 0;
++	}
++	case ADM_CMDRSP_DEVICE_OPEN_V5: {
++		struct adm_cmd_rsp_device_open_v5 {
++			u32 status;
++			u16 copp_id;
++			u16 reserved;
++		} __packed * open = data->payload;
++
++		open = data->payload;
++		copp = adm_find_copp(adm, port_idx, copp_idx);
++		if (!copp)
++			return 0;
++
++		if (open->copp_id == INVALID_COPP_ID) {
++			dev_err(&adev->dev, "Invalid coppid rxed %d\n",
++				open->copp_id);
++			copp->result.status = ADSP_EBADPARAM;
++			wake_up(&copp->wait);
++			break;
++		}
++		copp->result.opcode = data->opcode;
++		copp->id = open->copp_id;
++		wake_up(&copp->wait);
++	}
++	break;
++	default:
++		dev_err(&adev->dev, "Unknown cmd:0x%x\n",
++		       data->opcode);
++		break;
 +	}
 +
++	return 0;
++}
++
++static struct copp *adm_alloc_copp(struct q6adm *adm, int port_idx)
++{
++	struct copp *c;
++	int idx;
++
++	idx = find_first_zero_bit(&adm->copp_bitmap[port_idx],
++				  MAX_COPPS_PER_PORT);
++
++	if (idx > MAX_COPPS_PER_PORT)
++		return ERR_PTR(-EBUSY);
++
++	c = kzalloc(sizeof(*c), GFP_KERNEL);
++	if (!c)
++		return ERR_PTR(-ENOMEM);
++
++	set_bit(idx, &adm->copp_bitmap[port_idx]);
++	c->copp_idx = idx;
++	c->afe_port = port_idx;
++	c->adm = adm;
++
++	init_waitqueue_head(&c->wait);
++
++	return c;
++}
++
++static int q6adm_apr_send_copp_pkt(struct q6adm *adm, struct copp *copp,
++				   void *data, uint32_t rsp_opcode)
++{
++	struct device *dev = adm->dev;
++	struct apr_hdr *hdr = data;
++	uint32_t opcode = hdr->opcode;
++	int ret;
++
++	mutex_lock(&adm->lock);
++	copp->result.opcode = 0;
++	copp->result.status = 0;
++	ret = apr_send_pkt(adm->apr, data);
++	if (ret < 0) {
++		dev_err(dev, "Failed to send APR packet\n");
++		ret = -EINVAL;
++		goto err;
++	}
++
++	/* Wait for the callback with copp id */
++	if (rsp_opcode)
++		ret = wait_event_timeout(copp->wait,
++					 (copp->result.opcode == opcode) ||
++					 (copp->result.opcode == rsp_opcode),
++					 msecs_to_jiffies(TIMEOUT_MS));
++	else
++		ret = wait_event_timeout(copp->wait,
++					 (copp->result.opcode == opcode),
++					 msecs_to_jiffies(TIMEOUT_MS));
++
++	if (!ret) {
++		dev_err(dev, "ADM copp cmd timedout\n");
++		ret = -EINVAL;
++	} else if (copp->result.status > 0) {
++		dev_err(dev, "DSP returned error[%d]\n",
++			copp->result.status);
++		ret = -EINVAL;
++	}
++
++err:
++	mutex_unlock(&adm->lock);
 +	return ret;
 +}
 +
-+static const struct snd_soc_dapm_widget q6afe_dai_widgets[] = {
-+	SND_SOC_DAPM_AIF_OUT("HDMI_RX", "HDMI Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("SLIMBUS_0_RX", "Slimbus Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("SLIMBUS_1_RX", "Slimbus1 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("SLIMBUS_2_RX", "Slimbus2 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("SLIMBUS_3_RX", "Slimbus3 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("SLIMBUS_4_RX", "Slimbus4 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("SLIMBUS_5_RX", "Slimbus5 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("SLIMBUS_6_RX", "Slimbus6 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("QUAT_MI2S_RX", "Quaternary MI2S Playback",
-+						0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("QUAT_MI2S_TX", "Quaternary MI2S Capture",
-+						0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("TERT_MI2S_RX", "Tertiary MI2S Playback",
-+						0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("TERT_MI2S_TX", "Tertiary MI2S Capture",
-+						0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("SEC_MI2S_RX", "Secondary MI2S Playback",
-+			     0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("SEC_MI2S_TX", "Secondary MI2S Capture",
-+						0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("SEC_MI2S_RX_SD1",
-+			"Secondary MI2S Playback SD1",
-+			0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("PRI_MI2S_RX", "Primary MI2S Playback",
-+			     0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("PRI_MI2S_TX", "Primary MI2S Capture",
-+						0, 0, 0, 0),
-+};
-+
-+static const struct snd_soc_component_driver q6afe_dai_component = {
-+	.name		= "q6afe-dai-component",
-+	.dapm_widgets = q6afe_dai_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(q6afe_dai_widgets),
-+	.dapm_routes = q6afe_dapm_routes,
-+	.num_dapm_routes = ARRAY_SIZE(q6afe_dapm_routes),
-+	.of_xlate_dai_name = q6afe_of_xlate_dai_name,
-+
-+};
-+
-+static void of_q6afe_parse_dai_data(struct device *dev,
-+				    struct q6afe_dai_data *data)
++static int q6adm_device_close(struct q6adm *adm, struct copp *copp,
++			      int port_id, int copp_idx)
 +{
-+	struct device_node *node;
++	struct apr_hdr close = {0};
++
++	close.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
++					APR_HDR_LEN(APR_HDR_SIZE),
++					APR_PKT_VER);
++	close.pkt_size = sizeof(close);
++	close.src_svc = APR_SVC_ADM;
++	close.src_domain = APR_DOMAIN_APPS;
++	close.src_port = port_id;
++	close.dest_svc = APR_SVC_ADM;
++	close.dest_domain = APR_DOMAIN_ADSP;
++	close.dest_port = copp->id;
++	close.token = port_id << 16 | copp_idx;
++	close.opcode = ADM_CMD_DEVICE_CLOSE_V5;
++
++	return q6adm_apr_send_copp_pkt(adm, copp, &close, 0);
++}
++
++static void adm_free_copp(struct kref *ref)
++{
++	struct copp *c = container_of(ref, struct copp, refcount);
++	struct q6adm *adm = c->adm;
++	int port_idx = c->afe_port;
++	int copp_idx = c->copp_idx;
++	unsigned long flags;
 +	int ret;
 +
-+	for_each_child_of_node(dev->of_node, node) {
-+		unsigned int lines[Q6AFE_MAX_MI2S_LINES];
-+		struct q6afe_dai_priv_data *priv;
-+		const char *if_type;
-+		int id, i, num_lines;
++	ret = q6adm_device_close(adm, c, port_idx, copp_idx);
++	if (ret < 0)
++		dev_err(adm->dev, "Failed to close copp %d\n", ret);
 +
-+		ret = of_property_read_u32(node, "reg", &id);
-+		if (ret || id > AFE_PORT_MAX) {
-+			dev_err(dev, "valid dai id not found:%d\n", ret);
-+			continue;
-+		}
++	clear_bit(c->copp_idx, &adm->copp_bitmap[port_idx]);
++	spin_lock_irqsave(&adm->copps_list_lock, flags);
++	list_del(&c->node);
++	spin_unlock_irqrestore(&adm->copps_list_lock, flags);
++	kfree(c);
++}
 +
-+		if (of_property_read_string(node, "interface-type", &if_type))
-+			continue;
++static struct copp *adm_find_matching_copp(struct q6adm *adm,
++					   int port_id, int topology,
++					   int mode, int rate, int channel_mode,
++					   int bit_width, int app_type)
++{
++	unsigned long flags;
++	struct copp *c;
 +
-+		priv = &data->priv[id];
++	spin_lock_irqsave(&adm->copps_list_lock, flags);
 +
-+		/* MI2S specific properties */
-+		if (!strcmp(if_type, "mi2s")) {
-+			ret = of_property_read_variable_u32_array(node,
-+							"qcom,sd-lines", lines, 0,
-+							Q6AFE_MAX_MI2S_LINES);
-+			if (ret < 0)
-+				num_lines = 0;
-+			else
-+				num_lines = ret;
-+
-+			priv->sd_line_mask = 0;
-+
-+			for (i = 0; i < num_lines; i++)
-+				priv->sd_line_mask |= BIT(lines[i]);
++	list_for_each_entry(c, &adm->copps_list, node) {
++		if ((port_id == c->afe_port) && (topology == c->topology) &&
++		    (mode == c->mode) && (rate == c->rate) &&
++		    (bit_width == c->bit_width) && (app_type == c->app_type)) {
++			spin_unlock_irqrestore(&adm->copps_list_lock, flags);
++			return c;
 +		}
 +	}
++	spin_unlock_irqrestore(&adm->copps_list_lock, flags);
++
++	c = adm_alloc_copp(adm, port_id);
++	if (IS_ERR_OR_NULL(c))
++		return ERR_CAST(c);
++
++	kref_init(&c->refcount);
++	c->topology = topology;
++	c->mode = mode;
++	c->rate = rate;
++	c->channels = channel_mode;
++	c->bit_width = bit_width;
++	c->app_type = app_type;
++
++	spin_lock_irqsave(&adm->copps_list_lock, flags);
++	list_add_tail(&c->node, &adm->copps_list);
++	spin_unlock_irqrestore(&adm->copps_list_lock, flags);
++
++	return c;
++
 +}
 +
-+static int q6afe_dai_bind(struct device *dev, struct device *master, void *data)
++static int q6adm_device_open(struct q6adm *adm, struct copp *copp, int port_id,
++			     int path, int topology, int channel_mode,
++			     int bit_width, int rate)
 +{
-+	struct q6afe_dai_data *dai_data;
-+	int rc = 0;
++	struct adm_cmd_device_open_v5 open = {0,};
++	int afe_port = q6afe_get_port_id(port_id);
++	int ret;
 +
-+	dai_data = kzalloc(sizeof(*dai_data), GFP_KERNEL);
-+	if (!dai_data)
-+		rc = -ENOMEM;
++	open.hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
++					   APR_HDR_LEN(APR_HDR_SIZE),
++					   APR_PKT_VER);
++	open.hdr.pkt_size = sizeof(open);
++	open.hdr.src_svc = APR_SVC_ADM;
++	open.hdr.src_domain = APR_DOMAIN_APPS;
++	open.hdr.src_port = afe_port;
++	open.hdr.dest_svc = APR_SVC_ADM;
++	open.hdr.dest_domain = APR_DOMAIN_ADSP;
++	open.hdr.dest_port = afe_port;
++	open.hdr.token = port_id << 16 | copp->copp_idx;
++	open.hdr.opcode = ADM_CMD_DEVICE_OPEN_V5;
++	open.flags = ADM_LEGACY_DEVICE_SESSION;
++	open.mode_of_operation = path;
++	open.endpoint_id_1 = afe_port;
++	open.topology_id = topology;
++	open.dev_num_channel = channel_mode & 0x00FF;
++	open.bit_width = bit_width;
++	open.sample_rate = rate;
 +
-+	dev_set_drvdata(dev, dai_data);
++	ret = q6dsp_map_channels(&open.dev_channel_mapping[0],
++				 channel_mode);
++	if (ret)
++		return ret;
 +
-+	of_q6afe_parse_dai_data(dev, dai_data);
-+
-+	return snd_soc_register_component(dev, &q6afe_dai_component,
-+					  q6afe_dais, ARRAY_SIZE(q6afe_dais));
++	return q6adm_apr_send_copp_pkt(adm, copp, &open,
++				       ADM_CMDRSP_DEVICE_OPEN_V5);
 +}
 +
-+static void q6afe_dai_unbind(struct device *dev, struct device *master,
-+			     void *data)
++/**
++ * q6adm_open() - open adm and grab a free copp
++ *
++ * @dev: Pointer to adm child device.
++ * @port_id: port id
++ * @path: playback or capture path.
++ * @rate: rate at which copp is required.
++ * @channel_mode: channel mode
++ * @topology: adm topology id
++ * @perf_mode: performace mode.
++ * @bit_width: audio sample bit width
++ * @app_type: Application type.
++ * @acdb_id: ACDB id
++ *
++ * Return: Will be an negative on error or a valid copp index on success.
++ */
++int q6adm_open(struct device *dev, int port_id, int path, int rate,
++	       int channel_mode, int topology, int perf_mode,
++	       uint16_t bit_width, int app_type, int acdb_id)
 +{
-+	struct q6afe_dai_data *dai_data = dev_get_drvdata(dev);
++	struct q6adm *adm = dev_get_drvdata(dev->parent);
++	struct copp *copp;
++	int ret = 0;
 +
-+	snd_soc_unregister_component(dev);
-+	kfree(dai_data);
++	if (port_id < 0) {
++		dev_err(dev, "Invalid port_id 0x%x\n", port_id);
++		return -EINVAL;
++	}
++
++	copp = adm_find_matching_copp(adm, port_id, topology, perf_mode,
++				      rate, channel_mode, bit_width, app_type);
++	if (kref_read(&copp->refcount) == 1) {
++		/* not initialized yet */
++		ret = q6adm_device_open(adm, copp, port_id, path, topology,
++				  channel_mode, bit_width, rate);
++		if (ret < 0)
++			return ret;
++	}
++
++	kref_get(&copp->refcount);
++
++	return copp->copp_idx;
 +}
++EXPORT_SYMBOL_GPL(q6adm_open);
 +
-+static const struct component_ops q6afe_dai_comp_ops = {
-+	.bind   = q6afe_dai_bind,
-+	.unbind = q6afe_dai_unbind,
-+};
-+
-+static int q6afe_dai_dev_probe(struct platform_device *pdev)
++/**
++ * q6adm_set_routing_data() - set routing private data
++ *
++ * @dev: Pointer to adm device.
++ * @data: routing private data
++ *
++ */
++void q6adm_set_routing_data(struct device *dev, void *data)
 +{
-+	return component_add(&pdev->dev, &q6afe_dai_comp_ops);
++	struct q6adm *adm = dev_get_drvdata(dev->parent);
++
++	adm->routing_data = data;
 +}
++EXPORT_SYMBOL_GPL(q6adm_set_routing_data);
 +
-+static int q6afe_dai_dev_remove(struct platform_device *pdev)
++/**
++ * q6adm_get_routing_data() - get routing private data
++ *
++ * @dev: Pointer to adm device.
++ *
++ * Return: pointer to routing private data
++ */
++void *q6adm_get_routing_data(struct device *dev)
 +{
-+	component_del(&pdev->dev, &q6afe_dai_comp_ops);
++	struct q6adm *adm = dev_get_drvdata(dev->parent);
++
++	return adm->routing_data;
++}
++EXPORT_SYMBOL_GPL(q6adm_get_routing_data);
++
++/**
++ * q6adm_matrix_map() - Map asm streams and afe ports using payload
++ *
++ * @dev: Pointer to adm child device.
++ * @path: playback or capture path.
++ * @payload_map: map between session id and afe ports.
++ * @perf_mode: Performace mode.
++ *
++ * Return: Will be an negative on error or a zero on success.
++ */
++int q6adm_matrix_map(struct device *dev, int path,
++		     struct route_payload payload_map, int perf_mode)
++{
++	struct q6adm *adm = dev_get_drvdata(dev->parent);
++	struct adm_cmd_matrix_map_routings_v5 *route;
++	struct adm_session_map_node_v5 *node;
++	uint16_t *copps_list;
++	int cmd_size, ret, i, copp_idx;
++	void *matrix_map = NULL;
++	struct copp *copp;
++
++	/* Assumes port_ids have already been validated during adm_open */
++	cmd_size = (sizeof(*route) +
++		    sizeof(*node) +
++		    (sizeof(uint32_t) * payload_map.num_copps));
++	matrix_map = kzalloc(cmd_size, GFP_KERNEL);
++	if (!matrix_map)
++		return -ENOMEM;
++
++	route = matrix_map;
++	route->hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
++					     APR_HDR_LEN(APR_HDR_SIZE),
++					     APR_PKT_VER);
++	route->hdr.pkt_size = cmd_size;
++	route->hdr.src_svc = 0;
++	route->hdr.src_domain = APR_DOMAIN_APPS;
++	route->hdr.dest_svc = APR_SVC_ADM;
++	route->hdr.dest_domain = APR_DOMAIN_ADSP;
++	route->hdr.token = 0;
++	route->hdr.opcode = ADM_CMD_MATRIX_MAP_ROUTINGS_V5;
++	route->num_sessions = 1;
++
++	switch (path) {
++	case ADM_PATH_PLAYBACK:
++		route->matrix_id = ADM_MATRIX_ID_AUDIO_RX;
++		break;
++	case ADM_PATH_LIVE_REC:
++		route->matrix_id = ADM_MATRIX_ID_AUDIO_TX;
++		break;
++	default:
++		dev_err(dev, "Wrong path set[%d]\n", path);
++
++		break;
++	}
++
++	node = matrix_map + sizeof(*route);
++	node->session_id = payload_map.session_id;
++	node->num_copps = payload_map.num_copps;
++	copps_list = matrix_map + sizeof(*route) + sizeof(*node);
++
++	for (i = 0; i < payload_map.num_copps; i++) {
++		int port_idx = payload_map.port_id[i];
++
++		if (port_idx < 0) {
++			dev_err(dev, "Invalid port_id 0x%x\n",
++				payload_map.port_id[i]);
++			ret = -EINVAL;
++			goto fail_cmd;
++		}
++		copp_idx = payload_map.copp_idx[i];
++
++		copp = adm_find_copp(adm, port_idx, copp_idx);
++		if (!copp) {
++			ret = -EINVAL;
++			goto fail_cmd;
++		}
++
++		copps_list[i] = copp->id;
++	}
++
++	mutex_lock(&adm->lock);
++	adm->result.status = 0;
++	adm->result.opcode = 0;
++
++	ret = apr_send_pkt(adm->apr, matrix_map);
++	if (ret < 0) {
++		dev_err(dev, "routing for syream %d failed ret %d\n",
++		       payload_map.session_id, ret);
++		goto fail_cmd;
++	}
++	ret = wait_event_timeout(adm->matrix_map_wait,
++				 adm->result.opcode == route->hdr.opcode,
++				 msecs_to_jiffies(TIMEOUT_MS));
++	if (!ret) {
++		dev_err(dev, "routing for syream %d failed\n",
++		       payload_map.session_id);
++		ret = -ETIMEDOUT;
++		goto fail_cmd;
++	} else if (adm->result.status > 0) {
++		dev_err(dev, "DSP returned error[%d]\n",
++		        adm->result.status);
++		ret = -EINVAL;
++		goto fail_cmd;
++	}
++
++fail_cmd:
++	mutex_unlock(&adm->lock);
++	kfree(matrix_map);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(q6adm_matrix_map);
++
++/**
++ * q6adm_close() - Close adm copp
++ *
++ * @dev: Pointer to adm child device.
++ * @port_id: afe port id.
++ * @perf_mode: perf_mode mode
++ * @copp_idx: copp index to close
++ *
++ * Return: Will be an negative on error or a zero on success.
++ */
++int q6adm_close(struct device *dev, int port_id, int perf_mode, int copp_idx)
++{
++	struct q6adm *adm = dev_get_drvdata(dev->parent);
++	struct copp *copp;
++
++	if (port_id < 0) {
++		dev_err(dev, "Invalid port_id 0x%x\n", port_id);
++		return -EINVAL;
++	}
++
++	if ((copp_idx < 0) || (copp_idx >= MAX_COPPS_PER_PORT)) {
++		dev_err(dev, "Invalid copp idx: %d\n", copp_idx);
++		return -EINVAL;
++	}
++
++	copp = adm_find_copp(adm, port_id, copp_idx);
++	if (!copp)
++		return -EINVAL;
++
++	kref_put(&copp->refcount, adm_free_copp);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(q6adm_close);
++
++static int q6adm_probe(struct apr_device *adev)
++{
++	struct device *dev = &adev->dev;
++	struct device_node *dais_np;
++	struct q6adm *adm;
++
++	adm = devm_kzalloc(&adev->dev, sizeof(*adm), GFP_KERNEL);
++	if (!adm)
++		return -ENOMEM;
++
++	adm->apr = adev;
++	dev_set_drvdata(&adev->dev, adm);
++	adm->dev = dev;
++	q6core_get_svc_api_info(adev->svc_id, &adm->ainfo);
++	mutex_init(&adm->lock);
++	init_waitqueue_head(&adm->matrix_map_wait);
++
++	INIT_LIST_HEAD(&adm->copps_list);
++	spin_lock_init(&adm->copps_list_lock);
++
++	dais_np = of_get_child_by_name(dev->of_node, "routing");
++	if (dais_np) {
++		adm->pdev_routing = of_platform_device_create(dais_np,
++							   "q6routing", dev);
++		of_node_put(dais_np);
++	}
++
 +	return 0;
 +}
 +
-+static struct platform_driver q6afe_dai_platform_driver = {
-+	.driver = {
-+		.name = "q6afe-dai",
-+	},
-+	.probe = q6afe_dai_dev_probe,
-+	.remove = q6afe_dai_dev_remove,
-+};
-+module_platform_driver(q6afe_dai_platform_driver);
++static int q6adm_remove(struct apr_device *adev)
++{
++	struct q6adm *adm = dev_get_drvdata(&adev->dev);
 +
-+MODULE_DESCRIPTION("Q6 Audio Fronend dai driver");
++	if (adm->pdev_routing)
++		of_platform_device_destroy(&adm->pdev_routing->dev, NULL);
++
++	return 0;
++}
++
++static const struct of_device_id q6adm_device_id[]  = {
++	{ .compatible = "qcom,q6adm" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, q6adm_device_id);
++
++static struct apr_driver qcom_q6adm_driver = {
++	.probe = q6adm_probe,
++	.remove = q6adm_remove,
++	.callback = q6adm_callback,
++	.driver = {
++		.name = "qcom-q6adm",
++		.of_match_table = of_match_ptr(q6adm_device_id),
++	},
++};
++
++module_apr_driver(qcom_q6adm_driver);
++MODULE_DESCRIPTION("Q6 Audio Device Manager");
 +MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/qcom/qdsp6/q6adm.h b/sound/soc/qcom/qdsp6/q6adm.h
+new file mode 100644
+index 000000000000..7ad278399ec0
+--- /dev/null
++++ b/sound/soc/qcom/qdsp6/q6adm.h
+@@ -0,0 +1,25 @@
++// SPDX-License-Identifier: GPL-2.0
++#ifndef __Q6_ADM_V2_H__
++#define __Q6_ADM_V2_H__
++
++#define ADM_PATH_PLAYBACK	0x1
++#define ADM_PATH_LIVE_REC	0x2
++#define MAX_COPPS_PER_PORT	8
++#define NULL_COPP_TOPOLOGY	0x00010312
++
++/* multiple copp per stream. */
++struct route_payload {
++	int num_copps;
++	int session_id;
++	int copp_idx[MAX_COPPS_PER_PORT];
++	int port_id[MAX_COPPS_PER_PORT];
++};
++
++int q6adm_open(struct device *dev, int port_id, int path, int rate,
++	       int channel_mode, int topology, int perf_mode,
++	       uint16_t bit_width, int app_type, int acdb_id);
++int q6adm_close(struct device *dev, int port, int topology, int perf_mode);
++int q6adm_matrix_map(struct device *dev, int path,
++		     struct route_payload payload_map, int perf_mode);
++
++#endif /* __Q6_ADM_V2_H__ */
 -- 
 2.15.1
