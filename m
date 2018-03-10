@@ -1,22 +1,14 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH v3 19/22] ASoC: Intel: bytcr_rt5651: Add
- support for Bay Trail CR / SSP0 using boards
-Date: Sun, 11 Mar 2018 19:19:34 +0100
-Message-ID: <2abd9dba-7e02-3bd4-847f-c63e98f8ad8b@redhat.com>
-References: <20180304143610.21125-1-hdegoede@redhat.com>
- <20180304143610.21125-20-hdegoede@redhat.com>
- <e4558b54-415e-a7f0-e696-27b9b9eb0a31@linux.intel.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: pcm: Fix UAF in snd_pcm_oss_get_formats()
+Date: Sat, 10 Mar 2018 23:11:58 +0100
+Message-ID: <20180310221158.28422-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f54.google.com (mail-wm0-f54.google.com [74.125.82.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 736AE266E63
- for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2018 19:19:36 +0100 (CET)
-Received: by mail-wm0-f54.google.com with SMTP id t6so12089941wmt.5
- for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2018 11:19:36 -0700 (PDT)
-In-Reply-To: <e4558b54-415e-a7f0-e696-27b9b9eb0a31@linux.intel.com>
-Content-Language: en-US
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 93BCC267172
+ for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2018 22:05:12 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,49 +18,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
-Cc: alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
+To: alsa-devel@alsa-project.org
+Cc: syzkaller-bugs@googlegroups.com
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAxMC0wMy0xOCAwMDozMCwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gCj4g
-U29ycnkgYWJvdXQgdGhlIGRlbGF5LCBJJ3ZlIG9ubHkgZm91bmQgdGhlIHRpbWUgdG8gbG9vayBh
-dCB0aGlzIG1hY2hpbmUgZHJpdmVyIGNoYW5nZXMgdGhpcyBhZnRlcm5vb24gd2hpbGUgSSB3YXMg
-ZG9pbmcgdGhlIFNPRiBpbnRlZ3JhdGlvbgo+IAo+PiBAQCAtMjkxLDkgKzMzMiwxNiBAQCBzdGF0
-aWMgaW50IGJ5dF9ydDU2NTFfYWlmMV9od19wYXJhbXMoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFt
-ICpzdWJzdHJlYW0sCj4+IMKgIHsKPj4gwqDCoMKgwqDCoCBzdHJ1Y3Qgc25kX3NvY19wY21fcnVu
-dGltZSAqcnRkID0gc3Vic3RyZWFtLT5wcml2YXRlX2RhdGE7Cj4+IMKgwqDCoMKgwqAgc3RydWN0
-IHNuZF9zb2NfZGFpICpjb2RlY19kYWkgPSBydGQtPmNvZGVjX2RhaTsKPj4gK8KgwqDCoCBzbmRf
-cGNtX2Zvcm1hdF90IGZvcm1hdCA9IHBhcmFtc19mb3JtYXQocGFyYW1zKTsKPj4gwqDCoMKgwqDC
-oCBpbnQgcmF0ZSA9IHBhcmFtc19yYXRlKHBhcmFtcyk7Cj4+ICvCoMKgwqAgaW50IGJjbGtfcmF0
-aW87Cj4+IC3CoMKgwqAgcmV0dXJuIGJ5dF9ydDU2NTFfcHJlcGFyZV9hbmRfZW5hYmxlX3BsbDEo
-Y29kZWNfZGFpLCByYXRlLCA1MCk7Cj4+ICvCoMKgwqAgaWYgKGZvcm1hdCA9PSBTTkRSVl9QQ01f
-Rk9STUFUX1MxNl9MRSkKPj4gK8KgwqDCoMKgwqDCoMKgIGJjbGtfcmF0aW8gPSAzMjsKPiAKPiBJ
-IGRvbid0IHRoaW5rIHdlIGNhbiBnZW5lcmF0ZSBhIDMyeCByYXRpbyB3aXRoIGEgMTkuMiBNSHog
-Y2xvY2ssIGV2ZW4gbGVzcyBzbyB3aXRoIGEgMjVNSHogcmVmZXJlbmNlLgo+IEFuZCBpbiBhZGRp
-dGlvbiBpbiB0aGUgYnl0Y3JfcnQ1NjQwIGNhc2Ugd2UgY291bGQgbmV2ZXIgZ2V0IGFueSBhdWRp
-byBvbiBieXRjciB3aGljaCB1c2VzIHRoZSBTU1AwIGxpbmsgd2l0aG91dCB0aGUgbWNsayBlbmFi
-bGVkLCBzbyB0aGlzIFNTUDArYmxjayBtb2RlIHdhcyBuZXZlciB0ZXN0ZWQgKG1heWJlIHByZWNp
-c2VseSBiZWNhdXNlIHRoaXMgcmF0aW8gd2FzIHdyb25nLi4uKQo+IAo+IEluIG90aGVyIHdvcmRz
-IHRoZXJlIGlzIGEgdGVzdCBnYXAgaGVyZSBmb3IgdGhlIGNhc2UgdXNpbmcgU1NQMCtiY2xrIGFz
-IGEgcmVmZXJlbmNlIHdpdGggdGhlIHJ0NTY1MSBhcyB3ZWxsLiBEb2VzIGFueW9uZSBoYXZlIGFj
-Y2VzcyB0byBhIEJZVC1DUiBwbGF0Zm9ybSB3LyBydDU2NTEgdG8gdGVzdCB0aGlzPwoKWWVzIEkn
-dmUgYWNjZXNzIHRvIGEgQllULUNSIHBsYXRmb3JtIHcvIHJ0NTY1MSwgSSBhc3N1bWUgdGhhdCB5
-b3Ugd2FudCBtZSB0byB0ZXN0IHRoZXJlIHdpdGggdGhlCkJZVF9SVDU2NTFfTUNMS19FTiBxdWly
-ayB1bnNldD8KCldoYXQgc2hvdWxkIEkgdHJ5IHRvIGZpeCB0aGluZ3MgaWYgdGhleSBkb24ndCB3
-b3JrPyAgT3IgbWF5YmUganVzdCBwdXQgYSBiaWcgZmF0Cndhcm5pbmcgcHJpbnRmIGluIHRoZSBk
-cml2ZXIgaWYgU1NQMCBpcyB1c2VkIHdpdGhvdXQgYmNsayBhbmQgcmVtb3ZlIHRoZSBoYW5kbGlu
-Zwpmb3IgdGhlIGJjbGsgKyBTU1AwIGNhc2UgYXMgaXRzIGJyb2tlbiBhbnl3YXlzID8KCj4gVGhl
-IG90aGVyIGNvbW1lbnQgSSBoYXZlIGlzIHRoYXQgdGhpcyBydW4tdGltZSBkZWZpbml0aW9uIG9m
-IHRoZSBiY2xrX3JhdGlvIGlzIGluY29uc2lzdGVudCB3aXRoIHRoZSBoYXJkLWNvZGVkIHZhbHVl
-IEkgc2VlIGluIHBsYXRmb3JtX2Nsb2NrX2NvbnRyb2woKQo+IHJldCA9IGJ5dF9ydDU2NTFfcHJl
-cGFyZV9hbmRfZW5hYmxlX3BsbDEoY29kZWNfZGFpLCA0ODAwMCwgNTApOwoKWWVzIHRoZSBhc3N1
-bXB0aW9uIGhlcmUgaXMgdGhhdCB3ZSBzaW1wbHkgbmVlZCAiYSIgY2xvY2sgd2hlbiB0aGUgIlBs
-YXRmb3JtIENsb2NrIgpnZXRzIGVuYWJsZWQgYW5kIHRoYXQgdGhlIGNsb2NrIHRoZW4gd2lsbCBs
-YXRlciBnZXQgc2V0IHRvIHRoZSBjb3JyZWN0IHNwZWVkLgoKQUZBSUsgeW91IGRpZCBub3Qgd2Fu
-dCBkdXBsaWNhdGlvbiBvZiB0aGUgU1NQMCBoYW5kbGluZyBvdXRzaWRlIHRoZSBmaXh1cApmdW5j
-dGlvbiBhbmQgcGxhdGZvcm1fY2xvY2tfY29udHJvbCgpIGRvZXMgbm90IGhhdmUgYWNjZXNzIHRv
-IHRoZSBmb3JtYXQsCnNpbmNlIHRoYXQgaXMgbGlrZWx5IG5vdCBldmVuIHNldHVwIGJ5IHRoZW4u
-CgpSZWdhcmRzLAoKSGFucwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+snd_pcm_oss_get_formats() has an obvious UAF around snd_mask_test()
+calls, as spotted by syzbot.  The passed format_mask argument is a
+pointer to the hw_params object that is freed before the loop.
+What a surprise that it has been present since the original code of
+decades ago...
+
+Reported-by: syzbot+4090700a4f13fccaf648@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/oss/pcm_oss.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+index b044c0a5a674..02298c9c6020 100644
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -1762,10 +1762,9 @@ static int snd_pcm_oss_get_formats(struct snd_pcm_oss_file *pcm_oss_file)
+ 		return -ENOMEM;
+ 	_snd_pcm_hw_params_any(params);
+ 	err = snd_pcm_hw_refine(substream, params);
+-	format_mask = hw_param_mask_c(params, SNDRV_PCM_HW_PARAM_FORMAT);
+-	kfree(params);
+ 	if (err < 0)
+-		return err;
++		goto error;
++	format_mask = hw_param_mask_c(params, SNDRV_PCM_HW_PARAM_FORMAT);
+ 	for (fmt = 0; fmt < 32; ++fmt) {
+ 		if (snd_mask_test(format_mask, fmt)) {
+ 			int f = snd_pcm_oss_format_to(fmt);
+@@ -1773,7 +1772,10 @@ static int snd_pcm_oss_get_formats(struct snd_pcm_oss_file *pcm_oss_file)
+ 				formats |= f;
+ 		}
+ 	}
+-	return formats;
++
++ error:
++	kfree(params);
++	return err < 0 ? err : formats;
+ }
+ 
+ static int snd_pcm_oss_set_format(struct snd_pcm_oss_file *pcm_oss_file, int format)
+-- 
+2.16.2
