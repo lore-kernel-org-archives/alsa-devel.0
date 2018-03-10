@@ -1,188 +1,94 @@
-From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v2] ASoC: dapm: add support to pinctrl dapm
-Date: Sat, 10 Mar 2018 02:37:27 +0000
-Message-ID: <20180310023727.27077-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
-Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Lukas Wunner <lukas@wunner.de>
+Subject: Re: [PATCH v2 3/3] ALSA: hda: Disabled unused audio
+ controller for Dell platforms with Switchable Graphics
+Date: Sat, 10 Mar 2018 07:50:39 +0100
+Message-ID: <20180310065039.GA6633@wunner.de>
+References: <20180308091023.9061-1-kai.heng.feng@canonical.com>
+ <20180308091023.9061-3-kai.heng.feng@canonical.com>
+ <20180309090223.xb55ltac4pfesdrh@pali>
+ <723DA929-C9FA-4F69-8D3A-03D8A75D09A6@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net
+ [83.223.90.240])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8976B267662
+ for <alsa-devel@alsa-project.org>; Sat, 10 Mar 2018 07:50:40 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <723DA929-C9FA-4F69-8D3A-03D8A75D09A6@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kai Heng Feng <kai.heng.feng@canonical.com>
+Cc: mjg59@srcf.ucam.org, alsa-devel@alsa-project.org, Mario Limonciello <mario.limonciello@dell.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, tiwai@suse.com, platform-driver-x86@vger.kernel.org, Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>, dvhart@infradead.org, andy@infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+On Fri, Mar 09, 2018 at 05:30:15PM +0800, Kai Heng Feng wrote:
+> >On Thursday 08 March 2018 17:10:23 Kai-Heng Feng wrote:
+> >>Some Dell platforms (Preicsion 7510/7710/7520/7720) have a BIOS option
+> >>"Switchable Graphics" (SG).
+> >>
+> >>When SG is enabled, we have:
+> >>00:02.0 VGA compatible controller: Intel Corporation Device 591b (rev 04)
+> >>00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (rev 31)
+> >>01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
+> >>[AMD/ATI] Ellesmere [Polaris10]
+> >>01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere
+> >>[Radeon RX 580]
+> >>
+> >>The Intel Audio outputs all the sound, including HDMI audio. The audio
+> >>controller comes with AMD graphics doesn't get used.
+> >>
+> >>When SG is disabled, we have:
+> >>00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (rev 31)
+> >>01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
+> >>[AMD/ATI] Ellesmere [Polaris10]
+> >>01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere
+> >>[Radeon RX 580]
+> >>
+> >>Now it's a typical discrete-only system. HDMI audio comes from AMD audio
+> >>controller, others from Intel audio controller.
+> >>
+> >>When SG is enabled, the unused AMD audio controller still exposes its
+> >>sysfs, so userspace still opens the control file and stream. If
+> >>userspace tries to output sound through the stream, it hangs when
+> >>runtime suspend kicks in:
+> >>[ 12.796265] snd_hda_intel 0000:01:00.1: Disabling via vga_switcheroo
+> >>[ 12.796367] snd_hda_intel 0000:01:00.1: Cannot lock devices!
+> >>
+> >>Since the discrete audio controller isn't useful when SG enabled, we
+> >>should just disable the device.
+> 
+> The platform does have a NVIDIA variant, but the discrete NVIDIA have a
+> audio controller, hence it doesn't have the issue.
 
-Purpose of having pinctrl dapm is to dynamically put the pins in
-low power state when they are not actively used by the audio and
-saving power.
+Sorry, I don't quite understand:  The AMD variant *also* has an audio
+controller, so what's the difference?  Or did you mean the Nvidia
+variant *doesn't* have an audio controller?
 
-Without this each driver has to set the pinctrl states, either
-during probe or dynamically depending on the callbacks received
-from ASoC core.
+Pretty much all modern Nvidia GPUs do have an integrated HDA
+controller, however it's possible to hide it by clearing a bit
+at offset 0x488 in the GPU's config space.  Some BIOSes hide
+the HDA if no external display is attached.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
-Changes since v1:
-	- removed synchronize with the DAPM async queue
+I could imagine that the BIOS of the Dell machines in question
+hides the HDA if Switchable Graphics is enabled.  If that is the
+case, be aware that there's an ongoing discussion to always expose
+the HDA controller because the behavior of some BIOSes to only
+expose the HDA when a display is attached causes massive problems
+with Linux' HDA driver:
+https://bugs.freedesktop.org/show_bug.cgi?id=75985
 
- include/sound/soc-dapm.h | 16 ++++++++++++++++
- sound/soc/soc-dapm.c     | 42 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 58 insertions(+)
+If we decide to always expose the HDA controller on Nvidia cards,
+you may need to also match for the Nvidia vendor ID here.
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 344b96c206a3..a6ce2de4e20a 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -269,6 +269,13 @@ struct device;
- 	.reg = SND_SOC_NOPM, .shift = wdelay, .event = dapm_regulator_event, \
- 	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD, \
- 	.on_val = wflags}
-+#define SND_SOC_DAPM_PINCTRL(wname, active, sleep) \
-+{	.id = snd_soc_dapm_pinctrl, .name = wname, \
-+	.priv = (&(struct snd_soc_dapm_pinctrl_priv) \
-+		{ .active_state = active, .sleep_state = sleep,}), \
-+	.reg = SND_SOC_NOPM, .event = dapm_pinctrl_event, \
-+	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD }
-+
- 
- 
- /* dapm kcontrol types */
-@@ -374,6 +381,8 @@ int dapm_regulator_event(struct snd_soc_dapm_widget *w,
- 			 struct snd_kcontrol *kcontrol, int event);
- int dapm_clock_event(struct snd_soc_dapm_widget *w,
- 			 struct snd_kcontrol *kcontrol, int event);
-+int dapm_pinctrl_event(struct snd_soc_dapm_widget *w,
-+			 struct snd_kcontrol *kcontrol, int event);
- 
- /* dapm controls */
- int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
-@@ -500,6 +509,7 @@ enum snd_soc_dapm_type {
- 	snd_soc_dapm_pre,			/* machine specific pre widget - exec first */
- 	snd_soc_dapm_post,			/* machine specific post widget - exec last */
- 	snd_soc_dapm_supply,		/* power/clock supply */
-+	snd_soc_dapm_pinctrl,		/* pinctrl */
- 	snd_soc_dapm_regulator_supply,	/* external regulator */
- 	snd_soc_dapm_clock_supply,	/* external clock */
- 	snd_soc_dapm_aif_in,		/* audio interface input */
-@@ -581,6 +591,7 @@ struct snd_soc_dapm_widget {
- 
- 	void *priv;				/* widget specific data */
- 	struct regulator *regulator;		/* attached regulator */
-+	struct pinctrl *pinctrl;		/* attached pinctrl */
- 	const struct snd_soc_pcm_stream *params; /* params for dai links */
- 	unsigned int num_params; /* number of params for dai links */
- 	unsigned int params_select; /* currently selected param for dai link */
-@@ -683,6 +694,11 @@ struct snd_soc_dapm_stats {
- 	int neighbour_checks;
- };
- 
-+struct snd_soc_dapm_pinctrl_priv {
-+	const char *active_state;
-+	const char *sleep_state;
-+};
-+
- /**
-  * snd_soc_dapm_init_bias_level() - Initialize DAPM bias level
-  * @dapm: The DAPM context to initialize
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 40085a4c8f92..ac4f13230faf 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -35,6 +35,7 @@
- #include <linux/debugfs.h>
- #include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
-+#include <linux/pinctrl/consumer.h>
- #include <linux/clk.h>
- #include <linux/slab.h>
- #include <sound/core.h>
-@@ -72,6 +73,7 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
- static int dapm_up_seq[] = {
- 	[snd_soc_dapm_pre] = 0,
- 	[snd_soc_dapm_regulator_supply] = 1,
-+	[snd_soc_dapm_pinctrl] = 1,
- 	[snd_soc_dapm_clock_supply] = 1,
- 	[snd_soc_dapm_supply] = 2,
- 	[snd_soc_dapm_micbias] = 3,
-@@ -119,6 +121,7 @@ static int dapm_down_seq[] = {
- 	[snd_soc_dapm_dai_link] = 11,
- 	[snd_soc_dapm_supply] = 12,
- 	[snd_soc_dapm_clock_supply] = 13,
-+	[snd_soc_dapm_pinctrl] = 13,
- 	[snd_soc_dapm_regulator_supply] = 13,
- 	[snd_soc_dapm_post] = 14,
- };
-@@ -1287,6 +1290,31 @@ int dapm_regulator_event(struct snd_soc_dapm_widget *w,
- }
- EXPORT_SYMBOL_GPL(dapm_regulator_event);
- 
-+/*
-+ * Handler for pinctrl widget.
-+ */
-+int dapm_pinctrl_event(struct snd_soc_dapm_widget *w,
-+		       struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_dapm_pinctrl_priv *priv = w->priv;
-+	struct pinctrl *p = w->pinctrl;
-+	struct pinctrl_state *s;
-+
-+	if (!p || !priv)
-+		return -EIO;
-+
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		s = pinctrl_lookup_state(p, priv->active_state);
-+	else
-+		s = pinctrl_lookup_state(p, priv->sleep_state);
-+
-+	if (IS_ERR(s))
-+		return PTR_ERR(s);
-+
-+	return pinctrl_select_state(p, s);
-+}
-+EXPORT_SYMBOL_GPL(dapm_pinctrl_event);
-+
- /*
-  * Handler for clock supply widget.
-  */
-@@ -1900,6 +1928,7 @@ static int dapm_power_widgets(struct snd_soc_card *card, int event)
- 				break;
- 			case snd_soc_dapm_supply:
- 			case snd_soc_dapm_regulator_supply:
-+			case snd_soc_dapm_pinctrl:
- 			case snd_soc_dapm_clock_supply:
- 			case snd_soc_dapm_micbias:
- 				if (d->target_bias_level < SND_SOC_BIAS_STANDBY)
-@@ -2313,6 +2342,7 @@ static ssize_t dapm_widget_show_component(struct snd_soc_component *cmpnt,
- 		case snd_soc_dapm_mixer_named_ctl:
- 		case snd_soc_dapm_supply:
- 		case snd_soc_dapm_regulator_supply:
-+		case snd_soc_dapm_pinctrl:
- 		case snd_soc_dapm_clock_supply:
- 			if (w->name)
- 				count += sprintf(buf + count, "%s: %s\n",
-@@ -3462,6 +3492,17 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
- 					 w->name, ret);
- 		}
- 		break;
-+	case snd_soc_dapm_pinctrl:
-+		w->pinctrl = devm_pinctrl_get(dapm->dev);
-+		if (IS_ERR_OR_NULL(w->pinctrl)) {
-+			ret = PTR_ERR(w->pinctrl);
-+			if (ret == -EPROBE_DEFER)
-+				return ERR_PTR(ret);
-+			dev_err(dapm->dev, "ASoC: Failed to request %s: %d\n",
-+				w->name, ret);
-+			return NULL;
-+		}
-+		break;
- 	case snd_soc_dapm_clock_supply:
- #ifdef CONFIG_CLKDEV_LOOKUP
- 		w->clk = devm_clk_get(dapm->dev, w->name);
-@@ -3541,6 +3582,7 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
- 		break;
- 	case snd_soc_dapm_supply:
- 	case snd_soc_dapm_regulator_supply:
-+	case snd_soc_dapm_pinctrl:
- 	case snd_soc_dapm_clock_supply:
- 	case snd_soc_dapm_kcontrol:
- 		w->is_supply = 1;
--- 
-2.15.1
+Thanks,
+
+Lukas
