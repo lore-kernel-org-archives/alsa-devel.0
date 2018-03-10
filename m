@@ -1,19 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v3 19/22] ASoC: Intel: bytcr_rt5651: Add
- support for Bay Trail CR / SSP0 using boards
-Date: Fri, 9 Mar 2018 17:30:16 -0600
-Message-ID: <e4558b54-415e-a7f0-e696-27b9b9eb0a31@linux.intel.com>
-References: <20180304143610.21125-1-hdegoede@redhat.com>
- <20180304143610.21125-20-hdegoede@redhat.com>
+From: srinivas.kandagatla@linaro.org
+Subject: [PATCH v4 00/24] ASoC: qcom: Add support to QDSP based
+	Audio
+Date: Sat, 10 Mar 2018 02:24:32 +0000
+Message-ID: <20180310022456.26739-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id D2862266D7D
- for <alsa-devel@alsa-project.org>; Sat, 10 Mar 2018 00:30:20 +0100 (CET)
-In-Reply-To: <20180304143610.21125-20-hdegoede@redhat.com>
-Content-Language: en-US
+Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
+ [209.85.128.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F38D2675EE
+ for <alsa-devel@alsa-project.org>; Sat, 10 Mar 2018 03:27:42 +0100 (CET)
+Received: by mail-wr0-f193.google.com with SMTP id k9so10677608wre.9
+ for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2018 18:27:42 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,42 +22,182 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
-Cc: alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
+To: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, plai@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, srinivas.kandagatla@linaro.org, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-Sorry about the delay, I've only found the time to look at this machine 
-driver changes this afternoon while I was doing the SOF integration
+Thankyou everyone for providing feedback on v3 patchset.
+This patchset aims to provide a basic version of QCOM DSP based
+audio support which is available in downstream andriod kernels.
+This patchset support audio playback on HDMI-RX, MI2S, SLIMBus and
+will add support to other features as we move on.
 
-> @@ -291,9 +332,16 @@ static int byt_rt5651_aif1_hw_params(struct snd_pcm_substream *substream,
->   {
->   	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->   	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-> +	snd_pcm_format_t format = params_format(params);
->   	int rate = params_rate(params);
-> +	int bclk_ratio;
->   
-> -	return byt_rt5651_prepare_and_enable_pll1(codec_dai, rate, 50);
-> +	if (format == SNDRV_PCM_FORMAT_S16_LE)
-> +		bclk_ratio = 32;
+QDSP has both static and dynamic modules. static modules like AFE
+(Audio FrontEnd), ADM (Audio Device Manager), ASM(Audio Stream Manager)
+and CORE to provide this audio services.
+All these services use APR (Asynchronous Packet Router) protocol
+via smd/glink transport to communicate with Application processor.
+More details on each module is availble in there respective patch.
 
-I don't think we can generate a 32x ratio with a 19.2 MHz clock, even 
-less so with a 25MHz reference.
-And in addition in the bytcr_rt5640 case we could never get any audio on 
-bytcr which uses the SSP0 link without the mclk enabled, so this 
-SSP0+blck mode was never tested (maybe precisely because this ratio was 
-wrong...)
+This patchset is tested on DB820c, with HDMI audio playback, MI2S on
+DB410c on top of mainline, Also tested SLIMBus analog audio using
+wcd9355 with an additional patches. Previous version of these
+patches are also tested on SDM845 by Rohit.
 
-In other words there is a test gap here for the case using SSP0+bclk as 
-a reference with the rt5651 as well. Does anyone have access to a BYT-CR 
-platform w/ rt5651 to test this?
+Here is my test branch incase someone want to try these patches
+https://git.linaro.org/people/srinivas.kandagatla/linux.git/log/?h=v4.16-qdsp6-v4
 
-The other comment I have is that this run-time definition of the 
-bclk_ratio is inconsistent with the hard-coded value I see in 
-platform_clock_control()
-ret = byt_rt5651_prepare_and_enable_pll1(codec_dai, 48000, 50);
+Here is block diagram to give a quick overview of the components
 
-Looks good otherwise.
-Cheers
--Pierre
+
+  +---------+          +---------+         +---------+   
+  |  q6asm  |          |q6routing|         | q6afe   | 
+  |   dais  | <------> |  mixers | <-----> |  dais   |  
+  +---------+          +---------+         +---------+   
+      ^                     ^                   ^
+      |                     |                   |
+      |  +------------------+----------------+  |       
+      |  |                  |                |  |       
+      v  v                  v                v  v       
+  +---------+          +---------+         +---------+ 
+  |   q6ASM |          |  q6ADM  |         |   q6AFE |  
+  +---------+          +---------+         +---------+  
+      ^                     ^                   ^          ^
+      |                     |                   | CPU Side |
+------+---------------------+-------------------+--------
+      |                     |                   |
+      |                     |APR(smd/glink)     | 
+      |                     |                   |
+      |  +------------------+----------------+  |
+      |  |                  |                |  |
++-----+--+-----------------------------------+--+-------
+      |  |                  |                |  | QDSP Side |
+      v  v                  v                v  v           v
+ +---------+          +---------+         +---------+
+ |   ASM   | <------> |   ADM   | <-----> |   AFE   |
+ +---------+          +---------+         +---------+
+                                               ^
+                                               | 
+                           +-------------------+
+                           |
+---------------------------+--------------------------
+                           |            Audio I/O |
+                           v                      v
+    +--------------------------------------------------+
+    |                Audio devices                     |
+    | CODEC | HDMI-TX | PCM  | SLIMBUS | I2S |MI2S |...|
+    |                                                  |
+    +--------------------------------------------------+
+
+
+Changes since v3 (https://lkml.org/lkml/2018/2/13/719)
+
+- Cleaned up apr and other dt bindings from comments
+	 from various reviewers.
+- Updated sndcard and dsp components to use component framework
+- Fixed various locking issues spotted by Mark B.
+- Removed Error to string lookup functions which can be done later.
+- cleaned up the subject headers suggested by Mark B
+- cleaned up Kconfig as suggested in review.
+- Fixed SPDX licence commenting style, suggested by Mark.
+- Made adsp command and response in sync
+- moved sound node out of apr bus.
+- Added more info into dsp versioning support
+- Fixed issues with MI2S SD-line selection, spotted by Rohit.
+- Added my self as co-maintainer for qcom audio stuff.
+- Fixed q6routing issue spotted by flto and rohit.
+
+Srinivas Kandagatla (24):
+  soc: qcom dt-bindings: Add APR bus bindings
+  soc: qcom: Add APR bus driver
+  ASoC: qdsp6: q6common: Add qdsp6 helper functions
+  ASoC: qdsp6: dt-bindings: Add q6afe dt bindings
+  ASoC: qdsp6: dt-bindings: Add q6adm dt bindings
+  ASoC: qdsp6: dt-bindings: Add q6asm dt bindings
+  ASoC: qdsp6: q6afe: Add q6afe driver
+  ASoC: qdsp6: qdafe: Add SLIMBus port Support
+  ASoC: qdsp6: q6afe: Add support to MI2S ports
+  ASoC: qdsp6: q6afe: Add support to MI2S sysclks
+  ASoC: qdsp6: q6adm: Add q6adm driver
+  ASoC: qdsp6: q6asm: Add q6asm driver
+  ASoC: qdsp6: q6asm: Add support to memory map and unmap
+  ASoC: qdsp6: q6asm: Add support to audio stream apis
+  ASoC: qdsp6: q6core: Add q6core driver
+  ASoC: qdsp6: q6routing: Add q6routing driver
+  ASoC: qdsp6: q6routing: Add support to all SLIMBus Mixers
+  ASoC: qdsp6: q6routing: Add support to MI2S Mixers
+  ASoC: qdsp6: q6afe: Add q6afe dai driver
+  ASoC: qdsp6: q6asm: Add q6asm dai driver
+  ASoC: qdsp6: dt-bindings: Add apq8096 machine bindings
+  ASoC: qcom: apq8096: Add db820c machine driver
+  arm64: dts: db820c: add sound card dt entry
+  MAINTAINERS: Add myself as co-maintainer of qcom audio
+
+ .../devicetree/bindings/soc/qcom/qcom,apr.txt      |   85 ++
+ .../devicetree/bindings/sound/qcom,apq8096.txt     |   80 ++
+ .../devicetree/bindings/sound/qcom,q6adm.txt       |   34 +
+ .../devicetree/bindings/sound/qcom,q6afe.txt       |  107 ++
+ .../devicetree/bindings/sound/qcom,q6asm.txt       |   34 +
+ MAINTAINERS                                        |    1 +
+ arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi       |   34 +
+ arch/arm64/boot/dts/qcom/msm8996.dtsi              |   75 +-
+ drivers/soc/qcom/Kconfig                           |    9 +
+ drivers/soc/qcom/Makefile                          |    1 +
+ drivers/soc/qcom/apr.c                             |  379 ++++++
+ include/dt-bindings/soc/qcom,apr.h                 |   27 +
+ include/dt-bindings/sound/qcom,q6afe.h             |   31 +
+ include/dt-bindings/sound/qcom,q6asm.h             |   22 +
+ include/linux/mod_devicetable.h                    |   11 +
+ include/linux/soc/qcom/apr.h                       |  131 ++
+ sound/soc/qcom/Kconfig                             |   50 +
+ sound/soc/qcom/Makefile                            |    5 +
+ sound/soc/qcom/apq8096.c                           |  235 ++++
+ sound/soc/qcom/qdsp6/Makefile                      |    8 +
+ sound/soc/qcom/qdsp6/q6adm.c                       |  664 ++++++++++
+ sound/soc/qcom/qdsp6/q6adm.h                       |   25 +
+ sound/soc/qcom/qdsp6/q6afe-dai.c                   |  746 +++++++++++
+ sound/soc/qcom/qdsp6/q6afe.c                       | 1067 ++++++++++++++++
+ sound/soc/qcom/qdsp6/q6afe.h                       |  193 +++
+ sound/soc/qcom/qdsp6/q6asm-dai.c                   |  632 ++++++++++
+ sound/soc/qcom/qdsp6/q6asm.c                       | 1310 ++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6asm.h                       |   69 ++
+ sound/soc/qcom/qdsp6/q6core.c                      |  381 ++++++
+ sound/soc/qcom/qdsp6/q6core.h                      |   15 +
+ sound/soc/qcom/qdsp6/q6dsp-common.c                |   66 +
+ sound/soc/qcom/qdsp6/q6dsp-common.h                |   24 +
+ sound/soc/qcom/qdsp6/q6dsp-errno.h                 |   51 +
+ sound/soc/qcom/qdsp6/q6routing.c                   |  982 +++++++++++++++
+ sound/soc/qcom/qdsp6/q6routing.h                   |    9 +
+ 35 files changed, 7592 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8096.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6adm.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6asm.txt
+ create mode 100644 drivers/soc/qcom/apr.c
+ create mode 100644 include/dt-bindings/soc/qcom,apr.h
+ create mode 100644 include/dt-bindings/sound/qcom,q6afe.h
+ create mode 100644 include/dt-bindings/sound/qcom,q6asm.h
+ create mode 100644 include/linux/soc/qcom/apr.h
+ create mode 100644 sound/soc/qcom/apq8096.c
+ create mode 100644 sound/soc/qcom/qdsp6/Makefile
+ create mode 100644 sound/soc/qcom/qdsp6/q6adm.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6adm.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6afe-dai.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6afe.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6afe.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6asm-dai.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6asm.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6asm.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6core.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6core.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6dsp-common.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6dsp-common.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6dsp-errno.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6routing.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6routing.h
+
+-- 
+2.15.1
