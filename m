@@ -1,300 +1,367 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v4 22/24] ASoC: qcom: apq8096: Add db820c machine driver
-Date: Sat, 10 Mar 2018 02:24:54 +0000
-Message-ID: <20180310022456.26739-23-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v4 09/24] ASoC: qdsp6: q6afe: Add support to
+	MI2S ports
+Date: Sat, 10 Mar 2018 02:24:41 +0000
+Message-ID: <20180310022456.26739-10-srinivas.kandagatla@linaro.org>
 References: <20180310022456.26739-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4471A267663
+ for <alsa-devel@alsa-project.org>; Sat, 10 Mar 2018 03:27:53 +0100 (CET)
+Received: by mail-wm0-f66.google.com with SMTP id 188so6974020wme.1
+ for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2018 18:27:53 -0800 (PST)
 In-Reply-To: <20180310022456.26739-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
-Cc: gregkh@linuxfoundation.org, david.brown@linaro.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, bgoswami@codeaurora.org, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com, srinivas.kandagatla@linaro.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, plai@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, srinivas.kandagatla@linaro.org, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch adds support to DB820c machine driver.
+This patch adds support to 4 MI2S ports on LPASS.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/Kconfig   |   9 ++
- sound/soc/qcom/Makefile  |   2 +
- sound/soc/qcom/apq8096.c | 235 +++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 246 insertions(+)
- create mode 100644 sound/soc/qcom/apq8096.c
+ sound/soc/qcom/qdsp6/q6afe.c | 228 +++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6afe.h |  13 +++
+ 2 files changed, 241 insertions(+)
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 5bdf39f6003f..9d8007e2f3cf 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -84,3 +84,12 @@ config SND_SOC_QDSP6
- 	 This will enable sound soc platform specific
- 	 audio drivers. This includes q6asm, q6adm,
- 	 q6afe interfaces to DSP using apr.
-+
-+config SND_SOC_MSM8996
-+	tristate "SoC Machine driver for MSM8996 and APQ8096 boards"
-+	depends on QCOM_APR
-+	select SND_SOC_QDSP6
-+	help
-+          Support for Qualcomm Technologies LPASS audio block in
-+          APQ8096 SoC-based systems.
-+          Say Y if you want to use audio device on this SoCs
-diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
-index 0276717917c0..206945bb9ba1 100644
---- a/sound/soc/qcom/Makefile
-+++ b/sound/soc/qcom/Makefile
-@@ -13,9 +13,11 @@ obj-$(CONFIG_SND_SOC_LPASS_APQ8016) += snd-soc-lpass-apq8016.o
- # Machine
- snd-soc-storm-objs := storm.o
- snd-soc-apq8016-sbc-objs := apq8016_sbc.o
-+snd-soc-apq8096-objs := apq8096.o
- 
- obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
- obj-$(CONFIG_SND_SOC_APQ8016_SBC) += snd-soc-apq8016-sbc.o
-+obj-$(CONFIG_SND_SOC_MSM8996) += snd-soc-apq8096.o
- 
- #DSP lib
- obj-$(CONFIG_SND_SOC_QDSP6) += qdsp6/
-diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
-new file mode 100644
-index 000000000000..e9b61dc0aa63
---- /dev/null
-+++ b/sound/soc/qcom/apq8096.c
-@@ -0,0 +1,235 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2018, Linaro Limited
-+
-+#include <linux/soc/qcom/apr.h>
-+#include <linux/module.h>
-+#include <linux/component.h>
-+#include <linux/platform_device.h>
-+#include <linux/of_device.h>
+diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+index de50ddd9faa4..2da5e3b14e38 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.c
++++ b/sound/soc/qcom/qdsp6/q6afe.c
+@@ -14,6 +14,10 @@
+ #include <linux/spinlock.h>
+ #include <linux/delay.h>
+ #include <linux/soc/qcom/apr.h>
 +#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
++#include <sound/soc-dai.h>
 +#include <sound/pcm.h>
++#include <sound/pcm_params.h>
+ #include "q6dsp-errno.h"
+ #include "q6core.h"
+ #include "q6afe.h"
+@@ -28,7 +32,36 @@
+ 
+ #define AFE_PARAM_ID_CDC_SLIMBUS_SLAVE_CFG 0x00010235
+ 
++#define AFE_PARAM_ID_LPAIF_CLK_CONFIG	0x00010238
++#define AFE_PARAM_ID_INTERNAL_DIGITAL_CDC_CLK_CONFIG	0x00010239
 +
-+static int apq8096_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
-+				      struct snd_pcm_hw_params *params)
+ #define AFE_PARAM_ID_SLIMBUS_CONFIG    0x00010212
++#define AFE_PARAM_ID_I2S_CONFIG	0x0001020D
++
++/* I2S config specific */
++#define AFE_API_VERSION_I2S_CONFIG	0x1
++#define AFE_PORT_I2S_SD0		0x1
++#define AFE_PORT_I2S_SD1		0x2
++#define AFE_PORT_I2S_SD2		0x3
++#define AFE_PORT_I2S_SD3		0x4
++#define AFE_PORT_I2S_SD0_MASK		BIT(0x1)
++#define AFE_PORT_I2S_SD1_MASK		BIT(0x2)
++#define AFE_PORT_I2S_SD2_MASK		BIT(0x3)
++#define AFE_PORT_I2S_SD3_MASK		BIT(0x4)
++#define AFE_PORT_I2S_SD0_1_MASK		GENMASK(2, 1)
++#define AFE_PORT_I2S_SD2_3_MASK		GENMASK(4, 3)
++#define AFE_PORT_I2S_SD0_1_2_MASK	GENMASK(3, 1)
++#define AFE_PORT_I2S_SD0_1_2_3_MASK	GENMASK(4, 1)
++#define AFE_PORT_I2S_QUAD01		0x5
++#define AFE_PORT_I2S_QUAD23		0x6
++#define AFE_PORT_I2S_6CHS		0x7
++#define AFE_PORT_I2S_8CHS		0x8
++#define AFE_PORT_I2S_MONO		0x0
++#define AFE_PORT_I2S_STEREO		0x1
++#define AFE_PORT_CONFIG_I2S_WS_SRC_EXTERNAL	0x0
++#define AFE_PORT_CONFIG_I2S_WS_SRC_INTERNAL	0x1
++#define AFE_LINEAR_PCM_DATA				0x0
++
+ 
+ /* Port IDs */
+ #define AFE_API_VERSION_HDMI_CONFIG	0x1
+@@ -64,6 +97,19 @@
+ #define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX      0x400c
+ /* SLIMbus Tx port on channel 6. */
+ #define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_TX      0x400d
++#define AFE_PORT_ID_PRIMARY_MI2S_RX         0x1000
++#define AFE_PORT_ID_PRIMARY_MI2S_TX         0x1001
++#define AFE_PORT_ID_SECONDARY_MI2S_RX       0x1002
++#define AFE_PORT_ID_SECONDARY_MI2S_TX       0x1003
++#define AFE_PORT_ID_TERTIARY_MI2S_RX        0x1004
++#define AFE_PORT_ID_TERTIARY_MI2S_TX        0x1005
++#define AFE_PORT_ID_QUATERNARY_MI2S_RX      0x1006
++#define AFE_PORT_ID_QUATERNARY_MI2S_TX      0x1007
++
++#define Q6AFE_LPASS_MODE_CLK1_VALID 1
++#define Q6AFE_LPASS_MODE_CLK2_VALID 2
++#define Q6AFE_LPASS_CLK_SRC_INTERNAL 1
++#define Q6AFE_LPASS_CLK_ROOT_DEFAULT 0
+ 
+ #define TIMEOUT_MS 1000
+ #define AFE_CMD_RESP_AVAIL	0
+@@ -160,10 +206,21 @@ struct afe_param_id_slimbus_cfg {
+  */
+ } __packed;
+ 
++struct afe_param_id_i2s_cfg {
++	u32	i2s_cfg_minor_version;
++	u16	bit_width;
++	u16	channel_mode;
++	u16	mono_stereo;
++	u16	ws_src;
++	u32	sample_rate;
++	u16	data_format;
++	u16	reserved;
++} __packed;
+ 
+ union afe_port_config {
+ 	struct afe_param_id_hdmi_multi_chan_audio_cfg hdmi_multi_ch;
+ 	struct afe_param_id_slimbus_cfg           slim_cfg;
++	struct afe_param_id_i2s_cfg	i2s_cfg;
+ } __packed;
+ 
+ struct q6afe_port {
+@@ -210,6 +267,22 @@ static struct afe_port_map port_maps[AFE_PORT_MAX] = {
+ 				SLIMBUS_4_RX, 1, 1},
+ 	[SLIMBUS_5_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_5_RX,
+ 				SLIMBUS_5_RX, 1, 1},
++	[QUATERNARY_MI2S_RX] = { AFE_PORT_ID_QUATERNARY_MI2S_RX,
++				QUATERNARY_MI2S_RX, 1, 1},
++	[QUATERNARY_MI2S_TX] = { AFE_PORT_ID_QUATERNARY_MI2S_TX,
++				QUATERNARY_MI2S_TX, 0, 1},
++	[SECONDARY_MI2S_RX] = { AFE_PORT_ID_SECONDARY_MI2S_RX,
++				SECONDARY_MI2S_RX, 1, 1},
++	[SECONDARY_MI2S_TX] = { AFE_PORT_ID_SECONDARY_MI2S_TX,
++				SECONDARY_MI2S_TX, 0, 1},
++	[TERTIARY_MI2S_RX] = { AFE_PORT_ID_TERTIARY_MI2S_RX,
++				TERTIARY_MI2S_RX, 1, 1},
++	[TERTIARY_MI2S_TX] = { AFE_PORT_ID_TERTIARY_MI2S_TX,
++				TERTIARY_MI2S_TX, 0, 1},
++	[PRIMARY_MI2S_RX] = { AFE_PORT_ID_PRIMARY_MI2S_RX,
++				PRIMARY_MI2S_RX, 1, 1},
++	[PRIMARY_MI2S_TX] = { AFE_PORT_ID_PRIMARY_MI2S_TX,
++				PRIMARY_MI2S_RX, 0, 1},
+ 	[SLIMBUS_6_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX,
+ 				SLIMBUS_6_RX, 1, 1},
+ };
+@@ -448,6 +521,150 @@ void q6afe_hdmi_port_prepare(struct q6afe_port *port,
+ }
+ EXPORT_SYMBOL_GPL(q6afe_hdmi_port_prepare);
+ 
++/**
++ * q6afe_i2s_port_prepare() - Prepare i2s afe port.
++ *
++ * @port: Instance of afe port
++ * @cfg: I2S configuration for the afe port
++ *
++  Return: Will be an negative on error and zero on success.
++ */
++int q6afe_i2s_port_prepare(struct q6afe_port *port, struct q6afe_i2s_cfg *cfg)
 +{
-+	struct snd_interval *rate = hw_param_interval(params,
-+					SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels = hw_param_interval(params,
-+					SNDRV_PCM_HW_PARAM_CHANNELS);
++	union afe_port_config *pcfg = &port->port_cfg;
++	struct device *dev = port->afe->dev;
++	int num_sd_lines;
 +
-+	rate->min = rate->max = 48000;
-+	channels->min = channels->max = 2;
++	pcfg->i2s_cfg.i2s_cfg_minor_version = AFE_API_VERSION_I2S_CONFIG;
++	pcfg->i2s_cfg.sample_rate = cfg->sample_rate;
++	pcfg->i2s_cfg.bit_width = cfg->bit_width;
++	pcfg->i2s_cfg.data_format = AFE_LINEAR_PCM_DATA;
++
++	switch (cfg->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBS_CFS:
++		pcfg->i2s_cfg.ws_src = AFE_PORT_CONFIG_I2S_WS_SRC_INTERNAL;
++		break;
++	case SND_SOC_DAIFMT_CBM_CFM:
++		/* CPU is slave */
++		pcfg->i2s_cfg.ws_src = AFE_PORT_CONFIG_I2S_WS_SRC_EXTERNAL;
++		break;
++	default:
++		break;
++	}
++
++	num_sd_lines = hweight_long(cfg->sd_line_mask);
++
++	switch (num_sd_lines) {
++	case 0:
++		dev_err(dev, "no line is assigned\n");
++		return -EINVAL;
++	case 1:
++		switch (cfg->sd_line_mask) {
++		case AFE_PORT_I2S_SD0_MASK:
++			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD0;
++			break;
++		case AFE_PORT_I2S_SD1_MASK:
++			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD1;
++			break;
++		case AFE_PORT_I2S_SD2_MASK:
++			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD2;
++			break;
++		case AFE_PORT_I2S_SD3_MASK:
++			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD3;
++			break;
++		default:
++			dev_err(dev, "Invalid SD lines\n");
++			return -EINVAL;
++		}
++		break;
++	case 2:
++		switch (cfg->sd_line_mask) {
++		case AFE_PORT_I2S_SD0_1_MASK:
++			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_QUAD01;
++			break;
++		case AFE_PORT_I2S_SD2_3_MASK:
++			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_QUAD23;
++			break;
++		default:
++			dev_err(dev, "Invalid SD lines\n");
++			return -EINVAL;
++		}
++		break;
++	case 3:
++		switch (cfg->sd_line_mask) {
++		case AFE_PORT_I2S_SD0_1_2_MASK:
++			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_6CHS;
++			break;
++		default:
++			dev_err(dev, "Invalid SD lines\n");
++			return -EINVAL;
++		}
++		break;
++	case 4:
++		switch (cfg->sd_line_mask) {
++		case AFE_PORT_I2S_SD0_1_2_3_MASK:
++			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_8CHS;
++
++			break;
++		default:
++			dev_err(dev, "Invalid SD lines\n");
++			return -EINVAL;
++		}
++		break;
++	default:
++		dev_err(dev, "Invalid SD lines\n");
++		return -EINVAL;
++	}
++
++	switch (cfg->num_channels) {
++	case 1:
++	case 2:
++		switch (pcfg->i2s_cfg.channel_mode) {
++		case AFE_PORT_I2S_QUAD01:
++		case AFE_PORT_I2S_6CHS:
++		case AFE_PORT_I2S_8CHS:
++			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD0;
++			break;
++		case AFE_PORT_I2S_QUAD23:
++				pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD2;
++			break;
++		}
++
++		if (cfg->num_channels == 2)
++			pcfg->i2s_cfg.mono_stereo = AFE_PORT_I2S_STEREO;
++		else
++			pcfg->i2s_cfg.mono_stereo = AFE_PORT_I2S_MONO;
++
++		break;
++	case 3:
++	case 4:
++		if (pcfg->i2s_cfg.channel_mode < AFE_PORT_I2S_QUAD01) {
++			dev_err(dev, "Invalid Channel mode\n");
++			return -EINVAL;
++		}
++		break;
++	case 5:
++	case 6:
++		if (pcfg->i2s_cfg.channel_mode < AFE_PORT_I2S_6CHS) {
++			dev_err(dev, "Invalid Channel mode\n");
++			return -EINVAL;
++		}
++		break;
++	case 7:
++	case 8:
++		if (pcfg->i2s_cfg.channel_mode < AFE_PORT_I2S_8CHS) {
++			dev_err(dev, "Invalid Channel mode\n");
++			return -EINVAL;
++		}
++		break;
++	default:
++		break;
++	}
 +
 +	return 0;
 +}
++EXPORT_SYMBOL_GPL(q6afe_i2s_port_prepare);
 +
-+static int apq8096_sbc_parse_of(struct snd_soc_card *card)
-+{
-+	struct device_node *np, *codec, *platform, *cpu, *node;
-+	struct device *dev = card->dev;
-+	struct snd_soc_dai_link *link;
-+	int ret, num_links;
+ /**
+  * q6afe_port_start() - Start a afe port
+  *
+@@ -529,6 +746,17 @@ struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
+ 	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX:
+ 		cfg_type = AFE_PARAM_ID_SLIMBUS_CONFIG;
+ 		break;
 +
-+	ret = snd_soc_of_parse_card_name(card, "qcom,model");
-+	if (ret) {
-+		dev_err(dev, "Error parsing card name: %d\n", ret);
-+		return ret;
-+	}
++	case AFE_PORT_ID_PRIMARY_MI2S_RX:
++	case AFE_PORT_ID_PRIMARY_MI2S_TX:
++	case AFE_PORT_ID_SECONDARY_MI2S_RX:
++	case AFE_PORT_ID_SECONDARY_MI2S_TX:
++	case AFE_PORT_ID_TERTIARY_MI2S_RX:
++	case AFE_PORT_ID_TERTIARY_MI2S_TX:
++	case AFE_PORT_ID_QUATERNARY_MI2S_RX:
++	case AFE_PORT_ID_QUATERNARY_MI2S_TX:
++		cfg_type = AFE_PARAM_ID_I2S_CONFIG;
++		break;
+ 	default:
+ 		dev_err(dev, "Invalid port id 0x%x\n", port_id);
+ 		return ERR_PTR(-EINVAL);
+diff --git a/sound/soc/qcom/qdsp6/q6afe.h b/sound/soc/qcom/qdsp6/q6afe.h
+index 155d6e47d7ce..05c61014abea 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.h
++++ b/sound/soc/qcom/qdsp6/q6afe.h
+@@ -11,6 +11,8 @@
+ #define MSM_AFE_PORT_TYPE_TX 1
+ #define AFE_MAX_PORTS AFE_PORT_MAX
+ 
++#define Q6AFE_MAX_MI2S_LINES	4
 +
-+	node = dev->of_node;
-+
-+	/* DAPM routes */
-+	if (of_property_read_bool(node, "qcom,audio-routing")) {
-+		ret = snd_soc_of_parse_audio_routing(card,
-+					"qcom,audio-routing");
-+		if (ret)
-+			return ret;
-+	}
-+
-+	/* Populate links */
-+	num_links = of_get_child_count(node);
-+
-+	/* Allocate the DAI link array */
-+	card->dai_link = kcalloc(num_links, sizeof(*link), GFP_KERNEL);
-+	if (!card->dai_link)
-+		return -ENOMEM;
-+
-+	card->num_links	= num_links;
-+	link = card->dai_link;
-+
-+	for_each_child_of_node(node, np) {
-+		cpu = of_get_child_by_name(np, "cpu");
-+		platform = of_get_child_by_name(np, "platform");
-+		codec = of_get_child_by_name(np, "codec");
-+
-+		if (!cpu) {
-+			dev_err(dev, "Can't find cpu DT node\n");
-+			return -EINVAL;
-+		}
-+
-+		link->cpu_of_node = of_parse_phandle(cpu, "sound-dai", 0);
-+		if (!link->cpu_of_node) {
-+			dev_err(card->dev, "error getting cpu phandle\n");
-+			return -EINVAL;
-+		}
-+
-+		link->platform_of_node = of_parse_phandle(platform,
-+							  "sound-dai", 0);
-+		if (!link->platform_of_node) {
-+			dev_err(card->dev, "error getting platform phandle\n");
-+			return -EINVAL;
-+		}
-+
-+		ret = snd_soc_of_get_dai_name(cpu, &link->cpu_dai_name);
-+		if (ret) {
-+			dev_err(card->dev, "error getting cpu dai name\n");
-+			return ret;
-+		}
-+
-+		if (codec) {
-+			ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
-+
-+			if (ret < 0) {
-+				dev_err(card->dev, "error getting codec dai name\n");
-+				return ret;
-+			}
-+			link->no_pcm = 1;
-+			link->ignore_suspend = 1;
-+			link->ignore_pmdown_time = 1;
-+			link->be_hw_params_fixup = apq8096_be_hw_params_fixup;
-+		} else {
-+			link->codec_dai_name = "snd-soc-dummy-dai";
-+			link->codec_name = "snd-soc-dummy";
-+			link->dynamic = 1;
-+		}
-+
-+		ret = of_property_read_string(np, "link-name", &link->name);
-+		if (ret) {
-+			dev_err(card->dev, "error getting codec dai_link name\n");
-+			return ret;
-+		}
-+
-+		link->dpcm_playback = 1;
-+		link->dpcm_capture = 1;
-+		link->stream_name = link->name;
-+		link++;
-+	}
-+
-+	return ret;
-+}
-+
-+static int apq8096_bind(struct device *dev)
-+{
-+	struct snd_soc_card *card;
-+	int ret;
-+
-+	card = kzalloc(sizeof(*card), GFP_KERNEL);
-+	if (!card)
-+		return -ENOMEM;
-+
-+	component_bind_all(dev, card);
-+	card->dev = dev;
-+	ret = apq8096_sbc_parse_of(card);
-+	if (ret) {
-+		dev_err(dev, "Error parsing OF data\n");
-+		component_unbind_all(dev, card);
-+		return ret;
-+	}
-+
-+	return snd_soc_register_card(card);
-+}
-+
-+static void apq8096_unbind(struct device *dev)
-+{
-+	struct snd_soc_card *card = dev_get_drvdata(dev);
-+
-+	component_unbind_all(dev, card);
-+	snd_soc_unregister_card(card);
-+	kfree(card->dai_link);
-+	kfree(card);
-+}
-+
-+static const struct component_master_ops apq8096_ops = {
-+	.bind = apq8096_bind,
-+	.unbind = apq8096_unbind,
+ #define AFE_MAX_CHAN_COUNT	8
+ #define AFE_PORT_MAX_AUDIO_CHAN_CNT	0x8
+ 
+@@ -29,9 +31,19 @@ struct q6afe_slim_cfg {
+ 	u8	ch_mapping[AFE_MAX_CHAN_COUNT];
+ };
+ 
++struct q6afe_i2s_cfg {
++	u32	sample_rate;
++	u16	bit_width;
++	u16	data_format;
++	u16	num_channels;
++	u32	sd_line_mask;
++	int fmt;
 +};
 +
-+static int apq8016_compare_of(struct device *dev, void *data)
-+{
-+	return dev->of_node == data;
-+}
-+
-+static void apq8016_release_of(struct device *dev, void *data)
-+{
-+	of_node_put(data);
-+}
-+
-+static int add_audio_components(struct device *dev,
-+				struct component_match **matchptr)
-+{
-+	struct device_node *np, *platform, *cpu, *node, *dai_node;
-+
-+	node = dev->of_node;
-+
-+	for_each_child_of_node(node, np) {
-+		cpu = of_get_child_by_name(np, "cpu");
-+		if (cpu) {
-+			dai_node = of_parse_phandle(cpu, "sound-dai", 0);
-+			of_node_get(dai_node);
-+			component_match_add_release(dev, matchptr,
-+						    apq8016_release_of,
-+						    apq8016_compare_of,
-+						    dai_node);
-+		}
-+
-+		platform = of_get_child_by_name(np, "platform");
-+		if (platform) {
-+			dai_node = of_parse_phandle(platform, "sound-dai", 0);
-+			component_match_add_release(dev, matchptr,
-+						    apq8016_release_of,
-+						    apq8016_compare_of,
-+						    dai_node);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int apq8096_platform_probe(struct platform_device *pdev)
-+{
-+	struct component_match *match = NULL;
-+	int ret;
-+
-+	ret = add_audio_components(&pdev->dev, &match);
-+	if (ret)
-+		return ret;
-+
-+	return component_master_add_with_match(&pdev->dev, &apq8096_ops, match);
-+}
-+
-+static int apq8096_platform_remove(struct platform_device *pdev)
-+{
-+	component_master_del(&pdev->dev, &apq8096_ops);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id msm_snd_apq8096_dt_match[] = {
-+	{.compatible = "qcom,apq8096-sndcard"},
-+	{}
-+};
-+
-+static struct platform_driver msm_snd_apq8096_driver = {
-+	.probe  = apq8096_platform_probe,
-+	.remove = apq8096_platform_remove,
-+	.driver = {
-+		.name = "msm-snd-apq8096",
-+		.owner = THIS_MODULE,
-+		.of_match_table = msm_snd_apq8096_dt_match,
-+	},
-+};
-+module_platform_driver(msm_snd_apq8096_driver);
-+MODULE_AUTHOR("Srinivas Kandagatla <srinivas.kandagatla@linaro.org");
-+MODULE_DESCRIPTION("APQ8096 ASoC Machine Driver");
-+MODULE_LICENSE("GPL v2");
+ struct q6afe_port_config {
+ 	struct q6afe_hdmi_cfg hdmi;
+ 	struct q6afe_slim_cfg slim;
++	struct q6afe_i2s_cfg i2s_cfg;
+ };
+ 
+ struct q6afe_port;
+@@ -45,5 +57,6 @@ void q6afe_hdmi_port_prepare(struct q6afe_port *port,
+ 			    struct q6afe_hdmi_cfg *cfg);
+ void q6afe_slim_port_prepare(struct q6afe_port *port,
+ 			  struct q6afe_slim_cfg *cfg);
++int q6afe_i2s_port_prepare(struct q6afe_port *port, struct q6afe_i2s_cfg *cfg);
+ 
+ #endif /* __Q6AFE_H__ */
 -- 
 2.15.1
