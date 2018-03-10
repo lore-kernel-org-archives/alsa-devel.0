@@ -1,19 +1,18 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v4 03/24] ASoC: qdsp6: q6common: Add qdsp6
-	helper functions
-Date: Sat, 10 Mar 2018 02:24:35 +0000
-Message-ID: <20180310022456.26739-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v4 05/24] ASoC: qdsp6: dt-bindings: Add q6adm
+	dt bindings
+Date: Sat, 10 Mar 2018 02:24:37 +0000
+Message-ID: <20180310022456.26739-6-srinivas.kandagatla@linaro.org>
 References: <20180310022456.26739-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f196.google.com (mail-wr0-f196.google.com
- [209.85.128.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 8387E2675EE
- for <alsa-devel@alsa-project.org>; Sat, 10 Mar 2018 03:27:46 +0100 (CET)
-Received: by mail-wr0-f196.google.com with SMTP id h2so3395330wre.12
- for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2018 18:27:46 -0800 (PST)
+Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6BF9D267657
+ for <alsa-devel@alsa-project.org>; Sat, 10 Mar 2018 03:27:49 +0100 (CET)
+Received: by mail-wm0-f67.google.com with SMTP id z81so7040818wmb.4
+ for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2018 18:27:49 -0800 (PST)
 In-Reply-To: <20180310022456.26739-1-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,210 +29,55 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch adds some common helper functions like translating dsp error
-to linux error codes and channel mappings etc.
-
-These functions are used in all the following qdsp6 drivers.
+This patch add DT bindings for ADM (Audio Device Manager) DSP module.
+This module implements mixer controls to setup the connections between
+AFE ports and ASM streams.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/Kconfig              | 13 ++++++++
- sound/soc/qcom/qdsp6/Makefile       |  1 +
- sound/soc/qcom/qdsp6/q6dsp-common.c | 66 +++++++++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6dsp-common.h | 24 ++++++++++++++
- sound/soc/qcom/qdsp6/q6dsp-errno.h  | 51 ++++++++++++++++++++++++++++
- 5 files changed, 155 insertions(+)
- create mode 100644 sound/soc/qcom/qdsp6/Makefile
- create mode 100644 sound/soc/qcom/qdsp6/q6dsp-common.c
- create mode 100644 sound/soc/qcom/qdsp6/q6dsp-common.h
- create mode 100644 sound/soc/qcom/qdsp6/q6dsp-errno.h
+ .../devicetree/bindings/sound/qcom,q6adm.txt       | 34 ++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6adm.txt
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 8ec9a074b38b..8247ade16dbe 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -43,3 +43,16 @@ config SND_SOC_APQ8016_SBC
-           Support for Qualcomm Technologies LPASS audio block in
-           APQ8016 SOC-based systems.
-           Say Y if you want to use audio devices on MI2S.
-+
-+config SND_SOC_QDSP6_COMMON
-+	tristate
-+
-+config SND_SOC_QDSP6
-+	tristate "SoC ALSA audio driver for QDSP6"
-+	depends on QCOM_APR && HAS_DMA
-+	select SND_SOC_QDSP6_COMMON
-+	help
-+	 To add support for MSM QDSP6 Soc Audio.
-+	 This will enable sound soc platform specific
-+	 audio drivers. This includes q6asm, q6adm,
-+	 q6afe interfaces to DSP using apr.
-diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6adm.txt b/Documentation/devicetree/bindings/sound/qcom,q6adm.txt
 new file mode 100644
-index 000000000000..accebdb49306
+index 000000000000..ddd93c80bd8a
 --- /dev/null
-+++ b/sound/soc/qcom/qdsp6/Makefile
-@@ -0,0 +1 @@
-+obj-$(CONFIG_SND_SOC_QDSP6_COMMON) += q6dsp-common.o
-diff --git a/sound/soc/qcom/qdsp6/q6dsp-common.c b/sound/soc/qcom/qdsp6/q6dsp-common.c
-new file mode 100644
-index 000000000000..c342a073144c
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6dsp-common.c
-@@ -0,0 +1,66 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2011-2017, The Linux Foundation
-+// Copyright (c) 2018, Linaro Limited
++++ b/Documentation/devicetree/bindings/sound/qcom,q6adm.txt
+@@ -0,0 +1,34 @@
++Qualcomm Audio Device Manager (Q6ADM) binding
 +
-+#include "q6dsp-common.h"
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/string.h>
-+#include <linux/errno.h>
++Q6ADM is one of the APR audio service on Q6DSP.
++Please refer to qcom,apr.txt for details of the coommon apr service bindings
++used by the apr service device.
 +
-+int q6dsp_map_channels(u8 ch_map[PCM_FORMAT_MAX_NUM_CHANNEL], int ch)
-+{
-+	memset(ch_map, 0, PCM_FORMAT_MAX_NUM_CHANNEL);
++- but must contain the following property:
 +
-+	switch (ch) {
-+	case 1:
-+		ch_map[0] = PCM_CHANNEL_FC;
-+		break;
-+	case 2:
-+		ch_map[0] = PCM_CHANNEL_FL;
-+		ch_map[1] = PCM_CHANNEL_FR;
-+		break;
-+	case 3:
-+		ch_map[0] = PCM_CHANNEL_FL;
-+		ch_map[1] = PCM_CHANNEL_FR;
-+		ch_map[2] = PCM_CHANNEL_FC;
-+		break;
-+	case 4:
-+		ch_map[0] = PCM_CHANNEL_FL;
-+		ch_map[1] = PCM_CHANNEL_FR;
-+		ch_map[2] = PCM_CHANNEL_LS;
-+		ch_map[3] = PCM_CHANNEL_RS;
-+		break;
-+	case 5:
-+		ch_map[0] = PCM_CHANNEL_FL;
-+		ch_map[1] = PCM_CHANNEL_FR;
-+		ch_map[2] = PCM_CHANNEL_FC;
-+		ch_map[3] = PCM_CHANNEL_LS;
-+		ch_map[4] = PCM_CHANNEL_RS;
-+		break;
-+	case 6:
-+		ch_map[0] = PCM_CHANNEL_FL;
-+		ch_map[1] = PCM_CHANNEL_FR;
-+		ch_map[2] = PCM_CHANNEL_LFE;
-+		ch_map[3] = PCM_CHANNEL_FC;
-+		ch_map[4] = PCM_CHANNEL_LS;
-+		ch_map[5] = PCM_CHANNEL_RS;
-+		break;
-+	case 8:
-+		ch_map[0] = PCM_CHANNEL_FL;
-+		ch_map[1] = PCM_CHANNEL_FR;
-+		ch_map[2] = PCM_CHANNEL_LFE;
-+		ch_map[3] = PCM_CHANNEL_FC;
-+		ch_map[4] = PCM_CHANNEL_LS;
-+		ch_map[5] = PCM_CHANNEL_RS;
-+		ch_map[6] = PCM_CHANNEL_LB;
-+		ch_map[7] = PCM_CHANNEL_RB;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
++- compatible:
++	Usage: required
++	Value type: <stringlist>
++	Definition: must be "qcom,adm-v<MAJOR-NUMBER>.<MINOR-NUMBER>".
++		   Or "qcom,adm" where the version number can be queried
++		   from DSP.
++		   example "qcom,adm-v2.0"
 +
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(q6dsp_map_channels);
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/qcom/qdsp6/q6dsp-common.h b/sound/soc/qcom/qdsp6/q6dsp-common.h
-new file mode 100644
-index 000000000000..32386f4a6432
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6dsp-common.h
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
 +
-+#ifndef __Q6DSP_COMMON_H__
-+#define __Q6DSP_COMMON_H__
++= ADM routing
++"routing" subnode of the ADM node represents adm routing specific configuration
 +
-+#include <linux/kernel.h>
++- #sound-dai-cells
++	Usage: required
++	Value type: <prop-encoded-array>
++	Definition: Must be 0
 +
-+#define PCM_FORMAT_MAX_NUM_CHANNEL  8
-+#define PCM_CHANNEL_NULL 0
-+
-+#define PCM_CHANNEL_FL    1	/* Front left channel. */
-+#define PCM_CHANNEL_FR    2	/* Front right channel. */
-+#define PCM_CHANNEL_FC    3	/* Front center channel. */
-+#define PCM_CHANNEL_LS   4	/* Left surround channel. */
-+#define PCM_CHANNEL_RS   5	/* Right surround channel. */
-+#define PCM_CHANNEL_LFE  6	/* Low frequency effect channel. */
-+#define PCM_CHANNEL_CS   7	/* Center surround channel; Rear center ch */
-+#define PCM_CHANNEL_LB   8	/* Left back channel; Rear left channel. */
-+#define PCM_CHANNEL_RB   9	/* Right back channel; Rear right channel. */
-+#define PCM_CHANNELS   10	/* Top surround channel. */
-+
-+int q6dsp_map_channels(u8 ch_map[PCM_FORMAT_MAX_NUM_CHANNEL], int ch);
-+
-+#endif /* __Q6DSP_COMMON_H__ */
-diff --git a/sound/soc/qcom/qdsp6/q6dsp-errno.h b/sound/soc/qcom/qdsp6/q6dsp-errno.h
-new file mode 100644
-index 000000000000..6285e1782824
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6dsp-errno.h
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#ifndef __Q6DSP_ERR_NO_H__
-+#define __Q6DSP_ERR_NO_H__
-+#include <linux/kernel.h>
-+
-+/* Success. The operation completed with no errors. */
-+#define ADSP_EOK          0x00000000
-+/* General failure. */
-+#define ADSP_EFAILED      0x00000001
-+/* Bad operation parameter. */
-+#define ADSP_EBADPARAM    0x00000002
-+/* Unsupported routine or operation. */
-+#define ADSP_EUNSUPPORTED 0x00000003
-+/* Unsupported version. */
-+#define ADSP_EVERSION     0x00000004
-+/* Unexpected problem encountered. */
-+#define ADSP_EUNEXPECTED  0x00000005
-+/* Unhandled problem occurred. */
-+#define ADSP_EPANIC       0x00000006
-+/* Unable to allocate resource. */
-+#define ADSP_ENORESOURCE  0x00000007
-+/* Invalid handle. */
-+#define ADSP_EHANDLE      0x00000008
-+/* Operation is already processed. */
-+#define ADSP_EALREADY     0x00000009
-+/* Operation is not ready to be processed. */
-+#define ADSP_ENOTREADY    0x0000000A
-+/* Operation is pending completion. */
-+#define ADSP_EPENDING     0x0000000B
-+/* Operation could not be accepted or processed. */
-+#define ADSP_EBUSY        0x0000000C
-+/* Operation aborted due to an error. */
-+#define ADSP_EABORTED     0x0000000D
-+/* Operation preempted by a higher priority. */
-+#define ADSP_EPREEMPTED   0x0000000E
-+/* Operation requests intervention to complete. */
-+#define ADSP_ECONTINUE    0x0000000F
-+/* Operation requests immediate intervention to complete. */
-+#define ADSP_EIMMEDIATE   0x00000010
-+/* Operation is not implemented. */
-+#define ADSP_ENOTIMPL     0x00000011
-+/* Operation needs more data or resources. */
-+#define ADSP_ENEEDMORE    0x00000012
-+/* Operation does not have memory. */
-+#define ADSP_ENOMEMORY    0x00000014
-+/* Item does not exist. */
-+#define ADSP_ENOTEXIST    0x00000015
-+/* Max count for adsp error code sent to HLOS*/
-+
-+#endif /*__Q6DSP_ERR_NO_H__ */
++= EXAMPLE
++q6adm: q6adm {
++	compatible = "qcom,q6adm";
++	qcom,apr-svc-name = "ADM";
++	qcom,apr-svc-id = <APR_SVC_ADM>;
++	q6routing: routing {
++		#sound-dai-cells = <0>;
++	};
++};
 -- 
 2.15.1
