@@ -1,225 +1,53 @@
-From: Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>
-Subject: Re: [PATCH v2 3/3] ALSA: hda: Disabled unused audio
- controller for Dell platforms with Switchable Graphics
-Date: Sun, 11 Mar 2018 15:30:18 +0100
-Message-ID: <20180311143018.u64cldtxuv7divta@pali>
-References: <20180308091023.9061-1-kai.heng.feng@canonical.com>
- <20180308091023.9061-3-kai.heng.feng@canonical.com>
- <20180309090223.xb55ltac4pfesdrh@pali>
- <723DA929-C9FA-4F69-8D3A-03D8A75D09A6@canonical.com>
- <014795f5a3014cd3bf55de26f76a5af8@ausx13mpc124.AMER.DELL.COM>
- <20180309094600.m24d3zbzdsmls7aw@pali>
- <09eadabb264f401a88b427744505adf8@ausx13mpc124.AMER.DELL.COM>
- <20180310103809.5nnwoulua2u64rku@pali>
- <ea9ab148c4bb45b9ae7369020300b74b@ausx13mpc124.AMER.DELL.COM>
+From: Lukas Wunner <lukas@wunner.de>
+Subject: Re: [PATCH v2 0/7] Modernize vga_switcheroo by using device link for
+ HDA
+Date: Sun, 11 Mar 2018 16:55:49 +0100
+Message-ID: <20180311155549.GA11806@wunner.de>
+References: <cover.1520068884.git.lukas@wunner.de>
+ <20180306102940.GG22212@phenom.ffwll.local>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4218736437392629670=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f48.google.com (mail-wm0-f48.google.com [74.125.82.48])
- by alsa0.perex.cz (Postfix) with ESMTP id D9493266E77
- for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2018 15:30:26 +0100 (CET)
-Received: by mail-wm0-f48.google.com with SMTP id e194so11702258wmd.3
- for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2018 07:30:26 -0700 (PDT)
-In-Reply-To: <ea9ab148c4bb45b9ae7369020300b74b@ausx13mpc124.AMER.DELL.COM>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mario.Limonciello@dell.com
-Cc: mjg59@srcf.ucam.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, platform-driver-x86@vger.kernel.org, kai.heng.feng@canonical.com, dvhart@infradead.org, andy@infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <20180306102940.GG22212@phenom.ffwll.local>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Daniel Vetter <daniel@ffwll.ch>, Alex Deucher <alexander.deucher@amd.com>, Sean Paul <seanpaul@chromium.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Gustavo Padovan <gustavo@padovan.org>, Bjorn Helgaas <bhelgaas@google.com>
+Cc: alsa-devel@alsa-project.org, Martin Lopatar <lopin@dataplex.cz>, nouveau@lists.freedesktop.org, Maik Freudenberg <hhfeuer@gmx.de>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Denis Lisov <dennis.lissov@gmail.com>, dri-devel@lists.freedesktop.org, Daniel Drake <dan@reactivated.net>, Hans de Goede <hdegoede@redhat.com>, Kai-Heng Feng <kai.heng.feng@canonical.com>, Peter Wu <peter@lekensteyn.nl>, linux-pci@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4218736437392629670==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gsne4cu2stnnwixf"
-Content-Disposition: inline
-
-
---gsne4cu2stnnwixf
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sunday 11 March 2018 14:03:13 Mario.Limonciello@dell.com wrote:
-> > -----Original Message-----
-> > From: platform-driver-x86-owner@vger.kernel.org [mailto:platform-driver=
--x86-
-> > owner@vger.kernel.org] On Behalf Of Pali Roh=C3=A1r
-> > Sent: Saturday, March 10, 2018 6:38 PM
-> > To: Limonciello, Mario <Mario_Limonciello@Dell.com>
-> > Cc: kai.heng.feng@canonical.com; mjg59@srcf.ucam.org; dvhart@infradead.=
-org;
-> > andy@infradead.org; tiwai@suse.com; platform-driver-x86@vger.kernel.org=
-; linux-
-> > kernel@vger.kernel.org; alsa-devel@alsa-project.org
-> > Subject: Re: [PATCH v2 3/3] ALSA: hda: Disabled unused audio controller=
- for Dell
-> > platforms with Switchable Graphics
-> >=20
-> > On Friday 09 March 2018 09:59:39 Mario.Limonciello@dell.com wrote:
-> > > > > Pali is your concern that this code for matching vendor/subsystem=
- is running
-> > > > > on non-Dell too?  The only other recommendation I think that can =
-be to restrict
-> > > > > to matching Dell OEM strings in SMBIOS table, but I don't think t=
-hat's any better
-> > > > > than the matching for VID/SSVID.
-> > > >
-> > > > My concern is about adding a new machine specific code into generic
-> > > > driver, which check is done just by PCI vendor and subvendor.
-> > > >
-> > > > In future there can be new models or other PCI devices which matches
-> > > > above condition even they would not have any switchable graphics, n=
-or
-> > > > they would manufactured by Dell.
-> > >
-> > > Uh Dell subsystem ID means it's Dell no?
-> >=20
-> > What would prevent you to take PCI device marked with Dell ID and put it
-> > into non-Dell computer? I do not believe that Dell PCI devices are
-> > configured to work only in Dell branded devices and refuse to power up
-> > in others.
->=20
-> I think the missing aspect is that this is only used in AIO and laptop fo=
-rm
-> factors where the discrete graphics is in a non-removable form factor.
-
-Why we are not checking if kernel is running on AIO or laptop form
-factor then? Or it is not possible?
-
-Basically what I see there is that we need to detect if current HW
-platform has switchable graphics and check how is configured AUDIO MUX.
-
-But instead of directly checking hw state of audio MUX, we are trying to
-check something different which could get us information of state of the
-audio mux.
-
-I suspect that we do not have a way how to check audio MUX directly, so
-it needs to be done indirectly -- via some Dell SMBIOS call and some
-other heuristic. This is something which should be specified either in
-comment or in commit message (problem of type: we need X, but check for
-Y).
-
-And if we are doing this check indirectly, we should do the most
-specific test and not more general.
-
-I think that PCI vendor ID check of audio device is more general test
-then checking if kernel is running on Dell laptop (check via DMI). And
-if we can check also if running on AIO or laptop form, then it would be
-more specific test.
-
-> Running with your hypothetical though, what would happen is if it's
-> on a non-Dell machine the PCI check would pass and then the code
-> would not be executed by dell-laptop (since dell-smbios didn't load).
-
-Right.
-
-> If it was on a Dell machine it would load but the BIOS would return
-> either Switchable graphics turned off, or invalid token.
->=20
-> Even though these aren't real for switchable graphics on Dell I don't
-> see a problem with either of these situations if it ever came up.
-
-I see, this solution is working...
-
-=2E.. but, I see there a very bad precedense. What would happen if another
-laptop manufactor comes with similar solution for hybrid graphics. Does
-it mean that hda audio driver would try to call for every one vendor its
-vendor dependent API function (EFI, SMM, WMI, whatever) to check if
-current HW has some switchable graphics and needs special checks?
-
-Those vendor dependent API functions (which Dell SMBIOS is) should be
-really called on vendor hardware.
-
-Otherwise audio drivers would load bunch of the other vendor dependent
-platform modules and all of those modules (except maximally one) just
-return error.
-
-> >=20
-> > If there is Dell ID then it just means that PCI device itself is Dell's.
-> > And not that machine in which that device is plugged is also Dell.
-> >=20
-> > > > Also I can imagine that in future (or maybe already now?) it is pos=
-sible
-> > > > to find PCI device which pass above checks and connect this PCI dev=
-ice
-> > > > into desktop /server / any non-laptop device.
-> > > >
-> > > > If this switchable graphics solution is specific to dell laptops, t=
-hen
-> > > > rather checking for PCI vendor/subvevendor main check, there should=
- be
-> > > > main check via DMI strings.
-> > >
-> > > Right now this is affected to both AIO desktop and laptops.
-> > >
-> > > IIRC you won't end up with switchable graphics in traditional desktop=
- that you
-> > > can remove PCI card.  If this code was run on a traditional desktop w=
-ith a
-> > > AMD PCI card that BIOS query result should be invalid token (which wi=
-ll infer
-> > > switchable off to this routine).
-> > >
-> > > >
-> > > > Hardware is changing relatively quickly and there is absolutely no
-> > > > guarantee that e.g. NVIDIA would not start providing audio controll=
-er in
-> > > > similar like AMD and it would be put in those Dell machines.
-> > >
-> > > Kai Heng can explain exactly why NVIDIA isn't affected.
-> > > This is probably good information to include in the commit message to=
-o.
-> >=20
-> > Yes, extending commit message is a good idea.
-> >=20
-> > But here I'm talking about future, NVIDIA cards could be in future.
-> >=20
-> > I still think that whitelisting devices based on vendor ID by some
-> > measurements at one time is a bad idea. It is fragile which can stop
-> > working in the future.
->=20
-> Compiling a whitelist is a wasted effort because it will have to change
-> Every year for every new platform that has AMD switchable graphics.
-
-I agree, But see that this patch already uses vendor ID whitelisting.
-
-> This heuristic that is selected covers switchable graphics back for the
-> past generations that Canonical has tested and fixed, not just this
-> current one.
->=20
-> If that situation you refer to happens, it will be on new hardware that's
-> not yet enabled by the Linux kernel.  We can cross that bridge when we
-> come to it with either a newly proposed heuristic or some adjustments
-> for whitelist/blacklist.
-
---=20
-Pali Roh=C3=A1r
-pali.rohar@gmail.com
-
---gsne4cu2stnnwixf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQS4VrIQdKium2krgIWL8Mk9A+RDUgUCWqU9eAAKCRCL8Mk9A+RD
-UgDdAJ9sl5bdeT1maV1eeEmiV+V0ASpDEwCfX2AHE0WpoEAjXMtkPOvK9yTiutM=
-=wDLP
------END PGP SIGNATURE-----
-
---gsne4cu2stnnwixf--
-
---===============4218736437392629670==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4218736437392629670==--
+T24gVHVlLCBNYXIgMDYsIDIwMTggYXQgMTE6Mjk6NDBBTSArMDEwMCwgRGFuaWVsIFZldHRlciB3
+cm90ZToKPiBPbiBTYXQsIE1hciAwMywgMjAxOCBhdCAxMDo1MzoyNEFNICswMTAwLCBMdWthcyBX
+dW5uZXIgd3JvdGU6Cj4gPiBNb2Rlcm5pemUgdmdhX3N3aXRjaGVyb28gYnkgdXNpbmcgYSBkZXZp
+Y2UgbGluayB0byBlbmZvcmNlIGEgcnVudGltZSBQTQo+ID4gZGVwZW5kZW5jeSBmcm9tIGFuIEhE
+QSBjb250cm9sbGVyIHRvIHRoZSBHUFUgaXQncyBpbnRlZ3JhdGVkIGludG8sIHYyLgo+ID4gCj4g
+PiBodHRwczovL2dpdGh1Yi5jb20vbDFrL2xpbnV4L2NvbW1pdHMvc3dpdGNoZXJvb19kZXZsaW5r
+X3YyCj4gCj4gVGhpcyBhbGwgbG9va3MgcmVhbGx5IHJlYXNvbmFibGUgYW5kIGxpa2UgYSBnb29k
+IGNsZWFudXAsIGJ1dCBpdCdzIGEgYml0Cj4gdG9vIG11Y2ggZGV0YWlsIHNvIEknbGwgcHVudCBy
+ZXZpZXcgdG8gc29tZW9uZSBlbHNlIHdpdGggbW9yZSBjbHVlLgoKUGF0Y2hlcyBbMy83XSB0byBb
+Ny83XSB3ZXJlIHJldmlld2VkIGJ5IFBldGVyIFd1LCB0aGUgSERBIGJpdHMgaW4KcGF0Y2ggWzUv
+N10gYWRkaXRpb25hbGx5IGJ5IFRha2FzaGkuCgpQYXRjaCBbMi83XSB3YXMgYWNrZWQgYnkgQmpv
+cm4uICBUaGVyZSB3YXMgbm8gYWNrIGZvciBwYXRjaCBbMS83XQooYXV0aG9yZWQgYnkgUmFmYWVs
+KSwgYnV0IGl0IGFkcmVzc2VkIHRoZSBvYmplY3Rpb24gQmpvcm4gcmFpc2VkCmFnYWluc3QgbXkg
+b3JpZ2luYWwgcGF0Y2gsIHNvIEknbSBhc3N1bWluZyBCam9ybiBpcyBva2F5IHdpdGggaXQuCihC
+am9ybiwgcGxlYXNlIGxldCBtZSBrbm93IGlmIHRoYXQgaXNuJ3QgdGhlIGNhc2UuKQoKVGhlIHNl
+cmllcyBoYXMgYmVlbiB0ZXN0ZWQgb24gNSBzeXN0ZW1zLCB3aGljaCByYWlzZXMgdGhlIGNvbmZp
+ZGVuY2U6CjJ4IEFNRCBQb3dlclhwcmVzcyAoTWlrZSBMb3RoaWFuLCBLYWkgSGVuZyBGZW5nKQoy
+eCBOdmlkaWEgT3B0aW11cyAoRGVuaXMgTGlzb3YsIFBldGVyIFd1KQoxeCBNYWNCb29rIFBybwoK
+VGhlIGlzc3VlcyBmb3VuZCBkdXJpbmcgUGV0ZXIgV3UncyB0aG9yb3VnaCB0ZXN0aW5nIGFwcGVh
+ciB0byBhbGwKYmUgdW5yZWxhdGVkIHRvIHRoaXMgc2VyaWVzLCBhcyBwZXIgbXkgZS1tYWlsIHll
+c3RlcmRheS4KCklmIHRoZXJlIGFyZSBubyBvYmplY3Rpb25zLCBJIHBsYW4gdG8gcHVzaCB0aGUg
+c2VyaWVzIHRvCmRybS1taXNjLW5leHQgYnkgdGhlIG1pZGRsZSBvZiB0aGUgY29taW5nIHdlZWsg
+c28gdGhhdCBpdAp3b3VsZCBzdGlsbCBjYXRjaCB0aGUgbGFzdCB0cmFpbiB0byA0LjE3LgoKVGhh
+bmtzLAoKTHVrYXMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
+Cmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVs
+Cg==
