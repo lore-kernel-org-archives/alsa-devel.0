@@ -1,23 +1,26 @@
-From: <Mario.Limonciello@dell.com>
+From: Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>
 Subject: Re: [PATCH v2 3/3] ALSA: hda: Disabled unused audio
  controller for Dell platforms with Switchable Graphics
-Date: Sun, 11 Mar 2018 14:06:15 +0000
-Message-ID: <12df9a905ea842498e3fba492fdef59e@ausx13mpc124.AMER.DELL.COM>
+Date: Sun, 11 Mar 2018 15:30:18 +0100
+Message-ID: <20180311143018.u64cldtxuv7divta@pali>
 References: <20180308091023.9061-1-kai.heng.feng@canonical.com>
  <20180308091023.9061-3-kai.heng.feng@canonical.com>
  <20180309090223.xb55ltac4pfesdrh@pali>
  <723DA929-C9FA-4F69-8D3A-03D8A75D09A6@canonical.com>
- <20180310065039.GA6633@wunner.de>
+ <014795f5a3014cd3bf55de26f76a5af8@ausx13mpc124.AMER.DELL.COM>
+ <20180309094600.m24d3zbzdsmls7aw@pali>
+ <09eadabb264f401a88b427744505adf8@ausx13mpc124.AMER.DELL.COM>
+ <20180310103809.5nnwoulua2u64rku@pali>
+ <ea9ab148c4bb45b9ae7369020300b74b@ausx13mpc124.AMER.DELL.COM>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============4218736437392629670=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from esa3.dell-outbound.iphmx.com (esa3.dell-outbound.iphmx.com
- [68.232.153.94])
- by alsa0.perex.cz (Postfix) with ESMTP id A8863266E77
- for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2018 15:06:19 +0100 (CET)
-In-Reply-To: <20180310065039.GA6633@wunner.de>
-Content-Language: en-US
+Received: from mail-wm0-f48.google.com (mail-wm0-f48.google.com [74.125.82.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9493266E77
+ for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2018 15:30:26 +0100 (CET)
+Received: by mail-wm0-f48.google.com with SMTP id e194so11702258wmd.3
+ for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2018 07:30:26 -0700 (PDT)
+In-Reply-To: <ea9ab148c4bb45b9ae7369020300b74b@ausx13mpc124.AMER.DELL.COM>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,99 +30,196 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lukas@wunner.de, kai.heng.feng@canonical.com
-Cc: mjg59@srcf.ucam.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, platform-driver-x86@vger.kernel.org, pali.rohar@gmail.com, dvhart@infradead.org, andy@infradead.org
+To: Mario.Limonciello@dell.com
+Cc: mjg59@srcf.ucam.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, platform-driver-x86@vger.kernel.org, kai.heng.feng@canonical.com, dvhart@infradead.org, andy@infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Lukas Wunner [mailto:lukas@wunner.de]
-> Sent: Saturday, March 10, 2018 2:51 PM
-> To: Kai Heng Feng <kai.heng.feng@canonical.com>
-> Cc: Pali Roh=E1r <pali.rohar@gmail.com>; mjg59@srcf.ucam.org;
-> dvhart@infradead.org; andy@infradead.org; Limonciello, Mario
-> <Mario_Limonciello@Dell.com>; tiwai@suse.com; platform-driver-
-> x86@vger.kernel.org; Linux Kernel Mailing List <linux-kernel@vger.kernel.=
-org>; alsa-
-> devel@alsa-project.org
-> Subject: Re: [PATCH v2 3/3] ALSA: hda: Disabled unused audio controller f=
-or Dell
-> platforms with Switchable Graphics
-> =
 
-> On Fri, Mar 09, 2018 at 05:30:15PM +0800, Kai Heng Feng wrote:
-> > >On Thursday 08 March 2018 17:10:23 Kai-Heng Feng wrote:
-> > >>Some Dell platforms (Preicsion 7510/7710/7520/7720) have a BIOS option
-> > >>"Switchable Graphics" (SG).
-> > >>
-> > >>When SG is enabled, we have:
-> > >>00:02.0 VGA compatible controller: Intel Corporation Device 591b (rev=
- 04)
-> > >>00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (re=
-v 31)
-> > >>01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
-> > >>[AMD/ATI] Ellesmere [Polaris10]
-> > >>01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere
-> > >>[Radeon RX 580]
-> > >>
-> > >>The Intel Audio outputs all the sound, including HDMI audio. The audio
-> > >>controller comes with AMD graphics doesn't get used.
-> > >>
-> > >>When SG is disabled, we have:
-> > >>00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (re=
-v 31)
-> > >>01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
-> > >>[AMD/ATI] Ellesmere [Polaris10]
-> > >>01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere
-> > >>[Radeon RX 580]
-> > >>
-> > >>Now it's a typical discrete-only system. HDMI audio comes from AMD au=
-dio
-> > >>controller, others from Intel audio controller.
-> > >>
-> > >>When SG is enabled, the unused AMD audio controller still exposes its
-> > >>sysfs, so userspace still opens the control file and stream. If
-> > >>userspace tries to output sound through the stream, it hangs when
-> > >>runtime suspend kicks in:
-> > >>[ 12.796265] snd_hda_intel 0000:01:00.1: Disabling via vga_switcheroo
-> > >>[ 12.796367] snd_hda_intel 0000:01:00.1: Cannot lock devices!
-> > >>
-> > >>Since the discrete audio controller isn't useful when SG enabled, we
-> > >>should just disable the device.
-> >
-> > The platform does have a NVIDIA variant, but the discrete NVIDIA have a
-> > audio controller, hence it doesn't have the issue.
-> =
+--===============4218736437392629670==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="gsne4cu2stnnwixf"
+Content-Disposition: inline
 
-> Sorry, I don't quite understand:  The AMD variant *also* has an audio
-> controller, so what's the difference?  Or did you mean the Nvidia
-> variant *doesn't* have an audio controller?
-> =
 
-> Pretty much all modern Nvidia GPUs do have an integrated HDA
-> controller, however it's possible to hide it by clearing a bit
-> at offset 0x488 in the GPU's config space.  Some BIOSes hide
-> the HDA if no external display is attached.
-> =
+--gsne4cu2stnnwixf
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I could imagine that the BIOS of the Dell machines in question
-> hides the HDA if Switchable Graphics is enabled.  If that is the
-> case, be aware that there's an ongoing discussion to always expose
-> the HDA controller because the behavior of some BIOSes to only
-> expose the HDA when a display is attached causes massive problems
-> with Linux' HDA driver:
-> https://bugs.freedesktop.org/show_bug.cgi?id=3D75985
-> =
+On Sunday 11 March 2018 14:03:13 Mario.Limonciello@dell.com wrote:
+> > -----Original Message-----
+> > From: platform-driver-x86-owner@vger.kernel.org [mailto:platform-driver=
+-x86-
+> > owner@vger.kernel.org] On Behalf Of Pali Roh=C3=A1r
+> > Sent: Saturday, March 10, 2018 6:38 PM
+> > To: Limonciello, Mario <Mario_Limonciello@Dell.com>
+> > Cc: kai.heng.feng@canonical.com; mjg59@srcf.ucam.org; dvhart@infradead.=
+org;
+> > andy@infradead.org; tiwai@suse.com; platform-driver-x86@vger.kernel.org=
+; linux-
+> > kernel@vger.kernel.org; alsa-devel@alsa-project.org
+> > Subject: Re: [PATCH v2 3/3] ALSA: hda: Disabled unused audio controller=
+ for Dell
+> > platforms with Switchable Graphics
+> >=20
+> > On Friday 09 March 2018 09:59:39 Mario.Limonciello@dell.com wrote:
+> > > > > Pali is your concern that this code for matching vendor/subsystem=
+ is running
+> > > > > on non-Dell too?  The only other recommendation I think that can =
+be to restrict
+> > > > > to matching Dell OEM strings in SMBIOS table, but I don't think t=
+hat's any better
+> > > > > than the matching for VID/SSVID.
+> > > >
+> > > > My concern is about adding a new machine specific code into generic
+> > > > driver, which check is done just by PCI vendor and subvendor.
+> > > >
+> > > > In future there can be new models or other PCI devices which matches
+> > > > above condition even they would not have any switchable graphics, n=
+or
+> > > > they would manufactured by Dell.
+> > >
+> > > Uh Dell subsystem ID means it's Dell no?
+> >=20
+> > What would prevent you to take PCI device marked with Dell ID and put it
+> > into non-Dell computer? I do not believe that Dell PCI devices are
+> > configured to work only in Dell branded devices and refuse to power up
+> > in others.
+>=20
+> I think the missing aspect is that this is only used in AIO and laptop fo=
+rm
+> factors where the discrete graphics is in a non-removable form factor.
 
-> If we decide to always expose the HDA controller on Nvidia cards,
-> you may need to also match for the Nvidia vendor ID here.
-> =
+Why we are not checking if kernel is running on AIO or laptop form
+factor then? Or it is not possible?
 
-Like I said I don't know the details on why NVIDIA isn't affected, Kai
-Heng will need to comment here.  You might very well be right.
+Basically what I see there is that we need to detect if current HW
+platform has switchable graphics and check how is configured AUDIO MUX.
 
-I stand by my point that the heuristic makes sense for what exists
-In the kernel today though.  If the point you mention is the reason
-why NV isn't affected and this changes in the future it's a simple extra
-|| to match NV cards too, or to remove the AMD part of the check
-and just look for Dell subsystem vendor instead of AMD product
-vendor and Dell subsystem vendor.
+But instead of directly checking hw state of audio MUX, we are trying to
+check something different which could get us information of state of the
+audio mux.
+
+I suspect that we do not have a way how to check audio MUX directly, so
+it needs to be done indirectly -- via some Dell SMBIOS call and some
+other heuristic. This is something which should be specified either in
+comment or in commit message (problem of type: we need X, but check for
+Y).
+
+And if we are doing this check indirectly, we should do the most
+specific test and not more general.
+
+I think that PCI vendor ID check of audio device is more general test
+then checking if kernel is running on Dell laptop (check via DMI). And
+if we can check also if running on AIO or laptop form, then it would be
+more specific test.
+
+> Running with your hypothetical though, what would happen is if it's
+> on a non-Dell machine the PCI check would pass and then the code
+> would not be executed by dell-laptop (since dell-smbios didn't load).
+
+Right.
+
+> If it was on a Dell machine it would load but the BIOS would return
+> either Switchable graphics turned off, or invalid token.
+>=20
+> Even though these aren't real for switchable graphics on Dell I don't
+> see a problem with either of these situations if it ever came up.
+
+I see, this solution is working...
+
+=2E.. but, I see there a very bad precedense. What would happen if another
+laptop manufactor comes with similar solution for hybrid graphics. Does
+it mean that hda audio driver would try to call for every one vendor its
+vendor dependent API function (EFI, SMM, WMI, whatever) to check if
+current HW has some switchable graphics and needs special checks?
+
+Those vendor dependent API functions (which Dell SMBIOS is) should be
+really called on vendor hardware.
+
+Otherwise audio drivers would load bunch of the other vendor dependent
+platform modules and all of those modules (except maximally one) just
+return error.
+
+> >=20
+> > If there is Dell ID then it just means that PCI device itself is Dell's.
+> > And not that machine in which that device is plugged is also Dell.
+> >=20
+> > > > Also I can imagine that in future (or maybe already now?) it is pos=
+sible
+> > > > to find PCI device which pass above checks and connect this PCI dev=
+ice
+> > > > into desktop /server / any non-laptop device.
+> > > >
+> > > > If this switchable graphics solution is specific to dell laptops, t=
+hen
+> > > > rather checking for PCI vendor/subvevendor main check, there should=
+ be
+> > > > main check via DMI strings.
+> > >
+> > > Right now this is affected to both AIO desktop and laptops.
+> > >
+> > > IIRC you won't end up with switchable graphics in traditional desktop=
+ that you
+> > > can remove PCI card.  If this code was run on a traditional desktop w=
+ith a
+> > > AMD PCI card that BIOS query result should be invalid token (which wi=
+ll infer
+> > > switchable off to this routine).
+> > >
+> > > >
+> > > > Hardware is changing relatively quickly and there is absolutely no
+> > > > guarantee that e.g. NVIDIA would not start providing audio controll=
+er in
+> > > > similar like AMD and it would be put in those Dell machines.
+> > >
+> > > Kai Heng can explain exactly why NVIDIA isn't affected.
+> > > This is probably good information to include in the commit message to=
+o.
+> >=20
+> > Yes, extending commit message is a good idea.
+> >=20
+> > But here I'm talking about future, NVIDIA cards could be in future.
+> >=20
+> > I still think that whitelisting devices based on vendor ID by some
+> > measurements at one time is a bad idea. It is fragile which can stop
+> > working in the future.
+>=20
+> Compiling a whitelist is a wasted effort because it will have to change
+> Every year for every new platform that has AMD switchable graphics.
+
+I agree, But see that this patch already uses vendor ID whitelisting.
+
+> This heuristic that is selected covers switchable graphics back for the
+> past generations that Canonical has tested and fixed, not just this
+> current one.
+>=20
+> If that situation you refer to happens, it will be on new hardware that's
+> not yet enabled by the Linux kernel.  We can cross that bridge when we
+> come to it with either a newly proposed heuristic or some adjustments
+> for whitelist/blacklist.
+
+--=20
+Pali Roh=C3=A1r
+pali.rohar@gmail.com
+
+--gsne4cu2stnnwixf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQS4VrIQdKium2krgIWL8Mk9A+RDUgUCWqU9eAAKCRCL8Mk9A+RD
+UgDdAJ9sl5bdeT1maV1eeEmiV+V0ASpDEwCfX2AHE0WpoEAjXMtkPOvK9yTiutM=
+=wDLP
+-----END PGP SIGNATURE-----
+
+--gsne4cu2stnnwixf--
+
+--===============4218736437392629670==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4218736437392629670==--
