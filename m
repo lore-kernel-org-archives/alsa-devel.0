@@ -1,25 +1,22 @@
 From: <Mario.Limonciello@dell.com>
 Subject: Re: [PATCH v2 3/3] ALSA: hda: Disabled unused audio
  controller for Dell platforms with Switchable Graphics
-Date: Sun, 11 Mar 2018 14:03:13 +0000
-Message-ID: <ea9ab148c4bb45b9ae7369020300b74b@ausx13mpc124.AMER.DELL.COM>
+Date: Sun, 11 Mar 2018 14:06:15 +0000
+Message-ID: <12df9a905ea842498e3fba492fdef59e@ausx13mpc124.AMER.DELL.COM>
 References: <20180308091023.9061-1-kai.heng.feng@canonical.com>
  <20180308091023.9061-3-kai.heng.feng@canonical.com>
  <20180309090223.xb55ltac4pfesdrh@pali>
  <723DA929-C9FA-4F69-8D3A-03D8A75D09A6@canonical.com>
- <014795f5a3014cd3bf55de26f76a5af8@ausx13mpc124.AMER.DELL.COM>
- <20180309094600.m24d3zbzdsmls7aw@pali>
- <09eadabb264f401a88b427744505adf8@ausx13mpc124.AMER.DELL.COM>
- <20180310103809.5nnwoulua2u64rku@pali>
+ <20180310065039.GA6633@wunner.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from esa3.dell-outbound.iphmx.com (esa3.dell-outbound.iphmx.com
  [68.232.153.94])
- by alsa0.perex.cz (Postfix) with ESMTP id C4263266E63
- for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2018 15:03:17 +0100 (CET)
-In-Reply-To: <20180310103809.5nnwoulua2u64rku@pali>
+ by alsa0.perex.cz (Postfix) with ESMTP id A8863266E77
+ for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2018 15:06:19 +0100 (CET)
+In-Reply-To: <20180310065039.GA6633@wunner.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,87 +27,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: pali.rohar@gmail.com
-Cc: mjg59@srcf.ucam.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, platform-driver-x86@vger.kernel.org, kai.heng.feng@canonical.com, dvhart@infradead.org, andy@infradead.org
+To: lukas@wunner.de, kai.heng.feng@canonical.com
+Cc: mjg59@srcf.ucam.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, platform-driver-x86@vger.kernel.org, pali.rohar@gmail.com, dvhart@infradead.org, andy@infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBwbGF0Zm9ybS1kcml2ZXIteDg2
-LW93bmVyQHZnZXIua2VybmVsLm9yZyBbbWFpbHRvOnBsYXRmb3JtLWRyaXZlci14ODYtDQo+IG93
-bmVyQHZnZXIua2VybmVsLm9yZ10gT24gQmVoYWxmIE9mIFBhbGkgUm9ow6FyDQo+IFNlbnQ6IFNh
-dHVyZGF5LCBNYXJjaCAxMCwgMjAxOCA2OjM4IFBNDQo+IFRvOiBMaW1vbmNpZWxsbywgTWFyaW8g
-PE1hcmlvX0xpbW9uY2llbGxvQERlbGwuY29tPg0KPiBDYzoga2FpLmhlbmcuZmVuZ0BjYW5vbmlj
-YWwuY29tOyBtamc1OUBzcmNmLnVjYW0ub3JnOyBkdmhhcnRAaW5mcmFkZWFkLm9yZzsNCj4gYW5k
-eUBpbmZyYWRlYWQub3JnOyB0aXdhaUBzdXNlLmNvbTsgcGxhdGZvcm0tZHJpdmVyLXg4NkB2Z2Vy
-Lmtlcm5lbC5vcmc7IGxpbnV4LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnOyBhbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2MiAzLzNdIEFMU0E6IGhk
-YTogRGlzYWJsZWQgdW51c2VkIGF1ZGlvIGNvbnRyb2xsZXIgZm9yIERlbGwNCj4gcGxhdGZvcm1z
-IHdpdGggU3dpdGNoYWJsZSBHcmFwaGljcw0KPiANCj4gT24gRnJpZGF5IDA5IE1hcmNoIDIwMTgg
-MDk6NTk6MzkgTWFyaW8uTGltb25jaWVsbG9AZGVsbC5jb20gd3JvdGU6DQo+ID4gPiA+IFBhbGkg
-aXMgeW91ciBjb25jZXJuIHRoYXQgdGhpcyBjb2RlIGZvciBtYXRjaGluZyB2ZW5kb3Ivc3Vic3lz
-dGVtIGlzIHJ1bm5pbmcNCj4gPiA+ID4gb24gbm9uLURlbGwgdG9vPyAgVGhlIG9ubHkgb3RoZXIg
-cmVjb21tZW5kYXRpb24gSSB0aGluayB0aGF0IGNhbiBiZSB0byByZXN0cmljdA0KPiA+ID4gPiB0
-byBtYXRjaGluZyBEZWxsIE9FTSBzdHJpbmdzIGluIFNNQklPUyB0YWJsZSwgYnV0IEkgZG9uJ3Qg
-dGhpbmsgdGhhdCdzIGFueSBiZXR0ZXINCj4gPiA+ID4gdGhhbiB0aGUgbWF0Y2hpbmcgZm9yIFZJ
-RC9TU1ZJRC4NCj4gPiA+DQo+ID4gPiBNeSBjb25jZXJuIGlzIGFib3V0IGFkZGluZyBhIG5ldyBt
-YWNoaW5lIHNwZWNpZmljIGNvZGUgaW50byBnZW5lcmljDQo+ID4gPiBkcml2ZXIsIHdoaWNoIGNo
-ZWNrIGlzIGRvbmUganVzdCBieSBQQ0kgdmVuZG9yIGFuZCBzdWJ2ZW5kb3IuDQo+ID4gPg0KPiA+
-ID4gSW4gZnV0dXJlIHRoZXJlIGNhbiBiZSBuZXcgbW9kZWxzIG9yIG90aGVyIFBDSSBkZXZpY2Vz
-IHdoaWNoIG1hdGNoZXMNCj4gPiA+IGFib3ZlIGNvbmRpdGlvbiBldmVuIHRoZXkgd291bGQgbm90
-IGhhdmUgYW55IHN3aXRjaGFibGUgZ3JhcGhpY3MsIG5vcg0KPiA+ID4gdGhleSB3b3VsZCBtYW51
-ZmFjdHVyZWQgYnkgRGVsbC4NCj4gPg0KPiA+IFVoIERlbGwgc3Vic3lzdGVtIElEIG1lYW5zIGl0
-J3MgRGVsbCBubz8NCj4gDQo+IFdoYXQgd291bGQgcHJldmVudCB5b3UgdG8gdGFrZSBQQ0kgZGV2
-aWNlIG1hcmtlZCB3aXRoIERlbGwgSUQgYW5kIHB1dCBpdA0KPiBpbnRvIG5vbi1EZWxsIGNvbXB1
-dGVyPyBJIGRvIG5vdCBiZWxpZXZlIHRoYXQgRGVsbCBQQ0kgZGV2aWNlcyBhcmUNCj4gY29uZmln
-dXJlZCB0byB3b3JrIG9ubHkgaW4gRGVsbCBicmFuZGVkIGRldmljZXMgYW5kIHJlZnVzZSB0byBw
-b3dlciB1cA0KPiBpbiBvdGhlcnMuDQoNCkkgdGhpbmsgdGhlIG1pc3NpbmcgYXNwZWN0IGlzIHRo
-YXQgdGhpcyBpcyBvbmx5IHVzZWQgaW4gQUlPIGFuZCBsYXB0b3AgZm9ybQ0KZmFjdG9ycyB3aGVy
-ZSB0aGUgZGlzY3JldGUgZ3JhcGhpY3MgaXMgaW4gYSBub24tcmVtb3ZhYmxlIGZvcm0gZmFjdG9y
-Lg0KDQpSdW5uaW5nIHdpdGggeW91ciBoeXBvdGhldGljYWwgdGhvdWdoLCB3aGF0IHdvdWxkIGhh
-cHBlbiBpcyBpZiBpdCdzDQpvbiBhIG5vbi1EZWxsIG1hY2hpbmUgdGhlIFBDSSBjaGVjayB3b3Vs
-ZCBwYXNzIGFuZCB0aGVuIHRoZSBjb2RlDQp3b3VsZCBub3QgYmUgZXhlY3V0ZWQgYnkgZGVsbC1s
-YXB0b3AgKHNpbmNlIGRlbGwtc21iaW9zIGRpZG4ndCBsb2FkKS4NCg0KSWYgaXQgd2FzIG9uIGEg
-RGVsbCBtYWNoaW5lIGl0IHdvdWxkIGxvYWQgYnV0IHRoZSBCSU9TIHdvdWxkIHJldHVybg0KZWl0
-aGVyIFN3aXRjaGFibGUgZ3JhcGhpY3MgdHVybmVkIG9mZiwgb3IgaW52YWxpZCB0b2tlbi4NCg0K
-RXZlbiB0aG91Z2ggdGhlc2UgYXJlbid0IHJlYWwgZm9yIHN3aXRjaGFibGUgZ3JhcGhpY3Mgb24g
-RGVsbCBJIGRvbid0DQpzZWUgYSBwcm9ibGVtIHdpdGggZWl0aGVyIG9mIHRoZXNlIHNpdHVhdGlv
-bnMgaWYgaXQgZXZlciBjYW1lIHVwLg0KIA0KPiANCj4gSWYgdGhlcmUgaXMgRGVsbCBJRCB0aGVu
-IGl0IGp1c3QgbWVhbnMgdGhhdCBQQ0kgZGV2aWNlIGl0c2VsZiBpcyBEZWxsJ3MuDQo+IEFuZCBu
-b3QgdGhhdCBtYWNoaW5lIGluIHdoaWNoIHRoYXQgZGV2aWNlIGlzIHBsdWdnZWQgaXMgYWxzbyBE
-ZWxsLg0KPiANCj4gPiA+IEFsc28gSSBjYW4gaW1hZ2luZSB0aGF0IGluIGZ1dHVyZSAob3IgbWF5
-YmUgYWxyZWFkeSBub3c/KSBpdCBpcyBwb3NzaWJsZQ0KPiA+ID4gdG8gZmluZCBQQ0kgZGV2aWNl
-IHdoaWNoIHBhc3MgYWJvdmUgY2hlY2tzIGFuZCBjb25uZWN0IHRoaXMgUENJIGRldmljZQ0KPiA+
-ID4gaW50byBkZXNrdG9wIC9zZXJ2ZXIgLyBhbnkgbm9uLWxhcHRvcCBkZXZpY2UuDQo+ID4gPg0K
-PiA+ID4gSWYgdGhpcyBzd2l0Y2hhYmxlIGdyYXBoaWNzIHNvbHV0aW9uIGlzIHNwZWNpZmljIHRv
-IGRlbGwgbGFwdG9wcywgdGhlbg0KPiA+ID4gcmF0aGVyIGNoZWNraW5nIGZvciBQQ0kgdmVuZG9y
-L3N1YnZldmVuZG9yIG1haW4gY2hlY2ssIHRoZXJlIHNob3VsZCBiZQ0KPiA+ID4gbWFpbiBjaGVj
-ayB2aWEgRE1JIHN0cmluZ3MuDQo+ID4NCj4gPiBSaWdodCBub3cgdGhpcyBpcyBhZmZlY3RlZCB0
-byBib3RoIEFJTyBkZXNrdG9wIGFuZCBsYXB0b3BzLg0KPiA+DQo+ID4gSUlSQyB5b3Ugd29uJ3Qg
-ZW5kIHVwIHdpdGggc3dpdGNoYWJsZSBncmFwaGljcyBpbiB0cmFkaXRpb25hbCBkZXNrdG9wIHRo
-YXQgeW91DQo+ID4gY2FuIHJlbW92ZSBQQ0kgY2FyZC4gIElmIHRoaXMgY29kZSB3YXMgcnVuIG9u
-IGEgdHJhZGl0aW9uYWwgZGVza3RvcCB3aXRoIGENCj4gPiBBTUQgUENJIGNhcmQgdGhhdCBCSU9T
-IHF1ZXJ5IHJlc3VsdCBzaG91bGQgYmUgaW52YWxpZCB0b2tlbiAod2hpY2ggd2lsbCBpbmZlcg0K
-PiA+IHN3aXRjaGFibGUgb2ZmIHRvIHRoaXMgcm91dGluZSkuDQo+ID4NCj4gPiA+DQo+ID4gPiBI
-YXJkd2FyZSBpcyBjaGFuZ2luZyByZWxhdGl2ZWx5IHF1aWNrbHkgYW5kIHRoZXJlIGlzIGFic29s
-dXRlbHkgbm8NCj4gPiA+IGd1YXJhbnRlZSB0aGF0IGUuZy4gTlZJRElBIHdvdWxkIG5vdCBzdGFy
-dCBwcm92aWRpbmcgYXVkaW8gY29udHJvbGxlciBpbg0KPiA+ID4gc2ltaWxhciBsaWtlIEFNRCBh
-bmQgaXQgd291bGQgYmUgcHV0IGluIHRob3NlIERlbGwgbWFjaGluZXMuDQo+ID4NCj4gPiBLYWkg
-SGVuZyBjYW4gZXhwbGFpbiBleGFjdGx5IHdoeSBOVklESUEgaXNuJ3QgYWZmZWN0ZWQuDQo+ID4g
-VGhpcyBpcyBwcm9iYWJseSBnb29kIGluZm9ybWF0aW9uIHRvIGluY2x1ZGUgaW4gdGhlIGNvbW1p
-dCBtZXNzYWdlIHRvby4NCj4gDQo+IFllcywgZXh0ZW5kaW5nIGNvbW1pdCBtZXNzYWdlIGlzIGEg
-Z29vZCBpZGVhLg0KPiANCj4gQnV0IGhlcmUgSSdtIHRhbGtpbmcgYWJvdXQgZnV0dXJlLCBOVklE
-SUEgY2FyZHMgY291bGQgYmUgaW4gZnV0dXJlLg0KPiANCj4gSSBzdGlsbCB0aGluayB0aGF0IHdo
-aXRlbGlzdGluZyBkZXZpY2VzIGJhc2VkIG9uIHZlbmRvciBJRCBieSBzb21lDQo+IG1lYXN1cmVt
-ZW50cyBhdCBvbmUgdGltZSBpcyBhIGJhZCBpZGVhLiBJdCBpcyBmcmFnaWxlIHdoaWNoIGNhbiBz
-dG9wDQo+IHdvcmtpbmcgaW4gdGhlIGZ1dHVyZS4NCg0KQ29tcGlsaW5nIGEgd2hpdGVsaXN0IGlz
-IGEgd2FzdGVkIGVmZm9ydCBiZWNhdXNlIGl0IHdpbGwgaGF2ZSB0byBjaGFuZ2UNCkV2ZXJ5IHll
-YXIgZm9yIGV2ZXJ5IG5ldyBwbGF0Zm9ybSB0aGF0IGhhcyBBTUQgc3dpdGNoYWJsZSBncmFwaGlj
-cy4NCg0KVGhpcyBoZXVyaXN0aWMgdGhhdCBpcyBzZWxlY3RlZCBjb3ZlcnMgc3dpdGNoYWJsZSBn
-cmFwaGljcyBiYWNrIGZvciB0aGUNCnBhc3QgZ2VuZXJhdGlvbnMgdGhhdCBDYW5vbmljYWwgaGFz
-IHRlc3RlZCBhbmQgZml4ZWQsIG5vdCBqdXN0IHRoaXMNCmN1cnJlbnQgb25lLg0KDQpJZiB0aGF0
-IHNpdHVhdGlvbiB5b3UgcmVmZXIgdG8gaGFwcGVucywgaXQgd2lsbCBiZSBvbiBuZXcgaGFyZHdh
-cmUgdGhhdCdzDQpub3QgeWV0IGVuYWJsZWQgYnkgdGhlIExpbnV4IGtlcm5lbC4gIFdlIGNhbiBj
-cm9zcyB0aGF0IGJyaWRnZSB3aGVuIHdlDQpjb21lIHRvIGl0IHdpdGggZWl0aGVyIGEgbmV3bHkg
-cHJvcG9zZWQgaGV1cmlzdGljIG9yIHNvbWUgYWRqdXN0bWVudHMNCmZvciB3aGl0ZWxpc3QvYmxh
-Y2tsaXN0Lg0KDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
-cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+> -----Original Message-----
+> From: Lukas Wunner [mailto:lukas@wunner.de]
+> Sent: Saturday, March 10, 2018 2:51 PM
+> To: Kai Heng Feng <kai.heng.feng@canonical.com>
+> Cc: Pali Roh=E1r <pali.rohar@gmail.com>; mjg59@srcf.ucam.org;
+> dvhart@infradead.org; andy@infradead.org; Limonciello, Mario
+> <Mario_Limonciello@Dell.com>; tiwai@suse.com; platform-driver-
+> x86@vger.kernel.org; Linux Kernel Mailing List <linux-kernel@vger.kernel.=
+org>; alsa-
+> devel@alsa-project.org
+> Subject: Re: [PATCH v2 3/3] ALSA: hda: Disabled unused audio controller f=
+or Dell
+> platforms with Switchable Graphics
+> =
+
+> On Fri, Mar 09, 2018 at 05:30:15PM +0800, Kai Heng Feng wrote:
+> > >On Thursday 08 March 2018 17:10:23 Kai-Heng Feng wrote:
+> > >>Some Dell platforms (Preicsion 7510/7710/7520/7720) have a BIOS option
+> > >>"Switchable Graphics" (SG).
+> > >>
+> > >>When SG is enabled, we have:
+> > >>00:02.0 VGA compatible controller: Intel Corporation Device 591b (rev=
+ 04)
+> > >>00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (re=
+v 31)
+> > >>01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
+> > >>[AMD/ATI] Ellesmere [Polaris10]
+> > >>01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere
+> > >>[Radeon RX 580]
+> > >>
+> > >>The Intel Audio outputs all the sound, including HDMI audio. The audio
+> > >>controller comes with AMD graphics doesn't get used.
+> > >>
+> > >>When SG is disabled, we have:
+> > >>00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (re=
+v 31)
+> > >>01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
+> > >>[AMD/ATI] Ellesmere [Polaris10]
+> > >>01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere
+> > >>[Radeon RX 580]
+> > >>
+> > >>Now it's a typical discrete-only system. HDMI audio comes from AMD au=
+dio
+> > >>controller, others from Intel audio controller.
+> > >>
+> > >>When SG is enabled, the unused AMD audio controller still exposes its
+> > >>sysfs, so userspace still opens the control file and stream. If
+> > >>userspace tries to output sound through the stream, it hangs when
+> > >>runtime suspend kicks in:
+> > >>[ 12.796265] snd_hda_intel 0000:01:00.1: Disabling via vga_switcheroo
+> > >>[ 12.796367] snd_hda_intel 0000:01:00.1: Cannot lock devices!
+> > >>
+> > >>Since the discrete audio controller isn't useful when SG enabled, we
+> > >>should just disable the device.
+> >
+> > The platform does have a NVIDIA variant, but the discrete NVIDIA have a
+> > audio controller, hence it doesn't have the issue.
+> =
+
+> Sorry, I don't quite understand:  The AMD variant *also* has an audio
+> controller, so what's the difference?  Or did you mean the Nvidia
+> variant *doesn't* have an audio controller?
+> =
+
+> Pretty much all modern Nvidia GPUs do have an integrated HDA
+> controller, however it's possible to hide it by clearing a bit
+> at offset 0x488 in the GPU's config space.  Some BIOSes hide
+> the HDA if no external display is attached.
+> =
+
+> I could imagine that the BIOS of the Dell machines in question
+> hides the HDA if Switchable Graphics is enabled.  If that is the
+> case, be aware that there's an ongoing discussion to always expose
+> the HDA controller because the behavior of some BIOSes to only
+> expose the HDA when a display is attached causes massive problems
+> with Linux' HDA driver:
+> https://bugs.freedesktop.org/show_bug.cgi?id=3D75985
+> =
+
+> If we decide to always expose the HDA controller on Nvidia cards,
+> you may need to also match for the Nvidia vendor ID here.
+> =
+
+Like I said I don't know the details on why NVIDIA isn't affected, Kai
+Heng will need to comment here.  You might very well be right.
+
+I stand by my point that the heuristic makes sense for what exists
+In the kernel today though.  If the point you mention is the reason
+why NV isn't affected and this changes in the future it's a simple extra
+|| to match NV cards too, or to remove the AMD part of the check
+and just look for Dell subsystem vendor instead of AMD product
+vendor and Dell subsystem vendor.
