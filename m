@@ -1,8 +1,7 @@
 From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH v2 2/6] ASoC: sun4i-i2s: Add regmap field to
- sign extend sample
-Date: Mon, 12 Mar 2018 16:57:49 +0100
-Message-ID: <20180312155753.9478-3-codekipper@gmail.com>
+Subject: [PATCH v2 1/6] ASoC: sun4i-i2s: Add slot width override
+Date: Mon, 12 Mar 2018 16:57:48 +0100
+Message-ID: <20180312155753.9478-2-codekipper@gmail.com>
 References: <20180312155753.9478-1-codekipper@gmail.com>
 Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
@@ -22,93 +21,85 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-On the newer SoCs (H3, H5, A64 etc) this is set by default to
-transfer a 0 after each sample in each slot whereas on the
-earlier SoCs (A20, A31 etc) the default sign extension is to
-pad the LSB.
-
-Add the regmap field to configure this and set it so that it
-pads the sample with 0s.
+Some codecs require a different amount of a bit clocks per frame
+than what is calculated by using the sample width. Use a slot
+width override property to provide this mechanism.
 
 Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ Documentation/devicetree/bindings/sound/sun4i-i2s.txt |  5 +++++
+ sound/soc/sunxi/sun4i-i2s.c                           | 15 ++++++++++++---
+ 2 files changed, 17 insertions(+), 3 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+index b9d50d6cdef3..48addef65b8f 100644
+--- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+@@ -28,6 +28,11 @@ Required properties for the following compatibles:
+ 	- "allwinner,sun8i-h3-i2s"
+ - resets: phandle to the reset line for this codec
+ 
++Optional properties:
++- allwinner,slot-width-override:if this property is present then the dai is
++				configured to extend the slot width to the
++				value specified. Min 8, Max 32.
++
+ Example:
+ 
+ i2s0: i2s@1c22400 {
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 873054a6c3be..396b11346361 100644
+index a4aa931ebfae..873054a6c3be 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -138,6 +138,7 @@
-  * @field_fmt_bclk: regmap field to set clk polarity.
-  * @field_fmt_lrclk: regmap field to set frame polarity.
-  * @field_fmt_mode: regmap field to set the operational mode.
-+ * @field_fmt_sext: regmap field to set the sign extension.
-  * @field_txchanmap: location of the tx channel mapping register.
-  * @field_rxchanmap: location of the rx channel mapping register.
-  * @field_txchansel: location of the tx channel select bit fields.
-@@ -163,6 +164,7 @@ struct sun4i_i2s_quirks {
- 	struct reg_field		field_fmt_bclk;
- 	struct reg_field		field_fmt_lrclk;
- 	struct reg_field		field_fmt_mode;
-+	struct reg_field		field_fmt_sext;
- 	struct reg_field		field_txchanmap;
- 	struct reg_field		field_rxchanmap;
- 	struct reg_field		field_txchansel;
-@@ -187,6 +189,7 @@ struct sun4i_i2s {
- 	struct regmap_field	*field_fmt_bclk;
- 	struct regmap_field	*field_fmt_lrclk;
- 	struct regmap_field	*field_fmt_mode;
-+	struct regmap_field	*field_fmt_sext;
- 	struct regmap_field	*field_txchanmap;
- 	struct regmap_field	*field_rxchanmap;
- 	struct regmap_field	*field_txchansel;
-@@ -348,6 +351,9 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
- 				   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
- 				   SUN8I_I2S_FMT0_LRCK_PERIOD(word_size));
+@@ -193,6 +193,8 @@ struct sun4i_i2s {
+ 	struct regmap_field	*field_rxchansel;
  
-+	/* Set sign extension to pad out LSB with 0 */
-+	regmap_field_write(i2s->field_fmt_sext, 0);
+ 	const struct sun4i_i2s_quirks	*variant;
 +
++	unsigned int	slot_width;
+ };
+ 
+ struct sun4i_i2s_clk_div {
+@@ -344,7 +346,7 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+ 	if (i2s->variant->has_fmt_set_lrck_period)
+ 		regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
+ 				   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
+-				   SUN8I_I2S_FMT0_LRCK_PERIOD(32));
++				   SUN8I_I2S_FMT0_LRCK_PERIOD(word_size));
+ 
  	return 0;
  }
+@@ -418,7 +420,8 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 			   sr + i2s->variant->fmt_offset);
  
-@@ -901,6 +907,7 @@ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
- 	.has_slave_select_bit	= true,
- 	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
-+	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 8, 8),
- 	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
- 	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
- 	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
-@@ -918,6 +925,7 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
- 	.has_slave_select_bit	= true,
- 	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
-+	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 8, 8),
- 	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
- 	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
- 	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
-@@ -958,6 +966,7 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
- 	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 19, 19),
- 	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_CTRL_REG, 4, 5),
-+	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 4, 5),
- 	.field_txchanmap	= REG_FIELD(SUN8I_I2S_TX_CHAN_MAP_REG, 0, 31),
- 	.field_rxchanmap	= REG_FIELD(SUN8I_I2S_RX_CHAN_MAP_REG, 0, 31),
- 	.field_txchansel	= REG_FIELD(SUN8I_I2S_TX_CHAN_SEL_REG, 0, 2),
-@@ -1003,6 +1012,12 @@ static int sun4i_i2s_init_regmap_fields(struct device *dev,
- 	if (IS_ERR(i2s->field_fmt_mode))
- 		return PTR_ERR(i2s->field_fmt_mode);
+ 	return sun4i_i2s_set_clk_rate(dai, params_rate(params),
+-				      params_width(params));
++				      i2s->slot_width ?
++				      i2s->slot_width : params_width(params));
+ }
  
-+	i2s->field_fmt_sext =
-+			devm_regmap_field_alloc(dev, i2s->regmap,
-+						i2s->variant->field_fmt_sext);
-+	if (IS_ERR(i2s->field_fmt_sext))
-+		return PTR_ERR(i2s->field_fmt_sext);
+ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+@@ -1029,7 +1032,7 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
+ 	struct sun4i_i2s *i2s;
+ 	struct resource *res;
+ 	void __iomem *regs;
+-	int irq, ret;
++	int irq, ret, val;
+ 
+ 	i2s = devm_kzalloc(&pdev->dev, sizeof(*i2s), GFP_KERNEL);
+ 	if (!i2s)
+@@ -1096,6 +1099,12 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
+ 	i2s->capture_dma_data.addr = res->start + SUN4I_I2S_FIFO_RX_REG;
+ 	i2s->capture_dma_data.maxburst = 8;
+ 
++	if (!of_property_read_u32(pdev->dev.of_node,
++				  "allwinner,slot-width-override", &val)) {
++		if (val >= 8 && val <= 32)
++			i2s->slot_width = val;
++	}
 +
- 	i2s->field_txchanmap =
- 			devm_regmap_field_alloc(dev, i2s->regmap,
- 						i2s->variant->field_txchanmap);
+ 	pm_runtime_enable(&pdev->dev);
+ 	if (!pm_runtime_enabled(&pdev->dev)) {
+ 		ret = sun4i_i2s_runtime_resume(&pdev->dev);
 -- 
 2.16.2
