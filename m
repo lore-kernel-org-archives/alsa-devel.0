@@ -1,77 +1,48 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/7] ASoC: amd: dma driver changes for BT
- I2S controller instance
-Date: Mon, 12 Mar 2018 11:25:37 -0700
-Message-ID: <20180312182537.GO2186@sirena.org.uk>
-References: <1520836460-21809-1-git-send-email-Vijendar.Mukunda@amd.com>
- <1520836460-21809-2-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: Re: [PATCH v2 6/6] ASoC: sun4i-i2s: Add support for loopback
+Date: Mon, 12 Mar 2018 11:35:21 -0700
+Message-ID: <20180312183521.GP2186@sirena.org.uk>
+References: <20180312155753.9478-1-codekipper@gmail.com>
+ <20180312155753.9478-7-codekipper@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1615718785222397510=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 60AC8266E63
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 19:25:41 +0100 (CET)
-In-Reply-To: <1520836460-21809-2-git-send-email-Vijendar.Mukunda@amd.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, Akshu Agrawal <akshu.agrawal@amd.com>, Alexander.Deucher@amd.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cmVHo2jXx4bdYlgS"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180312155753.9478-7-codekipper@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: codekipper@gmail.com
+Cc: maxime.ripard@free-electrons.com, wens@csie.org, linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, be17068@iperbole.bo.it
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1615718785222397510==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="da9oBGf5DLtF9ehv"
-Content-Disposition: inline
-
-
---da9oBGf5DLtF9ehv
+--cmVHo2jXx4bdYlgS
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Mar 12, 2018 at 12:04:14PM +0530, Vijendar Mukunda wrote:
+On Mon, Mar 12, 2018 at 04:57:53PM +0100, codekipper@gmail.com wrote:
 
-> +		 * It has fixed mapping as mentioned below.
-> +		 * designware-i2s.1.auto cpu dai will be used for I2S SP Instance playback device.
-> +		 * designware-i2s.2.auto cpu dai will be used for I2S SP Instance capture device.
-> +		 * designware-i2s.3.auto cpu dai will be used for I2S BT Instance playback/capture device.
+> +- loopback:	if this property is present then the dai is configured in
+> +		loopback mode where the output fifo is redirected to the input
+> +		fifo.
 
-I'm still not thrilled about this.  If we're hard coding names they
-should be explicitly assigned names so that there's less chance that
-some other change in the subsystem will change things.
+This really doesn't seem like something that ought to go into the DT
+and hence ABI given that there's obviously no reason to use this in
+production.  Just make it be a #define in the code or something.
 
-Please make some effort to keep the code within 80 columns too.
-
---da9oBGf5DLtF9ehv
+--cmVHo2jXx4bdYlgS
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqmxiAACgkQJNaLcl1U
-h9Dh7wf9EyH1bBB++XkE2PBN+B7FC1Jv0s9K28NycW9/4ZrVGpIui7jMaBtrauFz
-0vA4Y2YQgYHvy7KB5mwqtpuzmU0BCSkkiFKYYwqdKU3xMSE1GbkgUOfov3XM9tHx
-EPu3UJKQ7BUOuEqkRuKEEl5pKcuP8IFPWl/J2tjGe5QdnrdkOeqxiFbiufg3/cJg
-9UgibHyQqfMxXdyaqamm6A0G+iZVNfuoGBpx20sgqNjOJJ1/WmvgrzxjNLzY7Yyl
-UvvKGxWYsCNlSnh9FYAFSOUF4UucIomobRMJe/8110pDWrriw4xRLXk8KAFwfWcE
-2CYYvJ0pwuq0Nzkx1Ak7TlWLQy5WLw==
-=g/9Q
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqmyGgACgkQJNaLcl1U
+h9DKGwf/fEsKyLWh7qHH1FKS9OOo2Lr6CBEU/7DAHjMAkQvpRKPEKH0pEgS99uuW
+moEpDFHrScp6A+vgQsZMKO/rk5bgqOeoz+9gFHIfR5bGz17QPNjuA5T8Uvw7PBHk
+kGpaKcLk0T7dkPng1igOlc9pQrwokaldDJRj38ixBEcRybfooNF2wFq07a66z5NI
+qK0hOGzIMbetpG2Spits83X0N3K/P4/gG72V+UlCR65K31dnhX0U+iSAtYY5srYC
+ZQMzLLXzAwjjCrJYFsYWUkTgUKdk2t27y+Z7ZebKAWXiij1zzmOX0cC/MRo2fist
+Sd51QiGaluqqNiqwrooyxghGBhlZ2A==
+=KOfl
 -----END PGP SIGNATURE-----
 
---da9oBGf5DLtF9ehv--
-
---===============1615718785222397510==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1615718785222397510==--
+--cmVHo2jXx4bdYlgS--
