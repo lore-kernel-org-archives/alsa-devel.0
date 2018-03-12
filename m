@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: create TLV data for dapm
-	widgets" to the asoc tree
-Date: Mon, 12 Mar 2018 18:17:05 +0000 (GMT)
-Message-ID: <20180312181705.9CCBD440079@finisterre.ee.mobilebroadband>
-References: <20180309191117.9028-1-ranjani.sridharan@linux.intel.com>
+Subject: Re: [PATCH v2 1/6] ASoC: sun4i-i2s: Add slot width
+	override
+Date: Mon, 12 Mar 2018 11:20:30 -0700
+Message-ID: <20180312182030.GN2186@sirena.org.uk>
+References: <20180312155753.9478-1-codekipper@gmail.com>
+ <20180312155753.9478-2-codekipper@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6837123339736015011=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A796A266E43
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 19:17:08 +0100 (CET)
-In-Reply-To: <20180309191117.9028-1-ranjani.sridharan@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 835A8266E63
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 19:20:37 +0100 (CET)
+In-Reply-To: <20180312155753.9478-2-codekipper@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,66 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
+To: codekipper@gmail.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, be17068@iperbole.bo.it, linux-sunxi@googlegroups.com, maxime.ripard@free-electrons.com, wens@csie.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: topology: create TLV data for dapm widgets
+--===============6837123339736015011==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="VnOTrGv5LmZxna7m"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--VnOTrGv5LmZxna7m
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Mar 12, 2018 at 04:57:48PM +0100, codekipper@gmail.com wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> Some codecs require a different amount of a bit clocks per frame
+> than what is calculated by using the sample width. Use a slot
+> width override property to provide this mechanism.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+If this is a CODEC requirement we should really be working this out from
+the CODEC rather than adding a DT property on the I2S controller, or at
+the very least putting this in the machine drivers.  The generic drivers
+already have support for mclk-fs and there's an operation set_bclk_ratio()=
+=20
+for them to use though we don't have a DT binding for that yet.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--VnOTrGv5LmZxna7m
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
 
->From bde8b3887add8368ecf0ca71117baf2fd56a6fc9 Mon Sep 17 00:00:00 2001
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Date: Fri, 9 Mar 2018 11:11:17 -0800
-Subject: [PATCH] ASoC: topology: create TLV data for dapm widgets
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqmxO4ACgkQJNaLcl1U
+h9CVtQf/Vxp7jVhu8gdF97IjSkSeLrpYv7gpjDD1Lx4CwA4nX0ZHIQrGbRH1vVQj
+isw+xD96BY3zQAw6lBMsVhK94R/dWoAHafA35gjxE3Vfgi3YGncCw5SMV3u812K6
+71vRpptZnUaCIRIPl44ulKrjboHC7/4QAk6FwtJPs/yFin3dKz9yMpYULryiFqR0
+uXxVCVYbTRwFlCG38AEALoP6K3kRYt2OriNxENykHWp+iBiAtoSIIYfEKSjkW2t4
+BRkSRZG/fEQ5Us6NpdebeLwbP3xp7N2iX50pMy2olUgL+MItMa2pIQz5ngl9w9IQ
+ItZSuQWb5BubZ1lJwkcUZo4Z2ZEPVg==
+=jGrF
+-----END PGP SIGNATURE-----
 
-This patch adds the change required to create the TLV data
-for dapm widget kcontrols from topology. This also fixes the following
-TLV read error shown in amixer while showing the card control contents.
-"amixer: Control hw:1 element TLV read error: No such device or address"
+--VnOTrGv5LmZxna7m--
 
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-topology.c | 3 +++
- 1 file changed, 3 insertions(+)
+--===============6837123339736015011==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 01a50413c66f..e81b52600d58 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1272,6 +1272,9 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
- 			kfree(sm);
- 			continue;
- 		}
-+
-+		/* create any TLV data */
-+		soc_tplg_create_tlv(tplg, &kc[i], &mc->hdr);
- 	}
- 	return kc;
- 
--- 
-2.16.2
+
+--===============6837123339736015011==--
