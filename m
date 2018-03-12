@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: i2s: Fix rclk_srcrate
-	handling" to the asoc tree
-Date: Mon, 12 Mar 2018 18:07:41 +0000 (GMT)
-Message-ID: <20180312180741.D40BF44007A@finisterre.ee.mobilebroadband>
-References: <20180307170120.13943-1-s.nawrocki@samsung.com>
+Subject: Applied "ASoC: topology: create TLV data for dapm
+	widgets" to the asoc tree
+Date: Mon, 12 Mar 2018 18:17:05 +0000 (GMT)
+Message-ID: <20180312181705.9CCBD440079@finisterre.ee.mobilebroadband>
+References: <20180309191117.9028-1-ranjani.sridharan@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id F2043266E78
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 19:07:43 +0100 (CET)
-In-Reply-To: <20180307170120.13943-1-s.nawrocki@samsung.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A796A266E43
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 19:17:08 +0100 (CET)
+In-Reply-To: <20180309191117.9028-1-ranjani.sridharan@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, lgirdwood@gmail.com, broonie@kernel.org, m.szyprowski@samsung.com
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: i2s: Fix rclk_srcrate handling
+   ASoC: topology: create TLV data for dapm widgets
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 995e73e55f46dcfae863d72de674447008a85887 Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Fri, 9 Mar 2018 18:48:55 +0100
-Subject: [PATCH] ASoC: samsung: i2s: Fix rclk_srcrate handling
+>From bde8b3887add8368ecf0ca71117baf2fd56a6fc9 Mon Sep 17 00:00:00 2001
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Date: Fri, 9 Mar 2018 11:11:17 -0800
+Subject: [PATCH] ASoC: topology: create TLV data for dapm widgets
 
-As the RCLK clock may be updated through the common clk API before each
-snd_soc_dai_ops::trigger call, it is not enough to update i2s->rclk_srcrate
-only once after it has been initially set to 0. To avoid wrong PSR values
-we always get RCLK frequency from the CLK_I2S_RCLK_SRC clock, when that
-clock is available.
+This patch adds the change required to create the TLV data
+for dapm widget kcontrols from topology. This also fixes the following
+TLV read error shown in amixer while showing the card control contents.
+"amixer: Control hw:1 element TLV read error: No such device or address"
 
-Fixes: e1417fdf3011 "ASoC: samsung: i2s: Ensure the RCLK rate is properly determined"
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-topology.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index b6407fbabdd1..f914ed45db7d 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -887,7 +887,7 @@ static int config_setup(struct i2s_dai *i2s)
- 	if (!(i2s->quirks & QUIRK_NO_MUXPSR)) {
- 		struct clk *rclksrc = i2s->clk_table[CLK_I2S_RCLK_SRC];
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 01a50413c66f..e81b52600d58 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1272,6 +1272,9 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
+ 			kfree(sm);
+ 			continue;
+ 		}
++
++		/* create any TLV data */
++		soc_tplg_create_tlv(tplg, &kc[i], &mc->hdr);
+ 	}
+ 	return kc;
  
--		if (i2s->rclk_srcrate == 0 && rclksrc && !IS_ERR(rclksrc))
-+		if (rclksrc && !IS_ERR(rclksrc))
- 			i2s->rclk_srcrate = clk_get_rate(rclksrc);
- 
- 		psr = i2s->rclk_srcrate / i2s->frmclk / rfs;
 -- 
 2.16.2
