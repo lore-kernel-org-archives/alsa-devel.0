@@ -1,17 +1,15 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 2/2] ASoC: rt5651: Fix jack-dectect typo in the
-	dt-bindings documentation
-Date: Mon, 12 Mar 2018 20:34:36 +0100
-Message-ID: <20180312193436.8385-2-hdegoede@redhat.com>
-References: <20180312193436.8385-1-hdegoede@redhat.com>
+Subject: [PATCH 1/2] ASoC: rt5651: move definitions of
+	dt-binding constants to include/dt-bindings
+Date: Mon, 12 Mar 2018 20:34:35 +0100
+Message-ID: <20180312193436.8385-1-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 440CF267144
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 20:34:41 +0100 (CET)
-In-Reply-To: <20180312193436.8385-1-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DC6A267048
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 20:34:40 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,23 +23,106 @@ To: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chio
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Rml4IHRoZSBqYWNrLWRlY3RlY3QgdHlwbyBpbiB0aGUgZHQtYmluZGluZ3MgZG9jdW1lbnRhdGlv
-bi4KClNpZ25lZC1vZmYtYnk6IEhhbnMgZGUgR29lZGUgPGhkZWdvZWRlQHJlZGhhdC5jb20+Ci0t
-LQogRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3J0NTY1MS50eHQgfCA2
-ICsrKy0tLQogMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkK
-CmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvcnQ1
-NjUxLnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9ydDU2NTEu
-dHh0CmluZGV4IDc4OTBhYTk0NzdmOC4uYjg1MjIxODY0Y2VjIDEwMDY0NAotLS0gYS9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvcnQ1NjUxLnR4dAorKysgYi9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvcnQ1NjUxLnR4dApAQCAtMTgsOSArMTgs
-OSBAQCBPcHRpb25hbCBwcm9wZXJ0aWVzOgogCiAtIHJlYWx0ZWssamFjay1kZXRlY3Qtc291cmNl
-CiAgIHUzMi4gVmFsaWQgdmFsdWVzOgotICAxOiBVc2UgSkQxXzEgcGluIGZvciBqYWNrLWRlY3Rl
-Y3QKLSAgMjogVXNlIEpEMV8yIHBpbiBmb3IgamFjay1kZWN0ZWN0Ci0gIDM6IFVzZSBKRDIgcGlu
-IGZvciBqYWNrLWRlY3RlY3QKKyAgMTogVXNlIEpEMV8xIHBpbiBmb3IgamFjay1kZXRlY3QKKyAg
-MjogVXNlIEpEMV8yIHBpbiBmb3IgamFjay1kZXRlY3QKKyAgMzogVXNlIEpEMiBwaW4gZm9yIGph
-Y2stZGV0ZWN0CiAKIC0gcmVhbHRlayxvdmVyLWN1cnJlbnQtdGhyZXNob2xkLW1pY3JvYW1wCiAg
-IHUzMiwgbWljYmlhcyBvdmVyLWN1cnJlbnQgZGV0ZWN0aW9uIHRocmVzaG9sZCBpbiDCtUEsIHZh
-bGlkIHZhbHVlcyBhcmUKLS0gCjIuMTQuMwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+Move the definitions of constants used in the dt-bindings from
+include/sound/rt5651.h to include/dt-bindings/sound/rt5651.h.
+
+As dt-bindings headers may also be parsed by the dt-compiler, they cannot
+use enums, only defines, so this commit also changes the code declaring
+the constants to use defines.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ include/dt-bindings/sound/rt5651.h | 15 +++++++++++++++
+ include/sound/rt5651.h             | 36 ------------------------------------
+ sound/soc/codecs/rt5651.h          |  4 ++--
+ 3 files changed, 17 insertions(+), 38 deletions(-)
+ create mode 100644 include/dt-bindings/sound/rt5651.h
+ delete mode 100644 include/sound/rt5651.h
+
+diff --git a/include/dt-bindings/sound/rt5651.h b/include/dt-bindings/sound/rt5651.h
+new file mode 100644
+index 000000000000..2f2dac915168
+--- /dev/null
++++ b/include/dt-bindings/sound/rt5651.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __DT_RT5651_H
++#define __DT_RT5651_H
++
++#define RT5651_JD_NULL			0
++#define RT5651_JD1_1			1
++#define RT5651_JD1_2			2
++#define RT5651_JD2			3
++
++#define RT5651_OVCD_SF_0P5		0
++#define RT5651_OVCD_SF_0P75		1
++#define RT5651_OVCD_SF_1P0		2
++#define RT5651_OVCD_SF_1P5		3
++
++#endif /* __DT_RT5651_H */
+diff --git a/include/sound/rt5651.h b/include/sound/rt5651.h
+deleted file mode 100644
+index 6403b862fb9a..000000000000
+--- a/include/sound/rt5651.h
++++ /dev/null
+@@ -1,36 +0,0 @@
+-/*
+- * linux/sound/rt286.h -- Platform data for RT286
+- *
+- * Copyright 2013 Realtek Microelectronics
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- */
+-
+-#ifndef __LINUX_SND_RT5651_H
+-#define __LINUX_SND_RT5651_H
+-
+-/*
+- * Note these MUST match the values from the DT binding:
+- * Documentation/devicetree/bindings/sound/rt5651.txt
+- */
+-enum rt5651_jd_src {
+-	RT5651_JD_NULL,
+-	RT5651_JD1_1,
+-	RT5651_JD1_2,
+-	RT5651_JD2,
+-};
+-
+-/*
+- * Note these MUST match the values from the DT binding:
+- * Documentation/devicetree/bindings/sound/rt5651.txt
+- */
+-enum rt5651_ovcd_sf {
+-	RT5651_OVCD_SF_0P5,
+-	RT5651_OVCD_SF_0P75,
+-	RT5651_OVCD_SF_1P0,
+-	RT5651_OVCD_SF_1P5,
+-};
+-
+-#endif
+diff --git a/sound/soc/codecs/rt5651.h b/sound/soc/codecs/rt5651.h
+index f20c9be94fb2..3a0968c53fde 100644
+--- a/sound/soc/codecs/rt5651.h
++++ b/sound/soc/codecs/rt5651.h
+@@ -12,7 +12,7 @@
+ #ifndef __RT5651_H__
+ #define __RT5651_H__
+ 
+-#include <sound/rt5651.h>
++#include <dt-bindings/sound/rt5651.h>
+ 
+ /* Info */
+ #define RT5651_RESET				0x00
+@@ -2073,7 +2073,7 @@ struct rt5651_priv {
+ 	struct regmap *regmap;
+ 	struct snd_soc_jack *hp_jack;
+ 	struct work_struct jack_detect_work;
+-	enum rt5651_jd_src jd_src;
++	unsigned int jd_src;
+ 	unsigned int ovcd_th;
+ 	unsigned int ovcd_sf;
+ 
+-- 
+2.14.3
