@@ -1,7 +1,7 @@
 From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH v2 5/6] ASoc: sun4i-i2s: Add 20, 24 and 32 bit support
-Date: Mon, 12 Mar 2018 16:57:52 +0100
-Message-ID: <20180312155753.9478-6-codekipper@gmail.com>
+Subject: [PATCH v2 6/6] ASoC: sun4i-i2s: Add support for loopback
+Date: Mon, 12 Mar 2018 16:57:53 +0100
+Message-ID: <20180312155753.9478-7-codekipper@gmail.com>
 References: <20180312155753.9478-1-codekipper@gmail.com>
 Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
@@ -21,94 +21,72 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Extend the functionality of the driver to include support of 20 and
-24 bits per sample for the earlier SoCs.
-
-Newer SoCs can also handle 32bit samples.
+The DAI has a loopback register which can be set and therefore routes
+the transmit fifo to receive fifo. This is useful for testing the block
+without the need for any external hardware.
 
 Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 34 +++++++++++++++++++++++++++++++---
- 1 file changed, 31 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/sound/sun4i-i2s.txt |  3 +++
+ sound/soc/sunxi/sun4i-i2s.c                           | 11 +++++++++++
+ 2 files changed, 14 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+index 3f966ac61b9e..325e3d4571f1 100644
+--- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+@@ -32,6 +32,9 @@ Optional properties:
+ - allwinner,slot-width-override:if this property is present then the dai is
+ 				configured to extend the slot width to the
+ 				value specified. Min 8, Max 32.
++- loopback:	if this property is present then the dai is configured in
++		loopback mode where the output fifo is redirected to the input
++		fifo.
+ 
+ - allwinner,playback-channels:  if this property is present then the number
+ 				of available channels is extended and the
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 436480df1844..7cf4dfe440de 100644
+index 7cf4dfe440de..a3c33814d33e 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -451,6 +451,11 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 	case 16:
- 		width = DMA_SLAVE_BUSWIDTH_2_BYTES;
- 		break;
-+	case 20:
-+	case 24:
-+	case 32:
-+		width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-+		break;
- 	default:
- 		dev_err(dai->dev, "Unsupported physical sample width: %d\n",
- 			params_physical_width(params));
-@@ -463,7 +468,18 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 		sr = 0;
- 		wss = 0;
- 		break;
--
-+	case 20:
-+		sr = 1;
-+		wss = 1;
-+		break;
-+	case 24:
-+		sr = 2;
-+		wss = 2;
-+		break;
-+	case 32:
-+		sr = 4;
-+		wss = 4;
-+		break;
- 	default:
- 		dev_err(dai->dev, "Unsupported sample width: %d\n",
- 			params_width(params));
-@@ -766,6 +782,13 @@ static int sun4i_i2s_dai_probe(struct snd_soc_dai *dai)
- 	return 0;
+@@ -31,6 +31,7 @@
+ #define SUN4I_I2S_CTRL_MODE_MASK		BIT(5)
+ #define SUN4I_I2S_CTRL_MODE_SLAVE			(1 << 5)
+ #define SUN4I_I2S_CTRL_MODE_MASTER			(0 << 5)
++#define SUN4I_I2S_CTRL_LOOP			BIT(3)
+ #define SUN4I_I2S_CTRL_TX_EN			BIT(2)
+ #define SUN4I_I2S_CTRL_RX_EN			BIT(1)
+ #define SUN4I_I2S_CTRL_GL_EN			BIT(0)
+@@ -195,6 +196,8 @@ struct sun4i_i2s {
+ 
+ 	const struct sun4i_i2s_quirks	*variant;
+ 
++	bool loopback;
++
+ 	unsigned int	slot_width;
+ };
+ 
+@@ -639,6 +642,11 @@ static void sun4i_i2s_start_capture(struct sun4i_i2s *i2s)
+ 	regmap_update_bits(i2s->regmap, SUN4I_I2S_DMA_INT_CTRL_REG,
+ 			   SUN4I_I2S_DMA_INT_CTRL_RX_DRQ_EN,
+ 			   SUN4I_I2S_DMA_INT_CTRL_RX_DRQ_EN);
++
++	/* Debugging without codec */
++	if (i2s->loopback)
++		regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
++				   SUN4I_I2S_CTRL_LOOP, SUN4I_I2S_CTRL_LOOP);
  }
  
-+#define SUN4I_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
-+			 SNDRV_PCM_FMTBIT_S20_3LE | \
-+			 SNDRV_PCM_FMTBIT_S24_LE)
-+
-+#define SUN8I_FORMATS	(SUN4I_FORMATS | \
-+			 SNDRV_PCM_FMTBIT_S32_LE)
-+
- static struct snd_soc_dai_driver sun4i_i2s_dai = {
- 	.probe = sun4i_i2s_dai_probe,
- 	.capture = {
-@@ -773,14 +796,14 @@ static struct snd_soc_dai_driver sun4i_i2s_dai = {
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_8000_192000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SUN4I_FORMATS,
- 	},
- 	.playback = {
- 		.stream_name = "Playback",
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_8000_192000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SUN4I_FORMATS,
- 	},
- 	.ops = &sun4i_i2s_dai_ops,
- 	.symmetric_rates = 1,
-@@ -1170,6 +1193,11 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
- 		goto err_pm_disable;
+ static void sun4i_i2s_start_playback(struct sun4i_i2s *i2s)
+@@ -1204,6 +1212,9 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
+ 			soc_dai->playback.channels_max = val;
  	}
  
-+	if (i2s->variant->has_fmt_set_lrck_period) {
-+		soc_dai->playback.formats = SUN8I_FORMATS;
-+		soc_dai->capture.formats = SUN8I_FORMATS;
-+	}
++	if (of_property_read_bool(pdev->dev.of_node, "loopback"))
++		i2s->loopback = true;
 +
- 	if (!of_property_read_u32(pdev->dev.of_node,
- 				  "allwinner,playback-channels", &val)) {
- 		if (val >= 2 && val <= 8)
+ 	pm_runtime_enable(&pdev->dev);
+ 	if (!pm_runtime_enabled(&pdev->dev)) {
+ 		ret = sun4i_i2s_runtime_resume(&pdev->dev);
 -- 
 2.16.2
