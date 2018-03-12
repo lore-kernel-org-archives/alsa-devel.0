@@ -1,18 +1,26 @@
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH 7/7] ASoC: amd: enabling bt i2s config after
-	acp reset
-Date: Mon, 12 Mar 2018 12:04:20 +0530
-Message-ID: <1520836460-21809-8-git-send-email-Vijendar.Mukunda@amd.com>
-References: <1520836460-21809-1-git-send-email-Vijendar.Mukunda@amd.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v2 6/7] ASoC: samsung: Drop uneeded RCLKSRC
+ setting in the Snow driver
+Date: Mon, 12 Mar 2018 08:35:19 +0100
+Message-ID: <CAJKOXPeckmMestwPyChw=Cjj8TLGXSuCtV47G=T-xULwv=wpig@mail.gmail.com>
+References: <CGME20180309175015epcas1p2ef43a122b650a7a420320ca619124dc6@epcas1p2.samsung.com>
+ <20180309174858.24017-1-s.nawrocki@samsung.com>
+ <20180309174858.24017-6-s.nawrocki@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM01-SN1-obe.outbound.protection.outlook.com
- (mail-sn1nam01on0046.outbound.protection.outlook.com [104.47.32.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 6FD1A2676B6
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 07:33:44 +0100 (CET)
-In-Reply-To: <1520836460-21809-1-git-send-email-Vijendar.Mukunda@amd.com>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ by alsa0.perex.cz (Postfix) with ESMTP id 64C46266E43
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 08:35:24 +0100 (CET)
+Received: from mail-wm0-f53.google.com (mail-wm0-f53.google.com [74.125.82.53])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 0260521772
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 07:35:22 +0000 (UTC)
+Received: by mail-wm0-f53.google.com with SMTP id e194so14322150wmd.3
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 00:35:21 -0700 (PDT)
+In-Reply-To: <20180309174858.24017-6-s.nawrocki@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,49 +30,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org, perex@perex.cz
-Cc: tiwai@suse.de, Alexander.Deucher@amd.com, lgirdwood@gmail.com, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, =?UTF-8?B?QmFydMWCb21pZWogxbtvxYJuaWVya2lld2ljeg==?= <b.zolnierkie@samsung.com>, sbkim73@samsung.com, lgirdwood@gmail.com, robh+dt@kernel.org, javierm@redhat.com, broonie@kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-after acp reset , it requires to reprogram bt i2s config
-mux pins to enable bt i2s instance.
-added bt i2s enablement sequence during acp init.
+On Fri, Mar 9, 2018 at 6:48 PM, Sylwester Nawrocki
+<s.nawrocki@samsung.com> wrote:
+> The RCLKSRC mux input 0 is a default configuration after reset, so
+> there is no need for this explicit snd_soc_dai_set_sysclk() call.
+> Also, this static mux clock configuration can be specified in DT.
+>
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> ---
+> Changes since v1:
+>  - none.
+> ---
+>  sound/soc/samsung/snow.c | 5 -----
+>  1 file changed, 5 deletions(-)
 
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
----
- sound/soc/amd/acp-pcm-dma.c | 5 +++++
- sound/soc/amd/acp.h         | 2 ++
- 2 files changed, 7 insertions(+)
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index a6787ac..f7471ae 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -604,6 +604,11 @@ static int acp_init(void __iomem *acp_mmio, u32 asic_type)
- 	val &= ~ACP_SOFT_RESET__SoftResetAud_MASK;
- 	acp_reg_write(val, acp_mmio, mmACP_SOFT_RESET);
- 
-+	/*For BT instance change pins from UART to BT */
-+	val = acp_reg_read(acp_mmio, mmACP_BT_UART_PAD_SEL);
-+	val |= ACP_BT_UART_PAD_SELECT_MASK;
-+	acp_reg_write(val, acp_mmio, mmACP_BT_UART_PAD_SEL);
-+
- 	/* initiailize Onion control DAGB register */
- 	acp_reg_write(ACP_ONION_CNTL_DEFAULT, acp_mmio,
- 			mmACP_AXI2DAGB_ONION_CNTL);
-diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
-index cd83a03..84b3850 100644
---- a/sound/soc/amd/acp.h
-+++ b/sound/soc/amd/acp.h
-@@ -108,6 +108,8 @@
- #define ACP_I2S_BT_16BIT_RESOLUTION_EN	0x04
- #define I2S_SP_INSTANCE 1
- #define I2S_BT_INSTANCE 3
-+#define ACP_BT_UART_PAD_SELECT_MASK	0x1
-+
- enum acp_dma_priority_level {
- 	/* 0x0 Specifies the DMA channel is given normal priority */
- 	ACP_DMA_PRIORITY_LEVEL_NORMAL = 0x0,
--- 
-2.7.4
+Best regards,
+Krzysztof
