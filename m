@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98090: Add #sound-dai-cells property
-	documentation" to the asoc tree
+Subject: Applied "ASoC: twl6040: Add back missing write
+	callback" to the asoc tree
 Date: Mon, 12 Mar 2018 16:40:05 +0000 (GMT)
-Message-ID: <20180312164005.37286440079@finisterre.ee.mobilebroadband>
+Message-ID: <20180312164005.B384644007A@finisterre.ee.mobilebroadband>
+References: <20180312142423.13177-2-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9ABAF266E63
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 17:40:08 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 8411926718B
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 17:40:09 +0100 (CET)
+In-Reply-To: <20180312142423.13177-2-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, lars@metafoo.de, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98090: Add #sound-dai-cells property documentation
+   ASoC: twl6040: Add back missing write callback
 
 has been applied to the asoc tree at
 
@@ -52,32 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From b50c32bd28e399cd4672a1e43645399e5bd1eb85 Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Fri, 9 Mar 2018 18:48:52 +0100
-Subject: [PATCH] ASoC: max98090: Add #sound-dai-cells property documentation
+>From c9d066650cd5adf4ed4bf5734386699e765222b7 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Mon, 12 Mar 2018 16:24:22 +0200
+Subject: [PATCH] ASoC: twl6040: Add back missing write callback
 
-MAX98090 CODEC supports 1 input DAI, adding the #sound-dai-cells property
-helps to reference the DAI in DT in a standard way.
+We need to have the write callback to use the code.
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Fixes: 7480389fb0d8 ("ASoC: twl6040: replace codec to component")
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/max98090.txt | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/twl6040.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/max98090.txt b/Documentation/devicetree/bindings/sound/max98090.txt
-index 4e3be6682c98..7e1bbd5c27fd 100644
---- a/Documentation/devicetree/bindings/sound/max98090.txt
-+++ b/Documentation/devicetree/bindings/sound/max98090.txt
-@@ -16,6 +16,8 @@ Optional properties:
- 
- - clock-names: Should be "mclk"
- 
-+- #sound-dai-cells : should be 0.
-+
- - maxim,dmic-freq: Frequency at which to clock DMIC
- 
- - maxim,micbias: Micbias voltage applies to the analog mic, valid voltages value are:
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index 9bf23f8e7162..b56a6471f9c4 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -1157,6 +1157,7 @@ static const struct snd_soc_component_driver soc_component_dev_twl6040 = {
+ 	.probe			= twl6040_probe,
+ 	.remove			= twl6040_remove,
+ 	.read			= twl6040_read,
++	.write			= twl6040_write,
+ 	.remove			= twl6040_remove,
+ 	.set_bias_level		= twl6040_set_bias_level,
+ 	.controls		= twl6040_snd_controls,
 -- 
 2.16.2
