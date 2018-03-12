@@ -1,17 +1,17 @@
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH 6/7] ASoC: amd: 16bit resolution support for bt
-	i2s instance
-Date: Mon, 12 Mar 2018 12:04:19 +0530
-Message-ID: <1520836460-21809-7-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: [PATCH 7/7] ASoC: amd: enabling bt i2s config after
+	acp reset
+Date: Mon, 12 Mar 2018 12:04:20 +0530
+Message-ID: <1520836460-21809-8-git-send-email-Vijendar.Mukunda@amd.com>
 References: <1520836460-21809-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM03-CO1-obe.outbound.protection.outlook.com
- (mail-co1nam03on0062.outbound.protection.outlook.com [104.47.40.62])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B8B6267614
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 07:33:38 +0100 (CET)
+Received: from NAM01-SN1-obe.outbound.protection.outlook.com
+ (mail-sn1nam01on0046.outbound.protection.outlook.com [104.47.32.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6FD1A2676B6
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 07:33:44 +0100 (CET)
 In-Reply-To: <1520836460-21809-1-git-send-email-Vijendar.Mukunda@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,59 +26,45 @@ To: broonie@kernel.org, alsa-devel@alsa-project.org, perex@perex.cz
 Cc: tiwai@suse.de, Alexander.Deucher@amd.com, lgirdwood@gmail.com, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-added 16bit resolution support for bt i2s instance for stoney.
+after acp reset , it requires to reprogram bt i2s config
+mux pins to enable bt i2s instance.
+added bt i2s enablement sequence during acp init.
 
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- sound/soc/amd/acp-pcm-dma.c | 23 +++++++++++++++++++----
- sound/soc/amd/acp.h         |  1 +
- 2 files changed, 20 insertions(+), 4 deletions(-)
+ sound/soc/amd/acp-pcm-dma.c | 5 +++++
+ sound/soc/amd/acp.h         | 2 ++
+ 2 files changed, 7 insertions(+)
 
 diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index ad46719..a6787ac 100644
+index a6787ac..f7471ae 100644
 --- a/sound/soc/amd/acp-pcm-dma.c
 +++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -919,10 +919,25 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
+@@ -604,6 +604,11 @@ static int acp_init(void __iomem *acp_mmio, u32 asic_type)
+ 	val &= ~ACP_SOFT_RESET__SoftResetAud_MASK;
+ 	acp_reg_write(val, acp_mmio, mmACP_SOFT_RESET);
  
- 	if (adata->asic_type == CHIP_STONEY) {
- 		val = acp_reg_read(adata->acp_mmio, mmACP_I2S_16BIT_RESOLUTION_EN);
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--			val |= ACP_I2S_SP_16BIT_RESOLUTION_EN;
--		else
--			val |= ACP_I2S_MIC_16BIT_RESOLUTION_EN;
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+			switch (rtd->i2s_play_instance) {
-+			case I2S_BT_INSTANCE:
-+				val |= ACP_I2S_BT_16BIT_RESOLUTION_EN;
-+				break;
-+			case I2S_SP_INSTANCE:
-+			default:
-+				val |= ACP_I2S_SP_16BIT_RESOLUTION_EN;
-+			}
-+		} else {
-+			switch (rtd->i2s_capture_instance) {
-+			case I2S_BT_INSTANCE:
-+				val |= ACP_I2S_BT_16BIT_RESOLUTION_EN;
-+				break;
-+			case I2S_SP_INSTANCE:
-+			default:
-+				val |= ACP_I2S_MIC_16BIT_RESOLUTION_EN;
-+			}
-+		}
- 		acp_reg_write(val, adata->acp_mmio, mmACP_I2S_16BIT_RESOLUTION_EN);
- 	}
- 	size = params_buffer_bytes(params);
++	/*For BT instance change pins from UART to BT */
++	val = acp_reg_read(acp_mmio, mmACP_BT_UART_PAD_SEL);
++	val |= ACP_BT_UART_PAD_SELECT_MASK;
++	acp_reg_write(val, acp_mmio, mmACP_BT_UART_PAD_SEL);
++
+ 	/* initiailize Onion control DAGB register */
+ 	acp_reg_write(ACP_ONION_CNTL_DEFAULT, acp_mmio,
+ 			mmACP_AXI2DAGB_ONION_CNTL);
 diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
-index d40749a..cd83a03 100644
+index cd83a03..84b3850 100644
 --- a/sound/soc/amd/acp.h
 +++ b/sound/soc/amd/acp.h
-@@ -105,6 +105,7 @@
- #define mmACP_I2S_16BIT_RESOLUTION_EN       0x5209
- #define ACP_I2S_MIC_16BIT_RESOLUTION_EN 0x01
- #define ACP_I2S_SP_16BIT_RESOLUTION_EN	0x02
-+#define ACP_I2S_BT_16BIT_RESOLUTION_EN	0x04
+@@ -108,6 +108,8 @@
+ #define ACP_I2S_BT_16BIT_RESOLUTION_EN	0x04
  #define I2S_SP_INSTANCE 1
  #define I2S_BT_INSTANCE 3
++#define ACP_BT_UART_PAD_SELECT_MASK	0x1
++
  enum acp_dma_priority_level {
+ 	/* 0x0 Specifies the DMA channel is given normal priority */
+ 	ACP_DMA_PRIORITY_LEVEL_NORMAL = 0x0,
 -- 
 2.7.4
