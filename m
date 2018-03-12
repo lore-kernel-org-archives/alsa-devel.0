@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Applied "ASoC: mt8173-rt5650: fix child-node
- lookup" to the asoc tree
-Date: Mon, 12 Mar 2018 09:33:54 -0700
-Message-ID: <20180312163354.GJ2186@sirena.org.uk>
-References: <20180131055921.25574-1-johan@kernel.org>
- <20180312162852.E3DDE44007C@finisterre.ee.mobilebroadband>
+Subject: Applied "ASoC: max98090: Add #sound-dai-cells property
+	documentation" to the asoc tree
+Date: Mon, 12 Mar 2018 16:40:05 +0000 (GMT)
+Message-ID: <20180312164005.37286440079@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0463487416108890796=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4AD5326726B
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 17:34:05 +0100 (CET)
-In-Reply-To: <20180312162852.E3DDE44007C@finisterre.ee.mobilebroadband>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9ABAF266E63
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 17:40:08 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Johan Hovold <johan@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-mediatek@lists.infradead.org, PC Liao <pc.liao@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============0463487416108890796==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="yhze8HlyfmXt1APY"
-Content-Disposition: inline
+   ASoC: max98090: Add #sound-dai-cells property documentation
 
+has been applied to the asoc tree at
 
---yhze8HlyfmXt1APY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Mar 12, 2018 at 04:28:52PM +0000, Mark Brown wrote:
-> The patch
->=20
->    ASoC: mt8173-rt5650: fix child-node lookup
->=20
-> has been applied to the asoc tree at
->=20
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git=20
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-=2E..a while ago, my script found some old branches and pushed them out
-sorry.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---yhze8HlyfmXt1APY
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqmq/EACgkQJNaLcl1U
-h9DTSAf9Hvp3X5cqnAlzugzyNo+4weYbMLGxza1mL6sKX7MduK5MvdUKC0z14s8y
-qXTwnoRRV0GaFxEc2JXrBQ6NhEYtcXcM6LEk3/wCA68Tc5jibPdDiard74yOaY7G
-jUQx3v4uuLpUaIvtvEZo9ZMxt6UuzIm3ER8+jeggs0EbNhuWAHUbcXeCJIW23wLy
-+JWecahExf77Gv91YrobnwEI9CUfqGfo89t/RnP48AsSjOsjJGHwnfzX0xZCcpXe
-kKGAiQ1WaJ4G6tVBJPg3JMDPMatWEhPjOoQull9TL+sdpAghErEIHOyhQNkmbQvR
-MRAGJLWDf5xlqMRdPwMRYVzfjRahQg==
-=6L4w
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---yhze8HlyfmXt1APY--
+>From b50c32bd28e399cd4672a1e43645399e5bd1eb85 Mon Sep 17 00:00:00 2001
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Date: Fri, 9 Mar 2018 18:48:52 +0100
+Subject: [PATCH] ASoC: max98090: Add #sound-dai-cells property documentation
 
---===============0463487416108890796==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+MAX98090 CODEC supports 1 input DAI, adding the #sound-dai-cells property
+helps to reference the DAI in DT in a standard way.
 
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ Documentation/devicetree/bindings/sound/max98090.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 
---===============0463487416108890796==--
+diff --git a/Documentation/devicetree/bindings/sound/max98090.txt b/Documentation/devicetree/bindings/sound/max98090.txt
+index 4e3be6682c98..7e1bbd5c27fd 100644
+--- a/Documentation/devicetree/bindings/sound/max98090.txt
++++ b/Documentation/devicetree/bindings/sound/max98090.txt
+@@ -16,6 +16,8 @@ Optional properties:
+ 
+ - clock-names: Should be "mclk"
+ 
++- #sound-dai-cells : should be 0.
++
+ - maxim,dmic-freq: Frequency at which to clock DMIC
+ 
+ - maxim,micbias: Micbias voltage applies to the analog mic, valid voltages value are:
+-- 
+2.16.2
