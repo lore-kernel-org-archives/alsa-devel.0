@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 1/2] ASoC: twl6040: Add back missing write
-	callback
-Date: Mon, 12 Mar 2018 16:24:22 +0200
-Message-ID: <20180312142423.13177-2-peter.ujfalusi@ti.com>
+Subject: [PATCH 2/2] ASoC: soc-io: Fix
+	snd_soc_component_update_bits_legacy
+Date: Mon, 12 Mar 2018 16:24:23 +0200
+Message-ID: <20180312142423.13177-3-peter.ujfalusi@ti.com>
 References: <20180312142423.13177-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
- by alsa0.perex.cz (Postfix) with ESMTP id 17C5B266E63
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 15:24:25 +0100 (CET)
+Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id 81BE8266E60
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 15:24:28 +0100 (CET)
 In-Reply-To: <20180312142423.13177-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,27 +25,47 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, lars@metafoo.de, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
-We need to have the write callback to use the code.
+After the codec to component conversion codecs with custom read/write
+function will no longer able to use update_bits as their io callbacks are
+registered at component->driver level and not in component level.
 
-Fixes: 7480389fb0d8 ("ASoC: twl6040: replace codec to component")
+To not complicate the code further, lets just use the
+snd_soc_component_read/snd_soc_component_write function and let them sort
+out the correct io function to call.
+
+Fixes: e2c330b9b5665 ("ASoC: Move IO abstraction to the component level")
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/twl6040.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/soc-io.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 9bf23f8e7162..b56a6471f9c4 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -1157,6 +1157,7 @@ static const struct snd_soc_component_driver soc_component_dev_twl6040 = {
- 	.probe			= twl6040_probe,
- 	.remove			= twl6040_remove,
- 	.read			= twl6040_read,
-+	.write			= twl6040_write,
- 	.remove			= twl6040_remove,
- 	.set_bias_level		= twl6040_set_bias_level,
- 	.controls		= twl6040_snd_controls,
+diff --git a/sound/soc/soc-io.c b/sound/soc/soc-io.c
+index 2bc1c4c17896..d36a192fbece 100644
+--- a/sound/soc/soc-io.c
++++ b/sound/soc/soc-io.c
+@@ -88,19 +88,16 @@ static int snd_soc_component_update_bits_legacy(
+ 	unsigned int old, new;
+ 	int ret;
+ 
+-	if (!component->read || !component->write)
+-		return -EIO;
+-
+ 	mutex_lock(&component->io_mutex);
+ 
+-	ret = component->read(component, reg, &old);
++	ret = snd_soc_component_read(component, reg, &old);
+ 	if (ret < 0)
+ 		goto out_unlock;
+ 
+ 	new = (old & ~mask) | (val & mask);
+ 	*change = old != new;
+ 	if (*change)
+-		ret = component->write(component, reg, new);
++		ret = snd_soc_component_write(component, reg, new);
+ out_unlock:
+ 	mutex_unlock(&component->io_mutex);
+ 
 -- 
 Peter
 
