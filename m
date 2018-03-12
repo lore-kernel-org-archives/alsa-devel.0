@@ -1,48 +1,64 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 6/6] ASoC: sun4i-i2s: Add support for loopback
-Date: Mon, 12 Mar 2018 11:35:21 -0700
-Message-ID: <20180312183521.GP2186@sirena.org.uk>
-References: <20180312155753.9478-1-codekipper@gmail.com>
- <20180312155753.9478-7-codekipper@gmail.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH v3 1/2] ASoC: samsung: Snow DT bindings update
+Date: Mon, 12 Mar 2018 19:49:38 +0100
+Message-ID: <20180312184939.11327-1-s.nawrocki@samsung.com>
+References: <CGME20180312184951epcas2p2987f3335bb05a32384d3002addb47f80@epcas2p2.samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cmVHo2jXx4bdYlgS"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180312155753.9478-7-codekipper@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: codekipper@gmail.com
-Cc: maxime.ripard@free-electrons.com, wens@csie.org, linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, be17068@iperbole.bo.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78C65266E43
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 19:49:55 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, lgirdwood@gmail.com, krzk@kernel.org, robh+dt@kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>, linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
+The new DT bindings are introduced so sound on the HDMI interface
+can also be supported. The exisiting CPU and CODEC DAI phandle
+properties are marked as deprecated.
 
---cmVHo2jXx4bdYlgS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+Changes since v2:
+ - edited summary line.
+---
+ Documentation/devicetree/bindings/sound/snow.txt | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-On Mon, Mar 12, 2018 at 04:57:53PM +0100, codekipper@gmail.com wrote:
-
-> +- loopback:	if this property is present then the dai is configured in
-> +		loopback mode where the output fifo is redirected to the input
-> +		fifo.
-
-This really doesn't seem like something that ought to go into the DT
-and hence ABI given that there's obviously no reason to use this in
-production.  Just make it be a #define in the code or something.
-
---cmVHo2jXx4bdYlgS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqmyGgACgkQJNaLcl1U
-h9DKGwf/fEsKyLWh7qHH1FKS9OOo2Lr6CBEU/7DAHjMAkQvpRKPEKH0pEgS99uuW
-moEpDFHrScp6A+vgQsZMKO/rk5bgqOeoz+9gFHIfR5bGz17QPNjuA5T8Uvw7PBHk
-kGpaKcLk0T7dkPng1igOlc9pQrwokaldDJRj38ixBEcRybfooNF2wFq07a66z5NI
-qK0hOGzIMbetpG2Spits83X0N3K/P4/gG72V+UlCR65K31dnhX0U+iSAtYY5srYC
-ZQMzLLXzAwjjCrJYFsYWUkTgUKdk2t27y+Z7ZebKAWXiij1zzmOX0cC/MRo2fist
-Sd51QiGaluqqNiqwrooyxghGBhlZ2A==
-=KOfl
------END PGP SIGNATURE-----
-
---cmVHo2jXx4bdYlgS--
+diff --git a/Documentation/devicetree/bindings/sound/snow.txt b/Documentation/devicetree/bindings/sound/snow.txt
+index 6df74f15687f..80fd9a87bb3f 100644
+--- a/Documentation/devicetree/bindings/sound/snow.txt
++++ b/Documentation/devicetree/bindings/sound/snow.txt
+@@ -5,8 +5,17 @@ Required properties:
+ 			"google,snow-audio-max98090" or
+ 			"google,snow-audio-max98091" or
+ 			"google,snow-audio-max98095"
+-- samsung,i2s-controller: The phandle of the Samsung I2S controller
+-- samsung,audio-codec: The phandle of the audio codec
++- samsung,i2s-controller (deprecated): The phandle of the Samsung I2S controller
++- samsung,audio-codec (deprecated): The phandle of the audio codec
++
++Required sub-nodes:
++
++ - 'cpu' subnode with a 'sound-dai' property containing the phandle of the I2S
++    controller
++ - 'codec' subnode with a 'sound-dai' property containing list of phandles
++    to the CODEC nodes, first entry must be the phandle of the MAX98090,
++    MAX98091 or MAX98095 CODEC (exact device type is indicated by the compatible
++    string) and the second entry must be the phandle of the HDMI IP block node
+ 
+ Optional:
+ - samsung,model: The name of the sound-card
+-- 
+2.14.2
