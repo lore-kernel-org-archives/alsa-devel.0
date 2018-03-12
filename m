@@ -1,87 +1,119 @@
-From: <Mario.Limonciello@dell.com>
-Subject: RE: [PATCH v2 3/3] ALSA: hda: Disabled unused audio controller for
- Dell platforms with Switchable Graphics
-Date: Mon, 12 Mar 2018 01:30:28 +0000
-Message-ID: <c49f28560996405fa4173a5a492bf201@ausx13mpc124.AMER.DELL.COM>
-References: <20180308091023.9061-1-kai.heng.feng@canonical.com>
- <20180308091023.9061-3-kai.heng.feng@canonical.com>
- <20180309090223.xb55ltac4pfesdrh@pali>
- <723DA929-C9FA-4F69-8D3A-03D8A75D09A6@canonical.com>
- <014795f5a3014cd3bf55de26f76a5af8@ausx13mpc124.AMER.DELL.COM>
- <20180309094600.m24d3zbzdsmls7aw@pali>
- <09eadabb264f401a88b427744505adf8@ausx13mpc124.AMER.DELL.COM>
- <20180310103809.5nnwoulua2u64rku@pali>
- <ea9ab148c4bb45b9ae7369020300b74b@ausx13mpc124.AMER.DELL.COM>
- <20180311143018.u64cldtxuv7divta@pali>
+From: Shreyas NC <shreyas.nc@intel.com>
+Subject: Re: [PATCH 1/3] ASoC: Add initial support for multiple
+ CPU DAIs
+Date: Mon, 12 Mar 2018 10:32:57 +0530
+Message-ID: <20180312050256.GA2887@snc-desk>
+References: <1520334030-8018-1-git-send-email-shreyas.nc@intel.com>
+ <1520334030-8018-2-git-send-email-shreyas.nc@intel.com>
+ <20180309145043.lmdw5r3x7rhplk6x@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180311143018.u64cldtxuv7divta@pali>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: pali.rohar@gmail.com, kai.heng.feng@canonical.com
-Cc: mjg59@srcf.ucam.org, dvhart@infradead.org, andy@infradead.org, tiwai@suse.com, platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18085266E77
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 06:05:12 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20180309145043.lmdw5r3x7rhplk6x@localhost.localdomain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, Patches Audio <patches.audio@intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-PiA+IEkgdGhpbmsgdGhlIG1pc3NpbmcgYXNwZWN0IGlzIHRoYXQgdGhpcyBpcyBvbmx5IHVzZWQg
-aW4gQUlPIGFuZCBsYXB0b3AgZm9ybQ0KPiA+IGZhY3RvcnMgd2hlcmUgdGhlIGRpc2NyZXRlIGdy
-YXBoaWNzIGlzIGluIGEgbm9uLXJlbW92YWJsZSBmb3JtIGZhY3Rvci4NCj4gDQo+IFdoeSB3ZSBh
-cmUgbm90IGNoZWNraW5nIGlmIGtlcm5lbCBpcyBydW5uaW5nIG9uIEFJTyBvciBsYXB0b3AgZm9y
-bQ0KPiBmYWN0b3IgdGhlbj8gT3IgaXQgaXMgbm90IHBvc3NpYmxlPw0KDQpLYWkgSGVuZywgY2Fu
-IHlvdSBwbGVhc2UgY29uZmlybSBpZiBBSU8gc2V0cyBjaGFzc2lzIHR5cGUgcHJvcGVybHk/DQpJ
-dCBzaG91bGQgYmUgMERoLg0KDQpJZiBzbywgdGhlbiBJIHRoaW5rIGFzIHNlY29uZCBjaGVjayBm
-b3IgY2hhc3NpcyB0eXBlIHNob3VsZCBiZSBwb3NzaWJsZSBmb3INCm5leHQgdmVyc2lvbiBvZiB0
-aGlzIHBhdGNoLg0KDQo+IA0KPiBCYXNpY2FsbHkgd2hhdCBJIHNlZSB0aGVyZSBpcyB0aGF0IHdl
-IG5lZWQgdG8gZGV0ZWN0IGlmIGN1cnJlbnQgSFcNCj4gcGxhdGZvcm0gaGFzIHN3aXRjaGFibGUg
-Z3JhcGhpY3MgYW5kIGNoZWNrIGhvdyBpcyBjb25maWd1cmVkIEFVRElPIE1VWC4NCj4gDQo+IEJ1
-dCBpbnN0ZWFkIG9mIGRpcmVjdGx5IGNoZWNraW5nIGh3IHN0YXRlIG9mIGF1ZGlvIE1VWCwgd2Ug
-YXJlIHRyeWluZyB0bw0KPiBjaGVjayBzb21ldGhpbmcgZGlmZmVyZW50IHdoaWNoIGNvdWxkIGdl
-dCB1cyBpbmZvcm1hdGlvbiBvZiBzdGF0ZSBvZiB0aGUNCj4gYXVkaW8gbXV4Lg0KPiANCj4gSSBz
-dXNwZWN0IHRoYXQgd2UgZG8gbm90IGhhdmUgYSB3YXkgaG93IHRvIGNoZWNrIGF1ZGlvIE1VWCBk
-aXJlY3RseSwgc28NCj4gaXQgbmVlZHMgdG8gYmUgZG9uZSBpbmRpcmVjdGx5IC0tIHZpYSBzb21l
-IERlbGwgU01CSU9TIGNhbGwgYW5kIHNvbWUNCj4gb3RoZXIgaGV1cmlzdGljLiBUaGlzIGlzIHNv
-bWV0aGluZyB3aGljaCBzaG91bGQgYmUgc3BlY2lmaWVkIGVpdGhlciBpbg0KPiBjb21tZW50IG9y
-IGluIGNvbW1pdCBtZXNzYWdlIChwcm9ibGVtIG9mIHR5cGU6IHdlIG5lZWQgWCwgYnV0IGNoZWNr
-IGZvcg0KPiBZKS4NCj4gDQo+IEFuZCBpZiB3ZSBhcmUgZG9pbmcgdGhpcyBjaGVjayBpbmRpcmVj
-dGx5LCB3ZSBzaG91bGQgZG8gdGhlIG1vc3QNCj4gc3BlY2lmaWMgdGVzdCBhbmQgbm90IG1vcmUg
-Z2VuZXJhbC4NCg0KUmlnaHQuDQoNCj4gDQo+IEkgdGhpbmsgdGhhdCBQQ0kgdmVuZG9yIElEIGNo
-ZWNrIG9mIGF1ZGlvIGRldmljZSBpcyBtb3JlIGdlbmVyYWwgdGVzdA0KPiB0aGVuIGNoZWNraW5n
-IGlmIGtlcm5lbCBpcyBydW5uaW5nIG9uIERlbGwgbGFwdG9wIChjaGVjayB2aWEgRE1JKS4gQW5k
-DQo+IGlmIHdlIGNhbiBjaGVjayBhbHNvIGlmIHJ1bm5pbmcgb24gQUlPIG9yIGxhcHRvcCBmb3Jt
-LCB0aGVuIGl0IHdvdWxkIGJlDQo+IG1vcmUgc3BlY2lmaWMgdGVzdC4NCj4gDQo+ID4gUnVubmlu
-ZyB3aXRoIHlvdXIgaHlwb3RoZXRpY2FsIHRob3VnaCwgd2hhdCB3b3VsZCBoYXBwZW4gaXMgaWYg
-aXQncw0KPiA+IG9uIGEgbm9uLURlbGwgbWFjaGluZSB0aGUgUENJIGNoZWNrIHdvdWxkIHBhc3Mg
-YW5kIHRoZW4gdGhlIGNvZGUNCj4gPiB3b3VsZCBub3QgYmUgZXhlY3V0ZWQgYnkgZGVsbC1sYXB0
-b3AgKHNpbmNlIGRlbGwtc21iaW9zIGRpZG4ndCBsb2FkKS4NCj4gDQo+IFJpZ2h0Lg0KPiANCj4g
-PiBJZiBpdCB3YXMgb24gYSBEZWxsIG1hY2hpbmUgaXQgd291bGQgbG9hZCBidXQgdGhlIEJJT1Mg
-d291bGQgcmV0dXJuDQo+ID4gZWl0aGVyIFN3aXRjaGFibGUgZ3JhcGhpY3MgdHVybmVkIG9mZiwg
-b3IgaW52YWxpZCB0b2tlbi4NCj4gPg0KPiA+IEV2ZW4gdGhvdWdoIHRoZXNlIGFyZW4ndCByZWFs
-IGZvciBzd2l0Y2hhYmxlIGdyYXBoaWNzIG9uIERlbGwgSSBkb24ndA0KPiA+IHNlZSBhIHByb2Js
-ZW0gd2l0aCBlaXRoZXIgb2YgdGhlc2Ugc2l0dWF0aW9ucyBpZiBpdCBldmVyIGNhbWUgdXAuDQo+
-IA0KPiBJIHNlZSwgdGhpcyBzb2x1dGlvbiBpcyB3b3JraW5nLi4uDQo+IA0KPiAuLi4gYnV0LCBJ
-IHNlZSB0aGVyZSBhIHZlcnkgYmFkIHByZWNlZGVuc2UuIFdoYXQgd291bGQgaGFwcGVuIGlmIGFu
-b3RoZXINCj4gbGFwdG9wIG1hbnVmYWN0b3IgY29tZXMgd2l0aCBzaW1pbGFyIHNvbHV0aW9uIGZv
-ciBoeWJyaWQgZ3JhcGhpY3MuIERvZXMNCj4gaXQgbWVhbiB0aGF0IGhkYSBhdWRpbyBkcml2ZXIg
-d291bGQgdHJ5IHRvIGNhbGwgZm9yIGV2ZXJ5IG9uZSB2ZW5kb3IgaXRzDQo+IHZlbmRvciBkZXBl
-bmRlbnQgQVBJIGZ1bmN0aW9uIChFRkksIFNNTSwgV01JLCB3aGF0ZXZlcikgdG8gY2hlY2sgaWYN
-Cj4gY3VycmVudCBIVyBoYXMgc29tZSBzd2l0Y2hhYmxlIGdyYXBoaWNzIGFuZCBuZWVkcyBzcGVj
-aWFsIGNoZWNrcz8NCj4gDQo+IFRob3NlIHZlbmRvciBkZXBlbmRlbnQgQVBJIGZ1bmN0aW9ucyAo
-d2hpY2ggRGVsbCBTTUJJT1MgaXMpIHNob3VsZCBiZQ0KPiByZWFsbHkgY2FsbGVkIG9uIHZlbmRv
-ciBoYXJkd2FyZS4NCj4gDQo+IE90aGVyd2lzZSBhdWRpbyBkcml2ZXJzIHdvdWxkIGxvYWQgYnVu
-Y2ggb2YgdGhlIG90aGVyIHZlbmRvciBkZXBlbmRlbnQNCj4gcGxhdGZvcm0gbW9kdWxlcyBhbmQg
-YWxsIG9mIHRob3NlIG1vZHVsZXMgKGV4Y2VwdCBtYXhpbWFsbHkgb25lKSBqdXN0DQo+IHJldHVy
-biBlcnJvci4NCj4gDQoNClN1cmUgdGhlIG1vcmUgc3BlY2lmaWMgdGhlIGNoZWNrIHRoZSBsZXNz
-IHN5bWJvbCByZXF1ZXN0cyBuZWVkZWQgdGhhdA0Kd2lsbCBmYWlsLg0KDQpLYWkgSGVuZywNCg0K
-Q2FuIHlvdSBwbGVhc2UgdXNlIEFsZXggSHVuZydzIE9FTSBzdHJpbmdzIHBhdGNoIGluIHlvdXIg
-c2VyaWVzIHRvIG1hdGNoDQoiRGVsbCBTeXN0ZW0iIGluIE9FTSBzdHJpbmdzIHRvbz8NCg0KQmV0
-d2VlbiBjaGFzc2lzIHR5cGUsIE9FTSBzdHJpbmdzIG1hdGNoLCBhbmQgQU1EIHZlbmRvci9EZWxs
-IHN1YnN5c3RlbQ0KdmVuZG9yIHRoYXQgc2hvdWxkIHNhdGlzZnkgYWxsIG9mIFBhbGkncyBjb25j
-ZXJucyBJIHRoaW5rLg0KDQpJZiBhbnlvbmUgdGhpbmtzIHRoYXQncyB0b28gbXVjaCwgcGxlYXNl
-IHNwZWFrIHVwLg0KDQo+ID4gQ29tcGlsaW5nIGEgd2hpdGVsaXN0IGlzIGEgd2FzdGVkIGVmZm9y
-dCBiZWNhdXNlIGl0IHdpbGwgaGF2ZSB0byBjaGFuZ2UNCj4gPiBFdmVyeSB5ZWFyIGZvciBldmVy
-eSBuZXcgcGxhdGZvcm0gdGhhdCBoYXMgQU1EIHN3aXRjaGFibGUgZ3JhcGhpY3MuDQo+IA0KPiBJ
-IGFncmVlLCBCdXQgc2VlIHRoYXQgdGhpcyBwYXRjaCBhbHJlYWR5IHVzZXMgdmVuZG9yIElEIHdo
-aXRlbGlzdGluZy4NCg0KSSBtZWFuIG1ha2luZyBhIHdoaXRlbGlzdCBvZiBhbGwgaW5kaXZpZHVh
-bCBhZmZlY3RlZCBEZWxsIHBsYXRmb3JtcyB3aWxsIGdyb3cNCmVhY2ggeWVhci4gIEkgd2FudCB0
-byBhdm9pZCB0aGF0IGFwcHJvYWNoLg0K
+Thanks for the review,
+
+On Fri, Mar 09, 2018 at 08:20:43PM +0530, Charles Keepax wrote:
+> > @@ -679,13 +687,17 @@ int snd_soc_suspend(struct device *dev)
+> >  		card->suspend_pre(card);
+> >  
+> >  	list_for_each_entry(rtd, &card->rtd_list, list) {
+> > -		struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+> > +		struct snd_soc_dai *cpu_dai;
+> >  
+> >  		if (rtd->dai_link->ignore_suspend)
+> >  			continue;
+> >  
+> > -		if (cpu_dai->driver->suspend && !cpu_dai->driver->bus_control)
+> > -			cpu_dai->driver->suspend(cpu_dai);
+> > +		for (i = 0; i < rtd->num_cpu_dai; i++) {
+> > +			cpu_dai = rtd->cpu_dais[i];
+> > +			if (cpu_dai->driver->suspend &&
+> > +					!cpu_dai->driver->bus_control)
+> > +				cpu_dai->driver->suspend(cpu_dai);
+> > +		}
+> >  	}
+> >  
+> >  	/* close any waiting streams */
+> > @@ -793,13 +805,18 @@ static void soc_resume_deferred(struct work_struct *work)
+> 
+> Is there not another call to cpu_dai->driver->suspend at the
+> bottom of snd_soc_suspend you need to handle?
+> 
+
+Yes. Thanks for pointing out :)
+
+> > @@ -1680,9 +1760,11 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
+> >  	/* set default power off timeout */
+> >  	rtd->pmdown_time = pmdown_time;
+> >  
+> > -	ret = soc_probe_dai(cpu_dai, order);
+> > -	if (ret)
+> > -		return ret;
+> > +	for (i = 0; i < rtd->num_cpu_dai; i++) {
+> > +		ret = soc_probe_dai(rtd->cpu_dais[i], order);
+> > +		if (ret)
+> > +			return ret;
+> > +	}
+> >  
+> >  	/* probe the CODEC DAI */
+> >  	for (i = 0; i < rtd->num_codecs; i++) {
+> > @@ -1718,9 +1800,9 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
+> >  		soc_dpcm_debugfs_add(rtd);
+> >  #endif
+> >  
+> > -	if (cpu_dai->driver->compress_new) {
+> > +	if (rtd->cpu_dais[0]->driver->compress_new) {
+> >  		/*create compress_device"*/
+> > -		ret = cpu_dai->driver->compress_new(rtd, rtd->num);
+> > +		ret = rtd->cpu_dais[0]->driver->compress_new(rtd, rtd->num);
+> >  		if (ret < 0) {
+> >  			dev_err(card->dev, "ASoC: can't create compress %s\n",
+> >  					 dai_link->stream_name);
+> 
+> Is it worth throwing an error or printing a warning to say that
+> we don't support multiple DAIs on the compressed framework? Not
+> sure if here is were we should do that though.
+> 
+
+Sure, makes sense. Let me check the right place to add that.
+
+> > @@ -1736,7 +1818,8 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
+> >  				       dai_link->stream_name, ret);
+> >  				return ret;
+> >  			}
+> > -			ret = soc_link_dai_pcm_new(&cpu_dai, 1, rtd);
+> > +			ret = soc_link_dai_pcm_new(rtd->cpu_dais,
+> > +					rtd->num_cpu_dai, rtd);
+> >  			if (ret < 0)
+> >  				return ret;
+> >  			ret = soc_link_dai_pcm_new(rtd->codec_dais,
+> > @@ -2361,10 +2444,11 @@ int snd_soc_poweroff(struct device *dev)
+> 
+> Do we need to update the handling in snd_soc_runtime_set_dai_fmt?
+> Seems like we skipped over that.
+> 
+
+Yes, that is a miss as well :(
+Thanks for pointing out, I'll fix and send v2.
+
+--Shreyas
+
+-- 
