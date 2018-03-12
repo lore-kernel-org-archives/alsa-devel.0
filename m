@@ -1,18 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5659: Separate adc 1/2 clock control"
-	to the asoc tree
-Date: Mon, 12 Mar 2018 16:40:08 +0000 (GMT)
-Message-ID: <20180312164008.38843440079@finisterre.ee.mobilebroadband>
-References: <1520855409-28862-3-git-send-email-bardliao@realtek.com>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH v2 0/7] Modernize vga_switcheroo by using
+ device link for HDA
+Date: Mon, 12 Mar 2018 17:54:47 +0100
+Message-ID: <20180312165447.GJ8589@phenom.ffwll.local>
+References: <cover.1520068884.git.lukas@wunner.de>
+ <20180306102940.GG22212@phenom.ffwll.local>
+ <20180311155549.GA11806@wunner.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C79526743E
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 17:40:13 +0100 (CET)
-In-Reply-To: <1520855409-28862-3-git-send-email-bardliao@realtek.com>
+Received: from mail-wm0-f53.google.com (mail-wm0-f53.google.com [74.125.82.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C8FE267172
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 17:54:51 +0100 (CET)
+Received: by mail-wm0-f53.google.com with SMTP id s206so14285758wme.0
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 09:54:51 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20180311155549.GA11806@wunner.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,143 +26,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, zhongan@pinecone.net, flove@realtek.com
+To: Lukas Wunner <lukas@wunner.de>
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, alsa-devel@alsa-project.org, Martin Lopatar <lopin@dataplex.cz>, Hans de Goede <hdegoede@redhat.com>, linux-pci@vger.kernel.org, Gustavo Padovan <gustavo@padovan.org>, Maik Freudenberg <hhfeuer@gmx.de>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Daniel Drake <dan@reactivated.net>, dri-devel@lists.freedesktop.org, Denis Lisov <dennis.lissov@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, Mike Lothian <mike@fireburn.co.uk>, Sean Paul <seanpaul@chromium.org>, Peter Wu <peter@lekensteyn.nl>, Daniel Vetter <daniel@ffwll.ch>, nouveau@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>, Lyude Paul <lyude@redhat.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Sun, Mar 11, 2018 at 04:55:49PM +0100, Lukas Wunner wrote:
+> On Tue, Mar 06, 2018 at 11:29:40AM +0100, Daniel Vetter wrote:
+> > On Sat, Mar 03, 2018 at 10:53:24AM +0100, Lukas Wunner wrote:
+> > > Modernize vga_switcheroo by using a device link to enforce a runtime PM
+> > > dependency from an HDA controller to the GPU it's integrated into, v2.
+> > > 
+> > > https://github.com/l1k/linux/commits/switcheroo_devlink_v2
+> > 
+> > This all looks really reasonable and like a good cleanup, but it's a bit
+> > too much detail so I'll punt review to someone else with more clue.
+> 
+> Patches [3/7] to [7/7] were reviewed by Peter Wu, the HDA bits in
+> patch [5/7] additionally by Takashi.
+> 
+> Patch [2/7] was acked by Bjorn.  There was no ack for patch [1/7]
+> (authored by Rafael), but it adressed the objection Bjorn raised
+> against my original patch, so I'm assuming Bjorn is okay with it.
+> (Bjorn, please let me know if that isn't the case.)
 
-   ASoC: rt5659: Separate adc 1/2 clock control
+Since it's written by someone else your s-o-b counts as full review (wrt
+drm-misc rules at least as implemented by dim). So sounds like you have
+review for all the bits.
 
-has been applied to the asoc tree at
+> The series has been tested on 5 systems, which raises the confidence:
+> 2x AMD PowerXpress (Mike Lothian, Kai Heng Feng)
+> 2x Nvidia Optimus (Denis Lisov, Peter Wu)
+> 1x MacBook Pro
+> 
+> The issues found during Peter Wu's thorough testing appear to all
+> be unrelated to this series, as per my e-mail yesterday.
+> 
+> If there are no objections, I plan to push the series to
+> drm-misc-next by the middle of the coming week so that it
+> would still catch the last train to 4.17.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Please make sure all maintainers of other bits are ok with that and have
+given their formal ack for merging through drm-misc. With that you have
+until end of this week (but don't cut it too short) to sneak it into 4.17.
+Otherwise just push and it'll land in 4.18.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From ce571b80e2b2411d5cdfa78888a6865f918621c6 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Mon, 12 Mar 2018 19:50:09 +0800
-Subject: [PATCH] ASoC: rt5659: Separate adc 1/2 clock control
-
-The control bits of ADC 1 and 2 clock are different. We have to
-separate it.
-
-Signed-off-by: Zhong An <zhongan@pinecone.net>
-Signed-off-by: Bard Liao <bardliao@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5659.c | 38 ++++++++++++++++++++++++++++++++------
- sound/soc/codecs/rt5659.h | 12 ++++++++----
- 2 files changed, 40 insertions(+), 10 deletions(-)
-
-diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
-index a81e248dfdcd..1c1a521c73cb 100644
---- a/sound/soc/codecs/rt5659.c
-+++ b/sound/soc/codecs/rt5659.c
-@@ -1622,7 +1622,7 @@ static int set_dmic_clk(struct snd_soc_dapm_widget *w,
- 	return idx;
- }
- 
--static int set_adc_clk(struct snd_soc_dapm_widget *w,
-+static int set_adc1_clk(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
- 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-@@ -1630,13 +1630,39 @@ static int set_adc_clk(struct snd_soc_dapm_widget *w,
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
- 		snd_soc_component_update_bits(component, RT5659_CHOP_ADC,
--			RT5659_CKXEN_ADCC_MASK | RT5659_CKGEN_ADCC_MASK,
--			RT5659_CKXEN_ADCC_MASK | RT5659_CKGEN_ADCC_MASK);
-+			RT5659_CKXEN_ADC1_MASK | RT5659_CKGEN_ADC1_MASK,
-+			RT5659_CKXEN_ADC1_MASK | RT5659_CKGEN_ADC1_MASK);
- 		break;
- 
- 	case SND_SOC_DAPM_PRE_PMD:
- 		snd_soc_component_update_bits(component, RT5659_CHOP_ADC,
--			RT5659_CKXEN_ADCC_MASK | RT5659_CKGEN_ADCC_MASK, 0);
-+			RT5659_CKXEN_ADC1_MASK | RT5659_CKGEN_ADC1_MASK, 0);
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+
-+}
-+
-+static int set_adc2_clk(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_dapm_to_component(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		snd_soc_component_update_bits(component, RT5659_CHOP_ADC,
-+			RT5659_CKXEN_ADC2_MASK | RT5659_CKGEN_ADC2_MASK,
-+			RT5659_CKXEN_ADC2_MASK | RT5659_CKGEN_ADC2_MASK);
-+		break;
-+
-+	case SND_SOC_DAPM_PRE_PMD:
-+		snd_soc_component_update_bits(component, RT5659_CHOP_ADC,
-+			RT5659_CKXEN_ADC2_MASK | RT5659_CKGEN_ADC2_MASK, 0);
- 		break;
- 
- 	default:
-@@ -2559,9 +2585,9 @@ static const struct snd_soc_dapm_widget rt5659_dapm_widgets[] = {
- 		RT5659_PWR_ADC_L2_BIT, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("ADC2 R Power", RT5659_PWR_DIG_1,
- 		RT5659_PWR_ADC_R2_BIT, 0, NULL, 0),
--	SND_SOC_DAPM_SUPPLY("ADC1 clock", SND_SOC_NOPM, 0, 0, set_adc_clk,
-+	SND_SOC_DAPM_SUPPLY("ADC1 clock", SND_SOC_NOPM, 0, 0, set_adc1_clk,
- 		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
--	SND_SOC_DAPM_SUPPLY("ADC2 clock", SND_SOC_NOPM, 0, 0, set_adc_clk,
-+	SND_SOC_DAPM_SUPPLY("ADC2 clock", SND_SOC_NOPM, 0, 0, set_adc2_clk,
- 		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
- 
- 	/* ADC Mux */
-diff --git a/sound/soc/codecs/rt5659.h b/sound/soc/codecs/rt5659.h
-index 3b51c8a46e6e..8b576d768744 100644
---- a/sound/soc/codecs/rt5659.h
-+++ b/sound/soc/codecs/rt5659.h
-@@ -1743,10 +1743,14 @@
- #define RT5659_CKGEN_DAC2_SFT			4
- 
- /* Chopper and Clock control for ADC (0x013b)*/
--#define RT5659_CKXEN_ADCC_MASK			(0x1 << 13)
--#define RT5659_CKXEN_ADCC_SFT			13
--#define RT5659_CKGEN_ADCC_MASK			(0x1 << 12)
--#define RT5659_CKGEN_ADCC_SFT			12
-+#define RT5659_CKXEN_ADC1_MASK			(0x1 << 13)
-+#define RT5659_CKXEN_ADC1_SFT			13
-+#define RT5659_CKGEN_ADC1_MASK			(0x1 << 12)
-+#define RT5659_CKGEN_ADC1_SFT			12
-+#define RT5659_CKXEN_ADC2_MASK			(0x1 << 5)
-+#define RT5659_CKXEN_ADC2_SFT			5
-+#define RT5659_CKGEN_ADC2_MASK			(0x1 << 4)
-+#define RT5659_CKGEN_ADC2_SFT			4
- 
- /* Test Mode Control 1 (0x0145) */
- #define RT5659_AD2DA_LB_MASK			(0x1 << 9)
+I think you've got all the other pieces.
+-Daniel
 -- 
-2.16.2
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
