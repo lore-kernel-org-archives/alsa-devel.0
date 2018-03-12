@@ -1,92 +1,83 @@
-From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH v2 6/6] ASoC: sun4i-i2s: Add support for loopback
-Date: Mon, 12 Mar 2018 16:57:53 +0100
-Message-ID: <20180312155753.9478-7-codekipper@gmail.com>
-References: <20180312155753.9478-1-codekipper@gmail.com>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: soc-core: Add missing NULL check
+Date: Mon, 12 Mar 2018 09:02:04 -0700
+Message-ID: <20180312160204.GA2186@sirena.org.uk>
+References: <20180308200653.GA47801@beast>
+ <20180309125050.GD5252@sirena.org.uk>
+ <CAGXu5jJo2JVXKV+nieGwzH0XOPpzzo4DmYy0L05iZD6wwO1vGg@mail.gmail.com>
+ <20180309202242.GA3073@sirena.org.uk>
+ <20180312103143.y7bidz4gj6ya7dgo@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBDGHTLKQKGQEAHJ2RTY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20180312155753.9478-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============1096509956501006645=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id BC46526726B
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 17:02:09 +0100 (CET)
+In-Reply-To: <20180312103143.y7bidz4gj6ya7dgo@localhost.localdomain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: moderated for non-subscribers <alsa-devel@alsa-project.org>, Kees Cook <keescook@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Pavel Machek <pavel@ucw.cz>
 List-Id: alsa-devel@alsa-project.org
 
-From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-The DAI has a loopback register which can be set and therefore routes
-the transmit fifo to receive fifo. This is useful for testing the block
-without the need for any external hardware.
+--===============1096509956501006645==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="MGYHOYXEY6WxJCY8"
+Content-Disposition: inline
 
-Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
----
- Documentation/devicetree/bindings/sound/sun4i-i2s.txt |  3 +++
- sound/soc/sunxi/sun4i-i2s.c                           | 11 +++++++++++
- 2 files changed, 14 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-index 3f966ac61b9e..325e3d4571f1 100644
---- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-@@ -32,6 +32,9 @@ Optional properties:
- - allwinner,slot-width-override:if this property is present then the dai is
- 				configured to extend the slot width to the
- 				value specified. Min 8, Max 32.
-+- loopback:	if this property is present then the dai is configured in
-+		loopback mode where the output fifo is redirected to the input
-+		fifo.
- 
- - allwinner,playback-channels:  if this property is present then the number
- 				of available channels is extended and the
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 7cf4dfe440de..a3c33814d33e 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -31,6 +31,7 @@
- #define SUN4I_I2S_CTRL_MODE_MASK		BIT(5)
- #define SUN4I_I2S_CTRL_MODE_SLAVE			(1 << 5)
- #define SUN4I_I2S_CTRL_MODE_MASTER			(0 << 5)
-+#define SUN4I_I2S_CTRL_LOOP			BIT(3)
- #define SUN4I_I2S_CTRL_TX_EN			BIT(2)
- #define SUN4I_I2S_CTRL_RX_EN			BIT(1)
- #define SUN4I_I2S_CTRL_GL_EN			BIT(0)
-@@ -195,6 +196,8 @@ struct sun4i_i2s {
- 
- 	const struct sun4i_i2s_quirks	*variant;
- 
-+	bool loopback;
-+
- 	unsigned int	slot_width;
- };
- 
-@@ -639,6 +642,11 @@ static void sun4i_i2s_start_capture(struct sun4i_i2s *i2s)
- 	regmap_update_bits(i2s->regmap, SUN4I_I2S_DMA_INT_CTRL_REG,
- 			   SUN4I_I2S_DMA_INT_CTRL_RX_DRQ_EN,
- 			   SUN4I_I2S_DMA_INT_CTRL_RX_DRQ_EN);
-+
-+	/* Debugging without codec */
-+	if (i2s->loopback)
-+		regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-+				   SUN4I_I2S_CTRL_LOOP, SUN4I_I2S_CTRL_LOOP);
- }
- 
- static void sun4i_i2s_start_playback(struct sun4i_i2s *i2s)
-@@ -1204,6 +1212,9 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
- 			soc_dai->playback.channels_max = val;
- 	}
- 
-+	if (of_property_read_bool(pdev->dev.of_node, "loopback"))
-+		i2s->loopback = true;
-+
- 	pm_runtime_enable(&pdev->dev);
- 	if (!pm_runtime_enabled(&pdev->dev)) {
- 		ret = sun4i_i2s_runtime_resume(&pdev->dev);
--- 
-2.16.2
+--MGYHOYXEY6WxJCY8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Mar 12, 2018 at 10:31:43AM +0000, Charles Keepax wrote:
+> On Fri, Mar 09, 2018 at 08:22:42PM +0000, Mark Brown wrote:
+
+> > I think I might just remove the file though, it's been non-functional on
+> > most systems for a while now as almost all the drivers migrated to
+> > regmap and nobody complained so we should be safe.  There's still
+> > something that ought to be investigated here.
+
+> Looks like we might already be about to try that since it looks
+> like the componentisation actually removed these files, although
+> I assume inadvertently.
+
+No, that's an intended effect.  This only exists for CODEC drivers and
+even then it's only ones that use the legacy ASoC I/O code that really
+ever got anything from this.  Anything that's well maintained should be
+using regmap.
+
+--MGYHOYXEY6WxJCY8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqmpHgACgkQJNaLcl1U
+h9BJnwf+IEaSxqmLSmXNcJS1IWYTAdjXvz4eEysxVOja9W4x+qAPlN27iFeelxtK
+WkQotQrvdNsUdUNoD58K4ApwuH5Vz0gbAgl05CS7t2qDEDgELpgv0LGZcw3WghWD
+ktdk2RvnANbNjrj3atrAZ64O3TWZWPzOoVR5H712SGUT7wEvuu5ZOrkTD94SfDzw
+tefG29lDWWLfUpZkTG+bIMpBqIT5y9bwHw8tkOYmNEw+sEpb8WtLJtqI1Z+nkK+p
+KKAE2rhJgZox38MxAvDaUxVV84U/RpGGnOyJOrupkFczxfGv+RAi/eDBs55WUQhz
+n+MUsGVBaPVQ2wKuFumOsj9GetXAxg==
+=Mttv
+-----END PGP SIGNATURE-----
+
+--MGYHOYXEY6WxJCY8--
+
+--===============1096509956501006645==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1096509956501006645==--
