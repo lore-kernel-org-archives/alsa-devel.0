@@ -1,17 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Add snd_soc_of_put_dai_link_codecs()
-	helper function" to the asoc tree
-Date: Mon, 12 Mar 2018 17:58:55 +0000 (GMT)
-Message-ID: <20180312175855.1D2B2440079@finisterre.ee.mobilebroadband>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v2 7/7] ASoC: samsung: Add HDMI audio
+ support for Chromebook Snow
+Date: Mon, 12 Mar 2018 19:04:10 +0100
+Message-ID: <20180312180410.ehbbrdu4gvkgx4zi@kozik-lap>
+References: <CGME20180309175019epcas2p34a7fd706117cb18d31109dbc9c8cf60b@epcas2p3.samsung.com>
+ <20180309174858.24017-1-s.nawrocki@samsung.com>
+ <20180309174858.24017-7-s.nawrocki@samsung.com>
+ <CAJKOXPddtARqmHAfYYp80pfnz8t_2ctT5bnf89bQw95LDUKQOw@mail.gmail.com>
+ <a9f9a02c-128c-0414-cd90-6ecaf731cb8d@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DD804266E43
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 18:58:59 +0100 (CET)
-In-Reply-To: 
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 837B4266E63
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 19:04:13 +0100 (CET)
+Received: by mail-wm0-f66.google.com with SMTP id 188so17897112wme.1
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 11:04:13 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <a9f9a02c-128c-0414-cd90-6ecaf731cb8d@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,119 +29,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, =?utf-8?Q?Bart=C5=82omiej_=C5=BBo=C5=82nierkiewicz?= <b.zolnierkie@samsung.com>, sbkim73@samsung.com, broonie@kernel.org, lgirdwood@gmail.com, javierm@redhat.com, robh+dt@kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Mon, Mar 12, 2018 at 05:21:03PM +0100, Sylwester Nawrocki wrote:
+> On 03/12/2018 08:39 AM, Krzysztof Kozlowski wrote:
+> >> -#define FIN_PLL_RATE           24000000
+> >> +#define FIN_PLL_RATE           24000000UL
+> >
+> > This change looks unrelated so how about making it separate patch?
+> 
+> I knew you will find this! ;P I don't want to be making this kind
+> of funny patches :), I can repost v3 in a few days with this bit removed.
 
-   ASoC: Add snd_soc_of_put_dai_link_codecs() helper function
+Ah, you know, after working with crappy code and crappy history, I find
+very useful to have strict approach around changes.  This one might be
+harmless... or you might be fixing some warning caught by your
+compiler thus it looks like nice candidate for seaprate patch.
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 946857636d279486eaa47c930930185631f28fce Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Fri, 9 Mar 2018 18:48:54 +0100
-Subject: [PATCH] ASoC: Add snd_soc_of_put_dai_link_codecs() helper function
-
-The code for dereferencing device nodes in the 'codecs' array is moved
-to a separate function so we can avoid open coding that in drivers.
-
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/sound/soc.h  |  1 +
- sound/soc/soc-core.c | 32 +++++++++++++++++++++++---------
- 2 files changed, 24 insertions(+), 9 deletions(-)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 747fd583b9dc..4a387f0b3d56 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1807,6 +1807,7 @@ int snd_soc_of_get_dai_name(struct device_node *of_node,
- int snd_soc_of_get_dai_link_codecs(struct device *dev,
- 				   struct device_node *of_node,
- 				   struct snd_soc_dai_link *dai_link);
-+void snd_soc_of_put_dai_link_codecs(struct snd_soc_dai_link *dai_link);
- 
- int snd_soc_add_dai_link(struct snd_soc_card *card,
- 				struct snd_soc_dai_link *dai_link);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 96c44f6576c9..a1f86e85bff9 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -4397,6 +4397,26 @@ int snd_soc_of_get_dai_name(struct device_node *of_node,
- }
- EXPORT_SYMBOL_GPL(snd_soc_of_get_dai_name);
- 
-+/*
-+ * snd_soc_of_put_dai_link_codecs - Dereference device nodes in the codecs array
-+ * @dai_link: DAI link
-+ *
-+ * Dereference device nodes acquired by snd_soc_of_get_dai_link_codecs().
-+ */
-+void snd_soc_of_put_dai_link_codecs(struct snd_soc_dai_link *dai_link)
-+{
-+	struct snd_soc_dai_link_component *component = dai_link->codecs;
-+	int index;
-+
-+	for (index = 0; index < dai_link->num_codecs; index++, component++) {
-+		if (!component->of_node)
-+			break;
-+		of_node_put(component->of_node);
-+		component->of_node = NULL;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_of_put_dai_link_codecs);
-+
- /*
-  * snd_soc_of_get_dai_link_codecs - Parse a list of CODECs in the devicetree
-  * @dev: Card device
-@@ -4406,7 +4426,8 @@ EXPORT_SYMBOL_GPL(snd_soc_of_get_dai_name);
-  * Builds an array of CODEC DAI components from the DAI link property
-  * 'sound-dai'.
-  * The array is set in the DAI link and the number of DAIs is set accordingly.
-- * The device nodes in the array (of_node) must be dereferenced by the caller.
-+ * The device nodes in the array (of_node) must be dereferenced by calling
-+ * snd_soc_of_put_dai_link_codecs() on @dai_link.
-  *
-  * Returns 0 for success
-  */
-@@ -4454,14 +4475,7 @@ int snd_soc_of_get_dai_link_codecs(struct device *dev,
- 	}
- 	return 0;
- err:
--	for (index = 0, component = dai_link->codecs;
--	     index < dai_link->num_codecs;
--	     index++, component++) {
--		if (!component->of_node)
--			break;
--		of_node_put(component->of_node);
--		component->of_node = NULL;
--	}
-+	snd_soc_of_put_dai_link_codecs(dai_link);
- 	dai_link->codecs = NULL;
- 	dai_link->num_codecs = 0;
- 	return ret;
--- 
-2.16.2
+Best regards,
+Krzysztof
