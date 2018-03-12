@@ -1,22 +1,18 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v2 0/7] Modernize vga_switcheroo by using
- device link for HDA
-Date: Mon, 12 Mar 2018 17:54:47 +0100
-Message-ID: <20180312165447.GJ8589@phenom.ffwll.local>
-References: <cover.1520068884.git.lukas@wunner.de>
- <20180306102940.GG22212@phenom.ffwll.local>
- <20180311155549.GA11806@wunner.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: soc-io: Fix
+ snd_soc_component_update_bits_legacy
+Date: Mon, 12 Mar 2018 09:58:49 -0700
+Message-ID: <20180312165849.GK2186@sirena.org.uk>
+References: <20180312142423.13177-1-peter.ujfalusi@ti.com>
+ <20180312142423.13177-3-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8673226203404175265=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f53.google.com (mail-wm0-f53.google.com [74.125.82.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C8FE267172
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 17:54:51 +0100 (CET)
-Received: by mail-wm0-f53.google.com with SMTP id s206so14285758wme.0
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 09:54:51 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20180311155549.GA11806@wunner.de>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B068266E63
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 17:58:55 +0100 (CET)
+In-Reply-To: <20180312142423.13177-3-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,53 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lukas Wunner <lukas@wunner.de>
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, alsa-devel@alsa-project.org, Martin Lopatar <lopin@dataplex.cz>, Hans de Goede <hdegoede@redhat.com>, linux-pci@vger.kernel.org, Gustavo Padovan <gustavo@padovan.org>, Maik Freudenberg <hhfeuer@gmx.de>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Daniel Drake <dan@reactivated.net>, dri-devel@lists.freedesktop.org, Denis Lisov <dennis.lissov@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, Mike Lothian <mike@fireburn.co.uk>, Sean Paul <seanpaul@chromium.org>, Peter Wu <peter@lekensteyn.nl>, Daniel Vetter <daniel@ffwll.ch>, nouveau@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>, Lyude Paul <lyude@redhat.com>, Takashi Iwai <tiwai@suse.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Liam Girdwood <lgirdwood@gmail.com>, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Mar 11, 2018 at 04:55:49PM +0100, Lukas Wunner wrote:
-> On Tue, Mar 06, 2018 at 11:29:40AM +0100, Daniel Vetter wrote:
-> > On Sat, Mar 03, 2018 at 10:53:24AM +0100, Lukas Wunner wrote:
-> > > Modernize vga_switcheroo by using a device link to enforce a runtime PM
-> > > dependency from an HDA controller to the GPU it's integrated into, v2.
-> > > 
-> > > https://github.com/l1k/linux/commits/switcheroo_devlink_v2
-> > 
-> > This all looks really reasonable and like a good cleanup, but it's a bit
-> > too much detail so I'll punt review to someone else with more clue.
-> 
-> Patches [3/7] to [7/7] were reviewed by Peter Wu, the HDA bits in
-> patch [5/7] additionally by Takashi.
-> 
-> Patch [2/7] was acked by Bjorn.  There was no ack for patch [1/7]
-> (authored by Rafael), but it adressed the objection Bjorn raised
-> against my original patch, so I'm assuming Bjorn is okay with it.
-> (Bjorn, please let me know if that isn't the case.)
 
-Since it's written by someone else your s-o-b counts as full review (wrt
-drm-misc rules at least as implemented by dim). So sounds like you have
-review for all the bits.
+--===============8673226203404175265==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ibq+fG+Ci5ONsaof"
+Content-Disposition: inline
 
-> The series has been tested on 5 systems, which raises the confidence:
-> 2x AMD PowerXpress (Mike Lothian, Kai Heng Feng)
-> 2x Nvidia Optimus (Denis Lisov, Peter Wu)
-> 1x MacBook Pro
-> 
-> The issues found during Peter Wu's thorough testing appear to all
-> be unrelated to this series, as per my e-mail yesterday.
-> 
-> If there are no objections, I plan to push the series to
-> drm-misc-next by the middle of the coming week so that it
-> would still catch the last train to 4.17.
 
-Please make sure all maintainers of other bits are ok with that and have
-given their formal ack for merging through drm-misc. With that you have
-until end of this week (but don't cut it too short) to sneak it into 4.17.
-Otherwise just push and it'll land in 4.18.
+--ibq+fG+Ci5ONsaof
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I think you've got all the other pieces.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+On Mon, Mar 12, 2018 at 04:24:23PM +0200, Peter Ujfalusi wrote:
+
+> Fixes: e2c330b9b5665 ("ASoC: Move IO abstraction to the component level")
+>=20
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+
+When you add a Fixes line for some reason you always seem to add a blank
+line before the signoff which is a bit weird and I'm worried will
+confuse some scripts.
+
+--ibq+fG+Ci5ONsaof
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqmsckACgkQJNaLcl1U
+h9Dsygf8DMPW7fqR1+HQCUxgBsUyOFfjN063mQ9+SB/ZXo25+smzxhP4dGAth/bJ
+3ZXYPP+1eo/S7qUnH/Lh6agYXXtXjvaG8NZTNWZ3+Vapb/0Kt9ug6Wui72DVnonB
+yQls0W1zeIyJopjw5AZKGhepqvgGCiQ/ww5Zmnufava4La/0oX15M7fKhN1heXU6
+j+Uahc1Ta8DlRmUHKtk8ste1U15/X3T1AsTpR8zcQgHqE5MrJE+kcKtaN1q1vQym
+wMwkvO9R9WDDvhUzRlHaug82NbzRzkOkBeq9gRvSlt+7CWLMoX0uHqWRUrBErYB9
+wluB+7v3I9ASiciKhRWD/LJhRKqh0A==
+=gr5l
+-----END PGP SIGNATURE-----
+
+--ibq+fG+Ci5ONsaof--
+
+--===============8673226203404175265==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8673226203404175265==--
