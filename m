@@ -1,27 +1,25 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v2 7/7] ASoC: samsung: Add HDMI audio
- support for Chromebook Snow
-Date: Mon, 12 Mar 2018 08:39:11 +0100
-Message-ID: <CAJKOXPddtARqmHAfYYp80pfnz8t_2ctT5bnf89bQw95LDUKQOw@mail.gmail.com>
-References: <CGME20180309175019epcas2p34a7fd706117cb18d31109dbc9c8cf60b@epcas2p3.samsung.com>
- <20180309174858.24017-1-s.nawrocki@samsung.com>
- <20180309174858.24017-7-s.nawrocki@samsung.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCHv5 3/5] mfd: motorola-cpcap: Add audio-codec
+	support
+Date: Mon, 12 Mar 2018 09:08:38 +0000
+Message-ID: <20180312090838.ubqvlqnqzv6g4cxr@dell>
+References: <20180223200254.25685-1-sebastian.reichel@collabora.co.uk>
+ <20180223200254.25685-4-sebastian.reichel@collabora.co.uk>
+ <20180307163211.rytfli5tb47yhtug@dell>
+ <20180308094652.qg4atjw5c3hayaz3@earth.universe>
+ <20180308170736.GN5799@atomide.com>
+ <20180309112915.bjnqi7tddgucdqjl@earth.universe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B662266E43
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 08:39:14 +0100 (CET)
-Received: from mail-wr0-f173.google.com (mail-wr0-f173.google.com
- [209.85.128.173])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 8CDE1205F4
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 07:39:13 +0000 (UTC)
-Received: by mail-wr0-f173.google.com with SMTP id o8so14593251wra.1
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 00:39:13 -0700 (PDT)
-In-Reply-To: <20180309174858.24017-7-s.nawrocki@samsung.com>
+Received: from mail-wm0-f54.google.com (mail-wm0-f54.google.com [74.125.82.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB53E26726B
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 10:08:41 +0100 (CET)
+Received: by mail-wm0-f54.google.com with SMTP id e194so14818204wmd.3
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 02:08:41 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20180309112915.bjnqi7tddgucdqjl@earth.universe>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,51 +29,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, =?UTF-8?B?QmFydMWCb21pZWogxbtvxYJuaWVya2lld2ljeg==?= <b.zolnierkie@samsung.com>, sbkim73@samsung.com, lgirdwood@gmail.com, robh+dt@kernel.org, javierm@redhat.com, broonie@kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>
+To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, kernel@collabora.com, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 9, 2018 at 6:48 PM, Sylwester Nawrocki
-<s.nawrocki@samsung.com> wrote:
-> This patch updates the driver so, in addition to current DT bindings,
-> the new DT bindings with cpu, codec subnodes can be used, in order to
-> support sound on the HDMI interface.
->
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
-> Changes since v1:
->  - adjustments to changed order of codecs in codec/cpu-dai property,
->  - fixed errors in snow_remove().
-> ---
->  sound/soc/samsung/snow.c | 226 +++++++++++++++++++++++++++++++++++++----------
->  1 file changed, 178 insertions(+), 48 deletions(-)
->
-> diff --git a/sound/soc/samsung/snow.c b/sound/soc/samsung/snow.c
-> index fc62110f500f..f00ca1ca0171 100644
-> --- a/sound/soc/samsung/snow.c
-> +++ b/sound/soc/samsung/snow.c
-> @@ -11,92 +11,207 @@
->   * General Public License for more details.
->   */
->
-> +#include <linux/clk.h>
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
->  #include <linux/of.h>
->  #include <linux/of_device.h>
-> -
-> +#include <sound/pcm_params.h>
->  #include <sound/soc.h>
->
->  #include "i2s.h"
->
-> -#define FIN_PLL_RATE           24000000
-> +#define FIN_PLL_RATE           24000000UL
-
-This change looks unrelated so how about making it separate patch?
-
-For the rest:
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-
-Best regards,
-Krzysztof
+T24gRnJpLCAwOSBNYXIgMjAxOCwgU2ViYXN0aWFuIFJlaWNoZWwgd3JvdGU6Cgo+IEhpLAo+IAo+
+IE9uIFRodSwgTWFyIDA4LCAyMDE4IGF0IDA5OjA3OjM2QU0gLTA4MDAsIFRvbnkgTGluZGdyZW4g
+d3JvdGU6Cj4gPiAqIFNlYmFzdGlhbiBSZWljaGVsIDxzZWJhc3RpYW4ucmVpY2hlbEBjb2xsYWJv
+cmEuY28udWs+IFsxODAzMDggMDk6NDddOgo+ID4gPiBIaSBMZWUsCj4gPiA+IAo+ID4gPiBPbiBX
+ZWQsIE1hciAwNywgMjAxOCBhdCAwNDozMjoxMVBNICswMDAwLCBMZWUgSm9uZXMgd3JvdGU6Cj4g
+PiA+ID4gT24gRnJpLCAyMyBGZWIgMjAxOCwgU2ViYXN0aWFuIFJlaWNoZWwgd3JvdGU6Cj4gPiA+
+ID4gPiArc3RhdGljIGNvbnN0IHN0cnVjdCBtZmRfY2VsbCBjcGNhcF9tZmRfZGV2aWNlc1tdID0g
+ewo+ID4gPiAKPiA+ID4gWy4uLl0KPiA+ID4gCj4gPiA+ID4gPiArCX0sIHsKPiA+ID4gPiA+ICsJ
+CS5uYW1lICAgICAgICAgID0gImNwY2FwLWxlZCIsCj4gPiA+ID4gPiArCQkuaWQgICAgICAgICAg
+ICA9IDQsCj4gPiA+ID4gPiArCQkub2ZfY29tcGF0aWJsZSA9ICJtb3Rvcm9sYSxjcGNhcC1sZWQt
+Y3AiLAo+ID4gPiA+ID4gKwl9LCB7Cj4gPiA+ID4gPiArCQkubmFtZSAgICAgICAgICA9ICJjcGNh
+cC1jb2RlYyIsCj4gPiA+ID4gPiArCX0KPiA+ID4gPiA+ICt9Owo+ID4gPiA+IAo+ID4gPiA+IFdp
+dGggbm9uZSBvZiB0aGUgZW50cmllcyBjb250YWluaW5nIHBsYXRmb3JtX2RhdGEgL21lIHdvbmRl
+cnMgd2h5IHlvdQo+ID4gPiA+IGNhbid0IHN0aWxsIHVzZSBkZXZtX29mX3BsYXRmb3JtX3BvcHVs
+YXRlKCk/Cj4gPiA+IAo+ID4gPiBCZWNhdXNlIGRldm1fb2ZfcGxhdGZvcm1fcG9wdWxhdGUgd29y
+a3Mgd2l0aCBjb21wYXRpYmxlIHByb3BlcnRpZXMgYW5kCj4gPiA+IGNwY2FwLWNvZGVjIGRvZXMg
+bm90IGhhdmUgb25lIGFmdGVyIEkgcmVtb3ZlZCBpdCBmb3IgTWFyay4KPiA+IAo+ID4gSG93IGFi
+b3V0IGtlZXAgZGV2bV9vZl9wbGF0Zm9ybV9wb3B1bGF0ZSgpIGZvciB0aGUgb25lcyB0aGF0Cj4g
+PiBhbHJlYWR5IGhhdmUgY29tcGF0aWJsZS4gVGhlbiBhZGQgYSB0YWJsZSBlbnRyeSBmb3IgY3Bj
+YXAtY29kZWMKPiA+IG9ubHkgYW5kIGNhbGwgZGV2bV9tZmRfYWRkX2RldmljZXMoKT8KPiAKPiBU
+aGlzIHNob3VsZCB3b3JrLiBJIHRoaW5rIGl0IG1ha2VzIHNlbnNlIHRvIHdhaXQgZm9yIFJvYiBI
+ZXJyaW5nJ3MKPiBmZWVkYmFjayBvbiB0aGUgYmluZGluZy4gTXkgdW5kZXJzdGFuZGluZyBpcywg
+dGhhdCBoZSBoYXMgdGhlIGxhc3QKPiB3b3JkIG9uIGJpbmRpbmcgcXVlc3Rpb25zIGFuZCBJIHdv
+dWxkIGxpa2UgdG8gYXZvaWQgY2hhbmdpbmcgdGhpcwo+IGJhY2sgYW5kIGZvcnRoLgoKSSd2ZSBi
+ZWVuIGF2b2lkaW5nIG1peC1hbmQtbWF0Y2hpbmcgbWZkXyooKSBhbmQgb2ZfcGxhdGZvcm1fKigp
+IEFQSXMsCmVsc2UgaXQgZ2V0cyB0b28gY29uZnVzaW5nIGZvciBuZXcgZGV2ZWxvcGVycy4KCipJ
+ZiogeW91IG1ha2UgdGhlIHN3aXRjaCB0byBtZmRfKigpIEFQSXMgKG5vdCBwcmVmZXJhYmxlKSwg
+dGhlbiBJCndvdWxkIGxpa2UgdG8gc2VlIG9mX3BsYXRmb3JtXyooKSByZW1vdmVkLgoKLS0gCkxl
+ZSBKb25lcyBb5p2O55C85pavXQpMaW5hcm8gU2VydmljZXMgVGVjaG5pY2FsIExlYWQKTGluYXJv
+Lm9yZyDilIIgT3BlbiBzb3VyY2Ugc29mdHdhcmUgZm9yIEFSTSBTb0NzCkZvbGxvdyBMaW5hcm86
+IEZhY2Vib29rIHwgVHdpdHRlciB8IEJsb2cKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
