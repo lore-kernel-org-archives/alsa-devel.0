@@ -1,25 +1,21 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCHv5 3/5] mfd: motorola-cpcap: Add audio-codec
-	support
-Date: Mon, 12 Mar 2018 09:08:38 +0000
-Message-ID: <20180312090838.ubqvlqnqzv6g4cxr@dell>
-References: <20180223200254.25685-1-sebastian.reichel@collabora.co.uk>
- <20180223200254.25685-4-sebastian.reichel@collabora.co.uk>
- <20180307163211.rytfli5tb47yhtug@dell>
- <20180308094652.qg4atjw5c3hayaz3@earth.universe>
- <20180308170736.GN5799@atomide.com>
- <20180309112915.bjnqi7tddgucdqjl@earth.universe>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH 3/3] ASoC: Add Multi CPU DAI support in DAPM
+Date: Mon, 12 Mar 2018 09:21:06 +0000
+Message-ID: <20180312092106.eke3lfc6op3lz42d@localhost.localdomain>
+References: <1520334030-8018-1-git-send-email-shreyas.nc@intel.com>
+ <1520334030-8018-4-git-send-email-shreyas.nc@intel.com>
+ <20180309163124.5vxiponvnubxnez2@localhost.localdomain>
+ <20180312053751.GC2887@snc-desk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f54.google.com (mail-wm0-f54.google.com [74.125.82.54])
- by alsa0.perex.cz (Postfix) with ESMTP id BB53E26726B
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 10:08:41 +0100 (CET)
-Received: by mail-wm0-f54.google.com with SMTP id e194so14818204wmd.3
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 02:08:41 -0700 (PDT)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7ECB266E43
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 10:21:12 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20180309112915.bjnqi7tddgucdqjl@earth.universe>
+In-Reply-To: <20180312053751.GC2887@snc-desk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,41 +25,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, kernel@collabora.com, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Shreyas NC <shreyas.nc@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, Patches Audio <patches.audio@intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAwOSBNYXIgMjAxOCwgU2ViYXN0aWFuIFJlaWNoZWwgd3JvdGU6Cgo+IEhpLAo+IAo+
-IE9uIFRodSwgTWFyIDA4LCAyMDE4IGF0IDA5OjA3OjM2QU0gLTA4MDAsIFRvbnkgTGluZGdyZW4g
-d3JvdGU6Cj4gPiAqIFNlYmFzdGlhbiBSZWljaGVsIDxzZWJhc3RpYW4ucmVpY2hlbEBjb2xsYWJv
-cmEuY28udWs+IFsxODAzMDggMDk6NDddOgo+ID4gPiBIaSBMZWUsCj4gPiA+IAo+ID4gPiBPbiBX
-ZWQsIE1hciAwNywgMjAxOCBhdCAwNDozMjoxMVBNICswMDAwLCBMZWUgSm9uZXMgd3JvdGU6Cj4g
-PiA+ID4gT24gRnJpLCAyMyBGZWIgMjAxOCwgU2ViYXN0aWFuIFJlaWNoZWwgd3JvdGU6Cj4gPiA+
-ID4gPiArc3RhdGljIGNvbnN0IHN0cnVjdCBtZmRfY2VsbCBjcGNhcF9tZmRfZGV2aWNlc1tdID0g
-ewo+ID4gPiAKPiA+ID4gWy4uLl0KPiA+ID4gCj4gPiA+ID4gPiArCX0sIHsKPiA+ID4gPiA+ICsJ
-CS5uYW1lICAgICAgICAgID0gImNwY2FwLWxlZCIsCj4gPiA+ID4gPiArCQkuaWQgICAgICAgICAg
-ICA9IDQsCj4gPiA+ID4gPiArCQkub2ZfY29tcGF0aWJsZSA9ICJtb3Rvcm9sYSxjcGNhcC1sZWQt
-Y3AiLAo+ID4gPiA+ID4gKwl9LCB7Cj4gPiA+ID4gPiArCQkubmFtZSAgICAgICAgICA9ICJjcGNh
-cC1jb2RlYyIsCj4gPiA+ID4gPiArCX0KPiA+ID4gPiA+ICt9Owo+ID4gPiA+IAo+ID4gPiA+IFdp
-dGggbm9uZSBvZiB0aGUgZW50cmllcyBjb250YWluaW5nIHBsYXRmb3JtX2RhdGEgL21lIHdvbmRl
-cnMgd2h5IHlvdQo+ID4gPiA+IGNhbid0IHN0aWxsIHVzZSBkZXZtX29mX3BsYXRmb3JtX3BvcHVs
-YXRlKCk/Cj4gPiA+IAo+ID4gPiBCZWNhdXNlIGRldm1fb2ZfcGxhdGZvcm1fcG9wdWxhdGUgd29y
-a3Mgd2l0aCBjb21wYXRpYmxlIHByb3BlcnRpZXMgYW5kCj4gPiA+IGNwY2FwLWNvZGVjIGRvZXMg
-bm90IGhhdmUgb25lIGFmdGVyIEkgcmVtb3ZlZCBpdCBmb3IgTWFyay4KPiA+IAo+ID4gSG93IGFi
-b3V0IGtlZXAgZGV2bV9vZl9wbGF0Zm9ybV9wb3B1bGF0ZSgpIGZvciB0aGUgb25lcyB0aGF0Cj4g
-PiBhbHJlYWR5IGhhdmUgY29tcGF0aWJsZS4gVGhlbiBhZGQgYSB0YWJsZSBlbnRyeSBmb3IgY3Bj
-YXAtY29kZWMKPiA+IG9ubHkgYW5kIGNhbGwgZGV2bV9tZmRfYWRkX2RldmljZXMoKT8KPiAKPiBU
-aGlzIHNob3VsZCB3b3JrLiBJIHRoaW5rIGl0IG1ha2VzIHNlbnNlIHRvIHdhaXQgZm9yIFJvYiBI
-ZXJyaW5nJ3MKPiBmZWVkYmFjayBvbiB0aGUgYmluZGluZy4gTXkgdW5kZXJzdGFuZGluZyBpcywg
-dGhhdCBoZSBoYXMgdGhlIGxhc3QKPiB3b3JkIG9uIGJpbmRpbmcgcXVlc3Rpb25zIGFuZCBJIHdv
-dWxkIGxpa2UgdG8gYXZvaWQgY2hhbmdpbmcgdGhpcwo+IGJhY2sgYW5kIGZvcnRoLgoKSSd2ZSBi
-ZWVuIGF2b2lkaW5nIG1peC1hbmQtbWF0Y2hpbmcgbWZkXyooKSBhbmQgb2ZfcGxhdGZvcm1fKigp
-IEFQSXMsCmVsc2UgaXQgZ2V0cyB0b28gY29uZnVzaW5nIGZvciBuZXcgZGV2ZWxvcGVycy4KCipJ
-ZiogeW91IG1ha2UgdGhlIHN3aXRjaCB0byBtZmRfKigpIEFQSXMgKG5vdCBwcmVmZXJhYmxlKSwg
-dGhlbiBJCndvdWxkIGxpa2UgdG8gc2VlIG9mX3BsYXRmb3JtXyooKSByZW1vdmVkLgoKLS0gCkxl
-ZSBKb25lcyBb5p2O55C85pavXQpMaW5hcm8gU2VydmljZXMgVGVjaG5pY2FsIExlYWQKTGluYXJv
-Lm9yZyDilIIgT3BlbiBzb3VyY2Ugc29mdHdhcmUgZm9yIEFSTSBTb0NzCkZvbGxvdyBMaW5hcm86
-IEZhY2Vib29rIHwgVHdpdHRlciB8IEJsb2cKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+On Mon, Mar 12, 2018 at 11:07:52AM +0530, Shreyas NC wrote:
+> On Fri, Mar 09, 2018 at 10:01:24PM +0530, Charles Keepax wrote:
+> > On Tue, Mar 06, 2018 at 04:30:30PM +0530, Shreyas NC wrote:
+> > > -static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
+> > > -					  struct snd_soc_pcm_runtime *rtd)
+> > > +static void dapm_check_dai_valid_widget(struct snd_soc_card *card,
+> > > +					struct snd_soc_pcm_runtime *rtd,
+> > > +					struct snd_soc_dai *codec_dai,
+> > > +					struct snd_soc_dai *cpu_dai)
+> > 
+> > Not sure about the name here dapm_check_dai_valid_widget doesn't
+> > sound like it should be adding paths, otherwise I think this one
+> > looks ok.
+> > 
+> 
+> Ok, does dapm_add_valid_widget() sound better?
+
+Yeah that seems like a better name to me.
+
+Thanks,
+Charles
