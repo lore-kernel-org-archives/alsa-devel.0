@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5659: fix wrong bit define for ADC L2
-	power." to the asoc tree
+Subject: Applied "ASoC: mt8173-rt5650: fix child-node lookup" to the asoc tree
 Date: Mon, 12 Mar 2018 16:28:52 +0000 (GMT)
-Message-ID: <20180312162852.4271A44007A@finisterre.ee.mobilebroadband>
-References: <1520855409-28862-1-git-send-email-bardliao@realtek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E6C3326726B
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 17:28:55 +0100 (CET)
-In-Reply-To: <1520855409-28862-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, zhongan@pinecone.net, flove@realtek.com
+Message-ID: <20180312162852.E3DDE44007C@finisterre.ee.mobilebroadband>
+References: <20180131055921.25574-1-johan@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180131055921.25574-1-johan@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Johan Hovold <johan@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-mediatek@lists.infradead.org, PC Liao <pc.liao@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5659: fix wrong bit define for ADC L2 power.
+   ASoC: mt8173-rt5650: fix child-node lookup
 
 has been applied to the asoc tree at
 
@@ -53,32 +37,58 @@ to this mail.
 Thanks,
 Mark
 
->From 9849ef555c7212f4ae93d752cfa1232488ec7c83 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Mon, 12 Mar 2018 19:50:07 +0800
-Subject: [PATCH] ASoC: rt5659: fix wrong bit define for ADC L2 power.
+>From 06190937b9de9803e15a122762b5bbd442eaee31 Mon Sep 17 00:00:00 2001
+From: Johan Hovold <johan@kernel.org>
+Date: Wed, 31 Jan 2018 16:59:21 +1100
+Subject: [PATCH] ASoC: mt8173-rt5650: fix child-node lookup
 
-RT5659_PWR_ADC_L2_BIT should be 2.
+This driver used the wrong OF-helper when looking up the optional
+capture-codec child node during probe. Instead of searching just
+children of the sound node, a tree-wide depth-first search starting at
+the unrelated platform node was done. Not only could this end up
+matching an unrelated node or no node at all; the platform node could
+also be prematurely freed since of_find_node_by_name() drops a reference
+to its first argument. This particular pattern has been observed leading
+to crashes after probe deferrals in other drivers.
 
-Signed-off-by: Zhong An <zhongan@pinecone.net>
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Fix this by dropping the broken call to of_find_node_by_name() and
+keeping only the second, correct lookup using of_get_child_by_name()
+while taking care not to bail out if the optional node is missing.
+
+Note that this also addresses two capture-codec node-reference leaks
+(one for each of the original helper calls).
+
+Compile tested only.
+
+Fixes: d349caeb0510 ("ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver")
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5659.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/mediatek/mt8173/mt8173-rt5650.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5659.h b/sound/soc/codecs/rt5659.h
-index 8f1aeef08489..3ae2d74861ef 100644
---- a/sound/soc/codecs/rt5659.h
-+++ b/sound/soc/codecs/rt5659.h
-@@ -1008,7 +1008,7 @@
- #define RT5659_PWR_ADC_R1			(0x1 << 3)
- #define RT5659_PWR_ADC_R1_BIT			3
- #define RT5659_PWR_ADC_L2			(0x1 << 2)
--#define RT5659_PWR_ADC_L2_BIT			4
-+#define RT5659_PWR_ADC_L2_BIT			2
- #define RT5659_PWR_ADC_R2			(0x1 << 1)
- #define RT5659_PWR_ADC_R2_BIT			1
- #define RT5659_PWR_CLS_D			(0x1)
+diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
+index 40ebefd625c1..679fc8bea0a3 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
++++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
+@@ -272,15 +272,10 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
+ 	}
+ 	mt8173_rt5650_codecs[1].of_node = mt8173_rt5650_codecs[0].of_node;
+ 
+-	if (of_find_node_by_name(platform_node, "codec-capture")) {
+-		np = of_get_child_by_name(pdev->dev.of_node, "codec-capture");
+-		if (!np) {
+-			dev_err(&pdev->dev,
+-				"%s: Can't find codec-capture DT node\n",
+-				__func__);
+-			return -EINVAL;
+-		}
++	np = of_get_child_by_name(pdev->dev.of_node, "codec-capture");
++	if (np) {
+ 		ret = snd_soc_of_get_dai_name(np, &codec_capture_dai);
++		of_node_put(np);
+ 		if (ret < 0) {
+ 			dev_err(&pdev->dev,
+ 				"%s codec_capture_dai name fail %d\n",
 -- 
 2.16.2
