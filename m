@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: AMD: Use single dai for da7219
- playback and capture
-Date: Mon, 12 Mar 2018 10:01:18 -0700
-Message-ID: <20180312170118.GL2186@sirena.org.uk>
-References: <1520845883-24062-1-git-send-email-akshu.agrawal@amd.com>
+Subject: Applied "ASoC: soc-io: Fix
+	snd_soc_component_update_bits_legacy" to the asoc tree
+Date: Mon, 12 Mar 2018 17:01:25 +0000 (GMT)
+Message-ID: <20180312170125.F0C48440079@finisterre.ee.mobilebroadband>
+References: <20180312142423.13177-3-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1404401077536281769=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 242DE266E43
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 18:01:21 +0100 (CET)
-In-Reply-To: <1520845883-24062-1-git-send-email-akshu.agrawal@amd.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6ACDA267198
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 18:01:29 +0100 (CET)
+In-Reply-To: <20180312142423.13177-3-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,61 +22,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Akshu Agrawal <akshu.agrawal@amd.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, lars@metafoo.de, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============1404401077536281769==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ucfHZChuBC0NsER/"
-Content-Disposition: inline
+   ASoC: soc-io: Fix snd_soc_component_update_bits_legacy
 
+has been applied to the asoc tree at
 
---ucfHZChuBC0NsER/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Mar 12, 2018 at 02:41:22PM +0530, Akshu Agrawal wrote:
-> BT I2S is a bi-directional dai, we will use the same
-> cpu dai for playback and capture.
->=20
-> TEST=3DBuild, apply grunt_mixer_settings:
-> iotools mmio_write32 0xfed80e40 0x040c40c0
-> iotools mmio_write32 0xfed80e28 0x10000
-> aplay -D hw:0,0 -vv <file>
-> arecord -D hw:0,0 -f dat -d 5 -vv <file>
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-These reproduction instructions don't make much sense outside of your
-test environment (how is anyone supposed to know what
-grunt_mixer_settings is?).  I'm also rather worried about the random
-magic numbers you're using with this iowrite tool - what do they do?  It
-sounds like this driver might not work at all without some missing
-bit...
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---ucfHZChuBC0NsER/
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqmsl0ACgkQJNaLcl1U
-h9B/Ngf7BU2XDi1HW8WcGIE6nUu7PWtbTspfczhtRXmgY0jQDO4ex2E7v181hQrK
-MNNg10nsWpdm+Musmz5mH70CPy70dpGOWKQWolPsut3qq94qpW9ATKc4Ub3fG6Lk
-fZ2qlaNy3PMWO9vic72zRnIHSduNDEEc3oYD+Q/UXEBU25k955Tw/btXnMJaIlyt
-nFM6RqGIMeHV5TjOcCN2sZ+q8BkMrkP6kurmOMXQsHw5GWQIlV0AbbiNm694e0GW
-qsLUWH4iVv0rkIpMSCzC1p+JweOYvD1jVTdkrh0P4unIAA97EjRzAw/pEYV9NmLm
-K5tJO+DC8Zz+uCCzugbO5e5uxIz7Rw==
-=0nEt
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---ucfHZChuBC0NsER/--
+>From dead99e8579b6e2ebdf1e9c819e67d7f4a5cedbb Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Mon, 12 Mar 2018 16:24:23 +0200
+Subject: [PATCH] ASoC: soc-io: Fix snd_soc_component_update_bits_legacy
 
---===============1404401077536281769==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+After the codec to component conversion codecs with custom read/write
+function will no longer able to use update_bits as their io callbacks are
+registered at component->driver level and not in component level.
 
+To not complicate the code further, lets just use the
+snd_soc_component_read/snd_soc_component_write function and let them sort
+out the correct io function to call.
 
---===============1404401077536281769==--
+Fixes: d0ff8ba57d965 ("ASoC: add Component level .read/.write")
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-io.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/soc-io.c b/sound/soc/soc-io.c
+index 2bc1c4c17896..d36a192fbece 100644
+--- a/sound/soc/soc-io.c
++++ b/sound/soc/soc-io.c
+@@ -88,19 +88,16 @@ static int snd_soc_component_update_bits_legacy(
+ 	unsigned int old, new;
+ 	int ret;
+ 
+-	if (!component->read || !component->write)
+-		return -EIO;
+-
+ 	mutex_lock(&component->io_mutex);
+ 
+-	ret = component->read(component, reg, &old);
++	ret = snd_soc_component_read(component, reg, &old);
+ 	if (ret < 0)
+ 		goto out_unlock;
+ 
+ 	new = (old & ~mask) | (val & mask);
+ 	*change = old != new;
+ 	if (*change)
+-		ret = component->write(component, reg, new);
++		ret = snd_soc_component_write(component, reg, new);
+ out_unlock:
+ 	mutex_unlock(&component->io_mutex);
+ 
+-- 
+2.16.2
