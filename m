@@ -1,17 +1,17 @@
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH 5/7] ASoC: amd: pointer and trigger callback
-	modifications for bt i2s
-Date: Mon, 12 Mar 2018 12:04:18 +0530
-Message-ID: <1520836460-21809-6-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: [PATCH 6/7] ASoC: amd: 16bit resolution support for bt
+	i2s instance
+Date: Mon, 12 Mar 2018 12:04:19 +0530
+Message-ID: <1520836460-21809-7-git-send-email-Vijendar.Mukunda@amd.com>
 References: <1520836460-21809-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM01-BN3-obe.outbound.protection.outlook.com
- (mail-bn3nam01on0061.outbound.protection.outlook.com [104.47.33.61])
- by alsa0.perex.cz (Postfix) with ESMTP id C82872673CE
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 07:33:37 +0100 (CET)
+Received: from NAM03-CO1-obe.outbound.protection.outlook.com
+ (mail-co1nam03on0062.outbound.protection.outlook.com [104.47.40.62])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B8B6267614
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 07:33:38 +0100 (CET)
 In-Reply-To: <1520836460-21809-1-git-send-email-Vijendar.Mukunda@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,248 +26,59 @@ To: broonie@kernel.org, alsa-devel@alsa-project.org, perex@perex.cz
 Cc: tiwai@suse.de, Alexander.Deucher@amd.com, lgirdwood@gmail.com, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-modified trigger and pointer callbacks for bt i2s
-instance.
+added 16bit resolution support for bt i2s instance for stoney.
 
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 ---
- sound/soc/amd/acp-pcm-dma.c | 186 ++++++++++++++++++++++++++++++++------------
- 1 file changed, 137 insertions(+), 49 deletions(-)
+ sound/soc/amd/acp-pcm-dma.c | 23 +++++++++++++++++++----
+ sound/soc/amd/acp.h         |  1 +
+ 2 files changed, 20 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 2b6c9ad..ad46719 100644
+index ad46719..a6787ac 100644
 --- a/sound/soc/amd/acp-pcm-dma.c
 +++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -958,23 +958,43 @@ static int acp_dma_hw_free(struct snd_pcm_substream *substream)
- 	return snd_pcm_lib_free_pages(substream);
- }
+@@ -919,10 +919,25 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
  
--static u64 acp_get_byte_count(void __iomem *acp_mmio, int stream)
-+static u64 acp_get_byte_count(void __iomem *acp_mmio, u16 instance, int stream)
- {
- 	union acp_dma_count playback_dma_count;
- 	union acp_dma_count capture_dma_count;
- 	u64 bytescount = 0;
- 
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		playback_dma_count.bcount.high = acp_reg_read(acp_mmio,
--					mmACP_I2S_TRANSMIT_BYTE_CNT_HIGH);
--		playback_dma_count.bcount.low  = acp_reg_read(acp_mmio,
--					mmACP_I2S_TRANSMIT_BYTE_CNT_LOW);
-+		switch (instance) {
-+		case I2S_BT_INSTANCE:
-+			playback_dma_count.bcount.high = acp_reg_read(acp_mmio,
-+						mmACP_I2S_BT_TRANSMIT_BYTE_CNT_HIGH);
-+			playback_dma_count.bcount.low  = acp_reg_read(acp_mmio,
-+						mmACP_I2S_BT_TRANSMIT_BYTE_CNT_LOW);
-+			break;
-+		case I2S_SP_INSTANCE:
-+		default:
-+			playback_dma_count.bcount.high = acp_reg_read(acp_mmio,
-+						mmACP_I2S_TRANSMIT_BYTE_CNT_HIGH);
-+			playback_dma_count.bcount.low  = acp_reg_read(acp_mmio,
-+						mmACP_I2S_TRANSMIT_BYTE_CNT_LOW);
-+		}
- 		bytescount = playback_dma_count.bytescount;
- 	} else {
--		capture_dma_count.bcount.high = acp_reg_read(acp_mmio,
--					mmACP_I2S_RECEIVED_BYTE_CNT_HIGH);
--		capture_dma_count.bcount.low  = acp_reg_read(acp_mmio,
--					mmACP_I2S_RECEIVED_BYTE_CNT_LOW);
-+		switch (instance) {
-+		case I2S_BT_INSTANCE:
-+			capture_dma_count.bcount.high = acp_reg_read(acp_mmio,
-+						mmACP_I2S_BT_RECEIVE_BYTE_CNT_HIGH);
-+			capture_dma_count.bcount.low  = acp_reg_read(acp_mmio,
-+						mmACP_I2S_BT_RECEIVE_BYTE_CNT_LOW);
-+			break;
-+		case I2S_SP_INSTANCE:
-+		default:
-+			capture_dma_count.bcount.high = acp_reg_read(acp_mmio,
-+						mmACP_I2S_RECEIVED_BYTE_CNT_HIGH);
-+			capture_dma_count.bcount.low  = acp_reg_read(acp_mmio,
-+						mmACP_I2S_RECEIVED_BYTE_CNT_LOW);
-+		}
- 		bytescount = capture_dma_count.bytescount;
- 	}
- 	return bytescount;
-@@ -993,14 +1013,32 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
- 		return -EINVAL;
- 
- 	buffersize = frames_to_bytes(runtime, runtime->buffer_size);
--	bytescount = acp_get_byte_count(rtd->acp_mmio, substream->stream);
--
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		if (bytescount > rtd->i2ssp_renderbytescount)
--			bytescount = bytescount - rtd->i2ssp_renderbytescount;
-+		bytescount = acp_get_byte_count(rtd->acp_mmio,
-+					rtd->i2s_play_instance, substream->stream);
-+		switch (rtd->i2s_play_instance) {
-+		case I2S_BT_INSTANCE:
-+			if (bytescount > rtd->i2sbt_renderbytescount)
-+				bytescount = bytescount - rtd->i2sbt_renderbytescount;
-+		break;
-+		case I2S_SP_INSTANCE:
-+		default:
-+			if (bytescount > rtd->i2ssp_renderbytescount)
-+				bytescount = bytescount - rtd->i2ssp_renderbytescount;
-+		}
- 	} else {
--		if (bytescount > rtd->i2ssp_capturebytescount)
--			bytescount = bytescount - rtd->i2ssp_capturebytescount;
-+		bytescount = acp_get_byte_count(rtd->acp_mmio,
-+					rtd->i2s_capture_instance, substream->stream);
-+		switch (rtd->i2s_capture_instance) {
-+		case I2S_BT_INSTANCE:
-+			if (bytescount > rtd->i2sbt_capturebytescount)
-+				bytescount = bytescount - rtd->i2sbt_capturebytescount;
-+			break;
-+		case I2S_SP_INSTANCE:
-+		default:
-+			if (bytescount > rtd->i2ssp_capturebytescount)
-+				bytescount = bytescount - rtd->i2ssp_capturebytescount;
-+		}
- 	}
- 	pos = do_div(bytescount, buffersize);
- 	return bytes_to_frames(runtime, pos);
-@@ -1083,54 +1121,104 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 	case SNDRV_PCM_TRIGGER_RESUME:
--		bytescount = acp_get_byte_count(rtd->acp_mmio,
--						substream->stream);
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--			if (rtd->i2ssp_renderbytescount == 0)
--				rtd->i2ssp_renderbytescount = bytescount;
--			acp_dma_start(rtd->acp_mmio,
--						SYSRAM_TO_ACP_CH_NUM, false);
--			while (acp_reg_read(rtd->acp_mmio, mmACP_DMA_CH_STS) &
--						BIT(SYSRAM_TO_ACP_CH_NUM)) {
--				if (!loops--) {
--					dev_err(component->dev,
--						"acp dma start timeout\n");
--					return -ETIMEDOUT;
-+			bytescount = acp_get_byte_count(rtd->acp_mmio,
-+					rtd->i2s_play_instance,
-+					substream->stream);
+ 	if (adata->asic_type == CHIP_STONEY) {
+ 		val = acp_reg_read(adata->acp_mmio, mmACP_I2S_16BIT_RESOLUTION_EN);
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-			val |= ACP_I2S_SP_16BIT_RESOLUTION_EN;
+-		else
+-			val |= ACP_I2S_MIC_16BIT_RESOLUTION_EN;
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 +			switch (rtd->i2s_play_instance) {
 +			case I2S_BT_INSTANCE:
-+				if (rtd->i2sbt_renderbytescount == 0)
-+					rtd->i2sbt_renderbytescount = bytescount;
-+				acp_dma_start(rtd->acp_mmio,
-+					SYSRAM_TO_ACP_BT_INSTANCE_CH_NUM, false);
-+				while (acp_reg_read(rtd->acp_mmio, mmACP_DMA_CH_STS) &
-+					BIT(SYSRAM_TO_ACP_BT_INSTANCE_CH_NUM)) {
-+					if (!loops--) {
-+						dev_err(component->dev,
-+							"acp dma start timeout\n");
-+						return -ETIMEDOUT;
-+					}
-+					cpu_relax();
- 				}
--				cpu_relax();
--			}
--
--			acp_dma_start(rtd->acp_mmio,
-+				acp_dma_start(rtd->acp_mmio,
-+					ACP_TO_I2S_DMA_BT_INSTANCE_CH_NUM, true);
++				val |= ACP_I2S_BT_16BIT_RESOLUTION_EN;
 +				break;
 +			case I2S_SP_INSTANCE:
 +			default:
-+				if (rtd->i2ssp_renderbytescount == 0)
-+					rtd->i2ssp_renderbytescount = bytescount;
-+				acp_dma_start(rtd->acp_mmio,
-+					SYSRAM_TO_ACP_CH_NUM, false);
-+				while (acp_reg_read(rtd->acp_mmio, mmACP_DMA_CH_STS) &
-+					BIT(SYSRAM_TO_ACP_CH_NUM)) {
-+					if (!loops--) {
-+						dev_err(component->dev,
-+							"acp dma start timeout\n");
-+						return -ETIMEDOUT;
-+					}
-+					cpu_relax();
-+				}
-+				acp_dma_start(rtd->acp_mmio,
- 					ACP_TO_I2S_DMA_CH_NUM, true);
--
++				val |= ACP_I2S_SP_16BIT_RESOLUTION_EN;
 +			}
- 		} else {
--			if (rtd->i2ssp_capturebytescount == 0)
--				rtd->i2ssp_capturebytescount = bytescount;
--			acp_dma_start(rtd->acp_mmio,
--					    I2S_TO_ACP_DMA_CH_NUM, true);
-+			bytescount = acp_get_byte_count(rtd->acp_mmio,
-+						rtd->i2s_capture_instance,
-+						substream->stream);
++		} else {
 +			switch (rtd->i2s_capture_instance) {
 +			case I2S_BT_INSTANCE:
-+				if (rtd->i2sbt_capturebytescount == 0)
-+					rtd->i2sbt_capturebytescount = 0;
-+				acp_dma_start(rtd->acp_mmio,
-+					I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM, true);
++				val |= ACP_I2S_BT_16BIT_RESOLUTION_EN;
 +				break;
 +			case I2S_SP_INSTANCE:
 +			default:
-+				if (rtd->i2ssp_capturebytescount == 0)
-+					rtd->i2ssp_capturebytescount = bytescount;
-+				acp_dma_start(rtd->acp_mmio,
-+					I2S_TO_ACP_DMA_CH_NUM, true);
++				val |= ACP_I2S_MIC_16BIT_RESOLUTION_EN;
 +			}
- 		}
- 		ret = 0;
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
--		/* Need to stop only circular DMA channels :
--		 * ACP_TO_I2S_DMA_CH_NUM / I2S_TO_ACP_DMA_CH_NUM. Non-circular
--		 * channels will stopped automatically after its transfer
--		 * completes : SYSRAM_TO_ACP_CH_NUM / ACP_TO_SYSRAM_CH_NUM
--		 */
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--			ret = acp_dma_stop(rtd->acp_mmio,
-+			switch (rtd->i2s_play_instance) {
-+			case I2S_BT_INSTANCE:
-+				ret = acp_dma_stop(rtd->acp_mmio,
-+						SYSRAM_TO_ACP_BT_INSTANCE_CH_NUM);
-+				ret = acp_dma_stop(rtd->acp_mmio,
-+						ACP_TO_I2S_DMA_BT_INSTANCE_CH_NUM);
-+				rtd->i2sbt_renderbytescount = 0;
-+				break;
-+			case I2S_SP_INSTANCE:
-+			default:
-+				ret = acp_dma_stop(rtd->acp_mmio,
- 						SYSRAM_TO_ACP_CH_NUM);
--			ret = acp_dma_stop(rtd->acp_mmio,
--					ACP_TO_I2S_DMA_CH_NUM);
--			rtd->i2ssp_renderbytescount = 0;
-+				ret =  acp_dma_stop(rtd->acp_mmio,
-+						ACP_TO_I2S_DMA_CH_NUM);
-+				rtd->i2ssp_renderbytescount = 0;
-+			}
- 		} else {
--			ret = acp_dma_stop(rtd->acp_mmio,
--					I2S_TO_ACP_DMA_CH_NUM);
--			ret = acp_dma_stop(rtd->acp_mmio,
-+			switch (rtd->i2s_capture_instance) {
-+			case I2S_BT_INSTANCE:
-+				ret = acp_dma_stop(rtd->acp_mmio,
-+						I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM);
-+				ret = acp_dma_stop(rtd->acp_mmio,
-+						ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM);
-+				rtd->i2sbt_capturebytescount = 0;
-+				break;
-+			case I2S_SP_INSTANCE:
-+			default:
-+				ret = acp_dma_stop(rtd->acp_mmio,
-+						I2S_TO_ACP_DMA_CH_NUM);
-+				ret = acp_dma_stop(rtd->acp_mmio,
- 						ACP_TO_SYSRAM_CH_NUM);
--			rtd->i2ssp_capturebytescount = 0;
-+				rtd->i2ssp_capturebytescount = 0;
-+			}
- 		}
- 		break;
- 	default:
++		}
+ 		acp_reg_write(val, adata->acp_mmio, mmACP_I2S_16BIT_RESOLUTION_EN);
+ 	}
+ 	size = params_buffer_bytes(params);
+diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
+index d40749a..cd83a03 100644
+--- a/sound/soc/amd/acp.h
++++ b/sound/soc/amd/acp.h
+@@ -105,6 +105,7 @@
+ #define mmACP_I2S_16BIT_RESOLUTION_EN       0x5209
+ #define ACP_I2S_MIC_16BIT_RESOLUTION_EN 0x01
+ #define ACP_I2S_SP_16BIT_RESOLUTION_EN	0x02
++#define ACP_I2S_BT_16BIT_RESOLUTION_EN	0x04
+ #define I2S_SP_INSTANCE 1
+ #define I2S_BT_INSTANCE 3
+ enum acp_dma_priority_level {
 -- 
 2.7.4
