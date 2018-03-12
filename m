@@ -1,12 +1,15 @@
 From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH v2 0/6] ASoC: sun4i-i2s: Updates to the driver
-Date: Mon, 12 Mar 2018 16:57:47 +0100
-Message-ID: <20180312155753.9478-1-codekipper@gmail.com>
+Subject: [PATCH v2 2/6] ASoC: sun4i-i2s: Add regmap field to
+ sign extend sample
+Date: Mon, 12 Mar 2018 16:57:49 +0100
+Message-ID: <20180312155753.9478-3-codekipper@gmail.com>
+References: <20180312155753.9478-1-codekipper@gmail.com>
 Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBBGHTLKQKGQERA6PIRQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBB6HTLKQKGQETOLMOZI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20180312155753.9478-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -19,52 +22,93 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Hi All,
+On the newer SoCs (H3, H5, A64 etc) this is set by default to
+transfer a 0 after each sample in each slot whereas on the
+earlier SoCs (A20, A31 etc) the default sign extension is to
+pad the LSB.
 
-here is a patch series to add some improvements to the sun4i-i2s driver
-found whilst getting slave clocking and hdmi audio working on the newer
-SoCs. The original attempt had some changes related to the slave work
-but I've left them out for this release as I would still like to do some
-more investigations.
+Add the regmap field to configure this and set it so that it
+pads the sample with 0s.
 
-The functionality included with the new patch set has been extended to
-cover more sample resolutions, multi-lane data output for HDMI audio
-and loopback so block testing can be made without an external codec.
-
-I've also moved away from using tdm to set the slot width and now use
-a dedicated property.
-
-This has been tested on a Pine64 using the ES9023 audio POT board
-(https://github.com/codekipper/linux-sunxi/commits/upstream)
-and HDMI audio
-(https://github.com/codekipper/linux-sunxi/commits/sunxi-wip-a64)
-
-BR,
-CK
-
+Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 ---
-v2 changes compared to v1 are:
- - removed slave mode changes which didn't set mclk and bclk div.
- - removed use of tdm and now use a dedicated property.
- - fix commit message to better explain reason for sign extending
- - add divider calculations for newer SoCs.
- - add support for multi-lane i2s data output.
- - add support for 20, 24 and 32 bit samples.
- - add loopback property so blocks can be tested without a codec.
+ sound/soc/sunxi/sun4i-i2s.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
----
-
-Marcus Cooper (6):
-  ASoC: sun4i-i2s: Add slot width override
-  ASoC: sun4i-i2s: Add regmap field to sign extend sample
-  ASoC: sun4i-i2s: Correct divider calculations
-  ASoC: sun4i-i2s: Add multi-lane functionality
-  ASoc: sun4i-i2s: Add 20, 24 and 32 bit support
-  ASoC: sun4i-i2s: Add support for loopback
-
- .../devicetree/bindings/sound/sun4i-i2s.txt        |  11 ++
- sound/soc/sunxi/sun4i-i2s.c                        | 199 ++++++++++++++++-----
- 2 files changed, 170 insertions(+), 40 deletions(-)
-
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index 873054a6c3be..396b11346361 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -138,6 +138,7 @@
+  * @field_fmt_bclk: regmap field to set clk polarity.
+  * @field_fmt_lrclk: regmap field to set frame polarity.
+  * @field_fmt_mode: regmap field to set the operational mode.
++ * @field_fmt_sext: regmap field to set the sign extension.
+  * @field_txchanmap: location of the tx channel mapping register.
+  * @field_rxchanmap: location of the rx channel mapping register.
+  * @field_txchansel: location of the tx channel select bit fields.
+@@ -163,6 +164,7 @@ struct sun4i_i2s_quirks {
+ 	struct reg_field		field_fmt_bclk;
+ 	struct reg_field		field_fmt_lrclk;
+ 	struct reg_field		field_fmt_mode;
++	struct reg_field		field_fmt_sext;
+ 	struct reg_field		field_txchanmap;
+ 	struct reg_field		field_rxchanmap;
+ 	struct reg_field		field_txchansel;
+@@ -187,6 +189,7 @@ struct sun4i_i2s {
+ 	struct regmap_field	*field_fmt_bclk;
+ 	struct regmap_field	*field_fmt_lrclk;
+ 	struct regmap_field	*field_fmt_mode;
++	struct regmap_field	*field_fmt_sext;
+ 	struct regmap_field	*field_txchanmap;
+ 	struct regmap_field	*field_rxchanmap;
+ 	struct regmap_field	*field_txchansel;
+@@ -348,6 +351,9 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+ 				   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
+ 				   SUN8I_I2S_FMT0_LRCK_PERIOD(word_size));
+ 
++	/* Set sign extension to pad out LSB with 0 */
++	regmap_field_write(i2s->field_fmt_sext, 0);
++
+ 	return 0;
+ }
+ 
+@@ -901,6 +907,7 @@ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
+ 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
+ 	.has_slave_select_bit	= true,
+ 	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
++	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 8, 8),
+ 	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
+ 	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
+ 	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
+@@ -918,6 +925,7 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
+ 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
+ 	.has_slave_select_bit	= true,
+ 	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
++	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 8, 8),
+ 	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
+ 	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
+ 	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
+@@ -958,6 +966,7 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
+ 	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
+ 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 19, 19),
+ 	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_CTRL_REG, 4, 5),
++	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 4, 5),
+ 	.field_txchanmap	= REG_FIELD(SUN8I_I2S_TX_CHAN_MAP_REG, 0, 31),
+ 	.field_rxchanmap	= REG_FIELD(SUN8I_I2S_RX_CHAN_MAP_REG, 0, 31),
+ 	.field_txchansel	= REG_FIELD(SUN8I_I2S_TX_CHAN_SEL_REG, 0, 2),
+@@ -1003,6 +1012,12 @@ static int sun4i_i2s_init_regmap_fields(struct device *dev,
+ 	if (IS_ERR(i2s->field_fmt_mode))
+ 		return PTR_ERR(i2s->field_fmt_mode);
+ 
++	i2s->field_fmt_sext =
++			devm_regmap_field_alloc(dev, i2s->regmap,
++						i2s->variant->field_fmt_sext);
++	if (IS_ERR(i2s->field_fmt_sext))
++		return PTR_ERR(i2s->field_fmt_sext);
++
+ 	i2s->field_txchanmap =
+ 			devm_regmap_field_alloc(dev, i2s->regmap,
+ 						i2s->variant->field_txchanmap);
 -- 
 2.16.2
