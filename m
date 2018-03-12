@@ -1,17 +1,17 @@
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH 3/7] ASoC: amd: Interrupt handler changes for
-	BT I2S instance
-Date: Mon, 12 Mar 2018 12:04:16 +0530
-Message-ID: <1520836460-21809-4-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: [PATCH 4/7] ASoC: amd: prepare callback modifications
+	for bt i2s instance
+Date: Mon, 12 Mar 2018 12:04:17 +0530
+Message-ID: <1520836460-21809-5-git-send-email-Vijendar.Mukunda@amd.com>
 References: <1520836460-21809-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM01-SN1-obe.outbound.protection.outlook.com
- (mail-sn1nam01on0072.outbound.protection.outlook.com [104.47.32.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F003266E77
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 07:33:05 +0100 (CET)
+Received: from NAM01-BN3-obe.outbound.protection.outlook.com
+ (mail-bn3nam01on0052.outbound.protection.outlook.com [104.47.33.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 741E7266E77
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 07:33:32 +0100 (CET)
 In-Reply-To: <1520836460-21809-1-git-send-email-Vijendar.Mukunda@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,67 +26,83 @@ To: broonie@kernel.org, alsa-devel@alsa-project.org, perex@perex.cz
 Cc: tiwai@suse.de, Alexander.Deucher@amd.com, lgirdwood@gmail.com, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-Interrupt handler changes for BT I2S instance.
+modified prepare callback for configuring dma channels for BT instance.
 
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- sound/soc/amd/acp-pcm-dma.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ sound/soc/amd/acp-pcm-dma.c | 53 +++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 41 insertions(+), 12 deletions(-)
 
 diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index f401006..8660f36 100644
+index 8660f36..2b6c9ad 100644
 --- a/sound/soc/amd/acp-pcm-dma.c
 +++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -721,6 +721,21 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
- 				acp_mmio, mmACP_EXTERNAL_INTR_STAT);
- 	}
+@@ -1014,25 +1014,54 @@ static int acp_dma_mmap(struct snd_pcm_substream *substream,
  
-+	if ((intr_flag & BIT(ACP_TO_I2S_DMA_BT_INSTANCE_CH_NUM)) != 0) {
-+		valid_irq = true;
-+		if (acp_reg_read(acp_mmio, mmACP_DMA_CUR_DSCR_9) ==
-+			PLAYBACK_START_DMA_DESCR_CH9)
-+			dscr_idx = PLAYBACK_END_DMA_DESCR_CH8;
-+		else
-+			dscr_idx = PLAYBACK_START_DMA_DESCR_CH8;
-+		config_acp_dma_channel(acp_mmio, SYSRAM_TO_ACP_BT_INSTANCE_CH_NUM, dscr_idx,
-+				1, 0);
-+		acp_dma_start(acp_mmio, SYSRAM_TO_ACP_BT_INSTANCE_CH_NUM, false);
-+		snd_pcm_period_elapsed(irq_data->play_i2sbt_stream);
-+		acp_reg_write((intr_flag & BIT(ACP_TO_I2S_DMA_BT_INSTANCE_CH_NUM)) << 16,
-+			acp_mmio, mmACP_EXTERNAL_INTR_STAT);
-+	}
-+
- 	if ((intr_flag & BIT(I2S_TO_ACP_DMA_CH_NUM)) != 0) {
- 		valid_irq = true;
- 		if (acp_reg_read(acp_mmio, mmACP_DMA_CUR_DSCR_15) ==
-@@ -743,6 +758,27 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
- 				acp_mmio, mmACP_EXTERNAL_INTR_STAT);
- 	}
+ static int acp_dma_prepare(struct snd_pcm_substream *substream)
+ {
++	u16 start_dscr_idx;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct audio_substream_data *rtd = runtime->private_data;
  
-+	if ((intr_flag & BIT(I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM)) != 0) {
-+		valid_irq = true;
-+		if (acp_reg_read(acp_mmio, mmACP_DMA_CUR_DSCR_11) ==
-+			CAPTURE_START_DMA_DESCR_CH11)
-+			dscr_idx = CAPTURE_END_DMA_DESCR_CH10;
-+		else
-+			dscr_idx = CAPTURE_START_DMA_DESCR_CH10;
-+		config_acp_dma_channel(acp_mmio, ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM, dscr_idx,
-+				1, 0);
-+		acp_dma_start(acp_mmio, ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM, false);
-+		acp_reg_write((intr_flag & BIT(I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM)) << 16,
-+				acp_mmio, mmACP_EXTERNAL_INTR_STAT);
-+	}
-+
-+	if ((intr_flag & BIT(ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM)) != 0) {
-+		valid_irq = true;
-+		snd_pcm_period_elapsed(irq_data->capture_i2sbt_stream);
-+		acp_reg_write((intr_flag & BIT(ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM)) << 16,
-+			acp_mmio, mmACP_EXTERNAL_INTR_STAT);
-+	}
-+
- 	if (valid_irq)
- 		return IRQ_HANDLED;
- 	else
+ 	if (!rtd)
+ 		return -EINVAL;
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		config_acp_dma_channel(rtd->acp_mmio, SYSRAM_TO_ACP_CH_NUM,
+-					PLAYBACK_START_DMA_DESCR_CH12,
+-					NUM_DSCRS_PER_CHANNEL, 0);
+-		config_acp_dma_channel(rtd->acp_mmio, ACP_TO_I2S_DMA_CH_NUM,
+-					PLAYBACK_START_DMA_DESCR_CH13,
+-					NUM_DSCRS_PER_CHANNEL, 0);
++		switch (rtd->i2s_play_instance) {
++		case I2S_BT_INSTANCE:
++			start_dscr_idx =  PLAYBACK_START_DMA_DESCR_CH8;
++			config_acp_dma_channel(rtd->acp_mmio, SYSRAM_TO_ACP_BT_INSTANCE_CH_NUM,
++						start_dscr_idx,
++						NUM_DSCRS_PER_CHANNEL, 0);
++			config_acp_dma_channel(rtd->acp_mmio, ACP_TO_I2S_DMA_BT_INSTANCE_CH_NUM,
++						start_dscr_idx + 2,
++						NUM_DSCRS_PER_CHANNEL, 0);
++			break;
++		case I2S_SP_INSTANCE:
++		default:
++			start_dscr_idx = PLAYBACK_START_DMA_DESCR_CH12;
++			config_acp_dma_channel(rtd->acp_mmio, SYSRAM_TO_ACP_CH_NUM,
++						start_dscr_idx,
++						NUM_DSCRS_PER_CHANNEL, 0);
++			config_acp_dma_channel(rtd->acp_mmio, ACP_TO_I2S_DMA_CH_NUM,
++						start_dscr_idx + 2,
++						NUM_DSCRS_PER_CHANNEL, 0);
++		}
+ 	} else {
+-		config_acp_dma_channel(rtd->acp_mmio, ACP_TO_SYSRAM_CH_NUM,
+-					CAPTURE_START_DMA_DESCR_CH14,
+-					NUM_DSCRS_PER_CHANNEL, 0);
+-		config_acp_dma_channel(rtd->acp_mmio, I2S_TO_ACP_DMA_CH_NUM,
+-					CAPTURE_START_DMA_DESCR_CH15,
+-					NUM_DSCRS_PER_CHANNEL, 0);
++		switch (rtd->i2s_capture_instance) {
++		case I2S_BT_INSTANCE:
++			start_dscr_idx = CAPTURE_START_DMA_DESCR_CH10;
++			config_acp_dma_channel(rtd->acp_mmio, ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM,
++						start_dscr_idx,
++						NUM_DSCRS_PER_CHANNEL, 0);
++			config_acp_dma_channel(rtd->acp_mmio, I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM,
++						start_dscr_idx + 2,
++						NUM_DSCRS_PER_CHANNEL, 0);
++			break;
++		case I2S_SP_INSTANCE:
++		default:
++			start_dscr_idx = CAPTURE_START_DMA_DESCR_CH14;
++			config_acp_dma_channel(rtd->acp_mmio, ACP_TO_SYSRAM_CH_NUM,
++						start_dscr_idx,
++						NUM_DSCRS_PER_CHANNEL, 0);
++			config_acp_dma_channel(rtd->acp_mmio, I2S_TO_ACP_DMA_CH_NUM,
++						start_dscr_idx + 2,
++						NUM_DSCRS_PER_CHANNEL, 0);
++		}
+ 	}
+ 	return 0;
+ }
 -- 
 2.7.4
