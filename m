@@ -1,19 +1,16 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 2/2] ASoC: soc-io: Fix
- snd_soc_component_update_bits_legacy
-Date: Mon, 12 Mar 2018 16:57:03 +0200
-Message-ID: <0331e035-cadf-ef35-4665-9bdf66d8f171@ti.com>
-References: <20180312142423.13177-1-peter.ujfalusi@ti.com>
- <20180312142423.13177-3-peter.ujfalusi@ti.com>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] echoaudio: remove redundant initialization of
+	pointer 'pipe'
+Date: Mon, 12 Mar 2018 15:01:00 +0000
+Message-ID: <20180312150100.8089-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
- by alsa0.perex.cz (Postfix) with ESMTP id 99DB6266E60
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 15:59:40 +0100 (CET)
-In-Reply-To: <20180312142423.13177-3-peter.ujfalusi@ti.com>
-Content-Language: en-GB
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id F023526726B
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 16:01:08 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,40 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, kuninori.morimoto.gx@renesas.com
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Arvind Yadav <arvind.yadav.cs@gmail.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDMvMTIvMjAxOCAwNDoyNCBQTSwgUGV0ZXIgVWpmYWx1c2kgd3JvdGU6Cj4gQWZ0ZXIgdGhl
-IGNvZGVjIHRvIGNvbXBvbmVudCBjb252ZXJzaW9uIGNvZGVjcyB3aXRoIGN1c3RvbSByZWFkL3dy
-aXRlCj4gZnVuY3Rpb24gd2lsbCBubyBsb25nZXIgYWJsZSB0byB1c2UgdXBkYXRlX2JpdHMgYXMg
-dGhlaXIgaW8gY2FsbGJhY2tzIGFyZQo+IHJlZ2lzdGVyZWQgYXQgY29tcG9uZW50LT5kcml2ZXIg
-bGV2ZWwgYW5kIG5vdCBpbiBjb21wb25lbnQgbGV2ZWwuCj4gCj4gVG8gbm90IGNvbXBsaWNhdGUg
-dGhlIGNvZGUgZnVydGhlciwgbGV0cyBqdXN0IHVzZSB0aGUKPiBzbmRfc29jX2NvbXBvbmVudF9y
-ZWFkL3NuZF9zb2NfY29tcG9uZW50X3dyaXRlIGZ1bmN0aW9uIGFuZCBsZXQgdGhlbSBzb3J0Cj4g
-b3V0IHRoZSBjb3JyZWN0IGlvIGZ1bmN0aW9uIHRvIGNhbGwuCj4gCj4gRml4ZXM6IGUyYzMzMGI5
-YjU2NjUgKCJBU29DOiBNb3ZlIElPIGFic3RyYWN0aW9uIHRvIHRoZSBjb21wb25lbnQgbGV2ZWwi
-KQoKTm90IHRoaXMgb25lLCBidXQ6CmQwZmY4YmE1N2Q5NjUgKCJBU29DOiBhZGQgQ29tcG9uZW50
-IGxldmVsIC5yZWFkLy53cml0ZSIpCgpTb3JyeS4KCj4gCj4gU2lnbmVkLW9mZi1ieTogUGV0ZXIg
-VWpmYWx1c2kgPHBldGVyLnVqZmFsdXNpQHRpLmNvbT4KPiAtLS0KPiAgc291bmQvc29jL3NvYy1p
-by5jIHwgNyArKy0tLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDUgZGVs
-ZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zb2MtaW8uYyBiL3NvdW5kL3Nv
-Yy9zb2MtaW8uYwo+IGluZGV4IDJiYzFjNGMxNzg5Ni4uZDM2YTE5MmZiZWNlIDEwMDY0NAo+IC0t
-LSBhL3NvdW5kL3NvYy9zb2MtaW8uYwo+ICsrKyBiL3NvdW5kL3NvYy9zb2MtaW8uYwo+IEBAIC04
-OCwxOSArODgsMTYgQEAgc3RhdGljIGludCBzbmRfc29jX2NvbXBvbmVudF91cGRhdGVfYml0c19s
-ZWdhY3koCj4gIAl1bnNpZ25lZCBpbnQgb2xkLCBuZXc7Cj4gIAlpbnQgcmV0Owo+ICAKPiAtCWlm
-ICghY29tcG9uZW50LT5yZWFkIHx8ICFjb21wb25lbnQtPndyaXRlKQo+IC0JCXJldHVybiAtRUlP
-Owo+IC0KPiAgCW11dGV4X2xvY2soJmNvbXBvbmVudC0+aW9fbXV0ZXgpOwo+ICAKPiAtCXJldCA9
-IGNvbXBvbmVudC0+cmVhZChjb21wb25lbnQsIHJlZywgJm9sZCk7Cj4gKwlyZXQgPSBzbmRfc29j
-X2NvbXBvbmVudF9yZWFkKGNvbXBvbmVudCwgcmVnLCAmb2xkKTsKPiAgCWlmIChyZXQgPCAwKQo+
-ICAJCWdvdG8gb3V0X3VubG9jazsKPiAgCj4gIAluZXcgPSAob2xkICYgfm1hc2spIHwgKHZhbCAm
-IG1hc2spOwo+ICAJKmNoYW5nZSA9IG9sZCAhPSBuZXc7Cj4gIAlpZiAoKmNoYW5nZSkKPiAtCQly
-ZXQgPSBjb21wb25lbnQtPndyaXRlKGNvbXBvbmVudCwgcmVnLCBuZXcpOwo+ICsJCXJldCA9IHNu
-ZF9zb2NfY29tcG9uZW50X3dyaXRlKGNvbXBvbmVudCwgcmVnLCBuZXcpOwo+ICBvdXRfdW5sb2Nr
-Ogo+ICAJbXV0ZXhfdW5sb2NrKCZjb21wb25lbnQtPmlvX211dGV4KTsKPiAgCj4gCgoKLS0gClDD
-qXRlcgoKVGV4YXMgSW5zdHJ1bWVudHMgRmlubGFuZCBPeSwgUG9ya2thbGFua2F0dSAyMiwgMDAx
-ODAgSGVsc2lua2kuClktdHVubnVzL0J1c2luZXNzIElEOiAwNjE1NTIxLTQuIEtvdGlwYWlra2Ev
-RG9taWNpbGU6IEhlbHNpbmtpCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+From: Colin Ian King <colin.king@canonical.com>
+
+The pointer 'pipe' is being initialized with a value that is never
+read and it is re-assigned later, hence the initialization is redundant
+and can be removed. Also remove pointer 'runtime' as it is no longer
+required.
+
+Cleans up clang warning:
+sound/pci/echoaudio/echoaudio.c:740:20: warning: Value stored to 'pipe'
+during its initialization is never read
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/pci/echoaudio/echoaudio.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
+index d68f99e076a8..0935a5c8741f 100644
+--- a/sound/pci/echoaudio/echoaudio.c
++++ b/sound/pci/echoaudio/echoaudio.c
+@@ -736,8 +736,7 @@ static int pcm_prepare(struct snd_pcm_substream *substream)
+ static int pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct echoaudio *chip = snd_pcm_substream_chip(substream);
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct audiopipe *pipe = runtime->private_data;
++	struct audiopipe *pipe;
+ 	int i, err;
+ 	u32 channelmask = 0;
+ 	struct snd_pcm_substream *s;
+-- 
+2.15.1
