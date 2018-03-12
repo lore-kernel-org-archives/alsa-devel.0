@@ -1,21 +1,16 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH 3/3] ASoC: Add Multi CPU DAI support in DAPM
-Date: Mon, 12 Mar 2018 09:21:06 +0000
-Message-ID: <20180312092106.eke3lfc6op3lz42d@localhost.localdomain>
-References: <1520334030-8018-1-git-send-email-shreyas.nc@intel.com>
- <1520334030-8018-4-git-send-email-shreyas.nc@intel.com>
- <20180309163124.5vxiponvnubxnez2@localhost.localdomain>
- <20180312053751.GC2887@snc-desk>
+From: Akshu Agrawal <akshu.agrawal@amd.com>
+Subject: [PATCH 1/2] ASoC: AMD: Use single dai for da7219
+	playback and capture
+Date: Mon, 12 Mar 2018 14:41:22 +0530
+Message-ID: <1520845883-24062-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id D7ECB266E43
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 10:21:12 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20180312053751.GC2887@snc-desk>
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com
+ (mail-cys01nam02on0042.outbound.protection.outlook.com [104.47.37.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id A04322672BA
+ for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 10:26:40 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,28 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shreyas NC <shreyas.nc@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, Patches Audio <patches.audio@intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "broonie@kernel.org" <broonie@kernel.org>
+To: broonie@kernel.org, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, lgirdwood@gmail.com, akshu.agrawal@amd.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 12, 2018 at 11:07:52AM +0530, Shreyas NC wrote:
-> On Fri, Mar 09, 2018 at 10:01:24PM +0530, Charles Keepax wrote:
-> > On Tue, Mar 06, 2018 at 04:30:30PM +0530, Shreyas NC wrote:
-> > > -static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
-> > > -					  struct snd_soc_pcm_runtime *rtd)
-> > > +static void dapm_check_dai_valid_widget(struct snd_soc_card *card,
-> > > +					struct snd_soc_pcm_runtime *rtd,
-> > > +					struct snd_soc_dai *codec_dai,
-> > > +					struct snd_soc_dai *cpu_dai)
-> > 
-> > Not sure about the name here dapm_check_dai_valid_widget doesn't
-> > sound like it should be adding paths, otherwise I think this one
-> > looks ok.
-> > 
-> 
-> Ok, does dapm_add_valid_widget() sound better?
+BT I2S is a bi-directional dai, we will use the same
+cpu dai for playback and capture.
 
-Yeah that seems like a better name to me.
+TEST=Build, apply grunt_mixer_settings:
+iotools mmio_write32 0xfed80e40 0x040c40c0
+iotools mmio_write32 0xfed80e28 0x10000
+aplay -D hw:0,0 -vv <file>
+arecord -D hw:0,0 -f dat -d 5 -vv <file>
 
-Thanks,
-Charles
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+---
+ sound/soc/amd/acp-da7219-max98357a.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
+
+diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+index bbe0f10..d07c2a1 100644
+--- a/sound/soc/amd/acp-da7219-max98357a.c
++++ b/sound/soc/amd/acp-da7219-max98357a.c
+@@ -124,8 +124,8 @@ static int cz_fe_startup(struct snd_pcm_substream *substream)
+ 
+ static struct snd_soc_dai_link cz_dai_7219_98357[] = {
+ 	{
+-		.name = "amd-da7219-play",
+-		.stream_name = "Playback",
++		.name = "amd-da7219-play-cap",
++		.stream_name = "Playback and Capture",
+ 		.platform_name = "acp_audio_dma.0.auto",
+ 		.cpu_dai_name = "designware-i2s.3.auto",
+ 		.codec_dai_name = "da7219-hifi",
+@@ -134,16 +134,6 @@ static int cz_fe_startup(struct snd_pcm_substream *substream)
+ 				| SND_SOC_DAIFMT_CBM_CFM,
+ 		.init = cz_da7219_init,
+ 		.dpcm_playback = 1,
+-	},
+-	{
+-		.name = "amd-da7219-cap",
+-		.stream_name = "Capture",
+-		.platform_name = "acp_audio_dma.0.auto",
+-		.cpu_dai_name = "designware-i2s.4.auto",
+-		.codec_dai_name = "da7219-hifi",
+-		.codec_name = "i2c-DLGS7219:00",
+-		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+-				| SND_SOC_DAIFMT_CBM_CFM,
+ 		.dpcm_capture = 1,
+ 		.ops = &cz_da7219_cap_ops,
+ 	},
+-- 
+1.9.1
