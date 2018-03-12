@@ -1,17 +1,21 @@
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: [asoc:topic/twl6040 1/2]
- sound/soc/codecs/twl6040.c:1156:71-72: remove: first occurrence line 1158,
- second occurrence line 1160 (fwd)
-Date: Mon, 12 Mar 2018 23:09:18 +0100 (CET)
-Message-ID: <alpine.DEB.2.20.1803122308230.3378@hadrien>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v3 19/22] ASoC: Intel: bytcr_rt5651: Add
+ support for Bay Trail CR / SSP0 using boards
+Date: Mon, 12 Mar 2018 18:26:32 -0500
+Message-ID: <5501e17e-512f-e787-30dc-6c2d72cf7f2a@linux.intel.com>
+References: <20180304143610.21125-1-hdegoede@redhat.com>
+ <20180304143610.21125-20-hdegoede@redhat.com>
+ <e4558b54-415e-a7f0-e696-27b9b9eb0a31@linux.intel.com>
+ <2abd9dba-7e02-3bd4-847f-c63e98f8ad8b@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail2-relais-roc.national.inria.fr
- (mail2-relais-roc.national.inria.fr [192.134.164.83])
- by alsa0.perex.cz (Postfix) with ESMTP id 8892A266F0F
- for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2018 23:09:20 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0785E266F0F
+ for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2018 00:26:36 +0100 (CET)
+In-Reply-To: <2abd9dba-7e02-3bd4-847f-c63e98f8ad8b@redhat.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +25,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
+To: Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
+Cc: alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-There are two initializations of the remove field.  Both give it the same
-value, so one can just be dropped.
-
-julia
-
----------- Forwarded message ----------
-Date: Tue, 13 Mar 2018 05:55:05 +0800
-From: kbuild test robot <fengguang.wu@intel.com>
-To: kbuild@01.org
-Cc: Julia Lawall <julia.lawall@lip6.fr>
-Subject: [asoc:topic/twl6040 1/2] sound/soc/codecs/twl6040.c:1156:71-72: remove:
-     first occurrence line 1158, second occurrence line 1160
-
-CC: kbuild-all@01.org
-CC: alsa-devel@alsa-project.org
-TO: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-CC: Mark Brown <broonie@kernel.org>
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/twl6040
-head:   c9d066650cd5adf4ed4bf5734386699e765222b7
-commit: 7480389fb0d873ed78619542bf5d2717a7ad7786 [1/2] ASoC: twl6040: replace codec to component
-:::::: branch date: 5 hours ago
-:::::: commit date: 4 weeks ago
-
->> sound/soc/codecs/twl6040.c:1156:71-72: remove: first occurrence line 1158, second occurrence line 1160
-
-# https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/commit/?id=7480389fb0d873ed78619542bf5d2717a7ad7786
-git remote add asoc https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
-git remote update asoc
-git checkout 7480389fb0d873ed78619542bf5d2717a7ad7786
-vim +1156 sound/soc/codecs/twl6040.c
-
-8ecbabd9 Misael Lopez Cruz 2010-03-19  1155
-7480389f Kuninori Morimoto 2018-01-29 @1156  static const struct snd_soc_component_driver soc_component_dev_twl6040 = {
-f0fba2ad Liam Girdwood     2010-03-17  1157  	.probe			= twl6040_probe,
-f0fba2ad Liam Girdwood     2010-03-17 @1158  	.remove			= twl6040_remove,
-8146acff Tony Lindgren     2018-01-25  1159  	.read			= twl6040_read,
-7480389f Kuninori Morimoto 2018-01-29 @1160  	.remove			= twl6040_remove,
-f0fba2ad Liam Girdwood     2010-03-17  1161  	.set_bias_level		= twl6040_set_bias_level,
-a175fce0 Peter Ujfalusi    2011-10-11  1162  	.controls		= twl6040_snd_controls,
-a175fce0 Peter Ujfalusi    2011-10-11  1163  	.num_controls		= ARRAY_SIZE(twl6040_snd_controls),
-a175fce0 Peter Ujfalusi    2011-10-11  1164  	.dapm_widgets		= twl6040_dapm_widgets,
-a175fce0 Peter Ujfalusi    2011-10-11  1165  	.num_dapm_widgets	= ARRAY_SIZE(twl6040_dapm_widgets),
-a175fce0 Peter Ujfalusi    2011-10-11  1166  	.dapm_routes		= intercon,
-a175fce0 Peter Ujfalusi    2011-10-11  1167  	.num_dapm_routes	= ARRAY_SIZE(intercon),
-7480389f Kuninori Morimoto 2018-01-29  1168  	.suspend_bias_off	= 1,
-7480389f Kuninori Morimoto 2018-01-29  1169  	.idle_bias_on		= 1,
-7480389f Kuninori Morimoto 2018-01-29  1170  	.endianness		= 1,
-7480389f Kuninori Morimoto 2018-01-29  1171  	.non_legacy_dai_naming	= 1,
-f0fba2ad Liam Girdwood     2010-03-17  1172  };
-f0fba2ad Liam Girdwood     2010-03-17  1173
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+T24gMy8xMS8xOCAxOjE5IFBNLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+IEhpLAo+IAo+IE9uIDEw
+LTAzLTE4IDAwOjMwLCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPj4KPj4gU29ycnkgYWJv
+dXQgdGhlIGRlbGF5LCBJJ3ZlIG9ubHkgZm91bmQgdGhlIHRpbWUgdG8gbG9vayBhdCB0aGlzIAo+
+PiBtYWNoaW5lIGRyaXZlciBjaGFuZ2VzIHRoaXMgYWZ0ZXJub29uIHdoaWxlIEkgd2FzIGRvaW5n
+IHRoZSBTT0YgCj4+IGludGVncmF0aW9uCj4+Cj4+PiBAQCAtMjkxLDkgKzMzMiwxNiBAQCBzdGF0
+aWMgaW50IGJ5dF9ydDU2NTFfYWlmMV9od19wYXJhbXMoc3RydWN0IAo+Pj4gc25kX3BjbV9zdWJz
+dHJlYW0gKnN1YnN0cmVhbSwKPj4+IMKgIHsKPj4+IMKgwqDCoMKgwqAgc3RydWN0IHNuZF9zb2Nf
+cGNtX3J1bnRpbWUgKnJ0ZCA9IHN1YnN0cmVhbS0+cHJpdmF0ZV9kYXRhOwo+Pj4gwqDCoMKgwqDC
+oCBzdHJ1Y3Qgc25kX3NvY19kYWkgKmNvZGVjX2RhaSA9IHJ0ZC0+Y29kZWNfZGFpOwo+Pj4gK8Kg
+wqDCoCBzbmRfcGNtX2Zvcm1hdF90IGZvcm1hdCA9IHBhcmFtc19mb3JtYXQocGFyYW1zKTsKPj4+
+IMKgwqDCoMKgwqAgaW50IHJhdGUgPSBwYXJhbXNfcmF0ZShwYXJhbXMpOwo+Pj4gK8KgwqDCoCBp
+bnQgYmNsa19yYXRpbzsKPj4+IC3CoMKgwqAgcmV0dXJuIGJ5dF9ydDU2NTFfcHJlcGFyZV9hbmRf
+ZW5hYmxlX3BsbDEoY29kZWNfZGFpLCByYXRlLCA1MCk7Cj4+PiArwqDCoMKgIGlmIChmb3JtYXQg
+PT0gU05EUlZfUENNX0ZPUk1BVF9TMTZfTEUpCj4+PiArwqDCoMKgwqDCoMKgwqAgYmNsa19yYXRp
+byA9IDMyOwo+Pgo+PiBJIGRvbid0IHRoaW5rIHdlIGNhbiBnZW5lcmF0ZSBhIDMyeCByYXRpbyB3
+aXRoIGEgMTkuMiBNSHogY2xvY2ssIGV2ZW4gCj4+IGxlc3Mgc28gd2l0aCBhIDI1TUh6IHJlZmVy
+ZW5jZS4KPj4gQW5kIGluIGFkZGl0aW9uIGluIHRoZSBieXRjcl9ydDU2NDAgY2FzZSB3ZSBjb3Vs
+ZCBuZXZlciBnZXQgYW55IGF1ZGlvIAo+PiBvbiBieXRjciB3aGljaCB1c2VzIHRoZSBTU1AwIGxp
+bmsgd2l0aG91dCB0aGUgbWNsayBlbmFibGVkLCBzbyB0aGlzIAo+PiBTU1AwK2JsY2sgbW9kZSB3
+YXMgbmV2ZXIgdGVzdGVkIChtYXliZSBwcmVjaXNlbHkgYmVjYXVzZSB0aGlzIHJhdGlvIAo+PiB3
+YXMgd3JvbmcuLi4pCj4+Cj4+IEluIG90aGVyIHdvcmRzIHRoZXJlIGlzIGEgdGVzdCBnYXAgaGVy
+ZSBmb3IgdGhlIGNhc2UgdXNpbmcgU1NQMCtiY2xrIAo+PiBhcyBhIHJlZmVyZW5jZSB3aXRoIHRo
+ZSBydDU2NTEgYXMgd2VsbC4gRG9lcyBhbnlvbmUgaGF2ZSBhY2Nlc3MgdG8gYSAKPj4gQllULUNS
+IHBsYXRmb3JtIHcvIHJ0NTY1MSB0byB0ZXN0IHRoaXM/Cj4gCj4gWWVzIEkndmUgYWNjZXNzIHRv
+IGEgQllULUNSIHBsYXRmb3JtIHcvIHJ0NTY1MSwgSSBhc3N1bWUgdGhhdCB5b3Ugd2FudCAKPiBt
+ZSB0byB0ZXN0IHRoZXJlIHdpdGggdGhlCj4gQllUX1JUNTY1MV9NQ0xLX0VOIHF1aXJrIHVuc2V0
+PwoKeWVzLgoKPiAKPiBXaGF0IHNob3VsZCBJIHRyeSB0byBmaXggdGhpbmdzIGlmIHRoZXkgZG9u
+J3Qgd29yaz/CoCBPciBtYXliZSBqdXN0IHB1dCBhIAo+IGJpZyBmYXQKPiB3YXJuaW5nIHByaW50
+ZiBpbiB0aGUgZHJpdmVyIGlmIFNTUDAgaXMgdXNlZCB3aXRob3V0IGJjbGsgYW5kIHJlbW92ZSB0
+aGUgCj4gaGFuZGxpbmcKPiBmb3IgdGhlIGJjbGsgKyBTU1AwIGNhc2UgYXMgaXRzIGJyb2tlbiBh
+bnl3YXlzID8KCkR1bm5vLiBXZSBtYXkgYmUgYWJsZSB0byB0ZXN0IHdpdGggU09GIGFzIHdlbGwg
+YW5kIGNoZWNrIHdoYXQgZm9ybWF0cyB3b3JrLgoKPiAKPj4gVGhlIG90aGVyIGNvbW1lbnQgSSBo
+YXZlIGlzIHRoYXQgdGhpcyBydW4tdGltZSBkZWZpbml0aW9uIG9mIHRoZSAKPj4gYmNsa19yYXRp
+byBpcyBpbmNvbnNpc3RlbnQgd2l0aCB0aGUgaGFyZC1jb2RlZCB2YWx1ZSBJIHNlZSBpbiAKPj4g
+cGxhdGZvcm1fY2xvY2tfY29udHJvbCgpCj4+IHJldCA9IGJ5dF9ydDU2NTFfcHJlcGFyZV9hbmRf
+ZW5hYmxlX3BsbDEoY29kZWNfZGFpLCA0ODAwMCwgNTApOwo+IAo+IFllcyB0aGUgYXNzdW1wdGlv
+biBoZXJlIGlzIHRoYXQgd2Ugc2ltcGx5IG5lZWQgImEiIGNsb2NrIHdoZW4gdGhlIAo+ICJQbGF0
+Zm9ybSBDbG9jayIKPiBnZXRzIGVuYWJsZWQgYW5kIHRoYXQgdGhlIGNsb2NrIHRoZW4gd2lsbCBs
+YXRlciBnZXQgc2V0IHRvIHRoZSBjb3JyZWN0IAo+IHNwZWVkLgo+IAo+IEFGQUlLIHlvdSBkaWQg
+bm90IHdhbnQgZHVwbGljYXRpb24gb2YgdGhlIFNTUDAgaGFuZGxpbmcgb3V0c2lkZSB0aGUgZml4
+dXAKPiBmdW5jdGlvbiBhbmQgcGxhdGZvcm1fY2xvY2tfY29udHJvbCgpIGRvZXMgbm90IGhhdmUg
+YWNjZXNzIHRvIHRoZSBmb3JtYXQsCj4gc2luY2UgdGhhdCBpcyBsaWtlbHkgbm90IGV2ZW4gc2V0
+dXAgYnkgdGhlbi4KCndlbGwgdGhpbmdzIGFyZSBicm9rZW4gaW4gdGhlIDE2LWJpdCBtb2RlIHRo
+ZW4/Cgo+IAo+IFJlZ2FyZHMsCj4gCj4gSGFucwo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
