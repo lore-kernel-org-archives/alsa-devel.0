@@ -1,79 +1,83 @@
-From: Colin Ian King <colin.king@canonical.com>
-Subject: Re: [PATCH][next] ASoC: samsung: remove redundant pointer cpu_dai
-Date: Tue, 13 Mar 2018 16:22:41 +0000
-Message-ID: <1db711ff-63ba-7a0e-dc9d-33638bd4a0d9@canonical.com>
-References: <20180313133626.31286-1-colin.king@canonical.com>
- <20180313162138.GQ2186@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [linux-sunxi] Re: [PATCH v2 6/6] ASoC: sun4i-i2s:
+ Add support for loopback
+Date: Tue, 13 Mar 2018 09:26:42 -0700
+Message-ID: <20180313162642.GR2186@sirena.org.uk>
+References: <20180312155753.9478-1-codekipper@gmail.com>
+ <20180312155753.9478-7-codekipper@gmail.com>
+ <20180312183521.GP2186@sirena.org.uk>
+ <CAP03XeoaYcMrzv3+K83wGUaDn6ZcCDzePdVNcjAqJ4QrF-WLSA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="NmhQ8UuReUGrKkEw16050u7Y6wETHqa6I"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180313162138.GQ2186@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============2988961111132407489=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id BFAF5266E60
+ for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2018 17:26:47 +0100 (CET)
+In-Reply-To: <CAP03XeoaYcMrzv3+K83wGUaDn6ZcCDzePdVNcjAqJ4QrF-WLSA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Chris Obbard <chris@64studio.com>
+Cc: alsa-devel@alsa-project.org, be17068@iperbole.bo.it, linux-sunxi <linux-sunxi@googlegroups.com>, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, Code Kipper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, Linux ARM <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---NmhQ8UuReUGrKkEw16050u7Y6wETHqa6I
-Content-Type: multipart/mixed; boundary="7ATi9oyvZgQiuPffh01VtWsIZvRkXEuM6";
- protected-headers="v1"
-From: Colin Ian King <colin.king@canonical.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim
- <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <1db711ff-63ba-7a0e-dc9d-33638bd4a0d9@canonical.com>
-Subject: Re: [PATCH][next] ASoC: samsung: remove redundant pointer cpu_dai
-References: <20180313133626.31286-1-colin.king@canonical.com>
- <20180313162138.GQ2186@sirena.org.uk>
-In-Reply-To: <20180313162138.GQ2186@sirena.org.uk>
 
---7ATi9oyvZgQiuPffh01VtWsIZvRkXEuM6
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-On 13/03/18 16:21, Mark Brown wrote:
-> On Tue, Mar 13, 2018 at 01:36:26PM +0000, Colin King wrote:
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> The pointer cpu_dai is assigned a value but the pointer is never
->> read, hence it is redundant and can be removed.
->=20
-> There's some subsequent patches to that driver which I think provide an=
-
-> alternative fix for this.
->=20
-OK, glad it's been resolved.
+--===============2988961111132407489==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="19HmC3QOnaNVzKTI"
+Content-Disposition: inline
 
 
---7ATi9oyvZgQiuPffh01VtWsIZvRkXEuM6--
+--19HmC3QOnaNVzKTI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---NmhQ8UuReUGrKkEw16050u7Y6wETHqa6I
+On Tue, Mar 13, 2018 at 01:39:44PM +0000, Chris Obbard wrote:
+> >> +- loopback:  if this property is present then the dai is configured in
+> >> +             loopback mode where the output fifo is redirected to the input
+> >> +             fifo.
+
+> > This really doesn't seem like something that ought to go into the DT
+> > and hence ABI given that there's obviously no reason to use this in
+> > production.  Just make it be a #define in the code or something.
+
+> It would be nice to have this as an optional devicetree property so
+> when testing JACK latency etc I don't have to manually re-compile a
+> kernel...
+
+You'll have to rebuild your DT anyway, I'm not sure the kernel is that
+much of a difference...  For your use case you'd want a regular runtime
+ALSA control, not a DT property anyway.  That would be fine.
+
+--19HmC3QOnaNVzKTI
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQJNBAEBCAA3FiEEcGLapPABucZhZwDPaMKH38aoAiYFAlqn+tEZHGNvbGluLmtp
-bmdAY2Fub25pY2FsLmNvbQAKCRBowoffxqgCJk0FD/9EwjzOc/DkqLjwN58bPtUM
-3KwUDNe29LLLRSFT9bBIZqpTFFAU0e/V6ThOMXl+ft0RaC+48xlf/i2+nqIgYx2z
-5YsX8rYzbJAEN+wqT7LxHBYRUgzKCqVA+mjaxT1bbIgwK5V44gjlJGEAjNEIm8GA
-BP+pdd3pHhcuuWMxivW8fFO5eaLlotM0N2S8fX0UruftkdpHYPn9lw1o3UmFVphE
-+T62O2I7JI7+3guiYfM5vYMgJQf76+RVaKr1gw+7KQLNo2h0/G2Pes02d2Zpw6Le
-0vuZ1/x03PFyvVwvdS74xEpKZiSM9fN3oPF3DZEx0j0xBbidOlM8BjfKmRKJbQIq
-UpREasYvwUxOv2cmA4hhJQTYl+4q+YLsrsFBVts2sY3E3GEBLNJ1WcSwWbcVoC/m
-ngPIz2suOu4RM+ookZg+bBr7UvomRvOVFj6myrrJ9IMCtgFGqaxVHEYPmDG5IuCt
-Sx7xI+EKs/cmvKHqKan6iyXdEf+EMoCmGfzG0utVLh1gf18PFO+5NQ5V+DLRN3jI
-H2uhuTYJuuIpKt5ftPE45XkD80jiJliPk+8JDeT/uV/q8qVBiYGZabCINlM0/gtO
-8dOm0BIpaGCO3Wt3mPkFt6xuIFAZj0AIeypEcSOBcIFA12BS+w5pxz9FsDPAZe1V
-kAxQyvwmgIjCdD1VTARwog==
-=wjy8
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqn+8EACgkQJNaLcl1U
+h9CsWwf/aZ5n+PDY6I4YPxSGCMLvlVViob04VH3UODkQUCRdUIpJJ/R4ot1p8Tpp
+MqyoqIdJ0xogmXHNGGKFhmolD2xk8YEsi+Zi7k4SPRo8xXkMiy/O2lX+QwedaosL
+wzkPRfhz/M5ql2zz5sNdLZoqsMbQUaoJLvjx6kAs0J90bSibV64/2NpnYe0Mp33F
+6/kSJfwPYsB8pYGgtnHZn/7QJDy/Gve1iz6DDrE8y24oB6gNSKbrZAezt8uM8FUX
+dXBBET3QLm9jcfqYOgyMRIX3NFlyfCj27j+8IHAMNpc3DS2DGA3KTvti4v06Bois
+1AZ4IONrfSpjRRXtotyhhrijCbRvjg==
+=PdOe
 -----END PGP SIGNATURE-----
 
---NmhQ8UuReUGrKkEw16050u7Y6wETHqa6I--
+--19HmC3QOnaNVzKTI--
+
+--===============2988961111132407489==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2988961111132407489==--
