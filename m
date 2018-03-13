@@ -1,145 +1,92 @@
-From: <twischer@de.adit-jv.com>
-Subject: [PATCH - JACK 1/1] jack: Do not Xrun the ALSA buffer
-Date: Tue, 13 Mar 2018 09:34:44 +0100
-Message-ID: <1520930084-17449-4-git-send-email-twischer@de.adit-jv.com>
-References: <1520007674-14618-4-git-send-email-twischer@de.adit-jv.com>
- <1520930084-17449-1-git-send-email-twischer@de.adit-jv.com>
+From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH v2 4/6] ASoC: sun4i-i2s: Add multi-lane functionality
+Date: Tue, 13 Mar 2018 09:59:03 +0100
+Message-ID: <CAEKpxBn6Zxy5nuMPYkPU_UweCqBm+P4M2fd2UqepdojBiOErbQ@mail.gmail.com>
+References: <20180312155753.9478-1-codekipper@gmail.com> <20180312155753.9478-5-codekipper@gmail.com>
+ <20180313080026.jtag4w46koxzeqe2@flea> <CAEKpxBkE_Aipa3Z6r0HnVNuU-kmfr1zandotZzQ9Z0AkShR=rw@mail.gmail.com>
+ <20180313082337.zekrzyx5utx5lkj6@flea>
+Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [62.225.105.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 01B2E267275
- for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2018 09:35:42 +0100 (CET)
-In-Reply-To: <1520930084-17449-1-git-send-email-twischer@de.adit-jv.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBWFFT3KQKGQE3WSBRNY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20180313082337.zekrzyx5utx5lkj6@flea>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
+Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Timo Wischer <twischer@de.adit-jv.com>
+On 13 March 2018 at 09:23, Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org> wrote:
+> On Tue, Mar 13, 2018 at 09:15:49AM +0100, Code Kipper wrote:
+>> On 13 March 2018 at 09:00, Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org> wrote:
+>> > On Mon, Mar 12, 2018 at 04:57:51PM +0100, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
+>> >> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+>> >>
+>> >> The i2s block supports multi-lane i2s output however this functionality
+>> >> is only possible in earlier SoCs where the pins are exposed and for
+>> >> the i2s block used for HDMI audio on the later SoCs.
+>> >>
+>> >> To enable this functionality, an optional property has been added to
+>> >> the bindings.
+>> >>
+>> >> Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+>> >> ---
+>> >>  .../devicetree/bindings/sound/sun4i-i2s.txt        |  3 ++
+>> >>  sound/soc/sunxi/sun4i-i2s.c                        | 48 +++++++++++++++++-----
+>> >>  2 files changed, 41 insertions(+), 10 deletions(-)
+>> >>
+>> >> diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+>> >> index 48addef65b8f..3f966ac61b9e 100644
+>> >> --- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+>> >> +++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+>> >> @@ -33,6 +33,9 @@ Optional properties:
+>> >>                               configured to extend the slot width to the
+>> >>                               value specified. Min 8, Max 32.
+>> >>
+>> >> +- allwinner,playback-channels:  if this property is present then the number
+>> >> +                             of available channels is extended and the
+>> >> +                             outputs enabled.
+>> >
+>> > Isn't it something that is fixed for each generation of SoCs? Can't we
+>> > attach it to the compatible?
+>>
+>> I'm not sure as the documentation is pretty poor. It looks like it is
+>> supported by all of the variations that we've seen but only exposed as
+>> pins on A10 and A20. I'm also not sure who would ever use it with
+>> external devices.
+>
+> Well, you were saying that it was the case on the older SoCs in your
+> commit log, so this needs to be figured out.
+>
+>> The reason why I've added it is that it is required by HDMI for
+>> supporting surround sound on the newer SoCs.
+>
+> Why isn't that mentionned in your commit log?
+>
+> Can you post the whole set of changes needed for HDMI audio? this
+> would make things much easier to see where you're going.
 
-when the JACK thread is requesting too many audio frames
+Maybe we should drop this change for now as basic HDMI audio for two
+channels doesn't require it. I've also not tested multi-channel audio
+yet.
 
-Playback:
-Without this commit the ALSA audio buffer will be played with endless
-repeats as long as the user application has not provided new audio data.
-Therefore this garbage will be played as long as the user application has
-not called snd_pcm_stop() after an Xrun. With this fix the rest of the
-JACK buffer will be filled with silence.
+To get HDMI audio working the following patches are required for the dts
+https://github.com/codekipper/linux-sunxi/commit/997c622ae10ef136bae0a35a0e9bf9c6dd27910a
+and
+https://github.com/codekipper/linux-sunxi/commit/4a81676d30a0262c57ffc0827e46c7934fb3b358
 
-Capture:
-Without this commit the audio data in the ALSA buffer would be
-overwritten. With this commit the new data from the JACK buffer will not
-be copied. Therefore the existing data in the ALSA buffer will not be
-overwritten.
+they don't need this patch but do need the slot-width-override patch.
 
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
-
-diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
-index c547cbb..7c7c230 100644
---- a/jack/pcm_jack.c
-+++ b/jack/pcm_jack.c
-@@ -54,6 +54,7 @@ typedef struct {
- 
- static int snd_pcm_jack_stop(snd_pcm_ioplug_t *io);
- 
-+
- static int pcm_poll_block_check(snd_pcm_ioplug_t *io)
- {
- 	static char buf[32];
-@@ -143,8 +144,6 @@ static int
- snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
- {
- 	snd_pcm_jack_t *jack = io->private_data;
--	snd_pcm_uframes_t hw_ptr;
--	const snd_pcm_channel_area_t *areas;
- 	snd_pcm_uframes_t xfer = 0;
- 	unsigned int channel;
- 	
-@@ -154,39 +153,50 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
- 		jack->areas[channel].first = 0;
- 		jack->areas[channel].step = jack->sample_bits;
- 	}
--		
--	if (io->state != SND_PCM_STATE_RUNNING) {
--		if (io->stream == SND_PCM_STREAM_PLAYBACK) {
--			for (channel = 0; channel < io->channels; channel++)
--				snd_pcm_area_silence(&jack->areas[channel], 0, nframes, io->format);
--			return 0;
--		}
--	}
- 
--	hw_ptr = jack->hw_ptr;
--	areas = snd_pcm_ioplug_mmap_areas(io);
-+	if (io->state == SND_PCM_STATE_RUNNING) {
-+		snd_pcm_uframes_t hw_ptr = jack->hw_ptr;
-+		const snd_pcm_uframes_t hw_avail = snd_pcm_ioplug_hw_avail(io, hw_ptr,
-+									   io->appl_ptr);
- 
--	while (xfer < nframes) {
--		snd_pcm_uframes_t frames = nframes - xfer;
--		snd_pcm_uframes_t offset = hw_ptr % io->buffer_size;
--		snd_pcm_uframes_t cont = io->buffer_size - offset;
-+		if (hw_avail > 0) {
-+			const snd_pcm_channel_area_t *areas = snd_pcm_ioplug_mmap_areas(io);
-+			const snd_pcm_uframes_t offset = hw_ptr % io->buffer_size;
- 
--		if (cont < frames)
--			frames = cont;
-+			xfer = nframes;
-+			if (xfer > hw_avail)
-+				xfer = hw_avail;
- 
--		for (channel = 0; channel < io->channels; channel++) {
- 			if (io->stream == SND_PCM_STREAM_PLAYBACK)
--				snd_pcm_area_copy(&jack->areas[channel], xfer, &areas[channel], offset, frames, io->format);
-+				snd_pcm_areas_copy_wrap(jack->areas, 0, nframes,
-+							areas, offset,
-+							io->buffer_size,
-+							io->channels, xfer,
-+							io->format);
- 			else
--				snd_pcm_area_copy(&areas[channel], offset, &jack->areas[channel], xfer, frames, io->format);
-+				snd_pcm_areas_copy_wrap(areas, offset,
-+							io->buffer_size,
-+							jack->areas, 0, nframes,
-+							io->channels, xfer,
-+							io->format);
-+
-+			hw_ptr += xfer;
-+			if (hw_ptr >= jack->boundary)
-+				hw_ptr -= jack->boundary;
-+			jack->hw_ptr = hw_ptr;
-+		}
-+	}
-+
-+	/* check if requested frames were copied */
-+	if (xfer < nframes) {
-+		/* always fill the not yet written JACK buffer with silence */
-+		if (io->stream == SND_PCM_STREAM_PLAYBACK) {
-+			const snd_pcm_uframes_t frames = nframes - xfer;
-+
-+			snd_pcm_areas_silence(jack->areas, io->channels, xfer,
-+					      frames, io->format);
- 		}
--		
--		hw_ptr += frames;
--		if (hw_ptr >= jack->boundary)
--			hw_ptr -= jack->boundary;
--		xfer += frames;
- 	}
--	jack->hw_ptr = hw_ptr;
- 
- 	pcm_poll_unblock_check(io); /* unblock socket for polling if needed */
- 
--- 
-2.7.4
+CK
+>
+> Maxime
+>
+> --
+> Maxime Ripard, Bootlin (formerly Free Electrons)
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
