@@ -1,81 +1,60 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: pcm: Remove VLA usage
-Date: Tue, 13 Mar 2018 12:37:58 +0100
-Message-ID: <20180313113758.14286-1-tiwai@suse.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH] ALSA: pcm: Use krealloc() for resizing the
+	rules array
+Date: Tue, 13 Mar 2018 12:42:10 +0100
+Message-ID: <20180313114210.12434-1-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 96FD02670F8
+ for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2018 12:42:12 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id E3B91ACE9
+ for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2018 11:42:11 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-A helper function used by snd_pcm_hw_refine() still keeps using VLA
-for timestamps of hw constraint rules that are non-fixed size.
+Just a minor simplification.  Change from kcalloc() shouldn't matter
+as each array element is fully initialized.
 
-Let's replace the VLA with a simple kmalloc() array.
-
-Reference: https://lkml.org/lkml/2018/3/7/621
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/pcm_native.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ sound/core/pcm_lib.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 77ba50ddcf9e..756a9a3884a5 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -323,7 +323,7 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_constraints *constrs =
- 					&substream->runtime->hw_constraints;
- 	unsigned int k;
--	unsigned int rstamps[constrs->rules_num];
-+	unsigned int *rstamps;
- 	unsigned int vstamps[SNDRV_PCM_HW_PARAM_LAST_INTERVAL + 1];
- 	unsigned int stamp;
- 	struct snd_pcm_hw_rule *r;
-@@ -331,7 +331,7 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
- 	struct snd_mask old_mask;
- 	struct snd_interval old_interval;
- 	bool again;
--	int changed;
-+	int changed, err = 0;
- 
- 	/*
- 	 * Each application of rule has own sequence number.
-@@ -339,8 +339,9 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
- 	 * Each member of 'rstamps' array represents the sequence number of
- 	 * recent application of corresponding rule.
- 	 */
--	for (k = 0; k < constrs->rules_num; k++)
--		rstamps[k] = 0;
-+	rstamps = kcalloc(constrs->rules_num, sizeof(unsigned int), GFP_KERNEL);
-+	if (!rstamps)
-+		return -ENOMEM;
- 
- 	/*
- 	 * Each member of 'vstamps' array represents the sequence number of
-@@ -398,8 +399,10 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index a83152e7d387..f4a19509cccf 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -1129,16 +1129,12 @@ int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime, unsigned int cond,
+ 	if (constrs->rules_num >= constrs->rules_all) {
+ 		struct snd_pcm_hw_rule *new;
+ 		unsigned int new_rules = constrs->rules_all + 16;
+-		new = kcalloc(new_rules, sizeof(*c), GFP_KERNEL);
++		new = krealloc(constrs->rules, new_rules * sizeof(*c),
++			       GFP_KERNEL);
+ 		if (!new) {
+ 			va_end(args);
+ 			return -ENOMEM;
  		}
- 
- 		changed = r->func(params, r);
--		if (changed < 0)
--			return changed;
-+		if (changed < 0) {
-+			err = changed;
-+			goto out;
-+		}
- 
- 		/*
- 		 * When the parameter is changed, notify it to the caller
-@@ -430,7 +433,9 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
- 	if (again)
- 		goto retry;
- 
--	return 0;
-+ out:
-+	kfree(rstamps);
-+	return err;
- }
- 
- static int fixup_unreferenced_params(struct snd_pcm_substream *substream,
+-		if (constrs->rules) {
+-			memcpy(new, constrs->rules,
+-			       constrs->rules_num * sizeof(*c));
+-			kfree(constrs->rules);
+-		}
+ 		constrs->rules = new;
+ 		constrs->rules_all = new_rules;
+ 	}
 -- 
 2.16.2
