@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Disable clock and power
-	gating during FW/LIB download" to the asoc tree
-Date: Tue, 13 Mar 2018 16:31:15 +0000 (GMT)
-Message-ID: <20180313163115.2829A440079@finisterre.ee.mobilebroadband>
-References: <20180313033225.9714-1-guneshwor.o.singh@intel.com>
+Subject: Applied "ASoC: dapm: add support to pinctrl dapm" to
+	the asoc tree
+Date: Tue, 13 Mar 2018 16:46:54 +0000 (GMT)
+Message-ID: <20180313164654.4F7FC440079@finisterre.ee.mobilebroadband>
+References: <20180310023727.27077-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 52E26267320
- for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2018 17:31:33 +0100 (CET)
-In-Reply-To: <20180313033225.9714-1-guneshwor.o.singh@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F4E2266E77
+ for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2018 17:46:58 +0100 (CET)
+In-Reply-To: <20180310023727.27077-1-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sanyog Kale <sanyog.r.kale@intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, Vinod Koul <vinod.koul@intel.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Disable clock and power gating during FW/LIB download
+   ASoC: dapm: add support to pinctrl dapm
 
 has been applied to the asoc tree at
 
@@ -53,159 +53,182 @@ to this mail.
 Thanks,
 Mark
 
->From fc9fdd61c4809b14faa9b84fe3d8f4167a836326 Mon Sep 17 00:00:00 2001
-From: Sanyog Kale <sanyog.r.kale@intel.com>
-Date: Tue, 13 Mar 2018 09:02:25 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Disable clock and power gating during
- FW/LIB download
+>From 5b2d15bbd1eeb3d787c8e6459a8cb2645f336050 Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Sat, 10 Mar 2018 02:37:27 +0000
+Subject: [PATCH] ASoC: dapm: add support to pinctrl dapm
 
-In order to achieve better DMA performance and reduce download time for
-firmware and library, it is recommended to disable dynamic clock and
-power gating. In some scenarios, DMA may wait to accumulate more data and
-last chunk of data never gets completed if dynamic clock and power
-gating is kept enabled.
+Purpose of having pinctrl dapm is to dynamically put the pins in
+low power state when they are not actively used by the audio and
+saving power.
 
-This patch adds support to disable/enable dynamic clock and power gating
-and use it during firmware and library download.
+Without this each driver has to set the pinctrl states, either
+during probe or dynamically depending on the callbacks received
+from ASoC core.
 
-Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
-Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-messages.c |  7 ++++++-
- sound/soc/intel/skylake/skl-pcm.c      |  7 ++++++-
- sound/soc/intel/skylake/skl-sst-ipc.h  |  3 +++
- sound/soc/intel/skylake/skl.c          | 27 +++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl.h          |  4 ++++
- 5 files changed, 46 insertions(+), 2 deletions(-)
+ include/sound/soc-dapm.h | 16 ++++++++++++++++
+ sound/soc/soc-dapm.c     | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 58 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index f161907859f3..57d4a58522a6 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -417,11 +417,16 @@ int skl_resume_dsp(struct skl *skl)
- 	if (skl->skl_sst->is_first_boot == true)
- 		return 0;
- 
--	/* disable dynamic clock gating during fw and lib download */
-+	/*
-+	 * Disable dynamic clock and power gating during firmware
-+	 * and library download
-+	 */
- 	ctx->enable_miscbdcge(ctx->dev, false);
-+	ctx->clock_power_gating(ctx->dev, false);
- 
- 	ret = skl_dsp_wake(ctx->dsp);
- 	ctx->enable_miscbdcge(ctx->dev, true);
-+	ctx->clock_power_gating(ctx->dev, true);
- 	if (ret < 0)
- 		return ret;
- 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 84e40faeb869..15cb8ac3e374 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1356,11 +1356,16 @@ static int skl_platform_soc_probe(struct snd_soc_component *component)
- 			return -EIO;
- 		}
- 
--		/* disable dynamic clock gating during fw and lib download */
-+		/*
-+		 * Disable dynamic clock and power gating during firmware
-+		 * and library download
-+		 */
- 		skl->skl_sst->enable_miscbdcge(component->dev, false);
-+		skl->skl_sst->clock_power_gating(component->dev, false);
- 
- 		ret = ops->init_fw(component->dev, skl->skl_sst);
- 		skl->skl_sst->enable_miscbdcge(component->dev, true);
-+		skl->skl_sst->clock_power_gating(component->dev, true);
- 		if (ret < 0) {
- 			dev_err(component->dev, "Failed to boot first fw: %d\n", ret);
- 			return ret;
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
-index 55f2d2ce09df..f74f040dfd83 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.h
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.h
-@@ -118,6 +118,9 @@ struct skl_sst {
- 	struct skl_d0i3_data d0i3;
- 
- 	const struct skl_dsp_ops *dsp_ops;
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 344b96c206a3..a6ce2de4e20a 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -269,6 +269,13 @@ struct device;
+ 	.reg = SND_SOC_NOPM, .shift = wdelay, .event = dapm_regulator_event, \
+ 	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD, \
+ 	.on_val = wflags}
++#define SND_SOC_DAPM_PINCTRL(wname, active, sleep) \
++{	.id = snd_soc_dapm_pinctrl, .name = wname, \
++	.priv = (&(struct snd_soc_dapm_pinctrl_priv) \
++		{ .active_state = active, .sleep_state = sleep,}), \
++	.reg = SND_SOC_NOPM, .event = dapm_pinctrl_event, \
++	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD }
 +
-+	/* Callback to update dynamic clock and power gating registers */
-+	void (*clock_power_gating)(struct device *dev, bool enable);
+ 
+ 
+ /* dapm kcontrol types */
+@@ -374,6 +381,8 @@ int dapm_regulator_event(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol, int event);
+ int dapm_clock_event(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol, int event);
++int dapm_pinctrl_event(struct snd_soc_dapm_widget *w,
++			 struct snd_kcontrol *kcontrol, int event);
+ 
+ /* dapm controls */
+ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
+@@ -500,6 +509,7 @@ enum snd_soc_dapm_type {
+ 	snd_soc_dapm_pre,			/* machine specific pre widget - exec first */
+ 	snd_soc_dapm_post,			/* machine specific post widget - exec last */
+ 	snd_soc_dapm_supply,		/* power/clock supply */
++	snd_soc_dapm_pinctrl,		/* pinctrl */
+ 	snd_soc_dapm_regulator_supply,	/* external regulator */
+ 	snd_soc_dapm_clock_supply,	/* external clock */
+ 	snd_soc_dapm_aif_in,		/* audio interface input */
+@@ -581,6 +591,7 @@ struct snd_soc_dapm_widget {
+ 
+ 	void *priv;				/* widget specific data */
+ 	struct regulator *regulator;		/* attached regulator */
++	struct pinctrl *pinctrl;		/* attached pinctrl */
+ 	const struct snd_soc_pcm_stream *params; /* params for dai links */
+ 	unsigned int num_params; /* number of params for dai links */
+ 	unsigned int params_select; /* currently selected param for dai link */
+@@ -683,6 +694,11 @@ struct snd_soc_dapm_stats {
+ 	int neighbour_checks;
  };
  
- struct skl_ipc_init_instance_msg {
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index aa9edc84eefb..abf324747b29 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -94,6 +94,32 @@ static void skl_enable_miscbdcge(struct device *dev, bool enable)
- 	update_pci_dword(pci, AZX_PCIREG_CGCTL, AZX_CGCTL_MISCBDCGE_MASK, val);
++struct snd_soc_dapm_pinctrl_priv {
++	const char *active_state;
++	const char *sleep_state;
++};
++
+ /**
+  * snd_soc_dapm_init_bias_level() - Initialize DAPM bias level
+  * @dapm: The DAPM context to initialize
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 92894d9cac19..a5fb4d404c99 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -35,6 +35,7 @@
+ #include <linux/debugfs.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/pinctrl/consumer.h>
+ #include <linux/clk.h>
+ #include <linux/slab.h>
+ #include <sound/core.h>
+@@ -72,6 +73,7 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
+ static int dapm_up_seq[] = {
+ 	[snd_soc_dapm_pre] = 0,
+ 	[snd_soc_dapm_regulator_supply] = 1,
++	[snd_soc_dapm_pinctrl] = 1,
+ 	[snd_soc_dapm_clock_supply] = 1,
+ 	[snd_soc_dapm_supply] = 2,
+ 	[snd_soc_dapm_micbias] = 3,
+@@ -121,6 +123,7 @@ static int dapm_down_seq[] = {
+ 	[snd_soc_dapm_dai_link] = 11,
+ 	[snd_soc_dapm_supply] = 12,
+ 	[snd_soc_dapm_clock_supply] = 13,
++	[snd_soc_dapm_pinctrl] = 13,
+ 	[snd_soc_dapm_regulator_supply] = 13,
+ 	[snd_soc_dapm_post] = 14,
+ };
+@@ -1289,6 +1292,31 @@ int dapm_regulator_event(struct snd_soc_dapm_widget *w,
  }
+ EXPORT_SYMBOL_GPL(dapm_regulator_event);
  
-+/**
-+ * skl_clock_power_gating: Enable/Disable clock and power gating
-+ *
-+ * @dev: Device pointer
-+ * @enable: Enable/Disable flag
++/*
++ * Handler for pinctrl widget.
 + */
-+static void skl_clock_power_gating(struct device *dev, bool enable)
++int dapm_pinctrl_event(struct snd_soc_dapm_widget *w,
++		       struct snd_kcontrol *kcontrol, int event)
 +{
-+	struct pci_dev *pci = to_pci_dev(dev);
-+	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	u32 val;
++	struct snd_soc_dapm_pinctrl_priv *priv = w->priv;
++	struct pinctrl *p = w->pinctrl;
++	struct pinctrl_state *s;
 +
-+	/* Update PDCGE bit of CGCTL register */
-+	val = enable ? AZX_CGCTL_ADSPDCGE : 0;
-+	update_pci_dword(pci, AZX_PCIREG_CGCTL, AZX_CGCTL_ADSPDCGE, val);
++	if (!p || !priv)
++		return -EIO;
 +
-+	/* Update L1SEN bit of EM2 register */
-+	val = enable ? AZX_REG_VS_EM2_L1SEN : 0;
-+	snd_hdac_chip_updatel(bus, VS_EM2, AZX_REG_VS_EM2_L1SEN, val);
++	if (SND_SOC_DAPM_EVENT_ON(event))
++		s = pinctrl_lookup_state(p, priv->active_state);
++	else
++		s = pinctrl_lookup_state(p, priv->sleep_state);
 +
-+	/* Update ADSPPGD bit of PGCTL register */
-+	val = enable ? 0 : AZX_PGCTL_ADSPPGD;
-+	update_pci_dword(pci, AZX_PCIREG_PGCTL, AZX_PGCTL_ADSPPGD, val);
++	if (IS_ERR(s))
++		return PTR_ERR(s);
++
++	return pinctrl_select_state(p, s);
 +}
++EXPORT_SYMBOL_GPL(dapm_pinctrl_event);
 +
  /*
-  * While performing reset, controller may not come back properly causing
-  * issues, so recommendation is to set CGCTL.MISCBDCGE to 0 then do reset
-@@ -916,6 +942,7 @@ static int skl_probe(struct pci_dev *pci,
- 			goto out_nhlt_free;
+  * Handler for clock supply widget.
+  */
+@@ -1902,6 +1930,7 @@ static int dapm_power_widgets(struct snd_soc_card *card, int event)
+ 				break;
+ 			case snd_soc_dapm_supply:
+ 			case snd_soc_dapm_regulator_supply:
++			case snd_soc_dapm_pinctrl:
+ 			case snd_soc_dapm_clock_supply:
+ 			case snd_soc_dapm_micbias:
+ 				if (d->target_bias_level < SND_SOC_BIAS_STANDBY)
+@@ -2315,6 +2344,7 @@ static ssize_t dapm_widget_show_component(struct snd_soc_component *cmpnt,
+ 		case snd_soc_dapm_mixer_named_ctl:
+ 		case snd_soc_dapm_supply:
+ 		case snd_soc_dapm_regulator_supply:
++		case snd_soc_dapm_pinctrl:
+ 		case snd_soc_dapm_clock_supply:
+ 			if (w->name)
+ 				count += sprintf(buf + count, "%s: %s\n",
+@@ -3464,6 +3494,17 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
+ 					 w->name, ret);
  		}
- 		skl->skl_sst->enable_miscbdcge = skl_enable_miscbdcge;
-+		skl->skl_sst->clock_power_gating = skl_clock_power_gating;
- 	}
- 	if (bus->mlcap)
- 		snd_hdac_ext_bus_get_ml_capabilities(ebus);
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index ca46ad1d0a08..0d5375cbcf6e 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -33,8 +33,10 @@
- 
- #define AZX_PCIREG_PGCTL		0x44
- #define AZX_PGCTL_LSRMD_MASK		(1 << 4)
-+#define AZX_PGCTL_ADSPPGD		BIT(2)
- #define AZX_PCIREG_CGCTL		0x48
- #define AZX_CGCTL_MISCBDCGE_MASK	(1 << 6)
-+#define AZX_CGCTL_ADSPDCGE		BIT(1)
- /* D0I3C Register fields */
- #define AZX_REG_VS_D0I3C_CIP      0x1 /* Command in progress */
- #define AZX_REG_VS_D0I3C_I3       0x4 /* D0i3 enable */
-@@ -43,6 +45,8 @@
- #define DMA_TRANSMITION_START	2
- #define DMA_TRANSMITION_STOP	3
- 
-+#define AZX_REG_VS_EM2_L1SEN		BIT(13)
-+
- struct skl_dsp_resource {
- 	u32 max_mcps;
- 	u32 max_mem;
+ 		break;
++	case snd_soc_dapm_pinctrl:
++		w->pinctrl = devm_pinctrl_get(dapm->dev);
++		if (IS_ERR_OR_NULL(w->pinctrl)) {
++			ret = PTR_ERR(w->pinctrl);
++			if (ret == -EPROBE_DEFER)
++				return ERR_PTR(ret);
++			dev_err(dapm->dev, "ASoC: Failed to request %s: %d\n",
++				w->name, ret);
++			return NULL;
++		}
++		break;
+ 	case snd_soc_dapm_clock_supply:
+ #ifdef CONFIG_CLKDEV_LOOKUP
+ 		w->clk = devm_clk_get(dapm->dev, w->name);
+@@ -3543,6 +3584,7 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
+ 		break;
+ 	case snd_soc_dapm_supply:
+ 	case snd_soc_dapm_regulator_supply:
++	case snd_soc_dapm_pinctrl:
+ 	case snd_soc_dapm_clock_supply:
+ 	case snd_soc_dapm_kcontrol:
+ 		w->is_supply = 1;
 -- 
 2.16.2
