@@ -1,16 +1,17 @@
 From: Olivier Moysan <olivier.moysan@st.com>
-Subject: [PATCH 0/3] ASoC: stm32: sai: add support of iec958
-	controls
-Date: Tue, 13 Mar 2018 17:27:05 +0100
-Message-ID: <1520958428-10930-1-git-send-email-olivier.moysan@st.com>
+Subject: [PATCH 3/3] ASoC: dmaengine_pcm: document process
+	callback
+Date: Tue, 13 Mar 2018 17:27:08 +0100
+Message-ID: <1520958428-10930-4-git-send-email-olivier.moysan@st.com>
+References: <1520958428-10930-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 9DD91267172
- for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2018 17:27:16 +0100 (CET)
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id D9D14267274
+ for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2018 17:27:17 +0100 (CET)
+In-Reply-To: <1520958428-10930-1-git-send-email-olivier.moysan@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,26 +25,26 @@ To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mco
 Cc: jsarha@ti.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.com, rmk@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-This patchset adds support of iec958 controls to STM32 SAI driver.
+Add missing description of process callback.
 
-The patch makes use of iec958 control status helpers previously proposed
-and discussed through the following threads:
-https://patchwork.kernel.org/patch/8062601/
-https://patchwork.kernel.org/patch/8091551/ (v2)
-https://patchwork.kernel.org/patch/8462961/ (v3)
-https://patchwork.kernel.org/patch/8533731/ (v4)
+Fixes: 78648092ef46 ("ASoC: dmaengine_pcm: add processing support")
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+---
+ include/sound/dmaengine_pcm.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Olivier Moysan (3):
-  ALSA: pcm: add IEC958 channel status control helper
-  ASoC: stm32: sai: add iec958 controls support
-  ASoC: dmaengine_pcm: document process callback
-
- include/sound/dmaengine_pcm.h |   2 +
- include/sound/pcm_iec958.h    |  19 +++++++
- sound/core/pcm_iec958.c       | 114 ++++++++++++++++++++++++++++++++++++++++++
- sound/soc/stm/Kconfig         |   1 +
- sound/soc/stm/stm32_sai_sub.c | 101 ++++++++++++++++++++++++++++++++-----
- 5 files changed, 225 insertions(+), 12 deletions(-)
-
+diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
+index 47ef486852ed..e3481eebdd98 100644
+--- a/include/sound/dmaengine_pcm.h
++++ b/include/sound/dmaengine_pcm.h
+@@ -118,6 +118,8 @@ void snd_dmaengine_pcm_set_config_from_dai_data(
+  *   PCM substream. Will be called from the PCM drivers hwparams callback.
+  * @compat_request_channel: Callback to request a DMA channel for platforms
+  *   which do not use devicetree.
++ * @process: Callback used to apply processing on samples transferred from/to
++ *   user space.
+  * @compat_filter_fn: Will be used as the filter function when requesting a
+  *  channel for platforms which do not use devicetree. The filter parameter
+  *  will be the DAI's DMA data.
 -- 
 1.9.1
