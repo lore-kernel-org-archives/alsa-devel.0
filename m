@@ -1,20 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [linux-sunxi] Re: [PATCH v2 6/6] ASoC: sun4i-i2s:
- Add support for loopback
-Date: Tue, 13 Mar 2018 09:26:42 -0700
-Message-ID: <20180313162642.GR2186@sirena.org.uk>
-References: <20180312155753.9478-1-codekipper@gmail.com>
- <20180312155753.9478-7-codekipper@gmail.com>
- <20180312183521.GP2186@sirena.org.uk>
- <CAP03XeoaYcMrzv3+K83wGUaDn6ZcCDzePdVNcjAqJ4QrF-WLSA@mail.gmail.com>
+From: Olivier Moysan <olivier.moysan@st.com>
+Subject: [PATCH 1/3] ALSA: pcm: add IEC958 channel status
+	control helper
+Date: Tue, 13 Mar 2018 17:27:06 +0100
+Message-ID: <1520958428-10930-2-git-send-email-olivier.moysan@st.com>
+References: <1520958428-10930-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2988961111132407489=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BFAF5266E60
- for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2018 17:26:47 +0100 (CET)
-In-Reply-To: <CAP03XeoaYcMrzv3+K83wGUaDn6ZcCDzePdVNcjAqJ4QrF-WLSA@mail.gmail.com>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 6BF17266E60
+ for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2018 17:27:17 +0100 (CET)
+In-Reply-To: <1520958428-10930-1-git-send-email-olivier.moysan@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,60 +21,201 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Chris Obbard <chris@64studio.com>
-Cc: alsa-devel@alsa-project.org, be17068@iperbole.bo.it, linux-sunxi <linux-sunxi@googlegroups.com>, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, Code Kipper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, Linux ARM <linux-arm-kernel@lists.infradead.org>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com
+Cc: jsarha@ti.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.com, rmk@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 
---===============2988961111132407489==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="19HmC3QOnaNVzKTI"
-Content-Disposition: inline
+Add IEC958 channel status helper that creates control to handle the
+IEC60958 status bits.
 
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+---
+ include/sound/pcm_iec958.h |  19 ++++++++
+ sound/core/pcm_iec958.c    | 113 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 132 insertions(+)
 
---19HmC3QOnaNVzKTI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Mar 13, 2018 at 01:39:44PM +0000, Chris Obbard wrote:
-> >> +- loopback:  if this property is present then the dai is configured in
-> >> +             loopback mode where the output fifo is redirected to the input
-> >> +             fifo.
-
-> > This really doesn't seem like something that ought to go into the DT
-> > and hence ABI given that there's obviously no reason to use this in
-> > production.  Just make it be a #define in the code or something.
-
-> It would be nice to have this as an optional devicetree property so
-> when testing JACK latency etc I don't have to manually re-compile a
-> kernel...
-
-You'll have to rebuild your DT anyway, I'm not sure the kernel is that
-much of a difference...  For your use case you'd want a regular runtime
-ALSA control, not a DT property anyway.  That would be fine.
-
---19HmC3QOnaNVzKTI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqn+8EACgkQJNaLcl1U
-h9CsWwf/aZ5n+PDY6I4YPxSGCMLvlVViob04VH3UODkQUCRdUIpJJ/R4ot1p8Tpp
-MqyoqIdJ0xogmXHNGGKFhmolD2xk8YEsi+Zi7k4SPRo8xXkMiy/O2lX+QwedaosL
-wzkPRfhz/M5ql2zz5sNdLZoqsMbQUaoJLvjx6kAs0J90bSibV64/2NpnYe0Mp33F
-6/kSJfwPYsB8pYGgtnHZn/7QJDy/Gve1iz6DDrE8y24oB6gNSKbrZAezt8uM8FUX
-dXBBET3QLm9jcfqYOgyMRIX3NFlyfCj27j+8IHAMNpc3DS2DGA3KTvti4v06Bois
-1AZ4IONrfSpjRRXtotyhhrijCbRvjg==
-=PdOe
------END PGP SIGNATURE-----
-
---19HmC3QOnaNVzKTI--
-
---===============2988961111132407489==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2988961111132407489==--
+diff --git a/include/sound/pcm_iec958.h b/include/sound/pcm_iec958.h
+index 0939aa45e2fe..3c9701a9b1b0 100644
+--- a/include/sound/pcm_iec958.h
++++ b/include/sound/pcm_iec958.h
+@@ -4,9 +4,28 @@
+ 
+ #include <linux/types.h>
+ 
++/**
++ * struct snd_pcm_iec958_params: IEC 60958 controls parameters
++ * @ctrl_set: control set callback
++ * This callback is optional and shall be used to set associated driver
++ * configuration.
++ * @iec: Mandatory pointer to iec958 structure.
++ * @cs: Mandatory pointer to AES/IEC958  channel status bits.
++ * @cs_len: size in byte of the AES/IEC958  channel status bits.
++ * @private_data: Optional private pointer to driver context.
++ */
++struct snd_pcm_iec958_params {
++	int (*ctrl_set)(struct snd_pcm_iec958_params *iec_param);
++	unsigned char *cs;
++	unsigned char cs_len;
++	void *private_data;
++};
++
+ int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+ 	size_t len);
+ 
+ int snd_pcm_create_iec958_consumer_hw_params(struct snd_pcm_hw_params *params,
+ 					     u8 *cs, size_t len);
++int snd_pcm_add_iec958_ctl(struct snd_pcm *pcm, int subdevice, int stream,
++			   struct snd_pcm_iec958_params *params);
+ #endif
+diff --git a/sound/core/pcm_iec958.c b/sound/core/pcm_iec958.c
+index 5e6aed64f451..aba1f522e98a 100644
+--- a/sound/core/pcm_iec958.c
++++ b/sound/core/pcm_iec958.c
+@@ -7,11 +7,88 @@
+  */
+ #include <linux/export.h>
+ #include <linux/types.h>
++#include <linux/wait.h>
+ #include <sound/asoundef.h>
++#include <sound/control.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/pcm_iec958.h>
+ 
++static int snd_pcm_iec958_info(struct snd_kcontrol *kcontrol,
++			       struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
++	uinfo->count = 1;
++	return 0;
++}
++
++/*
++ * IEC958 channel status default controls callbacks
++ */
++static int snd_pcm_iec958_get(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *uctl)
++{
++	struct snd_pcm_iec958_params *params = snd_kcontrol_chip(kcontrol);
++	int i;
++
++	for (i = 0; i < params->cs_len; i++)
++		uctl->value.iec958.status[i] = params->cs[i];
++
++	return 0;
++}
++
++static int snd_pcm_iec958_put(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *uctl)
++{
++	struct snd_pcm_iec958_params *params = snd_kcontrol_chip(kcontrol);
++	int err = 0;
++	unsigned int i, updated = 0;
++	unsigned char old_status[5];
++
++	for (i = 0; i < params->cs_len; i++) {
++		if (params->cs[i] != uctl->value.iec958.status[i])
++			updated = 1;
++	}
++
++	if (!updated)
++		return 0;
++
++	/* Store current status to restore them in error case */
++	for (i = 0; i < params->cs_len; i++) {
++		old_status[i] = params->cs[i];
++		params->cs[i] = uctl->value.iec958.status[i];
++	}
++
++	if (params->ctrl_set)
++		err = params->ctrl_set(params);
++	if (err < 0) {
++		for (i = 0; i < params->cs_len; i++)
++			params->cs[i] = old_status[i];
++	}
++
++	return err;
++}
++
++static const struct snd_kcontrol_new iec958_ctls[] = {
++	{
++		.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE |
++			   SNDRV_CTL_ELEM_ACCESS_VOLATILE),
++		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
++		.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
++		.info = snd_pcm_iec958_info,
++		.get = snd_pcm_iec958_get,
++		.put = snd_pcm_iec958_put,
++	},
++	{
++		.access = (SNDRV_CTL_ELEM_ACCESS_READ |
++			   SNDRV_CTL_ELEM_ACCESS_VOLATILE),
++		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
++		.name = SNDRV_CTL_NAME_IEC958("", CAPTURE, DEFAULT),
++		.info = snd_pcm_iec958_info,
++		.get = snd_pcm_iec958_get,
++	},
++};
++
+ static int create_iec958_consumer(uint rate, uint sample_width,
+ 				  u8 *cs, size_t len)
+ {
+@@ -21,6 +98,9 @@ static int create_iec958_consumer(uint rate, uint sample_width,
+ 		return -EINVAL;
+ 
+ 	switch (rate) {
++	case 0:
++		fs = IEC958_AES3_CON_FS_NOTID;
++		break;
+ 	case 32000:
+ 		fs = IEC958_AES3_CON_FS_32000;
+ 		break;
+@@ -48,6 +128,9 @@ static int create_iec958_consumer(uint rate, uint sample_width,
+ 
+ 	if (len > 4) {
+ 		switch (sample_width) {
++		case 0:
++			ws = IEC958_AES4_CON_WORDLEN_NOTID;
++			break;
+ 		case 16:
+ 			ws = IEC958_AES4_CON_WORDLEN_20_16;
+ 			break;
+@@ -124,3 +207,33 @@ int snd_pcm_create_iec958_consumer_hw_params(struct snd_pcm_hw_params *params,
+ 				      cs, len);
+ }
+ EXPORT_SYMBOL(snd_pcm_create_iec958_consumer_hw_params);
++
++/**
++ * snd_pcm_add_iec958_ctl - Add a IEC958 control associated to the pcm device
++ * @pcm: pcm device to associate to the control.
++ * @subdevice: subdevice index.Must be set to 0 if unused
++ * @iec958: snd_pcm_iec958_params structure that contains callbacks
++ *          and channel status buffer.
++ * @stream: stream type SNDRV_PCM_STREAM_PLAYBACK or SNDRV_PCM_STREAM_CATURE.
++ * Returns:  negative error code if something failed.
++ */
++int snd_pcm_add_iec958_ctl(struct snd_pcm *pcm, int subdevice, int stream,
++			   struct snd_pcm_iec958_params *params)
++{
++	struct snd_kcontrol_new knew;
++
++	if (stream > SNDRV_PCM_STREAM_LAST)
++		return -EINVAL;
++	if (!params->cs)
++		return -EINVAL;
++	if (params->cs_len < 4)
++		return -EINVAL;
++
++	create_iec958_consumer(0, 0, params->cs, params->cs_len);
++	knew = iec958_ctls[stream];
++	knew.device = pcm->device;
++	knew.subdevice = subdevice;
++
++	return snd_ctl_add(pcm->card, snd_ctl_new1(&knew, params));
++}
++EXPORT_SYMBOL(snd_pcm_add_iec958_ctl);
+-- 
+1.9.1
