@@ -1,115 +1,69 @@
-From: Kai Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH v2 3/3] ALSA: hda: Disabled unused audio controller for
- Dell platforms with Switchable Graphics
-Date: Tue, 13 Mar 2018 16:24:24 +0800
-Message-ID: <87BEDA0C-1821-4D2B-A4AF-FC89A434967B@canonical.com>
-References: <20180308091023.9061-1-kai.heng.feng@canonical.com>
- <20180308091023.9061-3-kai.heng.feng@canonical.com>
- <20180309090223.xb55ltac4pfesdrh@pali>
- <723DA929-C9FA-4F69-8D3A-03D8A75D09A6@canonical.com>
- <20180310065039.GA6633@wunner.de>
-Mime-Version: 1.0 (Mac OS X Mail 11.3 \(3445.6.15\))
-Content-Type: text/plain;
-        charset=us-ascii;
-        delsp=yes;
-        format=flowed
+From: <twischer@de.adit-jv.com>
+Subject: [PATCH - JACK plugin] jack: Do not Xrun the ALSA buffer
+Date: Tue, 13 Mar 2018 09:34:41 +0100
+Message-ID: <1520930084-17449-1-git-send-email-twischer@de.adit-jv.com>
+References: <1520007674-14618-4-git-send-email-twischer@de.adit-jv.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180310065039.GA6633@wunner.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lukas Wunner <lukas@wunner.de>
-Cc: =?utf-8?Q?Pali_Roh=C3=A1r?= <pali.rohar@gmail.com>, mjg59@srcf.ucam.org, dvhart@infradead.org, andy@infradead.org, Mario Limonciello <mario.limonciello@dell.com>, tiwai@suse.com, platform-driver-x86@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [62.225.105.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CA9A2670F8
+ for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2018 09:35:15 +0100 (CET)
+In-Reply-To: <1520007674-14618-4-git-send-email-twischer@de.adit-jv.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-> On Mar 10, 2018, at 2:50 PM, Lukas Wunner <lukas@wunner.de> wrote:
->
-> On Fri, Mar 09, 2018 at 05:30:15PM +0800, Kai Heng Feng wrote:
->>> On Thursday 08 March 2018 17:10:23 Kai-Heng Feng wrote:
->>>> Some Dell platforms (Preicsion 7510/7710/7520/7720) have a BIOS option
->>>> "Switchable Graphics" (SG).
->>>>
->>>> When SG is enabled, we have:
->>>> 00:02.0 VGA compatible controller: Intel Corporation Device 591b (rev  
->>>> 04)
->>>> 00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (rev  
->>>> 31)
->>>> 01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
->>>> [AMD/ATI] Ellesmere [Polaris10]
->>>> 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere
->>>> [Radeon RX 580]
->>>>
->>>> The Intel Audio outputs all the sound, including HDMI audio. The audio
->>>> controller comes with AMD graphics doesn't get used.
->>>>
->>>> When SG is disabled, we have:
->>>> 00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (rev  
->>>> 31)
->>>> 01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
->>>> [AMD/ATI] Ellesmere [Polaris10]
->>>> 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere
->>>> [Radeon RX 580]
->>>>
->>>> Now it's a typical discrete-only system. HDMI audio comes from AMD audio
->>>> controller, others from Intel audio controller.
->>>>
->>>> When SG is enabled, the unused AMD audio controller still exposes its
->>>> sysfs, so userspace still opens the control file and stream. If
->>>> userspace tries to output sound through the stream, it hangs when
->>>> runtime suspend kicks in:
->>>> [ 12.796265] snd_hda_intel 0000:01:00.1: Disabling via vga_switcheroo
->>>> [ 12.796367] snd_hda_intel 0000:01:00.1: Cannot lock devices!
->>>>
->>>> Since the discrete audio controller isn't useful when SG enabled, we
->>>> should just disable the device.
->>
->> The platform does have a NVIDIA variant, but the discrete NVIDIA have a
->> audio controller, hence it doesn't have the issue.
->
-> Sorry, I don't quite understand:  The AMD variant *also* has an audio
-> controller, so what's the difference?  Or did you mean the Nvidia
-> variant *doesn't* have an audio controller?
+Hello Takashi,
 
-It does, but the audio controller only shows under SG disabled.
+Now I have compiled and tested the patchies successfully.
+Some minor adaption where required.
+I have incorporated all your findings.
 
->
-> Pretty much all modern Nvidia GPUs do have an integrated HDA
-> controller, however it's possible to hide it by clearing a bit
-> at offset 0x488 in the GPU's config space.  Some BIOSes hide
-> the HDA if no external display is attached.
 
-This is how the Nvidia variant works:
+> Please try to format the text a bit nicer.  These line breaks appear
+> like you're writing a poem :)i
 
-When SG is enabled:
-One audio controller, the integrated one.
-All sounds comes from the integrated one, including DP/HDMI.
+Done.
 
-When SG is disabled:
-Two audio controller.
-The DP/HDMI sounds come from the Nvidia audio controller. Others are from  
-the integrated audio controller.
 
->
-> I could imagine that the BIOS of the Dell machines in question
-> hides the HDA if Switchable Graphics is enabled.  If that is the
-> case, be aware that there's an ongoing discussion to always expose
-> the HDA controller because the behavior of some BIOSes to only
-> expose the HDA when a display is attached causes massive problems
-> with Linux' HDA driver:
-> https://bugs.freedesktop.org/show_bug.cgi?id=75985
+> You don't need to put inline unless it's really mandatory.
 
-The system in the bug doesn't have "Switchable Graphics".
+Done.
 
-Right now all sounds output are from integrated audio controller on SG  
-enabled machines.
 
->
-> If we decide to always expose the HDA controller on Nvidia cards,
-> you may need to also match for the Nvidia vendor ID here.
+> Hm, this whole stuff would fit better in ioplug code itself instead of
+> open-coding in each plugin.  Maybe providing a new helper function?
 
-Thanks for the info, I'll also put Nvidia vendor ID on next patch version.
+I am providing a new helper function called snd_pcm_ioplug_hw_avail()
+and I am reusing internally already existing functions.
 
->
-> Thanks,
->
-> Lukas
+
+> Ditto.  Basically the whole procedure here is some common pattern, so
+> it wouldn't be too bad to have it in ioplug side.
+
+I have provided a new area copy function which takes care about the buffer wrap around.
+This function is called snd_pcm_areas_copy_wrap().
+This reduces the complexity of the JACK IO plug a lot.
+I have also compared the new implementation with other ALSA IO plugins.
+I could not found more simuilarities because not all plugins are creating a snd_pcm_channel_area_t for the DMA/HW buffer.
+Therefore functions like snd_pcm_areas_silence() and snd_pcm_areas_copy() cannot be used.
+For example the pulse IO plug is also not using snd_pcm_channel_area_t for the pulse buffer.
+
+I hope you are fine with these changes, now.
+If not it would be great if you could give me a feedback in time.
+
+Best regards
+
+Timo
