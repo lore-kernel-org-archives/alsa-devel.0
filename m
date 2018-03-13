@@ -1,22 +1,22 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v4 07/24] ASoC: qdsp6: q6afe: Add q6afe
+Subject: Re: [PATCH v4 15/24] ASoC: qdsp6: q6core: Add q6core
  driver
-Date: Tue, 13 Mar 2018 13:51:28 +0000
-Message-ID: <e2c668dd-aad5-db06-cc92-e27c57cf598e@linaro.org>
+Date: Tue, 13 Mar 2018 13:55:40 +0000
+Message-ID: <e1d119f8-146a-b549-3dd9-da6d8b0f3e9f@linaro.org>
 References: <20180310022456.26739-1-srinivas.kandagatla@linaro.org>
- <20180310022456.26739-8-srinivas.kandagatla@linaro.org>
- <3d750b29-d341-af4d-41b3-30260f8296b7@codeaurora.org>
+ <20180310022456.26739-16-srinivas.kandagatla@linaro.org>
+ <21207441-4e81-284e-343c-bdeb01c9d06f@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wr0-f194.google.com (mail-wr0-f194.google.com
  [209.85.128.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 766B02670F8
- for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2018 14:51:31 +0100 (CET)
-Received: by mail-wr0-f194.google.com with SMTP id h2so15615158wre.12
- for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2018 06:51:31 -0700 (PDT)
-In-Reply-To: <3d750b29-d341-af4d-41b3-30260f8296b7@codeaurora.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id EB6CB2670F8
+ for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2018 14:55:42 +0100 (CET)
+Received: by mail-wr0-f194.google.com with SMTP id r8so7806436wrg.0
+ for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2018 06:55:42 -0700 (PDT)
+In-Reply-To: <21207441-4e81-284e-343c-bdeb01c9d06f@codeaurora.org>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,59 +31,43 @@ To: Rohit Kumar <rohitkr@codeaurora.org>, andy.gross@linaro.org, broonie@kernel.
 Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, plai@codeaurora.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, spatakok@qti.qualcomm.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Rohit for the review,
+Thanks Rohit for review comments,
 
-On 13/03/18 11:29, Rohit Kumar wrote:
+On 13/03/18 11:46, Rohit Kumar wrote:
 > 
 > 
 > On 3/10/2018 7:54 AM, srinivas.kandagatla@linaro.org wrote:
 >> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>
->> This patch adds support to Q6AFE (Audio Front End) module on Q6DSP.
->>
 > [..]
->> +        if (res->status) {
->> +            dev_err(afe->dev, "cmd = 0x%x returned error = 0x%x\n",
->> +                res->opcode, res->status);
->> +        }
->> +        switch (res->opcode) {
->> +        case AFE_PORT_CMD_SET_PARAM_V2:
->> +        case AFE_PORT_CMD_DEVICE_STOP:
->> +        case AFE_PORT_CMD_DEVICE_START:
-> 
-> case AFE_SVC_CMD_SET_PARAM: needs to be added
-thanks for spotting this, Will add this back
-
->> +            port = afe_find_port(afe, data->token);
->> +            if (port) {
->> +                port->result = *res;
->> +                wake_up(&port->wait);
->> +            }
-> [..]
->> +
->> +static int q6afe_port_set_param_v2(struct q6afe_port *port, void *data,
->> +                   int param_id, int psize)
+>> +static int q6core_get_svc_versions(struct q6core *core)
 >> +{
+>> +    struct apr_device *adev = core->adev;
+>> +    struct apr_hdr hdr = {0};
+>> +    int rc;
+>> +
+>> +    core->get_version_supported = true;
+> 
+> core->get_version_supported should be set to true only after we get 
+> proper response from adsp in callback(). In case,we get wrong response 
+> from adsp, memory for g_core->svc_version
+>   will not get allocated and there will be NULL pointer dereference in  
+> q6core_get_svc_api_info() in below statement
 
-...
->> +    ret = afe_apr_send_pkt(afe, data, port);
->> +    if (ret)
->> +        dev_err(afe->dev, "AFE enable for port 0x%x failed %d\n",
-> 
-> we should add %s to distinguish different functions with similar error 
-> logs. Also, q6afe_port_set_param_v2() can be called for different 
-> purpose.  AFE enable for port 0x%x failed is suitable only for port 
-> start failure. Error message needs to be updated here.
-> 
-q6afe_callback already has a extra level of error message which shows 
-the opcode and error code in failure cases.
+I totally agree with you , this line seems to be a leftover from 
+previous patches, It should be removed.
 
 thanks,
 srini
-
->> +               port_id, ret);
+> +    } else if (g_core->get_version_supported) {
+> +        for (i = 0; i < g_core->svc_version->num_services; i++) {
+> 
+> 
+>> +    hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
+>> +                      APR_HDR_LEN(APR_HDR_SIZE), APR_PKT_VER);
+>> +    hdr.pkt_size = APR_HDR_SIZE;
+>> +    hdr.opcode = AVCS_GET_VERSIONS;
 >> +
->> +
->> +    return ret;
->> +}
+>> +    rc = apr_send_pkt(adev, &hdr);
+>> +    if (rc < 0)
+>> +        return rc;
 >> +
