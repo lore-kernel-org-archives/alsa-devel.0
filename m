@@ -1,40 +1,89 @@
-From: Chris Obbard <chris@64studio.com>
-Subject: Re: [linux-sunxi] Re: [PATCH v2 6/6] ASoC: sun4i-i2s: Add support for
- loopback
-Date: Tue, 13 Mar 2018 13:39:44 +0000
-Message-ID: <CAP03XeoaYcMrzv3+K83wGUaDn6ZcCDzePdVNcjAqJ4QrF-WLSA@mail.gmail.com>
-References: <20180312155753.9478-1-codekipper@gmail.com>
- <20180312155753.9478-7-codekipper@gmail.com>
- <20180312183521.GP2186@sirena.org.uk>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v4 07/24] ASoC: qdsp6: q6afe: Add q6afe
+ driver
+Date: Tue, 13 Mar 2018 13:51:28 +0000
+Message-ID: <e2c668dd-aad5-db06-cc92-e27c57cf598e@linaro.org>
+References: <20180310022456.26739-1-srinivas.kandagatla@linaro.org>
+ <20180310022456.26739-8-srinivas.kandagatla@linaro.org>
+ <3d750b29-d341-af4d-41b3-30260f8296b7@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20180312183521.GP2186@sirena.org.uk>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: broonie@sirena.org.uk
-Cc: alsa-devel@alsa-project.org, be17068@iperbole.bo.it, linux-kernel@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>, lgirdwood@gmail.com, Code Kipper <codekipper@gmail.com>, linux-sunxi <linux-sunxi@googlegroups.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Linux ARM <linux-arm-kernel@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr0-f194.google.com (mail-wr0-f194.google.com
+ [209.85.128.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 766B02670F8
+ for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2018 14:51:31 +0100 (CET)
+Received: by mail-wr0-f194.google.com with SMTP id h2so15615158wre.12
+ for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2018 06:51:31 -0700 (PDT)
+In-Reply-To: <3d750b29-d341-af4d-41b3-30260f8296b7@codeaurora.org>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Rohit Kumar <rohitkr@codeaurora.org>, andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, plai@codeaurora.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, spatakok@qti.qualcomm.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Thanks Rohit for the review,
 
->
->> +- loopback:  if this property is present then the dai is configured in
->> +             loopback mode where the output fifo is redirected to the input
->> +             fifo.
->
-> This really doesn't seem like something that ought to go into the DT
-> and hence ABI given that there's obviously no reason to use this in
-> production.  Just make it be a #define in the code or something.
+On 13/03/18 11:29, Rohit Kumar wrote:
+> 
+> 
+> On 3/10/2018 7:54 AM, srinivas.kandagatla@linaro.org wrote:
+>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>
+>> This patch adds support to Q6AFE (Audio Front End) module on Q6DSP.
+>>
+> [..]
+>> +        if (res->status) {
+>> +            dev_err(afe->dev, "cmd = 0x%x returned error = 0x%x\n",
+>> +                res->opcode, res->status);
+>> +        }
+>> +        switch (res->opcode) {
+>> +        case AFE_PORT_CMD_SET_PARAM_V2:
+>> +        case AFE_PORT_CMD_DEVICE_STOP:
+>> +        case AFE_PORT_CMD_DEVICE_START:
+> 
+> case AFE_SVC_CMD_SET_PARAM: needs to be added
+thanks for spotting this, Will add this back
 
-It would be nice to have this as an optional devicetree property so
-when testing JACK latency etc I don't have to manually re-compile a
-kernel...
+>> +            port = afe_find_port(afe, data->token);
+>> +            if (port) {
+>> +                port->result = *res;
+>> +                wake_up(&port->wait);
+>> +            }
+> [..]
+>> +
+>> +static int q6afe_port_set_param_v2(struct q6afe_port *port, void *data,
+>> +                   int param_id, int psize)
+>> +{
+
+...
+>> +    ret = afe_apr_send_pkt(afe, data, port);
+>> +    if (ret)
+>> +        dev_err(afe->dev, "AFE enable for port 0x%x failed %d\n",
+> 
+> we should add %s to distinguish different functions with similar error 
+> logs. Also, q6afe_port_set_param_v2() can be called for different 
+> purpose.  AFE enable for port 0x%x failed is suitable only for port 
+> start failure. Error message needs to be updated here.
+> 
+q6afe_callback already has a extra level of error message which shows 
+the opcode and error code in failure cases.
+
+thanks,
+srini
+
+>> +               port_id, ret);
+>> +
+>> +
+>> +    return ret;
+>> +}
+>> +
