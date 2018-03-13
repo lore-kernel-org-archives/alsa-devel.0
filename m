@@ -1,74 +1,71 @@
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-Subject: Re: [linux-sunxi] Re: [PATCH v2 6/6] ASoC: sun4i-i2s: Add support
- for loopback
-Date: Tue, 13 Mar 2018 15:03:03 +0100
-Message-ID: <20180313140303.wkwsxhhm5lxbzp5a@flea>
-References: <20180312155753.9478-1-codekipper@gmail.com>
- <20180312155753.9478-7-codekipper@gmail.com>
- <20180312183521.GP2186@sirena.org.uk>
- <CAP03XeoaYcMrzv3+K83wGUaDn6ZcCDzePdVNcjAqJ4QrF-WLSA@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: pcm: Use krealloc() for resizing the
+	rules array
+Date: Tue, 13 Mar 2018 23:17:56 +0900
+Message-ID: <62b420c2-3401-6b2d-7adf-a39728762ea7@sakamocchi.jp>
+References: <20180313114210.12434-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="2x7byyr6nyfj2hcd"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAP03XeoaYcMrzv3+K83wGUaDn6ZcCDzePdVNcjAqJ4QrF-WLSA@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Chris Obbard <chris@64studio.com>
-Cc: broonie@sirena.org.uk, Code Kipper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, linux-sunxi <linux-sunxi@googlegroups.com>, Linux ARM <linux-arm-kernel@lists.infradead.org>, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, be17068@iperbole.bo.it
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 1FAB7267172
+ for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2018 15:18:00 +0100 (CET)
+In-Reply-To: <20180313114210.12434-1-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---2x7byyr6nyfj2hcd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mar 13 2018 20:42, Takashi Iwai wrote:
+> Just a minor simplification.  Change from kcalloc() shouldn't matter
+> as each array element is fully initialized.
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>   sound/core/pcm_lib.c | 8 ++------
+>   1 file changed, 2 insertions(+), 6 deletions(-)
 
-On Tue, Mar 13, 2018 at 01:39:44PM +0000, Chris Obbard wrote:
-> >> +- loopback:  if this property is present then the dai is configured in
-> >> +             loopback mode where the output fifo is redirected to the=
- input
-> >> +             fifo.
-> >
-> > This really doesn't seem like something that ought to go into the DT
-> > and hence ABI given that there's obviously no reason to use this in
-> > production.  Just make it be a #define in the code or something.
->=20
-> It would be nice to have this as an optional devicetree property so
-> when testing JACK latency etc I don't have to manually re-compile a
-> kernel...
+I think this is a good simplification and preferable, too. Some local 
+variables in this block could be replaced by assignment but for 
+readability it's better to keep them as is, in my opinion.
 
-Another one might also argue that having to recompile the DT and
-reflash the whole firmware or EEPROM is overkill for just testing JACK
-latency.
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-Can't we create a module parameter for it?
+> diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+> index a83152e7d387..f4a19509cccf 100644
+> --- a/sound/core/pcm_lib.c
+> +++ b/sound/core/pcm_lib.c
+> @@ -1129,16 +1129,12 @@ int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime, unsigned int cond,
+>   	if (constrs->rules_num >= constrs->rules_all) {
+>   		struct snd_pcm_hw_rule *new;
+>   		unsigned int new_rules = constrs->rules_all + 16;
+> -		new = kcalloc(new_rules, sizeof(*c), GFP_KERNEL);
+> +		new = krealloc(constrs->rules, new_rules * sizeof(*c),
+> +			       GFP_KERNEL);
+>   		if (!new) {
+>   			va_end(args);
+>   			return -ENOMEM;
+>   		}
+> -		if (constrs->rules) {
+> -			memcpy(new, constrs->rules,
+> -			       constrs->rules_num * sizeof(*c));
+> -			kfree(constrs->rules);
+> -		}
+>   		constrs->rules = new;
+>   		constrs->rules_all = new_rules;
+>   	}
 
-Maxime
+Regards
 
---=20
-Maxime Ripard, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
---2x7byyr6nyfj2hcd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEE0VqZU19dR2zEVaqr0rTAlCFNr3QFAlqn2hYACgkQ0rTAlCFN
-r3S1DRAAjhIduewFI9H4p3wDEAaXqYFAOsodCtcThLZpIZOuUHufQ2XPvhH/4LjH
-e9jyynK2jmzXK/THayoEr2WkG9TsIU5pgt7tGUcTjYqC4JR4XlkeNAS7Th8XFP/Q
-+mFOjIefCpEyj1acT1HWjFyuoTKK3CacYWaHbn2wr5ovqwr1p3hG9zX8KgxxGe2k
-yQ6WSKDu1EfdPYeP/N2JNdfWYAPS6HC6I8LRJ2e1g0cA3t7LUbR/rd8ynTiWh2Rb
-yJiS6EDgRqGBCsPr5PPz579HZRQ8JUsL6h3FWv2ZTd9QGtkynvXwY3YnfIXzk4se
-qUPsT0jwg5BBEsjB6DPMrOl/hPW1TL7oaN1zn7VTsgjW1xyYEQXYanQRaZawb4Rl
-yepNYVLlhDiXBTxMW4KMUM6NHCfQ5Za/HqSUNB3Chma+rODTUBPzm/MFF9wqucdc
-7b/tmGsEFSxP6IXuUbQ+iCzUfSeM6TYrzYir+LnKZIFV/FB7iwiqcpwU+iIE9zWP
-n4fSbHXOqeHFnSTJbWd/iuYiJmi0C2TmmjUJxV5iGrt6aTL1jx/D3X2ZUeZk/hQq
-w+cSg56449LXrJ3xV5O2kDAMU4ZtTqc6SoHwVLM4lF82YazaNYC8yzKl9piQoakq
-CS41wsLktRvvbatVsbx2LpyYRLvQK9ZVQBZdf9lmsQqZ1WiOhpw=
-=b85g
------END PGP SIGNATURE-----
-
---2x7byyr6nyfj2hcd--
+Takashi Sakamoto
