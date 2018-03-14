@@ -1,24 +1,15 @@
-From: Josh Boyer <jwboyer@kernel.org>
-Subject: Re: [GIT PULL]: kbl audio firmware update
-Date: Wed, 14 Mar 2018 08:03:13 -0400
-Message-ID: <CA+5PVA6ZYYCoJp6R0UiSxT48JcsMJV=jTYoh_duDVx2hBR8N3Q@mail.gmail.com>
-References: <20180314114713.GA22290@buildpc-HP-Z230>
+From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Subject: [PATCH] ASoC: uniphier: evea: add switch for changing
+	source of line-in
+Date: Wed, 14 Mar 2018 21:39:00 +0900
+Message-ID: <20180314123900.19505-1-suzuki.katsuhiro@socionext.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- by alsa0.perex.cz (Postfix) with ESMTP id 96F562670BE
- for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2018 13:10:09 +0100 (CET)
-Received: from mail-qt0-f176.google.com (mail-qt0-f176.google.com
- [209.85.216.176])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id DA19E2176E
- for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2018 12:03:14 +0000 (UTC)
-Received: by mail-qt0-f176.google.com with SMTP id n12so3076552qtl.5
- for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2018 05:03:14 -0700 (PDT)
-In-Reply-To: <20180314114713.GA22290@buildpc-HP-Z230>
+Received: from mx.socionext.com (mx.socionext.com [202.248.49.38])
+ by alsa0.perex.cz (Postfix) with ESMTP id 508D02670BE
+ for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2018 13:39:05 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,37 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sanyog Kale <sanyog.r.kale@intel.com>
-Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org, Linux Firmware <linux-firmware@kernel.org>
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 14, 2018 at 7:47 AM, Sanyog Kale <sanyog.r.kale@intel.com> wrote:
-> Hi,
->
-> Please PULL to receive the update for KBL audio DSP firmware.
->
-> The following changes since commit 9cf0ec08c8fa93ff3aa1cb5f16189735909c3ac6:
->
->   Mellanox: Add new mlxsw_spectrum firmware 13.1620.192 (2018-03-12 09:59:13 -0400)
->
-> are available in the git repository at:
->
->   https://github.com/sanyogrk/firmware.git kbl
->
-> for you to fetch changes up to 4c0bf113a55975d702673e57c5542f150807ad66:
->
->   linux-firmware: intel: Update Kabylake audio firmware (2018-03-14 16:23:08 +0530)
->
-> ----------------------------------------------------------------
-> Sanyog Kale (1):
->       linux-firmware: intel: Update Kabylake audio firmware
->
->  WHENCE                     |   4 +++-
->  intel/dsp_fw_kbl.bin       |   2 +-
->  intel/dsp_fw_kbl_v3420.bin | Bin 0 -> 243016 bytes
->  3 files changed, 4 insertions(+), 2 deletions(-)
->  create mode 100644 intel/dsp_fw_kbl_v3420.bin
+This patch adds mixer switch for changing audio source of line-in.
+We can choose one of LIN1, 2, 3, default is LIN1.
 
-Pulled and pushed out.  Thanks!
+Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+---
+ sound/soc/uniphier/evea.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-josh
+diff --git a/sound/soc/uniphier/evea.c b/sound/soc/uniphier/evea.c
+index 439f14f91b23..73fd6730095c 100644
+--- a/sound/soc/uniphier/evea.c
++++ b/sound/soc/uniphier/evea.c
+@@ -18,6 +18,8 @@
+ 
+ #define AADCPOW(n)                           (0x0078 + 0x04 * (n))
+ #define   AADCPOW_AADC_POWD                   BIT(0)
++#define ALINSW1                              0x0088
++#define   ALINSW1_SEL1_SHIFT                  3
+ #define AHPOUTPOW                            0x0098
+ #define   AHPOUTPOW_HP_ON                     BIT(4)
+ #define ALINEPOW                             0x009c
+@@ -278,7 +280,16 @@ static int evea_set_switch_hp(struct snd_kcontrol *kcontrol,
+ 	return evea_update_switch_hp(evea);
+ }
+ 
++static const char * const linsw1_sel1_text[] = {
++	"LIN1", "LIN2", "LIN3"
++};
++
++static SOC_ENUM_SINGLE_DECL(linsw1_sel1_enum,
++	ALINSW1, ALINSW1_SEL1_SHIFT,
++	linsw1_sel1_text);
++
+ static const struct snd_kcontrol_new evea_controls[] = {
++	SOC_ENUM("Line Capture Source", linsw1_sel1_enum),
+ 	SOC_SINGLE_BOOL_EXT("Line Capture Switch", 0,
+ 			    evea_get_switch_lin, evea_set_switch_lin),
+ 	SOC_SINGLE_BOOL_EXT("Line Playback Switch", 0,
+-- 
+2.16.1
