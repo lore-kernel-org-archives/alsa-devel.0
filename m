@@ -1,15 +1,14 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH] ASoC: pcm: improve debug output for DPCM BE
-	searching.
-Date: Wed, 14 Mar 2018 20:43:51 +0000
-Message-ID: <20180314204351.13973-1-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH] ALSA: core: Allow drivers to set R/W wait time.
+Date: Wed, 14 Mar 2018 20:44:40 +0000
+Message-ID: <20180314204440.14027-1-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 49FE726718B
- for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2018 21:43:56 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5419B26718B
+ for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2018 21:44:45 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,58 +19,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Improve the DPCM BE search debug output to make it easier to debug
-issues in topologies.
+Currently ALSA core blocks userspace for about 10 seconds for PCM R/W IO.
+This needs to be configurable for modern hardware like DSPs where no
+pointer update in milliseconds can indicate terminal DSP errors.
+
+Add a substream variable to set the wait time in ms. This allows userspace
+and drivers to recover more quickly from terminal DSP errors.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- sound/soc/soc-pcm.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ include/sound/pcm.h  |  6 ++++++
+ sound/core/pcm_lib.c | 15 ++++++++++-----
+ 2 files changed, 16 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index ea36de977c93..4ce489165a6d 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1404,12 +1404,18 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
- 	struct snd_soc_pcm_runtime *be;
- 	int i;
- 
-+	dev_dbg(card->dev, "ASoC: find BE for widget %s\n", widget->name);
-+
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		list_for_each_entry(be, &card->rtd_list, list) {
- 
- 			if (!be->dai_link->no_pcm)
- 				continue;
- 
-+			dev_dbg(card->dev, "ASoC: try BE : %s\n",
-+				be->cpu_dai->playback_widget ?
-+				be->cpu_dai->playback_widget->name : "(not set)");
-+
- 			if (be->cpu_dai->playback_widget == widget)
- 				return be;
- 
-@@ -1426,6 +1432,10 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
- 			if (!be->dai_link->no_pcm)
- 				continue;
- 
-+			dev_dbg(card->dev, "ASoC: try BE %s\n",
-+				be->cpu_dai->capture_widget ?
-+				be->cpu_dai->capture_widget->name : "(not set)");
-+
- 			if (be->cpu_dai->capture_widget == widget)
- 				return be;
- 
-@@ -1437,6 +1447,7 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index e054c583d3b3..e4694684c524 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -462,6 +462,7 @@ struct snd_pcm_substream {
+         /* -- timer section -- */
+ 	struct snd_timer *timer;		/* timer */
+ 	unsigned timer_running: 1;	/* time is running */
++	unsigned wait_time;	/* time in ms for R/W to wait for avail */
+ 	/* -- next substream -- */
+ 	struct snd_pcm_substream *next;
+ 	/* -- linked substreams -- */
+@@ -579,6 +580,11 @@ int snd_pcm_start(struct snd_pcm_substream *substream);
+ int snd_pcm_stop(struct snd_pcm_substream *substream, snd_pcm_state_t status);
+ int snd_pcm_drain_done(struct snd_pcm_substream *substream);
+ int snd_pcm_stop_xrun(struct snd_pcm_substream *substream);
++static inline void snd_pcm_wait_time(struct snd_pcm_substream *substream,
++	unsigned wait_time)
++{
++	substream->wait_time = wait_time;
++}
+ #ifdef CONFIG_PM
+ int snd_pcm_suspend(struct snd_pcm_substream *substream);
+ int snd_pcm_suspend_all(struct snd_pcm *pcm);
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index a83152e7d387..2ee76c70f55f 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -1839,12 +1839,17 @@ static int wait_for_avail(struct snd_pcm_substream *substream,
+ 	if (runtime->no_period_wakeup)
+ 		wait_time = MAX_SCHEDULE_TIMEOUT;
+ 	else {
+-		wait_time = 10;
+-		if (runtime->rate) {
+-			long t = runtime->period_size * 2 / runtime->rate;
+-			wait_time = max(t, wait_time);
++		/* use wait time from substream if available */
++		if (substream->wait_time) {
++			wait_time = msecs_to_jiffies(substream->wait_time);
++		} else {
++			wait_time = 10;
++			if (runtime->rate) {
++				long t = runtime->period_size * 2 / runtime->rate;
++				wait_time = max(t, wait_time);
++			}
++			wait_time = msecs_to_jiffies(wait_time * 1000);
  		}
+-		wait_time = msecs_to_jiffies(wait_time * 1000);
  	}
  
-+	/* dai link name and stream name set correctly ? */
- 	dev_err(card->dev, "ASoC: can't get %s BE for %s\n",
- 		stream ? "capture" : "playback", widget->name);
- 	return NULL;
+ 	for (;;) {
 -- 
 2.14.1
