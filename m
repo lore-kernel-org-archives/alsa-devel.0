@@ -1,23 +1,15 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: topology: Fix bclk and fsync
- inversion in set_link_hw_format()
-Date: Wed, 14 Mar 2018 13:37:20 -0500
-Message-ID: <2f8b5ee2-78f4-8f2e-34cd-78b22c9ab2e8@linux.intel.com>
-References: <20180301064556.5387-1-k.marinushkin@gmail.com>
- <20180301064812.5463-1-k.marinushkin@gmail.com>
- <dd207ff4-f7fc-f044-d87f-9f6c008abcf1@gmail.com>
- <0ffee89d-ea0b-2454-d1f2-d5056c85a253@linux.intel.com>
- <b30629d0-1703-f86b-f675-a37ccd21e713@gmail.com>
- <4e0ebb1a-7926-b3ad-2e08-f14d6b8beb54@linux.intel.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: [PATCH] ASoC: core: Allow topology to override machine
+	driver FE DAI link config.
+Date: Wed, 14 Mar 2018 20:23:52 +0000
+Message-ID: <20180314202352.13560-1-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 9FEA226708E
- for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2018 19:37:24 +0100 (CET)
-In-Reply-To: <4e0ebb1a-7926-b3ad-2e08-f14d6b8beb54@linux.intel.com>
-Content-Language: en-US
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id B6553266EBE
+ for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2018 21:24:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,200 +19,217 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Pan, Xiuli" <xiuli.pan@linux.intel.com>, Kirill Marinushkin <k.marinushkin@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAwMy8xNC8yMDE4IDA0OjQyIEFNLCBQYW4sIFhpdWxpIHdyb3RlOgo+Cj4KPiBPbiAzLzE0
-LzIwMTggMDM6NTIsIEtpcmlsbCBNYXJpbnVzaGtpbiB3cm90ZToKPj4gT24gMDMvMTMvMTggMDc6
-NTcsIFBhbiwgWGl1bGkgd3JvdGU6Cj4+Pgo+Pj4gT24gMy8xLzIwMTggMTQ6NTMsIEtpcmlsbCBN
-YXJpbnVzaGtpbiB3cm90ZToKPj4+PiBUaGlzIHBhdGNoIGlzIGZvciBhbHNhLWxpYi4gSSBmb3Jn
-b3QgdG8gbWVudGlvbiBpdCBpbiB0aGUgc3ViamVjdC4KPj4+Pgo+Pj4+Cj4+Pj4gT24gMDMvMDEv
-MTggMDc6NDgsIEtpcmlsbCBNYXJpbnVzaGtpbiB3cm90ZToKPj4+Pj4gVGhlIHZhbHVlcyBvZiBi
-Y2xrIGFuZCBmc3luYyBhcmUgaW52ZXJ0ZWQgV1JUIHRoZSBjb2RlYy4gQnV0IHRoZSAKPj4+Pj4g
-ZXhpc3RpbmcKPj4+Pj4gc29sdXRpb24gYWxyZWFkeSB3b3JrcyBmb3IgQnJvYWR3ZWxsLCBzZWUg
-dGhlIGFsc2EtbGliIGNvbmZpZzoKPj4+Pj4KPj4+Pj4gYGFsc2EtbGliL3NyYy9jb25mL3RvcG9s
-b2d5L2Jyb2Fkd2VsbC9icm9hZHdlbGwuY29uZmAKPj4+Pj4KPj4+Pj4gVGhpcyBjb21taXQgcHJv
-dmlkZXMgdGhlIGJhY2t3YXJkcy1jb21wYXRpYmxlIHNvbHV0aW9uIHRvIGZpeCB0aGlzIAo+Pj4+
-PiBtaXN1c2UuCj4+Pj4+IFRoaXMgY29tbWl0IGdvZXMgaW4gcGFpciB3aXRoIHRoZSBjb3JyZXNw
-b25kaW5nIHBhdGNoIGZvciBsaW51eC4KPj4+Pj4KPj4+Pj4gU2lnbmVkLW9mZi1ieTogS2lyaWxs
-IE1hcmludXNoa2luIDxrLm1hcmludXNoa2luQGdtYWlsLmNvbT4KPj4+Pj4gQ2M6IE1hcmsgQnJv
-d24gPGJyb29uaWVAa2VybmVsLm9yZz4KPj4+Pj4gQ2M6IFRha2FzaGkgSXdhaSA8dGl3YWlAc3Vz
-ZS5kZT4KPj4+Pj4gQ2M6IEphcm9zbGF2IEt5c2VsYSA8cGVyZXhAcGVyZXguY3o+Cj4+Pj4+IENj
-OiBQaWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwu
-Y29tPgo+Pj4+PiBDYzogUGFuIFhpdWxpIDx4aXVsaS5wYW5AbGludXguaW50ZWwuY29tPgo+Pj4+
-PiBDYzogTGlhbSBHaXJkd29vZCA8bGlhbS5yLmdpcmR3b29kQGxpbnV4LmludGVsLmNvbT4KPj4+
-Pj4gQ2M6IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+Pj4+PiAtLS0KPj4+Pj4gwqDCoCBp
-bmNsdWRlL3NvdW5kL2Fzb2MuaMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIHwgMTYgKysrKysrKysrKysrKystLQo+Pj4+PiDCoMKgIGluY2x1ZGUvdG9wb2xvZ3ku
-aMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqAgNCAr
-Ky0tCj4+Pj4+IMKgwqAgc3JjL2NvbmYvdG9wb2xvZ3kvYnJvYWR3ZWxsL2Jyb2Fkd2VsbC5jb25m
-IHzCoCA0ICsrLS0KPj4+Pj4gwqDCoCBzcmMvdG9wb2xvZ3kvcGNtLmPCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfCAzMCAKPj4+Pj4gKysrKysrKysrKysr
-KysrKysrKysrKysrKystLS0tCj4+Pj4+IMKgwqAgNCBmaWxlcyBjaGFuZ2VkLCA0NCBpbnNlcnRp
-b25zKCspLCAxMCBkZWxldGlvbnMoLSkKPj4+Pj4KPj4+Pj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUv
-c291bmQvYXNvYy5oIGIvaW5jbHVkZS9zb3VuZC9hc29jLmgKPj4+Pj4gaW5kZXggMGY1ZDlmOWEu
-Ljg5YjAwNzAzIDEwMDY0NAo+Pj4+PiAtLS0gYS9pbmNsdWRlL3NvdW5kL2Fzb2MuaAo+Pj4+PiAr
-KysgYi9pbmNsdWRlL3NvdW5kL2Fzb2MuaAo+Pj4+PiBAQCAtMTU2LDYgKzE1NiwxOCBAQAo+Pj4+
-PiDCoMKgICNkZWZpbmUgU05EX1NPQ19UUExHX0xOS19GTEdCSVRfU1lNTUVUUklDX1NBTVBMRUJJ
-VFMgKDEgPDwgMikKPj4+Pj4gwqDCoCAjZGVmaW5lIFNORF9TT0NfVFBMR19MTktfRkxHQklUX1ZP
-SUNFX1dBS0VVUCAoMSA8PCAzKQo+Pj4+PiDCoMKgICsvKiBEQUkgdG9wb2xvZ3kgQkNMSyBwYXJh
-bWV0ZXIKPj4+Pj4gKyAqIEZvciB0aGUgYmFja3dhcmRzIGNhcGFiaWxpdHksIGJ5IGRlZmF1bHQg
-Y29kZWMgaXMgYmNsayBtYXN0ZXIKPj4+Pj4gKyAqLwo+Pj4+PiArI2RlZmluZSBTTkRfU09DX1RQ
-TEdfQkNMS19DTcKgwqDCoMKgwqDCoMKgwqAgMCAvKiBjb2RlYyBpcyBiY2xrIG1hc3RlciAqLwo+
-Pj4+PiArI2RlZmluZSBTTkRfU09DX1RQTEdfQkNMS19DU8KgwqDCoMKgwqDCoMKgwqAgMSAvKiBj
-b2RlYyBpcyBiY2xrIHNsYXZlICovCj4+Pj4+ICsKPj4+Pj4gKy8qIERBSSB0b3BvbG9neSBGU1lO
-QyBwYXJhbWV0ZXIKPj4+Pj4gKyAqIEZvciB0aGUgYmFja3dhcmRzIGNhcGFiaWxpdHksIGJ5IGRl
-ZmF1bHQgY29kZWMgaXMgZnN5bmMgbWFzdGVyCj4+Pj4+ICsgKi8KPj4+Pj4gKyNkZWZpbmUgU05E
-X1NPQ19UUExHX0ZTWU5DX0NNwqDCoMKgwqDCoMKgwqDCoCAwIC8qIGNvZGVjIGlzIGZzeW5jIG1h
-c3RlciAqLwo+Pj4+PiArI2RlZmluZSBTTkRfU09DX1RQTEdfRlNZTkNfQ1PCoMKgwqDCoMKgwqDC
-oMKgIDEgLyogY29kZWMgaXMgZnN5bmMgc2xhdmUgKi8KPj4+Pj4gKwo+Pj4+PiDCoMKgIC8qCj4+
-PiBDb3VsZCB3ZSBrZWVwIHRoaXMgYWxpZ24gd2l0aCB0aGUgb2xkIHZhbHVlcy4KPj4+Cj4+PiAx
-IGZvciBtYXN0ZXIgb2YgQkNMSywgMCBmb3Igc2xhdmUKPj4+IDEgZm9yIG1hc3RlciBvZiBGU1lO
-QywgMCBmb3Igc2xhdmUKPj4gV2UgY2Fubm90IGtlZXAgaXQgYWxpZ25lZCB3aXRoIHRoZSBvbGQg
-KmNvbW1lbnQgZGVzY3JpcHRpb25zKiwgCj4+IGJlY2F1c2Ugd2Uga2VlcCBpdCBhbGlnbmVkIHdp
-dGggdGhlIG9sZCAqaW1wbGVtZW50YXRpb24qLgo+PiBBcyB5b3UgcmVtZW1iZXIsIHRoZSB3aG9s
-ZSBpc3N1ZSB3YXMgd2l0aCB0aGUgcmV2ZXJ0ZWQgdmFsdWVzLgo+PiBXZSBleGFjdGx5IGtlZXAg
-b3VyIG5ldyBzb2x1dGlvbiBhbGlnbmVkIHRvIHRoZSBvbGQgc29sdXRpb24gYnkgZG9pbmcgCj4+
-IHRoaXM6Cj4KPiBZZXMsIGJ1dCB3aGF0IEkgc3VnZ2VzdCBpcyB0aGF0IGlmIHdlIGNhbiBub3Qg
-bW9kaWZ5IHRoZSBrZXJuZWwgcGFydC4gCj4gQnV0IGp1c3QgdXNlIHRoZSB2YWx1ZSBpbiBhbHNh
-dHBsZyB0byBmaXggdGhpcyBwcm9ibGVtLiBXZSBhY3R1YWxseSAKPiBub3QgcGFzc2VkIGFueSBz
-dHJpbmcgaW4gdGhlIHRwbGcgZmlsZSwgYnV0IG9ubHkgc29tZSBwYXJzZWQgdmFsdWUuCj4gQ291
-bGQgd2UgYWxpZ24gdGhlIHN0cmluZyAmIHZhbHVlIG1hcHBpbmcgdG8gbWFrZSB0aGlzIG1vcmUg
-ZWFzaWVyLgo+Cj4gVGhvdWdoIEkga25vdyB0aGF0IHRoZSB2YWx1ZSBmb3IgYmNsa19tYXN0ZXIg
-YW5zIGZzeW5jX21hc3RlciBpcyB2ZXJ5IAo+IGNvbmZ1c2luZy4KClhpdWxpLCBJIHdhcyBub3Qg
-YWJsZSB0byB1bmRlcnN0YW5kIGFueSBvZiB5b3VyIHBvaW50cy4uLgpSdWxlICMxIGlzIHdlIGRv
-bid0IGJyZWFrIHVzZXJzcGFjZS4gSWYgcGVvcGxlIGdlbmVyYXRlZCBhIC50cGxnIGZpbGUgCndp
-dGggYW4gb2xkIHZlcnNpb24gb2YgYWxzYXRwbGcgb3IgYW4gaW52ZXJzaW9uIGluIHRoZSAuY29u
-ZiBmaWxlLCB0aGVuIAp3ZSBoYXZlIHRvIHByb3ZpZGUgYSBiYWNrd2FyZHMtY29tcGF0aWJsZSBz
-b2x1dGlvbi4KCj4KPj4gfn5+fgo+PiAjZGVmaW5lIFNORF9TT0NfVFBMR19GU1lOQ19DTcKgwqDC
-oMKgwqDCoMKgwqAgMCAvKiBjb2RlYyBpcyBmc3luYyBtYXN0ZXIgKi8KPj4gI2RlZmluZSBTTkRf
-U09DX1RQTEdfRlNZTkNfQ1PCoMKgwqDCoMKgwqDCoMKgIDEgLyogY29kZWMgaXMgZnN5bmMgc2xh
-dmUgKi8KPj4gfn5+fgo+Pgo+Pj4gVGhpcyB3aWxsIHNhdmUgc29tZSBjaGFuZ2UgZm9yIFNPRiB0
-b3BvbG9neSBsb2FkIHBhcnNlIHRvIERTUC4KPj4+IE5vdyB3ZSBuZWVkIHRvIG1vZGlmeSBhIGZl
-dyBjb2RlcyB0b28gZml0IHRoaXMgY2hhbmdpbmcuCj4+Pgo+PiBTZWUgYWJvdmUgd2h5IHdlIGNh
-bid0IGZvbGxvdyB0aGlzIHByb3Bvc2FsLgo+Pgo+Pj4gQW5kIHRvIG1ha2UgdGhpbmdzIG1vcmUg
-ZWFzaWVyLiBXZSBjYW4ganVzdCBrZWVwIHRoZSBvbGQgdmFsdWVzIGFuZCAKPj4+IG9ubHkgbW9k
-aWZ5IGFsc2EtbGliIHRvIGxldCAibWFzdGVyIiA9PSAiY29kZWNfc2xhdmUiLgo+Pj4gSGVyZSB3
-ZSBvbmx5IG5lZWQgdG8gY2hhbmdlIGhvdyB3ZSB3cml0ZSB0cGxnIGFuZCBubyBtb3JlIGtlcm5l
-bCAKPj4+IHBhdGNoZXMgYXJlIG5lZWQuCj4+Pgo+Pj4+PiDCoMKgwqAgKiBCbG9jayBIZWFkZXIu
-Cj4+Pj4+IMKgwqDCoCAqIFRoaXMgaGVhZGVyIHByZWNlZGVzIGFsbCBvYmplY3QgYW5kIG9iamVj
-dCBhcnJheXMgYmVsb3cuCj4+Pj4+IEBAIC0zMTEsOCArMzIzLDggQEAgc3RydWN0IHNuZF9zb2Nf
-dHBsZ19od19jb25maWcgewo+Pj4+PiDCoMKgwqDCoMKgwqAgX191OCBjbG9ja19nYXRlZDvCoMKg
-wqAgLyogMSBpZiBjbG9jayBjYW4gYmUgZ2F0ZWQgdG8gc2F2ZSAKPj4+Pj4gcG93ZXIgKi8KPj4+
-Pj4gwqDCoMKgwqDCoMKgIF9fdTggaW52ZXJ0X2JjbGs7wqDCoMKgIC8qIDEgZm9yIGludmVydGVk
-IEJDTEssIDAgZm9yIG5vcm1hbCAqLwo+Pj4+PiDCoMKgwqDCoMKgwqAgX191OCBpbnZlcnRfZnN5
-bmM7wqDCoMKgIC8qIDEgZm9yIGludmVydGVkIGZyYW1lIGNsb2NrLCAwIGZvciAKPj4+Pj4gbm9y
-bWFsICovCj4+Pj4+IC3CoMKgwqAgX191OCBiY2xrX21hc3RlcjvCoMKgwqAgLyogMSBmb3IgbWFz
-dGVyIG9mIEJDTEssIDAgZm9yIHNsYXZlICovCj4+Pj4+IC3CoMKgwqAgX191OCBmc3luY19tYXN0
-ZXI7wqDCoMKgIC8qIDEgZm9yIG1hc3RlciBvZiBGU1lOQywgMCBmb3Igc2xhdmUgKi8KPj4+Pj4g
-K8KgwqDCoCBfX3U4IGJjbGtfbWFzdGVyO8KgwqDCoCAvKiBTTkRfU09DX1RQTEdfQkNMS18gdmFs
-dWUgKi8KPj4+Pj4gK8KgwqDCoCBfX3U4IGZzeW5jX21hc3RlcjvCoMKgwqAgLyogU05EX1NPQ19U
-UExHX0ZTWU5DXyB2YWx1ZSAqLwo+Pj4+PiDCoMKgwqDCoMKgwqAgX191OCBtY2xrX2RpcmVjdGlv
-bjvCoMKgwqAgLyogMCBmb3IgaW5wdXQsIDEgZm9yIG91dHB1dCAqLwo+Pj4+PiDCoMKgwqDCoMKg
-wqAgX19sZTE2IHJlc2VydmVkO8KgwqDCoCAvKiBmb3IgMzJiaXQgYWxpZ25tZW50ICovCj4+Pj4+
-IMKgwqDCoMKgwqDCoCBfX2xlMzIgbWNsa19yYXRlO8KgwqDCoCAvKiBNQ0xLIG9yIFNZU0NMSyBm
-cmVxZW5jeSBpbiBIeiAqLwo+Pj4+PiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS90b3BvbG9neS5oIGIv
-aW5jbHVkZS90b3BvbG9neS5oCj4+Pj4+IGluZGV4IDg3NzlkYTRkLi41ZDdiNDZkZiAxMDA2NDQK
-Pj4+Pj4gLS0tIGEvaW5jbHVkZS90b3BvbG9neS5oCj4+Pj4+ICsrKyBiL2luY2x1ZGUvdG9wb2xv
-Z3kuaAo+Pj4+PiBAQCAtMTAwMCw4ICsxMDAwLDggQEAgc3RydWN0IHNuZF90cGxnX2h3X2NvbmZp
-Z190ZW1wbGF0ZSB7Cj4+Pj4+IMKgwqDCoMKgwqDCoCB1bnNpZ25lZCBjaGFyIGNsb2NrX2dhdGVk
-O8KgwqDCoMKgwqAgLyogMSBpZiBjbG9jayBjYW4gYmUgZ2F0ZWQgCj4+Pj4+IHRvIHNhdmUgcG93
-ZXIgKi8KPj4+Pj4gwqDCoMKgwqDCoMKgIHVuc2lnbmVkIGNoYXLCoCBpbnZlcnRfYmNsazvCoMKg
-wqDCoCAvKiAxIGZvciBpbnZlcnRlZCBCQ0xLLCAwIAo+Pj4+PiBmb3Igbm9ybWFsICovCj4+Pj4+
-IMKgwqDCoMKgwqDCoCB1bnNpZ25lZCBjaGFywqAgaW52ZXJ0X2ZzeW5jO8KgwqDCoCAvKiAxIGZv
-ciBpbnZlcnRlZCBmcmFtZSAKPj4+Pj4gY2xvY2ssIDAgZm9yIG5vcm1hbCAqLwo+Pj4+PiAtwqDC
-oMKgIHVuc2lnbmVkIGNoYXLCoCBiY2xrX21hc3RlcjvCoMKgwqDCoCAvKiAxIGZvciBtYXN0ZXIg
-b2YgQkNMSywgMCAKPj4+Pj4gZm9yIHNsYXZlICovCj4+Pj4+IC3CoMKgwqAgdW5zaWduZWQgY2hh
-csKgIGZzeW5jX21hc3RlcjvCoMKgwqAgLyogMSBmb3IgbWFzdGVyIG9mIEZTWU5DLCAwIAo+Pj4+
-PiBmb3Igc2xhdmUgKi8KPj4+Pj4gK8KgwqDCoCB1bnNpZ25lZCBjaGFywqAgYmNsa19tYXN0ZXI7
-wqDCoMKgwqAgLyogU05EX1NPQ19UUExHX0JDTEtfIHZhbHVlICovCj4+Pj4+ICvCoMKgwqAgdW5z
-aWduZWQgY2hhcsKgIGZzeW5jX21hc3RlcjvCoMKgwqAgLyogU05EX1NPQ19UUExHX0ZTWU5DXyB2
-YWx1ZSAqLwo+Pj4+PiDCoMKgwqDCoMKgwqAgdW5zaWduZWQgY2hhcsKgIG1jbGtfZGlyZWN0aW9u
-O8KgIC8qIDAgZm9yIGlucHV0LCAxIGZvciAKPj4+Pj4gb3V0cHV0ICovCj4+Pj4+IMKgwqDCoMKg
-wqDCoCB1bnNpZ25lZCBzaG9ydCByZXNlcnZlZDvCoMKgwqDCoMKgwqDCoCAvKiBmb3IgMzJiaXQg
-YWxpZ25tZW50ICovCj4+Pj4+IMKgwqDCoMKgwqDCoCB1bnNpZ25lZCBpbnQgbWNsa19yYXRlO8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgLyogTUNMSyBvciBTWVNDTEsgCj4+Pj4+IGZyZXFlbmN5IGlu
-IEh6ICovCj4+Pj4+IGRpZmYgLS1naXQgYS9zcmMvY29uZi90b3BvbG9neS9icm9hZHdlbGwvYnJv
-YWR3ZWxsLmNvbmYgCj4+Pj4+IGIvc3JjL2NvbmYvdG9wb2xvZ3kvYnJvYWR3ZWxsL2Jyb2Fkd2Vs
-bC5jb25mCj4+Pj4+IGluZGV4IGI4NDA1ZDkzLi4wOWZjNGRhYSAxMDA2NDQKPj4+Pj4gLS0tIGEv
-c3JjL2NvbmYvdG9wb2xvZ3kvYnJvYWR3ZWxsL2Jyb2Fkd2VsbC5jb25mCj4+Pj4+ICsrKyBiL3Ny
-Yy9jb25mL3RvcG9sb2d5L2Jyb2Fkd2VsbC9icm9hZHdlbGwuY29uZgo+Pj4+PiBAQCAtMzkzLDgg
-KzM5Myw4IEBAIFNlY3Rpb25HcmFwaC4iZHNwIiB7Cj4+Pj4+IMKgwqAgU2VjdGlvbkhXQ29uZmln
-LiJDb2RlY0hXQ29uZmlnIiB7Cj4+Pj4+IMKgwqDCoMKgwqDCoCBpZCAiMSIKPj4+Pj4gwqDCoMKg
-wqDCoMKgIGZvcm1hdCAiSTJTIsKgwqDCoMKgwqDCoMKgICMgcGh5c2ljYWwgYXVkaW8gZm9ybWF0
-Lgo+Pj4+PiAtwqDCoMKgIGJjbGvCoMKgICJtYXN0ZXIiwqDCoMKgwqDCoMKgwqAgIyBQbGF0Zm9y
-bSBpcyBtYXN0ZXIgb2YgYml0IGNsb2NrCj4+Pj4+IC3CoMKgwqAgZnN5bmPCoCAibWFzdGVyIsKg
-wqDCoMKgwqDCoMKgICMgcGxhdGZvcm0gaXMgbWFzdGVyIG9mIGZzeW5jCj4+Pj4+ICvCoMKgwqAg
-YmNsa8KgwqAgImNvZGVjX3NsYXZlIsKgwqDCoCAjIHBsYXRmb3JtIGlzIG1hc3RlciBvZiBiaXQg
-Y2xvY2sgCj4+Pj4+IChjb2RlYyBpcyBzbGF2ZSkKPj4+Pj4gK8KgwqDCoCBmc3luY8KgICJjb2Rl
-Y19zbGF2ZSLCoMKgwqAgIyBwbGF0Zm9ybSBpcyBtYXN0ZXIgb2YgZnN5bmMgKGNvZGVjIAo+Pj4+
-PiBpcyBzbGF2ZSkKPj4+Pj4gwqDCoCB9Cj4+Pj4+IMKgwqAgwqAgU2VjdGlvbkxpbmsuIkNvZGVj
-IiB7Cj4+Pj4+IGRpZmYgLS1naXQgYS9zcmMvdG9wb2xvZ3kvcGNtLmMgYi9zcmMvdG9wb2xvZ3kv
-cGNtLmMKPj4+Pj4gaW5kZXggNThjZWUzMWQuLmJkYWI4ZWVmIDEwMDY0NAo+Pj4+PiAtLS0gYS9z
-cmMvdG9wb2xvZ3kvcGNtLmMKPj4+Pj4gKysrIGIvc3JjL3RvcG9sb2d5L3BjbS5jCj4+Pj4+IEBA
-IC0xMTM3LDggKzExMzcsMTkgQEAgaW50IHRwbGdfcGFyc2VfaHdfY29uZmlnKHNuZF90cGxnX3Qg
-KnRwbGcsIAo+Pj4+PiBzbmRfY29uZmlnX3QgKmNmZywKPj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCBpZiAoc25kX2NvbmZpZ19nZXRfc3RyaW5nKG4sICZ2YWwpIDwgMCkKPj4+Pj4g
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiAtRUlOVkFMOwo+Pj4+
-PiDCoMKgIC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmICghc3RyY21wKHZhbCwgIm1hc3RlciIp
-KQo+Pj4+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGh3X2NmZy0+YmNsa19tYXN0
-ZXIgPSB0cnVlOwo+Pj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoIXN0cmNtcCh2YWws
-ICJtYXN0ZXIiKSkgewo+Pj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC8qIEZv
-ciBiYWNrd2FyZHMgY2FwYWJpbGl0eSwKPj4+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgICogIm1hc3RlciIgPT0gImNvZGVjIGlzIHNsYXZlIgo+Pj4+PiArwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgKi8KPj4+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBTTkRFUlIoIndhcm5pbmc6IGRlcHJlY2F0ZWQgYmNsayB2YWx1ZSAnJXMnXG4iLAo+Pj4+
-PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdmFsKTsKPj4+
-Pj4gKwo+Pj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGh3X2NmZy0+YmNsa19t
-YXN0ZXIgPSBTTkRfU09DX1RQTEdfQkNMS19DUzsKPj4+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgfSBlbHNlIGlmICghc3RyY21wKHZhbCwgImNvZGVjX3NsYXZlIikpIHsKPj4+Pj4gK8KgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBod19jZmctPmJjbGtfbWFzdGVyID0gU05EX1NPQ19U
-UExHX0JDTEtfQ1M7Cj4+Pj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH0gZWxzZSBpZiAoIXN0
-cmNtcCh2YWwsICJjb2RlY19tYXN0ZXIiKSkgewo+Pj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIGh3X2NmZy0+YmNsa19tYXN0ZXIgPSBTTkRfU09DX1RQTEdfQkNMS19DTTsKPj4+
-Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfQo+Pj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIGNvbnRpbnVlOwo+Pj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9Cj4+PiDCoMKgV2hh
-dCBpZiBzb21lIG9sZCB0cGxnIHVzZWQgInNsYXZlIj8gV2hhdCBzaG91bGQgd2UgZG8gdG8gdGhv
-c2UgCj4+PiB2YWx1ZXMuCj4+Pgo+PiBPbGQgYmVoYXZpb3I6ICJzbGF2ZSIgPT4gbm90IG1vZGlm
-aWVkIChod19jZmctPmJjbGtfbWFzdGVyID0gMCkKPj4gTmV3IGJlaGF2aW9yOiAic2xhdmUiID0+
-IG5vdCBtb2RpZmllZCAoaHdfY2ZnLT5iY2xrX21hc3RlciA9IDApCj4+Cj4+IFNvLCB3ZSBrZWVw
-IHRoaXMgdXNlLWNhc2UgdW5jaGFuZ2VkLgo+Cj4gV2hhdCBJIHdvcnJ5IGFib3V0IGlzIHRoYXQg
-d2UgaGF2ZSBtYWtlIGh3X2NmZy0+YmNsa19tYXN0ZXIgdXNhZ2UgCj4gZGlmZmVyZW50IGluIGtl
-cm5lbCBwYXJ0Lgo+IEkgdGhpbmsgd2Ugc2hvdWxkIGtlZXAgdGhpcyB0aGUgc2FtZSBub3csIHRo
-ZSBzYW1lIDAgaGF2ZSBkaWZmZXJlbnQgCj4gbWVhbmluZ3MuCj4gT3RoZXJ3aXNlLCB3aHkgc2hv
-dWxkIHdlIGNoZWNrIGNvZGVjX21hc3Rlcj8KPj4+Pj4gwqDCoCBAQCAtMTE2Myw4ICsxMTc0LDE5
-IEBAIGludCB0cGxnX3BhcnNlX2h3X2NvbmZpZyhzbmRfdHBsZ190IAo+Pj4+PiAqdHBsZywgc25k
-X2NvbmZpZ190ICpjZmcsCj4+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKHNu
-ZF9jb25maWdfZ2V0X3N0cmluZyhuLCAmdmFsKSA8IDApCj4+Pj4+IMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gLUVJTlZBTDsKPj4+Pj4gwqDCoCAtwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBpZiAoIXN0cmNtcCh2YWwsICJtYXN0ZXIiKSkKPj4+Pj4gLcKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBod19jZmctPmZzeW5jX21hc3RlciA9IHRydWU7Cj4+Pj4+
-ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmICghc3RyY21wKHZhbCwgIm1hc3RlciIpKSB7Cj4+
-Pj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLyogRm9yIGJhY2t3YXJkcyBjYXBh
-YmlsaXR5LAo+Pj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKiAibWFzdGVy
-IiA9PSAiY29kZWMgaXMgc2xhdmUiCj4+Pj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCAqLwo+Pj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFNOREVSUigid2Fy
-bmluZzogZGVwcmVjYXRlZCBmc3luYyB2YWx1ZSAnJXMnXG4iLAo+Pj4+PiArwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdmFsKTsKPj4+Pj4gKwo+Pj4+PiArwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGh3X2NmZy0+ZnN5bmNfbWFzdGVyID0gU05EX1NP
-Q19UUExHX0ZTWU5DX0NTOwo+Pj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9IGVsc2UgaWYg
-KCFzdHJjbXAodmFsLCAiY29kZWNfc2xhdmUiKSkgewo+Pj4+PiArwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIGh3X2NmZy0+ZnN5bmNfbWFzdGVyID0gU05EX1NPQ19UUExHX0ZTWU5DX0NT
-Owo+Pj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9IGVsc2UgaWYgKCFzdHJjbXAodmFsLCAi
-Y29kZWNfbWFzdGVyIikpIHsKPj4+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBo
-d19jZmctPmZzeW5jX21hc3RlciA9IFNORF9TT0NfVFBMR19GU1lOQ19DTTsKPj4+Pj4gK8KgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgfQo+Pj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNv
-bnRpbnVlOwo+Pj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9Cj4+PiBUZXN0IHdpdGggb3VyIFNP
-RiB0b3BvbG9neSBhbmQgZm91bmQgYSBtaXNzaW5nIHBhcnQgbWNsay4KPj4+IFdlIGFsc28gdXNl
-IG1jbGsgbm93LCBhbmQgSSB0aGluayB0aGVzZSBLRVkgV09SRFMgc2hvdWxkIGFsaWduIHdpdGgg
-Cj4+PiB0aGUgbmV3IGNoYW5nZXMsIHRvby4KPj4+Cj4+IG1jbGsgaXMgbm90IHJlbGF0ZWQgdG8g
-dGhpcyBwYXRjaCBzZXJpZXMuIEZlZWwgZnJlZSB0byBhZGQgaXQgaW4gYSAKPj4gc2VwYXJhdGUg
-cGF0Y2guCj4KPiBPSywgd2UgbWF5IGFkZCB0aGlzIHN1cHBvcnQgbGF0ZXIuCj4KPiBUaGFua3MK
-PiBYaXVsaQo+Cj4+IEJlc3QgUmVnYXJkcywKPj4gS2lyaWxsCj4+IF9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-Cj4+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+PiBodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+CgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Machine drivers statically define a number of DAI links that currently
+cannot be changed or removed by topology. This means PCMs and platform
+components cannot be changed by topology at runtime AND machine drivers
+are tightly coupled to topology.
+
+This patch allows topology to override the machine driver DAI link config
+in order to reuse machine drivers with different topologies and platform
+components. The patch supports :-
+
+1) create new FE PCMs with a topology defined PCM ID.
+2) destroy existing static FE PCMs
+3) change the platform component driver.
+4) assign any new HW params fixups.
+
+The patch requires no changes to the machine drivers, but does add some
+platform component flags that the platform component driver can assign
+before loading topologies.
+
+The initial user for this patch will be SOF.
+
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+---
+ include/sound/soc.h  | 10 +++++++
+ sound/soc/soc-core.c | 80 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ sound/soc/soc-pcm.c  | 12 ++++++++
+ 3 files changed, 99 insertions(+), 3 deletions(-)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index ad266d7e9553..4e368c308f93 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1012,6 +1012,13 @@ struct snd_soc_platform_driver {
+ 
+ 	/* platform stream compress ops */
+ 	const struct snd_compr_ops *compr_ops;
++
++	/* this platform uses topology and ignore machine driver FEs */
++	const char *ignore_machine;
++	int (*be_hw_params_fixup)(struct snd_soc_pcm_runtime *rtd,
++				  struct snd_pcm_hw_params *params);
++	bool use_dai_pcm_id;	/* use the DAI link PCM ID as PCM device number */
++	int be_pcm_base;	/* base device ID for all BE PCMs */
+ };
+ 
+ struct snd_soc_dai_link_component {
+@@ -1118,6 +1125,9 @@ struct snd_soc_dai_link {
+ 	/* pmdown_time is ignored at stop */
+ 	unsigned int ignore_pmdown_time:1;
+ 
++	/* Do not create a PCM for this DAI link */
++	unsigned int ignore:1;
++
+ 	struct list_head list; /* DAI link list of the soc card */
+ 	struct snd_soc_dobj dobj; /* For topology */
+ };
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 0bd8613c52ab..33840e5bc24e 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1050,6 +1050,9 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
+ 	const char *platform_name;
+ 	int i;
+ 
++	if (dai_link->ignore)
++		return 0;
++
+ 	dev_dbg(card->dev, "ASoC: binding %s\n", dai_link->name);
+ 
+ 	if (soc_is_dai_link_bound(card, dai_link)) {
+@@ -1672,7 +1675,7 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
+ {
+ 	struct snd_soc_dai_link *dai_link = rtd->dai_link;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	int i, ret;
++	int i, ret, num;
+ 
+ 	dev_dbg(card->dev, "ASoC: probe %s dai link %d late %d\n",
+ 			card->name, rtd->num, order);
+@@ -1718,9 +1721,23 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
+ 		soc_dpcm_debugfs_add(rtd);
+ #endif
+ 
++	/*
++	 * most drivers will register their PCMs using DAI link ordering but
++	 * topology based drivers can use the DAI link id field to set PCM
++	 * device number and then use rtd + a base offset of the BEs.
++	 */
++	if (rtd->platform->driver->use_dai_pcm_id) {
++		if (rtd->dai_link->no_pcm)
++			num = rtd->platform->driver->be_pcm_base + rtd->num;
++		else
++			num = rtd->dai_link->id;
++	} else {
++		num = rtd->num;
++	}
++
+ 	if (cpu_dai->driver->compress_new) {
+ 		/*create compress_device"*/
+-		ret = cpu_dai->driver->compress_new(rtd, rtd->num);
++		ret = cpu_dai->driver->compress_new(rtd, num);
+ 		if (ret < 0) {
+ 			dev_err(card->dev, "ASoC: can't create compress %s\n",
+ 					 dai_link->stream_name);
+@@ -1730,7 +1747,7 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
+ 
+ 		if (!dai_link->params) {
+ 			/* create the pcm */
+-			ret = soc_new_pcm(rtd, rtd->num);
++			ret = soc_new_pcm(rtd, num);
+ 			if (ret < 0) {
+ 				dev_err(card->dev, "ASoC: can't create pcm %s :%d\n",
+ 				       dai_link->stream_name, ret);
+@@ -2076,6 +2093,60 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
+ EXPORT_SYMBOL_GPL(snd_soc_set_dmi_name);
+ #endif /* CONFIG_DMI */
+ 
++/* check if we need to ignore or override the FEs for this card */
++static void soc_check_tplg_fes(struct snd_soc_card *card)
++{
++	struct snd_soc_platform *platform;
++	struct snd_soc_dai_link *dai_link;
++	int i;
++
++	list_for_each_entry(platform, &platform_list, list) {
++
++		/* does this platform override FEs ? */
++		if (!platform->driver->ignore_machine)
++			continue;
++
++		/* for this machine ? */
++		if (strcmp(platform->driver->ignore_machine,
++			   card->dev->driver->name))
++			continue;
++
++		/* machine matches, so override the rtd data */
++		for (i = 0; i < card->num_links; i++) {
++
++			dai_link = &card->dai_link[i];
++
++			/* ignore this FE */
++			if (dai_link->dynamic) {
++				dai_link->ignore = true;
++				continue;
++			}
++
++			dev_info(card->dev, "info: override FE DAI link %s\n",
++				 card->dai_link[i].name);
++
++			/* override platform */
++			dai_link->platform_name = platform->component.name;
++			dai_link->cpu_dai_name = platform->component.name;
++
++			/* convert non BE into BE */
++			dai_link->no_pcm = 1;
++			dai_link->dpcm_playback = 1;
++			dai_link->dpcm_capture = 1;
++
++			/* override any BE fixups */
++			dai_link->be_hw_params_fixup =
++				platform->driver->be_hw_params_fixup;
++
++			/* most BE links dont set stream name, so set it to
++			 * dai link name if it's NULL to help bind widgets.
++			 */
++			if (!dai_link->stream_name)
++				dai_link->stream_name = dai_link->name;
++		}
++	}
++}
++
+ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_codec *codec;
+@@ -2086,6 +2157,9 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	mutex_lock(&client_mutex);
+ 	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_INIT);
+ 
++	/* check whether any platform is ignore machine FE and using topology */
++	soc_check_tplg_fes(card);
++
+ 	/* bind DAIs */
+ 	for (i = 0; i < card->num_links; i++) {
+ 		ret = soc_bind_dai_link(card, &card->dai_link[i]);
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 084125463d10..ea36de977c93 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -909,8 +909,20 @@ int soc_dai_hw_params(struct snd_pcm_substream *substream,
+ 		      struct snd_pcm_hw_params *params,
+ 		      struct snd_soc_dai *dai)
+ {
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	int ret;
+ 
++	/* perform any topology hw_params fixups before DAI  */
++	if (rtd->dai_link->be_hw_params_fixup) {
++		ret = rtd->dai_link->be_hw_params_fixup(rtd, params);
++		if (ret < 0) {
++			dev_err(rtd->dev,
++				"ASoC: hw_params topology fixup failed %d\n",
++				ret);
++			return ret;
++		}
++	}
++
+ 	if (dai->driver->ops->hw_params) {
+ 		ret = dai->driver->ops->hw_params(substream, params, dai);
+ 		if (ret < 0) {
+-- 
+2.14.1
