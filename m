@@ -1,21 +1,19 @@
-From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Subject: Re: [PATCH 1/7] ASoC: amd: dma driver changes for BT
- I2S controller instance
-Date: Wed, 14 Mar 2018 16:06:15 +0530
-Message-ID: <284973fb-bcc9-19b9-2692-966e40129430@amd.com>
-References: <1520836460-21809-1-git-send-email-Vijendar.Mukunda@amd.com>
- <1520836460-21809-2-git-send-email-Vijendar.Mukunda@amd.com>
- <20180312182537.GO2186@sirena.org.uk>
+From: Anshuman Gupta <anshuman.gupta@intel.com>
+Subject: Re: [PATCH] [sound] hdac-codec runtime suspended at
+	PM:Suspend.
+Date: Wed, 14 Mar 2018 16:08:16 +0530
+Message-ID: <37904.6940747232$1521023864@news.gmane.org>
+References: <1520853467-31653-1-git-send-email-anshuman.gupta@intel.com>
+ <CAJZ5v0hyk=jto8Wt0er==YmKEsgvfvZhO2wDbGOhxZaWWCNgBg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM01-SN1-obe.outbound.protection.outlook.com
- (mail-sn1nam01on0046.outbound.protection.outlook.com [104.47.32.46])
- by alsa0.perex.cz (Postfix) with ESMTP id CC1682670F8
- for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2018 11:34:14 +0100 (CET)
-In-Reply-To: <20180312182537.GO2186@sirena.org.uk>
-Content-Language: en-US
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id BA5D12670F8
+ for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2018 11:39:38 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0hyk=jto8Wt0er==YmKEsgvfvZhO2wDbGOhxZaWWCNgBg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,28 +23,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, Akshu Agrawal <akshu.agrawal@amd.com>, Alexander.Deucher@amd.com
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux PM <linux-pm@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Mar 12, 2018 at 12:26:53PM +0100, Rafael J. Wysocki wrote:
+> On Mon, Mar 12, 2018 at 12:17 PM, Anshuman Gupta
+> <anshuman.gupta@intel.com> wrote:
+> > Keep hdac-codec to be in runtime suspended while entering to suspend.
+> > If hdac-codec is already in runtime suspend state skip its power down
+> > sequence in prepare, power up sequence in complete phase.
+> >
+> > Avoid resuming hdac controller PCI device 00:1f.3 from runtime suspend
+> > state in case  hdac-codec already in runtime-suspend state, this is
+> > unnecessary and block the direct complete even for hdac controller
+> > PCI device 00:1f.3.
+> >
+> > This enabled direct complete path for hdac-codec and PCI device 00:1f.3.
+> >
+> > Signed-off-by: Anshuman Gupta <anshuman.gupta@intel.com>
+> > ---
+> >  sound/soc/codecs/hdac_hdmi.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+> > index f3b4f4d..810a8a6 100644
+> > --- a/sound/soc/codecs/hdac_hdmi.c
+> > +++ b/sound/soc/codecs/hdac_hdmi.c
+> > @@ -1852,6 +1852,8 @@ static int hdmi_codec_prepare(struct device *dev)
+> >         struct hdac_ext_device *edev = to_hda_ext_device(dev);
+> >         struct hdac_device *hdac = &edev->hdac;
+> >
+> > +       if (pm_runtime_status_suspended(dev))
+> > +               return 1;
+> 
+> This is racy in principle, because the runtime PM status can still
+> change after you've checked here.
+  Will using pm_runtime_disable/pm_runtime_enable for safe check of runtime 
+  status avoids this race?	
+> 
+> But even if it isn't racy in practice, the following
+> pm_runtime_get_sync() becomes redundant after it, doesn't it?
+  I have no idea but if there can be a case that PCI 00:1f.3 (hdac controller)
+  is runtime suspended and hdac hdmi codec is active, in that case it may be 
+  required to use pm_runtime_get_sync() for hdac controller as it is parent of
+  hdac hdmi codec.			
+> 
+> >         pm_runtime_get_sync(&edev->hdac.dev);
+> >
+> >         /*
+> > @@ -1873,6 +1875,8 @@ static void hdmi_codec_complete(struct device *dev)
+> >         struct hdac_hdmi_priv *hdmi = edev->private_data;
+> >         struct hdac_device *hdac = &edev->hdac;
+> >
+> > +       if (pm_runtime_status_suspended(dev))
+> > +               return;
+> 
+> That, again, is somewhat fragile from the concurrency perspective.
+> 
+> >         /* Power up afg */
+> >         snd_hdac_codec_read(hdac, hdac->afg, 0, AC_VERB_SET_POWER_STATE,
+> >                                                         AC_PWRST_D0);
+> > --
+> > 2.7.4
+> >
 
-
-On Monday 12 March 2018 11:55 PM, Mark Brown wrote:
-> On Mon, Mar 12, 2018 at 12:04:14PM +0530, Vijendar Mukunda wrote:
->
->> +		 * It has fixed mapping as mentioned below.
->> +		 * designware-i2s.1.auto cpu dai will be used for I2S SP Instance playback device.
->> +		 * designware-i2s.2.auto cpu dai will be used for I2S SP Instance capture device.
->> +		 * designware-i2s.3.auto cpu dai will be used for I2S BT Instance playback/capture device.
-> I'm still not thrilled about this.  If we're hard coding names they
-> should be explicitly assigned names so that there's less chance that
-> some other change in the subsystem will change things.
-AMD Gpu driver creates devices for Playback and capture devices for both the I2S Controller instances using MFD framework.
-Designware driver probe call gets invoked for every device creation with resource information and platform data provided by GPU driver.
-In runtime , it seems exporting the device resource name from dwc driver to acp dma driver is not possible.
-We understand your concern, but we have made the all necessary checks to avoid any fall-backs due to this.
-Our design makes sure that the same naming convention is followed in machine driver too and there also we mention cpu dai name in the same way.
-We explored other options but this seems to be the best which makes acp dma driver compatible with multiple platforms.
->
-> Please make some effort to keep the code within 80 columns too.
-We will fix it and share updated patch.
+-- 
+Thanks,
+Anshuman
