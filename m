@@ -1,24 +1,17 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: call/normal switch was Re: omap4-droid4: voice
-	call support was
-Date: Sat, 31 Mar 2018 21:55:24 +0200
-Message-ID: <20180331195524.GB19388@amd>
-References: <20180326155828.ttnduivadob4iqmd@earth.universe>
- <20180327121441.GH29239@sirena.org.uk>
- <20180327222237.wcx2aqznvdrvbaa5@earth.universe>
- <20180328022910.GM29239@sirena.org.uk>
- <20180328140219.f6667up5evrrafkv@earth.universe>
- <20180329014507.GM5700@atomide.com> <20180331145531.GA10404@amd>
- <20180331181935.GX5700@atomide.com> <20180331191939.GA8999@amd>
- <20180331194616.GA19388@amd>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3925253045098251408=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
- [195.113.26.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E1E1267277
- for <alsa-devel@alsa-project.org>; Sat, 31 Mar 2018 21:55:25 +0200 (CEST)
-In-Reply-To: <20180331194616.GA19388@amd>
+Return-Path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id BA5D12670F8
+ for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2018 11:39:38 +0100 (CET)
+Date: Wed, 14 Mar 2018 16:08:16 +0530
+From: Anshuman Gupta <anshuman.gupta@intel.com>
+Message-ID: <20180314103816.GA7012@anshuman.gupta@intel.com>
+References: <1520853467-31653-1-git-send-email-anshuman.gupta@intel.com>
+ <CAJZ5v0hyk=jto8Wt0er==YmKEsgvfvZhO2wDbGOhxZaWWCNgBg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0hyk=jto8Wt0er==YmKEsgvfvZhO2wDbGOhxZaWWCNgBg@mail.gmail.com>
+Subject: Re: [alsa-devel] [PATCH] [sound] hdac-codec runtime suspended at
+	PM:Suspend.
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,97 +19,79 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Dan Williams <dcbw@redhat.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, linux-omap@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
-List-Id: alsa-devel@alsa-project.org
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux PM <linux-pm@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+List-ID: <alsa-devel@alsa-project.org>
 
+On Mon, Mar 12, 2018 at 12:26:53PM +0100, Rafael J. Wysocki wrote:
+> On Mon, Mar 12, 2018 at 12:17 PM, Anshuman Gupta
+> <anshuman.gupta@intel.com> wrote:
+> > Keep hdac-codec to be in runtime suspended while entering to suspend.
+> > If hdac-codec is already in runtime suspend state skip its power down
+> > sequence in prepare, power up sequence in complete phase.
+> >
+> > Avoid resuming hdac controller PCI device 00:1f.3 from runtime suspend
+> > state in case  hdac-codec already in runtime-suspend state, this is
+> > unnecessary and block the direct complete even for hdac controller
+> > PCI device 00:1f.3.
+> >
+> > This enabled direct complete path for hdac-codec and PCI device 00:1f.3.
+> >
+> > Signed-off-by: Anshuman Gupta <anshuman.gupta@intel.com>
+> > ---
+> >  sound/soc/codecs/hdac_hdmi.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+> > index f3b4f4d..810a8a6 100644
+> > --- a/sound/soc/codecs/hdac_hdmi.c
+> > +++ b/sound/soc/codecs/hdac_hdmi.c
+> > @@ -1852,6 +1852,8 @@ static int hdmi_codec_prepare(struct device *dev)
+> >         struct hdac_ext_device *edev = to_hda_ext_device(dev);
+> >         struct hdac_device *hdac = &edev->hdac;
+> >
+> > +       if (pm_runtime_status_suspended(dev))
+> > +               return 1;
+> 
+> This is racy in principle, because the runtime PM status can still
+> change after you've checked here.
+  Will using pm_runtime_disable/pm_runtime_enable for safe check of runtime 
+  status avoids this race?	
+> 
+> But even if it isn't racy in practice, the following
+> pm_runtime_get_sync() becomes redundant after it, doesn't it?
+  I have no idea but if there can be a case that PCI 00:1f.3 (hdac controller)
+  is runtime suspended and hdac hdmi codec is active, in that case it may be 
+  required to use pm_runtime_get_sync() for hdac controller as it is parent of
+  hdac hdmi codec.			
+> 
+> >         pm_runtime_get_sync(&edev->hdac.dev);
+> >
+> >         /*
+> > @@ -1873,6 +1875,8 @@ static void hdmi_codec_complete(struct device *dev)
+> >         struct hdac_hdmi_priv *hdmi = edev->private_data;
+> >         struct hdac_device *hdac = &edev->hdac;
+> >
+> > +       if (pm_runtime_status_suspended(dev))
+> > +               return;
+> 
+> That, again, is somewhat fragile from the concurrency perspective.
+> 
+> >         /* Power up afg */
+> >         snd_hdac_codec_read(hdac, hdac->afg, 0, AC_VERB_SET_POWER_STATE,
+> >                                                         AC_PWRST_D0);
+> > --
+> > 2.7.4
+> >
 
---===============3925253045098251408==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oC1+HKm2/end4ao3"
-Content-Disposition: inline
-
-
---oC1+HKm2/end4ao3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sat 2018-03-31 21:46:16, Pavel Machek wrote:
-> On Sat 2018-03-31 21:19:39, Pavel Machek wrote:
-> > On Sat 2018-03-31 11:19:35, Tony Lindgren wrote:
-> > > * Pavel Machek <pavel@ucw.cz> [180331 14:56]:
-> > > > Hi!
-> > > >=20
-> > > > > Hmm well I got audio call hacked to work as a proof of concept ha=
-ck,
-> > > > > see below. Maybe it can be used to verify some of the assumptions
-> > > > > above.
-> > > > >=20
-> > > > > Then.. To split the work a bit, can you guys maybe try to decode
-> > > > > the cpcap register values and try to do a proper ASoC driver patc=
-h?
-> > > >=20
-> > > > This is not proper patch yet, but it should be a step in that
-> > > > direction...
-> > >=20
-> > > Cool :) Microphone still does not work for me.. I tried tweaking
-> > > the alsamixer settings but no mic. This is with cold boot with
-> > > droid4-kexecboot if that might make a difference, we may have
-> > > some register uninitialized somewhere. Any ideas?
-> >=20
-> > Ok, I was focusing on the speaker side.
-> >=20
-> > alsamixer, tab to go to capture settings, set it to 37 37 Mic2 Mic1
-> > should work, according to my notes, but not recently tested and not
-> > tested against real human.
-> >=20
-> > I'll attempt to test it, but something in my userland shuts down
-> > system just after boot 60% of time, which is rather annoying.
->=20
-> Hmm. So I tried again, and setting Mic1 and back in the capture
-> settings crashed the modem. Bang, disconnected from the USB.
-
-Next try, and it worked this time.
-
-_Before the call_, set mode to Normal and then Call. Then go to
-capture, and set 100 100 Mic2 Mic1. Then place a call,
-
-AT+CFUN=3D1
-OK
-ATD6;
-
-If you change Mic1 setting, GSM modem will likely crash.
-
-Good luck,
-								Pavel
-
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---oC1+HKm2/end4ao3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlq/56wACgkQMOfwapXb+vJ/qQCeIU54eQpC57waRBl7oeSUY2iq
-bgMAniWkWV59oz3p91PgHzDFqEDcXX1q
-=5l1u
------END PGP SIGNATURE-----
-
---oC1+HKm2/end4ao3--
-
---===============3925253045098251408==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3925253045098251408==--
+-- 
+Thanks,
+Anshuman
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
