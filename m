@@ -1,17 +1,41 @@
-From: Lukas Wunner <lukas@wunner.de>
-Subject: linux-next: merge conflict between drm-misc and sound
-	trees
-Date: Wed, 14 Mar 2018 07:38:01 +0100
-Message-ID: <20180314063801.GA26553@wunner.de>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: [Xen-devel][PATCH 0/2] sndif: add explicit back
+ and front synchronization
+Date: Wed, 14 Mar 2018 09:32:16 +0200
+Message-ID: <138a1a1e-e1a8-2bbe-9f33-2c5d424f45d0@gmail.com>
+References: <1517819100-1029-1-git-send-email-andr2000@gmail.com>
+ <s5hd10hcw6t.wl-tiwai@suse.de>
+ <d460d2f9-8a93-7046-dbe3-fe921c2da130@gmail.com>
+ <s5h4lltcud4.wl-tiwai@suse.de>
+ <1531a22b-5df6-a66e-72ee-775538aeff4d@gmail.com>
+ <s5hwoypbc3c.wl-tiwai@suse.de>
+ <e11de1a2-5095-6297-184b-00405300bfe7@gmail.com>
+ <s5hpo4hb9hg.wl-tiwai@suse.de>
+ <621aaaa9-5994-176c-b243-c2fc9823a699@gmail.com>
+ <s5hfu5db7pd.wl-tiwai@suse.de>
+ <18f6eced-a932-ad82-0097-e18ac1a562ae@gmail.com>
+ <s5ha7vlb5vl.wl-tiwai@suse.de>
+ <670e6d78-1dbd-dcc9-fd82-813c2f45c5d3@gmail.com>
+ <s5hwoyp9nem.wl-tiwai@suse.de>
+ <397eb20c-096a-f8d1-1e63-3662d79f14cf@gmail.com>
+ <s5hk1ujgh91.wl-tiwai@suse.de>
+ <88ec5cf5-ab98-4ee4-2284-3a1d34d9a353@gmail.com>
+ <e3f39c7f-721f-ace9-82b3-d270c6bf0137@gmail.com>
+ <s5hvae09bu5.wl-tiwai@suse.de>
+ <7b8359e2-46d6-46dc-937a-331799c11718@gmail.com>
+ <s5hin9zlslg.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net
- [83.223.95.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 152322672C0
- for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2018 07:38:02 +0100 (CET)
-Content-Disposition: inline
+Received: from mail-lf0-f52.google.com (mail-lf0-f52.google.com
+ [209.85.215.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 220F22672C0
+ for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2018 08:32:18 +0100 (CET)
+Received: by mail-lf0-f52.google.com with SMTP id x205-v6so3269087lfa.0
+ for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2018 00:32:18 -0700 (PDT)
+In-Reply-To: <s5hin9zlslg.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +45,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Sean Paul <seanpaul@chromium.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Gustavo Padovan <gustavo@padovan.org>, Dave Airlie <airlied@gmail.com>, Takashi Iwai <tiwai@suse.de>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: xen-devel@lists.xenproject.org, alsa-devel@alsa-project.org, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Stephen,
-
-when rebuilding linux-next you're going to see a merge conflict in:
-
-  sound/pci/hda/hda_intel.c
-
-betwen commit:
-
-  1ba8f9d30817 ("ALSA: hda: Add a power_save blacklist")
-
-from the sound tree and commit:
-
-  07f4f97d7b4b ("vga_switcheroo: Use device link for HDA controller")
-
-from the drm-misc tree.
-
-I recommend fixing it up like below.
-
-
--- >8 --
-@@@ -2284,16 -2298,22 +2303,30 @@@
-  	chip->running = 1;
-  	azx_add_card_list(chip);
-  
- +	/*
- +	 * The discrete GPU cannot power down unless the HDA controller runtime
- +	 * suspends, so activate runtime PM on codecs even if power_save == 0.
- +	 */
- +	if (use_vga_switcheroo(hda))
- +		list_for_each_codec(codec, &chip->bus)
- +			codec->auto_runtime_pm = 1;
- +
-- 	snd_hda_set_power_save(&chip->bus, power_save * 1000);
-+ 	val = power_save;
-+ #ifdef CONFIG_PM
-+ 	if (val == -1) {
-+ 		const struct snd_pci_quirk *q;
-+ 
-+ 		val = CONFIG_SND_HDA_POWER_SAVE_DEFAULT;
-+ 		q = snd_pci_quirk_lookup(chip->pci, power_save_blacklist);
-+ 		if (q && val) {
-+ 			dev_info(chip->card->dev, "device %04x:%04x is on the power_save blacklist, forcing power_save to 0\n",
-+ 				 q->subvendor, q->subdevice);
-+ 			val = 0;
-+ 		}
-+ 	}
-+ #endif /* CONFIG_PM */
-+ 	snd_hda_set_power_save(&chip->bus, val * 1000);
- -	if (azx_has_pm_runtime(chip) || hda->use_vga_switcheroo)
- +	if (azx_has_pm_runtime(chip))
-  		pm_runtime_put_autosuspend(&pci->dev);
-  
-  out_free:
+T24gMDMvMTMvMjAxOCAwODo0OCBQTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIFR1ZSwgMTMg
+TWFyIDIwMTggMTg6MzE6NTUgKzAxMDAsCj4gT2xla3NhbmRyIEFuZHJ1c2hjaGVua28gd3JvdGU6
+Cj4+IE9uIDAzLzEzLzIwMTggMDY6MzEgUE0sIFRha2FzaGkgSXdhaSB3cm90ZToKPj4+IE9uIFR1
+ZSwgMTMgTWFyIDIwMTggMTI6NDk6MDAgKzAxMDAsCj4+PiBPbGVrc2FuZHIgQW5kcnVzaGNoZW5r
+byB3cm90ZToKPj4+PiBTbywgSSB0cmllZCB0byBtYWtlIGEgUE9DIHRvIHN0cmVzcyB0aGUgcHJv
+dG9jb2wgY2hhbmdlcyBhbmQgc2VlCj4+Pj4gd2hhdCBpbXBsZW1lbnRhdGlvbiBvZiB0aGUgSFcg
+cGFyYW1ldGVyIG5lZ290aWF0aW9uIHdvdWxkIGxvb2sgbGlrZS4KPj4+Pgo+Pj4+IFBsZWFzZSBm
+aW5kIHByb3RvY29sIGNoYW5nZXMgYXQgWzFdOgo+Pj4+IC0gYWRkIFhFTlNORF9PUF9IV19QQVJB
+TV9RVUVSWSByZXF1ZXN0IHRvIHJlYWQvdXBkYXRlCj4+Pj4gICDCoMKgIGNvbmZpZ3VyYXRpb24g
+c3BhY2UgZm9yIHRoZSBwYXJhbWV0ZXIgZ2l2ZW46IHJlcXVlc3QgcGFzc2VzCj4+Pj4gICDCoMKg
+IGRlc2lyZWQgcGFyYW1ldGVyIGludGVydmFsIGFuZCB0aGUgcmVzcG9uc2UgdG8gdGhpcyByZXF1
+ZXN0Cj4+Pj4gICDCoMKgIHJldHVybnMgbWluL21heCBpbnRlcnZhbCBmb3IgdGhlIHBhcmFtZXRl
+ciB0byBiZSB1c2VkLgo+Pj4+ICAgwqDCoCBQYXJhbWV0ZXJzIHN1cHBvcnRlZCBieSB0aGlzIHJl
+cXVlc3Q6Cj4+Pj4gICDCoMKgwqDCoCAtIGZyYW1lIHJhdGUKPj4+PiAgIMKgwqDCoMKgIC0gc2Ft
+cGxlIHJhdGUKPj4+PiAgIMKgwqDCoMKgIC0gbnVtYmVyIG9mIGNoYW5uZWxzCj4+Pj4gICDCoMKg
+wqDCoCAtIGJ1ZmZlciBzaXplCj4+Pj4gICDCoMKgwqDCoCAtIHBlcmlvZCBzaXplCj4+Pj4gICDC
+oC0gYWRkIG1pbmltdW0gYnVmZmVyIHNpemUgdG8gWGVuU3RvcmUgY29uZmlndXJhdGlvbgo+Pj4+
+Cj4+Pj4gICBGcm9tIHRoZSBwcmV2aW91cyBjaGFuZ2VzIHRvIHRoZSBwcm90b2NvbCB3aGljaCBJ
+IHBvc3RlZCBlYXJsaWVyIEkgc2VlCj4+Pj4gdGhhdCBYRU5TTkRfT1BfSFdfUEFSQU1fU0VUIGlz
+IG5vdCByZWFsbHkgbmVlZGVkIC0gcmVtb3ZlZC4KPj4+Pgo+Pj4+IFRoZSBpbXBsZW1lbnRhdGlv
+biBpbiB0aGUgUFYgZnJvbnRlbmQgZHJpdmVyIGlzIGF0IFsyXS4KPj4+Pgo+Pj4+IFRha2FzaGks
+IGNvdWxkIHlvdSBwbGVhc2UgdGFrZSBhIGxvb2sgYXQgdGhlIGFib3ZlIGlmIGl0IG1lZXRzIHlv
+dXIKPj4+PiBleHBlY3RhdGlvbnMKPj4+PiBzbyBJIGNhbiBtb3ZlIGZvcndhcmQ/Cj4+PiBUaGlz
+IGxvb2tzIGFsbW9zdCBnb29kIHRocm91Z2ggYSBxdWljayBnbGFuY2UuCj4+PiBCdXQgdGhlIG1p
+eHR1cmUgb2YgU05EUlZfUENNX0hXX1BBUkFNX1BFUklPRF9TSVpFIGFuZAo+Pj4gU05EUlZfUENN
+X0hXX1BBUkFNX0JVRkZFUl9CWVRFUyBhcmUgbGlrZWx5IGNvbmZ1c2luZy4KPj4+IFRoZSAqX1NJ
+WkUgbWVhbnMgaW4gZnJhbWVzIHVuaXQgd2hpbGUgKl9CWVRFUyBtZWFucyBpbiBieXRlcy4KPj4+
+IFlvdSBzaG91bGQgYWxpZ24gYm90aCBQRVJJT0RfIGFuZCBCVUZGRVJfIHRvIHRoZSBzYW1lIHVu
+aXRzLAo+Pj4gaS5lLiBlaXRoZXIgdXNlIFNORFJWX1BDTV9IV19QQVJBTV9QRVJJT0RfQllURVMg
+YW5kICpfQlVGRkVSX0JZVEVTLAo+Pj4gb3IgU05EUlZfUENNX0hXX1BBUkFNX1BFUklPRF9TSVpF
+IGFuZCAqX0JVRkZFUl9TSVpFLgo+PiBZb3UgYXJlIGNvcnJlY3QsIGZpeGVkIHRoaXMgYXQgWzFd
+Cj4+PiBBbHNvLCBhIHNsaWdodGx5IHJlbWFpbmluZyBjb25jZXJuIGlzIHRoZSB1c2UtY2FzZSB3
+aGVyZSBod19wYXJhbXMgaXMKPj4+IGNhbGxlZCBtdWx0aXBsZSB0aW1lcy4gIEFuIGFwcGxpY2F0
+aW9uIG1heSBjYWxsIGh3X2ZyZWUgYW5kIGh3X3BhcmFtcwo+Pj4gZnJlZWx5LCBvciBldmVuIGh3
+X3BhcmFtcyBjYWxscyBtdWx0aXBsZSB0aW1lcywgaW4gb3JkZXIgdG8gY2hhbmdlIHRoZQo+Pj4g
+cGFyYW1ldGVyLgo+Pj4KPj4+IElmIHRoZSBiYWNrZW5kIG5lZWRzIHRvIHJlc29sdmUgc29tZSBk
+ZXBlbmRlbmN5IGJldHdlZW4gcGFyYW1ldGVycwo+Pj4gKGUuZy4gdGhlIGF2YWlsYWJsZSBwZXJp
+b2Qgc2l6ZSBkZXBlbmRzIG9uIHRoZSBzYW1wbGUgcmF0ZSksIHRoZQo+Pj4gYmFja2VuZCBoYXMg
+dG8gcmVtZW1iZXIgdGhlIHByZXZpb3VzbHkgcGFzc2VkIHBhcmFtZXRlcnMuCj4+Pgo+Pj4gU28s
+IGluc3RlYWQgb2YgcGFzc2luZyBhIHNpbmdsZSBwYXJhbWV0ZXIsIHlvdSBtYXkgZXh0ZW5kIHRo
+ZSBwcm90b2NvbAo+Pj4gYWx3YXlzIHRvIHBhc3MgdGhlIGZ1bGwgKGZpdmUpIHBhcmFtZXRlcnMs
+IHRvby4KPj4+Cj4+PiBPVE9ILCB0aGlzIGNhbiBiZSBjb25zaWRlcmVkIHRvIGJlIGEgbWlub3Ig
+Y2FzZSwgYW5kIHRoZSBiYWNrZW5kCj4+PiAoZS5nLiBQQSkgY2FuIGxpa2VseSBzdXBwb3J0IGV2
+ZXJ5IHBvc3NpYmxlIGNvbWJpbmF0aW9ucywgc28gbWF5YmUgYQo+Pj4gc2ltcGxlciBjb2RlIG1h
+eSBiZSBhIGJldHRlciBzb2x1dGlvbiBpbiB0aGUgZW5kLgo+PiBZZXMsIGxldCdzIGhhdmUgaXQg
+c3RlcCBieSBzdGVwLgo+PiBJZiB5b3UgYXJlIG9rIHdpdGggd2hhdCB3ZSBoYXZlIGF0IHRoZSBt
+b21lbnQgdGhlbiwgYWZ0ZXIgSSBpbXBsZW1lbnQgYm90aAo+PiBiYWNrZW5kIGFuZCBmcm9udGVu
+ZCBjaGFuZ2VzIGFuZCBjb25maXJtIHRoYXQgcHJvdG9jb2wgd29ya3MsCj4+IEkgd2lsbCBzZW5k
+IHYzIG9mIHRoZSBzZXJpZXMgKHByb3RvY29sIGNoYW5nZXMpLgo+Pgo+PiBTdGlsbCB0aGVyZSBz
+b21lIHF1ZXN0aW9uczoKPj4gMS4gRG8gd2UgcmVhbGx5IG5lZWQgbWluIGJ1ZmZlciB2YWx1ZSBh
+cyBjb25maWd1cmF0aW9uIFsyXT8gSSBzZWUgbm8KPj4gd2F5IGl0IGNhbiBiZSB1c2VkLAo+PiBm
+b3IgaW5zdGFuY2UgYXQgWzNdLCB3ZSBvbmx5IGhhdmUgc25kX3BjbV9oYXJkd2FyZS5idWZmZXJf
+Ynl0ZXNfbWF4LAo+PiBidXQgbm90IG1pbi4KPj4gU28sIEkgZmVlbCBJIGNhbiBkcm9wIHRoYXQK
+PiBBY3R1YWxseSB3aXRoIHRoZSBod19wYXJhbSBxdWVyeSBtZWNoYW5pc20sIHRoaXMgc2V0dXAg
+aXMgbW9vdC4KPiBZb3UgY2FuIHBhc3MgYSBmaXhlZCB2YWx1ZSB0aGF0IHNob3VsZCBiZSBlbm91
+Z2ggbGFyZ2UgZm9yIGFsbCBjYXNlcwo+IHRoZXJlLgpvaywgc28gb25seSBidWZmZXIgbWF4IGFz
+IGl0IGlzIGFscmVhZHkgZGVmaW5lZAo+PiAyLiBDYW4gSSBhc3N1bWUgdGhhdCBtaW4gYnVmZmVy
+IHNpemUgPT0gcGVyaW9kIHNpemUgYW5kIGFkZCBzdWNoIGEKPj4gY29uc3RyYWludAo+PiBpbiB0
+aGUgZnJvbnRlbmQgZHJpdmVyPwo+IFRoZSBidWZmZXIgc2llID09IHBlcmlvZCBzaXplIGlzIGEg
+c3BlY2lhbCBjYXNlLCBpLmUuIHBlcmlvZHM9MSwgYW5kCj4gdGhpcyB3b24ndCB3b3JrIG1vc3Qg
+bGlrZWx5LiAgSXQncyB1c2VkIG9ubHkgZm9yIGEgY2FzZSBsaWtlIFBBCj4gZGVwbG95bWVudCB3
+aXRob3V0IHRoZSBwZXJpb2QgaW50ZXJydXB0LiAgQW5kIGl0IG5lZWRzIGEgc3BlY2lhbAo+IGh3
+X3BhcmFtcyBmbGFnIHlvdXIgZHJpdmVyIGRvZXNuJ3QgZGVhbCB3aXRoLgo+Cj4gU28gZm9yIHRo
+ZSBzYW5lIHNldHVwLCB5b3UgY2FuIHNhZmVseSBhc3N1bWUgbWluX3BlcmlvZHM9Mi4KVGhhbmtz
+LCB3aWxsIGxpbWl0IG1pbiB0byAyIHBlcmlvZHMgdGhlbgo+PiAzLiBPbiBiYWNrZW5kIHNpZGUg
+KEFMU0EpLCB3aXRoIGN1cnJlbnQgY2hhbmdlcyBpbiB0aGUgcHJvdG9jb2wgSSB3aWxsCj4+IGNh
+bGwgc29tZXRoaW5nIGxpa2UKPj4gaW50IHNuZF9wY21faHdfcGFyYW1zX3NldF9jaGFubmVsc19t
+aW5tYXgoc25kX3BjbV90ICpwY20sCj4+IHNuZF9wY21faHdfcGFyYW1zX3QgKnBhcmFtcywgdW5z
+aWduZWQgaW50ICptaW4sIHVuc2lnbmVkIGludCAqbWF4KQo+Pgo+PiBpbnN0ZWFkIG9mCj4+Cj4+
+IGludCBzbmRfcGNtX2h3X3BhcmFtc19zZXRfY2hhbm5lbHMoc25kX3BjbV90ICpwY20sIHNuZF9w
+Y21faHdfcGFyYW1zX3QKPj4gKnBhcmFtcywgdW5zaWduZWQgaW50IHZhbCkKPj4KPj4gd2hpbGUg
+c2VydmljaW5nCj4+IFhFTlNORF9PUF9IV19QQVJBTV9RVUVSWS5YRU5TTkRfT1BfSFdfUEFSQU1f
+Q0hBTk5FTFMuIERvZXMgdGhpcyBtYWtlCj4+IHNlbnNlPwo+IFllYWgsIHRoYXQncyBiZXR0ZXIs
+IEkgc3VwcG9zZS4KRXhjZWxsZW50Cj4KPiBUYWthc2hpClRoYW5rIHlvdSB2ZXJ5IG11Y2ggZm9y
+IGhlbHBpbmcgd2l0aCB0aGlzISEhCk9sZWtzYW5kciBBbmRydXNoY2hlbmtvCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
+aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
