@@ -1,196 +1,86 @@
-From: Martin Schreiber <mse00000@gmail.com>
-Subject: Re: [BUG] snd_pcm_drop() does not stop the PCM
- immediately
-Date: Wed, 14 Mar 2018 17:39:46 +0100
-Message-ID: <bdf166af-553f-3f4e-187b-0e5120ffcf19@gmail.com>
-References: <32cead2b-d2fc-485f-70e9-e528bc2fe63e@gmail.com>
- <s5hvady8zbk.wl-tiwai@suse.de>
- <332672f7-eabb-73a2-9f76-d03e8c9c253c@gmail.com>
- <s5hk1ue8wft.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------534F57F6FC48AA1E05757557"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f49.google.com (mail-wm0-f49.google.com [74.125.82.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 7641626708E
- for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2018 17:39:50 +0100 (CET)
-Received: by mail-wm0-f49.google.com with SMTP id w128so5341785wmw.0
- for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2018 09:39:50 -0700 (PDT)
-In-Reply-To: <s5hk1ue8wft.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: uniphier: evea: add switch for changing source of line-in" to the asoc tree
+Date: Wed, 14 Mar 2018 16:39:49 +0000 (GMT)
+Message-ID: <20180314163950.001CB44007C@finisterre.ee.mobilebroadband>
+References: <20180314123900.19505-1-suzuki.katsuhiro@socionext.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180314123900.19505-1-suzuki.katsuhiro@socionext.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------534F57F6FC48AA1E05757557
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+The patch
 
-On 03/14/2018 05:16 PM, Takashi Iwai wrote:
->> Does snd_pcm_close() "scratching off the existing data from the mixed
->> buffer"?
-> 
-> It shouldn't.  There is no corresponding code in the dmix close path
-> as far as I read again.  So, if it really does anything better, it's
-> somewhere rather in the ALSA timer handling, I suppose.
-> 
-It does better, see attached alsadrop2.c.
-Now the question is why? And could it be implemented in snd_pcm_drop() too?
+   ASoC: uniphier: evea: add switch for changing source of line-in
 
-Martin
+has been applied to the asoc tree at
 
---------------534F57F6FC48AA1E05757557
-Content-Type: text/x-csrc;
- name="alsadrop2.c"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="alsadrop2.c"
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-//alsadrop2 testcase
-// compile with 
-//gcc -oalsadrop2 -lasound -lpthread -g alsadrop2.c
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-#include <alsa/asoundlib.h>
-#include <pthread.h>
-#define samplefrequ 44100
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-int16_t bufa[samplefrequ]; //1 second f1
-int16_t bufb[samplefrequ]; //1 second f2
-pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-void* buf;
-snd_pcm_t *pcm;
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-void*
-threadexe(void* param){
- snd_pcm_sframes_t frameswritten;
- int i1,i2,i3;
- void* buf1;
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
- i1 = sizeof(bufa)/sizeof(bufa[0]);
- frameswritten = 0;
- i3 = 0;
+Thanks,
+Mark
+
+>From 90e0fb05e5c1b1cf6a59c4f888f500e2b1feffc4 Mon Sep 17 00:00:00 2001
+From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Date: Wed, 14 Mar 2018 21:39:00 +0900
+Subject: [PATCH] ASoC: uniphier: evea: add switch for changing source of
+ line-in
+
+This patch adds mixer switch for changing audio source of line-in.
+We can choose one of LIN1, 2, 3, default is LIN1.
+
+Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/uniphier/evea.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/sound/soc/uniphier/evea.c b/sound/soc/uniphier/evea.c
+index 439f14f91b23..73fd6730095c 100644
+--- a/sound/soc/uniphier/evea.c
++++ b/sound/soc/uniphier/evea.c
+@@ -18,6 +18,8 @@
  
- while (1){
-  pthread_mutex_lock(&mutex);
-  printf("++waitstart\n");
-  pthread_cond_wait(&cond,&mutex);
-  printf("!!signaled\n");
-  buf1 = buf;
-  pthread_mutex_unlock(&mutex);
-  frameswritten = snd_pcm_writei(pcm,buf1,i1);
-  printf("%d %p %d\n",i3,buf1,frameswritten);
-  i3++;
- } 
- return NULL;
-}
-
-int pcmopen(char* dev){
-
- unsigned int rate = samplefrequ;
- snd_pcm_hw_params_t *params = NULL;
- snd_pcm_hw_params_malloc(&params);
-
- if (snd_pcm_open(&pcm,dev, SND_PCM_STREAM_PLAYBACK, 0)){
-  printf("Can not open pcm %s",dev);
-  goto error;
+ #define AADCPOW(n)                           (0x0078 + 0x04 * (n))
+ #define   AADCPOW_AADC_POWD                   BIT(0)
++#define ALINSW1                              0x0088
++#define   ALINSW1_SEL1_SHIFT                  3
+ #define AHPOUTPOW                            0x0098
+ #define   AHPOUTPOW_HP_ON                     BIT(4)
+ #define ALINEPOW                             0x009c
+@@ -278,7 +280,16 @@ static int evea_set_switch_hp(struct snd_kcontrol *kcontrol,
+ 	return evea_update_switch_hp(evea);
  }
- if (!params){
-  goto error;
- };
- if (snd_pcm_hw_params_any(pcm, params)<0){
-  goto error;
- };
- if (snd_pcm_hw_params_set_access(pcm,params,SND_PCM_ACCESS_RW_INTERLEAVED)){
-  goto error;
- };
- if (snd_pcm_hw_params_set_format(pcm,params,SND_PCM_FORMAT_S16_LE)){
-  goto error;
- };
- if (snd_pcm_hw_params_set_rate_near(pcm,params,&rate,0)){
-  goto error;
- };
- if (snd_pcm_hw_params_set_channels(pcm,params,1)){
-  goto error;
- };
- if (snd_pcm_hw_params(pcm,params)){
-  goto error;
- };
- if (snd_pcm_prepare(pcm)){
-  goto error;
- };
- snd_pcm_nonblock(pcm,0);
- free(params);
- return 0;
-error:
- return -1;
-}
-
-int main()
-{
- int i1,i2;
- char* dev;
- snd_pcm_sframes_t frameswritten;
- pthread_t thread;
-
- for(i1=0;i1 < samplefrequ;i1++){
-  bufa[i1] = 0x4000 * (2*((i1 / 40) % 2)-1);
-  bufb[i1] = 0x4000 * (2*((i1 / 41) % 2)-1);
- }
-
- dev = "sysdefault"; //alsa direct      ->> overlapping sound
-// dev = "default";  //over pulsaudio   ->> OK
- if (pcmopen(dev)){
-  goto error;
- };
- mutex.__data.__kind = PTHREAD_MUTEX_RECURSIVE; 
  
- if (pthread_create(&thread,NULL,&threadexe,NULL)){
-  goto error;
- }
- while(1){
-  pthread_mutex_lock(&mutex);
-  if (buf == bufa){
-   buf = bufb;
-  }
-  else{
-   buf = bufa;
-  }
-  pthread_mutex_unlock(&mutex);
-  printf("--- %p signal\n",buf);
-  pthread_cond_signal(&cond);
-  usleep(700000);
-  printf("<<<close\n");
-  snd_pcm_close(pcm);
-  if (pcmopen(dev)){
-   goto error;
-  };
-/*
-  printf("<<<drop\n");
-  snd_pcm_drop(pcm);
-  snd_pcm_drain(pcm);
- */
-  i2 = snd_pcm_prepare(pcm);
-  printf("<<<prepare %d\n",i2);
- }
- return 0;
-error:
- return 1;
-}
---------------534F57F6FC48AA1E05757557
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------534F57F6FC48AA1E05757557--
++static const char * const linsw1_sel1_text[] = {
++	"LIN1", "LIN2", "LIN3"
++};
++
++static SOC_ENUM_SINGLE_DECL(linsw1_sel1_enum,
++	ALINSW1, ALINSW1_SEL1_SHIFT,
++	linsw1_sel1_text);
++
+ static const struct snd_kcontrol_new evea_controls[] = {
++	SOC_ENUM("Line Capture Source", linsw1_sel1_enum),
+ 	SOC_SINGLE_BOOL_EXT("Line Capture Switch", 0,
+ 			    evea_get_switch_lin, evea_set_switch_lin),
+ 	SOC_SINGLE_BOOL_EXT("Line Playback Switch", 0,
+-- 
+2.16.2
