@@ -1,94 +1,50 @@
-From: James Kelly <jamespeterkelly@gmail.com>
-Subject: [PATCH] ASoC: ssm2602: Replace reg_default_raw with
-	reg_default
-Date: Thu, 15 Mar 2018 09:24:16 +1100
-Message-ID: <20180314222416.95836-1-jamespeterkelly@gmail.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH 00/47] arch-removal: device drivers
+Date: Wed, 14 Mar 2018 23:45:54 +0100
+Message-ID: <CAJZ5v0jsoxWRiwPOCJH6AAz-MiccOuicD8peCevLRMbTfc7LEg@mail.gmail.com>
+References: <20180314153603.3127932-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f195.google.com (mail-pf0-f195.google.com
- [209.85.192.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B251266F68
- for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2018 23:24:24 +0100 (CET)
-Received: by mail-pf0-f195.google.com with SMTP id j20so2048229pfi.1
- for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2018 15:24:24 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
+Return-path: <linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org>
+In-Reply-To: <20180314153603.3127932-1-arnd@arndb.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" <linux-usb@vger.kernel.org>, Wolfram Sang <wsa@the-dreams.de>, linux-iio@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, alexandre.belloni@bootlin.com, linux-ide@vger.kernel.org, netdev <netdev@vger.kernel.org>, linux-mtd@lists.infradead.org, linux-i2c <linux-i2c@vger.kernel.org>, linux-rtc@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>, Herbert Xu <herbert@gondor.apana.org.au>, Jonathan Corbet <corbet@lwn.net>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Alan Stern <stern@rowland.harvard.edu>, linux-serial@vger.kernel.org, Jiri Slaby <jslaby@suse.com>, linux-mmc <linux-mmc@vger.kernel.org>, shli@kernel.org, wg@grandegger.com, linux-crypto@vger.kernel.org, Linux PWM List <linux-pwm@vger.kernel.org>, linux-watchdog@vger.k
 List-Id: alsa-devel@alsa-project.org
 
-SSM2602 driver is broken on recent kernels (at least
-since 4.9). User space applications such as amixer or
-alsamixer get EIO when attempting to access codec
-controls via the relevant IOCTLs.
+On Wed, Mar 14, 2018 at 4:35 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+> Hi driver maintainers,
+>
+> I just posted one series with the removal of eight architectures,
+> see https://lkml.org/lkml/2018/3/14/505 for details, or
+> https://lwn.net/Articles/748074/ for more background.
+>
+> These are the device drivers that go along with them. I have already
+> picked up the drivers for arch/metag/ into my tree, they were reviewed
+> earlier.
+>
+> Please let me know if you have any concerns with the patch, or if you
+> prefer to pick up the patches in your respective trees.  I created
+> the patches with 'git format-patch -D', so they will not apply without
+> manually removing those files.
+>
+> For anything else, I'd keep the removal patches in my asm-generic tree
+> and will send a pull request for 4.17 along with the actual arch removal.
 
-Root cause of these failures is the regcache_hw_init
-function in drivers/base/regmap/regcache.c, which
-prevents regmap cache initalization from the
-reg_defaults_raw element of the regmap_config structure
-when registers are write only. It also disables the
-regmap cache entirely when all registers are write only
-or volatile as is the case for the SSM2602 driver.
+Please include the cpufreq patches into that and you can add ACKs from
+me on them if that helps.
 
-Using the reg_defaults element of the regmap_config
-structure rather than the reg_defaults_raw element to
-initalize the regmap cache avoids the logic in the
-regcache_hw_init function entirely. It also makes this
-driver consistent with other ASoC codec drivers, as
-this driver was the ONLY codec driver that used the
-reg_defaults_raw element to initalize the cache.
+Thanks!
 
-Tested on Digilent Zybo Z7 development board which has
-a SSM2603 codec chip connected to a Xilinx Zynq SoC.
----
- sound/soc/codecs/ssm2602.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
-index 031e0eabcc1f..501a4e73b185 100644
---- a/sound/soc/codecs/ssm2602.c
-+++ b/sound/soc/codecs/ssm2602.c
-@@ -54,10 +54,17 @@ struct ssm2602_priv {
-  * using 2 wire for device control, so we cache them instead.
-  * There is no point in caching the reset register
-  */
--static const u16 ssm2602_reg[SSM2602_CACHEREGNUM] = {
--	0x0097, 0x0097, 0x0079, 0x0079,
--	0x000a, 0x0008, 0x009f, 0x000a,
--	0x0000, 0x0000
-+static const struct reg_default ssm2602_reg[SSM2602_CACHEREGNUM] = {
-+	{ .reg = 0x00, .def = 0x0097 },
-+	{ .reg = 0x01, .def = 0x0097 },
-+	{ .reg = 0x02, .def = 0x0079 },
-+	{ .reg = 0x03, .def = 0x0079 },
-+	{ .reg = 0x04, .def = 0x000a },
-+	{ .reg = 0x05, .def = 0x0008 },
-+	{ .reg = 0x06, .def = 0x009f },
-+	{ .reg = 0x07, .def = 0x000a },
-+	{ .reg = 0x08, .def = 0x0000 },
-+	{ .reg = 0x09, .def = 0x0000 }
- };
- 
- 
-@@ -621,8 +628,8 @@ const struct regmap_config ssm2602_regmap_config = {
- 	.volatile_reg = ssm2602_register_volatile,
- 
- 	.cache_type = REGCACHE_RBTREE,
--	.reg_defaults_raw = ssm2602_reg,
--	.num_reg_defaults_raw = ARRAY_SIZE(ssm2602_reg),
-+	.reg_defaults = ssm2602_reg,
-+	.num_reg_defaults = ARRAY_SIZE(ssm2602_reg),
- };
- EXPORT_SYMBOL_GPL(ssm2602_regmap_config);
- 
--- 
-2.14.3 (Apple Git-98)
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
