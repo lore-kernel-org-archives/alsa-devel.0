@@ -1,45 +1,42 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [alsa-devel] [PATCH v4 02/24] soc: qcom: Add APR bus driver
-Date: Wed, 14 Mar 2018 14:15:21 +0000
-Message-ID: <b2b24ce9-2923-2dd5-f569-fbad80f3f706@linaro.org>
-References: <20180310022456.26739-1-srinivas.kandagatla@linaro.org>
- <20180310022456.26739-3-srinivas.kandagatla@linaro.org>
- <d9e92aeb-8d74-554e-4390-4117571806a9@codeaurora.org>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH][next] ASoC: da7219: make structure da7219_dai_clks_ops static
+Date: Wed, 14 Mar 2018 14:28:25 +0000
+Message-ID: <20180314142825.8615-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <d9e92aeb-8d74-554e-4390-4117571806a9@codeaurora.org>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Rohit Kumar <rohitkr@codeaurora.org>, andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, plai@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, linux-kernel@vger.kernel.org
+To: Support Opensource <support.opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Colin Ian King <colin.king@canonical.com>
 
+structure da7219_dai_clks_ops is local to the source and does not need
+to be in global scope, so make it static.
 
-On 14/03/18 14:12, Rohit Kumar wrote:
-> 
-> 
-> On 3/10/2018 7:54 AM, srinivas.kandagatla@linaro.org wrote:
->> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>
-> [..]
->> +struct bus_type aprbus_type = {
->> +    .name        = "aprbus",
->> +    .match        = apr_device_match,
->> +    .probe        = apr_device_probe,
->> +    .remove        = apr_device_remove,
->> +    .force_dma    = true,
-> 
-> There is no need of force_dma now as machine driver is not child of apr. 
-> Please remove it.
+Cleans up sparse warning:
+sound/soc/codecs/da7219.c:1777:22: warning: symbol 'da7219_dai_clks_ops'
+was not declared. Should it be static?
 
-Thanks Rohit, Will remove it.
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/codecs/da7219.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
->> +};
->> +EXPORT_SYMBOL_GPL(aprbus_type);
->> +
->>
-> 
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 08f55d7a11ba..980a6a8bf56d 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1774,7 +1774,7 @@ static int da7219_dai_clks_is_prepared(struct clk_hw *hw)
+ 	return !!(clk_reg & DA7219_DAI_CLK_EN_MASK);
+ }
+ 
+-const struct clk_ops da7219_dai_clks_ops = {
++static const struct clk_ops da7219_dai_clks_ops = {
+ 	.prepare = da7219_dai_clks_prepare,
+ 	.unprepare = da7219_dai_clks_unprepare,
+ 	.is_prepared = da7219_dai_clks_is_prepared,
+-- 
+2.15.1
