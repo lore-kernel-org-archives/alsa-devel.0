@@ -1,7 +1,7 @@
 From: Arnd Bergmann <arnd@arndb.de>
 Subject: Re: [PATCH 15/47] ASoC: remove blackfin drivers
-Date: Wed, 14 Mar 2018 17:26:26 +0100
-Message-ID: <CAK8P3a3PMUEn7=g9kq+ncbd4kkswyDeg0bBiE9kNSSrcvDBg7w@mail.gmail.com>
+Date: Wed, 14 Mar 2018 17:26:25 +0100
+Message-ID: <CAK8P3a1AX16ekADiZeLuDXp9+mPQaOxNa4bGy1ptquEdO3AC6g@mail.gmail.com>
 References: <20180314153603.3127932-1-arnd@arndb.de> <20180314153603.3127932-16-arnd@arndb.de>
  <20180314161212.GS2186@sirena.org.uk>
 Mime-Version: 1.0
