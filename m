@@ -1,19 +1,14 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH] ALSA: core: Allow drivers to set R/W wait
-	time.
-Date: Thu, 15 Mar 2018 16:07:39 +0000
-Message-ID: <1521130059.7762.298.camel@linux.intel.com>
-References: <20180314204440.14027-1-liam.r.girdwood@linux.intel.com>
- <s5hsh928gak.wl-tiwai@suse.de> <1521120937.7762.258.camel@linux.intel.com>
- <s5hin9x76n8.wl-tiwai@suse.de>
+From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?= <mylene.josserand@bootlin.com>
+Subject: [PATCH v3 0/2] ASoC: Add support for DAC PCM1789
+Date: Thu, 15 Mar 2018 17:18:23 +0100
+Message-ID: <20180315161825.5524-1-mylene.josserand@bootlin.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id D03B2267252
- for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2018 17:07:44 +0100 (CET)
-In-Reply-To: <s5hin9x76n8.wl-tiwai@suse.de>
+Received: from mail.bootlin.com (mail.bootlin.com [62.4.15.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 41B18267277
+ for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2018 17:19:18 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,23 +18,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, michael@amarulasolutions.com, alexandre.belloni@bootlin.com, linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, mylene.josserand@bootlin.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2018-03-15 at 15:30 +0100, Takashi Iwai wrote:
-> > It's not atm, as it was being set by the driver. Would probably mean an ABI
-> > change to PCM ops or a new ioctl ? The latter wont break the ABI and the
-> > default
-> > value would remain if the ioctl was not called.
-> 
-> Basically this timeout is merely for a safety, wasn't considered as a
-> part of the real functionality.
-> 
-> So, with your plan, this is exposed as a real PCM feature, as a part
-> of API?  For what kind of scenario / purpose?
-
-Use case is XRUN handling, DMA failure or FW crash detection. The shortened
-timeout means we can recover far faster leaving a smaller gap in any audio.
-
-Liam
+SGVsbG8gZXZlcnlvbmUsCgpUaGUgY3VycmVudCBzZXJpZXMgaXMgdGhlIDNyZCB2ZXJzaW9uIHRv
+IGFkZCB0aGUgc3VwcG9ydCBvZiBUZXhhcwpJbnN0cnVtZW50J3MgREFDIFBDTTE3ODkuIFRoaXMg
+REFDIGlzIHZlcnkgbWluaW1hbGlzdCBhbmQgZG9lcwpub3QgaGF2ZSBtYW55IHJlZ2lzdGVycy4K
+Ckl0IGlzIGltcG9ydGFudCB0byBub3RpY2UgdGhhdCB0aGlzIERBQyBuZWVkcyB0byBhbHdheXMg
+aGF2ZSBjbG9ja3MKZW5hYmxlZCAoZXZlbiB3aXRob3V0IGFueSBkYXRhKSBvdGhlcndpc2UgaXQg
+d2lsbCBiZSBpbiBhICJkZXN5bmNocm9uaXplZCIKc3RhdGUgYW5kIGNhbiBub3Qgc2VuZCBkYXRh
+IGNvcnJlY3RseS4KVGhpcyBpc3N1ZSBoYXMgYmVlbiBzb2x2ZWQgYnkgcGVyZm9ybWluZyBhIHJl
+c2V0IGVhY2ggdGltZSBhIHNvdW5kCmlzIHBsYXllZC4gVGhpcyByZXNldCBjYW4gcHJvZHVjZSBh
+ICJwb3AiIG5vaXNlLgoKRGVwZW5kaW5nIG9uIHlvdXIgREFJLCB5b3Ugd2lsbCBuZWVkIHRvIHBy
+b3ZpZGUgYW5kIGVuYWJsZSB0aGUgTUNMSwp0byBiZSBhYmxlIHRvIGNvbW11bmljYXRlIHdpdGgg
+dGhpcyBjb2RlYyB0aHJvdWdodCBpMmMuCgpDaGFuZ2VzIHNpbmNlIHYyOgoJLSBVcGRhdGUgU1BE
+WCBoZWFkZXJzIGFjY29yZGluZyB0byBNYXJrIEJyb3duJ3MgcmV2aWV3LgoJLSBVcGRhdGUgdGhl
+IGR0IGJpbmRpbmdzIGFjY29yZGluZyB0byBSb2IgSGVycmluZydzIHJldmlldy4KQ2hhbmdlcyBz
+aW5jZSB2MToKCS0gQ3JlYXRlIGEgbmV3IGZpbGUgdG8gc3VwcG9ydCBwY20xNzg5IGluc3RlYWQg
+b2YgY29udmVydGluZyB0aGUKCWV4aXN0aW5nIHBjbTE3OXggZHJpdmVyLiBBbGwgdGhlIHBhdGNo
+ZXMgYXJlIG1lcmdlZCBpbnRvIG9uZSBwYXRjaC4KCS0gVXBkYXRlIHRoZSBjb2RlIHRvIHVzZSBn
+cGlvZCBmb3IgdGhlIHJlc2V0LgoJLSBBZGQgc29tZSBmaXhlcyBhY2NvcmRpbmcgdG8gVGhvbWFz
+IFBldGF6em9uaSdzIHJldmlld3MKCS0gQ3JlYXRlIGEgbmV3IHBhdGNoIHRvIGFkZCBkZXZpY2Ut
+dHJlZSBiaW5kaW5ncyBmb3IgdGhpcyBuZXcgREFDLgoKVGhhbmsgeW91IGluIGFkdmFuY2UgZm9y
+IGFueSByZXZpZXcuCgpCZXN0IHJlZ2FyZHMsCk15bMOobmUKCk15bMOobmUgSm9zc2VyYW5kICgy
+KToKICBBU29DOiBjb2RlY3M6IEFkZCBzdXBwb3J0IGZvciBQQ00xNzg5CiAgQVNvQzogQWRkIGJp
+bmRpbmdzIGZvciBQQ00xNzg5CgogLi4uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvcGNtMTc4
+OS50eHQgICAgICAgICAgfCAgMjIgKysKIHNvdW5kL3NvYy9jb2RlY3MvS2NvbmZpZyAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIHwgIDEyICsKIHNvdW5kL3NvYy9jb2RlY3MvTWFrZWZpbGUgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHwgICA0ICsKIHNvdW5kL3NvYy9jb2RlY3MvcGNtMTc4OS1p
+MmMuYyAgICAgICAgICAgICAgICAgICAgIHwgIDYyICsrKysrCiBzb3VuZC9zb2MvY29kZWNzL3Bj
+bTE3ODkuYyAgICAgICAgICAgICAgICAgICAgICAgICB8IDI3NCArKysrKysrKysrKysrKysrKysr
+KysKIHNvdW5kL3NvYy9jb2RlY3MvcGNtMTc4OS5oICAgICAgICAgICAgICAgICAgICAgICAgIHwg
+IDE3ICsrCiA2IGZpbGVzIGNoYW5nZWQsIDM5MSBpbnNlcnRpb25zKCspCiBjcmVhdGUgbW9kZSAx
+MDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3BjbTE3ODkudHh0
+CiBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2NvZGVjcy9wY20xNzg5LWkyYy5jCiBjcmVh
+dGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2NvZGVjcy9wY20xNzg5LmMKIGNyZWF0ZSBtb2RlIDEw
+MDY0NCBzb3VuZC9zb2MvY29kZWNzL3BjbTE3ODkuaAoKLS0gCjIuMTEuMAoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
