@@ -1,18 +1,23 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH] ALSA: core: Allow drivers to set R/W wait
-	time.
-Date: Thu, 15 Mar 2018 13:35:37 +0000
-Message-ID: <1521120937.7762.258.camel@linux.intel.com>
-References: <20180314204440.14027-1-liam.r.girdwood@linux.intel.com>
- <s5hsh928gak.wl-tiwai@suse.de>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: alsalib and snd_pcm_hw_params_set_rate_minmax
+Date: Thu, 15 Mar 2018 15:39:33 +0200
+Message-ID: <d17e2fdd-d316-8bd7-351c-9e0446adafc1@gmail.com>
+References: <8f76589f-d64f-e6c2-db4a-57319e68ec3d@gmail.com>
+ <084894a2-8107-05ab-6f6c-7418c505f3c4@sakamocchi.jp>
+ <9cf1073b-97ec-a3f5-a08a-5c54f5d92c4a@gmail.com>
+ <s5ho9jp79s7.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 68903267252
- for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2018 14:35:41 +0100 (CET)
-In-Reply-To: <s5hsh928gak.wl-tiwai@suse.de>
+Received: from mail-lf0-f54.google.com (mail-lf0-f54.google.com
+ [209.85.215.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2EE4E267252
+ for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2018 14:39:35 +0100 (CET)
+Received: by mail-lf0-f54.google.com with SMTP id f75-v6so10215191lfg.6
+ for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2018 06:39:35 -0700 (PDT)
+In-Reply-To: <s5ho9jp79s7.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,113 +28,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2018-03-14 at 23:04 +0100, Takashi Iwai wrote:
-> On Wed, 14 Mar 2018 21:44:40 +0100,
-> Liam Girdwood wrote:
-> > 
-> > Currently ALSA core blocks userspace for about 10 seconds for PCM R/W IO.
-> > This needs to be configurable for modern hardware like DSPs where no
-> > pointer update in milliseconds can indicate terminal DSP errors.
-> > 
-> > Add a substream variable to set the wait time in ms. This allows userspace
-> > and drivers to recover more quickly from terminal DSP errors.
-> > 
-> > Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> 
-> The idea looks good, though, a bit of nitpicking:
-> 
-> > ---
-> >  include/sound/pcm.h  |  6 ++++++
-> >  sound/core/pcm_lib.c | 15 ++++++++++-----
-> >  2 files changed, 16 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-> > index e054c583d3b3..e4694684c524 100644
-> > --- a/include/sound/pcm.h
-> > +++ b/include/sound/pcm.h
-> > @@ -462,6 +462,7 @@ struct snd_pcm_substream {
-> >          /* -- timer section -- */
-> >  	struct snd_timer *timer;		/* timer */
-> >  	unsigned timer_running: 1;	/* time is running */
-> > +	unsigned wait_time;	/* time in ms for R/W to wait for avail
-> > */
-> 
-> I'd name wait_timeout, which is slightly clearer.
-> 
-> 
-> >  	/* -- next substream -- */
-> >  	struct snd_pcm_substream *next;
-> >  	/* -- linked substreams -- */
-> > @@ -579,6 +580,11 @@ int snd_pcm_start(struct snd_pcm_substream *substream);
-> >  int snd_pcm_stop(struct snd_pcm_substream *substream, snd_pcm_state_t
-> > status);
-> >  int snd_pcm_drain_done(struct snd_pcm_substream *substream);
-> >  int snd_pcm_stop_xrun(struct snd_pcm_substream *substream);
-> > +static inline void snd_pcm_wait_time(struct snd_pcm_substream *substream,
-> > +	unsigned wait_time)
-> > +{
-> > +	substream->wait_time = wait_time;
-> > +}
-> 
-> IMO, it's a simple one parameter, and no need wrapping with an inline
-> function.
+On 03/15/2018 03:23 PM, Takashi Iwai wrote:
+> On Thu, 15 Mar 2018 13:20:14 +0100,
+> Oleksandr Andrushchenko wrote:
+>> On 03/15/2018 01:59 PM, Takashi Sakamoto wrote:
+>>> Hi,
+>>>
+>>> On Mar 15 2018 19:45, Oleksandr Andrushchenko wrote:
+>>>> Is it possible for user-space to reduce configuration space
+>>>> with snd_pcm_hw_params_set_rate_minmax and then change it
+>>>> with another snd_pcm_hw_params_set_rate_minmax with values
+>>>> out of the reduced config?
+>>>>
+>>>> For example, the initial min/max is 44100/48000 and I set 44100
+>>>> first, e.g.
+>>>>
+>>>> snd_pcm_hw_params_set_rate_minmax(handle, hw_params, 44100, 0, 44100, 0)
+>>>>
+>>>> and then want
+>>>>
+>>>> snd_pcm_hw_params_set_rate_minmax(handle, hw_params, 48000, 0, 48000, 0)
+>>>>
+>>>> Obviously, the last call fails as we have already a reduced
+>>>> space of [44100; 44100].
+>>>>
+>>>> Is there a way I can still set the range to [48000; 48000]?
+>>>>
+>>>> Thank you,
+>>>> Oleksandr
+>>>>
+>>>> P.S. This is in context of work done for [1]
+>>>>
+>>>> [1] https://www.spinics.net/lists/alsa-devel/msg75382.html
+>>> We can't. Once shrinking available interval of a parameter, we cannot
+>>> expand it again without initializing the parameter on memory object for
+>>> 'struct snd_pcm_hw_params_t', in which actual layout is never disclosed
+>>> to user applications.
+>> So, this effectively means that this is a one way road, if you need to
+>> change
+>> some parameter you'll need to start all over, so the whole configuration
+>> space remains consistent :(
+> Yes, that's the design.  The only way to expand is to reset the whole,
+> space and reduce again to the given size.
+>
+Clear, thank you
+>>> If you can initialize whole the parameters, snd_pcm_hw_params_any() is
+>>> available for your purpose, then set min/max rate again.
+>> This is what I do now but...
+>>> But just for
+>>> one of the parameters, in my opinion, we need to open an internal
+>>> API; snd_pcm_hw_param_any()[1].
+>> IMO, this will lead to the false assumption that configuration is possible.
+>> For example, I set 4 channels and 44100, but then, after
+>> snd_pcm_hw_params_any,
+>> set 48000 and might assume that the configuration is still
+>> possible. But this may not
+>> be true: it is true for the configuration returned by snd_pcm_hw_param_any
+>> as we don't know about 4 channels yet. But might not be allowed if we
+>> want 4 channels
+>> and 48000 at the same time.
+> Right.  At the point where snd_pcm_hw_params_any() is called, the
+> whole configuration gets reset.  That's the reason I thought we may
+> need to pass all 5 parameters in the query protocol.
+Yes, I now start thinking of the same, e.g. if we pass
+all 5 parameters (mask for formats and intervals for rate, channels,
+buffer and period), then on backend side I can do something like:
 
-This was for drivers to set the parameter according to HW capabilities.
+1. snd_pcm_hw_params_any
+2. snd_pcm_hw_params_set_format_mask
+3. snd_pcm_hw_params_set_rate_minmax
+4. snd_pcm_hw_params_set_channels_minmax
+5. snd_pcm_hw_params_set_buffer_size_minmax
+6. snd_pcm_hw_params_set_period_size_minmax
 
-> 
-> 
-> 
-> >  #ifdef CONFIG_PM
-> >  int snd_pcm_suspend(struct snd_pcm_substream *substream);
-> >  int snd_pcm_suspend_all(struct snd_pcm *pcm);
-> > diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-> > index a83152e7d387..2ee76c70f55f 100644
-> > --- a/sound/core/pcm_lib.c
-> > +++ b/sound/core/pcm_lib.c
-> > @@ -1839,12 +1839,17 @@ static int wait_for_avail(struct snd_pcm_substream
-> > *substream,
-> >  	if (runtime->no_period_wakeup)
-> >  		wait_time = MAX_SCHEDULE_TIMEOUT;
-> >  	else {
-> > -		wait_time = 10;
-> > -		if (runtime->rate) {
-> > -			long t = runtime->period_size * 2 / runtime->rate;
-> > -			wait_time = max(t, wait_time);
-> > +		/* use wait time from substream if available */
-> > +		if (substream->wait_time) {
-> > +			wait_time = msecs_to_jiffies(substream->wait_time);
-> > +		} else {
-> > +			wait_time = 10;
-> > +			if (runtime->rate) {
-> > +				long t = runtime->period_size * 2 /
-> > runtime->rate;
-> > +				wait_time = max(t, wait_time);
-> > +			}
-> > +			wait_time = msecs_to_jiffies(wait_time * 1000);
-> >  		}
-> > -		wait_time = msecs_to_jiffies(wait_time * 1000);
-> 
-> This can go bad when wait_time is shorter than the period time.
-> Some validation is needed?
-> 
+So, when finished the above confirms that configuration is possible.
+The only concern here is that so many calls on backend side
+might introduce start-up latency on frontend side though
 
-Yes, and we should also validate no irq mode somehow too, probably using buffer
-time.
+> IOW, the query stuff won't be modal, it just tries to reduce the given
+> configuration space to the acceptable ranges.
+Do you think the above solution with 5 parameters and the
+corresponding snd_pcm_hw_params_set_xxx calls will do?
 
-> Also, how is user-space supposed to set the new parameter?
-> 
-
-It's not atm, as it was being set by the driver. Would probably mean an ABI
-change to PCM ops or a new ioctl ? The latter wont break the ABI and the default
-value would remain if the ioctl was not called.
-
-Liam
-
-
-> 
-> thanks,
-> 
+>
 > Takashi
+Thank you,
+Oleksandr
