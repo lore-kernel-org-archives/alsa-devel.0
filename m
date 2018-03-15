@@ -1,15 +1,17 @@
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Subject: [PATCH v2] ASoC: Intel: Boards: Add CNL RT274 I2S
-	machine driver
-Date: Thu, 15 Mar 2018 17:23:45 +0530
-Message-ID: <20180315115345.3087-1-guneshwor.o.singh@intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: alsalib and snd_pcm_hw_params_set_rate_minmax
+Date: Thu, 15 Mar 2018 20:59:46 +0900
+Message-ID: <084894a2-8107-05ab-6f6c-7418c505f3c4@sakamocchi.jp>
+References: <8f76589f-d64f-e6c2-db4a-57319e68ec3d@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id D393E2670BE
- for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2018 12:54:03 +0100 (CET)
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 68242267252
+ for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2018 12:59:53 +0100 (CET)
+In-Reply-To: <8f76589f-d64f-e6c2-db4a-57319e68ec3d@gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,297 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>
+To: Oleksandr Andrushchenko <andr2000@gmail.com>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Add CNL I2S machine driver using Realtek RT274 codec in I2S mode
-configured to ssp0.
+Hi,
 
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
----
- sound/soc/intel/boards/Kconfig     |  11 ++
- sound/soc/intel/boards/Makefile    |   2 +
- sound/soc/intel/boards/cnl_rt274.c | 232 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 245 insertions(+)
- create mode 100644 sound/soc/intel/boards/cnl_rt274.c
+On Mar 15 2018 19:45, Oleksandr Andrushchenko wrote:
+> Is it possible for user-space to reduce configuration space
+> with snd_pcm_hw_params_set_rate_minmax and then change it
+> with another snd_pcm_hw_params_set_rate_minmax with values
+> out of the reduced config?
+> 
+> For example, the initial min/max is 44100/48000 and I set 44100
+> first, e.g.
+> 
+> snd_pcm_hw_params_set_rate_minmax(handle, hw_params, 44100, 0, 44100, 0)
+> 
+> and then want
+> 
+> snd_pcm_hw_params_set_rate_minmax(handle, hw_params, 48000, 0, 48000, 0)
+> 
+> Obviously, the last call fails as we have already a reduced
+> space of [44100; 44100].
+> 
+> Is there a way I can still set the range to [48000; 48000]?
+> 
+> Thank you,
+> Oleksandr
+> 
+> P.S. This is in context of work done for [1]
+> 
+> [1] https://www.spinics.net/lists/alsa-devel/msg75382.html
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 24797482a3d2..822b9143dcb1 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -281,6 +281,17 @@ config SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH
- 	  Say Y if you have such a device.
- 	  If unsure select "N".
- 
-+config SND_SOC_INTEL_CNL_RT274_MACH
-+	tristate "ASoC Audio driver for Cannonlake with RT274 I2S mode"
-+	depends on MFD_INTEL_LPSS && ACPI && I2C
-+	select SND_SOC_RT274
-+	select SND_SOC_DMIC
-+	help
-+	   This adds support for ASoC machine driver for Cannonlake platform
-+	   with RT274 I2S audio codec.
-+	   Say Y if you have such a device.
-+	   If unsure select "N".
-+
- endif ## SND_SOC_INTEL_SKYLAKE
- 
- endif ## SND_SOC_INTEL_MACH
-diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
-index 92b5507291af..2b49cb6aa84a 100644
---- a/sound/soc/intel/boards/Makefile
-+++ b/sound/soc/intel/boards/Makefile
-@@ -21,6 +21,7 @@ snd-soc-kbl_rt5663_rt5514_max98927-objs := kbl_rt5663_rt5514_max98927.o
- snd-soc-skl_rt286-objs := skl_rt286.o
- snd-skl_nau88l25_max98357a-objs := skl_nau88l25_max98357a.o
- snd-soc-skl_nau88l25_ssm4567-objs := skl_nau88l25_ssm4567.o
-+snd-soc-cnl-rt274-objs := cnl_rt274.o
- 
- obj-$(CONFIG_SND_SOC_INTEL_HASWELL_MACH) += snd-soc-sst-haswell.o
- obj-$(CONFIG_SND_SOC_INTEL_BYT_RT5640_MACH) += snd-soc-sst-byt-rt5640-mach.o
-@@ -44,3 +45,4 @@ obj-$(CONFIG_SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH) += snd-soc-kbl_rt566
- obj-$(CONFIG_SND_SOC_INTEL_SKL_RT286_MACH) += snd-soc-skl_rt286.o
- obj-$(CONFIG_SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH) += snd-skl_nau88l25_max98357a.o
- obj-$(CONFIG_SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH) += snd-soc-skl_nau88l25_ssm4567.o
-+obj-$(CONFIG_SND_SOC_INTEL_CNL_RT274_MACH) += snd-soc-cnl-rt274.o
-diff --git a/sound/soc/intel/boards/cnl_rt274.c b/sound/soc/intel/boards/cnl_rt274.c
-new file mode 100644
-index 000000000000..04986c015f0f
---- /dev/null
-+++ b/sound/soc/intel/boards/cnl_rt274.c
-@@ -0,0 +1,232 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright(c) 2016-18 Intel Corporation.
-+
-+#include <linux/module.h>
-+#include <sound/jack.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include "../../codecs/rt274.h"
-+
-+#define CNL_FREQ_OUT		24000000
-+#define CNL_BE_FIXUP_RATE	48000
-+#define RT274_CODEC_DAI		"rt274-aif1"
-+
-+static int cnl_rt274_clock_control(struct snd_soc_dapm_widget *w,
-+				   struct snd_kcontrol *k, int event)
-+{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+	struct snd_soc_card *card = dapm->card;
-+	struct snd_soc_dai *codec_dai =
-+		snd_soc_card_get_codec_dai(card, RT274_CODEC_DAI);
-+	int ret, ratio = 100;
-+
-+	if (!codec_dai)
-+		return -EINVAL;
-+
-+	/* Codec needs clock for Jack detection and button press */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, RT274_SCLK_S_PLL2,
-+				     CNL_FREQ_OUT, SND_SOC_CLOCK_IN);
-+	if (ret < 0) {
-+		dev_err(codec_dai->dev, "set codec sysclk failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	if (SND_SOC_DAPM_EVENT_ON(event)) {
-+		ret = snd_soc_dai_set_bclk_ratio(codec_dai, ratio);
-+		if (ret) {
-+			dev_err(codec_dai->dev,
-+				"set bclk ratio failed: %d\n", ret);
-+			return ret;
-+		}
-+
-+		ret = snd_soc_dai_set_pll(codec_dai, 0, RT274_PLL2_S_BCLK,
-+					  CNL_BE_FIXUP_RATE * ratio,
-+					  CNL_FREQ_OUT);
-+		if (ret) {
-+			dev_err(codec_dai->dev,
-+				"enable PLL2 failed: %d\n", ret);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct snd_kcontrol_new cnl_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
-+	SOC_DAPM_PIN_SWITCH("Mic Jack"),
-+};
-+
-+static const struct snd_soc_dapm_widget cnl_rt274_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_MIC("Mic Jack", NULL),
-+	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
-+	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
-+			    cnl_rt274_clock_control,
-+			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
-+};
-+
-+static int cnl_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
-+			  struct snd_pcm_hw_params *params)
-+{
-+	struct snd_interval *channels =
-+		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+
-+	if (params_channels(params) == 2)
-+		channels->min = channels->max = 2;
-+	else
-+		channels->min = channels->max = 4;
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_route cnl_map[] = {
-+	{"Headphone Jack", NULL, "HPO Pin"},
-+	{"MIC", NULL, "Mic Jack"},
-+	{"DMic", NULL, "SoC DMIC"},
-+	{"DMIC01 Rx", NULL, "Capture"},
-+	{"dmic01_hifi", NULL, "DMIC01 Rx"},
-+
-+	{"AIF1 Playback", NULL, "ssp0 Tx"},
-+	{"ssp0 Tx", NULL, "codec1_out"},
-+	{"ssp0 Tx", NULL, "codec0_out"},
-+
-+	{"ssp0 Rx", NULL, "AIF1 Capture"},
-+	{"codec0_in", NULL, "ssp0 Rx"},
-+
-+	{"Headphone Jack", NULL, "Platform Clock"},
-+	{"Mic Jack", NULL, "Platform Clock"},
-+};
-+
-+static	struct snd_soc_jack_pin cnl_headset_pins[] = {
-+	{
-+		.pin = "Mic Jack",
-+		.mask = SND_JACK_MICROPHONE,
-+	},
-+	{
-+		.pin = "Headphone Jack",
-+		.mask = SND_JACK_HEADPHONE,
-+	},
-+};
-+
-+static struct snd_soc_jack cnl_headset;
-+
-+static int cnl_rt274_init(struct snd_soc_pcm_runtime *runtime)
-+{
-+	struct snd_soc_card *card = runtime->card;
-+	struct snd_soc_dai *codec_dai = runtime->codec_dai;
-+	struct snd_soc_component *component = codec_dai->component;
-+	int ret;
-+
-+	ret = snd_soc_card_jack_new(runtime->card, "Headset",
-+		SND_JACK_HEADSET, &cnl_headset,
-+		cnl_headset_pins, ARRAY_SIZE(cnl_headset_pins));
-+	if (ret)
-+		return ret;
-+
-+	ret = snd_soc_component_set_jack(component, &cnl_headset, NULL);
-+	if (ret)
-+		return ret;
-+
-+	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
-+	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xf, 0xf, 4, 24);
-+	if (ret < 0) {
-+		dev_err(runtime->dev, "can't set codec pcm format %d\n", ret);
-+		return ret;
-+	}
-+
-+	card->dapm.idle_bias_off = true;
-+
-+	return 0;
-+}
-+
-+static int cnl_be_fixup(struct snd_soc_pcm_runtime *rtd,
-+			    struct snd_pcm_hw_params *params)
-+{
-+	struct snd_interval *rate =
-+		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels =
-+		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+
-+	rate->min = rate->max = CNL_BE_FIXUP_RATE;
-+	channels->min = channels->max = 2;
-+	snd_mask_none(hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT));
-+	snd_mask_set(hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT),
-+		     SNDRV_PCM_FORMAT_S24_LE);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_link cnl_rt274_dailink[] = {
-+	{
-+		.name = "SSP0-Codec",
-+		.cpu_dai_name = "SSP0 Pin",
-+		.codec_name = "i2c-INT34C2:00",
-+		.codec_dai_name = "rt274-aif1",
-+		.platform_name = "0000:00:1f.3",
-+		.be_hw_params_fixup = cnl_be_fixup,
-+		.no_pcm = 1,
-+		.ignore_pmdown_time = 1,
-+		.dai_fmt = SND_SOC_DAIFMT_DSP_A |
-+			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+		.init = cnl_rt274_init,
-+	},
-+	{
-+		.name = "dmic01",
-+		.cpu_dai_name = "DMIC01 Pin",
-+		.codec_name = "dmic-codec",
-+		.codec_dai_name = "dmic-hifi",
-+		.platform_name = "0000:00:1f.3",
-+		.be_hw_params_fixup = cnl_dmic_fixup,
-+		.no_pcm = 1,
-+		.ignore_suspend = 1,
-+		.dpcm_capture = 1,
-+	},
-+};
-+
-+static int
-+cnl_add_dai_link(struct snd_soc_card *card, struct snd_soc_dai_link *link)
-+{
-+	link->platform_name = "0000:00:1f.3";
-+	link->nonatomic = 1;
-+
-+	return 0;
-+}
-+
-+/* SoC card */
-+static struct snd_soc_card snd_soc_card_cnl = {
-+	.name = KBUILD_MODNAME,
-+	.dai_link = cnl_rt274_dailink,
-+	.num_links = ARRAY_SIZE(cnl_rt274_dailink),
-+	.dapm_widgets = cnl_rt274_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(cnl_rt274_widgets),
-+	.dapm_routes = cnl_map,
-+	.num_dapm_routes = ARRAY_SIZE(cnl_map),
-+	.controls = cnl_controls,
-+	.num_controls = ARRAY_SIZE(cnl_controls),
-+	.add_dai_link = cnl_add_dai_link,
-+	.fully_routed = true,
-+};
-+
-+static int cnl_rt274_probe(struct platform_device *pdev)
-+{
-+	snd_soc_card_cnl.dev = &pdev->dev;
-+
-+	return devm_snd_soc_register_card(&pdev->dev, &snd_soc_card_cnl);
-+}
-+
-+static struct platform_driver cnl_rt274_driver = {
-+	.driver = {
-+		.name = "cnl_rt274",
-+		.pm = &snd_soc_pm_ops,
-+	},
-+	.probe = cnl_rt274_probe,
-+};
-+
-+module_platform_driver(cnl_rt274_driver);
-+
-+MODULE_AUTHOR("Guneshwor Singh <guneshwor.o.singh@intel.com>");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:cnl_rt274");
--- 
-2.16.2
+We can't. Once shrinking available interval of a parameter, we cannot
+expand it again without initializing the parameter on memory object for
+'struct snd_pcm_hw_params_t', in which actual layout is never disclosed
+to user applications.
+
+If you can initialize whole the parameters, snd_pcm_hw_params_any() is
+available for your purpose, then set min/max rate again. But just for
+one of the parameters, in my opinion, we need to open an internal API; 
+snd_pcm_hw_param_any()[1].
+
+[1] 
+http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/pcm/pcm_params.c;h=608a2324cb268f84d91f67c53d979521678f4edb;hb=HEAD#l107
+
+
+Regards
+
+Takashi Sakamoto
