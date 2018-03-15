@@ -1,17 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: Intel: Boards: Add CNL RT274 I2S
- machine driver
-Date: Thu, 15 Mar 2018 07:23:05 -0500
-Message-ID: <26dcf212-6a6f-d9f6-bdbf-0eea559451bb@linux.intel.com>
-References: <20180315115345.3087-1-guneshwor.o.singh@intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: alsalib and snd_pcm_hw_params_set_rate_minmax
+Date: Thu, 15 Mar 2018 21:45:46 +0900
+Message-ID: <d51e5537-75f9-df37-beee-08dce0129d23@sakamocchi.jp>
+References: <8f76589f-d64f-e6c2-db4a-57319e68ec3d@gmail.com>
+ <084894a2-8107-05ab-6f6c-7418c505f3c4@sakamocchi.jp>
+ <9cf1073b-97ec-a3f5-a08a-5c54f5d92c4a@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id E8016267282
- for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2018 13:23:08 +0100 (CET)
-In-Reply-To: <20180315115345.3087-1-guneshwor.o.singh@intel.com>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 18A01267282
+ for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2018 13:45:49 +0100 (CET)
+In-Reply-To: <9cf1073b-97ec-a3f5-a08a-5c54f5d92c4a@gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,105 +23,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Guneshwor Singh <guneshwor.o.singh@intel.com>, ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>
+To: Oleksandr Andrushchenko <andr2000@gmail.com>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Mar 15 2018 21:20, Oleksandr Andrushchenko wrote:
+> On 03/15/2018 01:59 PM, Takashi Sakamoto wrote:
+>> Hi,
+>>
+>> On Mar 15 2018 19:45, Oleksandr Andrushchenko wrote:
+>>> Is it possible for user-space to reduce configuration space
+>>> with snd_pcm_hw_params_set_rate_minmax and then change it
+>>> with another snd_pcm_hw_params_set_rate_minmax with values
+>>> out of the reduced config?
+>>>
+>>> For example, the initial min/max is 44100/48000 and I set 44100
+>>> first, e.g.
+>>>
+>>> snd_pcm_hw_params_set_rate_minmax(handle, hw_params, 44100, 0, 44100, 0)
+>>>
+>>> and then want
+>>>
+>>> snd_pcm_hw_params_set_rate_minmax(handle, hw_params, 48000, 0, 48000, 0)
+>>>
+>>> Obviously, the last call fails as we have already a reduced
+>>> space of [44100; 44100].
+>>>
+>>> Is there a way I can still set the range to [48000; 48000]?
+>>>
+>>> Thank you,
+>>> Oleksandr
+>>>
+>>> P.S. This is in context of work done for [1]
+>>>
+>>> [1] https://www.spinics.net/lists/alsa-devel/msg75382.html
+>>
+>> We can't. Once shrinking available interval of a parameter, we cannot
+>> expand it again without initializing the parameter on memory object for
+>> 'struct snd_pcm_hw_params_t', in which actual layout is never disclosed
+>> to user applications.
+> So, this effectively means that this is a one way road, if you need to 
+> change
+> some parameter you'll need to start all over, so the whole configuration
+> space remains consistent :(
 
-> +
-> +static int cnl_rt274_clock_control(struct snd_soc_dapm_widget *w,
-> +				   struct snd_kcontrol *k, int event)
-> +{
-> +	struct snd_soc_dapm_context *dapm = w->dapm;
-> +	struct snd_soc_card *card = dapm->card;
-> +	struct snd_soc_dai *codec_dai =
-> +		snd_soc_card_get_codec_dai(card, RT274_CODEC_DAI);
-> +	int ret, ratio = 100;
-> +
-> +	if (!codec_dai)
-> +		return -EINVAL;
-> +
-> +	/* Codec needs clock for Jack detection and button press */
-> +	ret = snd_soc_dai_set_sysclk(codec_dai, RT274_SCLK_S_PLL2,
-> +				     CNL_FREQ_OUT, SND_SOC_CLOCK_IN);
-> +	if (ret < 0) {
-> +		dev_err(codec_dai->dev, "set codec sysclk failed: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	if (SND_SOC_DAPM_EVENT_ON(event)) {
-> +		ret = snd_soc_dai_set_bclk_ratio(codec_dai, ratio);
-> +		if (ret) {
-> +			dev_err(codec_dai->dev,
-> +				"set bclk ratio failed: %d\n", ret);
-> +			return ret;
-> +		}
-> +
-> +		ret = snd_soc_dai_set_pll(codec_dai, 0, RT274_PLL2_S_BCLK,
-> +					  CNL_BE_FIXUP_RATE * ratio,
-> +					  CNL_FREQ_OUT);
-> +		if (ret) {
-> +			dev_err(codec_dai->dev,
-> +				"enable PLL2 failed: %d\n", ret);
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-it's not clear to me why you need a clock control? You are not changing 
-anything that really depends on DAPM events, to e.g. take the MCLK down 
-and use a local clock, so could this be moved to hw_params?
-> +static const struct snd_soc_dapm_route cnl_map[] = {
-> +	{"Headphone Jack", NULL, "HPO Pin"},
-> +	{"MIC", NULL, "Mic Jack"},
-> +	{"DMic", NULL, "SoC DMIC"},
-> +	{"DMIC01 Rx", NULL, "Capture"},
-> +	{"dmic01_hifi", NULL, "DMIC01 Rx"},
-> +
-> +	{"AIF1 Playback", NULL, "ssp0 Tx"},
-> +	{"ssp0 Tx", NULL, "codec1_out"},
-> +	{"ssp0 Tx", NULL, "codec0_out"},
-I get the routes to connect firmware widgets to codec ones, but why do 
-we need SSP0 TX-> codec1_out? shouldn't this be part of the topology?
-> +
-> +	{"ssp0 Rx", NULL, "AIF1 Capture"},
-> +	{"codec0_in", NULL, "ssp0 Rx"},
-> +
-> +	{"Headphone Jack", NULL, "Platform Clock"},
-> +	{"Mic Jack", NULL, "Platform Clock"},
-> +};
-> +
-> +static	struct snd_soc_jack_pin cnl_headset_pins[] = {
-> +	{
-> +		.pin = "Mic Jack",
-> +		.mask = SND_JACK_MICROPHONE,
-> +	},
-> +	{
-> +		.pin = "Headphone Jack",
-> +		.mask = SND_JACK_HEADPHONE,
-> +	},
-> +};
-> +
-> +static struct snd_soc_jack cnl_headset;
-> +
-> +static int cnl_rt274_init(struct snd_soc_pcm_runtime *runtime)
-> +{
-> +	struct snd_soc_card *card = runtime->card;
-> +	struct snd_soc_dai *codec_dai = runtime->codec_dai;
-> +	struct snd_soc_component *component = codec_dai->component;
-> +	int ret;
-> +
-> +	ret = snd_soc_card_jack_new(runtime->card, "Headset",
-> +		SND_JACK_HEADSET, &cnl_headset,
-> +		cnl_headset_pins, ARRAY_SIZE(cnl_headset_pins));
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = snd_soc_component_set_jack(component, &cnl_headset, NULL);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
-> +	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xf, 0xf, 4, 24);
-what are the 4 slots used for?
+You miss whole a design of ALSA PCM interface and protocol.
+
+The protocol consists of interactions between applications, ALSA PCM
+core and drivers:
+1.Userspace applications are expected to allocate 'struct
+   snd_pcm_hw_params' in its VMA, then fill it with maximum range and
+   set of parameters.
+2.The applications are expected to execute ioctl(2) with
+    SNDRV_PCM_IOCTL_HW_REFINE, to inquire available set of parameters.
+3.In kernel land, ALSA PCM core handles the ioctl request, then shrink
+   range and set of parameters on the applications' VMA according to
+   runtime information registered by used drivers.
+4.In this time, in userspace, memory object for the
+   'struct snd_pcm_hw_params' represents available range and set
+   parameters. The applications are expected to decide actual value of
+   the parameters. If no interests, leave them as is.
+5.The applications are expected to execute ioctl(2) with
+   SNDRV_PCM_IOCTL_HW_PARAMS finally.
+6.In kernel land, ALSA PCM core handles the request, then choose final
+   range and set of parameters.
+
+In this protocol, one way is better because expanding range and set of
+parameters brings ambiguity of available range and set.
+
+>> If you can initialize whole the parameters, snd_pcm_hw_params_any() is
+>> available for your purpose, then set min/max rate again. 
+> This is what I do now but...
+>> But just for
+>> one of the parameters, in my opinion, we need to open an internal API; 
+>> snd_pcm_hw_param_any()[1].
+> IMO, this will lead to the false assumption that configuration is possible.
+> For example, I set 4 channels and 44100, but then, after 
+> snd_pcm_hw_params_any,
+> set 48000 and might assume that the configuration is still possible. But 
+> this may not
+> be true: it is true for the configuration returned by snd_pcm_hw_param_any
+> as we don't know about 4 channels yet. But might not be allowed if we 
+> want 4 channels
+> and 48000 at the same time.
+
+Exactly. In short, it's not better idea to expand range and set of
+parameters during the above steps.
+
+For your information, in runtime of PCM substream, several parameters
+can have dependency. Actually, to handle the dependency,
+SNDRV_PCM_IOCTL_HW_REFINE should be called several times to inquire
+available range and set of parameters to drivers which satisfies
+hardware specification.
+
+
+Regards
+
+Takashi Sakamoto
