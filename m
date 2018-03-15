@@ -1,17 +1,19 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 31B15267338
- for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2018 16:38:36 +0100 (CET)
-Date: Wed, 14 Mar 2018 21:07:14 +0530
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 71A50267252
+ for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2018 16:33:52 +0100 (CET)
+Date: Thu, 15 Mar 2018 21:02:30 +0530
 From: Anshuman Gupta <anshuman.gupta@intel.com>
-Message-ID: <20180314153714.GA11459@anshuman.gupta@intel.com>
+Message-ID: <20180315153230.GA16531@anshuman.gupta@intel.com>
 References: <1520853467-31653-1-git-send-email-anshuman.gupta@intel.com>
  <CAJZ5v0hyk=jto8Wt0er==YmKEsgvfvZhO2wDbGOhxZaWWCNgBg@mail.gmail.com>
  <5aa8fbe9.4251620a.c3daa.3711SMTPIN_ADDED_BROKEN@mx.google.com>
  <CAJZ5v0jrKPNFhgpoL97Ac-k9jAmMa-vzgc-4PD+uuynSMqE2Fw@mail.gmail.com>
+ <20180314153714.GA11459@anshuman.gupta@intel.com>
+ <20180315104237.GB13659@subhransu-desktop>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAJZ5v0jrKPNFhgpoL97Ac-k9jAmMa-vzgc-4PD+uuynSMqE2Fw@mail.gmail.com>
+In-Reply-To: <20180315104237.GB13659@subhransu-desktop>
 Subject: Re: [alsa-devel] [PATCH] [sound] hdac-codec runtime suspended at
 	PM:Suspend.
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,105 +27,68 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Rafael J. Wysocki" <rafael@kernel.org>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux PM <linux-pm@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-ID: <alsa-devel@alsa-project.org>
 
-On Wed, Mar 14, 2018 at 11:53:58AM +0100, Rafael J. Wysocki wrote:
-> On Wed, Mar 14, 2018 at 11:38 AM, Anshuman Gupta
-> <anshuman.gupta@intel.com> wrote:
-> > On Mon, Mar 12, 2018 at 12:26:53PM +0100, Rafael J. Wysocki wrote:
-> >> On Mon, Mar 12, 2018 at 12:17 PM, Anshuman Gupta
-> >> <anshuman.gupta@intel.com> wrote:
-> >> > Keep hdac-codec to be in runtime suspended while entering to suspend.
-> >> > If hdac-codec is already in runtime suspend state skip its power down
-> >> > sequence in prepare, power up sequence in complete phase.
-> >> >
-> >> > Avoid resuming hdac controller PCI device 00:1f.3 from runtime suspend
-> >> > state in case  hdac-codec already in runtime-suspend state, this is
-> >> > unnecessary and block the direct complete even for hdac controller
-> >> > PCI device 00:1f.3.
-> >> >
-> >> > This enabled direct complete path for hdac-codec and PCI device 00:1f.3.
-> >> >
-> >> > Signed-off-by: Anshuman Gupta <anshuman.gupta@intel.com>
-> >> > ---
-> >> >  sound/soc/codecs/hdac_hdmi.c | 4 ++++
-> >> >  1 file changed, 4 insertions(+)
-> >> >
-> >> > diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-> >> > index f3b4f4d..810a8a6 100644
-> >> > --- a/sound/soc/codecs/hdac_hdmi.c
-> >> > +++ b/sound/soc/codecs/hdac_hdmi.c
-> >> > @@ -1852,6 +1852,8 @@ static int hdmi_codec_prepare(struct device *dev)
-> >> >         struct hdac_ext_device *edev = to_hda_ext_device(dev);
-> >> >         struct hdac_device *hdac = &edev->hdac;
-> >> >
-> >> > +       if (pm_runtime_status_suspended(dev))
-> >> > +               return 1;
-> >>
-> >> This is racy in principle, because the runtime PM status can still
-> >> change after you've checked here.
-> >   Will using pm_runtime_disable/pm_runtime_enable for safe check of runtime
-> >   status avoids this race?
+On Thu, Mar 15, 2018 at 04:12:44PM +0530, Subhransu S. Prusty wrote:
+> On Wed, Mar 14, 2018 at 09:07:14PM +0530, Anshuman Gupta wrote:
+> > On Wed, Mar 14, 2018 at 11:53:58AM +0100, Rafael J. Wysocki wrote:
+> > > On Wed, Mar 14, 2018 at 11:38 AM, Anshuman Gupta
+> > > <anshuman.gupta@intel.com> wrote:
+> > > > On Mon, Mar 12, 2018 at 12:26:53PM +0100, Rafael J. Wysocki wrote:
+> > > >> On Mon, Mar 12, 2018 at 12:17 PM, Anshuman Gupta
+> > > >> <anshuman.gupta@intel.com> wrote:
+> > > >> >
+> > > >> > +       if (pm_runtime_status_suspended(dev))
+> > > >> > +               return;
+> > > >>
+> > > >> That, again, is somewhat fragile from the concurrency perspective.
+> > > >>
+> > > 
+> > > And here you want to avoid the below if the device is still suspended.
+> >   Yes, if we do not avoid the code below, complete callback takes about 
+> >   3 seconds due to snd_hdac_codec_read timed out because hdac controller 
+> >   would be in runtime suspend state.	
+> > > 
+> > > Why is the below code located in the ->complete callback anyway?
+> > > Shouldn't it be there in the ->resume one?
+> > > 
+> >   Yes even i am also having same doubt, why these power down and power up
+> >   sequences are part of prepare and complete callback.
+> >   Adding driver author "Subhransu S. Prusty" to provide more inputs on this.
 > 
-> It might help, but is this a leaf device or does it have children?
-  In kernel traces this hdac hdmi codec device appear with name 
-  "HDA Codec ehdaudio0D2", and it seems to be a leaf device do not 
-  have any child. So it would be ok to use pm_runtime_disable to
-  avoid any race ?
+> This driver needs a late resume as it receives a jack notification from the
+> i915 driver and the skl controller driver resume may not have happened and
+> in turn hda controller may not ready. This ensures a synchronization for
+> jack event during resume from S3.
+  Let me give you insight of the issue, this driver blocks the direct complete
+  of hda controller PCI 00:1f.3, sometimes it takes 280ms to resume hda controller
+  from S3 and s2idle. So it does not make sense to suspend/resume hda controller 
+  when it is already in runtime suspend.  
 > 
-> >> But even if it isn't racy in practice, the following
-> >> pm_runtime_get_sync() becomes redundant after it, doesn't it?
-> >   I have no idea but if there can be a case that PCI 00:1f.3 (hdac controller)
-> >   is runtime suspended and hdac hdmi codec is active, in that case it may be
-> >   required to use pm_runtime_get_sync() for hdac controller as it is parent of
-> >   hdac hdmi codec.
-> >>
-> >> >         pm_runtime_get_sync(&edev->hdac.dev);
-> >> >
+> I think this patch defeats the purpose.
+  Here in this case PCI driver may kick the direct complete for hda controller
+  https://elixir.bootlin.com/linux/latest/source/drivers/pci/pci-driver.c#L691
+  But hdac hdmi codec driver is blocking it.
+  So i think it will be ok to keep this codec and hda controller in runtime 
+  suspend while entering S3 or s2idle, both can resume by runtime PM as well,
+  will it brake any audio functionality? 
 > 
-> So it sounds like you need the "get" part, but you don't need the
-> "sync" one, because you've just checked that the device is not
-> suspended.
+> Regards,
+> Subhransu
 > 
-> I guess the idea is to return 1 for the direct-complete mechanism to
-> kick in if the device is already suspended, but otherwise bump up its
-> reference counter to prevent it from suspending going forward, right?
+> > > >> >         /* Power up afg */
+> > > >> >         snd_hdac_codec_read(hdac, hdac->afg, 0, AC_VERB_SET_POWER_STATE,
+> > > >> >                                                         AC_PWRST_D0);
+> > > >> > --
+> > > >> > 2.7.4
+> > 
+> > -- 
+> > Thanks,
+> > Anshuman
 > 
-  Idea of this patch to remove the PCI 00:1f:3 (hdac controller) direct 
-  complete blocker, as hdac hdmi codec is resuming it from runtime suspend
-  in its prepare callback to set the hdac hdmi codec in low power state.
-  (https://elixir.bootlin.com/linux/v4.16-rc5/source/sound/soc/codecs/hdac_hdmi.c#L1860)
-  So if hdac hdmi codec in active state it require to resume hdac controller
-  from runtime suspend.      
-> >> >         /*
-> >> > @@ -1873,6 +1875,8 @@ static void hdmi_codec_complete(struct device *dev)
-> >> >         struct hdac_hdmi_priv *hdmi = edev->private_data;
-> >> >         struct hdac_device *hdac = &edev->hdac;
-> >> >
-> >> > +       if (pm_runtime_status_suspended(dev))
-> >> > +               return;
-> >>
-> >> That, again, is somewhat fragile from the concurrency perspective.
-> >>
-> 
-> And here you want to avoid the below if the device is still suspended.
-  Yes, if we do not avoid the code below, complete callback takes about 
-  3 seconds due to snd_hdac_codec_read timed out because hdac controller 
-  would be in runtime suspend state.	
-> 
-> Why is the below code located in the ->complete callback anyway?
-> Shouldn't it be there in the ->resume one?
-> 
-  Yes even i am also having same doubt, why these power down and power up
-  sequences are part of prepare and complete callback.
-  Adding driver author "Subhransu S. Prusty" to provide more inputs on this.
-> >> >         /* Power up afg */
-> >> >         snd_hdac_codec_read(hdac, hdac->afg, 0, AC_VERB_SET_POWER_STATE,
-> >> >                                                         AC_PWRST_D0);
-> >> > --
-> >> > 2.7.4
+> -- 
 
 -- 
 Thanks,
