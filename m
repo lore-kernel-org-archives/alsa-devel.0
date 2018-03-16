@@ -1,25 +1,17 @@
-From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: Re: alsalib and snd_pcm_hw_params_set_rate_minmax
-Date: Fri, 16 Mar 2018 12:17:19 +0200
-Message-ID: <43fb1d82-60e3-37af-961b-5d8819bf3cef@gmail.com>
-References: <8f76589f-d64f-e6c2-db4a-57319e68ec3d@gmail.com>
- <084894a2-8107-05ab-6f6c-7418c505f3c4@sakamocchi.jp>
- <9cf1073b-97ec-a3f5-a08a-5c54f5d92c4a@gmail.com>
- <s5ho9jp79s7.wl-tiwai@suse.de>
- <d17e2fdd-d316-8bd7-351c-9e0446adafc1@gmail.com>
- <s5hefkl6q1s.wl-tiwai@suse.de>
+From: <twischer@de.adit-jv.com>
+Subject: [PATCH - IOPLUG 1/1] pcm: ioplug: update prepare and
+	draining state correctly
+Date: Fri, 16 Mar 2018 11:20:46 +0100
+Message-ID: <1521195646-21615-1-git-send-email-twischer@de.adit-jv.com>
+References: <s5hk1uc5o43.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f48.google.com (mail-lf0-f48.google.com
- [209.85.215.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 00E97267380
- for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 11:17:21 +0100 (CET)
-Received: by mail-lf0-f48.google.com with SMTP id e5-v6so10514763lfb.7
- for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 03:17:21 -0700 (PDT)
-In-Reply-To: <s5hefkl6q1s.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [62.225.105.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 002EF267380
+ for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 11:20:58 +0100 (CET)
+In-Reply-To: <s5hk1uc5o43.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,116 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, "Oleksandr_Andrushchenko@epam.com" <Oleksandr_Andrushchenko@epam.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: tiwai@suse.de
+Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-+Konrad
+From: Timo Wischer <twischer@de.adit-jv.com>
 
-On 03/15/2018 10:29 PM, Takashi Iwai wrote:
-> On Thu, 15 Mar 2018 14:39:33 +0100,
-> Oleksandr Andrushchenko wrote:
->> On 03/15/2018 03:23 PM, Takashi Iwai wrote:
->>> On Thu, 15 Mar 2018 13:20:14 +0100,
->>> Oleksandr Andrushchenko wrote:
->>>> On 03/15/2018 01:59 PM, Takashi Sakamoto wrote:
->>>>> Hi,
->>>>>
->>>>> On Mar 15 2018 19:45, Oleksandr Andrushchenko wrote:
->>>>>> Is it possible for user-space to reduce configuration space
->>>>>> with snd_pcm_hw_params_set_rate_minmax and then change it
->>>>>> with another snd_pcm_hw_params_set_rate_minmax with values
->>>>>> out of the reduced config?
->>>>>>
->>>>>> For example, the initial min/max is 44100/48000 and I set 44100
->>>>>> first, e.g.
->>>>>>
->>>>>> snd_pcm_hw_params_set_rate_minmax(handle, hw_params, 44100, 0, 44100, 0)
->>>>>>
->>>>>> and then want
->>>>>>
->>>>>> snd_pcm_hw_params_set_rate_minmax(handle, hw_params, 48000, 0, 48000, 0)
->>>>>>
->>>>>> Obviously, the last call fails as we have already a reduced
->>>>>> space of [44100; 44100].
->>>>>>
->>>>>> Is there a way I can still set the range to [48000; 48000]?
->>>>>>
->>>>>> Thank you,
->>>>>> Oleksandr
->>>>>>
->>>>>> P.S. This is in context of work done for [1]
->>>>>>
->>>>>> [1] https://www.spinics.net/lists/alsa-devel/msg75382.html
->>>>> We can't. Once shrinking available interval of a parameter, we cannot
->>>>> expand it again without initializing the parameter on memory object for
->>>>> 'struct snd_pcm_hw_params_t', in which actual layout is never disclosed
->>>>> to user applications.
->>>> So, this effectively means that this is a one way road, if you need to
->>>> change
->>>> some parameter you'll need to start all over, so the whole configuration
->>>> space remains consistent :(
->>> Yes, that's the design.  The only way to expand is to reset the whole,
->>> space and reduce again to the given size.
->>>
->> Clear, thank you
->>>>> If you can initialize whole the parameters, snd_pcm_hw_params_any() is
->>>>> available for your purpose, then set min/max rate again.
->>>> This is what I do now but...
->>>>> But just for
->>>>> one of the parameters, in my opinion, we need to open an internal
->>>>> API; snd_pcm_hw_param_any()[1].
->>>> IMO, this will lead to the false assumption that configuration is possible.
->>>> For example, I set 4 channels and 44100, but then, after
->>>> snd_pcm_hw_params_any,
->>>> set 48000 and might assume that the configuration is still
->>>> possible. But this may not
->>>> be true: it is true for the configuration returned by snd_pcm_hw_param_any
->>>> as we don't know about 4 channels yet. But might not be allowed if we
->>>> want 4 channels
->>>> and 48000 at the same time.
->>> Right.  At the point where snd_pcm_hw_params_any() is called, the
->>> whole configuration gets reset.  That's the reason I thought we may
->>> need to pass all 5 parameters in the query protocol.
->> Yes, I now start thinking of the same, e.g. if we pass
->> all 5 parameters (mask for formats and intervals for rate, channels,
->> buffer and period), then on backend side I can do something like:
->>
->> 1. snd_pcm_hw_params_any
->> 2. snd_pcm_hw_params_set_format_mask
->> 3. snd_pcm_hw_params_set_rate_minmax
->> 4. snd_pcm_hw_params_set_channels_minmax
->> 5. snd_pcm_hw_params_set_buffer_size_minmax
->> 6. snd_pcm_hw_params_set_period_size_minmax
->>
->> So, when finished the above confirms that configuration is possible.
->> The only concern here is that so many calls on backend side
->> might introduce start-up latency on frontend side though
->>
->>> IOW, the query stuff won't be modal, it just tries to reduce the given
->>> configuration space to the acceptable ranges.
->> Do you think the above solution with 5 parameters and the
->> corresponding snd_pcm_hw_params_set_xxx calls will do?
-> I guess so, but let's model & test :)
-I did some testing:
-- frontend driver [1]
-- sndif protocol [2]
-- backend changes [3]
+PREPARED should only be set when it is done and it was successfully.
 
-All seem to work now when I pass all 5 parameters while querying.
-The only scary thing is that I had to change the size of
-requests/responses in the sndif protocol from 32 to 64 bytes :(
+DRAINING should be signalled when starting to drain. There is no need to
+check if draining was successfully because it will change to drop (SETUP)
+in any case.
 
-Takashi, could you please have a quick look and tell me if
-this is what you expect?
->
-> thanks,
->
-> Takashi
-Thank you,
-Oleksandr
+Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
 
-[1] 
-https://github.com/andr2000/linux/commits/tiwai_sound_for_next_pv_snd_upstream_v2
-[2] https://github.com/andr2000/xen/commits/pr_sndif_v3
-[3] https://github.com/andr2000/snd_be/commits/pr_hw_param
+diff --git a/ChangeLog b/ChangeLog
+index 22df356..3dff7fb 100644
+--- a/ChangeLog
++++ b/ChangeLog
+@@ -1,3 +1,4 @@
++* Set IO plug state to PREPARED after calling the IO plugin prepare callback
+ * update to libtool 1.3.3
+ 
+ 0.1.3 -> 0.2.0
+diff --git a/src/pcm/pcm_ioplug.c b/src/pcm/pcm_ioplug.c
+index af223a1..8c0ed48 100644
+--- a/src/pcm/pcm_ioplug.c
++++ b/src/pcm/pcm_ioplug.c
+@@ -146,13 +146,16 @@ static int snd_pcm_ioplug_prepare(snd_pcm_t *pcm)
+ 	ioplug_priv_t *io = pcm->private_data;
+ 	int err = 0;
+ 
+-	io->data->state = SND_PCM_STATE_PREPARED;
+ 	snd_pcm_ioplug_reset(pcm);
+ 	if (io->data->callback->prepare) {
+ 		snd_pcm_unlock(pcm); /* to avoid deadlock */
+ 		err = io->data->callback->prepare(io->data);
+ 		snd_pcm_lock(pcm);
+ 	}
++	if (err < 0)
++		return err;
++
++	io->data->state = SND_PCM_STATE_PREPARED;
+ 	return err;
+ }
+ 
+@@ -493,6 +496,8 @@ static int snd_pcm_ioplug_drain(snd_pcm_t *pcm)
+ 
+ 	if (io->data->state == SND_PCM_STATE_OPEN)
+ 		return -EBADFD;
++
++	io->data->state = SND_PCM_STATE_DRAINING;
+ 	if (io->data->callback->drain)
+ 		io->data->callback->drain(io->data);
+ 	snd_pcm_lock(pcm);
+-- 
+2.7.4
