@@ -1,26 +1,26 @@
 From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH 1/5] ASoC: samsung: odroid: Fix 32000
-	sample rate handling
-Date: Fri, 16 Mar 2018 08:29:35 +0100
-Message-ID: <CAJKOXPem69c9L1pYqpV-WsYrHRMSp4=q=6KJQ3O12=xuO6+cvQ@mail.gmail.com>
-References: <CGME20180314164131epcas2p426aa34f4503ff12fa041a817cdd3eed9@epcas2p4.samsung.com>
+Subject: Re: [PATCH 2/5] ASoC: samsung: odroid: Drop sample
+ rates that cannot be supported from hw_params()
+Date: Fri, 16 Mar 2018 08:30:06 +0100
+Message-ID: <CAJKOXPcvj2hOUPMzZz+rOFm0QiQJ+m9cE=ZvxfFRn0GzfVOQ_w@mail.gmail.com>
+References: <CGME20180314164137epcas2p336d64724b044d14aa920d611b6483593@epcas2p3.samsung.com>
  <20180314164115.22736-1-s.nawrocki@samsung.com>
+ <20180314164115.22736-2-s.nawrocki@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- by alsa0.perex.cz (Postfix) with ESMTP id 6872226738C
- for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 08:29:39 +0100 (CET)
-Received: from mail-wr0-f182.google.com (mail-wr0-f182.google.com
- [209.85.128.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 85A882673CB
+ for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 08:30:10 +0100 (CET)
+Received: from mail-wm0-f46.google.com (mail-wm0-f46.google.com [74.125.82.46])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C47812177B
- for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 07:29:37 +0000 (UTC)
-Received: by mail-wr0-f182.google.com with SMTP id l8so10664724wrg.5
- for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 00:29:37 -0700 (PDT)
-In-Reply-To: <20180314164115.22736-1-s.nawrocki@samsung.com>
+ by mail.kernel.org (Postfix) with ESMTPSA id A0F3521741
+ for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 07:30:08 +0000 (UTC)
+Received: by mail-wm0-f46.google.com with SMTP id 5so1228619wmh.0
+ for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 00:30:08 -0700 (PDT)
+In-Reply-To: <20180314164115.22736-2-s.nawrocki@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -36,29 +36,14 @@ List-Id: alsa-devel@alsa-project.org
 
 On Wed, Mar 14, 2018 at 5:41 PM, Sylwester Nawrocki
 <s.nawrocki@samsung.com> wrote:
-> In case of sample rates lower than 44100 currently there is too low MCLK
-> frequency set for the CODEC. Playback fails with following errors:
->
-> $ speaker-test -c2 -t sine -f 1500 -l2 -r 32000
->
-> Sine wave rate is 1500.0000Hz
-> Rate set to 32000Hz (requested 32000Hz)
-> Buffer size range from 128 to 131072
-> Period size range from 64 to 65536
-> Using max buffer size 131072
-> Periods = 4
-> Unable to set hw params for playback: Invalid argument
-> Setting of hwparams failed: Invalid argument
->
-> [  497.883700] max98090 1-0010: Invalid master clock frequency
->
-> To fix this the I2S root clock's frequency is increased, depending
-> on sampling rate.
+> The I2S controller can handle sample rates only up to 96000 and the CPU DAI
+> has already related constraint set so drop the impossible 176400, 192000
+> switch cases.
 >
 > Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 > ---
->  sound/soc/samsung/odroid.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
+>  sound/soc/samsung/odroid.c | 2 --
+>  1 file changed, 2 deletions(-)
 
 Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
