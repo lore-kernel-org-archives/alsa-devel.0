@@ -1,17 +1,18 @@
 From: <twischer@de.adit-jv.com>
-Subject: [PATCH - IOPLUG] Update prepare and draining state
-	correctly
-Date: Fri, 16 Mar 2018 11:02:53 +0100
-Message-ID: <1521194574-20196-1-git-send-email-twischer@de.adit-jv.com>
+Subject: [PATCH - IOPLUG 1/1] pcm: ioplug: update Prepare and
+	draining state correctly
+Date: Fri, 16 Mar 2018 11:02:54 +0100
+Message-ID: <1521194574-20196-2-git-send-email-twischer@de.adit-jv.com>
 References: <s5h605x72zh.wl-tiwai@suse.de>
+ <1521194574-20196-1-git-send-email-twischer@de.adit-jv.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [62.225.105.245])
- by alsa0.perex.cz (Postfix) with ESMTP id C9B32267380
- for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 11:03:03 +0100 (CET)
-In-Reply-To: <s5h605x72zh.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6EB322674D6
+ for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 11:03:09 +0100 (CET)
+In-Reply-To: <1521194574-20196-1-git-send-email-twischer@de.adit-jv.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,23 +23,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Timo Wischer <twischer@de.adit-jv.com>
 
-Hi Takashi,
+PREPARED should only be set when it is done and it was successfully.
 
-> Yes, these are very trivial changes.
+DRAINING should be signalled when starting to drain. There is no need to
+check if draining was successfully because it will change to drop (SETUP)
+in any case.
 
-See attached the required patch for the IO plug API.
+Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
 
-> Well, but your internal state copy is also not thread safe as of this
-> patch, after all.
-
-I will introduce additional variables for the synchronisation between the
-JACK thread and ALSA thread with the thread safety patches.
-
-
-Best regards
-
-Timo
+diff --git a/src/pcm/pcm_ioplug.c b/src/pcm/pcm_ioplug.c
+index af223a1..e60b688 100644
+--- a/src/pcm/pcm_ioplug.c
++++ b/src/pcm/pcm_ioplug.c
+@@ -146,13 +146,18 @@ static int snd_pcm_ioplug_prepare(snd_pcm_t *pcm)
+ 	ioplug_priv_t *io = pcm->private_data;
+ 	int err = 0;
+ 
+-	io->data->state = SND_PCM_STATE_PREPARED;
+ 	snd_pcm_ioplug_reset(pcm);
+ 	if (io->data->callback->prepare) {
+ 		snd_pcm_unlock(pcm); /* to avoid deadlock */
+ 		err = io->data->callback->prepare(io->data);
+ 		snd_pcm_lock(pcm);
+ 	}
++	if (err < 0)
++		return err;
++
++	gettimestamp(&io->trigger_tstamp, pcm->tstamp_type);
++	io->data->state = SND_PCM_STATE_PREPARED;
++
+ 	return err;
+ }
+ 
+@@ -493,6 +498,10 @@ static int snd_pcm_ioplug_drain(snd_pcm_t *pcm)
+ 
+ 	if (io->data->state == SND_PCM_STATE_OPEN)
+ 		return -EBADFD;
++
++	gettimestamp(&io->trigger_tstamp, pcm->tstamp_type);
++	io->data->state = SND_PCM_STATE_DRAINING;
++
+ 	if (io->data->callback->drain)
+ 		io->data->callback->drain(io->data);
+ 	snd_pcm_lock(pcm);
+-- 
+2.7.4
