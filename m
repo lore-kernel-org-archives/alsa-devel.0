@@ -1,19 +1,17 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH -next] ASoC: wm8400: Use
-	devm_snd_soc_register_component()
-Date: Fri, 16 Mar 2018 09:21:50 +0000
-Message-ID: <20180316092150.osexp6amtg3utvhm@localhost.localdomain>
-References: <1521185527-164406-1-git-send-email-weiyongjun1@huawei.com>
+From: <twischer@de.adit-jv.com>
+Subject: [PATCH - IOPLUG] Update prepare and draining state
+	correctly
+Date: Fri, 16 Mar 2018 11:02:53 +0100
+Message-ID: <1521194574-20196-1-git-send-email-twischer@de.adit-jv.com>
+References: <s5h605x72zh.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 76CBA267475
- for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 10:21:57 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1521185527-164406-1-git-send-email-weiyongjun1@huawei.com>
+Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [62.225.105.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id C9B32267380
+ for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 11:03:03 +0100 (CET)
+In-Reply-To: <s5h605x72zh.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,22 +21,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, patches@opensource.cirrus.com, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 16, 2018 at 07:32:07AM +0000, Wei Yongjun wrote:
-> Since the remove callback is removed, the snd_soc_unregister_component()
-> is missing when remove device. Using devm_snd_soc_register_component()
-> instead of snd_soc_register_component().
-> 
-> Fixes: 10dc44c6462d ("ASoC: wm8400: replace codec to component")
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> ---
 
-Thanks for spotting this.
+Hi Takashi,
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> Yes, these are very trivial changes.
 
-Thanks,
-Charles
+See attached the required patch for the IO plug API.
+
+> Well, but your internal state copy is also not thread safe as of this
+> patch, after all.
+
+I will introduce additional variables for the synchronisation between the
+JACK thread and ALSA thread with the thread safety patches.
+
+
+Best regards
+
+Timo
