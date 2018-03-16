@@ -1,26 +1,18 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH 4/5] ASoC: samsung: Document compatible
- strings for Odroid X/X2, Odroid XU3
-Date: Fri, 16 Mar 2018 08:37:28 +0100
-Message-ID: <CAJKOXPdxSULHestFBc2YmtVzEpu422VdqtKMmy9FoCOjGV3wgw@mail.gmail.com>
-References: <CGME20180314164301epcas1p105f42730914735774284892b71839572@epcas1p1.samsung.com>
- <20180314164242.22927-1-s.nawrocki@samsung.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH -next] ASoC: mediatek: mt2701: drop
+ unnessary snd_soc_unregister_component()
+Date: Fri, 16 Mar 2018 11:47:12 +0300
+Message-ID: <20180316084712.hh4ll7hfsncqqsos@mwanda>
+References: <1521185516-164333-1-git-send-email-weiyongjun1@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- by alsa0.perex.cz (Postfix) with ESMTP id 10B91267396
- for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 08:37:31 +0100 (CET)
-Received: from mail-wr0-f178.google.com (mail-wr0-f178.google.com
- [209.85.128.178])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 6B7B8217D2
- for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 07:37:30 +0000 (UTC)
-Received: by mail-wr0-f178.google.com with SMTP id z8so959098wrh.7
- for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 00:37:30 -0700 (PDT)
-In-Reply-To: <20180314164242.22927-1-s.nawrocki@samsung.com>
+Received: from aserp2130.oracle.com (aserp2130.oracle.com [141.146.126.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1751F267274
+ for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 09:52:35 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1521185516-164333-1-git-send-email-weiyongjun1@huawei.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,47 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, =?UTF-8?B?QmFydMWCb21pZWogxbtvxYJuaWVya2lld2ljeg==?= <b.zolnierkie@samsung.com>, sbkim73@samsung.com, lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>
+To: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: alsa-devel@alsa-project.org, Ryder Lee <ryder.lee@mediatek.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 14, 2018 at 5:42 PM, Sylwester Nawrocki
-<s.nawrocki@samsung.com> wrote:
-> There are no significant differences across Odroid X, Odroid-X2, Odroid-U3
-> and Odroid-XU3 with regards to the audio subsystem so add more entries
-> to the compatible strings list.
->
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
->  Documentation/devicetree/bindings/sound/samsung,odroid.txt | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/sound/samsung,odroid.txt b/Documentation/devicetree/bindings/sound/samsung,odroid.txt
-> index f35a2694eb04..a50a0c6a354b 100644
-> --- a/Documentation/devicetree/bindings/sound/samsung,odroid.txt
-> +++ b/Documentation/devicetree/bindings/sound/samsung,odroid.txt
-> @@ -1,8 +1,10 @@
-> -Samsung Exynos Odroid XU3/XU4 audio complex with MAX98090 codec
-> +Hardkernel Odroid X/X2/U3/XU3/XU4 audio complex with MAX98090 codec
->
->  Required properties:
->
-> - - compatible - "hardkernel,odroid-xu3-audio" - for Odroid XU3 board,
-> + - compatible - "hardkernel,odroid-u3-audio" - for Odroid U3 board,
-> +               "hardkernel,odroid-x-audio" - for Odroid X, Odroid X2 boards,
-> +               "hardkernel,odroid-xu3-audio" - for Odroid XU3 board,
->                 "hardkernel,odroid-xu4-audio" - for Odroid XU4 board
+On Fri, Mar 16, 2018 at 07:31:56AM +0000, Wei Yongjun wrote:
+> It's not necessary to unregister a component registered
+> with devm_snd_soc_register_component().
+> 
+> Fixes: f1b5bf07365d ("ASoC: mt2701/mt8173: replace platform to componen")
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 
-These are the same so I think they should not get separate
-compatibles. By definition [2] the compatible expresses the
-compatibility with family of devices. In this case - these belong to
-the same family.
 
-The same applies to patch 5/5 (implementation of this).
+This fixes a double free on unload, right?
 
-Best regards,
-Krzysztof
-
-[1] DeviceTree specification v0.2: "They allow a device to express its
-compatibility with a family of similar devices, potentially allowing a
-single device driver to match against several devices."
+regards,
+dan carpenter
