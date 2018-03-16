@@ -1,71 +1,100 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2 00/21] Allow compile-testing NO_DMA (drivers)
-Date: Fri, 16 Mar 2018 16:41:57 +0100
-Message-ID: <CAMuHMdUKULvoB6-6EhsYpdbWEEEfjtn27GbzpXj7+Mz+=qeOnw@mail.gmail.com>
-References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
- <20180316151410.GA6527@gondor.apana.org.au>
+From: "Wischer, Timo (ADITG/ESB)" <twischer@de.adit-jv.com>
+Subject: Re: [PATCH - JACK plugin 4/4] jack: Support
+ snd_pcm_drain()
+Date: Fri, 16 Mar 2018 15:52:31 +0000
+Message-ID: <B0FB33DC1499054591F62C0EF1E013D7684FDF04@HI2EXCH01.adit-jv.com>
+References: <s5hd10qyg05.wl-tiwai@suse.de>
+ <1519910048-19732-1-git-send-email-twischer@de.adit-jv.com>
+ <1519910048-19732-5-git-send-email-twischer@de.adit-jv.com>
+ <3f0f0873-9544-050d-ef69-35d4b23e8c6c@perex.cz>
+ <B0FB33DC1499054591F62C0EF1E013D7684FDEA1@HI2EXCH01.adit-jv.com>,
+ <07334145-d1f1-54b4-84d0-eacbea0a3987@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
-In-Reply-To: <20180316151410.GA6527@gondor.apana.org.au>
-List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
-List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
-List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
-List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
-List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
-Errors-To: driverdev-devel-bounces@linuxdriverproject.org
-Sender: "devel" <driverdev-devel-bounces@linuxdriverproject.org>
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, Wolfram Sang <wsa@the-dreams.de>, linux-iio@vger.kernel.org, linux-fpga@vger.kernel.org, linux-remoteproc@vger.kernel.org, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Bjorn Andersson <bjorn.andersson@linaro.org>, Eric Anholt <eric@anholt.net>, netdev <netdev@vger.kernel.org>, MTD Maling List <linux-mtd@lists.infradead.org>, Linux I2C <linux-i2c@vger.kernel.org>, linux1394-devel@lists.sourceforge.net, Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>, Stefan Wahren <stefan.wahren@i2se.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>, scsi <linux-scsi@vger.kernel.org>, Richard Weinberger <richard@nod.at>, Joerg Roedel <joro@8bytes.org>, Jassi Brar <jassisinghbrar@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, linux-serial@vger.k
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [62.225.105.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id C467E2670A1
+ for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 16:52:44 +0100 (CET)
+In-Reply-To: <07334145-d1f1-54b4-84d0-eacbea0a3987@perex.cz>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Herbert,
+Hi Jaroslav,
 
-On Fri, Mar 16, 2018 at 4:14 PM, Herbert Xu <herbert@gondor.apana.org.au> wrote:
-> On Fri, Mar 16, 2018 at 02:51:33PM +0100, Geert Uytterhoeven wrote:
->> This patch series:
->>   - Removes dependencies on HAS_DMA for symbols that already have
->>     platform dependencies implying HAS_DMA.
->>
->> To avoid allmodconfig/allyesconfig regressions on NO_DMA=y platforms,
->> this (drivers) series should be applied after the previous (core)
->> series (but not many people may notice/care ;-)
->>
->> Changes compared to v1:
->>   - Add Reviewed-by, Acked-by,
->>   - Drop dependency of SND_SOC_LPASS_IPQ806X on HAS_DMA,
->>   - Drop dependency of VIDEOBUF{,2}_DMA_{CONTIG,SG} on HAS_DMA,
->>   - Drop new dependencies of VIDEO_IPU3_CIO2, DVB_C8SECTPFE, and
->>     MTD_NAND_MARVELL on HAS_DMA,
->>   - Split in per-subsystem patches,
->>   - Split-off the core part in a separate series.
->>
->> This series is against v4.16-rc5. It can also be found at
->> https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git/log/?h=no-dma-compile-testing-v2
->>
->> It has been compile-tested with allmodconfig and allyesconfig for
->> m68k/sun3, and has received attention from the kbuild test robot.
->
-> Do these patches have any dependencies? Can they be applied directly
-> in a subsystem tree?
+> But it changes the PCM API behaviour, so some apps might have trouble
+> with it, because it might cause the unexpected task blocking. The
+> correct behaviour is return with -EAGAIN
 
-| To avoid allmodconfig/allyesconfig regressions on NO_DMA=y platforms,
-| this (drivers) series should be applied after the previous (core)
-| series (but not many people may notice/care ;-)
+I have checked all IO plugins (pulse, oss, a52, jack) only a52 could return=
+ -EAGAIN.
+oss and pulse do always block and it seems that they are not updating the f=
+ile descriptor in case of draining.
+Therefore snd_pcm_wait() would block infinitely.
 
-Apart from introducing build failures in allmodconfig/allyesconfig builds on
-(uncommon) NO_DMA=y platforms, they can be applied directly and individually.
+I think an application developer would not expect that he has to call snd_p=
+cm_drop() after snd_pcm_drain().
+Therefore snd_pcm_drop has to be called internally.
+(On a real hardware it will be handled in the kernel)
 
-Gr{oetje,eeting}s,
+Therefore I think snd_pcm_drop() has to be called from snd_pcm_wait() befor=
+e returning.
+But snd_pcm_wait callback is not available in the IO plug API.
+Therefore I think we have to call snd_pcm_drop() from snd_pcm_ioplug_poll_r=
+events().
+But this looks a little bit ugly for me.
+Do you have another idea?
 
-                        Geert
+One approach could be the following
+snd_pcm_ioplug_poll_revents()
+{
+	...
+	if (draining)
+		snd_pcm_drop()
+}
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+snd_pcm_ioplug_drain()
+{
+	int err =3D 0
+	if (io->data->callback->drain)
+		err =3D io->data->callback->drain(io->data);
+	if (err !=3D -EAGAIN) {
+		snd_pcm_lock(pcm);
+		err =3D snd_pcm_ioplug_drop(pcm);
+		snd_pcm_unlock(pcm);
+	}
+	return err;
+}
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+But I am not aware of if this would brake any of the existing IO plugins.
+I would prefer to avoid these changes.
+
+Best regards
+
+Timo Wischer
+
+Advanced Driver Information Technology GmbH
+Engineering Software Base (ADITG/ESB)
+Robert-Bosch-Str. 200
+31139 Hildesheim
+Germany
+
+Tel. +49 5121 49 6938
+Fax +49 5121 49 6999
+twischer@de.adit-jv.com
+
+ADIT is a joint venture company of Robert Bosch GmbH/Robert Bosch Car Multi=
+media GmbH and DENSO Corporation
+Sitz: Hildesheim, Registergericht: Amtsgericht Hildesheim HRB 3438
+Gesch=E4ftsf=FChrung: Wilhelm Grabow, Ken Yaguchi
