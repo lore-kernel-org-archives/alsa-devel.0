@@ -1,26 +1,21 @@
-From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: Re: alsalib and snd_pcm_hw_params_set_rate_minmax
-Date: Fri, 16 Mar 2018 17:10:30 +0200
-Message-ID: <50ae5d27-127e-17ad-e15a-2b4116d0d474@gmail.com>
-References: <8f76589f-d64f-e6c2-db4a-57319e68ec3d@gmail.com>
- <084894a2-8107-05ab-6f6c-7418c505f3c4@sakamocchi.jp>
- <9cf1073b-97ec-a3f5-a08a-5c54f5d92c4a@gmail.com>
- <s5ho9jp79s7.wl-tiwai@suse.de>
- <d17e2fdd-d316-8bd7-351c-9e0446adafc1@gmail.com>
- <s5hefkl6q1s.wl-tiwai@suse.de>
- <43fb1d82-60e3-37af-961b-5d8819bf3cef@gmail.com>
- <s5hefkk3vt0.wl-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH - JACK plugin 4/4] jack: Support
+ snd_pcm_drain()
+Date: Fri, 16 Mar 2018 16:11:15 +0100
+Message-ID: <07334145-d1f1-54b4-84d0-eacbea0a3987@perex.cz>
+References: <s5hd10qyg05.wl-tiwai@suse.de>
+ <1519910048-19732-1-git-send-email-twischer@de.adit-jv.com>
+ <1519910048-19732-5-git-send-email-twischer@de.adit-jv.com>
+ <3f0f0873-9544-050d-ef69-35d4b23e8c6c@perex.cz>
+ <B0FB33DC1499054591F62C0EF1E013D7684FDEA1@HI2EXCH01.adit-jv.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f51.google.com (mail-lf0-f51.google.com
- [209.85.215.51])
- by alsa0.perex.cz (Postfix) with ESMTP id A57302670A1
- for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 16:10:33 +0100 (CET)
-Received: by mail-lf0-f51.google.com with SMTP id z143-v6so9619372lff.3
- for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 08:10:33 -0700 (PDT)
-In-Reply-To: <s5hefkk3vt0.wl-tiwai@suse.de>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id BCF0E2670A1
+ for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 16:11:19 +0100 (CET)
+In-Reply-To: <B0FB33DC1499054591F62C0EF1E013D7684FDEA1@HI2EXCH01.adit-jv.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,124 +26,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, "Oleksandr_Andrushchenko@epam.com" <Oleksandr_Andrushchenko@epam.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: "Wischer, Timo (ADITG/ESB)" <twischer@de.adit-jv.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/16/2018 05:05 PM, Takashi Iwai wrote:
-> On Fri, 16 Mar 2018 11:17:19 +0100,
-> Oleksandr Andrushchenko wrote:
->> +Konrad
->>
->> On 03/15/2018 10:29 PM, Takashi Iwai wrote:
->>> On Thu, 15 Mar 2018 14:39:33 +0100,
->>> Oleksandr Andrushchenko wrote:
->>>> On 03/15/2018 03:23 PM, Takashi Iwai wrote:
->>>>> On Thu, 15 Mar 2018 13:20:14 +0100,
->>>>> Oleksandr Andrushchenko wrote:
->>>>>> On 03/15/2018 01:59 PM, Takashi Sakamoto wrote:
->>>>>>> Hi,
->>>>>>>
->>>>>>> On Mar 15 2018 19:45, Oleksandr Andrushchenko wrote:
->>>>>>>> Is it possible for user-space to reduce configuration space
->>>>>>>> with snd_pcm_hw_params_set_rate_minmax and then change it
->>>>>>>> with another snd_pcm_hw_params_set_rate_minmax with values
->>>>>>>> out of the reduced config?
->>>>>>>>
->>>>>>>> For example, the initial min/max is 44100/48000 and I set 44100
->>>>>>>> first, e.g.
->>>>>>>>
->>>>>>>> snd_pcm_hw_params_set_rate_minmax(handle, hw_params, 44100, 0, 44100, 0)
->>>>>>>>
->>>>>>>> and then want
->>>>>>>>
->>>>>>>> snd_pcm_hw_params_set_rate_minmax(handle, hw_params, 48000, 0, 48000, 0)
->>>>>>>>
->>>>>>>> Obviously, the last call fails as we have already a reduced
->>>>>>>> space of [44100; 44100].
->>>>>>>>
->>>>>>>> Is there a way I can still set the range to [48000; 48000]?
->>>>>>>>
->>>>>>>> Thank you,
->>>>>>>> Oleksandr
->>>>>>>>
->>>>>>>> P.S. This is in context of work done for [1]
->>>>>>>>
->>>>>>>> [1] https://www.spinics.net/lists/alsa-devel/msg75382.html
->>>>>>> We can't. Once shrinking available interval of a parameter, we cannot
->>>>>>> expand it again without initializing the parameter on memory object for
->>>>>>> 'struct snd_pcm_hw_params_t', in which actual layout is never disclosed
->>>>>>> to user applications.
->>>>>> So, this effectively means that this is a one way road, if you need to
->>>>>> change
->>>>>> some parameter you'll need to start all over, so the whole configuration
->>>>>> space remains consistent :(
->>>>> Yes, that's the design.  The only way to expand is to reset the whole,
->>>>> space and reduce again to the given size.
->>>>>
->>>> Clear, thank you
->>>>>>> If you can initialize whole the parameters, snd_pcm_hw_params_any() is
->>>>>>> available for your purpose, then set min/max rate again.
->>>>>> This is what I do now but...
->>>>>>> But just for
->>>>>>> one of the parameters, in my opinion, we need to open an internal
->>>>>>> API; snd_pcm_hw_param_any()[1].
->>>>>> IMO, this will lead to the false assumption that configuration is possible.
->>>>>> For example, I set 4 channels and 44100, but then, after
->>>>>> snd_pcm_hw_params_any,
->>>>>> set 48000 and might assume that the configuration is still
->>>>>> possible. But this may not
->>>>>> be true: it is true for the configuration returned by snd_pcm_hw_param_any
->>>>>> as we don't know about 4 channels yet. But might not be allowed if we
->>>>>> want 4 channels
->>>>>> and 48000 at the same time.
->>>>> Right.  At the point where snd_pcm_hw_params_any() is called, the
->>>>> whole configuration gets reset.  That's the reason I thought we may
->>>>> need to pass all 5 parameters in the query protocol.
->>>> Yes, I now start thinking of the same, e.g. if we pass
->>>> all 5 parameters (mask for formats and intervals for rate, channels,
->>>> buffer and period), then on backend side I can do something like:
->>>>
->>>> 1. snd_pcm_hw_params_any
->>>> 2. snd_pcm_hw_params_set_format_mask
->>>> 3. snd_pcm_hw_params_set_rate_minmax
->>>> 4. snd_pcm_hw_params_set_channels_minmax
->>>> 5. snd_pcm_hw_params_set_buffer_size_minmax
->>>> 6. snd_pcm_hw_params_set_period_size_minmax
->>>>
->>>> So, when finished the above confirms that configuration is possible.
->>>> The only concern here is that so many calls on backend side
->>>> might introduce start-up latency on frontend side though
->>>>
->>>>> IOW, the query stuff won't be modal, it just tries to reduce the given
->>>>> configuration space to the acceptable ranges.
->>>> Do you think the above solution with 5 parameters and the
->>>> corresponding snd_pcm_hw_params_set_xxx calls will do?
->>> I guess so, but let's model & test :)
->> I did some testing:
->> - frontend driver [1]
->> - sndif protocol [2]
->> - backend changes [3]
->>
->> All seem to work now when I pass all 5 parameters while querying.
->> The only scary thing is that I had to change the size of
->> requests/responses in the sndif protocol from 32 to 64 bytes :(
-> You may split the protocol from a single shot to a sequence, too, if
-> the size really matters :)
-But this will complicate things, e.g. I'll have to collect
-the whole thing from pieces before I can try applying the
-configuration. What is more it will increase number of IO
-operations between front and back by 5, thus increasing start up
-latency
->> Takashi, could you please have a quick look and tell me if
->> this is what you expect?
-> Through a quick glance, it looks good to me.
-> If it works, even better.
-Ok, thank you
->
-> thanks,
->
-> Takashi
-
-Thank you,
-Oleksandr
+RG5lIDE2LjMuMjAxOCB2IDE1OjQ0IFdpc2NoZXIsIFRpbW8gKEFESVRHL0VTQikgbmFwc2FsKGEp
+Ogo+IEhlbGxvIEphcm9zbGF2Cj4gCj4+IERvIHlvdSBoYW5kbGUgdGhlIG5vbi1ibG9ja2luZyBt
+b2RlIGNvcnJlY3RseSBoZXJlPyBJdCBzZWVtcyB0aGF0IHRoaXMKPj4gbW9kZSBpcyBjb21wbGV0
+ZWx5IGlnbm9yZWQuCj4gCj4gWW91IGFyZSByaWdodC4gVGhlIG5vbi1ibG9ja2luZyBtb2RlIGZs
+YWcgd2lsbCBiZSBpZ25vcmVkIGhlcmUuCj4gQnV0IHRoaXMgY2FzZSBpcyBhbHNvIG5vdCBjb3Zl
+cmVkIGJ5IHRoZSBJTyBwbHVnIEFQSS4KPiBzbmRfcGNtX2Ryb3AoKSBpcyBjYWxsZWQgaW1tZWRp
+YXRlbHkgYWZ0ZXIgdGhlIElPIHBsdWdpbiBkcmFpbiBjYWxsYmFjayByZXR1cm5zIFsxXS4KPiBU
+aGUgcmV0dXJuIHZhbHVlIG9mIHRoZSBkcmFpbiBjYWxsYmFjayB3aWxsIGJlIGlnbm9yZWQuCgpZ
+ZXMsIGl0IHNlZW1zIGxpa2UgYSBmbGF3IGluIHRoZSBpb3BsdWcgY29yZSBjb2RlLgoKPiBUaGVy
+ZWZvcmUgdGhlIElPIHBsdWcgQVBJIGhhcyB0byBiZSBjaGFuZ2VkIHRvIHN1cHBvcnQgdGhpcy4K
+PiBCdXQgSSBkbyBub3QgcmVhbGx5IHNlZSBhIHVzZSBjYXNlIGZvciBpdC4KCkJ1dCBpdCBjaGFu
+Z2VzIHRoZSBQQ00gQVBJIGJlaGF2aW91ciwgc28gc29tZSBhcHBzIG1pZ2h0IGhhdmUgdHJvdWJs
+ZQp3aXRoIGl0LCBiZWNhdXNlIGl0IG1pZ2h0IGNhdXNlIHRoZSB1bmV4cGVjdGVkIHRhc2sgYmxv
+Y2tpbmcuIFRoZQpjb3JyZWN0IGJlaGF2aW91ciBpcyByZXR1cm4gd2l0aCAtRUFHQUlOIGFuZCBs
+ZXQgYXBwbGljYXRpb24gd2FpdCBmb3IKdGhlIGVuZC1vZi1kYXRhIHVzaW5nIHRoZSBmaWxlIGRl
+c2NyaXB0b3IgZXZlbnQgKG9yIGJ1aWxkLWluCnNuZF9wY21fd2FpdCgpIGZjbiB3aGljaCBpbXBs
+ZW1lbnRzIHRoZSBwb2xsKCkgbG9vcCAtIHNlZQpzbmRfcGNtX3dhaXRfbm9jaGVjaygpKS4KCj4g
+SWYgeW91IHdhbnQgdG8gZHJhaW4geW91IGFsc28gd2FudCB0byB3YWl0L2Jsb2NrIHlvdXIgYXBw
+bGljYXRpb24gdW50aWwgYWxsIGZyYW1lcyB3ZXJlIHBsYXllZC4KCkJ1dCBpdCBkb2VzIG5vdCBp
+bXBseSB0aGF0IHRoZSBkcmFpbiBzaG91bGQgYmxvY2suIFRoZSBhcHAganVzdCBub3RpZnkKdGhl
+IGRldmljZSB0aGF0IHRoZSByZXN0IG9mIHRoZSBkYXRhIHNob3VsZCBiZSBwbGF5ZWQuCgo+IElm
+IHlvdSB0aGluayBpdCBpcyByZXF1aXJlZCB0byBjaGFuZ2UgYW55dGhpbmcgaW4gdGhpcyBwYXRj
+aAo+IHdlIGhhdmUgdG8gY2xhcmlmeSB3aGVuIGRyb3Agc2hvdWxkIGJlIGNhbGxlZCBhbmQgd2hl
+biBub3QuCj4gV2hhdCBpcyB0aGUgc2VxdWVuY2Ugd2hpY2ggdGhlIHVzZXIgd291bGQgZXhwZWN0
+Pwo+IERvZXMgdGhlIHVzZXIgbmVlZCB0byBjYWxsIGRyb3AgYWZ0ZXIgZHJhaW4gaXMgZG9uZSBv
+ciB3b3VsZCBpdCBiZSBjYWxsZWQgYnkgc25kX3BjbV93YWl0L3NuZF9wY21fZHJhaW4gd2hlbiBp
+dCBpcyBub3QgcmV0dXJuaW5nIC1FQUdBSU4/Cj4gCj4gWzFdIGh0dHA6Ly9naXQuYWxzYS1wcm9q
+ZWN0Lm9yZy8/cD1hbHNhLWxpYi5naXQ7YT1ibG9iO2Y9c3JjL3BjbS9wY21faW9wbHVnLmM7aD04
+YzBlZDQ4MzYzNjVhZmI1M2MwY2JjZTc5NmE1ZDM5YzJkMDVhM2Q3O2hiPTA3YTE3YmQ1YTUwMjg5
+ZTJmZGIyNzE0YTRlMzlmMzhmNDE4MTE1NTgjbDUwNAo+IAo+IEJlc3QgcmVnYXJkcwo+IAo+IFRp
+bW8gV2lzY2hlcgo+IAo+IEFkdmFuY2VkIERyaXZlciBJbmZvcm1hdGlvbiBUZWNobm9sb2d5IEdt
+YkgKPiBFbmdpbmVlcmluZyBTb2Z0d2FyZSBCYXNlIChBRElURy9FU0IpCj4gUm9iZXJ0LUJvc2No
+LVN0ci4gMjAwCj4gMzExMzkgSGlsZGVzaGVpbQo+IEdlcm1hbnkKPiAKPiBUZWwuICs0OSA1MTIx
+IDQ5IDY5MzgKPiBGYXggKzQ5IDUxMjEgNDkgNjk5OQo+IHR3aXNjaGVyQGRlLmFkaXQtanYuY29t
+Cj4gCj4gQURJVCBpcyBhIGpvaW50IHZlbnR1cmUgY29tcGFueSBvZiBSb2JlcnQgQm9zY2ggR21i
+SC9Sb2JlcnQgQm9zY2ggQ2FyIE11bHRpbWVkaWEgR21iSCBhbmQgREVOU08gQ29ycG9yYXRpb24K
+PiBTaXR6OiBIaWxkZXNoZWltLCBSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IEhpbGRlc2hl
+aW0gSFJCIDM0MzgKPiBHZXNjaMOkZnRzZsO8aHJ1bmc6IFdpbGhlbG0gR3JhYm93LCBLZW4gWWFn
+dWNoaQo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBGcm9t
+OiBKYXJvc2xhdiBLeXNlbGEgW3BlcmV4QHBlcmV4LmN6XQo+IFNlbnQ6IFRodXJzZGF5LCBNYXJj
+aCAwMSwgMjAxOCAyOjQyIFBNCj4gVG86IFdpc2NoZXIsIFRpbW8gKEFESVRHL0VTQikKPiBDYzog
+QUxTQSBkZXZlbG9wbWVudDsgVGFrYXNoaSBJd2FpCj4gU3ViamVjdDogUmU6IFthbHNhLWRldmVs
+XSBbUEFUQ0ggLSBKQUNLIHBsdWdpbiA0LzRdIGphY2s6IFN1cHBvcnQgc25kX3BjbV9kcmFpbigp
+Cj4gCj4gRG5lIDEuMy4yMDE4IHYgMTQ6MTQgdHdpc2NoZXJAZGUuYWRpdC1qdi5jb20gbmFwc2Fs
+KGEpOgo+PiBGcm9tOiBUaW1vIFdpc2NoZXIgPHR3aXNjaGVyQGRlLmFkaXQtanYuY29tPgo+Pgo+
+PiBCbG9jayBvbiBkcmFpbiB0aWxsIGF2YWlsYWJsZSBzYW1wbGVzIHBsYXllZAo+IAo+IERvIHlv
+dSBoYW5kbGUgdGhlIG5vbi1ibG9ja2luZyBtb2RlIGNvcnJlY3RseSBoZXJlPyBJdCBzZWVtcyB0
+aGF0IHRoaXMKPiBtb2RlIGlzIGNvbXBsZXRlbHkgaWdub3JlZC4KPiAKPiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgSmFyb3NsYXYKPiAKPiAtLQo+IEphcm9zbGF2IEt5
+c2VsYSA8cGVyZXhAcGVyZXguY3o+Cj4gTGludXggU291bmQgTWFpbnRhaW5lcjsgQUxTQSBQcm9q
+ZWN0OyBSZWQgSGF0LCBJbmMuCj4gCgoKLS0gCkphcm9zbGF2IEt5c2VsYSA8cGVyZXhAcGVyZXgu
+Y3o+CkxpbnV4IFNvdW5kIE1haW50YWluZXI7IEFMU0EgUHJvamVjdDsgUmVkIEhhdCwgSW5jLgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
