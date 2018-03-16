@@ -1,87 +1,57 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH - JACK plugin 4/4] jack: Support
- snd_pcm_drain()
-Date: Fri, 16 Mar 2018 16:11:15 +0100
-Message-ID: <07334145-d1f1-54b4-84d0-eacbea0a3987@perex.cz>
-References: <s5hd10qyg05.wl-tiwai@suse.de>
- <1519910048-19732-1-git-send-email-twischer@de.adit-jv.com>
- <1519910048-19732-5-git-send-email-twischer@de.adit-jv.com>
- <3f0f0873-9544-050d-ef69-35d4b23e8c6c@perex.cz>
- <B0FB33DC1499054591F62C0EF1E013D7684FDEA1@HI2EXCH01.adit-jv.com>
+From: Herbert Xu <herbert-lOAM2aK0SrRLBo1qDEOMRrpzq4S04n8Q@public.gmane.org>
+Subject: Re: [PATCH v2 00/21] Allow compile-testing NO_DMA (drivers)
+Date: Fri, 16 Mar 2018 23:14:10 +0800
+Message-ID: <20180316151410.GA6527@gondor.apana.org.au>
+References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id BCF0E2670A1
- for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 16:11:19 +0100 (CET)
-In-Reply-To: <B0FB33DC1499054591F62C0EF1E013D7684FDEA1@HI2EXCH01.adit-jv.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Wischer, Timo (ADITG/ESB)" <twischer@de.adit-jv.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1521208314-4783-1-git-send-email-geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
+List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
+Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+To: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
+Cc: Ulf Hansson <ulf.hansson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-fpga-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-remoteproc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Bjorn Andersson <bjorn.andersson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Eric Anholt <eric-WhKQ6XTQaPysTnJN9+BGXg@public.gmane.org>, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux1394-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>, Stefan Wahren <stefan.wahren-eS4NqCHxEME@public.gmane.org>, Boris Brezillon <boris.brezillon-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, "James E . J . Bottomley" <jejb-23VcF4HTsmIX0ybBhKVfKdBPR1lH4CV8@public.gmane.org>, linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Richard Weinberger <richard-/L3Ra7n9ekc@public.gmane.org>, Jassi Brar <jassisinghbrar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Marek Vasut <marek.vasut-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-serial-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Matias Bjorling <mb-VR7NuqX4VJ8tq7phqP6ubQ@public.gmane.org>, David Woodhouse <dwmw2-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Ohad Ben-Cohen <ohad-Ix1uc/W3ht7QT0dZR+AlfA@public.gmane.org>, devel@d
 List-Id: alsa-devel@alsa-project.org
 
-RG5lIDE2LjMuMjAxOCB2IDE1OjQ0IFdpc2NoZXIsIFRpbW8gKEFESVRHL0VTQikgbmFwc2FsKGEp
-Ogo+IEhlbGxvIEphcm9zbGF2Cj4gCj4+IERvIHlvdSBoYW5kbGUgdGhlIG5vbi1ibG9ja2luZyBt
-b2RlIGNvcnJlY3RseSBoZXJlPyBJdCBzZWVtcyB0aGF0IHRoaXMKPj4gbW9kZSBpcyBjb21wbGV0
-ZWx5IGlnbm9yZWQuCj4gCj4gWW91IGFyZSByaWdodC4gVGhlIG5vbi1ibG9ja2luZyBtb2RlIGZs
-YWcgd2lsbCBiZSBpZ25vcmVkIGhlcmUuCj4gQnV0IHRoaXMgY2FzZSBpcyBhbHNvIG5vdCBjb3Zl
-cmVkIGJ5IHRoZSBJTyBwbHVnIEFQSS4KPiBzbmRfcGNtX2Ryb3AoKSBpcyBjYWxsZWQgaW1tZWRp
-YXRlbHkgYWZ0ZXIgdGhlIElPIHBsdWdpbiBkcmFpbiBjYWxsYmFjayByZXR1cm5zIFsxXS4KPiBU
-aGUgcmV0dXJuIHZhbHVlIG9mIHRoZSBkcmFpbiBjYWxsYmFjayB3aWxsIGJlIGlnbm9yZWQuCgpZ
-ZXMsIGl0IHNlZW1zIGxpa2UgYSBmbGF3IGluIHRoZSBpb3BsdWcgY29yZSBjb2RlLgoKPiBUaGVy
-ZWZvcmUgdGhlIElPIHBsdWcgQVBJIGhhcyB0byBiZSBjaGFuZ2VkIHRvIHN1cHBvcnQgdGhpcy4K
-PiBCdXQgSSBkbyBub3QgcmVhbGx5IHNlZSBhIHVzZSBjYXNlIGZvciBpdC4KCkJ1dCBpdCBjaGFu
-Z2VzIHRoZSBQQ00gQVBJIGJlaGF2aW91ciwgc28gc29tZSBhcHBzIG1pZ2h0IGhhdmUgdHJvdWJs
-ZQp3aXRoIGl0LCBiZWNhdXNlIGl0IG1pZ2h0IGNhdXNlIHRoZSB1bmV4cGVjdGVkIHRhc2sgYmxv
-Y2tpbmcuIFRoZQpjb3JyZWN0IGJlaGF2aW91ciBpcyByZXR1cm4gd2l0aCAtRUFHQUlOIGFuZCBs
-ZXQgYXBwbGljYXRpb24gd2FpdCBmb3IKdGhlIGVuZC1vZi1kYXRhIHVzaW5nIHRoZSBmaWxlIGRl
-c2NyaXB0b3IgZXZlbnQgKG9yIGJ1aWxkLWluCnNuZF9wY21fd2FpdCgpIGZjbiB3aGljaCBpbXBs
-ZW1lbnRzIHRoZSBwb2xsKCkgbG9vcCAtIHNlZQpzbmRfcGNtX3dhaXRfbm9jaGVjaygpKS4KCj4g
-SWYgeW91IHdhbnQgdG8gZHJhaW4geW91IGFsc28gd2FudCB0byB3YWl0L2Jsb2NrIHlvdXIgYXBw
-bGljYXRpb24gdW50aWwgYWxsIGZyYW1lcyB3ZXJlIHBsYXllZC4KCkJ1dCBpdCBkb2VzIG5vdCBp
-bXBseSB0aGF0IHRoZSBkcmFpbiBzaG91bGQgYmxvY2suIFRoZSBhcHAganVzdCBub3RpZnkKdGhl
-IGRldmljZSB0aGF0IHRoZSByZXN0IG9mIHRoZSBkYXRhIHNob3VsZCBiZSBwbGF5ZWQuCgo+IElm
-IHlvdSB0aGluayBpdCBpcyByZXF1aXJlZCB0byBjaGFuZ2UgYW55dGhpbmcgaW4gdGhpcyBwYXRj
-aAo+IHdlIGhhdmUgdG8gY2xhcmlmeSB3aGVuIGRyb3Agc2hvdWxkIGJlIGNhbGxlZCBhbmQgd2hl
-biBub3QuCj4gV2hhdCBpcyB0aGUgc2VxdWVuY2Ugd2hpY2ggdGhlIHVzZXIgd291bGQgZXhwZWN0
-Pwo+IERvZXMgdGhlIHVzZXIgbmVlZCB0byBjYWxsIGRyb3AgYWZ0ZXIgZHJhaW4gaXMgZG9uZSBv
-ciB3b3VsZCBpdCBiZSBjYWxsZWQgYnkgc25kX3BjbV93YWl0L3NuZF9wY21fZHJhaW4gd2hlbiBp
-dCBpcyBub3QgcmV0dXJuaW5nIC1FQUdBSU4/Cj4gCj4gWzFdIGh0dHA6Ly9naXQuYWxzYS1wcm9q
-ZWN0Lm9yZy8/cD1hbHNhLWxpYi5naXQ7YT1ibG9iO2Y9c3JjL3BjbS9wY21faW9wbHVnLmM7aD04
-YzBlZDQ4MzYzNjVhZmI1M2MwY2JjZTc5NmE1ZDM5YzJkMDVhM2Q3O2hiPTA3YTE3YmQ1YTUwMjg5
-ZTJmZGIyNzE0YTRlMzlmMzhmNDE4MTE1NTgjbDUwNAo+IAo+IEJlc3QgcmVnYXJkcwo+IAo+IFRp
-bW8gV2lzY2hlcgo+IAo+IEFkdmFuY2VkIERyaXZlciBJbmZvcm1hdGlvbiBUZWNobm9sb2d5IEdt
-YkgKPiBFbmdpbmVlcmluZyBTb2Z0d2FyZSBCYXNlIChBRElURy9FU0IpCj4gUm9iZXJ0LUJvc2No
-LVN0ci4gMjAwCj4gMzExMzkgSGlsZGVzaGVpbQo+IEdlcm1hbnkKPiAKPiBUZWwuICs0OSA1MTIx
-IDQ5IDY5MzgKPiBGYXggKzQ5IDUxMjEgNDkgNjk5OQo+IHR3aXNjaGVyQGRlLmFkaXQtanYuY29t
-Cj4gCj4gQURJVCBpcyBhIGpvaW50IHZlbnR1cmUgY29tcGFueSBvZiBSb2JlcnQgQm9zY2ggR21i
-SC9Sb2JlcnQgQm9zY2ggQ2FyIE11bHRpbWVkaWEgR21iSCBhbmQgREVOU08gQ29ycG9yYXRpb24K
-PiBTaXR6OiBIaWxkZXNoZWltLCBSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IEhpbGRlc2hl
-aW0gSFJCIDM0MzgKPiBHZXNjaMOkZnRzZsO8aHJ1bmc6IFdpbGhlbG0gR3JhYm93LCBLZW4gWWFn
-dWNoaQo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBGcm9t
-OiBKYXJvc2xhdiBLeXNlbGEgW3BlcmV4QHBlcmV4LmN6XQo+IFNlbnQ6IFRodXJzZGF5LCBNYXJj
-aCAwMSwgMjAxOCAyOjQyIFBNCj4gVG86IFdpc2NoZXIsIFRpbW8gKEFESVRHL0VTQikKPiBDYzog
-QUxTQSBkZXZlbG9wbWVudDsgVGFrYXNoaSBJd2FpCj4gU3ViamVjdDogUmU6IFthbHNhLWRldmVs
-XSBbUEFUQ0ggLSBKQUNLIHBsdWdpbiA0LzRdIGphY2s6IFN1cHBvcnQgc25kX3BjbV9kcmFpbigp
-Cj4gCj4gRG5lIDEuMy4yMDE4IHYgMTQ6MTQgdHdpc2NoZXJAZGUuYWRpdC1qdi5jb20gbmFwc2Fs
-KGEpOgo+PiBGcm9tOiBUaW1vIFdpc2NoZXIgPHR3aXNjaGVyQGRlLmFkaXQtanYuY29tPgo+Pgo+
-PiBCbG9jayBvbiBkcmFpbiB0aWxsIGF2YWlsYWJsZSBzYW1wbGVzIHBsYXllZAo+IAo+IERvIHlv
-dSBoYW5kbGUgdGhlIG5vbi1ibG9ja2luZyBtb2RlIGNvcnJlY3RseSBoZXJlPyBJdCBzZWVtcyB0
-aGF0IHRoaXMKPiBtb2RlIGlzIGNvbXBsZXRlbHkgaWdub3JlZC4KPiAKPiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgSmFyb3NsYXYKPiAKPiAtLQo+IEphcm9zbGF2IEt5
-c2VsYSA8cGVyZXhAcGVyZXguY3o+Cj4gTGludXggU291bmQgTWFpbnRhaW5lcjsgQUxTQSBQcm9q
-ZWN0OyBSZWQgSGF0LCBJbmMuCj4gCgoKLS0gCkphcm9zbGF2IEt5c2VsYSA8cGVyZXhAcGVyZXgu
-Y3o+CkxpbnV4IFNvdW5kIE1haW50YWluZXI7IEFMU0EgUHJvamVjdDsgUmVkIEhhdCwgSW5jLgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Fri, Mar 16, 2018 at 02:51:33PM +0100, Geert Uytterhoeven wrote:
+>
+> This patch series:
+>   - Removes dependencies on HAS_DMA for symbols that already have
+>     platform dependencies implying HAS_DMA.
+> 
+> To avoid allmodconfig/allyesconfig regressions on NO_DMA=y platforms,
+> this (drivers) series should be applied after the previous (core)
+> series (but not many people may notice/care ;-)
+> 
+> Changes compared to v1:
+>   - Add Reviewed-by, Acked-by,
+>   - Drop dependency of SND_SOC_LPASS_IPQ806X on HAS_DMA,
+>   - Drop dependency of VIDEOBUF{,2}_DMA_{CONTIG,SG} on HAS_DMA,
+>   - Drop new dependencies of VIDEO_IPU3_CIO2, DVB_C8SECTPFE, and
+>     MTD_NAND_MARVELL on HAS_DMA,
+>   - Split in per-subsystem patches,
+>   - Split-off the core part in a separate series.
+> 
+> This series is against v4.16-rc5. It can also be found at
+> https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git/log/?h=no-dma-compile-testing-v2
+> 
+> It has been compile-tested with allmodconfig and allyesconfig for
+> m68k/sun3, and has received attention from the kbuild test robot.
+
+Do these patches have any dependencies? Can they be applied directly
+in a subsystem tree?
+
+Thanks,
+-- 
+Email: Herbert Xu <herbert-lOAM2aK0SrRLBo1qDEOMRrpzq4S04n8Q@public.gmane.org>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
