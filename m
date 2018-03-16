@@ -1,138 +1,49 @@
-From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Subject: [PATCH 2/2] ASoC: uniphier: add syscon property for UniPhier sound system
-Date: Fri, 16 Mar 2018 16:08:13 +0900
-Message-ID: <20180316070813.17969-3-suzuki.katsuhiro@socionext.com>
-References: <20180316070813.17969-1-suzuki.katsuhiro@socionext.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180316070813.17969-1-suzuki.katsuhiro@socionext.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>
-Cc: Masami Hiramatsu <masami.hiramatsu@linaro.org>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Subject: [PATCH -next] ASoC: wm8400: Use
+	devm_snd_soc_register_component()
+Date: Fri, 16 Mar 2018 07:32:07 +0000
+Message-ID: <1521185527-164406-1-git-send-email-weiyongjun1@huawei.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from huawei.com (unknown [45.249.212.32])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AAFB26738C
+ for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 08:26:01 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori
+ Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: kernel-janitors@vger.kernel.org, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, Wei Yongjun <weiyongjun1@huawei.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds syscon property for specifying soc-glue core.
+Since the remove callback is removed, the snd_soc_unregister_component()
+is missing when remove device. Using devm_snd_soc_register_component()
+instead of snd_soc_register_component().
 
-Currently, soc-glue core is used for changing the state of S/PDIF
-signal output pin to signal output state or Hi-Z state. After
-resetting of SoC Hi-Z state is selected. This driver set to signal
-output state when syscon property is available.
-
-Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Fixes: 10dc44c6462d ("ASoC: wm8400: replace codec to component")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 ---
- sound/soc/uniphier/aio-core.c | 21 +++++++++++++++++++++
- sound/soc/uniphier/aio-cpu.c  | 11 +++++++++++
- sound/soc/uniphier/aio-reg.h  |  3 +++
- sound/soc/uniphier/aio.h      |  2 ++
- 4 files changed, 37 insertions(+)
+ sound/soc/codecs/wm8400.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/uniphier/aio-core.c b/sound/soc/uniphier/aio-core.c
-index 1711361fc0c2..6d50042a4571 100644
---- a/sound/soc/uniphier/aio-core.c
-+++ b/sound/soc/uniphier/aio-core.c
-@@ -83,6 +83,27 @@ u64 aio_rb_space_to_end(struct uniphier_aio_sub *sub)
- 	return rb_space_to_end(sub->wr_offs, sub->rd_offs, sub->compr_bytes);
+diff --git a/sound/soc/codecs/wm8400.c b/sound/soc/codecs/wm8400.c
+index c237365..57b2206 100644
+--- a/sound/soc/codecs/wm8400.c
++++ b/sound/soc/codecs/wm8400.c
+@@ -1343,7 +1343,7 @@ static void  wm8400_component_remove(struct snd_soc_component *component)
+ 
+ static int wm8400_probe(struct platform_device *pdev)
+ {
+-	return snd_soc_register_component(&pdev->dev,
++	return devm_snd_soc_register_component(&pdev->dev,
+ 			&soc_component_dev_wm8400,
+ 			&wm8400_dai, 1);
  }
- 
-+/**
-+ * aio_iecout_set_enable - setup IEC output via SoC glue
-+ * @chip: the AIO chip pointer
-+ * @enable: false to stop the output, true to start
-+ *
-+ * Set enabled or disabled S/PDIF signal output to out of SoC via AOnIEC pins.
-+ * This function need to call at driver startup.
-+ *
-+ * The regmap of SoC glue is specified by 'socionext,syscon' optional property
-+ * of DT. This function has no effect if no property.
-+ */
-+void aio_iecout_set_enable(struct uniphier_aio_chip *chip, bool enable)
-+{
-+	struct regmap *r = chip->regmap_sg;
-+
-+	if (!r)
-+		return;
-+
-+	regmap_write(r, SG_AOUTEN, (enable) ? ~0 : 0);
-+}
-+
- /**
-  * aio_chip_set_pll - set frequency to audio PLL
-  * @chip  : the AIO chip pointer
-diff --git a/sound/soc/uniphier/aio-cpu.c b/sound/soc/uniphier/aio-cpu.c
-index 7cf2316c69a2..1e5eb8e6f8c7 100644
---- a/sound/soc/uniphier/aio-cpu.c
-+++ b/sound/soc/uniphier/aio-cpu.c
-@@ -20,6 +20,7 @@
- #include <linux/clk.h>
- #include <linux/errno.h>
- #include <linux/kernel.h>
-+#include <linux/mfd/syscon.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_platform.h>
-@@ -387,6 +388,7 @@ int uniphier_aio_dai_probe(struct snd_soc_dai *dai)
- 		sub->spec = spec;
- 	}
- 
-+	aio_iecout_set_enable(aio->chip, true);
- 	aio_chip_init(aio->chip);
- 	aio->chip->active = 1;
- 
-@@ -431,6 +433,7 @@ int uniphier_aio_dai_resume(struct snd_soc_dai *dai)
- 	if (ret)
- 		goto err_out_clock;
- 
-+	aio_iecout_set_enable(aio->chip, true);
- 	aio_chip_init(aio->chip);
- 
- 	for (i = 0; i < ARRAY_SIZE(aio->sub); i++) {
-@@ -477,6 +480,14 @@ int uniphier_aio_probe(struct platform_device *pdev)
- 	if (!chip->chip_spec)
- 		return -EINVAL;
- 
-+	chip->regmap_sg = syscon_regmap_lookup_by_phandle(dev->of_node,
-+							  "socionext,syscon");
-+	if (IS_ERR(chip->regmap_sg)) {
-+		if (PTR_ERR(chip->regmap_sg) == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+		chip->regmap_sg = NULL;
-+	}
-+
- 	chip->clk = devm_clk_get(dev, "aio");
- 	if (IS_ERR(chip->clk))
- 		return PTR_ERR(chip->clk);
-diff --git a/sound/soc/uniphier/aio-reg.h b/sound/soc/uniphier/aio-reg.h
-index eaf2c65acf14..136d3563cf44 100644
---- a/sound/soc/uniphier/aio-reg.h
-+++ b/sound/soc/uniphier/aio-reg.h
-@@ -23,6 +23,9 @@
- 
- #include <linux/bitops.h>
- 
-+/* soc-glue */
-+#define SG_AOUTEN                       0x1c04
-+
- /* SW view */
- #define A2CHNMAPCTR0(n)                 (0x00000 + 0x40 * (n))
- #define A2RBNMAPCTR0(n)                 (0x01000 + 0x40 * (n))
-diff --git a/sound/soc/uniphier/aio.h b/sound/soc/uniphier/aio.h
-index 793334675cb3..8cab4a553a97 100644
---- a/sound/soc/uniphier/aio.h
-+++ b/sound/soc/uniphier/aio.h
-@@ -296,6 +296,7 @@ struct uniphier_aio_chip {
- 	struct clk *clk;
- 	struct reset_control *rst;
- 	struct regmap *regmap;
-+	struct regmap *regmap_sg;
- 	int active;
- };
- 
-@@ -323,6 +324,7 @@ u64 aio_rbt_cnt_to_end(struct uniphier_aio_sub *sub);
- u64 aio_rb_space(struct uniphier_aio_sub *sub);
- u64 aio_rb_space_to_end(struct uniphier_aio_sub *sub);
- 
-+void aio_iecout_set_enable(struct uniphier_aio_chip *chip, bool enable);
- int aio_chip_set_pll(struct uniphier_aio_chip *chip, int pll_id,
- 		     unsigned int freq);
- void aio_chip_init(struct uniphier_aio_chip *chip);
--- 
-2.16.2
