@@ -1,19 +1,23 @@
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Subject: Re: [PATCH v2] ASoC: Intel: Boards: Add CNL RT274 I2S
- machine driver
-Date: Fri, 16 Mar 2018 09:10:46 +0530
-Message-ID: <20180316034046.GA31796@g2>
-References: <20180315115345.3087-1-guneshwor.o.singh@intel.com>
- <26dcf212-6a6f-d9f6-bdbf-0eea559451bb@linux.intel.com>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: [Xen-devel][PATCH v2 2/3] sndif: Add explicit back
+ and front synchronization
+Date: Fri, 16 Mar 2018 08:24:41 +0200
+Message-ID: <7752ee92-8f43-03be-5e64-702794af0f8d@gmail.com>
+References: <1521043365-26813-1-git-send-email-andr2000@gmail.com>
+ <1521043365-26813-3-git-send-email-andr2000@gmail.com>
+ <20180315201724.GN10870@char.us.oracle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 9BBF4267252
- for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 04:41:13 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <26dcf212-6a6f-d9f6-bdbf-0eea559451bb@linux.intel.com>
+Received: from mail-lf0-f66.google.com (mail-lf0-f66.google.com
+ [209.85.215.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id E89C4267274
+ for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2018 07:24:43 +0100 (CET)
+Received: by mail-lf0-f66.google.com with SMTP id g13-v6so2722185lfe.10
+ for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2018 23:24:43 -0700 (PDT)
+In-Reply-To: <20180315201724.GN10870@char.us.oracle.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,126 +27,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, bardliao@realtek.com
+To: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc: alsa-devel@alsa-project.org, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, tiwai@suse.de, Clemens Ladisch <clemens@ladisch.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Oleksandr Grytsov <oleksandr_grytsov@epam.com>, xen-devel@lists.xenproject.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Pierre,
-
-On Thu, Mar 15, 2018 at 07:23:05AM -0500, Pierre-Louis Bossart wrote:
-> 
-> >+
-> >+static int cnl_rt274_clock_control(struct snd_soc_dapm_widget *w,
-> >+				   struct snd_kcontrol *k, int event)
-> >+{
-> >+	struct snd_soc_dapm_context *dapm = w->dapm;
-> >+	struct snd_soc_card *card = dapm->card;
-> >+	struct snd_soc_dai *codec_dai =
-> >+		snd_soc_card_get_codec_dai(card, RT274_CODEC_DAI);
-> >+	int ret, ratio = 100;
-> >+
-> >+	if (!codec_dai)
-> >+		return -EINVAL;
-> >+
-> >+	/* Codec needs clock for Jack detection and button press */
-> >+	ret = snd_soc_dai_set_sysclk(codec_dai, RT274_SCLK_S_PLL2,
-> >+				     CNL_FREQ_OUT, SND_SOC_CLOCK_IN);
-> >+	if (ret < 0) {
-> >+		dev_err(codec_dai->dev, "set codec sysclk failed: %d\n", ret);
-> >+		return ret;
-> >+	}
-> >+
-> >+	if (SND_SOC_DAPM_EVENT_ON(event)) {
-> >+		ret = snd_soc_dai_set_bclk_ratio(codec_dai, ratio);
-> >+		if (ret) {
-> >+			dev_err(codec_dai->dev,
-> >+				"set bclk ratio failed: %d\n", ret);
-> >+			return ret;
-> >+		}
-> >+
-> >+		ret = snd_soc_dai_set_pll(codec_dai, 0, RT274_PLL2_S_BCLK,
-> >+					  CNL_BE_FIXUP_RATE * ratio,
-> >+					  CNL_FREQ_OUT);
-> >+		if (ret) {
-> >+			dev_err(codec_dai->dev,
-> >+				"enable PLL2 failed: %d\n", ret);
-> >+			return ret;
-> >+		}
-> >+	}
-> >+
-> >+	return 0;
-> >+}
-> it's not clear to me why you need a clock control? You are not changing
-> anything that really depends on DAPM events, to e.g. take the MCLK down and
-> use a local clock, so could this be moved to hw_params?
-
-Yes, we can do in hw_params too. When we implemented it we thought
-during simultaneous playback and capture, hw_params will be called twice
-but clock clock event will be called just once.
-
-It does not harm to call twice as done in other machine drivers. Do you
-suggest to move it to hw_params?
-
-> >+static const struct snd_soc_dapm_route cnl_map[] = {
-> >+	{"Headphone Jack", NULL, "HPO Pin"},
-> >+	{"MIC", NULL, "Mic Jack"},
-> >+	{"DMic", NULL, "SoC DMIC"},
-> >+	{"DMIC01 Rx", NULL, "Capture"},
-> >+	{"dmic01_hifi", NULL, "DMIC01 Rx"},
-> >+
-> >+	{"AIF1 Playback", NULL, "ssp0 Tx"},
-> >+	{"ssp0 Tx", NULL, "codec1_out"},
-> >+	{"ssp0 Tx", NULL, "codec0_out"},
-> I get the routes to connect firmware widgets to codec ones, but why do we
-> need SSP0 TX-> codec1_out? shouldn't this be part of the topology?
-
-We still have routes for BEs defined here. Only FE ones come from
-topology.
-
-> >+
-> >+	{"ssp0 Rx", NULL, "AIF1 Capture"},
-> >+	{"codec0_in", NULL, "ssp0 Rx"},
-> >+
-> >+	{"Headphone Jack", NULL, "Platform Clock"},
-> >+	{"Mic Jack", NULL, "Platform Clock"},
-> >+};
-> >+
-> >+static	struct snd_soc_jack_pin cnl_headset_pins[] = {
-> >+	{
-> >+		.pin = "Mic Jack",
-> >+		.mask = SND_JACK_MICROPHONE,
-> >+	},
-> >+	{
-> >+		.pin = "Headphone Jack",
-> >+		.mask = SND_JACK_HEADPHONE,
-> >+	},
-> >+};
-> >+
-> >+static struct snd_soc_jack cnl_headset;
-> >+
-> >+static int cnl_rt274_init(struct snd_soc_pcm_runtime *runtime)
-> >+{
-> >+	struct snd_soc_card *card = runtime->card;
-> >+	struct snd_soc_dai *codec_dai = runtime->codec_dai;
-> >+	struct snd_soc_component *component = codec_dai->component;
-> >+	int ret;
-> >+
-> >+	ret = snd_soc_card_jack_new(runtime->card, "Headset",
-> >+		SND_JACK_HEADSET, &cnl_headset,
-> >+		cnl_headset_pins, ARRAY_SIZE(cnl_headset_pins));
-> >+	if (ret)
-> >+		return ret;
-> >+
-> >+	ret = snd_soc_component_set_jack(component, &cnl_headset, NULL);
-> >+	if (ret)
-> >+		return ret;
-> >+
-> >+	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
-> >+	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xf, 0xf, 4, 24);
-> what are the 4 slots used for?
-
-Ah, this is a mistake. Thanks for pointing out. It should be
-snd_soc_dai_set_tdm_slot(codec_dai, 0x3, 0x3, 2, 24) as we do not have
-speakers on rt274. Will correct in v3.
-
-> 
+On 03/15/2018 10:17 PM, Konrad Rzeszutek Wilk wrote:
+>> + ******************************************************************************
+>> + *                        Back to front events delivery
+>> + ******************************************************************************
+>> + * In order to deliver asynchronous events from back to front a shared page is
+>> + * allocated by front and its granted reference propagated to back via
+>> + * XenStore entries (evt-ring-ref/evt-event-channel).
+>> + * This page has a common header used by both front and back to synchronize
+>> + * access and control event's ring buffer, while back being a producer of the
+>> + * events and front being a consumer. The rest of the page after the header
+>> + * is used for event packets.
+>> + *
+>> + * Upon reception of an event(s) front may confirm its reception
+>> + * for either each event, group of events or none.
+>> + */
+>> +
+>> +struct xensnd_event_page {
+>> +    uint32_t in_cons;
+>> +    uint32_t in_prod;
+>> +    uint8_t reserved[24];
+> Could this be aligned at 64 bytes?
+Sure, will make the struct 64 bytes
+>> +};
+>> +
