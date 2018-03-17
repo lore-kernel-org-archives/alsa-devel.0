@@ -1,69 +1,76 @@
-From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH v3 1/2] ASoC: codecs: Add support for
-	PCM1789
-Date: Sat, 17 Mar 2018 19:19:51 +0800
-Message-ID: <201803171907.vbmkB7Z8%fengguang.wu@intel.com>
-References: <20180315161825.5524-2-mylene.josserand@bootlin.com>
+From: Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH v2 08/21] iio: adc: Remove depends on HAS_DMA in case of
+ platform dependency
+Date: Sat, 17 Mar 2018 16:42:41 +0000
+Message-ID: <20180317164241.6fbad835@archlinux>
+References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
+ <1521208314-4783-9-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 4346E267196
- for <alsa-devel@alsa-project.org>; Sat, 17 Mar 2018 12:19:56 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20180315161825.5524-2-mylene.josserand@bootlin.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, michael@amarulasolutions.com, alexandre.belloni@bootlin.com, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org, kbuild-all@01.org, thomas.petazzoni@bootlin.com, mylene.josserand@bootlin.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+In-Reply-To: <1521208314-4783-9-git-send-email-geert@linux-m68k.org>
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
+List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
+List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
+Errors-To: driverdev-devel-bounces@linuxdriverproject.org
+Sender: "devel" <driverdev-devel-bounces@linuxdriverproject.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, Wolfram Sang <wsa@the-dreams.de>, linux-iio@vger.kernel.org, linux-fpga@vger.kernel.org, linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org, Bjorn Andersson <bjorn.andersson@linaro.org>, Eric Anholt <eric@anholt.net>, netdev@vger.kernel.org, linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org, linux1394-devel@lists.sourceforge.net, Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>, Stefan Wahren <stefan.wahren@i2se.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>, Herbert Xu <herbert@gondor.apana.org.au>, linux-scsi@vger.kernel.org, Richard Weinberger <richard@nod.at>, Joerg Roedel <joro@8bytes.org>, Jassi Brar <jassisinghbrar@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, linux-serial@vger.kernel.org, Matias Bjorling <mb@lightn>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Myl=E8ne,
+On Fri, 16 Mar 2018 14:51:41 +0100
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-Thank you for the patch! Perhaps something to improve:
+> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
+> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
+> In most cases this other symbol is an architecture or platform specific
+> symbol, or PCI.
+> 
+> Generic symbols and drivers without platform dependencies keep their
+> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
+> cannot work anyway.
+> 
+> This simplifies the dependencies, and allows to improve compile-testing.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reviewed-by: Mark Brown <broonie@kernel.org>
+> Acked-by: Robin Murphy <robin.murphy@arm.com>
+Great.
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[auto build test WARNING on v4.16-rc4]
-[also build test WARNING on next-20180316]
-[if your patch is applied to the wrong git tree, please drop us a note to h=
-elp improve the system]
+Thanks for doing this - this has been annoying for a long time :)
 
-url:    https://github.com/0day-ci/linux/commits/Myl-ne-Josserand/ASoC-code=
-cs-Add-support-for-PCM1789/20180317-174449
-
-
-coccinelle warnings: (new ones prefixed by >>)
-
->> sound/soc/codecs/pcm1789.c:265:1-3: ERROR: test of a variable/field addr=
-ess
-
-vim +265 sound/soc/codecs/pcm1789.c
-
-   260	=
-
-   261	int pcm1789_common_exit(struct device *dev)
-   262	{
-   263		struct pcm1789_private *priv =3D dev_get_drvdata(dev);
-   264	=
-
- > 265		if (&priv->work)
-   266			flush_work(&priv->work);
-   267	=
-
-   268		return 0;
-   269	}
-   270	EXPORT_SYMBOL_GPL(pcm1789_common_exit);
-   271	=
-
-
----
-0-DAY kernel test infrastructure                Open Source Technology Cent=
-er
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporati=
-on
+> ---
+> v2:
+>   - Add Reviewed-by, Acked-by,
+>   - Drop RFC state,
+>   - Split per subsystem.
+> ---
+>  drivers/iio/adc/Kconfig | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+> index 72bc2b71765ae2ff..57f46e88f5c2536e 100644
+> --- a/drivers/iio/adc/Kconfig
+> +++ b/drivers/iio/adc/Kconfig
+> @@ -158,7 +158,6 @@ config AT91_SAMA5D2_ADC
+>  	tristate "Atmel AT91 SAMA5D2 ADC"
+>  	depends on ARCH_AT91 || COMPILE_TEST
+>  	depends on HAS_IOMEM
+> -	depends on HAS_DMA
+>  	select IIO_TRIGGERED_BUFFER
+>  	help
+>  	  Say yes here to build support for Atmel SAMA5D2 ADC which is
+> @@ -647,7 +646,6 @@ config SD_ADC_MODULATOR
+>  config STM32_ADC_CORE
+>  	tristate "STMicroelectronics STM32 adc core"
+>  	depends on ARCH_STM32 || COMPILE_TEST
+> -	depends on HAS_DMA
+>  	depends on OF
+>  	depends on REGULATOR
+>  	select IIO_BUFFER
