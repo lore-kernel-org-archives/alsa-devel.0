@@ -1,45 +1,53 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] ASoC: rsnd: Document R-Car M3-W support
-Date: Sun, 18 Mar 2018 07:52:54 -0500
-Message-ID: <20180318033451.d4ejjp34k6udgvex@rob-hp-laptop>
-References: <1521208785-5698-1-git-send-email-geert+renesas@glider.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f194.google.com (mail-pf0-f194.google.com
- [209.85.192.194])
- by alsa0.perex.cz (Postfix) with ESMTP id BF35F266F1C
- for <alsa-devel@alsa-project.org>; Sun, 18 Mar 2018 13:52:58 +0100 (CET)
-Received: by mail-pf0-f194.google.com with SMTP id a16so5953898pfn.9
- for <alsa-devel@alsa-project.org>; Sun, 18 Mar 2018 05:52:58 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1521208785-5698-1-git-send-email-geert+renesas@glider.be>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>
+From: Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH 1/3] sound: usb: line6: Replace mdelay with msleep in line6_read_data
+Date: Sun, 18 Mar 2018 22:51:33 +0800
+Message-ID: <1521384693-23336-1-git-send-email-baijiaju1990@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 16, 2018 at 02:59:45PM +0100, Geert Uytterhoeven wrote:
-> Document support for the sound modules in the Renesas M3-W (r8a7796)
-> SoC.
-> 
-> No driver update is needed.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> "renesas,rcar_sound-r8a7796" has been in use since quite a while, but
-> the binding update was still missing.
-> ---
->  Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 1 +
->  1 file changed, 1 insertion(+)
+line6_read_data() is never called in atomic context.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+The call chains ending up at line6_read_data() are:
+[1] line6_read_data() <- line6_read_serial_number() -> pod_startup4()
+[2] line6_read_data() <- line6_read_serial_number() <- 
+	podhd_startup_workqueue()
+[3] line6_read_data() <- podhd_dev_start() <- podhd_startup_workqueue()
+[4] line6_read_data() <- line6_read_serial_number() <- toneport_init()
+	<- line6_probe()
+[5] line6_read_data() <- toneport_init() <- line6_probe()
+
+pod_startup4() and podhd_startup_workqueue() are set in INIT_WORK().
+line6_probe() is called in toneport_probe(), pod_probe(), podhd_probe() 
+and variax_probe(), which are set as ".probe" in usb_driver structure.
+These functions are not called in atomic context.
+
+Despite never getting called from atomic context, line6_read_data()
+calls mdelay for busy wait.
+That is not necessary and can be replaced with msleep to 
+avoid busy waiting.
+
+This is found by a static analysis tool named DCNS written by myself.
+
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+---
+ sound/usb/line6/driver.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+index 0ff5a7d..af99e73 100644
+--- a/sound/usb/line6/driver.c
++++ b/sound/usb/line6/driver.c
+@@ -356,7 +356,7 @@ int line6_read_data(struct usb_line6 *line6, unsigned address, void *data,
+ 
+ 	/* Wait for data length. We'll get 0xff until length arrives. */
+ 	for (count = 0; count < LINE6_READ_WRITE_MAX_RETRIES; count++) {
+-		mdelay(LINE6_READ_WRITE_STATUS_DELAY);
++		msleep(LINE6_READ_WRITE_STATUS_DELAY);
+ 
+ 		ret = usb_control_msg(usbdev, usb_rcvctrlpipe(usbdev, 0), 0x67,
+ 				      USB_TYPE_VENDOR | USB_RECIP_DEVICE |
+-- 
+1.9.1
