@@ -1,84 +1,68 @@
-From: Matt Porter <mporter@konsulko.com>
-Subject: [PATCH v2 1/2] ASoC: add tda7419 audio processor
-	binding
-Date: Sun, 18 Mar 2018 13:22:37 -0400
-Message-ID: <20180318172238.9795-2-mporter@konsulko.com>
-References: <20180318172238.9795-1-mporter@konsulko.com>
+From: =?UTF-8?Q?Matias_Bj=c3=b8rling?= <mb@lightnvm.io>
+Subject: Re: [PATCH v2 10/21] lightnvm: Remove depends on HAS_DMA in case of
+ platform dependency
+Date: Sun, 18 Mar 2018 19:46:11 +0100
+Message-ID: <319a2b17-f08e-7219-cf5d-08e2df81d55c@lightnvm.io>
+References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
+ <1521208314-4783-11-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f193.google.com (mail-io0-f193.google.com
- [209.85.223.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 128F1267205
- for <alsa-devel@alsa-project.org>; Sun, 18 Mar 2018 18:22:48 +0100 (CET)
-Received: by mail-io0-f193.google.com with SMTP id m83so17987506ioi.8
- for <alsa-devel@alsa-project.org>; Sun, 18 Mar 2018 10:22:48 -0700 (PDT)
-In-Reply-To: <20180318172238.9795-1-mporter@konsulko.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1521208314-4783-11-git-send-email-geert@linux-m68k.org>
+Content-Language: en-GB
+Sender: linux-kernel-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>, "Martin K . Petersen" <martin.petersen@oracle.com>, Andrew Morton <akpm@linux-foundation.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Tejun Heo <tj@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, "David S . Miller" <davem@davemloft.net>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Stefan Richter <stefanr@s5r6.in-berlin.de>, Alan Tull <atull@kernel.org>, Moritz Fischer <mdf@kernel.org>, Wolfram Sang <wsa@the-dreams.de>
+Cc: iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org, linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org, linux-ide@vger.kernel.org, linux-crypto@vger.kernel.org, linux-fbdev@vger.kernel.org, linux1394-devel@lists.sourceforge.net, linux-fpga@vger.kernel.org, linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org, linux-block@vger.kernel.org, linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org, linux-spi@vger.kernel.org, devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-DeviceTree binding for the tda7419 audio processor.
+On 03/16/2018 02:51 PM, Geert Uytterhoeven wrote:
+> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
+> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
+> In most cases this other symbol is an architecture or platform specific
+> symbol, or PCI.
+> 
+> Generic symbols and drivers without platform dependencies keep their
+> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
+> cannot work anyway.
+> 
+> This simplifies the dependencies, and allows to improve compile-testing.
+> 
+> Notes:
+>    - FSL_FMAN keeps its dependency on HAS_DMA, as it calls set_dma_ops(),
+>      which does not exist if HAS_DMA=n (Do we need a dummy? The use of
+>      set_dma_ops() in this driver is questionable),
+>    - SND_SOC_LPASS_IPQ806X and SND_SOC_LPASS_PLATFORM loose their
+>      dependency on HAS_DMA, as they are selected from
+>      SND_SOC_APQ8016_SBC.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reviewed-by: Mark Brown <broonie@kernel.org>
+> Acked-by: Robin Murphy <robin.murphy@arm.com>
+> ---
+> v2:
+>    - Add Reviewed-by, Acked-by,
+>    - Drop RFC state,
+>    - Split per subsystem.
+> ---
+>   drivers/lightnvm/Kconfig | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/lightnvm/Kconfig b/drivers/lightnvm/Kconfig
+> index 10c08982185a572f..9c03f35d9df113c6 100644
+> --- a/drivers/lightnvm/Kconfig
+> +++ b/drivers/lightnvm/Kconfig
+> @@ -4,7 +4,7 @@
+>   
+>   menuconfig NVM
+>   	bool "Open-Channel SSD target support"
+> -	depends on BLOCK && HAS_DMA && PCI
+> +	depends on BLOCK && PCI
+>   	select BLK_DEV_NVME
+>   	help
+>   	  Say Y here to get to enable Open-channel SSDs.
+> 
 
-Signed-off-by: Matt Porter <mporter@konsulko.com>
----
- .../devicetree/bindings/sound/tda7419.txt          | 38 ++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/tda7419.txt
+Looks good.
 
-diff --git a/Documentation/devicetree/bindings/sound/tda7419.txt b/Documentation/devicetree/bindings/sound/tda7419.txt
-new file mode 100644
-index 000000000000..6b85ec38dd56
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/tda7419.txt
-@@ -0,0 +1,38 @@
-+TDA7419 audio processor
-+
-+This device supports I2C only.
-+
-+Required properties:
-+
-+- compatible : "st,tda7419"
-+- reg : the I2C address of the device.
-+- vdd-supply : a regulator spec for the common power supply (8-10V)
-+
-+Optional properties:
-+
-+- st,mute-gpios : a GPIO spec for the MUTE pin.
-+
-+Pins on the device (for linking into audio routes):
-+
-+  * SE3L
-+  * SE3R
-+  * SE2L
-+  * SE2R
-+  * SE1L
-+  * SE1R
-+  * DIFFL
-+  * DIFFR
-+  * MIX
-+  * OUTLF
-+  * OUTRF
-+  * OUTLR
-+  * OUTRR
-+  * OUTSW
-+
-+Example:
-+
-+ap: tda7419@44 {
-+	compatible = "st,tda7419";
-+	reg = <0x44>;
-+	vdd-supply = <&vdd_9v0_reg>;
-+};
--- 
-2.11.0
+Reviewed-by: Matias Bjørling <mb@lightnvm.io>
