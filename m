@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: twl6040: remove duplicated remove
-	callback
-Date: Mon, 19 Mar 2018 16:43:28 +0800
-Message-ID: <20180319084328.GJ2186@sirena.org.uk>
-References: <87d100tsjh.wl%kuninori.morimoto.gx@renesas.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt286: don't turn off HV and VREF if
+	headset is detected
+Date: Mon, 19 Mar 2018 18:07:12 +0800
+Message-ID: <1521454032-32387-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6181503835225812631=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0120F2672C0
- for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 09:43:35 +0100 (CET)
-In-Reply-To: <87d100tsjh.wl%kuninori.morimoto.gx@renesas.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 04AC9266F2E
+ for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 11:07:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,78 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Julia Lawall <julia.lawall@lip6.fr>, Linux-ALSA <alsa-devel@alsa-project.org>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, puneethx.prabhu@intel.com, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+"HV" and "VREF" will be powered up when jack type detection process is
+started and will be powered off when jack type detection process is finished.
+It will generate an unexpected interrupt signal when they are powered
+up during the capture process. Codec driver will do the jack type detection
+process and we can't capture properly before the jack detection process is
+finished. This patch will not power off the "HV" and "VREF" widgets if
+headset is detected and it will solve the unexpected interrupt issue. As a
+result, it will also solve the silence data captured at the beginning in
+headset mic recording issue.
 
---===============6181503835225812631==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="94Ornb/7sD1MvElF"
-Content-Disposition: inline
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt286.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-
---94Ornb/7sD1MvElF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Mar 19, 2018 at 07:50:48AM +0000, Kuninori Morimoto wrote:
->=20
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> We don't need 2 .remove callback
-
-Copying in Peter.
-
->=20
-> Fixes: 7480389fb0d8 ("ASoC: twl6040: replace codec to component")
-> Reported-by: Julia Lawall <julia.lawall@lip6.fr>
-> Reported-by: kbuild test robot <fengguang.wu@intel.com>
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  sound/soc/codecs/twl6040.c | 1 -
->  1 file changed, 1 deletion(-)
->=20
-> diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-> index b56a647..bfd1abd 100644
-> --- a/sound/soc/codecs/twl6040.c
-> +++ b/sound/soc/codecs/twl6040.c
-> @@ -1158,7 +1158,6 @@ static void twl6040_remove(struct snd_soc_component=
- *component)
->  	.remove			=3D twl6040_remove,
->  	.read			=3D twl6040_read,
->  	.write			=3D twl6040_write,
-> -	.remove			=3D twl6040_remove,
->  	.set_bias_level		=3D twl6040_set_bias_level,
->  	.controls		=3D twl6040_snd_controls,
->  	.num_controls		=3D ARRAY_SIZE(twl6040_snd_controls),
-> --=20
-> 1.9.1
->=20
-
---94Ornb/7sD1MvElF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqveC8ACgkQJNaLcl1U
-h9AcFAf8C1YgpTHmeex26vSQc5VvgvwbYeeRK6I+nX8Laj6jRZJ5Bswd/X1SmGCQ
-z37/BOEpFwWkUZqqq86nGjiSuBY1sGzeboSSVlGZYP0jt/ddnixaC395uVqe1wD2
-n9sxuxsnF6ZyF/+vNXpei4H1/osYoHrplGwDX3dg0mhcy9NxVmYWofhP8wty+RnB
-QdT5Oh5tzJ+xLQo3FuvFAoDF2ILX051y5M0SnK7Gc1ZddH8LgZKB2cprwQA/99Xe
-qoNcp+YkS0WxoJnjp7aoVwKHGSvhth0pvDdRoefO5PpJK6m/4qfTpnLTKZ8DqPIo
-8qJpABo8gMr71LSQ57ZbVZzhUWmmdw==
-=ScA3
------END PGP SIGNATURE-----
-
---94Ornb/7sD1MvElF--
-
---===============6181503835225812631==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6181503835225812631==--
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index e164357..0b0f748 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -275,9 +275,10 @@ static int rt286_jack_detect(struct rt286_priv *rt286, bool *hp, bool *mic)
+ 		regmap_read(rt286->regmap, RT286_GET_MIC1_SENSE, &buf);
+ 		*mic = buf & 0x80000000;
+ 	}
+-
+-	snd_soc_dapm_disable_pin(dapm, "HV");
+-	snd_soc_dapm_disable_pin(dapm, "VREF");
++	if (!*mic) {
++		snd_soc_dapm_disable_pin(dapm, "HV");
++		snd_soc_dapm_disable_pin(dapm, "VREF");
++	}
+ 	if (!*hp)
+ 		snd_soc_dapm_disable_pin(dapm, "LDO1");
+ 	snd_soc_dapm_sync(dapm);
+-- 
+2.7.4
