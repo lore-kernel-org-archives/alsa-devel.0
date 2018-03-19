@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Check widget kcontrols before
-	deref." to the asoc tree
-Date: Mon, 19 Mar 2018 08:08:58 +0000 (GMT)
-Message-ID: <20180319080858.AA52144007A@finisterre.ee.mobilebroadband>
-References: <20180314204240.13848-1-liam.r.girdwood@linux.intel.com>
+Subject: Applied "ASoC: pcm: improve debug output for DPCM BE
+	searching." to the asoc tree
+Date: Mon, 19 Mar 2018 08:09:02 +0000 (GMT)
+Message-ID: <20180319080902.C0C2F44007A@finisterre.ee.mobilebroadband>
+References: <20180314204351.13973-1-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 51B552672C0
- for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 09:09:03 +0100 (CET)
-In-Reply-To: <20180314204240.13848-1-liam.r.girdwood@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D21B32672C0
+ for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 09:09:05 +0100 (CET)
+In-Reply-To: <20180314204351.13973-1-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: Check widget kcontrols before deref.
+   ASoC: pcm: improve debug output for DPCM BE searching.
 
 has been applied to the asoc tree at
 
@@ -53,53 +53,61 @@ to this mail.
 Thanks,
 Mark
 
->From 05bdcf12905533b8628627b6634608cd3b57c607 Mon Sep 17 00:00:00 2001
+>From 3c1464658ec642309453db33364e82291d98acc2 Mon Sep 17 00:00:00 2001
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Date: Wed, 14 Mar 2018 20:42:40 +0000
-Subject: [PATCH] ASoC: topology: Check widget kcontrols before deref.
+Date: Wed, 14 Mar 2018 20:43:51 +0000
+Subject: [PATCH] ASoC: pcm: improve debug output for DPCM BE searching.
 
-Validate the topology input before we dereference the pointer.
+Improve the DPCM BE search debug output to make it easier to debug
+issues in topologies.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ sound/soc/soc-pcm.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index e81b52600d58..b363f2409f72 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -504,6 +504,9 @@ static void remove_widget(struct snd_soc_component *comp,
- 	if (dobj->ops && dobj->ops->widget_unload)
- 		dobj->ops->widget_unload(comp, dobj);
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 084125463d10..68d9dc930096 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1392,12 +1392,18 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
+ 	struct snd_soc_pcm_runtime *be;
+ 	int i;
  
-+	if (!w->kcontrols)
-+		goto free_news;
++	dev_dbg(card->dev, "ASoC: find BE for widget %s\n", widget->name);
 +
- 	/*
- 	 * Dynamic Widgets either have 1..N enum kcontrols or mixers.
- 	 * The enum may either have an array of values or strings.
-@@ -524,7 +527,6 @@ static void remove_widget(struct snd_soc_component *comp,
+ 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		list_for_each_entry(be, &card->rtd_list, list) {
  
- 			kfree(se);
+ 			if (!be->dai_link->no_pcm)
+ 				continue;
+ 
++			dev_dbg(card->dev, "ASoC: try BE : %s\n",
++				be->cpu_dai->playback_widget ?
++				be->cpu_dai->playback_widget->name : "(not set)");
++
+ 			if (be->cpu_dai->playback_widget == widget)
+ 				return be;
+ 
+@@ -1414,6 +1420,10 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
+ 			if (!be->dai_link->no_pcm)
+ 				continue;
+ 
++			dev_dbg(card->dev, "ASoC: try BE %s\n",
++				be->cpu_dai->capture_widget ?
++				be->cpu_dai->capture_widget->name : "(not set)");
++
+ 			if (be->cpu_dai->capture_widget == widget)
+ 				return be;
+ 
+@@ -1425,6 +1435,7 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
  		}
--		kfree(w->kcontrol_news);
- 	} else {
- 		/* volume mixer or bytes controls */
- 		for (i = 0; i < w->num_kcontrols; i++) {
-@@ -541,8 +543,11 @@ static void remove_widget(struct snd_soc_component *comp,
- 			kfree((void *)kcontrol->private_value);
- 			snd_ctl_remove(card, kcontrol);
- 		}
--		kfree(w->kcontrol_news);
  	}
-+
-+free_news:
-+	kfree(w->kcontrol_news);
-+
- 	/* widget w is freed by soc-dapm.c */
- }
  
++	/* dai link name and stream name set correctly ? */
+ 	dev_err(card->dev, "ASoC: can't get %s BE for %s\n",
+ 		stream ? "capture" : "playback", widget->name);
+ 	return NULL;
 -- 
 2.16.2
