@@ -1,46 +1,70 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH] ASoC: topology: Fix kcontrol name string
- handling.
-Date: Mon, 19 Mar 2018 19:32:24 +0000
-Message-ID: <1521487944.1923.71.camel@linux.intel.com>
-References: <20180314204319.13919-1-liam.r.girdwood@linux.intel.com>
- <20180319070643.GD2186@sirena.org.uk>
+From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: Re: [PATCH] ALSA: usb-audio: Fix parsing descriptor of UAC2
+ processing unit
+Date: Tue, 20 Mar 2018 01:32:16 +0200
+Message-ID: <CAB=otbRC+5CxFAW2doYDps9p14dJXRNSw1-XyW7iqb=NvsMNiQ@mail.gmail.com>
+References: <20180319061108.24178-1-k.marinushkin@gmail.com>
+ <20180319074019.GA30688@kroah.com> <s5hzi34o6ai.wl-tiwai@suse.de> <s5hd100vzl2.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id B24F726720A
- for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 20:32:28 +0100 (CET)
-In-Reply-To: <20180319070643.GD2186@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hd100vzl2.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Kirill Marinushkin <k.marinushkin@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Felipe Balbi <felipe.balbi@linux.intel.com>, Philippe Ombredanne <pombredanne@nexb.com>, Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2018-03-19 at 15:06 +0800, Mark Brown wrote:
-> On Wed, Mar 14, 2018 at 08:43:19PM +0000, Liam Girdwood wrote:
-> > Fix the topology kcontrol string handling so that string pointer
-> > references are strdup()ed instead of being copied. This fixes issues
-> > with kcontrol templates on the stack or ones that are freed. Remember
-> > and free the strings too when topology is unloaded.
-> 
-> This doesn't seem to apply against current code (I was going to apply it
-> as a fix but it doesn't seem to apply against -next either).
-> _______________________________________________
-> 
+On Mon, Mar 19, 2018 at 5:45 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Mon, 19 Mar 2018 08:47:49 +0100,
+> Takashi Iwai wrote:
+>>
+>> On Mon, 19 Mar 2018 08:40:19 +0100,
+>> Greg Kroah-Hartman wrote:
+>> >
+>> > On Mon, Mar 19, 2018 at 07:11:08AM +0100, Kirill Marinushkin wrote:
+>> > > Currently, the offsets in the UAC2 processing unit descriptor are
+>> > > calculated incorrectly. It causes an issue when connecting the device which
+>> > > provides such a feature:
+>> > >
+>> > > ~~~~
+>> > > [84126.724420] usb 1-1.3.1: invalid Processing Unit descriptor (id 18)
+>> > > ~~~~
+>> > >
+>> > > After this patch is applied, the UAC2 processing unit inits w/o this error.
+>> > >
+>> > > Fixes: 5e1ddb481776 ("UAPI: (Scripted) Disintegrate include/linux/usb")
+>> > > Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
+>> > > Cc: Mark Brown <broonie@kernel.org>
+>> > > Cc: Jaroslav Kysela <perex@perex.cz>
+>> > > Cc: Takashi Iwai <tiwai@suse.com>
+>> > > Cc: Thomas Gleixner <tglx@linutronix.de>
+>> > > Cc: Felipe Balbi <felipe.balbi@linux.intel.com>
+>> > > Cc: Philippe Ombredanne <pombredanne@nexb.com>
+>> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> > > Cc: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+>> > > Cc: linux-kernel@vger.kernel.org
+>> > > Cc: alsa-devel@alsa-project.org
+>> > > ---
+>> > >  include/uapi/linux/usb/audio.h | 4 ++--
+>> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+>> >
+>> >     Cc: stable <stable@vger.kernel.org>
+>> >  perhaps?
+>>
+>> Yes, it deserves.  But I'd need to double-check the UAC2
+>> specification.  It's interesting that such a basic thing hasn't hit
+>> until now.  Maybe just because it's a fairly minor feature.
+>
+> ... and the patch looks correct, after confirming the UAC2 spec.
+> Now I applied it, with a minor correction of Fixes tag, which actually
+> was introduced by 23caaf19b11e ("ALSA: usb-mixer: Add support for
+> Audio Class v2.0"), and adding Cc to stable.
+>
 
-Ok will do, Fwiw I did them against -next when you were at ELC, I guess there
-have been some updates between now and then.
+I also checked UAC1/UAC2 spec and the patch looks good.
+What's interesting it seems nobody faced this issue (after searching
+ower Internet can't find any mention) which was present from the
+beginning of UAC2 driver implementation.
 
-Thanks
-
-Liam
+Thanks,
+Ruslan
