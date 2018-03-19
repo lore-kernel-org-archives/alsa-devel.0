@@ -1,67 +1,46 @@
 From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH 4/5] ASoC: samsung: Document compatible
- strings for Odroid X/X2, Odroid XU3
-Date: Mon, 19 Mar 2018 11:17:54 +0100
-Message-ID: <dad52dab-d6e3-0283-0a19-b42d6632df29@samsung.com>
-References: <CGME20180314164301epcas1p105f42730914735774284892b71839572@epcas1p1.samsung.com>
- <20180314164242.22927-1-s.nawrocki@samsung.com>
- <CAJKOXPdxSULHestFBc2YmtVzEpu422VdqtKMmy9FoCOjGV3wgw@mail.gmail.com>
+Subject: Re: [PATCH v2] ASoC: samsung: Mark unused Odroid compatibles as
+ deprecated
+Date: Mon, 19 Mar 2018 11:29:22 +0100
+Message-ID: <9bb639c3-f4e9-3a1e-61e8-a34fcfd0a344@samsung.com>
+References: <20180318153512.8343-1-krzk@kernel.org>
+        <CGME20180319102927epcas1p12d4a070d0a7125db9424990b997c01c8@epcas1p1.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
- by alsa0.perex.cz (Postfix) with ESMTP id B59F5266F2E
- for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 11:18:03 +0100 (CET)
-In-reply-to: <CAJKOXPdxSULHestFBc2YmtVzEpu422VdqtKMmy9FoCOjGV3wgw@mail.gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-reply-to: <20180318153512.8343-1-krzk@kernel.org>
 Content-language: en-GB
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, =?UTF-8?Q?Bart=c5=82omiej_=c5=bbo=c5=82nierkiewicz?= <b.zolnierkie@samsung.com>, sbkim73@samsung.com, broonie@kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/16/2018 08:37 AM, Krzysztof Kozlowski wrote:
->> diff --git a/Documentation/devicetree/bindings/sound/samsung,odroid.txt b/Documentation/devicetree/bindings/sound/samsung,odroid.txt
->> index f35a2694eb04..a50a0c6a354b 100644
->> --- a/Documentation/devicetree/bindings/sound/samsung,odroid.txt
->> +++ b/Documentation/devicetree/bindings/sound/samsung,odroid.txt
->> @@ -1,8 +1,10 @@
->> -Samsung Exynos Odroid XU3/XU4 audio complex with MAX98090 codec
->> +Hardkernel Odroid X/X2/U3/XU3/XU4 audio complex with MAX98090 codec
->>
->>  Required properties:
->>
->> - - compatible - "hardkernel,odroid-xu3-audio" - for Odroid XU3 board,
->> + - compatible - "hardkernel,odroid-u3-audio" - for Odroid U3 board,
->> +               "hardkernel,odroid-x-audio" - for Odroid X, Odroid X2 boards,
->> +               "hardkernel,odroid-xu3-audio" - for Odroid XU3 board,
->>                 "hardkernel,odroid-xu4-audio" - for Odroid XU4 board
->
-> These are the same so I think they should not get separate
-> compatibles. By definition [2] the compatible expresses the
-> compatibility with family of devices. In this case - these belong to
-> the same family.
-> 
-> The same applies to patch 5/5 (implementation of this).
+On 03/18/2018 04:35 PM, Krzysztof Kozlowski wrote:
+> Compatible for XU4 audio is not being used.  Instead the board uses the
+> same compatible as XU3.  The devices are now just compatible so they
+> should use the same value.  Mark "hardkernel,odroid-xu4-audio" as being
+> deprecated so in this future could be removed to limit useless
+> properties.
 
-Given that everything except XU4 is already obsoleted, are we going to use
-"hardkernel,odroid-xu3-audio" for Odroid X and Odroid U3?
+It doesn't feel right to obsolete the "hardkernel,odroid-xu4-audio"
+compatible, there is significant difference between XU3 and XU4 - there
+is no audio CODEC on XU4, this board only supports audio over HDMI interface.
+XU4 could be compatible with XU3, but not the other way around.
+It just happens we have other DT properties that help to handle such HW 
+design difference.
 
-We could also make it:
-"hardkernel,odroid-xu3-audio", "hardkernel,odroid-x-audio" - for Odroid X, Odroid X2
-"hardkernel,odroid-xu3-audio", "hardkernel,odroid-u3-audio" - for Odroid U3
+Moreover, only XU4 is still in production and should be in few more years [1], 
+others are obsoleted now.
 
-And in the driver wee would only have "hardkernel,odroid-xu3-audio", while dts
-would contain detailed compatible.
+So I think we should keep at least these 2 compatible strings:
 
--- 
-Regards,
+- "hardkernel,odroid-xu3-audio" - for boards with audio CODEC,
+- "hardkernel,odroid-xu4-audio" - for boards without audio CODEC, 
+   supporting only HDMI interface.
+
+--
+Thanks,
 Sylwester
+
+[1] https://com.odroid.com/sigong/blog/blog_list.php
