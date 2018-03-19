@@ -1,15 +1,15 @@
 From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt286: don't turn off HV and VREF if
+Subject: [PATCH] ASoC: rt298: don't turn off HV and VREF if
 	headset is detected
-Date: Mon, 19 Mar 2018 18:07:12 +0800
-Message-ID: <1521454032-32387-1-git-send-email-bardliao@realtek.com>
+Date: Mon, 19 Mar 2018 18:07:29 +0800
+Message-ID: <1521454049-32435-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 04AC9266F2E
- for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 11:07:27 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 052DB266F2E
+ for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 11:07:48 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,15 +35,15 @@ headset mic recording issue.
 
 Signed-off-by: Bard Liao <bardliao@realtek.com>
 ---
- sound/soc/codecs/rt286.c | 7 ++++---
+ sound/soc/codecs/rt298.c | 7 ++++---
  1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index e164357..0b0f748 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -275,9 +275,10 @@ static int rt286_jack_detect(struct rt286_priv *rt286, bool *hp, bool *mic)
- 		regmap_read(rt286->regmap, RT286_GET_MIC1_SENSE, &buf);
+diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
+index 7bf4b31..06cdba4 100644
+--- a/sound/soc/codecs/rt298.c
++++ b/sound/soc/codecs/rt298.c
+@@ -290,9 +290,10 @@ static int rt298_jack_detect(struct rt298_priv *rt298, bool *hp, bool *mic)
+ 		regmap_read(rt298->regmap, RT298_GET_MIC1_SENSE, &buf);
  		*mic = buf & 0x80000000;
  	}
 -
