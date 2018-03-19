@@ -1,98 +1,65 @@
-From: James Kelly <jamespeterkelly@gmail.com>
-Subject: [PATCH v2] ASoC: ssm2602: Replace reg_default_raw with
-	reg_default
-Date: Mon, 19 Mar 2018 21:29:50 +1100
-Message-ID: <20180319102950.13993-1-jamespeterkelly@gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v2] ASoC: samsung: Mark unused Odroid compatibles as deprecated
+Date: Mon, 19 Mar 2018 11:56:00 +0100
+Message-ID: <CAJKOXPcBesWpBoq07XbE1j3F1_N5dAWMTRkv8SN=tSMEm1q0iQ@mail.gmail.com>
+References: <CGME20180319102927epcas1p12d4a070d0a7125db9424990b997c01c8@epcas1p1.samsung.com>
+ <20180318153512.8343-1-krzk@kernel.org> <9bb639c3-f4e9-3a1e-61e8-a34fcfd0a344@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl0-f67.google.com (mail-pl0-f67.google.com
- [209.85.160.67])
- by alsa0.perex.cz (Postfix) with ESMTP id D517A266F2E
- for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 11:30:01 +0100 (CET)
-Received: by mail-pl0-f67.google.com with SMTP id 61-v6so9954867plf.3
- for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 03:30:01 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: James Kelly <jamespeterkelly@gmail.com>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <9bb639c3-f4e9-3a1e-61e8-a34fcfd0a344@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SSM2602 driver is broken on recent kernels (at least
-since 4.9). User space applications such as amixer or
-alsamixer get EIO when attempting to access codec
-controls via the relevant IOCTLs.
+On Mon, Mar 19, 2018 at 11:29 AM, Sylwester Nawrocki
+<s.nawrocki@samsung.com> wrote:
+> On 03/18/2018 04:35 PM, Krzysztof Kozlowski wrote:
+>> Compatible for XU4 audio is not being used.  Instead the board uses the
+>> same compatible as XU3.  The devices are now just compatible so they
+>> should use the same value.  Mark "hardkernel,odroid-xu4-audio" as being
+>> deprecated so in this future could be removed to limit useless
+>> properties.
+>
+> It doesn't feel right to obsolete the "hardkernel,odroid-xu4-audio"
+> compatible, there is significant difference between XU3 and XU4 - there
+> is no audio CODEC on XU4, this board only supports audio over HDMI interface.
+> XU4 could be compatible with XU3, but not the other way around.
+> It just happens we have other DT properties that help to handle such HW
+> design difference.
 
-Root cause of these failures is the regcache_hw_init
-function in drivers/base/regmap/regcache.c, which
-prevents regmap cache initalization from the
-reg_defaults_raw element of the regmap_config structure
-when registers are write only. It also disables the
-regmap cache entirely when all registers are write only
-or volatile as is the case for the SSM2602 driver.
+The compatible does not describe physical differences. It does not
+mean that devices are the same. In this case they are just coming from
+the same family and they operate the same, from the bindings
+perspective.
 
-Using the reg_defaults element of the regmap_config
-structure rather than the reg_defaults_raw element to
-initalize the regmap cache avoids the logic in the
-regcache_hw_init function entirely. It also makes this
-driver consistent with other ASoC codec drivers, as
-this driver was the ONLY codec driver that used the
-reg_defaults_raw element to initalize the cache.
+The XU4 binding is not being used. Adding a compatible which is not
+used in the moment of adding is a proof that this compatible is not
+needed. It is just a duplicate. There is no point of adding
+duplicates.
 
-Tested on Digilent Zybo Z7 development board which has
-a SSM2603 codec chip connected to a Xilinx Zynq SoC.
+>
+> Moreover, only XU4 is still in production and should be in few more years [1],
+> others are obsoleted now.
 
-Signed-off-by: James Kelly <jamespeterkelly@gmail.com>
----
-Sorry I forgot the signature in v1.
+It is not a problem. Whether device is manufactured or not, does not
+reflect what bindings we are using. Deprecated XU4 compatible does not
+mean that XU4 itself is deprecated. Just this compatible should not be
+used for new DTS.
 
- sound/soc/codecs/ssm2602.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+>
+> So I think we should keep at least these 2 compatible strings:
+>
+> - "hardkernel,odroid-xu3-audio" - for boards with audio CODEC,
+> - "hardkernel,odroid-xu4-audio" - for boards without audio CODEC,
+>    supporting only HDMI interface.
 
-diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
-index 031e0eabcc1f..501a4e73b185 100644
---- a/sound/soc/codecs/ssm2602.c
-+++ b/sound/soc/codecs/ssm2602.c
-@@ -54,10 +54,17 @@ struct ssm2602_priv {
-  * using 2 wire for device control, so we cache them instead.
-  * There is no point in caching the reset register
-  */
--static const u16 ssm2602_reg[SSM2602_CACHEREGNUM] = {
--	0x0097, 0x0097, 0x0079, 0x0079,
--	0x000a, 0x0008, 0x009f, 0x000a,
--	0x0000, 0x0000
-+static const struct reg_default ssm2602_reg[SSM2602_CACHEREGNUM] = {
-+	{ .reg = 0x00, .def = 0x0097 },
-+	{ .reg = 0x01, .def = 0x0097 },
-+	{ .reg = 0x02, .def = 0x0079 },
-+	{ .reg = 0x03, .def = 0x0079 },
-+	{ .reg = 0x04, .def = 0x000a },
-+	{ .reg = 0x05, .def = 0x0008 },
-+	{ .reg = 0x06, .def = 0x009f },
-+	{ .reg = 0x07, .def = 0x000a },
-+	{ .reg = 0x08, .def = 0x0000 },
-+	{ .reg = 0x09, .def = 0x0000 }
- };
- 
- 
-@@ -621,8 +628,8 @@ const struct regmap_config ssm2602_regmap_config = {
- 	.volatile_reg = ssm2602_register_volatile,
- 
- 	.cache_type = REGCACHE_RBTREE,
--	.reg_defaults_raw = ssm2602_reg,
--	.num_reg_defaults_raw = ARRAY_SIZE(ssm2602_reg),
-+	.reg_defaults = ssm2602_reg,
-+	.num_reg_defaults = ARRAY_SIZE(ssm2602_reg),
- };
- EXPORT_SYMBOL_GPL(ssm2602_regmap_config);
- 
--- 
-2.14.3 (Apple Git-98)
+Yeah, and then we inflate this list into X, X2, U3, HC1 and all others
+which are the same. And then we should add XU3-lite (it is different
+device). This goes to some nonsense. Compatible is not for each device
+but for family even though there are differences between specific
+devices.
+
+Best regards,
+Krzysztof
