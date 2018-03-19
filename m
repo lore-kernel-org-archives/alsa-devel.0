@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: add tda7419 audio processor binding" to
-	the asoc tree
-Date: Mon, 19 Mar 2018 01:41:01 +0000 (GMT)
-Message-ID: <20180319014101.ADC1344007A@finisterre.ee.mobilebroadband>
-References: <20180318172238.9795-2-mporter@konsulko.com>
+Subject: Re: [PATCH 4/5] ASoC: samsung: Document compatible
+ strings for Odroid X/X2, Odroid XU3
+Date: Mon, 19 Mar 2018 09:45:12 +0800
+Message-ID: <20180319014512.GB2186@sirena.org.uk>
+References: <CGME20180314164301epcas1p105f42730914735774284892b71839572@epcas1p1.samsung.com>
+ <20180314164242.22927-1-s.nawrocki@samsung.com>
+ <CAJKOXPdxSULHestFBc2YmtVzEpu422VdqtKMmy9FoCOjGV3wgw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8864332222568641391=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B093C267253
- for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 02:41:05 +0100 (CET)
-In-Reply-To: <20180318172238.9795-2-mporter@konsulko.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 85676267253
+ for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 02:45:17 +0100 (CET)
+In-Reply-To: <CAJKOXPdxSULHestFBc2YmtVzEpu422VdqtKMmy9FoCOjGV3wgw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,94 +23,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Porter <mporter@konsulko.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, =?utf-8?Q?Bart=C5=82omiej_=C5=BBo=C5=82nierkiewicz?= <b.zolnierkie@samsung.com>, sbkim73@samsung.com, lgirdwood@gmail.com, robh+dt@kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: add tda7419 audio processor binding
+--===============8864332222568641391==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="wDIVdgWPGyZzZswh"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--wDIVdgWPGyZzZswh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Fri, Mar 16, 2018 at 08:37:28AM +0100, Krzysztof Kozlowski wrote:
+> On Wed, Mar 14, 2018 at 5:42 PM, Sylwester Nawrocki
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> > - - compatible - "hardkernel,odroid-xu3-audio" - for Odroid XU3 board,
+> > + - compatible - "hardkernel,odroid-u3-audio" - for Odroid U3 board,
+> > +               "hardkernel,odroid-x-audio" - for Odroid X, Odroid X2 boards,
+> > +               "hardkernel,odroid-xu3-audio" - for Odroid XU3 board,
+> >                 "hardkernel,odroid-xu4-audio" - for Odroid XU4 board
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> These are the same so I think they should not get separate
+> compatibles. By definition [2] the compatible expresses the
+> compatibility with family of devices. In this case - these belong to
+> the same family.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> The same applies to patch 5/5 (implementation of this).
 
-Thanks,
-Mark
+I don't see a problem with adding the compatibles - the software
+handling might be identical but it's not really causing a problem to
+explicit document which board it is if people want.  It may end up
+coming in useful at some point if there's some mechanical/plastics
+difference which ends up being useful to handle (though that's much less
+likely for dev boards like this than for finished products).  But
+equally it's not essential, whatever you two decide.
 
->From 050a0e1f539448474250f441332c0a7d9714d3b5 Mon Sep 17 00:00:00 2001
-From: Matt Porter <mporter@konsulko.com>
-Date: Sun, 18 Mar 2018 13:22:37 -0400
-Subject: [PATCH] ASoC: add tda7419 audio processor binding
+--wDIVdgWPGyZzZswh
+Content-Type: application/pgp-signature; name="signature.asc"
 
-DeviceTree binding for the tda7419 audio processor.
+-----BEGIN PGP SIGNATURE-----
 
-Signed-off-by: Matt Porter <mporter@konsulko.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- .../devicetree/bindings/sound/tda7419.txt          | 38 ++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/tda7419.txt
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqvFicACgkQJNaLcl1U
+h9BpdQf+PTSYmQtGxBX8xXq8mXk+c58fcg+uQJM23M7mKv/O02VPqufeYzb1PIYA
+YzlZLsg9HVwi9J4VrhMAOxnqn6W7PfSoZ0AApYJeNSeBI11dTpV5PyntzgyxqIIx
+BoG3VD8noHGPKbJvNsi7yWJHkaXsikbUSPNAX7cMReD0XyVQi85b8Bm2dChseZ4q
+g2Zs1Pk4ryuRl/K4cU5FmBfMtGV1kmvoPLUySLVzmkhBKwhVnKZKS+0MXxFsO3Ck
+nn78g5O8iKdxGxQWxezjcKGWn1nJgKmsBwm3Z0AxNyIfTQ7e8sGnMUTFAdC7vcyJ
+iASbUVfQUaYyMhVziu6QePAFiK88Ew==
+=fmOW
+-----END PGP SIGNATURE-----
 
-diff --git a/Documentation/devicetree/bindings/sound/tda7419.txt b/Documentation/devicetree/bindings/sound/tda7419.txt
-new file mode 100644
-index 000000000000..6b85ec38dd56
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/tda7419.txt
-@@ -0,0 +1,38 @@
-+TDA7419 audio processor
-+
-+This device supports I2C only.
-+
-+Required properties:
-+
-+- compatible : "st,tda7419"
-+- reg : the I2C address of the device.
-+- vdd-supply : a regulator spec for the common power supply (8-10V)
-+
-+Optional properties:
-+
-+- st,mute-gpios : a GPIO spec for the MUTE pin.
-+
-+Pins on the device (for linking into audio routes):
-+
-+  * SE3L
-+  * SE3R
-+  * SE2L
-+  * SE2R
-+  * SE1L
-+  * SE1R
-+  * DIFFL
-+  * DIFFR
-+  * MIX
-+  * OUTLF
-+  * OUTRF
-+  * OUTLR
-+  * OUTRR
-+  * OUTSW
-+
-+Example:
-+
-+ap: tda7419@44 {
-+	compatible = "st,tda7419";
-+	reg = <0x44>;
-+	vdd-supply = <&vdd_9v0_reg>;
-+};
--- 
-2.16.2
+--wDIVdgWPGyZzZswh--
+
+--===============8864332222568641391==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8864332222568641391==--
