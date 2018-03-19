@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: mt2701: drop unnessary
-	snd_soc_unregister_component()" to the asoc tree
-Date: Mon, 19 Mar 2018 01:03:24 +0000 (GMT)
-Message-ID: <20180319010324.86C54440079@finisterre.ee.mobilebroadband>
-References: <1521185516-164333-1-git-send-email-weiyongjun1@huawei.com>
+Subject: Re: [PATCH v3 1/2] ASoC: codecs: Add support for
+	PCM1789
+Date: Mon, 19 Mar 2018 09:23:35 +0800
+Message-ID: <20180319012335.GA2186@sirena.org.uk>
+References: <20180315161825.5524-2-mylene.josserand@bootlin.com>
+ <201803171907.vbmkB7Z8%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4677099683268348733=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 80239267344
- for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 02:03:34 +0100 (CET)
-In-Reply-To: <1521185516-164333-1-git-send-email-weiyongjun1@huawei.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 105B3267205
+ for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 02:23:50 +0100 (CET)
+In-Reply-To: <201803171907.vbmkB7Z8%fengguang.wu@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: alsa-devel@alsa-project.org, Ryder Lee <ryder.lee@mediatek.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Brugger <matthias.bgg@gmail.com>, Matthias@sirena.org.uk, linux-arm-kernel@lists.infradead.org
+To: kbuild test robot <lkp@intel.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, michael@amarulasolutions.com, alexandre.belloni@bootlin.com, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org, kbuild-all@01.org, thomas.petazzoni@bootlin.com, =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@bootlin.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: mediatek: mt2701: drop unnessary snd_soc_unregister_component()
+--===============4677099683268348733==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="rmZDAlAp7pllCg/D"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--rmZDAlAp7pllCg/D
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Sat, Mar 17, 2018 at 07:19:51PM +0800, kbuild test robot wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> >> sound/soc/codecs/pcm1789.c:265:1-3: ERROR: test of a variable/field address
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+>  > 265		if (&priv->work)
+>    266			flush_work(&priv->work);
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+This is a legit warning but otherwise this looks good so I'll apply,
+please send a followup patch fixing this.
 
-Thanks,
-Mark
+--rmZDAlAp7pllCg/D
+Content-Type: application/pgp-signature; name="signature.asc"
 
->From 66717d787a092c1438d2ce7b31d47fe88b6b93ea Mon Sep 17 00:00:00 2001
-From: Wei Yongjun <weiyongjun1@huawei.com>
-Date: Fri, 16 Mar 2018 07:31:56 +0000
-Subject: [PATCH] ASoC: mediatek: mt2701: drop unnessary
- snd_soc_unregister_component()
+-----BEGIN PGP SIGNATURE-----
 
-It's not necessary to unregister a component registered
-with devm_snd_soc_register_component().
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqvERcACgkQJNaLcl1U
+h9Bz6Af+Obo5cUDzueqjNID4s8PqyHekx1WLIbfKMpBrMnZT9yunB+tKct+xQ2Zf
+s9OQ5zNuYVo1SdY4KFKGtqHWQm7UPwLr/aISpEZFov/gRYRVkXibf/LjdhVEx9Du
+GNSSnsE6ZYDQ8U5LJB03wofldsHH7HD5ZRJ9+/gAc/uX2qwtF0GTX9RF8q3Z+AQw
+r+VtleDfLSr2Ca/83qka4o7IBrbjl3nWgyczY4wRs6I3kUlRfnp0EK6IIHxHnmyQ
+Pdwcxi14w9rRHmw3j0IGgiR/9BLUTYlyh+ik9DKm89UslcEYW3LX8jrzxird10i0
+csg2pQT3CBA9Eyeq8XXkaGkuva/3dA==
+=kJ15
+-----END PGP SIGNATURE-----
 
-Fixes: f1b5bf07365d ("ASoC: mt2701/mt8173: replace platform to componen")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 2 --
- 1 file changed, 2 deletions(-)
+--rmZDAlAp7pllCg/D--
 
-diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-index f7e0702d92f8..43837a3bf1ca 100644
---- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-+++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-@@ -1561,8 +1561,6 @@ static int mt2701_afe_pcm_dev_remove(struct platform_device *pdev)
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		mt2701_afe_runtime_suspend(&pdev->dev);
- 
--	snd_soc_unregister_component(&pdev->dev);
--
- 	return 0;
- }
- 
--- 
-2.16.2
+--===============4677099683268348733==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4677099683268348733==--
