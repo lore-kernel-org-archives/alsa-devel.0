@@ -1,46 +1,98 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH v2] ASoC: samsung: Mark unused Odroid compatibles as
- deprecated
-Date: Mon, 19 Mar 2018 11:29:22 +0100
-Message-ID: <9bb639c3-f4e9-3a1e-61e8-a34fcfd0a344@samsung.com>
-References: <20180318153512.8343-1-krzk@kernel.org>
-        <CGME20180319102927epcas1p12d4a070d0a7125db9424990b997c01c8@epcas1p1.samsung.com>
+From: James Kelly <jamespeterkelly@gmail.com>
+Subject: [PATCH v2] ASoC: ssm2602: Replace reg_default_raw with
+	reg_default
+Date: Mon, 19 Mar 2018 21:29:50 +1100
+Message-ID: <20180319102950.13993-1-jamespeterkelly@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <20180318153512.8343-1-krzk@kernel.org>
-Content-language: en-GB
-Sender: linux-kernel-owner@vger.kernel.org
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pl0-f67.google.com (mail-pl0-f67.google.com
+ [209.85.160.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id D517A266F2E
+ for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 11:30:01 +0100 (CET)
+Received: by mail-pl0-f67.google.com with SMTP id 61-v6so9954867plf.3
+ for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 03:30:01 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: James Kelly <jamespeterkelly@gmail.com>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/18/2018 04:35 PM, Krzysztof Kozlowski wrote:
-> Compatible for XU4 audio is not being used.  Instead the board uses the
-> same compatible as XU3.  The devices are now just compatible so they
-> should use the same value.  Mark "hardkernel,odroid-xu4-audio" as being
-> deprecated so in this future could be removed to limit useless
-> properties.
+SSM2602 driver is broken on recent kernels (at least
+since 4.9). User space applications such as amixer or
+alsamixer get EIO when attempting to access codec
+controls via the relevant IOCTLs.
 
-It doesn't feel right to obsolete the "hardkernel,odroid-xu4-audio"
-compatible, there is significant difference between XU3 and XU4 - there
-is no audio CODEC on XU4, this board only supports audio over HDMI interface.
-XU4 could be compatible with XU3, but not the other way around.
-It just happens we have other DT properties that help to handle such HW 
-design difference.
+Root cause of these failures is the regcache_hw_init
+function in drivers/base/regmap/regcache.c, which
+prevents regmap cache initalization from the
+reg_defaults_raw element of the regmap_config structure
+when registers are write only. It also disables the
+regmap cache entirely when all registers are write only
+or volatile as is the case for the SSM2602 driver.
 
-Moreover, only XU4 is still in production and should be in few more years [1], 
-others are obsoleted now.
+Using the reg_defaults element of the regmap_config
+structure rather than the reg_defaults_raw element to
+initalize the regmap cache avoids the logic in the
+regcache_hw_init function entirely. It also makes this
+driver consistent with other ASoC codec drivers, as
+this driver was the ONLY codec driver that used the
+reg_defaults_raw element to initalize the cache.
 
-So I think we should keep at least these 2 compatible strings:
+Tested on Digilent Zybo Z7 development board which has
+a SSM2603 codec chip connected to a Xilinx Zynq SoC.
 
-- "hardkernel,odroid-xu3-audio" - for boards with audio CODEC,
-- "hardkernel,odroid-xu4-audio" - for boards without audio CODEC, 
-   supporting only HDMI interface.
+Signed-off-by: James Kelly <jamespeterkelly@gmail.com>
+---
+Sorry I forgot the signature in v1.
 
---
-Thanks,
-Sylwester
+ sound/soc/codecs/ssm2602.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
-[1] https://com.odroid.com/sigong/blog/blog_list.php
+diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+index 031e0eabcc1f..501a4e73b185 100644
+--- a/sound/soc/codecs/ssm2602.c
++++ b/sound/soc/codecs/ssm2602.c
+@@ -54,10 +54,17 @@ struct ssm2602_priv {
+  * using 2 wire for device control, so we cache them instead.
+  * There is no point in caching the reset register
+  */
+-static const u16 ssm2602_reg[SSM2602_CACHEREGNUM] = {
+-	0x0097, 0x0097, 0x0079, 0x0079,
+-	0x000a, 0x0008, 0x009f, 0x000a,
+-	0x0000, 0x0000
++static const struct reg_default ssm2602_reg[SSM2602_CACHEREGNUM] = {
++	{ .reg = 0x00, .def = 0x0097 },
++	{ .reg = 0x01, .def = 0x0097 },
++	{ .reg = 0x02, .def = 0x0079 },
++	{ .reg = 0x03, .def = 0x0079 },
++	{ .reg = 0x04, .def = 0x000a },
++	{ .reg = 0x05, .def = 0x0008 },
++	{ .reg = 0x06, .def = 0x009f },
++	{ .reg = 0x07, .def = 0x000a },
++	{ .reg = 0x08, .def = 0x0000 },
++	{ .reg = 0x09, .def = 0x0000 }
+ };
+ 
+ 
+@@ -621,8 +628,8 @@ const struct regmap_config ssm2602_regmap_config = {
+ 	.volatile_reg = ssm2602_register_volatile,
+ 
+ 	.cache_type = REGCACHE_RBTREE,
+-	.reg_defaults_raw = ssm2602_reg,
+-	.num_reg_defaults_raw = ARRAY_SIZE(ssm2602_reg),
++	.reg_defaults = ssm2602_reg,
++	.num_reg_defaults = ARRAY_SIZE(ssm2602_reg),
+ };
+ EXPORT_SYMBOL_GPL(ssm2602_regmap_config);
+ 
+-- 
+2.14.3 (Apple Git-98)
