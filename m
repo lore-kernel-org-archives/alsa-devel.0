@@ -1,19 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/5] ASoC: samsung: Document compatible
- strings for Odroid X/X2, Odroid XU3
-Date: Mon, 19 Mar 2018 09:45:12 +0800
-Message-ID: <20180319014512.GB2186@sirena.org.uk>
-References: <CGME20180314164301epcas1p105f42730914735774284892b71839572@epcas1p1.samsung.com>
- <20180314164242.22927-1-s.nawrocki@samsung.com>
- <CAJKOXPdxSULHestFBc2YmtVzEpu422VdqtKMmy9FoCOjGV3wgw@mail.gmail.com>
+From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: [PATCH v2 0/2] USB Audio Device Class 3.0 support
+Date: Mon, 19 Mar 2018 03:46:01 +0200
+Message-ID: <1521423963-24677-1-git-send-email-ruslan.bilovol@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8864332222568641391=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 85676267253
- for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 02:45:17 +0100 (CET)
-In-Reply-To: <CAJKOXPdxSULHestFBc2YmtVzEpu422VdqtKMmy9FoCOjGV3wgw@mail.gmail.com>
+Received: from mail-lf0-f65.google.com (mail-lf0-f65.google.com
+ [209.85.215.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id EBA9F267253
+ for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 02:46:06 +0100 (CET)
+Received: by mail-lf0-f65.google.com with SMTP id a22-v6so22995332lfg.9
+ for <alsa-devel@alsa-project.org>; Sun, 18 Mar 2018 18:46:06 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,67 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, =?utf-8?Q?Bart=C5=82omiej_=C5=BBo=C5=82nierkiewicz?= <b.zolnierkie@samsung.com>, sbkim73@samsung.com, lgirdwood@gmail.com, robh+dt@kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>
+To: Takashi Iwai <tiwai@suse.com>
+Cc: Jorge <jorge.sanjuan@codethink.co.uk>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi,
 
---===============8864332222568641391==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="wDIVdgWPGyZzZswh"
-Content-Disposition: inline
+This patch adds initial USB Audio Device Class 3.0 [1]
+support to the ALSA that we discussed at ELCE.
 
+The patch was tested with UAC3 gadget [2] that I posted
+to USB mailing list before. It is good for working with
+BADD device which implements such topologies like
+BAIF (Basic Audio Input Functions), BAOF (Basic Audio
+Output Functions) or compbination of both.
 
---wDIVdgWPGyZzZswh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+UAC3 spec has changed descriptors laout and many other
+codes comparing to UAC2 spec, thus making reuse of existing
+sources impossible or quite complex.
 
-On Fri, Mar 16, 2018 at 08:37:28AM +0100, Krzysztof Kozlowski wrote:
-> On Wed, Mar 14, 2018 at 5:42 PM, Sylwester Nawrocki
+There are still many areas of improvement, as this patch
+doesn't have UAC3 Mixer Unit support nor some new features
+like Power Management
 
-> > - - compatible - "hardkernel,odroid-xu3-audio" - for Odroid XU3 board,
-> > + - compatible - "hardkernel,odroid-u3-audio" - for Odroid U3 board,
-> > +               "hardkernel,odroid-x-audio" - for Odroid X, Odroid X2 boards,
-> > +               "hardkernel,odroid-xu3-audio" - for Odroid XU3 board,
-> >                 "hardkernel,odroid-xu4-audio" - for Odroid XU4 board
+I tested this with BeagleBone Black as UAC3 gadget device.
 
-> These are the same so I think they should not get separate
-> compatibles. By definition [2] the compatible expresses the
-> compatibility with family of devices. In this case - these belong to
-> the same family.
+[1] http://www.usb.org/developers/docs/devclass_docs/USB_Audio_v3.0.zip
+[2] http://www.spinics.net/lists/linux-usb/msg162482.html
 
-> The same applies to patch 5/5 (implementation of this).
-
-I don't see a problem with adding the compatibles - the software
-handling might be identical but it's not really causing a problem to
-explicit document which board it is if people want.  It may end up
-coming in useful at some point if there's some mechanical/plastics
-difference which ends up being useful to handle (though that's much less
-likely for dev boards like this than for finished products).  But
-equally it's not essential, whatever you two decide.
-
---wDIVdgWPGyZzZswh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqvFicACgkQJNaLcl1U
-h9BpdQf+PTSYmQtGxBX8xXq8mXk+c58fcg+uQJM23M7mKv/O02VPqufeYzb1PIYA
-YzlZLsg9HVwi9J4VrhMAOxnqn6W7PfSoZ0AApYJeNSeBI11dTpV5PyntzgyxqIIx
-BoG3VD8noHGPKbJvNsi7yWJHkaXsikbUSPNAX7cMReD0XyVQi85b8Bm2dChseZ4q
-g2Zs1Pk4ryuRl/K4cU5FmBfMtGV1kmvoPLUySLVzmkhBKwhVnKZKS+0MXxFsO3Ck
-nn78g5O8iKdxGxQWxezjcKGWn1nJgKmsBwm3Z0AxNyIfTQ7e8sGnMUTFAdC7vcyJ
-iASbUVfQUaYyMhVziu6QePAFiK88Ew==
-=fmOW
------END PGP SIGNATURE-----
-
---wDIVdgWPGyZzZswh--
-
---===============8864332222568641391==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+v2 changes:
+ - moved audioformat quirks to quirks.c
+ - addressed many comments from Pierre-Louis Bossart
+ - reorganized audio-v3.h
+ - added more UAC3 channel relationship definitions
 
 
---===============8864332222568641391==--
+Ruslan Bilovol (2):
+  ALSA: usb-audio: move audioformat quirks to quirks.c
+  ALSA: usb: initial USB Audio Device Class 3.0 support
+
+ include/linux/usb/audio-v2.h   |   4 +-
+ include/linux/usb/audio-v3.h   | 395 +++++++++++++++++++++++++++++++++++++++++
+ include/uapi/linux/usb/audio.h |   1 +
+ sound/usb/card.c               |   7 +-
+ sound/usb/card.h               |   2 +-
+ sound/usb/clock.c              | 228 +++++++++++++++++++++---
+ sound/usb/clock.h              |   4 +-
+ sound/usb/format.c             |  91 ++++++++--
+ sound/usb/format.h             |   6 +-
+ sound/usb/mixer.c              | 337 +++++++++++++++++++++++------------
+ sound/usb/quirks.c             |  34 ++++
+ sound/usb/quirks.h             |   4 +
+ sound/usb/stream.c             | 393 +++++++++++++++++++++++++++++++++-------
+ 13 files changed, 1284 insertions(+), 222 deletions(-)
+ create mode 100644 include/linux/usb/audio-v3.h
+
+-- 
+1.9.1
