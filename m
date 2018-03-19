@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm: improve debug output for DPCM BE
-	searching." to the asoc tree
-Date: Mon, 19 Mar 2018 08:09:02 +0000 (GMT)
-Message-ID: <20180319080902.C0C2F44007A@finisterre.ee.mobilebroadband>
-References: <20180314204351.13973-1-liam.r.girdwood@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D21B32672C0
- for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 09:09:05 +0100 (CET)
-In-Reply-To: <20180314204351.13973-1-liam.r.girdwood@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: Applied "soc-core: don't call kfree() for component" to the asoc tree
+Date: Mon, 19 Mar 2018 08:08:54 +0000 (GMT)
+Message-ID: <20180319080854.94EE3440079@finisterre.ee.mobilebroadband>
+References: <87h8pq166i.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <87h8pq166i.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Jernej Skrabec <jernej.skrabec@siol.net>Jernej Skrabec <jernej.skrabec@siol.net>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.orgJernej =?ISO-8859-2?Q?=A9krabec?= <jernej.skrabec@siol.net>, linux-kernel@vger.kernel.org, wens@csie.org, maxime.ripard@free-electrons.com, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm: improve debug output for DPCM BE searching.
+   soc-core: don't call kfree() for component
 
 has been applied to the asoc tree at
 
@@ -53,61 +37,62 @@ to this mail.
 Thanks,
 Mark
 
->From 3c1464658ec642309453db33364e82291d98acc2 Mon Sep 17 00:00:00 2001
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Date: Wed, 14 Mar 2018 20:43:51 +0000
-Subject: [PATCH] ASoC: pcm: improve debug output for DPCM BE searching.
+>From 7ecbd6a91b1e9bb90a4f3be641669347aacc5ab5 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 19 Mar 2018 07:27:17 +0000
+Subject: [PATCH] soc-core: don't call kfree() for component
 
-Improve the DPCM BE search debug output to make it easier to debug
-issues in topologies.
+When driver register its component to ALSA SoC, almost all drivers are
+using snd_soc_register_component(), but soc-generic-dmaengine-pcm is
+using snd_soc_add_component().
 
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Existing component function had been assumed that registered component
+was allocated, and it calling kfree() for it.
+But, the user who used snd_soc_add_component() doesn't.
+
+This patch uses devm_kzalloc() instead of kzalloc() for component,
+and doesn't call kree() anymore.
+This patch fixes commit be7ee5f32a9a ("ASoC: soc-generic-dmaengine-pcm:
+replace platform to component").
+Allwinner H3 SoC will crash without this patch.
+Thanks Jernej report.
+
+Reported-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: Jernej Skrabec <jernej.skrabec@siol.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/soc-core.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 084125463d10..68d9dc930096 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1392,12 +1392,18 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
- 	struct snd_soc_pcm_runtime *be;
- 	int i;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 9558125b448d..8b1ef90f7b57 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3454,7 +3454,6 @@ int snd_soc_add_component(struct device *dev,
+ err_cleanup:
+ 	snd_soc_component_cleanup(component);
+ err_free:
+-	kfree(component);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_add_component);
+@@ -3466,7 +3465,7 @@ int snd_soc_register_component(struct device *dev,
+ {
+ 	struct snd_soc_component *component;
  
-+	dev_dbg(card->dev, "ASoC: find BE for widget %s\n", widget->name);
-+
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		list_for_each_entry(be, &card->rtd_list, list) {
+-	component = kzalloc(sizeof(*component), GFP_KERNEL);
++	component = devm_kzalloc(dev, sizeof(*component), GFP_KERNEL);
+ 	if (!component)
+ 		return -ENOMEM;
  
- 			if (!be->dai_link->no_pcm)
- 				continue;
+@@ -3501,7 +3500,6 @@ static int __snd_soc_unregister_component(struct device *dev)
  
-+			dev_dbg(card->dev, "ASoC: try BE : %s\n",
-+				be->cpu_dai->playback_widget ?
-+				be->cpu_dai->playback_widget->name : "(not set)");
-+
- 			if (be->cpu_dai->playback_widget == widget)
- 				return be;
- 
-@@ -1414,6 +1420,10 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
- 			if (!be->dai_link->no_pcm)
- 				continue;
- 
-+			dev_dbg(card->dev, "ASoC: try BE %s\n",
-+				be->cpu_dai->capture_widget ?
-+				be->cpu_dai->capture_widget->name : "(not set)");
-+
- 			if (be->cpu_dai->capture_widget == widget)
- 				return be;
- 
-@@ -1425,6 +1435,7 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
- 		}
+ 	if (found) {
+ 		snd_soc_component_cleanup(component);
+-		kfree(component);
  	}
  
-+	/* dai link name and stream name set correctly ? */
- 	dev_err(card->dev, "ASoC: can't get %s BE for %s\n",
- 		stream ? "capture" : "playback", widget->name);
- 	return NULL;
+ 	return found;
 -- 
 2.16.2
