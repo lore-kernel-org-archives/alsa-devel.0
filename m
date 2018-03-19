@@ -1,141 +1,125 @@
-From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Subject: Re: [PATCH v1 0/6] ALSA: usb: UAC3. Add support for
- Basic Audio Device (BADD)
-Date: Mon, 19 Mar 2018 03:51:10 +0200
-Message-ID: <CAB=otbTk4-bv42A6DvtW83Ld38PF17VdK4AJ3acyS_sddxXxcw@mail.gmail.com>
-References: <20171219091411.16267-1-jorge.sanjuan@codethink.co.uk>
- <s5hy3lz3vjn.wl-tiwai@suse.de>
- <af8552b9-09d6-90db-c9c4-681c0d027815@codethink.co.uk>
+From: Ulf Hansson <ulf.hansson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 13/21] mmc: Remove depends on HAS_DMA in case of
+	platform dependency
+Date: Mon, 19 Mar 2018 04:08:43 +0100
+Message-ID: <CAPDyKFpPEQJLOv+i8yBEPkAiPG9QhjGGvyYSawPxRVShayznvw@mail.gmail.com>
+References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
+	<1521208314-4783-14-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f196.google.com (mail-ot0-f196.google.com
- [74.125.82.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 0289F267205
- for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 02:51:11 +0100 (CET)
-Received: by mail-ot0-f196.google.com with SMTP id t2-v6so6526061otj.4
- for <alsa-devel@alsa-project.org>; Sun, 18 Mar 2018 18:51:11 -0700 (PDT)
-In-Reply-To: <af8552b9-09d6-90db-c9c4-681c0d027815@codethink.co.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jorge <jorge.sanjuan@codethink.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org, ci005-internal@lists.codethink.co.uk
+Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+In-Reply-To: <1521208314-4783-14-git-send-email-geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
+List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
+Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+To: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-fpga-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-remoteproc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Linux Fbdev development list <linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Bjorn Andersson <bjorn.andersson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Eric Anholt <eric-WhKQ6XTQaPysTnJN9+BGXg@public.gmane.org>, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux1394-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>, Stefan Wahren <stefan.wahren-eS4NqCHxEME@public.gmane.org>, Boris Brezillon <boris.brezillon-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, "James E . J . Bottomley" <jejb-23VcF4HTsmIX0ybBhKVfKdBPR1lH4CV8@public.gmane.org>, Herbert Xu <herbert-lOAM2aK0SrRLBo1qDEOMRrpzq4S04n8Q@public.gmane.org>, linux-scsi <linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Richard Weinberger <richard-/L3Ra7n9ekc@public.gmane.org>, Jassi Brar <jassisinghbrar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Marek Vasut <marek.vasut-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-serial-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Matias Bjorling <mb-VR7NuqX4VJ8tq7phqP6ubQ@public.gmane.org>, David Woodhouse <dwmw2@infradea>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 19, 2017 at 11:46 AM, Jorge <jorge.sanjuan@codethink.co.uk> wrote:
+On 16 March 2018 at 14:51, Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org> wrote:
+> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
+> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
+> In most cases this other symbol is an architecture or platform specific
+> symbol, or PCI.
 >
+> Generic symbols and drivers without platform dependencies keep their
+> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
+> cannot work anyway.
 >
-> On 19/12/17 09:40, Takashi Iwai wrote:
->>
->> On Tue, 19 Dec 2017 10:14:05 +0100,
->> Jorge Sanjuan wrote:
->>>
->>>
->>> This adds functionality for the Basic Audio Device (BADD) subset that is
->>> defined in the USB Audio Class 3 (UAC3). In a BADD compliant driver, all
->>> Class Specific descriptors are inferred and so they should all be
->>> generated
->>> in the *host* as the device wont expose those. This also applies to the
->>> new
->>> HIGH CAPABILITY descriptor as the GET request is not to be supported in
->>> a BADD compliant driver.
->>>
->>> The new class requires the device to have 3 usb configurations as
->>> follows:
->>>
->>>      1: Legacy Mode: UAC1 or UAC2.
->>>      2: BADD device with a prefined topology. (Minimum).
->>>      3: UAC3 device for more detailed description or more complex
->>>         devices that can't be covered by the BADD profile.
->>>
->>> This patch series also includes some minor fixes to sound/usb.
->>>
->>> It has been tested with an actual UAC3 compliant device in different host
->>> machines and all configs (UAC1/2, BADD and UAC3) work.
->>>
->>> Also, this has been implemented on top of the the patch which adds UAC3
->>> support
->>> to the usb sound card driver:
->>>
->>>         commit ddd452d7b04b86fb5f9285a19ac54deca9264ac1
->>>         Author: Ruslan Bilovol <ruslan.bilovol@gmail.com>
->>>         Date:   Tue Nov 7 04:01:20 2017 +0200
->>
->>
->> Where did you get this commit at all...?  The UAC3 patchset has never
->> been merged yet.  So it's moot for developing the stuff on top of it.
->> Or at least coordinate with Ruslan for merging into his series for the
->> next review round.
+> This simplifies the dependencies, and allows to improve compile-testing.
 >
->
-> Sorry. I meant to reference this patch:
->
-> https://patchwork.kernel.org/patch/10045619/
->
-> I had that commit message in our internal dev-branch after applying.
->
->>
->> Ruslan, can you revise the patchset addressing the issues, and
->> resubmit?
+> Signed-off-by: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
+> Reviewed-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+> Acked-by: Robin Murphy <robin.murphy-5wv7dgnIgG8@public.gmane.org>
 
-I've just sent v2, but it doesn't include this patchset as I'm currently
-looking if it will be easier to update alsa structures directly rather
-then generating full set of descriptors for such devices with inferred
-class-specific descriptors. Will update you soon.
+Acked-by: Ulf Hansson <ulf.hansson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 
-Thanks,
-Ruslan
-
-
->>
->>
->> thanks,
->>
->> Takashi
->>
->>>
->>> Jorge Sanjuan (6):
->>>    usb: audio: Add bi-directional terminal types.
->>>    usb: audio: Fix variable length field to be variable.
->>>    ALSA: usb: UAC3. Add initial mixer support.
->>>    ALSA: usb: Only get AudioControl header for UAC1 class.
->>>    ALSA: usb: Use Class Specific EP for UAC3 devices.
->>>    ALSA: usb: ADC3: Add initial BADD spec support
->>>
->>>   include/linux/usb/audio-v3.h   |   2 +-
->>>   include/uapi/linux/usb/audio.h |  21 +-
->>>   sound/usb/Makefile             |   3 +-
->>>   sound/usb/badd.c               | 518
->>> +++++++++++++++++++++++++++++++++++++++++
->>>   sound/usb/badd.h               |  14 ++
->>>   sound/usb/card.c               |  25 +-
->>>   sound/usb/mixer.c              |  24 ++
->>>   sound/usb/stream.c             | 165 ++++++++-----
->>>   sound/usb/usbaudio.h           |   1 +
->>>   9 files changed, 702 insertions(+), 71 deletions(-)
->>>   create mode 100644 sound/usb/badd.c
->>>   create mode 100644 sound/usb/badd.h
->>>
->>> --
->>> 2.11.0
->>>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
+> ---
+> v2:
+>   - Add Reviewed-by, Acked-by,
+>   - Drop RFC state,
+>   - Split per subsystem.
+> ---
+>  drivers/mmc/host/Kconfig | 10 ++--------
+>  1 file changed, 2 insertions(+), 8 deletions(-)
 >
-
-
-
--- 
-Best regards,
-Ruslan Bilovol
+> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+> index 620c2d90a646f387..f6d43348b4a3e5d4 100644
+> --- a/drivers/mmc/host/Kconfig
+> +++ b/drivers/mmc/host/Kconfig
+> @@ -358,7 +358,6 @@ config MMC_MESON_MX_SDIO
+>         tristate "Amlogic Meson6/Meson8/Meson8b SD/MMC Host Controller support"
+>         depends on ARCH_MESON || COMPILE_TEST
+>         depends on COMMON_CLK
+> -       depends on HAS_DMA
+>         depends on OF
+>         help
+>           This selects support for the SD/MMC Host Controller on
+> @@ -401,7 +400,6 @@ config MMC_OMAP
+>
+>  config MMC_OMAP_HS
+>         tristate "TI OMAP High Speed Multimedia Card Interface support"
+> -       depends on HAS_DMA
+>         depends on ARCH_OMAP2PLUS || ARCH_KEYSTONE || COMPILE_TEST
+>         help
+>           This selects the TI OMAP High Speed Multimedia card Interface.
+> @@ -511,7 +509,6 @@ config MMC_DAVINCI
+>
+>  config MMC_GOLDFISH
+>         tristate "goldfish qemu Multimedia Card Interface support"
+> -       depends on HAS_DMA
+>         depends on GOLDFISH || COMPILE_TEST
+>         help
+>           This selects the Goldfish Multimedia card Interface emulation
+> @@ -605,7 +602,7 @@ config MMC_SDHI
+>
+>  config MMC_SDHI_SYS_DMAC
+>         tristate "DMA for SDHI SD/SDIO controllers using SYS-DMAC"
+> -       depends on MMC_SDHI && HAS_DMA
+> +       depends on MMC_SDHI
+>         default MMC_SDHI if (SUPERH || ARM)
+>         help
+>           This provides DMA support for SDHI SD/SDIO controllers
+> @@ -615,7 +612,7 @@ config MMC_SDHI_SYS_DMAC
+>  config MMC_SDHI_INTERNAL_DMAC
+>         tristate "DMA for SDHI SD/SDIO controllers using on-chip bus mastering"
+>         depends on ARM64 || COMPILE_TEST
+> -       depends on MMC_SDHI && HAS_DMA
+> +       depends on MMC_SDHI
+>         default MMC_SDHI if ARM64
+>         help
+>           This provides DMA support for SDHI SD/SDIO controllers
+> @@ -688,7 +685,6 @@ config MMC_CAVIUM_THUNDERX
+>
+>  config MMC_DW
+>         tristate "Synopsys DesignWare Memory Card Interface"
+> -       depends on HAS_DMA
+>         depends on ARC || ARM || ARM64 || MIPS || COMPILE_TEST
+>         help
+>           This selects support for the Synopsys DesignWare Mobile Storage IP
+> @@ -758,7 +754,6 @@ config MMC_DW_ZX
+>
+>  config MMC_SH_MMCIF
+>         tristate "SuperH Internal MMCIF support"
+> -       depends on HAS_DMA
+>         depends on SUPERH || ARCH_RENESAS || COMPILE_TEST
+>         help
+>           This selects the MMC Host Interface controller (MMCIF) found in various
+> @@ -878,7 +873,6 @@ config MMC_TOSHIBA_PCI
+>  config MMC_BCM2835
+>         tristate "Broadcom BCM2835 SDHOST MMC Controller support"
+>         depends on ARCH_BCM2835 || COMPILE_TEST
+> -       depends on HAS_DMA
+>         help
+>           This selects the BCM2835 SDHOST MMC controller. If you have
+>           a BCM2835 platform with SD or MMC devices, say Y or M here.
+> --
+> 2.7.4
+>
