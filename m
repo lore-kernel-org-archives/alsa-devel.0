@@ -1,15 +1,20 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt298: don't turn off HV and VREF if
-	headset is detected
-Date: Mon, 19 Mar 2018 18:07:29 +0800
-Message-ID: <1521454049-32435-1-git-send-email-bardliao@realtek.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [PATCH 4/5] ASoC: samsung: Document compatible
+ strings for Odroid X/X2, Odroid XU3
+Date: Mon, 19 Mar 2018 11:17:54 +0100
+Message-ID: <dad52dab-d6e3-0283-0a19-b42d6632df29@samsung.com>
+References: <CGME20180314164301epcas1p105f42730914735774284892b71839572@epcas1p1.samsung.com>
+ <20180314164242.22927-1-s.nawrocki@samsung.com>
+ <CAJKOXPdxSULHestFBc2YmtVzEpu422VdqtKMmy9FoCOjGV3wgw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 052DB266F2E
- for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 11:07:48 +0100 (CET)
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id B59F5266F2E
+ for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 11:18:03 +0100 (CET)
+In-reply-to: <CAJKOXPdxSULHestFBc2YmtVzEpu422VdqtKMmy9FoCOjGV3wgw@mail.gmail.com>
+Content-language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,42 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, puneethx.prabhu@intel.com, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, =?UTF-8?Q?Bart=c5=82omiej_=c5=bbo=c5=82nierkiewicz?= <b.zolnierkie@samsung.com>, sbkim73@samsung.com, broonie@kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-"HV" and "VREF" will be powered up when jack type detection process is
-started and will be powered off when jack type detection process is finished.
-It will generate an unexpected interrupt signal when they are powered
-up during the capture process. Codec driver will do the jack type detection
-process and we can't capture properly before the jack detection process is
-finished. This patch will not power off the "HV" and "VREF" widgets if
-headset is detected and it will solve the unexpected interrupt issue. As a
-result, it will also solve the silence data captured at the beginning in
-headset mic recording issue.
+On 03/16/2018 08:37 AM, Krzysztof Kozlowski wrote:
+>> diff --git a/Documentation/devicetree/bindings/sound/samsung,odroid.txt b/Documentation/devicetree/bindings/sound/samsung,odroid.txt
+>> index f35a2694eb04..a50a0c6a354b 100644
+>> --- a/Documentation/devicetree/bindings/sound/samsung,odroid.txt
+>> +++ b/Documentation/devicetree/bindings/sound/samsung,odroid.txt
+>> @@ -1,8 +1,10 @@
+>> -Samsung Exynos Odroid XU3/XU4 audio complex with MAX98090 codec
+>> +Hardkernel Odroid X/X2/U3/XU3/XU4 audio complex with MAX98090 codec
+>>
+>>  Required properties:
+>>
+>> - - compatible - "hardkernel,odroid-xu3-audio" - for Odroid XU3 board,
+>> + - compatible - "hardkernel,odroid-u3-audio" - for Odroid U3 board,
+>> +               "hardkernel,odroid-x-audio" - for Odroid X, Odroid X2 boards,
+>> +               "hardkernel,odroid-xu3-audio" - for Odroid XU3 board,
+>>                 "hardkernel,odroid-xu4-audio" - for Odroid XU4 board
+>
+> These are the same so I think they should not get separate
+> compatibles. By definition [2] the compatible expresses the
+> compatibility with family of devices. In this case - these belong to
+> the same family.
+> 
+> The same applies to patch 5/5 (implementation of this).
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt298.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Given that everything except XU4 is already obsoleted, are we going to use
+"hardkernel,odroid-xu3-audio" for Odroid X and Odroid U3?
 
-diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index 7bf4b31..06cdba4 100644
---- a/sound/soc/codecs/rt298.c
-+++ b/sound/soc/codecs/rt298.c
-@@ -290,9 +290,10 @@ static int rt298_jack_detect(struct rt298_priv *rt298, bool *hp, bool *mic)
- 		regmap_read(rt298->regmap, RT298_GET_MIC1_SENSE, &buf);
- 		*mic = buf & 0x80000000;
- 	}
--
--	snd_soc_dapm_disable_pin(dapm, "HV");
--	snd_soc_dapm_disable_pin(dapm, "VREF");
-+	if (!*mic) {
-+		snd_soc_dapm_disable_pin(dapm, "HV");
-+		snd_soc_dapm_disable_pin(dapm, "VREF");
-+	}
- 	if (!*hp)
- 		snd_soc_dapm_disable_pin(dapm, "LDO1");
- 	snd_soc_dapm_sync(dapm);
+We could also make it:
+"hardkernel,odroid-xu3-audio", "hardkernel,odroid-x-audio" - for Odroid X, Odroid X2
+"hardkernel,odroid-xu3-audio", "hardkernel,odroid-u3-audio" - for Odroid U3
+
+And in the driver wee would only have "hardkernel,odroid-xu3-audio", while dts
+would contain detailed compatible.
+
 -- 
-2.7.4
+Regards,
+Sylwester
