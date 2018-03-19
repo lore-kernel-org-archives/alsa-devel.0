@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7210: Use
-	devm_snd_soc_register_component()" to the asoc tree
-Date: Mon, 19 Mar 2018 01:03:11 +0000 (GMT)
-Message-ID: <20180319010311.B5EED440079@finisterre.ee.mobilebroadband>
-References: <1521185534-164511-1-git-send-email-weiyongjun1@huawei.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F6FB2672A7
- for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2018 02:03:18 +0100 (CET)
-In-Reply-To: <1521185534-164511-1-git-send-email-weiyongjun1@huawei.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Wei Yongjun <weiyongjun1@huawei.com>
+Subject: Applied "ASoC: samsung: Mark unused Odroid compatibles as deprecated" to the asoc tree
+Date: Mon, 19 Mar 2018 01:03:15 +0000 (GMT)
+Message-ID: <20180319010315.ECCA1440079@finisterre.ee.mobilebroadband>
+References: <20180318153512.8343-1-krzk@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180318153512.8343-1-krzk@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7210: Use devm_snd_soc_register_component()
+   ASoC: samsung: Mark unused Odroid compatibles as deprecated
 
 has been applied to the asoc tree at
 
@@ -52,34 +37,39 @@ to this mail.
 Thanks,
 Mark
 
->From c0153b126cc6e14335b142a799c9aa8990e28669 Mon Sep 17 00:00:00 2001
-From: "weiyongjun (A)" <weiyongjun1@huawei.com>
-Date: Fri, 16 Mar 2018 07:32:14 +0000
-Subject: [PATCH] ASoC: da7210: Use devm_snd_soc_register_component()
+>From 3b84574d95c020f01410ff2ca0a38dd8fd7b644b Mon Sep 17 00:00:00 2001
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Date: Sun, 18 Mar 2018 16:35:12 +0100
+Subject: [PATCH] ASoC: samsung: Mark unused Odroid compatibles as deprecated
 
-Since the remove callback is removed, the snd_soc_unregister_component()
-is missing when remove device. Using devm_snd_soc_register_component()
-instead of snd_soc_register_component().
+Compatible for XU4 audio is not being used.  Instead the board uses the
+same compatible as XU3.  The devices are now just compatible so they
+should use the same value.  Mark "hardkernel,odroid-xu4-audio" as being
+deprecated so in this future could be removed to limit useless
+properties.
 
-Fixes: d06f33aed85c ("ASoC: da7210: replace codec to component")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Additionally add older compatibles appearing in the bindings.
+
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7210.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/samsung,odroid.txt | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
-index 07153be52c52..a664111b7184 100644
---- a/sound/soc/codecs/da7210.c
-+++ b/sound/soc/codecs/da7210.c
-@@ -1233,7 +1233,7 @@ static int da7210_i2c_probe(struct i2c_client *i2c,
- 	if (ret != 0)
- 		dev_warn(&i2c->dev, "Failed to apply regmap patch: %d\n", ret);
+diff --git a/Documentation/devicetree/bindings/sound/samsung,odroid.txt b/Documentation/devicetree/bindings/sound/samsung,odroid.txt
+index f35a2694eb04..e9da2200e173 100644
+--- a/Documentation/devicetree/bindings/sound/samsung,odroid.txt
++++ b/Documentation/devicetree/bindings/sound/samsung,odroid.txt
+@@ -3,7 +3,9 @@ Samsung Exynos Odroid XU3/XU4 audio complex with MAX98090 codec
+ Required properties:
  
--	ret =  snd_soc_register_component(&i2c->dev,
-+	ret =  devm_snd_soc_register_component(&i2c->dev,
- 			&soc_component_dev_da7210, &da7210_dai, 1);
- 	if (ret < 0)
- 		dev_err(&i2c->dev, "Failed to register component: %d\n", ret);
+  - compatible - "hardkernel,odroid-xu3-audio" - for Odroid XU3 board,
+-		"hardkernel,odroid-xu4-audio" - for Odroid XU4 board
++		"hardkernel,odroid-xu4-audio" - for Odroid XU4 board (deprecated),
++		"samsung,odroid-xu3-audio" - for Odroid XU3 board (deprecated),
++		"samsung,odroid-xu4-audio" - for Odroid XU4 board (deprecated)
+  - model - the user-visible name of this sound complex
+  - clocks - should contain entries matching clock names in the clock-names
+     property
 -- 
 2.16.2
