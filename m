@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: amd: Enable da7219 master clock using
-	common clock framework" to the asoc tree
-Date: Tue, 20 Mar 2018 01:21:32 +0000 (GMT)
-Message-ID: <20180320012132.ADB6F44007A@finisterre.ee.mobilebroadband>
-References: <1520921250-30124-2-git-send-email-akshu.agrawal@amd.com>
+Subject: Applied "ASoC: amd: Use single dai for da7219 playback
+	and capture" to the asoc tree
+Date: Tue, 20 Mar 2018 01:21:45 +0000 (GMT)
+Message-ID: <20180320012145.9442E44007A@finisterre.ee.mobilebroadband>
+References: <1520845883-24062-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 05CE72672B2
- for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2018 02:21:36 +0100 (CET)
-In-Reply-To: <1520921250-30124-2-git-send-email-akshu.agrawal@amd.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E0042672B2
+ for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2018 02:21:49 +0100 (CET)
+In-Reply-To: <1520845883-24062-1-git-send-email-akshu.agrawal@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: amd: Enable da7219 master clock using common clock framework
+   ASoC: amd: Use single dai for da7219 playback and capture
 
 has been applied to the asoc tree at
 
@@ -52,127 +52,54 @@ to this mail.
 Thanks,
 Mark
 
->From c88d311533563e6dadc244930a36125d592f5ec5 Mon Sep 17 00:00:00 2001
+>From f155181d23608acd3fb46d0d6b1507b68ffa436b Mon Sep 17 00:00:00 2001
 From: Akshu Agrawal <akshu.agrawal@amd.com>
-Date: Mon, 19 Mar 2018 11:07:42 +0530
-Subject: [PATCH] ASoC: amd: Enable da7219 master clock using common clock
- framework
+Date: Mon, 19 Mar 2018 11:07:41 +0530
+Subject: [PATCH] ASoC: amd: Use single dai for da7219 playback and capture
 
-DA7219 is clock master for other codecs. DA7219 has exposed clock
-control by using common clock framework and same is used to enable
-and disable clock for all codecs in the system.
+BT I2S is a bi-directional dai, we will use the same
+cpu dai for playback and capture.
 
 TEST=aplay -D hw:0,0 -vv <file>
 arecord -D hw:0,0 -f dat -d 5 -vv <file>
-aplay -D hw:0,1 -vv <file>
 
 Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-da7219-max98357a.c | 41 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+ sound/soc/amd/acp-da7219-max98357a.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
 
 diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index d07c2a1d5d9e..99c6b5ce5c6c 100644
+index bbe0f103e6a8..d07c2a1d5d9e 100644
 --- a/sound/soc/amd/acp-da7219-max98357a.c
 +++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -29,6 +29,7 @@
- #include <sound/pcm_params.h>
- #include <sound/soc-dapm.h>
- #include <sound/jack.h>
-+#include <linux/clk.h>
- #include <linux/gpio.h>
- #include <linux/module.h>
- #include <linux/i2c.h>
-@@ -42,11 +43,13 @@
- #define DUAL_CHANNEL		2
+@@ -124,8 +124,8 @@ static struct snd_soc_ops cz_da7219_cap_ops = {
  
- static struct snd_soc_jack cz_jack;
-+struct clk *da7219_dai_clk;
- 
- static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	int ret;
- 	struct snd_soc_card *card = rtd->card;
-+	struct snd_soc_codec *codec = rtd->codec;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_component *component = codec_dai->component;
- 
-@@ -66,6 +69,8 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
- 		return ret;
- 	}
- 
-+	da7219_dai_clk = clk_get(codec->dev, "da7219-dai-clks");
-+
- 	ret = snd_soc_card_jack_new(card, "Headset Jack",
- 				SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
- 				SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-@@ -81,6 +86,28 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
- 
-+static int cz_da7219_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params)
-+{
-+	int ret = 0;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+
-+	ret = clk_prepare_enable(da7219_dai_clk);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "can't enable master clock %d\n", ret);
-+		return ret;
-+	}
-+
-+	return ret;
-+}
-+
-+static int cz_da7219_hw_free(struct snd_pcm_substream *substream)
-+{
-+	clk_disable_unprepare(da7219_dai_clk);
-+
-+	return 0;
-+}
-+
- static const unsigned int channels[] = {
- 	DUAL_CHANNEL,
- };
-@@ -119,9 +146,21 @@ static int cz_fe_startup(struct snd_pcm_substream *substream)
- }
- 
- static struct snd_soc_ops cz_da7219_cap_ops = {
-+	.hw_params = cz_da7219_hw_params,
-+	.hw_free = cz_da7219_hw_free,
- 	.startup = cz_fe_startup,
- };
- 
-+static struct snd_soc_ops cz_max_play_ops = {
-+	.hw_params = cz_da7219_hw_params,
-+	.hw_free = cz_da7219_hw_free,
-+};
-+
-+static struct snd_soc_ops cz_dmic_cap_ops = {
-+	.hw_params = cz_da7219_hw_params,
-+	.hw_free = cz_da7219_hw_free,
-+};
-+
  static struct snd_soc_dai_link cz_dai_7219_98357[] = {
  	{
- 		.name = "amd-da7219-play-cap",
-@@ -147,6 +186,7 @@ static struct snd_soc_dai_link cz_dai_7219_98357[] = {
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+-		.name = "amd-da7219-play",
+-		.stream_name = "Playback",
++		.name = "amd-da7219-play-cap",
++		.stream_name = "Playback and Capture",
+ 		.platform_name = "acp_audio_dma.0.auto",
+ 		.cpu_dai_name = "designware-i2s.3.auto",
+ 		.codec_dai_name = "da7219-hifi",
+@@ -134,16 +134,6 @@ static struct snd_soc_dai_link cz_dai_7219_98357[] = {
  				| SND_SOC_DAIFMT_CBM_CFM,
+ 		.init = cz_da7219_init,
  		.dpcm_playback = 1,
-+		.ops = &cz_max_play_ops,
- 	},
- 	{
- 		.name = "dmic",
-@@ -158,6 +198,7 @@ static struct snd_soc_dai_link cz_dai_7219_98357[] = {
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
- 				| SND_SOC_DAIFMT_CBM_CFM,
+-	},
+-	{
+-		.name = "amd-da7219-cap",
+-		.stream_name = "Capture",
+-		.platform_name = "acp_audio_dma.0.auto",
+-		.cpu_dai_name = "designware-i2s.4.auto",
+-		.codec_dai_name = "da7219-hifi",
+-		.codec_name = "i2c-DLGS7219:00",
+-		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+-				| SND_SOC_DAIFMT_CBM_CFM,
  		.dpcm_capture = 1,
-+		.ops = &cz_dmic_cap_ops,
+ 		.ops = &cz_da7219_cap_ops,
  	},
- };
- 
 -- 
 2.16.2
