@@ -1,15 +1,15 @@
 From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Subject: [alsa-utils][RESEND][PATCH] Add support for no-rewind
-	flag in aplay utility
-Date: Tue, 20 Mar 2018 21:32:34 +0530
-Message-ID: <1521561754-28660-1-git-send-email-sriramx.periyasamy@intel.com>
+Subject: [alsa-lib][RESEND][PATCH] pcm: add set and get methods
+	for no-rewind flag
+Date: Tue, 20 Mar 2018 21:33:04 +0530
+Message-ID: <1521561784-28711-1-git-send-email-sriramx.periyasamy@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id B83192671F9
- for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2018 17:10:56 +0100 (CET)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id 450882671F9
+ for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2018 17:11:26 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,11 +25,7 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Ramesh Babu <ramesh.babu@intel.com>
 
-The "no-rewind" flag is introduced in alsa.
-Application can use this flag to assure kernel driver
-that rewind won't be exercised. Driver could use this
-flag to alter it's buffering scheme to optimize power
-and performance.
+Add functions to set/get no-rewind flag
 
 Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
 Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
@@ -38,70 +34,101 @@ Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
 Please find the reference for previous discussion at [1].
 
 [1]
-https://patchwork.kernel.org/patch/10191483/
+https://patchwork.kernel.org/patch/10191481/
 
- aplay/aplay.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ include/pcm.h          |  2 ++
+ include/sound/asound.h |  1 +
+ src/pcm/pcm.c          | 40 ++++++++++++++++++++++++++++++++++++++++
+ src/pcm/pcm_local.h    |  1 +
+ 4 files changed, 44 insertions(+)
 
-diff --git a/aplay/aplay.c b/aplay/aplay.c
-index bbd7fffa04fc..6eb9d3b04d92 100644
---- a/aplay/aplay.c
-+++ b/aplay/aplay.c
-@@ -108,6 +108,7 @@ static snd_pcm_stream_t stream = SND_PCM_STREAM_PLAYBACK;
- static int mmap_flag = 0;
- static int interleaved = 1;
- static int nonblock = 0;
-+static int no_rewind = 0;
- static volatile sig_atomic_t in_aborting = 0;
- static u_char *audiobuf = NULL;
- static snd_pcm_uframes_t chunk_size = 0;
-@@ -229,6 +230,7 @@ _("Usage: %s [OPTION]... [FILE]...\n"
- "-I, --separate-channels one file for each channel\n"
- "-i, --interactive       allow interactive operation from stdin\n"
- "-m, --chmap=ch1,ch2,..  Give the channel map to override or follow\n"
-+"-w, --no-rewind         enables no rewind mode\n"
- "    --disable-resample  disable automatic rate resample\n"
- "    --disable-channels  disable automatic channel conversions\n"
- "    --disable-format    disable automatic format conversions\n"
-@@ -470,7 +472,7 @@ int main(int argc, char *argv[])
- {
- 	int duration_or_sample = 0;
- 	int option_index;
--	static const char short_options[] = "hnlLD:qt:c:f:r:d:s:MNF:A:R:T:B:vV:IPCi"
-+	static const char short_options[] = "hnlLD:qt:c:f:r:d:s:w:MNF:A:R:T:B:vV:IPCi"
- #ifdef CONFIG_SUPPORT_CHMAP
- 		"m:"
- #endif
-@@ -514,6 +516,7 @@ int main(int argc, char *argv[])
- 		{"process-id-file", 1, 0, OPT_PROCESS_ID_FILE},
- 		{"use-strftime", 0, 0, OPT_USE_STRFTIME},
- 		{"interactive", 0, 0, 'i'},
-+		{"no-rewind", 0, 0, 'w'},
- 		{"dump-hw-params", 0, 0, OPT_DUMP_HWPARAMS},
- 		{"fatal-errors", 0, 0, OPT_FATAL_ERRORS},
- #ifdef CONFIG_SUPPORT_CHMAP
-@@ -753,6 +756,9 @@ int main(int argc, char *argv[])
- 		case 'i':
- 			interactive = 1;
- 			break;
-+		case 'w':
-+			no_rewind = 1;
-+			break;
- 		case OPT_DISABLE_RESAMPLE:
- 			open_mode |= SND_PCM_NO_AUTO_RESAMPLE;
- 			break;
-@@ -1396,6 +1402,12 @@ static void set_params(void)
- 							     &buffer_frames);
- 	}
- 	assert(err >= 0);
+diff --git a/include/pcm.h b/include/pcm.h
+index e2a53435caab..c6af884607ae 100644
+--- a/include/pcm.h
++++ b/include/pcm.h
+@@ -805,6 +805,8 @@ int snd_pcm_hw_params_set_export_buffer(snd_pcm_t *pcm, snd_pcm_hw_params_t *par
+ int snd_pcm_hw_params_get_export_buffer(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int *val);
+ int snd_pcm_hw_params_set_period_wakeup(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int val);
+ int snd_pcm_hw_params_get_period_wakeup(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int *val);
++int snd_pcm_hw_params_set_no_rewind(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int val);
++int snd_pcm_hw_params_get_no_rewind(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int *val);
+ 
+ int snd_pcm_hw_params_get_period_time(const snd_pcm_hw_params_t *params, unsigned int *val, int *dir);
+ int snd_pcm_hw_params_get_period_time_min(const snd_pcm_hw_params_t *params, unsigned int *val, int *dir);
+diff --git a/include/sound/asound.h b/include/sound/asound.h
+index 6041cab27a23..35fd50ec5395 100644
+--- a/include/sound/asound.h
++++ b/include/sound/asound.h
+@@ -375,6 +375,7 @@ typedef int snd_pcm_hw_param_t;
+ #define SNDRV_PCM_HW_PARAMS_NORESAMPLE	(1<<0)	/* avoid rate resampling */
+ #define SNDRV_PCM_HW_PARAMS_EXPORT_BUFFER	(1<<1)	/* export buffer */
+ #define SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP	(1<<2)	/* disable period wakeups */
++#define SNDRV_PCM_HW_PARAMS_NO_REWINDS          (1<<3)  /* disable rewinds */
+ 
+ struct snd_interval {
+ 	unsigned int min, max;
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index ed47cb516c73..3346609fdf6d 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -4826,6 +4826,46 @@ int snd_pcm_hw_params_get_period_wakeup(snd_pcm_t *pcm, snd_pcm_hw_params_t *par
+ }
+ 
+ /**
++ * \brief Configure no-rewind flag through configuration space
++ * \param pcm PCM handle
++ * \param params Configuration space
++ * \param val 0 = disable (default), 1 = enable (default) no-rewind flag
++ * \return Zero on success, otherwise a negative error code.
++ *
++ * This function can be called to inform driver about application uses rewind or not
++ *
++ * Based on no-rewind flag, underlying driver could take decision on buffering scheme.
++ */
 +
-+	if (no_rewind) {
-+		err = snd_pcm_hw_params_set_no_rewind(handle, params, 1);
-+		assert(err >= 0);
-+	}
++/* TODO: Invert the logic with function name set_rewind */
++int snd_pcm_hw_params_set_no_rewind(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int val)
++{
++	assert(pcm && params);
 +
- 	monotonic = snd_pcm_hw_params_is_monotonic(params);
- 	can_pause = snd_pcm_hw_params_can_pause(params);
- 	err = snd_pcm_hw_params(handle, params);
++	if (val) {
++		params->flags |= SND_PCM_HW_PARAMS_NO_REWINDS;
++	} else
++		params->flags &= ~SND_PCM_HW_PARAMS_NO_REWINDS;
++	params->rmask = ~0;
++
++	return snd_pcm_hw_refine(pcm, params);
++}
++
++/**
++ * \brief Extract no-rewind flag from a configuration space
++ * \param pcm PCM handle
++ * \param params Configuration space
++ * \param val 0 = disabled, 1 = enabled no-rewind flag
++ * \return Zero on success, otherwise a negative error code.
++ */
++int snd_pcm_hw_params_get_no_rewind(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int *val)
++{
++	assert(pcm && params && val);
++	*val = params->flags & SND_PCM_HW_PARAMS_NO_REWINDS ? 0 : 1;
++	return 0;
++}
++
++/**
+  * \brief Extract period time from a configuration space
+  * \param params Configuration space
+  * \param val Returned approximate period duration in us
+diff --git a/src/pcm/pcm_local.h b/src/pcm/pcm_local.h
+index d52229d8ddea..2b3cae5b93f5 100644
+--- a/src/pcm/pcm_local.h
++++ b/src/pcm/pcm_local.h
+@@ -103,6 +103,7 @@
+ #define SND_PCM_HW_PARAMS_NORESAMPLE SNDRV_PCM_HW_PARAMS_NORESAMPLE
+ #define SND_PCM_HW_PARAMS_EXPORT_BUFFER SNDRV_PCM_HW_PARAMS_EXPORT_BUFFER
+ #define SND_PCM_HW_PARAMS_NO_PERIOD_WAKEUP SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP
++#define SND_PCM_HW_PARAMS_NO_REWINDS SNDRV_PCM_HW_PARAMS_NO_REWINDS
+ 
+ #define SND_PCM_INFO_MONOTONIC	0x80000000
+ 
 -- 
 2.7.4
