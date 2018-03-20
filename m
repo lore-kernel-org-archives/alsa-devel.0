@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: topology: Fix kcontrol name string
- handling.
-Date: Tue, 20 Mar 2018 08:57:04 +0800
-Message-ID: <20180320005704.GM2186@sirena.org.uk>
-References: <20180314204319.13919-1-liam.r.girdwood@linux.intel.com>
- <20180319070643.GD2186@sirena.org.uk>
- <1521487944.1923.71.camel@linux.intel.com>
+Subject: Applied "ASoC: twl6040: remove duplicated remove
+	callback" to the asoc tree
+Date: Tue, 20 Mar 2018 01:05:49 +0000 (GMT)
+Message-ID: <20180320010549.AC2A744007A@finisterre.ee.mobilebroadband>
+References: <87d100tsjh.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2367726837247453359=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 55E46267294
- for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2018 01:57:13 +0100 (CET)
-In-Reply-To: <1521487944.1923.71.camel@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 740BB2672B2
+ for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2018 02:05:58 +0100 (CET)
+In-Reply-To: <87d100tsjh.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,55 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Julia Lawall <julia.lawall@lip6.fr>, Mark Brown <broonie@kernel.org>, kbuild test robot <fengguang.wu@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============2367726837247453359==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="jsINjv9JwFjY+Quq"
-Content-Disposition: inline
+   ASoC: twl6040: remove duplicated remove callback
 
+has been applied to the asoc tree at
 
---jsINjv9JwFjY+Quq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Mar 19, 2018 at 07:32:24PM +0000, Liam Girdwood wrote:
-> On Mon, 2018-03-19 at 15:06 +0800, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > This doesn't seem to apply against current code (I was going to apply it
-> > as a fix but it doesn't seem to apply against -next either).
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Ok will do, Fwiw I did them against -next when you were at ELC, I guess there
-> have been some updates between now and then.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-It's also possible you have interdependencies between the patches - you
-didn't send them as a series so any ordering requirements got lost.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---jsINjv9JwFjY+Quq
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From 83eca9f5eda6efff71515cb9c1a373b26d2d4c5b Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 19 Mar 2018 07:50:48 +0000
+Subject: [PATCH] ASoC: twl6040: remove duplicated remove callback
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqwXF0ACgkQJNaLcl1U
-h9C5ZQf+OOGcsSuDu/wCRVY3Pn92IM2m2MALwY3SYuT7HqEwKDiWqFUNGN2JcmB6
-aIkoDWqgnIKPrj2hGvq3INE55fBV0eEaZ12x2MW7GdLpiXyyIHjfr43XIRhf8S5J
-1MpEkk53XHoQO6OhnYCRFizAyg40Vh0nzAXxJN6HUn8T1t7IM4xM+5DDbnQPVl0U
-uNlgbjIoceKHCis6Y0SPccwur+fe21/pdanRQZJtRWZfFTXNwsNYlkOiJRTZUDce
-S2DLDWvlZseHlydlsQ9lubXAq+3WfHgOceon7h77nPzSx2ZMh+21LOw4YIiufVj/
-lIkMi8ItRnpZdEuRi4i+1dvUTgoPCQ==
-=EWMa
------END PGP SIGNATURE-----
+We don't need 2 .remove callback
 
---jsINjv9JwFjY+Quq--
+Fixes: 7480389fb0d8 ("ASoC: twl6040: replace codec to component")
+Reported-by: Julia Lawall <julia.lawall@lip6.fr>
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/twl6040.c | 1 -
+ 1 file changed, 1 deletion(-)
 
---===============2367726837247453359==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2367726837247453359==--
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index b56a6471f9c4..bfd1abd72253 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -1158,7 +1158,6 @@ static const struct snd_soc_component_driver soc_component_dev_twl6040 = {
+ 	.remove			= twl6040_remove,
+ 	.read			= twl6040_read,
+ 	.write			= twl6040_write,
+-	.remove			= twl6040_remove,
+ 	.set_bias_level		= twl6040_set_bias_level,
+ 	.controls		= twl6040_snd_controls,
+ 	.num_controls		= ARRAY_SIZE(twl6040_snd_controls),
+-- 
+2.16.2
