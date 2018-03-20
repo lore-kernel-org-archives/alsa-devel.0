@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt298: don't turn off HV and VREF if
+Subject: Applied "ASoC: rt286: don't turn off HV and VREF if
 	headset is detected" to the asoc tree
-Date: Tue, 20 Mar 2018 01:06:06 +0000 (GMT)
-Message-ID: <20180320010606.B701344007A@finisterre.ee.mobilebroadband>
-References: <1521454049-32435-1-git-send-email-bardliao@realtek.com>
+Date: Tue, 20 Mar 2018 01:06:12 +0000 (GMT)
+Message-ID: <20180320010612.59E8E44007A@finisterre.ee.mobilebroadband>
+References: <1521454032-32387-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B34022672B2
- for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2018 02:06:13 +0100 (CET)
-In-Reply-To: <1521454049-32435-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 205862672C1
+ for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2018 02:06:16 +0100 (CET)
+In-Reply-To: <1521454032-32387-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt298: don't turn off HV and VREF if headset is detected
+   ASoC: rt286: don't turn off HV and VREF if headset is detected
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 40d2677bdadbd221f3e398877586a30d8065140c Mon Sep 17 00:00:00 2001
+>From 8153362e757a7b971aa73e7747bdc2ca2acbe84b Mon Sep 17 00:00:00 2001
 From: Bard Liao <bardliao@realtek.com>
-Date: Mon, 19 Mar 2018 18:07:29 +0800
-Subject: [PATCH] ASoC: rt298: don't turn off HV and VREF if headset is
+Date: Mon, 19 Mar 2018 18:07:12 +0800
+Subject: [PATCH] ASoC: rt286: don't turn off HV and VREF if headset is
  detected
 
 "HV" and "VREF" will be powered up when jack type detection process is
@@ -72,15 +72,15 @@ headset mic recording issue.
 Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt298.c | 7 ++++---
+ sound/soc/codecs/rt286.c | 7 ++++---
  1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index ce963768449f..ff52d0365cfa 100644
---- a/sound/soc/codecs/rt298.c
-+++ b/sound/soc/codecs/rt298.c
-@@ -290,9 +290,10 @@ static int rt298_jack_detect(struct rt298_priv *rt298, bool *hp, bool *mic)
- 		regmap_read(rt298->regmap, RT298_GET_MIC1_SENSE, &buf);
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index af6325c78292..e5c9d59c3967 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -275,9 +275,10 @@ static int rt286_jack_detect(struct rt286_priv *rt286, bool *hp, bool *mic)
+ 		regmap_read(rt286->regmap, RT286_GET_MIC1_SENSE, &buf);
  		*mic = buf & 0x80000000;
  	}
 -
