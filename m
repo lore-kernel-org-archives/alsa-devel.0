@@ -1,79 +1,77 @@
-From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Subject: Re: [PATCH v2 2/2] ALSA: usb: initial USB Audio Device Class 3.0 support
-Date: Tue, 20 Mar 2018 01:57:46 +0200
-Message-ID: <CAB=otbQ-5_G3Y8i5AmRcWE6KuLb_aEYEO1-ZDcNLH73ojCEE-g@mail.gmail.com>
-References: <1521423963-24677-1-git-send-email-ruslan.bilovol@gmail.com>
- <1521423963-24677-3-git-send-email-ruslan.bilovol@gmail.com> <s5h1sggvxkn.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: topology: Fix kcontrol name string
+ handling.
+Date: Tue, 20 Mar 2018 08:57:04 +0800
+Message-ID: <20180320005704.GM2186@sirena.org.uk>
+References: <20180314204319.13919-1-liam.r.girdwood@linux.intel.com>
+ <20180319070643.GD2186@sirena.org.uk>
+ <1521487944.1923.71.camel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h1sggvxkn.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Jorge <jorge.sanjuan@codethink.co.uk>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============2367726837247453359=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 55E46267294
+ for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2018 01:57:13 +0100 (CET)
+In-Reply-To: <1521487944.1923.71.camel@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 19, 2018 at 6:28 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Mon, 19 Mar 2018 02:46:03 +0100,
-> Ruslan Bilovol wrote:
->>
->> Recently released USB Audio Class 3.0 specification
->> introduces many significant changes comparing to
->> previous versions, like
->>  - new Power Domains, support for LPM/L1
->>  - new Cluster descriptor
->>  - changed layout of all class-specific descriptors
->>  - new High Capability descriptors
->>  - New class-specific String descriptors
->>  - new and removed units
->>  - additional sources for interrupts
->>  - removed Type II Audio Data Formats
->>  - ... and many other things (check spec)
->>
->> It also provides backward compatibility through
->> multiple configurations, as well as requires
->> mandatory support for BADD (Basic Audio Device
->> Definition) on each ADC3.0 compliant device
->>
->> This patch adds initial support of UAC3 specification
->> that is enough for Generic I/O Profile (BAOF, BAIF)
->> device support from BADD document.
->>
->> Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
->
-> Most code changes look fairly straightforward, and not breaking the
-> UAC1/UAC2 stuff.  So the stuff is good enough through a quick glance.
->
-> I suppose it's better to merge via sound git tree.
-> Greg, could you check include/linux/usb/* (and uapi) stuff and give an
-> ack if it's OK?
->
-> In anyway, I'll check the specs and compare with the definitions in
-> this patch.
 
-Please note that I took "A.12 CHANNEL RELATIONSHIP
-DEFINITIONS" values from previous Pierre's email (they were
-in a draft UAC3 spec but disappeared in the final version).
-I've sent an email with my quiestions to audio-chair@usb.org but
-didn't get any reply from them yet.
+--===============2367726837247453359==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="jsINjv9JwFjY+Quq"
+Content-Disposition: inline
 
->
->
-> And, just minor nitpicking regarding the code change:
->
-> it's better to drop the parentheses in a line like below
->
->> +             if ((protocol == UAC_VERSION_1) || (protocol == UAC_VERSION_2)) {
->
-> that is,
->                 if (protocol == UAC_VERSION_1 || protocol == UAC_VERSION_2) {
->
-> The indentation became so deep in some functions, and it's better to
-> refactor, but this can be done later once after all implementations
-> are finished.
 
-Sure, I fixed these and also kbuild test robot's complaint; if there
-will no any more comments, I'm going to send v3 tomorrow.
+--jsINjv9JwFjY+Quq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Ruslan
+On Mon, Mar 19, 2018 at 07:32:24PM +0000, Liam Girdwood wrote:
+> On Mon, 2018-03-19 at 15:06 +0800, Mark Brown wrote:
+
+> > This doesn't seem to apply against current code (I was going to apply it
+> > as a fix but it doesn't seem to apply against -next either).
+
+> Ok will do, Fwiw I did them against -next when you were at ELC, I guess there
+> have been some updates between now and then.
+
+It's also possible you have interdependencies between the patches - you
+didn't send them as a series so any ordering requirements got lost.
+
+--jsINjv9JwFjY+Quq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqwXF0ACgkQJNaLcl1U
+h9C5ZQf+OOGcsSuDu/wCRVY3Pn92IM2m2MALwY3SYuT7HqEwKDiWqFUNGN2JcmB6
+aIkoDWqgnIKPrj2hGvq3INE55fBV0eEaZ12x2MW7GdLpiXyyIHjfr43XIRhf8S5J
+1MpEkk53XHoQO6OhnYCRFizAyg40Vh0nzAXxJN6HUn8T1t7IM4xM+5DDbnQPVl0U
+uNlgbjIoceKHCis6Y0SPccwur+fe21/pdanRQZJtRWZfFTXNwsNYlkOiJRTZUDce
+S2DLDWvlZseHlydlsQ9lubXAq+3WfHgOceon7h77nPzSx2ZMh+21LOw4YIiufVj/
+lIkMi8ItRnpZdEuRi4i+1dvUTgoPCQ==
+=EWMa
+-----END PGP SIGNATURE-----
+
+--jsINjv9JwFjY+Quq--
+
+--===============2367726837247453359==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2367726837247453359==--
