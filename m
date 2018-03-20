@@ -1,111 +1,87 @@
-From: "Katsuhiro Suzuki" <suzuki.katsuhiro@socionext.com>
-Subject: Re: [PATCH] ASoC: uniphier: evea: add switch for changing source of line-in
-Date: Tue, 20 Mar 2018 11:35:56 +0900
-Message-ID: <001d01d3bff4$2cef92e0$86ceb8a0$@socionext.com>
-References: <20180314123900.19505-1-suzuki.katsuhiro@socionext.com> <20180314162609.GV2186@sirena.org.uk> <001101d3bf39$6e3933c0$4aab9b40$@socionext.com> <20180320011216.GN2186@sirena.org.uk>
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Subject: [PATCH V2] ASoC: dwc: I2S Controller instance param
+	added
+Date: Tue, 20 Mar 2018 12:42:22 +0530
+Message-ID: <1521529942-21262-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-        charset="iso-2022-jp"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180320011216.GN2186@sirena.org.uk>
-Content-Language: ja
-Sender: linux-kernel-owner@vger.kernel.org
-To: 'Mark Brown' <broonie@kernel.org>, =?iso-2022-jp?B?U3V6dWtpLCBLYXRzdWhpcm8vGyRCTmtMWhsoQiAbJEI+IUduGyhC?= <suzuki.katsuhiro@socionext.com>
-Cc: alsa-devel@alsa-project.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from NAM01-BY2-obe.outbound.protection.outlook.com
+ (mail-by2nam01on0075.outbound.protection.outlook.com [104.47.34.75])
+ by alsa0.perex.cz (Postfix) with ESMTP id C530C2671F9
+ for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2018 08:10:17 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, alsa-devel@alsa-project.org, perex@perex.cz
+Cc: tiwai@suse.de, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, lgirdwood@gmail.com, Akshu.Agrawal@amd.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello Mark,
+When multiple I2S controller instances created,
+i2s_instance parameter refers to i2s controller instance value.
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Tuesday, March 20, 2018 10:12 AM
-> To: Suzuki, Katsuhiro <suzuki.katsuhiro@socionext.com>
-> Cc: alsa-devel@alsa-project.org; Masami Hiramatsu
-<masami.hiramatsu@linaro.org>;
-> Jassi Brar <jaswinder.singh@linaro.org>; linux-arm-kernel@lists.infradead.org;
-> linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] ASoC: uniphier: evea: add switch for changing source of
-line-in
-> 
-> On Mon, Mar 19, 2018 at 01:19:10PM +0900, Katsuhiro Suzuki wrote:
-> 
-> > > I'll apply for now but this should really be a DAPM control so that we
-> > > can power down things connected to the disconnected line inputs when
-> > > recording.
-> 
-> > Thanks a lot for your suggestion. I tried to change the implementation to
-DAPM
-> > control as follows:
-> 
-> > I can see the value of ALINSW1 register at 'Line In 1 Mux',0 using
-> >   amixer get 'Line In 1 Mux',0
-> 
-> > But I can't change the value.
-> >   amixer set 'Line In 1 Mux',0 LIN2
-> >   Simple mixer control 'Line In 1 Mux',0
-> >     Capabilities: enum
-> >     Items: 'LIN1' 'LIN2' 'LIN3'
-> >     Item0: 'LIN1'
-> 
-> > Would you tell me what is wrong...
-> 
-> Ugh, I *have* run into that before but I can't remember what triggers it
-> and your code doesn't have any mistakes I can spot.  Unfortunately I'm
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+---
+v1->v2: defined I2S instance macros in designware header file
+ include/sound/designware_i2s.h | 6 ++++++
+ sound/soc/dwc/dwc-i2s.c        | 1 +
+ sound/soc/dwc/local.h          | 1 +
+ 3 files changed, 8 insertions(+)
 
-Thank you for reviewing.
-
-
-> at Linaro Connect this week and don't have a test system I can poke at
-> with me to remind myself, and I'm still travelling next week
-> unfortunately.
-> 
-
-I see, no problem. Have a nice trip!
-
-
-> I'd add some trace to the set code path to make sure everything is being
-> called as expected.  It's somemthing really small that's hard to make a
-> warning for in the code IIRC.
-
-I traced some DAPM codes. The 'get' function as follows:
-
-int snd_soc_dapm_get_enum_double(struct snd_kcontrol *kcontrol,
-        struct snd_ctl_elem_value *ucontrol)
-{
-        //...
-
-        mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
-        if (e->reg != SND_SOC_NOPM && dapm_kcontrol_is_powered(kcontrol)) {
-                int ret = soc_dapm_read(dapm, e->reg, &reg_val);
-
-The soc_dapm_read() reads real value of register. It's simple.
-
-
-But 'put' function is mysterious for me...
-
-int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
-        struct snd_ctl_elem_value *ucontrol)
-{
-        //...
-
-        change = dapm_kcontrol_set_value(kcontrol, val);
-
-        if (e->reg != SND_SOC_NOPM)
-                reg_change = soc_dapm_test_bits(dapm, e->reg, mask, val);
-
-dapm_kcontrol_set_value() has stored value into dapm_kcontrol_data. And 
-soc_dapm_test_bits() has just checked value of a register and returned need 
-update or not. It seems anyone does not update a register in this function.
-
-I tried to change soc_dapm_test_bits() -> soc_dapm_update_bits(), so I can 
-change value of register using amixer. But I feel this change was wrong. And I 
-found dapm_seq_run_coalesced() calls soc_dapm_update_bits(). Unfortunately 
-this function has not been called even if I run amixer.
-
-Anyway, I'll continue to study about DAPM codes.
-
-
-Regards,
---
-Katsuhiro Suzuki
+diff --git a/include/sound/designware_i2s.h b/include/sound/designware_i2s.h
+index 830f5ca..8113759 100644
+--- a/include/sound/designware_i2s.h
++++ b/include/sound/designware_i2s.h
+@@ -44,6 +44,10 @@ struct i2s_platform_data {
+ 	int channel;
+ 	u32 snd_fmts;
+ 	u32 snd_rates;
++	/* i2s_instance parameter returns I2S controller instance value
++	 * when multiple I2S controllers instantiated
++	 */
++	u32 i2s_instance;
+ 
+ 	#define DW_I2S_QUIRK_COMP_REG_OFFSET	(1 << 0)
+ 	#define DW_I2S_QUIRK_COMP_PARAM1	(1 << 1)
+@@ -74,5 +78,7 @@ struct i2s_dma_data {
+ #define FOUR_CHANNEL_SUPPORT	4	/* up to 3.1 */
+ #define SIX_CHANNEL_SUPPORT	6	/* up to 5.1 */
+ #define EIGHT_CHANNEL_SUPPORT	8	/* up to 7.1 */
++#define I2S_SP_INSTANCE		1
++#define I2S_BT_INSTANCE		2
+ 
+ #endif /*  __SOUND_DESIGNWARE_I2S_H */
+diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
+index e27e21f..20145c0 100644
+--- a/sound/soc/dwc/dwc-i2s.c
++++ b/sound/soc/dwc/dwc-i2s.c
+@@ -549,6 +549,7 @@ static int dw_configure_dai_by_pd(struct dw_i2s_dev *dev,
+ 
+ 	if (dev->quirks & DW_I2S_QUIRK_16BIT_IDX_OVERRIDE)
+ 		idx = 1;
++	dev->i2s_instance = pdata->i2s_instance;
+ 	/* Set DMA slaves info */
+ 	dev->play_dma_data.pd.data = pdata->play_dma_data;
+ 	dev->capture_dma_data.pd.data = pdata->capture_dma_data;
+diff --git a/sound/soc/dwc/local.h b/sound/soc/dwc/local.h
+index 91dc70a..e89e464 100644
+--- a/sound/soc/dwc/local.h
++++ b/sound/soc/dwc/local.h
+@@ -98,6 +98,7 @@ struct dw_i2s_dev {
+ 	u32 ccr;
+ 	u32 xfer_resolution;
+ 	u32 fifo_th;
++	u32 i2s_instance;
+ 
+ 	/* data related to DMA transfers b/w i2s and DMAC */
+ 	union dw_i2s_snd_dma_data play_dma_data;
+-- 
+2.7.4
