@@ -1,114 +1,96 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ssm2602: Replace reg_default_raw with reg_default" to the asoc tree
-Date: Tue, 20 Mar 2018 01:06:21 +0000 (GMT)
-Message-ID: <20180320010621.C047F44007A@finisterre.ee.mobilebroadband>
-References: <20180314222416.95836-1-jamespeterkelly@gmail.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20180314222416.95836-1-jamespeterkelly@gmail.com>
-Sender: stable-owner@vger.kernel.org
-To: James Kelly <jamespeterkelly@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.org, alsa-devel@alsa-project.orgMark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ASoC: uniphier: evea: add switch for
+ changing source of line-in
+Date: Tue, 20 Mar 2018 09:12:16 +0800
+Message-ID: <20180320011216.GN2186@sirena.org.uk>
+References: <20180314123900.19505-1-suzuki.katsuhiro@socionext.com>
+ <20180314162609.GV2186@sirena.org.uk>
+ <001101d3bf39$6e3933c0$4aab9b40$@socionext.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============2829839700482554598=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 350B52672B2
+ for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2018 02:12:22 +0100 (CET)
+In-Reply-To: <001101d3bf39$6e3933c0$4aab9b40$@socionext.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Cc: Jassi Brar <jaswinder.singh@linaro.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: ssm2602: Replace reg_default_raw with reg_default
+--===============2829839700482554598==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Wi2ae8OABxFj6q5L"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--Wi2ae8OABxFj6q5L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Mar 19, 2018 at 01:19:10PM +0900, Katsuhiro Suzuki wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> > I'll apply for now but this should really be a DAPM control so that we
+> > can power down things connected to the disconnected line inputs when
+> > recording.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> Thanks a lot for your suggestion. I tried to change the implementation to DAPM
+> control as follows:
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> I can see the value of ALINSW1 register at 'Line In 1 Mux',0 using
+>   amixer get 'Line In 1 Mux',0
 
-Thanks,
-Mark
+> But I can't change the value.
+>   amixer set 'Line In 1 Mux',0 LIN2
+>   Simple mixer control 'Line In 1 Mux',0
+>     Capabilities: enum
+>     Items: 'LIN1' 'LIN2' 'LIN3'
+>     Item0: 'LIN1'
 
->From a01df75ce737951ad13a08d101306e88c3f57cb2 Mon Sep 17 00:00:00 2001
-From: James Kelly <jamespeterkelly@gmail.com>
-Date: Mon, 19 Mar 2018 21:29:50 +1100
-Subject: [PATCH] ASoC: ssm2602: Replace reg_default_raw with reg_default
+> Would you tell me what is wrong...
 
-SSM2602 driver is broken on recent kernels (at least
-since 4.9). User space applications such as amixer or
-alsamixer get EIO when attempting to access codec
-controls via the relevant IOCTLs.
+Ugh, I *have* run into that before but I can't remember what triggers it
+and your code doesn't have any mistakes I can spot.  Unfortunately I'm
+at Linaro Connect this week and don't have a test system I can poke at
+with me to remind myself, and I'm still travelling next week
+unfortunately.
 
-Root cause of these failures is the regcache_hw_init
-function in drivers/base/regmap/regcache.c, which
-prevents regmap cache initalization from the
-reg_defaults_raw element of the regmap_config structure
-when registers are write only. It also disables the
-regmap cache entirely when all registers are write only
-or volatile as is the case for the SSM2602 driver.
+I'd add some trace to the set code path to make sure everything is being
+called as expected.  It's somemthing really small that's hard to make a
+warning for in the code IIRC.
 
-Using the reg_defaults element of the regmap_config
-structure rather than the reg_defaults_raw element to
-initalize the regmap cache avoids the logic in the
-regcache_hw_init function entirely. It also makes this
-driver consistent with other ASoC codec drivers, as
-this driver was the ONLY codec driver that used the
-reg_defaults_raw element to initalize the cache.
+--Wi2ae8OABxFj6q5L
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Tested on Digilent Zybo Z7 development board which has
-a SSM2603 codec chip connected to a Xilinx Zynq SoC.
+-----BEGIN PGP SIGNATURE-----
 
-Signed-off-by: James Kelly <jamespeterkelly@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
----
- sound/soc/codecs/ssm2602.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqwX+8ACgkQJNaLcl1U
+h9B+8Af/QQGTFkLC66sq2/jYkUs8UZJhHNj12km7M4MmEXAn7DBmnkE/EOBWonBW
+VkUyPNIpqrLEVd9ROjvHiBRzvGgJsnZUAJ0ZFVpWEYyFlp34nJdHNggw2KQPC8/n
+OXDXw203NShiCmzqBJ/G+kanSDSIiUGq+yXFoDApjemx6VjtKKxuf8Q9m8Ys54o2
+UWgmaDAVXmnikl+H9dV5GQ7y3II8OMVgYeYApPtzhW8PKKq+Hx4XesxcyT/UzLeW
+TEOQd6nkhrNYAG8RvBQqfBfG4xYIvrqjkm7kdo4udETAMPCQZlVya7hK0Mj37BLj
+z4UMUpRSlt1VSXTifOY2fml1/8/f3w==
+=WXd1
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
-index 9b341c23f62b..5e80867d09ef 100644
---- a/sound/soc/codecs/ssm2602.c
-+++ b/sound/soc/codecs/ssm2602.c
-@@ -54,10 +54,17 @@ struct ssm2602_priv {
-  * using 2 wire for device control, so we cache them instead.
-  * There is no point in caching the reset register
-  */
--static const u16 ssm2602_reg[SSM2602_CACHEREGNUM] = {
--	0x0097, 0x0097, 0x0079, 0x0079,
--	0x000a, 0x0008, 0x009f, 0x000a,
--	0x0000, 0x0000
-+static const struct reg_default ssm2602_reg[SSM2602_CACHEREGNUM] = {
-+	{ .reg = 0x00, .def = 0x0097 },
-+	{ .reg = 0x01, .def = 0x0097 },
-+	{ .reg = 0x02, .def = 0x0079 },
-+	{ .reg = 0x03, .def = 0x0079 },
-+	{ .reg = 0x04, .def = 0x000a },
-+	{ .reg = 0x05, .def = 0x0008 },
-+	{ .reg = 0x06, .def = 0x009f },
-+	{ .reg = 0x07, .def = 0x000a },
-+	{ .reg = 0x08, .def = 0x0000 },
-+	{ .reg = 0x09, .def = 0x0000 }
- };
- 
- 
-@@ -620,8 +627,8 @@ const struct regmap_config ssm2602_regmap_config = {
- 	.volatile_reg = ssm2602_register_volatile,
- 
- 	.cache_type = REGCACHE_RBTREE,
--	.reg_defaults_raw = ssm2602_reg,
--	.num_reg_defaults_raw = ARRAY_SIZE(ssm2602_reg),
-+	.reg_defaults = ssm2602_reg,
-+	.num_reg_defaults = ARRAY_SIZE(ssm2602_reg),
- };
- EXPORT_SYMBOL_GPL(ssm2602_regmap_config);
- 
--- 
-2.16.2
+--Wi2ae8OABxFj6q5L--
+
+--===============2829839700482554598==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2829839700482554598==--
