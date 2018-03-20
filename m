@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt286: don't turn off HV and VREF if
-	headset is detected" to the asoc tree
-Date: Tue, 20 Mar 2018 01:06:12 +0000 (GMT)
-Message-ID: <20180320010612.59E8E44007A@finisterre.ee.mobilebroadband>
-References: <1521454032-32387-1-git-send-email-bardliao@realtek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 205862672C1
- for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2018 02:06:16 +0100 (CET)
-In-Reply-To: <1521454032-32387-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, puneethx.prabhu@intel.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
+Subject: Applied "ASoC: ssm2602: Replace reg_default_raw with reg_default" to the asoc tree
+Date: Tue, 20 Mar 2018 01:06:21 +0000 (GMT)
+Message-ID: <20180320010621.C047F44007A@finisterre.ee.mobilebroadband>
+References: <20180314222416.95836-1-jamespeterkelly@gmail.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20180314222416.95836-1-jamespeterkelly@gmail.com>
+Sender: stable-owner@vger.kernel.org
+To: James Kelly <jamespeterkelly@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.org, alsa-devel@alsa-project.orgMark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt286: don't turn off HV and VREF if headset is detected
+   ASoC: ssm2602: Replace reg_default_raw with reg_default
 
 has been applied to the asoc tree at
 
@@ -53,45 +37,78 @@ to this mail.
 Thanks,
 Mark
 
->From 8153362e757a7b971aa73e7747bdc2ca2acbe84b Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Mon, 19 Mar 2018 18:07:12 +0800
-Subject: [PATCH] ASoC: rt286: don't turn off HV and VREF if headset is
- detected
+>From a01df75ce737951ad13a08d101306e88c3f57cb2 Mon Sep 17 00:00:00 2001
+From: James Kelly <jamespeterkelly@gmail.com>
+Date: Mon, 19 Mar 2018 21:29:50 +1100
+Subject: [PATCH] ASoC: ssm2602: Replace reg_default_raw with reg_default
 
-"HV" and "VREF" will be powered up when jack type detection process is
-started and will be powered off when jack type detection process is finished.
-It will generate an unexpected interrupt signal when they are powered
-up during the capture process. Codec driver will do the jack type detection
-process and we can't capture properly before the jack detection process is
-finished. This patch will not power off the "HV" and "VREF" widgets if
-headset is detected and it will solve the unexpected interrupt issue. As a
-result, it will also solve the silence data captured at the beginning in
-headset mic recording issue.
+SSM2602 driver is broken on recent kernels (at least
+since 4.9). User space applications such as amixer or
+alsamixer get EIO when attempting to access codec
+controls via the relevant IOCTLs.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Root cause of these failures is the regcache_hw_init
+function in drivers/base/regmap/regcache.c, which
+prevents regmap cache initalization from the
+reg_defaults_raw element of the regmap_config structure
+when registers are write only. It also disables the
+regmap cache entirely when all registers are write only
+or volatile as is the case for the SSM2602 driver.
+
+Using the reg_defaults element of the regmap_config
+structure rather than the reg_defaults_raw element to
+initalize the regmap cache avoids the logic in the
+regcache_hw_init function entirely. It also makes this
+driver consistent with other ASoC codec drivers, as
+this driver was the ONLY codec driver that used the
+reg_defaults_raw element to initalize the cache.
+
+Tested on Digilent Zybo Z7 development board which has
+a SSM2603 codec chip connected to a Xilinx Zynq SoC.
+
+Signed-off-by: James Kelly <jamespeterkelly@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/rt286.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/codecs/ssm2602.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index af6325c78292..e5c9d59c3967 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -275,9 +275,10 @@ static int rt286_jack_detect(struct rt286_priv *rt286, bool *hp, bool *mic)
- 		regmap_read(rt286->regmap, RT286_GET_MIC1_SENSE, &buf);
- 		*mic = buf & 0x80000000;
- 	}
--
--	snd_soc_dapm_disable_pin(dapm, "HV");
--	snd_soc_dapm_disable_pin(dapm, "VREF");
-+	if (!*mic) {
-+		snd_soc_dapm_disable_pin(dapm, "HV");
-+		snd_soc_dapm_disable_pin(dapm, "VREF");
-+	}
- 	if (!*hp)
- 		snd_soc_dapm_disable_pin(dapm, "LDO1");
- 	snd_soc_dapm_sync(dapm);
+diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+index 9b341c23f62b..5e80867d09ef 100644
+--- a/sound/soc/codecs/ssm2602.c
++++ b/sound/soc/codecs/ssm2602.c
+@@ -54,10 +54,17 @@ struct ssm2602_priv {
+  * using 2 wire for device control, so we cache them instead.
+  * There is no point in caching the reset register
+  */
+-static const u16 ssm2602_reg[SSM2602_CACHEREGNUM] = {
+-	0x0097, 0x0097, 0x0079, 0x0079,
+-	0x000a, 0x0008, 0x009f, 0x000a,
+-	0x0000, 0x0000
++static const struct reg_default ssm2602_reg[SSM2602_CACHEREGNUM] = {
++	{ .reg = 0x00, .def = 0x0097 },
++	{ .reg = 0x01, .def = 0x0097 },
++	{ .reg = 0x02, .def = 0x0079 },
++	{ .reg = 0x03, .def = 0x0079 },
++	{ .reg = 0x04, .def = 0x000a },
++	{ .reg = 0x05, .def = 0x0008 },
++	{ .reg = 0x06, .def = 0x009f },
++	{ .reg = 0x07, .def = 0x000a },
++	{ .reg = 0x08, .def = 0x0000 },
++	{ .reg = 0x09, .def = 0x0000 }
+ };
+ 
+ 
+@@ -620,8 +627,8 @@ const struct regmap_config ssm2602_regmap_config = {
+ 	.volatile_reg = ssm2602_register_volatile,
+ 
+ 	.cache_type = REGCACHE_RBTREE,
+-	.reg_defaults_raw = ssm2602_reg,
+-	.num_reg_defaults_raw = ARRAY_SIZE(ssm2602_reg),
++	.reg_defaults = ssm2602_reg,
++	.num_reg_defaults = ARRAY_SIZE(ssm2602_reg),
+ };
+ EXPORT_SYMBOL_GPL(ssm2602_regmap_config);
+ 
 -- 
 2.16.2
