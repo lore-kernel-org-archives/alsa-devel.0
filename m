@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: twl6040: remove duplicated remove
-	callback" to the asoc tree
-Date: Tue, 20 Mar 2018 01:05:49 +0000 (GMT)
-Message-ID: <20180320010549.AC2A744007A@finisterre.ee.mobilebroadband>
-References: <87d100tsjh.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rt298: don't turn off HV and VREF if
+	headset is detected" to the asoc tree
+Date: Tue, 20 Mar 2018 01:06:06 +0000 (GMT)
+Message-ID: <20180320010606.B701344007A@finisterre.ee.mobilebroadband>
+References: <1521454049-32435-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 740BB2672B2
- for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2018 02:05:58 +0100 (CET)
-In-Reply-To: <87d100tsjh.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B34022672B2
+ for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2018 02:06:13 +0100 (CET)
+In-Reply-To: <1521454049-32435-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Julia Lawall <julia.lawall@lip6.fr>, Mark Brown <broonie@kernel.org>, kbuild test robot <fengguang.wu@intel.com>, alsa-devel@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, puneethx.prabhu@intel.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: twl6040: remove duplicated remove callback
+   ASoC: rt298: don't turn off HV and VREF if headset is detected
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From 83eca9f5eda6efff71515cb9c1a373b26d2d4c5b Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 19 Mar 2018 07:50:48 +0000
-Subject: [PATCH] ASoC: twl6040: remove duplicated remove callback
+>From 40d2677bdadbd221f3e398877586a30d8065140c Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Mon, 19 Mar 2018 18:07:29 +0800
+Subject: [PATCH] ASoC: rt298: don't turn off HV and VREF if headset is
+ detected
 
-We don't need 2 .remove callback
+"HV" and "VREF" will be powered up when jack type detection process is
+started and will be powered off when jack type detection process is finished.
+It will generate an unexpected interrupt signal when they are powered
+up during the capture process. Codec driver will do the jack type detection
+process and we can't capture properly before the jack detection process is
+finished. This patch will not power off the "HV" and "VREF" widgets if
+headset is detected and it will solve the unexpected interrupt issue. As a
+result, it will also solve the silence data captured at the beginning in
+headset mic recording issue.
 
-Fixes: 7480389fb0d8 ("ASoC: twl6040: replace codec to component")
-Reported-by: Julia Lawall <julia.lawall@lip6.fr>
-Reported-by: kbuild test robot <fengguang.wu@intel.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/twl6040.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/rt298.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index b56a6471f9c4..bfd1abd72253 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -1158,7 +1158,6 @@ static const struct snd_soc_component_driver soc_component_dev_twl6040 = {
- 	.remove			= twl6040_remove,
- 	.read			= twl6040_read,
- 	.write			= twl6040_write,
--	.remove			= twl6040_remove,
- 	.set_bias_level		= twl6040_set_bias_level,
- 	.controls		= twl6040_snd_controls,
- 	.num_controls		= ARRAY_SIZE(twl6040_snd_controls),
+diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
+index ce963768449f..ff52d0365cfa 100644
+--- a/sound/soc/codecs/rt298.c
++++ b/sound/soc/codecs/rt298.c
+@@ -290,9 +290,10 @@ static int rt298_jack_detect(struct rt298_priv *rt298, bool *hp, bool *mic)
+ 		regmap_read(rt298->regmap, RT298_GET_MIC1_SENSE, &buf);
+ 		*mic = buf & 0x80000000;
+ 	}
+-
+-	snd_soc_dapm_disable_pin(dapm, "HV");
+-	snd_soc_dapm_disable_pin(dapm, "VREF");
++	if (!*mic) {
++		snd_soc_dapm_disable_pin(dapm, "HV");
++		snd_soc_dapm_disable_pin(dapm, "VREF");
++	}
+ 	if (!*hp)
+ 		snd_soc_dapm_disable_pin(dapm, "LDO1");
+ 	snd_soc_dapm_sync(dapm);
 -- 
 2.16.2
