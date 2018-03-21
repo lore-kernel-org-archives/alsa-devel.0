@@ -1,15 +1,18 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Force polling mode on CFL for
-	fixing codec communication
-Date: Wed, 21 Mar 2018 10:15:25 +0100
-Message-ID: <20180321091525.1366-1-tiwai@suse.de>
+From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
+Subject: Re: [PATCH] ALSA: hda - Force polling mode on CFL
+	for	fixing codec communication
+Date: Wed, 21 Mar 2018 09:39:35 +0000
+Message-ID: <85DFEED57DC57344B2483EF7BF8CB60579B46264@BGSMSX101.gar.corp.intel.com>
+References: <20180321091525.1366-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 32E972671F9
- for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2018 10:15:27 +0100 (CET)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id 290D72671F9
+ for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2018 10:39:42 +0100 (CET)
+In-Reply-To: <20180321091525.1366-1-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,54 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 Cc: Hui Wang <hui.wang@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-We've observed too long probe time with Coffee Lake machines, and the
-likely cause is some communication problem between the HD-audio
-controller and the codec chips.  While the controller expects an IRQ
-wakeup for each codec response, it seems sometimes missing, and it
-takes one second for the controller driver to time out and read the
-response in the polling mode.
 
-Although we aren't sure about the real culprit yet, in this patch, we
-put a workaround by forcing the polling mode as default for CFL
-machines; the polling mode itself isn't too heavy, and much better
-than other workarounds initially suggested (e.g. disabling
-power-save), at least.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=199007
-Fixes: e79b0006c45c ("ALSA: hda - Add Coffelake PCI ID")
-Reported-and-tested-by: Hui Wang <hui.wang@canonical.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_intel.c | 5 +++++
- 1 file changed, 5 insertions(+)
+>-----Original Message-----
+>From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-
+>project.org] On Behalf Of Takashi Iwai
+>Sent: Wednesday, March 21, 2018 2:45 PM
+>To: alsa-devel@alsa-project.org
+>Cc: Hui Wang <hui.wang@canonical.com>
+>Subject: [alsa-devel] [PATCH] ALSA: hda - Force polling mode on CFL for fixing
+>codec communication
+>
+>We've observed too long probe time with Coffee Lake machines, and the
+>likely cause is some communication problem between the HD-audio
+>controller and the codec chips.  While the controller expects an IRQ
+>wakeup for each codec response, it seems sometimes missing, and it
+>takes one second for the controller driver to time out and read the
+>response in the polling mode.
+>
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index d5017adf9feb..c507c69029e3 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -375,6 +375,7 @@ enum {
- 					((pci)->device == 0x160c))
- 
- #define IS_BXT(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x5a98)
-+#define IS_CFL(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0xa348)
- 
- static char *driver_short_names[] = {
- 	[AZX_DRIVER_ICH] = "HDA Intel",
-@@ -1744,6 +1745,10 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
- 	else
- 		chip->bdl_pos_adj = bdl_pos_adj[dev];
- 
-+	/* Workaround for a communication error on CFL (bko#199007) */
-+	if (IS_CFL(pci))
-+		chip->polling_mode = 1;
-+
- 	err = azx_bus_init(chip, model[dev], &pci_hda_io_ops);
- 	if (err < 0) {
- 		kfree(hda);
--- 
-2.16.2
+I think I faced similar problem while doing the HDA ASoC work.
+
+I don't have any way to reproduce and test this. Can we increase
+the delay after the link is powered ON. The present delay is 100usec,
+can we make it 521 uSec ? Possibly the codec is not ready after
+the link is powered on and so it's not responding.
+
+File: hda_intel.c
+
+	/* 4. turn link up: set SPA to 1 and wait CPA to 1 */
+	intel_ml_lctl_set_power(chip, 1);
+	udelay(100); --> change this to 521.
+
+Regards,
+Rakesh
