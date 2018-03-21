@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [asoc:topic/amd 2/7]
- sound/soc//amd/acp-da7219-max98357a.c:79:22: error: passing argument 1 of
- 'da7219_aad_jack_det' from incompatible pointer type
-Date: Wed, 21 Mar 2018 09:41:03 +0800
-Message-ID: <20180321014103.GT2186@sirena.org.uk>
-References: <201803201546.ySLV9bNZ%fengguang.wu@intel.com>
- <87d0zzumqz.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 3/3] dt-bindings: sound: rockchip Fix
+ compatible string in example
+Date: Wed, 21 Mar 2018 09:52:16 +0800
+Message-ID: <20180321015216.GU2186@sirena.org.uk>
+References: <20180320160332.13212-1-ezequiel@vanguardiasur.com.ar>
+ <20180320160332.13212-4-ezequiel@vanguardiasur.com.ar>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7002885877539142430=="
+Content-Type: multipart/mixed; boundary="===============2801568672922947606=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 69C9526731A
- for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2018 02:41:16 +0100 (CET)
-In-Reply-To: <87d0zzumqz.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E343267219
+ for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2018 02:52:24 +0100 (CET)
+In-Reply-To: <20180320160332.13212-4-ezequiel@vanguardiasur.com.ar>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,51 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, kbuild test robot <fengguang.wu@intel.com>, kbuild-all@01.org
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-rockchip@lists.infradead.org, Ezequiel Garcia <ezequiel@collabora.co.uk>, kernel@collabora.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7002885877539142430==
+--===============2801568672922947606==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="2YRWZLSLC5jz1DAJ"
+	protocol="application/pgp-signature"; boundary="fzjtk4ayEOCSo8lB"
 Content-Disposition: inline
 
 
---2YRWZLSLC5jz1DAJ
+--fzjtk4ayEOCSo8lB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 20, 2018 at 09:22:50AM +0000, Kuninori Morimoto wrote:
+On Tue, Mar 20, 2018 at 01:03:32PM -0300, Ezequiel Garcia wrote:
+> From: Ezequiel Garcia <ezequiel@collabora.co.uk>
+>=20
+> Use the correct compatible string in the example devicetree
+> snippet, which was probably overlooked.
 
-> I think topic/amd want to based on topic/hda-sync-power.
-> But, it seems this branch was removed ??
+Please use subject lines matching the style for the subsystem.  This
+makes it easier for people to identify relevant patches.
 
-That topic rings no bells at all...   I certainly didn't deliberately
-remove anything.
-
---2YRWZLSLC5jz1DAJ
+--fzjtk4ayEOCSo8lB
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqxuC4ACgkQJNaLcl1U
-h9DPTgf9EYuZ8gwYlyzMW5TMq/Oy8/dSmY+QRKRt3mopnK14b5Ktizx08MsztwsP
-mqHBsoxYac4nTWheeKbtGDVNAQh0BXwgJS11gWN/kkvMAQQgahj22TChGF05kgRR
-Uhb5pI1107pc47cPBcXxG9eH9OxO9DqiQBBKd0F2WIxxNYHKqGmcxTYDHBBGl4LX
-rM33mekPT6cjUyoVntbMZFYKekxL0m+5GXHgGpbIR9V7WrAEf/2cAdvRjF6bYX7e
-GbkAKLpfFtUtw2bi3WXqHoJfzQQBswK/hdiQkpw9ozqIHIrW9z3nwv3iGUAcziKQ
-tnxcI0uMzIopU/+F2uegTK0qe+8iSA==
-=GrBh
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqxutAACgkQJNaLcl1U
+h9DAcwf/bYW4CIGdq2kOKN4CHIVmjGVX3W11zO75WlWSXST/IqFd0H0JN4crYn9S
+25HvEkob+XjA1v/eSzho/yizt9yVOjh5jod6oRKruT1fmbzczMhc1gg3ZXbmeSJi
+F2HAYpJFDh5cGKAVWVYnrXFyCG/9jnBwWWdfy7kjp9sbmDSXCi2MgFqHVyrKcdxx
+qUoD/ErnN4loLH1/I3LJpWYpaPLSeBz/BXqw4pzAWYgcSsOaGBDSTFVRh3Ix+Smy
+gKAdMcH7vOUtSiU96xnLp1aW9xG4di1dWFir62uthz53vzNbfluR/t2NBLzHBXYY
+U1FkjlQ4+TVHDjz2zRDVMDVaUcwypg==
+=MLPw
 -----END PGP SIGNATURE-----
 
---2YRWZLSLC5jz1DAJ--
+--fzjtk4ayEOCSo8lB--
 
---===============7002885877539142430==
+--===============2801568672922947606==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7002885877539142430==--
+--===============2801568672922947606==--
