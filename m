@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: set pm_ops in
-	hibernate-compatible way" to the asoc tree
-Date: Wed, 21 Mar 2018 01:33:54 +0000 (GMT)
-Message-ID: <20180321013354.DBB4544007A@finisterre.ee.mobilebroadband>
-References: <20180320084115.23880-1-nikita.yoush@cogentembedded.com>
+Subject: Re: [RESEND][PATCH v4 0/3] Add SPIB Support for Intel
+ Skylake platforms
+Date: Wed, 21 Mar 2018 09:34:52 +0800
+Message-ID: <20180321013452.GS2186@sirena.org.uk>
+References: <1521561668-28613-1-git-send-email-sriramx.periyasamy@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2620310948384992403=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C6D3267339
- for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2018 02:34:00 +0100 (CET)
-In-Reply-To: <20180320084115.23880-1-nikita.yoush@cogentembedded.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E068826731A
+ for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2018 02:35:05 +0100 (CET)
+In-Reply-To: <1521561668-28613-1-git-send-email-sriramx.periyasamy@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,66 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Arvind Yadav <arvind.yadav.cs@gmail.com>, Bhumika Goyal <bhumirks@gmail.com>
+To: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Cc: ALSA ML <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rsnd: set pm_ops in hibernate-compatible way
+--===============2620310948384992403==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="MiMBASdxvnz+XAiL"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--MiMBASdxvnz+XAiL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, Mar 20, 2018 at 09:31:05PM +0530, Sriram Periyasamy wrote:
+> Skylake audio controller supports SPIB (Software Position in buffer)
+> capability, which can be used to inform position of application pointer
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+You probably want to cut down on the number of tags you're adding in
+your subject lines - what I see when I look at this mail in my inbox is:
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+-> 1061   T 03/20 Sriram Periyasa (1.7K) [alsa-devel][RESEND][PATCH v4 0/3] Add
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+so I can't see *anything* about what the patch is about!  The
+[alsa-devel] bit is probably the main thing that can go, I know the
+mailing list software adds it which is unfortuate.
 
-Thanks,
-Mark
+--MiMBASdxvnz+XAiL
+Content-Type: application/pgp-signature; name="signature.asc"
 
->From f8a9a29c4fe9dd0dd2206cc4368efec95dc9defb Mon Sep 17 00:00:00 2001
-From: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Date: Tue, 20 Mar 2018 11:41:15 +0300
-Subject: [PATCH] ASoC: rsnd: set pm_ops in hibernate-compatible way
+-----BEGIN PGP SIGNATURE-----
 
-Use SET_SYSTEM_SLEEP_PM_OPS() macro instead of direct assignment to
-.suspend and .resume fields.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqxtrsACgkQJNaLcl1U
+h9Bmzgf/QqgN4zCb72suuWONn/sI+o29baTv7B5h1vKrEyDKO4H5tzeC0K3SXIeZ
+/1Keol/MGQMjTfkl+GOK3+8rJrTGWg4OTZ5mAJSmnMgUbHrQSaMlybzOteSLoDtX
+rDMznyX4o4doFNjGFNzxEOHbt7KDFy/XQKaZCjCLTOhgQ2CMe6y7hZfyHmV324HI
+A5B9Vtdli6PpSm311gJ2cv0sZtZJoFFrUG4KHgJF/We41k+ttQIdBJkVUx3bbLm5
+mlqH8U3ViiwPzGPR6idRI9ZATdtKXTd6kj4nLzMMlWTxQcD/X7PlSktkbSVvN1Z/
+ceULYLcZVlEzhymWnYX/IxnGHrrGqg==
+=HOym
+-----END PGP SIGNATURE-----
 
-This makes driver working after restore from hibernation.
+--MiMBASdxvnz+XAiL--
 
-Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sh/rcar/core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+--===============2620310948384992403==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 5aafc37f5119..96526c91a94b 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1569,8 +1569,7 @@ static int rsnd_resume(struct device *dev)
- }
- 
- static const struct dev_pm_ops rsnd_pm_ops = {
--	.suspend		= rsnd_suspend,
--	.resume			= rsnd_resume,
-+	SET_SYSTEM_SLEEP_PM_OPS(rsnd_suspend, rsnd_resume)
- };
- 
- static struct platform_driver rsnd_driver = {
--- 
-2.16.2
+
+--===============2620310948384992403==--
