@@ -1,15 +1,15 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH] ASoC: nau8824: user configuration of key
-	detection
-Date: Wed, 21 Mar 2018 15:30:23 +0800
-Message-ID: <1521617423-2213-1-git-send-email-KCHSU0@nuvoton.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Force polling mode on CFL for
+	fixing codec communication
+Date: Wed, 21 Mar 2018 10:15:25 +0100
+Message-ID: <20180321091525.1366-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 62A46267321
- for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2018 08:30:29 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32E972671F9
+ for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2018 10:15:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,39 +19,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com
+To: alsa-devel@alsa-project.org
+Cc: Hui Wang <hui.wang@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-The SAR ADC of key press detection varies depending on headset.
-We can't make a set of common threshold values for every case.
-Therefore, the driver provides configuration for user and
-they can set up values by UCM configuration.
+We've observed too long probe time with Coffee Lake machines, and the
+likely cause is some communication problem between the HD-audio
+controller and the codec chips.  While the controller expects an IRQ
+wakeup for each codec response, it seems sometimes missing, and it
+takes one second for the controller driver to time out and read the
+response in the polling mode.
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Although we aren't sure about the real culprit yet, in this patch, we
+put a workaround by forcing the polling mode as default for CFL
+machines; the polling mode itself isn't too heavy, and much better
+than other workarounds initially suggested (e.g. disabling
+power-save), at least.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=199007
+Fixes: e79b0006c45c ("ALSA: hda - Add Coffelake PCI ID")
+Reported-and-tested-by: Hui Wang <hui.wang@canonical.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/nau8824.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/pci/hda/hda_intel.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
-index 637e952..76502c0 100644
---- a/sound/soc/codecs/nau8824.c
-+++ b/sound/soc/codecs/nau8824.c
-@@ -409,6 +409,15 @@ static const struct snd_kcontrol_new nau8824_snd_controls[] = {
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index d5017adf9feb..c507c69029e3 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -375,6 +375,7 @@ enum {
+ 					((pci)->device == 0x160c))
  
- 	SOC_SINGLE("DACL LR Mix", NAU8824_REG_DAC_MUTE_CTRL, 0, 1, 0),
- 	SOC_SINGLE("DACR LR Mix", NAU8824_REG_DAC_MUTE_CTRL, 1, 1, 0),
+ #define IS_BXT(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x5a98)
++#define IS_CFL(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0xa348)
+ 
+ static char *driver_short_names[] = {
+ 	[AZX_DRIVER_ICH] = "HDA Intel",
+@@ -1744,6 +1745,10 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
+ 	else
+ 		chip->bdl_pos_adj = bdl_pos_adj[dev];
+ 
++	/* Workaround for a communication error on CFL (bko#199007) */
++	if (IS_CFL(pci))
++		chip->polling_mode = 1;
 +
-+	SOC_SINGLE("THD for key media",
-+		NAU8824_REG_VDET_THRESHOLD_1, 8, 0xff, 0),
-+	SOC_SINGLE("THD for key voice command",
-+		NAU8824_REG_VDET_THRESHOLD_1, 0, 0xff, 0),
-+	SOC_SINGLE("THD for key volume up",
-+		NAU8824_REG_VDET_THRESHOLD_2, 8, 0xff, 0),
-+	SOC_SINGLE("THD for key volume down",
-+		NAU8824_REG_VDET_THRESHOLD_2, 0, 0xff, 0),
- };
- 
- static int nau8824_output_dac_event(struct snd_soc_dapm_widget *w,
+ 	err = azx_bus_init(chip, model[dev], &pci_hda_io_ops);
+ 	if (err < 0) {
+ 		kfree(hda);
 -- 
-2.6.4
+2.16.2
