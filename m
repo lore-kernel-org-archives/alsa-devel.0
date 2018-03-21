@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: rk3288-hdmi-analog: Select
-	needed codecs" to the asoc tree
-Date: Wed, 21 Mar 2018 01:57:29 +0000 (GMT)
-Message-ID: <20180321015729.0B1B044007A@finisterre.ee.mobilebroadband>
-References: <20180320160332.13212-3-ezequiel@vanguardiasur.com.ar>
+Subject: Applied "ASoC: rockchip: Fix compatible string in
+	example" to the asoc tree
+Date: Wed, 21 Mar 2018 01:57:44 +0000 (GMT)
+Message-ID: <20180321015744.64AAD44007A@finisterre.ee.mobilebroadband>
+References: <20180320160332.13212-4-ezequiel@vanguardiasur.com.ar>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id F335D267321
- for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2018 02:57:34 +0100 (CET)
-In-Reply-To: <20180320160332.13212-3-ezequiel@vanguardiasur.com.ar>
+ by alsa0.perex.cz (Postfix) with ESMTP id DA8AD2673A6
+ for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2018 02:57:48 +0100 (CET)
+In-Reply-To: <20180320160332.13212-4-ezequiel@vanguardiasur.com.ar>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Ezequiel Garcia <ezequiel@collabora.co.uk>
-Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-rockchip@lists.infradead.org, Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Mark Brown <broonie@kernel.org>, kernel@collabora.com, linux-arm-kernel@lists.infradead.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, kernel@collabora.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: rk3288-hdmi-analog: Select needed codecs
+   ASoC: rockchip: Fix compatible string in example
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From b1d0db067fbe2598d62b248beea5d705a0ea7642 Mon Sep 17 00:00:00 2001
+>From 279df1917d3e7817983bf5b3476643ec6dfd6f22 Mon Sep 17 00:00:00 2001
 From: Ezequiel Garcia <ezequiel@collabora.co.uk>
-Date: Tue, 20 Mar 2018 13:03:31 -0300
-Subject: [PATCH] ASoC: rockchip: rk3288-hdmi-analog: Select needed codecs
+Date: Tue, 20 Mar 2018 13:03:32 -0300
+Subject: [PATCH] ASoC: rockchip: Fix compatible string in example
 
-The driver does not select all the codec drivers that needs.
-Fix it by selecting the analog and HDMI codecs.
+Use the correct compatible string in the example devicetree
+snippet, which was probably overlooked.
 
-Cc: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
 Signed-off-by: Ezequiel Garcia <ezequiel@collabora.co.uk>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/Kconfig | 3 +++
- 1 file changed, 3 insertions(+)
+ Documentation/devicetree/bindings/sound/rockchip,rk3288-hdmi-analog.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
-index b0825370d262..957046ac6c8c 100644
---- a/sound/soc/rockchip/Kconfig
-+++ b/sound/soc/rockchip/Kconfig
-@@ -56,6 +56,9 @@ config SND_SOC_RK3288_HDMI_ANALOG
- 	depends on SND_SOC_ROCKCHIP && I2C && GPIOLIB && CLKDEV_LOOKUP
- 	select SND_SOC_ROCKCHIP_I2S
- 	select SND_SOC_HDMI_CODEC
-+	select SND_SOC_ES8328_I2C
-+	select SND_SOC_ES8328_SPI if SPI_MASTER
-+	select DRM_DW_HDMI_I2S_AUDIO if DRM_DW_HDMI
- 	help
- 	  Say Y or M here if you want to add support for SoC audio on Rockchip
- 	  RK3288 boards using an analog output and the built-in HDMI audio.
+diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3288-hdmi-analog.txt b/Documentation/devicetree/bindings/sound/rockchip,rk3288-hdmi-analog.txt
+index 2539e1d68107..e5430d1d34e4 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip,rk3288-hdmi-analog.txt
++++ b/Documentation/devicetree/bindings/sound/rockchip,rk3288-hdmi-analog.txt
+@@ -22,7 +22,7 @@ Optionnal properties:
+ Example:
+ 
+ sound {
+-	compatible = "rockchip,rockchip-audio-es8388";
++	compatible = "rockchip,rk3288-hdmi-analog";
+ 	rockchip,model = "Analog audio output";
+ 	rockchip,i2s-controller = <&i2s>;
+ 	rockchip,audio-codec = <&es8388>;
 -- 
 2.16.2
