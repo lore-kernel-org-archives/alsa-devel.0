@@ -1,16 +1,22 @@
-From: Akshu Agrawal <akshu.agrawal@amd.com>
-Subject: [PATCH v3] ASoC: AMD: Enable/Disable auxiliary clock
-	via common clock framework
-Date: Wed, 21 Mar 2018 09:35:03 +0530
-Message-ID: <1521605103-13574-1-git-send-email-akshu.agrawal@amd.com>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: [Xen-devel][PATCH v3 0/5] sndif: add explicit back
+ and front synchronization
+Date: Wed, 21 Mar 2018 09:15:36 +0200
+Message-ID: <2868f1f8-3988-7f25-9b88-8b686866b9ce@gmail.com>
+References: <1521444144-12451-1-git-send-email-andr2000@gmail.com>
+ <s5hr2oeebui.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM01-BY2-obe.outbound.protection.outlook.com
- (mail-by2nam01on0062.outbound.protection.outlook.com [104.47.34.62])
- by alsa0.perex.cz (Postfix) with ESMTP id D72A526731A
- for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2018 05:20:55 +0100 (CET)
+Received: from mail-lf0-f50.google.com (mail-lf0-f50.google.com
+ [209.85.215.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32AC8267219
+ for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2018 08:15:38 +0100 (CET)
+Received: by mail-lf0-f50.google.com with SMTP id p142-v6so6314820lfd.6
+ for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2018 00:15:38 -0700 (PDT)
+In-Reply-To: <s5hr2oeebui.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,220 +26,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, lgirdwood@gmail.com, djkurtz@chromium.org, akshu.agrawal@amd.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: xen-devel@lists.xenproject.org, alsa-devel@alsa-project.org, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, konrad.wilk@oracle.com
 List-Id: alsa-devel@alsa-project.org
 
-This enables/disables and sets auxiliary clock at 25Mhz. It uses
-common clock framework for proper ref counting. This approach will
-save power in comparison to keeping it always On in firmware.
+On 03/20/2018 10:22 PM, Takashi Iwai wrote:
+> On Mon, 19 Mar 2018 08:22:19 +0100,
+> Oleksandr Andrushchenko wrote:
+>> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+>>
+>> Hello, all!
+>>
+>> In order to provide explicit synchronization between backend and
+>> frontend the following changes are introduced in the protocol:
+>>   - bump protocol version to 2
+>>   - add new ring buffer for sending asynchronous events from
+>>     backend to frontend to report number of bytes played by the
+>>     frontend (XENSND_EVT_CUR_POS)
+>>   - introduce trigger events for playback control: start/stop/pause/resume
+>>   - add "req-" prefix to event-channel and ring-ref to unify naming
+>>     of the Xen event channels for requests and events
+>>   - add XENSND_OP_HW_PARAM_QUERY request to read/update
+>>     stream configuration space: request passes desired intervals/formats for
+>>     the stream parameters and the response returns allowed intervals and
+>>     formats mask that can be used.
+>>
+>> Changes since v2:
+>> 1. Konrad's r-b tag for version patch
+>> 2. MAJOR: changed req/resp/evt packet sizes from 32 to 64 octets
+>> 3. Reworked XENSND_OP_HW_PARAM_QUERY so it now sends all
+>>     parameters at once, allowing to check all the configuration
+>>     space.
+>> 4. Minor documentation cleanup (added missed "reserved" fields)
+>>
+>> Changes since v1:
+>>
+>> 1. Changed protocol version definition from string to integer,
+>> so it can easily be used in comparisons.
+>> Konrad, I have removed your r-b tag for the reason of this change.
+>>
+>> 2. In order to provide explicit stream parameter negotiation between
+>> backend and frontend the following changes are introduced in the protocol:
+>> add XENSND_OP_HW_PARAM_QUERY request to read/update
+>> configuration space for the parameter given: request passes
+>> desired parameter interval (mask) and the response to this request
+>> returns min/max interval (mask) for the parameter to be used.
+>>
+>> Parameters supported by this request/response:
+>>   - format mask
+>>   - sample rate interval
+>>   - number of channels interval
+>>   - buffer size, interval, frames
+>>   - period size, interval, frames
+> I can't judge exactly about the protocol without the actual FE/BE
+> implementations, but the change looks good to me, especially if you've
+> already tested something.
+Thank you, I have tested the changes and need them to start upstreaming
+the frontend driver used to test the protocol.
+Do you mind if I put your Acked-by (or you prefer Reviewed-by?) tag to 
+these patches:
 
-V2: Correcting the pin to OSCOUT1 from OSCOUT2
-V3: Fix error/warnings from kbuild test
+[PATCH v3 4/5] sndif: Add explicit back and front synchronization
+[PATCH v3 5/5] sndif: Add explicit back and front parameter negotiation
 
-TEST= aplay -vv <file>
-check register to see clock enabled
-kill aplay
-check register to see clock disabled
-
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
----
- sound/soc/amd/acp-da7219-max98357a.c | 135 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 133 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index 99c6b5c..baea370 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -30,10 +30,13 @@
- #include <sound/soc-dapm.h>
- #include <sound/jack.h>
- #include <linux/clk.h>
-+#include <linux/clkdev.h>
-+#include <linux/clk-provider.h>
- #include <linux/gpio.h>
- #include <linux/module.h>
- #include <linux/i2c.h>
- #include <linux/acpi.h>
-+#include <linux/types.h>
- 
- #include "../codecs/da7219.h"
- #include "../codecs/da7219-aad.h"
-@@ -41,6 +44,18 @@
- #define CZ_PLAT_CLK 24000000
- #define MCLK_RATE 24576000
- #define DUAL_CHANNEL		2
-+#define CLKDRVSTR2	0x28
-+#define MISCCLKCNTL1	0x40
-+#define OSCCLKENB	2
-+#define OSCOUT1CLK25MHZ	16
-+
-+struct cz_clock {
-+	const char* acp_clks_name;
-+	struct clk_hw acp_clks_hw;
-+	struct clk_lookup *acp_clks_lookup;
-+	struct clk *acp_clks;
-+	void __iomem *res_base;
-+};
- 
- static struct snd_soc_jack cz_jack;
- struct clk *da7219_dai_clk;
-@@ -91,6 +106,8 @@ static int cz_da7219_hw_params(struct snd_pcm_substream *substream,
- {
- 	int ret = 0;
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_card *card = rtd->card;
-+	struct clk *acpd7219_clk;
- 
- 	ret = clk_prepare_enable(da7219_dai_clk);
- 	if (ret < 0) {
-@@ -98,13 +115,27 @@ static int cz_da7219_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
- 
-+	acpd7219_clk = clk_get(card->dev, "acpd7219-clks");
-+	ret = clk_prepare_enable(acpd7219_clk);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "can't enable oscillator clock %d\n", ret);
-+		return ret;
-+	}
-+
- 	return ret;
- }
- 
- static int cz_da7219_hw_free(struct snd_pcm_substream *substream)
- {
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_card *card = rtd->card;
-+	struct clk *acpd7219_clk;
-+
- 	clk_disable_unprepare(da7219_dai_clk);
- 
-+	acpd7219_clk = clk_get(card->dev, "acpd7219-clks");
-+	clk_disable_unprepare(acpd7219_clk);
-+
- 	return 0;
- }
- 
-@@ -237,9 +268,106 @@ static int cz_fe_startup(struct snd_pcm_substream *substream)
- 	.num_controls = ARRAY_SIZE(cz_mc_controls),
- };
- 
-+static int acpd7219_clks_prepare(struct clk_hw *hw)
-+{
-+	u32 reg_val;
-+	struct cz_clock *cz_clock_obj =
-+		container_of(hw, struct cz_clock, acp_clks_hw);
-+	void __iomem *base = cz_clock_obj->res_base;
-+
-+	reg_val = readl(base + MISCCLKCNTL1);
-+	reg_val &= ~(0x1 << OSCCLKENB);
-+	writel(reg_val, base + MISCCLKCNTL1);
-+	reg_val = readl(base + CLKDRVSTR2);
-+	reg_val |= (0x1 << OSCOUT1CLK25MHZ);
-+	writel(reg_val, base + CLKDRVSTR2);
-+
-+	return 0;
-+}
-+
-+static void acpd7219_clks_unprepare(struct clk_hw *hw)
-+{
-+	u32 reg_val;
-+	struct cz_clock *cz_clock_obj =
-+		container_of(hw, struct cz_clock, acp_clks_hw);
-+	void __iomem *base = cz_clock_obj->res_base;
-+
-+	reg_val = readl(base + MISCCLKCNTL1);
-+	reg_val |= (0x1 << OSCCLKENB);
-+	writel(reg_val, base + MISCCLKCNTL1);
-+}
-+
-+static int acpd7219_clks_is_enabled(struct clk_hw *hw)
-+{
-+	u32 reg_val;
-+	struct cz_clock *cz_clock_obj =
-+		container_of(hw, struct cz_clock, acp_clks_hw);
-+	void __iomem *base = cz_clock_obj->res_base;
-+
-+	reg_val = readl(base + MISCCLKCNTL1);
-+
-+	return !(reg_val & OSCCLKENB);
-+}
-+
-+const struct clk_ops acpd7219_clks_ops = {
-+	.prepare = acpd7219_clks_prepare,
-+	.unprepare = acpd7219_clks_unprepare,
-+	.is_enabled = acpd7219_clks_is_enabled,
-+};
-+
-+static int register_acpd7219_clocks(struct platform_device *pdev)
-+{
-+	struct clk_init_data init = {};
-+	struct clk *acp_clks;
-+	struct clk_lookup *acp_clks_lookup;
-+	struct cz_clock *cz_clock_obj;
-+	struct resource *res;
-+	struct device dev = pdev->dev;
-+
-+	cz_clock_obj = kzalloc(sizeof(struct cz_clock), GFP_KERNEL);
-+	if (!cz_clock_obj)
-+		return -ENOMEM;
-+
-+	cz_clock_obj->acp_clks_name = "acpd7219-clks";
-+
-+	init.parent_names = NULL;
-+	init.num_parents = 0;
-+	init.name = cz_clock_obj->acp_clks_name;
-+	init.ops = &acpd7219_clks_ops;
-+	cz_clock_obj->acp_clks_hw.init = &init;
-+
-+	acp_clks = devm_clk_register(&dev, &cz_clock_obj->acp_clks_hw);
-+	if (IS_ERR(acp_clks))
-+	{
-+		dev_err(&dev, "Failed to register DAI clocks: %ld\n",
-+			 PTR_ERR(acp_clks));
-+		return -EINVAL;
-+	}
-+	cz_clock_obj->acp_clks = acp_clks;
-+
-+	acp_clks_lookup = clkdev_create(acp_clks, cz_clock_obj->acp_clks_name,
-+					"%s", dev_name(&dev));
-+	if (!acp_clks_lookup)
-+		dev_warn(&dev, "Failed to create DAI clkdev");
-+	else
-+		cz_clock_obj->acp_clks_lookup = acp_clks_lookup;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res) {
-+		dev_err(&pdev->dev, "Failed to get misc io resource.\n");
-+		return -EINVAL;
-+	}
-+	cz_clock_obj->res_base = devm_ioremap_nocache(&pdev->dev, res->start,
-+					resource_size(res));
-+	if (!cz_clock_obj->res_base)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
- static int cz_probe(struct platform_device *pdev)
- {
--	int ret;
-+	int ret = 0;
- 	struct snd_soc_card *card;
- 
- 	card = &cz_card;
-@@ -252,7 +380,10 @@ static int cz_probe(struct platform_device *pdev)
- 				cz_card.name, ret);
- 		return ret;
- 	}
--	return 0;
-+
-+	ret = register_acpd7219_clocks(pdev);
-+
-+	return ret;
- }
- 
- static const struct acpi_device_id cz_audio_acpi_match[] = {
--- 
-1.9.1
+Please note, that the changes first to be merged into Xen and then I'll 
+prepare
+the same, but for the kernel
+>
+> If other people have no concern, let's go ahead with FE/BE stuff.
+Konrad, are you ok with the changes?
+>
+> thanks,
+>
+> Takashi
+Thank you,
+Oleksandr
