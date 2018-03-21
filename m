@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Disable DAPM for click avoidance ?
-Date: Wed, 21 Mar 2018 10:34:32 +0800
-Message-ID: <20180321023432.GV2186@sirena.org.uk>
-References: <alpine.DEB.2.11.1711221315370.27895@lnxricardw1.se.axis.com>
- <20171122161315.vpahz77si5xgkmct@sirena.org.uk>
- <alpine.DEB.2.11.1803191641250.14045@lnxricardw1.se.axis.com>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: [PATCH] ASoC: nau8824: recover system clock when
+	device changes
+Date: Wed, 21 Mar 2018 12:16:32 +0800
+Message-ID: <1521605792-17360-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9196716222175272697=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 542BB267219
- for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2018 03:34:37 +0100 (CET)
-In-Reply-To: <alpine.DEB.2.11.1803191641250.14045@lnxricardw1.se.axis.com>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A155267219
+ for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2018 05:16:42 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,92 +19,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
+User reports an issue in Ubuntu about the device switch upon playback.
+We find the FLL will disalbe when switching headphone to speaker.
+The pulseaudio will stop the headphone and close its power. Then,
+it just opens the speaker and turn on its power. Therefore,
+the supply of system clock does the OFF event and disables FLL.
+But the FLL doesn't enable again when the speaker powers on.
 
---===============9196716222175272697==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="P3ueQkFGL7LDwHzi"
-Content-Disposition: inline
+The patch adds the recovery of system clock to enable FLL again
+for this case. And it covers the case that system clock from MCLK.
 
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+---
+ sound/soc/codecs/nau8824.c | 40 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 39 insertions(+), 1 deletion(-)
 
---P3ueQkFGL7LDwHzi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Mar 19, 2018 at 04:53:23PM +0100, Ricard Wanderlof wrote:
-> On Wed, 22 Nov 2017, Mark Brown wrote:
-
-> > The CODEC driver is broken, it shouldn't be powering off on idle if it
-> > takes a second to ramp, it should be leaving VMID up while the system is
-> > running - this is what the _STANDBY bias level is all about.  Look at
-> > what older CODEC drivers like the wm8731 do.
-
-> I was tracing through what actually is called in the codec driver when a=
-=20
-> stream is started, and from what I can see ALSA sequences through the=20
-> STANDBY, PREPARE and ON states when a stream is started, with no other=20
-> calls to set_bias_level prior to that. So it would seem that the STANDBY=
-=20
-> level is reached during the process of starting the stream, in other=20
-> words, VMID and the outputs would have to be enabled already in the OFF=
-=20
-> state.
-
-To repeat if you're setting idle_bias_off for a CODEC like this you're
-doing it wrong.  The device shouldn't be going to a bias level lower
-than _STANDBY while the system is out of suspend.
-
-> In our system, the power consumed by the codec is negligible compared to=
-=20
-> the rest of the system at all times, so it's not a problem to leave=20
-> basically the whole codec up, but I am trying understand what is the=20
-> Right Thing to do here.
-
-Are you sure that the device doesn't have any facility for switching the
-outputs to a lower power maintenance state while things are idle?  This
-sounds like an extremely basic device, even by the standards of a decade
-ago.  The reason for powering down the outputs isn't just a power one,
-often especially with these older devices there's an audible noise floor
-even when playing silence which is distracting for users in quiet
-environments.  Powering down eliminates this noise floor.
-
-The easiest thing to do if you just want to keep playing audio all the
-time is to handle this in the sound server and have it keep playing.  If
-the hardware really is as limited as it seems there's going to be no
-good way to support it.  Without knowing how flexible it is or what
-features it has it's difficult to be specific about the best way to
-handle it but whatever gets done having a stream coming from the CPU all
-the time will work.  The more control there is the more likely it is
-that the driver is going to have to power it down on idle anyway to
-allow configuration changes to be made without generating pops and
-clicks.
-
---P3ueQkFGL7LDwHzi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqxxLcACgkQJNaLcl1U
-h9D/WAf/YMmqISzYcr0hQa9v3tz2i+tdZcztBYRw5ZsnrR3FQ2Zi6AAURqo/d/iJ
-/it9C7iCPBalIQlOD6Nl+6hlVRYTnUKc5aN3uk6GWscfy2lpc+dpmQ3QTrKoMCm6
-Px6KdoTGynxw9LQB5rWXgpmPscxK+oEMknfFNfJbdMQbdzqtlpsxKarLD5M5pyEV
-kDl0z5LGNPBUtwhUhxN0gG75Vj4XQiv7hr0DwbBfJFbY3TQg4SzLNgo2qO97ensd
-apVgbjRwtOa2naFghht5+eGRNe/oFlMkFz79J3s9XEISQE1fxzk2QsunKYIYDys6
-CzxoziEiwF1yxP1TUeWxGqFE/x+a6A==
-=tmx9
------END PGP SIGNATURE-----
-
---P3ueQkFGL7LDwHzi--
-
---===============9196716222175272697==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9196716222175272697==--
+diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
+index 4d9148a..637e952 100644
+--- a/sound/soc/codecs/nau8824.c
++++ b/sound/soc/codecs/nau8824.c
+@@ -489,8 +489,12 @@ static int system_clock_control(struct snd_soc_dapm_widget *w,
+ {
+ 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+ 	struct nau8824 *nau8824 = snd_soc_component_get_drvdata(component);
++	struct regmap *regmap = nau8824->regmap;
++	unsigned int value;
++	bool clk_fll, error;
+ 
+ 	if (SND_SOC_DAPM_EVENT_OFF(event)) {
++		dev_dbg(nau8824->dev, "system clock control : POWER OFF\n");
+ 		/* Set clock source to disable or internal clock before the
+ 		 * playback or capture end. Codec needs clock for Jack
+ 		 * detection and button press if jack inserted; otherwise,
+@@ -502,7 +506,40 @@ static int system_clock_control(struct snd_soc_dapm_widget *w,
+ 		} else {
+ 			nau8824_config_sysclk(nau8824, NAU8824_CLK_DIS, 0);
+ 		}
++	} else {
++		dev_dbg(nau8824->dev, "system clock control : POWER ON\n");
++		/* Check the clock source setting is proper or not
++		 * no matter the source is from FLL or MCLK.
++		 */
++		regmap_read(regmap, NAU8824_REG_FLL1, &value);
++		clk_fll = value & NAU8824_FLL_RATIO_MASK;
++		/* It's error to use internal clock when playback */
++		regmap_read(regmap, NAU8824_REG_FLL6, &value);
++		error = value & NAU8824_DCO_EN;
++		if (!error) {
++			/* Check error depending on source is FLL or MCLK. */
++			regmap_read(regmap, NAU8824_REG_CLK_DIVIDER, &value);
++			if (clk_fll)
++				error = !(value & NAU8824_CLK_SRC_VCO);
++			else
++				error = value & NAU8824_CLK_SRC_VCO;
++		}
++		/* Recover the clock source setting if error. */
++		if (error) {
++			if (clk_fll) {
++				regmap_update_bits(regmap,
++					NAU8824_REG_FLL6, NAU8824_DCO_EN, 0);
++				regmap_update_bits(regmap,
++					NAU8824_REG_CLK_DIVIDER,
++					NAU8824_CLK_SRC_MASK,
++					NAU8824_CLK_SRC_VCO);
++			} else {
++				nau8824_config_sysclk(nau8824,
++					NAU8824_CLK_MCLK, 0);
++			}
++		}
+ 	}
++
+ 	return 0;
+ }
+ 
+@@ -591,7 +628,8 @@ static const struct snd_kcontrol_new nau8824_dacr_mux =
+ 
+ static const struct snd_soc_dapm_widget nau8824_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SUPPLY("System Clock", SND_SOC_NOPM, 0, 0,
+-			system_clock_control, SND_SOC_DAPM_POST_PMD),
++		system_clock_control, SND_SOC_DAPM_POST_PMD |
++		SND_SOC_DAPM_POST_PMU),
+ 
+ 	SND_SOC_DAPM_INPUT("HSMIC1"),
+ 	SND_SOC_DAPM_INPUT("HSMIC2"),
+-- 
+2.6.4
