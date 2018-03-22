@@ -1,207 +1,105 @@
-From: Andrew Chant <achant@google.com>
-Subject: [PATCH 2/2] ALSA: usb-audio: UAC2 jack detection
-Date: Thu, 22 Mar 2018 14:39:56 -0700
-Message-ID: <20180322213956.217933-3-achant@google.com>
-References: <20180322213956.217933-1-achant@google.com>
+From: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+Subject: Re: [PATCHv5,5/5] ARM: dts: omap4-droid4: add soundcard
+Date: Fri, 23 Mar 2018 00:48:32 +0100
+Message-ID: <20180322234832.o24ut5ahon46mdu4@earth.universe>
+References: <20180223200254.25685-6-sebastian.reichel@collabora.co.uk>
+ <20180322204804.GA26871@amd>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl0-f66.google.com (mail-pl0-f66.google.com
- [209.85.160.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C16B267396
- for <alsa-devel@alsa-project.org>; Thu, 22 Mar 2018 22:40:40 +0100 (CET)
-Received: by mail-pl0-f66.google.com with SMTP id u11-v6so6180937plq.1
- for <alsa-devel@alsa-project.org>; Thu, 22 Mar 2018 14:40:40 -0700 (PDT)
-In-Reply-To: <20180322213956.217933-1-achant@google.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Andrew Chant <achant@google.com>, Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="y5ecaf34wtg5q27y"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180322204804.GA26871@amd>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pavel Machek <pavel@ucw.cz>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Tony Lindgren <tony@atomide.com>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
 List-Id: alsa-devel@alsa-project.org
 
-This implements UAC2 jack detection support, presenting
-jack status as a boolean read-only mono mixer.
 
-The presence of any channel in the UAC2_TE_CONNECTOR
-control for a terminal will result in the mixer saying
-the jack is connected.
+--y5ecaf34wtg5q27y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Mixer naming follows the convention in sound/core/ctljack.c,
-terminating the mixer with " Jack".
-For additional clues as to which jack is being presented,
-the name is prefixed with " - Input Jack" or " - Output Jack"
-depending on if it's an input or output terminal.
+Hi Pavel,
 
-This is required because terminal names are ambiguous
-between inputs and outputs and often duplicated -
-Bidirectional terminal types (0x400 -> 0x4FF)
-"... may be used separately for input only or output only.
-These types require two Terminal descriptors. Both have the same type."
-(quote from "USB Device Class Definition for Terminal Types")
+On Thu, Mar 22, 2018 at 09:48:05PM +0100, Pavel Machek wrote:
+> Hi!
+>=20
+> > Add sound support to Motorola Droid 4 using simple-soundcard
+> > and CPCAP's audio codec. This does not yet correctly represent
+> > the whole audio routing, since McBSP3 is also connected to
+> > Bluetooth and MDM6600 modem (and probably also 4G modem).
+> > These extra DAI links are not yet supported and have not been
+> > tested.
+>=20
+> I applied the series on top v4.16-rc5, but I can't seem to get it
+> to work:
+>=20
+> root@devuan:/sys/devices/platform/usb-phy@1# cat /proc/asound/cards
+>  0 [H58006000encode]: HDMI_58006000_e - HDMI 58006000.encoder
+>                        HDMI 58006000.encoder
+> root@devuan:/sys/devices/platform/usb-phy@1#
+> [   10.819122] ALSA device list:
+> [   10.832641]   #0: HDMI 58006000.encoder
+> [   10.842407] Waiting 10 sec before mounting root device...
+>=20
+> I think I should have the required options enabled...=20
+>=20
+> CONFIG_SND_OMAP_SOC=3Dy
+> CONFIG_SND_OMAP_SOC_DMIC=3Dy
+> CONFIG_SND_OMAP_SOC_MCBSP=3Dy
+> CONFIG_SND_OMAP_SOC_MCPDM=3Dy
+> CONFIG_SND_OMAP_SOC_HDMI_AUDIO=3Dy
 
-Since bidirectional terminal types are common for headphone adapters,
-this distinguishes between two otherwise identically-named
-jack controls.
+That's the SoC (OMAP) side.
 
-Tested with a UAC2 audio device with connector control capability.
+> # CONFIG_SND_OMAP_SOC_RX51 is not set
+> # CONFIG_SND_OMAP_SOC_N9 is not set
+> CONFIG_SND_OMAP_SOC_OMAP_TWL4030=3Dy
+> CONFIG_SND_OMAP_SOC_OMAP_ABE_TWL6040=3Dy
 
-Signed-off-by: Andrew Chant <achant@google.com>
----
- sound/usb/mixer.c | 99 ++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 98 insertions(+), 1 deletion(-)
+That's not needed (but does not hurt). The Droid 4
+has no TWL companion chip and uses CPCAP instead.
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 3075ac50a391..6cb61307aefe 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1235,6 +1235,21 @@ static int mixer_ctl_feature_put(struct snd_kcontrol *kcontrol,
- 	return changed;
- }
- 
-+/* get the current value from a mixer element */
-+static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct usb_mixer_elem_info *cval = kcontrol->private_data;
-+	int val, err;
-+
-+	err = snd_usb_get_cur_mix_value(cval, 0, 0, &val);
-+	if (err < 0)
-+		return filter_error(cval, err);
-+	val = (val != 0);
-+	ucontrol->value.integer.value[0] = val;
-+	return 0;
-+}
-+
- static struct snd_kcontrol_new usb_feature_unit_ctl = {
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	.name = "", /* will be filled later manually */
-@@ -1252,6 +1267,16 @@ static const struct snd_kcontrol_new usb_feature_unit_ctl_ro = {
- 	.put = NULL,
- };
- 
-+/* A UAC connector mixer control */
-+static struct snd_kcontrol_new usb_connector_ctl_ro = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "", /* will be filled later manually */
-+	.access = SNDRV_CTL_ELEM_ACCESS_READ,
-+	.info = snd_ctl_boolean_mono_info,
-+	.get = mixer_ctl_connector_get,
-+	.put = NULL,
-+};
-+
- /*
-  * This symbol is exported in order to allow the mixer quirks to
-  * hook up to the standard feature unit control mechanism
-@@ -1464,6 +1489,55 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
- 	snd_usb_mixer_add_control(&cval->head, kctl);
- }
- 
-+static void get_connector_control_name(struct mixer_build *state,
-+				       struct usb_audio_term *term,
-+				       bool is_input, char *name, int name_size)
-+{
-+	int name_len = get_term_name(state, term, name, name_size, 0);
-+
-+	if (name_len == 0)
-+		strlcpy(name, "Unknown", name_size);
-+
-+	/*
-+	 *  sound/core/ctljack.c has a convention of naming jack controls
-+	 * by ending in " Jack".  Make it slightly more useful by
-+	 * indicating Input or Output after the terminal name.
-+	 */
-+	if (is_input)
-+		strlcat(name, " - Input Jack", name_size);
-+	else
-+		strlcat(name, " - Output Jack", name_size);
-+}
-+
-+/* Build a mixer control for a UAC connector control (jack-detect) */
-+static void build_connector_control(struct mixer_build *state,
-+				    struct usb_audio_term *term, bool is_input)
-+{
-+	struct snd_kcontrol *kctl;
-+	struct usb_mixer_elem_info *cval;
-+
-+	cval = kzalloc(sizeof(*cval), GFP_KERNEL);
-+	if (!cval)
-+		return;
-+	snd_usb_mixer_elem_init_std(&cval->head, state->mixer, term->id);
-+	cval->control = UAC2_TE_CONNECTOR;
-+	cval->val_type = USB_MIXER_BOOLEAN;
-+	cval->channels = term->channels;
-+	cval->cmask = term->chconfig;
-+	cval->min = 0;
-+	cval->max = 1;
-+	kctl = snd_ctl_new1(&usb_connector_ctl_ro, cval);
-+	if (!kctl) {
-+		usb_audio_err(state->chip, "cannot malloc kcontrol\n");
-+		kfree(cval);
-+		return;
-+	}
-+	get_connector_control_name(state, term, is_input, kctl->id.name,
-+				   sizeof(kctl->id.name));
-+	kctl->private_free = snd_usb_mixer_elem_free;
-+	snd_usb_mixer_add_control(&cval->head, kctl);
-+}
-+
- static int parse_clock_source_unit(struct mixer_build *state, int unitid,
- 				   void *_ftr)
- {
-@@ -1770,6 +1844,23 @@ static void build_mixer_unit_ctl(struct mixer_build *state,
- 	snd_usb_mixer_add_control(&cval->head, kctl);
- }
- 
-+static int parse_audio_input_terminal(struct mixer_build *state, int unitid,
-+				      void *raw_desc)
-+{
-+	struct usb_audio_term iterm;
-+	struct uac2_input_terminal_descriptor *d = raw_desc;
-+
-+	check_input_term(state, d->bTerminalID, &iterm);
-+	if (state->mixer->protocol == UAC_VERSION_2) {
-+		/* Check for jack detection. */
-+		if (uac_v2v3_control_is_readable(d->bmControls,
-+						 UAC2_TE_CONNECTOR)) {
-+			build_connector_control(state, &iterm, true);
-+		}
-+	}
-+	return 0;
-+}
-+
- /*
-  * parse a mixer unit
-  */
-@@ -2320,7 +2411,7 @@ static int parse_audio_unit(struct mixer_build *state, int unitid)
- 	if (protocol == UAC_VERSION_1 || protocol == UAC_VERSION_2) {
- 		switch (p1[2]) {
- 		case UAC_INPUT_TERMINAL:
--			return 0; /* NOP */
-+			return parse_audio_input_terminal(state, unitid, p1);
- 		case UAC_MIXER_UNIT:
- 			return parse_audio_mixer_unit(state, unitid, p1);
- 		case UAC2_CLOCK_SOURCE:
-@@ -2463,6 +2554,12 @@ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
- 			err = parse_audio_unit(&state, desc->bCSourceID);
- 			if (err < 0 && err != -EINVAL)
- 				return err;
-+
-+			if (uac_v2v3_control_is_readable(desc->bmControls,
-+							 UAC2_TE_CONNECTOR)) {
-+				build_connector_control(&state, &state.oterm,
-+							false);
-+			}
- 		} else {  /* UAC_VERSION_3 */
- 			struct uac3_output_terminal_descriptor *desc = p;
- 
--- 
-2.17.0.rc0.231.g781580f067-goog
+> # CONFIG_SND_SOC_IMG is not set
+>=20
+> #
+> # STMicroelectronics STM32 SOC audio support
+> #
+> # CONFIG_SND_SOC_XTFPGA_I2S is not set
+> # CONFIG_ZX_TDM is not set
+> CONFIG_SND_SOC_I2C_AND_SPI=3Dy
+> CONFIG_SND_SOC_CPCAP=3Dy
+
+That's the codec side.
+
+> Any ideas?
+
+You probably did not enable the soundcard driver, that binds against
+"audio-graph-card" compatible and connects the codec driver with the
+SoC driver: CONFIG_SND_AUDIO_GRAPH_CARD
+
+-- Sebastian
+
+--y5ecaf34wtg5q27y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAlq0QMUACgkQ2O7X88g7
++ppWzQ/+N0e86wVGZ+cWdPiKhD18HNNtj9xaw2MrU9lgDBKHWqOqQr4Tx7ghG0os
+EKZe4dvtOaaeb2ecNh907LOWlOdmJHI/naBWbiv5ZJIVX/8TNRUDizGrCXcv+qQv
+2Z3Fdlf/74gV6yJVTyKWJ6hsMnxUrv8WGKzF3t3hCv4uBft5k3GuZZdYrYfiPebw
+v5VY5iJwY2Ai9x43ulw8OsuJBZCm+4Q01gkc76nRGQmfSB7dkqicNRa5fsq6xjuf
+WGta9XsdutJwPDg3UNON2Fgelh9x3zl8n2yL8Ooj+O/7Lz80y5ihQ+gjLygppyWy
+HDe3pNi9OzBHGBHWzJdLGVsLhhfY/2cX6yjn1d52Qcdil7iI5KRj6TeEIOckXtfC
+VX9umFJgVlso5pBrxpBFp29XN0SMe3bAjc++FnFx2kv34A97sdKyReWunVvfWaPw
+iq3lxPKxskZtir02Sfl94+EfGSgT54U1GgyL62lpu+2bj627Rp/wTmK2GDfrq1BO
+MZFDWNYyVNSmq8s0IWiTHycyOU/z0F9xfwC/LVXurV0X0dMGQ3ywSbU/einkRkuo
+ydJGb0ftTHXx8sYf1s0P1SMULdo7heV00iYLRlgtvwCZyEI0i9nXf3QrpKiKNYAg
+6FCeJdTkeDhgniiqNccv+skLvJhuusfWUJQUz/Vh+B3Zb9gHKDU=
+=gDeS
+-----END PGP SIGNATURE-----
+
+--y5ecaf34wtg5q27y--
