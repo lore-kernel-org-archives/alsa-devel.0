@@ -1,8 +1,7 @@
 From: Andrew Chant <achant@google.com>
-Subject: [PATCH 1/2] ALSA: usb-audio: fix uac control query
-	argument
-Date: Thu, 22 Mar 2018 14:39:55 -0700
-Message-ID: <20180322213956.217933-2-achant@google.com>
+Subject: [PATCH 2/2] ALSA: usb-audio: UAC2 jack detection
+Date: Thu, 22 Mar 2018 14:39:56 -0700
+Message-ID: <20180322213956.217933-3-achant@google.com>
 References: <20180322213956.217933-1-achant@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,10 +9,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pl0-f66.google.com (mail-pl0-f66.google.com
  [209.85.160.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 31AB0267396
- for <alsa-devel@alsa-project.org>; Thu, 22 Mar 2018 22:40:36 +0100 (CET)
-Received: by mail-pl0-f66.google.com with SMTP id w15-v6so6162926plq.9
- for <alsa-devel@alsa-project.org>; Thu, 22 Mar 2018 14:40:36 -0700 (PDT)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C16B267396
+ for <alsa-devel@alsa-project.org>; Thu, 22 Mar 2018 22:40:40 +0100 (CET)
+Received: by mail-pl0-f66.google.com with SMTP id u11-v6so6180937plq.1
+ for <alsa-devel@alsa-project.org>; Thu, 22 Mar 2018 14:40:40 -0700 (PDT)
 In-Reply-To: <20180322213956.217933-1-achant@google.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,226 +27,181 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Andrew Chant <achant@google.com>, Ruslan Bilovol <ruslan.bilovol@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes code readability and should have no functional change.
+This implements UAC2 jack detection support, presenting
+jack status as a boolean read-only mono mixer.
 
-Correct uac control query functions to account for the 1-based indexing
-of USB Audio Class control identifiers.
+The presence of any channel in the UAC2_TE_CONNECTOR
+control for a terminal will result in the mixer saying
+the jack is connected.
 
-The function parameter, u8 control, should be the
-constant defined in audio-v2.h to identify the control to be checked for
-readability or writeability.
+Mixer naming follows the convention in sound/core/ctljack.c,
+terminating the mixer with " Jack".
+For additional clues as to which jack is being presented,
+the name is prefixed with " - Input Jack" or " - Output Jack"
+depending on if it's an input or output terminal.
 
-This patch fixes all callers that had adjusted, and makes explicit
-the mapping between audio_feature_info[] array index and the associated
-control identifier.
+This is required because terminal names are ambiguous
+between inputs and outputs and often duplicated -
+Bidirectional terminal types (0x400 -> 0x4FF)
+"... may be used separately for input only or output only.
+These types require two Terminal descriptors. Both have the same type."
+(quote from "USB Device Class Definition for Terminal Types")
+
+Since bidirectional terminal types are common for headphone adapters,
+this distinguishes between two otherwise identically-named
+jack controls.
+
+Tested with a UAC2 audio device with connector control capability.
 
 Signed-off-by: Andrew Chant <achant@google.com>
 ---
- include/linux/usb/audio-v2.h |  4 +--
- sound/usb/clock.c            |  5 +--
- sound/usb/mixer.c            | 69 ++++++++++++++++++++++--------------
- 3 files changed, 48 insertions(+), 30 deletions(-)
+ sound/usb/mixer.c | 99 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 98 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/usb/audio-v2.h b/include/linux/usb/audio-v2.h
-index 2db83a191e78..aaafecf073ff 100644
---- a/include/linux/usb/audio-v2.h
-+++ b/include/linux/usb/audio-v2.h
-@@ -36,12 +36,12 @@
- 
- static inline bool uac_v2v3_control_is_readable(u32 bmControls, u8 control)
- {
--	return (bmControls >> (control * 2)) & 0x1;
-+	return (bmControls >> ((control - 1) * 2)) & 0x1;
- }
- 
- static inline bool uac_v2v3_control_is_writeable(u32 bmControls, u8 control)
- {
--	return (bmControls >> (control * 2)) & 0x2;
-+	return (bmControls >> ((control - 1) * 2)) & 0x2;
- }
- 
- /* 4.7.2 Class-Specific AC Interface Descriptor */
-diff --git a/sound/usb/clock.c b/sound/usb/clock.c
-index 25de7fe285d9..ab39ccb974c6 100644
---- a/sound/usb/clock.c
-+++ b/sound/usb/clock.c
-@@ -214,7 +214,7 @@ static bool uac_clock_source_is_valid(struct snd_usb_audio *chip,
- 
- 	/* If a clock source can't tell us whether it's valid, we assume it is */
- 	if (!uac_v2v3_control_is_readable(bmControls,
--				      UAC2_CS_CONTROL_CLOCK_VALID - 1))
-+				      UAC2_CS_CONTROL_CLOCK_VALID))
- 		return 1;
- 
- 	err = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC2_CS_CUR,
-@@ -552,7 +552,8 @@ static int set_sample_rate_v2v3(struct snd_usb_audio *chip, int iface,
- 		bmControls = cs_desc->bmControls;
- 	}
- 
--	writeable = uac_v2v3_control_is_writeable(bmControls, UAC2_CS_CONTROL_SAM_FREQ - 1);
-+	writeable = uac_v2v3_control_is_writeable(bmControls,
-+						  UAC2_CS_CONTROL_SAM_FREQ);
- 	if (writeable) {
- 		data = cpu_to_le32(rate);
- 		err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), UAC2_CS_CUR,
 diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 1c02f7373eda..3075ac50a391 100644
+index 3075ac50a391..6cb61307aefe 100644
 --- a/sound/usb/mixer.c
 +++ b/sound/usb/mixer.c
-@@ -879,26 +879,27 @@ static int check_input_term(struct mixer_build *state, int id,
- 
- /* feature unit control information */
- struct usb_feature_control_info {
-+	int control;
- 	const char *name;
- 	int type;	/* data type for uac1 */
- 	int type_uac2;	/* data type for uac2 if different from uac1, else -1 */
- };
- 
- static struct usb_feature_control_info audio_feature_info[] = {
--	{ "Mute",			USB_MIXER_INV_BOOLEAN, -1 },
--	{ "Volume",			USB_MIXER_S16, -1 },
--	{ "Tone Control - Bass",	USB_MIXER_S8, -1 },
--	{ "Tone Control - Mid",		USB_MIXER_S8, -1 },
--	{ "Tone Control - Treble",	USB_MIXER_S8, -1 },
--	{ "Graphic Equalizer",		USB_MIXER_S8, -1 }, /* FIXME: not implemeted yet */
--	{ "Auto Gain Control",		USB_MIXER_BOOLEAN, -1 },
--	{ "Delay Control",		USB_MIXER_U16, USB_MIXER_U32 },
--	{ "Bass Boost",			USB_MIXER_BOOLEAN, -1 },
--	{ "Loudness",			USB_MIXER_BOOLEAN, -1 },
-+	{ UAC_FU_MUTE,			"Mute",			USB_MIXER_INV_BOOLEAN, -1 },
-+	{ UAC_FU_VOLUME,		"Volume",		USB_MIXER_S16, -1 },
-+	{ UAC_FU_BASS,			"Tone Control - Bass",	USB_MIXER_S8, -1 },
-+	{ UAC_FU_MID,			"Tone Control - Mid",	USB_MIXER_S8, -1 },
-+	{ UAC_FU_TREBLE,		"Tone Control - Treble", USB_MIXER_S8, -1 },
-+	{ UAC_FU_GRAPHIC_EQUALIZER,	"Graphic Equalizer",	USB_MIXER_S8, -1 }, /* FIXME: not implemented yet */
-+	{ UAC_FU_AUTOMATIC_GAIN,	"Auto Gain Control",	USB_MIXER_BOOLEAN, -1 },
-+	{ UAC_FU_DELAY,			"Delay Control",	USB_MIXER_U16, USB_MIXER_U32 },
-+	{ UAC_FU_BASS_BOOST,		"Bass Boost",		USB_MIXER_BOOLEAN, -1 },
-+	{ UAC_FU_LOUDNESS,		"Loudness",		USB_MIXER_BOOLEAN, -1 },
- 	/* UAC2 specific */
--	{ "Input Gain Control",		USB_MIXER_S16, -1 },
--	{ "Input Gain Pad Control",	USB_MIXER_S16, -1 },
--	{ "Phase Inverter Control",	USB_MIXER_BOOLEAN, -1 },
-+	{ UAC2_FU_INPUT_GAIN,		"Input Gain Control",	USB_MIXER_S16, -1 },
-+	{ UAC2_FU_INPUT_GAIN_PAD,	"Input Gain Pad Control", USB_MIXER_S16, -1 },
-+	{ UAC2_FU_PHASE_INVERTER,	 "Phase Inverter Control", USB_MIXER_BOOLEAN, -1 },
- };
- 
- /* private_free callback */
-@@ -1293,6 +1294,17 @@ static void check_no_speaker_on_headset(struct snd_kcontrol *kctl,
- 	strlcpy(kctl->id.name, "Headphone", sizeof(kctl->id.name));
+@@ -1235,6 +1235,21 @@ static int mixer_ctl_feature_put(struct snd_kcontrol *kcontrol,
+ 	return changed;
  }
  
-+static struct usb_feature_control_info *get_feature_control_info(int control)
++/* get the current value from a mixer element */
++static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
 +{
-+	int i;
++	struct usb_mixer_elem_info *cval = kcontrol->private_data;
++	int val, err;
 +
-+	for (i = 0; i < ARRAY_SIZE(audio_feature_info); ++i) {
-+		if (audio_feature_info[i].control == control)
-+			return &audio_feature_info[i];
-+	}
-+	return NULL;
++	err = snd_usb_get_cur_mix_value(cval, 0, 0, &val);
++	if (err < 0)
++		return filter_error(cval, err);
++	val = (val != 0);
++	ucontrol->value.integer.value[0] = val;
++	return 0;
 +}
 +
- static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
- 			      unsigned int ctl_mask, int control,
- 			      struct usb_audio_term *iterm, int unitid,
-@@ -1308,8 +1320,6 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
- 	const struct usbmix_name_map *map;
- 	unsigned int range;
+ static struct snd_kcontrol_new usb_feature_unit_ctl = {
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 	.name = "", /* will be filled later manually */
+@@ -1252,6 +1267,16 @@ static const struct snd_kcontrol_new usb_feature_unit_ctl_ro = {
+ 	.put = NULL,
+ };
  
--	control++; /* change from zero-based to 1-based value */
--
- 	if (control == UAC_FU_GRAPHIC_EQUALIZER) {
- 		/* FIXME: not supported yet */
- 		return;
-@@ -1325,7 +1335,10 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
- 	snd_usb_mixer_elem_init_std(&cval->head, state->mixer, unitid);
- 	cval->control = control;
- 	cval->cmask = ctl_mask;
--	ctl_info = &audio_feature_info[control-1];
++/* A UAC connector mixer control */
++static struct snd_kcontrol_new usb_connector_ctl_ro = {
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name = "", /* will be filled later manually */
++	.access = SNDRV_CTL_ELEM_ACCESS_READ,
++	.info = snd_ctl_boolean_mono_info,
++	.get = mixer_ctl_connector_get,
++	.put = NULL,
++};
 +
-+	ctl_info = get_feature_control_info(control);
-+	if (!ctl_info)
+ /*
+  * This symbol is exported in order to allow the mixer quirks to
+  * hook up to the standard feature unit control mechanism
+@@ -1464,6 +1489,55 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
+ 	snd_usb_mixer_add_control(&cval->head, kctl);
+ }
+ 
++static void get_connector_control_name(struct mixer_build *state,
++				       struct usb_audio_term *term,
++				       bool is_input, char *name, int name_size)
++{
++	int name_len = get_term_name(state, term, name, name_size, 0);
++
++	if (name_len == 0)
++		strlcpy(name, "Unknown", name_size);
++
++	/*
++	 *  sound/core/ctljack.c has a convention of naming jack controls
++	 * by ending in " Jack".  Make it slightly more useful by
++	 * indicating Input or Output after the terminal name.
++	 */
++	if (is_input)
++		strlcat(name, " - Input Jack", name_size);
++	else
++		strlcat(name, " - Output Jack", name_size);
++}
++
++/* Build a mixer control for a UAC connector control (jack-detect) */
++static void build_connector_control(struct mixer_build *state,
++				    struct usb_audio_term *term, bool is_input)
++{
++	struct snd_kcontrol *kctl;
++	struct usb_mixer_elem_info *cval;
++
++	cval = kzalloc(sizeof(*cval), GFP_KERNEL);
++	if (!cval)
 +		return;
- 	if (state->mixer->protocol == UAC_VERSION_1)
- 		cval->val_type = ctl_info->type;
- 	else /* UAC_VERSION_2 */
-@@ -1475,7 +1488,7 @@ static int parse_clock_source_unit(struct mixer_build *state, int unitid,
- 	 * clock source validity. If that isn't readable, just bail out.
- 	 */
- 	if (!uac_v2v3_control_is_readable(hdr->bmControls,
--				      ilog2(UAC2_CS_CONTROL_CLOCK_VALID)))
-+				      UAC2_CS_CONTROL_CLOCK_VALID))
- 		return 0;
- 
- 	cval = kzalloc(sizeof(*cval), GFP_KERNEL);
-@@ -1491,7 +1504,7 @@ static int parse_clock_source_unit(struct mixer_build *state, int unitid,
- 	cval->control = UAC2_CS_CONTROL_CLOCK_VALID;
- 
- 	if (uac_v2v3_control_is_writeable(hdr->bmControls,
--				      ilog2(UAC2_CS_CONTROL_CLOCK_VALID)))
-+				      UAC2_CS_CONTROL_CLOCK_VALID))
- 		kctl = snd_ctl_new1(&usb_feature_unit_ctl, cval);
- 	else {
- 		cval->master_readonly = 1;
-@@ -1625,6 +1638,8 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid,
- 		/* check all control types */
- 		for (i = 0; i < 10; i++) {
- 			unsigned int ch_bits = 0;
-+			int control = audio_feature_info[i].control;
++	snd_usb_mixer_elem_init_std(&cval->head, state->mixer, term->id);
++	cval->control = UAC2_TE_CONNECTOR;
++	cval->val_type = USB_MIXER_BOOLEAN;
++	cval->channels = term->channels;
++	cval->cmask = term->chconfig;
++	cval->min = 0;
++	cval->max = 1;
++	kctl = snd_ctl_new1(&usb_connector_ctl_ro, cval);
++	if (!kctl) {
++		usb_audio_err(state->chip, "cannot malloc kcontrol\n");
++		kfree(cval);
++		return;
++	}
++	get_connector_control_name(state, term, is_input, kctl->id.name,
++				   sizeof(kctl->id.name));
++	kctl->private_free = snd_usb_mixer_elem_free;
++	snd_usb_mixer_add_control(&cval->head, kctl);
++}
 +
- 			for (j = 0; j < channels; j++) {
- 				unsigned int mask;
+ static int parse_clock_source_unit(struct mixer_build *state, int unitid,
+ 				   void *_ftr)
+ {
+@@ -1770,6 +1844,23 @@ static void build_mixer_unit_ctl(struct mixer_build *state,
+ 	snd_usb_mixer_add_control(&cval->head, kctl);
+ }
  
-@@ -1640,25 +1655,26 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid,
- 			 * (for ease of programming).
- 			 */
- 			if (ch_bits & 1)
--				build_feature_ctl(state, _ftr, ch_bits, i,
-+				build_feature_ctl(state, _ftr, ch_bits, control,
- 						  &iterm, unitid, 0);
- 			if (master_bits & (1 << i))
--				build_feature_ctl(state, _ftr, 0, i, &iterm,
--						  unitid, 0);
-+				build_feature_ctl(state, _ftr, 0, control,
-+						  &iterm, unitid, 0);
- 		}
- 	} else { /* UAC_VERSION_2/3 */
- 		for (i = 0; i < ARRAY_SIZE(audio_feature_info); i++) {
- 			unsigned int ch_bits = 0;
- 			unsigned int ch_read_only = 0;
-+			int control = audio_feature_info[i].control;
- 
- 			for (j = 0; j < channels; j++) {
- 				unsigned int mask;
- 
- 				mask = snd_usb_combine_bytes(bmaControls +
- 							     csize * (j+1), csize);
--				if (uac_v2v3_control_is_readable(mask, i)) {
-+				if (uac_v2v3_control_is_readable(mask, control)) {
- 					ch_bits |= (1 << j);
--					if (!uac_v2v3_control_is_writeable(mask, i))
-+					if (!uac_v2v3_control_is_writeable(mask, control))
- 						ch_read_only |= (1 << j);
- 				}
- 			}
-@@ -1677,11 +1693,12 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid,
- 			 * (for ease of programming).
- 			 */
- 			if (ch_bits & 1)
--				build_feature_ctl(state, _ftr, ch_bits, i,
-+				build_feature_ctl(state, _ftr, ch_bits, control,
- 						  &iterm, unitid, ch_read_only);
--			if (uac_v2v3_control_is_readable(master_bits, i))
-+			if (uac_v2v3_control_is_readable(master_bits, control))
- 				build_feature_ctl(state, _ftr, 0, i, &iterm, unitid,
--						  !uac_v2v3_control_is_writeable(master_bits, i));
-+						  !uac_v2v3_control_is_writeable(master_bits,
-+										 control));
- 		}
- 	}
++static int parse_audio_input_terminal(struct mixer_build *state, int unitid,
++				      void *raw_desc)
++{
++	struct usb_audio_term iterm;
++	struct uac2_input_terminal_descriptor *d = raw_desc;
++
++	check_input_term(state, d->bTerminalID, &iterm);
++	if (state->mixer->protocol == UAC_VERSION_2) {
++		/* Check for jack detection. */
++		if (uac_v2v3_control_is_readable(d->bmControls,
++						 UAC2_TE_CONNECTOR)) {
++			build_connector_control(state, &iterm, true);
++		}
++	}
++	return 0;
++}
++
+ /*
+  * parse a mixer unit
+  */
+@@ -2320,7 +2411,7 @@ static int parse_audio_unit(struct mixer_build *state, int unitid)
+ 	if (protocol == UAC_VERSION_1 || protocol == UAC_VERSION_2) {
+ 		switch (p1[2]) {
+ 		case UAC_INPUT_TERMINAL:
+-			return 0; /* NOP */
++			return parse_audio_input_terminal(state, unitid, p1);
+ 		case UAC_MIXER_UNIT:
+ 			return parse_audio_mixer_unit(state, unitid, p1);
+ 		case UAC2_CLOCK_SOURCE:
+@@ -2463,6 +2554,12 @@ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
+ 			err = parse_audio_unit(&state, desc->bCSourceID);
+ 			if (err < 0 && err != -EINVAL)
+ 				return err;
++
++			if (uac_v2v3_control_is_readable(desc->bmControls,
++							 UAC2_TE_CONNECTOR)) {
++				build_connector_control(&state, &state.oterm,
++							false);
++			}
+ 		} else {  /* UAC_VERSION_3 */
+ 			struct uac3_output_terminal_descriptor *desc = p;
  
 -- 
 2.17.0.rc0.231.g781580f067-goog
