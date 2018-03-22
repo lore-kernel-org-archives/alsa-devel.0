@@ -1,18 +1,18 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/2] ALSA: pcm: Avoid potential races between
-	OSS ioctls and read/write
-Date: Fri, 23 Mar 2018 18:09:41 +0100
-Message-ID: <20180323170942.18470-1-tiwai@suse.de>
+From: Ezequiel Garcia <ezequiel@collabora.co.uk>
+Subject: Re: [PATCH] ASoC: max98357a: Fix speaker pop when
+	starting playback
+Date: Thu, 22 Mar 2018 01:00:49 -0300
+Message-ID: <1521691249.4330.9.camel@collabora.co.uk>
+References: <20180321223015.32173-1-ezequiel@vanguardiasur.com.ar>
+ <20180322015456.GZ2186@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C99C9266B0F
- for <alsa-devel@alsa-project.org>; Fri, 23 Mar 2018 18:09:47 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id C3968AF8A
- for <alsa-devel@alsa-project.org>; Fri, 23 Mar 2018 17:09:46 +0000 (UTC)
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E7D5267219
+ for <alsa-devel@alsa-project.org>; Thu, 22 Mar 2018 05:01:42 +0100 (CET)
+In-Reply-To: <20180322015456.GZ2186@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,374 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, kernel@collabora.com, Liam Girdwood <lgirdwood@gmail.com>, Mac Chiang <mac.chiang@intel.com>, Stephen Barber <smbarber@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Although we apply the params_lock mutex to the whole read and write
-operations as well as snd_pcm_oss_change_params(), we may still face
-some races.
+Hi Mark,
 
-First off, the params_lock is taken inside the read and write loop.
-This is intentional for avoiding the too long locking, but it allows
-the in-between parameter change, which might lead to invalid
-pointers.  We check the readiness of the stream and set up via
-snd_pcm_oss_make_ready() at the beginning of read and write, but it's
-called only once, by assuming that it remains ready in the rest.
+Thanks for reviewing this so quickly.
 
-Second, many ioctls that may change the actual parameters
-(i.e. setting runtime->oss.params=1) aren't protected, hence they can
-be processed in a half-baked state.
+On Thu, 2018-03-22 at 09:54 +0800, Mark Brown wrote:
+> On Wed, Mar 21, 2018 at 07:30:15PM -0300, Ezequiel Garcia wrote:
+> 
+> > +- sdmode-delay : specify a delay time for SD_MODE pin. According
+> > +        to the DAC datasheet, if LRCLK is removed while BCLK is
+> > present,
+> > +        the DAC output can cause loud pop/crack noises. This
+> > property
+> > +        specifies a delay for the SD_MODE pin assert, required to
+> > +        eliminate the noise.
+> 
+> Why is this configurable?  This sounds like something entirely within
+> the digital domain of the device rather than something that depends
+> on
+> board configuration and it's hard to see how someone would configure
+> this.
+> 
 
-This patch is an attempt to plug these holes.  The stream readiness
-check is moved inside the read/write inner loop, so that the stream is
-always set up in a proper state before further processing.  Also, each
-ioctl that may change the parameter is wrapped with the params_lock
-for avoiding the races.
+The amount of delay needed seems specific to the CPU DAI,
+not specific to the DAC. The CPU DAIs or the machine 
+could specify this as a parameter, but I can't don't see how.
 
-The issues were triggered by syzkaller in a few different scenarios,
-particularly the one below appearing as GPF in loopback_pos_update.
+Perhaps it could be a driver parameter?
 
-Reported-by: syzbot+c4227aec125487ec3efa@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/oss/pcm_oss.c | 134 +++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 106 insertions(+), 28 deletions(-)
+> > +static void max98357a_enable_sdmode_work(struct work_struct *work)
+> > +{
+> > +	struct max98357a_priv *max98357a = container_of(work,
+> > +		struct max98357a_priv, enable_sdmode_work.work);
+> > +	unsigned long flags;
+> > +
+> > +	spin_lock_irqsave(&max98357a->sdmode_lock, flags);
+> > +	gpiod_set_value(max98357a->sdmode, max98357a-
+> > >sdmode_enabled);
+> > +	spin_unlock_irqrestore(&max98357a->sdmode_lock, flags);
+> > +}
+> 
+> What is this lock supposed to accomplish?  We perform a single action
+> under the lock which itself has internal locking, it's not going to
+> have
+> any meaningful effect.
 
-diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
-index 02298c9c6020..f8bfee8022e0 100644
---- a/sound/core/oss/pcm_oss.c
-+++ b/sound/core/oss/pcm_oss.c
-@@ -823,8 +823,8 @@ static int choose_rate(struct snd_pcm_substream *substream,
- 	return snd_pcm_hw_param_near(substream, params, SNDRV_PCM_HW_PARAM_RATE, best_rate, NULL);
- }
- 
--static int snd_pcm_oss_change_params(struct snd_pcm_substream *substream,
--				     bool trylock)
-+/* call with params_lock held */
-+static int snd_pcm_oss_change_params_locked(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_pcm_hw_params *params, *sparams;
-@@ -838,11 +838,8 @@ static int snd_pcm_oss_change_params(struct snd_pcm_substream *substream,
- 	const struct snd_mask *sformat_mask;
- 	struct snd_mask mask;
- 
--	if (trylock) {
--		if (!(mutex_trylock(&runtime->oss.params_lock)))
--			return -EAGAIN;
--	} else if (mutex_lock_interruptible(&runtime->oss.params_lock))
--		return -ERESTARTSYS;
-+	if (!runtime->oss.params)
-+		return 0;
- 	sw_params = kzalloc(sizeof(*sw_params), GFP_KERNEL);
- 	params = kmalloc(sizeof(*params), GFP_KERNEL);
- 	sparams = kmalloc(sizeof(*sparams), GFP_KERNEL);
-@@ -1068,6 +1065,23 @@ static int snd_pcm_oss_change_params(struct snd_pcm_substream *substream,
- 	kfree(sw_params);
- 	kfree(params);
- 	kfree(sparams);
-+	return err;
-+}
-+
-+/* this one takes the lock by itself */
-+static int snd_pcm_oss_change_params(struct snd_pcm_substream *substream,
-+				     bool trylock)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int err;
-+
-+	if (trylock) {
-+		if (!(mutex_trylock(&runtime->oss.params_lock)))
-+			return -EAGAIN;
-+	} else if (mutex_lock_interruptible(&runtime->oss.params_lock))
-+		return -ERESTARTSYS;
-+
-+	err = snd_pcm_oss_change_params_locked(substream);
- 	mutex_unlock(&runtime->oss.params_lock);
- 	return err;
- }
-@@ -1096,11 +1110,14 @@ static int snd_pcm_oss_get_active_substream(struct snd_pcm_oss_file *pcm_oss_fil
- 	return 0;
- }
- 
-+/* call with params_lock held */
- static int snd_pcm_oss_prepare(struct snd_pcm_substream *substream)
- {
- 	int err;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 
-+	if (!runtime->oss.prepare)
-+		return 0;
- 	err = snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_PREPARE, NULL);
- 	if (err < 0) {
- 		pcm_dbg(substream->pcm,
-@@ -1120,14 +1137,35 @@ static int snd_pcm_oss_make_ready(struct snd_pcm_substream *substream)
- 	struct snd_pcm_runtime *runtime;
- 	int err;
- 
--	if (substream == NULL)
--		return 0;
- 	runtime = substream->runtime;
- 	if (runtime->oss.params) {
- 		err = snd_pcm_oss_change_params(substream, false);
- 		if (err < 0)
- 			return err;
- 	}
-+	if (runtime->oss.prepare) {
-+		if (mutex_lock_interruptible(&runtime->oss.params_lock))
-+			return -ERESTARTSYS;
-+		err = snd_pcm_oss_prepare(substream);
-+		mutex_unlock(&runtime->oss.params_lock);
-+		if (err < 0)
-+			return err;
-+	}
-+	return 0;
-+}
-+
-+/* call with params_lock held */
-+static int snd_pcm_oss_make_ready_locked(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime;
-+	int err;
-+
-+	runtime = substream->runtime;
-+	if (runtime->oss.params) {
-+		err = snd_pcm_oss_change_params_locked(substream);
-+		if (err < 0)
-+			return err;
-+	}
- 	if (runtime->oss.prepare) {
- 		err = snd_pcm_oss_prepare(substream);
- 		if (err < 0)
-@@ -1332,13 +1370,14 @@ static ssize_t snd_pcm_oss_write1(struct snd_pcm_substream *substream, const cha
- 	if (atomic_read(&substream->mmap_count))
- 		return -ENXIO;
- 
--	if ((tmp = snd_pcm_oss_make_ready(substream)) < 0)
--		return tmp;
- 	while (bytes > 0) {
- 		if (mutex_lock_interruptible(&runtime->oss.params_lock)) {
- 			tmp = -ERESTARTSYS;
- 			break;
- 		}
-+		tmp = snd_pcm_oss_make_ready_locked(substream);
-+		if (tmp < 0)
-+			goto err;
- 		if (bytes < runtime->oss.period_bytes || runtime->oss.buffer_used > 0) {
- 			tmp = bytes;
- 			if (tmp + runtime->oss.buffer_used > runtime->oss.period_bytes)
-@@ -1439,13 +1478,14 @@ static ssize_t snd_pcm_oss_read1(struct snd_pcm_substream *substream, char __use
- 	if (atomic_read(&substream->mmap_count))
- 		return -ENXIO;
- 
--	if ((tmp = snd_pcm_oss_make_ready(substream)) < 0)
--		return tmp;
- 	while (bytes > 0) {
- 		if (mutex_lock_interruptible(&runtime->oss.params_lock)) {
- 			tmp = -ERESTARTSYS;
- 			break;
- 		}
-+		tmp = snd_pcm_oss_make_ready_locked(substream);
-+		if (tmp < 0)
-+			goto err;
- 		if (bytes < runtime->oss.period_bytes || runtime->oss.buffer_used > 0) {
- 			if (runtime->oss.buffer_used == 0) {
- 				tmp = snd_pcm_oss_read2(substream, runtime->oss.buffer, runtime->oss.period_bytes, 1);
-@@ -1501,10 +1541,12 @@ static int snd_pcm_oss_reset(struct snd_pcm_oss_file *pcm_oss_file)
- 			continue;
- 		runtime = substream->runtime;
- 		snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_DROP, NULL);
-+		mutex_lock(&runtime->oss.params_lock);
- 		runtime->oss.prepare = 1;
- 		runtime->oss.buffer_used = 0;
- 		runtime->oss.prev_hw_ptr_period = 0;
- 		runtime->oss.period_ptr = 0;
-+		mutex_unlock(&runtime->oss.params_lock);
- 	}
- 	return 0;
- }
-@@ -1590,9 +1632,10 @@ static int snd_pcm_oss_sync(struct snd_pcm_oss_file *pcm_oss_file)
- 			goto __direct;
- 		if ((err = snd_pcm_oss_make_ready(substream)) < 0)
- 			return err;
-+		if (mutex_lock_interruptible(&runtime->oss.params_lock))
-+			return -ERESTARTSYS;
- 		format = snd_pcm_oss_format_from(runtime->oss.format);
- 		width = snd_pcm_format_physical_width(format);
--		mutex_lock(&runtime->oss.params_lock);
- 		if (runtime->oss.buffer_used > 0) {
- #ifdef OSS_DEBUG
- 			pcm_dbg(substream->pcm, "sync: buffer_used\n");
-@@ -1643,7 +1686,9 @@ static int snd_pcm_oss_sync(struct snd_pcm_oss_file *pcm_oss_file)
- 		substream->f_flags = saved_f_flags;
- 		if (err < 0)
- 			return err;
-+		mutex_lock(&runtime->oss.params_lock);
- 		runtime->oss.prepare = 1;
-+		mutex_unlock(&runtime->oss.params_lock);
- 	}
- 
- 	substream = pcm_oss_file->streams[SNDRV_PCM_STREAM_CAPTURE];
-@@ -1654,8 +1699,10 @@ static int snd_pcm_oss_sync(struct snd_pcm_oss_file *pcm_oss_file)
- 		err = snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_DROP, NULL);
- 		if (err < 0)
- 			return err;
-+		mutex_lock(&runtime->oss.params_lock);
- 		runtime->oss.buffer_used = 0;
- 		runtime->oss.prepare = 1;
-+		mutex_unlock(&runtime->oss.params_lock);
- 	}
- 	return 0;
- }
-@@ -1674,10 +1721,13 @@ static int snd_pcm_oss_set_rate(struct snd_pcm_oss_file *pcm_oss_file, int rate)
- 			rate = 1000;
- 		else if (rate > 192000)
- 			rate = 192000;
-+		if (mutex_lock_interruptible(&runtime->oss.params_lock))
-+			return -ERESTARTSYS;
- 		if (runtime->oss.rate != rate) {
- 			runtime->oss.params = 1;
- 			runtime->oss.rate = rate;
- 		}
-+		mutex_unlock(&runtime->oss.params_lock);
- 	}
- 	return snd_pcm_oss_get_rate(pcm_oss_file);
- }
-@@ -1705,10 +1755,13 @@ static int snd_pcm_oss_set_channels(struct snd_pcm_oss_file *pcm_oss_file, unsig
- 		if (substream == NULL)
- 			continue;
- 		runtime = substream->runtime;
-+		if (mutex_lock_interruptible(&runtime->oss.params_lock))
-+			return -ERESTARTSYS;
- 		if (runtime->oss.channels != channels) {
- 			runtime->oss.params = 1;
- 			runtime->oss.channels = channels;
- 		}
-+		mutex_unlock(&runtime->oss.params_lock);
- 	}
- 	return snd_pcm_oss_get_channels(pcm_oss_file);
- }
-@@ -1794,10 +1847,13 @@ static int snd_pcm_oss_set_format(struct snd_pcm_oss_file *pcm_oss_file, int for
- 			if (substream == NULL)
- 				continue;
- 			runtime = substream->runtime;
-+			if (mutex_lock_interruptible(&runtime->oss.params_lock))
-+				return -ERESTARTSYS;
- 			if (runtime->oss.format != format) {
- 				runtime->oss.params = 1;
- 				runtime->oss.format = format;
- 			}
-+			mutex_unlock(&runtime->oss.params_lock);
- 		}
- 	}
- 	return snd_pcm_oss_get_format(pcm_oss_file);
-@@ -1817,8 +1873,6 @@ static int snd_pcm_oss_set_subdivide1(struct snd_pcm_substream *substream, int s
- {
- 	struct snd_pcm_runtime *runtime;
- 
--	if (substream == NULL)
--		return 0;
- 	runtime = substream->runtime;
- 	if (subdivide == 0) {
- 		subdivide = runtime->oss.subdivision;
-@@ -1842,9 +1896,16 @@ static int snd_pcm_oss_set_subdivide(struct snd_pcm_oss_file *pcm_oss_file, int
- 
- 	for (idx = 1; idx >= 0; --idx) {
- 		struct snd_pcm_substream *substream = pcm_oss_file->streams[idx];
-+		struct snd_pcm_runtime *runtime;
-+
- 		if (substream == NULL)
- 			continue;
--		if ((err = snd_pcm_oss_set_subdivide1(substream, subdivide)) < 0)
-+		runtime = substream->runtime;
-+		if (mutex_lock_interruptible(&runtime->oss.params_lock))
-+			return -ERESTARTSYS;
-+		err = snd_pcm_oss_set_subdivide1(substream, subdivide);
-+		mutex_unlock(&runtime->oss.params_lock);
-+		if (err < 0)
- 			return err;
- 	}
- 	return err;
-@@ -1854,8 +1915,6 @@ static int snd_pcm_oss_set_fragment1(struct snd_pcm_substream *substream, unsign
- {
- 	struct snd_pcm_runtime *runtime;
- 
--	if (substream == NULL)
--		return 0;
- 	runtime = substream->runtime;
- 	if (runtime->oss.subdivision || runtime->oss.fragshift)
- 		return -EINVAL;
-@@ -1875,9 +1934,16 @@ static int snd_pcm_oss_set_fragment(struct snd_pcm_oss_file *pcm_oss_file, unsig
- 
- 	for (idx = 1; idx >= 0; --idx) {
- 		struct snd_pcm_substream *substream = pcm_oss_file->streams[idx];
-+		struct snd_pcm_runtime *runtime;
-+
- 		if (substream == NULL)
- 			continue;
--		if ((err = snd_pcm_oss_set_fragment1(substream, val)) < 0)
-+		runtime = substream->runtime;
-+		if (mutex_lock_interruptible(&runtime->oss.params_lock))
-+			return -ERESTARTSYS;
-+		err = snd_pcm_oss_set_fragment1(substream, val);
-+		mutex_unlock(&runtime->oss.params_lock);
-+		if (err < 0)
- 			return err;
- 	}
- 	return err;
-@@ -1961,6 +2027,9 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
- 	}
-       	if (psubstream) {
-       		runtime = psubstream->runtime;
-+		cmd = 0;
-+		if (mutex_lock_interruptible(&runtime->oss.params_lock))
-+			return -ERESTARTSYS;
- 		if (trigger & PCM_ENABLE_OUTPUT) {
- 			if (runtime->oss.trigger)
- 				goto _skip1;
-@@ -1978,13 +2047,19 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
- 			cmd = SNDRV_PCM_IOCTL_DROP;
- 			runtime->oss.prepare = 1;
- 		}
--		err = snd_pcm_kernel_ioctl(psubstream, cmd, NULL);
--		if (err < 0)
--			return err;
--	}
-  _skip1:
-+		mutex_unlock(&runtime->oss.params_lock);
-+		if (cmd) {
-+			err = snd_pcm_kernel_ioctl(psubstream, cmd, NULL);
-+			if (err < 0)
-+				return err;
-+		}
-+	}
- 	if (csubstream) {
-       		runtime = csubstream->runtime;
-+		cmd = 0;
-+		if (mutex_lock_interruptible(&runtime->oss.params_lock))
-+			return -ERESTARTSYS;
- 		if (trigger & PCM_ENABLE_INPUT) {
- 			if (runtime->oss.trigger)
- 				goto _skip2;
-@@ -1999,11 +2074,14 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
- 			cmd = SNDRV_PCM_IOCTL_DROP;
- 			runtime->oss.prepare = 1;
- 		}
--		err = snd_pcm_kernel_ioctl(csubstream, cmd, NULL);
--		if (err < 0)
--			return err;
--	}
-  _skip2:
-+		mutex_unlock(&runtime->oss.params_lock);
-+		if (cmd) {
-+			err = snd_pcm_kernel_ioctl(csubstream, cmd, NULL);
-+			if (err < 0)
-+				return err;
-+		}
-+	}
- 	return 0;
- }
- 
--- 
-2.16.2
+I am under the impression it removes the race condition
+between the gpiod_set_value() happening in the different
+contexts.
+
+Thanks,
+Eze
