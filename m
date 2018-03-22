@@ -1,18 +1,18 @@
-From: Ezequiel Garcia <ezequiel@collabora.com>
-Subject: Re: [PATCH] ASoC: max98357a: Fix speaker pop when
-	starting playback
-Date: Thu, 22 Mar 2018 10:01:32 -0300
-Message-ID: <1521723692.1890.1.camel@collabora.com>
-References: <20180321223015.32173-1-ezequiel@vanguardiasur.com.ar>
- <20180322015456.GZ2186@sirena.org.uk>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: aloop: Fix access to not-yet-ready
+	substream via cable
+Date: Thu, 22 Mar 2018 14:29:58 +0100
+Message-ID: <20180322132958.29481-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- by alsa0.perex.cz (Postfix) with ESMTP id 7195B26738C
- for <alsa-devel@alsa-project.org>; Thu, 22 Mar 2018 14:02:27 +0100 (CET)
-In-Reply-To: <20180322015456.GZ2186@sirena.org.uk>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id C7EC226738C
+ for <alsa-devel@alsa-project.org>; Thu, 22 Mar 2018 14:30:00 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 0B9AFACC3
+ for <alsa-devel@alsa-project.org>; Thu, 22 Mar 2018 13:30:00 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Stephen Barber <smbarber@chromium.org>, Mac Chiang <mac.chiang@intel.com>, Ezequiel Garcia <ezequiel@collabora.co.uk>, kernel@collabora.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+In loopback_open() and loopback_close(), we assign and release the
+substream object to the corresponding cable in a racy way.  It's
+neither locked nor done in the right position.  The open callback
+assigns the substream before its preparation finishes, hence the other
+side of the cable may pick it up, which may lead to the invalid memory
+access.
 
-Thanks for reviewing this so quickly.
+This patch addresses these: move the assignment to the end of the open
+callback, and wrap with cable->lock for avoiding concurrent accesses.
 
-On Thu, 2018-03-22 at 09:54 +0800, Mark Brown wrote:
-> On Wed, Mar 21, 2018 at 07:30:15PM -0300, Ezequiel Garcia wrote:
-> 
-> > +- sdmode-delay : specify a delay time for SD_MODE pin. According
-> > +        to the DAC datasheet, if LRCLK is removed while BCLK is
-> > present,
-> > +        the DAC output can cause loud pop/crack noises. This
-> > property
-> > +        specifies a delay for the SD_MODE pin assert, required to
-> > +        eliminate the noise.
-> 
-> Why is this configurable?  This sounds like something entirely within
-> the digital domain of the device rather than something that depends
-> on
-> board configuration and it's hard to see how someone would configure
-> this.
-> 
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/drivers/aloop.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-The amount of delay needed seems specific to the CPU DAI,
-not specific to the DAC. The CPU DAIs or the machine 
-could specify this as a parameter, but I can't don't see how.
-
-Perhaps it could be a driver parameter?
-
-> > +static void max98357a_enable_sdmode_work(struct work_struct *work)
-> > +{
-> > +   struct max98357a_priv *max98357a = container_of(work,
-> > +           struct max98357a_priv, enable_sdmode_work.work);
-> > +   unsigned long flags;
-> > +
-> > +   spin_lock_irqsave(&max98357a->sdmode_lock, flags);
-> > +   gpiod_set_value(max98357a->sdmode, max98357a-
-> > >sdmode_enabled);
-> > +   spin_unlock_irqrestore(&max98357a->sdmode_lock, flags);
-> > +}
-> 
-> What is this lock supposed to accomplish?  We perform a single action
-> under the lock which itself has internal locking, it's not going to
-> have
-> any meaningful effect.
-
-I am under the impression it removes the race condition
-between the gpiod_set_value() happening in the different
-contexts.
-
-Thanks,
-Eze
+diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
+index 0a08e63e9c66..1063a4377502 100644
+--- a/sound/drivers/aloop.c
++++ b/sound/drivers/aloop.c
+@@ -666,7 +666,9 @@ static void free_cable(struct snd_pcm_substream *substream)
+ 		return;
+ 	if (cable->streams[!substream->stream]) {
+ 		/* other stream is still alive */
++		spin_lock_irq(&cable->lock);
+ 		cable->streams[substream->stream] = NULL;
++		spin_unlock_irq(&cable->lock);
+ 	} else {
+ 		/* free the cable */
+ 		loopback->cables[substream->number][dev] = NULL;
+@@ -705,7 +707,6 @@ static int loopback_open(struct snd_pcm_substream *substream)
+ 		loopback->cables[substream->number][dev] = cable;
+ 	}
+ 	dpcm->cable = cable;
+-	cable->streams[substream->stream] = dpcm;
+ 
+ 	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
+ 
+@@ -737,6 +738,11 @@ static int loopback_open(struct snd_pcm_substream *substream)
+ 		runtime->hw = loopback_pcm_hardware;
+ 	else
+ 		runtime->hw = cable->hw;
++
++	spin_lock_irq(&cable->lock);
++	cable->streams[substream->stream] = dpcm;
++	spin_unlock_irq(&cable->lock);
++
+  unlock:
+ 	if (err < 0) {
+ 		free_cable(substream);
+-- 
+2.16.2
