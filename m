@@ -1,18 +1,17 @@
-From: Ezequiel Garcia <ezequiel@collabora.co.uk>
-Subject: Re: [PATCH] ASoC: max98357a: Fix speaker pop when
-	starting playback
-Date: Thu, 22 Mar 2018 01:00:49 -0300
-Message-ID: <1521691249.4330.9.camel@collabora.co.uk>
-References: <20180321223015.32173-1-ezequiel@vanguardiasur.com.ar>
- <20180322015456.GZ2186@sirena.org.uk>
+From: Nobutaka Okabe <nob77413@gmail.com>
+Subject: [PATCH] ALSA: usb-audio: Add native DSD support for
+	TEAC UD-301
+Date: Fri, 23 Mar 2018 18:55:04 +0900
+Message-ID: <20180323095504.6422-1-nob77413@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E7D5267219
- for <alsa-devel@alsa-project.org>; Thu, 22 Mar 2018 05:01:42 +0100 (CET)
-In-Reply-To: <20180322015456.GZ2186@sirena.org.uk>
+Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id D34612673B2
+ for <alsa-devel@alsa-project.org>; Fri, 23 Mar 2018 10:55:55 +0100 (CET)
+Received: by mail-pg0-f65.google.com with SMTP id n11so4385264pgp.4
+ for <alsa-devel@alsa-project.org>; Fri, 23 Mar 2018 02:55:55 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +21,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, kernel@collabora.com, Liam Girdwood <lgirdwood@gmail.com>, Mac Chiang <mac.chiang@intel.com>, Stephen Barber <smbarber@chromium.org>
+To: alsa-devel@alsa-project.org
+Cc: Nobutaka Okabe <nob77413@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Add native DSD support quirk for TEAC UD-301 DAC,
+by adding the PID/VID 0644:804a.
 
-Thanks for reviewing this so quickly.
+Signed-off-by: Nobutaka Okabe <nob77413@gmail.com>
+---
+ sound/usb/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On Thu, 2018-03-22 at 09:54 +0800, Mark Brown wrote:
-> On Wed, Mar 21, 2018 at 07:30:15PM -0300, Ezequiel Garcia wrote:
-> 
-> > +- sdmode-delay : specify a delay time for SD_MODE pin. According
-> > +        to the DAC datasheet, if LRCLK is removed while BCLK is
-> > present,
-> > +        the DAC output can cause loud pop/crack noises. This
-> > property
-> > +        specifies a delay for the SD_MODE pin assert, required to
-> > +        eliminate the noise.
-> 
-> Why is this configurable?  This sounds like something entirely within
-> the digital domain of the device rather than something that depends
-> on
-> board configuration and it's hard to see how someone would configure
-> this.
-> 
-
-The amount of delay needed seems specific to the CPU DAI,
-not specific to the DAC. The CPU DAIs or the machine 
-could specify this as a parameter, but I can't don't see how.
-
-Perhaps it could be a driver parameter?
-
-> > +static void max98357a_enable_sdmode_work(struct work_struct *work)
-> > +{
-> > +	struct max98357a_priv *max98357a = container_of(work,
-> > +		struct max98357a_priv, enable_sdmode_work.work);
-> > +	unsigned long flags;
-> > +
-> > +	spin_lock_irqsave(&max98357a->sdmode_lock, flags);
-> > +	gpiod_set_value(max98357a->sdmode, max98357a-
-> > >sdmode_enabled);
-> > +	spin_unlock_irqrestore(&max98357a->sdmode_lock, flags);
-> > +}
-> 
-> What is this lock supposed to accomplish?  We perform a single action
-> under the lock which itself has internal locking, it's not going to
-> have
-> any meaningful effect.
-
-I am under the impression it removes the race condition
-between the gpiod_set_value() happening in the different
-contexts.
-
-Thanks,
-Eze
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index ea8f3de92fa4..794224e1d6df 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1171,6 +1171,7 @@ static bool is_teac_dsd_dac(unsigned int id)
+ 	switch (id) {
+ 	case USB_ID(0x0644, 0x8043): /* TEAC UD-501/UD-503/NT-503 */
+ 	case USB_ID(0x0644, 0x8044): /* Esoteric D-05X */
++	case USB_ID(0x0644, 0x804a): /* TEAC UD-301 */
+ 		return true;
+ 	}
+ 	return false;
+-- 
+2.11.1
