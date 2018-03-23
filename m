@@ -1,19 +1,18 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCHv5,
-	5/5] ARM: dts: omap4-droid4: add soundcard
-Date: Fri, 23 Mar 2018 11:09:30 +0100
-Message-ID: <20180323100930.GA21644@amd>
-References: <20180223200254.25685-6-sebastian.reichel@collabora.co.uk>
- <20180322204804.GA26871@amd>
- <20180322234832.o24ut5ahon46mdu4@earth.universe>
+From: Nobutaka Okabe <nob77413@gmail.com>
+Subject: [PATCH 1/3] ALSA: usb-audio: Add native DSD support
+	for Luxman DA-06
+Date: Fri, 23 Mar 2018 19:18:22 +0900
+Message-ID: <20180323101822.6529-1-nob77413@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6956086639242749605=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
- [195.113.26.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4395D2673F3
- for <alsa-devel@alsa-project.org>; Fri, 23 Mar 2018 11:09:30 +0100 (CET)
-In-Reply-To: <20180322234832.o24ut5ahon46mdu4@earth.universe>
+Received: from mail-pl0-f68.google.com (mail-pl0-f68.google.com
+ [209.85.160.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB1312673C9
+ for <alsa-devel@alsa-project.org>; Fri, 23 Mar 2018 11:19:17 +0100 (CET)
+Received: by mail-pl0-f68.google.com with SMTP id c11-v6so7161020plo.0
+ for <alsa-devel@alsa-project.org>; Fri, 23 Mar 2018 03:19:17 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,113 +22,125 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, linux-omap@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+To: alsa-devel@alsa-project.org
+Cc: Nobutaka Okabe <nob77413@gmail.com>, Jurgen Kramer <gtmkramer@xs4all.nl>
 List-Id: alsa-devel@alsa-project.org
 
+Add native DSD support quirk for Luxman DA-06 DAC, by adding the PID/VID 1852:5065.
 
---===============6956086639242749605==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BOKacYhQ+x31HxR3"
-Content-Disposition: inline
+Rename "is_marantz_denon_dac()" function to "is_itf_usb_dsd_2alts_dac()"
+to cover broader device family sharing the same USB audio implementation(*).
+For the same reason, rename "is_teac_dsd_dac()" function to "is_itf_usb_dsd_3alts_dac()".
 
+(*)
+These devices have the same USB controller "ITF-USB DSD", supplied by INTERFACE Co., Ltd.
+"ITF-USB DSD" USB controller has two patterns,
 
---BOKacYhQ+x31HxR3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Pattern 1. (2 altsets version)
+- Altset 0: for control
+- Altset 1: for stream (S32)
+- Altset 2: for stream (S32, DSD_U32)
 
-Hi!
+Pattern 2. (3 altsets version)
+- Altset 0: for control
+- Altset 1: for stream (S16)
+- Altset 2: for stream (S32)
+- Altset 3: for stream (S32, DSD_U32)
 
-> > # CONFIG_SND_OMAP_SOC_RX51 is not set
-> > # CONFIG_SND_OMAP_SOC_N9 is not set
-> > CONFIG_SND_OMAP_SOC_OMAP_TWL4030=3Dy
-> > CONFIG_SND_OMAP_SOC_OMAP_ABE_TWL6040=3Dy
->=20
-> That's not needed (but does not hurt). The Droid 4
-> has no TWL companion chip and uses CPCAP instead.
+"is_itf_usb_dsd_2alts_dac()" returns true, if the DAC has "Pattern 1" USB controller,
+and "is_itf_usb_dsd_3alts_dac()" returns true, if "Pattern2".
 
-Aha, thanks. I was doing wild experiments to get something that
-boots... I turned them off.
+Signed-off-by: Nobutaka Okabe <nob77413@gmail.com>
+---
+ sound/usb/quirks.c | 29 ++++++++++++++++-------------
+ 1 file changed, 16 insertions(+), 13 deletions(-)
 
-> > Any ideas?
->=20
-> You probably did not enable the soundcard driver, that binds against
-> "audio-graph-card" compatible and connects the codec driver with the
-> SoC driver: CONFIG_SND_AUDIO_GRAPH_CARD
-
-Ok, that certainly changed things; I am now getting this:
-
-Mar 23 08:39:17 devuan kernel: [   11.633605] asoc-audio-graph-card soundca=
-rd: GPIO lookup for
- consumer pa
-Mar 23 08:39:17 devuan kernel: [   11.644958] asoc-audio-graph-card soundca=
-rd: using device tr
-ee for GPIO lookup
-Mar 23 08:39:17 devuan kernel: [   11.656677] of_get_named_gpiod_flags: can=
-'t parse 'pa-gpios'
- property of node '/soundcard[0]'
-Mar 23 08:39:17 devuan kernel: [   11.669738] of_get_named_gpiod_flags: can=
-'t parse 'pa-gpio'=20
-property of node '/soundcard[0]'
-Mar 23 08:39:17 devuan kernel: [   11.682617] asoc-audio-graph-card soundca=
-rd: using lookup ta
-bles for GPIO lookup
-Mar 23 08:39:17 devuan kernel: [   11.694427] asoc-audio-graph-card soundca=
-rd: lookup for GPIO
- pa failed
-
-Indeed the dts does not seem to contain any gpios
-
-        soundcard {
-                compatible =3D "audio-graph-card";
-                label =3D "Droid 4 Audio";
-
-                simple-graph-card,widgets =3D
-                        "Speaker", "Earpiece",
-                        "Speaker", "Loudspeaker",
-	                "Headphone", "Headphone Jack",
-	                "Microphone", "Internal Mic";
-
-                simple-graph-card,routing =3D
-	                "Earpiece", "EP",
-		        "Loudspeaker", "SPKR",
-                        "Headphone Jack", "HSL",
-                        "Headphone Jack", "HSR",
-	                "MICR", "Internal Mic";
-
-                dais =3D <&mcbsp2_port>, <&mcbsp3_port>;
-	};
-
-Any more ideas? :-)
-
-Thanks,
-
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---BOKacYhQ+x31HxR3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlq00loACgkQMOfwapXb+vL71wCfei9Wakmc6L0+DQQ6ydjcLxIl
-d54AnAmfV0UHVbqUBgYCCLQbQS1kZVmN
-=VTw6
------END PGP SIGNATURE-----
-
---BOKacYhQ+x31HxR3--
-
---===============6956086639242749605==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6956086639242749605==--
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 794224e1d6df..006da37ad0d9 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1149,24 +1149,27 @@ bool snd_usb_get_sample_rate_quirk(struct snd_usb_audio *chip)
+ 	return false;
+ }
+ 
+-/* Marantz/Denon USB DACs need a vendor cmd to switch
++/* ITF-USB DSD based DACs need a vendor cmd to switch
+  * between PCM and native DSD mode
++ * (2 altsets version)
+  */
+-static bool is_marantz_denon_dac(unsigned int id)
++static bool is_itf_usb_dsd_2alts_dac(unsigned int id)
+ {
+ 	switch (id) {
+ 	case USB_ID(0x154e, 0x1003): /* Denon DA-300USB */
+ 	case USB_ID(0x154e, 0x3005): /* Marantz HD-DAC1 */
+ 	case USB_ID(0x154e, 0x3006): /* Marantz SA-14S1 */
++	case USB_ID(0x1852, 0x5065): /* Luxman DA-06 */
+ 		return true;
+ 	}
+ 	return false;
+ }
+ 
+-/* TEAC UD-501/UD-503/NT-503 USB DACs need a vendor cmd to switch
+- * between PCM/DOP and native DSD mode
++/* ITF-USB DSD based DACs need a vendor cmd to switch
++ * between PCM and native DSD mode
++ * (3 altsets version)
+  */
+-static bool is_teac_dsd_dac(unsigned int id)
++static bool is_itf_usb_dsd_3alts_dac(unsigned int id)
+ {
+ 	switch (id) {
+ 	case USB_ID(0x0644, 0x8043): /* TEAC UD-501/UD-503/NT-503 */
+@@ -1183,7 +1186,7 @@ int snd_usb_select_mode_quirk(struct snd_usb_substream *subs,
+ 	struct usb_device *dev = subs->dev;
+ 	int err;
+ 
+-	if (is_marantz_denon_dac(subs->stream->chip->usb_id)) {
++	if (is_itf_usb_dsd_2alts_dac(subs->stream->chip->usb_id)) {
+ 		/* First switch to alt set 0, otherwise the mode switch cmd
+ 		 * will not be accepted by the DAC
+ 		 */
+@@ -1204,7 +1207,7 @@ int snd_usb_select_mode_quirk(struct snd_usb_substream *subs,
+ 			break;
+ 		}
+ 		mdelay(20);
+-	} else if (is_teac_dsd_dac(subs->stream->chip->usb_id)) {
++	} else if (is_itf_usb_dsd_3alts_dac(subs->stream->chip->usb_id)) {
+ 		/* Vendor mode switch cmd is required. */
+ 		switch (fmt->altsetting) {
+ 		case 3: /* DSD mode (DSD_U32) requested */
+@@ -1300,10 +1303,10 @@ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
+ 	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
+ 		mdelay(20);
+ 
+-	/* Marantz/Denon devices with USB DAC functionality need a delay
++	/* ITF-USB DSD based DACs functionality need a delay
+ 	 * after each class compliant request
+ 	 */
+-	if (is_marantz_denon_dac(chip->usb_id)
++	if (is_itf_usb_dsd_2alts_dac(chip->usb_id)
+ 	    && (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
+ 		mdelay(20);
+ 
+@@ -1390,14 +1393,14 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+ 		break;
+ 	}
+ 
+-	/* Denon/Marantz devices with USB DAC functionality */
+-	if (is_marantz_denon_dac(chip->usb_id)) {
++	/* ITF-USB DSD based DACs (2 altsets version) */
++	if (is_itf_usb_dsd_2alts_dac(chip->usb_id)) {
+ 		if (fp->altsetting == 2)
+ 			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
+ 	}
+ 
+-	/* TEAC devices with USB DAC functionality */
+-	if (is_teac_dsd_dac(chip->usb_id)) {
++	/* ITF-USB DSD based DACs (3 altsets version) */
++	if (is_itf_usb_dsd_3alts_dac(chip->usb_id)) {
+ 		if (fp->altsetting == 3)
+ 			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
+ 	}
+-- 
+2.11.1
