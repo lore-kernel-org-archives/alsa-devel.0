@@ -1,21 +1,12 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCHv5,
-	5/5] ARM: dts: omap4-droid4: add soundcard
-Date: Fri, 23 Mar 2018 15:11:07 +0100
-Message-ID: <20180323141107.GB23658@amd>
-References: <20180223200254.25685-6-sebastian.reichel@collabora.co.uk>
- <20180322204804.GA26871@amd>
- <20180322234832.o24ut5ahon46mdu4@earth.universe>
- <20180323100930.GA21644@amd>
- <20180323103006.alymgb3ywftb4gek@earth.universe>
+From: <twischer@de.adit-jv.com>
+Subject: [PATCH - PCM HW APPEND 1/1] pcm: hw: Keep control data
+	from kernel when SND_PCM_APPEND
+Date: Fri, 23 Mar 2018 15:27:23 +0100
+Message-ID: <1521815243-30432-1-git-send-email-twischer@de.adit-jv.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2054007461423125893=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
- [195.113.26.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 333A8266A73
- for <alsa-devel@alsa-project.org>; Fri, 23 Mar 2018 15:11:08 +0100 (CET)
-In-Reply-To: <20180323103006.alymgb3ywftb4gek@earth.universe>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,61 +16,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, linux-omap@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+To: patch@alsa-project.org
+Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Timo Wischer <twischer@de.adit-jv.com>
 
---===============2054007461423125893==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9zSXsLTf0vkW971A"
-Content-Disposition: inline
+Without this fix the application pointer would be reseted
+whenever an application opens a device with SND_PCM_APPEND.
 
+This would result in an Xrun if the device is already opened and
+in running state and the appl_ptr is use.
 
---9zSXsLTf0vkW971A
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
 
-Hi!
-
-> > Any more ideas? :-)
->=20
-> Make sure, that the device was not proped properly (cat
-> /proc/asound/cards) and post the real error? :)
-
-Oh and, audio now works for me, so
-
-Tested-by: Pavel Machek <pavel@ucw.cz>
-
-for the series.
-
-Thanks,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---9zSXsLTf0vkW971A
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlq1CvsACgkQMOfwapXb+vKxXwCfTytipVc3xGXvXOwWxZs6IaIl
-npsAn3MkVEAatodpRCjq0aXU5w39na7W
-=83Zg
------END PGP SIGNATURE-----
-
---9zSXsLTf0vkW971A--
-
---===============2054007461423125893==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2054007461423125893==--
+diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
+index b93926c..65b198c 100644
+--- a/src/pcm/pcm_hw.c
++++ b/src/pcm/pcm_hw.c
+@@ -1004,16 +1004,28 @@ static int map_status_and_control_data(snd_pcm_t *pcm, bool force_fallback)
+ 		hw->sync_ptr = NULL;
+ 	}
+ 
+-	/* Initialize the data. */
+-	hw->mmap_control->appl_ptr = 0;
+-	hw->mmap_control->avail_min = 1;
++	/* do not initialize in case of append and keep the values from the
++	 * kernel
++	 */
++	if (!(pcm->mode & SND_PCM_APPEND)) {
++		/* Initialize the data. */
++		hw->mmap_control->appl_ptr = 0;
++		hw->mmap_control->avail_min = 1;
++	}
+ 	snd_pcm_set_hw_ptr(pcm, &hw->mmap_status->hw_ptr, hw->fd,
+ 			   SNDRV_PCM_MMAP_OFFSET_STATUS +
+ 				offsetof(struct snd_pcm_mmap_status, hw_ptr));
+ 	snd_pcm_set_appl_ptr(pcm, &hw->mmap_control->appl_ptr, hw->fd,
+ 			     SNDRV_PCM_MMAP_OFFSET_CONTROL);
+ 	if (hw->mmap_control_fallbacked) {
+-		err = sync_ptr1(hw, 0);
++		unsigned int flags;
++		/* read appl_ptr and avail_min from kernel when device opened
++		 * with SND_PCM_APPEND flag
++		 */
++		if (pcm->mode & SND_PCM_APPEND)
++			flags = SNDRV_PCM_SYNC_PTR_APPL |
++				SNDRV_PCM_SYNC_PTR_AVAIL_MIN;
++		err = sync_ptr1(hw, flags);
+ 		if (err < 0)
+ 			return err;
+ 	}
+@@ -1539,6 +1551,8 @@ int snd_pcm_hw_open_fd(snd_pcm_t **pcmp, const char *name, int fd,
+ 		mode |= SND_PCM_NONBLOCK;
+ 	if (fmode & O_ASYNC)
+ 		mode |= SND_PCM_ASYNC;
++	if (fmode & O_APPEND)
++		mode |= SND_PCM_APPEND;
+ 
+ 	if (ioctl(fd, SNDRV_PCM_IOCTL_PVERSION, &ver) < 0) {
+ 		ret = -errno;
+-- 
+2.7.4
