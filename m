@@ -1,21 +1,19 @@
-From: Andrew Chant <achant@google.com>
-Subject: Re: [PATCH 2/2] ALSA: usb-audio: UAC2 jack detection
-Date: Fri, 23 Mar 2018 15:24:55 -0700
-Message-ID: <CANVWZtHyFz2MZ4aQjRu3WLyB1WY=5JMN5=s_oL1v0ZEyqr2nCQ@mail.gmail.com>
-References: <20180322213956.217933-1-achant@google.com>
- <20180322213956.217933-3-achant@google.com>
- <s5hzi2z9qsk.wl-tiwai@suse.de>
+From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+Subject: [PATCH 1/3] ASoC: TSCS42xx: Shorten lines and other
+ cleanup
+Date: Fri, 23 Mar 2018 18:25:25 -0500
+Message-ID: <20180323232515.GA20519@t7-ThinkPad-E560>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yb0-f170.google.com (mail-yb0-f170.google.com
- [209.85.213.170])
- by alsa0.perex.cz (Postfix) with ESMTP id A0EFC266B67
- for <alsa-devel@alsa-project.org>; Fri, 23 Mar 2018 23:25:37 +0100 (CET)
-Received: by mail-yb0-f170.google.com with SMTP id x72-v6so975664ybe.8
- for <alsa-devel@alsa-project.org>; Fri, 23 Mar 2018 15:25:37 -0700 (PDT)
-In-Reply-To: <s5hzi2z9qsk.wl-tiwai@suse.de>
+Received: from mail-ot0-f194.google.com (mail-ot0-f194.google.com
+ [74.125.82.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id DD350266B67
+ for <alsa-devel@alsa-project.org>; Sat, 24 Mar 2018 00:25:37 +0100 (CET)
+Received: by mail-ot0-f194.google.com with SMTP id r30-v6so15007748otr.2
+ for <alsa-devel@alsa-project.org>; Fri, 23 Mar 2018 16:25:37 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,49 +23,241 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Ruslan Bilovol <ruslan.bilovol@gmail.com>, Benson Leung <bleung@google.com>
+To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 23, 2018 at 12:47 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> Let's follow the other usages, and here iface is set to
-> SNDRV_CTL_ELEM_IFACE_CARD.  This was for avoiding such volatile
-> controls appearing the mixer application.
-Will do - it looks like the "Clock Source Validity" control also needs this.
-I'll send a patch for that as well.
+Shorten lines greater than 80 chars
+Add const to struct snd_soc_component_driver
 
->> +     .access = SNDRV_CTL_ELEM_ACCESS_READ,
->
-> Actually we should have set SNDRV_CTL_ELEM_ACCESS_VOLATILE, too.
-> We forgot it in ctljack.c, too.
-Sounds good.
+Signed-off-by: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+---
+ sound/soc/codecs/tscs42xx.c | 87 ++++++++++++++++++++++++++++-----------------
+ 1 file changed, 55 insertions(+), 32 deletions(-)
 
->
-> The rest looks good.  But one thing to confirm: the value change
-> notification is done in snd_usb_mixer_interrupt()?
->
-> Also, is the jack re-detected after suspend/resume?  That is, plug off
-> the jack while sleeping, and after the resume, is the jack status
-> change recognized and notified?
-
-Yes - the USB audio device causes a remote wakeup, then after a few ms
-responds with the interrupt data message indicating the connector control
-that changed.  This ends up calling snd_usb_mixer_interrupt().
-
-On codeaurora kernels for Qualcomm SoCs, there's a
-patch which enables autosuspend for any USB device with an audio interface.
-https://source.codeaurora.org/quic/la/kernel/msm-4.4/tree/sound/usb/card.c?h=LA.HB.1.1.5.c1#n663
-so suspend/resume paths are well tested when devices are used on Android.
-
-Two new questions:
-#1 - I'd like to report the impedance of the load connected to the jack
-(generally as an integer).  Is a read-only control element the right way to
-do this?
-
-#2 - In our particular case there's a single jack which can detect presence of
-a microphone and playback separately.  USB descriptors provide a mechanism to
-show that the input and output terminals are linked in this way
-(terminal type 4xx along with bAssocTerminal).
-
-Is there a better way of having this reported than two separate mono jack
-controls?
+diff --git a/sound/soc/codecs/tscs42xx.c b/sound/soc/codecs/tscs42xx.c
+index cfc71b5411ee..37636d6efe60 100644
+--- a/sound/soc/codecs/tscs42xx.c
++++ b/sound/soc/codecs/tscs42xx.c
+@@ -204,7 +204,8 @@ static int power_up_audio_plls(struct snd_soc_component *component)
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+-		dev_err(component->dev, "Unrecognized PLL output freq (%d)\n", ret);
++		dev_err(component->dev,
++				"Unrecognized PLL output freq (%d)\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -261,7 +262,8 @@ static int power_down_audio_plls(struct snd_soc_component *component)
+ static int coeff_ram_get(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct snd_soc_component *component =
++		snd_soc_kcontrol_component(kcontrol);
+ 	struct tscs42xx *tscs42xx = snd_soc_component_get_drvdata(component);
+ 	struct coeff_ram_ctl *ctl =
+ 		(struct coeff_ram_ctl *)kcontrol->private_value;
+@@ -280,7 +282,8 @@ static int coeff_ram_get(struct snd_kcontrol *kcontrol,
+ static int coeff_ram_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct snd_soc_component *component =
++		snd_soc_kcontrol_component(kcontrol);
+ 	struct tscs42xx *tscs42xx = snd_soc_component_get_drvdata(component);
+ 	struct coeff_ram_ctl *ctl =
+ 		(struct coeff_ram_ctl *)kcontrol->private_value;
+@@ -363,7 +366,8 @@ static int dapm_micb_event(struct snd_soc_dapm_widget *w,
+ static int pll_event(struct snd_soc_dapm_widget *w,
+ 		     struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct snd_soc_component *component =
++		snd_soc_dapm_to_component(w->dapm);
+ 	int ret;
+ 
+ 	if (SND_SOC_DAPM_EVENT_ON(event))
+@@ -377,7 +381,8 @@ static int pll_event(struct snd_soc_dapm_widget *w,
+ static int dac_event(struct snd_soc_dapm_widget *w,
+ 		     struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct snd_soc_component *component =
++		snd_soc_dapm_to_component(w->dapm);
+ 	struct tscs42xx *tscs42xx = snd_soc_component_get_drvdata(component);
+ 	int ret;
+ 
+@@ -819,16 +824,19 @@ static int setup_sample_format(struct snd_soc_component *component,
+ 		dev_err(component->dev, "Unsupported format width (%d)\n", ret);
+ 		return ret;
+ 	}
+-	ret = snd_soc_component_update_bits(component, R_AIC1, RM_AIC1_WL, width);
++	ret = snd_soc_component_update_bits(component,
++			R_AIC1, RM_AIC1_WL, width);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Failed to set sample width (%d)\n", ret);
++		dev_err(component->dev,
++				"Failed to set sample width (%d)\n", ret);
+ 		return ret;
+ 	}
+ 
+ 	return 0;
+ }
+ 
+-static int setup_sample_rate(struct snd_soc_component *component, unsigned int rate)
++static int setup_sample_rate(struct snd_soc_component *component,
++		unsigned int rate)
+ {
+ 	struct tscs42xx *tscs42xx = snd_soc_component_get_drvdata(component);
+ 	unsigned int br, bm;
+@@ -881,24 +889,32 @@ static int setup_sample_rate(struct snd_soc_component *component, unsigned int r
+ 	}
+ 
+ 	/* DAC and ADC share bit and frame clock */
+-	ret = snd_soc_component_update_bits(component, R_DACSR, RM_DACSR_DBR, br);
++	ret = snd_soc_component_update_bits(component,
++			R_DACSR, RM_DACSR_DBR, br);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Failed to update register (%d)\n", ret);
++		dev_err(component->dev,
++				"Failed to update register (%d)\n", ret);
+ 		return ret;
+ 	}
+-	ret = snd_soc_component_update_bits(component, R_DACSR, RM_DACSR_DBM, bm);
++	ret = snd_soc_component_update_bits(component,
++			R_DACSR, RM_DACSR_DBM, bm);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Failed to update register (%d)\n", ret);
++		dev_err(component->dev,
++				"Failed to update register (%d)\n", ret);
+ 		return ret;
+ 	}
+-	ret = snd_soc_component_update_bits(component, R_ADCSR, RM_DACSR_DBR, br);
++	ret = snd_soc_component_update_bits(component,
++			R_ADCSR, RM_DACSR_DBR, br);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Failed to update register (%d)\n", ret);
++		dev_err(component->dev,
++				"Failed to update register (%d)\n", ret);
+ 		return ret;
+ 	}
+-	ret = snd_soc_component_update_bits(component, R_ADCSR, RM_DACSR_DBM, bm);
++	ret = snd_soc_component_update_bits(component,
++			R_ADCSR, RM_DACSR_DBM, bm);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Failed to update register (%d)\n", ret);
++		dev_err(component->dev,
++				"Failed to update register (%d)\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -1076,7 +1092,8 @@ static int tscs42xx_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	ret = setup_sample_rate(component, params_rate(params));
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Failed to setup sample rate (%d)\n", ret);
++		dev_err(component->dev,
++				"Failed to setup sample rate (%d)\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -1087,7 +1104,8 @@ static inline int dac_mute(struct snd_soc_component *component)
+ {
+ 	int ret;
+ 
+-	ret = snd_soc_component_update_bits(component, R_CNVRTR1, RM_CNVRTR1_DACMU,
++	ret = snd_soc_component_update_bits(component,
++			R_CNVRTR1, RM_CNVRTR1_DACMU,
+ 		RV_CNVRTR1_DACMU_ENABLE);
+ 	if (ret < 0) {
+ 		dev_err(component->dev, "Failed to mute DAC (%d)\n",
+@@ -1102,7 +1120,8 @@ static inline int dac_unmute(struct snd_soc_component *component)
+ {
+ 	int ret;
+ 
+-	ret = snd_soc_component_update_bits(component, R_CNVRTR1, RM_CNVRTR1_DACMU,
++	ret = snd_soc_component_update_bits(component,
++			R_CNVRTR1, RM_CNVRTR1_DACMU,
+ 		RV_CNVRTR1_DACMU_DISABLE);
+ 	if (ret < 0) {
+ 		dev_err(component->dev, "Failed to unmute DAC (%d)\n",
+@@ -1117,8 +1136,8 @@ static inline int adc_mute(struct snd_soc_component *component)
+ {
+ 	int ret;
+ 
+-	ret = snd_soc_component_update_bits(component, R_CNVRTR0, RM_CNVRTR0_ADCMU,
+-		RV_CNVRTR0_ADCMU_ENABLE);
++	ret = snd_soc_component_update_bits(component,
++			R_CNVRTR0, RM_CNVRTR0_ADCMU, RV_CNVRTR0_ADCMU_ENABLE);
+ 	if (ret < 0) {
+ 		dev_err(component->dev, "Failed to mute ADC (%d)\n",
+ 				ret);
+@@ -1132,8 +1151,8 @@ static inline int adc_unmute(struct snd_soc_component *component)
+ {
+ 	int ret;
+ 
+-	ret = snd_soc_component_update_bits(component, R_CNVRTR0, RM_CNVRTR0_ADCMU,
+-		RV_CNVRTR0_ADCMU_DISABLE);
++	ret = snd_soc_component_update_bits(component,
++			R_CNVRTR0, RM_CNVRTR0_ADCMU, RV_CNVRTR0_ADCMU_DISABLE);
+ 	if (ret < 0) {
+ 		dev_err(component->dev, "Failed to unmute ADC (%d)\n",
+ 				ret);
+@@ -1171,8 +1190,8 @@ static int tscs42xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	/* Slave mode not supported since it needs always-on frame clock */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+-		ret = snd_soc_component_update_bits(component, R_AIC1, RM_AIC1_MS,
+-				RV_AIC1_MS_MASTER);
++		ret = snd_soc_component_update_bits(component,
++				R_AIC1, RM_AIC1_MS, RV_AIC1_MS_MASTER);
+ 		if (ret < 0) {
+ 			dev_err(component->dev,
+ 				"Failed to set codec DAI master (%d)\n", ret);
+@@ -1211,14 +1230,18 @@ static int tscs42xx_set_dai_bclk_ratio(struct snd_soc_dai *codec_dai,
+ 		return -EINVAL;
+ 	}
+ 
+-	ret = snd_soc_component_update_bits(component, R_DACSR, RM_DACSR_DBCM, value);
++	ret = snd_soc_component_update_bits(component,
++			R_DACSR, RM_DACSR_DBCM, value);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Failed to set DAC BCLK ratio (%d)\n", ret);
++		dev_err(component->dev,
++				"Failed to set DAC BCLK ratio (%d)\n", ret);
+ 		return ret;
+ 	}
+-	ret = snd_soc_component_update_bits(component, R_ADCSR, RM_ADCSR_ABCM, value);
++	ret = snd_soc_component_update_bits(component,
++			R_ADCSR, RM_ADCSR_ABCM, value);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Failed to set ADC BCLK ratio (%d)\n", ret);
++		dev_err(component->dev,
++				"Failed to set ADC BCLK ratio (%d)\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -1309,7 +1332,7 @@ static int part_is_valid(struct tscs42xx *tscs42xx)
+ 	};
+ }
+ 
+-static struct snd_soc_component_driver soc_codec_dev_tscs42xx = {
++static const struct snd_soc_component_driver soc_codec_dev_tscs42xx = {
+ 	.dapm_widgets		= tscs42xx_dapm_widgets,
+ 	.num_dapm_widgets	= ARRAY_SIZE(tscs42xx_dapm_widgets),
+ 	.dapm_routes		= tscs42xx_intercon,
+@@ -1416,8 +1439,8 @@ static int tscs42xx_i2c_probe(struct i2c_client *i2c,
+ 	mutex_init(&tscs42xx->coeff_ram_lock);
+ 	mutex_init(&tscs42xx->pll_lock);
+ 
+-	ret = devm_snd_soc_register_component(tscs42xx->dev, &soc_codec_dev_tscs42xx,
+-			&tscs42xx_dai, 1);
++	ret = devm_snd_soc_register_component(tscs42xx->dev,
++			&soc_codec_dev_tscs42xx, &tscs42xx_dai, 1);
+ 	if (ret) {
+ 		dev_err(tscs42xx->dev, "Failed to register codec (%d)\n", ret);
+ 		return ret;
+-- 
+2.15.1
