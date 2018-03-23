@@ -1,15 +1,19 @@
-From: Sanyog Kale <sanyog.r.kale@intel.com>
-Subject: [GIT PULL] Audio firmware update
-Date: Fri, 23 Mar 2018 15:19:39 +0530
-Message-ID: <20180323094939.GA6602@buildpc-HP-Z230>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCHv5,
+	5/5] ARM: dts: omap4-droid4: add soundcard
+Date: Fri, 23 Mar 2018 11:09:30 +0100
+Message-ID: <20180323100930.GA21644@amd>
+References: <20180223200254.25685-6-sebastian.reichel@collabora.co.uk>
+ <20180322204804.GA26871@amd>
+ <20180322234832.o24ut5ahon46mdu4@earth.universe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6956086639242749605=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 9183126748B
- for <alsa-devel@alsa-project.org>; Fri, 23 Mar 2018 10:49:06 +0100 (CET)
-Content-Disposition: inline
+Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
+ [195.113.26.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4395D2673F3
+ for <alsa-devel@alsa-project.org>; Fri, 23 Mar 2018 11:09:30 +0100 (CET)
+In-Reply-To: <20180322234832.o24ut5ahon46mdu4@earth.universe>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,50 +23,113 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-firmware@kernel.org
-Cc: patches.audio@intel.com, alsa-devel@alsa-project.org, jeremy.p.lin@intel.com
+To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, linux-omap@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-Please PULL to receive the update for Skylake, Kabylake, Broxton and
-Geminilake audio DSP firmware.
+--===============6956086639242749605==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="BOKacYhQ+x31HxR3"
+Content-Disposition: inline
 
-The following changes since commit 44476f2465dac9c22bce90da66e86b2b56ba34f0:
 
-  BCM-0bb4-0306: Update to Cypress license in WHENCE (2018-03-20 12:20:21 -0400)
+--BOKacYhQ+x31HxR3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-are available in the git repository at:
+Hi!
 
-  https://github.com/sanyogrk/firmware kbl
+> > # CONFIG_SND_OMAP_SOC_RX51 is not set
+> > # CONFIG_SND_OMAP_SOC_N9 is not set
+> > CONFIG_SND_OMAP_SOC_OMAP_TWL4030=3Dy
+> > CONFIG_SND_OMAP_SOC_OMAP_ABE_TWL6040=3Dy
+>=20
+> That's not needed (but does not hurt). The Droid 4
+> has no TWL companion chip and uses CPCAP instead.
 
-for you to fetch changes up to 9c53767c99f1d393e9c0f566ec17e4699788e95d:
+Aha, thanks. I was doing wild experiments to get something that
+boots... I turned them off.
 
-  linux-firmware: intel: Update Geminilake audio firmware (2018-03-23 09:55:51 +0530)
+> > Any ideas?
+>=20
+> You probably did not enable the soundcard driver, that binds against
+> "audio-graph-card" compatible and connects the codec driver with the
+> SoC driver: CONFIG_SND_AUDIO_GRAPH_CARD
 
-----------------------------------------------------------------
-Sanyog Kale (4):
-      linux-firmware: intel: Update Skylake audio firmware
-      linux-firmware: intel: Update Broxton audio firmware
-      linux-firmware: intel: Update Kabylake audio firmware
-      linux-firmware: intel: Update Geminilake audio firmware
+Ok, that certainly changed things; I am now getting this:
 
- WHENCE                         |  16 ++++++++++++----
- intel/dsp_fw_bxtn.bin          |   2 +-
- intel/dsp_fw_bxtn_v3366.bin    | Bin 0 -> 505608 bytes
- intel/dsp_fw_glk.bin           |   2 +-
- intel/dsp_fw_glk_v3366.bin     | Bin 0 -> 505608 bytes
- intel/dsp_fw_kbl.bin           |   2 +-
- intel/dsp_fw_kbl_v3402.bin     | Bin 0 -> 247112 bytes
- intel/dsp_fw_release.bin       |   2 +-
- intel/dsp_fw_release_v3402.bin | Bin 0 -> 247112 bytes
- 9 files changed, 16 insertions(+), 8 deletions(-)
- create mode 100644 intel/dsp_fw_bxtn_v3366.bin
- create mode 100644 intel/dsp_fw_glk_v3366.bin
- create mode 100644 intel/dsp_fw_kbl_v3402.bin
- create mode 100644 intel/dsp_fw_release_v3402.bin
+Mar 23 08:39:17 devuan kernel: [   11.633605] asoc-audio-graph-card soundca=
+rd: GPIO lookup for
+ consumer pa
+Mar 23 08:39:17 devuan kernel: [   11.644958] asoc-audio-graph-card soundca=
+rd: using device tr
+ee for GPIO lookup
+Mar 23 08:39:17 devuan kernel: [   11.656677] of_get_named_gpiod_flags: can=
+'t parse 'pa-gpios'
+ property of node '/soundcard[0]'
+Mar 23 08:39:17 devuan kernel: [   11.669738] of_get_named_gpiod_flags: can=
+'t parse 'pa-gpio'=20
+property of node '/soundcard[0]'
+Mar 23 08:39:17 devuan kernel: [   11.682617] asoc-audio-graph-card soundca=
+rd: using lookup ta
+bles for GPIO lookup
+Mar 23 08:39:17 devuan kernel: [   11.694427] asoc-audio-graph-card soundca=
+rd: lookup for GPIO
+ pa failed
+
+Indeed the dts does not seem to contain any gpios
+
+        soundcard {
+                compatible =3D "audio-graph-card";
+                label =3D "Droid 4 Audio";
+
+                simple-graph-card,widgets =3D
+                        "Speaker", "Earpiece",
+                        "Speaker", "Loudspeaker",
+	                "Headphone", "Headphone Jack",
+	                "Microphone", "Internal Mic";
+
+                simple-graph-card,routing =3D
+	                "Earpiece", "EP",
+		        "Loudspeaker", "SPKR",
+                        "Headphone Jack", "HSL",
+                        "Headphone Jack", "HSR",
+	                "MICR", "Internal Mic";
+
+                dais =3D <&mcbsp2_port>, <&mcbsp3_port>;
+	};
+
+Any more ideas? :-)
 
 Thanks,
-Sanyog
 
--- 
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--BOKacYhQ+x31HxR3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlq00loACgkQMOfwapXb+vL71wCfei9Wakmc6L0+DQQ6ydjcLxIl
+d54AnAmfV0UHVbqUBgYCCLQbQS1kZVmN
+=VTw6
+-----END PGP SIGNATURE-----
+
+--BOKacYhQ+x31HxR3--
+
+--===============6956086639242749605==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6956086639242749605==--
