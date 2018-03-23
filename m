@@ -1,114 +1,227 @@
 From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Subject: [PATCH 2/3] ASoC: TSCS42xx: Cleanup private data
-	members
-Date: Fri, 23 Mar 2018 18:32:11 -0500
-Message-ID: <20180323233136.GA20651@t7-ThinkPad-E560>
+Subject: [alsa-devel][PATCH 3/3] ASoC: TSCS42xx: Add CCF support to get sysclk
+Date: Fri, 23 Mar 2018 18:38:30 -0500
+Message-ID: <20180323233820.GA20733@t7-ThinkPad-E560>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f65.google.com (mail-oi0-f65.google.com
- [209.85.218.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 06F6E266B67
- for <alsa-devel@alsa-project.org>; Sat, 24 Mar 2018 00:32:23 +0100 (CET)
-Received: by mail-oi0-f65.google.com with SMTP id u141-v6so11714142oif.1
- for <alsa-devel@alsa-project.org>; Fri, 23 Mar 2018 16:32:23 -0700 (PDT)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-In the TSCS42xx driver there are some unnecesarry private data members
+The TSCS42xx relies on set_sysclk to get a unique clock id and rate, which
+prevents it from being used with the simple-card.
 
-Remove blrcm from private data
-Remove dev from private data
+Remove set_sysclk callback
+Add CCF support to get clock id and rate
+Add clocks and clock-names to device tree binding
 
 Signed-off-by: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
 ---
- sound/soc/codecs/tscs42xx.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ .../devicetree/bindings/sound/tscs42xx.txt         |  6 ++
+ sound/soc/codecs/tscs42xx.c                        | 98 ++++++++++++++--------
+ sound/soc/codecs/tscs42xx.h                        |  2 +-
+ 3 files changed, 69 insertions(+), 37 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/sound/tscs42xx.txt b/Documentation/devicetree/bindings/sound/tscs42xx.txt
+index 2ac2f0996697..7eea32e9d078 100644
+--- a/Documentation/devicetree/bindings/sound/tscs42xx.txt
++++ b/Documentation/devicetree/bindings/sound/tscs42xx.txt
+@@ -8,9 +8,15 @@ Required Properties:
+ 	- reg : 	<0x71> for analog mic
+ 			<0x69> for digital mic
+ 
++	- clock-names:	Must one of  the following "mclk1", "xtal", "mclk2"
++
++	- clocks:	phandle of the clock that provides the codec sysclk
++
+ Example:
+ 
+ wookie: codec@69 {
+ 	compatible = "tempo,tscs42A2";
+ 	reg = <0x69>;
++	clock-names = "xtal";
++	clocks = <&audio_xtal>;
+ };
 diff --git a/sound/soc/codecs/tscs42xx.c b/sound/soc/codecs/tscs42xx.c
-index 37636d6efe60..d41852a37ac6 100644
+index d41852a37ac6..081af0e05d33 100644
 --- a/sound/soc/codecs/tscs42xx.c
 +++ b/sound/soc/codecs/tscs42xx.c
-@@ -31,7 +31,6 @@ struct tscs42xx {
- 
- 	int bclk_ratio;
- 	int samplerate;
--	unsigned int blrcm;
- 	struct mutex audio_params_lock;
- 
- 	u8 coeff_ram[COEFF_RAM_SIZE];
-@@ -41,8 +40,6 @@ struct tscs42xx {
+@@ -12,6 +12,7 @@
+ #include <linux/module.h>
+ #include <linux/delay.h>
+ #include <linux/mutex.h>
++#include <linux/clk.h>
+ #include <sound/tlv.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+@@ -40,6 +41,9 @@ struct tscs42xx {
  	struct mutex pll_lock;
  
  	struct regmap *regmap;
--
--	struct device *dev;
++
++	struct clk *sysclk;
++	int sysclk_src_id;
  };
  
  struct coeff_ram_ctl {
-@@ -1404,12 +1401,11 @@ static int tscs42xx_i2c_probe(struct i2c_client *i2c,
- 		return ret;
+@@ -1251,13 +1255,46 @@ static int tscs42xx_set_dai_bclk_ratio(struct snd_soc_dai *codec_dai,
+ 	return 0;
+ }
+ 
+-static int tscs42xx_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+-	int clk_id, unsigned int freq, int dir)
++static const struct snd_soc_dai_ops tscs42xx_dai_ops = {
++	.hw_params	= tscs42xx_hw_params,
++	.mute_stream	= tscs42xx_mute_stream,
++	.set_fmt	= tscs42xx_set_dai_fmt,
++	.set_bclk_ratio = tscs42xx_set_dai_bclk_ratio,
++};
++
++static int part_is_valid(struct tscs42xx *tscs42xx)
+ {
+-	struct snd_soc_component *component = codec_dai->component;
++	int val;
+ 	int ret;
++	unsigned int reg;
+ 
+-	switch (clk_id) {
++	ret = regmap_read(tscs42xx->regmap, R_DEVIDH, &reg);
++	if (ret < 0)
++		return ret;
++
++	val = reg << 8;
++	ret = regmap_read(tscs42xx->regmap, R_DEVIDL, &reg);
++	if (ret < 0)
++		return ret;
++
++	val |= reg;
++
++	switch (val) {
++	case 0x4A74:
++	case 0x4A73:
++		return true;
++	default:
++		return false;
++	};
++}
++
++static int set_sysclk(struct snd_soc_component *component)
++{
++	struct tscs42xx *tscs42xx = snd_soc_component_get_drvdata(component);
++	unsigned long freq;
++	int ret;
++
++	switch (tscs42xx->sysclk_src_id) {
+ 	case TSCS42XX_PLL_SRC_XTAL:
+ 	case TSCS42XX_PLL_SRC_MCLK1:
+ 		ret = snd_soc_component_write(component, R_PLLREFSEL,
+@@ -1285,6 +1322,7 @@ static int tscs42xx_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 		return -EINVAL;
+ 	}
+ 
++	freq = clk_get_rate(tscs42xx->sysclk);
+ 	ret = set_pll_ctl_from_input_freq(component, freq);
+ 	if (ret < 0) {
+ 		dev_err(component->dev,
+@@ -1295,41 +1333,13 @@ static int tscs42xx_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 	return 0;
+ }
+ 
+-static const struct snd_soc_dai_ops tscs42xx_dai_ops = {
+-	.hw_params	= tscs42xx_hw_params,
+-	.mute_stream	= tscs42xx_mute_stream,
+-	.set_fmt	= tscs42xx_set_dai_fmt,
+-	.set_bclk_ratio = tscs42xx_set_dai_bclk_ratio,
+-	.set_sysclk	= tscs42xx_set_dai_sysclk,
+-};
+-
+-static int part_is_valid(struct tscs42xx *tscs42xx)
++static int tscs42xx_probe(struct snd_soc_component *component)
+ {
+-	int val;
+-	int ret;
+-	unsigned int reg;
+-
+-	ret = regmap_read(tscs42xx->regmap, R_DEVIDH, &reg);
+-	if (ret < 0)
+-		return ret;
+-
+-	val = reg << 8;
+-	ret = regmap_read(tscs42xx->regmap, R_DEVIDL, &reg);
+-	if (ret < 0)
+-		return ret;
+-
+-	val |= reg;
+-
+-	switch (val) {
+-	case 0x4A74:
+-	case 0x4A73:
+-		return true;
+-	default:
+-		return false;
+-	};
++	return set_sysclk(component);
+ }
+ 
+ static const struct snd_soc_component_driver soc_codec_dev_tscs42xx = {
++	.probe			= tscs42xx_probe,
+ 	.dapm_widgets		= tscs42xx_dapm_widgets,
+ 	.num_dapm_widgets	= ARRAY_SIZE(tscs42xx_dapm_widgets),
+ 	.dapm_routes		= tscs42xx_intercon,
+@@ -1387,11 +1397,15 @@ static const struct reg_sequence tscs42xx_patch[] = {
+ 	{ R_AIC2, RV_AIC2_BLRCM_DAC_BCLK_LRCLK_SHARED },
+ };
+ 
++static char const * const src_names[TSCS42XX_PLL_SRC_CNT] = {
++	"xtal", "mclk1", "mclk2"};
++
+ static int tscs42xx_i2c_probe(struct i2c_client *i2c,
+ 		const struct i2c_device_id *id)
+ {
+ 	struct tscs42xx *tscs42xx;
+-	int ret = 0;
++	int src;
++	int ret;
+ 
+ 	tscs42xx = devm_kzalloc(&i2c->dev, sizeof(*tscs42xx), GFP_KERNEL);
+ 	if (!tscs42xx) {
+@@ -1402,6 +1416,18 @@ static int tscs42xx_i2c_probe(struct i2c_client *i2c,
  	}
  	i2c_set_clientdata(i2c, tscs42xx);
--	tscs42xx->dev = &i2c->dev;
  
++	for (src = TSCS42XX_PLL_SRC_XTAL; src < TSCS42XX_PLL_SRC_CNT; src++) {
++		tscs42xx->sysclk = devm_clk_get(&i2c->dev, src_names[src]);
++		if (!IS_ERR(tscs42xx->sysclk)) {
++			break;
++		} else if (PTR_ERR(tscs42xx->sysclk) != -ENOENT) {
++			ret = PTR_ERR(tscs42xx->sysclk);
++			dev_err(&i2c->dev, "Failed to get sysclk (%d)\n", ret);
++			return ret;
++		}
++	}
++	tscs42xx->sysclk_src_id = src;
++
  	tscs42xx->regmap = devm_regmap_init_i2c(i2c, &tscs42xx_regmap);
  	if (IS_ERR(tscs42xx->regmap)) {
  		ret = PTR_ERR(tscs42xx->regmap);
--		dev_err(tscs42xx->dev, "Failed to allocate regmap (%d)\n", ret);
-+		dev_err(&i2c->dev, "Failed to allocate regmap (%d)\n", ret);
- 		return ret;
- 	}
+diff --git a/sound/soc/codecs/tscs42xx.h b/sound/soc/codecs/tscs42xx.h
+index d4a30bcbf64b..814c8f3c4a68 100644
+--- a/sound/soc/codecs/tscs42xx.h
++++ b/sound/soc/codecs/tscs42xx.h
+@@ -7,10 +7,10 @@
+ #define __WOOKIE_H__
  
-@@ -1417,21 +1413,21 @@ static int tscs42xx_i2c_probe(struct i2c_client *i2c,
+ enum {
+-	TSCS42XX_PLL_SRC_NONE,
+ 	TSCS42XX_PLL_SRC_XTAL,
+ 	TSCS42XX_PLL_SRC_MCLK1,
+ 	TSCS42XX_PLL_SRC_MCLK2,
++	TSCS42XX_PLL_SRC_CNT,
+ };
  
- 	ret = part_is_valid(tscs42xx);
- 	if (ret <= 0) {
--		dev_err(tscs42xx->dev, "No valid part (%d)\n", ret);
-+		dev_err(&i2c->dev, "No valid part (%d)\n", ret);
- 		ret = -ENODEV;
- 		return ret;
- 	}
- 
- 	ret = regmap_write(tscs42xx->regmap, R_RESET, RV_RESET_ENABLE);
- 	if (ret < 0) {
--		dev_err(tscs42xx->dev, "Failed to reset device (%d)\n", ret);
-+		dev_err(&i2c->dev, "Failed to reset device (%d)\n", ret);
- 		return ret;
- 	}
- 
- 	ret = regmap_register_patch(tscs42xx->regmap, tscs42xx_patch,
- 			ARRAY_SIZE(tscs42xx_patch));
- 	if (ret < 0) {
--		dev_err(tscs42xx->dev, "Failed to apply patch (%d)\n", ret);
-+		dev_err(&i2c->dev, "Failed to apply patch (%d)\n", ret);
- 		return ret;
- 	}
- 
-@@ -1439,10 +1435,10 @@ static int tscs42xx_i2c_probe(struct i2c_client *i2c,
- 	mutex_init(&tscs42xx->coeff_ram_lock);
- 	mutex_init(&tscs42xx->pll_lock);
- 
--	ret = devm_snd_soc_register_component(tscs42xx->dev,
-+	ret = devm_snd_soc_register_component(&i2c->dev,
- 			&soc_codec_dev_tscs42xx, &tscs42xx_dai, 1);
- 	if (ret) {
--		dev_err(tscs42xx->dev, "Failed to register codec (%d)\n", ret);
-+		dev_err(&i2c->dev, "Failed to register codec (%d)\n", ret);
- 		return ret;
- 	}
- 
+ #define R_HPVOLL        0x0
 -- 
 2.15.1
