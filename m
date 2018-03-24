@@ -1,19 +1,17 @@
 From: Andrew Chant <achant@google.com>
-Subject: [PATCH 2/2] ALSA: usb-audio: update clock valid control
-Date: Fri, 23 Mar 2018 18:55:49 -0700
-Message-ID: <20180324015549.162765-3-achant@google.com>
-References: <20180324015549.162765-1-achant@google.com>
+Subject: [PATCH v3 0/2] UAC2 jack detection and clock validity
+Date: Fri, 23 Mar 2018 19:25:22 -0700
+Message-ID: <20180324022524.227748-1-achant@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pf0-f193.google.com (mail-pf0-f193.google.com
  [209.85.192.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A43D266EBC
- for <alsa-devel@alsa-project.org>; Sat, 24 Mar 2018 02:56:55 +0100 (CET)
-Received: by mail-pf0-f193.google.com with SMTP id l27so5399272pfk.12
- for <alsa-devel@alsa-project.org>; Fri, 23 Mar 2018 18:56:55 -0700 (PDT)
-In-Reply-To: <20180324015549.162765-1-achant@google.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A930266B67
+ for <alsa-devel@alsa-project.org>; Sat, 24 Mar 2018 03:25:52 +0100 (CET)
+Received: by mail-pf0-f193.google.com with SMTP id u5so5422694pfh.6
+ for <alsa-devel@alsa-project.org>; Fri, 23 Mar 2018 19:25:52 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,94 +25,35 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Andrew Chant <achant@google.com>, Ruslan Bilovol <ruslan.bilovol@gmail.com>, Benson Leung <bleung@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-Make the "clock valid" control a global control instead of a mixer
-so that it doesn't appear in mixer applications.
+These patches implement UAC2 jack detection.
 
-Additionally, remove the check for writeability prohibited by spec, and
-Use common code to read the control value.
+This allows USB-to-3.5mm adapters and similar USB devices
+to report jack state via alsa control, using the reporting
+provided by the UAC2 connector control.
 
-Tested with a UAC2 Audio device that presents a clock validity
-control.  The control still shows up in /proc usbmixer but not
-in alsamixer.
+The second patch updates the clock validity control so
+it doesn't show up in mixer UIs.
 
-Signed-off-by: Andrew Chant <achant@google.com>
----
- sound/usb/mixer.c | 34 +++++++++++++++++++---------------
- 1 file changed, 19 insertions(+), 15 deletions(-)
+I declined to mark the controls as VOLATILE since clients
+should always be notified of changes, since UAC devices
+are expected to generate interrupt messages when a control
+value changes.
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 3db4185a5f96..162c10f10dd0 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1235,8 +1235,8 @@ static int mixer_ctl_feature_put(struct snd_kcontrol *kcontrol,
- 	return changed;
- }
- 
--/* get the current value from a mixer element */
--static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
-+/* get the boolean value from the master channel of a UAC control */
-+static int mixer_ctl_master_bool_get(struct snd_kcontrol *kcontrol,
- 				   struct snd_ctl_elem_value *ucontrol)
- {
- 	struct usb_mixer_elem_info *cval = kcontrol->private_data;
-@@ -1267,13 +1267,16 @@ static const struct snd_kcontrol_new usb_feature_unit_ctl_ro = {
- 	.put = NULL,
- };
- 
--/* A UAC connector mixer control */
--static struct snd_kcontrol_new usb_connector_ctl_ro = {
-+/*
-+ * A control which shows the boolean value from reading a UAC control on
-+ * the master channel.
-+ */
-+static struct snd_kcontrol_new usb_bool_master_control_ctl_ro = {
- 	.iface = SNDRV_CTL_ELEM_IFACE_CARD,
- 	.name = "", /* will be filled later manually */
- 	.access = SNDRV_CTL_ELEM_ACCESS_READ,
- 	.info = snd_ctl_boolean_mono_info,
--	.get = mixer_ctl_connector_get,
-+	.get = mixer_ctl_master_bool_get,
- 	.put = NULL,
- };
- 
-@@ -1520,13 +1523,18 @@ static void build_connector_control(struct mixer_build *state,
- 	if (!cval)
- 		return;
- 	snd_usb_mixer_elem_init_std(&cval->head, state->mixer, term->id);
-+	/*
-+	 * The first byte from reading the UAC2_TE_CONNECTOR control returns the
-+	 * number of channels connected.  This boolean ctl will simply report
-+	 * if any channels are connected or not.
-+	 * (Audio20_final.pdf Table 5-10: Connector Control CUR Parameter Block)
-+	 */
- 	cval->control = UAC2_TE_CONNECTOR;
- 	cval->val_type = USB_MIXER_BOOLEAN;
--	cval->channels = term->channels;
--	cval->cmask = term->chconfig;
-+	cval->channels = 1;  // only report boolean connected-or-not.
- 	cval->min = 0;
- 	cval->max = 1;
--	kctl = snd_ctl_new1(&usb_connector_ctl_ro, cval);
-+	kctl = snd_ctl_new1(&usb_bool_master_control_ctl_ro, cval);
- 	if (!kctl) {
- 		usb_audio_err(state->chip, "cannot malloc kcontrol\n");
- 		kfree(cval);
-@@ -1577,13 +1585,9 @@ static int parse_clock_source_unit(struct mixer_build *state, int unitid,
- 	cval->val_type = USB_MIXER_BOOLEAN;
- 	cval->control = UAC2_CS_CONTROL_CLOCK_VALID;
- 
--	if (uac_v2v3_control_is_writeable(hdr->bmControls,
--				      UAC2_CS_CONTROL_CLOCK_VALID))
--		kctl = snd_ctl_new1(&usb_feature_unit_ctl, cval);
--	else {
--		cval->master_readonly = 1;
--		kctl = snd_ctl_new1(&usb_feature_unit_ctl_ro, cval);
--	}
-+	cval->master_readonly = 1;
-+	/* From UAC2 5.2.5.1.2 "Only the get request is supported." */
-+	kctl = snd_ctl_new1(&usb_bool_master_control_ctl_ro, cval);
- 
- 	if (!kctl) {
- 		kfree(cval);
+v3 changes:
+ - move channel count correction to first patch.
+ - fix incorrect comment formatting and spacing.
+
+v2 changes:
+ - use SNDRV_CTL_ELEM_IFACE_CARD instead of _MIXER
+ - correct channel count to 1, cmask to 0.
+ - add validity patch.
+
+Andrew Chant (2):
+  ALSA: usb-audio: UAC2 jack detection
+  ALSA: usb-audio: update clock valid control
+
+ sound/usb/mixer.c | 117 ++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 109 insertions(+), 8 deletions(-)
+
 -- 
 2.17.0.rc0.231.g781580f067-goog
