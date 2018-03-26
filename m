@@ -1,51 +1,58 @@
-From: <sean.wang@mediatek.com>
-Subject: [PATCH 2/2] ASoC: mediatek: fix module autoloading for OF platform drivers
-Date: Mon, 26 Mar 2018 18:09:38 +0800
-Message-ID: <7b8f10225cef6aef8c623c2c5ddc0a95bce247aa.1522055433.git.sean.wang@mediatek.com>
-References: <da30b7c1ac29e1d3668a5713cd096a73a8c8dd7d.1522055433.git.sean.wang@mediatek.com>
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Subject: [PATCH 0/8] Enablement of BT I2S controller instance
+	for AMD APUs
+Date: Mon, 26 Mar 2018 18:42:55 +0530
+Message-ID: <1522069983-11381-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <da30b7c1ac29e1d3668a5713cd096a73a8c8dd7d.1522055433.git.sean.wang@mediatek.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, ryder.lee@mediatek.com, arvind.yadav.cs@gmail.com, dolinux.peng@gmail.com
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from NAM01-BN3-obe.outbound.protection.outlook.com
+ (mail-bn3nam01on0077.outbound.protection.outlook.com [104.47.33.77])
+ by alsa0.perex.cz (Postfix) with ESMTP id 79012266FA1
+ for <alsa-devel@alsa-project.org>; Mon, 26 Mar 2018 15:11:06 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, alsa-devel@alsa-project.org, perex@perex.cz
+Cc: tiwai@suse.de, Alexander.Deucher@amd.com, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, lgirdwood@gmail.com, Akshu.Agrawal@amd.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Sean Wang <sean.wang@mediatek.com>
+This patch set updates Audio CoProcessor (ACP) audio drivers to enable
+BT I2S controller instance. In Audio Coprocessor, There are three I2S
+controllers can be configured/enabled.(I2S SP, I2S MICSP, BT I2S)
+Default enabled I2S controller instance is I2S SP instance.
+There is a requirement to enable BT I2S controller Instance along with
+I2S SP controller instance. This patch set bring up functionality to render
+& capture on BT I2S controller instance.
 
-It's required to create a modules.alias via MODULE_DEVICE_TABLE helper
-for the OF platform driver. Otherwise, module autoloading cannot work.
+The current patch set also includes a new dependent patch.
 
-Signed-off-by: Sean Wang <sean.wang@mediatek.com>
----
- sound/soc/mediatek/mt2701/mt2701-cs42448.c | 1 +
- sound/soc/mediatek/mt2701/mt2701-wm8960.c  | 1 +
- 2 files changed, 2 insertions(+)
+The current code is based on asoc-next, but I'm happy to rebase on whatever
+tree this ends up going through if there are any problems applying.
 
-diff --git a/sound/soc/mediatek/mt2701/mt2701-cs42448.c b/sound/soc/mediatek/mt2701/mt2701-cs42448.c
-index f664b9d..d37a6e1a 100644
---- a/sound/soc/mediatek/mt2701/mt2701-cs42448.c
-+++ b/sound/soc/mediatek/mt2701/mt2701-cs42448.c
-@@ -391,6 +391,7 @@ static const struct of_device_id mt2701_cs42448_machine_dt_match[] = {
- 	{.compatible = "mediatek,mt2701-cs42448-machine",},
- 	{}
- };
-+MODULE_DEVICE_TABLE(of, mt2701_cs42448_machine_dt_match);
- #endif
- 
- static struct platform_driver mt2701_cs42448_machine = {
-diff --git a/sound/soc/mediatek/mt2701/mt2701-wm8960.c b/sound/soc/mediatek/mt2701/mt2701-wm8960.c
-index a137057..cbee02e 100644
---- a/sound/soc/mediatek/mt2701/mt2701-wm8960.c
-+++ b/sound/soc/mediatek/mt2701/mt2701-wm8960.c
-@@ -153,6 +153,7 @@ static const struct of_device_id mt2701_wm8960_machine_dt_match[] = {
- 	{.compatible = "mediatek,mt2701-wm8960-machine",},
- 	{}
- };
-+MODULE_DEVICE_TABLE(of, mt2701_wm8960_machine_dt_match);
- #endif
- 
- static struct platform_driver mt2701_wm8960_machine = {
+Vijendar Mukunda (8):
+  ASoC: dwc: I2S Controller instance param added
+  ASoC: amd: dma driver changes for BT I2S controller instance
+  ASoC: amd: dma descriptor changes for BT I2S Instance
+  ASoC: amd: Interrupt handler changes for BT I2S instance
+  ASoC: amd: prepare callback modifications for bt i2s instance
+  ASoC: amd: pointer and trigger callback modifications for bt i2s
+  ASoC: amd: 16bit resolution support for bt i2s instance
+  ASoC: amd: enabling bt i2s config after acp reset
+
+ include/sound/designware_i2s.h |   6 +
+ sound/soc/amd/acp-pcm-dma.c    | 531 +++++++++++++++++++++++++++++++++--------
+ sound/soc/amd/acp.h            |  50 +++-
+ sound/soc/dwc/dwc-i2s.c        |   1 +
+ sound/soc/dwc/local.h          |   1 +
+ 5 files changed, 481 insertions(+), 108 deletions(-)
+
 -- 
 2.7.4
