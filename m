@@ -1,15 +1,23 @@
-From: Ezequiel Garcia <ezequiel@collabora.com>
-Subject: [PATCH v2] ASoC: max98357a: add a delay parameter to
-	avoid speaker pop/crack noise
-Date: Mon, 26 Mar 2018 19:10:00 -0300
-Message-ID: <20180326221000.23424-1-ezequiel@collabora.com>
+From: Kirill Marinushkin <k.marinushkin@gmail.com>
+Subject: Re: [RFC,
+ alsa-utils] RFC: alsamixer: Improve description of playback switches
+Date: Tue, 27 Mar 2018 00:22:27 +0200
+Message-ID: <9394bffd-c895-65eb-497e-4e39918638eb@gmail.com>
+References: <20180326051144.16672-1-k.marinushkin@gmail.com>
+ <0f684e10-d8b0-611b-50a3-b982658de0c3@sakamocchi.jp>
+ <cdb05b97-94ce-ff22-e0c6-c5f00e290af2@gmail.com>
+ <dc681602-acc5-618e-2c46-b4fcebd52ba4@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- by alsa0.perex.cz (Postfix) with ESMTP id 4DCA9266FA1
- for <alsa-devel@alsa-project.org>; Tue, 27 Mar 2018 00:11:01 +0200 (CEST)
+Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED054266FA1
+ for <alsa-devel@alsa-project.org>; Tue, 27 Mar 2018 00:21:53 +0200 (CEST)
+Received: by mail-wm0-f67.google.com with SMTP id i75so18152052wmf.0
+ for <alsa-devel@alsa-project.org>; Mon, 26 Mar 2018 15:21:53 -0700 (PDT)
+In-Reply-To: <dc681602-acc5-618e-2c46-b4fcebd52ba4@sakamocchi.jp>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,143 +27,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, kernel@collabora.com, Ezequiel Garcia <ezequiel@collabora.com>, Mac Chiang <mac.chiang@intel.com>, Stephen Barber <smbarber@chromium.org>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mac Chiang <mac.chiang@intel.com>
-
-Currently, speaker pop/crack noise can happen during PCM playback.
-This is due to the LRCLK being removed while the BCLK being
-present, which as per the datasheet can cause large DC output voltage.
-
-While on some platforms simply controlling the SD_MODE pin is enough
-to remove the noise, others have a significant delay between
-the BCLK and the LRCLK activation.
-
-Therefore, this commit adds a delay in the codec driver to guarantee
-clocks are both active by the time SD_MODE is asserted.
-
-Link: https://github.com/raspberrypi/linux/issues/2212
-Signed-off-by: Mac Chiang <mac.chiang@intel.com>
-Signed-off-by: Stephen Barber <smbarber@chromium.org>
-[Ezequiel: make the delay a module parameter]
-Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
----
-Changes on v2:
- * Got rid of spinlock around gpio set.
- * Make the delay a module parameter, and not a device tree property.
-
- sound/soc/codecs/max98357a.c | 65 ++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 56 insertions(+), 9 deletions(-)
-
-diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
-index d469576b5a7b..7d9a0ee71487 100644
---- a/sound/soc/codecs/max98357a.c
-+++ b/sound/soc/codecs/max98357a.c
-@@ -27,27 +27,58 @@
- #include <sound/soc-dai.h>
- #include <sound/soc-dapm.h>
- 
-+/* According to the DAC datasheet, if LRCLK is removed while BCLK is present,
-+ * the DAC output can cause loud pop/crack noises. This parameter specifies
-+ * a delay for the SD_MODE pin assert, required to eliminate the noise.
-+ */
-+static unsigned int sdmode_delay;
-+module_param(sdmode_delay, uint, 0444);
-+MODULE_PARM_DESC(sdmode_delay, "SD_MODE pin delay.");
-+
-+struct max98357a_priv {
-+	struct delayed_work enable_sdmode_work;
-+	struct gpio_desc *sdmode;
-+	int sdmode_enabled;
-+};
-+
-+static void max98357a_enable_sdmode_work(struct work_struct *work)
-+{
-+	struct max98357a_priv *priv = container_of(work,
-+		struct max98357a_priv, enable_sdmode_work.work);
-+
-+	gpiod_set_value(priv->sdmode, priv->sdmode_enabled);
-+}
-+
- static int max98357a_daiops_trigger(struct snd_pcm_substream *substream,
- 		int cmd, struct snd_soc_dai *dai)
- {
--	struct gpio_desc *sdmode = snd_soc_dai_get_drvdata(dai);
-+	struct snd_soc_component *component = dai->component;
-+	struct max98357a_priv *priv = snd_soc_component_get_drvdata(component);
- 
--	if (!sdmode)
-+	if (!priv->sdmode)
- 		return 0;
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		gpiod_set_value(sdmode, 1);
-+		priv->sdmode_enabled = 1;
-+		if (sdmode_delay) {
-+			queue_delayed_work(system_power_efficient_wq,
-+				&priv->enable_sdmode_work,
-+				msecs_to_jiffies(sdmode_delay));
-+			return 0;
-+		}
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		gpiod_set_value(sdmode, 0);
-+		priv->sdmode_enabled = 0;
-+		cancel_delayed_work(&priv->enable_sdmode_work);
- 		break;
- 	}
- 
-+	gpiod_set_value(priv->sdmode, priv->sdmode_enabled);
- 	return 0;
- }
- 
-@@ -61,19 +92,35 @@ static const struct snd_soc_dapm_route max98357a_dapm_routes[] = {
- 
- static int max98357a_component_probe(struct snd_soc_component *component)
- {
--	struct gpio_desc *sdmode;
-+	struct max98357a_priv *priv;
- 
--	sdmode = devm_gpiod_get_optional(component->dev, "sdmode", GPIOD_OUT_LOW);
--	if (IS_ERR(sdmode))
--		return PTR_ERR(sdmode);
-+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
- 
--	snd_soc_component_set_drvdata(component, sdmode);
-+	priv->sdmode = gpiod_get_optional(component->dev,
-+					  "sdmode", GPIOD_OUT_LOW);
-+	if (IS_ERR(priv->sdmode))
-+		return PTR_ERR(priv->sdmode);
- 
-+	INIT_DELAYED_WORK(&priv->enable_sdmode_work,
-+			  max98357a_enable_sdmode_work);
-+	snd_soc_component_set_drvdata(component, priv);
- 	return 0;
- }
- 
-+static void max98357a_component_remove(struct snd_soc_component *component)
-+{
-+	struct max98357a_priv *priv = snd_soc_component_get_drvdata(component);
-+
-+	cancel_delayed_work_sync(&priv->enable_sdmode_work);
-+	gpiod_put(priv->sdmode);
-+	kfree(priv);
-+}
-+
- static const struct snd_soc_component_driver max98357a_component_driver = {
- 	.probe			= max98357a_component_probe,
-+	.remove			= max98357a_component_remove,
- 	.dapm_widgets		= max98357a_dapm_widgets,
- 	.num_dapm_widgets	= ARRAY_SIZE(max98357a_dapm_widgets),
- 	.dapm_routes		= max98357a_dapm_routes,
--- 
-2.16.2
+T24gMDMvMjcvMTggMDA6MDMsIFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4gSGksCj4KPiBPbiBN
+YXIgMjcgMjAxOCAwMzo0MiwgS2lyaWxsIE1hcmludXNoa2luIHdyb3RlOgo+PiBPbiAwMy8yNi8x
+OCAxMDoxOSwgVGFrYXNoaSBTYWthbW90byB3cm90ZToKPj4+IEhpLAo+Pj4KPj4+IE9uIE1hciAy
+NiAyMDE4IDE0OjExLCBLaXJpbGwgTWFyaW51c2hraW4gd3JvdGU6Cj4+Pj4gQ3VycmVudGx5LCBh
+bGwgcGxheWJhY2sgc3dpdGNoZXMgYXJlIGRlc2NyaWJlZCBhcyBtdXRlLiBJdCBpcyBzaG93biBh
+czoKPj4+Pgo+Pj4+IFtPT10gPT0gc291bmQgaXMgb24gKGxlZnQgYW5kIHJpZ2h0IGNoYW5uZWxz
+KQo+Pj4+IFtNTV0gPT0gc291bmQgaXMgbXV0ZWQgKGxlZnQgYW5kIHJpZ2h0IGNoYW5uZWxzKQo+
+Pj4+Cj4+Pj4gQnV0IGNhcmRzIGNhbiBoYXZlIGRpZmZlcmVudCBraW5kcyBvZiBzd2l0Y2ggY29u
+dHJvbHMsIG5vdCBvbmx5IG11dGUuIEF0Cj4+Pj4gbGVhc3QgdXNiLWF1ZGlvIHByb3ZpZGVzIGJv
+b2xlYW4gY29udHJvbHMgYXMgcGxheWJhY2sgc3dpdGNoZXMgZm9yOgo+Pj4+Cj4+Pj4gKiBjbG9j
+ayBzb3VyY2UgdmFsaWRpdHkgKHJlYWQgb25seSBzd2l0Y2gpCj4+Pj4gKiBwcm9jZXNzaW5nIGZl
+YXR1cmVzIG9uL29mZiAocncgc3dpdGNoKQo+Pj4+ICogcG90ZW50aWFsbHkgb3RoZXIgc2ltaWxh
+ciB1c2UtY2FzZXMKPj4+Pgo+Pj4+IEl0IGJlY2FtZXMgY29uZnVzaW5nLCBiZWNhdXNlIGl0IGlz
+IHNob3duIGFzOgo+Pj4+Cj4+Pj4gW09PXSA9PSBjbG9jayBzb3VyY2UgaXMgdmFsaWQKPj4+PiBb
+TU1dID09IGNsb2NrIHNvdXJjZSBpcyBpbnZhbGlkCj4+Pj4KPj4+PiBbT09dID09IHByb2Nlc3Np
+bmcgZmVhdHVyZSBpcyBvbgo+Pj4+IFtNTV0gPT0gcHJvY2Vzc2luZyBmZWF0dXJlIGlzIG9mZgo+
+Pj4+Cj4+Pj4gQW5kIGZyb20gdGhlIGhlbHAsIGl0IGlzIG5vdCBjbGVhciBob3cgdG8gdG9nZ2xl
+IHN1Y2ggc3dpdGNoZXMuCj4+Pgo+Pj4gQ291bGQgeW91IHNob3cgc3VjaCBjb250cm9sIGVsZW1l
+bnRzIHRvIGhlbHAgcmV2aWV3ZXJzPyBGb3IgZXhhbXBsZSwgb3V0cHV0IGZyb20gJ2FtaXhlcicg
+bWlnaHQgYmUgZW5vdWdoLgo+Pj4KPj4KPj4gSGVsbG8gVGFrYXNoaSBTYWthbW90bywKPj4KPj4g
+SSBtaXNyZWFkIHlvdXIgbWVzc2FnZS4gWW91IG1lYW4gdGhlIGFtaXhlciBvdXRwdXQsIG5vdCB0
+aGUgYWxzYW1peGVyLgo+PiBCZWxvdyBJIGF0dGFjaCB0aGUgb3V0cHV0IGZyb20gYW1peGVyLgo+
+Pgo+PiAkIGFtaXhlciAtYzIKPj4gU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0Nsb2NrIFNvdXJjZSAx
+NSBWYWxpZGl0eScsMAo+PiDCoMKgIENhcGFiaWxpdGllczogcHN3aXRjaCBwc3dpdGNoLWpvaW5l
+ZAo+PiDCoMKgIFBsYXliYWNrIGNoYW5uZWxzOiBNb25vCj4+IMKgwqAgTW9ubzogUGxheWJhY2sg
+W29uXQo+PiBTaW1wbGUgbWl4ZXIgY29udHJvbCAnVXAgRG93bicsMAo+PiDCoMKgIENhcGFiaWxp
+dGllczogcHN3aXRjaCBwc3dpdGNoLWpvaW5lZAo+PiDCoMKgIFBsYXliYWNrIGNoYW5uZWxzOiBN
+b25vCj4+IMKgwqAgTW9ubzogUGxheWJhY2sgW29uXQo+PiBTaW1wbGUgbWl4ZXIgY29udHJvbCAn
+VXAgRG93biBNb2RlIFNlbGVjdCcsMAo+PiDCoMKgIENhcGFiaWxpdGllczogdm9sdW1lIHZvbHVt
+ZS1qb2luZWQKPj4gwqDCoCBQbGF5YmFjayBjaGFubmVsczogTW9ubwo+PiDCoMKgIENhcHR1cmUg
+Y2hhbm5lbHM6IE1vbm8KPj4gwqDCoCBMaW1pdHM6IDAgLSAxCj4+IMKgwqAgTW9ubzogMSBbMTAw
+JV0KPgo+IFRoYW5rcy4gVGhlbiB5b3UgY2FuIHNlZSBjb3JyZXNwb25kaW5nIGNvbnRyb2wgZWxl
+bWVudHMgd2l0aCB0aGUgc2FtZSBuYW1lIGluIG91dHB1dCBvZiAnYW1peGVyIC1jMiBjb250ZW50
+cycuIEkgZ3Vlc3M6Cj4KPiAkIGFtaXhlciAtYyAyIGNvbnRlbnRzIHwgZ3JlcCAtQjEgLUExIEJP
+T0xFQU4KPiAuLi4KPiBudW1pZD0/LGlmYWNlPU1JWEVSLG5hbWU9J0Nsb2NrIFNvdXJjZSAxNSBW
+YWxpZGl0eScKPiDCoCA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnctLS0tLS0sdmFsdWVzPTEKPiDC
+oCA6IHZhbHVlcz1vbgo+IG51bWlkPT8saWZhY2U9TUlYRVIsbmFtZT0nVXAgRG93bicKPiDCoCA7
+IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnctLS0tLS0sdmFsdWVzPTEKPiDCoCA6IHZhbHVlcz1vbgo+
+IC4uLgo+Cj4gQSBjb250cm9sIGVsZW1lbnQgb2YgJ1VwIERvd24gTW9kZSBTZWxlY3QnIGlzIG5v
+dCB0aGUgb25lIG9mIEJPT0xFQU4gdHlwZSBzbyBpdCdzIG5vdCBpc3N1ZWQgb25lIGluIHlvdXIg
+cGF0Y2guCj4KPiBGb3IgZXhhbXBsZSwgaW4gbXkgY2FzZSAoRS1NVSAwNDA0IFVTQiwga2VybmVs
+IHY0LjEzKToKPgo+ICQgYW1peGVyIC1jIDEKPiAuLi4KPiBTaW1wbGUgbWl4ZXIgY29udHJvbCAn
+QW5hbG9ndWVJbiBTb2Z0IExpbWl0wqAgJywwCj4gwqAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBz
+d2l0Y2gtam9pbmVkCj4gwqAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KPiDCoCBNb25vOiBQbGF5
+YmFjayBbb25dCj4gU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0Nsb2NrIHJhdGUgU2VsZWN0b3InLDAK
+PiDCoCBDYXBhYmlsaXRpZXM6IHZvbHVtZSB2b2x1bWUtam9pbmVkCj4gwqAgUGxheWJhY2sgY2hh
+bm5lbHM6IE1vbm8KPiDCoCBDYXB0dXJlIGNoYW5uZWxzOiBNb25vCj4gwqAgTGltaXRzOiAwIC0g
+NQo+IMKgIE1vbm86IDAgWzAlXQo+IFNpbXBsZSBtaXhlciBjb250cm9sICdEaWdpdGFsSW4gQ0xL
+IHNvdXJjZSBFeHRlcm5hbCcsMAo+IMKgIENhcGFiaWxpdGllczogcHN3aXRjaCBwc3dpdGNoLWpv
+aW5lZAo+IMKgIFBsYXliYWNrIGNoYW5uZWxzOiBNb25vCj4gwqAgTW9ubzogUGxheWJhY2sgW29m
+Zl0KPiBTaW1wbGUgbWl4ZXIgY29udHJvbCAnRGlnaXRhbE91dCBmb3JtYXQ6IFNQRElGL0FDMycs
+MAo+IMKgIENhcGFiaWxpdGllczogcHN3aXRjaCBwc3dpdGNoLWpvaW5lZAo+IMKgIFBsYXliYWNr
+IGNoYW5uZWxzOiBNb25vCj4gwqAgTW9ubzogUGxheWJhY2sgW29mZl0KPgo+IFRoZXNlIG1peGVy
+IGVsZW1lbnRzIGFyZSB0cmFuc2xhdGVkIGJ5IGFsc2EtbGliJ3MgbWl4ZXIgQVBJIGltcGxlbWVu
+dGF0aW9uIGZyb20gY29udHJvbCBlbGVtZW50cyBtYWludGFpbmVkIGJ5IEFMU0EgY29udHJvbCBj
+b3JlLiBJbiBteSBjYXNlOgo+Cj4gJCBhbWl4ZXIgLWMgMSBjb250ZW50cyB8IGdyZXAgLUIxIC1B
+MSBCT09MRUFOCj4gbnVtaWQ9NCxpZmFjZT1NSVhFUixuYW1lPSdQQ00gUGxheWJhY2sgU3dpdGNo
+Jwo+IMKgIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLS0tLSx2YWx1ZXM9MQo+IMKgIDogdmFs
+dWVzPW9uCj4gLS0gCj4gbnVtaWQ9OSxpZmFjZT1NSVhFUixuYW1lPSdBbmFsb2d1ZUluIFNvZnQg
+TGltaXTCoCAnCj4gwqAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLS0tLHZhbHVlcz0xCj4g
+wqAgOiB2YWx1ZXM9b24KPiAtLSAKPiBudW1pZD04LGlmYWNlPU1JWEVSLG5hbWU9J0RpZ2l0YWxJ
+biBDTEsgc291cmNlIEV4dGVybmFsJwo+IMKgIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLS0t
+LSx2YWx1ZXM9MQo+IMKgIDogdmFsdWVzPW9mZgo+IG51bWlkPTYsaWZhY2U9TUlYRVIsbmFtZT0n
+RGlnaXRhbE91dCBmb3JtYXQ6IFNQRElGL0FDMycKPiDCoCA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9
+cnctLS0tLS0sdmFsdWVzPTEKPiDCoCA6IHZhbHVlcz1vZmYKPgo+IFdlbGwsIGlmIHlvdXIgYWlt
+IGlzIGp1c3QgdG8gZm9jdXMgb24gVUkgaXNzdWUsIGl0J3MgZW5vdWdoIHRvIGNoYW5nZSBhbHNh
+bWl4ZXIuIE9uIHRoZSBvdGhlciBoYW5kLCBkZXZlbG9wZXJzIHRlbmQgdG8gYWRkIGFueSBjb250
+cm9sIGVsZW1lbnQgY2F0ZWdvcml6ZWQgdG8gJ21peGVyJyBpZmFjZSB3aXRob3V0IGVub3VnaCBj
+YXJlIG9mIGl0cyBtZWFuaW5nLiBXaGF0IHlvdSBzZWUgaXMgdGhpcyBraW5kIG9mIGNvbnRyb2wg
+ZWxlbWVudHMsIEkgZ3Vlc3MuIElmIHlvdSB3aXNoIHRvIHN1cHByZXNzIGFsc2FtaXhlciB0byBo
+YW5kbGUgc3VjaCBub24tdHJhZGl0aW9uYWwgbWl4ZXIgY29udHJvbHMgKEkgbWVhbiB0aGV5J3Jl
+IG5vdCBmb3IgZ2Fpbi9sZXZlbC9wYW4vbXV0ZSBldGMpLCBpdCdzIGJldHRlciB0byBoYXZlIGV4
+dHJhIGNhcmU7IGUuZy4gYmFja3dhcmQgY29tcGF0aWJpbGl0eS4KPgoKSGVsbG8gVGFrYXNoaSBT
+YWthbW90bywKCk1heWJlIHRoZXJlIGlzIGEgbWlzdW5kZXJzdGFuZGluZy4gSSBkb24ndCB3YW50
+IHRvIHN1cHByZXNzIG5vbi10cmFkaXRpb25hbCBtaXhlciBjb250cm9scy4KQXMgSSBtZW50aW9u
+ZWQgaW4gdGhlIHN1YmplY3QsIEkgd2FudCB0byBJbXByb3ZlIHRoZWlyIGRlc2NyaXB0aW9uLgpJ
+IGRvbid0IHdhbnQgdG8gY2hhbmdlIHRoZSBleGlzdGluZyBiZWhhdmlvci4KCkkgdGhpbmsgSSB3
+aWxsIGp1c3QgY3JlYXRlIGFuIHBhdGNoLCBhbmQgaXQgd2lsbCBtYWtlIHRoaW5ncyBjbGVhci4K
+CkJlc3QgUmVnYXJkcywKS2lyaWxsCgo+Cj4gUmVnYXJkcwo+Cj4gVGFrYXNoaSBTYWthbW90bwoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
