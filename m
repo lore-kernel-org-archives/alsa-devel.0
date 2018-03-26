@@ -1,19 +1,19 @@
 From: Kirill Marinushkin <k.marinushkin@gmail.com>
 Subject: Re: [RFC,
  alsa-utils] RFC: alsamixer: Improve description of playback switches
-Date: Mon, 26 Mar 2018 20:37:20 +0200
-Message-ID: <63ca3112-afff-0c8e-6216-8a79f8b2f91d@gmail.com>
+Date: Mon, 26 Mar 2018 20:42:40 +0200
+Message-ID: <cdb05b97-94ce-ff22-e0c6-c5f00e290af2@gmail.com>
 References: <20180326051144.16672-1-k.marinushkin@gmail.com>
  <0f684e10-d8b0-611b-50a3-b982658de0c3@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f41.google.com (mail-wm0-f41.google.com [74.125.82.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 920432670F9
- for <alsa-devel@alsa-project.org>; Mon, 26 Mar 2018 20:36:49 +0200 (CEST)
-Received: by mail-wm0-f41.google.com with SMTP id i75so17216588wmf.0
- for <alsa-devel@alsa-project.org>; Mon, 26 Mar 2018 11:36:49 -0700 (PDT)
+Received: from mail-wm0-f42.google.com (mail-wm0-f42.google.com [74.125.82.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 82731266E4B
+ for <alsa-devel@alsa-project.org>; Mon, 26 Mar 2018 20:42:07 +0200 (CEST)
+Received: by mail-wm0-f42.google.com with SMTP id v21so17330079wmc.1
+ for <alsa-devel@alsa-project.org>; Mon, 26 Mar 2018 11:42:07 -0700 (PDT)
 In-Reply-To: <0f684e10-d8b0-611b-50a3-b982658de0c3@sakamocchi.jp>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -45,26 +45,18 @@ aWQKPj4KPj4gW09PXSA9PSBwcm9jZXNzaW5nIGZlYXR1cmUgaXMgb24KPj4gW01NXSA9PSBwcm9j
 ZXNzaW5nIGZlYXR1cmUgaXMgb2ZmCj4+Cj4+IEFuZCBmcm9tIHRoZSBoZWxwLCBpdCBpcyBub3Qg
 Y2xlYXIgaG93IHRvIHRvZ2dsZSBzdWNoIHN3aXRjaGVzLgo+Cj4gQ291bGQgeW91IHNob3cgc3Vj
 aCBjb250cm9sIGVsZW1lbnRzIHRvIGhlbHAgcmV2aWV3ZXJzPyBGb3IgZXhhbXBsZSwgb3V0cHV0
-IGZyb20gJ2FtaXhlcicgbWlnaHQgYmUgZW5vdWdoLgo+CgpJIHRyaWVkIHRvIGF2b2lkIGl0LCBi
-ZWNhdXNlIG1vc3QgcHJvYmFibHkgaXQgd2lsbCBiZSBkaXNwbGF5ZWQgaW5jb3JyZWN0bHkgaW5z
-aWRlIHRoZSBlbWFpbC4KSSBhdHRhY2ggaXQgbm93LCBidXQga2VlcCBpbiBtaW5kIHRoYXQgaW4g
-YWxzYW1peGVyIGl0IHdpbGwgbG9vayBtb3JlIGFjY3VyYXRlLgoKRm9yIHRoZSBuZXcgcHJvcG9z
-YWwsIHdoZXJlIHdlIG1vZGlmeSBvbmx5IHRoZSBoZWxwLCB0aGUgb3V0cHV0IHdpbGwgbG9vayBs
-aWtlIHRoaXM6CgrilILCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg4pSCwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAjwqDCoMKgIMKgwqDCoCDCoOKUggrilILCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAg4pSCTcKgwqDCoMKgwqDCoMKgwqDCoCBUb2dnbGUgbXV0ZS9z
-d2l0Y2jCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgI8KgwqDCoCDCoMKgwqAgwqDilIIK
-4pSCwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIOKUgjwgPsKgwqDCoMKgwqDCoMKgIFRv
-Z2dsZSBsZWZ0L3JpZ2h0IG11dGUvc3dpdGNowqDCoMKgwqAgI8KgwqDCoCDCoMKgwqAgwqDilIIK
-4pSCwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIOKUgsKgwqDCoMKgwqDCoMKgwqDCoMKg
-IFtPXSA9PSBwbGF5YmFjayBvbiAvIHN3aXRjaCBvbsKgwqDCoCAjwqDCoMKgIMKgwqDCoCDCoOKU
-ggrilILCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg4pSCwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgW01dID09IHBsYXliYWNrIG11dGVkIC8gc3dpdGNoIG9mZiPCoMKgwqAgwqDCoMKgIMKg4pSC
-CuKUgsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCDilILCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoOKUggrilIIKCj4KPiBSZWdhcmRzCj4KPiBU
-YWthc2hpIFNha2Ftb3RvCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+IGZyb20gJ2FtaXhlcicgbWlnaHQgYmUgZW5vdWdoLgo+CgpIZWxsbyBUYWthc2hpIFNha2Ftb3Rv
+LAoKSSBtaXNyZWFkIHlvdXIgbWVzc2FnZS4gWW91IG1lYW4gdGhlIGFtaXhlciBvdXRwdXQsIG5v
+dCB0aGUgYWxzYW1peGVyLgpCZWxvdyBJIGF0dGFjaCB0aGUgb3V0cHV0IGZyb20gYW1peGVyLgoK
+JCBhbWl4ZXIgLWMyClNpbXBsZSBtaXhlciBjb250cm9sICdDbG9jayBTb3VyY2UgMTUgVmFsaWRp
+dHknLDAKwqAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCsKgIFBsYXliYWNr
+IGNoYW5uZWxzOiBNb25vCsKgIE1vbm86IFBsYXliYWNrIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRy
+b2wgJ1VwIERvd24nLDAKwqAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCsKg
+IFBsYXliYWNrIGNoYW5uZWxzOiBNb25vCsKgIE1vbm86IFBsYXliYWNrIFtvbl0KU2ltcGxlIG1p
+eGVyIGNvbnRyb2wgJ1VwIERvd24gTW9kZSBTZWxlY3QnLDAKwqAgQ2FwYWJpbGl0aWVzOiB2b2x1
+bWUgdm9sdW1lLWpvaW5lZArCoCBQbGF5YmFjayBjaGFubmVsczogTW9ubwrCoCBDYXB0dXJlIGNo
+YW5uZWxzOiBNb25vCsKgIExpbWl0czogMCAtIDEKwqAgTW9ubzogMSBbMTAwJV0KCgo+IFJlZ2Fy
+ZHMKPgo+IFRha2FzaGkgU2FrYW1vdG8KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYWxzYS1kZXZlbAo=
