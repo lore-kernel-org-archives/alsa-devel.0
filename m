@@ -1,24 +1,19 @@
-From: Kirill Marinushkin <k.marinushkin@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Subject: Re: [RFC,
  alsa-utils] RFC: alsamixer: Improve description of playback switches
-Date: Mon, 26 Mar 2018 23:53:19 +0200
-Message-ID: <185d4bb1-8af6-23a4-5abd-86d91ace83f2@gmail.com>
+Date: Tue, 27 Mar 2018 07:03:06 +0900
+Message-ID: <dc681602-acc5-618e-2c46-b4fcebd52ba4@sakamocchi.jp>
 References: <20180326051144.16672-1-k.marinushkin@gmail.com>
- <s5ho9jb70ce.wl-tiwai@suse.de>
- <58f2b5d7-35ce-7233-2dbf-d4e1f0b1f617@gmail.com>
- <CANVWZtF6B_Bnv+tGfUVVkjE8PhBQXSMqTdUBa-n1D+uMeVh4=Q@mail.gmail.com>
- <bb64a7f3-1664-65cc-871d-da7d5952a864@gmail.com>
- <e1cb0e74-8372-f342-b38c-9ad4f80c0ffd@sakamocchi.jp>
+ <0f684e10-d8b0-611b-50a3-b982658de0c3@sakamocchi.jp>
+ <cdb05b97-94ce-ff22-e0c6-c5f00e290af2@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D884266FA1
- for <alsa-devel@alsa-project.org>; Mon, 26 Mar 2018 23:52:42 +0200 (CEST)
-Received: by mail-wm0-f65.google.com with SMTP id f125so18064100wme.4
- for <alsa-devel@alsa-project.org>; Mon, 26 Mar 2018 14:52:42 -0700 (PDT)
-In-Reply-To: <e1cb0e74-8372-f342-b38c-9ad4f80c0ffd@sakamocchi.jp>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id E9A30266FA1
+ for <alsa-devel@alsa-project.org>; Tue, 27 Mar 2018 00:03:08 +0200 (CEST)
+In-Reply-To: <cdb05b97-94ce-ff22-e0c6-c5f00e290af2@gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,48 +24,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Andrew Chant <achant@google.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Kirill Marinushkin <k.marinushkin@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/26/18 23:44, Takashi Sakamoto wrote:
-> Hi,
->
-> On Mar 27 2018 06:13, Kirill Marinushkin wrote:
->> On 03/26/18 22:41, Andrew Chant wrote:
->>> On Mon, Mar 26, 2018 at 11:32 AM, Kirill Marinushkin
->>> <k.marinushkin@gmail.com> wrote:
->>>> I faced 2 problems:
->>>>
->>>> * the clock source validity was displayed as [O]. I thought it is a zero, which is the opposite from the real state
->>>> * I couldn't find how to turn the processing feature on. The help doesn't say anything about it
->>> A recent patch of mine changed clock source validity from a mixer to a
->>> global control, so it should no longer show up in alsamixer.
->>
->> Hello Andrew,
->>
->> Nice! One of the problems is solved. However, the second problem is still actual.
->> As you had a recent experience with alsamixer, what is your opinion?
->
-> I think Kirill mentions a patch to change the type of 'iface' for such control elements to 'SNDRV_CTL_ELEM_IFACE_CARD' or 'SNDRV_CTL_ELEM_IFACE_PCM', but I cannot find such patches in Iwai-san's tree[1]. I guess they're not merged yet.
-
-Andrew mentioned the patch [2]
-
->
-> In my humble opinion, if so, Kirill's patch is not better in a view of compatibility, because such smixer controls suddenly disappear via alsa-lib's mixer APIs when the patched kernel is released. In a point of backward compatibility, this kind of change should be avoided, as possible (of cource, depending on the cases).
-
-The patch of Andrew and my RFC serve different purposes. They do not replace each other.
-Patch of Andrew made the "clock valid" global.
-My RFC is to add the string in the help, to clarify how to toggle the switches in alsamixer.
-
->
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/log/?h=for-next
->
-
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/?h=for-next&id=568fa7e087ef98bc85b5aa31ea7c9252c1305c1f
-
->
-> Regards
->
-> Takashi Sakamoto
+SGksCgpPbiBNYXIgMjcgMjAxOCAwMzo0MiwgS2lyaWxsIE1hcmludXNoa2luIHdyb3RlOgo+IE9u
+IDAzLzI2LzE4IDEwOjE5LCBUYWthc2hpIFNha2Ftb3RvIHdyb3RlOgo+PiBIaSwKPj4KPj4gT24g
+TWFyIDI2IDIwMTggMTQ6MTEsIEtpcmlsbCBNYXJpbnVzaGtpbiB3cm90ZToKPj4+IEN1cnJlbnRs
+eSwgYWxsIHBsYXliYWNrIHN3aXRjaGVzIGFyZSBkZXNjcmliZWQgYXMgbXV0ZS4gSXQgaXMgc2hv
+d24gYXM6Cj4+Pgo+Pj4gW09PXSA9PSBzb3VuZCBpcyBvbiAobGVmdCBhbmQgcmlnaHQgY2hhbm5l
+bHMpCj4+PiBbTU1dID09IHNvdW5kIGlzIG11dGVkIChsZWZ0IGFuZCByaWdodCBjaGFubmVscykK
+Pj4+Cj4+PiBCdXQgY2FyZHMgY2FuIGhhdmUgZGlmZmVyZW50IGtpbmRzIG9mIHN3aXRjaCBjb250
+cm9scywgbm90IG9ubHkgbXV0ZS4gQXQKPj4+IGxlYXN0IHVzYi1hdWRpbyBwcm92aWRlcyBib29s
+ZWFuIGNvbnRyb2xzIGFzIHBsYXliYWNrIHN3aXRjaGVzIGZvcjoKPj4+Cj4+PiAqIGNsb2NrIHNv
+dXJjZSB2YWxpZGl0eSAocmVhZCBvbmx5IHN3aXRjaCkKPj4+ICogcHJvY2Vzc2luZyBmZWF0dXJl
+cyBvbi9vZmYgKHJ3IHN3aXRjaCkKPj4+ICogcG90ZW50aWFsbHkgb3RoZXIgc2ltaWxhciB1c2Ut
+Y2FzZXMKPj4+Cj4+PiBJdCBiZWNhbWVzIGNvbmZ1c2luZywgYmVjYXVzZSBpdCBpcyBzaG93biBh
+czoKPj4+Cj4+PiBbT09dID09IGNsb2NrIHNvdXJjZSBpcyB2YWxpZAo+Pj4gW01NXSA9PSBjbG9j
+ayBzb3VyY2UgaXMgaW52YWxpZAo+Pj4KPj4+IFtPT10gPT0gcHJvY2Vzc2luZyBmZWF0dXJlIGlz
+IG9uCj4+PiBbTU1dID09IHByb2Nlc3NpbmcgZmVhdHVyZSBpcyBvZmYKPj4+Cj4+PiBBbmQgZnJv
+bSB0aGUgaGVscCwgaXQgaXMgbm90IGNsZWFyIGhvdyB0byB0b2dnbGUgc3VjaCBzd2l0Y2hlcy4K
+Pj4KPj4gQ291bGQgeW91IHNob3cgc3VjaCBjb250cm9sIGVsZW1lbnRzIHRvIGhlbHAgcmV2aWV3
+ZXJzPyBGb3IgZXhhbXBsZSwgb3V0cHV0IGZyb20gJ2FtaXhlcicgbWlnaHQgYmUgZW5vdWdoLgo+
+Pgo+IAo+IEhlbGxvIFRha2FzaGkgU2FrYW1vdG8sCj4gCj4gSSBtaXNyZWFkIHlvdXIgbWVzc2Fn
+ZS4gWW91IG1lYW4gdGhlIGFtaXhlciBvdXRwdXQsIG5vdCB0aGUgYWxzYW1peGVyLgo+IEJlbG93
+IEkgYXR0YWNoIHRoZSBvdXRwdXQgZnJvbSBhbWl4ZXIuCj4gCj4gJCBhbWl4ZXIgLWMyCj4gU2lt
+cGxlIG1peGVyIGNvbnRyb2wgJ0Nsb2NrIFNvdXJjZSAxNSBWYWxpZGl0eScsMAo+ICDCoCBDYXBh
+YmlsaXRpZXM6IHBzd2l0Y2ggcHN3aXRjaC1qb2luZWQKPiAgwqAgUGxheWJhY2sgY2hhbm5lbHM6
+IE1vbm8KPiAgwqAgTW9ubzogUGxheWJhY2sgW29uXQo+IFNpbXBsZSBtaXhlciBjb250cm9sICdV
+cCBEb3duJywwCj4gIMKgIENhcGFiaWxpdGllczogcHN3aXRjaCBwc3dpdGNoLWpvaW5lZAo+ICDC
+oCBQbGF5YmFjayBjaGFubmVsczogTW9ubwo+ICDCoCBNb25vOiBQbGF5YmFjayBbb25dCj4gU2lt
+cGxlIG1peGVyIGNvbnRyb2wgJ1VwIERvd24gTW9kZSBTZWxlY3QnLDAKPiAgwqAgQ2FwYWJpbGl0
+aWVzOiB2b2x1bWUgdm9sdW1lLWpvaW5lZAo+ICDCoCBQbGF5YmFjayBjaGFubmVsczogTW9ubwo+
+ICDCoCBDYXB0dXJlIGNoYW5uZWxzOiBNb25vCj4gIMKgIExpbWl0czogMCAtIDEKPiAgwqAgTW9u
+bzogMSBbMTAwJV0KClRoYW5rcy4gVGhlbiB5b3UgY2FuIHNlZSBjb3JyZXNwb25kaW5nIGNvbnRy
+b2wgZWxlbWVudHMgd2l0aCB0aGUgc2FtZSAKbmFtZSBpbiBvdXRwdXQgb2YgJ2FtaXhlciAtYzIg
+Y29udGVudHMnLiBJIGd1ZXNzOgoKJCBhbWl4ZXIgLWMgMiBjb250ZW50cyB8IGdyZXAgLUIxIC1B
+MSBCT09MRUFOCi4uLgpudW1pZD0/LGlmYWNlPU1JWEVSLG5hbWU9J0Nsb2NrIFNvdXJjZSAxNSBW
+YWxpZGl0eScKICAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLS0tLHZhbHVlcz0xCiAgIDog
+dmFsdWVzPW9uCm51bWlkPT8saWZhY2U9TUlYRVIsbmFtZT0nVXAgRG93bicKICAgOyB0eXBlPUJP
+T0xFQU4sYWNjZXNzPXJ3LS0tLS0tLHZhbHVlcz0xCiAgIDogdmFsdWVzPW9uCi4uLgoKQSBjb250
+cm9sIGVsZW1lbnQgb2YgJ1VwIERvd24gTW9kZSBTZWxlY3QnIGlzIG5vdCB0aGUgb25lIG9mIEJP
+T0xFQU4gCnR5cGUgc28gaXQncyBub3QgaXNzdWVkIG9uZSBpbiB5b3VyIHBhdGNoLgoKRm9yIGV4
+YW1wbGUsIGluIG15IGNhc2UgKEUtTVUgMDQwNCBVU0IsIGtlcm5lbCB2NC4xMyk6CgokIGFtaXhl
+ciAtYyAxCi4uLgpTaW1wbGUgbWl4ZXIgY29udHJvbCAnQW5hbG9ndWVJbiBTb2Z0IExpbWl0ICAn
+LDAKICAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAgIFBsYXliYWNrIGNo
+YW5uZWxzOiBNb25vCiAgIE1vbm86IFBsYXliYWNrIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRyb2wg
+J0Nsb2NrIHJhdGUgU2VsZWN0b3InLDAKICAgQ2FwYWJpbGl0aWVzOiB2b2x1bWUgdm9sdW1lLWpv
+aW5lZAogICBQbGF5YmFjayBjaGFubmVsczogTW9ubwogICBDYXB0dXJlIGNoYW5uZWxzOiBNb25v
+CiAgIExpbWl0czogMCAtIDUKICAgTW9ubzogMCBbMCVdClNpbXBsZSBtaXhlciBjb250cm9sICdE
+aWdpdGFsSW4gQ0xLIHNvdXJjZSBFeHRlcm5hbCcsMAogICBDYXBhYmlsaXRpZXM6IHBzd2l0Y2gg
+cHN3aXRjaC1qb2luZWQKICAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KICAgTW9ubzogUGxheWJh
+Y2sgW29mZl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0RpZ2l0YWxPdXQgZm9ybWF0OiBTUERJRi9B
+QzMnLDAKICAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAgIFBsYXliYWNr
+IGNoYW5uZWxzOiBNb25vCiAgIE1vbm86IFBsYXliYWNrIFtvZmZdCgpUaGVzZSBtaXhlciBlbGVt
+ZW50cyBhcmUgdHJhbnNsYXRlZCBieSBhbHNhLWxpYidzIG1peGVyIEFQSSAKaW1wbGVtZW50YXRp
+b24gZnJvbSBjb250cm9sIGVsZW1lbnRzIG1haW50YWluZWQgYnkgQUxTQSBjb250cm9sIGNvcmUu
+IEluIApteSBjYXNlOgoKJCBhbWl4ZXIgLWMgMSBjb250ZW50cyB8IGdyZXAgLUIxIC1BMSBCT09M
+RUFOCm51bWlkPTQsaWZhY2U9TUlYRVIsbmFtZT0nUENNIFBsYXliYWNrIFN3aXRjaCcKICAgOyB0
+eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLS0tLHZhbHVlcz0xCiAgIDogdmFsdWVzPW9uCi0tCm51
+bWlkPTksaWZhY2U9TUlYRVIsbmFtZT0nQW5hbG9ndWVJbiBTb2Z0IExpbWl0ICAnCiAgIDsgdHlw
+ZT1CT09MRUFOLGFjY2Vzcz1ydy0tLS0tLSx2YWx1ZXM9MQogICA6IHZhbHVlcz1vbgotLQpudW1p
+ZD04LGlmYWNlPU1JWEVSLG5hbWU9J0RpZ2l0YWxJbiBDTEsgc291cmNlIEV4dGVybmFsJwogICA7
+IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnctLS0tLS0sdmFsdWVzPTEKICAgOiB2YWx1ZXM9b2ZmCm51
+bWlkPTYsaWZhY2U9TUlYRVIsbmFtZT0nRGlnaXRhbE91dCBmb3JtYXQ6IFNQRElGL0FDMycKICAg
+OyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLS0tLHZhbHVlcz0xCiAgIDogdmFsdWVzPW9mZgoK
+V2VsbCwgaWYgeW91ciBhaW0gaXMganVzdCB0byBmb2N1cyBvbiBVSSBpc3N1ZSwgaXQncyBlbm91
+Z2ggdG8gY2hhbmdlIAphbHNhbWl4ZXIuIE9uIHRoZSBvdGhlciBoYW5kLCBkZXZlbG9wZXJzIHRl
+bmQgdG8gYWRkIGFueSBjb250cm9sIGVsZW1lbnQgCmNhdGVnb3JpemVkIHRvICdtaXhlcicgaWZh
+Y2Ugd2l0aG91dCBlbm91Z2ggY2FyZSBvZiBpdHMgbWVhbmluZy4gV2hhdCAKeW91IHNlZSBpcyB0
+aGlzIGtpbmQgb2YgY29udHJvbCBlbGVtZW50cywgSSBndWVzcy4gSWYgeW91IHdpc2ggdG8gCnN1
+cHByZXNzIGFsc2FtaXhlciB0byBoYW5kbGUgc3VjaCBub24tdHJhZGl0aW9uYWwgbWl4ZXIgY29u
+dHJvbHMgKEkgbWVhbiAKdGhleSdyZSBub3QgZm9yIGdhaW4vbGV2ZWwvcGFuL211dGUgZXRjKSwg
+aXQncyBiZXR0ZXIgdG8gaGF2ZSBleHRyYSAKY2FyZTsgZS5nLiBiYWNrd2FyZCBjb21wYXRpYmls
+aXR5LgoKClJlZ2FyZHMKClRha2FzaGkgU2FrYW1vdG8KX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
