@@ -1,20 +1,15 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC,
- alsa-utils] RFC: alsamixer: Improve description of playback switches
-Date: Tue, 27 Mar 2018 07:03:06 +0900
-Message-ID: <dc681602-acc5-618e-2c46-b4fcebd52ba4@sakamocchi.jp>
-References: <20180326051144.16672-1-k.marinushkin@gmail.com>
- <0f684e10-d8b0-611b-50a3-b982658de0c3@sakamocchi.jp>
- <cdb05b97-94ce-ff22-e0c6-c5f00e290af2@gmail.com>
+From: Ezequiel Garcia <ezequiel@collabora.com>
+Subject: [PATCH v2] ASoC: max98357a: add a delay parameter to
+	avoid speaker pop/crack noise
+Date: Mon, 26 Mar 2018 19:10:00 -0300
+Message-ID: <20180326221000.23424-1-ezequiel@collabora.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id E9A30266FA1
- for <alsa-devel@alsa-project.org>; Tue, 27 Mar 2018 00:03:08 +0200 (CEST)
-In-Reply-To: <cdb05b97-94ce-ff22-e0c6-c5f00e290af2@gmail.com>
-Content-Language: en-US
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4DCA9266FA1
+ for <alsa-devel@alsa-project.org>; Tue, 27 Mar 2018 00:11:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,80 +19,143 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kirill Marinushkin <k.marinushkin@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, kernel@collabora.com, Ezequiel Garcia <ezequiel@collabora.com>, Mac Chiang <mac.chiang@intel.com>, Stephen Barber <smbarber@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiBNYXIgMjcgMjAxOCAwMzo0MiwgS2lyaWxsIE1hcmludXNoa2luIHdyb3RlOgo+IE9u
-IDAzLzI2LzE4IDEwOjE5LCBUYWthc2hpIFNha2Ftb3RvIHdyb3RlOgo+PiBIaSwKPj4KPj4gT24g
-TWFyIDI2IDIwMTggMTQ6MTEsIEtpcmlsbCBNYXJpbnVzaGtpbiB3cm90ZToKPj4+IEN1cnJlbnRs
-eSwgYWxsIHBsYXliYWNrIHN3aXRjaGVzIGFyZSBkZXNjcmliZWQgYXMgbXV0ZS4gSXQgaXMgc2hv
-d24gYXM6Cj4+Pgo+Pj4gW09PXSA9PSBzb3VuZCBpcyBvbiAobGVmdCBhbmQgcmlnaHQgY2hhbm5l
-bHMpCj4+PiBbTU1dID09IHNvdW5kIGlzIG11dGVkIChsZWZ0IGFuZCByaWdodCBjaGFubmVscykK
-Pj4+Cj4+PiBCdXQgY2FyZHMgY2FuIGhhdmUgZGlmZmVyZW50IGtpbmRzIG9mIHN3aXRjaCBjb250
-cm9scywgbm90IG9ubHkgbXV0ZS4gQXQKPj4+IGxlYXN0IHVzYi1hdWRpbyBwcm92aWRlcyBib29s
-ZWFuIGNvbnRyb2xzIGFzIHBsYXliYWNrIHN3aXRjaGVzIGZvcjoKPj4+Cj4+PiAqIGNsb2NrIHNv
-dXJjZSB2YWxpZGl0eSAocmVhZCBvbmx5IHN3aXRjaCkKPj4+ICogcHJvY2Vzc2luZyBmZWF0dXJl
-cyBvbi9vZmYgKHJ3IHN3aXRjaCkKPj4+ICogcG90ZW50aWFsbHkgb3RoZXIgc2ltaWxhciB1c2Ut
-Y2FzZXMKPj4+Cj4+PiBJdCBiZWNhbWVzIGNvbmZ1c2luZywgYmVjYXVzZSBpdCBpcyBzaG93biBh
-czoKPj4+Cj4+PiBbT09dID09IGNsb2NrIHNvdXJjZSBpcyB2YWxpZAo+Pj4gW01NXSA9PSBjbG9j
-ayBzb3VyY2UgaXMgaW52YWxpZAo+Pj4KPj4+IFtPT10gPT0gcHJvY2Vzc2luZyBmZWF0dXJlIGlz
-IG9uCj4+PiBbTU1dID09IHByb2Nlc3NpbmcgZmVhdHVyZSBpcyBvZmYKPj4+Cj4+PiBBbmQgZnJv
-bSB0aGUgaGVscCwgaXQgaXMgbm90IGNsZWFyIGhvdyB0byB0b2dnbGUgc3VjaCBzd2l0Y2hlcy4K
-Pj4KPj4gQ291bGQgeW91IHNob3cgc3VjaCBjb250cm9sIGVsZW1lbnRzIHRvIGhlbHAgcmV2aWV3
-ZXJzPyBGb3IgZXhhbXBsZSwgb3V0cHV0IGZyb20gJ2FtaXhlcicgbWlnaHQgYmUgZW5vdWdoLgo+
-Pgo+IAo+IEhlbGxvIFRha2FzaGkgU2FrYW1vdG8sCj4gCj4gSSBtaXNyZWFkIHlvdXIgbWVzc2Fn
-ZS4gWW91IG1lYW4gdGhlIGFtaXhlciBvdXRwdXQsIG5vdCB0aGUgYWxzYW1peGVyLgo+IEJlbG93
-IEkgYXR0YWNoIHRoZSBvdXRwdXQgZnJvbSBhbWl4ZXIuCj4gCj4gJCBhbWl4ZXIgLWMyCj4gU2lt
-cGxlIG1peGVyIGNvbnRyb2wgJ0Nsb2NrIFNvdXJjZSAxNSBWYWxpZGl0eScsMAo+ICDCoCBDYXBh
-YmlsaXRpZXM6IHBzd2l0Y2ggcHN3aXRjaC1qb2luZWQKPiAgwqAgUGxheWJhY2sgY2hhbm5lbHM6
-IE1vbm8KPiAgwqAgTW9ubzogUGxheWJhY2sgW29uXQo+IFNpbXBsZSBtaXhlciBjb250cm9sICdV
-cCBEb3duJywwCj4gIMKgIENhcGFiaWxpdGllczogcHN3aXRjaCBwc3dpdGNoLWpvaW5lZAo+ICDC
-oCBQbGF5YmFjayBjaGFubmVsczogTW9ubwo+ICDCoCBNb25vOiBQbGF5YmFjayBbb25dCj4gU2lt
-cGxlIG1peGVyIGNvbnRyb2wgJ1VwIERvd24gTW9kZSBTZWxlY3QnLDAKPiAgwqAgQ2FwYWJpbGl0
-aWVzOiB2b2x1bWUgdm9sdW1lLWpvaW5lZAo+ICDCoCBQbGF5YmFjayBjaGFubmVsczogTW9ubwo+
-ICDCoCBDYXB0dXJlIGNoYW5uZWxzOiBNb25vCj4gIMKgIExpbWl0czogMCAtIDEKPiAgwqAgTW9u
-bzogMSBbMTAwJV0KClRoYW5rcy4gVGhlbiB5b3UgY2FuIHNlZSBjb3JyZXNwb25kaW5nIGNvbnRy
-b2wgZWxlbWVudHMgd2l0aCB0aGUgc2FtZSAKbmFtZSBpbiBvdXRwdXQgb2YgJ2FtaXhlciAtYzIg
-Y29udGVudHMnLiBJIGd1ZXNzOgoKJCBhbWl4ZXIgLWMgMiBjb250ZW50cyB8IGdyZXAgLUIxIC1B
-MSBCT09MRUFOCi4uLgpudW1pZD0/LGlmYWNlPU1JWEVSLG5hbWU9J0Nsb2NrIFNvdXJjZSAxNSBW
-YWxpZGl0eScKICAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLS0tLHZhbHVlcz0xCiAgIDog
-dmFsdWVzPW9uCm51bWlkPT8saWZhY2U9TUlYRVIsbmFtZT0nVXAgRG93bicKICAgOyB0eXBlPUJP
-T0xFQU4sYWNjZXNzPXJ3LS0tLS0tLHZhbHVlcz0xCiAgIDogdmFsdWVzPW9uCi4uLgoKQSBjb250
-cm9sIGVsZW1lbnQgb2YgJ1VwIERvd24gTW9kZSBTZWxlY3QnIGlzIG5vdCB0aGUgb25lIG9mIEJP
-T0xFQU4gCnR5cGUgc28gaXQncyBub3QgaXNzdWVkIG9uZSBpbiB5b3VyIHBhdGNoLgoKRm9yIGV4
-YW1wbGUsIGluIG15IGNhc2UgKEUtTVUgMDQwNCBVU0IsIGtlcm5lbCB2NC4xMyk6CgokIGFtaXhl
-ciAtYyAxCi4uLgpTaW1wbGUgbWl4ZXIgY29udHJvbCAnQW5hbG9ndWVJbiBTb2Z0IExpbWl0ICAn
-LDAKICAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAgIFBsYXliYWNrIGNo
-YW5uZWxzOiBNb25vCiAgIE1vbm86IFBsYXliYWNrIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRyb2wg
-J0Nsb2NrIHJhdGUgU2VsZWN0b3InLDAKICAgQ2FwYWJpbGl0aWVzOiB2b2x1bWUgdm9sdW1lLWpv
-aW5lZAogICBQbGF5YmFjayBjaGFubmVsczogTW9ubwogICBDYXB0dXJlIGNoYW5uZWxzOiBNb25v
-CiAgIExpbWl0czogMCAtIDUKICAgTW9ubzogMCBbMCVdClNpbXBsZSBtaXhlciBjb250cm9sICdE
-aWdpdGFsSW4gQ0xLIHNvdXJjZSBFeHRlcm5hbCcsMAogICBDYXBhYmlsaXRpZXM6IHBzd2l0Y2gg
-cHN3aXRjaC1qb2luZWQKICAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KICAgTW9ubzogUGxheWJh
-Y2sgW29mZl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0RpZ2l0YWxPdXQgZm9ybWF0OiBTUERJRi9B
-QzMnLDAKICAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAgIFBsYXliYWNr
-IGNoYW5uZWxzOiBNb25vCiAgIE1vbm86IFBsYXliYWNrIFtvZmZdCgpUaGVzZSBtaXhlciBlbGVt
-ZW50cyBhcmUgdHJhbnNsYXRlZCBieSBhbHNhLWxpYidzIG1peGVyIEFQSSAKaW1wbGVtZW50YXRp
-b24gZnJvbSBjb250cm9sIGVsZW1lbnRzIG1haW50YWluZWQgYnkgQUxTQSBjb250cm9sIGNvcmUu
-IEluIApteSBjYXNlOgoKJCBhbWl4ZXIgLWMgMSBjb250ZW50cyB8IGdyZXAgLUIxIC1BMSBCT09M
-RUFOCm51bWlkPTQsaWZhY2U9TUlYRVIsbmFtZT0nUENNIFBsYXliYWNrIFN3aXRjaCcKICAgOyB0
-eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLS0tLHZhbHVlcz0xCiAgIDogdmFsdWVzPW9uCi0tCm51
-bWlkPTksaWZhY2U9TUlYRVIsbmFtZT0nQW5hbG9ndWVJbiBTb2Z0IExpbWl0ICAnCiAgIDsgdHlw
-ZT1CT09MRUFOLGFjY2Vzcz1ydy0tLS0tLSx2YWx1ZXM9MQogICA6IHZhbHVlcz1vbgotLQpudW1p
-ZD04LGlmYWNlPU1JWEVSLG5hbWU9J0RpZ2l0YWxJbiBDTEsgc291cmNlIEV4dGVybmFsJwogICA7
-IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnctLS0tLS0sdmFsdWVzPTEKICAgOiB2YWx1ZXM9b2ZmCm51
-bWlkPTYsaWZhY2U9TUlYRVIsbmFtZT0nRGlnaXRhbE91dCBmb3JtYXQ6IFNQRElGL0FDMycKICAg
-OyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLS0tLHZhbHVlcz0xCiAgIDogdmFsdWVzPW9mZgoK
-V2VsbCwgaWYgeW91ciBhaW0gaXMganVzdCB0byBmb2N1cyBvbiBVSSBpc3N1ZSwgaXQncyBlbm91
-Z2ggdG8gY2hhbmdlIAphbHNhbWl4ZXIuIE9uIHRoZSBvdGhlciBoYW5kLCBkZXZlbG9wZXJzIHRl
-bmQgdG8gYWRkIGFueSBjb250cm9sIGVsZW1lbnQgCmNhdGVnb3JpemVkIHRvICdtaXhlcicgaWZh
-Y2Ugd2l0aG91dCBlbm91Z2ggY2FyZSBvZiBpdHMgbWVhbmluZy4gV2hhdCAKeW91IHNlZSBpcyB0
-aGlzIGtpbmQgb2YgY29udHJvbCBlbGVtZW50cywgSSBndWVzcy4gSWYgeW91IHdpc2ggdG8gCnN1
-cHByZXNzIGFsc2FtaXhlciB0byBoYW5kbGUgc3VjaCBub24tdHJhZGl0aW9uYWwgbWl4ZXIgY29u
-dHJvbHMgKEkgbWVhbiAKdGhleSdyZSBub3QgZm9yIGdhaW4vbGV2ZWwvcGFuL211dGUgZXRjKSwg
-aXQncyBiZXR0ZXIgdG8gaGF2ZSBleHRyYSAKY2FyZTsgZS5nLiBiYWNrd2FyZCBjb21wYXRpYmls
-aXR5LgoKClJlZ2FyZHMKClRha2FzaGkgU2FrYW1vdG8KX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+From: Mac Chiang <mac.chiang@intel.com>
+
+Currently, speaker pop/crack noise can happen during PCM playback.
+This is due to the LRCLK being removed while the BCLK being
+present, which as per the datasheet can cause large DC output voltage.
+
+While on some platforms simply controlling the SD_MODE pin is enough
+to remove the noise, others have a significant delay between
+the BCLK and the LRCLK activation.
+
+Therefore, this commit adds a delay in the codec driver to guarantee
+clocks are both active by the time SD_MODE is asserted.
+
+Link: https://github.com/raspberrypi/linux/issues/2212
+Signed-off-by: Mac Chiang <mac.chiang@intel.com>
+Signed-off-by: Stephen Barber <smbarber@chromium.org>
+[Ezequiel: make the delay a module parameter]
+Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+---
+Changes on v2:
+ * Got rid of spinlock around gpio set.
+ * Make the delay a module parameter, and not a device tree property.
+
+ sound/soc/codecs/max98357a.c | 65 ++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 56 insertions(+), 9 deletions(-)
+
+diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
+index d469576b5a7b..7d9a0ee71487 100644
+--- a/sound/soc/codecs/max98357a.c
++++ b/sound/soc/codecs/max98357a.c
+@@ -27,27 +27,58 @@
+ #include <sound/soc-dai.h>
+ #include <sound/soc-dapm.h>
+ 
++/* According to the DAC datasheet, if LRCLK is removed while BCLK is present,
++ * the DAC output can cause loud pop/crack noises. This parameter specifies
++ * a delay for the SD_MODE pin assert, required to eliminate the noise.
++ */
++static unsigned int sdmode_delay;
++module_param(sdmode_delay, uint, 0444);
++MODULE_PARM_DESC(sdmode_delay, "SD_MODE pin delay.");
++
++struct max98357a_priv {
++	struct delayed_work enable_sdmode_work;
++	struct gpio_desc *sdmode;
++	int sdmode_enabled;
++};
++
++static void max98357a_enable_sdmode_work(struct work_struct *work)
++{
++	struct max98357a_priv *priv = container_of(work,
++		struct max98357a_priv, enable_sdmode_work.work);
++
++	gpiod_set_value(priv->sdmode, priv->sdmode_enabled);
++}
++
+ static int max98357a_daiops_trigger(struct snd_pcm_substream *substream,
+ 		int cmd, struct snd_soc_dai *dai)
+ {
+-	struct gpio_desc *sdmode = snd_soc_dai_get_drvdata(dai);
++	struct snd_soc_component *component = dai->component;
++	struct max98357a_priv *priv = snd_soc_component_get_drvdata(component);
+ 
+-	if (!sdmode)
++	if (!priv->sdmode)
+ 		return 0;
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		gpiod_set_value(sdmode, 1);
++		priv->sdmode_enabled = 1;
++		if (sdmode_delay) {
++			queue_delayed_work(system_power_efficient_wq,
++				&priv->enable_sdmode_work,
++				msecs_to_jiffies(sdmode_delay));
++			return 0;
++		}
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		gpiod_set_value(sdmode, 0);
++		priv->sdmode_enabled = 0;
++		cancel_delayed_work(&priv->enable_sdmode_work);
+ 		break;
+ 	}
+ 
++	gpiod_set_value(priv->sdmode, priv->sdmode_enabled);
+ 	return 0;
+ }
+ 
+@@ -61,19 +92,35 @@ static const struct snd_soc_dapm_route max98357a_dapm_routes[] = {
+ 
+ static int max98357a_component_probe(struct snd_soc_component *component)
+ {
+-	struct gpio_desc *sdmode;
++	struct max98357a_priv *priv;
+ 
+-	sdmode = devm_gpiod_get_optional(component->dev, "sdmode", GPIOD_OUT_LOW);
+-	if (IS_ERR(sdmode))
+-		return PTR_ERR(sdmode);
++	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
+ 
+-	snd_soc_component_set_drvdata(component, sdmode);
++	priv->sdmode = gpiod_get_optional(component->dev,
++					  "sdmode", GPIOD_OUT_LOW);
++	if (IS_ERR(priv->sdmode))
++		return PTR_ERR(priv->sdmode);
+ 
++	INIT_DELAYED_WORK(&priv->enable_sdmode_work,
++			  max98357a_enable_sdmode_work);
++	snd_soc_component_set_drvdata(component, priv);
+ 	return 0;
+ }
+ 
++static void max98357a_component_remove(struct snd_soc_component *component)
++{
++	struct max98357a_priv *priv = snd_soc_component_get_drvdata(component);
++
++	cancel_delayed_work_sync(&priv->enable_sdmode_work);
++	gpiod_put(priv->sdmode);
++	kfree(priv);
++}
++
+ static const struct snd_soc_component_driver max98357a_component_driver = {
+ 	.probe			= max98357a_component_probe,
++	.remove			= max98357a_component_remove,
+ 	.dapm_widgets		= max98357a_dapm_widgets,
+ 	.num_dapm_widgets	= ARRAY_SIZE(max98357a_dapm_widgets),
+ 	.dapm_routes		= max98357a_dapm_routes,
+-- 
+2.16.2
