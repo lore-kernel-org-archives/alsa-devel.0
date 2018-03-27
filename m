@@ -1,235 +1,68 @@
-From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Subject: [alsa-devel][PATCH 3/3 v3] ASoC: TSCS42xx: Add CCF support to get
- sysclk
-Date: Tue, 27 Mar 2018 12:50:49 -0500
-Message-ID: <20180327175040.GA26604@t7-ThinkPad-E560>
+From: Ezequiel Garcia <ezequiel@collabora.com>
+Subject: Re: [PATCH] ASoC: max98357a: Fix speaker pop when
+ starting playback
+Date: Tue, 27 Mar 2018 15:11:57 -0300
+Message-ID: <1522174317.2289.8.camel@collabora.com>
+References: <20180321223015.32173-1-ezequiel@vanguardiasur.com.ar>
+ <20180322015456.GZ2186@sirena.org.uk>
+ <1521723692.1890.1.camel@collabora.com>
+ <20180327113631.GB29239@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+ by alsa0.perex.cz (Postfix) with ESMTP id 59B6F267063
+ for <alsa-devel@alsa-project.org>; Tue, 27 Mar 2018 20:12:57 +0200 (CEST)
+In-Reply-To: <20180327113631.GB29239@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Stephen Barber <smbarber@chromium.org>, Mac Chiang <mac.chiang@intel.com>, Ezequiel Garcia <ezequiel@collabora.co.uk>, kernel@collabora.com
 List-Id: alsa-devel@alsa-project.org
 
-The TSCS42xx relies on set_sysclk to get a unique clock id and rate,
-which
-prevents it from being used with the simple-card.
+On Tue, 2018-03-27 at 19:36 +0800, Mark Brown wrote:
+> On Thu, Mar 22, 2018 at 10:01:32AM -0300, Ezequiel Garcia wrote:
+> > On Thu, 2018-03-22 at 09:54 +0800, Mark Brown wrote:
+> > > On Wed, Mar 21, 2018 at 07:30:15PM -0300, Ezequiel Garcia wrote:
+> > > > +- sdmode-delay : specify a delay time for SD_MODE pin.
+> > > > According
+> > > > +        to the DAC datasheet, if LRCLK is removed while BCLK
+> > > > is
+> > > > present,
+> > > > +        the DAC output can cause loud pop/crack noises. This
+> > > > property
+> > > > +        specifies a delay for the SD_MODE pin assert, required
+> > > > to
+> > > > +        eliminate the noise.
+> > > Why is this configurable?  This sounds like something entirely
+> > > within
+> > > the digital domain of the device rather than something that
+> > > depends
+> > > on
+> > > board configuration and it's hard to see how someone would
+> > > configure
+> > > this.
+> > The amount of delay needed seems specific to the CPU DAI,
+> > not specific to the DAC. The CPU DAIs or the machine 
+> > could specify this as a parameter, but I can't don't see how.
+> 
+> This sounds like it's just trying to reimplement the digital mute
+> feature we already have, it sounds more like what you're seeing is
+> noise
+> playing out of the SoC at the start of playback due to startup issues
+> or non-flushed FIFOs.  Can you try implementing there please?
+> 
 
-Remove set_sysclk callback
-Add CCF support to get clock id and rate
-Add clocks and clock-names to device tree binding
+OK, I'll see how it goes using digital mute.
+Please discard v2 then.
 
-Signed-off-by: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
----
- .../devicetree/bindings/sound/tscs42xx.txt         |   6 ++
- sound/soc/codecs/tscs42xx.c                        | 104 ++++++++++++++-------
- sound/soc/codecs/tscs42xx.h                        |   2 +-
- 3 files changed, 75 insertions(+), 37 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/tscs42xx.txt b/Documentation/devicetree/bindings/sound/tscs42xx.txt
-index 2ac2f0996697..7eea32e9d078 100644
---- a/Documentation/devicetree/bindings/sound/tscs42xx.txt
-+++ b/Documentation/devicetree/bindings/sound/tscs42xx.txt
-@@ -8,9 +8,15 @@ Required Properties:
- 	- reg : 	<0x71> for analog mic
- 			<0x69> for digital mic
- 
-+	- clock-names:	Must one of  the following "mclk1", "xtal", "mclk2"
-+
-+	- clocks:	phandle of the clock that provides the codec sysclk
-+
- Example:
- 
- wookie: codec@69 {
- 	compatible = "tempo,tscs42A2";
- 	reg = <0x69>;
-+	clock-names = "xtal";
-+	clocks = <&audio_xtal>;
- };
-diff --git a/sound/soc/codecs/tscs42xx.c b/sound/soc/codecs/tscs42xx.c
-index d41852a37ac6..0aaa6a826096 100644
---- a/sound/soc/codecs/tscs42xx.c
-+++ b/sound/soc/codecs/tscs42xx.c
-@@ -12,6 +12,7 @@
- #include <linux/module.h>
- #include <linux/delay.h>
- #include <linux/mutex.h>
-+#include <linux/clk.h>
- #include <sound/tlv.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -40,6 +41,9 @@ struct tscs42xx {
- 	struct mutex pll_lock;
- 
- 	struct regmap *regmap;
-+
-+	struct clk *sysclk;
-+	int sysclk_src_id;
- };
- 
- struct coeff_ram_ctl {
-@@ -1251,13 +1255,46 @@ static int tscs42xx_set_dai_bclk_ratio(struct snd_soc_dai *codec_dai,
- 	return 0;
- }
- 
--static int tscs42xx_set_dai_sysclk(struct snd_soc_dai *codec_dai,
--	int clk_id, unsigned int freq, int dir)
-+static const struct snd_soc_dai_ops tscs42xx_dai_ops = {
-+	.hw_params	= tscs42xx_hw_params,
-+	.mute_stream	= tscs42xx_mute_stream,
-+	.set_fmt	= tscs42xx_set_dai_fmt,
-+	.set_bclk_ratio = tscs42xx_set_dai_bclk_ratio,
-+};
-+
-+static int part_is_valid(struct tscs42xx *tscs42xx)
- {
--	struct snd_soc_component *component = codec_dai->component;
-+	int val;
- 	int ret;
-+	unsigned int reg;
-+
-+	ret = regmap_read(tscs42xx->regmap, R_DEVIDH, &reg);
-+	if (ret < 0)
-+		return ret;
- 
--	switch (clk_id) {
-+	val = reg << 8;
-+	ret = regmap_read(tscs42xx->regmap, R_DEVIDL, &reg);
-+	if (ret < 0)
-+		return ret;
-+
-+	val |= reg;
-+
-+	switch (val) {
-+	case 0x4A74:
-+	case 0x4A73:
-+		return true;
-+	default:
-+		return false;
-+	};
-+}
-+
-+static int set_sysclk(struct snd_soc_component *component)
-+{
-+	struct tscs42xx *tscs42xx = snd_soc_component_get_drvdata(component);
-+	unsigned long freq;
-+	int ret;
-+
-+	switch (tscs42xx->sysclk_src_id) {
- 	case TSCS42XX_PLL_SRC_XTAL:
- 	case TSCS42XX_PLL_SRC_MCLK1:
- 		ret = snd_soc_component_write(component, R_PLLREFSEL,
-@@ -1285,6 +1322,7 @@ static int tscs42xx_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 		return -EINVAL;
- 	}
- 
-+	freq = clk_get_rate(tscs42xx->sysclk);
- 	ret = set_pll_ctl_from_input_freq(component, freq);
- 	if (ret < 0) {
- 		dev_err(component->dev,
-@@ -1295,41 +1333,13 @@ static int tscs42xx_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 	return 0;
- }
- 
--static const struct snd_soc_dai_ops tscs42xx_dai_ops = {
--	.hw_params	= tscs42xx_hw_params,
--	.mute_stream	= tscs42xx_mute_stream,
--	.set_fmt	= tscs42xx_set_dai_fmt,
--	.set_bclk_ratio = tscs42xx_set_dai_bclk_ratio,
--	.set_sysclk	= tscs42xx_set_dai_sysclk,
--};
--
--static int part_is_valid(struct tscs42xx *tscs42xx)
-+static int tscs42xx_probe(struct snd_soc_component *component)
- {
--	int val;
--	int ret;
--	unsigned int reg;
--
--	ret = regmap_read(tscs42xx->regmap, R_DEVIDH, &reg);
--	if (ret < 0)
--		return ret;
--
--	val = reg << 8;
--	ret = regmap_read(tscs42xx->regmap, R_DEVIDL, &reg);
--	if (ret < 0)
--		return ret;
--
--	val |= reg;
--
--	switch (val) {
--	case 0x4A74:
--	case 0x4A73:
--		return true;
--	default:
--		return false;
--	};
-+	return set_sysclk(component);
- }
- 
- static const struct snd_soc_component_driver soc_codec_dev_tscs42xx = {
-+	.probe			= tscs42xx_probe,
- 	.dapm_widgets		= tscs42xx_dapm_widgets,
- 	.num_dapm_widgets	= ARRAY_SIZE(tscs42xx_dapm_widgets),
- 	.dapm_routes		= tscs42xx_intercon,
-@@ -1387,11 +1397,15 @@ static const struct reg_sequence tscs42xx_patch[] = {
- 	{ R_AIC2, RV_AIC2_BLRCM_DAC_BCLK_LRCLK_SHARED },
- };
- 
-+static char const * const src_names[TSCS42XX_PLL_SRC_CNT] = {
-+	"xtal", "mclk1", "mclk2"};
-+
- static int tscs42xx_i2c_probe(struct i2c_client *i2c,
- 		const struct i2c_device_id *id)
- {
- 	struct tscs42xx *tscs42xx;
--	int ret = 0;
-+	int src;
-+	int ret;
- 
- 	tscs42xx = devm_kzalloc(&i2c->dev, sizeof(*tscs42xx), GFP_KERNEL);
- 	if (!tscs42xx) {
-@@ -1402,6 +1416,24 @@ static int tscs42xx_i2c_probe(struct i2c_client *i2c,
- 	}
- 	i2c_set_clientdata(i2c, tscs42xx);
- 
-+	for (src = TSCS42XX_PLL_SRC_XTAL; src < TSCS42XX_PLL_SRC_CNT; src++) {
-+		tscs42xx->sysclk = devm_clk_get(&i2c->dev, src_names[src]);
-+		if (!IS_ERR(tscs42xx->sysclk)) {
-+			break;
-+		} else if (PTR_ERR(tscs42xx->sysclk) != -ENOENT) {
-+			ret = PTR_ERR(tscs42xx->sysclk);
-+			dev_err(&i2c->dev, "Failed to get sysclk (%d)\n", ret);
-+			return ret;
-+		}
-+	}
-+	if (src == TSCS42XX_PLL_SRC_CNT) {
-+		ret = -EINVAL;
-+		dev_err(&i2c->dev, "Failed to get a valid clock name (%d)\n",
-+				ret);
-+		return ret;
-+	}
-+	tscs42xx->sysclk_src_id = src;
-+
- 	tscs42xx->regmap = devm_regmap_init_i2c(i2c, &tscs42xx_regmap);
- 	if (IS_ERR(tscs42xx->regmap)) {
- 		ret = PTR_ERR(tscs42xx->regmap);
-diff --git a/sound/soc/codecs/tscs42xx.h b/sound/soc/codecs/tscs42xx.h
-index d4a30bcbf64b..814c8f3c4a68 100644
---- a/sound/soc/codecs/tscs42xx.h
-+++ b/sound/soc/codecs/tscs42xx.h
-@@ -7,10 +7,10 @@
- #define __WOOKIE_H__
- 
- enum {
--	TSCS42XX_PLL_SRC_NONE,
- 	TSCS42XX_PLL_SRC_XTAL,
- 	TSCS42XX_PLL_SRC_MCLK1,
- 	TSCS42XX_PLL_SRC_MCLK2,
-+	TSCS42XX_PLL_SRC_CNT,
- };
- 
- #define R_HPVOLL        0x0
--- 
-2.15.1
+Thanks,
+Eze
