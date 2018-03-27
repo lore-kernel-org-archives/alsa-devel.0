@@ -1,20 +1,23 @@
-From: Ezequiel Garcia <ezequiel@collabora.com>
-Subject: Re: [PATCH] ASoC: max98357a: Fix speaker pop when
- starting playback
-Date: Tue, 27 Mar 2018 18:57:44 -0300
-Message-ID: <1522187864.2289.48.camel@collabora.com>
-References: <20180321223015.32173-1-ezequiel@vanguardiasur.com.ar>
- <20180322015456.GZ2186@sirena.org.uk>
- <1521723692.1890.1.camel@collabora.com>
- <20180327113631.GB29239@sirena.org.uk>
+From: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+Subject: Re: omap4-droid4: voice call support was Re: [PATCHv5,
+ 5/5] ARM: dts: omap4-droid4: add soundcard
+Date: Wed, 28 Mar 2018 00:22:37 +0200
+Message-ID: <20180327222237.wcx2aqznvdrvbaa5@earth.universe>
+References: <20180223200254.25685-6-sebastian.reichel@collabora.co.uk>
+ <20180322204804.GA26871@amd>
+ <20180322234832.o24ut5ahon46mdu4@earth.universe>
+ <20180323100930.GA21644@amd>
+ <20180323103006.alymgb3ywftb4gek@earth.universe>
+ <20180326141638.GB1450@amd>
+ <20180326155828.ttnduivadob4iqmd@earth.universe>
+ <20180327121441.GH29239@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1410738994701922851=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- by alsa0.perex.cz (Postfix) with ESMTP id C40232670F9
- for <alsa-devel@alsa-project.org>; Tue, 27 Mar 2018 23:58:40 +0200 (CEST)
-In-Reply-To: <20180327113631.GB29239@sirena.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id E241D2670F9
+ for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2018 00:22:40 +0200 (CEST)
+In-Reply-To: <20180327121441.GH29239@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,74 +28,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Stephen Barber <smbarber@chromium.org>, Mac Chiang <mac.chiang@intel.com>, Ezequiel Garcia <ezequiel@collabora.co.uk>, kernel@collabora.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>, linux-omap@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2018-03-27 at 19:36 +0800, Mark Brown wrote:
-> On Thu, Mar 22, 2018 at 10:01:32AM -0300, Ezequiel Garcia wrote:
-> > On Thu, 2018-03-22 at 09:54 +0800, Mark Brown wrote:
-> > > On Wed, Mar 21, 2018 at 07:30:15PM -0300, Ezequiel Garcia wrote:
-> > > > +- sdmode-delay : specify a delay time for SD_MODE pin.
-> > > > According
-> > > > +        to the DAC datasheet, if LRCLK is removed while BCLK
-> > > > is
-> > > > present,
-> > > > +        the DAC output can cause loud pop/crack noises. This
-> > > > property
-> > > > +        specifies a delay for the SD_MODE pin assert, required
-> > > > to
-> > > > +        eliminate the noise.
-> > > Why is this configurable?  This sounds like something entirely
-> > > within
-> > > the digital domain of the device rather than something that
-> > > depends
-> > > on
-> > > board configuration and it's hard to see how someone would
-> > > configure
-> > > this.
-> > The amount of delay needed seems specific to the CPU DAI,
-> > not specific to the DAC. The CPU DAIs or the machine 
-> > could specify this as a parameter, but I can't don't see how.
-> 
-> This sounds like it's just trying to reimplement the digital mute
-> feature we already have, it sounds more like what you're seeing is
-> noise
-> playing out of the SoC at the start of playback due to startup issues
-> or non-flushed FIFOs.  Can you try implementing there please?
-> 
 
-On a second look, I don't think digital mute helps here. And I don't
-think the problem is fixable at the CPU DAI level.
+--===============1410738994701922851==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ohop5liubgppbvc6"
+Content-Disposition: inline
 
-The noise has been reported on bcm2835-i2s and rockchip-i2s, which made
-me think most SoCs were unable to guarantee the clocks could be stopped
-properly.
 
-As the commit explains, the root of the noise is that this amplifier
-specifies that the LRCLK cannot be disabled with the BCLK being
-enabled.
+--ohop5liubgppbvc6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I don't see any mechanism at the SoC level to guarantee that the LRCLK
-and BCLK clocks will be shutdown in order.
+Hi Mark,
 
-Hopefully, I'm making sense here.
+On Tue, Mar 27, 2018 at 08:14:41PM +0800, Mark Brown wrote:
+> On Mon, Mar 26, 2018 at 05:58:28PM +0200, Sebastian Reichel wrote:
+>=20
+> > My understanding is, that we only need to replace the audio-graph-card
+> > driver to something more complex. The VOICE DAI needs to be configured
+> > differently based on the use case:
+>=20
+> No, this is exactly the sort of use case with multiple DAIs that the
+> graph card is intended to enable over the old simple-card.
 
-> > Perhaps it could be a driver parameter?
-> 
-> Driver parameters are almost never a good idea.  Nobody turns them on
-> and the mechanisms for doing so are bad.
-> 
+Oh nice. So the Droid 4 hardware wiring looks like this (at least
+according to my understanding):
 
-Well, from the above description, it seems this noise arises from a
-limitation of the amplifier, so it doesn't seem too bad to apply a
-small delay and make it configurable.
++----------+         +-------------+
+| OMAP4    |         | CPCAP       |
+|          |         |             |
+| [McBSP2] | <-----> | [HiFi DAI]  |
+|          |         |             |
+| [McBSP3] | <--+--> | [Voice DAI] |
+|          |    |    |             |
++----------+    |    +-------------+
+                |
++----------+    |    +-------------+
+| MDM6600  |    |    | WL1285      |
+|          |    |    |             |
+|    [DAI] | <--+--> | [DAI]       |
+|          |         |             |
++----------+         +-------------+
 
-The default value (no delay) will work for most users, and the delay
-parameter would be turned on by those having noise issues with this
-driver.
+Legend:
+    OMAP4   =3D SoC running Linux
+    CPCAP   =3D Audio codec
+    MDM6600 =3D Baseband
+    WL1285  =3D Bluetooth
 
-That is what patch v2 does, let me know if you still think it's
-horrible, or if you think I am still missing anything.
+Re-reading the audio-graph-card binding document I still don't see
+how the network (OMAP.McBSP3, CPCAP.Voice, MDM6600, WL1285) is
+supposed to look like. It seems to expect point-to-point DAI
+connections.
 
-Thanks,
-Eze
+> > "audio-graph-card" is not capable of doing this. I was planning to
+> > try "audio-graph-scu-card" in combination with adding codecs for the
+> > modem and BT to DT. If that does not work we need a Droid 4 specific
+> > soundcard driver.
+>=20
+> That's just the audio graph card with some hacks for working with a DPCM
+> based SoC driver set.
+
+Ok.
+
+-- Sebastian
+
+--ohop5liubgppbvc6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAlq6xCsACgkQ2O7X88g7
++pr4Mw/9H73f8pw44CXjo5tlVFXl5Q1SECW4Rtl7d7ji8UPUi5vVX/AKb+Aai1Ag
+PW3EzEUuz8qLKgXtb21eTRazQd4ueh6XuzaTucUIhTv/jELr/jt99Sw9xby2loPU
+UN0X6w/h6Qsfqi2mfaLfsNv/6fTZqKbgCIVEV6eA6rf0W0zcTm3rNMtnuzG7l6z1
+iUnPxWXeSBE4gqr6xwn1JQ21QH3R7HCZpsRc1nJA46OnT5D7eg40lOnHOVOH0jD1
+erb9Q4R1NdDHDn9iPWQPmmK30gFpKr/etPO+r3PhNysQpoikU3ZfrD2u4626ssiy
+6tIRogsxECPWnmHCn89QnQQiI691S7zWlbJnlbPAdU7g1Re1MHZs2o+XQYDPU4bA
+tf0nVubaQeSI+JyqdY5OnSEJlDp9F089HBnjWJnK9ptror/Zfl5BePG3LtfyWZOB
+7QyrQkW4vA4jN6wBuOU+QW//Lt+bEvjZeH8qc2s07Ubp2+cmOdV8Ug6xowfWvH0p
+rGqG5QW/PYy5UU/60+Qlj0vvyS8GDjJk5f9QgA2vxC8kql21yFzAO2e6rjc5HaCO
+usnVZ84zflgzH3CIkk5Mt34d54KFvo/tRQJFGir6A/+5dNUVg29JjykDNEaPrn1r
+5gtCJ7yvtbfM0yZnTy7oTtfgDRZCCwu1OCLW4sX1HUMC91wkqEI=
+=mFzH
+-----END PGP SIGNATURE-----
+
+--ohop5liubgppbvc6--
+
+--===============1410738994701922851==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1410738994701922851==--
