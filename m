@@ -1,21 +1,26 @@
-From: Sriram Periyasamy <sriram.oqensourz@gmail.com>
-Subject: Re: [PATCH v4] ASoC: AMD: Enable/Disable auxiliary
- clock via common clock framework
-Date: Wed, 28 Mar 2018 00:16:23 +0530
-Message-ID: <20180327184621.gzyzqcnvi6quajxw@sriram-VirtualBox>
-References: <1522054560-31088-1-git-send-email-akshu.agrawal@amd.com>
+From: Kirill Marinushkin <k.marinushkin@gmail.com>
+Subject: Re: [RFC,
+ alsa-utils] RFC: alsamixer: Improve description of playback switches
+Date: Tue, 27 Mar 2018 21:12:01 +0200
+Message-ID: <b0b861a6-b466-1ecd-4f81-328883c64c47@gmail.com>
+References: <20180326051144.16672-1-k.marinushkin@gmail.com>
+ <s5ho9jb70ce.wl-tiwai@suse.de>
+ <58f2b5d7-35ce-7233-2dbf-d4e1f0b1f617@gmail.com>
+ <CANVWZtF6B_Bnv+tGfUVVkjE8PhBQXSMqTdUBa-n1D+uMeVh4=Q@mail.gmail.com>
+ <bb64a7f3-1664-65cc-871d-da7d5952a864@gmail.com>
+ <e1cb0e74-8372-f342-b38c-9ad4f80c0ffd@sakamocchi.jp>
+ <185d4bb1-8af6-23a4-5abd-86d91ace83f2@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl0-f66.google.com (mail-pl0-f66.google.com
- [209.85.160.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 3507E267063
- for <alsa-devel@alsa-project.org>; Tue, 27 Mar 2018 20:46:32 +0200 (CEST)
-Received: by mail-pl0-f66.google.com with SMTP id p9-v6so14659092pls.2
- for <alsa-devel@alsa-project.org>; Tue, 27 Mar 2018 11:46:32 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1522054560-31088-1-git-send-email-akshu.agrawal@amd.com>
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id B7FF8267063
+ for <alsa-devel@alsa-project.org>; Tue, 27 Mar 2018 21:11:29 +0200 (CEST)
+Received: by mail-wm0-f65.google.com with SMTP id x82so850130wmg.1
+ for <alsa-devel@alsa-project.org>; Tue, 27 Mar 2018 12:11:29 -0700 (PDT)
+In-Reply-To: <185d4bb1-8af6-23a4-5abd-86d91ace83f2@gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,142 +30,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Akshu Agrawal <akshu.agrawal@amd.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, djkurtz@chromium.org, broonie@kernel.org, Alexander.Deucher@amd.com
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Andrew Chant <achant@google.com>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 26, 2018 at 02:26:00PM +0530, Akshu Agrawal wrote:
-> This enables/disables and sets auxiliary clock at 25Mhz. It uses
-> common clock framework for proper ref counting. This approach will
-> save power in comparison to keeping it always On in firmware.
-> 
-> V2: Correcting the pin to OSCOUT1 from OSCOUT2
-> V3: Fix error/warnings from kbuild test
-> V4: Fix build errors for platform which do not support CONFIG_COMMON_CLK
-> 
+Hello Takashi Sakamoto, Takashi Iwai, Andrew Chant,
 
-Please consider adding the change history across versions below
-the marker --- which is the standard way of doing.
+Thank you for the discussion. I saw the drawbacks of my proposal, and it was nice to clarify them with you.
 
-> TEST= aplay -vv <file>
-> check register to see clock enabled
-> kill aplay
-> check register to see clock disabled
-> 
-> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-> Acked-by: Alex Deucher <alexander.deucher@amd.com>
-> ---
->  sound/soc/amd/acp-da7219-max98357a.c | 144 ++++++++++++++++++++++++++++++++++-
->  1 file changed, 142 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-> index 99c6b5c..3c77803 100644
-> --- a/sound/soc/amd/acp-da7219-max98357a.c
-> +++ b/sound/soc/amd/acp-da7219-max98357a.c
+Also, during our discussion I found, that the "description of playback switches" has a different solution.
+I will check my new idea. If it will work good enough, I will send a patch later.
 
-<snip>
+>From my perspective, we can consider this RFC to be closed.
 
-> @@ -98,13 +117,27 @@ static int cz_da7219_hw_params(struct snd_pcm_substream *substream,
->  		return ret;
->  	}
->  
-> +	acpd7219_clk = clk_get(card->dev, "acpd7219-clks");
+Thanks for your attention.
 
-Consider adding the error handling, for example if CONFIG_COMMON_CLK is not
-defined for this platform, then clk_get may return error.
+Best Regards,
+Kirill
 
-> +	ret = clk_prepare_enable(acpd7219_clk);
-> +	if (ret < 0) {
-> +		dev_err(rtd->dev, "can't enable oscillator clock %d\n", ret);
-> +		return ret;
-
-One return statement is enough here.
-
-> +	}
-> +
->  	return ret;
->  }
->  
->  static int cz_da7219_hw_free(struct snd_pcm_substream *substream)
->  {
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_card *card = rtd->card;
-> +	struct clk *acpd7219_clk;
-> +
->  	clk_disable_unprepare(da7219_dai_clk);
->  
-> +	acpd7219_clk = clk_get(card->dev, "acpd7219-clks");
-
-Error handling here as well.
-
-> +	clk_disable_unprepare(acpd7219_clk);
-> +
->  	return 0;
->  }
->  
-> @@ -237,9 +270,113 @@ static int cz_fe_startup(struct snd_pcm_substream *substream)
->  	.num_controls = ARRAY_SIZE(cz_mc_controls),
->  };
+On 03/26/18 23:53, Kirill Marinushkin wrote:
+> On 03/26/18 23:44, Takashi Sakamoto wrote:
+>> Hi,
+>>
+>> On Mar 27 2018 06:13, Kirill Marinushkin wrote:
+>>> On 03/26/18 22:41, Andrew Chant wrote:
+>>>> On Mon, Mar 26, 2018 at 11:32 AM, Kirill Marinushkin
+>>>> <k.marinushkin@gmail.com> wrote:
+>>>>> I faced 2 problems:
+>>>>>
+>>>>> * the clock source validity was displayed as [O]. I thought it is a zero, which is the opposite from the real state
+>>>>> * I couldn't find how to turn the processing feature on. The help doesn't say anything about it
+>>>> A recent patch of mine changed clock source validity from a mixer to a
+>>>> global control, so it should no longer show up in alsamixer.
+>>> Hello Andrew,
+>>>
+>>> Nice! One of the problems is solved. However, the second problem is still actual.
+>>> As you had a recent experience with alsamixer, what is your opinion?
+>> I think Kirill mentions a patch to change the type of 'iface' for such control elements to 'SNDRV_CTL_ELEM_IFACE_CARD' or 'SNDRV_CTL_ELEM_IFACE_PCM', but I cannot find such patches in Iwai-san's tree[1]. I guess they're not merged yet.
+> Andrew mentioned the patch [2]
 >
-
-<snip>
-  
-> +
-> +static int register_acpd7219_clocks(struct platform_device *pdev)
-> +{
-> +	struct clk_init_data init = {};
-> +	struct clk *acp_clks;
-> +	struct clk_lookup *acp_clks_lookup;
-> +	struct cz_clock *cz_clock_obj;
-> +	struct resource *res;
-> +	struct device dev = pdev->dev;
-> +
-> +	cz_clock_obj = kzalloc(sizeof(struct cz_clock), GFP_KERNEL);
-> +	if (!cz_clock_obj)
-> +		return -ENOMEM;
-> +
-> +	cz_clock_obj->acp_clks_name = "acpd7219-clks";
-> +
-> +	init.parent_names = NULL;
-> +	init.num_parents = 0;
-> +	init.name = cz_clock_obj->acp_clks_name;
-> +	init.ops = &acpd7219_clks_ops;
-> +	cz_clock_obj->acp_clks_hw.init = &init;
-> +
-> +	acp_clks = devm_clk_register(&dev, &cz_clock_obj->acp_clks_hw);
-> +	if (IS_ERR(acp_clks))
-> +	{
-> +		dev_err(&dev, "Failed to register DAI clocks: %ld\n",
-> +			 PTR_ERR(acp_clks));
-> +		return -EINVAL;
-> +	}
-> +	cz_clock_obj->acp_clks = acp_clks;
-> +
-> +	acp_clks_lookup = clkdev_create(acp_clks, cz_clock_obj->acp_clks_name,
-> +					"%s", dev_name(&dev));
-> +	if (!acp_clks_lookup)
-> +		dev_warn(&dev, "Failed to create DAI clkdev");
-
-Error not handled on purpose?
-
-> +	else
-> +		cz_clock_obj->acp_clks_lookup = acp_clks_lookup;
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		dev_err(&pdev->dev, "Failed to get misc io resource.\n");
-
-Shouldn't be clkdev_drop used here to free up?
-
-> +		return -EINVAL;
-> +	}
-> +	cz_clock_obj->res_base = devm_ioremap_nocache(&pdev->dev, res->start,
-> +					resource_size(res));
-> +	if (!cz_clock_obj->res_base)
-
-Here as well.
-clkdev_drop is not called when the driver is removed?
-
-Thanks,
-Sriram.
--- 
+>> In my humble opinion, if so, Kirill's patch is not better in a view of compatibility, because such smixer controls suddenly disappear via alsa-lib's mixer APIs when the patched kernel is released. In a point of backward compatibility, this kind of change should be avoided, as possible (of cource, depending on the cases).
+> The patch of Andrew and my RFC serve different purposes. They do not replace each other.
+> Patch of Andrew made the "clock valid" global.
+> My RFC is to add the string in the help, to clarify how to toggle the switches in alsamixer.
+>
+>>
+>> [1] https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/log/?h=for-next
+>>
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/?h=for-next&id=568fa7e087ef98bc85b5aa31ea7c9252c1305c1f
+>
+>> Regards
+>>
+>> Takashi Sakamoto
