@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 1/1] ASoC: davinci-mcasp: Only disable
 	inactive serializer
-Date: Tue, 27 Mar 2018 19:57:34 +0800
-Message-ID: <20180327115734.GE29239@sirena.org.uk>
+Date: Tue, 27 Mar 2018 19:58:57 +0800
+Message-ID: <20180327115857.GF29239@sirena.org.uk>
 References: <20180227145104.5868-1-vishalthanki@gmail.com>
  <20180227145104.5868-2-vishalthanki@gmail.com>
  <e74a7b15-8971-6f58-ba10-21f3f0546afc@ti.com>
  <CAC3a_SDgNjxGLZu72zuecJV7e=0STWH8fUafK1h-7jFdGpM-vw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7864417171967143311=="
+Content-Type: multipart/mixed; boundary="===============1586760376754467560=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id F2903267140
- for <alsa-devel@alsa-project.org>; Tue, 27 Mar 2018 13:57:44 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4234D267140
+ for <alsa-devel@alsa-project.org>; Tue, 27 Mar 2018 13:59:11 +0200 (CEST)
 In-Reply-To: <CAC3a_SDgNjxGLZu72zuecJV7e=0STWH8fUafK1h-7jFdGpM-vw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,52 +29,57 @@ Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Arvind Yadav <arvind.yadav.cs@gmail.
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7864417171967143311==
+--===============1586760376754467560==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="imjhCm/Pyz7Rq5F2"
+	protocol="application/pgp-signature"; boundary="l+goss899txtYvYf"
 Content-Disposition: inline
 
 
---imjhCm/Pyz7Rq5F2
+--l+goss899txtYvYf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 On Tue, Mar 27, 2018 at 01:34:55PM +0200, Vishal Thanki wrote:
+> On Mon, Mar 5, 2018 at 1:42 PM, Peter Ujfalusi <peter.ujfalusi@ti.com> wr=
+ote:
+
+> > Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+
+> >> Signed-off-by: Vishal Thanki <vishalthanki@gmail.com>
 
 > Just a gentle reminder, can this patch be accepted for the next release?
 
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so=20
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  If there have been
-review comments then people may be waiting for those to be addressed.
-Sending content free pings just adds to the mail volume (if they are
-seen at all) and if something has gone wrong you'll have to resend the
-patches anyway.
+Oh, and it was just pointed out to me:
 
---imjhCm/Pyz7Rq5F2
+As documented in SubmittingPatches please send patches to the=20
+maintainers for the code you would like to change.  The normal kernel
+workflow is that people apply patches from their inboxes, if they aren't
+copied they are likely to not see the patch at all and it is much more
+difficult to apply patches.
+
+--l+goss899txtYvYf
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlq6Ma4ACgkQJNaLcl1U
-h9ApXAf8Cyn16HBd3iL8R7S+weFz8M+TMrkd/KU8+6UfAxOvWgheLOTspFA/aVyc
-BHWsig+S3icKbuzhyXOF3wcQprvxgDnEU0R8Di8Co5T9dPnX0M86V40dnfFxIVnd
-tQqJR1N1iP0i2jEjqMeXR1BbuTpH9/FEo4mnAfiRe8n7ud88XhGf034Yo6OfDdUv
-7RkmlACQYBUwfuMrzlhhpmZxD4QityPY+eE5XNKp388xzQwMOUuEBHBNw+bWLD1y
-/m9W6TcQmMOQACN8ApdIsLV69i6wLWxoyF0um/O+8Ccjbj8iLhn23dM6E4VNJlD7
-7yqjCCRVUS5nUiyZd2UxE33yUI38ow==
-=QbvR
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlq6MgAACgkQJNaLcl1U
+h9A+lQf9F/0kYl3HhvhzOCQwIMcuGUyo6gRXrfF7xV/EibcXRTCFdDVze8XCuhhu
+702/vZIitoiIDQkcsc0rvcKVFcaHJzwnnmWZpAKiXb9JLInhLKsU8UdmGwy7qJ7K
+e5SaMYOP7d1zj5GwUprAjKzFO3f1KOdUwe2MsUCLUUTIoPbRgPu9rqWrHkSpuJG1
+AG/t0MdcLXiHaCFEbf9MUc0TfCoNtSg+RSR60h/woBi/OmzJitvu4fz09EGZBGxJ
+FLA63cOYWLxfZw8qs8+NHR3guVpYSrj5WJTcjeItBttbeLTYSsW6r1wd/ZfcFJo9
+nrnwg/maDP+SeICb53QuhpNwfyTJZg==
+=8qUO
 -----END PGP SIGNATURE-----
 
---imjhCm/Pyz7Rq5F2--
+--l+goss899txtYvYf--
 
---===============7864417171967143311==
+--===============1586760376754467560==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7864417171967143311==--
+--===============1586760376754467560==--
