@@ -1,120 +1,98 @@
-From: Kirill Marinushkin <k.marinushkin@gmail.com>
-Subject: [PATCH, alsa-lib, v3 2/2] ASoC: topology: Add missing clock gating parameter when parsing hw_configs
-Date: Tue, 27 Mar 2018 23:00:50 +0200
-Message-ID: <20180327210050.3728-3-k.marinushkin@gmail.com>
-References: <20180327205632.3677-1-k.marinushkin@gmail.com>
- <20180327210050.3728-1-k.marinushkin@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180327210050.3728-1-k.marinushkin@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Cc: Pan Xiuli <xiuli.pan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Kirill Marinushkin <k.marinushkin@gmail.com>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Add accessor macros for TLV items
+Date: Tue, 27 Mar 2018 14:08:24 -0700
+Message-ID: <1522184904.2236.14.camel@linux.intel.com>
+References: <20180327183945.6551-1-ranjani.sridharan@linux.intel.com>
+ <s5hh8p18fsw.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7FE0326719A
+ for <alsa-devel@alsa-project.org>; Tue, 27 Mar 2018 23:08:26 +0200 (CEST)
+In-Reply-To: <s5hh8p18fsw.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Clock gating parameter is a part of `dai_fmt`. It is supported by
-`alsa-lib` when creating a topology binary file, but ignored by kernel
-when loading this topology file.
+On Tue, 2018-03-27 at 21:43 +0200, Takashi Iwai wrote:
+> On Tue, 27 Mar 2018 20:39:45 +0200,
+> Ranjani Sridharan wrote:
+> > 
+> > This patch adds macros for accessing the type, length, min, mute
+> > and step items in TLV data. These will be used by drivers to
+> > extract
+> > the TLV data while loading topology.
+> > 
+> > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com
+> > >
+> 
+> The subject is wrongly prefixed.  This is ALSA core API stuff, not
+> about ASoC.
 
-After applying this commit, the clock gating parameter is not ignored any
-more. This solution is backwards compatible. The existing behaviour is
-not broken, because by default the parameter value is 0 and is ignored.
+Will fix this in v2. 
+> 
+> And about the change...
+> 
+> > --- a/include/sound/tlv.h
+> > +++ b/include/sound/tlv.h
+> > @@ -49,6 +49,11 @@
+> >  
+> >  #define TLV_DB_GAIN_MUTE		SNDRV_CTL_TLVD_DB_GAIN_MUT
+> > E
+> >  
+> > +#define TLV_ITEM_TYPE			SNDRV_CTL_TLVD_ITEM_T
+> > YPE
+> > +#define TLV_ITEM_LEN			SNDRV_CTL_TLVD_ITEM_LE
+> > N
+> > +#define TLV_DB_MIN			SNDRV_CTL_TLVD_DB_SCALE_
+> > MIN
+> > +#define TLV_DB_MUTE_AND_STEP		SNDRV_CTL_TLVD_DB_SCAL
+> > E_MUTE_AND_STEP
+> 
+> What's the reason of these redundant redefinitions?
 
-snd_soc_tplg_hw_config.clock_gated = 0 => no effect
-snd_soc_tplg_hw_config.clock_gated = 1 => SND_SOC_DAIFMT_GATED
-snd_soc_tplg_hw_config.clock_gated = 2 => SND_SOC_DAIFMT_CONT
+I followed the other definitions in this file which were aliases to the
+ones in uapi/sound/tlv.h. I suppose these can be avoided. I'll fix this
+ in v2.
+> 
+> 
+> > --- a/include/uapi/sound/tlv.h
+> > +++ b/include/uapi/sound/tlv.h
+> > @@ -60,6 +60,13 @@
+> >  	unsigned int name[] = { \
+> >  		SNDRV_CTL_TLVD_DB_SCALE_ITEM(min, step, mute) \
+> >  	}
+> > +/* Accessor macros for TLV type and len */
+> > +#define SNDRV_CTL_TLVD_ITEM_TYPE		0
+> > +#define SNDRV_CTL_TLVD_ITEM_LEN			1
+> > +
+> > +/* Accessor macros for min, mute and step values from dB scale
+> > type TLV */
+> > +#define SNDRV_CTL_TLVD_DB_SCALE_MIN		2
+> > +#define SNDRV_CTL_TLVD_DB_SCALE_MUTE_AND_STEP	3
+> 
+> These are no "macros" but constants.  And, they use the same prefix
+> SNDRV_CTL_TLVD_* as other existing macros.  SNDTV_CTL_TLVD_*() is a
+> macro to define/expand a TLV descriptor.  It's not for defining the
+> offset value as added in the patch.
+> 
+> That is, better to choose another unique prefix to distinguish the
+> definitions clearly.
 
-For example, the following config, based on
-alsa-lib/src/conf/topology/broadwell/broadwell.conf, is now supported:
-
-~~~~
-SectionHWConfig."CodecHWConfig" {
-        id "1"
-        format "I2S"            # physical audio format.
-        pm_gate_clocks "true"   # clock can be gated
-}
-
-SectionLink."Codec" {
-
-        # used for binding to the physical link
-        id "0"
-
-        hw_configs [
-                "CodecHWConfig"
-        ]
-
-        default_hw_conf_id "1"
-}
-~~~~
-
-Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Pan Xiuli <xiuli.pan@linux.intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org
----
- include/sound/asoc.h | 7 ++++++-
- include/topology.h   | 2 +-
- src/topology/pcm.c   | 6 +++++-
- 3 files changed, 12 insertions(+), 3 deletions(-)
-
-diff --git a/include/sound/asoc.h b/include/sound/asoc.h
-index 89b00703..297e837c 100644
---- a/include/sound/asoc.h
-+++ b/include/sound/asoc.h
-@@ -135,6 +135,11 @@
- #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_CHANNELS      (1 << 1)
- #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
- 
-+/* DAI clock gating */
-+#define SND_SOC_TPLG_DAI_CLK_GATE_UNDEFINED	0
-+#define SND_SOC_TPLG_DAI_CLK_GATE_GATED	1
-+#define SND_SOC_TPLG_DAI_CLK_GATE_CONT		2
-+
- /* DAI physical PCM data formats.
-  * Add new formats to the end of the list.
-  */
-@@ -320,7 +325,7 @@ struct snd_soc_tplg_hw_config {
- 	__le32 size;            /* in bytes of this structure */
- 	__le32 id;		/* unique ID - - used to match */
- 	__le32 fmt;		/* SND_SOC_DAI_FORMAT_ format value */
--	__u8 clock_gated;	/* 1 if clock can be gated to save power */
-+	__u8 clock_gated;	/* SND_SOC_TPLG_DAI_CLK_GATE_ value */
- 	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
- 	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
- 	__u8 bclk_master;	/* SND_SOC_TPLG_BCLK_ value */
-diff --git a/include/topology.h b/include/topology.h
-index 5d7b46df..3793115c 100644
---- a/include/topology.h
-+++ b/include/topology.h
-@@ -997,7 +997,7 @@ struct snd_tplg_pcm_template {
- struct snd_tplg_hw_config_template {
- 	int id;                         /* unique ID - - used to match */
- 	unsigned int fmt;               /* SND_SOC_DAI_FORMAT_ format value */
--	unsigned char clock_gated;      /* 1 if clock can be gated to save power */
-+	unsigned char clock_gated;      /* SND_SOC_TPLG_DAI_CLK_GATE_ value */
- 	unsigned char  invert_bclk;     /* 1 for inverted BCLK, 0 for normal */
- 	unsigned char  invert_fsync;    /* 1 for inverted frame clock, 0 for normal */
- 	unsigned char  bclk_master;     /* SND_SOC_TPLG_BCLK_ value */
-diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index d0395182..b53f6b03 100644
---- a/src/topology/pcm.c
-+++ b/src/topology/pcm.c
-@@ -1233,7 +1233,11 @@ int tplg_parse_hw_config(snd_tplg_t *tplg, snd_config_t *cfg,
- 				return -EINVAL;
- 
- 			if (!strcmp(val, "true"))
--				hw_cfg->clock_gated = true;
-+				hw_cfg->clock_gated =
-+					SND_SOC_TPLG_DAI_CLK_GATE_GATED;
-+			else
-+				hw_cfg->clock_gated =
-+					SND_SOC_TPLG_DAI_CLK_GATE_CONT;
- 			continue;
- 		}
- 
--- 
-2.13.6
+Sure, will change the prefix as well. Thanks!
+> 
+> 
+> thanks,
+> 
+> Takashi
