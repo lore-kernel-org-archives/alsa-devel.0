@@ -1,54 +1,36 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: omap4-droid4: voice call support was Re: [PATCHv5,5/5] ARM: dts:
- omap4-droid4: add soundcard
-Date: Tue, 27 Mar 2018 13:51:10 -0700
-Message-ID: <20180327205110.GI5700@atomide.com>
-References: <20180223200254.25685-6-sebastian.reichel@collabora.co.uk>
- <20180322204804.GA26871@amd>
- <20180322234832.o24ut5ahon46mdu4@earth.universe>
- <20180323100930.GA21644@amd>
- <20180323103006.alymgb3ywftb4gek@earth.universe>
- <20180326141638.GB1450@amd>
- <20180326155828.ttnduivadob4iqmd@earth.universe>
- <20180326203154.GA9334@amd>
- <20180326231022.vilvxwqkniffk775@earth.universe>
- <20180327204111.GA2254@amd>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Kirill Marinushkin <k.marinushkin@gmail.com>
+Subject: [PATCH v3 0/2] ASoC: topology: Improve parsing hw_configs
+Date: Tue, 27 Mar 2018 22:56:30 +0200
+Message-ID: <20180327205632.3677-1-k.marinushkin@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180327204111.GA2254@amd>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pavel Machek <pavel@ucw.cz>
-Cc: Sebastian Reichel <sebastian.reichel@collabora.co.uk>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Cc: Pan Xiuli <xiuli.pan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Kirill Marinushkin <k.marinushkin@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-* Pavel Machek <pavel@ucw.cz> [180327 20:42]:
-> But Motorola code seems to do different magic according to modem type,
-> so things may not be as easy.
-> 
->                 if (pdata->voice_type == VOICE_TYPE_STE) {
->                         /* STE_M570 */
->                         ret = cpcap_audio_reg_write(codec, 2, 0xAE06);
->                         if (rate == 16000)
-> 				ret |= cpcap_audio_reg_write(codec, 1, 0x8720);
->                         else
->                                 ret |= cpcap_audio_reg_write(codec, 1, 0x8120);
->                 } else if (pdata->voice_type == VOICE_TYPE_QC) {
->                         /* MDM6600 */
->                         ret = cpcap_audio_reg_write(codec, 2, 0xAE02);
->                         if (rate == 16000) {
->                                 ret |= cpcap_audio_reg_write(codec, 1, 0x6720);
->                         } else {
->                                 ret |= cpcap_audio_reg_write(codec, 1, 0x6120);
->                         }
+Hello Jaroslav, Takashi, Mark,
 
-The parts not related to mdm6600 can be ignored until somebody
-gets some device other modems working with mainline kernel.
+This patch series is a resend of [1] and [2], rebased on top of the latest
+head. It was logical to resend them together.
 
-And if there are any refrerences to W3GLTE, or wrigley, it
-supposedly never worked for voice calls and only data.
+It includes 2 patches for linux + 2 patches for alsa-lib.
 
-Regards,
+Please have a look.
 
-Tony
+Best Regards,
+Kirill
+
+[1] https://patchwork.kernel.org/patch/10250485/
+[2] https://patchwork.kernel.org/patch/10230611/
+
+Kirill Marinushkin (2):
+  ASoC: topology: Fix bclk and fsync inversion in set_link_hw_format()
+  ASoC: topology: Add missing clock gating parameter when parsing
+    hw_configs
+
+ include/uapi/sound/asoc.h | 23 ++++++++++++++++++++---
+ sound/soc/soc-topology.c  | 19 ++++++++++++++-----
+ 2 files changed, 34 insertions(+), 8 deletions(-)
+
+-- 
+2.13.6
