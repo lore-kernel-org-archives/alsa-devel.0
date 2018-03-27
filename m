@@ -1,8 +1,8 @@
 From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Subject: [alsa-devel][PATCH 3/3 v2] ASoC: TSCS42xx: Add CCF support to get
+Subject: [alsa-devel][PATCH 3/3 v3] ASoC: TSCS42xx: Add CCF support to get
  sysclk
-Date: Tue, 27 Mar 2018 12:42:55 -0500
-Message-ID: <20180327174246.GA23392@t7-ThinkPad-E560>
+Date: Tue, 27 Mar 2018 12:50:49 -0500
+Message-ID: <20180327175040.GA26604@t7-ThinkPad-E560>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
@@ -48,7 +48,7 @@ index 2ac2f0996697..7eea32e9d078 100644
 +	clocks = <&audio_xtal>;
  };
 diff --git a/sound/soc/codecs/tscs42xx.c b/sound/soc/codecs/tscs42xx.c
-index d41852a37ac6..69cd4c1ed1d6 100644
+index d41852a37ac6..0aaa6a826096 100644
 --- a/sound/soc/codecs/tscs42xx.c
 +++ b/sound/soc/codecs/tscs42xx.c
 @@ -12,6 +12,7 @@
@@ -204,7 +204,7 @@ index d41852a37ac6..69cd4c1ed1d6 100644
 +			return ret;
 +		}
 +	}
-+	if (src > TSCS42XX_PLL_SRC_CNT) {
++	if (src == TSCS42XX_PLL_SRC_CNT) {
 +		ret = -EINVAL;
 +		dev_err(&i2c->dev, "Failed to get a valid clock name (%d)\n",
 +				ret);
