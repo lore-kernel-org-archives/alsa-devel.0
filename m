@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: amd: don't use codec anymore" to the
-	asoc tree
-Date: Wed, 28 Mar 2018 03:20:56 +0100 (BST)
-Message-ID: <20180328022056.81D0044007A@finisterre.ee.mobilebroadband>
-References: <871sg555xp.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4CA9B26721A
- for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2018 04:21:00 +0200 (CEST)
-In-Reply-To: <871sg555xp.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Akshu Agrawal <akshu.agrawal@amd.com>, Mark Brown <broonie@kernel.org>, Alex Deucher <alexander.deucher@amd.com>, Dylan Reid <dgreid@chromium.org>
+Subject: Applied "ASoC: topology: Fix kcontrol name string handling" to the asoc tree
+Date: Wed, 28 Mar 2018 03:21:21 +0100 (BST)
+Message-ID: <20180328022121.B14D744007A@finisterre.ee.mobilebroadband>
+References: <20180327110404.27189-1-liam.r.girdwood@linux.intel.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20180327110404.27189-1-liam.r.girdwood@linux.intel.com>
+Sender: stable-owner@vger.kernel.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.org, alsa-devel@alsa-project.orgMark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: amd: don't use codec anymore
+   ASoC: topology: Fix kcontrol name string handling
 
 has been applied to the asoc tree at
 
@@ -53,42 +37,107 @@ to this mail.
 Thanks,
 Mark
 
->From 4c50e1e3e2c29899c0226f7ad56d7266e814f2b3 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 28 Mar 2018 01:48:07 +0000
-Subject: [PATCH] ASoC: amd: don't use codec anymore
+>From 267e2c6fd7ca3d4076d20f9d52d49dc91addfe9d Mon Sep 17 00:00:00 2001
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Date: Tue, 27 Mar 2018 12:04:04 +0100
+Subject: [PATCH] ASoC: topology: Fix kcontrol name string handling
 
-commit c88d31153356 ("ASoC: amd: Enable da7219 master clock using common
-clock framework") is using rtd->codec, but codec is replaced to component.
-Let's use component
+Fix the topology kcontrol string handling so that string pointer
+references are strdup()ed instead of being copied. This fixes issues
+with kcontrol templates on the stack or ones that are freed. Remember
+and free the strings too when topology is unloaded.
 
-Fixes: c88d31153356 ("ASoC: amd: Enable da7219 master clock using common clock framework")
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
- sound/soc/amd/acp-da7219-max98357a.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/soc-topology.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index 99c6b5ce5c6c..b205c782e494 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -49,7 +49,6 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	int ret;
- 	struct snd_soc_card *card = rtd->card;
--	struct snd_soc_codec *codec = rtd->codec;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_component *component = codec_dai->component;
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 01a50413c66f..782c580b7aa3 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -523,6 +523,7 @@ static void remove_widget(struct snd_soc_component *comp,
+ 				kfree(se->dobj.control.dtexts[j]);
  
-@@ -69,7 +68,7 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
- 		return ret;
+ 			kfree(se);
++			kfree(w->kcontrol_news[i].name);
+ 		}
+ 		kfree(w->kcontrol_news);
+ 	} else {
+@@ -540,6 +541,7 @@ static void remove_widget(struct snd_soc_component *comp,
+ 			 */
+ 			kfree((void *)kcontrol->private_value);
+ 			snd_ctl_remove(card, kcontrol);
++			kfree(w->kcontrol_news[i].name);
+ 		}
+ 		kfree(w->kcontrol_news);
  	}
+@@ -1233,7 +1235,9 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
+ 		dev_dbg(tplg->dev, " adding DAPM widget mixer control %s at %d\n",
+ 			mc->hdr.name, i);
  
--	da7219_dai_clk = clk_get(codec->dev, "da7219-dai-clks");
-+	da7219_dai_clk = clk_get(component->dev, "da7219-dai-clks");
+-		kc[i].name = mc->hdr.name;
++		kc[i].name = kstrdup(mc->hdr.name, GFP_KERNEL);
++		if (kc[i].name == NULL)
++			goto err_str;
+ 		kc[i].private_value = (long)sm;
+ 		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+ 		kc[i].access = mc->hdr.access;
+@@ -1278,8 +1282,10 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
+ err_str:
+ 	kfree(sm);
+ err:
+-	for (--i; i >= 0; i--)
++	for (--i; i >= 0; i--) {
+ 		kfree((void *)kc[i].private_value);
++		kfree(kc[i].name);
++	}
+ 	kfree(kc);
+ 	return NULL;
+ }
+@@ -1310,7 +1316,9 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_denum_create(
+ 		dev_dbg(tplg->dev, " adding DAPM widget enum control %s\n",
+ 			ec->hdr.name);
  
- 	ret = snd_soc_card_jack_new(card, "Headset Jack",
- 				SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
+-		kc[i].name = ec->hdr.name;
++		kc[i].name = kstrdup(ec->hdr.name, GFP_KERNEL);
++		if (kc[i].name == NULL)
++			goto err_se;
+ 		kc[i].private_value = (long)se;
+ 		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+ 		kc[i].access = ec->hdr.access;
+@@ -1386,6 +1394,7 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_denum_create(
+ 			kfree(se->dobj.control.dtexts[j]);
+ 
+ 		kfree(se);
++		kfree(kc[i].name);
+ 	}
+ err:
+ 	kfree(kc);
+@@ -1424,7 +1433,9 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dbytes_create(
+ 			"ASoC: adding bytes kcontrol %s with access 0x%x\n",
+ 			be->hdr.name, be->hdr.access);
+ 
+-		kc[i].name = be->hdr.name;
++		kc[i].name = kstrdup(be->hdr.name, GFP_KERNEL);
++		if (kc[i].name == NULL)
++			goto err;
+ 		kc[i].private_value = (long)sbe;
+ 		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+ 		kc[i].access = be->hdr.access;
+@@ -1454,8 +1465,10 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dbytes_create(
+ 	return kc;
+ 
+ err:
+-	for (--i; i >= 0; i--)
++	for (--i; i >= 0; i--) {
+ 		kfree((void *)kc[i].private_value);
++		kfree(kc[i].name);
++	}
+ 
+ 	kfree(kc);
+ 	return NULL;
 -- 
 2.16.2
