@@ -1,23 +1,16 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RESEND][PATCH v4 1/3] ALSA: core: let low-level
- driver or userspace disable rewinds
-Date: Wed, 28 Mar 2018 12:58:54 -0500
-Message-ID: <53f5df7e-0162-9a4a-ea2d-a8beb4c14b89@linux.intel.com>
-References: <1521561668-28613-1-git-send-email-sriramx.periyasamy@intel.com>
- <1521561668-28613-2-git-send-email-sriramx.periyasamy@intel.com>
- <s5ho9jiu3fk.wl-tiwai@suse.de> <20180325104643.GA13721@intel.com>
- <s5h1sg88aml.wl-tiwai@suse.de>
- <c5967958-7bb0-3351-f818-549675645a1d@linux.intel.com>
- <s5h1sg4mdlf.wl-tiwai@suse.de>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH][next] ASoC: topology: fix memory leak on se
+	when kstrdup fails
+Date: Wed, 28 Mar 2018 19:17:25 +0100
+Message-ID: <20180328181725.17226-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id B3496266E07
- for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2018 19:59:00 +0200 (CEST)
-In-Reply-To: <s5h1sg4mdlf.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 59734267063
+ for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2018 20:17:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,225 +20,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA ML <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Ramesh Babu <ramesh.babu@intel.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 3/28/18 10:20 AM, Takashi Iwai wrote:
-> On Wed, 28 Mar 2018 16:30:09 +0200,
-> Pierre-Louis Bossart wrote:
->>
->> On 3/25/18 9:58 AM, Takashi Iwai wrote:
->>> On Sun, 25 Mar 2018 12:46:43 +0200,
->>> Sriram Periyasamy wrote:
->>>>
->>>> On Tue, Mar 20, 2018 at 05:17:35PM +0100, Takashi Iwai wrote:
->>>>> On Tue, 20 Mar 2018 17:01:06 +0100,
->>>>> Sriram Periyasamy wrote:
->>>>>>
->>>>>> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>>>>>
->>>>>> Add new hw_params flag to explicitly tell driver that rewinds will never
->>>>>> be used. This can be used by low-level driver to optimize DMA operations
->>>>>> and reduce power consumption. Use this flag only when data written in
->>>>>> ring buffer will never be invalidated, e.g. any update of appl_ptr is
->>>>>> final.
->>>>>>
->>>>>> Note that the update of appl_ptr include both a read/write data
->>>>>> operation as well as snd_pcm_forward() whose behavior is not modified.
->>>>>>
->>>>>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>>>>> Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
->>>>>> Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
->>>>>> Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
->>>>>
->>>>> Well, I'm still not convinced with this flag.
->>>>>
->>>>> First off, does it really need to be per PCM stream?  The introducing
->>>>
->>>> Flag per PCM stream helps where each stream in given system may have
->>>> different requirement such as low power or low latency based on the
->>>> use case. For example in case of low power stream, driver can perform
->>>> required optimizations at hardware level based on the no_rewind flag.
->>>
->>> Yes, but does it really need to be PCM stream, i.e. per application?
->>> Certainly the system will be using some sound backend (like PA).  In
->>> which scenario can such behavior change -- some application uses a
->>> different backend on a phone or a tablet?
->>
->> This is intended for the case where the system server exposes a
->> 'deep-buffer' PCM device for music playback in low-power mode and a
->> separate one for system sounds or anything that requires
->> interactivity.
->> The need for rewinding is really for the case where the interactive
->> system sounds are mixed with music, when you have separation between
->> types of sounds and hardware/firmware mixing then the rewinds are
->> unnecessary.
-> 
-> Yes, but why application must tell no-rewind flag if it wants to
-> save a bit of power?  IOW, how each application can know it needs to
-> set no-rewind flag *for saving power*?
-> 
-> Or, put in another way: you want to make all applications running in
-> lower power generically.  What would you do?  Adding no-rewind flag to
-> all calls?  It makes no sense if the application runs on non-Intel
-> chips, so can't be hard-coded.
-> 
->> If there are multiple applications using different PCM devices each
->> (which is a bit hypothetical to me) there is no way to know ahead of
->> time when the modules are loaded if the application will perform
->> rewinds due to its interactive nature or will just stream without ever
->> invalidating the ring buffer. So yes it's per stream.
-> 
-> Fair enough, per stream is a requirement.
-> 
-> But still my argument below applies: what you really want to set
-> is to make the stream low-power.  It's not about to make the stream
-> non-rewindable.  And this makes me feel uneasy.
-> 
-> 
->>>>> something to hw_parms implies that it varies per application.  But I
->>>>> can't imagine that a system requires different behavior per stream
->>>>> regarding such a thing.
->>>>>
->>>>> Second, the driver can implement a check in PCM ack callback to
->>>>> prevent the rewind, too.  Then there is no need to touch the PCM
->>>>> core.
->>>>>
->>>>
->>>> As per the previous discussion at [1],
->>>>
->>>> [1]
->>>> https://patchwork.kernel.org/patch/9795233/
->>>>
->>>> from Pierre,
->>>>
->>>> "The application (which is in most cases an audio server) *knows* if it
->>>> requires rewinds or not. It's part of its design, with rewinds typically
->>>> disabled if period interrupts are required. It's been that way for a
->>>> number of years now. The use of rewinds is typically associated with the
->>>> combination of a large buffer and no interrupts (having either of the
->>>> two would not require rewinds).
->>>>
->>>> So the idea is that the application makes a statement that rewinds will
->>>> not be used, and the low-level driver makes use of the information to
->>>> enable whatever optimizations are available at the hardware level.
->>>>
->>>> Exposing more information to userspace would quickly lead to a confusing
->>>> decision-making and would require more than just a flag."
->>>
->>> And, requiring *that* information is already confusing, IMO.
->>> Think from the application writer POV: what is the relation between
->>> the power-saving and no_rewind behavior in application level at all?
->>> If you have no idea about the hardware details, they are totally
->>> irrelevant.
->>
->> I feel like disabling IRQs or disabling rewinds is the same level of
->> information, you set the flags without necessary knowing all the power
->> savings down to the mW level. But it provides an opportunity to save
->> power with additional degrees of freedom for implementations.
->   
-> Sure, I do understand this will bring the merit.  But the question is
-> the API design.
-> 
->> An additional benefit of using the underlying SPIB register on Intel
->> hardware is that the DMA hardware will not wrap-around, which can lead
->> to better detection of real-time issues and a guarantee that stale
->> data will not be played.
-> 
-> So, again, the purpose of no-rewind isn't the rewind thing itself.
-> It's set for obtaining other benefits.
-> 
->>> Or, think like this way: imagine a hardware that requires a different
->>> constraint, e.g. the power-of-two buffer size, for power-efficient
->>> operation.  What would you do?  Adding a new power_of_two bit flag
->>> into hw_params?  Likely not.
->>
->> we've added the noIRQ mode in the past using flags, if now you are
->> saying that flags is a bad idea then fine, but let's be consistent...
-> 
-> The no-IRQ is rather a more drastic behavior change.  The ALSA PCM
-> mandated the period update per definition, and setting this flag
-> really switches to a different mode, hence it deserves for an API
-> extension.  And, the flag itself is self-explaining: the less IRQ is
-> less power.  But no-rewind is...?
-> 
->>> In such a case, I would expect some operation mode switch
->>> (e.g. power-saving vs low latency or whatever) instead of a very
->>> specific hw_parmas flag.  It might be a module option, via ALSA
->>> control, or something else.  But it's clearer for which purpose it's
->>> present, at least, and it can be implemented well without changing the
->>> existing API.
->>
->> We have no way of predicting what the application will do so the
->> module option is not possible.
->>
->> Using an ALSA control is possible, but it's odd to me.
->>
->> I really don't see what's so problematic about adding flags. I uses an
->> existing capability of the API, it's consistent with the previous
->> usages. There is no change in behavior for existing apps, only newer
->> can benefit for better use of the hardware. There is no complicated
->> decision making, you set the flags if you don't use IRQ or rewinds.
->> And it's not like we will have new flags every week, we've been
->> talking about this SPIB capability since Skylake which is 3 years old
->> already.
-> 
-> Again, my concern is that you swapped between the purpose and the
-> method.  The no-irq isn't any purpose, per se.  It's just a
-> requirement some hardware casually applies for power saving.
-> 
-> The real need isn't about each detailed hardware-specific flag, but
-> rather some API to give a hint for the preferred operation mode.
+From: Colin Ian King <colin.king@canonical.com>
 
-let me try a different explanation (don't want to be pedantic but try to 
-explain the line of thought).
+In the case when kstrdup fails to allocation memory for kc[i].name
+the error exit path does not free up 'se' leading to a small leak.
+Fix this by kfree'ing 'se' before jumping to err_se and since
+kc[i].private_value is zero we end up avoiding kfree'ing the
+rest of the unallocated objects in se.
 
-There are two needs in terms of application/driver interaction.
+Detected by CoverityScan, CID#1466991 ("Reseource leak")
 
-The first need is to let the application know about hardware 
-capabilities or restrictions. This is handled today with the .info 
-fields. We have quite a few of them that provide information to 
-userspace and let the application use the ALSA API in different ways 
-(e.g. BATCH, BLOCK_TRANSFER, PAUSE, SYNC_START, WALL_CLK). To take the 
-example above, if a specific hardware could handle optimizations for 
-powers of two, it could add a flag in the .info field and let the 
-application make that decision.
+Fixes: 267e2c6fd7ca ("ASoC: topology: Fix kcontrol name string handling")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/soc-topology.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-The second need is to establish a contract between application and 
-driver, set in stone and non modifiable dynamically while the stream is 
-open. We are using hw_params for this, and the flags are one way to 
-extend the API to new capabilities. the no-irq flag is one example of 
-this contract which fundamentally changes the way the application is 
-written. It's not limited to power savings but can also be used to 
-reduce the latency as done by Android/AAudio, and it's not a 'casual' 
-way of doing things but a fundamental design decision.
-
-The proposal in this patchset is to restrict the use of rewinds which 
-can have two known benefits
-1. better DMA handling with opportunistic/bursty transfers
-2. no wrap-around and handling of stale data.
-This capability may be used for low-power and low-latency, in a similar 
-way to the no-irq mode. Whether it makes sense for a system is not the 
-debate here, we want to leave the decision making to system integrators. 
-Since we use the hw_params flags in the past, we chose the same 
-solution. We also did not add any flag in the .info field since the 
-application doesn't really need to know what hardware will do or not. If 
-it doesn't use rewinds, it just states it and lets the hardware enable 
-new capabilities.
-
-I am really struggling to see how the proposal is viewed as different 
-from previous ones and where we confused 'purpose and method'. We used 
-the same hooks for the same purposes.
-
-I also don't think that either the no-irq and no-rewinds can be assigned 
-to low-power or low-latency usages. I don't think we are in a position 
-to make that call and I don't think we want to add a 'low-latency' or 
-'low-power' flag to the ALSA API - this would be extremely confusing to 
-applications.
-
-If your position is that we can no longer report or enable new 
-capabilities with the .info and hw_params fields, then what are the options?
-a) do nothing and leave ALSA handle hardware designed prior to 2013
-b) define a new API and transition both the info and hw_params to 
-something else
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index fa27d0fca6dc..71b20d795b51 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1325,8 +1325,10 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_denum_create(
+ 			ec->hdr.name);
+ 
+ 		kc[i].name = kstrdup(ec->hdr.name, GFP_KERNEL);
+-		if (kc[i].name == NULL)
++		if (kc[i].name == NULL) {
++			kfree(se);
+ 			goto err_se;
++		}
+ 		kc[i].private_value = (long)se;
+ 		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+ 		kc[i].access = ec->hdr.access;
+-- 
+2.15.1
