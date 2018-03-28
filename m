@@ -1,24 +1,18 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: omap4-droid4: voice call support was Re: [PATCHv5,
- 5/5] ARM: dts: omap4-droid4: add soundcard
-Date: Wed, 28 Mar 2018 11:36:41 +0200
-Message-ID: <20180328093641.GA17774@amd>
-References: <20180223200254.25685-6-sebastian.reichel@collabora.co.uk>
- <20180322204804.GA26871@amd>
- <20180322234832.o24ut5ahon46mdu4@earth.universe>
- <20180323100930.GA21644@amd>
- <20180323103006.alymgb3ywftb4gek@earth.universe>
- <20180326141638.GB1450@amd>
- <20180326155828.ttnduivadob4iqmd@earth.universe>
- <20180328090031.GA17300@amd>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH][RFC] ASoC: wm8350: remove snd_soc_codec
+Date: Wed, 28 Mar 2018 10:48:35 +0100
+Message-ID: <20180328094835.hzthjeoq6vpdgjgm@localhost.localdomain>
+References: <87tvt13psj.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3301934277111650717=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
- [195.113.26.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3105D2671A9
- for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2018 11:36:42 +0200 (CEST)
-In-Reply-To: <20180328090031.GA17300@amd>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id E5F0C266E07
+ for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2018 11:48:40 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <87tvt13psj.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,91 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, linux-omap@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, patches@opensource.cirrus.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Mar 28, 2018 at 02:22:07AM +0000, Kuninori Morimoto wrote:
+> 
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> codec is replace to component.
+> It seems no-one is using it, Let's remove it.
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+> Hi Mark, Liam
+> 
+> I think no-one is using snd_soc_codec, but please double-check it.
+> I added [RFC] on this patch
+> 
 
---===============3301934277111650717==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9jxsPFA5p3P2qPhR"
-Content-Disposition: inline
+Looks to me like there are still users in
+drivers/mfd/cwm8350-core.c:
 
+wm8350_client_dev_register(wm8350, "wm8350-codec",
+			   &(wm8350->codec.pdev));
 
---9jxsPFA5p3P2qPhR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+And arch/arm/mach-imx/mach-mx31ads.c:
 
-Hi!
+wm8350->codec.platform_data = &imx32ads_wm8350_setup;
 
-> > > I can talk to the modem and start a call.
-> >=20
-> > Doing an AT query is the easy part :)
-> >=20
-> > > Then something like this (untested!) is certainly needed.
-> > > Probably more...
-> >=20
-> > I intentionally left this part out. The CPCAP codec has two DAIs
-> > and not 3+. The code you just added is a hack from Motorola. Their
-> > driver is full of hacks and it's obvious its author(s) did not
-> > fully understand the ASoC APIs.
-> >=20
-> > My understanding is, that we only need to replace the audio-graph-card
-> > driver to something more complex. The VOICE DAI needs to be configured
-> > differently based on the use case:
->=20
-> Does the voice part work for you? I configured all the mixers to
-> voice, and then am using
+Also it should be simple enough to build test drivers for patches
+like this, you don't need to have the hardware to build the driver.
 
-I tried with 8kHz, 8-bit, too:
-
-user@devuan:/my/tui/rweb$ arecord -D plughw:CARD=3DAudio,DEV=3D1 -t wav
---max-file-time 30 mon.wav
-Recording WAVE 'mon.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
-^CAborted by signal Interrupt...
-arecord: pcm_read:2103: read error: Interrupted system call
-user@devuan:/my/tui/rweb$ aplay -D plughw:CARD=3DAudio,DEV=3D1 -t wav
-mon.wav
-Playing WAVE 'mon.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
-^CAborted by signal Interrupt...
-
-Recording works okay, but playback produces ugly noise (not white this
-time). If I copy mon.wav to PC, it playes back in pretty acceptable
-quality.
-
-So summary
-
-HIFI DAI works
-VOICE DAI recording is ok
-VOICE DAI playbacks plays noise.
-
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---9jxsPFA5p3P2qPhR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlq7YikACgkQMOfwapXb+vLxNwCdE/Fragqrz7l3vrPSiD4kZkYU
-mkgAnjYnKZqJYm5pviMW9kjZfIIfJ++H
-=xgf1
------END PGP SIGNATURE-----
-
---9jxsPFA5p3P2qPhR--
-
---===============3301934277111650717==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3301934277111650717==--
+Thanks,
+Charles
