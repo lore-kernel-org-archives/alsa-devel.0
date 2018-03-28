@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: doc: replace codec to component" to the
-	asoc tree
-Date: Wed, 28 Mar 2018 03:38:12 +0100 (BST)
-Message-ID: <20180328023812.9F2FF44007A@finisterre.ee.mobilebroadband>
-References: <87woxx3q5g.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 3/3 v3] ASoC: TSCS42xx: Add CCF support to
+ get sysclk
+Date: Wed, 28 Mar 2018 10:44:27 +0800
+Message-ID: <20180328024427.GN29239@sirena.org.uk>
+References: <20180327175040.GA26604@t7-ThinkPad-E560>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0091656622200251540=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9227C2671F9
- for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2018 04:38:15 +0200 (CEST)
-In-Reply-To: <87woxx3q5g.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F0BC267194
+ for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2018 04:44:31 +0200 (CEST)
+In-Reply-To: <20180327175040.GA26604@t7-ThinkPad-E560>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,70 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: doc: replace codec to component
+--===============0091656622200251540==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="oOpJzULQ70+PGW7h"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--oOpJzULQ70+PGW7h
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, Mar 27, 2018 at 12:50:49PM -0500, Steven Eckhoff wrote:
+> The TSCS42xx relies on set_sysclk to get a unique clock id and rate,
+> which
+> prevents it from being used with the simple-card.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+I'm missing patches 1 and 2 of this resend.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--oOpJzULQ70+PGW7h
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlq7AYoACgkQJNaLcl1U
+h9BqWwf/XFltXPVpE+9oCtx/BdFm0tGKdCQ/Cfy5SJhwpuB0EYm7RTOk2ht3819b
+ogV0oJguUQZANVtlU1zbT0GzjGzOQx3RuAOK1TKfW53K3Gdw5CrxV8GcaEmM3lRK
+BxGjtMuM5sIBVsZWK+8B3PSQ31PCmoxTxTuB0+FBKfpodMeK2al8cic0HuThLZ/0
+vom8sAtR/HlF/d+XMgoT09I9LqEYrRZtLY7r7VbUqXrXQhNkWAT+2ir+awWpknOI
+EdfWSDCS/1fBes4o43YcY+qrEmnGZZQFu/x6J5PLSiDt6nY3FUIs5IrC3/IczjcM
+Coj0UDuL4FHS15GOqk1eMGP9wjFs2w==
+=Lsi8
+-----END PGP SIGNATURE-----
 
->From a3ac7727f3a226b0569431de62a4e9bb4c770b2b Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 28 Mar 2018 02:14:22 +0000
-Subject: [PATCH] ASoC: doc: replace codec to component
+--oOpJzULQ70+PGW7h--
 
-Now we can replace Codec to Component. Let's do it.
+--===============0091656622200251540==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- Documentation/sound/soc/codec.rst | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/sound/soc/codec.rst b/Documentation/sound/soc/codec.rst
-index f87612b94812..58f625fe3d39 100644
---- a/Documentation/sound/soc/codec.rst
-+++ b/Documentation/sound/soc/codec.rst
-@@ -179,12 +179,12 @@ i.e.
- 
-   static int wm8974_mute(struct snd_soc_dai *dai, int mute)
-   {
--	struct snd_soc_codec *codec = dai->codec;
--	u16 mute_reg = snd_soc_read(codec, WM8974_DAC) & 0xffbf;
-+	struct snd_soc_component *component = dai->component;
-+	u16 mute_reg = snd_soc_component_read32(component, WM8974_DAC) & 0xffbf;
- 
- 	if (mute)
--		snd_soc_write(codec, WM8974_DAC, mute_reg | 0x40);
-+		snd_soc_component_write(component, WM8974_DAC, mute_reg | 0x40);
- 	else
--		snd_soc_write(codec, WM8974_DAC, mute_reg);
-+		snd_soc_component_write(component, WM8974_DAC, mute_reg);
- 	return 0;
-   }
--- 
-2.16.2
+--===============0091656622200251540==--
