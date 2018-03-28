@@ -1,47 +1,65 @@
-From: Lukas Wunner <lukas@wunner.de>
-Subject: Re: [PATCH] ALSA: hda_intel: mark PM functions as __maybe_unused
-Date: Wed, 28 Mar 2018 16:31:50 +0200
-Message-ID: <20180328143150.GA17992@wunner.de>
-References: <20180328142020.3275989-1-arnd@arndb.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: rsnd: mark PM functions __maybe_unused
+Date: Wed, 28 Mar 2018 16:53:10 +0200
+Message-ID: <20180328145318.10136-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180328142020.3275989-1-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Hans de Goede <hdegoede@redhat.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Libin Yang <libin.yang@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
+ by alsa0.perex.cz (Postfix) with ESMTP id A3078266F93
+ for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2018 16:54:01 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 28, 2018 at 04:19:29PM +0200, Arnd Bergmann wrote:
-> Two callsites of azx_suspend/azx_resume were removed, leaving these
-> functions only called from the optional SET_SYSTEM_SLEEP_PM_OPS()
-> and causing a warning without CONFIG_PM_SLEEP:
-> 
-> sound/pci/hda/hda_intel.c:1029:12: error: 'azx_resume' defined but not used [-Werror=unused-function]
->  static int azx_resume(struct device *dev)
->             ^~~~~~~~~~
-> sound/pci/hda/hda_intel.c:994:12: error: 'azx_suspend' defined but not used [-Werror=unused-function]
->  static int azx_suspend(struct device *dev)
->             ^~~~~~~~~~~
-> 
-> Keeping track of the correct #ifdef checks is hard, so this removes
-> all the #ifdefs for power management in this file and instead uses
-> __maybe_unused annotations that let the compiler do the job right
-> by itself.
+The suspend/resume callbacks are now optional, leading to a warning
+when they are unused:
 
-Ugh, this isn't as hard as it may seem, just replace
+sound/soc/sh/rcar/core.c:1548:12: error: 'rsnd_resume' defined but not used [-Werror=unused-function]
+ static int rsnd_resume(struct device *dev)
+            ^~~~~~~~~~~
+sound/soc/sh/rcar/core.c:1539:12: error: 'rsnd_suspend' defined but not used [-Werror=unused-function]
+ static int rsnd_suspend(struct device *dev)
 
-	#if defined(CONFIG_PM_SLEEP) || defined(SUPPORT_VGA_SWITCHEROO)
+This marks the as __maybe_unused to avoid the warning.
 
-with
+Fixes: f8a9a29c4fe9 ("ASoC: rsnd: set pm_ops in hibernate-compatible way")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ sound/soc/sh/rcar/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-	#if defined(CONFIG_PM_SLEEP)
-
-That way it's just a simple one line change which is less intrusive.
-
-Care to respin like this?
-
-Thanks for the report,
-
-Lukas
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 6a76688a8ba9..94f081b93258 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1536,7 +1536,7 @@ static int rsnd_remove(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int rsnd_suspend(struct device *dev)
++static int __maybe_unused rsnd_suspend(struct device *dev)
+ {
+ 	struct rsnd_priv *priv = dev_get_drvdata(dev);
+ 
+@@ -1545,7 +1545,7 @@ static int rsnd_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int rsnd_resume(struct device *dev)
++static int __maybe_unused rsnd_resume(struct device *dev)
+ {
+ 	struct rsnd_priv *priv = dev_get_drvdata(dev);
+ 
+-- 
+2.9.0
