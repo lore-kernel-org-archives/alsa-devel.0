@@ -1,25 +1,15 @@
-From: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Subject: Re: omap4-droid4: voice call support was Re: [PATCHv5,
- 5/5] ARM: dts: omap4-droid4: add soundcard
-Date: Wed, 28 Mar 2018 16:02:19 +0200
-Message-ID: <20180328140219.f6667up5evrrafkv@earth.universe>
-References: <20180223200254.25685-6-sebastian.reichel@collabora.co.uk>
- <20180322204804.GA26871@amd>
- <20180322234832.o24ut5ahon46mdu4@earth.universe>
- <20180323100930.GA21644@amd>
- <20180323103006.alymgb3ywftb4gek@earth.universe>
- <20180326141638.GB1450@amd>
- <20180326155828.ttnduivadob4iqmd@earth.universe>
- <20180327121441.GH29239@sirena.org.uk>
- <20180327222237.wcx2aqznvdrvbaa5@earth.universe>
- <20180328022910.GM29239@sirena.org.uk>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ALSA: hda_intel: mark PM functions as
+	__maybe_unused
+Date: Wed, 28 Mar 2018 16:19:29 +0200
+Message-ID: <20180328142020.3275989-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3395156663064364246=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- by alsa0.perex.cz (Postfix) with ESMTP id 9414B266FA1
- for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2018 16:02:23 +0200 (CEST)
-In-Reply-To: <20180328022910.GM29239@sirena.org.uk>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id C9BC5266F93
+ for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2018 16:20:44 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,107 +19,241 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>, linux-omap@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Libin Yang <libin.yang@intel.com>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, Lukas Wunner <lukas@wunner.de>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
+Two callsites of azx_suspend/azx_resume were removed, leaving these
+functions only called from the optional SET_SYSTEM_SLEEP_PM_OPS()
+and causing a warning without CONFIG_PM_SLEEP:
 
---===============3395156663064364246==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="kv4lnffrs5agllfz"
-Content-Disposition: inline
+sound/pci/hda/hda_intel.c:1029:12: error: 'azx_resume' defined but not used [-Werror=unused-function]
+ static int azx_resume(struct device *dev)
+            ^~~~~~~~~~
+sound/pci/hda/hda_intel.c:994:12: error: 'azx_suspend' defined but not used [-Werror=unused-function]
+ static int azx_suspend(struct device *dev)
+            ^~~~~~~~~~~
 
+Keeping track of the correct #ifdef checks is hard, so this removes
+all the #ifdefs for power management in this file and instead uses
+__maybe_unused annotations that let the compiler do the job right
+by itself.
 
---kv4lnffrs5agllfz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 07f4f97d7b4b ("vga_switcheroo: Use device link for HDA controller")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ sound/pci/hda/hda_intel.c       | 52 +++++++++++++++++------------------------
+ sound/pci/hda/hda_intel_trace.h |  2 --
+ 2 files changed, 21 insertions(+), 33 deletions(-)
 
-Hi,
-
-On Wed, Mar 28, 2018 at 10:29:10AM +0800, Mark Brown wrote:
-> On Wed, Mar 28, 2018 at 12:22:37AM +0200, Sebastian Reichel wrote:
-> > On Tue, Mar 27, 2018 at 08:14:41PM +0800, Mark Brown wrote:
->=20
-> > > No, this is exactly the sort of use case with multiple DAIs that the
-> > > graph card is intended to enable over the old simple-card.
->=20
-> > +----------+         +-------------+
-> > | OMAP4    |         | CPCAP       |
-> > |          |         |             |
-> > | [McBSP2] | <-----> | [HiFi DAI]  |
-> > |          |         |             |
-> > | [McBSP3] | <--+--> | [Voice DAI] |
-> > |          |    |    |             |
-> > +----------+    |    +-------------+
-> >                 |
-> > +----------+    |    +-------------+
-> > | MDM6600  |    |    | WL1285      |
-> > |          |    |    |             |
-> > |    [DAI] | <--+--> | [DAI]       |
-> > |          |         |             |
-> > +----------+         +-------------+
->=20
-> > Legend:
-> >     OMAP4   =3D SoC running Linux
-> >     CPCAP   =3D Audio codec
-> >     MDM6600 =3D Baseband
-> >     WL1285  =3D Bluetooth
->=20
-> > Re-reading the audio-graph-card binding document I still don't see
-> > how the network (OMAP.McBSP3, CPCAP.Voice, MDM6600, WL1285) is
-> > supposed to look like. It seems to expect point-to-point DAI
-> > connections.
->=20
-> Ugh, a TDM mux?
-
-Yes, at least that's how I understood Motorola's code.
-
-> That's really unusual and not particularly supported yet, you'd
-> need to extend the graph card to do it.  It's where things should
-> end up for a generic card though.
-
-Motorola's driver provided the following modes:
-
-OMAP4 <-> CPCAP      (voice recording)
-MDM6600 <-> CPCAP    (voice call, CPU not involved)
-OMAP4 <-> WL1285     (bluetooth HFP/HSP)
-MDM6600 <-> WL1285   (bluetooth voice call)
-
-In case of the last two variants, the bus clock is provided by
-CPCAP, so it needs to be enabled for any audio stream. I suppose
-the codec <-> codec as part of TDM is out of scope for the graph
-card and we need a Droid 4 specific card driver?
-
--- Sebastian
-
---kv4lnffrs5agllfz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAlq7oGUACgkQ2O7X88g7
-+pq2rQ/7BsWFnlf8oYXVK859+eH8vI+FlsTQd7NiOXuIPaaTt00faOY8sJHxt+RQ
-NfR8FM0i2meCUlT+NrncqKXKb+TPBc4FzmEk5JspEFa6bZIsk0uGOGveHwy7p7lY
-yEpnHM8rcODMUXXZnfVJxQI+PImEZvSStF8jYf47snO8oL48m890gOZnAv4EzeCf
-YFvjJ0s7z7jAab1OIAX/gBzX4X8MeImjftrbgYrfvbQj3XycVrKw2DlinF7rE9Rt
-NyrGS4ieX20ff7+G+e2ZomHyJwfnedRqLzAcPRdj6P1iDDhWn4BXSXsTiSDTFAdR
-MqUq2QzjAP2RYsfxOrme3ayprzdK7LAawzDJCzZj56Noe+KMyPPIlpbGrTdxP6+/
-u98cRnp39/YA5mDgF/mQb6lsiP8ALD2+ai78N306FKtdQyJ+LYGH4KdTzpMGY6Vt
-Gpz3ikp1nOtR4Y5txQtW1uiobKuS1KUihdYy5Y0jJxQxHTnYm6mqDLCL6CXiqnng
-dpaeYXbpHja/Doi9kzYQs8IIQT5nSETYEb5nv0CRDp7bIPtdb+nnbuZW0EuRWytS
-bYKye39R+7WCLPRazVGfuLS3c0YMHgGq0iVQSeLeGuL1uMewAkxsZt0cijgWuAv2
-jVA66wXnG0vpJU/aHtgCjwgj3bPIRs1oxrp6RWDCvty4os0grAI=
-=CxnS
------END PGP SIGNATURE-----
-
---kv4lnffrs5agllfz--
-
---===============3395156663064364246==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3395156663064364246==--
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 087c4d861c6e..01a96972d191 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -198,7 +198,9 @@ static bool power_save_controller = 1;
+ module_param(power_save_controller, bool, 0644);
+ MODULE_PARM_DESC(power_save_controller, "Reset controller in power save mode.");
+ #else
+-#define power_save	0
++#define power_save		0
++#define power_save_controller	0
++#define pm_blacklist		0
+ #endif /* CONFIG_PM */
+ 
+ static int align_buffer_size = -1;
+@@ -941,13 +943,16 @@ static unsigned int azx_get_pos_skl(struct azx *chip, struct azx_dev *azx_dev)
+ 	return azx_get_pos_posbuf(chip, azx_dev);
+ }
+ 
+-#ifdef CONFIG_PM
+ static DEFINE_MUTEX(card_list_lock);
+ static LIST_HEAD(card_list);
+ 
+ static void azx_add_card_list(struct azx *chip)
+ {
+ 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
++
++	if (!IS_ENABLED(CONFIG_PM))
++		return;
++
+ 	mutex_lock(&card_list_lock);
+ 	list_add(&hda->list, &card_list);
+ 	mutex_unlock(&card_list_lock);
+@@ -956,13 +961,17 @@ static void azx_add_card_list(struct azx *chip)
+ static void azx_del_card_list(struct azx *chip)
+ {
+ 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
++
++	if (!IS_ENABLED(CONFIG_PM))
++		return;
++
+ 	mutex_lock(&card_list_lock);
+ 	list_del_init(&hda->list);
+ 	mutex_unlock(&card_list_lock);
+ }
+ 
+ /* trigger power-save check at writing parameter */
+-static int param_set_xint(const char *val, const struct kernel_param *kp)
++static int __maybe_unused param_set_xint(const char *val, const struct kernel_param *kp)
+ {
+ 	struct hda_intel *hda;
+ 	struct azx *chip;
+@@ -982,16 +991,11 @@ static int param_set_xint(const char *val, const struct kernel_param *kp)
+ 	mutex_unlock(&card_list_lock);
+ 	return 0;
+ }
+-#else
+-#define azx_add_card_list(chip) /* NOP */
+-#define azx_del_card_list(chip) /* NOP */
+-#endif /* CONFIG_PM */
+ 
+-#if defined(CONFIG_PM_SLEEP) || defined(SUPPORT_VGA_SWITCHEROO)
+ /*
+  * power management
+  */
+-static int azx_suspend(struct device *dev)
++static int __maybe_unused azx_suspend(struct device *dev)
+ {
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct azx *chip;
+@@ -1026,7 +1030,7 @@ static int azx_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int azx_resume(struct device *dev)
++static int __maybe_unused azx_resume(struct device *dev)
+ {
+ 	struct pci_dev *pci = to_pci_dev(dev);
+ 	struct snd_card *card = dev_get_drvdata(dev);
+@@ -1068,13 +1072,11 @@ static int azx_resume(struct device *dev)
+ 	trace_azx_resume(chip);
+ 	return 0;
+ }
+-#endif /* CONFIG_PM_SLEEP || SUPPORT_VGA_SWITCHEROO */
+ 
+-#ifdef CONFIG_PM_SLEEP
+ /* put codec down to D3 at hibernation for Intel SKL+;
+  * otherwise BIOS may still access the codec and screw up the driver
+  */
+-static int azx_freeze_noirq(struct device *dev)
++static int __maybe_unused azx_freeze_noirq(struct device *dev)
+ {
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct azx *chip = card->private_data;
+@@ -1086,7 +1088,7 @@ static int azx_freeze_noirq(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int azx_thaw_noirq(struct device *dev)
++static int __maybe_unused azx_thaw_noirq(struct device *dev)
+ {
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct azx *chip = card->private_data;
+@@ -1097,10 +1099,8 @@ static int azx_thaw_noirq(struct device *dev)
+ 
+ 	return 0;
+ }
+-#endif /* CONFIG_PM_SLEEP */
+ 
+-#ifdef CONFIG_PM
+-static int azx_runtime_suspend(struct device *dev)
++static int __maybe_unused azx_runtime_suspend(struct device *dev)
+ {
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct azx *chip;
+@@ -1132,7 +1132,7 @@ static int azx_runtime_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int azx_runtime_resume(struct device *dev)
++static int __maybe_unused azx_runtime_resume(struct device *dev)
+ {
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct azx *chip;
+@@ -1185,7 +1185,7 @@ static int azx_runtime_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int azx_runtime_idle(struct device *dev)
++static int __maybe_unused azx_runtime_idle(struct device *dev)
+ {
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct azx *chip;
+@@ -1215,12 +1215,6 @@ static const struct dev_pm_ops azx_pm = {
+ 	SET_RUNTIME_PM_OPS(azx_runtime_suspend, azx_runtime_resume, azx_runtime_idle)
+ };
+ 
+-#define AZX_PM_OPS	&azx_pm
+-#else
+-#define AZX_PM_OPS	NULL
+-#endif /* CONFIG_PM */
+-
+-
+ static int azx_probe_continue(struct azx *chip);
+ 
+ #ifdef SUPPORT_VGA_SWITCHEROO
+@@ -2199,7 +2193,6 @@ static int azx_probe(struct pci_dev *pci,
+ 	return err;
+ }
+ 
+-#ifdef CONFIG_PM
+ /* On some boards setting power_save to a non 0 value leads to clicking /
+  * popping sounds when ever we enter/leave powersaving mode. Ideally we would
+  * figure out how to avoid these sounds, but that is not always feasible.
+@@ -2215,7 +2208,6 @@ static struct snd_pci_quirk power_save_blacklist[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x2227, "Lenovo X1 Carbon 3rd Gen", 0),
+ 	{}
+ };
+-#endif /* CONFIG_PM */
+ 
+ /* number of codec slots for each chipset: 0 = default slots (i.e. 4) */
+ static unsigned int azx_max_codecs[AZX_NUM_DRIVERS] = {
+@@ -2313,8 +2305,7 @@ static int azx_probe_continue(struct azx *chip)
+ 	azx_add_card_list(chip);
+ 
+ 	val = power_save;
+-#ifdef CONFIG_PM
+-	if (pm_blacklist) {
++	if (IS_ENABLED(CONFIG_PM) && pm_blacklist) {
+ 		const struct snd_pci_quirk *q;
+ 
+ 		q = snd_pci_quirk_lookup(chip->pci, power_save_blacklist);
+@@ -2324,7 +2315,6 @@ static int azx_probe_continue(struct azx *chip)
+ 			val = 0;
+ 		}
+ 	}
+-#endif /* CONFIG_PM */
+ 
+ 	/*
+ 	 * The discrete GPU cannot power down unless the HDA controller runtime
+@@ -2671,7 +2661,7 @@ static struct pci_driver azx_driver = {
+ 	.remove = azx_remove,
+ 	.shutdown = azx_shutdown,
+ 	.driver = {
+-		.pm = AZX_PM_OPS,
++		.pm = &azx_pm,
+ 	},
+ };
+ 
+diff --git a/sound/pci/hda/hda_intel_trace.h b/sound/pci/hda/hda_intel_trace.h
+index 73a7adfa192d..2775fa81a500 100644
+--- a/sound/pci/hda/hda_intel_trace.h
++++ b/sound/pci/hda/hda_intel_trace.h
+@@ -34,7 +34,6 @@ DEFINE_EVENT(hda_pm, azx_resume,
+ 	TP_ARGS(chip)
+ );
+ 
+-#ifdef CONFIG_PM
+ DEFINE_EVENT(hda_pm, azx_runtime_suspend,
+ 	TP_PROTO(struct azx *chip),
+ 	TP_ARGS(chip)
+@@ -44,7 +43,6 @@ DEFINE_EVENT(hda_pm, azx_runtime_resume,
+ 	TP_PROTO(struct azx *chip),
+ 	TP_ARGS(chip)
+ );
+-#endif
+ 
+ #endif /* _TRACE_HDA_INTEL_H */
+ 
+-- 
+2.9.0
