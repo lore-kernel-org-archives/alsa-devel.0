@@ -1,15 +1,21 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ALSA: hda_intel: mark PM functions as
-	__maybe_unused
-Date: Wed, 28 Mar 2018 16:19:29 +0200
-Message-ID: <20180328142020.3275989-1-arnd@arndb.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RESEND][PATCH v4 1/3] ALSA: core: let low-level
+ driver or userspace disable rewinds
+Date: Wed, 28 Mar 2018 09:30:09 -0500
+Message-ID: <c5967958-7bb0-3351-f818-549675645a1d@linux.intel.com>
+References: <1521561668-28613-1-git-send-email-sriramx.periyasamy@intel.com>
+ <1521561668-28613-2-git-send-email-sriramx.periyasamy@intel.com>
+ <s5ho9jiu3fk.wl-tiwai@suse.de> <20180325104643.GA13721@intel.com>
+ <s5h1sg88aml.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
- by alsa0.perex.cz (Postfix) with ESMTP id C9BC5266F93
- for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2018 16:20:44 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id C82EA266F93
+ for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2018 16:30:07 +0200 (CEST)
+In-Reply-To: <s5h1sg88aml.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,241 +25,147 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Libin Yang <libin.yang@intel.com>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, Lukas Wunner <lukas@wunner.de>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+To: Takashi Iwai <tiwai@suse.de>, Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Cc: ALSA ML <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Ramesh Babu <ramesh.babu@intel.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Two callsites of azx_suspend/azx_resume were removed, leaving these
-functions only called from the optional SET_SYSTEM_SLEEP_PM_OPS()
-and causing a warning without CONFIG_PM_SLEEP:
+On 3/25/18 9:58 AM, Takashi Iwai wrote:
+> On Sun, 25 Mar 2018 12:46:43 +0200,
+> Sriram Periyasamy wrote:
+>>
+>> On Tue, Mar 20, 2018 at 05:17:35PM +0100, Takashi Iwai wrote:
+>>> On Tue, 20 Mar 2018 17:01:06 +0100,
+>>> Sriram Periyasamy wrote:
+>>>>
+>>>> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>>>
+>>>> Add new hw_params flag to explicitly tell driver that rewinds will never
+>>>> be used. This can be used by low-level driver to optimize DMA operations
+>>>> and reduce power consumption. Use this flag only when data written in
+>>>> ring buffer will never be invalidated, e.g. any update of appl_ptr is
+>>>> final.
+>>>>
+>>>> Note that the update of appl_ptr include both a read/write data
+>>>> operation as well as snd_pcm_forward() whose behavior is not modified.
+>>>>
+>>>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>>> Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
+>>>> Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+>>>> Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+>>>
+>>> Well, I'm still not convinced with this flag.
+>>>
+>>> First off, does it really need to be per PCM stream?  The introducing
+>>
+>> Flag per PCM stream helps where each stream in given system may have
+>> different requirement such as low power or low latency based on the
+>> use case. For example in case of low power stream, driver can perform
+>> required optimizations at hardware level based on the no_rewind flag.
+> 
+> Yes, but does it really need to be PCM stream, i.e. per application?
+> Certainly the system will be using some sound backend (like PA).  In
+> which scenario can such behavior change -- some application uses a
+> different backend on a phone or a tablet?
 
-sound/pci/hda/hda_intel.c:1029:12: error: 'azx_resume' defined but not used [-Werror=unused-function]
- static int azx_resume(struct device *dev)
-            ^~~~~~~~~~
-sound/pci/hda/hda_intel.c:994:12: error: 'azx_suspend' defined but not used [-Werror=unused-function]
- static int azx_suspend(struct device *dev)
-            ^~~~~~~~~~~
+This is intended for the case where the system server exposes a 
+'deep-buffer' PCM device for music playback in low-power mode and a 
+separate one for system sounds or anything that requires interactivity.
+The need for rewinding is really for the case where the interactive 
+system sounds are mixed with music, when you have separation between 
+types of sounds and hardware/firmware mixing then the rewinds are 
+unnecessary.
 
-Keeping track of the correct #ifdef checks is hard, so this removes
-all the #ifdefs for power management in this file and instead uses
-__maybe_unused annotations that let the compiler do the job right
-by itself.
+If there are multiple applications using different PCM devices each 
+(which is a bit hypothetical to me) there is no way to know ahead of 
+time when the modules are loaded if the application will perform rewinds 
+due to its interactive nature or will just stream without ever 
+invalidating the ring buffer. So yes it's per stream.
 
-Fixes: 07f4f97d7b4b ("vga_switcheroo: Use device link for HDA controller")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/pci/hda/hda_intel.c       | 52 +++++++++++++++++------------------------
- sound/pci/hda/hda_intel_trace.h |  2 --
- 2 files changed, 21 insertions(+), 33 deletions(-)
+> 
+> 
+>>> something to hw_parms implies that it varies per application.  But I
+>>> can't imagine that a system requires different behavior per stream
+>>> regarding such a thing.
+>>>
+>>> Second, the driver can implement a check in PCM ack callback to
+>>> prevent the rewind, too.  Then there is no need to touch the PCM
+>>> core.
+>>>
+>>
+>> As per the previous discussion at [1],
+>>
+>> [1]
+>> https://patchwork.kernel.org/patch/9795233/
+>>
+>> from Pierre,
+>>
+>> "The application (which is in most cases an audio server) *knows* if it
+>> requires rewinds or not. It's part of its design, with rewinds typically
+>> disabled if period interrupts are required. It's been that way for a
+>> number of years now. The use of rewinds is typically associated with the
+>> combination of a large buffer and no interrupts (having either of the
+>> two would not require rewinds).
+>>
+>> So the idea is that the application makes a statement that rewinds will
+>> not be used, and the low-level driver makes use of the information to
+>> enable whatever optimizations are available at the hardware level.
+>>
+>> Exposing more information to userspace would quickly lead to a confusing
+>> decision-making and would require more than just a flag."
+> 
+> And, requiring *that* information is already confusing, IMO.
+> Think from the application writer POV: what is the relation between
+> the power-saving and no_rewind behavior in application level at all?
+> If you have no idea about the hardware details, they are totally
+> irrelevant.
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 087c4d861c6e..01a96972d191 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -198,7 +198,9 @@ static bool power_save_controller = 1;
- module_param(power_save_controller, bool, 0644);
- MODULE_PARM_DESC(power_save_controller, "Reset controller in power save mode.");
- #else
--#define power_save	0
-+#define power_save		0
-+#define power_save_controller	0
-+#define pm_blacklist		0
- #endif /* CONFIG_PM */
- 
- static int align_buffer_size = -1;
-@@ -941,13 +943,16 @@ static unsigned int azx_get_pos_skl(struct azx *chip, struct azx_dev *azx_dev)
- 	return azx_get_pos_posbuf(chip, azx_dev);
- }
- 
--#ifdef CONFIG_PM
- static DEFINE_MUTEX(card_list_lock);
- static LIST_HEAD(card_list);
- 
- static void azx_add_card_list(struct azx *chip)
- {
- 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
-+
-+	if (!IS_ENABLED(CONFIG_PM))
-+		return;
-+
- 	mutex_lock(&card_list_lock);
- 	list_add(&hda->list, &card_list);
- 	mutex_unlock(&card_list_lock);
-@@ -956,13 +961,17 @@ static void azx_add_card_list(struct azx *chip)
- static void azx_del_card_list(struct azx *chip)
- {
- 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
-+
-+	if (!IS_ENABLED(CONFIG_PM))
-+		return;
-+
- 	mutex_lock(&card_list_lock);
- 	list_del_init(&hda->list);
- 	mutex_unlock(&card_list_lock);
- }
- 
- /* trigger power-save check at writing parameter */
--static int param_set_xint(const char *val, const struct kernel_param *kp)
-+static int __maybe_unused param_set_xint(const char *val, const struct kernel_param *kp)
- {
- 	struct hda_intel *hda;
- 	struct azx *chip;
-@@ -982,16 +991,11 @@ static int param_set_xint(const char *val, const struct kernel_param *kp)
- 	mutex_unlock(&card_list_lock);
- 	return 0;
- }
--#else
--#define azx_add_card_list(chip) /* NOP */
--#define azx_del_card_list(chip) /* NOP */
--#endif /* CONFIG_PM */
- 
--#if defined(CONFIG_PM_SLEEP) || defined(SUPPORT_VGA_SWITCHEROO)
- /*
-  * power management
-  */
--static int azx_suspend(struct device *dev)
-+static int __maybe_unused azx_suspend(struct device *dev)
- {
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip;
-@@ -1026,7 +1030,7 @@ static int azx_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int azx_resume(struct device *dev)
-+static int __maybe_unused azx_resume(struct device *dev)
- {
- 	struct pci_dev *pci = to_pci_dev(dev);
- 	struct snd_card *card = dev_get_drvdata(dev);
-@@ -1068,13 +1072,11 @@ static int azx_resume(struct device *dev)
- 	trace_azx_resume(chip);
- 	return 0;
- }
--#endif /* CONFIG_PM_SLEEP || SUPPORT_VGA_SWITCHEROO */
- 
--#ifdef CONFIG_PM_SLEEP
- /* put codec down to D3 at hibernation for Intel SKL+;
-  * otherwise BIOS may still access the codec and screw up the driver
-  */
--static int azx_freeze_noirq(struct device *dev)
-+static int __maybe_unused azx_freeze_noirq(struct device *dev)
- {
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip = card->private_data;
-@@ -1086,7 +1088,7 @@ static int azx_freeze_noirq(struct device *dev)
- 	return 0;
- }
- 
--static int azx_thaw_noirq(struct device *dev)
-+static int __maybe_unused azx_thaw_noirq(struct device *dev)
- {
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip = card->private_data;
-@@ -1097,10 +1099,8 @@ static int azx_thaw_noirq(struct device *dev)
- 
- 	return 0;
- }
--#endif /* CONFIG_PM_SLEEP */
- 
--#ifdef CONFIG_PM
--static int azx_runtime_suspend(struct device *dev)
-+static int __maybe_unused azx_runtime_suspend(struct device *dev)
- {
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip;
-@@ -1132,7 +1132,7 @@ static int azx_runtime_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int azx_runtime_resume(struct device *dev)
-+static int __maybe_unused azx_runtime_resume(struct device *dev)
- {
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip;
-@@ -1185,7 +1185,7 @@ static int azx_runtime_resume(struct device *dev)
- 	return 0;
- }
- 
--static int azx_runtime_idle(struct device *dev)
-+static int __maybe_unused azx_runtime_idle(struct device *dev)
- {
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip;
-@@ -1215,12 +1215,6 @@ static const struct dev_pm_ops azx_pm = {
- 	SET_RUNTIME_PM_OPS(azx_runtime_suspend, azx_runtime_resume, azx_runtime_idle)
- };
- 
--#define AZX_PM_OPS	&azx_pm
--#else
--#define AZX_PM_OPS	NULL
--#endif /* CONFIG_PM */
--
--
- static int azx_probe_continue(struct azx *chip);
- 
- #ifdef SUPPORT_VGA_SWITCHEROO
-@@ -2199,7 +2193,6 @@ static int azx_probe(struct pci_dev *pci,
- 	return err;
- }
- 
--#ifdef CONFIG_PM
- /* On some boards setting power_save to a non 0 value leads to clicking /
-  * popping sounds when ever we enter/leave powersaving mode. Ideally we would
-  * figure out how to avoid these sounds, but that is not always feasible.
-@@ -2215,7 +2208,6 @@ static struct snd_pci_quirk power_save_blacklist[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x2227, "Lenovo X1 Carbon 3rd Gen", 0),
- 	{}
- };
--#endif /* CONFIG_PM */
- 
- /* number of codec slots for each chipset: 0 = default slots (i.e. 4) */
- static unsigned int azx_max_codecs[AZX_NUM_DRIVERS] = {
-@@ -2313,8 +2305,7 @@ static int azx_probe_continue(struct azx *chip)
- 	azx_add_card_list(chip);
- 
- 	val = power_save;
--#ifdef CONFIG_PM
--	if (pm_blacklist) {
-+	if (IS_ENABLED(CONFIG_PM) && pm_blacklist) {
- 		const struct snd_pci_quirk *q;
- 
- 		q = snd_pci_quirk_lookup(chip->pci, power_save_blacklist);
-@@ -2324,7 +2315,6 @@ static int azx_probe_continue(struct azx *chip)
- 			val = 0;
- 		}
- 	}
--#endif /* CONFIG_PM */
- 
- 	/*
- 	 * The discrete GPU cannot power down unless the HDA controller runtime
-@@ -2671,7 +2661,7 @@ static struct pci_driver azx_driver = {
- 	.remove = azx_remove,
- 	.shutdown = azx_shutdown,
- 	.driver = {
--		.pm = AZX_PM_OPS,
-+		.pm = &azx_pm,
- 	},
- };
- 
-diff --git a/sound/pci/hda/hda_intel_trace.h b/sound/pci/hda/hda_intel_trace.h
-index 73a7adfa192d..2775fa81a500 100644
---- a/sound/pci/hda/hda_intel_trace.h
-+++ b/sound/pci/hda/hda_intel_trace.h
-@@ -34,7 +34,6 @@ DEFINE_EVENT(hda_pm, azx_resume,
- 	TP_ARGS(chip)
- );
- 
--#ifdef CONFIG_PM
- DEFINE_EVENT(hda_pm, azx_runtime_suspend,
- 	TP_PROTO(struct azx *chip),
- 	TP_ARGS(chip)
-@@ -44,7 +43,6 @@ DEFINE_EVENT(hda_pm, azx_runtime_resume,
- 	TP_PROTO(struct azx *chip),
- 	TP_ARGS(chip)
- );
--#endif
- 
- #endif /* _TRACE_HDA_INTEL_H */
- 
--- 
-2.9.0
+I feel like disabling IRQs or disabling rewinds is the same level of 
+information, you set the flags without necessary knowing all the power 
+savings down to the mW level. But it provides an opportunity to save 
+power with additional degrees of freedom for implementations.
+
+An additional benefit of using the underlying SPIB register on Intel 
+hardware is that the DMA hardware will not wrap-around, which can lead 
+to better detection of real-time issues and a guarantee that stale data 
+will not be played.
+
+> 
+> Or, think like this way: imagine a hardware that requires a different
+> constraint, e.g. the power-of-two buffer size, for power-efficient
+> operation.  What would you do?  Adding a new power_of_two bit flag
+> into hw_params?  Likely not.
+
+we've added the noIRQ mode in the past using flags, if now you are 
+saying that flags is a bad idea then fine, but let's be consistent...
+
+> 
+> In such a case, I would expect some operation mode switch
+> (e.g. power-saving vs low latency or whatever) instead of a very
+> specific hw_parmas flag.  It might be a module option, via ALSA
+> control, or something else.  But it's clearer for which purpose it's
+> present, at least, and it can be implemented well without changing the
+> existing API.
+
+We have no way of predicting what the application will do so the module 
+option is not possible.
+
+Using an ALSA control is possible, but it's odd to me.
+
+I really don't see what's so problematic about adding flags. I uses an 
+existing capability of the API, it's consistent with the previous 
+usages. There is no change in behavior for existing apps, only newer can 
+benefit for better use of the hardware. There is no complicated decision 
+making, you set the flags if you don't use IRQ or rewinds.
+And it's not like we will have new flags every week, we've been talking 
+about this SPIB capability since Skylake which is 3 years old already.
+
+> 
+> 
+> thanks,
+> 
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
