@@ -1,64 +1,54 @@
-From: Kyle Spiers <kyle@spiers.me>
-Subject: [PATCH] pcm_native: Remove VLA usage
-Date: Wed, 28 Mar 2018 15:11:19 -0700
-Message-ID: <1522275079-2229-1-git-send-email-kyle@spiers.me>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] ALSA: hda_intel: mark PM functions as __maybe_unused
+Date: Thu, 29 Mar 2018 00:14:03 +0200
+Message-ID: <CAK8P3a2RSDgxOcAqJK9fJ-zsZJu37nTVn3Wdogj3B655d0yr5Q@mail.gmail.com>
+References: <20180328142020.3275989-1-arnd@arndb.de> <20180328143150.GA17992@wunner.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180328143150.GA17992@wunner.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz
-Cc: tiwai@suse.com, o-takashi@sakamocchi.jp, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, keescook@chromium.org, Kyle Spiers <kyle@spiers.me>
+To: Lukas Wunner <lukas@wunner.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Hans de Goede <hdegoede@redhat.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Libin Yang <libin.yang@intel.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-As part of the effort to remove VLAs from the kernel[1], this changes
-the allocation of the rstamps array from being on the stack to being
-kcalloc()ed. This also allows for the removal of the explicit zeroing
-loop.
+On Wed, Mar 28, 2018 at 4:31 PM, Lukas Wunner <lukas@wunner.de> wrote:
+> On Wed, Mar 28, 2018 at 04:19:29PM +0200, Arnd Bergmann wrote:
+>> Two callsites of azx_suspend/azx_resume were removed, leaving these
+>> functions only called from the optional SET_SYSTEM_SLEEP_PM_OPS()
+>> and causing a warning without CONFIG_PM_SLEEP:
+>>
+>> sound/pci/hda/hda_intel.c:1029:12: error: 'azx_resume' defined but not used [-Werror=unused-function]
+>>  static int azx_resume(struct device *dev)
+>>             ^~~~~~~~~~
+>> sound/pci/hda/hda_intel.c:994:12: error: 'azx_suspend' defined but not used [-Werror=unused-function]
+>>  static int azx_suspend(struct device *dev)
+>>             ^~~~~~~~~~~
+>>
+>> Keeping track of the correct #ifdef checks is hard, so this removes
+>> all the #ifdefs for power management in this file and instead uses
+>> __maybe_unused annotations that let the compiler do the job right
+>> by itself.
+>
+> Ugh, this isn't as hard as it may seem, just replace
+>
+>         #if defined(CONFIG_PM_SLEEP) || defined(SUPPORT_VGA_SWITCHEROO)
+>
+> with
+>
+>         #if defined(CONFIG_PM_SLEEP)
+>
+> That way it's just a simple one line change which is less intrusive.
+>
+> Care to respin like this?
 
-[1] https://lkml.org/lkml/2018/3/7/621
+I won't be able to test that properly before the merge window. If you
+are sure that works, maybe you can send that patch and just mark
+it as 'Reported-by: Arnd Bergmann <arnd@arndb.de>'?
 
-Signed-off-by: Kyle Spiers <kyle@spiers.me>
----
- sound/core/pcm_native.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+I've mostly stopped trying to figure out what the correct set of #ifdef
+for power management functions is, since I get those wrong as much
+as everyone else. ;-). The patch I sent has been through a few days
+of randconfig testing.
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 77ba50d..57240b8 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -323,7 +323,7 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_constraints *constrs =
- 					&substream->runtime->hw_constraints;
- 	unsigned int k;
--	unsigned int rstamps[constrs->rules_num];
-+	unsigned int *rstamps;
- 	unsigned int vstamps[SNDRV_PCM_HW_PARAM_LAST_INTERVAL + 1];
- 	unsigned int stamp;
- 	struct snd_pcm_hw_rule *r;
-@@ -339,8 +339,8 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
- 	 * Each member of 'rstamps' array represents the sequence number of
- 	 * recent application of corresponding rule.
- 	 */
--	for (k = 0; k < constrs->rules_num; k++)
--		rstamps[k] = 0;
-+
-+	rstamps = kcalloc(constrs->rules_num, sizeof(*rstamps), GFP_KERNEL);
- 
- 	/*
- 	 * Each member of 'vstamps' array represents the sequence number of
-@@ -399,6 +399,7 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
- 
- 		changed = r->func(params, r);
- 		if (changed < 0)
-+			kfree(rstamps);
- 			return changed;
- 
- 		/*
-@@ -430,6 +431,7 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
- 	if (again)
- 		goto retry;
- 
-+	kfree(rstamps);
- 	return 0;
- }
- 
--- 
-2.7.4
+      Arnd
