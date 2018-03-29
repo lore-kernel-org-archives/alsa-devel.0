@@ -1,16 +1,31 @@
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH V2] ASoC: amd: dma driver changes for BT I2S
-	controller instance
-Date: Fri, 30 Mar 2018 02:09:54 +0530
-Message-ID: <1522355994-32039-1-git-send-email-Vijendar.Mukunda@amd.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RESEND][PATCH v4 1/3] ALSA: core: let low-level
+ driver or userspace disable rewinds
+Date: Thu, 29 Mar 2018 16:40:43 -0500
+Message-ID: <b708554c-c044-9e57-441f-c11f22ede4b0@linux.intel.com>
+References: <1521561668-28613-1-git-send-email-sriramx.periyasamy@intel.com>
+ <1521561668-28613-2-git-send-email-sriramx.periyasamy@intel.com>
+ <s5ho9jiu3fk.wl-tiwai@suse.de> <20180325104643.GA13721@intel.com>
+ <s5h1sg88aml.wl-tiwai@suse.de>
+ <c5967958-7bb0-3351-f818-549675645a1d@linux.intel.com>
+ <s5h1sg4mdlf.wl-tiwai@suse.de>
+ <53f5df7e-0162-9a4a-ea2d-a8beb4c14b89@linux.intel.com>
+ <s5hk1tw82vt.wl-tiwai@suse.de>
+ <bdd9eb75-b145-963b-3c8d-d7577bf81efd@linux.intel.com>
+ <s5hd0zn9abs.wl-tiwai@suse.de>
+ <1714954c-0703-d397-ae08-24f3359f6af4@linux.intel.com>
+ <s5h8taakhwg.wl-tiwai@suse.de>
+ <6d209396-bfad-b210-cb83-73b4be4aa360@linux.intel.com>
+ <s5ha7uq7icw.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM01-SN1-obe.outbound.protection.outlook.com
- (mail-sn1nam01on0063.outbound.protection.outlook.com [104.47.32.63])
- by alsa0.perex.cz (Postfix) with ESMTP id 1EFBD2671B9
- for <alsa-devel@alsa-project.org>; Thu, 29 Mar 2018 22:37:11 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id F0A69267140
+ for <alsa-devel@alsa-project.org>; Thu, 29 Mar 2018 23:40:48 +0200 (CEST)
+In-Reply-To: <s5ha7uq7icw.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,247 +35,176 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, lgirdwood@gmail.com, Akshu Agrawal <akshu.agrawal@amd.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA ML <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Ramesh Babu <ramesh.babu@intel.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-With in ACP, There are three I2S controllers can be
-configured/enabled ( I2S SP, I2S MICSP, I2S BT).
-Default enabled I2S controller instance is I2S SP.
-This patch provides required changes to support I2S BT
-controller Instance.
 
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-v1->v2: fixed kbuild errors
----
- sound/soc/amd/acp-pcm-dma.c | 116 +++++++++++++++++++++++++++++++++++---------
- sound/soc/amd/acp.h         |  17 +++++++
- 2 files changed, 111 insertions(+), 22 deletions(-)
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 540088d..cad995e 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -697,6 +697,9 @@ static int acp_dma_open(struct snd_pcm_substream *substream)
- 	struct snd_soc_pcm_runtime *prtd = substream->private_data;
- 	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd, DRV_NAME);
- 	struct audio_drv_data *intr_data = dev_get_drvdata(component->dev);
-+#ifdef CONFIG_SND_DESIGNWARE_PCM
-+	struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(prtd->cpu_dai);
-+#endif
- 	struct audio_substream_data *adata =
- 		kzalloc(sizeof(struct audio_substream_data), GFP_KERNEL);
- 	if (adata == NULL)
-@@ -710,7 +713,29 @@ static int acp_dma_open(struct snd_pcm_substream *substream)
- 		default:
- 			runtime->hw = acp_pcm_hardware_playback;
- 		}
-+#ifdef CONFIG_SND_DESIGNWARE_PCM
-+		adata->i2s_play_instance = dev->i2s_instance;
-+#else
-+		adata->i2s_play_instance = I2S_SP_INSTANCE;
-+#endif
-+		if (adata->i2s_play_instance == I2S_SP_INSTANCE)
-+			adata->i2ssp_renderbytescount = 0;
-+		else if (adata->i2s_play_instance == I2S_BT_INSTANCE)
-+			adata->i2sbt_renderbytescount = 0;
-+		else
-+			return -EINVAL;
- 	} else {
-+#ifdef CONFIG_SND_DESIGNWARE_PCM
-+		adata->i2s_capture_instance = dev->i2s_instance;
-+#else
-+		adata->i2s_capture_instance = I2S_SP_INSTANCE;
-+#endif
-+		if (adata->i2s_capture_instance == I2S_SP_INSTANCE)
-+			adata->i2ssp_capturebytescount = 0;
-+		else if (adata->i2s_capture_instance == I2S_BT_INSTANCE)
-+			adata->i2sbt_capturebytescount = 0;
-+		else
-+			return -EINVAL;
- 		switch (intr_data->asic_type) {
- 		case CHIP_STONEY:
- 			runtime->hw = acp_st_pcm_hardware_capture;
-@@ -736,11 +761,20 @@ static int acp_dma_open(struct snd_pcm_substream *substream)
- 	 * This enablement is not required for another stream, if current
- 	 * stream is not closed
- 	*/
--	if (!intr_data->play_i2ssp_stream && !intr_data->capture_i2ssp_stream)
-+	if (!intr_data->play_i2ssp_stream && !intr_data->capture_i2ssp_stream &&
-+		!intr_data->play_i2sbt_stream &&
-+		!intr_data->capture_i2sbt_stream)
- 		acp_reg_write(1, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		intr_data->play_i2ssp_stream = substream;
-+		switch (adata->i2s_play_instance) {
-+		case I2S_BT_INSTANCE:
-+			intr_data->play_i2sbt_stream = substream;
-+			break;
-+		case I2S_SP_INSTANCE:
-+		default:
-+			intr_data->play_i2ssp_stream = substream;
-+		}
- 		/* For Stoney, Memory gating is disabled,i.e SRAM Banks
- 		 * won't be turned off. The default state for SRAM banks is ON.
- 		 * Setting SRAM bank state code skipped for STONEY platform.
-@@ -751,7 +785,14 @@ static int acp_dma_open(struct snd_pcm_substream *substream)
- 							bank, true);
- 		}
- 	} else {
--		intr_data->capture_i2ssp_stream = substream;
-+		switch (adata->i2s_capture_instance) {
-+		case I2S_BT_INSTANCE:
-+			intr_data->capture_i2sbt_stream = substream;
-+			break;
-+		case I2S_SP_INSTANCE:
-+		default:
-+			intr_data->capture_i2ssp_stream = substream;
-+		}
- 		if (intr_data->asic_type != CHIP_STONEY) {
- 			for (bank = 5; bank <= 8; bank++)
- 				acp_set_sram_bank_state(intr_data->acp_mmio,
-@@ -1010,34 +1051,49 @@ static int acp_dma_close(struct snd_pcm_substream *substream)
- 	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd, DRV_NAME);
- 	struct audio_drv_data *adata = dev_get_drvdata(component->dev);
- 
--	kfree(rtd);
--
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		adata->play_i2ssp_stream = NULL;
--		/* For Stoney, Memory gating is disabled,i.e SRAM Banks
--		 * won't be turned off. The default state for SRAM banks is ON.
--		 * Setting SRAM bank state code skipped for STONEY platform.
--		 * added condition checks for Carrizo platform only
--		 */
--		if (adata->asic_type != CHIP_STONEY) {
--			for (bank = 1; bank <= 4; bank++)
--				acp_set_sram_bank_state(adata->acp_mmio, bank,
--				false);
-+		switch (rtd->i2s_play_instance) {
-+		case I2S_BT_INSTANCE:
-+			adata->play_i2sbt_stream = NULL;
-+			break;
-+		case I2S_SP_INSTANCE:
-+		default:
-+			adata->play_i2ssp_stream = NULL;
-+			/* For Stoney, Memory gating is disabled,i.e SRAM Banks
-+			 * won't be turned off. The default state for SRAM banks
-+			 * is ON.Setting SRAM bank state code skipped for STONEY
-+			 * platform.Added condition checks for Carrizo platform
-+			 * only.
-+			 */
-+			if (adata->asic_type != CHIP_STONEY) {
-+				for (bank = 1; bank <= 4; bank++)
-+					acp_set_sram_bank_state(adata->acp_mmio,
-+							bank, false);
-+			}
- 		}
- 	} else  {
--		adata->capture_i2ssp_stream = NULL;
--		if (adata->asic_type != CHIP_STONEY) {
--			for (bank = 5; bank <= 8; bank++)
--				acp_set_sram_bank_state(adata->acp_mmio, bank,
--						     false);
-+		switch (rtd->i2s_capture_instance) {
-+		case I2S_BT_INSTANCE:
-+			adata->capture_i2sbt_stream = NULL;
-+			break;
-+		case I2S_SP_INSTANCE:
-+		default:
-+			adata->capture_i2ssp_stream = NULL;
-+			if (adata->asic_type != CHIP_STONEY) {
-+				for (bank = 5; bank <= 8; bank++)
-+					acp_set_sram_bank_state(adata->acp_mmio,
-+							bank, false);
-+			}
- 		}
- 	}
- 
- 	/* Disable ACP irq, when the current stream is being closed and
- 	 * another stream is also not active.
--	*/
--	if (!adata->play_i2ssp_stream && !adata->capture_i2ssp_stream)
-+	 */
-+	if (!adata->play_i2ssp_stream && !adata->capture_i2ssp_stream &&
-+		!adata->play_i2sbt_stream && !adata->capture_i2sbt_stream)
- 		acp_reg_write(0, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
-+	kfree(rtd);
- 
- 	return 0;
- }
-@@ -1089,6 +1145,8 @@ static int acp_audio_probe(struct platform_device *pdev)
- 
- 	audio_drv_data->play_i2ssp_stream = NULL;
- 	audio_drv_data->capture_i2ssp_stream = NULL;
-+	audio_drv_data->play_i2sbt_stream = NULL;
-+	audio_drv_data->capture_i2sbt_stream = NULL;
- 
- 	audio_drv_data->asic_type =  *pdata;
- 
-@@ -1177,6 +1235,20 @@ static int acp_pcm_resume(struct device *dev)
- 			adata->capture_i2ssp_stream->runtime->private_data,
- 			adata->asic_type);
- 	}
-+	if (adata->asic_type != CHIP_CARRIZO) {
-+		if (adata->play_i2sbt_stream &&
-+			adata->play_i2sbt_stream->runtime) {
-+			config_acp_dma(adata->acp_mmio,
-+				adata->play_i2sbt_stream->runtime->private_data,
-+				adata->asic_type);
-+		}
-+		if (adata->capture_i2sbt_stream &&
-+			adata->capture_i2sbt_stream->runtime) {
-+			config_acp_dma(adata->acp_mmio,
-+				adata->capture_i2sbt_stream->runtime->private_data,
-+				adata->asic_type);
-+		}
-+	}
- 	acp_reg_write(1, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
- 	return 0;
- }
-diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
-index ba01510..7ad165b 100644
---- a/sound/soc/amd/acp.h
-+++ b/sound/soc/amd/acp.h
-@@ -4,6 +4,17 @@
- 
- #include "include/acp_2_2_d.h"
- #include "include/acp_2_2_sh_mask.h"
-+#ifdef CONFIG_SND_DESIGNWARE_PCM
-+#include "../dwc/local.h"
-+#endif
-+
-+#ifndef I2S_SP_INSTANCE
-+#define I2S_SP_INSTANCE 0x01
-+#endif
-+
-+#ifndef I2S_BT_INSTANCE
-+#define I2S_BT_INSTANCE 0x02
-+#endif
- 
- #define ACP_PAGE_SIZE_4K_ENABLE			0x02
- 
-@@ -88,12 +99,18 @@ struct audio_substream_data {
- 	uint64_t size;
- 	u64 i2ssp_renderbytescount;
- 	u64 i2ssp_capturebytescount;
-+	u64 i2sbt_renderbytescount;
-+	u64 i2sbt_capturebytescount;
- 	void __iomem *acp_mmio;
-+	u16 i2s_play_instance;
-+	u16 i2s_capture_instance;
- };
- 
- struct audio_drv_data {
- 	struct snd_pcm_substream *play_i2ssp_stream;
- 	struct snd_pcm_substream *capture_i2ssp_stream;
-+	struct snd_pcm_substream *play_i2sbt_stream;
-+	struct snd_pcm_substream *capture_i2sbt_stream;
- 	void __iomem *acp_mmio;
- 	u32 asic_type;
- };
--- 
-2.7.4
+On 03/29/2018 03:10 PM, Takashi Iwai wrote:
+> On Thu, 29 Mar 2018 21:16:58 +0200,
+> Pierre-Louis Bossart wrote:
+>>
+>>
+>> On 03/29/2018 10:42 AM, Takashi Iwai wrote:
+>>> On Wed, 28 Mar 2018 23:51:46 +0200,
+>>> Pierre-Louis Bossart wrote:
+>>>>>> Chrome can be benefit immediately since rewinds are never used.
+>>>>>> Jack can benefit immediately since rewinds are never used
+>>>>>> Android HALs can benefit immediately since rewinds are never used.
+>>>>> ... if you patch all these.  That's not immediate.
+>>>> It's a single flag to add to the hw_params. It'll take time to ripple
+>>>> to distros but it's not really complex.
+>>> Yes, but you have to modify *each* of them.  That's flaky.
+>>> Sure, it's safer for not enabling it as default, but is it your goal?
+>>>
+>>>>> OTOH, if you do introduce a single switch, it's immediately
+>>>>> effective, even with the old user-space without compilation.
+>>>> Humm, now you lost me.
+>>>> In your replies, you stated that the applications need to tell the
+>>>> driver - but disagreed that a hw_params flag was the right way. I am
+>>>> not religious here, as long as it remains simple enough we can look at
+>>>> other options.
+>>>>
+>>>> I don't get however what 'single switch' are you referring to here?
+>>> Just a simple module option or a kctl, for example.
+>>> That is, if we can forget about the ability for adjustment per stream,
+>>> the operation mode can be flipped by a switch on the fly.  This makes
+>>> things a lot easier.
+>>>
+>>>> In all cases, I don't see how we can enable this without rebuilding
+>>>> the apps.
+>>>> Except for ChromeOS, I don't know how a distro would enable a switch
+>>>> that would impact all apps using the ALSA API.
+>>> So here came the question how it would impact on PA.
+>>> If it doesn't work for PA, it means that essentially all traditional
+>>> Linux distros will turn it off as default.  It's only for Android and
+>>> Chrome OS, and they have own setup.  They can turn it on as default.
+>>>
+>>> If anyone wants to turn it on for JACK, they can do it.  But I don't
+>>> think people would mix up JACK and PA on the same system at the very
+>>> same time.  (One can hook up as a client, but then it doesn't matter
+>>> about this hardware feature.)
+>> I do recall Lennart implementing a mechanism to hand-over the ALSA
+>> resources between PulseAudio and Jack so there is a precedent here.
+>>>>> And, now back to the question: in which situation you'll have to mix
+>>>>> both no-rewind and rewind operations on a single machine?  In theory,
+>>>>> yes, we may keep rewind working, but from the practical POV, it is
+>>>>> only PA who uses the rewind feature.  And, even if we disable rewind,
+>>>>> PA will still work as is.  (I know it because I broke it previously :)
+>>>> define 'work'. If PulseAudio cannot use the rewinds, then the system
+>>>> sounds will be heard with a delay and transitions between use cases
+>>>> will only happen when the queued audio is finished playing.
+>>> I just tried music players with PA, and disabled the rewind forcibly
+>>> (by putting return 0 in rewind_appl_ptr() in pcm_native.c).  I
+>>> couldn't hear any audible difference in its response for changing the
+>>> stream position, etc, interactively.  There was no audible latency
+>>> increase by that change.
+>>>
+>>> It was the test weeks ago, so I refreshed testing now.  And the
+>>> result is same, I saw no response difference.
+>>> Any specific workload to make the clear difference in your mind?
+>> It depends on how the app is written and what the configuration of the
+>> server is.
+> Isn't it about what PA does, not apps?
+The PulseAudio server has parameters, but the app can ask for a 
+different behavior depending on its needs by passing a pa_buffer_attr 
+structure, with a -1 value meaning "highest possible latency". This is 
+only possible btw with the regular API, apps using the simple API will 
+not control this behavior and can't ask for a specific latency.
+
+https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/LatencyControl/
+
+>
+>> Back in the Meego days the plan was to use very long
+>> buffers and not rewinding did impact user experience. It's the same
+>> issue on Windows and Android with deep buffers, source transitions,
+>> volume changes can be painful when the committed samples cannot be
+>> invalidated.
+> Yes, but we're talking specifically about the Intel HD-audio, and it
+> apparently works as is without rewind.  So an API change looks
+> overcommitting (even though it's one bit flag addition).
+>
+> If the feature is really generic in wider hardware ranges, it's a
+> convincing factor for changing the API.  Let's see.
+>
+>>>> If an app wants to play a sound immediately due to user interaction
+>>>> requirements, rewinds are an attractive solution. I don't know how we
+>>>> could determine ahead of time what userspace will do, certainly the
+>>>> use of rewinds is on a per-card basis and likely a per-stream
+>>>> decision.
+>>>>
+>>>>> So, what's wrong with introducing a global switch instead of changing
+>>>>> the existing API and requiring the code change in each application and
+>>>>> rebuild?
+>>>> I totally agree that pretty much all apps don't do any rewinds, and
+>>>> rewinds on capture is quite useless. But I stuck to the 'we don't
+>>>> break userspace' mantra with the idea of an opt-in flag requiring an
+>>>> explicit code change to take effect. we will break userspace if we add
+>>>> a kernel-level switch, and the net result is that no one will ever use
+>>>> this option.
+>>> Sure, I agree with the golden "no regression" rule, too.  So I thought
+>>> of some switch that is default off for the systems that may use
+>>> rewind, while turning it on as default on the known systems like
+>>> Android.  As PA is the sole user of rewind, here we won't see any
+>>> regression, in theory.
+>> The regression will depend on the depth of the buffer and whether apps
+>> are ok to indicate the max latency when connecting with
+>> PulseAudio. we've done crazy things with PulseAudio in the past and
+>> things will go wrong.
+> Yes, obviously we need testing.  But, in this case, the target
+> hardware is *very* limited.  So covering this shouldn't be a big
+> matter, I hope.  (And we'll keep a "big red button" to turn it off in
+> emergency for some time.)
+>
+>
+>>> And, such a system-level switch is preferable from the system
+>>> management POV.  It's easier than a hard-coded API extension flag, and
+>>> you can toggle it at any time for debugging if a problem happens.
+>>>
+>>> *IFF* the no-rewind feature is required by other multiple systems,
+>>> adding some API would make sense.  But, currently, no-rewind is needed
+>>> only for enabling some feature that is indirectly involved with the
+>>> rewind on Intel chips.  To my eyes, it's too far away from the purpose
+>>> of the PCM hw_params API.
+>>>
+>>> (Again, no-irq was in a different situation; it's a flag for a mode
+>>>    that didn't exist (zero period) in the hw_params space.  But
+>>>    no-rewind is irrelevant with the hw_params configuration itself.)
+>> I hope we didn't give you the wrong impression that we are abusing the
+>> API for nefarious or Intel-specific views.
+>> In the initial patchset some 2+ years ago, there was this change that
+>> disabled rewinds but also an additional functionality that let drivers
+>> expose the granularity of the DMA bursts to userspace (I think
+>> Jaroslav wanted it to be called in-flight-bytes), and possibly set
+>> them depending on the application need. The latter part is of interest
+>> to others, and I don't think removing the rewinds is useful only to
+>> Intel, as soon as people use a second-level buffer rewinds are
+>> problematic for everyone.
+> I can think of some interface, too, but using hw_params flag is still
+> questionable.  It's no worst choice, sure, but it doesn't look like
+> the best fit, either, IMO -- especially because the rewind is no
+> target of hw_params config space.
+>
+> We need to be extremely careful if it comes to API.  After all, API is
+> the only fixed definition we can never ever change.  Once set, it must
+> be rock-solid for the next decades...
+>
+>> So maybe a way to progress is to leave this flag set as a module
+>> parameter as you suggested for now, but with the information known to
+>> the core, which lets Intel enable functionality on Google OSes
+>> (Android/Chrome), and in a second step (when we are done with SOF
+>> upstream) suggest a more generic API enhancement related to DMA
+>> handling which is not Intel specific.
+>>
+>> Would that be agreeable?
+> Yes, that's a compromise.  I'd really love to have the support for
+> this kind of feature, while I hesitate to add such a spontaneous bit
+> flag in the global API level.  So let's begin with the driver-specific
+> implementation, and extend to API level once when we see what are the
+> real demands in wide range of hardware.
+
+ok, makes sense.
+Thanks for your feedback and enjoy your 4 day weekend.
+I'll bug you next week with UCM stuff.
+-Pierre
