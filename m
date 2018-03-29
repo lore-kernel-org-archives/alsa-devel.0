@@ -1,20 +1,15 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH][RFC] ASoC: wm8350: remove snd_soc_codec
-Date: Thu, 29 Mar 2018 11:56:56 +0100
-Message-ID: <20180329105656.a7yenlfmftg7l73f@localhost.localdomain>
-References: <87tvt13psj.wl%kuninori.morimoto.gx@renesas.com>
- <20180328094835.hzthjeoq6vpdgjgm@localhost.localdomain>
- <877epv7o4m.wl%kuninori.morimoto.gx@renesas.com>
+From: Lukas Wunner <lukas@wunner.de>
+Subject: [PATCH] ALSA: hda - Silence PM ops build warning
+Date: Thu, 29 Mar 2018 13:46:26 +0200
+Message-ID: <b8e70e34a9acbd4f0a1a6c7673cea96888ae9503.1522323444.git.lukas@wunner.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 779E5266F69
- for <alsa-devel@alsa-project.org>; Thu, 29 Mar 2018 12:57:00 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <877epv7o4m.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mailout2.hostsharing.net (mailout2.hostsharing.net
+ [83.223.90.233])
+ by alsa0.perex.cz (Postfix) with ESMTP id 37D15266F69
+ for <alsa-devel@alsa-project.org>; Thu, 29 Mar 2018 13:46:29 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,61 +19,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: patches@opensource.cirrus.com, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 28, 2018 at 11:56:52PM +0000, Kuninori Morimoto wrote:
-> 
-> Hi Charles
-> 
-> Thank you for your feedback
-> 
-> > > I think no-one is using snd_soc_codec, but please double-check it.
-> > > I added [RFC] on this patch
-> > > 
-> > 
-> > Looks to me like there are still users in
-> > drivers/mfd/cwm8350-core.c:
-> > 
-> > wm8350_client_dev_register(wm8350, "wm8350-codec",
-> > 			   &(wm8350->codec.pdev));
-> > 
-> > And arch/arm/mach-imx/mach-mx31ads.c:
-> > 
-> > wm8350->codec.platform_data = &imx32ads_wm8350_setup;
-> > 
-> > Also it should be simple enough to build test drivers for patches
-> > like this, you don't need to have the hardware to build the driver.
-> 
-> The relationships (and my removed) are
-> 
-> 	struct wm8350_codec {
-> 		struct platform_device *pdev;
-> 	-	struct snd_soc_codec *codec;
-> 		struct wm8350_audio_platform_data *platform_data;
-> 	};
-> 
-> 	struct wm8350 {
-> 		...
-> 		struct wm8350_codec codec;
-> 		...
-> 	}
-> 
-> This means I think my removed was
-> 
-> 	wm8350->codec.codec
-> 
-> not
-> 
-> 	wm8350->codec
-> 
-> And I think no one is using wm8350->codec.codec.
-> But can you double check ?
+The system sleep PM ops azx_suspend() and azx_resume() were previously
+called by vga_switcheroo, but commit 07f4f97d7b4b ("vga_switcheroo: Use
+device link for HDA controller") removed their invocation.
 
-Apologies you are of course correct. Looks good from my side:
+Unfortunately the commit neglected to update the #ifdef surrounding the
+two functions, so if CONFIG_PM_SLEEP is *not* enabled but all three of
+CONFIG_PM, CONFIG_VGA_SWITCHEROO and CONFIG_SND_HDA_CODEC_HDMI *are*
+enabled, the compiler now emits the following warning:
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+sound/pci/hda/hda_intel.c:1024:12: warning: 'azx_resume' defined but not used [-Wunused-function]
+ static int azx_resume(struct device *dev)
+            ^~~~~~~~~~
+sound/pci/hda/hda_intel.c:989:12: warning: 'azx_suspend' defined but not used [-Wunused-function]
+ static int azx_suspend(struct device *dev)
+            ^~~~~~~~~~~
 
-Thanks,
-Charles
+Silence by updating the #ifdef.  Because the #ifdef block now uses the
+same condition as the one immediately succeeding it, the two blocks can
+be collapsed together, shaving off another two lines.
+
+Fixes: 07f4f97d7b4b ("vga_switcheroo: Use device link for HDA controller")
+Cc: Takashi Iwai <tiwai@suse.com>
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+---
+ sound/pci/hda/hda_intel.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index ec4e6b829ee2..d653c56e9141 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -982,7 +982,7 @@ static int param_set_xint(const char *val, const struct kernel_param *kp)
+ #define azx_del_card_list(chip) /* NOP */
+ #endif /* CONFIG_PM */
+ 
+-#if defined(CONFIG_PM_SLEEP) || defined(SUPPORT_VGA_SWITCHEROO)
++#ifdef CONFIG_PM_SLEEP
+ /*
+  * power management
+  */
+@@ -1063,9 +1063,7 @@ static int azx_resume(struct device *dev)
+ 	trace_azx_resume(chip);
+ 	return 0;
+ }
+-#endif /* CONFIG_PM_SLEEP || SUPPORT_VGA_SWITCHEROO */
+ 
+-#ifdef CONFIG_PM_SLEEP
+ /* put codec down to D3 at hibernation for Intel SKL+;
+  * otherwise BIOS may still access the codec and screw up the driver
+  */
+-- 
+2.16.2
