@@ -1,25 +1,25 @@
 From: Pavel Machek <pavel@ucw.cz>
 Subject: Re: omap4-droid4: voice call support was Re: [PATCHv5,
  5/5] ARM: dts: omap4-droid4: add soundcard
-Date: Thu, 29 Mar 2018 20:05:41 +0200
-Message-ID: <20180329180541.GA26545@amd>
-References: <20180323103006.alymgb3ywftb4gek@earth.universe>
- <20180326141638.GB1450@amd>
- <20180326155828.ttnduivadob4iqmd@earth.universe>
- <20180327121441.GH29239@sirena.org.uk>
+Date: Thu, 29 Mar 2018 20:40:07 +0200
+Message-ID: <20180329184007.GA27688@amd>
+References: <20180327121441.GH29239@sirena.org.uk>
  <20180327222237.wcx2aqznvdrvbaa5@earth.universe>
  <20180328022910.GM29239@sirena.org.uk>
  <20180328140219.f6667up5evrrafkv@earth.universe>
- <20180329014507.GM5700@atomide.com> <20180329160828.GA14007@amd>
- <20180329163450.GQ5700@atomide.com>
+ <20180329014507.GM5700@atomide.com>
+ <20180329133613.khldv72w3zj63vsk@earth.universe>
+ <20180329135904.GN5700@atomide.com>
+ <20180329154600.qhels5fqzzg364gj@earth.universe>
+ <20180329163716.GA20743@amd> <20180329164113.GR5700@atomide.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4839443310609181135=="
+Content-Type: multipart/mixed; boundary="===============3480095662906942942=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
  [195.113.26.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2DCF42670D7
- for <alsa-devel@alsa-project.org>; Thu, 29 Mar 2018 20:05:41 +0200 (CEST)
-In-Reply-To: <20180329163450.GQ5700@atomide.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D24142671A9
+ for <alsa-devel@alsa-project.org>; Thu, 29 Mar 2018 20:40:09 +0200 (CEST)
+In-Reply-To: <20180329164113.GR5700@atomide.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,117 +34,131 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.co
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4839443310609181135==
+--===============3480095662906942942==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mYCpIKhGyMATD0i+"
+	protocol="application/pgp-signature"; boundary="gBBFr7Ir9EOA20Yy"
 Content-Disposition: inline
 
 
---mYCpIKhGyMATD0i+
+--gBBFr7Ir9EOA20Yy
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu 2018-03-29 09:34:50, Tony Lindgren wrote:
-> * Pavel Machek <pavel@ucw.cz> [180329 16:09]:
-> > > Then using the n_gsm ts 27.010 uart mux, I dial:
-> > >=20
-> > > ./ngsm-rw 1 "AT+CFUN=3D1"		# connect to network
-> > > U0001+CFUN:OK
-> > > ./ngsm-rw 2 "AT+CMUT=3D0"		# unmute speaker over ch2, do this over qm=
-i?
-> > > U0001+CMUT:OK
-> > > ./ngsm-rw 1 "ATD#123"		# dial number
-> > > U0001D:OK
-> > >=20
-> > > And I do hear a voice talking over the speakerphone :) Sorry have not=
- tested the
-> > > mic yet..
+On Thu 2018-03-29 09:41:13, Tony Lindgren wrote:
+> * Pavel Machek <pavel@ucw.cz> [180329 16:38]:
+> > Hi!
 > >=20
-> > Hehe, ok, that's fun! I don't need +CMUT=3D0. It gave me error but then
-> > the call worked, anyway... (I'm working with ttyUSB4).
+> > > > > > And I do hear a voice talking over the speakerphone :) Sorry ha=
+ve not tested the
+> > > > > > mic yet..
+> > > >=20
+> > > > And calling a person I can hear the other end but the mic is
+> > > > not working. So maybe I need to tweak the alsamixer settings
+> > > > too for mic?
+> > >=20
+> > > Your override kills most settings from alsamixer. You can try to
+> > > just override CPCAP_REG_VAUDIOC, CPCAP_REG_CC and CPCAP_REG_CDI
+> > > and setup everything else with alsamixer.
+> >=20
+> > I tried that, and could not get it to work; will try some more.
+> >=20
+> > Is there easy way to get the register dump?
 >=20
-> Oh interesting. So maybe Android is doing AT+CMUT=3D0 for some other
-> modems and it's not really needed? Or you have settings preserved
-> from warm boot from Android?
+> For mainline kernel:
+>=20
+> # cat /sys/kernel/debug/regmap/spi0.0/registers
+>=20
+> For Android v3.0.8 kernel, see cpcaprw on github.
 
-No idea. But I booted from recovery, and I had to power up modem using
-+CFUN...
+Thanks. I got call working including outgoing audio: in capture
+settings, right->mic 1, Mic1 + Mic2 in alsamixer -> 100%. But I had
+the other phone muted, so I don't yet know if such call would be of
+usable quality.
 
-> I did not have any luck with ttyUSB4 last night. Did you dial with
-> ATD123; or ATD123? So is the semicolon really needed?
->
+Thanks!
+								Pavel
 
-AT+CFUN=3D1
-OK
-ATD800123456
-NO CARRIER
-ATD800123456;
-OK
+--- tony.as	2018-03-29 18:29:41.715742372 +0000
++++ mic.as	2018-03-29 18:33:40.910759649 +0000
+@@ -258,8 +258,8 @@
+ 0404: 0000
+ 0408: 0000
+ 040c: 0000
+-0410: 0014
+-0414: 0104
++0410: 0004
++0414: 0105
+ 0418: 000e
+ 041c: 00ff
+ 0420: 44d3
+@@ -515,8 +515,8 @@
+ 0808: ae0a
+ 080c: 0078
+ 0810: 003c
+-0814: 0cc0
+-0818: 0610
++0814: 0cc4
++0818: 061f
+ 081c: 0006
+ 0820: 0b2c
+ 0824: 0606
+@@ -641,13 +641,13 @@
+ 0a00: 0000
+ 0a04: 23b6
+ 0a08: 002b
+-0a0c: 1530
++0a0c: 18ec
+ 0a10: 0000
+-0a14: 4e54
+-0a18: 0036
++0a14: 6a90
++0a18: 0040
+ 0a1c: 0000
+ 0a20: 0000
+-0a24: 0738
++0a24: 0b40
+ 0a28: 0000
+ 0a2c: 0000
+ 0a30: 0000
+@@ -769,12 +769,12 @@
+ 0c00: 9004
+ 0c04: 0136
+ 0c08: 0000
+-0c0c: 02fb
++0c0c: 02fc
+ 0c10: 01da
+-0c14: 015b
+-0c18: 0300
+-0c1c: 0271
+-0c20: 01e5
++0c14: 015a
++0c18: 02fe
++0c1c: 0270
++0c20: 01f5
+ 0c24: 0000
+ 0c28: 0204
+ 0c2c: 0205
 
-I seem to need semicolon. And yes, I tried again after the call. Still
-says no carrier.
-
-Hmm. And when calling test number, the modem failed:
->
-[  438.236755] Somebody do a proper driver please cpcap_soc_work
-[  495.496032] phy-mapphone-mdm6600 usb-phy@1: modem status: 0 off
-[  499.406005] phy-mapphone-mdm6600 usb-phy@1: modem status: 0 off
-[  499.407318] usb 2-1: USB disconnect, device number 2
-[  499.424926] qcserial ttyUSB0: Qualcomm USB modem converter now
-disconnected from ttyUSB0
-[  499.434112] qcserial 2-1:1.0: device disconnected
-[  499.443389] qcserial ttyUSB1: Qualcomm USB modem converter now
-disconnected from ttyUSB1
-[  499.451904] qcserial 2-1:1.1: device disconnected
-[  499.460968] qcserial ttyUSB2: Qualcomm USB modem converter now
-disconnected from ttyUSB2
-[  499.469512] qcserial 2-1:1.2: device disconnected
-[  499.478057] qcserial ttyUSB3: Qualcomm USB modem converter now
-disconnected from ttyUSB3
-[  499.486572] qcserial 2-1:1.3: device disconnected
-[  499.504760] qcserial ttyUSB4: Qualcomm USB modem converter now
-disconnected from ttyUSB4
-[  499.513244] qcserial 2-1:1.4: device disconnected
-[  499.519104] qmi_wwan 2-1:1.5 wwan0: unregister 'qmi_wwan'
-usb-4a064800.ohci-1, WWAN/QMI device
-[  499.611511] qmi_wwan 2-1:1.6 wwan1: unregister 'qmi_wwan'
-usb-4a064800.ohci-1, WWAN/QMI device
-[  499.676086] Somebody do a proper driver please cpcap_soc_work
-[  499.688323] qmi_wwan 2-1:1.7 wwan2: unregister 'qmi_wwan'
-usb-4a064800.ohci-1, WWAN/QMI device
-[  499.768859] qmi_wwan 2-1:1.8 wwan3: unregister 'qmi_wwan'
-usb-4a064800.ohci-1, WWAN/QMI device
-
-That one will be fun to debug, I'm afraid. (Or does the message at
-495.496032 mean that we turned it off?)
-
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---mYCpIKhGyMATD0i+
+--gBBFr7Ir9EOA20Yy
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iEYEARECAAYFAlq9KvUACgkQMOfwapXb+vI3aACeMTD7Ccii/NsR4dxiS/2u9eAH
-6nIAoLWmdDoXg6IwiSLMkYtvm9hw0jMZ
-=W3nw
+iEYEARECAAYFAlq9MwcACgkQMOfwapXb+vKNFwCfXxd9MPUKRnmKkwjQ8hYcx0sN
+0WgAoILdNTLj1n+vHTeXXGgbrqhenCwt
+=Mqev
 -----END PGP SIGNATURE-----
 
---mYCpIKhGyMATD0i+--
+--gBBFr7Ir9EOA20Yy--
 
---===============4839443310609181135==
+--===============3480095662906942942==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4839443310609181135==--
+--===============3480095662906942942==--
