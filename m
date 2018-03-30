@@ -1,92 +1,63 @@
 From: Pavel Machek <pavel@ucw.cz>
 Subject: Re: omap4-droid4: voice call support was Re: [PATCHv5,5/5] ARM: dts:
  omap4-droid4: add soundcard
-Date: Fri, 30 Mar 2018 22:46:44 +0200
-Message-ID: <20180330204644.GA1804@amd>
-References: <20180329135904.GN5700@atomide.com>
+Date: Sat, 31 Mar 2018 00:31:52 +0200
+Message-ID: <20180330223152.GB3389@amd>
+References: <20180326155828.ttnduivadob4iqmd@earth.universe>
+ <20180327121441.GH29239@sirena.org.uk>
+ <20180327222237.wcx2aqznvdrvbaa5@earth.universe>
+ <20180328022910.GM29239@sirena.org.uk>
+ <20180328140219.f6667up5evrrafkv@earth.universe>
+ <20180329014507.GM5700@atomide.com>
+ <20180329133613.khldv72w3zj63vsk@earth.universe>
+ <20180329135904.GN5700@atomide.com>
  <20180329154600.qhels5fqzzg364gj@earth.universe>
- <20180329163716.GA20743@amd>
- <20180329164113.GR5700@atomide.com>
- <20180329184007.GA27688@amd>
- <20180329215612.GS5700@atomide.com>
- <20180330103744.GA17404@amd>
- <a2a7a65c-1794-66c7-0f69-5919d32665fb@wizzup.org>
- <20180330175050.GA26571@amd>
- <20180330180151.GA27494@amd>
+ <20180329160611.GP5700@atomide.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="ReaqsoxgOBHFXBhH"
+        protocol="application/pgp-signature"; boundary="hHWLQfXTYDoKhP50"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20180330180151.GA27494@amd>
+In-Reply-To: <20180329160611.GP5700@atomide.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Merlijn Wajer <merlijn@wizzup.org>
-Cc: Tony Lindgren <tony@atomide.com>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com, Dan Williams <dcbw@redhat.com>
+To: Tony Lindgren <tony@atomide.com>
+Cc: Sebastian Reichel <sebastian.reichel@collabora.co.uk>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com, Dan Williams <dcbw@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---ReaqsoxgOBHFXBhH
+--hHWLQfXTYDoKhP50
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 Hi!
 
-> > > Would you mind sharing those hacks - I would like to play around with
-> > > ofonod as well. Maybe I can help with a way forward.
-> >=20
-> > Okay. Here's less hacky version of the hack, but still using AT
-> > commands. You still need to set up udev, as described in the other
-> > mail.
-> >=20
-> > And... it seems I can have a qmi connection, too, but that's topic for
-> > other email.
+> > Your override kills most settings from alsamixer. You can try to
+> > just override CPCAP_REG_VAUDIOC, CPCAP_REG_CC and CPCAP_REG_CDI
+> > and setup everything else with alsamixer.
 >=20
-> This, applied on top of previous patch, gives me some kind of qmi
-> connection, AFAICT. I can enable/online a modem, but nothing else
-> works.
->=20
-> LocationReporting is advertised but does not work. dial-number does
-> not work either. But from list-modems, it looks like some kind of
-> communication works...
+> OK I'll try to narrow it down and play with the mic settings
+> tonight or over the weekend.
 
-Ok, strange.
+No, just the three+alsamixer will not work. You also need to
 
-So there's ofonod in the maemo-leste already.
+814: |=3D 400
 
-user@devuan:~$ /usr/sbin/ofonod -v
-1.22
+824: |=3D 400 CPCAP_REG_RXCOA : CPCAP_BIT_PGA_CDC_EN
+81c: |=3D 006 CPCAP_REG_RXOA : CPCAP_BIT_A2_LDSP_L_EN / CPCAP_BIT_A2_LDSP_R=
+_EN
 
-=2E..and it seems to somehow work with the droid 4, in default
-configuration, thinking it is "Gobi" modem.=20
+You can set those using sudo aplay -D plughw:CARD=3DAudio,DEV=3D1
+/usr/share/sounds/alsa/Front_Left.wav ... but that will do bad stuff
+to the rest of the bits.
 
-user@devuan:/my/ofono$ sudo python2 test/list-modems
-[ /gobi_0 ]
-    Features =3D sms net rat ussd sim gps
-        Emergency =3D 0
-	    Powered =3D 1
-	        Lockdown =3D 0
-		    Interfaces =3D org.ofono.SmartMessaging
-		    org.ofono.PushNotification
-		    org.ofono.MessageManager
-		    org.ofono.NetworkRegistration
-		    org.ofono.RadioSettings
-		    org.ofono.SupplementaryServices
-		    org.ofono.NetworkMonitor org.ofono.MessageWaiting
-		    org.ofono.AllowedAccessPoints org.ofono.SimManager
-		    org.ofono.LocationReporting
-		    org.ofono.VoiceCallManager
-		        Online =3D 1
-			    Model =3D 196
-			        Revision =3D M6600A-SCAUHSZ-3.1.3310T  1
-				[Jun 09 2011 17:00:00]
-				    Type =3D hardware
-=2E..
+You might find this useful:
 
-=2E.. and it seems to kind-of work. Even incoming SMSes work, which I
-could not get to work in AT mode. Otoh, voice calls do not, so...
+ watch 'cat /sys/kernel/debug/regmap/spi0.0/registers | grep "0800\|0804\|0=
+808\|0814\|0818\|081c\|0820\|0824\|0828"'
 
-Confused,
+Good luck, I need some sleep,
+
 									Pavel
 
 --=20
@@ -94,16 +65,16 @@ Confused,
 (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
 g.html
 
---ReaqsoxgOBHFXBhH
+--hHWLQfXTYDoKhP50
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iEYEARECAAYFAlq+ojQACgkQMOfwapXb+vKtTQCdHy9xyOIrDEAF8CvzuUqzmHei
-wuwAoLQnAXPZn3vJuz54lusymybIVXmI
-=uQ/Y
+iEYEARECAAYFAlq+utgACgkQMOfwapXb+vKdRwCgk42W9KTV2310PKUMvFqHFiRD
+sz0AoI4KM0o0hvQUfK+kuSG80yd5ldHp
+=498e
 -----END PGP SIGNATURE-----
 
---ReaqsoxgOBHFXBhH--
+--hHWLQfXTYDoKhP50--
