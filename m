@@ -1,21 +1,19 @@
-From: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 08/13] ASoC: Add SoundWire stream
-	programming interface
-Date: Fri, 30 Mar 2018 08:03:25 +0200
-Message-ID: <20180330060325.GA9729@kroah.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 01/13] soundwire: Add more documentation
+Date: Fri, 30 Mar 2018 12:08:15 +0530
+Message-ID: <20180330063815.GO15443@localhost>
 References: <1522229918-4748-1-git-send-email-vinod.koul@intel.com>
- <1522229918-4748-9-git-send-email-vinod.koul@intel.com>
- <355ca9b5-d6c4-9423-8cf6-a1c73fbdc695@sakamocchi.jp>
+ <1522229918-4748-2-git-send-email-vinod.koul@intel.com>
+ <639b2f0b-eea8-9c68-e9e9-a29238450d5d@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.linuxfoundation.org (mail.linuxfoundation.org
- [140.211.169.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 478922671B9
- for <alsa-devel@alsa-project.org>; Fri, 30 Mar 2018 08:03:34 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3570E2671B9
+ for <alsa-devel@alsa-project.org>; Fri, 30 Mar 2018 08:34:05 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <355ca9b5-d6c4-9423-8cf6-a1c73fbdc695@sakamocchi.jp>
+In-Reply-To: <639b2f0b-eea8-9c68-e9e9-a29238450d5d@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,48 +23,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: ALSA <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Shreyas NC <shreyas.nc@intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 30, 2018 at 12:05:00PM +0900, Takashi Sakamoto wrote:
-> Hi,
+Just a note, it helps to trim the context. Pls do so in replies.
+
+On Thu, Mar 29, 2018 at 08:47:28PM -0500, Pierre-Louis Bossart wrote:
+> On 3/28/18 4:38 AM, Vinod Koul wrote:
+
+> >+SoundWire stream states
+> >+-----------------------
+> >+
+> >+Below shows the SoundWire stream states and state transition diagram. ::
+> >+
+> >+	+---------+     +----------+     +----------+     +----------+
+> >+	|  ALLOC  +---->|  CONFIG  +---->| PREPARE  +---->|  ENABLE  |
+> >+	|  STATE  |     |  STATE   |     |  STATE   |     |  STATE   |
+> >+	+---------+     +----------+     +----------+     +----+-----+
+> >+	                                                       ^
+> >+	                                                       |
+> >+	                                                       |
+> >+	                                                       v
+> >+	         +----------+           +-----------+     +----+-----+
+> >+	         |  RELEASE |<----------+ DEPREPARE |<----+  DISABLE |
+> >+	         |   STATE  |           |  STATE    |     |  STATE   |
+> >+	         +----------+           +-----------+     +----------+
+> >+
+> >+NOTE: All stream transitions in MIPI Spec are NOT supported by software.
 > 
-> On Mar 28 2018 18:38, Vinod Koul wrote:
-> > diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> > index c0edac80df34..690e56a35237 100644
-> > --- a/sound/soc/soc-core.c
-> > +++ b/sound/soc/soc-core.c
-> > @@ -2882,6 +2882,26 @@ int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
-> >   EXPORT_SYMBOL_GPL(snd_soc_dai_set_tdm_slot);
-> >   /**
-> > + * snd_soc_dai_set_sdw_stream() - Configures a DAI for SDW stream operation
-> > + * @dai: DAI
-> > + * @stream: STREAM
-> > + * @direction: Stream direction(Playback/Capture)
-> > + * SoundWire subsystem doesn't have a notion of direction and we reuse
-> > + * the ASoC stream direction to configure sink/source ports.
-> > + *
-> > + * Returns 0 on success, a negative error code otherwise.
-> > + */
-> > +int snd_soc_dai_set_sdw_stream(struct snd_soc_dai *dai,
-> > +				void *stream, int direction)
-> > +{
-> > +	if (dai->driver->ops->set_sdw_stream)
-> > +		return dai->driver->ops->set_sdw_stream(dai, stream, direction);
-> > +	else
-> > +		return -ENOTSUPP;
-> > +}
-> > +EXPORT_SYMBOL_GPL(snd_soc_dai_set_sdw_stream);
+> specifically that there are not transitions between prepare and deprepare.
+
+Okay we can add that.
+
+> While I am at it, didn't I provide feedback that the documentation and code
+> confuse states and transitions between the states?
+
+> Also there is a
+> connection between released and allocated, this state machine isn't really
+> working or representative of what the code does initially.
+
+When we allocate sdw_stream_runtime, the initial state of the stream
+would be garbage/NULL. It is initialized to ALLOC at that time.
+
+        stream = kzalloc(sizeof(*stream), GFP_KERNEL);
+        if (!stream)
+                return NULL;
+
+        stream->name = stream_name;
+        stream->state = SDW_STREAM_ALLOC;
+
+One can argue that we use kzalloc so we are in RELEASE, but I think that is
+bike shedding. The lifetime of stream starts with ALLOC and ends at RELEASE
+and we freeup the data structure. So I don't think there is a relation
+between ALLOC and RELEASE. Any attempt to make such a relation would confuse
+folks!
+
+> See my feedback dated February 26 on the previous version.
 > 
-> It's better for this kind of code to be incline function in any header. In
-> general, new symbols increase maintenance cost of binary of kernel-related
-> stuffs. It's preferable to avoid the addition if possible, IMO.
+> "the name of the states are equivalent to an action. It would be more
+> consistent to e.g. have an ENABLED state reached after an
+> sdw_stream_enable() function.
+> 
+> same with sdw_stream_prepared leading to the PREPARED state. I think it's
+> how most standards or state machine designs are defined (and how English
+> grammar works as well)." ALSA also uses OPEN, PREPARED, PAUSED, see asound.h
 
-I don't understand, functionally it's the same, there should not be any
-increased maintenance either way.  Please explain how this makes things
-"harder"?
+Hmmm after immersing in bunch of English literature we finally figured
+that wrapped logic here that out stream states shall be named as not action.
+Well that could have possibly be communicated in plain speak too :D
 
-thanks,
+No worries, will change the state names aptly.
 
-greg k-h
+-- 
+~Vinod
