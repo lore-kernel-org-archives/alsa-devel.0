@@ -1,112 +1,91 @@
-From: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Subject: Re: omap4-droid4: voice call support was Re: [PATCHv5,
- 5/5] ARM: dts: omap4-droid4: add soundcard
-Date: Fri, 30 Mar 2018 12:57:42 +0200
-Message-ID: <20180330105742.4laay5qtu37zxpbw@earth.universe>
-References: <20180326155828.ttnduivadob4iqmd@earth.universe>
- <20180327121441.GH29239@sirena.org.uk>
- <20180327222237.wcx2aqznvdrvbaa5@earth.universe>
- <20180328022910.GM29239@sirena.org.uk>
+From: Merlijn Wajer <merlijn@wizzup.org>
+Subject: Re: omap4-droid4: voice call support was Re: [PATCHv5,5/5] ARM: dts:
+ omap4-droid4: add soundcard
+Date: Fri, 30 Mar 2018 15:07:24 +0200
+Message-ID: <a2a7a65c-1794-66c7-0f69-5919d32665fb@wizzup.org>
+References: <20180328022910.GM29239@sirena.org.uk>
  <20180328140219.f6667up5evrrafkv@earth.universe>
  <20180329014507.GM5700@atomide.com>
  <20180329133613.khldv72w3zj63vsk@earth.universe>
  <20180329135904.GN5700@atomide.com>
- <20180329154600.qhels5fqzzg364gj@earth.universe>
- <20180329160611.GP5700@atomide.com>
+ <20180329154600.qhels5fqzzg364gj@earth.universe> <20180329163716.GA20743@amd>
+ <20180329164113.GR5700@atomide.com> <20180329184007.GA27688@amd>
+ <20180329215612.GS5700@atomide.com> <20180330103744.GA17404@amd>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2937575814766221968=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- by alsa0.perex.cz (Postfix) with ESMTP id AC2AB2671B9
- for <alsa-devel@alsa-project.org>; Fri, 30 Mar 2018 12:57:46 +0200 (CEST)
-In-Reply-To: <20180329160611.GP5700@atomide.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Dan Williams <dcbw@redhat.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>, linux-omap@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="hI0ZG3nfavXOuBdbdh9ms3DoDaBj3w1fc"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180330103744.GA17404@amd>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pavel Machek <pavel@ucw.cz>, Tony Lindgren <tony@atomide.com>
+Cc: Sebastian Reichel <sebastian.reichel@collabora.co.uk>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com, Dan Williams <dcbw@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--hI0ZG3nfavXOuBdbdh9ms3DoDaBj3w1fc
+Content-Type: multipart/mixed; boundary="KsFUvhtn0PoJ53wI6USGpD3sGO1CJsV2E";
+ protected-headers="v1"
+From: Merlijn Wajer <merlijn@wizzup.org>
+To: Pavel Machek <pavel@ucw.cz>, Tony Lindgren <tony@atomide.com>
+Cc: Sebastian Reichel <sebastian.reichel@collabora.co.uk>,
+ Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, linux-omap@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel@collabora.com, Dan Williams <dcbw@redhat.com>
+Message-ID: <a2a7a65c-1794-66c7-0f69-5919d32665fb@wizzup.org>
+Subject: Re: omap4-droid4: voice call support was Re: [PATCHv5,5/5] ARM: dts:
+ omap4-droid4: add soundcard
+References: <20180328022910.GM29239@sirena.org.uk>
+ <20180328140219.f6667up5evrrafkv@earth.universe>
+ <20180329014507.GM5700@atomide.com>
+ <20180329133613.khldv72w3zj63vsk@earth.universe>
+ <20180329135904.GN5700@atomide.com>
+ <20180329154600.qhels5fqzzg364gj@earth.universe> <20180329163716.GA20743@amd>
+ <20180329164113.GR5700@atomide.com> <20180329184007.GA27688@amd>
+ <20180329215612.GS5700@atomide.com> <20180330103744.GA17404@amd>
+In-Reply-To: <20180330103744.GA17404@amd>
 
---===============2937575814766221968==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="dtoyyvsv6euhb6du"
-Content-Disposition: inline
-
-
---dtoyyvsv6euhb6du
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--KsFUvhtn0PoJ53wI6USGpD3sGO1CJsV2E
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-GB
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On Thu, Mar 29, 2018 at 09:06:11AM -0700, Tony Lindgren wrote:
-> * Sebastian Reichel <sebastian.reichel@collabora.co.uk> [180329 15:47]:
-> > Hi,
-> >=20
-> > On Thu, Mar 29, 2018 at 06:59:04AM -0700, Tony Lindgren wrote:
-> > > > I think cpcap is always the clock and frame master, but I think
-> > > > mdm6600 is the remote side and OMAP is not involved at all.
-> > >=20
-> > > OK. So could it be just an alsamixer on/off toggle then for
-> > > "Modem" or something similar?
-> >=20
-> > I think so. We might want to have an "Mode" enum instead, though.
-> > That can be extended, once we unlock the other modes (bluetooth,
-> > bluetooth call).
+On 30/03/18 12:37, Pavel Machek wrote:
+> On Thu 2018-03-29 14:56:13, Tony Lindgren wrote:
+>> * Pavel Machek <pavel@ucw.cz> [180329 18:41]:
+>>> Thanks. I got call working including outgoing audio: in capture
+>>> settings, right->mic 1, Mic1 + Mic2 in alsamixer -> 100%. But I had
+>>> the other phone muted, so I don't yet know if such call would be of
+>>> usable quality.
+>>
+>> Great, good to hear that :)
 >=20
-> OK. Seems in addition to the "Mode" enum, we also need
-> some other switch for modem on and off toggle?
+> I also got ofonod to work, with rather crazy hacks. But I now have
+> incoming/outgoing calls with GUI :-).
 
-I don't think so. DAPM should automatically power on/off the
-modem if there is a valid path from some CPCAP output/input.
-Since the mode enum will "disconnect" the modem in the DAPM
-graph, it should be enabled/disabled automatically.
+Would you mind sharing those hacks - I would like to play around with
+ofonod as well. Maybe I can help with a way forward.
 
-> I guess most people want to save the preferred "Mode" enum,
-> then for the duration of the call enable the selected mode.
->=20
-> And I guess the mute is already there for the mic with 'm'
-> in alsamixer for conf calls :)
+Cheers,
+Merlijn
 
-Yes.
 
--- Sebastian
+--KsFUvhtn0PoJ53wI6USGpD3sGO1CJsV2E--
 
---dtoyyvsv6euhb6du
+--hI0ZG3nfavXOuBdbdh9ms3DoDaBj3w1fc
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAlq+GCMACgkQ2O7X88g7
-+pqT5A//bgZCPfqwkJPw0+YJNKRQWZFpFNiAn2OPuASup1KHHCL3td8MKJbas4fP
-3N/A/z5b6a1f2x7ti30pW7bKYIdiALVVZIZpImKtSwzikDldJFgZLxDiYx+19ERl
-9kEKyOsbq8OuPp8dzHitmcwZmOjQ0zp+dcOXhcOJFD54/urq9p8bbeUOjjDqSXN7
-G+R7UAZ5DoF5D10Teg39Bq29tv2Q71LR6Kmw/f3QRtPHaDTlLgSLrNube3wpDOP5
-xMXw+k+3RPhgUij7jX1hXqRQu1qFNzs9fNsjWavqeuH5XzkP9EWJ2sBDESEy8u3l
-0A4JpOr9PFH4pykFVACGTuiUPCHeymarRURmIqJQLY6iU5uCjg5jM58kbxRrdXcu
-m9lsHq13bJXcrjaVSnJIUXp8losd8R/W12GvNNe66uL/Xnn/lT+fhEuXd6OrvAD3
-31HdKSCzWq2ffkYmsAR76T5vXmuIBx66YYYx9QiDBWT9L+LWBGFqNFTtX7LopvIN
-utpnkdo7LMkGg+ZuDiS2KjluH7Wa/M+acjdOSDq6+wRb5AL/V8JuoVA5wSwaMOHy
-GNpj8/82nujbMT15AsSu88pC8Ud2OrDWYlpY0yJFL0KyygxpbyVV6Ns9H8OhU0pL
-QqLcDiWS3siThLgXWwyWnLpdBAs6dJmjYKvoY8aszMHgw8CuxI8=
-=0ZYh
+iHUEARYIAB0WIQRM5LT7NbLF9yb6a/UGN09rynK8WgUCWr42lQAKCRAGN09rynK8
+WqIOAPsEJaQgN9irgNhKw3gSFFCWFTUtdRRIZww8B7hKwSil0wD/ftOoBZ/qkCxQ
+hjBUIt8wHI2Cppi8doUUm7HOqyDQ6A4=
+=0iGc
 -----END PGP SIGNATURE-----
 
---dtoyyvsv6euhb6du--
-
---===============2937575814766221968==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2937575814766221968==--
+--hI0ZG3nfavXOuBdbdh9ms3DoDaBj3w1fc--
