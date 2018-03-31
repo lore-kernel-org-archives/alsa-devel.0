@@ -1,58 +1,49 @@
-From: Sriram Periyasamy <sriram.oqensourz@gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: AMD: Enable/Disable auxiliary
- clock via common clock framework
-Date: Sat, 31 Mar 2018 12:13:34 +0530
-Message-ID: <20180331064332.wb4ay4vfzkguj7jy@sriram-VirtualBox>
-References: <1522404297-7555-1-git-send-email-akshu.agrawal@amd.com>
- <1522404297-7555-2-git-send-email-akshu.agrawal@amd.com>
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH] ASoC: atmel_ssc_dai: fix spelling mistake: "Stoping" ->
+ "Stopping"
+Date: Sat, 31 Mar 2018 10:54:20 +0200
+Message-ID: <20180331085420.GE14180@piout.net>
+References: <20180330154420.6903-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f194.google.com (mail-pf0-f194.google.com
- [209.85.192.194])
- by alsa0.perex.cz (Postfix) with ESMTP id BC7852671B9
- for <alsa-devel@alsa-project.org>; Sat, 31 Mar 2018 08:43:48 +0200 (CEST)
-Received: by mail-pf0-f194.google.com with SMTP id j2so6689937pff.10
- for <alsa-devel@alsa-project.org>; Fri, 30 Mar 2018 23:43:48 -0700 (PDT)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1522404297-7555-2-git-send-email-akshu.agrawal@amd.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Akshu Agrawal <akshu.agrawal@amd.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, djkurtz@chromium.org, broonie@kernel.org, Alexander.Deucher@amd.com
+In-Reply-To: <20180330154420.6903-1-colin.king@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Colin King <colin.king@canonical.com>
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 30, 2018 at 03:34:57PM +0530, Akshu Agrawal wrote:
-> This enables/disables and sets auxiliary clock at 25Mhz. It uses
-> common clock framework for proper ref counting. This approach will
-> save power in comparison to keeping it always On in firmware.
+On 30/03/2018 at 16:44:20 +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> TEST= aplay -vv <file>
-> check register to see clock enabled
-> kill aplay
-> check register to see clock disabled
+> Trivial fix to spelling mistake in pr_debug message text
 > 
-> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-> Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
-> V2: Correcting the pin to OSCOUT1 from OSCOUT2
-> V3: Fix error/warnings from kbuild test
-> V4: Fix build errors for platform which do not support CONFIG_COMMON_CLK
-> V5: Review comments by Dan and Sriram
+>  sound/soc/atmel/atmel_ssc_dai.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+> index a1e2c5682dcd..1c7af0ca98ec 100644
+> --- a/sound/soc/atmel/atmel_ssc_dai.c
+> +++ b/sound/soc/atmel/atmel_ssc_dai.c
+> @@ -820,7 +820,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+>  		if (ret < 0) {
+>  			printk(KERN_WARNING
+>  					"atmel_ssc_dai: request_irq failure\n");
+> -			pr_debug("Atmel_ssc_dai: Stoping clock\n");
+> +			pr_debug("Atmel_ssc_dai: Stopping clock\n");
+>  			clk_disable(ssc_p->ssc->clk);
+>  			return ret;
+>  		}
+> -- 
+> 2.15.1
 > 
 
-LGTM.
-
-Thanks,
-Sriram.
-
->  sound/soc/amd/acp-da7219-max98357a.c | 159 ++++++++++++++++++++++++++++++++++-
->  1 file changed, 157 insertions(+), 2 deletions(-)
+-- 
+Alexandre Belloni, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
