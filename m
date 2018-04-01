@@ -1,15 +1,23 @@
-From: Sanyog Kale <sanyog.r.kale@intel.com>
-Subject: [PATCH] ASoC: Intel: Skylake: Reset stream to link
-	mapping
-Date: Sun,  1 Apr 2018 15:13:23 +0530
-Message-ID: <20180401094323.20864-1-sanyog.r.kale@intel.com>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: call/normal switch was Re: omap4-droid4: voice
+	call support was
+Date: Sun, 1 Apr 2018 15:18:52 +0200
+Message-ID: <20180401131852.GA11086@amd>
+References: <20180327222237.wcx2aqznvdrvbaa5@earth.universe>
+ <20180328022910.GM29239@sirena.org.uk>
+ <20180328140219.f6667up5evrrafkv@earth.universe>
+ <20180329014507.GM5700@atomide.com> <20180331145531.GA10404@amd>
+ <20180331181935.GX5700@atomide.com> <20180331191939.GA8999@amd>
+ <20180331194616.GA19388@amd> <20180331195524.GB19388@amd>
+ <20180331234314.GZ5700@atomide.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3556982793431663491=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 05EDD267358
- for <alsa-devel@alsa-project.org>; Sun,  1 Apr 2018 11:43:00 +0200 (CEST)
+Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
+ [195.113.26.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id BA9A32671AB
+ for <alsa-devel@alsa-project.org>; Sun,  1 Apr 2018 15:18:53 +0200 (CEST)
+In-Reply-To: <20180331234314.GZ5700@atomide.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,46 +27,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: abhijeet.kumar@intel.com, tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Tony Lindgren <tony@atomide.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Dan Williams <dcbw@redhat.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, linux-omap@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 
-By default all the streams are mapped to all links after controller is
-reset which causes stream to be broadcast on all the links.
+--===============3556982793431663491==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
+Content-Disposition: inline
 
-This patch resets the stream-link mapping after controller reset. The
-stream is mapped later to the appropriate link as part of stream setup.
 
-Tested-by: Abhijeet Kumar <abhijeet.kumar@intel.com>
-Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
-Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
----
- sound/soc/intel/skylake/skl.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+--x+6KMIRAuhnl3hBn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index abf324747b29..f0d9793f872a 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -127,10 +127,17 @@ static void skl_clock_power_gating(struct device *dev, bool enable)
-  */
- static int skl_init_chip(struct hdac_bus *bus, bool full_reset)
- {
-+	struct hdac_ext_bus *ebus = hbus_to_ebus(bus);
-+	struct hdac_ext_link *hlink;
- 	int ret;
- 
- 	skl_enable_miscbdcge(bus->dev, false);
- 	ret = snd_hdac_bus_init_chip(bus, full_reset);
-+
-+	/* Reset stream-to-link mapping */
-+	list_for_each_entry(hlink, &ebus->hlink_list, list)
-+		bus->io_ops->reg_writel(0, hlink->ml_addr + AZX_REG_ML_LOSIDV);
-+
- 	skl_enable_miscbdcge(bus->dev, true);
- 
- 	return ret;
--- 
-2.13.0
+On Sat 2018-03-31 16:43:14, Tony Lindgren wrote:
+> * Pavel Machek <pavel@ucw.cz> [180331 19:56]:
+> > On Sat 2018-03-31 21:46:16, Pavel Machek wrote:
+> > > On Sat 2018-03-31 21:19:39, Pavel Machek wrote:
+> > > > On Sat 2018-03-31 11:19:35, Tony Lindgren wrote:
+> > > > > Cool :) Microphone still does not work for me.. I tried tweaking
+> > > > > the alsamixer settings but no mic. This is with cold boot with
+> > > > > droid4-kexecboot if that might make a difference, we may have
+> > > > > some register uninitialized somewhere. Any ideas?
+> > > >=20
+> > > > Ok, I was focusing on the speaker side.
+> > > >=20
+> > > > alsamixer, tab to go to capture settings, set it to 37 37 Mic2 Mic1
+> > > > should work, according to my notes, but not recently tested and not
+> > > > tested against real human.
+> > > >=20
+> > > > I'll attempt to test it, but something in my userland shuts down
+> > > > system just after boot 60% of time, which is rather annoying.
+> > >=20
+> > > Hmm. So I tried again, and setting Mic1 and back in the capture
+> > > settings crashed the modem. Bang, disconnected from the USB.
+> >=20
+> > Next try, and it worked this time.
+> >=20
+> > _Before the call_, set mode to Normal and then Call. Then go to
+> > capture, and set 100 100 Mic2 Mic1. Then place a call,
+> >=20
+> > AT+CFUN=3D1
+> > OK
+> > ATD6;
+>=20
+> No luck with microphone here :( Using ttyUSB4, AT+CFUN=3D1
+> works, but ATD command on it just hangs the USB interface
+> and I have to reload phy-mapphone-mdm6600 to reset the
+> modem.
+
+Test call with real human worked (thanks to Rolf K.), I could hear him
+well but he reported call was very quiet. And that was with capture
+settings at 100%.
+
+If you had a register dump from android with mics working, preferably
+not in speaker mode, perhaps I could try to figure it out?
+
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--x+6KMIRAuhnl3hBn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlrA3DwACgkQMOfwapXb+vKQyACgnbrFs3rTKvHCoMKHWoeXGdpR
+MF4AoKlnNqMScX5ldLO34asSo9+ZYKH8
+=XUgN
+-----END PGP SIGNATURE-----
+
+--x+6KMIRAuhnl3hBn--
+
+--===============3556982793431663491==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3556982793431663491==--
