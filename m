@@ -1,93 +1,64 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: call/normal switch was Re: omap4-droid4: voice call support was
-Date: Sun, 1 Apr 2018 08:48:59 +0200
-Message-ID: <20180401064858.GA28665@amd>
-References: <20180327222237.wcx2aqznvdrvbaa5@earth.universe>
- <20180328022910.GM29239@sirena.org.uk>
- <20180328140219.f6667up5evrrafkv@earth.universe>
- <20180329014507.GM5700@atomide.com>
- <20180331145531.GA10404@amd>
- <20180331181935.GX5700@atomide.com>
- <20180331191939.GA8999@amd>
- <20180331194616.GA19388@amd>
- <20180331195524.GB19388@amd>
- <20180331234314.GZ5700@atomide.com>
+From: Sanyog Kale <sanyog.r.kale@intel.com>
+Subject: [PATCH] ASoC: Intel: Skylake: Reset stream to link
+	mapping
+Date: Sun,  1 Apr 2018 15:13:23 +0530
+Message-ID: <20180401094323.20864-1-sanyog.r.kale@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="n8g4imXOkfNTN/H1"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180331234314.GZ5700@atomide.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: Sebastian Reichel <sebastian.reichel@collabora.co.uk>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com, Dan Williams <dcbw@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id 05EDD267358
+ for <alsa-devel@alsa-project.org>; Sun,  1 Apr 2018 11:43:00 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: abhijeet.kumar@intel.com, tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 
---n8g4imXOkfNTN/H1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+By default all the streams are mapped to all links after controller is
+reset which causes stream to be broadcast on all the links.
 
-On Sat 2018-03-31 16:43:14, Tony Lindgren wrote:
-> * Pavel Machek <pavel@ucw.cz> [180331 19:56]:
-> > On Sat 2018-03-31 21:46:16, Pavel Machek wrote:
-> > > On Sat 2018-03-31 21:19:39, Pavel Machek wrote:
-> > > > On Sat 2018-03-31 11:19:35, Tony Lindgren wrote:
-> > > > > Cool :) Microphone still does not work for me.. I tried tweaking
-> > > > > the alsamixer settings but no mic. This is with cold boot with
-> > > > > droid4-kexecboot if that might make a difference, we may have
-> > > > > some register uninitialized somewhere. Any ideas?
-> > > >=20
-> > > > Ok, I was focusing on the speaker side.
-> > > >=20
-> > > > alsamixer, tab to go to capture settings, set it to 37 37 Mic2 Mic1
-> > > > should work, according to my notes, but not recently tested and not
-> > > > tested against real human.
-> > > >=20
-> > > > I'll attempt to test it, but something in my userland shuts down
-> > > > system just after boot 60% of time, which is rather annoying.
-> > >=20
-> > > Hmm. So I tried again, and setting Mic1 and back in the capture
-> > > settings crashed the modem. Bang, disconnected from the USB.
-> >=20
-> > Next try, and it worked this time.
-> >=20
-> > _Before the call_, set mode to Normal and then Call. Then go to
-> > capture, and set 100 100 Mic2 Mic1. Then place a call,
-> >=20
-> > AT+CFUN=3D1
-> > OK
-> > ATD6;
->=20
-> No luck with microphone here :( Using ttyUSB4, AT+CFUN=3D1
-> works, but ATD command on it just hangs the USB interface
-> and I have to reload phy-mapphone-mdm6600 to reset the
-> modem.
+This patch resets the stream-link mapping after controller reset. The
+stream is mapped later to the appropriate link as part of stream setup.
 
-I realized where the difference is.
+Tested-by: Abhijeet Kumar <abhijeet.kumar@intel.com>
+Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+---
+ sound/soc/intel/skylake/skl.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-I have ofonod running there, one from maemo leste distribution. It
-manages to talk to the modem somehow. I guess that accounts for the
-difference.
-
-I guess I should get it out of the picture....
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---n8g4imXOkfNTN/H1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlrAgNoACgkQMOfwapXb+vIAgACgg/Ilvp9K3F+7uf2y2BkQg/9N
-X0MAn0y/nJdpBTfI39Hqf5g0MQW4Bc4l
-=J88w
------END PGP SIGNATURE-----
-
---n8g4imXOkfNTN/H1--
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index abf324747b29..f0d9793f872a 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -127,10 +127,17 @@ static void skl_clock_power_gating(struct device *dev, bool enable)
+  */
+ static int skl_init_chip(struct hdac_bus *bus, bool full_reset)
+ {
++	struct hdac_ext_bus *ebus = hbus_to_ebus(bus);
++	struct hdac_ext_link *hlink;
+ 	int ret;
+ 
+ 	skl_enable_miscbdcge(bus->dev, false);
+ 	ret = snd_hdac_bus_init_chip(bus, full_reset);
++
++	/* Reset stream-to-link mapping */
++	list_for_each_entry(hlink, &ebus->hlink_list, list)
++		bus->io_ops->reg_writel(0, hlink->ml_addr + AZX_REG_ML_LOSIDV);
++
+ 	skl_enable_miscbdcge(bus->dev, true);
+ 
+ 	return ret;
+-- 
+2.13.0
