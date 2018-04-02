@@ -1,18 +1,20 @@
-From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Subject: Re: [PATCH 0/8] Enablement of BT I2S controller
-	instance for AMD APUs
-Date: Mon, 2 Apr 2018 08:16:12 +0530
-Message-ID: <0decf647-6130-c105-6c83-9e6e59fc4f25@amd.com>
-References: <1522069983-11381-1-git-send-email-Vijendar.Mukunda@amd.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 08/13] ASoC: Add SoundWire stream
+	programming interface
+Date: Mon, 2 Apr 2018 15:26:35 +0900
+Message-ID: <f8f97f3a-3447-5d6d-eeb6-9140ce299e06@sakamocchi.jp>
+References: <1522229918-4748-1-git-send-email-vinod.koul@intel.com>
+ <1522229918-4748-9-git-send-email-vinod.koul@intel.com>
+ <355ca9b5-d6c4-9423-8cf6-a1c73fbdc695@sakamocchi.jp>
+ <20180330060325.GA9729@kroah.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM01-BN3-obe.outbound.protection.outlook.com
- (mail-bn3nam01on0080.outbound.protection.outlook.com [104.47.33.80])
- by alsa0.perex.cz (Postfix) with ESMTP id 3135526735C
- for <alsa-devel@alsa-project.org>; Mon,  2 Apr 2018 04:43:49 +0200 (CEST)
-In-Reply-To: <1522069983-11381-1-git-send-email-Vijendar.Mukunda@amd.com>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id B03FE266A73
+ for <alsa-devel@alsa-project.org>; Mon,  2 Apr 2018 08:26:38 +0200 (CEST)
+In-Reply-To: <20180330060325.GA9729@kroah.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,50 +25,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org, perex@perex.cz
-Cc: tiwai@suse.de, Alexander.Deucher@amd.com, lgirdwood@gmail.com, Akshu.Agrawal@amd.com
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: ALSA <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Greg,
+
+I'm sorry for delay but I had a short trip.
+
+On Mar 30 2018 15:03, Greg KH wrote:
+> On Fri, Mar 30, 2018 at 12:05:00PM +0900, Takashi Sakamoto wrote:
+>> Hi,
+>>
+>> On Mar 28 2018 18:38, Vinod Koul wrote:
+>>> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+>>> index c0edac80df34..690e56a35237 100644
+>>> --- a/sound/soc/soc-core.c
+>>> +++ b/sound/soc/soc-core.c
+>>> @@ -2882,6 +2882,26 @@ int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
+>>>    EXPORT_SYMBOL_GPL(snd_soc_dai_set_tdm_slot);
+>>>    /**
+>>> + * snd_soc_dai_set_sdw_stream() - Configures a DAI for SDW stream operation
+>>> + * @dai: DAI
+>>> + * @stream: STREAM
+>>> + * @direction: Stream direction(Playback/Capture)
+>>> + * SoundWire subsystem doesn't have a notion of direction and we reuse
+>>> + * the ASoC stream direction to configure sink/source ports.
+>>> + *
+>>> + * Returns 0 on success, a negative error code otherwise.
+>>> + */
+>>> +int snd_soc_dai_set_sdw_stream(struct snd_soc_dai *dai,
+>>> +				void *stream, int direction)
+>>> +{
+>>> +	if (dai->driver->ops->set_sdw_stream)
+>>> +		return dai->driver->ops->set_sdw_stream(dai, stream, direction);
+>>> +	else
+>>> +		return -ENOTSUPP;
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(snd_soc_dai_set_sdw_stream);
+>>
+>> It's better for this kind of code to be incline function in any header. In
+>> general, new symbols increase maintenance cost of binary of kernel-related
+>> stuffs. It's preferable to avoid the addition if possible, IMO.
+> 
+> I don't understand, functionally it's the same, there should not be any
+> increased maintenance either way.  Please explain how this makes things
+> "harder"?
+
+Hm, if so it might be my misunderstanding to reasons for typical usage 
+of inline functions in kernel source, sorry.
+
+In my understanding, exported symbols are put into some sections of ELF 
+binary. Addition of new symbols increases size of the section. 
+Additionally, after linking vmlinux, kbuild scans built-in symbols and 
+make a file with entries of them. The addition increases time of this 
+step. Furthermore, at the end of building kernel, kmod is called to 
+generate some map files for exported symbols in loadable module. In a 
+view of distributors, these files are maintained by binary packages of 
+any type carefully because some incompatibilities can be delivered such 
+as version mismatch.
+
+For these reasons, I think thing goes harder when people carelessly add 
+new symbols for functions with a few codes; e.g. accessing to a member 
+of structure, then simply check an return it. Actually I can see some 
+examples in upstreamed headers.
 
 
-On Monday 26 March 2018 06:42 PM, Vijendar Mukunda wrote:
-> This patch set updates Audio CoProcessor (ACP) audio drivers to enable
-> BT I2S controller instance. In Audio Coprocessor, There are three I2S
-> controllers can be configured/enabled.(I2S SP, I2S MICSP, BT I2S)
-> Default enabled I2S controller instance is I2S SP instance.
-> There is a requirement to enable BT I2S controller Instance along with
-> I2S SP controller instance. This patch set bring up functionality to render
-> & capture on BT I2S controller instance.
-> 
-> The current patch set also includes a new dependent patch.
-> 
-> The current code is based on asoc-next, but I'm happy to rebase on whatever
-> tree this ends up going through if there are any problems applying.
-> 
-> Vijendar Mukunda (8):
->    ASoC: dwc: I2S Controller instance param added
->    ASoC: amd: dma driver changes for BT I2S controller instance
->    ASoC: amd: dma descriptor changes for BT I2S Instance
->    ASoC: amd: Interrupt handler changes for BT I2S instance
->    ASoC: amd: prepare callback modifications for bt i2s instance
->    ASoC: amd: pointer and trigger callback modifications for bt i2s
->    ASoC: amd: 16bit resolution support for bt i2s instance
->    ASoC: amd: enabling bt i2s config after acp reset
-> 
->   include/sound/designware_i2s.h |   6 +
->   sound/soc/amd/acp-pcm-dma.c    | 531 +++++++++++++++++++++++++++++++++--------
->   sound/soc/amd/acp.h            |  50 +++-
->   sound/soc/dwc/dwc-i2s.c        |   1 +
->   sound/soc/dwc/local.h          |   1 +
->   5 files changed, 481 insertions(+), 108 deletions(-)
-> 
+Thanks
 
-Hi Mark,
-
-Could you please review the entire patch set.
-Only for [PATCH 2/8] ASoC: amd: dma driver changes for BT I2S controller
-instance, Posted a V2 patch which fixes kbuild errors.
-https://patchwork.kernel.org/patch/10316177/
-
-Thanks,
-Vijendar
+Takashi Sakamoto
