@@ -1,16 +1,16 @@
 From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Subject: [PATCH 1/3] ASoC: Intel: Skylake: Reset DSP Pipelines
-	in prepare
-Date: Mon,  2 Apr 2018 12:15:48 +0530
-Message-ID: <1522651550-27236-2-git-send-email-sriramx.periyasamy@intel.com>
+Subject: [PATCH 2/3] ASoC: Intel: Skylake: Reset DSP pipe in
+	skl_pcm_hw_free
+Date: Mon,  2 Apr 2018 12:15:49 +0530
+Message-ID: <1522651550-27236-3-git-send-email-sriramx.periyasamy@intel.com>
 References: <1522651550-27236-1-git-send-email-sriramx.periyasamy@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id E0CDF2670D5
- for <alsa-devel@alsa-project.org>; Mon,  2 Apr 2018 08:54:41 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7FE66266A73
+ for <alsa-devel@alsa-project.org>; Mon,  2 Apr 2018 08:54:44 +0200 (CEST)
 In-Reply-To: <1522651550-27236-1-git-send-email-sriramx.periyasamy@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,61 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Divya Prakash <divya1.prakash@intel.com>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Divya Prakash <divya1.prakash@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+From: Divya Prakash <divya1.prakash@intel.com>
 
-An application can choose to call .prepare function
-any number of times. In such scenarios, there is a
-need to reset the DSP pipeline.
+Currently during destroy pipeline the gateway is disabled
+before DMA completion. This leads to improper draining of
+data and subsequently causing issues on HD-Audio DMA.
+Hence added a new pipe reset IPC in skl_pcm_hw_free in
+which the Gateway Enable(GEN bit) is reset to 0 after
+DMA completion in skl_pcm_trigger.
 
-Signed-off-by: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
 Signed-off-by: Divya Prakash <divya1.prakash@intel.com>
 Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 15cb8ac3e374..5ac0a12007c2 100644
+index 5ac0a12007c2..afa86b9e4dcf 100644
 --- a/sound/soc/intel/skylake/skl-pcm.c
 +++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -268,15 +268,31 @@ static int skl_pcm_prepare(struct snd_pcm_substream *substream,
+@@ -382,9 +382,21 @@ static int skl_pcm_hw_free(struct snd_pcm_substream *substream,
  {
- 	struct skl *skl = get_skl_ctx(dai->dev);
- 	struct skl_module_cfg *mconfig;
+ 	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
+ 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
++	struct skl *skl = get_skl_ctx(dai->dev);
++	struct skl_module_cfg *mconfig;
 +	int ret;
  
  	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
  
- 	mconfig = skl_tplg_fe_get_cpr_module(dai, substream->stream);
- 
--	/* In case of XRUN recovery, reset the FW pipe to clean state */
--	if (mconfig && (substream->runtime->status->state ==
--					SNDRV_PCM_STATE_XRUN))
--		skl_reset_pipe(skl->skl_sst, mconfig->pipe);
-+	/*
-+	 * In case of XRUN recovery or in the case when the application
-+	 * calls prepare another time, reset the FW pipe to clean state
-+	 */
-+	if (mconfig &&
-+		(substream->runtime->status->state == SNDRV_PCM_STATE_XRUN ||
-+		 mconfig->pipe->state == SKL_PIPE_CREATED ||
-+		 mconfig->pipe->state == SKL_PIPE_PAUSED)) {
++	mconfig = skl_tplg_fe_get_cpr_module(dai, substream->stream);
 +
++	if (mconfig) {
 +		ret = skl_reset_pipe(skl->skl_sst, mconfig->pipe);
-+
 +		if (ret < 0)
-+			return ret;
-+
-+		ret = skl_pcm_host_dma_prepare(dai->dev,
-+					mconfig->pipe->p_params);
-+		if (ret < 0)
-+			return ret;
++			dev_err(dai->dev, "%s:Reset failed ret =%d",
++						__func__, ret);
 +	}
++
+ 	snd_hdac_stream_cleanup(hdac_stream(stream));
+ 	hdac_stream(stream)->prepared = 0;
  
- 	return 0;
- }
 -- 
 2.7.4
