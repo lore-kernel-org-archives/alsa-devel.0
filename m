@@ -1,16 +1,16 @@
 From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Subject: [PATCH 2/3] ASoC: Intel: Skylake: Reset DSP pipe in
-	skl_pcm_hw_free
-Date: Mon,  2 Apr 2018 12:15:49 +0530
-Message-ID: <1522651550-27236-3-git-send-email-sriramx.periyasamy@intel.com>
+Subject: [PATCH 3/3] ASoC: Intel: Skylake: Unify the fw ops for
+	SKL and KBL
+Date: Mon,  2 Apr 2018 12:15:50 +0530
+Message-ID: <1522651550-27236-4-git-send-email-sriramx.periyasamy@intel.com>
 References: <1522651550-27236-1-git-send-email-sriramx.periyasamy@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FE66266A73
- for <alsa-devel@alsa-project.org>; Mon,  2 Apr 2018 08:54:44 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 738FD2673C8
+ for <alsa-devel@alsa-project.org>; Mon,  2 Apr 2018 08:54:47 +0200 (CEST)
 In-Reply-To: <1522651550-27236-1-git-send-email-sriramx.periyasamy@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,49 +22,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Divya Prakash <divya1.prakash@intel.com>
+Cc: Pradeep Tewani <pradeep.d.tewani@intel.com>, Takashi Iwai <tiwai@suse.de>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Divya Prakash <divya1.prakash@intel.com>
+From: Pradeep Tewani <pradeep.d.tewani@intel.com>
 
-Currently during destroy pipeline the gateway is disabled
-before DMA completion. This leads to improper draining of
-data and subsequently causing issues on HD-Audio DMA.
-Hence added a new pipe reset IPC in skl_pcm_hw_free in
-which the Gateway Enable(GEN bit) is reset to 0 after
-DMA completion in skl_pcm_trigger.
+SKL and KBL driver used separate set of fw ops for library loading.
+However, with the unification of fw binary, use the common set of fw
+ops for both
 
-Signed-off-by: Divya Prakash <divya1.prakash@intel.com>
+Signed-off-by: Pradeep Tewani <pradeep.d.tewani@intel.com>
 Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/intel/skylake/skl-messages.c |  2 +-
+ sound/soc/intel/skylake/skl-sst-dsp.h  |  3 ---
+ sound/soc/intel/skylake/skl-sst.c      | 34 ++--------------------------------
+ 3 files changed, 3 insertions(+), 36 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 5ac0a12007c2..afa86b9e4dcf 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -382,9 +382,21 @@ static int skl_pcm_hw_free(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 57d4a58522a6..dd590a1c58e2 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -225,7 +225,7 @@ static const struct skl_dsp_ops dsp_ops[] = {
+ 		.id = 0x9d71,
+ 		.num_cores = 2,
+ 		.loader_ops = skl_get_loader_ops,
+-		.init = kbl_sst_dsp_init,
++		.init = skl_sst_dsp_init,
+ 		.init_fw = skl_sst_init_fw,
+ 		.cleanup = skl_sst_dsp_cleanup
+ 	},
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
+index 12fc9a73dc8a..e1d6f6719f7e 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -231,9 +231,6 @@ int skl_dsp_boot(struct sst_dsp *ctx);
+ int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 		const char *fw_name, struct skl_dsp_loader_ops dsp_ops,
+ 		struct skl_sst **dsp);
+-int kbl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+-		const char *fw_name, struct skl_dsp_loader_ops dsp_ops,
+-		struct skl_sst **dsp);
+ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 		const char *fw_name, struct skl_dsp_loader_ops dsp_ops,
+ 		struct skl_sst **dsp);
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index 5a7e41b65ef3..5951bbdf1f1a 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -390,7 +390,7 @@ static int skl_transfer_module(struct sst_dsp *ctx, const void *data,
+ }
+ 
+ static int
+-kbl_load_library(struct sst_dsp *ctx, struct skl_lib_info *linfo, int lib_count)
++skl_load_library(struct sst_dsp *ctx, struct skl_lib_info *linfo, int lib_count)
  {
- 	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
- 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
-+	struct skl *skl = get_skl_ctx(dai->dev);
-+	struct skl_module_cfg *mconfig;
-+	int ret;
+ 	struct skl_sst *skl = ctx->thread_context;
+ 	struct firmware stripped_fw;
+@@ -508,16 +508,7 @@ static const struct skl_dsp_fw_ops skl_fw_ops = {
+ 	.set_state_D3 = skl_set_dsp_D3,
+ 	.load_fw = skl_load_base_firmware,
+ 	.get_fw_errcode = skl_get_errorcode,
+-	.load_mod = skl_load_module,
+-	.unload_mod = skl_unload_module,
+-};
+-
+-static const struct skl_dsp_fw_ops kbl_fw_ops = {
+-	.set_state_D0 = skl_set_dsp_D0,
+-	.set_state_D3 = skl_set_dsp_D3,
+-	.load_fw = skl_load_base_firmware,
+-	.get_fw_errcode = skl_get_errorcode,
+-	.load_library = kbl_load_library,
++	.load_library = skl_load_library,
+ 	.load_mod = skl_load_module,
+ 	.unload_mod = skl_unload_module,
+ };
+@@ -573,27 +564,6 @@ int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ }
+ EXPORT_SYMBOL_GPL(skl_sst_dsp_init);
  
- 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
- 
-+	mconfig = skl_tplg_fe_get_cpr_module(dai, substream->stream);
-+
-+	if (mconfig) {
-+		ret = skl_reset_pipe(skl->skl_sst, mconfig->pipe);
-+		if (ret < 0)
-+			dev_err(dai->dev, "%s:Reset failed ret =%d",
-+						__func__, ret);
-+	}
-+
- 	snd_hdac_stream_cleanup(hdac_stream(stream));
- 	hdac_stream(stream)->prepared = 0;
- 
+-int kbl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+-		const char *fw_name, struct skl_dsp_loader_ops dsp_ops,
+-		struct skl_sst **dsp)
+-{
+-	struct sst_dsp *sst;
+-	int ret;
+-
+-	ret = skl_sst_dsp_init(dev, mmio_base, irq, fw_name, dsp_ops, dsp);
+-	if (ret < 0) {
+-		dev_err(dev, "%s: Init failed %d\n", __func__, ret);
+-		return ret;
+-	}
+-
+-	sst = (*dsp)->dsp;
+-	sst->fw_ops = kbl_fw_ops;
+-
+-	return 0;
+-
+-}
+-EXPORT_SYMBOL_GPL(kbl_sst_dsp_init);
+-
+ int skl_sst_init_fw(struct device *dev, struct skl_sst *ctx)
+ {
+ 	int ret;
 -- 
 2.7.4
