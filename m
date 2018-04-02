@@ -1,74 +1,132 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3 v3] ASoC: TSCS42xx: Shorten lines and
- other cleanup
-Date: Mon, 2 Apr 2018 16:23:35 +0100
-Message-ID: <20180402152335.GQ29239@sirena.org.uk>
-References: <20180328150809.GA303@t7-ThinkPad-E560>
+From: Dan Williams <dcbw@redhat.com>
+Subject: Re: call/normal switch was Re: omap4-droid4: voice call support was
+Date: Mon, 02 Apr 2018 10:50:08 -0500
+Message-ID: <67086fdd0cdd69142cb89cd00f90e5a580e6607a.camel@redhat.com>
+References: <20180328140219.f6667up5evrrafkv@earth.universe>
+         <20180329014507.GM5700@atomide.com> <20180331145531.GA10404@amd>
+         <20180331181935.GX5700@atomide.com> <20180331191939.GA8999@amd>
+         <20180331194616.GA19388@amd> <20180331195524.GB19388@amd>
+         <20180331234314.GZ5700@atomide.com> <20180401131852.GA11086@amd>
+         <20180401153631.GA5700@atomide.com> <20180401173012.GB5700@atomide.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5697195737990426365=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F667267211
- for <alsa-devel@alsa-project.org>; Mon,  2 Apr 2018 17:23:38 +0200 (CEST)
-In-Reply-To: <20180328150809.GA303@t7-ThinkPad-E560>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180401173012.GB5700@atomide.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tony Lindgren <tony@atomide.com>, Pavel Machek <pavel@ucw.cz>
+Cc: Sebastian Reichel <sebastian.reichel@collabora.co.uk>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 2018-04-01 at 10:30 -0700, Tony Lindgren wrote:
+> * Tony Lindgren <tony@atomide.com> [180401 15:38]:
+> > * Pavel Machek <pavel@ucw.cz> [180401 13:20]:
+> > > On Sat 2018-03-31 16:43:14, Tony Lindgren wrote:
+> > > > * Pavel Machek <pavel@ucw.cz> [180331 19:56]:
+> > > > > On Sat 2018-03-31 21:46:16, Pavel Machek wrote:
+> > > > > > On Sat 2018-03-31 21:19:39, Pavel Machek wrote:
+> > > > > > > On Sat 2018-03-31 11:19:35, Tony Lindgren wrote:
+> > > > > > > > Cool :) Microphone still does not work for me.. I tried
+> > > > > > > > tweaking
+> > > > > > > > the alsamixer settings but no mic. This is with cold
+> > > > > > > > boot with
+> > > > > > > > droid4-kexecboot if that might make a difference, we
+> > > > > > > > may have
+> > > > > > > > some register uninitialized somewhere. Any ideas?
+> > > > > > > 
+> > > > > > > Ok, I was focusing on the speaker side.
+> > > > > > > 
+> > > > > > > alsamixer, tab to go to capture settings, set it to 37 37
+> > > > > > > Mic2 Mic1
+> > > > > > > should work, according to my notes, but not recently
+> > > > > > > tested and not
+> > > > > > > tested against real human.
+> > > > > > > 
+> > > > > > > I'll attempt to test it, but something in my userland
+> > > > > > > shuts down
+> > > > > > > system just after boot 60% of time, which is rather
+> > > > > > > annoying.
+> > > > > > 
+> > > > > > Hmm. So I tried again, and setting Mic1 and back in the
+> > > > > > capture
+> > > > > > settings crashed the modem. Bang, disconnected from the
+> > > > > > USB.
+> > > > > 
+> > > > > Next try, and it worked this time.
+> > > > > 
+> > > > > _Before the call_, set mode to Normal and then Call. Then go
+> > > > > to
+> > > > > capture, and set 100 100 Mic2 Mic1. Then place a call,
+> > > > > 
+> > > > > AT+CFUN=1
+> > > > > OK
+> > > > > ATD6;
+> > > > 
+> > > > No luck with microphone here :( Using ttyUSB4, AT+CFUN=1
+> > > > works, but ATD command on it just hangs the USB interface
+> > > > and I have to reload phy-mapphone-mdm6600 to reset the
+> > > > modem.
+> > > 
+> > > Test call with real human worked (thanks to Rolf K.), I could
+> > > hear him
+> > > well but he reported call was very quiet. And that was with
+> > > capture
+> > > settings at 100%.
+> > 
+> > Maybe the volume also needs to be controlled at mdm6600 end.
+> > I'm seeing some AT+CLVL=n with n being between [0-7] calls on
+> > DLCI2 in my Android logcat logs.
+> > 
+> > > If you had a register dump from android with mics working,
+> > > preferably
+> > > not in speaker mode, perhaps I could try to figure it out?
+> > 
+> > OK here are four diffs against starting the phone app for regular
+> > call, speaker call, and muted versions of them:
+> > 
+> > http://muru.com/linux/d4/cpcap/
+> > 
+> > Also, I'm connected over cdma right now, not 3g, but I doubt
+> > that makes a difference for the microphone.
+> 
+> Found it! Here's what I need to do over n_gsm:
+> 
+> ngsm 1 "AT+CFUN=1"
+> ngsm 1 "AT+CFUN?"
+> ngsm 2 "AT+EACC=3,0"    # enable mic
+> ngsm 2 "AT+CLVL=4"      # set speaker volume
+> ngsm 2 "AT+CMUT=0"      # unmute mic
 
---===============5697195737990426365==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="XMHqbYJb993HXwLR"
-Content-Disposition: inline
+I tried to look through the QMI dumps we have in libqmi from 2013
+(latest Qualcomm posted) and couldn't find anything to do with mic
+control, speaker volume, or anything like that.
 
+If the modem supports the AT service (which I think it does?  Not
+looking at the libqmi dumps right now) then it could potentially tunnel
+these AT commands through QMI too.
 
---XMHqbYJb993HXwLR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Perhaps Qualcomm added something to the Voice service after 2013, or
+perhaps there are other services that might control speaker/mic that we
+don't have public dumps for yet though.
 
-On Wed, Mar 28, 2018 at 10:08:22AM -0500, Steven Eckhoff wrote:
-> Shorten lines greater than 80 chars
-> Add const to struct snd_soc_component_driver
+Dan
 
-I only seem to have patches 1 and 2 here (and they aren't threaded with
-each other which is a bit odd too).  I seem to recall this has been
-happening quite a bit with your patches - in general if you're sending
-things you should always send the entire series at once, ideally
-threaded together.  Sending things separately makes it very error prone
-to try to follow which patches go together.
-
---XMHqbYJb993HXwLR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrCSvcACgkQJNaLcl1U
-h9CVJQf7B/UelqFwB4MvkQ66X4oZe/I8BRXnG6NHdlEwdSBSDFPMwI3JgNz+KgHB
-0L94w8+i3bVq8Nk5XR0B02HH//aevPVyIdXmAqGqudIf6UdROWhL+4/fdqsSWGtZ
-K4VayAdw69zvIGaWRxUvh4Nt7oumTjzfciTI7ZC3+vTwz0plhT1Cthcu6j6gHgZ0
-6E/hn94e4gIJJenbxJXsVQChYmckKqpBGCuWeql7grawRzn6zzROJ1JpLo9RrfTP
-Ai5hH5P6DZUDzgZoUJmeJf6nGvQ2jfJUWdEQkvuIYLxGfVtfV/S2cjBAbDngcxxI
-4BrrO0XvfAK6fLDqRrbzU4HMPK05UA==
-=WSy+
------END PGP SIGNATURE-----
-
---XMHqbYJb993HXwLR--
-
---===============5697195737990426365==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5697195737990426365==--
+> ngsm 1 "ATD${number}"
+> ngsm 1 "AT+CLCC"	# list current calls
+> ngsm 2 "AT+NREC=1"	# enable noise cancellation
+> ngsm 1 "AT+SCRN=0"	# ??? not sure if this does anything
+> 
+> while [ 1 ]; do
+> 	date
+> 	ngsm 1 "AT+CLCC"
+> 	sleep 10
+> done
+> 
+> So speaker phone call works just fine, I just tested with a
+> human at the other end :)
+> 
+> Hmm let's hope all those also translate to some qmi calls.
+> 
+> Regards,
+> 
+> Tony
