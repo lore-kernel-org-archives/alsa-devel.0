@@ -1,21 +1,23 @@
-From: Daniel Kurtz <djkurtz@chromium.org>
-Subject: Re: [PATCH 2/2] ASoC: AMD: Enable/Disable auxiliary
- clock via common clock framework
-Date: Tue, 03 Apr 2018 18:57:51 +0000
-Message-ID: <CAGS+omDqWEjEm0b3H5-pwd2Nrf_pEbQTAU_dPKVmXi5vsDxKLw@mail.gmail.com>
-References: <1522404297-7555-1-git-send-email-akshu.agrawal@amd.com>
- <1522404297-7555-2-git-send-email-akshu.agrawal@amd.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v3 0/2] ASoC: topology: Improve parsing
+ hw_configs
+Date: Tue, 3 Apr 2018 14:19:12 -0500
+Message-ID: <f03cb3f6-0346-685c-7c81-5c67a919a2b1@linux.intel.com>
+References: <20180327205632.3677-1-k.marinushkin@gmail.com>
+ <17f0767a-2dea-92dd-a88e-a3f3e670d0d2@gmail.com>
+ <461bbabf-7c36-1361-8f66-5abbe3c7f4d8@linux.intel.com>
+ <ee6ba140-fa5c-78e9-47bc-125b1aca7672@gmail.com>
+ <260f1850-37f2-fffa-fb33-4b5ff823ba0b@linux.intel.com>
+ <21dd211e-2b93-b5af-0606-726432e40795@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ua0-f195.google.com (mail-ua0-f195.google.com
- [209.85.217.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E7AF2675CB
- for <alsa-devel@alsa-project.org>; Tue,  3 Apr 2018 20:58:05 +0200 (CEST)
-Received: by mail-ua0-f195.google.com with SMTP id o34so11676262uae.9
- for <alsa-devel@alsa-project.org>; Tue, 03 Apr 2018 11:58:04 -0700 (PDT)
-In-Reply-To: <1522404297-7555-2-git-send-email-akshu.agrawal@amd.com>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id A945F266CE7
+ for <alsa-devel@alsa-project.org>; Tue,  3 Apr 2018 21:19:15 +0200 (CEST)
+In-Reply-To: <21dd211e-2b93-b5af-0606-726432e40795@gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,283 +27,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Akshu Agrawal <akshu.agrawal@amd.com>
-Cc: tiwai@suse.de, Alexander.Deucher@amd.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Kirill Marinushkin <k.marinushkin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Pan Xiuli <xiuli.pan@linux.intel.com>, linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Akshu,
-
-On Fri, Mar 30, 2018 at 4:05 AM Akshu Agrawal <akshu.agrawal@amd.com> wrote:
-
-> This enables/disables and sets auxiliary clock at 25Mhz. It uses
-> common clock framework for proper ref counting. This approach will
-> save power in comparison to keeping it always On in firmware.
-
-I have some general concern with the approach in this patch:
-
-(1) The 25 MHz clock being created here is a general system clock
-resource.  I think it should be created in an SoC clock driver, rather than
-here in an audio machine driver.   This has several advantages:
-   (a) the clock resource would be available for other boards that use it but
-don't use this particular audio machine driver
-   (b) the clock would be instantiated at boot, rather than at machine driver
-load.
-   (c) the machine driver would not then need the additional clkdev code
-
-(2) The oscout1 clock is a pretty standard clk_gate with a clk_mux.  We can
-use some standard helpers to better model the clock tree rather than
-rewriting them:
-
-static struct clk *clk_48m;
-static struct clk *clk_25m;
-static struct clk *clk_oscout1_mux;
-static struct clk *clk_oscout1;
-
-static const char *clk_oscout1_parents[] = { "clk48MHz", "clk25MHz" };
-
-{
-    clk_48m = clk_register_fixed_rate(dev, "clk48MHz", NULL, 0, 48000000);
-    clk_25m = clk_register_fixed_rate(dev, "clk25MHz", NULL, 0, 25000000);
-
-    res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-    res_base = devm_ioremap_nocache(dev, res->start, resource_size(res));
-
-    clk_oscout1_mux = clk_register_mux(dev, "oscout1_mux",
-        clk_oscout1_parents, ARRAY_SIZE(clk_oscout1_parents),
-        0, res_base + CLKDRVSTR2, OSCOUT1CLK25MHZ, 3, 0, NULL);
-
-    clk_set_parent(clk_oscout1_mux, clk_25m);
-
-    clk_oscout1 = clk_register_gate(dev, "oscout1", "oscout1_mux", 0,
-          res_base + MISCCLKCNTL1, OSCCLKENB, 0, NULL);
-
-
-(3) IIUC, the 25 MHz clock (oscout1) is actually the da7219's mclk.  The
-da7219 already
-has infrastructure to enable/disable its mclk as needed.  Once we establish
-the system clock,
-we can then wire this clock up to the da7219 via ACPI / devicetree
-properties.
-
-
-(4) Instead of a adding inline "#ifdef CONFIG_COMMON_CLK", can we just make
-this driver select COMMON_CLK in its Kconfig instead?   When would you use
-this machine driver without COMMON_CLK?
-
-
-Below are additional code review comments on the current version of the
-patch, which may be obsolete if we change approach...
-
-
-> TEST= aplay -vv <file>
-> check register to see clock enabled
-> kill aplay
-> check register to see clock disabled
-
-> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-> Acked-by: Alex Deucher <alexander.deucher@amd.com>
-> ---
-> V2: Correcting the pin to OSCOUT1 from OSCOUT2
-> V3: Fix error/warnings from kbuild test
-> V4: Fix build errors for platform which do not support CONFIG_COMMON_CLK
-> V5: Review comments by Dan and Sriram
-
->    sound/soc/amd/acp-da7219-max98357a.c | 159
-++++++++++++++++++++++++++++++++++-
->    1 file changed, 157 insertions(+), 2 deletions(-)
-
-> diff --git a/sound/soc/amd/acp-da7219-max98357a.c
-b/sound/soc/amd/acp-da7219-max98357a.c
-> index d9491e1..9e649c3 100644
-> --- a/sound/soc/amd/acp-da7219-max98357a.c
-> +++ b/sound/soc/amd/acp-da7219-max98357a.c
-> @@ -30,19 +30,41 @@
->    #include <sound/soc-dapm.h>
->    #include <sound/jack.h>
->    #include <linux/clk.h>
-> +#include <linux/clkdev.h>
-> +#include <linux/clk-provider.h>
->    #include <linux/gpio.h>
->    #include <linux/module.h>
->    #include <linux/i2c.h>
->    #include <linux/input.h>
->    #include <linux/acpi.h>
-> +#include <linux/types.h>
-
->    #include "../codecs/da7219.h"
->    #include "../codecs/da7219-aad.h"
-
-> -#define CZ_PLAT_CLK 24000000
-> +#define CZ_PLAT_CLK 25000000
->    #define MCLK_RATE 24576000
-
-IIUC, "MCLK_RATE" here is misnamed.  "MCLK" is the input clock to the
-DA7219, that is, it is the 25 MHz "CZ_PLAT_CLK" being generated on OSCOUT1
-and sent to the mclk pin of the da7219.  The rate here (24.576 MHz) is
-actually the clock rate of the DA7219's internal VCO (FVCO), which will be
-then be divided down by the DA7219's PLL to give the output BCLK.
-
->    #define DUAL_CHANNEL           2
-
-> +/* Clock Driving Strength 2 register */
-> +#define CLKDRVSTR2     0x28
-> +/* Clock Control 1 register */
-> +#define MISCCLKCNTL1   0x40
-> +/* Auxiliary clock1 enable bit */
-> +#define OSCCLKENB      2
-> +/* 25Mhz auxiliary output clock freq bit */
-> +#define OSCOUT1CLK25MHZ        16
-> +
-> +struct cz_clock {
-> +       const char* acp_clks_name;
-
-I still think you should remove acp_clks_name, acp_clks_lookup and acp_clks
-from the struct since they are used locally during
-register_acpd7219_clocks, and, afaict, never referenced again.
-
-Also why the 's' in "clks"?  It looks like there is just one clock, so just
-use the singular, acp_clk.
-
-> +#ifdef CONFIG_COMMON_CLK
-> +       struct clk_hw acp_clks_hw;
-> +#endif
-> +       struct clk_lookup *acp_clks_lookup;
-> +       struct clk *acp_clks;
-> +       void __iomem *res_base;
-> +};
-> +
->    static struct snd_soc_jack cz_jack;
->    struct clk *da7219_dai_clk;
-
-> @@ -98,6 +120,8 @@ static int cz_da7219_hw_params(struct
-snd_pcm_substream *substream,
->    {
->           int ret = 0;
->           struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +       struct snd_soc_card *card = rtd->card;
-> +       struct clk *acpd7219_clk;
-
->           ret = clk_prepare_enable(da7219_dai_clk);
->           if (ret < 0) {
-> @@ -105,13 +129,37 @@ static int cz_da7219_hw_params(struct
-snd_pcm_substream *substream,
->                   return ret;
->           }
-
-> +       acpd7219_clk = clk_get(card->dev, "acpd7219-clks");
-
-Does clk_get take a reference?  Should there be a corresponding clk_put?
-Can we instead avoid doing this on every hw_params/hw_free and rather do a
-single devm_clk_get() during probe?
-
-> +       if (IS_ERR(acpd7219_clk)) {
-> +               dev_err(rtd->dev, "failed to get clock: %ld\n",
-> +                       PTR_ERR(acpd7219_clk));
-> +               return PTR_ERR(acpd7219_clk);
-> +       }
-> +
-> +       ret = clk_prepare_enable(acpd7219_clk);
-> +       if (ret < 0)
-> +               dev_err(rtd->dev, "can't enable oscillator clock %d\n",
-ret);
-
-Enable on hw_params() and disable on hw_free() doesn't sound balanced?
-Will there always be exactly one hw_free() for every hw_params()?
-
->           return ret;
->    }
-
->    static int cz_da7219_hw_free(struct snd_pcm_substream *substream)
->    {
-> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +       struct snd_soc_card *card = rtd->card;
-> +       struct clk *acpd7219_clk;
-> +
->           clk_disable_unprepare(da7219_dai_clk);
-
-> +       acpd7219_clk = clk_get(card->dev, "acpd7219-clks");
-> +       if (IS_ERR(acpd7219_clk)) {
-> +               dev_err(rtd->dev, "failed to get clock: %ld\n",
-> +                       PTR_ERR(acpd7219_clk));
-> +               return PTR_ERR(acpd7219_clk);
-> +       }
-> +
-> +       clk_disable_unprepare(acpd7219_clk);
-> +
->           return 0;
->    }
-
-> @@ -244,6 +292,112 @@ static int cz_fe_startup(struct snd_pcm_substream
-*substream)
->           .num_controls = ARRAY_SIZE(cz_mc_controls),
->    };
-
-> +#ifdef CONFIG_COMMON_CLK
-> +static int acpd7219_clks_enable(struct clk_hw *hw)
-> +{
-> +       u32 reg_val;
-> +       struct cz_clock *cz_clock_obj =
-> +               container_of(hw, struct cz_clock, acp_clks_hw);
-
-What compile failure does the following cause?
-    struct cz_clock *cz_clock = container_of(hw, struct cz_clock,
-acp_clks_hw);
-
-> +       void __iomem *base = cz_clock_obj->res_base;
-> +
-> +       reg_val = readl(base + MISCCLKCNTL1);
-> +       reg_val &= ~(0x1 << OSCCLKENB);
-> +       writel(reg_val, base + MISCCLKCNTL1);
-> +       reg_val = readl(base + CLKDRVSTR2);
-> +       reg_val |= (0x1 << OSCOUT1CLK25MHZ);
-> +       writel(reg_val, base + CLKDRVSTR2);
-> +
-> +       return 0;
-> +}
-> +
-> +static void acpd7219_clks_disable(struct clk_hw *hw)
-> +{
-> +       u32 reg_val;
-> +       struct cz_clock *cz_clock_obj =
-> +               container_of(hw, struct cz_clock, acp_clks_hw);
-> +       void __iomem *base = cz_clock_obj->res_base;
-> +
-> +       reg_val = readl(base + MISCCLKCNTL1);
-> +       reg_val |= (0x1 << OSCCLKENB);
-> +       writel(reg_val, base + MISCCLKCNTL1);
-> +}
-> +
-> +static int acpd7219_clks_is_enabled(struct clk_hw *hw)
-> +{
-> +       u32 reg_val;
-> +       struct cz_clock *cz_clock_obj =
-> +               container_of(hw, struct cz_clock, acp_clks_hw);
-> +       void __iomem *base = cz_clock_obj->res_base;
-> +
-> +       reg_val = readl(base + MISCCLKCNTL1);
-> +
-> +       return !(reg_val & OSCCLKENB);
-> +}
-> +
-> +static const struct clk_ops acpd7219_clks_ops = {
-> +       .enable = acpd7219_clks_enable,
-> +       .disable = acpd7219_clks_disable,
-> +       .is_enabled = acpd7219_clks_is_enabled,
-> +};
-> +
-> +static int register_acpd7219_clocks(struct platform_device *pdev)
-
-Where is the corresponding unregister?  Isn't this a module that can be
-unloaded?
-
-> +{
-> +       struct clk *acp_clks;
-> +       struct clk_lookup *acp_clks_lookup;
-> +       struct cz_clock *cz_clock_obj;
-> +       struct resource *res;
-> +       struct device dev = pdev->dev;
-
-struct device *dev = &pdev->dev;
-
-Thanks,
--Dan
+T24gNC8zLzE4IDE6MTYgUE0sIEtpcmlsbCBNYXJpbnVzaGtpbiB3cm90ZToKPiBPbiAwNC8wMy8x
+OCAxOToyMSwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4+Cj4+Cj4+IE9uIDA0LzAzLzIw
+MTggMTI6MTUgQU0sIEtpcmlsbCBNYXJpbnVzaGtpbiB3cm90ZToKPj4+IE9uIDA0LzAzLzE4IDAy
+OjU3LCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPj4+Pgo+Pj4+IE9uIDA0LzAyLzIwMTgg
+MDQ6MTcgUE0sIEtpcmlsbCBNYXJpbnVzaGtpbiB3cm90ZToKPj4+Pj4gSGVsbG8gUGllcnJlLUxv
+dWlzLAo+Pj4+Pgo+Pj4+PiBJIGV4cGxpY2l0bHkgY2xhcmlmaWVkIHdpdGggVGFrYXNoaTogdG8g
+aGF2ZSB0aGlzIHBhdGNoIHNlcmllcyBtZXJnZWQsIHdlCj4+Pj4+IG5lZWQgYQo+Pj4+PiB0YWcg
+IlJldmlld2VkLWJ5IiBmcm9tIHlvdS4KPj4+PiBJIGFtIGZpbmUgd2l0aCB0aGUgY2hhbmdlcywg
+YnV0IG1heWJlIHdoaWxlIHdlIGFyZSBhdCBpdCwgd2Ugc2hvdWxkIGNsYXJpZnkKPj4+PiB3aGF0
+IG1jbGtfZGlyZWN0aW9uIG1lYW5zPwo+Pj4gVGhhdCdzIGEgZ29vZCBpZGVhIHRvIGhhdmUgaXQg
+c29sdmVkIHdpdGhpbiB0aGlzIHBhdGNoIHNlcmllcy4KPj4+Cj4+Pj4gIMKgwqDCoMKgIF9fdTgg
+bWNsa19kaXJlY3Rpb247wqDCoMKgIC8qIDAgZm9yIGlucHV0LCAxIGZvciBvdXRwdXQgKi8KPj4+
+Pgo+Pj4+IFRoaXMgaXMgcmVhbGx5IGF3ZnVsIGFuZCBtaWdodCBiZW5lZml0IGZvciBhZGRpdGlv
+bmFsIGNsYXJpdHkgdXNpbmcKPj4+PiBjb2RlYy1jZW50cmljIGNvbnZlbnRpb25zLgo+Pj4+Cj4+
+PiBJIGFncmVlIHRoYXQgaGF2aW5nIGEgY2xlYXIgbmFtaW5nIHdpbGwgYXZvaWQgY29uZnVzaW9u
+IGZvciBmdXR1cmUgdXNhZ2UuCj4+PiBJIHNlZSBmcm9tIHRoZSBjb2RlLCB0aGF0IHRoaXMgdmFy
+aWFibGUgaXMgaWdub3JlZC4gU28gd2UgaGF2ZSBubyB0ZWNobmljYWwKPj4+IHJlc3RyaWN0aW9u
+IG9uIGhvdyB0byBpbnRlcnByZXQgdGhpcy4KPj4+IEkgc3VnZ2VzdCB0byBkbyBzaW1pbGFyIHRv
+IHdoYXQgd2UgZGlkIGZvciBiY2xrX21hc3RlcjoKPj4+Cj4+PiAvKiBEQUkgbWNsa19kaXJlY3Rp
+b24gKi8KPj4+ICNkZWZpbmUgU05EX1NPQ19UUExHX01DTEtfQ08gwqDCoMKgwqDCoMKgIDAgLyog
+Zm9yIGNvZGVjLCBtY2xrIGlzIG91dHB1dCAqLwo+Pj4gI2RlZmluZSBTTkRfU09DX1RQTEdfTUNM
+S19DSSDCoMKgwqDCoMKgwqDCoMKgIDEgLyogZm9yIGNvZGVjLCBtY2xrIGlzIGlucHV0ICovCj4+
+Pgo+Pj4+IFdlIGFsc28gaGFkIGEgZGlzY3Vzc2lvbiBpbnRlcm5hbGx5IGFuZCBjYW4ndCBmaWd1
+cmUgb3V0IHdoeSB0aGUgc3RyaW5ncyBhcmUKPj4+PiBkaWZmZXJlbnQgZnJvbSB0aGUgZmllbGRz
+IGluIHRoZSBzdHJ1Y3R1cmUsIEkgZmVlbCBpdCdkIGJlIHNpbXBsZXIgdG8gYWxpZ24KPj4+PiBj
+b25maWcgYW5kIGNvZGUgdG8gYXZvaWQgaXNzdWVzIGJ1dCBrZWVwIGV4aXN0aW5nIG5vdGF0aW9u
+IGZvciBiYWNrd2FyZHMKPj4+PiBjb21wYXRpYmlsaXR5LCBlLmcuCj4+Pj4KPj4+PiBpZiAoc3Ry
+Y21wKGlkLCAibWNsa19mcmVxIikgPT0gMCkgfHwgc3RyY21wKGlkLCAibWNsa19yYXRlIikgPT0g
+MCkgewo+Pj4+ICDCoMKgwqDCoCDCoMKgwqAgaWYgKHNuZF9jb25maWdfZ2V0X3N0cmluZyhuLCAm
+dmFsKSA8IDApCj4+Pj4gIMKgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIHJldHVybiAtRUlO
+VkFMOwo+Pj4+Cj4+Pj4gIMKgwqDCoMKgIMKgwqDCoCDCoMKgwqAgaHdfY2ZnLT5tY2xrX3JhdGUg
+PSBhdG9pKHZhbCk7Cj4+Pj4gIMKgwqDCoMKgIMKgwqDCoCDCoMKgwqAgY29udGludWU7Cj4+Pj4g
+fQo+Pj4gSSBhZ3JlZSB3aXRoIHRoaXMuIEkgd2lsbCBhbHNvIGRvIHRoZSBzYW1lIChrZWVwaW5n
+IGJhY2t3YXJkcy1jb21wYXRpYmlsaXR5KQo+Pj4gZm9yOgo+Pj4KPj4+ICJmb3JtYXQiID0+ICJm
+bXQiCj4+PiAiYmNsayIgPT4gImJjbGtfbWFzdGVyIgo+Pj4gImJjbGtfZnJlcSIgPT4gImJjbGtf
+cmF0ZSIKPj4+ICJiY2xrX2ludmVydCIgPT4gImludmVydF9iY2xrIgo+Pj4gImZzeW5jIiA9PiAi
+ZnN5bmNfbWFzdGVyIgo+Pj4gImZzeW5jX2ludmVydCIgPT4gImludmVydF9mc3luYyIKPj4+ICJm
+c3luY19mcmVxIiA9PiAiZnN5bmNfcmF0ZSIKPj4+ICJtY2xrX2ZyZXEiID0+ICJtY2xrX3JhdGUi
+Cj4+PiAibWNsayIgPT4gIm1jbGtfZGlyZWN0aW9uIgo+Pj4gInBtX2dhdGVfY2xvY2tzIiA9PiAi
+Y2xvY2tfZ2F0ZWQiCj4+Pgo+Pj4gSWYgeW91IGFncmVlIHdpdGggYm90aCBwcm9wb3NhbHMsIEkg
+d2lsbCBhZGQgcGF0Y2hlcyB0byB0aGlzIHBhdGNoIHNlcmllcywgYW5kCj4+PiByZS1zZW5kIGFz
+IHBhdGNoIHY0Lgo+Pj4gT3IgY2FuIHdlIGhhbmRsZSBpdCBpbiBhIGJldHRlciB3YXk/Cj4+IEEg
+djQgaXMgZmluZSB3aXRoIG1lLgo+Pgo+PiBUaGVzZSB0b3BvbG9neSBkZWZpbml0aW9ucyBhcHBl
+YXIgaW4gaGluZHNpZ2h0IHF1aXRlIHByb2JsZW1hdGljLCB0aGVyZSBhcmUKPj4gbWlzc2luZyBk
+ZWZpbml0aW9ucyBhbmQgY2FwYWJpbGl0aWVzLCBlLmcgd2UgaGF2ZSB0aGUgYWJpbGl0eSB0byAn
+Z2F0ZSB0aGUKPj4gY2xvY2snIGJ1dCB3aXRob3V0IGtub3dpbmcgd2hpY2ggY2xvY2ssIGFuZCB3
+ZSBoYXZlIG5vIGFiaWxpdHkgdG8gZm9yY2UgdGhlCj4+IG1jbGsvYmNsay9mc3luYyBvbiAoYmUg
+aXQgb24gZGVtYW5kIGZyb20gYSBjb2RlYyBkcml2ZXIgb3Igb24gc3RhcnR1cCBhcyBhCj4+IHN5
+c3RlbSByZXF1aXJlbWVudCkuIEFuZCB0aGVyZSBpcyBubyByZWFsIGV4dGVuc2lvbiBjYXBhYmls
+aXR5IHdpdGggYSBwcm90b2NvbAo+PiB2ZXJzaW9uLiBUaGUgbmV0IGVmZmVjdCBpcyB0aGF0IHBl
+b3BsZSB3aWxsIGhhdmUgdG8gY3JlYXRlIGN1c3RvbSB0b2tlbnMgYW5kCj4+IHBhcnNpbmcgZm9y
+IHRoaW5ncyB0aGF0IHNob3VsZCBiZSBjb21tb24uLi4KPj4KPiAKPiBZZXMsIGRlZmluaXRpb25z
+IHdoaWNoIHlvdSBtZW50aW9uZWQgcmVhbGx5IGNhbiBiZWNvbWUgYSBwcm9ibGVtLgo+IEJ1dCwg
+SSBzZWUgZnJvbSB0aGUgaGVhZGVyIHRoYXQgdG9wb2xvZ3kgZmlsZXMgc3VwcG9ydCB2ZXJzaW9u
+aW5nOgo+IAo+IH5+fn4KPiAjZGVmaW5lIFNORF9TT0NfVFBMR19BQklfVkVSU0lPTsKgwqDCoCAw
+eDXCoMKgwqAgLyogY3VycmVudCB2ZXJzaW9uICovCj4gfn5+fgo+IAo+IFNvLCBpbiBmdXR1cmUg
+c3VjaCBwcm9ibGVtcyBjYW4gYmUgc29sdmVkIGJ5IGluY3JlbWVudGluZyB0aGUgdmVyc2lvbiwg
+aWYgbm8KPiBiYWNrd2FyZHMgY2FwYWJpbGl0aWVzIGFyZSBhdmFpbGFibGUuCgpNYXliZSBJIG1p
+c3VuZGVyc3Rvb2QgdGhpcyB2ZXJzaW9uIG51bWJlciwgSSB0aG91Z2h0IHRoaXMgd2FzIG9ubHkg
+Zm9yIAp0aGUgaW5pdGlhbCBzdGFnZXMgd2hlcmUgdGhlcmUgd2FzIHF1aXRlIGEgZmV3IGV2b2x1
+dGlvbnMgaW4gYSBjb3VwbGUgb2YgCm1vbnRocy4gSWYgdGhpcyBjYW4gYmUgdXBncmFkZWQgdGhl
+biB3ZSBtaWdodCB3YW50IHRvIGFkZCBuZXcgCmRlZmluaXRpb25zIHRoYXQgd2UgY2FtZSB1cCB3
+aXRoIGR1cmluZyB0aGUgU09GIHdvcmsgYnV0IGFyZSBvZiBpbnRlcmVzdCAKdG8gb3RoZXJzLgoK
+PiAKPiAKPiAKPiAKPiBCZWZvcmUgSSBjb250aW51ZSB3aXRoIHRoZSBwYXRjaCB2NCwgSSB3YW50
+IHRvIGNsYXJpZnkgd2l0aCB5b3UsIHNvIHRoYXQgd2UKPiBhdm9pZCB0aGUgbWlzdW5kZXJzdGFu
+ZGluZzoKPiAKPiAqIGluIHRoZSBleGlzdGluZyA0IHBhdGNoZXMsIEkgd2lsbCBhZGQgYSB0YWcK
+PiAgwqAgIlJldmlld2VkLWJ5OiBQaWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlzLmJv
+c3NhcnRAbGludXguaW50ZWwuY29tPiIKPiAqIGluIHRoZSBuZXcgMiBwYXRjaGVzLCB3aGljaCB3
+ZSByZWNlbnRseSBkaXNjdXNzZWQsIEkgd2lsbCBhZGQgYSB0YWcKPiAgwqAgIkFja2VkLWJ5OiBQ
+aWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29t
+PiIKPiAKPiBEbyB5b3UgYWdyZWUgd2l0aCB0aGF0PwoKWWVzLCB0aGF0J3MgZmluZS4KX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
