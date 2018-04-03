@@ -1,21 +1,24 @@
-From: Andrew Chant <achant@google.com>
-Subject: Re: [PATCH 2/2] ALSA: usb-audio: Add sanity checks in
- v3 clock parsers
-Date: Tue, 3 Apr 2018 10:23:19 -0700
-Message-ID: <CANVWZtHhZRZoQYr8moY2oWKmCadegSdhQgE+fpD_iu2HbZhC9Q@mail.gmail.com>
-References: <20180403154808.21947-1-tiwai@suse.de>
- <20180403154808.21947-2-tiwai@suse.de>
+From: Ladislav Michl <ladis@linux-mips.org>
+Subject: Re: [PATCH] ASoC: atmel_ssc_dai: fix spelling mistake:
+ "Stoping" -> "Stopping"
+Date: Tue, 3 Apr 2018 19:30:44 +0200
+Message-ID: <20180403173044.GA6031@lenoch>
+References: <20180330154420.6903-1-colin.king@canonical.com>
+ <20180403134540.GA29017@lenoch>
+ <1522770597.11653.49.camel@perches.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
- [209.85.128.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4877F2675FA
- for <alsa-devel@alsa-project.org>; Tue,  3 Apr 2018 19:24:01 +0200 (CEST)
-Received: by mail-wr0-f193.google.com with SMTP id p53so19461067wrc.10
- for <alsa-devel@alsa-project.org>; Tue, 03 Apr 2018 10:24:01 -0700 (PDT)
-In-Reply-To: <20180403154808.21947-2-tiwai@suse.de>
+Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9723C2675EF
+ for <alsa-devel@alsa-project.org>; Tue,  3 Apr 2018 19:30:45 +0200 (CEST)
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23993251AbeDCRaovs-JG (ORCPT
+ <rfc822;alsa-devel@alsa-project.org>); Tue, 3 Apr 2018 19:30:44 +0200
+Content-Disposition: inline
+In-Reply-To: <1522770597.11653.49.camel@perches.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,59 +28,140 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Ruslan Bilovol <ruslan.bilovol@gmail.com>
+To: Joe Perches <joe@perches.com>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Colin King <colin.king@canonical.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 3, 2018 at 8:48 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> The UAC3 clock parser codes lack of the sanity checks for malformed
-> descriptors like UAC2 parser does.  Without it, the driver may lead to
-> a potential crash.
->
-> Fixes: 9a2fe9b801f5 ("ALSA: usb: initial USB Audio Device Class 3.0 support")
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+On Tue, Apr 03, 2018 at 08:49:57AM -0700, Joe Perches wrote:
+> On Tue, 2018-04-03 at 15:45 +0200, Ladislav Michl wrote:
+> > On Fri, Mar 30, 2018 at 04:44:20PM +0100, Colin King wrote:
+> > > From: Colin Ian King <colin.king@canonical.com>
+> > 
+> > Hello Colin,
+> > 
+> > > Trivial fix to spelling mistake in pr_debug message text
+> > 
+> > would you mind making this patch a bit less non-trivial and
+> > change pr_debug to dev_dbg dropping Atmel_ssc_dai prefix?
+> 
+> Presumably, then all the pr_<foo> calls should be changed.
+
+Yes, that's what non-trivial means here :)
+
+> Something like:
 > ---
->  sound/usb/clock.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/sound/usb/clock.c b/sound/usb/clock.c
-> index c5f0cf532c0c..169fb3ac3715 100644
-> --- a/sound/usb/clock.c
-> +++ b/sound/usb/clock.c
-> @@ -58,7 +58,7 @@ static bool validate_clock_source_v2(void *p, int id)
->  static bool validate_clock_source_v3(void *p, int id)
->  {
->         struct uac3_clock_source_descriptor *cs = p;
-> -       return cs->bClockID == id;
-> +       return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
+>  sound/soc/atmel/atmel_ssc_dai.c | 38 ++++++++++++++++----------------------
+>  1 file changed, 16 insertions(+), 22 deletions(-)
+> 
+> diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+> index a1e2c5682dcd..594228156b2d 100644
+> --- a/sound/soc/atmel/atmel_ssc_dai.c
+> +++ b/sound/soc/atmel/atmel_ssc_dai.c
+> @@ -291,11 +291,10 @@ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
+>  	int dir, dir_mask;
+>  	int ret;
+>  
+> -	pr_debug("atmel_ssc_startup: SSC_SR=0x%x\n",
+> -		ssc_readl(ssc_p->ssc->regs, SR));
+> +	dev_dbg(dai->dev, "SSC_SR=0x%x\n", ssc_readl(ssc_p->ssc->regs, SR));
+>  
+>  	/* Enable PMC peripheral clock for this SSC */
+> -	pr_debug("atmel_ssc_dai: Starting clock\n");
+> +	dev_dbg(dai->dev, "Starting clock\n");
+>  	clk_enable(ssc_p->ssc->clk);
+>  	ssc_p->mck_rate = clk_get_rate(ssc_p->ssc->clk);
+>  
+> @@ -385,7 +384,7 @@ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
+>  	spin_unlock_irq(&ssc_p->lock);
+>  
+>  	/* Shutdown the SSC clock. */
+> -	pr_debug("atmel_ssc_dai: Stopping clock\n");
+> +	dev_dbg(dai->dev, "Stopping clock\n");
+>  	clk_disable(ssc_p->ssc->clk);
 >  }
->
->  static bool validate_clock_selector_v2(void *p, int id)
-> @@ -71,7 +71,8 @@ static bool validate_clock_selector_v2(void *p, int id)
->  static bool validate_clock_selector_v3(void *p, int id)
->  {
->         struct uac3_clock_selector_descriptor *cs = p;
-> -       return cs->bClockID == id;
-> +       return cs->bLength >= sizeof(*cs) && cs->bClockID == id &&
-> +               cs->bLength >= 5 + cs->bNrInPins;
+>  
+> @@ -794,13 +793,12 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+>  		break;
+>  
+>  	default:
+> -		printk(KERN_WARNING "atmel_ssc_dai: unsupported DAI format 0x%x\n",
+> -			ssc_p->daifmt);
+> +		dev_warn(dai->dev, "unsupported DAI format 0x%x\n",
+> +			 ssc_p->daifmt);
+>  		return -EINVAL;
+>  	}
+> -	pr_debug("atmel_ssc_hw_params: "
+> -			"RCMR=%08x RFMR=%08x TCMR=%08x TFMR=%08x\n",
+> -			rcmr, rfmr, tcmr, tfmr);
+> +	dev_dbg(dai->dev, "RCMR=%08x RFMR=%08x TCMR=%08x TFMR=%08x\n",
+> +		rcmr, rfmr, tcmr, tfmr);
+>  
+>  	if (!ssc_p->initialized) {
+>  		if (!ssc_p->ssc->pdata->use_dma) {
+> @@ -818,9 +816,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+>  		ret = request_irq(ssc_p->ssc->irq, atmel_ssc_interrupt, 0,
+>  				ssc_p->name, ssc_p);
+>  		if (ret < 0) {
+> -			printk(KERN_WARNING
+> -					"atmel_ssc_dai: request_irq failure\n");
+> -			pr_debug("Atmel_ssc_dai: Stoping clock\n");
+> +			dev_warn(dai->dev, "request_irq failure\n");
+> +			dev_dbg(dai->dev, "Stopping clock\n");
+>  			clk_disable(ssc_p->ssc->clk);
+>  			return ret;
+>  		}
+> @@ -839,7 +836,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+>  	ssc_writel(ssc_p->ssc->regs, TCMR, tcmr);
+>  	ssc_writel(ssc_p->ssc->regs, TFMR, tfmr);
+>  
+> -	pr_debug("atmel_ssc_dai,hw_params: SSC initialized\n");
+> +	dev_dbg(dai->dev, "SSC initialized\n");
+>  	return 0;
 >  }
->
->  static bool validate_clock_multiplier_v2(void *p, int id)
-> @@ -83,7 +84,7 @@ static bool validate_clock_multiplier_v2(void *p, int id)
->  static bool validate_clock_multiplier_v3(void *p, int id)
->  {
->         struct uac3_clock_multiplier_descriptor *cs = p;
-> -       return cs->bClockID == id;
-> +       return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
+>  
+> @@ -862,9 +859,9 @@ static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
+>  	ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_disable);
+>  	ssc_writel(ssc_p->ssc->regs, IDR, dma_params->mask->ssc_error);
+>  
+> -	pr_debug("%s enabled SSC_SR=0x%08x\n",
+> -			dir ? "receive" : "transmit",
+> -			ssc_readl(ssc_p->ssc->regs, SR));
+> +	dev_dbg(dai->dev, "%s enabled SSC_SR=0x%08x\n",
+> +		dir ? "receive" : "transmit",
+> +		ssc_readl(ssc_p->ssc->regs, SR));
+>  	return 0;
 >  }
->
->  #define DEFINE_FIND_HELPER(name, obj, validator, type)         \
-> --
-> 2.16.2
->
+>  
+> @@ -1050,21 +1047,18 @@ static void asoc_ssc_exit(struct device *dev)
+>  int atmel_ssc_set_audio(int ssc_id)
+>  {
+>  	struct ssc_device *ssc;
+> -	int ret;
+>  
+>  	/* If we can grab the SSC briefly to parent the DAI device off it */
+>  	ssc = ssc_request(ssc_id);
+>  	if (IS_ERR(ssc)) {
+>  		pr_err("Unable to parent ASoC SSC DAI on SSC: %ld\n",
+> -			PTR_ERR(ssc));
+> +		       PTR_ERR(ssc));
+
+Well, these are usefull, but unrelated changes. But while there, above
+pr_error deserves to be replaced with dev_err as well.
+
+>  		return PTR_ERR(ssc);
+> -	} else {
+> -		ssc_info[ssc_id].ssc = ssc;
+>  	}
+>  
+> -	ret = asoc_ssc_init(&ssc->pdev->dev);
+> +	ssc_info[ssc_id].ssc = ssc;
+>  
+> -	return ret;
+> +	return asoc_ssc_init(&ssc->pdev->dev);
+>  }
+>  EXPORT_SYMBOL_GPL(atmel_ssc_set_audio);
+>  
 > _______________________________________________
 > Alsa-devel mailing list
 > Alsa-devel@alsa-project.org
 > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-These address all the comments I had on patch 1. sorry for the noise.
