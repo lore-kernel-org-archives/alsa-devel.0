@@ -1,19 +1,25 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH] ASoC: atmel_ssc_dai: fix spelling mistake:
- "Stoping" -> "Stopping"
-Date: Tue, 03 Apr 2018 08:49:57 -0700
-Message-ID: <1522770597.11653.49.camel@perches.com>
-References: <20180330154420.6903-1-colin.king@canonical.com>
- <20180403134540.GA29017@lenoch>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: call/normal switch was Re: omap4-droid4: voice
+	call support was
+Date: Tue, 3 Apr 2018 17:50:24 +0200
+Message-ID: <20180403155023.GA14638@atrey.karlin.mff.cuni.cz>
+References: <20180331191939.GA8999@amd> <20180331194616.GA19388@amd>
+ <20180331195524.GB19388@amd> <20180331234314.GZ5700@atomide.com>
+ <20180401131852.GA11086@amd> <20180401153631.GA5700@atomide.com>
+ <20180401173012.GB5700@atomide.com>
+ <67086fdd0cdd69142cb89cd00f90e5a580e6607a.camel@redhat.com>
+ <20180402155754.GD5700@atomide.com>
+ <20180403150444.GE5700@atomide.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtprelay.hostedemail.com (smtprelay0142.hostedemail.com
- [216.40.44.142])
- by alsa0.perex.cz (Postfix) with ESMTP id BB9762675CA
- for <alsa-devel@alsa-project.org>; Tue,  3 Apr 2018 17:50:02 +0200 (CEST)
-In-Reply-To: <20180403134540.GA29017@lenoch>
+Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
+ [195.113.26.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id DBAD92675CA
+ for <alsa-devel@alsa-project.org>; Tue,  3 Apr 2018 17:50:24 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20180403150444.GE5700@atomide.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,128 +29,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ladislav Michl <ladis@linux-mips.org>, Colin King <colin.king@canonical.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: Tony Lindgren <tony@atomide.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Dan Williams <dcbw@redhat.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, linux-omap@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2018-04-03 at 15:45 +0200, Ladislav Michl wrote:
-> On Fri, Mar 30, 2018 at 04:44:20PM +0100, Colin King wrote:
-> > From: Colin Ian King <colin.king@canonical.com>
-> 
-> Hello Colin,
-> 
-> > Trivial fix to spelling mistake in pr_debug message text
-> 
-> would you mind making this patch a bit less non-trivial and
-> change pr_debug to dev_dbg dropping Atmel_ssc_dai prefix?
+Hi!
 
-Presumably, then all the pr_<foo> calls should be changed.
-Something like:
----
- sound/soc/atmel/atmel_ssc_dai.c | 38 ++++++++++++++++----------------------
- 1 file changed, 16 insertions(+), 22 deletions(-)
+> > OK thanks for checking. So probably only n_gsm channel 1 is for normal
+> > Qualcomm at commands, and then channel 2 and others are commands
+> > implemented by Motorola on the mdm6600.
+> > 
+> > I guess we'd have to add support for reading and writing to
+> > /dev/gsmtty2 at least as it looks like these cannot be accessed
+> > via /dev/ttyUSB4. Or at least I have not figured out any other
+> > way to access them.
+> 
+> Hmm or maybe there is some way to select where qmi to tunnels the
+> AT commands to? Some kind of channel type paramenter like n_gsm
+> has?
+> 
+> Anyways, for trying to figure out things for alsamixer, I tested
+> that ngsm 2 "AT+EACC=3,0" is not related to cpcap audio register
+> settings and the mic is enabled during the call with Pavel's patch
+> with alsamixer "Mode" set to either "Call" or "Normal". Also speaker
+> keeps working during the call toggling between "Call" and "Normal".
+> "Voice" in alsamixer does also control the speaker volume during
+> the call. And setting the second "Speaker" from "Voice" to "HiFi"
+> mutes the speaker.
 
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index a1e2c5682dcd..594228156b2d 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -291,11 +291,10 @@ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
- 	int dir, dir_mask;
- 	int ret;
- 
--	pr_debug("atmel_ssc_startup: SSC_SR=0x%x\n",
--		ssc_readl(ssc_p->ssc->regs, SR));
-+	dev_dbg(dai->dev, "SSC_SR=0x%x\n", ssc_readl(ssc_p->ssc->regs, SR));
- 
- 	/* Enable PMC peripheral clock for this SSC */
--	pr_debug("atmel_ssc_dai: Starting clock\n");
-+	dev_dbg(dai->dev, "Starting clock\n");
- 	clk_enable(ssc_p->ssc->clk);
- 	ssc_p->mck_rate = clk_get_rate(ssc_p->ssc->clk);
- 
-@@ -385,7 +384,7 @@ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
- 	spin_unlock_irq(&ssc_p->lock);
- 
- 	/* Shutdown the SSC clock. */
--	pr_debug("atmel_ssc_dai: Stopping clock\n");
-+	dev_dbg(dai->dev, "Stopping clock\n");
- 	clk_disable(ssc_p->ssc->clk);
- }
- 
-@@ -794,13 +793,12 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 		break;
- 
- 	default:
--		printk(KERN_WARNING "atmel_ssc_dai: unsupported DAI format 0x%x\n",
--			ssc_p->daifmt);
-+		dev_warn(dai->dev, "unsupported DAI format 0x%x\n",
-+			 ssc_p->daifmt);
- 		return -EINVAL;
- 	}
--	pr_debug("atmel_ssc_hw_params: "
--			"RCMR=%08x RFMR=%08x TCMR=%08x TFMR=%08x\n",
--			rcmr, rfmr, tcmr, tfmr);
-+	dev_dbg(dai->dev, "RCMR=%08x RFMR=%08x TCMR=%08x TFMR=%08x\n",
-+		rcmr, rfmr, tcmr, tfmr);
- 
- 	if (!ssc_p->initialized) {
- 		if (!ssc_p->ssc->pdata->use_dma) {
-@@ -818,9 +816,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 		ret = request_irq(ssc_p->ssc->irq, atmel_ssc_interrupt, 0,
- 				ssc_p->name, ssc_p);
- 		if (ret < 0) {
--			printk(KERN_WARNING
--					"atmel_ssc_dai: request_irq failure\n");
--			pr_debug("Atmel_ssc_dai: Stoping clock\n");
-+			dev_warn(dai->dev, "request_irq failure\n");
-+			dev_dbg(dai->dev, "Stopping clock\n");
- 			clk_disable(ssc_p->ssc->clk);
- 			return ret;
- 		}
-@@ -839,7 +836,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 	ssc_writel(ssc_p->ssc->regs, TCMR, tcmr);
- 	ssc_writel(ssc_p->ssc->regs, TFMR, tfmr);
- 
--	pr_debug("atmel_ssc_dai,hw_params: SSC initialized\n");
-+	dev_dbg(dai->dev, "SSC initialized\n");
- 	return 0;
- }
- 
-@@ -862,9 +859,9 @@ static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
- 	ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_disable);
- 	ssc_writel(ssc_p->ssc->regs, IDR, dma_params->mask->ssc_error);
- 
--	pr_debug("%s enabled SSC_SR=0x%08x\n",
--			dir ? "receive" : "transmit",
--			ssc_readl(ssc_p->ssc->regs, SR));
-+	dev_dbg(dai->dev, "%s enabled SSC_SR=0x%08x\n",
-+		dir ? "receive" : "transmit",
-+		ssc_readl(ssc_p->ssc->regs, SR));
- 	return 0;
- }
- 
-@@ -1050,21 +1047,18 @@ static void asoc_ssc_exit(struct device *dev)
- int atmel_ssc_set_audio(int ssc_id)
- {
- 	struct ssc_device *ssc;
--	int ret;
- 
- 	/* If we can grab the SSC briefly to parent the DAI device off it */
- 	ssc = ssc_request(ssc_id);
- 	if (IS_ERR(ssc)) {
- 		pr_err("Unable to parent ASoC SSC DAI on SSC: %ld\n",
--			PTR_ERR(ssc));
-+		       PTR_ERR(ssc));
- 		return PTR_ERR(ssc);
--	} else {
--		ssc_info[ssc_id].ssc = ssc;
- 	}
- 
--	ret = asoc_ssc_init(&ssc->pdev->dev);
-+	ssc_info[ssc_id].ssc = ssc;
- 
--	return ret;
-+	return asoc_ssc_init(&ssc->pdev->dev);
- }
- EXPORT_SYMBOL_GPL(atmel_ssc_set_audio);
- 
+Take a look at the patch. Selecting "call" does something at hardware
+level, selecting "normal" is a nop.
+
+Sorry for confusion.
+
+Yes, that patch needs more work.
+
+								Pavel
+
+-- 
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
