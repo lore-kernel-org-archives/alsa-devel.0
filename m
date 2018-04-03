@@ -1,119 +1,55 @@
-From: Kirill Marinushkin <k.marinushkin@gmail.com>
-Subject: Re: [alsa-devel] [PATCH v3 0/2] ASoC: topology: Improve parsing
- hw_configs
-Date: Tue, 3 Apr 2018 20:16:23 +0200
-Message-ID: <21dd211e-2b93-b5af-0606-726432e40795@gmail.com>
-References: <20180327205632.3677-1-k.marinushkin@gmail.com>
- <17f0767a-2dea-92dd-a88e-a3f3e670d0d2@gmail.com>
- <461bbabf-7c36-1361-8f66-5abbe3c7f4d8@linux.intel.com>
- <ee6ba140-fa5c-78e9-47bc-125b1aca7672@gmail.com>
- <260f1850-37f2-fffa-fb33-4b5ff823ba0b@linux.intel.com>
+From: Joe Perches <joe@perches.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: atmel_ssc_dai: fix spelling mistake:
+ "Stoping" -> "Stopping"
+Date: Tue, 03 Apr 2018 11:17:03 -0700
+Message-ID: <1522779423.11653.63.camel@perches.com>
+References: <20180330154420.6903-1-colin.king@canonical.com>
+         <20180403134540.GA29017@lenoch> <1522770597.11653.49.camel@perches.com>
+         <20180403173044.GA6031@lenoch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <260f1850-37f2-fffa-fb33-4b5ff823ba0b@linux.intel.com>
-Content-Language: en-US
+In-Reply-To: <20180403173044.GA6031@lenoch>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Pan Xiuli <xiuli.pan@linux.intel.com>, linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: Colin King <colin.king@canonical.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/03/18 19:21, Pierre-Louis Bossart wrote:
->
->
-> On 04/03/2018 12:15 AM, Kirill Marinushkin wrote:
->> On 04/03/18 02:57, Pierre-Louis Bossart wrote:
->>>
->>> On 04/02/2018 04:17 PM, Kirill Marinushkin wrote:
->>>> Hello Pierre-Louis,
->>>>
->>>> I explicitly clarified with Takashi: to have this patch series merged, we
->>>> need a
->>>> tag "Reviewed-by" from you.
->>> I am fine with the changes, but maybe while we are at it, we should clarify
->>> what mclk_direction means?
->> That's a good idea to have it solved within this patch series.
->>
->>>      __u8 mclk_direction;    /* 0 for input, 1 for output */
->>>
->>> This is really awful and might benefit for additional clarity using
->>> codec-centric conventions.
->>>
->> I agree that having a clear naming will avoid confusion for future usage.
->> I see from the code, that this variable is ignored. So we have no technical
->> restriction on how to interpret this.
->> I suggest to do similar to what we did for bclk_master:
->>
->> /* DAI mclk_direction */
->> #define SND_SOC_TPLG_MCLK_CO        0 /* for codec, mclk is output */
->> #define SND_SOC_TPLG_MCLK_CI          1 /* for codec, mclk is input */
->>
->>> We also had a discussion internally and can't figure out why the strings are
->>> different from the fields in the structure, I feel it'd be simpler to align
->>> config and code to avoid issues but keep existing notation for backwards
->>> compatibility, e.g.
->>>
->>> if (strcmp(id, "mclk_freq") == 0) || strcmp(id, "mclk_rate") == 0) {
->>>          if (snd_config_get_string(n, &val) < 0)
->>>                  return -EINVAL;
->>>
->>>              hw_cfg->mclk_rate = atoi(val);
->>>              continue;
->>> }
->> I agree with this. I will also do the same (keeping backwards-compatibility)
->> for:
->>
->> "format" => "fmt"
->> "bclk" => "bclk_master"
->> "bclk_freq" => "bclk_rate"
->> "bclk_invert" => "invert_bclk"
->> "fsync" => "fsync_master"
->> "fsync_invert" => "invert_fsync"
->> "fsync_freq" => "fsync_rate"
->> "mclk_freq" => "mclk_rate"
->> "mclk" => "mclk_direction"
->> "pm_gate_clocks" => "clock_gated"
->>
->> If you agree with both proposals, I will add patches to this patch series, and
->> re-send as patch v4.
->> Or can we handle it in a better way?
-> A v4 is fine with me.
->
-> These topology definitions appear in hindsight quite problematic, there are
-> missing definitions and capabilities, e.g we have the ability to 'gate the
-> clock' but without knowing which clock, and we have no ability to force the
-> mclk/bclk/fsync on (be it on demand from a codec driver or on startup as a
-> system requirement). And there is no real extension capability with a protocol
-> version. The net effect is that people will have to create custom tokens and
-> parsing for things that should be common...
->
+On Tue, 2018-04-03 at 19:30 +0200, Ladislav Michl wrote:
+> On Tue, Apr 03, 2018 at 08:49:57AM -0700, Joe Perches wrote:
+> > On Tue, 2018-04-03 at 15:45 +0200, Ladislav Michl wrote:
+> > > On Fri, Mar 30, 2018 at 04:44:20PM +0100, Colin King wrote:
+> > > > From: Colin Ian King <colin.king@canonical.com>
+> > > 
+> > > Hello Colin,
+> > > 
+> > > > Trivial fix to spelling mistake in pr_debug message text
+> > > 
+> > > would you mind making this patch a bit less non-trivial and
+> > > change pr_debug to dev_dbg dropping Atmel_ssc_dai prefix?
+> > 
+> > Presumably, then all the pr_<foo> calls should be changed.
+> Yes, that's what non-trivial means here :)
 
-Yes, definitions which you mentioned really can become a problem.
-But, I see from the header that topology files support versioning:
+More useful would be less specific originally.
 
-~~~~
-#define SND_SOC_TPLG_ABI_VERSION    0x5    /* current version */
-~~~~
+> > diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+[]
+> > @@ -1050,21 +1047,18 @@ static void asoc_ssc_exit(struct device *dev)
+> >  int atmel_ssc_set_audio(int ssc_id)
+> >  {
+> >  	struct ssc_device *ssc;
+> > -	int ret;
+> >  
+> >  	/* If we can grab the SSC briefly to parent the DAI device off it */
+> >  	ssc = ssc_request(ssc_id);
+> >  	if (IS_ERR(ssc)) {
+> >  		pr_err("Unable to parent ASoC SSC DAI on SSC: %ld\n",
+> > -			PTR_ERR(ssc));
+> > +		       PTR_ERR(ssc));
+> 
+> Well, these are usefull, but unrelated changes. But while there, above
+> pr_error deserves to be replaced with dev_err as well.
 
-So, in future such problems can be solved by incrementing the version, if no
-backwards capabilities are available.
-
-
-
-
-Before I continue with the patch v4, I want to clarify with you, so that we
-avoid the misunderstanding:
-
-* in the existing 4 patches, I will add a tag
-  "Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>"
-* in the new 2 patches, which we recently discussed, I will add a tag
-  "Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>"
-
-Do you agree with that?
-
-Best Regards,
-Kirill
-
-> Thanks
-> -Pierre
+No  dai device.
