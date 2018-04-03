@@ -1,50 +1,102 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH][RESEND] ASoC: Intel: atom: fix ACPI/PCI Kconfig
-Date: Tue, 3 Apr 2018 10:25:56 +0530
-Message-ID: <20180403045554.GT15443@localhost>
-References: <20180402170614.5599-1-pierre-louis.bossart@linux.intel.com>
+From: Kirill Marinushkin <k.marinushkin@gmail.com>
+Subject: Re: [PATCH v3 0/2] ASoC: topology: Improve parsing
+	hw_configs
+Date: Tue, 3 Apr 2018 07:15:37 +0200
+Message-ID: <ee6ba140-fa5c-78e9-47bc-125b1aca7672@gmail.com>
+References: <20180327205632.3677-1-k.marinushkin@gmail.com>
+ <17f0767a-2dea-92dd-a88e-a3f3e670d0d2@gmail.com>
+ <461bbabf-7c36-1361-8f66-5abbe3c7f4d8@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180402170614.5599-1-pierre-louis.bossart@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id A59282673D6
+ for <alsa-devel@alsa-project.org>; Tue,  3 Apr 2018 07:15:01 +0200 (CEST)
+Received: by mail-wm0-f67.google.com with SMTP id h76so30375385wme.4
+ for <alsa-devel@alsa-project.org>; Mon, 02 Apr 2018 22:15:01 -0700 (PDT)
+In-Reply-To: <461bbabf-7c36-1361-8f66-5abbe3c7f4d8@linux.intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, liam.r.girdwood@linux.intel.com, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Harsha Priya N <harshapriya.n@intel.com>, Naveen M <naveen.m@intel.com>, Daniel Drake <drake@endlessm.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Pan Xiuli <xiuli.pan@linux.intel.com>, linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 02, 2018 at 12:06:14PM -0500, Pierre-Louis Bossart wrote:
-> The split between ACPI and PCI platforms generated issues with randconfig:
-> 
-> with SND_SST_ATOM_HIFI2_PLATFORM_PCI=y and
-> SND_SST_ATOM_HIFI2_PLATFORM=m, we get this module link failure:
-> 
-> ERROR: "sst_context_init"
-> [sound/soc/intel/atom/sst/snd-intel-sst-acpi.ko] undefined!
-> 
-> ERROR: "sst_context_cleanup"
-> [sound/soc/intel/atom/sst/snd-intel-sst-acpi.ko] undefined!
-> 
-> ERROR: "sst_alloc_drv_context"
-> [sound/soc/intel/atom/sst/snd-intel-sst-acpi.ko] undefined!
-> 
-> ERROR: "intel_sst_pm" [sound/soc/intel/atom/sst/snd-intel-sst-acpi.ko]
-> undefined!
-> 
-> ERROR: "sst_configure_runtime_pm"
-> [sound/soc/intel/atom/sst/snd-intel-sst-acpi.ko] undefined!
-> 
-> To keep things simple, let's expose two configs for
-> SND_SST_ATOM_HIFI2_PLATFORM_PCI and SND_SST_ATOM_HIFI2_PLATFORM_ACPI,
-> which select a common SND_SST_ATOM_HIFI2_PLATFORM option. To avoid
-> breaking existing solutions with the semantics change,
-> SND_SST_ATOM_HIFI2_PLATFORM_ACPI uses "default ACPI" so that "make
-> oldnoconfig" and "make olddefconfig" still work as expected.
-> 
-> Also remove mentions of Medfield while we are at it since it was
-> removed recently.
-
-Acked-By: Vinod Koul <vinod.koul@intel.com>
-
--- 
-~Vinod
+T24gMDQvMDMvMTggMDI6NTcsIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+Cj4KPiBPbiAw
+NC8wMi8yMDE4IDA0OjE3IFBNLCBLaXJpbGwgTWFyaW51c2hraW4gd3JvdGU6Cj4+IEhlbGxvIFBp
+ZXJyZS1Mb3VpcywKPj4KPj4gSSBleHBsaWNpdGx5IGNsYXJpZmllZCB3aXRoIFRha2FzaGk6IHRv
+IGhhdmUgdGhpcyBwYXRjaCBzZXJpZXMgbWVyZ2VkLCB3ZSBuZWVkIGEKPj4gdGFnICJSZXZpZXdl
+ZC1ieSIgZnJvbSB5b3UuCj4gSSBhbSBmaW5lIHdpdGggdGhlIGNoYW5nZXMsIGJ1dCBtYXliZSB3
+aGlsZSB3ZSBhcmUgYXQgaXQsIHdlIHNob3VsZCBjbGFyaWZ5Cj4gd2hhdCBtY2xrX2RpcmVjdGlv
+biBtZWFucz8KClRoYXQncyBhIGdvb2QgaWRlYSB0byBoYXZlIGl0IHNvbHZlZCB3aXRoaW4gdGhp
+cyBwYXRjaCBzZXJpZXMuCgo+Cj4gwqDCoMKgIF9fdTggbWNsa19kaXJlY3Rpb247wqDCoMKgIC8q
+IDAgZm9yIGlucHV0LCAxIGZvciBvdXRwdXQgKi8KPgo+IFRoaXMgaXMgcmVhbGx5IGF3ZnVsIGFu
+ZCBtaWdodCBiZW5lZml0IGZvciBhZGRpdGlvbmFsIGNsYXJpdHkgdXNpbmcKPiBjb2RlYy1jZW50
+cmljIGNvbnZlbnRpb25zLgo+CgpJIGFncmVlIHRoYXQgaGF2aW5nIGEgY2xlYXIgbmFtaW5nIHdp
+bGwgYXZvaWQgY29uZnVzaW9uIGZvciBmdXR1cmUgdXNhZ2UuCkkgc2VlIGZyb20gdGhlIGNvZGUs
+IHRoYXQgdGhpcyB2YXJpYWJsZSBpcyBpZ25vcmVkLiBTbyB3ZSBoYXZlIG5vIHRlY2huaWNhbApy
+ZXN0cmljdGlvbiBvbiBob3cgdG8gaW50ZXJwcmV0IHRoaXMuCkkgc3VnZ2VzdCB0byBkbyBzaW1p
+bGFyIHRvIHdoYXQgd2UgZGlkIGZvciBiY2xrX21hc3RlcjoKCi8qIERBSSBtY2xrX2RpcmVjdGlv
+biAqLwojZGVmaW5lIFNORF9TT0NfVFBMR19NQ0xLX0NPIMKgwqDCoMKgwqDCoCAwIC8qIGZvciBj
+b2RlYywgbWNsayBpcyBvdXRwdXQgKi8KI2RlZmluZSBTTkRfU09DX1RQTEdfTUNMS19DSSDCoMKg
+wqDCoMKgwqDCoMKgIDEgLyogZm9yIGNvZGVjLCBtY2xrIGlzIGlucHV0ICovCgo+IFdlIGFsc28g
+aGFkIGEgZGlzY3Vzc2lvbiBpbnRlcm5hbGx5IGFuZCBjYW4ndCBmaWd1cmUgb3V0IHdoeSB0aGUg
+c3RyaW5ncyBhcmUKPiBkaWZmZXJlbnQgZnJvbSB0aGUgZmllbGRzIGluIHRoZSBzdHJ1Y3R1cmUs
+IEkgZmVlbCBpdCdkIGJlIHNpbXBsZXIgdG8gYWxpZ24KPiBjb25maWcgYW5kIGNvZGUgdG8gYXZv
+aWQgaXNzdWVzIGJ1dCBrZWVwIGV4aXN0aW5nIG5vdGF0aW9uIGZvciBiYWNrd2FyZHMKPiBjb21w
+YXRpYmlsaXR5LCBlLmcuCj4KPiBpZiAoc3RyY21wKGlkLCAibWNsa19mcmVxIikgPT0gMCkgfHwg
+c3RyY21wKGlkLCAibWNsa19yYXRlIikgPT0gMCkgewo+IMKgwqDCoCDCoMKgwqAgaWYgKHNuZF9j
+b25maWdfZ2V0X3N0cmluZyhuLCAmdmFsKSA8IDApCj4gwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDC
+oMKgIHJldHVybiAtRUlOVkFMOwo+Cj4gwqDCoMKgIMKgwqDCoCDCoMKgwqAgaHdfY2ZnLT5tY2xr
+X3JhdGUgPSBhdG9pKHZhbCk7Cj4gwqDCoMKgIMKgwqDCoCDCoMKgwqAgY29udGludWU7Cj4gfQoK
+SSBhZ3JlZSB3aXRoIHRoaXMuIEkgd2lsbCBhbHNvIGRvIHRoZSBzYW1lIChrZWVwaW5nIGJhY2t3
+YXJkcy1jb21wYXRpYmlsaXR5KSBmb3I6CgoiZm9ybWF0IiA9PiAiZm10IgoiYmNsayIgPT4gImJj
+bGtfbWFzdGVyIgoiYmNsa19mcmVxIiA9PiAiYmNsa19yYXRlIgoiYmNsa19pbnZlcnQiID0+ICJp
+bnZlcnRfYmNsayIKImZzeW5jIiA9PiAiZnN5bmNfbWFzdGVyIgoiZnN5bmNfaW52ZXJ0IiA9PiAi
+aW52ZXJ0X2ZzeW5jIgoiZnN5bmNfZnJlcSIgPT4gImZzeW5jX3JhdGUiCiJtY2xrX2ZyZXEiID0+
+ICJtY2xrX3JhdGUiCiJtY2xrIiA9PiAibWNsa19kaXJlY3Rpb24iCiJwbV9nYXRlX2Nsb2NrcyIg
+PT4gImNsb2NrX2dhdGVkIgoKSWYgeW91IGFncmVlIHdpdGggYm90aCBwcm9wb3NhbHMsIEkgd2ls
+bCBhZGQgcGF0Y2hlcyB0byB0aGlzIHBhdGNoIHNlcmllcywgYW5kCnJlLXNlbmQgYXMgcGF0Y2gg
+djQuCk9yIGNhbiB3ZSBoYW5kbGUgaXQgaW4gYSBiZXR0ZXIgd2F5PwoKPj4KPj4gUGF0Y2hlcyBb
+Ml0gYW5kIFs1XToKPj4gWW91IGFscmVhZHkgdGVzdGVkIHRoZW0uIE1heSBJIHB1dCBhIHRhZyAi
+UmV2aWV3ZWQtYnkiIHdpdGggeW91ciBuYW1lIGludG8gdGhlbT8KPj4KPj4gUGF0Y2hlcyBbM10g
+YW5kIFs2XToKPj4gVGhvc2UgYXJlIG5ldyBmb3IgeW91OyBJIGFkZGVkIHRoZW0gdG8gdGhpcyBw
+YXRjaCBzZXJpZXMsIGJlY2F1c2UgdGhleSBhcmUKPj4gbG9naWNhbGx5IHNpbWlsYXIgdG8gWzJd
+IGFuZCBbNV0uCj4+IENvdWxkIHlvdSBwbGVhc2UgcmV2aWV3IHRoZXNlIHBhdGNoZXM/Cj4+Cj4+
+IEJlc3QgUmVnYXJkcywKPj4gS2lyaWxsCj4+Cj4+IFsxXSBbUEFUQ0ggdjMgMC8yXSBBU29DOiB0
+b3BvbG9neTogSW1wcm92ZSBwYXJzaW5nIGh3X2NvbmZpZ3MKPj4gWzJdIFtQQVRDSCB2MyAxLzJd
+IEFTb0M6IHRvcG9sb2d5OiBGaXggYmNsayBhbmQgZnN5bmMgaW52ZXJzaW9uIGluCj4+IHNldF9s
+aW5rX2h3X2Zvcm1hdCgpCj4+IFszXSBbUEFUQ0ggdjMgMi8yXSBBU29DOiB0b3BvbG9neTogQWRk
+IG1pc3NpbmcgY2xvY2sgZ2F0aW5nIHBhcmFtZXRlciB3aGVuCj4+IHBhcnNpbmcgaHdfY29uZmln
+cwo+PiBbNF0gW1BBVENILCBhbHNhLWxpYiwgdjMgMC8yXSBhbHNhLWxpYjogQVNvQzogdG9wb2xv
+Z3k6IEltcHJvdmUgcGFyc2luZwo+PiBod19jb25maWdzCj4+IFs1XSBbUEFUQ0gsIGFsc2EtbGli
+LCB2MyAxLzJdIEFTb0M6IHRvcG9sb2d5OiBGaXggYmNsayBhbmQgZnN5bmMgaW52ZXJzaW9uIGlu
+Cj4+IHNldF9saW5rX2h3X2Zvcm1hdCgpCj4+IFs2XSBbUEFUQ0gsIGFsc2EtbGliLCB2MyAyLzJd
+IEFTb0M6IHRvcG9sb2d5OiBBZGQgbWlzc2luZyBjbG9jayBnYXRpbmcKPj4gcGFyYW1ldGVyIHdo
+ZW4gcGFyc2luZyBod19jb25maWdzCj4+Cj4+Cj4+IE9uIDAzLzI3LzE4IDIyOjU2LCBLaXJpbGwg
+TWFyaW51c2hraW4gd3JvdGU6Cj4+PiBIZWxsbyBKYXJvc2xhdiwgVGFrYXNoaSwgTWFyaywKPj4+
+Cj4+PiBUaGlzIHBhdGNoIHNlcmllcyBpcyBhIHJlc2VuZCBvZiBbMV0gYW5kIFsyXSwgcmViYXNl
+ZCBvbiB0b3Agb2YgdGhlIGxhdGVzdAo+Pj4gaGVhZC4gSXQgd2FzIGxvZ2ljYWwgdG8gcmVzZW5k
+IHRoZW0gdG9nZXRoZXIuCj4+Pgo+Pj4gSXQgaW5jbHVkZXMgMiBwYXRjaGVzIGZvciBsaW51eCAr
+IDIgcGF0Y2hlcyBmb3IgYWxzYS1saWIuCj4+Pgo+Pj4gUGxlYXNlIGhhdmUgYSBsb29rLgo+Pj4K
+Pj4+IEJlc3QgUmVnYXJkcywKPj4+IEtpcmlsbAo+Pj4KPj4+IFsxXSBodHRwczovL3BhdGNod29y
+ay5rZXJuZWwub3JnL3BhdGNoLzEwMjUwNDg1Lwo+Pj4gWzJdIGh0dHBzOi8vcGF0Y2h3b3JrLmtl
+cm5lbC5vcmcvcGF0Y2gvMTAyMzA2MTEvCj4+Pgo+Pj4gS2lyaWxsIE1hcmludXNoa2luICgyKToK
+Pj4+IMKgwqAgQVNvQzogdG9wb2xvZ3k6IEZpeCBiY2xrIGFuZCBmc3luYyBpbnZlcnNpb24gaW4g
+c2V0X2xpbmtfaHdfZm9ybWF0KCkKPj4+IMKgwqAgQVNvQzogdG9wb2xvZ3k6IEFkZCBtaXNzaW5n
+IGNsb2NrIGdhdGluZyBwYXJhbWV0ZXIgd2hlbiBwYXJzaW5nCj4+PiDCoMKgwqDCoCBod19jb25m
+aWdzCj4+Pgo+Pj4gwqAgaW5jbHVkZS91YXBpL3NvdW5kL2Fzb2MuaCB8IDIzICsrKysrKysrKysr
+KysrKysrKysrLS0tCj4+PiDCoCBzb3VuZC9zb2Mvc29jLXRvcG9sb2d5LmPCoCB8IDE5ICsrKysr
+KysrKysrKysrLS0tLS0KPj4+IMKgIDIgZmlsZXMgY2hhbmdlZCwgMzQgaW5zZXJ0aW9ucygrKSwg
+OCBkZWxldGlvbnMoLSkKPj4+Cj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
