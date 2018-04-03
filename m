@@ -1,107 +1,61 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v3 0/2] ASoC: topology: Improve parsing
- hw_configs
-Date: Tue, 3 Apr 2018 14:19:12 -0500
-Message-ID: <f03cb3f6-0346-685c-7c81-5c67a919a2b1@linux.intel.com>
-References: <20180327205632.3677-1-k.marinushkin@gmail.com>
- <17f0767a-2dea-92dd-a88e-a3f3e670d0d2@gmail.com>
- <461bbabf-7c36-1361-8f66-5abbe3c7f4d8@linux.intel.com>
- <ee6ba140-fa5c-78e9-47bc-125b1aca7672@gmail.com>
- <260f1850-37f2-fffa-fb33-4b5ff823ba0b@linux.intel.com>
- <21dd211e-2b93-b5af-0606-726432e40795@gmail.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: call/normal switch was Re: omap4-droid4: voice call support was
+Date: Tue, 3 Apr 2018 12:44:19 -0700
+Message-ID: <20180403194419.GG5700@atomide.com>
+References: <20180331194616.GA19388@amd>
+ <20180331195524.GB19388@amd>
+ <20180331234314.GZ5700@atomide.com>
+ <20180401131852.GA11086@amd>
+ <20180401153631.GA5700@atomide.com>
+ <20180401173012.GB5700@atomide.com>
+ <67086fdd0cdd69142cb89cd00f90e5a580e6607a.camel@redhat.com>
+ <20180402155754.GD5700@atomide.com>
+ <20180403150444.GE5700@atomide.com>
+ <20180403155023.GA14638@atrey.karlin.mff.cuni.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id A945F266CE7
- for <alsa-devel@alsa-project.org>; Tue,  3 Apr 2018 21:19:15 +0200 (CEST)
-In-Reply-To: <21dd211e-2b93-b5af-0606-726432e40795@gmail.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kirill Marinushkin <k.marinushkin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Pan Xiuli <xiuli.pan@linux.intel.com>, linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180403155023.GA14638@atrey.karlin.mff.cuni.cz>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pavel Machek <pavel@ucw.cz>
+Cc: Dan Williams <dcbw@redhat.com>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gNC8zLzE4IDE6MTYgUE0sIEtpcmlsbCBNYXJpbnVzaGtpbiB3cm90ZToKPiBPbiAwNC8wMy8x
-OCAxOToyMSwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4+Cj4+Cj4+IE9uIDA0LzAzLzIw
-MTggMTI6MTUgQU0sIEtpcmlsbCBNYXJpbnVzaGtpbiB3cm90ZToKPj4+IE9uIDA0LzAzLzE4IDAy
-OjU3LCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPj4+Pgo+Pj4+IE9uIDA0LzAyLzIwMTgg
-MDQ6MTcgUE0sIEtpcmlsbCBNYXJpbnVzaGtpbiB3cm90ZToKPj4+Pj4gSGVsbG8gUGllcnJlLUxv
-dWlzLAo+Pj4+Pgo+Pj4+PiBJIGV4cGxpY2l0bHkgY2xhcmlmaWVkIHdpdGggVGFrYXNoaTogdG8g
-aGF2ZSB0aGlzIHBhdGNoIHNlcmllcyBtZXJnZWQsIHdlCj4+Pj4+IG5lZWQgYQo+Pj4+PiB0YWcg
-IlJldmlld2VkLWJ5IiBmcm9tIHlvdS4KPj4+PiBJIGFtIGZpbmUgd2l0aCB0aGUgY2hhbmdlcywg
-YnV0IG1heWJlIHdoaWxlIHdlIGFyZSBhdCBpdCwgd2Ugc2hvdWxkIGNsYXJpZnkKPj4+PiB3aGF0
-IG1jbGtfZGlyZWN0aW9uIG1lYW5zPwo+Pj4gVGhhdCdzIGEgZ29vZCBpZGVhIHRvIGhhdmUgaXQg
-c29sdmVkIHdpdGhpbiB0aGlzIHBhdGNoIHNlcmllcy4KPj4+Cj4+Pj4gIMKgwqDCoMKgIF9fdTgg
-bWNsa19kaXJlY3Rpb247wqDCoMKgIC8qIDAgZm9yIGlucHV0LCAxIGZvciBvdXRwdXQgKi8KPj4+
-Pgo+Pj4+IFRoaXMgaXMgcmVhbGx5IGF3ZnVsIGFuZCBtaWdodCBiZW5lZml0IGZvciBhZGRpdGlv
-bmFsIGNsYXJpdHkgdXNpbmcKPj4+PiBjb2RlYy1jZW50cmljIGNvbnZlbnRpb25zLgo+Pj4+Cj4+
-PiBJIGFncmVlIHRoYXQgaGF2aW5nIGEgY2xlYXIgbmFtaW5nIHdpbGwgYXZvaWQgY29uZnVzaW9u
-IGZvciBmdXR1cmUgdXNhZ2UuCj4+PiBJIHNlZSBmcm9tIHRoZSBjb2RlLCB0aGF0IHRoaXMgdmFy
-aWFibGUgaXMgaWdub3JlZC4gU28gd2UgaGF2ZSBubyB0ZWNobmljYWwKPj4+IHJlc3RyaWN0aW9u
-IG9uIGhvdyB0byBpbnRlcnByZXQgdGhpcy4KPj4+IEkgc3VnZ2VzdCB0byBkbyBzaW1pbGFyIHRv
-IHdoYXQgd2UgZGlkIGZvciBiY2xrX21hc3RlcjoKPj4+Cj4+PiAvKiBEQUkgbWNsa19kaXJlY3Rp
-b24gKi8KPj4+ICNkZWZpbmUgU05EX1NPQ19UUExHX01DTEtfQ08gwqDCoMKgwqDCoMKgIDAgLyog
-Zm9yIGNvZGVjLCBtY2xrIGlzIG91dHB1dCAqLwo+Pj4gI2RlZmluZSBTTkRfU09DX1RQTEdfTUNM
-S19DSSDCoMKgwqDCoMKgwqDCoMKgIDEgLyogZm9yIGNvZGVjLCBtY2xrIGlzIGlucHV0ICovCj4+
-Pgo+Pj4+IFdlIGFsc28gaGFkIGEgZGlzY3Vzc2lvbiBpbnRlcm5hbGx5IGFuZCBjYW4ndCBmaWd1
-cmUgb3V0IHdoeSB0aGUgc3RyaW5ncyBhcmUKPj4+PiBkaWZmZXJlbnQgZnJvbSB0aGUgZmllbGRz
-IGluIHRoZSBzdHJ1Y3R1cmUsIEkgZmVlbCBpdCdkIGJlIHNpbXBsZXIgdG8gYWxpZ24KPj4+PiBj
-b25maWcgYW5kIGNvZGUgdG8gYXZvaWQgaXNzdWVzIGJ1dCBrZWVwIGV4aXN0aW5nIG5vdGF0aW9u
-IGZvciBiYWNrd2FyZHMKPj4+PiBjb21wYXRpYmlsaXR5LCBlLmcuCj4+Pj4KPj4+PiBpZiAoc3Ry
-Y21wKGlkLCAibWNsa19mcmVxIikgPT0gMCkgfHwgc3RyY21wKGlkLCAibWNsa19yYXRlIikgPT0g
-MCkgewo+Pj4+ICDCoMKgwqDCoCDCoMKgwqAgaWYgKHNuZF9jb25maWdfZ2V0X3N0cmluZyhuLCAm
-dmFsKSA8IDApCj4+Pj4gIMKgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIHJldHVybiAtRUlO
-VkFMOwo+Pj4+Cj4+Pj4gIMKgwqDCoMKgIMKgwqDCoCDCoMKgwqAgaHdfY2ZnLT5tY2xrX3JhdGUg
-PSBhdG9pKHZhbCk7Cj4+Pj4gIMKgwqDCoMKgIMKgwqDCoCDCoMKgwqAgY29udGludWU7Cj4+Pj4g
-fQo+Pj4gSSBhZ3JlZSB3aXRoIHRoaXMuIEkgd2lsbCBhbHNvIGRvIHRoZSBzYW1lIChrZWVwaW5n
-IGJhY2t3YXJkcy1jb21wYXRpYmlsaXR5KQo+Pj4gZm9yOgo+Pj4KPj4+ICJmb3JtYXQiID0+ICJm
-bXQiCj4+PiAiYmNsayIgPT4gImJjbGtfbWFzdGVyIgo+Pj4gImJjbGtfZnJlcSIgPT4gImJjbGtf
-cmF0ZSIKPj4+ICJiY2xrX2ludmVydCIgPT4gImludmVydF9iY2xrIgo+Pj4gImZzeW5jIiA9PiAi
-ZnN5bmNfbWFzdGVyIgo+Pj4gImZzeW5jX2ludmVydCIgPT4gImludmVydF9mc3luYyIKPj4+ICJm
-c3luY19mcmVxIiA9PiAiZnN5bmNfcmF0ZSIKPj4+ICJtY2xrX2ZyZXEiID0+ICJtY2xrX3JhdGUi
-Cj4+PiAibWNsayIgPT4gIm1jbGtfZGlyZWN0aW9uIgo+Pj4gInBtX2dhdGVfY2xvY2tzIiA9PiAi
-Y2xvY2tfZ2F0ZWQiCj4+Pgo+Pj4gSWYgeW91IGFncmVlIHdpdGggYm90aCBwcm9wb3NhbHMsIEkg
-d2lsbCBhZGQgcGF0Y2hlcyB0byB0aGlzIHBhdGNoIHNlcmllcywgYW5kCj4+PiByZS1zZW5kIGFz
-IHBhdGNoIHY0Lgo+Pj4gT3IgY2FuIHdlIGhhbmRsZSBpdCBpbiBhIGJldHRlciB3YXk/Cj4+IEEg
-djQgaXMgZmluZSB3aXRoIG1lLgo+Pgo+PiBUaGVzZSB0b3BvbG9neSBkZWZpbml0aW9ucyBhcHBl
-YXIgaW4gaGluZHNpZ2h0IHF1aXRlIHByb2JsZW1hdGljLCB0aGVyZSBhcmUKPj4gbWlzc2luZyBk
-ZWZpbml0aW9ucyBhbmQgY2FwYWJpbGl0aWVzLCBlLmcgd2UgaGF2ZSB0aGUgYWJpbGl0eSB0byAn
-Z2F0ZSB0aGUKPj4gY2xvY2snIGJ1dCB3aXRob3V0IGtub3dpbmcgd2hpY2ggY2xvY2ssIGFuZCB3
-ZSBoYXZlIG5vIGFiaWxpdHkgdG8gZm9yY2UgdGhlCj4+IG1jbGsvYmNsay9mc3luYyBvbiAoYmUg
-aXQgb24gZGVtYW5kIGZyb20gYSBjb2RlYyBkcml2ZXIgb3Igb24gc3RhcnR1cCBhcyBhCj4+IHN5
-c3RlbSByZXF1aXJlbWVudCkuIEFuZCB0aGVyZSBpcyBubyByZWFsIGV4dGVuc2lvbiBjYXBhYmls
-aXR5IHdpdGggYSBwcm90b2NvbAo+PiB2ZXJzaW9uLiBUaGUgbmV0IGVmZmVjdCBpcyB0aGF0IHBl
-b3BsZSB3aWxsIGhhdmUgdG8gY3JlYXRlIGN1c3RvbSB0b2tlbnMgYW5kCj4+IHBhcnNpbmcgZm9y
-IHRoaW5ncyB0aGF0IHNob3VsZCBiZSBjb21tb24uLi4KPj4KPiAKPiBZZXMsIGRlZmluaXRpb25z
-IHdoaWNoIHlvdSBtZW50aW9uZWQgcmVhbGx5IGNhbiBiZWNvbWUgYSBwcm9ibGVtLgo+IEJ1dCwg
-SSBzZWUgZnJvbSB0aGUgaGVhZGVyIHRoYXQgdG9wb2xvZ3kgZmlsZXMgc3VwcG9ydCB2ZXJzaW9u
-aW5nOgo+IAo+IH5+fn4KPiAjZGVmaW5lIFNORF9TT0NfVFBMR19BQklfVkVSU0lPTsKgwqDCoCAw
-eDXCoMKgwqAgLyogY3VycmVudCB2ZXJzaW9uICovCj4gfn5+fgo+IAo+IFNvLCBpbiBmdXR1cmUg
-c3VjaCBwcm9ibGVtcyBjYW4gYmUgc29sdmVkIGJ5IGluY3JlbWVudGluZyB0aGUgdmVyc2lvbiwg
-aWYgbm8KPiBiYWNrd2FyZHMgY2FwYWJpbGl0aWVzIGFyZSBhdmFpbGFibGUuCgpNYXliZSBJIG1p
-c3VuZGVyc3Rvb2QgdGhpcyB2ZXJzaW9uIG51bWJlciwgSSB0aG91Z2h0IHRoaXMgd2FzIG9ubHkg
-Zm9yIAp0aGUgaW5pdGlhbCBzdGFnZXMgd2hlcmUgdGhlcmUgd2FzIHF1aXRlIGEgZmV3IGV2b2x1
-dGlvbnMgaW4gYSBjb3VwbGUgb2YgCm1vbnRocy4gSWYgdGhpcyBjYW4gYmUgdXBncmFkZWQgdGhl
-biB3ZSBtaWdodCB3YW50IHRvIGFkZCBuZXcgCmRlZmluaXRpb25zIHRoYXQgd2UgY2FtZSB1cCB3
-aXRoIGR1cmluZyB0aGUgU09GIHdvcmsgYnV0IGFyZSBvZiBpbnRlcmVzdCAKdG8gb3RoZXJzLgoK
-PiAKPiAKPiAKPiAKPiBCZWZvcmUgSSBjb250aW51ZSB3aXRoIHRoZSBwYXRjaCB2NCwgSSB3YW50
-IHRvIGNsYXJpZnkgd2l0aCB5b3UsIHNvIHRoYXQgd2UKPiBhdm9pZCB0aGUgbWlzdW5kZXJzdGFu
-ZGluZzoKPiAKPiAqIGluIHRoZSBleGlzdGluZyA0IHBhdGNoZXMsIEkgd2lsbCBhZGQgYSB0YWcK
-PiAgwqAgIlJldmlld2VkLWJ5OiBQaWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlzLmJv
-c3NhcnRAbGludXguaW50ZWwuY29tPiIKPiAqIGluIHRoZSBuZXcgMiBwYXRjaGVzLCB3aGljaCB3
-ZSByZWNlbnRseSBkaXNjdXNzZWQsIEkgd2lsbCBhZGQgYSB0YWcKPiAgwqAgIkFja2VkLWJ5OiBQ
-aWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29t
-PiIKPiAKPiBEbyB5b3UgYWdyZWUgd2l0aCB0aGF0PwoKWWVzLCB0aGF0J3MgZmluZS4KX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+* Pavel Machek <pavel@ucw.cz> [180403 15:51]:
+> Hi!
+> 
+> > > OK thanks for checking. So probably only n_gsm channel 1 is for normal
+> > > Qualcomm at commands, and then channel 2 and others are commands
+> > > implemented by Motorola on the mdm6600.
+> > > 
+> > > I guess we'd have to add support for reading and writing to
+> > > /dev/gsmtty2 at least as it looks like these cannot be accessed
+> > > via /dev/ttyUSB4. Or at least I have not figured out any other
+> > > way to access them.
+> > 
+> > Hmm or maybe there is some way to select where qmi to tunnels the
+> > AT commands to? Some kind of channel type paramenter like n_gsm
+> > has?
+> > 
+> > Anyways, for trying to figure out things for alsamixer, I tested
+> > that ngsm 2 "AT+EACC=3,0" is not related to cpcap audio register
+> > settings and the mic is enabled during the call with Pavel's patch
+> > with alsamixer "Mode" set to either "Call" or "Normal". Also speaker
+> > keeps working during the call toggling between "Call" and "Normal".
+> > "Voice" in alsamixer does also control the speaker volume during
+> > the call. And setting the second "Speaker" from "Voice" to "HiFi"
+> > mutes the speaker.
+> 
+> Take a look at the patch. Selecting "call" does something at hardware
+> level, selecting "normal" is a nop.
+> 
+> Sorry for confusion.
+> 
+> Yes, that patch needs more work.
+
+OK that explains why the speaker keeps working then :)
+
+Regards,
+
+Tony
