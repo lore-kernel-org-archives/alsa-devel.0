@@ -1,15 +1,19 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/2] ALSA: usb-audio: Refactor clock finder
-	helpers
-Date: Tue,  3 Apr 2018 17:48:07 +0200
-Message-ID: <20180403154808.21947-1-tiwai@suse.de>
+From: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH] ASoC: atmel_ssc_dai: fix spelling mistake:
+ "Stoping" -> "Stopping"
+Date: Tue, 03 Apr 2018 08:49:57 -0700
+Message-ID: <1522770597.11653.49.camel@perches.com>
+References: <20180330154420.6903-1-colin.king@canonical.com>
+ <20180403134540.GA29017@lenoch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id D77FD2675CE
- for <alsa-devel@alsa-project.org>; Tue,  3 Apr 2018 17:48:10 +0200 (CEST)
+Received: from smtprelay.hostedemail.com (smtprelay0142.hostedemail.com
+ [216.40.44.142])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB9762675CA
+ for <alsa-devel@alsa-project.org>; Tue,  3 Apr 2018 17:50:02 +0200 (CEST)
+In-Reply-To: <20180403134540.GA29017@lenoch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,186 +23,128 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+To: Ladislav Michl <ladis@linux-mips.org>, Colin King <colin.king@canonical.com>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-There are lots of open-coded functions to find a clock source,
-selector and multiplier.  Now there are both v2 and v3, so six
-variants.
+On Tue, 2018-04-03 at 15:45 +0200, Ladislav Michl wrote:
+> On Fri, Mar 30, 2018 at 04:44:20PM +0100, Colin King wrote:
+> > From: Colin Ian King <colin.king@canonical.com>
+> 
+> Hello Colin,
+> 
+> > Trivial fix to spelling mistake in pr_debug message text
+> 
+> would you mind making this patch a bit less non-trivial and
+> change pr_debug to dev_dbg dropping Atmel_ssc_dai prefix?
 
-This patch refactors the code to use a common helper for the main
-loop, and define each validator function for each target.
-There is no functional change.
-
-Fixes: 9a2fe9b801f5 ("ALSA: usb: initial USB Audio Device Class 3.0 support")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Presumably, then all the pr_<foo> calls should be changed.
+Something like:
 ---
- sound/usb/clock.c | 127 +++++++++++++++++++++++-------------------------------
- 1 file changed, 53 insertions(+), 74 deletions(-)
+ sound/soc/atmel/atmel_ssc_dai.c | 38 ++++++++++++++++----------------------
+ 1 file changed, 16 insertions(+), 22 deletions(-)
 
-diff --git a/sound/usb/clock.c b/sound/usb/clock.c
-index ab39ccb974c6..c5f0cf532c0c 100644
---- a/sound/usb/clock.c
-+++ b/sound/usb/clock.c
-@@ -35,105 +35,84 @@
- #include "clock.h"
- #include "quirks.h"
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index a1e2c5682dcd..594228156b2d 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -291,11 +291,10 @@ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
+ 	int dir, dir_mask;
+ 	int ret;
  
--static struct uac_clock_source_descriptor *
--	snd_usb_find_clock_source(struct usb_host_interface *ctrl_iface,
--				  int clock_id)
-+static void *find_descriptor(struct usb_host_interface *iface, int id,
-+			     bool (*validator)(void *, int), u8 type)
+-	pr_debug("atmel_ssc_startup: SSC_SR=0x%x\n",
+-		ssc_readl(ssc_p->ssc->regs, SR));
++	dev_dbg(dai->dev, "SSC_SR=0x%x\n", ssc_readl(ssc_p->ssc->regs, SR));
+ 
+ 	/* Enable PMC peripheral clock for this SSC */
+-	pr_debug("atmel_ssc_dai: Starting clock\n");
++	dev_dbg(dai->dev, "Starting clock\n");
+ 	clk_enable(ssc_p->ssc->clk);
+ 	ssc_p->mck_rate = clk_get_rate(ssc_p->ssc->clk);
+ 
+@@ -385,7 +384,7 @@ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
+ 	spin_unlock_irq(&ssc_p->lock);
+ 
+ 	/* Shutdown the SSC clock. */
+-	pr_debug("atmel_ssc_dai: Stopping clock\n");
++	dev_dbg(dai->dev, "Stopping clock\n");
+ 	clk_disable(ssc_p->ssc->clk);
+ }
+ 
+@@ -794,13 +793,12 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 		break;
+ 
+ 	default:
+-		printk(KERN_WARNING "atmel_ssc_dai: unsupported DAI format 0x%x\n",
+-			ssc_p->daifmt);
++		dev_warn(dai->dev, "unsupported DAI format 0x%x\n",
++			 ssc_p->daifmt);
+ 		return -EINVAL;
+ 	}
+-	pr_debug("atmel_ssc_hw_params: "
+-			"RCMR=%08x RFMR=%08x TCMR=%08x TFMR=%08x\n",
+-			rcmr, rfmr, tcmr, tfmr);
++	dev_dbg(dai->dev, "RCMR=%08x RFMR=%08x TCMR=%08x TFMR=%08x\n",
++		rcmr, rfmr, tcmr, tfmr);
+ 
+ 	if (!ssc_p->initialized) {
+ 		if (!ssc_p->ssc->pdata->use_dma) {
+@@ -818,9 +816,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 		ret = request_irq(ssc_p->ssc->irq, atmel_ssc_interrupt, 0,
+ 				ssc_p->name, ssc_p);
+ 		if (ret < 0) {
+-			printk(KERN_WARNING
+-					"atmel_ssc_dai: request_irq failure\n");
+-			pr_debug("Atmel_ssc_dai: Stoping clock\n");
++			dev_warn(dai->dev, "request_irq failure\n");
++			dev_dbg(dai->dev, "Stopping clock\n");
+ 			clk_disable(ssc_p->ssc->clk);
+ 			return ret;
+ 		}
+@@ -839,7 +836,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 	ssc_writel(ssc_p->ssc->regs, TCMR, tcmr);
+ 	ssc_writel(ssc_p->ssc->regs, TFMR, tfmr);
+ 
+-	pr_debug("atmel_ssc_dai,hw_params: SSC initialized\n");
++	dev_dbg(dai->dev, "SSC initialized\n");
+ 	return 0;
+ }
+ 
+@@ -862,9 +859,9 @@ static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
+ 	ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_disable);
+ 	ssc_writel(ssc_p->ssc->regs, IDR, dma_params->mask->ssc_error);
+ 
+-	pr_debug("%s enabled SSC_SR=0x%08x\n",
+-			dir ? "receive" : "transmit",
+-			ssc_readl(ssc_p->ssc->regs, SR));
++	dev_dbg(dai->dev, "%s enabled SSC_SR=0x%08x\n",
++		dir ? "receive" : "transmit",
++		ssc_readl(ssc_p->ssc->regs, SR));
+ 	return 0;
+ }
+ 
+@@ -1050,21 +1047,18 @@ static void asoc_ssc_exit(struct device *dev)
+ int atmel_ssc_set_audio(int ssc_id)
  {
--	struct uac_clock_source_descriptor *cs = NULL;
-+	void *cs = NULL;
+ 	struct ssc_device *ssc;
+-	int ret;
  
--	while ((cs = snd_usb_find_csint_desc(ctrl_iface->extra,
--					     ctrl_iface->extralen,
--					     cs, UAC2_CLOCK_SOURCE))) {
--		if (cs->bLength >= sizeof(*cs) && cs->bClockID == clock_id)
-+	while ((cs = snd_usb_find_csint_desc(iface->extra, iface->extralen,
-+					     cs, type))) {
-+		if (validator(cs, id))
- 			return cs;
+ 	/* If we can grab the SSC briefly to parent the DAI device off it */
+ 	ssc = ssc_request(ssc_id);
+ 	if (IS_ERR(ssc)) {
+ 		pr_err("Unable to parent ASoC SSC DAI on SSC: %ld\n",
+-			PTR_ERR(ssc));
++		       PTR_ERR(ssc));
+ 		return PTR_ERR(ssc);
+-	} else {
+-		ssc_info[ssc_id].ssc = ssc;
  	}
  
- 	return NULL;
+-	ret = asoc_ssc_init(&ssc->pdev->dev);
++	ssc_info[ssc_id].ssc = ssc;
+ 
+-	return ret;
++	return asoc_ssc_init(&ssc->pdev->dev);
  }
+ EXPORT_SYMBOL_GPL(atmel_ssc_set_audio);
  
--static struct uac3_clock_source_descriptor *
--	snd_usb_find_clock_source_v3(struct usb_host_interface *ctrl_iface,
--				  int clock_id)
-+static bool validate_clock_source_v2(void *p, int id)
- {
--	struct uac3_clock_source_descriptor *cs = NULL;
--
--	while ((cs = snd_usb_find_csint_desc(ctrl_iface->extra,
--					     ctrl_iface->extralen,
--					     cs, UAC3_CLOCK_SOURCE))) {
--		if (cs->bClockID == clock_id)
--			return cs;
--	}
--
--	return NULL;
-+	struct uac_clock_source_descriptor *cs = p;
-+	return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
- }
- 
--static struct uac_clock_selector_descriptor *
--	snd_usb_find_clock_selector(struct usb_host_interface *ctrl_iface,
--				    int clock_id)
-+static bool validate_clock_source_v3(void *p, int id)
- {
--	struct uac_clock_selector_descriptor *cs = NULL;
--
--	while ((cs = snd_usb_find_csint_desc(ctrl_iface->extra,
--					     ctrl_iface->extralen,
--					     cs, UAC2_CLOCK_SELECTOR))) {
--		if (cs->bLength >= sizeof(*cs) && cs->bClockID == clock_id) {
--			if (cs->bLength < 5 + cs->bNrInPins)
--				return NULL;
--			return cs;
--		}
--	}
--
--	return NULL;
-+	struct uac3_clock_source_descriptor *cs = p;
-+	return cs->bClockID == id;
- }
- 
--static struct uac3_clock_selector_descriptor *
--	snd_usb_find_clock_selector_v3(struct usb_host_interface *ctrl_iface,
--				    int clock_id)
-+static bool validate_clock_selector_v2(void *p, int id)
- {
--	struct uac3_clock_selector_descriptor *cs = NULL;
--
--	while ((cs = snd_usb_find_csint_desc(ctrl_iface->extra,
--					     ctrl_iface->extralen,
--					     cs, UAC3_CLOCK_SELECTOR))) {
--		if (cs->bClockID == clock_id)
--			return cs;
--	}
--
--	return NULL;
-+	struct uac_clock_selector_descriptor *cs = p;
-+	return cs->bLength >= sizeof(*cs) && cs->bClockID == id &&
-+		cs->bLength >= 5 + cs->bNrInPins;
- }
- 
--static struct uac_clock_multiplier_descriptor *
--	snd_usb_find_clock_multiplier(struct usb_host_interface *ctrl_iface,
--				      int clock_id)
-+static bool validate_clock_selector_v3(void *p, int id)
- {
--	struct uac_clock_multiplier_descriptor *cs = NULL;
--
--	while ((cs = snd_usb_find_csint_desc(ctrl_iface->extra,
--					     ctrl_iface->extralen,
--					     cs, UAC2_CLOCK_MULTIPLIER))) {
--		if (cs->bLength >= sizeof(*cs) && cs->bClockID == clock_id)
--			return cs;
--	}
--
--	return NULL;
-+	struct uac3_clock_selector_descriptor *cs = p;
-+	return cs->bClockID == id;
- }
- 
--static struct uac3_clock_multiplier_descriptor *
--	snd_usb_find_clock_multiplier_v3(struct usb_host_interface *ctrl_iface,
--				      int clock_id)
-+static bool validate_clock_multiplier_v2(void *p, int id)
- {
--	struct uac3_clock_multiplier_descriptor *cs = NULL;
-+	struct uac_clock_multiplier_descriptor *cs = p;
-+	return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
-+}
- 
--	while ((cs = snd_usb_find_csint_desc(ctrl_iface->extra,
--					     ctrl_iface->extralen,
--					     cs, UAC3_CLOCK_MULTIPLIER))) {
--		if (cs->bClockID == clock_id)
--			return cs;
--	}
-+static bool validate_clock_multiplier_v3(void *p, int id)
-+{
-+	struct uac3_clock_multiplier_descriptor *cs = p;
-+	return cs->bClockID == id;
-+}
- 
--	return NULL;
-+#define DEFINE_FIND_HELPER(name, obj, validator, type)		\
-+static obj *name(struct usb_host_interface *iface, int id)	\
-+{								\
-+	return find_descriptor(iface, id, validator, type);	\
- }
- 
-+DEFINE_FIND_HELPER(snd_usb_find_clock_source,
-+		   struct uac_clock_source_descriptor,
-+		   validate_clock_source_v2, UAC2_CLOCK_SOURCE);
-+DEFINE_FIND_HELPER(snd_usb_find_clock_source_v3,
-+		   struct uac3_clock_source_descriptor,
-+		   validate_clock_source_v3, UAC3_CLOCK_SOURCE);
-+
-+DEFINE_FIND_HELPER(snd_usb_find_clock_selector,
-+		   struct uac_clock_selector_descriptor,
-+		   validate_clock_selector_v2, UAC2_CLOCK_SELECTOR);
-+DEFINE_FIND_HELPER(snd_usb_find_clock_selector_v3,
-+		   struct uac3_clock_selector_descriptor,
-+		   validate_clock_selector_v3, UAC3_CLOCK_SELECTOR);
-+
-+DEFINE_FIND_HELPER(snd_usb_find_clock_multiplier,
-+		   struct uac_clock_multiplier_descriptor,
-+		   validate_clock_multiplier_v2, UAC2_CLOCK_MULTIPLIER);
-+DEFINE_FIND_HELPER(snd_usb_find_clock_multiplier_v3,
-+		   struct uac3_clock_multiplier_descriptor,
-+		   validate_clock_multiplier_v3, UAC3_CLOCK_MULTIPLIER);
-+
- static int uac_clock_selector_get_val(struct snd_usb_audio *chip, int selector_id)
- {
- 	unsigned char buf;
--- 
-2.16.2
