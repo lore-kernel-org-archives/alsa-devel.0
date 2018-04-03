@@ -1,28 +1,88 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: atmel_ssc_dai: fix spelling mistake:
- "Stoping" -> "Stopping"
-Date: Tue, 03 Apr 2018 16:08:17 -0700
-Message-ID: <1522796897.11653.73.camel@perches.com>
-References: <20180330154420.6903-1-colin.king@canonical.com>
-         <20180403134540.GA29017@lenoch> <1522770597.11653.49.camel@perches.com>
-         <20180403173044.GA6031@lenoch> <1522779423.11653.63.camel@perches.com>
-         <20180403185423.GA8683@lenoch>
+From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: Re: [PATCH 2/2] ALSA: usb-audio: Add sanity checks in
+	v3 clock parsers
+Date: Wed, 4 Apr 2018 02:15:05 +0300
+Message-ID: <CAB=otbTC69iVcZHYpWADQHH-K2sVrvhqotERvksM0B4DePeg5Q@mail.gmail.com>
+References: <20180403154808.21947-1-tiwai@suse.de>
+ <20180403154808.21947-2-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180403185423.GA8683@lenoch>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: Colin King <colin.king@canonical.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ot0-f194.google.com (mail-ot0-f194.google.com
+ [74.125.82.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 65CEC267617
+ for <alsa-devel@alsa-project.org>; Wed,  4 Apr 2018 01:15:07 +0200 (CEST)
+Received: by mail-ot0-f194.google.com with SMTP id h26-v6so21290890otj.12
+ for <alsa-devel@alsa-project.org>; Tue, 03 Apr 2018 16:15:07 -0700 (PDT)
+In-Reply-To: <20180403154808.21947-2-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2018-04-03 at 20:54 +0200, Ladislav Michl wrote:
-> > 
-> > No  dai device.
-> 
-> As all call sites are already providing error message, so what about just
-> removing this one completely?
+On Tue, Apr 3, 2018 at 6:48 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> The UAC3 clock parser codes lack of the sanity checks for malformed
+> descriptors like UAC2 parser does.  Without it, the driver may lead to
+> a potential crash.
+>
+> Fixes: 9a2fe9b801f5 ("ALSA: usb: initial USB Audio Device Class 3.0 support")
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/usb/clock.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+> index c5f0cf532c0c..169fb3ac3715 100644
+> --- a/sound/usb/clock.c
+> +++ b/sound/usb/clock.c
+> @@ -58,7 +58,7 @@ static bool validate_clock_source_v2(void *p, int id)
+>  static bool validate_clock_source_v3(void *p, int id)
+>  {
+>         struct uac3_clock_source_descriptor *cs = p;
+> -       return cs->bClockID == id;
+> +       return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
 
-No idea, none of this is code I know or care about.
-Do what's appropriate.
+I'm not sure why UAC2 checks are relaxed, but we can be more strict
+here since bLength of uac3_clock_source_descriptor is defined by standard
+and should be 12, so we can check for exact match in this place.
+
+>  }
+>
+>  static bool validate_clock_selector_v2(void *p, int id)
+> @@ -71,7 +71,8 @@ static bool validate_clock_selector_v2(void *p, int id)
+>  static bool validate_clock_selector_v3(void *p, int id)
+>  {
+>         struct uac3_clock_selector_descriptor *cs = p;
+> -       return cs->bClockID == id;
+> +       return cs->bLength >= sizeof(*cs) && cs->bClockID == id &&
+> +               cs->bLength >= 5 + cs->bNrInPins;
+>  }
+
+Same here, bLength is defined by spec, can be easily calculated and
+must be "11+bNrInPins"
+
+>
+>  static bool validate_clock_multiplier_v2(void *p, int id)
+> @@ -83,7 +84,7 @@ static bool validate_clock_multiplier_v2(void *p, int id)
+>  static bool validate_clock_multiplier_v3(void *p, int id)
+>  {
+>         struct uac3_clock_multiplier_descriptor *cs = p;
+> -       return cs->bClockID == id;
+> +       return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
+
+Also here, bLength should be 11 as per spec
+
+By the way, we can make UAC2 bLength checks more strict as well,
+assuming there is no any hw bug we try to workaroud
+
+Thanks,
+Ruslan
