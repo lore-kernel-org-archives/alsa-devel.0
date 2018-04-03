@@ -1,71 +1,71 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: call/normal switch was Re: omap4-droid4: voice
-	call support was
-Date: Tue, 3 Apr 2018 17:50:24 +0200
-Message-ID: <20180403155023.GA14638@atrey.karlin.mff.cuni.cz>
-References: <20180331191939.GA8999@amd> <20180331194616.GA19388@amd>
- <20180331195524.GB19388@amd> <20180331234314.GZ5700@atomide.com>
- <20180401131852.GA11086@amd> <20180401153631.GA5700@atomide.com>
- <20180401173012.GB5700@atomide.com>
- <67086fdd0cdd69142cb89cd00f90e5a580e6607a.camel@redhat.com>
- <20180402155754.GD5700@atomide.com>
- <20180403150444.GE5700@atomide.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 14/15] ARM: pxa: change SSP devices allocation
+Date: Tue, 3 Apr 2018 17:53:25 +0200
+Message-ID: <CAK8P3a1ko=YEwR2VOahH0OWHfeOyWAzDYah4DSohBcvTNq_MKQ@mail.gmail.com>
+References: <20180402142656.26815-1-robert.jarzmik@free.fr>
+ <20180402142656.26815-15-robert.jarzmik@free.fr> <CAK8P3a2hYWO2eweg3zpR7iJoqtH4uxJLAxJAno7L96G7nA2HxQ@mail.gmail.com>
+ <87lge4485x.fsf@belgarion.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
- [195.113.26.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DBAD92675CA
- for <alsa-devel@alsa-project.org>; Tue,  3 Apr 2018 17:50:24 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20180403150444.GE5700@atomide.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Dan Williams <dcbw@redhat.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, linux-omap@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <87lge4485x.fsf@belgarion.home>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+On Tue, Apr 3, 2018 at 5:32 PM, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+> Arnd Bergmann <arnd@arndb.de> writes:
+>
+> chop chop ... removed several mail recipients to leave only the ASoC / PXA
+> subset ...
+>
+>> On Mon, Apr 2, 2018 at 4:26 PM, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+>>
+>>>
+>>> +static struct pxa_ssp_info pxa_ssp_infos[] = {
+>>> +       { .dma_chan_rx_name = "ssp1_rx", .dma_chan_tx_name = "ssp1_tx", },
+>>> +       { .dma_chan_rx_name = "ssp1_rx", .dma_chan_tx_name = "ssp1_tx", },
+>>> +       { .dma_chan_rx_name = "ssp2_rx", .dma_chan_tx_name = "ssp2_tx", },
+>>> +       { .dma_chan_rx_name = "ssp2_rx", .dma_chan_tx_name = "ssp2_tx", },
+>>> +       { .dma_chan_rx_name = "ssp3_rx", .dma_chan_tx_name = "ssp3_tx", },
+>>> +       { .dma_chan_rx_name = "ssp3_rx", .dma_chan_tx_name = "ssp3_tx", },
+>>> +       { .dma_chan_rx_name = "ssp4_rx", .dma_chan_tx_name = "ssp4_tx", },
+>>> +       { .dma_chan_rx_name = "ssp4_rx", .dma_chan_tx_name = "ssp4_tx", },
+>>> +};
+>>
+>> This part looks odd to me, you're adding an extra level of indirection to
+>> do two stages of lookups in some form of platform data.
+> That's unfortunately right.
+>
+>> Why can't you just always use "rx" and "tx" as the names here?
+> Well I couldn't. I'll explain you why, and maybe you'll find a better solution.
+>
+> That all is related to how ASoC and SSP interact.
+> If I remember correctly, here is how it works :
+>  - the DMA channel is requested in sound/arm/pxa2xx-pcm-lib.c:128
+>         return snd_dmaengine_pcm_open(
+>                 substream, dma_request_slave_channel(rtd->platform->dev,
+>    The trick is that the device here is _not_ the SSP one, it's if memory serves
+>    me well the pxa-pcm-audio one.
+>
+>    As a consequence, the device cannot be used to differenciate which SSP
+>    exactly is providing the sound samples stream. This information is
+>    nevertheless required to choose the correct requestor line, which is a 1-to-1
+>    match to the SSP port.
+>
+>    The indirection in the channel name is used to choose the correct requestor
+>    line for a given SSP port providing the samples.
+>
+>    It also must be underlined that this dma request serves both AC97 and SSP as
+>    sample providers.
 
-> > OK thanks for checking. So probably only n_gsm channel 1 is for normal
-> > Qualcomm at commands, and then channel 2 and others are commands
-> > implemented by Motorola on the mdm6600.
-> > 
-> > I guess we'd have to add support for reading and writing to
-> > /dev/gsmtty2 at least as it looks like these cannot be accessed
-> > via /dev/ttyUSB4. Or at least I have not figured out any other
-> > way to access them.
-> 
-> Hmm or maybe there is some way to select where qmi to tunnels the
-> AT commands to? Some kind of channel type paramenter like n_gsm
-> has?
-> 
-> Anyways, for trying to figure out things for alsamixer, I tested
-> that ngsm 2 "AT+EACC=3,0" is not related to cpcap audio register
-> settings and the mic is enabled during the call with Pavel's patch
-> with alsamixer "Mode" set to either "Call" or "Normal". Also speaker
-> keeps working during the call toggling between "Call" and "Normal".
-> "Voice" in alsamixer does also control the speaker volume during
-> the call. And setting the second "Speaker" from "Voice" to "HiFi"
-> mutes the speaker.
+I'm still unable to follow through that code, but I understand now that
+the device you pass to dma_request_slave_channel() is not the one
+we'd like it to be here.
 
-Take a look at the patch. Selecting "call" does something at hardware
-level, selecting "normal" is a nop.
+Where exactly does that call to dma_request_chan() happen? Is this
+the one in dmaengine_pcm_new()? Could we perhaps put a
+pointer to the SSP device into snd_dmaengine_dai_dma_data?
 
-Sorry for confusion.
-
-Yes, that patch needs more work.
-
-								Pavel
-
--- 
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+       Arnd
