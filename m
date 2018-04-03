@@ -1,60 +1,93 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 00/15] ARM: pxa: switch to DMA slave maps
-Date: Tue, 3 Apr 2018 09:15:03 +0200
-Message-ID: <CAK8P3a20etAsuj_-b2UbtPcTdB0ry7CZbh660omTk=c_eY8N6w@mail.gmail.com>
-References: <20180402142656.26815-1-robert.jarzmik@free.fr>
+From: Robert Rosengren <robert.rosengren@axis.com>
+Subject: [PATCH 2/2] ASoC: adau17x1: Do not reload dsp-fw if
+	samplerate has not changed
+Date: Tue,  3 Apr 2018 10:05:35 +0200
+Message-ID: <20180403080535.6109-2-robertr@axis.com>
+References: <20180403080535.6109-1-robertr@axis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
-In-Reply-To: <20180402142656.26815-1-robert.jarzmik@free.fr>
-List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
-List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
-List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
-List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
-List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
-Errors-To: driverdev-devel-bounces@linuxdriverproject.org
-Sender: "devel" <driverdev-devel-bounces@linuxdriverproject.org>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, IDE-ML <linux-ide@vger.kernel.org>, Networking <netdev@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>, devel@driverdev.osuosl.org, Boris Brezillon <boris.brezillon@free-electrons.com>, Vinod Koul <vinod.koul@intel.com>, Richard Weinberger <richard@nod.at>, Takashi Iwai <tiwai@suse.com>, Marek Vasut <marek.vasut@gmail.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Linux Media Mailing List <linux-media@vger.kernel.org>, Samuel Ortiz <samuel@sortiz.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, dmaengine@vger.kernel.org, Mark Brown <broonie@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, Nicolas Pitre <nico@fluxnic.net>, Greg
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C395266CE7
+ for <alsa-devel@alsa-project.org>; Tue,  3 Apr 2018 10:05:46 +0200 (CEST)
+In-Reply-To: <20180403080535.6109-1-robertr@axis.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org
+Cc: Danny Smith <dannys@axis.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 2, 2018 at 4:26 PM, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
-> Hi,
->
-> This serie is aimed at removing the dmaengine slave compat use, and transfer
-> knowledge of the DMA requestors into architecture code.
->
-> This was discussed/advised by Arnd a couple of years back, it's almost time.
->
-> The serie is divided in 3 phasees :
->  - phase 1 : patch 1/15 and patch 2/15
->    => this is the preparation work
->  - phase 2 : patches 3/15 .. 10/15
->    => this is the switch of all the drivers
->    => this one will require either an Ack of the maintainers or be taken by them
->       once phase 1 is merged
->  - phase 3 : patches 11/15
->    => this is the last part, cleanup and removal of export of the DMA filter
->       function
->
-> As this looks like a patch bomb, each maintainer expressing for his tree either
-> an Ack or "I want to take through my tree" will be spared in the next iterations
-> of this serie.
->
-> Several of these changes have been tested on actual hardware, including :
->  - pxamci
->  - pxa_camera
->  - smc*
->  - ASoC and SSP
->
-> Happy review.
+From: Danny Smith <dannys@axis.com>
 
-This looks really great overall, thanks for cleaning this up!
+Reloading fw causes an audiable popping sound, we can avoid this
+by not reloading if the samplerate is the same as before.
 
-The SSP part is still a bit weird, as I commented, but I'm sure we can
-figure something out there.
+Signed-off-by: Danny Smith <dannys@axis.com>
+---
+ sound/soc/codecs/adau17x1.c | 39 ++++++++++++++++++++++++---------------
+ 1 file changed, 24 insertions(+), 15 deletions(-)
 
-    Arnd
+diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
+index 5636b9522462..3c28b7191ecd 100644
+--- a/sound/soc/codecs/adau17x1.c
++++ b/sound/soc/codecs/adau17x1.c
+@@ -840,25 +840,34 @@ int adau17x1_setup_firmware(struct adau *adau, unsigned int rate)
+ 	int ret;
+ 	int dspsr, dsp_run;
+ 
+-	ret = regmap_read(adau->regmap, ADAU17X1_DSP_SAMPLING_RATE, &dspsr);
+-	if (ret)
+-		return ret;
++	/* Check if sample rate is the same as before. If it is there is no
++	 * point in performing the below steps as the call to
++	 * sigmadsp_setup(...) will return directly when it finds the sample
++	 * rate to be the same as before. By checking this we can prevent an
++	 * audiable popping noise which occours when toggling DSP_RUN.
++	 */
++	if (adau->sigmadsp->current_samplerate != rate) {
++		ret = regmap_read(adau->regmap, ADAU17X1_DSP_SAMPLING_RATE,
++			&dspsr);
++		if (ret)
++			return ret;
+ 
+-	ret = regmap_read(adau->regmap, ADAU17X1_DSP_RUN, &dsp_run);
+-	if (ret)
+-		return ret;
++		ret = regmap_read(adau->regmap, ADAU17X1_DSP_RUN, &dsp_run);
++		if (ret)
++			return ret;
+ 
+-	regmap_write(adau->regmap, ADAU17X1_DSP_ENABLE, 1);
+-	regmap_write(adau->regmap, ADAU17X1_DSP_SAMPLING_RATE, 0xf);
+-	regmap_write(adau->regmap, ADAU17X1_DSP_RUN, 0);
++		regmap_write(adau->regmap, ADAU17X1_DSP_ENABLE, 1);
++		regmap_write(adau->regmap, ADAU17X1_DSP_SAMPLING_RATE, 0xf);
++		regmap_write(adau->regmap, ADAU17X1_DSP_RUN, 0);
+ 
+-	ret = sigmadsp_setup(adau->sigmadsp, rate);
+-	if (ret) {
+-		regmap_write(adau->regmap, ADAU17X1_DSP_ENABLE, 0);
+-		return ret;
++		ret = sigmadsp_setup(adau->sigmadsp, rate);
++		if (ret) {
++			regmap_write(adau->regmap, ADAU17X1_DSP_ENABLE, 0);
++			return ret;
++		}
++		regmap_write(adau->regmap, ADAU17X1_DSP_SAMPLING_RATE, dspsr);
++		regmap_write(adau->regmap, ADAU17X1_DSP_RUN, dsp_run);
+ 	}
+-	regmap_write(adau->regmap, ADAU17X1_DSP_SAMPLING_RATE, dspsr);
+-	regmap_write(adau->regmap, ADAU17X1_DSP_RUN, dsp_run);
+ 
+ 	return 0;
+ }
+-- 
+2.11.0
