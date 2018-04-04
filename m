@@ -1,17 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 2/3] ALSA: usb-audio: More strict sanity
-	checks for clock parsers
-Date: Wed,  4 Apr 2018 07:36:20 +0200
-Message-ID: <20180404053621.32539-3-tiwai@suse.de>
-References: <20180404053621.32539-1-tiwai@suse.de>
+Subject: [PATCH v2 0/3] ALSA: usb-audio: Minor refactoring and
+	UAC3 fix
+Date: Wed,  4 Apr 2018 07:36:18 +0200
+Message-ID: <20180404053621.32539-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id B28F326762E
+ by alsa0.perex.cz (Postfix) with ESMTP id DF7EF267641
  for <alsa-devel@alsa-project.org>; Wed,  4 Apr 2018 07:36:23 +0200 (CEST)
-In-Reply-To: <20180404053621.32539-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,53 +23,31 @@ To: alsa-devel@alsa-project.org
 Cc: Andrew Chant <achant@google.com>, Ruslan Bilovol <ruslan.bilovol@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The sanity checks introduced for malformed descriptors loosely check
-the given descriptor size, although the size greater than the defined
-description is invalid.  It was due to a concern of any funky firmware
-in the actual products.  But this doesn't look hitting, and any sane
-products must have the defined descriptors.
+Hi,
 
-So in this patch, we make the validators more strict, allowing only
-with the defined descriptor sizes.
+this is a v2 patchset (now with a shiny cover letter!) for refactoring
+and hardening UAC2 and UAC3 clock parsers.
 
-Suggested-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/clock.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+BTW, it'll be great if anyone can double-check that this rewrite
+doesn't break things, especially with a UAC3 device.
 
-diff --git a/sound/usb/clock.c b/sound/usb/clock.c
-index 27c2275a2505..5e533edfb092 100644
---- a/sound/usb/clock.c
-+++ b/sound/usb/clock.c
-@@ -52,7 +52,7 @@ static void *find_uac_clock_desc(struct usb_host_interface *iface, int id,
- static bool validate_clock_source_v2(void *p, int id)
- {
- 	struct uac_clock_source_descriptor *cs = p;
--	return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
-+	return cs->bLength == sizeof(*cs) && cs->bClockID == id;
- }
- 
- static bool validate_clock_source_v3(void *p, int id)
-@@ -64,8 +64,8 @@ static bool validate_clock_source_v3(void *p, int id)
- static bool validate_clock_selector_v2(void *p, int id)
- {
- 	struct uac_clock_selector_descriptor *cs = p;
--	return cs->bLength >= sizeof(*cs) && cs->bClockID == id &&
--		cs->bLength >= 5 + cs->bNrInPins;
-+	return cs->bLength == sizeof(*cs) && cs->bClockID == id &&
-+		cs->bLength == 5 + cs->bNrInPins;
- }
- 
- static bool validate_clock_selector_v3(void *p, int id)
-@@ -77,7 +77,7 @@ static bool validate_clock_selector_v3(void *p, int id)
- static bool validate_clock_multiplier_v2(void *p, int id)
- {
- 	struct uac_clock_multiplier_descriptor *cs = p;
--	return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
-+	return cs->bLength == sizeof(*cs) && cs->bClockID == id;
- }
- 
- static bool validate_clock_multiplier_v3(void *p, int id)
+
+thanks,
+
+Takashi
+
+===
+
+v1->v2:	Rename the helper function to be more specific
+	Make validators to check sizes more strictly
+
+Takashi Iwai (3):
+  ALSA: usb-audio: Refactor clock finder helpers
+  ALSA: usb-audio: More strict sanity checks for clock parsers
+  ALSA: usb-audio: Add sanity checks in UAC3 clock parsers
+
+ sound/usb/clock.c | 128 +++++++++++++++++++++++-------------------------------
+ 1 file changed, 54 insertions(+), 74 deletions(-)
+
 -- 
 2.16.2
