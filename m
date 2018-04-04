@@ -1,15 +1,15 @@
 From: David Woodhouse <dwmw2@infradead.org>
 Subject: Re: CX20724 headset button detect
-Date: Wed, 04 Apr 2018 17:29:23 +0100
-Message-ID: <1522859362.7862.62.camel@infradead.org>
+Date: Wed, 04 Apr 2018 17:54:13 +0100
+Message-ID: <1522860853.7862.65.camel@infradead.org>
 References: <1522841412.7862.15.camel@infradead.org>
  <s5hmuyjf0md.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3031888938668775828=="
+Content-Type: multipart/mixed; boundary="===============2654056530143980509=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from twosheds.infradead.org (twosheds.infradead.org [90.155.92.209])
- by alsa0.perex.cz (Postfix) with ESMTP id ED93626718D
- for <alsa-devel@alsa-project.org>; Wed,  4 Apr 2018 18:29:29 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 70AD526718D
+ for <alsa-devel@alsa-project.org>; Wed,  4 Apr 2018 18:54:14 +0200 (CEST)
 In-Reply-To: <s5hmuyjf0md.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,345 +20,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Andrew Duggan <aduggan@synaptics.com>, David Henningsson <david.henningsson@canonical.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3031888938668775828==
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/x-pkcs7-signature"; boundary="=-k7WtYrdagGUdPnA6HXGK"
+--===============2654056530143980509==
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/x-pkcs7-signature"; boundary="=-inH9QFm00s1qoYXGO68a"
 
 
---=-k7WtYrdagGUdPnA6HXGK
+--=-inH9QFm00s1qoYXGO68a
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-
-
 On Wed, 2018-04-04 at 17:32 +0200, Takashi Iwai wrote:
-> On Wed, 04 Apr 2018 13:30:12 +0200,
-> David Woodhouse wrote:
-> >=20
-> >=20
-> > I have an HP EliteBook 850 G3 with CX20724:
-> >=20
-> > =C2=A0hdaudioC0D0: CX20724: BIOS auto-probing.
-> > =C2=A0hdaudioC0D0: action: 0 gpio_led: 0
-> > =C2=A0hdaudioC0D0: autoconfig for CX20724: line_outs=3D1 (0x16/0x0/0x0/=
-0x0/0x0) type:line
-> > =C2=A0hdaudioC0D0:=C2=A0=C2=A0=C2=A0=C2=A0speaker_outs=3D1 (0x17/0x0/0x=
-0/0x0/0x0)
-> > =C2=A0hdaudioC0D0:=C2=A0=C2=A0=C2=A0=C2=A0hp_outs=3D1 (0x1d/0x0/0x0/0x0=
-/0x0)
-> > =C2=A0hdaudioC0D0:=C2=A0=C2=A0=C2=A0=C2=A0mono: mono_out=3D0x0
-> > =C2=A0hdaudioC0D0:=C2=A0=C2=A0=C2=A0=C2=A0inputs:
-> > =C2=A0hdaudioC0D0:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Mic=3D0x19
-> > =C2=A0hdaudioC0D0:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Internal Mic=3D0x=
-1a
-> > =C2=A0hdaudioC0D0:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Line=3D0x18
-> > =C2=A0hdaudioC0D0: Enable sync_write for stable communication
-> > =C2=A0hdaudioC0D0: action: 1 gpio_led: 0
-> > =C2=A0hdaudioC0D0: action: 2 gpio_led: 0
-> > =C2=A0...
-> > =C2=A0input: HDA Intel PCH Mic as /devices/pci0000:00/0000:00:1f.3/soun=
-d/card0/input21
-> >=20
-> > The CX20724 datasheet=C2=B9 suggests that it supports headset button ev=
-ents
-> > =E2=80=94 at least 'Function A' when the mic pin is shorted to ground, =
-if not
-> > the other functions.
-> >=20
-> > But it isn't working. Only the jack insertion is reported through the
-> > corresponding input device, not the button press. I added a printk into
-> > snd_hda_jack_unsol_event(), and it isn't even being invoked at all for
-> > the button presses; only insertion/removal.
-> >=20
-> > How do we make this work?
-> >
-> > =C2=B9 https://www.tonymacx86.com/attachments/datasheet_cx20724-pdf.203=
-615/
->
->
-> Unfortunately, there is no standard definition for the headset button
-> handling in HD-audio spec, and each vendor implements in own way
-> without disclosure.
-> For example, the datasheet you gave also doesn't shed any light how
-> it's triggered (the headset button widget NID is empty and no more
-> information).
 >=20
-> So at this moment, only Conexant people can answer to this question
-> properly, sorry.
-
-Thanks. I think that would be "Synaptics people" now... Andrew, is
-there any chance you could find a better datasheet for this part
-please? I see mention of a 'BIOS guide' in what we have so far.
-
-Alternatively=E2=80=A6 David, in=C2=A0https://bugs.launchpad.net/ubuntu/+bu=
-g/1198030
-you added code which touches registers in the vendor-specific 0x1C NID.
-Do you have access to something I haven't been able to find, and does
-it say anything about headset button detection?
-
-
 > Maybe you can try to enable the GPIO unsolicited event and see whether
-> any unsolicited event is generated.=C2=A0=C2=A0Though, the datasheet says=
- it's
+> any unsolicited event is generated.=C2=A0 Though, the datasheet says it's
 > something else individual, but who knows.
 
-Hm... forgive my ignorance; how do I do that? FWIW here's the content
-of /proc/asound/card0/codec#0:
+/sys/class/sound/card0/hwC0D0# cat init_verbs=C2=A0
+0x1e 0x708 0x0086
+0x1b 0x708 0x0087
+0x1c 0x708 0x0088
 
-Codec: Conexant CX20724
-Address: 0
-AFG Function Id: 0x1 (unsol 1)
-Vendor Id: 0x14f150f4
-Subsystem Id: 0x103c814d
-Revision Id: 0x100109
-No Modem Function Group found
-Default PCM:
-=C2=A0=C2=A0=C2=A0=C2=A0rates [0x140]: 48000 96000
-=C2=A0=C2=A0=C2=A0=C2=A0bits [0xa]: 16 24
-=C2=A0=C2=A0=C2=A0=C2=A0formats [0x1]: PCM
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-State of AFG node 0x01:
-=C2=A0 Power states:=C2=A0=C2=A0D0 D1 D2 D3 D3cold S3D3cold CLKSTOP EPSS
-=C2=A0 Power: setting=3DD0, actual=3DD0
-GPIO: io=3D7, o=3D0, i=3D0, unsolicited=3D1, wake=3D1
-=C2=A0 IO[0]: enable=3D1, dir=3D1, wake=3D0, sticky=3D0, data=3D0, unsol=3D=
-0
-=C2=A0 IO[1]: enable=3D1, dir=3D1, wake=3D0, sticky=3D0, data=3D0, unsol=3D=
-0
-=C2=A0 IO[2]: enable=3D0, dir=3D0, wake=3D0, sticky=3D0, data=3D0, unsol=3D=
-0
-=C2=A0 IO[3]: enable=3D0, dir=3D0, wake=3D0, sticky=3D0, data=3D0, unsol=3D=
-0
-=C2=A0 IO[4]: enable=3D0, dir=3D0, wake=3D0, sticky=3D0, data=3D0, unsol=3D=
-0
-=C2=A0 IO[5]: enable=3D0, dir=3D0, wake=3D0, sticky=3D0, data=3D0, unsol=3D=
-0
-=C2=A0 IO[6]: enable=3D0, dir=3D0, wake=3D0, sticky=3D0, data=3D0, unsol=3D=
-0
-Node 0x10 [Audio Output] wcaps 0xc1d: Stereo Amp-Out R/L
-=C2=A0 Control: name=3D"Speaker+LO Playback Volume", index=3D0, device=3D0
-=C2=A0=C2=A0=C2=A0=C2=A0ControlAmp: chs=3D3, dir=3DOut, idx=3D0, ofs=3D0
-=C2=A0 Control: name=3D"Speaker+LO Playback Switch", index=3D0, device=3D0
-=C2=A0=C2=A0=C2=A0=C2=A0ControlAmp: chs=3D3, dir=3DOut, idx=3D0, ofs=3D0
-=C2=A0 Device: name=3D"CX20724 Analog", type=3D"Audio", device=3D0
-=C2=A0 Amp-Out caps: ofs=3D0x4a, nsteps=3D0x4a, stepsize=3D0x03, mute=3D1
-=C2=A0 Amp-Out vals:=C2=A0=C2=A0[0x80 0x80]
-=C2=A0 Converter: stream=3D1, channel=3D0
-=C2=A0 PCM:
-=C2=A0=C2=A0=C2=A0=C2=A0rates [0x540]: 48000 96000 192000
-=C2=A0=C2=A0=C2=A0=C2=A0bits [0xa]: 16 24
-=C2=A0=C2=A0=C2=A0=C2=A0formats [0x1]: PCM
-=C2=A0 Power states:=C2=A0=C2=A0D0 D1 D2 D3 EPSS
-=C2=A0 Power: setting=3DD0, actual=3DD0
-Node 0x11 [Audio Output] wcaps 0xc1d: Stereo Amp-Out R/L
-=C2=A0 Control: name=3D"Headphone Playback Volume", index=3D0, device=3D0
-=C2=A0=C2=A0=C2=A0=C2=A0ControlAmp: chs=3D3, dir=3DOut, idx=3D0, ofs=3D0
-=C2=A0 Control: name=3D"Headphone Playback Switch", index=3D0, device=3D0
-=C2=A0=C2=A0=C2=A0=C2=A0ControlAmp: chs=3D3, dir=3DOut, idx=3D0, ofs=3D0
-=C2=A0 Amp-Out caps: ofs=3D0x4a, nsteps=3D0x4a, stepsize=3D0x03, mute=3D1
-=C2=A0 Amp-Out vals:=C2=A0=C2=A0[0x3d 0x3d]
-=C2=A0 Converter: stream=3D1, channel=3D0
-=C2=A0 PCM:
-=C2=A0=C2=A0=C2=A0=C2=A0rates [0x540]: 48000 96000 192000
-=C2=A0=C2=A0=C2=A0=C2=A0bits [0xa]: 16 24
-=C2=A0=C2=A0=C2=A0=C2=A0formats [0x1]: PCM
-=C2=A0 Power states:=C2=A0=C2=A0D0 D1 D2 D3 EPSS
-=C2=A0 Power: setting=3DD0, actual=3DD0
-Node 0x12 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
-=C2=A0 Control: name=3D"Beep Playback Volume", index=3D0, device=3D0
-=C2=A0=C2=A0=C2=A0=C2=A0ControlAmp: chs=3D1, dir=3DOut, idx=3D0, ofs=3D0
-=C2=A0 Control: name=3D"Beep Playback Switch", index=3D0, device=3D0
-=C2=A0=C2=A0=C2=A0=C2=A0ControlAmp: chs=3D1, dir=3DOut, idx=3D0, ofs=3D0
-=C2=A0 Amp-Out caps: ofs=3D0x07, nsteps=3D0x07, stepsize=3D0x0f, mute=3D0
-=C2=A0 Amp-Out vals:=C2=A0=C2=A0[0x03]
-Node 0x13 [Audio Input] wcaps 0x100d1b: Stereo Amp-In R/L
-=C2=A0 Control: name=3D"Capture Volume", index=3D0, device=3D0
-=C2=A0=C2=A0=C2=A0=C2=A0ControlAmp: chs=3D3, dir=3DIn, idx=3D0, ofs=3D0
-=C2=A0 Control: name=3D"Capture Switch", index=3D0, device=3D0
-=C2=A0=C2=A0=C2=A0=C2=A0ControlAmp: chs=3D3, dir=3DIn, idx=3D0, ofs=3D0
-=C2=A0 Device: name=3D"CX20724 Analog", type=3D"Audio", device=3D0
-=C2=A0 Amp-In caps: ofs=3D0x4a, nsteps=3D0x50, stepsize=3D0x03, mute=3D1
-=C2=A0 Amp-In vals:=C2=A0=C2=A0[0x50 0x50] [0x50 0x50] [0x50 0x50] [0x80 0x=
-80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-=C2=A0 Converter: stream=3D1, channel=3D0
-=C2=A0 SDI-Select: 0
-=C2=A0 PCM:
-=C2=A0=C2=A0=C2=A0=C2=A0rates [0x140]: 48000 96000
-=C2=A0=C2=A0=C2=A0=C2=A0bits [0xa]: 16 24
-=C2=A0=C2=A0=C2=A0=C2=A0formats [0x1]: PCM
-=C2=A0 Power states:=C2=A0=C2=A0D0 D1 D2 D3 EPSS
-=C2=A0 Power: setting=3DD0, actual=3DD0
-=C2=A0 Connection: 7
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A00x18 0x19* 0x1a 0x15 0x1d 0x1e 0x1f
-Node 0x14 [Audio Input] wcaps 0x100d1b: Stereo Amp-In R/L
-=C2=A0 Amp-In caps: ofs=3D0x4a, nsteps=3D0x50, stepsize=3D0x03, mute=3D1
-=C2=A0 Amp-In vals:=C2=A0=C2=A0[0x4a 0x4a] [0x4a 0x4a] [0x4a 0x4a]
-=C2=A0 Converter: stream=3D0, channel=3D0
-=C2=A0 SDI-Select: 0
-=C2=A0 PCM:
-=C2=A0=C2=A0=C2=A0=C2=A0rates [0x140]: 48000 96000
-=C2=A0=C2=A0=C2=A0=C2=A0bits [0xa]: 16 24
-=C2=A0=C2=A0=C2=A0=C2=A0formats [0x1]: PCM
-=C2=A0 Power states:=C2=A0=C2=A0D0 D1 D2 D3 EPSS
-=C2=A0 Power: setting=3DD0, actual=3DD0
-=C2=A0 Connection: 3
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A00x1a* 0x15 0x1f
-Node 0x15 [Vendor Defined Widget] wcaps 0xf0050b: Stereo Amp-In
-=C2=A0 Amp-In caps: ofs=3D0x4a, nsteps=3D0x4a, stepsize=3D0x03, mute=3D1
-=C2=A0 Amp-In vals:=C2=A0=C2=A0[0x4a 0x4a] [0x4a 0x4a]
-=C2=A0 Power states:=C2=A0=C2=A0D0 D1 D2 D3 EPSS
-=C2=A0 Power: setting=3DD0, actual=3DD0
-=C2=A0 Connection: 2
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A00x10* 0x11
-Node 0x16 [Pin Complex] wcaps 0x400581: Stereo
-=C2=A0 Pincap 0x0001001c: OUT HP EAPD Detect
-=C2=A0 EAPD 0x0:
-=C2=A0 Pin Default 0x40f001f0: [N/A] Other at Ext N/A
-=C2=A0=C2=A0=C2=A0=C2=A0Conn =3D Unknown, Color =3D Unknown
-=C2=A0=C2=A0=C2=A0=C2=A0DefAssociation =3D 0xf, Sequence =3D 0x0
-=C2=A0=C2=A0=C2=A0=C2=A0Misc =3D NO_PRESENCE
-=C2=A0 Pin-ctls: 0x40: OUT
-=C2=A0 Unsolicited: tag=3D02, enabled=3D1
-=C2=A0 Power states:=C2=A0=C2=A0D0 D1 D2 D3 EPSS
-=C2=A0 Power: setting=3DD0, actual=3DD0
-=C2=A0 Connection: 2
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A00x10* 0x11
-Node 0x17 [Pin Complex] wcaps 0x400501: Stereo
-=C2=A0 Pincap 0x00010010: OUT EAPD
-=C2=A0 EAPD 0x0:
-=C2=A0 Pin Default 0x91170110: [Fixed] Speaker at Int Rear
-=C2=A0=C2=A0=C2=A0=C2=A0Conn =3D Analog, Color =3D Unknown
-=C2=A0=C2=A0=C2=A0=C2=A0DefAssociation =3D 0x1, Sequence =3D 0x0
-=C2=A0=C2=A0=C2=A0=C2=A0Misc =3D NO_PRESENCE
-=C2=A0 Pin-ctls: 0x40: OUT
-=C2=A0 Power states:=C2=A0=C2=A0D0 D1 D2 D3 EPSS
-=C2=A0 Power: setting=3DD0, actual=3DD0
-=C2=A0 Connection: 2
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A00x10* 0x11
-Node 0x18 [Pin Complex] wcaps 0x40048b: Stereo Amp-In
-=C2=A0 Control: name=3D"Line Boost Volume", index=3D0, device=3D0
-=C2=A0=C2=A0=C2=A0=C2=A0ControlAmp: chs=3D3, dir=3DIn, idx=3D0, ofs=3D0
-=C2=A0 Amp-In caps: ofs=3D0x00, nsteps=3D0x03, stepsize=3D0x2f, mute=3D0
-=C2=A0 Amp-In vals:=C2=A0=C2=A0[0x00 0x00]
-=C2=A0 Pincap 0x00001324: IN Detect
-=C2=A0=C2=A0=C2=A0=C2=A0Vref caps: HIZ 50 80
-=C2=A0 Pin Default 0x40f001f0: [N/A] Other at Ext N/A
-=C2=A0=C2=A0=C2=A0=C2=A0Conn =3D Unknown, Color =3D Unknown
-=C2=A0=C2=A0=C2=A0=C2=A0DefAssociation =3D 0xf, Sequence =3D 0x0
-=C2=A0=C2=A0=C2=A0=C2=A0Misc =3D NO_PRESENCE
-=C2=A0 Pin-ctls: 0x20: IN VREF_HIZ
-=C2=A0 Unsolicited: tag=3D05, enabled=3D1
-=C2=A0 Power states:=C2=A0=C2=A0D0 D1 D2 D3 EPSS
-=C2=A0 Power: setting=3DD0, actual=3DD0
-Node 0x19 [Pin Complex] wcaps 0x40048b: Stereo Amp-In
-=C2=A0 Control: name=3D"Mic Boost Volume", index=3D0, device=3D0
-=C2=A0=C2=A0=C2=A0=C2=A0ControlAmp: chs=3D3, dir=3DIn, idx=3D0, ofs=3D0
-=C2=A0 Amp-In caps: ofs=3D0x00, nsteps=3D0x03, stepsize=3D0x2f, mute=3D0
-=C2=A0 Amp-In vals:=C2=A0=C2=A0[0x03 0x03]
-=C2=A0 Pincap 0x00001324: IN Detect
-=C2=A0=C2=A0=C2=A0=C2=A0Vref caps: HIZ 50 80
-=C2=A0 Pin Default 0x04a11030: [Jack] Mic at Ext Right
-=C2=A0=C2=A0=C2=A0=C2=A0Conn =3D 1/8, Color =3D Black
-=C2=A0=C2=A0=C2=A0=C2=A0DefAssociation =3D 0x3, Sequence =3D 0x0
-=C2=A0 Pin-ctls: 0x24: IN VREF_80
-=C2=A0 Unsolicited: tag=3D03, enabled=3D1
-=C2=A0 Power states:=C2=A0=C2=A0D0 D1 D2 D3 EPSS
-=C2=A0 Power: setting=3DD0, actual=3DD0
-Node 0x1a [Pin Complex] wcaps 0x40040b: Stereo Amp-In
-=C2=A0 Control: name=3D"Internal Mic Boost Volume", index=3D0, device=3D0
-=C2=A0=C2=A0=C2=A0=C2=A0ControlAmp: chs=3D3, dir=3DIn, idx=3D0, ofs=3D0
-=C2=A0 Amp-In caps: ofs=3D0x00, nsteps=3D0x03, stepsize=3D0x2f, mute=3D0
-=C2=A0 Amp-In vals:=C2=A0=C2=A0[0x00 0x00]
-=C2=A0 Pincap 0x00000020: IN
-=C2=A0 Pin Default 0x95a60120: [Fixed] Mic at Int Top
-=C2=A0=C2=A0=C2=A0=C2=A0Conn =3D Digital, Color =3D Unknown
-=C2=A0=C2=A0=C2=A0=C2=A0DefAssociation =3D 0x2, Sequence =3D 0x0
-=C2=A0=C2=A0=C2=A0=C2=A0Misc =3D NO_PRESENCE
-=C2=A0 Pin-ctls: 0x20: IN
-=C2=A0 Power states:=C2=A0=C2=A0D0 D1 D2 D3 EPSS
-=C2=A0 Power: setting=3DD0, actual=3DD0
-Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1c [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1d [Pin Complex] wcaps 0x40058b: Stereo Amp-In
-=C2=A0 Amp-In caps: ofs=3D0x00, nsteps=3D0x03, stepsize=3D0x2f, mute=3D0
-=C2=A0 Amp-In vals:=C2=A0=C2=A0[0x00 0x00]
-=C2=A0 Pincap 0x0001133c: IN OUT HP EAPD Detect
-=C2=A0=C2=A0=C2=A0=C2=A0Vref caps: HIZ 50 80
-=C2=A0 EAPD 0x0:
-=C2=A0 Pin Default 0x04211040: [Jack] HP Out at Ext Right
-=C2=A0=C2=A0=C2=A0=C2=A0Conn =3D 1/8, Color =3D Black
-=C2=A0=C2=A0=C2=A0=C2=A0DefAssociation =3D 0x4, Sequence =3D 0x0
-=C2=A0 Pin-ctls: 0xc0: OUT HP VREF_HIZ
-=C2=A0 Unsolicited: tag=3D01, enabled=3D1
-=C2=A0 Power states:=C2=A0=C2=A0D0 D1 D2 D3 EPSS
-=C2=A0 Power: setting=3DD0, actual=3DD0
-=C2=A0 Connection: 2
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A00x10 0x11*
-Node 0x1e [Pin Complex] wcaps 0x40048b: Stereo Amp-In
-=C2=A0 Amp-In caps: ofs=3D0x00, nsteps=3D0x03, stepsize=3D0x2f, mute=3D0
-=C2=A0 Amp-In vals:=C2=A0=C2=A0[0x00 0x00]
-=C2=A0 Pincap 0x00000024: IN Detect
-=C2=A0 Pin Default 0x40f001f0: [N/A] Other at Ext N/A
-=C2=A0=C2=A0=C2=A0=C2=A0Conn =3D Unknown, Color =3D Unknown
-=C2=A0=C2=A0=C2=A0=C2=A0DefAssociation =3D 0xf, Sequence =3D 0x0
-=C2=A0=C2=A0=C2=A0=C2=A0Misc =3D NO_PRESENCE
-=C2=A0 Pin-ctls: 0x00:
-=C2=A0 Unsolicited: tag=3D00, enabled=3D0
-=C2=A0 Power states:=C2=A0=C2=A0D0 D1 D2 D3 EPSS
-=C2=A0 Power: setting=3DD0, actual=3DD0
-Node 0x1f [Pin Complex] wcaps 0x40040b: Stereo Amp-In
-=C2=A0 Amp-In caps: ofs=3D0x00, nsteps=3D0x03, stepsize=3D0x2f, mute=3D0
-=C2=A0 Amp-In vals:=C2=A0=C2=A0[0x00 0x00]
-=C2=A0 Pincap 0x00000020: IN
-=C2=A0 Pin Default 0x40f001f0: [N/A] Other at Ext N/A
-=C2=A0=C2=A0=C2=A0=C2=A0Conn =3D Unknown, Color =3D Unknown
-=C2=A0=C2=A0=C2=A0=C2=A0DefAssociation =3D 0xf, Sequence =3D 0x0
-=C2=A0=C2=A0=C2=A0=C2=A0Misc =3D NO_PRESENCE
-=C2=A0 Pin-ctls: 0x00:
-=C2=A0 Power states:=C2=A0=C2=A0D0 D1 D2 D3 EPSS
-=C2=A0 Power: setting=3DD0, actual=3DD0
-Node 0x20 [Audio Output] wcaps 0x611: Stereo Digital
-=C2=A0 Converter: stream=3D0, channel=3D0
-=C2=A0 Digital:
-=C2=A0 Digital category: 0x0
-=C2=A0 IEC Coding Type: 0x0
-=C2=A0 PCM:
-=C2=A0=C2=A0=C2=A0=C2=A0rates [0x540]: 48000 96000 192000
-=C2=A0=C2=A0=C2=A0=C2=A0bits [0xe]: 16 20 24
-=C2=A0=C2=A0=C2=A0=C2=A0formats [0x5]: PCM AC3
-=C2=A0 Power states:=C2=A0=C2=A0D0 D1 D2 D3 EPSS
-=C2=A0 Power: setting=3DD0, actual=3DD0
-Node 0x21 [Pin Complex] wcaps 0x400701: Stereo Digital
-=C2=A0 Pincap 0x00000010: OUT
-=C2=A0 Pin Default 0x40f001f0: [N/A] Other at Ext N/A
-=C2=A0=C2=A0=C2=A0=C2=A0Conn =3D Unknown, Color =3D Unknown
-=C2=A0=C2=A0=C2=A0=C2=A0DefAssociation =3D 0xf, Sequence =3D 0x0
-=C2=A0=C2=A0=C2=A0=C2=A0Misc =3D NO_PRESENCE
-=C2=A0 Pin-ctls: 0x00:
-=C2=A0 Power states:=C2=A0=C2=A0D0 D1 D2 D3 EPSS
-=C2=A0 Power: setting=3DD0, actual=3DD0
-=C2=A0 Connection: 1
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A00x20
-Node 0x22 [Pin Complex] wcaps 0x400501: Stereo
-=C2=A0 Pincap 0x00010010: OUT EAPD
-=C2=A0 EAPD 0x0:
-=C2=A0 Pin Default 0x40f001f0: [N/A] Other at Ext N/A
-=C2=A0=C2=A0=C2=A0=C2=A0Conn =3D Unknown, Color =3D Unknown
-=C2=A0=C2=A0=C2=A0=C2=A0DefAssociation =3D 0xf, Sequence =3D 0x0
-=C2=A0=C2=A0=C2=A0=C2=A0Misc =3D NO_PRESENCE
-=C2=A0 Pin-ctls: 0x00:
-=C2=A0 Power states:=C2=A0=C2=A0D0 D1 D2 D3 EPSS
-=C2=A0 Power: setting=3DD0, actual=3DD0
-=C2=A0 Connection: 2
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A00x10* 0x11
+Kill pulseaudio and echo 1 > reconfig, and now I don't even have the
+jack insertion events... :)
 
-
---=-k7WtYrdagGUdPnA6HXGK
+--=-inH9QFm00s1qoYXGO68a
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -441,30 +130,30 @@ px9/s81rgzdEZOofSlZHynoSMYIDxzCCA8MCAQEwgawwgZcxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 ExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBD
 QSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQg
 U2VjdXJlIEVtYWlsIENBAhBNRhEyk/HZ7naOeTHWrzuAMA0GCWCGSAFlAwQCAQUAoIIB6zAYBgkq
-hkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xODA0MDQxNjI5MjNaMC8GCSqG
-SIb3DQEJBDEiBCBI1Qx9u5CgN9fIkxsXpkTtVEDPfZJ1OYLzWOTLDz7urTCBvQYJKwYBBAGCNxAE
+hkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xODA0MDQxNjU0MTNaMC8GCSqG
+SIb3DQEJBDEiBCBAPB0pBupUlR0Nr8GjTDM1To5PaVexDJoQngv6TUtidDCBvQYJKwYBBAGCNxAE
 MYGvMIGsMIGXMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
 VQQHEwdTYWxmb3JkMRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09NT0RP
 IFJTQSBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIQTUYRMpPx2e52
 jnkx1q87gDCBvwYLKoZIhvcNAQkQAgsxga+ggawwgZcxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJH
 cmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBM
 aW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2Vj
-dXJlIEVtYWlsIENBAhBNRhEyk/HZ7naOeTHWrzuAMA0GCSqGSIb3DQEBAQUABIIBAAshI2Aedv3o
-rTXdUKRnZwp4imI4ZqHObxg4NFvXLLviiHQWdeiMTWHy8qlxmxRxGPwA5sfdyggFjuq9lCVvhGaM
-aLKTzjdWEk4HhfuH13YnFNlSaLYYf1ANqcLG4DKtvXQ96vunshzmInFzuYZl/6ViMIjrbEY5rsgI
-Zf22CHlG/wqHtYWRKIvap9742VW4/x69dlmSl/HZ4eyIMNuq+SVhHIjUSwkYpMnSP06Xtwpb6Iue
-QIMZW8nB/C05hgePiY6rv7d3np3CYFTut01hE9IlTSKhQCAM4/7Zx8YQEBQU03nPhQssioX50Jgg
-z93/0irGb8YogR2xT7JanfCy0dUAAAAAAAA=
+dXJlIEVtYWlsIENBAhBNRhEyk/HZ7naOeTHWrzuAMA0GCSqGSIb3DQEBAQUABIIBAIcyifFpo+zf
+pDjs6Mce1SA/GoRDcDBwjukSt1wENL2DNcdsCyTi0EOsytRVtEVfiejLoNy3f3DYg2+z4nZF/3E9
+g0bC+elN0KwAfcLYGPEyqVEyIJ1En/G/HXEeoP7ghYeFx7nbg8+Mzj6B5iB+F8+cmEL73ZUXnEbO
+uXv/7Wpx5qpNhIWD9DwCAOiRZVnHL8w3GQIiA6quUTodtHxaNqFbU2b341ZbwQeOlpA0H9F+Bxkv
+yiTEQ0Etj1Qz65h9yNMpTvTDuz48AeXTpUnFVY/M8+nuCnvOOSTKdEr+xLeXr/Z2n8S1AxPlYVc8
+/C7LTc+pH+0O7s+RaBusHMC4fWkAAAAAAAA=
 
 
---=-k7WtYrdagGUdPnA6HXGK--
+--=-inH9QFm00s1qoYXGO68a--
 
 
---===============3031888938668775828==
+--===============2654056530143980509==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3031888938668775828==--
+--===============2654056530143980509==--
