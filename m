@@ -1,18 +1,19 @@
-From: Freaky <freaky2000@gmail.com>
-Subject: No audio on headphones on HP X2 210 (Baytrail Atom -
-	RT5640)
-Date: Wed, 4 Apr 2018 10:39:32 +0200
-Message-ID: <CAEw6ZyvFXPC=5fQ8T2qpvb_0VFVcYWLRmUSiQfSx2kCR49947g@mail.gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH] ASoC: atmel_ssc_dai: fix spelling mistake:
+ "Stoping" -> "Stopping"
+Date: Wed, 4 Apr 2018 13:24:26 +0300
+Message-ID: <20180404102425.cwj7vzvrvi2obcoi@mwanda>
+References: <20180330154420.6903-1-colin.king@canonical.com>
+ <20180403134540.GA29017@lenoch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f177.google.com (mail-qk0-f177.google.com
- [209.85.220.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 490222675C8
- for <alsa-devel@alsa-project.org>; Wed,  4 Apr 2018 10:39:34 +0200 (CEST)
-Received: by mail-qk0-f177.google.com with SMTP id d206so21674368qkb.0
- for <alsa-devel@alsa-project.org>; Wed, 04 Apr 2018 01:39:34 -0700 (PDT)
+Received: from userp2120.oracle.com (userp2120.oracle.com [156.151.31.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24EAF267408
+ for <alsa-devel@alsa-project.org>; Wed,  4 Apr 2018 12:34:38 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20180403134540.GA29017@lenoch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,38 +23,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Colin King <colin.king@canonical.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi there,
+On Tue, Apr 03, 2018 at 03:45:40PM +0200, Ladislav Michl wrote:
+> On Fri, Mar 30, 2018 at 04:44:20PM +0100, Colin King wrote:
+> > From: Colin Ian King <colin.king@canonical.com>
+> 
+> Hello Colin,
+> 
+> > Trivial fix to spelling mistake in pr_debug message text
+> 
+> would you mind making this patch a bit less non-trivial and
+> change pr_debug to dev_dbg dropping Atmel_ssc_dai prefix?
+> 
+> Thank you.
+>
 
-we're running Fedora 27 on a HP X2 210. Grabbed the UCM config files for it
-from the GIT repo of plbossart (
-https://github.com/plbossart/UCM/tree/master/bytcr-rt5640) blacklisted the
-snd_hdmi_lpe_audio and sound now works via the onboard speakers.
+Trivial patches should just be trivial instead of evolving into a thread
+that lasts for days.
 
-Current kernel is 4.15.13.
+I sometimes write trivial clean up patches for things like:
 
-Audio via the headphones does not work. Been looking at the source code,
-but most of the abbreviations are mumbo jumbo to me :). Doesn't look like
-there are any for the headphones in 4.15.13.
+arch/x86/lib/csum-partial_64.c:97 do_csum() warn: inconsistent indenting
+    88                          /* last up to 7 8byte blocks */
+    89                          count %= 8; 
+    90                          while (count) { 
+    91                                  asm("addq %1,%0\n\t"
+    92                                      "adcq %2,%0\n" 
+    93                                              : "=r" (result)
+    94                                      : "m" (*(unsigned long *)buff), 
+    95                                      "r" (zero),  "0" (result));
+    96                                  --count; 
+    97                                          buff += 8;
+    98                          }
 
-Did find this patch:
-https://webcache.googleusercontent.com/search?q=cache:FlvUx7XgbH4J:https://github.com/jwrdegoede/linux-sunxi/commit/+&cd=3&hl=en&ct=clnk&gl=nl
+Why is "buff += 8;" indented too far?  And why does every line end in a
+space character?  And I think about it for 10 minutes and then delete my
+patch because it's too much hassle to deal with for something small.
 
-Which seems to enable a quirk for headphone detection. Doesn't seem to be
-in 4.15.14 source. Do we require that patch? Not sure what this line does:
-
-#define BYT_RT5640_JACK_PIN(quirk) ((quirk) & GENMASK(15, 13))
-
-Would I need to flip bits 15 and 13? What would the parameter be? The file
-is called bytcr_rt5640.c, but for the 5645 (Cherrytrail atoms) the kernel
-parameter is called snd_soc_rt5645.quirk, is it called snd_soc_rt5640.quirk
-here? Doubt it since there are quirks defined in sound/soc/codecs/rt5645.c
-whereas I don't see any (4.15.14 sources) in sound/soc/codecs/rt5640.c.
-
-Any advise would be most welcome :).
-
-Thanks in advance.
-
-Kind regards,
+regards,
+dan carpenter
