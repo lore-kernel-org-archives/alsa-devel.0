@@ -1,181 +1,187 @@
-From: David Woodhouse <dwmw2@infradead.org>
-Subject: CX20724 headset button detect
-Date: Wed, 04 Apr 2018 12:30:12 +0100
-Message-ID: <1522841412.7862.15.camel@infradead.org>
+From: Ladislav Michl <ladis@linux-mips.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: atmel_ssc_dai: fix spelling mistake:
+ "Stoping" -> "Stopping"
+Date: Wed, 4 Apr 2018 14:30:21 +0200
+Message-ID: <20180404123021.GA21058@lenoch>
+References: <20180330154420.6903-1-colin.king@canonical.com>
+ <20180403134540.GA29017@lenoch>
+ <20180404102425.cwj7vzvrvi2obcoi@mwanda>
+ <9b1399de-3834-cd22-2bca-42a1048e0901@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1985636212283959898=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from twosheds.infradead.org (twosheds.infradead.org [90.155.92.209])
- by alsa0.perex.cz (Postfix) with ESMTP id 09728267408
- for <alsa-devel@alsa-project.org>; Wed,  4 Apr 2018 13:30:19 +0200 (CEST)
-Received: from [2001:8b0:10b:1::b8f]
- by twosheds.infradead.org with esmtpsa (Exim 4.89 #1 (Red Hat Linux))
- id 1f3gcG-00036o-GB
- for alsa-devel@alsa-project.org; Wed, 04 Apr 2018 11:30:12 +0000
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <9b1399de-3834-cd22-2bca-42a1048e0901@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Apr 04, 2018 at 11:41:23AM +0100, Colin Ian King wrote:
+> On 04/04/18 11:24, Dan Carpenter wrote:
+> > On Tue, Apr 03, 2018 at 03:45:40PM +0200, Ladislav Michl wrote:
+> >> On Fri, Mar 30, 2018 at 04:44:20PM +0100, Colin King wrote:
+> >>> From: Colin Ian King <colin.king@canonical.com>
+> >>
+> >> Hello Colin,
+> >>
+> >>> Trivial fix to spelling mistake in pr_debug message text
+> >>
+> >> would you mind making this patch a bit less non-trivial and
+> >> change pr_debug to dev_dbg dropping Atmel_ssc_dai prefix?
+> >>
+> >> Thank you.
+> >>
+> > 
+> > Trivial patches should just be trivial instead of evolving into a thread
+> > that lasts for days.
+> 
+> Yep, this feels like this scenario for sure.
 
---===============1985636212283959898==
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/x-pkcs7-signature"; boundary="=-6dpqxvSVHqGXIIr6VPyh"
+And this scenario happens because I wanted to avoid all that work preparing
+trivial patch. In the other words, this thread could be few mails shorter
+if anyone else took a chance ;-)
 
+[...]
 
---=-6dpqxvSVHqGXIIr6VPyh
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> > space character?  And I think about it for 10 minutes and then delete my
+> > patch because it's too much hassle to deal with for something small.
 
-I have an HP EliteBook 850 G3 with CX20724:
+...leading into many small glitches never polished...
 
-=C2=A0hdaudioC0D0: CX20724: BIOS auto-probing.
-=C2=A0hdaudioC0D0: action: 0 gpio_led: 0
-=C2=A0hdaudioC0D0: autoconfig for CX20724: line_outs=3D1 (0x16/0x0/0x0/0x0/=
-0x0) type:line
-=C2=A0hdaudioC0D0:=C2=A0=C2=A0=C2=A0=C2=A0speaker_outs=3D1 (0x17/0x0/0x0/0x=
-0/0x0)
-=C2=A0hdaudioC0D0:=C2=A0=C2=A0=C2=A0=C2=A0hp_outs=3D1 (0x1d/0x0/0x0/0x0/0x0=
-)
-=C2=A0hdaudioC0D0:=C2=A0=C2=A0=C2=A0=C2=A0mono: mono_out=3D0x0
-=C2=A0hdaudioC0D0:=C2=A0=C2=A0=C2=A0=C2=A0inputs:
-=C2=A0hdaudioC0D0:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Mic=3D0x19
-=C2=A0hdaudioC0D0:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Internal Mic=3D0x1a
-=C2=A0hdaudioC0D0:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Line=3D0x18
-=C2=A0hdaudioC0D0: Enable sync_write for stable communication
-=C2=A0hdaudioC0D0: action: 1 gpio_led: 0
-=C2=A0hdaudioC0D0: action: 2 gpio_led: 0
-=C2=A0...
-=C2=A0input: HDA Intel PCH Mic as /devices/pci0000:00/0000:00:1f.3/sound/ca=
-rd0/input21
+> Same here. Hence stuff never gets fixed.
 
-The CX20724 datasheet=C2=B9 suggests that it supports headset button events
-=E2=80=94 at least 'Function A' when the mic pin is shorted to ground, if n=
-ot
-the other functions.
+For sure, hassle with sending a patch and crediting everyone who contributed
+properly is order of magnitude more time consuming than preparing patch itself.
 
-But it isn't working. Only the jack insertion is reported through the
-corresponding input device, not the button press. I added a printk into
-snd_hda_jack_unsol_event(), and it isn't even being invoked at all for
-the button presses; only insertion/removal.
+So here's my last contribution to this painful thread. If you do not like it,
+it's your turn :)
 
-How do we make this work?
+(and it'll be needed as Mark does not like patches being sended this way,
+oh well, whoever sent original patch should first figure out why driver
+outputs debug message just after warning one - so the simplest fix would
+be just deleting that line)
 
+-- >8 -- 
 
-=C2=B9 https://www.tonymacx86.com/attachments/datasheet_cx20724-pdf.203615/
---=-6dpqxvSVHqGXIIr6VPyh
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH] ASoC: atmel_ssc_dai: Replace pr_debug with dev_dbg
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEFQw
-ggUxMIIEGaADAgECAhBNRhEyk/HZ7naOeTHWrzuAMA0GCSqGSIb3DQEBCwUAMIGXMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRowGAYD
-VQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09NT0RPIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQTAeFw0xNzEyMjEwMDAwMDBaFw0xODEyMjEyMzU5
-NTlaMCQxIjAgBgkqhkiG9w0BCQEWE2R3bXcyQGluZnJhZGVhZC5vcmcwggEiMA0GCSqGSIb3DQEB
-AQUAA4IBDwAwggEKAoIBAQDgzLNWa18DNpGUj/ZeH0Sgz53ESIbzdPw3OJeuNP6jZhxZojbyfxbM
-hETscxI/Hj6UZ4a7sHm5BkVjlsB1Af2Za/PXUt8MmLAcPMHkMPGunvkUibEvblDvpqMkQZlaZM+t
-5PqFmWkbehLaEvbpNY7dmEAAeKh4klTzJzrr5AAzaCQ32cA2e3+DEIv5O5l9ViMIjy/JM+xMQrfX
-3PZ0chY1PaVWjg59d4Uno+5LRDbgCnPkKJX4ysBGadibjBGQGJEZCjh94iiEebn2KsRLvtrJ72Ph
-3W2HDEdngW3YP0wujFQVs81U7L8XN3kdPRsa9zNqGtYQP/+1KMMJQ57hnfi9AgMBAAGjggHpMIIB
-5TAfBgNVHSMEGDAWgBSCr2yM+MX+lmF86B89K3FIXsSLwDAdBgNVHQ4EFgQUpL+/5lli9jmj2KHj
-ryyhnB2xRt0wDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwIAYDVR0lBBkwFwYIKwYBBQUH
-AwQGCysGAQQBsjEBAwUCMBEGCWCGSAGG+EIBAQQEAwIFIDBGBgNVHSAEPzA9MDsGDCsGAQQBsjEB
-AgEBATArMCkGCCsGAQUFBwIBFh1odHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8E
-UzBRME+gTaBLhklodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50
-aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKG
-SWh0dHA6Ly9jcnQuY29tb2RvY2EuY29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5k
-U2VjdXJlRW1haWxDQS5jcnQwJAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAe
-BgNVHREEFzAVgRNkd213MkBpbmZyYWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQCK28BdbVJ9
-QKQqTDfXwogAYiRBEGptfE1Bjy4F5vC6eWJqOJ15vunxjLwdbZYb4L0qrJlh+ZHHHlbIK8uEZu7N
-XHUntmWMbGbZiu7JgrbSXJK1ct9gxrN/sdWYJ+JDjVHg7GfDTvTTPa26JMRqJsO1TjjyDX7A3K39
-TjV8C0hqXvwF9BsNf+qBeWO6GVzJ5572awY221hc1umibmZaKV4fg+7fS7qscx5TSuIc6uvMBQhm
-7NQiCq6euMMWBDUDlotQCDW0ilm0OuLW3IVLuZCm6Msc+6hT9+dCT4JUvxTHZnnO7uLCxV+Ujad+
-PH3itRm38i96p2zvwgLr8vwWA0ckMIIFMTCCBBmgAwIBAgIQTUYRMpPx2e52jnkx1q87gDANBgkq
-hkiG9w0BAQsFADCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQ
-MA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENP
-TU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTcx
-MjIxMDAwMDAwWhcNMTgxMjIxMjM1OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRl
-YWQub3JnMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4MyzVmtfAzaRlI/2Xh9EoM+d
-xEiG83T8NziXrjT+o2YcWaI28n8WzIRE7HMSPx4+lGeGu7B5uQZFY5bAdQH9mWvz11LfDJiwHDzB
-5DDxrp75FImxL25Q76ajJEGZWmTPreT6hZlpG3oS2hL26TWO3ZhAAHioeJJU8yc66+QAM2gkN9nA
-Nnt/gxCL+TuZfVYjCI8vyTPsTEK319z2dHIWNT2lVo4OfXeFJ6PuS0Q24Apz5CiV+MrARmnYm4wR
-kBiRGQo4feIohHm59irES77aye9j4d1thwxHZ4Ft2D9MLoxUFbPNVOy/Fzd5HT0bGvczahrWED//
-tSjDCUOe4Z34vQIDAQABo4IB6TCCAeUwHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8Aw
-HQYDVR0OBBYEFKS/v+ZZYvY5o9ih468soZwdsUbdMA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8E
-AjAAMCAGA1UdJQQZMBcGCCsGAQUFBwMEBgsrBgEEAbIxAQMFAjARBglghkgBhvhCAQEEBAMCBSAw
-RgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAQEwKzApBggrBgEFBQcCARYdaHR0cHM6Ly9zZWN1cmUu
-Y29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2NybC5jb21vZG9jYS5jb20v
-Q09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNybDCBiwYIKwYB
-BQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FD
-bGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQGCCsGAQUFBzABhhhodHRw
-Oi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkq
-hkiG9w0BAQsFAAOCAQEAitvAXW1SfUCkKkw318KIAGIkQRBqbXxNQY8uBebwunliajideb7p8Yy8
-HW2WG+C9KqyZYfmRxx5WyCvLhGbuzVx1J7ZljGxm2YruyYK20lyStXLfYMazf7HVmCfiQ41R4Oxn
-w0700z2tuiTEaibDtU448g1+wNyt/U41fAtIal78BfQbDX/qgXljuhlcyeee9msGNttYXNbpom5m
-WileH4Pu30u6rHMeU0riHOrrzAUIZuzUIgqunrjDFgQ1A5aLUAg1tIpZtDri1tyFS7mQpujLHPuo
-U/fnQk+CVL8Ux2Z5zu7iwsVflI2nfjx94rUZt/Iveqds78IC6/L8FgNHJDCCBeYwggPOoAMCAQIC
-EGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNVBAYTAkdCMRswGQYDVQQI
-ExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBD
-QSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4X
-DTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJH
-cmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBM
-aW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2Vj
-dXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvrOeV6wodnVAFsc4
-A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf+bGBSyD9aH95dDSmeny1
-nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcfWlP8dSsE3Rfywq09N0Zf
-xcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqzaaPpGRqXB7IMjtf7tTmU2
-jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDKCMPybTjoNCQuelc0IAaO
-4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAUu69+Aj36pvE8hI6t7jiY
-7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1UdDwEB/wQEAwIBhjASBgNV
-HRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8ERTBDMEGgP6A9hjtodHRw
-Oi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9uQXV0aG9yaXR5LmNybDBx
-BggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29tb2RvY2EuY29tL0NPTU9E
-T1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20w
-DQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2SQgG1NgvNc3fQP7TcePo
-7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs0j8CGpfb+SJA3GaBQ+39
-4k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDMKVmU/PUWNMKSTvtlenlx
-Bhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+E2pvOUtY+hPebuPtTbq7
-vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfHM5tdhYF/8v5UY5g2xANP
-ECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4jkhJiA7EuTecP/CFtR72
-uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1tyZR2niOYihZ+FCbtf3D9
-mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4ognzgXtgtdk3ShrtOS1iA
-N2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAbR9HWdFqzcOoB/hxfEyIQ
-px9/s81rgzdEZOofSlZHynoSMYIDxzCCA8MCAQEwgawwgZcxCzAJBgNVBAYTAkdCMRswGQYDVQQI
-ExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBD
-QSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQg
-U2VjdXJlIEVtYWlsIENBAhBNRhEyk/HZ7naOeTHWrzuAMA0GCWCGSAFlAwQCAQUAoIIB6zAYBgkq
-hkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xODA0MDQxMTMwMTJaMC8GCSqG
-SIb3DQEJBDEiBCDO3ndJfRyKbcuUIhhh+N/spvLFK/jtZnUViQ280qK1XjCBvQYJKwYBBAGCNxAE
-MYGvMIGsMIGXMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09NT0RP
-IFJTQSBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIQTUYRMpPx2e52
-jnkx1q87gDCBvwYLKoZIhvcNAQkQAgsxga+ggawwgZcxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJH
-cmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBM
-aW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2Vj
-dXJlIEVtYWlsIENBAhBNRhEyk/HZ7naOeTHWrzuAMA0GCSqGSIb3DQEBAQUABIIBANXd+EC0gS1y
-lTDc5zN2rM6cj1qm2jVo0M1nzeB4s4bFxog+Rp0CL0TcVmKdcJPi1yh8YcTGfA/DRAE7sLlbZbky
-oEEWQzSW86u2ZVNQxci5tHWn3Ea3SamLoduesVPcW/QsvSJPqm1ELb7CZha51dPqxP8+TG9d9JY2
-e4ys7rI/Crgm8VFzrxDGRRT1oxO83OzXWFejW874CHUYXdIyW0fWhN7kANWb7+T6x6ktPD1n4B2K
-GloE+hspwbG2JNA+yyApZmqdoy9pFjOz4cPSBT+ZNCjX/NdhT7UVB6yAnZn+DvwhPbaL03oH4Odx
-YcCsk1Io/EQLMbcTCfmXd7Hkb5IAAAAAAAA=
+Use dev_dbg for debug output, remove registration error message
+as every user of atmel_ssc_set_audio prints its own error.
 
+Signed-off-by: Joe Perches <joe@perches.com>
+Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+[Colin Ian King: fix spelling mistake: "Stoping" -> "Stopping"]
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/atmel/atmel_ssc_dai.c | 42 +++++++++++++--------------------
+ 1 file changed, 17 insertions(+), 25 deletions(-)
 
---=-6dpqxvSVHqGXIIr6VPyh--
-
-
---===============1985636212283959898==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1985636212283959898==--
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index a1e2c5682dcd..45c4730e9939 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -291,11 +291,10 @@ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
+ 	int dir, dir_mask;
+ 	int ret;
+ 
+-	pr_debug("atmel_ssc_startup: SSC_SR=0x%x\n",
+-		ssc_readl(ssc_p->ssc->regs, SR));
++	dev_dbg(dai->dev, "SSC_SR=0x%x\n", ssc_readl(ssc_p->ssc->regs, SR));
+ 
+ 	/* Enable PMC peripheral clock for this SSC */
+-	pr_debug("atmel_ssc_dai: Starting clock\n");
++	dev_dbg(dai->dev, "Starting clock\n");
+ 	clk_enable(ssc_p->ssc->clk);
+ 	ssc_p->mck_rate = clk_get_rate(ssc_p->ssc->clk);
+ 
+@@ -385,7 +384,7 @@ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
+ 	spin_unlock_irq(&ssc_p->lock);
+ 
+ 	/* Shutdown the SSC clock. */
+-	pr_debug("atmel_ssc_dai: Stopping clock\n");
++	dev_dbg(dai->dev, "Stopping clock\n");
+ 	clk_disable(ssc_p->ssc->clk);
+ }
+ 
+@@ -794,13 +793,12 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 		break;
+ 
+ 	default:
+-		printk(KERN_WARNING "atmel_ssc_dai: unsupported DAI format 0x%x\n",
+-			ssc_p->daifmt);
++		dev_warn(dai->dev, "unsupported DAI format 0x%x\n",
++			 ssc_p->daifmt);
+ 		return -EINVAL;
+ 	}
+-	pr_debug("atmel_ssc_hw_params: "
+-			"RCMR=%08x RFMR=%08x TCMR=%08x TFMR=%08x\n",
+-			rcmr, rfmr, tcmr, tfmr);
++	dev_dbg(dai->dev, "RCMR=%08x RFMR=%08x TCMR=%08x TFMR=%08x\n",
++		rcmr, rfmr, tcmr, tfmr);
+ 
+ 	if (!ssc_p->initialized) {
+ 		if (!ssc_p->ssc->pdata->use_dma) {
+@@ -818,9 +816,9 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 		ret = request_irq(ssc_p->ssc->irq, atmel_ssc_interrupt, 0,
+ 				ssc_p->name, ssc_p);
+ 		if (ret < 0) {
+-			printk(KERN_WARNING
+-					"atmel_ssc_dai: request_irq failure\n");
+-			pr_debug("Atmel_ssc_dai: Stoping clock\n");
++			dev_warn(dai->dev,
++				 "unable to request irq (%d), stopping clock\n",
++				 ret);
+ 			clk_disable(ssc_p->ssc->clk);
+ 			return ret;
+ 		}
+@@ -839,7 +837,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 	ssc_writel(ssc_p->ssc->regs, TCMR, tcmr);
+ 	ssc_writel(ssc_p->ssc->regs, TFMR, tfmr);
+ 
+-	pr_debug("atmel_ssc_dai,hw_params: SSC initialized\n");
++	dev_dbg(dai->dev, "SSC initialized\n");
+ 	return 0;
+ }
+ 
+@@ -862,9 +860,9 @@ static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
+ 	ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_disable);
+ 	ssc_writel(ssc_p->ssc->regs, IDR, dma_params->mask->ssc_error);
+ 
+-	pr_debug("%s enabled SSC_SR=0x%08x\n",
+-			dir ? "receive" : "transmit",
+-			ssc_readl(ssc_p->ssc->regs, SR));
++	dev_dbg(dai->dev, "%s enabled SSC_SR=0x%08x\n",
++		dir ? "receive" : "transmit",
++		ssc_readl(ssc_p->ssc->regs, SR));
+ 	return 0;
+ }
+ 
+@@ -1050,21 +1048,15 @@ static void asoc_ssc_exit(struct device *dev)
+ int atmel_ssc_set_audio(int ssc_id)
+ {
+ 	struct ssc_device *ssc;
+-	int ret;
+ 
+ 	/* If we can grab the SSC briefly to parent the DAI device off it */
+ 	ssc = ssc_request(ssc_id);
+-	if (IS_ERR(ssc)) {
+-		pr_err("Unable to parent ASoC SSC DAI on SSC: %ld\n",
+-			PTR_ERR(ssc));
++	if (IS_ERR(ssc))
+ 		return PTR_ERR(ssc);
+-	} else {
+-		ssc_info[ssc_id].ssc = ssc;
+-	}
+ 
+-	ret = asoc_ssc_init(&ssc->pdev->dev);
++	ssc_info[ssc_id].ssc = ssc;
+ 
+-	return ret;
++	return asoc_ssc_init(&ssc->pdev->dev);
+ }
+ EXPORT_SYMBOL_GPL(atmel_ssc_set_audio);
+ 
+-- 
+2.17.0
