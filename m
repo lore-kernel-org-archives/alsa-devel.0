@@ -1,17 +1,25 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 1/3] ALSA: usb-audio: Refactor clock finder
-	helpers
-Date: Wed,  4 Apr 2018 07:36:19 +0200
-Message-ID: <20180404053621.32539-2-tiwai@suse.de>
-References: <20180404053621.32539-1-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: ALSA 1.1.6 release
+Date: Wed, 4 Apr 2018 09:06:12 +0200
+Message-ID: <38de9bc3-4cd2-b3a0-d4cb-8d0814bdafe2@perex.cz>
+References: <9727277c-ad3b-3a0f-2a60-8e26de5c0ce5@perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id DD94B267640
- for <alsa-devel@alsa-project.org>; Wed,  4 Apr 2018 07:36:23 +0200 (CEST)
-In-Reply-To: <20180404053621.32539-1-tiwai@suse.de>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2734A2675C8
+ for <alsa-devel@alsa-project.org>; Wed,  4 Apr 2018 09:06:14 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 00F2CA0042
+ for <alsa-devel@alsa-project.org>; Wed,  4 Apr 2018 09:06:13 +0200 (CEST)
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA
+ for <alsa-devel@alsa-project.org>; Wed,  4 Apr 2018 09:06:12 +0200 (CEST)
+In-Reply-To: <9727277c-ad3b-3a0f-2a60-8e26de5c0ce5@perex.cz>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,187 +29,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Andrew Chant <achant@google.com>, Ruslan Bilovol <ruslan.bilovol@gmail.com>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-There are lots of open-coded functions to find a clock source,
-selector and multiplier.  Now there are both v2 and v3, so six
-variants.
+Hello all,
 
-This patch refactors the code to use a common helper for the main
-loop, and define each validator function for each target.
-There is no functional change.
+  all userspace packages were released. You may download them from the
+ALSA website http://www.alsa-project.org or directly from the FTP server
+ftp://ftp.alsa-project.org/pub .
 
-Fixes: 9a2fe9b801f5 ("ALSA: usb: initial USB Audio Device Class 3.0 support")
-Reviewed-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/clock.c | 127 +++++++++++++++++++++++-------------------------------
- 1 file changed, 53 insertions(+), 74 deletions(-)
+Full list of changes:
 
-diff --git a/sound/usb/clock.c b/sound/usb/clock.c
-index ab39ccb974c6..27c2275a2505 100644
---- a/sound/usb/clock.c
-+++ b/sound/usb/clock.c
-@@ -35,105 +35,84 @@
- #include "clock.h"
- #include "quirks.h"
- 
--static struct uac_clock_source_descriptor *
--	snd_usb_find_clock_source(struct usb_host_interface *ctrl_iface,
--				  int clock_id)
-+static void *find_uac_clock_desc(struct usb_host_interface *iface, int id,
-+				 bool (*validator)(void *, int), u8 type)
- {
--	struct uac_clock_source_descriptor *cs = NULL;
-+	void *cs = NULL;
- 
--	while ((cs = snd_usb_find_csint_desc(ctrl_iface->extra,
--					     ctrl_iface->extralen,
--					     cs, UAC2_CLOCK_SOURCE))) {
--		if (cs->bLength >= sizeof(*cs) && cs->bClockID == clock_id)
-+	while ((cs = snd_usb_find_csint_desc(iface->extra, iface->extralen,
-+					     cs, type))) {
-+		if (validator(cs, id))
- 			return cs;
- 	}
- 
- 	return NULL;
- }
- 
--static struct uac3_clock_source_descriptor *
--	snd_usb_find_clock_source_v3(struct usb_host_interface *ctrl_iface,
--				  int clock_id)
-+static bool validate_clock_source_v2(void *p, int id)
- {
--	struct uac3_clock_source_descriptor *cs = NULL;
--
--	while ((cs = snd_usb_find_csint_desc(ctrl_iface->extra,
--					     ctrl_iface->extralen,
--					     cs, UAC3_CLOCK_SOURCE))) {
--		if (cs->bClockID == clock_id)
--			return cs;
--	}
--
--	return NULL;
-+	struct uac_clock_source_descriptor *cs = p;
-+	return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
- }
- 
--static struct uac_clock_selector_descriptor *
--	snd_usb_find_clock_selector(struct usb_host_interface *ctrl_iface,
--				    int clock_id)
-+static bool validate_clock_source_v3(void *p, int id)
- {
--	struct uac_clock_selector_descriptor *cs = NULL;
--
--	while ((cs = snd_usb_find_csint_desc(ctrl_iface->extra,
--					     ctrl_iface->extralen,
--					     cs, UAC2_CLOCK_SELECTOR))) {
--		if (cs->bLength >= sizeof(*cs) && cs->bClockID == clock_id) {
--			if (cs->bLength < 5 + cs->bNrInPins)
--				return NULL;
--			return cs;
--		}
--	}
--
--	return NULL;
-+	struct uac3_clock_source_descriptor *cs = p;
-+	return cs->bClockID == id;
- }
- 
--static struct uac3_clock_selector_descriptor *
--	snd_usb_find_clock_selector_v3(struct usb_host_interface *ctrl_iface,
--				    int clock_id)
-+static bool validate_clock_selector_v2(void *p, int id)
- {
--	struct uac3_clock_selector_descriptor *cs = NULL;
--
--	while ((cs = snd_usb_find_csint_desc(ctrl_iface->extra,
--					     ctrl_iface->extralen,
--					     cs, UAC3_CLOCK_SELECTOR))) {
--		if (cs->bClockID == clock_id)
--			return cs;
--	}
--
--	return NULL;
-+	struct uac_clock_selector_descriptor *cs = p;
-+	return cs->bLength >= sizeof(*cs) && cs->bClockID == id &&
-+		cs->bLength >= 5 + cs->bNrInPins;
- }
- 
--static struct uac_clock_multiplier_descriptor *
--	snd_usb_find_clock_multiplier(struct usb_host_interface *ctrl_iface,
--				      int clock_id)
-+static bool validate_clock_selector_v3(void *p, int id)
- {
--	struct uac_clock_multiplier_descriptor *cs = NULL;
--
--	while ((cs = snd_usb_find_csint_desc(ctrl_iface->extra,
--					     ctrl_iface->extralen,
--					     cs, UAC2_CLOCK_MULTIPLIER))) {
--		if (cs->bLength >= sizeof(*cs) && cs->bClockID == clock_id)
--			return cs;
--	}
--
--	return NULL;
-+	struct uac3_clock_selector_descriptor *cs = p;
-+	return cs->bClockID == id;
- }
- 
--static struct uac3_clock_multiplier_descriptor *
--	snd_usb_find_clock_multiplier_v3(struct usb_host_interface *ctrl_iface,
--				      int clock_id)
-+static bool validate_clock_multiplier_v2(void *p, int id)
- {
--	struct uac3_clock_multiplier_descriptor *cs = NULL;
-+	struct uac_clock_multiplier_descriptor *cs = p;
-+	return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
-+}
- 
--	while ((cs = snd_usb_find_csint_desc(ctrl_iface->extra,
--					     ctrl_iface->extralen,
--					     cs, UAC3_CLOCK_MULTIPLIER))) {
--		if (cs->bClockID == clock_id)
--			return cs;
--	}
-+static bool validate_clock_multiplier_v3(void *p, int id)
-+{
-+	struct uac3_clock_multiplier_descriptor *cs = p;
-+	return cs->bClockID == id;
-+}
- 
--	return NULL;
-+#define DEFINE_FIND_HELPER(name, obj, validator, type)		\
-+static obj *name(struct usb_host_interface *iface, int id)	\
-+{								\
-+	return find_uac_clock_desc(iface, id, validator, type);	\
- }
- 
-+DEFINE_FIND_HELPER(snd_usb_find_clock_source,
-+		   struct uac_clock_source_descriptor,
-+		   validate_clock_source_v2, UAC2_CLOCK_SOURCE);
-+DEFINE_FIND_HELPER(snd_usb_find_clock_source_v3,
-+		   struct uac3_clock_source_descriptor,
-+		   validate_clock_source_v3, UAC3_CLOCK_SOURCE);
-+
-+DEFINE_FIND_HELPER(snd_usb_find_clock_selector,
-+		   struct uac_clock_selector_descriptor,
-+		   validate_clock_selector_v2, UAC2_CLOCK_SELECTOR);
-+DEFINE_FIND_HELPER(snd_usb_find_clock_selector_v3,
-+		   struct uac3_clock_selector_descriptor,
-+		   validate_clock_selector_v3, UAC3_CLOCK_SELECTOR);
-+
-+DEFINE_FIND_HELPER(snd_usb_find_clock_multiplier,
-+		   struct uac_clock_multiplier_descriptor,
-+		   validate_clock_multiplier_v2, UAC2_CLOCK_MULTIPLIER);
-+DEFINE_FIND_HELPER(snd_usb_find_clock_multiplier_v3,
-+		   struct uac3_clock_multiplier_descriptor,
-+		   validate_clock_multiplier_v3, UAC3_CLOCK_MULTIPLIER);
-+
- static int uac_clock_selector_get_val(struct snd_usb_audio *chip, int selector_id)
- {
- 	unsigned char buf;
+  http://www.alsa-project.org/main/index.php/Changes_v1.1.5_v1.1.6
+
+				Have fun,
+					Jaroslav
+
 -- 
-2.16.2
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
