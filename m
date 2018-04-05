@@ -1,11 +1,21 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: SOF 1.1 Release
-Date: Thu, 05 Apr 2018 10:42:42 +0100
-Message-ID: <1522921362.1923.958.camel@linux.intel.com>
+From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: Re: [PATCH v2 2/3] ALSA: usb-audio: More strict sanity
+ checks for clock parsers
+Date: Thu, 5 Apr 2018 14:16:09 +0300
+Message-ID: <CAB=otbSRK1=vkwEV86ZbXvEVLD_D2Z2ErDvGMArJ9imsfDuf-w@mail.gmail.com>
+References: <20180404053621.32539-1-tiwai@suse.de>
+ <20180404053621.32539-3-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ot0-f195.google.com (mail-ot0-f195.google.com
+ [74.125.82.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id B93102675C8
+ for <alsa-devel@alsa-project.org>; Thu,  5 Apr 2018 13:16:11 +0200 (CEST)
+Received: by mail-ot0-f195.google.com with SMTP id p33-v6so20457875otp.11
+ for <alsa-devel@alsa-project.org>; Thu, 05 Apr 2018 04:16:11 -0700 (PDT)
+In-Reply-To: <20180404053621.32539-3-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -15,36 +25,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "sound-open-firmware@alsa-project.org" <sound-open-firmware@alsa-project.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Andrew Chant <achant@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-Sound Open Firmware 1.1 has now been released and available here :-
+Hi Takashi,
 
-git://git.alsa-project.org/sound-open-firmware.git
+On Wed, Apr 4, 2018 at 8:36 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> The sanity checks introduced for malformed descriptors loosely check
+> the given descriptor size, although the size greater than the defined
+> description is invalid.  It was due to a concern of any funky firmware
+> in the actual products.  But this doesn't look hitting, and any sane
+> products must have the defined descriptors.
+>
+> So in this patch, we make the validators more strict, allowing only
+> with the defined descriptor sizes.
+>
+> Suggested-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/usb/clock.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+> index 27c2275a2505..5e533edfb092 100644
+> --- a/sound/usb/clock.c
+> +++ b/sound/usb/clock.c
+> @@ -52,7 +52,7 @@ static void *find_uac_clock_desc(struct usb_host_interface *iface, int id,
+>  static bool validate_clock_source_v2(void *p, int id)
+>  {
+>         struct uac_clock_source_descriptor *cs = p;
+> -       return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
+> +       return cs->bLength == sizeof(*cs) && cs->bClockID == id;
 
-git://git.alsa-project.org/sound-open-firmware-tools.git
+This one looks good
+
+>  }
+>
+>  static bool validate_clock_source_v3(void *p, int id)
+> @@ -64,8 +64,8 @@ static bool validate_clock_source_v3(void *p, int id)
+>  static bool validate_clock_selector_v2(void *p, int id)
+>  {
+>         struct uac_clock_selector_descriptor *cs = p;
+> -       return cs->bLength >= sizeof(*cs) && cs->bClockID == id &&
+> -               cs->bLength >= 5 + cs->bNrInPins;
+> +       return cs->bLength == sizeof(*cs) && cs->bClockID == id &&
+> +               cs->bLength == 5 + cs->bNrInPins;
+
+This one is wrong. uac_clock_selector_descriptor is of variable size, so
+original first bLength check was correct, but last one can be more strict.
+However, as per UAC2 spec, bLength should be "7 + bNrInPins", so
+finally we shoud have here something like this:
+
+       return cs->bLength >= sizeof(*cs) && cs->bClockID == id &&
+               cs->bLength == 7 + cs->bNrInPins;
 
 
-Significant changes since 1.0 :-
+>  }
+>
+>  static bool validate_clock_selector_v3(void *p, int id)
+> @@ -77,7 +77,7 @@ static bool validate_clock_selector_v3(void *p, int id)
+>  static bool validate_clock_multiplier_v2(void *p, int id)
+>  {
+>         struct uac_clock_multiplier_descriptor *cs = p;
+> -       return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
+> +       return cs->bLength == sizeof(*cs) && cs->bClockID == id;
 
- o  Support for Playback/Capture on Intel Apollolake and Cannonlake platforms.
- o  Initial support for Intel Haswell and Broadwell platforms.
- o  Support for DMA based firmware tracing to host userspace.
- o  SIMD optimisations for SRC on xtensa ISA.
- o  Initial support for running firmware components on host.
+This one looks good too
 
-
-Plans for 1.2 :-
-
- o  Playback/Capture on Haswell/Broadwell.
- o  SIMD optimisations for volume and mixer.
- o  Improved host based component testing.
- o  Initial runtime module support.
-
-SOF Linux driver dependencies for ALSA/ASoC have also started to upstream.
-Driver patches will continue to flow in anticipation for base SOF driver in
-4.18.
-
-Thanks
-
-Liam 
+Thanks,
+Ruslan
