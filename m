@@ -1,36 +1,81 @@
-From: Sasha Levin <Alexander.Levin@microsoft.com>
-Subject: Re: Re: KASAN: use-after-free Read in snd_pcm_timer_resolution
-Date: Thu, 5 Apr 2018 16:42:41 +0000
-Message-ID: <DM5PR2101MB10326C8216F954D62A720FEAFBBB0@DM5PR2101MB1032.namprd21.prod.outlook.com>
-References: <s5ha7ul2u9l.wl-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH v2 00/13] soundwire: Add stream support
+Date: Thu,  5 Apr 2018 22:18:11 +0530
+Message-ID: <1522946904-2089-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <s5ha7ul2u9l.wl-tiwai@suse.de>
-Content-Language: en-US
-Sender: stable-owner@vger.kernel.org
-To: Sasha Levin <Alexander.Levin@microsoft.com>, Takashi Iwai <tiwai@suse.de>Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "colin.king@canonical.com" <colin.king@canonical.com>, "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>, "stable@vger.kernel.org" <stable@vger.kernel.org>"stable@vger.kernel.org" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id E02F226764E
+ for <alsa-devel@alsa-project.org>; Thu,  5 Apr 2018 18:44:04 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi.
+This series adds support in SoundWire subsystem for:
+ - Documentation for stream support
+ - stream management
+ - data port management
+ - DAI ops in cadence and Intel drivers
+ - ASoC API to propagate SDW stream
 
-[This is an automated email]
+Updates in v2:
+  - Make ASoC API inlined
+  - Make stream states as states and not action
+  - Update the direction enum
+  - Fix some typos and comment updates
 
-This commit has been processed because it contains a -stable tag.
-The stable tag indicates that it's relevant for the following trees: all
+Sanyog Kale (7):
+  soundwire: Add more documentation
+  soundwire: Add support for SoundWire stream management
+  soundwire: Add support for port management
+  soundwire: Add Master and Slave port programming
+  soundwire: Add helpers for ports operations
+  soundwire: Add bank switch routine
+  soundwire: Add stream configuration APIs
 
-The bot has also determined it's probably a bug fixing patch. (score: 98.81=
-13)
+Shreyas NC (2):
+  ASoC: Add SoundWire stream programming interface
+  soundwire: Remove cdns_master_ops
 
-The bot has tested the following trees: v4.15.15, v4.14.32, v4.9.92, v4.4.1=
-26,=20
+Vinod Koul (4):
+  soundwire: cdns: Add port routines
+  soundwire: cdns: Add stream routines
+  soundwire: intel: Add stream initialization
+  soundwire: intel: Add audio DAI ops
 
-v4.15.15: Build OK!
-v4.14.32: Build OK!
-v4.9.92: Build OK!
-v4.4.126: Build OK!
+ .../driver-api/soundwire/error_handling.rst        |   65 +
+ Documentation/driver-api/soundwire/index.rst       |    3 +
+ Documentation/driver-api/soundwire/locking.rst     |  106 ++
+ Documentation/driver-api/soundwire/stream.rst      |  368 +++++
+ drivers/soundwire/Kconfig                          |    2 +-
+ drivers/soundwire/Makefile                         |    2 +-
+ drivers/soundwire/bus.c                            |   43 +
+ drivers/soundwire/bus.h                            |   72 +
+ drivers/soundwire/cadence_master.c                 |  449 +++++-
+ drivers/soundwire/cadence_master.h                 |  151 ++
+ drivers/soundwire/intel.c                          |  528 ++++++-
+ drivers/soundwire/intel.h                          |    4 +
+ drivers/soundwire/intel_init.c                     |    3 +
+ drivers/soundwire/stream.c                         | 1549 ++++++++++++++++++++
+ include/linux/soundwire/sdw.h                      |  332 ++++-
+ include/linux/soundwire/sdw_intel.h                |   14 +
+ include/sound/soc-dai.h                            |   21 +
+ 17 files changed, 3698 insertions(+), 14 deletions(-)
+ create mode 100644 Documentation/driver-api/soundwire/error_handling.rst
+ create mode 100644 Documentation/driver-api/soundwire/locking.rst
+ create mode 100644 Documentation/driver-api/soundwire/stream.rst
+ create mode 100644 drivers/soundwire/stream.c
 
-Please let us know if you'd like to have this patch included in a stable tr=
-ee.
+-- 
+2.7.4
