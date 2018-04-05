@@ -1,52 +1,50 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 14/15] ARM: pxa: change SSP devices allocation
-Date: Thu, 5 Apr 2018 09:29:30 +0200
-Message-ID: <CAK8P3a0xJnVfXfUtP+JXGNgc2-LuHUmZCMq-SnEQw3wu3azemA@mail.gmail.com>
-References: <20180402142656.26815-1-robert.jarzmik@free.fr>
- <20180402142656.26815-15-robert.jarzmik@free.fr> <CAK8P3a2hYWO2eweg3zpR7iJoqtH4uxJLAxJAno7L96G7nA2HxQ@mail.gmail.com>
- <87lge4485x.fsf@belgarion.home> <CAK8P3a1ko=YEwR2VOahH0OWHfeOyWAzDYah4DSohBcvTNq_MKQ@mail.gmail.com>
- <87zi2i2ljy.fsf@belgarion.home>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: SOF 1.1 Release
+Date: Thu, 05 Apr 2018 10:42:42 +0100
+Message-ID: <1522921362.1923.958.camel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87zi2i2ljy.fsf@belgarion.home>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "sound-open-firmware@alsa-project.org" <sound-open-firmware@alsa-project.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 5, 2018 at 8:51 AM, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
-> Arnd Bergmann <arnd@arndb.de> writes:
->
->> I'm still unable to follow through that code, but I understand now that
->> the device you pass to dma_request_slave_channel() is not the one
->> we'd like it to be here.
->>
->> Where exactly does that call to dma_request_chan() happen? Is this
->> the one in dmaengine_pcm_new()? Could we perhaps put a
->> pointer to the SSP device into snd_dmaengine_dai_dma_data?
-> This is a sample stack I captured with an added WARN_ON(1), triggered by a
-> userland "aplay Sultans_Of_Swing.wav" :)
->
-> [  299.216743] [<c0012e80>] (unwind_backtrace) from [<c000f55c>] (show_stack+0x20/0x24)
-> [  299.223986] [<c000f55c>] (show_stack) from [<c0529d68>] (dump_stack+0x20/0x28)
-> [  299.231321] [<c0529d68>] (dump_stack) from [<c001de34>] (__warn+0xf0/0x11c)
-> [  299.238183] [<c001de34>] (__warn) from [<c001df94>] (warn_slowpath_null+0x4c/0x58)
-> [  299.245234] [<c001df94>] (warn_slowpath_null) from [<c02a2d38>] (dma_request_chan+0x40/0x228)
-> [  299.252550] [<c02a2d38>] (dma_request_chan) from [<c02a2f38>] (dma_request_slave_channel+0x18/0x24)
-> [  299.259855] [<c02a2f38>] (dma_request_slave_channel) from [<c03f76f0>] (__pxa2xx_pcm_open+0xf4/0x110)
-> [  299.266789] [<c03f76f0>] (__pxa2xx_pcm_open) from [<c0409ed0>] (soc_pcm_open+0xf8/0x9c8)
-> [  299.273932] [<c0409ed0>] (soc_pcm_open) from [<c03db9d4>] (snd_pcm_open_substream+0x9c/0x134)
+Sound Open Firmware 1.1 has now been released and available here :-
 
-Ok, so it seems we currently have a special case here that is only used by
-pxa/mmp and omap, and you can simply open-code that by calling
-dma_request_chan() from the pxa-specific __pxa2xx_pcm_open()
-with any device pointer you like, it doesn't have to be the main audio
-device.
+git://git.alsa-project.org/sound-open-firmware.git
 
-I don't know exactly how the probing works, but I'd assume that we have
-the correct device pointers in pxa2xx_ac97_dev_probe() and
-asoc_ssp_probe(), or maybe in pxa2xx_ac97_*_startup() and
-pxa_ssp_startup().
+git://git.alsa-project.org/sound-open-firmware-tools.git
 
-      Arnd
+
+Significant changes since 1.0 :-
+
+ o  Support for Playback/Capture on Intel Apollolake and Cannonlake platforms.
+ o  Initial support for Intel Haswell and Broadwell platforms.
+ o  Support for DMA based firmware tracing to host userspace.
+ o  SIMD optimisations for SRC on xtensa ISA.
+ o  Initial support for running firmware components on host.
+
+
+Plans for 1.2 :-
+
+ o  Playback/Capture on Haswell/Broadwell.
+ o  SIMD optimisations for volume and mixer.
+ o  Improved host based component testing.
+ o  Initial runtime module support.
+
+SOF Linux driver dependencies for ALSA/ASoC have also started to upstream.
+Driver patches will continue to flow in anticipation for base SOF driver in
+4.18.
+
+Thanks
+
+Liam 
