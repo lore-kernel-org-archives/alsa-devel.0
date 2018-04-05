@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v3 2/3] ALSA: usb-audio: More strict sanity
-	checks for clock parsers
-Date: Thu,  5 Apr 2018 14:11:12 +0200
-Message-ID: <20180405121113.551-3-tiwai@suse.de>
+Subject: [PATCH v3 1/3] ALSA: usb-audio: Refactor clock finder
+	helpers
+Date: Thu,  5 Apr 2018 14:11:11 +0200
+Message-ID: <20180405121113.551-2-tiwai@suse.de>
 References: <20180405121113.551-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A1B6726764A
+ by alsa0.perex.cz (Postfix) with ESMTP id A3FEC26764E
  for <alsa-devel@alsa-project.org>; Thu,  5 Apr 2018 14:11:15 +0200 (CEST)
 In-Reply-To: <20180405121113.551-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,51 +25,183 @@ To: alsa-devel@alsa-project.org
 Cc: Andrew Chant <achant@google.com>, Ruslan Bilovol <ruslan.bilovol@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The sanity checks introduced for malformed descriptors loosely check
-the given descriptor size, although the size greater than the defined
-description is invalid.  It was due to a concern of any funky firmware
-in the actual products.  But this doesn't look hitting, and any sane
-products must have the defined descriptors.
+There are lots of open-coded functions to find a clock source,
+selector and multiplier.  Now there are both v2 and v3, so six
+variants.
 
-So in this patch, we make the validators more strict, allowing only
-with the defined descriptor sizes.
+This patch refactors the code to use a common helper for the main
+loop, and define each validator function for each target.
+There is no functional change.
 
-Suggested-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Fixes: 9a2fe9b801f5 ("ALSA: usb: initial USB Audio Device Class 3.0 support")
+Reviewed-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/clock.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/usb/clock.c | 127 +++++++++++++++++++++++-------------------------------
+ 1 file changed, 53 insertions(+), 74 deletions(-)
 
 diff --git a/sound/usb/clock.c b/sound/usb/clock.c
-index 27c2275a2505..cbf68ab01836 100644
+index ab39ccb974c6..27c2275a2505 100644
 --- a/sound/usb/clock.c
 +++ b/sound/usb/clock.c
-@@ -52,7 +52,7 @@ static void *find_uac_clock_desc(struct usb_host_interface *iface, int id,
- static bool validate_clock_source_v2(void *p, int id)
+@@ -35,105 +35,84 @@
+ #include "clock.h"
+ #include "quirks.h"
+ 
+-static struct uac_clock_source_descriptor *
+-	snd_usb_find_clock_source(struct usb_host_interface *ctrl_iface,
+-				  int clock_id)
++static void *find_uac_clock_desc(struct usb_host_interface *iface, int id,
++				 bool (*validator)(void *, int), u8 type)
  {
- 	struct uac_clock_source_descriptor *cs = p;
--	return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
-+	return cs->bLength == sizeof(*cs) && cs->bClockID == id;
+-	struct uac_clock_source_descriptor *cs = NULL;
++	void *cs = NULL;
+ 
+-	while ((cs = snd_usb_find_csint_desc(ctrl_iface->extra,
+-					     ctrl_iface->extralen,
+-					     cs, UAC2_CLOCK_SOURCE))) {
+-		if (cs->bLength >= sizeof(*cs) && cs->bClockID == clock_id)
++	while ((cs = snd_usb_find_csint_desc(iface->extra, iface->extralen,
++					     cs, type))) {
++		if (validator(cs, id))
+ 			return cs;
+ 	}
+ 
+ 	return NULL;
  }
  
- static bool validate_clock_source_v3(void *p, int id)
-@@ -65,7 +65,7 @@ static bool validate_clock_selector_v2(void *p, int id)
+-static struct uac3_clock_source_descriptor *
+-	snd_usb_find_clock_source_v3(struct usb_host_interface *ctrl_iface,
+-				  int clock_id)
++static bool validate_clock_source_v2(void *p, int id)
  {
- 	struct uac_clock_selector_descriptor *cs = p;
- 	return cs->bLength >= sizeof(*cs) && cs->bClockID == id &&
--		cs->bLength >= 5 + cs->bNrInPins;
-+		cs->bLength == 5 + cs->bNrInPins;
+-	struct uac3_clock_source_descriptor *cs = NULL;
+-
+-	while ((cs = snd_usb_find_csint_desc(ctrl_iface->extra,
+-					     ctrl_iface->extralen,
+-					     cs, UAC3_CLOCK_SOURCE))) {
+-		if (cs->bClockID == clock_id)
+-			return cs;
+-	}
+-
+-	return NULL;
++	struct uac_clock_source_descriptor *cs = p;
++	return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
  }
  
- static bool validate_clock_selector_v3(void *p, int id)
-@@ -77,7 +77,7 @@ static bool validate_clock_selector_v3(void *p, int id)
- static bool validate_clock_multiplier_v2(void *p, int id)
+-static struct uac_clock_selector_descriptor *
+-	snd_usb_find_clock_selector(struct usb_host_interface *ctrl_iface,
+-				    int clock_id)
++static bool validate_clock_source_v3(void *p, int id)
  {
- 	struct uac_clock_multiplier_descriptor *cs = p;
--	return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
-+	return cs->bLength == sizeof(*cs) && cs->bClockID == id;
+-	struct uac_clock_selector_descriptor *cs = NULL;
+-
+-	while ((cs = snd_usb_find_csint_desc(ctrl_iface->extra,
+-					     ctrl_iface->extralen,
+-					     cs, UAC2_CLOCK_SELECTOR))) {
+-		if (cs->bLength >= sizeof(*cs) && cs->bClockID == clock_id) {
+-			if (cs->bLength < 5 + cs->bNrInPins)
+-				return NULL;
+-			return cs;
+-		}
+-	}
+-
+-	return NULL;
++	struct uac3_clock_source_descriptor *cs = p;
++	return cs->bClockID == id;
  }
  
- static bool validate_clock_multiplier_v3(void *p, int id)
+-static struct uac3_clock_selector_descriptor *
+-	snd_usb_find_clock_selector_v3(struct usb_host_interface *ctrl_iface,
+-				    int clock_id)
++static bool validate_clock_selector_v2(void *p, int id)
+ {
+-	struct uac3_clock_selector_descriptor *cs = NULL;
+-
+-	while ((cs = snd_usb_find_csint_desc(ctrl_iface->extra,
+-					     ctrl_iface->extralen,
+-					     cs, UAC3_CLOCK_SELECTOR))) {
+-		if (cs->bClockID == clock_id)
+-			return cs;
+-	}
+-
+-	return NULL;
++	struct uac_clock_selector_descriptor *cs = p;
++	return cs->bLength >= sizeof(*cs) && cs->bClockID == id &&
++		cs->bLength >= 5 + cs->bNrInPins;
+ }
+ 
+-static struct uac_clock_multiplier_descriptor *
+-	snd_usb_find_clock_multiplier(struct usb_host_interface *ctrl_iface,
+-				      int clock_id)
++static bool validate_clock_selector_v3(void *p, int id)
+ {
+-	struct uac_clock_multiplier_descriptor *cs = NULL;
+-
+-	while ((cs = snd_usb_find_csint_desc(ctrl_iface->extra,
+-					     ctrl_iface->extralen,
+-					     cs, UAC2_CLOCK_MULTIPLIER))) {
+-		if (cs->bLength >= sizeof(*cs) && cs->bClockID == clock_id)
+-			return cs;
+-	}
+-
+-	return NULL;
++	struct uac3_clock_selector_descriptor *cs = p;
++	return cs->bClockID == id;
+ }
+ 
+-static struct uac3_clock_multiplier_descriptor *
+-	snd_usb_find_clock_multiplier_v3(struct usb_host_interface *ctrl_iface,
+-				      int clock_id)
++static bool validate_clock_multiplier_v2(void *p, int id)
+ {
+-	struct uac3_clock_multiplier_descriptor *cs = NULL;
++	struct uac_clock_multiplier_descriptor *cs = p;
++	return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
++}
+ 
+-	while ((cs = snd_usb_find_csint_desc(ctrl_iface->extra,
+-					     ctrl_iface->extralen,
+-					     cs, UAC3_CLOCK_MULTIPLIER))) {
+-		if (cs->bClockID == clock_id)
+-			return cs;
+-	}
++static bool validate_clock_multiplier_v3(void *p, int id)
++{
++	struct uac3_clock_multiplier_descriptor *cs = p;
++	return cs->bClockID == id;
++}
+ 
+-	return NULL;
++#define DEFINE_FIND_HELPER(name, obj, validator, type)		\
++static obj *name(struct usb_host_interface *iface, int id)	\
++{								\
++	return find_uac_clock_desc(iface, id, validator, type);	\
+ }
+ 
++DEFINE_FIND_HELPER(snd_usb_find_clock_source,
++		   struct uac_clock_source_descriptor,
++		   validate_clock_source_v2, UAC2_CLOCK_SOURCE);
++DEFINE_FIND_HELPER(snd_usb_find_clock_source_v3,
++		   struct uac3_clock_source_descriptor,
++		   validate_clock_source_v3, UAC3_CLOCK_SOURCE);
++
++DEFINE_FIND_HELPER(snd_usb_find_clock_selector,
++		   struct uac_clock_selector_descriptor,
++		   validate_clock_selector_v2, UAC2_CLOCK_SELECTOR);
++DEFINE_FIND_HELPER(snd_usb_find_clock_selector_v3,
++		   struct uac3_clock_selector_descriptor,
++		   validate_clock_selector_v3, UAC3_CLOCK_SELECTOR);
++
++DEFINE_FIND_HELPER(snd_usb_find_clock_multiplier,
++		   struct uac_clock_multiplier_descriptor,
++		   validate_clock_multiplier_v2, UAC2_CLOCK_MULTIPLIER);
++DEFINE_FIND_HELPER(snd_usb_find_clock_multiplier_v3,
++		   struct uac3_clock_multiplier_descriptor,
++		   validate_clock_multiplier_v3, UAC3_CLOCK_MULTIPLIER);
++
+ static int uac_clock_selector_get_val(struct snd_usb_audio *chip, int selector_id)
+ {
+ 	unsigned char buf;
 -- 
 2.16.2
