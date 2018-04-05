@@ -1,53 +1,96 @@
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH 00/15] ARM: pxa: switch to DMA slave maps
-Date: Thu, 5 Apr 2018 08:29:53 +0200
-Message-ID: <CAPDyKFoFz_HgYPOMGuOTpehrTR3DtWE3uZbcnVwUwVhDy02Mow@mail.gmail.com>
-References: <20180402142656.26815-1-robert.jarzmik@free.fr>
- <CAPDyKFot9dAST2jQL5s8E4U=bCHxkio=uwpqPd6S0N4FWJRB-w@mail.gmail.com>
- <874lkq4urd.fsf@belgarion.home> <20180404215623.2bf07406@bbrezillon>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 08/13] ASoC: Add SoundWire stream
+	programming interface
+Date: Thu, 5 Apr 2018 12:08:33 +0530
+Message-ID: <20180405063832.GA6014@localhost>
+References: <1522229918-4748-1-git-send-email-vinod.koul@intel.com>
+ <1522229918-4748-9-git-send-email-vinod.koul@intel.com>
+ <355ca9b5-d6c4-9423-8cf6-a1c73fbdc695@sakamocchi.jp>
+ <20180330060325.GA9729@kroah.com>
+ <f8f97f3a-3447-5d6d-eeb6-9140ce299e06@sakamocchi.jp>
+ <s5hr2nwijk5.wl-tiwai@suse.de>
+ <25fffedb-4dea-e688-4005-b4ca8647d305@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
-In-Reply-To: <20180404215623.2bf07406@bbrezillon>
-List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
-List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
-List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
-List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
-List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
-Errors-To: driverdev-devel-bounces@linuxdriverproject.org
-Sender: "devel" <driverdev-devel-bounces@linuxdriverproject.org>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, linux-ide@vger.kernel.org, netdev@vger.kernel.org, linux-mtd@lists.infradead.org, Robert Jarzmik <robert.jarzmik@free.fr>, driverdevel <devel@driverdev.osuosl.org>, Boris Brezillon <boris.brezillon@free-electrons.com>, Vinod Koul <vinod.koul@intel.com>, Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, linux-media@vger.kernel.org, Samuel Ortiz <samuel@sortiz.org>, Arnd Bergmann <arnd@arndb.de>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, dmaengine@vger.kernel.org, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Mauro Carvalho Chehab <mchehab@kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, Nicolas Pitre <nico@fluxnic.net>, Greg Kroah-Hartman <gregk>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id B31D7267660
+ for <alsa-devel@alsa-project.org>; Thu,  5 Apr 2018 08:34:14 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <25fffedb-4dea-e688-4005-b4ca8647d305@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: ALSA <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Greg KH <gregkh@linuxfoundation.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 4 April 2018 at 21:56, Boris Brezillon <boris.brezillon@bootlin.com> wrote:
-> On Wed, 04 Apr 2018 21:49:26 +0200
-> Robert Jarzmik <robert.jarzmik@free.fr> wrote:
->
->> Ulf Hansson <ulf.hansson@linaro.org> writes:
->>
->> > On 2 April 2018 at 16:26, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
->> >> Hi,
->> >>
->> >> This serie is aimed at removing the dmaengine slave compat use, and transfer
->> >> knowledge of the DMA requestors into architecture code.
->> >> As this looks like a patch bomb, each maintainer expressing for his tree either
->> >> an Ack or "I want to take through my tree" will be spared in the next iterations
->> >> of this serie.
->> >
->> > Perhaps an option is to send this hole series as PR for 3.17 rc1, that
->> > would removed some churns and make this faster/easier? Well, if you
->> > receive the needed acks of course.
->> For 3.17-rc1 it looks a bit optimistic with the review time ... If I have all
->
-> Especially since 3.17-rc1 has been released more than 3 years ago :-),
-> but I guess you meant 4.17-rc1.
+On Thu, Apr 05, 2018 at 02:03:31PM +0900, Takashi Sakamoto wrote:
+> Hi,
+> 
+> On Apr 3 2018 21:03, Takashi Iwai wrote:
+> >>>>It's better for this kind of code to be incline function in any header. In
+> >>>>general, new symbols increase maintenance cost of binary of kernel-related
+> >>>>stuffs. It's preferable to avoid the addition if possible, IMO.
+> >>>
+> >>>I don't understand, functionally it's the same, there should not be any
+> >>>increased maintenance either way.  Please explain how this makes things
+> >>>"harder"?
+> >>
+> >>Hm, if so it might be my misunderstanding to reasons for typical usage
+> >>of inline functions in kernel source, sorry.
+> >>
+> >>In my understanding, exported symbols are put into some sections of
+> >>ELF binary. Addition of new symbols increases size of the
+> >>section. Additionally, after linking vmlinux, kbuild scans built-in
+> >>symbols and make a file with entries of them. The addition increases
+> >>time of this step. Furthermore, at the end of building kernel, kmod is
+> >>called to generate some map files for exported symbols in loadable
+> >>module. In a view of distributors, these files are maintained by
+> >>binary packages of any type carefully because some incompatibilities
+> >>can be delivered such as version mismatch.
+> >>
+> >>For these reasons, I think thing goes harder when people carelessly
+> >>add new symbols for functions with a few codes; e.g. accessing to a
+> >>member of structure, then simply check an return it. Actually I can
+> >>see some examples in upstreamed headers.
+> >
+> >The advantage of inline function isn't about the maintenance cost.
+> >It's mostly for performance, as well as the binary size reduction.
+> >
+> >Actually, when a kernel live-patching comes into play, an inline
+> >function is worse from the maintenance POV.  Then we'd have to patch
+> >every place that is expanded instead of a single place.
+> >
+> >However, this doesn't discourage the use of inline function, either.
+> 
+> I'm OK for this view, and let me add it to my criteria for my daily
+> reviewing work. Thanks for sharing the view.
 
-Yeah, I realize that I was a bit lost in time yesterday. Even more
-people have been having fun about it (me too). :-)
+For us the motivation to keep as proposed was prior art. Currently all of
+the snd_soc_dai_set_* APIs are doing similar functionally of setting
+something on DAIs and not inlined.
 
-Kind regards
-Uffe
+Said that I agree this can be inlined so we shall do so.
+
+> >Overall, the performance is still the most important factor for major
+> >cases.  So I agree with that this particular case can be well inlined,
+> >supposing that no complex code is planned to be added in future.
+> 
+> I agree with it as well. When developers add more complexity to content
+> of the inline function, then let them convert it to exported symbols.
+> 
+> 
+> Thanks
+> 
+> Takashi Sakamoto
+
+-- 
+~Vinod
