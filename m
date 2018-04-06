@@ -1,54 +1,75 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 11/13] soundwire: cdns: Add stream
- routines
-Date: Fri, 6 Apr 2018 14:27:43 +0530
-Message-ID: <20180406085742.GM6014@localhost>
-References: <1522946904-2089-1-git-send-email-vinod.koul@intel.com>
- <1522946904-2089-12-git-send-email-vinod.koul@intel.com>
- <03af620f-2961-32f0-99a2-dbf4e5bd0fd2@linux.intel.com>
+From: Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH v3 0/5] sndif: add explicit back and front
+ synchronization
+Date: Fri, 6 Apr 2018 11:13:53 +0200
+Message-ID: <22b14d78-701d-f5c6-0b0b-b95b28bfe19c@suse.com>
+References: <1521444144-12451-1-git-send-email-andr2000@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F0B0266E30
- for <alsa-devel@alsa-project.org>; Fri,  6 Apr 2018 10:53:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <03af620f-2961-32f0-99a2-dbf4e5bd0fd2@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <xen-devel-bounces@lists.xenproject.org>
+In-Reply-To: <1521444144-12451-1-git-send-email-andr2000@gmail.com>
+Content-Language: de-DE
+List-Unsubscribe: <https://lists.xenproject.org/mailman/options/xen-devel>,
+ <mailto:xen-devel-request@lists.xenproject.org?subject=unsubscribe>
+List-Post: <mailto:xen-devel@lists.xenproject.org>
+List-Help: <mailto:xen-devel-request@lists.xenproject.org?subject=help>
+List-Subscribe: <https://lists.xenproject.org/mailman/listinfo/xen-devel>,
+ <mailto:xen-devel-request@lists.xenproject.org?subject=subscribe>
+Errors-To: xen-devel-bounces@lists.xenproject.org
+Sender: "Xen-devel" <xen-devel-bounces@lists.xenproject.org>
+To: Oleksandr Andrushchenko <andr2000@gmail.com>, alsa-devel@alsa-project.org, xen-devel@lists.xenproject.org, konrad.wilk@oracle.com, tiwai@suse.de
+Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 05, 2018 at 07:29:11PM -0500, Pierre-Louis Bossart wrote:
-> On 4/5/18 11:48 AM, Vinod Koul wrote:
-
-> >+static int cdns_get_pdi(struct sdw_cdns *cdns,
-> >+		struct sdw_cdns_pdi *pdi,
-> >+		unsigned int num, u32 ch)
-> >+{
-> >+	int i, pdis = 0;
-> >+	u32 ch_count = ch;
-> 
-> redundant variable without added value...
-
-ok will remove
-
-> >+EXPORT_SYMBOL(sdw_cdns_alloc_stream);
-> 
-> can you clarify the difference between _get_pdi and _find_pdi and
-> alloc_stream/get_stream.
-> 
-> It's pretty confusing.
-
-Okay will add few notes and try to rename the functions.
--- 
-~Vinod
+T24gMTkvMDMvMTggMDg6MjIsIE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIHdyb3RlOgo+IEZyb206
+IE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIDxvbGVrc2FuZHJfYW5kcnVzaGNoZW5rb0BlcGFtLmNv
+bT4KPiAKPiBIZWxsbywgYWxsIQo+IAo+IEluIG9yZGVyIHRvIHByb3ZpZGUgZXhwbGljaXQgc3lu
+Y2hyb25pemF0aW9uIGJldHdlZW4gYmFja2VuZCBhbmQKPiBmcm9udGVuZCB0aGUgZm9sbG93aW5n
+IGNoYW5nZXMgYXJlIGludHJvZHVjZWQgaW4gdGhlIHByb3RvY29sOgo+ICAtIGJ1bXAgcHJvdG9j
+b2wgdmVyc2lvbiB0byAyCj4gIC0gYWRkIG5ldyByaW5nIGJ1ZmZlciBmb3Igc2VuZGluZyBhc3lu
+Y2hyb25vdXMgZXZlbnRzIGZyb20KPiAgICBiYWNrZW5kIHRvIGZyb250ZW5kIHRvIHJlcG9ydCBu
+dW1iZXIgb2YgYnl0ZXMgcGxheWVkIGJ5IHRoZQo+ICAgIGZyb250ZW5kIChYRU5TTkRfRVZUX0NV
+Ul9QT1MpCj4gIC0gaW50cm9kdWNlIHRyaWdnZXIgZXZlbnRzIGZvciBwbGF5YmFjayBjb250cm9s
+OiBzdGFydC9zdG9wL3BhdXNlL3Jlc3VtZQo+ICAtIGFkZCAicmVxLSIgcHJlZml4IHRvIGV2ZW50
+LWNoYW5uZWwgYW5kIHJpbmctcmVmIHRvIHVuaWZ5IG5hbWluZwo+ICAgIG9mIHRoZSBYZW4gZXZl
+bnQgY2hhbm5lbHMgZm9yIHJlcXVlc3RzIGFuZCBldmVudHMKPiAgLSBhZGQgWEVOU05EX09QX0hX
+X1BBUkFNX1FVRVJZIHJlcXVlc3QgdG8gcmVhZC91cGRhdGUKPiAgICBzdHJlYW0gY29uZmlndXJh
+dGlvbiBzcGFjZTogcmVxdWVzdCBwYXNzZXMgZGVzaXJlZCBpbnRlcnZhbHMvZm9ybWF0cyBmb3IK
+PiAgICB0aGUgc3RyZWFtIHBhcmFtZXRlcnMgYW5kIHRoZSByZXNwb25zZSByZXR1cm5zIGFsbG93
+ZWQgaW50ZXJ2YWxzIGFuZAo+ICAgIGZvcm1hdHMgbWFzayB0aGF0IGNhbiBiZSB1c2VkLgo+IAo+
+IENoYW5nZXMgc2luY2UgdjI6Cj4gMS4gS29ucmFkJ3Mgci1iIHRhZyBmb3IgdmVyc2lvbiBwYXRj
+aAo+IDIuIE1BSk9SOiBjaGFuZ2VkIHJlcS9yZXNwL2V2dCBwYWNrZXQgc2l6ZXMgZnJvbSAzMiB0
+byA2NCBvY3RldHMKPiAzLiBSZXdvcmtlZCBYRU5TTkRfT1BfSFdfUEFSQU1fUVVFUlkgc28gaXQg
+bm93IHNlbmRzIGFsbCAKPiAgICBwYXJhbWV0ZXJzIGF0IG9uY2UsIGFsbG93aW5nIHRvIGNoZWNr
+IGFsbCB0aGUgY29uZmlndXJhdGlvbgo+ICAgIHNwYWNlLgo+IDQuIE1pbm9yIGRvY3VtZW50YXRp
+b24gY2xlYW51cCAoYWRkZWQgbWlzc2VkICJyZXNlcnZlZCIgZmllbGRzKQo+IAo+IENoYW5nZXMg
+c2luY2UgdjE6Cj4gCj4gMS4gQ2hhbmdlZCBwcm90b2NvbCB2ZXJzaW9uIGRlZmluaXRpb24gZnJv
+bSBzdHJpbmcgdG8gaW50ZWdlciwKPiBzbyBpdCBjYW4gZWFzaWx5IGJlIHVzZWQgaW4gY29tcGFy
+aXNvbnMuCj4gS29ucmFkLCBJIGhhdmUgcmVtb3ZlZCB5b3VyIHItYiB0YWcgZm9yIHRoZSByZWFz
+b24gb2YgdGhpcyBjaGFuZ2UuCj4gCj4gMi4gSW4gb3JkZXIgdG8gcHJvdmlkZSBleHBsaWNpdCBz
+dHJlYW0gcGFyYW1ldGVyIG5lZ290aWF0aW9uIGJldHdlZW4KPiBiYWNrZW5kIGFuZCBmcm9udGVu
+ZCB0aGUgZm9sbG93aW5nIGNoYW5nZXMgYXJlIGludHJvZHVjZWQgaW4gdGhlIHByb3RvY29sOgo+
+IGFkZCBYRU5TTkRfT1BfSFdfUEFSQU1fUVVFUlkgcmVxdWVzdCB0byByZWFkL3VwZGF0ZQo+IGNv
+bmZpZ3VyYXRpb24gc3BhY2UgZm9yIHRoZSBwYXJhbWV0ZXIgZ2l2ZW46IHJlcXVlc3QgcGFzc2Vz
+Cj4gZGVzaXJlZCBwYXJhbWV0ZXIgaW50ZXJ2YWwgKG1hc2spIGFuZCB0aGUgcmVzcG9uc2UgdG8g
+dGhpcyByZXF1ZXN0Cj4gcmV0dXJucyBtaW4vbWF4IGludGVydmFsIChtYXNrKSBmb3IgdGhlIHBh
+cmFtZXRlciB0byBiZSB1c2VkLgo+IAo+IFBhcmFtZXRlcnMgc3VwcG9ydGVkIGJ5IHRoaXMgcmVx
+dWVzdC9yZXNwb25zZToKPiAgLSBmb3JtYXQgbWFzawo+ICAtIHNhbXBsZSByYXRlIGludGVydmFs
+Cj4gIC0gbnVtYmVyIG9mIGNoYW5uZWxzIGludGVydmFsCj4gIC0gYnVmZmVyIHNpemUsIGludGVy
+dmFsLCBmcmFtZXMKPiAgLSBwZXJpb2Qgc2l6ZSwgaW50ZXJ2YWwsIGZyYW1lcwo+IAo+IE9sZWtz
+YW5kciBBbmRydXNoY2hlbmtvICg1KToKPiAgIHNuZGlmOiBJbnRyb2R1Y2UgcHJvdG9jb2wgdmVy
+c2lvbgo+ICAgc25kaWY6IEZpeCBtaXNzZWQgInJlc2VydmVkIiBmaWVsZHMgaW4gY29tbWVudHMK
+PiAgIHNuZGlmOiBNYWtlIHJlcXVlc3RzIGFuZCByZXNwb25zZXMgNjQgb2N0ZXRzIGxvbmcKPiAg
+IHNuZGlmOiBBZGQgZXhwbGljaXQgYmFjayBhbmQgZnJvbnQgc3luY2hyb25pemF0aW9uCj4gICBz
+bmRpZjogQWRkIGV4cGxpY2l0IGJhY2sgYW5kIGZyb250IHBhcmFtZXRlciBuZWdvdGlhdGlvbgo+
+IAo+ICB4ZW4vaW5jbHVkZS9wdWJsaWMvaW8vc25kaWYuaCB8IDMyMiArKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKystLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDMwNiBpbnNlcnRp
+b25zKCspLCAxNiBkZWxldGlvbnMoLSkKPiAKCldpdGggS29ucmFkJ3MgYWNrIHlvdSBjYW4gaGF2
+ZSBteToKClJlbGVhc2UtYWNrZWQtYnk6IEp1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT4K
+CmV2ZW4gaWYgdGhlIGNvbW1pdCBjYW4ndCBiZSBkb25lIGJlZm9yZSB0aGUgZnJlZXplLiBUaGUg
+aGVhZGVyIGlzbid0CnVzZWQgaW5zaWRlIFhlbiBzbyB0aGUgcmlzayBmb3IgdGhlIHJlbGVhc2Ug
+aXMgemVyby4KCgpKdWVyZ2VuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpYZW4tZGV2ZWwgbWFpbGluZyBsaXN0Clhlbi1kZXZlbEBsaXN0cy54ZW5wcm9q
+ZWN0Lm9yZwpodHRwczovL2xpc3RzLnhlbnByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8veGVu
+LWRldmVs
