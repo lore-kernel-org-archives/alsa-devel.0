@@ -1,20 +1,21 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 08/13] ASoC: Add SoundWire stream
-	programming interface
-Date: Fri, 6 Apr 2018 14:19:35 +0530
-Message-ID: <20180406084934.GK6014@localhost>
-References: <1522946904-2089-1-git-send-email-vinod.koul@intel.com>
- <1522946904-2089-9-git-send-email-vinod.koul@intel.com>
- <7fc98a33-6e48-604e-73b7-308a798f5d66@linux.intel.com>
+From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: Re: [PATCH v3 3/3] ALSA: usb-audio: Add sanity checks
+	in UAC3 clock parsers
+Date: Fri, 6 Apr 2018 11:45:18 +0300
+Message-ID: <CAB=otbRP4aJyacMHn4_ahDmrpL6KS1XyKcunpz686tK-s-1AYA@mail.gmail.com>
+References: <20180405121113.551-1-tiwai@suse.de>
+ <20180405121113.551-4-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E04A266E30
- for <alsa-devel@alsa-project.org>; Fri,  6 Apr 2018 10:45:14 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <7fc98a33-6e48-604e-73b7-308a798f5d66@linux.intel.com>
+Received: from mail-ot0-f193.google.com (mail-ot0-f193.google.com
+ [74.125.82.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 99B112676B2
+ for <alsa-devel@alsa-project.org>; Fri,  6 Apr 2018 10:45:20 +0200 (CEST)
+Received: by mail-ot0-f193.google.com with SMTP id n40-v6so416972otd.3
+ for <alsa-devel@alsa-project.org>; Fri, 06 Apr 2018 01:45:20 -0700 (PDT)
+In-Reply-To: <20180405121113.551-4-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,23 +25,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Shreyas NC <shreyas.nc@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Andrew Chant <achant@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 05, 2018 at 06:42:53PM -0500, Pierre-Louis Bossart wrote:
-> >+/**
-> >+ * snd_soc_dai_set_sdw_stream() - Configures a DAI for SDW stream operation
-> >+ * @dai: DAI
-> >+ * @stream: STREAM
-> >+ * @direction: Stream direction(Playback/Capture)
-> >+ * SoundWire subsystem doesn't have a notion of direction and we reuse
-> >+ * the ASoC stream direction to configure sink/source ports.
-> 
-> Playback == source, Capture == sink?
-> what is the mapping convention?
+On Thu, Apr 5, 2018 at 3:11 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> The UAC3 clock parser codes lack of the sanity checks for malformed
+> descriptors like UAC2 parser does.  Without it, the driver may lead to
+> a potential crash.
 
-oops, will fix
+Reviewed-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
 
--- 
-~Vinod
+And also I tested this patch along with patch #1 and don't see any issue,
+so feel free to add to both:
+
+Tested-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+
+Thanks,
+Ruslan
+
+>
+> Fixes: 9a2fe9b801f5 ("ALSA: usb: initial USB Audio Device Class 3.0 support")
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/usb/clock.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+> index cbf68ab01836..29b7c85635e3 100644
+> --- a/sound/usb/clock.c
+> +++ b/sound/usb/clock.c
+> @@ -58,7 +58,7 @@ static bool validate_clock_source_v2(void *p, int id)
+>  static bool validate_clock_source_v3(void *p, int id)
+>  {
+>         struct uac3_clock_source_descriptor *cs = p;
+> -       return cs->bClockID == id;
+> +       return cs->bLength == sizeof(*cs) && cs->bClockID == id;
+>  }
+>
+>  static bool validate_clock_selector_v2(void *p, int id)
+> @@ -71,7 +71,8 @@ static bool validate_clock_selector_v2(void *p, int id)
+>  static bool validate_clock_selector_v3(void *p, int id)
+>  {
+>         struct uac3_clock_selector_descriptor *cs = p;
+> -       return cs->bClockID == id;
+> +       return cs->bLength >= sizeof(*cs) && cs->bClockID == id &&
+> +               cs->bLength == 11 + cs->bNrInPins;
+>  }
+>
+>  static bool validate_clock_multiplier_v2(void *p, int id)
+> @@ -83,7 +84,7 @@ static bool validate_clock_multiplier_v2(void *p, int id)
+>  static bool validate_clock_multiplier_v3(void *p, int id)
+>  {
+>         struct uac3_clock_multiplier_descriptor *cs = p;
+> -       return cs->bClockID == id;
+> +       return cs->bLength == sizeof(*cs) && cs->bClockID == id;
+>  }
+>
+>  #define DEFINE_FIND_HELPER(name, obj, validator, type)         \
+> --
+> 2.16.2
+>
