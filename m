@@ -1,19 +1,20 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 01/13] soundwire: Add more documentation
-Date: Fri, 6 Apr 2018 10:24:08 -0500
-Message-ID: <f58cbf3c-3096-ccf7-eac3-2317dec142c9@linux.intel.com>
+Subject: Re: [PATCH v2 03/13] soundwire: Add support for port
+ management
+Date: Fri, 6 Apr 2018 10:26:01 -0500
+Message-ID: <8a717662-57fa-b9d9-8cd7-3fb03d693297@linux.intel.com>
 References: <1522946904-2089-1-git-send-email-vinod.koul@intel.com>
- <1522946904-2089-2-git-send-email-vinod.koul@intel.com>
- <1f54fc62-8da0-ee1e-327c-30230b5f00f6@linux.intel.com>
- <20180406032449.GD6014@localhost>
+ <1522946904-2089-4-git-send-email-vinod.koul@intel.com>
+ <a5240b66-759a-7a46-8274-e975075ad682@linux.intel.com>
+ <20180406050029.GF6014@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 757BD266BBC
- for <alsa-devel@alsa-project.org>; Fri,  6 Apr 2018 17:24:11 +0200 (CEST)
-In-Reply-To: <20180406032449.GD6014@localhost>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 875A7266BBC
+ for <alsa-devel@alsa-project.org>; Fri,  6 Apr 2018 17:26:04 +0200 (CEST)
+In-Reply-To: <20180406050029.GF6014@localhost>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,60 +29,132 @@ To: Vinod Koul <vinod.koul@intel.com>
 Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 4/5/18 10:24 PM, Vinod Koul wrote:
-> On Thu, Apr 05, 2018 at 04:37:14PM -0500, Pierre-Louis Bossart wrote:
+On 4/6/18 12:00 AM, Vinod Koul wrote:
+> On Thu, Apr 05, 2018 at 06:04:32PM -0500, Pierre-Louis Bossart wrote:
 >> On 4/5/18 11:48 AM, Vinod Koul wrote:
 > 
->>> +SoundWire stream states
->>> +-----------------------
->>> +
->>> +Below shows the SoundWire stream states and state transition diagram. ::
->>> +
->>> +	+-----------+     +------------+     +----------+     +----------+
->>> +	| ALLOCATED +---->| CONFIGURED +---->| PREPARED +---->| ENABLED  |
->>> +	|   STATE   |     |    STATE   |     |  STATE   |     |  STATE   |
->>> +	+-----------+     +------------+     +----------+     +----+-----+
->>> +	                                                           ^
->>> +	                                                           |
->>> +	                                                           |
->>> +	                                                           v
->>> +	         +----------+           +------------+        +----+-----+
->>> +	         | RELEASED |<----------+ DEPREPARED |<-------+ DISABLED |
->>> +	         |  STATE   |           |   STATE    |        |  STATE   |
->>> +	         +----------+           +------------+        +----------+
->>> +
+>>> @@ -70,6 +93,7 @@ struct sdw_slave_runtime {
+>>>    * @ch_count: Number of channels handled by the Master for
+>>>    * this stream
+>>>    * @slave_rt_list: Slave runtime list
+>>> + * @port_list: List of Master Ports configured for this stream
 >>
->> Patch 2 describes the states as below:
+>> possibly empty for device to device communication.
+> 
+> Not in scope, will add in that series
+> 
+>>> +static void sdw_master_port_deconfig(struct sdw_bus *bus,
+>>> +			struct sdw_master_runtime *m_rt)
+>>> +{
+>>> +	struct sdw_port_runtime *p_rt, *_p_rt;
+>>> +
+>>> +	list_for_each_entry_safe(p_rt, _p_rt,
+>>> +			&m_rt->port_list, port_node) {
+>>> +
+>>> +		list_del(&p_rt->port_node);
+>>> +		kfree(p_rt);
+>>> +	}
+>>> +}
 >>
->> +enum sdw_stream_state {
->> +	SDW_STREAM_RELEASED = 0,
->> +	SDW_STREAM_ALLOCATED = 1,
->> +	SDW_STREAM_CONFIGURED = 2,
->> +	SDW_STREAM_PREPARED = 3,
->> +	SDW_STREAM_ENABLED = 4,
->> +	SDW_STREAM_DISABLED = 5,
->> +	SDW_STREAM_DEPREPARED = 6,
->>
->> which isn't the same picture as the ascii art above. The RELEASED state is
->> the starting point, and there's an arrow missing from RELEASED to ALLOCATED.
+>> I still don't get the naming conventions. There is no DECONFIGURED state,
+>> why not call it release? In which state is this called?
 > 
-> The enumerator describes the values given for each state. That has no
-> relation whatsoever to state transitions allowed. I don't recall why people
-> made SDW_STREAM_RELEASED as Zero, it could very well have been 7 and nothing
-> changes in diagram.
-> 
-> Now in the last review I did mention to you that there is NO transition
-> between RELEASED and ALLOCATED, hence no arrow can be made.
-> 
-> Your point on initial state is not right. I can we go ahead and do a
-> kmalloc() instead of current kzalloc() for the structure which would make
-> stream state from garbage/uninitialized to ALLOCATED and eventually finally
-> into RELEASED and it being freed. See no move between ALLOCATED and
-> RELEASED!
+> it is NOT about stream state, but deconfigure the ports. Well we can make it
+> sdw_master_port_release() if that makes you happy!
 
-since RELEASED is the value zero, it is the implicit start state, like 
-it or not. If you don't initialize your structure then your tests may 
-fail or your stream might be allocated when it's not.
+yes please. There is no operation called 'deconfigure'
 
-It's just engineering 101 to define a state machine with a known start 
-point...
+> 
+>>
+>>> +
+>>> +static void sdw_slave_port_deconfig(struct sdw_bus *bus,
+>>> +		struct sdw_slave *slave,
+>>> +		struct sdw_stream_runtime *stream)
+>>> +{
+>>> +	struct sdw_port_runtime *p_rt, *_p_rt;
+>>> +	struct sdw_master_runtime *m_rt = stream->m_rt;
+>>> +	struct sdw_slave_runtime *s_rt;
+>>> +
+>>> +	list_for_each_entry(s_rt, &m_rt->slave_rt_list, m_rt_node) {
+>>> +
+>>> +		if (s_rt->slave != slave)
+>>> +			continue;
+>>> +
+>>> +		list_for_each_entry_safe(p_rt, _p_rt,
+>>> +				&s_rt->port_list, port_node) {
+>>> +
+>>> +			list_del(&p_rt->port_node);
+>>> +			kfree(p_rt);
+>>> +		}
+>>
+>> can we use common code between master and slaves? This looks virtually
+>> identical.
+> 
+> Nope it is not, we tried in past and end result looked uglier.
+> Only 4 lines of code are same and previous one iterates
+> over master and here we have slave...
+
+ok
+
+> 
+>>>   int sdw_stream_remove_slave(struct sdw_slave *slave,
+>>>   		struct sdw_stream_runtime *stream)
+>>>   {
+>>>   	mutex_lock(&slave->bus->bus_lock);
+>>> +	sdw_slave_port_deconfig(slave->bus, slave, stream);
+>>
+>> then call it sdw_slave_port_release as I mentioned above...
+> 
+> ok
+> 
+>>> +static int sdw_master_port_config(struct sdw_bus *bus,
+>>> +			struct sdw_master_runtime *m_rt,
+>>> +			struct sdw_port_config *port_config,
+>>> +			unsigned int num_ports)
+>>> +{
+>>> +	struct sdw_port_runtime *p_rt;
+>>> +	int i, ret;
+>>> +
+>>> +	/* Iterate for number of ports to perform initialization */
+>>> +	for (i = 0; i < num_ports; i++) {
+>>> +
+>>> +		p_rt = sdw_port_alloc(bus->dev, port_config, i);
+>>> +		if (!p_rt)
+>>> +			return -ENOMEM; > +
+>>> +		ret = sdw_is_valid_port_range(bus->dev, p_rt);
+>>
+>> a master has no definition of ports. You could have more than 14 ports.
+>> Even if you have a description of those ports, it has to be checking not for
+>> the standard definition but what the hardware can support
+> 
+> ok will remove check for master
+> 
+>>> +static int sdw_slave_port_config(struct sdw_slave *slave,
+>>> +			struct sdw_slave_runtime *s_rt,
+>>> +			struct sdw_port_config *port_config,
+>>> +			unsigned int num_config)
+>>> +{
+>>> +	struct sdw_port_runtime *p_rt;
+>>> +	int i, ret;
+>>> +
+>>> +	/* Iterate for number of ports to perform initialization */
+>>> +	for (i = 0; i < num_config; i++) {
+>>> +
+>>> +		p_rt = sdw_port_alloc(&slave->dev, port_config, i);
+>>> +		if (!p_rt)
+>>> +			return -ENOMEM;
+>>> +
+>>> +		ret = sdw_is_valid_port_range(&slave->dev, p_rt);
+>>
+>> this is optimistic. You should check the actual port range (as defined in
+>> DisCo properties or driver), not just the worst case allowed by the
+>> standard.
+>> This should include a check that the bi-dir ports are configured for the
+>> right role and that the direction is compatible for regular fixed-direction
+>> ports.
+> 
+> well this is better that no check but yes that can be further improved in
+> future to comprehend DisCo properties and port direction. I will add that to
+> my list
+
+ok, I am fine with a TODO.
