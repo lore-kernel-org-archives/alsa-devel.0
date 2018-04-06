@@ -1,17 +1,20 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 00/13] soundwire: Add stream support
-Date: Thu, 5 Apr 2018 19:46:08 -0500
-Message-ID: <050f17cb-519e-65d9-b34c-0d760c6ddedc@linux.intel.com>
-References: <1522946904-2089-1-git-send-email-vinod.koul@intel.com>
+From: Naveen M <naveen.m@intel.com>
+Subject: Re: [PATCH 2/5] ASoC: Intel: Headset button support in
+ broxton machine driver
+Date: Fri, 6 Apr 2018 06:45:58 +0530
+Message-ID: <20180406011548.GA4189@intel.com>
+References: <1522817219-3750-1-git-send-email-naveen.m@intel.com>
+ <1522817219-3750-3-git-send-email-naveen.m@intel.com>
+ <20180406003033.GA234162@decatoncale.mtv.corp.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 611382672B2
- for <alsa-devel@alsa-project.org>; Fri,  6 Apr 2018 02:46:12 +0200 (CEST)
-In-Reply-To: <1522946904-2089-1-git-send-email-vinod.koul@intel.com>
-Content-Language: en-US
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id EEA962676D9
+ for <alsa-devel@alsa-project.org>; Fri,  6 Apr 2018 03:16:25 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20180406003033.GA234162@decatoncale.mtv.corp.google.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,71 +24,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Greg KH <gregkh@linuxfoundation.org>
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, ALSA <alsa-devel@alsa-project.org>, broonie@kernel.org, patches.audio@intel.com
+To: Benson Leung <bleung@google.com>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, harshapriya.n@intel.com, broonie@kernel.org, bleung@chromium.org, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 4/5/18 11:48 AM, Vinod Koul wrote:
-> This series adds support in SoundWire subsystem for:
->   - Documentation for stream support
->   - stream management
->   - data port management
->   - DAI ops in cadence and Intel drivers
->   - ASoC API to propagate SDW stream
+On Thu, Apr 05, 2018 at 05:30:33PM -0700, Benson Leung wrote:
+> Hi Naveen,
 > 
-> Updates in v2:
->    - Make ASoC API inlined
->    - Make stream states as states and not action
->    - Update the direction enum
->    - Fix some typos and comment updates
+> On Wed, Apr 04, 2018 at 10:16:56AM +0530, Naveen Manohar wrote:
+> > Patch adds headset button support for broxton machine driver
+> > (bxt_da7219_max98357a).
+> > 
+> > Signed-off-by: Naveen Manohar <naveen.m@intel.com>
+> > ---
+> >  sound/soc/intel/boards/bxt_da7219_max98357a.c | 9 ++++++++-
+> >  1 file changed, 8 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+> > index ce021a3..1c1e70c 100644
+> > --- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
+> > +++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+> > @@ -16,6 +16,7 @@
+> >   * GNU General Public License for more details.
+> >   */
+> >  
+> > +#include <linux/input.h>
+> >  #include <linux/module.h>
+> >  #include <linux/platform_device.h>
+> >  #include <sound/core.h>
+> > @@ -168,6 +169,7 @@ static int broxton_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+> >  static int broxton_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
+> >  {
+> >  	int ret;
+> > +	struct snd_soc_jack *jack;
+> >  	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+> >  	struct snd_soc_component *component = rtd->codec_dai->component;
+> >  
+> > @@ -192,7 +194,12 @@ static int broxton_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
+> >  		return ret;
+> >  	}
+> >  
+> > -	da7219_aad_jack_det(component, &broxton_headset);
+> > +	jack = &broxton_headset;
+> > +	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_MEDIA);
+> 
+> I recently made a set of changes that replaced KEY_MEDIA usage for BTN_0
+> with KEY_PLAYPAUSE. See https://lkml.org/lkml/2017/11/22/586
+> 
+> Since this patch may be destined for Chrome OS, you should definitely use
+> KEY_PLAYPAUSE, as the Chrome OS user space doesn't respond to KEY_MEDIA but does
+> respond to KEY_PLAYPAUSE.
+> 
+> Thanks,
+> Benson
+> 
+Thanks for the review and update. Shall correct this in V2.
+Also there are other machines which still use KEY_MEDIA - kbl_da7219_max98357a.c, cht_bsw_nau8824.c
+Shall correct these too.
+> -- 
+> Benson Leung
+> Staff Software Engineer
+> Chrome OS Kernel
+> Google Inc.
+> bleung@google.com
+> Chromium OS Project
+> bleung@chromium.org
 
-This is better than v1 and has few minor comments to be addressed but 
-one big problem: you shot yourselves in the foot with the changes in 
-state management that are inconsistent with the documentation (see e.g 
-the patch #2). Without explanations on the intent that entire stream 
-management section makes little sense. If you can fix this in a v3 the 
-series will be in much better shape. Thanks!
 
-> 
-> Sanyog Kale (7):
->    soundwire: Add more documentation
->    soundwire: Add support for SoundWire stream management
->    soundwire: Add support for port management
->    soundwire: Add Master and Slave port programming
->    soundwire: Add helpers for ports operations
->    soundwire: Add bank switch routine
->    soundwire: Add stream configuration APIs
-> 
-> Shreyas NC (2):
->    ASoC: Add SoundWire stream programming interface
->    soundwire: Remove cdns_master_ops
-> 
-> Vinod Koul (4):
->    soundwire: cdns: Add port routines
->    soundwire: cdns: Add stream routines
->    soundwire: intel: Add stream initialization
->    soundwire: intel: Add audio DAI ops
-> 
->   .../driver-api/soundwire/error_handling.rst        |   65 +
->   Documentation/driver-api/soundwire/index.rst       |    3 +
->   Documentation/driver-api/soundwire/locking.rst     |  106 ++
->   Documentation/driver-api/soundwire/stream.rst      |  368 +++++
->   drivers/soundwire/Kconfig                          |    2 +-
->   drivers/soundwire/Makefile                         |    2 +-
->   drivers/soundwire/bus.c                            |   43 +
->   drivers/soundwire/bus.h                            |   72 +
->   drivers/soundwire/cadence_master.c                 |  449 +++++-
->   drivers/soundwire/cadence_master.h                 |  151 ++
->   drivers/soundwire/intel.c                          |  528 ++++++-
->   drivers/soundwire/intel.h                          |    4 +
->   drivers/soundwire/intel_init.c                     |    3 +
->   drivers/soundwire/stream.c                         | 1549 ++++++++++++++++++++
->   include/linux/soundwire/sdw.h                      |  332 ++++-
->   include/linux/soundwire/sdw_intel.h                |   14 +
->   include/sound/soc-dai.h                            |   21 +
->   17 files changed, 3698 insertions(+), 14 deletions(-)
->   create mode 100644 Documentation/driver-api/soundwire/error_handling.rst
->   create mode 100644 Documentation/driver-api/soundwire/locking.rst
->   create mode 100644 Documentation/driver-api/soundwire/stream.rst
->   create mode 100644 drivers/soundwire/stream.c
-> 
+
+-- 
