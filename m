@@ -1,58 +1,126 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: Conversion to int16_t and resolution loss with
- rate converter plugins
-Date: Fri, 6 Apr 2018 08:32:53 +0200
-Message-ID: <dea3c23d-7499-83cf-226b-1da44ff1d380@ivitera.com>
-References: <MWHPR21MB0478EFE0FDB4BD2A0A7293D0D8BB0@MWHPR21MB0478.namprd21.prod.outlook.com>
- <3a7d4f82-07af-cffb-a757-a258242b0199@ivitera.com>
- <MWHPR21MB047829F84F3DCDAD597F6B71D8BB0@MWHPR21MB0478.namprd21.prod.outlook.com>
+From: syzbot <syzbot+7e3f31a52646f939c052@syzkaller.appspotmail.com>
+Subject: INFO: rcu detected stall in __snd_pcm_lib_xfer (2)
+Date: Fri, 06 Apr 2018 00:08:01 -0700
+Message-ID: <00000000000078359d056928b7ea@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
- by alsa0.perex.cz (Postfix) with ESMTP id 62F302673EF
- for <alsa-devel@alsa-project.org>; Fri,  6 Apr 2018 08:32:58 +0200 (CEST)
-In-Reply-To: <MWHPR21MB047829F84F3DCDAD597F6B71D8BB0@MWHPR21MB0478.namprd21.prod.outlook.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Flavio Protasio Ribeiro <flaviopr@microsoft.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, o-takashi@sakamocchi.jp, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-Dne 5.4.2018 v 23:21 Flavio Protasio Ribeiro napsal(a):
-> Hi Pavel,
-> 
-> Thanks for the reference to your previous discussion and the patches.
-> They were super helpful. As you can see from my reply to Takashi, I'm
-> proposing adding a convert_s32 method that doesn't impose dependency
-> on a HW FPU on alsa-lib. The convert_s32 method would operate on an
-> array of int32's.
-> 
-> From the point of view of the plugin developer, the change from
-> convert_s16 to convert_s32 is pretty trivial. The plugins that I
-> personally care about operate internally with floats. The plugin
-> would remain responsible for converting between int32 and float.
+Hello,
 
-Sounds much better than my attempt at float API.
-> 
-> I agree that a libsoxr plugin would be great. Getting higher quality
-> real-time resampling is my ultimate goal :)
+syzbot hit the following crash on upstream commit
+e02d37bf55a9a36f22427fd6dd733fe104d817b6 (Thu Apr 5 17:42:07 2018 +0000)
+Merge tag 'sound-4.17-rc1' of  
+git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound
+syzbot dashboard link:  
+https://syzkaller.appspot.com/bug?extid=7e3f31a52646f939c052
 
-If you make it work, you will be praised by countless users :-)
+So far this crash happened 43 times on upstream.
+Unfortunately, I don't have any reproducer for this crash yet.
+Raw console output:  
+https://syzkaller.appspot.com/x/log.txt?id=5148264345108480
+Kernel config:  
+https://syzkaller.appspot.com/x/.config?id=-4805825610197092128
+compiler: gcc (GCC) 8.0.1 20180301 (experimental)
 
-But the existing rate API will have to be modified since libsoxr behaves 
-a bit different to speex or libresample - see the library author 
-discussing the issues 
-http://mailman.alsa-project.org/pipermail/alsa-devel/2013-September/066764.html
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+7e3f31a52646f939c052@syzkaller.appspotmail.com
+It will help syzbot understand when the bug is fixed. See footer for  
+details.
+If you forward the report, please keep this part and the footer.
 
-Thanks,
+INFO: rcu_sched self-detected stall on CPU
+	1-...!: (124999 ticks this GP) idle=522/1/4611686018427387906  
+softirq=65432/65432 fqs=169
+	 (t=125000 jiffies g=35384 c=35383 q=537)
+rcu_sched kthread starved for 124294 jiffies! g35384 c35383 f0x0  
+RCU_GP_WAIT_FQS(3) ->state=0x0 ->cpu=0
+RCU grace-period kthread stack dump:
+rcu_sched       R  running task    23768     9      2 0x80000000
+Call Trace:
+  context_switch kernel/sched/core.c:2848 [inline]
+  __schedule+0x807/0x1e40 kernel/sched/core.c:3490
+  schedule+0xef/0x430 kernel/sched/core.c:3549
+  schedule_timeout+0x138/0x240 kernel/time/timer.c:1801
+  rcu_gp_kthread+0x6b5/0x1940 kernel/rcu/tree.c:2231
+  kthread+0x345/0x410 kernel/kthread.c:238
+  ret_from_fork+0x3a/0x50 arch/x86/entry/entry_64.S:411
+NMI backtrace for cpu 1
+CPU: 1 PID: 15299 Comm: syz-executor3 Not tainted 4.16.0+ #2
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  <IRQ>
+  __dump_stack lib/dump_stack.c:17 [inline]
+  dump_stack+0x1b9/0x29f lib/dump_stack.c:53
+  nmi_cpu_backtrace.cold.4+0x19/0xce lib/nmi_backtrace.c:103
+  nmi_trigger_cpumask_backtrace+0x151/0x192 lib/nmi_backtrace.c:62
+  arch_trigger_cpumask_backtrace+0x14/0x20 arch/x86/kernel/apic/hw_nmi.c:38
+  trigger_single_cpu_backtrace include/linux/nmi.h:156 [inline]
+  rcu_dump_cpu_stacks+0x175/0x1c2 kernel/rcu/tree.c:1376
+  print_cpu_stall kernel/rcu/tree.c:1525 [inline]
+  check_cpu_stall.isra.61.cold.80+0x36c/0x59a kernel/rcu/tree.c:1593
+  __rcu_pending kernel/rcu/tree.c:3356 [inline]
+  rcu_pending kernel/rcu/tree.c:3401 [inline]
+  rcu_check_callbacks+0x21b/0xad0 kernel/rcu/tree.c:2763
+  update_process_times+0x2d/0x70 kernel/time/timer.c:1636
+  tick_sched_handle+0xa0/0x180 kernel/time/tick-sched.c:171
+  tick_sched_timer+0x42/0x130 kernel/time/tick-sched.c:1179
+  __run_hrtimer kernel/time/hrtimer.c:1337 [inline]
+  __hrtimer_run_queues+0x3e3/0x10a0 kernel/time/hrtimer.c:1399
+  hrtimer_interrupt+0x286/0x650 kernel/time/hrtimer.c:1457
+  local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1025 [inline]
+  smp_apic_timer_interrupt+0x15d/0x710 arch/x86/kernel/apic/apic.c:1050
+  apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:862
+  </IRQ>
+RIP: 0010:arch_local_irq_enable arch/x86/include/asm/paravirt.h:793 [inline]
+RIP: 0010:snd_pcm_stream_unlock_irq+0xb7/0xf0 sound/core/pcm_native.c:166
+RSP: 0018:ffff8801c3f27560 EFLAGS: 00000246 ORIG_RAX: ffffffffffffff13
+RAX: 0000000000040000 RBX: 0000000000000000 RCX: ffffc900038d5000
+RDX: 0000000000040000 RSI: ffffffff859ca760 RDI: ffffffff88b172b8
+RBP: ffff8801c3f27568 R08: ffff8801abf86af8 R09: 0000000000000006
+R10: ffff8801abf86280 R11: 0000000000000000 R12: 0000000000000004
+R13: 00000000ffffffe0 R14: ffff8801d7d9e1c0 R15: ffff8801ceac6940
+  __snd_pcm_lib_xfer+0x739/0x1d10 sound/core/pcm_lib.c:2246
+  snd_pcm_oss_write3+0xe9/0x220 sound/core/oss/pcm_oss.c:1236
+  io_playback_transfer+0x274/0x310 sound/core/oss/io.c:47
+  snd_pcm_plug_write_transfer+0x36c/0x470 sound/core/oss/pcm_plugin.c:619
+  snd_pcm_oss_write2+0x25c/0x460 sound/core/oss/pcm_oss.c:1365
+  snd_pcm_oss_write1 sound/core/oss/pcm_oss.c:1415 [inline]
+  snd_pcm_oss_write+0x764/0xa20 sound/core/oss/pcm_oss.c:2774
+  __vfs_write+0x10b/0x880 fs/read_write.c:485
+  vfs_write+0x1f8/0x560 fs/read_write.c:549
+  ksys_write+0xf9/0x250 fs/read_write.c:598
+  SYSC_write fs/read_write.c:610 [inline]
+  SyS_write+0x24/0x30 fs/read_write.c:607
+  do_syscall_64+0x29e/0x9d0 arch/x86/entry/common.c:287
+  entry_SYSCALL_64_after_hwframe+0x42/0xb7
+RIP: 0033:0x4552d9
+RSP: 002b:00007f1568de6c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f1568de76d4 RCX: 00000000004552d9
+RDX: 0000000000000060 RSI: 0000000020000000 RDI: 0000000000000013
+RBP: 000000000072bea0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
+R13: 00000000000006c0 R14: 00000000006fd2a0 R15: 0000000000000000
 
-Pavel.
+
+---
+This bug is generated by a dumb bot. It may contain errors.
+See https://goo.gl/tpsmEJ for details.
+Direct all questions to syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report.
+If you forgot to add the Reported-by tag, once the fix for this bug is  
+merged
+into any tree, please reply to this email with:
+#syz fix: exact-commit-title
+To mark this as a duplicate of another syzbot report, please reply with:
+#syz dup: exact-subject-of-another-report
+If it's a one-off invalid bug report, please reply with:
+#syz invalid
+Note: if the crash happens again, it will cause creation of a new bug  
+report.
+Note: all commands must start from beginning of the line in the email body.
