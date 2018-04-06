@@ -1,20 +1,19 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 07/13] soundwire: Add stream
- configuration APIs
-Date: Fri, 6 Apr 2018 10:28:00 -0500
-Message-ID: <8bb8a892-1889-c5a1-d5c8-c0529ce90e08@linux.intel.com>
+Subject: Re: [PATCH v2 10/13] soundwire: cdns: Add port routines
+Date: Fri, 6 Apr 2018 10:29:11 -0500
+Message-ID: <15eaa926-ecf8-0185-ed58-bbc4dcc6c521@linux.intel.com>
 References: <1522946904-2089-1-git-send-email-vinod.koul@intel.com>
- <1522946904-2089-8-git-send-email-vinod.koul@intel.com>
- <06b35225-232a-7220-ffda-e42b5c6c9366@linux.intel.com>
- <20180406084851.GJ6014@localhost>
+ <1522946904-2089-11-git-send-email-vinod.koul@intel.com>
+ <cc86f00d-dcf8-6609-ba01-f97ec69807d1@linux.intel.com>
+ <20180406085524.GL6014@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 84B3F266BBC
- for <alsa-devel@alsa-project.org>; Fri,  6 Apr 2018 17:28:03 +0200 (CEST)
-In-Reply-To: <20180406084851.GJ6014@localhost>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18A49266BBC
+ for <alsa-devel@alsa-project.org>; Fri,  6 Apr 2018 17:29:13 +0200 (CEST)
+In-Reply-To: <20180406085524.GL6014@localhost>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,87 +25,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Sanyog Kale <sanyog.r.kale@intel.com>
+Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 4/6/18 3:48 AM, Vinod Koul wrote:
-> On Thu, Apr 05, 2018 at 06:40:20PM -0500, Pierre-Louis Bossart wrote:
+On 4/6/18 3:55 AM, Vinod Koul wrote:
+> On Thu, Apr 05, 2018 at 07:19:43PM -0500, Pierre-Louis Bossart wrote:
+>> On 4/5/18 11:48 AM, Vinod Koul wrote:
 > 
->>> +int sdw_prepare_stream(struct sdw_stream_runtime *stream)
->>> +{
->>> +	int ret = 0;
->>> +
->>> +	if (!stream) {
->>> +		pr_err("SoundWire: Handle not found for stream");
->>> +		return -EINVAL;
->>> +	}
->>> +
->>> +	mutex_lock(&stream->m_rt->bus->bus_lock);
->>> +
->>> +	if (stream->state == SDW_STREAM_DISABLED)
->>> +		goto error;
->>> +
->>> +	if (stream->state != SDW_STREAM_CONFIGURED) {
->>> +		ret = -EINVAL;
->>> +		goto error;
->>> +	}
+>>> +static int cdns_allocate_pdi(struct sdw_cdns *cdns,
+>>> +			struct sdw_cdns_pdi **stream,
+>>> +			u32 start, u32 num, u32 pdi_offset)
 >>
->> this seems to be a new pattern in this file.
->> Why is the first test even needed?
+>> the start parameter doesn't seem to be used, remove and remove the useless
+>> zeroes in all the calls to this routine?
 > 
-> Looking it again, the state transition is from CONFIGURED, so the first
-> check is not required and will be removed.
+> Yes this seems to be the case, will fix
 > 
->>> +int sdw_enable_stream(struct sdw_stream_runtime *stream)
->>> +{
->>> +	int ret = 0;
 >>> +
->>> +	if (!stream) {
->>> +		pr_err("SoundWire: Handle not found for stream");
->>> +		return -EINVAL;
->>> +	}
+>>> +pdm_error:
+>>> +	kfree(stream->bd);
+>>> +	kfree(stream->in);
+>>> +	kfree(stream->out);
 >>> +
->>> +	mutex_lock(&stream->m_rt->bus->bus_lock);
->>> +
->>> +	if (stream->state == SDW_STREAM_ENABLED)
->>> +		goto error;
->>> +
->>> +	if ((stream->state != SDW_STREAM_PREPARED) &&
->>> +		(stream->state != SDW_STREAM_DISABLED)) {
->>> +		ret = -EINVAL;
->>> +		goto error;
->>> +	}
+>>> +pcm_error:
+>>> +	stream = &cdns->pcm;
+>>> +	kfree(stream->bd);
+>>> +	kfree(stream->in);
+>>> +	kfree(stream->out);
 >>
->> same here, why would you enable a stream that's already enabled? Why is this
->> an error that returns 0?
+>> call me a grumpy old fart if you want, I still don't like people freeing
+>> memory they never allocated. It may be legal but it's sloppy.
 > 
-> So first, we think stream should not be enabled if it is already enabled.
-> The code right now doesnt treat it as error, but we should so will fix it
-> up...
-> 
+> Actually looking at it freeing is not required as we are doing devm_
+> allocations, so this can be removed and return error should do the trick and
+> we propagate the error and cleanup, thanks for the catch
 
-ok
-
->>> +int sdw_disable_stream(struct sdw_stream_runtime *stream)
->>> +{
->>> +	int ret = 0;
->>> +
->>> +	if (!stream) {
->>> +		pr_err("SoundWire: Handle not found for stream");
->>> +		return -EINVAL;
->>> +	}
->>> +
->>> +	mutex_lock(&stream->m_rt->bus->bus_lock);
->>> +
->>> +	if (stream->state == SDW_STREAM_DISABLED)
->>> +		goto error;
->>> +
->>> +	if (stream->state != SDW_STREAM_ENABLED) {
->>> +		ret = -EINVAL;
->>> +		goto error;
->>> +	}
->>
->> and here to.
-> 
-> yup, here too :)
-> 
+sounds good.
