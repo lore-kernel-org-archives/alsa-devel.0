@@ -1,112 +1,480 @@
-From: syzbot <syzbot+803e0047ac3a3096bb4f@syzkaller.appspotmail.com>
-Subject: WARNING in snd_pcm_hw_params
-Date: Thu, 05 Apr 2018 17:02:02 -0700
-Message-ID: <001a113fe6c005d8ac056922c4c3@google.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2 10/13] soundwire: cdns: Add port routines
+Date: Thu, 5 Apr 2018 19:19:43 -0500
+Message-ID: <cc86f00d-dcf8-6609-ba01-f97ec69807d1@linux.intel.com>
+References: <1522946904-2089-1-git-send-email-vinod.koul@intel.com>
+ <1522946904-2089-11-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, o-takashi@sakamocchi.jp, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id A0D282672B2
+ for <alsa-devel@alsa-project.org>; Fri,  6 Apr 2018 02:19:47 +0200 (CEST)
+In-Reply-To: <1522946904-2089-11-git-send-email-vinod.koul@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>, Greg KH <gregkh@linuxfoundation.org>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, ALSA <alsa-devel@alsa-project.org>, broonie@kernel.org, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On 4/5/18 11:48 AM, Vinod Koul wrote:
+> Add support for Cadence port management and implement
+> master port ops.
+> 
+> Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+> Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> ---
+>   drivers/soundwire/cadence_master.c | 256 +++++++++++++++++++++++++++++++++++++
+>   drivers/soundwire/cadence_master.h | 100 +++++++++++++++
+>   drivers/soundwire/intel.c          |   1 +
+>   3 files changed, 357 insertions(+)
+> 
+> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+> index b0c09efd8f83..89a4ae86d36a 100644
+> --- a/drivers/soundwire/cadence_master.c
+> +++ b/drivers/soundwire/cadence_master.c
+> @@ -669,6 +669,133 @@ int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
+>   }
+>   EXPORT_SYMBOL(sdw_cdns_enable_interrupt);
+>   
+> +static int cdns_allocate_pdi(struct sdw_cdns *cdns,
+> +			struct sdw_cdns_pdi **stream,
+> +			u32 start, u32 num, u32 pdi_offset)
 
-syzbot hit the following crash on upstream commit
-3c8ba0d61d04ced9f8d9ff93977995a9e4e96e91 (Sat Mar 31 01:52:36 2018 +0000)
-kernel.h: Retain constant expression output for max()/min()
-syzbot dashboard link:  
-https://syzkaller.appspot.com/bug?extid=803e0047ac3a3096bb4f
+the start parameter doesn't seem to be used, remove and remove the 
+useless zeroes in all the calls to this routine?
 
-So far this crash happened 6 times on upstream.
-C reproducer: https://syzkaller.appspot.com/x/repro.c?id=5886672973594624
-syzkaller reproducer:  
-https://syzkaller.appspot.com/x/repro.syz?id=4913841943085056
-Raw console output:  
-https://syzkaller.appspot.com/x/log.txt?id=6314122077536256
-Kernel config:  
-https://syzkaller.appspot.com/x/.config?id=-1647968177339044852
-compiler: gcc (GCC) 8.0.1 20180301 (experimental)
+> +{
+> +	struct sdw_cdns_pdi *pdi;
+> +	int i;
+> +
+> +	if (!num)
+> +		return 0;
+> +
+> +	pdi = devm_kcalloc(cdns->dev, num, sizeof(*pdi), GFP_KERNEL);
+> +	if (!pdi)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < num; i++) {
+> +		pdi[i].num = i + pdi_offset;
+> +		pdi[i].assigned = false;
+> +	}
+> +
+> +	*stream = pdi;
+> +	return 0;
+> +}
+> +
+> +/**
+> + * sdw_cdns_pdi_init: PDI initialization routine
+> + *
+> + * @cdns: Cadence instance
+> + * @config: Stream configurations
+> + */
+> +int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
+> +			struct sdw_cdns_stream_config config)
+> +{
+> +	struct sdw_cdns_streams *stream;
+> +	int offset, i, ret;
+> +
+> +	cdns->pcm.num_bd = config.pcm_bd;
+> +	cdns->pcm.num_in = config.pcm_in;
+> +	cdns->pcm.num_out = config.pcm_out;
+> +	cdns->pdm.num_bd = config.pdm_bd;
+> +	cdns->pdm.num_in = config.pdm_in;
+> +	cdns->pdm.num_out = config.pdm_out;
+> +
+> +	/* Allocate PDIs for PCMs */
+> +	stream = &cdns->pcm;
+> +
+> +	/* First two PDIs are reserved for bulk transfers */
+> +	stream->num_bd -= CDNS_PCM_PDI_OFFSET;
+> +	offset = CDNS_PCM_PDI_OFFSET;
+> +
+> +	ret = cdns_allocate_pdi(cdns, &stream->bd, 0,
+> +				stream->num_bd, offset);
+> +	if (ret)
+> +		goto pcm_error;
+> +
+> +	offset += stream->num_bd;
+> +
+> +	ret = cdns_allocate_pdi(cdns, &stream->in, 0,
+> +				stream->num_in, offset);
+> +	if (ret)
+> +		goto pcm_error;
+> +
+> +
+> +	offset += stream->num_in;
+> +
+> +	ret = cdns_allocate_pdi(cdns, &stream->out, 0,
+> +				stream->num_out, offset);
+> +	if (ret)
+> +		goto pcm_error;
+> +
+> +	/* Update total number of PCM PDIs */
+> +	stream->num_pdi = stream->num_bd + stream->num_in + stream->num_out;
+> +	cdns->num_ports = stream->num_pdi;
+> +
+> +	/* Allocate PDIs for PDMs */
+> +	stream = &cdns->pdm;
+> +	offset = CDNS_PDM_PDI_OFFSET;
+> +	ret = cdns_allocate_pdi(cdns, &stream->bd, 0,
+> +				stream->num_bd, offset);
+> +	if (ret)
+> +		goto pdm_error;
+> +
+> +	offset += stream->num_bd;
+> +
+> +	ret = cdns_allocate_pdi(cdns, &stream->in, 0,
+> +				stream->num_in, offset);
+> +	if (ret)
+> +		goto pdm_error;
+> +
+> +	offset += stream->num_in;
+> +
+> +	ret = cdns_allocate_pdi(cdns, &stream->out, 0,
+> +				stream->num_out, offset);
+> +	if (ret)
+> +		goto pdm_error;
+> +
+> +	/* Update total number of PDM PDIs */
+> +	stream->num_pdi = stream->num_bd + stream->num_in + stream->num_out;
+> +	cdns->num_ports += stream->num_pdi;
+> +
+> +	cdns->ports = devm_kcalloc(cdns->dev, cdns->num_ports,
+> +				sizeof(*cdns->ports), GFP_KERNEL);
+> +	if (!cdns->ports) {
+> +		ret = -ENOMEM;
+> +		goto pdm_error;
+> +	}
+> +
+> +	for (i = 0; i < cdns->num_ports; i++) {
+> +		cdns->ports[i].assigned = false;
+> +		cdns->ports[i].num = i + 1; /* Port 0 reserved for bulk */
+> +	}
+> +
+> +	return 0;
+> +
+> +pdm_error:
+> +	kfree(stream->bd);
+> +	kfree(stream->in);
+> +	kfree(stream->out);
+> +
+> +pcm_error:
+> +	stream = &cdns->pcm;
+> +	kfree(stream->bd);
+> +	kfree(stream->in);
+> +	kfree(stream->out);
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+803e0047ac3a3096bb4f@syzkaller.appspotmail.com
-It will help syzbot understand when the bug is fixed. See footer for  
-details.
-If you forward the report, please keep this part and the footer.
+call me a grumpy old fart if you want, I still don't like people freeing 
+memory they never allocated. It may be legal but it's sloppy.
 
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000441939
-RDX: 0000000000000001 RSI: 0000000020000180 RDI: 0000000000000003
-RBP: 00007ffe8c3569b0 R08: 0000000000000002 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000005
-R13: ffffffffffffffff R14: 0000000000000000 R15: 0000000000000000
-WARNING: CPU: 0 PID: 4468 at sound/core/pcm_native.c:620  
-snd_pcm_hw_params_choose sound/core/pcm_native.c:620 [inline]
-WARNING: CPU: 0 PID: 4468 at sound/core/pcm_native.c:620  
-snd_pcm_hw_params+0x65a/0x1e20 sound/core/pcm_native.c:672
-Kernel panic - not syncing: panic_on_warn set ...
-
-CPU: 0 PID: 4468 Comm: syzkaller371267 Not tainted 4.16.0+ #2
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:17 [inline]
-  dump_stack+0x1b9/0x29f lib/dump_stack.c:53
-  panic+0x22f/0x4de kernel/panic.c:183
-  __warn.cold.8+0x163/0x1a3 kernel/panic.c:547
-  report_bug+0x252/0x2d0 lib/bug.c:186
-  fixup_bug arch/x86/kernel/traps.c:178 [inline]
-  do_error_trap+0x1bc/0x470 arch/x86/kernel/traps.c:296
-  do_invalid_op+0x1b/0x20 arch/x86/kernel/traps.c:315
-  invalid_op+0x1b/0x40 arch/x86/entry/entry_64.S:991
-RIP: 0010:snd_pcm_hw_params_choose sound/core/pcm_native.c:620 [inline]
-RIP: 0010:snd_pcm_hw_params+0x65a/0x1e20 sound/core/pcm_native.c:672
-RSP: 0018:ffff8801ac66f498 EFLAGS: 00010293
-RAX: ffff8801acb86580 RBX: 00000000fffffff4 RCX: ffffffff859d7220
-RDX: 0000000000000000 RSI: ffffffff859d752a RDI: 0000000000000005
-RBP: ffff8801ac66f6e8 R08: ffff8801acb86580 R09: ffffed003b6046c2
-R10: ffffed003b6046c2 R11: ffff8801db023613 R12: ffffffff8826309c
-R13: ffff8801ceab6940 R14: ffff8801d9509200 R15: dffffc0000000000
-  snd_pcm_kernel_ioctl+0x6c/0x240 sound/core/pcm_native.c:2999
-  snd_pcm_oss_change_params_locked+0x1be8/0x3ce0 sound/core/oss/pcm_oss.c:993
-  snd_pcm_oss_make_ready_locked+0xbc/0x130 sound/core/oss/pcm_oss.c:1182
-  snd_pcm_oss_write1 sound/core/oss/pcm_oss.c:1396 [inline]
-  snd_pcm_oss_write+0x516/0xa20 sound/core/oss/pcm_oss.c:2774
-  __vfs_write+0x10b/0x880 fs/read_write.c:485
-  vfs_write+0x1f8/0x560 fs/read_write.c:549
-  ksys_write+0xf9/0x250 fs/read_write.c:598
-  SYSC_write fs/read_write.c:610 [inline]
-  SyS_write+0x24/0x30 fs/read_write.c:607
-  do_syscall_64+0x29e/0x9d0 arch/x86/entry/common.c:287
-  entry_SYSCALL_64_after_hwframe+0x42/0xb7
-RIP: 0033:0x441939
-RSP: 002b:00007ffe8c3568e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000441939
-RDX: 0000000000000001 RSI: 0000000020000180 RDI: 0000000000000003
-RBP: 00007ffe8c3569b0 R08: 0000000000000002 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000005
-R13: ffffffffffffffff R14: 0000000000000000 R15: 0000000000000000
-Dumping ftrace buffer:
-    (ftrace buffer empty)
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This bug is generated by a dumb bot. It may contain errors.
-See https://goo.gl/tpsmEJ for details.
-Direct all questions to syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report.
-If you forgot to add the Reported-by tag, once the fix for this bug is  
-merged
-into any tree, please reply to this email with:
-#syz fix: exact-commit-title
-If you want to test a patch for this bug, please reply with:
-#syz test: git://repo/address.git branch
-and provide the patch inline or as an attachment.
-To mark this as a duplicate of another syzbot report, please reply with:
-#syz dup: exact-subject-of-another-report
-If it's a one-off invalid bug report, please reply with:
-#syz invalid
-Note: if the crash happens again, it will cause creation of a new bug  
-report.
-Note: all commands must start from beginning of the line in the email body.
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(sdw_cdns_pdi_init);
+> +
+>   /**
+>    * sdw_cdns_init() - Cadence initialization
+>    * @cdns: Cadence instance
+> @@ -730,6 +857,134 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
+>   }
+>   EXPORT_SYMBOL(sdw_cdns_init);
+>   
+> +int cdns_bus_conf(struct sdw_bus *bus, struct sdw_bus_params *params)
+> +{
+> +	struct sdw_cdns *cdns = bus_to_cdns(bus);
+> +	int mcp_clkctrl_off, mcp_clkctrl;
+> +	int divider;
+> +
+> +	if (!params->curr_dr_freq) {
+> +		dev_err(cdns->dev, "NULL curr_dr_freq");
+> +		return -EINVAL;
+> +	}
+> +
+> +	divider	= (params->max_dr_freq / params->curr_dr_freq) - 1;
+> +
+> +	if (params->next_bank)
+> +		mcp_clkctrl_off = CDNS_MCP_CLK_CTRL1;
+> +	else
+> +		mcp_clkctrl_off = CDNS_MCP_CLK_CTRL0;
+> +
+> +	mcp_clkctrl = cdns_readl(cdns, mcp_clkctrl_off);
+> +	mcp_clkctrl |= divider;
+> +	cdns_writel(cdns, mcp_clkctrl_off, mcp_clkctrl);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(cdns_bus_conf);
+> +
+> +static int cdns_port_params(struct sdw_bus *bus,
+> +		struct sdw_port_params *p_params, unsigned int bank)
+> +{
+> +	struct sdw_cdns *cdns = bus_to_cdns(bus);
+> +	int dpn_config = 0, dpn_config_off;
+> +
+> +	if (bank)
+> +		dpn_config_off = CDNS_DPN_B1_CONFIG(p_params->num);
+> +	else
+> +		dpn_config_off = CDNS_DPN_B0_CONFIG(p_params->num);
+> +
+> +	dpn_config = cdns_readl(cdns, dpn_config_off);
+> +
+> +	dpn_config |= ((p_params->bps - 1) <<
+> +				SDW_REG_SHIFT(CDNS_DPN_CONFIG_WL));
+> +	dpn_config |= (p_params->flow_mode <<
+> +				SDW_REG_SHIFT(CDNS_DPN_CONFIG_PORT_FLOW));
+> +	dpn_config |= (p_params->data_mode <<
+> +				SDW_REG_SHIFT(CDNS_DPN_CONFIG_PORT_DAT));
+> +
+> +	cdns_writel(cdns, dpn_config_off, dpn_config);
+> +
+> +	return 0;
+> +}
+> +
+> +static int cdns_transport_params(struct sdw_bus *bus,
+> +			struct sdw_transport_params *t_params,
+> +			enum sdw_reg_bank bank)
+> +{
+> +	struct sdw_cdns *cdns = bus_to_cdns(bus);
+> +	int dpn_offsetctrl = 0, dpn_offsetctrl_off;
+> +	int dpn_config = 0, dpn_config_off;
+> +	int dpn_hctrl = 0, dpn_hctrl_off;
+> +	int num = t_params->port_num;
+> +	int dpn_samplectrl_off;
+> +
+> +	/*
+> +	 * Note: Only full data port is supported on the Master side for
+> +	 * both PCM and PDM ports.
+> +	 */
+> +
+> +	if (bank) {
+> +		dpn_config_off = CDNS_DPN_B1_CONFIG(num);
+> +		dpn_samplectrl_off = CDNS_DPN_B1_SAMPLE_CTRL(num);
+> +		dpn_hctrl_off = CDNS_DPN_B1_HCTRL(num);
+> +		dpn_offsetctrl_off = CDNS_DPN_B1_OFFSET_CTRL(num);
+> +	} else {
+> +		dpn_config_off = CDNS_DPN_B0_CONFIG(num);
+> +		dpn_samplectrl_off = CDNS_DPN_B0_SAMPLE_CTRL(num);
+> +		dpn_hctrl_off = CDNS_DPN_B0_HCTRL(num);
+> +		dpn_offsetctrl_off = CDNS_DPN_B0_OFFSET_CTRL(num);
+> +	}
+> +
+> +	dpn_config = cdns_readl(cdns, dpn_config_off);
+> +
+> +	dpn_config |= (t_params->blk_grp_ctrl <<
+> +				SDW_REG_SHIFT(CDNS_DPN_CONFIG_BGC));
+> +	dpn_config |= (t_params->blk_pkg_mode <<
+> +				SDW_REG_SHIFT(CDNS_DPN_CONFIG_BPM));
+> +	cdns_writel(cdns, dpn_config_off, dpn_config);
+> +
+> +	dpn_offsetctrl |= (t_params->offset1 <<
+> +				SDW_REG_SHIFT(CDNS_DPN_OFFSET_CTRL_1));
+> +	dpn_offsetctrl |= (t_params->offset2 <<
+> +				SDW_REG_SHIFT(CDNS_DPN_OFFSET_CTRL_2));
+> +	cdns_writel(cdns, dpn_offsetctrl_off,  dpn_offsetctrl);
+> +
+> +	dpn_hctrl |= (t_params->hstart <<
+> +				SDW_REG_SHIFT(CDNS_DPN_HCTRL_HSTART));
+> +	dpn_hctrl |= (t_params->hstop << SDW_REG_SHIFT(CDNS_DPN_HCTRL_HSTOP));
+> +	dpn_hctrl |= (t_params->lane_ctrl <<
+> +				SDW_REG_SHIFT(CDNS_DPN_HCTRL_LCTRL));
+> +
+> +	cdns_writel(cdns, dpn_hctrl_off, dpn_hctrl);
+> +	cdns_writel(cdns, dpn_samplectrl_off, (t_params->sample_interval - 1));
+> +
+> +	return 0;
+> +}
+> +
+> +static int cdns_port_enable(struct sdw_bus *bus,
+> +		struct sdw_enable_ch *enable_ch, unsigned int bank)
+> +{
+> +	struct sdw_cdns *cdns = bus_to_cdns(bus);
+> +	int dpn_chnen_off, ch_mask;
+> +
+> +	if (bank)
+> +		dpn_chnen_off = CDNS_DPN_B1_CH_EN(enable_ch->num);
+> +	else
+> +		dpn_chnen_off = CDNS_DPN_B0_CH_EN(enable_ch->num);
+> +
+> +	ch_mask = enable_ch->ch_mask * enable_ch->enable;
+> +	cdns_writel(cdns, dpn_chnen_off, ch_mask);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct sdw_master_port_ops cdns_port_ops = {
+> +	.dpn_set_port_params = cdns_port_params,
+> +	.dpn_set_port_transport_params = cdns_transport_params,
+> +	.dpn_port_enable_ch = cdns_port_enable,
+> +};
+> +
+>   /**
+>    * sdw_cdns_probe() - Cadence probe routine
+>    * @cdns: Cadence instance
+> @@ -737,6 +992,7 @@ EXPORT_SYMBOL(sdw_cdns_init);
+>   int sdw_cdns_probe(struct sdw_cdns *cdns)
+>   {
+>   	init_completion(&cdns->tx_complete);
+> +	cdns->bus.port_ops = &cdns_port_ops;
+>   
+>   	return 0;
+>   }
+> diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
+> index 3ec74fa5f4f9..98a17f57918f 100644
+> --- a/drivers/soundwire/cadence_master.h
+> +++ b/drivers/soundwire/cadence_master.h
+> @@ -5,6 +5,92 @@
+>   #define __SDW_CADENCE_H
+>   
+>   /**
+> + * struct sdw_cdns_pdi: PDI (Physical Data Interface) instance
+> + *
+> + * @assigned: pdi assigned
+> + * @num: pdi number
+> + * @intel_alh_id: link identifier
+> + * @l_ch_num: low channel for PDI
+> + * @h_ch_num: high channel for PDI
+> + * @ch_count: total channel count for PDI
+> + * @dir: data direction
+> + * @type: stream type, PDM or PCM
+> + */
+> +struct sdw_cdns_pdi {
+> +	bool assigned;
+> +	int num;
+> +	int intel_alh_id;
+> +	int l_ch_num;
+> +	int h_ch_num;
+> +	int ch_count;
+> +	enum sdw_data_direction dir;
+> +	enum sdw_stream_type type;
+> +};
+> +
+> +/**
+> + * struct sdw_cdns_port: Cadence port structure
+> + *
+> + * @num: port number
+> + * @assigned: port assigned
+> + * @ch: channel count
+> + * @direction: data port direction
+> + * @pdi: pdi for this port
+> + */
+> +struct sdw_cdns_port {
+> +	unsigned int num;
+> +	bool assigned;
+> +	unsigned int ch;
+> +	enum sdw_data_direction direction;
+> +	struct sdw_cdns_pdi *pdi;
+> +};
+> +
+> +/**
+> + * struct sdw_cdns_streams: Cadence stream data structure
+> + *
+> + * @num_bd: number of bidirectional streams
+> + * @num_in: number of input streams
+> + * @num_out: number of output streams
+> + * @num_ch_bd: number of bidirectional stream channels
+> + * @num_ch_bd: number of input stream channels
+> + * @num_ch_bd: number of output stream channels
+> + * @num_pdi: total number of PDIs
+> + * @bd: bidirectional streams
+> + * @in: input streams
+> + * @out: output streams
+> + */
+> +struct sdw_cdns_streams {
+> +	unsigned int num_bd;
+> +	unsigned int num_in;
+> +	unsigned int num_out;
+> +	unsigned int num_ch_bd;
+> +	unsigned int num_ch_in;
+> +	unsigned int num_ch_out;
+> +	unsigned int num_pdi;
+> +	struct sdw_cdns_pdi *bd;
+> +	struct sdw_cdns_pdi *in;
+> +	struct sdw_cdns_pdi *out;
+> +};
+> +
+> +/**
+> + * struct sdw_cdns_stream_config: stream configuration
+> + *
+> + * @pcm_bd: number of bidirectional PCM streams supported
+> + * @pcm_in: number of input PCM streams supported
+> + * @pcm_out: number of output PCM streams supported
+> + * @pdm_bd: number of bidirectional PDM streams supported
+> + * @pdm_in: number of input PDM streams supported
+> + * @pdm_out: number of output PDM streams supported
+> + */
+> +struct sdw_cdns_stream_config {
+> +	unsigned int pcm_bd;
+> +	unsigned int pcm_in;
+> +	unsigned int pcm_out;
+> +	unsigned int pdm_bd;
+> +	unsigned int pdm_in;
+> +	unsigned int pdm_out;
+> +};
+> +
+> +/**
+>    * struct sdw_cdns - Cadence driver context
+>    * @dev: Linux device
+>    * @bus: Bus handle
+> @@ -12,6 +98,10 @@
+>    * @response_buf: SoundWire response buffer
+>    * @tx_complete: Tx completion
+>    * @defer: Defer pointer
+> + * @ports: Data ports
+> + * @num_ports: Total number of data ports
+> + * @pcm: PCM streams
+> + * @pdm: PDM streams
+>    * @registers: Cadence registers
+>    * @link_up: Link status
+>    * @msg_count: Messages sent on bus
+> @@ -25,6 +115,12 @@ struct sdw_cdns {
+>   	struct completion tx_complete;
+>   	struct sdw_defer *defer;
+>   
+> +	struct sdw_cdns_port *ports;
+> +	int num_ports;
+> +
+> +	struct sdw_cdns_streams pcm;
+> +	struct sdw_cdns_streams pdm;
+> +
+>   	void __iomem *registers;
+>   
+>   	bool link_up;
+> @@ -42,6 +138,8 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id);
+>   irqreturn_t sdw_cdns_thread(int irq, void *dev_id);
+>   
+>   int sdw_cdns_init(struct sdw_cdns *cdns);
+> +int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
+> +			struct sdw_cdns_stream_config config);
+>   int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns);
+>   
+>   enum sdw_command_response
+> @@ -53,4 +151,6 @@ cdns_xfer_msg_defer(struct sdw_bus *bus,
+>   
+>   enum sdw_command_response
+>   cdns_reset_page_addr(struct sdw_bus *bus, unsigned int dev_num);
+> +
+> +int cdns_bus_conf(struct sdw_bus *bus, struct sdw_bus_params *params);
+>   #endif /* __SDW_CADENCE_H */
+> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+> index aa0c60133de5..a64f87a08cfd 100644
+> --- a/drivers/soundwire/intel.c
+> +++ b/drivers/soundwire/intel.c
+> @@ -257,6 +257,7 @@ static struct sdw_master_ops sdw_intel_ops = {
+>   	.xfer_msg = cdns_xfer_msg,
+>   	.xfer_msg_defer = cdns_xfer_msg_defer,
+>   	.reset_page_addr = cdns_reset_page_addr,
+> +	.set_bus_conf = cdns_bus_conf,
+>   };
+>   
+>   /*
+> 
