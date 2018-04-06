@@ -1,98 +1,74 @@
-From: syzbot <syzbot+150189c103427d31a053@syzkaller.appspotmail.com>
-Subject: Re: INFO: rcu detected stall in snd_pcm_oss_write3 (2)
-Date: Fri, 06 Apr 2018 14:14:01 -0700
-Message-ID: <00000000000004c1de05693489a8@google.com>
-References: <000000000000118a9a056928bbd9@google.com>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: call/normal switch was Re: omap4-droid4: voice call support was
+Date: Sat, 7 Apr 2018 00:02:24 +0200
+Message-ID: <20180406220223.GA32064@amd>
+References: <20180401131852.GA11086@amd>
+ <20180401153631.GA5700@atomide.com>
+ <20180401173012.GB5700@atomide.com>
+ <67086fdd0cdd69142cb89cd00f90e5a580e6607a.camel@redhat.com>
+ <20180402155754.GD5700@atomide.com>
+ <20180403150444.GE5700@atomide.com>
+ <20180403155023.GA14638@atrey.karlin.mff.cuni.cz>
+ <20180403194419.GG5700@atomide.com>
+ <20180406120423.GA18691@amd>
+ <516eb3f7-e300-d59d-6a31-ab7545c656f1@wizzup.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="mYCpIKhGyMATD0i+"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <000000000000118a9a056928bbd9@google.com>
+Content-Disposition: inline
+In-Reply-To: <516eb3f7-e300-d59d-6a31-ab7545c656f1@wizzup.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: akpm@linux-foundation.org, alsa-devel@alsa-project.org, aryabinin@virtuozzo.com, dvyukov@google.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, o-takashi@sakamocchi.jp, perex@perex.cz, syzkaller-bugs@googlegroups.com, tchibo@google.com, tglx@linutronix.de, tiwai@suse.com
+To: Merlijn Wajer <merlijn@wizzup.org>
+Cc: Tony Lindgren <tony@atomide.com>, Dan Williams <dcbw@redhat.com>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
 List-Id: alsa-devel@alsa-project.org
 
-syzbot has found reproducer for the following crash on upstream commit
-38c23685b273cfb4ccf31a199feccce3bdcb5d83 (Fri Apr 6 04:29:35 2018 +0000)
-Merge tag 'armsoc-drivers' of  
-git://git.kernel.org/pub/scm/linux/kernel/git/arm/arm-soc
-syzbot dashboard link:  
-https://syzkaller.appspot.com/bug?extid=150189c103427d31a053
 
-So far this crash happened 15 times on upstream.
-C reproducer: https://syzkaller.appspot.com/x/repro.c?id=5405588854931456
-syzkaller reproducer:  
-https://syzkaller.appspot.com/x/repro.syz?id=5561439796330496
-Raw console output:  
-https://syzkaller.appspot.com/x/log.txt?id=5697900571000832
-Kernel config:  
-https://syzkaller.appspot.com/x/.config?id=-5813481738265533882
-compiler: gcc (GCC) 8.0.1 20180301 (experimental)
+--mYCpIKhGyMATD0i+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+150189c103427d31a053@syzkaller.appspotmail.com
-It will help syzbot understand when the bug is fixed.
+On Fri 2018-04-06 14:23:46, Merlijn Wajer wrote:
+> Hi,
+>=20
+> On 06/04/18 14:04, Pavel Machek wrote:
+> > Hi!
+> >=20
+> >> OK that explains why the speaker keeps working then :)
+> >=20
+> > Ok, I pushed new version of unicsy_demo.
+> >=20
+> > It now sends & receives sms and you can call & receive call. Tone from
+> > linphone is used for incoming call. User interface and code is
+> > slightly weird, as ofono was -- and still is -- meant as a backend.
+>=20
+> Great news, can't wait to try it.
 
-IPVS: ftp: loaded support on port[0] = 21
-INFO: rcu_sched self-detected stall on CPU
-	1-....: (124999 ticks this GP) idle=622/1/4611686018427387906  
-softirq=10596/10596 fqs=31239
-	 (t=125000 jiffies g=4952 c=4951 q=20)
-NMI backtrace for cpu 1
-CPU: 1 PID: 4474 Comm: syzkaller631460 Not tainted 4.16.0+ #3
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  <IRQ>
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x1b9/0x294 lib/dump_stack.c:113
-  nmi_cpu_backtrace.cold.4+0x19/0xce lib/nmi_backtrace.c:103
-  nmi_trigger_cpumask_backtrace+0x151/0x192 lib/nmi_backtrace.c:62
-  arch_trigger_cpumask_backtrace+0x14/0x20 arch/x86/kernel/apic/hw_nmi.c:38
-  trigger_single_cpu_backtrace include/linux/nmi.h:156 [inline]
-  rcu_dump_cpu_stacks+0x175/0x1c2 kernel/rcu/tree.c:1376
-  print_cpu_stall kernel/rcu/tree.c:1525 [inline]
-  check_cpu_stall.isra.61.cold.80+0x36c/0x59a kernel/rcu/tree.c:1593
-  __rcu_pending kernel/rcu/tree.c:3356 [inline]
-  rcu_pending kernel/rcu/tree.c:3401 [inline]
-  rcu_check_callbacks+0x21b/0xad0 kernel/rcu/tree.c:2763
-  update_process_times+0x2d/0x70 kernel/time/timer.c:1636
-  tick_sched_handle+0xa0/0x180 kernel/time/tick-sched.c:171
-  tick_sched_timer+0x42/0x130 kernel/time/tick-sched.c:1179
-  __run_hrtimer kernel/time/hrtimer.c:1337 [inline]
-  __hrtimer_run_queues+0x3e3/0x10a0 kernel/time/hrtimer.c:1399
-  hrtimer_interrupt+0x286/0x650 kernel/time/hrtimer.c:1457
-  local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1025 [inline]
-  smp_apic_timer_interrupt+0x15d/0x710 arch/x86/kernel/apic/apic.c:1050
-  apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:862
-  </IRQ>
-RIP: 0010:__snd_pcm_lib_xfer+0x768/0x1d10 sound/core/pcm_lib.c:2111
-RSP: 0018:ffff8801b7b76ea8 EFLAGS: 00000286 ORIG_RAX: ffffffffffffff13
-RAX: 0000000000000000 RBX: ffffffffffffffe0 RCX: ffffed0036f6edec
-RDX: 0000000000000000 RSI: ffffffff859ff04e RDI: ffffed0036f6edf0
-RBP: ffff8801b7b77148 R08: ffff8801afeae9b8 R09: 0000000000000006
-R10: ffff8801afeae140 R11: 0000000000000000 R12: 0000000000000004
-R13: 00000000ffffffe0 R14: ffff8801af2165c0 R15: ffff8801ceaec000
-  snd_pcm_oss_write3+0xe9/0x220 sound/core/oss/pcm_oss.c:1236
-  io_playback_transfer+0x274/0x310 sound/core/oss/io.c:47
-  snd_pcm_plug_write_transfer+0x36c/0x470 sound/core/oss/pcm_plugin.c:619
-  snd_pcm_oss_write2+0x25c/0x460 sound/core/oss/pcm_oss.c:1365
-  snd_pcm_oss_sync1+0x332/0x5a0 sound/core/oss/pcm_oss.c:1606
-  snd_pcm_oss_sync.isra.29+0x790/0x980 sound/core/oss/pcm_oss.c:1682
-  snd_pcm_oss_release+0x214/0x290 sound/core/oss/pcm_oss.c:2559
-  __fput+0x34d/0x890 fs/file_table.c:209
-  ____fput+0x15/0x20 fs/file_table.c:243
-  task_work_run+0x1e4/0x290 kernel/task_work.c:113
-  exit_task_work include/linux/task_work.h:22 [inline]
-  do_exit+0x1aee/0x2730 kernel/exit.c:865
-  do_group_exit+0x16f/0x430 kernel/exit.c:968
-  SYSC_exit_group kernel/exit.c:979 [inline]
-  SyS_exit_group+0x1d/0x20 kernel/exit.c:977
-  do_syscall_64+0x29e/0x9d0 arch/x86/entry/common.c:287
-  entry_SYSCALL_64_after_hwframe+0x42/0xb7
-RIP: 0033:0x4446e9
-RSP: 002b:00007ffe29466408 EFLAGS: 00000202 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: ffffffffffffffff RCX: 00000000004446e9
-RDX: 00000000004446e9 RSI: 0000000000000080 RDI: 0000000000000001
-RBP: 00000000006cf018 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000401ff0
-R13: 0000000000402080 R14: 0000000000000000 R15: 0000000000000000
+Oh btw ... if you need any help just ask. unicsy_demo needs to be
+symlinked to /usr/share/unicsy.
+
+If you could make notes of any problems you encounter and any packages
+you'll need to install, that would be nice -- it would be good to
+create README with installation instructions.
+
+Good luck,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--mYCpIKhGyMATD0i+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlrH7m8ACgkQMOfwapXb+vJjswCfbZnDcnE8joUOeLmBhqfwh3+u
+rdoAoKjPe4yRv2yWBOQx9J0eCRxi/1my
+=/oPQ
+-----END PGP SIGNATURE-----
+
+--mYCpIKhGyMATD0i+--
