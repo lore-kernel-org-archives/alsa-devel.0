@@ -1,61 +1,30 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Procedure for alsa modules compilation from git
-Date: Fri, 6 Apr 2018 20:33:49 +0200
-Message-ID: <fe243517-c3ed-dd66-c339-8843be7ee038@perex.cz>
-References: <c5de487e-3d99-e7d9-7640-cf1781748075@ivitera.com>
+From: Sasha Levin <Alexander.Levin@microsoft.com>
+Subject: Re: [PATCH][RESEND] ASoC: Intel: atom: fix ACPI/PCI Kconfig
+Date: Fri, 6 Apr 2018 20:05:12 +0000
+Message-ID: <MW2PR2101MB10349A640F79E0DF368EDACDFBBA0@MW2PR2101MB1034.namprd21.prod.outlook.com>
+References: <20180402170614.5599-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id EEF89266BBC
- for <alsa-devel@alsa-project.org>; Fri,  6 Apr 2018 20:33:51 +0200 (CEST)
-In-Reply-To: <c5de487e-3d99-e7d9-7640-cf1781748075@ivitera.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20180402170614.5599-1-pierre-louis.bossart@linux.intel.com>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pavel Hofman <pavel.hofman@ivitera.com>, alsa-devel@alsa-project.org
+Sender: stable-owner@vger.kernel.org
+To: Sasha Levin <Alexander.Levin@microsoft.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 6.4.2018 v 20:07 Pavel Hofman napsal(a):
-> Hi,
-> 
-> May I ask for description/link describing current working compilation of 
-> alsa modules from git? I would like to compile only alsa modules, 
-> against my stock ubuntu kernel. Headers/sources in /usr/src, configured 
-> to current configuration from /boot/config...
-> 
-> What is the oldest kernel to compile against (isch)? Would 4.4 work?
-> 
-> I would like to make a small patch for ice1724, test, and send here for 
-> review/inclusion.
-> 
-> I very much appreciate any help. I think it would be useful to many 
-> other occasional devels.
+Hi,
 
-The info is unfortunately obsolete, because the demand for this type of
-the compilation is really low. For simple changes, you may use the code
-from your kernel and write own Makefile for the external module build
-(copy obj parts from the ALSA makefiles) like:
+[This is an automated email]
 
---
-obj-m += test.o
+This commit has been processed because it contains a "Fixes:" tag,
+fixing commit: 4772c16ede52 ASoC: Intel: Kconfig: Simplify-clarify ACPI/PCI=
+ dependencies.
 
-all:
-    make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
---
+The bot has also determined it's probably a bug fixing patch. (score: 3.818=
+9)
 
-For complex changes, use the whole git tree.
+The bot has tested the following trees: v4.16.
 
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+v4.16: Build OK!
