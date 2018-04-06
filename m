@@ -1,75 +1,101 @@
-From: Juergen Gross <jgross@suse.com>
-Subject: Re: [PATCH v3 0/5] sndif: add explicit back and front
- synchronization
-Date: Fri, 6 Apr 2018 11:13:53 +0200
-Message-ID: <22b14d78-701d-f5c6-0b0b-b95b28bfe19c@suse.com>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: [Xen-devel] [PATCH v3 0/5] sndif: add explicit
+ back and front synchronization
+Date: Fri, 6 Apr 2018 12:18:39 +0300
+Message-ID: <835ef633-575c-63ec-e3b5-80d0f1dd4cf9@gmail.com>
 References: <1521444144-12451-1-git-send-email-andr2000@gmail.com>
+ <22b14d78-701d-f5c6-0b0b-b95b28bfe19c@suse.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <xen-devel-bounces@lists.xenproject.org>
-In-Reply-To: <1521444144-12451-1-git-send-email-andr2000@gmail.com>
-Content-Language: de-DE
-List-Unsubscribe: <https://lists.xenproject.org/mailman/options/xen-devel>,
- <mailto:xen-devel-request@lists.xenproject.org?subject=unsubscribe>
-List-Post: <mailto:xen-devel@lists.xenproject.org>
-List-Help: <mailto:xen-devel-request@lists.xenproject.org?subject=help>
-List-Subscribe: <https://lists.xenproject.org/mailman/listinfo/xen-devel>,
- <mailto:xen-devel-request@lists.xenproject.org?subject=subscribe>
-Errors-To: xen-devel-bounces@lists.xenproject.org
-Sender: "Xen-devel" <xen-devel-bounces@lists.xenproject.org>
-To: Oleksandr Andrushchenko <andr2000@gmail.com>, alsa-devel@alsa-project.org, xen-devel@lists.xenproject.org, konrad.wilk@oracle.com, tiwai@suse.de
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f41.google.com (mail-wm0-f41.google.com [74.125.82.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id C492E267235
+ for <alsa-devel@alsa-project.org>; Fri,  6 Apr 2018 11:18:41 +0200 (CEST)
+Received: by mail-wm0-f41.google.com with SMTP id x82so1881619wmg.1
+ for <alsa-devel@alsa-project.org>; Fri, 06 Apr 2018 02:18:41 -0700 (PDT)
+In-Reply-To: <22b14d78-701d-f5c6-0b0b-b95b28bfe19c@suse.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Juergen Gross <jgross@suse.com>, alsa-devel@alsa-project.org, xen-devel@lists.xenproject.org, konrad.wilk@oracle.com, tiwai@suse.de
 Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTkvMDMvMTggMDg6MjIsIE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIHdyb3RlOgo+IEZyb206
-IE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIDxvbGVrc2FuZHJfYW5kcnVzaGNoZW5rb0BlcGFtLmNv
-bT4KPiAKPiBIZWxsbywgYWxsIQo+IAo+IEluIG9yZGVyIHRvIHByb3ZpZGUgZXhwbGljaXQgc3lu
-Y2hyb25pemF0aW9uIGJldHdlZW4gYmFja2VuZCBhbmQKPiBmcm9udGVuZCB0aGUgZm9sbG93aW5n
-IGNoYW5nZXMgYXJlIGludHJvZHVjZWQgaW4gdGhlIHByb3RvY29sOgo+ICAtIGJ1bXAgcHJvdG9j
-b2wgdmVyc2lvbiB0byAyCj4gIC0gYWRkIG5ldyByaW5nIGJ1ZmZlciBmb3Igc2VuZGluZyBhc3lu
-Y2hyb25vdXMgZXZlbnRzIGZyb20KPiAgICBiYWNrZW5kIHRvIGZyb250ZW5kIHRvIHJlcG9ydCBu
-dW1iZXIgb2YgYnl0ZXMgcGxheWVkIGJ5IHRoZQo+ICAgIGZyb250ZW5kIChYRU5TTkRfRVZUX0NV
-Ul9QT1MpCj4gIC0gaW50cm9kdWNlIHRyaWdnZXIgZXZlbnRzIGZvciBwbGF5YmFjayBjb250cm9s
-OiBzdGFydC9zdG9wL3BhdXNlL3Jlc3VtZQo+ICAtIGFkZCAicmVxLSIgcHJlZml4IHRvIGV2ZW50
-LWNoYW5uZWwgYW5kIHJpbmctcmVmIHRvIHVuaWZ5IG5hbWluZwo+ICAgIG9mIHRoZSBYZW4gZXZl
-bnQgY2hhbm5lbHMgZm9yIHJlcXVlc3RzIGFuZCBldmVudHMKPiAgLSBhZGQgWEVOU05EX09QX0hX
-X1BBUkFNX1FVRVJZIHJlcXVlc3QgdG8gcmVhZC91cGRhdGUKPiAgICBzdHJlYW0gY29uZmlndXJh
-dGlvbiBzcGFjZTogcmVxdWVzdCBwYXNzZXMgZGVzaXJlZCBpbnRlcnZhbHMvZm9ybWF0cyBmb3IK
-PiAgICB0aGUgc3RyZWFtIHBhcmFtZXRlcnMgYW5kIHRoZSByZXNwb25zZSByZXR1cm5zIGFsbG93
-ZWQgaW50ZXJ2YWxzIGFuZAo+ICAgIGZvcm1hdHMgbWFzayB0aGF0IGNhbiBiZSB1c2VkLgo+IAo+
-IENoYW5nZXMgc2luY2UgdjI6Cj4gMS4gS29ucmFkJ3Mgci1iIHRhZyBmb3IgdmVyc2lvbiBwYXRj
-aAo+IDIuIE1BSk9SOiBjaGFuZ2VkIHJlcS9yZXNwL2V2dCBwYWNrZXQgc2l6ZXMgZnJvbSAzMiB0
-byA2NCBvY3RldHMKPiAzLiBSZXdvcmtlZCBYRU5TTkRfT1BfSFdfUEFSQU1fUVVFUlkgc28gaXQg
-bm93IHNlbmRzIGFsbCAKPiAgICBwYXJhbWV0ZXJzIGF0IG9uY2UsIGFsbG93aW5nIHRvIGNoZWNr
-IGFsbCB0aGUgY29uZmlndXJhdGlvbgo+ICAgIHNwYWNlLgo+IDQuIE1pbm9yIGRvY3VtZW50YXRp
-b24gY2xlYW51cCAoYWRkZWQgbWlzc2VkICJyZXNlcnZlZCIgZmllbGRzKQo+IAo+IENoYW5nZXMg
-c2luY2UgdjE6Cj4gCj4gMS4gQ2hhbmdlZCBwcm90b2NvbCB2ZXJzaW9uIGRlZmluaXRpb24gZnJv
-bSBzdHJpbmcgdG8gaW50ZWdlciwKPiBzbyBpdCBjYW4gZWFzaWx5IGJlIHVzZWQgaW4gY29tcGFy
-aXNvbnMuCj4gS29ucmFkLCBJIGhhdmUgcmVtb3ZlZCB5b3VyIHItYiB0YWcgZm9yIHRoZSByZWFz
-b24gb2YgdGhpcyBjaGFuZ2UuCj4gCj4gMi4gSW4gb3JkZXIgdG8gcHJvdmlkZSBleHBsaWNpdCBz
-dHJlYW0gcGFyYW1ldGVyIG5lZ290aWF0aW9uIGJldHdlZW4KPiBiYWNrZW5kIGFuZCBmcm9udGVu
-ZCB0aGUgZm9sbG93aW5nIGNoYW5nZXMgYXJlIGludHJvZHVjZWQgaW4gdGhlIHByb3RvY29sOgo+
-IGFkZCBYRU5TTkRfT1BfSFdfUEFSQU1fUVVFUlkgcmVxdWVzdCB0byByZWFkL3VwZGF0ZQo+IGNv
-bmZpZ3VyYXRpb24gc3BhY2UgZm9yIHRoZSBwYXJhbWV0ZXIgZ2l2ZW46IHJlcXVlc3QgcGFzc2Vz
-Cj4gZGVzaXJlZCBwYXJhbWV0ZXIgaW50ZXJ2YWwgKG1hc2spIGFuZCB0aGUgcmVzcG9uc2UgdG8g
-dGhpcyByZXF1ZXN0Cj4gcmV0dXJucyBtaW4vbWF4IGludGVydmFsIChtYXNrKSBmb3IgdGhlIHBh
-cmFtZXRlciB0byBiZSB1c2VkLgo+IAo+IFBhcmFtZXRlcnMgc3VwcG9ydGVkIGJ5IHRoaXMgcmVx
-dWVzdC9yZXNwb25zZToKPiAgLSBmb3JtYXQgbWFzawo+ICAtIHNhbXBsZSByYXRlIGludGVydmFs
-Cj4gIC0gbnVtYmVyIG9mIGNoYW5uZWxzIGludGVydmFsCj4gIC0gYnVmZmVyIHNpemUsIGludGVy
-dmFsLCBmcmFtZXMKPiAgLSBwZXJpb2Qgc2l6ZSwgaW50ZXJ2YWwsIGZyYW1lcwo+IAo+IE9sZWtz
-YW5kciBBbmRydXNoY2hlbmtvICg1KToKPiAgIHNuZGlmOiBJbnRyb2R1Y2UgcHJvdG9jb2wgdmVy
-c2lvbgo+ICAgc25kaWY6IEZpeCBtaXNzZWQgInJlc2VydmVkIiBmaWVsZHMgaW4gY29tbWVudHMK
-PiAgIHNuZGlmOiBNYWtlIHJlcXVlc3RzIGFuZCByZXNwb25zZXMgNjQgb2N0ZXRzIGxvbmcKPiAg
-IHNuZGlmOiBBZGQgZXhwbGljaXQgYmFjayBhbmQgZnJvbnQgc3luY2hyb25pemF0aW9uCj4gICBz
-bmRpZjogQWRkIGV4cGxpY2l0IGJhY2sgYW5kIGZyb250IHBhcmFtZXRlciBuZWdvdGlhdGlvbgo+
-IAo+ICB4ZW4vaW5jbHVkZS9wdWJsaWMvaW8vc25kaWYuaCB8IDMyMiArKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKystLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDMwNiBpbnNlcnRp
-b25zKCspLCAxNiBkZWxldGlvbnMoLSkKPiAKCldpdGggS29ucmFkJ3MgYWNrIHlvdSBjYW4gaGF2
-ZSBteToKClJlbGVhc2UtYWNrZWQtYnk6IEp1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT4K
-CmV2ZW4gaWYgdGhlIGNvbW1pdCBjYW4ndCBiZSBkb25lIGJlZm9yZSB0aGUgZnJlZXplLiBUaGUg
-aGVhZGVyIGlzbid0CnVzZWQgaW5zaWRlIFhlbiBzbyB0aGUgcmlzayBmb3IgdGhlIHJlbGVhc2Ug
-aXMgemVyby4KCgpKdWVyZ2VuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpYZW4tZGV2ZWwgbWFpbGluZyBsaXN0Clhlbi1kZXZlbEBsaXN0cy54ZW5wcm9q
-ZWN0Lm9yZwpodHRwczovL2xpc3RzLnhlbnByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8veGVu
-LWRldmVs
+On 04/06/2018 12:13 PM, Juergen Gross wrote:
+> On 19/03/18 08:22, Oleksandr Andrushchenko wrote:
+>> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+>>
+>> Hello, all!
+>>
+>> In order to provide explicit synchronization between backend and
+>> frontend the following changes are introduced in the protocol:
+>>   - bump protocol version to 2
+>>   - add new ring buffer for sending asynchronous events from
+>>     backend to frontend to report number of bytes played by the
+>>     frontend (XENSND_EVT_CUR_POS)
+>>   - introduce trigger events for playback control: start/stop/pause/resume
+>>   - add "req-" prefix to event-channel and ring-ref to unify naming
+>>     of the Xen event channels for requests and events
+>>   - add XENSND_OP_HW_PARAM_QUERY request to read/update
+>>     stream configuration space: request passes desired intervals/formats for
+>>     the stream parameters and the response returns allowed intervals and
+>>     formats mask that can be used.
+>>
+>> Changes since v2:
+>> 1. Konrad's r-b tag for version patch
+>> 2. MAJOR: changed req/resp/evt packet sizes from 32 to 64 octets
+>> 3. Reworked XENSND_OP_HW_PARAM_QUERY so it now sends all
+>>     parameters at once, allowing to check all the configuration
+>>     space.
+>> 4. Minor documentation cleanup (added missed "reserved" fields)
+>>
+>> Changes since v1:
+>>
+>> 1. Changed protocol version definition from string to integer,
+>> so it can easily be used in comparisons.
+>> Konrad, I have removed your r-b tag for the reason of this change.
+>>
+>> 2. In order to provide explicit stream parameter negotiation between
+>> backend and frontend the following changes are introduced in the protocol:
+>> add XENSND_OP_HW_PARAM_QUERY request to read/update
+>> configuration space for the parameter given: request passes
+>> desired parameter interval (mask) and the response to this request
+>> returns min/max interval (mask) for the parameter to be used.
+>>
+>> Parameters supported by this request/response:
+>>   - format mask
+>>   - sample rate interval
+>>   - number of channels interval
+>>   - buffer size, interval, frames
+>>   - period size, interval, frames
+>>
+>> Oleksandr Andrushchenko (5):
+>>    sndif: Introduce protocol version
+>>    sndif: Fix missed "reserved" fields in comments
+>>    sndif: Make requests and responses 64 octets long
+>>    sndif: Add explicit back and front synchronization
+>>    sndif: Add explicit back and front parameter negotiation
+>>
+>>   xen/include/public/io/sndif.h | 322 +++++++++++++++++++++++++++++++++++++++---
+>>   1 file changed, 306 insertions(+), 16 deletions(-)
+>>
+> With Konrad's ack you can have my:
+>
+> Release-acked-by: Juergen Gross <jgross@suse.com>
+Thank you
+>
+> even if the commit can't be done before the freeze. The header isn't
+> used inside Xen so the risk for the release is zero.
+This is true
+>
+> Juergen
+Thank you,
+Oleksandr
