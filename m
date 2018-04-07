@@ -1,18 +1,23 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: Procedure for alsa modules compilation from git
-Date: Sat, 7 Apr 2018 00:04:54 +0200
-Message-ID: <325f4103-3552-8caf-44b2-8ea0b366d585@ivitera.com>
-References: <c5de487e-3d99-e7d9-7640-cf1781748075@ivitera.com>
- <fe243517-c3ed-dd66-c339-8843be7ee038@perex.cz>
+From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: Re: [PATCH v3 2/3] ALSA: usb-audio: More strict sanity
+ checks for clock parsers
+Date: Sat, 7 Apr 2018 03:55:23 +0300
+Message-ID: <CAB=otbRDDU6a8vi=D8y82U_mBDPhZA8a8VmeZg09TAJYc-LQ4A@mail.gmail.com>
+References: <20180405121113.551-1-tiwai@suse.de>
+ <20180405121113.551-3-tiwai@suse.de>
+ <CAB=otbS5cTc1jZ5rERZU=3BxaC9e4o07+O1sAyWTo--iS+A=fw@mail.gmail.com>
+ <s5h7epklf7v.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
- by alsa0.perex.cz (Postfix) with ESMTP id BBEA6267359
- for <alsa-devel@alsa-project.org>; Sat,  7 Apr 2018 00:05:04 +0200 (CEST)
-In-Reply-To: <fe243517-c3ed-dd66-c339-8843be7ee038@perex.cz>
-Content-Language: en-US
+Received: from mail-ot0-f195.google.com (mail-ot0-f195.google.com
+ [74.125.82.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1BC0267359
+ for <alsa-devel@alsa-project.org>; Sat,  7 Apr 2018 02:55:25 +0200 (CEST)
+Received: by mail-ot0-f195.google.com with SMTP id m22-v6so9902otf.8
+ for <alsa-devel@alsa-project.org>; Fri, 06 Apr 2018 17:55:25 -0700 (PDT)
+In-Reply-To: <s5h7epklf7v.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,27 +27,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Andrew Chant <achant@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 6.4.2018 v 20:33 Jaroslav Kysela napsal(a):
+On Fri, Apr 6, 2018 at 2:57 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Fri, 06 Apr 2018 01:41:51 +0200,
+> Ruslan Bilovol wrote:
+>>
+>> Hi Takashi,
+>>
+>> On Thu, Apr 5, 2018 at 3:11 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > The sanity checks introduced for malformed descriptors loosely check
+>> > the given descriptor size, although the size greater than the defined
+>> > description is invalid.  It was due to a concern of any funky firmware
+>> > in the actual products.  But this doesn't look hitting, and any sane
+>> > products must have the defined descriptors.
+>> >
+>> > So in this patch, we make the validators more strict, allowing only
+>> > with the defined descriptor sizes.
+>> >
+>> > Suggested-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+>> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+>> > ---
+>> >  sound/usb/clock.c | 6 +++---
+>> >  1 file changed, 3 insertions(+), 3 deletions(-)
+>> >
+>> > diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+>> > index 27c2275a2505..cbf68ab01836 100644
+>> > --- a/sound/usb/clock.c
+>> > +++ b/sound/usb/clock.c
+>> > @@ -52,7 +52,7 @@ static void *find_uac_clock_desc(struct usb_host_interface *iface, int id,
+>> >  static bool validate_clock_source_v2(void *p, int id)
+>> >  {
+>> >         struct uac_clock_source_descriptor *cs = p;
+>> > -       return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
+>> > +       return cs->bLength == sizeof(*cs) && cs->bClockID == id;
+>> >  }
+>> >
+>> >  static bool validate_clock_source_v3(void *p, int id)
+>> > @@ -65,7 +65,7 @@ static bool validate_clock_selector_v2(void *p, int id)
+>> >  {
+>> >         struct uac_clock_selector_descriptor *cs = p;
+>> >         return cs->bLength >= sizeof(*cs) && cs->bClockID == id &&
+>> > -               cs->bLength >= 5 + cs->bNrInPins;
+>> > +               cs->bLength == 5 + cs->bNrInPins;
+>>
+>> This one still has an issue, here we should check it next way:
+>>                cs->bLength == 7 + cs->bNrInPins;
+>>
+>> This is because bLength is 7+bNrInPins as per UAC2 spec, not 5 :P
+>
+> Doh, I obviously overlooked the hidden members...
+> The fixed version is below.
+>
+>
+> Takashi
+>
+> -- 8< --
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH v3] ALSA: usb-audio: More strict sanity checks for clock parsers
+>
+> The sanity checks introduced for malformed descriptors loosely check
+> the given descriptor size, although the size greater than the defined
+> description is invalid.  It was due to a concern of any funky firmware
+> in the actual products.  But this doesn't look hitting, and any sane
+> products must have the defined descriptors.
+>
+> So in this patch, we make the validators more strict, allowing only
+> with the defined descriptor sizes.  The value in clock selector
+> validator is corrected from 5 to 7 to count the two unlisted fields
+> after baCSourceID[].
 
-> The info is unfortunately obsolete, because the demand for this type of
-> the compilation is really low. For simple changes, you may use the code
-> from your kernel and write own Makefile for the external module build
-> (copy obj parts from the ALSA makefiles) like:
-> 
+Looks good!
+
+Reviewed-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+
+I also tested this patch partially (validate_clock_source_v2() func only)
+and didn't get any issue in my case.
+
+Thanks,
+Ruslan
+
+>
+> Suggested-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/usb/clock.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+> index 27c2275a2505..30cfd5b1bdfb 100644
+> --- a/sound/usb/clock.c
+> +++ b/sound/usb/clock.c
+> @@ -52,7 +52,7 @@ static void *find_uac_clock_desc(struct usb_host_interface *iface, int id,
+>  static bool validate_clock_source_v2(void *p, int id)
+>  {
+>         struct uac_clock_source_descriptor *cs = p;
+> -       return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
+> +       return cs->bLength == sizeof(*cs) && cs->bClockID == id;
+>  }
+>
+>  static bool validate_clock_source_v3(void *p, int id)
+> @@ -65,7 +65,7 @@ static bool validate_clock_selector_v2(void *p, int id)
+>  {
+>         struct uac_clock_selector_descriptor *cs = p;
+>         return cs->bLength >= sizeof(*cs) && cs->bClockID == id &&
+> -               cs->bLength >= 5 + cs->bNrInPins;
+> +               cs->bLength == 7 + cs->bNrInPins;
+>  }
+>
+>  static bool validate_clock_selector_v3(void *p, int id)
+> @@ -77,7 +77,7 @@ static bool validate_clock_selector_v3(void *p, int id)
+>  static bool validate_clock_multiplier_v2(void *p, int id)
+>  {
+>         struct uac_clock_multiplier_descriptor *cs = p;
+> -       return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
+> +       return cs->bLength == sizeof(*cs) && cs->bClockID == id;
+>  }
+>
+>  static bool validate_clock_multiplier_v3(void *p, int id)
 > --
-> obj-m += test.o
-> 
-> all:
->      make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
-> --
-> 
-> For complex changes, use the whole git tree.
-
-Thanks a lot, I will compile the whole tree then.
-
-Best regards,
-
-Pavel.
+> 2.16.3
+>
