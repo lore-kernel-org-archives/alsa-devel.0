@@ -1,24 +1,18 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: simultaneous voice/data works (was Re: call/normal
- switch was Re: omap4-droid4: voice call support was)
-Date: Sat, 7 Apr 2018 10:10:00 +0200
-Message-ID: <20180407081000.GB7818@amd>
-References: <20180401131852.GA11086@amd> <20180401153631.GA5700@atomide.com>
- <20180401173012.GB5700@atomide.com>
- <67086fdd0cdd69142cb89cd00f90e5a580e6607a.camel@redhat.com>
- <20180402155754.GD5700@atomide.com>
- <20180403150444.GE5700@atomide.com>
- <20180403155023.GA14638@atrey.karlin.mff.cuni.cz>
- <20180403194419.GG5700@atomide.com> <20180406120423.GA18691@amd>
- <516eb3f7-e300-d59d-6a31-ab7545c656f1@wizzup.org>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: pcm: Fix endless loop for XRUN recovery
+	in OSS emulation
+Date: Sat,  7 Apr 2018 11:55:40 +0200
+Message-ID: <20180407095540.21162-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2608735475586296374=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
- [195.113.26.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BBB62266F69
- for <alsa-devel@alsa-project.org>; Sat,  7 Apr 2018 10:10:01 +0200 (CEST)
-In-Reply-To: <516eb3f7-e300-d59d-6a31-ab7545c656f1@wizzup.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23494266F69
+ for <alsa-devel@alsa-project.org>; Sat,  7 Apr 2018 11:55:43 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 4568FAE1E
+ for <alsa-devel@alsa-project.org>; Sat,  7 Apr 2018 09:55:43 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,64 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Merlijn Wajer <merlijn@wizzup.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Dan Williams <dcbw@redhat.com>, Mark Brown <broonie@kernel.org>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, linux-omap@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The commit 02a5d6925cd3 ("ALSA: pcm: Avoid potential races between OSS
+ioctls and read/write") split the PCM preparation code to a locked
+version, and it added a sanity check of runtime->oss.prepare flag
+along with the change.  This leaded to an endless loop when the stream
+gets XRUN: namely, snd_pcm_oss_write3() and co call
+snd_pcm_oss_prepare() without setting runtime->oss.prepare flag and
+the loop continues until the PCM state reaches to another one.
 
---===============2608735475586296374==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="E39vaYmALEf/7YXx"
-Content-Disposition: inline
+As the function is supposed to execute the preparation
+unconditionally, drop the invalid state check there.
 
+The bug was triggered by syzkaller.
 
---E39vaYmALEf/7YXx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 02a5d6925cd3 ("ALSA: pcm: Avoid potential races between OSS ioctls and read/write")
+Reported-by: syzbot+7e3f31a52646f939c052@syzkaller.appspotmail.com
+Reported-by: syzbot+4f2016cf5185da7759dc@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/oss/pcm_oss.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Hi!
-
-It seems qmicli can be used while unicsy_demo/ofone talks to the modem
-using the AT commands.
-
-So I could do:
-
-qmicli -d /dev/cdc-wdm0 --wds-follow-network --wds-start-network=3Dapn=3Din=
-ternet.t-mobile.cz
-route del default
-sudo ifconfig wwan0 up
-dhclient wwan0
-
-to get GPRS/UMTS connection. AT commands still work.
-
-Does anyone have any idea what to do to get the GPS to work?
-
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---E39vaYmALEf/7YXx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlrIfNgACgkQMOfwapXb+vLUgwCeM8xvN8f4NiGsYsGYTtPbEpiu
-+kMAn0ncGuWCT/d3i8uOStcDckMHMnJ9
-=sXKV
------END PGP SIGNATURE-----
-
---E39vaYmALEf/7YXx--
-
---===============2608735475586296374==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2608735475586296374==--
+diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+index 481ab0e94ffa..727647755aab 100644
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -1128,13 +1128,12 @@ static int snd_pcm_oss_get_active_substream(struct snd_pcm_oss_file *pcm_oss_fil
+ }
+ 
+ /* call with params_lock held */
++/* NOTE: this doesn't care whether runtime->oss.prepare is set or not */
+ static int snd_pcm_oss_prepare(struct snd_pcm_substream *substream)
+ {
+ 	int err;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 
+-	if (!runtime->oss.prepare)
+-		return 0;
+ 	err = snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_PREPARE, NULL);
+ 	if (err < 0) {
+ 		pcm_dbg(substream->pcm,
+-- 
+2.16.3
