@@ -1,58 +1,115 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: INFO: rcu detected stall in snd_pcm_oss_write3 (2)
-Date: Sat, 7 Apr 2018 13:58:46 +0200
-Message-ID: <CACT4Y+YC7W2fTCaGAs081NQCzkA-nJxjMb7SZxouYkLDRFmUTA@mail.gmail.com>
-References: <000000000000118a9a056928bbd9@google.com> <00000000000004c1de05693489a8@google.com>
- <s5hlgdzgx0k.wl-tiwai@suse.de> <CACT4Y+aTGHDimPZzeAi+QyJNio_NGTWfFM8xvndP9NceEPRwOQ@mail.gmail.com>
- <s5hin93gu2x.wl-tiwai@suse.de>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: simultaneous voice/data works (was Re: call/normal
+ switch was Re: omap4-droid4: voice call support was)
+Date: Sat, 7 Apr 2018 14:22:33 +0200
+Message-ID: <20180407122233.GA11302@amd>
+References: <20180401153631.GA5700@atomide.com>
+ <20180401173012.GB5700@atomide.com>
+ <67086fdd0cdd69142cb89cd00f90e5a580e6607a.camel@redhat.com>
+ <20180402155754.GD5700@atomide.com>
+ <20180403150444.GE5700@atomide.com>
+ <20180403155023.GA14638@atrey.karlin.mff.cuni.cz>
+ <20180403194419.GG5700@atomide.com> <20180406120423.GA18691@amd>
+ <516eb3f7-e300-d59d-6a31-ab7545c656f1@wizzup.org>
+ <20180407081000.GB7818@amd>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hin93gu2x.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: syzbot <syzbot+150189c103427d31a053@syzkaller.appspotmail.com>, alsa-devel@alsa-project.org, Victor Chibotaru <tchibo@google.com>, syzkaller-bugs@googlegroups.com, Thomas Gleixner <tglx@linutronix.de>, Andrew Morton <akpm@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, LKML <linux-kernel@vger.kernel.org>, Andrey Ryabinin <aryabinin@virtuozzo.com>
+Content-Type: multipart/mixed; boundary="===============2656763259633967031=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
+ [195.113.26.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32A6126732A
+ for <alsa-devel@alsa-project.org>; Sat,  7 Apr 2018 14:22:33 +0200 (CEST)
+In-Reply-To: <20180407081000.GB7818@amd>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Merlijn Wajer <merlijn@wizzup.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Dan Williams <dcbw@redhat.com>, Mark Brown <broonie@kernel.org>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, linux-omap@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-#syz dup: INFO: rcu detected stall in io_playback_transfer
 
-On Sat, Apr 7, 2018 at 1:00 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Sat, 07 Apr 2018 12:19:33 +0200,
-> Dmitry Vyukov wrote:
->>
->> On Sat, Apr 7, 2018 at 11:56 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> > On Fri, 06 Apr 2018 23:14:01 +0200,
->> > syzbot wrote:
->> >>
->> >> syzbot has found reproducer for the following crash on upstream commit
->> >> 38c23685b273cfb4ccf31a199feccce3bdcb5d83 (Fri Apr 6 04:29:35 2018 +0000)
->> >> Merge tag 'armsoc-drivers' of
->> >> git://git.kernel.org/pub/scm/linux/kernel/git/arm/arm-soc
->> >> syzbot dashboard link:
->> >> https://syzkaller.appspot.com/bug?extid=150189c103427d31a053
->> >>
->> >> So far this crash happened 15 times on upstream.
->> >> C reproducer: https://syzkaller.appspot.com/x/repro.c?id=5405588854931456
->> >> syzkaller reproducer:
->> >> https://syzkaller.appspot.com/x/repro.syz?id=5561439796330496
->> >> Raw console output:
->> >> https://syzkaller.appspot.com/x/log.txt?id=5697900571000832
->> >> Kernel config:
->> >> https://syzkaller.appspot.com/x/.config?id=-5813481738265533882
->> >> compiler: gcc (GCC) 8.0.1 20180301 (experimental)
->> >
->> > Thanks to the reproducer, I could spot out now.
->> > Below is the patch (which was submitted as well).
->>
->> Great!
->>
->> There are 3 more recent stalls in sound, does this fix them as well?
->>
->> https://groups.google.com/forum/#!msg/syzkaller-bugs/MGfk8WH3O6k/ja2xKpdcCAAJ
->> https://groups.google.com/forum/#!msg/syzkaller-bugs/74HglwU94go/T89ohzlYCAAJ
->> https://groups.google.com/forum/#!msg/syzkaller-bugs/D2xWV7WTRDk/5y2kZyBICAAJ
->
-> Yes, very likely.
->
->
-> Takashi
+--===============2656763259633967031==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="2fHTh5uZTiUOsy+g"
+Content-Disposition: inline
+
+
+--2fHTh5uZTiUOsy+g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat 2018-04-07 10:10:00, Pavel Machek wrote:
+> Hi!
+>=20
+> It seems qmicli can be used while unicsy_demo/ofone talks to the modem
+> using the AT commands.
+>=20
+> So I could do:
+>=20
+> qmicli -d /dev/cdc-wdm0 --wds-follow-network --wds-start-network=3Dapn=3D=
+internet.t-mobile.cz
+> route del default
+> sudo ifconfig wwan0 up
+> dhclient wwan0
+>=20
+> to get GPRS/UMTS connection. AT commands still work.
+>=20
+> Does anyone have any idea what to do to get the GPS to work?
+
+Got that to work.
+
+I installed modemmanager -- unfortunately that claims ttyUSB4 so it
+breaks voice/sms -- but then
+
+mmcli -m 0 --enable
+mmcli -m 0  --location-enable-gps-nmea
+watch -n .3 sudo mmcli -m 0  --location-get-gps-nmea
+
+=2E..can be used to get GPS data. Droid4 seems to have rather bad GPS,
+so you should probably put it near window for testing.
+
+Is there way to grab data from modemmanager and feed it to gpsd, so
+that normal applications can access gps? I don't see easy way.
+
+I tried --location-enable-gps-unmanaged , but that did not work for
+me.
+
+Is modemmanager enabling GPS, or is it talking to libqmi to do that?
+The code is quite confusing to me...
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--2fHTh5uZTiUOsy+g
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlrIuAgACgkQMOfwapXb+vKwNgCgnpkGp1ZCvHY6YIGdLkLNZj2B
+bF4An2dCSDEPgPDJVe6bZ9cpT1Ob5zoX
+=4HlO
+-----END PGP SIGNATURE-----
+
+--2fHTh5uZTiUOsy+g--
+
+--===============2656763259633967031==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2656763259633967031==--
