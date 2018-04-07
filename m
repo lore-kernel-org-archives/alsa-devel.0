@@ -1,23 +1,24 @@
-From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Subject: Re: [PATCH v3 2/3] ALSA: usb-audio: More strict sanity
- checks for clock parsers
-Date: Sat, 7 Apr 2018 03:55:23 +0300
-Message-ID: <CAB=otbRDDU6a8vi=D8y82U_mBDPhZA8a8VmeZg09TAJYc-LQ4A@mail.gmail.com>
-References: <20180405121113.551-1-tiwai@suse.de>
- <20180405121113.551-3-tiwai@suse.de>
- <CAB=otbS5cTc1jZ5rERZU=3BxaC9e4o07+O1sAyWTo--iS+A=fw@mail.gmail.com>
- <s5h7epklf7v.wl-tiwai@suse.de>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: simultaneous voice/data works (was Re: call/normal
+ switch was Re: omap4-droid4: voice call support was)
+Date: Sat, 7 Apr 2018 10:10:00 +0200
+Message-ID: <20180407081000.GB7818@amd>
+References: <20180401131852.GA11086@amd> <20180401153631.GA5700@atomide.com>
+ <20180401173012.GB5700@atomide.com>
+ <67086fdd0cdd69142cb89cd00f90e5a580e6607a.camel@redhat.com>
+ <20180402155754.GD5700@atomide.com>
+ <20180403150444.GE5700@atomide.com>
+ <20180403155023.GA14638@atrey.karlin.mff.cuni.cz>
+ <20180403194419.GG5700@atomide.com> <20180406120423.GA18691@amd>
+ <516eb3f7-e300-d59d-6a31-ab7545c656f1@wizzup.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2608735475586296374=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f195.google.com (mail-ot0-f195.google.com
- [74.125.82.195])
- by alsa0.perex.cz (Postfix) with ESMTP id F1BC0267359
- for <alsa-devel@alsa-project.org>; Sat,  7 Apr 2018 02:55:25 +0200 (CEST)
-Received: by mail-ot0-f195.google.com with SMTP id m22-v6so9902otf.8
- for <alsa-devel@alsa-project.org>; Fri, 06 Apr 2018 17:55:25 -0700 (PDT)
-In-Reply-To: <s5h7epklf7v.wl-tiwai@suse.de>
+Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
+ [195.113.26.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id BBB62266F69
+ for <alsa-devel@alsa-project.org>; Sat,  7 Apr 2018 10:10:01 +0200 (CEST)
+In-Reply-To: <516eb3f7-e300-d59d-6a31-ab7545c656f1@wizzup.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,126 +28,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Andrew Chant <achant@google.com>
+To: Merlijn Wajer <merlijn@wizzup.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Dan Williams <dcbw@redhat.com>, Mark Brown <broonie@kernel.org>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, linux-omap@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 6, 2018 at 2:57 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Fri, 06 Apr 2018 01:41:51 +0200,
-> Ruslan Bilovol wrote:
->>
->> Hi Takashi,
->>
->> On Thu, Apr 5, 2018 at 3:11 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> > The sanity checks introduced for malformed descriptors loosely check
->> > the given descriptor size, although the size greater than the defined
->> > description is invalid.  It was due to a concern of any funky firmware
->> > in the actual products.  But this doesn't look hitting, and any sane
->> > products must have the defined descriptors.
->> >
->> > So in this patch, we make the validators more strict, allowing only
->> > with the defined descriptor sizes.
->> >
->> > Suggested-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
->> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
->> > ---
->> >  sound/usb/clock.c | 6 +++---
->> >  1 file changed, 3 insertions(+), 3 deletions(-)
->> >
->> > diff --git a/sound/usb/clock.c b/sound/usb/clock.c
->> > index 27c2275a2505..cbf68ab01836 100644
->> > --- a/sound/usb/clock.c
->> > +++ b/sound/usb/clock.c
->> > @@ -52,7 +52,7 @@ static void *find_uac_clock_desc(struct usb_host_interface *iface, int id,
->> >  static bool validate_clock_source_v2(void *p, int id)
->> >  {
->> >         struct uac_clock_source_descriptor *cs = p;
->> > -       return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
->> > +       return cs->bLength == sizeof(*cs) && cs->bClockID == id;
->> >  }
->> >
->> >  static bool validate_clock_source_v3(void *p, int id)
->> > @@ -65,7 +65,7 @@ static bool validate_clock_selector_v2(void *p, int id)
->> >  {
->> >         struct uac_clock_selector_descriptor *cs = p;
->> >         return cs->bLength >= sizeof(*cs) && cs->bClockID == id &&
->> > -               cs->bLength >= 5 + cs->bNrInPins;
->> > +               cs->bLength == 5 + cs->bNrInPins;
->>
->> This one still has an issue, here we should check it next way:
->>                cs->bLength == 7 + cs->bNrInPins;
->>
->> This is because bLength is 7+bNrInPins as per UAC2 spec, not 5 :P
->
-> Doh, I obviously overlooked the hidden members...
-> The fixed version is below.
->
->
-> Takashi
->
-> -- 8< --
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH v3] ALSA: usb-audio: More strict sanity checks for clock parsers
->
-> The sanity checks introduced for malformed descriptors loosely check
-> the given descriptor size, although the size greater than the defined
-> description is invalid.  It was due to a concern of any funky firmware
-> in the actual products.  But this doesn't look hitting, and any sane
-> products must have the defined descriptors.
->
-> So in this patch, we make the validators more strict, allowing only
-> with the defined descriptor sizes.  The value in clock selector
-> validator is corrected from 5 to 7 to count the two unlisted fields
-> after baCSourceID[].
 
-Looks good!
+--===============2608735475586296374==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="E39vaYmALEf/7YXx"
+Content-Disposition: inline
 
-Reviewed-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
 
-I also tested this patch partially (validate_clock_source_v2() func only)
-and didn't get any issue in my case.
+--E39vaYmALEf/7YXx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Ruslan
+Hi!
 
->
-> Suggested-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/usb/clock.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/sound/usb/clock.c b/sound/usb/clock.c
-> index 27c2275a2505..30cfd5b1bdfb 100644
-> --- a/sound/usb/clock.c
-> +++ b/sound/usb/clock.c
-> @@ -52,7 +52,7 @@ static void *find_uac_clock_desc(struct usb_host_interface *iface, int id,
->  static bool validate_clock_source_v2(void *p, int id)
->  {
->         struct uac_clock_source_descriptor *cs = p;
-> -       return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
-> +       return cs->bLength == sizeof(*cs) && cs->bClockID == id;
->  }
->
->  static bool validate_clock_source_v3(void *p, int id)
-> @@ -65,7 +65,7 @@ static bool validate_clock_selector_v2(void *p, int id)
->  {
->         struct uac_clock_selector_descriptor *cs = p;
->         return cs->bLength >= sizeof(*cs) && cs->bClockID == id &&
-> -               cs->bLength >= 5 + cs->bNrInPins;
-> +               cs->bLength == 7 + cs->bNrInPins;
->  }
->
->  static bool validate_clock_selector_v3(void *p, int id)
-> @@ -77,7 +77,7 @@ static bool validate_clock_selector_v3(void *p, int id)
->  static bool validate_clock_multiplier_v2(void *p, int id)
->  {
->         struct uac_clock_multiplier_descriptor *cs = p;
-> -       return cs->bLength >= sizeof(*cs) && cs->bClockID == id;
-> +       return cs->bLength == sizeof(*cs) && cs->bClockID == id;
->  }
->
->  static bool validate_clock_multiplier_v3(void *p, int id)
-> --
-> 2.16.3
->
+It seems qmicli can be used while unicsy_demo/ofone talks to the modem
+using the AT commands.
+
+So I could do:
+
+qmicli -d /dev/cdc-wdm0 --wds-follow-network --wds-start-network=3Dapn=3Din=
+ternet.t-mobile.cz
+route del default
+sudo ifconfig wwan0 up
+dhclient wwan0
+
+to get GPRS/UMTS connection. AT commands still work.
+
+Does anyone have any idea what to do to get the GPS to work?
+
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--E39vaYmALEf/7YXx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlrIfNgACgkQMOfwapXb+vLUgwCeM8xvN8f4NiGsYsGYTtPbEpiu
++kMAn0ncGuWCT/d3i8uOStcDckMHMnJ9
+=sXKV
+-----END PGP SIGNATURE-----
+
+--E39vaYmALEf/7YXx--
+
+--===============2608735475586296374==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2608735475586296374==--
