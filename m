@@ -1,93 +1,79 @@
-From: Dan Williams <dcbw@redhat.com>
-Subject: Re: simultaneous voice/data works (was Re: call/normal switch was
- Re: omap4-droid4: voice call support was)
-Date: Sat, 07 Apr 2018 21:44:59 -0500
-Message-ID: <cbfc3cfa8acbc02dde848ec4e1d71b5089ff1d10.camel@redhat.com>
-References: <20180401153631.GA5700@atomide.com>
-         <20180401173012.GB5700@atomide.com>
-         <67086fdd0cdd69142cb89cd00f90e5a580e6607a.camel@redhat.com>
-         <20180402155754.GD5700@atomide.com> <20180403150444.GE5700@atomide.com>
-         <20180403155023.GA14638@atrey.karlin.mff.cuni.cz>
-         <20180403194419.GG5700@atomide.com> <20180406120423.GA18691@amd>
-         <516eb3f7-e300-d59d-6a31-ab7545c656f1@wizzup.org>
-         <20180407081000.GB7818@amd> <20180407122233.GA11302@amd>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_esai: Clear the xPM bit when
+ using xFP
+Date: Sat, 7 Apr 2018 21:01:28 -0700
+Message-ID: <20180408040127.GA14245@Asurada-CZ80>
+References: <20180407130221.24770-1-marex@denx.de>
+ <20180408011454.GA2997@Asurada-CZ80>
+ <32ecf3e6-2241-682a-4f24-940fbab998b7@denx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180407122233.GA11302@amd>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pavel Machek <pavel@ucw.cz>, Merlijn Wajer <merlijn@wizzup.org>
-Cc: Tony Lindgren <tony@atomide.com>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf0-f177.google.com (mail-pf0-f177.google.com
+ [209.85.192.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1069267070
+ for <alsa-devel@alsa-project.org>; Sun,  8 Apr 2018 06:01:35 +0200 (CEST)
+Received: by mail-pf0-f177.google.com with SMTP id p15so3555355pff.11
+ for <alsa-devel@alsa-project.org>; Sat, 07 Apr 2018 21:01:35 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <32ecf3e6-2241-682a-4f24-940fbab998b7@denx.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Marek Vasut <marex@denx.de>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, "Gustavo A . R . Silva" <garsilva@embeddedor.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2018-04-07 at 14:22 +0200, Pavel Machek wrote:
-> On Sat 2018-04-07 10:10:00, Pavel Machek wrote:
-> > Hi!
-> > 
-> > It seems qmicli can be used while unicsy_demo/ofone talks to the
-> > modem
-> > using the AT commands.
-> > 
-> > So I could do:
-> > 
-> > qmicli -d /dev/cdc-wdm0 --wds-follow-network --wds-start-
-> > network=apn=internet.t-mobile.cz
-> > route del default
-> > sudo ifconfig wwan0 up
-> > dhclient wwan0
-> > 
-> > to get GPRS/UMTS connection. AT commands still work.
-> > 
-> > Does anyone have any idea what to do to get the GPS to work?
+On Sun, Apr 08, 2018 at 04:16:39AM +0200, Marek Vasut wrote:
+
+> > Could you please provide a failed
+> > instance? It's been a while since I wrote the code. But I can tell
+> > that PM is supposed to be called by set_sysclk() only, while FP is
+> > used for bclk. If you clear PM when setting FP, the output of HCK
+> > could be messed.
 > 
-> Got that to work.
-> 
-> I installed modemmanager -- unfortunately that claims ttyUSB4 so it
-> breaks voice/sms -- but then
+> Try feeding it the following values, The codec I use is PCM1808.
 
-It shouldn't break SMS since MM will do SMS via QMI, but yeah for now
-it'll break voice because that would happen via QMI too, and we haven't
-implemented voice for QMI yet.
+> [1] fsl_esai_set_dai_sysclk[227] clk_id=0 freq=24576000 dir=1
+> [2] fsl_esai_divisor_cal[131] tx=0 ratio=2 usefp=0 fp=0
+> [3] fsl_esai_set_bclk[322] tx=0 freq=3072000
+> [4] fsl_esai_divisor_cal[131] tx=0 ratio=8 usefp=1 fp=8
 
---help-messaging
---help-sms
+So [1] tries to output HCKT (using FSYS) and to set its freq
+at 24MHz. If [2] is correct, you'd have HCKT outputting 24MHz.
 
-Also available via D-Bus of course.
+Let's put this in the graph:
+FSYS (48MHz) --> PSR & PM (input_rate / 2) --> HCKT (24MHz)
 
-> mmcli -m 0 --enable
-> mmcli -m 0  --location-enable-gps-nmea
-> watch -n .3 sudo mmcli -m 0  --location-get-gps-nmea
-> 
-> ...can be used to get GPS data. Droid4 seems to have rather bad GPS,
-> so you should probably put it near window for testing.
-> 
-> Is there way to grab data from modemmanager and feed it to gpsd, so
-> that normal applications can access gps? I don't see easy way.
-> 
-> I tried --location-enable-gps-unmanaged , but that did not work for
-> me.
+[3] tries to output SCKT (bit clock) at 3MHz. So you got fp=8
+and usefp=1. The combination of usefp=1 and fp=8 should bypass
+PSR/PM settings because both should be correctly configured:
 
-That requires a TTY that would spit out the GPS data; in this mode MM
-only sends the start/stop commands, and what comes out the GPS TTY is
-undefined (at least by MM).
+HCKT (24MHz) --> FP (input_rate / 8) --> SCKT (3MHz)
 
-So unless you know that one of the 6600's TTYs does GPS and in what
-format it does GPS, then no.
+If you set PM=0 at [4], the HCKT at [2] would be changed. So
+your change shouldn't be a good fix. Meanwhile, I don't see
+any problem of the driver at the FP/PM part. I think you can
+help me figure it out as it might because of something else.
+You may dump the PSR, PM here to check if HCKT is 24MHz.
 
-Doesn't --location-get-gps-nmea work for you?  That will spit out the
-latest NMEA traces MM gets from the modem, if it supports NMEA.  I
-believe --location-status will tell you what methods MM supports with
-the modem.
+> Also, I think there is another bug in the fsl_esai_divisor_cal() now
+> that I look at it.
 
-Also available via D-Bus of course.
+> If usefp = 0, then maxfp = 1 , then savesub = 0 and
 
-> Is modemmanager enabling GPS, or is it talking to libqmi to do that?
-> The code is quite confusing to me...
+I see. This actually would happen when PSR=0. And the ratio in
+this case is <= 256 (which could be satisfied by PM only). Btw,
+is this the reason why you got a "dirty" PM?
 
-Yes.  When the modem is driven with QMI, then all the data comes from
-QMI.  For other modems (like Huawei HiLink and Gobi 1000) the enabling
-commands are done via AT on the main command port and then one of the
-TTYs starts spewing out NMEA.
+Anyway, this part is a bug. Would you like to fix it?
 
-Dan
+Thanks
+Nicolin
