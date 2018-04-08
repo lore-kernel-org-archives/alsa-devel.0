@@ -1,84 +1,45 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: simultaneous voice/data works (was Re: call/normal switch was
- Re: omap4-droid4: voice call support was)
-Date: Sun, 8 Apr 2018 09:41:24 +0200
-Message-ID: <20180408074124.GA19844@amd>
-References: <67086fdd0cdd69142cb89cd00f90e5a580e6607a.camel@redhat.com>
- <20180402155754.GD5700@atomide.com>
- <20180403150444.GE5700@atomide.com>
- <20180403155023.GA14638@atrey.karlin.mff.cuni.cz>
- <20180403194419.GG5700@atomide.com>
- <20180406120423.GA18691@amd>
- <516eb3f7-e300-d59d-6a31-ab7545c656f1@wizzup.org>
- <20180407081000.GB7818@amd>
- <20180407122233.GA11302@amd>
- <cbfc3cfa8acbc02dde848ec4e1d71b5089ff1d10.camel@redhat.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] slimbus: Fix out-of-bounds access in slim_slicesize()
+Date: Sun,  8 Apr 2018 11:02:34 +0200
+Message-ID: <1523178154-1130-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="dDRMvlgZJXvWKvBx"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <cbfc3cfa8acbc02dde848ec4e1d71b5089ff1d10.camel@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Dan Williams <dcbw@redhat.com>
-Cc: Merlijn Wajer <merlijn@wizzup.org>, Tony Lindgren <tony@atomide.com>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: alsa-devel@alsa-project.org
 
+With gcc-4.1.2:
 
---dDRMvlgZJXvWKvBx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+    slimbus/messaging.c: In function ‘slim_slicesize’:
+    slimbus/messaging.c:186: warning: statement with no effect
 
-Hi!
+Indeed, clamp() is a macro not operating in-place, but returning the
+clamped value.  Hence the value is not clamped at all, which may lead to
+an out-of-bounds access.
 
-> > mmcli -m 0 --enable
-> > mmcli -m 0  --location-enable-gps-nmea
-> > watch -n .3 sudo mmcli -m 0  --location-get-gps-nmea
-> >=20
-> > ...can be used to get GPS data. Droid4 seems to have rather bad GPS,
-> > so you should probably put it near window for testing.
-> >=20
-> > Is there way to grab data from modemmanager and feed it to gpsd, so
-> > that normal applications can access gps? I don't see easy way.
-> >=20
-> > I tried --location-enable-gps-unmanaged , but that did not work for
-> > me.
->=20
-> That requires a TTY that would spit out the GPS data; in this mode MM
-> only sends the start/stop commands, and what comes out the GPS TTY is
-> undefined (at least by MM).
->=20
-> So unless you know that one of the 6600's TTYs does GPS and in what
-> format it does GPS, then no.
->=20
-> Doesn't --location-get-gps-nmea work for you?  That will spit out the
-> latest NMEA traces MM gets from the modem, if it supports NMEA.  I
-> believe --location-status will tell you what methods MM supports with
-> the modem.
+Fix this by assigning the clamped value.
 
-Yes, --location-get-gps-nmea works for me.
+Fixes: afbdcc7c384b0d44 ("slimbus: Add messaging APIs to slimbus framework")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/slimbus/messaging.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I guess one way forward would be to implement --location-get-gps-nmea
-support for qmicli, and use that?
-
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---dDRMvlgZJXvWKvBx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlrJx6QACgkQMOfwapXb+vKvOQCgsAtBVTQXYes1gXS4wxsb6+ju
-lKEAn25u8epgd3/FHcoh5BJa4dyYA7jJ
-=KX/F
------END PGP SIGNATURE-----
-
---dDRMvlgZJXvWKvBx--
+diff --git a/drivers/slimbus/messaging.c b/drivers/slimbus/messaging.c
+index 884419c37e8419c8..457ea1f8db309cb9 100644
+--- a/drivers/slimbus/messaging.c
++++ b/drivers/slimbus/messaging.c
+@@ -183,7 +183,7 @@ static u16 slim_slicesize(int code)
+ 		0, 1, 2, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7
+ 	};
+ 
+-	clamp(code, 1, (int)ARRAY_SIZE(sizetocode));
++	code = clamp(code, 1, (int)ARRAY_SIZE(sizetocode));
+ 
+ 	return sizetocode[code - 1];
+ }
+-- 
+2.7.4
