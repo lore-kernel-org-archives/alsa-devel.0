@@ -1,85 +1,84 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH] ASoC: fsl_ssi: Fix mode setting when changing
-	channel number
-Date: Sat,  7 Apr 2018 21:40:21 -0700
-Message-ID: <1523162421-26400-1-git-send-email-nicoleotsuka@gmail.com>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: simultaneous voice/data works (was Re: call/normal switch was
+ Re: omap4-droid4: voice call support was)
+Date: Sun, 8 Apr 2018 09:41:24 +0200
+Message-ID: <20180408074124.GA19844@amd>
+References: <67086fdd0cdd69142cb89cd00f90e5a580e6607a.camel@redhat.com>
+ <20180402155754.GD5700@atomide.com>
+ <20180403150444.GE5700@atomide.com>
+ <20180403155023.GA14638@atrey.karlin.mff.cuni.cz>
+ <20180403194419.GG5700@atomide.com>
+ <20180406120423.GA18691@amd>
+ <516eb3f7-e300-d59d-6a31-ab7545c656f1@wizzup.org>
+ <20180407081000.GB7818@amd>
+ <20180407122233.GA11302@amd>
+ <cbfc3cfa8acbc02dde848ec4e1d71b5089ff1d10.camel@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl0-f47.google.com (mail-pl0-f47.google.com
- [209.85.160.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 348C9267070
- for <alsa-devel@alsa-project.org>; Sun,  8 Apr 2018 06:41:09 +0200 (CEST)
-Received: by mail-pl0-f47.google.com with SMTP id 59-v6so3095189plc.13
- for <alsa-devel@alsa-project.org>; Sat, 07 Apr 2018 21:41:09 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, mika.penttila@nextfour.com
-Cc: alsa-devel@alsa-project.org, timur@tabi.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="dDRMvlgZJXvWKvBx"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <cbfc3cfa8acbc02dde848ec4e1d71b5089ff1d10.camel@redhat.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dan Williams <dcbw@redhat.com>
+Cc: Merlijn Wajer <merlijn@wizzup.org>, Tony Lindgren <tony@atomide.com>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBpcyBhIHBhcnRpYWwgcmV2ZXJ0IChpbiBhIGNsZWFuZXIgd2F5KSBvZiBjb21taXQgZWJm
-MDhhZTNiYzkwCigiQVNvQzogZnNsX3NzaTogS2VlcCBzc2ktPmkyc19uZXQgdXBkYXRlZCIpIHRv
-IGZpeCBhIHJlZ3Jlc3Npb24KYXQgdGVzdCBjYXNlcyB3aGVuIHN3aXRjaGluZyBiZXR3ZWVuIG1v
-bm8gYW5kIHN0ZXJlbyBhdWRpby4KClRoZSBwcm9ibGVtIGlzIHRoYXQgc3NpLT5pMnNfbmV0IGlz
-IGluaXRpYWxpemVkIGluIHNldF9kYWlfZm10KCkKb25seSwgd2hpbGUgdGhpcyBzZXRfZGFpX2Zt
-dCgpIGlzIG9ubHkgY2FsbGVkIGR1cmluZyB0aGUgZGFpLWxpbmsKcHJvYmUoKS4gVGhlIG9yaWdp
-bmFsIHBhdGNoIGFzc3VtZWQgc2V0X2RhaV9mbXQoKSB3b3VsZCBiZSBjYWxsZWQKZHVyaW5nIGV2
-ZXJ5IHBsYXliYWNrIGluc3RhbmNlLCBzbyBpdCBmYWlsZWQgYXQgdGhlIG92ZXJyaWRpbmcgdXNl
-CmNhc2VzLgoKVGhpcyBwYXRjaCBhZGRzIHRoZSBsb2NhbCB2YXJpYWJsZSBpMnNfbmV0IGJhY2sg
-dG8gbGV0IHJlZ3VsYXIgdXNlCmNhc2VzIHN0aWxsIGZvbGxvdyB0aGUgbW9kZSBzZXR0aW5ncyBm
-cm9tIHRoZSBzZXRfZGFpX2ZtdCgpLgoKTWVhbndoaWxlLCB0aGUgb3JpZ2luYWwgY29tbWl0IG9m
-IGtlZXBpbmcgc3NpLT5pMnNfbmV0IHVwZGF0ZWQgd2FzCnRvIG1ha2Ugc2V0X3RkbV9zbG90KCkg
-Y2xlYW4gYnkgY2hlY2tpbmcgdGhlIHNzaS0+aTJzX25ldCBkaXJlY3RseQppbnN0ZWFkIG9mIHJl
-YWRpbmcgU0NSIHJlZ2lzdGVyLiBIb3dldmVyLCB0aGUgY2hhbmdlIGl0c2VsZiBpcyBub3QKbmVj
-ZXNzYXJ5IChvciBldmVuIGhhcm1mdWwpIGJlY2F1c2UgdGhlIHNldF90ZG1fc2xvdCgpIG1pZ2h0
-IGZhaWwKdG8gY2hlY2sgdGhlIHNsb3QgbnVtYmVyIGZvciBOb3JtYWwtTW9kZS1Ob25lLU5ldCBz
-ZXR0aW5ncyB3aGlsZQptb25vIGF1ZGlvIGNhc2VzIHN0aWxsIG5lZWQgMiBzbG90cy4gU28gdGhp
-cyBwYXRjaCBjYW4gYWxzbyBmaXggaXQuCkFuZCBpdCBhZGRzIGFuIGV4dHJhIGxpbmUgb2YgY29t
-bWVudHMgdG8gZGVjbGFyZSBzc2ktPmkyc19uZXQgZG9lcwpub3QgcmVmbGVjdCB0aGUgcmVnaXN0
-ZXIgdmFsdWUgYnV0IG1lcmVseSB0aGUgaW5pdGlhbCBzZXR0aW5nIGZyb20KdGhlIHNldF9kYWlf
-Zm10KCkuCgpSZXBvcnRlZC1ieTogTWlrYSBQZW50dGlsw6QgPG1pa2EucGVudHRpbGFAbmV4dGZv
-dXIuY29tPgpTaWduZWQtb2ZmLWJ5OiBOaWNvbGluIENoZW4gPG5pY29sZW90c3VrYUBnbWFpbC5j
-b20+CkNjOiBNaWthIFBlbnR0aWzDpCA8bWlrYS5wZW50dGlsYUBuZXh0Zm91ci5jb20+Ci0tLQog
-c291bmQvc29jL2ZzbC9mc2xfc3NpLmMgfCAxNCArKysrKysrKysrKy0tLQogMSBmaWxlIGNoYW5n
-ZWQsIDExIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQv
-c29jL2ZzbC9mc2xfc3NpLmMgYi9zb3VuZC9zb2MvZnNsL2ZzbF9zc2kuYwppbmRleCAwODIzYjA4
-Li44OWRmMmQ5IDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvZnNsL2ZzbF9zc2kuYworKysgYi9zb3Vu
-ZC9zb2MvZnNsL2ZzbF9zc2kuYwpAQCAtMjE3LDYgKzIxNyw3IEBAIHN0cnVjdCBmc2xfc3NpX3Nv
-Y19kYXRhIHsKICAqIEBkYWlfZm10OiBEQUkgY29uZmlndXJhdGlvbiB0aGlzIGRldmljZSBpcyBj
-dXJyZW50bHkgdXNlZCB3aXRoCiAgKiBAc3RyZWFtczogTWFzayBvZiBjdXJyZW50IGFjdGl2ZSBz
-dHJlYW1zOiBCSVQoVFgpIGFuZCBCSVQoUlgpCiAgKiBAaTJzX25ldDogSTJTIGFuZCBOZXR3b3Jr
-IG1vZGUgY29uZmlndXJhdGlvbnMgb2YgU0NSIHJlZ2lzdGVyCisgKiAgICAgICAgICAgKHRoaXMg
-aXMgdGhlIGluaXRpYWwgc2V0dGluZ3MgYmFzZWQgb24gdGhlIERBSSBmb3JtYXQpCiAgKiBAc3lu
-Y2hyb25vdXM6IFVzZSBzeW5jaHJvbm91cyBtb2RlIC0gYm90aCBvZiBUWCBhbmQgUlggdXNlIFNU
-Q0sgYW5kIFNGQ0sKICAqIEB1c2VfZG1hOiBETUEgaXMgdXNlZCBvciBGSVEgd2l0aCBzdHJlYW0g
-ZmlsdGVyCiAgKiBAdXNlX2R1YWxfZmlmbzogRE1BIHdpdGggc3VwcG9ydCBmb3IgZHVhbCBGSUZP
-IG1vZGUKQEAgLTgyOSwxNiArODMwLDIzIEBAIHN0YXRpYyBpbnQgZnNsX3NzaV9od19wYXJhbXMo
-c3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCiAJfQogCiAJaWYgKCFmc2xfc3Np
-X2lzX2FjOTcoc3NpKSkgeworCQkvKgorCQkgKiBLZWVwIHRoZSBzc2ktPmkyc19uZXQgaW50YWN0
-IHdoaWxlIGhhdmluZyBhIGxvY2FsIHZhcmlhYmxlCisJCSAqIHRvIG92ZXJyaWRlIHNldHRpbmdz
-IGZvciBzcGVjaWFsIHVzZSBjYXNlcy4gT3RoZXJ3aXNlLCB0aGUKKwkJICogc3NpLT5pMnNfbmV0
-IHdpbGwgbG9zZSB0aGUgc2V0dGluZ3MgZm9yIHJlZ3VsYXIgdXNlIGNhc2VzLgorCQkgKi8KKwkJ
-dTggaTJzX25ldCA9IHNzaS0+aTJzX25ldDsKKwogCQkvKiBOb3JtYWwgKyBOZXR3b3JrIG1vZGUg
-dG8gc2VuZCAxNi1iaXQgZGF0YSBpbiAzMi1iaXQgZnJhbWVzICovCiAJCWlmIChmc2xfc3NpX2lz
-X2kyc19jYm1fY2ZzKHNzaSkgJiYgc2FtcGxlX3NpemUgPT0gMTYpCi0JCQlzc2ktPmkyc19uZXQg
-PSBTU0lfU0NSX0kyU19NT0RFX05PUk1BTCB8IFNTSV9TQ1JfTkVUOworCQkJaTJzX25ldCA9IFNT
-SV9TQ1JfSTJTX01PREVfTk9STUFMIHwgU1NJX1NDUl9ORVQ7CiAKIAkJLyogVXNlIE5vcm1hbCBt
-b2RlIHRvIHNlbmQgbW9ubyBkYXRhIGF0IDFzdCBzbG90IG9mIDIgc2xvdHMgKi8KIAkJaWYgKGNo
-YW5uZWxzID09IDEpCi0JCQlzc2ktPmkyc19uZXQgPSBTU0lfU0NSX0kyU19NT0RFX05PUk1BTDsK
-KwkJCWkyc19uZXQgPSBTU0lfU0NSX0kyU19NT0RFX05PUk1BTDsKIAogCQlyZWdtYXBfdXBkYXRl
-X2JpdHMocmVncywgUkVHX1NTSV9TQ1IsCi0JCQkJICAgU1NJX1NDUl9JMlNfTkVUX01BU0ssIHNz
-aS0+aTJzX25ldCk7CisJCQkJICAgU1NJX1NDUl9JMlNfTkVUX01BU0ssIGkyc19uZXQpOwogCX0K
-IAogCS8qIEluIHN5bmNocm9ub3VzIG1vZGUsIHRoZSBTU0kgdXNlcyBTVENDUiBmb3IgY2FwdHVy
-ZSAqLwotLSAKMi43LjQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+
+--dDRMvlgZJXvWKvBx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> > mmcli -m 0 --enable
+> > mmcli -m 0  --location-enable-gps-nmea
+> > watch -n .3 sudo mmcli -m 0  --location-get-gps-nmea
+> >=20
+> > ...can be used to get GPS data. Droid4 seems to have rather bad GPS,
+> > so you should probably put it near window for testing.
+> >=20
+> > Is there way to grab data from modemmanager and feed it to gpsd, so
+> > that normal applications can access gps? I don't see easy way.
+> >=20
+> > I tried --location-enable-gps-unmanaged , but that did not work for
+> > me.
+>=20
+> That requires a TTY that would spit out the GPS data; in this mode MM
+> only sends the start/stop commands, and what comes out the GPS TTY is
+> undefined (at least by MM).
+>=20
+> So unless you know that one of the 6600's TTYs does GPS and in what
+> format it does GPS, then no.
+>=20
+> Doesn't --location-get-gps-nmea work for you?  That will spit out the
+> latest NMEA traces MM gets from the modem, if it supports NMEA.  I
+> believe --location-status will tell you what methods MM supports with
+> the modem.
+
+Yes, --location-get-gps-nmea works for me.
+
+I guess one way forward would be to implement --location-get-gps-nmea
+support for qmicli, and use that?
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--dDRMvlgZJXvWKvBx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlrJx6QACgkQMOfwapXb+vKvOQCgsAtBVTQXYes1gXS4wxsb6+ju
+lKEAn25u8epgd3/FHcoh5BJa4dyYA7jJ
+=KX/F
+-----END PGP SIGNATURE-----
+
+--dDRMvlgZJXvWKvBx--
