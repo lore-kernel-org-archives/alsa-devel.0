@@ -1,23 +1,18 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_esai: Clear the xPM bit when
- using xFP
-Date: Sat, 7 Apr 2018 21:01:28 -0700
-Message-ID: <20180408040127.GA14245@Asurada-CZ80>
-References: <20180407130221.24770-1-marex@denx.de>
- <20180408011454.GA2997@Asurada-CZ80>
- <32ecf3e6-2241-682a-4f24-940fbab998b7@denx.de>
+Subject: [PATCH] ASoC: fsl_ssi: Fix mode setting when changing
+	channel number
+Date: Sat,  7 Apr 2018 21:40:21 -0700
+Message-ID: <1523162421-26400-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f177.google.com (mail-pf0-f177.google.com
- [209.85.192.177])
- by alsa0.perex.cz (Postfix) with ESMTP id F1069267070
- for <alsa-devel@alsa-project.org>; Sun,  8 Apr 2018 06:01:35 +0200 (CEST)
-Received: by mail-pf0-f177.google.com with SMTP id p15so3555355pff.11
- for <alsa-devel@alsa-project.org>; Sat, 07 Apr 2018 21:01:35 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <32ecf3e6-2241-682a-4f24-940fbab998b7@denx.de>
+Received: from mail-pl0-f47.google.com (mail-pl0-f47.google.com
+ [209.85.160.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 348C9267070
+ for <alsa-devel@alsa-project.org>; Sun,  8 Apr 2018 06:41:09 +0200 (CEST)
+Received: by mail-pl0-f47.google.com with SMTP id 59-v6so3095189plc.13
+ for <alsa-devel@alsa-project.org>; Sat, 07 Apr 2018 21:41:09 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,53 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marex@denx.de>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, "Gustavo A . R . Silva" <garsilva@embeddedor.com>
+To: broonie@kernel.org, mika.penttila@nextfour.com
+Cc: alsa-devel@alsa-project.org, timur@tabi.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Apr 08, 2018 at 04:16:39AM +0200, Marek Vasut wrote:
-
-> > Could you please provide a failed
-> > instance? It's been a while since I wrote the code. But I can tell
-> > that PM is supposed to be called by set_sysclk() only, while FP is
-> > used for bclk. If you clear PM when setting FP, the output of HCK
-> > could be messed.
-> 
-> Try feeding it the following values, The codec I use is PCM1808.
-
-> [1] fsl_esai_set_dai_sysclk[227] clk_id=0 freq=24576000 dir=1
-> [2] fsl_esai_divisor_cal[131] tx=0 ratio=2 usefp=0 fp=0
-> [3] fsl_esai_set_bclk[322] tx=0 freq=3072000
-> [4] fsl_esai_divisor_cal[131] tx=0 ratio=8 usefp=1 fp=8
-
-So [1] tries to output HCKT (using FSYS) and to set its freq
-at 24MHz. If [2] is correct, you'd have HCKT outputting 24MHz.
-
-Let's put this in the graph:
-FSYS (48MHz) --> PSR & PM (input_rate / 2) --> HCKT (24MHz)
-
-[3] tries to output SCKT (bit clock) at 3MHz. So you got fp=8
-and usefp=1. The combination of usefp=1 and fp=8 should bypass
-PSR/PM settings because both should be correctly configured:
-
-HCKT (24MHz) --> FP (input_rate / 8) --> SCKT (3MHz)
-
-If you set PM=0 at [4], the HCKT at [2] would be changed. So
-your change shouldn't be a good fix. Meanwhile, I don't see
-any problem of the driver at the FP/PM part. I think you can
-help me figure it out as it might because of something else.
-You may dump the PSR, PM here to check if HCKT is 24MHz.
-
-> Also, I think there is another bug in the fsl_esai_divisor_cal() now
-> that I look at it.
-
-> If usefp = 0, then maxfp = 1 , then savesub = 0 and
-
-I see. This actually would happen when PSR=0. And the ratio in
-this case is <= 256 (which could be satisfied by PM only). Btw,
-is this the reason why you got a "dirty" PM?
-
-Anyway, this part is a bug. Would you like to fix it?
-
-Thanks
-Nicolin
+VGhpcyBpcyBhIHBhcnRpYWwgcmV2ZXJ0IChpbiBhIGNsZWFuZXIgd2F5KSBvZiBjb21taXQgZWJm
+MDhhZTNiYzkwCigiQVNvQzogZnNsX3NzaTogS2VlcCBzc2ktPmkyc19uZXQgdXBkYXRlZCIpIHRv
+IGZpeCBhIHJlZ3Jlc3Npb24KYXQgdGVzdCBjYXNlcyB3aGVuIHN3aXRjaGluZyBiZXR3ZWVuIG1v
+bm8gYW5kIHN0ZXJlbyBhdWRpby4KClRoZSBwcm9ibGVtIGlzIHRoYXQgc3NpLT5pMnNfbmV0IGlz
+IGluaXRpYWxpemVkIGluIHNldF9kYWlfZm10KCkKb25seSwgd2hpbGUgdGhpcyBzZXRfZGFpX2Zt
+dCgpIGlzIG9ubHkgY2FsbGVkIGR1cmluZyB0aGUgZGFpLWxpbmsKcHJvYmUoKS4gVGhlIG9yaWdp
+bmFsIHBhdGNoIGFzc3VtZWQgc2V0X2RhaV9mbXQoKSB3b3VsZCBiZSBjYWxsZWQKZHVyaW5nIGV2
+ZXJ5IHBsYXliYWNrIGluc3RhbmNlLCBzbyBpdCBmYWlsZWQgYXQgdGhlIG92ZXJyaWRpbmcgdXNl
+CmNhc2VzLgoKVGhpcyBwYXRjaCBhZGRzIHRoZSBsb2NhbCB2YXJpYWJsZSBpMnNfbmV0IGJhY2sg
+dG8gbGV0IHJlZ3VsYXIgdXNlCmNhc2VzIHN0aWxsIGZvbGxvdyB0aGUgbW9kZSBzZXR0aW5ncyBm
+cm9tIHRoZSBzZXRfZGFpX2ZtdCgpLgoKTWVhbndoaWxlLCB0aGUgb3JpZ2luYWwgY29tbWl0IG9m
+IGtlZXBpbmcgc3NpLT5pMnNfbmV0IHVwZGF0ZWQgd2FzCnRvIG1ha2Ugc2V0X3RkbV9zbG90KCkg
+Y2xlYW4gYnkgY2hlY2tpbmcgdGhlIHNzaS0+aTJzX25ldCBkaXJlY3RseQppbnN0ZWFkIG9mIHJl
+YWRpbmcgU0NSIHJlZ2lzdGVyLiBIb3dldmVyLCB0aGUgY2hhbmdlIGl0c2VsZiBpcyBub3QKbmVj
+ZXNzYXJ5IChvciBldmVuIGhhcm1mdWwpIGJlY2F1c2UgdGhlIHNldF90ZG1fc2xvdCgpIG1pZ2h0
+IGZhaWwKdG8gY2hlY2sgdGhlIHNsb3QgbnVtYmVyIGZvciBOb3JtYWwtTW9kZS1Ob25lLU5ldCBz
+ZXR0aW5ncyB3aGlsZQptb25vIGF1ZGlvIGNhc2VzIHN0aWxsIG5lZWQgMiBzbG90cy4gU28gdGhp
+cyBwYXRjaCBjYW4gYWxzbyBmaXggaXQuCkFuZCBpdCBhZGRzIGFuIGV4dHJhIGxpbmUgb2YgY29t
+bWVudHMgdG8gZGVjbGFyZSBzc2ktPmkyc19uZXQgZG9lcwpub3QgcmVmbGVjdCB0aGUgcmVnaXN0
+ZXIgdmFsdWUgYnV0IG1lcmVseSB0aGUgaW5pdGlhbCBzZXR0aW5nIGZyb20KdGhlIHNldF9kYWlf
+Zm10KCkuCgpSZXBvcnRlZC1ieTogTWlrYSBQZW50dGlsw6QgPG1pa2EucGVudHRpbGFAbmV4dGZv
+dXIuY29tPgpTaWduZWQtb2ZmLWJ5OiBOaWNvbGluIENoZW4gPG5pY29sZW90c3VrYUBnbWFpbC5j
+b20+CkNjOiBNaWthIFBlbnR0aWzDpCA8bWlrYS5wZW50dGlsYUBuZXh0Zm91ci5jb20+Ci0tLQog
+c291bmQvc29jL2ZzbC9mc2xfc3NpLmMgfCAxNCArKysrKysrKysrKy0tLQogMSBmaWxlIGNoYW5n
+ZWQsIDExIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQv
+c29jL2ZzbC9mc2xfc3NpLmMgYi9zb3VuZC9zb2MvZnNsL2ZzbF9zc2kuYwppbmRleCAwODIzYjA4
+Li44OWRmMmQ5IDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvZnNsL2ZzbF9zc2kuYworKysgYi9zb3Vu
+ZC9zb2MvZnNsL2ZzbF9zc2kuYwpAQCAtMjE3LDYgKzIxNyw3IEBAIHN0cnVjdCBmc2xfc3NpX3Nv
+Y19kYXRhIHsKICAqIEBkYWlfZm10OiBEQUkgY29uZmlndXJhdGlvbiB0aGlzIGRldmljZSBpcyBj
+dXJyZW50bHkgdXNlZCB3aXRoCiAgKiBAc3RyZWFtczogTWFzayBvZiBjdXJyZW50IGFjdGl2ZSBz
+dHJlYW1zOiBCSVQoVFgpIGFuZCBCSVQoUlgpCiAgKiBAaTJzX25ldDogSTJTIGFuZCBOZXR3b3Jr
+IG1vZGUgY29uZmlndXJhdGlvbnMgb2YgU0NSIHJlZ2lzdGVyCisgKiAgICAgICAgICAgKHRoaXMg
+aXMgdGhlIGluaXRpYWwgc2V0dGluZ3MgYmFzZWQgb24gdGhlIERBSSBmb3JtYXQpCiAgKiBAc3lu
+Y2hyb25vdXM6IFVzZSBzeW5jaHJvbm91cyBtb2RlIC0gYm90aCBvZiBUWCBhbmQgUlggdXNlIFNU
+Q0sgYW5kIFNGQ0sKICAqIEB1c2VfZG1hOiBETUEgaXMgdXNlZCBvciBGSVEgd2l0aCBzdHJlYW0g
+ZmlsdGVyCiAgKiBAdXNlX2R1YWxfZmlmbzogRE1BIHdpdGggc3VwcG9ydCBmb3IgZHVhbCBGSUZP
+IG1vZGUKQEAgLTgyOSwxNiArODMwLDIzIEBAIHN0YXRpYyBpbnQgZnNsX3NzaV9od19wYXJhbXMo
+c3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCiAJfQogCiAJaWYgKCFmc2xfc3Np
+X2lzX2FjOTcoc3NpKSkgeworCQkvKgorCQkgKiBLZWVwIHRoZSBzc2ktPmkyc19uZXQgaW50YWN0
+IHdoaWxlIGhhdmluZyBhIGxvY2FsIHZhcmlhYmxlCisJCSAqIHRvIG92ZXJyaWRlIHNldHRpbmdz
+IGZvciBzcGVjaWFsIHVzZSBjYXNlcy4gT3RoZXJ3aXNlLCB0aGUKKwkJICogc3NpLT5pMnNfbmV0
+IHdpbGwgbG9zZSB0aGUgc2V0dGluZ3MgZm9yIHJlZ3VsYXIgdXNlIGNhc2VzLgorCQkgKi8KKwkJ
+dTggaTJzX25ldCA9IHNzaS0+aTJzX25ldDsKKwogCQkvKiBOb3JtYWwgKyBOZXR3b3JrIG1vZGUg
+dG8gc2VuZCAxNi1iaXQgZGF0YSBpbiAzMi1iaXQgZnJhbWVzICovCiAJCWlmIChmc2xfc3NpX2lz
+X2kyc19jYm1fY2ZzKHNzaSkgJiYgc2FtcGxlX3NpemUgPT0gMTYpCi0JCQlzc2ktPmkyc19uZXQg
+PSBTU0lfU0NSX0kyU19NT0RFX05PUk1BTCB8IFNTSV9TQ1JfTkVUOworCQkJaTJzX25ldCA9IFNT
+SV9TQ1JfSTJTX01PREVfTk9STUFMIHwgU1NJX1NDUl9ORVQ7CiAKIAkJLyogVXNlIE5vcm1hbCBt
+b2RlIHRvIHNlbmQgbW9ubyBkYXRhIGF0IDFzdCBzbG90IG9mIDIgc2xvdHMgKi8KIAkJaWYgKGNo
+YW5uZWxzID09IDEpCi0JCQlzc2ktPmkyc19uZXQgPSBTU0lfU0NSX0kyU19NT0RFX05PUk1BTDsK
+KwkJCWkyc19uZXQgPSBTU0lfU0NSX0kyU19NT0RFX05PUk1BTDsKIAogCQlyZWdtYXBfdXBkYXRl
+X2JpdHMocmVncywgUkVHX1NTSV9TQ1IsCi0JCQkJICAgU1NJX1NDUl9JMlNfTkVUX01BU0ssIHNz
+aS0+aTJzX25ldCk7CisJCQkJICAgU1NJX1NDUl9JMlNfTkVUX01BU0ssIGkyc19uZXQpOwogCX0K
+IAogCS8qIEluIHN5bmNocm9ub3VzIG1vZGUsIHRoZSBTU0kgdXNlcyBTVENDUiBmb3IgY2FwdHVy
+ZSAqLwotLSAKMi43LjQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
