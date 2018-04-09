@@ -1,114 +1,95 @@
-From: syzbot <syzbot+619d9f40141d826b097e@syzkaller.appspotmail.com>
-Subject: BUG: soft lockup in snd_virmidi_output_trigger
-Date: Sun, 08 Apr 2018 22:58:01 -0700
-Message-ID: <000000000000abcd98056964164c@google.com>
+From: =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>
+Subject: Re: [PATCH] ASoC: fsl_ssi: Fix mode setting when changing channel
+ number
+Date: Mon, 9 Apr 2018 09:55:11 +0300
+Message-ID: <757bf30b-60fc-5ff8-e9b3-7978bae2264d@nextfour.com>
+References: <1523162421-26400-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1523162421-26400-1-git-send-email-nicoleotsuka@gmail.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
+To: Nicolin Chen <nicoleotsuka@gmail.com>, broonie@kernel.org
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, tiwai@suse.com, perex@perex.cz, lgirdwood@gmail.com, fabio.estevam@nxp.com, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On 04/08/2018 07:40 AM, Nicolin Chen wrote:
+> This is a partial revert (in a cleaner way) of commit ebf08ae3bc90
+> ("ASoC: fsl_ssi: Keep ssi->i2s_net updated") to fix a regression
+> at test cases when switching between mono and stereo audio.
+> 
+> The problem is that ssi->i2s_net is initialized in set_dai_fmt()
+> only, while this set_dai_fmt() is only called during the dai-link
+> probe(). The original patch assumed set_dai_fmt() would be called
+> during every playback instance, so it failed at the overriding use
+> cases.
+> 
+> This patch adds the local variable i2s_net back to let regular use
+> cases still follow the mode settings from the set_dai_fmt().
+> 
+> Meanwhile, the original commit of keeping ssi->i2s_net updated was
+> to make set_tdm_slot() clean by checking the ssi->i2s_net directly
+> instead of reading SCR register. However, the change itself is not
+> necessary (or even harmful) because the set_tdm_slot() might fail
+> to check the slot number for Normal-Mode-None-Net settings while
+> mono audio cases still need 2 slots. So this patch can also fix it.
+> And it adds an extra line of comments to declare ssi->i2s_net does
+> not reflect the register value but merely the initial setting from
+> the set_dai_fmt().
+> 
+> Reported-by: Mika Penttilä <mika.penttila@nextfour.com>
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> Cc: Mika Penttilä <mika.penttila@nextfour.com>
+> ---
+>  sound/soc/fsl/fsl_ssi.c | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> index 0823b08..89df2d9 100644
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+> @@ -217,6 +217,7 @@ struct fsl_ssi_soc_data {
+>   * @dai_fmt: DAI configuration this device is currently used with
+>   * @streams: Mask of current active streams: BIT(TX) and BIT(RX)
+>   * @i2s_net: I2S and Network mode configurations of SCR register
+> + *           (this is the initial settings based on the DAI format)
+>   * @synchronous: Use synchronous mode - both of TX and RX use STCK and SFCK
+>   * @use_dma: DMA is used or FIQ with stream filter
+>   * @use_dual_fifo: DMA with support for dual FIFO mode
+> @@ -829,16 +830,23 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+>  	}
+>  
+>  	if (!fsl_ssi_is_ac97(ssi)) {
+> +		/*
+> +		 * Keep the ssi->i2s_net intact while having a local variable
+> +		 * to override settings for special use cases. Otherwise, the
+> +		 * ssi->i2s_net will lose the settings for regular use cases.
+> +		 */
+> +		u8 i2s_net = ssi->i2s_net;
+> +
+>  		/* Normal + Network mode to send 16-bit data in 32-bit frames */
+>  		if (fsl_ssi_is_i2s_cbm_cfs(ssi) && sample_size == 16)
+> -			ssi->i2s_net = SSI_SCR_I2S_MODE_NORMAL | SSI_SCR_NET;
+> +			i2s_net = SSI_SCR_I2S_MODE_NORMAL | SSI_SCR_NET;
+>  
+>  		/* Use Normal mode to send mono data at 1st slot of 2 slots */
+>  		if (channels == 1)
+> -			ssi->i2s_net = SSI_SCR_I2S_MODE_NORMAL;
+> +			i2s_net = SSI_SCR_I2S_MODE_NORMAL;
+>  
+>  		regmap_update_bits(regs, REG_SSI_SCR,
+> -				   SSI_SCR_I2S_NET_MASK, ssi->i2s_net);
+> +				   SSI_SCR_I2S_NET_MASK, i2s_net);
+>  	}
+>  
+>  	/* In synchronous mode, the SSI uses STCCR for capture */
+> 
 
-syzbot hit the following crash on upstream commit
-3fd14cdcc05a682b03743683ce3a726898b20555 (Fri Apr 6 19:15:41 2018 +0000)
-Merge tag 'mtd/for-4.17' of git://git.infradead.org/linux-mtd
-syzbot dashboard link:  
-https://syzkaller.appspot.com/bug?extid=619d9f40141d826b097e
+This patch fixes my problems, so: 
 
-Unfortunately, I don't have any reproducer for this crash yet.
-Raw console output:  
-https://syzkaller.appspot.com/x/log.txt?id=4594231414882304
-Kernel config:  
-https://syzkaller.appspot.com/x/.config?id=-5813481738265533882
-compiler: gcc (GCC) 8.0.1 20180301 (experimental)
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+619d9f40141d826b097e@syzkaller.appspotmail.com
-It will help syzbot understand when the bug is fixed. See footer for  
-details.
-If you forward the report, please keep this part and the footer.
-
-8021q: adding VLAN 0 to HW filter on device team0
-IPv6: ADDRCONF(NETDEV_UP): team0: link is not ready
-8021q: adding VLAN 0 to HW filter on device team0
-IPv6: ADDRCONF(NETDEV_UP): team0: link is not ready
-8021q: adding VLAN 0 to HW filter on device team0
-watchdog: BUG: soft lockup - CPU#1 stuck for 134s! [syz-executor2:10431]
-Modules linked in:
-irq event stamp: 35856
-hardirqs last  enabled at (35855): [<ffffffff874a1734>]  
-__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
-hardirqs last  enabled at (35855): [<ffffffff874a1734>]  
-_raw_spin_unlock_irqrestore+0x74/0xc0 kernel/locking/spinlock.c:184
-hardirqs last disabled at (35856): [<ffffffff87600901>]  
-interrupt_entry+0xb1/0xf0 arch/x86/entry/entry_64.S:624
-softirqs last  enabled at (162): [<ffffffff87800778>]  
-__do_softirq+0x778/0xaf5 kernel/softirq.c:311
-softirqs last disabled at (95): [<ffffffff81467a61>] invoke_softirq  
-kernel/softirq.c:365 [inline]
-softirqs last disabled at (95): [<ffffffff81467a61>] irq_exit+0x1d1/0x200  
-kernel/softirq.c:405
-CPU: 1 PID: 10431 Comm: syz-executor2 Not tainted 4.16.0+ #4
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-RIP: 0010:arch_local_irq_restore arch/x86/include/asm/paravirt.h:783  
-[inline]
-RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160  
-[inline]
-RIP: 0010:_raw_spin_unlock_irqrestore+0xa1/0xc0  
-kernel/locking/spinlock.c:184
-RSP: 0018:ffff880184db7780 EFLAGS: 00000282 ORIG_RAX: ffffffffffffff13
-RAX: dffffc0000000000 RBX: 0000000000000282 RCX: 0000000000000000
-RDX: 1ffffffff1162e55 RSI: 0000000000000001 RDI: 0000000000000282
-RBP: ffff880184db7790 R08: ffffed0035d21962 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff8801ae90cb08
-R13: ffff880184db7810 R14: 0000000000000001 R15: ffff8801cb9a5880
-FS:  00007fc943ad8700(0000) GS:ffff8801db100000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fc943ad7db8 CR3: 00000001b070d000 CR4: 00000000001406e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
-  spin_unlock_irqrestore include/linux/spinlock.h:365 [inline]
-  snd_virmidi_output_trigger+0x522/0x6c0 sound/core/seq/seq_virmidi.c:205
-  snd_rawmidi_output_trigger sound/core/rawmidi.c:150 [inline]
-  snd_rawmidi_kernel_write1+0x519/0x700 sound/core/rawmidi.c:1288
-  snd_rawmidi_write+0x2e2/0xdc0 sound/core/rawmidi.c:1338
-  __vfs_write+0x10b/0x880 fs/read_write.c:485
-  vfs_write+0x1f8/0x560 fs/read_write.c:549
-  ksys_write+0xf9/0x250 fs/read_write.c:598
-  SYSC_write fs/read_write.c:610 [inline]
-  SyS_write+0x24/0x30 fs/read_write.c:607
-  do_syscall_64+0x29e/0x9d0 arch/x86/entry/common.c:287
-  entry_SYSCALL_64_after_hwframe+0x42/0xb7
-RIP: 0033:0x455259
-RSP: 002b:00007fc943ad7c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007fc943ad86d4 RCX: 0000000000455259
-RDX: 00000000e78e624c RSI: 0000000020000040 RDI: 0000000000000014
-RBP: 000000000072c010 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 00000000000006ca R14: 00000000006fd390 R15: 0000000000000002
-Code: c7 a8 72 b1 88 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80  
-3c 02 00 75 21 48 83 3d 4e 5b 67 01 00 74 0e 48 89 df 57 9d <0f> 1f 44 00  
-00 eb bb 0f 0b 0f 0b e8 6f 29 68 fa eb 97 e8 68 29
+Tested-by: Mika Penttilä <mika.penttila@nextfour.com>
 
 
----
-This bug is generated by a dumb bot. It may contain errors.
-See https://goo.gl/tpsmEJ for details.
-Direct all questions to syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report.
-If you forgot to add the Reported-by tag, once the fix for this bug is  
-merged
-into any tree, please reply to this email with:
-#syz fix: exact-commit-title
-To mark this as a duplicate of another syzbot report, please reply with:
-#syz dup: exact-subject-of-another-report
-If it's a one-off invalid bug report, please reply with:
-#syz invalid
-Note: if the crash happens again, it will cause creation of a new bug  
-report.
-Note: all commands must start from beginning of the line in the email body.
+--Mika
