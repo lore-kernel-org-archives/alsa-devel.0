@@ -1,15 +1,14 @@
-From: Robert Rosengren <robert.rosengren@axis.com>
-Subject: [PATCH v2 1/2] ASoC: adau17x1: Handling of DSP_RUN
-	register during fw setup
-Date: Mon,  9 Apr 2018 15:13:35 +0200
-Message-ID: <20180409131336.21990-1-robert.rosengren@axis.com>
+From: Lars Wendler <polynomial-c@gentoo.org>
+Subject: alsa-lib-1.1.6.tar.bz2: some files are missing in the
+	tarball
+Date: Mon, 9 Apr 2018 15:16:16 +0200
+Message-ID: <20180409151616.6c8338a7@abudhabi.paradoxon.rec>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1807079921855885950=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 708B6266C99
- for <alsa-devel@alsa-project.org>; Mon,  9 Apr 2018 15:14:03 +0200 (CEST)
+Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
+ by alsa0.perex.cz (Postfix) with ESMTP id 21EC8266C99
+ for <alsa-devel@alsa-project.org>; Mon,  9 Apr 2018 15:16:25 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,95 +18,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Robert Rosengren <robertr@axis.com>, Danny Smith <dannys@axis.com>
+To: alsa-devel@alsa-project.org
+Cc: alsa-bugs@gentoo.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Danny Smith <dannys@axis.com>
+--===============1807079921855885950==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/1s0Cc6zsjGi=IMnk8PinPu/"; protocol="application/pgp-signature"
 
-DSP_RUN needs to be disabled during firmware write otherwise
-we can end up with undefined behavior if writing to a dsp which
-is already running firmware.
+--Sig_/1s0Cc6zsjGi=IMnk8PinPu/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Danny Smith <dannys@axis.com>
-Signed-off-by: Robert Rosengren <robert.rosengren@axis.com>
----
- sound/soc/codecs/adau17x1.c | 26 ++++++++++++++++++++------
- sound/soc/codecs/adau17x1.h |  3 ++-
- 2 files changed, 22 insertions(+), 7 deletions(-)
+Hello list,
 
-diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
-index 80c2a06285bb..12bf24c26818 100644
---- a/sound/soc/codecs/adau17x1.c
-+++ b/sound/soc/codecs/adau17x1.c
-@@ -502,7 +502,7 @@ static int adau17x1_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- 	if (adau->sigmadsp) {
--		ret = adau17x1_setup_firmware(adau, params_rate(params));
-+		ret = adau17x1_setup_firmware(component, params_rate(params));
- 		if (ret < 0)
- 			return ret;
- 	}
-@@ -835,26 +835,40 @@ bool adau17x1_volatile_register(struct device *dev, unsigned int reg)
- }
- EXPORT_SYMBOL_GPL(adau17x1_volatile_register);
- 
--int adau17x1_setup_firmware(struct adau *adau, unsigned int rate)
-+int adau17x1_setup_firmware(struct snd_soc_component *component,
-+	unsigned int rate)
- {
- 	int ret;
--	int dspsr;
-+	int dspsr, dsp_run;
-+	struct adau *adau = snd_soc_component_get_drvdata(component);
-+	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
-+
-+	snd_soc_dapm_mutex_lock(dapm);
- 
- 	ret = regmap_read(adau->regmap, ADAU17X1_DSP_SAMPLING_RATE, &dspsr);
- 	if (ret)
--		return ret;
-+		goto err;
-+
-+	ret = regmap_read(adau->regmap, ADAU17X1_DSP_RUN, &dsp_run);
-+	if (ret)
-+		goto err;
- 
- 	regmap_write(adau->regmap, ADAU17X1_DSP_ENABLE, 1);
- 	regmap_write(adau->regmap, ADAU17X1_DSP_SAMPLING_RATE, 0xf);
-+	regmap_write(adau->regmap, ADAU17X1_DSP_RUN, 0);
- 
- 	ret = sigmadsp_setup(adau->sigmadsp, rate);
- 	if (ret) {
- 		regmap_write(adau->regmap, ADAU17X1_DSP_ENABLE, 0);
--		return ret;
-+		goto err;
- 	}
- 	regmap_write(adau->regmap, ADAU17X1_DSP_SAMPLING_RATE, dspsr);
-+	regmap_write(adau->regmap, ADAU17X1_DSP_RUN, dsp_run);
- 
--	return 0;
-+err:
-+	snd_soc_dapm_mutex_unlock(dapm);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(adau17x1_setup_firmware);
- 
-diff --git a/sound/soc/codecs/adau17x1.h b/sound/soc/codecs/adau17x1.h
-index a7b1cb770814..e6fe87beec07 100644
---- a/sound/soc/codecs/adau17x1.h
-+++ b/sound/soc/codecs/adau17x1.h
-@@ -68,7 +68,8 @@ int adau17x1_resume(struct snd_soc_component *component);
- 
- extern const struct snd_soc_dai_ops adau17x1_dai_ops;
- 
--int adau17x1_setup_firmware(struct adau *adau, unsigned int rate);
-+int adau17x1_setup_firmware(struct snd_soc_component *component,
-+	unsigned int rate);
- bool adau17x1_has_dsp(struct adau *adau);
- 
- #define ADAU17X1_CLOCK_CONTROL			0x4000
--- 
-2.11.0
+please have a look at this Gentoo bug report [1] where a user reported
+that he cannot compile alsa-lib-1.1.6 with --enable-alisp configure
+option. The error message is:
+
+  make[3]: *** No rule to make target 'SI7018/sndoc-mixer.alisp',
+  needed by 'all-am'. Stop.
+
+This happens because the directory src/conf/cards/SI7018 is missing
+as well as the following files:
+
+src/conf/cards/aliases.alisp
+src/conf/smixer.conf
+src/conf/sndo-mixer.alisp
+
+First I thought those files were removed intentionally but checking the
+alsa-lib git tree I can see all files still being available. So at
+Gentoo we fixed this by re-adding the files through a patch [2].
+
+Any chance this was an accidental oversight?
+
+Kind regards
+Lars
+
+[1] https://bugs.gentoo.org/652422
+[2]
+https://gitweb.gentoo.org/repo/gentoo.git/tree/media-libs/alsa-lib/files/al=
+sa-lib-1.1.6-missing_files.patch
+
+P.S.: Please CC me on replies as I am not subscribed to the list.
+
+--=20
+Lars Wendler
+Gentoo package maintainer
+GPG: 21CC CF02 4586 0A07 ED93  9F68 498F E765 960E 9B39
+
+--Sig_/1s0Cc6zsjGi=IMnk8PinPu/
+Content-Type: application/pgp-signature
+Content-Description: Digitale Signatur von OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEWCOBmo8i7LhvVmNAVx3S0DQ8YDkFAlrLZ6AACgkQVx3S0DQ8
+YDm9IA/+NI8kXm6xEYrR8csfN2rVPYeobfV0Bf712CutKRZXT2kSVMKik9tFLsa4
+REFrTcc8QTgLELs6g7WLLjkC2XD1H3FO/eCTxdklVBLIaPUzhytcgfUzOOJXOCGD
+PjwFNm/KWxSQkp4HJjvdgjmLYLQWsGLNhbo6YroAo1kVSmzB09hOAaC/rK1kqDDX
+lO0/lHtwxJ4H+ucH/iNk+Quw6PCB+C8JbvPfu3SvbFVPIZY2VFXfECHf6nuosZCO
+SkzycDmBB7k1KaZSm+hC4Wk+CKY/SMH1gfKV7zaHrUG6jcLEtFp6rLMMSePSaBFn
+0ePsRP+AsFiff+T/qxs708grpyvlPtqgrT5PP3qthcjln5XVjfjP7aNs+BLR+HYb
+V+Vd5Fv8+HVJJWtGzwkKUqtHDMQfNWU4Na4X5mD0ymVhbjmkBBKilTJpMGOJtkdp
+D9/bFhagdRlI0yysmJyEzIfsiivB1uElrUoj+K8lF0w8v2GbYSMnTkJSw98QkF0R
+a9r/+78Q20q+MKEtK4TtxpS/DdcDktWc2BC5TIT3ZyjB86RO76DoHIH7mBGjFQJc
+UmDZQFci1PAlgFKl5c5EqPMRyLInhDKwdlWPseSs1e6GIIiM/P8a+PBlrunA6fl4
+FecwTQkSsJOwbJ6SizhDk7cIP849P7BRcrHZB2d+ybDxuq9KIrI=
+=0kkF
+-----END PGP SIGNATURE-----
+
+--Sig_/1s0Cc6zsjGi=IMnk8PinPu/--
+
+--===============1807079921855885950==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1807079921855885950==--
