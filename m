@@ -1,87 +1,56 @@
-From: Daniel Kurtz <djkurtz@chromium.org>
-Subject: Re: [PATCH v2,
-	1/2] ASoC: AMD: Support headset button on Stoney DA7219
-Date: Mon, 09 Apr 2018 17:32:32 +0000
-Message-ID: <CAGS+omDeOT25uMXzBOcc0pA4N+js1=sCGSv8MRJPf6AizwDddw@mail.gmail.com>
-References: <1523265596-8837-1-git-send-email-akshu.agrawal@amd.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] sound: soc: intel: bxt_da7219_max98357a:
+ Replace GFP_ATOMIC with GFP_KERNEL in broxton_audio_probe
+Date: Mon, 9 Apr 2018 13:57:43 -0500
+Message-ID: <482591fb-bf12-2e0a-e0ef-2ae0b4095000@linux.intel.com>
+References: <1523270781-22627-1-git-send-email-baijiaju1990@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ua0-f193.google.com (mail-ua0-f193.google.com
- [209.85.217.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 26918266CD2
- for <alsa-devel@alsa-project.org>; Mon,  9 Apr 2018 19:32:45 +0200 (CEST)
-Received: by mail-ua0-f193.google.com with SMTP id q26so5542843uab.0
- for <alsa-devel@alsa-project.org>; Mon, 09 Apr 2018 10:32:45 -0700 (PDT)
-In-Reply-To: <1523265596-8837-1-git-send-email-akshu.agrawal@amd.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Akshu Agrawal <akshu.agrawal@amd.com>
-Cc: tiwai@suse.de, Alexander.Deucher@amd.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1523270781-22627-1-git-send-email-baijiaju1990@gmail.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jia-Ju Bai <baijiaju1990@gmail.com>, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, sathyanarayana.nujella@intel.com, Adam.Thomson.Opensource@diasemi.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 9, 2018 at 3:20 AM Akshu Agrawal <akshu.agrawal@amd.com> wrote:
+On 4/9/18 5:46 AM, Jia-Ju Bai wrote:
+> broxton_audio_probe() is never called in atomic context.
+> This function is only set as ".probe" in "struct platform_driver".
+> 
+> Despite never getting called from atomic context,
+> broxton_audio_probe() calls devm_kzalloc() with GFP_ATOMIC,
+> which waits busily for allocation.
+> GFP_ATOMIC is not necessary and can be replaced with GFP_KERNEL,
+> to avoid busy waiting and improve the possibility of sucessful allocation.
 
-> Adds headset button support.
+[answering for the series]
+Humm, this is interesting.
+If indeed we can afford to sleep then the change should be done on ALL 
+14 boards in sound/soc/intel/boards which follow the same code pattern.
+If we cannot sleep then then none of these changes should be applied.
+Liam and Vinod?
 
-> TEST=Tested Volume UP/Down, Play/Pause functionality
-
-> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-
+> 
+> This is found by a static analysis tool named DCNS written by myself.
+> 
+> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 > ---
-> v2: Changed KEY_MEDIA to KEY_PLAYPAUSE
-
->   sound/soc/amd/acp-da7219-max98357a.c | 8 ++++++++
->   1 file changed, 8 insertions(+)
-
-> diff --git a/sound/soc/amd/acp-da7219-max98357a.c
-b/sound/soc/amd/acp-da7219-max98357a.c
-> index b205c78..1012a80 100644
-> --- a/sound/soc/amd/acp-da7219-max98357a.c
-> +++ b/sound/soc/amd/acp-da7219-max98357a.c
-> @@ -33,6 +33,7 @@
->   #include <linux/gpio.h>
->   #include <linux/module.h>
->   #include <linux/i2c.h>
-> +#include <linux/input.h>
->   #include <linux/acpi.h>
-
->   #include "../codecs/da7219.h"
-> @@ -51,6 +52,7 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime
-*rtd)
->          struct snd_soc_card *card = rtd->card;
->          struct snd_soc_dai *codec_dai = rtd->codec_dai;
->          struct snd_soc_component *component = codec_dai->component;
-> +       struct snd_soc_jack *jack;
-
->          dev_info(rtd->dev, "codec dai name = %s\n", codec_dai->name);
-
-> @@ -80,6 +82,12 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime
-*rtd)
->                  return ret;
->          }
-
-> +       jack = &cz_jack;
-
-Hmm, this seems a bit unnecessary.  For all of these, can you just do:
-
-   snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-
-> +       snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-> +       snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
-> +       snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
-> +       snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
-> +
->          da7219_aad_jack_det(component, &cz_jack);
-
->          return 0;
-> --
-> 1.9.1
+>   sound/soc/intel/boards/bxt_da7219_max98357a.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+> index ce35ec7..f4361b7 100644
+> --- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
+> +++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+> @@ -585,7 +585,7 @@ static int broxton_audio_probe(struct platform_device *pdev)
+>   {
+>   	struct bxt_card_private *ctx;
+>   
+> -	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
+> +	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+>   	if (!ctx)
+>   		return -ENOMEM;
+>   
+> 
