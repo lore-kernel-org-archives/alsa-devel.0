@@ -1,95 +1,128 @@
-From: =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>
-Subject: Re: [PATCH] ASoC: fsl_ssi: Fix mode setting when changing channel
- number
-Date: Mon, 9 Apr 2018 09:55:11 +0300
-Message-ID: <757bf30b-60fc-5ff8-e9b3-7978bae2264d@nextfour.com>
-References: <1523162421-26400-1-git-send-email-nicoleotsuka@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: Conversion to int16_t and resolution loss with
+ rate converter plugins
+Date: Mon, 9 Apr 2018 16:32:44 +0900
+Message-ID: <1656f543-b23a-ca14-47f8-38e4ea559395@sakamocchi.jp>
+References: <MWHPR21MB0478EFE0FDB4BD2A0A7293D0D8BB0@MWHPR21MB0478.namprd21.prod.outlook.com>
+ <b435dc74-b2fb-7e29-6bb5-778b262fb5c8@sakamocchi.jp>
+ <MWHPR21MB0478AF6C62CC2AEABFF15533D8BB0@MWHPR21MB0478.namprd21.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1523162421-26400-1-git-send-email-nicoleotsuka@gmail.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 28A80266C1C
+ for <alsa-devel@alsa-project.org>; Mon,  9 Apr 2018 09:32:48 +0200 (CEST)
+In-Reply-To: <MWHPR21MB0478AF6C62CC2AEABFF15533D8BB0@MWHPR21MB0478.namprd21.prod.outlook.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>, broonie@kernel.org
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, tiwai@suse.com, perex@perex.cz, lgirdwood@gmail.com, fabio.estevam@nxp.com, timur@tabi.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Flavio Protasio Ribeiro <flaviopr@microsoft.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/08/2018 07:40 AM, Nicolin Chen wrote:
-> This is a partial revert (in a cleaner way) of commit ebf08ae3bc90
-> ("ASoC: fsl_ssi: Keep ssi->i2s_net updated") to fix a regression
-> at test cases when switching between mono and stereo audio.
-> 
-> The problem is that ssi->i2s_net is initialized in set_dai_fmt()
-> only, while this set_dai_fmt() is only called during the dai-link
-> probe(). The original patch assumed set_dai_fmt() would be called
-> during every playback instance, so it failed at the overriding use
-> cases.
-> 
-> This patch adds the local variable i2s_net back to let regular use
-> cases still follow the mode settings from the set_dai_fmt().
-> 
-> Meanwhile, the original commit of keeping ssi->i2s_net updated was
-> to make set_tdm_slot() clean by checking the ssi->i2s_net directly
-> instead of reading SCR register. However, the change itself is not
-> necessary (or even harmful) because the set_tdm_slot() might fail
-> to check the slot number for Normal-Mode-None-Net settings while
-> mono audio cases still need 2 slots. So this patch can also fix it.
-> And it adds an extra line of comments to declare ssi->i2s_net does
-> not reflect the register value but merely the initial setting from
-> the set_dai_fmt().
-> 
-> Reported-by: Mika Penttilä <mika.penttila@nextfour.com>
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> Cc: Mika Penttilä <mika.penttila@nextfour.com>
-> ---
->  sound/soc/fsl/fsl_ssi.c | 14 +++++++++++---
->  1 file changed, 11 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> index 0823b08..89df2d9 100644
-> --- a/sound/soc/fsl/fsl_ssi.c
-> +++ b/sound/soc/fsl/fsl_ssi.c
-> @@ -217,6 +217,7 @@ struct fsl_ssi_soc_data {
->   * @dai_fmt: DAI configuration this device is currently used with
->   * @streams: Mask of current active streams: BIT(TX) and BIT(RX)
->   * @i2s_net: I2S and Network mode configurations of SCR register
-> + *           (this is the initial settings based on the DAI format)
->   * @synchronous: Use synchronous mode - both of TX and RX use STCK and SFCK
->   * @use_dma: DMA is used or FIQ with stream filter
->   * @use_dual_fifo: DMA with support for dual FIFO mode
-> @@ -829,16 +830,23 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
->  	}
->  
->  	if (!fsl_ssi_is_ac97(ssi)) {
-> +		/*
-> +		 * Keep the ssi->i2s_net intact while having a local variable
-> +		 * to override settings for special use cases. Otherwise, the
-> +		 * ssi->i2s_net will lose the settings for regular use cases.
-> +		 */
-> +		u8 i2s_net = ssi->i2s_net;
-> +
->  		/* Normal + Network mode to send 16-bit data in 32-bit frames */
->  		if (fsl_ssi_is_i2s_cbm_cfs(ssi) && sample_size == 16)
-> -			ssi->i2s_net = SSI_SCR_I2S_MODE_NORMAL | SSI_SCR_NET;
-> +			i2s_net = SSI_SCR_I2S_MODE_NORMAL | SSI_SCR_NET;
->  
->  		/* Use Normal mode to send mono data at 1st slot of 2 slots */
->  		if (channels == 1)
-> -			ssi->i2s_net = SSI_SCR_I2S_MODE_NORMAL;
-> +			i2s_net = SSI_SCR_I2S_MODE_NORMAL;
->  
->  		regmap_update_bits(regs, REG_SSI_SCR,
-> -				   SSI_SCR_I2S_NET_MASK, ssi->i2s_net);
-> +				   SSI_SCR_I2S_NET_MASK, i2s_net);
->  	}
->  
->  	/* In synchronous mode, the SSI uses STCCR for capture */
-> 
+Hi,
 
-This patch fixes my problems, so: 
+Sorry for delay.
 
-Tested-by: Mika Penttilä <mika.penttila@nextfour.com>
+On Apr 6 2018 06:10, Flavio Protasio Ribeiro wrote:
+> My original proposal was to replace 'convert_s16' with 'convert_s32', while keeping 'convert'. Looking at your previous thread with Pavel on this topic, recognize your policy of not breaking binary compatibility with previous plugins.
+> 
+> So instead I propose adding a 'convert_s32' method (at the end of snd_pcm_rate_ops_t, with appropriate versioning) that gets called by default if the plugin implements it. The simplified code would look like:
+> 
+> (pcm_rate.c)
+> static void do_convert(const snd_pcm_channel_area_t *dst_areas,
+>                         snd_pcm_uframes_t dst_offset, unsigned int dst_frames,
+>                         const snd_pcm_channel_area_t *src_areas,
+>                         snd_pcm_uframes_t src_offset, unsigned int src_frames,
+>                         unsigned int channels,
+>                         snd_pcm_rate_t *rate)
+> {
+>          if (rate->ops.convert_s32) {
+>                  convert_to_s32(rate, rate->src_buf, src_areas, src_offset, src_frames, channels);
+>                  rate->ops.convert_s32(rate->obj, dst, dst_frames, src, src_frames);
+>                  convert_from_s32(rate, rate->dst_buf, dst_areas, dst_offset,  dst_frames, channels);
+>          } else if (rate->ops.convert_s16) {
+>                  convert_to_s16(rate, rate->src_buf, src_areas, src_offset, src_frames, channels);
+>                  rate->ops.convert_s16(rate->obj, dst, dst_frames, src, src_frames);
+>                  convert_from_s16(rate, rate->dst_buf, dst_areas, dst_offset,  dst_frames, channels);
+>          } else {
+>                  rate->ops.convert(rate->obj, dst_areas, dst_offset, dst_frames,
+>                                     src_areas, src_offset, src_frames);
+>          }
+> }
+> 
+> What do you think? If this looks good to you I can provide a patch.
+
+Hm. In my opinion, in a point of existent
+'struct snd_pcm_rate_ops.convert()', the new
+'struct snd_pcm_rate_ops.convert_s32()' is not necessarily required.
+Developers can implement conversion with data of any 32 bit physical
+width as long as implementing buffer handling according to
+'snd_pcm_channel_area_t' in backend of PCM plugin.
+
+On the other hand, I recognize the new
+'struct snd_pcm_rate_ops.convert_s32()' might be a fast path for cases 
+that sample data is 32 bit physical width and aligned to interleaved
+(packed) order. I can assume this can cover most use cases with
+'.convert_s16()'.
+
+However, at first place, it's better to utilize existent
+'.convert_s32()' because no need to update interface version. When you
+face performance issues, then work for the new API. Thus at present,
+each plugin needs to parse 'snd_pcm_channel_area_t' and align sample
+data according to alignment which used libraries; e.g. libsamplerate
+requires.
 
 
---Mika
+Pavel's patch (0001-Support-for-float-samples-in-rate-converters.patch)
+converts sample data to/from float/integer inner ALSA PCM rate plugin
+according to API specification of libsamplerate/libspeex, as he said[1].
+However, when considering that libsamplerate/libspeex have conversion
+helper APIs or perform conversion internally, it's better to delegate
+the task to judge the way to convert float/interger into each
+implementation of PCM rate backend. As long as I know, below methods are
+available for this purpose on below backends:
+
+libsamplerate:
+  * src_short_to_float_array()
+  * src_float_to_short_array()
+  * src_int_to_float_array()
+  * src_float_to_int_array()
+libspeex:
+  * Below conversion API performs conversion of sample data to float as
+    well.
+   * speex_resampler_process_int()
+   * speex_resampler_process_interleaved_int()
+libswresample (obsoletes libavresample):
+  * Below conversion API performs conversion of sample data to float as
+    well if correctly configured.
+   * swr_convert()
+
+However, his patch is a good example for how to parse
+'snd_pcm_channel_area_t', in my opinion. But I don't avoid to change the
+other parts; e.g. code on pcm rate plugin itself.
+
+On Apr 6 2018 15:32, Pavel Hofman wrote:
+ > But the existing rate API will have to be modified since libsoxr
+ > behaves  a bit different to speex or libresample - see the library
+ > author discussing the issues
+ > 
+http://mailman.alsa-project.org/pipermail/alsa-devel/2013-September/066764.html
+
+I get 404 from these links. Could I request more detail about a
+requirement of modification for libsoxr?
+
+[1] 
+http://mailman.alsa-project.org/pipermail/alsa-devel/2018-April/134065.html
+
+
+Regards
+
+Takashi Sakamoto
