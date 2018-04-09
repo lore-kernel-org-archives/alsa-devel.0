@@ -1,19 +1,20 @@
-From: syzbot <syzbot+74e011b2046f4322d178@syzkaller.appspotmail.com>
-Subject: Re: INFO: rcu detected stall in snd_pcm_stream_lock_irq
-Date: Sat, 07 Apr 2018 04:58:16 -0700
-Message-ID: <000000000000504885056940e334@google.com>
-References: <CACT4Y+a71tv-_C3sxmk7POt4WtFwj6eNSNj9tbjL4VU7attObQ@mail.gmail.com>
+From: Daniel Kurtz <djkurtz@chromium.org>
+Subject: Re: [PATCH v2,
+	1/2] ASoC: AMD: Support headset button on Stoney DA7219
+Date: Mon, 09 Apr 2018 17:32:32 +0000
+Message-ID: <CAGS+omDeOT25uMXzBOcc0pA4N+js1=sCGSv8MRJPf6AizwDddw@mail.gmail.com>
+References: <1523265596-8837-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="yes"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f199.google.com (mail-io0-f199.google.com
- [209.85.223.199])
- by alsa0.perex.cz (Postfix) with ESMTP id A1B9426732A
- for <alsa-devel@alsa-project.org>; Sat,  7 Apr 2018 13:58:17 +0200 (CEST)
-Received: by mail-io0-f199.google.com with SMTP id h25so3566250ioi.3
- for <alsa-devel@alsa-project.org>; Sat, 07 Apr 2018 04:58:17 -0700 (PDT)
-In-Reply-To: <CACT4Y+a71tv-_C3sxmk7POt4WtFwj6eNSNj9tbjL4VU7attObQ@mail.gmail.com>
+Received: from mail-ua0-f193.google.com (mail-ua0-f193.google.com
+ [209.85.217.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 26918266CD2
+ for <alsa-devel@alsa-project.org>; Mon,  9 Apr 2018 19:32:45 +0200 (CEST)
+Received: by mail-ua0-f193.google.com with SMTP id q26so5542843uab.0
+ for <alsa-devel@alsa-project.org>; Mon, 09 Apr 2018 10:32:45 -0700 (PDT)
+In-Reply-To: <1523265596-8837-1-git-send-email-akshu.agrawal@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,126 +24,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, syzkaller-bugs@googlegroups.com, dvyukov@google.com, o-takashi@sakamocchi.jp
+To: Akshu Agrawal <akshu.agrawal@amd.com>
+Cc: tiwai@suse.de, Alexander.Deucher@amd.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-> #syz dup: INFO: rcu detected stall in io_playback_transfer
+On Mon, Apr 9, 2018 at 3:20 AM Akshu Agrawal <akshu.agrawal@amd.com> wrote:
 
-Your 'dup:' command is accepted, but please keep  
-syzkaller-bugs@googlegroups.com mailing list in CC next time. It serves as  
-a history of what happened with each bug report. Thank you.
+> Adds headset button support.
 
+> TEST=Tested Volume UP/Down, Play/Pause functionality
 
-> On Fri, Apr 6, 2018 at 3:32 PM, Dmitry Vyukov <dvyukov@google.com> wrote:
->> On Fri, Apr 6, 2018 at 3:24 PM, syzbot
->> <syzbot+74e011b2046f4322d178@syzkaller.appspotmail.com> wrote:
->>> Hello,
+> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 
->>> syzbot hit the following crash on upstream commit
->>> 38c23685b273cfb4ccf31a199feccce3bdcb5d83 (Fri Apr 6 04:29:35 2018 +0000)
->>> Merge tag 'armsoc-drivers' of
->>> git://git.kernel.org/pub/scm/linux/kernel/git/arm/arm-soc
->>> syzbot dashboard link:
->>> https://syzkaller.appspot.com/bug?extid=74e011b2046f4322d178
+> ---
+> v2: Changed KEY_MEDIA to KEY_PLAYPAUSE
 
->>> Unfortunately, I don't have any reproducer for this crash yet.
->>> Raw console output:
->>> https://syzkaller.appspot.com/x/log.txt?id=4582053840420864
->>> Kernel config:
->>> https://syzkaller.appspot.com/x/.config?id=-5813481738265533882
->>> compiler: gcc (GCC) 8.0.1 20180301 (experimental)
+>   sound/soc/amd/acp-da7219-max98357a.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
 
->> +ALSA maintainers
->> This was misattributed to kcov.c, I will fix it.
+> diff --git a/sound/soc/amd/acp-da7219-max98357a.c
+b/sound/soc/amd/acp-da7219-max98357a.c
+> index b205c78..1012a80 100644
+> --- a/sound/soc/amd/acp-da7219-max98357a.c
+> +++ b/sound/soc/amd/acp-da7219-max98357a.c
+> @@ -33,6 +33,7 @@
+>   #include <linux/gpio.h>
+>   #include <linux/module.h>
+>   #include <linux/i2c.h>
+> +#include <linux/input.h>
+>   #include <linux/acpi.h>
 
->>> IMPORTANT: if you fix the bug, please add the following tag to the  
->>> commit:
->>> Reported-by: syzbot+74e011b2046f4322d178@syzkaller.appspotmail.com
->>> It will help syzbot understand when the bug is fixed. See footer for
->>> details.
->>> If you forward the report, please keep this part and the footer.
+>   #include "../codecs/da7219.h"
+> @@ -51,6 +52,7 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime
+*rtd)
+>          struct snd_soc_card *card = rtd->card;
+>          struct snd_soc_dai *codec_dai = rtd->codec_dai;
+>          struct snd_soc_component *component = codec_dai->component;
+> +       struct snd_soc_jack *jack;
 
->>> syz-executor1 (6140) used greatest stack depth: 11720 bytes left
->>> INFO: rcu_sched self-detected stall on CPU
->>>          1-....: (124998 ticks this GP) idle=0b2/1/4611686018427387906
->>> softirq=15730/15730 fqs=31205
->>>           (t=125000 jiffies g=8316 c=8315 q=1529)
->>> NMI backtrace for cpu 1
->>> CPU: 1 PID: 6087 Comm: syz-executor0 Not tainted 4.16.0+ #3
->>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
->>> Google 01/01/2011
->>> Call Trace:
->>>   <IRQ>
->>>   __dump_stack lib/dump_stack.c:77 [inline]
->>>   dump_stack+0x1b9/0x294 lib/dump_stack.c:113
->>>   nmi_cpu_backtrace.cold.4+0x19/0xce lib/nmi_backtrace.c:103
->>>   nmi_trigger_cpumask_backtrace+0x151/0x192 lib/nmi_backtrace.c:62
->>>   arch_trigger_cpumask_backtrace+0x14/0x20  
->>> arch/x86/kernel/apic/hw_nmi.c:38
->>>   trigger_single_cpu_backtrace include/linux/nmi.h:156 [inline]
->>>   rcu_dump_cpu_stacks+0x175/0x1c2 kernel/rcu/tree.c:1376
->>>   print_cpu_stall kernel/rcu/tree.c:1525 [inline]
->>>   check_cpu_stall.isra.61.cold.80+0x36c/0x59a kernel/rcu/tree.c:1593
->>>   __rcu_pending kernel/rcu/tree.c:3356 [inline]
->>>   rcu_pending kernel/rcu/tree.c:3401 [inline]
->>>   rcu_check_callbacks+0x21b/0xad0 kernel/rcu/tree.c:2763
->>>   update_process_times+0x2d/0x70 kernel/time/timer.c:1636
->>>   tick_sched_handle+0xa0/0x180 kernel/time/tick-sched.c:171
->>>   tick_sched_timer+0x42/0x130 kernel/time/tick-sched.c:1179
->>>   __run_hrtimer kernel/time/hrtimer.c:1337 [inline]
->>>   __hrtimer_run_queues+0x3e3/0x10a0 kernel/time/hrtimer.c:1399
->>>   hrtimer_interrupt+0x286/0x650 kernel/time/hrtimer.c:1457
->>>   local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1025 [inline]
->>>   smp_apic_timer_interrupt+0x15d/0x710 arch/x86/kernel/apic/apic.c:1050
->>>   apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:862
->>>   </IRQ>
->>> RIP: 0010:__sanitizer_cov_trace_pc+0x3f/0x50 kernel/kcov.c:106
->>> RSP: 0018:ffff8801920cf4d0 EFLAGS: 00000216 ORIG_RAX: ffffffffffffff13
->>> RAX: 0000000000040000 RBX: ffff8801ceb61200 RCX: ffffc90001eb0000
->>> RDX: 0000000000040000 RSI: ffffffff859d760f RDI: ffff8801ceb61200
->>> RBP: ffff8801920cf4d0 R08: ffff8801b4946540 R09: 0000000000000006
->>> R10: ffff8801b4946540 R11: 0000000000000000 R12: ffffffff8826fa20
->>> R13: 0000000000000020 R14: ffff8801d3008c00 R15: ffff8801ceb61200
->>>   snd_pcm_stream_lock_irq+0xf/0xf0 sound/core/pcm_native.c:150
->>>   __snd_pcm_lib_xfer+0x345/0x1d10 sound/core/pcm_lib.c:2162
->>>   snd_pcm_oss_write3+0xe9/0x220 sound/core/oss/pcm_oss.c:1236
->>>   io_playback_transfer+0x274/0x310 sound/core/oss/io.c:47
->>>   snd_pcm_plug_write_transfer+0x36c/0x470 sound/core/oss/pcm_plugin.c:619
->>>   snd_pcm_oss_write2+0x25c/0x460 sound/core/oss/pcm_oss.c:1365
->>>   snd_pcm_oss_write1 sound/core/oss/pcm_oss.c:1431 [inline]
->>>   snd_pcm_oss_write+0x55f/0xa20 sound/core/oss/pcm_oss.c:2774
->>>   do_loop_readv_writev fs/read_write.c:703 [inline]
->>>   do_iter_write+0x491/0x5f0 fs/read_write.c:961
->>>   vfs_writev+0x1c7/0x330 fs/read_write.c:1004
->>>   do_writev+0x112/0x2f0 fs/read_write.c:1039
->>>   SYSC_writev fs/read_write.c:1112 [inline]
->>>   SyS_writev+0x27/0x30 fs/read_write.c:1109
->>>   do_syscall_64+0x29e/0x9d0 arch/x86/entry/common.c:287
->>>   entry_SYSCALL_64_after_hwframe+0x42/0xb7
->>> RIP: 0033:0x4552d9
->>> RSP: 002b:00007f82ef52cc68 EFLAGS: 00000246 ORIG_RAX: 0000000000000014
->>> RAX: ffffffffffffffda RBX: 00007f82ef52d6d4 RCX: 00000000004552d9
->>> RDX: 0000000000000001 RSI: 0000000020000180 RDI: 0000000000000015
->>> RBP: 000000000072bea0 R08: 0000000000000000 R09: 0000000000000000
->>> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
->>> R13: 00000000000006cc R14: 00000000006fd3c0 R15: 0000000000000000
+>          dev_info(rtd->dev, "codec dai name = %s\n", codec_dai->name);
 
+> @@ -80,6 +82,12 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime
+*rtd)
+>                  return ret;
+>          }
 
->>> ---
->>> This bug is generated by a dumb bot. It may contain errors.
->>> See https://goo.gl/tpsmEJ for details.
->>> Direct all questions to syzkaller@googlegroups.com.
+> +       jack = &cz_jack;
 
->>> syzbot will keep track of this bug report.
->>> If you forgot to add the Reported-by tag, once the fix for this bug is
->>> merged
->>> into any tree, please reply to this email with:
->>> #syz fix: exact-commit-title
->>> To mark this as a duplicate of another syzbot report, please reply with:
->>> #syz dup: exact-subject-of-another-report
->>> If it's a one-off invalid bug report, please reply with:
->>> #syz invalid
->>> Note: if the crash happens again, it will cause creation of a new bug
->>> report.
->>> Note: all commands must start from beginning of the line in the email  
->>> body.
+Hmm, this seems a bit unnecessary.  For all of these, can you just do:
+
+   snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
+
+> +       snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
+> +       snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
+> +       snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
+> +       snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
+> +
+>          da7219_aad_jack_det(component, &cz_jack);
+
+>          return 0;
+> --
+> 1.9.1
