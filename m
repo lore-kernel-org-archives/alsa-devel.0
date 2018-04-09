@@ -1,125 +1,70 @@
-From: Jian-Hong Pan <jian-hong@endlessm.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Enable audio line out
-	on ASUS D640SA
-Date: Mon, 9 Apr 2018 11:01:41 +0800
-Message-ID: <CAPpJ_ed8NiqJHz8uFRdpqs0Sf_DKLUWJyb213oHyLUyXEdPXKA@mail.gmail.com>
-References: <20180402073313.13247-1-jian-hong@endlessm.com>
- <s5hwoxp3kyz.wl-tiwai@suse.de>
- <CAPpJ_eeYthiOiEMijRAvk05JR7cZLFpSiV8mVCHjxv_GL5Bjpg@mail.gmail.com>
- <s5ho9j01x0g.wl-tiwai@suse.de>
+From: Dan Williams <dcbw@redhat.com>
+Subject: Re: simultaneous voice/data works (was Re: call/normal switch was
+ Re: omap4-droid4: voice call support was)
+Date: Sun, 08 Apr 2018 22:15:30 -0500
+Message-ID: <1a37aaadcd25b849d81bf295b28cdad7d5ffd1d2.camel@redhat.com>
+References: <67086fdd0cdd69142cb89cd00f90e5a580e6607a.camel@redhat.com>
+         <20180402155754.GD5700@atomide.com> <20180403150444.GE5700@atomide.com>
+         <20180403155023.GA14638@atrey.karlin.mff.cuni.cz>
+         <20180403194419.GG5700@atomide.com> <20180406120423.GA18691@amd>
+         <516eb3f7-e300-d59d-6a31-ab7545c656f1@wizzup.org>
+         <20180407081000.GB7818@amd> <20180407122233.GA11302@amd>
+         <cbfc3cfa8acbc02dde848ec4e1d71b5089ff1d10.camel@redhat.com>
+         <20180408074124.GA19844@amd>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f170.google.com (mail-io0-f170.google.com
- [209.85.223.170])
- by alsa0.perex.cz (Postfix) with ESMTP id ACAA32673C7
- for <alsa-devel@alsa-project.org>; Mon,  9 Apr 2018 05:01:43 +0200 (CEST)
-Received: by mail-io0-f170.google.com with SMTP id p139so7863271iod.0
- for <alsa-devel@alsa-project.org>; Sun, 08 Apr 2018 20:01:43 -0700 (PDT)
-In-Reply-To: <s5ho9j01x0g.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>, linux-kernel@vger.kernel.org, Hui Wang <hui.wang@canonical.com>, linux@endlessm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180408074124.GA19844@amd>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pavel Machek <pavel@ucw.cz>
+Cc: Merlijn Wajer <merlijn@wizzup.org>, Tony Lindgren <tony@atomide.com>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
 List-Id: alsa-devel@alsa-project.org
 
-MjAxOC0wNC0wMyAxNzowNCBHTVQrMDg6MDAgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPjoK
-PiBPbiBUdWUsIDAzIEFwciAyMDE4IDEwOjQzOjAyICswMjAwLAo+IEppYW4tSG9uZyBQYW4gd3Jv
-dGU6Cj4+Cj4+IDIwMTgtMDQtMDIgMTk6MjkgR01UKzA4OjAwIFRha2FzaGkgSXdhaSA8dGl3YWlA
-c3VzZS5kZT46Cj4+ID4KPj4gPiBPbiBNb24sIDAyIEFwciAyMDE4IDA5OjMzOjEzICswMjAwLAo+
-PiA+IEppYW4tSG9uZyBQYW4gd3JvdGU6Cj4+ID4gPgo+PiA+ID4gVGhpcyBBU1VTIEQ2NDBTQSBk
-ZXNrdG9wIHdob3NlIG1vdGhlciBib2FyZCBpcyBENjQwTUIgaGFzCj4+ID4gPiAtIHR3byBqYWNr
-cyB3aGljaCBhcmUgYSBoZWFkcGhvbmUgYW5kIGEgbWljIG9uIHRoZSBmcm9udCBwYW5lbCwKPj4g
-PiA+IC0gdGhyZWUgamFja3Mgd2hpY2ggYXJlIGEgbWljLCBhIGxpbmUgb3V0IGFuZCBhIGxpbmUg
-aW4gb24gdGhlIHJlYXIgcGFuZWwKPj4gPiA+IC0gb25lIGludGVybmFsIHNwZWFrZXIuCj4+ID4g
-Pgo+PiA+ID4gSWYgSSBwbHVnIGEgaGVhZHBob25lIHRvIHRoZSBmcm9udCBoZWFkcGhvbmUgamFj
-aywgdGhlcmUgd2lsbCBiZSBzb3VuZAo+PiA+ID4gdGhyb3VnaCB0aGUgaGVhZHBob25lIGphY2ss
-IGFuZCBubyBzb3VuZCB0aHJvdWdoIHRoZSBpbnRlcm5hbCBzcGVha2VyLgo+PiA+ID4gSWYgSSB1
-bnBsdWcgdGhlIGhlYWRwaG9uZSBmcm9tIHRoZSB0aGUgaGVhZHBob25lIGphY2ssIHRoZXJlIHdp
-bGwgYmUKPj4gPiA+IHNvdW5kIHRocm91Z2ggdGhlIGludGVybmFsIHNwZWFrZXIuICBBbmQgYWx3
-YXlzIG5vIHNvdW5kIHRocm91Z2ggcmVhcgo+PiA+ID4gbGluZSBvdXQsIHdoZW4gSSBwbHVnIGEg
-aGVhZHBob25lIG9yIGFuIGV4dGVybmVsIHNwZWFrZXIgdG8gdGhlIHJlYXIKPj4gPiA+IGxpbmUg
-b3V0IGphY2suCj4+ID4gPgo+PiA+ID4gQmVzaWRlcywgSSBoYWQgY2hlY2tlZCBhbmQgdG9nZ2xl
-ZCB0aGUgQXV0by1NdXRlIE1vZGUgaW4gYWxzYW1peGVyLCBidXQKPj4gPiA+IHRoZSByZWFyIGxp
-bmUgb3V0IHN0aWxsIHdhcyBub3Qgd29ya2luZy4gIFRoZW4gSSBjaGVja2VkIHRoZSBzb3VuZAo+
-PiA+ID4gc2V0dGluZ3MgaW4gR1VJLCBhbmQgZm91bmQgdGhlcmUgd2FzIG5vICJMaW5lIE91dCIg
-Y291bGQgYmUgY2hvc2VuLCBvbmx5Cj4+ID4gPiB0aGUgIkhlYWRwaG9uZXMiIGFuZCAiSERNSS9E
-aXNwbGF5UG9ydCIuCj4+ID4gPiBIb3dldmVyLCBzeXN0ZW0gZG9lcyBrbm93IHRoYXQgdGhlcmUg
-aXMgYW4gIkludGVsIFBDSCBMaW5lIE91dCIuCj4+ID4gPgo+PiA+ID4gWyAgIDEwLjA4OTA4Ml0g
-c25kX2hkYV9jb2RlY19yZWFsdGVrIGhkYXVkaW9DMEQwOiBhdXRvY29uZmlnIGZvcgo+PiA+ID4g
-QUxDODg3LVZEOiBsaW5lX291dHM9MSAoMHgxNC8weDAvMHgwLzB4MC8weDApIHR5cGU6bGluZQo+
-PiA+ID4gWyAgIDEwLjA4OTA4M10gc25kX2hkYV9jb2RlY19yZWFsdGVrIGhkYXVkaW9DMEQwOiAg
-ICBzcGVha2VyX291dHM9MQo+PiA+ID4gKDB4MWEvMHgwLzB4MC8weDAvMHgwKQo+PiA+ID4gWyAg
-IDEwLjA4OTA4NF0gc25kX2hkYV9jb2RlY19yZWFsdGVrIGhkYXVkaW9DMEQwOiAgICBocF9vdXRz
-PTEKPj4gPiA+ICgweDFiLzB4MC8weDAvMHgwLzB4MCkKPj4gPiA+IFsgICAxMC4wODkwODVdIHNu
-ZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMDogICAgbW9ubzogbW9ub19vdXQ9MHgwCj4+
-ID4gPiBbICAgMTAuMDg5MDg2XSBzbmRfaGRhX2NvZGVjX3JlYWx0ZWsgaGRhdWRpb0MwRDA6ICAg
-IGlucHV0czoKPj4gPiA+IFsgICAxMC4wODkwODddIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1
-ZGlvQzBEMDogICAgICBSZWFyIE1pYz0weDE4Cj4+ID4gPiBbICAgMTAuMDg5MDg4XSBzbmRfaGRh
-X2NvZGVjX3JlYWx0ZWsgaGRhdWRpb0MwRDA6ICAgICAgRnJvbnQgTWljPTB4MTkKPj4gPiA+IFsg
-ICAxMC4wODkwODldIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMDogICAgICBMaW5l
-PTB4MTUKPj4gPiA+IFsgICAxMC4xMDQzODddIGlucHV0OiBIREEgSW50ZWwgUENIIFJlYXIgTWlj
-IGFzCj4+ID4gPiAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWYuMy9zb3VuZC9jYXJkMC9p
-bnB1dDkKPj4gPiA+IFsgICAxMC4xMDQ0MTZdIGlucHV0OiBIREEgSW50ZWwgUENIIEZyb250IE1p
-YyBhcwo+PiA+ID4gL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFmLjMvc291bmQvY2FyZDAv
-aW5wdXQxMAo+PiA+ID4gWyAgIDEwLjEwNDQ0MV0gaW5wdXQ6IEhEQSBJbnRlbCBQQ0ggTGluZSBh
-cwo+PiA+ID4gL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFmLjMvc291bmQvY2FyZDAvaW5w
-dXQxMQo+PiA+ID4gWyAgIDEwLjEwNDQ2N10gaW5wdXQ6IEhEQSBJbnRlbCBQQ0ggTGluZSBPdXQg
-YXMKPj4gPiA+IC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxZi4zL3NvdW5kL2NhcmQwL2lu
-cHV0MTIKPj4gPiA+IFsgICAxMC4xMDQ0OTRdIGlucHV0OiBIREEgSW50ZWwgUENIIEZyb250IEhl
-YWRwaG9uZSBhcwo+PiA+ID4gL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFmLjMvc291bmQv
-Y2FyZDAvaW5wdXQxMwo+PiA+ID4KPj4gPiA+IENvbnNlcXVlbnRseSwgSSBjaGVja2VkIHRoZSBw
-aW4gd2lkZ2V0cycgZGVmYXVsdCBjb25maWd1cmF0aW9uIHZhbHVlczoKPj4gPiA+IC0gTm9kZSAw
-eDE0IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDA1OGQ6IFN0ZXJlbyBBbXAtT3V0Cj4+ID4gPiAg
-ICAgUGluIERlZmF1bHQgMHgwMTAxNDAxMDogW0phY2tdIExpbmUgT3V0IGF0IEV4dCBSZWFyCj4+
-ID4gPgo+PiA+ID4gLSBOb2RlIDB4MWIgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDU4ZjogU3Rl
-cmVvIEFtcC1JbiBBbXAtT3V0Cj4+ID4gPiAgICAgUGluIERlZmF1bHQgMHgwMjIxNDAzMDogW0ph
-Y2tdIEhQIE91dCBhdCBFeHQgRnJvbnQKPj4gPiA+Cj4+ID4gPiBCZWNhdXNlIHRoZSBoZWFkcGhv
-bmUgamFjayAoTm9kZSBJRDoweDFiKSBsb2NhdGVzIG9uIHRoZSBkZXNrdG9wJ3MgZnJvbnQKPj4g
-PiA+IHBhbmVsLCBub3QgcmVhciBwYW5lbCwgSSBjaGFuZ2UgdGhlIGhlYWRwaG9uZSBqYWNrJ3Mg
-Y29uZmlndXJhdGlvbiBmcm9tCj4+ID4gPiBwcmltYXJ5IGNoYXNzaXMgdG8gc2VwYXJhdGUgY2hh
-c3Npcy4gIFNvLCB0aGUgY29uZmlndXJhdGlvbiB2YWx1ZSBvZgo+PiA+ID4gTm9kZSBJRDoweDFi
-IHNob3VsZCBiZSAweDIyMjE0MDMwLgo+PiA+Cj4+ID4gVGhpcyBpcyBPSywgYnV0Li4uCj4+ID4K
-Pj4gPiA+IEFkZGl0aW9uYWxseSwgSSB0b2dnbGUgdGhlIEF1dG8tTXV0ZSBNb2RlIG9mIFJlYWx0
-ZWsgY29kZWNzIHRvIOKAnFNwZWFrZXIKPj4gPiA+IE9ubHnigJ0gd2hpY2ggbWFrZXMgc2lnbmFs
-IG91dHB1dHMgdGhyb3VnaCBsaW5lIG91dCBqYWNrIHdoZW4gdGhlICJMaW5lCj4+ID4gPiBPdXQi
-IGlzIGNob3NlbiBpbiB0aGUgc291bmQgc2V0dGluZ3MuCj4+ID4KPj4gPiAuLi4gdGhpcyBpcyBh
-IG1hdHRlciBvZiB0YXN0ZSwgYW5kIEkgZG9uJ3QgdGhpbmsgaXQgZ29vZCB0byBzZXQgYQo+PiA+
-IGRpZmZlcmVudCBkZWZhdWx0IGZyb20gb3RoZXJzLiAgWW91IGNhbiBjaGFuZ2UgaXQgb25jZSBh
-bmQgc2F2ZSBpdCB2aWEKPj4gPiBhbHNhY3RsLgo+Pgo+PiBUaGUgZGVmYXVsdCBzdGF0ZSBvZiBB
-dXRvLU11dGUgTW9kZSBvZiBSZWFsdGVrIGNvZGVjIG9uIHRoaXMgbWFjaGluZSBpcwo+PiAiTGlu
-ZSBPdXQgKyBTcGVha2VyIi4KPj4gVGhpcyBkaXNhbGxvd3MgdG8gb3V0cHV0IGF1ZGlvIHNpZ25h
-bCB0aHJvdWdoIHRoZSBsaW5lIG91dCBqYWNrLCBldmVuIEkgYWxyZWFkeQo+PiBjaG9vc2UgdGhl
-ICJMaW5lIE91dCIgYXMgdGhlIGF1ZGlvIG91dHB1dCBkZXZpY2UgaW4gdGhlIHNvdW5kIHNldHRp
-bmdzLgo+PiBJdCBtZWFucyB0aGVyZSBpcyBubyB3YXkgdG8gdXNlIHRoZSBsaW5lIG91dCBqYWNr
-IGluICJMaW5lIE91dCArIFNwZWFrZXIiIHN0YXRlCj4+IG9mIEF1dG8tTXV0ZSBNb2RlIG9uIHRo
-aXMgbWFjaGluZS4KPgo+IEl0J3MgYSBzZXR1cCBpc3N1ZSBieSBQQSwgYW5kIGl0J3Mgbm90IHNw
-ZWNpZmljIHRvIHRoaXMgZGV2aWNlIGF0Cj4gYWxsLiAgSWYgUEEgd2FudHMgdGhlIGluZGVwZW5k
-ZW50IG91dHB1dCwgaXQgY2FuIGNoYW5nZSB0byBhdXRvLW11dGUKPiBvZmYgYnkgaXRzZWxmLgo+
-Cj4+IFRvIGVuaGFuY2UgdGhlIHVzZXIgZXhwZXJpZW5jZSwgZXNwZWNpYWxseSB0aGUgbmV3IG9u
-ZSB3aG8gZmlyc3QgdXNlcyBMaW51eCwKPj4gY2hhbmdpbmcgdGhpcyBtYWNoaW5lJ3MgQXV0by1N
-dXRlIE1vZGUgdG8gIlNwZWFrZXIgT25seSIgc3RhdGUsIHdoaWNoIGFsbG93cwo+PiB0byBvdXRw
-dXQgdGhlIGF1ZGlvIHNpZ25hbCB0aHJvdWdoIHRoZSBsaW5lIG91dCBqYWNrLCB3aWxsIGJlIHRo
-ZSBiZXR0ZXIgY2hvaWNlLgo+Pgo+PiBCeSB0aGUgd2F5LCBpZiB0aGUgIkhlYWRwaG9uZXMiIGlz
-IGNob3NlbiBhcyB0aGUgYXVkaW8gb3V0cHV0IGRldmljZSBpbiB0aGUKPj4gc291bmQgc2V0dGlu
-Z3MsIHRoZSBhdWRpbyBzaWduYWwgd2lsbCBub3Qgb3V0cHV0IHRocm91Z2ggdGhlIGxpbmUgb3V0
-IGphY2sKPj4gYXV0b21hdGljYWxseS4KPj4KPj4gVGhlcmVmb3JlLCBJIHRoaW5rIHRoaXMgcGFy
-dCBvZiB0aGUgcXVpcmsgaXMgc3RpbGwgbmVlZGVkIG9uIHRoaXMgbWFjaGluZS4KPgo+IEFnYWlu
-LCB0aGlzIGlzbid0IGFib3V0IHRoZSBtYWNoaW5lIGNvbmZpZ3VyYXRpb24sIGJ1dCBhIGdlbmVy
-aWMgUEEKPiBwcm9ibGVtLiAgRml4aW5nIGl0IGluIGEgZGV2aWNlLXNwZWNpZmljIGZpeHVwIGlz
-IG5vIHJpZ2h0IHdheS4KClRoYW5rcyBmb3IgdGhlIGhpbnQgd2hpY2ggaXMgYWJvdXQgdGhlIFB1
-bHNlQXVkaW8uCkkgd2lsbCB0cnkgdG8gZmlndXJlIG91dCB0aGUgZml4IGZvciB0aGUgQXV0by1N
-dXRlIHByb2JsZW0gd2l0aApQdWxzZUF1ZGlvIGZpcnN0LgpBbmQgdGhlIHBpbiBjb25maWd1cmF0
-aW9uIGZpeHVwIG1heSBiZSBub3QgbmVlZCBvciBzdGlsbCBuZWVkZWQsIGFmdGVyIHRoZSB0cnku
-CgpUaGFua3MsCgpKaWFuLUhvbmcgUGFuCgo+Cj4gdGhhbmtzLAo+Cj4gVGFrYXNoaQpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
-bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Sun, 2018-04-08 at 09:41 +0200, Pavel Machek wrote:
+> Hi!
+> 
+> > > mmcli -m 0 --enable
+> > > mmcli -m 0  --location-enable-gps-nmea
+> > > watch -n .3 sudo mmcli -m 0  --location-get-gps-nmea
+> > > 
+> > > ...can be used to get GPS data. Droid4 seems to have rather bad
+> > > GPS,
+> > > so you should probably put it near window for testing.
+> > > 
+> > > Is there way to grab data from modemmanager and feed it to gpsd,
+> > > so
+> > > that normal applications can access gps? I don't see easy way.
+> > > 
+> > > I tried --location-enable-gps-unmanaged , but that did not work
+> > > for
+> > > me.
+> > 
+> > That requires a TTY that would spit out the GPS data; in this mode
+> > MM
+> > only sends the start/stop commands, and what comes out the GPS TTY
+> > is
+> > undefined (at least by MM).
+> > 
+> > So unless you know that one of the 6600's TTYs does GPS and in what
+> > format it does GPS, then no.
+> > 
+> > Doesn't --location-get-gps-nmea work for you?  That will spit out
+> > the
+> > latest NMEA traces MM gets from the modem, if it supports NMEA.  I
+> > believe --location-status will tell you what methods MM supports
+> > with
+> > the modem.
+> 
+> Yes, --location-get-gps-nmea works for me.
+> 
+> I guess one way forward would be to implement --location-get-gps-nmea
+> support for qmicli, and use that?
+
+Yeah, libqmi already has the necessary bits but it's not plumbed
+through to qmicli.  Note that qmicli is a straight interface to QMI and
+doesn't try to impose abstractions on anything, so you wouldn't get --
+location-get-gps-nmea, but you'd instead be working directly with the
+QMI PDS (older) and/or LOC (newer) service commands.
+
+Dan
