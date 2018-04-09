@@ -1,46 +1,60 @@
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH 2/2] sound: ad1889: Replace mdelay with usleep_range in snd_ad1889_ac97_ready
-Date: Mon,  9 Apr 2018 21:03:38 +0800
-Message-ID: <1523279018-24017-1-git-send-email-baijiaju1990@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: T-Bone@parisc-linux.org, perex@perex.cz, tiwai@suse.com
-Cc: linux-parisc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
+From: Robert Rosengren <robert.rosengren@axis.com>
+Subject: [PATCH v2 2/2] ASoC: adau17x1: Do not reload dsp-fw if
+	samplerate has not changed
+Date: Mon,  9 Apr 2018 15:13:36 +0200
+Message-ID: <20180409131336.21990-2-robert.rosengren@axis.com>
+References: <20180409131336.21990-1-robert.rosengren@axis.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D02B2673D9
+ for <alsa-devel@alsa-project.org>; Mon,  9 Apr 2018 15:14:03 +0200 (CEST)
+In-Reply-To: <20180409131336.21990-1-robert.rosengren@axis.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Robert Rosengren <robertr@axis.com>, Danny Smith <dannys@axis.com>
 List-Id: alsa-devel@alsa-project.org
 
-snd_ad1889_ac97_ready() is never called in atomic context.
+From: Danny Smith <dannys@axis.com>
 
-The call chain ending up at snd_ad1889_ac97_ready() is:
-[1] snd_ad1889_ac97_ready() <- snd_ad1889_ac97_xinit() <- 
-	snd_ad1889_ac97_init() <- snd_ad1889_probe()
+Reloading fw causes an audiable popping sound, we can avoid this
+by not reloading if the samplerate is the same as before.
 
-snd_ad1889_probe() is only set as ".probe" in struct pci_driver.
-This function is not called in atomic context.
-
-Despite never getting called from atomic context, snd_ad1889_ac97_ready()
-calls mdelay for busy wait.
-This is not necessary and can be replaced with usleep_range to
-avoid busy waiting.
-
-This is found by a static analysis tool named DCNS written by myself.
-
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Signed-off-by: Danny Smith <dannys@axis.com>
+Signed-off-by: Robert Rosengren <robert.rosengren@axis.com>
 ---
- sound/pci/ad1889.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/adau17x1.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/pci/ad1889.c b/sound/pci/ad1889.c
-index 0bf2c04..a2a8e1d 100644
---- a/sound/pci/ad1889.c
-+++ b/sound/pci/ad1889.c
-@@ -258,7 +258,7 @@ struct snd_ad1889 {
- 	
- 	while (!(ad1889_readw(chip, AD_AC97_ACIC) & AD_AC97_ACIC_ACRDY) 
- 			&& --retry)
--		mdelay(1);
-+		usleep_range(1000, 2000);
- 	if (!retry) {
- 		dev_err(chip->card->dev, "[%s] Link is not ready.\n",
- 			__func__);
+diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
+index 12bf24c26818..ae41edd1c406 100644
+--- a/sound/soc/codecs/adau17x1.c
++++ b/sound/soc/codecs/adau17x1.c
+@@ -843,6 +843,15 @@ int adau17x1_setup_firmware(struct snd_soc_component *component,
+ 	struct adau *adau = snd_soc_component_get_drvdata(component);
+ 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+ 
++	/* Check if sample rate is the same as before. If it is there is no
++	 * point in performing the below steps as the call to
++	 * sigmadsp_setup(...) will return directly when it finds the sample
++	 * rate to be the same as before. By checking this we can prevent an
++	 * audiable popping noise which occours when toggling DSP_RUN.
++	 */
++	if (adau->sigmadsp->current_samplerate == rate)
++		return 0;
++
+ 	snd_soc_dapm_mutex_lock(dapm);
+ 
+ 	ret = regmap_read(adau->regmap, ADAU17X1_DSP_SAMPLING_RATE, &dspsr);
 -- 
-1.9.1
+2.11.0
