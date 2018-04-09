@@ -1,17 +1,24 @@
 From: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH] ASoC: fsl_esai: Fix divisor calculation
- failure at lower ratio
-Date: Mon, 9 Apr 2018 23:43:02 +0200
-Message-ID: <42010284-6fbd-2d1a-ffe1-8a825478d1d7@denx.de>
-References: <1523231855-7854-1-git-send-email-nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_esai: Clear the xPM bit when
+ using xFP
+Date: Mon, 9 Apr 2018 23:43:21 +0200
+Message-ID: <850f989f-936b-c825-2237-f26b50982a91@denx.de>
+References: <20180407130221.24770-1-marex@denx.de>
+ <20180408011454.GA2997@Asurada-CZ80>
+ <32ecf3e6-2241-682a-4f24-940fbab998b7@denx.de>
+ <20180408040127.GA14245@Asurada-CZ80>
+ <4029cd13-0de6-609f-d8cc-923553cd0d0f@denx.de>
+ <20180408192713.GA1932@Asurada>
+ <d3cc98b4-8bcb-752a-1ff0-c113d4213198@denx.de>
+ <20180409000741.GA50921@Asurada-CZ80>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
- by alsa0.perex.cz (Postfix) with ESMTP id 41A66266C1C
- for <alsa-devel@alsa-project.org>; Tue, 10 Apr 2018 01:46:00 +0200 (CEST)
-In-Reply-To: <1523231855-7854-1-git-send-email-nicoleotsuka@gmail.com>
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F00B266D8D
+ for <alsa-devel@alsa-project.org>; Tue, 10 Apr 2018 01:46:02 +0200 (CEST)
+In-Reply-To: <20180409000741.GA50921@Asurada-CZ80>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,52 +29,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, "Gustavo A . R . Silva" <garsilva@embeddedor.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/09/2018 01:57 AM, Nicolin Chen wrote:
-> When the desired ratio is less than 256, the savesub (tolerance)
-> in the calculation would become 0. This will then fail the loop-
-> search immediately without reporting any errors.
+On 04/09/2018 02:07 AM, Nicolin Chen wrote:
+> On Sun, Apr 08, 2018 at 09:33:52PM +0200, Marek Vasut wrote:
 > 
-> But if the ratio is smaller enough, there is no need to calculate
-> the tolerance because PM divisor alone is enough to get the ratio.
+>>>>>> Try feeding it the following values, The codec I use is PCM1808.
+>>>>>
+>>>>>> [1] fsl_esai_set_dai_sysclk[227] clk_id=0 freq=24576000 dir=1
+>>>>>> [2] fsl_esai_divisor_cal[131] tx=0 ratio=2 usefp=0 fp=0
+>>>>>> [3] fsl_esai_set_bclk[322] tx=0 freq=3072000
+>>>>>> [4] fsl_esai_divisor_cal[131] tx=0 ratio=8 usefp=1 fp=8
+>>>>
+>>>> Sorry for confusing you, clk_id in [1] should be 3 .
+>>>
+>>> No worries, it doesn't change the program flow. But it makes
+>>> sense now as the input is 48MHz.
+>>
+>> Except with this configuration , the audio doesn't work without this
+>> patch. I'm happy to receive any feedback on why or what is the problem.
 > 
-> So a simple fix could be just to set PM directly instead of going
-> into the loop-search.
-> 
-> Reported-by: Marek Vasut <marex@denx.de>
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> Cc: Marek Vasut <marex@denx.de>
+> I sent a patch to you and in the maillist for review. Would
+> you please test it and sent a Tested-by to the patch? Thanks
 
-On i.MX6Q with TI PCM1808
-Tested-by: Marek Vasut <marex@denx.de>
-
-> ---
->  sound/soc/fsl/fsl_esai.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-> index 40a7004..da8fd98 100644
-> --- a/sound/soc/fsl/fsl_esai.c
-> +++ b/sound/soc/fsl/fsl_esai.c
-> @@ -144,6 +144,13 @@ static int fsl_esai_divisor_cal(struct snd_soc_dai *dai, bool tx, u32 ratio,
->  
->  	psr = ratio <= 256 * maxfp ? ESAI_xCCR_xPSR_BYPASS : ESAI_xCCR_xPSR_DIV8;
->  
-> +	/* Do not loop-search if PM (1 ~ 256) alone can serve the ratio */
-> +	if (ratio <= 256) {
-> +		pm = ratio;
-> +		fp = 1;
-> +		goto out;
-> +	}
-> +
->  	/* Set the max fluctuation -- 0.1% of the max devisor */
->  	savesub = (psr ? 1 : 8)  * 256 * maxfp / 1000;
->  
-> 
-
+Done, thanks for your help! :)
 
 -- 
 Best regards,
