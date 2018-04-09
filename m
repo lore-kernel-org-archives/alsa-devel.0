@@ -1,125 +1,45 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: BUG: soft lockup in snd_virmidi_output_trigger
-Date: Mon, 9 Apr 2018 15:52:29 +0200
-Message-ID: <CACT4Y+b5SoyHa2pHvFFPBVhFSPHn=PZiAiGa=-7jYkcdFHLn4Q@mail.gmail.com>
-References: <000000000000abcd98056964164c@google.com> <s5h6050h6r8.wl-tiwai@suse.de>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: simultaneous voice/data works (was Re: call/normal switch was
+ Re: omap4-droid4: voice call support was)
+Date: Mon, 9 Apr 2018 07:08:47 -0700
+Message-ID: <20180409140847.GP5700@atomide.com>
+References: <67086fdd0cdd69142cb89cd00f90e5a580e6607a.camel@redhat.com>
+ <20180402155754.GD5700@atomide.com>
+ <20180403150444.GE5700@atomide.com>
+ <20180403155023.GA14638@atrey.karlin.mff.cuni.cz>
+ <20180403194419.GG5700@atomide.com>
+ <20180406120423.GA18691@amd>
+ <516eb3f7-e300-d59d-6a31-ab7545c656f1@wizzup.org>
+ <20180407081000.GB7818@amd>
+ <20180407122233.GA11302@amd>
+ <cbfc3cfa8acbc02dde848ec4e1d71b5089ff1d10.camel@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h6050h6r8.wl-tiwai@suse.de>
+Content-Disposition: inline
+In-Reply-To: <cbfc3cfa8acbc02dde848ec4e1d71b5089ff1d10.camel@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: syzbot <syzbot+619d9f40141d826b097e@syzkaller.appspotmail.com>, alsa-devel@alsa-project.org, syzkaller-bugs@googlegroups.com, Jaroslav Kysela <perex@perex.cz>, LKML <linux-kernel@vger.kernel.org>
+To: Dan Williams <dcbw@redhat.com>
+Cc: Pavel Machek <pavel@ucw.cz>, Merlijn Wajer <merlijn@wizzup.org>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 9, 2018 at 3:03 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Mon, 09 Apr 2018 07:58:01 +0200,
-> syzbot wrote:
->>
->> Hello,
->>
->> syzbot hit the following crash on upstream commit
->> 3fd14cdcc05a682b03743683ce3a726898b20555 (Fri Apr 6 19:15:41 2018 +0000)
->> Merge tag 'mtd/for-4.17' of git://git.infradead.org/linux-mtd
->> syzbot dashboard link:
->> https://syzkaller.appspot.com/bug?extid=619d9f40141d826b097e
->>
->> Unfortunately, I don't have any reproducer for this crash yet.
->> Raw console output:
->> https://syzkaller.appspot.com/x/log.txt?id=4594231414882304
->> Kernel config:
->> https://syzkaller.appspot.com/x/.config?id=-5813481738265533882
->> compiler: gcc (GCC) 8.0.1 20180301 (experimental)
->>
->> IMPORTANT: if you fix the bug, please add the following tag to the commit:
->> Reported-by: syzbot+619d9f40141d826b097e@syzkaller.appspotmail.com
->> It will help syzbot understand when the bug is fixed. See footer for
->> details.
->> If you forward the report, please keep this part and the footer.
->>
->> 8021q: adding VLAN 0 to HW filter on device team0
->> IPv6: ADDRCONF(NETDEV_UP): team0: link is not ready
->> 8021q: adding VLAN 0 to HW filter on device team0
->> IPv6: ADDRCONF(NETDEV_UP): team0: link is not ready
->> 8021q: adding VLAN 0 to HW filter on device team0
->> watchdog: BUG: soft lockup - CPU#1 stuck for 134s! [syz-executor2:10431]
->> Modules linked in:
->> irq event stamp: 35856
->> hardirqs last  enabled at (35855): [<ffffffff874a1734>]
->> __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160
->> [inline]
->> hardirqs last  enabled at (35855): [<ffffffff874a1734>]
->> _raw_spin_unlock_irqrestore+0x74/0xc0 kernel/locking/spinlock.c:184
->> hardirqs last disabled at (35856): [<ffffffff87600901>]
->> interrupt_entry+0xb1/0xf0 arch/x86/entry/entry_64.S:624
->> softirqs last  enabled at (162): [<ffffffff87800778>]
->> __do_softirq+0x778/0xaf5 kernel/softirq.c:311
->> softirqs last disabled at (95): [<ffffffff81467a61>] invoke_softirq
->> kernel/softirq.c:365 [inline]
->> softirqs last disabled at (95): [<ffffffff81467a61>]
->> irq_exit+0x1d1/0x200  kernel/softirq.c:405
->> CPU: 1 PID: 10431 Comm: syz-executor2 Not tainted 4.16.0+ #4
->> Hardware name: Google Google Compute Engine/Google Compute Engine,
->> BIOS  Google 01/01/2011
->> RIP: 0010:arch_local_irq_restore arch/x86/include/asm/paravirt.h:783
->> [inline]
->> RIP: 0010:__raw_spin_unlock_irqrestore
->> include/linux/spinlock_api_smp.h:160  [inline]
->> RIP: 0010:_raw_spin_unlock_irqrestore+0xa1/0xc0
->> kernel/locking/spinlock.c:184
->> RSP: 0018:ffff880184db7780 EFLAGS: 00000282 ORIG_RAX: ffffffffffffff13
->> RAX: dffffc0000000000 RBX: 0000000000000282 RCX: 0000000000000000
->> RDX: 1ffffffff1162e55 RSI: 0000000000000001 RDI: 0000000000000282
->> RBP: ffff880184db7790 R08: ffffed0035d21962 R09: 0000000000000000
->> R10: 0000000000000000 R11: 0000000000000000 R12: ffff8801ae90cb08
->> R13: ffff880184db7810 R14: 0000000000000001 R15: ffff8801cb9a5880
->> FS:  00007fc943ad8700(0000) GS:ffff8801db100000(0000) knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 00007fc943ad7db8 CR3: 00000001b070d000 CR4: 00000000001406e0
->> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> Call Trace:
->>  spin_unlock_irqrestore include/linux/spinlock.h:365 [inline]
->>  snd_virmidi_output_trigger+0x522/0x6c0 sound/core/seq/seq_virmidi.c:205
->>  snd_rawmidi_output_trigger sound/core/rawmidi.c:150 [inline]
->>  snd_rawmidi_kernel_write1+0x519/0x700 sound/core/rawmidi.c:1288
->>  snd_rawmidi_write+0x2e2/0xdc0 sound/core/rawmidi.c:1338
->>  __vfs_write+0x10b/0x880 fs/read_write.c:485
->>  vfs_write+0x1f8/0x560 fs/read_write.c:549
->>  ksys_write+0xf9/0x250 fs/read_write.c:598
->>  SYSC_write fs/read_write.c:610 [inline]
->>  SyS_write+0x24/0x30 fs/read_write.c:607
->>  do_syscall_64+0x29e/0x9d0 arch/x86/entry/common.c:287
->>  entry_SYSCALL_64_after_hwframe+0x42/0xb7
->> RIP: 0033:0x455259
->> RSP: 002b:00007fc943ad7c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
->> RAX: ffffffffffffffda RBX: 00007fc943ad86d4 RCX: 0000000000455259
->> RDX: 00000000e78e624c RSI: 0000000020000040 RDI: 0000000000000014
->> RBP: 000000000072c010 R08: 0000000000000000 R09: 0000000000000000
->> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
->> R13: 00000000000006ca R14: 00000000006fd390 R15: 0000000000000002
->> Code: c7 a8 72 b1 88 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea
->> 03 80  3c 02 00 75 21 48 83 3d 4e 5b 67 01 00 74 0e 48 89 df 57 9d
->> <0f> 1f 44 00  00 eb bb 0f 0b 0f 0b e8 6f 29 68 fa eb 97 e8 68 29
->
-> This is quite new, and I still don't figure out what went wrong.
->
-> At first I thought of the endless loop in snd_virmidi_output_trigger()
-> (e.g the error handling of snd_midi_event_encode() continues the loop,
-> and it may go into an endless loop in theory.  But, practically,
-> snd_midi_event_encode() never returns an error, so it shouldn't
-> matter.)  But it doesn't explain why the report points to
-> spin_unlock_IRQ restore().
->
-> If you have a similar report or any relevant information, please let
-> me know.
+* Dan Williams <dcbw@redhat.com> [180408 02:46]:
+> On Sat, 2018-04-07 at 14:22 +0200, Pavel Machek wrote:
+> > I tried --location-enable-gps-unmanaged , but that did not work for
+> > me.
+> 
+> That requires a TTY that would spit out the GPS data; in this mode MM
+> only sends the start/stop commands, and what comes out the GPS TTY is
+> undefined (at least by MM).
+> 
+> So unless you know that one of the 6600's TTYs does GPS and in what
+> format it does GPS, then no.
 
+There should be a NMEA port within the unknown port range ttyUSB[123].
 
-All information syzbot has is available here (not much for now though):
+Is there some easy way to enable --location-enable-gps-unmanaged for
+testing so I can check if GPS gets enabled for one of the ports?
 
-https://syzkaller.appspot.com/bug?extid=619d9f40141d826b097e
+Regards,
 
-And here are all other reports, if case you want to correlate it with
-other stalls:
-
-https://syzkaller.appspot.com
+Tony
