@@ -1,54 +1,65 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [alsa-devel] [PATCH] sound: soc: intel: bxt_da7219_max98357a:
- Replace GFP_ATOMIC with GFP_KERNEL in broxton_audio_probe
-Date: Tue, 10 Apr 2018 19:47:22 +0530
-Message-ID: <20180410141721.GQ6014@localhost>
-References: <1523270781-22627-1-git-send-email-baijiaju1990@gmail.com>
- <482591fb-bf12-2e0a-e0ef-2ae0b4095000@linux.intel.com>
- <s5h3704dvad.wl-tiwai@suse.de>
+From: Freaky <freaky2000@gmail.com>
+Subject: Re: No audio on iMac18,1 (A1418) with kernel 4.15.14
+Date: Tue, 10 Apr 2018 16:34:47 +0200
+Message-ID: <CAEw6ZytErrkSmBdC+aiQJk38qa64x5a6qLC4zAt1-rjn2+_2eg@mail.gmail.com>
+References: <CAEw6ZysiM28o+AM5FTE5L24BNKYBEgV2Ktm4oifwmBR9KFEi_g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5h3704dvad.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Adam.Thomson.Opensource@diasemi.com, Jia-Ju Bai <baijiaju1990@gmail.com>, lgirdwood@gmail.com, sathyanarayana.nujella@intel.com, broonie@kernel.org, perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qk0-f195.google.com (mail-qk0-f195.google.com
+ [209.85.220.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id BBC772673C7
+ for <alsa-devel@alsa-project.org>; Tue, 10 Apr 2018 16:34:49 +0200 (CEST)
+Received: by mail-qk0-f195.google.com with SMTP id v2so13584566qkh.10
+ for <alsa-devel@alsa-project.org>; Tue, 10 Apr 2018 07:34:49 -0700 (PDT)
+In-Reply-To: <CAEw6ZysiM28o+AM5FTE5L24BNKYBEgV2Ktm4oifwmBR9KFEi_g@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 09, 2018 at 09:39:06PM +0200, Takashi Iwai wrote:
-> On Mon, 09 Apr 2018 20:57:43 +0200,
-> Pierre-Louis Bossart wrote:
-> > 
-> > On 4/9/18 5:46 AM, Jia-Ju Bai wrote:
-> > > broxton_audio_probe() is never called in atomic context.
-> > > This function is only set as ".probe" in "struct platform_driver".
-> > >
-> > > Despite never getting called from atomic context,
-> > > broxton_audio_probe() calls devm_kzalloc() with GFP_ATOMIC,
-> > > which waits busily for allocation.
-> > > GFP_ATOMIC is not necessary and can be replaced with GFP_KERNEL,
-> > > to avoid busy waiting and improve the possibility of sucessful allocation.
-> > 
-> > [answering for the series]
-> > Humm, this is interesting.
-> > If indeed we can afford to sleep then the change should be done on ALL
-> > 14 boards in sound/soc/intel/boards which follow the same code
-> > pattern.
-> > If we cannot sleep then then none of these changes should be applied.
-> > Liam and Vinod?
-> 
-> It must be sleepable context as it's a standard platform driver probe
-> callback.
-> 
-> And now looking at grep output, only sound/soc/intel contains so many
-> calls with GFP_ATOMIC.  I bet that almost all can be done with
-> GFP_KERNEL, maybe only one or two in atom/sst would be conditionally
-> with GFP_ATOMIC.
+FYI: Tested all the pin outs with hda-analyzer, didn't get sound on the
+speakers with any of them.
 
-Yeah I don't see many cases which would warrant atomic context, I will review
-them and fix these after merge window closes. Clearly machines have no
-reason for that, and I guess most are copy-paste from 1st culprit
+On Tue, Apr 10, 2018 at 3:57 PM, Freaky <freaky2000@gmail.com> wrote:
 
--- 
-~Vinod
+> Hi there,
+>
+> we got an iMac18,1 here on which we have no audio.
+>
+> Maybe the codec is just too new, although I see people using it on
+> non-Apple hardware. Using model parameters imac27 or imac27_122 doesn't
+> help.
+>
+> Have alsa-info attached. lspci (on this distro (but it's dated although it
+> has a recent kernel)) doesn't recognize it yet, the online PCI-IDs says:
+>
+> Sunrise Point-LP HD Audio
+>
+> Found some other people mentioning this issue at Arch, thread is here:
+> https://bbs.archlinux.org/viewtopic.php?id=233449&p=2 - no solution so
+> far.
+>
+> Will see if flipping bits with hda-analyzer will make it go.
+>
+> If there's a solution for this already we'd be much obliged if someone can
+> point us to it. Otherwise very willing to help, but can't code drivers
+> unfortunately. Can apply patches and build kernels however :). We'll have
+> to return the machine in about a week, so if anyone desires
+> output/testing/etc. please let us know asap as we only have it available
+> for a short while.
+>
+> Will post the solution, if we can find one, to the Arch thread as well.
+>
+> Thanks in advance.
+>
+> Kind regards
+>
