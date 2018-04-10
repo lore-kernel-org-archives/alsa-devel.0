@@ -1,27 +1,23 @@
-From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: Re: [Xen-devel][PATCH v3 0/5] sndif: add explicit back
- and front synchronization
-Date: Tue, 10 Apr 2018 08:28:17 +0300
-Message-ID: <3cfc6db2-8cff-ab44-ccd3-18dcbfc019b9@gmail.com>
-References: <1521444144-12451-1-git-send-email-andr2000@gmail.com>
- <s5hr2oeebui.wl-tiwai@suse.de>
- <2868f1f8-3988-7f25-9b88-8b686866b9ce@gmail.com>
- <s5hin9pevyi.wl-tiwai@suse.de>
- <6d471483-ec53-72e1-0827-eb3a933467f3@gmail.com>
- <0bce4538-89e1-fb14-060e-4e0a5b1d980d@gmail.com>
- <d5af6fe0-13cf-35b7-deca-a9456c3317b6@gmail.com>
+From: Daniel Kurtz <djkurtz@chromium.org>
+Subject: Re: [PATCH 2/2] ASoC: AMD: Enable/Disable auxiliary
+ clock via common clock framework
+Date: Tue, 10 Apr 2018 05:43:00 +0000
+Message-ID: <CAGS+omCLJnXcqL=r7ijp+csk7_dBko0pyBG9MHtPPGAd2AgJgA@mail.gmail.com>
+References: <1522404297-7555-1-git-send-email-akshu.agrawal@amd.com>
+ <1522404297-7555-2-git-send-email-akshu.agrawal@amd.com>
+ <CAGS+omDqWEjEm0b3H5-pwd2Nrf_pEbQTAU_dPKVmXi5vsDxKLw@mail.gmail.com>
+ <cc2ee422-edf6-5a01-1482-8152d896b1b3@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f51.google.com (mail-lf0-f51.google.com
- [209.85.215.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 820CB266D47
- for <alsa-devel@alsa-project.org>; Tue, 10 Apr 2018 07:28:20 +0200 (CEST)
-Received: by mail-lf0-f51.google.com with SMTP id p142-v6so9798191lfd.6
- for <alsa-devel@alsa-project.org>; Mon, 09 Apr 2018 22:28:20 -0700 (PDT)
-In-Reply-To: <d5af6fe0-13cf-35b7-deca-a9456c3317b6@gmail.com>
-Content-Language: en-US
+Received: from mail-vk0-f66.google.com (mail-vk0-f66.google.com
+ [209.85.213.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E7C2266D47
+ for <alsa-devel@alsa-project.org>; Tue, 10 Apr 2018 07:43:12 +0200 (CEST)
+Received: by mail-vk0-f66.google.com with SMTP id x204so6265954vkd.7
+ for <alsa-devel@alsa-project.org>; Mon, 09 Apr 2018 22:43:12 -0700 (PDT)
+In-Reply-To: <cc2ee422-edf6-5a01-1482-8152d896b1b3@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,80 +27,177 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: konrad.wilk@oracle.com
-Cc: Takashi Iwai <tiwai@suse.de>, xen-devel@lists.xenproject.org, alsa-devel@alsa-project.org, "Oleksandr_Andrushchenko@epam.com" <Oleksandr_Andrushchenko@epam.com>
+To: Akshu Agrawal <Akshu.Agrawal@amd.com>
+Cc: tiwai@suse.de, Alexander.Deucher@amd.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-S29ucmFkPwoKT24gMDQvMDMvMjAxOCAwODozNyBBTSwgT2xla3NhbmRyIEFuZHJ1c2hjaGVua28g
-d3JvdGU6Cj4gcGluZwo+Cj4gT24gMDMvMjcvMjAxOCAwODo0MSBBTSwgT2xla3NhbmRyIEFuZHJ1
-c2hjaGVua28gd3JvdGU6Cj4+IEhpLCBLb25yYWQhCj4+Cj4+IENvdWxkIHlvdSBwbGVhc2UgcmV2
-aWV3Pwo+Pgo+PiBUaGFuayB5b3UsCj4+IE9sZWtzYW5kcgo+Pgo+PiBPbiAwMy8yMS8yMDE4IDA5
-OjI1IEFNLCBPbGVrc2FuZHIgQW5kcnVzaGNoZW5rbyB3cm90ZToKPj4+IE9uIDAzLzIxLzIwMTgg
-MDk6MjAgQU0sIFRha2FzaGkgSXdhaSB3cm90ZToKPj4+PiBPbiBXZWQsIDIxIE1hciAyMDE4IDA4
-OjE1OjM2ICswMTAwLAo+Pj4+IE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIHdyb3RlOgo+Pj4+PiBP
-biAwMy8yMC8yMDE4IDEwOjIyIFBNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+Pj4+PiBPbiBNb24s
-IDE5IE1hciAyMDE4IDA4OjIyOjE5ICswMTAwLAo+Pj4+Pj4gT2xla3NhbmRyIEFuZHJ1c2hjaGVu
-a28gd3JvdGU6Cj4+Pj4+Pj4gRnJvbTogT2xla3NhbmRyIEFuZHJ1c2hjaGVua28gPG9sZWtzYW5k
-cl9hbmRydXNoY2hlbmtvQGVwYW0uY29tPgo+Pj4+Pj4+Cj4+Pj4+Pj4gSGVsbG8sIGFsbCEKPj4+
-Pj4+Pgo+Pj4+Pj4+IEluIG9yZGVyIHRvIHByb3ZpZGUgZXhwbGljaXQgc3luY2hyb25pemF0aW9u
-IGJldHdlZW4gYmFja2VuZCBhbmQKPj4+Pj4+PiBmcm9udGVuZCB0aGUgZm9sbG93aW5nIGNoYW5n
-ZXMgYXJlIGludHJvZHVjZWQgaW4gdGhlIHByb3RvY29sOgo+Pj4+Pj4+IMKgwqAgLSBidW1wIHBy
-b3RvY29sIHZlcnNpb24gdG8gMgo+Pj4+Pj4+IMKgwqAgLSBhZGQgbmV3IHJpbmcgYnVmZmVyIGZv
-ciBzZW5kaW5nIGFzeW5jaHJvbm91cyBldmVudHMgZnJvbQo+Pj4+Pj4+IMKgwqDCoMKgIGJhY2tl
-bmQgdG8gZnJvbnRlbmQgdG8gcmVwb3J0IG51bWJlciBvZiBieXRlcyBwbGF5ZWQgYnkgdGhlCj4+
-Pj4+Pj4gwqDCoMKgwqAgZnJvbnRlbmQgKFhFTlNORF9FVlRfQ1VSX1BPUykKPj4+Pj4+PiDCoMKg
-IC0gaW50cm9kdWNlIHRyaWdnZXIgZXZlbnRzIGZvciBwbGF5YmFjayBjb250cm9sOiAKPj4+Pj4+
-PiBzdGFydC9zdG9wL3BhdXNlL3Jlc3VtZQo+Pj4+Pj4+IMKgwqAgLSBhZGQgInJlcS0iIHByZWZp
-eCB0byBldmVudC1jaGFubmVsIGFuZCByaW5nLXJlZiB0byB1bmlmeSAKPj4+Pj4+PiBuYW1pbmcK
-Pj4+Pj4+PiDCoMKgwqDCoCBvZiB0aGUgWGVuIGV2ZW50IGNoYW5uZWxzIGZvciByZXF1ZXN0cyBh
-bmQgZXZlbnRzCj4+Pj4+Pj4gwqDCoCAtIGFkZCBYRU5TTkRfT1BfSFdfUEFSQU1fUVVFUlkgcmVx
-dWVzdCB0byByZWFkL3VwZGF0ZQo+Pj4+Pj4+IMKgwqDCoMKgIHN0cmVhbSBjb25maWd1cmF0aW9u
-IHNwYWNlOiByZXF1ZXN0IHBhc3NlcyBkZXNpcmVkIAo+Pj4+Pj4+IGludGVydmFscy9mb3JtYXRz
-IGZvcgo+Pj4+Pj4+IMKgwqDCoMKgIHRoZSBzdHJlYW0gcGFyYW1ldGVycyBhbmQgdGhlIHJlc3Bv
-bnNlIHJldHVybnMgYWxsb3dlZCAKPj4+Pj4+PiBpbnRlcnZhbHMgYW5kCj4+Pj4+Pj4gwqDCoMKg
-wqAgZm9ybWF0cyBtYXNrIHRoYXQgY2FuIGJlIHVzZWQuCj4+Pj4+Pj4KPj4+Pj4+PiBDaGFuZ2Vz
-IHNpbmNlIHYyOgo+Pj4+Pj4+IDEuIEtvbnJhZCdzIHItYiB0YWcgZm9yIHZlcnNpb24gcGF0Y2gK
-Pj4+Pj4+PiAyLiBNQUpPUjogY2hhbmdlZCByZXEvcmVzcC9ldnQgcGFja2V0IHNpemVzIGZyb20g
-MzIgdG8gNjQgb2N0ZXRzCj4+Pj4+Pj4gMy4gUmV3b3JrZWQgWEVOU05EX09QX0hXX1BBUkFNX1FV
-RVJZIHNvIGl0IG5vdyBzZW5kcyBhbGwKPj4+Pj4+PiDCoMKgwqDCoCBwYXJhbWV0ZXJzIGF0IG9u
-Y2UsIGFsbG93aW5nIHRvIGNoZWNrIGFsbCB0aGUgY29uZmlndXJhdGlvbgo+Pj4+Pj4+IMKgwqDC
-oMKgIHNwYWNlLgo+Pj4+Pj4+IDQuIE1pbm9yIGRvY3VtZW50YXRpb24gY2xlYW51cCAoYWRkZWQg
-bWlzc2VkICJyZXNlcnZlZCIgZmllbGRzKQo+Pj4+Pj4+Cj4+Pj4+Pj4gQ2hhbmdlcyBzaW5jZSB2
-MToKPj4+Pj4+Pgo+Pj4+Pj4+IDEuIENoYW5nZWQgcHJvdG9jb2wgdmVyc2lvbiBkZWZpbml0aW9u
-IGZyb20gc3RyaW5nIHRvIGludGVnZXIsCj4+Pj4+Pj4gc28gaXQgY2FuIGVhc2lseSBiZSB1c2Vk
-IGluIGNvbXBhcmlzb25zLgo+Pj4+Pj4+IEtvbnJhZCwgSSBoYXZlIHJlbW92ZWQgeW91ciByLWIg
-dGFnIGZvciB0aGUgcmVhc29uIG9mIHRoaXMgY2hhbmdlLgo+Pj4+Pj4+Cj4+Pj4+Pj4gMi4gSW4g
-b3JkZXIgdG8gcHJvdmlkZSBleHBsaWNpdCBzdHJlYW0gcGFyYW1ldGVyIG5lZ290aWF0aW9uIAo+
-Pj4+Pj4+IGJldHdlZW4KPj4+Pj4+PiBiYWNrZW5kIGFuZCBmcm9udGVuZCB0aGUgZm9sbG93aW5n
-IGNoYW5nZXMgYXJlIGludHJvZHVjZWQgaW4gdGhlIAo+Pj4+Pj4+IHByb3RvY29sOgo+Pj4+Pj4+
-IGFkZCBYRU5TTkRfT1BfSFdfUEFSQU1fUVVFUlkgcmVxdWVzdCB0byByZWFkL3VwZGF0ZQo+Pj4+
-Pj4+IGNvbmZpZ3VyYXRpb24gc3BhY2UgZm9yIHRoZSBwYXJhbWV0ZXIgZ2l2ZW46IHJlcXVlc3Qg
-cGFzc2VzCj4+Pj4+Pj4gZGVzaXJlZCBwYXJhbWV0ZXIgaW50ZXJ2YWwgKG1hc2spIGFuZCB0aGUg
-cmVzcG9uc2UgdG8gdGhpcyByZXF1ZXN0Cj4+Pj4+Pj4gcmV0dXJucyBtaW4vbWF4IGludGVydmFs
-IChtYXNrKSBmb3IgdGhlIHBhcmFtZXRlciB0byBiZSB1c2VkLgo+Pj4+Pj4+Cj4+Pj4+Pj4gUGFy
-YW1ldGVycyBzdXBwb3J0ZWQgYnkgdGhpcyByZXF1ZXN0L3Jlc3BvbnNlOgo+Pj4+Pj4+IMKgwqAg
-LSBmb3JtYXQgbWFzawo+Pj4+Pj4+IMKgwqAgLSBzYW1wbGUgcmF0ZSBpbnRlcnZhbAo+Pj4+Pj4+
-IMKgwqAgLSBudW1iZXIgb2YgY2hhbm5lbHMgaW50ZXJ2YWwKPj4+Pj4+PiDCoMKgIC0gYnVmZmVy
-IHNpemUsIGludGVydmFsLCBmcmFtZXMKPj4+Pj4+PiDCoMKgIC0gcGVyaW9kIHNpemUsIGludGVy
-dmFsLCBmcmFtZXMKPj4+Pj4+IEkgY2FuJ3QganVkZ2UgZXhhY3RseSBhYm91dCB0aGUgcHJvdG9j
-b2wgd2l0aG91dCB0aGUgYWN0dWFsIEZFL0JFCj4+Pj4+PiBpbXBsZW1lbnRhdGlvbnMsIGJ1dCB0
-aGUgY2hhbmdlIGxvb2tzIGdvb2QgdG8gbWUsIGVzcGVjaWFsbHkgaWYgCj4+Pj4+PiB5b3UndmUK
-Pj4+Pj4+IGFscmVhZHkgdGVzdGVkIHNvbWV0aGluZy4KPj4+Pj4gVGhhbmsgeW91LCBJIGhhdmUg
-dGVzdGVkIHRoZSBjaGFuZ2VzIGFuZCBuZWVkIHRoZW0gdG8gc3RhcnQgCj4+Pj4+IHVwc3RyZWFt
-aW5nCj4+Pj4+IHRoZSBmcm9udGVuZCBkcml2ZXIgdXNlZCB0byB0ZXN0IHRoZSBwcm90b2NvbC4K
-Pj4+Pj4gRG8geW91IG1pbmQgaWYgSSBwdXQgeW91ciBBY2tlZC1ieSAob3IgeW91IHByZWZlciBS
-ZXZpZXdlZC1ieT8pIAo+Pj4+PiB0YWcgdG8KPj4+Pj4gdGhlc2UgcGF0Y2hlczoKPj4+Pj4KPj4+
-Pj4gW1BBVENIIHYzIDQvNV0gc25kaWY6IEFkZCBleHBsaWNpdCBiYWNrIGFuZCBmcm9udCBzeW5j
-aHJvbml6YXRpb24KPj4+Pj4gW1BBVENIIHYzIDUvNV0gc25kaWY6IEFkZCBleHBsaWNpdCBiYWNr
-IGFuZCBmcm9udCBwYXJhbWV0ZXIgCj4+Pj4+IG5lZ290aWF0aW9uCj4+Pj4gU3VyZSwgZmVlbCBm
-cmVlIHRvIHRha2UgbXkgYWNrOgo+Pj4+IMKgwqAgUmV2aWV3ZWQtYnk6IFRha2FzaGkgSXdhaSA8
-dGl3YWlAc3VzZS5kZT4KPj4+IFRoYW5rIHlvdQo+Pj4+Cj4+Pj4gVGFrYXNoaQo+Pj4+Cj4+Pj4+
-IFBsZWFzZSBub3RlLCB0aGF0IHRoZSBjaGFuZ2VzIGZpcnN0IHRvIGJlIG1lcmdlZCBpbnRvIFhl
-biBhbmQgdGhlbgo+Pj4+PiBJJ2xsIHByZXBhcmUKPj4+Pj4gdGhlIHNhbWUsIGJ1dCBmb3IgdGhl
-IGtlcm5lbAo+Pj4+Pj4gSWYgb3RoZXIgcGVvcGxlIGhhdmUgbm8gY29uY2VybiwgbGV0J3MgZ28g
-YWhlYWQgd2l0aCBGRS9CRSBzdHVmZi4KPj4+Pj4gS29ucmFkLCBhcmUgeW91IG9rIHdpdGggdGhl
-IGNoYW5nZXM/Cj4+Pj4+PiB0aGFua3MsCj4+Pj4+Pgo+Pj4+Pj4gVGFrYXNoaQo+Pj4+PiBUaGFu
-ayB5b3UsCj4+Pj4+IE9sZWtzYW5kcgo+Pj4+Pgo+Pj4KPj4KPgoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+> On 4/4/2018 12:27 AM, Daniel Kurtz wrote:
+> > Hi Akshu,
+> >
+> > On Fri, Mar 30, 2018 at 4:05 AM Akshu Agrawal <akshu.agrawal@amd.com>
+wrote:
+> >
+> >> This enables/disables and sets auxiliary clock at 25Mhz. It uses
+> >> common clock framework for proper ref counting. This approach will
+> >> save power in comparison to keeping it always On in firmware.
+> >
+> > I have some general concern with the approach in this patch:
+> >
+> > (1) The 25 MHz clock being created here is a general system clock
+> > resource.  I think it should be created in an SoC clock driver, rather
+than
+> > here in an audio machine driver.   This has several advantages:
+> >     (a) the clock resource would be available for other boards that use
+it but
+> > don't use this particular audio machine driver
+> >     (b) the clock would be instantiated at boot, rather than at machine
+driver
+> > load.
+> >     (c) the machine driver would not then need the additional clkdev
+code
+> >
+> > (2) The oscout1 clock is a pretty standard clk_gate with a clk_mux.  We
+can
+> > use some standard helpers to better model the clock tree rather than
+> > rewriting them:
+> >
+> > static struct clk *clk_48m;
+> > static struct clk *clk_25m;
+> > static struct clk *clk_oscout1_mux;
+> > static struct clk *clk_oscout1;
+> >
+> > static const char *clk_oscout1_parents[] = { "clk48MHz", "clk25MHz" };
+> >
+> > {
+> >      clk_48m = clk_register_fixed_rate(dev, "clk48MHz", NULL, 0,
+48000000);
+> >      clk_25m = clk_register_fixed_rate(dev, "clk25MHz", NULL, 0,
+25000000);
+> >
+> >      res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> >      res_base = devm_ioremap_nocache(dev, res->start,
+resource_size(res));
+> >
+> >      clk_oscout1_mux = clk_register_mux(dev, "oscout1_mux",
+> >          clk_oscout1_parents, ARRAY_SIZE(clk_oscout1_parents),
+> >          0, res_base + CLKDRVSTR2, OSCOUT1CLK25MHZ, 3, 0, NULL);
+> >
+> >      clk_set_parent(clk_oscout1_mux, clk_25m);
+> >
+> >      clk_oscout1 = clk_register_gate(dev, "oscout1", "oscout1_mux", 0,
+> >            res_base + MISCCLKCNTL1, OSCCLKENB, 0, NULL);
+> >
+> >
+> > (3) IIUC, the 25 MHz clock (oscout1) is actually the da7219's mclk.  The
+> > da7219 already
+> > has infrastructure to enable/disable its mclk as needed.  Once we
+establish
+> > the system clock,
+> > we can then wire this clock up to the da7219 via ACPI / devicetree
+> > properties.
+> >
+> The above design is something used in almost all ARM based platform
+> where we define all mux, pll, divider and gate and then each device uses
+> them though the devicetree.
+> The clock here are controlled in firmware. Enable/disable is handled in
+> firmware, where this being the exception case. Hence, I don't think it
+> will be of much value add.
+
+The value add to properly modeling the SoC's clock tree is highlighted
+above.
+In addition to making the code more understandable, and the SoC easier to
+use for other designs in the future, the clock tree as expressed via
+debugfs (/sys/kernel/debug/clk/clk_summary) will make more sense.
+In the particular case of the acp-da7219-max98357a.c machine driver and
+da7219 codec driver, properly modeling the oscout1 clock tree as a
+fixed_clks+mux+gate and then passing it to da7219 as its mclk will allow
+the mclk driver to do what it expects using its existing code - set the
+mclk rate (via oscout1's parent mux selector) and then enable/disable as
+needed.
+
+> For ST/CZ we have other platforms which do not use this clock. They have
+> a dedicated Oscillator for the codec.
+
+Exactly, such platforms will just not use this machine driver and this
+clock will be defined properly, but remain in the state programmed by
+firmware.
+
+> If you think its beneficial for other platform based on ST/CZ then maybe
+> we can take this as a separate activity. Where we move the clocks to a
+> common file and use the same framework.
+
+Moving the clock configuration out of acp-da7219-max98357a.c allows this
+system clock to be available independent of when this machine driver kernel
+module is loaded.
+
+[snip]
+
+> >> +struct cz_clock {
+> >> +       const char* acp_clks_name;
+> >
+> > I still think you should remove acp_clks_name, acp_clks_lookup and
+acp_clks
+> > from the struct since they are used locally during
+> > register_acpd7219_clocks, and, afaict, never referenced again.
+> >
+> I don't think putting in struct is bad. Plus it helps me get res_base
+> value on clk_enable using clk_hw.
+
+Yes, you can use a struct to store the fields that are needed, like
+res_base.  However, fields that are only used locally in a single function
+waste memory and confuse driver reviewers, since storing them in the struct
+implies that the field is state that must be preserved, when in fact the
+field's use is transitory.
+
+Please remove the extraneous fields from the struct: acp_clk_name,
+acp_clk_lookup, and acp_clk (unless you write an unregister that releases
+this clock, and therefore needs this).
+
+> +struct cz_clock {
+> +     const char* acp_clk_name;
+> +     struct clk_hw acp_clk_hw;
+> +     struct clk_lookup *acp_clk_lookup;
+> +     struct clk *acp_clk;
+> +     void __iomem *res_base;
+> +};
+
+[snip]
+
+> >
+> > Enable on hw_params() and disable on hw_free() doesn't sound balanced?
+> > Will there always be exactly one hw_free() for every hw_params()?
+> >
+> Yes, all resources allocated by hw_paramns are freed in hw_free.
+
+Right, but is it possible for hw_params() to get called mulitple times
+*without* hw_free()?
+This would cause more enables than disables.
+
+Documentation/sound/kernel-api/writing-an-alsa-driver.rst says:
+"""
+Note that this and ``prepare`` callbacks may be called multiple times
+per initialization. For example, the OSS emulation may call these
+callbacks at each change via its ioctl.
+
+Thus, you need to be careful not to allocate the same buffers many
+times, which will lead to memory leaks! Calling the helper function
+above many times is OK. It will release the previous buffer
+automatically when it was already allocated.
+"""
+
+[snip]
+
+> >> +static int register_acpd7219_clocks(struct platform_device *pdev)
+> >
+> > Where is the corresponding unregister?  Isn't this a module that can be
+> > unloaded?
+> >
+> I see none of the machine driver have registered a remove callback, I
+> wonder why?
+
+I don't know, either?  Perhaps because they don't instantiate anything that
+won't be cleaned up by devm_ on unload?
+This patch as written is currently instantiating clocks, though, so should
+really clean that up when removed.
+
+-Dan
