@@ -1,24 +1,19 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: simultaneous voice/data works (was Re: call/normal
- switch was Re: omap4-droid4: voice call support was)
-Date: Tue, 10 Apr 2018 06:50:29 -0700
-Message-ID: <20180410135029.GS5700@atomide.com>
-References: <20180403150444.GE5700@atomide.com>
- <20180403155023.GA14638@atrey.karlin.mff.cuni.cz>
- <20180403194419.GG5700@atomide.com> <20180406120423.GA18691@amd>
- <516eb3f7-e300-d59d-6a31-ab7545c656f1@wizzup.org>
- <20180407081000.GB7818@amd> <20180407122233.GA11302@amd>
- <cbfc3cfa8acbc02dde848ec4e1d71b5089ff1d10.camel@redhat.com>
- <20180409140847.GP5700@atomide.com> <20180410105840.GA13697@amd>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] sound: soc: intel: bxt_da7219_max98357a:
+ Replace GFP_ATOMIC with GFP_KERNEL in broxton_audio_probe
+Date: Tue, 10 Apr 2018 15:02:51 +0100
+Message-ID: <20180410140251.GB14657@sirena.org.uk>
+References: <1523270781-22627-1-git-send-email-baijiaju1990@gmail.com>
+ <482591fb-bf12-2e0a-e0ef-2ae0b4095000@linux.intel.com>
+ <s5h3704dvad.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2008624062510159452=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from muru.com (muru.com [72.249.23.125])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C302266C1C
- for <alsa-devel@alsa-project.org>; Tue, 10 Apr 2018 15:50:35 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20180410105840.GA13697@amd>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8448D266C1C
+ for <alsa-devel@alsa-project.org>; Tue, 10 Apr 2018 16:03:41 +0200 (CEST)
+In-Reply-To: <s5h3704dvad.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,36 +23,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pavel Machek <pavel@ucw.cz>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Dan Williams <dcbw@redhat.com>, linux-kernel@vger.kernel.org, Merlijn Wajer <merlijn@wizzup.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, linux-omap@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jia-Ju Bai <baijiaju1990@gmail.com>, sathyanarayana.nujella@intel.com, Adam.Thomson.Opensource@diasemi.com
 List-Id: alsa-devel@alsa-project.org
 
-* Pavel Machek <pavel@ucw.cz> [180410 11:00]:
-> On Mon 2018-04-09 07:08:47, Tony Lindgren wrote:
-> > * Dan Williams <dcbw@redhat.com> [180408 02:46]:
-> > > On Sat, 2018-04-07 at 14:22 +0200, Pavel Machek wrote:
-> > > > I tried --location-enable-gps-unmanaged , but that did not work for
-> > > > me.
-> > > 
-> > > That requires a TTY that would spit out the GPS data; in this mode MM
-> > > only sends the start/stop commands, and what comes out the GPS TTY is
-> > > undefined (at least by MM).
-> > > 
-> > > So unless you know that one of the 6600's TTYs does GPS and in what
-> > > format it does GPS, then no.
-> > 
-> > There should be a NMEA port within the unknown port range ttyUSB[123].
-> > 
-> > Is there some easy way to enable --location-enable-gps-unmanaged for
-> > testing so I can check if GPS gets enabled for one of the ports?
-> 
-> This should be userful for testing:
-> 
-> Just pass --pds-start-gps and you should get NMEA on stdout.
 
-Hmm maybe also try to check if enabling the GPS this way starts
-printing something out of /dev/ttyUSB[123]?
+--===============2008624062510159452==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="bCsyhTFzCvuiizWE"
+Content-Disposition: inline
 
-Regards,
 
-Tony
+--bCsyhTFzCvuiizWE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Apr 09, 2018 at 09:39:06PM +0200, Takashi Iwai wrote:
+
+> It must be sleepable context as it's a standard platform driver probe
+> callback.
+
+> And now looking at grep output, only sound/soc/intel contains so many
+> calls with GFP_ATOMIC.  I bet that almost all can be done with
+> GFP_KERNEL, maybe only one or two in atom/sst would be conditionally
+> with GFP_ATOMIC.
+
+Yeah, it's not like it'd be the first code quality problem found in the
+Intel drivers.
+
+--bCsyhTFzCvuiizWE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrMxAoACgkQJNaLcl1U
+h9Af9Qf9G3jjm88KOaPES27ZSNhU49vRVZfy2H5IzqPPi6vt/ibAMs7WLTzKA7Bi
+94SoRQjmZZRjXOq2x2kMLmR1m/+EmkvExHFwy3pFiFJ8yWak64egJDUR2lOnb5Fm
+PEzJyMpEPBxySkhkhLs2JSlHhqxyErrLHX070fPviy68c7kkmO4JadcMVHqzclAf
+chQvTrP+PG17VuzfcUFjIuziSEOQqDSz/ZRC7wpptorIHhVw9JK0p/6P47lkb0/M
+9F9oQ5tpDwZlg+T965LUh98vBFE7J1jdRI3jqhrV3C/JAk4yM0X6+kscZsjiTAQY
+7DD/S0COX89nr6Ih9wJQjCnU404nzA==
+=H+RI
+-----END PGP SIGNATURE-----
+
+--bCsyhTFzCvuiizWE--
+
+--===============2008624062510159452==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2008624062510159452==--
