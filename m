@@ -1,61 +1,99 @@
-From: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH] ASoC: fsl_esai: Clear the xPM bit when
- using xFP
-Date: Mon, 9 Apr 2018 23:43:21 +0200
-Message-ID: <850f989f-936b-c825-2237-f26b50982a91@denx.de>
-References: <20180407130221.24770-1-marex@denx.de>
- <20180408011454.GA2997@Asurada-CZ80>
- <32ecf3e6-2241-682a-4f24-940fbab998b7@denx.de>
- <20180408040127.GA14245@Asurada-CZ80>
- <4029cd13-0de6-609f-d8cc-923553cd0d0f@denx.de>
- <20180408192713.GA1932@Asurada>
- <d3cc98b4-8bcb-752a-1ff0-c113d4213198@denx.de>
- <20180409000741.GA50921@Asurada-CZ80>
+From: syzbot <syzbot+7e3f31a52646f939c052@syzkaller.appspotmail.com>
+Subject: Re: INFO: rcu detected stall in __snd_pcm_lib_xfer (2)
+Date: Mon, 09 Apr 2018 18:39:01 -0700
+Message-ID: <00000000000046a7c805697496e1@google.com>
+References: <00000000000078359d056928b7ea@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F00B266D8D
- for <alsa-devel@alsa-project.org>; Tue, 10 Apr 2018 01:46:02 +0200 (CEST)
-In-Reply-To: <20180409000741.GA50921@Asurada-CZ80>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, "Gustavo A . R . Silva" <garsilva@embeddedor.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <00000000000078359d056928b7ea@google.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel-bounces@alsa-project.org, alsa-devel@alsa-project.org, dvyukov@google.com, linux-kernel@vger.kernel.org, o-takashi@sakamocchi.jp, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On 04/09/2018 02:07 AM, Nicolin Chen wrote:
-> On Sun, Apr 08, 2018 at 09:33:52PM +0200, Marek Vasut wrote:
-> 
->>>>>> Try feeding it the following values, The codec I use is PCM1808.
->>>>>
->>>>>> [1] fsl_esai_set_dai_sysclk[227] clk_id=0 freq=24576000 dir=1
->>>>>> [2] fsl_esai_divisor_cal[131] tx=0 ratio=2 usefp=0 fp=0
->>>>>> [3] fsl_esai_set_bclk[322] tx=0 freq=3072000
->>>>>> [4] fsl_esai_divisor_cal[131] tx=0 ratio=8 usefp=1 fp=8
->>>>
->>>> Sorry for confusing you, clk_id in [1] should be 3 .
->>>
->>> No worries, it doesn't change the program flow. But it makes
->>> sense now as the input is 48MHz.
->>
->> Except with this configuration , the audio doesn't work without this
->> patch. I'm happy to receive any feedback on why or what is the problem.
-> 
-> I sent a patch to you and in the maillist for review. Would
-> you please test it and sent a Tested-by to the patch? Thanks
+syzbot has found reproducer for the following crash on upstream commit
+fd40ffc72e2f74c7db61e400903e7d50a88bc0b0 (Mon Apr 9 18:36:05 2018 +0000)
+selinux: fix missing dput() before selinuxfs unmount
+syzbot dashboard link:  
+https://syzkaller.appspot.com/bug?extid=7e3f31a52646f939c052
 
-Done, thanks for your help! :)
+So far this crash happened 731 times on upstream.
+C reproducer: https://syzkaller.appspot.com/x/repro.c?id=5746654556717056
+syzkaller reproducer:  
+https://syzkaller.appspot.com/x/repro.syz?id=5437811310198784
+Raw console output:  
+https://syzkaller.appspot.com/x/log.txt?id=5066563195502592
+Kernel config:  
+https://syzkaller.appspot.com/x/.config?id=-771321277174894814
+compiler: gcc (GCC) 8.0.1 20180301 (experimental)
 
--- 
-Best regards,
-Marek Vasut
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+7e3f31a52646f939c052@syzkaller.appspotmail.com
+It will help syzbot understand when the bug is fixed.
+
+INFO: rcu_sched self-detected stall on CPU
+	0-....: (124999 ticks this GP) idle=1f2/1/4611686018427387906  
+softirq=10492/10492 fqs=31246
+	 (t=125000 jiffies g=4909 c=4908 q=3)
+NMI backtrace for cpu 0
+CPU: 0 PID: 4481 Comm: syzkaller419220 Not tainted 4.16.0+ #14
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  <IRQ>
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x1b9/0x294 lib/dump_stack.c:113
+  nmi_cpu_backtrace.cold.4+0x19/0xce lib/nmi_backtrace.c:103
+  nmi_trigger_cpumask_backtrace+0x151/0x192 lib/nmi_backtrace.c:62
+  arch_trigger_cpumask_backtrace+0x14/0x20 arch/x86/kernel/apic/hw_nmi.c:38
+  trigger_single_cpu_backtrace include/linux/nmi.h:156 [inline]
+  rcu_dump_cpu_stacks+0x175/0x1c2 kernel/rcu/tree.c:1376
+  print_cpu_stall kernel/rcu/tree.c:1525 [inline]
+  check_cpu_stall.isra.61.cold.80+0x36c/0x59a kernel/rcu/tree.c:1593
+  __rcu_pending kernel/rcu/tree.c:3356 [inline]
+  rcu_pending kernel/rcu/tree.c:3401 [inline]
+  rcu_check_callbacks+0x21b/0xad0 kernel/rcu/tree.c:2763
+  update_process_times+0x2d/0x70 kernel/time/timer.c:1636
+  tick_sched_handle+0xa0/0x180 kernel/time/tick-sched.c:171
+  tick_sched_timer+0x42/0x130 kernel/time/tick-sched.c:1179
+  __run_hrtimer kernel/time/hrtimer.c:1337 [inline]
+  __hrtimer_run_queues+0x3e3/0x10a0 kernel/time/hrtimer.c:1399
+  hrtimer_interrupt+0x286/0x650 kernel/time/hrtimer.c:1457
+  local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1025 [inline]
+  smp_apic_timer_interrupt+0x15d/0x710 arch/x86/kernel/apic/apic.c:1050
+  apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:862
+  </IRQ>
+RIP: 0010:arch_local_irq_enable arch/x86/include/asm/paravirt.h:793 [inline]
+RIP: 0010:snd_pcm_stream_unlock_irq+0xb7/0xf0 sound/core/pcm_native.c:166
+RSP: 0018:ffff8801ac8a6b60 EFLAGS: 00000293 ORIG_RAX: ffffffffffffff13
+RAX: ffff8801a89e2700 RBX: 0000000000000000 RCX: 1ffff1003513c5f3
+RDX: 0000000000000000 RSI: ffffffff85a14e10 RDI: ffffffff88b17bf8
+RBP: ffff8801ac8a6b68 R08: ffff8801a89e2f78 R09: 0000000000000006
+R10: ffff8801a89e2700 R11: 0000000000000000 R12: 0000000000000004
+R13: 00000000ffffffe0 R14: ffff8801d9a6ac00 R15: ffff8801ceb2f200
+  __snd_pcm_lib_xfer+0x739/0x1d10 sound/core/pcm_lib.c:2246
+  snd_pcm_oss_write3+0xe9/0x220 sound/core/oss/pcm_oss.c:1236
+  snd_pcm_oss_write2+0x34c/0x460 sound/core/oss/pcm_oss.c:1373
+  snd_pcm_oss_sync1+0x332/0x5a0 sound/core/oss/pcm_oss.c:1606
+  snd_pcm_oss_sync.isra.29+0x790/0x980 sound/core/oss/pcm_oss.c:1682
+  snd_pcm_oss_release+0x214/0x290 sound/core/oss/pcm_oss.c:2559
+  __fput+0x34d/0x890 fs/file_table.c:209
+  ____fput+0x15/0x20 fs/file_table.c:243
+  task_work_run+0x1e4/0x290 kernel/task_work.c:113
+  exit_task_work include/linux/task_work.h:22 [inline]
+  do_exit+0x1aee/0x2730 kernel/exit.c:865
+  do_group_exit+0x16f/0x430 kernel/exit.c:968
+  get_signal+0x886/0x1960 kernel/signal.c:2469
+  do_signal+0x98/0x2040 arch/x86/kernel/signal.c:810
+  exit_to_usermode_loop+0x28a/0x310 arch/x86/entry/common.c:162
+  prepare_exit_to_usermode arch/x86/entry/common.c:196 [inline]
+  syscall_return_slowpath arch/x86/entry/common.c:265 [inline]
+  do_syscall_64+0x792/0x9d0 arch/x86/entry/common.c:292
+  entry_SYSCALL_64_after_hwframe+0x42/0xb7
+RIP: 0033:0x449eb9
+RSP: 002b:00007f302d286da8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 00000000006dcc5c RCX: 0000000000449eb9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000006dcc5c
+RBP: 00000000006dcc58 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0100000000000000
+R13: 7073642f7665642f R14: 646e732f7665642f R15: 0000000000000009
