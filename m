@@ -1,23 +1,15 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: simultaneous voice/data works (was Re: call/normal
- switch was Re: omap4-droid4: voice call support was)
-Date: Wed, 11 Apr 2018 13:43:40 +0200
-Message-ID: <20180411114339.GA6021@amd>
-References: <20180403155023.GA14638@atrey.karlin.mff.cuni.cz>
- <20180403194419.GG5700@atomide.com> <20180406120423.GA18691@amd>
- <516eb3f7-e300-d59d-6a31-ab7545c656f1@wizzup.org>
- <20180407081000.GB7818@amd> <20180407122233.GA11302@amd>
- <cbfc3cfa8acbc02dde848ec4e1d71b5089ff1d10.camel@redhat.com>
- <20180409140847.GP5700@atomide.com> <20180410105840.GA13697@amd>
- <20180410135029.GS5700@atomide.com>
+From: Peter Rosin <peda@axentia.se>
+Subject: [PATCH 1/2] ASoC: max9860: switch to using .probe_new
+Date: Wed, 11 Apr 2018 14:42:37 +0200
+Message-ID: <20180411124238.9385-1-peda@axentia.se>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3742626198252007166=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
- [195.113.26.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 49E5E266E30
- for <alsa-devel@alsa-project.org>; Wed, 11 Apr 2018 13:43:39 +0200 (CEST)
-In-Reply-To: <20180410135029.GS5700@atomide.com>
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur01on0132.outbound.protection.outlook.com [104.47.0.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5208D2673F2
+ for <alsa-devel@alsa-project.org>; Wed, 11 Apr 2018 14:42:50 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,87 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@collabora.com, Dan Williams <dcbw@redhat.com>, linux-kernel@vger.kernel.org, Merlijn Wajer <merlijn@wizzup.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, linux-omap@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Peter Rosin <peda@axentia.se>
 List-Id: alsa-devel@alsa-project.org
 
+Use the new probe style for i2c drivers.
 
---===============3742626198252007166==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="17pEHd4RhPHOinZp"
-Content-Disposition: inline
+Signed-off-by: Peter Rosin <peda@axentia.se>
+---
+ sound/soc/codecs/max9860.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue 2018-04-10 06:50:29, Tony Lindgren wrote:
-> * Pavel Machek <pavel@ucw.cz> [180410 11:00]:
-> > On Mon 2018-04-09 07:08:47, Tony Lindgren wrote:
-> > > * Dan Williams <dcbw@redhat.com> [180408 02:46]:
-> > > > On Sat, 2018-04-07 at 14:22 +0200, Pavel Machek wrote:
-> > > > > I tried --location-enable-gps-unmanaged , but that did not work f=
-or
-> > > > > me.
-> > > >=20
-> > > > That requires a TTY that would spit out the GPS data; in this mode =
-MM
-> > > > only sends the start/stop commands, and what comes out the GPS TTY =
-is
-> > > > undefined (at least by MM).
-> > > >=20
-> > > > So unless you know that one of the 6600's TTYs does GPS and in what
-> > > > format it does GPS, then no.
-> > >=20
-> > > There should be a NMEA port within the unknown port range ttyUSB[123].
-> > >=20
-> > > Is there some easy way to enable --location-enable-gps-unmanaged for
-> > > testing so I can check if GPS gets enabled for one of the ports?
-> >=20
-> > This should be userful for testing:
-> >=20
-> > Just pass --pds-start-gps and you should get NMEA on stdout.
->=20
-> Hmm maybe also try to check if enabling the GPS this way starts
-> printing something out of /dev/ttyUSB[123]?
-
-No, I did not find anything there :-(.
-
-This combination seems to give me working gps:
-
-sudo src/qmicli/qmicli -d /dev/cdc-wdm0 --pds-start-gps | nc -u 127.0.0.1 5=
-000
-
-/usr/sbin/gpsd -ND 4 udp://127.0.0.1:5000
-
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---17pEHd4RhPHOinZp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlrN9OsACgkQMOfwapXb+vKVswCfaomrMvbr2rwKZnH0R0P8kRXZ
-w+EAn268Psi+B2KKTywMG5Cr0g5LGewI
-=wJyE
------END PGP SIGNATURE-----
-
---17pEHd4RhPHOinZp--
-
---===============3742626198252007166==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3742626198252007166==--
+diff --git a/sound/soc/codecs/max9860.c b/sound/soc/codecs/max9860.c
+index a2dc6a47f466..376bd48e4790 100644
+--- a/sound/soc/codecs/max9860.c
++++ b/sound/soc/codecs/max9860.c
+@@ -599,8 +599,7 @@ static const struct dev_pm_ops max9860_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(max9860_suspend, max9860_resume, NULL)
+ };
+ 
+-static int max9860_probe(struct i2c_client *i2c,
+-			 const struct i2c_device_id *id)
++static int max9860_probe(struct i2c_client *i2c)
+ {
+ 	struct device *dev = &i2c->dev;
+ 	struct max9860_priv *max9860;
+@@ -738,7 +737,7 @@ static const struct of_device_id max9860_of_match[] = {
+ MODULE_DEVICE_TABLE(of, max9860_of_match);
+ 
+ static struct i2c_driver max9860_i2c_driver = {
+-	.probe	        = max9860_probe,
++	.probe_new      = max9860_probe,
+ 	.remove         = max9860_remove,
+ 	.id_table       = max9860_i2c_id,
+ 	.driver         = {
+-- 
+2.11.0
