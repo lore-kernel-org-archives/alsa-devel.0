@@ -1,25 +1,18 @@
-From: Daniel Kurtz <djkurtz@chromium.org>
-Subject: Re: [PATCH 2/2] ASoC: AMD: Enable/Disable auxiliary
- clock via common clock framework
-Date: Wed, 11 Apr 2018 18:14:06 +0000
-Message-ID: <CAGS+omAzSmUsL5wEkK1WS6u39RxpYY0HYtS7j=-as8gyL02juQ@mail.gmail.com>
-References: <1522404297-7555-1-git-send-email-akshu.agrawal@amd.com>
- <1522404297-7555-2-git-send-email-akshu.agrawal@amd.com>
- <CAGS+omDqWEjEm0b3H5-pwd2Nrf_pEbQTAU_dPKVmXi5vsDxKLw@mail.gmail.com>
- <cc2ee422-edf6-5a01-1482-8152d896b1b3@amd.com>
- <CAGS+omCLJnXcqL=r7ijp+csk7_dBko0pyBG9MHtPPGAd2AgJgA@mail.gmail.com>
- <341e4879-ec6b-8ea9-dd97-a79e4508f8e1@amd.com>
+From: syzbot <syzbot+f973e52978d95f818f69@syzkaller.appspotmail.com>
+Subject: BUG: unable to handle kernel paging request in
+	snd_pcm_format_set_silence
+Date: Wed, 11 Apr 2018 11:44:02 -0700
+Message-ID: <000000000000d059270569970587@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="yes"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f68.google.com (mail-vk0-f68.google.com
- [209.85.213.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 97D72266E30
- for <alsa-devel@alsa-project.org>; Wed, 11 Apr 2018 20:14:20 +0200 (CEST)
-Received: by mail-vk0-f68.google.com with SMTP id q198so1662397vke.3
- for <alsa-devel@alsa-project.org>; Wed, 11 Apr 2018 11:14:19 -0700 (PDT)
-In-Reply-To: <341e4879-ec6b-8ea9-dd97-a79e4508f8e1@amd.com>
+Received: from mail-io0-f199.google.com (mail-io0-f199.google.com
+ [209.85.223.199])
+ by alsa0.perex.cz (Postfix) with ESMTP id E18E9266FD1
+ for <alsa-devel@alsa-project.org>; Wed, 11 Apr 2018 20:44:03 +0200 (CEST)
+Received: by mail-io0-f199.google.com with SMTP id x7so2519105iob.21
+ for <alsa-devel@alsa-project.org>; Wed, 11 Apr 2018 11:44:03 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,178 +22,112 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Akshu Agrawal <Akshu.Agrawal@amd.com>
-Cc: tiwai@suse.de, Alexander.Deucher@amd.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, mail@maciej.szmigiero.name, o-takashi@sakamocchi.jp, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 11, 2018 at 4:08 AM Agrawal, Akshu <Akshu.Agrawal@amd.com>
-wrote:
+Hello,
+
+syzbot hit the following crash on upstream commit
+f2d285669aae656dfeafa0bf25e86bbbc5d22329 (Tue Apr 3 17:45:39 2018 +0000)
+Merge tag 'pm-4.17-rc1' of  
+git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
+syzbot dashboard link:  
+https://syzkaller.appspot.com/bug?extid=f973e52978d95f818f69
+
+So far this crash happened 2 times on upstream.
+syzkaller reproducer:  
+https://syzkaller.appspot.com/x/repro.syz?id=5368241429938176
+Raw console output:  
+https://syzkaller.appspot.com/x/log.txt?id=6066534392791040
+Kernel config: https://syzkaller.appspot.com/x/.config?id=686016073509112605
+compiler: gcc (GCC) 7.1.1 20170620
+user-space arch: i386
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+f973e52978d95f818f69@syzkaller.appspotmail.com
+It will help syzbot understand when the bug is fixed. See footer for  
+details.
+If you forward the report, please keep this part and the footer.
+
+IPVS: ftp: loaded support on port[0] = 21
+IPVS: ftp: loaded support on port[0] = 21
+IPVS: ftp: loaded support on port[0] = 21
+IPVS: ftp: loaded support on port[0] = 21
+IPVS: ftp: loaded support on port[0] = 21
+BUG: unable to handle kernel paging request at ffffc90004cc7000
+PGD 1dad42067 P4D 1dad42067 PUD 1dad43067 PMD 1c5cb3067 PTE 0
+Oops: 0002 [#1] SMP KASAN
+Dumping ftrace buffer:
+    (ftrace buffer empty)
+Modules linked in:
+CPU: 0 PID: 5516 Comm: syz-executor3 Not tainted 4.16.0+ #288
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+RIP: 0010:memset_erms+0x9/0x10 arch/x86/lib/memset_64.S:65
+RSP: 0018:ffff8801d7fc7368 EFLAGS: 00010246
+RAX: fffff520009b9600 RBX: ffffc90004cc7000 RCX: 0000000000104500
+RDX: 0000000000104500 RSI: 0000000000000000 RDI: ffffc90004cc7000
+RBP: ffff8801d7fc7388 R08: 0000000000000000 R09: ffffc90004cc7000
+R10: 00000000000208a0 R11: fffff520009b969f R12: 0000000000104500
+R13: 0000000000000000 R14: ffffffff88c9185c R15: 0000000000000010
+FS:  0000000000000000(0000) GS:ffff8801db000000(0063) knlGS:00000000f7f5fb40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: ffffc90004cc7000 CR3: 00000001d765c000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+  memset include/linux/string.h:330 [inline]
+  snd_pcm_format_set_silence+0x13f/0x4b0 sound/core/pcm_misc.c:431
+  loopback_prepare+0x92b/0xbf0 sound/drivers/aloop.c:347
+  snd_pcm_do_prepare+0x58/0x90 sound/core/pcm_native.c:1640
+  snd_pcm_action_single+0x70/0x110 sound/core/pcm_native.c:1084
+  snd_pcm_action_nonatomic+0x95/0xa0 sound/core/pcm_native.c:1151
+  snd_pcm_prepare+0x115/0x1a0 sound/core/pcm_native.c:1687
+  snd_pcm_kernel_ioctl+0x97/0x240 sound/core/pcm_native.c:2998
+  snd_pcm_oss_prepare+0x49/0x150 sound/core/oss/pcm_oss.c:1104
+  snd_pcm_oss_make_ready+0xf9/0x130 sound/core/oss/pcm_oss.c:1132
+  snd_pcm_oss_set_trigger+0x384/0x930 sound/core/oss/pcm_oss.c:1959
+  snd_pcm_oss_poll+0x7aa/0xd60 sound/core/oss/pcm_oss.c:2727
+  do_pollfd fs/select.c:832 [inline]
+  do_poll fs/select.c:883 [inline]
+  do_sys_poll+0x719/0x1050 fs/select.c:977
+  SYSC_poll fs/select.c:1035 [inline]
+  SyS_poll+0x10d/0x450 fs/select.c:1023
+  do_syscall_32_irqs_on arch/x86/entry/common.c:330 [inline]
+  do_fast_syscall_32+0x3ec/0xf9f arch/x86/entry/common.c:392
+  entry_SYSENTER_compat+0x70/0x7f arch/x86/entry/entry_64_compat.S:139
+RIP: 0023:0xf7f63c99
+RSP: 002b:00000000f7f5f0ac EFLAGS: 00000282 ORIG_RAX: 00000000000000a8
+RAX: ffffffffffffffda RBX: 0000000020000100 RCX: 0000000000000001
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+Code: 48 c1 e9 03 40 0f b6 f6 48 b8 01 01 01 01 01 01 01 01 48 0f af c6 f3  
+48 ab 89 d1 f3 aa 4c 89 c8 c3 90 49 89 f9 40 88 f0 48 89 d1 <f3> aa 4c 89  
+c8 c3 90 49 89 fa 40 0f b6 ce 48 b8 01 01 01 01 01
+RIP: memset_erms+0x9/0x10 arch/x86/lib/memset_64.S:65 RSP: ffff8801d7fc7368
+CR2: ffffc90004cc7000
+---[ end trace 95a476f9da224f32 ]---
 
 
+---
+This bug is generated by a dumb bot. It may contain errors.
+See https://goo.gl/tpsmEJ for details.
+Direct all questions to syzkaller@googlegroups.com.
 
-> On 4/10/2018 11:13 AM, Daniel Kurtz wrote:
-> >> On 4/4/2018 12:27 AM, Daniel Kurtz wrote:
-> >>> Hi Akshu,
-> >>>
-> >>> On Fri, Mar 30, 2018 at 4:05 AM Akshu Agrawal <akshu.agrawal@amd.com>
-> > wrote:
-> >>>
-> >>>> This enables/disables and sets auxiliary clock at 25Mhz. It uses
-> >>>> common clock framework for proper ref counting. This approach will
-> >>>> save power in comparison to keeping it always On in firmware.
-> >>>
-> >>> I have some general concern with the approach in this patch:
-> >>>
-> >>> (1) The 25 MHz clock being created here is a general system clock
-> >>> resource.  I think it should be created in an SoC clock driver, rather
-> > than
-> >>> here in an audio machine driver.   This has several advantages:
-> >>>      (a) the clock resource would be available for other boards that
-use
-> > it but
-> >>> don't use this particular audio machine driver
-> >>>      (b) the clock would be instantiated at boot, rather than at
-machine
-> > driver
-> >>> load.
-> >>>      (c) the machine driver would not then need the additional clkdev
-> > code
-> >>>
-> >>> (2) The oscout1 clock is a pretty standard clk_gate with a clk_mux.
-We
-> > can
-> >>> use some standard helpers to better model the clock tree rather than
-> >>> rewriting them:
-> >>>
-> >>> static struct clk *clk_48m;
-> >>> static struct clk *clk_25m;
-> >>> static struct clk *clk_oscout1_mux;
-> >>> static struct clk *clk_oscout1;
-> >>>
-> >>> static const char *clk_oscout1_parents[] = { "clk48MHz", "clk25MHz" };
-> >>>
-> >>> {
-> >>>       clk_48m = clk_register_fixed_rate(dev, "clk48MHz", NULL, 0,
-> > 48000000);
-> >>>       clk_25m = clk_register_fixed_rate(dev, "clk25MHz", NULL, 0,
-> > 25000000);
-> >>>
-> >>>       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> >>>       res_base = devm_ioremap_nocache(dev, res->start,
-> > resource_size(res));
-> >>>
-> >>>       clk_oscout1_mux = clk_register_mux(dev, "oscout1_mux",
-> >>>           clk_oscout1_parents, ARRAY_SIZE(clk_oscout1_parents),
-> >>>           0, res_base + CLKDRVSTR2, OSCOUT1CLK25MHZ, 3, 0, NULL);
-> >>>
-> >>>       clk_set_parent(clk_oscout1_mux, clk_25m);
-> >>>
-> >>>       clk_oscout1 = clk_register_gate(dev, "oscout1", "oscout1_mux",
-0,
-> >>>             res_base + MISCCLKCNTL1, OSCCLKENB, 0, NULL);
-> >>>
-> >>>
-> >>> (3) IIUC, the 25 MHz clock (oscout1) is actually the da7219's mclk.
-The
-> >>> da7219 already
-> >>> has infrastructure to enable/disable its mclk as needed.  Once we
-> > establish
-> >>> the system clock,
-> >>> we can then wire this clock up to the da7219 via ACPI / devicetree
-> >>> properties.
-> >>>
-> >> The above design is something used in almost all ARM based platform
-> >> where we define all mux, pll, divider and gate and then each device
-uses
-> >> them though the devicetree.
-> >> The clock here are controlled in firmware. Enable/disable is handled in
-> >> firmware, where this being the exception case. Hence, I don't think it
-> >> will be of much value add.
-> >
-> > The value add to properly modeling the SoC's clock tree is highlighted
-> > above.
-> > In addition to making the code more understandable, and the SoC easier
-to
-> > use for other designs in the future, the clock tree as expressed via
-> > debugfs (/sys/kernel/debug/clk/clk_summary) will make more sense.
-> > In the particular case of the acp-da7219-max98357a.c machine driver and
-> > da7219 codec driver, properly modeling the oscout1 clock tree as a
-> > fixed_clks+mux+gate and then passing it to da7219 as its mclk will allow
-> > the mclk driver to do what it expects using its existing code - set the
-> > mclk rate (via oscout1's parent mux selector) and then enable/disable as
-> > needed.
-> >
-> >> For ST/CZ we have other platforms which do not use this clock. They
-have
-> >> a dedicated Oscillator for the codec.
-> >
-> > Exactly, such platforms will just not use this machine driver and this
-> > clock will be defined properly, but remain in the state programmed by
-> > firmware.
-> >
-> >> If you think its beneficial for other platform based on ST/CZ then
-maybe
-> >> we can take this as a separate activity. Where we move the clocks to a
-> >> common file and use the same framework.
-> >
-> > Moving the clock configuration out of acp-da7219-max98357a.c allows this
-> > system clock to be available independent of when this machine driver
-kernel
-> > module is loaded.
-> >
-
-> I understand the advantages of having it moved to drivers/clk and also
-> connecting it to d7219's mclk. This is good to have feature for other
-> ST/CZ platforms. Would take it up this as a separate activity.
-
-I don't think this is a separate activity.  It is an integral part of the
-structure of this patch.  Let's fix it up now while we are actively
-thinking about this driver.
-
-
-> >>>
-> >>> Enable on hw_params() and disable on hw_free() doesn't sound balanced?
-> >>> Will there always be exactly one hw_free() for every hw_params()?
-> >>>
-> >> Yes, all resources allocated by hw_paramns are freed in hw_free.
-> >
-> > Right, but is it possible for hw_params() to get called mulitple times
-> > *without* hw_free()?
-> > This would cause more enables than disables.
-> >
-> > Documentation/sound/kernel-api/writing-an-alsa-driver.rst says:
-> > """
-> > Note that this and ``prepare`` callbacks may be called multiple times
-> > per initialization. For example, the OSS emulation may call these
-> > callbacks at each change via its ioctl.
-> >
-> > Thus, you need to be careful not to allocate the same buffers many
-> > times, which will lead to memory leaks! Calling the helper function
-> > above many times is OK. It will release the previous buffer
-> > automatically when it was already allocated.
-> > """
-> >
-> I get there is a remote possibility that hw_params maybe called multiple
-> times without hw_free (though I haven't come across it in my testing).
-> The other option was to use trigger. But, that is not possible as kernel
-> crashes when we call clk_prepare_enable(da7219_dai_clk) from trigger
-> registered to a non da7219 codec, like of max98357
-
-Using trigger won't work because you are not guaranteed to have symetric
-start/stop events.  In fact , there is a comment in the definition of
-struct snd_soc_dai_ops that specifically says this:
-
-/*
-* NOTE: Commands passed to the trigger function are not necessarily
-* compatible with the current state of the dai. For example this
-* sequence of commands is possible: START STOP STOP.
-* So do not unconditionally use refcounting functions in the trigger
-* function, e.g. clk_enable/disable.
-*/
-int (*trigger)(struct snd_pcm_substream *, int, struct snd_soc_dai *);
-
-Instead, can you try to use startup() / shutdown()?
-Those callbacks are non-atomic and should correspond to open()/close() on
-the corresponding audio device, which I think is what we want.
-
--Dan
+syzbot will keep track of this bug report.
+If you forgot to add the Reported-by tag, once the fix for this bug is  
+merged
+into any tree, please reply to this email with:
+#syz fix: exact-commit-title
+If you want to test a patch for this bug, please reply with:
+#syz test: git://repo/address.git branch
+and provide the patch inline or as an attachment.
+To mark this as a duplicate of another syzbot report, please reply with:
+#syz dup: exact-subject-of-another-report
+If it's a one-off invalid bug report, please reply with:
+#syz invalid
+Note: if the crash happens again, it will cause creation of a new bug  
+report.
+Note: all commands must start from beginning of the line in the email body.
