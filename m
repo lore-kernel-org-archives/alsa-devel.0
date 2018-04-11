@@ -1,20 +1,22 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: Applied "ASoC: mediatek: preallocate pages use
- platform device" to the asoc tree
-Date: Mon, 30 Apr 2018 21:44:08 +0200
-Message-ID: <20180430194408.synwtzoawrdrudx7@kozik-lap>
-References: <E1fC164-0003ui-Ea@debutante>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 558EB26735E
- for <alsa-devel@alsa-project.org>; Mon, 30 Apr 2018 21:44:10 +0200 (CEST)
-Received: by mail-wm0-f65.google.com with SMTP id a67so7441217wmf.3
- for <alsa-devel@alsa-project.org>; Mon, 30 Apr 2018 12:44:10 -0700 (PDT)
+Return-Path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E5162673D4
+ for <alsa-devel@alsa-project.org>; Wed, 11 Apr 2018 05:37:32 +0200 (CEST)
+Date: Wed, 11 Apr 2018 09:11:57 +0530
+From: Vinod Koul <vinod.koul@intel.com>
+Message-ID: <20180411034155.GU6014@localhost>
+References: <1522946904-2089-1-git-send-email-vinod.koul@intel.com>
+ <1522946904-2089-3-git-send-email-vinod.koul@intel.com>
+ <bd17bb61-11cb-c1d5-d9cc-29cb9b01d928@linux.intel.com>
+ <20180406045338.GE6014@localhost>
+ <12d67055-d20b-5573-e342-35865b973ec8@linux.intel.com>
+ <20180410044306.GP6014@localhost>
+ <29ccea0c-e89c-f9c2-7cde-465a60f14acc@linux.intel.com>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <E1fC164-0003ui-Ea@debutante>
+In-Reply-To: <29ccea0c-e89c-f9c2-7cde-465a60f14acc@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v2 02/13] soundwire: Add support for
+ SoundWire stream management
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,73 +24,78 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, ryder.lee@mediatek.com, wsd_upstream@mediatek.com, chipeng.chang@mediatek.com, garlic.tseng@mediatek.com, Hidalgo.Huang@mediatek.com, linux-mediatek@lists.infradead.org, PC.Liao@mediatek.com, Kai Chieh Chuang <kaichieh.chuang@mediatek.com>
-List-Id: alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Sanyog Kale <sanyog.r.kale@intel.com>
+List-ID: <alsa-devel@alsa-project.org>
 
-T24gRnJpLCBBcHIgMjcsIDIwMTggYXQgMTE6NTk6MjRBTSArMDEwMCwgTWFyayBCcm93biB3cm90
-ZToKPiBUaGUgcGF0Y2gKPiAKPiAgICBBU29DOiBtZWRpYXRlazogcHJlYWxsb2NhdGUgcGFnZXMg
-dXNlIHBsYXRmb3JtIGRldmljZQo+IAo+IGhhcyBiZWVuIGFwcGxpZWQgdG8gdGhlIGFzb2MgdHJl
-ZSBhdAo+IAo+ICAgIGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwv
-Z2l0L2Jyb29uaWUvc291bmQuZ2l0IAo+IAo+IEFsbCBiZWluZyB3ZWxsIHRoaXMgbWVhbnMgdGhh
-dCBpdCB3aWxsIGJlIGludGVncmF0ZWQgaW50byB0aGUgbGludXgtbmV4dAo+IHRyZWUgKHVzdWFs
-bHkgc29tZXRpbWUgaW4gdGhlIG5leHQgMjQgaG91cnMpIGFuZCBzZW50IHRvIExpbnVzIGR1cmlu
-Zwo+IHRoZSBuZXh0IG1lcmdlIHdpbmRvdyAob3Igc29vbmVyIGlmIGl0IGlzIGEgYnVnIGZpeCks
-IGhvd2V2ZXIgaWYKPiBwcm9ibGVtcyBhcmUgZGlzY292ZXJlZCB0aGVuIHRoZSBwYXRjaCBtYXkg
-YmUgZHJvcHBlZCBvciByZXZlcnRlZC4gIAo+IAo+IFlvdSBtYXkgZ2V0IGZ1cnRoZXIgZS1tYWls
-cyByZXN1bHRpbmcgZnJvbSBhdXRvbWF0ZWQgb3IgbWFudWFsIHRlc3RpbmcKPiBhbmQgcmV2aWV3
-IG9mIHRoZSB0cmVlLCBwbGVhc2UgZW5nYWdlIHdpdGggcGVvcGxlIHJlcG9ydGluZyBwcm9ibGVt
-cyBhbmQKPiBzZW5kIGZvbGxvd3VwIHBhdGNoZXMgYWRkcmVzc2luZyBhbnkgaXNzdWVzIHRoYXQg
-YXJlIHJlcG9ydGVkIGlmIG5lZWRlZC4KPiAKPiBJZiBhbnkgdXBkYXRlcyBhcmUgcmVxdWlyZWQg
-b3IgeW91IGFyZSBzdWJtaXR0aW5nIGZ1cnRoZXIgY2hhbmdlcyB0aGV5Cj4gc2hvdWxkIGJlIHNl
-bnQgYXMgaW5jcmVtZW50YWwgdXBkYXRlcyBhZ2FpbnN0IGN1cnJlbnQgZ2l0LCBleGlzdGluZwo+
-IHBhdGNoZXMgd2lsbCBub3QgYmUgcmVwbGFjZWQuCj4gCj4gUGxlYXNlIGFkZCBhbnkgcmVsZXZh
-bnQgbGlzdHMgYW5kIG1haW50YWluZXJzIHRvIHRoZSBDQ3Mgd2hlbiByZXBseWluZwo+IHRvIHRo
-aXMgbWFpbC4KPiAKPiBUaGFua3MsCj4gTWFyawo+IAo+ID5Gcm9tIDU4ZWRmMzI1NWNhMzAyNTQ0
-NGMwMTYyNDE2MTE0NTM1ODU0NTMwODkgTW9uIFNlcCAxNyAwMDowMDowMCAyMDAxCj4gRnJvbTog
-S2FpIENoaWVoIENodWFuZyA8a2FpY2hpZWguY2h1YW5nQG1lZGlhdGVrLmNvbT4KPiBEYXRlOiBG
-cmksIDI3IEFwciAyMDE4IDEwOjExOjM1ICswODAwCj4gU3ViamVjdDogW1BBVENIXSBBU29DOiBt
-ZWRpYXRlazogcHJlYWxsb2NhdGUgcGFnZXMgdXNlIHBsYXRmb3JtIGRldmljZQo+IAo+IHByZWFs
-bG9jYXRlIHBhZ2VzIHNob3VsZCB1c2UgcGxhdGZvcm0gZGV2aWNlLAo+IHNpbmNlIHdlIHNldCBk
-bWEgbWFzayBmb3IgcGxhdGZvcm0gZGV2aWNlLgo+IAo+IFNpZ25lZC1vZmYtYnk6IEthaUNoaWVo
-IENodWFuZyA8a2FpY2hpZWguY2h1YW5nQG1lZGlhdGVrLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBN
-YXJrIEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+Cj4gLS0tCj4gIHNvdW5kL3NvYy9tZWRpYXRl
-ay9jb21tb24vbXRrLWFmZS1wbGF0Zm9ybS1kcml2ZXIuYyB8IDQgKystLQo+ICAxIGZpbGUgY2hh
-bmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKSGksCgpJdCBsb29rcyBsaWtl
-IHRoaXMgcGF0Y2ggYnJlYWtzIGNvbXBpbGF0aW9uIG9mIGFsbHllc2NvbmZpZyBvbiBBUk0KbmV4
-dC0yMDE4MDQzMDoKCiAgICAgIENDICAgICAgc291bmQvc29jL21lZGlhdGVrL2NvbW1vbi9tdGst
-YWZlLXBsYXRmb3JtLWRyaXZlci5vCiAgICAuLi9zb3VuZC9zb2MvbWVkaWF0ZWsvY29tbW9uL210
-ay1hZmUtcGxhdGZvcm0tZHJpdmVyLmM6IEluIGZ1bmN0aW9uIOKAmG10a19hZmVfcGNtX25ld+KA
-mToKICAgIC4uL3NvdW5kL3NvYy9tZWRpYXRlay9jb21tb24vbXRrLWFmZS1wbGF0Zm9ybS1kcml2
-ZXIuYzo2NToxNTogZXJyb3I6IOKAmHN0cnVjdCBzbmRfc29jX3BjbV9ydW50aW1l4oCZIGhhcyBu
-byBtZW1iZXIgbmFtZWQg4oCYcGxhdGZvcm3igJkKICAgICAgICAgICAgICAgIHJ0ZC0+cGxhdGZv
-cm0tPmRldiwKICAgICAgICAgICAgICAgICAgIF4KICAgIC4uL3NvdW5kL3NvYy9tZWRpYXRlay9j
-b21tb24vbXRrLWFmZS1wbGF0Zm9ybS1kcml2ZXIuYzo2NzoxOiB3YXJuaW5nOiBjb250cm9sIHJl
-YWNoZXMgZW5kIG9mIG5vbi12b2lkIGZ1bmN0aW9uIFstV3JldHVybi10eXBlXQogICAgIH0KICAg
-ICBeCiAgICAuLi9zY3JpcHRzL01ha2VmaWxlLmJ1aWxkOjMxMjogcmVjaXBlIGZvciB0YXJnZXQg
-J3NvdW5kL3NvYy9tZWRpYXRlay9jb21tb24vbXRrLWFmZS1wbGF0Zm9ybS1kcml2ZXIubycgZmFp
-bGVkCiAgICBtYWtlWzVdOiAqKiogW3NvdW5kL3NvYy9tZWRpYXRlay9jb21tb24vbXRrLWFmZS1w
-bGF0Zm9ybS1kcml2ZXIub10gRXJyb3IgMQoKUmV2ZXJ0aW5nIGl0IGhlbHBzLgoKQmVzdCByZWdh
-cmRzLApLcnp5c3p0b2YKCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9tZWRpYXRlay9jb21tb24v
-bXRrLWFmZS1wbGF0Zm9ybS1kcml2ZXIuYyBiL3NvdW5kL3NvYy9tZWRpYXRlay9jb21tb24vbXRr
-LWFmZS1wbGF0Zm9ybS1kcml2ZXIuYwo+IGluZGV4IDQwNGZiZTE5ZTFhMy4uZDA0NmVhOGU1NDNi
-IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9tZWRpYXRlay9jb21tb24vbXRrLWFmZS1wbGF0Zm9y
-bS1kcml2ZXIuYwo+ICsrKyBiL3NvdW5kL3NvYy9tZWRpYXRlay9jb21tb24vbXRrLWFmZS1wbGF0
-Zm9ybS1kcml2ZXIuYwo+IEBAIC01NiwxNCArNTYsMTQgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBz
-bmRfcGNtX29wcyBtdGtfYWZlX3BjbV9vcHMgPSB7Cj4gIHN0YXRpYyBpbnQgbXRrX2FmZV9wY21f
-bmV3KHN0cnVjdCBzbmRfc29jX3BjbV9ydW50aW1lICpydGQpCj4gIHsKPiAgCXNpemVfdCBzaXpl
-Owo+IC0Jc3RydWN0IHNuZF9jYXJkICpjYXJkID0gcnRkLT5jYXJkLT5zbmRfY2FyZDsKPiAgCXN0
-cnVjdCBzbmRfcGNtICpwY20gPSBydGQtPnBjbTsKPiAgCXN0cnVjdCBzbmRfc29jX2NvbXBvbmVu
-dCAqY29tcG9uZW50ID0gc25kX3NvY19ydGRjb21fbG9va3VwKHJ0ZCwgQUZFX1BDTV9OQU1FKTsK
-PiAgCXN0cnVjdCBtdGtfYmFzZV9hZmUgKmFmZSA9IHNuZF9zb2NfY29tcG9uZW50X2dldF9kcnZk
-YXRhKGNvbXBvbmVudCk7Cj4gIAo+ICAJc2l6ZSA9IGFmZS0+bXRrX2FmZV9oYXJkd2FyZS0+YnVm
-ZmVyX2J5dGVzX21heDsKPiAgCXJldHVybiBzbmRfcGNtX2xpYl9wcmVhbGxvY2F0ZV9wYWdlc19m
-b3JfYWxsKHBjbSwgU05EUlZfRE1BX1RZUEVfREVWLAo+IC0JCQkJCQkgICAgIGNhcmQtPmRldiwg
-c2l6ZSwgc2l6ZSk7Cj4gKwkJCQkJCSAgICAgcnRkLT5wbGF0Zm9ybS0+ZGV2LAo+ICsJCQkJCQkg
-ICAgIHNpemUsIHNpemUpOwo+ICB9Cj4gIAo+ICBzdGF0aWMgdm9pZCBtdGtfYWZlX3BjbV9mcmVl
-KHN0cnVjdCBzbmRfcGNtICpwY20pCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+On Tue, Apr 10, 2018 at 10:47:24AM -0500, Pierre-Louis Bossart wrote:
+
+> >>>Again we are not writing a spec but code and comments to explain the code.
+> >>>The above is not related to "this" series so we should not add it here. When
+> >>>we add device-device support, multi-master support these can be added
+> >>>
+> >>>We are adding blocks in a giant building, but you are only looking at the
+> >>>giant picture but not the block in discussion!
+> >>
+> >>no, you have keep mentions to multi-link that are questionable. Either you
+> >>remove them or you state it's reserved for future use.
+> >
+> >I have clarified on bus_node above, can you check and tell me if there is
+> >anything else?
+> 
+> The code pattern for the bank switch was inspired by multi-link.
+
+As you pointed out, we are fixing that too
+
+> >Okay so we are going to track if master and slaves runtimes are configured
+> >by adding a flag in each of them. Once all the components are configured the
+> >stream stated will be updated. Does that sound ok?
+> 
+> How do you detect that all components are configured? We have a distributed
+> allocation/configuration with multiple actors, I don't what triggers the
+> transition to a new state.
+> see more below.
+> 
+> >
+> >>>>+Configuration state of stream. Operations performed before entering in
+> >>>>+this state:
+> >>>>+
+> >>>>+  (1) The resources allocated for stream information in
+> >>>>SDW_STREAM_ALLOCATED
+> >>>>+      state are updated here. This includes stream parameters, Master(s)
+> >>>>+      and Slave(s) runtime information associated with current stream.
+> >>>>+
+> >>>>+  (2) All the Master(s) and Slave(s) associated with current stream provide
+> >>>>+      the port information to Bus which includes port numbers allocated by
+> >>>>+      Master(s) and Slave(s) for current stream and their channel mask.
+> >>>>
+> >>>>so how can Master ports be configured if it is added to a stream *after* the
+> >>>>CONFIGURED state?
+> >>>
+> >>>Yes you have a valid point wrt documentation, will update it.
+> >>
+> >>It's not just the documentation, I wonder if it actually works. You would
+> >>want to make sure all masters and slaves are allocated before configuring
+> >>them, otherwise the error handling flow is just awful to deal with. You
+> >>could end-up in a situation where all Slaves are configured but the master
+> >>allocation fails.
+> >
+> >Ok
+> 
+> If the ALLOCATED and CONFIGURED states are clearly separated out, then what
+> if the flag you mentioned used for?
+
+As you rightly pointed out that we have distributed allocation/configuration
+with multiple actors. So to ensure that all actors are properly configured
+before we move stream state to CONFIGURED, we need to check and to do so the
+flag will be very useful :-)
+-- 
+~Vinod
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
