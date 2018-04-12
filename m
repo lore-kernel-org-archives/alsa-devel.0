@@ -1,47 +1,48 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 08/15] ASoC: pxa: remove the dmaengine compat need
-Date: Thu, 12 Apr 2018 16:26:32 +0100
-Message-ID: <20180412152632.GG9929@sirena.org.uk>
-References: <20180402142656.26815-1-robert.jarzmik@free.fr>
- <20180402142656.26815-9-robert.jarzmik@free.fr>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fCcDWlUEdh43YKr8"
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180402142656.26815-9-robert.jarzmik@free.fr>
-Sender: netdev-owner@vger.kernel.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Tejun Heo <tj@kernel.org>, Vinod Koul <vinod.koul@intel.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Nicolas Pitre <nico@fluxnic.net>, Samuel Ortiz <samuel@sortiz.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: [PATCH 0/5] for-linux/sndif: add explicit back and front synchronization
+Date: Thu, 12 Apr 2018 19:00:57 +0300
+Message-ID: <20180412160102.15833-1-oleksandr_andrushchenko@epam.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: boris.ostrovsky@oracle.com, jgross@suse.com, iurii.konovalenko@globallogic.com, oleksandr.dmytryshyn@globallogic.com, konrad.wilk@oracle.com, tiwai@suse.de, andr2000@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+Hello, all!
 
---fCcDWlUEdh43YKr8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This is the syncup version of the sound protocol changes for
+Linux Kernel with the only difference from the corresponding Xen
+version being spaces to tabs conversion. Regradless of this only
+change I have dropped R-b tags received for Xen version.
 
-On Mon, Apr 02, 2018 at 04:26:49PM +0200, Robert Jarzmik wrote:
-> As the pxa architecture switched towards the dmaengine slave map, the
-> old compatibility mechanism to acquire the dma requestor line number and
-> priority are not needed anymore.
+In order to provide explicit synchronization between backend and
+frontend the following changes are introduced in the protocol:
+ - bump protocol version to 2
+ - add new ring buffer for sending asynchronous events from
+   backend to frontend to report number of bytes played by the
+   frontend (XENSND_EVT_CUR_POS)
+ - introduce trigger events for playback control: start/stop/pause/resume
+ - add "req-" prefix to event-channel and ring-ref to unify naming
+   of the Xen event channels for requests and events
+ - add XENSND_OP_HW_PARAM_QUERY request to read/update
+   stream configuration space: request passes desired intervals/formats for
+   the stream parameters and the response returns allowed intervals and
+   formats mask that can be used.
+ - MAJOR: changed req/resp/evt packet sizes from 32 to 64 octets
+ -  Reworked XENSND_OP_HW_PARAM_QUERY so it now sends all
+   parameters at once, allowing to check all the configuration
+   space.
+ - Minor documentation cleanup (added missed "reserved" fields)
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Oleksandr Andrushchenko (5):
+  xen/sndif: Introduce protocol version
+  xen/sndif: Fix missed "reserved" fields in comments
+  xen/sndif: Make requests and responses 64 octets long
+  xen/sndif: Add explicit back and front synchronization
+  xen/sndif: Add explicit back and front parameter negotiation
 
-If there's no dependency I'm happy to take this for 4.18.
+ include/xen/interface/io/sndif.h | 322 +++++++++++++++++++++++++++++--
+ 1 file changed, 306 insertions(+), 16 deletions(-)
 
---fCcDWlUEdh43YKr8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrPeqcACgkQJNaLcl1U
-h9BSZAf/TjOZQziPXrBJ727QgQKnwF8+6GXuQPc3HlwShDoJ9qAWnzcOSwzJ8fkE
-dcG2858Zo0M7NCqcoOokOhM4wKUOn3aCE78wDsjEPX/PohKdI3uHZXBLbSrFaSF8
-y1TYjHDRCKqYTTfaG4bNfONcAb+ymbxjGD4ZOsrkV82pl8tCA+zCT5g6C8PrqshL
-GwwmmJQHGK0CU477p0+QN/EsW/B9VNLNsqpeFS9WAlZcTuA004mW/3YYf8hwpk0i
-pFqD2AXnmrDVsynBm78eKaAtqMRUkd0I/iWRWqFf7DtVVx6Foo8877fCdcVLYgYI
-mArYZJIh+YC/f25ftES/xWmAqIokOQ==
-=INfO
------END PGP SIGNATURE-----
-
---fCcDWlUEdh43YKr8--
+-- 
+2.17.0
