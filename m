@@ -1,48 +1,125 @@
 From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: [PATCH 0/5] for-linux/sndif: add explicit back and front synchronization
-Date: Thu, 12 Apr 2018 19:00:57 +0300
-Message-ID: <20180412160102.15833-1-oleksandr_andrushchenko@epam.com>
+Subject: [PATCH 3/5] xen/sndif: Make requests and responses 64 octets long
+Date: Thu, 12 Apr 2018 19:01:00 +0300
+Message-ID: <20180412160102.15833-4-oleksandr_andrushchenko@epam.com>
+References: <20180412160102.15833-1-oleksandr_andrushchenko@epam.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180412160102.15833-1-oleksandr_andrushchenko@epam.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 Cc: boris.ostrovsky@oracle.com, jgross@suse.com, iurii.konovalenko@globallogic.com, oleksandr.dmytryshyn@globallogic.com, konrad.wilk@oracle.com, tiwai@suse.de, andr2000@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello, all!
+Extend the size of the requests and responses to 64 octets.
+Bump protocol version to 2.
 
-This is the syncup version of the sound protocol changes for
-Linux Kernel with the only difference from the corresponding Xen
-version being spaces to tabs conversion. Regradless of this only
-change I have dropped R-b tags received for Xen version.
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+---
+ include/xen/interface/io/sndif.h | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-In order to provide explicit synchronization between backend and
-frontend the following changes are introduced in the protocol:
- - bump protocol version to 2
- - add new ring buffer for sending asynchronous events from
-   backend to frontend to report number of bytes played by the
-   frontend (XENSND_EVT_CUR_POS)
- - introduce trigger events for playback control: start/stop/pause/resume
- - add "req-" prefix to event-channel and ring-ref to unify naming
-   of the Xen event channels for requests and events
- - add XENSND_OP_HW_PARAM_QUERY request to read/update
-   stream configuration space: request passes desired intervals/formats for
-   the stream parameters and the response returns allowed intervals and
-   formats mask that can be used.
- - MAJOR: changed req/resp/evt packet sizes from 32 to 64 octets
- -  Reworked XENSND_OP_HW_PARAM_QUERY so it now sends all
-   parameters at once, allowing to check all the configuration
-   space.
- - Minor documentation cleanup (added missed "reserved" fields)
-
-Oleksandr Andrushchenko (5):
-  xen/sndif: Introduce protocol version
-  xen/sndif: Fix missed "reserved" fields in comments
-  xen/sndif: Make requests and responses 64 octets long
-  xen/sndif: Add explicit back and front synchronization
-  xen/sndif: Add explicit back and front parameter negotiation
-
- include/xen/interface/io/sndif.h | 322 +++++++++++++++++++++++++++++--
- 1 file changed, 306 insertions(+), 16 deletions(-)
-
+diff --git a/include/xen/interface/io/sndif.h b/include/xen/interface/io/sndif.h
+index b775df96f021..d48175f1a3d2 100644
+--- a/include/xen/interface/io/sndif.h
++++ b/include/xen/interface/io/sndif.h
+@@ -41,7 +41,7 @@
+  *                           Protocol version
+  ******************************************************************************
+  */
+-#define XENSND_PROTOCOL_VERSION	1
++#define XENSND_PROTOCOL_VERSION	2
+ 
+ /*
+  ******************************************************************************
+@@ -533,7 +533,7 @@
+  *
+  *---------------------------------- Requests ---------------------------------
+  *
+- * All request packets have the same length (32 octets)
++ * All request packets have the same length (64 octets)
+  * All request packets have common header:
+  *         0                1                 2               3        octet
+  * +----------------+----------------+----------------+----------------+
+@@ -570,7 +570,7 @@
+  * +----------------+----------------+----------------+----------------+
+  * |/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/|
+  * +----------------+----------------+----------------+----------------+
+- * |                             reserved                              | 32
++ * |                             reserved                              | 64
+  * +----------------+----------------+----------------+----------------+
+  *
+  * pcm_rate - uint32_t, stream data rate, Hz
+@@ -639,7 +639,7 @@ struct xensnd_page_directory {
+  * +----------------+----------------+----------------+----------------+
+  * |/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/|
+  * +----------------+----------------+----------------+----------------+
+- * |                             reserved                              | 32
++ * |                             reserved                              | 64
+  * +----------------+----------------+----------------+----------------+
+  *
+  * Request read/write - used for read (for capture) or write (for playback):
+@@ -657,7 +657,7 @@ struct xensnd_page_directory {
+  * +----------------+----------------+----------------+----------------+
+  * |/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/|
+  * +----------------+----------------+----------------+----------------+
+- * |                             reserved                              | 32
++ * |                             reserved                              | 64
+  * +----------------+----------------+----------------+----------------+
+  *
+  * operation - XENSND_OP_READ for read or XENSND_OP_WRITE for write
+@@ -684,7 +684,7 @@ struct xensnd_rw_req {
+  * +----------------+----------------+----------------+----------------+
+  * |/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/|
+  * +----------------+----------------+----------------+----------------+
+- * |                             reserved                              | 32
++ * |                             reserved                              | 64
+  * +----------------+----------------+----------------+----------------+
+  *
+  * operation - XENSND_OP_SET_VOLUME for volume set
+@@ -726,7 +726,7 @@ struct xensnd_rw_req {
+  * +----------------+----------------+----------------+----------------+
+  * |/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/|
+  * +----------------+----------------+----------------+----------------+
+- * |                             reserved                              | 32
++ * |                             reserved                              | 64
+  * +----------------+----------------+----------------+----------------+
+  *
+  * operation - XENSND_OP_MUTE for mute or XENSND_OP_UNMUTE for unmute
+@@ -759,7 +759,7 @@ struct xensnd_rw_req {
+ /*
+  *---------------------------------- Responses --------------------------------
+  *
+- * All response packets have the same length (32 octets)
++ * All response packets have the same length (64 octets)
+  *
+  * Response for all requests:
+  *         0                1                 2               3        octet
+@@ -772,7 +772,7 @@ struct xensnd_rw_req {
+  * +----------------+----------------+----------------+----------------+
+  * |/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/|
+  * +----------------+----------------+----------------+----------------+
+- * |                             reserved                              | 32
++ * |                             reserved                              | 64
+  * +----------------+----------------+----------------+----------------+
+  *
+  * id - uint16_t, copied from the request
+@@ -787,7 +787,7 @@ struct xensnd_req {
+ 	union {
+ 		struct xensnd_open_req open;
+ 		struct xensnd_rw_req rw;
+-		uint8_t reserved[24];
++		uint8_t reserved[56];
+ 	} op;
+ };
+ 
+@@ -796,7 +796,7 @@ struct xensnd_resp {
+ 	uint8_t operation;
+ 	uint8_t reserved;
+ 	int32_t status;
+-	uint8_t reserved1[24];
++	uint8_t reserved1[56];
+ };
+ 
+ DEFINE_RING_TYPES(xen_sndif, struct xensnd_req, struct xensnd_resp);
 -- 
 2.17.0
