@@ -1,64 +1,57 @@
 From: Peter Rosin <peda@axentia.se>
-Subject: Re: [PATCH 2/2] ASoC: tfa9879: switch to using
-	.probe_new
-Date: Thu, 12 Apr 2018 23:14:32 +0200
-Message-ID: <20180412211437.21599-1-peda@axentia.se>
+Subject: [PATCH v2 1/5] ASoC: max9860: fix whitespace issues caused by mindless conversion
+Date: Thu, 12 Apr 2018 23:14:33 +0200
+Message-ID: <20180412211437.21599-2-peda@axentia.se>
 References: <20180412161601.GI9929@sirena.org.uk>
+ <20180412211437.21599-1-peda@axentia.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR03-AM5-obe.outbound.protection.outlook.com
- (mail-eopbgr30107.outbound.protection.outlook.com [40.107.3.107])
- by alsa0.perex.cz (Postfix) with ESMTP id C81B3266F69
- for <alsa-devel@alsa-project.org>; Thu, 12 Apr 2018 23:15:08 +0200 (CEST)
-In-Reply-To: <20180412161601.GI9929@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180412211437.21599-1-peda@axentia.se>
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Peter Rosin <peda@axentia.se>
+Cc: Peter Rosin <peda@axentia.se>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2018-04-12 18:16, Mark Brown wrote:
-> On Wed, Apr 11, 2018 at 02:42:38PM +0200, Peter Rosin wrote:
-> 
->> Use the new probe style for i2c drivers.
-> This doesn't apply against current code, please check and resend.
+Long lines and bad alignment disturbs the reading pleasure.
 
-That's not my fault. Somebody forgot to drop a note with the maintainer
-so I was completely unaware of this change. It seems to have been a
-cocci-script or something behind that change because the code looks
-like shit afterwards.
+Signed-off-by: Peter Rosin <peda@axentia.se>
+---
+ sound/soc/codecs/max9860.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-For the record, I wish to be on Cc for changes to files I maintain.
-That is one of the core functions of the MAINTAINERS file, right?
-
-Anyway, I added a couple of fixups for that mess and I also did a SPDX
-conversion while at it since I noticed it was needed. Finishing off with
-the rebased patch.
-
-Cheers,
-Peter
-
-Peter Rosin (5):
-  ASoC: max9860: fix whitespace issues caused by mindless conversion
-  ASoC: tfa9879: fix whitespace issues caused by mindless conversion
-  ASoC: max9860: switch to SPDX license tag
-  ASoC: tfa9879: switch to SPDX license tag
-  ASoC: tfa9879: switch to using .probe_new
-
- sound/soc/codecs/max9860.c | 18 ++++++------------
- sound/soc/codecs/max9860.h | 10 +---------
- sound/soc/codecs/tfa9879.c | 37 ++++++++++++++++---------------------
- sound/soc/codecs/tfa9879.h |  7 +------
- 4 files changed, 24 insertions(+), 48 deletions(-)
-
+diff --git a/sound/soc/codecs/max9860.c b/sound/soc/codecs/max9860.c
+index 5bbf889ad98e..53448b7b7b28 100644
+--- a/sound/soc/codecs/max9860.c
++++ b/sound/soc/codecs/max9860.c
+@@ -443,7 +443,8 @@ static int max9860_hw_params(struct snd_pcm_substream *substream,
+ 		ret = regmap_update_bits(max9860->regmap, MAX9860_AUDIOCLKHIGH,
+ 					 MAX9860_PLL, MAX9860_PLL);
+ 		if (ret) {
+-			dev_err(component->dev, "Failed to enable PLL: %d\n", ret);
++			dev_err(component->dev, "Failed to enable PLL: %d\n",
++				ret);
+ 			return ret;
+ 		}
+ 	}
+@@ -515,7 +516,8 @@ static int max9860_set_bias_level(struct snd_soc_component *component,
+ 		ret = regmap_update_bits(max9860->regmap, MAX9860_PWRMAN,
+ 					 MAX9860_SHDN, MAX9860_SHDN);
+ 		if (ret) {
+-			dev_err(component->dev, "Failed to remove SHDN: %d\n", ret);
++			dev_err(component->dev, "Failed to remove SHDN: %d\n",
++				ret);
+ 			return ret;
+ 		}
+ 		break;
+@@ -698,7 +700,7 @@ static int max9860_probe(struct i2c_client *i2c,
+ 	pm_runtime_idle(dev);
+ 
+ 	ret = devm_snd_soc_register_component(dev, &max9860_component_driver,
+-				     &max9860_dai, 1);
++					      &max9860_dai, 1);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to register CODEC: %d\n", ret);
+ 		goto err_pm;
 -- 
 2.11.0
