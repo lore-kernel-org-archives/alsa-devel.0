@@ -1,49 +1,45 @@
-From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-Subject: Re: [PATCH 0/5] for-linux/sndif: add explicit back and
- front synchronization
-Date: Thu, 12 Apr 2018 19:55:04 +0300
-Message-ID: <db3ee9fb-d0ab-5f17-a1ec-7bb8ec5cf75f@epam.com>
-References: <20180412160102.15833-1-oleksandr_andrushchenko@epam.com>
- <d5ede3f5-200e-f1c7-71f4-4ebfb938ca48@gmail.com>
- <43348cf5-d2f8-9d7d-0390-2273eef8f67d@oracle.com>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH 08/15] ASoC: pxa: remove the dmaengine compat need
+Date: Thu, 12 Apr 2018 18:55:28 +0200
+Message-ID: <87a7u82wlb.fsf@belgarion.home>
+References: <20180402142656.26815-1-robert.jarzmik@free.fr>
+ <20180402142656.26815-9-robert.jarzmik@free.fr>
+ <20180412152632.GG9929@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com
- (mail-ve1eur01on0049.outbound.protection.outlook.com [104.47.1.49])
- by alsa0.perex.cz (Postfix) with ESMTP id E8AC526737B
- for <alsa-devel@alsa-project.org>; Thu, 12 Apr 2018 18:55:19 +0200 (CEST)
-In-Reply-To: <43348cf5-d2f8-9d7d-0390-2273eef8f67d@oracle.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Boris Ostrovsky <boris.ostrovsky@oracle.com>, Oleksandr Andrushchenko <andr2000@gmail.com>, konrad.wilk@oracle.com, tiwai@suse.de
-Cc: jgross@suse.com, xen-devel@lists.xenproject.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+In-Reply-To: <20180412152632.GG9929@sirena.org.uk> (Mark Brown's message of
+ "Thu, 12 Apr 2018 16:26:32 +0100")
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
+List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
+List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
+Errors-To: driverdev-devel-bounces@linuxdriverproject.org
+Sender: "devel" <driverdev-devel-bounces@linuxdriverproject.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, linux-ide@vger.kernel.org, netdev@vger.kernel.org, linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org, Boris Brezillon <boris.brezillon@free-electrons.com>, Vinod Koul <vinod.koul@intel.com>, Richard Weinberger <richard@nod.at>, linu@osuosl.org, Takashi Iwai <tiwai@suse.com>, Marek Vasut <marek.vasut@gmail.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Samuel Ortiz <samuel@sortiz.org>, Arnd Bergmann <arnd@arndb.de>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, dmaengine@vger.kernel.org, Mauro Carvalho Chehab <mchehab@kernel.org>, linux-arm-kernel@lists.infradead.org, Nicolas Pitre <nico@fluxnic.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-mmc@vger.kernel.org, Liam Girdwood <lgirdwood>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/12/2018 07:55 PM, Boris Ostrovsky wrote:
-> On 04/12/2018 12:11 PM, Oleksandr Andrushchenko wrote:
->> Hello, Konrad, Takashi!
->>
->> Could you please review the *Linux Kernel* version of the changes?
->> As I said in the cover letter below there is no functional changes
->> comparing to the corresponding Xen version, but spaces to tabs.
->> Still, formally, I have to drop the R-b tags and request for the new
->> review.
-> Is there any reason why this all can't be done in a single patch?
-Just to preserve the history of the changes?
-> This is just syncing up with the canonical definition in Xen.
-Do you want me to squash and resend?
-> -boris
+Mark Brown <broonie@kernel.org> writes:
+
+> On Mon, Apr 02, 2018 at 04:26:49PM +0200, Robert Jarzmik wrote:
+>> As the pxa architecture switched towards the dmaengine slave map, the
+>> old compatibility mechanism to acquire the dma requestor line number and
+>> priority are not needed anymore.
 >
+> Acked-by: Mark Brown <broonie@kernel.org>
 >
-Thank you,
-Oleksandr
+> If there's no dependency I'm happy to take this for 4.18.
+Thanks for the ack.
+
+The patches 1 and 2 are the dependency here, so I'd rather push it through my
+tree once the review is complete.
+
+Cheers.
+
+-- 
+Robert
