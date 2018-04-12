@@ -1,18 +1,25 @@
-From: =?UTF-8?Q?Fabi=C3=A1n_Inostroza?= <soulsonceonfire@gmail.com>
-Subject: [PATCH] ALSA: line6: Use correct endpoint type for
-	midi output
-Date: Thu, 12 Apr 2018 00:37:35 -0300
-Message-ID: <CAN0YATNkVQM_4NgLCWiVGmH9y0jiRrBEx+n8H7hWDFPXqxe_ow@mail.gmail.com>
+From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Subject: Re: [PATCH 2/2] ASoC: AMD: Enable/Disable auxiliary
+ clock via common clock framework
+Date: Thu, 12 Apr 2018 09:43:26 +0530
+Message-ID: <669f32b7-bb1f-0263-a79b-bbeeea158b3b@amd.com>
+References: <1522404297-7555-1-git-send-email-akshu.agrawal@amd.com>
+ <1522404297-7555-2-git-send-email-akshu.agrawal@amd.com>
+ <CAGS+omDqWEjEm0b3H5-pwd2Nrf_pEbQTAU_dPKVmXi5vsDxKLw@mail.gmail.com>
+ <cc2ee422-edf6-5a01-1482-8152d896b1b3@amd.com>
+ <CAGS+omCLJnXcqL=r7ijp+csk7_dBko0pyBG9MHtPPGAd2AgJgA@mail.gmail.com>
+ <341e4879-ec6b-8ea9-dd97-a79e4508f8e1@amd.com>
+ <CAGS+omAzSmUsL5wEkK1WS6u39RxpYY0HYtS7j=-as8gyL02juQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f65.google.com (mail-it0-f65.google.com
- [209.85.214.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 5236726718D
- for <alsa-devel@alsa-project.org>; Thu, 12 Apr 2018 05:37:37 +0200 (CEST)
-Received: by mail-it0-f65.google.com with SMTP id m134-v6so5553861itb.3
- for <alsa-devel@alsa-project.org>; Wed, 11 Apr 2018 20:37:37 -0700 (PDT)
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com
+ (mail-sn1nam02on0065.outbound.protection.outlook.com [104.47.36.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24DC226718D
+ for <alsa-devel@alsa-project.org>; Thu, 12 Apr 2018 06:13:51 +0200 (CEST)
+In-Reply-To: <CAGS+omAzSmUsL5wEkK1WS6u39RxpYY0HYtS7j=-as8gyL02juQ@mail.gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,28 +29,190 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Daniel Kurtz <djkurtz@chromium.org>
+Cc: tiwai@suse.de, Alexander.Deucher@amd.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpTZW5kaW5nIE1JREkgbWVzc2FnZXMgdG8gYSBQT0R4dCB0aHJvdWdoIHRoZSBVU0IgY29u
-bmVjdGlvbiBzaG93cwoidXNiX3N1Ym1pdF91cmIgZmFpbGVkIiBpbiBkbWVzZyBhbmQgdGhlIG1l
-c3NhZ2UgaXMgbm90IHJlY2VpdmVkIGJ5CnRoZSBQT0QuCgpUaGUgZXJyb3IgaXMgY2F1c2VkIGJl
-Y2F1c2UgaW4gdGhlIGZ1bmNpb24gc2VuZF9taWRpX2FzeW5jKCkgaW4gbWlkaS5jCnRoZXJlIGlz
-IGEgY2FsbCB0byB1c2Jfc25kYnVsa3BpcGUoKSBmb3IgZW5kcG9pbnQgMyBPVVQsIGJ1dCB0aGUg
-UE9EeHQKVVNCIGRlc2NyaXB0b3Igc2hvd3MgdGhhdCB0aGlzIGVuZHBvaW50IGl0J3MgYW4gaW50
-ZXJydXB0IGVuZHBvaW50LgoKUGF0Y2ggdGVzdGVkIHdpdGggUE9EeHQgb25seS4KClNpZ25lZC1v
-ZmYtYnk6IEZhYmnDoW4gSW5vc3Ryb3phIDxmYWJpYW5pbm9zdHJvemFAdWRlYy5jbD4KLS0tCiBz
-b3VuZC91c2IvbGluZTYvbWlkaS5jIHwgMiArLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9u
-KCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvdXNiL2xpbmU2L21pZGkuYyBi
-L3NvdW5kL3VzYi9saW5lNi9taWRpLmMKaW5kZXggNmQ3Y2RlNTYuLmUyY2Y1NWM1IDEwMDY0NAot
-LS0gYS9zb3VuZC91c2IvbGluZTYvbWlkaS5jCisrKyBiL3NvdW5kL3VzYi9saW5lNi9taWRpLmMK
-QEAgLTEyNSw3ICsxMjUsNyBAQCBzdGF0aWMgaW50IHNlbmRfbWlkaV9hc3luYyhzdHJ1Y3QgdXNi
-X2xpbmU2CipsaW5lNiwgdW5zaWduZWQgY2hhciAqZGF0YSwKICAgICB9CgogICAgIHVzYl9maWxs
-X2ludF91cmIodXJiLCBsaW5lNi0+dXNiZGV2LAotICAgICAgICAgICAgIHVzYl9zbmRidWxrcGlw
-ZShsaW5lNi0+dXNiZGV2LAorICAgICAgICAgICAgIHVzYl9zbmRpbnRwaXBlKGxpbmU2LT51c2Jk
-ZXYsCiAgICAgICAgICAgICAgICAgICAgICBsaW5lNi0+cHJvcGVydGllcy0+ZXBfY3RybF93KSwK
-ICAgICAgICAgICAgICB0cmFuc2Zlcl9idWZmZXIsIGxlbmd0aCwgbWlkaV9zZW50LCBsaW5lNiwK
-ICAgICAgICAgICAgICBsaW5lNi0+aW50ZXJ2YWwpOwotLSAKMi4xNi4zCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+
+On 4/11/2018 11:44 PM, Daniel Kurtz wrote:
+> On Wed, Apr 11, 2018 at 4:08 AM Agrawal, Akshu <Akshu.Agrawal@amd.com>
+> wrote:
+> 
+> 
+> 
+>> On 4/10/2018 11:13 AM, Daniel Kurtz wrote:
+>>>> On 4/4/2018 12:27 AM, Daniel Kurtz wrote:
+>>>>> Hi Akshu,
+>>>>>
+>>>>> On Fri, Mar 30, 2018 at 4:05 AM Akshu Agrawal <akshu.agrawal@amd.com>
+>>> wrote:
+>>>>>
+>>>>>> This enables/disables and sets auxiliary clock at 25Mhz. It uses
+>>>>>> common clock framework for proper ref counting. This approach will
+>>>>>> save power in comparison to keeping it always On in firmware.
+>>>>>
+>>>>> I have some general concern with the approach in this patch:
+>>>>>
+>>>>> (1) The 25 MHz clock being created here is a general system clock
+>>>>> resource.  I think it should be created in an SoC clock driver, rather
+>>> than
+>>>>> here in an audio machine driver.   This has several advantages:
+>>>>>       (a) the clock resource would be available for other boards that
+> use
+>>> it but
+>>>>> don't use this particular audio machine driver
+>>>>>       (b) the clock would be instantiated at boot, rather than at
+> machine
+>>> driver
+>>>>> load.
+>>>>>       (c) the machine driver would not then need the additional clkdev
+>>> code
+>>>>>
+>>>>> (2) The oscout1 clock is a pretty standard clk_gate with a clk_mux.
+> We
+>>> can
+>>>>> use some standard helpers to better model the clock tree rather than
+>>>>> rewriting them:
+>>>>>
+>>>>> static struct clk *clk_48m;
+>>>>> static struct clk *clk_25m;
+>>>>> static struct clk *clk_oscout1_mux;
+>>>>> static struct clk *clk_oscout1;
+>>>>>
+>>>>> static const char *clk_oscout1_parents[] = { "clk48MHz", "clk25MHz" };
+>>>>>
+>>>>> {
+>>>>>        clk_48m = clk_register_fixed_rate(dev, "clk48MHz", NULL, 0,
+>>> 48000000);
+>>>>>        clk_25m = clk_register_fixed_rate(dev, "clk25MHz", NULL, 0,
+>>> 25000000);
+>>>>>
+>>>>>        res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>>>>>        res_base = devm_ioremap_nocache(dev, res->start,
+>>> resource_size(res));
+>>>>>
+>>>>>        clk_oscout1_mux = clk_register_mux(dev, "oscout1_mux",
+>>>>>            clk_oscout1_parents, ARRAY_SIZE(clk_oscout1_parents),
+>>>>>            0, res_base + CLKDRVSTR2, OSCOUT1CLK25MHZ, 3, 0, NULL);
+>>>>>
+>>>>>        clk_set_parent(clk_oscout1_mux, clk_25m);
+>>>>>
+>>>>>        clk_oscout1 = clk_register_gate(dev, "oscout1", "oscout1_mux",
+> 0,
+>>>>>              res_base + MISCCLKCNTL1, OSCCLKENB, 0, NULL);
+>>>>>
+>>>>>
+>>>>> (3) IIUC, the 25 MHz clock (oscout1) is actually the da7219's mclk.
+> The
+>>>>> da7219 already
+>>>>> has infrastructure to enable/disable its mclk as needed.  Once we
+>>> establish
+>>>>> the system clock,
+>>>>> we can then wire this clock up to the da7219 via ACPI / devicetree
+>>>>> properties.
+>>>>>
+>>>> The above design is something used in almost all ARM based platform
+>>>> where we define all mux, pll, divider and gate and then each device
+> uses
+>>>> them though the devicetree.
+>>>> The clock here are controlled in firmware. Enable/disable is handled in
+>>>> firmware, where this being the exception case. Hence, I don't think it
+>>>> will be of much value add.
+>>>
+>>> The value add to properly modeling the SoC's clock tree is highlighted
+>>> above.
+>>> In addition to making the code more understandable, and the SoC easier
+> to
+>>> use for other designs in the future, the clock tree as expressed via
+>>> debugfs (/sys/kernel/debug/clk/clk_summary) will make more sense.
+>>> In the particular case of the acp-da7219-max98357a.c machine driver and
+>>> da7219 codec driver, properly modeling the oscout1 clock tree as a
+>>> fixed_clks+mux+gate and then passing it to da7219 as its mclk will allow
+>>> the mclk driver to do what it expects using its existing code - set the
+>>> mclk rate (via oscout1's parent mux selector) and then enable/disable as
+>>> needed.
+>>>
+>>>> For ST/CZ we have other platforms which do not use this clock. They
+> have
+>>>> a dedicated Oscillator for the codec.
+>>>
+>>> Exactly, such platforms will just not use this machine driver and this
+>>> clock will be defined properly, but remain in the state programmed by
+>>> firmware.
+>>>
+>>>> If you think its beneficial for other platform based on ST/CZ then
+> maybe
+>>>> we can take this as a separate activity. Where we move the clocks to a
+>>>> common file and use the same framework.
+>>>
+>>> Moving the clock configuration out of acp-da7219-max98357a.c allows this
+>>> system clock to be available independent of when this machine driver
+> kernel
+>>> module is loaded.
+>>>
+> 
+>> I understand the advantages of having it moved to drivers/clk and also
+>> connecting it to d7219's mclk. This is good to have feature for other
+>> ST/CZ platforms. Would take it up this as a separate activity.
+> 
+> I don't think this is a separate activity.  It is an integral part of the
+> structure of this patch.  Let's fix it up now while we are actively
+> thinking about this driver.
+> 
+> 
+
+Ok, then will first move the clk to clock tree framework.
+
+>>>>>
+>>>>> Enable on hw_params() and disable on hw_free() doesn't sound balanced?
+>>>>> Will there always be exactly one hw_free() for every hw_params()?
+>>>>>
+>>>> Yes, all resources allocated by hw_paramns are freed in hw_free.
+>>>
+>>> Right, but is it possible for hw_params() to get called mulitple times
+>>> *without* hw_free()?
+>>> This would cause more enables than disables.
+>>>
+>>> Documentation/sound/kernel-api/writing-an-alsa-driver.rst says:
+>>> """
+>>> Note that this and ``prepare`` callbacks may be called multiple times
+>>> per initialization. For example, the OSS emulation may call these
+>>> callbacks at each change via its ioctl.
+>>>
+>>> Thus, you need to be careful not to allocate the same buffers many
+>>> times, which will lead to memory leaks! Calling the helper function
+>>> above many times is OK. It will release the previous buffer
+>>> automatically when it was already allocated.
+>>> """
+>>>
+>> I get there is a remote possibility that hw_params maybe called multiple
+>> times without hw_free (though I haven't come across it in my testing).
+>> The other option was to use trigger. But, that is not possible as kernel
+>> crashes when we call clk_prepare_enable(da7219_dai_clk) from trigger
+>> registered to a non da7219 codec, like of max98357
+> 
+> Using trigger won't work because you are not guaranteed to have symetric
+> start/stop events.  In fact , there is a comment in the definition of
+> struct snd_soc_dai_ops that specifically says this:
+> 
+> /*
+> * NOTE: Commands passed to the trigger function are not necessarily
+> * compatible with the current state of the dai. For example this
+> * sequence of commands is possible: START STOP STOP.
+> * So do not unconditionally use refcounting functions in the trigger
+> * function, e.g. clk_enable/disable.
+> */
+> int (*trigger)(struct snd_pcm_substream *, int, struct snd_soc_dai *);
+> 
+> Instead, can you try to use startup() / shutdown()?
+> Those callbacks are non-atomic and should correspond to open()/close() on
+> the corresponding audio device, which I think is what we want.
+> 
+ok, startup/shutdown looks good will move to that. But, it won't be as 
+aggressive.
+
+> -Dan
+> 
+Thanks,
+Akshu
