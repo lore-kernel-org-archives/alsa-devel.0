@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: fix some tiny memory leaks"
-	to the asoc tree
-Date: Thu, 12 Apr 2018 17:17:03 +0100
-Message-ID: <E1f6euF-0008JM-RX@debutante>
-References: <20180405112518.GE4218@mwanda>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E9C626736C
- for <alsa-devel@alsa-project.org>; Thu, 12 Apr 2018 18:17:12 +0200 (CEST)
-In-Reply-To: <20180405112518.GE4218@mwanda>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
+Subject: Applied "ASoC: trace: remove snd_soc_codec" to the asoc tree
+Date: Thu, 12 Apr 2018 17:17:09 +0100
+Message-ID: <E1f6euL-0008KO-Vb@debutante>
+References: <87vadh3pz1.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <87vadh3pz1.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Thomas Gleixner <tglx@linutronix.de>, Philippe Ombredanne <pombredanne@nexb.com>, Kate Stewart <kstewart@linuxfoundation.org>, Linux-ALSA <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: fix some tiny memory leaks
+   ASoC: trace: remove snd_soc_codec
 
 has been applied to the asoc tree at
 
@@ -53,47 +37,32 @@ to this mail.
 Thanks,
 Mark
 
->From 65030ff305bc9c51cb75705483bdaac7813778f0 Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Thu, 5 Apr 2018 14:25:18 +0300
-Subject: [PATCH] ASoC: topology: fix some tiny memory leaks
+>From 03a364502bebb5f464853c6ec5d49e85195600ca Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 28 Mar 2018 02:18:13 +0000
+Subject: [PATCH] ASoC: trace: remove snd_soc_codec
 
-These tiny memory leaks don't have a huge real life impact but they
-cause static checker warnings so let's fix them.
+snd_soc_codec is replaced to snd_soc_component,
+and it is not used in this file.
+Let's remove it
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ include/trace/events/asoc.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index fa27d0fca6dc..942c6e5eb4b7 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1325,8 +1325,10 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_denum_create(
- 			ec->hdr.name);
+diff --git a/include/trace/events/asoc.h b/include/trace/events/asoc.h
+index ccd1a3bdff46..40c300fe704d 100644
+--- a/include/trace/events/asoc.h
++++ b/include/trace/events/asoc.h
+@@ -12,7 +12,6 @@
+ #define DAPM_ARROW(dir) (((dir) == SND_SOC_DAPM_DIR_OUT) ? "->" : "<-")
  
- 		kc[i].name = kstrdup(ec->hdr.name, GFP_KERNEL);
--		if (kc[i].name == NULL)
-+		if (kc[i].name == NULL) {
-+			kfree(se);
- 			goto err_se;
-+		}
- 		kc[i].private_value = (long)se;
- 		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
- 		kc[i].access = ec->hdr.access;
-@@ -1442,8 +1444,10 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dbytes_create(
- 			be->hdr.name, be->hdr.access);
- 
- 		kc[i].name = kstrdup(be->hdr.name, GFP_KERNEL);
--		if (kc[i].name == NULL)
-+		if (kc[i].name == NULL) {
-+			kfree(sbe);
- 			goto err;
-+		}
- 		kc[i].private_value = (long)sbe;
- 		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
- 		kc[i].access = be->hdr.access;
+ struct snd_soc_jack;
+-struct snd_soc_codec;
+ struct snd_soc_card;
+ struct snd_soc_dapm_widget;
+ struct snd_soc_dapm_path;
 -- 
 2.17.0
