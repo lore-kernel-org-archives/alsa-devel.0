@@ -1,216 +1,80 @@
 From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: [PATCH 5/5] xen/sndif: Add explicit back and front parameter negotiation
-Date: Thu, 12 Apr 2018 19:01:02 +0300
-Message-ID: <20180412160102.15833-6-oleksandr_andrushchenko@epam.com>
+Subject: Re: [PATCH 0/5] for-linux/sndif: add explicit back and
+ front synchronization
+Date: Thu, 12 Apr 2018 19:11:15 +0300
+Message-ID: <d5ede3f5-200e-f1c7-71f4-4ebfb938ca48@gmail.com>
 References: <20180412160102.15833-1-oleksandr_andrushchenko@epam.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lf0-f49.google.com (mail-lf0-f49.google.com
+ [209.85.215.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id EAA08266F69
+ for <alsa-devel@alsa-project.org>; Thu, 12 Apr 2018 18:11:22 +0200 (CEST)
+Received: by mail-lf0-f49.google.com with SMTP id d20-v6so8513828lfe.3
+ for <alsa-devel@alsa-project.org>; Thu, 12 Apr 2018 09:11:22 -0700 (PDT)
 In-Reply-To: <20180412160102.15833-1-oleksandr_andrushchenko@epam.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: boris.ostrovsky@oracle.com, jgross@suse.com, iurii.konovalenko@globallogic.com, oleksandr.dmytryshyn@globallogic.com, konrad.wilk@oracle.com, tiwai@suse.de, andr2000@gmail.com
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: konrad.wilk@oracle.com, tiwai@suse.de
+Cc: jgross@suse.com, alsa-devel@alsa-project.org, "Oleksandr_Andrushchenko@epam.com" <Oleksandr_Andrushchenko@epam.com>, linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org, boris.ostrovsky@oracle.com
 List-Id: alsa-devel@alsa-project.org
 
-In order to provide explicit stream parameter negotiation between
-backend and frontend the following changes are introduced in the protocol:
-add XENSND_OP_HW_PARAM_QUERY request to read/update
-configuration space for the parameters given: request passes
-desired parameter's intervals/masks and the response to this request
-returns allowed min/max intervals/masks to be used.
+Hello, Konrad, Takashi!
 
-Parameters supported by this request/response:
- - format mask
- - sample rate interval
- - number of channels interval
- - buffer size, interval, frames
- - period size, interval, frames
+Could you please review the *Linux Kernel* version of the changes?
+As I said in the cover letter below there is no functional changes
+comparing to the corresponding Xen version, but spaces to tabs.
+Still, formally, I have to drop the R-b tags and request for the new review.
 
-Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc: Takashi Iwai <tiwai@suse.de>
----
- include/xen/interface/io/sndif.h | 133 +++++++++++++++++++++++++++++--
- 1 file changed, 126 insertions(+), 7 deletions(-)
+Thank you,
+Oleksandr
 
-diff --git a/include/xen/interface/io/sndif.h b/include/xen/interface/io/sndif.h
-index 131c3b469d4a..78bb5d9f8d83 100644
---- a/include/xen/interface/io/sndif.h
-+++ b/include/xen/interface/io/sndif.h
-@@ -465,6 +465,7 @@
- #define XENSND_OP_MUTE			6
- #define XENSND_OP_UNMUTE		7
- #define XENSND_OP_TRIGGER		8
-+#define XENSND_OP_HW_PARAM_QUERY	9
- 
- #define XENSND_OP_TRIGGER_START		0
- #define XENSND_OP_TRIGGER_PAUSE		1
-@@ -832,28 +833,142 @@ struct xensnd_trigger_req {
- };
- 
- /*
-- *---------------------------------- Responses --------------------------------
-+ * Request stream parameter ranges: request intervals and
-+ *   masks of supported ranges for stream configuration values.
-  *
-- * All response packets have the same length (64 octets)
-+ *   Sound device configuration for a particular stream is a limited subset
-+ *   of the multidimensional configuration available on XenStore, e.g.
-+ *   once the frame rate has been selected there is a limited supported range
-+ *   for sample rates becomes available (which might be the same set configured
-+ *   on XenStore or less). For example, selecting 96kHz sample rate may limit
-+ *   number of channels available for such configuration from 4 to 2, etc.
-+ *   Thus, each call to XENSND_OP_HW_PARAM_QUERY may reduce configuration
-+ *   space making it possible to iteratively get the final stream configuration,
-+ *   used in XENSND_OP_OPEN request.
-+ *
-+ *   See response format for this request.
-  *
-- * Response for all requests:
-  *         0                1                 2               3        octet
-  * +----------------+----------------+----------------+----------------+
-- * |               id                |    operation   |    reserved    | 4
-+ * |               id                | _HW_PARAM_QUERY|    reserved    | 4
-  * +----------------+----------------+----------------+----------------+
-- * |                              status                               | 8
-+ * |                             reserved                              | 8
-+ * +----------------+----------------+----------------+----------------+
-+ * |                     formats mask low 32-bit                       | 12
-+ * +----------------+----------------+----------------+----------------+
-+ * |                     formats mask high 32-bit                      | 16
-+ * +----------------+----------------+----------------+----------------+
-+ * |                              min rate                             | 20
-+ * +----------------+----------------+----------------+----------------+
-+ * |                              max rate                             | 24
-+ * +----------------+----------------+----------------+----------------+
-+ * |                            min channels                           | 28
-+ * +----------------+----------------+----------------+----------------+
-+ * |                            max channels                           | 32
-+ * +----------------+----------------+----------------+----------------+
-+ * |                         min buffer frames                         | 36
-+ * +----------------+----------------+----------------+----------------+
-+ * |                         max buffer frames                         | 40
-+ * +----------------+----------------+----------------+----------------+
-+ * |                         min period frames                         | 44
-+ * +----------------+----------------+----------------+----------------+
-+ * |                         max period frames                         | 48
-  * +----------------+----------------+----------------+----------------+
-- * |                             reserved                              | 12
-+ * |                             reserved                              | 52
-  * +----------------+----------------+----------------+----------------+
-  * |/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/|
-  * +----------------+----------------+----------------+----------------+
-  * |                             reserved                              | 64
-  * +----------------+----------------+----------------+----------------+
-  *
-+ * formats - uint64_t, bit mask representing values of the parameter
-+ *     made as bitwise OR of (1 << XENSND_PCM_FORMAT_XXX) values
-+ *
-+ * For interval parameters:
-+ *   min - uint32_t, minimum value of the parameter
-+ *   max - uint32_t, maximum value of the parameter
-+ *
-+ * Frame is defined as a product of the number of channels by the
-+ * number of octets per one sample.
-+ */
-+
-+struct xensnd_query_hw_param {
-+	uint64_t formats;
-+	struct {
-+		uint32_t min;
-+		uint32_t max;
-+	} rates;
-+	struct {
-+		uint32_t min;
-+		uint32_t max;
-+	} channels;
-+	struct {
-+		uint32_t min;
-+		uint32_t max;
-+	} buffer;
-+	struct {
-+		uint32_t min;
-+		uint32_t max;
-+	} period;
-+};
-+
-+/*
-+ *---------------------------------- Responses --------------------------------
-+ *
-+ * All response packets have the same length (64 octets)
-+ *
-+ * All response packets have common header:
-+ *         0                1                 2               3        octet
-+ * +----------------+----------------+----------------+----------------+
-+ * |               id                |    operation   |    reserved    | 4
-+ * +----------------+----------------+----------------+----------------+
-+ * |                              status                               | 8
-+ * +----------------+----------------+----------------+----------------+
-+ *
-  * id - uint16_t, copied from the request
-  * operation - uint8_t, XENSND_OP_* - copied from request
-  * status - int32_t, response status, zero on success and -XEN_EXX on failure
-  *
-+ *
-+ * HW parameter query response - response for XENSND_OP_HW_PARAM_QUERY:
-+ *         0                1                 2               3        octet
-+ * +----------------+----------------+----------------+----------------+
-+ * |               id                |    operation   |    reserved    | 4
-+ * +----------------+----------------+----------------+----------------+
-+ * |                              status                               | 8
-+ * +----------------+----------------+----------------+----------------+
-+ * |                     formats mask low 32-bit                       | 12
-+ * +----------------+----------------+----------------+----------------+
-+ * |                     formats mask high 32-bit                      | 16
-+ * +----------------+----------------+----------------+----------------+
-+ * |                              min rate                             | 20
-+ * +----------------+----------------+----------------+----------------+
-+ * |                              max rate                             | 24
-+ * +----------------+----------------+----------------+----------------+
-+ * |                            min channels                           | 28
-+ * +----------------+----------------+----------------+----------------+
-+ * |                            max channels                           | 32
-+ * +----------------+----------------+----------------+----------------+
-+ * |                         min buffer frames                         | 36
-+ * +----------------+----------------+----------------+----------------+
-+ * |                         max buffer frames                         | 40
-+ * +----------------+----------------+----------------+----------------+
-+ * |                         min period frames                         | 44
-+ * +----------------+----------------+----------------+----------------+
-+ * |                         max period frames                         | 48
-+ * +----------------+----------------+----------------+----------------+
-+ * |                             reserved                              | 52
-+ * +----------------+----------------+----------------+----------------+
-+ * |/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/|
-+ * +----------------+----------------+----------------+----------------+
-+ * |                             reserved                              | 64
-+ * +----------------+----------------+----------------+----------------+
-+ *
-+ * Meaning of the values in this response is the same as for
-+ * XENSND_OP_HW_PARAM_QUERY request.
-+ */
-+
-+/*
-  *----------------------------------- Events ----------------------------------
-  *
-  * Events are sent via shared page allocated by the front and propagated by
-@@ -906,6 +1021,7 @@ struct xensnd_req {
- 		struct xensnd_open_req open;
- 		struct xensnd_rw_req rw;
- 		struct xensnd_trigger_req trigger;
-+		struct xensnd_query_hw_param hw_param;
- 		uint8_t reserved[56];
- 	} op;
- };
-@@ -915,7 +1031,10 @@ struct xensnd_resp {
- 	uint8_t operation;
- 	uint8_t reserved;
- 	int32_t status;
--	uint8_t reserved1[56];
-+	union {
-+		struct xensnd_query_hw_param hw_param;
-+		uint8_t reserved1[56];
-+	} resp;
- };
- 
- struct xensnd_evt {
--- 
-2.17.0
+P.S. Minus GlobalLogic e-mails which bounce
+
+On 04/12/2018 07:00 PM, Oleksandr Andrushchenko wrote:
+> Hello, all!
+>
+> This is the syncup version of the sound protocol changes for
+> Linux Kernel with the only difference from the corresponding Xen
+> version being spaces to tabs conversion. Regradless of this only
+> change I have dropped R-b tags received for Xen version.
+>
+> In order to provide explicit synchronization between backend and
+> frontend the following changes are introduced in the protocol:
+>   - bump protocol version to 2
+>   - add new ring buffer for sending asynchronous events from
+>     backend to frontend to report number of bytes played by the
+>     frontend (XENSND_EVT_CUR_POS)
+>   - introduce trigger events for playback control: start/stop/pause/resume
+>   - add "req-" prefix to event-channel and ring-ref to unify naming
+>     of the Xen event channels for requests and events
+>   - add XENSND_OP_HW_PARAM_QUERY request to read/update
+>     stream configuration space: request passes desired intervals/formats for
+>     the stream parameters and the response returns allowed intervals and
+>     formats mask that can be used.
+>   - MAJOR: changed req/resp/evt packet sizes from 32 to 64 octets
+>   -  Reworked XENSND_OP_HW_PARAM_QUERY so it now sends all
+>     parameters at once, allowing to check all the configuration
+>     space.
+>   - Minor documentation cleanup (added missed "reserved" fields)
+>
+> Oleksandr Andrushchenko (5):
+>    xen/sndif: Introduce protocol version
+>    xen/sndif: Fix missed "reserved" fields in comments
+>    xen/sndif: Make requests and responses 64 octets long
+>    xen/sndif: Add explicit back and front synchronization
+>    xen/sndif: Add explicit back and front parameter negotiation
+>
+>   include/xen/interface/io/sndif.h | 322 +++++++++++++++++++++++++++++--
+>   1 file changed, 306 insertions(+), 16 deletions(-)
+>
