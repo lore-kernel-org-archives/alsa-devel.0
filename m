@@ -1,19 +1,20 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 2/2] ASoC: adau17x1: Do not reload
- dsp-fw if samplerate has not changed
-Date: Thu, 12 Apr 2018 18:30:51 +0200
-Message-ID: <c3be336d-a569-ee22-8f4d-b8c9409634c2@metafoo.de>
-References: <20180409131336.21990-1-robert.rosengren@axis.com>
- <20180409131336.21990-2-robert.rosengren@axis.com>
+From: Daniel Kurtz <djkurtz@chromium.org>
+Subject: Re: [v3] ASoC: AMD: Support headset button on Stoney
+	DA7219
+Date: Thu, 12 Apr 2018 16:52:48 +0000
+Message-ID: <CAGS+omC00Gh5hhzAN5C3vpEipB_gj8=1M4ACC7APZ3XQe21F6w@mail.gmail.com>
+References: <1523527031-6132-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id C8FE1266E30
- for <alsa-devel@alsa-project.org>; Thu, 12 Apr 2018 18:47:15 +0200 (CEST)
-In-Reply-To: <20180409131336.21990-2-robert.rosengren@axis.com>
-Content-Language: en-US
+Received: from mail-ua0-f195.google.com (mail-ua0-f195.google.com
+ [209.85.217.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 87AF8266E30
+ for <alsa-devel@alsa-project.org>; Thu, 12 Apr 2018 18:53:00 +0200 (CEST)
+Received: by mail-ua0-f195.google.com with SMTP id n20so3940522ual.7
+ for <alsa-devel@alsa-project.org>; Thu, 12 Apr 2018 09:53:00 -0700 (PDT)
+In-Reply-To: <1523527031-6132-1-git-send-email-akshu.agrawal@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,43 +24,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Rosengren <robert.rosengren@axis.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Robert Rosengren <robertr@axis.com>, Danny Smith <dannys@axis.com>
+To: Akshu Agrawal <akshu.agrawal@amd.com>
+Cc: tiwai@suse.de, Alexander.Deucher@amd.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/09/2018 03:13 PM, Robert Rosengren wrote:
-> From: Danny Smith <dannys@axis.com>
-> 
-> Reloading fw causes an audiable popping sound, we can avoid this
-> by not reloading if the samplerate is the same as before.
-> 
-> Signed-off-by: Danny Smith <dannys@axis.com>
-> Signed-off-by: Robert Rosengren <robert.rosengren@axis.com>
+On Thu, Apr 12, 2018 at 3:58 AM Akshu Agrawal <akshu.agrawal@amd.com> wrote:
 
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+> Adds headset button support.
+
+> TEST=Tested Volume UP/Down, Play/Pause functionality
+
+> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+
+Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
 
 > ---
->  sound/soc/codecs/adau17x1.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
-> index 12bf24c26818..ae41edd1c406 100644
-> --- a/sound/soc/codecs/adau17x1.c
-> +++ b/sound/soc/codecs/adau17x1.c
-> @@ -843,6 +843,15 @@ int adau17x1_setup_firmware(struct snd_soc_component *component,
->  	struct adau *adau = snd_soc_component_get_drvdata(component);
->  	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
->  
-> +	/* Check if sample rate is the same as before. If it is there is no
-> +	 * point in performing the below steps as the call to
-> +	 * sigmadsp_setup(...) will return directly when it finds the sample
-> +	 * rate to be the same as before. By checking this we can prevent an
-> +	 * audiable popping noise which occours when toggling DSP_RUN.
-> +	 */
-> +	if (adau->sigmadsp->current_samplerate == rate)
-> +		return 0;
+> v2: Changed KEY_MEDIA to KEY_PLAYPAUSE
+> v3: Using cz_jack.jack instead of jack->jack
+
+>   sound/soc/amd/acp-da7219-max98357a.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
+
+> diff --git a/sound/soc/amd/acp-da7219-max98357a.c
+b/sound/soc/amd/acp-da7219-max98357a.c
+> index b205c78..d281c22 100644
+> --- a/sound/soc/amd/acp-da7219-max98357a.c
+> +++ b/sound/soc/amd/acp-da7219-max98357a.c
+> @@ -33,6 +33,7 @@
+>   #include <linux/gpio.h>
+>   #include <linux/module.h>
+>   #include <linux/i2c.h>
+> +#include <linux/input.h>
+>   #include <linux/acpi.h>
+
+>   #include "../codecs/da7219.h"
+> @@ -80,6 +81,11 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime
+*rtd)
+>                  return ret;
+>          }
+
+> +       snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
+> +       snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
+> +       snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
+> +       snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
 > +
->  	snd_soc_dapm_mutex_lock(dapm);
->  
->  	ret = regmap_read(adau->regmap, ADAU17X1_DSP_SAMPLING_RATE, &dspsr);
-> 
+>          da7219_aad_jack_det(component, &cz_jack);
+
+>          return 0;
+> --
+> 1.9.1
