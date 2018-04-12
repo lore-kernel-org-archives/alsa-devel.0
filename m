@@ -1,14 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: dmic: Fix clock parenting
-Date: Thu, 12 Apr 2018 11:23:15 +0300
-Message-ID: <20180412082315.17302-1-peter.ujfalusi@ti.com>
+From: Akshu Agrawal <akshu.agrawal@amd.com>
+Subject: [v3] ASoC: AMD: Support headset button on Stoney DA7219
+Date: Thu, 12 Apr 2018 17:57:11 +0800
+Message-ID: <1523527031-6132-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
- by alsa0.perex.cz (Postfix) with ESMTP id 1378D266FD1
- for <alsa-devel@alsa-project.org>; Thu, 12 Apr 2018 10:22:57 +0200 (CEST)
+Received: from NAM01-BN3-obe.outbound.protection.outlook.com
+ (mail-bn3nam01on0069.outbound.protection.outlook.com [104.47.33.69])
+ by alsa0.perex.cz (Postfix) with ESMTP id 705C3266FD1
+ for <alsa-devel@alsa-project.org>; Thu, 12 Apr 2018 11:58:03 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,78 +19,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: t-kristo@ti.com, alsa-devel@alsa-project.org, stable@vger.kernel.org
+To: broonie@kernel.org, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Alexander.Deucher@amd.com, lgirdwood@gmail.com, djkurtz@chromium.org, akshu.agrawal@amd.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Tero Kristo <t-kristo@ti.com>
+Adds headset button support.
 
-In 4.16 the clock hierarchy got changed by
-a5c82a09d876 ARM: dts: omap4: add clkctrl nodes
+TEST=Tested Volume UP/Down, Play/Pause functionality
 
-The fck of dmic is no longer a mux clock, it's parent is.
-
-Signed-off-by: Tero Kristo <t-kristo@ti.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: stable@vger.kernel.org # 4.16+
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 ---
-Mark,
+v2: Changed KEY_MEDIA to KEY_PLAYPAUSE
+v3: Using cz_jack.jack instead of jack->jack
 
-can you apply this for 4.17 as DMIC got broken already in 4.16.
+ sound/soc/amd/acp-da7219-max98357a.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Regards,
-Peter
-
- sound/soc/omap/omap-dmic.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/omap/omap-dmic.c b/sound/soc/omap/omap-dmic.c
-index c7101d851213..51dd7c65096b 100644
---- a/sound/soc/omap/omap-dmic.c
-+++ b/sound/soc/omap/omap-dmic.c
-@@ -281,7 +281,7 @@ static int omap_dmic_dai_trigger(struct snd_pcm_substream *substream,
- static int omap_dmic_select_fclk(struct omap_dmic *dmic, int clk_id,
- 				 unsigned int freq)
- {
--	struct clk *parent_clk;
-+	struct clk *parent_clk, *mux;
- 	char *parent_clk_name;
- 	int ret = 0;
+diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+index b205c78..d281c22 100644
+--- a/sound/soc/amd/acp-da7219-max98357a.c
++++ b/sound/soc/amd/acp-da7219-max98357a.c
+@@ -33,6 +33,7 @@
+ #include <linux/gpio.h>
+ #include <linux/module.h>
+ #include <linux/i2c.h>
++#include <linux/input.h>
+ #include <linux/acpi.h>
  
-@@ -329,14 +329,21 @@ static int omap_dmic_select_fclk(struct omap_dmic *dmic, int clk_id,
- 		return -ENODEV;
+ #include "../codecs/da7219.h"
+@@ -80,6 +81,11 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
+ 		return ret;
  	}
  
-+	mux = clk_get_parent(dmic->fclk);
-+	if (IS_ERR(mux)) {
-+		dev_err(dmic->dev, "can't get fck mux parent\n");
-+		clk_put(parent_clk);
-+		return -ENODEV;
-+	}
++	snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
++	snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
++	snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
++	snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
 +
- 	mutex_lock(&dmic->mutex);
- 	if (dmic->active) {
- 		/* disable clock while reparenting */
- 		pm_runtime_put_sync(dmic->dev);
--		ret = clk_set_parent(dmic->fclk, parent_clk);
-+		ret = clk_set_parent(mux, parent_clk);
- 		pm_runtime_get_sync(dmic->dev);
- 	} else {
--		ret = clk_set_parent(dmic->fclk, parent_clk);
-+		ret = clk_set_parent(mux, parent_clk);
- 	}
- 	mutex_unlock(&dmic->mutex);
+ 	da7219_aad_jack_det(component, &cz_jack);
  
-@@ -349,6 +356,7 @@ static int omap_dmic_select_fclk(struct omap_dmic *dmic, int clk_id,
- 	dmic->fclk_freq = freq;
- 
- err_busy:
-+	clk_put(mux);
- 	clk_put(parent_clk);
- 
- 	return ret;
+ 	return 0;
 -- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+1.9.1
