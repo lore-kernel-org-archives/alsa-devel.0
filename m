@@ -1,7 +1,7 @@
 From: Peter Rosin <peda@axentia.se>
-Subject: [PATCH v2 4/5] ASoC: tfa9879: switch to SPDX license tag
-Date: Thu, 12 Apr 2018 23:14:36 +0200
-Message-ID: <20180412211437.21599-5-peda@axentia.se>
+Subject: [PATCH v2 5/5] ASoC: tfa9879: switch to using .probe_new
+Date: Thu, 12 Apr 2018 23:14:37 +0200
+Message-ID: <20180412211437.21599-6-peda@axentia.se>
 References: <20180412161601.GI9929@sirena.org.uk>
  <20180412211437.21599-1-peda@axentia.se>
 Mime-Version: 1.0
@@ -13,53 +13,35 @@ To: linux-kernel@vger.kernel.org
 Cc: Peter Rosin <peda@axentia.se>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-It's less overhead, clearer and generally neater.
+Use the new probe style for i2c drivers.
 
 Signed-off-by: Peter Rosin <peda@axentia.se>
 ---
- sound/soc/codecs/tfa9879.c | 7 +------
- sound/soc/codecs/tfa9879.h | 7 +------
- 2 files changed, 2 insertions(+), 12 deletions(-)
+ sound/soc/codecs/tfa9879.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/tfa9879.c b/sound/soc/codecs/tfa9879.c
-index c30e0efdbe39..4d9b3f393808 100644
+index 4d9b3f393808..d686e04bc5c7 100644
 --- a/sound/soc/codecs/tfa9879.c
 +++ b/sound/soc/codecs/tfa9879.c
-@@ -1,14 +1,9 @@
-+// SPDX-License-Identifier: GPL-2.0+
- /*
-  * tfa9879.c  --  driver for NXP Semiconductors TFA9879
-  *
-  * Copyright (C) 2014 Axentia Technologies AB
-  * Author: Peter Rosin <peda@axentia.se>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-  */
+@@ -272,8 +272,7 @@ static struct snd_soc_dai_driver tfa9879_dai = {
+ 	.ops = &tfa9879_dai_ops,
+ };
  
- #include <linux/module.h>
-diff --git a/sound/soc/codecs/tfa9879.h b/sound/soc/codecs/tfa9879.h
-index 3408c90c4628..66c88d0396fe 100644
---- a/sound/soc/codecs/tfa9879.h
-+++ b/sound/soc/codecs/tfa9879.h
-@@ -1,14 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
- /*
-  * tfa9879.h  --  driver for NXP Semiconductors TFA9879
-  *
-  * Copyright (C) 2014 Axentia Technologies AB
-  * Author: Peter Rosin <peda@axentia.se>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-  */
+-static int tfa9879_i2c_probe(struct i2c_client *i2c,
+-			     const struct i2c_device_id *id)
++static int tfa9879_i2c_probe(struct i2c_client *i2c)
+ {
+ 	struct tfa9879_priv *tfa9879;
+ 	int i;
+@@ -314,7 +313,7 @@ static struct i2c_driver tfa9879_i2c_driver = {
+ 		.name = "tfa9879",
+ 		.of_match_table = tfa9879_of_match,
+ 	},
+-	.probe = tfa9879_i2c_probe,
++	.probe_new = tfa9879_i2c_probe,
+ 	.id_table = tfa9879_i2c_id,
+ };
  
- #ifndef _TFA9879_H
 -- 
 2.11.0
