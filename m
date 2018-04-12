@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel_ssc_dai: fix spelling mistake: "Stoping" -> "Stopping"" to the asoc tree
-Date: Thu, 12 Apr 2018 17:16:59 +0100
-Message-ID: <E1f6euB-0008IF-Vw@debutante>
-References: <20180330154420.6903-1-colin.king@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180330154420.6903-1-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Mark Brown <broonie@kernel.org>Nicolas Ferre <nicolas.ferre@microchip.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>Alexandre Belloni <alexandre.belloni@bootlin.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: topology: fix some tiny memory leaks"
+	to the asoc tree
+Date: Thu, 12 Apr 2018 17:17:03 +0100
+Message-ID: <E1f6euF-0008JM-RX@debutante>
+References: <20180405112518.GE4218@mwanda>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1E9C626736C
+ for <alsa-devel@alsa-project.org>; Thu, 12 Apr 2018 18:17:12 +0200 (CEST)
+In-Reply-To: <20180405112518.GE4218@mwanda>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel_ssc_dai: fix spelling mistake: "Stoping" -> "Stopping"
+   ASoC: topology: fix some tiny memory leaks
 
 has been applied to the asoc tree at
 
@@ -37,34 +53,47 @@ to this mail.
 Thanks,
 Mark
 
->From 78a7d414d5a8e3ea7bc5a636311cfb7ce593ce37 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Fri, 30 Mar 2018 16:44:20 +0100
-Subject: [PATCH] ASoC: atmel_ssc_dai: fix spelling mistake: "Stoping" ->
- "Stopping"
+>From 65030ff305bc9c51cb75705483bdaac7813778f0 Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Thu, 5 Apr 2018 14:25:18 +0300
+Subject: [PATCH] ASoC: topology: fix some tiny memory leaks
 
-Trivial fix to spelling mistake in pr_debug message text
+These tiny memory leaks don't have a huge real life impact but they
+cause static checker warnings so let's fix them.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/atmel_ssc_dai.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-topology.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index a1e2c5682dcd..1c7af0ca98ec 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -820,7 +820,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 		if (ret < 0) {
- 			printk(KERN_WARNING
- 					"atmel_ssc_dai: request_irq failure\n");
--			pr_debug("Atmel_ssc_dai: Stoping clock\n");
-+			pr_debug("Atmel_ssc_dai: Stopping clock\n");
- 			clk_disable(ssc_p->ssc->clk);
- 			return ret;
- 		}
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index fa27d0fca6dc..942c6e5eb4b7 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1325,8 +1325,10 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_denum_create(
+ 			ec->hdr.name);
+ 
+ 		kc[i].name = kstrdup(ec->hdr.name, GFP_KERNEL);
+-		if (kc[i].name == NULL)
++		if (kc[i].name == NULL) {
++			kfree(se);
+ 			goto err_se;
++		}
+ 		kc[i].private_value = (long)se;
+ 		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+ 		kc[i].access = ec->hdr.access;
+@@ -1442,8 +1444,10 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dbytes_create(
+ 			be->hdr.name, be->hdr.access);
+ 
+ 		kc[i].name = kstrdup(be->hdr.name, GFP_KERNEL);
+-		if (kc[i].name == NULL)
++		if (kc[i].name == NULL) {
++			kfree(sbe);
+ 			goto err;
++		}
+ 		kc[i].private_value = (long)sbe;
+ 		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+ 		kc[i].access = be->hdr.access;
 -- 
 2.17.0
