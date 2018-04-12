@@ -1,63 +1,72 @@
-From: Akshu Agrawal <akshu.agrawal@amd.com>
-Subject: [v3] ASoC: AMD: Support headset button on Stoney DA7219
-Date: Thu, 12 Apr 2018 17:57:11 +0800
-Message-ID: <1523527031-6132-1-git-send-email-akshu.agrawal@amd.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM01-BN3-obe.outbound.protection.outlook.com
- (mail-bn3nam01on0069.outbound.protection.outlook.com [104.47.33.69])
- by alsa0.perex.cz (Postfix) with ESMTP id 705C3266FD1
- for <alsa-devel@alsa-project.org>; Thu, 12 Apr 2018 11:58:03 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Alexander.Deucher@amd.com, lgirdwood@gmail.com, djkurtz@chromium.org, akshu.agrawal@amd.com
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: [PATCH v3 1/3] dell-led: Change dell-led.h to dell-common.h
+Date: Thu, 12 Apr 2018 18:42:37 +0800
+Message-ID: <20180412104239.25584-1-kai.heng.feng@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: mjg59@srcf.ucam.org, pali.rohar@gmail.com, dvhart@infradead.org, andy@infradead.org, mario.limonciello@dell.com, tiwai@suse.com
+Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Adds headset button support.
+This header will be used for more than just led. Change it to a more
+generic name.
 
-TEST=Tested Volume UP/Down, Play/Pause functionality
-
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+Cc: Mario Limonciello <mario.limonciello@dell.com>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 ---
-v2: Changed KEY_MEDIA to KEY_PLAYPAUSE
-v3: Using cz_jack.jack instead of jack->jack
+v3: Simplify dell_switchable_gfx_is_enabled() by returning bool instead
+    of error code.
+    Use DMI_DEV_TYPE_OEM_STRING to match Dell System.
 
- sound/soc/amd/acp-da7219-max98357a.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+v2: Mario suggested to squash the HDA part into the same series.
 
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index b205c78..d281c22 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -33,6 +33,7 @@
- #include <linux/gpio.h>
- #include <linux/module.h>
- #include <linux/i2c.h>
-+#include <linux/input.h>
- #include <linux/acpi.h>
+ drivers/platform/x86/dell-laptop.c          | 2 +-
+ include/linux/{dell-led.h => dell-common.h} | 4 ++--
+ sound/pci/hda/dell_wmi_helper.c             | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+ rename include/linux/{dell-led.h => dell-common.h} (61%)
+
+diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
+index c52c6723374b..8ba820e6c3d0 100644
+--- a/drivers/platform/x86/dell-laptop.c
++++ b/drivers/platform/x86/dell-laptop.c
+@@ -29,7 +29,7 @@
+ #include <linux/mm.h>
+ #include <linux/i8042.h>
+ #include <linux/debugfs.h>
+-#include <linux/dell-led.h>
++#include <linux/dell-common.h>
+ #include <linux/seq_file.h>
+ #include <acpi/video.h>
+ #include "dell-rbtn.h"
+diff --git a/include/linux/dell-led.h b/include/linux/dell-common.h
+similarity index 61%
+rename from include/linux/dell-led.h
+rename to include/linux/dell-common.h
+index 92521471517f..37e4b614dd74 100644
+--- a/include/linux/dell-led.h
++++ b/include/linux/dell-common.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef __DELL_LED_H__
+-#define __DELL_LED_H__
++#ifndef __DELL_COMMON_H__
++#define __DELL_COMMON_H__
  
- #include "../codecs/da7219.h"
-@@ -80,6 +81,11 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
- 		return ret;
- 	}
+ int dell_micmute_led_set(int on);
  
-+	snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-+	snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
-+	snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
-+	snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
-+
- 	da7219_aad_jack_det(component, &cz_jack);
+diff --git a/sound/pci/hda/dell_wmi_helper.c b/sound/pci/hda/dell_wmi_helper.c
+index 1b48a8c19d28..56050cc3c0ee 100644
+--- a/sound/pci/hda/dell_wmi_helper.c
++++ b/sound/pci/hda/dell_wmi_helper.c
+@@ -4,7 +4,7 @@
+  */
  
- 	return 0;
+ #if IS_ENABLED(CONFIG_DELL_LAPTOP)
+-#include <linux/dell-led.h>
++#include <linux/dell-common.h>
+ 
+ enum {
+ 	MICMUTE_LED_ON,
 -- 
-1.9.1
+2.17.0
