@@ -1,23 +1,17 @@
-From: =?UTF-8?Q?Charles_Fl=C3=A8che?= <charles.fleche@gmail.com>
-Subject: Re: snd_seq_query_port_subscribers not updating subs
-	index
-Date: Thu, 12 Apr 2018 16:56:35 +0200
-Message-ID: <CAMnW3Lt9vqB+njmQC+6tLR=UWGRaGGvmKMTYUY_5Zy=Y0v_TcQ@mail.gmail.com>
-References: <CAMnW3Lt-R_ECPvazFbJjm-cS0w-gey0t5Tvts+Cz5n5LVPO+RQ@mail.gmail.com>
- <s5h604w8owq.wl-tiwai@suse.de>
- <CAMnW3LuHs8MY3pZVCV5XGcb=9oqVjmf4kmoOKyqoZg5hV=SiRw@mail.gmail.com>
- <s5h1sfk8og7.wl-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Missing alsa-utils 1.1.6 tag
+Date: Thu, 12 Apr 2018 17:04:02 +0200
+Message-ID: <0723d6a2-db18-02ea-7d9b-9441486355b9@perex.cz>
+References: <35440cd77e27f0fa9b8d49af2102443fd3f6dd34.camel@debian.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f67.google.com (mail-it0-f67.google.com
- [209.85.214.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 58B30266C1C
- for <alsa-devel@alsa-project.org>; Thu, 12 Apr 2018 16:56:36 +0200 (CEST)
-Received: by mail-it0-f67.google.com with SMTP id 142-v6so7666947itl.5
- for <alsa-devel@alsa-project.org>; Thu, 12 Apr 2018 07:56:36 -0700 (PDT)
-In-Reply-To: <s5h1sfk8og7.wl-tiwai@suse.de>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F746266BBC
+ for <alsa-devel@alsa-project.org>; Thu, 12 Apr 2018 17:04:05 +0200 (CEST)
+In-Reply-To: <35440cd77e27f0fa9b8d49af2102443fd3f6dd34.camel@debian.org>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,53 +21,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, =?UTF-8?Q?Charles_Fl=C3=A8che?= <charles.fleche@free.fr>
+To: alsa-devel@alsa-project.org
+Cc: Jordi Mallach <jordi@debian.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gbXkgc3lzdGVtcyBpdCBkb2VzIGluY3JlbWVudCB0aGUgaW5kZXggbnVtYmVyLCBhbmQgSSB0
-aGluayBJIHRvb2sgdGhpcwpjb2RlIGZpcnN0IGZyb20gY29kZSBleGFtcGxlcyBvZiB0aGUgQWxz
-YSBkb2MuLi4gSSdsbCAgbWFrZSBzdXJlIHRvIGFsd2F5cwppbmNyZW1lbnQgdGhlIGluZGV4IGJ5
-IGhhbmQuCgpUaGFua3MgYWdhaW4sIFRha2FzaGkKCk9uIFRodSwgQXByIDEyLCAyMDE4IGF0IDQ6
-NTQgUE0sIFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4gd3JvdGU6Cgo+IE9uIFRodSwgMTIg
-QXByIDIwMTggMTY6NDk6MjcgKzAyMDAsCj4gQ2hhcmxlcyBGbMOoY2hlIHdyb3RlOgo+ID4KPiA+
-ID4gU29ydCBvZiwgeWVzCj4gPgo+ID4gPkZyb20gdGhlIHNuZF9zZXFfcXVlcnlfcG9ydF9zdWJz
-Y3JpYmVycyBkb2M6ICJUbyBsaXN0IHVwIGFsbCB0aGUKPiA+IHN1YnNjcmlwdGlvbnMsIGNhbGwg
-dGhpcyBmdW5jdGlvbiB3aXRoIHRoZSBpbmRleCBudW1iZXJzIGZyb20gMCB1bnRpbAo+IHRoaXMK
-PiA+IHJldHVybnMgYSBuZWdhdGl2ZSB2YWx1ZS4iCj4gPgo+ID4gU28gZG9lcyBpdCBtZWFuIHRo
-YW4gaW4gY2VydGFpbiBjYXNlcyBzbmRfc2VxX3F1ZXJ5X3BvcnRfc3Vic2NyaWJlcnMKPiA+IGlu
-Y3JlbWVudHMgdGhlIGluZGV4IGl0c2VsZiwgYW5kIHNvbWV0aW1lIGl0IGRvZXMgbm90ID8KPgo+
-IEl0IHNob3VsZG4ndCBpbmNyZW1lbnQgdGhlIGluZGV4IG51bWJlciBieSBpdHNlbGY7IGF0IGxl
-YXN0IHRoZSBrZXJuZWwKPiBpbnRlcmZhY2UgZG9lc24ndCBkbyB0aGF0LiAgQnV0IHRoZSBBUEkg
-ZG9lc24ndCBjaGVjayB3aGV0aGVyIHRoZQo+IGJhY2tlbmQgKHBsdWdpbikgZGlkbid0IHRvdWNo
-IHRoZSByZXR1cm5lZCBpbmRleCB2YWx1ZSBvciBub3QsIHNvIHRoZQo+IHBvc3NpYmlsaXR5IGlz
-IHN0aWxsIG9wZW4gOikKPgo+Cj4gVGFrYXNoaQo+Cj4gPgo+ID4gVGhhbmtzLCBUYWthc2hpCj4g
-Pgo+ID4gT24gVGh1LCBBcHIgMTIsIDIwMTggYXQgNDo0NCBQTSwgVGFrYXNoaSBJd2FpIDx0aXdh
-aUBzdXNlLmRlPiB3cm90ZToKPiA+Cj4gPiA+IE9uIFN1biwgMDggQXByIDIwMTggMTg6Mzc6NTgg
-KzAyMDAsCj4gPiA+IENoYXJsZXMgRmzDqGNoZSB3cm90ZToKPiA+ID4gPgo+ID4gPiA+IEhpIGFs
-bCwKPiA+ID4gPgo+ID4gPiA+IEknbSBpdGVyYXRpbmcgdGhyb3VnaCBzdWJzY3JpYmVycyB3aXRo
-Cj4gc25kX3NlcV9xdWVyeV9wb3J0X3N1YnNjcmliZXJzIHRvCj4gPiA+ID4gZGlzY29ubmVjdCB0
-aGVtLiBJdCB3b3JrcyBtb3N0IG9mIHRoZSB0aW1lLCBidXQgd2hlbiBhMmogKGFuIGFsc2EgLT4K
-PiBqYWNrCj4gPiA+ID4gTUlESSBicmlkZ2UpIHJ1bnMsIHNuZF9zZXFfcXVlcnlfcG9ydF9zdWJz
-Y3JpYmVycyBkb2VzIG5vdCB1cGRhdGUgdGhlCj4gPiA+IHN1YnMKPiA+ID4gPiBpbmRleCwgYW5k
-IHRoZSBuZXh0IGNhbGwgcmV0dXJucyAwLCBsZWFkaW5nIHRvIGFuIGluZmluaXRlIGxvb3AuIEkK
-PiBoYXZlCj4gPiA+IHRvCj4gPiA+ID4gbWFudWFsbHkgaW5jcmVhc2UgdGhlIGluZGV4IHdoZW4g
-dGhlIGRpc2Nvbm5lY3Rpb24gZmFpbHMgKG1lYW5pbmcKPiB0aGF0IEkKPiA+ID4gPiBoaXQgYW4g
-YTJqIGNvbm5lY3Rpb24pLgo+ID4gPiA+Cj4gPiA+ID4gd2hpbGUgKHNuZF9zZXFfcXVlcnlfcG9y
-dF9zdWJzY3JpYmVycyhzZXEsIHN1YnMpID49IDApIHsKPiA+ID4gPiAgIGFkZHIgPSAqc25kX3Nl
-cV9xdWVyeV9zdWJzY3JpYmVfZ2V0X2FkZHIoc3Vicyk7Cj4gPiA+ID4gICBpZiAoc25kX3NlcV9k
-aXNjb25uZWN0X3RvKHNlcSwgcG9ydCwgYWRkci5jbGllbnQsIGFkZHIucG9ydCkgPCAwKSB7Cj4g
-PiA+ID4gICAgIHNuZF9zZXFfcXVlcnlfc3Vic2NyaWJlX3NldF9pbmRleChzdWJzLAo+ID4gPiA+
-IHNuZF9zZXFfcXVlcnlfc3Vic2NyaWJlX2dldF9pbmRleChzdWJzKSArIDEpOwo+ID4gPiA+ICAg
-fQo+ID4gPiA+IH0KPiA+ID4gPgo+ID4gPiA+IDEuIElzIHRoZSBub24tdXBkYXRlZCBzdWJzIGlu
-ZGV4IGFuIGV4cGVjdGVkIGJlaGF2aW9yID8KPiA+ID4KPiA+ID4gU29ydCBvZiwgeWVzLiAgSXQn
-cyBubyBpdGVyYXRvciBvcGVyYXRpb24gbGlrZSBxdWVyeV9uZXh0X2NsaWVudC4KPiA+ID4gSXQg
-anVzdCBxdWVyaWVzIHRoZSBnaXZlbiBpbmRleCBhbmQgZmlsbHMgb3V0IHRoZSByZXN1bHQuICBU
-aGUgdXNlcgo+ID4gPiBuZWVkcyB0byBpdGVyYXRlIHdpdGggaW5jcmVtZW50aW5nIHRoZSBpbmRl
-eCBtYW51YWxseS4KPiA+ID4KPiA+ID4gPiAyLiBJcyBteSBmaXggYSBjb3JyZWN0IG9uZSBvciBj
-b3VsZCBpdCBsZWFkcyB0byBvdGhlciBpc3N1ZXMgPwo+ID4gPgo+ID4gPiBJdCdzIHRoZSBjb3Jy
-ZWN0IGltcGxlbWVudGF0aW9uLgo+ID4gPgo+ID4gPgo+ID4gPiBIVEgsCj4gPiA+Cj4gPiA+IFRh
-a2FzaGkKPiA+ID4KPiA+IFsyICA8dGV4dC9odG1sOyBVVEYtOCAocXVvdGVkLXByaW50YWJsZSk+
-XQo+ID4KPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Dne 12.4.2018 v 11:35 Jordi Mallach napsal(a):
+> Hello Jaroslav,
+> 
+> Can you push a tag for alsa-utils 1.1.6? It's missing from git AFAICT.
+
+The tag is there:
+
+http://git.alsa-project.org/?p=alsa-utils.git;a=tag;h=d3961abd3c045187f53b35775e3b5e0a2825f0d6
+
+					Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
