@@ -1,18 +1,18 @@
-From: syzbot <syzbot+f973e52978d95f818f69@syzkaller.appspotmail.com>
-Subject: BUG: unable to handle kernel paging request in
-	snd_pcm_format_set_silence
-Date: Wed, 11 Apr 2018 11:44:02 -0700
-Message-ID: <000000000000d059270569970587@google.com>
+From: =?UTF-8?Q?Fabi=C3=A1n_Inostroza?= <soulsonceonfire@gmail.com>
+Subject: [PATCH] ALSA: line6: Use correct endpoint type for
+	midi output
+Date: Thu, 12 Apr 2018 00:37:35 -0300
+Message-ID: <CAN0YATNkVQM_4NgLCWiVGmH9y0jiRrBEx+n8H7hWDFPXqxe_ow@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="yes"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f199.google.com (mail-io0-f199.google.com
- [209.85.223.199])
- by alsa0.perex.cz (Postfix) with ESMTP id E18E9266FD1
- for <alsa-devel@alsa-project.org>; Wed, 11 Apr 2018 20:44:03 +0200 (CEST)
-Received: by mail-io0-f199.google.com with SMTP id x7so2519105iob.21
- for <alsa-devel@alsa-project.org>; Wed, 11 Apr 2018 11:44:03 -0700 (PDT)
+Received: from mail-it0-f65.google.com (mail-it0-f65.google.com
+ [209.85.214.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5236726718D
+ for <alsa-devel@alsa-project.org>; Thu, 12 Apr 2018 05:37:37 +0200 (CEST)
+Received: by mail-it0-f65.google.com with SMTP id m134-v6so5553861itb.3
+ for <alsa-devel@alsa-project.org>; Wed, 11 Apr 2018 20:37:37 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,112 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, mail@maciej.szmigiero.name, o-takashi@sakamocchi.jp, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-syzbot hit the following crash on upstream commit
-f2d285669aae656dfeafa0bf25e86bbbc5d22329 (Tue Apr 3 17:45:39 2018 +0000)
-Merge tag 'pm-4.17-rc1' of  
-git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
-syzbot dashboard link:  
-https://syzkaller.appspot.com/bug?extid=f973e52978d95f818f69
-
-So far this crash happened 2 times on upstream.
-syzkaller reproducer:  
-https://syzkaller.appspot.com/x/repro.syz?id=5368241429938176
-Raw console output:  
-https://syzkaller.appspot.com/x/log.txt?id=6066534392791040
-Kernel config: https://syzkaller.appspot.com/x/.config?id=686016073509112605
-compiler: gcc (GCC) 7.1.1 20170620
-user-space arch: i386
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+f973e52978d95f818f69@syzkaller.appspotmail.com
-It will help syzbot understand when the bug is fixed. See footer for  
-details.
-If you forward the report, please keep this part and the footer.
-
-IPVS: ftp: loaded support on port[0] = 21
-IPVS: ftp: loaded support on port[0] = 21
-IPVS: ftp: loaded support on port[0] = 21
-IPVS: ftp: loaded support on port[0] = 21
-IPVS: ftp: loaded support on port[0] = 21
-BUG: unable to handle kernel paging request at ffffc90004cc7000
-PGD 1dad42067 P4D 1dad42067 PUD 1dad43067 PMD 1c5cb3067 PTE 0
-Oops: 0002 [#1] SMP KASAN
-Dumping ftrace buffer:
-    (ftrace buffer empty)
-Modules linked in:
-CPU: 0 PID: 5516 Comm: syz-executor3 Not tainted 4.16.0+ #288
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-RIP: 0010:memset_erms+0x9/0x10 arch/x86/lib/memset_64.S:65
-RSP: 0018:ffff8801d7fc7368 EFLAGS: 00010246
-RAX: fffff520009b9600 RBX: ffffc90004cc7000 RCX: 0000000000104500
-RDX: 0000000000104500 RSI: 0000000000000000 RDI: ffffc90004cc7000
-RBP: ffff8801d7fc7388 R08: 0000000000000000 R09: ffffc90004cc7000
-R10: 00000000000208a0 R11: fffff520009b969f R12: 0000000000104500
-R13: 0000000000000000 R14: ffffffff88c9185c R15: 0000000000000010
-FS:  0000000000000000(0000) GS:ffff8801db000000(0063) knlGS:00000000f7f5fb40
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: ffffc90004cc7000 CR3: 00000001d765c000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
-  memset include/linux/string.h:330 [inline]
-  snd_pcm_format_set_silence+0x13f/0x4b0 sound/core/pcm_misc.c:431
-  loopback_prepare+0x92b/0xbf0 sound/drivers/aloop.c:347
-  snd_pcm_do_prepare+0x58/0x90 sound/core/pcm_native.c:1640
-  snd_pcm_action_single+0x70/0x110 sound/core/pcm_native.c:1084
-  snd_pcm_action_nonatomic+0x95/0xa0 sound/core/pcm_native.c:1151
-  snd_pcm_prepare+0x115/0x1a0 sound/core/pcm_native.c:1687
-  snd_pcm_kernel_ioctl+0x97/0x240 sound/core/pcm_native.c:2998
-  snd_pcm_oss_prepare+0x49/0x150 sound/core/oss/pcm_oss.c:1104
-  snd_pcm_oss_make_ready+0xf9/0x130 sound/core/oss/pcm_oss.c:1132
-  snd_pcm_oss_set_trigger+0x384/0x930 sound/core/oss/pcm_oss.c:1959
-  snd_pcm_oss_poll+0x7aa/0xd60 sound/core/oss/pcm_oss.c:2727
-  do_pollfd fs/select.c:832 [inline]
-  do_poll fs/select.c:883 [inline]
-  do_sys_poll+0x719/0x1050 fs/select.c:977
-  SYSC_poll fs/select.c:1035 [inline]
-  SyS_poll+0x10d/0x450 fs/select.c:1023
-  do_syscall_32_irqs_on arch/x86/entry/common.c:330 [inline]
-  do_fast_syscall_32+0x3ec/0xf9f arch/x86/entry/common.c:392
-  entry_SYSENTER_compat+0x70/0x7f arch/x86/entry/entry_64_compat.S:139
-RIP: 0023:0xf7f63c99
-RSP: 002b:00000000f7f5f0ac EFLAGS: 00000282 ORIG_RAX: 00000000000000a8
-RAX: ffffffffffffffda RBX: 0000000020000100 RCX: 0000000000000001
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-Code: 48 c1 e9 03 40 0f b6 f6 48 b8 01 01 01 01 01 01 01 01 48 0f af c6 f3  
-48 ab 89 d1 f3 aa 4c 89 c8 c3 90 49 89 f9 40 88 f0 48 89 d1 <f3> aa 4c 89  
-c8 c3 90 49 89 fa 40 0f b6 ce 48 b8 01 01 01 01 01
-RIP: memset_erms+0x9/0x10 arch/x86/lib/memset_64.S:65 RSP: ffff8801d7fc7368
-CR2: ffffc90004cc7000
----[ end trace 95a476f9da224f32 ]---
-
-
----
-This bug is generated by a dumb bot. It may contain errors.
-See https://goo.gl/tpsmEJ for details.
-Direct all questions to syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report.
-If you forgot to add the Reported-by tag, once the fix for this bug is  
-merged
-into any tree, please reply to this email with:
-#syz fix: exact-commit-title
-If you want to test a patch for this bug, please reply with:
-#syz test: git://repo/address.git branch
-and provide the patch inline or as an attachment.
-To mark this as a duplicate of another syzbot report, please reply with:
-#syz dup: exact-subject-of-another-report
-If it's a one-off invalid bug report, please reply with:
-#syz invalid
-Note: if the crash happens again, it will cause creation of a new bug  
-report.
-Note: all commands must start from beginning of the line in the email body.
+SGksCgpTZW5kaW5nIE1JREkgbWVzc2FnZXMgdG8gYSBQT0R4dCB0aHJvdWdoIHRoZSBVU0IgY29u
+bmVjdGlvbiBzaG93cwoidXNiX3N1Ym1pdF91cmIgZmFpbGVkIiBpbiBkbWVzZyBhbmQgdGhlIG1l
+c3NhZ2UgaXMgbm90IHJlY2VpdmVkIGJ5CnRoZSBQT0QuCgpUaGUgZXJyb3IgaXMgY2F1c2VkIGJl
+Y2F1c2UgaW4gdGhlIGZ1bmNpb24gc2VuZF9taWRpX2FzeW5jKCkgaW4gbWlkaS5jCnRoZXJlIGlz
+IGEgY2FsbCB0byB1c2Jfc25kYnVsa3BpcGUoKSBmb3IgZW5kcG9pbnQgMyBPVVQsIGJ1dCB0aGUg
+UE9EeHQKVVNCIGRlc2NyaXB0b3Igc2hvd3MgdGhhdCB0aGlzIGVuZHBvaW50IGl0J3MgYW4gaW50
+ZXJydXB0IGVuZHBvaW50LgoKUGF0Y2ggdGVzdGVkIHdpdGggUE9EeHQgb25seS4KClNpZ25lZC1v
+ZmYtYnk6IEZhYmnDoW4gSW5vc3Ryb3phIDxmYWJpYW5pbm9zdHJvemFAdWRlYy5jbD4KLS0tCiBz
+b3VuZC91c2IvbGluZTYvbWlkaS5jIHwgMiArLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9u
+KCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvdXNiL2xpbmU2L21pZGkuYyBi
+L3NvdW5kL3VzYi9saW5lNi9taWRpLmMKaW5kZXggNmQ3Y2RlNTYuLmUyY2Y1NWM1IDEwMDY0NAot
+LS0gYS9zb3VuZC91c2IvbGluZTYvbWlkaS5jCisrKyBiL3NvdW5kL3VzYi9saW5lNi9taWRpLmMK
+QEAgLTEyNSw3ICsxMjUsNyBAQCBzdGF0aWMgaW50IHNlbmRfbWlkaV9hc3luYyhzdHJ1Y3QgdXNi
+X2xpbmU2CipsaW5lNiwgdW5zaWduZWQgY2hhciAqZGF0YSwKICAgICB9CgogICAgIHVzYl9maWxs
+X2ludF91cmIodXJiLCBsaW5lNi0+dXNiZGV2LAotICAgICAgICAgICAgIHVzYl9zbmRidWxrcGlw
+ZShsaW5lNi0+dXNiZGV2LAorICAgICAgICAgICAgIHVzYl9zbmRpbnRwaXBlKGxpbmU2LT51c2Jk
+ZXYsCiAgICAgICAgICAgICAgICAgICAgICBsaW5lNi0+cHJvcGVydGllcy0+ZXBfY3RybF93KSwK
+ICAgICAgICAgICAgICB0cmFuc2Zlcl9idWZmZXIsIGxlbmd0aCwgbWlkaV9zZW50LCBsaW5lNiwK
+ICAgICAgICAgICAgICBsaW5lNi0+aW50ZXJ2YWwpOwotLSAKMi4xNi4zCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
