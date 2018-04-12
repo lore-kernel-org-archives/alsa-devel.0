@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: mark PM functions __maybe_unused" to the asoc tree
-Date: Thu, 12 Apr 2018 15:48:03 +0100
-Message-ID: <E1f6dW7-00058g-TB@debutante>
-References: <20180328145318.10136-1-arnd@arndb.de>
+Subject: Applied "ASoC: fsl_esai: Fix divisor calculation failure at lower ratio" to the asoc tree
+Date: Thu, 12 Apr 2018 15:48:11 +0100
+Message-ID: <E1f6dWF-0005B1-It@debutante>
+References: <1523231855-7854-1-git-send-email-nicoleotsuka@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180328145318.10136-1-arnd@arndb.de>
+In-Reply-To: <1523231855-7854-1-git-send-email-nicoleotsuka@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>alsa-devel@alsa-project.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Marek Vasut <marex@denx.de>Marek Vasut <marex@denx.de>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgbroonie@kernel.orgmarex@denx.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: mark PM functions __maybe_unused
+   ASoC: fsl_esai: Fix divisor calculation failure at lower ratio
 
 has been applied to the asoc tree at
 
@@ -37,50 +37,49 @@ to this mail.
 Thanks,
 Mark
 
->From 6f5427039c33e149b711c0f973fcac7f6875b768 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Wed, 28 Mar 2018 16:53:10 +0200
-Subject: [PATCH] ASoC: rsnd: mark PM functions __maybe_unused
+>From c656941df9bc80f7ec65b92ca73c42f8b0b62628 Mon Sep 17 00:00:00 2001
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Date: Sun, 8 Apr 2018 16:57:35 -0700
+Subject: [PATCH] ASoC: fsl_esai: Fix divisor calculation failure at lower
+ ratio
 
-The suspend/resume callbacks are now optional, leading to a warning
-when they are unused:
+When the desired ratio is less than 256, the savesub (tolerance)
+in the calculation would become 0. This will then fail the loop-
+search immediately without reporting any errors.
 
-sound/soc/sh/rcar/core.c:1548:12: error: 'rsnd_resume' defined but not used [-Werror=unused-function]
- static int rsnd_resume(struct device *dev)
-            ^~~~~~~~~~~
-sound/soc/sh/rcar/core.c:1539:12: error: 'rsnd_suspend' defined but not used [-Werror=unused-function]
- static int rsnd_suspend(struct device *dev)
+But if the ratio is smaller enough, there is no need to calculate
+the tolerance because PM divisor alone is enough to get the ratio.
 
-This marks the as __maybe_unused to avoid the warning.
+So a simple fix could be just to set PM directly instead of going
+into the loop-search.
 
-Fixes: f8a9a29c4fe9 ("ASoC: rsnd: set pm_ops in hibernate-compatible way")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reported-by: Marek Vasut <marex@denx.de>
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Tested-by: Marek Vasut <marex@denx.de>
+Reviewed-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
- sound/soc/sh/rcar/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl_esai.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 6a76688a8ba9..94f081b93258 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1536,7 +1536,7 @@ static int rsnd_remove(struct platform_device *pdev)
- 	return ret;
- }
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index 40a700493f4c..da8fd98c7f51 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -144,6 +144,13 @@ static int fsl_esai_divisor_cal(struct snd_soc_dai *dai, bool tx, u32 ratio,
  
--static int rsnd_suspend(struct device *dev)
-+static int __maybe_unused rsnd_suspend(struct device *dev)
- {
- 	struct rsnd_priv *priv = dev_get_drvdata(dev);
+ 	psr = ratio <= 256 * maxfp ? ESAI_xCCR_xPSR_BYPASS : ESAI_xCCR_xPSR_DIV8;
  
-@@ -1545,7 +1545,7 @@ static int rsnd_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int rsnd_resume(struct device *dev)
-+static int __maybe_unused rsnd_resume(struct device *dev)
- {
- 	struct rsnd_priv *priv = dev_get_drvdata(dev);
++	/* Do not loop-search if PM (1 ~ 256) alone can serve the ratio */
++	if (ratio <= 256) {
++		pm = ratio;
++		fp = 1;
++		goto out;
++	}
++
+ 	/* Set the max fluctuation -- 0.1% of the max devisor */
+ 	savesub = (psr ? 1 : 8)  * 256 * maxfp / 1000;
  
 -- 
 2.17.0
