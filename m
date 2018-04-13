@@ -1,47 +1,117 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 0/2] ASoC: max9860/tfa9879: switch to SPDX license tag
-Date: Fri, 13 Apr 2018 14:41:44 +0100
-Message-ID: <20180413134144.GE6854@sirena.org.uk>
-References: <20180413111927.GC6854@sirena.org.uk>
- <20180413114751.6464-1-peda@axentia.se>
+Subject: Applied "ASoC: tfa9879: switch to SPDX license tag" to
+	the asoc tree
+Date: Fri, 13 Apr 2018 14:43:21 +0100
+Message-ID: <E1f6yz3-0004cD-14@debutante>
+References: <20180413114751.6464-3-peda@axentia.se>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="T6xhMxlHU34Bk0ad"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180413114751.6464-1-peda@axentia.se>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id DFC20266BBC
+ for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2018 15:43:27 +0200 (CEST)
+In-Reply-To: <20180413114751.6464-3-peda@axentia.se>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Peter Rosin <peda@axentia.se>
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---T6xhMxlHU34Bk0ad
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: tfa9879: switch to SPDX license tag
 
-On Fri, Apr 13, 2018 at 01:47:49PM +0200, Peter Rosin wrote:
+has been applied to the asoc tree at
 
-> Peter Rosin (2):
->   ASoC: max9860: switch to SPDX license tag
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-This one didn't turn up yet - it's only just been sent though so it
-might be stuck in a mail queue somewhere, I've applied patch 2 and I
-expect I'll apply this one as soon as it appears.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---T6xhMxlHU34Bk0ad
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrQs5cACgkQJNaLcl1U
-h9A7Ngf/dgc/Sy+Zi+zrMG8mvrva1JxND0Ocx9sMzMcsqWWezPsYAeC9CSgOPtXg
-s/2bglGrK1Vbh7pMyG6u35FF39Oa3Sz+IE01evpl1WMLtqTGqbllQxg5pRVv4Acz
-q2chfTWAWqMJqXCWQwe+9cPfM49naZQb6c6IeHas0R19T+fXynyehz0Qz9yvr3Rd
-B1iZHw8vGnxmZpOtoB2cLrRpxHXOqmyv+n50ic38aoBokz0nqXiULhfEWG8Qj7XZ
-OdQNxTbOCKu0vNg/oxVPWRW++LYR6gERoYs7MxPoe2SuDmav6ctJcY4uT2YibhcT
-XpZsxpOXhHxFpKlXX0P/DsqYeRDV8g==
-=j8pn
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---T6xhMxlHU34Bk0ad--
+Thanks,
+Mark
+
+>From 55c19bd95f4dac2ee221272349900dda75a67ebb Mon Sep 17 00:00:00 2001
+From: Peter Rosin <peda@axentia.se>
+Date: Fri, 13 Apr 2018 13:47:51 +0200
+Subject: [PATCH] ASoC: tfa9879: switch to SPDX license tag
+
+It's less overhead, clearer and generally neater.
+
+Signed-off-by: Peter Rosin <peda@axentia.se>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/tfa9879.c | 18 ++++++------------
+ sound/soc/codecs/tfa9879.h |  7 +------
+ 2 files changed, 7 insertions(+), 18 deletions(-)
+
+diff --git a/sound/soc/codecs/tfa9879.c b/sound/soc/codecs/tfa9879.c
+index 4ed020262a27..abc114a3ae2b 100644
+--- a/sound/soc/codecs/tfa9879.c
++++ b/sound/soc/codecs/tfa9879.c
+@@ -1,15 +1,9 @@
+-/*
+- * tfa9879.c  --  driver for NXP Semiconductors TFA9879
+- *
+- * Copyright (C) 2014 Axentia Technologies AB
+- * Author: Peter Rosin <peda@axentia.se>
+- *
+- *  This program is free software; you can redistribute  it and/or modify it
+- *  under  the terms of  the GNU General  Public License as published by the
+- *  Free Software Foundation;  either version 2 of the  License, or (at your
+- *  option) any later version.
+- *
+- */
++// SPDX-License-Identifier: GPL-2.0+
++//
++// tfa9879.c  --  driver for NXP Semiconductors TFA9879
++//
++// Copyright (C) 2014 Axentia Technologies AB
++// Author: Peter Rosin <peda@axentia.se>
+ 
+ #include <linux/module.h>
+ #include <linux/init.h>
+diff --git a/sound/soc/codecs/tfa9879.h b/sound/soc/codecs/tfa9879.h
+index 3408c90c4628..66c88d0396fe 100644
+--- a/sound/soc/codecs/tfa9879.h
++++ b/sound/soc/codecs/tfa9879.h
+@@ -1,14 +1,9 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+  * tfa9879.h  --  driver for NXP Semiconductors TFA9879
+  *
+  * Copyright (C) 2014 Axentia Technologies AB
+  * Author: Peter Rosin <peda@axentia.se>
+- *
+- *  This program is free software; you can redistribute  it and/or modify it
+- *  under  the terms of  the GNU General  Public License as published by the
+- *  Free Software Foundation;  either version 2 of the  License, or (at your
+- *  option) any later version.
+- *
+  */
+ 
+ #ifndef _TFA9879_H
+-- 
+2.17.0
