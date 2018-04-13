@@ -1,51 +1,47 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 3/5] ASoC: max9860: switch to SPDX license tag
-Date: Fri, 13 Apr 2018 12:19:27 +0100
-Message-ID: <20180413111927.GC6854@sirena.org.uk>
+Subject: Re: [PATCH 2/2] ASoC: tfa9879: switch to using .probe_new
+Date: Fri, 13 Apr 2018 12:21:12 +0100
+Message-ID: <20180413112112.GD6854@sirena.org.uk>
 References: <20180412161601.GI9929@sirena.org.uk>
  <20180412211437.21599-1-peda@axentia.se>
- <20180412211437.21599-4-peda@axentia.se>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="FsscpQKzF/jJk6ya"
+        protocol="application/pgp-signature"; boundary="EP0wieDxd4TSJjHq"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20180412211437.21599-4-peda@axentia.se>
+In-Reply-To: <20180412211437.21599-1-peda@axentia.se>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Peter Rosin <peda@axentia.se>
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---FsscpQKzF/jJk6ya
+--EP0wieDxd4TSJjHq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Apr 12, 2018 at 11:14:35PM +0200, Peter Rosin wrote:
+On Thu, Apr 12, 2018 at 11:14:32PM +0200, Peter Rosin wrote:
 
-> @@ -1,3 +1,4 @@
-> +// SPDX-License-Identifier: GPL-2.0
->  /*
->   * Driver for the MAX9860 Mono Audio Voice Codec
->   *
+> For the record, I wish to be on Cc for changes to files I maintain.
+> That is one of the core functions of the MAINTAINERS file, right?
 
-Please don't mix C and C++ comments like this - it looks unintentional
-and messy.  Just convert the entire comment block to C++ so it's
-consistent with itself.
+Right, people should do that but it's not 100% reliable unfortunately.
+It's not unknown for people to wonder why I've not reviewed patches they
+didn't send me :(
 
---FsscpQKzF/jJk6ya
+--EP0wieDxd4TSJjHq
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrQkj4ACgkQJNaLcl1U
-h9BenAf/W/JDwlbxh9fUKL63ITIAECbCWfVFrPyFMGalYh/tM3Gt+w4aSNENJa1P
-Eu6RrNVVhreEr1TN1GcJzPu5o84WHMGSBQRsBRWM7VFzfE46TByeMAq23FhBZUTl
-UXCEXc4gGpMji0GqWWDF2gVniWIXQBquaDv1+96YdrDCLCmKs5SSABktrO8daHDy
-7GRbovvhdqlaMPE76RYm4W+xnePcNwxqpTNKW3/70MGJR63M04May65NyRRmqNZp
-YFhUYinQZ+43UTCX3mBkfYBqmVUC9EmG54e3pot/2IrcLTT+hK40KvWqGHdMr09A
-NRJg712HVhRbMSYG9qzDBldAC0a0yg==
-=9021
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrQkqgACgkQJNaLcl1U
+h9AQ7Af/cHs422SLqUVDociesGGUt3iGgrxh7oqzdp4JfY7mrHxjZwXPRuW78byE
+qyuob+hpJI8ktS7BvlEBDbvt9LfJxMZHY5+svGK2pA4J71x17pHOgAjN2GJpSWft
+8RSNvGFqt+NwZMINmHoRwD1B0vn9YKmeekCv6Zkh3HaBP0XkNykvMm2Qw8TACJLM
+lQIPM+tYJ0CEXbvXlXszmzzAysWLiwZY1VEYeY9hHLaju4CGwswdIESrfpq+dTTy
+qs8PqPjs+08Qmf1/zDTZEFPZEI/oKB4jXWrwk929fXRJolZSkV3Zuf9qWK/7MQIt
+rc1tehC+suHQ6rJ82iaB+xwl8kXgsQ==
+=xzk9
 -----END PGP SIGNATURE-----
 
---FsscpQKzF/jJk6ya--
+--EP0wieDxd4TSJjHq--
