@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tfa9879: switch to SPDX license tag" to
-	the asoc tree
-Date: Fri, 13 Apr 2018 14:43:21 +0100
-Message-ID: <E1f6yz3-0004cD-14@debutante>
-References: <20180413114751.6464-3-peda@axentia.se>
+Subject: Applied "ASoC: rsnd: don't assume node full path name
+	for HDMI probing" to the asoc tree
+Date: Fri, 13 Apr 2018 14:43:25 +0100
+Message-ID: <E1f6yz7-0004dF-0R@debutante>
+References: <87r2nmfqbu.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DFC20266BBC
- for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2018 15:43:27 +0200 (CEST)
-In-Reply-To: <20180413114751.6464-3-peda@axentia.se>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5AF7A267079
+ for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2018 15:43:28 +0200 (CEST)
+In-Reply-To: <87r2nmfqbu.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Rosin <peda@axentia.se>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>, Nguyen Viet Dung <dung.nguyen.aj@renesas.com>, "Yokoyama (Renesas)" <hiroyuki.yokoyama.vx@renesas.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tfa9879: switch to SPDX license tag
+   ASoC: rsnd: don't assume node full path name for HDMI probing
 
 has been applied to the asoc tree at
 
@@ -53,65 +53,67 @@ to this mail.
 Thanks,
 Mark
 
->From 55c19bd95f4dac2ee221272349900dda75a67ebb Mon Sep 17 00:00:00 2001
-From: Peter Rosin <peda@axentia.se>
-Date: Fri, 13 Apr 2018 13:47:51 +0200
-Subject: [PATCH] ASoC: tfa9879: switch to SPDX license tag
+>From c24c69f0e4c024576895370cd6676e64b6eed49f Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 11 Apr 2018 02:10:45 +0000
+Subject: [PATCH] ASoC: rsnd: don't assume node full path name for HDMI probing
 
-It's less overhead, clearer and generally neater.
+Current ssi.c is assuming below 2 things to probing HDMI node.
+1) remote node is including "hdmi0" or "hdmi1" in node name
+2) remote_ep->full_name is including full path name
 
-Signed-off-by: Peter Rosin <peda@axentia.se>
+But, these assumptions are broken by below
+1) Node names should not use numerical suffixes
+ commit 6b5ac2f1cb11 ("arm64: dts: renesas: r8a7795: Drop bogus HDMI
+                       node names suffixes")
+2) node full_name no longer include full path name
+ commit a7e4cfb0a7ca ("of/fdt: only store the device node basename
+                       in full_name")
+
+Because of these reasons, ssi.c can't probe HDMI on current kernel.
+This patch probes HDMI0/1 by using its address.
+Note is that we need to keep updating for this address for future
+generation chip.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: Nguyen Viet Dung <dung.nguyen.aj@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tfa9879.c | 18 ++++++------------
- sound/soc/codecs/tfa9879.h |  7 +------
- 2 files changed, 7 insertions(+), 18 deletions(-)
+ sound/soc/sh/rcar/ssi.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tfa9879.c b/sound/soc/codecs/tfa9879.c
-index 4ed020262a27..abc114a3ae2b 100644
---- a/sound/soc/codecs/tfa9879.c
-+++ b/sound/soc/codecs/tfa9879.c
-@@ -1,15 +1,9 @@
--/*
-- * tfa9879.c  --  driver for NXP Semiconductors TFA9879
-- *
-- * Copyright (C) 2014 Axentia Technologies AB
-- * Author: Peter Rosin <peda@axentia.se>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-- */
-+// SPDX-License-Identifier: GPL-2.0+
-+//
-+// tfa9879.c  --  driver for NXP Semiconductors TFA9879
-+//
-+// Copyright (C) 2014 Axentia Technologies AB
-+// Author: Peter Rosin <peda@axentia.se>
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 333b802681ad..31ffe3f0e163 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -1004,19 +1004,26 @@ static void __rsnd_ssi_parse_hdmi_connection(struct rsnd_priv *priv,
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	struct rsnd_mod *mod = rsnd_io_to_mod_ssi(io);
+ 	struct rsnd_ssi *ssi;
++	struct device_node *remote_node = of_graph_get_port_parent(remote_ep);
++
++	/* support Gen3 only */
++	if (!rsnd_is_gen3(priv))
++		return;
  
- #include <linux/module.h>
- #include <linux/init.h>
-diff --git a/sound/soc/codecs/tfa9879.h b/sound/soc/codecs/tfa9879.h
-index 3408c90c4628..66c88d0396fe 100644
---- a/sound/soc/codecs/tfa9879.h
-+++ b/sound/soc/codecs/tfa9879.h
-@@ -1,14 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
- /*
-  * tfa9879.h  --  driver for NXP Semiconductors TFA9879
-  *
-  * Copyright (C) 2014 Axentia Technologies AB
-  * Author: Peter Rosin <peda@axentia.se>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-  */
+ 	if (!mod)
+ 		return;
  
- #ifndef _TFA9879_H
+ 	ssi  = rsnd_mod_to_ssi(mod);
+ 
+-	if (strstr(remote_ep->full_name, "hdmi0")) {
++	/* HDMI0 */
++	if (strstr(remote_node->full_name, "hdmi@fead0000")) {
+ 		rsnd_flags_set(ssi, RSND_SSI_HDMI0);
+ 		dev_dbg(dev, "%s[%d] connected to HDMI0\n",
+ 			 rsnd_mod_name(mod), rsnd_mod_id(mod));
+ 	}
+ 
+-	if (strstr(remote_ep->full_name, "hdmi1")) {
++	/* HDMI1 */
++	if (strstr(remote_node->full_name, "hdmi@feae0000")) {
+ 		rsnd_flags_set(ssi, RSND_SSI_HDMI1);
+ 		dev_dbg(dev, "%s[%d] connected to HDMI1\n",
+ 			rsnd_mod_name(mod), rsnd_mod_id(mod));
 -- 
 2.17.0
