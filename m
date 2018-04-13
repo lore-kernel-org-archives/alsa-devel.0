@@ -1,72 +1,68 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH] ASoC: Intel: Disable
- SND_SOC_INTEL_BAYTRAIL when SND_SST_ATOM_HIFI2_PLATFORM is enabled
-Date: Fri, 13 Apr 2018 18:56:54 +0200
-Message-ID: <7b4b2168-42e5-6fcf-9d24-49748f35f74b@redhat.com>
-References: <20180413124537.6765-1-hdegoede@redhat.com>
- <7d14acfc-f9e1-f408-2f76-bf00ab8b9534@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f196.google.com (mail-wr0-f196.google.com
- [209.85.128.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D91C266BBC
- for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2018 18:56:56 +0200 (CEST)
-Received: by mail-wr0-f196.google.com with SMTP id y7so9787540wrh.10
- for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2018 09:56:56 -0700 (PDT)
-In-Reply-To: <7d14acfc-f9e1-f408-2f76-bf00ab8b9534@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
+From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: [PATCH 0/4] USB Audio Device Class 3.0 BADD profiles support
+Date: Sat, 14 Apr 2018 01:24:22 +0300
+Message-ID: <1523658266-2259-1-git-send-email-ruslan.bilovol@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.com>
+Cc: Jorge <jorge.sanjuan@codethink.co.uk>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAxMy0wNC0xOCAxNjo1MCwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gT24g
-NC8xMy8xOCA3OjQ1IEFNLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+PiBUaGUgc291bmQvc29jL2lu
-dGVsL2NvbW1vbi9zc3QtYWNwaS5jIGNvZGUgb25seSB0cmllcyB0byBsb2FkIHRoZQo+PiAiYmF5
-dHJhaWwtcGNtLWF1ZGlvIiBkcml2ZXIgKGFuZCBzdXBwb3J0aW5nIGJvYXJkIGRyaXZlcnMpIHdo
-ZW4KPj4gU05EX1NTVF9BVE9NX0hJRkkyX1BMQVRGT1JNIGlzIG5vdCBlbmFibGVkLCBzaW5jZSBv
-dGhlcndpc2UgdGhlc2UKPj4gYXJlIGhhbmRsZWQgYnkgc25kLXNvYy1zc3QtYXRvbS1oaWZpMi1w
-bGF0Zm9ybS5rby4KPj4KPj4gU2luY2UgdGhlc2UgdGh1cyB3aWxsIG5ldmVyIGJlIHVzZWQgd2hl
-biBTTkRfU1NUX0FUT01fSElGSTJfUExBVEZPUk0gaXMKPj4gZW5hYmxlZCwgYnVpbGRpbmcgdGhl
-c2UgZHJpdmVycyB3aGVuIGl0IGlzIGVuYWJsZWQgaXMgdXNlbGVzcy4KPj4KPj4gQWRkIGEgS2Nv
-bmZpZyBkZXBlbmRlbmN5IHRvIHJlZmxlY3QgdGhpcywgc28gdGhhdCBTTkRfU09DX0lOVEVMX0JB
-WVRSQUlMCj4+IGNhbm5vdCBiZSBlbmFibGVkIHdoZW4gU05EX1NTVF9BVE9NX0hJRkkyX1BMQVRG
-T1JNIGlzIGFsc28gZW5hYmxlZC4KPiAKPiBXZSBoYWQgdGhpcyBiZWZvcmUgYW5kIEkgZHJvcHBl
-ZCBpdCB3aGVuIHdlIGNsZWFuZWQgdGhlIGNvZGUsIG1haW5seSBzaW5jZSB0aGlzIGRlcGVuZGVu
-Y3kgaXMgb25lLXNpZGVkIGFuZCB0aGUgc2VsZWN0aW9ucyBpbiBtZW51Y29uZmlnIGFyZSBhIGJp
-dCBvZGQuIEl0J3MgcmVhbGx5IGEgbXV0dWFsIGV4Y2x1c2lvbiB3ZSdkIHdhbnQuCgpJIHRoaW5r
-IHdlIGNhbiBnZXQgYSBtdXR1YWwgZXhjbHVzaW9uIGJ5IGFsc28gYWRkaW5nIGEKZGVwZW5kcyBv
-biBTTkRfU09DX0lOVEVMX0JBWVRSQUlMPW4gdG8gdGhlIFNORF9TU1RfQVRPTV9ISUZJMl9QTEFU
-Rk9STQpLY29uZmlnICh0aGlzIG5lZWRzIHRlc3RpbmcgdGhvdWdoKSwgYnV0IGRvIHdlIHJlYWxs
-eSB3YW50Cm11dHVhbCBleGNsdXNpb24gPyBEaXN0cm9zIHRlbmQgdG8gaGl0ICdtJyBmb3IgYWxs
-IHRoZXNlIG9wdGlvbnMsCnNvIHRoZW4gd2UgZW5kIHVwIHdpdGggd2hpY2ggZXZlciBvbmUgY29t
-ZXMgZmlyc3QuLi4KCkVpdGhlciB3YXkgZGlzdHJvcyBhcmUgY3VycmVudGx5IGJ1aWxkaW5nIGJv
-dGggYW5kIHRoYXQgaXMgbm8gZ29vZAphbmQgc2luY2Ugd2UgYWR2aWNlIHRoZSB1c2Ugb2YgU05E
-X1NTVF9BVE9NX0hJRkkyX1BMQVRGT1JNIG1ha2luZwpTTkRfU09DX0lOVEVMX0JBWVRSQUlMIGF1
-dG8tZGlzYWJsZSBzZWVtcyBsaWtlIGEgZ29vZCBpZGVhLgoKUmVnYXJkcywKCkhhbnMKCgoKPiAK
-Pj4KPj4gU2lnbmVkLW9mZi1ieTogSGFucyBkZSBHb2VkZSA8aGRlZ29lZGVAcmVkaGF0LmNvbT4K
-Pj4gLS0tCj4+IMKgIHNvdW5kL3NvYy9pbnRlbC9LY29uZmlnIHwgMiArLQo+PiDCoCAxIGZpbGUg
-Y2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKPj4KPj4gZGlmZiAtLWdpdCBh
-L3NvdW5kL3NvYy9pbnRlbC9LY29uZmlnIGIvc291bmQvc29jL2ludGVsL0tjb25maWcKPj4gaW5k
-ZXggY2ViMTA1Y2JkNDYxLi42NDBmOWJjOWJkNDYgMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL3NvYy9p
-bnRlbC9LY29uZmlnCj4+ICsrKyBiL3NvdW5kL3NvYy9pbnRlbC9LY29uZmlnCj4+IEBAIC02MSw3
-ICs2MSw3IEBAIGNvbmZpZyBTTkRfU09DX0lOVEVMX0hBU1dFTEwKPj4gwqAgY29uZmlnIFNORF9T
-T0NfSU5URUxfQkFZVFJBSUwKPj4gwqDCoMKgwqDCoCB0cmlzdGF0ZSAiQmF5dHJhaWwgKGxlZ2Fj
-eSkgUGxhdGZvcm1zIgo+PiAtwqDCoMKgIGRlcGVuZHMgb24gRE1BREVWSUNFUyAmJiBBQ1BJCj4+
-ICvCoMKgwqAgZGVwZW5kcyBvbiBETUFERVZJQ0VTICYmIEFDUEkgJiYgU05EX1NTVF9BVE9NX0hJ
-RkkyX1BMQVRGT1JNPW4KPj4gwqDCoMKgwqDCoCBzZWxlY3QgU05EX1NPQ19JTlRFTF9TU1QKPj4g
-wqDCoMKgwqDCoCBzZWxlY3QgU05EX1NPQ19JTlRFTF9TU1RfQUNQSQo+PiDCoMKgwqDCoMKgIHNl
-bGVjdCBTTkRfU09DX0lOVEVMX1NTVF9GSVJNV0FSRQo+Pgo+IApfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+This patchset adds BADD profiles support from the USB Audio
+Device Class 3.0 spec [1].
+
+BADD profile support is defined as mandatory feature of
+UAC3-compliant device, it should be implemented as a separate
+USB configuration.
+
+Notable issue with BADD configuration is that it misses
+class-specific descriptors (and it's mandatory as per spec),
+so host should guess them from BADD profile number and
+parameters of endpoints (type, number of endpoints and
+max packet size)
+
+This patchset adds support of all known/existing BADD profiles
+from the UAC3 specification.
+
+It's an alternative implementation comparing to [2],
+and doesn't build usb descriptors on the host but instead
+initializes alsa-usb structures with known parameters,
+so we don't need to keep whole class-specific descriptors
+in the driver since we anyway need to have BADD-specific
+logic.
+
+I've picked one Jorge's UAC1 patch-improvement and
+updated it to v4.17 wich contais recently introduced
+header's sanity checks.
+
+Remaining part is to add interrupt endpoint support
+so we will be able to detect jack insertion in
+the Headset Adapter profile.
+
+This has been tested on ARM and x86-64 machines with
+custom UAC3 gadget which I'll post later to linux-usb
+
+Comments and testing are welcome.
+
+[1] http://www.usb.org/developers/docs/devclass_docs/USB_Audio_v3.0.zip
+[2] https://www.spinics.net/lists/alsa-devel/msg71614.html
+
+Jorge Sanjuan (1):
+  ALSA: usb: Only get AudioControl header for UAC1 class.
+
+Ruslan Bilovol (3):
+  ALSA: usb: stream: refactor audio interface parsing
+  include: usb: audio-v3: add BADD-specific values
+  ALSA: usb: add UAC3 BADD profiles support
+
+ include/linux/usb/audio-v3.h |  26 ++
+ sound/usb/card.c             |  53 ++--
+ sound/usb/clock.c            |   9 +-
+ sound/usb/mixer.c            | 313 +++++++++++++++++++-
+ sound/usb/mixer_maps.c       |  65 +++++
+ sound/usb/stream.c           | 678 +++++++++++++++++++++++++------------------
+ sound/usb/usbaudio.h         |   2 +
+ 7 files changed, 836 insertions(+), 310 deletions(-)
+
+-- 
+1.9.1
