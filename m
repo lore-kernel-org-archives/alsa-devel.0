@@ -1,18 +1,14 @@
-From: Lukas Wunner <lukas@wunner.de>
-Subject: Re: [PATCH] ALSA: hda - Silence PM ops build warning
-Date: Fri, 13 Apr 2018 06:27:06 +0200
-Message-ID: <20180413042706.GA425@wunner.de>
-References: <b8e70e34a9acbd4f0a1a6c7673cea96888ae9503.1522323444.git.lukas@wunner.de>
+From: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+Subject: [PATCH 0/5] ASoC: mediatek: add support for mt6797 SoC
+Date: Fri, 13 Apr 2018 17:02:37 +0800
+Message-ID: <20180413090242.4211-1-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout1.hostsharing.net (mailout1.hostsharing.net
- [83.223.95.204])
- by alsa0.perex.cz (Postfix) with ESMTP id 2DCF5266BBC
- for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2018 06:27:04 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <b8e70e34a9acbd4f0a1a6c7673cea96888ae9503.1522323444.git.lukas@wunner.de>
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id B6EBC266BBC
+ for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2018 11:03:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,19 +18,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.com>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, wsd_upstream@mediatek.com, chipeng.chang@mediatek.com, garlic.tseng@mediatek.com, linux-mediatek@lists.infradead.org, kaichieh.chuang@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 29, 2018 at 01:46:26PM +0200, Lukas Wunner wrote:
-> sound/pci/hda/hda_intel.c:1024:12: warning: 'azx_resume' defined but not used [-Wunused-function]
->  static int azx_resume(struct device *dev)
->             ^~~~~~~~~~
-> sound/pci/hda/hda_intel.c:989:12: warning: 'azx_suspend' defined but not used [-Wunused-function]
->  static int azx_suspend(struct device *dev)
->             ^~~~~~~~~~~
+This patch adds basic support for Mediatek AFE for MT6797 SoC.
 
-Arnd, Takashi, just a quick FYI that the fix for the above-quoted
-warnings has landed in Linus' tree half an hour ago.  Thanks for
-your patience.
+KaiChieh Chuang (5):
+  ASoC: add mt6351 codec driver
+  ASoC: mt6797: add structure define and clock control function for 6797
+  ASoC: mt6797: add mt6797 platform driver
+  ASoC: add mt6797-mt6351 driver and config option
+  ASoC: mediatek: add documents for mt6797
 
-Lukas
+ Documentation/devicetree/bindings/sound/mt6351.txt |   16 +
+ .../devicetree/bindings/sound/mt6797-afe-pcm.txt   |   42 +
+ .../devicetree/bindings/sound/mt6797-mt6351.txt    |   14 +
+ sound/soc/codecs/Kconfig                           |    4 +
+ sound/soc/codecs/Makefile                          |    2 +
+ sound/soc/codecs/mt6351.c                          | 1639 ++++++++++++++++++++
+ sound/soc/codecs/mt6351.h                          |  108 ++
+ sound/soc/mediatek/Kconfig                         |   20 +
+ sound/soc/mediatek/Makefile                        |    1 +
+ sound/soc/mediatek/mt6797/Makefile                 |   19 +
+ sound/soc/mediatek/mt6797/mt6797-afe-clk.c         |  132 ++
+ sound/soc/mediatek/mt6797/mt6797-afe-clk.h         |   25 +
+ sound/soc/mediatek/mt6797/mt6797-afe-common.h      |   57 +
+ sound/soc/mediatek/mt6797/mt6797-afe-pcm.c         | 1234 +++++++++++++++
+ sound/soc/mediatek/mt6797/mt6797-interconnection.h |   41 +
+ sound/soc/mediatek/mt6797/mt6797-mt6351.c          |  186 +++
+ sound/soc/mediatek/mt6797/mt6797-reg.h             |  846 ++++++++++
+ 17 files changed, 4386 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt6351.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/mt6797-afe-pcm.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/mt6797-mt6351.txt
+ create mode 100644 sound/soc/codecs/mt6351.c
+ create mode 100644 sound/soc/codecs/mt6351.h
+ create mode 100644 sound/soc/mediatek/mt6797/Makefile
+ create mode 100644 sound/soc/mediatek/mt6797/mt6797-afe-clk.c
+ create mode 100644 sound/soc/mediatek/mt6797/mt6797-afe-clk.h
+ create mode 100644 sound/soc/mediatek/mt6797/mt6797-afe-common.h
+ create mode 100644 sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
+ create mode 100644 sound/soc/mediatek/mt6797/mt6797-interconnection.h
+ create mode 100644 sound/soc/mediatek/mt6797/mt6797-mt6351.c
+ create mode 100644 sound/soc/mediatek/mt6797/mt6797-reg.h
+
+-- 
+2.12.5
