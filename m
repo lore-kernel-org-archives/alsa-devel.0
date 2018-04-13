@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel_ssc_dai: fix spelling mistake: "Stoping" -> "Stopping"" to the asoc tree
-Date: Fri, 13 Apr 2018 11:56:48 +0100
-Message-ID: <E1f6wNs-0007Ig-K7@debutante>
-References: <20180330154420.6903-1-colin.king@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180330154420.6903-1-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Mark Brown <broonie@kernel.org>Nicolas Ferre <nicolas.ferre@microchip.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>Alexandre Belloni <alexandre.belloni@bootlin.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: wm8350: remove snd_soc_codec" to the
+	asoc tree
+Date: Fri, 13 Apr 2018 11:56:44 +0100
+Message-ID: <E1f6wNo-0007HP-W5@debutante>
+References: <87tvt13psj.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B7E32673D8
+ for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2018 12:56:51 +0200 (CEST)
+In-Reply-To: <87tvt13psj.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel_ssc_dai: fix spelling mistake: "Stoping" -> "Stopping"
+   ASoC: wm8350: remove snd_soc_codec
 
 has been applied to the asoc tree at
 
@@ -37,34 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From 78a7d414d5a8e3ea7bc5a636311cfb7ce593ce37 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Fri, 30 Mar 2018 16:44:20 +0100
-Subject: [PATCH] ASoC: atmel_ssc_dai: fix spelling mistake: "Stoping" ->
- "Stopping"
+>From d00ef703065abc8d1efe5e548daa923f5411b042 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 28 Mar 2018 02:22:07 +0000
+Subject: [PATCH] ASoC: wm8350: remove snd_soc_codec
 
-Trivial fix to spelling mistake in pr_debug message text
+codec is replace to component.
+It seems no-one is using it, Let's remove it.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/atmel_ssc_dai.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/mfd/wm8350/audio.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index a1e2c5682dcd..1c7af0ca98ec 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -820,7 +820,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 		if (ret < 0) {
- 			printk(KERN_WARNING
- 					"atmel_ssc_dai: request_irq failure\n");
--			pr_debug("Atmel_ssc_dai: Stoping clock\n");
-+			pr_debug("Atmel_ssc_dai: Stopping clock\n");
- 			clk_disable(ssc_p->ssc->clk);
- 			return ret;
- 		}
+diff --git a/include/linux/mfd/wm8350/audio.h b/include/linux/mfd/wm8350/audio.h
+index bd581c6fa085..0bc41c4c0429 100644
+--- a/include/linux/mfd/wm8350/audio.h
++++ b/include/linux/mfd/wm8350/audio.h
+@@ -617,11 +617,8 @@ struct wm8350_audio_platform_data {
+ 	u32 codec_current_charge:2;	/* codec current @ vmid charge */
+ };
+ 
+-struct snd_soc_codec;
+-
+ struct wm8350_codec {
+ 	struct platform_device *pdev;
+-	struct snd_soc_codec *codec;
+ 	struct wm8350_audio_platform_data *platform_data;
+ };
+ 
 -- 
 2.17.0
