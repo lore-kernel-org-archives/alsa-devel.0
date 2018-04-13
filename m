@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: cht_bsw_rt5645: Replace
-	GFP_ATOMIC with GFP_KERNEL in snd_cht_mc_probe" to the asoc tree
-Date: Fri, 13 Apr 2018 12:24:00 +0100
-Message-ID: <E1f6woC-0000BO-Ij@debutante>
-References: <E1f6wMw-00078v-Fd@debutante>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A4F4B2675DB
- for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2018 13:24:01 +0200 (CEST)
-In-Reply-To: <E1f6wMw-00078v-Fd@debutante>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: Applied "ASoC: intel: bxt_rt298: Replace GFP_ATOMIC with GFP_KERNEL in broxton_audio_probe" to the asoc tree
+Date: Fri, 13 Apr 2018 12:24:11 +0100
+Message-ID: <E1f6woN-0000Eh-Ns@debutante>
+References: <1523270827-22735-1-git-send-email-baijiaju1990@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1523270827-22735-1-git-send-email-baijiaju1990@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, pradeep.d.tewani@intel.com, subhransu.s.prusty@intel.com, dharageswari.r@intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: cht_bsw_rt5645: Replace GFP_ATOMIC with GFP_KERNEL in snd_cht_mc_probe
+   ASoC: intel: bxt_rt298: Replace GFP_ATOMIC with GFP_KERNEL in broxton_audio_probe
 
 has been applied to the asoc tree at
 
@@ -53,17 +37,17 @@ to this mail.
 Thanks,
 Mark
 
->From ca243b56cc07b63da38bddfd30d48792f442cca8 Mon Sep 17 00:00:00 2001
+>From ac6c5ea121e78b4c5caef2e307d59a0e35a65a88 Mon Sep 17 00:00:00 2001
 From: Jia-Ju Bai <baijiaju1990@gmail.com>
-Date: Mon, 9 Apr 2018 18:48:31 +0800
-Subject: [PATCH] ASoC: intel: cht_bsw_rt5645: Replace GFP_ATOMIC with
- GFP_KERNEL in snd_cht_mc_probe
+Date: Mon, 9 Apr 2018 18:47:07 +0800
+Subject: [PATCH] ASoC: intel: bxt_rt298: Replace GFP_ATOMIC with GFP_KERNEL in
+ broxton_audio_probe
 
-snd_cht_mc_probe() is never called in atomic context.
+broxton_audio_probe() is never called in atomic context.
 This function is only set as ".probe" in "struct platform_driver".
 
 Despite never getting called from atomic context,
-snd_cht_mc_probe() calls devm_kzalloc() with GFP_ATOMIC,
+broxton_audio_probe() calls devm_kzalloc() with GFP_ATOMIC,
 which waits busily for allocation.
 GFP_ATOMIC is not necessary and can be replaced with GFP_KERNEL,
 to avoid busy waiting and improve the possibility of sucessful allocation.
@@ -73,20 +57,20 @@ This is found by a static analysis tool named DCNS written by myself.
 Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_rt5645.c | 2 +-
+ sound/soc/intel/boards/bxt_rt298.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index 49ba1a956a06..f5a5ea6a093c 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -539,7 +539,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	int ret_val = 0;
- 	int i;
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index c7e9024e65ef..b68c289558a8 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -593,7 +593,7 @@ static int broxton_audio_probe(struct platform_device *pdev)
+ 		}
+ 	}
  
--	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_ATOMIC);
-+	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
- 	if (!drv)
+-	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
++	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
  		return -ENOMEM;
  
 -- 
