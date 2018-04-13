@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: makes rsnd_cmd_mod_get() static"
-	to the asoc tree
-Date: Fri, 13 Apr 2018 12:23:39 +0100
-Message-ID: <E1f6wnr-00007K-MB@debutante>
-References: <87k1tklwr9.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EDEF426735C
- for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2018 13:23:41 +0200 (CEST)
-In-Reply-To: <87k1tklwr9.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: intel: skl_nau88l25_ssm4567: Replace GFP_ATOMIC with GFP_KERNEL in skylake_audio_probe" to the asoc tree
+Date: Fri, 13 Apr 2018 12:23:46 +0100
+Message-ID: <E1f6wny-00009P-UZ@debutante>
+References: <1523270974-23082-1-git-send-email-baijiaju1990@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1523270974-23082-1-git-send-email-baijiaju1990@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jia-Ju Bai <baijiaju1990@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: makes rsnd_cmd_mod_get() static
+   ASoC: intel: skl_nau88l25_ssm4567: Replace GFP_ATOMIC with GFP_KERNEL in skylake_audio_probe
 
 has been applied to the asoc tree at
 
@@ -53,65 +37,41 @@ to this mail.
 Thanks,
 Mark
 
->From 8c1ddea58b080d33ce4921b45387c146ddb91751 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 6 Apr 2018 05:41:43 +0000
-Subject: [PATCH] ASoC: rsnd: makes rsnd_cmd_mod_get() static
+>From fe552c82476f2fb16e87a76ee178465325e57f61 Mon Sep 17 00:00:00 2001
+From: Jia-Ju Bai <baijiaju1990@gmail.com>
+Date: Mon, 9 Apr 2018 18:49:34 +0800
+Subject: [PATCH] ASoC: intel: skl_nau88l25_ssm4567: Replace GFP_ATOMIC with
+ GFP_KERNEL in skylake_audio_probe
 
-rsnd_cmd_mod_get() is used from cmd.c only.
-Let's makes it static function
+skylake_audio_probe() is never called in atomic context.
+This function is only set as ".probe" in "struct platform_driver".
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Despite never getting called from atomic context,
+skylake_audio_probe() calls devm_kzalloc() with GFP_ATOMIC,
+which waits busily for allocation.
+GFP_ATOMIC is not necessary and can be replaced with GFP_KERNEL,
+to avoid busy waiting and improve the possibility of sucessful allocation.
+
+This is found by a static analysis tool named DCNS written by myself.
+
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/cmd.c  | 15 +++++++--------
- sound/soc/sh/rcar/rsnd.h |  1 -
- 2 files changed, 7 insertions(+), 9 deletions(-)
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/cmd.c b/sound/soc/sh/rcar/cmd.c
-index f1d4fb566892..4221937ae79b 100644
---- a/sound/soc/sh/rcar/cmd.c
-+++ b/sound/soc/sh/rcar/cmd.c
-@@ -125,6 +125,13 @@ static struct rsnd_mod_ops rsnd_cmd_ops = {
- 	.stop	= rsnd_cmd_stop,
- };
+diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+index 212ac8971e55..b0610bba3cfa 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
++++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+@@ -696,7 +696,7 @@ static int skylake_audio_probe(struct platform_device *pdev)
+ 	struct skl_nau88125_private *ctx;
+ 	struct skl_machine_pdata *pdata;
  
-+static struct rsnd_mod *rsnd_cmd_mod_get(struct rsnd_priv *priv, int id)
-+{
-+	if (WARN_ON(id < 0 || id >= rsnd_cmd_nr(priv)))
-+		id = 0;
-+
-+	return rsnd_mod_get((struct rsnd_cmd *)(priv->cmd) + id);
-+}
- int rsnd_cmd_attach(struct rsnd_dai_stream *io, int id)
- {
- 	struct rsnd_priv *priv = rsnd_io_to_priv(io);
-@@ -133,14 +140,6 @@ int rsnd_cmd_attach(struct rsnd_dai_stream *io, int id)
- 	return rsnd_dai_connect(mod, io, mod->type);
- }
+-	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
++	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
+ 		return -ENOMEM;
  
--struct rsnd_mod *rsnd_cmd_mod_get(struct rsnd_priv *priv, int id)
--{
--	if (WARN_ON(id < 0 || id >= rsnd_cmd_nr(priv)))
--		id = 0;
--
--	return rsnd_mod_get((struct rsnd_cmd *)(priv->cmd) + id);
--}
--
- int rsnd_cmd_probe(struct rsnd_priv *priv)
- {
- 	struct device *dev = rsnd_priv_to_dev(priv);
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 172c8d612890..ab4d55548ed1 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -775,7 +775,6 @@ struct rsnd_mod *rsnd_dvc_mod_get(struct rsnd_priv *priv, int id);
- int rsnd_cmd_probe(struct rsnd_priv *priv);
- void rsnd_cmd_remove(struct rsnd_priv *priv);
- int rsnd_cmd_attach(struct rsnd_dai_stream *io, int id);
--struct rsnd_mod *rsnd_cmd_mod_get(struct rsnd_priv *priv, int id);
- 
- void rsnd_mod_make_sure(struct rsnd_mod *mod, enum rsnd_mod_type type);
- #ifdef DEBUG
 -- 
 2.17.0
