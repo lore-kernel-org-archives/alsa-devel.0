@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: skl_nau88l25_max98357a: Replace GFP_ATOMIC with GFP_KERNEL in skylake_audio_probe" to the asoc tree
-Date: Fri, 13 Apr 2018 11:55:47 +0100
-Message-ID: <E1f6wMt-000785-AG@debutante>
-References: <1523270936-22990-1-git-send-email-baijiaju1990@gmail.com>
+Subject: Applied "ASoC: intel: bxt_rt298: Replace GFP_ATOMIC with GFP_KERNEL in broxton_audio_probe" to the asoc tree
+Date: Fri, 13 Apr 2018 11:56:10 +0100
+Message-ID: <E1f6wNG-0007CB-0v@debutante>
+References: <1523270827-22735-1-git-send-email-baijiaju1990@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1523270936-22990-1-git-send-email-baijiaju1990@gmail.com>
+In-Reply-To: <1523270827-22735-1-git-send-email-baijiaju1990@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, pradeep.d.tewani@intel.com, subhransu.s.prusty@intel.com, dharageswari.r@intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: skl_nau88l25_max98357a: Replace GFP_ATOMIC with GFP_KERNEL in skylake_audio_probe
+   ASoC: intel: bxt_rt298: Replace GFP_ATOMIC with GFP_KERNEL in broxton_audio_probe
 
 has been applied to the asoc tree at
 
@@ -37,17 +37,17 @@ to this mail.
 Thanks,
 Mark
 
->From 6618d2e864ac0e869c6de47bc85d1552e7443b22 Mon Sep 17 00:00:00 2001
+>From ac6c5ea121e78b4c5caef2e307d59a0e35a65a88 Mon Sep 17 00:00:00 2001
 From: Jia-Ju Bai <baijiaju1990@gmail.com>
-Date: Mon, 9 Apr 2018 18:48:56 +0800
-Subject: [PATCH] ASoC: intel: skl_nau88l25_max98357a: Replace GFP_ATOMIC with
- GFP_KERNEL in skylake_audio_probe
+Date: Mon, 9 Apr 2018 18:47:07 +0800
+Subject: [PATCH] ASoC: intel: bxt_rt298: Replace GFP_ATOMIC with GFP_KERNEL in
+ broxton_audio_probe
 
-skylake_audio_probe() is never called in atomic context.
+broxton_audio_probe() is never called in atomic context.
 This function is only set as ".probe" in "struct platform_driver".
 
 Despite never getting called from atomic context,
-skylake_audio_probe() calls devm_kzalloc() with GFP_ATOMIC,
+broxton_audio_probe() calls devm_kzalloc() with GFP_ATOMIC,
 which waits busily for allocation.
 GFP_ATOMIC is not necessary and can be replaced with GFP_KERNEL,
 to avoid busy waiting and improve the possibility of sucessful allocation.
@@ -57,16 +57,16 @@ This is found by a static analysis tool named DCNS written by myself.
 Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_nau88l25_max98357a.c | 2 +-
+ sound/soc/intel/boards/bxt_rt298.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-index 9a7a0646bffe..3ff6646cfa21 100644
---- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-@@ -643,7 +643,7 @@ static int skylake_audio_probe(struct platform_device *pdev)
- 	struct skl_nau8825_private *ctx;
- 	struct skl_machine_pdata *pdata;
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index c7e9024e65ef..b68c289558a8 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -593,7 +593,7 @@ static int broxton_audio_probe(struct platform_device *pdev)
+ 		}
+ 	}
  
 -	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
 +	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
