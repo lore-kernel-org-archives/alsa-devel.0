@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max9860: switch to using .probe_new" to the asoc tree
-Date: Fri, 13 Apr 2018 11:56:41 +0100
-Message-ID: <E1f6wNl-0007GQ-DW@debutante>
-References: <20180411124238.9385-1-peda@axentia.se>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180411124238.9385-1-peda@axentia.se>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@axentia.se>
-Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: adau17x1: Handling of DSP_RUN register
+	during fw setup" to the asoc tree
+Date: Fri, 13 Apr 2018 11:56:21 +0100
+Message-ID: <E1f6wNR-0007FE-U7@debutante>
+References: <20180409131336.21990-1-robert.rosengren@axis.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id EC4F92673A2
+ for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2018 12:56:26 +0200 (CEST)
+In-Reply-To: <20180409131336.21990-1-robert.rosengren@axis.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Danny Smith <dannys@axis.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Robert Rosengren <robert.rosengren@axis.com>, Robert Rosengren <robertr@axis.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max9860: switch to using .probe_new
+   ASoC: adau17x1: Handling of DSP_RUN register during fw setup
 
 has been applied to the asoc tree at
 
@@ -37,41 +53,96 @@ to this mail.
 Thanks,
 Mark
 
->From ba4e62f653656a0077322eb29c7b8dde3c84399e Mon Sep 17 00:00:00 2001
-From: Peter Rosin <peda@axentia.se>
-Date: Wed, 11 Apr 2018 14:42:37 +0200
-Subject: [PATCH] ASoC: max9860: switch to using .probe_new
+>From d0f8b9c5a350ca6fa842b52bfb88b77b34ee485b Mon Sep 17 00:00:00 2001
+From: Danny Smith <dannys@axis.com>
+Date: Mon, 9 Apr 2018 15:13:35 +0200
+Subject: [PATCH] ASoC: adau17x1: Handling of DSP_RUN register during fw setup
 
-Use the new probe style for i2c drivers.
+DSP_RUN needs to be disabled during firmware write otherwise
+we can end up with undefined behavior if writing to a dsp which
+is already running firmware.
 
-Signed-off-by: Peter Rosin <peda@axentia.se>
+Signed-off-by: Danny Smith <dannys@axis.com>
+Signed-off-by: Robert Rosengren <robert.rosengren@axis.com>
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max9860.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/codecs/adau17x1.c | 26 ++++++++++++++++++++------
+ sound/soc/codecs/adau17x1.h |  3 ++-
+ 2 files changed, 22 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/max9860.c b/sound/soc/codecs/max9860.c
-index 5bbf889ad98e..96b2db3f2ddd 100644
---- a/sound/soc/codecs/max9860.c
-+++ b/sound/soc/codecs/max9860.c
-@@ -598,8 +598,7 @@ static const struct dev_pm_ops max9860_pm_ops = {
- 	SET_RUNTIME_PM_OPS(max9860_suspend, max9860_resume, NULL)
- };
+diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
+index 80c2a06285bb..12bf24c26818 100644
+--- a/sound/soc/codecs/adau17x1.c
++++ b/sound/soc/codecs/adau17x1.c
+@@ -502,7 +502,7 @@ static int adau17x1_hw_params(struct snd_pcm_substream *substream,
+ 	}
  
--static int max9860_probe(struct i2c_client *i2c,
--			 const struct i2c_device_id *id)
-+static int max9860_probe(struct i2c_client *i2c)
+ 	if (adau->sigmadsp) {
+-		ret = adau17x1_setup_firmware(adau, params_rate(params));
++		ret = adau17x1_setup_firmware(component, params_rate(params));
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+@@ -835,26 +835,40 @@ bool adau17x1_volatile_register(struct device *dev, unsigned int reg)
+ }
+ EXPORT_SYMBOL_GPL(adau17x1_volatile_register);
+ 
+-int adau17x1_setup_firmware(struct adau *adau, unsigned int rate)
++int adau17x1_setup_firmware(struct snd_soc_component *component,
++	unsigned int rate)
  {
- 	struct device *dev = &i2c->dev;
- 	struct max9860_priv *max9860;
-@@ -736,7 +735,7 @@ static const struct of_device_id max9860_of_match[] = {
- MODULE_DEVICE_TABLE(of, max9860_of_match);
+ 	int ret;
+-	int dspsr;
++	int dspsr, dsp_run;
++	struct adau *adau = snd_soc_component_get_drvdata(component);
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
++
++	snd_soc_dapm_mutex_lock(dapm);
  
- static struct i2c_driver max9860_i2c_driver = {
--	.probe	        = max9860_probe,
-+	.probe_new      = max9860_probe,
- 	.remove         = max9860_remove,
- 	.id_table       = max9860_i2c_id,
- 	.driver         = {
+ 	ret = regmap_read(adau->regmap, ADAU17X1_DSP_SAMPLING_RATE, &dspsr);
+ 	if (ret)
+-		return ret;
++		goto err;
++
++	ret = regmap_read(adau->regmap, ADAU17X1_DSP_RUN, &dsp_run);
++	if (ret)
++		goto err;
+ 
+ 	regmap_write(adau->regmap, ADAU17X1_DSP_ENABLE, 1);
+ 	regmap_write(adau->regmap, ADAU17X1_DSP_SAMPLING_RATE, 0xf);
++	regmap_write(adau->regmap, ADAU17X1_DSP_RUN, 0);
+ 
+ 	ret = sigmadsp_setup(adau->sigmadsp, rate);
+ 	if (ret) {
+ 		regmap_write(adau->regmap, ADAU17X1_DSP_ENABLE, 0);
+-		return ret;
++		goto err;
+ 	}
+ 	regmap_write(adau->regmap, ADAU17X1_DSP_SAMPLING_RATE, dspsr);
++	regmap_write(adau->regmap, ADAU17X1_DSP_RUN, dsp_run);
+ 
+-	return 0;
++err:
++	snd_soc_dapm_mutex_unlock(dapm);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(adau17x1_setup_firmware);
+ 
+diff --git a/sound/soc/codecs/adau17x1.h b/sound/soc/codecs/adau17x1.h
+index a7b1cb770814..e6fe87beec07 100644
+--- a/sound/soc/codecs/adau17x1.h
++++ b/sound/soc/codecs/adau17x1.h
+@@ -68,7 +68,8 @@ int adau17x1_resume(struct snd_soc_component *component);
+ 
+ extern const struct snd_soc_dai_ops adau17x1_dai_ops;
+ 
+-int adau17x1_setup_firmware(struct adau *adau, unsigned int rate);
++int adau17x1_setup_firmware(struct snd_soc_component *component,
++	unsigned int rate);
+ bool adau17x1_has_dsp(struct adau *adau);
+ 
+ #define ADAU17X1_CLOCK_CONTROL			0x4000
 -- 
 2.17.0
