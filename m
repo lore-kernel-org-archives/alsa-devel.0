@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: cht_bsw_rt5645: Replace
-	GFP_ATOMIC with GFP_KERNEL in snd_cht_mc_probe" to the asoc tree
-Date: Fri, 13 Apr 2018 11:55:50 +0100
-Message-ID: <E1f6wMw-00078v-Fd@debutante>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 626632673D9
- for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2018 12:55:51 +0200 (CEST)
-In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: Applied "ASoC: intel: skl_nau88l25_max98357a: Replace GFP_ATOMIC with GFP_KERNEL in skylake_audio_probe" to the asoc tree
+Date: Fri, 13 Apr 2018 11:55:47 +0100
+Message-ID: <E1f6wMt-000785-AG@debutante>
+References: <1523270936-22990-1-git-send-email-baijiaju1990@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1523270936-22990-1-git-send-email-baijiaju1990@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: cht_bsw_rt5645: Replace GFP_ATOMIC with GFP_KERNEL in snd_cht_mc_probe
+   ASoC: intel: skl_nau88l25_max98357a: Replace GFP_ATOMIC with GFP_KERNEL in skylake_audio_probe
 
 has been applied to the asoc tree at
 
@@ -52,17 +37,17 @@ to this mail.
 Thanks,
 Mark
 
->From ca243b56cc07b63da38bddfd30d48792f442cca8 Mon Sep 17 00:00:00 2001
+>From 6618d2e864ac0e869c6de47bc85d1552e7443b22 Mon Sep 17 00:00:00 2001
 From: Jia-Ju Bai <baijiaju1990@gmail.com>
-Date: Mon, 9 Apr 2018 18:48:31 +0800
-Subject: [PATCH] ASoC: intel: cht_bsw_rt5645: Replace GFP_ATOMIC with
- GFP_KERNEL in snd_cht_mc_probe
+Date: Mon, 9 Apr 2018 18:48:56 +0800
+Subject: [PATCH] ASoC: intel: skl_nau88l25_max98357a: Replace GFP_ATOMIC with
+ GFP_KERNEL in skylake_audio_probe
 
-snd_cht_mc_probe() is never called in atomic context.
+skylake_audio_probe() is never called in atomic context.
 This function is only set as ".probe" in "struct platform_driver".
 
 Despite never getting called from atomic context,
-snd_cht_mc_probe() calls devm_kzalloc() with GFP_ATOMIC,
+skylake_audio_probe() calls devm_kzalloc() with GFP_ATOMIC,
 which waits busily for allocation.
 GFP_ATOMIC is not necessary and can be replaced with GFP_KERNEL,
 to avoid busy waiting and improve the possibility of sucessful allocation.
@@ -72,20 +57,20 @@ This is found by a static analysis tool named DCNS written by myself.
 Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_rt5645.c | 2 +-
+ sound/soc/intel/boards/skl_nau88l25_max98357a.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index 49ba1a956a06..f5a5ea6a093c 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -539,7 +539,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	int ret_val = 0;
- 	int i;
+diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+index 9a7a0646bffe..3ff6646cfa21 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
++++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+@@ -643,7 +643,7 @@ static int skylake_audio_probe(struct platform_device *pdev)
+ 	struct skl_nau8825_private *ctx;
+ 	struct skl_machine_pdata *pdata;
  
--	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_ATOMIC);
-+	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
- 	if (!drv)
+-	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
++	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
  		return -ENOMEM;
  
 -- 
