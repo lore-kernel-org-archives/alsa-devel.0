@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: bytcr_rt5640: Replace GFP_ATOMIC
-	with GFP_KERNEL in snd_byt_rt5640_mc_probe" to the asoc tree
-Date: Fri, 13 Apr 2018 11:56:06 +0100
-Message-ID: <E1f6wNC-0007B3-Vv@debutante>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DF2FF2673EF
- for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2018 12:56:07 +0200 (CEST)
-In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: max9860: switch to using .probe_new" to the asoc tree
+Date: Fri, 13 Apr 2018 11:56:41 +0100
+Message-ID: <E1f6wNl-0007GQ-DW@debutante>
+References: <20180411124238.9385-1-peda@axentia.se>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180411124238.9385-1-peda@axentia.se>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Rosin <peda@axentia.se>
+Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: bytcr_rt5640: Replace GFP_ATOMIC with GFP_KERNEL in snd_byt_rt5640_mc_probe
+   ASoC: max9860: switch to using .probe_new
 
 has been applied to the asoc tree at
 
@@ -52,41 +37,41 @@ to this mail.
 Thanks,
 Mark
 
->From f5c74c2918e51be14bc9c11c76fa118e354f4789 Mon Sep 17 00:00:00 2001
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
-Date: Mon, 9 Apr 2018 18:47:37 +0800
-Subject: [PATCH] ASoC: intel: bytcr_rt5640: Replace GFP_ATOMIC with GFP_KERNEL
- in snd_byt_rt5640_mc_probe
+>From ba4e62f653656a0077322eb29c7b8dde3c84399e Mon Sep 17 00:00:00 2001
+From: Peter Rosin <peda@axentia.se>
+Date: Wed, 11 Apr 2018 14:42:37 +0200
+Subject: [PATCH] ASoC: max9860: switch to using .probe_new
 
-snd_byt_rt5640_mc_probe() is never called in atomic context.
-This function is only set as ".probe" in "struct platform_driver".
+Use the new probe style for i2c drivers.
 
-Despite never getting called from atomic context,
-snd_byt_rt5640_mc_probe() calls devm_kzalloc() with GFP_ATOMIC,
-which waits busily for allocation.
-GFP_ATOMIC is not necessary and can be replaced with GFP_KERNEL,
-to avoid busy waiting and improve the possibility of sucessful allocation.
-
-This is found by a static analysis tool named DCNS written by myself.
-
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Signed-off-by: Peter Rosin <peda@axentia.se>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/max9860.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index a8d8bff788e7..ad5fcd5a1762 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -744,7 +744,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	int i;
+diff --git a/sound/soc/codecs/max9860.c b/sound/soc/codecs/max9860.c
+index 5bbf889ad98e..96b2db3f2ddd 100644
+--- a/sound/soc/codecs/max9860.c
++++ b/sound/soc/codecs/max9860.c
+@@ -598,8 +598,7 @@ static const struct dev_pm_ops max9860_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(max9860_suspend, max9860_resume, NULL)
+ };
  
- 	is_bytcr = false;
--	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
- 		return -ENOMEM;
+-static int max9860_probe(struct i2c_client *i2c,
+-			 const struct i2c_device_id *id)
++static int max9860_probe(struct i2c_client *i2c)
+ {
+ 	struct device *dev = &i2c->dev;
+ 	struct max9860_priv *max9860;
+@@ -736,7 +735,7 @@ static const struct of_device_id max9860_of_match[] = {
+ MODULE_DEVICE_TABLE(of, max9860_of_match);
  
+ static struct i2c_driver max9860_i2c_driver = {
+-	.probe	        = max9860_probe,
++	.probe_new      = max9860_probe,
+ 	.remove         = max9860_remove,
+ 	.id_table       = max9860_i2c_id,
+ 	.driver         = {
 -- 
 2.17.0
