@@ -1,47 +1,119 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: tfa9879: switch to using .probe_new
-Date: Fri, 13 Apr 2018 12:21:12 +0100
-Message-ID: <20180413112112.GD6854@sirena.org.uk>
-References: <20180412161601.GI9929@sirena.org.uk>
- <20180412211437.21599-1-peda@axentia.se>
+Subject: Applied "ASoC: rsnd: don't assume node full path name
+	for HDMI probing" to the asoc tree
+Date: Fri, 13 Apr 2018 12:22:42 +0100
+Message-ID: <E1f6wmw-0008Np-87@debutante>
+References: <87r2nmfqbu.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EP0wieDxd4TSJjHq"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180412211437.21599-1-peda@axentia.se>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@axentia.se>
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D3B7267079
+ for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2018 13:22:45 +0200 (CEST)
+In-Reply-To: <87r2nmfqbu.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>, Nguyen Viet Dung <dung.nguyen.aj@renesas.com>, "Yokoyama (Renesas)" <hiroyuki.yokoyama.vx@renesas.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---EP0wieDxd4TSJjHq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: rsnd: don't assume node full path name for HDMI probing
 
-On Thu, Apr 12, 2018 at 11:14:32PM +0200, Peter Rosin wrote:
+has been applied to the asoc tree at
 
-> For the record, I wish to be on Cc for changes to files I maintain.
-> That is one of the core functions of the MAINTAINERS file, right?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Right, people should do that but it's not 100% reliable unfortunately.
-It's not unknown for people to wonder why I've not reviewed patches they
-didn't send me :(
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---EP0wieDxd4TSJjHq
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrQkqgACgkQJNaLcl1U
-h9AQ7Af/cHs422SLqUVDociesGGUt3iGgrxh7oqzdp4JfY7mrHxjZwXPRuW78byE
-qyuob+hpJI8ktS7BvlEBDbvt9LfJxMZHY5+svGK2pA4J71x17pHOgAjN2GJpSWft
-8RSNvGFqt+NwZMINmHoRwD1B0vn9YKmeekCv6Zkh3HaBP0XkNykvMm2Qw8TACJLM
-lQIPM+tYJ0CEXbvXlXszmzzAysWLiwZY1VEYeY9hHLaju4CGwswdIESrfpq+dTTy
-qs8PqPjs+08Qmf1/zDTZEFPZEI/oKB4jXWrwk929fXRJolZSkV3Zuf9qWK/7MQIt
-rc1tehC+suHQ6rJ82iaB+xwl8kXgsQ==
-=xzk9
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---EP0wieDxd4TSJjHq--
+Thanks,
+Mark
+
+>From c24c69f0e4c024576895370cd6676e64b6eed49f Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 11 Apr 2018 02:10:45 +0000
+Subject: [PATCH] ASoC: rsnd: don't assume node full path name for HDMI probing
+
+Current ssi.c is assuming below 2 things to probing HDMI node.
+1) remote node is including "hdmi0" or "hdmi1" in node name
+2) remote_ep->full_name is including full path name
+
+But, these assumptions are broken by below
+1) Node names should not use numerical suffixes
+ commit 6b5ac2f1cb11 ("arm64: dts: renesas: r8a7795: Drop bogus HDMI
+                       node names suffixes")
+2) node full_name no longer include full path name
+ commit a7e4cfb0a7ca ("of/fdt: only store the device node basename
+                       in full_name")
+
+Because of these reasons, ssi.c can't probe HDMI on current kernel.
+This patch probes HDMI0/1 by using its address.
+Note is that we need to keep updating for this address for future
+generation chip.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: Nguyen Viet Dung <dung.nguyen.aj@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/ssi.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 333b802681ad..31ffe3f0e163 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -1004,19 +1004,26 @@ static void __rsnd_ssi_parse_hdmi_connection(struct rsnd_priv *priv,
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	struct rsnd_mod *mod = rsnd_io_to_mod_ssi(io);
+ 	struct rsnd_ssi *ssi;
++	struct device_node *remote_node = of_graph_get_port_parent(remote_ep);
++
++	/* support Gen3 only */
++	if (!rsnd_is_gen3(priv))
++		return;
+ 
+ 	if (!mod)
+ 		return;
+ 
+ 	ssi  = rsnd_mod_to_ssi(mod);
+ 
+-	if (strstr(remote_ep->full_name, "hdmi0")) {
++	/* HDMI0 */
++	if (strstr(remote_node->full_name, "hdmi@fead0000")) {
+ 		rsnd_flags_set(ssi, RSND_SSI_HDMI0);
+ 		dev_dbg(dev, "%s[%d] connected to HDMI0\n",
+ 			 rsnd_mod_name(mod), rsnd_mod_id(mod));
+ 	}
+ 
+-	if (strstr(remote_ep->full_name, "hdmi1")) {
++	/* HDMI1 */
++	if (strstr(remote_node->full_name, "hdmi@feae0000")) {
+ 		rsnd_flags_set(ssi, RSND_SSI_HDMI1);
+ 		dev_dbg(dev, "%s[%d] connected to HDMI1\n",
+ 			rsnd_mod_name(mod), rsnd_mod_id(mod));
+-- 
+2.17.0
