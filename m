@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: doc: replace codec to component" to the
-	asoc tree
-Date: Fri, 13 Apr 2018 12:25:13 +0100
-Message-ID: <E1f6wpN-0000PF-Ce@debutante>
-References: <87woxx3q5g.wl%kuninori.morimoto.gx@renesas.com>
+From: Robert Tiemann <rtie@gmx.de>
+Subject: Sample format changes by plugin while playing
+Date: Fri, 13 Apr 2018 13:44:43 +0200
+Message-ID: <2f7e073c-b51a-dd7d-af89-9a10872faed1@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A48BD2675DD
- for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2018 13:25:15 +0200 (CEST)
-In-Reply-To: <87woxx3q5g.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+ by alsa0.perex.cz (Postfix) with ESMTP id D481C266BBC
+ for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2018 13:44:44 +0200 (CEST)
+Received: from [192.168.15.101] ([87.245.7.122]) by mail.gmx.com (mrgmx001
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 0MGS9o-1fBMyZ3Lzk-00DHbg for
+ <alsa-devel@alsa-project.org>; Fri, 13 Apr 2018 13:44:43 +0200
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,70 +22,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi,
 
-   ASoC: doc: replace codec to component
+I have a general question about ALSA plugins: Is it possible for an
+ALSA plugin to reconfigure the sample rate and sample format of its
+slave in such a way that the software playing through that plugin
+wouldn't notice?
 
-has been applied to the asoc tree at
+That is, given some audio stream, the plugin shall be allowed to
+change the sample rate and format based on control data extracted from
+the audio data pushed through the plugin. In my imagination, any
+output format changes should be completely transparent to the sound
+player; the player would always deliver a stream of audio data at a
+constant rate, and once in a while the plugin would change the
+hardware settings. For sure there would be an audible gap during
+reconfiguration, but that would be OK for me.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Now, is this possible at all?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 93cb87c7bf6746b853974dbd96d16e9bfe835825 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 28 Mar 2018 02:14:22 +0000
-Subject: [PATCH] ASoC: doc: replace codec to component
-
-Now we can replace Codec to Component. Let's do it.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- Documentation/sound/soc/codec.rst | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/sound/soc/codec.rst b/Documentation/sound/soc/codec.rst
-index f87612b94812..58f625fe3d39 100644
---- a/Documentation/sound/soc/codec.rst
-+++ b/Documentation/sound/soc/codec.rst
-@@ -179,12 +179,12 @@ i.e.
- 
-   static int wm8974_mute(struct snd_soc_dai *dai, int mute)
-   {
--	struct snd_soc_codec *codec = dai->codec;
--	u16 mute_reg = snd_soc_read(codec, WM8974_DAC) & 0xffbf;
-+	struct snd_soc_component *component = dai->component;
-+	u16 mute_reg = snd_soc_component_read32(component, WM8974_DAC) & 0xffbf;
- 
- 	if (mute)
--		snd_soc_write(codec, WM8974_DAC, mute_reg | 0x40);
-+		snd_soc_component_write(component, WM8974_DAC, mute_reg | 0x40);
- 	else
--		snd_soc_write(codec, WM8974_DAC, mute_reg);
-+		snd_soc_component_write(component, WM8974_DAC, mute_reg);
- 	return 0;
-   }
--- 
-2.17.0
+Best regards,
+Robert
