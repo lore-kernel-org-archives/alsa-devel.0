@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: bxt_da7219_max98357a: Replace GFP_ATOMIC with GFP_KERNEL in broxton_audio_probe" to the asoc tree
-Date: Fri, 13 Apr 2018 11:56:17 +0100
-Message-ID: <E1f6wNN-0007DY-4j@debutante>
-References: <1523270781-22627-1-git-send-email-baijiaju1990@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1523270781-22627-1-git-send-email-baijiaju1990@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Applied "ASoC: intel: bytcr_rt5640: Replace GFP_ATOMIC
+	with GFP_KERNEL in snd_byt_rt5640_mc_probe" to the asoc tree
+Date: Fri, 13 Apr 2018 11:56:06 +0100
+Message-ID: <E1f6wNC-0007B3-Vv@debutante>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id DF2FF2673EF
+ for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2018 12:56:07 +0200 (CEST)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, sathyanarayana.nujella@intel.com, Adam.Thomson.Opensource@diasemi.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: bxt_da7219_max98357a: Replace GFP_ATOMIC with GFP_KERNEL in broxton_audio_probe
+   ASoC: intel: bytcr_rt5640: Replace GFP_ATOMIC with GFP_KERNEL in snd_byt_rt5640_mc_probe
 
 has been applied to the asoc tree at
 
@@ -37,17 +52,17 @@ to this mail.
 Thanks,
 Mark
 
->From 8f2f9215aa14904ddd9775f3b4e7af2d94189dea Mon Sep 17 00:00:00 2001
+>From f5c74c2918e51be14bc9c11c76fa118e354f4789 Mon Sep 17 00:00:00 2001
 From: Jia-Ju Bai <baijiaju1990@gmail.com>
-Date: Mon, 9 Apr 2018 18:46:21 +0800
-Subject: [PATCH] ASoC: intel: bxt_da7219_max98357a: Replace GFP_ATOMIC with
- GFP_KERNEL in broxton_audio_probe
+Date: Mon, 9 Apr 2018 18:47:37 +0800
+Subject: [PATCH] ASoC: intel: bytcr_rt5640: Replace GFP_ATOMIC with GFP_KERNEL
+ in snd_byt_rt5640_mc_probe
 
-broxton_audio_probe() is never called in atomic context.
+snd_byt_rt5640_mc_probe() is never called in atomic context.
 This function is only set as ".probe" in "struct platform_driver".
 
 Despite never getting called from atomic context,
-broxton_audio_probe() calls devm_kzalloc() with GFP_ATOMIC,
+snd_byt_rt5640_mc_probe() calls devm_kzalloc() with GFP_ATOMIC,
 which waits busily for allocation.
 GFP_ATOMIC is not necessary and can be replaced with GFP_KERNEL,
 to avoid busy waiting and improve the possibility of sucessful allocation.
@@ -57,20 +72,20 @@ This is found by a static analysis tool named DCNS written by myself.
 Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 2 +-
+ sound/soc/intel/boards/bytcr_rt5640.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index 668c0934e942..40eb979d5ac1 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -571,7 +571,7 @@ static int broxton_audio_probe(struct platform_device *pdev)
- {
- 	struct bxt_card_private *ctx;
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index a8d8bff788e7..ad5fcd5a1762 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -744,7 +744,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 	int i;
  
--	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
-+	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
- 	if (!ctx)
+ 	is_bytcr = false;
+-	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
++	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
  		return -ENOMEM;
  
 -- 
