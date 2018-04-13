@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: cht_bsw_max98090_ti: Replace GFP_ATOMIC with GFP_KERNEL in snd_cht_mc_probe" to the asoc tree
-Date: Fri, 13 Apr 2018 12:24:04 +0100
-Message-ID: <E1f6woG-0000Cp-D7@debutante>
-References: <1523270890-22889-1-git-send-email-baijiaju1990@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1523270890-22889-1-git-send-email-baijiaju1990@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Applied "ASoC: intel: cht_bsw_rt5645: Replace
+	GFP_ATOMIC with GFP_KERNEL in snd_cht_mc_probe" to the asoc tree
+Date: Fri, 13 Apr 2018 12:24:00 +0100
+Message-ID: <E1f6woC-0000BO-Ij@debutante>
+References: <E1f6wMw-00078v-Fd@debutante>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4F4B2675DB
+ for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2018 13:24:01 +0200 (CEST)
+In-Reply-To: <E1f6wMw-00078v-Fd@debutante>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mka@chromium.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: cht_bsw_max98090_ti: Replace GFP_ATOMIC with GFP_KERNEL in snd_cht_mc_probe
+   ASoC: intel: cht_bsw_rt5645: Replace GFP_ATOMIC with GFP_KERNEL in snd_cht_mc_probe
 
 has been applied to the asoc tree at
 
@@ -37,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From f0a0bdcf34579b08acfe0179ad46da4dc123fc91 Mon Sep 17 00:00:00 2001
+>From ca243b56cc07b63da38bddfd30d48792f442cca8 Mon Sep 17 00:00:00 2001
 From: Jia-Ju Bai <baijiaju1990@gmail.com>
-Date: Mon, 9 Apr 2018 18:48:10 +0800
-Subject: [PATCH] ASoC: intel: cht_bsw_max98090_ti: Replace GFP_ATOMIC with
+Date: Mon, 9 Apr 2018 18:48:31 +0800
+Subject: [PATCH] ASoC: intel: cht_bsw_rt5645: Replace GFP_ATOMIC with
  GFP_KERNEL in snd_cht_mc_probe
 
 snd_cht_mc_probe() is never called in atomic context.
@@ -57,16 +73,16 @@ This is found by a static analysis tool named DCNS written by myself.
 Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_max98090_ti.c | 2 +-
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-index d3e1c7e12004..db6976f4ddaa 100644
---- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-+++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-@@ -391,7 +391,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index 49ba1a956a06..f5a5ea6a093c 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -539,7 +539,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
  	int ret_val = 0;
- 	struct cht_mc_private *drv;
+ 	int i;
  
 -	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_ATOMIC);
 +	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
