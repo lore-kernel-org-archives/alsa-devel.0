@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel_ssc_dai: fix spelling mistake: "Stoping" -> "Stopping"" to the asoc tree
-Date: Fri, 13 Apr 2018 12:24:52 +0100
-Message-ID: <E1f6wp2-0000Mn-DN@debutante>
-References: <20180330154420.6903-1-colin.king@canonical.com>
+Subject: Applied "ASoC: trace: remove snd_soc_codec" to the asoc tree
+Date: Fri, 13 Apr 2018 12:25:07 +0100
+Message-ID: <E1f6wpH-0000OO-Ue@debutante>
+References: <87vadh3pz1.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180330154420.6903-1-colin.king@canonical.com>
+In-Reply-To: <87vadh3pz1.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Mark Brown <broonie@kernel.org>Nicolas Ferre <nicolas.ferre@microchip.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>Alexandre Belloni <alexandre.belloni@bootlin.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Thomas Gleixner <tglx@linutronix.de>, Philippe Ombredanne <pombredanne@nexb.com>, Kate Stewart <kstewart@linuxfoundation.org>, Linux-ALSA <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel_ssc_dai: fix spelling mistake: "Stoping" -> "Stopping"
+   ASoC: trace: remove snd_soc_codec
 
 has been applied to the asoc tree at
 
@@ -37,34 +37,32 @@ to this mail.
 Thanks,
 Mark
 
->From 78a7d414d5a8e3ea7bc5a636311cfb7ce593ce37 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Fri, 30 Mar 2018 16:44:20 +0100
-Subject: [PATCH] ASoC: atmel_ssc_dai: fix spelling mistake: "Stoping" ->
- "Stopping"
+>From 03a364502bebb5f464853c6ec5d49e85195600ca Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 28 Mar 2018 02:18:13 +0000
+Subject: [PATCH] ASoC: trace: remove snd_soc_codec
 
-Trivial fix to spelling mistake in pr_debug message text
+snd_soc_codec is replaced to snd_soc_component,
+and it is not used in this file.
+Let's remove it
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/atmel_ssc_dai.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/trace/events/asoc.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index a1e2c5682dcd..1c7af0ca98ec 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -820,7 +820,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 		if (ret < 0) {
- 			printk(KERN_WARNING
- 					"atmel_ssc_dai: request_irq failure\n");
--			pr_debug("Atmel_ssc_dai: Stoping clock\n");
-+			pr_debug("Atmel_ssc_dai: Stopping clock\n");
- 			clk_disable(ssc_p->ssc->clk);
- 			return ret;
- 		}
+diff --git a/include/trace/events/asoc.h b/include/trace/events/asoc.h
+index ccd1a3bdff46..40c300fe704d 100644
+--- a/include/trace/events/asoc.h
++++ b/include/trace/events/asoc.h
+@@ -12,7 +12,6 @@
+ #define DAPM_ARROW(dir) (((dir) == SND_SOC_DAPM_DIR_OUT) ? "->" : "<-")
+ 
+ struct snd_soc_jack;
+-struct snd_soc_codec;
+ struct snd_soc_card;
+ struct snd_soc_dapm_widget;
+ struct snd_soc_dapm_path;
 -- 
 2.17.0
