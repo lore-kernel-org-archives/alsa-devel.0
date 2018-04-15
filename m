@@ -1,38 +1,74 @@
-From: Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v2 3/5] ASoC: max9860: switch to SPDX license tag
-Date: Sun, 15 Apr 2018 00:32:29 -0700
-Message-ID: <20180415073229.GA19823@infradead.org>
-References: <20180412161601.GI9929@sirena.org.uk>
- <20180412211437.21599-1-peda@axentia.se>
- <20180412211437.21599-4-peda@axentia.se>
- <20180413111927.GC6854@sirena.org.uk>
+From: Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>
+Subject: Re: [PATCH v3 3/3] ALSA: hda: Disabled unused audio controller for
+ Dell platforms with Switchable Graphics
+Date: Sun, 15 Apr 2018 19:17:46 +0200
+Message-ID: <20180415171746.futkvgbaoj6quy5z@pali>
+References: <20180412104239.25584-1-kai.heng.feng@canonical.com>
+ <20180412104239.25584-3-kai.heng.feng@canonical.com>
+ <s5hr2nk8zs5.wl-tiwai@suse.de>
+ <20180412105909.tbyfcjm55sb47hiq@pali>
+ <93DC0F40-81A5-49C6-A470-0D1B6AA85725@canonical.com>
+ <20180414104512.GA27158@wunner.de>
+ <20180414104950.ngomyjy5l5cwhb5i@pali>
+ <20180414111711.GA4245@wunner.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="lsvnox7sxk76vpiz"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20180413111927.GC6854@sirena.org.uk>
+In-Reply-To: <20180414111711.GA4245@wunner.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+To: Lukas Wunner <lukas@wunner.de>
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, Takashi Iwai <tiwai@suse.de>, mario.limonciello@dell.com, andy@infradead.org, dvhart@infradead.org, mjg59@srcf.ucam.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 13, 2018 at 12:19:27PM +0100, Mark Brown wrote:
-> On Thu, Apr 12, 2018 at 11:14:35PM +0200, Peter Rosin wrote:
-> 
-> > @@ -1,3 +1,4 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> >  /*
-> >   * Driver for the MAX9860 Mono Audio Voice Codec
-> >   *
-> 
-> Please don't mix C and C++ comments like this - it looks unintentional
-> and messy.  Just convert the entire comment block to C++ so it's
-> consistent with itself.
 
-NAK - that is exactky the wrong way to go.  Normal Linux comments are
-classi C-style comments and should remain so.  SPDX tags use c++
-comments exactly to be different and stick out.
+--lsvnox7sxk76vpiz
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Saturday 14 April 2018 13:17:11 Lukas Wunner wrote:
+> On Sat, Apr 14, 2018 at 12:49:50PM +0200, Pali Roh=C3=A1r wrote:
+> > On Saturday 14 April 2018 12:45:12 Lukas Wunner wrote:
+> > > On Thu, Apr 12, 2018 at 10:15:41PM +0800, Kai-Heng Feng wrote:
+> > > > Do you have any suggestion to check if it connects to the system via
+> > > > Thunderbolt?
+> > >=20
+> > > Just use pci_is_thunderbolt_attached(), introduced by 8531e283bee6,
+> > > like this:
+> > >=20
+> > > if (check_dell_switchable_gfx(pci) && !pci_is_thunderbolt_attached(pc=
+i))
+> >=20
+> > And what about PCI-e device attached to ExpressCard slot?
+>=20
+> I don't know of a bullet-proof way to recognize those.  In theory
+> one could check if the PCIe port above the GPU is a non-hotplug
+> root port, but I think there are machines with hotplug capable
+> root ports with GPUs below them that aren't actually removable.
+>=20
+> However I think ExpressCard-attached GPUs were rare, much less ones
+> with integrated HDA controller, so in reality that's probably a
+> non-issue.
 
+Hm... maybe another idea: Is it possible to detect which audio pci
+device belongs to graphics card via vga_switcheroo? Currently, looking
+at output it is same PCI device as graphic card, just different PCI
+function.
 
----end quoted text---
+--=20
+Pali Roh=C3=A1r
+pali.rohar@gmail.com
+
+--lsvnox7sxk76vpiz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQS4VrIQdKium2krgIWL8Mk9A+RDUgUCWtOJOAAKCRCL8Mk9A+RD
+UuYYAJ9Lpy9Pz9bUaG+MA2favSZebY/RQACfTgw6dpp4U+1FXTlc++IA8aitEX0=
+=vVLS
+-----END PGP SIGNATURE-----
+
+--lsvnox7sxk76vpiz--
