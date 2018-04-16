@@ -1,17 +1,18 @@
-From: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-Subject: Re: [PATCH 1/5] ASoC: add mt6351 codec driver
-Date: Mon, 16 Apr 2018 08:42:03 +0800
-Message-ID: <1523839323.14415.1.camel@mtksdaap41>
-References: <20180413090242.4211-2-kaichieh.chuang@mediatek.com>
- <201804141214.KHhwp7O4%fengguang.wu@intel.com>
+From: Raymond Jennings <shentino@gmail.com>
+Subject: possible bug: input and output devices are getting
+	mixed up
+Date: Sun, 15 Apr 2018 18:22:56 -0700
+Message-ID: <CAGDaZ_pcwGbsoqb6YCYKJ3GFdyfHJ3MeA2mGuBQiZbpfnQV0OA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- by alsa0.perex.cz (Postfix) with ESMTP id 00C8A267168
- for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 02:42:10 +0200 (CEST)
-In-Reply-To: <201804141214.KHhwp7O4%fengguang.wu@intel.com>
+Received: from mail-oi0-f45.google.com (mail-oi0-f45.google.com
+ [209.85.218.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id A03AD267168
+ for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 03:23:39 +0200 (CEST)
+Received: by mail-oi0-f45.google.com with SMTP id x9-v6so13083499oig.7
+ for <alsa-devel@alsa-project.org>; Sun, 15 Apr 2018 18:23:39 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,15 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: kbuild test robot <lkp@intel.com>
-Cc: alsa-devel@alsa-project.org, wsd_upstream@mediatek.com, chipeng.chang@mediatek.com, garlic.tseng@mediatek.com, broonie@kernel.org, linux-mediatek@lists.infradead.org, kbuild-all@01.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->    sound/soc/codecs/mt6351.c: In function 'mt_hp_event':
-> >> sound/soc/codecs/mt6351.c:912:8: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
->       else if (priv->hp_en_counter < 0)
->            ^~
->    sound/soc/codecs/mt6351.c:918:4: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
->        hp_zcd_disable(codec);
->        ^~~~~~~~~~~~~~
-I have sent v2 patch set to fix this, sorry for the inconvenience.
+I used arecord -L to list some things, and I got weird results, saying
+among other things that my webcam was capable of surround sound output
+even though it's strictly an input device.
+
+I already reported it downstream with my distro but so far no news.
+
+I was told it was a bug with alsa.
+
+As for the card in question, U0x46d0x825 is my logitech brand webcam
+connected via USB.
+
+$ arecord -L
+
+null
+    Discard all samples (playback) or generate zero samples (capture)
+pulse
+    PulseAudio Sound Server
+sysdefault:CARD=PCH
+    HDA Intel PCH, ALC887-VD Analog
+    Default Audio Device
+front:CARD=PCH,DEV=0
+    HDA Intel PCH, ALC887-VD Analog
+    Front speakers
+sysdefault:CARD=U0x46d0x825
+    USB Device 0x46d:0x825, USB Audio
+    Default Audio Device
+front:CARD=U0x46d0x825,DEV=0
+    USB Device 0x46d:0x825, USB Audio
+    Front speakers
+surround21:CARD=U0x46d0x825,DEV=0
+    USB Device 0x46d:0x825, USB Audio
+    2.1 Surround output to Front and Subwoofer speakers
+surround40:CARD=U0x46d0x825,DEV=0
+    USB Device 0x46d:0x825, USB Audio
+    4.0 Surround output to Front and Rear speakers
+surround41:CARD=U0x46d0x825,DEV=0
+    USB Device 0x46d:0x825, USB Audio
+    4.1 Surround output to Front, Rear and Subwoofer speakers
+surround50:CARD=U0x46d0x825,DEV=0
+    USB Device 0x46d:0x825, USB Audio
+    5.0 Surround output to Front, Center and Rear speakers
+surround51:CARD=U0x46d0x825,DEV=0
+    USB Device 0x46d:0x825, USB Audio
+    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
+surround71:CARD=U0x46d0x825,DEV=0
+    USB Device 0x46d:0x825, USB Audio
+    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
+iec958:CARD=U0x46d0x825,DEV=0
+    USB Device 0x46d:0x825, USB Audio
+    IEC958 (S/PDIF) Digital Audio Output
