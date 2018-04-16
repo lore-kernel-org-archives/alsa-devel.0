@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: adau17x1: Do not reload dsp-fw if
-	samplerate has not changed" to the asoc tree
-Date: Mon, 16 Apr 2018 12:59:25 +0100
-Message-ID: <E1f82n7-0008V0-8G@debutante>
-References: <20180409131336.21990-2-robert.rosengren@axis.com>
+Subject: Applied "ASoC: rsnd: ssi: wait maximum 5ms for status
+	check" to the asoc tree
+Date: Mon, 16 Apr 2018 12:59:32 +0100
+Message-ID: <E1f82nE-0008W0-IQ@debutante>
+References: <87r2ngc7k1.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D20CB2673C7
- for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 13:59:29 +0200 (CEST)
-In-Reply-To: <20180409131336.21990-2-robert.rosengren@axis.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 529A92673ED
+ for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 13:59:34 +0200 (CEST)
+In-Reply-To: <87r2ngc7k1.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Danny Smith <dannys@axis.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Robert Rosengren <robert.rosengren@axis.com>, Robert Rosengren <robertr@axis.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiromitsu Yamasaki <hiromitsu.yamasaki.ym@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: adau17x1: Do not reload dsp-fw if samplerate has not changed
+   ASoC: rsnd: ssi: wait maximum 5ms for status check
 
 has been applied to the asoc tree at
 
@@ -53,42 +53,39 @@ to this mail.
 Thanks,
 Mark
 
->From 728815e3feec751769b3a9fe406fbc529de7cdc0 Mon Sep 17 00:00:00 2001
-From: Danny Smith <dannys@axis.com>
-Date: Mon, 9 Apr 2018 15:13:36 +0200
-Subject: [PATCH] ASoC: adau17x1: Do not reload dsp-fw if samplerate has not
- changed
+>From 3fd391fb7c97ab6dfb9e44926a265566d1d1ab79 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 16 Apr 2018 00:38:13 +0000
+Subject: [PATCH] ASoC: rsnd: ssi: wait maximum 5ms for status check
 
-Reloading fw causes an audiable popping sound, we can avoid this
-by not reloading if the samplerate is the same as before.
+It is waiting udelay(50) x 1024 (= 50ms) for status check
+in worst case, but it is overkill.
+And we shouldn't use udelay() for 50us
+(linux/Documentation/timers/timers-howto.txt)
 
-Signed-off-by: Danny Smith <dannys@axis.com>
-Signed-off-by: Robert Rosengren <robert.rosengren@axis.com>
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+Waiting maximum udelay(5) x 1024 (= 5ms) is very enough
+for status check.
+This patch fixes these issue.
+
+Reported-by: Hiromitsu Yamasaki <hiromitsu.yamasaki.ym@renesas.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/adau17x1.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/sh/rcar/ssi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
-index 12bf24c26818..ae41edd1c406 100644
---- a/sound/soc/codecs/adau17x1.c
-+++ b/sound/soc/codecs/adau17x1.c
-@@ -843,6 +843,15 @@ int adau17x1_setup_firmware(struct snd_soc_component *component,
- 	struct adau *adau = snd_soc_component_get_drvdata(component);
- 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 31ffe3f0e163..9538f76f8e20 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -171,7 +171,7 @@ static void rsnd_ssi_status_check(struct rsnd_mod *mod,
+ 		if (status & bit)
+ 			return;
  
-+	/* Check if sample rate is the same as before. If it is there is no
-+	 * point in performing the below steps as the call to
-+	 * sigmadsp_setup(...) will return directly when it finds the sample
-+	 * rate to be the same as before. By checking this we can prevent an
-+	 * audiable popping noise which occours when toggling DSP_RUN.
-+	 */
-+	if (adau->sigmadsp->current_samplerate == rate)
-+		return 0;
-+
- 	snd_soc_dapm_mutex_lock(dapm);
+-		udelay(50);
++		udelay(5);
+ 	}
  
- 	ret = regmap_read(adau->regmap, ADAU17X1_DSP_SAMPLING_RATE, &dspsr);
+ 	dev_warn(dev, "%s[%d] status check failed\n",
 -- 
 2.17.0
