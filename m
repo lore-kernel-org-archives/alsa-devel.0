@@ -1,74 +1,350 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: alsa-lib: add-on configs directory changed to
- /etc/alsa/conf.d
-Date: Mon, 16 Apr 2018 15:01:33 +0200
-Message-ID: <ff21c743-5bd6-7448-4eb5-656d28f145ec@perex.cz>
-References: <a38c315a-e7b8-8531-e010-08c5f486d3b5@perex.cz>
- <s5hd0z7cz0l.wl-tiwai@suse.de>
+From: Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH v2 3/5] ALSA: xen-front: Implement Xen event channel
+ handling
+Date: Mon, 16 Apr 2018 15:12:26 +0200
+Message-ID: <f9d307ea-9464-252e-2a5a-11ac0b3163f4@suse.com>
+References: <20180416062453.24743-1-andr2000@gmail.com>
+ <20180416062453.24743-4-andr2000@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id ED7BF267217
- for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 15:01:35 +0200 (CEST)
-In-Reply-To: <s5hd0z7cz0l.wl-tiwai@suse.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180416062453.24743-4-andr2000@gmail.com>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Oleksandr Andrushchenko <andr2000@gmail.com>, xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, perex@perex.cz, tiwai@suse.com
+Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 10.4.2018 v 09:16 Takashi Iwai napsal(a):
-> On Wed, 04 Apr 2018 10:12:50 +0200,
-> Jaroslav Kysela wrote:
->>
->> Hi,
->>
->>    I pushed two commits to the alsa-lib package which changes the
->> default location for the add-on config files to /etc/alsa/conf.d from
->> /usr/share/alsa/alsa.conf.d . The reason is to follow the scheme like in
->> other packages. Also, the users might want to change or disable contents
->> in those 'default' files.
->>
->>    Example paths from other packages:
->>
->> # find /etc -type d -name conf.d
->> /etc/fonts/conf.d
->> /etc/NetworkManager/conf.d
->> /etc/libblockdev/conf.d
->> /etc/sssd/conf.d
->> /etc/httpd/conf.d
+On 16/04/18 08:24, Oleksandr Andrushchenko wrote:
+> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 > 
-> How about evaluating both paths, with preference of /etc over
-> /usr/share?  The change to allow only /etc would break the existing
-> alsa-plugins packaging, for example, which still may put the config to
-> /usr/share/alsa/conf.d.
->
-> In general, /usr/share is the place for global setups while /etc for
-> local machines.  So it's more natural to put the package default setup
-> to /usr/share while allowing overriding it via /etc.  You can imagine
-> /usr/share is shared via NFS.  If anything different is necessary, you
-> put it in /etc.
+> Handle Xen event channels:
+>   - create for all configured streams and publish
+>     corresponding ring references and event channels in Xen store,
+>     so backend can connect
+>   - implement event channels interrupt handlers
+>   - create and destroy event channels with respect to Xen bus state
+> 
+> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+> ---
+>  sound/xen/Makefile                |   3 +-
+>  sound/xen/xen_snd_front.c         |  10 +-
+>  sound/xen/xen_snd_front.h         |   7 +
+>  sound/xen/xen_snd_front_evtchnl.c | 474 ++++++++++++++++++++++++++++++++++++++
+>  sound/xen/xen_snd_front_evtchnl.h |  92 ++++++++
+>  5 files changed, 584 insertions(+), 2 deletions(-)
+>  create mode 100644 sound/xen/xen_snd_front_evtchnl.c
+>  create mode 100644 sound/xen/xen_snd_front_evtchnl.h
+> 
+> diff --git a/sound/xen/Makefile b/sound/xen/Makefile
+> index 06705bef61fa..03c669984000 100644
+> --- a/sound/xen/Makefile
+> +++ b/sound/xen/Makefile
+> @@ -1,6 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0 OR MIT
+>  
+>  snd_xen_front-objs := xen_snd_front.o \
+> -		      xen_snd_front_cfg.o
+> +		      xen_snd_front_cfg.o \
+> +		      xen_snd_front_evtchnl.o
+>  
+>  obj-$(CONFIG_SND_XEN_FRONTEND) += snd_xen_front.o
+> diff --git a/sound/xen/xen_snd_front.c b/sound/xen/xen_snd_front.c
+> index 65d2494a9d14..eb46bf4070f9 100644
+> --- a/sound/xen/xen_snd_front.c
+> +++ b/sound/xen/xen_snd_front.c
+> @@ -18,9 +18,11 @@
+>  #include <xen/interface/io/sndif.h>
+>  
+>  #include "xen_snd_front.h"
+> +#include "xen_snd_front_evtchnl.h"
 
->From the packager perspective, it makes more sense to have only
-/etc/alsa/conf.d in the global alsa.conf and make symlinks to /usr/share
-like fontconfig does (/etc/fonts/conf.d). The users will modify only
-/etc contents as they should for the non-standard configurations. This
-variant also looks to me more straight for users. Opinions?
+Does it really make sense to have multiple driver-private headers?
 
-					Thanks,
-						Jaroslav
+I think those can be merged.
+
+>  
+>  static void xen_snd_drv_fini(struct xen_snd_front_info *front_info)
+>  {
+> +	xen_snd_front_evtchnl_free_all(front_info);
+>  }
+>  
+>  static int sndback_initwait(struct xen_snd_front_info *front_info)
+> @@ -32,7 +34,12 @@ static int sndback_initwait(struct xen_snd_front_info *front_info)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	return 0;
+> +	/* create event channels for all streams and publish */
+> +	ret = xen_snd_front_evtchnl_create_all(front_info, num_streams);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return xen_snd_front_evtchnl_publish_all(front_info);
+>  }
+>  
+>  static int sndback_connect(struct xen_snd_front_info *front_info)
+> @@ -122,6 +129,7 @@ static int xen_drv_probe(struct xenbus_device *xb_dev,
+>  		return -ENOMEM;
+>  
+>  	front_info->xb_dev = xb_dev;
+> +	spin_lock_init(&front_info->io_lock);
+>  	dev_set_drvdata(&xb_dev->dev, front_info);
+>  
+>  	return xenbus_switch_state(xb_dev, XenbusStateInitialising);
+> diff --git a/sound/xen/xen_snd_front.h b/sound/xen/xen_snd_front.h
+> index b52226cb30bc..9c2ffbb4e4b8 100644
+> --- a/sound/xen/xen_snd_front.h
+> +++ b/sound/xen/xen_snd_front.h
+> @@ -13,9 +13,16 @@
+>  
+>  #include "xen_snd_front_cfg.h"
+>  
+> +struct xen_snd_front_evtchnl_pair;
+> +
+>  struct xen_snd_front_info {
+>  	struct xenbus_device *xb_dev;
+>  
+> +	/* serializer for backend IO: request/response */
+> +	spinlock_t io_lock;
+> +	int num_evt_pairs;
+> +	struct xen_snd_front_evtchnl_pair *evt_pairs;
+> +
+>  	struct xen_front_cfg_card cfg;
+>  };
+>  
+> diff --git a/sound/xen/xen_snd_front_evtchnl.c b/sound/xen/xen_snd_front_evtchnl.c
+> new file mode 100644
+> index 000000000000..9ece39f938f8
+> --- /dev/null
+> +++ b/sound/xen/xen_snd_front_evtchnl.c
+> @@ -0,0 +1,474 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR MIT
+> +
+> +/*
+> + * Xen para-virtual sound device
+> + *
+> + * Copyright (C) 2016-2018 EPAM Systems Inc.
+> + *
+> + * Author: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+> + */
+> +
+> +#include <xen/events.h>
+> +#include <xen/grant_table.h>
+> +#include <xen/xen.h>
+> +#include <xen/xenbus.h>
+> +
+> +#include "xen_snd_front.h"
+> +#include "xen_snd_front_cfg.h"
+> +#include "xen_snd_front_evtchnl.h"
+> +
+> +static irqreturn_t evtchnl_interrupt_req(int irq, void *dev_id)
+> +{
+> +	struct xen_snd_front_evtchnl *channel = dev_id;
+> +	struct xen_snd_front_info *front_info = channel->front_info;
+> +	struct xensnd_resp *resp;
+> +	RING_IDX i, rp;
+> +	unsigned long flags;
+> +
+> +	if (unlikely(channel->state != EVTCHNL_STATE_CONNECTED))
+> +		return IRQ_HANDLED;
+> +
+> +	spin_lock_irqsave(&front_info->io_lock, flags);
+> +
+> +again:
+> +	rp = channel->u.req.ring.sring->rsp_prod;
+> +	/* ensure we see queued responses up to rp */
+> +	rmb();
+> +
+> +	for (i = channel->u.req.ring.rsp_cons; i != rp; i++) {
+> +		resp = RING_GET_RESPONSE(&channel->u.req.ring, i);
+> +		if (resp->id != channel->evt_id)
+> +			continue;
+> +		switch (resp->operation) {
+> +		case XENSND_OP_OPEN:
+> +			/* fall through */
+> +		case XENSND_OP_CLOSE:
+> +			/* fall through */
+> +		case XENSND_OP_READ:
+> +			/* fall through */
+> +		case XENSND_OP_WRITE:
+> +			/* fall through */
+> +		case XENSND_OP_TRIGGER:
+> +			channel->u.req.resp_status = resp->status;
+> +			complete(&channel->u.req.completion);
+> +			break;
+> +		case XENSND_OP_HW_PARAM_QUERY:
+> +			channel->u.req.resp_status = resp->status;
+> +			channel->u.req.resp.hw_param =
+> +					resp->resp.hw_param;
+> +			complete(&channel->u.req.completion);
+> +			break;
+> +
+> +		default:
+> +			dev_err(&front_info->xb_dev->dev,
+> +				"Operation %d is not supported\n",
+> +				resp->operation);
+> +			break;
+> +		}
+> +	}
+> +
+> +	channel->u.req.ring.rsp_cons = i;
+> +	if (i != channel->u.req.ring.req_prod_pvt) {
+> +		int more_to_do;
+> +
+> +		RING_FINAL_CHECK_FOR_RESPONSES(&channel->u.req.ring,
+> +					       more_to_do);
+> +		if (more_to_do)
+> +			goto again;
+> +	} else {
+> +		channel->u.req.ring.sring->rsp_event = i + 1;
+> +	}
+> +
+> +	spin_unlock_irqrestore(&front_info->io_lock, flags);
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static irqreturn_t evtchnl_interrupt_evt(int irq, void *dev_id)
+> +{
+> +	struct xen_snd_front_evtchnl *channel = dev_id;
+> +	struct xen_snd_front_info *front_info = channel->front_info;
+> +	struct xensnd_event_page *page = channel->u.evt.page;
+> +	u32 cons, prod;
+> +	unsigned long flags;
+> +
+> +	if (unlikely(channel->state != EVTCHNL_STATE_CONNECTED))
+> +		return IRQ_HANDLED;
+> +
+> +	spin_lock_irqsave(&front_info->io_lock, flags);
+> +
+> +	prod = page->in_prod;
+> +	/* ensure we see ring contents up to prod */
+> +	virt_rmb();
+> +	if (prod == page->in_cons)
+> +		goto out;
+> +
+> +	for (cons = page->in_cons; cons != prod; cons++) {
+> +		struct xensnd_evt *event;
+> +
+> +		event = &XENSND_IN_RING_REF(page, cons);
+> +		if (unlikely(event->id != channel->evt_id++))
+> +			continue;
+> +
+> +		switch (event->type) {
+> +		case XENSND_EVT_CUR_POS:
+> +			/* do nothing at the moment */
+> +			break;
+> +		}
+> +	}
+> +
+> +	page->in_cons = cons;
+> +	/* ensure ring contents */
+> +	virt_wmb();
+> +
+> +out:
+> +	spin_unlock_irqrestore(&front_info->io_lock, flags);
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +void xen_snd_front_evtchnl_flush(struct xen_snd_front_evtchnl *channel)
+> +{
+> +	int notify;
+> +
+> +	channel->u.req.ring.req_prod_pvt++;
+> +	RING_PUSH_REQUESTS_AND_CHECK_NOTIFY(&channel->u.req.ring, notify);
+> +	if (notify)
+> +		notify_remote_via_irq(channel->irq);
+> +}
+> +
+> +static void evtchnl_free(struct xen_snd_front_info *front_info,
+> +			 struct xen_snd_front_evtchnl *channel)
+> +{
+> +	unsigned long page = 0;
+> +
+> +	if (channel->type == EVTCHNL_TYPE_REQ)
+> +		page = (unsigned long)channel->u.req.ring.sring;
+> +	else if (channel->type == EVTCHNL_TYPE_EVT)
+> +		page = (unsigned long)channel->u.evt.page;
+> +
+> +	if (!page)
+> +		return;
+> +
+> +	channel->state = EVTCHNL_STATE_DISCONNECTED;
+> +	if (channel->type == EVTCHNL_TYPE_REQ) {
+> +		/* release all who still waits for response if any */
+> +		channel->u.req.resp_status = -EIO;
+> +		complete_all(&channel->u.req.completion);
+> +	}
+> +
+> +	if (channel->irq)
+> +		unbind_from_irqhandler(channel->irq, channel);
+> +
+> +	if (channel->port)
+> +		xenbus_free_evtchn(front_info->xb_dev, channel->port);
+> +
+> +	/* end access and free the page */
+> +	if (channel->gref != GRANT_INVALID_REF)
+> +		gnttab_end_foreign_access(channel->gref, 0, page);
+
+Free page?
+
+> +
+> +	memset(channel, 0, sizeof(*channel));
+> +}
+> +
+> +void xen_snd_front_evtchnl_free_all(struct xen_snd_front_info *front_info)
+> +{
+> +	int i;
+> +
+> +	if (!front_info->evt_pairs)
+> +		return;
+> +
+> +	for (i = 0; i < front_info->num_evt_pairs; i++) {
+> +		evtchnl_free(front_info, &front_info->evt_pairs[i].req);
+> +		evtchnl_free(front_info, &front_info->evt_pairs[i].evt);
+> +	}
+> +
+> +	kfree(front_info->evt_pairs);
+> +	front_info->evt_pairs = NULL;
+> +}
+> +
+> +static int evtchnl_alloc(struct xen_snd_front_info *front_info, int index,
+> +			 struct xen_snd_front_evtchnl *channel,
+> +			 enum xen_snd_front_evtchnl_type type)
+> +{
+> +	struct xenbus_device *xb_dev = front_info->xb_dev;
+> +	unsigned long page;
+> +	grant_ref_t gref;
+> +	irq_handler_t handler;
+> +	char *handler_name = NULL;
+> +	int ret;
+> +
+> +	memset(channel, 0, sizeof(*channel));
+> +	channel->type = type;
+> +	channel->index = index;
+> +	channel->front_info = front_info;
+> +	channel->state = EVTCHNL_STATE_DISCONNECTED;
+> +	channel->gref = GRANT_INVALID_REF;
+> +	page = get_zeroed_page(GFP_NOIO | __GFP_HIGH);
+
+Why GFP_NOIO | __GFP_HIGH? Could it be you copied that from blkfront
+driver? I believe swapping via sound card is rather uncommon.
+
+> +	if (!page) {
+> +		ret = -ENOMEM;
+> +		goto fail;
+> +	}
+> +
+> +	handler_name = kasprintf(GFP_KERNEL, "%s-%s", XENSND_DRIVER_NAME,
+> +				 type == EVTCHNL_TYPE_REQ ?
+> +				 XENSND_FIELD_RING_REF :
+> +				 XENSND_FIELD_EVT_RING_REF);
+> +	if (!handler_name) {
+> +		ret = -ENOMEM;
+
+Missing free_page(page)? Maybe you rather add it in the common
+fail path instead of the numerous instances below?
 
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Juergen
