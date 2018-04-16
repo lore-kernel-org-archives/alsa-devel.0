@@ -1,19 +1,19 @@
 From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: [PATCH v2 1/5] ALSA: xen-front: Introduce Xen
-	para-virtualized sound frontend driver
-Date: Mon, 16 Apr 2018 09:24:49 +0300
-Message-ID: <20180416062453.24743-2-andr2000@gmail.com>
+Subject: [PATCH v2 2/5] ALSA: xen-front: Read sound driver
+	configuration from Xen store
+Date: Mon, 16 Apr 2018 09:24:50 +0300
+Message-ID: <20180416062453.24743-3-andr2000@gmail.com>
 References: <20180416062453.24743-1-andr2000@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f68.google.com (mail-lf0-f68.google.com
- [209.85.215.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A89826722C
- for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 08:25:06 +0200 (CEST)
-Received: by mail-lf0-f68.google.com with SMTP id r125-v6so3600776lfe.2
- for <alsa-devel@alsa-project.org>; Sun, 15 Apr 2018 23:25:06 -0700 (PDT)
+Received: from mail-lf0-f65.google.com (mail-lf0-f65.google.com
+ [209.85.215.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id CDBC0267217
+ for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 08:25:08 +0200 (CEST)
+Received: by mail-lf0-f65.google.com with SMTP id m14-v6so8334008lfc.0
+ for <alsa-devel@alsa-project.org>; Sun, 15 Apr 2018 23:25:08 -0700 (PDT)
 In-Reply-To: <20180416062453.24743-1-andr2000@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,87 +30,78 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 
-Introduce skeleton of the para-virtualized Xen sound
-frontend driver.
-
-Initial handling for Xen bus states: implement
-Xen bus state machine for the frontend driver according to
-the state diagram and recovery flow from sound para-virtualized
-protocol: xen/interface/io/sndif.h.
+Read configuration values from Xen store according
+to xen/interface/io/sndif.h protocol:
+  - introduce configuration structures for different
+    components, e.g. sound card, device, stream
+  - read PCM HW parameters, e.g rate, format etc.
+  - detect stream type (capture/playback)
+  - read device and card parameters
 
 Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 ---
- sound/Kconfig             |   2 +
- sound/Makefile            |   2 +-
- sound/xen/Kconfig         |  10 +++
- sound/xen/Makefile        |   5 ++
- sound/xen/xen_snd_front.c | 196 ++++++++++++++++++++++++++++++++++++++++++++++
- sound/xen/xen_snd_front.h |  18 +++++
- 6 files changed, 232 insertions(+), 1 deletion(-)
- create mode 100644 sound/xen/Kconfig
- create mode 100644 sound/xen/Makefile
- create mode 100644 sound/xen/xen_snd_front.c
- create mode 100644 sound/xen/xen_snd_front.h
+ sound/xen/Makefile            |   3 +-
+ sound/xen/xen_snd_front.c     |   7 +
+ sound/xen/xen_snd_front.h     |   4 +
+ sound/xen/xen_snd_front_cfg.c | 517 ++++++++++++++++++++++++++++++++++++++++++
+ sound/xen/xen_snd_front_cfg.h |  46 ++++
+ 5 files changed, 576 insertions(+), 1 deletion(-)
+ create mode 100644 sound/xen/xen_snd_front_cfg.c
+ create mode 100644 sound/xen/xen_snd_front_cfg.h
 
-diff --git a/sound/Kconfig b/sound/Kconfig
-index 6833db9002ec..1140e9988fc5 100644
---- a/sound/Kconfig
-+++ b/sound/Kconfig
-@@ -96,6 +96,8 @@ source "sound/x86/Kconfig"
- 
- source "sound/synth/Kconfig"
- 
-+source "sound/xen/Kconfig"
-+
- endif # SND
- 
- endif # !UML
-diff --git a/sound/Makefile b/sound/Makefile
-index 99d8c31262c8..797ecdcd35e2 100644
---- a/sound/Makefile
-+++ b/sound/Makefile
-@@ -5,7 +5,7 @@
- obj-$(CONFIG_SOUND) += soundcore.o
- obj-$(CONFIG_DMASOUND) += oss/dmasound/
- obj-$(CONFIG_SND) += core/ i2c/ drivers/ isa/ pci/ ppc/ arm/ sh/ synth/ usb/ \
--	firewire/ sparc/ spi/ parisc/ pcmcia/ mips/ soc/ atmel/ hda/ x86/
-+	firewire/ sparc/ spi/ parisc/ pcmcia/ mips/ soc/ atmel/ hda/ x86/ xen/
- obj-$(CONFIG_SND_AOA) += aoa/
- 
- # This one must be compilable even if sound is configured out
-diff --git a/sound/xen/Kconfig b/sound/xen/Kconfig
-new file mode 100644
-index 000000000000..7cad38be8317
---- /dev/null
-+++ b/sound/xen/Kconfig
-@@ -0,0 +1,10 @@
-+# ALSA Xen drivers
-+
-+config SND_XEN_FRONTEND
-+	tristate "Xen para-virtualized sound frontend driver"
-+	depends on XEN && SND_PCM
-+	select XEN_XENBUS_FRONTEND
-+	default n
-+	help
-+	  Choose this option if you want to enable a para-virtualized
-+	  frontend sound driver for Xen guest OSes.
 diff --git a/sound/xen/Makefile b/sound/xen/Makefile
-new file mode 100644
-index 000000000000..4507ef3c27fd
---- /dev/null
+index 4507ef3c27fd..06705bef61fa 100644
+--- a/sound/xen/Makefile
 +++ b/sound/xen/Makefile
-@@ -0,0 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0 OR MIT
-+
-+snd_xen_front-objs := xen_snd_front.o
-+
-+obj-$(CONFIG_SND_XEN_FRONTEND) += snd_xen_front.o
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0 OR MIT
+ 
+-snd_xen_front-objs := xen_snd_front.o
++snd_xen_front-objs := xen_snd_front.o \
++		      xen_snd_front_cfg.o
+ 
+ obj-$(CONFIG_SND_XEN_FRONTEND) += snd_xen_front.o
 diff --git a/sound/xen/xen_snd_front.c b/sound/xen/xen_snd_front.c
-new file mode 100644
-index 000000000000..f406a8f52c51
---- /dev/null
+index f406a8f52c51..65d2494a9d14 100644
+--- a/sound/xen/xen_snd_front.c
 +++ b/sound/xen/xen_snd_front.c
-@@ -0,0 +1,196 @@
+@@ -25,6 +25,13 @@ static void xen_snd_drv_fini(struct xen_snd_front_info *front_info)
+ 
+ static int sndback_initwait(struct xen_snd_front_info *front_info)
+ {
++	int num_streams;
++	int ret;
++
++	ret = xen_snd_front_cfg_card(front_info, &num_streams);
++	if (ret < 0)
++		return ret;
++
+ 	return 0;
+ }
+ 
+diff --git a/sound/xen/xen_snd_front.h b/sound/xen/xen_snd_front.h
+index 4ae204b23d32..b52226cb30bc 100644
+--- a/sound/xen/xen_snd_front.h
++++ b/sound/xen/xen_snd_front.h
+@@ -11,8 +11,12 @@
+ #ifndef __XEN_SND_FRONT_H
+ #define __XEN_SND_FRONT_H
+ 
++#include "xen_snd_front_cfg.h"
++
+ struct xen_snd_front_info {
+ 	struct xenbus_device *xb_dev;
++
++	struct xen_front_cfg_card cfg;
+ };
+ 
+ #endif /* __XEN_SND_FRONT_H */
+diff --git a/sound/xen/xen_snd_front_cfg.c b/sound/xen/xen_snd_front_cfg.c
+new file mode 100644
+index 000000000000..d461985afffa
+--- /dev/null
++++ b/sound/xen/xen_snd_front_cfg.c
+@@ -0,0 +1,517 @@
 +// SPDX-License-Identifier: GPL-2.0 OR MIT
 +
 +/*
@@ -121,198 +112,519 @@ index 000000000000..f406a8f52c51
 + * Author: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 + */
 +
-+#include <linux/delay.h>
-+#include <linux/module.h>
-+
-+#include <xen/platform_pci.h>
-+#include <xen/xen.h>
 +#include <xen/xenbus.h>
 +
 +#include <xen/interface/io/sndif.h>
 +
 +#include "xen_snd_front.h"
++#include "xen_snd_front_cfg.h"
 +
-+static void xen_snd_drv_fini(struct xen_snd_front_info *front_info)
++/* maximum number of supported streams */
++#define VSND_MAX_STREAM		8
++
++struct cfg_hw_sample_rate {
++	const char *name;
++	unsigned int mask;
++	unsigned int value;
++};
++
++static const struct cfg_hw_sample_rate CFG_HW_SUPPORTED_RATES[] = {
++	{ .name = "5512",   .mask = SNDRV_PCM_RATE_5512,   .value = 5512 },
++	{ .name = "8000",   .mask = SNDRV_PCM_RATE_8000,   .value = 8000 },
++	{ .name = "11025",  .mask = SNDRV_PCM_RATE_11025,  .value = 11025 },
++	{ .name = "16000",  .mask = SNDRV_PCM_RATE_16000,  .value = 16000 },
++	{ .name = "22050",  .mask = SNDRV_PCM_RATE_22050,  .value = 22050 },
++	{ .name = "32000",  .mask = SNDRV_PCM_RATE_32000,  .value = 32000 },
++	{ .name = "44100",  .mask = SNDRV_PCM_RATE_44100,  .value = 44100 },
++	{ .name = "48000",  .mask = SNDRV_PCM_RATE_48000,  .value = 48000 },
++	{ .name = "64000",  .mask = SNDRV_PCM_RATE_64000,  .value = 64000 },
++	{ .name = "96000",  .mask = SNDRV_PCM_RATE_96000,  .value = 96000 },
++	{ .name = "176400", .mask = SNDRV_PCM_RATE_176400, .value = 176400 },
++	{ .name = "192000", .mask = SNDRV_PCM_RATE_192000, .value = 192000 },
++};
++
++struct cfg_hw_sample_format {
++	const char *name;
++	u64 mask;
++};
++
++static const struct cfg_hw_sample_format CFG_HW_SUPPORTED_FORMATS[] = {
++	{
++		.name = XENSND_PCM_FORMAT_U8_STR,
++		.mask = SNDRV_PCM_FMTBIT_U8
++	},
++	{
++		.name = XENSND_PCM_FORMAT_S8_STR,
++		.mask = SNDRV_PCM_FMTBIT_S8
++	},
++	{
++		.name = XENSND_PCM_FORMAT_U16_LE_STR,
++		.mask = SNDRV_PCM_FMTBIT_U16_LE
++	},
++	{
++		.name = XENSND_PCM_FORMAT_U16_BE_STR,
++		.mask = SNDRV_PCM_FMTBIT_U16_BE
++	},
++	{
++		.name = XENSND_PCM_FORMAT_S16_LE_STR,
++		.mask = SNDRV_PCM_FMTBIT_S16_LE
++	},
++	{
++		.name = XENSND_PCM_FORMAT_S16_BE_STR,
++		.mask = SNDRV_PCM_FMTBIT_S16_BE
++	},
++	{
++		.name = XENSND_PCM_FORMAT_U24_LE_STR,
++		.mask = SNDRV_PCM_FMTBIT_U24_LE
++	},
++	{
++		.name = XENSND_PCM_FORMAT_U24_BE_STR,
++		.mask = SNDRV_PCM_FMTBIT_U24_BE
++	},
++	{
++		.name = XENSND_PCM_FORMAT_S24_LE_STR,
++		.mask = SNDRV_PCM_FMTBIT_S24_LE
++	},
++	{
++		.name = XENSND_PCM_FORMAT_S24_BE_STR,
++		.mask = SNDRV_PCM_FMTBIT_S24_BE
++	},
++	{
++		.name = XENSND_PCM_FORMAT_U32_LE_STR,
++		.mask = SNDRV_PCM_FMTBIT_U32_LE
++	},
++	{
++		.name = XENSND_PCM_FORMAT_U32_BE_STR,
++		.mask = SNDRV_PCM_FMTBIT_U32_BE
++	},
++	{
++		.name = XENSND_PCM_FORMAT_S32_LE_STR,
++		.mask = SNDRV_PCM_FMTBIT_S32_LE
++	},
++	{
++		.name = XENSND_PCM_FORMAT_S32_BE_STR,
++		.mask = SNDRV_PCM_FMTBIT_S32_BE
++	},
++	{
++		.name = XENSND_PCM_FORMAT_A_LAW_STR,
++		.mask = SNDRV_PCM_FMTBIT_A_LAW
++	},
++	{
++		.name = XENSND_PCM_FORMAT_MU_LAW_STR,
++		.mask = SNDRV_PCM_FMTBIT_MU_LAW
++	},
++	{
++		.name = XENSND_PCM_FORMAT_F32_LE_STR,
++		.mask = SNDRV_PCM_FMTBIT_FLOAT_LE
++	},
++	{
++		.name = XENSND_PCM_FORMAT_F32_BE_STR,
++		.mask = SNDRV_PCM_FMTBIT_FLOAT_BE
++	},
++	{
++		.name = XENSND_PCM_FORMAT_F64_LE_STR,
++		.mask = SNDRV_PCM_FMTBIT_FLOAT64_LE
++	},
++	{
++		.name = XENSND_PCM_FORMAT_F64_BE_STR,
++		.mask = SNDRV_PCM_FMTBIT_FLOAT64_BE
++	},
++	{
++		.name = XENSND_PCM_FORMAT_IEC958_SUBFRAME_LE_STR,
++		.mask = SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE
++	},
++	{
++		.name = XENSND_PCM_FORMAT_IEC958_SUBFRAME_BE_STR,
++		.mask = SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_BE
++	},
++	{
++		.name = XENSND_PCM_FORMAT_IMA_ADPCM_STR,
++		.mask = SNDRV_PCM_FMTBIT_IMA_ADPCM
++	},
++	{
++		.name = XENSND_PCM_FORMAT_MPEG_STR,
++		.mask = SNDRV_PCM_FMTBIT_MPEG
++	},
++	{
++		.name = XENSND_PCM_FORMAT_GSM_STR,
++		.mask = SNDRV_PCM_FMTBIT_GSM
++	},
++};
++
++static void cfg_hw_rates(char *list, unsigned int len,
++			 const char *path, struct snd_pcm_hardware *pcm_hw)
 +{
++	char *cur_rate;
++	unsigned int cur_mask;
++	unsigned int cur_value;
++	unsigned int rates;
++	unsigned int rate_min;
++	unsigned int rate_max;
++	int i;
++
++	rates = 0;
++	rate_min = -1;
++	rate_max = 0;
++	while ((cur_rate = strsep(&list, XENSND_LIST_SEPARATOR))) {
++		for (i = 0; i < ARRAY_SIZE(CFG_HW_SUPPORTED_RATES); i++)
++			if (!strncasecmp(cur_rate,
++					 CFG_HW_SUPPORTED_RATES[i].name,
++					 XENSND_SAMPLE_RATE_MAX_LEN)) {
++				cur_mask = CFG_HW_SUPPORTED_RATES[i].mask;
++				cur_value = CFG_HW_SUPPORTED_RATES[i].value;
++				rates |= cur_mask;
++				if (rate_min > cur_value)
++					rate_min = cur_value;
++				if (rate_max < cur_value)
++					rate_max = cur_value;
++			}
++	}
++
++	if (rates) {
++		pcm_hw->rates = rates;
++		pcm_hw->rate_min = rate_min;
++		pcm_hw->rate_max = rate_max;
++	}
 +}
 +
-+static int sndback_initwait(struct xen_snd_front_info *front_info)
++static void cfg_formats(char *list, unsigned int len,
++			const char *path, struct snd_pcm_hardware *pcm_hw)
 +{
-+	return 0;
++	u64 formats;
++	char *cur_format;
++	int i;
++
++	formats = 0;
++	while ((cur_format = strsep(&list, XENSND_LIST_SEPARATOR))) {
++		for (i = 0; i < ARRAY_SIZE(CFG_HW_SUPPORTED_FORMATS); i++)
++			if (!strncasecmp(cur_format,
++					 CFG_HW_SUPPORTED_FORMATS[i].name,
++					 XENSND_SAMPLE_FORMAT_MAX_LEN))
++				formats |= CFG_HW_SUPPORTED_FORMATS[i].mask;
++	}
++
++	if (formats)
++		pcm_hw->formats = formats;
 +}
 +
-+static int sndback_connect(struct xen_snd_front_info *front_info)
++#define MAX_BUFFER_SIZE		(64 * 1024)
++#define MIN_PERIOD_SIZE		64
++#define MAX_PERIOD_SIZE		MAX_BUFFER_SIZE
++#define USE_FORMATS		(SNDRV_PCM_FMTBIT_U8 | \
++				 SNDRV_PCM_FMTBIT_S16_LE)
++#define USE_RATE		(SNDRV_PCM_RATE_CONTINUOUS | \
++				 SNDRV_PCM_RATE_8000_48000)
++#define USE_RATE_MIN		5512
++#define USE_RATE_MAX		48000
++#define USE_CHANNELS_MIN	1
++#define USE_CHANNELS_MAX	2
++#define USE_PERIODS_MIN		2
++#define USE_PERIODS_MAX		(MAX_BUFFER_SIZE / MIN_PERIOD_SIZE)
++
++static const struct snd_pcm_hardware SND_DRV_PCM_HW_DEFAULT = {
++	.info = (SNDRV_PCM_INFO_MMAP |
++		 SNDRV_PCM_INFO_INTERLEAVED |
++		 SNDRV_PCM_INFO_RESUME |
++		 SNDRV_PCM_INFO_MMAP_VALID),
++	.formats = USE_FORMATS,
++	.rates = USE_RATE,
++	.rate_min = USE_RATE_MIN,
++	.rate_max = USE_RATE_MAX,
++	.channels_min = USE_CHANNELS_MIN,
++	.channels_max = USE_CHANNELS_MAX,
++	.buffer_bytes_max = MAX_BUFFER_SIZE,
++	.period_bytes_min = MIN_PERIOD_SIZE,
++	.period_bytes_max = MAX_PERIOD_SIZE,
++	.periods_min = USE_PERIODS_MIN,
++	.periods_max = USE_PERIODS_MAX,
++	.fifo_size = 0,
++};
++
++static void cfg_read_pcm_hw(const char *path,
++			    struct snd_pcm_hardware *parent_pcm_hw,
++			    struct snd_pcm_hardware *pcm_hw)
 +{
-+	return 0;
++	char *list;
++	int val;
++	size_t buf_sz;
++	unsigned int len;
++
++	/* inherit parent's PCM HW and read overrides from XenStore */
++	if (parent_pcm_hw)
++		*pcm_hw = *parent_pcm_hw;
++	else
++		*pcm_hw = SND_DRV_PCM_HW_DEFAULT;
++
++	val = xenbus_read_unsigned(path, XENSND_FIELD_CHANNELS_MIN, 0);
++	if (val)
++		pcm_hw->channels_min = val;
++
++	val = xenbus_read_unsigned(path, XENSND_FIELD_CHANNELS_MAX, 0);
++	if (val)
++		pcm_hw->channels_max = val;
++
++	list = xenbus_read(XBT_NIL, path, XENSND_FIELD_SAMPLE_RATES, &len);
++	if (!IS_ERR(list)) {
++		cfg_hw_rates(list, len, path, pcm_hw);
++		kfree(list);
++	}
++
++	list = xenbus_read(XBT_NIL, path, XENSND_FIELD_SAMPLE_FORMATS, &len);
++	if (!IS_ERR(list)) {
++		cfg_formats(list, len, path, pcm_hw);
++		kfree(list);
++	}
++
++	buf_sz = xenbus_read_unsigned(path, XENSND_FIELD_BUFFER_SIZE, 0);
++	if (buf_sz)
++		pcm_hw->buffer_bytes_max = buf_sz;
++
++	/* update configuration to match new values */
++	if (pcm_hw->channels_min > pcm_hw->channels_max)
++		pcm_hw->channels_min = pcm_hw->channels_max;
++
++	if (pcm_hw->rate_min > pcm_hw->rate_max)
++		pcm_hw->rate_min = pcm_hw->rate_max;
++
++	pcm_hw->period_bytes_max = pcm_hw->buffer_bytes_max;
++
++	pcm_hw->periods_max = pcm_hw->period_bytes_max /
++		pcm_hw->period_bytes_min;
 +}
 +
-+static void sndback_disconnect(struct xen_snd_front_info *front_info)
++static int cfg_get_stream_type(const char *path, int index,
++			       int *num_pb, int *num_cap)
 +{
-+	xen_snd_drv_fini(front_info);
-+	xenbus_switch_state(front_info->xb_dev, XenbusStateInitialising);
-+}
-+
-+static void sndback_changed(struct xenbus_device *xb_dev,
-+			    enum xenbus_state backend_state)
-+{
-+	struct xen_snd_front_info *front_info = dev_get_drvdata(&xb_dev->dev);
++	char *str = NULL;
++	char *stream_path;
 +	int ret;
 +
-+	dev_dbg(&xb_dev->dev, "Backend state is %s, front is %s\n",
-+		xenbus_strstate(backend_state),
-+		xenbus_strstate(xb_dev->state));
-+
-+	switch (backend_state) {
-+	case XenbusStateReconfiguring:
-+		/* fall through */
-+	case XenbusStateReconfigured:
-+		/* fall through */
-+	case XenbusStateInitialised:
-+		/* fall through */
-+		break;
-+
-+	case XenbusStateInitialising:
-+		/* recovering after backend unexpected closure */
-+		sndback_disconnect(front_info);
-+		break;
-+
-+	case XenbusStateInitWait:
-+		/* recovering after backend unexpected closure */
-+		sndback_disconnect(front_info);
-+
-+		ret = sndback_initwait(front_info);
-+		if (ret < 0)
-+			xenbus_dev_fatal(xb_dev, ret, "initializing frontend");
-+		else
-+			xenbus_switch_state(xb_dev, XenbusStateInitialised);
-+		break;
-+
-+	case XenbusStateConnected:
-+		if (xb_dev->state != XenbusStateInitialised)
-+			break;
-+
-+		ret = sndback_connect(front_info);
-+		if (ret < 0)
-+			xenbus_dev_fatal(xb_dev, ret, "initializing frontend");
-+		else
-+			xenbus_switch_state(xb_dev, XenbusStateConnected);
-+		break;
-+
-+	case XenbusStateClosing:
-+		/*
-+		 * in this state backend starts freeing resources,
-+		 * so let it go into closed state first, so we can also
-+		 * remove ours
-+		 */
-+		break;
-+
-+	case XenbusStateUnknown:
-+		/* fall through */
-+	case XenbusStateClosed:
-+		if (xb_dev->state == XenbusStateClosed)
-+			break;
-+
-+		sndback_disconnect(front_info);
-+		break;
++	*num_pb = 0;
++	*num_cap = 0;
++	stream_path = kasprintf(GFP_KERNEL, "%s/%d", path, index);
++	if (!stream_path) {
++		ret = -ENOMEM;
++		goto fail;
 +	}
++
++	str = xenbus_read(XBT_NIL, stream_path, XENSND_FIELD_TYPE, NULL);
++	if (IS_ERR(str)) {
++		ret = -EINVAL;
++		goto fail;
++	}
++
++	if (!strncasecmp(str, XENSND_STREAM_TYPE_PLAYBACK,
++			 sizeof(XENSND_STREAM_TYPE_PLAYBACK))) {
++		(*num_pb)++;
++	} else if (!strncasecmp(str, XENSND_STREAM_TYPE_CAPTURE,
++			      sizeof(XENSND_STREAM_TYPE_CAPTURE))) {
++		(*num_cap)++;
++	} else {
++		ret = -EINVAL;
++		goto fail;
++	}
++	ret = 0;
++
++fail:
++	kfree(stream_path);
++	kfree(str);
++	return ret;
 +}
 +
-+static int xen_drv_probe(struct xenbus_device *xb_dev,
-+			 const struct xenbus_device_id *id)
++static int cfg_stream(struct xen_snd_front_info *front_info,
++		      struct xen_front_cfg_pcm_instance *pcm_instance,
++		      const char *path, int index, int *cur_pb, int *cur_cap,
++		      int *stream_cnt)
 +{
-+	struct xen_snd_front_info *front_info;
++	char *str = NULL;
++	char *stream_path;
++	struct xen_front_cfg_stream *stream;
++	int ret;
 +
-+	front_info = devm_kzalloc(&xb_dev->dev,
-+				  sizeof(*front_info), GFP_KERNEL);
-+	if (!front_info)
++	stream_path = devm_kasprintf(&front_info->xb_dev->dev,
++				     GFP_KERNEL, "%s/%d", path, index);
++	if (!stream_path) {
++		ret = -ENOMEM;
++		goto fail;
++	}
++
++	str = xenbus_read(XBT_NIL, stream_path, XENSND_FIELD_TYPE, NULL);
++	if (IS_ERR(str)) {
++		ret = -EINVAL;
++		goto fail;
++	}
++
++	if (!strncasecmp(str, XENSND_STREAM_TYPE_PLAYBACK,
++			 sizeof(XENSND_STREAM_TYPE_PLAYBACK))) {
++		stream = &pcm_instance->streams_pb[(*cur_pb)++];
++	} else if (!strncasecmp(str, XENSND_STREAM_TYPE_CAPTURE,
++			      sizeof(XENSND_STREAM_TYPE_CAPTURE))) {
++		stream = &pcm_instance->streams_cap[(*cur_cap)++];
++	} else {
++		ret = -EINVAL;
++		goto fail;
++	}
++
++	/* get next stream index */
++	stream->index = (*stream_cnt)++;
++	stream->xenstore_path = stream_path;
++	/*
++	 * check in Xen store if PCM HW configuration exists for this stream
++	 * and update if so, e.g. we inherit all values from device's PCM HW,
++	 * but can still override some of the values for the stream
++	 */
++	cfg_read_pcm_hw(stream->xenstore_path,
++			&pcm_instance->pcm_hw, &stream->pcm_hw);
++	ret = 0;
++
++fail:
++	kfree(str);
++	return ret;
++}
++
++static int cfg_device(struct xen_snd_front_info *front_info,
++		      struct xen_front_cfg_pcm_instance *pcm_instance,
++		      struct snd_pcm_hardware *parent_pcm_hw,
++		      const char *path, int node_index, int *stream_cnt)
++{
++	char *str;
++	char *device_path;
++	int ret, i, num_streams;
++	int num_pb, num_cap;
++	int cur_pb, cur_cap;
++	char node[3];
++
++	device_path = kasprintf(GFP_KERNEL, "%s/%d", path, node_index);
++	if (!device_path)
 +		return -ENOMEM;
 +
-+	front_info->xb_dev = xb_dev;
-+	dev_set_drvdata(&xb_dev->dev, front_info);
-+
-+	return xenbus_switch_state(xb_dev, XenbusStateInitialising);
-+}
-+
-+static int xen_drv_remove(struct xenbus_device *dev)
-+{
-+	struct xen_snd_front_info *front_info = dev_get_drvdata(&dev->dev);
-+	int to = 100;
-+
-+	xenbus_switch_state(dev, XenbusStateClosing);
-+
-+	/*
-+	 * On driver removal it is disconnected from XenBus,
-+	 * so no backend state change events come via .otherend_changed
-+	 * callback. This prevents us from exiting gracefully, e.g.
-+	 * signaling the backend to free event channels, waiting for its
-+	 * state to change to XenbusStateClosed and cleaning at our end.
-+	 * Normally when front driver removed backend will finally go into
-+	 * XenbusStateInitWait state.
-+	 *
-+	 * Workaround: read backend's state manually and wait with time-out.
-+	 */
-+	while ((xenbus_read_unsigned(front_info->xb_dev->otherend, "state",
-+				     XenbusStateUnknown) != XenbusStateInitWait) &&
-+				     to--)
-+		msleep(10);
-+
-+	if (!to) {
-+		unsigned int state;
-+
-+		state = xenbus_read_unsigned(front_info->xb_dev->otherend,
-+					     "state", XenbusStateUnknown);
-+		pr_err("Backend state is %s while removing driver\n",
-+		       xenbus_strstate(state));
++	str = xenbus_read(XBT_NIL, device_path, XENSND_FIELD_DEVICE_NAME, NULL);
++	if (!IS_ERR(str)) {
++		strncpy(pcm_instance->name, str, sizeof(pcm_instance->name));
++		kfree(str);
 +	}
 +
-+	xen_snd_drv_fini(front_info);
-+	xenbus_frontend_closed(dev);
++	pcm_instance->device_id = node_index;
++
++	/*
++	 * check in Xen store if PCM HW configuration exists for this device
++	 * and update if so, e.g. we inherit all values from card's PCM HW,
++	 * but can still override some of the values for the device
++	 */
++	cfg_read_pcm_hw(device_path, parent_pcm_hw, &pcm_instance->pcm_hw);
++
++	/* find out how many streams were configured in Xen store */
++	num_streams = 0;
++	do {
++		snprintf(node, sizeof(node), "%d", num_streams);
++		if (!xenbus_exists(XBT_NIL, device_path, node))
++			break;
++
++		num_streams++;
++	} while (num_streams < VSND_MAX_STREAM);
++
++	pcm_instance->num_streams_pb = 0;
++	pcm_instance->num_streams_cap = 0;
++	/* get number of playback and capture streams */
++	for (i = 0; i < num_streams; i++) {
++		ret = cfg_get_stream_type(device_path, i, &num_pb, &num_cap);
++		if (ret < 0)
++			goto fail;
++
++		pcm_instance->num_streams_pb += num_pb;
++		pcm_instance->num_streams_cap += num_cap;
++	}
++
++	if (pcm_instance->num_streams_pb) {
++		pcm_instance->streams_pb =
++				devm_kcalloc(&front_info->xb_dev->dev,
++					     pcm_instance->num_streams_pb,
++					     sizeof(struct xen_front_cfg_stream),
++					     GFP_KERNEL);
++		if (!pcm_instance->streams_pb) {
++			ret = -ENOMEM;
++			goto fail;
++		}
++	}
++
++	if (pcm_instance->num_streams_cap) {
++		pcm_instance->streams_cap =
++				devm_kcalloc(&front_info->xb_dev->dev,
++					     pcm_instance->num_streams_cap,
++					     sizeof(struct xen_front_cfg_stream),
++					     GFP_KERNEL);
++		if (!pcm_instance->streams_cap) {
++			ret = -ENOMEM;
++			goto fail;
++		}
++	}
++
++	cur_pb = 0;
++	cur_cap = 0;
++	for (i = 0; i < num_streams; i++) {
++		ret = cfg_stream(front_info, pcm_instance, device_path, i,
++				 &cur_pb, &cur_cap, stream_cnt);
++		if (ret < 0)
++			goto fail;
++	}
++	ret = 0;
++
++fail:
++	kfree(device_path);
++	return ret;
++}
++
++int xen_snd_front_cfg_card(struct xen_snd_front_info *front_info,
++			   int *stream_cnt)
++{
++	struct xenbus_device *xb_dev = front_info->xb_dev;
++	struct xen_front_cfg_card *cfg = &front_info->cfg;
++	int ret, num_devices, i;
++	char node[3];
++
++	*stream_cnt = 0;
++	num_devices = 0;
++	do {
++		snprintf(node, sizeof(node), "%d", num_devices);
++		if (!xenbus_exists(XBT_NIL, xb_dev->nodename, node))
++			break;
++
++		num_devices++;
++	} while (num_devices < SNDRV_PCM_DEVICES);
++
++	if (!num_devices) {
++		dev_warn(&xb_dev->dev,
++			 "No devices configured for sound card at %s\n",
++			 xb_dev->nodename);
++		return -ENODEV;
++	}
++
++	/* start from default PCM HW configuration for the card */
++	cfg_read_pcm_hw(xb_dev->nodename, NULL, &cfg->pcm_hw);
++
++	cfg->pcm_instances =
++			devm_kcalloc(&front_info->xb_dev->dev, num_devices,
++				     sizeof(struct xen_front_cfg_pcm_instance),
++				     GFP_KERNEL);
++	if (!cfg->pcm_instances)
++		return -ENOMEM;
++
++	for (i = 0; i < num_devices; i++) {
++		ret = cfg_device(front_info, &cfg->pcm_instances[i],
++				 &cfg->pcm_hw, xb_dev->nodename, i, stream_cnt);
++		if (ret < 0)
++			return ret;
++	}
++	cfg->num_pcm_instances = num_devices;
 +	return 0;
 +}
 +
-+static const struct xenbus_device_id xen_drv_ids[] = {
-+	{ XENSND_DRIVER_NAME },
-+	{ "" }
-+};
-+
-+static struct xenbus_driver xen_driver = {
-+	.ids = xen_drv_ids,
-+	.probe = xen_drv_probe,
-+	.remove = xen_drv_remove,
-+	.otherend_changed = sndback_changed,
-+};
-+
-+static int __init xen_drv_init(void)
-+{
-+	if (!xen_domain())
-+		return -ENODEV;
-+
-+	if (!xen_has_pv_devices())
-+		return -ENODEV;
-+
-+	pr_info("Initialising Xen " XENSND_DRIVER_NAME " frontend driver\n");
-+	return xenbus_register_frontend(&xen_driver);
-+}
-+
-+static void __exit xen_drv_fini(void)
-+{
-+	pr_info("Unregistering Xen " XENSND_DRIVER_NAME " frontend driver\n");
-+	xenbus_unregister_driver(&xen_driver);
-+}
-+
-+module_init(xen_drv_init);
-+module_exit(xen_drv_fini);
-+
-+MODULE_DESCRIPTION("Xen virtual sound device frontend");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("xen:" XENSND_DRIVER_NAME);
-+MODULE_SUPPORTED_DEVICE("{{ALSA,Virtual soundcard}}");
-diff --git a/sound/xen/xen_snd_front.h b/sound/xen/xen_snd_front.h
+diff --git a/sound/xen/xen_snd_front_cfg.h b/sound/xen/xen_snd_front_cfg.h
 new file mode 100644
-index 000000000000..4ae204b23d32
+index 000000000000..2353fcc74889
 --- /dev/null
-+++ b/sound/xen/xen_snd_front.h
-@@ -0,0 +1,18 @@
++++ b/sound/xen/xen_snd_front_cfg.h
+@@ -0,0 +1,46 @@
 +/* SPDX-License-Identifier: GPL-2.0 OR MIT */
 +
 +/*
@@ -323,13 +635,41 @@ index 000000000000..4ae204b23d32
 + * Author: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 + */
 +
-+#ifndef __XEN_SND_FRONT_H
-+#define __XEN_SND_FRONT_H
++#ifndef __XEN_SND_FRONT_CFG_H
++#define __XEN_SND_FRONT_CFG_H
 +
-+struct xen_snd_front_info {
-+	struct xenbus_device *xb_dev;
++#include <sound/core.h>
++#include <sound/pcm.h>
++
++struct xen_snd_front_info;
++
++struct xen_front_cfg_stream {
++	int index;
++	char *xenstore_path;
++	struct snd_pcm_hardware pcm_hw;
 +};
 +
-+#endif /* __XEN_SND_FRONT_H */
++struct xen_front_cfg_pcm_instance {
++	char name[80];
++	int device_id;
++	struct snd_pcm_hardware pcm_hw;
++	int  num_streams_pb;
++	struct xen_front_cfg_stream *streams_pb;
++	int  num_streams_cap;
++	struct xen_front_cfg_stream *streams_cap;
++};
++
++struct xen_front_cfg_card {
++	char name_short[32];
++	char name_long[80];
++	struct snd_pcm_hardware pcm_hw;
++	int num_pcm_instances;
++	struct xen_front_cfg_pcm_instance *pcm_instances;
++};
++
++int xen_snd_front_cfg_card(struct xen_snd_front_info *front_info,
++			   int *stream_cnt);
++
++#endif /* __XEN_SND_FRONT_CFG_H */
 -- 
 2.16.2
