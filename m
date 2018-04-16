@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: AMD: Support headset button on Stoney
-	DA7219" to the asoc tree
-Date: Mon, 16 Apr 2018 12:39:16 +0100
-Message-ID: <E1f82Tc-0007V0-T0@debutante>
-References: <1523527031-6132-1-git-send-email-akshu.agrawal@amd.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C668E2673C4
- for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 13:39:20 +0200 (CEST)
-In-Reply-To: <1523527031-6132-1-git-send-email-akshu.agrawal@amd.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Agrawal@sirena.org.uk, Akshu <Akshu.Agrawal@amd.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, djkurtz@chromium.org, akshu.agrawal@amd.com, broonie@kernel.org, Alexander.Deucher@amd.com
+Subject: Applied "ASoC: tfa9879: switch to SPDX license tag" to the asoc tree
+Date: Mon, 16 Apr 2018 12:39:44 +0100
+Message-ID: <E1f82U4-0007XJ-Os@debutante>
+References: <20180413114751.6464-3-peda@axentia.se>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180413114751.6464-3-peda@axentia.se>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Rosin <peda@axentia.se>
+Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: AMD: Support headset button on Stoney DA7219
+   ASoC: tfa9879: switch to SPDX license tag
 
 has been applied to the asoc tree at
 
@@ -53,45 +37,65 @@ to this mail.
 Thanks,
 Mark
 
->From 923859e3f6b281cc280214854a44dfd04cb7f65d Mon Sep 17 00:00:00 2001
-From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
-Date: Thu, 12 Apr 2018 17:57:11 +0800
-Subject: [PATCH] ASoC: AMD: Support headset button on Stoney DA7219
+>From 3d5fa5270b1f4cc47b300a943b2a82727c6c6b07 Mon Sep 17 00:00:00 2001
+From: Peter Rosin <peda@axentia.se>
+Date: Fri, 13 Apr 2018 13:47:51 +0200
+Subject: [PATCH] ASoC: tfa9879: switch to SPDX license tag
 
-Adds headset button support.
+It's less overhead, clearer and generally neater.
 
-TEST=Tested Volume UP/Down, Play/Pause functionality
-
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
+Signed-off-by: Peter Rosin <peda@axentia.se>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-da7219-max98357a.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/codecs/tfa9879.c | 18 ++++++------------
+ sound/soc/codecs/tfa9879.h |  7 +------
+ 2 files changed, 7 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index b205c782e494..d281c227d64c 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -33,6 +33,7 @@
- #include <linux/gpio.h>
+diff --git a/sound/soc/codecs/tfa9879.c b/sound/soc/codecs/tfa9879.c
+index 4ed020262a27..abc114a3ae2b 100644
+--- a/sound/soc/codecs/tfa9879.c
++++ b/sound/soc/codecs/tfa9879.c
+@@ -1,15 +1,9 @@
+-/*
+- * tfa9879.c  --  driver for NXP Semiconductors TFA9879
+- *
+- * Copyright (C) 2014 Axentia Technologies AB
+- * Author: Peter Rosin <peda@axentia.se>
+- *
+- *  This program is free software; you can redistribute  it and/or modify it
+- *  under  the terms of  the GNU General  Public License as published by the
+- *  Free Software Foundation;  either version 2 of the  License, or (at your
+- *  option) any later version.
+- *
+- */
++// SPDX-License-Identifier: GPL-2.0+
++//
++// tfa9879.c  --  driver for NXP Semiconductors TFA9879
++//
++// Copyright (C) 2014 Axentia Technologies AB
++// Author: Peter Rosin <peda@axentia.se>
+ 
  #include <linux/module.h>
- #include <linux/i2c.h>
-+#include <linux/input.h>
- #include <linux/acpi.h>
+ #include <linux/init.h>
+diff --git a/sound/soc/codecs/tfa9879.h b/sound/soc/codecs/tfa9879.h
+index 3408c90c4628..66c88d0396fe 100644
+--- a/sound/soc/codecs/tfa9879.h
++++ b/sound/soc/codecs/tfa9879.h
+@@ -1,14 +1,9 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+  * tfa9879.h  --  driver for NXP Semiconductors TFA9879
+  *
+  * Copyright (C) 2014 Axentia Technologies AB
+  * Author: Peter Rosin <peda@axentia.se>
+- *
+- *  This program is free software; you can redistribute  it and/or modify it
+- *  under  the terms of  the GNU General  Public License as published by the
+- *  Free Software Foundation;  either version 2 of the  License, or (at your
+- *  option) any later version.
+- *
+  */
  
- #include "../codecs/da7219.h"
-@@ -80,6 +81,11 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
- 		return ret;
- 	}
- 
-+	snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-+	snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
-+	snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
-+	snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
-+
- 	da7219_aad_jack_det(component, &cz_jack);
- 
- 	return 0;
+ #ifndef _TFA9879_H
 -- 
 2.17.0
