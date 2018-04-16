@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514: Add the missing register in the
-	readable table" to the asoc tree
-Date: Mon, 16 Apr 2018 18:15:21 +0100
-Message-ID: <E1f87ir-0002vM-4o@debutante>
-References: <1522395715-14870-1-git-send-email-oder_chiou@realtek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 63D142673D2
- for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 19:15:24 +0200 (CEST)
-In-Reply-To: <1522395715-14870-1-git-send-email-oder_chiou@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+Subject: Applied "ASoC: topology: Fix bclk and fsync inversion in set_link_hw_format()" to the asoc tree
+Date: Mon, 16 Apr 2018 18:15:32 +0100
+Message-ID: <E1f87j2-00030Y-HV@debutante>
+References: <20180227203317.17274-2-k.marinushkin@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180227203317.17274-2-k.marinushkin@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kirill Marinushkin <k.marinushkin@gmail.com>
+Cc: Pan Xiuli <xiuli.pan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.orgMark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.orgPan Xiuli <xiuli.pan@linux.intel.com>Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>linux-kernel@vger.kernel.orgLiam Girdwood <liam.r.girdwood@linux.intel.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514: Add the missing register in the readable table
+   ASoC: topology: Fix bclk and fsync inversion in set_link_hw_format()
 
 has been applied to the asoc tree at
 
@@ -52,46 +37,93 @@ to this mail.
 Thanks,
 Mark
 
->From 5ef5ac8de125fe6b4b23293bee026ca7ea1529b9 Mon Sep 17 00:00:00 2001
-From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
-Date: Fri, 30 Mar 2018 15:41:55 +0800
-Subject: [PATCH] ASoC: rt5514: Add the missing register in the readable table
+>From a941e2fab3207cb0d57dc4ec47b1b12c8ea78b84 Mon Sep 17 00:00:00 2001
+From: Kirill Marinushkin <k.marinushkin@gmail.com>
+Date: Wed, 4 Apr 2018 06:19:37 +0200
+Subject: [PATCH] ASoC: topology: Fix bclk and fsync inversion in
+ set_link_hw_format()
 
-The patch adds the missing register in the readable table.
+The values of bclk and fsync are inverted WRT the codec. But the existing
+solution already works for Broadwell, see the alsa-lib config:
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+`alsa-lib/src/conf/topology/broadwell/broadwell.conf`
+
+This commit provides the backwards-compatible solution to fix this misuse.
+
+Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Tested-by: Pan Xiuli <xiuli.pan@linux.intel.com>
+Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5514.c | 3 +++
- 1 file changed, 3 insertions(+)
+ include/uapi/sound/asoc.h | 16 ++++++++++++++--
+ sound/soc/soc-topology.c  | 12 +++++++-----
+ 2 files changed, 21 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index e8a66b03faab..1570b91bf018 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -89,6 +89,7 @@ static const struct reg_default rt5514_reg[] = {
- 	{RT5514_PLL3_CALIB_CTRL5,	0x40220012},
- 	{RT5514_DELAY_BUF_CTRL1,	0x7fff006a},
- 	{RT5514_DELAY_BUF_CTRL3,	0x00000000},
-+	{RT5514_ASRC_IN_CTRL1,		0x00000003},
- 	{RT5514_DOWNFILTER0_CTRL1,	0x00020c2f},
- 	{RT5514_DOWNFILTER0_CTRL2,	0x00020c2f},
- 	{RT5514_DOWNFILTER0_CTRL3,	0x10000362},
-@@ -181,6 +182,7 @@ static bool rt5514_readable_register(struct device *dev, unsigned int reg)
- 	case RT5514_PLL3_CALIB_CTRL5:
- 	case RT5514_DELAY_BUF_CTRL1:
- 	case RT5514_DELAY_BUF_CTRL3:
-+	case RT5514_ASRC_IN_CTRL1:
- 	case RT5514_DOWNFILTER0_CTRL1:
- 	case RT5514_DOWNFILTER0_CTRL2:
- 	case RT5514_DOWNFILTER0_CTRL3:
-@@ -238,6 +240,7 @@ static bool rt5514_i2c_readable_register(struct device *dev,
- 	case RT5514_DSP_MAPPING | RT5514_PLL3_CALIB_CTRL5:
- 	case RT5514_DSP_MAPPING | RT5514_DELAY_BUF_CTRL1:
- 	case RT5514_DSP_MAPPING | RT5514_DELAY_BUF_CTRL3:
-+	case RT5514_DSP_MAPPING | RT5514_ASRC_IN_CTRL1:
- 	case RT5514_DSP_MAPPING | RT5514_DOWNFILTER0_CTRL1:
- 	case RT5514_DSP_MAPPING | RT5514_DOWNFILTER0_CTRL2:
- 	case RT5514_DSP_MAPPING | RT5514_DOWNFILTER0_CTRL3:
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index 69c37ecbff7e..f0e5e21efa54 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -160,6 +160,18 @@
+ #define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
+ #define SND_SOC_TPLG_LNK_FLGBIT_VOICE_WAKEUP            (1 << 3)
+ 
++/* DAI topology BCLK parameter
++ * For the backwards capability, by default codec is bclk master
++ */
++#define SND_SOC_TPLG_BCLK_CM         0 /* codec is bclk master */
++#define SND_SOC_TPLG_BCLK_CS         1 /* codec is bclk slave */
++
++/* DAI topology FSYNC parameter
++ * For the backwards capability, by default codec is fsync master
++ */
++#define SND_SOC_TPLG_FSYNC_CM         0 /* codec is fsync master */
++#define SND_SOC_TPLG_FSYNC_CS         1 /* codec is fsync slave */
++
+ /*
+  * Block Header.
+  * This header precedes all object and object arrays below.
+@@ -315,8 +327,8 @@ struct snd_soc_tplg_hw_config {
+ 	__u8 clock_gated;	/* 1 if clock can be gated to save power */
+ 	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
+ 	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
+-	__u8 bclk_master;	/* 1 for master of BCLK, 0 for slave */
+-	__u8 fsync_master;	/* 1 for master of FSYNC, 0 for slave */
++	__u8 bclk_master;	/* SND_SOC_TPLG_BCLK_ value */
++	__u8 fsync_master;	/* SND_SOC_TPLG_FSYNC_ value */
+ 	__u8 mclk_direction;    /* 0 for input, 1 for output */
+ 	__le16 reserved;	/* for 32bit alignment */
+ 	__le32 mclk_rate;	/* MCLK or SYSCLK freqency in Hz */
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 942c6e5eb4b7..1c55252641f3 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -2019,13 +2019,15 @@ static void set_link_hw_format(struct snd_soc_dai_link *link,
+ 			link->dai_fmt |= SND_SOC_DAIFMT_IB_IF;
+ 
+ 		/* clock masters */
+-		bclk_master = hw_config->bclk_master;
+-		fsync_master = hw_config->fsync_master;
+-		if (!bclk_master && !fsync_master)
++		bclk_master = (hw_config->bclk_master ==
++			       SND_SOC_TPLG_BCLK_CM);
++		fsync_master = (hw_config->fsync_master ==
++				SND_SOC_TPLG_FSYNC_CM);
++		if (bclk_master && fsync_master)
+ 			link->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
+-		else if (bclk_master && !fsync_master)
+-			link->dai_fmt |= SND_SOC_DAIFMT_CBS_CFM;
+ 		else if (!bclk_master && fsync_master)
++			link->dai_fmt |= SND_SOC_DAIFMT_CBS_CFM;
++		else if (bclk_master && !fsync_master)
+ 			link->dai_fmt |= SND_SOC_DAIFMT_CBM_CFS;
+ 		else
+ 			link->dai_fmt |= SND_SOC_DAIFMT_CBS_CFS;
 -- 
 2.17.0
