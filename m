@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Add missing clock gating parameter when parsing hw_configs" to the asoc tree
-Date: Mon, 16 Apr 2018 18:15:28 +0100
-Message-ID: <E1f87iy-0002y5-QX@debutante>
-References: <20180327205632.3677-3-k.marinushkin@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180327205632.3677-3-k.marinushkin@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kirill Marinushkin <k.marinushkin@gmail.com>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Pan Xiuli <xiuli.pan@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.orgMark Brown <broonie@kernel.org>Jaroslav Kysela <perex@perex.cz>Takashi Iwai <tiwai@suse.de>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.orgPan Xiuli <xiuli.pan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>linux-kernel@vger.kernel.orgLiam Girdwood <liam.r.girdwood@linux.intel.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: rt5514: Add the missing register in the
+	readable table" to the asoc tree
+Date: Mon, 16 Apr 2018 18:15:21 +0100
+Message-ID: <E1f87ir-0002vM-4o@debutante>
+References: <1522395715-14870-1-git-send-email-oder_chiou@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63D142673D2
+ for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 19:15:24 +0200 (CEST)
+In-Reply-To: <1522395715-14870-1-git-send-email-oder_chiou@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: Add missing clock gating parameter when parsing hw_configs
+   ASoC: rt5514: Add the missing register in the readable table
 
 has been applied to the asoc tree at
 
@@ -37,104 +52,46 @@ to this mail.
 Thanks,
 Mark
 
->From 933e1c4a667103c4d10ebdc9505a0a6abd8c3fbd Mon Sep 17 00:00:00 2001
-From: Kirill Marinushkin <k.marinushkin@gmail.com>
-Date: Wed, 4 Apr 2018 06:19:38 +0200
-Subject: [PATCH] ASoC: topology: Add missing clock gating parameter when
- parsing hw_configs
+>From 5ef5ac8de125fe6b4b23293bee026ca7ea1529b9 Mon Sep 17 00:00:00 2001
+From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
+Date: Fri, 30 Mar 2018 15:41:55 +0800
+Subject: [PATCH] ASoC: rt5514: Add the missing register in the readable table
 
-Clock gating parameter is a part of `dai_fmt`. It is supported by
-`alsa-lib` when creating a topology binary file, but ignored by kernel
-when loading this topology file.
+The patch adds the missing register in the readable table.
 
-After applying this commit, the clock gating parameter is not ignored any
-more. This solution is backwards compatible. The existing behaviour is
-not broken, because by default the parameter value is 0 and is ignored.
-
-snd_soc_tplg_hw_config.clock_gated = 0 => no effect
-snd_soc_tplg_hw_config.clock_gated = 1 => SND_SOC_DAIFMT_GATED
-snd_soc_tplg_hw_config.clock_gated = 2 => SND_SOC_DAIFMT_CONT
-
-For example, the following config, based on
-alsa-lib/src/conf/topology/broadwell/broadwell.conf, is now supported:
-
-~~~~
-SectionHWConfig."CodecHWConfig" {
-        id "1"
-        format "I2S"            # physical audio format.
-        pm_gate_clocks "true"   # clock can be gated
-}
-
-SectionLink."Codec" {
-
-        # used for binding to the physical link
-        id "0"
-
-        hw_configs [
-                "CodecHWConfig"
-        ]
-
-        default_hw_conf_id "1"
-}
-~~~~
-
-Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Pan Xiuli <xiuli.pan@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/uapi/sound/asoc.h | 7 ++++++-
- sound/soc/soc-topology.c  | 7 +++++++
- 2 files changed, 13 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5514.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index f0e5e21efa54..f3c4b46e39d8 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -139,6 +139,11 @@
- #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_CHANNELS      (1 << 1)
- #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
- 
-+/* DAI clock gating */
-+#define SND_SOC_TPLG_DAI_CLK_GATE_UNDEFINED	0
-+#define SND_SOC_TPLG_DAI_CLK_GATE_GATED	1
-+#define SND_SOC_TPLG_DAI_CLK_GATE_CONT		2
-+
- /* DAI physical PCM data formats.
-  * Add new formats to the end of the list.
-  */
-@@ -324,7 +329,7 @@ struct snd_soc_tplg_hw_config {
- 	__le32 size;            /* in bytes of this structure */
- 	__le32 id;		/* unique ID - - used to match */
- 	__le32 fmt;		/* SND_SOC_DAI_FORMAT_ format value */
--	__u8 clock_gated;	/* 1 if clock can be gated to save power */
-+	__u8 clock_gated;	/* SND_SOC_TPLG_DAI_CLK_GATE_ value */
- 	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
- 	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
- 	__u8 bclk_master;	/* SND_SOC_TPLG_BCLK_ value */
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 1c55252641f3..aab31144f683 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -2006,6 +2006,13 @@ static void set_link_hw_format(struct snd_soc_dai_link *link,
- 
- 		link->dai_fmt = hw_config->fmt & SND_SOC_DAIFMT_FORMAT_MASK;
- 
-+		/* clock gating */
-+		if (hw_config->clock_gated == SND_SOC_TPLG_DAI_CLK_GATE_GATED)
-+			link->dai_fmt |= SND_SOC_DAIFMT_GATED;
-+		else if (hw_config->clock_gated ==
-+			 SND_SOC_TPLG_DAI_CLK_GATE_CONT)
-+			link->dai_fmt |= SND_SOC_DAIFMT_CONT;
-+
- 		/* clock signal polarity */
- 		invert_bclk = hw_config->invert_bclk;
- 		invert_fsync = hw_config->invert_fsync;
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index e8a66b03faab..1570b91bf018 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -89,6 +89,7 @@ static const struct reg_default rt5514_reg[] = {
+ 	{RT5514_PLL3_CALIB_CTRL5,	0x40220012},
+ 	{RT5514_DELAY_BUF_CTRL1,	0x7fff006a},
+ 	{RT5514_DELAY_BUF_CTRL3,	0x00000000},
++	{RT5514_ASRC_IN_CTRL1,		0x00000003},
+ 	{RT5514_DOWNFILTER0_CTRL1,	0x00020c2f},
+ 	{RT5514_DOWNFILTER0_CTRL2,	0x00020c2f},
+ 	{RT5514_DOWNFILTER0_CTRL3,	0x10000362},
+@@ -181,6 +182,7 @@ static bool rt5514_readable_register(struct device *dev, unsigned int reg)
+ 	case RT5514_PLL3_CALIB_CTRL5:
+ 	case RT5514_DELAY_BUF_CTRL1:
+ 	case RT5514_DELAY_BUF_CTRL3:
++	case RT5514_ASRC_IN_CTRL1:
+ 	case RT5514_DOWNFILTER0_CTRL1:
+ 	case RT5514_DOWNFILTER0_CTRL2:
+ 	case RT5514_DOWNFILTER0_CTRL3:
+@@ -238,6 +240,7 @@ static bool rt5514_i2c_readable_register(struct device *dev,
+ 	case RT5514_DSP_MAPPING | RT5514_PLL3_CALIB_CTRL5:
+ 	case RT5514_DSP_MAPPING | RT5514_DELAY_BUF_CTRL1:
+ 	case RT5514_DSP_MAPPING | RT5514_DELAY_BUF_CTRL3:
++	case RT5514_DSP_MAPPING | RT5514_ASRC_IN_CTRL1:
+ 	case RT5514_DSP_MAPPING | RT5514_DOWNFILTER0_CTRL1:
+ 	case RT5514_DSP_MAPPING | RT5514_DOWNFILTER0_CTRL2:
+ 	case RT5514_DSP_MAPPING | RT5514_DOWNFILTER0_CTRL3:
 -- 
 2.17.0
