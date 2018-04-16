@@ -1,69 +1,91 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 3/5] ASoC: max9860: switch to SPDX license tag
-Date: Mon, 16 Apr 2018 12:35:35 +0100
-Message-ID: <20180416113535.GA20726@sirena.org.uk>
-References: <20180412161601.GI9929@sirena.org.uk>
- <20180412211437.21599-1-peda@axentia.se>
- <20180412211437.21599-4-peda@axentia.se>
- <20180413111927.GC6854@sirena.org.uk>
- <20180415073229.GA19823@infradead.org>
+Subject: Applied "ASoC: rsnd: ssi: wait maximum 5ms for status
+	check" to the asoc tree
+Date: Mon, 16 Apr 2018 12:38:42 +0100
+Message-ID: <E1f82T4-0007R5-Qa@debutante>
+References: <87r2ngc7k1.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="1yeeQ81UyVL57Vl7"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180415073229.GA19823@infradead.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id BD4472673C4
+ for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 13:38:46 +0200 (CEST)
+In-Reply-To: <87r2ngc7k1.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiromitsu Yamasaki <hiromitsu.yamasaki.ym@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---1yeeQ81UyVL57Vl7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: rsnd: ssi: wait maximum 5ms for status check
 
-On Sun, Apr 15, 2018 at 12:32:29AM -0700, Christoph Hellwig wrote:
-> On Fri, Apr 13, 2018 at 12:19:27PM +0100, Mark Brown wrote:
-> > On Thu, Apr 12, 2018 at 11:14:35PM +0200, Peter Rosin wrote:
+has been applied to the asoc tree at
 
-> > > @@ -1,3 +1,4 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > >  /*
-> > >   * Driver for the MAX9860 Mono Audio Voice Codec
-> > >   *
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> > Please don't mix C and C++ comments like this - it looks unintentional
-> > and messy.  Just convert the entire comment block to C++ so it's
-> > consistent with itself.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> NAK - that is exactky the wrong way to go.  Normal Linux comments are
-> classi C-style comments and should remain so.  SPDX tags use c++
-> comments exactly to be different and stick out.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-During some of the discussions of the SPDX stuff Linus was expressing a
-willingness or desire to just use C++ comments where sensible outside of
-the SPDX headers, especially with single line stuff though this seems
-like another useful exception.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Quite why we'd particularly need to have the SPDX stuff sticking out
-isn't really obvious either; there's the desire to have something very
-consistent to ease machine parsing but it's not exactly what I'd expect
-most humans to be first looking for when they open a source file.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---1yeeQ81UyVL57Vl7
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From 3fd391fb7c97ab6dfb9e44926a265566d1d1ab79 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 16 Apr 2018 00:38:13 +0000
+Subject: [PATCH] ASoC: rsnd: ssi: wait maximum 5ms for status check
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrUioYACgkQJNaLcl1U
-h9BTdQf/QYqLAfdAtU8bXP+DPcVKjQYEcO/chVZFNnE8MPFx/fV5q+CLmBVrnThw
-cWEYy7RUuTY80WVV0+4Xp3Cq9jJDh4Rv19rRSfKRWpblz4r3Cky3L7Y+Wz1rrGAo
-V0lWa3ZWMvdQFxqz/pMLYGceSbcIsH3BuIZdEmf0amvT5vsLaqaG+34gihm+COYG
-FFweBKlPc7pSa9LestNvJQx2uXLlbzVh4j4W2IK4JfPA5Rx9tgrge1lOr9/Xf2hm
-XyiKUSHtu5aL47C9AiLvNf2i5BRhMF5CGt2AyiW04B3+LpwIBjhyPqZjCZLdc/zO
-4Xp/0N15oXQN4GsMt6m/hexrX/mdVg==
-=Zyh3
------END PGP SIGNATURE-----
+It is waiting udelay(50) x 1024 (= 50ms) for status check
+in worst case, but it is overkill.
+And we shouldn't use udelay() for 50us
+(linux/Documentation/timers/timers-howto.txt)
 
---1yeeQ81UyVL57Vl7--
+Waiting maximum udelay(5) x 1024 (= 5ms) is very enough
+for status check.
+This patch fixes these issue.
+
+Reported-by: Hiromitsu Yamasaki <hiromitsu.yamasaki.ym@renesas.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/ssi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 31ffe3f0e163..9538f76f8e20 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -171,7 +171,7 @@ static void rsnd_ssi_status_check(struct rsnd_mod *mod,
+ 		if (status & bit)
+ 			return;
+ 
+-		udelay(50);
++		udelay(5);
+ 	}
+ 
+ 	dev_warn(dev, "%s[%d] status check failed\n",
+-- 
+2.17.0
