@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Add definitions for mclk_direction values" to the asoc tree
-Date: Mon, 16 Apr 2018 18:15:24 +0100
-Message-ID: <E1f87iu-0002wh-VJ@debutante>
-References: <20180404041939.23317-4-k.marinushkin@gmail.com>
+Subject: Applied "ASoC: topology: Add missing clock gating parameter when parsing hw_configs" to the asoc tree
+Date: Mon, 16 Apr 2018 18:15:28 +0100
+Message-ID: <E1f87iy-0002y5-QX@debutante>
+References: <20180327205632.3677-3-k.marinushkin@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180404041939.23317-4-k.marinushkin@gmail.com>
+In-Reply-To: <20180327205632.3677-3-k.marinushkin@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Kirill Marinushkin <k.marinushkin@gmail.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Pan Xiuli <xiuli.pan@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.orgMark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.orgTakashi Iwai <tiwai@suse.de>Pan Xiuli <xiuli.pan@linux.intel.com>Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>linux-kernel@vger.kernel.orgLiam Girdwood <liam.r.girdwood@linux.intel.com>alsa-devel@alsa-project.org
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Pan Xiuli <xiuli.pan@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.orgMark Brown <broonie@kernel.org>Jaroslav Kysela <perex@perex.cz>Takashi Iwai <tiwai@suse.de>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.orgPan Xiuli <xiuli.pan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>linux-kernel@vger.kernel.orgLiam Girdwood <liam.r.girdwood@linux.intel.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: Add definitions for mclk_direction values
+   ASoC: topology: Add missing clock gating parameter when parsing hw_configs
 
 has been applied to the asoc tree at
 
@@ -37,19 +37,49 @@ to this mail.
 Thanks,
 Mark
 
->From e590522a06adce8ca2eb47e77d80616cd1542d91 Mon Sep 17 00:00:00 2001
+>From 933e1c4a667103c4d10ebdc9505a0a6abd8c3fbd Mon Sep 17 00:00:00 2001
 From: Kirill Marinushkin <k.marinushkin@gmail.com>
-Date: Wed, 4 Apr 2018 06:19:39 +0200
-Subject: [PATCH] ASoC: topology: Add definitions for mclk_direction values
+Date: Wed, 4 Apr 2018 06:19:38 +0200
+Subject: [PATCH] ASoC: topology: Add missing clock gating parameter when
+ parsing hw_configs
 
-Current comment makes not clear the direction of mclk. Previously, similar
-description caused a misunderstanding for bclk_master and fsync_master.
+Clock gating parameter is a part of `dai_fmt`. It is supported by
+`alsa-lib` when creating a topology binary file, but ignored by kernel
+when loading this topology file.
 
-This commit solves the potential confusion the same way it is solved for
-bclk_master and fsync_master.
+After applying this commit, the clock gating parameter is not ignored any
+more. This solution is backwards compatible. The existing behaviour is
+not broken, because by default the parameter value is 0 and is ignored.
+
+snd_soc_tplg_hw_config.clock_gated = 0 => no effect
+snd_soc_tplg_hw_config.clock_gated = 1 => SND_SOC_DAIFMT_GATED
+snd_soc_tplg_hw_config.clock_gated = 2 => SND_SOC_DAIFMT_CONT
+
+For example, the following config, based on
+alsa-lib/src/conf/topology/broadwell/broadwell.conf, is now supported:
+
+~~~~
+SectionHWConfig."CodecHWConfig" {
+        id "1"
+        format "I2S"            # physical audio format.
+        pm_gate_clocks "true"   # clock can be gated
+}
+
+SectionLink."Codec" {
+
+        # used for binding to the physical link
+        id "0"
+
+        hw_configs [
+                "CodecHWConfig"
+        ]
+
+        default_hw_conf_id "1"
+}
+~~~~
 
 Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: Jaroslav Kysela <perex@perex.cz>
 Cc: Takashi Iwai <tiwai@suse.de>
 Cc: Mark Brown <broonie@kernel.org>
@@ -59,32 +89,52 @@ Cc: linux-kernel@vger.kernel.org
 Cc: alsa-devel@alsa-project.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/uapi/sound/asoc.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ include/uapi/sound/asoc.h | 7 ++++++-
+ sound/soc/soc-topology.c  | 7 +++++++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index f3c4b46e39d8..b901cdbe532a 100644
+index f0e5e21efa54..f3c4b46e39d8 100644
 --- a/include/uapi/sound/asoc.h
 +++ b/include/uapi/sound/asoc.h
-@@ -144,6 +144,10 @@
- #define SND_SOC_TPLG_DAI_CLK_GATE_GATED	1
- #define SND_SOC_TPLG_DAI_CLK_GATE_CONT		2
+@@ -139,6 +139,11 @@
+ #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_CHANNELS      (1 << 1)
+ #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
  
-+/* DAI mclk_direction */
-+#define SND_SOC_TPLG_MCLK_CO            0 /* for codec, mclk is output */
-+#define SND_SOC_TPLG_MCLK_CI            1 /* for codec, mclk is input */
++/* DAI clock gating */
++#define SND_SOC_TPLG_DAI_CLK_GATE_UNDEFINED	0
++#define SND_SOC_TPLG_DAI_CLK_GATE_GATED	1
++#define SND_SOC_TPLG_DAI_CLK_GATE_CONT		2
 +
  /* DAI physical PCM data formats.
   * Add new formats to the end of the list.
   */
-@@ -334,7 +338,7 @@ struct snd_soc_tplg_hw_config {
+@@ -324,7 +329,7 @@ struct snd_soc_tplg_hw_config {
+ 	__le32 size;            /* in bytes of this structure */
+ 	__le32 id;		/* unique ID - - used to match */
+ 	__le32 fmt;		/* SND_SOC_DAI_FORMAT_ format value */
+-	__u8 clock_gated;	/* 1 if clock can be gated to save power */
++	__u8 clock_gated;	/* SND_SOC_TPLG_DAI_CLK_GATE_ value */
+ 	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
  	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
  	__u8 bclk_master;	/* SND_SOC_TPLG_BCLK_ value */
- 	__u8 fsync_master;	/* SND_SOC_TPLG_FSYNC_ value */
--	__u8 mclk_direction;    /* 0 for input, 1 for output */
-+	__u8 mclk_direction;    /* SND_SOC_TPLG_MCLK_ value */
- 	__le16 reserved;	/* for 32bit alignment */
- 	__le32 mclk_rate;	/* MCLK or SYSCLK freqency in Hz */
- 	__le32 bclk_rate;	/* BCLK freqency in Hz */
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 1c55252641f3..aab31144f683 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -2006,6 +2006,13 @@ static void set_link_hw_format(struct snd_soc_dai_link *link,
+ 
+ 		link->dai_fmt = hw_config->fmt & SND_SOC_DAIFMT_FORMAT_MASK;
+ 
++		/* clock gating */
++		if (hw_config->clock_gated == SND_SOC_TPLG_DAI_CLK_GATE_GATED)
++			link->dai_fmt |= SND_SOC_DAIFMT_GATED;
++		else if (hw_config->clock_gated ==
++			 SND_SOC_TPLG_DAI_CLK_GATE_CONT)
++			link->dai_fmt |= SND_SOC_DAIFMT_CONT;
++
+ 		/* clock signal polarity */
+ 		invert_bclk = hw_config->invert_bclk;
+ 		invert_fsync = hw_config->invert_fsync;
 -- 
 2.17.0
