@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: amd: acp-da7219-max98357: Make symbol
-	da7219_dai_clk static" to the asoc tree
-Date: Mon, 16 Apr 2018 18:15:17 +0100
-Message-ID: <E1f87in-0002uK-DM@debutante>
-References: <20180313110353.GA117792@lkp-ib04>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 096152673D2
- for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 19:15:23 +0200 (CEST)
-In-Reply-To: <20180313110353.GA117792@lkp-ib04>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, akshu.agrawal@amd.com, broonie@kernel.org, kbuild-all@01.org
+Subject: Applied "ASoC: topology: Add definitions for mclk_direction values" to the asoc tree
+Date: Mon, 16 Apr 2018 18:15:24 +0100
+Message-ID: <E1f87iu-0002wh-VJ@debutante>
+References: <20180404041939.23317-4-k.marinushkin@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180404041939.23317-4-k.marinushkin@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kirill Marinushkin <k.marinushkin@gmail.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Pan Xiuli <xiuli.pan@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.orgMark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.orgTakashi Iwai <tiwai@suse.de>Pan Xiuli <xiuli.pan@linux.intel.com>Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>linux-kernel@vger.kernel.orgLiam Girdwood <liam.r.girdwood@linux.intel.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: amd: acp-da7219-max98357: Make symbol da7219_dai_clk static
+   ASoC: topology: Add definitions for mclk_direction values
 
 has been applied to the asoc tree at
 
@@ -53,35 +37,54 @@ to this mail.
 Thanks,
 Mark
 
->From ede1d3534f589d69b381e8509f3d01ec1e23c804 Mon Sep 17 00:00:00 2001
-From: Wei Yongjun <weiyongjun1@huawei.com>
-Date: Thu, 29 Mar 2018 02:14:03 +0000
-Subject: [PATCH] ASoC: amd: acp-da7219-max98357: Make symbol da7219_dai_clk
- static
+>From e590522a06adce8ca2eb47e77d80616cd1542d91 Mon Sep 17 00:00:00 2001
+From: Kirill Marinushkin <k.marinushkin@gmail.com>
+Date: Wed, 4 Apr 2018 06:19:39 +0200
+Subject: [PATCH] ASoC: topology: Add definitions for mclk_direction values
 
-Fixes the following sparse warning:
+Current comment makes not clear the direction of mclk. Previously, similar
+description caused a misunderstanding for bclk_master and fsync_master.
 
-sound/soc/amd/acp-da7219-max98357a.c:46:12: warning:
- symbol 'da7219_dai_clk' was not declared. Should it be static?
+This commit solves the potential confusion the same way it is solved for
+bclk_master and fsync_master.
 
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Pan Xiuli <xiuli.pan@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-da7219-max98357a.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/uapi/sound/asoc.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index d281c227d64c..215b06bf2039 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -44,7 +44,7 @@
- #define DUAL_CHANNEL		2
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index f3c4b46e39d8..b901cdbe532a 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -144,6 +144,10 @@
+ #define SND_SOC_TPLG_DAI_CLK_GATE_GATED	1
+ #define SND_SOC_TPLG_DAI_CLK_GATE_CONT		2
  
- static struct snd_soc_jack cz_jack;
--struct clk *da7219_dai_clk;
-+static struct clk *da7219_dai_clk;
- 
- static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
- {
++/* DAI mclk_direction */
++#define SND_SOC_TPLG_MCLK_CO            0 /* for codec, mclk is output */
++#define SND_SOC_TPLG_MCLK_CI            1 /* for codec, mclk is input */
++
+ /* DAI physical PCM data formats.
+  * Add new formats to the end of the list.
+  */
+@@ -334,7 +338,7 @@ struct snd_soc_tplg_hw_config {
+ 	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
+ 	__u8 bclk_master;	/* SND_SOC_TPLG_BCLK_ value */
+ 	__u8 fsync_master;	/* SND_SOC_TPLG_FSYNC_ value */
+-	__u8 mclk_direction;    /* 0 for input, 1 for output */
++	__u8 mclk_direction;    /* SND_SOC_TPLG_MCLK_ value */
+ 	__le16 reserved;	/* for 32bit alignment */
+ 	__le32 mclk_rate;	/* MCLK or SYSCLK freqency in Hz */
+ 	__le32 bclk_rate;	/* BCLK freqency in Hz */
 -- 
 2.17.0
