@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max9860: switch to SPDX license tag" to the asoc tree
-Date: Mon, 16 Apr 2018 12:59:55 +0100
-Message-ID: <E1f82nb-00006x-Jp@debutante>
-References: <20180413114751.6464-2-peda@axentia.se>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180413114751.6464-2-peda@axentia.se>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@axentia.se>
-Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: AMD: Support headset button on Stoney
+	DA7219" to the asoc tree
+Date: Mon, 16 Apr 2018 13:00:11 +0100
+Message-ID: <E1f82nr-00008V-TO@debutante>
+References: <1523527031-6132-1-git-send-email-akshu.agrawal@amd.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0762E2673F2
+ for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 14:00:15 +0200 (CEST)
+In-Reply-To: <1523527031-6132-1-git-send-email-akshu.agrawal@amd.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Agrawal@sirena.org.uk, Akshu <Akshu.Agrawal@amd.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, djkurtz@chromium.org, akshu.agrawal@amd.com, broonie@kernel.org, Alexander.Deucher@amd.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max9860: switch to SPDX license tag
+   ASoC: AMD: Support headset button on Stoney DA7219
 
 has been applied to the asoc tree at
 
@@ -37,81 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From a93532dbdc8d6b96b8c51eea333cb40bfa7c490c Mon Sep 17 00:00:00 2001
-From: Peter Rosin <peda@axentia.se>
-Date: Fri, 13 Apr 2018 13:47:50 +0200
-Subject: [PATCH] ASoC: max9860: switch to SPDX license tag
+>From 923859e3f6b281cc280214854a44dfd04cb7f65d Mon Sep 17 00:00:00 2001
+From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Date: Thu, 12 Apr 2018 17:57:11 +0800
+Subject: [PATCH] ASoC: AMD: Support headset button on Stoney DA7219
 
-It's less overhead, clearer and generally neater.
+Adds headset button support.
 
-Signed-off-by: Peter Rosin <peda@axentia.se>
+TEST=Tested Volume UP/Down, Play/Pause functionality
+
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max9860.c | 31 +++++++++++--------------------
- sound/soc/codecs/max9860.h | 10 +---------
- 2 files changed, 12 insertions(+), 29 deletions(-)
+ sound/soc/amd/acp-da7219-max98357a.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/codecs/max9860.c b/sound/soc/codecs/max9860.c
-index c1bd9de5e4a3..de3d44e9199b 100644
---- a/sound/soc/codecs/max9860.c
-+++ b/sound/soc/codecs/max9860.c
-@@ -1,23 +1,14 @@
--/*
-- * Driver for the MAX9860 Mono Audio Voice Codec
-- *
-- * https://datasheets.maximintegrated.com/en/ds/MAX9860.pdf
-- *
-- * The driver does not support sidetone since the DVST register field is
-- * backwards with the mute near the maximum level instead of the minimum.
-- *
-- * Author: Peter Rosin <peda@axentia.s>
-- *         Copyright 2016 Axentia Technologies
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License
-- * version 2 as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-- * General Public License for more details.
-- */
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// Driver for the MAX9860 Mono Audio Voice Codec
-+//
-+// https://datasheets.maximintegrated.com/en/ds/MAX9860.pdf
-+//
-+// The driver does not support sidetone since the DVST register field is
-+// backwards with the mute near the maximum level instead of the minimum.
-+//
-+// Author: Peter Rosin <peda@axentia.s>
-+//         Copyright 2016 Axentia Technologies
- 
- #include <linux/init.h>
+diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+index b205c782e494..d281c227d64c 100644
+--- a/sound/soc/amd/acp-da7219-max98357a.c
++++ b/sound/soc/amd/acp-da7219-max98357a.c
+@@ -33,6 +33,7 @@
+ #include <linux/gpio.h>
  #include <linux/module.h>
-diff --git a/sound/soc/codecs/max9860.h b/sound/soc/codecs/max9860.h
-index 22041bd67a7d..e07b905eaf50 100644
---- a/sound/soc/codecs/max9860.h
-+++ b/sound/soc/codecs/max9860.h
-@@ -1,17 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
- /*
-  * Driver for the MAX9860 Mono Audio Voice Codec
-  *
-  * Author: Peter Rosin <peda@axentia.s>
-  *         Copyright 2016 Axentia Technologies
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License
-- * version 2 as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-- * General Public License for more details.
-  */
+ #include <linux/i2c.h>
++#include <linux/input.h>
+ #include <linux/acpi.h>
  
- #ifndef _SND_SOC_MAX9860
+ #include "../codecs/da7219.h"
+@@ -80,6 +81,11 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
+ 		return ret;
+ 	}
+ 
++	snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
++	snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
++	snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
++	snd_jack_set_key(cz_jack.jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
++
+ 	da7219_aad_jack_det(component, &cz_jack);
+ 
+ 	return 0;
 -- 
 2.17.0
