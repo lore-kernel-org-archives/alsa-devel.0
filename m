@@ -1,51 +1,87 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 2/3] ASoC: topology: Add missing clock gating
- parameter when parsing hw_configs
-Date: Mon, 16 Apr 2018 17:52:06 +0100
-Message-ID: <20180416165206.GE20726@sirena.org.uk>
-References: <20180404041939.23317-1-k.marinushkin@gmail.com>
- <20180404041939.23317-3-k.marinushkin@gmail.com>
+Subject: Applied "ASoC: amd: acp-da7219-max98357: Make symbol
+	da7219_dai_clk static" to the asoc tree
+Date: Mon, 16 Apr 2018 18:15:07 +0100
+Message-ID: <E1f87id-0002tE-C9@debutante>
+References: <20180313110353.GA117792@lkp-ib04>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Rgf3q3z9SdmXC6oT"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180404041939.23317-3-k.marinushkin@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kirill Marinushkin <k.marinushkin@gmail.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Pan Xiuli <xiuli.pan@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 323D72673D2
+ for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 19:15:20 +0200 (CEST)
+In-Reply-To: <20180313110353.GA117792@lkp-ib04>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, akshu.agrawal@amd.com, broonie@kernel.org, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---Rgf3q3z9SdmXC6oT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: amd: acp-da7219-max98357: Make symbol da7219_dai_clk static
 
-On Wed, Apr 04, 2018 at 06:19:38AM +0200, Kirill Marinushkin wrote:
+has been applied to the asoc tree at
 
-> +		/* clock gating */
-> +		if (hw_config->clock_gated == SND_SOC_TPLG_DAI_CLK_GATE_GATED)
-> +			link->dai_fmt |= SND_SOC_DAIFMT_GATED;
-> +		else if (hw_config->clock_gated ==
-> +			 SND_SOC_TPLG_DAI_CLK_GATE_CONT)
-> +			link->dai_fmt |= SND_SOC_DAIFMT_CONT;
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-I'll apply this but the above would be better written as a switch
-statement - could you please send an incremental patch changing it?
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---Rgf3q3z9SdmXC6oT
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrU1LUACgkQJNaLcl1U
-h9AJHwf/VRXvj6wUgqNsOgl9BTNAgjrI542w0m0iTZLOCRoDi8215Dyu7VLL4eyX
-URweWYD0bpeXfGYGwAiEFZu5hQzWUOBwCInt29HoCNuEo9pwLySKZ1F0QHy9HFuQ
-jOoxHUHz8sa0iOiqw8w78pAlrNfOqF9FRkG92+By6ub8ygIfcM5N07AcS4ObNCHB
-Kdux0S0jyg1mztoaOQygdf1cta1WipWf+UphdGT9HgoCP++a8AWJ1kMzcxvCarIC
-/jmYmiG1spafa7wVYD8laLKmd2d8mquIDlwDe0pF9N4WkNbE7pfgbOoaU2/6CXOz
-LGtvCxqxqDkwHwa/cBd/4bUKlcPF+g==
-=ll/R
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---Rgf3q3z9SdmXC6oT--
+Thanks,
+Mark
+
+>From dc29f581fa9d5567c3a01ecfdd7f16b2e613c7fb Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Thu, 29 Mar 2018 02:14:03 +0000
+Subject: [PATCH] ASoC: amd: acp-da7219-max98357: Make symbol da7219_dai_clk
+ static
+
+Fixes the following sparse warning:
+
+sound/soc/amd/acp-da7219-max98357a.c:46:12: warning:
+ symbol 'da7219_dai_clk' was not declared. Should it be static?
+
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/amd/acp-da7219-max98357a.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+index b205c782e494..f41560ecbcd1 100644
+--- a/sound/soc/amd/acp-da7219-max98357a.c
++++ b/sound/soc/amd/acp-da7219-max98357a.c
+@@ -43,7 +43,7 @@
+ #define DUAL_CHANNEL		2
+ 
+ static struct snd_soc_jack cz_jack;
+-struct clk *da7219_dai_clk;
++static struct clk *da7219_dai_clk;
+ 
+ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
+ {
+-- 
+2.17.0
