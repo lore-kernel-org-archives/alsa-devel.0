@@ -1,76 +1,48 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_esai: Add freq check in set_dai_sysclk()" to the asoc tree
-Date: Mon, 16 Apr 2018 13:05:56 +0100
-Message-ID: <E1f82tQ-0000nK-OJ@debutante>
-References: <1523234034-33018-1-git-send-email-nicoleotsuka@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1523234034-33018-1-git-send-email-nicoleotsuka@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.orgalsa-devel@alsa-project.org
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 0/2] Minor GFP_ATOMIC removal
+Date: Mon, 16 Apr 2018 14:12:04 +0200
+Message-ID: <20180416121206.27131-1-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 795112673C4
+ for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 14:12:09 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id A94B7AE1B
+ for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 12:12:08 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi,
 
-   ASoC: fsl_esai: Add freq check in set_dai_sysclk()
+this is small fixes for the old PCI drivers that still used GFP_ATOMIC
+by some reason.  It became a nice cleanup in the end.
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Takashi
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+===
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Takashi Iwai (2):
+  ALSA: cmipci: Allocate with GFP_KERNEL instead of GFP_ATOMIC
+  ALSA: emu10k1: Reduce GFP_ATOMIC allocation
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+ include/sound/emu10k1.h    | 4 ++--
+ sound/pci/cmipci.c         | 2 +-
+ sound/pci/emu10k1/emufx.c  | 9 +--------
+ sound/pci/emu10k1/emupcm.c | 2 +-
+ 4 files changed, 5 insertions(+), 12 deletions(-)
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 8a2278b7fb3df67cd415c679ba1a0e5e4a1761a7 Mon Sep 17 00:00:00 2001
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Date: Sun, 8 Apr 2018 17:33:54 -0700
-Subject: [PATCH] ASoC: fsl_esai: Add freq check in set_dai_sysclk()
-
-The freq parameter indicates the physical frequency of an actual
-input clock or a desired frequency of an output clock for HCKT/R.
-It should never be passed 0. This might cause Division-by-zero.
-
-So this patch adds a check to fix it.
-
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Reviewed-by: Fabio Estevam <fabio.estevam@nxp.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/fsl/fsl_esai.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index da8fd98c7f51..d79e99ef31ad 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -226,6 +226,12 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
- 	unsigned long clk_rate;
- 	int ret;
- 
-+	if (freq == 0) {
-+		dev_err(dai->dev, "%sput freq of HCK%c should not be 0Hz\n",
-+			in ? "in" : "out", tx ? 'T' : 'R');
-+		return -EINVAL;
-+	}
-+
- 	/* Bypass divider settings if the requirement doesn't change */
- 	if (freq == esai_priv->hck_rate[tx] && dir == esai_priv->hck_dir[tx])
- 		return 0;
 -- 
-2.17.0
+2.16.3
