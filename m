@@ -1,1221 +1,265 @@
-From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: [PATCH v2 5/5] ALSA: xen-front: Implement ALSA virtual sound driver
-Date: Mon, 16 Apr 2018 09:24:53 +0300
-Message-ID: <20180416062453.24743-6-andr2000@gmail.com>
-References: <20180416062453.24743-1-andr2000@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180416062453.24743-1-andr2000@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, jgross@suse.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, perex@perex.cz, tiwai@suse.com
-Cc: andr2000@gmail.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+From: kbuild test robot <lkp@intel.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH 4/4] ALSA: usb: add UAC3 BADD profiles
+	support
+Date: Mon, 16 Apr 2018 12:05:27 +0300
+Message-ID: <20180416090527.yejas65ktstgflir@mwanda>
+References: <1523658266-2259-5-git-send-email-ruslan.bilovol@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from aserp2130.oracle.com (aserp2130.oracle.com [141.146.126.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9875C266F69
+ for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 11:05:42 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1523658266-2259-5-git-send-email-ruslan.bilovol@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: kbuild@01.org, Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Cc: alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Jorge <jorge.sanjuan@codethink.co.uk>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Hi Ruslan,
 
-Implement essential initialization of the sound driver:
-  - introduce required data structures
-  - handle driver registration
-  - handle sound card registration
-  - register sound driver on backend connection
-  - remove sound driver on backend disconnect
+Thank you for the patch! Perhaps something to improve:
 
-Initialize virtual sound card with streams according to the
-Xen store configuration.
+url:    https://github.com/0day-ci/linux/commits/Ruslan-Bilovol/USB-Audio-Device-Class-3-0-BADD-profiles-support/20180414-182703
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
 
-Implement ALSA driver operations including:
-- manage frontend/backend shared buffers
-- manage Xen bus event channel states
+smatch warnings:
+sound/usb/stream.c:964 snd_usb_get_audioformat_uac3() warn: possible memory leak of 'chmap'
 
-Implement requests from front to back for ALSA
-PCM operations.
- - report ALSA period elapsed event: handle XENSND_EVT_CUR_POS
-   notifications from the backend when stream position advances
-   during playback/capture. The event carries a value of how
-   many octets were played/captured at the time of the event.
- - implement explicit stream parameter negotiation between
-   backend and frontend: handle XENSND_OP_HW_PARAM_QUERY request
-   to read/update configuration space for the parameter given:
-   request passes desired parameter interval and the response to
-   this request returns min/max interval for the parameter to be used.
+# https://github.com/0day-ci/linux/commit/7e255927f3e697fce36dcd48f205a7997771ed4d
+git remote add linux-review https://github.com/0day-ci/linux
+git remote update linux-review
+git checkout 7e255927f3e697fce36dcd48f205a7997771ed4d
+vim +/chmap +964 sound/usb/stream.c
 
-Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+9a2fe9b801 Ruslan Bilovol 2018-03-21   791  
+1145e3d13b Ruslan Bilovol 2018-04-14   792  static struct audioformat *
+1145e3d13b Ruslan Bilovol 2018-04-14   793  snd_usb_get_audioformat_uac3(struct snd_usb_audio *chip,
+1145e3d13b Ruslan Bilovol 2018-04-14   794  			     struct usb_host_interface *alts,
+1145e3d13b Ruslan Bilovol 2018-04-14   795  			     int iface_no, int altno, int stream)
+1145e3d13b Ruslan Bilovol 2018-04-14   796  {
+1145e3d13b Ruslan Bilovol 2018-04-14   797  	struct usb_device *dev = chip->dev;
+9a2fe9b801 Ruslan Bilovol 2018-03-21   798  	struct uac3_input_terminal_descriptor *input_term;
+9a2fe9b801 Ruslan Bilovol 2018-03-21   799  	struct uac3_output_terminal_descriptor *output_term;
+9a2fe9b801 Ruslan Bilovol 2018-03-21   800  	struct uac3_cluster_header_descriptor *cluster;
+7e255927f3 Ruslan Bilovol 2018-04-14   801  	struct uac3_as_header_descriptor *as = NULL;
+9a2fe9b801 Ruslan Bilovol 2018-03-21   802  	struct uac3_hc_descriptor_header hc_header;
+1145e3d13b Ruslan Bilovol 2018-04-14   803  	struct snd_pcm_chmap_elem *chmap;
+7e255927f3 Ruslan Bilovol 2018-04-14   804  	unsigned char badd_profile;
+7e255927f3 Ruslan Bilovol 2018-04-14   805  	u64 badd_formats  = 0;
+1145e3d13b Ruslan Bilovol 2018-04-14   806  	unsigned int num_channels;
+1145e3d13b Ruslan Bilovol 2018-04-14   807  	struct audioformat *fp;
+9a2fe9b801 Ruslan Bilovol 2018-03-21   808  	u16 cluster_id, wLength;
+1145e3d13b Ruslan Bilovol 2018-04-14   809  	int clock = 0;
+1145e3d13b Ruslan Bilovol 2018-04-14   810  	int err;
+9a2fe9b801 Ruslan Bilovol 2018-03-21   811  
+7e255927f3 Ruslan Bilovol 2018-04-14   812  	badd_profile = chip->badd_profile;
+7e255927f3 Ruslan Bilovol 2018-04-14   813  
+7e255927f3 Ruslan Bilovol 2018-04-14   814  	if (badd_profile >= UAC3_FUNCTION_SUBCLASS_GENERIC_IO) {
+7e255927f3 Ruslan Bilovol 2018-04-14   815  		unsigned int maxpacksize =
+7e255927f3 Ruslan Bilovol 2018-04-14   816  			le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
+7e255927f3 Ruslan Bilovol 2018-04-14   817  
+7e255927f3 Ruslan Bilovol 2018-04-14   818  		switch (maxpacksize) {
+7e255927f3 Ruslan Bilovol 2018-04-14   819  		default:
+7e255927f3 Ruslan Bilovol 2018-04-14   820  			dev_err(&dev->dev,
+7e255927f3 Ruslan Bilovol 2018-04-14   821  				"%u:%d : incorrect wMaxPacketSize for BADD profile\n",
+7e255927f3 Ruslan Bilovol 2018-04-14   822  				iface_no, altno);
+7e255927f3 Ruslan Bilovol 2018-04-14   823  			return NULL;
+7e255927f3 Ruslan Bilovol 2018-04-14   824  		case UAC3_BADD_EP_MAXPSIZE_SYNC_MONO_16:
+7e255927f3 Ruslan Bilovol 2018-04-14   825  		case UAC3_BADD_EP_MAXPSIZE_ASYNC_MONO_16:
+7e255927f3 Ruslan Bilovol 2018-04-14   826  			badd_formats = SNDRV_PCM_FMTBIT_S16_LE;
+7e255927f3 Ruslan Bilovol 2018-04-14   827  			num_channels = 1;
+7e255927f3 Ruslan Bilovol 2018-04-14   828  			break;
+7e255927f3 Ruslan Bilovol 2018-04-14   829  		case UAC3_BADD_EP_MAXPSIZE_SYNC_MONO_24:
+7e255927f3 Ruslan Bilovol 2018-04-14   830  		case UAC3_BADD_EP_MAXPSIZE_ASYNC_MONO_24:
+7e255927f3 Ruslan Bilovol 2018-04-14   831  			badd_formats = SNDRV_PCM_FMTBIT_S24_3LE;
+7e255927f3 Ruslan Bilovol 2018-04-14   832  			num_channels = 1;
+7e255927f3 Ruslan Bilovol 2018-04-14   833  			break;
+7e255927f3 Ruslan Bilovol 2018-04-14   834  		case UAC3_BADD_EP_MAXPSIZE_SYNC_STEREO_16:
+7e255927f3 Ruslan Bilovol 2018-04-14   835  		case UAC3_BADD_EP_MAXPSIZE_ASYNC_STEREO_16:
+7e255927f3 Ruslan Bilovol 2018-04-14   836  			badd_formats = SNDRV_PCM_FMTBIT_S16_LE;
+7e255927f3 Ruslan Bilovol 2018-04-14   837  			num_channels = 2;
+7e255927f3 Ruslan Bilovol 2018-04-14   838  			break;
+7e255927f3 Ruslan Bilovol 2018-04-14   839  		case UAC3_BADD_EP_MAXPSIZE_SYNC_STEREO_24:
+7e255927f3 Ruslan Bilovol 2018-04-14   840  		case UAC3_BADD_EP_MAXPSIZE_ASYNC_STEREO_24:
+7e255927f3 Ruslan Bilovol 2018-04-14   841  			badd_formats = SNDRV_PCM_FMTBIT_S24_3LE;
+7e255927f3 Ruslan Bilovol 2018-04-14   842  			num_channels = 2;
+7e255927f3 Ruslan Bilovol 2018-04-14   843  			break;
+7e255927f3 Ruslan Bilovol 2018-04-14   844  		}
+7e255927f3 Ruslan Bilovol 2018-04-14   845  
+7e255927f3 Ruslan Bilovol 2018-04-14   846  		chmap = kzalloc(sizeof(*chmap), GFP_KERNEL);
+7e255927f3 Ruslan Bilovol 2018-04-14   847  		if (!chmap)
+7e255927f3 Ruslan Bilovol 2018-04-14   848  			return ERR_PTR(-ENOMEM);
+7e255927f3 Ruslan Bilovol 2018-04-14   849  
+7e255927f3 Ruslan Bilovol 2018-04-14   850  		if (num_channels == 1) {
+7e255927f3 Ruslan Bilovol 2018-04-14   851  			chmap->map[0] = SNDRV_CHMAP_MONO;
+7e255927f3 Ruslan Bilovol 2018-04-14   852  		} else {
+7e255927f3 Ruslan Bilovol 2018-04-14   853  			chmap->map[0] = SNDRV_CHMAP_FL;
+7e255927f3 Ruslan Bilovol 2018-04-14   854  			chmap->map[1] = SNDRV_CHMAP_FR;
+7e255927f3 Ruslan Bilovol 2018-04-14   855  		}
+7e255927f3 Ruslan Bilovol 2018-04-14   856  
+7e255927f3 Ruslan Bilovol 2018-04-14   857  		chmap->channels = num_channels;
+7e255927f3 Ruslan Bilovol 2018-04-14   858  		clock = UAC3_BADD_CS_ID9;
+7e255927f3 Ruslan Bilovol 2018-04-14   859  		goto found_clock;
+7e255927f3 Ruslan Bilovol 2018-04-14   860  	}
+7e255927f3 Ruslan Bilovol 2018-04-14   861  
+1145e3d13b Ruslan Bilovol 2018-04-14   862  	as = snd_usb_find_csint_desc(alts->extra, alts->extralen,
+9a2fe9b801 Ruslan Bilovol 2018-03-21   863  				     NULL, UAC_AS_GENERAL);
+9a2fe9b801 Ruslan Bilovol 2018-03-21   864  	if (!as) {
+9a2fe9b801 Ruslan Bilovol 2018-03-21   865  		dev_err(&dev->dev,
+9a2fe9b801 Ruslan Bilovol 2018-03-21   866  			"%u:%d : UAC_AS_GENERAL descriptor not found\n",
+9a2fe9b801 Ruslan Bilovol 2018-03-21   867  			iface_no, altno);
+1145e3d13b Ruslan Bilovol 2018-04-14   868  		return NULL;
+e8e8babf56 Daniel Mack    2011-09-12   869  	}
+e8e8babf56 Daniel Mack    2011-09-12   870  
+9a2fe9b801 Ruslan Bilovol 2018-03-21   871  	if (as->bLength < sizeof(*as)) {
+9a2fe9b801 Ruslan Bilovol 2018-03-21   872  		dev_err(&dev->dev,
+9a2fe9b801 Ruslan Bilovol 2018-03-21   873  			"%u:%d : invalid UAC_AS_GENERAL desc\n",
+9a2fe9b801 Ruslan Bilovol 2018-03-21   874  			iface_no, altno);
+1145e3d13b Ruslan Bilovol 2018-04-14   875  		return NULL;
+9a2fe9b801 Ruslan Bilovol 2018-03-21   876  	}
+9a2fe9b801 Ruslan Bilovol 2018-03-21   877  
+9a2fe9b801 Ruslan Bilovol 2018-03-21   878  	cluster_id = le16_to_cpu(as->wClusterDescrID);
+9a2fe9b801 Ruslan Bilovol 2018-03-21   879  	if (!cluster_id) {
+9a2fe9b801 Ruslan Bilovol 2018-03-21   880  		dev_err(&dev->dev,
+9a2fe9b801 Ruslan Bilovol 2018-03-21   881  			"%u:%d : no cluster descriptor\n",
+9a2fe9b801 Ruslan Bilovol 2018-03-21   882  			iface_no, altno);
+1145e3d13b Ruslan Bilovol 2018-04-14   883  		return NULL;
+9a2fe9b801 Ruslan Bilovol 2018-03-21   884  	}
+9a2fe9b801 Ruslan Bilovol 2018-03-21   885  
+9a2fe9b801 Ruslan Bilovol 2018-03-21   886  	/*
+9a2fe9b801 Ruslan Bilovol 2018-03-21   887  	 * Get number of channels and channel map through
+9a2fe9b801 Ruslan Bilovol 2018-03-21   888  	 * High Capability Cluster Descriptor
+9a2fe9b801 Ruslan Bilovol 2018-03-21   889  	 *
+9a2fe9b801 Ruslan Bilovol 2018-03-21   890  	 * First step: get High Capability header and
+9a2fe9b801 Ruslan Bilovol 2018-03-21   891  	 * read size of Cluster Descriptor
+9a2fe9b801 Ruslan Bilovol 2018-03-21   892  	 */
+9a2fe9b801 Ruslan Bilovol 2018-03-21   893  	err = snd_usb_ctl_msg(chip->dev,
+9a2fe9b801 Ruslan Bilovol 2018-03-21   894  			usb_rcvctrlpipe(chip->dev, 0),
+9a2fe9b801 Ruslan Bilovol 2018-03-21   895  			UAC3_CS_REQ_HIGH_CAPABILITY_DESCRIPTOR,
+9a2fe9b801 Ruslan Bilovol 2018-03-21   896  			USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+9a2fe9b801 Ruslan Bilovol 2018-03-21   897  			cluster_id,
+9a2fe9b801 Ruslan Bilovol 2018-03-21   898  			snd_usb_ctrl_intf(chip),
+9a2fe9b801 Ruslan Bilovol 2018-03-21   899  			&hc_header, sizeof(hc_header));
+9a2fe9b801 Ruslan Bilovol 2018-03-21   900  	if (err < 0)
+1145e3d13b Ruslan Bilovol 2018-04-14   901  		return ERR_PTR(err);
+9a2fe9b801 Ruslan Bilovol 2018-03-21   902  	else if (err != sizeof(hc_header)) {
+9a2fe9b801 Ruslan Bilovol 2018-03-21   903  		dev_err(&dev->dev,
+9a2fe9b801 Ruslan Bilovol 2018-03-21   904  			"%u:%d : can't get High Capability descriptor\n",
+9a2fe9b801 Ruslan Bilovol 2018-03-21   905  			iface_no, altno);
+1145e3d13b Ruslan Bilovol 2018-04-14   906  		return ERR_PTR(-EIO);
+9a2fe9b801 Ruslan Bilovol 2018-03-21   907  	}
+9a2fe9b801 Ruslan Bilovol 2018-03-21   908  
+9a2fe9b801 Ruslan Bilovol 2018-03-21   909  	/*
+9a2fe9b801 Ruslan Bilovol 2018-03-21   910  	 * Second step: allocate needed amount of memory
+9a2fe9b801 Ruslan Bilovol 2018-03-21   911  	 * and request Cluster Descriptor
+9a2fe9b801 Ruslan Bilovol 2018-03-21   912  	 */
+9a2fe9b801 Ruslan Bilovol 2018-03-21   913  	wLength = le16_to_cpu(hc_header.wLength);
+9a2fe9b801 Ruslan Bilovol 2018-03-21   914  	cluster = kzalloc(wLength, GFP_KERNEL);
+9a2fe9b801 Ruslan Bilovol 2018-03-21   915  	if (!cluster)
+1145e3d13b Ruslan Bilovol 2018-04-14   916  		return ERR_PTR(-ENOMEM);
+9a2fe9b801 Ruslan Bilovol 2018-03-21   917  	err = snd_usb_ctl_msg(chip->dev,
+9a2fe9b801 Ruslan Bilovol 2018-03-21   918  			usb_rcvctrlpipe(chip->dev, 0),
+9a2fe9b801 Ruslan Bilovol 2018-03-21   919  			UAC3_CS_REQ_HIGH_CAPABILITY_DESCRIPTOR,
+9a2fe9b801 Ruslan Bilovol 2018-03-21   920  			USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+9a2fe9b801 Ruslan Bilovol 2018-03-21   921  			cluster_id,
+9a2fe9b801 Ruslan Bilovol 2018-03-21   922  			snd_usb_ctrl_intf(chip),
+9a2fe9b801 Ruslan Bilovol 2018-03-21   923  			cluster, wLength);
+9a2fe9b801 Ruslan Bilovol 2018-03-21   924  	if (err < 0) {
+9a2fe9b801 Ruslan Bilovol 2018-03-21   925  		kfree(cluster);
+1145e3d13b Ruslan Bilovol 2018-04-14   926  		return ERR_PTR(err);
+9a2fe9b801 Ruslan Bilovol 2018-03-21   927  	} else if (err != wLength) {
+9a2fe9b801 Ruslan Bilovol 2018-03-21   928  		dev_err(&dev->dev,
+9a2fe9b801 Ruslan Bilovol 2018-03-21   929  			"%u:%d : can't get Cluster Descriptor\n",
+9a2fe9b801 Ruslan Bilovol 2018-03-21   930  			iface_no, altno);
+9a2fe9b801 Ruslan Bilovol 2018-03-21   931  		kfree(cluster);
+1145e3d13b Ruslan Bilovol 2018-04-14   932  		return ERR_PTR(-EIO);
+9a2fe9b801 Ruslan Bilovol 2018-03-21   933  	}
+9a2fe9b801 Ruslan Bilovol 2018-03-21   934  
+9a2fe9b801 Ruslan Bilovol 2018-03-21   935  	num_channels = cluster->bNrChannels;
+1145e3d13b Ruslan Bilovol 2018-04-14   936  	chmap = convert_chmap_v3(cluster);
+9a2fe9b801 Ruslan Bilovol 2018-03-21   937  	kfree(cluster);
+9a2fe9b801 Ruslan Bilovol 2018-03-21   938  
+1145e3d13b Ruslan Bilovol 2018-04-14   939  	/*
+1145e3d13b Ruslan Bilovol 2018-04-14   940  	 * lookup the terminal associated to this interface
+1145e3d13b Ruslan Bilovol 2018-04-14   941  	 * to extract the clock
+1145e3d13b Ruslan Bilovol 2018-04-14   942  	 */
+1145e3d13b Ruslan Bilovol 2018-04-14   943  	input_term = snd_usb_find_input_terminal_descriptor(chip->ctrl_intf,
+9a2fe9b801 Ruslan Bilovol 2018-03-21   944  							    as->bTerminalLink);
+9a2fe9b801 Ruslan Bilovol 2018-03-21   945  	if (input_term) {
+9a2fe9b801 Ruslan Bilovol 2018-03-21   946  		clock = input_term->bCSourceID;
+1145e3d13b Ruslan Bilovol 2018-04-14   947  		goto found_clock;
+9a2fe9b801 Ruslan Bilovol 2018-03-21   948  	}
+9a2fe9b801 Ruslan Bilovol 2018-03-21   949  
+9a2fe9b801 Ruslan Bilovol 2018-03-21   950  	output_term = snd_usb_find_output_terminal_descriptor(chip->ctrl_intf,
+9a2fe9b801 Ruslan Bilovol 2018-03-21   951  							     as->bTerminalLink);
+9a2fe9b801 Ruslan Bilovol 2018-03-21   952  	if (output_term) {
+9a2fe9b801 Ruslan Bilovol 2018-03-21   953  		clock = output_term->bCSourceID;
+1145e3d13b Ruslan Bilovol 2018-04-14   954  		goto found_clock;
+9a2fe9b801 Ruslan Bilovol 2018-03-21   955  	}
+9a2fe9b801 Ruslan Bilovol 2018-03-21   956  
+1145e3d13b Ruslan Bilovol 2018-04-14   957  	dev_err(&dev->dev, "%u:%d : bogus bTerminalLink %d\n",
+9a2fe9b801 Ruslan Bilovol 2018-03-21   958  			iface_no, altno, as->bTerminalLink);
+1145e3d13b Ruslan Bilovol 2018-04-14   959  	return NULL;
+e8e8babf56 Daniel Mack    2011-09-12   960  
+1145e3d13b Ruslan Bilovol 2018-04-14   961  found_clock:
+e8e8babf56 Daniel Mack    2011-09-12   962  	fp = kzalloc(sizeof(*fp), GFP_KERNEL);
+9ecb2406de Markus Elfring 2017-08-11   963  	if (!fp)
+1145e3d13b Ruslan Bilovol 2018-04-14  @964  		return ERR_PTR(-ENOMEM);
+e8e8babf56 Daniel Mack    2011-09-12   965  
+e8e8babf56 Daniel Mack    2011-09-12   966  	fp->iface = iface_no;
+e8e8babf56 Daniel Mack    2011-09-12   967  	fp->altsetting = altno;
+e8e8babf56 Daniel Mack    2011-09-12   968  	fp->endpoint = get_endpoint(alts, 0)->bEndpointAddress;
+e8e8babf56 Daniel Mack    2011-09-12   969  	fp->ep_attr = get_endpoint(alts, 0)->bmAttributes;
+e8e8babf56 Daniel Mack    2011-09-12   970  	fp->datainterval = snd_usb_parse_datainterval(chip, alts);
+1145e3d13b Ruslan Bilovol 2018-04-14   971  	fp->protocol = UAC_VERSION_3;
+e8e8babf56 Daniel Mack    2011-09-12   972  	fp->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
+e8e8babf56 Daniel Mack    2011-09-12   973  	fp->channels = num_channels;
+e8e8babf56 Daniel Mack    2011-09-12   974  	if (snd_usb_get_speed(dev) == USB_SPEED_HIGH)
+e8e8babf56 Daniel Mack    2011-09-12   975  		fp->maxpacksize = (((fp->maxpacksize >> 11) & 3) + 1)
+e8e8babf56 Daniel Mack    2011-09-12   976  				* (fp->maxpacksize & 0x7ff);
+e8e8babf56 Daniel Mack    2011-09-12   977  	fp->clock = clock;
+1145e3d13b Ruslan Bilovol 2018-04-14   978  	fp->chmap = chmap;
+836b34a935 Vladis Dronov  2016-03-31   979  	INIT_LIST_HEAD(&fp->list);
+e8e8babf56 Daniel Mack    2011-09-12   980  
+7e255927f3 Ruslan Bilovol 2018-04-14   981  	if (badd_profile >= UAC3_FUNCTION_SUBCLASS_GENERIC_IO) {
+7e255927f3 Ruslan Bilovol 2018-04-14   982  		fp->attributes = 0; /* No attributes */
+7e255927f3 Ruslan Bilovol 2018-04-14   983  
+7e255927f3 Ruslan Bilovol 2018-04-14   984  		fp->fmt_type = UAC_FORMAT_TYPE_I;
+7e255927f3 Ruslan Bilovol 2018-04-14   985  		fp->formats = badd_formats;
+7e255927f3 Ruslan Bilovol 2018-04-14   986  
+7e255927f3 Ruslan Bilovol 2018-04-14   987  		fp->nr_rates = 0;	/* SNDRV_PCM_RATE_CONTINUOUS */
+7e255927f3 Ruslan Bilovol 2018-04-14   988  		fp->rate_min = UAC3_BADD_SAMPLING_RATE;
+7e255927f3 Ruslan Bilovol 2018-04-14   989  		fp->rate_max = UAC3_BADD_SAMPLING_RATE;
+7e255927f3 Ruslan Bilovol 2018-04-14   990  		fp->rates = SNDRV_PCM_RATE_CONTINUOUS;
+7e255927f3 Ruslan Bilovol 2018-04-14   991  
+7e255927f3 Ruslan Bilovol 2018-04-14   992  	} else {
+7e255927f3 Ruslan Bilovol 2018-04-14   993  		fp->attributes = parse_uac_endpoint_attributes(chip, alts,
+7e255927f3 Ruslan Bilovol 2018-04-14   994  							       UAC_VERSION_3,
+7e255927f3 Ruslan Bilovol 2018-04-14   995  							       iface_no);
+e8e8babf56 Daniel Mack    2011-09-12   996  		/* ok, let's parse further... */
+1145e3d13b Ruslan Bilovol 2018-04-14   997  		if (snd_usb_parse_audio_format_v3(chip, fp, as, stream) < 0) {
+e8e8babf56 Daniel Mack    2011-09-12   998  			kfree(fp->rate_table);
+e8e8babf56 Daniel Mack    2011-09-12   999  			kfree(fp);
+1145e3d13b Ruslan Bilovol 2018-04-14  1000  			return NULL;
+e8e8babf56 Daniel Mack    2011-09-12  1001  		}
+7e255927f3 Ruslan Bilovol 2018-04-14  1002  	}
+9a2fe9b801 Ruslan Bilovol 2018-03-21  1003  
+1145e3d13b Ruslan Bilovol 2018-04-14  1004  	return fp;
+1145e3d13b Ruslan Bilovol 2018-04-14  1005  }
+9a2fe9b801 Ruslan Bilovol 2018-03-21  1006  
+
 ---
- sound/xen/Makefile                |   3 +-
- sound/xen/xen_snd_front.c         | 193 ++++++++-
- sound/xen/xen_snd_front.h         |  28 ++
- sound/xen/xen_snd_front_alsa.c    | 830 ++++++++++++++++++++++++++++++++++++++
- sound/xen/xen_snd_front_alsa.h    |  23 ++
- sound/xen/xen_snd_front_evtchnl.c |   6 +-
- 6 files changed, 1080 insertions(+), 3 deletions(-)
- create mode 100644 sound/xen/xen_snd_front_alsa.c
- create mode 100644 sound/xen/xen_snd_front_alsa.h
-
-diff --git a/sound/xen/Makefile b/sound/xen/Makefile
-index f028bc30af5d..1e6470ecc2f2 100644
---- a/sound/xen/Makefile
-+++ b/sound/xen/Makefile
-@@ -3,6 +3,7 @@
- snd_xen_front-objs := xen_snd_front.o \
- 		      xen_snd_front_cfg.o \
- 		      xen_snd_front_evtchnl.o \
--		      xen_snd_front_shbuf.o
-+		      xen_snd_front_shbuf.o \
-+		      xen_snd_front_alsa.o
- 
- obj-$(CONFIG_SND_XEN_FRONTEND) += snd_xen_front.o
-diff --git a/sound/xen/xen_snd_front.c b/sound/xen/xen_snd_front.c
-index 0569c6c596a3..1fef253ea21a 100644
---- a/sound/xen/xen_snd_front.c
-+++ b/sound/xen/xen_snd_front.c
-@@ -19,10 +19,201 @@
- #include <xen/interface/io/sndif.h>
- 
- #include "xen_snd_front.h"
-+#include "xen_snd_front_alsa.h"
- #include "xen_snd_front_evtchnl.h"
-+#include "xen_snd_front_shbuf.h"
-+
-+static struct xensnd_req *
-+be_stream_prepare_req(struct xen_snd_front_evtchnl *evtchnl, u8 operation)
-+{
-+	struct xensnd_req *req;
-+
-+	req = RING_GET_REQUEST(&evtchnl->u.req.ring,
-+			       evtchnl->u.req.ring.req_prod_pvt);
-+	req->operation = operation;
-+	req->id = evtchnl->evt_next_id++;
-+	evtchnl->evt_id = req->id;
-+	return req;
-+}
-+
-+static int be_stream_do_io(struct xen_snd_front_evtchnl *evtchnl)
-+{
-+	if (unlikely(evtchnl->state != EVTCHNL_STATE_CONNECTED))
-+		return -EIO;
-+
-+	reinit_completion(&evtchnl->u.req.completion);
-+	xen_snd_front_evtchnl_flush(evtchnl);
-+	return 0;
-+}
-+
-+static int be_stream_wait_io(struct xen_snd_front_evtchnl *evtchnl)
-+{
-+	if (wait_for_completion_timeout(&evtchnl->u.req.completion,
-+			msecs_to_jiffies(VSND_WAIT_BACK_MS)) <= 0)
-+		return -ETIMEDOUT;
-+
-+	return evtchnl->u.req.resp_status;
-+}
-+
-+int xen_snd_front_stream_query_hw_param(struct xen_snd_front_evtchnl *evtchnl,
-+					struct xensnd_query_hw_param *hw_param_req,
-+					struct xensnd_query_hw_param *hw_param_resp)
-+{
-+	struct xen_snd_front_info *front_info = evtchnl->front_info;
-+	struct xensnd_req *req;
-+	unsigned long flags;
-+	int ret;
-+
-+	mutex_lock(&evtchnl->u.req.req_io_lock);
-+
-+	spin_lock_irqsave(&front_info->io_lock, flags);
-+	req = be_stream_prepare_req(evtchnl, XENSND_OP_HW_PARAM_QUERY);
-+	req->op.hw_param = *hw_param_req;
-+
-+	ret = be_stream_do_io(evtchnl);
-+	spin_unlock_irqrestore(&front_info->io_lock, flags);
-+
-+	if (ret == 0)
-+		ret = be_stream_wait_io(evtchnl);
-+
-+	if (ret == 0)
-+		*hw_param_resp = evtchnl->u.req.resp.hw_param;
-+
-+	mutex_unlock(&evtchnl->u.req.req_io_lock);
-+	return ret;
-+}
-+
-+int xen_snd_front_stream_prepare(struct xen_snd_front_evtchnl *evtchnl,
-+				 struct xen_snd_front_shbuf *sh_buf,
-+				 u8 format, unsigned int channels,
-+				 unsigned int rate, u32 buffer_sz,
-+				 u32 period_sz)
-+{
-+	struct xen_snd_front_info *front_info = evtchnl->front_info;
-+	struct xensnd_req *req;
-+	unsigned long flags;
-+	int ret;
-+
-+	mutex_lock(&evtchnl->u.req.req_io_lock);
-+
-+	spin_lock_irqsave(&front_info->io_lock, flags);
-+	req = be_stream_prepare_req(evtchnl, XENSND_OP_OPEN);
-+	req->op.open.pcm_format = format;
-+	req->op.open.pcm_channels = channels;
-+	req->op.open.pcm_rate = rate;
-+	req->op.open.buffer_sz = buffer_sz;
-+	req->op.open.period_sz = period_sz;
-+	req->op.open.gref_directory = xen_snd_front_shbuf_get_dir_start(sh_buf);
-+
-+	ret = be_stream_do_io(evtchnl);
-+	spin_unlock_irqrestore(&front_info->io_lock, flags);
-+
-+	if (ret == 0)
-+		ret = be_stream_wait_io(evtchnl);
-+
-+	mutex_unlock(&evtchnl->u.req.req_io_lock);
-+	return ret;
-+}
-+
-+int xen_snd_front_stream_close(struct xen_snd_front_evtchnl *evtchnl)
-+{
-+	struct xen_snd_front_info *front_info = evtchnl->front_info;
-+	struct xensnd_req *req;
-+	unsigned long flags;
-+	int ret;
-+
-+	mutex_lock(&evtchnl->u.req.req_io_lock);
-+
-+	spin_lock_irqsave(&front_info->io_lock, flags);
-+	req = be_stream_prepare_req(evtchnl, XENSND_OP_CLOSE);
-+
-+	ret = be_stream_do_io(evtchnl);
-+	spin_unlock_irqrestore(&front_info->io_lock, flags);
-+
-+	if (ret == 0)
-+		ret = be_stream_wait_io(evtchnl);
-+
-+	mutex_unlock(&evtchnl->u.req.req_io_lock);
-+	return ret;
-+}
-+
-+int xen_snd_front_stream_write(struct xen_snd_front_evtchnl *evtchnl,
-+			       unsigned long pos, unsigned long count)
-+{
-+	struct xen_snd_front_info *front_info = evtchnl->front_info;
-+	struct xensnd_req *req;
-+	unsigned long flags;
-+	int ret;
-+
-+	mutex_lock(&evtchnl->u.req.req_io_lock);
-+
-+	spin_lock_irqsave(&front_info->io_lock, flags);
-+	req = be_stream_prepare_req(evtchnl, XENSND_OP_WRITE);
-+	req->op.rw.length = count;
-+	req->op.rw.offset = pos;
-+
-+	ret = be_stream_do_io(evtchnl);
-+	spin_unlock_irqrestore(&front_info->io_lock, flags);
-+
-+	if (ret == 0)
-+		ret = be_stream_wait_io(evtchnl);
-+
-+	mutex_unlock(&evtchnl->u.req.req_io_lock);
-+	return ret;
-+}
-+
-+int xen_snd_front_stream_read(struct xen_snd_front_evtchnl *evtchnl,
-+			      unsigned long pos, unsigned long count)
-+{
-+	struct xen_snd_front_info *front_info = evtchnl->front_info;
-+	struct xensnd_req *req;
-+	unsigned long flags;
-+	int ret;
-+
-+	mutex_lock(&evtchnl->u.req.req_io_lock);
-+
-+	spin_lock_irqsave(&front_info->io_lock, flags);
-+	req = be_stream_prepare_req(evtchnl, XENSND_OP_READ);
-+	req->op.rw.length = count;
-+	req->op.rw.offset = pos;
-+
-+	ret = be_stream_do_io(evtchnl);
-+	spin_unlock_irqrestore(&front_info->io_lock, flags);
-+
-+	if (ret == 0)
-+		ret = be_stream_wait_io(evtchnl);
-+
-+	mutex_unlock(&evtchnl->u.req.req_io_lock);
-+	return ret;
-+}
-+
-+int xen_snd_front_stream_trigger(struct xen_snd_front_evtchnl *evtchnl,
-+				 int type)
-+{
-+	struct xen_snd_front_info *front_info = evtchnl->front_info;
-+	struct xensnd_req *req;
-+	unsigned long flags;
-+	int ret;
-+
-+	mutex_lock(&evtchnl->u.req.req_io_lock);
-+
-+	spin_lock_irqsave(&front_info->io_lock, flags);
-+	req = be_stream_prepare_req(evtchnl, XENSND_OP_TRIGGER);
-+	req->op.trigger.type = type;
-+
-+	ret = be_stream_do_io(evtchnl);
-+	spin_unlock_irqrestore(&front_info->io_lock, flags);
-+
-+	if (ret == 0)
-+		ret = be_stream_wait_io(evtchnl);
-+
-+	mutex_unlock(&evtchnl->u.req.req_io_lock);
-+	return ret;
-+}
- 
- static void xen_snd_drv_fini(struct xen_snd_front_info *front_info)
- {
-+	xen_snd_front_alsa_fini(front_info);
- 	xen_snd_front_evtchnl_free_all(front_info);
- }
- 
-@@ -45,7 +236,7 @@ static int sndback_initwait(struct xen_snd_front_info *front_info)
- 
- static int sndback_connect(struct xen_snd_front_info *front_info)
- {
--	return 0;
-+	return xen_snd_front_alsa_init(front_info);
- }
- 
- static void sndback_disconnect(struct xen_snd_front_info *front_info)
-diff --git a/sound/xen/xen_snd_front.h b/sound/xen/xen_snd_front.h
-index 9c2ffbb4e4b8..7adbdb4d2019 100644
---- a/sound/xen/xen_snd_front.h
-+++ b/sound/xen/xen_snd_front.h
-@@ -13,17 +13,45 @@
- 
- #include "xen_snd_front_cfg.h"
- 
-+struct card_info;
-+struct xen_snd_front_evtchnl;
- struct xen_snd_front_evtchnl_pair;
-+struct xen_snd_front_shbuf;
-+struct xensnd_query_hw_param;
- 
- struct xen_snd_front_info {
- 	struct xenbus_device *xb_dev;
- 
-+	struct card_info *card_info;
-+
- 	/* serializer for backend IO: request/response */
- 	spinlock_t io_lock;
-+
- 	int num_evt_pairs;
- 	struct xen_snd_front_evtchnl_pair *evt_pairs;
- 
- 	struct xen_front_cfg_card cfg;
- };
- 
-+int xen_snd_front_stream_query_hw_param(struct xen_snd_front_evtchnl *evtchnl,
-+					struct xensnd_query_hw_param *hw_param_req,
-+					struct xensnd_query_hw_param *hw_param_resp);
-+
-+int xen_snd_front_stream_prepare(struct xen_snd_front_evtchnl *evtchnl,
-+				 struct xen_snd_front_shbuf *sh_buf,
-+				 u8 format, unsigned int channels,
-+				 unsigned int rate, u32 buffer_sz,
-+				 u32 period_sz);
-+
-+int xen_snd_front_stream_close(struct xen_snd_front_evtchnl *evtchnl);
-+
-+int xen_snd_front_stream_write(struct xen_snd_front_evtchnl *evtchnl,
-+			       unsigned long pos, unsigned long count);
-+
-+int xen_snd_front_stream_read(struct xen_snd_front_evtchnl *evtchnl,
-+			      unsigned long pos, unsigned long count);
-+
-+int xen_snd_front_stream_trigger(struct xen_snd_front_evtchnl *evtchnl,
-+				 int type);
-+
- #endif /* __XEN_SND_FRONT_H */
-diff --git a/sound/xen/xen_snd_front_alsa.c b/sound/xen/xen_snd_front_alsa.c
-new file mode 100644
-index 000000000000..f524b172750e
---- /dev/null
-+++ b/sound/xen/xen_snd_front_alsa.c
-@@ -0,0 +1,830 @@
-+// SPDX-License-Identifier: GPL-2.0 OR MIT
-+
-+/*
-+ * Xen para-virtual sound device
-+ *
-+ * Copyright (C) 2016-2018 EPAM Systems Inc.
-+ *
-+ * Author: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-+ */
-+
-+#include <linux/platform_device.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+
-+#include <xen/xenbus.h>
-+
-+#include "xen_snd_front.h"
-+#include "xen_snd_front_alsa.h"
-+#include "xen_snd_front_cfg.h"
-+#include "xen_snd_front_evtchnl.h"
-+#include "xen_snd_front_shbuf.h"
-+
-+struct pcm_stream_info {
-+	struct xen_snd_front_info *front_info;
-+	struct xen_snd_front_evtchnl_pair *evt_pair;
-+	struct xen_snd_front_shbuf sh_buf;
-+	int index;
-+
-+	bool is_open;
-+	struct snd_pcm_hardware pcm_hw;
-+
-+	/* number of processed frames as reported by the backend */
-+	snd_pcm_uframes_t be_cur_frame;
-+	/* current HW pointer to be reported via .period callback */
-+	atomic_t hw_ptr;
-+	/* modulo of the number of processed frames - for period detection */
-+	u32 out_frames;
-+};
-+
-+struct pcm_instance_info {
-+	struct card_info *card_info;
-+	struct snd_pcm *pcm;
-+	struct snd_pcm_hardware pcm_hw;
-+	int num_pcm_streams_pb;
-+	struct pcm_stream_info *streams_pb;
-+	int num_pcm_streams_cap;
-+	struct pcm_stream_info *streams_cap;
-+};
-+
-+struct card_info {
-+	struct xen_snd_front_info *front_info;
-+	struct snd_card *card;
-+	struct snd_pcm_hardware pcm_hw;
-+	int num_pcm_instances;
-+	struct pcm_instance_info *pcm_instances;
-+};
-+
-+struct alsa_sndif_sample_format {
-+	u8 sndif;
-+	snd_pcm_format_t alsa;
-+};
-+
-+struct alsa_sndif_hw_param {
-+	u8 sndif;
-+	snd_pcm_hw_param_t alsa;
-+};
-+
-+static const struct alsa_sndif_sample_format ALSA_SNDIF_FORMATS[] = {
-+	{
-+		.sndif = XENSND_PCM_FORMAT_U8,
-+		.alsa = SNDRV_PCM_FORMAT_U8
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_S8,
-+		.alsa = SNDRV_PCM_FORMAT_S8
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_U16_LE,
-+		.alsa = SNDRV_PCM_FORMAT_U16_LE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_U16_BE,
-+		.alsa = SNDRV_PCM_FORMAT_U16_BE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_S16_LE,
-+		.alsa = SNDRV_PCM_FORMAT_S16_LE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_S16_BE,
-+		.alsa = SNDRV_PCM_FORMAT_S16_BE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_U24_LE,
-+		.alsa = SNDRV_PCM_FORMAT_U24_LE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_U24_BE,
-+		.alsa = SNDRV_PCM_FORMAT_U24_BE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_S24_LE,
-+		.alsa = SNDRV_PCM_FORMAT_S24_LE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_S24_BE,
-+		.alsa = SNDRV_PCM_FORMAT_S24_BE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_U32_LE,
-+		.alsa = SNDRV_PCM_FORMAT_U32_LE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_U32_BE,
-+		.alsa = SNDRV_PCM_FORMAT_U32_BE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_S32_LE,
-+		.alsa = SNDRV_PCM_FORMAT_S32_LE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_S32_BE,
-+		.alsa = SNDRV_PCM_FORMAT_S32_BE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_A_LAW,
-+		.alsa = SNDRV_PCM_FORMAT_A_LAW
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_MU_LAW,
-+		.alsa = SNDRV_PCM_FORMAT_MU_LAW
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_F32_LE,
-+		.alsa = SNDRV_PCM_FORMAT_FLOAT_LE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_F32_BE,
-+		.alsa = SNDRV_PCM_FORMAT_FLOAT_BE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_F64_LE,
-+		.alsa = SNDRV_PCM_FORMAT_FLOAT64_LE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_F64_BE,
-+		.alsa = SNDRV_PCM_FORMAT_FLOAT64_BE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_IEC958_SUBFRAME_LE,
-+		.alsa = SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_IEC958_SUBFRAME_BE,
-+		.alsa = SNDRV_PCM_FORMAT_IEC958_SUBFRAME_BE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_IMA_ADPCM,
-+		.alsa = SNDRV_PCM_FORMAT_IMA_ADPCM
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_MPEG,
-+		.alsa = SNDRV_PCM_FORMAT_MPEG
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_GSM,
-+		.alsa = SNDRV_PCM_FORMAT_GSM
-+	},
-+};
-+
-+static int to_sndif_format(snd_pcm_format_t format)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(ALSA_SNDIF_FORMATS); i++)
-+		if (ALSA_SNDIF_FORMATS[i].alsa == format)
-+			return ALSA_SNDIF_FORMATS[i].sndif;
-+
-+	return -EINVAL;
-+}
-+
-+static u64 to_sndif_formats_mask(u64 alsa_formats)
-+{
-+	u64 mask;
-+	int i;
-+
-+	mask = 0;
-+	for (i = 0; i < ARRAY_SIZE(ALSA_SNDIF_FORMATS); i++)
-+		if (1 << ALSA_SNDIF_FORMATS[i].alsa & alsa_formats)
-+			mask |= 1 << ALSA_SNDIF_FORMATS[i].sndif;
-+
-+	return mask;
-+}
-+
-+static u64 to_alsa_formats_mask(u64 sndif_formats)
-+{
-+	u64 mask;
-+	int i;
-+
-+	mask = 0;
-+	for (i = 0; i < ARRAY_SIZE(ALSA_SNDIF_FORMATS); i++)
-+		if (1 << ALSA_SNDIF_FORMATS[i].sndif & sndif_formats)
-+			mask |= 1 << ALSA_SNDIF_FORMATS[i].alsa;
-+
-+	return mask;
-+}
-+
-+static void stream_clear(struct pcm_stream_info *stream)
-+{
-+	stream->is_open = false;
-+	stream->be_cur_frame = 0;
-+	stream->out_frames = 0;
-+	atomic_set(&stream->hw_ptr, 0);
-+	xen_snd_front_evtchnl_pair_clear(stream->evt_pair);
-+	xen_snd_front_shbuf_clear(&stream->sh_buf);
-+}
-+
-+static void stream_free(struct pcm_stream_info *stream)
-+{
-+	xen_snd_front_shbuf_free(&stream->sh_buf);
-+	stream_clear(stream);
-+}
-+
-+static struct pcm_stream_info *stream_get(struct snd_pcm_substream *substream)
-+{
-+	struct pcm_instance_info *pcm_instance =
-+			snd_pcm_substream_chip(substream);
-+	struct pcm_stream_info *stream;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		stream = &pcm_instance->streams_pb[substream->number];
-+	else
-+		stream = &pcm_instance->streams_cap[substream->number];
-+
-+	return stream;
-+}
-+
-+static int alsa_hw_rule(struct snd_pcm_hw_params *params,
-+			struct snd_pcm_hw_rule *rule)
-+{
-+	struct pcm_stream_info *stream = rule->private;
-+	struct device *dev = &stream->front_info->xb_dev->dev;
-+	struct snd_mask *formats =
-+			hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
-+	struct snd_interval *rates =
-+			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels =
-+			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_interval *period =
-+			hw_param_interval(params,
-+					  SNDRV_PCM_HW_PARAM_PERIOD_SIZE);
-+	struct snd_interval *buffer =
-+			hw_param_interval(params,
-+					  SNDRV_PCM_HW_PARAM_BUFFER_SIZE);
-+	struct xensnd_query_hw_param req;
-+	struct xensnd_query_hw_param resp;
-+	struct snd_interval interval;
-+	struct snd_mask mask;
-+	u64 sndif_formats;
-+	int changed, ret;
-+
-+	/* collect all the values we need for the query */
-+
-+	req.formats = to_sndif_formats_mask((u64)formats->bits[0] |
-+					    (u64)(formats->bits[1]) << 32);
-+
-+	req.rates.min = rates->min;
-+	req.rates.max = rates->max;
-+
-+	req.channels.min = channels->min;
-+	req.channels.max = channels->max;
-+
-+	req.buffer.min = buffer->min;
-+	req.buffer.max = buffer->max;
-+
-+	req.period.min = period->min;
-+	req.period.max = period->max;
-+
-+	ret = xen_snd_front_stream_query_hw_param(&stream->evt_pair->req,
-+						  &req, &resp);
-+	if (ret < 0) {
-+		/* check if this is due to backend communication error */
-+		if (ret == -EIO || ret == -ETIMEDOUT)
-+			dev_err(dev, "Failed to query ALSA HW parameters\n");
-+		return ret;
-+	}
-+
-+	/* refine HW parameters after the query */
-+	changed  = 0;
-+
-+	sndif_formats = to_alsa_formats_mask(resp.formats);
-+	snd_mask_none(&mask);
-+	mask.bits[0] = (u32)sndif_formats;
-+	mask.bits[1] = (u32)(sndif_formats >> 32);
-+	ret = snd_mask_refine(formats, &mask);
-+	if (ret < 0)
-+		return ret;
-+	changed |= ret;
-+
-+	interval.openmin = 0;
-+	interval.openmax = 0;
-+	interval.integer = 1;
-+
-+	interval.min = resp.rates.min;
-+	interval.max = resp.rates.max;
-+	ret = snd_interval_refine(rates, &interval);
-+	if (ret < 0)
-+		return ret;
-+	changed |= ret;
-+
-+	interval.min = resp.channels.min;
-+	interval.max = resp.channels.max;
-+	ret = snd_interval_refine(channels, &interval);
-+	if (ret < 0)
-+		return ret;
-+	changed |= ret;
-+
-+	interval.min = resp.buffer.min;
-+	interval.max = resp.buffer.max;
-+	ret = snd_interval_refine(buffer, &interval);
-+	if (ret < 0)
-+		return ret;
-+	changed |= ret;
-+
-+	interval.min = resp.period.min;
-+	interval.max = resp.period.max;
-+	ret = snd_interval_refine(period, &interval);
-+	if (ret < 0)
-+		return ret;
-+	changed |= ret;
-+
-+	return changed;
-+}
-+
-+static int alsa_open(struct snd_pcm_substream *substream)
-+{
-+	struct pcm_instance_info *pcm_instance =
-+			snd_pcm_substream_chip(substream);
-+	struct pcm_stream_info *stream = stream_get(substream);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct xen_snd_front_info *front_info =
-+			pcm_instance->card_info->front_info;
-+	struct device *dev = &front_info->xb_dev->dev;
-+	unsigned long flags;
-+	int ret;
-+
-+	/*
-+	 * return our HW properties: override defaults with those configured
-+	 * via XenStore
-+	 */
-+	runtime->hw = stream->pcm_hw;
-+	runtime->hw.info &= ~(SNDRV_PCM_INFO_MMAP |
-+			      SNDRV_PCM_INFO_MMAP_VALID |
-+			      SNDRV_PCM_INFO_DOUBLE |
-+			      SNDRV_PCM_INFO_BATCH |
-+			      SNDRV_PCM_INFO_NONINTERLEAVED |
-+			      SNDRV_PCM_INFO_RESUME |
-+			      SNDRV_PCM_INFO_PAUSE);
-+	runtime->hw.info |= SNDRV_PCM_INFO_INTERLEAVED;
-+
-+	spin_lock_irqsave(&front_info->io_lock, flags);
-+
-+	stream->evt_pair = &front_info->evt_pairs[stream->index];
-+
-+	stream->front_info = front_info;
-+
-+	xen_snd_front_evtchnl_pair_set_connected(stream->evt_pair, true);
-+
-+	stream->evt_pair->evt.u.evt.substream = substream;
-+
-+	stream_clear(stream);
-+
-+	spin_unlock_irqrestore(&front_info->io_lock, flags);
-+
-+	ret = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_FORMAT,
-+				  alsa_hw_rule, stream,
-+				  SNDRV_PCM_HW_PARAM_FORMAT, -1);
-+	if (ret) {
-+		dev_err(dev, "Failed to add HW rule for SNDRV_PCM_HW_PARAM_FORMAT\n");
-+		return ret;
-+	}
-+
-+	ret = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-+				  alsa_hw_rule, stream,
-+				  SNDRV_PCM_HW_PARAM_RATE, -1);
-+	if (ret) {
-+		dev_err(dev, "Failed to add HW rule for SNDRV_PCM_HW_PARAM_RATE\n");
-+		return ret;
-+	}
-+
-+	ret = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+				  alsa_hw_rule, stream,
-+				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+	if (ret) {
-+		dev_err(dev, "Failed to add HW rule for SNDRV_PCM_HW_PARAM_CHANNELS\n");
-+		return ret;
-+	}
-+
-+	ret = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
-+				  alsa_hw_rule, stream,
-+				  SNDRV_PCM_HW_PARAM_PERIOD_SIZE, -1);
-+	if (ret) {
-+		dev_err(dev, "Failed to add HW rule for SNDRV_PCM_HW_PARAM_PERIOD_SIZE\n");
-+		return ret;
-+	}
-+
-+	ret = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
-+				  alsa_hw_rule, stream,
-+				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, -1);
-+	if (ret) {
-+		dev_err(dev, "Failed to add HW rule for SNDRV_PCM_HW_PARAM_BUFFER_SIZE\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int alsa_close(struct snd_pcm_substream *substream)
-+{
-+	struct pcm_stream_info *stream = stream_get(substream);
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&stream->front_info->io_lock, flags);
-+
-+	xen_snd_front_evtchnl_pair_set_connected(stream->evt_pair, false);
-+
-+	spin_unlock_irqrestore(&stream->front_info->io_lock, flags);
-+	return 0;
-+}
-+
-+static int alsa_hw_params(struct snd_pcm_substream *substream,
-+			  struct snd_pcm_hw_params *params)
-+{
-+	struct pcm_stream_info *stream = stream_get(substream);
-+	int ret;
-+
-+	/*
-+	 * this callback may be called multiple times,
-+	 * so free the previously allocated shared buffer if any
-+	 */
-+	stream_free(stream);
-+
-+	ret = xen_snd_front_shbuf_alloc(stream->front_info->xb_dev,
-+					&stream->sh_buf,
-+					params_buffer_bytes(params));
-+	if (ret < 0) {
-+		stream_free(stream);
-+		dev_err(&stream->front_info->xb_dev->dev,
-+			"Failed to allocate buffers for stream with index %d\n",
-+			stream->index);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int alsa_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct pcm_stream_info *stream = stream_get(substream);
-+	int ret;
-+
-+	ret = xen_snd_front_stream_close(&stream->evt_pair->req);
-+	stream_free(stream);
-+	return ret;
-+}
-+
-+static int alsa_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct pcm_stream_info *stream = stream_get(substream);
-+
-+	if (!stream->is_open) {
-+		struct snd_pcm_runtime *runtime = substream->runtime;
-+		u8 sndif_format;
-+		int ret;
-+
-+		sndif_format = to_sndif_format(runtime->format);
-+		if (sndif_format < 0) {
-+			dev_err(&stream->front_info->xb_dev->dev,
-+				"Unsupported sample format: %d\n",
-+				runtime->format);
-+			return sndif_format;
-+		}
-+
-+		ret = xen_snd_front_stream_prepare(&stream->evt_pair->req,
-+						   &stream->sh_buf,
-+						   sndif_format,
-+						   runtime->channels,
-+						   runtime->rate,
-+						   snd_pcm_lib_buffer_bytes(substream),
-+						   snd_pcm_lib_period_bytes(substream));
-+		if (ret < 0)
-+			return ret;
-+
-+		stream->is_open = true;
-+	}
-+
-+	return 0;
-+}
-+
-+static int alsa_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct pcm_stream_info *stream = stream_get(substream);
-+	int type;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		type = XENSND_OP_TRIGGER_START;
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		type = XENSND_OP_TRIGGER_RESUME;
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		type = XENSND_OP_TRIGGER_STOP;
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		type = XENSND_OP_TRIGGER_PAUSE;
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return xen_snd_front_stream_trigger(&stream->evt_pair->req, type);
-+}
-+
-+void xen_snd_front_alsa_handle_cur_pos(struct xen_snd_front_evtchnl *evtchnl,
-+				       u64 pos_bytes)
-+{
-+	struct snd_pcm_substream *substream = evtchnl->u.evt.substream;
-+	struct pcm_stream_info *stream = stream_get(substream);
-+	snd_pcm_uframes_t delta, new_hw_ptr, cur_frame;
-+
-+	cur_frame = bytes_to_frames(substream->runtime, pos_bytes);
-+
-+	delta = cur_frame - stream->be_cur_frame;
-+	stream->be_cur_frame = cur_frame;
-+
-+	new_hw_ptr = (snd_pcm_uframes_t)atomic_read(&stream->hw_ptr);
-+	new_hw_ptr = (new_hw_ptr + delta) % substream->runtime->buffer_size;
-+	atomic_set(&stream->hw_ptr, (int)new_hw_ptr);
-+
-+	stream->out_frames += delta;
-+	if (stream->out_frames > substream->runtime->period_size) {
-+		stream->out_frames %= substream->runtime->period_size;
-+		snd_pcm_period_elapsed(substream);
-+	}
-+}
-+
-+static snd_pcm_uframes_t alsa_pointer(struct snd_pcm_substream *substream)
-+{
-+	struct pcm_stream_info *stream = stream_get(substream);
-+
-+	return (snd_pcm_uframes_t)atomic_read(&stream->hw_ptr);
-+}
-+
-+static int alsa_pb_copy_user(struct snd_pcm_substream *substream,
-+			     int channel, unsigned long pos, void __user *src,
-+			     unsigned long count)
-+{
-+	struct pcm_stream_info *stream = stream_get(substream);
-+
-+	if (unlikely(pos + count > stream->sh_buf.buffer_sz))
-+		return -EINVAL;
-+
-+	if (copy_from_user(stream->sh_buf.buffer + pos, src, count))
-+		return -EFAULT;
-+
-+	return xen_snd_front_stream_write(&stream->evt_pair->req, pos, count);
-+}
-+
-+static int alsa_pb_copy_kernel(struct snd_pcm_substream *substream,
-+			       int channel, unsigned long pos, void *src,
-+			       unsigned long count)
-+{
-+	struct pcm_stream_info *stream = stream_get(substream);
-+
-+	if (unlikely(pos + count > stream->sh_buf.buffer_sz))
-+		return -EINVAL;
-+
-+	memcpy(stream->sh_buf.buffer + pos, src, count);
-+
-+	return xen_snd_front_stream_write(&stream->evt_pair->req, pos, count);
-+}
-+
-+static int alsa_cap_copy_user(struct snd_pcm_substream *substream,
-+			      int channel, unsigned long pos, void __user *dst,
-+			      unsigned long count)
-+{
-+	struct pcm_stream_info *stream = stream_get(substream);
-+	int ret;
-+
-+	if (unlikely(pos + count > stream->sh_buf.buffer_sz))
-+		return -EINVAL;
-+
-+	ret = xen_snd_front_stream_read(&stream->evt_pair->req, pos, count);
-+	if (ret < 0)
-+		return ret;
-+
-+	return copy_to_user(dst, stream->sh_buf.buffer + pos, count) ?
-+		-EFAULT : 0;
-+}
-+
-+static int alsa_cap_copy_kernel(struct snd_pcm_substream *substream,
-+				int channel, unsigned long pos, void *dst,
-+				unsigned long count)
-+{
-+	struct pcm_stream_info *stream = stream_get(substream);
-+	int ret;
-+
-+	if (unlikely(pos + count > stream->sh_buf.buffer_sz))
-+		return -EINVAL;
-+
-+	ret = xen_snd_front_stream_read(&stream->evt_pair->req, pos, count);
-+	if (ret < 0)
-+		return ret;
-+
-+	memcpy(dst, stream->sh_buf.buffer + pos, count);
-+
-+	return 0;
-+}
-+
-+static int alsa_pb_fill_silence(struct snd_pcm_substream *substream,
-+				int channel, unsigned long pos,
-+				unsigned long count)
-+{
-+	struct pcm_stream_info *stream = stream_get(substream);
-+
-+	if (unlikely(pos + count > stream->sh_buf.buffer_sz))
-+		return -EINVAL;
-+
-+	memset(stream->sh_buf.buffer + pos, 0, count);
-+
-+	return xen_snd_front_stream_write(&stream->evt_pair->req, pos, count);
-+}
-+
-+/*
-+ * FIXME: The mmaped data transfer is asynchronous and there is no
-+ * ack signal from user-space when it is done. This is the
-+ * reason it is not implemented in the PV driver as we do need
-+ * to know when the buffer can be transferred to the backend.
-+ */
-+
-+static struct snd_pcm_ops snd_drv_alsa_playback_ops = {
-+	.open = alsa_open,
-+	.close = alsa_close,
-+	.ioctl = snd_pcm_lib_ioctl,
-+	.hw_params = alsa_hw_params,
-+	.hw_free = alsa_hw_free,
-+	.prepare = alsa_prepare,
-+	.trigger = alsa_trigger,
-+	.pointer = alsa_pointer,
-+	.copy_user = alsa_pb_copy_user,
-+	.copy_kernel = alsa_pb_copy_kernel,
-+	.fill_silence = alsa_pb_fill_silence,
-+};
-+
-+static struct snd_pcm_ops snd_drv_alsa_capture_ops = {
-+	.open = alsa_open,
-+	.close = alsa_close,
-+	.ioctl = snd_pcm_lib_ioctl,
-+	.hw_params = alsa_hw_params,
-+	.hw_free = alsa_hw_free,
-+	.prepare = alsa_prepare,
-+	.trigger = alsa_trigger,
-+	.pointer = alsa_pointer,
-+	.copy_user = alsa_cap_copy_user,
-+	.copy_kernel = alsa_cap_copy_kernel,
-+};
-+
-+static int new_pcm_instance(struct card_info *card_info,
-+			    struct xen_front_cfg_pcm_instance *instance_cfg,
-+			    struct pcm_instance_info *pcm_instance_info)
-+{
-+	struct snd_pcm *pcm;
-+	int ret, i;
-+
-+	dev_dbg(&card_info->front_info->xb_dev->dev,
-+		"New PCM device \"%s\" with id %d playback %d capture %d",
-+		instance_cfg->name,
-+		instance_cfg->device_id,
-+		instance_cfg->num_streams_pb,
-+		instance_cfg->num_streams_cap);
-+
-+	pcm_instance_info->card_info = card_info;
-+
-+	pcm_instance_info->pcm_hw = instance_cfg->pcm_hw;
-+
-+	if (instance_cfg->num_streams_pb) {
-+		pcm_instance_info->streams_pb =
-+				devm_kcalloc(&card_info->card->card_dev,
-+					     instance_cfg->num_streams_pb,
-+					     sizeof(struct pcm_stream_info),
-+					     GFP_KERNEL);
-+		if (!pcm_instance_info->streams_pb)
-+			return -ENOMEM;
-+	}
-+
-+	if (instance_cfg->num_streams_cap) {
-+		pcm_instance_info->streams_cap =
-+				devm_kcalloc(&card_info->card->card_dev,
-+					     instance_cfg->num_streams_cap,
-+					     sizeof(struct pcm_stream_info),
-+					     GFP_KERNEL);
-+		if (!pcm_instance_info->streams_cap)
-+			return -ENOMEM;
-+	}
-+
-+	pcm_instance_info->num_pcm_streams_pb =
-+			instance_cfg->num_streams_pb;
-+	pcm_instance_info->num_pcm_streams_cap =
-+			instance_cfg->num_streams_cap;
-+
-+	for (i = 0; i < pcm_instance_info->num_pcm_streams_pb; i++) {
-+		pcm_instance_info->streams_pb[i].pcm_hw =
-+			instance_cfg->streams_pb[i].pcm_hw;
-+		pcm_instance_info->streams_pb[i].index =
-+			instance_cfg->streams_pb[i].index;
-+	}
-+
-+	for (i = 0; i < pcm_instance_info->num_pcm_streams_cap; i++) {
-+		pcm_instance_info->streams_cap[i].pcm_hw =
-+			instance_cfg->streams_cap[i].pcm_hw;
-+		pcm_instance_info->streams_cap[i].index =
-+			instance_cfg->streams_cap[i].index;
-+	}
-+
-+	ret = snd_pcm_new(card_info->card, instance_cfg->name,
-+			  instance_cfg->device_id,
-+			  instance_cfg->num_streams_pb,
-+			  instance_cfg->num_streams_cap,
-+			  &pcm);
-+	if (ret < 0)
-+		return ret;
-+
-+	pcm->private_data = pcm_instance_info;
-+	pcm->info_flags = 0;
-+	/* we want to handle all PCM operations in non-atomic context */
-+	pcm->nonatomic = true;
-+	strncpy(pcm->name, "Virtual card PCM", sizeof(pcm->name));
-+
-+	if (instance_cfg->num_streams_pb)
-+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
-+				&snd_drv_alsa_playback_ops);
-+
-+	if (instance_cfg->num_streams_cap)
-+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
-+				&snd_drv_alsa_capture_ops);
-+
-+	pcm_instance_info->pcm = pcm;
-+	return 0;
-+}
-+
-+int xen_snd_front_alsa_init(struct xen_snd_front_info *front_info)
-+{
-+	struct device *dev = &front_info->xb_dev->dev;
-+	struct xen_front_cfg_card *cfg = &front_info->cfg;
-+	struct card_info *card_info;
-+	struct snd_card *card;
-+	int ret, i;
-+
-+	dev_dbg(dev, "Creating virtual sound card\n");
-+
-+	ret = snd_card_new(dev, 0, XENSND_DRIVER_NAME, THIS_MODULE,
-+			   sizeof(struct card_info), &card);
-+	if (ret < 0)
-+		return ret;
-+
-+	card_info = card->private_data;
-+	card_info->front_info = front_info;
-+	front_info->card_info = card_info;
-+	card_info->card = card;
-+	card_info->pcm_instances =
-+			devm_kcalloc(dev, cfg->num_pcm_instances,
-+				     sizeof(struct pcm_instance_info),
-+				     GFP_KERNEL);
-+	if (!card_info->pcm_instances) {
-+		ret = -ENOMEM;
-+		goto fail;
-+	}
-+
-+	card_info->num_pcm_instances = cfg->num_pcm_instances;
-+	card_info->pcm_hw = cfg->pcm_hw;
-+
-+	for (i = 0; i < cfg->num_pcm_instances; i++) {
-+		ret = new_pcm_instance(card_info, &cfg->pcm_instances[i],
-+				       &card_info->pcm_instances[i]);
-+		if (ret < 0)
-+			goto fail;
-+	}
-+
-+	strncpy(card->driver, XENSND_DRIVER_NAME, sizeof(card->driver));
-+	strncpy(card->shortname, cfg->name_short, sizeof(card->shortname));
-+	strncpy(card->longname, cfg->name_long, sizeof(card->longname));
-+
-+	ret = snd_card_register(card);
-+	if (ret < 0)
-+		goto fail;
-+
-+	return 0;
-+
-+fail:
-+	snd_card_free(card);
-+	return ret;
-+}
-+
-+void xen_snd_front_alsa_fini(struct xen_snd_front_info *front_info)
-+{
-+	struct card_info *card_info;
-+	struct snd_card *card;
-+
-+	card_info = front_info->card_info;
-+	if (!card_info)
-+		return;
-+
-+	card = card_info->card;
-+	if (!card)
-+		return;
-+
-+	dev_dbg(&front_info->xb_dev->dev, "Removing virtual sound card %d\n",
-+		card->number);
-+	snd_card_free(card);
-+
-+	/* card_info will be freed when destroying front_info->xb_dev->dev */
-+	card_info->card = NULL;
-+}
-diff --git a/sound/xen/xen_snd_front_alsa.h b/sound/xen/xen_snd_front_alsa.h
-new file mode 100644
-index 000000000000..18abd9eec967
---- /dev/null
-+++ b/sound/xen/xen_snd_front_alsa.h
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR MIT */
-+
-+/*
-+ * Xen para-virtual sound device
-+ *
-+ * Copyright (C) 2016-2018 EPAM Systems Inc.
-+ *
-+ * Author: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-+ */
-+
-+#ifndef __XEN_SND_FRONT_ALSA_H
-+#define __XEN_SND_FRONT_ALSA_H
-+
-+struct xen_snd_front_info;
-+
-+int xen_snd_front_alsa_init(struct xen_snd_front_info *front_info);
-+
-+void xen_snd_front_alsa_fini(struct xen_snd_front_info *front_info);
-+
-+void xen_snd_front_alsa_handle_cur_pos(struct xen_snd_front_evtchnl *evtchnl,
-+				       u64 pos_bytes);
-+
-+#endif /* __XEN_SND_FRONT_ALSA_H */
-diff --git a/sound/xen/xen_snd_front_evtchnl.c b/sound/xen/xen_snd_front_evtchnl.c
-index 9ece39f938f8..470196518716 100644
---- a/sound/xen/xen_snd_front_evtchnl.c
-+++ b/sound/xen/xen_snd_front_evtchnl.c
-@@ -14,6 +14,7 @@
- #include <xen/xenbus.h>
- 
- #include "xen_snd_front.h"
-+#include "xen_snd_front_alsa.h"
- #include "xen_snd_front_cfg.h"
- #include "xen_snd_front_evtchnl.h"
- 
-@@ -111,7 +112,10 @@ static irqreturn_t evtchnl_interrupt_evt(int irq, void *dev_id)
- 
- 		switch (event->type) {
- 		case XENSND_EVT_CUR_POS:
--			/* do nothing at the moment */
-+			spin_unlock_irqrestore(&front_info->io_lock, flags);
-+			xen_snd_front_alsa_handle_cur_pos(channel,
-+							  event->op.cur_pos.position);
-+			spin_lock_irqsave(&front_info->io_lock, flags);
- 			break;
- 		}
- 	}
--- 
-2.16.2
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
