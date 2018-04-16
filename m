@@ -1,18 +1,20 @@
 From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: [PATCH v2 0/5] ALSA: xen-front: Add Xen
-	para-virtualized frontend driver
-Date: Mon, 16 Apr 2018 09:24:48 +0300
-Message-ID: <20180416062453.24743-1-andr2000@gmail.com>
+Subject: [PATCH v2 1/5] ALSA: xen-front: Introduce Xen
+	para-virtualized sound frontend driver
+Date: Mon, 16 Apr 2018 09:24:49 +0300
+Message-ID: <20180416062453.24743-2-andr2000@gmail.com>
+References: <20180416062453.24743-1-andr2000@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f67.google.com (mail-lf0-f67.google.com
- [209.85.215.67])
- by alsa0.perex.cz (Postfix) with ESMTP id A03F6267217
- for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 08:25:05 +0200 (CEST)
-Received: by mail-lf0-f67.google.com with SMTP id v207-v6so20316787lfa.10
- for <alsa-devel@alsa-project.org>; Sun, 15 Apr 2018 23:25:05 -0700 (PDT)
+Received: from mail-lf0-f68.google.com (mail-lf0-f68.google.com
+ [209.85.215.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A89826722C
+ for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 08:25:06 +0200 (CEST)
+Received: by mail-lf0-f68.google.com with SMTP id r125-v6so3600776lfe.2
+ for <alsa-devel@alsa-project.org>; Sun, 15 Apr 2018 23:25:06 -0700 (PDT)
+In-Reply-To: <20180416062453.24743-1-andr2000@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,88 +30,306 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 
-Please note: this patch series depends on [3].
+Introduce skeleton of the para-virtualized Xen sound
+frontend driver.
 
-This patch series adds support for Xen [1] para-virtualized
-sound frontend driver. It implements the protocol from
-include/xen/interface/io/sndif.h with the following limitations:
-- mute/unmute is not supported
-- get/set volume is not supported
-Volume control is not supported for the reason that most of the
-use-cases (at the moment) are based on scenarious where
-unprivileged OS (e.g. Android, AGL etc) use software mixers.
+Initial handling for Xen bus states: implement
+Xen bus state machine for the frontend driver according to
+the state diagram and recovery flow from sound para-virtualized
+protocol: xen/interface/io/sndif.h.
 
-Both capture and playback are supported.
-
-Corresponding backend, implemented as a user-space application, can be
-found at [2].
-
-Thank you,
-Oleksandr
-
-Changes since v1:
-*****************
-
-1. Moved driver from sound/drivers to sound/xen
-
-2. Coding style changes to better meet Linux Kernel
-
-3. Added explicit back and front synchronization
-   In order to provide explicit synchronization between backend and
-   frontend the following changes are introduced in the protocol:
-    - add new ring buffer for sending asynchronous events from
-      backend to frontend to report number of bytes played by the
-      frontend (XENSND_EVT_CUR_POS)
-    - introduce trigger events for playback control: start/stop/pause/resume
-    - add "req-" prefix to event-channel and ring-ref to unify naming
-      of the Xen event channels for requests and events
-
-4. Added explicit back and front parameter negotiation
-   In order to provide explicit stream parameter negotiation between
-   backend and frontend the following changes are introduced in the protocol:
-   add XENSND_OP_HW_PARAM_QUERY request to read/update
-   configuration space for the parameters given: request passes
-   desired parameter's intervals/masks and the response to this request
-   returns allowed min/max intervals/masks to be used.
-
-[1] https://xenproject.org/
-[2] https://github.com/xen-troops/snd_be
-[3] https://lkml.org/lkml/2018/4/12/522
-
-Oleksandr Andrushchenko (5):
-  ALSA: xen-front: Introduce Xen para-virtualized sound frontend driver
-  ALSA: xen-front: Read sound driver configuration from Xen store
-  ALSA: xen-front: Implement Xen event channel handling
-  ALSA: xen-front: Implement handling of shared buffers
-  ALSA: xen-front: Implement ALSA virtual sound driver
-
- sound/Kconfig                     |   2 +
- sound/Makefile                    |   2 +-
- sound/xen/Kconfig                 |  10 +
- sound/xen/Makefile                |   9 +
- sound/xen/xen_snd_front.c         | 410 +++++++++++++++++++
- sound/xen/xen_snd_front.h         |  57 +++
- sound/xen/xen_snd_front_alsa.c    | 830 ++++++++++++++++++++++++++++++++++++++
- sound/xen/xen_snd_front_alsa.h    |  23 ++
- sound/xen/xen_snd_front_cfg.c     | 517 ++++++++++++++++++++++++
- sound/xen/xen_snd_front_cfg.h     |  46 +++
- sound/xen/xen_snd_front_evtchnl.c | 478 ++++++++++++++++++++++
- sound/xen/xen_snd_front_evtchnl.h |  92 +++++
- sound/xen/xen_snd_front_shbuf.c   | 193 +++++++++
- sound/xen/xen_snd_front_shbuf.h   |  36 ++
- 14 files changed, 2704 insertions(+), 1 deletion(-)
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+---
+ sound/Kconfig             |   2 +
+ sound/Makefile            |   2 +-
+ sound/xen/Kconfig         |  10 +++
+ sound/xen/Makefile        |   5 ++
+ sound/xen/xen_snd_front.c | 196 ++++++++++++++++++++++++++++++++++++++++++++++
+ sound/xen/xen_snd_front.h |  18 +++++
+ 6 files changed, 232 insertions(+), 1 deletion(-)
  create mode 100644 sound/xen/Kconfig
  create mode 100644 sound/xen/Makefile
  create mode 100644 sound/xen/xen_snd_front.c
  create mode 100644 sound/xen/xen_snd_front.h
- create mode 100644 sound/xen/xen_snd_front_alsa.c
- create mode 100644 sound/xen/xen_snd_front_alsa.h
- create mode 100644 sound/xen/xen_snd_front_cfg.c
- create mode 100644 sound/xen/xen_snd_front_cfg.h
- create mode 100644 sound/xen/xen_snd_front_evtchnl.c
- create mode 100644 sound/xen/xen_snd_front_evtchnl.h
- create mode 100644 sound/xen/xen_snd_front_shbuf.c
- create mode 100644 sound/xen/xen_snd_front_shbuf.h
 
+diff --git a/sound/Kconfig b/sound/Kconfig
+index 6833db9002ec..1140e9988fc5 100644
+--- a/sound/Kconfig
++++ b/sound/Kconfig
+@@ -96,6 +96,8 @@ source "sound/x86/Kconfig"
+ 
+ source "sound/synth/Kconfig"
+ 
++source "sound/xen/Kconfig"
++
+ endif # SND
+ 
+ endif # !UML
+diff --git a/sound/Makefile b/sound/Makefile
+index 99d8c31262c8..797ecdcd35e2 100644
+--- a/sound/Makefile
++++ b/sound/Makefile
+@@ -5,7 +5,7 @@
+ obj-$(CONFIG_SOUND) += soundcore.o
+ obj-$(CONFIG_DMASOUND) += oss/dmasound/
+ obj-$(CONFIG_SND) += core/ i2c/ drivers/ isa/ pci/ ppc/ arm/ sh/ synth/ usb/ \
+-	firewire/ sparc/ spi/ parisc/ pcmcia/ mips/ soc/ atmel/ hda/ x86/
++	firewire/ sparc/ spi/ parisc/ pcmcia/ mips/ soc/ atmel/ hda/ x86/ xen/
+ obj-$(CONFIG_SND_AOA) += aoa/
+ 
+ # This one must be compilable even if sound is configured out
+diff --git a/sound/xen/Kconfig b/sound/xen/Kconfig
+new file mode 100644
+index 000000000000..7cad38be8317
+--- /dev/null
++++ b/sound/xen/Kconfig
+@@ -0,0 +1,10 @@
++# ALSA Xen drivers
++
++config SND_XEN_FRONTEND
++	tristate "Xen para-virtualized sound frontend driver"
++	depends on XEN && SND_PCM
++	select XEN_XENBUS_FRONTEND
++	default n
++	help
++	  Choose this option if you want to enable a para-virtualized
++	  frontend sound driver for Xen guest OSes.
+diff --git a/sound/xen/Makefile b/sound/xen/Makefile
+new file mode 100644
+index 000000000000..4507ef3c27fd
+--- /dev/null
++++ b/sound/xen/Makefile
+@@ -0,0 +1,5 @@
++# SPDX-License-Identifier: GPL-2.0 OR MIT
++
++snd_xen_front-objs := xen_snd_front.o
++
++obj-$(CONFIG_SND_XEN_FRONTEND) += snd_xen_front.o
+diff --git a/sound/xen/xen_snd_front.c b/sound/xen/xen_snd_front.c
+new file mode 100644
+index 000000000000..f406a8f52c51
+--- /dev/null
++++ b/sound/xen/xen_snd_front.c
+@@ -0,0 +1,196 @@
++// SPDX-License-Identifier: GPL-2.0 OR MIT
++
++/*
++ * Xen para-virtual sound device
++ *
++ * Copyright (C) 2016-2018 EPAM Systems Inc.
++ *
++ * Author: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
++ */
++
++#include <linux/delay.h>
++#include <linux/module.h>
++
++#include <xen/platform_pci.h>
++#include <xen/xen.h>
++#include <xen/xenbus.h>
++
++#include <xen/interface/io/sndif.h>
++
++#include "xen_snd_front.h"
++
++static void xen_snd_drv_fini(struct xen_snd_front_info *front_info)
++{
++}
++
++static int sndback_initwait(struct xen_snd_front_info *front_info)
++{
++	return 0;
++}
++
++static int sndback_connect(struct xen_snd_front_info *front_info)
++{
++	return 0;
++}
++
++static void sndback_disconnect(struct xen_snd_front_info *front_info)
++{
++	xen_snd_drv_fini(front_info);
++	xenbus_switch_state(front_info->xb_dev, XenbusStateInitialising);
++}
++
++static void sndback_changed(struct xenbus_device *xb_dev,
++			    enum xenbus_state backend_state)
++{
++	struct xen_snd_front_info *front_info = dev_get_drvdata(&xb_dev->dev);
++	int ret;
++
++	dev_dbg(&xb_dev->dev, "Backend state is %s, front is %s\n",
++		xenbus_strstate(backend_state),
++		xenbus_strstate(xb_dev->state));
++
++	switch (backend_state) {
++	case XenbusStateReconfiguring:
++		/* fall through */
++	case XenbusStateReconfigured:
++		/* fall through */
++	case XenbusStateInitialised:
++		/* fall through */
++		break;
++
++	case XenbusStateInitialising:
++		/* recovering after backend unexpected closure */
++		sndback_disconnect(front_info);
++		break;
++
++	case XenbusStateInitWait:
++		/* recovering after backend unexpected closure */
++		sndback_disconnect(front_info);
++
++		ret = sndback_initwait(front_info);
++		if (ret < 0)
++			xenbus_dev_fatal(xb_dev, ret, "initializing frontend");
++		else
++			xenbus_switch_state(xb_dev, XenbusStateInitialised);
++		break;
++
++	case XenbusStateConnected:
++		if (xb_dev->state != XenbusStateInitialised)
++			break;
++
++		ret = sndback_connect(front_info);
++		if (ret < 0)
++			xenbus_dev_fatal(xb_dev, ret, "initializing frontend");
++		else
++			xenbus_switch_state(xb_dev, XenbusStateConnected);
++		break;
++
++	case XenbusStateClosing:
++		/*
++		 * in this state backend starts freeing resources,
++		 * so let it go into closed state first, so we can also
++		 * remove ours
++		 */
++		break;
++
++	case XenbusStateUnknown:
++		/* fall through */
++	case XenbusStateClosed:
++		if (xb_dev->state == XenbusStateClosed)
++			break;
++
++		sndback_disconnect(front_info);
++		break;
++	}
++}
++
++static int xen_drv_probe(struct xenbus_device *xb_dev,
++			 const struct xenbus_device_id *id)
++{
++	struct xen_snd_front_info *front_info;
++
++	front_info = devm_kzalloc(&xb_dev->dev,
++				  sizeof(*front_info), GFP_KERNEL);
++	if (!front_info)
++		return -ENOMEM;
++
++	front_info->xb_dev = xb_dev;
++	dev_set_drvdata(&xb_dev->dev, front_info);
++
++	return xenbus_switch_state(xb_dev, XenbusStateInitialising);
++}
++
++static int xen_drv_remove(struct xenbus_device *dev)
++{
++	struct xen_snd_front_info *front_info = dev_get_drvdata(&dev->dev);
++	int to = 100;
++
++	xenbus_switch_state(dev, XenbusStateClosing);
++
++	/*
++	 * On driver removal it is disconnected from XenBus,
++	 * so no backend state change events come via .otherend_changed
++	 * callback. This prevents us from exiting gracefully, e.g.
++	 * signaling the backend to free event channels, waiting for its
++	 * state to change to XenbusStateClosed and cleaning at our end.
++	 * Normally when front driver removed backend will finally go into
++	 * XenbusStateInitWait state.
++	 *
++	 * Workaround: read backend's state manually and wait with time-out.
++	 */
++	while ((xenbus_read_unsigned(front_info->xb_dev->otherend, "state",
++				     XenbusStateUnknown) != XenbusStateInitWait) &&
++				     to--)
++		msleep(10);
++
++	if (!to) {
++		unsigned int state;
++
++		state = xenbus_read_unsigned(front_info->xb_dev->otherend,
++					     "state", XenbusStateUnknown);
++		pr_err("Backend state is %s while removing driver\n",
++		       xenbus_strstate(state));
++	}
++
++	xen_snd_drv_fini(front_info);
++	xenbus_frontend_closed(dev);
++	return 0;
++}
++
++static const struct xenbus_device_id xen_drv_ids[] = {
++	{ XENSND_DRIVER_NAME },
++	{ "" }
++};
++
++static struct xenbus_driver xen_driver = {
++	.ids = xen_drv_ids,
++	.probe = xen_drv_probe,
++	.remove = xen_drv_remove,
++	.otherend_changed = sndback_changed,
++};
++
++static int __init xen_drv_init(void)
++{
++	if (!xen_domain())
++		return -ENODEV;
++
++	if (!xen_has_pv_devices())
++		return -ENODEV;
++
++	pr_info("Initialising Xen " XENSND_DRIVER_NAME " frontend driver\n");
++	return xenbus_register_frontend(&xen_driver);
++}
++
++static void __exit xen_drv_fini(void)
++{
++	pr_info("Unregistering Xen " XENSND_DRIVER_NAME " frontend driver\n");
++	xenbus_unregister_driver(&xen_driver);
++}
++
++module_init(xen_drv_init);
++module_exit(xen_drv_fini);
++
++MODULE_DESCRIPTION("Xen virtual sound device frontend");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("xen:" XENSND_DRIVER_NAME);
++MODULE_SUPPORTED_DEVICE("{{ALSA,Virtual soundcard}}");
+diff --git a/sound/xen/xen_snd_front.h b/sound/xen/xen_snd_front.h
+new file mode 100644
+index 000000000000..4ae204b23d32
+--- /dev/null
++++ b/sound/xen/xen_snd_front.h
+@@ -0,0 +1,18 @@
++/* SPDX-License-Identifier: GPL-2.0 OR MIT */
++
++/*
++ * Xen para-virtual sound device
++ *
++ * Copyright (C) 2016-2018 EPAM Systems Inc.
++ *
++ * Author: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
++ */
++
++#ifndef __XEN_SND_FRONT_H
++#define __XEN_SND_FRONT_H
++
++struct xen_snd_front_info {
++	struct xenbus_device *xb_dev;
++};
++
++#endif /* __XEN_SND_FRONT_H */
 -- 
 2.16.2
