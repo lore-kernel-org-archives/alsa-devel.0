@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tfa9879: switch to SPDX license tag" to the asoc tree
-Date: Mon, 16 Apr 2018 13:00:17 +0100
-Message-ID: <E1f82nx-00009X-1C@debutante>
-References: <20180413114751.6464-3-peda@axentia.se>
+Subject: Applied "ASoC: fsl_esai: Add freq check in set_dai_sysclk()" to the asoc tree
+Date: Mon, 16 Apr 2018 13:05:56 +0100
+Message-ID: <E1f82tQ-0000nK-OJ@debutante>
+References: <1523234034-33018-1-git-send-email-nicoleotsuka@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180413114751.6464-3-peda@axentia.se>
+In-Reply-To: <1523234034-33018-1-git-send-email-nicoleotsuka@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@axentia.se>
-Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tfa9879: switch to SPDX license tag
+   ASoC: fsl_esai: Add freq check in set_dai_sysclk()
 
 has been applied to the asoc tree at
 
@@ -37,65 +37,40 @@ to this mail.
 Thanks,
 Mark
 
->From 3d5fa5270b1f4cc47b300a943b2a82727c6c6b07 Mon Sep 17 00:00:00 2001
-From: Peter Rosin <peda@axentia.se>
-Date: Fri, 13 Apr 2018 13:47:51 +0200
-Subject: [PATCH] ASoC: tfa9879: switch to SPDX license tag
+>From 8a2278b7fb3df67cd415c679ba1a0e5e4a1761a7 Mon Sep 17 00:00:00 2001
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Date: Sun, 8 Apr 2018 17:33:54 -0700
+Subject: [PATCH] ASoC: fsl_esai: Add freq check in set_dai_sysclk()
 
-It's less overhead, clearer and generally neater.
+The freq parameter indicates the physical frequency of an actual
+input clock or a desired frequency of an output clock for HCKT/R.
+It should never be passed 0. This might cause Division-by-zero.
 
-Signed-off-by: Peter Rosin <peda@axentia.se>
+So this patch adds a check to fix it.
+
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Reviewed-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tfa9879.c | 18 ++++++------------
- sound/soc/codecs/tfa9879.h |  7 +------
- 2 files changed, 7 insertions(+), 18 deletions(-)
+ sound/soc/fsl/fsl_esai.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/codecs/tfa9879.c b/sound/soc/codecs/tfa9879.c
-index 4ed020262a27..abc114a3ae2b 100644
---- a/sound/soc/codecs/tfa9879.c
-+++ b/sound/soc/codecs/tfa9879.c
-@@ -1,15 +1,9 @@
--/*
-- * tfa9879.c  --  driver for NXP Semiconductors TFA9879
-- *
-- * Copyright (C) 2014 Axentia Technologies AB
-- * Author: Peter Rosin <peda@axentia.se>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-- */
-+// SPDX-License-Identifier: GPL-2.0+
-+//
-+// tfa9879.c  --  driver for NXP Semiconductors TFA9879
-+//
-+// Copyright (C) 2014 Axentia Technologies AB
-+// Author: Peter Rosin <peda@axentia.se>
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index da8fd98c7f51..d79e99ef31ad 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -226,6 +226,12 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 	unsigned long clk_rate;
+ 	int ret;
  
- #include <linux/module.h>
- #include <linux/init.h>
-diff --git a/sound/soc/codecs/tfa9879.h b/sound/soc/codecs/tfa9879.h
-index 3408c90c4628..66c88d0396fe 100644
---- a/sound/soc/codecs/tfa9879.h
-+++ b/sound/soc/codecs/tfa9879.h
-@@ -1,14 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
- /*
-  * tfa9879.h  --  driver for NXP Semiconductors TFA9879
-  *
-  * Copyright (C) 2014 Axentia Technologies AB
-  * Author: Peter Rosin <peda@axentia.se>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-  */
- 
- #ifndef _TFA9879_H
++	if (freq == 0) {
++		dev_err(dai->dev, "%sput freq of HCK%c should not be 0Hz\n",
++			in ? "in" : "out", tx ? 'T' : 'R');
++		return -EINVAL;
++	}
++
+ 	/* Bypass divider settings if the requirement doesn't change */
+ 	if (freq == esai_priv->hck_rate[tx] && dir == esai_priv->hck_dir[tx])
+ 		return 0;
 -- 
 2.17.0
