@@ -1,276 +1,116 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/3] ALSA: pcm: Clean up with snd_pcm_avail()
-	and snd_pcm_hw_avail() helpers
-Date: Mon, 16 Apr 2018 14:14:15 +0200
-Message-ID: <20180416121417.27452-2-tiwai@suse.de>
-References: <20180416121417.27452-1-tiwai@suse.de>
+From: Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH v2 1/5] ALSA: xen-front: Introduce Xen para-virtualized
+ sound frontend driver
+Date: Mon, 16 Apr 2018 14:25:13 +0200
+Message-ID: <c473b7b3-6125-7f2f-d3c2-bff58dc61d48@suse.com>
+References: <20180416062453.24743-1-andr2000@gmail.com>
+ <20180416062453.24743-2-andr2000@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 980DB2673CB
- for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 14:14:19 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id C2BEAAEF9
- for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 12:14:18 +0000 (UTC)
-In-Reply-To: <20180416121417.27452-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180416062453.24743-2-andr2000@gmail.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Oleksandr Andrushchenko <andr2000@gmail.com>, xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, perex@perex.cz, tiwai@suse.com
+Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-Introduce two new direction-neutral helpers to calculate the avail and
-hw_avail values, and clean up the code with them.
+On 16/04/18 08:24, Oleksandr Andrushchenko wrote:
+> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+> 
+> Introduce skeleton of the para-virtualized Xen sound
+> frontend driver.
+> 
+> Initial handling for Xen bus states: implement
+> Xen bus state machine for the frontend driver according to
+> the state diagram and recovery flow from sound para-virtualized
+> protocol: xen/interface/io/sndif.h.
+> 
+> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 
-The two separated forward and rewind functions are gathered to the
-unified functions.
+Only one minor nit (see below). With that addressed (or fixed when
+committing):
 
-No functional change but only code reductions.
+Reviewed-by: Juergen Gross <jgross@suse.com>
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/pcm_compat.c | 10 ++------
- sound/core/pcm_lib.c    | 15 +++---------
- sound/core/pcm_local.h  | 18 ++++++++++++++
- sound/core/pcm_native.c | 65 ++++++++-----------------------------------------
- 4 files changed, 33 insertions(+), 75 deletions(-)
 
-diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
-index b719d0bd833e..0be248543f1e 100644
---- a/sound/core/pcm_compat.c
-+++ b/sound/core/pcm_compat.c
-@@ -44,10 +44,7 @@ static int snd_pcm_ioctl_rewind_compat(struct snd_pcm_substream *substream,
- 
- 	if (get_user(frames, src))
- 		return -EFAULT;
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		err = snd_pcm_playback_rewind(substream, frames);
--	else
--		err = snd_pcm_capture_rewind(substream, frames);
-+	err = snd_pcm_rewind(substream, frames);
- 	if (put_user(err, src))
- 		return -EFAULT;
- 	return err < 0 ? err : 0;
-@@ -61,10 +58,7 @@ static int snd_pcm_ioctl_forward_compat(struct snd_pcm_substream *substream,
- 
- 	if (get_user(frames, src))
- 		return -EFAULT;
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		err = snd_pcm_playback_forward(substream, frames);
--	else
--		err = snd_pcm_capture_forward(substream, frames);
-+	err = snd_pcm_forward(substream, frames);
- 	if (put_user(err, src))
- 		return -EFAULT;
- 	return err < 0 ? err : 0;
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index f4a19509cccf..44b5ae833082 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -191,10 +191,7 @@ int snd_pcm_update_state(struct snd_pcm_substream *substream,
- {
- 	snd_pcm_uframes_t avail;
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		avail = snd_pcm_playback_avail(runtime);
--	else
--		avail = snd_pcm_capture_avail(runtime);
-+	avail = snd_pcm_avail(substream);
- 	if (avail > runtime->avail_max)
- 		runtime->avail_max = avail;
- 	if (runtime->status->state == SNDRV_PCM_STATE_DRAINING) {
-@@ -1856,10 +1853,7 @@ static int wait_for_avail(struct snd_pcm_substream *substream,
- 		 * This check must happen after been added to the waitqueue
- 		 * and having current state be INTERRUPTIBLE.
- 		 */
--		if (is_playback)
--			avail = snd_pcm_playback_avail(runtime);
--		else
--			avail = snd_pcm_capture_avail(runtime);
-+		avail = snd_pcm_avail(substream);
- 		if (avail >= runtime->twake)
- 			break;
- 		snd_pcm_stream_unlock_irq(substream);
-@@ -2175,10 +2169,7 @@ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
- 	runtime->twake = runtime->control->avail_min ? : 1;
- 	if (runtime->status->state == SNDRV_PCM_STATE_RUNNING)
- 		snd_pcm_update_hw_ptr(substream);
--	if (is_playback)
--		avail = snd_pcm_playback_avail(runtime);
--	else
--		avail = snd_pcm_capture_avail(runtime);
-+	avail = snd_pcm_avail(substream);
- 	while (size > 0) {
- 		snd_pcm_uframes_t frames, appl_ptr, appl_ofs;
- 		snd_pcm_uframes_t cont;
-diff --git a/sound/core/pcm_local.h b/sound/core/pcm_local.h
-index 16f254732b2a..7a499d02df6c 100644
---- a/sound/core/pcm_local.h
-+++ b/sound/core/pcm_local.h
-@@ -36,6 +36,24 @@ int snd_pcm_update_hw_ptr(struct snd_pcm_substream *substream);
- void snd_pcm_playback_silence(struct snd_pcm_substream *substream,
- 			      snd_pcm_uframes_t new_hw_ptr);
- 
-+static inline snd_pcm_uframes_t
-+snd_pcm_avail(struct snd_pcm_substream *substream)
-+{
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		return snd_pcm_playback_avail(substream->runtime);
-+	else
-+		return snd_pcm_capture_avail(substream->runtime);
-+}
-+
-+static inline snd_pcm_uframes_t
-+snd_pcm_hw_avail(struct snd_pcm_substream *substream)
-+{
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		return snd_pcm_playback_hw_avail(substream->runtime);
-+	else
-+		return snd_pcm_capture_hw_avail(substream->runtime);
-+}
-+
- #ifdef CONFIG_SND_PCM_TIMER
- void snd_pcm_timer_resolution_change(struct snd_pcm_substream *substream);
- void snd_pcm_timer_init(struct snd_pcm_substream *substream);
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 35ffccea94c3..f69d89c907b9 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -908,8 +908,8 @@ int snd_pcm_status(struct snd_pcm_substream *substream,
-  _tstamp_end:
- 	status->appl_ptr = runtime->control->appl_ptr;
- 	status->hw_ptr = runtime->status->hw_ptr;
-+	status->avail = snd_pcm_avail(substream);
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		status->avail = snd_pcm_playback_avail(runtime);
- 		if (runtime->status->state == SNDRV_PCM_STATE_RUNNING ||
- 		    runtime->status->state == SNDRV_PCM_STATE_DRAINING) {
- 			status->delay = runtime->buffer_size - status->avail;
-@@ -917,7 +917,6 @@ int snd_pcm_status(struct snd_pcm_substream *substream,
- 		} else
- 			status->delay = 0;
- 	} else {
--		status->avail = snd_pcm_capture_avail(runtime);
- 		if (runtime->status->state == SNDRV_PCM_STATE_RUNNING)
- 			status->delay = status->avail + runtime->delay;
- 		else
-@@ -2610,28 +2609,9 @@ static snd_pcm_sframes_t rewind_appl_ptr(struct snd_pcm_substream *substream,
- 	return ret < 0 ? 0 : frames;
- }
- 
--static snd_pcm_sframes_t snd_pcm_playback_rewind(struct snd_pcm_substream *substream,
--						 snd_pcm_uframes_t frames)
-+static snd_pcm_sframes_t snd_pcm_rewind(struct snd_pcm_substream *substream,
-+					snd_pcm_uframes_t frames)
- {
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	snd_pcm_sframes_t ret;
--
--	if (frames == 0)
--		return 0;
--
--	snd_pcm_stream_lock_irq(substream);
--	ret = do_pcm_hwsync(substream);
--	if (!ret)
--		ret = rewind_appl_ptr(substream, frames,
--				      snd_pcm_playback_hw_avail(runtime));
--	snd_pcm_stream_unlock_irq(substream);
--	return ret;
--}
--
--static snd_pcm_sframes_t snd_pcm_capture_rewind(struct snd_pcm_substream *substream,
--						snd_pcm_uframes_t frames)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
- 	snd_pcm_sframes_t ret;
- 
- 	if (frames == 0)
-@@ -2641,33 +2621,14 @@ static snd_pcm_sframes_t snd_pcm_capture_rewind(struct snd_pcm_substream *substr
- 	ret = do_pcm_hwsync(substream);
- 	if (!ret)
- 		ret = rewind_appl_ptr(substream, frames,
--				      snd_pcm_capture_hw_avail(runtime));
--	snd_pcm_stream_unlock_irq(substream);
--	return ret;
--}
--
--static snd_pcm_sframes_t snd_pcm_playback_forward(struct snd_pcm_substream *substream,
--						  snd_pcm_uframes_t frames)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	snd_pcm_sframes_t ret;
--
--	if (frames == 0)
--		return 0;
--
--	snd_pcm_stream_lock_irq(substream);
--	ret = do_pcm_hwsync(substream);
--	if (!ret)
--		ret = forward_appl_ptr(substream, frames,
--				       snd_pcm_playback_avail(runtime));
-+				      snd_pcm_hw_avail(substream));
- 	snd_pcm_stream_unlock_irq(substream);
- 	return ret;
- }
- 
--static snd_pcm_sframes_t snd_pcm_capture_forward(struct snd_pcm_substream *substream,
--						 snd_pcm_uframes_t frames)
-+static snd_pcm_sframes_t snd_pcm_forward(struct snd_pcm_substream *substream,
-+					 snd_pcm_uframes_t frames)
- {
--	struct snd_pcm_runtime *runtime = substream->runtime;
- 	snd_pcm_sframes_t ret;
- 
- 	if (frames == 0)
-@@ -2677,7 +2638,7 @@ static snd_pcm_sframes_t snd_pcm_capture_forward(struct snd_pcm_substream *subst
- 	ret = do_pcm_hwsync(substream);
- 	if (!ret)
- 		ret = forward_appl_ptr(substream, frames,
--				       snd_pcm_capture_avail(runtime));
-+				       snd_pcm_avail(substream));
- 	snd_pcm_stream_unlock_irq(substream);
- 	return ret;
- }
-@@ -2830,10 +2791,7 @@ static int snd_pcm_rewind_ioctl(struct snd_pcm_substream *substream,
- 		return -EFAULT;
- 	if (put_user(0, _frames))
- 		return -EFAULT;
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		result = snd_pcm_playback_rewind(substream, frames);
--	else
--		result = snd_pcm_capture_rewind(substream, frames);
-+	result = snd_pcm_rewind(substream, frames);
- 	__put_user(result, _frames);
- 	return result < 0 ? result : 0;
- }
-@@ -2848,10 +2806,7 @@ static int snd_pcm_forward_ioctl(struct snd_pcm_substream *substream,
- 		return -EFAULT;
- 	if (put_user(0, _frames))
- 		return -EFAULT;
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		result = snd_pcm_playback_forward(substream, frames);
--	else
--		result = snd_pcm_capture_forward(substream, frames);
-+	result = snd_pcm_forward(substream, frames);
- 	__put_user(result, _frames);
- 	return result < 0 ? result : 0;
- }
-@@ -2992,7 +2947,7 @@ int snd_pcm_kernel_ioctl(struct snd_pcm_substream *substream,
- 		/* provided only for OSS; capture-only and no value returned */
- 		if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
- 			return -EINVAL;
--		result = snd_pcm_capture_forward(substream, *frames);
-+		result = snd_pcm_forward(substream, *frames);
- 		return result < 0 ? result : 0;
- 	}
- 	case SNDRV_PCM_IOCTL_HW_PARAMS:
--- 
-2.16.3
+Juergen
+
+> ---
+>  sound/Kconfig             |   2 +
+>  sound/Makefile            |   2 +-
+>  sound/xen/Kconfig         |  10 +++
+>  sound/xen/Makefile        |   5 ++
+>  sound/xen/xen_snd_front.c | 196 ++++++++++++++++++++++++++++++++++++++++++++++
+>  sound/xen/xen_snd_front.h |  18 +++++
+>  6 files changed, 232 insertions(+), 1 deletion(-)
+>  create mode 100644 sound/xen/Kconfig
+>  create mode 100644 sound/xen/Makefile
+>  create mode 100644 sound/xen/xen_snd_front.c
+>  create mode 100644 sound/xen/xen_snd_front.h
+> 
+> diff --git a/sound/xen/xen_snd_front.c b/sound/xen/xen_snd_front.c
+> new file mode 100644
+> index 000000000000..f406a8f52c51
+> --- /dev/null
+> +++ b/sound/xen/xen_snd_front.c
+> @@ -0,0 +1,196 @@
+> +static void sndback_changed(struct xenbus_device *xb_dev,
+> +			    enum xenbus_state backend_state)
+> +{
+> +	struct xen_snd_front_info *front_info = dev_get_drvdata(&xb_dev->dev);
+> +	int ret;
+> +
+> +	dev_dbg(&xb_dev->dev, "Backend state is %s, front is %s\n",
+> +		xenbus_strstate(backend_state),
+> +		xenbus_strstate(xb_dev->state));
+> +
+> +	switch (backend_state) {
+> +	case XenbusStateReconfiguring:
+> +		/* fall through */
+> +	case XenbusStateReconfigured:
+> +		/* fall through */
+> +	case XenbusStateInitialised:
+> +		/* fall through */
+> +		break;
+> +
+> +	case XenbusStateInitialising:
+> +		/* recovering after backend unexpected closure */
+> +		sndback_disconnect(front_info);
+> +		break;
+> +
+> +	case XenbusStateInitWait:
+> +		/* recovering after backend unexpected closure */
+> +		sndback_disconnect(front_info);
+> +
+> +		ret = sndback_initwait(front_info);
+> +		if (ret < 0)
+> +			xenbus_dev_fatal(xb_dev, ret, "initializing frontend");
+> +		else
+> +			xenbus_switch_state(xb_dev, XenbusStateInitialised);
+> +		break;
+> +
+> +	case XenbusStateConnected:
+> +		if (xb_dev->state != XenbusStateInitialised)
+> +			break;
+> +
+> +		ret = sndback_connect(front_info);
+> +		if (ret < 0)
+> +			xenbus_dev_fatal(xb_dev, ret, "initializing frontend");
+> +		else
+> +			xenbus_switch_state(xb_dev, XenbusStateConnected);
+> +		break;
+> +
+> +	case XenbusStateClosing:
+> +		/*
+> +		 * in this state backend starts freeing resources,
+> +		 * so let it go into closed state first, so we can also
+> +		 * remove ours
+> +		 */
+
+Please start the sentence with a capital letter and end it with a
+full stop.
+
+
+Juergen
