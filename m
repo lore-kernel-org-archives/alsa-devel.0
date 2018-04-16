@@ -1,8 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: amd: acp-da7219-max98357: Make symbol
 	da7219_dai_clk static" to the asoc tree
-Date: Mon, 16 Apr 2018 18:15:07 +0100
-Message-ID: <E1f87id-0002tE-C9@debutante>
+Date: Mon, 16 Apr 2018 18:15:17 +0100
+Message-ID: <E1f87in-0002uK-DM@debutante>
 References: <20180313110353.GA117792@lkp-ib04>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 323D72673D2
- for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 19:15:20 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 096152673D2
+ for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2018 19:15:23 +0200 (CEST)
 In-Reply-To: <20180313110353.GA117792@lkp-ib04>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -53,7 +53,7 @@ to this mail.
 Thanks,
 Mark
 
->From dc29f581fa9d5567c3a01ecfdd7f16b2e613c7fb Mon Sep 17 00:00:00 2001
+>From ede1d3534f589d69b381e8509f3d01ec1e23c804 Mon Sep 17 00:00:00 2001
 From: Wei Yongjun <weiyongjun1@huawei.com>
 Date: Thu, 29 Mar 2018 02:14:03 +0000
 Subject: [PATCH] ASoC: amd: acp-da7219-max98357: Make symbol da7219_dai_clk
@@ -71,10 +71,10 @@ Signed-off-by: Mark Brown <broonie@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index b205c782e494..f41560ecbcd1 100644
+index d281c227d64c..215b06bf2039 100644
 --- a/sound/soc/amd/acp-da7219-max98357a.c
 +++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -43,7 +43,7 @@
+@@ -44,7 +44,7 @@
  #define DUAL_CHANNEL		2
  
  static struct snd_soc_jack cz_jack;
