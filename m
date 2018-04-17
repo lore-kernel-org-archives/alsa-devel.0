@@ -1,20 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v3 03/13] soundwire: Add support for port
- management
-Date: Tue, 17 Apr 2018 09:41:56 +0530
-Message-ID: <20180417041156.GT6014@localhost>
-References: <1523892221-16169-1-git-send-email-vinod.koul@intel.com>
- <1523892221-16169-4-git-send-email-vinod.koul@intel.com>
- <d0b1f66b-a530-62cf-91fb-e205b379e405@linux.intel.com>
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Subject: [PATCH 1/4] ASoC: dwc: I2S Controller instance param
+	added
+Date: Tue, 17 Apr 2018 10:29:51 +0530
+Message-ID: <1523941201-15665-2-git-send-email-Vijendar.Mukunda@amd.com>
+References: <1523941201-15665-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 825ED266C99
- for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2018 06:07:26 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <d0b1f66b-a530-62cf-91fb-e205b379e405@linux.intel.com>
+Received: from NAM03-BY2-obe.outbound.protection.outlook.com
+ (mail-by2nam03on0064.outbound.protection.outlook.com [104.47.42.64])
+ by alsa0.perex.cz (Postfix) with ESMTP id 130502673FE
+ for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2018 06:58:17 +0200 (CEST)
+In-Reply-To: <1523941201-15665-1-git-send-email-Vijendar.Mukunda@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,34 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Sanyog Kale <sanyog.r.kale@intel.com>
+Cc: Jose Abreu <Jose.Abreu@synopsys.com>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Lubomir Rintel <lkundrak@v3.sk>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Akshu Agrawal <akshu.agrawal@amd.com>, Markus Elfring <elfring@users.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 16, 2018 at 06:30:58PM -0500, Pierre-Louis Bossart wrote:
+When multiple I2S controller instances created,
+i2s_instance parameter refers to i2s controller instance value.
 
-> >  int sdw_stream_remove_slave(struct sdw_slave *slave,
-> >  		struct sdw_stream_runtime *stream)
-> >  {
-> >  	mutex_lock(&slave->bus->bus_lock);
-> >+	sdw_slave_port_release(slave->bus, slave, stream);
-> 
-> Humm, does this work if the sdw_stream_remove_master() is called first?
-> It'll call sdw_release_slave_stream() so you have lost the s_rt pointer by
-> the time you want to call sdw_slave_port_release() so will never free the
-> ports?
-> 
-> You will also have lost the stream->m_rt at that point. I believe the slave
-> ports should be freed from sdw_release_slave_stream(). This call to
-> sdw_slave_port_release comes too late if the master takes the initiative
-> first to clean house.
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+---
+ include/sound/designware_i2s.h | 6 ++++++
+ sound/soc/dwc/dwc-i2s.c        | 1 +
+ sound/soc/dwc/local.h          | 1 +
+ 3 files changed, 8 insertions(+)
 
-Thanks for spotting I believe, we should either call
-sdw_stream_remove_slave() here to remove port and slave runtime or add
-remove port in sdw_release_master_stream as well for the case master removed
-first.
-
-Will check and update this.
-
+diff --git a/include/sound/designware_i2s.h b/include/sound/designware_i2s.h
+index 830f5ca..8113759 100644
+--- a/include/sound/designware_i2s.h
++++ b/include/sound/designware_i2s.h
+@@ -44,6 +44,10 @@ struct i2s_platform_data {
+ 	int channel;
+ 	u32 snd_fmts;
+ 	u32 snd_rates;
++	/* i2s_instance parameter returns I2S controller instance value
++	 * when multiple I2S controllers instantiated
++	 */
++	u32 i2s_instance;
+ 
+ 	#define DW_I2S_QUIRK_COMP_REG_OFFSET	(1 << 0)
+ 	#define DW_I2S_QUIRK_COMP_PARAM1	(1 << 1)
+@@ -74,5 +78,7 @@ struct i2s_dma_data {
+ #define FOUR_CHANNEL_SUPPORT	4	/* up to 3.1 */
+ #define SIX_CHANNEL_SUPPORT	6	/* up to 5.1 */
+ #define EIGHT_CHANNEL_SUPPORT	8	/* up to 7.1 */
++#define I2S_SP_INSTANCE		1
++#define I2S_BT_INSTANCE		2
+ 
+ #endif /*  __SOUND_DESIGNWARE_I2S_H */
+diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
+index 65112b9..58f81a4 100644
+--- a/sound/soc/dwc/dwc-i2s.c
++++ b/sound/soc/dwc/dwc-i2s.c
+@@ -553,6 +553,7 @@ static int dw_configure_dai_by_pd(struct dw_i2s_dev *dev,
+ 
+ 	if (dev->quirks & DW_I2S_QUIRK_16BIT_IDX_OVERRIDE)
+ 		idx = 1;
++	dev->i2s_instance = pdata->i2s_instance;
+ 	/* Set DMA slaves info */
+ 	dev->play_dma_data.pd.data = pdata->play_dma_data;
+ 	dev->capture_dma_data.pd.data = pdata->capture_dma_data;
+diff --git a/sound/soc/dwc/local.h b/sound/soc/dwc/local.h
+index 91dc70a..e89e464 100644
+--- a/sound/soc/dwc/local.h
++++ b/sound/soc/dwc/local.h
+@@ -98,6 +98,7 @@ struct dw_i2s_dev {
+ 	u32 ccr;
+ 	u32 xfer_resolution;
+ 	u32 fifo_th;
++	u32 i2s_instance;
+ 
+ 	/* data related to DMA transfers b/w i2s and DMAC */
+ 	union dw_i2s_snd_dma_data play_dma_data;
 -- 
-~Vinod
+2.7.4
