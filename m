@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Check widget kcontrols before
-	deref" to the asoc tree
-Date: Tue, 17 Apr 2018 18:09:25 +0100
-Message-ID: <E1f8U6f-0001eL-FW@debutante>
-References: <20180327133045.29351-6-liam.r.girdwood@linux.intel.com>
+Subject: Applied "ASoC: nau8824: user configuration of key
+	detection" to the asoc tree
+Date: Tue, 17 Apr 2018 18:09:29 +0100
+Message-ID: <E1f8U6j-0001fI-3f@debutante>
+References: <1521617423-2213-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E21C1267642
- for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2018 19:09:27 +0200 (CEST)
-In-Reply-To: <20180327133045.29351-6-liam.r.girdwood@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 827E526763F
+ for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2018 19:09:33 +0200 (CEST)
+In-Reply-To: <1521617423-2213-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: Check widget kcontrols before deref
+   ASoC: nau8824: user configuration of key detection
 
 has been applied to the asoc tree at
 
@@ -53,40 +53,41 @@ to this mail.
 Thanks,
 Mark
 
->From f53c4c20d6d38bcefd89bfcab135486cbb797884 Mon Sep 17 00:00:00 2001
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Date: Tue, 27 Mar 2018 14:30:44 +0100
-Subject: [PATCH] ASoC: topology: Check widget kcontrols before deref
+>From 7b0037fa2d6048284e90de4131fc53c0ac1d4430 Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Wed, 21 Mar 2018 15:30:23 +0800
+Subject: [PATCH] ASoC: nau8824: user configuration of key detection
 
-Validate the topology input before we dereference the pointer.
+The SAR ADC of key press detection varies depending on headset.
+We can't make a set of common threshold values for every case.
+Therefore, the driver provides configuration for user and
+they can set up values by UCM configuration.
 
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/nau8824.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 5598e891b2b3..986b8b2f90fb 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -513,7 +513,7 @@ static void remove_widget(struct snd_soc_component *comp,
- 	 */
- 	if (dobj->widget.kcontrol_type == SND_SOC_TPLG_TYPE_ENUM) {
- 		/* enumerated widget mixer */
--		for (i = 0; i < w->num_kcontrols; i++) {
-+		for (i = 0; w->kcontrols != NULL && i < w->num_kcontrols; i++) {
- 			struct snd_kcontrol *kcontrol = w->kcontrols[i];
- 			struct soc_enum *se =
- 				(struct soc_enum *)kcontrol->private_value;
-@@ -530,7 +530,7 @@ static void remove_widget(struct snd_soc_component *comp,
- 		}
- 	} else {
- 		/* volume mixer or bytes controls */
--		for (i = 0; i < w->num_kcontrols; i++) {
-+		for (i = 0; w->kcontrols != NULL && i < w->num_kcontrols; i++) {
- 			struct snd_kcontrol *kcontrol = w->kcontrols[i];
+diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
+index 637e9527805f..76502c090654 100644
+--- a/sound/soc/codecs/nau8824.c
++++ b/sound/soc/codecs/nau8824.c
+@@ -409,6 +409,15 @@ static const struct snd_kcontrol_new nau8824_snd_controls[] = {
  
- 			if (dobj->widget.kcontrol_type
+ 	SOC_SINGLE("DACL LR Mix", NAU8824_REG_DAC_MUTE_CTRL, 0, 1, 0),
+ 	SOC_SINGLE("DACR LR Mix", NAU8824_REG_DAC_MUTE_CTRL, 1, 1, 0),
++
++	SOC_SINGLE("THD for key media",
++		NAU8824_REG_VDET_THRESHOLD_1, 8, 0xff, 0),
++	SOC_SINGLE("THD for key voice command",
++		NAU8824_REG_VDET_THRESHOLD_1, 0, 0xff, 0),
++	SOC_SINGLE("THD for key volume up",
++		NAU8824_REG_VDET_THRESHOLD_2, 8, 0xff, 0),
++	SOC_SINGLE("THD for key volume down",
++		NAU8824_REG_VDET_THRESHOLD_2, 0, 0xff, 0),
+ };
+ 
+ static int nau8824_output_dac_event(struct snd_soc_dapm_widget *w,
 -- 
 2.17.0
