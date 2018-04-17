@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Reset DSP Pipelines in
-	prepare" to the asoc tree
-Date: Tue, 17 Apr 2018 12:28:43 +0100
-Message-ID: <E1f8Omx-0000KS-Rn@debutante>
-References: <1522651550-27236-2-git-send-email-sriramx.periyasamy@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Reset stream to link
+	mapping" to the asoc tree
+Date: Tue, 17 Apr 2018 12:28:40 +0100
+Message-ID: <E1f8Omu-0000J9-8d@debutante>
+References: <20180401094323.20864-1-sanyog.r.kale@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4BDD9267605
- for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2018 13:28:48 +0200 (CEST)
-In-Reply-To: <1522651550-27236-2-git-send-email-sriramx.periyasamy@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4AB9B267600
+ for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2018 13:28:47 +0200 (CEST)
+In-Reply-To: <20180401094323.20864-1-sanyog.r.kale@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Divya Prakash <divya1.prakash@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Vinod Koul <vinod.koul@intel.com>
+To: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+Cc: alsa-devel@alsa-project.org, abhijeet.kumar@intel.com, tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Sanyog Kale <sanyog.r.kale@intel.com>, vinod.koul@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Reset DSP Pipelines in prepare
+   ASoC: Intel: Skylake: Reset stream to link mapping
 
 has been applied to the asoc tree at
 
@@ -53,62 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From 74e651926ee038237c48493d0a0853868d622b01 Mon Sep 17 00:00:00 2001
-From: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
-Date: Mon, 2 Apr 2018 12:15:48 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Reset DSP Pipelines in prepare
+>From 112c60b333ec9ddc7e940116f5e9fdc0d1a9706a Mon Sep 17 00:00:00 2001
+From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+Date: Sun, 1 Apr 2018 15:13:23 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Reset stream to link mapping
 
-An application can choose to call .prepare function
-any number of times. In such scenarios, there is a
-need to reset the DSP pipeline.
+By default all the streams are mapped to all links after controller is
+reset which causes stream to be broadcast on all the links.
 
-Signed-off-by: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
-Signed-off-by: Divya Prakash <divya1.prakash@intel.com>
-Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+This patch resets the stream-link mapping after controller reset. The
+stream is mapped later to the appropriate link as part of stream setup.
+
+Tested-by: Abhijeet Kumar <abhijeet.kumar@intel.com>
+Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+ sound/soc/intel/skylake/skl.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index fe25515debec..afa86b9e4dcf 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -268,15 +268,31 @@ static int skl_pcm_prepare(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index abf324747b29..f0d9793f872a 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -127,10 +127,17 @@ static void skl_clock_power_gating(struct device *dev, bool enable)
+  */
+ static int skl_init_chip(struct hdac_bus *bus, bool full_reset)
  {
- 	struct skl *skl = get_skl_ctx(dai->dev);
- 	struct skl_module_cfg *mconfig;
-+	int ret;
++	struct hdac_ext_bus *ebus = hbus_to_ebus(bus);
++	struct hdac_ext_link *hlink;
+ 	int ret;
  
- 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
- 
- 	mconfig = skl_tplg_fe_get_cpr_module(dai, substream->stream);
- 
--	/* In case of XRUN recovery, reset the FW pipe to clean state */
--	if (mconfig && (substream->runtime->status->state ==
--					SNDRV_PCM_STATE_XRUN))
--		skl_reset_pipe(skl->skl_sst, mconfig->pipe);
-+	/*
-+	 * In case of XRUN recovery or in the case when the application
-+	 * calls prepare another time, reset the FW pipe to clean state
-+	 */
-+	if (mconfig &&
-+		(substream->runtime->status->state == SNDRV_PCM_STATE_XRUN ||
-+		 mconfig->pipe->state == SKL_PIPE_CREATED ||
-+		 mconfig->pipe->state == SKL_PIPE_PAUSED)) {
+ 	skl_enable_miscbdcge(bus->dev, false);
+ 	ret = snd_hdac_bus_init_chip(bus, full_reset);
 +
-+		ret = skl_reset_pipe(skl->skl_sst, mconfig->pipe);
++	/* Reset stream-to-link mapping */
++	list_for_each_entry(hlink, &ebus->hlink_list, list)
++		bus->io_ops->reg_writel(0, hlink->ml_addr + AZX_REG_ML_LOSIDV);
 +
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = skl_pcm_host_dma_prepare(dai->dev,
-+					mconfig->pipe->p_params);
-+		if (ret < 0)
-+			return ret;
-+	}
+ 	skl_enable_miscbdcge(bus->dev, true);
  
- 	return 0;
- }
+ 	return ret;
 -- 
 2.17.0
