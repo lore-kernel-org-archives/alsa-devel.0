@@ -1,252 +1,121 @@
-From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: Re: [PATCH v2 4/5] ALSA: xen-front: Implement handling of shared
- buffers
-Date: Tue, 17 Apr 2018 12:22:48 +0300
-Message-ID: <edbd53c6-3396-9293-4a04-2b22655eeb12@gmail.com>
-References: <20180416062453.24743-1-andr2000@gmail.com>
- <20180416062453.24743-5-andr2000@gmail.com>
- <6ab76dd7-ec6b-0756-5490-f5b5805998d6@suse.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 3/3] ALSA: pcm: Unify delay calculation in
+ snd_pcm_status() and snd_pcm_delay()
+Date: Tue, 17 Apr 2018 19:05:01 +0900
+Message-ID: <f5732c1a-9b6b-93ef-9c10-efe1bf28e537@sakamocchi.jp>
+References: <20180416121417.27452-1-tiwai@suse.de>
+ <20180416121417.27452-4-tiwai@suse.de>
+ <c188c58d-3737-22d3-d994-25f2e79e7856@sakamocchi.jp>
+ <s5hin8qs92o.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <6ab76dd7-ec6b-0756-5490-f5b5805998d6@suse.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 5090A2673E1
+ for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2018 12:05:04 +0200 (CEST)
+In-Reply-To: <s5hin8qs92o.wl-tiwai@suse.de>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, perex@perex.cz, tiwai@suse.com
-Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/16/2018 04:39 PM, Juergen Gross wrote:
-> On 16/04/18 08:24, Oleksandr Andrushchenko wrote:
->> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
->>
->> Implement shared buffer handling according to the
->> para-virtualized sound device protocol at xen/interface/io/sndif.h:
->>    - manage buffer memory
->>    - handle granted references
->>    - handle page directories
->>
->> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
->> ---
->>   sound/xen/Makefile              |   3 +-
->>   sound/xen/xen_snd_front.c       |   8 ++
->>   sound/xen/xen_snd_front_shbuf.c | 193 ++++++++++++++++++++++++++++++++++++++++
->>   sound/xen/xen_snd_front_shbuf.h |  36 ++++++++
->>   4 files changed, 239 insertions(+), 1 deletion(-)
->>   create mode 100644 sound/xen/xen_snd_front_shbuf.c
->>   create mode 100644 sound/xen/xen_snd_front_shbuf.h
->>
->> diff --git a/sound/xen/Makefile b/sound/xen/Makefile
->> index 03c669984000..f028bc30af5d 100644
->> --- a/sound/xen/Makefile
->> +++ b/sound/xen/Makefile
->> @@ -2,6 +2,7 @@
->>   
->>   snd_xen_front-objs := xen_snd_front.o \
->>   		      xen_snd_front_cfg.o \
->> -		      xen_snd_front_evtchnl.o
->> +		      xen_snd_front_evtchnl.o \
->> +		      xen_snd_front_shbuf.o
->>   
->>   obj-$(CONFIG_SND_XEN_FRONTEND) += snd_xen_front.o
->> diff --git a/sound/xen/xen_snd_front.c b/sound/xen/xen_snd_front.c
->> index eb46bf4070f9..0569c6c596a3 100644
->> --- a/sound/xen/xen_snd_front.c
->> +++ b/sound/xen/xen_snd_front.c
->> @@ -11,6 +11,7 @@
->>   #include <linux/delay.h>
->>   #include <linux/module.h>
->>   
->> +#include <xen/page.h>
->>   #include <xen/platform_pci.h>
->>   #include <xen/xen.h>
->>   #include <xen/xenbus.h>
->> @@ -186,6 +187,13 @@ static struct xenbus_driver xen_driver = {
->>   
->>   static int __init xen_drv_init(void)
->>   {
->> +	/* At the moment we only support case with XEN_PAGE_SIZE == PAGE_SIZE */
->> +	if (XEN_PAGE_SIZE != PAGE_SIZE) {
->> +		pr_err(XENSND_DRIVER_NAME ": different kernel and Xen page sizes are not supported: XEN_PAGE_SIZE (%lu) != PAGE_SIZE (%lu)\n",
->> +		       XEN_PAGE_SIZE, PAGE_SIZE);
->> +		return -ENODEV;
->> +	}
-> Do you really want to print that error message on bare metal?
-will move it down after xen_domain/xen_has_pv_devices checks
->> +
->>   	if (!xen_domain())
->>   		return -ENODEV;
->>   
->> diff --git a/sound/xen/xen_snd_front_shbuf.c b/sound/xen/xen_snd_front_shbuf.c
->> new file mode 100644
->> index 000000000000..6845dbc7fdf5
->> --- /dev/null
->> +++ b/sound/xen/xen_snd_front_shbuf.c
->> @@ -0,0 +1,193 @@
->> +// SPDX-License-Identifier: GPL-2.0 OR MIT
->> +
->> +/*
->> + * Xen para-virtual sound device
->> + *
->> + * Copyright (C) 2016-2018 EPAM Systems Inc.
->> + *
->> + * Author: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
->> + */
->> +
->> +#include <xen/xen.h>
->> +#include <xen/xenbus.h>
->> +
->> +#include "xen_snd_front_shbuf.h"
->> +
->> +grant_ref_t xen_snd_front_shbuf_get_dir_start(struct xen_snd_front_shbuf *buf)
->> +{
->> +	if (!buf->grefs)
->> +		return GRANT_INVALID_REF;
->> +
->> +	return buf->grefs[0];
->> +}
->> +
->> +void xen_snd_front_shbuf_clear(struct xen_snd_front_shbuf *buf)
->> +{
->> +	memset(buf, 0, sizeof(*buf));
->> +}
->> +
->> +void xen_snd_front_shbuf_free(struct xen_snd_front_shbuf *buf)
->> +{
->> +	int i;
->> +
->> +	if (buf->grefs) {
->> +		for (i = 0; i < buf->num_grefs; i++)
->> +			if (buf->grefs[i] != GRANT_INVALID_REF)
->> +				gnttab_end_foreign_access(buf->grefs[i],
->> +							  0, 0UL);
->> +		kfree(buf->grefs);
->> +	}
->> +	kfree(buf->directory);
->> +	free_pages_exact(buf->buffer, buf->buffer_sz);
->> +	xen_snd_front_shbuf_clear(buf);
->> +}
->> +
->> +/*
->> + * number of grant references a page can hold with respect to the
->> + * xensnd_page_directory header
->> + */
->> +#define XENSND_NUM_GREFS_PER_PAGE ((XEN_PAGE_SIZE - \
->> +		offsetof(struct xensnd_page_directory, gref)) / \
->> +		sizeof(grant_ref_t))
->> +
->> +static void fill_page_dir(struct xen_snd_front_shbuf *buf,
->> +			  int num_pages_dir)
->> +{
->> +	struct xensnd_page_directory *page_dir;
->> +	unsigned char *ptr;
->> +	int i, cur_gref, grefs_left, to_copy;
->> +
->> +	ptr = buf->directory;
->> +	grefs_left = buf->num_grefs - num_pages_dir;
->> +	/*
->> +	 * skip grant references at the beginning, they are for pages granted
->> +	 * for the page directory itself
->> +	 */
->> +	cur_gref = num_pages_dir;
->> +	for (i = 0; i < num_pages_dir; i++) {
->> +		page_dir = (struct xensnd_page_directory *)ptr;
->> +		if (grefs_left <= XENSND_NUM_GREFS_PER_PAGE) {
->> +			to_copy = grefs_left;
->> +			page_dir->gref_dir_next_page = GRANT_INVALID_REF;
->> +		} else {
->> +			to_copy = XENSND_NUM_GREFS_PER_PAGE;
->> +			page_dir->gref_dir_next_page = buf->grefs[i + 1];
->> +		}
->> +
->> +		memcpy(&page_dir->gref, &buf->grefs[cur_gref],
->> +		       to_copy * sizeof(grant_ref_t));
->> +
->> +		ptr += XEN_PAGE_SIZE;
->> +		grefs_left -= to_copy;
->> +		cur_gref += to_copy;
->> +	}
->> +}
->> +
->> +static int grant_references(struct xenbus_device *xb_dev,
->> +			    struct xen_snd_front_shbuf *buf,
->> +			    int num_pages_dir, int num_pages_buffer,
->> +			    int num_grefs)
->> +{
->> +	grant_ref_t priv_gref_head;
->> +	unsigned long frame;
->> +	int ret, i, j, cur_ref;
->> +	int otherend_id;
->> +
->> +	ret = gnttab_alloc_grant_references(num_grefs, &priv_gref_head);
->> +	if (ret)
->> +		return ret;
->> +
->> +	buf->num_grefs = num_grefs;
->> +	otherend_id = xb_dev->otherend_id;
->> +	j = 0;
->> +
->> +	for (i = 0; i < num_pages_dir; i++) {
->> +		cur_ref = gnttab_claim_grant_reference(&priv_gref_head);
->> +		if (cur_ref < 0) {
->> +			ret = cur_ref;
->> +			goto fail;
->> +		}
->> +
->> +		frame = xen_page_to_gfn(virt_to_page(buf->directory +
->> +						     XEN_PAGE_SIZE * i));
->> +		gnttab_grant_foreign_access_ref(cur_ref, otherend_id, frame, 0);
->> +		buf->grefs[j++] = cur_ref;
->> +	}
->> +
->> +	for (i = 0; i < num_pages_buffer; i++) {
->> +		cur_ref = gnttab_claim_grant_reference(&priv_gref_head);
->> +		if (cur_ref < 0) {
->> +			ret = cur_ref;
->> +			goto fail;
->> +		}
->> +
->> +		frame = xen_page_to_gfn(virt_to_page(buf->buffer +
->> +						     XEN_PAGE_SIZE * i));
->> +		gnttab_grant_foreign_access_ref(cur_ref, otherend_id, frame, 0);
->> +		buf->grefs[j++] = cur_ref;
->> +	}
->> +
->> +	gnttab_free_grant_references(priv_gref_head);
->> +	fill_page_dir(buf, num_pages_dir);
->> +	return 0;
->> +
->> +fail:
->> +	gnttab_free_grant_references(priv_gref_head);
->> +	return ret;
->> +}
->> +
->> +static int alloc_int_buffers(struct xen_snd_front_shbuf *buf,
->> +			     int num_pages_dir, int num_pages_buffer,
->> +			     int num_grefs)
->> +{
->> +	buf->grefs = kcalloc(num_grefs, sizeof(*buf->grefs), GFP_KERNEL);
->> +	if (!buf->grefs)
->> +		return -ENOMEM;
->> +
->> +	buf->directory = kcalloc(num_pages_dir, XEN_PAGE_SIZE, GFP_KERNEL);
->> +	if (!buf->directory)
->> +		goto fail;
->> +
->> +	buf->buffer_sz = num_pages_buffer * XEN_PAGE_SIZE;
->> +	buf->buffer = alloc_pages_exact(buf->buffer_sz, GFP_KERNEL);
->> +	if (!buf->buffer)
->> +		goto fail;
->> +
->> +	return 0;
->> +
->> +fail:
->> +	kfree(buf->grefs);
->> +	buf->grefs = NULL;
->> +	kfree(buf->directory);
-> Why do you need to free those here? Shouldn't that be done via
-> xen_snd_front_shbuf_free() in case of an error?
-At this place we only allocate memory, but xen_snd_front_shbuf_free
-will also try to gnttab_end_foreign_access if buf->grefs != NULL.
-> Juergen
+Hi,
+
+On Apr 17 2018 14:20, Takashi Iwai wrote:
+> Subject: [PATCH v2 3/3] ALSA: pcm: Unify delay calculation in snd_pcm_status() and snd_pcm_delay()
+> 
+> Yet another slight code cleanup: there are two places where
+> calculating the PCM delay, and they can be unified in a single
+> helper.  It reduces the multiple open codes.
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>   sound/core/pcm_native.c | 37 ++++++++++++++++---------------------
+>   1 file changed, 16 insertions(+), 21 deletions(-)
+> 
+> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+> index eddb0cd6d1eb..7585444352df 100644
+> --- a/sound/core/pcm_native.c
+> +++ b/sound/core/pcm_native.c
+> @@ -857,6 +857,18 @@ static int snd_pcm_sw_params_user(struct snd_pcm_substream *substream,
+>   	return err;
+>   }
+>   
+> +static inline snd_pcm_uframes_t
+> +snd_pcm_calc_delay(struct snd_pcm_substream *substream)
+> +{
+> +	snd_pcm_uframes_t delay;
+> +
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +		delay = snd_pcm_playback_hw_avail(substream->runtime);
+> +	else
+> +		delay = snd_pcm_capture_avail(substream->runtime);
+> +	return delay + substream->runtime->delay;
+> +}
+> +
+>   int snd_pcm_status(struct snd_pcm_substream *substream,
+>   		   struct snd_pcm_status *status)
+>   {
+> @@ -909,19 +921,8 @@ int snd_pcm_status(struct snd_pcm_substream *substream,
+>   	status->appl_ptr = runtime->control->appl_ptr;
+>   	status->hw_ptr = runtime->status->hw_ptr;
+>   	status->avail = snd_pcm_avail(substream);
+> -	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> -		if (runtime->status->state == SNDRV_PCM_STATE_RUNNING ||
+> -		    runtime->status->state == SNDRV_PCM_STATE_DRAINING) {
+> -			status->delay = runtime->buffer_size - status->avail;
+> -			status->delay += runtime->delay;
+> -		} else
+> -			status->delay = 0;
+> -	} else {
+> -		if (runtime->status->state == SNDRV_PCM_STATE_RUNNING)
+> -			status->delay = status->avail + runtime->delay;
+> -		else
+> -			status->delay = 0;
+> -	}
+> +	status->delay = snd_pcm_running(substream) ?
+> +		snd_pcm_calc_delay(substream) : 0;
+>   	status->avail_max = runtime->avail_max;
+>   	status->overrange = runtime->overrange;
+>   	runtime->avail_max = 0;
+> @@ -2655,19 +2656,13 @@ static int snd_pcm_hwsync(struct snd_pcm_substream *substream)
+>   		
+>   static snd_pcm_sframes_t snd_pcm_delay(struct snd_pcm_substream *substream)
+>   {
+> -	struct snd_pcm_runtime *runtime = substream->runtime;
+>   	int err;
+>   	snd_pcm_sframes_t n = 0;
+>   
+>   	snd_pcm_stream_lock_irq(substream);
+>   	err = do_pcm_hwsync(substream);
+> -	if (!err) {
+> -		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> -			n = snd_pcm_playback_hw_avail(runtime);
+> -		else
+> -			n = snd_pcm_capture_avail(runtime);
+> -		n += runtime->delay;
+> -	}
+> +	if (!err)
+> +		n = snd_pcm_calc_delay(substream);
+>   	snd_pcm_stream_unlock_irq(substream);
+>   	return err < 0 ? err : n;
+>   }
+
+Oh, 'snd_pcm_running()' is exactly suitable for this case ;)
+
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+
+
+Thanks
+
+Takashi Sakamoto
