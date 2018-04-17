@@ -1,98 +1,70 @@
-From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
-Subject: Re: [PATCH 4/4] ASoC: amd: enabling bt i2s config after acp reset
-Date: Tue, 17 Apr 2018 16:12:24 +0530
-Message-ID: <b2bad607-9744-b1c4-c9fc-a76a9b3e90e1@amd.com>
-References: <1523941201-15665-1-git-send-email-Vijendar.Mukunda@amd.com>
- <1523941201-15665-5-git-send-email-Vijendar.Mukunda@amd.com>
+From: Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH v2 2/5] ALSA: xen-front: Read sound driver configuration
+ from Xen store
+Date: Tue, 17 Apr 2018 13:08:07 +0200
+Message-ID: <9e875172-cbc2-7019-9971-34f88ecc8d18@suse.com>
+References: <20180416062453.24743-1-andr2000@gmail.com>
+ <20180416062453.24743-3-andr2000@gmail.com>
+ <451f4f4b-646e-0058-e24f-d9ae918f583f@suse.com>
+ <2c37fff3-9dfe-f904-d06f-7751d5e9e002@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1523941201-15665-5-git-send-email-Vijendar.Mukunda@amd.com>
-Content-Language: en-US
+In-Reply-To: <2c37fff3-9dfe-f904-d06f-7751d5e9e002@gmail.com>
+Content-Language: de-DE
 Sender: linux-kernel-owner@vger.kernel.org
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Alex Deucher <alexander.deucher@amd.com>, Dylan Reid <dgreid@chromium.org>, Jason Clinton <jclinton@chromium.org>, Guenter Roeck <linux@roeck-us.net>, Philippe Ombredanne <pombredanne@nexb.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+To: Oleksandr Andrushchenko <andr2000@gmail.com>, xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, perex@perex.cz, tiwai@suse.com
+Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 17/04/18 10:42, Oleksandr Andrushchenko wrote:
+> On 04/16/2018 03:55 PM, Juergen Gross wrote:
+>> On 16/04/18 08:24, Oleksandr Andrushchenko wrote:
+>>> +        goto fail;
+>>> +    }
+>>> +
+>>> +    if (!strncasecmp(str, XENSND_STREAM_TYPE_PLAYBACK,
+>>> +             sizeof(XENSND_STREAM_TYPE_PLAYBACK))) {
+>>> +        stream = &pcm_instance->streams_pb[(*cur_pb)++];
+>>> +    } else if (!strncasecmp(str, XENSND_STREAM_TYPE_CAPTURE,
+>>> +                  sizeof(XENSND_STREAM_TYPE_CAPTURE))) {
+>>> +        stream = &pcm_instance->streams_cap[(*cur_cap)++];
+>>> +    } else {
+>>> +        ret = -EINVAL;
+>>> +        goto fail;
+>>> +    }
+>> Until here this function looks very much like cfg_get_stream_type().
+>> Can't they use a common sub-function?
+> Not really, because cfg_get_stream_type uses kasprintf
+> for strings and this one devm_kasprintf. Trying to make
+> a common sub-func doesn't make sense to me
+
+Aah, okay. Didn't spot that.
+
+>>> +    /* start from default PCM HW configuration for the card */
+>>> +    cfg_read_pcm_hw(xb_dev->nodename, NULL, &cfg->pcm_hw);
+>>> +
+>>> +    cfg->pcm_instances =
+>>> +            devm_kcalloc(&front_info->xb_dev->dev, num_devices,
+>>> +                     sizeof(struct xen_front_cfg_pcm_instance),
+>>> +                     GFP_KERNEL);
+>>> +    if (!cfg->pcm_instances)
+>>> +        return -ENOMEM;
+>>> +
+>>> +    for (i = 0; i < num_devices; i++) {
+>>> +        ret = cfg_device(front_info, &cfg->pcm_instances[i],
+>>> +                 &cfg->pcm_hw, xb_dev->nodename, i, stream_cnt);
+>>> +        if (ret < 0)
+>>> +            return ret;
+>> Who will free all the memory allocated until now in case of an error?
+> The memory is allocated with devm_xxx functions, so it will
+> be freed on device destructions automatically
+>>
+>> And I think when removing the device freeing the memory is missing, too.
+> Same as above, the kernel will take care of it while destroying the device
+
+Okay, thanks.
 
 
-On 4/17/2018 10:29 AM, Vijendar Mukunda wrote:
-> On ST/CZ based platforms, for specific platform bt uart
-> mux to be defined for bt i2s.
-> By default, these pins will be used for uart.
-> After acp reset , it requires to reprogram bt i2s config
-> mux pins to enable bt i2s instance.
-> added bt i2s enablement sequence during acp init.
-> 
-> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-> ---
->   sound/soc/amd/acp-da7219-max98357a.c | 2 ++
->   sound/soc/amd/acp-pcm-dma.c          | 9 +++++++++
->   sound/soc/amd/acp.h                  | 1 +
->   3 files changed, 12 insertions(+)
-> 
-> diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-> index b205c78..6dad0cb 100644
-> --- a/sound/soc/amd/acp-da7219-max98357a.c
-> +++ b/sound/soc/amd/acp-da7219-max98357a.c
-> @@ -44,6 +44,7 @@
->   
->   static struct snd_soc_jack cz_jack;
->   struct clk *da7219_dai_clk;
-> +extern int bt_pad_enable;
->   
->   static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
->   {
-> @@ -81,6 +82,7 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
->   	}
->   
->   	da7219_aad_jack_det(component, &cz_jack);
-> +	bt_pad_enable = device_property_read_bool(&pdev->dev, "bt-pad-enable");
-
-This is to be done in probe.
-
->   
->   	return 0;
->   }
-> diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-> index 7c392fe..b52c660 100644
-> --- a/sound/soc/amd/acp-pcm-dma.c
-> +++ b/sound/soc/amd/acp-pcm-dma.c
-> @@ -46,6 +46,8 @@
->   
->   #define DRV_NAME "acp_audio_dma"
->   
-> +bool bt_pad_enable = false;
-> +EXPORT_SYMBOL(bt_pad_enable);
->   
->   static const struct snd_pcm_hardware acp_pcm_hardware_playback = {
->   	.info = SNDRV_PCM_INFO_INTERLEAVED |
-> @@ -525,6 +527,13 @@ static int acp_init(void __iomem *acp_mmio, u32 asic_type)
->   	val &= ~ACP_SOFT_RESET__SoftResetAud_MASK;
->   	acp_reg_write(val, acp_mmio, mmACP_SOFT_RESET);
->   
-> +	/* For BT instance change pins from UART to BT */
-> +	if (bt_pad_enable) {
-> +		val = acp_reg_read(acp_mmio, mmACP_BT_UART_PAD_SEL);
-> +		val |= ACP_BT_UART_PAD_SELECT_MASK;
-> +		acp_reg_write(val, acp_mmio, mmACP_BT_UART_PAD_SEL);
-> +	}
-> +
->   	/* initiailize Onion control DAGB register */
->   	acp_reg_write(ACP_ONION_CNTL_DEFAULT, acp_mmio,
->   		      mmACP_AXI2DAGB_ONION_CNTL);
-> diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
-> index 460365c..6b43144 100644
-> --- a/sound/soc/amd/acp.h
-> +++ b/sound/soc/amd/acp.h
-> @@ -107,6 +107,7 @@
->   #define ACP_I2S_MIC_16BIT_RESOLUTION_EN 0x01
->   #define ACP_I2S_SP_16BIT_RESOLUTION_EN	0x02
->   #define ACP_I2S_BT_16BIT_RESOLUTION_EN	0x04
-> +#define ACP_BT_UART_PAD_SELECT_MASK	0x1
->   
->   enum acp_dma_priority_level {
->   	/* 0x0 Specifies the DMA channel is given normal priority */
-> 
+Juergen
