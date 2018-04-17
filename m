@@ -1,28 +1,19 @@
-From: Lukas Wunner <lukas@wunner.de>
-Subject: Re: [PATCH v3 3/3] ALSA: hda: Disabled unused audio
- controller for Dell platforms with Switchable Graphics
-Date: Tue, 17 Apr 2018 04:38:29 +0200
-Message-ID: <20180417023829.GA1533@wunner.de>
-References: <20180412104239.25584-3-kai.heng.feng@canonical.com>
- <s5hr2nk8zs5.wl-tiwai@suse.de>
- <20180412105909.tbyfcjm55sb47hiq@pali>
- <93DC0F40-81A5-49C6-A470-0D1B6AA85725@canonical.com>
- <20180414104512.GA27158@wunner.de>
- <20180414104950.ngomyjy5l5cwhb5i@pali>
- <20180414111711.GA4245@wunner.de>
- <20180415171746.futkvgbaoj6quy5z@pali>
- <20180415190523.GA16129@wunner.de>
- <20180416142512.bwsemgwrncyl5xan@pali>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 3/3] ALSA: pcm: Unify delay calculation in
+ snd_pcm_status() and snd_pcm_delay()
+Date: Tue, 17 Apr 2018 12:01:13 +0900
+Message-ID: <c188c58d-3737-22d3-d994-25f2e79e7856@sakamocchi.jp>
+References: <20180416121417.27452-1-tiwai@suse.de>
+ <20180416121417.27452-4-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net
- [83.223.90.240])
- by alsa0.perex.cz (Postfix) with ESMTP id 32FF22673FE
- for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2018 04:38:29 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20180416142512.bwsemgwrncyl5xan@pali>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 7BA4D2673FE
+ for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2018 05:01:18 +0200 (CEST)
+In-Reply-To: <20180416121417.27452-4-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,80 +23,137 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>
-Cc: mjg59@srcf.ucam.org, alsa-devel@alsa-project.org, mario.limonciello@dell.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org, Kai-Heng Feng <kai.heng.feng@canonical.com>, dvhart@infradead.org, andy@infradead.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 16, 2018 at 04:25:12PM +0200, Pali Roh=E1r wrote:
-> On Sunday 15 April 2018 21:05:23 Lukas Wunner wrote:
-> > On Sun, Apr 15, 2018 at 07:17:46PM +0200, Pali Roh=E1r wrote:
-> > > On Saturday 14 April 2018 13:17:11 Lukas Wunner wrote:
-> > > > On Sat, Apr 14, 2018 at 12:49:50PM +0200, Pali Roh=E1r wrote:
-> > > > > On Saturday 14 April 2018 12:45:12 Lukas Wunner wrote:
-> > > > > > On Thu, Apr 12, 2018 at 10:15:41PM +0800, Kai-Heng Feng wrote:
-> > > > > > > Do you have any suggestion to check if it connects to the sys=
-tem via
-> > > > > > > Thunderbolt?
-> > > > > > =
+Hi,
 
-> > > > > > Just use pci_is_thunderbolt_attached(), introduced by 8531e283b=
-ee6,
-> > > > > > like this:
-> > > > > > =
+On Apr 16 2018 21:14, Takashi Iwai wrote:
+> Yet another slight code cleanup: there are two places where
+> calculating the PCM delay, and they can be unified in a single
+> helper.  It reduces the multiple open codes.
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>   sound/core/pcm_native.c | 36 +++++++++++++++---------------------
+>   1 file changed, 15 insertions(+), 21 deletions(-)
+> 
+> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+> index eddb0cd6d1eb..81bbe0b3284b 100644
+> --- a/sound/core/pcm_native.c
+> +++ b/sound/core/pcm_native.c
+> @@ -857,6 +857,18 @@ static int snd_pcm_sw_params_user(struct snd_pcm_substream *substream,
+>   	return err;
+>   }
+>   
+> +static inline snd_pcm_uframes_t
+> +snd_pcm_calc_delay(struct snd_pcm_substream *substream)
+> +{
+> +	snd_pcm_uframes_t delay;
+> +
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +		delay = snd_pcm_playback_hw_avail(substream->runtime);
+> +	else
+> +		delay = snd_pcm_capture_avail(substream->runtime);
+> +	return delay + substream->runtime->delay;
+> +}
+> +
+>   int snd_pcm_status(struct snd_pcm_substream *substream,
+>   		   struct snd_pcm_status *status)
+>   {
+> @@ -909,19 +921,7 @@ int snd_pcm_status(struct snd_pcm_substream *substream,
+>   	status->appl_ptr = runtime->control->appl_ptr;
+>   	status->hw_ptr = runtime->status->hw_ptr;
+>   	status->avail = snd_pcm_avail(substream);
+> -	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> -		if (runtime->status->state == SNDRV_PCM_STATE_RUNNING ||
+> -		    runtime->status->state == SNDRV_PCM_STATE_DRAINING) {
+> -			status->delay = runtime->buffer_size - status->avail;
+> -			status->delay += runtime->delay;
+> -		} else
+> -			status->delay = 0;
+> -	} else {
+> -		if (runtime->status->state == SNDRV_PCM_STATE_RUNNING)
+> -			status->delay = status->avail + runtime->delay;
+> -		else
+> -			status->delay = 0;
+> -	}
+> +	status->delay = snd_pcm_calc_delay(substream);
+>   	status->avail_max = runtime->avail_max;
+>   	status->overrange = runtime->overrange;
+>   	runtime->avail_max = 0;
+> @@ -2655,19 +2655,13 @@ static int snd_pcm_hwsync(struct snd_pcm_substream *substream)
+>   		
+>   static snd_pcm_sframes_t snd_pcm_delay(struct snd_pcm_substream *substream)
+>   {
+> -	struct snd_pcm_runtime *runtime = substream->runtime;
+>   	int err;
+>   	snd_pcm_sframes_t n = 0;
+>   
+>   	snd_pcm_stream_lock_irq(substream);
+>   	err = do_pcm_hwsync(substream);
+> -	if (!err) {
+> -		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> -			n = snd_pcm_playback_hw_avail(runtime);
+> -		else
+> -			n = snd_pcm_capture_avail(runtime);
+> -		n += runtime->delay;
+> -	}
+> +	if (!err)
+> +		n = snd_pcm_calc_delay(substream);
+>   	snd_pcm_stream_unlock_irq(substream);
+>   	return err < 0 ? err : n;
+>   }
 
-> > > > > > if (check_dell_switchable_gfx(pci) && !pci_is_thunderbolt_attac=
-hed(pci))
-> > > > > =
+When any PCM substream is under running state, this patchset is good.
+Below is short descriptions of calculation in each case.
 
-> > > > > And what about PCI-e device attached to ExpressCard slot?
-> > > > =
+snd_pcm_status() for playback on running
+  * delay = runtime->buffer_size - status->avail 
+(=snd_pcm_playback_hw_avail())
+  * delay += runtime->delay
 
-> > > > I don't know of a bullet-proof way to recognize those.
-> > > =
+snd_pcm_status() for capture on running
+  * delay = status->avail (= snd_pcm_avail() = snd_pcm_capture_avail())
+  * delay += runtime->delay
 
-> > > Hm... maybe another idea: Is it possible to detect which audio pci
-> > > device belongs to graphics card via vga_switcheroo? Currently, looking
-> > > at output it is same PCI device as graphic card, just different PCI
-> > > function.
-> > =
+snd_pcm_delay() for playback
+  * delay = snd_pcm_playback_hw_avail()
+  * delay += rutime_delay
 
-> > No, the DRM drivers don't filter ExpressCard-attached GPUs when
-> > registering with vga_switcheroo.
-> =
-
-> > They do filter Thunderbolt-attached GPUs.
-> =
-
-> So check via vga_switcheroo should at least work for Thunderbolt GPUs.
-> =
-
-> I do not know if it is possible, but for me it looks like that check via
-> vga_switcheroo should be better then adding another heuristic to other
-> drivers.
-
-It is way simpler and more straightforward if hda_intel.c calls
-pci_is_thunderbolt_attached() directly, as I've suggested above.
-
-The DRM drivers call that as well and register with vga_switcheroo
-only if it returns false.  So if hda_intel.c asked vga_switcheroo
-and got back a negative answer, it would never know whether it's
-because the DRM driver hasn't finished probing yet, or it's module
-is blacklisted, or whatever.
+snd_pcm_delay() for capture
+  * delay = snd_pcm_capture_avail(runtime)
+  * delay += runtime->delay
 
 
-> And once we would have good/reliable check for EC devices we can add it
-> into vga_switcheroo and all users of it could benefit. Anyway, I think
-> that vga_switcheroo should filter also EC GPU cards if it already
-> filters Thunderbolt.
+However, under non-running states, I have some suspicion, because
+originally 'snd_pcm_status()' take 0 in the states while your code
+manage to calculate it.
 
-vga_switcheroo doesn't do the filtering, the DRM drivers themselves
-decice whether to register with vga_switcheroo or not.  The motivation
-is to avoid middle layers and instead provide the DRM drivers with
-a library of helpers that they may call at their own discretion.
+(sound/core/pcm_native.c)
+911    if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+912        status->avail = snd_pcm_playback_avail(runtime);
+913        if (runtime->status->state == SNDRV_PCM_STATE_RUNNING ||
+914            runtime->status->state == SNDRV_PCM_STATE_DRAINING) {
+                ...
+917        } else
+918            status->delay = 0;
+919        } else {
+920            status->avail = snd_pcm_capture_avail(runtime);
+921            if (runtime->status->state == SNDRV_PCM_STATE_RUNNING)
+                    ...
+923            else
+924                status->delay = 0;
+925        }
 
-See this blog post and the links therein for background info:
-http://blog.ffwll.ch/2016/12/midlayers-once-more-with-feeling.html
+I think this patch is based on an assumption that hw_ptr is zeroed
+after stopping PCM substream. On the other hand, I cannot find codes
+which reset hw_ptr to zero during lifetime of PCM runtime. Any
+calculation of delay with hw_ptr could return non-zero value in
+non-running states. This patch can change behaviour of PCM core in a 
+view of userspace applications, in my understanding.
 
-Thanks,
 
-Lukas
+Regards
+
+Takashi Sakamoto
