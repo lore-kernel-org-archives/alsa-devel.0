@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Fix bugs of freeing soc
-	topology" to the asoc tree
-Date: Tue, 17 Apr 2018 12:28:36 +0100
-Message-ID: <E1f8Omq-0000I2-Kk@debutante>
-References: <20180314204722.14144-1-liam.r.girdwood@linux.intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Reset DSP Pipelines in
+	prepare" to the asoc tree
+Date: Tue, 17 Apr 2018 12:28:43 +0100
+Message-ID: <E1f8Omx-0000KS-Rn@debutante>
+References: <1522651550-27236-2-git-send-email-sriramx.periyasamy@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 230252675CF
- for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2018 13:28:39 +0200 (CEST)
-In-Reply-To: <20180314204722.14144-1-liam.r.girdwood@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4BDD9267605
+ for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2018 13:28:48 +0200 (CEST)
+In-Reply-To: <1522651550-27236-2-git-send-email-sriramx.periyasamy@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Yan Wang <yan.wang@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Divya Prakash <divya1.prakash@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: Fix bugs of freeing soc topology
+   ASoC: Intel: Skylake: Reset DSP Pipelines in prepare
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,62 @@ to this mail.
 Thanks,
 Mark
 
->From feb12f0cd8d7b1e8df2e6fce19fc9a026a468cc2 Mon Sep 17 00:00:00 2001
-From: Yan Wang <yan.wang@linux.intel.com>
-Date: Mon, 26 Mar 2018 16:48:00 +0100
-Subject: [PATCH] ASoC: topology: Fix bugs of freeing soc topology
+>From 74e651926ee038237c48493d0a0853868d622b01 Mon Sep 17 00:00:00 2001
+From: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+Date: Mon, 2 Apr 2018 12:15:48 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Reset DSP Pipelines in prepare
 
-In snd_soc_tplg_component_remove(), it should compare index and
-not dobj->index with SND_SOC_TPLG_INDEX_ALL for removing all
-topology objects.
+An application can choose to call .prepare function
+any number of times. In such scenarios, there is a
+need to reset the DSP pipeline.
 
-Signed-off-by: Yan Wang <yan.wang@linux.intel.com>
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+Signed-off-by: Divya Prakash <divya1.prakash@intel.com>
+Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-pcm.c | 24 ++++++++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 942c6e5eb4b7..5598e891b2b3 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -2580,7 +2580,7 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp, u32 index)
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index fe25515debec..afa86b9e4dcf 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -268,15 +268,31 @@ static int skl_pcm_prepare(struct snd_pcm_substream *substream,
+ {
+ 	struct skl *skl = get_skl_ctx(dai->dev);
+ 	struct skl_module_cfg *mconfig;
++	int ret;
  
- 			/* match index */
- 			if (dobj->index != index &&
--				dobj->index != SND_SOC_TPLG_INDEX_ALL)
-+				index != SND_SOC_TPLG_INDEX_ALL)
- 				continue;
+ 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
  
- 			switch (dobj->type) {
+ 	mconfig = skl_tplg_fe_get_cpr_module(dai, substream->stream);
+ 
+-	/* In case of XRUN recovery, reset the FW pipe to clean state */
+-	if (mconfig && (substream->runtime->status->state ==
+-					SNDRV_PCM_STATE_XRUN))
+-		skl_reset_pipe(skl->skl_sst, mconfig->pipe);
++	/*
++	 * In case of XRUN recovery or in the case when the application
++	 * calls prepare another time, reset the FW pipe to clean state
++	 */
++	if (mconfig &&
++		(substream->runtime->status->state == SNDRV_PCM_STATE_XRUN ||
++		 mconfig->pipe->state == SKL_PIPE_CREATED ||
++		 mconfig->pipe->state == SKL_PIPE_PAUSED)) {
++
++		ret = skl_reset_pipe(skl->skl_sst, mconfig->pipe);
++
++		if (ret < 0)
++			return ret;
++
++		ret = skl_pcm_host_dma_prepare(dai->dev,
++					mconfig->pipe->p_params);
++		if (ret < 0)
++			return ret;
++	}
+ 
+ 	return 0;
+ }
 -- 
 2.17.0
