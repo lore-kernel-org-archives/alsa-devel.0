@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2 4/4] ASoC: amd: enabling bt i2s config
-	after acp reset
-Date: Tue, 17 Apr 2018 17:10:25 +0100
-Message-ID: <20180417161025.GI8973@sirena.org.uk>
-References: <1523941201-15665-5-git-send-email-Vijendar.Mukunda@amd.com>
- <1523980325-4242-1-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: Applied "ASoC: topology: Add callback for DAPM route
+	load/unload" to the asoc tree
+Date: Tue, 17 Apr 2018 18:09:11 +0100
+Message-ID: <E1f8U6R-0001ar-0Z@debutante>
+References: <20180327133045.29351-5-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4498658496216761735=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 426A02675DE
- for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2018 18:11:03 +0200 (CEST)
-In-Reply-To: <1523980325-4242-1-git-send-email-Vijendar.Mukunda@amd.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F304E266C99
+ for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2018 19:09:14 +0200 (CEST)
+In-Reply-To: <20180327133045.29351-5-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +22,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>, Jason Clinton <jclinton@chromium.org>, Alex Deucher <alexander.deucher@amd.com>, Dylan Reid <dgreid@chromium.org>, Akshu Agrawal <akshu.agrawal@amd.com>, Thomas Gleixner <tglx@linutronix.de>, Guenter Roeck <linux@roeck-us.net>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============4498658496216761735==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="J+eNKFoVC4T1DV3f"
-Content-Disposition: inline
+   ASoC: topology: Add callback for DAPM route load/unload
 
+has been applied to the asoc tree at
 
---J+eNKFoVC4T1DV3f
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Apr 17, 2018 at 09:21:45PM +0530, Vijendar Mukunda wrote:
-> On ST/CZ based platforms, for specific platform bt uart
-> mux to be defined for bt i2s.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Please don't send isolated patches numbered like they're in a series,
-the numbering is only there so people know what order a series should be
-handled in - outside of a series they mean nothing so just number within
-what you're posting.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---J+eNKFoVC4T1DV3f
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrWHHEACgkQJNaLcl1U
-h9Cq+Af/TaC+eA4q7acZzjEJEHNo/NV+rJ7jkXgyShPLc5gQPQwbO+KEMhKGQ+gy
-x/yT0/oh70jSxfpfPDktVrNqBTg27d2M13dxp2GhGjg41hTqzWvLWlGuaZhfCXbx
-5IWtmJe9883L8wclEdgiTaN3xFUZQyQAj1tft26t3xn4yBR4TNdB8M8kJq527bZV
-NKESwZfyjV/SV8hQju2e1pDeXYjtdDxVpsHpYVZ34Bn7BGHG/QsFfq4wmp2+Ob+p
-A7bvIiGRXCYZkZD5aEnBuH9fLIen4C8qVGy7YbNjeWlGSsuHny2xwrkZBknRjni0
-CL81mSijuXwj00PxNf/QYBtKJ/K6Cw==
-=TMm9
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---J+eNKFoVC4T1DV3f--
+>From 28aa6f7779f77a863a08c1b9db4b654a94c86dd0 Mon Sep 17 00:00:00 2001
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Date: Tue, 27 Mar 2018 14:30:43 +0100
+Subject: [PATCH] ASoC: topology: Add callback for DAPM route load/unload
 
---===============4498658496216761735==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Add a callback fro clients for notification about DAPM route loading and
+unloading.
 
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ include/sound/soc-topology.h |  7 +++++++
+ sound/soc/soc-topology.c     | 13 +++++++++++++
+ 2 files changed, 20 insertions(+)
 
---===============4498658496216761735==--
+diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
+index e1f265e21ee1..401ef2c45d6c 100644
+--- a/include/sound/soc-topology.h
++++ b/include/sound/soc-topology.h
+@@ -32,6 +32,7 @@ struct snd_kcontrol_new;
+ struct snd_soc_dai_link;
+ struct snd_soc_dai_driver;
+ struct snd_soc_dai;
++struct snd_soc_dapm_route;
+ 
+ /* object scan be loaded and unloaded in groups with identfying indexes */
+ #define SND_SOC_TPLG_INDEX_ALL	0	/* ID that matches all FW objects */
+@@ -116,6 +117,12 @@ struct snd_soc_tplg_ops {
+ 	int (*control_unload)(struct snd_soc_component *,
+ 		struct snd_soc_dobj *);
+ 
++	/* DAPM graph route element loading and unloading */
++	int (*dapm_route_load)(struct snd_soc_component *, int index,
++		struct snd_soc_dapm_route *route);
++	int (*dapm_route_unload)(struct snd_soc_component *,
++		struct snd_soc_dobj *);
++
+ 	/* external widget init - used for any driver specific init */
+ 	int (*widget_load)(struct snd_soc_component *, int index,
+ 		struct snd_soc_dapm_widget *,
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 028bcaa0eda5..b9370ae31907 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1161,6 +1161,17 @@ static int soc_tplg_kcontrol_elems_load(struct soc_tplg *tplg,
+ 	return 0;
+ }
+ 
++/* optionally pass new dynamic kcontrol to component driver. */
++static int soc_tplg_add_route(struct soc_tplg *tplg,
++	struct snd_soc_dapm_route *route)
++{
++	if (tplg->comp && tplg->ops && tplg->ops->dapm_route_load)
++		return tplg->ops->dapm_route_load(tplg->comp, tplg->index,
++			route);
++
++	return 0;
++}
++
+ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
+ 	struct snd_soc_tplg_hdr *hdr)
+ {
+@@ -1209,6 +1220,8 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
+ 		else
+ 			route.control = elem->control;
+ 
++		soc_tplg_add_route(tplg, &route);
++
+ 		/* add route, but keep going if some fail */
+ 		snd_soc_dapm_add_routes(dapm, &route, 1);
+ 	}
+-- 
+2.17.0
