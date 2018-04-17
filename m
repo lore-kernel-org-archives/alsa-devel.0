@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Reset DSP pipe in
-	skl_pcm_hw_free" to the asoc tree
-Date: Tue, 17 Apr 2018 12:28:53 +0100
-Message-ID: <E1f8On7-0000Mm-BA@debutante>
-References: <1522651550-27236-3-git-send-email-sriramx.periyasamy@intel.com>
+Subject: Applied "ASoC: rt1305: fix ACPI_PTR compile error" to
+	the asoc tree
+Date: Tue, 17 Apr 2018 12:29:05 +0100
+Message-ID: <E1f8OnJ-0000P8-Mz@debutante>
+References: <1523930882-17730-1-git-send-email-shumingf@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E26AF2675FF
- for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2018 13:28:58 +0200 (CEST)
-In-Reply-To: <1522651550-27236-3-git-send-email-sriramx.periyasamy@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F11572675DB
+ for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2018 13:29:14 +0200 (CEST)
+In-Reply-To: <1523930882-17730-1-git-send-email-shumingf@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Divya Prakash <divya1.prakash@intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>
+To: Shuming Fan <shumingf@realtek.com>
+Cc: oder_chiou@realtek.com, Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, lars@metafoo.de, jack.yu@realtek.com, lgirdwood@gmail.com, broonie@kernel.org, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Reset DSP pipe in skl_pcm_hw_free
+   ASoC: rt1305: fix ACPI_PTR compile error
 
 has been applied to the asoc tree at
 
@@ -53,50 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 179c2e86328c3d7e07f87f9c45a216cda626e9ee Mon Sep 17 00:00:00 2001
-From: Divya Prakash <divya1.prakash@intel.com>
-Date: Mon, 2 Apr 2018 12:15:49 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Reset DSP pipe in skl_pcm_hw_free
+>From 816cabd8d472d2e1b7daad2838eb4ce5046f03bb Mon Sep 17 00:00:00 2001
+From: Shuming Fan <shumingf@realtek.com>
+Date: Tue, 17 Apr 2018 10:08:02 +0800
+Subject: [PATCH] ASoC: rt1305: fix ACPI_PTR compile error
 
-Currently during destroy pipeline the gateway is disabled
-before DMA completion. This leads to improper draining of
-data and subsequently causing issues on HD-Audio DMA.
-Hence added a new pipe reset IPC in skl_pcm_hw_free in
-which the Gateway Enable(GEN bit) is reset to 0 after
-DMA completion in skl_pcm_trigger.
+This patch added <linux/acpi.h> header
 
-Signed-off-by: Divya Prakash <divya1.prakash@intel.com>
-Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/codecs/rt1305.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 15cb8ac3e374..fe25515debec 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -366,9 +366,21 @@ static int skl_pcm_hw_free(struct snd_pcm_substream *substream,
- {
- 	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
- 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
-+	struct skl *skl = get_skl_ctx(dai->dev);
-+	struct skl_module_cfg *mconfig;
-+	int ret;
- 
- 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
- 
-+	mconfig = skl_tplg_fe_get_cpr_module(dai, substream->stream);
-+
-+	if (mconfig) {
-+		ret = skl_reset_pipe(skl->skl_sst, mconfig->pipe);
-+		if (ret < 0)
-+			dev_err(dai->dev, "%s:Reset failed ret =%d",
-+						__func__, ret);
-+	}
-+
- 	snd_hdac_stream_cleanup(hdac_stream(stream));
- 	hdac_stream(stream)->prepared = 0;
- 
+diff --git a/sound/soc/codecs/rt1305.c b/sound/soc/codecs/rt1305.c
+index 90baab91d11b..84043068c0b7 100644
+--- a/sound/soc/codecs/rt1305.c
++++ b/sound/soc/codecs/rt1305.c
+@@ -14,6 +14,7 @@
+ #include <linux/init.h>
+ #include <linux/delay.h>
+ #include <linux/pm.h>
++#include <linux/acpi.h>
+ #include <linux/gpio.h>
+ #include <linux/i2c.h>
+ #include <linux/regmap.h>
 -- 
 2.17.0
