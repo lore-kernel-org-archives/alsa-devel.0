@@ -1,129 +1,89 @@
 From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: Re: [PATCH v2 3/5] ALSA: xen-front: Implement Xen event channel
- handling
-Date: Tue, 17 Apr 2018 11:58:13 +0300
-Message-ID: <2e06f714-ebc2-11bb-078b-8a453ea8464c@gmail.com>
+Subject: Re: [PATCH v2 4/5] ALSA: xen-front: Implement handling of shared
+ buffers
+Date: Tue, 17 Apr 2018 12:22:48 +0300
+Message-ID: <edbd53c6-3396-9293-4a04-2b22655eeb12@gmail.com>
 References: <20180416062453.24743-1-andr2000@gmail.com>
- <20180416062453.24743-4-andr2000@gmail.com>
- <f9d307ea-9464-252e-2a5a-11ac0b3163f4@suse.com>
+ <20180416062453.24743-5-andr2000@gmail.com>
+ <6ab76dd7-ec6b-0756-5490-f5b5805998d6@suse.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <f9d307ea-9464-252e-2a5a-11ac0b3163f4@suse.com>
+In-Reply-To: <6ab76dd7-ec6b-0756-5490-f5b5805998d6@suse.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, perex@perex.cz, tiwai@suse.com
 Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/16/2018 04:12 PM, Juergen Gross wrote:
+On 04/16/2018 04:39 PM, Juergen Gross wrote:
 > On 16/04/18 08:24, Oleksandr Andrushchenko wrote:
 >> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 >>
->> Handle Xen event channels:
->>    - create for all configured streams and publish
->>      corresponding ring references and event channels in Xen store,
->>      so backend can connect
->>    - implement event channels interrupt handlers
->>    - create and destroy event channels with respect to Xen bus state
+>> Implement shared buffer handling according to the
+>> para-virtualized sound device protocol at xen/interface/io/sndif.h:
+>>    - manage buffer memory
+>>    - handle granted references
+>>    - handle page directories
 >>
 >> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 >> ---
->>   sound/xen/Makefile                |   3 +-
->>   sound/xen/xen_snd_front.c         |  10 +-
->>   sound/xen/xen_snd_front.h         |   7 +
->>   sound/xen/xen_snd_front_evtchnl.c | 474 ++++++++++++++++++++++++++++++++++++++
->>   sound/xen/xen_snd_front_evtchnl.h |  92 ++++++++
->>   5 files changed, 584 insertions(+), 2 deletions(-)
->>   create mode 100644 sound/xen/xen_snd_front_evtchnl.c
->>   create mode 100644 sound/xen/xen_snd_front_evtchnl.h
+>>   sound/xen/Makefile              |   3 +-
+>>   sound/xen/xen_snd_front.c       |   8 ++
+>>   sound/xen/xen_snd_front_shbuf.c | 193 ++++++++++++++++++++++++++++++++++++++++
+>>   sound/xen/xen_snd_front_shbuf.h |  36 ++++++++
+>>   4 files changed, 239 insertions(+), 1 deletion(-)
+>>   create mode 100644 sound/xen/xen_snd_front_shbuf.c
+>>   create mode 100644 sound/xen/xen_snd_front_shbuf.h
 >>
 >> diff --git a/sound/xen/Makefile b/sound/xen/Makefile
->> index 06705bef61fa..03c669984000 100644
+>> index 03c669984000..f028bc30af5d 100644
 >> --- a/sound/xen/Makefile
 >> +++ b/sound/xen/Makefile
->> @@ -1,6 +1,7 @@
->>   # SPDX-License-Identifier: GPL-2.0 OR MIT
+>> @@ -2,6 +2,7 @@
 >>   
 >>   snd_xen_front-objs := xen_snd_front.o \
->> -		      xen_snd_front_cfg.o
->> +		      xen_snd_front_cfg.o \
->> +		      xen_snd_front_evtchnl.o
+>>   		      xen_snd_front_cfg.o \
+>> -		      xen_snd_front_evtchnl.o
+>> +		      xen_snd_front_evtchnl.o \
+>> +		      xen_snd_front_shbuf.o
 >>   
 >>   obj-$(CONFIG_SND_XEN_FRONTEND) += snd_xen_front.o
 >> diff --git a/sound/xen/xen_snd_front.c b/sound/xen/xen_snd_front.c
->> index 65d2494a9d14..eb46bf4070f9 100644
+>> index eb46bf4070f9..0569c6c596a3 100644
 >> --- a/sound/xen/xen_snd_front.c
 >> +++ b/sound/xen/xen_snd_front.c
->> @@ -18,9 +18,11 @@
->>   #include <xen/interface/io/sndif.h>
+>> @@ -11,6 +11,7 @@
+>>   #include <linux/delay.h>
+>>   #include <linux/module.h>
 >>   
->>   #include "xen_snd_front.h"
->> +#include "xen_snd_front_evtchnl.h"
-> Does it really make sense to have multiple driver-private headers?
->
-> I think those can be merged.
-I would really like to keep it separate as it clearly
-shows which stuff belongs to which modules.
-At least for me it is easier to maintain it this way.
->
+>> +#include <xen/page.h>
+>>   #include <xen/platform_pci.h>
+>>   #include <xen/xen.h>
+>>   #include <xen/xenbus.h>
+>> @@ -186,6 +187,13 @@ static struct xenbus_driver xen_driver = {
 >>   
->>   static void xen_snd_drv_fini(struct xen_snd_front_info *front_info)
+>>   static int __init xen_drv_init(void)
 >>   {
->> +	xen_snd_front_evtchnl_free_all(front_info);
->>   }
->>   
->>   static int sndback_initwait(struct xen_snd_front_info *front_info)
->> @@ -32,7 +34,12 @@ static int sndback_initwait(struct xen_snd_front_info *front_info)
->>   	if (ret < 0)
->>   		return ret;
->>   
->> -	return 0;
->> +	/* create event channels for all streams and publish */
->> +	ret = xen_snd_front_evtchnl_create_all(front_info, num_streams);
->> +	if (ret < 0)
->> +		return ret;
+>> +	/* At the moment we only support case with XEN_PAGE_SIZE == PAGE_SIZE */
+>> +	if (XEN_PAGE_SIZE != PAGE_SIZE) {
+>> +		pr_err(XENSND_DRIVER_NAME ": different kernel and Xen page sizes are not supported: XEN_PAGE_SIZE (%lu) != PAGE_SIZE (%lu)\n",
+>> +		       XEN_PAGE_SIZE, PAGE_SIZE);
+>> +		return -ENODEV;
+>> +	}
+> Do you really want to print that error message on bare metal?
+will move it down after xen_domain/xen_has_pv_devices checks
 >> +
->> +	return xen_snd_front_evtchnl_publish_all(front_info);
->>   }
+>>   	if (!xen_domain())
+>>   		return -ENODEV;
 >>   
->>   static int sndback_connect(struct xen_snd_front_info *front_info)
->> @@ -122,6 +129,7 @@ static int xen_drv_probe(struct xenbus_device *xb_dev,
->>   		return -ENOMEM;
->>   
->>   	front_info->xb_dev = xb_dev;
->> +	spin_lock_init(&front_info->io_lock);
->>   	dev_set_drvdata(&xb_dev->dev, front_info);
->>   
->>   	return xenbus_switch_state(xb_dev, XenbusStateInitialising);
->> diff --git a/sound/xen/xen_snd_front.h b/sound/xen/xen_snd_front.h
->> index b52226cb30bc..9c2ffbb4e4b8 100644
->> --- a/sound/xen/xen_snd_front.h
->> +++ b/sound/xen/xen_snd_front.h
->> @@ -13,9 +13,16 @@
->>   
->>   #include "xen_snd_front_cfg.h"
->>   
->> +struct xen_snd_front_evtchnl_pair;
->> +
->>   struct xen_snd_front_info {
->>   	struct xenbus_device *xb_dev;
->>   
->> +	/* serializer for backend IO: request/response */
->> +	spinlock_t io_lock;
->> +	int num_evt_pairs;
->> +	struct xen_snd_front_evtchnl_pair *evt_pairs;
->> +
->>   	struct xen_front_cfg_card cfg;
->>   };
->>   
->> diff --git a/sound/xen/xen_snd_front_evtchnl.c b/sound/xen/xen_snd_front_evtchnl.c
+>> diff --git a/sound/xen/xen_snd_front_shbuf.c b/sound/xen/xen_snd_front_shbuf.c
 >> new file mode 100644
->> index 000000000000..9ece39f938f8
+>> index 000000000000..6845dbc7fdf5
 >> --- /dev/null
->> +++ b/sound/xen/xen_snd_front_evtchnl.c
->> @@ -0,0 +1,474 @@
+>> +++ b/sound/xen/xen_snd_front_shbuf.c
+>> @@ -0,0 +1,193 @@
 >> +// SPDX-License-Identifier: GPL-2.0 OR MIT
 >> +
 >> +/*
@@ -134,223 +94,159 @@ At least for me it is easier to maintain it this way.
 >> + * Author: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 >> + */
 >> +
->> +#include <xen/events.h>
->> +#include <xen/grant_table.h>
 >> +#include <xen/xen.h>
 >> +#include <xen/xenbus.h>
 >> +
->> +#include "xen_snd_front.h"
->> +#include "xen_snd_front_cfg.h"
->> +#include "xen_snd_front_evtchnl.h"
+>> +#include "xen_snd_front_shbuf.h"
 >> +
->> +static irqreturn_t evtchnl_interrupt_req(int irq, void *dev_id)
+>> +grant_ref_t xen_snd_front_shbuf_get_dir_start(struct xen_snd_front_shbuf *buf)
 >> +{
->> +	struct xen_snd_front_evtchnl *channel = dev_id;
->> +	struct xen_snd_front_info *front_info = channel->front_info;
->> +	struct xensnd_resp *resp;
->> +	RING_IDX i, rp;
->> +	unsigned long flags;
+>> +	if (!buf->grefs)
+>> +		return GRANT_INVALID_REF;
 >> +
->> +	if (unlikely(channel->state != EVTCHNL_STATE_CONNECTED))
->> +		return IRQ_HANDLED;
->> +
->> +	spin_lock_irqsave(&front_info->io_lock, flags);
->> +
->> +again:
->> +	rp = channel->u.req.ring.sring->rsp_prod;
->> +	/* ensure we see queued responses up to rp */
->> +	rmb();
->> +
->> +	for (i = channel->u.req.ring.rsp_cons; i != rp; i++) {
->> +		resp = RING_GET_RESPONSE(&channel->u.req.ring, i);
->> +		if (resp->id != channel->evt_id)
->> +			continue;
->> +		switch (resp->operation) {
->> +		case XENSND_OP_OPEN:
->> +			/* fall through */
->> +		case XENSND_OP_CLOSE:
->> +			/* fall through */
->> +		case XENSND_OP_READ:
->> +			/* fall through */
->> +		case XENSND_OP_WRITE:
->> +			/* fall through */
->> +		case XENSND_OP_TRIGGER:
->> +			channel->u.req.resp_status = resp->status;
->> +			complete(&channel->u.req.completion);
->> +			break;
->> +		case XENSND_OP_HW_PARAM_QUERY:
->> +			channel->u.req.resp_status = resp->status;
->> +			channel->u.req.resp.hw_param =
->> +					resp->resp.hw_param;
->> +			complete(&channel->u.req.completion);
->> +			break;
->> +
->> +		default:
->> +			dev_err(&front_info->xb_dev->dev,
->> +				"Operation %d is not supported\n",
->> +				resp->operation);
->> +			break;
->> +		}
->> +	}
->> +
->> +	channel->u.req.ring.rsp_cons = i;
->> +	if (i != channel->u.req.ring.req_prod_pvt) {
->> +		int more_to_do;
->> +
->> +		RING_FINAL_CHECK_FOR_RESPONSES(&channel->u.req.ring,
->> +					       more_to_do);
->> +		if (more_to_do)
->> +			goto again;
->> +	} else {
->> +		channel->u.req.ring.sring->rsp_event = i + 1;
->> +	}
->> +
->> +	spin_unlock_irqrestore(&front_info->io_lock, flags);
->> +	return IRQ_HANDLED;
+>> +	return buf->grefs[0];
 >> +}
 >> +
->> +static irqreturn_t evtchnl_interrupt_evt(int irq, void *dev_id)
+>> +void xen_snd_front_shbuf_clear(struct xen_snd_front_shbuf *buf)
 >> +{
->> +	struct xen_snd_front_evtchnl *channel = dev_id;
->> +	struct xen_snd_front_info *front_info = channel->front_info;
->> +	struct xensnd_event_page *page = channel->u.evt.page;
->> +	u32 cons, prod;
->> +	unsigned long flags;
->> +
->> +	if (unlikely(channel->state != EVTCHNL_STATE_CONNECTED))
->> +		return IRQ_HANDLED;
->> +
->> +	spin_lock_irqsave(&front_info->io_lock, flags);
->> +
->> +	prod = page->in_prod;
->> +	/* ensure we see ring contents up to prod */
->> +	virt_rmb();
->> +	if (prod == page->in_cons)
->> +		goto out;
->> +
->> +	for (cons = page->in_cons; cons != prod; cons++) {
->> +		struct xensnd_evt *event;
->> +
->> +		event = &XENSND_IN_RING_REF(page, cons);
->> +		if (unlikely(event->id != channel->evt_id++))
->> +			continue;
->> +
->> +		switch (event->type) {
->> +		case XENSND_EVT_CUR_POS:
->> +			/* do nothing at the moment */
->> +			break;
->> +		}
->> +	}
->> +
->> +	page->in_cons = cons;
->> +	/* ensure ring contents */
->> +	virt_wmb();
->> +
->> +out:
->> +	spin_unlock_irqrestore(&front_info->io_lock, flags);
->> +	return IRQ_HANDLED;
+>> +	memset(buf, 0, sizeof(*buf));
 >> +}
 >> +
->> +void xen_snd_front_evtchnl_flush(struct xen_snd_front_evtchnl *channel)
->> +{
->> +	int notify;
->> +
->> +	channel->u.req.ring.req_prod_pvt++;
->> +	RING_PUSH_REQUESTS_AND_CHECK_NOTIFY(&channel->u.req.ring, notify);
->> +	if (notify)
->> +		notify_remote_via_irq(channel->irq);
->> +}
->> +
->> +static void evtchnl_free(struct xen_snd_front_info *front_info,
->> +			 struct xen_snd_front_evtchnl *channel)
->> +{
->> +	unsigned long page = 0;
->> +
->> +	if (channel->type == EVTCHNL_TYPE_REQ)
->> +		page = (unsigned long)channel->u.req.ring.sring;
->> +	else if (channel->type == EVTCHNL_TYPE_EVT)
->> +		page = (unsigned long)channel->u.evt.page;
->> +
->> +	if (!page)
->> +		return;
->> +
->> +	channel->state = EVTCHNL_STATE_DISCONNECTED;
->> +	if (channel->type == EVTCHNL_TYPE_REQ) {
->> +		/* release all who still waits for response if any */
->> +		channel->u.req.resp_status = -EIO;
->> +		complete_all(&channel->u.req.completion);
->> +	}
->> +
->> +	if (channel->irq)
->> +		unbind_from_irqhandler(channel->irq, channel);
->> +
->> +	if (channel->port)
->> +		xenbus_free_evtchn(front_info->xb_dev, channel->port);
->> +
->> +	/* end access and free the page */
->> +	if (channel->gref != GRANT_INVALID_REF)
->> +		gnttab_end_foreign_access(channel->gref, 0, page);
-> Free page?
-According to [1] if page is provided to gnttab_end_foreign_access
-it will be freed. So, no need to free it manually
->> +
->> +	memset(channel, 0, sizeof(*channel));
->> +}
->> +
->> +void xen_snd_front_evtchnl_free_all(struct xen_snd_front_info *front_info)
+>> +void xen_snd_front_shbuf_free(struct xen_snd_front_shbuf *buf)
 >> +{
 >> +	int i;
 >> +
->> +	if (!front_info->evt_pairs)
->> +		return;
->> +
->> +	for (i = 0; i < front_info->num_evt_pairs; i++) {
->> +		evtchnl_free(front_info, &front_info->evt_pairs[i].req);
->> +		evtchnl_free(front_info, &front_info->evt_pairs[i].evt);
+>> +	if (buf->grefs) {
+>> +		for (i = 0; i < buf->num_grefs; i++)
+>> +			if (buf->grefs[i] != GRANT_INVALID_REF)
+>> +				gnttab_end_foreign_access(buf->grefs[i],
+>> +							  0, 0UL);
+>> +		kfree(buf->grefs);
 >> +	}
->> +
->> +	kfree(front_info->evt_pairs);
->> +	front_info->evt_pairs = NULL;
+>> +	kfree(buf->directory);
+>> +	free_pages_exact(buf->buffer, buf->buffer_sz);
+>> +	xen_snd_front_shbuf_clear(buf);
 >> +}
 >> +
->> +static int evtchnl_alloc(struct xen_snd_front_info *front_info, int index,
->> +			 struct xen_snd_front_evtchnl *channel,
->> +			 enum xen_snd_front_evtchnl_type type)
->> +{
->> +	struct xenbus_device *xb_dev = front_info->xb_dev;
->> +	unsigned long page;
->> +	grant_ref_t gref;
->> +	irq_handler_t handler;
->> +	char *handler_name = NULL;
->> +	int ret;
+>> +/*
+>> + * number of grant references a page can hold with respect to the
+>> + * xensnd_page_directory header
+>> + */
+>> +#define XENSND_NUM_GREFS_PER_PAGE ((XEN_PAGE_SIZE - \
+>> +		offsetof(struct xensnd_page_directory, gref)) / \
+>> +		sizeof(grant_ref_t))
 >> +
->> +	memset(channel, 0, sizeof(*channel));
->> +	channel->type = type;
->> +	channel->index = index;
->> +	channel->front_info = front_info;
->> +	channel->state = EVTCHNL_STATE_DISCONNECTED;
->> +	channel->gref = GRANT_INVALID_REF;
->> +	page = get_zeroed_page(GFP_NOIO | __GFP_HIGH);
-> Why GFP_NOIO | __GFP_HIGH? Could it be you copied that from blkfront
-> driver?
-It can be net-front, I guess, which has the same for rx/tx rings
->   I believe swapping via sound card is rather uncommon.
-Indeed, will use GFP_KERNEL here
->> +	if (!page) {
->> +		ret = -ENOMEM;
->> +		goto fail;
+>> +static void fill_page_dir(struct xen_snd_front_shbuf *buf,
+>> +			  int num_pages_dir)
+>> +{
+>> +	struct xensnd_page_directory *page_dir;
+>> +	unsigned char *ptr;
+>> +	int i, cur_gref, grefs_left, to_copy;
+>> +
+>> +	ptr = buf->directory;
+>> +	grefs_left = buf->num_grefs - num_pages_dir;
+>> +	/*
+>> +	 * skip grant references at the beginning, they are for pages granted
+>> +	 * for the page directory itself
+>> +	 */
+>> +	cur_gref = num_pages_dir;
+>> +	for (i = 0; i < num_pages_dir; i++) {
+>> +		page_dir = (struct xensnd_page_directory *)ptr;
+>> +		if (grefs_left <= XENSND_NUM_GREFS_PER_PAGE) {
+>> +			to_copy = grefs_left;
+>> +			page_dir->gref_dir_next_page = GRANT_INVALID_REF;
+>> +		} else {
+>> +			to_copy = XENSND_NUM_GREFS_PER_PAGE;
+>> +			page_dir->gref_dir_next_page = buf->grefs[i + 1];
+>> +		}
+>> +
+>> +		memcpy(&page_dir->gref, &buf->grefs[cur_gref],
+>> +		       to_copy * sizeof(grant_ref_t));
+>> +
+>> +		ptr += XEN_PAGE_SIZE;
+>> +		grefs_left -= to_copy;
+>> +		cur_gref += to_copy;
+>> +	}
+>> +}
+>> +
+>> +static int grant_references(struct xenbus_device *xb_dev,
+>> +			    struct xen_snd_front_shbuf *buf,
+>> +			    int num_pages_dir, int num_pages_buffer,
+>> +			    int num_grefs)
+>> +{
+>> +	grant_ref_t priv_gref_head;
+>> +	unsigned long frame;
+>> +	int ret, i, j, cur_ref;
+>> +	int otherend_id;
+>> +
+>> +	ret = gnttab_alloc_grant_references(num_grefs, &priv_gref_head);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	buf->num_grefs = num_grefs;
+>> +	otherend_id = xb_dev->otherend_id;
+>> +	j = 0;
+>> +
+>> +	for (i = 0; i < num_pages_dir; i++) {
+>> +		cur_ref = gnttab_claim_grant_reference(&priv_gref_head);
+>> +		if (cur_ref < 0) {
+>> +			ret = cur_ref;
+>> +			goto fail;
+>> +		}
+>> +
+>> +		frame = xen_page_to_gfn(virt_to_page(buf->directory +
+>> +						     XEN_PAGE_SIZE * i));
+>> +		gnttab_grant_foreign_access_ref(cur_ref, otherend_id, frame, 0);
+>> +		buf->grefs[j++] = cur_ref;
 >> +	}
 >> +
->> +	handler_name = kasprintf(GFP_KERNEL, "%s-%s", XENSND_DRIVER_NAME,
->> +				 type == EVTCHNL_TYPE_REQ ?
->> +				 XENSND_FIELD_RING_REF :
->> +				 XENSND_FIELD_EVT_RING_REF);
->> +	if (!handler_name) {
->> +		ret = -ENOMEM;
-> Missing free_page(page)? Maybe you rather add it in the common
-> fail path instead of the numerous instances below?
->
-yes, will move it under the common fail: label
+>> +	for (i = 0; i < num_pages_buffer; i++) {
+>> +		cur_ref = gnttab_claim_grant_reference(&priv_gref_head);
+>> +		if (cur_ref < 0) {
+>> +			ret = cur_ref;
+>> +			goto fail;
+>> +		}
+>> +
+>> +		frame = xen_page_to_gfn(virt_to_page(buf->buffer +
+>> +						     XEN_PAGE_SIZE * i));
+>> +		gnttab_grant_foreign_access_ref(cur_ref, otherend_id, frame, 0);
+>> +		buf->grefs[j++] = cur_ref;
+>> +	}
+>> +
+>> +	gnttab_free_grant_references(priv_gref_head);
+>> +	fill_page_dir(buf, num_pages_dir);
+>> +	return 0;
+>> +
+>> +fail:
+>> +	gnttab_free_grant_references(priv_gref_head);
+>> +	return ret;
+>> +}
+>> +
+>> +static int alloc_int_buffers(struct xen_snd_front_shbuf *buf,
+>> +			     int num_pages_dir, int num_pages_buffer,
+>> +			     int num_grefs)
+>> +{
+>> +	buf->grefs = kcalloc(num_grefs, sizeof(*buf->grefs), GFP_KERNEL);
+>> +	if (!buf->grefs)
+>> +		return -ENOMEM;
+>> +
+>> +	buf->directory = kcalloc(num_pages_dir, XEN_PAGE_SIZE, GFP_KERNEL);
+>> +	if (!buf->directory)
+>> +		goto fail;
+>> +
+>> +	buf->buffer_sz = num_pages_buffer * XEN_PAGE_SIZE;
+>> +	buf->buffer = alloc_pages_exact(buf->buffer_sz, GFP_KERNEL);
+>> +	if (!buf->buffer)
+>> +		goto fail;
+>> +
+>> +	return 0;
+>> +
+>> +fail:
+>> +	kfree(buf->grefs);
+>> +	buf->grefs = NULL;
+>> +	kfree(buf->directory);
+> Why do you need to free those here? Shouldn't that be done via
+> xen_snd_front_shbuf_free() in case of an error?
+At this place we only allocate memory, but xen_snd_front_shbuf_free
+will also try to gnttab_end_foreign_access if buf->grefs != NULL.
 > Juergen
-[1] 
-https://elixir.bootlin.com/linux/v4.17-rc1/source/include/xen/grant_table.h#L96
