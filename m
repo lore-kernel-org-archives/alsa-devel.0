@@ -1,106 +1,130 @@
-From: Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>
-Subject: Re: [PATCH v3 3/3] ALSA: hda: Disabled unused audio controller for
- Dell platforms with Switchable Graphics
-Date: Tue, 17 Apr 2018 09:52:57 +0200
-Message-ID: <20180417075257.zjnju4jyyc3k5fez@pali>
-References: <s5hr2nk8zs5.wl-tiwai@suse.de>
- <20180412105909.tbyfcjm55sb47hiq@pali>
- <93DC0F40-81A5-49C6-A470-0D1B6AA85725@canonical.com>
- <20180414104512.GA27158@wunner.de>
- <20180414104950.ngomyjy5l5cwhb5i@pali>
- <20180414111711.GA4245@wunner.de>
- <20180415171746.futkvgbaoj6quy5z@pali>
- <20180415190523.GA16129@wunner.de>
- <20180416142512.bwsemgwrncyl5xan@pali>
- <20180417023829.GA1533@wunner.de>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: [PATCH v2 1/5] ALSA: xen-front: Introduce Xen
+ para-virtualized sound frontend driver
+Date: Tue, 17 Apr 2018 11:24:56 +0300
+Message-ID: <ea707fd4-fb72-aa8a-f5ac-dd9ff89dea9b@gmail.com>
+References: <20180416062453.24743-1-andr2000@gmail.com>
+ <20180416062453.24743-2-andr2000@gmail.com>
+ <c473b7b3-6125-7f2f-d3c2-bff58dc61d48@suse.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180417023829.GA1533@wunner.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lukas Wunner <lukas@wunner.de>
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, Takashi Iwai <tiwai@suse.de>, mario.limonciello@dell.com, andy@infradead.org, dvhart@infradead.org, mjg59@srcf.ucam.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lf0-f66.google.com (mail-lf0-f66.google.com
+ [209.85.215.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 45A6B2673D2
+ for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2018 10:24:58 +0200 (CEST)
+Received: by mail-lf0-f66.google.com with SMTP id p142-v6so26021935lfd.6
+ for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2018 01:24:58 -0700 (PDT)
+In-Reply-To: <c473b7b3-6125-7f2f-d3c2-bff58dc61d48@suse.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, perex@perex.cz, tiwai@suse.com
+Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 17 April 2018 04:38:29 Lukas Wunner wrote:
-> On Mon, Apr 16, 2018 at 04:25:12PM +0200, Pali Rohár wrote:
-> > On Sunday 15 April 2018 21:05:23 Lukas Wunner wrote:
-> > > On Sun, Apr 15, 2018 at 07:17:46PM +0200, Pali Rohár wrote:
-> > > > On Saturday 14 April 2018 13:17:11 Lukas Wunner wrote:
-> > > > > On Sat, Apr 14, 2018 at 12:49:50PM +0200, Pali Rohár wrote:
-> > > > > > On Saturday 14 April 2018 12:45:12 Lukas Wunner wrote:
-> > > > > > > On Thu, Apr 12, 2018 at 10:15:41PM +0800, Kai-Heng Feng wrote:
-> > > > > > > > Do you have any suggestion to check if it connects to the system via
-> > > > > > > > Thunderbolt?
-> > > > > > > 
-> > > > > > > Just use pci_is_thunderbolt_attached(), introduced by 8531e283bee6,
-> > > > > > > like this:
-> > > > > > > 
-> > > > > > > if (check_dell_switchable_gfx(pci) && !pci_is_thunderbolt_attached(pci))
-> > > > > > 
-> > > > > > And what about PCI-e device attached to ExpressCard slot?
-> > > > > 
-> > > > > I don't know of a bullet-proof way to recognize those.
-> > > > 
-> > > > Hm... maybe another idea: Is it possible to detect which audio pci
-> > > > device belongs to graphics card via vga_switcheroo? Currently, looking
-> > > > at output it is same PCI device as graphic card, just different PCI
-> > > > function.
-> > > 
-> > > No, the DRM drivers don't filter ExpressCard-attached GPUs when
-> > > registering with vga_switcheroo.
-> > 
-> > > They do filter Thunderbolt-attached GPUs.
-> > 
-> > So check via vga_switcheroo should at least work for Thunderbolt GPUs.
-> > 
-> > I do not know if it is possible, but for me it looks like that check via
-> > vga_switcheroo should be better then adding another heuristic to other
-> > drivers.
-> 
-> It is way simpler and more straightforward if hda_intel.c calls
-> pci_is_thunderbolt_attached() directly, as I've suggested above.
-> 
-> The DRM drivers call that as well and register with vga_switcheroo
-> only if it returns false.  So if hda_intel.c asked vga_switcheroo
-> and got back a negative answer, it would never know whether it's
-> because the DRM driver hasn't finished probing yet, or it's module
-> is blacklisted, or whatever.
-
-Ok, module blacklisting can be a problem.
-
-> 
-> > And once we would have good/reliable check for EC devices we can add it
-> > into vga_switcheroo and all users of it could benefit. Anyway, I think
-> > that vga_switcheroo should filter also EC GPU cards if it already
-> > filters Thunderbolt.
-> 
-> vga_switcheroo doesn't do the filtering, the DRM drivers themselves
-> decice whether to register with vga_switcheroo or not.  The motivation
-> is to avoid middle layers and instead provide the DRM drivers with
-> a library of helpers that they may call at their own discretion.
-
-Understood. Driver itself can also do more work, e.g. ask ACPI or do
-some other check to decide whatever to register to vga_switcheroo or
-not.
-
-But probably, hda_intel should have same logic for disabling device like
-gpu drivers for detection if they are going to register into
-vga_switcheroo or not.
-
-Right now this seems to be really complicated and suggested solution
-with pci_is_thunderbolt_attached() looks to be really simple and better
-for now.
-
-> See this blog post and the links therein for background info:
-> http://blog.ffwll.ch/2016/12/midlayers-once-more-with-feeling.html
-> 
-> Thanks,
-> 
-> Lukas
-
--- 
-Pali Rohár
-pali.rohar@gmail.com
+On 04/16/2018 03:25 PM, Juergen Gross wrote:
+> On 16/04/18 08:24, Oleksandr Andrushchenko wrote:
+>> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+>>
+>> Introduce skeleton of the para-virtualized Xen sound
+>> frontend driver.
+>>
+>> Initial handling for Xen bus states: implement
+>> Xen bus state machine for the frontend driver according to
+>> the state diagram and recovery flow from sound para-virtualized
+>> protocol: xen/interface/io/sndif.h.
+>>
+>> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+> Only one minor nit (see below). With that addressed (or fixed when
+> committing):
+will fix
+> Reviewed-by: Juergen Gross <jgross@suse.com>
+Thank you
+>
+> Juergen
+>
+>> ---
+>>   sound/Kconfig             |   2 +
+>>   sound/Makefile            |   2 +-
+>>   sound/xen/Kconfig         |  10 +++
+>>   sound/xen/Makefile        |   5 ++
+>>   sound/xen/xen_snd_front.c | 196 ++++++++++++++++++++++++++++++++++++++++++++++
+>>   sound/xen/xen_snd_front.h |  18 +++++
+>>   6 files changed, 232 insertions(+), 1 deletion(-)
+>>   create mode 100644 sound/xen/Kconfig
+>>   create mode 100644 sound/xen/Makefile
+>>   create mode 100644 sound/xen/xen_snd_front.c
+>>   create mode 100644 sound/xen/xen_snd_front.h
+>>
+>> diff --git a/sound/xen/xen_snd_front.c b/sound/xen/xen_snd_front.c
+>> new file mode 100644
+>> index 000000000000..f406a8f52c51
+>> --- /dev/null
+>> +++ b/sound/xen/xen_snd_front.c
+>> @@ -0,0 +1,196 @@
+>> +static void sndback_changed(struct xenbus_device *xb_dev,
+>> +			    enum xenbus_state backend_state)
+>> +{
+>> +	struct xen_snd_front_info *front_info = dev_get_drvdata(&xb_dev->dev);
+>> +	int ret;
+>> +
+>> +	dev_dbg(&xb_dev->dev, "Backend state is %s, front is %s\n",
+>> +		xenbus_strstate(backend_state),
+>> +		xenbus_strstate(xb_dev->state));
+>> +
+>> +	switch (backend_state) {
+>> +	case XenbusStateReconfiguring:
+>> +		/* fall through */
+>> +	case XenbusStateReconfigured:
+>> +		/* fall through */
+>> +	case XenbusStateInitialised:
+>> +		/* fall through */
+>> +		break;
+>> +
+>> +	case XenbusStateInitialising:
+>> +		/* recovering after backend unexpected closure */
+>> +		sndback_disconnect(front_info);
+>> +		break;
+>> +
+>> +	case XenbusStateInitWait:
+>> +		/* recovering after backend unexpected closure */
+>> +		sndback_disconnect(front_info);
+>> +
+>> +		ret = sndback_initwait(front_info);
+>> +		if (ret < 0)
+>> +			xenbus_dev_fatal(xb_dev, ret, "initializing frontend");
+>> +		else
+>> +			xenbus_switch_state(xb_dev, XenbusStateInitialised);
+>> +		break;
+>> +
+>> +	case XenbusStateConnected:
+>> +		if (xb_dev->state != XenbusStateInitialised)
+>> +			break;
+>> +
+>> +		ret = sndback_connect(front_info);
+>> +		if (ret < 0)
+>> +			xenbus_dev_fatal(xb_dev, ret, "initializing frontend");
+>> +		else
+>> +			xenbus_switch_state(xb_dev, XenbusStateConnected);
+>> +		break;
+>> +
+>> +	case XenbusStateClosing:
+>> +		/*
+>> +		 * in this state backend starts freeing resources,
+>> +		 * so let it go into closed state first, so we can also
+>> +		 * remove ours
+>> +		 */
+> Please start the sentence with a capital letter and end it with a
+> full stop.
+>
+>
+> Juergen
