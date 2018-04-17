@@ -1,91 +1,82 @@
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH V2 4/4] ASoC: amd: enabling bt i2s config after acp reset
-Date: Tue, 17 Apr 2018 21:21:45 +0530
-Message-ID: <1523980325-4242-1-git-send-email-Vijendar.Mukunda@amd.com>
-References: <1523941201-15665-5-git-send-email-Vijendar.Mukunda@amd.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/4] ASoC: dwc: I2S Controller instance
+	param added
+Date: Tue, 17 Apr 2018 17:09:08 +0100
+Message-ID: <20180417160908.GH8973@sirena.org.uk>
+References: <1523941201-15665-1-git-send-email-Vijendar.Mukunda@amd.com>
+ <1523941201-15665-2-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1523941201-15665-5-git-send-email-Vijendar.Mukunda@amd.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Akshu Agrawal <akshu.agrawal@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Alex Deucher <alexander.deucher@amd.com>, Dylan Reid <dgreid@chromium.org>, Jason Clinton <jclinton@chromium.org>, Guenter Roeck <linux@roeck-us.net>, Thomas Gleixner <tglx@linutronix.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============8357785694223369966=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97C0A2673DC
+ for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2018 18:09:51 +0200 (CEST)
+In-Reply-To: <1523941201-15665-2-git-send-email-Vijendar.Mukunda@amd.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: Jose Abreu <Jose.Abreu@synopsys.com>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Akshu Agrawal <akshu.agrawal@amd.com>, Lubomir Rintel <lkundrak@v3.sk>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Alex Deucher <alexander.deucher@amd.com>, Markus Elfring <elfring@users.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On ST/CZ based platforms, for specific platform bt uart
-mux to be defined for bt i2s.
-By default, these pins will be used for uart.
-After acp reset , it requires to reprogram bt i2s config
-mux pins to enable bt i2s instance.
-added bt i2s enablement sequence during acp init.
 
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+--===============8357785694223369966==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="/Gk0KcsbyUMelFU1"
+Content-Disposition: inline
 
-v1->v2: fixed kbuild errors
----
- sound/soc/amd/acp-da7219-max98357a.c | 2 ++
- sound/soc/amd/acp-pcm-dma.c          | 9 +++++++++
- sound/soc/amd/acp.h                  | 1 +
- 3 files changed, 12 insertions(+)
 
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index b205c78..9ff2138 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -44,6 +44,7 @@
- 
- static struct snd_soc_jack cz_jack;
- struct clk *da7219_dai_clk;
-+extern int bt_pad_enable;
- 
- static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
- {
-@@ -251,6 +252,7 @@ static int cz_probe(struct platform_device *pdev)
- 				cz_card.name, ret);
- 		return ret;
- 	}
-+	bt_pad_enable = device_property_read_bool(&pdev->dev, "bt-pad-enable");
- 	return 0;
- }
- 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 7c392fe..b52c660 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -46,6 +46,8 @@
- 
- #define DRV_NAME "acp_audio_dma"
- 
-+bool bt_pad_enable = false;
-+EXPORT_SYMBOL(bt_pad_enable);
- 
- static const struct snd_pcm_hardware acp_pcm_hardware_playback = {
- 	.info = SNDRV_PCM_INFO_INTERLEAVED |
-@@ -525,6 +527,13 @@ static int acp_init(void __iomem *acp_mmio, u32 asic_type)
- 	val &= ~ACP_SOFT_RESET__SoftResetAud_MASK;
- 	acp_reg_write(val, acp_mmio, mmACP_SOFT_RESET);
- 
-+	/* For BT instance change pins from UART to BT */
-+	if (bt_pad_enable) {
-+		val = acp_reg_read(acp_mmio, mmACP_BT_UART_PAD_SEL);
-+		val |= ACP_BT_UART_PAD_SELECT_MASK;
-+		acp_reg_write(val, acp_mmio, mmACP_BT_UART_PAD_SEL);
-+	}
-+
- 	/* initiailize Onion control DAGB register */
- 	acp_reg_write(ACP_ONION_CNTL_DEFAULT, acp_mmio,
- 		      mmACP_AXI2DAGB_ONION_CNTL);
-diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
-index 460365c..6b43144 100644
---- a/sound/soc/amd/acp.h
-+++ b/sound/soc/amd/acp.h
-@@ -107,6 +107,7 @@
- #define ACP_I2S_MIC_16BIT_RESOLUTION_EN 0x01
- #define ACP_I2S_SP_16BIT_RESOLUTION_EN	0x02
- #define ACP_I2S_BT_16BIT_RESOLUTION_EN	0x04
-+#define ACP_BT_UART_PAD_SELECT_MASK	0x1
- 
- enum acp_dma_priority_level {
- 	/* 0x0 Specifies the DMA channel is given normal priority */
--- 
-2.7.4
+--/Gk0KcsbyUMelFU1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Apr 17, 2018 at 10:29:51AM +0530, Vijendar Mukunda wrote:
+
+> +#define I2S_SP_INSTANCE		1
+> +#define I2S_BT_INSTANCE		2
+
+This is obviously very specific to the system you're working with and
+therefore doesn't belong in the generic driver.  The device should be
+dealing with its own configuration, it shouldn't need to know about what
+specifically is connected to it.  It's not even clear what they're doing
+in this driver given that there doesn't appear to be any use of the
+information, it feels like this is something that the machine driver
+should be encapsulating.
+
+Like I said with previous reviews this use of magic numbers for the
+interfaces is a bit of a red flag, internally within a driver they're
+fine but they shouldn't leak out too much except with things like
+numbering an array.
+
+--/Gk0KcsbyUMelFU1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrWHCMACgkQJNaLcl1U
+h9Di6gf+OJibGxzubgayG7ifz4l34Kbp5ZRW6szH0M6TztbcmeysSMwbAsBzJo3i
+DdyCxbfXeci1B0s7/Aa+3vACu7hIfuSkuZVRa72CFVmiNfexf73KIAEpbDNCgWZc
+9+VSNvnHx966KOt6vZRdSBN8fyM2DlGWLfSyHyjFVSTJZwXHUGUv1LO3dpVtSLXr
+JX+JMJvMUTrr0XnTJ8ptVIKtOgQqAXk45XTBqXAwcpFmDijyXZWlRbDiwcOamm2S
+zdD+w2pvpc2QuGfBC9+gUz8LUt9UEwh1RBblrWOiZAzoClhn/xDViahbtgpkt5w8
+g52fuIiUnmQvzVdpJuT7b1Yq6AJqMg==
+=e7UT
+-----END PGP SIGNATURE-----
+
+--/Gk0KcsbyUMelFU1--
+
+--===============8357785694223369966==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8357785694223369966==--
