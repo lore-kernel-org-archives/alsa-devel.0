@@ -1,83 +1,98 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt1305: fix ACPI_PTR compile error" to
-	the asoc tree
-Date: Tue, 17 Apr 2018 11:32:48 +0100
-Message-ID: <E1f8Nuq-0006pN-6d@debutante>
-References: <1523930882-17730-1-git-send-email-shumingf@realtek.com>
+From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Subject: Re: [PATCH 4/4] ASoC: amd: enabling bt i2s config after acp reset
+Date: Tue, 17 Apr 2018 16:12:24 +0530
+Message-ID: <b2bad607-9744-b1c4-c9fc-a76a9b3e90e1@amd.com>
+References: <1523941201-15665-1-git-send-email-Vijendar.Mukunda@amd.com>
+ <1523941201-15665-5-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C40E82675D0
- for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2018 12:32:54 +0200 (CEST)
-In-Reply-To: <1523930882-17730-1-git-send-email-shumingf@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Shuming Fan <shumingf@realtek.com>
-Cc: oder_chiou@realtek.com, Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, lars@metafoo.de, jack.yu@realtek.com, lgirdwood@gmail.com, broonie@kernel.org, bardliao@realtek.com, flove@realtek.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1523941201-15665-5-git-send-email-Vijendar.Mukunda@amd.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Alex Deucher <alexander.deucher@amd.com>, Dylan Reid <dgreid@chromium.org>, Jason Clinton <jclinton@chromium.org>, Guenter Roeck <linux@roeck-us.net>, Philippe Ombredanne <pombredanne@nexb.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rt1305: fix ACPI_PTR compile error
 
-has been applied to the asoc tree at
+On 4/17/2018 10:29 AM, Vijendar Mukunda wrote:
+> On ST/CZ based platforms, for specific platform bt uart
+> mux to be defined for bt i2s.
+> By default, these pins will be used for uart.
+> After acp reset , it requires to reprogram bt i2s config
+> mux pins to enable bt i2s instance.
+> added bt i2s enablement sequence during acp init.
+> 
+> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+> ---
+>   sound/soc/amd/acp-da7219-max98357a.c | 2 ++
+>   sound/soc/amd/acp-pcm-dma.c          | 9 +++++++++
+>   sound/soc/amd/acp.h                  | 1 +
+>   3 files changed, 12 insertions(+)
+> 
+> diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+> index b205c78..6dad0cb 100644
+> --- a/sound/soc/amd/acp-da7219-max98357a.c
+> +++ b/sound/soc/amd/acp-da7219-max98357a.c
+> @@ -44,6 +44,7 @@
+>   
+>   static struct snd_soc_jack cz_jack;
+>   struct clk *da7219_dai_clk;
+> +extern int bt_pad_enable;
+>   
+>   static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
+>   {
+> @@ -81,6 +82,7 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
+>   	}
+>   
+>   	da7219_aad_jack_det(component, &cz_jack);
+> +	bt_pad_enable = device_property_read_bool(&pdev->dev, "bt-pad-enable");
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+This is to be done in probe.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 816cabd8d472d2e1b7daad2838eb4ce5046f03bb Mon Sep 17 00:00:00 2001
-From: Shuming Fan <shumingf@realtek.com>
-Date: Tue, 17 Apr 2018 10:08:02 +0800
-Subject: [PATCH] ASoC: rt1305: fix ACPI_PTR compile error
-
-This patch added <linux/acpi.h> header
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt1305.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/codecs/rt1305.c b/sound/soc/codecs/rt1305.c
-index 90baab91d11b..84043068c0b7 100644
---- a/sound/soc/codecs/rt1305.c
-+++ b/sound/soc/codecs/rt1305.c
-@@ -14,6 +14,7 @@
- #include <linux/init.h>
- #include <linux/delay.h>
- #include <linux/pm.h>
-+#include <linux/acpi.h>
- #include <linux/gpio.h>
- #include <linux/i2c.h>
- #include <linux/regmap.h>
--- 
-2.17.0
+>   
+>   	return 0;
+>   }
+> diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+> index 7c392fe..b52c660 100644
+> --- a/sound/soc/amd/acp-pcm-dma.c
+> +++ b/sound/soc/amd/acp-pcm-dma.c
+> @@ -46,6 +46,8 @@
+>   
+>   #define DRV_NAME "acp_audio_dma"
+>   
+> +bool bt_pad_enable = false;
+> +EXPORT_SYMBOL(bt_pad_enable);
+>   
+>   static const struct snd_pcm_hardware acp_pcm_hardware_playback = {
+>   	.info = SNDRV_PCM_INFO_INTERLEAVED |
+> @@ -525,6 +527,13 @@ static int acp_init(void __iomem *acp_mmio, u32 asic_type)
+>   	val &= ~ACP_SOFT_RESET__SoftResetAud_MASK;
+>   	acp_reg_write(val, acp_mmio, mmACP_SOFT_RESET);
+>   
+> +	/* For BT instance change pins from UART to BT */
+> +	if (bt_pad_enable) {
+> +		val = acp_reg_read(acp_mmio, mmACP_BT_UART_PAD_SEL);
+> +		val |= ACP_BT_UART_PAD_SELECT_MASK;
+> +		acp_reg_write(val, acp_mmio, mmACP_BT_UART_PAD_SEL);
+> +	}
+> +
+>   	/* initiailize Onion control DAGB register */
+>   	acp_reg_write(ACP_ONION_CNTL_DEFAULT, acp_mmio,
+>   		      mmACP_AXI2DAGB_ONION_CNTL);
+> diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
+> index 460365c..6b43144 100644
+> --- a/sound/soc/amd/acp.h
+> +++ b/sound/soc/amd/acp.h
+> @@ -107,6 +107,7 @@
+>   #define ACP_I2S_MIC_16BIT_RESOLUTION_EN 0x01
+>   #define ACP_I2S_SP_16BIT_RESOLUTION_EN	0x02
+>   #define ACP_I2S_BT_16BIT_RESOLUTION_EN	0x04
+> +#define ACP_BT_UART_PAD_SELECT_MASK	0x1
+>   
+>   enum acp_dma_priority_level {
+>   	/* 0x0 Specifies the DMA channel is given normal priority */
+> 
