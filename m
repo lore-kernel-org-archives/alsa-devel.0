@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/5] ASoC: add mt6351 codec driver
-Date: Wed, 18 Apr 2018 17:40:40 +0100
-Message-ID: <20180418164040.GG10061@sirena.org.uk>
+Subject: Re: [PATCH v2 3/5] ASoC: mt6797: add mt6797 platform
+	driver
+Date: Wed, 18 Apr 2018 17:46:26 +0100
+Message-ID: <20180418164626.GH10061@sirena.org.uk>
 References: <20180416003252.4177-1-kaichieh.chuang@mediatek.com>
- <20180416003252.4177-2-kaichieh.chuang@mediatek.com>
+ <20180416003252.4177-4-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5079040343173244405=="
+Content-Type: multipart/mixed; boundary="===============5572451119875139748=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A729B26767A
- for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2018 18:40:48 +0200 (CEST)
-In-Reply-To: <20180416003252.4177-2-kaichieh.chuang@mediatek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 783A526767A
+ for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2018 18:46:34 +0200 (CEST)
+In-Reply-To: <20180416003252.4177-4-kaichieh.chuang@mediatek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,132 +27,95 @@ Cc: alsa-devel@alsa-project.org, garlic.tseng@mediatek.com, linux-mediatek@lists
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5079040343173244405==
+--===============5572451119875139748==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="w/VI3ydZO+RcZ3Ux"
+	protocol="application/pgp-signature"; boundary="SdvjNjn6lL3tIsv0"
 Content-Disposition: inline
 
 
---w/VI3ydZO+RcZ3Ux
+--SdvjNjn6lL3tIsv0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Apr 16, 2018 at 08:32:48AM +0800, KaiChieh Chuang wrote:
+On Mon, Apr 16, 2018 at 08:32:50AM +0800, KaiChieh Chuang wrote:
+> add support for mt6797 playback and capture
+> to MediaTek sound codec,
+> through MediaTek Proprietary audio interface.
+> add memory interface as FE dai.
+> add ADDA interface as BE dai.
 
-This looks pretty good, a couple of small things but nothing major here:
+Again this looks pretty good, some small comments but nothing major:
 
-> +	offset = idx > old_idx ? idx - old_idx : old_idx - idx;
-> +	reg_idx = old_idx;
+> +		/* set output mode */
+> +		if (rate == 96000) {
+> +			dl_src2_con0 |= (0x2 << 24); /* UP_SAMPLING_RATE_X4 */
+> +			dl_src2_con0 |= 1 << 14;
+> +		} else if (rate == 192000) {
+> +			dl_src2_con0 |= (0x1 << 24); /* UP_SAMPLING_RATE_X2 */
+> +			dl_src2_con0 |= 1 << 14;
+> +		} else {
+> +			dl_src2_con0 |= (0x3 << 24); /* UP_SAMPLING_RATE_X8 */
+> +		}
 
-These ternery statements would probably be clearer as regular if
-statements.
+This looks like a switch statement.
 
-> +/* dl pga gain */
-> +static const char *const dl_pga_gain[] = {
-> +	"8Db", "7Db", "6Db", "5Db", "4Db",
-> +	"3Db", "2Db", "1Db", "0Db", "-1Db",
-> +	"-2Db", "-3Db", "-4Db", "-5Db", "-6Db",
-> +	"-7Db", "-8Db", "-9Db", "-10Db", "-40Db",
-> +};
+> +		/* turn of mute function */
+> +		dl_src2_con0 |= (0x03 << 11);
 
-These gains should be put in TLVs rather than an enum so userspace can
-handle them (also it should be dB not Db).  You can handle irregular
-step sizes like these with DECLARE_TLV_DB_SCALE(), there's several
-examples in the code already.
+Is there any reason for not implementing this as a mute_stream()
+callback?  That'll keep the DAI muted during startup and before teardown
+which will do the most to avoid any noise making it into the output.
 
-> +static int dl_pga_get(struct snd_kcontrol *kcontrol,
-> +		      struct snd_ctl_elem_value *ucontrol)
+> +static irqreturn_t mt6797_afe_irq_handler(int irq_id, void *dev)
 > +{
-> +	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-> +	struct mt6351_priv *priv = snd_soc_codec_get_drvdata(codec);
+> +	struct mtk_base_afe *afe = dev;
+> +	struct mtk_base_afe_irq *irq;
+> +	unsigned int status;
+> +	unsigned int mcu_en;
+> +	int ret;
+> +	int i;
 > +
-> +	ucontrol->value.integer.value[0] = priv->ana_gain[kcontrol->id.device];
+> +	/* get irq that is sent to MCU */
+> +	regmap_read(afe->regmap, AFE_IRQ_MCU_EN, &mcu_en);
+
+...
+
+> +	/* clear irq */
+> +	regmap_write(afe->regmap,
+> +		     AFE_IRQ_MCU_CLR,
+> +		     status & AFE_IRQ_STATUS_BITS);
 > +
-> +	if (ucontrol->value.integer.value[0] == 0x1f)	/* reg idx for -40dB*/
-> +		ucontrol->value.integer.value[0] = ARRAY_SIZE(dl_pga_gain) - 1;
-
-Why do this rewriting?
-
-> +/* ul pga gain */
-> +static const char *const ul_pga_gain[] = {
-> +	"0Db", "6Db", "12Db", "18Db", "24Db", "30Db",
-> +};
-
-This should be a regular control with a TLV too.
-
-> +static const struct snd_kcontrol_new mt6351_snd_ul_controls[] = {
-> +	MT_SOC_ENUM_EXT_ID("Audio_PGA1_Setting", ul_pga_enum[0],
-> +			   ul_pga_get, ul_pga_set,
-> +			   AUDIO_ANALOG_VOLUME_MICAMP1),
-
-Volume controls should have names ending with " Volume" so userspace
-knows how to handle them.
-
-> +static int mt6351_codec_probe(struct snd_soc_codec *codec)
-> +{
-> +	struct mt6351_priv *priv = snd_soc_codec_get_drvdata(codec);
-> +
-> +	/* add codec controls */
-> +	snd_soc_add_codec_controls(codec,
-> +				   mt6351_snd_controls,
-> +				   ARRAY_SIZE(mt6351_snd_controls));
-> +	snd_soc_add_codec_controls(codec,
-> +				   mt6351_snd_ul_controls,
-> +				   ARRAY_SIZE(mt6351_snd_ul_controls));
-> +
-> +	mt6351_codec_init_reg(codec);
-> +
-> +	priv->ana_gain[AUDIO_ANALOG_VOLUME_HPOUTL] = 8;
-> +	priv->ana_gain[AUDIO_ANALOG_VOLUME_HPOUTR] = 8;
-> +	priv->ana_gain[AUDIO_ANALOG_VOLUME_MICAMP1] = 3;
-> +	priv->ana_gain[AUDIO_ANALOG_VOLUME_MICAMP2] = 3;
-> +
-> +	return 0;
+> +	return IRQ_HANDLED;
 > +}
 
-Can we read the configuration of the device back from the hardware?
-It's better to just use the defaults rather than set things up for a
-particular use case, that way there's a standard that can be agreed even
-if it's not good for every use case.
+This unconditionally returns IRQ_HANDLED even if we didn't get an
+interrupt - it's better to return IRQ_NONE unless we actually handled
+something since that is more robust if something goes wrong, it lets the
+IRQ core shut up interrupts that get latched on and works with shared
+interrupts if any future designs do that.
 
-> +static struct snd_soc_codec_driver mt6351_soc_codec_driver = {
-> +	.probe = mt6351_codec_probe,
-> +	.get_regmap = mt6351_get_regmap,
-
-We're just about to remove CODEC drivers entirely and replace them with
-components - nothing else is using the get_regmap() callback.  Do you
-really need that callback, if you do we should just add it to the
-component interface?
-
-> +	priv->regmap = dev_get_regmap(pdev->dev.parent, NULL);
-> +	if (IS_ERR(priv->regmap))
-> +		return PTR_ERR(priv->regmap);
-
-This should be the default behaviour so I'm guessing you don't need the
-callback?
-
---w/VI3ydZO+RcZ3Ux
+--SdvjNjn6lL3tIsv0
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrXdQgACgkQJNaLcl1U
-h9Buqgf/T5vQN0h3AI2agycQaLVw7iJxCk09Jj0Bs9QtXVosVEw8hMWwz5F6Z8yY
-7ylyTvli3TahDxax28If3q9DdUzaLEEvbMlbghQcIX3oozmCbkDmsyN/QscynEXs
-rbWxhsJKwwCa3m0Iixm3e16RTcKWxsoqRKKrdwPofqtETrAyB/YJINA9gB3Oefcx
-79VSh777KzU6A8kU6vVyH1XXeXqc/cVYpY2qZI/u6G0EcXLSnjDGsW8wKCi8KWXt
-RSu2J6iVSCT2b7nT/OfuWhPU5UYQr3gwYspJzocmRDxOGbJONseIpXqd8N9h1SEe
-GY9T0I8IJdXtCa+lhLEVDKQXIkdrew==
-=lRci
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrXdmEACgkQJNaLcl1U
+h9Dm5gf/V2pu7llSsyRFZ94RtbA6zbwBPZe/Q2PIg0AOJk41qZ88BY7oG4wOxWAB
+TjPVqVybyqj5UYAOdEXUsdNNXiCAmgYiJyqvu+KV/I533ARZySvzvjwl2EE6pSvr
+zTWqT/o5FI7N8srJL+Wtcyyry5k+5Rpx9S6fsFwuPG9ODzKFFuFF2dW7gj4IhlQR
+Mme/8g5tfUqm3dUYuuHiNXhDIxIvi+SSulb65K7UExFLh5btRMuNFFyH0kb5o8Dp
+I8jyYappuC5Iri4wApa1n7n6sWBj3n0c/Gh9asF+g24+ko7fx5Qt500sOhdOGbUs
+62Lr2ERFlHRq+Qhq+TESUfsxCN7yIA==
+=vRDM
 -----END PGP SIGNATURE-----
 
---w/VI3ydZO+RcZ3Ux--
+--SdvjNjn6lL3tIsv0--
 
---===============5079040343173244405==
+--===============5572451119875139748==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5079040343173244405==--
+--===============5572451119875139748==--
