@@ -1,76 +1,58 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Disable
- SND_SOC_INTEL_BAYTRAIL when SND_SST_ATOM_HIFI2_PLATFORM is enabled
-Date: Wed, 18 Apr 2018 12:23:40 -0500
-Message-ID: <0effa0aa-29b4-cc74-8653-6db763674634@linux.intel.com>
-References: <20180413124537.6765-1-hdegoede@redhat.com>
- <7d14acfc-f9e1-f408-2f76-bf00ab8b9534@linux.intel.com>
- <7b4b2168-42e5-6fcf-9d24-49748f35f74b@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id A783D26767A
- for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2018 19:25:26 +0200 (CEST)
-In-Reply-To: <7b4b2168-42e5-6fcf-9d24-49748f35f74b@redhat.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
+From: srinivas.kandagatla@linaro.org
+Subject: [PATCH] ASoC: msm8916-wcd-analog: use threaded context for mbhc events
+Date: Wed, 18 Apr 2018 18:46:37 +0100
+Message-ID: <20180418174637.24041-1-srinivas.kandagatla@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAwNC8xMy8yMDE4IDExOjU2IEFNLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+IEhpLAo+Cj4g
-T24gMTMtMDQtMTggMTY6NTAsIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+PiBPbiA0LzEz
-LzE4IDc6NDUgQU0sIEhhbnMgZGUgR29lZGUgd3JvdGU6Cj4+PiBUaGUgc291bmQvc29jL2ludGVs
-L2NvbW1vbi9zc3QtYWNwaS5jIGNvZGUgb25seSB0cmllcyB0byBsb2FkIHRoZQo+Pj4gImJheXRy
-YWlsLXBjbS1hdWRpbyIgZHJpdmVyIChhbmQgc3VwcG9ydGluZyBib2FyZCBkcml2ZXJzKSB3aGVu
-Cj4+PiBTTkRfU1NUX0FUT01fSElGSTJfUExBVEZPUk0gaXMgbm90IGVuYWJsZWQsIHNpbmNlIG90
-aGVyd2lzZSB0aGVzZQo+Pj4gYXJlIGhhbmRsZWQgYnkgc25kLXNvYy1zc3QtYXRvbS1oaWZpMi1w
-bGF0Zm9ybS5rby4KPj4+Cj4+PiBTaW5jZSB0aGVzZSB0aHVzIHdpbGwgbmV2ZXIgYmUgdXNlZCB3
-aGVuIFNORF9TU1RfQVRPTV9ISUZJMl9QTEFURk9STSBpcwo+Pj4gZW5hYmxlZCwgYnVpbGRpbmcg
-dGhlc2UgZHJpdmVycyB3aGVuIGl0IGlzIGVuYWJsZWQgaXMgdXNlbGVzcy4KPj4+Cj4+PiBBZGQg
-YSBLY29uZmlnIGRlcGVuZGVuY3kgdG8gcmVmbGVjdCB0aGlzLCBzbyB0aGF0IAo+Pj4gU05EX1NP
-Q19JTlRFTF9CQVlUUkFJTAo+Pj4gY2Fubm90IGJlIGVuYWJsZWQgd2hlbiBTTkRfU1NUX0FUT01f
-SElGSTJfUExBVEZPUk0gaXMgYWxzbyBlbmFibGVkLgo+Pgo+PiBXZSBoYWQgdGhpcyBiZWZvcmUg
-YW5kIEkgZHJvcHBlZCBpdCB3aGVuIHdlIGNsZWFuZWQgdGhlIGNvZGUsIG1haW5seSAKPj4gc2lu
-Y2UgdGhpcyBkZXBlbmRlbmN5IGlzIG9uZS1zaWRlZCBhbmQgdGhlIHNlbGVjdGlvbnMgaW4gbWVu
-dWNvbmZpZyAKPj4gYXJlIGEgYml0IG9kZC4gSXQncyByZWFsbHkgYSBtdXR1YWwgZXhjbHVzaW9u
-IHdlJ2Qgd2FudC4KPgo+IEkgdGhpbmsgd2UgY2FuIGdldCBhIG11dHVhbCBleGNsdXNpb24gYnkg
-YWxzbyBhZGRpbmcgYQo+IGRlcGVuZHMgb24gU05EX1NPQ19JTlRFTF9CQVlUUkFJTD1uIHRvIHRo
-ZSBTTkRfU1NUX0FUT01fSElGSTJfUExBVEZPUk0KPiBLY29uZmlnICh0aGlzIG5lZWRzIHRlc3Rp
-bmcgdGhvdWdoKSwgYnV0IGRvIHdlIHJlYWxseSB3YW50Cj4gbXV0dWFsIGV4Y2x1c2lvbiA/IERp
-c3Ryb3MgdGVuZCB0byBoaXQgJ20nIGZvciBhbGwgdGhlc2Ugb3B0aW9ucywKPiBzbyB0aGVuIHdl
-IGVuZCB1cCB3aXRoIHdoaWNoIGV2ZXIgb25lIGNvbWVzIGZpcnN0Li4uCj4KPiBFaXRoZXIgd2F5
-IGRpc3Ryb3MgYXJlIGN1cnJlbnRseSBidWlsZGluZyBib3RoIGFuZCB0aGF0IGlzIG5vIGdvb2QK
-PiBhbmQgc2luY2Ugd2UgYWR2aWNlIHRoZSB1c2Ugb2YgU05EX1NTVF9BVE9NX0hJRkkyX1BMQVRG
-T1JNIG1ha2luZwo+IFNORF9TT0NfSU5URUxfQkFZVFJBSUwgYXV0by1kaXNhYmxlIHNlZW1zIGxp
-a2UgYSBnb29kIGlkZWEuCgpBY2tlZC1ieTogUGllcnJlLUxvdWlzIEJvc3NhcnQgPHBpZXJyZS1s
-b3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbT4KCj4KPiBSZWdhcmRzLAo+Cj4gSGFucwo+Cj4K
-Pgo+Pgo+Pj4KPj4+IFNpZ25lZC1vZmYtYnk6IEhhbnMgZGUgR29lZGUgPGhkZWdvZWRlQHJlZGhh
-dC5jb20+Cj4+PiAtLS0KPj4+IMKgIHNvdW5kL3NvYy9pbnRlbC9LY29uZmlnIHwgMiArLQo+Pj4g
-wqAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCj4+Pgo+Pj4g
-ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbnRlbC9LY29uZmlnIGIvc291bmQvc29jL2ludGVsL0tj
-b25maWcKPj4+IGluZGV4IGNlYjEwNWNiZDQ2MS4uNjQwZjliYzliZDQ2IDEwMDY0NAo+Pj4gLS0t
-IGEvc291bmQvc29jL2ludGVsL0tjb25maWcKPj4+ICsrKyBiL3NvdW5kL3NvYy9pbnRlbC9LY29u
-ZmlnCj4+PiBAQCAtNjEsNyArNjEsNyBAQCBjb25maWcgU05EX1NPQ19JTlRFTF9IQVNXRUxMCj4+
-PiDCoCBjb25maWcgU05EX1NPQ19JTlRFTF9CQVlUUkFJTAo+Pj4gwqDCoMKgwqDCoCB0cmlzdGF0
-ZSAiQmF5dHJhaWwgKGxlZ2FjeSkgUGxhdGZvcm1zIgo+Pj4gLcKgwqDCoCBkZXBlbmRzIG9uIERN
-QURFVklDRVMgJiYgQUNQSQo+Pj4gK8KgwqDCoCBkZXBlbmRzIG9uIERNQURFVklDRVMgJiYgQUNQ
-SSAmJiBTTkRfU1NUX0FUT01fSElGSTJfUExBVEZPUk09bgo+Pj4gwqDCoMKgwqDCoCBzZWxlY3Qg
-U05EX1NPQ19JTlRFTF9TU1QKPj4+IMKgwqDCoMKgwqAgc2VsZWN0IFNORF9TT0NfSU5URUxfU1NU
-X0FDUEkKPj4+IMKgwqDCoMKgwqAgc2VsZWN0IFNORF9TT0NfSU5URUxfU1NUX0ZJUk1XQVJFCj4+
-Pgo+Pgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4g
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
+As snd_soc_jack_report() can sleep, move handling of mbhc events to a
+thread context rather than in interrupt context.
+
+Fixes: de66b3455023 ('ASoC: codecs: msm8916-wcd-analog: add MBHC support')
+Reported-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/codecs/msm8916-wcd-analog.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index 12ee83d52405..b7cf7cce95fe 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -1187,7 +1187,8 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
+ 		return irq;
+ 	}
+ 
+-	ret = devm_request_irq(dev, irq, pm8916_mbhc_switch_irq_handler,
++	ret = devm_request_threaded_irq(dev, irq, NULL,
++			       pm8916_mbhc_switch_irq_handler,
+ 			       IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING |
+ 			       IRQF_ONESHOT,
+ 			       "mbhc switch irq", priv);
+@@ -1201,7 +1202,8 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
+ 			return irq;
+ 		}
+ 
+-		ret = devm_request_irq(dev, irq, mbhc_btn_press_irq_handler,
++		ret = devm_request_threaded_irq(dev, irq, NULL,
++				       mbhc_btn_press_irq_handler,
+ 				       IRQF_TRIGGER_RISING |
+ 				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+ 				       "mbhc btn press irq", priv);
+@@ -1214,7 +1216,8 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
+ 			return irq;
+ 		}
+ 
+-		ret = devm_request_irq(dev, irq, mbhc_btn_release_irq_handler,
++		ret = devm_request_threaded_irq(dev, irq, NULL,
++				       mbhc_btn_release_irq_handler,
+ 				       IRQF_TRIGGER_RISING |
+ 				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+ 				       "mbhc btn release irq", priv);
+-- 
+2.16.2
