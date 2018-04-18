@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Fix build errors" to the asoc
-	tree
-Date: Wed, 18 Apr 2018 15:52:37 +0100
-Message-ID: <E1f8oRp-0001LA-Gd@debutante>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: [PATCH] [alsa-lib] pcm: softvol: Allow up to 90 dB of
+	gain
+Date: Wed, 18 Apr 2018 17:03:09 +0200
+Message-ID: <alpine.DEB.2.11.1804181632580.5586@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C587C266E30
- for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2018 16:52:42 +0200 (CEST)
-In-Reply-To: 
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id BAE4726765C
+ for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2018 17:03:53 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,369 +19,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: topology: Fix build errors
+The gain algorithm used in softvol can handle gain factors of up to
+32767 which is slightly more than 90 dB, so allow a max_dB of 90 dB.
+This doesn't affect existing asound.conf files, but does allow a
+max_dB of up to 90 dB when needed.
 
-has been applied to the asoc tree at
+Tested using Audacity that there is no undue distorsion or other
+artefacts when 90 dB of gain is applied to a suitable signal (i.e.
+a signal quiet enough not be clipped whan applying 90 dB of gain).
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 24ada03555505205b0c8b8b796d52926600bf947 Mon Sep 17 00:00:00 2001
-From: Mark Brown <broonie@kernel.org>
-Date: Wed, 18 Apr 2018 15:40:41 +0100
-Subject: [PATCH] ASoC: topology: Fix build errors
-
-The two commits:
-
-   81e9b0a07889 ASoC: topology: Give more data to clients via callbacks
-   28aa6f7779f7 ASoC: topology: Add callback for DAPM route load/unload
-
-break the build so revert them.
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
 ---
- include/sound/soc-topology.h           | 30 ++++++------------
- sound/soc/intel/skylake/skl-pcm.c      |  7 ++--
- sound/soc/intel/skylake/skl-topology.c |  5 ++-
- sound/soc/intel/skylake/skl-topology.h | 20 +++++++++---
- sound/soc/soc-topology.c               | 44 ++++++++------------------
- 5 files changed, 42 insertions(+), 64 deletions(-)
 
-diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-index 401ef2c45d6c..f552c3f56368 100644
---- a/include/sound/soc-topology.h
-+++ b/include/sound/soc-topology.h
-@@ -30,9 +30,6 @@ struct snd_soc_dapm_context;
- struct snd_soc_card;
- struct snd_kcontrol_new;
- struct snd_soc_dai_link;
--struct snd_soc_dai_driver;
--struct snd_soc_dai;
--struct snd_soc_dapm_route;
- 
- /* object scan be loaded and unloaded in groups with identfying indexes */
- #define SND_SOC_TPLG_INDEX_ALL	0	/* ID that matches all FW objects */
-@@ -112,44 +109,35 @@ struct snd_soc_tplg_widget_events {
- struct snd_soc_tplg_ops {
- 
- 	/* external kcontrol init - used for any driver specific init */
--	int (*control_load)(struct snd_soc_component *, int index,
-+	int (*control_load)(struct snd_soc_component *,
- 		struct snd_kcontrol_new *, struct snd_soc_tplg_ctl_hdr *);
- 	int (*control_unload)(struct snd_soc_component *,
- 		struct snd_soc_dobj *);
- 
--	/* DAPM graph route element loading and unloading */
--	int (*dapm_route_load)(struct snd_soc_component *, int index,
--		struct snd_soc_dapm_route *route);
--	int (*dapm_route_unload)(struct snd_soc_component *,
--		struct snd_soc_dobj *);
--
- 	/* external widget init - used for any driver specific init */
--	int (*widget_load)(struct snd_soc_component *, int index,
-+	int (*widget_load)(struct snd_soc_component *,
- 		struct snd_soc_dapm_widget *,
- 		struct snd_soc_tplg_dapm_widget *);
--	int (*widget_ready)(struct snd_soc_component *, int index,
-+	int (*widget_ready)(struct snd_soc_component *,
- 		struct snd_soc_dapm_widget *,
- 		struct snd_soc_tplg_dapm_widget *);
- 	int (*widget_unload)(struct snd_soc_component *,
- 		struct snd_soc_dobj *);
- 
- 	/* FE DAI - used for any driver specific init */
--	int (*dai_load)(struct snd_soc_component *, int index,
--		struct snd_soc_dai_driver *dai_drv,
--		struct snd_soc_tplg_pcm *pcm, struct snd_soc_dai *dai);
--
-+	int (*dai_load)(struct snd_soc_component *,
-+		struct snd_soc_dai_driver *dai_drv);
- 	int (*dai_unload)(struct snd_soc_component *,
- 		struct snd_soc_dobj *);
- 
- 	/* DAI link - used for any driver specific init */
--	int (*link_load)(struct snd_soc_component *, int index,
--		struct snd_soc_dai_link *link,
--		struct snd_soc_tplg_link_config *cfg);
-+	int (*link_load)(struct snd_soc_component *,
-+		struct snd_soc_dai_link *link);
- 	int (*link_unload)(struct snd_soc_component *,
- 		struct snd_soc_dobj *);
- 
- 	/* callback to handle vendor bespoke data */
--	int (*vendor_load)(struct snd_soc_component *, int index,
-+	int (*vendor_load)(struct snd_soc_component *,
- 		struct snd_soc_tplg_hdr *);
- 	int (*vendor_unload)(struct snd_soc_component *,
- 		struct snd_soc_tplg_hdr *);
-@@ -158,7 +146,7 @@ struct snd_soc_tplg_ops {
- 	void (*complete)(struct snd_soc_component *);
- 
- 	/* manifest - optional to inform component of manifest */
--	int (*manifest)(struct snd_soc_component *, int index,
-+	int (*manifest)(struct snd_soc_component *,
- 		struct snd_soc_tplg_manifest *);
- 
- 	/* vendor specific kcontrol handlers available for binding */
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 1f4dd08d36c5..afa86b9e4dcf 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1017,11 +1017,10 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- },
- };
- 
--int skl_dai_load(struct snd_soc_component *cmp, int index,
--			struct snd_soc_dai_driver *dai_drv,
--			struct snd_soc_tplg_pcm *pcm, struct snd_soc_dai *dai)
-+int skl_dai_load(struct snd_soc_component *cmp,
-+		 struct snd_soc_dai_driver *pcm_dai)
- {
--	dai_drv->ops = &skl_pcm_dai_ops;
-+	pcm_dai->ops = &skl_pcm_dai_ops;
- 
- 	return 0;
- }
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 6ac081f1f215..3b1dca419883 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -2851,7 +2851,7 @@ void skl_cleanup_resources(struct skl *skl)
-  * information to the driver about module and pipeline parameters which DSP
-  * FW expects like ids, resource values, formats etc
-  */
--static int skl_tplg_widget_load(struct snd_soc_component *cmpnt, int index,
-+static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
- 				struct snd_soc_dapm_widget *w,
- 				struct snd_soc_tplg_dapm_widget *tplg_w)
- {
-@@ -2958,7 +2958,6 @@ static int skl_init_enum_data(struct device *dev, struct soc_enum *se,
- }
- 
- static int skl_tplg_control_load(struct snd_soc_component *cmpnt,
--				int index,
- 				struct snd_kcontrol_new *kctl,
- 				struct snd_soc_tplg_ctl_hdr *hdr)
- {
-@@ -3447,7 +3446,7 @@ static int skl_tplg_get_manifest_data(struct snd_soc_tplg_manifest *manifest,
- 	return 0;
- }
- 
--static int skl_manifest_load(struct snd_soc_component *cmpnt, int index,
-+static int skl_manifest_load(struct snd_soc_component *cmpnt,
- 				struct snd_soc_tplg_manifest *manifest)
- {
- 	struct hdac_ext_bus *ebus = snd_soc_component_get_drvdata(cmpnt);
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 77857c598eed..b1e0667c0ae0 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -221,9 +221,18 @@ struct skl_mod_inst_map {
- 	u16 inst_id;
- };
- 
-+struct skl_uuid_inst_map {
-+	u16 inst_id;
-+	u16 reserved;
-+	uuid_le mod_uuid;
-+} __packed;
-+
- struct skl_kpb_params {
- 	u32 num_modules;
--	struct skl_mod_inst_map map[0];
-+	union {
-+		struct skl_mod_inst_map map[0];
-+		struct skl_uuid_inst_map map_uuid[0];
-+	} u;
- };
- 
- struct skl_module_inst_id {
-@@ -460,7 +469,7 @@ int skl_dsp_set_dma_control(struct skl_sst *ctx, u32 *caps,
- 			u32 caps_size, u32 node_id);
- void skl_tplg_set_be_dmic_config(struct snd_soc_dai *dai,
- 	struct skl_pipe_params *params, int stream);
--int skl_tplg_init(struct snd_soc_platform *platform,
-+int skl_tplg_init(struct snd_soc_component *component,
- 				struct hdac_ext_bus *ebus);
- struct skl_module_cfg *skl_tplg_fe_get_cpr_module(
- 		struct snd_soc_dai *dai, int stream);
-@@ -503,7 +512,8 @@ int skl_pcm_host_dma_prepare(struct device *dev,
- int skl_pcm_link_dma_prepare(struct device *dev,
- 			struct skl_pipe_params *params);
- 
--int skl_dai_load(struct snd_soc_component *, int index,
--		struct snd_soc_dai_driver *dai_drv,
--		struct snd_soc_tplg_pcm *pcm, struct snd_soc_dai *dai);
-+int skl_dai_load(struct snd_soc_component *cmp,
-+		 struct snd_soc_dai_driver *pcm_dai);
-+void skl_tplg_add_moduleid_in_bind_params(struct skl *skl,
-+				struct snd_soc_dapm_widget *w);
- #endif
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index b95a9ab0b526..de08693be9e1 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -315,7 +315,7 @@ static int soc_tplg_vendor_load_(struct soc_tplg *tplg,
- 	int ret = 0;
- 
- 	if (tplg->comp && tplg->ops && tplg->ops->vendor_load)
--		ret = tplg->ops->vendor_load(tplg->comp, tplg->index, hdr);
-+		ret = tplg->ops->vendor_load(tplg->comp, hdr);
- 	else {
- 		dev_err(tplg->dev, "ASoC: no vendor load callback for ID %d\n",
- 			hdr->vendor_type);
-@@ -347,8 +347,7 @@ static int soc_tplg_widget_load(struct soc_tplg *tplg,
- 	struct snd_soc_dapm_widget *w, struct snd_soc_tplg_dapm_widget *tplg_w)
- {
- 	if (tplg->comp && tplg->ops && tplg->ops->widget_load)
--		return tplg->ops->widget_load(tplg->comp, tplg->index, w,
--			tplg_w);
-+		return tplg->ops->widget_load(tplg->comp, w, tplg_w);
- 
- 	return 0;
- }
-@@ -359,30 +358,27 @@ static int soc_tplg_widget_ready(struct soc_tplg *tplg,
- 	struct snd_soc_dapm_widget *w, struct snd_soc_tplg_dapm_widget *tplg_w)
- {
- 	if (tplg->comp && tplg->ops && tplg->ops->widget_ready)
--		return tplg->ops->widget_ready(tplg->comp, tplg->index, w,
--			tplg_w);
-+		return tplg->ops->widget_ready(tplg->comp, w, tplg_w);
- 
- 	return 0;
- }
- 
- /* pass DAI configurations to component driver for extra initialization */
- static int soc_tplg_dai_load(struct soc_tplg *tplg,
--	struct snd_soc_dai_driver *dai_drv,
--	struct snd_soc_tplg_pcm *pcm, struct snd_soc_dai *dai)
-+	struct snd_soc_dai_driver *dai_drv)
- {
- 	if (tplg->comp && tplg->ops && tplg->ops->dai_load)
--		return tplg->ops->dai_load(tplg->comp, tplg->index, dai_drv,
--			pcm, dai);
-+		return tplg->ops->dai_load(tplg->comp, dai_drv);
- 
- 	return 0;
- }
- 
- /* pass link configurations to component driver for extra initialization */
- static int soc_tplg_dai_link_load(struct soc_tplg *tplg,
--	struct snd_soc_dai_link *link, struct snd_soc_tplg_link_config *cfg)
-+	struct snd_soc_dai_link *link)
- {
- 	if (tplg->comp && tplg->ops && tplg->ops->link_load)
--		return tplg->ops->link_load(tplg->comp, tplg->index, link, cfg);
-+		return tplg->ops->link_load(tplg->comp, link);
- 
- 	return 0;
- }
-@@ -703,8 +699,7 @@ static int soc_tplg_init_kcontrol(struct soc_tplg *tplg,
- 	struct snd_kcontrol_new *k, struct snd_soc_tplg_ctl_hdr *hdr)
- {
- 	if (tplg->comp && tplg->ops && tplg->ops->control_load)
--		return tplg->ops->control_load(tplg->comp, tplg->index, k,
--			hdr);
-+		return tplg->ops->control_load(tplg->comp, k, hdr);
- 
- 	return 0;
- }
-@@ -1161,17 +1156,6 @@ static int soc_tplg_kcontrol_elems_load(struct soc_tplg *tplg,
- 	return 0;
- }
- 
--/* optionally pass new dynamic kcontrol to component driver. */
--static int soc_tplg_add_route(struct soc_tplg *tplg,
--	struct snd_soc_dapm_route *route)
--{
--	if (tplg->comp && tplg->ops && tplg->ops->dapm_route_load)
--		return tplg->ops->dapm_route_load(tplg->comp, tplg->index,
--			route);
--
--	return 0;
--}
--
- static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
- 	struct snd_soc_tplg_hdr *hdr)
- {
-@@ -1220,8 +1204,6 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
- 		else
- 			route.control = elem->control;
- 
--		soc_tplg_add_route(tplg, &route);
--
- 		/* add route, but keep going if some fail */
- 		snd_soc_dapm_add_routes(dapm, &route, 1);
- 	}
-@@ -1776,7 +1758,7 @@ static int soc_tplg_dai_create(struct soc_tplg *tplg,
- 		dai_drv->compress_new = snd_soc_new_compress;
- 
- 	/* pass control to component driver for optional further init */
--	ret = soc_tplg_dai_load(tplg, dai_drv, pcm, NULL);
-+	ret = soc_tplg_dai_load(tplg, dai_drv);
- 	if (ret < 0) {
- 		dev_err(tplg->comp->dev, "ASoC: DAI loading failed\n");
- 		kfree(dai_drv);
-@@ -1846,7 +1828,7 @@ static int soc_tplg_fe_link_create(struct soc_tplg *tplg,
- 		set_link_flags(link, pcm->flag_mask, pcm->flags);
- 
- 	/* pass control to component driver for optional further init */
--	ret = soc_tplg_dai_link_load(tplg, link, NULL);
-+	ret = soc_tplg_dai_link_load(tplg, link);
- 	if (ret < 0) {
- 		dev_err(tplg->comp->dev, "ASoC: FE link loading failed\n");
- 		kfree(link);
-@@ -2154,7 +2136,7 @@ static int soc_tplg_link_config(struct soc_tplg *tplg,
- 		set_link_flags(link, cfg->flag_mask, cfg->flags);
- 
- 	/* pass control to component driver for optional further init */
--	ret = soc_tplg_dai_link_load(tplg, link, cfg);
-+	ret = soc_tplg_dai_link_load(tplg, link);
- 	if (ret < 0) {
- 		dev_err(tplg->dev, "ASoC: physical link loading failed\n");
- 		return ret;
-@@ -2276,7 +2258,7 @@ static int soc_tplg_dai_config(struct soc_tplg *tplg,
- 		set_dai_flags(dai_drv, d->flag_mask, d->flags);
- 
- 	/* pass control to component driver for optional further init */
--	ret = soc_tplg_dai_load(tplg, dai_drv, NULL, dai);
-+	ret = soc_tplg_dai_load(tplg, dai_drv);
- 	if (ret < 0) {
- 		dev_err(tplg->comp->dev, "ASoC: DAI loading failed\n");
- 		return ret;
-@@ -2382,7 +2364,7 @@ static int soc_tplg_manifest_load(struct soc_tplg *tplg,
- 
- 	/* pass control to component driver for optional further init */
- 	if (tplg->comp && tplg->ops && tplg->ops->manifest)
--		return tplg->ops->manifest(tplg->comp, tplg->index, _manifest);
-+		return tplg->ops->manifest(tplg->comp, _manifest);
- 
- 	if (!abi_match)	/* free the duplicated one */
- 		kfree(_manifest);
--- 
-2.17.0
+I discussed this with Takashi and Jaroslav back in January, but the =
+
+discussion petered out and didn't reach a conclusion on which maximum gain =
+
+would be acceptable, so I thought I'd send an actual patch and we can take =
+
+it from here.
+
+We have a couple of usecases where we are using digital microphones, which =
+
+have 24 bit resolution, and with an acoustic overload point of about 120 =
+
+dB SPL, the output level can be quite low when the sound source is a fair =
+
+distance form the microphone. The current softvol limit of 50 dB is =
+
+therefore a bit restrictive.
+
+When studying the code, it becomes apparent that the limit of the actual =
+
+gain function is a gain factor of 32767, which corresponds to 90.3 dB. So =
+
+it makes sense to set the MAX_DB_UPPER_LIMIT (whose only function is to =
+
+cause _snd_pcm_softvol_open() to bail out and emit an error message if the =
+
+gain is set higher than this limit) to 90 dB as it corresponds to the =
+
+technical limitations of the gain algorithm. Granted, 90 dB is probably =
+
+more than most people need, but there's no real harm in allowing a large =
+
+gain; the user gain limit in a given application is still set by the =
+
+max_dB parameter in asound.conf . The worst that can happen is that the =
+
+signal becomes clipped as would happen with any signal if the applied gain =
+
+drives it over 0 dB. If in fact a signal is close to 0 dB to start with, =
+
+then the resulting clipping when increased by 90 dB is not much worse than =
+
+when increased by 50 dB.
+
+ src/pcm/pcm_softvol.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/src/pcm/pcm_softvol.c b/src/pcm/pcm_softvol.c
+index 8bb4a39..0eaeace 100644
+--- a/src/pcm/pcm_softvol.c
++++ b/src/pcm/pcm_softvol.c
+@@ -59,7 +59,11 @@ typedef struct {
+ #define PRESET_RESOLUTION	256
+ #define PRESET_MIN_DB		-51.0
+ #define ZERO_DB                  0.0
+-#define MAX_DB_UPPER_LIMIT      50
++/*
++ * The gain algorithm as it stands supports gain factors up to 32767, which
++ * is a fraction more than 90 dB, so set 90 dB as the maximum possible gai=
+n.
++ */
++#define MAX_DB_UPPER_LIMIT      90
+ =
+
+ static const unsigned int preset_dB_value[PRESET_RESOLUTION] =3D {
+ 	0x00b8, 0x00bd, 0x00c1, 0x00c5, 0x00ca, 0x00cf, 0x00d4, 0x00d9,
+-- =
+
+2.1.4
+
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
