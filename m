@@ -1,21 +1,18 @@
-From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: Re: [PATCH v2 0/5] ALSA: xen-front: Add Xen
- para-virtualized frontend driver
-Date: Wed, 18 Apr 2018 18:15:46 +0300
-Message-ID: <9729eb3b-d331-cf3c-9816-f520748c5f9a@gmail.com>
-References: <20180416062453.24743-1-andr2000@gmail.com>
+From: srinivas.kandagatla@linaro.org
+Subject: [PATCH v5 00/23] ASoC: qcom: Add support to QDSP based
+	Audio
+Date: Wed, 18 Apr 2018 16:31:34 +0100
+Message-ID: <20180418153157.1960-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f66.google.com (mail-lf0-f66.google.com
- [209.85.215.66])
- by alsa0.perex.cz (Postfix) with ESMTP id C451B266E30
- for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2018 17:15:49 +0200 (CEST)
-Received: by mail-lf0-f66.google.com with SMTP id q5-v6so3193589lff.12
- for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2018 08:15:49 -0700 (PDT)
-In-Reply-To: <20180416062453.24743-1-andr2000@gmail.com>
-Content-Language: en-US
+Received: from mail-wr0-f196.google.com (mail-wr0-f196.google.com
+ [209.85.128.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7C187266E30
+ for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2018 17:35:56 +0200 (CEST)
+Received: by mail-wr0-f196.google.com with SMTP id v60-v6so6039109wrc.7
+ for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2018 08:35:56 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,96 +22,174 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, jgross@suse.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, perex@perex.cz, tiwai@suse.com
-Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+To: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, plai@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/16/2018 09:24 AM, Oleksandr Andrushchenko wrote:
-> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
->
-> Please note: this patch series depends on [3].
-The dependency is now merged into Xen kernel tree [4] for-linus-4.17
->
-> This patch series adds support for Xen [1] para-virtualized
-> sound frontend driver. It implements the protocol from
-> include/xen/interface/io/sndif.h with the following limitations:
-> - mute/unmute is not supported
-> - get/set volume is not supported
-> Volume control is not supported for the reason that most of the
-> use-cases (at the moment) are based on scenarious where
-> unprivileged OS (e.g. Android, AGL etc) use software mixers.
->
-> Both capture and playback are supported.
->
-> Corresponding backend, implemented as a user-space application, can be
-> found at [2].
->
-> Thank you,
-> Oleksandr
->
-> Changes since v1:
-> *****************
->
-> 1. Moved driver from sound/drivers to sound/xen
->
-> 2. Coding style changes to better meet Linux Kernel
->
-> 3. Added explicit back and front synchronization
->     In order to provide explicit synchronization between backend and
->     frontend the following changes are introduced in the protocol:
->      - add new ring buffer for sending asynchronous events from
->        backend to frontend to report number of bytes played by the
->        frontend (XENSND_EVT_CUR_POS)
->      - introduce trigger events for playback control: start/stop/pause/resume
->      - add "req-" prefix to event-channel and ring-ref to unify naming
->        of the Xen event channels for requests and events
->
-> 4. Added explicit back and front parameter negotiation
->     In order to provide explicit stream parameter negotiation between
->     backend and frontend the following changes are introduced in the protocol:
->     add XENSND_OP_HW_PARAM_QUERY request to read/update
->     configuration space for the parameters given: request passes
->     desired parameter's intervals/masks and the response to this request
->     returns allowed min/max intervals/masks to be used.
->
-> [1] https://xenproject.org/
-> [2] https://github.com/xen-troops/snd_be
-> [3] https://lkml.org/lkml/2018/4/12/522
->
-> Oleksandr Andrushchenko (5):
->    ALSA: xen-front: Introduce Xen para-virtualized sound frontend driver
->    ALSA: xen-front: Read sound driver configuration from Xen store
->    ALSA: xen-front: Implement Xen event channel handling
->    ALSA: xen-front: Implement handling of shared buffers
->    ALSA: xen-front: Implement ALSA virtual sound driver
->
->   sound/Kconfig                     |   2 +
->   sound/Makefile                    |   2 +-
->   sound/xen/Kconfig                 |  10 +
->   sound/xen/Makefile                |   9 +
->   sound/xen/xen_snd_front.c         | 410 +++++++++++++++++++
->   sound/xen/xen_snd_front.h         |  57 +++
->   sound/xen/xen_snd_front_alsa.c    | 830 ++++++++++++++++++++++++++++++++++++++
->   sound/xen/xen_snd_front_alsa.h    |  23 ++
->   sound/xen/xen_snd_front_cfg.c     | 517 ++++++++++++++++++++++++
->   sound/xen/xen_snd_front_cfg.h     |  46 +++
->   sound/xen/xen_snd_front_evtchnl.c | 478 ++++++++++++++++++++++
->   sound/xen/xen_snd_front_evtchnl.h |  92 +++++
->   sound/xen/xen_snd_front_shbuf.c   | 193 +++++++++
->   sound/xen/xen_snd_front_shbuf.h   |  36 ++
->   14 files changed, 2704 insertions(+), 1 deletion(-)
->   create mode 100644 sound/xen/Kconfig
->   create mode 100644 sound/xen/Makefile
->   create mode 100644 sound/xen/xen_snd_front.c
->   create mode 100644 sound/xen/xen_snd_front.h
->   create mode 100644 sound/xen/xen_snd_front_alsa.c
->   create mode 100644 sound/xen/xen_snd_front_alsa.h
->   create mode 100644 sound/xen/xen_snd_front_cfg.c
->   create mode 100644 sound/xen/xen_snd_front_cfg.h
->   create mode 100644 sound/xen/xen_snd_front_evtchnl.c
->   create mode 100644 sound/xen/xen_snd_front_evtchnl.h
->   create mode 100644 sound/xen/xen_snd_front_shbuf.c
->   create mode 100644 sound/xen/xen_snd_front_shbuf.h
->
-[4] 
-https://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git/commit/?h=for-linus-4.17&id=cd6e992b3aab072cc90839508aaf5573c8f7e066
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
+Thankyou everyone for providing feedback on v4 patchset.
+This patchset aims to provide a basic version of QCOM DSP based
+audio support which is available in downstream andriod kernels.
+This patchset support audio playback on HDMI-RX, MI2S, SLIMBus and
+will add support to other features as we move on.
+
+QDSP has both static and dynamic modules. static modules like AFE
+(Audio FrontEnd), ADM (Audio Device Manager), ASM(Audio Stream Manager)
+and CORE to provide this audio services.
+All these services use APR (Asynchronous Packet Router) protocol
+via smd/glink transport to communicate with Application processor.
+More details on each module is availble in there respective patch.
+
+This patchset is tested on DB820c, with HDMI audio playback, MI2S on
+DB410c on top of mainline, Also tested SLIMBus analog audio using
+wcd9355 with an additional patches. Previous version of these
+patches are also tested on SDM845 by Rohit.
+
+Here is my test branch incase someone want to try these patches
+https://git.linaro.org/people/srinivas.kandagatla/linux.git/log/?h=v4.16-qdsp6-v5
+
+Here is block diagram to give a quick overview of the components
+
+
+  +---------+          +---------+         +---------+   
+  |  q6asm  |          |q6routing|         | q6afe   | 
+  |   dais  | <------> |  mixers | <-----> |  dais   |  
+  +---------+          +---------+         +---------+   
+      ^                     ^                   ^
+      |                     |                   |
+      |  +------------------+----------------+  |       
+      |  |                  |                |  |       
+      v  v                  v                v  v       
+  +---------+          +---------+         +---------+ 
+  |   q6ASM |          |  q6ADM  |         |   q6AFE |  
+  +---------+          +---------+         +---------+  
+      ^                     ^                   ^          ^
+      |                     |                   | CPU Side |
+------+---------------------+-------------------+--------
+      |                     |                   |
+      |                     |APR(smd/glink)     | 
+      |                     |                   |
+      |  +------------------+----------------+  |
+      |  |                  |                |  |
++-----+--+-----------------------------------+--+-------
+      |  |                  |                |  | QDSP Side |
+      v  v                  v                v  v           v
+ +---------+          +---------+         +---------+
+ |   ASM   | <------> |   ADM   | <-----> |   AFE   |
+ +---------+          +---------+         +---------+
+                                               ^
+                                               | 
+                           +-------------------+
+                           |
+---------------------------+--------------------------
+                           |            Audio I/O |
+                           v                      v
+    +--------------------------------------------------+
+    |                Audio devices                     |
+    | CODEC | HDMI-TX | PCM  | SLIMBUS | I2S |MI2S |...|
+    |                                                  |
+    +--------------------------------------------------+
+
+
+Changes since v4 (https://lkml.org/lkml/2018/3/9/1207)
+ - Updated dt bindings as suggested by Rob H.
+ - removed dt patch as db820c requires some more display
+	 dt patches to get hdmi audio.
+ - remove static flags in q6core as suggested by Rohit.
+ - add Rohits tested and reviewed tag
+ - fixed few static checker warnings.
+ - use NULL topology flag as suggested by Rohit.
+
+Thanks,
+srini
+
+Srinivas Kandagatla (23):
+  soc: qcom dt-bindings: Add APR bus bindings
+  soc: qcom: Add APR bus driver
+  ASoC: qdsp6: q6common: Add qdsp6 helper functions
+  ASoC: qdsp6: dt-bindings: Add q6afe dt bindings
+  ASoC: qdsp6: dt-bindings: Add q6adm dt bindings
+  ASoC: qdsp6: dt-bindings: Add q6asm dt bindings
+  ASoC: qdsp6: q6afe: Add q6afe driver
+  ASoC: qdsp6: qdafe: Add SLIMBus port Support
+  ASoC: qdsp6: q6afe: Add support to MI2S ports
+  ASoC: qdsp6: q6afe: Add support to MI2S sysclks
+  ASoC: qdsp6: q6adm: Add q6adm driver
+  ASoC: qdsp6: q6asm: Add q6asm driver
+  ASoC: qdsp6: q6asm: Add support to memory map and unmap
+  ASoC: qdsp6: q6asm: Add support to audio stream apis
+  ASoC: qdsp6: q6core: Add q6core driver
+  ASoC: qdsp6: q6routing: Add q6routing driver
+  ASoC: qdsp6: q6routing: Add support to all SLIMBus Mixers
+  ASoC: qdsp6: q6routing: Add support to MI2S Mixers
+  ASoC: qdsp6: q6afe: Add q6afe dai driver
+  ASoC: qdsp6: q6asm: Add q6asm dai driver
+  ASoC: qdsp6: dt-bindings: Add apq8096 machine bindings
+  ASoC: qcom: apq8096: Add db820c machine driver
+  MAINTAINERS: Add myself as co-maintainer of qcom audio
+
+ .../devicetree/bindings/soc/qcom/qcom,apr.txt      |   85 ++
+ .../devicetree/bindings/sound/qcom,apq8096.txt     |   76 ++
+ .../devicetree/bindings/sound/qcom,q6adm.txt       |   33 +
+ .../devicetree/bindings/sound/qcom,q6afe.txt       |   88 ++
+ .../devicetree/bindings/sound/qcom,q6asm.txt       |   33 +
+ MAINTAINERS                                        |    1 +
+ drivers/soc/qcom/Kconfig                           |    9 +
+ drivers/soc/qcom/Makefile                          |    1 +
+ drivers/soc/qcom/apr.c                             |  385 ++++++
+ include/dt-bindings/soc/qcom,apr.h                 |   27 +
+ include/dt-bindings/sound/qcom,q6afe.h             |   31 +
+ include/dt-bindings/sound/qcom,q6asm.h             |   22 +
+ include/linux/mod_devicetable.h                    |   11 +
+ include/linux/soc/qcom/apr.h                       |  132 ++
+ sound/soc/qcom/Kconfig                             |   50 +
+ sound/soc/qcom/Makefile                            |    5 +
+ sound/soc/qcom/apq8096.c                           |  238 ++++
+ sound/soc/qcom/qdsp6/Makefile                      |    8 +
+ sound/soc/qcom/qdsp6/q6adm.c                       |  633 ++++++++++
+ sound/soc/qcom/qdsp6/q6adm.h                       |   25 +
+ sound/soc/qcom/qdsp6/q6afe-dai.c                   |  752 +++++++++++
+ sound/soc/qcom/qdsp6/q6afe.c                       | 1068 ++++++++++++++++
+ sound/soc/qcom/qdsp6/q6afe.h                       |  193 +++
+ sound/soc/qcom/qdsp6/q6asm-dai.c                   |  632 ++++++++++
+ sound/soc/qcom/qdsp6/q6asm.c                       | 1310 ++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6asm.h                       |   69 ++
+ sound/soc/qcom/qdsp6/q6core.c                      |  380 ++++++
+ sound/soc/qcom/qdsp6/q6core.h                      |   15 +
+ sound/soc/qcom/qdsp6/q6dsp-common.c                |   66 +
+ sound/soc/qcom/qdsp6/q6dsp-common.h                |   24 +
+ sound/soc/qcom/qdsp6/q6dsp-errno.h                 |   51 +
+ sound/soc/qcom/qdsp6/q6routing.c                   |  982 +++++++++++++++
+ sound/soc/qcom/qdsp6/q6routing.h                   |    9 +
+ 33 files changed, 7444 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8096.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6adm.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6asm.txt
+ create mode 100644 drivers/soc/qcom/apr.c
+ create mode 100644 include/dt-bindings/soc/qcom,apr.h
+ create mode 100644 include/dt-bindings/sound/qcom,q6afe.h
+ create mode 100644 include/dt-bindings/sound/qcom,q6asm.h
+ create mode 100644 include/linux/soc/qcom/apr.h
+ create mode 100644 sound/soc/qcom/apq8096.c
+ create mode 100644 sound/soc/qcom/qdsp6/Makefile
+ create mode 100644 sound/soc/qcom/qdsp6/q6adm.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6adm.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6afe-dai.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6afe.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6afe.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6asm-dai.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6asm.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6asm.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6core.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6core.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6dsp-common.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6dsp-common.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6dsp-errno.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6routing.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6routing.h
+
+-- 
+2.16.2
