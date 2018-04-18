@@ -1,19 +1,19 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v5 03/23] ASoC: qdsp6: q6common: Add qdsp6
-	helper functions
-Date: Wed, 18 Apr 2018 16:31:37 +0100
-Message-ID: <20180418153157.1960-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v5 04/23] ASoC: qdsp6: dt-bindings: Add q6afe
+	dt bindings
+Date: Wed, 18 Apr 2018 16:31:38 +0100
+Message-ID: <20180418153157.1960-5-srinivas.kandagatla@linaro.org>
 References: <20180418153157.1960-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
- [209.85.128.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4D419267673
- for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2018 17:36:00 +0200 (CEST)
-Received: by mail-wr0-f193.google.com with SMTP id u11-v6so6022876wri.12
- for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2018 08:36:00 -0700 (PDT)
+Received: from mail-wr0-f194.google.com (mail-wr0-f194.google.com
+ [209.85.128.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 65E72267673
+ for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2018 17:36:01 +0200 (CEST)
+Received: by mail-wr0-f194.google.com with SMTP id f14-v6so6044044wre.4
+ for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2018 08:36:01 -0700 (PDT)
 In-Reply-To: <20180418153157.1960-1-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,211 +30,147 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch adds some common helper functions like translating dsp error
-to linux error codes and channel mappings etc.
-
-These functions are used in all the following qdsp6 drivers.
+This patch add DT bindings for AFE (Audio Frontend) DSP module.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
 ---
- sound/soc/qcom/Kconfig              | 13 ++++++++
- sound/soc/qcom/qdsp6/Makefile       |  1 +
- sound/soc/qcom/qdsp6/q6dsp-common.c | 66 +++++++++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6dsp-common.h | 24 ++++++++++++++
- sound/soc/qcom/qdsp6/q6dsp-errno.h  | 51 ++++++++++++++++++++++++++++
- 5 files changed, 155 insertions(+)
- create mode 100644 sound/soc/qcom/qdsp6/Makefile
- create mode 100644 sound/soc/qcom/qdsp6/q6dsp-common.c
- create mode 100644 sound/soc/qcom/qdsp6/q6dsp-common.h
- create mode 100644 sound/soc/qcom/qdsp6/q6dsp-errno.h
+ .../devicetree/bindings/sound/qcom,q6afe.txt       | 88 ++++++++++++++++++++++
+ include/dt-bindings/sound/qcom,q6afe.h             | 31 ++++++++
+ 2 files changed, 119 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+ create mode 100644 include/dt-bindings/sound/qcom,q6afe.h
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 8ec9a074b38b..8247ade16dbe 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -43,3 +43,16 @@ config SND_SOC_APQ8016_SBC
-           Support for Qualcomm Technologies LPASS audio block in
-           APQ8016 SOC-based systems.
-           Say Y if you want to use audio devices on MI2S.
-+
-+config SND_SOC_QDSP6_COMMON
-+	tristate
-+
-+config SND_SOC_QDSP6
-+	tristate "SoC ALSA audio driver for QDSP6"
-+	depends on QCOM_APR && HAS_DMA
-+	select SND_SOC_QDSP6_COMMON
-+	help
-+	 To add support for MSM QDSP6 Soc Audio.
-+	 This will enable sound soc platform specific
-+	 audio drivers. This includes q6asm, q6adm,
-+	 q6afe interfaces to DSP using apr.
-diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
 new file mode 100644
-index 000000000000..accebdb49306
+index 000000000000..3925726a3319
 --- /dev/null
-+++ b/sound/soc/qcom/qdsp6/Makefile
-@@ -0,0 +1 @@
-+obj-$(CONFIG_SND_SOC_QDSP6_COMMON) += q6dsp-common.o
-diff --git a/sound/soc/qcom/qdsp6/q6dsp-common.c b/sound/soc/qcom/qdsp6/q6dsp-common.c
++++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+@@ -0,0 +1,88 @@
++Qualcomm Audio Front End (Q6AFE) binding
++
++AFE is one of the APR audio service on Q6DSP
++Please refer to qcom,apr.txt for details of the common apr service bindings
++used by all apr services.
++
++- but must contain the following property:
++
++- compatible:
++	Usage: required
++	Value type: <stringlist>
++	Definition: must be "qcom,afe-v<MAJOR-NUMBER>.<MINOR-NUMBER>"
++		  Or "qcom,afe" where the version number can be queried
++		  from DSP.
++		  example "qcom,afe-v2.0"
++
++= AFE DAIs (Digial Audio Interface)
++"dais" subnode of the AFE node represents dai specific configuration
++
++- #sound-dai-cells
++	Usage: required
++	Value type: <prop-encoded-array>
++	Definition: Must be 1
++
++- reg
++	Usage: required
++	Value type: <prop-encoded-array>
++	Definition: Must be dai id
++
++- qcom,sd-lines
++	Usage: required for mi2s interface
++	Value type: <prop-encoded-array>
++	Definition: Must be list of serial data lines used by this dai.
++	should be one or more of the 1-4 sd lines.
++
++= EXAMPLE
++
++q6afe {
++	compatible = "qcom,q6afe";
++	reg = <APR_SVC_AFE>;
++
++	dais {
++		#sound-dai-cells = <1>;
++		hdmi@1 {
++			reg = <1>;
++		};
++
++		prim-mi2s-rx@16 {
++			reg = <16>;
++			qcom,sd-lines = <1 3>;
++		};
++
++		prim-mi2s-tx@17 {
++			reg = <17>;
++			qcom,sd-lines = <2>;
++		};
++
++		sec-mi2s-rx@18 {
++			reg = <18>;
++			qcom,sd-lines = <1 4>;
++		};
++
++		sec-mi2s-tx@19 {
++			reg = <19>;
++			qcom,sd-lines = <2>;
++		};
++
++		tert-mi2s-rx@20 {
++			reg = <20>;
++			qcom,sd-lines = <2 4>;
++		};
++
++		tert-mi2s-tx@21 {
++			reg = <21>;
++			qcom,sd-lines = <1>;
++		};
++
++		quat-mi2s-rx@22 {
++			reg = <22>;
++			qcom,sd-lines = <1>;
++		};
++
++		quat-mi2s-tx@23 {
++			reg = <23>;
++			qcom,sd-lines = <2>;
++		};
++	};
++};
+diff --git a/include/dt-bindings/sound/qcom,q6afe.h b/include/dt-bindings/sound/qcom,q6afe.h
 new file mode 100644
-index 000000000000..c342a073144c
+index 000000000000..3c7868394889
 --- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6dsp-common.c
-@@ -0,0 +1,66 @@
++++ b/include/dt-bindings/sound/qcom,q6afe.h
+@@ -0,0 +1,31 @@
 +// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2011-2017, The Linux Foundation
-+// Copyright (c) 2018, Linaro Limited
++#ifndef __DT_BINDINGS_Q6_AFE_H__
++#define __DT_BINDINGS_Q6_AFE_H__
 +
-+#include "q6dsp-common.h"
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/string.h>
-+#include <linux/errno.h>
++/* Audio Front End (AFE) virtual ports IDs */
++#define HDMI_RX		1
++#define SLIMBUS_0_RX    2
++#define SLIMBUS_0_TX    3
++#define SLIMBUS_1_RX    4
++#define SLIMBUS_1_TX    5
++#define SLIMBUS_2_RX    6
++#define SLIMBUS_2_TX    7
++#define SLIMBUS_3_RX    8
++#define SLIMBUS_3_TX    9
++#define SLIMBUS_4_RX    10
++#define SLIMBUS_4_TX    11
++#define SLIMBUS_5_RX    12
++#define SLIMBUS_5_TX    13
++#define SLIMBUS_6_RX    14
++#define SLIMBUS_6_TX    15
++#define PRIMARY_MI2S_RX		16
++#define PRIMARY_MI2S_TX		17
++#define SECONDARY_MI2S_RX	18
++#define SECONDARY_MI2S_TX	19
++#define TERTIARY_MI2S_RX	20
++#define TERTIARY_MI2S_TX	21
++#define QUATERNARY_MI2S_RX	22
++#define QUATERNARY_MI2S_TX	23
 +
-+int q6dsp_map_channels(u8 ch_map[PCM_FORMAT_MAX_NUM_CHANNEL], int ch)
-+{
-+	memset(ch_map, 0, PCM_FORMAT_MAX_NUM_CHANNEL);
++#endif /* __DT_BINDINGS_Q6_AFE_H__ */
 +
-+	switch (ch) {
-+	case 1:
-+		ch_map[0] = PCM_CHANNEL_FC;
-+		break;
-+	case 2:
-+		ch_map[0] = PCM_CHANNEL_FL;
-+		ch_map[1] = PCM_CHANNEL_FR;
-+		break;
-+	case 3:
-+		ch_map[0] = PCM_CHANNEL_FL;
-+		ch_map[1] = PCM_CHANNEL_FR;
-+		ch_map[2] = PCM_CHANNEL_FC;
-+		break;
-+	case 4:
-+		ch_map[0] = PCM_CHANNEL_FL;
-+		ch_map[1] = PCM_CHANNEL_FR;
-+		ch_map[2] = PCM_CHANNEL_LS;
-+		ch_map[3] = PCM_CHANNEL_RS;
-+		break;
-+	case 5:
-+		ch_map[0] = PCM_CHANNEL_FL;
-+		ch_map[1] = PCM_CHANNEL_FR;
-+		ch_map[2] = PCM_CHANNEL_FC;
-+		ch_map[3] = PCM_CHANNEL_LS;
-+		ch_map[4] = PCM_CHANNEL_RS;
-+		break;
-+	case 6:
-+		ch_map[0] = PCM_CHANNEL_FL;
-+		ch_map[1] = PCM_CHANNEL_FR;
-+		ch_map[2] = PCM_CHANNEL_LFE;
-+		ch_map[3] = PCM_CHANNEL_FC;
-+		ch_map[4] = PCM_CHANNEL_LS;
-+		ch_map[5] = PCM_CHANNEL_RS;
-+		break;
-+	case 8:
-+		ch_map[0] = PCM_CHANNEL_FL;
-+		ch_map[1] = PCM_CHANNEL_FR;
-+		ch_map[2] = PCM_CHANNEL_LFE;
-+		ch_map[3] = PCM_CHANNEL_FC;
-+		ch_map[4] = PCM_CHANNEL_LS;
-+		ch_map[5] = PCM_CHANNEL_RS;
-+		ch_map[6] = PCM_CHANNEL_LB;
-+		ch_map[7] = PCM_CHANNEL_RB;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(q6dsp_map_channels);
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/qcom/qdsp6/q6dsp-common.h b/sound/soc/qcom/qdsp6/q6dsp-common.h
-new file mode 100644
-index 000000000000..32386f4a6432
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6dsp-common.h
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#ifndef __Q6DSP_COMMON_H__
-+#define __Q6DSP_COMMON_H__
-+
-+#include <linux/kernel.h>
-+
-+#define PCM_FORMAT_MAX_NUM_CHANNEL  8
-+#define PCM_CHANNEL_NULL 0
-+
-+#define PCM_CHANNEL_FL    1	/* Front left channel. */
-+#define PCM_CHANNEL_FR    2	/* Front right channel. */
-+#define PCM_CHANNEL_FC    3	/* Front center channel. */
-+#define PCM_CHANNEL_LS   4	/* Left surround channel. */
-+#define PCM_CHANNEL_RS   5	/* Right surround channel. */
-+#define PCM_CHANNEL_LFE  6	/* Low frequency effect channel. */
-+#define PCM_CHANNEL_CS   7	/* Center surround channel; Rear center ch */
-+#define PCM_CHANNEL_LB   8	/* Left back channel; Rear left channel. */
-+#define PCM_CHANNEL_RB   9	/* Right back channel; Rear right channel. */
-+#define PCM_CHANNELS   10	/* Top surround channel. */
-+
-+int q6dsp_map_channels(u8 ch_map[PCM_FORMAT_MAX_NUM_CHANNEL], int ch);
-+
-+#endif /* __Q6DSP_COMMON_H__ */
-diff --git a/sound/soc/qcom/qdsp6/q6dsp-errno.h b/sound/soc/qcom/qdsp6/q6dsp-errno.h
-new file mode 100644
-index 000000000000..6285e1782824
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6dsp-errno.h
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#ifndef __Q6DSP_ERR_NO_H__
-+#define __Q6DSP_ERR_NO_H__
-+#include <linux/kernel.h>
-+
-+/* Success. The operation completed with no errors. */
-+#define ADSP_EOK          0x00000000
-+/* General failure. */
-+#define ADSP_EFAILED      0x00000001
-+/* Bad operation parameter. */
-+#define ADSP_EBADPARAM    0x00000002
-+/* Unsupported routine or operation. */
-+#define ADSP_EUNSUPPORTED 0x00000003
-+/* Unsupported version. */
-+#define ADSP_EVERSION     0x00000004
-+/* Unexpected problem encountered. */
-+#define ADSP_EUNEXPECTED  0x00000005
-+/* Unhandled problem occurred. */
-+#define ADSP_EPANIC       0x00000006
-+/* Unable to allocate resource. */
-+#define ADSP_ENORESOURCE  0x00000007
-+/* Invalid handle. */
-+#define ADSP_EHANDLE      0x00000008
-+/* Operation is already processed. */
-+#define ADSP_EALREADY     0x00000009
-+/* Operation is not ready to be processed. */
-+#define ADSP_ENOTREADY    0x0000000A
-+/* Operation is pending completion. */
-+#define ADSP_EPENDING     0x0000000B
-+/* Operation could not be accepted or processed. */
-+#define ADSP_EBUSY        0x0000000C
-+/* Operation aborted due to an error. */
-+#define ADSP_EABORTED     0x0000000D
-+/* Operation preempted by a higher priority. */
-+#define ADSP_EPREEMPTED   0x0000000E
-+/* Operation requests intervention to complete. */
-+#define ADSP_ECONTINUE    0x0000000F
-+/* Operation requests immediate intervention to complete. */
-+#define ADSP_EIMMEDIATE   0x00000010
-+/* Operation is not implemented. */
-+#define ADSP_ENOTIMPL     0x00000011
-+/* Operation needs more data or resources. */
-+#define ADSP_ENEEDMORE    0x00000012
-+/* Operation does not have memory. */
-+#define ADSP_ENOMEMORY    0x00000014
-+/* Item does not exist. */
-+#define ADSP_ENOTEXIST    0x00000015
-+/* Max count for adsp error code sent to HLOS*/
-+
-+#endif /*__Q6DSP_ERR_NO_H__ */
 -- 
 2.16.2
