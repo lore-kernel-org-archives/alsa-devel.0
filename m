@@ -1,17 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 0/5] ASoC: mediatek: add support for
-	mt6797 SoC
-Date: Wed, 18 Apr 2018 17:46:58 +0100
-Message-ID: <20180418164658.GI10061@sirena.org.uk>
-References: <20180416003252.4177-1-kaichieh.chuang@mediatek.com>
+Subject: Re: [PATCH v2 1/3] ASoC: dwc: I2S Controller instance
+	param added
+Date: Wed, 18 Apr 2018 18:00:54 +0100
+Message-ID: <20180418170054.GK10061@sirena.org.uk>
+References: <1524049494-19526-1-git-send-email-Vijendar.Mukunda@amd.com>
+ <1524049494-19526-2-git-send-email-Vijendar.Mukunda@amd.com>
+ <20180418112442.GB10061@sirena.org.uk>
+ <a6a4cf79-b7f7-a565-28a8-6205f8d13936@amd.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2613757614209424035=="
+Content-Type: multipart/mixed; boundary="===============4315290254938560067=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 30D462676A0
- for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2018 18:46:59 +0200 (CEST)
-In-Reply-To: <20180416003252.4177-1-kaichieh.chuang@mediatek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A8ED326767A
+ for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2018 19:01:30 +0200 (CEST)
+In-Reply-To: <a6a4cf79-b7f7-a565-28a8-6205f8d13936@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,48 +24,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-Cc: alsa-devel@alsa-project.org, garlic.tseng@mediatek.com, linux-mediatek@lists.infradead.org, chipeng.chang@mediatek.com, wsd_upstream@mediatek.com
+To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Cc: Jose Abreu <Jose.Abreu@synopsys.com>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Akshu Agrawal <akshu.agrawal@amd.com>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Alex Deucher <alexander.deucher@amd.com>, Markus Elfring <elfring@users.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2613757614209424035==
+--===============4315290254938560067==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="cVp8NMj01v+Em8Se"
+	protocol="application/pgp-signature"; boundary="mGCtrYeZ202LI9ZG"
 Content-Disposition: inline
 
 
---cVp8NMj01v+Em8Se
+--mGCtrYeZ202LI9ZG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Apr 16, 2018 at 08:32:47AM +0800, KaiChieh Chuang wrote:
-> This patch adds basic support for Mediatek AFE for MT6797 SoC.
+On Wed, Apr 18, 2018 at 06:18:44PM +0530, Mukunda,Vijendar wrote:
+> On Wednesday 18 April 2018 04:54 PM, Mark Brown wrote:
+> > On Wed, Apr 18, 2018 at 04:34:52PM +0530, Vijendar Mukunda wrote:
 
-I commented on a couple of patches, everything else looks good!
+> > > When multiple I2S controller instances created,
+> > > i2s_instance parameter refers to i2s controller instance value.
 
---cVp8NMj01v+Em8Se
+> > You're missing the point here a bit - it's not just the defines for the
+> > magic numbers that are the problem, it's the whole idea of passing
+> > instance numbers around like this that's the big problem.  Whatever you
+
+> In Audio Coprocessor (ACP), There are three I2S controllers can be
+> configured/enabled.(I2S SP, I2S MICSP, BT I2S)
+> Default enabled I2S controller instance is I2S SP instance.
+> There is a requirement to enable BT I2S controller Instance along with
+> I2S SP controller instance in one of our platforms Which has multiple codecs
+> connected to each instance.
+
+Describing how the system is wired up is the function of the machine
+driver.  The individual drivers should just take configuration from the
+machine driver.
+
+> We have added one more parameter i2s instance to dwc platform data.
+> So that AMDGPU ACP Driver will pass I2S controller instance value to dwc
+> driver while creating device nodes for I2S Controllers.
+
+This is not the way to do this - you can already get the struct device
+for all the children from when they were instantiated, you should be
+able to use this to reference them so you can bind the machine driver.
+There's facilities for doing this (mostly serializing into dev_name() as
+this was mostly used by board file based machines) which are already
+used, if there's problems we should extend those rather than hacking
+things into every single driver.
+
+--mGCtrYeZ202LI9ZG
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrXdoEACgkQJNaLcl1U
-h9DppAf/YmharDPyMRkft8NfK2Y3HhI50QhLNoAnaI43SPmIAWFuk8Ap3Mo0KrUA
-9Y06/No94Z7GUHj4GXosiYYD1iT9YFfyuTQAeqmjQef70GuEv8kZxsfGR8+rY+9u
-hfSpGC3dgg3xkeWDpvunXehU7JXHBgaETrlCf8PbYbgJW3QGN9fRmfjnpb2eIYb5
-hi6uHzr59i1rpcx0/YrBLlPjjHW7VTkIJSTG5BrWFS/YBulyYFRSy81qet97zaQK
-owoysE82daDC/hc2JVcag8jIvRPiVJJaH6ufSVhtts/D26WJ437gXvnHFqR0vs9W
-1jvbe/8zH5Xmhcu9vabEKBmcJeA7fg==
-=wzYt
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrXecUACgkQJNaLcl1U
+h9B7EAf9FyPEUPnvk+z/hoE/cB2jaQS6z6AsXLbzGgHEDoPPqUm5MAUT4m+Vqvj0
+1AM9N3sPC7jaH4jefZ3n0nNTC5w/Zgro6i+w4KrDBb78x/sc4OIc/1GiJeFw28jy
+f/YJXmUwT239D3uQZJ4D4BhCc9iuOvyoLW/cqwqJTaENGUE9TvV7o/5dBk6+DlGH
+M7neQVaW/M8/4QiiYQ8pkU+4eVxy4dpf3GERRY5HWBpOJsXuph8bIYsFxjqSsyNg
+B0dbihDYZ/EHQTMQRgAZUvrVhKumyrA+4GZ++Ea0JFOr3NJbD0C31fXG1ua56Vvy
+a0HAALsXqDf79SSH//pAQ4GpgalFag==
+=iDzI
 -----END PGP SIGNATURE-----
 
---cVp8NMj01v+Em8Se--
+--mGCtrYeZ202LI9ZG--
 
---===============2613757614209424035==
+--===============4315290254938560067==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2613757614209424035==--
+--===============4315290254938560067==--
