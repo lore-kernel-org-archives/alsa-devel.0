@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/3] ASoC: dwc: I2S Controller instance
-	param added
-Date: Wed, 18 Apr 2018 18:00:54 +0100
-Message-ID: <20180418170054.GK10061@sirena.org.uk>
-References: <1524049494-19526-1-git-send-email-Vijendar.Mukunda@amd.com>
- <1524049494-19526-2-git-send-email-Vijendar.Mukunda@amd.com>
- <20180418112442.GB10061@sirena.org.uk>
- <a6a4cf79-b7f7-a565-28a8-6205f8d13936@amd.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Disable
+ SND_SOC_INTEL_BAYTRAIL when SND_SST_ATOM_HIFI2_PLATFORM is enabled
+Date: Wed, 18 Apr 2018 12:23:40 -0500
+Message-ID: <0effa0aa-29b4-cc74-8653-6db763674634@linux.intel.com>
+References: <20180413124537.6765-1-hdegoede@redhat.com>
+ <7d14acfc-f9e1-f408-2f76-bf00ab8b9534@linux.intel.com>
+ <7b4b2168-42e5-6fcf-9d24-49748f35f74b@redhat.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4315290254938560067=="
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A8ED326767A
- for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2018 19:01:30 +0200 (CEST)
-In-Reply-To: <a6a4cf79-b7f7-a565-28a8-6205f8d13936@amd.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id A783D26767A
+ for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2018 19:25:26 +0200 (CEST)
+In-Reply-To: <7b4b2168-42e5-6fcf-9d24-49748f35f74b@redhat.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,77 +24,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Cc: Jose Abreu <Jose.Abreu@synopsys.com>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Akshu Agrawal <akshu.agrawal@amd.com>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Alex Deucher <alexander.deucher@amd.com>, Markus Elfring <elfring@users.sourceforge.net>
+To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4315290254938560067==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="mGCtrYeZ202LI9ZG"
-Content-Disposition: inline
-
-
---mGCtrYeZ202LI9ZG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Apr 18, 2018 at 06:18:44PM +0530, Mukunda,Vijendar wrote:
-> On Wednesday 18 April 2018 04:54 PM, Mark Brown wrote:
-> > On Wed, Apr 18, 2018 at 04:34:52PM +0530, Vijendar Mukunda wrote:
-
-> > > When multiple I2S controller instances created,
-> > > i2s_instance parameter refers to i2s controller instance value.
-
-> > You're missing the point here a bit - it's not just the defines for the
-> > magic numbers that are the problem, it's the whole idea of passing
-> > instance numbers around like this that's the big problem.  Whatever you
-
-> In Audio Coprocessor (ACP), There are three I2S controllers can be
-> configured/enabled.(I2S SP, I2S MICSP, BT I2S)
-> Default enabled I2S controller instance is I2S SP instance.
-> There is a requirement to enable BT I2S controller Instance along with
-> I2S SP controller instance in one of our platforms Which has multiple codecs
-> connected to each instance.
-
-Describing how the system is wired up is the function of the machine
-driver.  The individual drivers should just take configuration from the
-machine driver.
-
-> We have added one more parameter i2s instance to dwc platform data.
-> So that AMDGPU ACP Driver will pass I2S controller instance value to dwc
-> driver while creating device nodes for I2S Controllers.
-
-This is not the way to do this - you can already get the struct device
-for all the children from when they were instantiated, you should be
-able to use this to reference them so you can bind the machine driver.
-There's facilities for doing this (mostly serializing into dev_name() as
-this was mostly used by board file based machines) which are already
-used, if there's problems we should extend those rather than hacking
-things into every single driver.
-
---mGCtrYeZ202LI9ZG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrXecUACgkQJNaLcl1U
-h9B7EAf9FyPEUPnvk+z/hoE/cB2jaQS6z6AsXLbzGgHEDoPPqUm5MAUT4m+Vqvj0
-1AM9N3sPC7jaH4jefZ3n0nNTC5w/Zgro6i+w4KrDBb78x/sc4OIc/1GiJeFw28jy
-f/YJXmUwT239D3uQZJ4D4BhCc9iuOvyoLW/cqwqJTaENGUE9TvV7o/5dBk6+DlGH
-M7neQVaW/M8/4QiiYQ8pkU+4eVxy4dpf3GERRY5HWBpOJsXuph8bIYsFxjqSsyNg
-B0dbihDYZ/EHQTMQRgAZUvrVhKumyrA+4GZ++Ea0JFOr3NJbD0C31fXG1ua56Vvy
-a0HAALsXqDf79SSH//pAQ4GpgalFag==
-=iDzI
------END PGP SIGNATURE-----
-
---mGCtrYeZ202LI9ZG--
-
---===============4315290254938560067==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4315290254938560067==--
+CgpPbiAwNC8xMy8yMDE4IDExOjU2IEFNLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+IEhpLAo+Cj4g
+T24gMTMtMDQtMTggMTY6NTAsIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+PiBPbiA0LzEz
+LzE4IDc6NDUgQU0sIEhhbnMgZGUgR29lZGUgd3JvdGU6Cj4+PiBUaGUgc291bmQvc29jL2ludGVs
+L2NvbW1vbi9zc3QtYWNwaS5jIGNvZGUgb25seSB0cmllcyB0byBsb2FkIHRoZQo+Pj4gImJheXRy
+YWlsLXBjbS1hdWRpbyIgZHJpdmVyIChhbmQgc3VwcG9ydGluZyBib2FyZCBkcml2ZXJzKSB3aGVu
+Cj4+PiBTTkRfU1NUX0FUT01fSElGSTJfUExBVEZPUk0gaXMgbm90IGVuYWJsZWQsIHNpbmNlIG90
+aGVyd2lzZSB0aGVzZQo+Pj4gYXJlIGhhbmRsZWQgYnkgc25kLXNvYy1zc3QtYXRvbS1oaWZpMi1w
+bGF0Zm9ybS5rby4KPj4+Cj4+PiBTaW5jZSB0aGVzZSB0aHVzIHdpbGwgbmV2ZXIgYmUgdXNlZCB3
+aGVuIFNORF9TU1RfQVRPTV9ISUZJMl9QTEFURk9STSBpcwo+Pj4gZW5hYmxlZCwgYnVpbGRpbmcg
+dGhlc2UgZHJpdmVycyB3aGVuIGl0IGlzIGVuYWJsZWQgaXMgdXNlbGVzcy4KPj4+Cj4+PiBBZGQg
+YSBLY29uZmlnIGRlcGVuZGVuY3kgdG8gcmVmbGVjdCB0aGlzLCBzbyB0aGF0IAo+Pj4gU05EX1NP
+Q19JTlRFTF9CQVlUUkFJTAo+Pj4gY2Fubm90IGJlIGVuYWJsZWQgd2hlbiBTTkRfU1NUX0FUT01f
+SElGSTJfUExBVEZPUk0gaXMgYWxzbyBlbmFibGVkLgo+Pgo+PiBXZSBoYWQgdGhpcyBiZWZvcmUg
+YW5kIEkgZHJvcHBlZCBpdCB3aGVuIHdlIGNsZWFuZWQgdGhlIGNvZGUsIG1haW5seSAKPj4gc2lu
+Y2UgdGhpcyBkZXBlbmRlbmN5IGlzIG9uZS1zaWRlZCBhbmQgdGhlIHNlbGVjdGlvbnMgaW4gbWVu
+dWNvbmZpZyAKPj4gYXJlIGEgYml0IG9kZC4gSXQncyByZWFsbHkgYSBtdXR1YWwgZXhjbHVzaW9u
+IHdlJ2Qgd2FudC4KPgo+IEkgdGhpbmsgd2UgY2FuIGdldCBhIG11dHVhbCBleGNsdXNpb24gYnkg
+YWxzbyBhZGRpbmcgYQo+IGRlcGVuZHMgb24gU05EX1NPQ19JTlRFTF9CQVlUUkFJTD1uIHRvIHRo
+ZSBTTkRfU1NUX0FUT01fSElGSTJfUExBVEZPUk0KPiBLY29uZmlnICh0aGlzIG5lZWRzIHRlc3Rp
+bmcgdGhvdWdoKSwgYnV0IGRvIHdlIHJlYWxseSB3YW50Cj4gbXV0dWFsIGV4Y2x1c2lvbiA/IERp
+c3Ryb3MgdGVuZCB0byBoaXQgJ20nIGZvciBhbGwgdGhlc2Ugb3B0aW9ucywKPiBzbyB0aGVuIHdl
+IGVuZCB1cCB3aXRoIHdoaWNoIGV2ZXIgb25lIGNvbWVzIGZpcnN0Li4uCj4KPiBFaXRoZXIgd2F5
+IGRpc3Ryb3MgYXJlIGN1cnJlbnRseSBidWlsZGluZyBib3RoIGFuZCB0aGF0IGlzIG5vIGdvb2QK
+PiBhbmQgc2luY2Ugd2UgYWR2aWNlIHRoZSB1c2Ugb2YgU05EX1NTVF9BVE9NX0hJRkkyX1BMQVRG
+T1JNIG1ha2luZwo+IFNORF9TT0NfSU5URUxfQkFZVFJBSUwgYXV0by1kaXNhYmxlIHNlZW1zIGxp
+a2UgYSBnb29kIGlkZWEuCgpBY2tlZC1ieTogUGllcnJlLUxvdWlzIEJvc3NhcnQgPHBpZXJyZS1s
+b3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbT4KCj4KPiBSZWdhcmRzLAo+Cj4gSGFucwo+Cj4K
+Pgo+Pgo+Pj4KPj4+IFNpZ25lZC1vZmYtYnk6IEhhbnMgZGUgR29lZGUgPGhkZWdvZWRlQHJlZGhh
+dC5jb20+Cj4+PiAtLS0KPj4+IMKgIHNvdW5kL3NvYy9pbnRlbC9LY29uZmlnIHwgMiArLQo+Pj4g
+wqAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCj4+Pgo+Pj4g
+ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbnRlbC9LY29uZmlnIGIvc291bmQvc29jL2ludGVsL0tj
+b25maWcKPj4+IGluZGV4IGNlYjEwNWNiZDQ2MS4uNjQwZjliYzliZDQ2IDEwMDY0NAo+Pj4gLS0t
+IGEvc291bmQvc29jL2ludGVsL0tjb25maWcKPj4+ICsrKyBiL3NvdW5kL3NvYy9pbnRlbC9LY29u
+ZmlnCj4+PiBAQCAtNjEsNyArNjEsNyBAQCBjb25maWcgU05EX1NPQ19JTlRFTF9IQVNXRUxMCj4+
+PiDCoCBjb25maWcgU05EX1NPQ19JTlRFTF9CQVlUUkFJTAo+Pj4gwqDCoMKgwqDCoCB0cmlzdGF0
+ZSAiQmF5dHJhaWwgKGxlZ2FjeSkgUGxhdGZvcm1zIgo+Pj4gLcKgwqDCoCBkZXBlbmRzIG9uIERN
+QURFVklDRVMgJiYgQUNQSQo+Pj4gK8KgwqDCoCBkZXBlbmRzIG9uIERNQURFVklDRVMgJiYgQUNQ
+SSAmJiBTTkRfU1NUX0FUT01fSElGSTJfUExBVEZPUk09bgo+Pj4gwqDCoMKgwqDCoCBzZWxlY3Qg
+U05EX1NPQ19JTlRFTF9TU1QKPj4+IMKgwqDCoMKgwqAgc2VsZWN0IFNORF9TT0NfSU5URUxfU1NU
+X0FDUEkKPj4+IMKgwqDCoMKgwqAgc2VsZWN0IFNORF9TT0NfSU5URUxfU1NUX0ZJUk1XQVJFCj4+
+Pgo+Pgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4g
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
