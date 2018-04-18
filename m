@@ -1,170 +1,94 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v5 01/23] soc: qcom dt-bindings: Add APR bus
-	bindings
-Date: Wed, 18 Apr 2018 16:31:35 +0100
-Message-ID: <20180418153157.1960-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v5 06/23] ASoC: qdsp6: dt-bindings: Add q6asm dt bindings
+Date: Wed, 18 Apr 2018 16:31:40 +0100
+Message-ID: <20180418153157.1960-7-srinivas.kandagatla@linaro.org>
 References: <20180418153157.1960-1-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
- [209.85.128.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C4EE3267673
- for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2018 17:35:57 +0200 (CEST)
-Received: by mail-wr0-f193.google.com with SMTP id s18-v6so6035095wrg.9
- for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2018 08:35:57 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180418153157.1960-1-srinivas.kandagatla@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, plai@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, linux-kernel@vger.kernel.org
+Cc: gregkh@linuxfoundation.org, david.brown@linaro.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, bgoswami@codeaurora.org, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch add dt bindings for Qualcomm APR (Asynchronous Packet Router)
-bus driver. This bus is used for communicating with DSP which provides
-audio and various other services to cpu.
+This patch add DT bindings for ASM (Audio Stream Manager) DSP module.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
 ---
- .../devicetree/bindings/soc/qcom/qcom,apr.txt      | 85 ++++++++++++++++++++++
- include/dt-bindings/soc/qcom,apr.h                 | 27 +++++++
- 2 files changed, 112 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
- create mode 100644 include/dt-bindings/soc/qcom,apr.h
+ .../devicetree/bindings/sound/qcom,q6asm.txt       | 33 ++++++++++++++++++++++
+ include/dt-bindings/sound/qcom,q6asm.h             | 22 +++++++++++++++
+ 2 files changed, 55 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6asm.txt
+ create mode 100644 include/dt-bindings/sound/qcom,q6asm.h
 
-diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
 new file mode 100644
-index 000000000000..85cc0433fb00
+index 000000000000..d034a50a202a
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
-@@ -0,0 +1,85 @@
-+Qualcomm APR (Asynchronous Packet Router) binding
++++ b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
+@@ -0,0 +1,33 @@
++Qualcomm Audio Stream Manager (Q6ASM) binding
 +
-+This binding describes the Qualcomm APR. APR is a IPC protocol for
-+communication between Application processor and QDSP. APR is mainly
-+used for audio/voice services on the QDSP.
++Q6ASM is one of the APR audio service on Q6DSP.
++Please refer to qcom,apr.txt for details of the coommon apr service bindings
++used by the apr service device.
++
++- but must contain the following property:
 +
 +- compatible:
 +	Usage: required
 +	Value type: <stringlist>
-+	Definition: must be "qcom,apr-v<VERSION-NUMBER>", example "qcom,apr-v2"
++	Definition: must be "qcom,asm-v<MAJOR-NUMBER>.<MINOR-NUMBER>".
++		    Or "qcom,asm" where the version number can be queried
++		    from DSP.
++		    example "qcom,asm-v2.0"
 +
-+- qcom,dest-domain-id
++= ASM DAIs (Digial Audio Interface)
++"dais" subnode of the ASM node represents dai specific configuration
++
++- #sound-dai-cells
 +	Usage: required
 +	Value type: <prop-encoded-array>
-+	Definition: Destination processor ID.
-+	Possible values are :
-+			1 - APR simulator
-+			2 - PC
-+			3 - MODEM
-+			4 - ADSP
-+			5 - APPS
-+			6 - MODEM2
-+			7 - APPS2
-+
-+= APR SERVICES
-+Each subnode of the APR node represents service tied to this apr. The name
-+of the nodes are not important. The properties of these nodes are defined
-+by the individual bindings for the specific service
-+- All APR services MUST contain the following property:
-+
-+- reg
-+	Usage: required
-+	Value type: <prop-encoded-array>
-+	Definition: APR Service ID
-+	Possible values are :
-+			3 - DSP Core Service
-+			4 - Audio Front End Service.
-+			5 - Voice Stream Manager Service.
-+			6 - Voice processing manager.
-+			7 - Audio Stream Manager Service.
-+			8 - Audio Device Manager Service.
-+			9 - Multimode voice manager.
-+			10 - Core voice stream.
-+			11 - Core voice processor.
-+			12 - Ultrasound stream manager.
-+			13 - Listen stream manager.
++	Definition: Must be 1
 +
 += EXAMPLE
-+The following example represents a QDSP based sound card on a MSM8996 device
-+which uses apr as communication between Apps and QDSP.
 +
-+	apr {
-+		compatible = "qcom,apr-v2";
-+		qcom,smd-channels = "apr_audio_svc";
-+		qcom,dest-domain-id = <APR_DOMAIN_ADSP>;
-+
-+		q6core {
-+			compatible = "qcom,q6core";
-+			reg = <APR_SVC_ADSP_CORE>;
-+		};
-+
-+		q6afe {
-+			compatible = "qcom,q6afe";
-+			reg = <APR_SVC_AFE>;
-+
-+			dais {
-+				#sound-dai-cells = <1>;
-+				hdmi@1 {
-+					reg = <1>;
-+				};
-+			};
-+		};
-+
-+		q6asm {
-+			compatible = "qcom,q6asm";
-+			reg = <APR_SVC_ASM>;
-+			...
-+		};
-+
-+		q6adm {
-+			compatible = "qcom,q6adm";
-+			reg = <APR_SVC_ADM>;
-+			...
-+		};
++q6asm {
++	compatible = "qcom,q6asm";
++	reg = <APR_SVC_ASM>;
++	q6asmdai: dais {
++		#sound-dai-cells = <1>;
 +	};
-diff --git a/include/dt-bindings/soc/qcom,apr.h b/include/dt-bindings/soc/qcom,apr.h
++};
+diff --git a/include/dt-bindings/sound/qcom,q6asm.h b/include/dt-bindings/sound/qcom,q6asm.h
 new file mode 100644
-index 000000000000..905503f81885
+index 000000000000..2e11b15d930d
 --- /dev/null
-+++ b/include/dt-bindings/soc/qcom,apr.h
-@@ -0,0 +1,27 @@
-+#ifndef __DT_BINDINGS_QCOM_APR_H
-+#define __DT_BINDINGS_QCOM_APR_H
++++ b/include/dt-bindings/sound/qcom,q6asm.h
+@@ -0,0 +1,22 @@
++// SPDX-License-Identifier: GPL-2.0
++#ifndef __DT_BINDINGS_Q6_ASM_H__
++#define __DT_BINDINGS_Q6_ASM_H__
 +
-+/* Domain IDs */
-+#define APR_DOMAIN_SIM		0x1
-+#define APR_DOMAIN_PC		0x2
-+#define APR_DOMAIN_MODEM	0x3
-+#define APR_DOMAIN_ADSP		0x4
-+#define APR_DOMAIN_APPS		0x5
-+#define APR_DOMAIN_MAX		0x6
++#define	MSM_FRONTEND_DAI_MULTIMEDIA1	0
++#define	MSM_FRONTEND_DAI_MULTIMEDIA2	1
++#define	MSM_FRONTEND_DAI_MULTIMEDIA3	2
++#define	MSM_FRONTEND_DAI_MULTIMEDIA4	3
++#define	MSM_FRONTEND_DAI_MULTIMEDIA5	4
++#define	MSM_FRONTEND_DAI_MULTIMEDIA6	5
++#define	MSM_FRONTEND_DAI_MULTIMEDIA7	6
++#define	MSM_FRONTEND_DAI_MULTIMEDIA8	7
++#define	MSM_FRONTEND_DAI_MULTIMEDIA9	8
++#define	MSM_FRONTEND_DAI_MULTIMEDIA10	9
++#define	MSM_FRONTEND_DAI_MULTIMEDIA11	10
++#define	MSM_FRONTEND_DAI_MULTIMEDIA12	11
++#define	MSM_FRONTEND_DAI_MULTIMEDIA13	12
++#define	MSM_FRONTEND_DAI_MULTIMEDIA14	13
++#define	MSM_FRONTEND_DAI_MULTIMEDIA15	14
++#define	MSM_FRONTEND_DAI_MULTIMEDIA16	15
 +
-+/* ADSP service IDs */
-+#define APR_SVC_ADSP_CORE	0x3
-+#define APR_SVC_AFE		0x4
-+#define APR_SVC_VSM		0x5
-+#define APR_SVC_VPM		0x6
-+#define APR_SVC_ASM		0x7
-+#define APR_SVC_ADM		0x8
-+#define APR_SVC_ADSP_MVM	0x09
-+#define APR_SVC_ADSP_CVS	0x0A
-+#define APR_SVC_ADSP_CVP	0x0B
-+#define APR_SVC_USM		0x0C
-+#define APR_SVC_LSM		0x0D
-+#define APR_SVC_VIDC		0x16
-+#define APR_SVC_MAX		0x17
-+
-+#endif /* __DT_BINDINGS_QCOM_APR_H */
++#endif /* __DT_BINDINGS_Q6_ASM_H__ */
 -- 
 2.16.2
