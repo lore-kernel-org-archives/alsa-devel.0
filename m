@@ -1,39 +1,40 @@
 From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH 2/2] ALSA: hda/realtek - adjust the location of one mic
-Date: Thu, 19 Apr 2018 13:29:05 +0800
-Message-ID: <1524115745-7868-2-git-send-email-hui.wang@canonical.com>
-References: <1524115745-7868-1-git-send-email-hui.wang@canonical.com>
+Subject: [PATCH 1/2] ALSA: hda/realtek - set PINCFG_HEADSET_MIC to parse_flags
+Date: Thu, 19 Apr 2018 13:29:04 +0800
+Message-ID: <1524115745-7868-1-git-send-email-hui.wang@canonical.com>
 Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1524115745-7868-1-git-send-email-hui.wang@canonical.com>
 Sender: stable-owner@vger.kernel.org
 To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-There are two front mics on this machine, if we don't adjust the
-location for one of them, they will have the same mixer name,
-pulseaudio can't handle this situation.
+Otherwise, the pin will be regarded as microphone, and the jack name
+is "Mic Phantom", it is always on in the pulseaudio even nothing is
+plugged into the jack. So the UI is confusing to users since the
+microphone always shows up in the UI even there is no microphone
+plugged.
 
-After applying this FIXUP, they will have different mixer name,
-then pulseaudio can handle them correctly.
+After adding this flag, the jack name is "Headset Mic Phantom", then
+the pulseaudio can handle its detection correctly.
 
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/hda/patch_realtek.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index c3b63b7..fc77bf7 100644
+index aef1f52..c3b63b7 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -6575,6 +6575,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
- 	SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
- 	SND_PCI_QUIRK(0x17aa, 0x310c, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
-+	SND_PCI_QUIRK(0x17aa, 0x3138, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
- 	SND_PCI_QUIRK(0x17aa, 0x313c, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
- 	SND_PCI_QUIRK(0x17aa, 0x3112, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
- 	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
+@@ -6370,6 +6370,8 @@ static const struct hda_fixup alc269_fixups[] = {
+ 			{ 0x19, 0x01a1913c }, /* use as headset mic, without its own jack detect */
+ 			{ }
+ 		},
++		.chained = true,
++		.chain_id = ALC269_FIXUP_HEADSET_MIC
+ 	},
+ };
+ 
 -- 
 2.7.4
