@@ -1,18 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH][tinycompress] crecord: Use whole buffer
-	requested by user
-Date: Thu, 19 Apr 2018 11:36:00 +0530
-Message-ID: <20180419060557.GG6014@localhost>
-References: <20180413115859.20310-1-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 1/5] compress: remove dead code
+	_is_codec_supported()
+Date: Thu, 19 Apr 2018 12:06:16 +0530
+Message-ID: <1524119780-21206-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id C8196267035
- for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2018 08:01:27 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20180413115859.20310-1-ckeepax@opensource.cirrus.com>
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ by alsa0.perex.cz (Postfix) with ESMTP id 03E2C267265
+ for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2018 08:31:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,16 +19,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 13, 2018 at 12:58:59PM +0100, Charles Keepax wrote:
-> Currently, crecord will only actually use 1 fragment worth of its
-> internal buffer no matter what the user requests. Correct this so that
-> the whole buffer requested by the user is used for copying data.
-
-Applied, thanks
-
--- 
-~Vinod
+VGhlIF9pc19jb2RlY19zdXBwb3J0ZWQoKSB3YXMgZGVhZCBhbmQgbm9uZSB1c2luZyBpdCwgc28g
+cmVtb3ZlIHRoaXMgYW5kCmVsaW1pbmF0ZSB1bnVzZWQgZnVuY3Rpb24gd2FybmluZwoKY29tcHJl
+c3MuYzoxNDU6MTM6IHdhcm5pbmc6IOKAmF9pc19jb2RlY19zdXBwb3J0ZWTigJkgZGVmaW5lZCBi
+dXQgbm90IHVzZWQgWy1XdW51c2VkLWZ1bmN0aW9uXQoKV2UgY2FuIHRha2UgZnJvbSBnaXQgaWYg
+dXNlciBhcHBlYXJzCgpTaWduZWQtb2ZmLWJ5OiBWaW5vZCBLb3VsIDx2aW5vZC5rb3VsQGludGVs
+LmNvbT4KLS0tCiBzcmMvbGliL2NvbXByZXNzLmMgfCA1MyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDUzIGRlbGV0
+aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NyYy9saWIvY29tcHJlc3MuYyBiL3NyYy9saWIvY29tcHJl
+c3MuYwppbmRleCA4YWU2YmJkYTdhODkuLjkzNDY5MGUzOWVkMCAxMDA2NDQKLS0tIGEvc3JjL2xp
+Yi9jb21wcmVzcy5jCisrKyBiL3NyYy9saWIvY29tcHJlc3MuYwpAQCAtMTQyLDQ5ICsxNDIsNiBA
+QCBzdGF0aWMgaW50IGdldF9jb21wcmVzc192ZXJzaW9uKHN0cnVjdCBjb21wcmVzcyAqY29tcHJl
+c3MpCiAJcmV0dXJuIHZlcnNpb247CiB9CiAKLXN0YXRpYyBib29sIF9pc19jb2RlY19zdXBwb3J0
+ZWQoc3RydWN0IGNvbXByZXNzICpjb21wcmVzcywgc3RydWN0IGNvbXByX2NvbmZpZyAqY29uZmln
+LAotCQkJCWNvbnN0IHN0cnVjdCBzbmRfY29tcHJfY2FwcyAqY2FwcykKLXsKLQlib29sIGNvZGVj
+ID0gZmFsc2U7Ci0JdW5zaWduZWQgaW50IGk7Ci0KLQlmb3IgKGkgPSAwOyBpIDwgY2Fwcy0+bnVt
+X2NvZGVjczsgaSsrKSB7Ci0JCWlmIChjYXBzLT5jb2RlY3NbaV0gPT0gY29uZmlnLT5jb2RlYy0+
+aWQpIHsKLQkJCS8qIGZvdW5kIHRoZSBjb2RlYyAqLwotCQkJY29kZWMgPSB0cnVlOwotCQkJYnJl
+YWs7Ci0JCX0KLQl9Ci0JaWYgKGNvZGVjID09IGZhbHNlKSB7Ci0JCW9vcHMoY29tcHJlc3MsIEVO
+WElPLCAidGhpcyBjb2RlYyBpcyBub3Qgc3VwcG9ydGVkIik7Ci0JCXJldHVybiBmYWxzZTsKLQl9
+Ci0KLQlpZiAoY29uZmlnLT5mcmFnbWVudF9zaXplIDwgY2Fwcy0+bWluX2ZyYWdtZW50X3NpemUp
+IHsKLQkJb29wcyhjb21wcmVzcywgRUlOVkFMLCAicmVxdWVzdGVkIGZyYWdtZW50IHNpemUgJWQg
+aXMgYmVsb3cgbWluIHN1cHBvcnRlZCAlZCIsCi0JCQljb25maWctPmZyYWdtZW50X3NpemUsIGNh
+cHMtPm1pbl9mcmFnbWVudF9zaXplKTsKLQkJcmV0dXJuIGZhbHNlOwotCX0KLQlpZiAoY29uZmln
+LT5mcmFnbWVudF9zaXplID4gY2Fwcy0+bWF4X2ZyYWdtZW50X3NpemUpIHsKLQkJb29wcyhjb21w
+cmVzcywgRUlOVkFMLCAicmVxdWVzdGVkIGZyYWdtZW50IHNpemUgJWQgaXMgYWJvdmUgbWF4IHN1
+cHBvcnRlZCAlZCIsCi0JCQljb25maWctPmZyYWdtZW50X3NpemUsIGNhcHMtPm1heF9mcmFnbWVu
+dF9zaXplKTsKLQkJcmV0dXJuIGZhbHNlOwotCX0KLQlpZiAoY29uZmlnLT5mcmFnbWVudHMgPCBj
+YXBzLT5taW5fZnJhZ21lbnRzKSB7Ci0JCW9vcHMoY29tcHJlc3MsIEVJTlZBTCwgInJlcXVlc3Rl
+ZCBmcmFnbWVudHMgJWQgYXJlIGJlbG93IG1pbiBzdXBwb3J0ZWQgJWQiLAotCQkJY29uZmlnLT5m
+cmFnbWVudHMsIGNhcHMtPm1pbl9mcmFnbWVudHMpOwotCQlyZXR1cm4gZmFsc2U7Ci0JfQotCWlm
+IChjb25maWctPmZyYWdtZW50cyA+IGNhcHMtPm1heF9mcmFnbWVudHMpIHsKLQkJb29wcyhjb21w
+cmVzcywgRUlOVkFMLCAicmVxdWVzdGVkIGZyYWdtZW50cyAlZCBhcmUgYWJvdmUgbWF4IHN1cHBv
+cnRlZCAlZCIsCi0JCQljb25maWctPmZyYWdtZW50cywgY2Fwcy0+bWF4X2ZyYWdtZW50cyk7Ci0J
+CXJldHVybiBmYWxzZTsKLQl9Ci0KLQkvKiBUT0RPOiBtYXRjaCB0aGUgY29kZWMgcHJvcGVydGll
+cyAqLwotCXJldHVybiB0cnVlOwotfQotCiBzdGF0aWMgYm9vbCBfaXNfY29kZWNfdHlwZV9zdXBw
+b3J0ZWQoaW50IGZkLCBzdHJ1Y3Qgc25kX2NvZGVjICpjb2RlYykKIHsKIAlzdHJ1Y3Qgc25kX2Nv
+bXByX2NhcHMgY2FwczsKQEAgLTI3MSwxNiArMjI4LDYgQEAgc3RydWN0IGNvbXByZXNzICpjb21w
+cmVzc19vcGVuKHVuc2lnbmVkIGludCBjYXJkLCB1bnNpZ25lZCBpbnQgZGV2aWNlLAogCQljb25m
+aWctPmZyYWdtZW50cyA9IGNhcHMubWF4X2ZyYWdtZW50czsKIAl9CiAKLSNpZiAwCi0JLyogRklY
+TUUgbmVlZCB0byB0dXJuIHRoaXMgT24gd2hlbiBEU1Agc3VwcG9ydHMKLQkgKiBhbmQgdHJlYXQg
+aW4gbm8gc3VwcG9ydCBjYXNlCi0JICovCi0JaWYgKF9pc19jb2RlY19zdXBwb3J0ZWQoY29tcHJl
+c3MsIGNvbmZpZywgJmNhcHMpID09IGZhbHNlKSB7Ci0JCW9vcHMoY29tcHJlc3MsIGVycm5vLCAi
+Y29kZWMgbm90IHN1cHBvcnRlZFxuIik7Ci0JCWdvdG8gY29kZWNfZmFpbDsKLQl9Ci0jZW5kaWYK
+LQogCW1lbWNweShjb21wcmVzcy0+Y29uZmlnLCBjb25maWcsIHNpemVvZigqY29tcHJlc3MtPmNv
+bmZpZykpOwogCWZpbGxfY29tcHJlc3NfcGFyYW1zKGNvbmZpZywgJnBhcmFtcyk7CiAKLS0gCjIu
+Ny40CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
