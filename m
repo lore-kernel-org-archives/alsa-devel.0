@@ -1,83 +1,133 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Old firmware version for Dice II ASIC
-Date: Thu, 19 Apr 2018 21:49:50 +0900
-Message-ID: <1d3d65f1-10eb-bdab-7619-5f470d8c9023@sakamocchi.jp>
-References: <f9e29911-bd79-3441-b240-88a2a838d6a2@sakamocchi.jp>
- <39ab1743-dab9-2812-ba57-4214659858ae@ladisch.de>
+From: Ulf Hansson <ulf.hansson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 13/20] mmc: Remove depends on HAS_DMA in case of
+	platform dependency
+Date: Thu, 19 Apr 2018 15:17:53 +0200
+Message-ID: <CAPDyKFrDsqJ-URAi=b0JmRkqoAqgT01HDPpQtNkH5to_Enm+LA@mail.gmail.com>
+References: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
+	<1523987360-18760-14-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id CCB57266E30
- for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2018 14:49:55 +0200 (CEST)
-In-Reply-To: <39ab1743-dab9-2812-ba57-4214659858ae@ladisch.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+In-Reply-To: <1523987360-18760-14-git-send-email-geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
+List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
+Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+To: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-fpga-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-remoteproc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Linux Fbdev development list <linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Bjorn Andersson <bjorn.andersson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Eric Anholt <eric-WhKQ6XTQaPysTnJN9+BGXg@public.gmane.org>, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux1394-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>, Stefan Wahren <stefan.wahren-eS4NqCHxEME@public.gmane.org>, Boris Brezillon <boris.brezillon-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Herbert Xu <herbert-lOAM2aK0SrRLBo1qDEOMRrpzq4S04n8Q@public.gmane.org>, Richard Weinberger <richard-/L3Ra7n9ekc@public.gmane.org>, Jassi Brar <jassisinghbrar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Marek Vasut <marek.vasut-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-serial-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Matias Bjorling <mb-VR7NuqX4VJ8tq7phqP6ubQ@public.gmane.org>, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Ohad Ben-Cohen <ohad-Ix1uc/W3ht7QT0dZR+AlfA@public.gmane.org>, driverdevel <devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org>, Alan Tull <atull@kern>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
-
-Thanks for your comment.
-
-On Apr 19 2018 17:54, Clemens Ladisch wrote:
-> Takashi Sakamoto wrote:
->> Recently I get Alesis Multimix 12 FireWire and work for ALSA dice driver
->> to support it. This unit uses ASIC of 'WaveFront DICE II STD' and TCAT
->> extended application protocol is not supported.
->>
->> Unfortunately, the driver in v4.17-rc1 can't handle this unit, due to
->> validation of address sections for global space.
->> [...]
->> (sound/firewire/dice/dice-interface.h)
->> 175 #define GLOBAL_SAMPLE_RATE              0x05c
->> ...
->> 181 #define GLOBAL_VERSION                  0x060
->> 182
->> 183 /* Some old firmware versions do not have the following global registers: */
->> ...
->> 188 #define GLOBAL_CLOCK_CAPABILITIES       0x064
->>
->> But this is not proper in my case because the maximum offset on global
->> sub-address space is 0x05c in quadlet unit.
-> 
-> IIRC that comment was based on the documentation.  Apparently, there was
-> a misunderstanding of "size 0x60" vs. "up to the register at 0x60".
-
-Aha. I'm OK.
-
- From my curiosity, do you know which version of DICE firstly supports 
-GLOBAL_VERSION register? Can you read it on the documentation?
-
->> In my opinion, GLOBAL_VERSION offset belongs to global address space for
->> newer firmware version.
-> 
-> I agree; if this is how the hardware behaves, then this is what the driver
-> should support.
+On 17 April 2018 at 19:49, Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org> wrote:
+> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
+> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
+> In most cases this other symbol is an architecture or platform specific
+> symbol, or PCI.
 >
-> The version register is checked only once (in get_subaddrs()) and does not
-> actually affect the behaviour of the driver, so it would not hurt to simply
-> omit that check on the old firmware.  (And the "quadlets >= 90" check in
-> dice_proc_read() needs to be adjusted.)
+> Generic symbols and drivers without platform dependencies keep their
+> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
+> cannot work anyway.
+>
+> This simplifies the dependencies, and allows to improve compile-testing.
+>
+> Signed-off-by: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
+> Reviewed-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+> Acked-by: Robin Murphy <robin.murphy-5wv7dgnIgG8@public.gmane.org>
+> Acked-by: Ulf Hansson <ulf.hansson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 
-Hm. The check is applied to the other spaces such as rx/tx, so I'd like 
-to leave it as is. With this patch[1], ALSA dice driver can handle the 
-unit. In this weekend, I'll post it. Your reviewing is very helpful.
+Thanks, applied for next!
 
-[1] 
-https://github.com/takaswie/snd-firewire-improve/commit/1889e06b9593e16da2812010ffd5a8e4b9bc777d
+Kind regrds
+Uffe
 
-
-Thanks
-
-Takashi Sakamoto
+> ---
+> v3:
+>   - Add Acked-by,
+>   - Rebase to v4.17-rc1,
+>
+> v2:
+>   - Add Reviewed-by, Acked-by,
+>   - Drop RFC state,
+>   - Split per subsystem.
+> ---
+>  drivers/mmc/host/Kconfig | 10 ++--------
+>  1 file changed, 2 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+> index 9589f9c9046f14b1..3978d0418958bf6b 100644
+> --- a/drivers/mmc/host/Kconfig
+> +++ b/drivers/mmc/host/Kconfig
+> @@ -358,7 +358,6 @@ config MMC_MESON_MX_SDIO
+>         tristate "Amlogic Meson6/Meson8/Meson8b SD/MMC Host Controller support"
+>         depends on ARCH_MESON || COMPILE_TEST
+>         depends on COMMON_CLK
+> -       depends on HAS_DMA
+>         depends on OF
+>         help
+>           This selects support for the SD/MMC Host Controller on
+> @@ -401,7 +400,6 @@ config MMC_OMAP
+>
+>  config MMC_OMAP_HS
+>         tristate "TI OMAP High Speed Multimedia Card Interface support"
+> -       depends on HAS_DMA
+>         depends on ARCH_OMAP2PLUS || ARCH_KEYSTONE || COMPILE_TEST
+>         help
+>           This selects the TI OMAP High Speed Multimedia card Interface.
+> @@ -511,7 +509,6 @@ config MMC_DAVINCI
+>
+>  config MMC_GOLDFISH
+>         tristate "goldfish qemu Multimedia Card Interface support"
+> -       depends on HAS_DMA
+>         depends on GOLDFISH || COMPILE_TEST
+>         help
+>           This selects the Goldfish Multimedia card Interface emulation
+> @@ -605,7 +602,7 @@ config MMC_SDHI
+>
+>  config MMC_SDHI_SYS_DMAC
+>         tristate "DMA for SDHI SD/SDIO controllers using SYS-DMAC"
+> -       depends on MMC_SDHI && HAS_DMA
+> +       depends on MMC_SDHI
+>         default MMC_SDHI if (SUPERH || ARM)
+>         help
+>           This provides DMA support for SDHI SD/SDIO controllers
+> @@ -615,7 +612,7 @@ config MMC_SDHI_SYS_DMAC
+>  config MMC_SDHI_INTERNAL_DMAC
+>         tristate "DMA for SDHI SD/SDIO controllers using on-chip bus mastering"
+>         depends on ARM64 || COMPILE_TEST
+> -       depends on MMC_SDHI && HAS_DMA
+> +       depends on MMC_SDHI
+>         default MMC_SDHI if ARM64
+>         help
+>           This provides DMA support for SDHI SD/SDIO controllers
+> @@ -669,7 +666,6 @@ config MMC_CAVIUM_THUNDERX
+>
+>  config MMC_DW
+>         tristate "Synopsys DesignWare Memory Card Interface"
+> -       depends on HAS_DMA
+>         depends on ARC || ARM || ARM64 || MIPS || COMPILE_TEST
+>         help
+>           This selects support for the Synopsys DesignWare Mobile Storage IP
+> @@ -748,7 +744,6 @@ config MMC_DW_ZX
+>
+>  config MMC_SH_MMCIF
+>         tristate "SuperH Internal MMCIF support"
+> -       depends on HAS_DMA
+>         depends on SUPERH || ARCH_RENESAS || COMPILE_TEST
+>         help
+>           This selects the MMC Host Interface controller (MMCIF) found in various
+> @@ -868,7 +863,6 @@ config MMC_TOSHIBA_PCI
+>  config MMC_BCM2835
+>         tristate "Broadcom BCM2835 SDHOST MMC Controller support"
+>         depends on ARCH_BCM2835 || COMPILE_TEST
+> -       depends on HAS_DMA
+>         help
+>           This selects the BCM2835 SDHOST MMC controller. If you have
+>           a BCM2835 platform with SD or MMC devices, say Y or M here.
+> --
+> 2.7.4
+>
