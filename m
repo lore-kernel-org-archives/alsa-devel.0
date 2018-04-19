@@ -1,49 +1,39 @@
-From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Subject: Re: [PATCH v2 2/3] ASoC: amd: dma driver changes for BT I2S instance
-Date: Thu, 19 Apr 2018 10:07:18 +0530
-Message-ID: <371ba4c4-2917-4250-31ed-8da121d1409f@amd.com>
-References: <1524049494-19526-1-git-send-email-Vijendar.Mukunda@amd.com>
- <1524049494-19526-3-git-send-email-Vijendar.Mukunda@amd.com>
- <CAGS+omBzuC75-pbROzwhQ9WqPQpKywZKEYMYGhdjvDNdZu2j=Q@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAGS+omBzuC75-pbROzwhQ9WqPQpKywZKEYMYGhdjvDNdZu2j=Q@mail.gmail.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Kurtz <djkurtz@chromium.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, alexander.deucher@amd.com, Akshu Agrawal <akshu.agrawal@amd.com>, jclinton@chromium.org, Guenter Roeck <linux@roeck-us.net>, kuninori.morimoto.gx@renesas.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH 2/2] ALSA: hda/realtek - adjust the location of one mic
+Date: Thu, 19 Apr 2018 13:29:05 +0800
+Message-ID: <1524115745-7868-2-git-send-email-hui.wang@canonical.com>
+References: <1524115745-7868-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1524115745-7868-1-git-send-email-hui.wang@canonical.com>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
+There are two front mics on this machine, if we don't adjust the
+location for one of them, they will have the same mixer name,
+pulseaudio can't handle this situation.
 
+After applying this FIXUP, they will have different mixer name,
+then pulseaudio can handle them correctly.
 
-On Thursday 19 April 2018 05:57 AM, Daniel Kurtz wrote:
-> Hi Vijendar,
-> 
-> On Wed, Apr 18, 2018 at 5:02 AM Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-> wrote:
-> 
->> With in ACP, There are three I2S controllers can be
->> configured/enabled ( I2S SP, I2S MICSP, I2S BT).
->> Default enabled I2S controller instance is I2S SP.
->> This patch provides required changes to support I2S BT
->> controller Instance.
-> 
-> I like the direction this patch is taking, but I think it would be easier
-> to review if you could split it into 2 parts:
->    (1) the cleanup of the existing driver to use a simplified flow for
-> playback vs capture paths.
->    (2) adding the BT I2S channel.
-> 
-> 
-> Thanks,
-> -Dan
-> 
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Hi Dan,
-
-I am fine with splitting the patch into two parts.
-
-Thanks,
-Vijendar
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index c3b63b7..fc77bf7 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6575,6 +6575,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+ 	SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+ 	SND_PCI_QUIRK(0x17aa, 0x310c, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
++	SND_PCI_QUIRK(0x17aa, 0x3138, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
+ 	SND_PCI_QUIRK(0x17aa, 0x313c, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
+ 	SND_PCI_QUIRK(0x17aa, 0x3112, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+ 	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
+-- 
+2.7.4
