@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Disable SND_SOC_INTEL_BAYTRAIL
-	when SND_SST_ATOM_HIFI2_PLATFORM is enabled" to the asoc tree
-Date: Thu, 19 Apr 2018 13:12:57 +0100
-Message-ID: <E1f98Qr-000156-AV@debutante>
-References: <20180413124537.6765-1-hdegoede@redhat.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: Old firmware version for Dice II ASIC
+Date: Thu, 19 Apr 2018 21:49:50 +0900
+Message-ID: <1d3d65f1-10eb-bdab-7619-5f470d8c9023@sakamocchi.jp>
+References: <f9e29911-bd79-3441-b240-88a2a838d6a2@sakamocchi.jp>
+ <39ab1743-dab9-2812-ba57-4214659858ae@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C05BB266E30
- for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2018 14:13:08 +0200 (CEST)
-In-Reply-To: <20180413124537.6765-1-hdegoede@redhat.com>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id CCB57266E30
+ for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2018 14:49:55 +0200 (CEST)
+In-Reply-To: <39ab1743-dab9-2812-ba57-4214659858ae@ladisch.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,73 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi Clemens,
 
-   ASoC: Intel: Disable SND_SOC_INTEL_BAYTRAIL when SND_SST_ATOM_HIFI2_PLATFORM is enabled
+Thanks for your comment.
 
-has been applied to the asoc tree at
+On Apr 19 2018 17:54, Clemens Ladisch wrote:
+> Takashi Sakamoto wrote:
+>> Recently I get Alesis Multimix 12 FireWire and work for ALSA dice driver
+>> to support it. This unit uses ASIC of 'WaveFront DICE II STD' and TCAT
+>> extended application protocol is not supported.
+>>
+>> Unfortunately, the driver in v4.17-rc1 can't handle this unit, due to
+>> validation of address sections for global space.
+>> [...]
+>> (sound/firewire/dice/dice-interface.h)
+>> 175 #define GLOBAL_SAMPLE_RATE              0x05c
+>> ...
+>> 181 #define GLOBAL_VERSION                  0x060
+>> 182
+>> 183 /* Some old firmware versions do not have the following global registers: */
+>> ...
+>> 188 #define GLOBAL_CLOCK_CAPABILITIES       0x064
+>>
+>> But this is not proper in my case because the maximum offset on global
+>> sub-address space is 0x05c in quadlet unit.
+> 
+> IIRC that comment was based on the documentation.  Apparently, there was
+> a misunderstanding of "size 0x60" vs. "up to the register at 0x60".
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Aha. I'm OK.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+ From my curiosity, do you know which version of DICE firstly supports 
+GLOBAL_VERSION register? Can you read it on the documentation?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+>> In my opinion, GLOBAL_VERSION offset belongs to global address space for
+>> newer firmware version.
+> 
+> I agree; if this is how the hardware behaves, then this is what the driver
+> should support.
+>
+> The version register is checked only once (in get_subaddrs()) and does not
+> actually affect the behaviour of the driver, so it would not hurt to simply
+> omit that check on the old firmware.  (And the "quadlets >= 90" check in
+> dice_proc_read() needs to be adjusted.)
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Hm. The check is applied to the other spaces such as rx/tx, so I'd like 
+to leave it as is. With this patch[1], ALSA dice driver can handle the 
+unit. In this weekend, I'll post it. Your reviewing is very helpful.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+[1] 
+https://github.com/takaswie/snd-firewire-improve/commit/1889e06b9593e16da2812010ffd5a8e4b9bc777d
 
-Thanks,
-Mark
 
->From ed55fe24d7cb6fdc391ab808f22f163bd28928be Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Fri, 13 Apr 2018 14:45:37 +0200
-Subject: [PATCH] ASoC: Intel: Disable SND_SOC_INTEL_BAYTRAIL when
- SND_SST_ATOM_HIFI2_PLATFORM is enabled
+Thanks
 
-The sound/soc/intel/common/sst-acpi.c code only tries to load the
-"baytrail-pcm-audio" driver (and supporting board drivers) when
-SND_SST_ATOM_HIFI2_PLATFORM is not enabled, since otherwise these
-are handled by snd-soc-sst-atom-hifi2-platform.ko.
-
-Since these thus will never be used when SND_SST_ATOM_HIFI2_PLATFORM is
-enabled, building these drivers when it is enabled is useless.
-
-Add a Kconfig dependency to reflect this, so that SND_SOC_INTEL_BAYTRAIL
-cannot be enabled when SND_SST_ATOM_HIFI2_PLATFORM is also enabled.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index addac2a8e52a..0caa1f4eb94d 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -61,7 +61,7 @@ config SND_SOC_INTEL_HASWELL
- 
- config SND_SOC_INTEL_BAYTRAIL
- 	tristate "Baytrail (legacy) Platforms"
--	depends on DMADEVICES && ACPI
-+	depends on DMADEVICES && ACPI && SND_SST_ATOM_HIFI2_PLATFORM=n
- 	select SND_SOC_INTEL_SST
- 	select SND_SOC_INTEL_SST_ACPI
- 	select SND_SOC_INTEL_SST_FIRMWARE
--- 
-2.17.0
+Takashi Sakamoto
