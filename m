@@ -1,19 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/5] ASoC: add mt6351 codec driver
-Date: Thu, 19 Apr 2018 15:41:39 +0100
-Message-ID: <20180419144139.GG27188@sirena.org.uk>
-References: <20180416003252.4177-1-kaichieh.chuang@mediatek.com>
- <20180416003252.4177-2-kaichieh.chuang@mediatek.com>
- <20180418164040.GG10061@sirena.org.uk>
- <1524103097.3290.14.camel@mtksdaap41>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v3 0/3] ASoC: Add Multi CPU DAI support
+Date: Thu, 19 Apr 2018 20:24:59 +0530
+Message-ID: <20180419145459.GK6014@localhost>
+References: <1524131359-24387-1-git-send-email-vinod.koul@intel.com>
+ <20180419111239.GA27188@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5838039384056307137=="
+Content-Type: multipart/mixed; boundary="===============5688713017480679997=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 07F05267235
- for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2018 16:41:46 +0200 (CEST)
-In-Reply-To: <1524103097.3290.14.camel@mtksdaap41>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 606EB267235
+ for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2018 16:50:26 +0200 (CEST)
+In-Reply-To: <20180419111239.GA27188@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,60 +20,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-Cc: alsa-devel@alsa-project.org, garlic.tseng@mediatek.com, linux-mediatek@lists.infradead.org, chipeng.chang@mediatek.com, wsd_upstream@mediatek.com
+To: Mark Brown <broonie@kernel.org>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5838039384056307137==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="t4apE7yKrX2dGgJC"
+--===============5688713017480679997==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="3lcZGd9BuhuYXNfi"
 Content-Disposition: inline
 
 
---t4apE7yKrX2dGgJC
+--3lcZGd9BuhuYXNfi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 19, 2018 at 09:58:17AM +0800, KaiChieh Chuang wrote:
-> On Wed, 2018-04-18 at 17:40 +0100, Mark Brown wrote:
+On Thu, Apr 19, 2018 at 12:12:39PM +0100, Mark Brown wrote:
+> On Thu, Apr 19, 2018 at 03:19:16PM +0530, Vinod Koul wrote:
+> > As discussed in [1], ASoC core supports multi codec DAIs
+> > on a DAI link. However it does not do so for CPU DAIs.
+> >=20
+> > So, add support for multi CPU DAIs on a DAI Link by adding
+> > multi CPU DAI in Card instantiation, suspend and resume
+> > functions, PCM ops, stream handling functions and DAPM.
+>=20
+> The main reason it's taking me a long time to get round to reviewing
+> these is that they're big, invasive core changes with tiny commit logs
+> that I'm going to need to go over in great detail.
 
-> > > +	priv->regmap = dev_get_regmap(pdev->dev.parent, NULL);
-> > > +	if (IS_ERR(priv->regmap))
-> > > +		return PTR_ERR(priv->regmap);
+Okay we can try adding more details but in essence it can be summarized to =
+one
+liner of patch series title. I.E make cpu_dai in rtd same as support for
+codecs. We are adding capability to support multiple cpu_dais in a dai link.
 
-> > This should be the default behaviour so I'm guessing you don't need the
-> > callback?
+Yes the changes are intrusive as we have to replace every instance of use of
+cpu_dai with multiple cpu_dais in the core.
 
-> the regmap is obtain from parent dev, i assume i can use
-> snd_soc_component_init_regmap() as alternative for
-> get_regmap().callback?
+Do let us know if you are looking for some specific to add here..
 
-Yes, though you shouldn't even need to do that - the core should just
-try using the parent regmap if none is provided.
+Thanks
+--=20
+~Vinod
 
---t4apE7yKrX2dGgJC
+--3lcZGd9BuhuYXNfi
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrYqqIACgkQJNaLcl1U
-h9COWwf/X3Glme1dInVh20LNwCsONUv8nFqls3g06hu3FIyuR5SX9/XOq3a5HoZa
-w5LkRmve66WIQPWV3u8lZu7SnquzzJvXHSaxfw6BV5LTJ54obq9Xf7Haig0c+6cq
-//b7olDohoDnHHw0lI1W/jRiE73JOxMaXOOyMsYqFwM3CByy/y8zpHTQ6qXlVjJk
-K46VL8uP6zw3EH3EJyRE0lVS4mL05jVl8vUnu6T9r4oUtxJfMIznozZRFz6EDp4c
-c5llouu1mTYu/1IQprqTXVAE9YzjLKR8jjcrInAGbA5j3N/1lQf24JtIjqf5a/Ce
-mZW/3jRNf7TawAtjSmHW71L//pbT/A==
-=VgQz
+iQIcBAEBAgAGBQJa2K3DAAoJEHwUBw8lI4NHOs8QALJyUcBgpQEl9KXqJQ5ZVjjv
+EzQGxJdFnwJnif6/II8uiH+xauweoq/IP61E2GE4V4qNdd6QrQzNuPlkHtDi4OJG
+5JrfLce4WGvcnqYgToG8II7/2bd2nvIiPKX6TtjXl2EKviQPXWgFgOkgIHhrHEZZ
+LE3bPC3u8fwIchim54rH1vzTKENqxifVt4+CDGGdhOLoaMlLNCRR6rjfkhPKqSiW
+ncq+pkvVgmmqmZeVT2PIfDmRlA/+PsNL8NQBJRsBgvHRDIRXO24gr/Cbun543Cqw
+O2E/JjP7WOSJxTbnlzwSA5UIcIGFeLivdj1vDGRKq52suRgQ91M7JIiAPsyi6F+p
+UUqQGHVkB9ATqZg8J+URepje7lnciwHcpFKo3KOgVl6yim0Hy/UuVd352Ty4ta3S
+1RyYNILkyd80obgnYmpZXnwAS3LXBMJ7UT2vENggWm8f/Vpjqrq5nwTQ5lUm7nsD
+FaHmB+V8ixn1x51CiH34QBrlmpWg6s6NWIDlk8f8xiJ8q7cYmcIX/z0vtzbvZhyy
+M3wQAuoxNgN2LT1wfu2vCOAPDkyzcjM22ax1NXEeOZmnTOEE33cIbXPOBy89017o
+IZ5Ahqxi2Y5PrHdaRoV1RMP/hPcYCLRL39OCf6Lyg1LqkFxVpZle6n9t2NOi04Ky
+27Koq9hrlVP4rGwdkSoN
+=flgR
 -----END PGP SIGNATURE-----
 
---t4apE7yKrX2dGgJC--
+--3lcZGd9BuhuYXNfi--
 
---===============5838039384056307137==
+--===============5688713017480679997==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5838039384056307137==--
+--===============5688713017480679997==--
