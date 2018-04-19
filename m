@@ -1,113 +1,92 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 3/5] ASoC: mt6797: add mt6797 platform
-	driver
-Date: Thu, 19 Apr 2018 12:29:21 +0100
-Message-ID: <20180419112921.GC27188@sirena.org.uk>
-References: <20180416003252.4177-1-kaichieh.chuang@mediatek.com>
- <20180416003252.4177-4-kaichieh.chuang@mediatek.com>
- <20180418164626.GH10061@sirena.org.uk>
- <1524102673.3290.8.camel@mtksdaap41>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2762712098572956247=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id ABB88266E30
- for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2018 13:29:29 +0200 (CEST)
-In-Reply-To: <1524102673.3290.8.camel@mtksdaap41>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-Cc: alsa-devel@alsa-project.org, garlic.tseng@mediatek.com, linux-mediatek@lists.infradead.org, chipeng.chang@mediatek.com, wsd_upstream@mediatek.com
+Subject: Applied "ASoC: msm8916-wcd-analog: use threaded context for mbhc events" to the asoc tree
+Date: Thu, 19 Apr 2018 12:33:37 +0100
+Message-ID: <E1f97on-0008A4-9G@debutante>
+References: <20180418174637.24041-1-srinivas.kandagatla@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180418174637.24041-1-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>, Mark Brown <broonie@kernel.org>broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============2762712098572956247==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="bKyqfOwhbdpXa4YI"
-Content-Disposition: inline
+   ASoC: msm8916-wcd-analog: use threaded context for mbhc events
 
+has been applied to the asoc tree at
 
---bKyqfOwhbdpXa4YI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Apr 19, 2018 at 09:51:13AM +0800, KaiChieh Chuang wrote:
-> On Wed, 2018-04-18 at 17:46 +0100, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > > +		/* turn of mute function */
-> > > +		dl_src2_con0 |= (0x03 << 11);
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> > Is there any reason for not implementing this as a mute_stream()
-> > callback?  That'll keep the DAI muted during startup and before teardown
-> > which will do the most to avoid any noise making it into the output.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> We used to avoid the pop sound from user space by closing hw path from outside to inside.
-> The control here is just to avoid the state is leaved in muted state.
-> I'll take a look at the mute_stream() though.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Right, that's the goal of mute_stream() too - it's the last thing we do
-during startup and first thing we do on tear down so that there's less
-chance of any noise making its way out of the DAI.  If it doesn't work
-for your system it's fine to do this though.
+Thanks,
+Mark
 
-> > This unconditionally returns IRQ_HANDLED even if we didn't get an
-> > interrupt - it's better to return IRQ_NONE unless we actually handled
-> > something since that is more robust if something goes wrong, it lets the
-> > IRQ core shut up interrupts that get latched on and works with shared
-> > interrupts if any future designs do that.
+>From a8419a0cd98ddf628a9e38a92110af7cc650dde7 Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Wed, 18 Apr 2018 18:46:37 +0100
+Subject: [PATCH] ASoC: msm8916-wcd-analog: use threaded context for mbhc
+ events
 
-> this IRQ num is not shared with other module, it's only for audio.
+As snd_soc_jack_report() can sleep, move handling of mbhc events to a
+thread context rather than in interrupt context.
 
-In current designs...
+Fixes: de66b3455023 ('ASoC: codecs: msm8916-wcd-analog: add MBHC support')
+Reported-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/msm8916-wcd-analog.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-> We error handle by clearing the all the irq status again, when
-> interrupts is sent but status not matched. we consider this handled?
-
-You should at least complain somewhere if you get an interrupt that the
-driver doesn't know how to handle.
-
-> I'm concerned if returing IRQ_NONE, will i no longer be able
-> to receive irq from this irq line?
-
-Well, that's kind of the goal in a way - if what's going wrong is
-something that's just going to keep flagging the interrupt up then
-the system will just get stuck handling the interrupt constantly which
-is especially nasty if the interrupt is just silently acknowledged.  If
-you return IRQ_NONE eventually the core will decide that the interrupt
-is stuck and disable it which contains whatever the problem is.  I'd at
-least put some logging in there so if something goes wrong there's an
-obvious indication that something's gone wrong with the interrupt.
-
---bKyqfOwhbdpXa4YI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrYfZEACgkQJNaLcl1U
-h9D3Kwf+IaP+LgEIq7poctDws9IcNmKIQ83vP/OW2JstIZK1KDhpoGaXYAC1U+fH
-PDqK/H+8ySGVudyPeWyWo8l1r58dJmJwyio9TE9SBo4JnOc89Dzo9eiM+/oMRdSZ
-O4SeWeLjVhmb97Kp0G5N1Od9FS3z4rIJYVx70E0wWeTKgMmeSU3wp1kXbvBrFEY+
-J9/ZOe1q4ENQFHp0smnQGri91Y1njfHSMKUBoqlC9uARQQBdAaedzaTVuWRY5Uws
-SWKJkI3mGqYAST8iNRDUnAeIB/dl404CwAb4NkMw7WbnMU0MC8nocvERTg47ICBr
-PJsetlZ8NpJLDyOix3mbGd4Y1CEYLw==
-=mH1c
------END PGP SIGNATURE-----
-
---bKyqfOwhbdpXa4YI--
-
---===============2762712098572956247==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2762712098572956247==--
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index 12ee83d52405..b7cf7cce95fe 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -1187,7 +1187,8 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
+ 		return irq;
+ 	}
+ 
+-	ret = devm_request_irq(dev, irq, pm8916_mbhc_switch_irq_handler,
++	ret = devm_request_threaded_irq(dev, irq, NULL,
++			       pm8916_mbhc_switch_irq_handler,
+ 			       IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING |
+ 			       IRQF_ONESHOT,
+ 			       "mbhc switch irq", priv);
+@@ -1201,7 +1202,8 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
+ 			return irq;
+ 		}
+ 
+-		ret = devm_request_irq(dev, irq, mbhc_btn_press_irq_handler,
++		ret = devm_request_threaded_irq(dev, irq, NULL,
++				       mbhc_btn_press_irq_handler,
+ 				       IRQF_TRIGGER_RISING |
+ 				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+ 				       "mbhc btn press irq", priv);
+@@ -1214,7 +1216,8 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
+ 			return irq;
+ 		}
+ 
+-		ret = devm_request_irq(dev, irq, mbhc_btn_release_irq_handler,
++		ret = devm_request_threaded_irq(dev, irq, NULL,
++				       mbhc_btn_release_irq_handler,
+ 				       IRQF_TRIGGER_RISING |
+ 				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+ 				       "mbhc btn release irq", priv);
+-- 
+2.17.0
