@@ -1,45 +1,68 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Sample format changes by plugin while playing
-Date: Thu, 19 Apr 2018 15:53:26 +0200
-Message-ID: <991e97ca-1176-c2a2-d376-a9c277334b03@ladisch.de>
-References: <2f7e073c-b51a-dd7d-af89-9a10872faed1@gmx.de>
- <f022197f-4909-c901-b61f-cd8a197d46e8@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.184])
- by alsa0.perex.cz (Postfix) with ESMTP id A4F63267140
- for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2018 15:53:29 +0200 (CEST)
-Received: from [10.1.2.4] (unknown [94.101.37.79])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id 79E2D5583529
- for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2018 15:53:28 +0200 (CEST)
-In-Reply-To: <f022197f-4909-c901-b61f-cd8a197d46e8@gmx.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Jerome Brunet <jbrunet@baylibre.com>
+Subject: [PATCH RFC] ASoC: dai playback_active and capture_active may be greater than 1
+Date: Thu, 19 Apr 2018 16:06:12 +0200
+Message-ID: <20180419140612.11049-1-jbrunet@baylibre.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-Robert Tiemann wrote:
-> Is this the correct list to ask questions about ALSA plugin development?
+At the moment playback_active and capture_active are using only 1 bit so
+the maximum active count is 1.
 
-Yes.
+However, snd_soc_runtime_activate() may be called several time on the
+same dai. This happens when a dai is part of several dai_links. It is
+often the case for "snd-soc-dummy-dai".
 
-> Is it possible for an ALSA plugin to reconfigure the sample rate and
-> sample format of its slave in such a way that the software playing
-> through that plugin wouldn't notice?
+This is a problem if snd_soc_runtime_activate() is called an even number
+of times on a dai. In this case the active count overflow back to 0. As
+consequence, ASoC functions, such as soc_dpcm_runtime_update(), won't run
+correctly.
 
-In theory, yes.  But you'd have to implement most of this yourself.
+Storing these usage counts on plain 'unsigned int' solves the problem.
 
+Fixes: f0fba2ad1b6b ("ASoC: multi-component - ASoC Multi-Component Support")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
 
-Regards,
-Clemens
+Hi,
+
+I found this problem while working on ASoC support for a new platform.
+During a playback, using DPCM, if I changed the backend dai, nothing
+happened, old backend path was not pruned, new backend path was not added.
+
+Here is how it goes:
+1 FE and 2 BE, all 3 using snd-soc-dummy-dai for the codec_dai (ATM).
+
+On playback start:
+ - BE #1 activates and increments snd-soc-dummy-dai's playback_active
+ - FE activates and increments snd-soc-dummy-dai's playback_active
+
+The playback works but snd-soc-dummy-dai's playback_active value is now 0.
+
+Through a mux kcontrol, change BE client of FE, from BE #1 to BE #2.
+ -> trigger soc_dpcm_runtime_update().
+    -> checks fe's codec_dai playback_active which is zero so playback
+    path processing is skipped, keeping the old invalid path.
+
+ include/sound/soc-dai.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 8ad11669e4d8..35ebb0be5114 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -294,8 +294,8 @@ struct snd_soc_dai {
+ 	struct snd_soc_dai_driver *driver;
+ 
+ 	/* DAI runtime info */
+-	unsigned int capture_active:1;		/* stream is in use */
+-	unsigned int playback_active:1;		/* stream is in use */
++	unsigned int capture_active;		/* stream usage count */
++	unsigned int playback_active;		/* stream usage count */
+ 	unsigned int probed:1;
+ 
+ 	unsigned int active;
+-- 
+2.14.3
