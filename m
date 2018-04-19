@@ -1,40 +1,37 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH 1/2] ALSA: hda/realtek - set PINCFG_HEADSET_MIC to parse_flags
-Date: Thu, 19 Apr 2018 13:29:04 +0800
-Message-ID: <1524115745-7868-1-git-send-email-hui.wang@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org, hui.wang@canonical.com
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH][tinycompress] crecord: Use whole buffer
+	requested by user
+Date: Thu, 19 Apr 2018 11:36:00 +0530
+Message-ID: <20180419060557.GG6014@localhost>
+References: <20180413115859.20310-1-ckeepax@opensource.cirrus.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id C8196267035
+ for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2018 08:01:27 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20180413115859.20310-1-ckeepax@opensource.cirrus.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Otherwise, the pin will be regarded as microphone, and the jack name
-is "Mic Phantom", it is always on in the pulseaudio even nothing is
-plugged into the jack. So the UI is confusing to users since the
-microphone always shows up in the UI even there is no microphone
-plugged.
+On Fri, Apr 13, 2018 at 12:58:59PM +0100, Charles Keepax wrote:
+> Currently, crecord will only actually use 1 fragment worth of its
+> internal buffer no matter what the user requests. Correct this so that
+> the whole buffer requested by the user is used for copying data.
 
-After adding this flag, the jack name is "Headset Mic Phantom", then
-the pulseaudio can handle its detection correctly.
+Applied, thanks
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index aef1f52..c3b63b7 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6370,6 +6370,8 @@ static const struct hda_fixup alc269_fixups[] = {
- 			{ 0x19, 0x01a1913c }, /* use as headset mic, without its own jack detect */
- 			{ }
- 		},
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_HEADSET_MIC
- 	},
- };
- 
 -- 
-2.7.4
+~Vinod
