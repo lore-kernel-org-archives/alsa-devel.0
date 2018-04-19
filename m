@@ -1,19 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 1/5] compress: remove dead code
- _is_codec_supported()
-Date: Thu, 19 Apr 2018 13:38:33 +0530
-Message-ID: <20180419080832.GH6014@localhost>
-References: <1524119780-21206-1-git-send-email-vinod.koul@intel.com>
- <6b870058-e263-775f-f70b-55f159537666@linux.intel.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Old firmware version for Dice II ASIC
+Date: Thu, 19 Apr 2018 10:54:12 +0200
+Message-ID: <39ab1743-dab9-2812-ba57-4214659858ae@ladisch.de>
+References: <f9e29911-bd79-3441-b240-88a2a838d6a2@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 55744266E30
- for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2018 10:03:59 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <6b870058-e263-775f-f70b-55f159537666@linux.intel.com>
+Received: from webclient5.webclient5.de (webclient5.webclient5.de
+ [136.243.32.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A049266E30
+ for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2018 10:54:15 +0200 (CEST)
+In-Reply-To: <f9e29911-bd79-3441-b240-88a2a838d6a2@sakamocchi.jp>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,39 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 19, 2018 at 12:19:28AM -0700, Pierre-Louis Bossart wrote:
-> On 4/18/18 11:36 PM, Vinod Koul wrote:
-> >  static bool _is_codec_type_supported(int fd, struct snd_codec *codec)
-> >  {
-> >  	struct snd_compr_caps caps;
-> >@@ -271,16 +228,6 @@ struct compress *compress_open(unsigned int card, unsigned int device,
-> >  		config->fragments = caps.max_fragments;
-> >  	}
-> >-#if 0
-> >-	/* FIXME need to turn this On when DSP supports
-> >-	 * and treat in no support case
-> >-	 */
-> >-	if (_is_codec_supported(compress, config, &caps) == false) {
-> >-		oops(compress, errno, "codec not supported\n");
-> >-		goto codec_fail;
-> >-	}
-> >-#endif
-> 
-> Why was this commented out in the first place?
+Takashi Sakamoto wrote:
+> Recently I get Alesis Multimix 12 FireWire and work for ALSA dice driver
+> to support it. This unit uses ASIC of 'WaveFront DICE II STD' and TCAT
+> extended application protocol is not supported.
+>
+> Unfortunately, the driver in v4.17-rc1 can't handle this unit, due to
+> validation of address sections for global space.
+> [...]
+> (sound/firewire/dice/dice-interface.h)
+> 175 #define GLOBAL_SAMPLE_RATE              0x05c
+> ...
+> 181 #define GLOBAL_VERSION                  0x060
+> 182
+> 183 /* Some old firmware versions do not have the following global registers: */
+> ...
+> 188 #define GLOBAL_CLOCK_CAPABILITIES       0x064
+>
+> But this is not proper in my case because the maximum offset on global
+> sub-address space is 0x05c in quadlet unit.
 
-It depends on capabilities being reported properly which wasn't the case so we
-had to turn it off...
+IIRC that comment was based on the documentation.  Apparently, there was
+a misunderstanding of "size 0x60" vs. "up to the register at 0x60".
 
-> This seems like a valid check to me. If the application is asking for a
-> codec that isn't supported by hardware, should it be allowed to proceed?
+> In my opinion, GLOBAL_VERSION offset belongs to global address space for
+> newer firmware version.
 
-It has been dead for quite some time, I don't know if ppl are reporting
-properly. Turning it on might break which is something I would like to
-avoid
+I agree; if this is how the hardware behaves, then this is what the driver
+should support.
 
--- 
-~Vinod
+The version register is checked only once (in get_subaddrs()) and does not
+actually affect the behaviour of the driver, so it would not hurt to simply
+omit that check on the old firmware.  (And the "quadlets >= 90" check in
+dice_proc_read() needs to be adjusted.)
+
+
+Regards,
+Clemens
