@@ -1,76 +1,102 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Old firmware version for Dice II ASIC
-Date: Thu, 19 Apr 2018 18:21:07 +0200
-Message-ID: <b73f31c7-2a47-bc6e-f6bc-9b0636275f06@ladisch.de>
-References: <f9e29911-bd79-3441-b240-88a2a838d6a2@sakamocchi.jp>
- <39ab1743-dab9-2812-ba57-4214659858ae@ladisch.de>
- <1d3d65f1-10eb-bdab-7619-5f470d8c9023@sakamocchi.jp>
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v3 15/20] net: Remove depends on HAS_DMA in case of
+ platform dependency
+Date: Thu, 19 Apr 2018 19:41:15 +0300
+Message-ID: <87wox3i1xw.fsf@kamboji.qca.qualcomm.com>
+References: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
+ <1523987360-18760-16-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.184])
- by alsa0.perex.cz (Postfix) with ESMTP id EABA92675FC
- for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2018 18:21:34 +0200 (CEST)
-In-Reply-To: <1d3d65f1-10eb-bdab-7619-5f470d8c9023@sakamocchi.jp>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org
+Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+In-Reply-To: <1523987360-18760-16-git-send-email-geert@linux-m68k.org> (Geert
+ Uytterhoeven's message of "Tue, 17 Apr 2018 19:49:15 +0200")
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
+List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
+List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
+Errors-To: driverdev-devel-bounces@linuxdriverproject.org
+Sender: "devel" <driverdev-devel-bounces@linuxdriverproject.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, Wolfram Sang <wsa@the-dreams.de>, linux-iio@vger.kernel.org, linux-wireless@vger.kernel.org, linux-fpga@vger.kernel.org, linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org, Bjorn Andersson <bjorn.andersson@linaro.org>, Eric Anholt <eric@anholt.net>, netdev@vger.kernel.org, linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org, linux1394-devel@lists.sourceforge.net, Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>, Stefan Wahren <stefan.wahren@i2se.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, Herbert Xu <herbert@gondor.apana.org.au>, Richard Weinberger <richard@nod.at>, Joerg Roedel <joro@8bytes.org>, Jassi Brar <jassisinghbrar@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, linux-serial@vger.kernel.org, Matias Bjorling <mb@lightnvm.io>, David Woodhouse <dwmw2@infradead.org>l
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> On Apr 19 2018 17:54, Clemens Ladisch wrote:
->> Takashi Sakamoto wrote:
->>> 183 /* Some old firmware versions do not have the following global registers: */
->>> ...
->>> 188 #define GLOBAL_CLOCK_CAPABILITIES       0x064
->>>
->>> But this is not proper in my case because the maximum offset on global
->>> sub-address space is 0x05c in quadlet unit.
->>
->> IIRC that comment was based on the documentation.  Apparently, there was
->> a misunderstanding of "size 0x60" vs. "up to the register at 0x60".
+(adding linux-wireless)
+
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
+
+> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
+> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
+> In most cases this other symbol is an architecture or platform specific
+> symbol, or PCI.
 >
-> From my curiosity, do you know which version of DICE firstly supports GLOBAL_VERSION register? Can you read it on the documentation?
-
-I misremembered: I did not find anything about this in the documentation.
-
-This is derived from TCAT's host driver, which unconditionally reads everything
-up to the clock capabilities register, and checks for a size larger than 0x64
-to detect if the firmware supports clock capabilities.
-
->> The version register is checked only once (in get_subaddrs()) and does not
->> actually affect the behaviour of the driver, so it would not hurt to simply
->> omit that check on the old firmware.
+> Generic symbols and drivers without platform dependencies keep their
+> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
+> cannot work anyway.
 >
-> Hm. The check is applied to the other spaces such as rx/tx, so I'd like to
-> leave it as is.
-
-Sorry, "that check" meant the version check for 0x01000000.  Your patch
-already implements what I suggested.
-
-> With this patch[1], ALSA dice driver can handle the unit. In this weekend, I'll post it. Your reviewing is very helpful.
+> This simplifies the dependencies, and allows to improve compile-testing.
 >
-> [1] https://github.com/takaswie/snd-firewire-improve/commit/1889e06b9593e16da2812010ffd5a8e4b9bc777d
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reviewed-by: Mark Brown <broonie@kernel.org>
+> Acked-by: Robin Murphy <robin.murphy@arm.com>
+> ---
+> v3:
+>   - Rebase to v4.17-rc1,
+>   - Drop obsolete note about FSL_FMAN,
+>
+> v2:
+>   - Add Reviewed-by, Acked-by,
+>   - Drop RFC state,
+>   - Split per subsystem.
+> ---
+>  drivers/net/ethernet/amd/Kconfig                | 2 +-
+>  drivers/net/ethernet/apm/xgene-v2/Kconfig       | 1 -
+>  drivers/net/ethernet/apm/xgene/Kconfig          | 1 -
+>  drivers/net/ethernet/arc/Kconfig                | 6 ++++--
+>  drivers/net/ethernet/broadcom/Kconfig           | 2 --
+>  drivers/net/ethernet/calxeda/Kconfig            | 2 +-
+>  drivers/net/ethernet/hisilicon/Kconfig          | 2 +-
+>  drivers/net/ethernet/marvell/Kconfig            | 8 +++-----
+>  drivers/net/ethernet/mellanox/mlxsw/Kconfig     | 2 +-
+>  drivers/net/ethernet/renesas/Kconfig            | 2 --
+>  drivers/net/wireless/broadcom/brcm80211/Kconfig | 1 -
+>  drivers/net/wireless/quantenna/qtnfmac/Kconfig  | 2 +-
+>  12 files changed, 12 insertions(+), 19 deletions(-)
 
-> +	/* Old firmware doesn't support these fields. */
-> +	if (dice->clock_caps == 0) {
-> +		dice->sync_offset = be32_to_cpu(pointers[6]) * 4;
-> +		dice->rsrv_offset = be32_to_cpu(pointers[8]) * 4;
-> +	}
+For wireless:
 
-Shouldn't this be clock_caps!=0?
+Acked-by: Kalle Valo <kvalo@codeaurora.org>
 
+Leaving the hunks for linux-wireless list to see:
 
-Regards,
-Clemens
+> diff --git a/drivers/net/wireless/broadcom/brcm80211/Kconfig b/drivers/net/wireless/broadcom/brcm80211/Kconfig
+> index 9d99eb42d9176f0f..6acba67bca07abd7 100644
+> --- a/drivers/net/wireless/broadcom/brcm80211/Kconfig
+> +++ b/drivers/net/wireless/broadcom/brcm80211/Kconfig
+> @@ -60,7 +60,6 @@ config BRCMFMAC_PCIE
+>  	bool "PCIE bus interface support for FullMAC driver"
+>  	depends on BRCMFMAC
+>  	depends on PCI
+> -	depends on HAS_DMA
+>  	select BRCMFMAC_PROTO_MSGBUF
+>  	select FW_LOADER
+>  	---help---
+> diff --git a/drivers/net/wireless/quantenna/qtnfmac/Kconfig b/drivers/net/wireless/quantenna/qtnfmac/Kconfig
+> index 025fa6018550895a..8d1492a90bd135c0 100644
+> --- a/drivers/net/wireless/quantenna/qtnfmac/Kconfig
+> +++ b/drivers/net/wireless/quantenna/qtnfmac/Kconfig
+> @@ -7,7 +7,7 @@ config QTNFMAC
+>  config QTNFMAC_PEARL_PCIE
+>  	tristate "Quantenna QSR10g PCIe support"
+>  	default n
+> -	depends on HAS_DMA && PCI && CFG80211
+> +	depends on PCI && CFG80211
+>  	select QTNFMAC
+>  	select FW_LOADER
+>  	select CRC32
+
+-- 
+Kalle Valo
