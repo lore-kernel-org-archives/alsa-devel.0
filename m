@@ -1,18 +1,19 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
 Subject: Re: [PATCH 1/5] compress: remove dead code
  _is_codec_supported()
-Date: Thu, 19 Apr 2018 00:19:28 -0700
-Message-ID: <6b870058-e263-775f-f70b-55f159537666@linux.intel.com>
+Date: Thu, 19 Apr 2018 13:38:33 +0530
+Message-ID: <20180419080832.GH6014@localhost>
 References: <1524119780-21206-1-git-send-email-vinod.koul@intel.com>
+ <6b870058-e263-775f-f70b-55f159537666@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E6D1267235
- for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2018 09:19:22 +0200 (CEST)
-In-Reply-To: <1524119780-21206-1-git-send-email-vinod.koul@intel.com>
-Content-Language: en-US
+ by alsa0.perex.cz (Postfix) with ESMTP id 55744266E30
+ for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2018 10:03:59 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <6b870058-e263-775f-f70b-55f159537666@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gNC8xOC8xOCAxMTozNiBQTSwgVmlub2QgS291bCB3cm90ZToKPiBUaGUgX2lzX2NvZGVjX3N1
-cHBvcnRlZCgpIHdhcyBkZWFkIGFuZCBub25lIHVzaW5nIGl0LCBzbyByZW1vdmUgdGhpcyBhbmQK
-PiBlbGltaW5hdGUgdW51c2VkIGZ1bmN0aW9uIHdhcm5pbmcKPiAKPiBjb21wcmVzcy5jOjE0NTox
-Mzogd2FybmluZzog4oCYX2lzX2NvZGVjX3N1cHBvcnRlZOKAmSBkZWZpbmVkIGJ1dCBub3QgdXNl
-ZCBbLVd1bnVzZWQtZnVuY3Rpb25dCj4gCj4gV2UgY2FuIHRha2UgZnJvbSBnaXQgaWYgdXNlciBh
-cHBlYXJzCj4gCj4gU2lnbmVkLW9mZi1ieTogVmlub2QgS291bCA8dmlub2Qua291bEBpbnRlbC5j
-b20+Cj4gLS0tCj4gICBzcmMvbGliL2NvbXByZXNzLmMgfCA1MyAtLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ICAgMSBmaWxlIGNoYW5nZWQsIDUz
-IGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9zcmMvbGliL2NvbXByZXNzLmMgYi9zcmMv
-bGliL2NvbXByZXNzLmMKPiBpbmRleCA4YWU2YmJkYTdhODkuLjkzNDY5MGUzOWVkMCAxMDA2NDQK
-PiAtLS0gYS9zcmMvbGliL2NvbXByZXNzLmMKPiArKysgYi9zcmMvbGliL2NvbXByZXNzLmMKPiBA
-QCAtMTQyLDQ5ICsxNDIsNiBAQCBzdGF0aWMgaW50IGdldF9jb21wcmVzc192ZXJzaW9uKHN0cnVj
-dCBjb21wcmVzcyAqY29tcHJlc3MpCj4gICAJcmV0dXJuIHZlcnNpb247Cj4gICB9Cj4gICAKPiAt
-c3RhdGljIGJvb2wgX2lzX2NvZGVjX3N1cHBvcnRlZChzdHJ1Y3QgY29tcHJlc3MgKmNvbXByZXNz
-LCBzdHJ1Y3QgY29tcHJfY29uZmlnICpjb25maWcsCj4gLQkJCQljb25zdCBzdHJ1Y3Qgc25kX2Nv
-bXByX2NhcHMgKmNhcHMpCj4gLXsKPiAtCWJvb2wgY29kZWMgPSBmYWxzZTsKPiAtCXVuc2lnbmVk
-IGludCBpOwo+IC0KPiAtCWZvciAoaSA9IDA7IGkgPCBjYXBzLT5udW1fY29kZWNzOyBpKyspIHsK
-PiAtCQlpZiAoY2Fwcy0+Y29kZWNzW2ldID09IGNvbmZpZy0+Y29kZWMtPmlkKSB7Cj4gLQkJCS8q
-IGZvdW5kIHRoZSBjb2RlYyAqLwo+IC0JCQljb2RlYyA9IHRydWU7Cj4gLQkJCWJyZWFrOwo+IC0J
-CX0KPiAtCX0KPiAtCWlmIChjb2RlYyA9PSBmYWxzZSkgewo+IC0JCW9vcHMoY29tcHJlc3MsIEVO
-WElPLCAidGhpcyBjb2RlYyBpcyBub3Qgc3VwcG9ydGVkIik7Cj4gLQkJcmV0dXJuIGZhbHNlOwo+
-IC0JfQo+IC0KPiAtCWlmIChjb25maWctPmZyYWdtZW50X3NpemUgPCBjYXBzLT5taW5fZnJhZ21l
-bnRfc2l6ZSkgewo+IC0JCW9vcHMoY29tcHJlc3MsIEVJTlZBTCwgInJlcXVlc3RlZCBmcmFnbWVu
-dCBzaXplICVkIGlzIGJlbG93IG1pbiBzdXBwb3J0ZWQgJWQiLAo+IC0JCQljb25maWctPmZyYWdt
-ZW50X3NpemUsIGNhcHMtPm1pbl9mcmFnbWVudF9zaXplKTsKPiAtCQlyZXR1cm4gZmFsc2U7Cj4g
-LQl9Cj4gLQlpZiAoY29uZmlnLT5mcmFnbWVudF9zaXplID4gY2Fwcy0+bWF4X2ZyYWdtZW50X3Np
-emUpIHsKPiAtCQlvb3BzKGNvbXByZXNzLCBFSU5WQUwsICJyZXF1ZXN0ZWQgZnJhZ21lbnQgc2l6
-ZSAlZCBpcyBhYm92ZSBtYXggc3VwcG9ydGVkICVkIiwKPiAtCQkJY29uZmlnLT5mcmFnbWVudF9z
-aXplLCBjYXBzLT5tYXhfZnJhZ21lbnRfc2l6ZSk7Cj4gLQkJcmV0dXJuIGZhbHNlOwo+IC0JfQo+
-IC0JaWYgKGNvbmZpZy0+ZnJhZ21lbnRzIDwgY2Fwcy0+bWluX2ZyYWdtZW50cykgewo+IC0JCW9v
-cHMoY29tcHJlc3MsIEVJTlZBTCwgInJlcXVlc3RlZCBmcmFnbWVudHMgJWQgYXJlIGJlbG93IG1p
-biBzdXBwb3J0ZWQgJWQiLAo+IC0JCQljb25maWctPmZyYWdtZW50cywgY2Fwcy0+bWluX2ZyYWdt
-ZW50cyk7Cj4gLQkJcmV0dXJuIGZhbHNlOwo+IC0JfQo+IC0JaWYgKGNvbmZpZy0+ZnJhZ21lbnRz
-ID4gY2Fwcy0+bWF4X2ZyYWdtZW50cykgewo+IC0JCW9vcHMoY29tcHJlc3MsIEVJTlZBTCwgInJl
-cXVlc3RlZCBmcmFnbWVudHMgJWQgYXJlIGFib3ZlIG1heCBzdXBwb3J0ZWQgJWQiLAo+IC0JCQlj
-b25maWctPmZyYWdtZW50cywgY2Fwcy0+bWF4X2ZyYWdtZW50cyk7Cj4gLQkJcmV0dXJuIGZhbHNl
-Owo+IC0JfQo+IC0KPiAtCS8qIFRPRE86IG1hdGNoIHRoZSBjb2RlYyBwcm9wZXJ0aWVzICovCj4g
-LQlyZXR1cm4gdHJ1ZTsKPiAtfQo+IC0KPiAgIHN0YXRpYyBib29sIF9pc19jb2RlY190eXBlX3N1
-cHBvcnRlZChpbnQgZmQsIHN0cnVjdCBzbmRfY29kZWMgKmNvZGVjKQo+ICAgewo+ICAgCXN0cnVj
-dCBzbmRfY29tcHJfY2FwcyBjYXBzOwo+IEBAIC0yNzEsMTYgKzIyOCw2IEBAIHN0cnVjdCBjb21w
-cmVzcyAqY29tcHJlc3Nfb3Blbih1bnNpZ25lZCBpbnQgY2FyZCwgdW5zaWduZWQgaW50IGRldmlj
-ZSwKPiAgIAkJY29uZmlnLT5mcmFnbWVudHMgPSBjYXBzLm1heF9mcmFnbWVudHM7Cj4gICAJfQo+
-ICAgCj4gLSNpZiAwCj4gLQkvKiBGSVhNRSBuZWVkIHRvIHR1cm4gdGhpcyBPbiB3aGVuIERTUCBz
-dXBwb3J0cwo+IC0JICogYW5kIHRyZWF0IGluIG5vIHN1cHBvcnQgY2FzZQo+IC0JICovCj4gLQlp
-ZiAoX2lzX2NvZGVjX3N1cHBvcnRlZChjb21wcmVzcywgY29uZmlnLCAmY2FwcykgPT0gZmFsc2Up
-IHsKPiAtCQlvb3BzKGNvbXByZXNzLCBlcnJubywgImNvZGVjIG5vdCBzdXBwb3J0ZWRcbiIpOwo+
-IC0JCWdvdG8gY29kZWNfZmFpbDsKPiAtCX0KPiAtI2VuZGlmCgpXaHkgd2FzIHRoaXMgY29tbWVu
-dGVkIG91dCBpbiB0aGUgZmlyc3QgcGxhY2U/CgpUaGlzIHNlZW1zIGxpa2UgYSB2YWxpZCBjaGVj
-ayB0byBtZS4gSWYgdGhlIGFwcGxpY2F0aW9uIGlzIGFza2luZyBmb3IgYSAKY29kZWMgdGhhdCBp
-c24ndCBzdXBwb3J0ZWQgYnkgaGFyZHdhcmUsIHNob3VsZCBpdCBiZSBhbGxvd2VkIHRvIHByb2Nl
-ZWQ/Cgo+IC0KPiAgIAltZW1jcHkoY29tcHJlc3MtPmNvbmZpZywgY29uZmlnLCBzaXplb2YoKmNv
-bXByZXNzLT5jb25maWcpKTsKPiAgIAlmaWxsX2NvbXByZXNzX3BhcmFtcyhjb25maWcsICZwYXJh
-bXMpOwo+ICAgCj4gCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+On Thu, Apr 19, 2018 at 12:19:28AM -0700, Pierre-Louis Bossart wrote:
+> On 4/18/18 11:36 PM, Vinod Koul wrote:
+> >  static bool _is_codec_type_supported(int fd, struct snd_codec *codec)
+> >  {
+> >  	struct snd_compr_caps caps;
+> >@@ -271,16 +228,6 @@ struct compress *compress_open(unsigned int card, unsigned int device,
+> >  		config->fragments = caps.max_fragments;
+> >  	}
+> >-#if 0
+> >-	/* FIXME need to turn this On when DSP supports
+> >-	 * and treat in no support case
+> >-	 */
+> >-	if (_is_codec_supported(compress, config, &caps) == false) {
+> >-		oops(compress, errno, "codec not supported\n");
+> >-		goto codec_fail;
+> >-	}
+> >-#endif
+> 
+> Why was this commented out in the first place?
+
+It depends on capabilities being reported properly which wasn't the case so we
+had to turn it off...
+
+> This seems like a valid check to me. If the application is asking for a
+> codec that isn't supported by hardware, should it be allowed to proceed?
+
+It has been dead for quite some time, I don't know if ppl are reporting
+properly. Turning it on might break which is something I would like to
+avoid
+
+-- 
+~Vinod
