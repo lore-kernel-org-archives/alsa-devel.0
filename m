@@ -1,58 +1,34 @@
-From: srinivas.kandagatla@linaro.org
-Subject: [PATCH] ASoC: msm8916-wcd-analog: use threaded context for mbhc events
-Date: Wed, 18 Apr 2018 18:46:37 +0100
-Message-ID: <20180418174637.24041-1-srinivas.kandagatla@linaro.org>
+From: Daniel Kurtz <djkurtz@chromium.org>
+Subject: Re: [PATCH v2 2/3] ASoC: amd: dma driver changes for BT I2S instance
+Date: Thu, 19 Apr 2018 00:27:05 +0000
+Message-ID: <CAGS+omBzuC75-pbROzwhQ9WqPQpKywZKEYMYGhdjvDNdZu2j=Q@mail.gmail.com>
+References: <1524049494-19526-1-git-send-email-Vijendar.Mukunda@amd.com> <1524049494-19526-3-git-send-email-Vijendar.Mukunda@amd.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1524049494-19526-3-git-send-email-Vijendar.Mukunda@amd.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: Vijendar.Mukunda@amd.com
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, alexander.deucher@amd.com, Akshu Agrawal <akshu.agrawal@amd.com>, jclinton@chromium.org, Guenter Roeck <linux@roeck-us.net>, kuninori.morimoto.gx@renesas.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Hi Vijendar,
 
-As snd_soc_jack_report() can sleep, move handling of mbhc events to a
-thread context rather than in interrupt context.
+On Wed, Apr 18, 2018 at 5:02 AM Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+wrote:
 
-Fixes: de66b3455023 ('ASoC: codecs: msm8916-wcd-analog: add MBHC support')
-Reported-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/codecs/msm8916-wcd-analog.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+> With in ACP, There are three I2S controllers can be
+> configured/enabled ( I2S SP, I2S MICSP, I2S BT).
+> Default enabled I2S controller instance is I2S SP.
+> This patch provides required changes to support I2S BT
+> controller Instance.
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index 12ee83d52405..b7cf7cce95fe 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -1187,7 +1187,8 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
- 		return irq;
- 	}
- 
--	ret = devm_request_irq(dev, irq, pm8916_mbhc_switch_irq_handler,
-+	ret = devm_request_threaded_irq(dev, irq, NULL,
-+			       pm8916_mbhc_switch_irq_handler,
- 			       IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING |
- 			       IRQF_ONESHOT,
- 			       "mbhc switch irq", priv);
-@@ -1201,7 +1202,8 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
- 			return irq;
- 		}
- 
--		ret = devm_request_irq(dev, irq, mbhc_btn_press_irq_handler,
-+		ret = devm_request_threaded_irq(dev, irq, NULL,
-+				       mbhc_btn_press_irq_handler,
- 				       IRQF_TRIGGER_RISING |
- 				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
- 				       "mbhc btn press irq", priv);
-@@ -1214,7 +1216,8 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
- 			return irq;
- 		}
- 
--		ret = devm_request_irq(dev, irq, mbhc_btn_release_irq_handler,
-+		ret = devm_request_threaded_irq(dev, irq, NULL,
-+				       mbhc_btn_release_irq_handler,
- 				       IRQF_TRIGGER_RISING |
- 				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
- 				       "mbhc btn release irq", priv);
--- 
-2.16.2
+I like the direction this patch is taking, but I think it would be easier
+to review if you could split it into 2 parts:
+  (1) the cleanup of the existing driver to use a simplified flow for
+playback vs capture paths.
+  (2) adding the BT I2S channel.
+
+
+Thanks,
+-Dan
