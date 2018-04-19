@@ -1,46 +1,95 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Sample format changes by plugin while playing
-Date: Thu, 19 Apr 2018 17:57:54 +0200
-Message-ID: <7c046ed4-9f38-31d3-61b7-b8b68bd5054c@ladisch.de>
-References: <2f7e073c-b51a-dd7d-af89-9a10872faed1@gmx.de>
- <f022197f-4909-c901-b61f-cd8a197d46e8@gmx.de>
- <991e97ca-1176-c2a2-d376-a9c277334b03@ladisch.de>
- <c7d05205-7990-3720-b687-157167a7c350@gmx.de>
+From: syzbot <syzbot+f7a0348affc3b67bc617@syzkaller.appspotmail.com>
+Subject: general protection fault in snd_rawmidi_ioctl_compat
+Date: Thu, 19 Apr 2018 09:10:01 -0700
+Message-ID: <000000000000c4f379056a35cdf6@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.184])
- by alsa0.perex.cz (Postfix) with ESMTP id 62EB1267235
- for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2018 17:58:20 +0200 (CEST)
-Received: from olorin.ladisch.de (x2f7f93d.dyn.telefonica.de [2.247.249.61])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id 504D555819C4
- for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2018 17:58:19 +0200 (CEST)
-In-Reply-To: <c7d05205-7990-3720-b687-157167a7c350@gmx.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-Robert Tiemann wrote:
-> I guess "in theory" means that you don't know about any plugin of such
-> kind I could take a look at, right?
+Hello,
 
-No; most plugins force the configuration of the slave to be similar, and
-to be done at the same time as their own.
+syzbot hit the following crash on upstream commit
+b284d4d5a6785f8cd07eda2646a95782373cd01e (Tue Apr 10 19:25:30 2018 +0000)
+Merge tag 'ceph-for-4.17-rc1' of git://github.com/ceph/ceph-client
+syzbot dashboard link:  
+https://syzkaller.appspot.com/bug?extid=f7a0348affc3b67bc617
 
-PulseAudio does something similar to this, but it's much more complex
-than just an ALSA plugin.
+Unfortunately, I don't have any reproducer for this crash yet.
+Raw console output:  
+https://syzkaller.appspot.com/x/log.txt?id=5208906934517760
+Kernel config:  
+https://syzkaller.appspot.com/x/.config?id=-1223000601505858474
+compiler: gcc (GCC) 8.0.1 20180301 (experimental)
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+f7a0348affc3b67bc617@syzkaller.appspotmail.com
+It will help syzbot understand when the bug is fixed. See footer for  
+details.
+If you forward the report, please keep this part and the footer.
+
+kasan: CONFIG_KASAN_INLINE enabled
+kasan: GPF could be caused by NULL-ptr deref or user memory access
+general protection fault: 0000 [#1] SMP KASAN
+Dumping ftrace buffer:
+    (ftrace buffer empty)
+Modules linked in:
+CPU: 1 PID: 21671 Comm: syz-executor7 Not tainted 4.16.0+ #17
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+RIP: 0010:snd_rawmidi_ioctl_status_x32 sound/core/rawmidi_compat.c:125  
+[inline]
+RIP: 0010:snd_rawmidi_ioctl_compat+0x51d/0xba0  
+sound/core/rawmidi_compat.c:168
+RSP: 0018:ffff88018ccdfc08 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc900054cb000
+RDX: 000000000000000b RSI: ffffffff85a61885 RDI: 0000000000000058
+RBP: ffff88018ccdfd80 R08: ffff8801af6f0740 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000000 R12: 1ffff1003199bf83
+R13: 0000000000930000 R14: ffff88018ccdfcf8 R15: 0000000000000001
+FS:  00007fa64d466700(0000) GS:ffff8801db100000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa30835b518 CR3: 00000001879ef000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+  C_SYSC_ioctl fs/compat_ioctl.c:1461 [inline]
+  compat_SyS_ioctl+0xa37/0x33b0 fs/compat_ioctl.c:1407
+  do_syscall_64+0x29e/0x9d0 arch/x86/entry/common.c:287
+  entry_SYSCALL_64_after_hwframe+0x42/0xb7
+RIP: 0033:0x455259
+RSP: 002b:00007fa64d465c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000202
+RAX: ffffffffffffffda RBX: 00007fa64d4666d4 RCX: 0000000000455259
+RDX: 0000000000930000 RSI: 00000000c0305720 RDI: 0000000000000013
+RBP: 000000000072bf58 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000020000180 R11: 0000000000000246 R12: 00000000ffffffff
+R13: 0000000000000641 R14: 00000000006fc6b8 R15: 0000000000000001
+Code: df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 1c 06 00 00 48 b8 00 00 00  
+00 00 fc ff df 48 8b 5b 08 48 8d 7b 58 48 89 fa 48 c1 ea 03 <80> 3c 02 00  
+0f 85 e5 05 00 00 48 8b 7b 58 4c 89 f6 e8 5d cc ff
+RIP: snd_rawmidi_ioctl_status_x32 sound/core/rawmidi_compat.c:125 [inline]  
+RSP: ffff88018ccdfc08
+RIP: snd_rawmidi_ioctl_compat+0x51d/0xba0 sound/core/rawmidi_compat.c:168  
+RSP: ffff88018ccdfc08
+---[ end trace 7dcd43c411f49842 ]---
 
 
-Regards,
-Clemens
+---
+This bug is generated by a dumb bot. It may contain errors.
+See https://goo.gl/tpsmEJ for details.
+Direct all questions to syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report.
+If you forgot to add the Reported-by tag, once the fix for this bug is  
+merged
+into any tree, please reply to this email with:
+#syz fix: exact-commit-title
+To mark this as a duplicate of another syzbot report, please reply with:
+#syz dup: exact-subject-of-another-report
+If it's a one-off invalid bug report, please reply with:
+#syz invalid
+Note: if the crash happens again, it will cause creation of a new bug  
+report.
+Note: all commands must start from beginning of the line in the email body.
