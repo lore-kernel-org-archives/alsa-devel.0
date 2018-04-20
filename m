@@ -1,75 +1,85 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/8] arm: renesas: Change platform dependency to
- ARCH_RENESAS
-Date: Fri, 20 Apr 2018 17:48:11 +0100
-Message-ID: <20180420164811.GC22369@sirena.org.uk>
-References: <1524230914-10175-1-git-send-email-geert+renesas@glider.be>
+Subject: Applied "ASoC: sh: Drop SUPERH platform dependency" to
+	the asoc tree
+Date: Fri, 20 Apr 2018 18:00:49 +0100
+Message-ID: <E1f9ZOz-0004Hg-U0@debutante>
+References: <1524234134-14297-1-git-send-email-geert+renesas@glider.be>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4325866435034445140=="
-Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
-In-Reply-To: <1524230914-10175-1-git-send-email-geert+renesas@glider.be>
-List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
-List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
-List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
-List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
-List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
-Errors-To: driverdev-devel-bounces@linuxdriverproject.org
-Sender: "devel" <driverdev-devel-bounces@linuxdriverproject.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8830E2673D4
+ for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 19:01:07 +0200 (CEST)
+In-Reply-To: <1524234134-14297-1-git-send-email-geert+renesas@glider.be>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, devel@driverdev.osuosl.org, Mauro Carvalho Chehab <mchehab@kernel.org>, Vinod Koul <vinod.koul@intel.com>, Magnus Damm <magnus.damm@gmail.com>, Russell King <linux@armlinux.org.uk>, linux-media@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Simon Horman <horms@verge.net.au>, Dan Williams <dan.j.williams@intel.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org, dmaengine@vger.ke
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============4325866435034445140==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="JgQwtEuHJzHdouWu"
-Content-Disposition: inline
+   ASoC: sh: Drop SUPERH platform dependency
 
+has been applied to the asoc tree at
 
---JgQwtEuHJzHdouWu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Apr 20, 2018 at 03:28:26PM +0200, Geert Uytterhoeven wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> The first 6 patches can be applied independently by subsystem
-> maintainers.
-> The last two patches depend on the first 6 patches, and are thus marked
-> RFC.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Would it not make sense to try to apply everything en masse rather than
-delaying?  I'm happy to apply the subsystem stuff but if it gets things
-done quicker or more efficiently I'm also happy to have the lot merged
-as one series.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---JgQwtEuHJzHdouWu
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlraGcoACgkQJNaLcl1U
-h9Dwjgf/Q07mk2IWEt7VXFh08KoOEpJEqv82iu1CWXLrjf83nqwrtopuQeod7ep3
-mYoWaxwFLG+wRiICbiVvZf1E9oyGm+sd/IceJnV/6vjTX3iAS//6hUZelNkyAjNj
-uvj3C3aGO+8n95ziwDEe579wVzhbzf1fNJKuXHavLmvN7Zo0q0J0Z/UcOku5bvIu
-cA6uuY4IiNLgq4b2Boe1YKLb4GFrzAMsBSCtrDwhKYPuepVHFN0U9yXjKHPUj9hd
-a/0SUXkvRlTTASH/rNZ/izVWymAudG+HJu4bbCuubieJZ2lZ8G3NL2TviyP9O+ql
-35zxtbJRtGQ/uHkqH44QJFZmUoDoNQ==
-=z1T8
------END PGP SIGNATURE-----
+>From 4070d91754039e88f7b64e462f3d0d8cdb4be041 Mon Sep 17 00:00:00 2001
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+Date: Fri, 20 Apr 2018 16:22:14 +0200
+Subject: [PATCH] ASoC: sh: Drop SUPERH platform dependency
 
---JgQwtEuHJzHdouWu--
+The SIU sound peripheral is used only on SuperH SH-Mobile platforms.
+As both SUPERH and ARCH_SHMOBILE are set for these platforms, the SUPERH
+dependency can be dropped.
 
---===============4325866435034445140==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-_______________________________________________
-devel mailing list
-devel@linuxdriverproject.org
-http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel
-
---===============4325866435034445140==--
+diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
+index 1aa5cd77ca24..365f46321147 100644
+--- a/sound/soc/sh/Kconfig
++++ b/sound/soc/sh/Kconfig
+@@ -28,7 +28,7 @@ config SND_SOC_SH4_FSI
+ 
+ config SND_SOC_SH4_SIU
+ 	tristate
+-	depends on (SUPERH || ARCH_SHMOBILE) && HAVE_CLK
++	depends on ARCH_SHMOBILE && HAVE_CLK
+ 	select DMA_ENGINE
+ 	select DMADEVICES
+ 	select SH_DMAE
+-- 
+2.17.0
