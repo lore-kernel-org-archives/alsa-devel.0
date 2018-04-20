@@ -1,50 +1,75 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH 4/8] sh_eth: Change platform check to
-	CONFIG_ARCH_RENESAS
-Date: Fri, 20 Apr 2018 18:22:03 +0300
-Message-ID: <b0e4bb99-f964-cf8a-dddc-621f599d35f0@cogentembedded.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 0/8] arm: renesas: Change platform dependency to
+ ARCH_RENESAS
+Date: Fri, 20 Apr 2018 17:48:11 +0100
+Message-ID: <20180420164811.GC22369@sirena.org.uk>
 References: <1524230914-10175-1-git-send-email-geert+renesas@glider.be>
- <1524230914-10175-5-git-send-email-geert+renesas@glider.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f47.google.com (mail-lf0-f47.google.com
- [209.85.215.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 9956E2673D4
- for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 17:22:07 +0200 (CEST)
-Received: by mail-lf0-f47.google.com with SMTP id u21-v6so4089484lfu.9
- for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 08:22:07 -0700 (PDT)
-In-Reply-To: <1524230914-10175-5-git-send-email-geert+renesas@glider.be>
-Content-Language: en-MW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Geert Uytterhoeven <geert+renesas@glider.be>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Dan Williams <dan.j.williams@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, "David S . Miller" <davem@davemloft.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Arnd Bergmann <arnd@arndb.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4325866435034445140=="
+Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+In-Reply-To: <1524230914-10175-1-git-send-email-geert+renesas@glider.be>
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
+List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
+List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
+Errors-To: driverdev-devel-bounces@linuxdriverproject.org
+Sender: "devel" <driverdev-devel-bounces@linuxdriverproject.org>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, devel@driverdev.osuosl.org, Mauro Carvalho Chehab <mchehab@kernel.org>, Vinod Koul <vinod.koul@intel.com>, Magnus Damm <magnus.damm@gmail.com>, Russell King <linux@armlinux.org.uk>, linux-media@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Simon Horman <horms@verge.net.au>, Dan Williams <dan.j.williams@intel.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org, dmaengine@vger.ke
 List-Id: alsa-devel@alsa-project.org
 
-On 04/20/2018 04:28 PM, Geert Uytterhoeven wrote:
 
-> Since commit 9b5ba0df4ea4f940 ("ARM: shmobile: Introduce ARCH_RENESAS")
-> is CONFIG_ARCH_RENESAS a more appropriate platform check than the legacy
-> CONFIG_ARCH_SHMOBILE, hence use the former.
-> 
-> Renesas SuperH SH-Mobile SoCs are still covered by the CONFIG_CPU_SH4
-> check.
-> 
-> This will allow to drop ARCH_SHMOBILE on ARM and ARM64 in the near
-> future.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-[...]
+--===============4325866435034445140==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="JgQwtEuHJzHdouWu"
+Content-Disposition: inline
 
-Acked-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 
-MBR, Sergei
+--JgQwtEuHJzHdouWu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Apr 20, 2018 at 03:28:26PM +0200, Geert Uytterhoeven wrote:
+
+> The first 6 patches can be applied independently by subsystem
+> maintainers.
+> The last two patches depend on the first 6 patches, and are thus marked
+> RFC.
+
+Would it not make sense to try to apply everything en masse rather than
+delaying?  I'm happy to apply the subsystem stuff but if it gets things
+done quicker or more efficiently I'm also happy to have the lot merged
+as one series.
+
+--JgQwtEuHJzHdouWu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlraGcoACgkQJNaLcl1U
+h9Dwjgf/Q07mk2IWEt7VXFh08KoOEpJEqv82iu1CWXLrjf83nqwrtopuQeod7ep3
+mYoWaxwFLG+wRiICbiVvZf1E9oyGm+sd/IceJnV/6vjTX3iAS//6hUZelNkyAjNj
+uvj3C3aGO+8n95ziwDEe579wVzhbzf1fNJKuXHavLmvN7Zo0q0J0Z/UcOku5bvIu
+cA6uuY4IiNLgq4b2Boe1YKLb4GFrzAMsBSCtrDwhKYPuepVHFN0U9yXjKHPUj9hd
+a/0SUXkvRlTTASH/rNZ/izVWymAudG+HJu4bbCuubieJZ2lZ8G3NL2TviyP9O+ql
+35zxtbJRtGQ/uHkqH44QJFZmUoDoNQ==
+=z1T8
+-----END PGP SIGNATURE-----
+
+--JgQwtEuHJzHdouWu--
+
+--===============4325866435034445140==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+devel mailing list
+devel@linuxdriverproject.org
+http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel
+
+--===============4325866435034445140==--
