@@ -1,23 +1,19 @@
-From: Robert Tiemann <rtie@gmx.de>
-Subject: Re: Sample format changes by plugin while playing
-Date: Fri, 20 Apr 2018 09:37:16 +0200
-Message-ID: <2d6ea183-4ff9-beb7-50b8-a0843f6d63a1@gmx.de>
-References: <2f7e073c-b51a-dd7d-af89-9a10872faed1@gmx.de>
- <f022197f-4909-c901-b61f-cd8a197d46e8@gmx.de>
- <991e97ca-1176-c2a2-d376-a9c277334b03@ladisch.de>
- <c7d05205-7990-3720-b687-157167a7c350@gmx.de>
- <7c046ed4-9f38-31d3-61b7-b8b68bd5054c@ladisch.de>
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
+Subject: Re: [PATCH 61/61] ASoC: atmel: simplify getting
+	.drvdata
+Date: Fri, 20 Apr 2018 10:06:46 +0200
+Message-ID: <23044c16-efbf-7920-2a25-338ad46376eb@microchip.com>
+References: <20180419140641.27926-1-wsa+renesas@sang-engineering.com>
+ <20180419140641.27926-62-wsa+renesas@sang-engineering.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
- by alsa0.perex.cz (Postfix) with ESMTP id A57E8266CA1
- for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 09:37:17 +0200 (CEST)
-Received: from [192.168.15.101] ([87.245.7.122]) by mail.gmx.com (mrgmx101
- [212.227.17.168]) with ESMTPSA (Nemesis) id 0LoJDJ-1eTC2H3SHZ-00gFED for
- <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 09:37:16 +0200
-In-Reply-To: <7c046ed4-9f38-31d3-61b7-b8b68bd5054c@ladisch.de>
+Received: from esa6.microchip.iphmx.com (esa6.microchip.iphmx.com
+ [216.71.154.253])
+ by alsa0.perex.cz (Postfix) with ESMTP id A55DA266CA1
+ for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 10:07:41 +0200 (CEST)
+In-Reply-To: <20180419140641.27926-62-wsa+renesas@sang-engineering.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,31 +24,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>, linux-kernel@vger.kernel.org
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-
-On 04/19/2018 05:57 PM, Clemens Ladisch wrote:
-> Robert Tiemann wrote:
->> I guess "in theory" means that you don't know about any plugin of such
->> kind I could take a look at, right?
+On 19/04/2018 at 16:06, Wolfram Sang wrote:
+> We should get drvdata from struct device directly. Going via
+> platform_device is an unneeded step back and forth.
 > 
-> No; most plugins force the configuration of the slave to be similar, and
-> to be done at the same time as their own.
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-So a plugin can configure its slave the way it likes? Would it be
-possible to change the slave configuration multiple times during
-playback (close/open slave would be OK for me)?
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-> PulseAudio does something similar to this, but it's much more complex
-> than just an ALSA plugin.
+> ---
+> 
+> Build tested only. buildbot is happy. Please apply individually.
+> 
+>   sound/soc/atmel/atmel_ssc_dai.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+> index a1e2c5682dcd..4a0275a6505d 100644
+> --- a/sound/soc/atmel/atmel_ssc_dai.c
+> +++ b/sound/soc/atmel/atmel_ssc_dai.c
+> @@ -1002,8 +1002,7 @@ static const struct snd_soc_component_driver atmel_ssc_component = {
+>   
+>   static int asoc_ssc_init(struct device *dev)
+>   {
+> -	struct platform_device *pdev = to_platform_device(dev);
+> -	struct ssc_device *ssc = platform_get_drvdata(pdev);
+> +	struct ssc_device *ssc = dev_get_drvdata(dev);
+>   	int ret;
+>   
+>   	ret = snd_soc_register_component(dev, &atmel_ssc_component,
+> @@ -1033,8 +1032,7 @@ static int asoc_ssc_init(struct device *dev)
+>   
+>   static void asoc_ssc_exit(struct device *dev)
+>   {
+> -	struct platform_device *pdev = to_platform_device(dev);
+> -	struct ssc_device *ssc = platform_get_drvdata(pdev);
+> +	struct ssc_device *ssc = dev_get_drvdata(dev);
+>   
+>   	if (ssc->pdata->use_dma)
+>   		atmel_pcm_dma_platform_unregister(dev);
+> 
 
-I'd like to avoid PulseAudio for my case. Basically, I have the choice
-between writing an ALSA plugin for a generic and transparent solution,
-or implementing the functionality in the playback software.
 
-The latter solution would be rather messy, I suspect, and be
-restricted to individual players (currently, I need to support two
-different players, both doing their things in very different ways).
-Anyway, taking a look a PulseAudio won't hurt if it cannot be done as
-ALSA plugin.
+-- 
+Nicolas Ferre
