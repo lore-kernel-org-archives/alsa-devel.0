@@ -1,34 +1,48 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 0/8] arm: renesas: Change platform dependency to ARCH_RENESAS
-Date: Fri, 20 Apr 2018 15:40:24 +0200
-Message-ID: <CAK8P3a17+rD9o=dKGYPhhjmtZsc7S-1YpPpH+Zfxbx6xVo7UWg@mail.gmail.com>
-References: <1524230914-10175-1-git-send-email-geert+renesas@glider.be>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] ASoC: sh: Drop SUPERH platform dependency
+Date: Fri, 20 Apr 2018 16:22:14 +0200
+Message-ID: <1524234134-14297-1-git-send-email-geert+renesas@glider.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1524230914-10175-1-git-send-email-geert+renesas@glider.be>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Dan Williams <dan.j.williams@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, "David S . Miller" <davem@davemloft.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>Linux
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [195.130.137.89])
+ by alsa0.perex.cz (Postfix) with ESMTP id 781AC2673D4
+ for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 16:22:17 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-renesas-soc@vger.kernel.org, alsa-devel@alsa-project.org, Geert Uytterhoeven <geert+renesas@glider.be>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 20, 2018 at 3:28 PM, Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
->         Hi all,
->
-> Commit 9b5ba0df4ea4f940 ("ARM: shmobile: Introduce ARCH_RENESAS")
-> started the conversion from ARCH_SHMOBILE to ARCH_RENESAS for Renesas
-> ARM SoCs.  This patch series completes the conversion, by:
->   1. Updating dependencies for drivers that weren't converted yet,
->   2. Removing the ARCH_SHMOBILE Kconfig symbols on ARM and ARM64.
->
-> The first 6 patches can be applied independently by subsystem
-> maintainers.
-> The last two patches depend on the first 6 patches, and are thus marked
-> RFC.
+The SIU sound peripheral is used only on SuperH SH-Mobile platforms.
+As both SUPERH and ARCH_SHMOBILE are set for these platforms, the SUPERH
+dependency can be dropped.
 
-This all looks fine to me.
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ sound/soc/sh/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-
-      Arnd
+diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
+index c1b7fb91e3063f2b..0ae0800bf3a8b471 100644
+--- a/sound/soc/sh/Kconfig
++++ b/sound/soc/sh/Kconfig
+@@ -28,7 +28,7 @@ config SND_SOC_SH4_FSI
+ 
+ config SND_SOC_SH4_SIU
+ 	tristate
+-	depends on (SUPERH || ARCH_SHMOBILE) && HAVE_CLK
++	depends on ARCH_SHMOBILE && HAVE_CLK
+ 	select DMA_ENGINE
+ 	select DMADEVICES
+ 	select SH_DMAE
+-- 
+2.7.4
