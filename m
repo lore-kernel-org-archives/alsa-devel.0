@@ -1,117 +1,50 @@
-From: Jean-Jacques Hiblot <jjhiblot@ti.com>
-Subject: [PATCH 3/3] ASoC: tas6424: Add support for the mute pin
-Date: Fri, 20 Apr 2018 12:04:44 +0200
-Message-ID: <1524218684-19752-4-git-send-email-jjhiblot@ti.com>
-References: <1524218684-19752-1-git-send-email-jjhiblot@ti.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH 1/7] ASoC: Intel: byt-max98090: Replace
+	GFP_ATOMIC with GFP_KERNEL
+Date: Fri, 20 Apr 2018 16:14:26 +0530
+Message-ID: <1524221072-11040-2-git-send-email-vinod.koul@intel.com>
+References: <1524221072-11040-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1524218684-19752-1-git-send-email-jjhiblot@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com
-Cc: dannenberg@ti.com, afd@ti.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Jean-Jacques Hiblot <jjhiblot@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id 68CB62673D3
+ for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 12:40:03 +0200 (CEST)
+In-Reply-To: <1524221072-11040-1-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-mute can be connected to GPIO. In that case we have to drive it to the
-correct value
+In byt_max98090_probe which is not atomic context, we use GFP_ATOMIC
+flag with memory allocation, fix that by using GFP_KERNEL.
 
-Signed-off-by: Jean-Jacques Hiblot <jjhiblot@ti.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- .../devicetree/bindings/sound/ti,tas6424.txt       |  1 +
- sound/soc/codecs/tas6424.c                         | 37 +++++++++++++++++++++-
- 2 files changed, 37 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/byt-max98090.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/ti,tas6424.txt b/Documentation/devicetree/bindings/sound/ti,tas6424.txt
-index 82c6d48..527e356 100644
---- a/Documentation/devicetree/bindings/sound/ti,tas6424.txt
-+++ b/Documentation/devicetree/bindings/sound/ti,tas6424.txt
-@@ -9,6 +9,7 @@ Required properties:
- 	- disable-auto-diagnostics: disable DC auto diagnostics (faster power
- 	  on, but less safe as shortage won't be detected)
- 	- standby-gpio: GPIO used to shut the TAS6424 down.
-+	- mute-gpio: GPIO used to mute all the outputs
+diff --git a/sound/soc/intel/boards/byt-max98090.c b/sound/soc/intel/boards/byt-max98090.c
+index 0f8b8209c020..f1283634b22b 100644
+--- a/sound/soc/intel/boards/byt-max98090.c
++++ b/sound/soc/intel/boards/byt-max98090.c
+@@ -151,7 +151,7 @@ static int byt_max98090_probe(struct platform_device *pdev)
+ 	struct byt_max98090_private *priv;
+ 	int ret_val;
  
- Example:
- 
-diff --git a/sound/soc/codecs/tas6424.c b/sound/soc/codecs/tas6424.c
-index 926259a..cf84b1c 100644
---- a/sound/soc/codecs/tas6424.c
-+++ b/sound/soc/codecs/tas6424.c
-@@ -46,6 +46,7 @@ struct tas6424_data {
- 	unsigned int last_warn;
- 	bool no_auto_diags;
- 	struct gpio_desc *standby_gpio;
-+	struct gpio_desc *mute_gpio;
- };
- 
- /*
-@@ -252,10 +253,16 @@ static int tas6424_set_dai_tdm_slot(struct snd_soc_dai *dai,
- static int tas6424_mute(struct snd_soc_dai *dai, int mute)
- {
- 	struct snd_soc_component *component = dai->component;
-+	struct tas6424_data *tas6424 = snd_soc_component_get_drvdata(component);
- 	unsigned int val;
- 
- 	dev_dbg(component->dev, "%s() mute=%d\n", __func__, mute);
- 
-+	if (tas6424->mute_gpio) {
-+		gpiod_set_value_cansleep(tas6424->mute_gpio, mute ? 1 : 0);
-+		return 0;
-+	}
-+
- 	if (mute)
- 		val = TAS6424_ALL_STATE_MUTE;
- 	else
-@@ -290,6 +297,7 @@ static int tas6424_power_on(struct snd_soc_component *component)
- {
- 	struct tas6424_data *tas6424 = snd_soc_component_get_drvdata(component);
- 	int ret;
-+	u8 chan_states;
- 
- 	ret = regulator_bulk_enable(ARRAY_SIZE(tas6424->supplies),
- 				    tas6424->supplies);
-@@ -306,7 +314,18 @@ static int tas6424_power_on(struct snd_soc_component *component)
- 		return ret;
- 	}
- 
--	snd_soc_component_write(component, TAS6424_CH_STATE_CTRL, TAS6424_ALL_STATE_MUTE);
-+	if (tas6424->mute_gpio) {
-+		gpiod_set_value_cansleep(tas6424->mute_gpio, 0);
-+		/*
-+		 * channels are muted via the mute pin, don't also. Don't also
-+		 * mute them via the registers so that subsequent register
-+		 * access is not necessary to un-mute the channels
-+		 */
-+		chan_states = TAS6424_ALL_STATE_PLAY;
-+	} else {
-+		chan_states = TAS6424_ALL_STATE_MUTE;
-+	}
-+	snd_soc_component_write(component, TAS6424_CH_STATE_CTRL, chan_states);
- 
- 	/* any time we come out of HIZ, the output channels automatically run DC
- 	 * load diagnostics, wait here until this completes
-@@ -650,6 +669,22 @@ static int tas6424_i2c_probe(struct i2c_client *client,
- 		tas6424->standby_gpio = NULL;
- 	}
- 
-+	/*
-+	 * Get control of the mute pin and set it HIGH in order to start with
-+	 * all the output muted.
-+	 * Note: The actual pin polarity is taken care of in the GPIO lib
-+	 * according the polarity specified in the DTS.
-+	 */
-+	tas6424->mute_gpio = devm_gpiod_get_optional(dev, "mute",
-+						      GPIOD_OUT_HIGH);
-+	if (IS_ERR(tas6424->mute_gpio)) {
-+		if (PTR_ERR(tas6424->mute_gpio) == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+		dev_info(dev, "failed to get nmute GPIO: %ld\n",
-+			PTR_ERR(tas6424->mute_gpio));
-+		tas6424->mute_gpio = NULL;
-+	}
-+
- 	for (i = 0; i < ARRAY_SIZE(tas6424->supplies); i++)
- 		tas6424->supplies[i].supply = tas6424_supply_names[i];
- 	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(tas6424->supplies),
+-	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
++	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv) {
+ 		dev_err(&pdev->dev, "allocation failed\n");
+ 		return -ENOMEM;
 -- 
 2.7.4
