@@ -1,20 +1,17 @@
-From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-Subject: Re: [PATCH 3/4] sound,
- media: allow building ISA drivers it with COMPILE_TEST
-Date: Fri, 20 Apr 2018 10:09:05 -0300
-Message-ID: <20180420100905.51e04e82@vento.lan>
-References: <cover.1524227382.git.mchehab@s-opensource.com>
- <3f4d8ae83a91c765581d9cbbd1e436b6871368fa.1524227382.git.mchehab@s-opensource.com>
- <s5h7ep2vysl.wl-tiwai@suse.de> <20180420095129.2b7d004d@vento.lan>
- <s5h36zqvxug.wl-tiwai@suse.de>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH/RFC 7/8] ARM: shmobile: Remove the
+	ARCH_SHMOBILE Kconfig symbol
+Date: Fri, 20 Apr 2018 15:28:33 +0200
+Message-ID: <1524230914-10175-8-git-send-email-geert+renesas@glider.be>
+References: <1524230914-10175-1-git-send-email-geert+renesas@glider.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from osg.samsung.com (osg.samsung.com [64.30.133.232])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E4F42673D4
- for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 15:09:11 +0200 (CEST)
-In-Reply-To: <s5h36zqvxug.wl-tiwai@suse.de>
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [195.130.132.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id ABBDB2673DF
+ for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 15:28:57 +0200 (CEST)
+In-Reply-To: <1524230914-10175-1-git-send-email-geert+renesas@glider.be>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,191 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Linux Media Mailing List <linux-media@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>
+To: Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Dan Williams <dan.j.williams@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, "David S . Miller" <davem@davemloft.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Arnd Bergmann <arnd@arndb.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Geert Uytterhoeven <geert+renesas@glider.be>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Em Fri, 20 Apr 2018 14:58:15 +0200
-Takashi Iwai <tiwai@suse.de> escreveu:
+All drivers for Renesas ARM SoCs have gained proper ARCH_RENESAS
+platform dependencies.  Hence finish the conversion from ARCH_SHMOBILE
+to ARCH_RENESAS for Renesas 32-bit ARM SoCs, as started by commit
+9b5ba0df4ea4f940 ("ARM: shmobile: Introduce ARCH_RENESAS").
 
-> On Fri, 20 Apr 2018 14:51:29 +0200,
-> Mauro Carvalho Chehab wrote:
-> > 
-> > Em Fri, 20 Apr 2018 14:37:46 +0200
-> > Takashi Iwai <tiwai@suse.de> escreveu:
-> >   
-> > > On Fri, 20 Apr 2018 14:32:15 +0200,
-> > > Mauro Carvalho Chehab wrote:  
-> > > > 
-> > > > All sound drivers that don't depend on PNP can be safelly
-> > > > build with COMPILE_TEST, as ISA provides function stubs to
-> > > > be used for such purposes.
-> > > > 
-> > > > As a side effect, with this change, the radio-miropcm20
-> > > > can now be built outside i386 with COMPILE_TEST.
-> > > > 
-> > > > Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-> > > > ---
-> > > >  drivers/media/radio/Kconfig | 3 ++-
-> > > >  sound/isa/Kconfig           | 9 +++++----
-> > > >  2 files changed, 7 insertions(+), 5 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/media/radio/Kconfig b/drivers/media/radio/Kconfig
-> > > > index d363726e9eb1..8fa403c7149e 100644
-> > > > --- a/drivers/media/radio/Kconfig
-> > > > +++ b/drivers/media/radio/Kconfig
-> > > > @@ -372,7 +372,8 @@ config RADIO_GEMTEK_PROBE
-> > > >  
-> > > >  config RADIO_MIROPCM20
-> > > >  	tristate "miroSOUND PCM20 radio"
-> > > > -	depends on ISA && ISA_DMA_API && VIDEO_V4L2 && SND
-> > > > +	depends on ISA || COMPILE_TEST
-> > > > +	depends on ISA_DMA_API && VIDEO_V4L2 && SND
-> > > >  	select SND_ISA
-> > > >  	select SND_MIRO
-> > > >  	---help---
-> > > > diff --git a/sound/isa/Kconfig b/sound/isa/Kconfig
-> > > > index cb54d9c0a77f..d2a6cdd0395c 100644
-> > > > --- a/sound/isa/Kconfig
-> > > > +++ b/sound/isa/Kconfig
-> > > > @@ -20,7 +20,8 @@ config SND_SB16_DSP
-> > > >  
-> > > >  menuconfig SND_ISA
-> > > >  	bool "ISA sound devices"
-> > > > -	depends on ISA && ISA_DMA_API
-> > > > +	depends on ISA || COMPILE_TEST
-> > > > +	depends on ISA_DMA_API
-> > > >  	default y
-> > > >  	help
-> > > >  	  Support for sound devices connected via the ISA bus.
-> > > > @@ -38,7 +39,7 @@ config SND_ADLIB
-> > > >  
-> > > >  config SND_AD1816A
-> > > >  	tristate "Analog Devices SoundPort AD1816A"
-> > > > -	depends on PNP
-> > > > +	depends on PNP && ISA
-> > > >  	select ISAPNP
-> > > >  	select SND_OPL3_LIB
-> > > >  	select SND_MPU401_UART    
-> > > 
-> > > Just from curiosity: what's the reason for this explicit CONFIG_ISA
-> > > dependency?  What error did you get?  
-> > 
-> > Kconfig complains with "select ISAPNP":
-> > 
-> > WARNING: unmet direct dependencies detected for ISAPNP
-> >   Depends on [n]: PNP [=y] && ISA [=n]
-> >   Selected by [y]:
-> >   - SND_AD1816A [=y] && SOUND [=y] && !UML && SND [=y] && SND_ISA [=y] && PNP [=y]
-> > 
-> > Because it is declared as:
-> > 
-> > config ISAPNP
-> > 	bool "ISA Plug and Play support"
-> >         depends on ISA  
-> 
-> I see.  Then it'd be better to put this explanations in the changelog
-> as well.
-
-Added. See enclosed.
-
-> 
-> > I could have tried to change ISAPNP to depends on ISA || COMPILE_TEST,
-> > but I suspect that would touch on yet another subsystem and has
-> > the potential to point to other things that need changes, as
-> > a lot more drivers will be selected.
-> > 
-> > Anyway, after a quick look at include/linux/isapnp.h, I suspect
-> > that this can work.
-> > 
-> > I'll run some tests here.  
-> 
-> At least a dumb stub is there, so let's hope we can widen the test
-> coverage :)
-
-Yes, that's the idea :-)
-
-Right now, for every patch I receive, I build media drivers for i386
-(I just made all of them build on i386), but I'm considering doing such
-builds on x86_64 instead, as it also enables compat32 code.
-
-Thanks,
-Mauro
-
-[PATCH v2] sound, media: allow building ISA drivers it with COMPILE_TEST
-
-All sound drivers that don't depend on PNP can be safelly
-build with COMPILE_TEST, as ISA provides function stubs to
-be used for such purposes.
-
-As a side effect, with this change, the radio-miropcm20
-can now be built outside i386 with COMPILE_TEST.
-
-It should be noticed that ISAPNP currently depends on ISA.
-So, on drivers that depend on it, we need to add an
-explicit dependency on ISA, at least until another patch
-removes it.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
+This depends on the previous patches in this series, hence the RFC.
 
-v2: only patch description changed, with the addition of a note
-about ISA explicit dependency on 3 drivers.
+JFTR, after this, the following symbols for drivers supporting only
+Renesas SuperH "SH-Mobile" SoCs can no longer be selected:
+  - CONFIG_KEYBOARD_SH_KEYSC,
+  - CONFIG_VIDEO_SH_VOU,
+  - CONFIG_VIDEO_SH_MOBILE_CEU,
+  - CONFIG_DRM_SHMOBILE[*],
+  - CONFIG_FB_SH_MOBILE_MERAM.
+(changes for a shmobile_defconfig .config)
 
+[*] CONFIG_DRM_SHMOBILE has a dependency on ARM, but it was never wired
+    up.  From the use of sh_mobile_meram, I guess it was meant for
+    SH-Mobile AP4 on Mackerel or AP4EVB, which are long gone.
+    So the only remaining upstream platforms that could make use of it
+    are legacy SuperH SH-Mobile SoCs?
+---
+ arch/arm/mach-shmobile/Kconfig | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/media/radio/Kconfig b/drivers/media/radio/Kconfig
-index d363726e9eb1..8fa403c7149e 100644
---- a/drivers/media/radio/Kconfig
-+++ b/drivers/media/radio/Kconfig
-@@ -372,7 +372,8 @@ config RADIO_GEMTEK_PROBE
- 
- config RADIO_MIROPCM20
- 	tristate "miroSOUND PCM20 radio"
--	depends on ISA && ISA_DMA_API && VIDEO_V4L2 && SND
-+	depends on ISA || COMPILE_TEST
-+	depends on ISA_DMA_API && VIDEO_V4L2 && SND
- 	select SND_ISA
- 	select SND_MIRO
- 	---help---
-diff --git a/sound/isa/Kconfig b/sound/isa/Kconfig
-index cb54d9c0a77f..d2a6cdd0395c 100644
---- a/sound/isa/Kconfig
-+++ b/sound/isa/Kconfig
-@@ -20,7 +20,8 @@ config SND_SB16_DSP
- 
- menuconfig SND_ISA
- 	bool "ISA sound devices"
--	depends on ISA && ISA_DMA_API
-+	depends on ISA || COMPILE_TEST
-+	depends on ISA_DMA_API
- 	default y
- 	help
- 	  Support for sound devices connected via the ISA bus.
-@@ -38,7 +39,7 @@ config SND_ADLIB
- 
- config SND_AD1816A
- 	tristate "Analog Devices SoundPort AD1816A"
--	depends on PNP
-+	depends on PNP && ISA
- 	select ISAPNP
- 	select SND_OPL3_LIB
- 	select SND_MPU401_UART
-@@ -66,7 +67,7 @@ config SND_AD1848
- 
- config SND_ALS100
- 	tristate "Diamond Tech. DT-019x and Avance Logic ALSxxx"
--	depends on PNP
-+	depends on PNP && ISA
- 	select ISAPNP
- 	select SND_OPL3_LIB
- 	select SND_MPU401_UART
-@@ -107,7 +108,7 @@ config SND_AZT2316
- 
- config SND_AZT2320
- 	tristate "Aztech Systems AZT2320"
--	depends on PNP
-+	depends on PNP && ISA
- 	select ISAPNP
- 	select SND_OPL3_LIB
- 	select SND_MPU401_UART
+diff --git a/arch/arm/mach-shmobile/Kconfig b/arch/arm/mach-shmobile/Kconfig
+index 96672da02f5f17b9..d892c5b52b6f5627 100644
+--- a/arch/arm/mach-shmobile/Kconfig
++++ b/arch/arm/mach-shmobile/Kconfig
+@@ -1,6 +1,3 @@
+-config ARCH_SHMOBILE
+-	bool
+-
+ config PM_RMOBILE
+ 	bool
+ 	select PM
+@@ -30,7 +27,6 @@ menuconfig ARCH_RENESAS
+ 	bool "Renesas ARM SoCs"
+ 	depends on ARCH_MULTI_V7 && MMU
+ 	select ARCH_DMA_ADDR_T_64BIT if ARM_LPAE
+-	select ARCH_SHMOBILE
+ 	select ARM_GIC
+ 	select GPIOLIB
+ 	select HAVE_ARM_SCU if SMP
+-- 
+2.7.4
