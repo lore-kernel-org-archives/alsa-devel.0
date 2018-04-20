@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel: simplify getting .drvdata" to the asoc tree
-Date: Fri, 20 Apr 2018 18:04:03 +0100
-Message-ID: <E1f9ZS7-0004VB-By@debutante>
-References: <20180419140641.27926-62-wsa+renesas@sang-engineering.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180419140641.27926-62-wsa+renesas@sang-engineering.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Alexandre Belloni <alexandre.belloni@bootlin.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.orgMark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: Intel: byt-max98090: Replace GFP_ATOMIC
+	with GFP_KERNEL" to the asoc tree
+Date: Fri, 20 Apr 2018 18:03:37 +0100
+Message-ID: <E1f9ZRh-0004SH-0G@debutante>
+References: <1524221072-11040-2-git-send-email-vinod.koul@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 717F9267638
+ for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 19:03:50 +0200 (CEST)
+In-Reply-To: <1524221072-11040-2-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel: simplify getting .drvdata
+   ASoC: Intel: byt-max98090: Replace GFP_ATOMIC with GFP_KERNEL
 
 has been applied to the asoc tree at
 
@@ -37,43 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From c0380478139fce887b948b35dc0dcee0b40bdf09 Mon Sep 17 00:00:00 2001
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Date: Thu, 19 Apr 2018 16:06:31 +0200
-Subject: [PATCH] ASoC: atmel: simplify getting .drvdata
+>From ffa481cf5d0e338e9221000805127c8cb3e2b150 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Fri, 20 Apr 2018 16:14:26 +0530
+Subject: [PATCH] ASoC: Intel: byt-max98090: Replace GFP_ATOMIC with GFP_KERNEL
 
-We should get drvdata from struct device directly. Going via
-platform_device is an unneeded step back and forth.
+In byt_max98090_probe which is not atomic context, we use GFP_ATOMIC
+flag with memory allocation, fix that by using GFP_KERNEL.
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/atmel_ssc_dai.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/intel/boards/byt-max98090.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index 1c7af0ca98ec..d3b69682d9c2 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -1002,8 +1002,7 @@ static const struct snd_soc_component_driver atmel_ssc_component = {
+diff --git a/sound/soc/intel/boards/byt-max98090.c b/sound/soc/intel/boards/byt-max98090.c
+index 0f8b8209c020..f1283634b22b 100644
+--- a/sound/soc/intel/boards/byt-max98090.c
++++ b/sound/soc/intel/boards/byt-max98090.c
+@@ -151,7 +151,7 @@ static int byt_max98090_probe(struct platform_device *pdev)
+ 	struct byt_max98090_private *priv;
+ 	int ret_val;
  
- static int asoc_ssc_init(struct device *dev)
- {
--	struct platform_device *pdev = to_platform_device(dev);
--	struct ssc_device *ssc = platform_get_drvdata(pdev);
-+	struct ssc_device *ssc = dev_get_drvdata(dev);
- 	int ret;
- 
- 	ret = snd_soc_register_component(dev, &atmel_ssc_component,
-@@ -1033,8 +1032,7 @@ static int asoc_ssc_init(struct device *dev)
- 
- static void asoc_ssc_exit(struct device *dev)
- {
--	struct platform_device *pdev = to_platform_device(dev);
--	struct ssc_device *ssc = platform_get_drvdata(pdev);
-+	struct ssc_device *ssc = dev_get_drvdata(dev);
- 
- 	if (ssc->pdata->use_dma)
- 		atmel_pcm_dma_platform_unregister(dev);
+-	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
++	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv) {
+ 		dev_err(&pdev->dev, "allocation failed\n");
+ 		return -ENOMEM;
 -- 
 2.17.0
