@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sh: Drop SUPERH platform dependency" to
-	the asoc tree
-Date: Fri, 20 Apr 2018 18:00:49 +0100
-Message-ID: <E1f9ZOz-0004Hg-U0@debutante>
-References: <1524234134-14297-1-git-send-email-geert+renesas@glider.be>
+Subject: Applied "ASoC: Intel: kbl_rt5663_rt5514_max98927:
+	Replace GFP_ATOMIC with GFP_KERNEL" to the asoc tree
+Date: Fri, 20 Apr 2018 18:01:05 +0100
+Message-ID: <E1f9ZPF-0004J1-Co@debutante>
+References: <1524221072-11040-8-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8830E2673D4
- for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 19:01:07 +0200 (CEST)
-In-Reply-To: <1524234134-14297-1-git-send-email-geert+renesas@glider.be>
+ by alsa0.perex.cz (Postfix) with ESMTP id CE7CF2673D4
+ for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 19:01:10 +0200 (CEST)
+In-Reply-To: <1524221072-11040-8-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sh: Drop SUPERH platform dependency
+   ASoC: Intel: kbl_rt5663_rt5514_max98927: Replace GFP_ATOMIC with GFP_KERNEL
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From 4070d91754039e88f7b64e462f3d0d8cdb4be041 Mon Sep 17 00:00:00 2001
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-Date: Fri, 20 Apr 2018 16:22:14 +0200
-Subject: [PATCH] ASoC: sh: Drop SUPERH platform dependency
+>From 46c33133ab70873ec32b2e9d970961f832058f60 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Fri, 20 Apr 2018 16:14:32 +0530
+Subject: [PATCH] ASoC: Intel: kbl_rt5663_rt5514_max98927: Replace GFP_ATOMIC
+ with GFP_KERNEL
 
-The SIU sound peripheral is used only on SuperH SH-Mobile platforms.
-As both SUPERH and ARCH_SHMOBILE are set for these platforms, the SUPERH
-dependency can be dropped.
+In kabylake_audio_probe which is not atomic context, we use GFP_ATOMIC
+flag with memory allocation, fix that by using GFP_KERNEL.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/Kconfig | 2 +-
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
-index 1aa5cd77ca24..365f46321147 100644
---- a/sound/soc/sh/Kconfig
-+++ b/sound/soc/sh/Kconfig
-@@ -28,7 +28,7 @@ config SND_SOC_SH4_FSI
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index 69c3d8446f06..e8382d6bbd8c 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -651,7 +651,7 @@ static int kabylake_audio_probe(struct platform_device *pdev)
+ 	struct kbl_codec_private *ctx;
+ 	struct skl_machine_pdata *pdata;
  
- config SND_SOC_SH4_SIU
- 	tristate
--	depends on (SUPERH || ARCH_SHMOBILE) && HAVE_CLK
-+	depends on ARCH_SHMOBILE && HAVE_CLK
- 	select DMA_ENGINE
- 	select DMADEVICES
- 	select SH_DMAE
+-	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
++	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
+ 		return -ENOMEM;
+ 
 -- 
 2.17.0
