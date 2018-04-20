@@ -1,74 +1,76 @@
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: Re: [PATCH 61/61] ASoC: atmel: simplify getting
-	.drvdata
-Date: Fri, 20 Apr 2018 10:06:46 +0200
-Message-ID: <23044c16-efbf-7920-2a25-338ad46376eb@microchip.com>
-References: <20180419140641.27926-1-wsa+renesas@sang-engineering.com>
- <20180419140641.27926-62-wsa+renesas@sang-engineering.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from esa6.microchip.iphmx.com (esa6.microchip.iphmx.com
- [216.71.154.253])
- by alsa0.perex.cz (Postfix) with ESMTP id A55DA266CA1
- for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 10:07:41 +0200 (CEST)
-In-Reply-To: <20180419140641.27926-62-wsa+renesas@sang-engineering.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, linux-kernel@vger.kernel.org
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: [PATCH v4 1/3] dell-led: Change dell-led.h to dell-common.h
+Date: Fri, 20 Apr 2018 17:44:30 +0800
+Message-ID: <20180420094432.13133-1-kai.heng.feng@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: mjg59@srcf.ucam.org, pali.rohar@gmail.com, dvhart@infradead.org, andy@infradead.org, mario.limonciello@dell.com, tiwai@suse.com
+Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 19/04/2018 at 16:06, Wolfram Sang wrote:
-> We should get drvdata from struct device directly. Going via
-> platform_device is an unneeded step back and forth.
-> 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+This header will be used for more than just led. Change it to a more
+generic name.
 
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc: Mario Limonciello <mario.limonciello@dell.com>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v4: Change the commit message to clarify there's no more runtime pm
+    warning.
+    Also skip the check for thunderbolt attached devices.
 
-> ---
-> 
-> Build tested only. buildbot is happy. Please apply individually.
-> 
->   sound/soc/atmel/atmel_ssc_dai.c | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-> index a1e2c5682dcd..4a0275a6505d 100644
-> --- a/sound/soc/atmel/atmel_ssc_dai.c
-> +++ b/sound/soc/atmel/atmel_ssc_dai.c
-> @@ -1002,8 +1002,7 @@ static const struct snd_soc_component_driver atmel_ssc_component = {
->   
->   static int asoc_ssc_init(struct device *dev)
->   {
-> -	struct platform_device *pdev = to_platform_device(dev);
-> -	struct ssc_device *ssc = platform_get_drvdata(pdev);
-> +	struct ssc_device *ssc = dev_get_drvdata(dev);
->   	int ret;
->   
->   	ret = snd_soc_register_component(dev, &atmel_ssc_component,
-> @@ -1033,8 +1032,7 @@ static int asoc_ssc_init(struct device *dev)
->   
->   static void asoc_ssc_exit(struct device *dev)
->   {
-> -	struct platform_device *pdev = to_platform_device(dev);
-> -	struct ssc_device *ssc = platform_get_drvdata(pdev);
-> +	struct ssc_device *ssc = dev_get_drvdata(dev);
->   
->   	if (ssc->pdata->use_dma)
->   		atmel_pcm_dma_platform_unregister(dev);
-> 
+v3: Simplify dell_switchable_gfx_is_enabled() by returning bool instead
+    of error code.
+    Use DMI_DEV_TYPE_OEM_STRING to match Dell System.
 
+v2: Mario suggested to squash the HDA part into the same series.
 
+ drivers/platform/x86/dell-laptop.c          | 2 +-
+ include/linux/{dell-led.h => dell-common.h} | 4 ++--
+ sound/pci/hda/dell_wmi_helper.c             | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+ rename include/linux/{dell-led.h => dell-common.h} (61%)
+
+diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
+index c52c6723374b..8ba820e6c3d0 100644
+--- a/drivers/platform/x86/dell-laptop.c
++++ b/drivers/platform/x86/dell-laptop.c
+@@ -29,7 +29,7 @@
+ #include <linux/mm.h>
+ #include <linux/i8042.h>
+ #include <linux/debugfs.h>
+-#include <linux/dell-led.h>
++#include <linux/dell-common.h>
+ #include <linux/seq_file.h>
+ #include <acpi/video.h>
+ #include "dell-rbtn.h"
+diff --git a/include/linux/dell-led.h b/include/linux/dell-common.h
+similarity index 61%
+rename from include/linux/dell-led.h
+rename to include/linux/dell-common.h
+index 92521471517f..37e4b614dd74 100644
+--- a/include/linux/dell-led.h
++++ b/include/linux/dell-common.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef __DELL_LED_H__
+-#define __DELL_LED_H__
++#ifndef __DELL_COMMON_H__
++#define __DELL_COMMON_H__
+ 
+ int dell_micmute_led_set(int on);
+ 
+diff --git a/sound/pci/hda/dell_wmi_helper.c b/sound/pci/hda/dell_wmi_helper.c
+index 1b48a8c19d28..56050cc3c0ee 100644
+--- a/sound/pci/hda/dell_wmi_helper.c
++++ b/sound/pci/hda/dell_wmi_helper.c
+@@ -4,7 +4,7 @@
+  */
+ 
+ #if IS_ENABLED(CONFIG_DELL_LAPTOP)
+-#include <linux/dell-led.h>
++#include <linux/dell-common.h>
+ 
+ enum {
+ 	MICMUTE_LED_ON,
 -- 
-Nicolas Ferre
+2.17.0
