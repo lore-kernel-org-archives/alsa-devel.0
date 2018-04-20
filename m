@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5651: Replace GFP_ATOMIC
-	with GFP_KERNEL" to the asoc tree
-Date: Fri, 20 Apr 2018 18:02:44 +0100
-Message-ID: <E1f9ZQq-0004PR-H7@debutante>
-References: <1524221072-11040-4-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: bytcht_es8316: Replace
+	GFP_ATOMIC with GFP_KERNEL" to the asoc tree
+Date: Fri, 20 Apr 2018 18:03:21 +0100
+Message-ID: <E1f9ZRR-0004R6-Rx@debutante>
+References: <1524221072-11040-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 948A02675F1
- for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 19:02:47 +0200 (CEST)
-In-Reply-To: <1524221072-11040-4-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BC55E2673DF
+ for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 19:03:24 +0200 (CEST)
+In-Reply-To: <1524221072-11040-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5651: Replace GFP_ATOMIC with GFP_KERNEL
+   ASoC: Intel: bytcht_es8316: Replace GFP_ATOMIC with GFP_KERNEL
 
 has been applied to the asoc tree at
 
@@ -53,27 +53,28 @@ to this mail.
 Thanks,
 Mark
 
->From aa5398e1e90bd08078797570e2bcda1b15934979 Mon Sep 17 00:00:00 2001
+>From d441b8588c3661afdcf61855aad38addb6833581 Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Fri, 20 Apr 2018 16:14:28 +0530
-Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Replace GFP_ATOMIC with GFP_KERNEL
+Date: Fri, 20 Apr 2018 16:14:27 +0530
+Subject: [PATCH] ASoC: Intel: bytcht_es8316: Replace GFP_ATOMIC with
+ GFP_KERNEL
 
-In snd_byt_rt5651_mc_probe which is not atomic context, we use
+In snd_byt_cht_es8316_mc_probe which is not atomic context, we use
 GFP_ATOMIC flag with memory allocation, fix that by using GFP_KERNEL.
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 2 +-
+ sound/soc/intel/boards/bytcht_es8316.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 1b1997f1d60c..3c7d93520c52 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -734,7 +734,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 	int dai_index = 0;
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 305e7f4fe55a..adc26dfc7d65 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -243,7 +243,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
  	int i;
+ 	int ret = 0;
  
 -	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
 +	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
