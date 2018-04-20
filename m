@@ -1,8 +1,8 @@
 From: Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH/RFC 8/8] arm64: renesas: Remove the ARCH_SHMOBILE Kconfig
- symbol
-Date: Fri, 20 Apr 2018 15:28:34 +0200
-Message-ID: <1524230914-10175-9-git-send-email-geert+renesas@glider.be>
+Subject: [PATCH 5/8] staging: emxx_udc: Change platform dependency to
+ ARCH_RENESAS
+Date: Fri, 20 Apr 2018 15:28:31 +0200
+Message-ID: <1524230914-10175-6-git-send-email-geert+renesas@glider.be>
 References: <1524230914-10175-1-git-send-email-geert+renesas@glider.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,95 +22,29 @@ To: Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, Russ
 Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Geert Uytterhoeven <geert+renesas@glider.be>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The Kconfig symbol for Renesas 64-bit ARM SoCs has always been
-ARCH_RENESAS, with ARCH_SHMOBILE being selected to reuse drivers shared
-with Renesas 32-bit ARM and/or Renesas SuperH SH-Mobile SoCs.
+Emma Mobile is a Renesas ARM SoC.  Since commit 9b5ba0df4ea4f940 ("ARM:
+shmobile: Introduce ARCH_RENESAS") is ARCH_RENESAS a more appropriate
+platform dependency than the legacy ARCH_SHMOBILE, hence use the
+former.
 
-Commit 9b5ba0df4ea4f940 ("ARM: shmobile: Introduce ARCH_RENESAS")
-started the conversion from ARCH_SHMOBILE to ARCH_RENESAS for Renesas
-32-bit SoCs.  Now all drivers for Renesas ARM SoCs have gained proper
-ARCH_RENESAS platform dependencies, there is no longer a need to select
-ARCH_SHMOBILE.
-
-With ARCH_SHMOBILE gone, move the ARCH_RENESAS section up, to restore
-alphabetical sort order.
+This will allow to drop ARCH_SHMOBILE on ARM in the near future.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
-This depends on the driver patches in this series, hence the RFC.
+ drivers/staging/emxx_udc/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-JFTR, after this, the following symbols for drivers supporting only
-Renesas SuperH "SH-Mobile" SoCs can no longer be selected:
-  - CONFIG_KEYBOARD_SH_KEYSC,
-  - CONFIG_VIDEO_SH_VOU,
-  - CONFIG_VIDEO_RENESAS_CEU,
-  - CONFIG_FB_SH_MOBILE_MERAM.
-(changes for a renesas_defconfig .config)
----
- arch/arm64/Kconfig.platforms | 42 +++++++++++++++++++-----------------------
- 1 file changed, 19 insertions(+), 23 deletions(-)
-
-diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-index d5aeac351fc3a776..49d8ed1ab84766dd 100644
---- a/arch/arm64/Kconfig.platforms
-+++ b/arch/arm64/Kconfig.platforms
-@@ -145,31 +145,8 @@ config ARCH_REALTEK
- 	  This enables support for the ARMv8 based Realtek chipsets,
- 	  like the RTD1295.
- 
--config ARCH_ROCKCHIP
--	bool "Rockchip Platforms"
--	select ARCH_HAS_RESET_CONTROLLER
--	select GPIOLIB
--	select PINCTRL
--	select PINCTRL_ROCKCHIP
--	select ROCKCHIP_TIMER
--	help
--	  This enables support for the ARMv8 based Rockchip chipsets,
--	  like the RK3368.
--
--config ARCH_SEATTLE
--	bool "AMD Seattle SoC Family"
--	help
--	  This enables support for AMD Seattle SOC Family
--
--config ARCH_SHMOBILE
--	bool
--
--config ARCH_SYNQUACER
--	bool "Socionext SynQuacer SoC Family"
--
- config ARCH_RENESAS
- 	bool "Renesas SoC Platforms"
--	select ARCH_SHMOBILE
- 	select PINCTRL
- 	select PM
- 	select PM_GENERIC_DOMAINS
-@@ -220,6 +197,25 @@ config ARCH_R8A77995
+diff --git a/drivers/staging/emxx_udc/Kconfig b/drivers/staging/emxx_udc/Kconfig
+index d7577096fb25ae7a..e50e722183648c55 100644
+--- a/drivers/staging/emxx_udc/Kconfig
++++ b/drivers/staging/emxx_udc/Kconfig
+@@ -1,6 +1,6 @@
+ config USB_EMXX
+ 	tristate "EMXX USB Function Device Controller"
+- 	depends on USB_GADGET && (ARCH_SHMOBILE || (ARM && COMPILE_TEST))
++	depends on USB_GADGET && (ARCH_RENESAS || (ARM && COMPILE_TEST))
  	help
- 	  This enables support for the Renesas R-Car D3 SoC.
- 
-+config ARCH_ROCKCHIP
-+	bool "Rockchip Platforms"
-+	select ARCH_HAS_RESET_CONTROLLER
-+	select GPIOLIB
-+	select PINCTRL
-+	select PINCTRL_ROCKCHIP
-+	select ROCKCHIP_TIMER
-+	help
-+	  This enables support for the ARMv8 based Rockchip chipsets,
-+	  like the RK3368.
-+
-+config ARCH_SEATTLE
-+	bool "AMD Seattle SoC Family"
-+	help
-+	  This enables support for AMD Seattle SOC Family
-+
-+config ARCH_SYNQUACER
-+	bool "Socionext SynQuacer SoC Family"
-+
- config ARCH_STRATIX10
- 	bool "Altera's Stratix 10 SoCFPGA Family"
- 	help
+ 	   The Emma Mobile series of SoCs from Renesas Electronics and
+ 	   former NEC Electronics include USB Function hardware.
 -- 
 2.7.4
