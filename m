@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH alsa-lib v4 0/4] alsa-lib: ASoC: topology:
- Improve hw_configs
-Date: Fri, 20 Apr 2018 12:45:00 +0100
-Message-ID: <20180420114500.GB22369@sirena.org.uk>
-References: <20180416182641.30312-1-k.marinushkin@gmail.com>
- <s5ho9iepc7i.wl-tiwai@suse.de>
+From: Daniel Mack <daniel@zonque.org>
+Subject: [PATCH] ASoC: codecs: msm8916-wcd: use threaded IRQ
+	handlers
+Date: Fri, 20 Apr 2018 14:07:50 +0200
+Message-ID: <20180420120750.356-1-daniel@zonque.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0453493141284929892=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1CEAE2673D4
- for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 13:45:06 +0200 (CEST)
-In-Reply-To: <s5ho9iepc7i.wl-tiwai@suse.de>
+Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
+ by alsa0.perex.cz (Postfix) with ESMTP id 202972673D4
+ for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 14:07:57 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +19,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Pan Xiuli <xiuli.pan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Kirill Marinushkin <k.marinushkin@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: linux-arm-msm@vger.kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
+The handler for the mbhc switch irq calls into snd_soc_jack_report() which
+in turn triggers a notifier chain that is blocking, which means it allows
+its callbacks to sleep. This leads to a "scheduling while atomic" Ooops
+when the jack notifier callback uses snd_soc_dapm_sync(), for instance.
 
---===============0453493141284929892==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="xgyAXRrhYN0wYx8y"
-Content-Disposition: inline
+Fix this by switching from atomic to threaded IRQ handlers.
 
+Fixes: de66b3455023e ("ASoC: codecs: msm8916-wcd-analog: add MBHC support")
+Signed-off-by: Daniel Mack <daniel@zonque.org>
+---
+ sound/soc/codecs/msm8916-wcd-analog.c | 29 +++++++++++++++++------------
+ 1 file changed, 17 insertions(+), 12 deletions(-)
 
---xgyAXRrhYN0wYx8y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Apr 20, 2018 at 09:29:53AM +0200, Takashi Iwai wrote:
-
-> Ideally, Mark should send the pull request for the uapi changes he
-> applied so that they are "fixated" before going further to user-space
-> patches.
-
-Unfortunately that's a bit annoying to do now without using topic
-branches...
-
-> But this topology change is no intrusive ABI breakage, so I applied
-> now as is.
-
-Yeah, it didn't look like there was an actual dependency which was why I
-didn't immediately push anything.
-
---xgyAXRrhYN0wYx8y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrZ0rsACgkQJNaLcl1U
-h9Cjcgf/V/Brjc029bOSGFwSyuB5OtXQH+bLNKOXwj2ACKE7oDttEXWQm0djoY2i
-mEdlwd/xoV1C1koEFx5DMoLWnEcks2ZChIq/WSRVVf5Cr4eTXqEPM0avl9TzrxIx
-8CBz/cXJNlUe7cZCONEL5Q2na2QDRJrqZL9SbSfdyw72MPEffaCHRM5ZLNYjW27Y
-VTRofaMMEdh0zYG4hsXo5uC7o0LtdOBbWrMv7/G1JOPmD2m+nSaDIJyfKK1+wmY7
-horRncCia5UjDyJAjQiuGZADGeuMgModPnj8n7/0qduQTJAprqBwd8KC+61ns9hl
-IJwEuPIPcHyOZKFif8YTNJrGLDyTrw==
-=mwxd
------END PGP SIGNATURE-----
-
---xgyAXRrhYN0wYx8y--
-
---===============0453493141284929892==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0453493141284929892==--
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index 12ee83d52405..52b4b6d836a4 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -1187,10 +1187,12 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
+ 		return irq;
+ 	}
+ 
+-	ret = devm_request_irq(dev, irq, pm8916_mbhc_switch_irq_handler,
+-			       IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING |
+-			       IRQF_ONESHOT,
+-			       "mbhc switch irq", priv);
++	ret = devm_request_threaded_irq(dev, irq, NULL,
++					pm8916_mbhc_switch_irq_handler,
++					IRQF_TRIGGER_RISING |
++					IRQF_TRIGGER_FALLING |
++					IRQF_ONESHOT,
++					"mbhc switch irq", priv);
+ 	if (ret)
+ 		dev_err(dev, "cannot request mbhc switch irq\n");
+ 
+@@ -1201,10 +1203,12 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
+ 			return irq;
+ 		}
+ 
+-		ret = devm_request_irq(dev, irq, mbhc_btn_press_irq_handler,
+-				       IRQF_TRIGGER_RISING |
+-				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+-				       "mbhc btn press irq", priv);
++		ret = devm_request_threaded_irq(dev, irq, NULL,
++						mbhc_btn_press_irq_handler,
++						IRQF_TRIGGER_RISING |
++						IRQF_TRIGGER_FALLING |
++						IRQF_ONESHOT,
++						"mbhc btn press irq", priv);
+ 		if (ret)
+ 			dev_err(dev, "cannot request mbhc button press irq\n");
+ 
+@@ -1214,10 +1218,11 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
+ 			return irq;
+ 		}
+ 
+-		ret = devm_request_irq(dev, irq, mbhc_btn_release_irq_handler,
+-				       IRQF_TRIGGER_RISING |
+-				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+-				       "mbhc btn release irq", priv);
++		ret = devm_request_threaded_irq(dev, irq, NULL,
++						mbhc_btn_release_irq_handler,
++						IRQF_TRIGGER_RISING |
++						IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
++						"mbhc btn release irq", priv);
+ 		if (ret)
+ 			dev_err(dev, "cannot request mbhc button release irq\n");
+ 
+-- 
+2.14.3
