@@ -1,7 +1,8 @@
 From: Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 1/8] arm: shmobile: Change platform dependency to ARCH_RENESAS
-Date: Fri, 20 Apr 2018 15:28:27 +0200
-Message-ID: <1524230914-10175-2-git-send-email-geert+renesas@glider.be>
+Subject: [PATCH 3/8] [media] v4l: rcar_fdp1: Change platform dependency to
+ ARCH_RENESAS
+Date: Fri, 20 Apr 2018 15:28:29 +0200
+Message-ID: <1524230914-10175-4-git-send-email-geert+renesas@glider.be>
 References: <1524230914-10175-1-git-send-email-geert+renesas@glider.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,43 +22,31 @@ To: Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, Russ
 Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Geert Uytterhoeven <geert+renesas@glider.be>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Since commit 9b5ba0df4ea4f940 ("ARM: shmobile: Introduce ARCH_RENESAS")
-is ARCH_RENESAS a more appropriate platform dependency than the legacy
-ARCH_SHMOBILE, hence use the former.
+The Renesas Fine Display Processor driver is used on Renesas R-Car SoCs
+only.  Since commit 9b5ba0df4ea4f940 ("ARM: shmobile: Introduce
+ARCH_RENESAS") is ARCH_RENESAS a more appropriate platform dependency
+than the legacy ARCH_SHMOBILE, hence use the former.
 
-This will allow to drop ARCH_SHMOBILE on ARM in the near future.
+This will allow to drop ARCH_SHMOBILE on ARM and ARM64 in the near
+future.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- arch/arm/Kconfig  | 2 +-
- arch/arm/Makefile | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/platform/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index a7f8e7f4b88fdd03..2d34c0a44877e85b 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -1467,7 +1467,7 @@ config ARM_PSCI
- config ARCH_NR_GPIO
- 	int
- 	default 2048 if ARCH_SOCFPGA
--	default 1024 if ARCH_BRCMSTB || ARCH_SHMOBILE || ARCH_TEGRA || \
-+	default 1024 if ARCH_BRCMSTB || ARCH_RENESAS || ARCH_TEGRA || \
- 		ARCH_ZYNQ
- 	default 512 if ARCH_EXYNOS || ARCH_KEYSTONE || SOC_OMAP5 || \
- 		SOC_DRA7XX || ARCH_S3C24XX || ARCH_S3C64XX || ARCH_S5PV210
-diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index e4e537f27339f7a1..a92f5a876d96839d 100644
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -212,7 +212,7 @@ machine-$(CONFIG_ARCH_S3C24XX)		+= s3c24xx
- machine-$(CONFIG_ARCH_S3C64XX)		+= s3c64xx
- machine-$(CONFIG_ARCH_S5PV210)		+= s5pv210
- machine-$(CONFIG_ARCH_SA1100)		+= sa1100
--machine-$(CONFIG_ARCH_SHMOBILE) 	+= shmobile
-+machine-$(CONFIG_ARCH_RENESAS)	 	+= shmobile
- machine-$(CONFIG_ARCH_SIRF)		+= prima2
- machine-$(CONFIG_ARCH_SOCFPGA)		+= socfpga
- machine-$(CONFIG_ARCH_STI)		+= sti
+diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+index f9235e8f8e962d2e..7ad4725f9d1f9627 100644
+--- a/drivers/media/platform/Kconfig
++++ b/drivers/media/platform/Kconfig
+@@ -396,7 +396,7 @@ config VIDEO_SH_VEU
+ config VIDEO_RENESAS_FDP1
+ 	tristate "Renesas Fine Display Processor"
+ 	depends on VIDEO_DEV && VIDEO_V4L2 && HAS_DMA
+-	depends on ARCH_SHMOBILE || COMPILE_TEST
++	depends on ARCH_RENESAS || COMPILE_TEST
+ 	depends on (!ARCH_RENESAS && !VIDEO_RENESAS_FCP) || VIDEO_RENESAS_FCP
+ 	select VIDEOBUF2_DMA_CONTIG
+ 	select V4L2_MEM2MEM_DEV
 -- 
 2.7.4
