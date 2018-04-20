@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: kbl_rt5663_max98927: Replace
+Subject: Applied "ASoC: Intel: kbl_da7219_max98357a: Replace
 	GFP_ATOMIC with GFP_KERNEL" to the asoc tree
-Date: Fri, 20 Apr 2018 18:01:40 +0100
-Message-ID: <E1f9ZPo-0004KZ-1K@debutante>
-References: <1524221072-11040-7-git-send-email-vinod.koul@intel.com>
+Date: Fri, 20 Apr 2018 18:02:10 +0100
+Message-ID: <E1f9ZQI-0004Mr-FM@debutante>
+References: <1524221072-11040-6-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 50D702675D0
- for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 19:01:44 +0200 (CEST)
-In-Reply-To: <1524221072-11040-7-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 92CE82673D4
+ for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 19:02:28 +0200 (CEST)
+In-Reply-To: <1524221072-11040-6-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: kbl_rt5663_max98927: Replace GFP_ATOMIC with GFP_KERNEL
+   ASoC: Intel: kbl_da7219_max98357a: Replace GFP_ATOMIC with GFP_KERNEL
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 5272681608e9f0f5746e8a97fdb5c3d4c29ab76e Mon Sep 17 00:00:00 2001
+>From 3069db24402f334a33c9d19b4edbbc3cca869876 Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Fri, 20 Apr 2018 16:14:31 +0530
-Subject: [PATCH] ASoC: Intel: kbl_rt5663_max98927: Replace GFP_ATOMIC with
+Date: Fri, 20 Apr 2018 16:14:30 +0530
+Subject: [PATCH] ASoC: Intel: kbl_da7219_max98357a: Replace GFP_ATOMIC with
  GFP_KERNEL
 
 In kabylake_audio_probe which is not atomic context, we use GFP_ATOMIC
@@ -65,16 +65,16 @@ flag with memory allocation, fix that by using GFP_KERNEL.
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/kbl_rt5663_max98927.c | 2 +-
+ sound/soc/intel/boards/kbl_da7219_max98357a.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index 0e6b7e79441c..513cc65a77be 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -972,7 +972,7 @@ static int kabylake_audio_probe(struct platform_device *pdev)
- 	struct skl_machine_pdata *pdata;
- 	int ret;
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+index e84baafd5f63..60e739f3d6f3 100644
+--- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
++++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+@@ -572,7 +572,7 @@ static int kabylake_audio_probe(struct platform_device *pdev)
+ {
+ 	struct kbl_codec_private *ctx;
  
 -	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
 +	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
