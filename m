@@ -1,103 +1,91 @@
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: [PATCH v4 2/3] platform/x86: dell-*: Add interface for switchable graphics status query
-Date: Fri, 20 Apr 2018 17:44:31 +0800
-Message-ID: <20180420094432.13133-2-kai.heng.feng@canonical.com>
-References: <20180420094432.13133-1-kai.heng.feng@canonical.com>
+From: Jean-Jacques Hiblot <jjhiblot@ti.com>
+Subject: [PATCH 2/3] ASoC: tas6424: Add support for the standby pin
+Date: Fri, 20 Apr 2018 12:04:43 +0200
+Message-ID: <1524218684-19752-3-git-send-email-jjhiblot@ti.com>
+References: <1524218684-19752-1-git-send-email-jjhiblot@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180420094432.13133-1-kai.heng.feng@canonical.com>
+In-Reply-To: <1524218684-19752-1-git-send-email-jjhiblot@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: mjg59@srcf.ucam.org, pali.rohar@gmail.com, dvhart@infradead.org, andy@infradead.org, mario.limonciello@dell.com, tiwai@suse.com
-Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
+To: broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com
+Cc: dannenberg@ti.com, afd@ti.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Jean-Jacques Hiblot <jjhiblot@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On some Dell platforms, there's a BIOS option "Enable Switchable
-Graphics". This information is useful if we want to do different things
-based on this value, e.g. disable unused audio controller that comes
-with the discrete graphics.
+The standby pin can be connected to a GPIO. In that case we have to drive
+it to the correct values for the TAS6424 to operate properly.
 
-Cc: Mario Limonciello <mario.limonciello@dell.com>
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Jean-Jacques Hiblot <jjhiblot@ti.com>
 ---
-v4: Change the commit message to clarify there's no more runtime pm
-    warning.
-    Also skip the check for thunderbolt attached devices.
+ .../devicetree/bindings/sound/ti,tas6424.txt       |  1 +
+ sound/soc/codecs/tas6424.c                         | 22 ++++++++++++++++++++++
+ 2 files changed, 23 insertions(+)
 
-v3: Simplify dell_switchable_gfx_is_enabled() by returning bool instead
-    of error code.
-    Use DMI_DEV_TYPE_OEM_STRING to match Dell System.
-
-v2: Mario suggested to squash the HDA part into the same series.
-
- drivers/platform/x86/dell-laptop.c      | 17 +++++++++++++++++
- drivers/platform/x86/dell-smbios-base.c |  2 ++
- drivers/platform/x86/dell-smbios.h      |  2 ++
- include/linux/dell-common.h             |  1 +
- 4 files changed, 22 insertions(+)
-
-diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
-index 8ba820e6c3d0..033a27b190cc 100644
---- a/drivers/platform/x86/dell-laptop.c
-+++ b/drivers/platform/x86/dell-laptop.c
-@@ -2116,6 +2116,23 @@ int dell_micmute_led_set(int state)
- }
- EXPORT_SYMBOL_GPL(dell_micmute_led_set);
+diff --git a/Documentation/devicetree/bindings/sound/ti,tas6424.txt b/Documentation/devicetree/bindings/sound/ti,tas6424.txt
+index bf2ff98..82c6d48 100644
+--- a/Documentation/devicetree/bindings/sound/ti,tas6424.txt
++++ b/Documentation/devicetree/bindings/sound/ti,tas6424.txt
+@@ -8,6 +8,7 @@ Required properties:
+ 	- sound-dai-cells: must be equal to 0
+ 	- disable-auto-diagnostics: disable DC auto diagnostics (faster power
+ 	  on, but less safe as shortage won't be detected)
++	- standby-gpio: GPIO used to shut the TAS6424 down.
  
-+bool dell_switchable_gfx_is_enabled(void)
-+{
-+	struct calling_interface_buffer buffer;
-+	struct calling_interface_token *token;
-+
-+	token = dell_smbios_find_token(SWITCHABLE_GRAPHICS_ENABLE);
-+	if (!token)
-+		return false;
-+
-+	dell_fill_request(&buffer, token->location, 0, 0, 0);
-+	if (dell_send_request(&buffer, CLASS_TOKEN_READ, SELECT_TOKEN_STD))
-+		return false;
-+
-+	return !!buffer.output[1];
-+}
-+EXPORT_SYMBOL_GPL(dell_switchable_gfx_is_enabled);
-+
- static int __init dell_init(void)
- {
- 	struct calling_interface_token *token;
-diff --git a/drivers/platform/x86/dell-smbios-base.c b/drivers/platform/x86/dell-smbios-base.c
-index 33fb2a20458a..881ce42f0ca7 100644
---- a/drivers/platform/x86/dell-smbios-base.c
-+++ b/drivers/platform/x86/dell-smbios-base.c
-@@ -86,6 +86,8 @@ struct token_range {
- static struct token_range token_whitelist[] = {
- 	/* used by userspace: fwupdate */
- 	{CAP_SYS_ADMIN,	CAPSULE_EN_TOKEN,	CAPSULE_DIS_TOKEN},
-+	/* can indicate to userspace Switchable Graphics enable status */
-+	{CAP_SYS_ADMIN,	SWITCHABLE_GRAPHICS_ENABLE,	SWITCHABLE_GRAPHICS_DISABLE},
- 	/* can indicate to userspace that WMI is needed */
- 	{0x0000,	WSMT_EN_TOKEN,		WSMT_DIS_TOKEN}
+ Example:
+ 
+diff --git a/sound/soc/codecs/tas6424.c b/sound/soc/codecs/tas6424.c
+index 5cee400..926259a 100644
+--- a/sound/soc/codecs/tas6424.c
++++ b/sound/soc/codecs/tas6424.c
+@@ -16,6 +16,7 @@
+ #include <linux/slab.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/delay.h>
++#include <linux/gpio/consumer.h>
+ 
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -44,6 +45,7 @@ struct tas6424_data {
+ 	unsigned int last_fault2;
+ 	unsigned int last_warn;
+ 	bool no_auto_diags;
++	struct gpio_desc *standby_gpio;
  };
-diff --git a/drivers/platform/x86/dell-smbios.h b/drivers/platform/x86/dell-smbios.h
-index d8adaf959740..7863e6a7cff8 100644
---- a/drivers/platform/x86/dell-smbios.h
-+++ b/drivers/platform/x86/dell-smbios.h
-@@ -37,6 +37,8 @@
- #define KBD_LED_AUTO_100_TOKEN	0x02F6
- #define GLOBAL_MIC_MUTE_ENABLE	0x0364
- #define GLOBAL_MIC_MUTE_DISABLE	0x0365
-+#define SWITCHABLE_GRAPHICS_ENABLE	0x037A
-+#define SWITCHABLE_GRAPHICS_DISABLE	0x037B
  
- struct notifier_block;
+ /*
+@@ -632,6 +634,22 @@ static int tas6424_i2c_probe(struct i2c_client *client,
+ 	tas6424->no_auto_diags = of_property_read_bool(dev->of_node,
+ 						"disable-auto-diagnostics");
  
-diff --git a/include/linux/dell-common.h b/include/linux/dell-common.h
-index 37e4b614dd74..1a90bc9a3bea 100644
---- a/include/linux/dell-common.h
-+++ b/include/linux/dell-common.h
-@@ -3,5 +3,6 @@
- #define __DELL_COMMON_H__
++	/*
++	 * Get control of the standby pin and set it LOW to take the codec
++	 * out of the stand-by mode.
++	 * Note: The actual pin polarity is taken care of in the GPIO lib
++	 * according the polarity specified in the DTS.
++	 */
++	tas6424->standby_gpio = devm_gpiod_get_optional(dev, "standby",
++						      GPIOD_OUT_LOW);
++	if (IS_ERR(tas6424->standby_gpio)) {
++		if (PTR_ERR(tas6424->standby_gpio) == -EPROBE_DEFER)
++			return -EPROBE_DEFER;
++		dev_info(dev, "failed to get standvby GPIO: %ld\n",
++			PTR_ERR(tas6424->standby_gpio));
++		tas6424->standby_gpio = NULL;
++	}
++
+ 	for (i = 0; i < ARRAY_SIZE(tas6424->supplies); i++)
+ 		tas6424->supplies[i].supply = tas6424_supply_names[i];
+ 	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(tas6424->supplies),
+@@ -691,6 +709,10 @@ static int tas6424_i2c_remove(struct i2c_client *client)
  
- int dell_micmute_led_set(int on);
-+bool dell_switchable_gfx_is_enabled(void);
+ 	cancel_delayed_work_sync(&tas6424->fault_check_work);
  
- #endif
++	/* put the codec in stand-by */
++	if (tas6424->standby_gpio)
++		gpiod_set_value_cansleep(tas6424->standby_gpio, 1);
++
+ 	ret = regulator_bulk_disable(ARRAY_SIZE(tas6424->supplies),
+ 				     tas6424->supplies);
+ 	if (ret < 0) {
 -- 
-2.17.0
+2.7.4
