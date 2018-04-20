@@ -1,17 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 1/7] ASoC: Intel: byt-max98090: Replace
-	GFP_ATOMIC with GFP_KERNEL
-Date: Fri, 20 Apr 2018 16:14:26 +0530
-Message-ID: <1524221072-11040-2-git-send-email-vinod.koul@intel.com>
-References: <1524221072-11040-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 0/7] ASoC: Intel: Replace GFP_ATOMIC with
+	GFP_KERNEL
+Date: Fri, 20 Apr 2018 16:14:25 +0530
+Message-ID: <1524221072-11040-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 68CB62673D3
- for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 12:40:03 +0200 (CEST)
-In-Reply-To: <1524221072-11040-1-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A18492673D2
+ for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 12:40:02 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,26 +23,26 @@ To: alsa-devel@alsa-project.org
 Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-In byt_max98090_probe which is not atomic context, we use GFP_ATOMIC
-flag with memory allocation, fix that by using GFP_KERNEL.
+Jia-Ju Bai recently fixed few Intel drivers which were using GFP_ATOMIC
+wrongly, this series fixes the remaining ones.
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/boards/byt-max98090.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Vinod Koul (7):
+  ASoC: Intel: byt-max98090: Replace GFP_ATOMIC with GFP_KERNEL
+  ASoC: Intel: bytcht_es8316: Replace GFP_ATOMIC with GFP_KERNEL
+  ASoC: Intel: bytcr_rt5651: Replace GFP_ATOMIC with GFP_KERNEL
+  ASoC: Intel: cht_bsw_nau8824: Replace GFP_ATOMIC with GFP_KERNEL
+  ASoC: Intel: kbl_da7219_max98357a: Replace GFP_ATOMIC with GFP_KERNEL
+  ASoC: Intel: kbl_rt5663_max98927: Replace GFP_ATOMIC with GFP_KERNEL
+  ASoC: Intel: kbl_rt5663_rt5514_max98927: Replace GFP_ATOMIC with GFP_KERNEL
 
-diff --git a/sound/soc/intel/boards/byt-max98090.c b/sound/soc/intel/boards/byt-max98090.c
-index 0f8b8209c020..f1283634b22b 100644
---- a/sound/soc/intel/boards/byt-max98090.c
-+++ b/sound/soc/intel/boards/byt-max98090.c
-@@ -151,7 +151,7 @@ static int byt_max98090_probe(struct platform_device *pdev)
- 	struct byt_max98090_private *priv;
- 	int ret_val;
- 
--	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv) {
- 		dev_err(&pdev->dev, "allocation failed\n");
- 		return -ENOMEM;
+ sound/soc/intel/boards/byt-max98090.c               | 2 +-
+ sound/soc/intel/boards/bytcht_es8316.c              | 2 +-
+ sound/soc/intel/boards/bytcr_rt5651.c               | 2 +-
+ sound/soc/intel/boards/cht_bsw_nau8824.c            | 2 +-
+ sound/soc/intel/boards/kbl_da7219_max98357a.c       | 2 +-
+ sound/soc/intel/boards/kbl_rt5663_max98927.c        | 2 +-
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
+
 -- 
 2.7.4
