@@ -1,14 +1,20 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: [PATCH] ALSA: add more quirks for DSD interfaces
-Date: Fri, 20 Apr 2018 22:29:41 +0200
-Message-ID: <20180420202941.10326-1-daniel@zonque.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/5] compress: remove dead code
+ _is_codec_supported()
+Date: Fri, 20 Apr 2018 15:20:28 -0700
+Message-ID: <8ce7cfbf-4396-37ff-31df-db44cd7ca4ac@linux.intel.com>
+References: <1524119780-21206-1-git-send-email-vinod.koul@intel.com>
+ <6b870058-e263-775f-f70b-55f159537666@linux.intel.com>
+ <20180419080832.GH6014@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
- by alsa0.perex.cz (Postfix) with ESMTP id 5EE012673D4
- for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 22:29:48 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 742B62673D4
+ for <alsa-devel@alsa-project.org>; Sat, 21 Apr 2018 00:20:17 +0200 (CEST)
+In-Reply-To: <20180419080832.GH6014@localhost>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,70 +24,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: wenyi@tianyu-wool.com, htenberge@gmail.com, Daniel Mack <daniel@zonque.org>, tiwai@suse.de
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Based on a downstream patch from Harry ten Berge.
+On 4/19/18 1:08 AM, Vinod Koul wrote:
+> On Thu, Apr 19, 2018 at 12:19:28AM -0700, Pierre-Louis Bossart wrote:
+>> On 4/18/18 11:36 PM, Vinod Koul wrote:
+>>>   static bool _is_codec_type_supported(int fd, struct snd_codec *codec)
+>>>   {
+>>>   	struct snd_compr_caps caps;
+>>> @@ -271,16 +228,6 @@ struct compress *compress_open(unsigned int card, unsigned int device,
+>>>   		config->fragments = caps.max_fragments;
+>>>   	}
+>>> -#if 0
+>>> -	/* FIXME need to turn this On when DSP supports
+>>> -	 * and treat in no support case
+>>> -	 */
+>>> -	if (_is_codec_supported(compress, config, &caps) == false) {
+>>> -		oops(compress, errno, "codec not supported\n");
+>>> -		goto codec_fail;
+>>> -	}
+>>> -#endif
+>>
+>> Why was this commented out in the first place?
+> 
+> It depends on capabilities being reported properly which wasn't the case so we
+> had to turn it off...
+> 
+>> This seems like a valid check to me. If the application is asking for a
+>> codec that isn't supported by hardware, should it be allowed to proceed?
+> 
+> It has been dead for quite some time, I don't know if ppl are reporting
+> properly. Turning it on might break which is something I would like to
+> avoid
 
-Signed-off-by: Daniel Mack <daniel@zonque.org>
-Reported-and-tested-by: wenyi@tianyu-wool.com
-Original-by: Harry ten Berge <htenberge@gmail.com>
----
- sound/usb/quirks.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
-
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index acbeb52f6fd6..5681767cc0d5 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1327,20 +1327,47 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
- 
- 	/* XMOS based USB DACs */
- 	switch (chip->usb_id) {
-+	case USB_ID(0x1511, 0x0037): /* AURALiC VEGA */
-+	case USB_ID(0x20b1, 0x0002): /* Wyred 4 Sound DAC-2 DSD */
-+	case USB_ID(0x20b1, 0x2004): /* Matrix Audio X-SPDIF 2 */
- 	case USB_ID(0x20b1, 0x3008): /* iFi Audio micro/nano iDSD */
- 	case USB_ID(0x20b1, 0x2008): /* Matrix Audio X-Sabre */
- 	case USB_ID(0x20b1, 0x300a): /* Matrix Audio Mini-i Pro */
- 	case USB_ID(0x22d9, 0x0416): /* OPPO HA-1 */
-+	case USB_ID(0x22d9, 0x0436): /* OPPO Sonica */
-+	case USB_ID(0x22d9, 0x0461): /* OPPO UDP-205 */
-+	case USB_ID(0x2522, 0x0012): /* LH Labs VI DAC Infinity */
-+	case USB_ID(0x25ce, 0x001f): /* Mytek Brooklyn DAC */
-+	case USB_ID(0x25ce, 0x0021): /* Mytek Manhattan DAC */
-+	case USB_ID(0x25ce, 0x8025): /* Mytek Brooklyn DAC+ */
- 	case USB_ID(0x2772, 0x0230): /* Pro-Ject Pre Box S2 Digital */
- 		if (fp->altsetting == 2)
- 			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
- 		break;
- 
-+	case USB_ID(0x0d8c, 0x0316): /* Hegel HD12 DSD */
-+	case USB_ID(0x16b0, 0x06b2): /* NuPrime DAC-10 */
-+	case USB_ID(0x16d0, 0x0733): /* Furutech ADL Stratos */
-+	case USB_ID(0x16d0, 0x09db): /* NuPrime Audio DAC-9 */
-+	case USB_ID(0x1db5, 0x0003): /* Bryston BDA3 */
- 	case USB_ID(0x20b1, 0x000a): /* Gustard DAC-X20U */
-+	case USB_ID(0x20b1, 0x2005): /* Denafrips Ares DAC */
- 	case USB_ID(0x20b1, 0x2009): /* DIYINHK DSD DXD 384kHz USB to I2S/DSD */
- 	case USB_ID(0x20b1, 0x2023): /* JLsounds I2SoverUSB */
-+	case USB_ID(0x20b1, 0x3021): /* Eastern El. MiniMax Tube DAC Supreme */
- 	case USB_ID(0x20b1, 0x3023): /* Aune X1S 32BIT/384 DSD DAC */
-+	case USB_ID(0x20b1, 0x302d): /* Unison Research Unico CD Due */
-+	case USB_ID(0x20b1, 0x3036): /* Holo Springs Level 3 R2R DAC */
-+	case USB_ID(0x20b1, 0x307b): /* CH Precision C1 DAC */
-+	case USB_ID(0x20b1, 0x3086): /* Singxer F-1 converter board */
-+	case USB_ID(0x22d9, 0x0426): /* OPPO HA-2 */
-+	case USB_ID(0x22e1, 0xca01): /* HDTA Serenade DSD */
-+	case USB_ID(0x249c, 0x9326): /* M2Tech Young MkIII */
- 	case USB_ID(0x2616, 0x0106): /* PS Audio NuWave DAC */
-+	case USB_ID(0x2622, 0x0041): /* Audiolab M-DAC+ */
-+	case USB_ID(0x27f7, 0x3002): /* W4S DAC-2v2SE */
-+	case USB_ID(0x29a2, 0x0086): /* Mutec MC3+ USB */
-+	case USB_ID(0x6b42, 0x0042): /* MSB Technology */
- 		if (fp->altsetting == 3)
- 			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
- 		break;
--- 
-2.14.3
+It was broken so it's better to remain broken to avoid breaking things? 
+TGIF.
