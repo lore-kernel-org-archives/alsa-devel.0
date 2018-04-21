@@ -1,18 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v4 07/13] soundwire: Add stream
- configuration APIs
-Date: Sat, 21 Apr 2018 06:56:26 -0700
-Message-ID: <bca948a4-a668-73d0-5e6d-63287a21a636@linux.intel.com>
+Subject: Re: [PATCH v4 00/13] soundwire: Add stream support
+Date: Sat, 21 Apr 2018 07:08:48 -0700
+Message-ID: <51a18a99-6cff-0072-f004-0ab0f258aad2@linux.intel.com>
 References: <1524049146-8725-1-git-send-email-vinod.koul@intel.com>
- <1524049146-8725-8-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id DFE20267230
- for <alsa-devel@alsa-project.org>; Sat, 21 Apr 2018 17:02:43 +0200 (CEST)
-In-Reply-To: <1524049146-8725-8-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3F8F72673F5
+ for <alsa-devel@alsa-project.org>; Sat, 21 Apr 2018 17:02:46 +0200 (CEST)
+In-Reply-To: <1524049146-8725-1-git-send-email-vinod.koul@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,80 +22,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>, Greg KH <gregkh@linuxfoundation.org>
-Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Sanyog Kale <sanyog.r.kale@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, ALSA <alsa-devel@alsa-project.org>, broonie@kernel.org, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+On 4/18/18 3:58 AM, Vinod Koul wrote:
+> This series adds support in SoundWire subsystem for:
+>   - Documentation for stream support
+>   - stream management
+>   - data port management
+>   - DAI ops in cadence and Intel drivers
+>   - ASoC API to propagate SDW stream
+> 
+> Updates in v4:
+>   - Add more comments for sdw_release_master_stream()
+>   - Make sure ports are freed upon sdw_stream_remove_slave()
+>   - Clarify snd_soc_dai_set_sdw_stream() and setting of NULL upon release.
 
-> +static int _sdw_prepare_stream(struct sdw_stream_runtime *stream)
-> +{
-> +	struct sdw_master_runtime *m_rt = stream->m_rt;
-> +	struct sdw_bus *bus = m_rt->bus;
-> +	struct sdw_master_prop *prop = NULL;
-> +	struct sdw_bus_params params;
-> +	int ret;
-> +
-> +	prop = &bus->prop;
-> +	memcpy(&params, &bus->params, sizeof(params));
-> +
-> +	/* TODO: Support Asynchronous mode */
-> +	if ((prop->max_freq % stream->params.rate) != 0) {
-> +		dev_err(bus->dev, "Async mode not supported");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Increment cumulative bus bandwidth */
-> +	bus->params.bandwidth += m_rt->stream->params.rate *
-> +		m_rt->ch_count * m_rt->stream->params.bps;
+Still a couple of precisions needed to make the code self-explanatory, 
+clarify a set of error handling and and fix the device-to-device channel 
+count issues.
 
-This also does not work for device-to-device communication, see e.g.
-the earlier documentation.
+I am still a bit lost on how ASoC will make use of the 'stream' concept. 
+The documentation mentions that the master and slave drivers will call 
+the APIs independently, but the order of the processing is still not 
+clear, who allocates the stream is still confusing and how all these 
+independent drivers get a hold of the 'stream' pointer isn't explained.
 
-ch_count: Number of channels handled by the Master for
-+ * this stream, can be zero.
-
-should it be m_rt->stream->params->ch_count?
-
-
-> +static int _sdw_deprepare_stream(struct sdw_stream_runtime *stream)
-> +{
-> +	struct sdw_master_runtime *m_rt = stream->m_rt;
-> +	struct sdw_bus *bus = m_rt->bus;
-> +	int ret = 0;
-> +
-> +	/* De-prepare port(s) */
-> +	ret = sdw_prep_deprep_ports(m_rt, false);
-> +	if (ret < 0) {
-> +		dev_err(bus->dev, "De-prepare port(s) failed: %d", ret);
-> +		return ret;
-> +	}
-> +
-> +	bus->params.bandwidth -= m_rt->stream->params.rate *
-> +		m_rt->ch_count * m_rt->stream->params.bps;
-
-And same here, the ch_count can be zero.
-
-> +
-> +	if (!bus->params.bandwidth) {
-> +		bus->params.row = 0;
-> +		bus->params.col = 0;
-> +		goto exit;
-
-What is the intent with this test+goto? Shouldn't you program the 
-parameters if you want to change the frame shape?
-
-> +	}
-> +
-> +	/* Program params */
-> +	ret = sdw_program_params(bus);
-> +	if (ret < 0) {
-> +		dev_err(bus->dev, "Program params failed: %d", ret);
-> +		return ret;
-> +	}
-> +
-> +	return do_bank_switch(stream);
-> +
-> +exit:
-> +	stream->state = SDW_STREAM_DEPREPARED;
-> +
-> +	return ret;
-> +}
+> 
+> Updates in v3:
+>   - Remove stream state transition checks and redefine stream states
+>   - Update bansk switch routines
+>   - Other nitpicks pointed out by Pierre.
+> 
+> Updates in v2:
+>    - Make ASoC API inlined
+>    - Make stream states as states and not action
+>    - Update the direction enum
+>    - Fix some typos and comment updates
+> 
+> Sanyog Kale (7):
+>    Documentation: soundwire: Add more documentation
+>    soundwire: Add support for SoundWire stream management
+>    soundwire: Add support for port management
+>    soundwire: Add Master and Slave port programming
+>    soundwire: Add helpers for ports operations
+>    soundwire: Add bank switch routine
+>    soundwire: Add stream configuration APIs
+> 
+> Shreyas NC (2):
+>    ASoC: Add SoundWire stream programming interface
+>    soundwire: Remove cdns_master_ops
+> 
+> Vinod Koul (4):
+>    soundwire: cdns: Add port routines
+>    soundwire: cdns: Add stream routines
+>    soundwire: intel: Add stream initialization
+>    soundwire: intel: Add audio DAI ops
+> 
+>   .../driver-api/soundwire/error_handling.rst        |   65 +
+>   Documentation/driver-api/soundwire/index.rst       |    3 +
+>   Documentation/driver-api/soundwire/locking.rst     |  106 ++
+>   Documentation/driver-api/soundwire/stream.rst      |  372 +++++
+>   drivers/soundwire/Kconfig                          |    2 +-
+>   drivers/soundwire/Makefile                         |    2 +-
+>   drivers/soundwire/bus.c                            |   43 +
+>   drivers/soundwire/bus.h                            |   72 +
+>   drivers/soundwire/cadence_master.c                 |  453 +++++-
+>   drivers/soundwire/cadence_master.h                 |  151 ++
+>   drivers/soundwire/intel.c                          |  528 ++++++-
+>   drivers/soundwire/intel.h                          |    4 +
+>   drivers/soundwire/intel_init.c                     |    3 +
+>   drivers/soundwire/stream.c                         | 1480 ++++++++++++++++++++
+>   include/linux/soundwire/sdw.h                      |  332 ++++-
+>   include/linux/soundwire/sdw_intel.h                |   14 +
+>   include/sound/soc-dai.h                            |   23 +
+>   17 files changed, 3639 insertions(+), 14 deletions(-)
+>   create mode 100644 Documentation/driver-api/soundwire/error_handling.rst
+>   create mode 100644 Documentation/driver-api/soundwire/locking.rst
+>   create mode 100644 Documentation/driver-api/soundwire/stream.rst
+>   create mode 100644 drivers/soundwire/stream.c
+> 
