@@ -1,20 +1,20 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v4 07/13] soundwire: Add stream
- configuration APIs
-Date: Sat, 21 Apr 2018 21:43:15 +0530
-Message-ID: <20180421161315.GO6014@localhost>
+Subject: Re: [PATCH v4 02/13] soundwire: Add support for
+ SoundWire stream management
+Date: Sat, 21 Apr 2018 21:47:56 +0530
+Message-ID: <20180421161756.GP6014@localhost>
 References: <1524049146-8725-1-git-send-email-vinod.koul@intel.com>
- <1524049146-8725-8-git-send-email-vinod.koul@intel.com>
- <bca948a4-a668-73d0-5e6d-63287a21a636@linux.intel.com>
+ <1524049146-8725-3-git-send-email-vinod.koul@intel.com>
+ <c88bfd9d-3192-5a0a-34d0-24fff829503c@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C664267230
- for <alsa-devel@alsa-project.org>; Sat, 21 Apr 2018 18:08:41 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id 59ED6267230
+ for <alsa-devel@alsa-project.org>; Sat, 21 Apr 2018 18:13:21 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <bca948a4-a668-73d0-5e6d-63287a21a636@linux.intel.com>
+In-Reply-To: <c88bfd9d-3192-5a0a-34d0-24fff829503c@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,92 +28,76 @@ To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Apr 21, 2018 at 06:56:26AM -0700, Pierre-Louis Bossart wrote:
-> 
-> >+static int _sdw_prepare_stream(struct sdw_stream_runtime *stream)
+
+On Sat, Apr 21, 2018 at 06:02:52AM -0700, Pierre-Louis Bossart wrote:
+> On 4/18/18 3:58 AM, Vinod Koul wrote:
+
+> >+static int sdw_config_stream(struct device *dev,
+> >+		struct sdw_stream_runtime *stream,
+> >+		struct sdw_stream_config *stream_config, bool is_slave)
 > >+{
-> >+	struct sdw_master_runtime *m_rt = stream->m_rt;
-> >+	struct sdw_bus *bus = m_rt->bus;
-> >+	struct sdw_master_prop *prop = NULL;
-> >+	struct sdw_bus_params params;
-> >+	int ret;
 > >+
-> >+	prop = &bus->prop;
-> >+	memcpy(&params, &bus->params, sizeof(params));
-> >+
-> >+	/* TODO: Support Asynchronous mode */
-> >+	if ((prop->max_freq % stream->params.rate) != 0) {
-> >+		dev_err(bus->dev, "Async mode not supported");
+> >+	/*
+> >+	 * Update the stream rate, channel and bps based on data
+> >+	 * source. For more than one data source (multilink),
+> >+	 * match the rate, bps, stream type and increment number of channels.
+> >+	 */
+> >+	if ((stream->params.rate) &&
+> 
+> so if the rate is zero there is no error?
+> 
+> >+			(stream->params.rate != stream_config->frame_rate)) {
+> >+		dev_err(dev, "rate not matching, stream:%s", stream->name);
 > >+		return -EINVAL;
 > >+	}
 > >+
-> >+	/* Increment cumulative bus bandwidth */
-> >+	bus->params.bandwidth += m_rt->stream->params.rate *
-> >+		m_rt->ch_count * m_rt->stream->params.bps;
+> >+	if ((stream->params.bps) &&
 > 
-> This also does not work for device-to-device communication, see e.g.
-> the earlier documentation.
+> same here, what is the intent behind the first test?
 
-Sure it doesn't work for a feature which is **NOT** supported. So I am not
-going to do anything here
+IIRC this was to check for valid values, but am not too sure, let me get
+back to you on these two..
 
-> ch_count: Number of channels handled by the Master for
-> + * this stream, can be zero.
 > 
-> should it be m_rt->stream->params->ch_count?
-
-Not for this case. In future when we support multi-link then yes.
-
-> >+static int _sdw_deprepare_stream(struct sdw_stream_runtime *stream)
-> >+{
-> >+	struct sdw_master_runtime *m_rt = stream->m_rt;
-> >+	struct sdw_bus *bus = m_rt->bus;
-> >+	int ret = 0;
-> >+
-> >+	/* De-prepare port(s) */
-> >+	ret = sdw_prep_deprep_ports(m_rt, false);
-> >+	if (ret < 0) {
-> >+		dev_err(bus->dev, "De-prepare port(s) failed: %d", ret);
-> >+		return ret;
+> >+			(stream->params.bps != stream_config->bps)) {
+> >+		dev_err(dev, "bps not matching, stream:%s", stream->name);
+> >+		return -EINVAL;
 > >+	}
 > >+
-> >+	bus->params.bandwidth -= m_rt->stream->params.rate *
-> >+		m_rt->ch_count * m_rt->stream->params.bps;
+> >+	stream->type = stream_config->type;
+> >+	stream->params.rate = stream_config->frame_rate;
+> >+	stream->params.bps = stream_config->bps;
+> >+	if (is_slave)
+> >+		stream->params.ch_count += stream_config->ch_count;
 > 
-> And same here, the ch_count can be zero.
+> Add comment or TODO that this does not work in device-to-device
+> communication. This is a known limitation that needs to be tracked.
 
-Same as above..
+Yes limitation for a feature that we dont support yet. So i dont think we
+need to do anything atm for this. When the support for device-to-device
+shows up, that would update this and other conditions valid only for specific
+cases.
 
+> >+/**
+> >+ * sdw_stream_state: Stream states
+> >+ *
+> >+ * @SDW_STREAM_RELEASED: Stream released
+> >+ * @SDW_STREAM_ALLOCATED: New stream allocated.
+> >+ * @SDW_STREAM_CONFIGURED: Stream configured
+> >+ * @SDW_STREAM_PREPARED: Stream prepared
+> >+ * @SDW_STREAM_ENABLED: Stream enabled
+> >+ * @SDW_STREAM_DISABLED: Stream disabled
+> >+ * @SDW_STREAM_DEPREPARED: Stream de-prepared
+> >+ */
+> >+enum sdw_stream_state {
+> >+	SDW_STREAM_ALLOCATED = 0,
 > 
-> >+
-> >+	if (!bus->params.bandwidth) {
-> >+		bus->params.row = 0;
-> >+		bus->params.col = 0;
-> >+		goto exit;
-> 
-> What is the intent with this test+goto? Shouldn't you program the parameters
-> if you want to change the frame shape?
+> with the kzalloc used in sdw_alloc_stream() the default state is
+> ALLOCATED...You may want to use values which don't include zero.
 
-hmmm that seems correct point to me, but then we are going idle and should
-ideally power down. Let me check again if that is the reason.
-
-> 
-> >+	}
-> >+
-> >+	/* Program params */
-> >+	ret = sdw_program_params(bus);
-> >+	if (ret < 0) {
-> >+		dev_err(bus->dev, "Program params failed: %d", ret);
-> >+		return ret;
-> >+	}
-> >+
-> >+	return do_bank_switch(stream);
-> >+
-> >+exit:
-> >+	stream->state = SDW_STREAM_DEPREPARED;
-> >+
-> >+	return ret;
-> >+}
+How would that help. If we use kzalloc then stream init to
+SDW_STREAM_ALLOCATED is no op. If we dont then it initializes... so seems
+better to me!
 
 -- 
 ~Vinod
