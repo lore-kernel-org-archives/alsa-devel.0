@@ -1,20 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Old firmware version for Dice II ASIC
-Date: Sat, 21 Apr 2018 13:10:21 +0900
-Message-ID: <0afa6539-d0d9-ac65-b87d-792acad0cf28@sakamocchi.jp>
-References: <f9e29911-bd79-3441-b240-88a2a838d6a2@sakamocchi.jp>
- <39ab1743-dab9-2812-ba57-4214659858ae@ladisch.de>
- <1d3d65f1-10eb-bdab-7619-5f470d8c9023@sakamocchi.jp>
- <b73f31c7-2a47-bc6e-f6bc-9b0636275f06@ladisch.de>
+From: Jeffery Miller <jmiller@neverware.com>
+Subject: [PATCH] ALSA: pcm: Return negative delays from
+	SNDRV_PCM_IOCTL_DELAY.
+Date: Fri, 20 Apr 2018 23:20:46 -0500
+Message-ID: <20180421042046.33408-1-jmiller@neverware.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 419AF2673D4
- for <alsa-devel@alsa-project.org>; Sat, 21 Apr 2018 06:10:26 +0200 (CEST)
-In-Reply-To: <b73f31c7-2a47-bc6e-f6bc-9b0636275f06@ladisch.de>
-Content-Language: en-US
+Received: from mail-it0-f66.google.com (mail-it0-f66.google.com
+ [209.85.214.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 193262673D4
+ for <alsa-devel@alsa-project.org>; Sat, 21 Apr 2018 06:20:51 +0200 (CEST)
+Received: by mail-it0-f66.google.com with SMTP id 186-v6so4825532itu.0
+ for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2018 21:20:51 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,79 +22,115 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Jeffery Miller <jmiller@neverware.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The commit c2c86a97175f ("ALSA: pcm: Remove set_fs() in PCM core code")
+changed SNDRV_PCM_IOCTL_DELAY to return an inconsistent error instead of a
+negative delay.  Originally the call would succeed and return the negative
+delay.  The Chromium OS Audio Server (CRAS) gets confused and hangs when
+the error is returned instead of the negative delay.
 
-On Apr 20 2018 01:21, Clemens Ladisch wrote:
-> Takashi Sakamoto wrote:
->> On Apr 19 2018 17:54, Clemens Ladisch wrote:
->>> Takashi Sakamoto wrote:
->>>> 183 /* Some old firmware versions do not have the following global registers: */
->>>> ...
->>>> 188 #define GLOBAL_CLOCK_CAPABILITIES       0x064
->>>>
->>>> But this is not proper in my case because the maximum offset on global
->>>> sub-address space is 0x05c in quadlet unit.
->>>
->>> IIRC that comment was based on the documentation.  Apparently, there was
->>> a misunderstanding of "size 0x60" vs. "up to the register at 0x60".
->>
->>  From my curiosity, do you know which version of DICE firstly supports GLOBAL_VERSION register? Can you read it on the documentation?
-> 
-> I misremembered: I did not find anything about this in the documentation.
-> 
-> This is derived from TCAT's host driver, which unconditionally reads everything
-> up to the clock capabilities register, and checks for a size larger than 0x64
-> to detect if the firmware supports clock capabilities.
+Help CRAS avoid the issue by rolling back the behavior to return a
+negative delay instead of an error.
 
-Hm. In a case of this device with the firmware, I experienced that the 
-latest proprietary driver for windows 7 (v3.5.3.8671) [1] cannot detect 
-it. I can see below message.
+Fixes: c2c86a97175f ("ALSA: pcm: Remove set_fs() in PCM core code")
+Signed-off-by: Jeffery Miller <jmiller@neverware.com>
+---
 
-"Driver error: Device firmware operation error
-Check the driver configuration or device connections."
+This patch changes the SNDRV_PCM_IOCTL_DELAY ioctl return behavior to
+be similar to what it was in an earlier kernel.
+I encountered this when upgrading from the 4.4 kernel to 4.14. Chrome
+Audio Server (cras) does not handle the error return as gracefully
+as it was handling the successful but negative delays.
 
-Additionally, Alesis had released v3.0.81.1080 driver for windows XP and 
-this included v2.0 firmware[2] (but it's not clear that which DICE 
-version is used for this release).
+The intent of this patch is to simply revert the behavior of the call
+to match what it was previously.
 
-In my reasoning, DICE firmware loses backward compatibility in its early 
-stage (e.g. DICE v1.0.2) due to the GLOBAL_VERSION register. And in 
-coincidence the unit has the old version firmware.
+It has been applied and tested with the 4.14 kernel. I did confirm this
+is still an issue and is resolved with the patch on the tiwai/sound.git
+master branch.
 
->>> The version register is checked only once (in get_subaddrs()) and does not
->>> actually affect the behaviour of the driver, so it would not hurt to simply
->>> omit that check on the old firmware.
->>
->> Hm. The check is applied to the other spaces such as rx/tx, so I'd like to
->> leave it as is.
-> 
-> Sorry, "that check" meant the version check for 0x01000000.  Your patch
-> already implements what I suggested.
-> 
->> With this patch[1], ALSA dice driver can handle the unit. In this weekend, I'll post it. Your reviewing is very helpful.
->>
->> [1] https://github.com/takaswie/snd-firewire-improve/commit/1889e06b9593e16da2812010ffd5a8e4b9bc777d
-> 
->> +	/* Old firmware doesn't support these fields. */
->> +	if (dice->clock_caps == 0) {
->> +		dice->sync_offset = be32_to_cpu(pointers[6]) * 4;
->> +		dice->rsrv_offset = be32_to_cpu(pointers[8]) * 4;
->> +	}
-> 
-> Shouldn't this be clock_caps!=0?
+ sound/core/pcm_compat.c |  7 ++++---
+ sound/core/pcm_native.c | 23 +++++++++++------------
+ 2 files changed, 15 insertions(+), 15 deletions(-)
 
-Yep, I did mistake. I pushed fixed one to my repository.
-
-[1] This version is available at below URL:
-http://www.alesis.com/products/view/multimix-12-firewire
-[2] I can find a web page at internet archive:
-http://web.archive.org/web/20080227094953/http://www.alesis.com:80/multimix12firewire
-
-
-Thanks
-
-Takashi Sakamoto
+diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
+index 0be248543f1e..077008a8e1d5 100644
+--- a/sound/core/pcm_compat.c
++++ b/sound/core/pcm_compat.c
+@@ -27,10 +27,11 @@ static int snd_pcm_ioctl_delay_compat(struct snd_pcm_substream *substream,
+ 				      s32 __user *src)
+ {
+ 	snd_pcm_sframes_t delay;
++	int err;
+ 
+-	delay = snd_pcm_delay(substream);
+-	if (delay < 0)
+-		return delay;
++	err = snd_pcm_delay(substream, &delay);
++	if (err)
++		return err;
+ 	if (put_user(delay, src))
+ 		return -EFAULT;
+ 	return 0;
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 7585444352df..d2ba181c666e 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -2654,7 +2654,8 @@ static int snd_pcm_hwsync(struct snd_pcm_substream *substream)
+ 	return err;
+ }
+ 		
+-static snd_pcm_sframes_t snd_pcm_delay(struct snd_pcm_substream *substream)
++static int snd_pcm_delay(struct snd_pcm_substream *substream,
++			 snd_pcm_sframes_t *delay)
+ {
+ 	int err;
+ 	snd_pcm_sframes_t n = 0;
+@@ -2664,7 +2665,9 @@ static snd_pcm_sframes_t snd_pcm_delay(struct snd_pcm_substream *substream)
+ 	if (!err)
+ 		n = snd_pcm_calc_delay(substream);
+ 	snd_pcm_stream_unlock_irq(substream);
+-	return err < 0 ? err : n;
++	if (!err)
++		*delay = n;
++	return err;
+ }
+ 		
+ static int snd_pcm_sync_ptr(struct snd_pcm_substream *substream,
+@@ -2866,11 +2869,13 @@ static int snd_pcm_common_ioctl(struct file *file,
+ 		return snd_pcm_hwsync(substream);
+ 	case SNDRV_PCM_IOCTL_DELAY:
+ 	{
+-		snd_pcm_sframes_t delay = snd_pcm_delay(substream);
++		snd_pcm_sframes_t delay;
+ 		snd_pcm_sframes_t __user *res = arg;
++		int err;
+ 
+-		if (delay < 0)
+-			return delay;
++		err = snd_pcm_delay(substream, &delay);
++		if (err)
++			return err;
+ 		if (put_user(delay, res))
+ 			return -EFAULT;
+ 		return 0;
+@@ -2958,13 +2963,7 @@ int snd_pcm_kernel_ioctl(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_IOCTL_DROP:
+ 		return snd_pcm_drop(substream);
+ 	case SNDRV_PCM_IOCTL_DELAY:
+-	{
+-		result = snd_pcm_delay(substream);
+-		if (result < 0)
+-			return result;
+-		*frames = result;
+-		return 0;
+-	}
++		return snd_pcm_delay(substream, frames);
+ 	default:
+ 		return -EINVAL;
+ 	}
+-- 
+2.14.3
