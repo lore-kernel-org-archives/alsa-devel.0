@@ -1,56 +1,58 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH 3/8] [media] v4l: rcar_fdp1: Change platform dependency to ARCH_RENESAS
-Date: Sat, 21 Apr 2018 11:07:11 +0300
-Message-ID: <3039853.rivznOVBTv@avalon>
-References: <1524230914-10175-1-git-send-email-geert+renesas@glider.be> <1524230914-10175-4-git-send-email-geert+renesas@glider.be>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: core: Report audio_tstamp in
+	snd_pcm_sync_ptr
+Date: Sat, 21 Apr 2018 14:57:40 +0200
+Message-ID: <20180421125740.10931-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1524230914-10175-4-git-send-email-geert+renesas@glider.be>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Dan Williams <dan.j.williams@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, "David S . Miller" <davem@davemloft.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Arnd Bergmann <arnd@arndb.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-renesas-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, dmaengine@vger
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C7A6267230
+ for <alsa-devel@alsa-project.org>; Sat, 21 Apr 2018 14:57:47 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: David Henningsson <diwic@ubuntu.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Geert,
+From: David Henningsson <diwic@ubuntu.com>
 
-Thank you for the patch.
+It looks like a simple mistake that this struct member
+was forgotten.
 
-On Friday, 20 April 2018 16:28:29 EEST Geert Uytterhoeven wrote:
-> The Renesas Fine Display Processor driver is used on Renesas R-Car SoCs
-> only.  Since commit 9b5ba0df4ea4f940 ("ARM: shmobile: Introduce
-> ARCH_RENESAS") is ARCH_RENESAS a more appropriate platform dependency
-> than the legacy ARCH_SHMOBILE, hence use the former.
-> 
-> This will allow to drop ARCH_SHMOBILE on ARM and ARM64 in the near
-> future.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Audio_tstamp isn't used much, and on some archs (such as x86) this
+ioctl is not used by default, so that might be the reason why this
+has slipped for so long.
 
-Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Fixes: 4eeaaeaea1ce ("ALSA: core: add hooks for audio timestamps")
+Signed-off-by: David Henningsson <diwic@ubuntu.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-How would you like to get this merged ?
+---
 
-> ---
->  drivers/media/platform/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-> index f9235e8f8e962d2e..7ad4725f9d1f9627 100644
-> --- a/drivers/media/platform/Kconfig
-> +++ b/drivers/media/platform/Kconfig
-> @@ -396,7 +396,7 @@ config VIDEO_SH_VEU
->  config VIDEO_RENESAS_FDP1
->  	tristate "Renesas Fine Display Processor"
->  	depends on VIDEO_DEV && VIDEO_V4L2 && HAS_DMA
-> -	depends on ARCH_SHMOBILE || COMPILE_TEST
-> +	depends on ARCH_RENESAS || COMPILE_TEST
->  	depends on (!ARCH_RENESAS && !VIDEO_RENESAS_FCP) || VIDEO_RENESAS_FCP
->  	select VIDEOBUF2_DMA_CONTIG
->  	select V4L2_MEM2MEM_DEV
+ sound/core/pcm_native.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 35ffcce..632228b 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -2751,6 +2751,7 @@ static int snd_pcm_sync_ptr(struct snd_pcm_substream *substream,
+ 	sync_ptr.s.status.hw_ptr = status->hw_ptr;
+ 	sync_ptr.s.status.tstamp = status->tstamp;
+ 	sync_ptr.s.status.suspended_state = status->suspended_state;
++	sync_ptr.s.status.audio_tstamp = status->audio_tstamp;
+ 	snd_pcm_stream_unlock_irq(substream);
+ 	if (copy_to_user(_sync_ptr, &sync_ptr, sizeof(sync_ptr)))
+ 		return -EFAULT;
 -- 
-Regards,
-
-Laurent Pinchart
+2.7.4
