@@ -1,15 +1,14 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: dice: improve support for ancient
-	firmware for DICE
-Date: Sun, 22 Apr 2018 21:07:59 +0900
-Message-ID: <20180422120759.15579-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: dice: fix OUI for TC group
+Date: Sun, 22 Apr 2018 21:19:24 +0900
+Message-ID: <20180422121924.16122-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 0CACE267265
- for <alsa-devel@alsa-project.org>; Sun, 22 Apr 2018 14:08:03 +0200 (CEST)
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id C5B79267265
+ for <alsa-devel@alsa-project.org>; Sun, 22 Apr 2018 14:19:31 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,174 +19,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-In early stage of firmware SDK, DICE seems to lose its backward
-compatibility due to some registers on global address section. I found
-this with Alesis Multimix 12 FireWire with ancient firmware (approx.
-shipped version).
+OUI for TC Electronic is 0x000166, for TC GROUP A/S. 0x001486 is for Echo
+Digital Audio Corporation.
 
-According to retrieved log from the unit, global section has 96 byte
-space. On the other hand, current version of ALSA dice driver assumes
-that all of supported unit has at least 100 byte space.
-
-$ ./firewire-request /dev/fw1 read 0xffffe0000000 28
-result: 000: 00 00 00 0a 00 00 00 18 00 00 00 22 00 00 00 8a
-result: 010: 00 00 00 ac 00 00 01 12 00 00 00 00 00 00 00 00
-result: 020: 00 00 00 00 00 00 00 00
-
-This commit adds support for the ancient firmware. Check of global section
-is loosened to accept the smaller space. The lack of information is
-already compensated by hard-coded parameters.
-
-I experienced that the latest version of Windows driver for this model
-can't handle this unit, too. This means that TCAT releases firmware SDK
-without backward compatibility for the ancient firmware.
-
-Below list is a early history of driver/firmware package released by
-Alesis. I investigated on wayback machine on Internet Archive:
- * Unknown: PAL v1.0.41.2, firmware v1.0.3
- * Mar 2006: PAL v1.54.0, firmware v1.0.4
- * Dec 2006: PAL v2.0.0.2, firmware v2.0
- * Jun 2007: PAL v3.0.41.5, firmware v2.0
- * Jul 2007: PAL v3.0.56.2. firmware v2.0
- * Jan 2008: PAL v3.0.81.1080, firmware v2.0
-
-If I can assume that firmware version is the same as DICE version,
-DICE version for the issued firmware may be v1.0.3. According to code
-base of userspace driver project (FFADO), I can read DICE v1.0.4 supports
-global space larger than 100 byte. I guess the smaller space of global
-section is a feature of DICE v1.0.3 but no way to clear it.
-
+Fixes: 7cafc65b3aa1 ('ALSA: dice: force to add two pcm devices for listed models')
+Cc: <stable@vger.kernel.org> # v4.6+
+Reference: http://standards-oui.ieee.org/oui/oui.txt
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/dice/dice-interface.h   |  9 +++++--
- sound/firewire/dice/dice-proc.c        | 10 +++----
- sound/firewire/dice/dice-transaction.c | 49 +++++++++++++++++++---------------
- 3 files changed, 40 insertions(+), 28 deletions(-)
+ sound/firewire/dice/dice.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/firewire/dice/dice-interface.h b/sound/firewire/dice/dice-interface.h
-index 15a484b05298..9cad3d608229 100644
---- a/sound/firewire/dice/dice-interface.h
-+++ b/sound/firewire/dice/dice-interface.h
-@@ -174,14 +174,19 @@
-  */
- #define GLOBAL_SAMPLE_RATE		0x05c
+diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
+index 4ddb4cdd054b..96bb01b6b751 100644
+--- a/sound/firewire/dice/dice.c
++++ b/sound/firewire/dice/dice.c
+@@ -14,7 +14,7 @@ MODULE_LICENSE("GPL v2");
+ #define OUI_WEISS		0x001c6a
+ #define OUI_LOUD		0x000ff2
+ #define OUI_FOCUSRITE		0x00130e
+-#define OUI_TCELECTRONIC	0x001486
++#define OUI_TCELECTRONIC	0x000166
  
-+/*
-+ * Some old firmware versions do not have the following global registers.
-+ * Windows drivers produced by TCAT lost backward compatibility in its
-+ * early release because they can handle firmware only which supports the
-+ * following registers.
-+ */
-+
- /*
-  * The version of the DICE driver specification that this device conforms to;
-  * read-only.
-  */
- #define GLOBAL_VERSION			0x060
- 
--/* Some old firmware versions do not have the following global registers: */
--
- /*
-  * Supported sample rates and clock sources; read-only.
-  */
-diff --git a/sound/firewire/dice/dice-proc.c b/sound/firewire/dice/dice-proc.c
-index f5c1d1bced59..cc079323ed30 100644
---- a/sound/firewire/dice/dice-proc.c
-+++ b/sound/firewire/dice/dice-proc.c
-@@ -148,12 +148,12 @@ static void dice_proc_read(struct snd_info_entry *entry,
- 				   >> CLOCK_RATE_SHIFT));
- 	snd_iprintf(buffer, "  ext status: %08x\n", buf.global.extended_status);
- 	snd_iprintf(buffer, "  sample rate: %u\n", buf.global.sample_rate);
--	snd_iprintf(buffer, "  version: %u.%u.%u.%u\n",
--		    (buf.global.version >> 24) & 0xff,
--		    (buf.global.version >> 16) & 0xff,
--		    (buf.global.version >>  8) & 0xff,
--		    (buf.global.version >>  0) & 0xff);
- 	if (quadlets >= 90) {
-+		snd_iprintf(buffer, "  version: %u.%u.%u.%u\n",
-+			    (buf.global.version >> 24) & 0xff,
-+			    (buf.global.version >> 16) & 0xff,
-+			    (buf.global.version >>  8) & 0xff,
-+			    (buf.global.version >>  0) & 0xff);
- 		snd_iprintf(buffer, "  clock caps:");
- 		for (i = 0; i <= 6; ++i)
- 			if (buf.global.clock_caps & (1 << i))
-diff --git a/sound/firewire/dice/dice-transaction.c b/sound/firewire/dice/dice-transaction.c
-index 0f0350320ae8..2410c082bf8e 100644
---- a/sound/firewire/dice/dice-transaction.c
-+++ b/sound/firewire/dice/dice-transaction.c
-@@ -265,7 +265,7 @@ int snd_dice_transaction_reinit(struct snd_dice *dice)
- static int get_subaddrs(struct snd_dice *dice)
- {
- 	static const int min_values[10] = {
--		10, 0x64 / 4,
-+		10, 0x60 / 4,
- 		10, 0x18 / 4,
- 		10, 0x18 / 4,
- 		0, 0,
-@@ -301,33 +301,40 @@ static int get_subaddrs(struct snd_dice *dice)
- 		}
- 	}
- 
--	/*
--	 * Check that the implemented DICE driver specification major version
--	 * number matches.
--	 */
--	err = snd_fw_transaction(dice->unit, TCODE_READ_QUADLET_REQUEST,
--				 DICE_PRIVATE_SPACE +
--				 be32_to_cpu(pointers[0]) * 4 + GLOBAL_VERSION,
--				 &version, sizeof(version), 0);
--	if (err < 0)
--		goto end;
-+	if (be32_to_cpu(pointers[1]) > 0x18) {
-+		/*
-+		 * Check that the implemented DICE driver specification major
-+		 * version number matches.
-+		 */
-+		err = snd_fw_transaction(dice->unit, TCODE_READ_QUADLET_REQUEST,
-+				DICE_PRIVATE_SPACE +
-+				be32_to_cpu(pointers[0]) * 4 + GLOBAL_VERSION,
-+				&version, sizeof(version), 0);
-+		if (err < 0)
-+			goto end;
- 
--	if ((version & cpu_to_be32(0xff000000)) != cpu_to_be32(0x01000000)) {
--		dev_err(&dice->unit->device,
--			"unknown DICE version: 0x%08x\n", be32_to_cpu(version));
--		err = -ENODEV;
--		goto end;
-+		if ((version & cpu_to_be32(0xff000000)) !=
-+						cpu_to_be32(0x01000000)) {
-+			dev_err(&dice->unit->device,
-+				"unknown DICE version: 0x%08x\n",
-+				be32_to_cpu(version));
-+			err = -ENODEV;
-+			goto end;
-+		}
-+
-+		/* Set up later. */
-+		dice->clock_caps = 1;
- 	}
- 
- 	dice->global_offset = be32_to_cpu(pointers[0]) * 4;
- 	dice->tx_offset = be32_to_cpu(pointers[2]) * 4;
- 	dice->rx_offset = be32_to_cpu(pointers[4]) * 4;
--	dice->sync_offset = be32_to_cpu(pointers[6]) * 4;
--	dice->rsrv_offset = be32_to_cpu(pointers[8]) * 4;
- 
--	/* Set up later. */
--	if (be32_to_cpu(pointers[1]) * 4 >= GLOBAL_CLOCK_CAPABILITIES + 4)
--		dice->clock_caps = 1;
-+	/* Old firmware doesn't support these fields. */
-+	if (pointers[7] > 0)
-+		dice->sync_offset = be32_to_cpu(pointers[6]) * 4;
-+	if (pointers[9] > 0)
-+		dice->rsrv_offset = be32_to_cpu(pointers[8]) * 4;
- end:
- 	kfree(pointers);
- 	return err;
+ #define DICE_CATEGORY_ID	0x04
+ #define WEISS_CATEGORY_ID	0x00
 -- 
 2.14.1
