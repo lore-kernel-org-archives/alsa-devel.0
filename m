@@ -1,99 +1,193 @@
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH 04/15] media: pxa_camera: remove the dmaengine compat need
-Date: Sun, 22 Apr 2018 13:06:12 +0200
-Message-ID: <89f3e97c-08a4-33b6-8fd3-0c1b4dea2065@xs4all.nl>
-References: <20180402142656.26815-1-robert.jarzmik@free.fr>
- <20180402142656.26815-5-robert.jarzmik@free.fr>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: dice: improve support for ancient
+	firmware for DICE
+Date: Sun, 22 Apr 2018 21:07:59 +0900
+Message-ID: <20180422120759.15579-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
-In-Reply-To: <20180402142656.26815-5-robert.jarzmik@free.fr>
-Content-Language: en-US
-List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
-List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
-List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
-List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
-List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
-Errors-To: driverdev-devel-bounces@linuxdriverproject.org
-Sender: "devel" <driverdev-devel-bounces@linuxdriverproject.org>
-To: Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Tejun Heo <tj@kernel.org>, Vinod Koul <vinod.koul@intel.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Nicolas Pitre <nico@fluxnic.net>, Samuel Ortiz <samuel@sortiz.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, A
-Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org, dmaengine@vger.kernel.org, =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund+renesas@ragnatech.se>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 0CACE267265
+ for <alsa-devel@alsa-project.org>; Sun, 22 Apr 2018 14:08:03 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On 04/02/2018 04:26 PM, Robert Jarzmik wrote:
-> From: Robert Jarzmik <robert.jarzmik@renault.com>
-> 
-> As the pxa architecture switched towards the dmaengine slave map, the
-> old compatibility mechanism to acquire the dma requestor line number and
-> priority are not needed anymore.
-> 
-> This patch simplifies the dma resource acquisition, using the more
-> generic function dma_request_slave_channel().
-> 
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+In early stage of firmware SDK, DICE seems to lose its backward
+compatibility due to some registers on global address section. I found
+this with Alesis Multimix 12 FireWire with ancient firmware (approx.
+shipped version).
 
-Acked-by: Hans Verkuil <hans.verkuil@cisco.com>
+According to retrieved log from the unit, global section has 96 byte
+space. On the other hand, current version of ALSA dice driver assumes
+that all of supported unit has at least 100 byte space.
 
-Regards,
+$ ./firewire-request /dev/fw1 read 0xffffe0000000 28
+result: 000: 00 00 00 0a 00 00 00 18 00 00 00 22 00 00 00 8a
+result: 010: 00 00 00 ac 00 00 01 12 00 00 00 00 00 00 00 00
+result: 020: 00 00 00 00 00 00 00 00
 
-	Hans
+This commit adds support for the ancient firmware. Check of global section
+is loosened to accept the smaller space. The lack of information is
+already compensated by hard-coded parameters.
 
-> ---
->  drivers/media/platform/pxa_camera.c | 22 +++-------------------
->  1 file changed, 3 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/media/platform/pxa_camera.c b/drivers/media/platform/pxa_camera.c
-> index c71a00736541..4c82d1880753 100644
-> --- a/drivers/media/platform/pxa_camera.c
-> +++ b/drivers/media/platform/pxa_camera.c
-> @@ -2357,8 +2357,6 @@ static int pxa_camera_probe(struct platform_device *pdev)
->  		.src_maxburst = 8,
->  		.direction = DMA_DEV_TO_MEM,
->  	};
-> -	dma_cap_mask_t mask;
-> -	struct pxad_param params;
->  	char clk_name[V4L2_CLK_NAME_SIZE];
->  	int irq;
->  	int err = 0, i;
-> @@ -2432,34 +2430,20 @@ static int pxa_camera_probe(struct platform_device *pdev)
->  	pcdev->base = base;
->  
->  	/* request dma */
-> -	dma_cap_zero(mask);
-> -	dma_cap_set(DMA_SLAVE, mask);
-> -	dma_cap_set(DMA_PRIVATE, mask);
-> -
-> -	params.prio = 0;
-> -	params.drcmr = 68;
-> -	pcdev->dma_chans[0] =
-> -		dma_request_slave_channel_compat(mask, pxad_filter_fn,
-> -						 &params, &pdev->dev, "CI_Y");
-> +	pcdev->dma_chans[0] = dma_request_slave_channel(&pdev->dev, "CI_Y");
->  	if (!pcdev->dma_chans[0]) {
->  		dev_err(&pdev->dev, "Can't request DMA for Y\n");
->  		return -ENODEV;
->  	}
->  
-> -	params.drcmr = 69;
-> -	pcdev->dma_chans[1] =
-> -		dma_request_slave_channel_compat(mask, pxad_filter_fn,
-> -						 &params, &pdev->dev, "CI_U");
-> +	pcdev->dma_chans[1] = dma_request_slave_channel(&pdev->dev, "CI_U");
->  	if (!pcdev->dma_chans[1]) {
->  		dev_err(&pdev->dev, "Can't request DMA for Y\n");
->  		err = -ENODEV;
->  		goto exit_free_dma_y;
->  	}
->  
-> -	params.drcmr = 70;
-> -	pcdev->dma_chans[2] =
-> -		dma_request_slave_channel_compat(mask, pxad_filter_fn,
-> -						 &params, &pdev->dev, "CI_V");
-> +	pcdev->dma_chans[2] = dma_request_slave_channel(&pdev->dev, "CI_V");
->  	if (!pcdev->dma_chans[2]) {
->  		dev_err(&pdev->dev, "Can't request DMA for V\n");
->  		err = -ENODEV;
-> 
+I experienced that the latest version of Windows driver for this model
+can't handle this unit, too. This means that TCAT releases firmware SDK
+without backward compatibility for the ancient firmware.
+
+Below list is a early history of driver/firmware package released by
+Alesis. I investigated on wayback machine on Internet Archive:
+ * Unknown: PAL v1.0.41.2, firmware v1.0.3
+ * Mar 2006: PAL v1.54.0, firmware v1.0.4
+ * Dec 2006: PAL v2.0.0.2, firmware v2.0
+ * Jun 2007: PAL v3.0.41.5, firmware v2.0
+ * Jul 2007: PAL v3.0.56.2. firmware v2.0
+ * Jan 2008: PAL v3.0.81.1080, firmware v2.0
+
+If I can assume that firmware version is the same as DICE version,
+DICE version for the issued firmware may be v1.0.3. According to code
+base of userspace driver project (FFADO), I can read DICE v1.0.4 supports
+global space larger than 100 byte. I guess the smaller space of global
+section is a feature of DICE v1.0.3 but no way to clear it.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/dice/dice-interface.h   |  9 +++++--
+ sound/firewire/dice/dice-proc.c        | 10 +++----
+ sound/firewire/dice/dice-transaction.c | 49 +++++++++++++++++++---------------
+ 3 files changed, 40 insertions(+), 28 deletions(-)
+
+diff --git a/sound/firewire/dice/dice-interface.h b/sound/firewire/dice/dice-interface.h
+index 15a484b05298..9cad3d608229 100644
+--- a/sound/firewire/dice/dice-interface.h
++++ b/sound/firewire/dice/dice-interface.h
+@@ -174,14 +174,19 @@
+  */
+ #define GLOBAL_SAMPLE_RATE		0x05c
+ 
++/*
++ * Some old firmware versions do not have the following global registers.
++ * Windows drivers produced by TCAT lost backward compatibility in its
++ * early release because they can handle firmware only which supports the
++ * following registers.
++ */
++
+ /*
+  * The version of the DICE driver specification that this device conforms to;
+  * read-only.
+  */
+ #define GLOBAL_VERSION			0x060
+ 
+-/* Some old firmware versions do not have the following global registers: */
+-
+ /*
+  * Supported sample rates and clock sources; read-only.
+  */
+diff --git a/sound/firewire/dice/dice-proc.c b/sound/firewire/dice/dice-proc.c
+index f5c1d1bced59..cc079323ed30 100644
+--- a/sound/firewire/dice/dice-proc.c
++++ b/sound/firewire/dice/dice-proc.c
+@@ -148,12 +148,12 @@ static void dice_proc_read(struct snd_info_entry *entry,
+ 				   >> CLOCK_RATE_SHIFT));
+ 	snd_iprintf(buffer, "  ext status: %08x\n", buf.global.extended_status);
+ 	snd_iprintf(buffer, "  sample rate: %u\n", buf.global.sample_rate);
+-	snd_iprintf(buffer, "  version: %u.%u.%u.%u\n",
+-		    (buf.global.version >> 24) & 0xff,
+-		    (buf.global.version >> 16) & 0xff,
+-		    (buf.global.version >>  8) & 0xff,
+-		    (buf.global.version >>  0) & 0xff);
+ 	if (quadlets >= 90) {
++		snd_iprintf(buffer, "  version: %u.%u.%u.%u\n",
++			    (buf.global.version >> 24) & 0xff,
++			    (buf.global.version >> 16) & 0xff,
++			    (buf.global.version >>  8) & 0xff,
++			    (buf.global.version >>  0) & 0xff);
+ 		snd_iprintf(buffer, "  clock caps:");
+ 		for (i = 0; i <= 6; ++i)
+ 			if (buf.global.clock_caps & (1 << i))
+diff --git a/sound/firewire/dice/dice-transaction.c b/sound/firewire/dice/dice-transaction.c
+index 0f0350320ae8..2410c082bf8e 100644
+--- a/sound/firewire/dice/dice-transaction.c
++++ b/sound/firewire/dice/dice-transaction.c
+@@ -265,7 +265,7 @@ int snd_dice_transaction_reinit(struct snd_dice *dice)
+ static int get_subaddrs(struct snd_dice *dice)
+ {
+ 	static const int min_values[10] = {
+-		10, 0x64 / 4,
++		10, 0x60 / 4,
+ 		10, 0x18 / 4,
+ 		10, 0x18 / 4,
+ 		0, 0,
+@@ -301,33 +301,40 @@ static int get_subaddrs(struct snd_dice *dice)
+ 		}
+ 	}
+ 
+-	/*
+-	 * Check that the implemented DICE driver specification major version
+-	 * number matches.
+-	 */
+-	err = snd_fw_transaction(dice->unit, TCODE_READ_QUADLET_REQUEST,
+-				 DICE_PRIVATE_SPACE +
+-				 be32_to_cpu(pointers[0]) * 4 + GLOBAL_VERSION,
+-				 &version, sizeof(version), 0);
+-	if (err < 0)
+-		goto end;
++	if (be32_to_cpu(pointers[1]) > 0x18) {
++		/*
++		 * Check that the implemented DICE driver specification major
++		 * version number matches.
++		 */
++		err = snd_fw_transaction(dice->unit, TCODE_READ_QUADLET_REQUEST,
++				DICE_PRIVATE_SPACE +
++				be32_to_cpu(pointers[0]) * 4 + GLOBAL_VERSION,
++				&version, sizeof(version), 0);
++		if (err < 0)
++			goto end;
+ 
+-	if ((version & cpu_to_be32(0xff000000)) != cpu_to_be32(0x01000000)) {
+-		dev_err(&dice->unit->device,
+-			"unknown DICE version: 0x%08x\n", be32_to_cpu(version));
+-		err = -ENODEV;
+-		goto end;
++		if ((version & cpu_to_be32(0xff000000)) !=
++						cpu_to_be32(0x01000000)) {
++			dev_err(&dice->unit->device,
++				"unknown DICE version: 0x%08x\n",
++				be32_to_cpu(version));
++			err = -ENODEV;
++			goto end;
++		}
++
++		/* Set up later. */
++		dice->clock_caps = 1;
+ 	}
+ 
+ 	dice->global_offset = be32_to_cpu(pointers[0]) * 4;
+ 	dice->tx_offset = be32_to_cpu(pointers[2]) * 4;
+ 	dice->rx_offset = be32_to_cpu(pointers[4]) * 4;
+-	dice->sync_offset = be32_to_cpu(pointers[6]) * 4;
+-	dice->rsrv_offset = be32_to_cpu(pointers[8]) * 4;
+ 
+-	/* Set up later. */
+-	if (be32_to_cpu(pointers[1]) * 4 >= GLOBAL_CLOCK_CAPABILITIES + 4)
+-		dice->clock_caps = 1;
++	/* Old firmware doesn't support these fields. */
++	if (pointers[7] > 0)
++		dice->sync_offset = be32_to_cpu(pointers[6]) * 4;
++	if (pointers[9] > 0)
++		dice->rsrv_offset = be32_to_cpu(pointers[8]) * 4;
+ end:
+ 	kfree(pointers);
+ 	return err;
+-- 
+2.14.1
