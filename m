@@ -1,75 +1,99 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH 3/8] [media] v4l: rcar_fdp1: Change
-	platform dependency to ARCH_RENESAS
-Date: Sun, 22 Apr 2018 11:46:28 +0300
-Message-ID: <1700954.Qkp7xggMnX@avalon>
-References: <1524230914-10175-1-git-send-email-geert+renesas@glider.be>
- <1524230914-10175-4-git-send-email-geert+renesas@glider.be>
- <3039853.rivznOVBTv@avalon>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH 04/15] media: pxa_camera: remove the dmaengine compat need
+Date: Sun, 22 Apr 2018 13:06:12 +0200
+Message-ID: <89f3e97c-08a4-33b6-8fd3-0c1b4dea2065@xs4all.nl>
+References: <20180402142656.26815-1-robert.jarzmik@free.fr>
+ <20180402142656.26815-5-robert.jarzmik@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
- [213.167.242.64])
- by alsa0.perex.cz (Postfix) with ESMTP id BA59426725C
- for <alsa-devel@alsa-project.org>; Sun, 22 Apr 2018 10:46:18 +0200 (CEST)
-In-Reply-To: <3039853.rivznOVBTv@avalon>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, devel@driverdev.osuosl.org, Mauro Carvalho Chehab <mchehab@kernel.org>, Geert Uytterhoeven <geert+renesas@glider.be>, Vinod Koul <vinod.koul@intel.com>, Magnus Damm <magnus.damm@gmail.com>, Russell King <linux@armlinux.org.uk>, linux-media@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>, Dan Williams <dan.j.williams@intel.com>, linux-arm-kernel@lists.infradead.org, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, Simon Horman <horms@verge.net.au>, netdev@vger.kernel.org, dmaengine@vger.kernel.org
+Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+In-Reply-To: <20180402142656.26815-5-robert.jarzmik@free.fr>
+Content-Language: en-US
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
+List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
+List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
+Errors-To: driverdev-devel-bounces@linuxdriverproject.org
+Sender: "devel" <driverdev-devel-bounces@linuxdriverproject.org>
+To: Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Tejun Heo <tj@kernel.org>, Vinod Koul <vinod.koul@intel.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Nicolas Pitre <nico@fluxnic.net>, Samuel Ortiz <samuel@sortiz.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, A
+Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org, dmaengine@vger.kernel.org, =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund+renesas@ragnatech.se>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Geert,
-
-On Saturday, 21 April 2018 11:07:11 EEST Laurent Pinchart wrote:
-> On Friday, 20 April 2018 16:28:29 EEST Geert Uytterhoeven wrote:
-> > The Renesas Fine Display Processor driver is used on Renesas R-Car SoCs
-> > only.  Since commit 9b5ba0df4ea4f940 ("ARM: shmobile: Introduce
-> > ARCH_RENESAS") is ARCH_RENESAS a more appropriate platform dependency
-> > than the legacy ARCH_SHMOBILE, hence use the former.
-> > 
-> > This will allow to drop ARCH_SHMOBILE on ARM and ARM64 in the near
-> > future.
-> > 
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+On 04/02/2018 04:26 PM, Robert Jarzmik wrote:
+> From: Robert Jarzmik <robert.jarzmik@renault.com>
 > 
-> Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> As the pxa architecture switched towards the dmaengine slave map, the
+> old compatibility mechanism to acquire the dma requestor line number and
+> priority are not needed anymore.
 > 
-> How would you like to get this merged ?
+> This patch simplifies the dma resource acquisition, using the more
+> generic function dma_request_slave_channel().
+> 
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
-Unless you would like to merge the whole series in one go, I'll take this in 
-my tree as I have a conflicting patch I would like to submit for v4.18.
+Acked-by: Hans Verkuil <hans.verkuil@cisco.com>
 
-> > ---
-> > 
-> >  drivers/media/platform/Kconfig | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/media/platform/Kconfig
-> > b/drivers/media/platform/Kconfig index f9235e8f8e962d2e..7ad4725f9d1f9627
-> > 100644
-> > --- a/drivers/media/platform/Kconfig
-> > +++ b/drivers/media/platform/Kconfig
-> > @@ -396,7 +396,7 @@ config VIDEO_SH_VEU
-> >  config VIDEO_RENESAS_FDP1
-> >  	tristate "Renesas Fine Display Processor"
-> >  	depends on VIDEO_DEV && VIDEO_V4L2 && HAS_DMA
-> > -	depends on ARCH_SHMOBILE || COMPILE_TEST
-> > +	depends on ARCH_RENESAS || COMPILE_TEST
-> >  	depends on (!ARCH_RENESAS && !VIDEO_RENESAS_FCP) || VIDEO_RENESAS_FCP
-> >  	select VIDEOBUF2_DMA_CONTIG
-> >  	select V4L2_MEM2MEM_DEV
-
--- 
 Regards,
 
-Laurent Pinchart
+	Hans
+
+> ---
+>  drivers/media/platform/pxa_camera.c | 22 +++-------------------
+>  1 file changed, 3 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/media/platform/pxa_camera.c b/drivers/media/platform/pxa_camera.c
+> index c71a00736541..4c82d1880753 100644
+> --- a/drivers/media/platform/pxa_camera.c
+> +++ b/drivers/media/platform/pxa_camera.c
+> @@ -2357,8 +2357,6 @@ static int pxa_camera_probe(struct platform_device *pdev)
+>  		.src_maxburst = 8,
+>  		.direction = DMA_DEV_TO_MEM,
+>  	};
+> -	dma_cap_mask_t mask;
+> -	struct pxad_param params;
+>  	char clk_name[V4L2_CLK_NAME_SIZE];
+>  	int irq;
+>  	int err = 0, i;
+> @@ -2432,34 +2430,20 @@ static int pxa_camera_probe(struct platform_device *pdev)
+>  	pcdev->base = base;
+>  
+>  	/* request dma */
+> -	dma_cap_zero(mask);
+> -	dma_cap_set(DMA_SLAVE, mask);
+> -	dma_cap_set(DMA_PRIVATE, mask);
+> -
+> -	params.prio = 0;
+> -	params.drcmr = 68;
+> -	pcdev->dma_chans[0] =
+> -		dma_request_slave_channel_compat(mask, pxad_filter_fn,
+> -						 &params, &pdev->dev, "CI_Y");
+> +	pcdev->dma_chans[0] = dma_request_slave_channel(&pdev->dev, "CI_Y");
+>  	if (!pcdev->dma_chans[0]) {
+>  		dev_err(&pdev->dev, "Can't request DMA for Y\n");
+>  		return -ENODEV;
+>  	}
+>  
+> -	params.drcmr = 69;
+> -	pcdev->dma_chans[1] =
+> -		dma_request_slave_channel_compat(mask, pxad_filter_fn,
+> -						 &params, &pdev->dev, "CI_U");
+> +	pcdev->dma_chans[1] = dma_request_slave_channel(&pdev->dev, "CI_U");
+>  	if (!pcdev->dma_chans[1]) {
+>  		dev_err(&pdev->dev, "Can't request DMA for Y\n");
+>  		err = -ENODEV;
+>  		goto exit_free_dma_y;
+>  	}
+>  
+> -	params.drcmr = 70;
+> -	pcdev->dma_chans[2] =
+> -		dma_request_slave_channel_compat(mask, pxad_filter_fn,
+> -						 &params, &pdev->dev, "CI_V");
+> +	pcdev->dma_chans[2] = dma_request_slave_channel(&pdev->dev, "CI_V");
+>  	if (!pcdev->dma_chans[2]) {
+>  		dev_err(&pdev->dev, "Can't request DMA for V\n");
+>  		err = -ENODEV;
+> 
