@@ -1,32 +1,19 @@
 From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH] ALSA: dice: improve support for ancient
- firmware for DICE
-Date: Mon, 23 Apr 2018 02:25:36 +0800
-Message-ID: <201804230032.0xnJM97d%fengguang.wu@intel.com>
-References: <20180422120759.15579-1-o-takashi@sakamocchi.jp>
+Subject: Re: [alsa-devel] [PATCH 3/4] ALSA: usb-audio: Use Class Specific EP
+ for UAC3 devices.
+Date: Mon, 23 Apr 2018 04:30:00 +0800
+Message-ID: <201804230447.jd3wJQ96%fengguang.wu@intel.com>
+References: <20180420170327.31569-4-jorge.sanjuan@codethink.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B95E267284
- for <alsa-devel@alsa-project.org>; Sun, 22 Apr 2018 20:26:14 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20180422120759.15579-1-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, kbuild-all@01.org, ffado-devel@lists.sf.net
+In-Reply-To: <20180420170327.31569-4-jorge.sanjuan@codethink.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: kbuild-all@01.org, tiwai@suse.com, gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Hi Jorge,
 
 Thank you for the patch! Perhaps something to improve:
 
@@ -34,7 +21,7 @@ Thank you for the patch! Perhaps something to improve:
 [also build test WARNING on v4.17-rc1 next-20180420]
 [if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
 
-url:    https://github.com/0day-ci/linux/commits/Takashi-Sakamoto/ALSA-dice-improve-support-for-ancient-firmware-for-DICE/20180422-230429
+url:    https://github.com/0day-ci/linux/commits/Jorge-Sanjuan/ALSA-usb-UAC3-new-features/20180423-015726
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
 reproduce:
         # apt-get install sparse
@@ -44,90 +31,72 @@ reproduce:
 
 sparse warnings: (new ones prefixed by >>)
 
->> sound/firewire/dice/dice-transaction.c:334:21: sparse: restricted __be32 degrades to integer
-   sound/firewire/dice/dice-transaction.c:336:21: sparse: restricted __be32 degrades to integer
+>> sound/usb/stream.c:597:26: sparse: restricted __le32 degrades to integer
 
-vim +334 sound/firewire/dice/dice-transaction.c
+vim +597 sound/usb/stream.c
 
-   264	
-   265	static int get_subaddrs(struct snd_dice *dice)
-   266	{
-   267		static const int min_values[10] = {
-   268			10, 0x60 / 4,
-   269			10, 0x18 / 4,
-   270			10, 0x18 / 4,
-   271			0, 0,
-   272			0, 0,
-   273		};
-   274		__be32 *pointers;
-   275		__be32 version;
-   276		u32 data;
-   277		unsigned int i;
-   278		int err;
-   279	
-   280		pointers = kmalloc_array(ARRAY_SIZE(min_values), sizeof(__be32),
-   281					 GFP_KERNEL);
-   282		if (pointers == NULL)
-   283			return -ENOMEM;
-   284	
-   285		/*
-   286		 * Check that the sub address spaces exist and are located inside the
-   287		 * private address space.  The minimum values are chosen so that all
-   288		 * minimally required registers are included.
-   289		 */
-   290		err = snd_fw_transaction(dice->unit, TCODE_READ_BLOCK_REQUEST,
-   291					 DICE_PRIVATE_SPACE, pointers,
-   292					 sizeof(__be32) * ARRAY_SIZE(min_values), 0);
-   293		if (err < 0)
-   294			goto end;
-   295	
-   296		for (i = 0; i < ARRAY_SIZE(min_values); ++i) {
-   297			data = be32_to_cpu(pointers[i]);
-   298			if (data < min_values[i] || data >= 0x40000) {
-   299				err = -ENODEV;
-   300				goto end;
-   301			}
-   302		}
-   303	
-   304		if (be32_to_cpu(pointers[1]) > 0x18) {
-   305			/*
-   306			 * Check that the implemented DICE driver specification major
-   307			 * version number matches.
-   308			 */
-   309			err = snd_fw_transaction(dice->unit, TCODE_READ_QUADLET_REQUEST,
-   310					DICE_PRIVATE_SPACE +
-   311					be32_to_cpu(pointers[0]) * 4 + GLOBAL_VERSION,
-   312					&version, sizeof(version), 0);
-   313			if (err < 0)
-   314				goto end;
-   315	
-   316			if ((version & cpu_to_be32(0xff000000)) !=
-   317							cpu_to_be32(0x01000000)) {
-   318				dev_err(&dice->unit->device,
-   319					"unknown DICE version: 0x%08x\n",
-   320					be32_to_cpu(version));
-   321				err = -ENODEV;
-   322				goto end;
-   323			}
-   324	
-   325			/* Set up later. */
-   326			dice->clock_caps = 1;
-   327		}
-   328	
-   329		dice->global_offset = be32_to_cpu(pointers[0]) * 4;
-   330		dice->tx_offset = be32_to_cpu(pointers[2]) * 4;
-   331		dice->rx_offset = be32_to_cpu(pointers[4]) * 4;
-   332	
-   333		/* Old firmware doesn't support these fields. */
- > 334		if (pointers[7] > 0)
-   335			dice->sync_offset = be32_to_cpu(pointers[6]) * 4;
-   336		if (pointers[9] > 0)
-   337			dice->rsrv_offset = be32_to_cpu(pointers[8]) * 4;
-   338	end:
-   339		kfree(pointers);
-   340		return err;
-   341	}
-   342	
+   544	
+   545	static int parse_uac_endpoint_attributes(struct snd_usb_audio *chip,
+   546						 struct usb_host_interface *alts,
+   547						 int protocol, int iface_no)
+   548	{
+   549		/* parsed with a v1 header here. that's ok as we only look at the
+   550		 * header first which is the same for both versions */
+   551		struct uac_iso_endpoint_descriptor *csep;
+   552		struct usb_interface_descriptor *altsd = get_iface_desc(alts);
+   553		int attributes = 0;
+   554	
+   555		csep = snd_usb_find_desc(alts->endpoint[0].extra, alts->endpoint[0].extralen, NULL, USB_DT_CS_ENDPOINT);
+   556	
+   557		/* Creamware Noah has this descriptor after the 2nd endpoint */
+   558		if (!csep && altsd->bNumEndpoints >= 2)
+   559			csep = snd_usb_find_desc(alts->endpoint[1].extra, alts->endpoint[1].extralen, NULL, USB_DT_CS_ENDPOINT);
+   560	
+   561		/*
+   562		 * If we can't locate the USB_DT_CS_ENDPOINT descriptor in the extra
+   563		 * bytes after the first endpoint, go search the entire interface.
+   564		 * Some devices have it directly *before* the standard endpoint.
+   565		 */
+   566		if (!csep)
+   567			csep = snd_usb_find_desc(alts->extra, alts->extralen, NULL, USB_DT_CS_ENDPOINT);
+   568	
+   569		if (!csep || csep->bLength < 7 ||
+   570		    csep->bDescriptorSubtype != UAC_EP_GENERAL) {
+   571			usb_audio_warn(chip,
+   572				       "%u:%d : no or invalid class specific endpoint descriptor\n",
+   573				       iface_no, altsd->bAlternateSetting);
+   574			return 0;
+   575		}
+   576	
+   577		switch (protocol) {
+   578		case UAC_VERSION_1:
+   579			attributes = csep->bmAttributes;
+   580			break;
+   581		case UAC_VERSION_2: {
+   582			struct uac2_iso_endpoint_descriptor *csep2 =
+   583				(struct uac2_iso_endpoint_descriptor *) csep;
+   584	
+   585			attributes = csep->bmAttributes & UAC_EP_CS_ATTR_FILL_MAX;
+   586	
+   587			/* emulate the endpoint attributes of a v1 device */
+   588			if (csep2->bmControls & UAC2_CONTROL_PITCH)
+   589				attributes |= UAC_EP_CS_ATTR_PITCH_CONTROL;
+   590			break;
+   591		}
+   592		case UAC_VERSION_3: {
+   593			struct uac3_iso_endpoint_descriptor *csep3 =
+   594				(struct uac3_iso_endpoint_descriptor *) csep;
+   595	
+   596			/* emulate the endpoint attributes of a v1 device */
+ > 597			if (csep3->bmControls & UAC2_CONTROL_PITCH)
+   598				attributes |= UAC_EP_CS_ATTR_PITCH_CONTROL;
+   599			break;
+   600		}
+   601		}
+   602	
+   603		return attributes;
+   604	}
+   605	
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
