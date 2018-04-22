@@ -1,16 +1,16 @@
 From: kbuild test robot <lkp@intel.com>
-Subject: Re: [alsa-devel] [PATCH 3/4] ALSA: usb-audio: Use Class Specific EP
- for UAC3 devices.
-Date: Mon, 23 Apr 2018 04:30:00 +0800
-Message-ID: <201804230447.jd3wJQ96%fengguang.wu@intel.com>
-References: <20180420170327.31569-4-jorge.sanjuan@codethink.co.uk>
+Subject: Re: [PATCH 4/4] ALSA: usb-audio: UAC3 Add support for connector
+ insertion.
+Date: Mon, 23 Apr 2018 04:55:12 +0800
+Message-ID: <201804230459.2dXlPwHY%fengguang.wu@intel.com>
+References: <20180420170327.31569-5-jorge.sanjuan@codethink.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20180420170327.31569-4-jorge.sanjuan@codethink.co.uk>
+In-Reply-To: <20180420170327.31569-5-jorge.sanjuan@codethink.co.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: kbuild-all@01.org, tiwai@suse.com, gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+Cc: kbuild-all@01.org, tiwai@suse.com, alsa-devel@alsa-project.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
 Hi Jorge,
@@ -31,72 +31,62 @@ reproduce:
 
 sparse warnings: (new ones prefixed by >>)
 
->> sound/usb/stream.c:597:26: sparse: restricted __le32 degrades to integer
+   sound/usb/mixer.c:899:59: sparse: cast to restricted __le16
+   sound/usb/mixer.c:1923:33: sparse: cast to restricted __le16
+>> sound/usb/mixer.c:1975:24: sparse: incorrect type in assignment (different base types) @@    expected unsigned int [unsigned] bmctls @@    got restrunsigned int [unsigned] bmctls @@
+   sound/usb/mixer.c:1975:24:    expected unsigned int [unsigned] bmctls
+   sound/usb/mixer.c:1975:24:    got restricted __le16 [usertype] bmControls
+   sound/usb/mixer.c:1981:24: sparse: incorrect type in assignment (different base types) @@    expected unsigned int [unsigned] bmctls @@    got restrunsigned int [unsigned] bmctls @@
+   sound/usb/mixer.c:1981:24:    expected unsigned int [unsigned] bmctls
+   sound/usb/mixer.c:1981:24:    got restricted __le32 [usertype] bmControls
+   sound/usb/mixer.c:2008:33: sparse: cast to restricted __le16
+   sound/usb/mixer.c:2697:62: sparse: incorrect type in argument 1 (different base types) @@    expected unsigned int [unsigned] [usertype] bmControls @@    got ed int [unsigned] [usertype] bmControls @@
+   sound/usb/mixer.c:2697:62:    expected unsigned int [unsigned] [usertype] bmControls
+   sound/usb/mixer.c:2697:62:    got restricted __le16 [usertype] bmControls
+   sound/usb/mixer.c:2724:62: sparse: incorrect type in argument 1 (different base types) @@    expected unsigned int [unsigned] [usertype] bmControls @@    got ed int [unsigned] [usertype] bmControls @@
+   sound/usb/mixer.c:2724:62:    expected unsigned int [unsigned] [usertype] bmControls
+   sound/usb/mixer.c:2724:62:    got restricted __le32 [usertype] bmControls
+   include/linux/usb.h:1676:28: sparse: expression using sizeof(void)
+   include/linux/usb.h:1676:28: sparse: expression using sizeof(void)
+   include/linux/usb.h:1676:28: sparse: expression using sizeof(void)
+   include/linux/usb.h:1676:28: sparse: expression using sizeof(void)
+   include/linux/usb.h:1676:28: sparse: expression using sizeof(void)
+   include/linux/usb.h:1676:28: sparse: expression using sizeof(void)
+   include/linux/usb.h:1676:28: sparse: expression using sizeof(void)
 
-vim +597 sound/usb/stream.c
+vim +1975 sound/usb/mixer.c
 
-   544	
-   545	static int parse_uac_endpoint_attributes(struct snd_usb_audio *chip,
-   546						 struct usb_host_interface *alts,
-   547						 int protocol, int iface_no)
-   548	{
-   549		/* parsed with a v1 header here. that's ok as we only look at the
-   550		 * header first which is the same for both versions */
-   551		struct uac_iso_endpoint_descriptor *csep;
-   552		struct usb_interface_descriptor *altsd = get_iface_desc(alts);
-   553		int attributes = 0;
-   554	
-   555		csep = snd_usb_find_desc(alts->endpoint[0].extra, alts->endpoint[0].extralen, NULL, USB_DT_CS_ENDPOINT);
-   556	
-   557		/* Creamware Noah has this descriptor after the 2nd endpoint */
-   558		if (!csep && altsd->bNumEndpoints >= 2)
-   559			csep = snd_usb_find_desc(alts->endpoint[1].extra, alts->endpoint[1].extralen, NULL, USB_DT_CS_ENDPOINT);
-   560	
-   561		/*
-   562		 * If we can't locate the USB_DT_CS_ENDPOINT descriptor in the extra
-   563		 * bytes after the first endpoint, go search the entire interface.
-   564		 * Some devices have it directly *before* the standard endpoint.
-   565		 */
-   566		if (!csep)
-   567			csep = snd_usb_find_desc(alts->extra, alts->extralen, NULL, USB_DT_CS_ENDPOINT);
-   568	
-   569		if (!csep || csep->bLength < 7 ||
-   570		    csep->bDescriptorSubtype != UAC_EP_GENERAL) {
-   571			usb_audio_warn(chip,
-   572				       "%u:%d : no or invalid class specific endpoint descriptor\n",
-   573				       iface_no, altsd->bAlternateSetting);
-   574			return 0;
-   575		}
-   576	
-   577		switch (protocol) {
-   578		case UAC_VERSION_1:
-   579			attributes = csep->bmAttributes;
-   580			break;
-   581		case UAC_VERSION_2: {
-   582			struct uac2_iso_endpoint_descriptor *csep2 =
-   583				(struct uac2_iso_endpoint_descriptor *) csep;
-   584	
-   585			attributes = csep->bmAttributes & UAC_EP_CS_ATTR_FILL_MAX;
-   586	
-   587			/* emulate the endpoint attributes of a v1 device */
-   588			if (csep2->bmControls & UAC2_CONTROL_PITCH)
-   589				attributes |= UAC_EP_CS_ATTR_PITCH_CONTROL;
-   590			break;
-   591		}
-   592		case UAC_VERSION_3: {
-   593			struct uac3_iso_endpoint_descriptor *csep3 =
-   594				(struct uac3_iso_endpoint_descriptor *) csep;
-   595	
-   596			/* emulate the endpoint attributes of a v1 device */
- > 597			if (csep3->bmControls & UAC2_CONTROL_PITCH)
-   598				attributes |= UAC_EP_CS_ATTR_PITCH_CONTROL;
-   599			break;
-   600		}
-   601		}
-   602	
-   603		return attributes;
-   604	}
-   605	
+  1964	
+  1965	static int parse_audio_input_terminal(struct mixer_build *state, int unitid,
+  1966					      void *raw_desc)
+  1967	{
+  1968		struct usb_audio_term iterm;
+  1969		unsigned int control, bmctls, term_id;
+  1970	
+  1971		if (state->mixer->protocol == UAC_VERSION_2) {
+  1972			struct uac2_input_terminal_descriptor *d_v2 = raw_desc;
+  1973			control = UAC2_TE_CONNECTOR;
+  1974			term_id = d_v2->bTerminalID;
+> 1975			bmctls = d_v2->bmControls;
+  1976		}
+  1977		else if (state->mixer->protocol == UAC_VERSION_3) {
+  1978			struct uac3_input_terminal_descriptor *d_v3 = raw_desc;
+  1979			control = UAC3_TE_INSERTION;
+  1980			term_id = d_v3->bTerminalID;
+  1981			bmctls = d_v3->bmControls;
+  1982		}
+  1983		else /* UAC1. No Insertion control */
+  1984			return 0;
+  1985	
+  1986		check_input_term(state, term_id, &iterm);
+  1987	
+  1988		/* Check for jack detection. */
+  1989		if (uac_v2v3_control_is_readable(bmctls, control))
+  1990			build_connector_control(state, &iterm, true);
+  1991	
+  1992		return 0;
+  1993	}
+  1994	
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
