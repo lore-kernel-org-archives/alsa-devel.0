@@ -1,62 +1,44 @@
-From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Subject: Re: [PATCH 1/4] ALSA: usb: stream: refactor audio
- interface parsing
-Date: Mon, 23 Apr 2018 22:48:49 +0300
-Message-ID: <CAB=otbQK3P5W-GCxncu-J2mCVuQYZuEBmOW=QJOKVF7RNUPGNQ@mail.gmail.com>
-References: <1523658266-2259-1-git-send-email-ruslan.bilovol@gmail.com>
- <1523658266-2259-2-git-send-email-ruslan.bilovol@gmail.com>
- <s5hbmefzfja.wl-tiwai@suse.de>
+From: Tim Harvey <tharvey@gateworks.com>
+Subject: Re: [PATCH v3][RESEND] media: i2c: tda1997: replace codec to component
+Date: Mon, 23 Apr 2018 13:59:32 -0700
+Message-ID: <CAJ+vNU35TfSLRYnkEYMkMQVC9r+XHt_pa-=+s4Dro3b-VNGULA@mail.gmail.com>
+References: <87in8ibrql.wl%kuninori.morimoto.gx@renesas.com>
+ <CAJ+vNU0mykhkMNNrN=Zsrj0_pv=XAkGiiQkXehQ4EWBkMDAv7w@mail.gmail.com> <20180423165213.GL19834@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f194.google.com (mail-ot0-f194.google.com
- [74.125.82.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 76274267659
- for <alsa-devel@alsa-project.org>; Mon, 23 Apr 2018 21:48:50 +0200 (CEST)
-Received: by mail-ot0-f194.google.com with SMTP id i5-v6so18637282oth.1
- for <alsa-devel@alsa-project.org>; Mon, 23 Apr 2018 12:48:50 -0700 (PDT)
-In-Reply-To: <s5hbmefzfja.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jorge <jorge.sanjuan@codethink.co.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180423165213.GL19834@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, linux-media <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 19, 2018 at 12:55 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Sat, 14 Apr 2018 00:24:23 +0200,
-> Ruslan Bilovol wrote:
->>
->> Offload snd_usb_parse_audio_interface() function which
->> became quite long after adding UAC3 spec support.
->>
->> Move class-specific parts to separate functions
->> which now produce audioformat structure that is
->> ready to be fed to snd_usb_add_audio_stream().
->>
->> This also broke Blue Microphones workaround (which
->> relies on audioformat decoded from previous altsetting)
->> into two parts: prepare quirk flag analyzing previous
->> altsetting then use it with current altsetting.
->>
->> Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+On Mon, Apr 23, 2018 at 9:52 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Mon, Apr 23, 2018 at 09:44:17AM -0700, Tim Harvey wrote:
 >
-> Could you try to split this patch to two parts: one is a simple
-> refactoring to move the code to snd_usb_get_audioformat_uac12(), and
-> another to add snd_usb_get_audioformat_uac3().
+>> Could you add some detail to the commit explaining why we need to
+>> replace codec to component? I don't really know what that means.
+>> Please refer to a commit if the ASoC API is changing in some way we
+>> need to catch up with.
 >
-> In this way, we can see a problem more clearly if it's in the
-> refactoring part.
->
+> This is a big transition in the ASoC API which is nearing completion -
+> this driver is one of the last users of the CODEC struct, we've (well,
+> mainly Morimoto-san) been migrating things away from it to the more
+> general purpose component.  There's no one commit to point at really as
+> the two have coexisted for a while and we won't be able to finally
+> remove the CODEC struct until all the drivers have transitioned away.
 
-Sure, will do in in next patchset
+Mark,
 
-Thanks,
-Ruslan
+Ok - thanks for the explanation!
+
+Kuninori,
+
+Sorry this took so long to get to. Tested on a GW5404
+
+Tested-by: Tim Harvey <tharvey@gateworks.com>
+Acked-by: Tim Harvey <tharvey@gateworks.com>
+
+Regards,
+
+Tim
