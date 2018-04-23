@@ -1,95 +1,114 @@
-From: Sanyog Kale <sanyog.r.kale@intel.com>
-Subject: Re: [PATCH v4 07/13] soundwire: Add stream
- configuration APIs
-Date: Mon, 23 Apr 2018 09:15:10 +0530
-Message-ID: <20180423034510.GA22365@buildpc-HP-Z230>
-References: <1524049146-8725-1-git-send-email-vinod.koul@intel.com>
- <1524049146-8725-8-git-send-email-vinod.koul@intel.com>
- <bca948a4-a668-73d0-5e6d-63287a21a636@linux.intel.com>
- <20180421161315.GO6014@localhost>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: [PATCH v2 0/5] ALSA: xen-front: Add Xen para-virtualized frontend
+ driver
+Date: Mon, 23 Apr 2018 09:34:26 +0300
+Message-ID: <198552e8-d1e2-d9e1-9636-927b0778ef9d@gmail.com>
+References: <20180416062453.24743-1-andr2000@gmail.com>
+ <9729eb3b-d331-cf3c-9816-f520748c5f9a@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id EDB02267284
- for <alsa-devel@alsa-project.org>; Mon, 23 Apr 2018 05:45:00 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20180421161315.GO6014@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <9729eb3b-d331-cf3c-9816-f520748c5f9a@gmail.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, jgross@suse.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, perex@perex.cz, tiwai@suse.com
+Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Apr 21, 2018 at 09:43:15PM +0530, Vinod Koul wrote:
-> On Sat, Apr 21, 2018 at 06:56:26AM -0700, Pierre-Louis Bossart wrote:
-> > 
-> > >+static int _sdw_deprepare_stream(struct sdw_stream_runtime *stream)
-> > >+{
-> > >+	struct sdw_master_runtime *m_rt = stream->m_rt;
-> > >+	struct sdw_bus *bus = m_rt->bus;
-> > >+	int ret = 0;
-> > >+
-> > >+	/* De-prepare port(s) */
-> > >+	ret = sdw_prep_deprep_ports(m_rt, false);
-> > >+	if (ret < 0) {
-> > >+		dev_err(bus->dev, "De-prepare port(s) failed: %d", ret);
-> > >+		return ret;
-> > >+	}
-> > >+
-> > >+	bus->params.bandwidth -= m_rt->stream->params.rate *
-> > >+		m_rt->ch_count * m_rt->stream->params.bps;
-> > 
-> > And same here, the ch_count can be zero.
-> 
-> Same as above..
-> 
-> > 
-> > >+
-> > >+	if (!bus->params.bandwidth) {
-> > >+		bus->params.row = 0;
-> > >+		bus->params.col = 0;
-> > >+		goto exit;
-> > 
-> > What is the intent with this test+goto? Shouldn't you program the parameters
-> > if you want to change the frame shape?
-> 
-> hmmm that seems correct point to me, but then we are going idle and should
-> ideally power down. Let me check again if that is the reason.
->
-
-We do not want to program parameters or change frame shape in case of bandwidth
-required is 0 on bus (ie. no stream running). The row and col values are reset
-to 0 and will be re-computed again in prepare_stream of next stream based
-on stream requirement.
-
-> > 
-> > >+	}
-> > >+
-> > >+	/* Program params */
-> > >+	ret = sdw_program_params(bus);
-> > >+	if (ret < 0) {
-> > >+		dev_err(bus->dev, "Program params failed: %d", ret);
-> > >+		return ret;
-> > >+	}
-> > >+
-> > >+	return do_bank_switch(stream);
-> > >+
-> > >+exit:
-> > >+	stream->state = SDW_STREAM_DEPREPARED;
-> > >+
-> > >+	return ret;
-> > >+}
-> 
-> -- 
-> ~Vinod
-
--- 
+On 04/18/2018 06:15 PM, Oleksandr Andrushchenko wrote:
+> On 04/16/2018 09:24 AM, Oleksandr Andrushchenko wrote:
+>> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+>>
+>> Please note: this patch series depends on [3].
+> The dependency is now merged into Xen kernel tree [4] for-linus-4.17
+The dependency is now pulled into Linus tree [5]
+>>
+>> This patch series adds support for Xen [1] para-virtualized
+>> sound frontend driver. It implements the protocol from
+>> include/xen/interface/io/sndif.h with the following limitations:
+>> - mute/unmute is not supported
+>> - get/set volume is not supported
+>> Volume control is not supported for the reason that most of the
+>> use-cases (at the moment) are based on scenarious where
+>> unprivileged OS (e.g. Android, AGL etc) use software mixers.
+>>
+>> Both capture and playback are supported.
+>>
+>> Corresponding backend, implemented as a user-space application, can be
+>> found at [2].
+>>
+>> Thank you,
+>> Oleksandr
+>>
+>> Changes since v1:
+>> *****************
+>>
+>> 1. Moved driver from sound/drivers to sound/xen
+>>
+>> 2. Coding style changes to better meet Linux Kernel
+>>
+>> 3. Added explicit back and front synchronization
+>>     In order to provide explicit synchronization between backend and
+>>     frontend the following changes are introduced in the protocol:
+>>      - add new ring buffer for sending asynchronous events from
+>>        backend to frontend to report number of bytes played by the
+>>        frontend (XENSND_EVT_CUR_POS)
+>>      - introduce trigger events for playback control: 
+>> start/stop/pause/resume
+>>      - add "req-" prefix to event-channel and ring-ref to unify naming
+>>        of the Xen event channels for requests and events
+>>
+>> 4. Added explicit back and front parameter negotiation
+>>     In order to provide explicit stream parameter negotiation between
+>>     backend and frontend the following changes are introduced in the 
+>> protocol:
+>>     add XENSND_OP_HW_PARAM_QUERY request to read/update
+>>     configuration space for the parameters given: request passes
+>>     desired parameter's intervals/masks and the response to this request
+>>     returns allowed min/max intervals/masks to be used.
+>>
+>> [1] https://xenproject.org/
+>> [2] https://github.com/xen-troops/snd_be
+>> [3] https://lkml.org/lkml/2018/4/12/522
+>>
+>> Oleksandr Andrushchenko (5):
+>>    ALSA: xen-front: Introduce Xen para-virtualized sound frontend driver
+>>    ALSA: xen-front: Read sound driver configuration from Xen store
+>>    ALSA: xen-front: Implement Xen event channel handling
+>>    ALSA: xen-front: Implement handling of shared buffers
+>>    ALSA: xen-front: Implement ALSA virtual sound driver
+>>
+>>   sound/Kconfig                     |   2 +
+>>   sound/Makefile                    |   2 +-
+>>   sound/xen/Kconfig                 |  10 +
+>>   sound/xen/Makefile                |   9 +
+>>   sound/xen/xen_snd_front.c         | 410 +++++++++++++++++++
+>>   sound/xen/xen_snd_front.h         |  57 +++
+>>   sound/xen/xen_snd_front_alsa.c    | 830 
+>> ++++++++++++++++++++++++++++++++++++++
+>>   sound/xen/xen_snd_front_alsa.h    |  23 ++
+>>   sound/xen/xen_snd_front_cfg.c     | 517 ++++++++++++++++++++++++
+>>   sound/xen/xen_snd_front_cfg.h     |  46 +++
+>>   sound/xen/xen_snd_front_evtchnl.c | 478 ++++++++++++++++++++++
+>>   sound/xen/xen_snd_front_evtchnl.h |  92 +++++
+>>   sound/xen/xen_snd_front_shbuf.c   | 193 +++++++++
+>>   sound/xen/xen_snd_front_shbuf.h   |  36 ++
+>>   14 files changed, 2704 insertions(+), 1 deletion(-)
+>>   create mode 100644 sound/xen/Kconfig
+>>   create mode 100644 sound/xen/Makefile
+>>   create mode 100644 sound/xen/xen_snd_front.c
+>>   create mode 100644 sound/xen/xen_snd_front.h
+>>   create mode 100644 sound/xen/xen_snd_front_alsa.c
+>>   create mode 100644 sound/xen/xen_snd_front_alsa.h
+>>   create mode 100644 sound/xen/xen_snd_front_cfg.c
+>>   create mode 100644 sound/xen/xen_snd_front_cfg.h
+>>   create mode 100644 sound/xen/xen_snd_front_evtchnl.c
+>>   create mode 100644 sound/xen/xen_snd_front_evtchnl.h
+>>   create mode 100644 sound/xen/xen_snd_front_shbuf.c
+>>   create mode 100644 sound/xen/xen_snd_front_shbuf.h
+>>
+> [4] 
+> https://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git/commit/?h=for-linus-4.17&id=cd6e992b3aab072cc90839508aaf5573c8f7e066
+[5] 
+https://elixir.bootlin.com/linux/v4.17-rc2/source/include/xen/interface/io/sndif.h
