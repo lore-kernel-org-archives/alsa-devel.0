@@ -1,14 +1,21 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: usb-audio: Fix missing endian conversion
-Date: Mon, 23 Apr 2018 15:24:04 +0200
-Message-ID: <20180423132404.12633-1-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v4 02/13] soundwire: Add support for
+ SoundWire stream management
+Date: Mon, 23 Apr 2018 08:25:21 -0500
+Message-ID: <f869e5a4-2651-9ee4-aa3a-6f21eaa15c01@linux.intel.com>
+References: <1524049146-8725-1-git-send-email-vinod.koul@intel.com>
+ <1524049146-8725-3-git-send-email-vinod.koul@intel.com>
+ <c88bfd9d-3192-5a0a-34d0-24fff829503c@linux.intel.com>
+ <20180421161756.GP6014@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 90B4C266CA1
- for <alsa-devel@alsa-project.org>; Mon, 23 Apr 2018 15:24:08 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id E84DC266CA1
+ for <alsa-devel@alsa-project.org>; Mon, 23 Apr 2018 15:25:24 +0200 (CEST)
+In-Reply-To: <20180421161756.GP6014@localhost>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,42 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Andrew Chant <achant@google.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The UAC2 jack detection support introduced the bmControls checks in a
-couple of places, but they forgot the endian conversion; the
-bmControls of UAC2 terminal descriptor is __le16, not a byte like in
-UAC1.
 
-Fixes: 5a222e849452 ("ALSA: usb-audio: UAC2 jack detection")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/mixer.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>>> +			(stream->params.bps != stream_config->bps)) {
+>>> +		dev_err(dev, "bps not matching, stream:%s", stream->name);
+>>> +		return -EINVAL;
+>>> +	}
+>>> +
+>>> +	stream->type = stream_config->type;
+>>> +	stream->params.rate = stream_config->frame_rate;
+>>> +	stream->params.bps = stream_config->bps;
+>>> +	if (is_slave)
+>>> +		stream->params.ch_count += stream_config->ch_count;
+>>
+>> Add comment or TODO that this does not work in device-to-device
+>> communication. This is a known limitation that needs to be tracked.
+> 
+> Yes limitation for a feature that we dont support yet. So i dont think we
+> need to do anything atm for this. When the support for device-to-device
+> shows up, that would update this and other conditions valid only for specific
+> cases.
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 301ad61ed426..f78b500b3c0e 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1859,7 +1859,7 @@ static int parse_audio_input_terminal(struct mixer_build *state, int unitid,
- 	check_input_term(state, d->bTerminalID, &iterm);
- 	if (state->mixer->protocol == UAC_VERSION_2) {
- 		/* Check for jack detection. */
--		if (uac_v2v3_control_is_readable(d->bmControls,
-+		if (uac_v2v3_control_is_readable(le16_to_cpu(d->bmControls),
- 						 UAC2_TE_CONNECTOR)) {
- 			build_connector_control(state, &iterm, true);
- 		}
-@@ -2561,7 +2561,7 @@ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
- 			if (err < 0 && err != -EINVAL)
- 				return err;
- 
--			if (uac_v2v3_control_is_readable(desc->bmControls,
-+			if (uac_v2v3_control_is_readable(le16_to_cpu(desc->bmControls),
- 							 UAC2_TE_CONNECTOR)) {
- 				build_connector_control(&state, &state.oterm,
- 							false);
--- 
-2.16.3
+so if you don't support it yet, add a comment that this will have to be 
+modified. This is all I am asking so that this limitation is known and 
+the parts that have to be changed identified.
