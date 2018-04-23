@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: codecs: msm8916-wcd: use threaded
-	IRQ handlers
-Date: Mon, 23 Apr 2018 16:25:59 +0100
-Message-ID: <20180423152559.GF19834@sirena.org.uk>
-References: <20180420120750.356-1-daniel@zonque.org>
- <20180423144901.GE19834@sirena.org.uk>
- <4ec0b0ff-f5f3-298d-8aa6-d4c16aee68e6@zonque.org>
+Subject: Re: [PATCH 2/3] ASoC: tas6424: Add support for the
+	standby pin
+Date: Mon, 23 Apr 2018 16:35:53 +0100
+Message-ID: <20180423153553.GI19834@sirena.org.uk>
+References: <1524218684-19752-1-git-send-email-jjhiblot@ti.com>
+ <1524218684-19752-3-git-send-email-jjhiblot@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8459576968299176865=="
+Content-Type: multipart/mixed; boundary="===============0510961045112970897=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5BCEE266CA1
- for <alsa-devel@alsa-project.org>; Mon, 23 Apr 2018 17:26:00 +0200 (CEST)
-In-Reply-To: <4ec0b0ff-f5f3-298d-8aa6-d4c16aee68e6@zonque.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9435C266CA1
+ for <alsa-devel@alsa-project.org>; Mon, 23 Apr 2018 17:36:33 +0200 (CEST)
+In-Reply-To: <1524218684-19752-3-git-send-email-jjhiblot@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,52 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, srinivas.kandagatla@linaro.org
+To: Jean-Jacques Hiblot <jjhiblot@ti.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, afd@ti.com, robh+dt@kernel.org, dannenberg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8459576968299176865==
+--===============0510961045112970897==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="gneEPciiIl/aKvOT"
+	protocol="application/pgp-signature"; boundary="sl5MdczEF/OU2Miu"
 Content-Disposition: inline
 
 
---gneEPciiIl/aKvOT
+--sl5MdczEF/OU2Miu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Apr 23, 2018 at 04:54:22PM +0200, Daniel Mack wrote:
-> On Monday, April 23, 2018 04:49 PM, Mark Brown wrote:
+On Fri, Apr 20, 2018 at 12:04:43PM +0200, Jean-Jacques Hiblot wrote:
 
-> > Someone already submitted a fix for this which is in -next already?
+> +	- standby-gpio: GPIO used to shut the TAS6424 down.
 
-> Ah, missed that. Nice, it's the exact same fix :)
+All GPIO property names are supposed to be called -gpios regardless of
+if there can ever be more than one GPIO (though the framework does
+support the singular, I wonder if it's not more helpful to just get the
+spec relaxed here).
 
-Great minds and all that!
+> +		dev_info(dev, "failed to get standvby GPIO: %ld\n",
 
---gneEPciiIl/aKvOT
+Typo.
+
+--sl5MdczEF/OU2Miu
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrd+wYACgkQJNaLcl1U
-h9CZ8gf/QAaOLYwApVqU218ZpSbWez7X4JKDldBdG01j0ZkqUXeID+esybpJ6Zjg
-D6sGMSeVI1XpHXKD1zzI0AgJoIwpxxcED5rVaJoXT7fe0+zBLSjq3iooEDiCoLIn
-fGP2vrsPR6MrZv6ogKrmku3z0o95mdKHWp0nnsMnuI2VZgoWSohCbHVs5STcWK1r
-BCTxzZNBAjJ5ot3/R9m+NxSWGDPWDKfl7xGO+dza986H/lffM1SYlwwxrutCetmg
-pHFSoa9TPCzek16QiIaM5iShlMTZWD86M2szY/CQEWnp4RPO/psTLCUANkzQ+qCC
-TCR6u4+m/eo6wNUPIjfUu51qpEmKAg==
-=V62s
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrd/VkACgkQJNaLcl1U
+h9DvMQf/WlAalw9VVpnJyOR7ezVpFT7BAS/zA4+NemWVT8DS0Juwk3kD/1mFjnFJ
+RuJECYe1tPHFv8a2/6rqMrD48zBfXG/YcGpKm0SF05ZA9/f1r8UTNdDJMiM4IHvh
+rfCJLGBraGX8TOuEZ2j8mmGBj7ToV3MXQ2Zq1tANd7mZKZ+WH+3nhl37IP7tu0t8
+V6qEGKK8Aklh6+fk/zWXwrnVtIJzFqXGUx7GZepahm558nSilomVSJ/+nTN0N8iH
+6RsGMJpDtfyf68fL5amN3z+ZHu9/FYCVIKICFoFRHxMqK5U3cc3ucSrCyOHGTNew
+rdfB+RVfHbNwCQq8QNeAQU/QYwuN2Q==
+=yJSP
 -----END PGP SIGNATURE-----
 
---gneEPciiIl/aKvOT--
+--sl5MdczEF/OU2Miu--
 
---===============8459576968299176865==
+--===============0510961045112970897==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8459576968299176865==--
+--===============0510961045112970897==--
