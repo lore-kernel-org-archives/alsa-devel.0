@@ -1,22 +1,22 @@
 From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Subject: Re: [PATCH 4/4] ALSA: usb: add UAC3 BADD profiles
-	support
-Date: Mon, 23 Apr 2018 22:47:55 +0300
-Message-ID: <CAB=otbSQ3=_257gn8SK=mAATOeZRzHigpjQcZR_prw6YG327jg@mail.gmail.com>
+Subject: Re: [PATCH 1/4] ALSA: usb: stream: refactor audio
+ interface parsing
+Date: Mon, 23 Apr 2018 22:48:49 +0300
+Message-ID: <CAB=otbQK3P5W-GCxncu-J2mCVuQYZuEBmOW=QJOKVF7RNUPGNQ@mail.gmail.com>
 References: <1523658266-2259-1-git-send-email-ruslan.bilovol@gmail.com>
- <1523658266-2259-5-git-send-email-ruslan.bilovol@gmail.com>
- <CANVWZtHn9jYczuhZiKyeC5yf1jjeKFySHv6RkY0ekDj5fD1h+w@mail.gmail.com>
+ <1523658266-2259-2-git-send-email-ruslan.bilovol@gmail.com>
+ <s5hbmefzfja.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f193.google.com (mail-ot0-f193.google.com
- [74.125.82.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9012F267659
- for <alsa-devel@alsa-project.org>; Mon, 23 Apr 2018 21:47:57 +0200 (CEST)
-Received: by mail-ot0-f193.google.com with SMTP id y10-v6so5603183otg.10
- for <alsa-devel@alsa-project.org>; Mon, 23 Apr 2018 12:47:57 -0700 (PDT)
-In-Reply-To: <CANVWZtHn9jYczuhZiKyeC5yf1jjeKFySHv6RkY0ekDj5fD1h+w@mail.gmail.com>
+Received: from mail-ot0-f194.google.com (mail-ot0-f194.google.com
+ [74.125.82.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 76274267659
+ for <alsa-devel@alsa-project.org>; Mon, 23 Apr 2018 21:48:50 +0200 (CEST)
+Received: by mail-ot0-f194.google.com with SMTP id i5-v6so18637282oth.1
+ for <alsa-devel@alsa-project.org>; Mon, 23 Apr 2018 12:48:50 -0700 (PDT)
+In-Reply-To: <s5hbmefzfja.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,59 +26,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andrew Chant <achant@google.com>
-Cc: Jorge <jorge.sanjuan@codethink.co.uk>, alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jorge <jorge.sanjuan@codethink.co.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBBcHIgMTksIDIwMTggYXQgMTI6NDIgUE0sIEFuZHJldyBDaGFudCA8YWNoYW50QGdv
-b2dsZS5jb20+IHdyb3RlOgo+IE9uIFNhdCwgQXByIDE0LCAyMDE4IGF0IDY6MjQgQU0sIFJ1c2xh
-biBCaWxvdm9sCj4gPHJ1c2xhbi5iaWxvdm9sQGdtYWlsLmNvbT4gd3JvdGU6Cj4+IFJlY2VudGx5
-IHJlbGVhc2VkIFVTQiBBdWRpbyBDbGFzcyAzLjAgc3BlY2lmaWNhdGlvbgo+PiBjb250YWlucyBC
-QUREIChCYXNpYyBBdWRpbyBEZXZpY2UgRGVmaW5pdGlvbikgZG9jdW1lbnQKPj4gd2hpY2ggZGVz
-Y3JpYmVzIHByZS1kZWZpbmVkIFVBQzMgY29uZmlndXJhdGlvbnMuCj4+Cj4+IEJBREQgc3VwcG9y
-dCBpcyBtYW5kYXRvcnkgZm9yIFVBQzMgZGV2aWNlcywgaXQgc2hvdWxkIGJlCj4+IGltcGxlbWVu
-dGVkIGFzIGEgc2VwYXJhdGUgVVNCIGRldmljZSBjb25maWd1cmF0aW9uLgo+PiBBcyBwZXIgQkFE
-RCBkb2N1bWVudCwgY2xhc3Mtc3BlY2lmaWMgZGVzY3JpcHRvcnMKPj4gc2hhbGwgbm90IGJlIGlu
-Y2x1ZGVkIGluIHRoZSBEZXZpY2XigJlzIENvbmZpZ3VyYXRpb24KPj4gZGVzY3JpcHRvciAoImlu
-ZmVycmVkIiksIGJ1dCBob3N0IGNhbiBndWVzcyB0aGVtCj4+IGZyb20gQkFERCBwcm9maWxlIG51
-bWJlciwgbnVtYmVyIG9mIGVuZHBvaW50cyBhbmQKPj4gdGhlaXIgbWF4IHBhY2tlZCBzaXplcy4K
-Pj4KPj4gVGhpcyBwYXRjaCBhZGRzIHN1cHBvcnQgb2YgYWxsIEJBREQgcHJvZmlsZXMgZnJvbSB0
-aGUgc3BlYwo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBSdXNsYW4gQmlsb3ZvbCA8cnVzbGFuLmJpbG92
-b2xAZ21haWwuY29tPgo+PiAtLS0KPj4gIHNvdW5kL3VzYi9jYXJkLmMgICAgICAgfCAgMTQgKysr
-Cj4+ICBzb3VuZC91c2IvY2xvY2suYyAgICAgIHwgICA5ICstCj4+ICBzb3VuZC91c2IvbWl4ZXIu
-YyAgICAgIHwgMzEzICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrLS0KPj4gIHNvdW5kL3VzYi9taXhlcl9tYXBzLmMgfCAgNjUgKysrKysrKysrKwo+PiAgc291
-bmQvdXNiL3N0cmVhbS5jICAgICB8ICA4MyArKysrKysrKysrKy0tCj4+ICBzb3VuZC91c2IvdXNi
-YXVkaW8uaCAgIHwgICAyICsKPj4gIDYgZmlsZXMgY2hhbmdlZCwgNDY2IGluc2VydGlvbnMoKyks
-IDIwIGRlbGV0aW9ucygtKQo+Cj4+IC0tLSBhL3NvdW5kL3VzYi9taXhlcl9tYXBzLmMKPj4gKysr
-IGIvc291bmQvdXNiL21peGVyX21hcHMuYwo+PiBAQCAtNDgyLDMgKzQ4Miw2OCBAQCBzdHJ1Y3Qg
-dXNibWl4X2N0bF9tYXAgewo+PiAgICAgICAgIHsgMCB9IC8qIHRlcm1pbmF0b3IgKi8KPj4gIH07
-Cj4+Cj4+ICsvKgo+PiArICogQ29udHJvbCBtYXAgZW50cmllcyBmb3IgVUFDMyBCQUREIHByb2Zp
-bGVzCj4+ICsgKi8KPj4gKwo+PiArc3RhdGljIHN0cnVjdCB1c2JtaXhfbmFtZV9tYXAgdWFjM19i
-YWRkX2dlbmVyaWNfaW9fbWFwW10gPSB7Cj4+ICsgICAgICAgeyBVQUMzX0JBRERfRlVfSUQyLCAi
-R2VuZXJpYyBPdXQgUGxheWJhY2siIH0sCj4+ICsgICAgICAgeyBVQUMzX0JBRERfRlVfSUQ1LCAi
-R2VuZXJpYyBJbiBDYXB0dXJlIiB9LAo+PiArICAgICAgIHsgMCB9ICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAvKiB0ZXJtaW5hdG9yICovCj4+ICt9Owo+PiArc3RhdGljIHN0cnVj
-dCB1c2JtaXhfbmFtZV9tYXAgdWFjM19iYWRkX2hlYWRwaG9uZV9tYXBbXSA9IHsKPj4gKyAgICAg
-ICB7IFVBQzNfQkFERF9GVV9JRDIsICJIZWFkcGhvbmUgUGxheWJhY2siIH0sCj4+ICsgICAgICAg
-eyAwIH0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8qIHRlcm1pbmF0b3IgKi8K
-Pj4gK307Cj4+ICtzdGF0aWMgc3RydWN0IHVzYm1peF9uYW1lX21hcCB1YWMzX2JhZGRfc3BlYWtl
-cl9tYXBbXSA9IHsKPj4gKyAgICAgICB7IFVBQzNfQkFERF9GVV9JRDIsICJTcGVha2VyIFBsYXli
-YWNrIiB9LAo+PiArICAgICAgIHsgMCB9ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAvKiB0ZXJtaW5hdG9yICovCj4+ICt9Owo+PiArc3RhdGljIHN0cnVjdCB1c2JtaXhfbmFtZV9t
-YXAgdWFjM19iYWRkX21pY3JvcGhvbmVfbWFwW10gPSB7Cj4+ICsgICAgICAgeyBVQUMzX0JBRERf
-RlVfSUQ1LCAiTWljIENhcHR1cmUiIH0sCj4+ICsgICAgICAgeyAwIH0gICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIC8qIHRlcm1pbmF0b3IgKi8KPj4gK307Cj4+ICsvKiBDb3ZlcnMg
-YWxzbyAnaGVhZHNldCBhZGFwdGVyJyBwcm9maWxlICovCj4+ICtzdGF0aWMgc3RydWN0IHVzYm1p
-eF9uYW1lX21hcCB1YWMzX2JhZGRfaGVhZHNldF9tYXBbXSA9IHsKPj4gKyAgICAgICB7IFVBQzNf
-QkFERF9GVV9JRDIsICJIZWFkc2V0IFBsYXliYWNrIiB9LAo+PiArICAgICAgIHsgVUFDM19CQURE
-X0ZVX0lENSwgIkhlYWRzZXQgQ2FwdHVyZSIgfSwKPj4gKyAgICAgICB7IFVBQzNfQkFERF9GVV9J
-RDcsICJTaWRlIFRvbmUgTWl4aW5nIiB9LAo+IENhbiB5b3UgcGxlYXNlIGNhbGwgdGhpcyAiU2lk
-ZXRvbmUiPwo+IFRoaXMgYmV0dGVyIG1hdGNoZXMgb3RoZXIgU2lkZXRvbmUgY29udHJvbCBuYW1l
-cyBpbiB0aGUgc291bmQgdHJlZSBhbmQKPiBtYWtlcyBpdCBjb21wYXRpYmxlIHdpdGggZXhpc3Rp
-bmcgQW5kcm9pZCB1c2Vyc3BhY2UgdXNhZ2UuCgpJIGhhdmUgbm8gYW55IG9iamVjdGlvbnMsICJT
-aWRlIFRvbmUiIHdhcyBpbiBVQUMzIGRvY3VtZW50YXRpb24sIGJ1dAoiU2lkZXRvbmUiIGlzIE9L
-IHRvbywgc28gd2lsbCBjaGFuZ2UgaXQKClRoYW5rcywKUnVzbGFuCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Thu, Apr 19, 2018 at 12:55 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Sat, 14 Apr 2018 00:24:23 +0200,
+> Ruslan Bilovol wrote:
+>>
+>> Offload snd_usb_parse_audio_interface() function which
+>> became quite long after adding UAC3 spec support.
+>>
+>> Move class-specific parts to separate functions
+>> which now produce audioformat structure that is
+>> ready to be fed to snd_usb_add_audio_stream().
+>>
+>> This also broke Blue Microphones workaround (which
+>> relies on audioformat decoded from previous altsetting)
+>> into two parts: prepare quirk flag analyzing previous
+>> altsetting then use it with current altsetting.
+>>
+>> Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+>
+> Could you try to split this patch to two parts: one is a simple
+> refactoring to move the code to snd_usb_get_audioformat_uac12(), and
+> another to add snd_usb_get_audioformat_uac3().
+>
+> In this way, we can see a problem more clearly if it's in the
+> refactoring part.
+>
+
+Sure, will do in in next patchset
+
+Thanks,
+Ruslan
