@@ -1,47 +1,99 @@
 From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v4 2/3] platform/x86: dell-*: Add interface
- for switchable graphics status query
-Date: Mon, 23 Apr 2018 16:43:41 +0300
-Message-ID: <CAHp75VdwtOS_B978JOXqWRnj611jMJyN7BxFr+qu+Ojdf07i2Q@mail.gmail.com>
-References: <20180420094432.13133-1-kai.heng.feng@canonical.com>
- <20180420094432.13133-2-kai.heng.feng@canonical.com>
+Subject: Re: [PATCH v4 3/3] ALSA: hda: Disabled unused audio controller for
+ Dell platforms with Switchable Graphics
+Date: Mon, 23 Apr 2018 16:52:18 +0300
+Message-ID: <CAHp75VfBW_Ypka92qVK0sF1Rke=Yx8ZWoXmQ2RG6+Aw7+A2Vaw@mail.gmail.com>
+References: <20180420094432.13133-1-kai.heng.feng@canonical.com> <20180420094432.13133-3-kai.heng.feng@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f176.google.com (mail-qk0-f176.google.com
- [209.85.220.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 0BBBC266E30
- for <alsa-devel@alsa-project.org>; Mon, 23 Apr 2018 15:43:53 +0200 (CEST)
-Received: by mail-qk0-f176.google.com with SMTP id o64so16150454qkl.7
- for <alsa-devel@alsa-project.org>; Mon, 23 Apr 2018 06:43:53 -0700 (PDT)
-In-Reply-To: <20180420094432.13133-2-kai.heng.feng@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180420094432.13133-3-kai.heng.feng@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: Matthew Garrett <mjg59@srcf.ucam.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Mario Limonciello <mario.limonciello@dell.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Platform Driver <platform-driver-x86@vger.kernel.org>, =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>
+Cc: Matthew Garrett <mjg59@srcf.ucam.org>, =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Mario Limonciello <mario.limonciello@dell.com>, Takashi Iwai <tiwai@suse.com>, Platform Driver <platform-driver-x86@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 On Fri, Apr 20, 2018 at 12:44 PM, Kai-Heng Feng
 <kai.heng.feng@canonical.com> wrote:
-> On some Dell platforms, there's a BIOS option "Enable Switchable
-> Graphics". This information is useful if we want to do different things
-> based on this value, e.g. disable unused audio controller that comes
-> with the discrete graphics.
+> Some Dell platforms (Preicsion 7510/7710/7520/7720) have a BIOS option
+> "Switchable Graphics" (SG).
+>
+> When SG is enabled, we have:
+> 00:02.0 VGA compatible controller: Intel Corporation Device 591b (rev 04)
+> 00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (rev 31)
+> 01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.  [AMD/ATI] Ellesmere [Polaris10]
+> 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere [Radeon RX 580]
+>
+> The Intel Audio outputs all the sound, including HDMI audio. The audio
+> controller comes with AMD graphics doesn't get used.
+>
+> When SG is disabled, we have:
+> 00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (rev 31)
+> 01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.  [AMD/ATI] Ellesmere [Polaris10]
+> 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere [Radeon RX 580]
+>
+> Now it's a typical discrete-only system. HDMI audio comes from AMD audio
+> controller, others from Intel audio controller.
+>
+> When SG is enabled, the unused AMD audio contoller still exposes its
+> sysfs, so userspace still opens the control file and stream. If
+> userspace tries to output sound through the stream, it hangs the system.
+>
+> Since the discrete audio controller isn't useful when SG is enabled, we
+> should just disable the device.
 
->  int dell_micmute_led_set(int on);
-> +bool dell_switchable_gfx_is_enabled(void);
+> +static bool check_dell_switchable_gfx(struct pci_dev *pdev)
 
-I would rather preserve existing API, i.e.
- - prototype int func(void), where return either state or negative error code.
- - naming: dell_switchable_gfx_get()
+Yeah, as following existing naming scheme in the driver
+(check_hdmi_disabled(), for example)
+I would rather call it similar:
+
+check_switchable_gfx_enabled()
+
+> +{
+> +       bool (*dell_switchable_gfx_is_enabled_func)(void);
+> +       bool enabled;
+> +
+> +       /* Thunderbolt devices won't be switchable */
+> +       if (pci_is_thunderbolt_attached(pdev))
+> +               return false;
+> +
+> +       /* Only check for Dell laptops and AIOs */
+
+> +       if (!dmi_find_device(DMI_DEV_TYPE_OEM_STRING, "Dell System", NULL) ||
+> +           !(dmi_match(DMI_CHASSIS_TYPE, "10") ||
+> +             dmi_match(DMI_CHASSIS_TYPE, "13")) ||
+
+Can't we do it in more flexible way, i.e. using struct dmi_system_id
+table and dmi_check_system() ?
+
+> +           !(pdev->vendor == PCI_VENDOR_ID_ATI ||
+> +             pdev->vendor == PCI_VENDOR_ID_NVIDIA))
+> +               return false;
+
+I would rather split DMI and PCI checks.
+
+> +
+> +       dell_switchable_gfx_is_enabled_func =
+> +               symbol_request(dell_switchable_gfx_is_enabled);
+> +       if (!dell_switchable_gfx_is_enabled_func)
+> +               return false;
+> +
+> +       enabled = dell_switchable_gfx_is_enabled_func();
+> +
+> +       symbol_put(dell_switchable_gfx_is_enabled);
+> +
+> +       return enabled;
+> +}
+> +#else
+> +static bool check_dell_switchable_gfx(struct pci_dev *pdev)
+
+inline
+
+> +{
+> +       return false;
+> +}
+> +#endif
 
 -- 
 With Best Regards,
