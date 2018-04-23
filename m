@@ -1,100 +1,71 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v4 3/3] ALSA: hda: Disabled unused audio controller for
- Dell platforms with Switchable Graphics
-Date: Mon, 23 Apr 2018 16:52:18 +0300
-Message-ID: <CAHp75VfBW_Ypka92qVK0sF1Rke=Yx8ZWoXmQ2RG6+Aw7+A2Vaw@mail.gmail.com>
-References: <20180420094432.13133-1-kai.heng.feng@canonical.com> <20180420094432.13133-3-kai.heng.feng@canonical.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: codecs: msm8916-wcd: use threaded
+	IRQ handlers
+Date: Mon, 23 Apr 2018 15:49:01 +0100
+Message-ID: <20180423144901.GE19834@sirena.org.uk>
+References: <20180420120750.356-1-daniel@zonque.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180420094432.13133-3-kai.heng.feng@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: Matthew Garrett <mjg59@srcf.ucam.org>, =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Mario Limonciello <mario.limonciello@dell.com>, Takashi Iwai <tiwai@suse.com>, Platform Driver <platform-driver-x86@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: multipart/mixed; boundary="===============2377819889557661591=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 366B2266CA1
+ for <alsa-devel@alsa-project.org>; Mon, 23 Apr 2018 16:49:02 +0200 (CEST)
+In-Reply-To: <20180420120750.356-1-daniel@zonque.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <daniel@zonque.org>
+Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, srinivas.kandagatla@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 20, 2018 at 12:44 PM, Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
-> Some Dell platforms (Preicsion 7510/7710/7520/7720) have a BIOS option
-> "Switchable Graphics" (SG).
->
-> When SG is enabled, we have:
-> 00:02.0 VGA compatible controller: Intel Corporation Device 591b (rev 04)
-> 00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (rev 31)
-> 01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.  [AMD/ATI] Ellesmere [Polaris10]
-> 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere [Radeon RX 580]
->
-> The Intel Audio outputs all the sound, including HDMI audio. The audio
-> controller comes with AMD graphics doesn't get used.
->
-> When SG is disabled, we have:
-> 00:1f.3 Audio device: Intel Corporation CM238 HD Audio Controller (rev 31)
-> 01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.  [AMD/ATI] Ellesmere [Polaris10]
-> 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere [Radeon RX 580]
->
-> Now it's a typical discrete-only system. HDMI audio comes from AMD audio
-> controller, others from Intel audio controller.
->
-> When SG is enabled, the unused AMD audio contoller still exposes its
-> sysfs, so userspace still opens the control file and stream. If
-> userspace tries to output sound through the stream, it hangs the system.
->
-> Since the discrete audio controller isn't useful when SG is enabled, we
-> should just disable the device.
 
-> +static bool check_dell_switchable_gfx(struct pci_dev *pdev)
+--===============2377819889557661591==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="8vCeF2GUdMpe9ZbK"
+Content-Disposition: inline
 
-Yeah, as following existing naming scheme in the driver
-(check_hdmi_disabled(), for example)
-I would rather call it similar:
 
-check_switchable_gfx_enabled()
+--8vCeF2GUdMpe9ZbK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +{
-> +       bool (*dell_switchable_gfx_is_enabled_func)(void);
-> +       bool enabled;
-> +
-> +       /* Thunderbolt devices won't be switchable */
-> +       if (pci_is_thunderbolt_attached(pdev))
-> +               return false;
-> +
-> +       /* Only check for Dell laptops and AIOs */
+On Fri, Apr 20, 2018 at 02:07:50PM +0200, Daniel Mack wrote:
+> The handler for the mbhc switch irq calls into snd_soc_jack_report() which
+> in turn triggers a notifier chain that is blocking, which means it allows
+> its callbacks to sleep. This leads to a "scheduling while atomic" Ooops
+> when the jack notifier callback uses snd_soc_dapm_sync(), for instance.
 
-> +       if (!dmi_find_device(DMI_DEV_TYPE_OEM_STRING, "Dell System", NULL) ||
-> +           !(dmi_match(DMI_CHASSIS_TYPE, "10") ||
-> +             dmi_match(DMI_CHASSIS_TYPE, "13")) ||
+Someone already submitted a fix for this which is in -next already?
 
-Can't we do it in more flexible way, i.e. using struct dmi_system_id
-table and dmi_check_system() ?
+--8vCeF2GUdMpe9ZbK
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +           !(pdev->vendor == PCI_VENDOR_ID_ATI ||
-> +             pdev->vendor == PCI_VENDOR_ID_NVIDIA))
-> +               return false;
+-----BEGIN PGP SIGNATURE-----
 
-I would rather split DMI and PCI checks.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrd8lwACgkQJNaLcl1U
+h9BaDQf/TgHu/+0gmIXyUHhskXOr/7UHEEwnRN3iVarEuaY/WR+OaDQ+kOCTkJnS
+9ZEIffuatBurCIYfHYxajG1wmYspuuUW/KEmjZgfurQRcS/FMpwew5gZ0dGEEGS5
+DdujTEjhm5cvQo/TDr0rJx0Dh5kSgReDKI6fWAE9//vfeSowh1pJZeRI/cRGN5sl
+5WNoxcbla3f+CAAag7lNecSusyQHMyySV4druS+ZGFdyk+ymeZTOlspPEpezuFJd
+t/II/1Kj7b8D9gmVhK+Y60QyFEVsvJT916l2Ld/78KB20Z+gUXvQ2OqUFIBGTUXa
++o9ngrTsBoT/7jLqkyBNkTY9wbDacw==
+=IK3E
+-----END PGP SIGNATURE-----
 
-> +
-> +       dell_switchable_gfx_is_enabled_func =
-> +               symbol_request(dell_switchable_gfx_is_enabled);
-> +       if (!dell_switchable_gfx_is_enabled_func)
-> +               return false;
-> +
-> +       enabled = dell_switchable_gfx_is_enabled_func();
-> +
-> +       symbol_put(dell_switchable_gfx_is_enabled);
-> +
-> +       return enabled;
-> +}
-> +#else
-> +static bool check_dell_switchable_gfx(struct pci_dev *pdev)
+--8vCeF2GUdMpe9ZbK--
 
-inline
+--===============2377819889557661591==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> +{
-> +       return false;
-> +}
-> +#endif
 
--- 
-With Best Regards,
-Andy Shevchenko
+--===============2377819889557661591==--
