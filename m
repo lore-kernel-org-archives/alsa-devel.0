@@ -1,92 +1,136 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: tas6424: Allow disabling auto
- diagnostics for faster power-on
-Date: Mon, 23 Apr 2018 16:44:12 +0100
-Message-ID: <20180423154411.GK19834@sirena.org.uk>
-References: <1524218684-19752-1-git-send-email-jjhiblot@ti.com>
- <1524218684-19752-2-git-send-email-jjhiblot@ti.com>
+From: Jorge <jorge.sanjuan@codethink.co.uk>
+Subject: Re: [PATCH 4/4] ALSA: usb-audio: UAC3 Add support for connector
+ insertion.
+Date: Mon, 23 Apr 2018 17:06:54 +0100
+Message-ID: <61a5d852-f4b7-70fa-ae0e-2b5559e3b1f6@codethink.co.uk>
+References: <20180420170327.31569-1-jorge.sanjuan@codethink.co.uk>
+ <20180420170327.31569-5-jorge.sanjuan@codethink.co.uk>
+ <s5hr2n6ru79.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8980880342058464309=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0CB9E266CA1
- for <alsa-devel@alsa-project.org>; Mon, 23 Apr 2018 17:44:22 +0200 (CEST)
-In-Reply-To: <1524218684-19752-2-git-send-email-jjhiblot@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Jacques Hiblot <jjhiblot@ti.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, afd@ti.com, robh+dt@kernel.org, dannenberg@ti.com
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hr2n6ru79.wl-tiwai@suse.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi,
 
---===============8980880342058464309==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="2WS97oupGEGbYNpW"
-Content-Disposition: inline
+Thank you very much for the reviews. I'll put a v2 patchset with the 
+suggested changes for this patch and the other ones you reviewed.
+
+Some comments below
+
+On 23/04/18 13:19, Takashi Iwai wrote:
+> On Fri, 20 Apr 2018 19:03:27 +0200,
+> Jorge Sanjuan wrote:
+>>
+>> diff --git a/include/linux/usb/audio-v3.h b/include/linux/usb/audio-v3.h
+>> index a8959aaba0ae..6cedb6d499ba 100644
+>> --- a/include/linux/usb/audio-v3.h
+>> +++ b/include/linux/usb/audio-v3.h
+>> @@ -221,6 +221,12 @@ struct uac3_iso_endpoint_descriptor {
+>>   	__le16 wLockDelay;
+>>   } __attribute__((packed));
+>>   
+>> +/* 5.2.1.6.1 INSERTION CONTROL PARAMETER BLOCK */
+>> +struct uac3_insertion_ctl_blk {
+>> +	__u8 bSize;
+>> +	__u8 bmConInserted[1];
+> 
+> Do we need to declare this as an array?
+
+The size of bmConInserted will be determined by bSize. We could check 
+how many connectors are in the device by checking the high capability 
+Connectors Descriptor. If the number of connectors was greater than 8 
+this block would need to get some more bytes in the request (or we could 
+just request the following bytes if bSize was greater than one).
+
+I'll remove the array and leave it as two byte block. That should be 
+enough for up to 8 connectors.
+
+> 
+>>   static struct snd_kcontrol_new usb_feature_unit_ctl = {
+>>   	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+>>   	.name = "", /* will be filled later manually */
+>> @@ -1322,6 +1367,15 @@ static struct snd_kcontrol_new usb_bool_master_control_ctl_ro = {
+>>   	.put = NULL,
+>>   };
+>>   
+>> +static struct snd_kcontrol_new usb_connector_ctl_ro = {
+> 
+> Put const.
+
++1	
+
+> 
+> 
+>> @@ -1904,16 +1966,29 @@ static int parse_audio_input_terminal(struct mixer_build *state, int unitid,
+>>   				      void *raw_desc)
+>>   {
+>>   	struct usb_audio_term iterm;
+>> -	struct uac2_input_terminal_descriptor *d = raw_desc;
+>> +	unsigned int control, bmctls, term_id;
+>>   
+>> -	check_input_term(state, d->bTerminalID, &iterm);
+>>   	if (state->mixer->protocol == UAC_VERSION_2) {
+>> -		/* Check for jack detection. */
+>> -		if (uac_v2v3_control_is_readable(d->bmControls,
+>> -						 UAC2_TE_CONNECTOR)) {
+>> -			build_connector_control(state, &iterm, true);
+>> -		}
+>> -	}
+>> +		struct uac2_input_terminal_descriptor *d_v2 = raw_desc;
+>> +		control = UAC2_TE_CONNECTOR;
+>> +		term_id = d_v2->bTerminalID;
+>> +		bmctls = d_v2->bmControls;
+>> +	}
+>> +	else if (state->mixer->protocol == UAC_VERSION_3) {
+> 
+> Put "else if" and the closing brace in the same line.
+
+Thanks. My bad.
+
+> 
+> 
+>> +		struct uac3_input_terminal_descriptor *d_v3 = raw_desc;
+>> +		control = UAC3_TE_INSERTION;
+>> +		term_id = d_v3->bTerminalID;
+>> +		bmctls = d_v3->bmControls;
+> 
+> Doesn't it need le32_to_cpu()?
+
+Agreed.
+
+> 
+>> +	}
+>> +	else /* UAC1. No Insertion control */
+> 
+> Ditto, put "else" and the closing brace in the same line.
+> Also, use braces for the rest block, otherwise it'll look
+> inconsistent.  Or rewrite with switch().
+> 
+>> @@ -2645,6 +2720,12 @@ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
+>>   			err = parse_audio_unit(&state, desc->bCSourceID);
+>>   			if (err < 0 && err != -EINVAL)
+>>   				return err;
+>> +
+>> +			if (uac_v2v3_control_is_readable(desc->bmControls,
+> 
+> Missing le32_to_cpu()?
+
+Agreed.
 
 
---2WS97oupGEGbYNpW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks,
 
-On Fri, Apr 20, 2018 at 12:04:42PM +0200, Jean-Jacques Hiblot wrote:
-> The TAS6424 incorporates both DC-load and AC-load diagnostics which are
-> used to determine the status of the load. The DC diagnostics runs when any
-> channel is directed to leave the Hi-Z state and enter the MUTE or PLAY
-> state.
-> The DC diagnostics are turned on by default but if a fast startup without
-> diagnostics is required the DC diagnostics can be bypassed by adding the
-> property "disable-auto-diagnostics".
+Jorge
 
-This is making me think we should be smarter here and either only run
-the diagnostics once during boot or provide a user control for the
-diagnostics.  It seems like something that is more of a runtime software
-decision than something that's fixed in hardware design, is there
-anything about the hardware design that'd make it impossible to run
-diagnostics?
-
-> +	if (tas6424->no_auto_diags) {
-> +		/*
-> +		 * Disable DC auto-diagnostics to save time when channel leave
-> +		 * Hi-Z state
-> +		 */
-> +		ret = regmap_update_bits(tas6424->regmap,
-> +					 TAS6424_DC_DIAG_CTRL1,
-> +					  0xff, TAS6424_LDGBYPASS);
-
-This could just be exposed to userspace as a simple switch control
-couldn't it?  I do note that it masks more bits than it sets though...
-
---2WS97oupGEGbYNpW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrd/0sACgkQJNaLcl1U
-h9BJJQf+LarwNv6nMCjPJuZ01r2WdQ8JnLzPZ8TUSXu7IoQHYAgSthTL024mNAi5
-4q5+gnO3UtOYJ6ij62m8j6btoTZTBWh3Xtc/oABbFYA46hThuw3w9oNgLWXL9eWd
-SmETAZ1RVCmQ8KrmRf2XF3hmHgba4Y14ts1gQsF203iFa69FLhFOs99r7rWzoOS1
-NZQ4+0bUJNh0MCAr5kuGiZmofDCevGCBHKBWUVG/fhWKGirsXNko02uDak/12Hvd
-dM/9wXXaYyvKScbPoBoYnXLgvvFw8drprINRTw9RkE2CrW+tyKX9+2Pvz+ZVKVDu
-Jm643AogFadU8Kp6s86j+9eBqjRDdg==
-=ruBO
------END PGP SIGNATURE-----
-
---2WS97oupGEGbYNpW--
-
---===============8980880342058464309==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8980880342058464309==--
+>  >
+> thanks,
+> 
+> Takashi
+> 
