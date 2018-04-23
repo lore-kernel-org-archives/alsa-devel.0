@@ -1,16 +1,16 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 09/15] net: irda: pxaficp_ir: remove the dmaengine compat
- need
-Date: Mon, 23 Apr 2018 10:37:20 +0200
-Message-ID: <20180423083720.GA25048@kroah.com>
-References: <20180402142656.26815-1-robert.jarzmik@free.fr>
- <20180402142656.26815-10-robert.jarzmik@free.fr>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH/RFC 7/8] ARM: shmobile: Remove the ARCH_SHMOBILE Kconfig
+ symbol
+Date: Mon, 23 Apr 2018 11:20:14 +0200
+Message-ID: <20180423092011.qnhcorgcu2j5hrls@verge.net.au>
+References: <1524230914-10175-1-git-send-email-geert+renesas@glider.be>
+ <1524230914-10175-8-git-send-email-geert+renesas@glider.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
 Content-Disposition: inline
-In-Reply-To: <20180402142656.26815-10-robert.jarzmik@free.fr>
+In-Reply-To: <1524230914-10175-8-git-send-email-geert+renesas@glider.be>
 List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
  <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
 List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
@@ -20,25 +20,34 @@ List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driver
  <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
 Errors-To: driverdev-devel-bounces@linuxdriverproject.org
 Sender: "devel" <driverdev-devel-bounces@linuxdriverproject.org>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, linux-ide@vger.kernel.org, Pravin Shedge <pravin.shedge4linux@gmail.com>, linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org, Boris Brezillon <boris.brezillon@free-electrons.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Vinod Koul <vinod.koul@intel.com>, Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, linux-media@vger.kernel.org, Samuel Ortiz <samuel@sortiz.org>, Arnd Bergmann <arnd@arndb.de>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, dmaengine@vger.kernel.org, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org, Nicolas Pitre <nico@fluxnic.net>, netdev@vger.kernel.org, linux-mmc
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, devel@driverdev.osuosl.org, Mauro Carvalho Chehab <mchehab@kernel.org>, Vinod Koul <vinod.koul@intel.com>, Magnus Damm <magnus.damm@gmail.com>, Russell King <linux@armlinux.org.uk>, linux-media@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>, Dan Williams <dan.j.williams@intel.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org, dmaengine@vger.kern
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 02, 2018 at 04:26:50PM +0200, Robert Jarzmik wrote:
-> As the pxa architecture switched towards the dmaengine slave map, the
-> old compatibility mechanism to acquire the dma requestor line number and
-> priority are not needed anymore.
+On Fri, Apr 20, 2018 at 03:28:33PM +0200, Geert Uytterhoeven wrote:
+> All drivers for Renesas ARM SoCs have gained proper ARCH_RENESAS
+> platform dependencies.  Hence finish the conversion from ARCH_SHMOBILE
+> to ARCH_RENESAS for Renesas 32-bit ARM SoCs, as started by commit
+> 9b5ba0df4ea4f940 ("ARM: shmobile: Introduce ARCH_RENESAS").
 > 
-> This patch simplifies the dma resource acquisition, using the more
-> generic function dma_request_slave_channel().
-> 
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
->  drivers/staging/irda/drivers/pxaficp_ir.c | 14 ++------------
->  1 file changed, 2 insertions(+), 12 deletions(-)
+> This depends on the previous patches in this series, hence the RFC.
+> 
+> JFTR, after this, the following symbols for drivers supporting only
+> Renesas SuperH "SH-Mobile" SoCs can no longer be selected:
+>   - CONFIG_KEYBOARD_SH_KEYSC,
+>   - CONFIG_VIDEO_SH_VOU,
+>   - CONFIG_VIDEO_SH_MOBILE_CEU,
+>   - CONFIG_DRM_SHMOBILE[*],
+>   - CONFIG_FB_SH_MOBILE_MERAM.
+> (changes for a shmobile_defconfig .config)
+> 
+> [*] CONFIG_DRM_SHMOBILE has a dependency on ARM, but it was never wired
+>     up.  From the use of sh_mobile_meram, I guess it was meant for
+>     SH-Mobile AP4 on Mackerel or AP4EVB, which are long gone.
+>     So the only remaining upstream platforms that could make use of it
+>     are legacy SuperH SH-Mobile SoCs?
 
-This file is no longer in Linus's tree :)
-
-thanks,
-
-greg k-h
+That sounds about right. If there is interest I can sift through my mail
+archive and see if it yields any answers.
