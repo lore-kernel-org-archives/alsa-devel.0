@@ -1,136 +1,50 @@
-From: Jorge <jorge.sanjuan@codethink.co.uk>
-Subject: Re: [PATCH 4/4] ALSA: usb-audio: UAC3 Add support for connector
- insertion.
-Date: Mon, 23 Apr 2018 17:06:54 +0100
-Message-ID: <61a5d852-f4b7-70fa-ae0e-2b5559e3b1f6@codethink.co.uk>
-References: <20180420170327.31569-1-jorge.sanjuan@codethink.co.uk>
- <20180420170327.31569-5-jorge.sanjuan@codethink.co.uk>
- <s5hr2n6ru79.wl-tiwai@suse.de>
+From: Tim Harvey <tharvey@gateworks.com>
+Subject: Re: [PATCH v3][RESEND] media: i2c: tda1997: replace codec to component
+Date: Mon, 23 Apr 2018 09:44:17 -0700
+Message-ID: <CAJ+vNU0mykhkMNNrN=Zsrj0_pv=XAkGiiQkXehQ4EWBkMDAv7w@mail.gmail.com>
+References: <87in8ibrql.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hr2n6ru79.wl-tiwai@suse.de>
-Content-Language: en-US
+In-Reply-To: <87in8ibrql.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, linux-media <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On Sun, Apr 22, 2018 at 7:10 PM, Kuninori Morimoto
+<kuninori.morimoto.gx@renesas.com> wrote:
+>
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>
+> Now we can replace Codec to Component. Let's do it.
+>
+> Note:
+>         xxx_codec_xxx()         ->      xxx_component_xxx()
+>         .idle_bias_off = 0      ->      .idle_bias_on = 1
+>         .ignore_pmdown_time = 0 ->      .use_pmdown_time = 1
+>         -                       ->      .endianness = 1
+>         -                       ->      .non_legacy_dai_naming = 1
+>
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+> Tim, Mauro
+>
+> 2 weeks passed. I re-send.
+> This replace patch is needed for ALSA SoC, otherwise it can't probe anymore.
+>
+> v2 -> v3
+>
+>  - fixup driver name (= tda1997)
+>
 
-Thank you very much for the reviews. I'll put a v2 patchset with the 
-suggested changes for this patch and the other ones you reviewed.
+Kuninori,
 
-Some comments below
+Could you add some detail to the commit explaining why we need to
+replace codec to component? I don't really know what that means.
+Please refer to a commit if the ASoC API is changing in some way we
+need to catch up with.
 
-On 23/04/18 13:19, Takashi Iwai wrote:
-> On Fri, 20 Apr 2018 19:03:27 +0200,
-> Jorge Sanjuan wrote:
->>
->> diff --git a/include/linux/usb/audio-v3.h b/include/linux/usb/audio-v3.h
->> index a8959aaba0ae..6cedb6d499ba 100644
->> --- a/include/linux/usb/audio-v3.h
->> +++ b/include/linux/usb/audio-v3.h
->> @@ -221,6 +221,12 @@ struct uac3_iso_endpoint_descriptor {
->>   	__le16 wLockDelay;
->>   } __attribute__((packed));
->>   
->> +/* 5.2.1.6.1 INSERTION CONTROL PARAMETER BLOCK */
->> +struct uac3_insertion_ctl_blk {
->> +	__u8 bSize;
->> +	__u8 bmConInserted[1];
-> 
-> Do we need to declare this as an array?
+Regards,
 
-The size of bmConInserted will be determined by bSize. We could check 
-how many connectors are in the device by checking the high capability 
-Connectors Descriptor. If the number of connectors was greater than 8 
-this block would need to get some more bytes in the request (or we could 
-just request the following bytes if bSize was greater than one).
-
-I'll remove the array and leave it as two byte block. That should be 
-enough for up to 8 connectors.
-
-> 
->>   static struct snd_kcontrol_new usb_feature_unit_ctl = {
->>   	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
->>   	.name = "", /* will be filled later manually */
->> @@ -1322,6 +1367,15 @@ static struct snd_kcontrol_new usb_bool_master_control_ctl_ro = {
->>   	.put = NULL,
->>   };
->>   
->> +static struct snd_kcontrol_new usb_connector_ctl_ro = {
-> 
-> Put const.
-
-+1	
-
-> 
-> 
->> @@ -1904,16 +1966,29 @@ static int parse_audio_input_terminal(struct mixer_build *state, int unitid,
->>   				      void *raw_desc)
->>   {
->>   	struct usb_audio_term iterm;
->> -	struct uac2_input_terminal_descriptor *d = raw_desc;
->> +	unsigned int control, bmctls, term_id;
->>   
->> -	check_input_term(state, d->bTerminalID, &iterm);
->>   	if (state->mixer->protocol == UAC_VERSION_2) {
->> -		/* Check for jack detection. */
->> -		if (uac_v2v3_control_is_readable(d->bmControls,
->> -						 UAC2_TE_CONNECTOR)) {
->> -			build_connector_control(state, &iterm, true);
->> -		}
->> -	}
->> +		struct uac2_input_terminal_descriptor *d_v2 = raw_desc;
->> +		control = UAC2_TE_CONNECTOR;
->> +		term_id = d_v2->bTerminalID;
->> +		bmctls = d_v2->bmControls;
->> +	}
->> +	else if (state->mixer->protocol == UAC_VERSION_3) {
-> 
-> Put "else if" and the closing brace in the same line.
-
-Thanks. My bad.
-
-> 
-> 
->> +		struct uac3_input_terminal_descriptor *d_v3 = raw_desc;
->> +		control = UAC3_TE_INSERTION;
->> +		term_id = d_v3->bTerminalID;
->> +		bmctls = d_v3->bmControls;
-> 
-> Doesn't it need le32_to_cpu()?
-
-Agreed.
-
-> 
->> +	}
->> +	else /* UAC1. No Insertion control */
-> 
-> Ditto, put "else" and the closing brace in the same line.
-> Also, use braces for the rest block, otherwise it'll look
-> inconsistent.  Or rewrite with switch().
-> 
->> @@ -2645,6 +2720,12 @@ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
->>   			err = parse_audio_unit(&state, desc->bCSourceID);
->>   			if (err < 0 && err != -EINVAL)
->>   				return err;
->> +
->> +			if (uac_v2v3_control_is_readable(desc->bmControls,
-> 
-> Missing le32_to_cpu()?
-
-Agreed.
-
-
-Thanks,
-
-Jorge
-
->  >
-> thanks,
-> 
-> Takashi
-> 
+Tim
