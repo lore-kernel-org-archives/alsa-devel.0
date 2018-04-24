@@ -1,22 +1,16 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v5 21/23] ASoC: qdsp6: dt-bindings: Add
- apq8096 machine bindings
-Date: Tue, 24 Apr 2018 17:49:15 +0100
-Message-ID: <655a593b-021c-3bf2-35c2-eb77cb0a4b95@linaro.org>
-References: <20180418153157.1960-1-srinivas.kandagatla@linaro.org>
- <20180418153157.1960-22-srinivas.kandagatla@linaro.org>
- <20180424162517.msxscjfg36xc22mo@rob-hp-laptop>
+From: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+Subject: [PATCH v2 0/4] ALSA: usb: UAC3 new features.
+Date: Tue, 24 Apr 2018 18:24:41 +0100
+Message-ID: <20180424172445.31928-1-jorge.sanjuan@codethink.co.uk>
+References: <20180420170327.31569-1-jorge.sanjuan@codethink.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 22C272675CD
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 18:49:17 +0200 (CEST)
-Received: by mail-wm0-f67.google.com with SMTP id j4so2350113wme.1
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 09:49:17 -0700 (PDT)
-In-Reply-To: <20180424162517.msxscjfg36xc22mo@rob-hp-laptop>
-Content-Language: en-US
+Received: from imap1.codethink.co.uk (imap1.codethink.co.uk [176.9.8.82])
+ by alsa0.perex.cz (Postfix) with ESMTP id BDEE22676AB
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 19:24:54 +0200 (CEST)
+In-Reply-To: <20180420170327.31569-1-jorge.sanjuan@codethink.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,92 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, spatakok@qti.qualcomm.com, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, andy.gross@linaro.org, linux-kernel@vger.kernel.org
+To: tiwai@suse.com
+Cc: gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the review.
+v2 fixes:
+ - If/else statements braces style fixes.
+ - Add wrapping function to mixer unit code.
+ - Make connectors control kctl struct const.
+ - Little endian to cpu conversion in several places.
+ - Sing off and add Fixes tag to fixup commit.
+ - Remove flex-array for a struct that is used statically.
 
-On 24/04/18 17:25, Rob Herring wrote:
-> On Wed, Apr 18, 2018 at 04:31:55PM +0100, srinivas.kandagatla@linaro.org wrote:
->> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>
->> Add devicetree bindings documentation file for Qualcomm apq8096 sound card.
->>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> ---
->>   .../devicetree/bindings/sound/qcom,apq8096.txt     | 76 ++++++++++++++++++++++
->>   1 file changed, 76 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8096.txt
->>
->> diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8096.txt b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
->> new file mode 100644
->> index 000000000000..37e23d926b95
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
->> @@ -0,0 +1,76 @@
->> +* Qualcomm Technologies APQ8096 ASoC sound card driver
->> +
->> +This binding describes the APQ8096 sound card, which uses qdsp for audio.
->> +
->> +- compatible:
->> +	Usage: required
->> +	Value type: <stringlist>
->> +	Definition: must be "qcom,apq8096-sndcard"
->> +
->> +- qcom,audio-routing:
->> +	Usage: Optional
->> +	Value type: <stringlist>
->> +	Definition:  A list of the connections between audio components.
->> +		  Each entry is a pair of strings, the first being the
->> +		  connection's sink, the second being the connection's
->> +		  source. Valid names could be power supplies, MicBias
->> +		  of codec and the jacks on the board:
-> 
-> Please list out valid values here.
+Now that the UAC3 patch [1] has made it to linux-next I have some extra
+features to make a UAC3 device fully work in Linux. Including Jack 
+insertion control that I have put on top of this other patch [2] for 
+UAC2. Also adding support for the UAC3 Mixer Unit which is most likely
+to appear in most headset type devices.
 
-I can list the values for the HDMI playback use-case, but the list would 
-grow as we start adding wcd9335 codec support.
+UAC3 devices also require to have a Basic Audio Device (BADD) in a separate 
+config for which both Ruslan Bilovol and myself have submited different 
+approaches[3][4] but I don't know what the final merge will be. Once there 
+is official support for BADD, we'll need to test it with an actual UAC3 
+device to confirm it all wokrs.
 
-> 
->> +
->> += dailinks
->> +Each subnode of sndcard represents either a dailink, and subnodes of each
->> +dailinks would be cpu/codec/platform dais.
->> +
->> +- link-name:
-> 
-> Not a standard property, but I guess that sneaked in with the 8016
-> binding...
-Yes, I followed 8016 bindings.
+All this features are tested with an actual UAC3 device that is still in
+development. For this patch series, only the legacy config (#1. UAC1/UAC2)
+and the UAC3 config have been tested. The BADD config is only tested using
+and updated verison of [4].
 
-Am happy to prefix this with qcom if that makes more sense.
-> 
->> +	Usage: required
->> +	Value type: <string>
->> +	Definition: User friendly name for dai link
->> +
->> += CPU, PLATFORM, CODEC dais subnodes
->> +- cpu:
->> +	Usage: required
->> +	Value type: <subnode>
->> +	Definition: cpu dai sub-node
->> +
->> +- codec:
->> +	Usage: Optional
->> +	Value type: <subnode>
->> +	Definition: codec dai sub-node
->> +
->> +- platform:
->> +	Usage: Optional
->> +	Value type: <subnode>
->> +	Definition: platform dai sub-node
->> +
->> +- sound-dai:
->> +	Usage: required
->> +	Value type: <phandle>
-> 
-> phandle with args.
-Yep.
+[1]: https://patchwork.kernel.org/patch/10298179/
+[2]: https://patchwork.kernel.org/patch/10305847/
+[3]: https://patchwork.kernel.org/patch/10340851/
+[4]: https://www.spinics.net/lists/alsa-devel/msg71617.html
 
---srini
+Based on linux-next tag: next-20180420
+
+Jorge Sanjuan (3):
+  ALSA: usb-audio: UAC3. Add support for mixer unit.
+  ALSA: usb-audio: Use Class Specific EP for UAC3 devices.
+  ALSA: usb-audio: UAC3 Add support for connector insertion.
+
+Michael Drake (1):
+  ALSA: usb-audio: ADC3: Fix channel mapping conversion for ADC3.
+
+ include/linux/usb/audio-v2.h   |   7 ++
+ include/linux/usb/audio-v3.h   |  14 +++
+ include/uapi/linux/usb/audio.h |  13 ++-
+ sound/usb/mixer.c              | 195 +++++++++++++++++++++++++++++++++++++----
+ sound/usb/stream.c             |  11 ++-
+ 5 files changed, 217 insertions(+), 23 deletions(-)
+
+-- 
+2.11.0
