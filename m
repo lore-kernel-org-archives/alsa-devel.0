@@ -1,21 +1,25 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v5 06/23] ASoC: qdsp6: dt-bindings: Add
-	q6asm dt bindings
-Date: Tue, 24 Apr 2018 17:20:07 +0100
-Message-ID: <0cc7f804-4c3c-1955-3d61-0dcbb70ae017@linaro.org>
-References: <20180418153157.1960-1-srinivas.kandagatla@linaro.org>
- <20180418153157.1960-7-srinivas.kandagatla@linaro.org>
- <20180424161730.4r3vixqa4sdjv7a2@rob-hp-laptop>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: [PATCH v2 3/5] ALSA: xen-front: Implement Xen
+ event channel handling
+Date: Tue, 24 Apr 2018 19:23:52 +0300
+Message-ID: <a8d3c2d2-25ec-0dc1-c26c-20eb6fbb4e3e@gmail.com>
+References: <20180416062453.24743-1-andr2000@gmail.com>
+ <20180416062453.24743-4-andr2000@gmail.com> <s5ho9i8sn25.wl-tiwai@suse.de>
+ <af277f77-5b22-58e3-4ea6-cde34e3181d3@gmail.com>
+ <s5hlgdcsmdm.wl-tiwai@suse.de>
+ <f37a8eb9-8733-eae9-4c3e-312d864592fc@gmail.com>
+ <s5h604gsl44.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D0AA2675CD
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 18:20:08 +0200 (CEST)
-Received: by mail-wm0-f66.google.com with SMTP id a8so2171573wmg.5
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 09:20:08 -0700 (PDT)
-In-Reply-To: <20180424161730.4r3vixqa4sdjv7a2@rob-hp-laptop>
+Received: from mail-lf0-f65.google.com (mail-lf0-f65.google.com
+ [209.85.215.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB7122675CD
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 18:23:55 +0200 (CEST)
+Received: by mail-lf0-f65.google.com with SMTP id b23-v6so21234753lfg.4
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 09:23:55 -0700 (PDT)
+In-Reply-To: <s5h604gsl44.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,71 +30,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, spatakok@qti.qualcomm.com, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, andy.gross@linaro.org, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Juergen Gross <jgross@suse.com>, alsa-devel@alsa-project.org, konrad.wilk@oracle.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org, boris.ostrovsky@oracle.com
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the review comments,
-
-On 24/04/18 17:17, Rob Herring wrote:
-> On Wed, Apr 18, 2018 at 04:31:40PM +0100, srinivas.kandagatla@linaro.org wrote:
->> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>
->> This patch add DT bindings for ASM (Audio Stream Manager) DSP module.
->>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
->> ---
->>   .../devicetree/bindings/sound/qcom,q6asm.txt       | 33 ++++++++++++++++++++++
->>   include/dt-bindings/sound/qcom,q6asm.h             | 22 +++++++++++++++
->>   2 files changed, 55 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6asm.txt
->>   create mode 100644 include/dt-bindings/sound/qcom,q6asm.h
->>
->> diff --git a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
->> new file mode 100644
->> index 000000000000..d034a50a202a
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
->> @@ -0,0 +1,33 @@
->> +Qualcomm Audio Stream Manager (Q6ASM) binding
->> +
->> +Q6ASM is one of the APR audio service on Q6DSP.
->> +Please refer to qcom,apr.txt for details of the coommon apr service bindings
->> +used by the apr service device.
-> 
-> Need to be clear this is a child of APR.
-Yep, I will add a line to state this explicitly.
-
-> 
->> +
->> +- but must contain the following property:
->> +
->> +- compatible:
->> +	Usage: required
->> +	Value type: <stringlist>
->> +	Definition: must be "qcom,asm-v<MAJOR-NUMBER>.<MINOR-NUMBER>".
->> +		    Or "qcom,asm" where the version number can be queried
->> +		    from DSP.
->> +		    example "qcom,asm-v2.0"
->> +
->> += ASM DAIs (Digial Audio Interface)
->> +"dais" subnode of the ASM node represents dai specific configuration
->> +
->> +- #sound-dai-cells
->> +	Usage: required
->> +	Value type: <prop-encoded-array>
->> +	Definition: Must be 1
->> +
->> += EXAMPLE
->> +
->> +q6asm {
-> 
-> Unit address needed.
-Agree, Will fix all such instances.
-> 
->> +	compatible = "qcom,q6asm";
-> 
-> Doesn't match the doc.
-Opps!! will fix all such instances with afe and asm too.
-> 
+T24gMDQvMjQvMjAxOCAwNjowMiBQTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIFR1ZSwgMjQg
+QXByIDIwMTggMTY6NTg6NDMgKzAyMDAsCj4gT2xla3NhbmRyIEFuZHJ1c2hjaGVua28gd3JvdGU6
+Cj4+IE9uIDA0LzI0LzIwMTggMDU6MzUgUE0sIFRha2FzaGkgSXdhaSB3cm90ZToKPj4+IE9uIFR1
+ZSwgMjQgQXByIDIwMTggMTY6Mjk6MTUgKzAyMDAsCj4+PiBPbGVrc2FuZHIgQW5kcnVzaGNoZW5r
+byB3cm90ZToKPj4+PiBPbiAwNC8yNC8yMDE4IDA1OjIwIFBNLCBUYWthc2hpIEl3YWkgd3JvdGU6
+Cj4+Pj4+IE9uIE1vbiwgMTYgQXByIDIwMTggMDg6MjQ6NTEgKzAyMDAsCj4+Pj4+IE9sZWtzYW5k
+ciBBbmRydXNoY2hlbmtvIHdyb3RlOgo+Pj4+Pj4gK3N0YXRpYyBpcnFyZXR1cm5fdCBldnRjaG5s
+X2ludGVycnVwdF9yZXEoaW50IGlycSwgdm9pZCAqZGV2X2lkKQo+Pj4+Pj4gK3sKPj4+Pj4+ICsJ
+c3RydWN0IHhlbl9zbmRfZnJvbnRfZXZ0Y2hubCAqY2hhbm5lbCA9IGRldl9pZDsKPj4+Pj4+ICsJ
+c3RydWN0IHhlbl9zbmRfZnJvbnRfaW5mbyAqZnJvbnRfaW5mbyA9IGNoYW5uZWwtPmZyb250X2lu
+Zm87Cj4+Pj4+PiArCXN0cnVjdCB4ZW5zbmRfcmVzcCAqcmVzcDsKPj4+Pj4+ICsJUklOR19JRFgg
+aSwgcnA7Cj4+Pj4+PiArCXVuc2lnbmVkIGxvbmcgZmxhZ3M7Cj4+Pj4+PiArCj4+Pj4+PiArCWlm
+ICh1bmxpa2VseShjaGFubmVsLT5zdGF0ZSAhPSBFVlRDSE5MX1NUQVRFX0NPTk5FQ1RFRCkpCj4+
+Pj4+PiArCQlyZXR1cm4gSVJRX0hBTkRMRUQ7Cj4+Pj4+PiArCj4+Pj4+PiArCXNwaW5fbG9ja19p
+cnFzYXZlKCZmcm9udF9pbmZvLT5pb19sb2NrLCBmbGFncyk7Cj4+Pj4+PiArCj4+Pj4+PiArYWdh
+aW46Cj4+Pj4+PiArCXJwID0gY2hhbm5lbC0+dS5yZXEucmluZy5zcmluZy0+cnNwX3Byb2Q7Cj4+
+Pj4+PiArCS8qIGVuc3VyZSB3ZSBzZWUgcXVldWVkIHJlc3BvbnNlcyB1cCB0byBycCAqLwo+Pj4+
+Pj4gKwlybWIoKTsKPj4+Pj4+ICsKPj4+Pj4+ICsJZm9yIChpID0gY2hhbm5lbC0+dS5yZXEucmlu
+Zy5yc3BfY29uczsgaSAhPSBycDsgaSsrKSB7Cj4+Pj4+IEknbSBub3QgZmFtaWxpYXIgd2l0aCBY
+ZW4gc3R1ZmYgaW4gZ2VuZXJhbCwgYnV0IHRocm91Z2ggYSBxdWljawo+Pj4+PiBnbGFuY2UsIHRo
+aXMga2luZCBvZiBjb2RlIHdvcnJpZXMgbWUgYSBiaXQuCj4+Pj4+Cj4+Pj4+IElmIGNoYW5uZWwt
+PnUucmVxLnJpbmcucnNwX2NvbnMgaGFzIGEgYm9ndXMgbnVtYmVyLCB0aGlzIG1heSBsZWFkIHRv
+IGEKPj4+Pj4gdmVyeSBsb25nIGxvb3AsIG5vPyAgQmV0dGVyIHRvIGhhdmUgYSBzYW5pdHkgY2hl
+Y2sgb2YgdGhlIHJpbmcgYnVmZmVyCj4+Pj4+IHNpemUuCj4+Pj4gSW4gdGhpcyBsb29wIEkgaGF2
+ZToKPj4+PiByZXNwID0gUklOR19HRVRfUkVTUE9OU0UoJmNoYW5uZWwtPnUucmVxLnJpbmcsIGkp
+Owo+Pj4+IGFuZCB0aGUgUklOR19HRVRfUkVTUE9OU0UgbWFjcm8gaXMgZGVzaWduZWQgaW4gdGhl
+IHdheSB0aGF0Cj4+Pj4gaXQgd3JhcHMgYXJvdW5kIHdoZW4gKmkqIGluIHRoZSBxdWVzdGlvbiBn
+ZXRzIGJpZ2dlciB0aGFuCj4+Pj4gdGhlIHJpbmcgc2l6ZToKPj4+Pgo+Pj4+ICNkZWZpbmUgUklO
+R19HRVRfUkVRVUVTVChfciwgX2lkeCnCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKg
+IFwKPj4+PiAgIMKgwqDCoCAoJigoX3IpLT5zcmluZy0+cmluZ1soKF9pZHgpICYgKFJJTkdfU0la
+RShfcikgLSAxKSldLnJlcSkpCj4+Pj4KPj4+PiBTbywgZXZlbiBpZiB0aGUgY291bnRlciBoYXMg
+YSBib2d1cyBudW1iZXIgaXQgd2lsbCBub3QgbGFzdCBsb25nCj4+PiBIbSwgdGhpcyBwcmV2ZW50
+cyBmcm9tIGFjY2Vzc2luZyBvdXRzaWRlIHRoZSByaW5nIGJ1ZmZlciwgYnV0IGRvZXMgaXQKPj4+
+IGNoYW5nZSB0aGUgbG9vcCBiZWhhdmlvcj8KPj4gbm8sIGl0IGRvZXNuJ3QKPj4+IFN1cHBvc2Ug
+Y2hhbm5lbC0+dS5yZXEucmluZ19yc3BfY29ucyA9IDEsIGFuZCBycCA9IDAsIHRoZSBsb29wIGJl
+bG93Cj4+PiB3b3VsZCBzdGlsbCBjb25zdW1lIHRoZSB3aG9sZSAzMmJpdCBjb3VudHMsIG5vPwo+
+Pj4KPj4+IAlmb3IgKGkgPSBjaGFubmVsLT51LnJlcS5yaW5nLnJzcF9jb25zOyBpICE9IHJwOyBp
+KyspIHsKPj4+IAkJcmVzcCA9IFJJTkdfR0VUX1JFU1BPTlNFKCZjaGFubmVsLT51LnJlcS5yaW5n
+LCBpKTsKPj4+IAkJLi4uCj4+PiAJfQo+PiBZb3UgYXJlIHJpZ2h0IGhlcmUgYW5kIHRoZSBjb21t
+ZW50IGlzIHRvdGFsbHkgdmFsaWQuCj4+IEknbGwgcHV0IGFuIGFkZGl0aW9uYWwgY2hlY2sgbGlr
+ZSBoZXJlIFsxXSBhbmQgaGVyZSBbMl0KPj4gV2lsbCB0aGlzIGFkZHJlc3MgeW91ciBjb21tZW50
+Pwo+IFllcCwgdGhpcyBraW5kIG9mIHNhbml0eSBjaGVja3Mgc2hvdWxkIHdvcmsuCj4KR3JlYXQs
+IHdpbGwgaW1wbGVtZW50IHRoZSBjaGVja3MgdGhpcyB3YXkgdGhlbgo+IHRoYW5rcywKPgo+IFRh
+a2FzaGkKVGhhbmsgeW91LApPbGVrc2FuZHIKPj4+IFRha2FzaGkKPj4gVGhhbmsgeW91LAo+PiBP
+bGVrc2FuZHIKPj4KPj4gWzFdCj4+IGh0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L3Y0
+LjE3LXJjMi9zb3VyY2UvZHJpdmVycy9ibG9jay94ZW4tYmxrYmFjay9ibGtiYWNrLmMjTDExMjcK
+Pj4gWzJdCj4+IGh0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L3Y0LjE3LXJjMi9zb3Vy
+Y2UvZHJpdmVycy9ibG9jay94ZW4tYmxrYmFjay9ibGtiYWNrLmMjTDExMzUKPj4KCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
