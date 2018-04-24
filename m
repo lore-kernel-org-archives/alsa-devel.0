@@ -1,68 +1,86 @@
-From: Lukas Wunner <lukas@wunner.de>
-Subject: Re: [alsa-devel] [PATCH v4 3/3] ALSA: hda: Disabled unused audio
- controller for Dell platforms with Switchable Graphics
-Date: Tue, 24 Apr 2018 23:13:47 +0200
-Message-ID: <20180424211347.GA18258@wunner.de>
-References: <20180420094432.13133-1-kai.heng.feng@canonical.com>
- <20180420094432.13133-3-kai.heng.feng@canonical.com>
- <s5hbmeew01d.wl-tiwai@suse.de>
- <E5D0F76C-0A83-4D2C-81F7-BD5768C0A7DC@canonical.com>
- <20180423080844.yh6ndicpu6mwy336@pali>
- <FF30493D-012C-41E8-B379-85138E1EDE05@canonical.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v4 08/13] ASoC: Add SoundWire stream
+ programming interface
+Date: Tue, 24 Apr 2018 18:40:54 -0500
+Message-ID: <a439fa96-0338-ad73-8203-4a2f875d44cb@linux.intel.com>
+References: <1524049146-8725-1-git-send-email-vinod.koul@intel.com>
+ <1524049146-8725-9-git-send-email-vinod.koul@intel.com>
+ <79c978d0-0ded-ddcb-5405-18b657c062d7@linux.intel.com>
+ <20180421155804.GN6014@localhost>
+ <d9b2a2dd-5f60-3916-a759-540d3cfa34ff@linux.intel.com>
+ <20180424090633.GD6014@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <FF30493D-012C-41E8-B379-85138E1EDE05@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kai Heng Feng <kai.heng.feng@canonical.com>
-Cc: Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>, Takashi Iwai <tiwai@suse.de>, mjg59@srcf.ucam.org, dvhart@infradead.org, andy@infradead.org, Mario Limonciello <mario.limonciello@dell.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6562F2676AD
+ for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2018 01:40:58 +0200 (CEST)
+In-Reply-To: <20180424090633.GD6014@localhost>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 23, 2018 at 04:18:35PM +0800, Kai Heng Feng wrote:
-> >On Apr 23, 2018, at 4:08 PM, Pali Rohár <pali.rohar@gmail.com> wrote:
-> >On Monday 23 April 2018 16:04:55 Kai Heng Feng wrote:
-> >>>On Apr 20, 2018, at 8:10 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> >>>On Fri, 20 Apr 2018 11:44:32 +0200, Kai-Heng Feng wrote:
-> >>>>Now it's a typical discrete-only system. HDMI audio comes from AMD audio
-> >>>>controller, others from Intel audio controller.
-> >>>>
-> >>>>When SG is enabled, the unused AMD audio contoller still exposes its
-> >>>>sysfs, so userspace still opens the control file and stream. If
-> >>>>userspace tries to output sound through the stream, it hangs the system.
-> >>>
-> >>>Hm, could you give more information about how it hangs?
-> >>
-> >>Well, I should say "it hangs the userspace process" instead.
-> >>
-> >>$ speaker-test -t wav -c 2 -D hw:CARD=HDMI,DEV=3
-> >>...and it just stopped. Can't Ctrl+C to break it.
-> >
-> >So userspace process cannot be killed at all? Then it is different bug
-> >in kernel and disabling pci device is just a workaround. Not a real fix.
-> >
-> >I would propose to find out what happen and why it cannot be killed
-> >(probably it stuck somewhere in kernel) and fix it properly.
+On 4/24/18 4:06 AM, Vinod Koul wrote:
+> On Mon, Apr 23, 2018 at 08:33:08AM -0500, Pierre-Louis Bossart wrote:
+>> On 4/21/18 10:58 AM, Vinod Koul wrote:
+>>> On Sat, Apr 21, 2018 at 06:59:49AM -0700, Pierre-Louis Bossart wrote:
+>>>>
+>>>>> +/**
+>>>>> + * snd_soc_dai_set_sdw_stream() - Configures a DAI for SDW stream operation
+>>>>> + * @dai: DAI
+>>>>> + * @stream: STREAM
+>>>>> + * @direction: Stream direction(Playback/Capture)
+>>>>> + * SoundWire subsystem doesn't have a notion of direction and we reuse
+>>>>> + * the ASoC stream direction to configure sink/source ports.
+>>>>> + * Playback maps to source on the TX and sink on Rx. Vice-versa for Capture.
+>>>>
+>>>> this is just confusing...
+>>>>
+>>>> This should be something like
+>>>> "use Playback for source ports and Capture for sink ports".
+>>>
+>>> Source port on ...? This is also confusing to me!
+>>>
+>>> For playback there are two ports, one on transmitter aka
+>>> TX and one on receiver aka RX. For Tx we use source port, and Rx uses sink
+>>> ports. I should probably add port to make people really figure out we are
+>>> talking about ports!
+>>>
+>>> So:
+>>>
+>>> Playback maps to source port on the TX and sink port on Rx. Vice-versa for Capture.
+>>>
+>>> Do you agree to above statement?
+>>
+>> No. Source port and TX are redundant definitions, and your wording isn't
+>> clear: is the PLAYBACK/CAPTURE qualifier for the stream or the DAI used by
+>> the stream?
 > 
-> That's because the audio device got runtime suspended by the graphics.
-> 
-> In this case, if we really want to use the the discrete audio, then we also
-> need to wake up the graphics.
-> The discrete audio is totally useless when SG is enabled, so my approach is
-> just to disable it.
+> Yes they are redundant, will update. PLAYBACK/CAPTURE qualifier is for stream.
 
-I don't quite follow, that should be fixed by commit 07f4f97d7b4b
-("vga_switcheroo: Use device link for HDA controller") which landed
-in v4.17-rc1.
+Let me try again.
+let's say in point-to-point mode you have dai1 as the source and dai2 as 
+the sink.
 
-My understanding was that with SG enabled, the external DP/HDMI ports
-are muxed to the Intel GPU, so audio can only be streamed to external
-displays by the Intel HDA, not by the HDA integrated into the discrete
-AMD/Nvidia GPU.  Audio streamed to the latter would essentially end up
-in a blackhole.  And preventing the user from seeing such useless audio
-devices was the sole purpose of this commit.  Am I missing something?
+Which sequence are the higher layers supposed to use:
 
-Thanks,
+a.
 
-Lukas
+snd_soc_dai_set_sdw_stream(dai1, stream, PLAYBACK);
+snd_soc_dai_set_sdw_stream(dai2, stream, PLAYBACK);
+
+b.
+
+snd_soc_dai_set_sdw_stream(dai1, stream, PLAYBACK);
+snd_soc_dai_set_sdw_stream(dai2, stream, CAPTURE);
