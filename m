@@ -1,23 +1,21 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Subject: Re: [PATCH v5 01/23] soc: qcom dt-bindings: Add APR
 	bus bindings
-Date: Tue, 24 Apr 2018 16:59:07 +0100
-Message-ID: <0cb15e17-7169-cfee-c444-d14743797ed3@linaro.org>
+Date: Tue, 24 Apr 2018 17:04:10 +0100
+Message-ID: <de5fac3b-1a56-61d0-facd-a592715d7606@linaro.org>
 References: <20180418153157.1960-1-srinivas.kandagatla@linaro.org>
  <20180418153157.1960-2-srinivas.kandagatla@linaro.org>
  <20180424155226.fo6rgdea4kmqqjdy@rob-hp-laptop>
- <20180424155739.GC22073@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f171.google.com (mail-wr0-f171.google.com
- [209.85.128.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 324AB2675CD
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 17:59:09 +0200 (CEST)
-Received: by mail-wr0-f171.google.com with SMTP id u18-v6so23232736wrg.3
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 08:59:09 -0700 (PDT)
-In-Reply-To: <20180424155739.GC22073@sirena.org.uk>
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB9372675CD
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 18:04:12 +0200 (CEST)
+Received: by mail-wm0-f66.google.com with SMTP id o78so1775069wmg.0
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 09:04:12 -0700 (PDT)
+In-Reply-To: <20180424155226.fo6rgdea4kmqqjdy@rob-hp-laptop>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,29 +26,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, spatakok@qti.qualcomm.com, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, andy.gross@linaro.org, linux-kernel@vger.kernel.org
+To: Rob Herring <robh@kernel.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, spatakok@qti.qualcomm.com, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, andy.gross@linaro.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Thanks for the review comments,
 
+On 24/04/18 16:52, Rob Herring wrote:
+> On Wed, Apr 18, 2018 at 04:31:35PM +0100, srinivas.kandagatla@linaro.org wrote:
+>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>
+>> This patch add dt bindings for Qualcomm APR (Asynchronous Packet Router)
+>> bus driver. This bus is used for communicating with DSP which provides
+>> audio and various other services to cpu.
+>>
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> ---
+>>   .../devicetree/bindings/soc/qcom/qcom,apr.txt      | 85 ++++++++++++++++++++++
+> 
+> This should probably go under bindings/sound/ as it is at least mostly
+> sound related.
+There are other non audio dsp/modem services that will be using apr.
 
-On 24/04/18 16:57, Mark Brown wrote:
-> On Tue, Apr 24, 2018 at 10:52:26AM -0500, Rob Herring wrote:
->> On Wed, Apr 18, 2018 at 04:31:35PM +0100, srinivas.kandagatla@linaro.org wrote:
->>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > 
->>> This patch add dt bindings for Qualcomm APR (Asynchronous Packet Router)
->>> bus driver. This bus is used for communicating with DSP which provides
->>> audio and various other services to cpu.
+>>   include/dt-bindings/soc/qcom,apr.h                 | 27 +++++++
+>>   2 files changed, 112 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+>>   create mode 100644 include/dt-bindings/soc/qcom,apr.h
+>>
+>> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+>> new file mode 100644
+>> index 000000000000..85cc0433fb00
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+>> @@ -0,0 +1,85 @@
+>> +Qualcomm APR (Asynchronous Packet Router) binding
+>> +
+>> +This binding describes the Qualcomm APR. APR is a IPC protocol for
+>> +communication between Application processor and QDSP. APR is mainly
+>> +used for audio/voice services on the QDSP.
+>> +
+>> +- compatible:
+>> +	Usage: required
+>> +	Value type: <stringlist>
+>> +	Definition: must be "qcom,apr-v<VERSION-NUMBER>", example "qcom,apr-v2"
+>> +
+>> +- qcom,dest-domain-id
+>> +	Usage: required
+>> +	Value type: <prop-encoded-array>
 > 
->> This should probably go under bindings/sound/ as it is at least mostly
->> sound related.
+> If this is an array, what do the indexes of the array correspond to?
 > 
-> AIUI the same interface is used for other DSP functionality - they're
-> upstreaming audio stuff right now but I believe there should be more to
-> come.
+This should be
+  Value type: <u32>
+
+these indexes point to the remote processor ID.
+
+>> +	Definition: Destination processor ID.
+>> +	Possible values are :
+>> +			1 - APR simulator
+>> +			2 - PC
+>> +			3 - MODEM
+>> +			4 - ADSP
+>> +			5 - APPS
+>> +			6 - MODEM2
+>> +			7 - APPS2
+>> +
+>> += APR SERVICES
+>> +Each subnode of the APR node represents service tied to this apr. The name
+>> +of the nodes are not important. The properties of these nodes are defined
+>> +by the individual bindings for the specific service
+>> +- All APR services MUST contain the following property:
+>> +
+>> +- reg
+>> +	Usage: required
+>> +	Value type: <prop-encoded-array>
 > 
-That's correct, this is not just for audio, APR is used for other dsp 
-services too.
+> Not really an array, right?
+No, again this is  Value type: <u32>
+
+> 
+>> +	Definition: APR Service ID
+>> +	Possible values are :
+>> +			3 - DSP Core Service
+>> +			4 - Audio Front End Service.
+>> +			5 - Voice Stream Manager Service.
+>> +			6 - Voice processing manager.
+>> +			7 - Audio Stream Manager Service.
+>> +			8 - Audio Device Manager Service.
+>> +			9 - Multimode voice manager.
+>> +			10 - Core voice stream.
+>> +			11 - Core voice processor.
+>> +			12 - Ultrasound stream manager.
+>> +			13 - Listen stream manager.
+>> +
+>> += EXAMPLE
+>> +The following example represents a QDSP based sound card on a MSM8996 device
+>> +which uses apr as communication between Apps and QDSP.
+>> +
+>> +	apr {
+>> +		compatible = "qcom,apr-v2";
+>> +		qcom,smd-channels = "apr_audio_svc";
+> 
+> Drop this?
+Sure
+
 
 --srini
