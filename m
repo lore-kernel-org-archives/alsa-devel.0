@@ -1,135 +1,173 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v5 01/23] soc: qcom dt-bindings: Add APR
-	bus bindings
-Date: Tue, 24 Apr 2018 17:04:10 +0100
-Message-ID: <de5fac3b-1a56-61d0-facd-a592715d7606@linaro.org>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v5 04/23] ASoC: qdsp6: dt-bindings: Add q6afe dt bindings
+Date: Tue, 24 Apr 2018 11:14:04 -0500
+Message-ID: <20180424161404.v3ecysrg7z4v3ejp@rob-hp-laptop>
 References: <20180418153157.1960-1-srinivas.kandagatla@linaro.org>
- <20180418153157.1960-2-srinivas.kandagatla@linaro.org>
- <20180424155226.fo6rgdea4kmqqjdy@rob-hp-laptop>
+ <20180418153157.1960-5-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
- by alsa0.perex.cz (Postfix) with ESMTP id AB9372675CD
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 18:04:12 +0200 (CEST)
-Received: by mail-wm0-f66.google.com with SMTP id o78so1775069wmg.0
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 09:04:12 -0700 (PDT)
-In-Reply-To: <20180424155226.fo6rgdea4kmqqjdy@rob-hp-laptop>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, spatakok@qti.qualcomm.com, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, andy.gross@linaro.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180418153157.1960-5-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: srinivas.kandagatla@linaro.org
+Cc: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, gregkh@linuxfoundation.org, david.brown@linaro.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, bgoswami@codeaurora.org, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the review comments,
-
-On 24/04/18 16:52, Rob Herring wrote:
-> On Wed, Apr 18, 2018 at 04:31:35PM +0100, srinivas.kandagatla@linaro.org wrote:
->> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>
->> This patch add dt bindings for Qualcomm APR (Asynchronous Packet Router)
->> bus driver. This bus is used for communicating with DSP which provides
->> audio and various other services to cpu.
->>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> ---
->>   .../devicetree/bindings/soc/qcom/qcom,apr.txt      | 85 ++++++++++++++++++++++
+On Wed, Apr 18, 2018 at 04:31:38PM +0100, srinivas.kandagatla@linaro.org wrote:
+> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > 
-> This should probably go under bindings/sound/ as it is at least mostly
-> sound related.
-There are other non audio dsp/modem services that will be using apr.
-
+> This patch add DT bindings for AFE (Audio Frontend) DSP module.
 > 
->>   include/dt-bindings/soc/qcom,apr.h                 | 27 +++++++
->>   2 files changed, 112 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
->>   create mode 100644 include/dt-bindings/soc/qcom,apr.h
->>
->> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
->> new file mode 100644
->> index 000000000000..85cc0433fb00
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
->> @@ -0,0 +1,85 @@
->> +Qualcomm APR (Asynchronous Packet Router) binding
->> +
->> +This binding describes the Qualcomm APR. APR is a IPC protocol for
->> +communication between Application processor and QDSP. APR is mainly
->> +used for audio/voice services on the QDSP.
->> +
->> +- compatible:
->> +	Usage: required
->> +	Value type: <stringlist>
->> +	Definition: must be "qcom,apr-v<VERSION-NUMBER>", example "qcom,apr-v2"
->> +
->> +- qcom,dest-domain-id
->> +	Usage: required
->> +	Value type: <prop-encoded-array>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
+> ---
+>  .../devicetree/bindings/sound/qcom,q6afe.txt       | 88 ++++++++++++++++++++++
+>  include/dt-bindings/sound/qcom,q6afe.h             | 31 ++++++++
+>  2 files changed, 119 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+>  create mode 100644 include/dt-bindings/sound/qcom,q6afe.h
 > 
-> If this is an array, what do the indexes of the array correspond to?
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+> new file mode 100644
+> index 000000000000..3925726a3319
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+> @@ -0,0 +1,88 @@
+> +Qualcomm Audio Front End (Q6AFE) binding
+> +
+> +AFE is one of the APR audio service on Q6DSP
+> +Please refer to qcom,apr.txt for details of the common apr service bindings
+> +used by all apr services.
+> +
+> +- but must contain the following property:
+> +
+> +- compatible:
+> +	Usage: required
+> +	Value type: <stringlist>
+> +	Definition: must be "qcom,afe-v<MAJOR-NUMBER>.<MINOR-NUMBER>"
+> +		  Or "qcom,afe" where the version number can be queried
+> +		  from DSP.
+> +		  example "qcom,afe-v2.0"
+
+Doesn't match the APR example.
+
+> +
+> += AFE DAIs (Digial Audio Interface)
+> +"dais" subnode of the AFE node represents dai specific configuration
+> +
+> +- #sound-dai-cells
+> +	Usage: required
+> +	Value type: <prop-encoded-array>
+
+array?
+
+> +	Definition: Must be 1
+> +
+> +- reg
+> +	Usage: required
+> +	Value type: <prop-encoded-array>
+
+array or single value?
+
+> +	Definition: Must be dai id
+> +
+> +- qcom,sd-lines
+> +	Usage: required for mi2s interface
+> +	Value type: <prop-encoded-array>
+> +	Definition: Must be list of serial data lines used by this dai.
+> +	should be one or more of the 1-4 sd lines.
+> +
+> += EXAMPLE
+> +
+> +q6afe {
+> +	compatible = "qcom,q6afe";
+> +	reg = <APR_SVC_AFE>;
+> +
+> +	dais {
+> +		#sound-dai-cells = <1>;
+> +		hdmi@1 {
+> +			reg = <1>;
+> +		};
+> +
+> +		prim-mi2s-rx@16 {
+> +			reg = <16>;
+> +			qcom,sd-lines = <1 3>;
+> +		};
+> +
+> +		prim-mi2s-tx@17 {
+> +			reg = <17>;
+> +			qcom,sd-lines = <2>;
+> +		};
+> +
+> +		sec-mi2s-rx@18 {
+> +			reg = <18>;
+> +			qcom,sd-lines = <1 4>;
+> +		};
+> +
+> +		sec-mi2s-tx@19 {
+> +			reg = <19>;
+> +			qcom,sd-lines = <2>;
+> +		};
+> +
+> +		tert-mi2s-rx@20 {
+> +			reg = <20>;
+> +			qcom,sd-lines = <2 4>;
+> +		};
+> +
+> +		tert-mi2s-tx@21 {
+> +			reg = <21>;
+> +			qcom,sd-lines = <1>;
+> +		};
+> +
+> +		quat-mi2s-rx@22 {
+> +			reg = <22>;
+> +			qcom,sd-lines = <1>;
+> +		};
+> +
+> +		quat-mi2s-tx@23 {
+> +			reg = <23>;
+> +			qcom,sd-lines = <2>;
+> +		};
+> +	};
+> +};
+> diff --git a/include/dt-bindings/sound/qcom,q6afe.h b/include/dt-bindings/sound/qcom,q6afe.h
+> new file mode 100644
+> index 000000000000..3c7868394889
+> --- /dev/null
+> +++ b/include/dt-bindings/sound/qcom,q6afe.h
+> @@ -0,0 +1,31 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#ifndef __DT_BINDINGS_Q6_AFE_H__
+> +#define __DT_BINDINGS_Q6_AFE_H__
+> +
+> +/* Audio Front End (AFE) virtual ports IDs */
+> +#define HDMI_RX		1
+> +#define SLIMBUS_0_RX    2
+> +#define SLIMBUS_0_TX    3
+> +#define SLIMBUS_1_RX    4
+> +#define SLIMBUS_1_TX    5
+> +#define SLIMBUS_2_RX    6
+> +#define SLIMBUS_2_TX    7
+> +#define SLIMBUS_3_RX    8
+> +#define SLIMBUS_3_TX    9
+> +#define SLIMBUS_4_RX    10
+> +#define SLIMBUS_4_TX    11
+> +#define SLIMBUS_5_RX    12
+> +#define SLIMBUS_5_TX    13
+> +#define SLIMBUS_6_RX    14
+> +#define SLIMBUS_6_TX    15
+> +#define PRIMARY_MI2S_RX		16
+> +#define PRIMARY_MI2S_TX		17
+> +#define SECONDARY_MI2S_RX	18
+> +#define SECONDARY_MI2S_TX	19
+> +#define TERTIARY_MI2S_RX	20
+> +#define TERTIARY_MI2S_TX	21
+> +#define QUATERNARY_MI2S_RX	22
+> +#define QUATERNARY_MI2S_TX	23
+> +
+> +#endif /* __DT_BINDINGS_Q6_AFE_H__ */
+> +
+> -- 
+> 2.16.2
 > 
-This should be
-  Value type: <u32>
-
-these indexes point to the remote processor ID.
-
->> +	Definition: Destination processor ID.
->> +	Possible values are :
->> +			1 - APR simulator
->> +			2 - PC
->> +			3 - MODEM
->> +			4 - ADSP
->> +			5 - APPS
->> +			6 - MODEM2
->> +			7 - APPS2
->> +
->> += APR SERVICES
->> +Each subnode of the APR node represents service tied to this apr. The name
->> +of the nodes are not important. The properties of these nodes are defined
->> +by the individual bindings for the specific service
->> +- All APR services MUST contain the following property:
->> +
->> +- reg
->> +	Usage: required
->> +	Value type: <prop-encoded-array>
-> 
-> Not really an array, right?
-No, again this is  Value type: <u32>
-
-> 
->> +	Definition: APR Service ID
->> +	Possible values are :
->> +			3 - DSP Core Service
->> +			4 - Audio Front End Service.
->> +			5 - Voice Stream Manager Service.
->> +			6 - Voice processing manager.
->> +			7 - Audio Stream Manager Service.
->> +			8 - Audio Device Manager Service.
->> +			9 - Multimode voice manager.
->> +			10 - Core voice stream.
->> +			11 - Core voice processor.
->> +			12 - Ultrasound stream manager.
->> +			13 - Listen stream manager.
->> +
->> += EXAMPLE
->> +The following example represents a QDSP based sound card on a MSM8996 device
->> +which uses apr as communication between Apps and QDSP.
->> +
->> +	apr {
->> +		compatible = "qcom,apr-v2";
->> +		qcom,smd-channels = "apr_audio_svc";
-> 
-> Drop this?
-Sure
-
-
---srini
