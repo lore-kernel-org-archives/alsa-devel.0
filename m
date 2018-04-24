@@ -1,19 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 10/11] ALSA: dice: use extended protocol to
-	detect available stream formats
-Date: Wed, 25 Apr 2018 08:42:33 +0900
-Message-ID: <20180424234234.6063-11-o-takashi@sakamocchi.jp>
+Subject: [PATCH 11/11] ALSA: dice: remove local frag of
+	force_two_pcms
+Date: Wed, 25 Apr 2018 08:42:34 +0900
+Message-ID: <20180424234234.6063-12-o-takashi@sakamocchi.jp>
 References: <20180424234234.6063-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f196.google.com (mail-pf0-f196.google.com
- [209.85.192.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C2F9267731
- for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2018 01:43:30 +0200 (CEST)
-Received: by mail-pf0-f196.google.com with SMTP id h69so13564415pfe.13
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 16:43:30 -0700 (PDT)
+Received: from mail-pf0-f193.google.com (mail-pf0-f193.google.com
+ [209.85.192.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 95062267742
+ for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2018 01:43:32 +0200 (CEST)
+Received: by mail-pf0-f193.google.com with SMTP id l27so13561873pfk.12
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 16:43:32 -0700 (PDT)
 In-Reply-To: <20180424234234.6063-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,262 +28,158 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-TC Applied Technologies (TCAT) have added extension to DICE protocol. This
-protocol extension is called as Extended Application Protocol, a.k.a. EAP.
+At present, to add PCM substreams for each of available tx/rx streams,
+this driver uses a condition based on model-name. This is not enough
+to support unknown models.
 
-In this protocol extension, units get additional 9 address spaces. One of
-it is for current configuration. In this address space, a pair of router
-and stream formats are exposed per mode of three sampling transmission
-frequencies.
+In former commits, this driver gains cache of stream formats. For models
+which support protocol extension, all of available steam formats are
+cached. For known models, hard-coded stream formats are used to generate
+the cache. For unknown models, stream formats at current mode of sampling
+transmission frequency is cached.
 
-This commit adds support the protocol extension for address space of the
-current configuration to generate cache of stream formats.
+Anyway, at least, the cached formats are used to expose constrains of PCM
+substreams for userspace applications. Thus, The cached data can be also
+used to add PCM substreams themselves, instead of the name-based
+conditions.
+
+This commit obsoletes local frag of force_two_pcms.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/dice/Makefile         |   2 +-
- sound/firewire/dice/dice-extension.c | 155 +++++++++++++++++++++++++++++++++++
- sound/firewire/dice/dice-stream.c    |   5 ++
- sound/firewire/dice/dice.c           |  18 +++-
- sound/firewire/dice/dice.h           |   1 +
- 5 files changed, 176 insertions(+), 5 deletions(-)
- create mode 100644 sound/firewire/dice/dice-extension.c
+ sound/firewire/dice/dice-pcm.c | 38 ++++++++------------------------------
+ sound/firewire/dice/dice.c     | 38 --------------------------------------
+ sound/firewire/dice/dice.h     |  2 --
+ 3 files changed, 8 insertions(+), 70 deletions(-)
 
-diff --git a/sound/firewire/dice/Makefile b/sound/firewire/dice/Makefile
-index 5cfe618f45ef..7b7997a5754c 100644
---- a/sound/firewire/dice/Makefile
-+++ b/sound/firewire/dice/Makefile
-@@ -1,4 +1,4 @@
- snd-dice-objs := dice-transaction.o dice-stream.o dice-proc.o dice-midi.o \
- 		 dice-pcm.o dice-hwdep.o dice.o dice-tcelectronic.o \
--		 dice-alesis.o
-+		 dice-alesis.o dice-extension.o
- obj-$(CONFIG_SND_DICE) += snd-dice.o
-diff --git a/sound/firewire/dice/dice-extension.c b/sound/firewire/dice/dice-extension.c
-new file mode 100644
-index 000000000000..5d4b6f0cdfa2
---- /dev/null
-+++ b/sound/firewire/dice/dice-extension.c
-@@ -0,0 +1,155 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * dice-extension.c - a part of driver for DICE based devices
-+ *
-+ * Copyright (c) 2018 Takashi Sakamoto
-+ */
-+
-+#include "dice.h"
-+
-+/* For TCD2210/2220, TCAT defines extension of application protocol. */
-+
-+#define DICE_EXT_APP_SPACE		0xffffe0200000uLL
-+
-+#define DICE_EXT_APP_CAPS_OFFSET	0x00
-+#define DICE_EXT_APP_CAPS_SIZE		0x04
-+#define DICE_EXT_APP_CMD_OFFSET		0x08
-+#define DICE_EXT_APP_CMD_SIZE		0x0c
-+#define DICE_EXT_APP_MIXER_OFFSET	0x10
-+#define DICE_EXT_APP_MIXER_SIZE		0x14
-+#define DICE_EXT_APP_PEAK_OFFSET	0x18
-+#define DICE_EXT_APP_PEAK_SIZE		0x1c
-+#define DICE_EXT_APP_ROUTER_OFFSET	0x20
-+#define DICE_EXT_APP_ROUTER_SIZE	0x24
-+#define DICE_EXT_APP_STREAM_OFFSET	0x28
-+#define DICE_EXT_APP_STREAM_SIZE	0x2c
-+#define DICE_EXT_APP_CURRENT_OFFSET	0x30
-+#define DICE_EXT_APP_CURRENT_SIZE	0x34
-+#define DICE_EXT_APP_STANDALONE_OFFSET	0x38
-+#define DICE_EXT_APP_STANDALONE_SIZE	0x3c
-+#define DICE_EXT_APP_APPLICATION_OFFSET	0x40
-+#define DICE_EXT_APP_APPLICATION_SIZE	0x44
-+
-+#define EXT_APP_STREAM_TX_NUMBER	0x0000
-+#define EXT_APP_STREAM_RX_NUMBER	0x0004
-+#define EXT_APP_STREAM_ENTRIES		0x0008
-+#define EXT_APP_STREAM_ENTRY_SIZE	0x010c
-+#define  EXT_APP_NUMBER_AUDIO		0x0000
-+#define  EXT_APP_NUMBER_MIDI		0x0004
-+#define  EXT_APP_NAMES			0x0008
-+#define   EXT_APP_NAMES_SIZE		256
-+#define  EXT_APP_AC3			0x0108
-+
-+#define EXT_APP_CONFIG_LOW_ROUTER	0x0000
-+#define EXT_APP_CONFIG_LOW_STREAM	0x1000
-+#define EXT_APP_CONFIG_MIDDLE_ROUTER	0x2000
-+#define EXT_APP_CONFIG_MIDDLE_STREAM	0x3000
-+#define EXT_APP_CONFIG_HIGH_ROUTER	0x4000
-+#define EXT_APP_CONFIG_HIGH_STREAM	0x5000
-+
-+static inline int read_transaction(struct snd_dice *dice, u64 section_addr,
-+				   u32 offset, void *buf, size_t len)
-+{
-+	return snd_fw_transaction(dice->unit,
-+				  len == 4 ? TCODE_READ_QUADLET_REQUEST :
-+					     TCODE_READ_BLOCK_REQUEST,
-+				  section_addr + offset, buf, len, 0);
-+}
-+
-+static int read_stream_entries(struct snd_dice *dice, u64 section_addr,
-+			       u32 base_offset, unsigned int stream_count,
-+			       unsigned int mode,
-+			       unsigned int pcm_channels[MAX_STREAMS][3],
-+			       unsigned int midi_ports[MAX_STREAMS])
-+{
-+	u32 entry_offset;
-+	__be32 reg[2];
-+	int err;
-+	int i;
-+
-+	for (i = 0; i < stream_count; ++i) {
-+		entry_offset = base_offset + i * EXT_APP_STREAM_ENTRY_SIZE;
-+		err = read_transaction(dice, section_addr,
-+				    entry_offset + EXT_APP_NUMBER_AUDIO,
-+				    reg, sizeof(reg));
-+		if (err < 0)
-+			return err;
-+		pcm_channels[i][mode] = be32_to_cpu(reg[0]);
-+		midi_ports[i] = max(midi_ports[i], be32_to_cpu(reg[1]));
-+	}
-+
-+	return 0;
-+}
-+
-+static int detect_stream_configs(struct snd_dice *dice, u64 section_addr)
-+{
-+	u32 base_offset;
-+	__be32 reg[2];
-+	unsigned int stream_count;
-+	int mode;
-+	int err;
-+
-+	for (mode = 0; mode < 3; ++mode) {
-+		base_offset = 0x2000 * mode + 0x1000;
-+
-+		err = read_transaction(dice, section_addr,
-+				       base_offset + EXT_APP_STREAM_TX_NUMBER,
-+				       &reg, sizeof(reg));
-+		if (err < 0)
-+			break;
-+
-+		base_offset += EXT_APP_STREAM_ENTRIES;
-+		stream_count = be32_to_cpu(reg[0]);
-+		err = read_stream_entries(dice, section_addr, base_offset,
-+					  stream_count, mode,
-+					  dice->tx_channels,
-+					  dice->tx_midi_ports);
-+		if (err < 0)
-+			break;
-+
-+		base_offset += stream_count * EXT_APP_STREAM_ENTRY_SIZE;
-+		stream_count = be32_to_cpu(reg[1]);
-+		err = read_stream_entries(dice, section_addr, base_offset,
-+					  stream_count,
-+					  mode, dice->rx_channels,
-+					  dice->rx_midi_ports);
-+		if (err < 0)
-+			break;
-+	}
-+
-+	return err;
-+}
-+
-+int snd_dice_detect_extension_spec(struct snd_dice *dice)
-+{
-+	__be32 *pointers;
-+	unsigned int i;
-+	u64 section_addr;
-+	int err;
-+
-+	pointers = kmalloc_array(9, sizeof(__be32) * 2, GFP_KERNEL);
-+	if (pointers == NULL)
-+		return -ENOMEM;
-+
-+	err = snd_fw_transaction(dice->unit, TCODE_READ_BLOCK_REQUEST,
-+				 DICE_EXT_APP_SPACE, pointers,
-+				 9 * sizeof(__be32) * 2, 0);
-+	if (err < 0)
-+		goto end;
-+
-+	/* Check two of them for offset have the same value or not. */
-+	for (i = 0; i < 9; ++i) {
-+		int j;
-+
-+		for (j = i + 1; j < 9; ++j) {
-+			if (pointers[i * 2] == pointers[j * 2])
-+				return -ENODEV;
-+		}
-+	}
-+
-+	section_addr = DICE_EXT_APP_SPACE + be32_to_cpu(pointers[12]) * 4;
-+	err = detect_stream_configs(dice, section_addr);
-+end:
-+	kfree(pointers);
-+	return err;
-+}
-diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
-index 92f3c345fa59..dbf0d8aa2a5b 100644
---- a/sound/firewire/dice/dice-stream.c
-+++ b/sound/firewire/dice/dice-stream.c
-@@ -543,6 +543,11 @@ int snd_dice_stream_detect_current_formats(struct snd_dice *dice)
- 	int i;
+diff --git a/sound/firewire/dice/dice-pcm.c b/sound/firewire/dice/dice-pcm.c
+index 682ca6a78c89..4a8f1b56cf7a 100644
+--- a/sound/firewire/dice/dice-pcm.c
++++ b/sound/firewire/dice/dice-pcm.c
+@@ -425,40 +425,18 @@ int snd_dice_create_pcm(struct snd_dice *dice)
+ 		.mmap      = snd_pcm_lib_mmap_vmalloc,
+ 	};
+ 	struct snd_pcm *pcm;
+-	unsigned int i, max_capture, max_playback, capture, playback;
++	unsigned int capture, playback;
++	int i, j;
  	int err;
  
-+	/* If extended protocol is available, detect detail spec. */
-+	err = snd_dice_detect_extension_spec(dice);
-+	if (err >= 0)
-+		return err;
-+
- 	/*
- 	 * Available stream format is restricted at current mode of sampling
- 	 * clock.
+-	/* Check whether PCM substreams are required. */
+-	if (dice->force_two_pcms) {
+-		max_capture = max_playback = 2;
+-	} else {
+-		int j;
+-		max_capture = max_playback = 0;
+-		for (i = 0; i < MAX_STREAMS; ++i) {
+-			for (j = 0; j < 3; ++j) {
+-				if (dice->tx_channels[i][j] > 0) {
+-					++max_capture;
+-					break;
+-				}
+-			}
+-
+-			for (j = 0; j < 3; ++j) {
+-				if (dice->tx_channels[i][j] > 0) {
+-					++max_playback;
+-					break;
+-				}
+-			}
+-		}
+-	}
+-
+ 	for (i = 0; i < MAX_STREAMS; i++) {
+ 		capture = playback = 0;
+-		if (i < max_capture)
+-			capture = 1;
+-		if (i < max_playback)
+-			playback = 1;
+-		if (capture == 0 && playback == 0)
+-			break;
++		for (j = 0; j < 3; ++j) {
++			if (dice->tx_channels[i][j] > 0)
++				capture = 1;
++			if (dice->rx_channels[i][j] > 0)
++				playback = 1;
++		}
+ 
+ 		err = snd_pcm_new(dice->card, "DICE", i, playback, capture,
+ 				  &pcm);
 diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
-index dce0d7a33649..300cd8bf8777 100644
+index 300cd8bf8777..a9f8a393e086 100644
 --- a/sound/firewire/dice/dice.c
 +++ b/sound/firewire/dice/dice.c
-@@ -16,6 +16,7 @@ MODULE_LICENSE("GPL v2");
- #define OUI_FOCUSRITE		0x00130e
- #define OUI_TCELECTRONIC	0x000166
- #define OUI_ALESIS		0x000595
-+#define OUI_MAUDIO		0x000d6c
+@@ -24,36 +24,6 @@ MODULE_LICENSE("GPL v2");
  
- #define DICE_CATEGORY_ID	0x04
- #define WEISS_CATEGORY_ID	0x00
-@@ -328,12 +329,21 @@ static void dice_bus_reset(struct fw_unit *unit)
- #define DICE_INTERFACE	0x000001
+ #define MODEL_ALESIS_IO_BOTH	0x000001
  
- static const struct ieee1394_device_id dice_id_table[] = {
--	/* M-Audio Profire 610/2626 has a different value in version field. */
-+	/* M-Audio Profire 2626 has a different value in version field. */
- 	{
- 		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
--				  IEEE1394_MATCH_SPECIFIER_ID,
--		.vendor_id	= 0x000d6c,
--		.specifier_id	= 0x000d6c,
-+				  IEEE1394_MATCH_MODEL_ID,
-+		.vendor_id	= OUI_MAUDIO,
-+		.model_id	= 0x000010,
-+		.driver_data = (kernel_ulong_t)snd_dice_detect_extension_spec,
-+	},
-+	/* M-Audio Profire 610 has a different value in version field. */
-+	{
-+		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
-+				  IEEE1394_MATCH_MODEL_ID,
-+		.vendor_id	= OUI_MAUDIO,
-+		.model_id	= 0x000011,
-+		.driver_data = (kernel_ulong_t)snd_dice_detect_extension_spec,
- 	},
- 	/* TC Electronic Konnekt 24D. */
- 	{
+-/*
+- * Some models support several isochronous channels, while these streams are not
+- * always available. In this case, add the model name to this list.
+- */
+-static bool force_two_pcm_support(struct fw_unit *unit)
+-{
+-	static const char *const models[] = {
+-		/* TC Electronic models. */
+-		"StudioKonnekt48",
+-		/* Focusrite models. */
+-		"SAFFIRE_PRO_40",
+-		"LIQUID_SAFFIRE_56",
+-		"SAFFIRE_PRO_40_1",
+-	};
+-	char model[32];
+-	unsigned int i;
+-	int err;
+-
+-	err = fw_csr_string(unit->directory, CSR_MODEL, model, sizeof(model));
+-	if (err < 0)
+-		return false;
+-
+-	for (i = 0; i < ARRAY_SIZE(models); i++) {
+-		if (strcmp(models[i], model) == 0)
+-			break;
+-	}
+-
+-	return i < ARRAY_SIZE(models);
+-}
+-
+ static int check_dice_category(struct fw_unit *unit)
+ {
+ 	struct fw_device *device = fw_parent_device(unit);
+@@ -79,11 +49,6 @@ static int check_dice_category(struct fw_unit *unit)
+ 		}
+ 	}
+ 
+-	if (vendor == OUI_FOCUSRITE || vendor == OUI_TCELECTRONIC) {
+-		if (force_two_pcm_support(unit))
+-			return 0;
+-	}
+-
+ 	if (vendor == OUI_WEISS)
+ 		category = WEISS_CATEGORY_ID;
+ 	else if (vendor == OUI_LOUD)
+@@ -190,9 +155,6 @@ static void do_registration(struct work_struct *work)
+ 	if (err < 0)
+ 		return;
+ 
+-	if (force_two_pcm_support(dice->unit))
+-		dice->force_two_pcms = true;
+-
+ 	err = snd_dice_transaction_init(dice);
+ 	if (err < 0)
+ 		goto error;
 diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
-index cbb766e17a99..3edae26802bf 100644
+index 3edae26802bf..26caed13f1ce 100644
 --- a/sound/firewire/dice/dice.h
 +++ b/sound/firewire/dice/dice.h
-@@ -220,5 +220,6 @@ int snd_dice_create_midi(struct snd_dice *dice);
+@@ -106,8 +106,6 @@ struct snd_dice {
+ 	bool global_enabled;
+ 	struct completion clock_accepted;
+ 	unsigned int substreams_counter;
+-
+-	bool force_two_pcms;
+ };
  
- int snd_dice_detect_tcelectronic_spec(struct snd_dice *dice);
- int snd_dice_detect_alesis_spec(struct snd_dice *dice);
-+int snd_dice_detect_extension_spec(struct snd_dice *dice);
- 
- #endif
+ enum snd_dice_addr_type {
 -- 
 2.14.1
