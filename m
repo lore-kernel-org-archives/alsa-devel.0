@@ -1,18 +1,18 @@
-From: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
-Subject: [PATCH v2 4/4] ALSA: usb-audio: UAC3 Add support for
-	connector insertion.
-Date: Tue, 24 Apr 2018 18:24:45 +0100
-Message-ID: <20180424172445.31928-5-jorge.sanjuan@codethink.co.uk>
-References: <20180420170327.31569-1-jorge.sanjuan@codethink.co.uk>
- <20180424172445.31928-1-jorge.sanjuan@codethink.co.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: wm_adsp: Account for name prefixes when
+	toggling preloader" to the asoc tree
+Date: Tue, 24 Apr 2018 18:45:37 +0100
+Message-ID: <E1fB20X-0003VY-Rb@debutante>
+References: <20180424155309.12059-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imap1.codethink.co.uk (imap1.codethink.co.uk [176.9.8.82])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A97A2676AB
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 19:24:58 +0200 (CEST)
-In-Reply-To: <20180424172445.31928-1-jorge.sanjuan@codethink.co.uk>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 814172676AB
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 19:45:41 +0200 (CEST)
+In-Reply-To: <20180424155309.12059-1-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,244 +22,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.com
-Cc: gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-This adds support for the UAC3 insertion controls. The status
-is reported as a boolean value in the same way it used to do
-for UAC2. Hence, the presence of any connector in the response
-will make the control saying the jack is connected.
+The patch
 
-The UAC2 support for this control has been moved to a dedicated
-control for connectors as both UAC2 and UAC3 follow a specific
-Control Request Parameter Block for this control. This parameter
-block for UAC3 could not be read in the same simplistic
-manner as in UAC2.
+   ASoC: wm_adsp: Account for name prefixes when toggling preloader
 
-This implementation is not requesting additional information
-from the HIGH CAPABILITY Connectors descriptor.
+has been applied to the asoc tree at
 
-Tested with an UAC3 device with UAC2 as legacy configuration.
-The connector status can be read with `amixer` and the interrupt
-is also caught with `alsactl monitor`.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 95a594d0f5ffdc55eaf0d1ae21cfbfd4e64378f2 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Tue, 24 Apr 2018 16:53:09 +0100
+Subject: [PATCH] ASoC: wm_adsp: Account for name prefixes when toggling
+ preloader
+
+Use the correct functions to allow a name prefix assigned through
+codec_conf to be taken into consideration whilst enabling and disabling
+the preloader widget.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/linux/usb/audio-v2.h |   7 +++
- include/linux/usb/audio-v3.h |  14 ++++++
- sound/usb/mixer.c            | 108 +++++++++++++++++++++++++++++++++++++------
- 3 files changed, 115 insertions(+), 14 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/usb/audio-v2.h b/include/linux/usb/audio-v2.h
-index aaafecf073ff..a96ed2ce3254 100644
---- a/include/linux/usb/audio-v2.h
-+++ b/include/linux/usb/audio-v2.h
-@@ -189,6 +189,13 @@ struct uac2_iso_endpoint_descriptor {
- #define UAC2_CONTROL_DATA_OVERRUN	(3 << 2)
- #define UAC2_CONTROL_DATA_UNDERRUN	(3 << 4)
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 82b0927e6ed7..b7b914963c62 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -2666,9 +2666,9 @@ int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
+ 	dsp->preloaded = ucontrol->value.integer.value[0];
  
-+/* 5.2.5.4.2 Connector Control Parameter Block */
-+struct uac2_connectors_ctl_blk {
-+	__u8 bNrChannels;
-+	__le32 bmChannelConfig;
-+	__u8 iChannelNames;
-+} __attribute__((packed));
-+
- /* 6.1 Interrupt Data Message */
+ 	if (ucontrol->value.integer.value[0])
+-		snd_soc_dapm_force_enable_pin(dapm, preload);
++		snd_soc_component_force_enable_pin(component, preload);
+ 	else
+-		snd_soc_dapm_disable_pin(dapm, preload);
++		snd_soc_component_disable_pin(component, preload);
  
- #define UAC2_INTERRUPT_DATA_MSG_VENDOR	(1 << 0)
-diff --git a/include/linux/usb/audio-v3.h b/include/linux/usb/audio-v3.h
-index a8959aaba0ae..eb732f6569cb 100644
---- a/include/linux/usb/audio-v3.h
-+++ b/include/linux/usb/audio-v3.h
-@@ -221,6 +221,12 @@ struct uac3_iso_endpoint_descriptor {
- 	__le16 wLockDelay;
- } __attribute__((packed));
+ 	snd_soc_dapm_sync(dapm);
  
-+/* 5.2.1.6.1 INSERTION CONTROL PARAMETER BLOCK */
-+struct uac3_insertion_ctl_blk {
-+	__u8 bSize;
-+	__u8 bmConInserted;
-+} __attribute__ ((packed));
-+
- /* 6.1 INTERRUPT DATA MESSAGE */
- struct uac3_interrupt_data_msg {
- 	__u8 bInfo;
-@@ -392,4 +398,12 @@ struct uac3_interrupt_data_msg {
- #define UAC3_AC_ACTIVE_INTERFACE_CONTROL	0x01
- #define UAC3_AC_POWER_DOMAIN_CONTROL		0x02
+@@ -2852,11 +2852,11 @@ EXPORT_SYMBOL_GPL(wm_adsp2_event);
  
-+/* A.23.5 TERMINAL CONTROL SELECTORS */
-+#define UAC3_TE_UNDEFINED			0x00
-+#define UAC3_TE_INSERTION			0x01
-+#define UAC3_TE_OVERLOAD			0x02
-+#define UAC3_TE_UNDERFLOW			0x03
-+#define UAC3_TE_OVERFLOW			0x04
-+#define UAC3_TE_LATENCY 			0x05
-+
- #endif /* __LINUX_USB_AUDIO_V3_H */
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index bf701b466a4e..9809d0a85894 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1322,6 +1322,51 @@ static int mixer_ctl_master_bool_get(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
-+/* get the connectors status and report it as boolean type */
-+static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct usb_mixer_elem_info *cval = kcontrol->private_data;
-+	struct snd_usb_audio *chip = cval->head.mixer->chip;
-+	int idx = 0, validx, ret, val;
-+
-+	validx = cval->control << 8 | 0;
-+
-+	ret = snd_usb_lock_shutdown(chip) ? -EIO : 0;
-+	if (ret)
-+		goto error;
-+
-+	idx = snd_usb_ctrl_intf(chip) | (cval->head.id << 8);
-+	if (cval->head.mixer->protocol == UAC_VERSION_2) {
-+		struct uac2_connectors_ctl_blk uac2_conn;
-+
-+		ret = snd_usb_ctl_msg(chip->dev, usb_rcvctrlpipe(chip->dev, 0), UAC2_CS_CUR,
-+				      USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
-+				      validx, idx, &uac2_conn, sizeof(uac2_conn));
-+		val = !!uac2_conn.bNrChannels;
-+	} else { /* UAC_VERSION_3 */
-+		struct uac3_insertion_ctl_blk uac3_conn;
-+
-+		ret = snd_usb_ctl_msg(chip->dev, usb_rcvctrlpipe(chip->dev, 0), UAC2_CS_CUR,
-+				      USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
-+				      validx, idx, &uac3_conn, sizeof(uac3_conn));
-+		val = !!uac3_conn.bmConInserted;
-+	}
-+
-+	snd_usb_unlock_shutdown(chip);
-+
-+	if (ret < 0) {
-+error:
-+		usb_audio_err(chip,
-+			"cannot get connectors status: req = %#x, wValue = %#x, wIndex = %#x, type = %d\n",
-+			UAC_GET_CUR, validx, idx, cval->val_type);
-+		return ret;
-+	}
-+
-+	ucontrol->value.integer.value[0] = val;
-+	return 0;
-+}
-+
- static struct snd_kcontrol_new usb_feature_unit_ctl = {
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	.name = "", /* will be filled later manually */
-@@ -1352,6 +1397,15 @@ static struct snd_kcontrol_new usb_bool_master_control_ctl_ro = {
- 	.put = NULL,
- };
- 
-+static const struct snd_kcontrol_new usb_connector_ctl_ro = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_CARD,
-+	.name = "", /* will be filled later manually */
-+	.access = SNDRV_CTL_ELEM_ACCESS_READ,
-+	.info = snd_ctl_boolean_mono_info,
-+	.get = mixer_ctl_connector_get,
-+	.put = NULL,
-+};
-+
- /*
-  * This symbol is exported in order to allow the mixer quirks to
-  * hook up to the standard feature unit control mechanism
-@@ -1598,17 +1652,25 @@ static void build_connector_control(struct mixer_build *state,
- 		return;
- 	snd_usb_mixer_elem_init_std(&cval->head, state->mixer, term->id);
- 	/*
--	 * The first byte from reading the UAC2_TE_CONNECTOR control returns the
--	 * number of channels connected.  This boolean ctl will simply report
--	 * if any channels are connected or not.
--	 * (Audio20_final.pdf Table 5-10: Connector Control CUR Parameter Block)
-+	 * UAC2: The first byte from reading the UAC2_TE_CONNECTOR control returns the
-+	 * number of channels connected.
-+	 *
-+	 * UAC3: The first byte specifies size of bitmap for the inserted controls. The
-+	 * following byte(s) specifies which connectors are inserted.
-+	 *
-+	 * This boolean ctl will simply report if any channels are connected
-+	 * or not.
- 	 */
--	cval->control = UAC2_TE_CONNECTOR;
-+	if (state->mixer->protocol == UAC_VERSION_2)
-+		cval->control = UAC2_TE_CONNECTOR;
-+	else /* UAC_VERSION_3 */
-+		cval->control = UAC3_TE_INSERTION;
-+
- 	cval->val_type = USB_MIXER_BOOLEAN;
- 	cval->channels = 1; /* report true if any channel is connected */
- 	cval->min = 0;
- 	cval->max = 1;
--	kctl = snd_ctl_new1(&usb_bool_master_control_ctl_ro, cval);
-+	kctl = snd_ctl_new1(&usb_connector_ctl_ro, cval);
- 	if (!kctl) {
- 		usb_audio_err(state->chip, "cannot malloc kcontrol\n");
- 		kfree(cval);
-@@ -1930,16 +1992,28 @@ static int parse_audio_input_terminal(struct mixer_build *state, int unitid,
- 				      void *raw_desc)
+ int wm_adsp2_component_probe(struct wm_adsp *dsp, struct snd_soc_component *component)
  {
- 	struct usb_audio_term iterm;
--	struct uac2_input_terminal_descriptor *d = raw_desc;
-+	unsigned int control, bmctls, term_id;
+-	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+ 	char preload[32];
  
--	check_input_term(state, d->bTerminalID, &iterm);
- 	if (state->mixer->protocol == UAC_VERSION_2) {
--		/* Check for jack detection. */
--		if (uac_v2v3_control_is_readable(d->bmControls,
--						 UAC2_TE_CONNECTOR)) {
--			build_connector_control(state, &iterm, true);
--		}
-+		struct uac2_input_terminal_descriptor *d_v2 = raw_desc;
-+		control = UAC2_TE_CONNECTOR;
-+		term_id = d_v2->bTerminalID;
-+		bmctls = le16_to_cpu(d_v2->bmControls);
-+	} else if (state->mixer->protocol == UAC_VERSION_3) {
-+		struct uac3_input_terminal_descriptor *d_v3 = raw_desc;
-+		control = UAC3_TE_INSERTION;
-+		term_id = d_v3->bTerminalID;
-+		bmctls = le32_to_cpu(d_v3->bmControls);
-+	} else {
-+		return 0; /* UAC1. No Insertion control */
- 	}
+ 	snprintf(preload, ARRAY_SIZE(preload), "DSP%d Preload", dsp->num);
+-	snd_soc_dapm_disable_pin(dapm, preload);
 +
-+	check_input_term(state, term_id, &iterm);
-+
-+	/* Check for jack detection. */
-+	if (uac_v2v3_control_is_readable(bmctls, control))
-+		build_connector_control(state, &iterm, true);
-+
- 	return 0;
- }
++	snd_soc_component_disable_pin(component, preload);
  
-@@ -2528,7 +2602,7 @@ static int parse_audio_unit(struct mixer_build *state, int unitid)
- 	} else { /* UAC_VERSION_3 */
- 		switch (p1[2]) {
- 		case UAC_INPUT_TERMINAL:
--			return 0; /* NOP */
-+			return parse_audio_input_terminal(state, unitid, p1);
- 		case UAC3_MIXER_UNIT:
- 			return parse_audio_mixer_unit(state, unitid, p1);
- 		case UAC3_CLOCK_SOURCE:
-@@ -2666,6 +2740,12 @@ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
- 			err = parse_audio_unit(&state, desc->bCSourceID);
- 			if (err < 0 && err != -EINVAL)
- 				return err;
-+
-+			if (uac_v2v3_control_is_readable(le32_to_cpu(desc->bmControls),
-+							 UAC3_TE_INSERTION)) {
-+				build_connector_control(&state, &state.oterm,
-+							false);
-+			}
- 		}
- 	}
+ 	wm_adsp2_init_debugfs(dsp, component);
  
 -- 
-2.11.0
+2.17.0
