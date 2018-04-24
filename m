@@ -1,19 +1,21 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v4 07/13] soundwire: Add stream
- configuration APIs
-Date: Tue, 24 Apr 2018 14:39:10 +0530
-Message-ID: <20180424090909.GE6014@localhost>
-References: <cf20c1f6-0804-70df-0f2d-6ad670481321@linux.intel.com>
+Subject: Re: [PATCH v4 02/13] soundwire: Add support for
+ SoundWire stream management
+Date: Tue, 24 Apr 2018 14:55:17 +0530
+Message-ID: <20180424092517.GF6014@localhost>
+References: <1524049146-8725-1-git-send-email-vinod.koul@intel.com>
+ <1524049146-8725-3-git-send-email-vinod.koul@intel.com>
+ <c88bfd9d-3192-5a0a-34d0-24fff829503c@linux.intel.com>
+ <20180421161756.GP6014@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 3DFB0266CA1
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 11:04:33 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F7D2266CA1
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 11:20:40 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <cf20c1f6-0804-70df-0f2d-6ad670481321@linux.intel.com>
- <20180423034510.GA22365@buildpc-HP-Z230>
+In-Reply-To: <20180421161756.GP6014@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,42 +25,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sanyog Kale <sanyog.r.kale@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 23, 2018 at 09:15:10AM +0530, Sanyog Kale wrote:
-> On Sat, Apr 21, 2018 at 09:43:15PM +0530, Vinod Koul wrote:
-> > On Sat, Apr 21, 2018 at 06:56:26AM -0700, Pierre-Louis Bossart wrote:
-> > > >+	if (!bus->params.bandwidth) {
-> > > >+		bus->params.row = 0;
-> > > >+		bus->params.col = 0;
-> > > >+		goto exit;
-> > > 
-> > > What is the intent with this test+goto? Shouldn't you program the parameters
-> > > if you want to change the frame shape?
+On Sat, Apr 21, 2018 at 09:47:56PM +0530, Vinod Koul wrote:
+> 
+> On Sat, Apr 21, 2018 at 06:02:52AM -0700, Pierre-Louis Bossart wrote:
+> > On 4/18/18 3:58 AM, Vinod Koul wrote:
+> 
+> > >+static int sdw_config_stream(struct device *dev,
+> > >+		struct sdw_stream_runtime *stream,
+> > >+		struct sdw_stream_config *stream_config, bool is_slave)
+> > >+{
+> > >+
+> > >+	/*
+> > >+	 * Update the stream rate, channel and bps based on data
+> > >+	 * source. For more than one data source (multilink),
+> > >+	 * match the rate, bps, stream type and increment number of channels.
+> > >+	 */
+> > >+	if ((stream->params.rate) &&
 > > 
-> > hmmm that seems correct point to me, but then we are going idle and should
-> > ideally power down. Let me check again if that is the reason.
+> > so if the rate is zero there is no error?
+> > 
+> > >+			(stream->params.rate != stream_config->frame_rate)) {
+> > >+		dev_err(dev, "rate not matching, stream:%s", stream->name);
+> > >+		return -EINVAL;
+> > >+	}
+> > >+
+> > >+	if ((stream->params.bps) &&
+> > 
+> > same here, what is the intent behind the first test?
 > 
-> We do not want to program parameters or change frame shape in case of bandwidth
-> required is 0 on bus (ie. no stream running). The row and col values are reset
-> to 0 and will be re-computed again in prepare_stream of next stream based
-> on stream requirement.
+> IIRC this was to check for valid values, but am not too sure, let me get
+> back to you on these two..
 
-Yes that is right
+So if the value previously is not set, we want to allow it be set and then
+compare. We are not checking for zero value or wrong values here, we are checking
+fir values to be matched
 
-On Mon, Apr 23, 2018 at 08:30:47AM -0500, Pierre-Louis Bossart wrote:
-> 
-> what about clock stop? what about the default frame shape specified in the
-> DisCo spec? I don't see the reason why we'd go to 48x2 - especially on Intel
-> platforms where we'll typically use  50x2 to remain aligned with a 48kHz
-> frame rate.
+Since you have asked this second time, I am going to add a comment here to
+clarify..
 
-But as Pierre pointed out ut should be using DisCo defaults and not 48x2 in
-the bus. So I will remove this check and add a TODO for using DisCo value
-here
-
-Thanks
 -- 
 ~Vinod
