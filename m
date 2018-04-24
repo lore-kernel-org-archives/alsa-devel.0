@@ -1,22 +1,16 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v5 01/23] soc: qcom dt-bindings: Add APR
-	bus bindings
-Date: Tue, 24 Apr 2018 10:52:26 -0500
-Message-ID: <20180424155226.fo6rgdea4kmqqjdy@rob-hp-laptop>
-References: <20180418153157.1960-1-srinivas.kandagatla@linaro.org>
- <20180418153157.1960-2-srinivas.kandagatla@linaro.org>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH] ASoC: wm_adsp: Account for name prefixes when
+	toggling preloader
+Date: Tue, 24 Apr 2018 16:53:09 +0100
+Message-ID: <20180424155309.12059-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f195.google.com (mail-ot0-f195.google.com
- [74.125.82.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 9FD1A2675CD
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 17:52:28 +0200 (CEST)
-Received: by mail-ot0-f195.google.com with SMTP id w4-v6so21805121ote.12
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 08:52:28 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20180418153157.1960-2-srinivas.kandagatla@linaro.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 379072676AD
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 17:53:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,162 +20,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: srinivas.kandagatla@linaro.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, spatakok@qti.qualcomm.com, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, andy.gross@linaro.org, linux-kernel@vger.kernel.org
+To: broonie@kernel.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 18, 2018 at 04:31:35PM +0100, srinivas.kandagatla@linaro.org wrote:
-> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> 
-> This patch add dt bindings for Qualcomm APR (Asynchronous Packet Router)
-> bus driver. This bus is used for communicating with DSP which provides
-> audio and various other services to cpu.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  .../devicetree/bindings/soc/qcom/qcom,apr.txt      | 85 ++++++++++++++++++++++
+Use the correct functions to allow a name prefix assigned through
+codec_conf to be taken into consideration whilst enabling and disabling
+the preloader widget.
 
-This should probably go under bindings/sound/ as it is at least mostly 
-sound related.
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ sound/soc/codecs/wm_adsp.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
->  include/dt-bindings/soc/qcom,apr.h                 | 27 +++++++
->  2 files changed, 112 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
->  create mode 100644 include/dt-bindings/soc/qcom,apr.h
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
-> new file mode 100644
-> index 000000000000..85cc0433fb00
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
-> @@ -0,0 +1,85 @@
-> +Qualcomm APR (Asynchronous Packet Router) binding
-> +
-> +This binding describes the Qualcomm APR. APR is a IPC protocol for
-> +communication between Application processor and QDSP. APR is mainly
-> +used for audio/voice services on the QDSP.
-> +
-> +- compatible:
-> +	Usage: required
-> +	Value type: <stringlist>
-> +	Definition: must be "qcom,apr-v<VERSION-NUMBER>", example "qcom,apr-v2"
-> +
-> +- qcom,dest-domain-id
-> +	Usage: required
-> +	Value type: <prop-encoded-array>
-
-If this is an array, what do the indexes of the array correspond to?
-
-> +	Definition: Destination processor ID.
-> +	Possible values are :
-> +			1 - APR simulator
-> +			2 - PC
-> +			3 - MODEM
-> +			4 - ADSP
-> +			5 - APPS
-> +			6 - MODEM2
-> +			7 - APPS2
-> +
-> += APR SERVICES
-> +Each subnode of the APR node represents service tied to this apr. The name
-> +of the nodes are not important. The properties of these nodes are defined
-> +by the individual bindings for the specific service
-> +- All APR services MUST contain the following property:
-> +
-> +- reg
-> +	Usage: required
-> +	Value type: <prop-encoded-array>
-
-Not really an array, right?
-
-> +	Definition: APR Service ID
-> +	Possible values are :
-> +			3 - DSP Core Service
-> +			4 - Audio Front End Service.
-> +			5 - Voice Stream Manager Service.
-> +			6 - Voice processing manager.
-> +			7 - Audio Stream Manager Service.
-> +			8 - Audio Device Manager Service.
-> +			9 - Multimode voice manager.
-> +			10 - Core voice stream.
-> +			11 - Core voice processor.
-> +			12 - Ultrasound stream manager.
-> +			13 - Listen stream manager.
-> +
-> += EXAMPLE
-> +The following example represents a QDSP based sound card on a MSM8996 device
-> +which uses apr as communication between Apps and QDSP.
-> +
-> +	apr {
-> +		compatible = "qcom,apr-v2";
-> +		qcom,smd-channels = "apr_audio_svc";
-
-Drop this?
-
-> +		qcom,dest-domain-id = <APR_DOMAIN_ADSP>;
-> +
-> +		q6core {
-> +			compatible = "qcom,q6core";
-> +			reg = <APR_SVC_ADSP_CORE>;
-> +		};
-> +
-> +		q6afe {
-> +			compatible = "qcom,q6afe";
-> +			reg = <APR_SVC_AFE>;
-> +
-> +			dais {
-> +				#sound-dai-cells = <1>;
-> +				hdmi@1 {
-> +					reg = <1>;
-> +				};
-> +			};
-> +		};
-> +
-> +		q6asm {
-> +			compatible = "qcom,q6asm";
-> +			reg = <APR_SVC_ASM>;
-> +			...
-> +		};
-> +
-> +		q6adm {
-> +			compatible = "qcom,q6adm";
-> +			reg = <APR_SVC_ADM>;
-> +			...
-> +		};
-> +	};
-> diff --git a/include/dt-bindings/soc/qcom,apr.h b/include/dt-bindings/soc/qcom,apr.h
-> new file mode 100644
-> index 000000000000..905503f81885
-> --- /dev/null
-> +++ b/include/dt-bindings/soc/qcom,apr.h
-> @@ -0,0 +1,27 @@
-> +#ifndef __DT_BINDINGS_QCOM_APR_H
-> +#define __DT_BINDINGS_QCOM_APR_H
-> +
-> +/* Domain IDs */
-> +#define APR_DOMAIN_SIM		0x1
-> +#define APR_DOMAIN_PC		0x2
-> +#define APR_DOMAIN_MODEM	0x3
-> +#define APR_DOMAIN_ADSP		0x4
-> +#define APR_DOMAIN_APPS		0x5
-> +#define APR_DOMAIN_MAX		0x6
-> +
-> +/* ADSP service IDs */
-> +#define APR_SVC_ADSP_CORE	0x3
-> +#define APR_SVC_AFE		0x4
-> +#define APR_SVC_VSM		0x5
-> +#define APR_SVC_VPM		0x6
-> +#define APR_SVC_ASM		0x7
-> +#define APR_SVC_ADM		0x8
-> +#define APR_SVC_ADSP_MVM	0x09
-> +#define APR_SVC_ADSP_CVS	0x0A
-> +#define APR_SVC_ADSP_CVP	0x0B
-> +#define APR_SVC_USM		0x0C
-> +#define APR_SVC_LSM		0x0D
-> +#define APR_SVC_VIDC		0x16
-> +#define APR_SVC_MAX		0x17
-> +
-> +#endif /* __DT_BINDINGS_QCOM_APR_H */
-> -- 
-> 2.16.2
-> 
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 82b0927e6ed7..b7b914963c62 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -2666,9 +2666,9 @@ int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
+ 	dsp->preloaded = ucontrol->value.integer.value[0];
+ 
+ 	if (ucontrol->value.integer.value[0])
+-		snd_soc_dapm_force_enable_pin(dapm, preload);
++		snd_soc_component_force_enable_pin(component, preload);
+ 	else
+-		snd_soc_dapm_disable_pin(dapm, preload);
++		snd_soc_component_disable_pin(component, preload);
+ 
+ 	snd_soc_dapm_sync(dapm);
+ 
+@@ -2852,11 +2852,11 @@ EXPORT_SYMBOL_GPL(wm_adsp2_event);
+ 
+ int wm_adsp2_component_probe(struct wm_adsp *dsp, struct snd_soc_component *component)
+ {
+-	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+ 	char preload[32];
+ 
+ 	snprintf(preload, ARRAY_SIZE(preload), "DSP%d Preload", dsp->num);
+-	snd_soc_dapm_disable_pin(dapm, preload);
++
++	snd_soc_component_disable_pin(component, preload);
+ 
+ 	wm_adsp2_init_debugfs(dsp, component);
+ 
+-- 
+2.11.0
