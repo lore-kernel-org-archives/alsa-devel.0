@@ -1,17 +1,21 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/8] ALSA: seq: oss: Hardening for potential
-	Spectre v1
-Date: Tue, 24 Apr 2018 09:56:13 +0200
-Message-ID: <20180424075619.29602-3-tiwai@suse.de>
-References: <20180424075619.29602-1-tiwai@suse.de>
+From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: Re: [PATCH 2/4] ALSA: usb-audio: ADC3: Fix channel
+ mapping conversion for ADC3.
+Date: Tue, 24 Apr 2018 11:03:40 +0300
+Message-ID: <CAB=otbQur-_pvTNccni-sNYuemo2aeiyahXUBZLoSALxphAzaA@mail.gmail.com>
+References: <20180420170327.31569-1-jorge.sanjuan@codethink.co.uk>
+ <20180420170327.31569-3-jorge.sanjuan@codethink.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 17729267692
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 09:56:44 +0200 (CEST)
-In-Reply-To: <20180424075619.29602-1-tiwai@suse.de>
+Received: from mail-ot0-f194.google.com (mail-ot0-f194.google.com
+ [74.125.82.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 69F12266CA1
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 10:03:42 +0200 (CEST)
+Received: by mail-ot0-f194.google.com with SMTP id w4-v6so20242620ote.12
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 01:03:41 -0700 (PDT)
+In-Reply-To: <20180420170327.31569-3-jorge.sanjuan@codethink.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,341 +25,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
+To: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, Michael Drake <michael.drake@codethink.co.uk>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-As the recent Smatch warned, a few places may expand the array
-directly from the user-space value with speculation, where there are a
-significant amount of references to either info->ch[] or dp->synths[]
-array:
+On Fri, Apr 20, 2018 at 8:03 PM, Jorge Sanjuan
+<jorge.sanjuan@codethink.co.uk> wrote:
+> From: Michael Drake <michael.drake@codethink.co.uk>
+>
+> The channel mapping is defined by bChRelationship, not bChPurpose.
+>
+> Signed-off-by: Michael Drake <michael.drake@codethink.co.uk>
+> ---
+>  sound/usb/stream.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+> index 6a8f5843334e..956be9f7c72a 100644
+> --- a/sound/usb/stream.c
+> +++ b/sound/usb/stream.c
+> @@ -349,7 +349,7 @@ snd_pcm_chmap_elem *convert_chmap_v3(struct uac3_cluster_header_descriptor
+>                          * TODO: this conversion is not complete, update it
+>                          * after adding UAC3 values to asound.h
+>                          */
+> -                       switch (is->bChPurpose) {
+> +                       switch (is->bChRelationship) {
 
-  sound/core/seq/oss/seq_oss_event.c:315 note_on_event() warn: potential spectre issue 'info->ch' (local cap)
-  sound/core/seq/oss/seq_oss_event.c:362 note_off_event() warn: potential spectre issue 'info->ch' (local cap)
-  sound/core/seq/oss/seq_oss_synth.c:470 snd_seq_oss_synth_load_patch() warn: potential spectre issue 'dp->synths' (local cap)
-  sound/core/seq/oss/seq_oss_event.c:293 note_on_event() warn: potential spectre issue 'dp->synths'
-  sound/core/seq/oss/seq_oss_event.c:353 note_off_event() warn: potential spectre issue 'dp->synths'
-  sound/core/seq/oss/seq_oss_synth.c:506 snd_seq_oss_synth_sysex() warn: potential spectre issue 'dp->synths'
-  sound/core/seq/oss/seq_oss_synth.c:580 snd_seq_oss_synth_ioctl() warn: potential spectre issue 'dp->synths'
+Good catch!
 
-Although all these seem doing only the first load without further
-reference, we may want to stay in a safer side, so hardening with
-array_index_nospec() would still make sense.
+Somehow I overlooked this, so in my case of Generic Audio it is always
+mono.
 
-We may put array_index_nospec() at each place, but here we take a
-different approach:
+Reviewed-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
 
-- For dp->synths[], change the helpers to retrieve seq_oss_synthinfo
-  pointer directly instead of the array expansion at each place
-
-- For info->ch[], harden in a normal way, as there are only a couple
-  of places
-
-As a result, the existing helper, snd_seq_oss_synth_is_valid() is
-replaced with snd_seq_oss_synth_info().  Also, we cover MIDI device
-where a similar array expansion is done, too, although it wasn't
-reported by Smatch.
-
-BugLink: https://marc.info/?l=linux-kernel&m=152411496503418&w=2
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/seq/oss/seq_oss_event.c | 15 +++++---
- sound/core/seq/oss/seq_oss_midi.c  |  2 +
- sound/core/seq/oss/seq_oss_synth.c | 75 +++++++++++++++++++++-----------------
- sound/core/seq/oss/seq_oss_synth.h |  3 +-
- 4 files changed, 55 insertions(+), 40 deletions(-)
-
-diff --git a/sound/core/seq/oss/seq_oss_event.c b/sound/core/seq/oss/seq_oss_event.c
-index c3908862bc8b..86ca584c27b2 100644
---- a/sound/core/seq/oss/seq_oss_event.c
-+++ b/sound/core/seq/oss/seq_oss_event.c
-@@ -26,6 +26,7 @@
- #include <sound/seq_oss_legacy.h>
- #include "seq_oss_readq.h"
- #include "seq_oss_writeq.h"
-+#include <linux/nospec.h>
- 
- 
- /*
-@@ -287,10 +288,10 @@ note_on_event(struct seq_oss_devinfo *dp, int dev, int ch, int note, int vel, st
- {
- 	struct seq_oss_synthinfo *info;
- 
--	if (!snd_seq_oss_synth_is_valid(dp, dev))
-+	info = snd_seq_oss_synth_info(dp, dev);
-+	if (!info)
- 		return -ENXIO;
- 
--	info = &dp->synths[dev];
- 	switch (info->arg.event_passing) {
- 	case SNDRV_SEQ_OSS_PROCESS_EVENTS:
- 		if (! info->ch || ch < 0 || ch >= info->nr_voices) {
-@@ -298,6 +299,7 @@ note_on_event(struct seq_oss_devinfo *dp, int dev, int ch, int note, int vel, st
- 			return set_note_event(dp, dev, SNDRV_SEQ_EVENT_NOTEON, ch, note, vel, ev);
- 		}
- 
-+		ch = array_index_nospec(ch, info->nr_voices);
- 		if (note == 255 && info->ch[ch].note >= 0) {
- 			/* volume control */
- 			int type;
-@@ -347,10 +349,10 @@ note_off_event(struct seq_oss_devinfo *dp, int dev, int ch, int note, int vel, s
- {
- 	struct seq_oss_synthinfo *info;
- 
--	if (!snd_seq_oss_synth_is_valid(dp, dev))
-+	info = snd_seq_oss_synth_info(dp, dev);
-+	if (!info)
- 		return -ENXIO;
- 
--	info = &dp->synths[dev];
- 	switch (info->arg.event_passing) {
- 	case SNDRV_SEQ_OSS_PROCESS_EVENTS:
- 		if (! info->ch || ch < 0 || ch >= info->nr_voices) {
-@@ -358,6 +360,7 @@ note_off_event(struct seq_oss_devinfo *dp, int dev, int ch, int note, int vel, s
- 			return set_note_event(dp, dev, SNDRV_SEQ_EVENT_NOTEON, ch, note, vel, ev);
- 		}
- 
-+		ch = array_index_nospec(ch, info->nr_voices);
- 		if (info->ch[ch].note >= 0) {
- 			note = info->ch[ch].note;
- 			info->ch[ch].vel = 0;
-@@ -381,7 +384,7 @@ note_off_event(struct seq_oss_devinfo *dp, int dev, int ch, int note, int vel, s
- static int
- set_note_event(struct seq_oss_devinfo *dp, int dev, int type, int ch, int note, int vel, struct snd_seq_event *ev)
- {
--	if (! snd_seq_oss_synth_is_valid(dp, dev))
-+	if (!snd_seq_oss_synth_info(dp, dev))
- 		return -ENXIO;
- 	
- 	ev->type = type;
-@@ -399,7 +402,7 @@ set_note_event(struct seq_oss_devinfo *dp, int dev, int type, int ch, int note,
- static int
- set_control_event(struct seq_oss_devinfo *dp, int dev, int type, int ch, int param, int val, struct snd_seq_event *ev)
- {
--	if (! snd_seq_oss_synth_is_valid(dp, dev))
-+	if (!snd_seq_oss_synth_info(dp, dev))
- 		return -ENXIO;
- 	
- 	ev->type = type;
-diff --git a/sound/core/seq/oss/seq_oss_midi.c b/sound/core/seq/oss/seq_oss_midi.c
-index b30b2139e3f0..9debd1b8fd28 100644
---- a/sound/core/seq/oss/seq_oss_midi.c
-+++ b/sound/core/seq/oss/seq_oss_midi.c
-@@ -29,6 +29,7 @@
- #include "../seq_lock.h"
- #include <linux/init.h>
- #include <linux/slab.h>
-+#include <linux/nospec.h>
- 
- 
- /*
-@@ -315,6 +316,7 @@ get_mididev(struct seq_oss_devinfo *dp, int dev)
- {
- 	if (dev < 0 || dev >= dp->max_mididev)
- 		return NULL;
-+	dev = array_index_nospec(dev, dp->max_mididev);
- 	return get_mdev(dev);
- }
- 
-diff --git a/sound/core/seq/oss/seq_oss_synth.c b/sound/core/seq/oss/seq_oss_synth.c
-index 9e2b250ae780..278ebb993122 100644
---- a/sound/core/seq/oss/seq_oss_synth.c
-+++ b/sound/core/seq/oss/seq_oss_synth.c
-@@ -26,6 +26,7 @@
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/slab.h>
-+#include <linux/nospec.h>
- 
- /*
-  * constants
-@@ -339,17 +340,13 @@ snd_seq_oss_synth_cleanup(struct seq_oss_devinfo *dp)
- 	dp->max_synthdev = 0;
- }
- 
--/*
-- * check if the specified device is MIDI mapped device
-- */
--static int
--is_midi_dev(struct seq_oss_devinfo *dp, int dev)
-+static struct seq_oss_synthinfo *
-+get_synthinfo_nospec(struct seq_oss_devinfo *dp, int dev)
- {
- 	if (dev < 0 || dev >= dp->max_synthdev)
--		return 0;
--	if (dp->synths[dev].is_midi)
--		return 1;
--	return 0;
-+		return NULL;
-+	dev = array_index_nospec(dev, SNDRV_SEQ_OSS_MAX_SYNTH_DEVS);
-+	return &dp->synths[dev];
- }
- 
- /*
-@@ -359,11 +356,13 @@ static struct seq_oss_synth *
- get_synthdev(struct seq_oss_devinfo *dp, int dev)
- {
- 	struct seq_oss_synth *rec;
--	if (dev < 0 || dev >= dp->max_synthdev)
-+	struct seq_oss_synthinfo *info = get_synthinfo_nospec(dp, dev);
-+
-+	if (!info)
- 		return NULL;
--	if (! dp->synths[dev].opened)
-+	if (!info->opened)
- 		return NULL;
--	if (dp->synths[dev].is_midi) {
-+	if (info->is_midi) {
- 		rec = &midi_synth_dev;
- 		snd_use_lock_use(&rec->use_lock);
- 	} else {
-@@ -406,10 +405,8 @@ snd_seq_oss_synth_reset(struct seq_oss_devinfo *dp, int dev)
- 	struct seq_oss_synth *rec;
- 	struct seq_oss_synthinfo *info;
- 
--	if (snd_BUG_ON(dev < 0 || dev >= dp->max_synthdev))
--		return;
--	info = &dp->synths[dev];
--	if (! info->opened)
-+	info = get_synthinfo_nospec(dp, dev);
-+	if (!info || !info->opened)
- 		return;
- 	if (info->sysex)
- 		info->sysex->len = 0; /* reset sysex */
-@@ -458,12 +455,14 @@ snd_seq_oss_synth_load_patch(struct seq_oss_devinfo *dp, int dev, int fmt,
- 			    const char __user *buf, int p, int c)
- {
- 	struct seq_oss_synth *rec;
-+	struct seq_oss_synthinfo *info;
- 	int rc;
- 
--	if (dev < 0 || dev >= dp->max_synthdev)
-+	info = get_synthinfo_nospec(dp, dev);
-+	if (!info)
- 		return -ENXIO;
- 
--	if (is_midi_dev(dp, dev))
-+	if (info->is_midi)
- 		return 0;
- 	if ((rec = get_synthdev(dp, dev)) == NULL)
- 		return -ENXIO;
-@@ -471,24 +470,25 @@ snd_seq_oss_synth_load_patch(struct seq_oss_devinfo *dp, int dev, int fmt,
- 	if (rec->oper.load_patch == NULL)
- 		rc = -ENXIO;
- 	else
--		rc = rec->oper.load_patch(&dp->synths[dev].arg, fmt, buf, p, c);
-+		rc = rec->oper.load_patch(&info->arg, fmt, buf, p, c);
- 	snd_use_lock_free(&rec->use_lock);
- 	return rc;
- }
- 
- /*
-- * check if the device is valid synth device
-+ * check if the device is valid synth device and return the synth info
-  */
--int
--snd_seq_oss_synth_is_valid(struct seq_oss_devinfo *dp, int dev)
-+struct seq_oss_synthinfo *
-+snd_seq_oss_synth_info(struct seq_oss_devinfo *dp, int dev)
- {
- 	struct seq_oss_synth *rec;
-+
- 	rec = get_synthdev(dp, dev);
- 	if (rec) {
- 		snd_use_lock_free(&rec->use_lock);
--		return 1;
-+		return get_synthinfo_nospec(dp, dev);
- 	}
--	return 0;
-+	return NULL;
- }
- 
- 
-@@ -503,16 +503,18 @@ snd_seq_oss_synth_sysex(struct seq_oss_devinfo *dp, int dev, unsigned char *buf,
- 	int i, send;
- 	unsigned char *dest;
- 	struct seq_oss_synth_sysex *sysex;
-+	struct seq_oss_synthinfo *info;
- 
--	if (! snd_seq_oss_synth_is_valid(dp, dev))
-+	info = snd_seq_oss_synth_info(dp, dev);
-+	if (!info)
- 		return -ENXIO;
- 
--	sysex = dp->synths[dev].sysex;
-+	sysex = info->sysex;
- 	if (sysex == NULL) {
- 		sysex = kzalloc(sizeof(*sysex), GFP_KERNEL);
- 		if (sysex == NULL)
- 			return -ENOMEM;
--		dp->synths[dev].sysex = sysex;
-+		info->sysex = sysex;
- 	}
- 
- 	send = 0;
-@@ -557,10 +559,12 @@ snd_seq_oss_synth_sysex(struct seq_oss_devinfo *dp, int dev, unsigned char *buf,
- int
- snd_seq_oss_synth_addr(struct seq_oss_devinfo *dp, int dev, struct snd_seq_event *ev)
- {
--	if (! snd_seq_oss_synth_is_valid(dp, dev))
-+	struct seq_oss_synthinfo *info = snd_seq_oss_synth_info(dp, dev);
-+
-+	if (!info)
- 		return -EINVAL;
--	snd_seq_oss_fill_addr(dp, ev, dp->synths[dev].arg.addr.client,
--			      dp->synths[dev].arg.addr.port);
-+	snd_seq_oss_fill_addr(dp, ev, info->arg.addr.client,
-+			      info->arg.addr.port);
- 	return 0;
- }
- 
-@@ -572,16 +576,18 @@ int
- snd_seq_oss_synth_ioctl(struct seq_oss_devinfo *dp, int dev, unsigned int cmd, unsigned long addr)
- {
- 	struct seq_oss_synth *rec;
-+	struct seq_oss_synthinfo *info;
- 	int rc;
- 
--	if (is_midi_dev(dp, dev))
-+	info = get_synthinfo_nospec(dp, dev);
-+	if (!info || info->is_midi)
- 		return -ENXIO;
- 	if ((rec = get_synthdev(dp, dev)) == NULL)
- 		return -ENXIO;
- 	if (rec->oper.ioctl == NULL)
- 		rc = -ENXIO;
- 	else
--		rc = rec->oper.ioctl(&dp->synths[dev].arg, cmd, addr);
-+		rc = rec->oper.ioctl(&info->arg, cmd, addr);
- 	snd_use_lock_free(&rec->use_lock);
- 	return rc;
- }
-@@ -593,7 +599,10 @@ snd_seq_oss_synth_ioctl(struct seq_oss_devinfo *dp, int dev, unsigned int cmd, u
- int
- snd_seq_oss_synth_raw_event(struct seq_oss_devinfo *dp, int dev, unsigned char *data, struct snd_seq_event *ev)
- {
--	if (! snd_seq_oss_synth_is_valid(dp, dev) || is_midi_dev(dp, dev))
-+	struct seq_oss_synthinfo *info;
-+
-+	info = snd_seq_oss_synth_info(dp, dev);
-+	if (!info || info->is_midi)
- 		return -ENXIO;
- 	ev->type = SNDRV_SEQ_EVENT_OSS;
- 	memcpy(ev->data.raw8.d, data, 8);
-diff --git a/sound/core/seq/oss/seq_oss_synth.h b/sound/core/seq/oss/seq_oss_synth.h
-index 74ac55f166b6..a63f9e22974d 100644
---- a/sound/core/seq/oss/seq_oss_synth.h
-+++ b/sound/core/seq/oss/seq_oss_synth.h
-@@ -37,7 +37,8 @@ void snd_seq_oss_synth_cleanup(struct seq_oss_devinfo *dp);
- void snd_seq_oss_synth_reset(struct seq_oss_devinfo *dp, int dev);
- int snd_seq_oss_synth_load_patch(struct seq_oss_devinfo *dp, int dev, int fmt,
- 				 const char __user *buf, int p, int c);
--int snd_seq_oss_synth_is_valid(struct seq_oss_devinfo *dp, int dev);
-+struct seq_oss_synthinfo *snd_seq_oss_synth_info(struct seq_oss_devinfo *dp,
-+						 int dev);
- int snd_seq_oss_synth_sysex(struct seq_oss_devinfo *dp, int dev, unsigned char *buf,
- 			    struct snd_seq_event *ev);
- int snd_seq_oss_synth_addr(struct seq_oss_devinfo *dp, int dev, struct snd_seq_event *ev);
--- 
-2.16.3
+>                         case UAC3_CH_MONO:
+>                                 map = SNDRV_CHMAP_MONO;
+>                                 break;
+> --
+> 2.11.0
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
