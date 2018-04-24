@@ -1,20 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: tas6424: Allow disabling auto
- diagnostics for faster power-on
-Date: Tue, 24 Apr 2018 11:19:53 +0100
-Message-ID: <20180424101953.GA22073@sirena.org.uk>
-References: <1524218684-19752-1-git-send-email-jjhiblot@ti.com>
- <1524218684-19752-2-git-send-email-jjhiblot@ti.com>
- <20180423154411.GK19834@sirena.org.uk>
- <d6a1c01b-7a9f-423f-d314-ff2e52aa9ab9@ti.com>
+From: Andrew Chant <achant@google.com>
+Subject: Re: [PATCH] ALSA: usb-audio: Fix missing endian
+	conversion
+Date: Tue, 24 Apr 2018 19:28:39 +0800
+Message-ID: <CANVWZtGJQh6Hsh6OPoXcv1twfcF0X2oJ5VEEsxfRgjU-f+Tjmw@mail.gmail.com>
+References: <20180423132404.12633-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9024464989625510573=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5414B266CA1
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 12:20:04 +0200 (CEST)
-In-Reply-To: <d6a1c01b-7a9f-423f-d314-ff2e52aa9ab9@ti.com>
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F58E26722C
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 13:29:21 +0200 (CEST)
+Received: by mail-wm0-f66.google.com with SMTP id o78so197936wmg.0
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 04:29:21 -0700 (PDT)
+In-Reply-To: <20180423132404.12633-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,56 +23,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Jacques Hiblot <jjhiblot@ti.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, afd@ti.com, robh+dt@kernel.org, dannenberg@ti.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Apr 23, 2018 at 9:24 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>
+> The UAC2 jack detection support introduced the bmControls checks in a
+> couple of places, but they forgot the endian conversion; the
+> bmControls of UAC2 terminal descriptor is __le16, not a byte like in
+> UAC1.
+>
+> Fixes: 5a222e849452 ("ALSA: usb-audio: UAC2 jack detection")
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Tested-by: Andrew Chant <achant@google.com>
+>
+> ---
+>  sound/usb/mixer.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+> index 301ad61ed426..f78b500b3c0e 100644
+> --- a/sound/usb/mixer.c
+> +++ b/sound/usb/mixer.c
+> @@ -1859,7 +1859,7 @@ static int parse_audio_input_terminal(struct mixer_build *state, int unitid,
+>         check_input_term(state, d->bTerminalID, &iterm);
+>         if (state->mixer->protocol == UAC_VERSION_2) {
+>                 /* Check for jack detection. */
+> -               if (uac_v2v3_control_is_readable(d->bmControls,
+> +               if (uac_v2v3_control_is_readable(le16_to_cpu(d->bmControls),
+>                                                  UAC2_TE_CONNECTOR)) {
+>                         build_connector_control(state, &iterm, true);
+>                 }
+> @@ -2561,7 +2561,7 @@ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
+>                         if (err < 0 && err != -EINVAL)
+>                                 return err;
+>
+> -                       if (uac_v2v3_control_is_readable(desc->bmControls,
+> +                       if (uac_v2v3_control_is_readable(le16_to_cpu(desc->bmControls),
+>                                                          UAC2_TE_CONNECTOR)) {
+>                                 build_connector_control(&state, &state.oterm,
+>                                                         false);
+> --
+> 2.16.3
+>
 
---===============9024464989625510573==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="UugvWAfsgieZRqgk"
-Content-Disposition: inline
-
-
---UugvWAfsgieZRqgk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Apr 23, 2018 at 09:00:18PM +0200, Jean-Jacques Hiblot wrote:
-
-> I can't think of anything that would make it unusable.
-> This auto diagnostic is really useful in cars where wires can get
-> disconnected or shorted to ground.
-> In quieter environment it may not be as useful, and a test at startup may be
-> sufficient.
-> Diagnostics can also be triggered at will.
-> Do you think a sysfs interface would be better suited to disable the
-> autodiag ?
-
-I'd just make it an ALSA control TBH.  sysfs should work as well though.
-
---UugvWAfsgieZRqgk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrfBMUACgkQJNaLcl1U
-h9AmdAf9G2hWHGY7WD/hfxizWfpUaXImjYIXNKDx+C5ZRJNzNR0J34RRiOi4l7R9
-PCD9FYNShJiWygRKrE8XhNbLouhXw6M02W+7zjD2Hj280TLTbg4JcH/IpwPvgwER
-ZWiRyWLsm5CY/TwM9HqBhDTfSZWZuC3hLK9fWezm1HCkFGZyQA1b34Bg/7ZdNbDH
-rRpL1vN7cWoNiESP7GPikmCDyVI8sU5BPV6mfu9yW1C72wcsy6KTZ+uTRyKc9F1z
-qXsvHUpQtwktIDPXe+u1BKbRLO69y/unfgrF97ANFii5ziWYLh3lLwUg9ZSTbM9R
-PL7Nuh2gZaZJIilyxvbiHg7pfuGkzQ==
-=2PQK
------END PGP SIGNATURE-----
-
---UugvWAfsgieZRqgk--
-
---===============9024464989625510573==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9024464989625510573==--
+Tests fine, thank you.  Did you intentionally leave the
+UAC2_CS_CONTROL_CLOCK_VALID reading at line 1575 for another patch?
