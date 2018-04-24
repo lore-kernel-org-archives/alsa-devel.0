@@ -1,41 +1,66 @@
 From: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
-Subject: [PATCH v2 2/4] ALSA: usb-audio: ADC3: Fix channel mapping conversion for ADC3.
-Date: Tue, 24 Apr 2018 18:24:43 +0100
-Message-ID: <20180424172445.31928-3-jorge.sanjuan@codethink.co.uk>
+Subject: [PATCH v2 3/4] ALSA: usb-audio: Use Class Specific EP
+	for UAC3 devices.
+Date: Tue, 24 Apr 2018 18:24:44 +0100
+Message-ID: <20180424172445.31928-4-jorge.sanjuan@codethink.co.uk>
 References: <20180420170327.31569-1-jorge.sanjuan@codethink.co.uk>
  <20180424172445.31928-1-jorge.sanjuan@codethink.co.uk>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from imap1.codethink.co.uk (imap1.codethink.co.uk [176.9.8.82])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23FE12676AB
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 19:24:57 +0200 (CEST)
 In-Reply-To: <20180424172445.31928-1-jorge.sanjuan@codethink.co.uk>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, Michael Drake <michael.drake@codethink.co.uk>, Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+Cc: gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-From: Michael Drake <michael.drake@codethink.co.uk>
+bmAtributes offset doesn't exist in the UAC3 CS_EP descriptor.
+Hence, checking for pitch control as if it was UAC2 doesn't make
+any sense. Use the defined UAC3 offsets instead.
 
-The channel mapping is defined by bChRelationship, not bChPurpose.
-
-Fixes: 9a2fe9b801f5 ("ALSA: usb: initial USB Audio Device Class 3.0
-support")
-Reviewed-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Signed-off-by: Michael Drake <michael.drake@codethink.co.uk>
 Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
 ---
- sound/usb/stream.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/stream.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/sound/usb/stream.c b/sound/usb/stream.c
-index 6a8f5843334e..956be9f7c72a 100644
+index 956be9f7c72a..5ed334575fc7 100644
 --- a/sound/usb/stream.c
 +++ b/sound/usb/stream.c
-@@ -349,7 +349,7 @@ snd_pcm_chmap_elem *convert_chmap_v3(struct uac3_cluster_header_descriptor
- 			 * TODO: this conversion is not complete, update it
- 			 * after adding UAC3 values to asound.h
- 			 */
--			switch (is->bChPurpose) {
-+			switch (is->bChRelationship) {
- 			case UAC3_CH_MONO:
- 				map = SNDRV_CHMAP_MONO;
- 				break;
+@@ -576,7 +576,7 @@ static int parse_uac_endpoint_attributes(struct snd_usb_audio *chip,
+ 
+ 	if (protocol == UAC_VERSION_1) {
+ 		attributes = csep->bmAttributes;
+-	} else {
++	} else if (protocol == UAC_VERSION_2) {
+ 		struct uac2_iso_endpoint_descriptor *csep2 =
+ 			(struct uac2_iso_endpoint_descriptor *) csep;
+ 
+@@ -585,6 +585,13 @@ static int parse_uac_endpoint_attributes(struct snd_usb_audio *chip,
+ 		/* emulate the endpoint attributes of a v1 device */
+ 		if (csep2->bmControls & UAC2_CONTROL_PITCH)
+ 			attributes |= UAC_EP_CS_ATTR_PITCH_CONTROL;
++	} else { /* UAC_VERSION_3 */
++		struct uac3_iso_endpoint_descriptor *csep3 =
++			(struct uac3_iso_endpoint_descriptor *) csep;
++
++		/* emulate the endpoint attributes of a v1 device */
++		if (le32_to_cpu(csep3->bmControls) & UAC2_CONTROL_PITCH)
++			attributes |= UAC_EP_CS_ATTR_PITCH_CONTROL;
+ 	}
+ 
+ 	return attributes;
 -- 
 2.11.0
