@@ -1,21 +1,18 @@
-From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Subject: Re: [PATCH 2/4] ALSA: usb-audio: ADC3: Fix channel
- mapping conversion for ADC3.
-Date: Tue, 24 Apr 2018 11:03:40 +0300
-Message-ID: <CAB=otbQur-_pvTNccni-sNYuemo2aeiyahXUBZLoSALxphAzaA@mail.gmail.com>
-References: <20180420170327.31569-1-jorge.sanjuan@codethink.co.uk>
- <20180420170327.31569-3-jorge.sanjuan@codethink.co.uk>
+From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH] sound,
+ isapnp: allow building more drivers with COMPILE_TEST
+Date: Tue, 24 Apr 2018 10:34:04 +0200
+Message-ID: <d6007528-98a3-492a-e1d3-d43c23bf3a09@intel.com>
+References: <082977bdb133dc0570f690d3f3a120207f1d63f1.1524229123.git.mchehab@s-opensource.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f194.google.com (mail-ot0-f194.google.com
- [74.125.82.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 69F12266CA1
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 10:03:42 +0200 (CEST)
-Received: by mail-ot0-f194.google.com with SMTP id w4-v6so20242620ote.12
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 01:03:41 -0700 (PDT)
-In-Reply-To: <20180420170327.31569-3-jorge.sanjuan@codethink.co.uk>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7E9C4266CA1
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 10:34:08 +0200 (CEST)
+In-Reply-To: <082977bdb133dc0570f690d3f3a120207f1d63f1.1524229123.git.mchehab@s-opensource.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,46 +22,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, Michael Drake <michael.drake@codethink.co.uk>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Andrew Morton <akpm@linux-foundation.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, Linux Media Mailing List <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 20, 2018 at 8:03 PM, Jorge Sanjuan
-<jorge.sanjuan@codethink.co.uk> wrote:
-> From: Michael Drake <michael.drake@codethink.co.uk>
+On 4/20/2018 2:58 PM, Mauro Carvalho Chehab wrote:
+> Drivers that depend on ISAPNP currently can't be built with
+> COMPILE_TEST. However, looking at isapnp.h, there are already
+> stubs there to allow drivers to include it even when isa
+> PNP is not supported.
 >
-> The channel mapping is defined by bChRelationship, not bChPurpose.
+> So, remove such dependencies when COMPILE_TEST.
 >
-> Signed-off-by: Michael Drake <michael.drake@codethink.co.uk>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 > ---
->  sound/usb/stream.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>   drivers/pnp/isapnp/Kconfig | 2 +-
+>   sound/isa/Kconfig          | 6 +++---
+>   2 files changed, 4 insertions(+), 4 deletions(-)
 >
-> diff --git a/sound/usb/stream.c b/sound/usb/stream.c
-> index 6a8f5843334e..956be9f7c72a 100644
-> --- a/sound/usb/stream.c
-> +++ b/sound/usb/stream.c
-> @@ -349,7 +349,7 @@ snd_pcm_chmap_elem *convert_chmap_v3(struct uac3_cluster_header_descriptor
->                          * TODO: this conversion is not complete, update it
->                          * after adding UAC3 values to asound.h
->                          */
-> -                       switch (is->bChPurpose) {
-> +                       switch (is->bChRelationship) {
+> diff --git a/drivers/pnp/isapnp/Kconfig b/drivers/pnp/isapnp/Kconfig
+> index f1ef36673ad4..a1af146d2d90 100644
+> --- a/drivers/pnp/isapnp/Kconfig
+> +++ b/drivers/pnp/isapnp/Kconfig
+> @@ -3,7 +3,7 @@
+>   #
+>   config ISAPNP
+>   	bool "ISA Plug and Play support"
+> -	depends on ISA
+> +	depends on ISA || COMPILE_TEST
+>   	help
+>   	  Say Y here if you would like support for ISA Plug and Play devices.
+>   	  Some information is in <file:Documentation/isapnp.txt>.
+> diff --git a/sound/isa/Kconfig b/sound/isa/Kconfig
+> index d2a6cdd0395c..43b35a873d78 100644
+> --- a/sound/isa/Kconfig
+> +++ b/sound/isa/Kconfig
+> @@ -39,7 +39,7 @@ config SND_ADLIB
+>   
+>   config SND_AD1816A
+>   	tristate "Analog Devices SoundPort AD1816A"
+> -	depends on PNP && ISA
+> +	depends on PNP
+>   	select ISAPNP
+>   	select SND_OPL3_LIB
+>   	select SND_MPU401_UART
+> @@ -67,7 +67,7 @@ config SND_AD1848
+>   
+>   config SND_ALS100
+>   	tristate "Diamond Tech. DT-019x and Avance Logic ALSxxx"
+> -	depends on PNP && ISA
+> +	depends on PNP
+>   	select ISAPNP
+>   	select SND_OPL3_LIB
+>   	select SND_MPU401_UART
+> @@ -108,7 +108,7 @@ config SND_AZT2316
+>   
+>   config SND_AZT2320
+>   	tristate "Aztech Systems AZT2320"
+> -	depends on PNP && ISA
+> +	depends on PNP
+>   	select ISAPNP
+>   	select SND_OPL3_LIB
+>   	select SND_MPU401_UART
 
-Good catch!
 
-Somehow I overlooked this, so in my case of Generic Audio it is always
-mono.
-
-Reviewed-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-
->                         case UAC3_CH_MONO:
->                                 map = SNDRV_CHMAP_MONO;
->                                 break;
-> --
-> 2.11.0
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
