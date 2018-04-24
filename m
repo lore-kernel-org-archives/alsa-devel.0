@@ -1,20 +1,20 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: dice: improve support for ancient
-	firmware for DICE
-Date: Tue, 24 Apr 2018 22:35:08 +0900
-Message-ID: <a986a5f0-573b-4b87-baef-0d21dff36e6b@sakamocchi.jp>
-References: <20180422120759.15579-1-o-takashi@sakamocchi.jp>
- <201804230032.0xnJM97d%fengguang.wu@intel.com> <s5hlgdcrfic.wl-tiwai@suse.de>
- <8c006d95-553e-be2f-ca54-b5663f0a0acc@sakamocchi.jp>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 0/8] Fix year 2038 issue for sound subsystem
+Date: Tue, 24 Apr 2018 15:37:28 +0200
+Message-ID: <CAK8P3a0SKAAJMUDOJBjHKCnvprqOTjTnX9Ju3W_q1avzdU7EnA@mail.gmail.com>
+References: <cover.1524570852.git.baolin.wang@linaro.org>
+ <66b26dc6-9139-80cc-0b49-28ff68169b5c@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 516F32676A6
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 15:35:12 +0200 (CEST)
-In-Reply-To: <8c006d95-553e-be2f-ca54-b5663f0a0acc@sakamocchi.jp>
-Content-Language: en-US
+Received: from mail-qt0-f194.google.com (mail-qt0-f194.google.com
+ [209.85.216.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id D74442676A6
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 15:37:30 +0200 (CEST)
+Received: by mail-qt0-f194.google.com with SMTP id h2-v6so9963263qtp.7
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 06:37:30 -0700 (PDT)
+In-Reply-To: <66b26dc6-9139-80cc-0b49-28ff68169b5c@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,34 +24,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, kbuild test robot <lkp@intel.com>, ffado-devel@lists.sf.net, kbuild-all@01.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Fabian Frederick <fabf@skynet.be>, Arvind Yadav <arvind.yadav.cs@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, Baolin Wang <baolin.wang@linaro.org>, Vinod Koul <vinod.koul@intel.com>, hardik.t.shah@intel.com, Takashi Iwai <tiwai@suse.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, gudishax.kranthikumar@intel.com, Mark Brown <broonie@kernel.org>, Bhumika Goyal <bhumirks@gmail.com>, Naveen M <naveen.m@intel.com>, SF Markus Elfring <elfring@users.sourceforge.net>, jeeja.kp@intel.com, subhransu.s.prusty@intel.com, Ingo Molnar <mingo@kernel.org>, Dan Carpenter <dan.carpenter@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gQXByIDI0IDIwMTggMjE6NTcsIFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4gSGksCj4gCj4g
-T24gQXByIDI0IDIwMTggMjA6NDksIFRha2FzaGkgSXdhaSB3cm90ZToKPj4gT24gU3VuLCAyMiBB
-cHIgMjAxOCAyMDoyNTozNiArMDIwMCwKPj4ga2J1aWxkIHRlc3Qgcm9ib3Qgd3JvdGU6Cj4+Pgo+
-Pj4gc3BhcnNlIHdhcm5pbmdzOiAobmV3IG9uZXMgcHJlZml4ZWQgYnkgPj4pCj4+Pgo+Pj4+PiBz
-b3VuZC9maXJld2lyZS9kaWNlL2RpY2UtdHJhbnNhY3Rpb24uYzozMzQ6MjE6IHNwYXJzZTogcmVz
-dHJpY3RlZCAKPj4+Pj4gX19iZTMyIGRlZ3JhZGVzIHRvIGludGVnZXIKPj4+IMKgwqDCoCBzb3Vu
-ZC9maXJld2lyZS9kaWNlL2RpY2UtdHJhbnNhY3Rpb24uYzozMzY6MjE6IHNwYXJzZTogcmVzdHJp
-Y3RlZCAKPj4+IF9fYmUzMiBkZWdyYWRlcyB0byBpbnRlZ2VyCj4+Pgo+Pj4gdmltICszMzQgc291
-bmQvZmlyZXdpcmUvZGljZS9kaWNlLXRyYW5zYWN0aW9uLmMKPj4gKHNuaXApCj4+PiDCoMKgwqAg
-MzMzwqDCoMKgwqDCoMKgwqAgLyogT2xkIGZpcm13YXJlIGRvZXNuJ3Qgc3VwcG9ydCB0aGVzZSBm
-aWVsZHMuICovCj4+PiDCoCA+IDMzNMKgwqDCoMKgwqDCoMKgIGlmIChwb2ludGVyc1s3XSA+IDAp
-Cj4+PiDCoMKgwqAgMzM1wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBkaWNlLT5zeW5jX29mZnNldCA9
-IGJlMzJfdG9fY3B1KHBvaW50ZXJzWzZdKSAqIDQ7Cj4+PiDCoMKgwqAgMzM2wqDCoMKgwqDCoMKg
-wqAgaWYgKHBvaW50ZXJzWzldID4gMCkKPj4+IMKgwqDCoCAzMzfCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIGRpY2UtPnJzcnZfb2Zmc2V0ID0gYmUzMl90b19jcHUocG9pbnRlcnNbOF0pICogNDsKPj4K
-Pj4gVGhlIHdhcm5pbmcgbG9va3MgcmVhc29uYWJsZS4KPiAKPiBZZXAuIFRoZSBpbnRlZ2VyIHZh
-bHVlIGNhbiBiZSBuZWdhdGl2ZS4KPiAKPj4gQWx0ZXJuYXRpdmVseSwgeW91IGNhbiByZXdyaXRl
-IGl0IGFzIGEgbm9uLXplcm8gY2hlY2s6Cj4+IMKgwqDCoMKgaWYgKHBvaW50ZXJzWzddKQo+PiDC
-oMKgwqDCoMKgwqDCoCAuLi4uCj4+IFRoZW4gaXQgd291bGQgYmUgT0sgd2l0aG91dCBlbmRpYW4g
-Y29udmVyc2lvbi4KPiAKPiBPSy4gSSdsbCByZXBvc3QuCgpJIHJlcG9zdGVkIGl0IG5vdyBhbmQg
-aXQncyBibGFzdGVkWzFdLiBQbGVhc2UgZXZhbHVhdGUgYW5kIGFwcGx5IGl0IAppbnN0ZWFkIG9m
-IHRoZSBvbmUgd2hpY2ggSSBtaXN0b29rIHRvIHNlbmQuCgoKWzFdIApodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTgtQXByaWwvMTM0OTM2Lmh0
-bWwKClRoYW5rcwoKVGFrYXNoaSBTYWthbW90bwpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwK
+On Tue, Apr 24, 2018 at 3:29 PM, Jaroslav Kysela <perex@perex.cz> wrote:
+> Dne 24.4.2018 v 14:06 Baolin Wang napsal(a):
+>> Since many structures will use timespec type variables to record time stamp
+>> in uapi/asound.h, which are not year 2038 safe on 32bit system. This patchset
+>> tries to introduce new structures removing timespec type to compatible native
+>> mode and compat mode.
+>>
+>> Moreover this patchset also converts the internal structrures to use timespec64
+>> type and related APIs.
+>
+> Thanks for your patchset. A few comments:
+>
+> It might be more nice to reuse the existing structures and put
+> timespec64 to the reserved field and duplicate information (with the
+> 32-bit wrapping for the old fields). It means that we do not need new
+> ioctls and old libraries will be fine.
+
+The current approach is intended to make any user space work
+without source-level changes, i.e. you can still build an old alsa-lib
+package against a new glibc as long as you have the latest kernel
+headers (which the glibc requires for using 64-bit time_t).
+
+If we try to extend the structures in a different way, that requires
+user space changes, and existing source code would silently
+break on a future glibc.
+IMHO changing the source-level interface should only be done
+as a last resort for y2038.
+
+Note that most of the work is not required to keep working beyond
+2038, but actually is required just to keep working with an
+updated glibc that redefines time_t to 64 bit. The audio timestamps
+should be in CLOCK_MONOTONIC for new user space anyway,
+and that doesn't overflow a 32-bit type.
+
+> It may make sense to define private snd_timespec32 and snd_timespec64
+> with s32/s64 types instead separate sec/usec fields.
+
+Right, I have some ideas there as well as I saw one remaining issue
+in my patch for the status mmap: when building a program with
+64-bit time_t, we still see a copy of the old structure but with an\
+impossible layout.
+
+       ARnd
