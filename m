@@ -1,195 +1,71 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2] ALSA: dice: improve support for ancient
-	firmware for DICE
-Date: Tue, 24 Apr 2018 22:24:32 +0900
-Message-ID: <20180424132432.3189-1-o-takashi@sakamocchi.jp>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 8/8] ALSA: add new 32-bit layout for snd_pcm_mmap_status/control
+Date: Tue, 24 Apr 2018 15:27:27 +0200
+Message-ID: <CAK8P3a2Os66+iwQYf97qh05W2JP8rmWao8zmKoHiXqVHvyYAJA@mail.gmail.com>
+References: <cover.1524570852.git.baolin.wang@linaro.org> <e7d7ed852943b5a35c5d494071f522465620371b.1524570852.git.baolin.wang@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 7169526722C
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 15:25:05 +0200 (CEST)
-Received: by mail-pg0-f65.google.com with SMTP id i29so9367022pgn.12
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 06:25:05 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de, o-takashi@sakamocchi.jp
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <e7d7ed852943b5a35c5d494071f522465620371b.1524570852.git.baolin.wang@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Baolin Wang <baolin.wang@linaro.org>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Ingo Molnar <mingo@kernel.org>, SF Markus Elfring <elfring@users.sourceforge.net>, Dan Carpenter <dan.carpenter@oracle.com>, jeeja.kp@intel.com, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, subhransu.s.prusty@intel.com, Bhumika Goyal <bhumirks@gmail.com>, gudishax.kranthikumar@intel.com, Naveen M <naveen.m@intel.com>, hardik.t.shah@intel.com, Arvind Yadav <arvind.yadav.cs@gmail.com>, Fabian Frederick <fabf@skynet.be>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-In early stage of firmware SDK, DICE seems to lose its backward
-compatibility due to some registers on global address section. I found
-this with Alesis Multimix 12 FireWire with ancient firmware (approx.
-shipped version).
+On Tue, Apr 24, 2018 at 2:06 PM, Baolin Wang <baolin.wang@linaro.org> wrote:
 
-According to retrieved log from the unit, global section has 96 byte
-space. On the other hand, current version of ALSA dice driver assumes
-that all of supported unit has at least 100 byte space.
+> @@ -544,6 +543,8 @@ static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
+>         case SNDRV_PCM_IOCTL_XRUN:
+>         case SNDRV_PCM_IOCTL_LINK:
+>         case SNDRV_PCM_IOCTL_UNLINK:
+> +       case __SNDRV_PCM_IOCTL_SYNC_PTR32:
+> +       case __SNDRV_PCM_IOCTL_SYNC_PTR64:
+>                 return snd_pcm_common_ioctl(file, substream, cmd, argp);
+>         case SNDRV_PCM_IOCTL_HW_REFINE32:
+>                 return snd_pcm_ioctl_hw_params_compat(substream, 1, argp);
+> @@ -555,8 +556,6 @@ static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
+>                 return snd_pcm_status_user32(substream, argp, false);
+>         case SNDRV_PCM_IOCTL_STATUS_EXT_COMPAT32:
+>                 return snd_pcm_status_user32(substream, argp, true);
+> -       case SNDRV_PCM_IOCTL_SYNC_PTR32:
+> -               return snd_pcm_ioctl_sync_ptr_compat(substream, argp);
+>         case SNDRV_PCM_IOCTL_CHANNEL_INFO32:
+>                 return snd_pcm_ioctl_channel_info_compat(substream, argp);
+>         case SNDRV_PCM_IOCTL_WRITEI_FRAMES32:
 
-$ ./firewire-request /dev/fw1 read 0xffffe0000000 28
-result: 000: 00 00 00 0a 00 00 00 18 00 00 00 22 00 00 00 8a
-result: 010: 00 00 00 ac 00 00 01 12 00 00 00 00 00 00 00 00
-result: 020: 00 00 00 00 00 00 00 00
+I found a bug here while doing some more testing on my own patch:
+__SNDRV_PCM_IOCTL_SYNC_PTR64 has the same value as
+SNDRV_PCM_IOCTL_SYNC_PTR_X32, so we get a duplicate case
+error when CONFIG_X86_X32 is enabled. We still need both handlers,
+so the fix I came up with is:
 
-This commit adds support for the ancient firmware. Check of global section
-is loosened to accept the smaller space. The lack of information is
-already compensated by hard-coded parameters.
-
-I experienced that the latest version of Windows driver for this model
-can't handle this unit, too. This means that TCAT releases firmware SDK
-without backward compatibility for the ancient firmware.
-
-Below list is a early history of driver/firmware package released by
-Alesis. I investigated on wayback machine on Internet Archive:
- * Unknown: PAL v1.0.41.2, firmware v1.0.3
- * Mar 2006: PAL v1.54.0, firmware v1.0.4
- * Dec 2006: PAL v2.0.0.2, firmware v2.0
- * Jun 2007: PAL v3.0.41.5, firmware v2.0
- * Jul 2007: PAL v3.0.56.2. firmware v2.0
- * Jan 2008: PAL v3.0.81.1080, firmware v2.0
-
-If I can assume that firmware version is the same as DICE version, DICE
-version for the issued firmware may be v1.0.3. According to code base of
-userspace driver project (FFADO), I can read DICE v1.0.4 supports global
-space larger than 100 byte. I guess the smaller space of global section is
-a feature of DICE v1.0.3.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/dice/dice-interface.h   |  9 +++++--
- sound/firewire/dice/dice-proc.c        | 10 +++----
- sound/firewire/dice/dice-transaction.c | 49 +++++++++++++++++++---------------
- 3 files changed, 40 insertions(+), 28 deletions(-)
-
-diff --git a/sound/firewire/dice/dice-interface.h b/sound/firewire/dice/dice-interface.h
-index 15a484b05298..9cad3d608229 100644
---- a/sound/firewire/dice/dice-interface.h
-+++ b/sound/firewire/dice/dice-interface.h
-@@ -174,14 +174,19 @@
-  */
- #define GLOBAL_SAMPLE_RATE		0x05c
- 
-+/*
-+ * Some old firmware versions do not have the following global registers.
-+ * Windows drivers produced by TCAT lost backward compatibility in its
-+ * early release because they can handle firmware only which supports the
-+ * following registers.
-+ */
-+
- /*
-  * The version of the DICE driver specification that this device conforms to;
-  * read-only.
-  */
- #define GLOBAL_VERSION			0x060
- 
--/* Some old firmware versions do not have the following global registers: */
--
- /*
-  * Supported sample rates and clock sources; read-only.
-  */
-diff --git a/sound/firewire/dice/dice-proc.c b/sound/firewire/dice/dice-proc.c
-index f5c1d1bced59..cc079323ed30 100644
---- a/sound/firewire/dice/dice-proc.c
-+++ b/sound/firewire/dice/dice-proc.c
-@@ -148,12 +148,12 @@ static void dice_proc_read(struct snd_info_entry *entry,
- 				   >> CLOCK_RATE_SHIFT));
- 	snd_iprintf(buffer, "  ext status: %08x\n", buf.global.extended_status);
- 	snd_iprintf(buffer, "  sample rate: %u\n", buf.global.sample_rate);
--	snd_iprintf(buffer, "  version: %u.%u.%u.%u\n",
--		    (buf.global.version >> 24) & 0xff,
--		    (buf.global.version >> 16) & 0xff,
--		    (buf.global.version >>  8) & 0xff,
--		    (buf.global.version >>  0) & 0xff);
- 	if (quadlets >= 90) {
-+		snd_iprintf(buffer, "  version: %u.%u.%u.%u\n",
-+			    (buf.global.version >> 24) & 0xff,
-+			    (buf.global.version >> 16) & 0xff,
-+			    (buf.global.version >>  8) & 0xff,
-+			    (buf.global.version >>  0) & 0xff);
- 		snd_iprintf(buffer, "  clock caps:");
- 		for (i = 0; i <= 6; ++i)
- 			if (buf.global.clock_caps & (1 << i))
-diff --git a/sound/firewire/dice/dice-transaction.c b/sound/firewire/dice/dice-transaction.c
-index 0f0350320ae8..b7e138b5abcf 100644
---- a/sound/firewire/dice/dice-transaction.c
-+++ b/sound/firewire/dice/dice-transaction.c
-@@ -265,7 +265,7 @@ int snd_dice_transaction_reinit(struct snd_dice *dice)
- static int get_subaddrs(struct snd_dice *dice)
- {
- 	static const int min_values[10] = {
--		10, 0x64 / 4,
-+		10, 0x60 / 4,
- 		10, 0x18 / 4,
- 		10, 0x18 / 4,
- 		0, 0,
-@@ -301,33 +301,40 @@ static int get_subaddrs(struct snd_dice *dice)
- 		}
- 	}
- 
--	/*
--	 * Check that the implemented DICE driver specification major version
--	 * number matches.
--	 */
--	err = snd_fw_transaction(dice->unit, TCODE_READ_QUADLET_REQUEST,
--				 DICE_PRIVATE_SPACE +
--				 be32_to_cpu(pointers[0]) * 4 + GLOBAL_VERSION,
--				 &version, sizeof(version), 0);
--	if (err < 0)
--		goto end;
-+	if (be32_to_cpu(pointers[1]) > 0x18) {
-+		/*
-+		 * Check that the implemented DICE driver specification major
-+		 * version number matches.
-+		 */
-+		err = snd_fw_transaction(dice->unit, TCODE_READ_QUADLET_REQUEST,
-+				DICE_PRIVATE_SPACE +
-+				be32_to_cpu(pointers[0]) * 4 + GLOBAL_VERSION,
-+				&version, sizeof(version), 0);
-+		if (err < 0)
-+			goto end;
- 
--	if ((version & cpu_to_be32(0xff000000)) != cpu_to_be32(0x01000000)) {
--		dev_err(&dice->unit->device,
--			"unknown DICE version: 0x%08x\n", be32_to_cpu(version));
--		err = -ENODEV;
--		goto end;
-+		if ((version & cpu_to_be32(0xff000000)) !=
-+						cpu_to_be32(0x01000000)) {
-+			dev_err(&dice->unit->device,
-+				"unknown DICE version: 0x%08x\n",
-+				be32_to_cpu(version));
-+			err = -ENODEV;
-+			goto end;
-+		}
-+
-+		/* Set up later. */
-+		dice->clock_caps = 1;
- 	}
- 
- 	dice->global_offset = be32_to_cpu(pointers[0]) * 4;
- 	dice->tx_offset = be32_to_cpu(pointers[2]) * 4;
- 	dice->rx_offset = be32_to_cpu(pointers[4]) * 4;
--	dice->sync_offset = be32_to_cpu(pointers[6]) * 4;
--	dice->rsrv_offset = be32_to_cpu(pointers[8]) * 4;
- 
--	/* Set up later. */
--	if (be32_to_cpu(pointers[1]) * 4 >= GLOBAL_CLOCK_CAPABILITIES + 4)
--		dice->clock_caps = 1;
-+	/* Old firmware doesn't support these fields. */
-+	if (pointers[7])
-+		dice->sync_offset = be32_to_cpu(pointers[6]) * 4;
-+	if (pointers[9])
-+		dice->rsrv_offset = be32_to_cpu(pointers[8]) * 4;
- end:
- 	kfree(pointers);
- 	return err;
--- 
-2.14.1
+diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
+index 51a9447442f3..dbeeae50fb8d 100644
+--- a/sound/core/pcm_compat.c
++++ b/sound/core/pcm_compat.c
+@@ -543,8 +543,13 @@ static long snd_pcm_ioctl_compat(struct file
+*file, unsigned int cmd, unsigned l
+        case SNDRV_PCM_IOCTL_XRUN:
+        case SNDRV_PCM_IOCTL_LINK:
+        case SNDRV_PCM_IOCTL_UNLINK:
+-       case __SNDRV_PCM_IOCTL_SYNC_PTR32:
+        case __SNDRV_PCM_IOCTL_SYNC_PTR64:
++#ifdef CONFIG_X86_X32
++               if (in_x32_syscall())
++                       return snd_pcm_ioctl_sync_ptr_x32(substream, argp);
++               /* fallthru */
++#endif /* CONFIG_X86_X32 */
++       case __SNDRV_PCM_IOCTL_SYNC_PTR32:
+                return snd_pcm_common_ioctl(file, substream, cmd, argp);
+        case SNDRV_PCM_IOCTL_HW_REFINE32:
+                return snd_pcm_ioctl_hw_params_compat(substream, 1, argp);
+@@ -577,8 +582,6 @@ static long snd_pcm_ioctl_compat(struct file
+*file, unsigned int cmd, unsigned l
+        case SNDRV_PCM_IOCTL_STATUS_EXT_COMPAT64:
+                return snd_pcm_status_user_compat64(substream, argp, true);
+ #ifdef CONFIG_X86_X32
+-       case SNDRV_PCM_IOCTL_SYNC_PTR_X32:
+-               return snd_pcm_ioctl_sync_ptr_x32(substream, argp);
+        case SNDRV_PCM_IOCTL_CHANNEL_INFO_X32:
+                return snd_pcm_ioctl_channel_info_x32(substream, argp);
+ #endif /* CONFIG_X86_X32 */
