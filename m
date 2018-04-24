@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 6/8] ALSA: asihpi: Hardening for potential
+Subject: [PATCH 7/8] ALSA: hdspm: Hardening for potential
 	Spectre v1
-Date: Tue, 24 Apr 2018 09:56:17 +0200
-Message-ID: <20180424075619.29602-7-tiwai@suse.de>
+Date: Tue, 24 Apr 2018 09:56:18 +0200
+Message-ID: <20180424075619.29602-8-tiwai@suse.de>
 References: <20180424075619.29602-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 1851426769E
+ by alsa0.perex.cz (Postfix) with ESMTP id 18A042676A3
  for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 09:56:44 +0200 (CEST)
 In-Reply-To: <20180424075619.29602-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,10 +25,11 @@ To: alsa-devel@alsa-project.org
 Cc: Dan Carpenter <dan.carpenter@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
-As the recent Smatch warned, a couple of places in ASIHPI driver may
-expand the array directly from the user-space value with speculation:
-  sound/pci/asihpi/hpimsginit.c:70 hpi_init_response() warn: potential spectre issue 'res_size' (local cap)
-  sound/pci/asihpi/hpioctl.c:189 asihpi_hpi_ioctl() warn: potential spectre issue 'adapters'
+As the recent Smatch warned, a couple of places in HDSP MADI driver
+may expand the array directly from the user-space value with
+speculation:
+  sound/pci/rme9652/hdspm.c:5717 snd_hdspm_channel_info() warn: potential spectre issue 'hdspm->channel_map_out' (local cap)
+  sound/pci/rme9652/hdspm.c:5734 snd_hdspm_channel_info() warn: potential spectre issue 'hdspm->channel_map_in' (local cap)
 
 This patch puts array_index_nospec() for hardening against them.
 
@@ -36,73 +37,74 @@ BugLink: https://marc.info/?l=linux-kernel&m=152411496503418&w=2
 Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/asihpi/hpimsginit.c | 13 +++++++++----
- sound/pci/asihpi/hpioctl.c    |  4 +++-
- 2 files changed, 12 insertions(+), 5 deletions(-)
+ sound/pci/rme9652/hdspm.c | 24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
-diff --git a/sound/pci/asihpi/hpimsginit.c b/sound/pci/asihpi/hpimsginit.c
-index 7eb617175fde..a31a70dccecf 100644
---- a/sound/pci/asihpi/hpimsginit.c
-+++ b/sound/pci/asihpi/hpimsginit.c
-@@ -23,6 +23,7 @@
- 
- #include "hpi_internal.h"
- #include "hpimsginit.h"
+diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+index 4c59983158e0..11b5b5e0e058 100644
+--- a/sound/pci/rme9652/hdspm.c
++++ b/sound/pci/rme9652/hdspm.c
+@@ -137,6 +137,7 @@
+ #include <linux/pci.h>
+ #include <linux/math64.h>
+ #include <linux/io.h>
 +#include <linux/nospec.h>
  
- /* The actual message size for each object type */
- static u16 msg_size[HPI_OBJ_MAXINDEX + 1] = HPI_MESSAGE_SIZE_BY_OBJECT;
-@@ -39,10 +40,12 @@ static void hpi_init_message(struct hpi_message *phm, u16 object,
+ #include <sound/core.h>
+ #include <sound/control.h>
+@@ -5698,40 +5699,43 @@ static int snd_hdspm_channel_info(struct snd_pcm_substream *substream,
+ 		struct snd_pcm_channel_info *info)
  {
- 	u16 size;
+ 	struct hdspm *hdspm = snd_pcm_substream_chip(substream);
++	unsigned int channel = info->channel;
  
--	if ((object > 0) && (object <= HPI_OBJ_MAXINDEX))
-+	if ((object > 0) && (object <= HPI_OBJ_MAXINDEX)) {
-+		object = array_index_nospec(object, HPI_OBJ_MAXINDEX + 1);
- 		size = msg_size[object];
--	else
-+	} else {
- 		size = sizeof(*phm);
-+	}
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		if (snd_BUG_ON(info->channel >= hdspm->max_channels_out)) {
++		if (snd_BUG_ON(channel >= hdspm->max_channels_out)) {
+ 			dev_info(hdspm->card->dev,
+ 				 "snd_hdspm_channel_info: output channel out of range (%d)\n",
+-				 info->channel);
++				 channel);
+ 			return -EINVAL;
+ 		}
  
- 	memset(phm, 0, size);
- 	phm->size = size;
-@@ -66,10 +69,12 @@ void hpi_init_response(struct hpi_response *phr, u16 object, u16 function,
- {
- 	u16 size;
+-		if (hdspm->channel_map_out[info->channel] < 0) {
++		channel = array_index_nospec(channel, hdspm->max_channels_out);
++		if (hdspm->channel_map_out[channel] < 0) {
+ 			dev_info(hdspm->card->dev,
+ 				 "snd_hdspm_channel_info: output channel %d mapped out\n",
+-				 info->channel);
++				 channel);
+ 			return -EINVAL;
+ 		}
  
--	if ((object > 0) && (object <= HPI_OBJ_MAXINDEX))
-+	if ((object > 0) && (object <= HPI_OBJ_MAXINDEX)) {
-+		object = array_index_nospec(object, HPI_OBJ_MAXINDEX + 1);
- 		size = res_size[object];
--	else
-+	} else {
- 		size = sizeof(*phr);
-+	}
+-		info->offset = hdspm->channel_map_out[info->channel] *
++		info->offset = hdspm->channel_map_out[channel] *
+ 			HDSPM_CHANNEL_BUFFER_BYTES;
+ 	} else {
+-		if (snd_BUG_ON(info->channel >= hdspm->max_channels_in)) {
++		if (snd_BUG_ON(channel >= hdspm->max_channels_in)) {
+ 			dev_info(hdspm->card->dev,
+ 				 "snd_hdspm_channel_info: input channel out of range (%d)\n",
+-				 info->channel);
++				 channel);
+ 			return -EINVAL;
+ 		}
  
- 	memset(phr, 0, sizeof(*phr));
- 	phr->size = size;
-diff --git a/sound/pci/asihpi/hpioctl.c b/sound/pci/asihpi/hpioctl.c
-index 5badd08e1d69..b1a2a7ea4172 100644
---- a/sound/pci/asihpi/hpioctl.c
-+++ b/sound/pci/asihpi/hpioctl.c
-@@ -33,6 +33,7 @@
- #include <linux/stringify.h>
- #include <linux/module.h>
- #include <linux/vmalloc.h>
-+#include <linux/nospec.h>
+-		if (hdspm->channel_map_in[info->channel] < 0) {
++		channel = array_index_nospec(channel, hdspm->max_channels_in);
++		if (hdspm->channel_map_in[channel] < 0) {
+ 			dev_info(hdspm->card->dev,
+ 				 "snd_hdspm_channel_info: input channel %d mapped out\n",
+-				 info->channel);
++				 channel);
+ 			return -EINVAL;
+ 		}
  
- #ifdef MODULE_FIRMWARE
- MODULE_FIRMWARE("asihpi/dsp5000.bin");
-@@ -186,7 +187,8 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 		struct hpi_adapter *pa = NULL;
+-		info->offset = hdspm->channel_map_in[info->channel] *
++		info->offset = hdspm->channel_map_in[channel] *
+ 			HDSPM_CHANNEL_BUFFER_BYTES;
+ 	}
  
- 		if (hm->h.adapter_index < ARRAY_SIZE(adapters))
--			pa = &adapters[hm->h.adapter_index];
-+			pa = &adapters[array_index_nospec(hm->h.adapter_index,
-+							  ARRAY_SIZE(adapters))];
- 
- 		if (!pa || !pa->adapter || !pa->adapter->type) {
- 			hpi_init_response(&hr->r0, hm->h.object,
 -- 
 2.16.3
