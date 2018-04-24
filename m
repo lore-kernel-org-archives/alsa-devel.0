@@ -1,16 +1,16 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4/8] ALSA: hda: Hardening for potential Spectre
-	v1
-Date: Tue, 24 Apr 2018 09:56:15 +0200
-Message-ID: <20180424075619.29602-5-tiwai@suse.de>
+Subject: [PATCH 3/8] ALSA: control: Hardening for potential
+	Spectre v1
+Date: Tue, 24 Apr 2018 09:56:14 +0200
+Message-ID: <20180424075619.29602-4-tiwai@suse.de>
 References: <20180424075619.29602-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id E09FD266E30
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 09:56:42 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 17EB026769C
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 09:56:44 +0200 (CEST)
 In-Reply-To: <20180424075619.29602-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,51 +25,60 @@ To: alsa-devel@alsa-project.org
 Cc: Dan Carpenter <dan.carpenter@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
-As the recent Smatch warned, one place in HD-audio hwdep ioctl codes
+As the recent Smatch warned, a few places in ALSA control core codes
 may expand the array directly from the user-space value with
 speculation:
-  sound/pci/hda/hda_local.h:467 get_wcaps() warn: potential spectre issue 'codec->wcaps'
 
-As get_wcaps() itself is a fairly frequently called inline function,
-and there is only one single call with a user-space value, it's better
-to open-code it locally with array_index_nospec() hardening.
+  sound/core/control.c:1003 snd_ctl_elem_lock() warn: potential spectre issue 'kctl->vd'
+  sound/core/control.c:1031 snd_ctl_elem_unlock() warn: potential spectre issue 'kctl->vd'
+  sound/core/control.c:844 snd_ctl_elem_info() warn: potential spectre issue 'kctl->vd'
+  sound/core/control.c:891 snd_ctl_elem_read() warn: potential spectre issue 'kctl->vd'
+  sound/core/control.c:939 snd_ctl_elem_write() warn: potential spectre issue 'kctl->vd'
+
+Although all these seem doing only the first load without further
+reference, we may want to stay in a safer side, so hardening with
+array_index_nospec() would still make sense.
+
+In this patch, we put array_index_nospec() to the common
+snd_ctl_get_ioff*() helpers instead of each caller.  They are also
+referred from some drivers, too, and basically all usages are to
+calculate the array index from the user-space value.
 
 BugLink: https://marc.info/?l=linux-kernel&m=152411496503418&w=2
 Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_hwdep.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ include/sound/control.h | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/hda_hwdep.c b/sound/pci/hda/hda_hwdep.c
-index 57df06e76968..cc009a4a3d1d 100644
---- a/sound/pci/hda/hda_hwdep.c
-+++ b/sound/pci/hda/hda_hwdep.c
-@@ -21,6 +21,7 @@
- #include <linux/init.h>
- #include <linux/slab.h>
- #include <linux/compat.h>
+diff --git a/include/sound/control.h b/include/sound/control.h
+index ca13a44ae9d4..6011a58d3e20 100644
+--- a/include/sound/control.h
++++ b/include/sound/control.h
+@@ -23,6 +23,7 @@
+  */
+ 
+ #include <linux/wait.h>
 +#include <linux/nospec.h>
- #include <sound/core.h>
- #include "hda_codec.h"
- #include "hda_local.h"
-@@ -51,7 +52,16 @@ static int get_wcap_ioctl(struct hda_codec *codec,
- 	
- 	if (get_user(verb, &arg->verb))
- 		return -EFAULT;
--	res = get_wcaps(codec, verb >> 24);
-+	/* open-code get_wcaps(verb>>24) with nospec */
-+	verb >>= 24;
-+	if (verb < codec->core.start_nid ||
-+	    verb >= codec->core.start_nid + codec->core.num_nodes) {
-+		res = 0;
-+	} else {
-+		verb -= codec->core.start_nid;
-+		verb = array_index_nospec(verb, codec->core.num_nodes);
-+		res = codec->wcaps[verb];
-+	}
- 	if (put_user(res, &arg->res))
- 		return -EFAULT;
- 	return 0;
+ #include <sound/asound.h>
+ 
+ #define snd_kcontrol_chip(kcontrol) ((kcontrol)->private_data)
+@@ -148,12 +149,14 @@ int snd_ctl_get_preferred_subdevice(struct snd_card *card, int type);
+ 
+ static inline unsigned int snd_ctl_get_ioffnum(struct snd_kcontrol *kctl, struct snd_ctl_elem_id *id)
+ {
+-	return id->numid - kctl->id.numid;
++	unsigned int ioff = id->numid - kctl->id.numid;
++	return array_index_nospec(ioff, kctl->count);
+ }
+ 
+ static inline unsigned int snd_ctl_get_ioffidx(struct snd_kcontrol *kctl, struct snd_ctl_elem_id *id)
+ {
+-	return id->index - kctl->id.index;
++	unsigned int ioff = id->index - kctl->id.index;
++	return array_index_nospec(ioff, kctl->count);
+ }
+ 
+ static inline unsigned int snd_ctl_get_ioff(struct snd_kcontrol *kctl, struct snd_ctl_elem_id *id)
 -- 
 2.16.3
