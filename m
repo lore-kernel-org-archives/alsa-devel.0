@@ -1,173 +1,96 @@
 From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v5 04/23] ASoC: qdsp6: dt-bindings: Add q6afe dt bindings
-Date: Tue, 24 Apr 2018 11:14:04 -0500
-Message-ID: <20180424161404.v3ecysrg7z4v3ejp@rob-hp-laptop>
+Subject: Re: [PATCH v5 05/23] ASoC: qdsp6: dt-bindings: Add
+	q6adm dt bindings
+Date: Tue, 24 Apr 2018 11:15:21 -0500
+Message-ID: <20180424161521.tyhnpiwbz2tqqetj@rob-hp-laptop>
 References: <20180418153157.1960-1-srinivas.kandagatla@linaro.org>
- <20180418153157.1960-5-srinivas.kandagatla@linaro.org>
+ <20180418153157.1960-6-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ot0-f193.google.com (mail-ot0-f193.google.com
+ [74.125.82.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3B5A2675CD
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 18:15:23 +0200 (CEST)
+Received: by mail-ot0-f193.google.com with SMTP id y10-v6so8910913otg.10
+ for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 09:15:23 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <20180418153157.1960-5-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <20180418153157.1960-6-srinivas.kandagatla@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: srinivas.kandagatla@linaro.org
-Cc: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, gregkh@linuxfoundation.org, david.brown@linaro.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, bgoswami@codeaurora.org, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, spatakok@qti.qualcomm.com, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, andy.gross@linaro.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 18, 2018 at 04:31:38PM +0100, srinivas.kandagatla@linaro.org wrote:
+On Wed, Apr 18, 2018 at 04:31:39PM +0100, srinivas.kandagatla@linaro.org wrote:
 > From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > 
-> This patch add DT bindings for AFE (Audio Frontend) DSP module.
+> This patch add DT bindings for ADM (Audio Device Manager) DSP module.
+> This module implements mixer controls to setup the connections between
+> AFE ports and ASM streams.
 > 
 > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
 > ---
->  .../devicetree/bindings/sound/qcom,q6afe.txt       | 88 ++++++++++++++++++++++
->  include/dt-bindings/sound/qcom,q6afe.h             | 31 ++++++++
->  2 files changed, 119 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6afe.txt
->  create mode 100644 include/dt-bindings/sound/qcom,q6afe.h
+>  .../devicetree/bindings/sound/qcom,q6adm.txt       | 33 ++++++++++++++++++++++
+>  1 file changed, 33 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6adm.txt
+
+Similar comments in this one.
+
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,q6adm.txt b/Documentation/devicetree/bindings/sound/qcom,q6adm.txt
 > new file mode 100644
-> index 000000000000..3925726a3319
+> index 000000000000..f1e2df8d2ea8
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
-> @@ -0,0 +1,88 @@
-> +Qualcomm Audio Front End (Q6AFE) binding
+> +++ b/Documentation/devicetree/bindings/sound/qcom,q6adm.txt
+> @@ -0,0 +1,33 @@
+> +Qualcomm Audio Device Manager (Q6ADM) binding
 > +
-> +AFE is one of the APR audio service on Q6DSP
-> +Please refer to qcom,apr.txt for details of the common apr service bindings
-> +used by all apr services.
+> +Q6ADM is one of the APR audio service on Q6DSP.
+> +Please refer to qcom,apr.txt for details of the coommon apr service bindings
+> +used by the apr service device.
 > +
 > +- but must contain the following property:
 > +
 > +- compatible:
 > +	Usage: required
 > +	Value type: <stringlist>
-> +	Definition: must be "qcom,afe-v<MAJOR-NUMBER>.<MINOR-NUMBER>"
-> +		  Or "qcom,afe" where the version number can be queried
-> +		  from DSP.
-> +		  example "qcom,afe-v2.0"
-
-Doesn't match the APR example.
-
+> +	Definition: must be "qcom,adm-v<MAJOR-NUMBER>.<MINOR-NUMBER>".
+> +		   Or "qcom,adm" where the version number can be queried
+> +		   from DSP.
+> +		   example "qcom,adm-v2.0"
 > +
-> += AFE DAIs (Digial Audio Interface)
-> +"dais" subnode of the AFE node represents dai specific configuration
+> +
+> += ADM routing
+> +"routing" subnode of the ADM node represents adm routing specific configuration
 > +
 > +- #sound-dai-cells
 > +	Usage: required
 > +	Value type: <prop-encoded-array>
-
-array?
-
-> +	Definition: Must be 1
-> +
-> +- reg
-> +	Usage: required
-> +	Value type: <prop-encoded-array>
-
-array or single value?
-
-> +	Definition: Must be dai id
-> +
-> +- qcom,sd-lines
-> +	Usage: required for mi2s interface
-> +	Value type: <prop-encoded-array>
-> +	Definition: Must be list of serial data lines used by this dai.
-> +	should be one or more of the 1-4 sd lines.
+> +	Definition: Must be 0
 > +
 > += EXAMPLE
-> +
-> +q6afe {
-> +	compatible = "qcom,q6afe";
-> +	reg = <APR_SVC_AFE>;
-> +
-> +	dais {
-> +		#sound-dai-cells = <1>;
-> +		hdmi@1 {
-> +			reg = <1>;
-> +		};
-> +
-> +		prim-mi2s-rx@16 {
-> +			reg = <16>;
-> +			qcom,sd-lines = <1 3>;
-> +		};
-> +
-> +		prim-mi2s-tx@17 {
-> +			reg = <17>;
-> +			qcom,sd-lines = <2>;
-> +		};
-> +
-> +		sec-mi2s-rx@18 {
-> +			reg = <18>;
-> +			qcom,sd-lines = <1 4>;
-> +		};
-> +
-> +		sec-mi2s-tx@19 {
-> +			reg = <19>;
-> +			qcom,sd-lines = <2>;
-> +		};
-> +
-> +		tert-mi2s-rx@20 {
-> +			reg = <20>;
-> +			qcom,sd-lines = <2 4>;
-> +		};
-> +
-> +		tert-mi2s-tx@21 {
-> +			reg = <21>;
-> +			qcom,sd-lines = <1>;
-> +		};
-> +
-> +		quat-mi2s-rx@22 {
-> +			reg = <22>;
-> +			qcom,sd-lines = <1>;
-> +		};
-> +
-> +		quat-mi2s-tx@23 {
-> +			reg = <23>;
-> +			qcom,sd-lines = <2>;
-> +		};
+> +q6adm {
+
+a6adm@?
+
+Needs to be the number, not a define.
+
+> +	compatible = "qcom,q6adm";
+> +	reg = <APR_SVC_ADM>;
+> +	q6routing: routing {
+> +		#sound-dai-cells = <0>;
 > +	};
 > +};
-> diff --git a/include/dt-bindings/sound/qcom,q6afe.h b/include/dt-bindings/sound/qcom,q6afe.h
-> new file mode 100644
-> index 000000000000..3c7868394889
-> --- /dev/null
-> +++ b/include/dt-bindings/sound/qcom,q6afe.h
-> @@ -0,0 +1,31 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#ifndef __DT_BINDINGS_Q6_AFE_H__
-> +#define __DT_BINDINGS_Q6_AFE_H__
-> +
-> +/* Audio Front End (AFE) virtual ports IDs */
-> +#define HDMI_RX		1
-> +#define SLIMBUS_0_RX    2
-> +#define SLIMBUS_0_TX    3
-> +#define SLIMBUS_1_RX    4
-> +#define SLIMBUS_1_TX    5
-> +#define SLIMBUS_2_RX    6
-> +#define SLIMBUS_2_TX    7
-> +#define SLIMBUS_3_RX    8
-> +#define SLIMBUS_3_TX    9
-> +#define SLIMBUS_4_RX    10
-> +#define SLIMBUS_4_TX    11
-> +#define SLIMBUS_5_RX    12
-> +#define SLIMBUS_5_TX    13
-> +#define SLIMBUS_6_RX    14
-> +#define SLIMBUS_6_TX    15
-> +#define PRIMARY_MI2S_RX		16
-> +#define PRIMARY_MI2S_TX		17
-> +#define SECONDARY_MI2S_RX	18
-> +#define SECONDARY_MI2S_TX	19
-> +#define TERTIARY_MI2S_RX	20
-> +#define TERTIARY_MI2S_TX	21
-> +#define QUATERNARY_MI2S_RX	22
-> +#define QUATERNARY_MI2S_TX	23
-> +
-> +#endif /* __DT_BINDINGS_Q6_AFE_H__ */
-> +
 > -- 
 > 2.16.2
 > 
